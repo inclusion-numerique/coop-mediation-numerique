@@ -127,7 +127,6 @@ export const executeUpdateStructuresCartographieNationale = async (
   for (const structure of toCreate) {
     if (toCreateStructureIdsMap.has(structure.id)) {
       toCreateStructureIdsMap.get(structure.id)?.push(structure)
-      console.log('DUPLICATED TO CREATE', structure)
       continue
     }
 
