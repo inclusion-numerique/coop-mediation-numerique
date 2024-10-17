@@ -5,6 +5,7 @@ import { executeBackupDatabaseJob } from '@app/web/jobs/backup-database/executeB
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import { prismaClient } from '@app/web/prismaClient'
 import { executeUpdateStructuresCartographieNationale } from '@app/web/jobs/update-structures-cartographie-nationale/executeUpdateStructuresCartographieNationale'
+import { executeImportCrasConseillerNumeriqueV1 } from '@app/web/jobs/import-cras-conseiller-numerique-v1/executeImportCrasConseillerNumeriqueV1'
 
 export type JobExecutor<Name extends JobName, Result = unknown> = (
   job: Job & { name: Name; payload: JobPayload<Name> },
@@ -17,6 +18,7 @@ export const jobExecutors: {
   'backup-database': executeBackupDatabaseJob,
   'update-structures-cartographie-nationale':
     executeUpdateStructuresCartographieNationale,
+  'import-cras-conseiller-numerique-v1': executeImportCrasConseillerNumeriqueV1,
 }
 
 export const executeJob = async (job: Job) => {
