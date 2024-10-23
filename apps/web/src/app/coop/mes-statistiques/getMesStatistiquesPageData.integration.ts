@@ -159,6 +159,10 @@ const emptyData: MesStatistiquesPageData = {
   departementsOptions: [],
   initialBeneficiairesOptions: [],
   lieuxActiviteOptions: [],
+  activiteDates: {
+    first: undefined,
+    last: undefined,
+  },
 }
 
 const createExpectedData = (
@@ -462,6 +466,9 @@ describe('getMesStatistiquesPageData', () => {
               label: mediateque.nom,
             },
           ]
+
+          data.activiteDates.first = new Date('2024-06-15')
+          data.activiteDates.last = new Date('2024-08-05')
 
           return data
         }),
