@@ -1,9 +1,9 @@
 /* eslint @typescript-eslint/no-unsafe-assignment: 0 */
 
 import {
-  mediateurAvecActivite,
   mediateurAvecActiviteMediateurId,
-} from '@app/fixtures/users'
+  mediateurAvecActivite,
+} from '@app/fixtures/users/mediateurAvecActivite'
 import { resetFixtureUser } from '@app/fixtures/resetFixtureUser'
 import { prismaClient } from '@app/web/prismaClient'
 import { seedStructures } from '@app/fixtures/structures'
