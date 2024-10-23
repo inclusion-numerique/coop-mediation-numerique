@@ -61,4 +61,7 @@ export const ServerWebAppConfig = {
   ConseillerNumerique: {
     mongodbUrl: process.env.CONSEILLER_NUMERIQUE_MONGODB_URL ?? '',
   },
+  Security: {
+    hmacSecretKey: process.env.HMAC_SECRET_KEY ?? '',
+  },
 }
