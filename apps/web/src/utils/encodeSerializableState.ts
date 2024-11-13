@@ -16,18 +16,15 @@ import superjson from 'superjson'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type EncodedState<T> = string & { __encodedStateType: T }
 
-export const encodeSerializableState = <T>(formState: T): EncodedState<T> => {
-  const jsonString = superjson.stringify(formState)
-  return btoa(jsonString) as EncodedState<T>
-}
+export const encodeSerializableState = <T>(formState: T): EncodedState<T> =>
+  encodeURIComponent(superjson.stringify(formState)) as EncodedState<T>
 
 export const decodeSerializableState = <T>(
   encodedState: EncodedState<T>,
   defaultValue: T, // Needed if decoding fails
 ): T => {
   try {
-    const jsonString = atob(encodedState)
-    return superjson.parse<T>(jsonString)
+    return superjson.parse<T>(decodeURIComponent(encodedState))
   } catch {
     return defaultValue
   }
