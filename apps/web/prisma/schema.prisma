@@ -197,6 +197,32 @@ model JobExecution {
   @@map("job_executions")
 }
 
+enum ApiClientScope {
+  Statistiques @map("statistiques")
+  Cras @map("cras") // Cras anonymisés
+  ArchivesV1Cras @map("archives_v1_cras")
+
+  @@map("api_client_scope")
+}
+
+model ApiClient {
+  id String @id @default(uuid()) @db.Uuid
+
+  name String @unique
+
+  secret String // hashed secret
+
+  validFrom DateTime @map("valid_from")
+  validUntil DateTime? @map("valid_until")
+
+  scopes ApiClientScope[]
+
+  created DateTime @default(now())
+  updated DateTime @default(now())
+
+  @@map("api_clients")
+}
+
 // Domain model
 
 // Un médiateur numérique
@@ -298,6 +324,7 @@ model CraConseillerNumeriqueV1 {
 
   @@index([v1ConseillerNumeriqueId])
   @@index([dateAccompagnement(sort: Asc)])
+  @@index([createdAt(sort: Desc)])
   @@index([codeCommune])
   @@map("cras_conseiller_numerique_v1")
 }
