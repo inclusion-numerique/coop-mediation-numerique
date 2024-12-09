@@ -84,7 +84,7 @@
     "mjml": "^4.15.3",
     "mjml-react": "^2.0.8",
     "mongodb": "^6.10.0",
-    "nanoid": "^5.0.7",
+    "nanoid": "^5.0.9",
     "next": "^14.2.15",
     "next-auth": "4.24.7",
     "node-html-parser": "^6.1.13",
