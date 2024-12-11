@@ -17,12 +17,16 @@ export const getAuthenticatedMediateur = () =>
     return user as AuthenticatedMediateur
   })
 
+export const isCoordinateur = (
+  user: SessionUser,
+): user is AuthenticatedCoordinateur => user.coordinateur != null
+
 export const getAuthenticatedCoordinateur = () =>
   getAuthenticatedSessionUser().then((user): AuthenticatedCoordinateur => {
-    if (!user.coordinateur) {
+    if (!isCoordinateur(user)) {
       throw new Error('User is not a coordinateur')
     }
-    return user as AuthenticatedCoordinateur
+    return user
   })
 
 export const getAuthenticatedMediateurOrCoordinateur = () =>
