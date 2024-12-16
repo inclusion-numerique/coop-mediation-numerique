@@ -117,6 +117,8 @@ model User {
   usurpateur   Session?           @relation(name: "usurper")
   rdvAccount   RdvAccount?
 
+  AssistantChatSession AssistantChatSession[]
+
   @@map("users")
 }
 
@@ -940,4 +942,30 @@ model Mutation {
 
   @@index([userId])
   @@map("mutations")
+}
+
+model AssistantChatSession {
+  id          String  @id @default(uuid()) @db.Uuid
+  createdBy   User?   @relation(fields: [createdById], references: [id])
+  createdById String? @map("created_by_id") @db.Uuid
+
+  context String
+
+  created  DateTime               @default(now())
+  updated  DateTime               @default(now())
+  messages AssistantChatMessage[]
+}
+
+enum AssistantChatRole {
+  User      @map("user")
+  Assistant @map("assistant")
+}
+
+model AssistantChatMessage {
+  id        String               @id @default(uuid()) @db.Uuid
+  role      AssistantChatRole
+  session   AssistantChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId String               @map("session_id") @db.Uuid
+  content   String
+  created   DateTime             @default(now())
 }
