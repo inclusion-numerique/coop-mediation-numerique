@@ -197,6 +197,31 @@ model JobExecution {
   @@map("job_executions")
 }
 
+enum ApiClientScope {
+  Statistiques   @map("statistiques")
+  Activites           @map("activites") // Cras anonymisés
+
+  @@map("api_client_scope")
+}
+
+model ApiClient {
+  id String @id @default(uuid()) @db.Uuid
+
+  name String @unique
+
+  secretHash String @map("secret_hash") // we only store the hashed secret
+
+  validFrom  DateTime  @map("valid_from")
+  validUntil DateTime? @map("valid_until")
+
+  scopes ApiClientScope[]
+
+  created DateTime @default(now())
+  updated DateTime @default(now())
+
+  @@map("api_clients")
+}
+
 // Domain model
 
 // Un médiateur numérique
@@ -213,12 +238,28 @@ model Mediateur {
   modification DateTime @default(now())
   // Cannot soft delete as we need to keep userId and conseillerNumerique.mediateurId unique
 
-  coordinations MediateurCoordonne[]
-  enActivite    MediateurEnActivite[]
-  beneficiaires Beneficiaire[]
-  activites     Activite[]
+  coordinations    MediateurCoordonne[]
+  enActivite       MediateurEnActivite[]
+  beneficiaires    Beneficiaire[]
+  activites        Activite[]
+  InvitationEquipe InvitationEquipe[]
 
   @@map("mediateurs")
+}
+
+model InvitationEquipe {
+  email          String
+  coordinateurId String    @map("coordinateur_id") @db.Uuid
+  mediateurId    String?   @unique @map("mediateur_id") @db.Uuid
+  creation       DateTime? @default(now())
+  acceptee       DateTime?
+  refusee        DateTime?
+
+  mediateurInvite Mediateur?   @relation(fields: [mediateurId], references: [id])
+  coordinateur    Coordinateur @relation(fields: [coordinateurId], references: [id])
+
+  @@unique([email, coordinateurId])
+  @@map("invitations_equipes")
 }
 
 // Source de vérité https://api.conseiller-numerique.gouv.fr
@@ -281,7 +322,7 @@ model CraConseillerNumeriqueV1 {
   organismes         Json? // Poursuite vers autre structures
   annotation         String?
 
-  createdAt DateTime  @map("created_at") // v1 field
+  createdAt DateTime  @unique @map("created_at") // v1 field
   updatedAt DateTime? @map("updated_at") // v1 field
 
   structureId              String? @map("structure_id")
@@ -298,6 +339,7 @@ model CraConseillerNumeriqueV1 {
 
   @@index([v1ConseillerNumeriqueId])
   @@index([dateAccompagnement(sort: Asc)])
+  @@index([createdAt(sort: Desc)])
   @@index([codeCommune])
   @@map("cras_conseiller_numerique_v1")
 }
@@ -319,6 +361,7 @@ model Coordinateur {
   // Cannot soft delete as we need to keep userId and conseillerNumeriqueId unique
 
   mediateursCoordonnes MediateurCoordonne[]
+  InvitationEquipe     InvitationEquipe[]
 
   @@index([userId])
   @@map("coordinateurs")
@@ -712,8 +755,13 @@ model Activite {
   titreAtelier String?        @map("titre_atelier")
   niveau       NiveauAtelier?
 
+  // "creation" cursor is used to paginate results for API queries
+  @@unique([creation, id])
+  // index relations
   @@index([structureId])
   @@index([mediateurId])
+  // descending sort on this cursor for api query performances
+  @@index([creation(sort: Desc), id(sort: Desc)])
   @@map("activites")
 }
 
