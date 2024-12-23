@@ -96,7 +96,7 @@
     "next-swagger-doc": "^0.4.1",
     "node-html-parser": "^6.1.13",
     "nodemailer": "^6.9.16",
-    "openai": "^4.76.3",
+    "openai": "^4.77.0",
     "opening_hours": "^3.8.0",
     "pako": "^2.1.0",
     "postcss": "^8.4.49",
