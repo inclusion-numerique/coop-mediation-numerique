@@ -969,6 +969,7 @@ enum AssistantChatRole {
   Assistant @map("assistant")
   Tool      @map("tool")
   Function  @map("function")
+  Developer @map("developer")
 
   @@map("assistant_chat_roles")
 }
