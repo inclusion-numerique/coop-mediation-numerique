@@ -52,6 +52,7 @@ export const webAppStackSensitiveVariables = [
   'CONSEILLER_NUMERIQUE_MONGODB_URL',
   'HMAC_SECRET_KEY',
   'ALBERT_API_KEY',
+  'BRAVE_API_KEY',
 ] as const
 
 /**
@@ -211,6 +212,7 @@ export class WebAppStack extends TerraformStack {
           sensitiveEnvironmentVariables.CONSEILLER_NUMERIQUE_MONGODB_URL.value,
         HMAC_SECRET_KEY: sensitiveEnvironmentVariables.HMAC_SECRET_KEY.value,
         ALBERT_API_KEY: sensitiveEnvironmentVariables.ALBERT_API_KEY.value,
+        BRAVE_API_KEY: sensitiveEnvironmentVariables.BRAVE_API_KEY.value,
       },
       name: containerName,
       minScale: isMain ? 2 : namespace === 'dev' ? 1 : 0,
