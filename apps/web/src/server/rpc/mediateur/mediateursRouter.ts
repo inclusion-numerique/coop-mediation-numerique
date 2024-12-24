@@ -9,11 +9,14 @@ import { searchMediateur } from '@app/web/mediateurs/searchMediateurs'
 import { removeMediateurFromTeamOf } from '@app/web/mediateurs/removeMediateurFromTeamOf'
 import { findInvitationFrom } from '@app/web/mediateurs/findInvitationFrom'
 import { inviteToJoinTeamOf } from '@app/web/mediateurs/inviteToJoinTeamOf'
+import { leaveTeamOf } from '@app/web/mediateurs/leaveTeamOf'
 import { acceptInvitation } from '@app/web/mediateurs/acceptInvitation'
 import { declineInvitation } from '@app/web/mediateurs/declineInvitation'
 import { InviterMembreValidation } from '@app/web/equipe/InviterMembreValidation'
-import { isCoordinateur } from '@app/web/auth/userTypeGuards'
+import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
 import { InvitationValidation } from '@app/web/equipe/InvitationValidation'
+import { createStopwatch } from '@app/web/utils/stopwatch'
+import { addMutationLog } from '@app/web/utils/addMutationLog'
 
 export const mediateursRouter = router({
   search: protectedProcedure
@@ -29,11 +32,42 @@ export const mediateursRouter = router({
     }),
   removeFromTeam: protectedProcedure
     .input(z.object({ mediateurId: z.string() }))
-    .mutation(({ input: { mediateurId }, ctx: { user } }) => {
+    .mutation(async ({ input: { mediateurId }, ctx: { user } }) => {
       if (!isCoordinateur(user))
         throw forbiddenError('User is not a coordinateur')
 
-      return removeMediateurFromTeamOf(user.coordinateur)(mediateurId)
+      const stopwatch = createStopwatch()
+
+      await removeMediateurFromTeamOf(user.coordinateur)(mediateurId)
+
+      addMutationLog({
+        userId: user.id,
+        nom: 'SupprimerMediateurCoordonne',
+        duration: stopwatch.stop().duration,
+        data: {
+          coordinateurId: user.coordinateur.id,
+          mediateurId,
+        },
+      })
+    }),
+  leaveTeam: protectedProcedure
+    .input(z.object({ coordinateurId: z.string() }))
+    .mutation(async ({ input: { coordinateurId }, ctx: { user } }) => {
+      if (!isMediateur(user)) throw forbiddenError('User is not a mediateur')
+
+      const stopwatch = createStopwatch()
+
+      await leaveTeamOf(user.mediateur)(coordinateurId)
+
+      addMutationLog({
+        userId: user.id,
+        nom: 'SupprimerMediateurCoordonne',
+        duration: stopwatch.stop().duration,
+        data: {
+          mediateurId: user.mediateur.id,
+          coordinateurId,
+        },
+      })
     }),
   invite: protectedProcedure
     .input(InviterMembreValidation)
@@ -41,11 +75,25 @@ export const mediateursRouter = router({
       if (!isCoordinateur(user))
         throw forbiddenError('User is not a coordinateur')
 
-      return inviteToJoinTeamOf(user)(members)
+      const stopwatch = createStopwatch()
+
+      await inviteToJoinTeamOf(user)(members)
+
+      addMutationLog({
+        userId: user.id,
+        nom: 'InviterMediateursCoordonnes',
+        duration: stopwatch.stop().duration,
+        data: {
+          coordinateurId: user.coordinateur.id,
+          members,
+        },
+      })
     }),
   declineInvitation: publicProcedure
     .input(InvitationValidation)
-    .mutation(async ({ input: { email, coordinateurId } }) => {
+    .mutation(async ({ input: { email, coordinateurId }, ctx: { user } }) => {
+      const stopwatch = createStopwatch()
+
       const invitation = await findInvitationFrom(coordinateurId)(email)
 
       if (invitation == null)
@@ -54,10 +102,22 @@ export const mediateursRouter = router({
         )
 
       await declineInvitation(invitation)
+
+      addMutationLog({
+        userId: user?.id ?? null,
+        nom: 'RefuserInvitationMediateurCoordonne',
+        duration: stopwatch.stop().duration,
+        data: {
+          email,
+          coordinateurId,
+        },
+      })
     }),
   acceptInvitation: publicProcedure
     .input(InvitationValidation)
-    .mutation(async ({ input: { email, coordinateurId } }) => {
+    .mutation(async ({ input: { email, coordinateurId }, ctx: { user } }) => {
+      const stopwatch = createStopwatch()
+
       const invitation = await findInvitationFrom(coordinateurId)(email)
 
       if (invitation == null)
@@ -66,5 +126,15 @@ export const mediateursRouter = router({
         )
 
       await acceptInvitation(invitation)
+
+      addMutationLog({
+        userId: user?.id ?? null,
+        nom: 'AccepterInvitationMediateurCoordonne',
+        duration: stopwatch.stop().duration,
+        data: {
+          email,
+          coordinateurId,
+        },
+      })
     }),
 })
