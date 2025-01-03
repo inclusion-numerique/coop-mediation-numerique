@@ -117,6 +117,8 @@ model User {
   usurpateur   Session?           @relation(name: "usurper")
   rdvAccount   RdvAccount?
 
+  AssistantChatSession AssistantChatSession[]
+
   @@map("users")
 }
 
@@ -953,4 +955,59 @@ model Mutation {
   @@index([userId])
   @@index([timestamp(sort: Desc)])
   @@map("mutations")
+}
+
+model AssistantChatSession {
+  id          String  @id @default(uuid()) @db.Uuid
+  createdBy   User?   @relation(fields: [createdById], references: [id])
+  createdById String? @map("created_by_id") @db.Uuid
+
+  title String?
+
+  context String
+
+  created  DateTime               @default(now())
+  updated  DateTime               @default(now())
+  deleted  DateTime?
+  messages AssistantChatMessage[]
+
+  @@index([createdById])
+  @@map("assistant_chat_sessions")
+}
+
+// Based on the OpenAI API standard
+enum AssistantChatRole {
+  System    @map("system")
+  User      @map("user")
+  Assistant @map("assistant")
+  Tool      @map("tool")
+  Function  @map("function")
+  Developer @map("developer")
+
+  @@map("assistant_chat_roles")
+}
+
+// Based on the OpenAI API standard
+model AssistantChatMessage {
+  id        String               @id @default(uuid()) @db.Uuid
+  role      AssistantChatRole
+  session   AssistantChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId String               @map("session_id") @db.Uuid
+  content   String? // Can be null for a tool call message
+  created   DateTime             @default(now())
+
+  name String? // also used for "function" message function name
+
+  // Additional fields for assistant chat messages
+  refusal String?
+  toolCalls Json[] @map("tool_calls") @default([])
+  finishReason String? @map("finish_reason")
+
+  // Additional fields for tool calls
+  toolCallId String? @map("tool_call_id")
+
+  @@index([sessionId])
+  @@index([created(sort: Asc)])
+
+  @@map("assistant_chat_messages")
 }
