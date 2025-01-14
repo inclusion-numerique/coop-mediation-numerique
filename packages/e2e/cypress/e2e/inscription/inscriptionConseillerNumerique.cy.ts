@@ -18,7 +18,7 @@ describe('ETQ Conseiller numérique, je peux m’inscrire en suivant le bon parc
     it(`ETQ Conseiller numérique ${user.lastName}, je ne peux m’inscrire en tant que conseiller même si j’ai choisi "coordinateur"`, () => {
       startInscriptionAs({
         user,
-        profilInscription: 'Coordinateur',
+        profilInscription: 'CoordinateurConseillerNumerique',
         identificationResult: 'different',
         expectedCheckedProfilInscription: 'ConseillerNumerique',
       })
