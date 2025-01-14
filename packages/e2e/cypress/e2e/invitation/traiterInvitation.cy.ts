@@ -5,9 +5,9 @@ import {
 } from '@app/fixtures/users/conseillerNumerique'
 import { coordinateurInscritCoordinateurId } from '@app/fixtures/users/coordinateurInscrit'
 import {
-  mediateurInscription,
   mediateurInscriptionMediateurId,
-} from '@app/fixtures/users/mediateurInscription'
+  mediateurInscriptionWithMediateur,
+} from '@app/fixtures/users/mediateurInscriptionWithMediateur'
 import { goToMostRecentEmailReceived } from '../goToMostRecentEmailReceived'
 import { startInscriptionAs } from '../inscription/inscriptionE2eHelpers'
 
@@ -102,18 +102,18 @@ describe('ETQ médiateur non inscrit, je peux donner suite à une invitation', (
   beforeEach(() => {
     cy.execute('resetFixtures', {})
     cy.execute('createInvitation', {
-      email: mediateurInscription.email,
+      email: mediateurInscriptionWithMediateur.email,
       mediateurId: mediateurInscriptionMediateurId,
       coordinateurId: coordinateurInscritCoordinateurId,
     })
   })
 
   it("En l'acceptant", () => {
-    cy.signin(mediateurInscription)
+    cy.signin(mediateurInscriptionWithMediateur)
 
     cy.visit(
       appUrl(
-        '/invitations/eJwljEEOwiAQAP-yZ5cYKE3bk1efsYXFrBGoFLw0_btEj5OZzAHPPSdYDuBI8oIFInuhyq2gpN0V2arkdHM5b_hXHTG1yEXejRUlV9Ujt48KBS7Qu-Il_QZ333dOkyUbDNpxZRxGo3HW1uA0XcNqQpiZBjjPLyKILmE',
+        '/invitations/eJw9jEEOgjAQRe8ya6cxLSXAyq3HKO1Ux8gUS6sLwt1FY1y-vPf_CrclCQwr0OT4DgNMFNgVqhlZFp95LpwEX1yu-Fcnn9L8w4-VOlHmRyXlxBd1SfWpYoYD7F0OLN_ROezvXjvrbDRo25GwaY3GXluDXXeMo4mxJ9fAtr0BXkg0Nw',
       ),
     )
 
@@ -154,7 +154,7 @@ describe('ETQ médiateur non inscrit, je peux donner suite à une invitation', (
       .should('contain', 'Inactif')
 
     goToMostRecentEmailReceived({
-      subjectInclude: `${mediateurInscription.email} a accepté votre invitation à rejoindre votre équipe`,
+      subjectInclude: `${mediateurInscriptionWithMediateur.email} a accepté votre invitation à rejoindre votre équipe`,
     })
   })
 
@@ -163,7 +163,7 @@ describe('ETQ médiateur non inscrit, je peux donner suite à une invitation', (
 
     cy.visit(
       appUrl(
-        '/invitations/eJwljEEOwiAQAP-yZ5cYKE3bk1efsYXFrBGoFLw0_btEj5OZzAHPPSdYDuBI8oIFInuhyq2gpN0V2arkdHM5b_hXHTG1yEXejRUlV9Ujt48KBS7Qu-Il_QZ333dOkyUbDNpxZRxGo3HW1uA0XcNqQpiZBjjPLyKILmE',
+        '/invitations/eJw9jEEOgjAQRe8ya6cxLSXAyq3HKO1Ux8gUS6sLwt1FY1y-vPf_CrclCQwr0OT4DgNMFNgVqhlZFp95LpwEX1yu-Fcnn9L8w4-VOlHmRyXlxBd1SfWpYoYD7F0OLN_ROezvXjvrbDRo25GwaY3GXluDXXeMo4mxJ9fAtr0BXkg0Nw',
       ),
     )
 
@@ -178,7 +178,7 @@ describe('ETQ médiateur non inscrit, je peux donner suite à une invitation', (
 
     cy.visit(
       appUrl(
-        '/invitations/eJwljEEOwiAQAP-yZ5cYKE3bk1efsYXFrBGoFLw0_btEj5OZzAHPPSdYDuBI8oIFInuhyq2gpN0V2arkdHM5b_hXHTG1yEXejRUlV9Ujt48KBS7Qu-Il_QZ333dOkyUbDNpxZRxGo3HW1uA0XcNqQpiZBjjPLyKILmE',
+        '/invitations/eJw9jEEOgjAQRe8ya6cxLSXAyq3HKO1Ux8gUS6sLwt1FY1y-vPf_CrclCQwr0OT4DgNMFNgVqhlZFp95LpwEX1yu-Fcnn9L8w4-VOlHmRyXlxBd1SfWpYoYD7F0OLN_ROezvXjvrbDRo25GwaY3GXluDXXeMo4mxJ9fAtr0BXkg0Nw',
       ),
     )
 
@@ -186,7 +186,7 @@ describe('ETQ médiateur non inscrit, je peux donner suite à une invitation', (
 
     cy.visit(
       appUrl(
-        '/invitations/eJwljEEOwiAQAP-yZ5cYKE3bk1efsYXFrBGoFLw0_btEj5OZzAHPPSdYDuBI8oIFInuhyq2gpN0V2arkdHM5b_hXHTG1yEXejRUlV9Ujt48KBS7Qu-Il_QZ333dOkyUbDNpxZRxGo3HW1uA0XcNqQpiZBjjPLyKILmE',
+        '/invitations/eJw9jEEOgjAQRe8ya6cxLSXAyq3HKO1Ux8gUS6sLwt1FY1y-vPf_CrclCQwr0OT4DgNMFNgVqhlZFp95LpwEX1yu-Fcnn9L8w4-VOlHmRyXlxBd1SfWpYoYD7F0OLN_ROezvXjvrbDRo25GwaY3GXluDXXeMo4mxJ9fAtr0BXkg0Nw',
       ),
     )
 

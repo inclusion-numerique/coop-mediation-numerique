@@ -57,9 +57,10 @@ enum UserRole {
 }
 
 enum ProfilInscription {
-  ConseillerNumerique @map("conseiller-numerique")
-  Mediateur           @map("mediateur")
-  Coordinateur        @map("coordinateur-conseiller-numerique")
+  ConseillerNumerique             @map("conseiller-numerique")
+  CoordinateurConseillerNumerique @map("coordinateur-conseiller-numerique")
+  Mediateur                       @map("mediateur")
+  Coordinateur                    @map("coordinateur")
 
   @@map("profil_inscription")
 }
@@ -360,8 +361,8 @@ model Coordinateur {
   id String @id @default(uuid()) @db.Uuid
 
   // Clé primaire chez conseiller-numerique
-  conseillerNumeriqueId   String @unique @map("conseiller_numerique_id")
-  conseillerNumeriqueIdPg Int?   @unique @map("conseiller_numerique_id_pg")
+  conseillerNumeriqueId   String? @unique @map("conseiller_numerique_id")
+  conseillerNumeriqueIdPg Int?    @unique @map("conseiller_numerique_id_pg")
 
   userId String @unique @map("user_id") @db.Uuid
   user   User   @relation(fields: [userId], references: [id])

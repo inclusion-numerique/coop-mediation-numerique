@@ -23,7 +23,7 @@ describe('ETQ médiateur, je peux m’inscrire en suivant le bon parcours', () =
   it(`ETQ Médiateur ${user.lastName}, je ne peux pas m’inscrire en tant que coordinateur de conseiller numérique`, () => {
     startInscriptionAs({
       user,
-      profilInscription: 'Coordinateur',
+      profilInscription: 'CoordinateurConseillerNumerique',
       identificationResult: 'not-found',
     })
   })
@@ -32,6 +32,14 @@ describe('ETQ médiateur, je peux m’inscrire en suivant le bon parcours', () =
     startInscriptionAs({
       user,
       profilInscription: 'Mediateur',
+      identificationResult: 'matching',
+    })
+  })
+
+  it(`ETQ Médiateur ${user.lastName}, je peux  m’inscrire en tant que coordinateur`, () => {
+    startInscriptionAs({
+      user,
+      profilInscription: 'Coordinateur',
       identificationResult: 'matching',
     })
   })

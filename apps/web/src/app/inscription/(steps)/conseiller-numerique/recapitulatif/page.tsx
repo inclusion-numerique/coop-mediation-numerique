@@ -7,7 +7,7 @@ import { getLieuxActiviteForInscription } from '@app/web/app/inscription/getLieu
 import { conseillerNumeriqueInscriptionSteps } from '@app/web/app/inscription/(steps)/conseiller-numerique/conseillerNumeriqueinscriptionSteps'
 import RoleInscriptionNotice from '@app/web/app/inscription/RoleInscriptionNotice'
 import InscriptionRecapitulatif from '@app/web/app/inscription/InscriptionRecapitulatif'
-import { profileInscriptionLabels } from '@app/web/inscription/profilInscription'
+import { allProfileInscriptionLabels } from '@app/web/inscription/profilInscription'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 
 export const metadata = {
@@ -42,7 +42,7 @@ const Page = async () => {
       subtitle="Vérifiez que ces informations sont exactes avant de valider votre inscription."
     >
       <RoleInscriptionNotice
-        roleInscription={profileInscriptionLabels.ConseillerNumerique.toLocaleLowerCase()}
+        roleInscription={allProfileInscriptionLabels.ConseillerNumerique.toLocaleLowerCase()}
         className="fr-mt-12v"
       />
       <InscriptionRecapitulatif

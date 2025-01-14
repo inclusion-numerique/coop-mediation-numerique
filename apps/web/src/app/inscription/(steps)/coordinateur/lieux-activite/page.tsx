@@ -25,7 +25,7 @@ const Page = async () => {
   return (
     <InscriptionCard
       title="Renseignez vos lieux d’activité"
-      backHref={coordinateurInscriptionSteps.recapitulatif}
+      backHref={coordinateurInscriptionSteps.structureEmployeuse}
       subtitle="Vos lieux d’activité sont les lieux ou vous accueillez et accompagnez vos bénéficiaires (e.g. : lieu de permanence...)"
     >
       <LieuxActiviteForm

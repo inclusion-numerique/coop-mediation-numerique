@@ -22,6 +22,7 @@ import {
   mediateurAvecActiviteMediateurId,
 } from './mediateurAvecActivite'
 import { mediateurInscription } from './mediateurInscription'
+import { mediateurInscriptionWithMediateur } from './mediateurInscriptionWithMediateur'
 import { mediateurSansActivites } from './mediateurSansActivites'
 
 export const fixtureUsers = [
@@ -30,6 +31,7 @@ export const fixtureUsers = [
   conseillerSansLieuInscription,
   conseillerNumerique,
   mediateurInscription,
+  mediateurInscriptionWithMediateur,
   mediateurSansActivites,
   mediateurAvecActivite,
   coordinateurInscription,

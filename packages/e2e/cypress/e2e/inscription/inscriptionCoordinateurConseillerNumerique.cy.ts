@@ -14,14 +14,14 @@ describe('ETQ Coordinateur conseiller numérique, je peux m’inscrire en suivan
         user,
         profilInscription: 'ConseillerNumerique',
         identificationResult: 'different',
-        expectedCheckedProfilInscription: 'Coordinateur',
+        expectedCheckedProfilInscription: 'CoordinateurConseillerNumerique',
       })
     })
 
     it(`ETQ Coordinateur ${user.lastName}, je peux m’inscrire en tant que coordinateur de conseiller numérique`, () => {
       startInscriptionAs({
         user,
-        profilInscription: 'Coordinateur',
+        profilInscription: 'CoordinateurConseillerNumerique',
         identificationResult: 'matching',
       })
     })
@@ -31,7 +31,7 @@ describe('ETQ Coordinateur conseiller numérique, je peux m’inscrire en suivan
         user,
         profilInscription: 'Mediateur',
         identificationResult: 'different',
-        expectedCheckedProfilInscription: 'Coordinateur',
+        expectedCheckedProfilInscription: 'CoordinateurConseillerNumerique',
       })
     })
   }

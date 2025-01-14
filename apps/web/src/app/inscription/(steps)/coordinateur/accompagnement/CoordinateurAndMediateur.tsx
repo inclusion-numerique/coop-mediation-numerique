@@ -6,7 +6,11 @@ import React from 'react'
 import { trpc } from '@app/web/trpc'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 
-const CoordinateurAndMediateur = () => {
+const CoordinateurAndMediateur = ({
+  horsDispositif,
+}: {
+  horsDispositif: boolean
+}) => {
   const router = useRouter()
   const [isLoading, setIsLoading] = React.useState(false)
   const addMediationNumeriqueToCoordinateurMutation =
@@ -14,14 +18,14 @@ const CoordinateurAndMediateur = () => {
 
   const onSkipMediationNumerique = () => {
     setIsLoading(true)
-    router.push(`recapitulatif`)
+    router.push(horsDispositif ? 'structure-employeuse' : 'recapitulatif')
     router.refresh()
   }
 
   const onAddMediationNumerique = async () => {
     setIsLoading(true)
     await addMediationNumeriqueToCoordinateurMutation.mutateAsync()
-    router.push(`recapitulatif`)
+    router.push(horsDispositif ? 'structure-employeuse' : 'recapitulatif')
     router.refresh()
   }
 

@@ -6,7 +6,7 @@ import { getStructureEmployeuseForInscription } from '@app/web/app/inscription/g
 import RoleInscriptionNotice from '@app/web/app/inscription/RoleInscriptionNotice'
 import { getLieuxActiviteForInscription } from '@app/web/app/inscription/getLieuxActiviteForInscription'
 import InscriptionRecapitulatif from '@app/web/app/inscription/InscriptionRecapitulatif'
-import { profileInscriptionLabels } from '@app/web/inscription/profilInscription'
+import { allProfileInscriptionLabels } from '@app/web/inscription/profilInscription'
 import { fetchConseillersCoordonnes } from '@app/web/external-apis/conseiller-numerique/fetchConseillersCoordonnes'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import { coordinateurInscriptionSteps } from '../coordinateurInscriptionSteps'
@@ -37,9 +37,12 @@ const Page = async () => {
       })
     : undefined
 
-  const mediateursCoordonnes = await fetchConseillersCoordonnes({
-    coordinateurV1Id: user.coordinateur.conseillerNumeriqueId,
-  })
+  const mediateursCoordonnes =
+    user.coordinateur.conseillerNumeriqueId == null
+      ? []
+      : await fetchConseillersCoordonnes({
+          coordinateurV1Id: user.coordinateur.conseillerNumeriqueId,
+        })
 
   return (
     <InscriptionCard
@@ -47,10 +50,12 @@ const Page = async () => {
       backHref={coordinateurInscriptionSteps.accompagnement}
       subtitle="Vérifiez que ces informations sont exactes avant de valider votre inscription."
     >
-      <RoleInscriptionNotice
-        roleInscription={profileInscriptionLabels.Coordinateur.toLocaleLowerCase()}
-        className="fr-mt-12v"
-      />
+      {user.coordinateur.conseillerNumeriqueId != null && (
+        <RoleInscriptionNotice
+          roleInscription={allProfileInscriptionLabels.Coordinateur.toLocaleLowerCase()}
+          className="fr-mt-12v"
+        />
+      )}
       <InscriptionRecapitulatif
         editLieuxActiviteHref={coordinateurInscriptionSteps.lieuxActivite}
         user={user}

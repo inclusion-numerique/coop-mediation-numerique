@@ -77,7 +77,16 @@ export const inscriptionRouter = router({
             profilInscription: profil,
             acceptationCgu: new Date(),
             mediateur:
-              sessionUser.mediateur || profil === ProfilInscription.Coordinateur
+              sessionUser.mediateur ||
+              profil === ProfilInscription.Coordinateur ||
+              profil === ProfilInscription.CoordinateurConseillerNumerique
+                ? undefined
+                : { create: { id: v4() } },
+            coordinateur:
+              sessionUser.coordinateur ||
+              profil === ProfilInscription.ConseillerNumerique ||
+              profil === ProfilInscription.Mediateur ||
+              profil === ProfilInscription.CoordinateurConseillerNumerique
                 ? undefined
                 : { create: { id: v4() } },
           },
@@ -607,21 +616,30 @@ export const inscriptionRouter = router({
 
       const stopwatch = createStopwatch()
 
-      const v1Conseiller = await fetchConseillerNumeriqueV1Data({
-        v1ConseillerId: sessionUser.coordinateur.conseillerNumeriqueId,
+      const upsertedMediateur = await prismaClient.mediateur.upsert({
+        where: { userId: sessionUser.id },
+        create: { userId: sessionUser.id },
+        update: {},
       })
 
-      if (
-        !v1Conseiller ||
-        !isConseillerNumeriqueV1DataWithActiveMiseEnRelation(v1Conseiller)
-      ) {
-        throw forbiddenError()
+      if (sessionUser.coordinateur.conseillerNumeriqueId != null) {
+        const v1Conseiller = await fetchConseillerNumeriqueV1Data({
+          v1ConseillerId: sessionUser.coordinateur.conseillerNumeriqueId,
+        })
+
+        if (
+          !v1Conseiller ||
+          !isConseillerNumeriqueV1DataWithActiveMiseEnRelation(v1Conseiller)
+        ) {
+          throw forbiddenError()
+        }
+
+        await importCoordinateurMediationDataFromV1({
+          user: sessionUser,
+          upsertedMediateur,
+          v1Conseiller,
+        })
       }
-
-      await importCoordinateurMediationDataFromV1({
-        user: sessionUser,
-        v1Conseiller,
-      })
 
       addMutationLog({
         userId: sessionUser.id,
