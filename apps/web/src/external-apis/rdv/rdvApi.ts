@@ -27,11 +27,15 @@ export type RdvApiCreateAccountResponse = {
   id: string
 }
 
-const rdvApiStagingUrl =
-  'https://demo-rdv-solidarites-pr4786.osc-secnum-fr1.scalingo.io'
+const rdvApiStagingUrl = 'https://demo.rdv-aide-numerique.fr/'
 
-const rdvApiProductionUrl =
-  'https://demo-rdv-solidarites-todotodo.osc-secnum-fr1.scalingo.io'
+export const rdvApiStagingSigninUrl =
+  'https://demo.rdv-aide-numerique.fr/agents/sign_in'
+
+const rdvApiProductionUrl = 'https://www.rdv-aide-numerique.fr'
+
+export const rdvApiProductionSigninUrl =
+  'https://www.rdv-aide-numerique.fr/agents/sign_in'
 
 export const getUserRdvApiData = async ({ userId }: { userId: string }) => {
   const user = await prismaClient.user.findUnique({
