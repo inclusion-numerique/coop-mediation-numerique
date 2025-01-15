@@ -7,6 +7,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import { updateStructureFromCartoDataApi } from '@app/web/jobs/update-structures-cartographie-nationale/updateStructureFromCartoDataApi'
 import { executeImportCrasConseillerNumeriqueV1 } from '@app/web/jobs/import-cras-conseiller-numerique-v1/executeImportCrasConseillerNumeriqueV1'
 import { executeFixCoordinationsV1 } from '@app/web/jobs/fix-coordinations-v1/executeFixCoordinationsV1'
+import { executeIngestLesBasesInRag } from '@app/web/jobs/ingest-les-bases-in-rag/executeIngestLesBasesInRag'
 import {
   downloadCartographieNationaleStructures,
   getStructuresCartographieNationaleFromLocalFile,
@@ -45,6 +46,7 @@ export const jobExecutors: {
     executeUpdateStructuresCartographieNationale,
   'import-cras-conseiller-numerique-v1': executeImportCrasConseillerNumeriqueV1,
   'fix-coordinations-v1': executeFixCoordinationsV1,
+  'ingest-les-bases-in-rag': executeIngestLesBasesInRag,
 }
 
 export const executeJob = async (job: Job) => {
