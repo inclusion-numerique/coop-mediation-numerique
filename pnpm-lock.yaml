@@ -19,7 +19,7 @@ importers:
         version: 7.4.4
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@swc/core@1.10.4(@swc/helpers@0.5.5))(@types/node@22.10.5)(typescript@5.8.0-dev.20250109)
+        version: 10.9.2(@swc/core@1.10.4(@swc/helpers@0.5.5))(@types/node@22.10.5)(typescript@5.8.0-dev.20250121)
       turbo:
         specifier: ^2.3.3
         version: 2.3.3
@@ -76,8 +76,8 @@ importers:
         specifier: ^4.19.2
         version: 4.19.2
       undici:
-        specifier: ^6.21.0
-        version: 6.21.0
+        specifier: ^6.21.1
+        version: 6.21.1
       zod:
         specifier: ^3.24.1
         version: 3.24.1
@@ -171,13 +171,13 @@ importers:
         version: 2.11.0(@tiptap/core@2.11.0(@tiptap/pm@2.11.0))(@tiptap/pm@2.11.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@trpc/client':
         specifier: next
-        version: 11.0.0-rc.688(@trpc/server@11.0.0-rc.688(typescript@5.7.3))(typescript@5.7.3)
+        version: 11.0.0-rc.711(@trpc/server@11.0.0-rc.711(typescript@5.7.3))(typescript@5.7.3)
       '@trpc/react-query':
         specifier: next
-        version: 11.0.0-rc.688(@tanstack/react-query@5.63.0(react@18.3.1))(@trpc/client@11.0.0-rc.688(@trpc/server@11.0.0-rc.688(typescript@5.7.3))(typescript@5.7.3))(@trpc/server@11.0.0-rc.688(typescript@5.7.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.3)
+        version: 11.0.0-rc.711(@tanstack/react-query@5.63.0(react@18.3.1))(@trpc/client@11.0.0-rc.711(@trpc/server@11.0.0-rc.711(typescript@5.7.3))(typescript@5.7.3))(@trpc/server@11.0.0-rc.711(typescript@5.7.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.3)
       '@trpc/server':
         specifier: next
-        version: 11.0.0-rc.688(typescript@5.7.3)
+        version: 11.0.0-rc.711(typescript@5.7.3)
       '@xstyled/styled-components':
         specifier: ^4.0.0
         version: 4.0.0(styled-components@6.1.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
@@ -392,8 +392,8 @@ importers:
         specifier: ^3.19.3
         version: 3.19.3
       undici:
-        specifier: ^6.21.0
-        version: 6.21.0
+        specifier: ^6.21.1
+        version: 6.21.1
       usehooks-ts:
         specifier: ^3.1.0
         version: 3.1.0(react@18.3.1)
@@ -4911,24 +4911,24 @@ packages:
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
     engines: {node: '>= 10'}
 
-  '@trpc/client@11.0.0-rc.688':
-    resolution: {integrity: sha512-e+2efSrqMrBjtAK6DxVvtkwX0kj+5ww7eZSyxHcoC0rjP1CYXl8HUUcWrSHpzOZEYt1Ey9E9o/zFlKKNeTGKWg==}
+  '@trpc/client@11.0.0-rc.711':
+    resolution: {integrity: sha512-m3uFfgEW+hbxA2IS4q238fTfT4hJFwz6Y4FQUfrgj3395W1afaOoUbF3S970jG9Gf/VTlIfTG8pQ1sTrZ7Uwug==}
     peerDependencies:
-      '@trpc/server': 11.0.0-rc.688+87ea49ed1
+      '@trpc/server': 11.0.0-rc.711+e82d26126
       typescript: '>=5.7.2'
 
-  '@trpc/react-query@11.0.0-rc.688':
-    resolution: {integrity: sha512-V9vj5cN4ct0ju9lGeFv/POOuitNPAq9qrPv+zBJV82m336pLr81jBBQtZ1b4Dc+uFiyMD+Ld4SZtvD9joMJlpg==}
+  '@trpc/react-query@11.0.0-rc.711':
+    resolution: {integrity: sha512-cVmVpLXDxuuvUFB1MC/Yyk1UVHPDwOWC68PgYRVG04o4lAb4l9g0F5g9vztOqdiDc5raSI2bFPbcnYrUncnZJw==}
     peerDependencies:
       '@tanstack/react-query': ^5.62.8
-      '@trpc/client': 11.0.0-rc.688+87ea49ed1
-      '@trpc/server': 11.0.0-rc.688+87ea49ed1
+      '@trpc/client': 11.0.0-rc.711+e82d26126
+      '@trpc/server': 11.0.0-rc.711+e82d26126
       react: '>=18.2.0'
       react-dom: '>=18.2.0'
       typescript: '>=5.7.2'
 
-  '@trpc/server@11.0.0-rc.688':
-    resolution: {integrity: sha512-nv1uJFMWFnD5Y+pt2rECXTYZ2J8WZMKesNU3DbPxZYUcmLXo18sKRYTlJGjVr5amJ58L3Z5F4JNrFO3GV0DsEQ==}
+  '@trpc/server@11.0.0-rc.711':
+    resolution: {integrity: sha512-dGaMXLFJaLg1XWGRQ3ZQp2dkq7Od6u+9DOrp+fn0s88sZW57eEhX2MOxWpFp5z9xLZNN0Hq5G6/4QtR0iMUVcw==}
     peerDependencies:
       typescript: '>=5.7.2'
 
@@ -13180,8 +13180,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.8.0-dev.20250109:
-    resolution: {integrity: sha512-p7pWPypjuK2v/76T8q25sTmuG17m53WWranllky9WiG/PUcIJOMXoGfNrRF3r5ufFfi49QM9TipJyfmeKgXRjg==}
+  typescript@5.8.0-dev.20250121:
+    resolution: {integrity: sha512-cRbtTDQVu4ZV28kEzT6EgGd1mT75C92i/5pFcQHVqa60S2HhbFbY+4Wpo0ebumER/YMoC63sfTzruaR2Z6kOJw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -13210,8 +13210,8 @@ packages:
   undici-types@6.20.0:
     resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
 
-  undici@6.21.0:
-    resolution: {integrity: sha512-BUgJXc752Kou3oOIuU1i+yZZypyZRqNPW0vqoMPl8VaoalSfeR0D8/t4iAS3yirs79SSMTxTag+ZC86uswv+Cw==}
+  undici@6.21.1:
+    resolution: {integrity: sha512-q/1rj5D0/zayJB2FraXdaWxbhWiNKDvu8naDT2dl1yTlvJp4BLtOcp2a5BvgGNQpYYJzau7tf1WgKv3b+7mqpQ==}
     engines: {node: '>=18.17'}
 
   unicode-canonical-property-names-ecmascript@2.0.1:
@@ -19346,21 +19346,21 @@ snapshots:
 
   '@tootallnate/once@2.0.0': {}
 
-  '@trpc/client@11.0.0-rc.688(@trpc/server@11.0.0-rc.688(typescript@5.7.3))(typescript@5.7.3)':
+  '@trpc/client@11.0.0-rc.711(@trpc/server@11.0.0-rc.711(typescript@5.7.3))(typescript@5.7.3)':
     dependencies:
-      '@trpc/server': 11.0.0-rc.688(typescript@5.7.3)
+      '@trpc/server': 11.0.0-rc.711(typescript@5.7.3)
       typescript: 5.7.3
 
-  '@trpc/react-query@11.0.0-rc.688(@tanstack/react-query@5.63.0(react@18.3.1))(@trpc/client@11.0.0-rc.688(@trpc/server@11.0.0-rc.688(typescript@5.7.3))(typescript@5.7.3))(@trpc/server@11.0.0-rc.688(typescript@5.7.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.3)':
+  '@trpc/react-query@11.0.0-rc.711(@tanstack/react-query@5.63.0(react@18.3.1))(@trpc/client@11.0.0-rc.711(@trpc/server@11.0.0-rc.711(typescript@5.7.3))(typescript@5.7.3))(@trpc/server@11.0.0-rc.711(typescript@5.7.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.3)':
     dependencies:
       '@tanstack/react-query': 5.63.0(react@18.3.1)
-      '@trpc/client': 11.0.0-rc.688(@trpc/server@11.0.0-rc.688(typescript@5.7.3))(typescript@5.7.3)
-      '@trpc/server': 11.0.0-rc.688(typescript@5.7.3)
+      '@trpc/client': 11.0.0-rc.711(@trpc/server@11.0.0-rc.711(typescript@5.7.3))(typescript@5.7.3)
+      '@trpc/server': 11.0.0-rc.711(typescript@5.7.3)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       typescript: 5.7.3
 
-  '@trpc/server@11.0.0-rc.688(typescript@5.7.3)':
+  '@trpc/server@11.0.0-rc.711(typescript@5.7.3)':
     dependencies:
       typescript: 5.7.3
 
@@ -21938,7 +21938,7 @@ snapshots:
     dependencies:
       semver: 7.6.3
       shelljs: 0.8.5
-      typescript: 5.8.0-dev.20250109
+      typescript: 5.8.0-dev.20250121
 
   dunder-proto@1.0.1:
     dependencies:
@@ -29691,7 +29691,7 @@ snapshots:
     optionalDependencies:
       '@swc/core': 1.10.4(@swc/helpers@0.5.5)
 
-  ts-node@10.9.2(@swc/core@1.10.4(@swc/helpers@0.5.5))(@types/node@22.10.5)(typescript@5.8.0-dev.20250109):
+  ts-node@10.9.2(@swc/core@1.10.4(@swc/helpers@0.5.5))(@types/node@22.10.5)(typescript@5.8.0-dev.20250121):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
@@ -29705,7 +29705,7 @@ snapshots:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 5.8.0-dev.20250109
+      typescript: 5.8.0-dev.20250121
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
     optionalDependencies:
@@ -29891,7 +29891,7 @@ snapshots:
 
   typescript@5.7.3: {}
 
-  typescript@5.8.0-dev.20250109: {}
+  typescript@5.8.0-dev.20250121: {}
 
   uc.micro@2.1.0: {}
 
@@ -29912,7 +29912,7 @@ snapshots:
 
   undici-types@6.20.0: {}
 
-  undici@6.21.0: {}
+  undici@6.21.1: {}
 
   unicode-canonical-property-names-ecmascript@2.0.1: {}
 
