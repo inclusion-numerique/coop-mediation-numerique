@@ -2,29 +2,31 @@
 
 import { CreateUserInput } from '@app/e2e/tasks/handlers/user.tasks'
 import {
+  allProfileInscriptionLabels,
   lowerCaseProfileInscriptionLabels,
-  profileInscriptionLabels,
   profileInscriptionSlugs,
 } from '@app/web/inscription/profilInscription'
 import { appUrl } from '@app/e2e/support/helpers'
 import { inscriptionRolesErrorTitles } from '@app/web/app/inscription/(steps)/identification/_components/inscriptionRole'
 
 export const startInscriptionAs = ({
+  user,
   profilInscription,
   identificationResult,
-  user,
   expectedCheckedProfilInscription,
 }: {
   user?: CreateUserInput
-  profilInscription: keyof typeof profileInscriptionLabels
+  profilInscription: keyof typeof allProfileInscriptionLabels
   identificationResult: 'matching' | 'different' | 'not-found'
-  expectedCheckedProfilInscription?: keyof typeof profileInscriptionLabels
+  expectedCheckedProfilInscription?: keyof typeof allProfileInscriptionLabels
 }) => {
   if (user != null) cy.createUserAndSignin(user)
 
   cy.visit(appUrl('/inscription'))
 
-  cy.contains(profileInscriptionLabels[profilInscription]).click()
+  cy.contains(
+    new RegExp(`^${allProfileInscriptionLabels[profilInscription]}$`),
+  ).click()
   cy.contains('J’ai lu et j’accepte').click()
 
   cy.get('button').contains('Continuer').click()
@@ -32,7 +34,10 @@ export const startInscriptionAs = ({
   cy.appUrlShouldBe(`/inscription/identification`, { timeout: 15_000 })
 
   if (identificationResult === 'matching') {
-    if (profilInscription === 'Mediateur') {
+    if (
+      profilInscription === 'Mediateur' ||
+      profilInscription === 'Coordinateur'
+    ) {
       cy.contains('Finaliser votre inscription pour accéder à votre espace', {
         timeout: 15_000,
       })
@@ -51,7 +56,7 @@ export const startInscriptionAs = ({
       )
     }
     cy.contains(
-      `Profil de ${profileInscriptionLabels[expectedCheckedProfilInscription].toLocaleLowerCase()} identifié`,
+      `Profil de ${allProfileInscriptionLabels[expectedCheckedProfilInscription].toLocaleLowerCase()} identifié`,
     )
     cy.findByRole('link', { name: 'Continuer mon inscription' })
   } else {
@@ -60,4 +65,24 @@ export const startInscriptionAs = ({
     )
     cy.findByRole('button', { name: 'Essayer une autre adresse email' })
   }
+}
+
+export const searchAndSelectStructureEmployeuse = (search: string) => {
+  cy.intercept('https://recherche-entreprises.api.gouv.fr/search?q=*').as(
+    'search',
+  )
+
+  // select the structure employeuse input
+  cy.get(
+    'input[id="custom-select-form-field__structureEmployeuse.siret"]',
+  ).type(search)
+
+  cy.wait('@search')
+
+  // The option should be visible
+  cy.get(`div[data-structure-employeuse-option="${search}"]`, {
+    timeout: 20_000, // We have a retry with backoff for avoiding 429 errors. This can be long
+  })
+    .eq(0)
+    .click()
 }

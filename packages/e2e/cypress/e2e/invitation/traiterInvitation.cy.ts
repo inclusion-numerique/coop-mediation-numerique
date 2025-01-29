@@ -9,7 +9,10 @@ import {
   mediateurInscriptionMediateurId,
 } from '@app/fixtures/users/mediateurInscription'
 import { goToMostRecentEmailReceived } from '../goToMostRecentEmailReceived'
-import { startInscriptionAs } from '../inscription/inscriptionE2eHelpers'
+import {
+  searchAndSelectStructureEmployeuse,
+  startInscriptionAs,
+} from '../inscription/inscriptionE2eHelpers'
 
 describe('ETQ visiteur, je peux donner suite à une invitation', () => {
   beforeEach(() => {
@@ -128,12 +131,7 @@ describe('ETQ médiateur non inscrit, je peux donner suite à une invitation', (
 
     cy.findByText('Continuer').click()
 
-    cy.get('input')
-      .click()
-      .type('Franc')
-      .type('e', { delay: 2000 })
-      .type('{downarrow}')
-      .type('{enter}')
+    searchAndSelectStructureEmployeuse('France')
 
     cy.findByText('Suivant').click()
 

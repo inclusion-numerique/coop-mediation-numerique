@@ -2,7 +2,8 @@ import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 
 export const EnvInformation = () => {
   const {
-    isMain,
+    isPreview,
+    isDev,
     Chromatic: chromatic,
     Branch: branch,
     projectTitle,
@@ -10,8 +11,8 @@ export const EnvInformation = () => {
     mainLiveUrl,
   } = PublicWebAppConfig
 
-  // Branch can be empty on dev env
-  if (isMain || !branch) {
+  // Only display something on preview env and dev env
+  if (!isPreview && !isDev) {
     return null
   }
 
