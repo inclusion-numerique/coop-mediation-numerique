@@ -74,4 +74,27 @@ export const ServerWebAppConfig = {
   Security: {
     hmacSecretKey: process.env.HMAC_SECRET_KEY ?? '',
   },
+  Assistant: {
+    // Which service to use for the assistant LLM
+    service: 'scaleway' satisfies 'scaleway' | 'albert',
+    Mistral: {
+      apiKey: process.env.MISTRAL_API_KEY ?? '',
+    },
+    Scaleway: {
+      serviceUrl: process.env.SCALEWAY_GENERATIVE_API_SERVICE_URL ?? '',
+      apiKey: process.env.SCW_SECRET_KEY ?? '',
+      // chatModel: 'mistral-nemo-instruct-2407',
+      chatModel: 'llama-3.1-70b-instruct',
+      embeddingsModel: 'bge-multilingual-gemma2',
+    },
+    Albert: {
+      serviceUrl: process.env.ALBERT_SERVICE_URL ?? '',
+      apiKey: process.env.ALBERT_API_KEY ?? '',
+      chatModel: 'meta-llama/Meta-Llama-3.1-70B-Instruct',
+      embeddingsModel: 'todo',
+    },
+    Brave: {
+      apiKey: process.env.BRAVE_API_KEY ?? '',
+    },
+  },
 }
