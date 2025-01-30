@@ -148,9 +148,9 @@ export const getBeneficiairesCommunesRaw = async ({
             WHEN act.type != 'collectif' THEN act.lieu_code_insee
             END
         ) AS coalesced_code_insee,
-        MIN(COALESCE(ben.commune, act.lieu_commune))                 AS commune,
+        MIN(COALESCE(ben.commune, act.lieu_commune)) AS commune,
         MIN(COALESCE(ben.commune_code_postal, act.lieu_code_postal)) AS code_postal,
-        COUNT(DISTINCT ben.id) ::integer                                   AS count_beneficiaires
+        COUNT(DISTINCT ben.id) ::integer AS count_beneficiaires
       FROM beneficiaires ben
         INNER JOIN accompagnements acc ON acc.beneficiaire_id = ben.id
           INNER JOIN activites act ON  act.id = acc.activite_id
