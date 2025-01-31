@@ -1,4 +1,4 @@
-import { Genre, Prisma, StatutSocial, TrancheAge } from '@prisma/client'
+import { Genre, StatutSocial, TrancheAge } from '@prisma/client'
 import { snakeCase } from 'change-case'
 import { prismaClient } from '@app/web/prismaClient'
 import {
@@ -16,6 +16,7 @@ import {
 } from '@app/web/cra/activitesFiltersSqlWhereConditions'
 import { createEnumCountSelect } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/createEnumCountSelect'
 import { allocatePercentagesFromRecords } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/allocatePercentages'
+import { activitesMediateurIdsWhereCondition } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/activitesMediateurIdsWhereCondition'
 
 export type BeneficiairesStatsRaw = {
   total_beneficiaires: number
@@ -30,10 +31,10 @@ export const getBeneficiaireStatsRaw = async ({
   mediateurIds,
   activitesFilters,
 }: {
-  mediateurIds: string[]
+  mediateurIds?: string[] // Undefined means no filter, empty array means no mediateur / no data.
   activitesFilters: ActivitesFilters
 }) => {
-  if (mediateurIds.length === 0) return EMPTY_BENEFICIAIRES_STATS
+  if (mediateurIds?.length === 0) return EMPTY_BENEFICIAIRES_STATS
 
   return prismaClient.$queryRaw<[BeneficiairesStatsRaw]>`
       WITH distinct_beneficiaires AS (SELECT DISTINCT beneficiaires.id,
@@ -47,9 +48,10 @@ export const getBeneficiaireStatsRaw = async ({
                                                INNER JOIN accompagnements ON accompagnements.beneficiaire_id = beneficiaires.id
                                                INNER JOIN activites ON
                                           activites.id = accompagnements.activite_id
-                                              AND activites.mediateur_id = ANY
-                                                  (ARRAY [${Prisma.join(mediateurIds.map((id) => `${id}`))}]::UUID[])
+                                              AND ${activitesMediateurIdsWhereCondition(mediateurIds)}
                                               AND activites.suppression IS NULL
+                                               LEFT JOIN mediateurs ON activites.mediateur_id = mediateurs.id
+                                               LEFT JOIN conseillers_numeriques ON mediateurs.id = conseillers_numeriques.mediateur_id
                                                LEFT JOIN structures ON structures.id = activites.structure_id
                                       WHERE ${getActiviteFiltersSqlFragment(
                                         getActivitesFiltersWhereConditions(
@@ -128,10 +130,10 @@ export const getBeneficiairesCommunesRaw = async ({
   mediateurIds,
   activitesFilters,
 }: {
-  mediateurIds: string[]
+  mediateurIds?: string[] // Undefined means no filter, empty array means no mediateur / no data.
   activitesFilters: ActivitesFilters
 }) => {
-  if (mediateurIds.length === 0) return []
+  if (mediateurIds?.length === 0) return []
 
   return prismaClient.$queryRaw<BeneficiairesCommunesRaw[]>`
       SELECT DISTINCT COALESCE(
@@ -148,9 +150,11 @@ export const getBeneficiairesCommunesRaw = async ({
           accompagnements.beneficiaire_id = beneficiaires.id
                INNER JOIN activites ON
           activites.id = accompagnements.activite_id
-              AND activites.mediateur_id = ANY (ARRAY [${Prisma.join(mediateurIds.map((id) => `${id}`))}]::UUID[])
+              AND ${activitesMediateurIdsWhereCondition(mediateurIds)}
               AND activites.suppression IS NULL
                LEFT JOIN structures ON structures.id = activites.structure_id
+               LEFT JOIN mediateurs ON activites.mediateur_id = mediateurs.id
+               LEFT JOIN conseillers_numeriques ON mediateurs.id = conseillers_numeriques.mediateur_id
       WHERE ${getActiviteFiltersSqlFragment(
         getActivitesFiltersWhereConditions(activitesFilters),
       )}
@@ -188,10 +192,27 @@ export const getBeneficiaireStats = async ({
   mediateurIds,
   activitesFilters,
 }: {
-  mediateurIds: string[]
+  mediateurIds?: string[] // Undefined means no filter, empty array means no mediateur / no data.
   activitesFilters: ActivitesFilters
 }) => {
   const statsRaw = await getBeneficiaireStatsRaw({
+    mediateurIds,
+    activitesFilters,
+  })
+
+  return normalizeBeneficiairesStatsRaw(statsRaw)
+}
+
+export type BeneficiaireStats = Awaited<ReturnType<typeof getBeneficiaireStats>>
+
+export const getBeneficiaireStatsWithCommunes = async ({
+  mediateurIds,
+  activitesFilters,
+}: {
+  mediateurIds?: string[] // Undefined means no filter, empty array means no mediateur / no data.
+  activitesFilters: ActivitesFilters
+}) => {
+  const beneficiairesStats = await getBeneficiaireStats({
     mediateurIds,
     activitesFilters,
   })
@@ -202,7 +223,11 @@ export const getBeneficiaireStats = async ({
   })
 
   return {
-    ...normalizeBeneficiairesStatsRaw(statsRaw),
+    ...beneficiairesStats,
     communes: normalizeBeneficiairesCommunesRaw(rawCommunes),
   }
 }
+
+export type BeneficiairesStatsWithCommunes = Awaited<
+  ReturnType<typeof getBeneficiaireStatsWithCommunes>
+>
