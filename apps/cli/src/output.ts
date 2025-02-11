@@ -5,3 +5,4 @@
  */
 // eslint-disable-next-line no-console
 export const output = console.log
+export const outputError = console.error
