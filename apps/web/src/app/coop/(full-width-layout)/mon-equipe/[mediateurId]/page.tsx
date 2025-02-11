@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation'
 import { prismaClient } from '@app/web/prismaClient'
 import { metadataTitle } from '@app/web/app/metadataTitle'
-import { MonEquipeMediateurPage } from './_components/MonEquipeMediateurPage'
-import { getMediateurPageData } from './getMediateurPageData'
+import { getMediateurPageData } from '@app/web/equipe/MediateurDetailPage/getMediateurPageData'
+import { MediateurDetailPage } from '@app/web/equipe/MediateurDetailPage/MediateurDetailPage'
 
 export const generateMetadata = async ({
   params: { mediateurId },
@@ -39,12 +39,14 @@ const Page = async ({
   } = mediateurPageData
 
   return (
-    <MonEquipeMediateurPage
+    <MediateurDetailPage
       {...mediateur}
+      href="/coop/mon-equipe"
       statistiques={statistiques}
       structureEmployeuse={structureEmployeuse}
       contract={contract}
       lieuxActivites={lieuxActivites}
+      coordinateurView
     />
   )
 }

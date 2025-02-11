@@ -469,6 +469,10 @@ model Structure {
   modalitesAccompagnement       String[]   @default([]) @map("modalites_accompagnement")
   activites                     Activite[] @relation(name: "activite_structure")
 
+  nomReferent       String? @map("nom_referent")
+  courrielReferent  String? @map("courriel_referent")
+  telephoneReferent String? @map("telephone_referent")
+
   // "creation" cursor is used to paginate results for API queries
   @@unique([creation, id])
   // descending sort on this cursor for api query performances
@@ -677,6 +681,9 @@ enum StatutSocial {
 
 model Beneficiaire {
   id String @id @default(uuid()) @db.Uuid
+
+  // Identifiant chez RDV service public si le bénéficiaire est synchronisé avec RDV Service Public
+  rdvServicePublicId Int? @map("rdv_service_public_id")
 
   // Relation avec le médiateur à qui est "rattaché" le bénéficiaire
   // Si le beneficiaire est "partagé", cela gardera la trace du médiateur source
