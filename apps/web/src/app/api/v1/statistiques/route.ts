@@ -261,6 +261,7 @@ import { serializeApiRequestParams } from '@app/web/app/api/v1/serializeApiReque
  *           type: string
  *           pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
  *           example: '2022-01-01'
+ *
  *       - in: query
  *         name: filter[au]
  *         required: false
@@ -296,6 +297,7 @@ import { serializeApiRequestParams } from '@app/web/app/api/v1/serializeApiReque
  *           type: string
  *           format: uuid
  *           example: '123e4567-e89b-12d3-a456-426614174000'
+ *
  *       - in: query
  *         name: filter[commune]
  *         required: false
