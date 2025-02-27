@@ -1,25 +1,26 @@
 'use client'
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import type { ReadonlyURLSearchParams } from 'next/dist/client/components/navigation.react-server'
-import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
-import { useMemo } from 'react'
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import classNames from 'classnames'
-import PeriodFilter, {
-  PeriodFilterValue,
-} from '@app/web/components/filters/PeriodFilter'
-import type { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
+import type { LieuActiviteOption } from '@app/web/app/lieu-activite/getLieuxActiviteOptions'
+import type { BeneficiaireOption } from '@app/web/beneficiaire/BeneficiaireOption'
 import ActiviteTypeFilter from '@app/web/components/filters/ActiviteTypeFilter'
 import BeneficiaireFilter from '@app/web/components/filters/BeneficiaireFilter'
-import type { BeneficiaireOption } from '@app/web/beneficiaire/BeneficiaireOption'
 import LocationFilter, {
   LocationFilterValue,
 } from '@app/web/components/filters/LocationFilter'
-import { TypeActiviteSlug } from '@app/web/cra/cra'
 import MediateurFilter from '@app/web/components/filters/MediateurFilter'
+import PeriodFilter, {
+  PeriodFilterValue,
+} from '@app/web/components/filters/PeriodFilter'
+import ProfilFilter from '@app/web/components/filters/ProfilFilter'
+import type { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
+import { ProfilSlug, TypeActiviteSlug } from '@app/web/cra/cra'
 import { MediateurOption } from '@app/web/mediateurs/MediateurOption'
-import type { LieuActiviteOption } from '@app/web/app/lieu-activite/getLieuxActiviteOptions'
+import classNames from 'classnames'
+import type { ReadonlyURLSearchParams } from 'next/dist/client/components/navigation.react-server'
+import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useMemo } from 'react'
 
 // Allows to replace the current route with new query params
 const replaceRouteWithNewParams = ({
@@ -125,6 +126,10 @@ const ActivitesFilterTags = ({
     replaceRouteParams({ type })
   }
 
+  const onProfilChange = (profil: ProfilSlug | null) => {
+    replaceRouteParams({ profil })
+  }
+
   const onBeneficiaireChange = (beneficiaireId: string | null) => {
     replaceRouteParams({ beneficiaire: beneficiaireId })
   }
@@ -192,11 +197,17 @@ const ActivitesFilterTags = ({
       </p>
       <div className="fr-flex fr-flex-gap-2v fr-flex-wrap">
         {isCoordinateur && (
-          <MediateurFilter
-            onChange={onMediateurChange}
-            initialMediateursOptions={initialMediateursOptions}
-            defaultValue={defaultFilters.mediateur}
-          />
+          <>
+            <MediateurFilter
+              onChange={onMediateurChange}
+              initialMediateursOptions={initialMediateursOptions}
+              defaultValue={defaultFilters.mediateur}
+            />
+            <ProfilFilter
+              onChange={onProfilChange}
+              defaultValue={defaultFilters.profil}
+            />
+          </>
         )}
         <PeriodFilter
           onChange={onPeriodChange}

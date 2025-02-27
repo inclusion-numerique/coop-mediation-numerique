@@ -1,7 +1,7 @@
-import axios, { AxiosError } from 'axios'
+import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { prismaClient } from '@app/web/prismaClient'
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
+import axios, { AxiosError } from 'axios'
 
 export type RdvApiLieuInput = {
   // external_id: string // not yet implemented on rdv side
@@ -79,7 +79,7 @@ export const getUserRdvApiData = async ({ userId }: { userId: string }) => {
     return null
   }
 
-  // L’organisation côté RDV service public sera l'équipe de l'utilisateur
+  // L’organisation côté RDV Aide Numérique sera l'équipe de l'utilisateur
   // Sinon l'utilisateur lui meme si il est coordinateur ou sans équipe
 
   const coordinationLaPlusRecente = user.mediateur?.coordinations?.at(0)
@@ -187,6 +187,7 @@ export const createAccount = async ({
       },
     })
     .catch((error: AxiosError) => {
+      // biome-ignore lint/suspicious/noConsole: needed for debugging while not in prod
       console.error('RDV API ERROR', error.toJSON())
       throw error
     })

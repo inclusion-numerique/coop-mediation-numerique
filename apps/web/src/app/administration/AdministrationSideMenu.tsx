@@ -1,8 +1,8 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
 import type { SideMenuProps } from '@codegouvfr/react-dsfr/SideMenu'
 import SideMenu from '@codegouvfr/react-dsfr/SideMenu'
+import { usePathname } from 'next/navigation'
 import styles from '../coop/CoopSideMenu.module.css'
 
 const AdministrationSideMenu = () => {
@@ -92,6 +92,18 @@ const AdministrationSideMenu = () => {
         href: '/administration/outils',
       },
       isActive: pathname?.startsWith('/administration/outils'),
+    },
+    {
+      text: (
+        <>
+          <span className="fr-icon-chat-check-line ri-xl fr-mr-1w fr-text--regular" />
+          Assistant
+        </>
+      ),
+      linkProps: {
+        href: '/assistant/chat',
+      },
+      isActive: pathname?.startsWith('/assistant'),
     },
   ] satisfies SideMenuProps.Item[]
 

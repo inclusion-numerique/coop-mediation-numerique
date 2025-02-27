@@ -1,8 +1,8 @@
-import { redirect } from 'next/navigation'
-import { prismaClient } from '@app/web/prismaClient'
 import { metadataTitle } from '@app/web/app/metadataTitle'
-import { getMediateurPageData } from '@app/web/equipe/MediateurDetailPage/getMediateurPageData'
 import { MediateurDetailPage } from '@app/web/equipe/MediateurDetailPage/MediateurDetailPage'
+import { getMediateurPageData } from '@app/web/equipe/MediateurDetailPage/getMediateurPageData'
+import { prismaClient } from '@app/web/prismaClient'
+import { redirect } from 'next/navigation'
 
 export const generateMetadata = async ({
   params: { mediateurId },
@@ -38,10 +38,17 @@ const Page = async ({
     lieuxActivites,
   } = mediateurPageData
 
+  const coordinateionEnd = mediateur.coordinations[0]?.suppression ?? undefined
+
   return (
     <MediateurDetailPage
       {...mediateur}
-      href="/coop/mon-equipe"
+      coordinationEnd={coordinateionEnd}
+      href={
+        coordinateionEnd == null
+          ? '/coop/mon-equipe'
+          : '/coop/mon-equipe/anciens-membres'
+      }
       statistiques={statistiques}
       structureEmployeuse={structureEmployeuse}
       contract={contract}

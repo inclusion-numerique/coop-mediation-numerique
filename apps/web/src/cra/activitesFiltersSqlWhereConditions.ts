@@ -1,7 +1,7 @@
-import { Sql } from '@prisma/client/runtime/library'
-import { Prisma } from '@prisma/client'
 import type { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
+import { Prisma } from '@prisma/client'
+import { Sql } from '@prisma/client/runtime/library'
 
 export type ActivitesFiltersWhereConditions = {
   [key in keyof ActivitesFilters]: Sql | null
@@ -69,11 +69,15 @@ export const getActivitesFiltersWhereConditions = ({
   departement,
   lieu,
   type,
+  profil,
   conseiller_numerique,
 }: ActivitesFilters): ActivitesFiltersWhereConditions => ({
   du: du ? Prisma.raw(`act.date >= '${du}'::timestamp`) : null,
   au: au ? Prisma.raw(`act.date <= '${au}'::timestamp`) : null,
   type: type ? Prisma.raw(`act.type = '${type}'`) : null,
+  profil: profil
+    ? Prisma.raw(`cn.id is ${profil === 'mediateur' ? '' : 'not'} null`)
+    : null,
   lieu: lieu ? Prisma.raw(`act.structure_id = '${lieu}'::UUID`) : null,
   commune: commune
     ? Prisma.raw(`${activiteLieuCodeInseeSelect.text} = '${commune}'`)
