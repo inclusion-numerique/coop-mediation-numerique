@@ -14,6 +14,8 @@ import {
   getStructuresCartographieNationaleFromLocalFile,
 } from '../data/cartographie-nationale/cartographieNationaleStructures'
 import { executeImportContactsToBrevo } from './import-contacts-to-brevo/executeImportContactsToBrevo'
+import { executeUpdateLieuxActivitesADistance } from './update-lieu-activite-a-distance/executeUpdateLieuxActivitesADistance'
+
 import { output } from './output'
 
 export type JobExecutor<Name extends JobName, Result = unknown> = (
@@ -51,6 +53,7 @@ export const jobExecutors: {
   'update-conum-structure-referent': executeUpdateConumStructureReferent,
   'import-contacts-to-brevo': executeImportContactsToBrevo,
   'ingest-les-bases-in-rag': executeIngestLesBasesInRag,
+  'update-lieux-activites-a-distance': executeUpdateLieuxActivitesADistance,
 }
 
 export const executeJob = async (job: Job) => {

@@ -6,6 +6,7 @@ import { IngestLesBasesInRagValidation } from '@app/web/jobs/ingest-les-bases-in
 import { UpdateConumStructureReferentJobValidation } from '@app/web/jobs/update-conum-structure-referent/UpdateConumStructureReferentJob'
 import { UpdateStructuresCartographieNationaleJobValidation } from '@app/web/jobs/update-structures-cartographie-nationale/updateStructuresCartographieNationaleJob'
 import z from 'zod'
+import { UpdateLieuxActivitesAdistanceValidation } from './update-lieu-activite-a-distance/updateLieuxActivitesAdistanceJob'
 
 /**
  * A job represents a task that can be executed asynchronously.
@@ -31,6 +32,7 @@ export const JobValidation = z.discriminatedUnion('name', [
   UpdateConumStructureReferentJobValidation,
   ImportContactsToBrevoValidation,
   IngestLesBasesInRagValidation,
+  UpdateLieuxActivitesAdistanceValidation,
 ])
 
 export type Job = z.infer<typeof JobValidation>
