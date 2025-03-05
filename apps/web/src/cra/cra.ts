@@ -5,7 +5,6 @@ import {
   DegreDeFinalisationDemarche,
   Materiel,
   NiveauAtelier,
-  ProfilInscription,
   StructureDeRedirection,
   Thematique,
   ThematiqueDemarcheAdministrative,
@@ -80,60 +79,6 @@ export const typeActiviteApiValues = {
   Collectif: 'collectif',
 } as const satisfies {
   [key in TypeActivite]: string
-}
-
-type FilterableProfils = Exclude<
-  ProfilInscription,
-  'Coordinateur' | 'CoordinateurConseillerNumerique'
->
-
-export const profilPluralLabels: {
-  [key in FilterableProfils]: string
-} = {
-  Mediateur: 'Médiateurs',
-  ConseillerNumerique: 'Conseillers numériques',
-}
-
-export type ProfilSlug = 'mediateur' | 'conseiller-numerique'
-
-export const profilLabels: {
-  [key in FilterableProfils]: string
-} = {
-  Mediateur: 'Médiateur',
-  ConseillerNumerique: 'Conseiller numérique',
-}
-
-export const profilSlugs: { [key in ProfilSlug]: FilterableProfils } = {
-  mediateur: 'Mediateur',
-  'conseiller-numerique': 'ConseillerNumerique',
-}
-
-export const profilSlugLabels: {
-  [key in ProfilSlug]: string
-} = {
-  mediateur: profilLabels[profilSlugs.mediateur],
-  'conseiller-numerique': profilLabels[profilSlugs['conseiller-numerique']],
-}
-
-export const profilValues = Object.keys(profilLabels) as [
-  ProfilInscription,
-  ...ProfilInscription[],
-]
-
-export const profilOptions = labelsToOptions(profilLabels)
-
-export const profilSlugOptions = labelsToOptions(profilSlugLabels)
-
-export const profilSlugValues = Object.keys(profilSlugLabels) as [
-  ProfilSlug,
-  ...ProfilSlug[],
-]
-
-export const profilApiValues = {
-  Mediateur: profilSlugs.mediateur,
-  ConseillerNumerique: profilSlugs['conseiller-numerique'],
-} as const satisfies {
-  [key in FilterableProfils]: string
 }
 
 export const dureeAccompagnementPersonnaliseeValue = 'personnaliser'
@@ -273,6 +218,7 @@ export const thematiqueLabels: {
 } = {
   DiagnosticNumerique: 'Diagnostic numérique',
   PrendreEnMainDuMateriel: 'Prendre en main du matériel',
+  MaintenanceDeMateriel: 'Maintenance de matériel',
   NavigationSurInternet: 'Navigation sur internet',
   Email: 'E-mail',
   Bureautique: 'Bureautique',
@@ -284,7 +230,7 @@ export const thematiqueLabels: {
   SecuriteNumerique: 'Prévention en sécurité numérique',
   Parentalite: 'Parentalité',
   ScolariteEtNumerique: 'Scolarité et numérique',
-  CreerAvecLeNumerique: 'Gérer ses contenus numériques',
+  CreerAvecLeNumerique: 'Créer avec le numérique',
   CultureNumerique: 'Culture numérique',
   IntelligenceArtificielle: 'Intelligence artificielle (IA)',
 }
@@ -307,6 +253,11 @@ export const thematiqueHints: {
     'Utiliser un ordinateur, une tablette ou un smartphone',
     'Utiliser des périphériques (réseau wifi, clé USB, imprimante, scanner…)',
     'Connaître & configurer les outils de base',
+  ],
+  MaintenanceDeMateriel: [
+    'Maintenance de niveau 1',
+    'Installation et paramétrage de matériel informatique',
+    'Mise à jour des systèmes, installer/désinstaller outils et applications...',
   ],
   NavigationSurInternet: [
     'Faire une recherche',
@@ -362,7 +313,7 @@ export const thematiqueHints: {
     'Évaluer le niveau des jeunes avec un logiciel (maths, français, etc.)',
   ],
   CreerAvecLeNumerique: [
-    'Création de médias : photos, vidéos, illustrations',
+    'Création/gestion de médias : photos, vidéos, illustrations',
     'Fablabs : impression 3D, code',
   ],
   CultureNumerique: [
@@ -383,6 +334,7 @@ export const thematiqueIllustrations: {
 } = {
   DiagnosticNumerique: '/images/iconographie/mednum-diagnostic.svg',
   PrendreEnMainDuMateriel: '/images/iconographie/mednum-materiel.svg',
+  MaintenanceDeMateriel: '/images/iconographie/mednum-maintenance.svg',
   NavigationSurInternet: '/images/iconographie/mednum-internet.svg',
   Email: '/images/iconographie/mednum-email.svg',
   Bureautique: '/images/iconographie/mednum-bureautique.svg',
@@ -421,6 +373,7 @@ export const thematiqueValues = Object.keys(thematiqueLabels) as [
 export const thematiqueApiValues = {
   DiagnosticNumerique: 'diagnostic_numerique',
   PrendreEnMainDuMateriel: 'prendre_en_main_du_materiel',
+  MaintenanceDeMateriel: 'maintenance_de_materiel',
   NavigationSurInternet: 'navigation_sur_internet',
   Email: 'email',
   Bureautique: 'bureautique',
