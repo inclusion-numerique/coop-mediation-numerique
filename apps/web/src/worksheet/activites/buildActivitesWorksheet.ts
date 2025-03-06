@@ -1,4 +1,9 @@
-import * as Excel from 'exceljs'
+import {
+  genreLabels,
+  statutSocialLabels,
+  trancheAgeLabels,
+} from '@app/web/beneficiaire/beneficiaire'
+import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import { ActiviteForList } from '@app/web/cra/activitesQueries'
 import {
   autonomieStars,
@@ -14,21 +19,16 @@ import {
   typeActiviteLabels,
   typeLieuLabels,
 } from '@app/web/cra/cra'
-import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
+import { ActivitesFiltersLabels } from '@app/web/cra/generateActivitesFiltersLabels'
 import { booleanToYesNoLabel } from '@app/web/utils/yesNoBooleanOptions'
 import {
-  genreLabels,
-  statutSocialLabels,
-  trancheAgeLabels,
-} from '@app/web/beneficiaire/beneficiaire'
-import { ActivitesFiltersLabels } from '@app/web/cra/generateActivitesFiltersLabels'
-import {
+  WorksheetUser,
   addExportMetadata,
   addFilters,
   autosizeColumns,
   setWorkbookMetadata,
-  WorksheetUser,
 } from '@app/web/worksheet/buildWorksheetHelpers'
+import * as Excel from 'exceljs'
 
 export type BuildActivitesWorksheetInput = {
   // This is the user that requested the worksheet, it might not be the same user as the one that owns the activites
@@ -76,6 +76,7 @@ export const buildActivitesWorksheet = ({
   addFilters(worksheet)(filters, {
     // only display the mediateur name if the user is NOT the mediateur used for export
     mediateurScope: user.id === mediateur.id ? null : mediateur,
+    excludeFilters: ['conseiller_numerique'],
   })
 
   const activitesTableHeaders = [
@@ -199,14 +200,12 @@ export const buildActivitesWorksheet = ({
     .getColumn(dateColumnIndex)
     .eachCell({ includeEmpty: true }, (cell, rowNumber) => {
       if (rowNumber >= tableStartRowNumber && cell.value) {
-        // eslint-disable-next-line no-param-reassign
         cell.numFmt = 'dd/mm/yyyy' // Set date format only for rows starting from tableStartRowNumber
       }
     })
 
   // Ensure that the rows auto-adjust their height to fit the wrapped text and displays break lines
   worksheet.eachRow((row) => {
-    // eslint-disable-next-line no-param-reassign
     row.alignment = { wrapText: true, vertical: 'top' }
   })
 

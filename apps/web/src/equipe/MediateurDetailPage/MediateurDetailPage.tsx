@@ -1,12 +1,13 @@
-import React from 'react'
-import Link from 'next/link'
-import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import Contract from '@app/web/components/conseiller-numerique/Contract'
-import { StructureEmployeuse } from '@app/web/components/structure/StructureEmployeuse'
 import { ReferentStructure } from '@app/web/components/structure/ReferentStructure'
+import { StructureEmployeuse } from '@app/web/components/structure/StructureEmployeuse'
 import { AlerteFinContrat } from '@app/web/conseiller-numerique/getContractInfo'
+import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import classNames from 'classnames'
+import Link from 'next/link'
+import React from 'react'
 import Identity from './Identity'
 import { LieuxActivites } from './LieuxActivites'
 import { Statistiques } from './Statistiques'
@@ -21,6 +22,7 @@ export const MediateurDetailPage = ({
   lieuxActivites,
   href,
   coordinateurView = false,
+  coordinationEnd,
 }: {
   id: string
   user: { name: string | null; email: string; phone: string | null }
@@ -67,6 +69,7 @@ export const MediateurDetailPage = ({
     creation: Date
   }[]
   href: string
+  coordinationEnd?: Date
   coordinateurView?: boolean
 }) => (
   <>
@@ -80,6 +83,7 @@ export const MediateurDetailPage = ({
         <section className="fr-my-10v">
           <Identity
             {...user}
+            coordinationEnd={coordinationEnd}
             mediateurId={id}
             isConseillerNumerique={conseillerNumerique?.id != null}
             href={href}
@@ -87,8 +91,19 @@ export const MediateurDetailPage = ({
           />
         </section>
         {coordinateurView && (
-          <section className="fr-p-8v fr-border-radius--16 fr-background-alt--brown-caramel">
-            <Statistiques mediateurId={id} {...statistiques} />
+          <section
+            className={classNames(
+              'fr-p-8v fr-border-radius--16',
+              coordinationEnd == null
+                ? 'fr-background-alt--brown-caramel'
+                : 'fr-background-alt--grey',
+            )}
+          >
+            <Statistiques
+              mediateurId={id}
+              coordinationEnd={coordinationEnd}
+              {...statistiques}
+            />
           </section>
         )}
         {coordinateurView && conseillerNumerique?.id != null && contract && (

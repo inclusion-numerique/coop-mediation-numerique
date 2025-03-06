@@ -1,8 +1,8 @@
-import { Suspense } from 'react'
-import type { ActivitesListPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-activites/(liste)/getActivitesListPageData'
-import { Spinner } from '@app/web/ui/Spinner'
 import ActivitesTable from '@app/web/app/coop/(sidemenu-layout)/mes-activites/(liste)/ActivitesTable'
+import type { ActivitesListPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-activites/(liste)/getActivitesListPageData'
 import { getActivitesResultCountLabel } from '@app/web/app/coop/(sidemenu-layout)/mes-activites/(liste)/getActivitesResultCountLabel'
+import { Spinner } from '@app/web/ui/Spinner'
+import { Suspense } from 'react'
 
 const SuspensedContent = async ({
   data,
@@ -13,7 +13,7 @@ const SuspensedContent = async ({
 
   return (
     <>
-      <p className="fr-text--bold fr-text--lg fr-mb-6v">
+      <p className="fr-text--bold fr-text--lg fr-mb-6v fr-mt-2v">
         {getActivitesResultCountLabel({ isFiltered, searchResult })}
       </p>
       <ActivitesTable
@@ -31,7 +31,6 @@ const MesActivitesTableauPage = ({
   data: Promise<ActivitesListPageData>
 }) => (
   <>
-    <hr className="fr-separator-6v" />
     <Suspense fallback={<Spinner />}>
       <SuspensedContent data={data} />
     </Suspense>

@@ -1,11 +1,12 @@
-import { v4 } from 'uuid'
-import z from 'zod'
-import { ProfilInscription } from '@prisma/client'
+import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
+import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { importCoordinateurMediationDataFromV1 } from '@app/web/app/inscription/(steps)/identification/importCoordinateurMediationDataFromV1'
 import { sessionUserSelect } from '@app/web/auth/getSessionUserFromSessionToken'
-import { SessionUser } from '@app/web/auth/sessionUser'
-import { createBrevoContact } from '@app/web/external-apis/brevo/api'
-import { toBrevoContact } from '@app/web/external-apis/brevo/contact'
+import type { SessionUser } from '@app/web/auth/sessionUser'
+import {
+  createContact,
+  toBrevoContact,
+} from '@app/web/external-apis/brevo/contact'
 import { fetchConseillerNumeriqueV1Data } from '@app/web/external-apis/conseiller-numerique/fetchConseillerNumeriqueV1Data'
 import { isConseillerNumeriqueV1DataWithActiveMiseEnRelation } from '@app/web/external-apis/conseiller-numerique/isConseillerNumeriqueV1WithActiveMiseEnRelation'
 import { ChoisirProfilEtAccepterCguValidation } from '@app/web/inscription/ChoisirProfilEtAccepterCguValidation'
@@ -16,12 +17,13 @@ import { prismaClient } from '@app/web/prismaClient'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { getOrCreateStructureEmployeuse } from '@app/web/server/rpc/inscription/getOrCreateStructureEmployeuse'
 import { forbiddenError } from '@app/web/server/rpc/trpcErrors'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { toStructureFromCartoStructure } from '@app/web/structure/toStructureFromCartoStructure'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import { createStopwatch } from '@app/web/utils/stopwatch'
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
+import { ProfilInscription } from '@prisma/client'
+import { v4 } from 'uuid'
+import z from 'zod'
 
 const inscriptionGuard = (
   targetUserId: string,
@@ -594,9 +596,10 @@ export const inscriptionRouter = router({
       })
 
       if (user != null && PublicWebAppConfig.isMain) {
-        await createBrevoContact(ServerWebAppConfig.Brevo.usersListId)(
-          toBrevoContact(user),
-        )
+        await createContact({
+          contact: toBrevoContact(user),
+          listIds: [ServerWebAppConfig.Brevo.usersListId],
+        })
       }
 
       if (!isMediateur(user)) return
@@ -641,12 +644,13 @@ export const inscriptionRouter = router({
       })
 
       if (sessionUser.inscriptionValidee != null && PublicWebAppConfig.isMain) {
-        await createBrevoContact(ServerWebAppConfig.Brevo.usersListId)(
-          toBrevoContact({
+        await createContact({
+          contact: toBrevoContact({
             ...sessionUser,
             mediateur: { ...upsertedMediateur, conseillerNumerique: null },
           }),
-        )
+          listIds: [ServerWebAppConfig.Brevo.usersListId],
+        })
       }
 
       if (sessionUser.coordinateur.conseillerNumeriqueId != null) {

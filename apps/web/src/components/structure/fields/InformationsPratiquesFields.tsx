@@ -1,11 +1,11 @@
-import { OsmDaysOfWeek } from '@gouvfr-anct/timetable-to-osm-opening-hours/lib/cjs/utilities'
-import React from 'react'
-import { UseFormReturn } from 'react-hook-form'
-import Link from 'next/link'
-import { OSM_DAYS_OF_WEEK } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import CheckboxFormField from '@app/ui/components/Form/CheckboxFormField'
 import InputFormField from '@app/ui/components/Form/InputFormField'
 import { InformationsPratiquesData } from '@app/web/app/structure/InformationsPratiquesValidation'
+import { OSM_DAYS_OF_WEEK } from '@gouvfr-anct/timetable-to-osm-opening-hours'
+import { OsmDaysOfWeek } from '@gouvfr-anct/timetable-to-osm-opening-hours/lib/cjs/utilities'
+import Link from 'next/link'
+import React from 'react'
+import { UseFormReturn } from 'react-hook-form'
 
 import { OpeningHourField } from './OpeningHourField'
 
@@ -66,12 +66,12 @@ export const InformationsPratiquesFields = <
         hint={
           <>
             Si la structure dispose d’un outil en ligne de prise de rendez-vous
-            (par exemple RDV Service Public{' '}
+            (par exemple RDV Aide Numérique{' '}
             <Link
               href="https://www.rdv-aide-numerique.fr/presentation_agent"
               target="_blank"
               className="fr-link fr-link--xs"
-              title="Site de RDV Service Public (nouvel onglet)"
+              title="Site de RDV Aide Numérique (nouvel onglet)"
             >
               https://www.rdv-aide-numerique.fr/presentation_agent
             </Link>

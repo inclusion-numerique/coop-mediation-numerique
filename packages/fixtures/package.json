@@ -6,7 +6,7 @@
   "scripts": {
     "load": "dotenv -e ../../.env -- tsx src/load.ts",
     "load:erase-all-data": "dotenv -e ../../.env -- tsx src/load.ts --erase-all-data",
-    "lint": "eslint src",
+    "lint": "biome check src",
     "tsc": "tsc --noEmit",
     "test": "jest --passWithNoTests"
   },
@@ -16,7 +16,7 @@
   "dependencies": {
     "@commander-js/extra-typings": "^12.1.0",
     "@faker-js/faker": "^8.4.1",
-    "@prisma/client": "6.0.1",
+    "@prisma/client": "6.3.1",
     "dotenv": "^16.4.7",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",

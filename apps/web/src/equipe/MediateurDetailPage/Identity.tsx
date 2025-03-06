@@ -1,14 +1,16 @@
 'use client'
 
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
+import BackButton from '@app/web/components/BackButton'
+import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { trpc } from '@app/web/trpc'
+import { dateAsDay } from '@app/web/utils/dateAsDay'
+import Badge from '@codegouvfr/react-dsfr/Badge'
 import { ButtonProps } from '@codegouvfr/react-dsfr/Button'
-import { useRouter } from 'next/navigation'
-import React from 'react'
 import ButtonsGroup from '@codegouvfr/react-dsfr/ButtonsGroup'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
-import { trpc } from '@app/web/trpc'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import BackButton from '@app/web/components/BackButton'
+import { useRouter } from 'next/navigation'
+import React from 'react'
 import { UserInfoLine } from './UserInfoLine'
 
 const Identity = ({
@@ -19,6 +21,7 @@ const Identity = ({
   phone,
   href,
   coordinateurView,
+  coordinationEnd,
 }: {
   mediateurId: string
   isConseillerNumerique: boolean
@@ -27,6 +30,7 @@ const Identity = ({
   phone: string | null
   href: string
   coordinateurView: boolean
+  coordinationEnd?: Date
 }) => {
   const {
     Component: RemoveFromTeamModal,
@@ -95,6 +99,11 @@ const Identity = ({
               phone={phone ?? undefined}
             />
           </div>
+          {coordinationEnd != null && (
+            <Badge className="fr-mt-4v fr-text-mention--grey" noIcon>
+              {`Ancien membre depuis le ${dateAsDay(coordinationEnd)}`}
+            </Badge>
+          )}
         </div>
       </div>
       <ButtonsGroup
@@ -112,7 +121,7 @@ const Identity = ({
             linkProps: { href: `mailto:${email}` },
             priority: 'tertiary',
           },
-          ...((coordinateurView
+          ...((coordinateurView && coordinationEnd == null
             ? [
                 {
                   children: (

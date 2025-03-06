@@ -1,3 +1,5 @@
+import { labelsToOptions } from '@app/ui/components/Form/utils/options'
+import { dureeAsString } from '@app/web/utils/dureeAsString'
 import {
   Autonomie,
   DegreDeFinalisationDemarche,
@@ -9,16 +11,6 @@ import {
   TypeActivite,
   TypeLieu,
 } from '@prisma/client'
-import { labelsToOptions } from '@app/ui/components/Form/utils/options'
-import { dureeAsString } from '@app/web/utils/dureeAsString'
-
-export const typeActiviteLabels: {
-  [key in TypeActivite]: string
-} = {
-  Individuel: 'Accompagnement individuel',
-  Demarche: 'Aide aux démarches administratives',
-  Collectif: 'Atelier collectif',
-}
 
 export const typeActivitePluralLabels: {
   [key in TypeActivite]: string
@@ -35,6 +27,15 @@ export const typeActiviteSlugs: { [key in TypeActivite]: TypeActiviteSlug } = {
   Demarche: 'demarche',
   Collectif: 'collectif',
 }
+
+export const typeActiviteLabels: {
+  [key in TypeActivite]: string
+} = {
+  Individuel: 'Accompagnement individuel',
+  Demarche: 'Aide aux démarches administratives',
+  Collectif: 'Atelier collectif',
+}
+
 export const typeActiviteForSlug: { [key in TypeActiviteSlug]: TypeActivite } =
   {
     individuel: 'Individuel',
@@ -217,6 +218,7 @@ export const thematiqueLabels: {
 } = {
   DiagnosticNumerique: 'Diagnostic numérique',
   PrendreEnMainDuMateriel: 'Prendre en main du matériel',
+  MaintenanceDeMateriel: 'Maintenance de matériel',
   NavigationSurInternet: 'Navigation sur internet',
   Email: 'E-mail',
   Bureautique: 'Bureautique',
@@ -228,7 +230,7 @@ export const thematiqueLabels: {
   SecuriteNumerique: 'Prévention en sécurité numérique',
   Parentalite: 'Parentalité',
   ScolariteEtNumerique: 'Scolarité et numérique',
-  CreerAvecLeNumerique: 'Gérer ses contenus numériques',
+  CreerAvecLeNumerique: 'Créer avec le numérique',
   CultureNumerique: 'Culture numérique',
   IntelligenceArtificielle: 'Intelligence artificielle (IA)',
 }
@@ -251,6 +253,11 @@ export const thematiqueHints: {
     'Utiliser un ordinateur, une tablette ou un smartphone',
     'Utiliser des périphériques (réseau wifi, clé USB, imprimante, scanner…)',
     'Connaître & configurer les outils de base',
+  ],
+  MaintenanceDeMateriel: [
+    'Maintenance de niveau 1',
+    'Installation et paramétrage de matériel informatique',
+    'Mise à jour des systèmes, installer/désinstaller outils et applications...',
   ],
   NavigationSurInternet: [
     'Faire une recherche',
@@ -306,7 +313,7 @@ export const thematiqueHints: {
     'Évaluer le niveau des jeunes avec un logiciel (maths, français, etc.)',
   ],
   CreerAvecLeNumerique: [
-    'Création de médias : photos, vidéos, illustrations',
+    'Création/gestion de médias : photos, vidéos, illustrations',
     'Fablabs : impression 3D, code',
   ],
   CultureNumerique: [
@@ -327,6 +334,7 @@ export const thematiqueIllustrations: {
 } = {
   DiagnosticNumerique: '/images/iconographie/mednum-diagnostic.svg',
   PrendreEnMainDuMateriel: '/images/iconographie/mednum-materiel.svg',
+  MaintenanceDeMateriel: '/images/iconographie/mednum-maintenance.svg',
   NavigationSurInternet: '/images/iconographie/mednum-internet.svg',
   Email: '/images/iconographie/mednum-email.svg',
   Bureautique: '/images/iconographie/mednum-bureautique.svg',
@@ -365,6 +373,7 @@ export const thematiqueValues = Object.keys(thematiqueLabels) as [
 export const thematiqueApiValues = {
   DiagnosticNumerique: 'diagnostic_numerique',
   PrendreEnMainDuMateriel: 'prendre_en_main_du_materiel',
+  MaintenanceDeMateriel: 'maintenance_de_materiel',
   NavigationSurInternet: 'navigation_sur_internet',
   Email: 'email',
   Bureautique: 'bureautique',

@@ -1,13 +1,14 @@
-import { v4 } from 'uuid'
-import * as Sentry from '@sentry/nextjs'
-import type { Job, JobName, JobPayload } from '@app/web/jobs/jobs'
 import { executeBackupDatabaseJob } from '@app/web/jobs/backup-database/executeBackupDatabaseJob'
-import { createStopwatch } from '@app/web/utils/stopwatch'
-import { prismaClient } from '@app/web/prismaClient'
-import { updateStructureFromCartoDataApi } from '@app/web/jobs/update-structures-cartographie-nationale/updateStructureFromCartoDataApi'
-import { executeImportCrasConseillerNumeriqueV1 } from '@app/web/jobs/import-cras-conseiller-numerique-v1/executeImportCrasConseillerNumeriqueV1'
 import { executeFixCoordinationsV1 } from '@app/web/jobs/fix-coordinations-v1/executeFixCoordinationsV1'
+import { executeImportCrasConseillerNumeriqueV1 } from '@app/web/jobs/import-cras-conseiller-numerique-v1/executeImportCrasConseillerNumeriqueV1'
+import { executeIngestLesBasesInRag } from '@app/web/jobs/ingest-les-bases-in-rag/executeIngestLesBasesInRag'
+import type { Job, JobName, JobPayload } from '@app/web/jobs/jobs'
 import { executeUpdateConumStructureReferent } from '@app/web/jobs/update-conum-structure-referent/executeUpdateConumStructureReferent'
+import { updateStructureFromCartoDataApi } from '@app/web/jobs/update-structures-cartographie-nationale/updateStructureFromCartoDataApi'
+import { prismaClient } from '@app/web/prismaClient'
+import { createStopwatch } from '@app/web/utils/stopwatch'
+import * as Sentry from '@sentry/nextjs'
+import { v4 } from 'uuid'
 import {
   downloadCartographieNationaleStructures,
   getStructuresCartographieNationaleFromLocalFile,
@@ -49,6 +50,7 @@ export const jobExecutors: {
   'fix-coordinations-v1': executeFixCoordinationsV1,
   'update-conum-structure-referent': executeUpdateConumStructureReferent,
   'import-contacts-to-brevo': executeImportContactsToBrevo,
+  'ingest-les-bases-in-rag': executeIngestLesBasesInRag,
 }
 
 export const executeJob = async (job: Job) => {
@@ -82,6 +84,7 @@ export const executeJob = async (job: Job) => {
         if (Sentry?.captureException) {
           Sentry.captureException(error)
         }
+        // biome-ignore lint/suspicious/noConsole: we need output from job executions
         console.error(error)
       })
 
@@ -95,6 +98,7 @@ export const executeJob = async (job: Job) => {
     if (Sentry?.captureException) {
       Sentry.captureException(error)
     }
+    // biome-ignore lint/suspicious/noConsole: we need output from job executions
     console.error(error)
     const { ended, duration } = stopWatch.stop()
 
