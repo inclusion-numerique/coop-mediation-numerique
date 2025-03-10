@@ -1,6 +1,6 @@
-import React from 'react'
-import type { AlertProps } from '@codegouvfr/react-dsfr/src/Alert'
 import Badge from '@codegouvfr/react-dsfr/Badge'
+import type { AlertProps } from '@codegouvfr/react-dsfr/src/Alert'
+import React from 'react'
 import { UserRole } from '../UserRole'
 import { type MediateurListProps } from './MediateurList'
 
@@ -40,7 +40,15 @@ export const MediateurListItem = ({
               Invitation envoyée
             </Badge>
           ) : (
-            <Badge severity={statusSeverity(status)} noIcon>
+            <Badge
+              severity={statusSeverity(status)}
+              noIcon
+              className={
+                statusSeverity(status) === undefined
+                  ? 'fr-text-mention--grey'
+                  : ''
+              }
+            >
               {status}
             </Badge>
           )}
@@ -80,7 +88,13 @@ export const MediateurListItem = ({
           Invitation envoyée
         </Badge>
       ) : (
-        <Badge severity={statusSeverity(status)} noIcon>
+        <Badge
+          severity={statusSeverity(status)}
+          noIcon
+          className={
+            statusSeverity(status) === undefined ? 'fr-text-mention--grey' : ''
+          }
+        >
           {status}
         </Badge>
       )}

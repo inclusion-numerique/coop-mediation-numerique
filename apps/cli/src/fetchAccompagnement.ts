@@ -1,8 +1,8 @@
 import { createWriteStream } from 'node:fs'
-import { Command } from '@commander-js/extra-typings'
+import { output } from '@app/cli/output'
 import { varFile } from '@app/config/varDirectory'
 import { getTotalCountsStats } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getTotalCountsStats'
-import { output } from '@app/cli/output'
+import { Command } from '@commander-js/extra-typings'
 
 // const BASE_URL = 'http://localhost:3000/api/v1/statistiques'
 const departements: string[] = [
@@ -120,8 +120,8 @@ export const fetchAccompagnements = new Command()
       departements.map(async (departement) => {
         const total = await getTotalCountsStats({
           activitesFilters: {
-            departement,
-            conseiller_numerique: `${conum}`,
+            departements: [departement],
+            conseiller_numerique: `${conum as '0' | '1'}`,
             au: `${date}`,
           },
         })

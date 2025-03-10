@@ -1,17 +1,14 @@
-import { NextResponse } from 'next/server'
-import { z, type ZodError } from 'zod'
+import {
+  JsonApiCursorPaginationQueryParamsValidation,
+  createCompositeCursor,
+  parseCompositeCursor,
+  prismaCursorPagination,
+} from '@app/web/app/api/v1/CursorPagination'
 import type {
   JsonApiListResponse,
   JsonApiResource,
 } from '@app/web/app/api/v1/JsonApiTypes'
-import { prismaClient } from '@app/web/prismaClient'
 import { apiV1Url } from '@app/web/app/api/v1/apiV1Url'
-import {
-  createCompositeCursor,
-  JsonApiCursorPaginationQueryParamsValidation,
-  parseCompositeCursor,
-  prismaCursorPagination,
-} from '@app/web/app/api/v1/CursorPagination'
 import { createApiV1Route } from '@app/web/app/api/v1/createApiV1Route'
 import {
   autonomieApiValues,
@@ -24,7 +21,10 @@ import {
   typeActiviteApiValues,
   typeLieuApiValues,
 } from '@app/web/cra/cra'
+import { prismaClient } from '@app/web/prismaClient'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
+import { NextResponse } from 'next/server'
+import { type ZodError, z } from 'zod'
 
 /**
  * API response types MUST be manually defined to NOT be infered
@@ -67,6 +67,7 @@ type ActiviteAttributes = {
   thematiques: (
     | 'diagnostic_numerique'
     | 'prendre_en_main_du_materiel'
+    | 'maintenance_de_materiel'
     | 'navigation_sur_internet'
     | 'email'
     | 'bureautique'
@@ -256,7 +257,7 @@ const ActiviteCursorValidation = z.object({
  *               description: thématiques abordées lors de l'accompagnement
  *               items:
  *                 type: string
- *                 enum: [diagnostic_numerique, prendre_en_main_du_materiel, navigation_sur_internet, email, bureautique, reseaux_sociaux, sante, banque_et_achats_en_ligne, entrepreneuriat, insertion_professionnelle, securite_numerique, parentalite, scolarite_et_numerique, creer_avec_le_numerique, culture_numerique, intelligence_artificielle]
+ *                 enum: [diagnostic_numerique, prendre_en_main_du_materiel, maintenance_de_materiel, navigation_sur_internet, email, bureautique, reseaux_sociaux, sante, banque_et_achats_en_ligne, entrepreneuriat, insertion_professionnelle, securite_numerique, parentalite, scolarite_et_numerique, creer_avec_le_numerique, culture_numerique, intelligence_artificielle]
  *                 example: "diagnostic_numerique"
  *             thematiques_demarche_administrative:
  *               type: array

@@ -1,16 +1,24 @@
-import { ObjectId } from 'mongodb'
-import {
-  conseillerNumeriqueMongoCollection,
-  objectIdFromString,
-} from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
+import type { ConseillerNumeriqueV1Data } from '@app/web/external-apis/conseiller-numerique/ConseillerNumeriqueV1Data'
 import { cleanConseillerNumeriqueV1Document } from '@app/web/external-apis/conseiller-numerique/ConseillerNumeriqueV1Document'
 import {
   MiseEnRelationConseillerNumeriqueV1MinimalProjection,
   MiseEnRelationV1MinimalProjection,
 } from '@app/web/external-apis/conseiller-numerique/MiseEnRelationConseillerNumeriqueV1'
-import { getActiveMiseEnRelation } from '@app/web/external-apis/conseiller-numerique/getActiveMiseEnRelation'
+import {
+  conseillerNumeriqueMongoCollection,
+  objectIdFromString,
+} from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
 import { fetchConseillersCoordonnes } from '@app/web/external-apis/conseiller-numerique/fetchConseillersCoordonnes'
-import type { ConseillerNumeriqueV1Data } from '@app/web/external-apis/conseiller-numerique/ConseillerNumeriqueV1Data'
+import { getActiveMiseEnRelation } from '@app/web/external-apis/conseiller-numerique/getActiveMiseEnRelation'
+import { ObjectId } from 'mongodb'
+
+const convertToLocalDate = (
+  isoDate: Date,
+  timeZone: string = 'Europe/Paris',
+): Date => new Date(new Date(isoDate).toLocaleString('fr-FR', { timeZone }))
+
+const convertToLocalDateOrNull = (isoDate: Date | null) =>
+  isoDate == null ? null : convertToLocalDate(isoDate)
 
 export const fetchConseillerNumeriqueV1Data = async (
   input:
@@ -100,6 +108,21 @@ export const fetchConseillerNumeriqueV1Data = async (
     nonAffichageCarto: boolean
   }[]
 
+  const fixedMiseEnRelations = miseEnRelations.map((miseEnRelation) => ({
+    ...miseEnRelation,
+    dateRecrutement: convertToLocalDateOrNull(miseEnRelation.dateRecrutement),
+    dateDebutDeContrat: convertToLocalDateOrNull(
+      miseEnRelation.dateDebutDeContrat,
+    ),
+    dateFinDeContrat: convertToLocalDateOrNull(miseEnRelation.dateFinDeContrat),
+    structureObj: {
+      ...miseEnRelation.structureObj,
+      dateDebutMission: convertToLocalDate(
+        miseEnRelation.structureObj.dateDebutMission,
+      ),
+    },
+  }))
+
   const conseillersCoordonnes = conseillerDocument.estCoordinateur
     ? await fetchConseillersCoordonnes({
         coordinateurV1Id: conseillerDocument._id.toString('hex'),
@@ -109,8 +132,8 @@ export const fetchConseillerNumeriqueV1Data = async (
   return conseillerDocument
     ? {
         conseiller: cleanConseillerNumeriqueV1Document(conseillerDocument),
-        miseEnRelations,
-        miseEnRelationActive: getActiveMiseEnRelation(miseEnRelations),
+        miseEnRelations: fixedMiseEnRelations,
+        miseEnRelationActive: getActiveMiseEnRelation(fixedMiseEnRelations),
         permanences,
         conseillersCoordonnes,
       }

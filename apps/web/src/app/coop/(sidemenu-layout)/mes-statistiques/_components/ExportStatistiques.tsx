@@ -2,15 +2,18 @@
 
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { createToast } from '@app/ui/toast/createToast'
+import type { LieuActiviteOption } from '@app/web/app/lieu-activite/getLieuxActiviteOptions'
+import type { BeneficiaireOption } from '@app/web/beneficiaire/BeneficiaireOption'
+import type { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
+import {
+  generateActivitesFiltersLabels,
+  toLieuPrefix,
+} from '@app/web/cra/generateActivitesFiltersLabels'
+import { MediateurOption } from '@app/web/mediateurs/MediateurOption'
+import { download } from '@app/web/utils/download'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Tag from '@codegouvfr/react-dsfr/Tag'
-import { generateActivitesFiltersLabels } from '@app/web/cra/generateActivitesFiltersLabels'
-import type { BeneficiaireOption } from '@app/web/beneficiaire/BeneficiaireOption'
-import { MediateurOption } from '@app/web/mediateurs/MediateurOption'
-import type { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
-import { download } from '@app/web/utils/download'
-import type { LieuActiviteOption } from '@app/web/app/lieu-activite/getLieuxActiviteOptions'
 
 const ExportStatistiquesModal = createModal({
   id: 'export-statistiques',
@@ -38,7 +41,7 @@ export const ExportStatistiques = ({
 
     for (const [key, value] of Object.entries(filters)) {
       if (!value) continue
-      searchParams.set(key, value)
+      searchParams.set(key, Array.isArray(value) ? value.join(',') : value)
     }
 
     const pathWithSearchParams =
@@ -63,20 +66,13 @@ export const ExportStatistiques = ({
     })
   }
 
-  const filterLabelsToDisplay = Object.entries(
-    generateActivitesFiltersLabels(filters, {
-      communesOptions,
-      departementsOptions,
-      lieuxActiviteOptions,
-      beneficiairesOptions,
-      mediateursOptions,
-    }),
-  )
-    .filter(
-      ([key]) =>
-        key !== 'du' && key !== 'au' && key !== 'typeLieu' && key !== 'nomLieu',
-    )
-    .filter((entry): entry is [string, string] => !!entry[1])
+  const filterLabelsToDisplay = generateActivitesFiltersLabels(filters, {
+    communesOptions,
+    departementsOptions,
+    lieuxActiviteOptions,
+    beneficiairesOptions,
+    mediateursOptions,
+  }).map(toLieuPrefix)
 
   return (
     <>
@@ -121,13 +117,16 @@ export const ExportStatistiques = ({
             <p className="fr-mb-2v">
               Vous avez appliqué les filtres suivants&nbsp;:
             </p>
-            <div className="fr-flex fr-flex-wrap fr-flex-gap-2v">
-              {filterLabelsToDisplay.map(([key, value]) => (
-                <Tag key={key} small>
-                  {value}
-                </Tag>
+            <ul className="fr-tags-group">
+              {filterLabelsToDisplay.map((filter) => (
+                <li
+                  className="fr-line-height-1"
+                  key={`${filter.type}-${filter.key}`}
+                >
+                  <Tag small>{filter.label}</Tag>
+                </li>
               ))}
-            </div>
+            </ul>
           </>
         ) : (
           <p className="fr-mb-2v">
