@@ -5,8 +5,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "lint": "eslint src",
-    "lint:style": "../../packages/lint/node_modules/.bin/stylelint \"src/**/*.css\"",
+    "lint": "biome check src",
     "test": "jest --passWithNoTests",
     "tsc": "tsc --noEmit",
     "postinstall": "pnpm --silent setup:dsfr",
@@ -25,7 +24,7 @@
     "@tiptap/starter-kit": "^2.10.3",
     "classnames": "^2.5.1",
     "dotenv": "^16.4.7",
-    "next": "^14.2.20",
+    "next": "^14.2.25",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.54.1",

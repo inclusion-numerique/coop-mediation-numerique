@@ -1,6 +1,9 @@
-import { redirect } from 'next/navigation'
 import { getSessionUser } from '@app/web/auth/getSessionUser'
 import { getLoginRedirectUrl } from '@app/web/security/getHomepage'
+import { redirect } from 'next/navigation'
+
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 /**
  * Cette page permet de rediriger l'utilisateur après une connexion réussie
@@ -8,6 +11,7 @@ import { getLoginRedirectUrl } from '@app/web/security/getHomepage'
  */
 const Page = async () => {
   const user = await getSessionUser()
+
   redirect(getLoginRedirectUrl(user))
 
   return null

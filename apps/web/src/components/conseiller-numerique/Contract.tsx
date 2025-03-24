@@ -1,8 +1,8 @@
+import Card from '@app/web/components/Card'
+import { AlerteFinContrat } from '@app/web/conseiller-numerique/getContractInfo'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Link from 'next/link'
 import React from 'react'
-import Card from '@app/web/components/Card'
-import { AlerteFinContrat } from '@app/web/conseiller-numerique/getContractInfo'
 
 const showContratInfoFeatureFlag = true
 
@@ -28,7 +28,7 @@ const Contract = ({
       titleAs="h2"
       title={
         <span className="fr-flex fr-justify-content-space-between fr-align-items-end fr-mb-4v">
-          <span className="fr-flex fr-flex-gap-3v fr-align-items-end fr-h6 fr-mb-0">
+          <span className="fr-flex fr-flex-gap-3v fr-align-items-center fr-h6 fr-mb-0">
             <span className="fr-flex fr-background-alt--blue-france fr-p-2v fr-border-radius--8">
               <img
                 width="20px"

@@ -1,10 +1,10 @@
-import { PrismaClient } from '@prisma/client'
 import { output } from '@app/cli/output'
 import {
+  createContact,
   onlyWithBrevoRole,
   toBrevoContact,
 } from '@app/web/external-apis/brevo/contact'
-import { createBrevoContact } from '@app/web/external-apis/brevo/api'
+import { PrismaClient } from '@prisma/client'
 
 const userListId = Number.parseInt(process.env.BREVO_USERS_LIST_ID!, 10)
 const prisma = new PrismaClient()
@@ -27,7 +27,9 @@ export const executeImportContactsToBrevo = async () => {
   output('Importing contacts to Brevo...')
 
   const results = await Promise.allSettled(
-    contacts.map((contact) => createBrevoContact(userListId)(contact)),
+    contacts.map((contact) =>
+      createContact({ contact, listIds: [userListId] }),
+    ),
   )
 
   const failures = results.filter((result) => result.status === 'rejected')

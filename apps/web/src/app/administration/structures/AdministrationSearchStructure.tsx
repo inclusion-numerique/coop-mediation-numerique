@@ -1,13 +1,13 @@
 'use client'
 
-import { useForm } from 'react-hook-form'
 import CustomSelectFormField from '@app/ui/components/Form/CustomSelectFormField'
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
-import { useRef } from 'react'
-import Button from '@codegouvfr/react-dsfr/Button'
-import { trpc } from '@app/web/trpc'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import type { SearchStructureResultStructure } from '@app/web/structure/searchStructure'
+import { trpc } from '@app/web/trpc'
+import Button from '@codegouvfr/react-dsfr/Button'
+import { useRef } from 'react'
+import { useForm } from 'react-hook-form'
 
 const AdministrationSearchStructure = () => {
   const form = useForm<{ structure: string }>()
@@ -97,9 +97,9 @@ const AdministrationSearchStructure = () => {
               href: `/administration/structures/${selectedStructureId}/modifier`,
             }}
             priority="tertiary"
-            iconId="fr-icon-edit-line"
+            iconId="fr-icon-eye-line"
           >
-            Modifier cette structure
+            Voir les infos de la structure
           </Button>
           <pre className="fr-background-alt--blue-france fr-p-4v fr-border-radius--16 fr-text--xs fr-mb-0">
             {JSON.stringify(selectedStructure, null, 2)}

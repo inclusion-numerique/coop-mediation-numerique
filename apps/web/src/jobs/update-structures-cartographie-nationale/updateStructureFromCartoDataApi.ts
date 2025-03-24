@@ -1,8 +1,8 @@
 import { output } from '@app/cli/output'
-import { SchemaLieuMediationNumerique } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { prismaClient } from '@app/web/prismaClient'
-import { createStopwatch } from '@app/web/utils/stopwatch'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
+import { createStopwatch } from '@app/web/utils/stopwatch'
+import { SchemaLieuMediationNumerique } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { structureCartographieNationaleToPrismaModel } from './transform/structureCartographieNationaleToPrismaModel'
 import { structureToPrismaModel } from './transform/structureToPrismaModel'
 
@@ -57,53 +57,51 @@ const groupCoopIdsByCartoghraphieId = (
   structure,
 })
 
-const linkToCoopStructure =
-  (now: Date) =>
-  ({
-    coopIds: [structureId, ...idsToDelete],
-    structure,
-  }: CoopIdsToMergeInSingleStructure) =>
-    prismaClient.$transaction(async (prisma) => {
-      const existingStructure = await prisma.structure.findUnique({
-        where: { id: structureId },
-      })
-
-      if (!existingStructure) {
-        output(`Skipping non-existent structureId: ${structureId}`)
-        return
-      }
-
-      await prisma.structure.update({
-        where: { id: structureId },
-        data: {
-          ...(latestChangesFromCoop(structure)
-            ? structureToPrismaModel(structure, now)
-            : {}),
-          structureCartographieNationaleId: structure.id,
-        },
-      })
-
-      if (idsToDelete.length > 0) {
-        await Promise.all([
-          prisma.employeStructure.updateMany({
-            where: { structureId: { in: idsToDelete } },
-            data: { structureId },
-          }),
-          prisma.mediateurEnActivite.updateMany({
-            where: { structureId: { in: idsToDelete } },
-            data: { structureId },
-          }),
-          prisma.activite.updateMany({
-            where: { structureId: { in: idsToDelete } },
-            data: { structureId },
-          }),
-        ])
-
-        await prisma.structure.deleteMany({
-          where: { id: { in: idsToDelete } },
-        })
-      }
+const linkToCoopStructure = ({
+  coopIds: [structureId, ...idsToDelete],
+  structure,
+}: CoopIdsToMergeInSingleStructure) =>
+  prismaClient.$transaction(async (prisma) => {
+    const existingStructure = await prisma.structure.findUnique({
+      where: { id: structureId },
     })
+
+    if (!existingStructure) {
+      output(`Skipping non-existent structureId: ${structureId}`)
+      return
+    }
+
+    await prisma.structure.update({
+      where: { id: structureId },
+      data: {
+        ...(latestChangesFromCoop(structure)
+          ? structureToPrismaModel(structure)
+          : {}),
+        structureCartographieNationaleId: structure.id,
+      },
+    })
+
+    if (idsToDelete.length > 0) {
+      await Promise.all([
+        prisma.employeStructure.updateMany({
+          where: { structureId: { in: idsToDelete } },
+          data: { structureId },
+        }),
+        prisma.mediateurEnActivite.updateMany({
+          where: { structureId: { in: idsToDelete } },
+          data: { structureId },
+        }),
+        prisma.activite.updateMany({
+          where: { structureId: { in: idsToDelete } },
+          data: { structureId },
+        }),
+      ])
+
+      await prisma.structure.deleteMany({
+        where: { id: { in: idsToDelete } },
+      })
+    }
+  })
 
 export const updateStructureFromCartoDataApi =
   ({
@@ -130,8 +128,7 @@ export const updateStructureFromCartoDataApi =
       `3. link ${structuresLinkedToCarto.length} structures from cartographie nationale to coop structures`,
     )
     for (const structureLinkedToCarto of structuresLinkedToCarto) {
-      // eslint-disable-next-line no-await-in-loop
-      await linkToCoopStructure(now)(structureLinkedToCarto)
+      await linkToCoopStructure(structureLinkedToCarto)
     }
     output(`4. updated finished successfully`)
     addMutationLog({

@@ -1,8 +1,8 @@
-import { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
-import { searchActivite } from '@app/web/cra/searchActivite'
-import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFiltersOptionsForMediateur'
-import { generateActivitesFiltersLabels } from '@app/web/cra/generateActivitesFiltersLabels'
 import { SessionUser } from '@app/web/auth/sessionUser'
+import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFiltersOptionsForMediateur'
+import { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
+import { generateActivitesFiltersLabels } from '@app/web/cra/generateActivitesFiltersLabels'
+import { searchActivite } from '@app/web/cra/searchActivite'
 import type { BuildActivitesWorksheetInput } from './buildActivitesWorksheet'
 
 export const getActivitesWorksheetInput = async ({
@@ -14,7 +14,7 @@ export const getActivitesWorksheetInput = async ({
 }): Promise<BuildActivitesWorksheetInput> => {
   const { activites, totalPages } = await searchActivite({
     mediateurId: user.mediateur?.id,
-    beneficiaireId: filters.beneficiaire,
+    beneficiaireIds: filters.beneficiaires,
     searchParams: {
       ...filters,
       lignes: '10000000',
@@ -33,7 +33,7 @@ export const getActivitesWorksheetInput = async ({
     lieuxActiviteOptions,
   } = await getFiltersOptionsForMediateur({
     user,
-    includeBeneficiaireId: filters.beneficiaire,
+    includeBeneficiaireIds: filters.beneficiaires,
   })
 
   const activitesFiltersLabels = generateActivitesFiltersLabels(filters, {

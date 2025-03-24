@@ -4,7 +4,7 @@
   "license": "AGPL-3.0-or-later",
   "type": "module",
   "scripts": {
-    "lint": "eslint cypress",
+    "lint": "biome check cypress",
     "tsc": "tsc --noEmit",
     "cy": "dotenv -e ../../.env -e ./cypress.env -- cypress"
   },
@@ -15,7 +15,7 @@
     "@cypress/react18": "^2.0.1",
     "cypress": "^13.17.0",
     "cypress-real-events": "^1.13.0",
-    "next": "^14.2.20",
+    "next": "^14.2.25",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.54.1",

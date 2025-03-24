@@ -1,17 +1,17 @@
-import { ObjectId } from 'mongodb'
 import { isConseillerNumerique } from '@app/web/auth/userTypeGuards'
-import { findConseillerNumeriqueV1 } from '@app/web/external-apis/conseiller-numerique/searchConseillerNumeriqueV1'
-import { conseillerNumeriqueMongoCollection } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
 import {
   MiseEnRelationConseillerNumeriqueV1MinimalProjection,
   MiseEnRelationV1MinimalProjection,
 } from '@app/web/external-apis/conseiller-numerique/MiseEnRelationConseillerNumeriqueV1'
-import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
-import { forbiddenError } from '@app/web/server/rpc/trpcErrors'
+import { conseillerNumeriqueMongoCollection } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
+import { findConseillerNumeriqueV1 } from '@app/web/external-apis/conseiller-numerique/searchConseillerNumeriqueV1'
 import { MettreAJourStructureEmployeuseDepuisContratActifValidation } from '@app/web/server/rpc/conseillers-numerique/MettreAJourStructureEmployeuseDepuisContratActifValidation'
 import { SearchConseillerNumeriqueByEmailValidation } from '@app/web/server/rpc/conseillers-numerique/SearchConseillerNumeriqueByEmailValidation'
-import { createStopwatch } from '@app/web/utils/stopwatch'
+import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
+import { forbiddenError } from '@app/web/server/rpc/trpcErrors'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
+import { createStopwatch } from '@app/web/utils/stopwatch'
+import { ObjectId } from 'mongodb'
 import { miseAJourStructureEmployeuseFor } from './miseAJourStructureEmployeuseFor'
 
 export const conseillersNumeriqueRouter = router({
@@ -57,20 +57,19 @@ export const conseillersNumeriqueRouter = router({
 
       const stopwatch = createStopwatch()
 
-      const misesEnRelationCollection =
-        await conseillerNumeriqueMongoCollection('misesEnRelation')
+      const conseillerNumeriqueInfo = await findConseillerNumeriqueV1({
+        id: user.mediateur.conseillerNumerique.id,
+        includeDeleted: false,
+      })
 
-      const miseEnRelation = (await misesEnRelationCollection.findOne(
-        {
-          'conseillerObj._id': new ObjectId(
-            user.mediateur.conseillerNumerique.id,
-          ),
-        },
-        { projection: MiseEnRelationV1MinimalProjection },
-      )) as unknown as MiseEnRelationConseillerNumeriqueV1MinimalProjection
+      if (conseillerNumeriqueInfo?.miseEnRelationActive == null) {
+        throw new Error(
+          `Le conseiller numérique ${user.id} n'a pas de mise en relation active`,
+        )
+      }
 
       const structure = await miseAJourStructureEmployeuseFor(user.id)(
-        miseEnRelation,
+        conseillerNumeriqueInfo?.miseEnRelationActive,
       )
 
       addMutationLog({

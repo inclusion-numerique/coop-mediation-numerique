@@ -1,13 +1,11 @@
-/* eslint-disable no-sparse-arrays */
-
-import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
-import type { Workbook, Worksheet } from 'exceljs'
-import { numberToPercentage } from '@app/web/utils/formatNumber'
 import { computeProportion } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/allocatePercentages'
+import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
 import { dureeAccompagnementStatisticsRanges } from '@app/web/cra/cra'
+import { numberToPercentage } from '@app/web/utils/formatNumber'
+import type { Workbook, Worksheet } from 'exceljs'
 import {
-  buildStatistiquesWorksheet,
   type BuildStatistiquesWorksheetInput,
+  buildStatistiquesWorksheet,
 } from './buildStatistiquesWorksheet'
 
 const DATE = new Date('2024-09-11T17:42:00.000Z')
@@ -368,17 +366,68 @@ const STATISTIQUES_WORKSHEET_INPUT_FOR_MEDIATEUR: BuildStatistiquesWorksheetInpu
       },
       coordinateur: null,
     },
-    filters: {
-      du: '01/08/2024',
-      au: '31/08/2024',
-      typeLieu: 'Commune',
-      nomLieu: 'Lyon',
-      type: 'Accompagnement',
-      beneficiaire: null,
-      mediateur: null,
-      lieu: null,
-      periode: null,
-    },
+    filters: [
+      {
+        label: '29.01.2025 - 11.02.2025',
+        key: ['du', 'au'],
+        type: 'periode',
+      },
+      {
+        label: 'Lieu d’activité : Exemple de Mediateque',
+        key: '36929ed7-3b6f-4ed3-9924-b5e1a6c27096',
+        type: 'lieux',
+      },
+      {
+        key: '69382',
+        label: 'Commune : Lyon 2eme · 69002',
+        type: 'communes',
+      },
+      {
+        key: '69',
+        label: 'Département : 69 · Rhône',
+        type: 'departements',
+      },
+      {
+        key: '42',
+        label: 'Département : 42 · Loire',
+        type: 'departements',
+      },
+      {
+        label: 'Accompagnement individuel',
+        key: 'individuel',
+        type: 'types',
+      },
+      {
+        label: 'Atelier collectif',
+        key: 'collectif',
+        type: 'types',
+      },
+      {
+        label: 'Médiateur',
+        key: '0',
+        type: 'conseiller_numerique',
+      },
+      {
+        label: 'Coordinateur Inscrit avec tout (Mes statistiques)',
+        key: '379a0d7e-54ac-4db6-95c4-3752cdd05d32',
+        type: 'mediateurs',
+      },
+      {
+        label: 'Médiateur Avec activités',
+        key: '303381cc-3da7-433d-a553-1a5f76465989',
+        type: 'mediateurs',
+      },
+      {
+        label: 'Marcel Sans accompagnements',
+        key: 'afcbdd63-7dd9-4342-9fa6-084e7a785406',
+        type: 'beneficiaires',
+      },
+      {
+        label: 'Georges Maximal',
+        key: '7d6091bc-dc91-4d1b-b357-f101e9eb6217',
+        type: 'beneficiaires',
+      },
+    ],
   }
 
 const STATISTIQUES_WORKSHEET_INPUT_FOR_COORDINATEUR: BuildStatistiquesWorksheetInput =
@@ -396,17 +445,28 @@ const STATISTIQUES_WORKSHEET_INPUT_FOR_COORDINATEUR: BuildStatistiquesWorksheetI
         mediateursCoordonnes: [],
       },
     },
-    filters: {
-      du: '01/08/2024',
-      au: '31/08/2024',
-      typeLieu: 'Commune',
-      nomLieu: 'Lyon',
-      type: 'Accompagnement',
-      beneficiaire: null,
-      mediateur: 'Marie Doe',
-      lieu: null,
-      periode: null,
-    },
+    filters: [
+      {
+        key: '69382',
+        label: 'Commune : Lyon 2eme · 69002',
+        type: 'communes',
+      },
+      {
+        label: 'Accompagnement individuel',
+        key: 'individuel',
+        type: 'types',
+      },
+      {
+        label: 'Marie Doe',
+        key: '303381cc-3da7-433d-a553-1a5f76465989',
+        type: 'mediateurs',
+      },
+      {
+        label: 'Médiateur',
+        key: '0',
+        type: 'conseiller_numerique',
+      },
+    ],
   }
 
 const expectQuantifiedShareRows = (
@@ -419,11 +479,114 @@ const expectQuantifiedShareRows = (
   )
 
   return expectedRows.map(([label, count]) => [
-    ,
+    undefined,
     label,
     count,
     numberToPercentage(computeProportion(count, proportionTotal)),
   ])
+}
+
+const mainTitle = { start: 1, length: 1 }
+const info = { start: mainTitle.start + mainTitle.length, length: 6 }
+const filterTitle = { start: info.start + info.length, length: 1 }
+const filters = { start: filterTitle.start + filterTitle.length, length: 8 }
+const generalesTitle = { start: filters.start + filters.length, length: 1 }
+const generales = {
+  start: generalesTitle.start + generalesTitle.length,
+  length: 8,
+}
+const activitesTitle = { start: generales.start + generales.length, length: 1 }
+const activites = {
+  start: activitesTitle.start + activitesTitle.length,
+  length: 6,
+}
+const mediationNumeriqueTitle = {
+  start: activites.start + activites.length,
+  length: 1,
+}
+const mediationNumerique = {
+  start: mediationNumeriqueTitle.start + mediationNumeriqueTitle.length,
+  length: 15,
+}
+const demarcheAdministrativeTitle = {
+  start: mediationNumerique.start + mediationNumerique.length,
+  length: 1,
+}
+const demarcheAdministrative = {
+  start: demarcheAdministrativeTitle.start + demarcheAdministrativeTitle.length,
+  length: 11,
+}
+const materielTitle = {
+  start: demarcheAdministrative.start + demarcheAdministrative.length,
+  length: 1,
+}
+const materiel = {
+  start: materielTitle.start + materielTitle.length,
+  length: 6,
+}
+const canauxTitle = {
+  start: materiel.start + materiel.length,
+  length: 1,
+}
+const canaux = {
+  start: canauxTitle.start + canauxTitle.length,
+  length: 5,
+}
+const dureeTitle = {
+  start: canaux.start + canaux.length,
+  length: 1,
+}
+const duree = {
+  start: dureeTitle.start + dureeTitle.length,
+  length: 5,
+}
+const nombreActivitesTitle = {
+  start: duree.start + duree.length,
+  length: 1,
+}
+const nombreActivites = {
+  start: nombreActivitesTitle.start + nombreActivitesTitle.length,
+  length: 2,
+}
+const beneficiairesTitle = {
+  start: nombreActivites.start + nombreActivites.length,
+  length: 1,
+}
+const beneficiairesGenreTitle = {
+  start: beneficiairesTitle.start + beneficiairesTitle.length,
+  length: 1,
+}
+const beneficiairesGenre = {
+  start: beneficiairesGenreTitle.start + beneficiairesGenreTitle.length,
+  length: 4,
+}
+const trancheAgeTitle = {
+  start: beneficiairesGenre.start + beneficiairesGenre.length,
+  length: 1,
+}
+const trancheAge = {
+  start: trancheAgeTitle.start + trancheAgeTitle.length,
+  length: 9,
+}
+const statusSocialTitle = {
+  start: trancheAge.start + trancheAge.length,
+  length: 1,
+}
+const statusSocial = {
+  start: statusSocialTitle.start + statusSocialTitle.length,
+  length: 6,
+}
+const communesBeneficiairesTitle = {
+  start: statusSocial.start + statusSocial.length,
+  length: 1,
+}
+const communesBeneficiaires = {
+  start: communesBeneficiairesTitle.start + communesBeneficiairesTitle.length,
+  length: 3,
+}
+
+const range = ({ start, length }: { start: number; length: number }) => {
+  return `in Statistiques worksheet from row ${start} to ${start + length}`
 }
 
 describe('build statistiques worksheet for médiateur', () => {
@@ -445,48 +608,70 @@ describe('build statistiques worksheet for médiateur', () => {
     expect(worksheet).toBeDefined()
   })
 
-  it('should contains bold `Informations export` in Statistiques worksheet at position A1', () => {
-    const exportTitleCell = worksheet.getCell('A1')
+  it(`should contains bold 'Informations export' ${range(mainTitle)}`, () => {
+    const exportTitleCell = worksheet.getCell(`A${mainTitle.start}`)
 
     expect(exportTitleCell?.value).toBe('Informations export')
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it('should contains Informations export in Statistiques worksheet from row 2 to 6', () => {
-    const rows = worksheet.getRows(2, 6)?.map((row) => row.values)
+  it(`should contains Informations export ${range(info)}`, () => {
+    const rows = worksheet
+      .getRows(info.start, info.length)
+      ?.map((row) => row.values)
 
-    expect(rows).toStrictEqual([
-      [, 'Nom', 'Doe'],
-      [, 'Prénom', 'John'],
-      [, 'Rôle', 'Conseiller Numérique'],
-      [, 'Date d’export', '11/09/2024'],
-      [, 'Heure d’export', '17:42'],
+    expect(rows).toEqual([
+      [undefined, 'Nom', 'Doe'],
+      [undefined, 'Prénom', 'John'],
+      [undefined, 'Rôle', 'Conseiller Numérique'],
+      [undefined, 'Date d’export', '11/09/2024'],
+      [undefined, 'Heure d’export', '17:42'],
       [],
     ])
   })
 
-  it('should contains bold `Filtres :` in Statistiques worksheet at position A8', () => {
-    const exportTitleCell = worksheet.getCell('A8')
+  it(`should contains bold 'Filtres :' in Statistiques worksheet at position A${filterTitle.start}`, () => {
+    const exportTitleCell = worksheet.getCell(`A${filterTitle.start}`)
 
     expect(exportTitleCell?.value).toBe('Filtres')
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it('should contains Filters in Statistiques worksheet from row 9 to 15', () => {
-    const rows = worksheet.getRows(9, 6)?.map((row) => row.values)
+  it(`should contains Filters ${range(filters)}`, () => {
+    const rows = worksheet
+      .getRows(filters.start, filters.length)
+      ?.map((row) => row.values)
 
-    expect(rows).toStrictEqual([
-      [, 'Début de période', '01/08/2024'],
-      [, 'Fin de période', '31/08/2024'],
-      [, 'Type de lieu', 'Commune'],
-      [, 'Nom du lieu', 'Lyon'],
-      [, 'Type d’accompagnement', 'Accompagnement'],
+    expect(rows).toEqual([
+      [undefined, 'Période', '29.01.2025 - 11.02.2025'],
+      [
+        undefined,
+        'Lieux d’accompagnement',
+        'Lieu d’activité : Exemple de Mediateque',
+      ],
+      [undefined, 'Communes', 'Commune : Lyon 2eme · 69002'],
+      [
+        undefined,
+        'Départements',
+        'Département : 69 · Rhône, Département : 42 · Loire',
+      ],
+      [
+        undefined,
+        'Type d’accompagnement',
+        'Accompagnement individuel, Atelier collectif',
+      ],
+      [undefined, 'Rôle', 'Médiateur'],
+      [
+        undefined,
+        'Médiateurs',
+        'Coordinateur Inscrit avec tout (Mes statistiques), Médiateur Avec activités',
+      ],
       [],
     ])
   })
 
-  it('should contains bold `Statistiques générales sur vos accompagnements` in Statistiques worksheet at position A15', () => {
-    const exportTitleCell = worksheet.getCell('A15')
+  it(`should contains bold 'Statistiques générales sur vos accompagnements' in Statistiques worksheet at position A${generalesTitle.start}`, () => {
+    const exportTitleCell = worksheet.getCell(`A${generalesTitle.start}`)
 
     expect(exportTitleCell?.value).toBe(
       'Statistiques générales sur vos accompagnements',
@@ -494,17 +679,19 @@ describe('build statistiques worksheet for médiateur', () => {
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it('should contains statistiques general in Statistiques worksheet from row 16 to 21', () => {
-    const rows = worksheet.getRows(16, 8)?.map((row) => row.values)
+  it(`should contains statistiques general ${range(generales)}`, () => {
+    const rows = worksheet
+      .getRows(generales.start, generales.length)
+      ?.map((row) => row.values)
 
-    expect(rows).toStrictEqual([
-      [, 'Accompagnements au total', 44],
-      [, 'Bénéficiaires accompagnés', 23],
-      [, 'Nouveaux bénéficiaires', 6],
-      [, 'Bénéficiaires suivis', 2],
-      [, 'Bénéficiaires anonymes', 21],
+    expect(rows).toEqual([
+      [undefined, 'Accompagnements au total', 44],
+      [undefined, 'Bénéficiaires accompagnés', 23],
+      [undefined, 'Nouveaux bénéficiaires', 6],
+      [undefined, 'Bénéficiaires suivis', 2],
+      [undefined, 'Bénéficiaires anonymes', 21],
       [
-        ,
+        undefined,
         'Accompagnements sur les 12 derniers mois',
         'Oct.',
         'Nov.',
@@ -519,42 +706,48 @@ describe('build statistiques worksheet for médiateur', () => {
         'Août',
         'Sep.',
       ],
-      [, '', 2, 6, 8, 6, 12, 12, 14, 9, 10, 4, 2, 7],
+      [undefined, '', 2, 6, 8, 6, 12, 12, 14, 9, 10, 4, 2, 7],
       [],
     ])
   })
 
-  it('should contains bold `Statistiques sur vos activités` in Statistiques worksheet at position A24', () => {
-    const exportTitleCell = worksheet.getCell('A24')
+  it(`should contains bold 'Statistiques sur vos activités' in Statistiques worksheet at position A${activitesTitle.start}`, () => {
+    const exportTitleCell = worksheet.getCell(`A${activitesTitle.start}`)
 
     expect(exportTitleCell?.value).toBe('Statistiques sur vos activités')
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it('should contains statistiques activités in Statistiques worksheet from row 25 to 29', () => {
-    const rows = worksheet.getRows(25, 6)?.map((row) => row.values)
+  it(`should contains statistiques activités ${range(activites)}`, () => {
+    const rows = worksheet
+      .getRows(activites.start, activites.length)
+      ?.map((row) => row.values)
 
-    expect(rows).toStrictEqual([
-      [, 'Accompagnements individuels', 8, '40 %'],
-      [, 'Ateliers collectifs', 4, '20 %'],
-      [, 'Nombre total de participants aux ateliers', 28],
-      [, 'Aide aux démarches administratives', 8, '40 %'],
-      [, 'Nombre total d’activités', 20],
+    expect(rows).toEqual([
+      [undefined, 'Accompagnements individuels', 8, '40 %'],
+      [undefined, 'Ateliers collectifs', 4, '20 %'],
+      [undefined, 'Nombre total de participants aux ateliers', 28],
+      [undefined, 'Aide aux démarches administratives', 8, '40 %'],
+      [undefined, 'Nombre total d’activités', 20],
       [],
     ])
   })
 
-  it('should contains bold `Thématiques Médiation numérique` in Statistiques worksheet at position A31', () => {
-    const exportTitleCell = worksheet.getCell('A31')
+  it(`should contains bold 'Thématiques Médiation numérique' in Statistiques worksheet at position A${mediationNumeriqueTitle.start}`, () => {
+    const exportTitleCell = worksheet.getCell(
+      `A${mediationNumeriqueTitle.start}`,
+    )
 
     expect(exportTitleCell?.value).toBe('Thématiques Médiation numérique')
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it('should contains Thématiques Médiation numérique in Statistiques worksheet from row 32 to 45', () => {
-    const rows = worksheet.getRows(32, 15)?.map((row) => row.values)
+  it(`should contains Thématiques Médiation numérique ${range(mediationNumerique)}`, () => {
+    const rows = worksheet
+      .getRows(mediationNumerique.start, mediationNumerique.length)
+      ?.map((row) => row.values)
 
-    expect(rows).toStrictEqual([
+    expect(rows).toEqual([
       ...expectQuantifiedShareRows([
         ['Prendre en main du matériel', 0],
         ['Navigation sur internet', 0],
@@ -575,17 +768,21 @@ describe('build statistiques worksheet for médiateur', () => {
     ])
   })
 
-  it('should contains bold `Thématiques Démarches administratives` in Statistiques worksheet at position A47', () => {
-    const exportTitleCell = worksheet.getCell('A47')
+  it(`should contains bold 'Thématiques Démarches administratives' in Statistiques worksheet at position A${demarcheAdministrativeTitle.start}`, () => {
+    const exportTitleCell = worksheet.getCell(
+      `A${demarcheAdministrativeTitle.start}`,
+    )
 
     expect(exportTitleCell?.value).toBe('Thématiques Démarches administratives')
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it('should contains Thématiques Démarches administratives in Statistiques worksheet from row 48 to 57', () => {
-    const rows = worksheet.getRows(48, 11)?.map((row) => row.values)
+  it(`should contains Thématiques Démarches administratives ${range(demarcheAdministrative)}`, () => {
+    const rows = worksheet
+      .getRows(demarcheAdministrative.start, demarcheAdministrative.length)
+      ?.map((row) => row.values)
 
-    expect(rows).toStrictEqual([
+    expect(rows).toEqual([
       ...expectQuantifiedShareRows([
         ['Papiers - Élections Citoyenneté', 0],
         ['Famille - Scolarité', 2],
@@ -602,17 +799,19 @@ describe('build statistiques worksheet for médiateur', () => {
     ])
   })
 
-  it('should contains bold `Matériel utilisés` in Statistiques worksheet at position A59', () => {
-    const exportTitleCell = worksheet.getCell('A59')
+  it(`should contains bold 'Matériel utilisés' in Statistiques worksheet at position A${materielTitle.start}`, () => {
+    const exportTitleCell = worksheet.getCell(`A${materielTitle.start}`)
 
     expect(exportTitleCell?.value).toBe('Matériel utilisés')
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it('should contains Matériel utilisés in Statistiques worksheet from row 60 to 64', () => {
-    const rows = worksheet.getRows(60, 6)?.map((row) => row.values)
+  it(`should contains Matériel utilisés ${range(materiel)}`, () => {
+    const rows = worksheet
+      .getRows(materiel.start, materiel.length)
+      ?.map((row) => row.values)
 
-    expect(rows).toStrictEqual([
+    expect(rows).toEqual([
       ...expectQuantifiedShareRows([
         ['Ordinateur', 6],
         ['Téléphone', 2],
@@ -624,17 +823,19 @@ describe('build statistiques worksheet for médiateur', () => {
     ])
   })
 
-  it('should contains bold `Canaux des activités` in Statistiques worksheet at position A66', () => {
-    const exportTitleCell = worksheet.getCell('A66')
+  it(`should contains bold 'Canaux des activités' in Statistiques worksheet at position A${canauxTitle.start}`, () => {
+    const exportTitleCell = worksheet.getCell(`A${canauxTitle.start}`)
 
     expect(exportTitleCell?.value).toBe('Canaux des activités')
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it('should contains Canaux des activités in Statistiques worksheet from row 67 to 71', () => {
-    const rows = worksheet.getRows(67, 5)?.map((row) => row.values)
+  it(`should contains Canaux des activités ${range(canaux)}`, () => {
+    const rows = worksheet
+      .getRows(canaux.start, canaux.length)
+      ?.map((row) => row.values)
 
-    expect(rows).toStrictEqual([
+    expect(rows).toEqual([
       ...expectQuantifiedShareRows([
         ['Lieu d’activité', 0],
         ['À domicile', 4],
@@ -645,17 +846,19 @@ describe('build statistiques worksheet for médiateur', () => {
     ])
   })
 
-  it('should contains bold `Durées des activités` in Statistiques worksheet at position A72', () => {
-    const exportTitleCell = worksheet.getCell('A72')
+  it(`should contains bold 'Durées des activités' in Statistiques worksheet at position A${dureeTitle.start}`, () => {
+    const exportTitleCell = worksheet.getCell(`A${dureeTitle.start}`)
 
     expect(exportTitleCell?.value).toBe('Durées des activités')
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it('should contains Durées des activités in Statistiques worksheet from row 73 to 76', () => {
-    const rows = worksheet.getRows(73, 5)?.map((row) => row.values)
+  it(`should contains Durées des activités ${range(duree)}`, () => {
+    const rows = worksheet
+      .getRows(duree.start, duree.length)
+      ?.map((row) => row.values)
 
-    expect(rows).toStrictEqual([
+    expect(rows).toEqual([
       ...expectQuantifiedShareRows([
         [dureeAccompagnementStatisticsRanges[0].label, 0],
         [dureeAccompagnementStatisticsRanges[1].label, 0],
@@ -666,37 +869,43 @@ describe('build statistiques worksheet for médiateur', () => {
     ])
   })
 
-  it('should contains bold `Nombre d’activités par lieux` in Statistiques worksheet at position A78', () => {
-    const exportTitleCell = worksheet.getCell('A78')
+  it(`should contains bold 'Nombre d’activités par lieux' in Statistiques worksheet at position ${nombreActivitesTitle.start}`, () => {
+    const exportTitleCell = worksheet.getCell(`A${nombreActivitesTitle.start}`)
 
     expect(exportTitleCell?.value).toBe('Nombre d’activités par lieux')
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it('should contains Nombre d’activités par lieux in Statistiques worksheet from row 79 to 80', () => {
-    const rows = worksheet.getRows(79, 2)?.map((row) => row.values)
+  it(`should contains Nombre d’activités par lieux ${range(nombreActivites)}`, () => {
+    const rows = worksheet
+      .getRows(nombreActivites.start, nombreActivites.length)
+      ?.map((row) => row.values)
 
-    expect(rows).toStrictEqual([[, 'Exemple de Mediateque', 4, '100 %'], []])
+    expect(rows).toEqual([[undefined, 'Exemple de Mediateque', 4, '100 %'], []])
   })
 
-  it('should contains bold `Statistiques sur vos bénéficiaires` in Statistiques worksheet at position A81', () => {
-    const exportTitleCell = worksheet.getCell('A81')
+  it(`should contains bold 'Statistiques sur vos bénéficiaires' in Statistiques worksheet at position A${beneficiairesTitle.start}`, () => {
+    const exportTitleCell = worksheet.getCell(`A${beneficiairesTitle.start}`)
 
     expect(exportTitleCell?.value).toBe('Statistiques sur vos bénéficiaires')
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it('should contains bold `Genre` in Statistiques worksheet at position A82', () => {
-    const exportTitleCell = worksheet.getCell('A82')
+  it(`should contains bold 'Genre' in Statistiques worksheet at position A${beneficiairesGenreTitle.start}`, () => {
+    const exportTitleCell = worksheet.getCell(
+      `A${beneficiairesGenreTitle.start}`,
+    )
 
     expect(exportTitleCell?.value).toBe('Genre')
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it('should contains Statistiques bénéficiaires in Statistiques worksheet from row 83 to 85', () => {
-    const rows = worksheet.getRows(83, 4)?.map((row) => row.values)
+  it(`should contains Statistiques bénéficiaires ${range(beneficiairesGenre)}`, () => {
+    const rows = worksheet
+      .getRows(beneficiairesGenre.start, beneficiairesGenre.length)
+      ?.map((row) => row.values)
 
-    expect(rows).toStrictEqual([
+    expect(rows).toEqual([
       ...expectQuantifiedShareRows([
         ['Masculin', 2],
         ['Féminin', 0],
@@ -706,17 +915,19 @@ describe('build statistiques worksheet for médiateur', () => {
     ])
   })
 
-  it('should contains bold `Tranches d’âge` in Statistiques worksheet at position A8', () => {
-    const exportTitleCell = worksheet.getCell('A87')
+  it(`should contains bold 'Tranches d’âge' in Statistiques worksheet at position A${trancheAgeTitle.start}`, () => {
+    const exportTitleCell = worksheet.getCell(`A${trancheAgeTitle.start}`)
 
     expect(exportTitleCell?.value).toBe('Tranches d’âge')
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it('should contains Tranches d’âge in Statistiques worksheet from row 88 to 95', () => {
-    const rows = worksheet.getRows(88, 9)?.map((row) => row.values)
+  it(`should contains Tranches d’âge ${range(trancheAge)}`, () => {
+    const rows = worksheet
+      .getRows(trancheAge.start, trancheAge.length)
+      ?.map((row) => row.values)
 
-    expect(rows).toStrictEqual([
+    expect(rows).toEqual([
       ...expectQuantifiedShareRows([
         ['70 ans et plus', 0],
         ['60 - 69 ans', 0],
@@ -731,17 +942,19 @@ describe('build statistiques worksheet for médiateur', () => {
     ])
   })
 
-  it('should contains bold `Statuts` in Statistiques worksheet at position A97', () => {
-    const exportTitleCell = worksheet.getCell('A97')
+  it(`should contains bold 'Statuts' in Statistiques worksheet at position A${statusSocialTitle.start}`, () => {
+    const exportTitleCell = worksheet.getCell(`A${statusSocialTitle.start}`)
 
     expect(exportTitleCell?.value).toBe('Statuts')
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it('should contains Statuts in Statistiques worksheet from row 98 to 103', () => {
-    const rows = worksheet.getRows(98, 6)?.map((row) => row.values)
+  it(`should contains Statuts ${range(statusSocial)}`, () => {
+    const rows = worksheet
+      .getRows(statusSocial.start, statusSocial.length)
+      ?.map((row) => row.values)
 
-    expect(rows).toStrictEqual([
+    expect(rows).toEqual([
       ...expectQuantifiedShareRows([
         ['Retraité', 0],
         ['Sans emploi', 0],
@@ -753,8 +966,10 @@ describe('build statistiques worksheet for médiateur', () => {
     ])
   })
 
-  it('should contains bold `Commune de résidence des bénéficiaires` in Statistiques worksheet at position A104', () => {
-    const exportTitleCell = worksheet.getCell('A104')
+  it(`should contains bold 'Commune de résidence des bénéficiaires' in Statistiques worksheet at position A${communesBeneficiairesTitle.start}`, () => {
+    const exportTitleCell = worksheet.getCell(
+      `A${communesBeneficiairesTitle.start}`,
+    )
 
     expect(exportTitleCell?.value).toBe(
       'Commune de résidence des bénéficiaires',
@@ -762,10 +977,12 @@ describe('build statistiques worksheet for médiateur', () => {
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it('should contains Commune de résidence des bénéficiaires in Statistiques worksheet from row 105 to 103', () => {
-    const rows = worksheet.getRows(105, 3)?.map((row) => row.values)
+  it(`should contains Commune de résidence des bénéficiaires ${communesBeneficiaires}`, () => {
+    const rows = worksheet
+      .getRows(communesBeneficiaires.start, communesBeneficiaires.length)
+      ?.map((row) => row.values)
 
-    expect(rows).toStrictEqual([
+    expect(rows).toEqual([
       ...expectQuantifiedShareRows([
         ['Paris · 75001', 2],
         ['Lyon 2eme · 69002', 1],
@@ -791,10 +1008,8 @@ describe('build statistiques worksheet for coordinateur', () => {
   })
 
   it('should contains médiateur filter in Statistiques worksheet in row 16 when', () => {
-    const rows = worksheet.getRows(14, 2)?.map((row) => row.values)
+    const rows = worksheet.getRows(15, 2)?.map((row) => row.values)
 
-    expect(rows).toStrictEqual([[, 'Médiateur', 'Marie Doe'], []])
+    expect(rows).toEqual([[undefined, 'Médiateurs', 'Marie Doe'], []])
   })
 })
-
-/* eslint-enable */

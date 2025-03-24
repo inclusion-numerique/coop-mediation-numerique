@@ -1,33 +1,34 @@
-import { NextResponse } from 'next/server'
 import type {
   JsonApiItemResponse,
   JsonApiResource,
 } from '@app/web/app/api/v1/JsonApiTypes'
 import { apiV1Url } from '@app/web/app/api/v1/apiV1Url'
 import { createApiV1Route } from '@app/web/app/api/v1/createApiV1Route'
+import { serializeApiRequestParams } from '@app/web/app/api/v1/serializeApiRequestParams'
 import { ApiV1StatistiquesQueryParamsValidation } from '@app/web/app/api/v1/statistiques/ApiV1StatistiquesQueryParams'
 import {
   getAccompagnementsCountByDay,
   getAccompagnementsCountByMonth,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getAccompagnementsCountByPeriod'
 import {
-  BeneficiaireStats,
-  getBeneficiaireStats,
-} from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getBeneficiaireStats'
-import {
   ActivitesStats,
   getActivitesStats,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getActivitesStats'
 import {
-  getTotalCountsStats,
+  BeneficiaireStats,
+  getBeneficiaireStats,
+} from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getBeneficiaireStats'
+import {
   TotalCountsStats,
+  getTotalCountsStats,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getTotalCountsStats'
+import type { LabelAndCount } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/quantifiedShare'
+import { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
 import {
   ChangeObjectKeysCaseRecursive,
   changeObjectKeysCaseRecursive,
 } from '@app/web/utils/changeObjectKeysCaseRecursive'
-import type { LabelAndCount } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/quantifiedShare'
-import { serializeApiRequestParams } from '@app/web/app/api/v1/serializeApiRequestParams'
+import { NextResponse } from 'next/server'
 
 /**
  * @openapi
@@ -272,36 +273,36 @@ import { serializeApiRequestParams } from '@app/web/app/api/v1/serializeApiReque
  *           example: '2022-01-31'
  *
  *       - in: query
- *         name: filter[type]
+ *         name: filter[types]
  *         required: false
- *         description: Type d’activité (individuel, démarche ou collectif)
+ *         description: Types d’activités (individuel, démarche et/ou collectif) séparés par des virgules
  *         schema:
  *           type: string
  *           enum: [Individuel, Demarche, Collectif]
  *           example: 'Individuel'
  *
  *       - in: query
- *         name: filter[mediateur]
+ *         name: filter[mediateurs]
  *         required: false
- *         description: UUID du médiateur ayant réalisé l’activité
+ *         description: UUID des médiateurs ayant réalisé les activités séparés par des virgules
  *         schema:
  *           type: string
  *           format: uuid
  *           example: '123e4567-e89b-12d3-a456-426614174000'
  *
  *       - in: query
- *         name: filter[beneficiaire]
+ *         name: filter[beneficiaires]
  *         required: false
- *         description: UUID du bénéficiaire de l’activité
+ *         description: UUID des bénéficiaire des activités séparés par des virgules
  *         schema:
  *           type: string
  *           format: uuid
  *           example: '123e4567-e89b-12d3-a456-426614174000'
  *
  *       - in: query
- *         name: filter[commune]
+ *         name: filter[communes]
  *         required: false
- *         description: Code INSEE de la commune où l’activité a été réalisée (5 caractères)
+ *         description: Code INSEE des communes où les activités ont étés réalisées (5 caractères) séparés par des virgules
  *         schema:
  *           type: string
  *           minLength: 5
@@ -309,18 +310,18 @@ import { serializeApiRequestParams } from '@app/web/app/api/v1/serializeApiReque
  *           example: '69385'
  *
  *       - in: query
- *         name: filter[departement]
+ *         name: filter[departements]
  *         required: false
- *         description: Code du département où l’activité a été réalisée (1 à 3 caractères)
+ *         description: Code des départements où les activités ont étés réalisées (1 à 3 caractères) séparés par des virgules
  *         schema:
  *           type: string
  *           maxLength: 3
  *           example: '69'
  *
  *       - in: query
- *         name: filter[lieu]
+ *         name: filter[lieux]
  *         required: false
- *         description: UUID du lieu où l’activité a été réalisée
+ *         description: UUID des lieux où les activités ont étés réalisées séparés par des virgules
  *         schema:
  *           type: string
  *           format: uuid
@@ -384,7 +385,7 @@ export const GET = createApiV1Route
   })
   .queryParams(ApiV1StatistiquesQueryParamsValidation)
   .handle(async ({ params }) => {
-    const activitesFilters = params.filter
+    const activitesFilters = params.filter as ActivitesFilters
 
     const [
       accompagnementsParJour,

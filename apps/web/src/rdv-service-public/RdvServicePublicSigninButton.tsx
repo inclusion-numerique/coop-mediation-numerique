@@ -1,16 +1,16 @@
 'use client'
 
-import { Route } from 'next'
-import React, { useState } from 'react'
-import Button from '@codegouvfr/react-dsfr/Button'
-import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
-import classNames from 'classnames'
-import { useRouter } from 'next/navigation'
 import { createToast } from '@app/ui/toast/createToast'
+import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { SessionUser } from '@app/web/auth/sessionUser'
-import { trpc } from '@app/web/trpc'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import { rdvOauthLinkAccountFlowUrl } from '@app/web/rdv-service-public/rdvServicePublicOauth'
+import { trpc } from '@app/web/trpc'
+import Button from '@codegouvfr/react-dsfr/Button'
+import classNames from 'classnames'
+import { Route } from 'next'
+import { useRouter } from 'next/navigation'
+import React, { useState } from 'react'
 
 const RdvServicePublicSigninButton = ({
   className,
@@ -32,12 +32,10 @@ const RdvServicePublicSigninButton = ({
     if (isLoading) return
     setIsLoading(true)
 
-    console.log('CREATE ACCOUNT')
     try {
-      const createAccountResult = await createAccountMutation.mutateAsync({
+      await createAccountMutation.mutateAsync({
         userId: user.id,
       })
-      console.log('CREATE ACCOUNT RESULT', createAccountResult)
 
       router.push(rdvOauthLinkAccountFlowUrl({ redirectTo: callbackUrl }))
     } catch {
@@ -65,7 +63,7 @@ const RdvServicePublicSigninButton = ({
         <span className="fr-ml-1v fr-text--left">
           Se connecter à
           <br />
-          <strong>Rdv Service Public</strong>
+          <strong>RDV Aide Numérique</strong>
         </span>
       </Button>
 
@@ -75,7 +73,7 @@ const RdvServicePublicSigninButton = ({
         target="_blank"
         rel="noreferrer"
       >
-        En savoir plus sur Rdv Service Public
+        En savoir plus sur RDV Aide Numérique
       </a>
     </div>
   )

@@ -1,8 +1,14 @@
-import Button from '@codegouvfr/react-dsfr/Button'
-import classNames from 'classnames'
-import { addresseFromParts } from '@app/web/utils/addresseFromParts'
 import type { StructureData } from '@app/web/app/structure/StructureValidation'
 import { typologieStructureLabels } from '@app/web/app/structure/typologieStructure'
+import { addresseFromParts } from '@app/web/utils/addresseFromParts'
+import Button from '@codegouvfr/react-dsfr/Button'
+import classNames from 'classnames'
+import type { ReactNode } from 'react'
+
+export type StructureCardStructure = Pick<
+  StructureData,
+  'nom' | 'typologies' | 'adresse' | 'commune' | 'codePostal' | 'siret' | 'rna'
+>
 
 const StructureCard = ({
   structure: { nom, adresse, rna, siret, codePostal, commune, typologies },
@@ -11,17 +17,8 @@ const StructureCard = ({
   className,
 }: {
   className?: string
-  structure: Pick<
-    StructureData,
-    | 'nom'
-    | 'typologies'
-    | 'adresse'
-    | 'commune'
-    | 'codePostal'
-    | 'siret'
-    | 'rna'
-  >
-  topRight?: React.ReactNode
+  structure: StructureCardStructure
+  topRight?: ReactNode
   infoLinkHref?: string
 }) => {
   const tooltipId = `tooltip-${nom.replaceAll('"', '')}-${typologies?.join(',')}-${siret}-${rna}-${codePostal}-${commune}-${adresse}`

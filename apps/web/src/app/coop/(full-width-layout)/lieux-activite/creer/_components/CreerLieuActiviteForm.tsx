@@ -1,38 +1,38 @@
 'use client'
 
-import React from 'react'
-import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import Button from '@codegouvfr/react-dsfr/Button'
-import {
-  fromTimetableOpeningHours,
-  Schedule,
-} from '@gouvfr-anct/timetable-to-osm-opening-hours'
-import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { createToast } from '@app/ui/toast/createToast'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { trpc } from '@app/web/trpc'
-import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
-import { DisplayOnCartography } from '@app/web/components/structure/DisplayOnCartography'
+import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import {
   CreerLieuActiviteData,
   CreerLieuActiviteValidation,
 } from '@app/web/app/lieu-activite/CreerLieuActiviteValidation'
+import { CompleteFields } from '@app/web/components/form/CompleteFields'
+import { DisplayOnCartography } from '@app/web/components/structure/DisplayOnCartography'
 import { DescriptionFields } from '@app/web/components/structure/fields/DescriptionFields'
 import { InformationsGeneralesFields } from '@app/web/components/structure/fields/InformationsGeneralesFields'
 import { InformationsPratiquesFields } from '@app/web/components/structure/fields/InformationsPratiquesFields'
 import { ModalitesAccesAuServiceFields } from '@app/web/components/structure/fields/ModalitesAccesAuServiceFields'
 import { ServicesEtAccompagnementFields } from '@app/web/components/structure/fields/ServicesEtAccompagnementFields'
 import { TypesDePublicsAccueillisFields } from '@app/web/components/structure/fields/TypesDePublicsAccueillisFields'
+import { VisiblePourCartographieNationaleFields } from '@app/web/components/structure/fields/VisiblePourCartographieNationaleFields'
 import {
   appendComment,
   emptyOpeningHours,
 } from '@app/web/components/structure/fields/openingHoursHelpers'
 import { LieuAccueillantPublicTitle } from '@app/web/components/structure/titles/LieuAccueillantPublicTitle'
 import { ServiceInclusionNumeriqueTitle } from '@app/web/components/structure/titles/ServiceInclusionNumeriqueTitle'
-import { VisiblePourCartographieNationaleFields } from '@app/web/components/structure/fields/VisiblePourCartographieNationaleFields'
-import { CompleteFields } from '@app/web/components/form/CompleteFields'
+import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { trpc } from '@app/web/trpc'
+import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
+import Button from '@codegouvfr/react-dsfr/Button'
+import {
+  Schedule,
+  fromTimetableOpeningHours,
+} from '@gouvfr-anct/timetable-to-osm-opening-hours'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
+import React from 'react'
+import { useForm } from 'react-hook-form'
 
 const CreerLieuActiviteForm = ({
   onVisiblePourCartographieNationaleChange,
@@ -124,10 +124,11 @@ const CreerLieuActiviteForm = ({
           <div className="fr-px-4w">
             <CompleteFields
               id="services-et-accompagnement"
+              defaultCanComplete
               title="Services & types d’accompagnement"
               description="Renseignez ici les services et les types d’accompagnements proposés dans ce lieu."
             >
-              <ServicesEtAccompagnementFields form={form} />
+              <ServicesEtAccompagnementFields form={form} isServicesRequired />
             </CompleteFields>
             <hr className="fr-separator-1px" />
             <CompleteFields

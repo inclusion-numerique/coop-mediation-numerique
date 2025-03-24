@@ -1,14 +1,14 @@
-import { redirect } from 'next/navigation'
-import { getAuthenticatedSessionUser } from '@app/web/auth/getSessionUser'
 import { AuthenticationError } from '@app/web/auth/AuthenticationError'
+import { getAuthenticatedSessionUser } from '@app/web/auth/getSessionUser'
 import {
   type ConseillerNumeriqueUser,
   type CoordinateurUser,
+  type MediateurUser,
   isConseillerNumerique,
   isCoordinateur,
   isMediateur,
-  type MediateurUser,
 } from '@app/web/auth/userTypeGuards'
+import { redirect } from 'next/navigation'
 
 /**
  * This gets the session user from request cache and redirects to login
@@ -25,6 +25,8 @@ export const authenticateUser = async (redirectTo = '/connexion') => {
       throw error
     }
 
+    // biome-ignore lint/suspicious/noConsole: XXX DEBUG REMOVE ME
+    console.log('no authenticated user, redirecting to ', redirectTo)
     redirect(redirectTo)
   }
 }
@@ -50,6 +52,15 @@ export const authenticateMediateurOrCoordinateur = async (
 ): Promise<MediateurUser | CoordinateurUser> => {
   const user = await authenticateUser(redirectTo)
   if (isMediateur(user) || isCoordinateur(user)) return user
+
+  // biome-ignore lint/suspicious/noConsole: XXX DEBUG REMOVE ME
+  console.log('no domain role for user, redirecting to ', redirectTo)
+  // biome-ignore lint/suspicious/noConsole: XXX DEBUG REMOVE ME
+  console.log('user', user)
+  // biome-ignore lint/suspicious/noConsole: XXX DEBUG REMOVE ME
+  console.log('mediateur ? ', isMediateur(user))
+  // biome-ignore lint/suspicious/noConsole: XXX DEBUG REMOVE ME
+  console.log('coordinateur ? ', isCoordinateur(user))
   redirect(redirectTo)
 }
 

@@ -1,31 +1,31 @@
-import { notFound } from 'next/navigation'
-import Notice from '@codegouvfr/react-dsfr/Notice'
-import Link from 'next/link'
-import Tag from '@codegouvfr/react-dsfr/Tag'
-import type { Structure } from '@prisma/client'
-import Button from '@codegouvfr/react-dsfr/Button'
-import { Fragment } from 'react'
-import Badge from '@codegouvfr/react-dsfr/Badge'
-import { metadataTitle } from '@app/web/app/metadataTitle'
 import AdministrationBreadcrumbs from '@app/web/app/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@app/web/app/administration/AdministrationTitle'
-import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import AdministrationInfoCard from '@app/web/app/administration/AdministrationInfoCard'
 import AdministrationInlineLabelsValues, {
   type LabelAndValue,
 } from '@app/web/app/administration/AdministrationInlineLabelsValues'
-import { dateAsDay } from '@app/web/utils/dateAsDay'
-import { prismaClient } from '@app/web/prismaClient'
-import { dateAsDayAndTime } from '@app/web/utils/dateAsDayAndTime'
 import AdministrationMailtoLink from '@app/web/app/administration/AdministrationMailtoLink'
-import { getUserDisplayName } from '@app/web/utils/user'
+import AdministrationTitle from '@app/web/app/administration/AdministrationTitle'
+import ResetUserInscriptionButton from '@app/web/app/administration/utilisateurs/[id]/ResetUserInscriptionButton'
 import { getUserLifecycleBadge } from '@app/web/app/administration/utilisateurs/getUserLifecycleBadge'
-import { numberToString } from '@app/web/utils/formatNumber'
-import { findConseillerNumeriqueV1 } from '@app/web/external-apis/conseiller-numerique/searchConseillerNumeriqueV1'
+import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
+import { metadataTitle } from '@app/web/app/metadataTitle'
 import { isUserInscriptionEnCours } from '@app/web/auth/isUserInscriptionEnCours'
 import { isConseillerNumeriqueV1DataWithActiveMiseEnRelation } from '@app/web/external-apis/conseiller-numerique/isConseillerNumeriqueV1WithActiveMiseEnRelation'
+import { findConseillerNumeriqueV1 } from '@app/web/external-apis/conseiller-numerique/searchConseillerNumeriqueV1'
+import { prismaClient } from '@app/web/prismaClient'
+import { dateAsDay } from '@app/web/utils/dateAsDay'
+import { dateAsDayAndTime } from '@app/web/utils/dateAsDayAndTime'
+import { numberToString } from '@app/web/utils/formatNumber'
+import { getUserDisplayName } from '@app/web/utils/user'
 import { countCrasConseillerNumeriqueV1 } from '@app/web/v1/v1CraQueries'
-import ResetUserInscriptionButton from '@app/web/app/administration/utilisateurs/[id]/ResetUserInscriptionButton'
+import Badge from '@codegouvfr/react-dsfr/Badge'
+import Button from '@codegouvfr/react-dsfr/Button'
+import Notice from '@codegouvfr/react-dsfr/Notice'
+import Tag from '@codegouvfr/react-dsfr/Tag'
+import type { Structure } from '@prisma/client'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { Fragment } from 'react'
 
 export const metadata = {
   title: metadataTitle('Utilisateurs - Détails'),
@@ -498,25 +498,28 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
         </AdministrationInfoCard>
       )}
       {emplois.length > 0 ? (
-        <AdministrationInfoCard title="Structures employeuses">
-          <Button
-            title="Modifier la structure employeuse"
-            iconId="fr-icon-edit-line"
-            priority="tertiary"
-            size="small"
-            linkProps={{
-              href: `/administration/utilisateurs/${user.id}/structure-employeuse`,
-            }}
-          >
-            Modifier la structure employeuse
-          </Button>
+        <AdministrationInfoCard
+          title="Structures employeuses"
+          actions={
+            <Button
+              iconId="fr-icon-settings-5-line"
+              priority="tertiary"
+              size="small"
+              linkProps={{
+                href: `/administration/utilisateurs/${user.id}/emplois`,
+              }}
+            >
+              Paramétrer les structures employeuses
+            </Button>
+          }
+        >
           {emplois.map((emploi) => (
             <div key={emploi.id}>
               <p className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
                 {emploi.structure.nom}{' '}
                 {!!emploi.suppression && (
                   <Badge className="fr-ml-2w" severity="warning" small>
-                    Lien d’emploi supprimé
+                    Emploi terminé
                   </Badge>
                 )}
               </p>

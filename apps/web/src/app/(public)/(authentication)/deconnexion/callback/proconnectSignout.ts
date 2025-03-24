@@ -1,6 +1,4 @@
-import { v4 } from 'uuid'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 
 const proconnectSignoutRedirectPath = '/deconnexion/callback'
 
@@ -16,22 +14,23 @@ export type ProconnectSignoutState = {
  */
 export const generateProconnectSignoutUrl = ({
   origin,
-  callbackUrl,
+  callbackUrl: _callbackUrl,
   idTokenHint,
 }: {
   origin: string
   idTokenHint: string
   callbackUrl: string
 }) => {
-  const state = encodeSerializableState({
-    callbackUrl,
-    nonce: v4(),
-  })
+  // ProConnect does not support dynamic state parameter so we remove state from the url
+  // https://github.com/numerique-gouv/proconnect-documentation/blob/main/doc_fs/implementation_technique.md#243-vérification-du-state
+  // const state = encodeSerializableState({
+  //   callbackUrl,
+  //   nonce: v4(),
+  // })
 
   const postLogoutRedirectUri = `${origin}${proconnectSignoutRedirectPath}`
 
   const queryParams = new URLSearchParams({
-    state,
     post_logout_redirect_uri: postLogoutRedirectUri,
     id_token_hint: idTokenHint,
   })
