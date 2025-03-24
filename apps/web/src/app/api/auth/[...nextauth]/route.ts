@@ -4,6 +4,8 @@ import { ProConnectProvider } from '@app/web/auth/ProConnectProvider'
 import { authenticationViaProconnect } from '@app/web/auth/authenticationProvider'
 import { nextAuthAdapter } from '@app/web/auth/nextAuthAdapter'
 import { sendVerificationRequest } from '@app/web/auth/sendVerificationRequest'
+import { SessionUser } from '@app/web/auth/sessionUser'
+import { updateUserData } from '@app/web/auth/updateUserData'
 import { registerLastLogin } from '@app/web/security/registerLastLogin'
 import * as Sentry from '@sentry/nextjs'
 import NextAuth, { type NextAuthOptions } from 'next-auth'
@@ -12,6 +14,17 @@ import type { NextRequest } from 'next/server'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
+
+const isOutdatedUserData =
+  (user: SessionUser) =>
+  (profile: {
+    given_name: string
+    usual_name: string
+    phone_number: string | null
+  }) =>
+    user.firstName !== profile.given_name ||
+    user.lastName !== profile.usual_name ||
+    user.phone !== profile.phone_number
 
 const authOptions: NextAuthOptions = {
   // debug: process.env.NODE_ENV !== 'production',
@@ -33,8 +46,42 @@ const authOptions: NextAuthOptions = {
         }),
       ],
   callbacks: {
-    signIn({ user }) {
-      // Everyone is allowed to sign in
+    signIn(params) {
+      // For email signin verification request, we should do nothing
+      // and continue with the signin flow
+      if (params.email?.verificationRequest) {
+        return true
+      }
+
+      // For an email signin, we don't have a "profile" object
+      if (params.account?.provider === 'email') {
+        registerLastLogin({ userId: params.user.id }).catch((error) => {
+          Sentry.captureException(error)
+        })
+        return true
+      }
+
+      // The rest of this function will execute for ProConnect flow
+
+      const { user, profile } = params as unknown as {
+        user: SessionUser
+        profile: {
+          given_name: string
+          usual_name: string
+          phone_number: string | null
+        }
+      }
+
+      if (isOutdatedUserData(user)(profile)) {
+        updateUserData({
+          userId: user.id,
+          firstName: profile.given_name,
+          lastName: profile.usual_name,
+          phone: profile.phone_number,
+        }).catch((error) => {
+          Sentry.captureException(error)
+        })
+      }
 
       registerLastLogin({ userId: user.id }).catch((error) => {
         Sentry.captureException(error)
