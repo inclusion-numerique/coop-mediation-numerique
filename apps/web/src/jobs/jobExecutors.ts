@@ -1,5 +1,7 @@
 import { executeBackupDatabaseJob } from '@app/web/jobs/backup-database/executeBackupDatabaseJob'
 import { executeFixCoordinationsV1 } from '@app/web/jobs/fix-coordinations-v1/executeFixCoordinationsV1'
+import { executeFixStructures } from '@app/web/jobs/fix-structures/executeFixStructures'
+import { executeImportContactsToBrevo } from '@app/web/jobs/import-contacts-to-brevo/executeImportContactsToBrevo'
 import { executeImportCrasConseillerNumeriqueV1 } from '@app/web/jobs/import-cras-conseiller-numerique-v1/executeImportCrasConseillerNumeriqueV1'
 import { executeIngestLesBasesInRag } from '@app/web/jobs/ingest-les-bases-in-rag/executeIngestLesBasesInRag'
 import type { Job, JobName, JobPayload } from '@app/web/jobs/jobs'
@@ -14,7 +16,6 @@ import {
   downloadCartographieNationaleStructures,
   getStructuresCartographieNationaleFromLocalFile,
 } from '../data/cartographie-nationale/cartographieNationaleStructures'
-import { executeImportContactsToBrevo } from './import-contacts-to-brevo/executeImportContactsToBrevo'
 import { output } from './output'
 import { executeUpdateLieuxActivitesADistance } from './update-lieu-activite-a-distance/executeUpdateLieuxActivitesADistance'
 
@@ -55,6 +56,7 @@ export const jobExecutors: {
   'ingest-les-bases-in-rag': executeIngestLesBasesInRag,
   'set-servcies-to-shared-lieux': executeSetServciesToSharedLieux,
   'update-lieux-activites-a-distance': executeUpdateLieuxActivitesADistance,
+  'fix-structures': executeFixStructures,
 }
 
 export const executeJob = async (job: Job) => {
