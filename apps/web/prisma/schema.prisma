@@ -222,8 +222,9 @@ enum ApiClientScope {
   Statistiques @map("statistiques")
 
   // Cras anonymisés
-  Activites  @map("activites")
-  Structures @map("structures")
+  Activites     @map("activites")
+  Structures    @map("structures")
+  LieuxActivite @map("lieux_activite")
 
   // Utilisateurs (excepté admins et supports), incluant données nominatives et leurs roles
   Utilisateurs @map("utilisateurs")
@@ -264,6 +265,8 @@ model Mediateur {
   creation     DateTime @default(now())
   modification DateTime @default(now())
   // Cannot soft delete as we need to keep userId and conseillerNumerique.mediateurId unique
+
+  isVisible Boolean @default(false) @map("is_visible")
 
   coordinations MediateurCoordonne[]
   enActivite    MediateurEnActivite[]
@@ -961,6 +964,7 @@ enum MutationName {
   InviterMediateursCoordonnes              @map("inviter_mediateurs_coordonnes")
   AccepterInvitationMediateurCoordonne     @map("accepter_invitation_mediateur_coordonne")
   RefuserInvitationMediateurCoordonne      @map("refuser_invitation_mediateur_coordonne")
+  SetMediateurVisibility                   @map("set_mediateur_visibility")
   CreerActivite                            @map("creer_activite")
   ModifierActivite                         @map("modifier_activite")
   SupprimerActivite                        @map("supprimer_activite")
