@@ -1,10 +1,12 @@
 'use client'
 
 import LieuActiviteSideMenu from '@app/web/app/coop/(full-width-layout)/lieux-activite/_components/LieuActiviteSideMenu'
+import { FraisAChargeLabel } from '@app/web/app/structure/fraisACharge'
 import IconInSquare from '@app/web/components/IconInSquare'
 import { DisplayOnCartography } from '@app/web/components/structure/DisplayOnCartography'
 import { LieuAccueillantPublicTitle } from '@app/web/components/structure/titles/LieuAccueillantPublicTitle'
 import { ServiceInclusionNumeriqueTitle } from '@app/web/components/structure/titles/ServiceInclusionNumeriqueTitle'
+import { Itinerance, ModaliteAcces } from '@prisma/client'
 import React, { ReactNode, useState } from 'react'
 import VisiblePourCartographieNationaleFields from './VisiblePourCartographieNationaleFields'
 import DescriptionEditCard from './description/DescriptionEditCard'
@@ -31,9 +33,9 @@ export const LieuActivitePageContent = ({
     telephone?: string | null
     structureCartographieNationaleId: string | null
     visiblePourCartographieNationale: boolean
-    itinerance: string[]
-    fraisACharge: string[]
-    modalitesAcces: string[]
+    itinerance: Itinerance[]
+    fraisACharge: FraisAChargeLabel[]
+    modalitesAcces: ModaliteAcces[]
     courriels: string[]
   }
   contentTop?: ReactNode
@@ -79,7 +81,9 @@ export const LieuActivitePageContent = ({
             <hr className="fr-separator-1px fr-mx-4w" />
             <InformationsPratiquesEditCard
               {...structure}
-              lieuItinerant={structure.itinerance.includes('Itinérant')}
+              lieuItinerant={structure.itinerance.includes(
+                Itinerance.Itinerant,
+              )}
             />
             <hr className="fr-separator-1px" />
             <ServiceInclusionNumeriqueTitle />
@@ -90,10 +94,15 @@ export const LieuActivitePageContent = ({
               id={structure.id}
               fraisACharge={structure.fraisACharge}
               modalitesAcces={{
-                surPlace: structure.modalitesAcces.includes('Se présenter'),
-                parTelephone: structure.modalitesAcces.includes('Téléphoner'),
-                parMail:
-                  structure.modalitesAcces.includes('Contacter par mail'),
+                surPlace: structure.modalitesAcces.includes(
+                  ModaliteAcces.SePresenter,
+                ),
+                parTelephone: structure.modalitesAcces.includes(
+                  ModaliteAcces.Telephoner,
+                ),
+                parMail: structure.modalitesAcces.includes(
+                  ModaliteAcces.ContacterParMail,
+                ),
                 numeroTelephone: structure.telephone,
                 adresseMail: structure.courriels[0] ?? null,
               }}

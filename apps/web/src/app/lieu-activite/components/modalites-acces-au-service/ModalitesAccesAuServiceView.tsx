@@ -1,11 +1,13 @@
+import { fraisAChargeLabels } from '@app/web/app/structure/fraisACharge'
 import Tag from '@codegouvfr/react-dsfr/Tag'
+import type { FraisACharge } from '@prisma/client'
 import Link from 'next/link'
 
 export const ModalitesAccesAuServiceView = ({
   fraisACharge = [],
   modalitesAcces,
 }: {
-  fraisACharge?: string[]
+  fraisACharge?: FraisACharge[]
   modalitesAcces?: {
     surPlace?: boolean | null
     parTelephone?: boolean | null
@@ -73,7 +75,7 @@ export const ModalitesAccesAuServiceView = ({
         <ul className="fr-tags-group">
           {fraisACharge.map((frais) => (
             <li key={frais}>
-              <Tag>{frais}</Tag>
+              <Tag>{fraisAChargeLabels[frais]}</Tag>
             </li>
           ))}
         </ul>

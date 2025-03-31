@@ -2,7 +2,6 @@ import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   Localisation,
-  Service,
   isValidTelephone,
   isValidUrl,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
@@ -51,13 +50,6 @@ const fixLocation = (localisation: {
     : Localisation({ latitude, longitude })
 }
 
-const servicesToFix: Map<string, Service> = new Map([
-  [
-    'Réaliser des démarches administratives avec un accompagnement',
-    Service.AideAuxDemarchesAdministratives,
-  ],
-])
-
 const isInvalidLocation = ({
   latitude,
   longitude,
@@ -73,9 +65,6 @@ const isInvalidFicheAccesLibre = ({
 }: {
   ficheAccesLibre: string | null
 }) => ficheAccesLibre?.startsWith('https://acceslibre.beta.gouv.fr/static')
-
-const isInvalidServices = ({ services }: { services: string[] }) =>
-  services.some((service) => servicesToFix.has(service))
 
 const isInvalidPriseRDV = ({ priseRdv }: { priseRdv: string | null }) =>
   priseRdv && !isValidUrl(priseRdv)
@@ -141,23 +130,6 @@ export const executeFixStructures = async (_job: FixStructuresJob) => {
       ficheAccesLibre: null,
     },
   })
-
-  const invalidServices = structures.filter(isInvalidServices)
-
-  output.log(`Found ${invalidServices.length} structures with invalid services`)
-
-  await Promise.all(
-    invalidServices.map(({ id, services }) =>
-      prismaClient.structure.update({
-        where: { id },
-        data: {
-          services: services.map(
-            (service: string) => servicesToFix.get(service) ?? service,
-          ),
-        },
-      }),
-    ),
-  )
 
   const invalidPriseRDV = structures.filter(isInvalidPriseRDV)
 

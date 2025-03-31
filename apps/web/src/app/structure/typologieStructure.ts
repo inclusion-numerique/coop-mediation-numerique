@@ -1,6 +1,7 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
+import type { Typologie as PrismaTypologie } from '@prisma/client'
 
-export const typologieStructureLabels: Record<string, string> = {
+export const typologieStructureLabels: Record<PrismaTypologie, string> = {
   ACI: 'Structures porteuses d’ateliers et chantiers d’insertion (ACI)',
   ACIPHC: 'SIAE — Atelier chantier d’insertion premières heures en chantier',
   AFPA: 'Agence nationale pour la formation professionnelle des adultes (AFPA)',
@@ -58,6 +59,7 @@ export const typologieStructureLabels: Record<string, string> = {
   ETTI: 'Entreprises de travail temporaire d’insertion (ETTI)',
   EVS: 'Espace de vie sociale (EVS)',
   FABLAB: 'Fablab',
+  FABRIQUE: 'Fabrique',
   FAIS: 'Fédérations d’acteurs de l’insertion et de la solidarité',
   FT: 'France travail',
   GEIQ: 'Groupements d’employeurs pour l’insertion et la qualification (GEIQ)',
@@ -90,6 +92,7 @@ export const typologieStructureLabels: Record<string, string> = {
   PREF: 'Préfecture, Sous-Préfecture',
   PREVENTION: 'Service ou club de prévention',
   REG: 'Région',
+  RELAIS_LECTURE: 'Relais lecture',
   RESSOURCERIE: 'Ressourcerie',
   RFS: 'Réseau France Services',
   RS_FJT: 'Résidence sociale / FJT - Foyer de Jeunes Travailleurs',
@@ -99,13 +102,11 @@ export const typologieStructureLabels: Record<string, string> = {
   UDAF: 'Union Départementale d’Aide aux Familles (UDAF)',
 }
 
-export type TypologieStructure = keyof typeof typologieStructureLabels
+export type TypologieLabel = keyof typeof typologieStructureLabels
 
-export const typologieStructureValue = Object.fromEntries(
-  Object.keys(typologieStructureLabels).map((key) => [key, key]),
-) as {
-  [key in TypologieStructure]: TypologieStructure
-}
+export const typologieStructureValue = Object.keys(
+  typologieStructureLabels,
+) as [TypologieLabel, ...TypologieLabel[]]
 
 export const typologieStructureOptions = labelsToOptions(
   typologieStructureLabels,

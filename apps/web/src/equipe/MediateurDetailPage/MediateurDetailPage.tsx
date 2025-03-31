@@ -5,6 +5,7 @@ import { ReferentStructure } from '@app/web/components/structure/ReferentStructu
 import { StructureEmployeuse } from '@app/web/components/structure/StructureEmployeuse'
 import { AlerteFinContrat } from '@app/web/conseiller-numerique/getContractInfo'
 import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import type { Typologie } from '@prisma/client'
 import classNames from 'classnames'
 import Link from 'next/link'
 import React from 'react'
@@ -39,7 +40,7 @@ export const MediateurDetailPage = ({
       complementAdresse: string | null
       siret: string | null
       rna: string | null
-      typologies: string[]
+      typologies: Typologie[]
       nomReferent: string | null
       courrielReferent: string | null
       telephoneReferent: string | null
@@ -61,7 +62,7 @@ export const MediateurDetailPage = ({
       complementAdresse?: string | null
       commune: string
       codePostal: string
-      typologies: string[]
+      typologies: Typologie[]
       siret?: string | null
       rna?: string | null
       _count: { mediateursEnActivite: number }

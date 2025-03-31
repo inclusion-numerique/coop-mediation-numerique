@@ -1,14 +1,11 @@
 import { CreerStructureValidation } from '@app/web/app/structure/CreerStructureValidation'
-import {
-  itineranceStructureValues,
-  modalitesAccesStructureValues,
-} from '@app/web/app/structure/optionsStructure'
 import { prismaClient } from '@app/web/prismaClient'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { searchStructure } from '@app/web/structure/searchStructure'
 import { searchStructureCartographieNationale } from '@app/web/structure/searchStructureCartographieNationale'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import { createStopwatch } from '@app/web/utils/stopwatch'
+import { Itinerance, ModaliteAcces } from '@prisma/client'
 import { v4 } from 'uuid'
 import { z } from 'zod'
 
@@ -98,19 +95,17 @@ export const structuresRouter = router({
           itinerance:
             typeof lieuItinerant === 'boolean'
               ? lieuItinerant
-                ? [itineranceStructureValues.Itinérant]
-                : [itineranceStructureValues.Fixe]
+                ? [Itinerance.Itinerant]
+                : [Itinerance.Fixe]
               : undefined,
           modalitesAcces: modalitesAcces
             ? [
-                modalitesAcces.surPlace
-                  ? modalitesAccesStructureValues['Se présenter']
-                  : undefined,
+                modalitesAcces.surPlace ? ModaliteAcces.SePresenter : undefined,
                 modalitesAcces.parTelephone
-                  ? modalitesAccesStructureValues.Téléphoner
+                  ? ModaliteAcces.Telephoner
                   : undefined,
                 modalitesAcces.parMail
-                  ? modalitesAccesStructureValues['Contacter par mail']
+                  ? ModaliteAcces.ContacterParMail
                   : undefined,
               ].filter(onlyDefinedAndNotNull)
             : undefined,

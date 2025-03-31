@@ -1,18 +1,17 @@
 import { output } from '@app/cli/output'
-import { servicesStructureLabels } from '@app/web/app/structure/optionsStructure'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Service } from '@prisma/client'
 import { SetServciesToSharedLieuxJob } from './setServciesToSharedLieuxJob'
 
 const prisma = new PrismaClient()
 
 const DEFAULT_SERVICES = [
-  servicesStructureLabels['Aide aux démarches administratives'],
-  servicesStructureLabels['Maîtrise des outils numériques du quotidien'],
-  servicesStructureLabels['Insertion professionnelle via le numérique'],
-  servicesStructureLabels['Utilisation sécurisée du numérique'],
-  servicesStructureLabels['Parentalité et éducation avec le numérique'],
-  servicesStructureLabels['Loisirs et créations numériques'],
-  servicesStructureLabels['Comprehension du monde numérique'],
+  Service.AideAuxDemarchesAdministratives,
+  Service.MaitriseDesOutilsNumeriquesDuQuotidien,
+  Service.InsertionProfessionnelleViaLeNumerique,
+  Service.UtilisationSecuriseeDuNumerique,
+  Service.ParentaliteEtEducationAvecLeNumerique,
+  Service.LoisirsEtCreationsNumeriques,
+  Service.ComprehensionDuMondeNumerique,
 ]
 
 export const executeSetServciesToSharedLieux = async (

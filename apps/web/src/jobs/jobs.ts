@@ -5,6 +5,7 @@ import { ImportContactsToBrevoValidation } from '@app/web/jobs/import-contacts-t
 import { ImportCrasConseillerNumeriqueV1JobValidation } from '@app/web/jobs/import-cras-conseiller-numerique-v1/ImportCrasConseillerNumeriqueV1Job'
 import { IngestLesBasesInRagValidation } from '@app/web/jobs/ingest-les-bases-in-rag/ingestLesBasesInRagJob'
 import { SetServciesToSharedLieuxValidation } from '@app/web/jobs/set-servcies-to-shared-lieux/setServciesToSharedLieuxJob'
+import { UpdateConumInfoValidation } from '@app/web/jobs/update-conum-info/UpdateConumInfoJob'
 import { UpdateConumStructureReferentJobValidation } from '@app/web/jobs/update-conum-structure-referent/UpdateConumStructureReferentJob'
 import { UpdateLieuxActivitesAdistanceValidation } from '@app/web/jobs/update-lieu-activite-a-distance/updateLieuxActivitesAdistanceJob'
 import { UpdateStructuresCartographieNationaleJobValidation } from '@app/web/jobs/update-structures-cartographie-nationale/updateStructuresCartographieNationaleJob'
@@ -37,6 +38,7 @@ export const JobValidation = z.discriminatedUnion('name', [
   SetServciesToSharedLieuxValidation,
   UpdateLieuxActivitesAdistanceValidation,
   FixStructuresJobValidation,
+  UpdateConumInfoValidation,
 ])
 
 export type Job = z.infer<typeof JobValidation>

@@ -1,8 +1,12 @@
 import z from 'zod'
+import { modaliteAccompagnementValues } from './modaliteAccompagnement'
+import { serviceValues } from './service'
 
 export const ServicesEtAccompagnementShape = {
-  services: z.array(z.string()).nullish(),
-  modalitesAccompagnement: z.array(z.string()).nullish(),
+  services: z.array(z.enum(serviceValues)).nullish(),
+  modalitesAccompagnement: z
+    .array(z.enum(modaliteAccompagnementValues))
+    .nullish(),
 }
 
 export const ServicesEtAccompagnementValidation = z.object({
