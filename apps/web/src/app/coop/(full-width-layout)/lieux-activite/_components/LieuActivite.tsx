@@ -1,6 +1,7 @@
 import { Typologies } from '@app/web/components/structure/Typologies'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import Button from '@codegouvfr/react-dsfr/Button'
+import type { Typologie } from '@prisma/client'
 import Image from 'next/image'
 import Link from 'next/link'
 import DeleteMediateurActivite from './DeleteMediateurActivite'
@@ -27,7 +28,7 @@ export const LieuActivite = ({
   complementAdresse?: string | null
   codePostal: string
   commune: string
-  typologies?: string[]
+  typologies?: Typologie[]
   siret?: string | null
   rna?: string | null
   visiblePourCartographieNationale?: boolean

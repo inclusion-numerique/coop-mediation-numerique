@@ -10,6 +10,7 @@ import { redirect } from 'next/navigation'
 import React from 'react'
 import { AucunLieu } from './_components/AucunLieu'
 import { LieuActivite } from './_components/LieuActivite'
+import VisibiliteMediateur from './_components/VisibiliteMediateur'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes lieux d’activités'),
@@ -49,6 +50,9 @@ const LieuActiviteListPage = async () => {
               Ajouter un lieu
             </Button>
           </span>
+          {user.mediateur.conseillerNumerique && (
+            <VisibiliteMediateur isVisible={user.mediateur.isVisible} />
+          )}
           <div className="fr-flex fr-direction-column fr-flex-gap-4v">
             {lieuxActivites.length === 0 ? (
               <AucunLieu />

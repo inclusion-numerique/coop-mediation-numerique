@@ -5,6 +5,7 @@ import {
   DescriptionData,
   descriptionMaxLength,
 } from '@app/web/app/structure/DescriptionValidation'
+import { formationLabelOptions } from '@app/web/app/structure/formationLabel'
 import { typologieStructureOptions } from '@app/web/app/structure/typologieStructure'
 import React from 'react'
 import { UseFormReturn } from 'react-hook-form'
@@ -49,6 +50,14 @@ export const DescriptionFields = <T extends Omit<DescriptionData, 'id'>>({
         label="Description complète du lieu"
         control={control}
         disabled={formState.isSubmitting}
+      />
+      <MultipleSelectFormField
+        control={control}
+        disabled={formState.isSubmitting}
+        path="formationsLabels"
+        label="Formations et labels"
+        hint="Indiquez si le lieu a obtenu un(e) ou plusieurs formations et labels."
+        options={optionsWithEmptyValue(formationLabelOptions)}
       />
     </>
   )

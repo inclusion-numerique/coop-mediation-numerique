@@ -1,3 +1,4 @@
+import { Typologie } from '@prisma/client'
 import type { Meta, StoryObj } from '@storybook/react'
 import { v4 } from 'uuid'
 import { LieuActivite } from './LieuActivite'
@@ -21,7 +22,12 @@ export const Full: Story = {
     complementAdresse: 'Bâtiment 5',
     codePostal: '93210',
     commune: 'Saint-Denis',
-    typologies: ['Association', 'RFS', 'BIB', 'CAARUD'],
+    typologies: [
+      Typologie.ASSO,
+      Typologie.RFS,
+      Typologie.BIB,
+      Typologie.CAARUD,
+    ],
     siret: '77560540501013',
     rna: '802477',
     visiblePourCartographieNationale: true,

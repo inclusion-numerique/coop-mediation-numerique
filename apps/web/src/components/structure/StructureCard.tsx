@@ -2,6 +2,7 @@ import type { StructureData } from '@app/web/app/structure/StructureValidation'
 import { typologieStructureLabels } from '@app/web/app/structure/typologieStructure'
 import { addresseFromParts } from '@app/web/utils/addresseFromParts'
 import Button from '@codegouvfr/react-dsfr/Button'
+import type { Typologie } from '@prisma/client'
 import classNames from 'classnames'
 import type { ReactNode } from 'react'
 
@@ -56,11 +57,11 @@ const StructureCard = ({
             role="tooltip"
             aria-hidden="true"
           >
-            {typologies
+            {(typologies as Typologie[])
               .map((typologie) =>
                 typologie in typologieStructureLabels
-                  ? typologieStructureLabels[typologie]
-                  : typologie,
+                  ? typologieStructureLabels[typologie].toString()
+                  : typologie.toString(),
               )
               .join(', ')}
           </span>

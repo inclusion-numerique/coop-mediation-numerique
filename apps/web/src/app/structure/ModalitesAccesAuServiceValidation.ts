@@ -1,4 +1,5 @@
 import z from 'zod'
+import { fraisAChargeValues } from './fraisACharge'
 
 export const ModalitesAccesAuServiceShape = {
   modalitesAcces: z
@@ -29,7 +30,7 @@ export const ModalitesAccesAuServiceShape = {
         })
       }
     }),
-  fraisACharge: z.array(z.string()).nullish(),
+  fraisACharge: z.array(z.enum(fraisAChargeValues)).nullish(),
 }
 
 export const ModalitesAccesAuServiceValidation = z.object({

@@ -1,8 +1,16 @@
+import type { FraisAChargeLabel } from '@app/web/app/structure/fraisACharge'
 import { validateValidRnaDigits } from '@app/web/rna/rnaValidation'
 import { validateValidSiretDigits } from '@app/web/siret/siretValidation'
-import {
-  type Prisma,
-  type StructureCartographieNationale,
+import type {
+  Itinerance,
+  ModaliteAcces,
+  ModaliteAccompagnement,
+  PriseEnChargeSpecifique,
+  Prisma,
+  PublicSpecifiquementAdresse,
+  Service,
+  StructureCartographieNationale,
+  Typologie,
 } from '@prisma/client'
 import { v4 } from 'uuid'
 
@@ -75,18 +83,24 @@ export const toStructureFromCartoStructure = ({
     longitude,
     latitude,
     ficheAccesLibre,
-    services: services?.split('|'),
+    services: services?.split('|') as Service[] | undefined,
     horaires,
-    typologies: typologie?.split(';'),
+    typologies: typologie?.split('|') as Typologie[] | undefined,
     presentationResume,
     presentationDetail,
     courriels: courriels?.split('|'),
     telephone,
     siteWeb,
-    modalitesAccompagnement: modalitesAccompagnement?.split('|'),
-    modalitesAcces: modalitesAcces?.split('|'),
-    fraisACharge: fraisACharge?.split('|'),
-    itinerance: itinerance?.split('|'),
-    priseEnChargeSpecifique: priseEnChargeSpecifique?.split('|'),
-    publicsSpecifiquementAdresses: publicsSpecifiquementAdresses?.split('|'),
+    modalitesAccompagnement: modalitesAccompagnement?.split('|') as
+      | ModaliteAccompagnement[]
+      | undefined,
+    modalitesAcces: modalitesAcces?.split('|') as ModaliteAcces[] | undefined,
+    fraisACharge: fraisACharge?.split('|') as FraisAChargeLabel[] | undefined,
+    itinerance: itinerance?.split('|') as Itinerance[] | undefined,
+    priseEnChargeSpecifique: priseEnChargeSpecifique?.split('|') as
+      | PriseEnChargeSpecifique[]
+      | undefined,
+    publicsSpecifiquementAdresses: publicsSpecifiquementAdresses?.split('|') as
+      | PublicSpecifiquementAdresse[]
+      | undefined,
   }) satisfies Prisma.StructureCreateManyInput
