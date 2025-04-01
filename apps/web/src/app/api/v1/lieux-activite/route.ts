@@ -232,7 +232,7 @@ export const GET = createApiV1Route
       (LieuMediationNumerique & { aidants?: Aidant[] })[]
     >`
     SELECT structures.id,
-      COALESCE(structures.siret, structures.rna, '00000000000000') AS pivot,
+      COALESCE(NULLIF(structures.siret, ''), NULLIF(structures.rna, ''), '00000000000000') AS pivot,
       structures.nom,
       jsonb_strip_nulls(
         jsonb_build_object(
@@ -260,8 +260,8 @@ export const GET = createApiV1Route
       NULLIF(structures.horaires, '') AS horaires,
       jsonb_strip_nulls(
         jsonb_build_object(
-          'resume', structures.presentation_resume,
-          'detail', structures.presentation_detail
+          'resume', NULLIF(structures.presentation_resume, ''),
+          'detail', NULLIF(structures.presentation_detail, '')
         )
       ) AS presentation,
       'Coop numérique' AS source,
