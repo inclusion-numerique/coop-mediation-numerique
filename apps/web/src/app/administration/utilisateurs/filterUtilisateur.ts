@@ -27,7 +27,7 @@ const roleFilter: Record<
     mediateur?: { isNot: null } | null
   }
 > = {
-  mediateur: { role: 'User', coordinateur: null, mediateur: { isNot: null } },
+  mediateur: { role: 'User', mediateur: { isNot: null } },
   coordinateur: { role: 'User', coordinateur: { isNot: null } },
   administrateur: { role: 'Admin' },
 }

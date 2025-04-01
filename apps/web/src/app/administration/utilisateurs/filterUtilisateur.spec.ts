@@ -63,7 +63,6 @@ describe('filter utilisateur', () => {
 
       expect(filters).toEqual({
         role: 'User',
-        coordinateur: null,
         mediateur: { isNot: null },
       })
     })
@@ -99,7 +98,6 @@ describe('filter utilisateur', () => {
           { role: 'Admin' },
           {
             role: 'User',
-            coordinateur: null,
             mediateur: { isNot: null },
           },
         ],
