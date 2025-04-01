@@ -5,6 +5,7 @@ import {
   ServicesEtAccompagnementData,
   ServicesEtAccompagnementValidation,
 } from '@app/web/app/structure/ServicesEtAccompagnementValidation'
+import type { ServiceLabel } from '@app/web/app/structure/service'
 import EditCard from '@app/web/components/EditCard'
 import { ServicesEtAccompagnementFields } from '@app/web/components/structure/fields/ServicesEtAccompagnementFields'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
@@ -13,6 +14,7 @@ import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodV
 import { isEmpty } from '@app/web/utils/isEmpty'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { zodResolver } from '@hookform/resolvers/zod'
+import type { ModaliteAccompagnement } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 import { useForm } from 'react-hook-form'
@@ -25,8 +27,8 @@ const ServicesEtAccompagnementEditCard = ({
   modalitesAccompagnement,
 }: {
   id: string
-  services?: string[]
-  modalitesAccompagnement?: string[]
+  services?: ServiceLabel[]
+  modalitesAccompagnement?: ModaliteAccompagnement[]
 }) => {
   const mutation =
     trpc.lieuActivite.updateServicesEtAccompagnement.useMutation()

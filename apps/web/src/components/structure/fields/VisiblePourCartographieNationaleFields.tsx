@@ -31,7 +31,7 @@ export const VisiblePourCartographieNationaleFields = ({
           className="fr-m-0"
           label={
             <span className="fr-text--medium">
-              Rendre mon lieu d’activité visible sur la cartographie{' '}
+              Rendre mon lieu d’activité visible sur la cartographie
             </span>
           }
           labelPosition="left"

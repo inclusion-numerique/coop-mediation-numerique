@@ -222,8 +222,9 @@ enum ApiClientScope {
   Statistiques @map("statistiques")
 
   // Cras anonymisés
-  Activites  @map("activites")
-  Structures @map("structures")
+  Activites     @map("activites")
+  Structures    @map("structures")
+  LieuxActivite @map("lieux_activite")
 
   // Utilisateurs (excepté admins et supports), incluant données nominatives et leurs roles
   Utilisateurs @map("utilisateurs")
@@ -264,6 +265,8 @@ model Mediateur {
   creation     DateTime @default(now())
   modification DateTime @default(now())
   // Cannot soft delete as we need to keep userId and conseillerNumerique.mediateurId unique
+
+  isVisible Boolean @default(false) @map("is_visible")
 
   coordinations MediateurCoordonne[]
   enActivite    MediateurEnActivite[]
@@ -416,6 +419,204 @@ model MediateurCoordonne {
   @@map("mediateurs_coordonnes")
 }
 
+enum Typologie {
+  ACI            @map("ACI")
+  ACIPHC         @map("ACIPHC")
+  AFPA           @map("AFPA")
+  AI             @map("AI")
+  ASE            @map("ASE")
+  ASSO           @map("ASSO")
+  ASSO_CHOMEUR   @map("ASSO_CHOMEUR")
+  Autre          @map("Autre")
+  AVIP           @map("AVIP")
+  BIB            @map("BIB")
+  CAARUD         @map("CAARUD")
+  CADA           @map("CADA")
+  CAF            @map("CAF")
+  CAP_EMPLOI     @map("CAP_EMPLOI")
+  CAVA           @map("CAVA")
+  CC             @map("CC")
+  CCAS           @map("CCAS")
+  CCONS          @map("CCONS")
+  CD             @map("CD")
+  CDAS           @map("CDAS")
+  CFP            @map("CFP")
+  CHRS           @map("CHRS")
+  CHU            @map("CHU")
+  CIAS           @map("CIAS")
+  CIDFF          @map("CIDFF")
+  CITMET         @map("CITMET")
+  CMP            @map("CMP")
+  CMS            @map("CMS")
+  CPAM           @map("CPAM")
+  CPH            @map("CPH")
+  CS             @map("CS")
+  CSAPA          @map("CSAPA")
+  CSC            @map("CSC")
+  DEETS          @map("DEETS")
+  DEPT           @map("DEPT")
+  DIPLP          @map("DIPLP")
+  E2C            @map("E2C")
+  EA             @map("EA")
+  EATT           @map("EATT")
+  EI             @map("EI")
+  EITI           @map("EITI")
+  ENM            @map("ENM")
+  EPCI           @map("EPCI")
+  EPI            @map("EPI")
+  EPIDE          @map("EPIDE")
+  EPN            @map("EPN")
+  ES             @map("ES")
+  ESAT           @map("ESAT")
+  ESS            @map("ESS")
+  ETTI           @map("ETTI")
+  EVS            @map("EVS")
+  FABLAB         @map("FABLAB")
+  FABRIQUE       @map("FABRIQUE")
+  FAIS           @map("FAIS")
+  FT             @map("FT")
+  GEIQ           @map("GEIQ")
+  HUDA           @map("HUDA")
+  LA_POSTE       @map("LA_POSTE")
+  MDE            @map("MDE")
+  MDH            @map("MDH")
+  MDEF           @map("MDEF")
+  MDPH           @map("MDPH")
+  MDS            @map("MDS")
+  MJC            @map("MJC")
+  ML             @map("ML")
+  MQ             @map("MQ")
+  MSA            @map("MSA")
+  MSAP           @map("MSAP")
+  MUNI           @map("MUNI")
+  OACAS          @map("OACAS")
+  ODC            @map("ODC")
+  OF             @map("OF")
+  OIL            @map("OIL")
+  OPCS           @map("OPCS")
+  PAD            @map("PAD")
+  PENSION        @map("PENSION")
+  PI             @map("PI")
+  PIJ_BIJ        @map("PIJ_BIJ")
+  PIMMS          @map("PIMMS")
+  PJJ            @map("PJJ")
+  PLIE           @map("PLIE")
+  PREF           @map("PREF")
+  PREVENTION     @map("PREVENTION")
+  REG            @map("REG")
+  RELAIS_LECTURE @map("RELAIS_LECTURE")
+  RESSOURCERIE   @map("RESSOURCERIE")
+  RFS            @map("RFS")
+  RS_FJT         @map("RS_FJT")
+  SCP            @map("SCP")
+  SPIP           @map("SPIP")
+  TIERS_LIEUX    @map("TIERS_LIEUX")
+  UDAF           @map("UDAF")
+
+  @@map("typologie")
+}
+
+enum Service {
+  AideAuxDemarchesAdministratives                 @map("Aide aux démarches administratives")
+  MaitriseDesOutilsNumeriquesDuQuotidien          @map("Maîtrise des outils numériques du quotidien")
+  InsertionProfessionnelleViaLeNumerique          @map("Insertion professionnelle via le numérique")
+  UtilisationSecuriseeDuNumerique                 @map("Utilisation sécurisée du numérique")
+  ParentaliteEtEducationAvecLeNumerique           @map("Parentalité et éducation avec le numérique")
+  LoisirsEtCreationsNumeriques                    @map("Loisirs et créations numériques")
+  ComprehensionDuMondeNumerique                   @map("Compréhension du monde numérique")
+  AccesInternetEtMaterielInformatique             @map("Accès internet et matériel informatique")
+  AcquisitionDeMaterielInformatiqueAPrixSolidaire @map("Acquisition de matériel informatique à prix solidaire")
+
+  @@map("service")
+}
+
+enum PublicSpecifiquementAdresse {
+  Jeunes          @map("Jeunes")
+  Etudiants       @map("Étudiants")
+  FamillesEnfants @map("Familles et/ou enfants")
+  Seniors         @map("Seniors")
+  Femmes          @map("Femmes")
+
+  @@map("public_specifiquement_adresse")
+}
+
+enum PriseEnChargeSpecifique {
+  Surdite                  @map("Surdité")
+  HandicapsMoteurs         @map("Handicaps moteurs")
+  HandicapsMentaux         @map("Handicaps mentaux")
+  Illettrisme              @map("Illettrisme")
+  LanguesEtrangeresAnglais @map("Langues étrangères (anglais)")
+  LanguesEtrangeresAutre   @map("Langues étrangères (autres)")
+  DeficienceVisuelle       @map("Déficience visuelle")
+
+  @@map("prise_en_charge_specifique")
+}
+
+enum FraisACharge {
+  Gratuit              @map("Gratuit")
+  GratuitSousCondition @map("Gratuit sous condition")
+  Payant               @map("Payant")
+
+  @@map("frais_a_charge")
+}
+
+enum DispositifProgrammeNational {
+  AidantsConnect                    @map("Aidants Connect")
+  BibliothequesNumeriqueDeReference @map("Bibliothèques numérique de référence")
+  CertificationPix                  @map("Certification PIX")
+  ConseillersNumeriques             @map("Conseillers numériques")
+  EmmausConnect                     @map("Emmaüs Connect")
+  FranceServices                    @map("France Services")
+  GrandeEcoleDuNumerique            @map("Grande école du numérique")
+  LaCroixRouge                      @map("La Croix Rouge")
+  PointAccesNumeriqueCaf            @map("Point d'accès numérique CAF")
+  PromeneursDuNet                   @map("Promeneurs du net")
+  RelaisNumeriqueEmmausConnect      @map("Relais numérique (Emmaüs Connect)")
+
+  @@map("dispositif_programme_national")
+}
+
+enum FormationLabel {
+  FormeAMonEspaceSante                 @map("Formé à « Mon Espace Santé »")
+  FormeADuplex                         @map("Formé à « DUPLEX » (illettrisme)")
+  ArniaMednum                          @map("Arnia/MedNum BFC (Bourgogne-Franche-Comté)")
+  CollectifRessourcesEtActeursReemploi @map("Collectif ressources et acteurs réemploi (Normandie)")
+  FabriquesDeTerritoire                @map("Fabriques de Territoire")
+  LesEclaireurs                        @map("Les Éclaireurs du numérique (Drôme)")
+  MesPapiers                           @map("Mes Papiers (Métropole de Lyon)")
+  Ordi3                                @map("ORDI 3.0")
+  SudLabs                              @map("SUD LABS (PACA)")
+
+  @@map("formation_label")
+}
+
+enum Itinerance {
+  Itinerant @map("Itinérant")
+  Fixe      @map("Fixe")
+
+  @@map("itinerance")
+}
+
+enum ModaliteAcces {
+  SePresenter         @map("Se présenter")
+  Telephoner          @map("Téléphoner")
+  ContacterParMail    @map("Contacter par mail")
+  PrendreRdvEnLigne   @map("Prendre un RDV en ligne")
+  PasDePublic         @map("Ce lieu n’accueille pas de public")
+  FicheDePrescription @map("Envoyer un mail avec une fiche de prescription")
+
+  @@map("modalite_acces")
+}
+
+enum ModaliteAccompagnement {
+  EnAutonomie              @map("En autonomie")
+  AccompagnementIndividuel @map("Accompagnement individuel")
+  DansUnAtelierCollectif   @map("Dans un atelier collectif")
+  ADistance                @map("À distance")
+
+  @@map("modalite_accompagnement")
+}
+
 // Lieu physique. Source de vérité interne. Peut être mise à jour depuis StructureCartographieNationale.
 // Ce model recense les structures utilisées dans la coop, ce n'est pas une source de vérité exaustive des structures
 model Structure {
@@ -455,27 +656,27 @@ model Structure {
   // CF optionsStructures.ts pour les valeurs possibles
   // CF LieuStandardMediationNumerique.ts pour la documentation complète
 
-  typologies                    String[]   @default([])
-  presentationResume            String?    @map("presentation_resume")
-  presentationDetail            String?    @map("presentation_detail")
-  siteWeb                       String?    @map("site_web")
+  typologies                    Typologie[]                   @default([])
+  presentationResume            String?                       @map("presentation_resume")
+  presentationDetail            String?                       @map("presentation_detail")
+  siteWeb                       String?                       @map("site_web")
   telephone                     String?
-  courriels                     String[]   @default([])
-  ficheAccesLibre               String?    @map("fiche_acces_libre") // url vers fiche accès libre
+  courriels                     String[]                      @default([])
+  ficheAccesLibre               String?                       @map("fiche_acces_libre") // url vers fiche accès libre
   horaires                      String?
-  priseRdv                      String?    @map("prise_rdv") // url vers le site de prise de rendez-vous
-  structureParente              String?    @map("structure_parente")
-  services                      String[]   @default([])
-  publicsSpecifiquementAdresses String[]   @default([]) @map("publics_specifiquement_adresses")
-  priseEnChargeSpecifique       String[]   @default([]) @map("prise_en_charge_specifique")
-  fraisACharge                  String[]   @default([]) @map("frais_a_charge")
-  dispositifProgrammesNationaux String[]   @default([]) @map("dispositif_programmes_nationaux")
-  formationsLabels              String[]   @default([]) @map("formations_labels")
-  autresFormationsLabels        String[]   @default([]) @map("autres_formations_labels")
-  itinerance                    String[]   @default([])
-  modalitesAcces                String[]   @default([]) @map("modalites_acces")
-  modalitesAccompagnement       String[]   @default([]) @map("modalites_accompagnement")
-  activites                     Activite[] @relation(name: "activite_structure")
+  priseRdv                      String?                       @map("prise_rdv") // url vers le site de prise de rendez-vous
+  structureParente              String?                       @map("structure_parente")
+  services                      Service[]                     @default([])
+  publicsSpecifiquementAdresses PublicSpecifiquementAdresse[] @default([]) @map("publics_specifiquement_adresses")
+  priseEnChargeSpecifique       PriseEnChargeSpecifique[]     @default([]) @map("prise_en_charge_specifique")
+  fraisACharge                  FraisACharge[]                @default([]) @map("frais_a_charge")
+  dispositifProgrammesNationaux DispositifProgrammeNational[] @default([]) @map("dispositif_programmes_nationaux")
+  formationsLabels              FormationLabel[]              @default([]) @map("formations_labels")
+  autresFormationsLabels        String[]                      @default([]) @map("autres_formations_labels")
+  itinerance                    Itinerance[]                  @default([])
+  modalitesAcces                ModaliteAcces[]               @default([]) @map("modalites_acces")
+  modalitesAccompagnement       ModaliteAccompagnement[]      @default([]) @map("modalites_accompagnement")
+  activites                     Activite[]                    @relation(name: "activite_structure")
 
   nomReferent       String? @map("nom_referent")
   courrielReferent  String? @map("courriel_referent")
@@ -851,23 +1052,24 @@ enum Materiel {
 
 // Thematiques d’inclusion numérique
 enum Thematique {
-  DiagnosticNumerique      @map("diagnostic_numerique")
-  PrendreEnMainDuMateriel  @map("prendre_en_main_du_materiel")
-  MaintenanceDeMateriel    @map("maintenance_de_materiel")
-  NavigationSurInternet    @map("navigation_sur_internet")
-  Email                    @map("email")
-  Bureautique              @map("bureautique")
-  ReseauxSociaux           @map("reseaux_sociaux")
-  Sante                    @map("sante")
-  BanqueEtAchatsEnLigne    @map("banque_et_achats_en_ligne")
-  Entrepreneuriat          @map("entrepreneuriat")
-  InsertionProfessionnelle @map("insertion_professionnelle")
-  SecuriteNumerique        @map("securite_numerique")
-  Parentalite              @map("parentalite")
-  ScolariteEtNumerique     @map("scolarite_et_numerique")
-  CreerAvecLeNumerique     @map("creer_avec_le_numerique")
-  CultureNumerique         @map("culture_numerique")
-  IntelligenceArtificielle @map("intelligence_artificielle")
+  DiagnosticNumerique       @map("diagnostic_numerique")
+  PrendreEnMainDuMateriel   @map("prendre_en_main_du_materiel")
+  MaintenanceDeMateriel     @map("maintenance_de_materiel")
+  GereSesContenusNumeriques @map("gere_ses_contenus_numeriques")
+  NavigationSurInternet     @map("navigation_sur_internet")
+  Email                     @map("email")
+  Bureautique               @map("bureautique")
+  ReseauxSociaux            @map("reseaux_sociaux")
+  Sante                     @map("sante")
+  BanqueEtAchatsEnLigne     @map("banque_et_achats_en_ligne")
+  Entrepreneuriat           @map("entrepreneuriat")
+  InsertionProfessionnelle  @map("insertion_professionnelle")
+  SecuriteNumerique         @map("securite_numerique")
+  Parentalite               @map("parentalite")
+  ScolariteEtNumerique      @map("scolarite_et_numerique")
+  CreerAvecLeNumerique      @map("creer_avec_le_numerique")
+  CultureNumerique          @map("culture_numerique")
+  IntelligenceArtificielle  @map("intelligence_artificielle")
 
   @@map("thematique")
 }
@@ -960,6 +1162,7 @@ enum MutationName {
   InviterMediateursCoordonnes              @map("inviter_mediateurs_coordonnes")
   AccepterInvitationMediateurCoordonne     @map("accepter_invitation_mediateur_coordonne")
   RefuserInvitationMediateurCoordonne      @map("refuser_invitation_mediateur_coordonne")
+  SetMediateurVisibility                   @map("set_mediateur_visibility")
   CreerActivite                            @map("creer_activite")
   ModifierActivite                         @map("modifier_activite")
   SupprimerActivite                        @map("supprimer_activite")

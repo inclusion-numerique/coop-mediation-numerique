@@ -14,6 +14,8 @@ import React, { useRef, type FormEventHandler, useEffect } from 'react'
 import { v4 } from 'uuid'
 import styles from './ChatThread.module.css'
 
+const scrollDownFeature = false
+
 const ChatThread = ({
   initialMessages,
   threadId,
@@ -85,8 +87,10 @@ const ChatThread = ({
   // biome-ignore lint/correctness/useExhaustiveDependencies: we want to scroll to bottom when status changes
   useEffect(() => {
     // TODO Disable the effect if user has scrolled upwards ?
-    scrollToBottom()
-  }, [status, scrollToBottom, messages])
+    if (scrollDownFeature) {
+      scrollToBottom()
+    }
+  }, [status, scrollToBottom, messages.length])
 
   return (
     <div className={styles.sessionContainer}>
@@ -98,7 +102,7 @@ const ChatThread = ({
           <div />
         </div>
       </div>
-      {!isScrolledToBottom && (
+      {scrollDownFeature && !isScrolledToBottom && (
         <Button
           priority="tertiary"
           iconId="ri-arrow-down-line"

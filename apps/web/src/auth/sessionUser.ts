@@ -36,7 +36,7 @@ export type SessionUser = Pick<
     structure: Pick<Structure, 'nom'>
   })[]
   mediateur:
-    | (Pick<Mediateur, 'id'> & {
+    | (Pick<Mediateur, 'id' | 'isVisible'> & {
         coordinations: {
           coordinateur: {
             id: string

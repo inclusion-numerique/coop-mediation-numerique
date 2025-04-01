@@ -22,7 +22,7 @@ importers:
         version: 7.4.4
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@swc/core@1.10.14(@swc/helpers@0.5.5))(@types/node@22.13.1)(typescript@5.9.0-dev.20250326)
+        version: 10.9.2(@swc/core@1.10.14(@swc/helpers@0.5.5))(@types/node@22.13.1)(typescript@5.9.0-dev.20250331)
       turbo:
         specifier: ^2.3.3
         version: 2.4.0
@@ -168,7 +168,7 @@ importers:
         version: 0.3.0-0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@next-auth/prisma-adapter':
         specifier: ^1.0.7
-        version: 1.0.7(@prisma/client@6.3.1(prisma@6.3.1(typescript@5.7.3))(typescript@5.7.3))(next-auth@4.24.7(next@14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(nodemailer@6.10.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
+        version: 1.0.7(@prisma/client@6.3.1(prisma@6.3.1(typescript@5.7.3))(typescript@5.7.3))(next-auth@4.24.7(next@14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(nodemailer@6.10.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@next/bundle-analyzer':
         specifier: ^14.2.20
         version: 14.2.23
@@ -186,7 +186,7 @@ importers:
         version: 8.54.0
       '@sentry/nextjs':
         specifier: ^8.46.0
-        version: 8.54.0(@opentelemetry/context-async-hooks@1.30.1(@opentelemetry/api@1.9.0))(@opentelemetry/core@1.30.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.57.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.0))(encoding@0.1.13)(next@14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(react@18.3.1)(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)(uglify-js@3.19.3))
+        version: 8.54.0(@opentelemetry/context-async-hooks@1.30.1(@opentelemetry/api@1.9.0))(@opentelemetry/core@1.30.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.57.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.0))(encoding@0.1.13)(next@14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(react@18.3.1)(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(uglify-js@3.19.3))
       '@stoplight/elements':
         specifier: ^8.5.2
         version: 8.5.2(@babel/core@7.26.7)(@babel/template@7.25.9)(encoding@0.1.13)(immer@9.0.21)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(xstate@4.38.3)
@@ -327,13 +327,13 @@ importers:
         version: 5.0.9
       next:
         specifier: ^14.2.25
-        version: 14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4)
+        version: 14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4)
       next-auth:
         specifier: 4.24.7
-        version: 4.24.7(next@14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(nodemailer@6.10.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 4.24.7(next@14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(nodemailer@6.10.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-swagger-doc:
         specifier: ^0.4.1
-        version: 0.4.1(next@14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(openapi-types@7.2.3)
+        version: 0.4.1(next@14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(openapi-types@7.2.3)
       node-html-parser:
         specifier: ^6.1.13
         version: 6.1.13
@@ -366,7 +366,7 @@ importers:
         version: 16.1.0(postcss@8.5.1)
       postcss-loader:
         specifier: ^8.1.1
-        version: 8.1.1(postcss@8.5.1)(typescript@5.7.3)(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)(uglify-js@3.19.3))
+        version: 8.1.1(postcss@8.5.1)(typescript@5.7.3)(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(uglify-js@3.19.3))
       postcss-nested:
         specifier: ^6.2.0
         version: 6.2.0(postcss@8.5.1)
@@ -376,6 +376,9 @@ importers:
       prisma:
         specifier: 6.3.1
         version: 6.3.1(typescript@5.7.3)
+      proj4:
+        specifier: ^2.15.0
+        version: 2.15.0
       radix-ui:
         specifier: ^1.1.3
         version: 1.1.3(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -527,6 +530,9 @@ importers:
       '@types/pako':
         specifier: ^2.0.3
         version: 2.0.3
+      '@types/proj4':
+        specifier: ^2.5.6
+        version: 2.5.6
       '@types/react':
         specifier: ^18.3.17
         version: 18.3.18
@@ -544,7 +550,7 @@ importers:
         version: 10.0.0
       css-loader:
         specifier: ^7.1.2
-        version: 7.1.2(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)(uglify-js@3.19.3))
+        version: 7.1.2(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(uglify-js@3.19.3))
       eslint:
         specifier: ^8.57.1
         version: 8.57.1
@@ -553,13 +559,13 @@ importers:
         version: 3.0.0
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.13.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.10.14(@swc/helpers@0.5.5))(@types/node@22.13.1)(typescript@5.7.3))
+        version: 29.7.0(@types/node@22.13.1)(ts-node@10.9.2(@swc/core@1.10.14(@swc/helpers@0.5.5))(@types/node@22.13.1)(typescript@5.7.3))
       jest-mock:
         specifier: ^29.7.0
         version: 29.7.0
       jest-mock-extended:
         specifier: ^3.0.7
-        version: 3.0.7(jest@29.7.0(@types/node@22.13.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.10.14(@swc/helpers@0.5.5))(@types/node@22.13.1)(typescript@5.7.3)))(typescript@5.7.3)
+        version: 3.0.7(jest@29.7.0(@types/node@22.13.1)(ts-node@10.9.2(@swc/core@1.10.14(@swc/helpers@0.5.5))(@types/node@22.13.1)(typescript@5.7.3)))(typescript@5.7.3)
       joi:
         specifier: ^17.13.3
         version: 17.13.3
@@ -574,10 +580,10 @@ importers:
         version: 2.0.2
       style-loader:
         specifier: ^4.0.0
-        version: 4.0.0(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)(uglify-js@3.19.3))
+        version: 4.0.0(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(uglify-js@3.19.3))
       ts-jest:
         specifier: ^29.2.5
-        version: 29.2.5(@babel/core@7.26.7)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.7))(esbuild@0.24.2)(jest@29.7.0(@types/node@22.13.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.10.14(@swc/helpers@0.5.5))(@types/node@22.13.1)(typescript@5.7.3)))(typescript@5.7.3)
+        version: 29.2.5(@babel/core@7.26.7)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.7))(jest@29.7.0(@types/node@22.13.1)(ts-node@10.9.2(@swc/core@1.10.14(@swc/helpers@0.5.5))(@types/node@22.13.1)(typescript@5.7.3)))(typescript@5.7.3)
       typescript:
         specifier: ^5.7.2
         version: 5.7.3
@@ -5916,6 +5922,9 @@ packages:
   '@types/postcss-modules-scope@3.0.4':
     resolution: {integrity: sha512-//ygSisVq9kVI0sqx3UPLzWIMCmtSVrzdljtuaAEJtGoGnpjBikZ2sXO5MpH9SnWX9HRfXxHifDAXcQjupWnIQ==}
 
+  '@types/proj4@2.5.6':
+    resolution: {integrity: sha512-zfMrPy9fx+8DchqM0kIUGeu2tTVB5ApO1KGAYcSGFS8GoqRIkyL41xq2yCx/iV3sOLzo7v4hEgViSLTiPI1L0w==}
+
   '@types/prop-types@15.7.14':
     resolution: {integrity: sha512-gNMvNH49DJ7OJYv+KAKn0Xp45p8PLl6zo2YnvDIbTd4J6MER2BmWN49TG7n9LvkyihINxeKW8+3bfS2yDC9dzQ==}
 
@@ -10108,6 +10117,9 @@ packages:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
 
+  mgrs@1.0.0:
+    resolution: {integrity: sha512-awNbTOqCxK1DBGjalK3xqWIstBZgN6fxsMSiXLs9/spqWkF2pAhb2rrYCFSsr1/tT7PhcDGjZndG8SWYn0byYA==}
+
   micromark-extension-frontmatter@0.2.2:
     resolution: {integrity: sha512-q6nPLFCMTLtfsctAuS0Xh4vaolxSFUWUWR6PZSrXXiRy+SANGllpcqdXFv2z07l0Xz/6Hl40hK0ffNCJPH2n1A==}
 
@@ -11389,6 +11401,9 @@ packages:
   progress@2.0.3:
     resolution: {integrity: sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==}
     engines: {node: '>=0.4.0'}
+
+  proj4@2.15.0:
+    resolution: {integrity: sha512-LqCNEcPdI03BrCHxPLj29vsd5afsm+0sV1H/O3nTDKrv8/LA01ea1z4QADDMjUqxSXWnrmmQDjqFm1J/uZ5RLw==}
 
   prompts@2.4.2:
     resolution: {integrity: sha512-NxNv/kLguCA7p3jE8oL2aEBsrJWgAakBpgmgK6lpPWV+WuOmY6r2/zbAVnP+T8bQlA0nzHXSJSJW0Hq7ylaD2Q==}
@@ -13057,8 +13072,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.9.0-dev.20250326:
-    resolution: {integrity: sha512-v95UmcM97b/++aKo6u/0+SgRJP8qjKEHsAQBBXss+A6zEaUM5cZjVzGPpI5veXugK2dJKLWvLEjTT/ATgHMReQ==}
+  typescript@5.9.0-dev.20250331:
+    resolution: {integrity: sha512-0wW/4BrQ4HacVwcyQh/60+vAJwIrTasAqYqBdIPgc3EWr9nF/ZXjjCuzE3itlIH/6nXoBNuAyVTt9g9U8kTTWQ==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -13602,6 +13617,9 @@ packages:
   widest-line@3.1.0:
     resolution: {integrity: sha512-NsmoXalsWVDMGupxZ5R08ka9flZjjiLvHVAWYOKtiKM8ujtZWr9cRffak+uSE48+Ob8ObalXpwyeUiyDD6QFgg==}
     engines: {node: '>=8'}
+
+  wkt-parser@1.4.0:
+    resolution: {integrity: sha512-qpwO7Ihds/YYDTi1aADFTI1Sm9YC/tTe3SHD24EeIlZxy7Ik6a1b4HOz7jAi0xdUAw487duqpo8OGu+Tf4nwlQ==}
 
   wmf@1.0.2:
     resolution: {integrity: sha512-/p9K7bEh0Dj6WbXg4JG0xvLQmIadrner1bi45VMJTfnbVHsc7yIajZyoSoK60/dtVBs12Fm6WkUI5/3WAVsNMw==}
@@ -16641,10 +16659,10 @@ snapshots:
     dependencies:
       sparse-bitfield: 3.0.3
 
-  '@next-auth/prisma-adapter@1.0.7(@prisma/client@6.3.1(prisma@6.3.1(typescript@5.7.3))(typescript@5.7.3))(next-auth@4.24.7(next@14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(nodemailer@6.10.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
+  '@next-auth/prisma-adapter@1.0.7(@prisma/client@6.3.1(prisma@6.3.1(typescript@5.7.3))(typescript@5.7.3))(next-auth@4.24.7(next@14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(nodemailer@6.10.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
     dependencies:
       '@prisma/client': 6.3.1(prisma@6.3.1(typescript@5.7.3))(typescript@5.7.3)
-      next-auth: 4.24.7(next@14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(nodemailer@6.10.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      next-auth: 4.24.7(next@14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(nodemailer@6.10.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   '@next/bundle-analyzer@14.2.23':
     dependencies:
@@ -18302,7 +18320,7 @@ snapshots:
       '@sentry/types': 6.19.7
       tslib: 1.14.1
 
-  '@sentry/nextjs@8.54.0(@opentelemetry/context-async-hooks@1.30.1(@opentelemetry/api@1.9.0))(@opentelemetry/core@1.30.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.57.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.0))(encoding@0.1.13)(next@14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(react@18.3.1)(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)(uglify-js@3.19.3))':
+  '@sentry/nextjs@8.54.0(@opentelemetry/context-async-hooks@1.30.1(@opentelemetry/api@1.9.0))(@opentelemetry/core@1.30.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.57.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.0))(encoding@0.1.13)(next@14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(react@18.3.1)(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(uglify-js@3.19.3))':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/semantic-conventions': 1.28.0
@@ -18313,9 +18331,9 @@ snapshots:
       '@sentry/opentelemetry': 8.54.0(@opentelemetry/api@1.9.0)(@opentelemetry/context-async-hooks@1.30.1(@opentelemetry/api@1.9.0))(@opentelemetry/core@1.30.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.57.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.28.0)
       '@sentry/react': 8.54.0(react@18.3.1)
       '@sentry/vercel-edge': 8.54.0
-      '@sentry/webpack-plugin': 2.22.7(encoding@0.1.13)(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)(uglify-js@3.19.3))
+      '@sentry/webpack-plugin': 2.22.7(encoding@0.1.13)(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(uglify-js@3.19.3))
       chalk: 3.0.0
-      next: 14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4)
+      next: 14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4)
       resolve: 1.22.8
       rollup: 3.29.5
       stacktrace-parser: 0.1.10
@@ -18422,12 +18440,12 @@ snapshots:
       '@opentelemetry/api': 1.9.0
       '@sentry/core': 8.54.0
 
-  '@sentry/webpack-plugin@2.22.7(encoding@0.1.13)(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)(uglify-js@3.19.3))':
+  '@sentry/webpack-plugin@2.22.7(encoding@0.1.13)(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(uglify-js@3.19.3))':
     dependencies:
       '@sentry/bundler-plugin-core': 2.22.7(encoding@0.1.13)
       unplugin: 1.0.1
       uuid: 9.0.1
-      webpack: 5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)(uglify-js@3.19.3)
+      webpack: 5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(uglify-js@3.19.3)
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -20327,6 +20345,8 @@ snapshots:
     dependencies:
       postcss: 8.5.1
 
+  '@types/proj4@2.5.6': {}
+
   '@types/prop-types@15.7.14': {}
 
   '@types/react-dom@17.0.26(@types/react@17.0.83)':
@@ -21891,7 +21911,7 @@ snapshots:
     optionalDependencies:
       webpack: 5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)
 
-  css-loader@7.1.2(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)(uglify-js@3.19.3)):
+  css-loader@7.1.2(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(uglify-js@3.19.3)):
     dependencies:
       icss-utils: 5.1.0(postcss@8.5.1)
       postcss: 8.5.1
@@ -21902,7 +21922,7 @@ snapshots:
       postcss-value-parser: 4.2.0
       semver: 7.7.1
     optionalDependencies:
-      webpack: 5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)(uglify-js@3.19.3)
+      webpack: 5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(uglify-js@3.19.3)
 
   css-prefers-color-scheme@9.0.1(postcss@8.5.1):
     dependencies:
@@ -22351,7 +22371,7 @@ snapshots:
     dependencies:
       semver: 7.7.1
       shelljs: 0.8.5
-      typescript: 5.9.0-dev.20250326
+      typescript: 5.9.0-dev.20250331
 
   dunder-proto@1.0.1:
     dependencies:
@@ -24400,9 +24420,9 @@ snapshots:
       slash: 3.0.0
       stack-utils: 2.0.6
 
-  jest-mock-extended@3.0.7(jest@29.7.0(@types/node@22.13.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.10.14(@swc/helpers@0.5.5))(@types/node@22.13.1)(typescript@5.7.3)))(typescript@5.7.3):
+  jest-mock-extended@3.0.7(jest@29.7.0(@types/node@22.13.1)(ts-node@10.9.2(@swc/core@1.10.14(@swc/helpers@0.5.5))(@types/node@22.13.1)(typescript@5.7.3)))(typescript@5.7.3):
     dependencies:
-      jest: 29.7.0(@types/node@22.13.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.10.14(@swc/helpers@0.5.5))(@types/node@22.13.1)(typescript@5.7.3))
+      jest: 29.7.0(@types/node@22.13.1)(ts-node@10.9.2(@swc/core@1.10.14(@swc/helpers@0.5.5))(@types/node@22.13.1)(typescript@5.7.3))
       ts-essentials: 10.0.4(typescript@5.7.3)
       typescript: 5.7.3
 
@@ -25401,6 +25421,8 @@ snapshots:
 
   merge2@1.4.1: {}
 
+  mgrs@1.0.0: {}
+
   micromark-extension-frontmatter@0.2.2:
     dependencies:
       fault: 1.0.4
@@ -25865,9 +25887,11 @@ snapshots:
       '@babel/runtime': 7.26.7
       js-beautify: 1.15.1
       lodash: 4.17.21
-      mjml-core: 4.15.3(encoding@0.1.13)
+      mjml-core: 4.15.3
       mjml-parser-xml: 4.15.3
       yargs: 17.7.2
+    transitivePeerDependencies:
+      - encoding
 
   mjml-migrate@4.15.3(encoding@0.1.13):
     dependencies:
@@ -26239,13 +26263,13 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  next-auth@4.24.7(next@14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(nodemailer@6.10.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  next-auth@4.24.7(next@14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(nodemailer@6.10.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.26.7
       '@panva/hkdf': 1.2.1
       cookie: 0.5.0
       jose: 4.15.9
-      next: 14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4)
+      next: 14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4)
       oauth: 0.9.15
       openid-client: 5.7.1
       preact: 10.25.4
@@ -26256,12 +26280,12 @@ snapshots:
     optionalDependencies:
       nodemailer: 6.10.0
 
-  next-swagger-doc@0.4.1(next@14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(openapi-types@7.2.3):
+  next-swagger-doc@0.4.1(next@14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(openapi-types@7.2.3):
     dependencies:
       '@types/swagger-jsdoc': 6.0.4
       cleye: 1.3.2
       isarray: 2.0.5
-      next: 14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4)
+      next: 14.2.25(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4)
       swagger-jsdoc: 6.2.8(openapi-types@7.2.3)
     transitivePeerDependencies:
       - openapi-types
@@ -27060,17 +27084,6 @@ snapshots:
       postcss: 8.5.1
       ts-node: 10.9.2(@swc/core@1.10.14(@swc/helpers@0.5.5))(@types/node@22.13.1)(typescript@5.7.3)
 
-  postcss-loader@8.1.1(postcss@8.5.1)(typescript@5.7.3)(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)(uglify-js@3.19.3)):
-    dependencies:
-      cosmiconfig: 9.0.0(typescript@5.7.3)
-      jiti: 1.21.7
-      postcss: 8.5.1
-      semver: 7.7.1
-    optionalDependencies:
-      webpack: 5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)(uglify-js@3.19.3)
-    transitivePeerDependencies:
-      - typescript
-
   postcss-loader@8.1.1(postcss@8.5.1)(typescript@5.7.3)(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)):
     dependencies:
       cosmiconfig: 9.0.0(typescript@5.7.3)
@@ -27079,6 +27092,17 @@ snapshots:
       semver: 7.7.1
     optionalDependencies:
       webpack: 5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)
+    transitivePeerDependencies:
+      - typescript
+
+  postcss-loader@8.1.1(postcss@8.5.1)(typescript@5.7.3)(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(uglify-js@3.19.3)):
+    dependencies:
+      cosmiconfig: 9.0.0(typescript@5.7.3)
+      jiti: 1.21.7
+      postcss: 8.5.1
+      semver: 7.7.1
+    optionalDependencies:
+      webpack: 5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(uglify-js@3.19.3)
     transitivePeerDependencies:
       - typescript
 
@@ -27358,6 +27382,11 @@ snapshots:
   process@0.11.10: {}
 
   progress@2.0.3: {}
+
+  proj4@2.15.0:
+    dependencies:
+      mgrs: 1.0.0
+      wkt-parser: 1.4.0
 
   prompts@2.4.2:
     dependencies:
@@ -28783,9 +28812,9 @@ snapshots:
     dependencies:
       webpack: 5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)
 
-  style-loader@4.0.0(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)(uglify-js@3.19.3)):
+  style-loader@4.0.0(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(uglify-js@3.19.3)):
     dependencies:
-      webpack: 5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)(uglify-js@3.19.3)
+      webpack: 5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(uglify-js@3.19.3)
 
   style-to-object@0.4.4:
     dependencies:
@@ -28928,19 +28957,6 @@ snapshots:
 
   terminal-columns@1.4.1: {}
 
-  terser-webpack-plugin@5.3.11(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)(uglify-js@3.19.3)(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)(uglify-js@3.19.3)):
-    dependencies:
-      '@jridgewell/trace-mapping': 0.3.25
-      jest-worker: 27.5.1
-      schema-utils: 4.3.0
-      serialize-javascript: 6.0.2
-      terser: 5.37.0
-      webpack: 5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)(uglify-js@3.19.3)
-    optionalDependencies:
-      '@swc/core': 1.10.14(@swc/helpers@0.5.5)
-      esbuild: 0.24.2
-      uglify-js: 3.19.3
-
   terser-webpack-plugin@5.3.11(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
@@ -28952,6 +28968,18 @@ snapshots:
     optionalDependencies:
       '@swc/core': 1.10.14(@swc/helpers@0.5.5)
       esbuild: 0.24.2
+
+  terser-webpack-plugin@5.3.11(@swc/core@1.10.14(@swc/helpers@0.5.5))(uglify-js@3.19.3)(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(uglify-js@3.19.3)):
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.25
+      jest-worker: 27.5.1
+      schema-utils: 4.3.0
+      serialize-javascript: 6.0.2
+      terser: 5.37.0
+      webpack: 5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(uglify-js@3.19.3)
+    optionalDependencies:
+      '@swc/core': 1.10.14(@swc/helpers@0.5.5)
+      uglify-js: 3.19.3
 
   terser-webpack-plugin@5.3.11(@swc/core@1.10.14(@swc/helpers@0.5.5))(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))):
     dependencies:
@@ -29090,26 +29118,6 @@ snapshots:
     optionalDependencies:
       typescript: 5.7.3
 
-  ts-jest@29.2.5(@babel/core@7.26.7)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.7))(esbuild@0.24.2)(jest@29.7.0(@types/node@22.13.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.10.14(@swc/helpers@0.5.5))(@types/node@22.13.1)(typescript@5.7.3)))(typescript@5.7.3):
-    dependencies:
-      bs-logger: 0.2.6
-      ejs: 3.1.10
-      fast-json-stable-stringify: 2.1.0
-      jest: 29.7.0(@types/node@22.13.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.10.14(@swc/helpers@0.5.5))(@types/node@22.13.1)(typescript@5.7.3))
-      jest-util: 29.7.0
-      json5: 2.2.3
-      lodash.memoize: 4.1.2
-      make-error: 1.3.6
-      semver: 7.7.1
-      typescript: 5.7.3
-      yargs-parser: 21.1.1
-    optionalDependencies:
-      '@babel/core': 7.26.7
-      '@jest/transform': 29.7.0
-      '@jest/types': 29.6.3
-      babel-jest: 29.7.0(@babel/core@7.26.7)
-      esbuild: 0.24.2
-
   ts-jest@29.2.5(@babel/core@7.26.7)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.7))(jest@29.7.0(@types/node@22.13.1)(ts-node@10.9.2(@swc/core@1.10.14(@swc/helpers@0.5.5))(@types/node@22.13.1)(typescript@5.7.3)))(typescript@5.7.3):
     dependencies:
       bs-logger: 0.2.6
@@ -29151,7 +29159,7 @@ snapshots:
     optionalDependencies:
       '@swc/core': 1.10.14(@swc/helpers@0.5.5)
 
-  ts-node@10.9.2(@swc/core@1.10.14(@swc/helpers@0.5.5))(@types/node@22.13.1)(typescript@5.9.0-dev.20250326):
+  ts-node@10.9.2(@swc/core@1.10.14(@swc/helpers@0.5.5))(@types/node@22.13.1)(typescript@5.9.0-dev.20250331):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
@@ -29165,7 +29173,7 @@ snapshots:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 5.9.0-dev.20250326
+      typescript: 5.9.0-dev.20250331
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
     optionalDependencies:
@@ -29333,7 +29341,7 @@ snapshots:
 
   typescript@5.7.3: {}
 
-  typescript@5.9.0-dev.20250326: {}
+  typescript@5.9.0-dev.20250331: {}
 
   uc.micro@2.1.0: {}
 
@@ -29933,7 +29941,7 @@ snapshots:
       - esbuild
       - uglify-js
 
-  webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)(uglify-js@3.19.3):
+  webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(uglify-js@3.19.3):
     dependencies:
       '@types/eslint-scope': 3.7.7
       '@types/estree': 1.0.6
@@ -29955,7 +29963,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 3.3.0
       tapable: 2.2.1
-      terser-webpack-plugin: 5.3.11(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)(uglify-js@3.19.3)(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(esbuild@0.24.2)(uglify-js@3.19.3))
+      terser-webpack-plugin: 5.3.11(@swc/core@1.10.14(@swc/helpers@0.5.5))(uglify-js@3.19.3)(webpack@5.97.1(@swc/core@1.10.14(@swc/helpers@0.5.5))(uglify-js@3.19.3))
       watchpack: 2.4.2
       webpack-sources: 3.2.3
     transitivePeerDependencies:
@@ -30048,6 +30056,8 @@ snapshots:
   widest-line@3.1.0:
     dependencies:
       string-width: 4.2.3
+
+  wkt-parser@1.4.0: {}
 
   wmf@1.0.2: {}
 

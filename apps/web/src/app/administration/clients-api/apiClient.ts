@@ -5,6 +5,7 @@ export const apiClientScopeLabels: { [key in ApiClientScope]: string } = {
   Activites: 'Activités',
   Statistiques: 'Statistiques',
   Structures: 'Structures',
+  LieuxActivite: 'LieuxActivite',
   Utilisateurs: 'Utilisateurs',
 }
 

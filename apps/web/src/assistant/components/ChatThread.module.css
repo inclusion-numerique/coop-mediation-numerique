@@ -160,15 +160,19 @@
 .toolResultCard {
   margin-bottom: 0;
   border: var(--slim-grey-border);
-  padding: 16px 16px;
+  padding: 8px;
   border-radius: 8px;
 
-  &:first-of-type {
-    margin-top: 16px;
+  &:not(:last-of-type) {
+    margin-bottom: 8px;
   }
 
-  &:not(:last-of-type) {
-    margin-bottom: 16px;
+  &.toolResultCardFirst {
+    margin-top: 16px !important;
+  }
+
+  &.toolResultCardLast {
+    margin-bottom: 24px !important;
   }
 
   .toolResultHeader {
@@ -176,16 +180,19 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    margin-bottom: 16px;
   }
 
   .toolResultSourceTitle {
     margin: 0 !important;
-    font-size: 1.125rem !important;
-    line-height: 1.75rem;
+    font-size: 14px !important;
+    line-height: 20px !important;
+    display: inline-block;
+    flex-shrink: 0;
   }
 
   .toolResultContent {
+    margin-top: 16px;
+
     max-height: 240px;
     overflow-y: auto;
 

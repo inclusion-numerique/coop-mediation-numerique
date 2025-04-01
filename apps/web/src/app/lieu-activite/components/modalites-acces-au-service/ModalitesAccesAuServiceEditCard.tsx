@@ -5,6 +5,7 @@ import {
   ModalitesAccesAuServiceData,
   ModalitesAccesAuServiceValidation,
 } from '@app/web/app/structure/ModalitesAccesAuServiceValidation'
+import { FraisAChargeLabel } from '@app/web/app/structure/fraisACharge'
 import EditCard from '@app/web/components/EditCard'
 import { ModalitesAccesAuServiceFields } from '@app/web/components/structure/fields/ModalitesAccesAuServiceFields'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
@@ -23,7 +24,7 @@ const ModalitesAccesAuServiceEditCard = ({
   modalitesAcces,
 }: {
   id: string
-  fraisACharge?: string[]
+  fraisACharge?: FraisAChargeLabel[]
   modalitesAcces?: {
     surPlace?: boolean | null
     parTelephone?: boolean | null
