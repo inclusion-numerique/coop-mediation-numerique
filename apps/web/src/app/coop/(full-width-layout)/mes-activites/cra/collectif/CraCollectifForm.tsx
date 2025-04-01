@@ -217,6 +217,7 @@ const CraCollectifForm = ({
           control={control}
           path="structureId"
           placeholder="Rechercher un lieu d’activité"
+          defaultValue={lieuActiviteRichOptions.at(0)}
           options={lieuActiviteRichOptions}
           filterOption={lieuActiviteFilterOption}
         />
