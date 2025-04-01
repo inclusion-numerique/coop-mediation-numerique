@@ -54,38 +54,6 @@ const PageWebIcon = ({ src }: { src?: string }) =>
     </div>
   )
 
-const _PageWebOfficielleIcon = ({ src }: { src?: string }) =>
-  src ? (
-    <img
-      className=" fr-border-radius--8 fr-p-0"
-      width={32}
-      height={32}
-      src={src}
-      alt=""
-    />
-  ) : null
-
-const getFirstLine = (content: string) => {
-  const newlineIndex = content.indexOf('\n')
-  return newlineIndex === -1 ? content : content.slice(0, newlineIndex)
-}
-
-const getTitleFromMarkdown = (markdown: string) => {
-  const firstLine = getFirstLine(markdown)
-
-  // if this is not a title (starts with #), returns null
-  if (!firstLine.startsWith('#')) {
-    return null
-  }
-
-  return firstLine.replace(/^#+\s+/, '')
-}
-
-const removeFirstLine = (content: string) => {
-  const newlineIndex = content.indexOf('\n')
-  return newlineIndex === -1 ? content : content.slice(newlineIndex + 1)
-}
-
 const ChatMessageAgenticSearchToolResult = ({
   toolInvocation: { result },
 }: {
@@ -112,18 +80,8 @@ const ChatMessageAgenticSearchToolResult = ({
     <>
       {sourcesLesBases.length > 0 && (
         <>
-          {/*<h3 className={styles.toolResultTitle}>*/}
-          {/*  Ressources sur les bases du numérique d’intérêt général*/}
-          {/*</h3>*/}
-
-          {sourcesLesBases.map((source) => {
-            const title = getTitleFromMarkdown(source.content)
-
-            const contentToParse = title
-              ? removeFirstLine(source.content)
-              : source.content
-
-            const parsedContent = marked.parse(contentToParse, {
+          {sourcesLesBases.map((source, index) => {
+            const parsedContent = marked.parse(source.content, {
               renderer,
               async: false,
             })
@@ -131,9 +89,14 @@ const ChatMessageAgenticSearchToolResult = ({
             return (
               <ToolResultCard
                 key={source.id}
-                title={title || 'Les bases - ressource'}
+                title={source.title || 'Les bases - ressource'}
                 url={source.url}
                 icon={<LesBasesIcon />}
+                isFirst={index === 0}
+                isLast={
+                  index === sourcesLesBases.length - 1 &&
+                  webSources.length === 0
+                }
               >
                 <div dangerouslySetInnerHTML={{ __html: parsedContent }} />
               </ToolResultCard>
@@ -147,7 +110,7 @@ const ChatMessageAgenticSearchToolResult = ({
           {/*  Sites web */}
           {/*</h3>*/}
 
-          {webSources.map((source) => {
+          {webSources.map((source, index) => {
             // Extract the domain from the url to use as title
             const title = source.url.split('/')[2]
 
@@ -157,6 +120,8 @@ const ChatMessageAgenticSearchToolResult = ({
                 title={title}
                 url={source.url}
                 icon={<PageWebIcon src={source.thumbnail?.src} />}
+                isFirst={index === 0 && sourcesLesBases.length === 0}
+                isLast={index === webSources.length - 1}
               >
                 <p className="fr-text--bold fr-mb-1v">{source.title}</p>
                 <div className="fr-mb-4v">

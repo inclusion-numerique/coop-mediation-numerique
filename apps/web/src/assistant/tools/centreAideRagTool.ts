@@ -1,3 +1,4 @@
+import type { RagSearchChunkResult } from '@app/web/assistant/rag/executeRagSearch'
 import {
   type RagChunkResultForAssistant,
   formatRagSearchResultToJsonForAssistant,
@@ -68,9 +69,45 @@ export const centreAideRagToolOptions = {
       )
     }
 
+    // We need to merge the chunks that are from the same source
+
+    const chunksBySource = new Map<string, RagSearchChunkResult[]>()
+    for (const chunk of chunks) {
+      const sourceId = chunk.sourceId
+
+      const existingChunks = chunksBySource.get(sourceId)
+
+      if (existingChunks) {
+        existingChunks.push(chunk)
+        existingChunks.sort((a, b) => a.chunk - b.chunk)
+      } else {
+        chunksBySource.set(sourceId, [chunk])
+      }
+    }
+
+    // Then we reconstruct the chunks array by merging the chunks from each source
+    const resultChunks: RagSearchChunkResult[] = []
+    for (const sourceChunks of chunksBySource.values()) {
+      const resultChunk = sourceChunks.at(0)
+
+      if (!resultChunk) {
+        // Will not happen, here for type safety
+        continue
+      }
+
+      for (const chunk of sourceChunks) {
+        if (chunk === resultChunk) {
+          continue
+        }
+        resultChunk.content += `\n\n${chunk.content}`
+      }
+
+      resultChunks.push(resultChunk)
+    }
+
     const yamlResultObject = {
       objectif: `L’assistant doit utiliser ces informations pour répondre de manière complète et pertinente et générer les liens vers les sources pour l’utilisateur dans l’objectif de : ${query}`,
-      sources: formatRagSearchResultToJsonForAssistant(chunks),
+      sources: formatRagSearchResultToJsonForAssistant(resultChunks),
     }
 
     return stringify(yamlResultObject)

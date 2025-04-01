@@ -42,7 +42,7 @@ renderer.image = (_imageParameters: Tokens.Image) => {
   return ''
 }
 
-const AideIcon = () => <LogoCoop height={40} width={40} />
+const AideIcon = () => <LogoCoop height={32} width={32} />
 
 const ChatMessageCentreAideToolResult = ({
   toolInvocation: { result },
@@ -67,7 +67,7 @@ const ChatMessageCentreAideToolResult = ({
     <>
       {sources.length > 0 && (
         <>
-          {sources.map((source) => {
+          {sources.map((source, index) => {
             const parsedContent = marked.parse(source.content, {
               renderer,
               async: false,
@@ -79,6 +79,8 @@ const ChatMessageCentreAideToolResult = ({
                 title={source.title || 'Centre d’aide - article'}
                 url={source.url}
                 icon={<AideIcon />}
+                isFirst={index === 0}
+                isLast={index === sources.length - 1}
               >
                 <div dangerouslySetInnerHTML={{ __html: parsedContent }} />
               </ToolResultCard>
