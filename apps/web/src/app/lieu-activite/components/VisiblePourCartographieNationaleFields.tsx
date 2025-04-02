@@ -1,21 +1,21 @@
 'use client'
 
 import { createToast } from '@app/ui/toast/createToast'
-import { servicesStructureLabels } from '@app/web/app/structure/optionsStructure'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import { trpc } from '@app/web/trpc'
 import ToggleSwitch from '@codegouvfr/react-dsfr/ToggleSwitch'
+import { Service } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import React, { ReactNode } from 'react'
 
 const DEFAULT_SERVICES = [
-  servicesStructureLabels['Aide aux démarches administratives'],
-  servicesStructureLabels['Maîtrise des outils numériques du quotidien'],
-  servicesStructureLabels['Insertion professionnelle via le numérique'],
-  servicesStructureLabels['Utilisation sécurisée du numérique'],
-  servicesStructureLabels['Parentalité et éducation avec le numérique'],
-  servicesStructureLabels['Loisirs et créations numériques'],
-  servicesStructureLabels['Comprehension du monde numérique'],
+  Service.AideAuxDemarchesAdministratives,
+  Service.MaitriseDesOutilsNumeriquesDuQuotidien,
+  Service.InsertionProfessionnelleViaLeNumerique,
+  Service.UtilisationSecuriseeDuNumerique,
+  Service.ParentaliteEtEducationAvecLeNumerique,
+  Service.LoisirsEtCreationsNumeriques,
+  Service.ComprehensionDuMondeNumerique,
 ]
 
 const VisiblePourCartographieNationaleFields = ({

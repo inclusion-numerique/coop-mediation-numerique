@@ -2,7 +2,7 @@ import CheckboxFormField from '@app/ui/components/Form/CheckboxFormField'
 import CheckboxGroupFormField from '@app/ui/components/Form/CheckboxGroupFormField'
 import InputFormField from '@app/ui/components/Form/InputFormField'
 import { ModalitesAccesAuServiceData } from '@app/web/app/structure/ModalitesAccesAuServiceValidation'
-import { fraisAChargeStructureOptions } from '@app/web/app/structure/optionsStructure'
+import { fraisAChargeOptions } from '@app/web/app/structure/fraisACharge'
 import React from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
@@ -71,7 +71,7 @@ export const ModalitesAccesAuServiceFields = <
         path="fraisACharge"
         label="Frais à charge"
         hint="Indiquez les conditions financières d'accès aux services."
-        options={fraisAChargeStructureOptions}
+        options={fraisAChargeOptions}
         control={control}
         disabled={formState.isSubmitting}
       />

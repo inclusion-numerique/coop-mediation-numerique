@@ -69,7 +69,7 @@ export type LieuStandardMediationNumerique = {
 
   // Ce champ permet de décrire les types d'accompagnement proposés dans l'offre du lieu.
   // Sélectionner une ou plusieurs valeurs séparées par un `|` parmi la liste suivante :
-  // Aide aux démarches administratives;Maîtrise des outils numériques du quotidien;Insertion professionnelle via le numérique;Utilisation sécurisée du numérique;Parentalité et éducation avec le numérique;Loisirs et créations numériques;Comprehension du monde numérique;Accès internet et matériel informatique;Acquisition de matériel informatique à prix solidaire.
+  // Aide aux démarches administratives;Maîtrise des outils numériques du quotidien;Insertion professionnelle via le numérique;Utilisation sécurisée du numérique;Parentalité et éducation avec le numérique;Loisirs et créations numériques;Compréhension du monde numérique;Accès internet et matériel informatique;Acquisition de matériel informatique à prix solidaire.
   // Par défault: "Maîtrise des outils numériques du quotidien"
   services?: string | null
 

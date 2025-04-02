@@ -27,10 +27,6 @@ import {
   VisiblePourCartographieNationaleData,
   VisiblePourCartographieNationaleValidation,
 } from '@app/web/app/structure/VisiblePourCartographieNationaleValidation'
-import {
-  itineranceStructureValues,
-  modalitesAccesStructureValues,
-} from '@app/web/app/structure/optionsStructure'
 import { SessionUser } from '@app/web/auth/sessionUser'
 import { prismaClient } from '@app/web/prismaClient'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
@@ -38,6 +34,7 @@ import { forbiddenError, invalidError } from '@app/web/server/rpc/trpcErrors'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import { createStopwatch } from '@app/web/utils/stopwatch'
+import { Itinerance, ModaliteAcces } from '@prisma/client'
 import { v4 } from 'uuid'
 import z from 'zod'
 import { lieuActiviteValidation } from './lieuActiviteValidation'
@@ -97,8 +94,8 @@ const setInformationsPratiquesFields = ({
     lieuItinerant == null
       ? undefined
       : lieuItinerant
-        ? [itineranceStructureValues.Itinérant]
-        : [itineranceStructureValues.Fixe],
+        ? [Itinerance.Itinerant]
+        : [Itinerance.Fixe],
   siteWeb: siteWeb ?? undefined,
   ficheAccesLibre: ficheAccesLibre ?? undefined,
   horaires: horaires ?? undefined,
@@ -109,10 +106,12 @@ const setDescriptionFields = ({
   typologies,
   presentationResume,
   presentationDetail,
+  formationsLabels,
 }: Omit<DescriptionData, 'id'>) => ({
   typologies: typologies ?? undefined,
   presentationResume: presentationResume ?? undefined,
   presentationDetail: presentationDetail ?? undefined,
+  formationsLabels: formationsLabels ?? undefined,
 })
 
 const setServicesEtAccompagnementFields = ({
@@ -137,15 +136,9 @@ const setModalitesAccesAuServiceFields = ({
       : [],
   modalitesAcces: modalitesAcces
     ? [
-        modalitesAcces.surPlace
-          ? modalitesAccesStructureValues['Se présenter']
-          : undefined,
-        modalitesAcces.parTelephone
-          ? modalitesAccesStructureValues.Téléphoner
-          : undefined,
-        modalitesAcces.parMail
-          ? modalitesAccesStructureValues['Contacter par mail']
-          : undefined,
+        modalitesAcces.surPlace ? ModaliteAcces.SePresenter : undefined,
+        modalitesAcces.parTelephone ? ModaliteAcces.Telephoner : undefined,
+        modalitesAcces.parMail ? ModaliteAcces.ContacterParMail : undefined,
       ].filter(onlyDefinedAndNotNull)
     : undefined,
   fraisACharge: fraisACharge ?? undefined,

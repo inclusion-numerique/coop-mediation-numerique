@@ -2,10 +2,8 @@ import CheckboxFormField from '@app/ui/components/Form/CheckboxFormField'
 import CheckboxGroupFormField from '@app/ui/components/Form/CheckboxGroupFormField'
 import { useWatchSubscription } from '@app/ui/hooks/useWatchSubscription'
 import { TypesDePublicsAccueillisData } from '@app/web/app/structure/TypesDePublicsAccueillisValidation'
-import {
-  priseEnChargeSpecifiqueStructureOptions,
-  publicsAccueillisStructureOptions,
-} from '@app/web/app/structure/optionsStructure'
+import { priseEnChargeSpecifiqueOptions } from '@app/web/app/structure/priseEnChargeSpecifique'
+import { publicSpecifiquementAdresseOptions } from '@app/web/app/structure/publicSpecifiquementAdresse'
 import React, { useCallback } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
@@ -39,13 +37,13 @@ export const TypesDePublicsAccueillisFields = <
         const allPublicsChecked =
           Array.isArray(data.publicsSpecifiquementAdresses) &&
           data.publicsSpecifiquementAdresses.length ===
-            publicsAccueillisStructureOptions.length
+            publicSpecifiquementAdresseOptions.length
 
         if (name === 'toutPublic') {
           if (data.toutPublic && !allPublicsChecked) {
             setValue(
               'publicsSpecifiquementAdresses',
-              publicsAccueillisStructureOptions.map((option) => option.value),
+              publicSpecifiquementAdresseOptions.map((option) => option.value),
             )
           } else if (
             !data.toutPublic &&
@@ -90,7 +88,7 @@ export const TypesDePublicsAccueillisFields = <
       <CheckboxGroupFormField
         key={publicsAccueillisKey}
         path="publicsSpecifiquementAdresses"
-        options={publicsAccueillisStructureOptions}
+        options={publicSpecifiquementAdresseOptions}
         control={control}
         disabled={formState.isSubmitting}
         className="fr-mb-0 fr-ml-4v"
@@ -99,7 +97,7 @@ export const TypesDePublicsAccueillisFields = <
       />
       <CheckboxGroupFormField
         path="priseEnChargeSpecifique"
-        options={priseEnChargeSpecifiqueStructureOptions}
+        options={priseEnChargeSpecifiqueOptions}
         label="Prise en charge spécifique"
         hint="Indiquez si le lieu est en mesure d'accompagner et soutenir des publics ayant des besoins particuliers."
         control={control}

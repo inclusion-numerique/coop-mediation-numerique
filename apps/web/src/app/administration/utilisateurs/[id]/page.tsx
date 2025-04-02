@@ -317,7 +317,21 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
           title="Inexistant dans la base de données des conseillers numériques V1"
         />
       )}
-      <AdministrationInfoCard title="Détails de l'utilisateur">
+      <AdministrationInfoCard
+        title="Détails de l'utilisateur"
+        actions={
+          <Button
+            iconId="fr-icon-git-merge-line"
+            priority="tertiary"
+            size="small"
+            linkProps={{
+              href: `/administration/utilisateurs/${user.id}/merge`,
+            }}
+          >
+            Fusionner avec un autre utilisateur
+          </Button>
+        }
+      >
         <AdministrationInlineLabelsValues
           items={[
             {

@@ -1,5 +1,6 @@
 import Card from '@app/web/components/Card'
 import Badge from '@codegouvfr/react-dsfr/Badge'
+import type { Typologie } from '@prisma/client'
 import React, { ReactNode } from 'react'
 import { Typologies } from './Typologies'
 
@@ -22,7 +23,7 @@ export const StructureEmployeuse = ({
   complementAdresse?: string | null
   commune: string
   codePostal: string
-  typologies?: string[]
+  typologies?: Typologie[]
   siret?: string | null
   rna?: string | null
   isLieuActivite: boolean

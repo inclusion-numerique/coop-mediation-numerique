@@ -2,10 +2,8 @@ import CheckboxGroupFormField from '@app/ui/components/Form/CheckboxGroupFormFie
 import MultipleSelectFormField from '@app/ui/components/Form/MultipleSelectFormField'
 import { optionsWithEmptyValue } from '@app/ui/components/Form/utils/options'
 import { ServicesEtAccompagnementData } from '@app/web/app/structure/ServicesEtAccompagnementValidation'
-import {
-  modalitesAccompagnementStructureOptions,
-  servicesStructureOptions,
-} from '@app/web/app/structure/optionsStructure'
+import { modaliteAccompagnementOptions } from '@app/web/app/structure/modaliteAccompagnement'
+import { serviceOptions } from '@app/web/app/structure/service'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import React from 'react'
 import { UseFormReturn } from 'react-hook-form'
@@ -36,7 +34,7 @@ export const ServicesEtAccompagnementFields = <
       <MultipleSelectFormField
         asterisk={isServicesRequired}
         path="services"
-        options={optionsWithEmptyValue(servicesStructureOptions)}
+        options={optionsWithEmptyValue(serviceOptions)}
         label="Thématiques des services d’inclusion numérique"
         hint="Renseignez ici les services proposés dans ce lieu."
         control={control}
@@ -44,7 +42,7 @@ export const ServicesEtAccompagnementFields = <
       />
       <CheckboxGroupFormField
         path="modalitesAccompagnement"
-        options={modalitesAccompagnementStructureOptions}
+        options={modaliteAccompagnementOptions}
         label="Types d’accompagnements proposés"
         control={control}
         disabled={formState.isSubmitting}

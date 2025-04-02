@@ -50,6 +50,7 @@ export const sessionUserSelect = {
   mediateur: {
     select: {
       id: true,
+      isVisible: true,
       conseillerNumerique: {
         select: {
           id: true,

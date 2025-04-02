@@ -1,9 +1,15 @@
 import z from 'zod'
+import { priseEnChargeSpecifiqueValues } from './priseEnChargeSpecifique'
+import { publicSpecifiquementAdresseValues } from './publicSpecifiquementAdresse'
 
 export const TypesDePublicsAccueillisShape = {
-  priseEnChargeSpecifique: z.array(z.string()).nullish(),
+  priseEnChargeSpecifique: z
+    .array(z.enum(priseEnChargeSpecifiqueValues))
+    .nullish(),
   toutPublic: z.boolean().nullish(),
-  publicsSpecifiquementAdresses: z.array(z.string()).nullish(),
+  publicsSpecifiquementAdresses: z
+    .array(z.enum(publicSpecifiquementAdresseValues))
+    .nullish(),
 }
 
 export const TypesDePublicsAccueillisValidation = z.object({

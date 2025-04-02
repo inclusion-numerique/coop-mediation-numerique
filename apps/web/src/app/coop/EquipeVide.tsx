@@ -12,7 +12,7 @@ export const EquipeVide = () => (
     </p>
     <Button
       linkProps={{
-        href: 'coop/mon-equipe/inviter',
+        href: '/coop/mon-equipe/inviter',
       }}
       iconId="fr-icon-user-add-line"
     >

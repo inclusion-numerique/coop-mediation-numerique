@@ -1,13 +1,19 @@
+import { priseEnChargeSpecifiqueLabels } from '@app/web/app/structure/priseEnChargeSpecifique'
+import { publicSpecifiquementAdresseLabels } from '@app/web/app/structure/publicSpecifiquementAdresse'
 import Tag from '@codegouvfr/react-dsfr/Tag'
+import type {
+  PriseEnChargeSpecifique,
+  PublicSpecifiquementAdresse,
+} from '@prisma/client'
 
 export const TypesDePublicsAccueillisView = ({
   priseEnChargeSpecifique = [],
   toutPublic = false,
   publicsSpecifiquementAdresses = [],
 }: {
-  priseEnChargeSpecifique?: string[]
+  priseEnChargeSpecifique?: PriseEnChargeSpecifique[]
   toutPublic?: boolean
-  publicsSpecifiquementAdresses?: string[]
+  publicsSpecifiquementAdresses?: PublicSpecifiquementAdresse[]
 }) => (
   <>
     <div
@@ -19,7 +25,9 @@ export const TypesDePublicsAccueillisView = ({
         <ul className="fr-tags-group fr-mt-3v fr-mt-1v">
           {publicsSpecifiquementAdresses.map((publicSpecifiquementAdresse) => (
             <li key={publicSpecifiquementAdresse}>
-              <Tag>{publicSpecifiquementAdresse}</Tag>
+              <Tag>
+                {publicSpecifiquementAdresseLabels[publicSpecifiquementAdresse]}
+              </Tag>
             </li>
           ))}
         </ul>
@@ -41,7 +49,7 @@ export const TypesDePublicsAccueillisView = ({
         <ul className="fr-tags-group">
           {priseEnChargeSpecifique.map((priseEnCharge) => (
             <li key={priseEnCharge}>
-              <Tag>{priseEnCharge}</Tag>
+              <Tag>{priseEnChargeSpecifiqueLabels[priseEnCharge]}</Tag>
             </li>
           ))}
         </ul>

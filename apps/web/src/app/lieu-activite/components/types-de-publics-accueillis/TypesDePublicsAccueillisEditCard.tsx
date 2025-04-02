@@ -12,6 +12,10 @@ import { trpc } from '@app/web/trpc'
 import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
 import { isEmpty } from '@app/web/utils/isEmpty'
 import { zodResolver } from '@hookform/resolvers/zod'
+import type {
+  PriseEnChargeSpecifique,
+  PublicSpecifiquementAdresse,
+} from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { EmptyState } from '../EmptyState'
@@ -24,9 +28,9 @@ const TypesDePublicsAccueillisEditCard = ({
   publicsSpecifiquementAdresses,
 }: {
   id: string
-  priseEnChargeSpecifique?: string[]
+  priseEnChargeSpecifique?: PriseEnChargeSpecifique[]
   toutPublic?: boolean
-  publicsSpecifiquementAdresses?: string[]
+  publicsSpecifiquementAdresses?: PublicSpecifiquementAdresse[]
 }) => {
   const mutation =
     trpc.lieuActivite.updateTypesDePublicsAccueillis.useMutation()

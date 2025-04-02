@@ -2,11 +2,7 @@ import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
 
-export const mediateurStructureSelect = ({
-  mediateurIds,
-}: {
-  mediateurIds: string[]
-}) =>
+export const mediateurStructureSelect = () =>
   ({
     nom: true,
     id: true,
@@ -15,11 +11,7 @@ export const mediateurStructureSelect = ({
     commune: true,
     _count: {
       select: {
-        activites: {
-          where: {
-            mediateurId: { in: mediateurIds },
-          },
-        },
+        activites: true,
       },
     },
   }) satisfies Prisma.StructureSelect
@@ -34,18 +26,13 @@ export type LieuActiviteOption = SelectOption<
   }
 >
 
-export const getLieuxActiviteOptions = async ({
-  mediateurIds,
-}: {
-  mediateurIds: string[]
-}): Promise<LieuActiviteOption[]> => {
-  const structureSelect = mediateurStructureSelect({
-    mediateurIds,
-  })
+export const getLieuxActiviteOptions = async (): Promise<
+  LieuActiviteOption[]
+> => {
+  const structureSelect = mediateurStructureSelect()
 
   const lieuxActivite = await prismaClient.mediateurEnActivite.findMany({
     where: {
-      mediateurId: { in: mediateurIds },
       suppression: null,
     },
     select: {

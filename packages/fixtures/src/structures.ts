@@ -1,6 +1,5 @@
 import { givenStructure } from '@app/fixtures/givenStructure'
-import { typologieStructureValue } from '@app/web/app/structure/typologieStructure'
-import type { Prisma } from '@prisma/client'
+import { type Prisma, Typologie } from '@prisma/client'
 
 export const structureEmployeuse = givenStructure({
   id: 'f4dbca97-6fe8-4be1-97be-bdf5e66b9ea8',
@@ -18,11 +17,7 @@ export const mediateque = givenStructure({
   codePostal: '69002',
   codeInsee: '69382',
   commune: 'Lyon 2eme',
-  typologies: [
-    typologieStructureValue.BIB,
-    typologieStructureValue.MUNI,
-    typologieStructureValue.CIDFF,
-  ],
+  typologies: [Typologie.BIB, Typologie.MUNI, Typologie.CIDFF],
 })
 
 export const centreSocial = givenStructure({
@@ -33,10 +28,10 @@ export const centreSocial = givenStructure({
   commune: 'Paris 3eme',
   codeInsee: '75103',
   typologies: [
-    typologieStructureValue.PREVENTION,
-    typologieStructureValue.REG,
-    typologieStructureValue.CCAS,
-    typologieStructureValue.CAARUD,
+    Typologie.PREVENTION,
+    Typologie.REG,
+    Typologie.CCAS,
+    Typologie.CAARUD,
   ],
 })
 

@@ -17,7 +17,7 @@ import CraBeneficiaryForm, {
 } from '@app/web/app/coop/(full-width-layout)/mes-activites/cra/CraBeneficiaryForm'
 import CraFormLabel from '@app/web/app/coop/(full-width-layout)/mes-activites/cra/CraFormLabel'
 import { craFormFieldsetClassname } from '@app/web/app/coop/(full-width-layout)/mes-activites/cra/craFormFieldsetClassname'
-import type { LieuActiviteOption } from '@app/web/app/lieu-activite/getLieuxActiviteOptions'
+import type { LieuActiviteOption } from '@app/web/app/lieu-activite/getMediateursLieuxActiviteOptions'
 import type { BeneficiaireOption } from '@app/web/beneficiaire/BeneficiaireOption'
 import {
   genreOptions,
@@ -336,6 +336,7 @@ const CraIndividuelForm = ({
           control={control}
           path="structureId"
           placeholder="Rechercher un lieu d’activité"
+          defaultValue={lieuActiviteRichOptions.at(0)}
           options={lieuActiviteRichOptions}
           filterOption={lieuActiviteFilterOption}
         />

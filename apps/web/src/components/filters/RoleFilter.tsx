@@ -1,28 +1,26 @@
 'use client'
 
 import { Popover } from '@app/web/components/Popover'
+import { RoleSlug, roleSlugOptions } from '@app/web/user/list'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { ChangeEvent, useEffect, useState } from 'react'
+import { FilterFooter } from './elements/FilterFooter'
 import TriggerButton from './elements/TriggerButton'
 
-const roleOptions = [
-  { label: 'Conseillers numériques', value: '1' },
-  { label: 'Médiateurs numériques', value: '0' },
-]
-
-export const RoleFilter = ({ defaultValue }: { defaultValue?: '0' | '1' }) => {
+export const RoleFilter = ({ defaultValue }: { defaultValue?: RoleSlug[] }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const params = new URLSearchParams(searchParams.toString())
 
   const [isOpen, setIsOpen] = useState(false)
-
-  const [role, setRole] = useState(defaultValue)
+  const [roles, setRoles] = useState(defaultValue ?? [])
 
   useEffect(() => {
-    setRole(defaultValue)
+    setRoles(defaultValue ?? [])
   }, [defaultValue])
+
+  const hasFilters = roles.length > 0
 
   const closePopover = (close: boolean = false) => {
     close && setIsOpen(false)
@@ -30,21 +28,23 @@ export const RoleFilter = ({ defaultValue }: { defaultValue?: '0' | '1' }) => {
   }
 
   const handleSubmit = (close: boolean = false) => {
-    role == null
-      ? params.delete('conseiller_numerique')
-      : params.set('conseiller_numerique', role)
+    roles.length > 0
+      ? params.set('roles', roles.join(','))
+      : params.delete('roles')
+
     closePopover(close)
   }
 
   const handleClearFilters = () => {
-    setRole(undefined)
-    params.delete('conseiller_numerique')
+    setRoles([])
+    params.delete('roles')
+    closePopover(true)
   }
 
   const handleSelectFilter = (option: ChangeEvent<HTMLInputElement>) => {
     option.target.checked
-      ? setRole(option.target?.value as '0' | '1')
-      : setRole(undefined)
+      ? setRoles([...roles, option.target.value as RoleSlug])
+      : setRoles(roles.filter((role) => role !== option.target.value))
   }
 
   return (
@@ -54,53 +54,34 @@ export const RoleFilter = ({ defaultValue }: { defaultValue?: '0' | '1' }) => {
       onInteractOutside={() => handleSubmit()}
       onEscapeKeyDown={() => handleSubmit()}
       trigger={
-        <TriggerButton isOpen={isOpen} isFilled={role != null}>
-          Rôle
-          {role && <>&nbsp;·&nbsp;1</>}
+        <TriggerButton isOpen={isOpen} isFilled={hasFilters}>
+          Rôle{hasFilters && ` · ${roles.length}`}
         </TriggerButton>
       }
     >
-      <form style={{ width: 384 }}>
+      <form style={{ width: 384 }} action={() => handleSubmit(true)}>
         <fieldset className="fr-fieldset fr-mb-0">
           <label className="fr-label fr-mb-2v fr-text--bold">
             Filtrer par&nbsp;:
           </label>
-          <div className="fr-fieldset__element">
-            <div className="fr-radio-group">
-              <input
-                type="radio"
-                id="activite-filter-radio-clear"
-                name="role"
-                value="clear"
-                defaultChecked={defaultValue == null}
-                onChange={handleClearFilters}
-              />
-              <label
-                className="fr-label fr-whitespace-nowrap"
-                htmlFor="activite-filter-radio-clear"
-              >
-                Tous les rôles
-              </label>
-            </div>
-          </div>
-          {roleOptions.map(({ label, value: optionValue }, index) => {
-            const id = `activite-filter-radio-${optionValue}`
+          {roleSlugOptions.map(({ label, value: optionValue }, index) => {
+            const id = `role-filter-radio-${optionValue}`
 
             return (
               <div
                 className={classNames(
                   'fr-fieldset__element',
-                  index === roleOptions.length - 1 && 'fr-mb-0',
+                  index === roleSlugOptions.length - 1 && 'fr-mb-0',
                 )}
                 key={optionValue}
               >
-                <div className="fr-radio-group">
+                <div className="fr-checkbox-group">
                   <input
-                    type="radio"
+                    type="checkbox"
                     id={id}
-                    name="role"
+                    name="role-type"
                     value={optionValue}
-                    defaultChecked={defaultValue === optionValue}
+                    defaultChecked={defaultValue?.includes(optionValue)}
                     onChange={handleSelectFilter}
                   />
                   <label className="fr-label fr-whitespace-nowrap" htmlFor={id}>
@@ -111,6 +92,7 @@ export const RoleFilter = ({ defaultValue }: { defaultValue?: '0' | '1' }) => {
             )
           })}
         </fieldset>
+        <FilterFooter onClearFilters={handleClearFilters} />
       </form>
     </Popover>
   )

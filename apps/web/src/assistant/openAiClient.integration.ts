@@ -9,11 +9,7 @@ describe('openAiClient', () => {
   })
 
   it('should be able to list models', async () => {
-    const models = await openAiClient.models
-      .list({
-        method: 'post',
-      })
-      .withResponse()
+    const models = await openAiClient.models.list().withResponse()
     const modelsList = models.data.data
 
     expect(Array.isArray(modelsList)).toBe(true) // instanceof does not work on CI :/

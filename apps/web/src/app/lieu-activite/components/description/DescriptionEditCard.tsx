@@ -12,6 +12,7 @@ import { trpc } from '@app/web/trpc'
 import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
 import { isEmpty } from '@app/web/utils/isEmpty'
 import { zodResolver } from '@hookform/resolvers/zod'
+import type { FormationLabel, Typologie } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { EmptyState } from '../EmptyState'
@@ -22,11 +23,13 @@ const DescriptionEditCard = ({
   typologies,
   presentationResume,
   presentationDetail,
+  formationsLabels,
 }: {
   id: string
-  typologies?: string[] | null
+  typologies?: Typologie[] | null
   presentationResume?: string | null
   presentationDetail?: string | null
+  formationsLabels?: FormationLabel[] | null
 }) => {
   const mutation = trpc.lieuActivite.updateDescription.useMutation()
   const router = useRouter()
@@ -80,6 +83,7 @@ const DescriptionEditCard = ({
           typologies={typologies}
           presentationResume={presentationResume}
           presentationDetail={presentationDetail}
+          formationsLabels={formationsLabels}
         />
       }
       isEmpty={[typologies, presentationResume, presentationDetail].every(

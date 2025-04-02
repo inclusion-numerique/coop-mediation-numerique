@@ -1,5 +1,6 @@
 import { typologieStructureLabels } from '@app/web/app/structure/typologieStructure'
 import Button from '@codegouvfr/react-dsfr/Button'
+import type { Typologie } from '@prisma/client'
 import React from 'react'
 
 export const Typologies = ({
@@ -7,7 +8,7 @@ export const Typologies = ({
   typologies,
 }: {
   id: string
-  typologies: string[]
+  typologies: Typologie[]
 }) =>
   typologies.length > 0 && (
     <div className="fr-flex fr-align-items-center">
@@ -27,7 +28,10 @@ export const Typologies = ({
         aria-hidden="true"
       >
         {typologies
-          .map((typologie) => typologieStructureLabels[typologie])
+          .map(
+            (typologie: Typologie): string =>
+              typologieStructureLabels[typologie],
+          )
           ?.join(', ')}
       </span>
     </div>

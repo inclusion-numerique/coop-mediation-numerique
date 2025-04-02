@@ -1,7 +1,4 @@
-import {
-  OsmDaysOfWeek,
-  toTimetableOpeningHours,
-} from '@gouvfr-anct/timetable-to-osm-opening-hours'
+import { OsmDaysOfWeek } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 
 export type Period = 'am' | 'pm'
 
@@ -44,13 +41,6 @@ export const emptyOpeningHours = {
   Sa: defaultOpeningHours,
   Su: defaultOpeningHours,
 }
-
-export const osmOpeningHoursToOpeningHours = (
-  osmOpeningHours?: string | null,
-) =>
-  osmOpeningHours
-    ? toTimetableOpeningHours(new Date())(osmOpeningHours)
-    : emptyOpeningHours
 
 export const appendComment = (
   osmOpeningHours: string,

@@ -1,11 +1,14 @@
+import { modaliteAccompagnementLabels } from '@app/web/app/structure/modaliteAccompagnement'
+import { serviceLabels } from '@app/web/app/structure/service'
 import Tag from '@codegouvfr/react-dsfr/Tag'
+import type { ModaliteAccompagnement, Service } from '@prisma/client'
 
 export const ServicesEtAccompagnementView = ({
   services = [],
   modalitesAccompagnement = [],
 }: {
-  services?: string[]
-  modalitesAccompagnement?: string[]
+  services?: Service[]
+  modalitesAccompagnement?: ModaliteAccompagnement[]
 }) => (
   <div className="fr-flex fr-direction-column fr-flex-gap-4v">
     <div data-testid="services-et-accompagnement-services">
@@ -19,7 +22,7 @@ export const ServicesEtAccompagnementView = ({
         <ul className="fr-tags-group">
           {services.map((service) => (
             <li key={service}>
-              <Tag>{service}</Tag>
+              <Tag>{serviceLabels[service]}</Tag>
             </li>
           ))}
         </ul>
@@ -33,7 +36,7 @@ export const ServicesEtAccompagnementView = ({
         <ul className="fr-tags-group">
           {modalitesAccompagnement.map((modaliteAccompagnement) => (
             <li key={modaliteAccompagnement}>
-              <Tag>{modaliteAccompagnement}</Tag>
+              <Tag>{modaliteAccompagnementLabels[modaliteAccompagnement]}</Tag>
             </li>
           ))}
         </ul>
