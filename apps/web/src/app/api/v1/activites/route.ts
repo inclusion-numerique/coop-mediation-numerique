@@ -34,6 +34,7 @@ import { type ZodError, z } from 'zod'
 type ActiviteAttributes = {
   type: 'individuel' | 'demarche_administrative' | 'collectif'
   mediateur_id: string
+  user_id: string
   accompagnements: number
   date: string
   duree: number // minutes
@@ -375,6 +376,7 @@ export const GET = createApiV1Route
       },
       orderBy: [{ creation: 'desc' }],
       include: {
+        mediateur: true,
         _count: {
           select: {
             accompagnements: true,
@@ -408,6 +410,7 @@ export const GET = createApiV1Route
         ({
           id,
           type,
+          mediateur,
           mediateurId,
           date,
           duree,
@@ -436,6 +439,7 @@ export const GET = createApiV1Route
             attributes: {
               type: typeActiviteApiValues[type],
               mediateur_id: mediateurId,
+              user_id: mediateur.userId,
               date: date.toISOString(),
               duree,
               structure_id: structureId,
