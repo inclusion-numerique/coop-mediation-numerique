@@ -159,7 +159,13 @@ const CraDemarcheAdministrativeForm = ({
     formState: { isSubmitting, isSubmitSuccessful, errors },
   } = form
 
+  const isLoading = isSubmitting || isSubmitSuccessful
+
   const onSubmit = async (data: CraDemarcheAdministrativeData) => {
+    if (isLoading) {
+      return
+    }
+
     try {
       await mutation.mutateAsync(data)
       createToast({
@@ -179,7 +185,6 @@ const CraDemarcheAdministrativeForm = ({
       })
     }
   }
-  const isLoading = isSubmitting || isSubmitSuccessful
 
   useScrollToError({ errors })
 
