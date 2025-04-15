@@ -376,7 +376,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
                 },
                 {
                   label: 'Adresse',
-                  value: (
+                  value: miseEnRelationActive.structureObj.insee ? (
                     <>
                       {
                         miseEnRelationActive.structureObj.insee.adresse
@@ -396,6 +396,8 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
                           .libelle_commune
                       }
                     </>
+                  ) : (
+                    'Non renseignée'
                   ),
                 },
                 miseEnRelationActive.structureObj.location?.coordinates
