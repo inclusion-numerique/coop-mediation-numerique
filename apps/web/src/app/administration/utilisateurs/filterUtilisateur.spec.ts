@@ -223,6 +223,14 @@ describe('filter utilisateur', () => {
       expect(filters).toEqual({})
     })
 
+    it('should not filter when roles filter is undefined', () => {
+      const data = {}
+
+      const filters = filterOnLieux(data)
+
+      expect(filters).toEqual({})
+    })
+
     it('should filter when lieux filter contains an id', () => {
       const data = { lieux: ['52f16963-fc6f-4684-a690-68b28f10da6a'] }
 
