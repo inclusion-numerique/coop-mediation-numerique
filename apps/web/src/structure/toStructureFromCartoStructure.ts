@@ -1,14 +1,23 @@
-import type { FraisAChargeLabel } from '@app/web/app/structure/fraisACharge'
+import { fraisAChargeKeys } from '@app/web/app/structure/fraisACharge'
+import { itineranceKeys } from '@app/web/app/structure/itinerance'
+import { modaliteAccompagnementKeys } from '@app/web/app/structure/modaliteAccompagnement'
+import { modaliteAccesKeys } from '@app/web/app/structure/modalitesAcces'
+import { priseEnChargeSpecifiqueKeys } from '@app/web/app/structure/priseEnChargeSpecifique'
+import { publicSpecifiquementAdresseKeys } from '@app/web/app/structure/publicSpecifiquementAdresse'
+import { serviceKeys } from '@app/web/app/structure/service'
 import { validateValidRnaDigits } from '@app/web/rna/rnaValidation'
 import { validateValidSiretDigits } from '@app/web/siret/siretValidation'
 import type {
+  Frais,
   Itinerance,
   ModaliteAcces,
   ModaliteAccompagnement,
   PriseEnChargeSpecifique,
-  Prisma,
   PublicSpecifiquementAdresse,
   Service,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
+import type {
+  Prisma,
   StructureCartographieNationale,
   Typologie,
 } from '@prisma/client'
@@ -83,7 +92,9 @@ export const toStructureFromCartoStructure = ({
     longitude,
     latitude,
     ficheAccesLibre,
-    services: services?.split('|') as Service[] | undefined,
+    services: services
+      ?.split('|')
+      .map((serviceLabel) => serviceKeys[serviceLabel as Service]),
     horaires,
     typologies: typologie?.split('|') as Typologie[] | undefined,
     presentationResume,
@@ -91,16 +102,37 @@ export const toStructureFromCartoStructure = ({
     courriels: courriels?.split('|'),
     telephone,
     siteWeb,
-    modalitesAccompagnement: modalitesAccompagnement?.split('|') as
-      | ModaliteAccompagnement[]
-      | undefined,
-    modalitesAcces: modalitesAcces?.split('|') as ModaliteAcces[] | undefined,
-    fraisACharge: fraisACharge?.split('|') as FraisAChargeLabel[] | undefined,
-    itinerance: itinerance?.split('|') as Itinerance[] | undefined,
-    priseEnChargeSpecifique: priseEnChargeSpecifique?.split('|') as
-      | PriseEnChargeSpecifique[]
-      | undefined,
-    publicsSpecifiquementAdresses: publicsSpecifiquementAdresses?.split('|') as
-      | PublicSpecifiquementAdresse[]
-      | undefined,
+    modalitesAccompagnement: modalitesAccompagnement
+      ?.split('|')
+      .map(
+        (modaliteAccompagnement) =>
+          modaliteAccompagnementKeys[
+            modaliteAccompagnement as ModaliteAccompagnement
+          ],
+      ),
+    modalitesAcces: modalitesAcces
+      ?.split('|')
+      .map(
+        (modaliteAcces) => modaliteAccesKeys[modaliteAcces as ModaliteAcces],
+      ),
+    fraisACharge: fraisACharge
+      ?.split('|')
+      .map((frais) => fraisAChargeKeys[frais as Frais]),
+    itinerance: itinerance
+      ?.split('|')
+      .map((itineranceLabel) => itineranceKeys[itineranceLabel as Itinerance]),
+    priseEnChargeSpecifique: priseEnChargeSpecifique
+      ?.split('|')
+      .map(
+        (priseEnCharge) =>
+          priseEnChargeSpecifiqueKeys[priseEnCharge as PriseEnChargeSpecifique],
+      ),
+    publicsSpecifiquementAdresses: publicsSpecifiquementAdresses
+      ?.split('|')
+      .map(
+        (publicSpecifiquementAdresse) =>
+          publicSpecifiquementAdresseKeys[
+            publicSpecifiquementAdresse as PublicSpecifiquementAdresse
+          ],
+      ),
   }) satisfies Prisma.StructureCreateManyInput
