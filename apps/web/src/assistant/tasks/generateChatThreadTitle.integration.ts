@@ -27,6 +27,7 @@ describe('generateChatThreadTitle', () => {
     expect(title).toBeOneOf([
       'Faon de biche',
       'Faons de biche',
+      'Faons de biches',
       'Bébés des biches',
       'Bébés de biches',
       'Nom des bébés biches',
