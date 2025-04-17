@@ -11,6 +11,7 @@ import {
   coordinations,
   fixtureUsers,
   teamAdministrateurs,
+  teamMediateurs,
 } from '@app/fixtures/users'
 import type { Prisma } from '@prisma/client'
 import { upsertCoordinationFixtures } from './upsertCoordinationFixture'
@@ -65,6 +66,21 @@ export const seed = async (transaction: Prisma.TransactionClient) => {
         })
         .catch((error) => {
           output.error('Error upserting team administrator fixture', team)
+          throw error
+        }),
+    ),
+  )
+
+  await Promise.all(
+    teamMediateurs.map((team) =>
+      transaction.user
+        .upsert({
+          where: { id: team.id },
+          create: team,
+          update: team,
+        })
+        .catch((error) => {
+          output.error('Error upserting team mediateur fixture', team)
           throw error
         }),
     ),
