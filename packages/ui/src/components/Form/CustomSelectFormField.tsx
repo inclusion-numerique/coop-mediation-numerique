@@ -157,6 +157,7 @@ const CustomSelectFormField = <
         >['onChange'] = (option) => {
           if (option == null) {
             onChange(null)
+            setSelected([])
             return
           }
 

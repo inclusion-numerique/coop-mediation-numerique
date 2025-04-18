@@ -446,18 +446,10 @@ describe('getMesStatistiquesPageData', () => {
             {
               codeInsee: '75101',
               codePostal: '75001',
-              count: 2,
               label: 'Paris · 75001',
               nom: 'Paris',
-              proportion: 66.667,
-            },
-            {
-              codeInsee: '69382',
-              codePostal: '69002',
               count: 1,
-              label: 'Lyon 2eme · 69002',
-              nom: 'Lyon 2eme',
-              proportion: 33.333,
+              proportion: 100,
             },
           ]
 

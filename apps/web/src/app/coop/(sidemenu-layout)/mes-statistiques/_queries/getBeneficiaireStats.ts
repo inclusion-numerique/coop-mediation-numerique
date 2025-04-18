@@ -125,7 +125,7 @@ export const normalizeBeneficiairesStatsRaw = (
 export type BeneficiairesCommunesRaw = {
   commune: string
   code_postal: string
-  coalesced_code_insee: string
+  code_insee: string
   count_beneficiaires: number
 }
 
@@ -142,14 +142,9 @@ export const getBeneficiairesCommunesRaw = async ({
 
   return prismaClient.$queryRaw<BeneficiairesCommunesRaw[]>`
       SELECT DISTINCT
-        COALESCE(
-          ben.commune_code_insee,
-          CASE
-            WHEN act.type != 'collectif' THEN act.lieu_code_insee
-            END
-        ) AS coalesced_code_insee,
-        MIN(COALESCE(ben.commune, act.lieu_commune)) AS commune,
-        MIN(COALESCE(ben.commune_code_postal, act.lieu_code_postal)) AS code_postal,
+        MIN(ben.commune_code_insee) AS code_insee,
+        MIN(ben.commune) AS commune,
+        MIN(ben.commune_code_postal) AS code_postal,
         COUNT(DISTINCT ben.id) ::integer AS count_beneficiaires
       FROM beneficiaires ben
         INNER JOIN accompagnements acc ON acc.beneficiaire_id = ben.id
@@ -162,10 +157,10 @@ export const getBeneficiairesCommunesRaw = async ({
             FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user.coordinateur?.id}::UUID
         WHERE (act.date <= mc.suppression OR mc.suppression IS NULL)
           AND ${getActiviteFiltersSqlFragment(getActivitesFiltersWhereConditions(activitesFilters))}
-      GROUP BY coalesced_code_insee
+      GROUP BY commune_code_insee
   `.then((result) =>
     // Filter out null codeInsee for when there is no commune in beneficiaire or activite
-    result.filter(({ coalesced_code_insee }) => !!coalesced_code_insee),
+    result.filter(({ code_insee }) => !!code_insee),
   )
 }
 
@@ -176,9 +171,9 @@ export const normalizeBeneficiairesCommunesRaw = (
     (a, b) => b.count_beneficiaires - a.count_beneficiaires,
   )
   const normalizedCommunes = sortedCommunes.map(
-    ({ commune, coalesced_code_insee, code_postal, count_beneficiaires }) => ({
+    ({ commune, code_insee, code_postal, count_beneficiaires }) => ({
       nom: commune,
-      codeInsee: coalesced_code_insee,
+      codeInsee: code_insee,
       codePostal: code_postal,
       count: count_beneficiaires,
       label: `${commune} · ${code_postal}`,
