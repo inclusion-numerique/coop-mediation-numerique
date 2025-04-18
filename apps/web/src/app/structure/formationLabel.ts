@@ -18,6 +18,11 @@ export const formationLabelLabels: Record<
   SudLabs: FormationLabel.SudLabs,
 }
 
+export const formationLabelKeys: Record<FormationLabel, PrismaFormationLabel> =
+  Object.fromEntries(
+    Object.entries(formationLabelLabels).map(([key, value]) => [value, key]),
+  ) as Record<FormationLabel, PrismaFormationLabel>
+
 export type FormationLabelLabel = keyof typeof formationLabelLabels
 
 export const formationLabelValues = Object.keys(formationLabelLabels) as [

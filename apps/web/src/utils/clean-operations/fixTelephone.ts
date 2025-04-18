@@ -51,9 +51,10 @@ const fixShortAssuranceRetraitePhone = (field: string): CleanOperation => ({
 
 const fixMissingPlusCharAtStartingPhone = (field: string): CleanOperation => ({
   name: 'fix missing + at starting phone number',
-  selector: /^33(\d+)/,
+  selector: /^(33|262|590|594|596)(\d+)/,
   field,
-  fix: (toFix: string): string => toFix.replace(/^33(\d+)/, '+33$1'),
+  fix: (toFix: string): string =>
+    toFix.replace(/^(33|262|590|594|596)(\d+)/, '+$1$2'),
 })
 
 const fixReplaceLeading0With33InPhoneNumberStatingWithPlus = (
@@ -104,7 +105,7 @@ const keepFirstNumberIfMultiple = (field: string): CleanOperation => ({
 })
 
 const cleanOperationIfAny = (
-  cleanOperator: (colonne: string, codePostal?: string) => CleanOperation,
+  cleanOperator: (colonne: string) => CleanOperation,
   telephone: string | null,
 ): CleanOperation[] => (telephone == null ? [] : [cleanOperator(telephone)])
 
@@ -139,10 +140,18 @@ const applyOperation =
   (cleanOperation: CleanOperation) => (telephone: string) =>
     cleanOperation.fix ? cleanOperation.fix(telephone) : null
 
-export const toFixedTelephone = (
+const toFixedTelephone = (
   telephone: string | null,
   cleanOperation: CleanOperation,
 ): string | null =>
   canFixTelephone(telephone, cleanOperation)
     ? applyOperation(cleanOperation)(telephone)
     : telephone
+
+const toInternationalFormat = (phone: string): string =>
+  /^0\d{9}$/.test(phone) ? `+33${phone.slice(1)}` : phone
+
+export const fixTelephone = (telephone: string | null) => {
+  const fixed = cleanTelephone(telephone).reduce(toFixedTelephone, telephone)
+  return fixed == null ? null : toInternationalFormat(fixed)
+}

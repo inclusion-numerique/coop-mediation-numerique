@@ -12,6 +12,16 @@ export const modaliteAccompagnementLabels: Record<
   ADistance: ModaliteAccompagnement.ADistance,
 }
 
+export const modaliteAccompagnementKeys: Record<
+  ModaliteAccompagnement,
+  PrismaModaliteAccompagnement
+> = Object.fromEntries(
+  Object.entries(modaliteAccompagnementLabels).map(([key, value]) => [
+    value,
+    key,
+  ]),
+) as Record<ModaliteAccompagnement, PrismaModaliteAccompagnement>
+
 export type ModaliteAccompagnementLabel =
   keyof typeof modaliteAccompagnementLabels
 

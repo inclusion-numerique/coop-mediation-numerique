@@ -172,8 +172,11 @@ const canFixUrl = (
 const applyOperation = (cleanOperation: CleanOperation) => (url: string) =>
   cleanOperation.fix ? cleanOperation.fix(url) : null
 
-export const toFixedUrl = (
+const toFixedUrl = (
   url: string | null,
   cleanOperation: CleanOperation,
 ): string | null =>
   canFixUrl(url, cleanOperation) ? applyOperation(cleanOperation)(url) : url
+
+export const fixUrl = (url: string | null) =>
+  cleanUrl(url).reduce(toFixedUrl, url)

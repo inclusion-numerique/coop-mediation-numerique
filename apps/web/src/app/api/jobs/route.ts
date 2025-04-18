@@ -5,6 +5,7 @@ import { JobValidation } from '@app/web/jobs/jobs'
 import * as Sentry from '@sentry/nextjs'
 import type { NextRequest } from 'next/server'
 
+export const maxDuration = 600
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 

@@ -19,6 +19,10 @@ export const serviceLabels: Record<PrismaService, Service> = {
     Service.AccesInternetEtMaterielInformatique,
 }
 
+export const serviceKeys: Record<Service, PrismaService> = Object.fromEntries(
+  Object.entries(serviceLabels).map(([key, value]) => [value, key]),
+) as Record<Service, PrismaService>
+
 export type ServiceLabel = keyof typeof serviceLabels
 
 export const serviceValues = Object.keys(serviceLabels) as [

@@ -8,6 +8,11 @@ export const fraisAChargeLabels: Record<PrismaFraisACharge, Frais> = {
   Payant: Frais.Payant,
 }
 
+export const fraisAChargeKeys: Record<Frais, PrismaFraisACharge> =
+  Object.fromEntries(
+    Object.entries(fraisAChargeLabels).map(([key, value]) => [value, key]),
+  ) as Record<Frais, PrismaFraisACharge>
+
 export type FraisAChargeLabel = keyof typeof fraisAChargeLabels
 
 export const fraisAChargeValues = Object.keys(fraisAChargeLabels) as [

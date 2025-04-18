@@ -1,4 +1,5 @@
 import { prismaClient } from '@app/web/prismaClient'
+import { fixTelephone } from '@app/web/utils/clean-operations'
 
 export const updateUserData = async ({
   userId,
@@ -15,7 +16,7 @@ export const updateUserData = async ({
     data: {
       firstName,
       lastName,
-      phone,
+      phone: fixTelephone(phone),
       name: `${firstName} ${lastName}`,
     },
     where: {

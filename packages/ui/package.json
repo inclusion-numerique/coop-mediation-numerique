@@ -16,8 +16,8 @@
     "node": "^22.10"
   },
   "dependencies": {
-    "@codegouvfr/react-dsfr": "^1.16.4",
-    "@gouvfr/dsfr": "^1.13.0",
+    "@codegouvfr/react-dsfr": "^1.22.5",
+    "@gouvfr/dsfr": "^1.13.1",
     "@hookform/resolvers": "^3.9.1",
     "@tiptap/extension-link": "^2.10.3",
     "@tiptap/react": "^2.10.3",

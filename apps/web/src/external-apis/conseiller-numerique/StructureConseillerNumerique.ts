@@ -31,7 +31,7 @@ export type StructureConseillerNumerique = {
   deleted_at: Date | null
   userCreated: boolean
   coselecAt: Date
-  insee: {
+  insee?: {
     siret: string
     siege_social: boolean
     etat_administratif: string // 'A' | other possible states

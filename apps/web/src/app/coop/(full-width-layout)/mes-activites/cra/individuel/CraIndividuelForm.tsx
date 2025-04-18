@@ -151,7 +151,12 @@ const CraIndividuelForm = ({
     formState: { isSubmitting, isSubmitSuccessful, errors },
   } = form
 
+  const isLoading = isSubmitting || isSubmitSuccessful
+
   const onSubmit = async (data: CraIndividuelData) => {
+    if (isLoading) {
+      return
+    }
     try {
       await mutation.mutateAsync(data)
       createToast({
@@ -173,7 +178,6 @@ const CraIndividuelForm = ({
       throw mutationError
     }
   }
-  const isLoading = isSubmitting || isSubmitSuccessful
 
   useScrollToError({ errors })
 

@@ -13,6 +13,7 @@ import { ServerUserSignupValidation } from '@app/web/server/rpc/user/userSignup.
 import { mergeUser } from '@app/web/user/mergeUser'
 import { searchUser } from '@app/web/user/searchUser'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
+import { fixTelephone } from '@app/web/utils/clean-operations'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import { v4 } from 'uuid'
 import { z } from 'zod'
@@ -45,7 +46,7 @@ export const userRouter = router({
           data: {
             firstName,
             lastName,
-            phone,
+            phone: fixTelephone(phone ?? null),
             name: `${firstName} ${lastName}`,
           },
         })

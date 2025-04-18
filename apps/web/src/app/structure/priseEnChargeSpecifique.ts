@@ -15,6 +15,16 @@ export const priseEnChargeSpecifiqueLabels: Record<
   DeficienceVisuelle: PriseEnChargeSpecifique.DeficienceVisuelle,
 }
 
+export const priseEnChargeSpecifiqueKeys: Record<
+  PriseEnChargeSpecifique,
+  PrismaPriseEnChargeSpecifique
+> = Object.fromEntries(
+  Object.entries(priseEnChargeSpecifiqueLabels).map(([key, value]) => [
+    value,
+    key,
+  ]),
+) as Record<PriseEnChargeSpecifique, PrismaPriseEnChargeSpecifique>
+
 export type PriseEnChargeSpecifiqueLabel =
   keyof typeof priseEnChargeSpecifiqueLabels
 

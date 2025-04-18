@@ -707,7 +707,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
                 },
                 {
                   label: 'Adresse',
-                  value: (
+                  value: miseEnRelationActive.structureObj.insee ? (
                     <>
                       {
                         miseEnRelationActive.structureObj.insee.adresse
@@ -727,6 +727,8 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
                           .libelle_commune
                       }
                     </>
+                  ) : (
+                    'Non renseignée'
                   ),
                 },
                 miseEnRelationActive.structureObj.location?.coordinates
@@ -937,7 +939,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
                 },
                 {
                   label: 'Adresse',
-                  value: (
+                  value: miseEnRelation.structureObj.insee ? (
                     <>
                       {miseEnRelation.structureObj.insee.adresse.numero_voie}{' '}
                       {miseEnRelation.structureObj.insee.adresse.libelle_voie},{' '}
@@ -947,6 +949,8 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
                           .libelle_commune
                       }
                     </>
+                  ) : (
+                    'Non renseignée'
                   ),
                 },
                 miseEnRelation.structureObj.location?.coordinates

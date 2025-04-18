@@ -30,7 +30,7 @@ const CreateCraIndividuelPage = async ({
     mediateurId: string
   } = {
     ...urlFormState,
-    date: new Date().toISOString().slice(0, 10),
+    date: urlFormState.date ?? new Date().toISOString().slice(0, 10),
     mediateurId: user.mediateur.id,
     beneficiaire: {
       // Could be from another mediateur ? is it safe ? check will be backend ?

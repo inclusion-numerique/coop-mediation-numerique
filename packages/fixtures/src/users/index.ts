@@ -1,4 +1,5 @@
 import { givenUser } from '@app/fixtures/givenUser'
+import { mediateque, structureEmployeuse } from '@app/fixtures/structures'
 import type { Prisma } from '@prisma/client'
 import { administrateur } from './administrateur'
 import { conseillerInscription } from './conseillerInscription'
@@ -67,6 +68,51 @@ export const coordinations = [
       mediateurAvecActiviteMediateurId,
     ],
   },
+]
+
+export const teamMediateurs = [
+  givenUser({
+    id: '4aaa6b35-95ef-488f-beab-f5cd46575496',
+    firstName: 'Manon (test)',
+    lastName: 'Galle',
+    email: 'manon_galle@hotmail.com',
+    role: 'User',
+    inscriptionValidee: new Date(),
+    lieuxActiviteRenseignes: new Date(),
+    structureEmployeuseRenseignee: new Date(),
+    mediateur: {
+      connectOrCreate: {
+        where: {
+          id: '80366431-7f55-4e2f-b922-77f747a73152',
+        },
+        create: {
+          id: '80366431-7f55-4e2f-b922-77f747a73152',
+          enActivite: {
+            connectOrCreate: {
+              where: {
+                id: '10470094-854a-4ebf-bf94-e632309a87ae',
+              },
+              create: {
+                id: '10470094-854a-4ebf-bf94-e632309a87ae',
+                structureId: mediateque.id,
+              },
+            },
+          },
+        },
+      },
+    },
+    emplois: {
+      connectOrCreate: {
+        where: {
+          id: '5f1fb5a2-1e8e-4d6d-892b-25ae1cbeabcc',
+        },
+        create: {
+          id: '5f1fb5a2-1e8e-4d6d-892b-25ae1cbeabcc',
+          structureId: structureEmployeuse.id,
+        },
+      },
+    },
+  }),
 ]
 
 export const teamAdministrateurs = [
