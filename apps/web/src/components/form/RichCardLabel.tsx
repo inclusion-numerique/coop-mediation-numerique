@@ -53,20 +53,23 @@ const RichCardLabel = memo(
         >
           Information
         </button>
-        <span
-          className="fr-tooltip fr-placement"
-          id={tooltipId}
-          role="tooltip"
-          aria-hidden="true"
-        >
-          {option.extra.tooltips.map((tooltipContent) => (
-            <Fragment key={tooltipContent}>
-              {tooltipContent}
-              <br />
-            </Fragment>
-          ))}
-        </span>
       </div>
+    ) : null
+
+    const tooltipContent = option.extra?.tooltips ? (
+      <span
+        className="fr-tooltip fr-placement"
+        id={tooltipId}
+        role="tooltip"
+        aria-hidden="true"
+      >
+        {option.extra.tooltips.map((tooltipContent) => (
+          <Fragment key={tooltipContent}>
+            {tooltipContent}
+            <br />
+          </Fragment>
+        ))}
+      </span>
     ) : null
 
     const handleKeyPress: KeyboardEventHandler = (event) => {
@@ -80,63 +83,66 @@ const RichCardLabel = memo(
     }
 
     return (
-      <label
-        htmlFor={htmlFor}
-        className={classNames(
-          'fr-border-radius--4 fr-border',
-          styles.label,
-          paddingX === 16 ? styles.paddingX16 : styles.paddingX24,
-          paddingRight
-            ? paddingRight === 16
-              ? styles.paddingRight16
-              : styles.paddingRight24
-            : null,
-          className,
-        )}
-        tabIndex={0}
-        onKeyDown={handleKeyPress}
-      >
-        <div className="fr-flex fr-justify-content-space-between fr-flex-gap-4v fr-width-full fr-height-full">
-          <div
-            className={classNames(
-              'fr-text--sm fr-mb-0 fr-text--medium fr-flex-grow-1 fr-flex fr-justify-content-center fr-direction-column',
-              classes?.labelContainer,
-            )}
-          >
-            {typeof option.extra?.stars === 'number' && (
-              <Stars
-                count={option.extra.stars}
-                max={option.extra.maxStars}
-                className="fr-mb-1v"
-              />
-            )}
-            {option.label}
-            {!!option.hint && (
-              <>
-                <br />
-                <span className="fr-text--xs fr-mb-0 fr-text--regular fr-text-mention--grey fr-flex-grow-1">
-                  {option.hint}
-                </span>{' '}
-              </>
-            )}
-          </div>
-
-          {!!option.extra?.illustration && (
+      <>
+        <label
+          htmlFor={htmlFor}
+          className={classNames(
+            'fr-border-radius--4 fr-border',
+            styles.label,
+            paddingX === 16 ? styles.paddingX16 : styles.paddingX24,
+            paddingRight
+              ? paddingRight === 16
+                ? styles.paddingRight16
+                : styles.paddingRight24
+              : null,
+            className,
+          )}
+          tabIndex={0}
+          onKeyDown={handleKeyPress}
+        >
+          <div className="fr-flex fr-justify-content-space-between fr-flex-gap-4v fr-width-full fr-height-full">
             <div
               className={classNames(
-                'fr-flex-shrink-0 fr-flex fr-align-items-center',
+                'fr-text--sm fr-mb-0 fr-text--medium fr-flex-grow-1 fr-flex fr-justify-content-center fr-direction-column',
+                classes?.labelContainer,
               )}
             >
-              <img
-                className={styles.illustration}
-                alt=""
-                src={option.extra.illustration}
-              />
+              {typeof option.extra?.stars === 'number' && (
+                <Stars
+                  count={option.extra.stars}
+                  max={option.extra.maxStars}
+                  className="fr-mb-1v"
+                />
+              )}
+              {option.label}
+              {!!option.hint && (
+                <>
+                  <br />
+                  <span className="fr-text--xs fr-mb-0 fr-text--regular fr-text-mention--grey fr-flex-grow-1">
+                    {option.hint}
+                  </span>{' '}
+                </>
+              )}
             </div>
-          )}
-        </div>
-        {hintsTooltip}
-      </label>
+
+            {!!option.extra?.illustration && (
+              <div
+                className={classNames(
+                  'fr-flex-shrink-0 fr-flex fr-align-items-center',
+                )}
+              >
+                <img
+                  className={styles.illustration}
+                  alt=""
+                  src={option.extra.illustration}
+                />
+              </div>
+            )}
+          </div>
+          {hintsTooltip}
+        </label>
+        {tooltipContent}
+      </>
     )
   },
 )

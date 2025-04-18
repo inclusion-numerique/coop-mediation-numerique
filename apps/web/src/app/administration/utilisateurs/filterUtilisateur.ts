@@ -104,7 +104,9 @@ const canFilterOnLieux = ({
   departements?: string[]
   communes?: string[]
 }) =>
-  lieux?.length === 0 && departements?.length === 0 && communes?.length === 0
+  (lieux?.length ?? 0) === 0 &&
+  (departements?.length ?? 0) === 0 &&
+  (communes?.length ?? 0) === 0
 
 const hasLieuxFilter = ({ lieux }: { lieux?: string[] }) =>
   lieux != null && lieux.length > 0

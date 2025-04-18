@@ -13,6 +13,16 @@ export const publicSpecifiquementAdresseLabels: Record<
   Femmes: PublicSpecifiquementAdresse.Femmes,
 }
 
+export const publicSpecifiquementAdresseKeys: Record<
+  PublicSpecifiquementAdresse,
+  PrismaPublicSpecifiquementAdresse
+> = Object.fromEntries(
+  Object.entries(publicSpecifiquementAdresseLabels).map(([key, value]) => [
+    value,
+    key,
+  ]),
+) as Record<PublicSpecifiquementAdresse, PrismaPublicSpecifiquementAdresse>
+
 export type PublicSpecifiquementAdresseLabel =
   keyof typeof publicSpecifiquementAdresseLabels
 

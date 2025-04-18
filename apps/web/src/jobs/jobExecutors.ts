@@ -1,6 +1,7 @@
 import { executeBackupDatabaseJob } from '@app/web/jobs/backup-database/executeBackupDatabaseJob'
 import { executeFixCoordinationsV1 } from '@app/web/jobs/fix-coordinations-v1/executeFixCoordinationsV1'
 import { executeFixStructures } from '@app/web/jobs/fix-structures/executeFixStructures'
+import { executeFixUsers } from '@app/web/jobs/fix-users/executeFixUsers'
 import { executeImportContactsToBrevo } from '@app/web/jobs/import-contacts-to-brevo/executeImportContactsToBrevo'
 import { executeImportCrasConseillerNumeriqueV1 } from '@app/web/jobs/import-cras-conseiller-numerique-v1/executeImportCrasConseillerNumeriqueV1'
 import { executeIngestLesBasesInRag } from '@app/web/jobs/ingest-les-bases-in-rag/executeIngestLesBasesInRag'
@@ -38,9 +39,7 @@ const executeUpdateStructuresCartographieNationale = async () => {
     structuresCartographieNationale,
   })
 
-  const result = await execute()
-
-  return result
+  return await execute()
 }
 
 // Create an object that for each JobName, MUST has a JobExecutor<Name>
@@ -59,6 +58,7 @@ export const jobExecutors: {
   'update-lieux-activites-a-distance': executeUpdateLieuxActivitesADistance,
   'fix-structures': executeFixStructures,
   'update-conum-info': executeUpdateConumInfo,
+  'fix-users': executeFixUsers,
 }
 
 export const executeJob = async (job: Job) => {

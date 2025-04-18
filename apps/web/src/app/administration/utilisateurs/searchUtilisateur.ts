@@ -2,6 +2,12 @@ import {
   UtilisateursDataTable,
   type UtilisateursDataTableSearchParams,
 } from '@app/web/app/administration/utilisateurs/UtilisateursDataTable'
+import {
+  filterOnDispositif,
+  filterOnLieux,
+  filterOnRoles,
+  filterOnStatut,
+} from '@app/web/app/administration/utilisateurs/filterUtilisateur'
 import { queryUtilisateursForList } from '@app/web/app/administration/utilisateurs/queryUtilisateursForList'
 import { getDataTableOrderBy } from '@app/web/data-table/getDataTableOrderBy'
 import { takeAndSkipFromPage } from '@app/web/data-table/takeAndSkipFromPage'
@@ -10,12 +16,6 @@ import { toQueryParts } from '@app/web/data-table/toQueryParts'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
 import { z } from 'zod'
-import {
-  filterOnDispositif,
-  filterOnLieux,
-  filterOnRoles,
-  filterOnStatut,
-} from './filterUtilisateur'
 import { UtiliateursFilterValidations } from './utilisateursFilters'
 
 type SearchUtilisateurOptions = {

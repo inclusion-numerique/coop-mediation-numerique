@@ -18,6 +18,8 @@
 }
 
 .fr-btn.fr-btn--loading {
+  pointer-events: none;
+
   &:not(.fr-btn--icon-right, .fr-connect) {
     &::before {
       mask-image: url("/images/spinner.svg");

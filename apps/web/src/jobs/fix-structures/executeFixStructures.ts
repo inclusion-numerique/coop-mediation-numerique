@@ -1,17 +1,12 @@
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
+import { fixTelephone, fixUrl } from '@app/web/utils/clean-operations'
 import {
   Localisation,
   isValidTelephone,
   isValidUrl,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import proj4 from 'proj4'
-import {
-  cleanTelephone,
-  cleanUrl,
-  toFixedTelephone,
-  toFixedUrl,
-} from './clean-operations'
 import { FixStructuresJob } from './fixStructuresJob'
 
 const isInvalidPivot = ({
@@ -26,11 +21,6 @@ const toId = ({ id }: { id: string }) => id
 
 const isInvalidTelephone = ({ telephone }: { telephone: string | null }) =>
   telephone && !isValidTelephone(telephone)
-
-const fixTelephone = (telephone: string | null) =>
-  cleanTelephone(telephone).reduce(toFixedTelephone, telephone)
-
-const fixUrl = (url: string | null) => cleanUrl(url).reduce(toFixedUrl, url)
 
 const fixLocation = (localisation: {
   latitude: number | null

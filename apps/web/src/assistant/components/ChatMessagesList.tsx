@@ -13,10 +13,11 @@ const ChatMessagesList = ({
 }) => {
   // There is some duplicated messages sometimes, we remove them
   // TODO find out why duplicated ? Bug from ai-sdk-react ?
-  const messages = new Map(
-    unprocessedMessages.map((message) => [message.id, message]),
-  )
-    .values()
+  const messages = [
+    ...new Map(
+      unprocessedMessages.map((message) => [message.id, message]),
+    ).values(),
+  ]
     .map((message) => {
       // we remove the "repondre" tool invocations from message parts
       if (message.role === 'assistant') {
@@ -36,7 +37,6 @@ const ChatMessagesList = ({
       return message
     })
     .filter((message) => !!message.content || message.parts.length > 0)
-    .toArray()
 
   if (messages.length === 0)
     return (
