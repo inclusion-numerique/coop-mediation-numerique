@@ -280,7 +280,7 @@ model Mediateur {
 model InvitationEquipe {
   email          String
   coordinateurId String    @map("coordinateur_id") @db.Uuid
-  mediateurId    String?   @unique @map("mediateur_id") @db.Uuid
+  mediateurId    String?   @map("mediateur_id") @db.Uuid
   creation       DateTime? @default(now())
   acceptee       DateTime?
   refusee        DateTime?
@@ -1265,8 +1265,8 @@ model AssistantConfiguration {
 model AssistantChatMessage {
   id          String              @id @default(uuid()) @db.Uuid
   role        String // 'system' | 'user' | 'assistant'
-  thread     AssistantChatThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  threadId   String              @map("thread_id") @db.Uuid
+  thread      AssistantChatThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  threadId    String              @map("thread_id") @db.Uuid
   created     DateTime            @default(now())
   parts       Json[]              @default([]) // See CoreMessage.parts types (text, tool-result, etc...)
   annotations Json[]              @default([]) // Custom data
