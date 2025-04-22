@@ -1,15 +1,17 @@
-import { RdvAccount } from '@prisma/client'
-
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import { OauthRdvApiGetUserResponse } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
+import {
+  OauthRdvApiGetUserResponse,
+  OauthRdvApiMeResponse,
+} from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
 import { refreshRdvAccessToken } from '@app/web/rdv-service-public/refreshRdvAccessToken'
 import { removeUndefinedValues } from '@app/web/utils/removeUndefinedValues'
+import type { RdvAccount } from '@prisma/client'
 import axios, { AxiosError, AxiosRequestConfig } from 'axios'
 
-export type OAuthRdvApiCallRdvAccount = Pick<
+export type OAuthRdvApiCredentials = Pick<
   RdvAccount,
-  'id' | 'accessToken' | 'refreshToken' | 'scope' | 'expiresAt'
->
+  'accessToken' | 'refreshToken' | 'expiresAt' | 'scope'
+> & { id?: number }
 
 /**
  * executes an API call to the rdv system using the rdvAccount's tokens,
@@ -19,11 +21,11 @@ export type OAuthRdvApiCallRdvAccount = Pick<
 export const executeOAuthRdvApiCall = async <ResponseType = unknown>({
   rdvAccount,
   path,
-  config,
+  config = {},
 }: {
   path: string
-  rdvAccount: OAuthRdvApiCallRdvAccount
-  config: Omit<AxiosRequestConfig, 'url'>
+  rdvAccount: OAuthRdvApiCredentials
+  config?: Omit<AxiosRequestConfig, 'url'>
 }) => {
   // check if token is expired or about to expire
   const now = Date.now()
@@ -34,8 +36,11 @@ export const executeOAuthRdvApiCall = async <ResponseType = unknown>({
   let accountToUse = rdvAccount
 
   // refresh if it's already expired or will soon expire
-  if (willExpireSoon) {
-    accountToUse = await refreshRdvAccessToken(rdvAccount)
+  if (willExpireSoon && rdvAccount.id) {
+    accountToUse = await refreshRdvAccessToken({
+      ...rdvAccount,
+      id: rdvAccount.id,
+    })
     currentAccessToken = accountToUse.accessToken
   }
 
@@ -58,9 +63,12 @@ export const executeOAuthRdvApiCall = async <ResponseType = unknown>({
     if (error instanceof AxiosError) {
       const status = error.response?.status
       // typical invalid token scenario: 401
-      if (status === 401) {
+      if (status === 401 && rdvAccount.id) {
         // refresh and retry once
-        const updated = await refreshRdvAccessToken(accountToUse)
+        const updated = await refreshRdvAccessToken({
+          ...accountToUse,
+          id: rdvAccount.id,
+        })
         const retryConfig: AxiosRequestConfig = {
           ...requestConfig,
           headers: {
@@ -84,10 +92,23 @@ export const oAuthRdvApiGetUser = async ({
   rdvAccount,
 }: {
   userId: string // RDV Service Public user id
-  rdvAccount: OAuthRdvApiCallRdvAccount
+  rdvAccount: OAuthRdvApiCredentials
 }) =>
   executeOAuthRdvApiCall<OauthRdvApiGetUserResponse>({
     path: `/users/${userId}`,
+    rdvAccount,
+    config: {
+      method: 'GET',
+    },
+  })
+
+export const oAuthRdvApiMe = async ({
+  rdvAccount,
+}: {
+  rdvAccount: OAuthRdvApiCredentials
+}) =>
+  executeOAuthRdvApiCall<OauthRdvApiMeResponse>({
+    path: '/agents/me',
     rdvAccount,
     config: {
       method: 'GET',

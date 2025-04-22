@@ -15,7 +15,6 @@ export type OauthRdvApiMeResponse = {
     email: string
     first_name: string
     last_name: string
-    inclusion_connect_open_id_sub: string | null
   }
 }
 

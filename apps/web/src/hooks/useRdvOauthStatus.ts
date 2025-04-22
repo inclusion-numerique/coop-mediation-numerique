@@ -1,4 +1,4 @@
-import { SessionUser } from '@app/web/auth/sessionUser'
+import type { SessionUser } from '@app/web/auth/sessionUser'
 import { trpc } from '@app/web/trpc'
 import { useEffect, useState } from 'react'
 

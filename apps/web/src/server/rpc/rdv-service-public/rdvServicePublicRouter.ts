@@ -9,11 +9,9 @@ import {
   OauthRdvApiMeInputValidation,
   type OauthRdvApiMeResponse,
 } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
-import { createRdvServicePublicAccount } from '@app/web/rdv-service-public/createRdvServicePublicAccount'
 import { executeOAuthRdvApiCall } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
-import { forbiddenError, invalidError } from '@app/web/server/rpc/trpcErrors'
-import z from 'zod'
+import { invalidError } from '@app/web/server/rpc/trpcErrors'
 
 const getContextForOAuthApiCall = async ({
   user,
@@ -43,42 +41,6 @@ const getContextForOAuthApiCall = async ({
 }
 
 export const rdvServicePublicRouter = router({
-  createAccount: protectedProcedure
-    .input(
-      z.object({
-        userId: z.string().uuid(),
-      }),
-    )
-    .mutation(async ({ input: { userId }, ctx: { user } }) => {
-      if (user.id !== userId) {
-        throw forbiddenError("Vous n'avez pas accès à cette action")
-      }
-
-      const userWithSecretData = await prismaClient.user.findUnique({
-        where: {
-          id: userId,
-        },
-        include: {
-          rdvAccount: true,
-        },
-      })
-
-      if (!userWithSecretData) {
-        throw invalidError('Utilisateur introuvable')
-      }
-
-      const rdvAccount = await createRdvServicePublicAccount({
-        user,
-      })
-
-      return {
-        rdvAccount,
-        hasOauthTokens: !!(
-          userWithSecretData.rdvAccount?.accessToken &&
-          userWithSecretData.rdvAccount?.refreshToken
-        ),
-      }
-    }),
   executeOauthApiCall: protectedProcedure
     .input(OAuthRdvApiCallInputValidation)
     .mutation(async ({ input, ctx: { user } }) => {

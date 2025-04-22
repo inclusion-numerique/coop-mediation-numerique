@@ -53,6 +53,7 @@ export const MesOutils = () => (
               logo="/images/services/rdv-service-public.svg"
               title="RDV Service Public"
               inforef="rdv-service-public"
+              isNew
             >
               Faciliter la gestion des rendez-vous avec vos bénéficiaires.
             </CardOutil>
