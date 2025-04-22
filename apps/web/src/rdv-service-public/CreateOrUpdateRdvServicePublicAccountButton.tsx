@@ -12,7 +12,7 @@ import React, { useState } from 'react'
 
 /**
  * This creates an account for the user email if it does not exist yet.
- * It sends organization (team) and lieux activités to the RDV Aide Numérique api so the account is set up correctly.
+ * It sends organization (team) and lieux activités to the RDV Service Public api so the account is set up correctly.
  * If the account already exists, it just updates the organization and lieux activités.
  */
 const CreateOrUpdateRdvServicepublicAccountButton = ({
@@ -54,8 +54,8 @@ const CreateOrUpdateRdvServicepublicAccountButton = ({
         createToast({
           priority: 'success',
           message: creation
-            ? 'Votre compte à bien été créé sur RDV Aide Numérique. Veuillez finaliser la création de votre compte depuis l’email d’invitation que nous vous avons envoyé.'
-            : 'Votre compte à bien été synchronisé RDV Aide Numérique.',
+            ? 'Votre compte à bien été créé sur RDV Service Public. Veuillez finaliser la création de votre compte depuis l’email d’invitation que nous vous avons envoyé.'
+            : 'Votre compte à bien été synchronisé RDV Service Public.',
         })
       }
     } catch {
@@ -75,7 +75,7 @@ const CreateOrUpdateRdvServicepublicAccountButton = ({
   }
 
   const title = creation
-    ? 'Créer mon compte RDV Aide Numérique'
+    ? 'Créer mon compte RDV Service Public'
     : 'Synchroniser mon compte'
 
   return (

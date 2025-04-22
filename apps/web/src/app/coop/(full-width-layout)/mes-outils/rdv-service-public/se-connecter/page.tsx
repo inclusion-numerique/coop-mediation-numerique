@@ -1,15 +1,15 @@
-import RdvServicePubliqueConnexionCard from '@app/web/app/coop/(full-width-layout)/mes-outils/rdv-aide-numerique/RdvServicePubliqueConnexionCard'
+import RdvServicePubliqueConnexionCard from '@app/web/app/coop/(full-width-layout)/mes-outils/rdv-service-public/RdvServicePubliqueConnexionCard'
 import BackButton from '@app/web/components/BackButton'
 import { rdvSigninUrl } from '@app/web/rdv-service-public/rdvUrls'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Image from 'next/image'
 import React from 'react'
 
-const RdvAideNumeriqueSeConnecterPage = () => {
+const RdvServicePublicSeConnecterPage = () => {
   return (
     <div className="fr-mb-32v">
       <div className="fr-mb-6v fr-mt-10v">
-        <BackButton href="/coop/mes-outils/rdv-aide-numerique">
+        <BackButton href="/coop/mes-outils/rdv-service-public">
           Retour
         </BackButton>
       </div>
@@ -19,7 +19,7 @@ const RdvAideNumeriqueSeConnecterPage = () => {
             className="fr-background-alt--blue-france fr-border-radius--8 fr-p-3v"
             width={64}
             height={64}
-            src="/images/services/rdv-aide-numerique.svg"
+            src="/images/services/rdv-service-public.svg"
             alt=""
           />
           <h1 className="fr-h3 fr-mb-2v fr-mt-6v fr-text-title--blue-france">
@@ -39,7 +39,7 @@ const RdvAideNumeriqueSeConnecterPage = () => {
           </Button>
           <Button
             linkProps={{
-              href: '/coop/mes-outils/rdv-aide-numerique/creation-compte',
+              href: '/coop/mes-outils/rdv-service-public/creation-compte',
             }}
             priority="secondary"
             className="fr-mb-0"
@@ -52,4 +52,4 @@ const RdvAideNumeriqueSeConnecterPage = () => {
   )
 }
 
-export default RdvAideNumeriqueSeConnecterPage
+export default RdvServicePublicSeConnecterPage

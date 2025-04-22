@@ -18,7 +18,7 @@ const RdvServicePublicMesOutilsMore = async () => {
 
   return (
     <RdvServicePublicAccountStatusCard
-      oAuthFlowRedirectTo="/coop/mes-outils/rdv-aide-numerique"
+      oAuthFlowRedirectTo="/coop/mes-outils/rdv-service-public"
       user={user}
     />
   )

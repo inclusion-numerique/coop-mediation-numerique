@@ -63,7 +63,7 @@ const RdvServicePublicSigninButton = ({
         <span className="fr-ml-1v fr-text--left">
           Se connecter à
           <br />
-          <strong>RDV Aide Numérique</strong>
+          <strong>RDV Service Public</strong>
         </span>
       </Button>
 
@@ -73,7 +73,7 @@ const RdvServicePublicSigninButton = ({
         target="_blank"
         rel="noreferrer"
       >
-        En savoir plus sur RDV Aide Numérique
+        En savoir plus sur RDV Service Public
       </a>
     </div>
   )

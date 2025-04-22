@@ -892,7 +892,7 @@ enum StatutSocial {
 model Beneficiaire {
   id String @id @default(uuid()) @db.Uuid
 
-  // Identifiant chez RDV Aide Numérique si le bénéficiaire est synchronisé avec RDV Aide Numérique
+  // Identifiant chez RDV Service Public si le bénéficiaire est synchronisé avec RDV Service Public
   rdvServicePublicId Int? @map("rdv_service_public_id")
 
   // Relation avec le médiateur à qui est "rattaché" le bénéficiaire
@@ -1111,7 +1111,7 @@ enum NiveauAtelier {
 }
 
 // An account linked in the Rdv service
-// https://www.rdv-solidarites.fr
+// https://rdv.anct.gouv.fr
 // Stores the external id of the account and the oauth credentials
 model RdvAccount {
   id Int @id // external id of the "agent" account in rdv systems
