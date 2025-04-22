@@ -1,7 +1,7 @@
-import RdvServicePubliqueConnexionCard from '@app/web/app/coop/(full-width-layout)/mes-outils/rdv-aide-numerique/RdvServicePubliqueConnexionCard'
+import RdvServicePubliqueConnexionCard from '@app/web/app/coop/(full-width-layout)/mes-outils/rdv-service-public/RdvServicePubliqueConnexionCard'
 import React from 'react'
 
-const RdvAideNumeriqueCreationConfirmationPage = () => {
+const RdvServicePublicCreationConfirmationPage = () => {
   return (
     <div className="fr-mb-32v fr-mt-10v">
       <RdvServicePubliqueConnexionCard title="Créer son compte avec ProConnect">
@@ -40,4 +40,4 @@ const RdvAideNumeriqueCreationConfirmationPage = () => {
   )
 }
 
-export default RdvAideNumeriqueCreationConfirmationPage
+export default RdvServicePublicCreationConfirmationPage

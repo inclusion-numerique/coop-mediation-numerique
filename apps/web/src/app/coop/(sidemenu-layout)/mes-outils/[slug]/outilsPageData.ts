@@ -15,7 +15,7 @@ const outilsPageData = {
   'espace-france-numerique-ensemble': espaceFranceNumeriqueEnsemblePageData,
   'les-bases-du-numerique-d-interet-general': lesBasesPageData,
   pix: pixPageData,
-  'rdv-aide-numerique': rdvPageData,
+  'rdv-service-public': rdvPageData,
 } satisfies { [key: string]: OutilPageData }
 
 export type OutilSlug = keyof typeof outilsPageData

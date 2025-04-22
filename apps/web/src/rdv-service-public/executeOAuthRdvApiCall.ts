@@ -83,7 +83,7 @@ export const oAuthRdvApiGetUser = async ({
   userId,
   rdvAccount,
 }: {
-  userId: string // RDV Aide Numérique user id
+  userId: string // RDV Service Public user id
   rdvAccount: OAuthRdvApiCallRdvAccount
 }) =>
   executeOAuthRdvApiCall<OauthRdvApiGetUserResponse>({
