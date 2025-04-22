@@ -1,5 +1,5 @@
 import { OutilPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-outils/outilPageData'
-import RdvServicePublicMesOutilsMore from '@app/web/rdv-service-public/RdvServicePublicMesOutilsMore'
+import RdvServicePublicAccessCard from '@app/web/rdv-service-public/RdvServicePublicAccessServer'
 
 export default {
   notice:
@@ -30,17 +30,8 @@ export default {
       icon: 'ri-loop-right-line',
     },
   ],
-  access: {
-    how: 'Accédez à ce service grâce à ProConnect, votre identifiant unique pour accéder à plusieurs services de l’État.',
-    illustration: '/images/services/pro-connect-logo.svg',
-    info: {
-      label: 'En savoir plus sur ProConnect',
-      link: 'https://www.proconnect.gouv.fr',
-    },
-    callToAction: {
-      label: 'Se connecter',
-      link: '/coop/mes-outils/rdv-service-public/se-connecter',
-    },
+  accessComponent: <RdvServicePublicAccessCard />,
+  classes: {
+    access: 'fr-background-alt--blue-ecume fr-border-none',
   },
-  more: <RdvServicePublicMesOutilsMore />,
 } satisfies OutilPageData
