@@ -21,11 +21,20 @@ export const acceptInvitation = async (invitation: {
   })
 
   if (invitation.mediateurInvite != null) {
-    await prismaClient.mediateurCoordonne.create({
-      data: {
+    await prismaClient.mediateurCoordonne.upsert({
+      where: {
+        coordinateurId_mediateurId: {
+          mediateurId: invitation.mediateurInvite.id,
+          coordinateurId: invitation.coordinateurId,
+        },
+      },
+      create: {
         id: v4(),
         mediateurId: invitation.mediateurInvite.id,
         coordinateurId: invitation.coordinateurId,
+      },
+      update: {
+        suppression: null,
       },
     })
   }

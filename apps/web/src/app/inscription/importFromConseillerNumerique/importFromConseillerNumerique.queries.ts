@@ -202,11 +202,20 @@ export const upsertMediateurCoordonne = async ({
     return existing
   }
 
-  return prismaClient.mediateurCoordonne.create({
-    data: {
+  return await prismaClient.mediateurCoordonne.upsert({
+    where: {
+      coordinateurId_mediateurId: {
+        mediateurId,
+        coordinateurId,
+      },
+    },
+    create: {
       id: v4(),
       mediateurId,
       coordinateurId,
+    },
+    update: {
+      suppression: null,
     },
   })
 }
