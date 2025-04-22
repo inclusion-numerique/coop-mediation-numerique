@@ -297,7 +297,8 @@ export const GET = createApiV1Route
         LEFT JOIN conseillers_numeriques conseillers_numeriques ON mediateurs_en_activite.mediateur_id = conseillers_numeriques.mediateur_id
         LEFT JOIN mediateurs ON mediateurs_en_activite.mediateur_id = mediateurs.id AND mediateurs.is_visible = TRUE
         LEFT JOIN users ON mediateurs.user_id = users.id
-      WHERE structures.suppression IS NULL
+    WHERE structures.suppression IS NULL
+        AND mediateurs_en_activite.suppression IS NULL
         AND structures.visible_pour_cartographie_nationale IS true
         ${dispositif_programmes_nationaux ? Prisma.sql`AND ARRAY[${dispositif_programmes_nationaux}] <@ dispositif_programmes_nationaux` : Prisma.empty}
       GROUP BY structures.id

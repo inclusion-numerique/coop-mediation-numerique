@@ -615,6 +615,7 @@ export const inscriptionRouter = router({
           coordinateurId: invitation.coordinateurId,
           mediateurId: user.mediateur.id,
         })),
+        skipDuplicates: true,
       })
 
       addMutationLog({
