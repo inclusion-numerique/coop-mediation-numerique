@@ -23,6 +23,19 @@ export const rdvOauthLinkAccountSuccessCallbackPath =
 export const rdvOauthLinkAccountErrorCallbackPath =
   '/coop/mes-outils/rdv-service-public/connexion-erreur'
 
+// TODO replace with specific link for rdv integration when ready
+export const rdvIntegrationEnSavoirPlusLink = PublicWebAppConfig.centreAideUrl
+
+export const rdvWebsiteLink = PublicWebAppConfig.isMain
+  ? 'https://rdv.anct.gouv.fr'
+  : 'https://demo.rdv.anct.gouv.fr'
+
+export const rdvMyHomepageLink = `${rdvWebsiteLink}/agents/sign_in`
+
+export const rdvSupportEmail = 'support@rdv-service-public.fr'
+
+export const rdvOauthApplicationsIntegrationsManagementUrl = `${rdvWebsiteLink}/oauth/authorized_applications`
+
 export type RdvOauthLinkAccountState = {
   redirectToSuccess?: string
   redirectToError?: string

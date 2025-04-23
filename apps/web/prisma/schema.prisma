@@ -1119,7 +1119,7 @@ model RdvAccount {
   userId String @unique @map("user_id") @db.Uuid
   user   User   @relation(fields: [userId], references: [id])
 
-  accessToken  String?   @map("access_token") // Empty if account created but oauth not linked
+  accessToken  String?   @map("access_token") // Empty if account created but oauth not linked or invalidated
   refreshToken String?   @map("refresh_token")
   expiresAt    DateTime? @map("expires_at")
   scope        String?

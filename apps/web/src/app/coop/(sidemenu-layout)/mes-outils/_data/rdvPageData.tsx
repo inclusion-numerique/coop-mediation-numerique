@@ -1,5 +1,6 @@
 import { OutilPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-outils/outilPageData'
-import RdvServicePublicAccessCard from '@app/web/rdv-service-public/RdvServicePublicAccessServer'
+import RdvServicePublicAccessCard from '@app/web/rdv-service-public/RdvServicePublicAccess'
+import { rdvWebsiteLink } from '@app/web/rdv-service-public/rdvServicePublicOauth'
 
 export default {
   notice:
@@ -7,7 +8,7 @@ export default {
   title: 'RDV Service Public',
   description:
     'Un outil de prise de rendez-vous en ligne, simplifiant votre organisation et rappelant aux usagers leurs rendez-vous par SMS.',
-  website: 'https://rdv.anct.gouv.fr',
+  website: rdvWebsiteLink,
   logo: '/images/services/rdv-service-public.svg',
   illustration: '/images/illustrations/mes-outils/rdv-service-public.webp',
   features: [
