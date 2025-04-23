@@ -80,6 +80,7 @@ export const teamMediateurs = [
     inscriptionValidee: new Date(),
     lieuxActiviteRenseignes: new Date(),
     structureEmployeuseRenseignee: new Date(),
+    featureFlags: ['RdvServicePublic'],
     mediateur: {
       connectOrCreate: {
         where: {

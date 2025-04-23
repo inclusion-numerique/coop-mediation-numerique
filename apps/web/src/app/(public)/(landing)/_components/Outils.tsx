@@ -1,3 +1,4 @@
+import { rdvWebsiteLink } from '@app/web/rdv-service-public/rdvServicePublicOauth'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -134,7 +135,7 @@ export const Outils = () => (
           <span className="fr-mt-auto">
             <Link
               className="fr-link"
-              href="https://rdv.anct.gouv.fr"
+              href={rdvWebsiteLink}
               target="_blank"
               rel="noreferrer"
               title="Accéder à RDV Service Public - nouvel onglet"

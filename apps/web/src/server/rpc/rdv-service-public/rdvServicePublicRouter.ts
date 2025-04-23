@@ -7,9 +7,11 @@ import {
   OauthRdvApiCreateRdvPlanMutationInputValidation,
   OauthRdvApiCreateRdvPlanResponse,
   OauthRdvApiMeInputValidation,
-  type OauthRdvApiMeResponse,
 } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
-import { executeOAuthRdvApiCall } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
+import {
+  executeOAuthRdvApiCall,
+  oAuthRdvApiMe,
+} from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { invalidError } from '@app/web/server/rpc/trpcErrors'
 
@@ -58,15 +60,11 @@ export const rdvServicePublicRouter = router({
     }),
   oAuthApiMe: protectedProcedure
     .input(OauthRdvApiMeInputValidation)
-    .mutation(async ({ input, ctx: { user } }) => {
+    .mutation(async ({ ctx: { user } }) => {
       const oAuthCallUser = await getContextForOAuthApiCall({ user })
 
-      const result = await executeOAuthRdvApiCall<OauthRdvApiMeResponse>({
-        path: input.endpoint,
+      const result = await oAuthRdvApiMe({
         rdvAccount: oAuthCallUser.rdvAccount,
-        config: {
-          data: input.data,
-        },
       })
 
       return result

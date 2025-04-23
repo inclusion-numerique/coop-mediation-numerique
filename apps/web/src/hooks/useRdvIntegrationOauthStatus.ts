@@ -1,22 +1,21 @@
-import type { SessionUser } from '@app/web/auth/sessionUser'
+import { SessionUser } from '@app/web/auth/sessionUser'
+import { getRdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
 import { trpc } from '@app/web/trpc'
 import { useEffect, useState } from 'react'
 
-/**
- *  This hook checks if the user has an OAuth token for RDV
- *  It can only be used in a component using withTrpc()
- */
-export const useRdvOauthStatus = ({
+export type RdvOauthIntegrationStatus = 'loading' | 'none' | 'success' | 'error'
+
+export const useRdvIntegrationOauthStatus = ({
   user,
 }: {
-  user: Pick<SessionUser, 'rdvAccount'> | null
+  user: Pick<SessionUser, 'rdvAccount'>
 }) => {
   const oauthApiCallMutation = trpc.rdvServicePublic.oAuthApiMe.useMutation()
-  const hasOauthTokens = user?.rdvAccount?.hasOauthTokens ?? false
+  const hasOauthTokens = user.rdvAccount?.hasOauthTokens ?? false
 
-  const [status, setStatus] = useState<
-    'loading' | 'success' | 'empty' | 'error'
-  >(hasOauthTokens ? 'loading' : 'empty')
+  const [status, setStatus] = useState<RdvOauthIntegrationStatus>(
+    getRdvOauthIntegrationStatus({ user }),
+  )
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: oauthApiCallMutation.isPending is not in dependencies as it should not retrigger the call
   useEffect(() => {
@@ -30,7 +29,7 @@ export const useRdvOauthStatus = ({
         if (result?.agent?.id) {
           return 'success' as const
         }
-        return 'empty' as const
+        return 'none' as const
       })
       .catch(() => 'error' as const)
       .then((result) => {
@@ -46,7 +45,7 @@ export const useRdvOauthStatus = ({
     status,
     isLoading: status === 'loading',
     isError: status === 'error',
-    isEmpty: status === 'empty',
+    isNone: status === 'none',
     isSuccess: status === 'success',
   }
 }

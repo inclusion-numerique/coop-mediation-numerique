@@ -1,7 +1,9 @@
 import RdvServicePubliqueConnexionCard from '@app/web/app/coop/(full-width-layout)/mes-outils/rdv-service-public/RdvServicePubliqueConnexionCard'
-import React from 'react'
-import Link from 'next/link'
+import IconInSquare from '@app/web/components/IconInSquare'
+import { rdvIntegrationEnSavoirPlusLink } from '@app/web/rdv-service-public/rdvServicePublicOauth'
 import Button from '@codegouvfr/react-dsfr/Button'
+import Link from 'next/link'
+import React from 'react'
 
 const RdvServicePublicCreationReussiePage = () => {
   return (
@@ -11,24 +13,29 @@ const RdvServicePublicCreationReussiePage = () => {
         title="Créer son compte avec ProConnect"
       >
         <div className="fr-grid-row fr-grid-row--center">
-          <picture>
-            <img
-              src="/images/services/rdv-service-public-coop-connexion.svg"
-              alt=""
-            />
-          </picture>
+          <IconInSquare
+            iconId="fr-icon-checkbox-circle-fill"
+            size="medium"
+            className="fr-background-contrast--success"
+            classes={{
+              icon: 'fr-text-default--success',
+            }}
+          />
         </div>
         <div className="fr-text--center">
-          <h1 className="fr-mt-4v fr-h2 fr-text-title--blue-france fr-mb-4v">
-            <span className="fr-icon-success-fill fr-icon--lg fr-text-default--success" />{' '}
+          <h1 className="fr-mt-6v fr-h2 fr-text-title--blue-france fr-mb-4v">
             Connexion réussie&nbsp;!
           </h1>
-          <p className="fr-mb-4v ">
+          <p className="fr-text-mention--grey fr-mb-6v">
             Vous pouvez maintenant programmer des rendez-vous avec vos
             bénéficiaires suivis et les retrouver dans leur historiques
             d’accompagnements.
           </p>
-          <Link href="TODO" className="fr-link fr-text--center" target="_blank">
+          <Link
+            href={rdvIntegrationEnSavoirPlusLink}
+            className="fr-link fr-text--center"
+            target="_blank"
+          >
             En savoir plus
           </Link>
         </div>
@@ -37,6 +44,7 @@ const RdvServicePublicCreationReussiePage = () => {
             linkProps={{
               href: '/coop/mes-outils/rdv-service-public',
             }}
+            className="fr-mb-0"
           >
             J’ai compris
           </Button>

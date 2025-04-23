@@ -27,6 +27,17 @@ type OAuthTokenResponse = {
   scope?: string // Scopes accordés
 }
 
+const createErrorRedirectionFunction =
+  (redirectToError: string) => (queryParams?: Record<string, string>) => {
+    const urlSearchParams = new URLSearchParams(queryParams)
+
+    return NextResponse.redirect(
+      getServerUrl(`${redirectToError}?${urlSearchParams.toString()}`, {
+        absolutePath: true,
+      }),
+    )
+  }
+
 /**
  * This is the OAuth callback url route where rdv redirects to after the user has logged in.
  * It is used to get the user's tokens and update his RdvAccount.
@@ -50,9 +61,9 @@ export const GET = async (request: NextRequest) => {
   const code = request.nextUrl.searchParams.get('code')
   const state = request.nextUrl.searchParams.get('state')
 
-  if (!code || !state) {
+  if (!state) {
     return NextResponse.json(
-      { error: 'Missing code or state parameter' },
+      { error: 'Missing state parameter' },
       { status: 400 },
     )
   }
@@ -65,8 +76,29 @@ export const GET = async (request: NextRequest) => {
     {},
   )
 
-  const redirectToSuccess = decodedState.redirectToSuccess ?? '/coop'
-  const redirectToError = decodedState.redirectToError ?? '/coop'
+  const successCallbackUrl = decodedState.redirectToSuccess ?? '/coop'
+  const errorCallbackUrl = decodedState.redirectToError ?? '/coop'
+
+  const redirectToError = createErrorRedirectionFunction(errorCallbackUrl)
+
+  // Get query params error_description and error
+  const error = request.nextUrl.searchParams.get('error') || ''
+  const error_description =
+    request.nextUrl.searchParams.get('error_description') || ''
+
+  if (error) {
+    return redirectToError({
+      error,
+      error_description,
+    })
+  }
+
+  if (!code) {
+    return redirectToError({
+      error: 'invalid_oauth_code',
+      error_description: 'Le code d’autorisation est manquant',
+    })
+  }
 
   try {
     // Échanger `code` contre access/refresh tokens.
@@ -93,16 +125,24 @@ export const GET = async (request: NextRequest) => {
       metadata: {},
     }
 
-    console.log('TOKEN RESPONSE', tokenResponse.data)
-    console.log('authuserdata', authUserData)
-
     const userData = await oAuthRdvApiMe({
       rdvAccount: authUserData,
     })
-    console.log('userData from oauth', userData.agent)
 
     if (!userData.agent?.id) {
-      throw new Error('userData.agent.id is undefined from /api/me response')
+      return redirectToError({
+        error: 'invalid_oauth_account',
+        error_description:
+          'Impossible de récupérer l’identifiant de l’utilisateur',
+      })
+    }
+
+    if (userData.agent?.email.toLowerCase() !== user.email) {
+      return redirectToError({
+        error: 'account_does_not_match_email',
+        error_description:
+          'Le compte RDV Service Public ne correspond pas à l’adresse email du compte de La coop',
+      })
     }
 
     // Update the rdv account
@@ -127,14 +167,15 @@ export const GET = async (request: NextRequest) => {
     // Rediriger vers une route de succès ou une page front.
 
     return NextResponse.redirect(
-      getServerUrl(redirectToSuccess, { absolutePath: true }),
+      getServerUrl(successCallbackUrl, { absolutePath: true }),
     )
   } catch (error) {
     Sentry.captureException(error)
     // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
     console.error('Error while connecting to RDV Service Public', error)
-    return NextResponse.redirect(
-      getServerUrl(redirectToError, { absolutePath: true }),
-    )
+    return redirectToError({
+      error: 'server_error',
+      error_description: 'Une erreur est survenue lors de la connexion',
+    })
   }
 }
