@@ -1,7 +1,7 @@
 'use client'
 
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import SiretFormField from '@app/web/siret/SiretFormField'
+import SiretFormField from '@app/web/features/structures/siret/SiretFormField'
 import { useForm } from 'react-hook-form'
 
 const AdministrationCheckSiret = () => {

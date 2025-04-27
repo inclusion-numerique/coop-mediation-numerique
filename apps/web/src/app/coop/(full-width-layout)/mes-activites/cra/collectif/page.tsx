@@ -1,11 +1,11 @@
 import CraCollectifPage from '@app/web/app/coop/(full-width-layout)/mes-activites/cra/collectif/CraCollectifPage'
-import { getMediateursLieuxActiviteOptions } from '@app/web/app/lieu-activite/getMediateursLieuxActiviteOptions'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/beneficiaire/getInitialBeneficiairesOptionsForSearch'
 import { AdressBanFormFieldOption } from '@app/web/components/form/AdresseBanFormField'
 import { CraCollectifData } from '@app/web/cra/CraCollectifValidation'
 import { getAdaptiveDureeOptions } from '@app/web/cra/getAdaptiveDureeOptions'
 import { participantsAnonymesDefault } from '@app/web/cra/participantsAnonymes'
+import { getMediateursLieuxActiviteOptions } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
 import {
   EncodedState,
   decodeSerializableState,

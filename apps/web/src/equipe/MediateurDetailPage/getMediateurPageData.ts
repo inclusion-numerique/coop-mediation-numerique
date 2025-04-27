@@ -3,7 +3,7 @@ import { authenticateUser } from '@app/web/auth/authenticateUser'
 import { getContractInfo } from '@app/web/conseiller-numerique/getContractInfo'
 import type { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
 import { findConseillerNumeriqueV1 } from '@app/web/external-apis/conseiller-numerique/searchConseillerNumeriqueV1'
-import { getLieuxActivites } from '@app/web/lieu-activite/getLieuxActivites'
+import { getLieuxActivite } from '@app/web/features/lieux-activite/getLieuxActivite'
 import { prismaClient } from '@app/web/prismaClient'
 import { getStructureEmployeuseAddress } from '@app/web/structure/getStructureEmployeuseAddress'
 
@@ -97,7 +97,7 @@ export const getMediateurPageData = async (
     mediateur.user.id,
   )
 
-  const lieuxActivites = await getLieuxActivites(mediateur.id)
+  const lieuxActivites = await getLieuxActivite(mediateur.id)
 
   return {
     mediateur,

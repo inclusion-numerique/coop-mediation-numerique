@@ -1,5 +1,5 @@
 import type { ActiviteForList } from '@app/web/cra/activitesQueries'
-import type { DataTableConfiguration } from '@app/web/data-table/DataTableConfiguration'
+import type { DataTableConfiguration } from '@app/web/libs/data-table/DataTableConfiguration'
 import type { Prisma } from '@prisma/client'
 
 export type ActivitesDataTableConfiguration = DataTableConfiguration<

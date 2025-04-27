@@ -1,4 +1,4 @@
-import { StructureData } from '@app/web/app/structure/StructureValidation'
+import { StructureData } from '@app/web/features/structures/StructureValidation'
 import { prismaClient } from '@app/web/prismaClient'
 
 export const getLieuxActiviteForInscription = async ({

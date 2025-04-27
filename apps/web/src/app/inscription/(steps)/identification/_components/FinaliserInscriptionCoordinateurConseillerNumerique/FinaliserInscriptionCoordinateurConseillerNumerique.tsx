@@ -4,7 +4,7 @@ import {
   ProfileInscriptionSlug,
   allProfileInscriptionLabels,
   profileInscriptionFromSlug,
-} from '@app/web/inscription/profilInscription'
+} from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import React from 'react'
 import { AnotherRoleFound } from '../AnotherRoleFound'
 import { RoleFound } from '../RoleFound'

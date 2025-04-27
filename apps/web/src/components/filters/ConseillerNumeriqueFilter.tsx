@@ -1,10 +1,10 @@
 'use client'
 
-import { Popover } from '@app/web/components/Popover'
+import TriggerButton from '@app/web/libs/filters/TriggerButton'
+import { Popover } from '@app/web/libs/ui/elements/Popover'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { ChangeEvent, useEffect, useState } from 'react'
-import TriggerButton from './elements/TriggerButton'
 
 const conseillerNumeriqueOptions = [
   { label: 'Conseillers numériques', value: '1' },

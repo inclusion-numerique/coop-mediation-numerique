@@ -1,10 +1,10 @@
-import AdministrationBreadcrumbs from '@app/web/app/administration/AdministrationBreadcrumbs'
 import AdministrationInfoCard from '@app/web/app/administration/AdministrationInfoCard'
-import AdministrationTitle from '@app/web/app/administration/AdministrationTitle'
 import ClientApiForm from '@app/web/app/administration/clients-api/ClientApiForm'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
+import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
+import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 
 export const metadata = {
   title: metadataTitle('Clients API - Créer'),

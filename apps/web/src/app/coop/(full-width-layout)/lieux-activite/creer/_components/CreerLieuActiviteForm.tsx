@@ -2,10 +2,6 @@
 
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
-import {
-  CreerLieuActiviteData,
-  CreerLieuActiviteValidation,
-} from '@app/web/app/lieu-activite/CreerLieuActiviteValidation'
 import { CompleteFields } from '@app/web/components/form/CompleteFields'
 import { DisplayOnCartography } from '@app/web/components/structure/DisplayOnCartography'
 import { DescriptionFields } from '@app/web/components/structure/fields/DescriptionFields'
@@ -22,6 +18,10 @@ import {
 import { LieuAccueillantPublicTitle } from '@app/web/components/structure/titles/LieuAccueillantPublicTitle'
 import { ServiceInclusionNumeriqueTitle } from '@app/web/components/structure/titles/ServiceInclusionNumeriqueTitle'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import {
+  CreerLieuActiviteData,
+  CreerLieuActiviteValidation,
+} from '@app/web/features/lieux-activite/CreerLieuActiviteValidation'
 import { trpc } from '@app/web/trpc'
 import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
 import Button from '@codegouvfr/react-dsfr/Button'

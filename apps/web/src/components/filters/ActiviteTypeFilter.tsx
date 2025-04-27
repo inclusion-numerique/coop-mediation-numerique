@@ -1,16 +1,16 @@
 'use client'
 
-import { Popover } from '@app/web/components/Popover'
 import {
   TypeActiviteSlug,
   typeActiviteOptions,
   typeActiviteSlugOptions,
 } from '@app/web/cra/cra'
+import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
+import TriggerButton from '@app/web/libs/filters/TriggerButton'
+import { Popover } from '@app/web/libs/ui/elements/Popover'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { ChangeEvent, useEffect, useState } from 'react'
-import { FilterFooter } from './elements/FilterFooter'
-import TriggerButton from './elements/TriggerButton'
 
 export const ActiviteTypeFilter = ({
   defaultValue = [],

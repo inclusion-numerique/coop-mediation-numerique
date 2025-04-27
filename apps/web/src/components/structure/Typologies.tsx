@@ -1,4 +1,4 @@
-import { typologieStructureLabels } from '@app/web/app/structure/typologieStructure'
+import { typologieStructureLabels } from '@app/web/features/structures/typologieStructure'
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { Typologie } from '@prisma/client'
 import React from 'react'

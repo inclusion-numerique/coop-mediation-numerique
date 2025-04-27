@@ -3,18 +3,18 @@
 import CustomSelect from '@app/ui/components/CustomSelect/CustomSelect'
 import { SelectOption } from '@app/ui/components/Form/utils/options'
 import { BeneficiaireOption } from '@app/web/beneficiaire/BeneficiaireOption'
-import { Popover } from '@app/web/components/Popover'
-import { useRouter, useSearchParams } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
-import { FilterFooter } from './elements/FilterFooter'
-import { FilterSelection } from './elements/FilterSelection'
-import TriggerButton from './elements/TriggerButton'
+import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
+import { FilterSelection } from '@app/web/libs/filters/FilterSelection'
+import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import {
   availableOptionsIn,
   defautValuesFrom,
   matchingOption,
   update,
-} from './elements/helpers'
+} from '@app/web/libs/filters/helpers'
+import { Popover } from '@app/web/libs/ui/elements/Popover'
+import { useRouter, useSearchParams } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
 
 type BeneficiaireOptionWithId = BeneficiaireOption & {
   value: { id: string }

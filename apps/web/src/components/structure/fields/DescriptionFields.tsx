@@ -4,9 +4,9 @@ import { optionsWithEmptyValue } from '@app/ui/components/Form/utils/options'
 import {
   DescriptionData,
   descriptionMaxLength,
-} from '@app/web/app/structure/DescriptionValidation'
-import { formationLabelOptions } from '@app/web/app/structure/formationLabel'
-import { typologieStructureOptions } from '@app/web/app/structure/typologieStructure'
+} from '@app/web/features/structures/DescriptionValidation'
+import { formationLabelOptions } from '@app/web/features/structures/formationLabel'
+import { typologieStructureOptions } from '@app/web/features/structures/typologieStructure'
 import React from 'react'
 import { UseFormReturn } from 'react-hook-form'
 

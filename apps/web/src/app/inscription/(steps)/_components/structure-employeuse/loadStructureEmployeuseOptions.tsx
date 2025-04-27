@@ -1,6 +1,6 @@
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
-import type { StructureCreationDataWithSiret } from '@app/web/app/structure/StructureValidation'
 import { rechercheApiEntreprise } from '@app/web/external-apis/rechercheApiEntreprise'
+import type { StructureCreationDataWithSiret } from '@app/web/features/structures/StructureValidation'
 import { structureCreationDataWithSiretFromUniteLegale } from '@app/web/structure/structuresInfoFromUniteLegale'
 import debounce from 'debounce-promise'
 import React from 'react'
