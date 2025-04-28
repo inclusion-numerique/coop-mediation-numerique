@@ -2,9 +2,7 @@ import { BeneficiaireCraValidation } from '@app/web/beneficiaire/BeneficiaireVal
 import { CraDureeValidation } from '@app/web/cra/CraDureeValidation'
 import {
   autonomieValues,
-  degreDeFinalisationDemarcheValues,
   structuresRedirectionValues,
-  thematiqueDemarcheAdministrativeValues,
   thematiqueValues,
   typeLieuValues,
 } from '@app/web/cra/cra'
@@ -28,14 +26,13 @@ export const CraDemarcheAdministrativeValidation = z
     structureId: z.string().uuid().nullish(),
     lieuCommuneData: AdresseBanValidation.nullish(),
     thematiques: z
-      .array(z.enum(thematiqueDemarcheAdministrativeValues), {
+      .array(z.enum(thematiqueValues), {
         required_error: 'Veuillez renseigner au moins une thématique',
       })
       .min(1, 'Veuillez renseigner au moins une thématique'),
     thematiquesMediationNumerique: z.array(z.enum(thematiqueValues)).nullish(),
     precisionsDemarche: z.string().nullish(),
     autonomie: z.enum(autonomieValues).nullish(),
-    degreDeFinalisation: z.enum(degreDeFinalisationDemarcheValues).nullish(),
     structureDeRedirection: z.enum(structuresRedirectionValues).nullish(),
     notes: z.string().nullish(),
   })

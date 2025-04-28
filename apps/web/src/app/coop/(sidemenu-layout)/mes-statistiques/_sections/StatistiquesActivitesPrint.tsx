@@ -26,16 +26,6 @@ export const StatistiquesActivitesPrint = ({
     0,
   )
 
-  const thematiquesDemarches = activites.thematiquesDemarches.sort(
-    (a, b) => b.count - a.count,
-  )
-  const thematiquesDemarchesMaxProportion =
-    activites.thematiquesDemarches.reduce(
-      (max, thematique) =>
-        thematique.proportion > max ? thematique.proportion : max,
-      0,
-    )
-
   return (
     <>
       <h2 className="fr-h3">Statistiques sur vos activités</h2>
@@ -45,7 +35,11 @@ export const StatistiquesActivitesPrint = ({
           <li key={value}>
             <b>{numberToString(count)}</b> {typeActivitePluralLabels[value]}
             {value === 'Collectif' &&
-              `, ${totalCounts.accompagnements.collectifs.total} participation${sPluriel(totalCounts.accompagnements.collectifs.total)} au total`}{' '}
+              `, ${
+                totalCounts.accompagnements.collectifs.total
+              } participation${sPluriel(
+                totalCounts.accompagnements.collectifs.total,
+              )} au total`}{' '}
             ({numberToPercentage(proportion)} des activités)
           </li>
         ))}
@@ -73,24 +67,7 @@ export const StatistiquesActivitesPrint = ({
         ))}
       </ul>
       <h4 className="fr-h6 fr-mb-2v fr-mt-6v">Démarches administratives</h4>
-      <ul className="fr-px-0 fr-mb-0">
-        {thematiquesDemarches.map(
-          ({ value, proportion, label, count }, index) => (
-            <ProgressListItem
-              key={value}
-              count={count}
-              proportion={proportion}
-              maxProportion={thematiquesDemarchesMaxProportion}
-              label={label}
-              colors={[
-                thematiquesAccompagnementColors[
-                  index % thematiquesAccompagnementColors.length
-                ],
-              ]}
-            />
-          ),
-        )}
-      </ul>
+      <p>TODO</p>
       <h3 className="fr-h5 fr-mb-2v fr-mt-6v">Matériel utilisé</h3>
       <small role="note" className="fr-mb-6v fr-display-block">
         Matériel utilisé lors d’un accompagnement de médiation numérique. À

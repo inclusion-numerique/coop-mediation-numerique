@@ -8,8 +8,8 @@ import {
 import {
   dureeAccompagnementParDefautLabels,
   materielLabels,
-  thematiqueDemarcheAdministrativeLabels,
-  thematiqueLabels,
+  thematiquesAdministrativesLabels,
+  thematiquesNonAdministrativesLabels,
   typeActiviteLabels,
   typeLieuLabels,
 } from '@app/web/cra/cra'
@@ -107,11 +107,11 @@ const statistiquesPageData = {
       fixedValues: [400, 350, 250],
     }),
     thematiques: quantifiedSharesFromFixedValues({
-      enumObject: thematiqueLabels,
+      enumObject: thematiquesNonAdministrativesLabels,
       fixedValues: [80, 100, 90, 70, 60, 40, 30, 20, 25, 10, 10, 10, 10, 5],
     }),
     thematiquesDemarches: quantifiedSharesFromFixedValues({
-      enumObject: thematiqueDemarcheAdministrativeLabels,
+      enumObject: thematiquesAdministrativesLabels,
       fixedValues: [100, 90, 80, 60, 50, 40, 30, 20, 10, 10],
     }),
     materiels: quantifiedSharesFromFixedValues({

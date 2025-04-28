@@ -219,7 +219,9 @@ const CraIndividuelForm = ({
     useCallback(
       (data, { name }) => {
         replaceRouteWithoutRerender(
-          `/coop/mes-activites/cra/individuel?v=${encodeSerializableState(data)}`,
+          `/coop/mes-activites/cra/individuel?v=${encodeSerializableState(
+            data,
+          )}`,
         )
 
         // When changing the beneficiaire

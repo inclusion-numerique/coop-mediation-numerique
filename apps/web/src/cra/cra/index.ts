@@ -1,6 +1,5 @@
 export * from './autonomie'
 export * from './duree-accompagnement'
-export * from './finalisation-demarche'
 export * from './materiel'
 export * from './niveau-atelier'
 export * from './structures-redirection'

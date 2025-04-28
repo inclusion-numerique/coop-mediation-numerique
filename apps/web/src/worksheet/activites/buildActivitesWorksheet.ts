@@ -8,13 +8,10 @@ import { ActiviteForList } from '@app/web/cra/activitesQueries'
 import {
   autonomieStars,
   autonomieValues,
-  degreDeFinalisationDemarcheHints,
-  degreDeFinalisationDemarcheLabels,
   materielLabels,
   niveauAtelierStars,
   niveauAtelierValues,
   structuresRedirectionLabels,
-  thematiqueDemarcheAdministrativeLabels,
   thematiqueLabels,
   typeActiviteLabels,
   typeLieuLabels,
@@ -130,13 +127,11 @@ export const buildActivitesWorksheet = ({
         titreAtelier,
         materiel,
         thematiques,
-        thematiquesDemarche,
         precisionsDemarche,
         autonomie,
         niveau,
         notes,
         orienteVersStructure,
-        degreDeFinalisation,
         structureDeRedirection,
       } = activite
 
@@ -156,12 +151,9 @@ export const buildActivitesWorksheet = ({
         materiel
           .map((materielValue) => materielLabels[materielValue])
           .join(intraCellLineBreak),
-        [
-          ...thematiques.map((thematique) => thematiqueLabels[thematique]),
-          ...thematiquesDemarche.map(
-            (thematique) => thematiqueDemarcheAdministrativeLabels[thematique],
-          ),
-        ].join(intraCellLineBreak),
+        thematiques
+          .map((thematique) => thematiqueLabels[thematique])
+          .join(intraCellLineBreak),
         precisionsDemarche || '',
         autonomie
           ? `${autonomieStars[autonomie]}/${autonomieValues.length}`
@@ -172,9 +164,6 @@ export const buildActivitesWorksheet = ({
         orienteVersStructure === null
           ? ''
           : booleanToYesNoLabel(orienteVersStructure),
-        degreDeFinalisation
-          ? `${degreDeFinalisationDemarcheLabels[degreDeFinalisation]} ${degreDeFinalisationDemarcheHints[degreDeFinalisation]}`.trim()
-          : '',
         structureDeRedirection
           ? structuresRedirectionLabels[structureDeRedirection]
           : '',

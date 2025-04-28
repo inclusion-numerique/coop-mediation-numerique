@@ -163,128 +163,35 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
     ],
     activites: {
       thematiques: [
+        { label: 'Prendre en main du matériel', count: 0, proportion: 0 },
+        { label: 'Navigation sur internet', count: 0, proportion: 0 },
+        { label: 'E-mail', count: 6, proportion: 15 },
+        { label: 'Bureautique', count: 0, proportion: 0 },
+        { label: 'Réseaux sociaux communication', count: 4, proportion: 10 },
+        { label: 'Santé', count: 6, proportion: 15 },
+        { label: 'Banque et achats en ligne', count: 0, proportion: 0 },
+        { label: 'Entrepreneuriat', count: 0, proportion: 0 },
+        { label: 'Insertion professionnelle', count: 2, proportion: 5 },
+        { label: 'Prévention en sécurité numérique', count: 0, proportion: 0 },
+        { label: 'Parentalité', count: 2, proportion: 5 },
+        { label: 'Scolarité et numérique', count: 0, proportion: 0 },
+        { label: 'Gérer ses contenus numériques', count: 0, proportion: 0 },
+        { label: 'Culture numérique', count: 4, proportion: 10 },
         {
-          label: 'Prendre en main du matériel',
-          count: 0,
-          proportion: 0,
+          label: 'Aide aux démarches administratives',
+          count: 16,
+          proportion: 40,
         },
-        {
-          label: 'Navigation sur internet',
-          count: 0,
-          proportion: 0,
-        },
-        {
-          label: 'E-mail',
-          count: 6,
-          proportion: 25,
-        },
-        {
-          label: 'Bureautique',
-          count: 0,
-          proportion: 0,
-        },
-        {
-          label: 'Réseaux sociaux communication',
-          count: 4,
-          proportion: 16.67,
-        },
-        {
-          label: 'Santé',
-          count: 6,
-          proportion: 25,
-        },
-        {
-          label: 'Banque et achats en ligne',
-          count: 0,
-          proportion: 0,
-        },
-        {
-          label: 'Entrepreneuriat',
-          count: 0,
-          proportion: 0,
-        },
-        {
-          label: 'Insertion professionnelle',
-          count: 2,
-          proportion: 8.33,
-        },
-        {
-          label: 'Prévention en sécurité numérique',
-          count: 0,
-          proportion: 0,
-        },
-        {
-          label: 'Parentalité',
-          count: 2,
-          proportion: 8.33,
-        },
-        {
-          label: 'Scolarité et numérique',
-          count: 0,
-          proportion: 0,
-        },
-        {
-          label: 'Gérer ses contenus numériques',
-          count: 0,
-          proportion: 0,
-        },
-        {
-          label: 'Culture numérique',
-          count: 4,
-          proportion: 16.67,
-        },
-      ],
-      thematiquesDemarches: [
-        {
-          label: 'Papiers - Élections Citoyenneté',
-          count: 0,
-          proportion: 0,
-        },
-        {
-          label: 'Famille - Scolarité',
-          count: 2,
-          proportion: 12.5,
-        },
-        {
-          label: 'Social - Santé',
-          count: 6,
-          proportion: 37.5,
-        },
-        {
-          label: 'Travail - Formation',
-          count: 0,
-          proportion: 0,
-        },
-        {
-          label: 'Logement',
-          count: 2,
-          proportion: 12.5,
-        },
-        {
-          label: 'Transports - Mobilité',
-          count: 2,
-          proportion: 12.5,
-        },
-        {
-          label: 'Argent - Impôts',
-          count: 0,
-          proportion: 0,
-        },
-        {
-          label: 'Justice',
-          count: 2,
-          proportion: 12.5,
-        },
-        {
-          label: 'Étrangers - Europe',
-          count: 2,
-          proportion: 12.5,
-        },
-        {
-          label: 'Loisirs - Sports Culture',
-          count: 0,
-          proportion: 0,
-        },
+        { label: 'Papiers - Élections Citoyenneté', count: 0, proportion: 0 },
+        { label: 'Famille - Scolarité', count: 2, proportion: 12.5 },
+        { label: 'Social - Santé', count: 6, proportion: 37.5 },
+        { label: 'Travail - Formation', count: 0, proportion: 0 },
+        { label: 'Logement', count: 2, proportion: 12.5 },
+        { label: 'Transports - Mobilité', count: 2, proportion: 12.5 },
+        { label: 'Argent - Impôts', count: 0, proportion: 0 },
+        { label: 'Justice', count: 2, proportion: 12.5 },
+        { label: 'Étrangers - Europe', count: 2, proportion: 12.5 },
+        { label: 'Loisirs - Sports Culture', count: 0, proportion: 0 },
       ],
       materiels: [
         {
@@ -469,10 +376,7 @@ const STATISTIQUES_WORKSHEET_INPUT_FOR_COORDINATEUR: BuildStatistiquesWorksheetI
     ],
   }
 
-const expectQuantifiedShareRows = (
-  // label, count
-  expectedRows: [string, number][],
-) => {
+const expectQuantifiedShareRows = (expectedRows: [string, number][]) => {
   const proportionTotal = expectedRows.reduce(
     (total, [, count]) => total + count,
     0,
@@ -506,18 +410,10 @@ const mediationNumeriqueTitle = {
 }
 const mediationNumerique = {
   start: mediationNumeriqueTitle.start + mediationNumeriqueTitle.length,
-  length: 15,
-}
-const demarcheAdministrativeTitle = {
-  start: mediationNumerique.start + mediationNumerique.length,
-  length: 1,
-}
-const demarcheAdministrative = {
-  start: demarcheAdministrativeTitle.start + demarcheAdministrativeTitle.length,
-  length: 11,
+  length: 26,
 }
 const materielTitle = {
-  start: demarcheAdministrative.start + demarcheAdministrative.length,
+  start: mediationNumerique.start + mediationNumerique.length,
   length: 1,
 }
 const materiel = {
@@ -742,7 +638,9 @@ describe('build statistiques worksheet for médiateur', () => {
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it(`should contains Thématiques Médiation numérique ${range(mediationNumerique)}`, () => {
+  it(`should contains Thématiques Médiation numérique ${range(
+    mediationNumerique,
+  )}`, () => {
     const rows = worksheet
       .getRows(mediationNumerique.start, mediationNumerique.length)
       ?.map((row) => row.values)
@@ -763,26 +661,8 @@ describe('build statistiques worksheet for médiateur', () => {
         ['Scolarité et numérique', 0],
         ['Gérer ses contenus numériques', 0],
         ['Culture numérique', 4],
+        ['Aide aux démarches administratives', 16],
       ]),
-      [],
-    ])
-  })
-
-  it(`should contains bold 'Thématiques Démarches administratives' in Statistiques worksheet at position A${demarcheAdministrativeTitle.start}`, () => {
-    const exportTitleCell = worksheet.getCell(
-      `A${demarcheAdministrativeTitle.start}`,
-    )
-
-    expect(exportTitleCell?.value).toBe('Thématiques Démarches administratives')
-    expect(exportTitleCell?.font.bold).toBe(true)
-  })
-
-  it(`should contains Thématiques Démarches administratives ${range(demarcheAdministrative)}`, () => {
-    const rows = worksheet
-      .getRows(demarcheAdministrative.start, demarcheAdministrative.length)
-      ?.map((row) => row.values)
-
-    expect(rows).toEqual([
       ...expectQuantifiedShareRows([
         ['Papiers - Élections Citoyenneté', 0],
         ['Famille - Scolarité', 2],
@@ -876,7 +756,9 @@ describe('build statistiques worksheet for médiateur', () => {
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it(`should contains Nombre d’activités par lieux ${range(nombreActivites)}`, () => {
+  it(`should contains Nombre d’activités par lieux ${range(
+    nombreActivites,
+  )}`, () => {
     const rows = worksheet
       .getRows(nombreActivites.start, nombreActivites.length)
       ?.map((row) => row.values)
@@ -900,7 +782,9 @@ describe('build statistiques worksheet for médiateur', () => {
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it(`should contains Statistiques bénéficiaires ${range(beneficiairesGenre)}`, () => {
+  it(`should contains Statistiques bénéficiaires ${range(
+    beneficiairesGenre,
+  )}`, () => {
     const rows = worksheet
       .getRows(beneficiairesGenre.start, beneficiairesGenre.length)
       ?.map((row) => row.values)

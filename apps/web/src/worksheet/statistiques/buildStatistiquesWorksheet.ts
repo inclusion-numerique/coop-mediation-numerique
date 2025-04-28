@@ -88,14 +88,6 @@ const addStatistiquesThematiquesMediationNumerique =
     worksheet.addRow([])
   }
 
-const addStatistiquesThematiquesDemarchesAdministratives =
-  (worksheet: Excel.Worksheet) =>
-  ({ activites: { thematiquesDemarches } }: MesStatistiquesPageData) => {
-    addTitleRow(worksheet)('Thématiques Démarches administratives')
-    addQuantifiedShareRows(worksheet, thematiquesDemarches)
-    worksheet.addRow([])
-  }
-
 const addStatistiquesMaterielUtilises =
   (worksheet: Excel.Worksheet) =>
   ({ activites: { materiels } }: MesStatistiquesPageData) => {
@@ -192,7 +184,6 @@ export const buildStatistiquesWorksheet = ({
   addStatistiquesGenerales(worksheet)(statistiques)
   addStatistiquesActivites(worksheet)(statistiques)
   addStatistiquesThematiquesMediationNumerique(worksheet)(statistiques)
-  addStatistiquesThematiquesDemarchesAdministratives(worksheet)(statistiques)
   addStatistiquesMaterielUtilises(worksheet)(statistiques)
   addStatistiquesCanauxActivites(worksheet)(statistiques)
   addStatistiquesDureesActivites(worksheet)(statistiques)

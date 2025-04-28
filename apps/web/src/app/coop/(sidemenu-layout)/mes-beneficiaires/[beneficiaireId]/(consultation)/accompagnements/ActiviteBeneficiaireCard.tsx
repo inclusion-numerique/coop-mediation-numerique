@@ -4,7 +4,6 @@ import type { ActiviteForList } from '@app/web/cra/activitesQueries'
 import {
   autonomieStars,
   niveauAtelierStars,
-  thematiqueDemarcheAdministrativeLabels,
   thematiqueLabels,
   typeActiviteIllustrations,
   typeActiviteLabels,
@@ -16,14 +15,7 @@ const ActiviteBeneficiaireCard = ({
 }: {
   activite: ActiviteForList
 }) => {
-  const {
-    titreAtelier,
-    niveau,
-    thematiques,
-    thematiquesDemarche,
-    autonomie,
-    type,
-  } = activite
+  const { titreAtelier, niveau, thematiques, autonomie, type } = activite
 
   const { hasStars, starsCount } = autonomie
     ? { hasStars: true, starsCount: autonomieStars[autonomie] }
@@ -34,12 +26,9 @@ const ActiviteBeneficiaireCard = ({
         }
       : { hasStars: false, starsCount: 0 }
 
-  const thematiqueTags = [
-    ...thematiques.map((thematique) => thematiqueLabels[thematique]),
-    ...thematiquesDemarche.map(
-      (thematique) => thematiqueDemarcheAdministrativeLabels[thematique],
-    ),
-  ]
+  const thematiqueTags = thematiques.map(
+    (thematique) => thematiqueLabels[thematique],
+  )
 
   return (
     <div className="fr-py-2v fr-px-4v fr-flex fr-align-items-center fr-flex-gap-4v fr-my-2v fr-enlarge-button fr-border-radius--8">

@@ -28,8 +28,8 @@ import { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
 import {
   dureeAccompagnementStatisticsRanges,
   materielLabels,
-  thematiqueDemarcheAdministrativeLabels,
-  thematiqueLabels,
+  thematiquesAdministrativesLabels,
+  thematiquesNonAdministrativesLabels,
   typeActiviteLabels,
   typeLieuLabels,
 } from '@app/web/cra/cra'
@@ -135,9 +135,11 @@ const emptyData: MesStatistiquesPageData = {
   activites: {
     total: 0,
     typeActivites: emptyQuantifiedSharesFromEnum(typeActiviteLabels),
-    thematiques: emptyQuantifiedSharesFromEnum(thematiqueLabels),
+    thematiques: emptyQuantifiedSharesFromEnum(
+      thematiquesNonAdministrativesLabels,
+    ),
     thematiquesDemarches: emptyQuantifiedSharesFromEnum(
-      thematiqueDemarcheAdministrativeLabels,
+      thematiquesAdministrativesLabels,
     ),
     materiels: emptyQuantifiedSharesFromEnum(materielLabels),
     typeLieu: emptyQuantifiedSharesFromEnum(typeLieuLabels),
@@ -329,18 +331,25 @@ describe('getMesStatistiquesPageData', () => {
           expectEnum(data.activites.materiels, 'Telephone', 2, 10)
           expectEnum(data.activites.materiels, 'Tablette', 2, 10)
           expectEnum(data.activites.materiels, 'Autre', 3, 10)
+          // before
 
-          expectEnum(data.activites.thematiques, 'Email', 3, 11)
-          expectEnum(data.activites.thematiques, 'ReseauxSociaux', 2, 11)
-          expectEnum(data.activites.thematiques, 'Sante', 2, 11)
+          expectEnum(data.activites.thematiques, 'Email', 3, 15)
+          expectEnum(data.activites.thematiques, 'ReseauxSociaux', 2, 15)
+          expectEnum(data.activites.thematiques, 'Sante', 2, 15)
           expectEnum(
             data.activites.thematiques,
             'InsertionProfessionnelle',
             1,
-            11,
+            15,
           )
-          expectEnum(data.activites.thematiques, 'Parentalite', 1, 11)
-          expectEnum(data.activites.thematiques, 'CultureNumerique', 2, 11)
+          expectEnum(data.activites.thematiques, 'Parentalite', 1, 15)
+          expectEnum(data.activites.thematiques, 'CultureNumerique', 2, 15)
+          expectEnum(
+            data.activites.thematiques,
+            'AideAuxDemarchesAdministratives',
+            4,
+            15,
+          )
 
           expectEnum(
             data.activites.thematiquesDemarches,
@@ -364,6 +373,7 @@ describe('getMesStatistiquesPageData', () => {
             8,
           )
 
+          // after
           expectEnum(
             data.activites.typeActivites,
             'Individuel',

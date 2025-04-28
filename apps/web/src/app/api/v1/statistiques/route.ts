@@ -102,10 +102,6 @@ import { NextResponse } from 'next/server'
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/ValueLabelCountProportion'
- *         thematiques_demarches:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/ValueLabelCountProportion'
  *         materiels:
  *           type: array
  *           items:

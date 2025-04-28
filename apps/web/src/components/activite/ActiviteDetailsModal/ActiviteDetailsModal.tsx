@@ -24,12 +24,9 @@ import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import type { ActiviteForList } from '@app/web/cra/activitesQueries'
 import {
   autonomieStars,
-  degreDeFinalisationDemarcheHints,
-  degreDeFinalisationDemarcheLabels,
   materielLabels,
   niveauAtelierStars,
   structuresRedirectionLabels,
-  thematiqueDemarcheAdministrativeLabels,
   thematiqueLabels,
   typeActiviteIllustrations,
   typeActiviteLabels,
@@ -76,8 +73,14 @@ const premierAccompagnement = (
   nouveauxParticipants: number,
   participantsDejaAccompagnes: number,
 ) => [
-  `${nouveauxParticipants} ${nouveauxParticipants > 1 ? 'nouveaux bénéficiaires' : 'nouveau bénéficiaire'}`,
-  `${participantsDejaAccompagnes} ${participantsDejaAccompagnes > 1 ? 'bénéficiaires déjà accompagnés' : 'bénéficiaire déjà accompagné'}`,
+  `${nouveauxParticipants} ${
+    nouveauxParticipants > 1 ? 'nouveaux bénéficiaires' : 'nouveau bénéficiaire'
+  }`,
+  `${participantsDejaAccompagnes} ${
+    participantsDejaAccompagnes > 1
+      ? 'bénéficiaires déjà accompagnés'
+      : 'bénéficiaire déjà accompagné'
+  }`,
 ]
 
 const ActiviteDetailsModal = ({
@@ -93,7 +96,9 @@ const ActiviteDetailsModal = ({
   // Get full path with query params for actionsRetourPath
   const currentPath = usePathname()
   const searchParamsString = useSearchParams().toString()
-  const actionsRetourPath = `${currentPath}${searchParamsString ? `?${searchParamsString}` : ''}`
+  const actionsRetourPath = `${currentPath}${
+    searchParamsString ? `?${searchParamsString}` : ''
+  }`
 
   const [deletionConfirmation, setDeletionConfirmation] = useState(false)
 
@@ -118,7 +123,6 @@ const ActiviteDetailsModal = ({
     duree,
     autonomie,
     date,
-    degreDeFinalisation,
     structureDeRedirection,
     orienteVersStructure,
     niveau,
@@ -128,7 +132,6 @@ const ActiviteDetailsModal = ({
     precisionsDemarche,
     accompagnements,
     thematiques,
-    thematiquesDemarche,
   } = activite
 
   const onDelete = async () => {
@@ -161,17 +164,16 @@ const ActiviteDetailsModal = ({
   const dureeString = dureeAsString(duree)
   const locationString = getActiviteLocationString(activite)
 
-  const thematiqueTags = [
-    ...thematiques.map((thematique) => thematiqueLabels[thematique]),
-    ...thematiquesDemarche.map(
-      (thematique) => thematiqueDemarcheAdministrativeLabels[thematique],
-    ),
-  ]
+  const thematiqueTags = thematiques.map(
+    (thematique) => thematiqueLabels[thematique],
+  )
 
   const donneesItems: ReactNode[] = [
     // Material utilisé
     materiel.length > 0 &&
-      `Matériel utilisé : ${materiel.map((materielValue) => materielLabels[materielValue]).join(', ')}`,
+      `Matériel utilisé : ${materiel
+        .map((materielValue) => materielLabels[materielValue])
+        .join(', ')}`,
     // Thématiques
     <>
       Thématique{sPluriel(thematiqueTags.length)}&nbsp;:{' '}
@@ -192,23 +194,8 @@ const ActiviteDetailsModal = ({
         <Stars count={autonomieStars[autonomie]} max={3} />
       </>
     ),
-    // Finalisation demarche
-    !!degreDeFinalisation && (
-      <>
-        Démarche finalisée&nbsp;:{' '}
-        {degreDeFinalisationDemarcheLabels[degreDeFinalisation]}
-        {degreDeFinalisationDemarcheHints[degreDeFinalisation] &&
-          `, ${(
-            degreDeFinalisationDemarcheHints[degreDeFinalisation] ?? ''
-          ).toLocaleLowerCase()}`}
-      </>
-    ),
     // Redirection structure accompagnement individuel
     !!orienteVersStructure &&
-      !!structureDeRedirection &&
-      `Orienté vers ${structuresRedirectionLabels[structureDeRedirection]}`,
-    // Redirection structure démarche
-    degreDeFinalisation === 'OrienteVersStructure' &&
       !!structureDeRedirection &&
       `Orienté vers ${structuresRedirectionLabels[structureDeRedirection]}`,
     // Niveau atelier
@@ -262,18 +249,24 @@ const ActiviteDetailsModal = ({
     ? participants.beneficiairesSuivis.length > 0 &&
       participants.participantsAnonymes.total > 0
       ? // Both participants suivis and anonymes
-        `${(beneficiairesCollectif ?? []).length} participant${sPluriel((beneficiairesCollectif ?? []).length)} dont ${
+        `${(beneficiairesCollectif ?? []).length} participant${sPluriel(
+          (beneficiairesCollectif ?? []).length,
+        )} dont ${
           participants.beneficiairesSuivis.length
-        } bénéficiaire${sPluriel(participants.beneficiairesSuivis.length)} suivi${sPluriel(
+        } bénéficiaire${sPluriel(
           participants.beneficiairesSuivis.length,
-        )} et ${
+        )} suivi${sPluriel(participants.beneficiairesSuivis.length)} et ${
           participants.participantsAnonymes.total
         } anonyme${sPluriel(participants.participantsAnonymes.total)}`
       : participants.beneficiairesSuivis.length > 0
         ? // Only participants suivis
-          `${participants.beneficiairesSuivis.length} bénéficiaire${sPluriel(participants.beneficiairesSuivis.length)} suivi${sPluriel(participants.beneficiairesSuivis.length)}`
+          `${participants.beneficiairesSuivis.length} bénéficiaire${sPluriel(
+            participants.beneficiairesSuivis.length,
+          )} suivi${sPluriel(participants.beneficiairesSuivis.length)}`
         : // Only participants anonymes
-          `${participants.participantsAnonymes.total} participant${sPluriel(participants.participantsAnonymes.total)} anonyme${sPluriel(participants.participantsAnonymes.total)}`
+          `${participants.participantsAnonymes.total} participant${sPluriel(
+            participants.participantsAnonymes.total,
+          )} anonyme${sPluriel(participants.participantsAnonymes.total)}`
     : null
 
   const participantsAnonymesInfos =

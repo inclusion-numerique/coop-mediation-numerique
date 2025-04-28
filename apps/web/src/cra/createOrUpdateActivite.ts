@@ -289,8 +289,6 @@ export const createOrUpdateActivite = async ({
     titreAtelier: 'titreAtelier' in data ? data.titreAtelier : undefined,
     precisionsDemarche:
       'precisionsDemarche' in data ? data.precisionsDemarche : undefined,
-    degreDeFinalisation:
-      'degreDeFinalisation' in data ? data.degreDeFinalisation : undefined,
     lieuCommune,
     lieuCodePostal,
     lieuCodeInsee,
@@ -310,8 +308,6 @@ export const createOrUpdateActivite = async ({
       input.type === 'Demarche'
         ? (input.data.thematiquesMediationNumerique ?? [])
         : input.data.thematiques,
-    thematiquesDemarche:
-      input.type === 'Demarche' ? input.data.thematiques : undefined,
     structure:
       // Only set structure if it is the correct type of lieuAccompagnement
       structure

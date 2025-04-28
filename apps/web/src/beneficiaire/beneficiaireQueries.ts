@@ -1,13 +1,6 @@
-import {
-  thematiqueDemarcheAdministrativeLabels,
-  thematiqueLabels,
-} from '@app/web/cra/cra'
+import { thematiqueLabels } from '@app/web/cra/cra'
 import { prismaClient } from '@app/web/prismaClient'
-import {
-  Prisma,
-  Thematique,
-  ThematiqueDemarcheAdministrative,
-} from '@prisma/client'
+import { Prisma, Thematique } from '@prisma/client'
 import { pascalCase } from 'change-case'
 
 export const beneficiaireAccompagnementsCountSelect = {
@@ -26,7 +19,7 @@ export type ThematiqueCount = {
 }
 
 export type ThematiqueDemarcheAdministrativeCount = {
-  thematique: ThematiqueDemarcheAdministrative
+  thematique: Thematique
   count: number
   enumValue: string
   label: string
@@ -40,9 +33,7 @@ export type CountThematiquesResult = CraThematiqueCount[]
 
 const addLabelToThematiques = (
   counts: { thematique: string; count: bigint }[],
-  labelMap:
-    | { [key in ThematiqueDemarcheAdministrative]: string }
-    | { [key in Thematique]: string },
+  labelMap: { [key in Thematique]: string },
 ): CraThematiqueCount[] =>
   counts.map((queryResult) => {
     const thematique = pascalCase(
@@ -72,37 +63,17 @@ export const countThematiques = async ({
        AND a.mediateur_id = '${mediateurId}'::UUID
        `)
 
-  const [thematiquesCounts, thematiquesDemarcheCounts] = await Promise.all([
-    prismaClient.$queryRaw<{ thematique: string; count: bigint }[]>`
+  const thematiquesCounts = await prismaClient.$queryRaw<
+    { thematique: string; count: bigint }[]
+  >`
       SELECT unnest(a.thematiques) AS thematique, count(*) AS count
       ${activitesFragment}
       GROUP BY thematique
       ORDER BY thematique ASC
-    `,
-    prismaClient.$queryRaw<{ thematique: string; count: bigint }[]>`
-      SELECT unnest(a.thematiques_demarche) AS thematique, count(*) AS count
-      ${activitesFragment}
-      GROUP BY thematique
-      ORDER BY thematique ASC
-    `,
-  ])
-
-  // Use the helper function to map both thematiques and thematiques_demarche
-  const thematiquesWithLabel = addLabelToThematiques(
-    thematiquesCounts,
-    thematiqueLabels,
-  )
-
-  const thematiquesDemarchesWithLabel = addLabelToThematiques(
-    thematiquesDemarcheCounts,
-    thematiqueDemarcheAdministrativeLabels,
-  )
+    `
 
   // Merge the results and sort by label
-  const sortedThematiques = [
-    ...thematiquesWithLabel,
-    ...thematiquesDemarchesWithLabel,
-  ].sort((a, b) => a.label.localeCompare(b.label))
-
-  return sortedThematiques
+  return addLabelToThematiques(thematiquesCounts, thematiqueLabels).sort(
+    (a, b) => a.label.localeCompare(b.label),
+  )
 }

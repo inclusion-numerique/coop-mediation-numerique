@@ -62,9 +62,7 @@ export const activiteListSelect = {
 
   orienteVersStructure: true,
 
-  thematiquesDemarche: true,
   precisionsDemarche: true,
-  degreDeFinalisation: true,
 
   titreAtelier: true,
   niveau: true,

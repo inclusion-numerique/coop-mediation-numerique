@@ -17,7 +17,7 @@ import { mediateque } from '@app/fixtures/structures'
 import { conseillerNumeriqueMediateurId } from '@app/fixtures/users/conseillerNumerique'
 import { mediateurAvecActiviteMediateurId } from '@app/fixtures/users/mediateurAvecActivite'
 import { participantsAnonymesDefault } from '@app/web/cra/participantsAnonymes'
-import { Thematique, ThematiqueDemarcheAdministrative } from '@prisma/client'
+import { Thematique } from '@prisma/client'
 import { coordinateurInscritAvecToutMediateurId } from './users/coordinateurInscritAvecTout'
 
 export const mediateurAvecActiviteCrasIndividuels = [
@@ -71,9 +71,10 @@ export const mediateurAvecActiviteCrasDemarchesAdministratives = [
     id: '1c083c39-beec-4606-ba1a-f1cdf173e5d4',
     beneficiaireId: beneficiaireMinimaleMediateurAvecActivite.id,
     mediateurId: mediateurAvecActiviteMediateurId,
-    thematiquesDemarche: [
-      ThematiqueDemarcheAdministrative.SocialSante,
-      ThematiqueDemarcheAdministrative.EtrangersEurope,
+    thematiques: [
+      Thematique.AideAuxDemarchesAdministratives,
+      Thematique.SocialSante,
+      Thematique.EtrangersEurope,
     ],
     date: new Date('2024-08-02'),
     creation: new Date('2024-08-02T14:00:00'),
@@ -82,9 +83,10 @@ export const mediateurAvecActiviteCrasDemarchesAdministratives = [
     id: '42b5be6b-5140-48e3-9c56-af7b6dda04f0',
     beneficiaireId: beneficiaireMaximaleMediateurAvecActivite.id,
     mediateurId: mediateurAvecActiviteMediateurId,
-    thematiquesDemarche: [
-      ThematiqueDemarcheAdministrative.SocialSante,
-      ThematiqueDemarcheAdministrative.Logement,
+    thematiques: [
+      Thematique.AideAuxDemarchesAdministratives,
+      Thematique.SocialSante,
+      Thematique.Logement,
     ],
     date: new Date('2024-08-03'),
     creation: new Date('2024-08-03T15:00:00'),
@@ -94,9 +96,10 @@ export const mediateurAvecActiviteCrasDemarchesAdministratives = [
     id: 'c96812d9-cbfe-4260-9430-77f9befd22aa',
     beneficiaireId: beneficiaireAnonymeMediateurAvecActivite.id,
     mediateurId: mediateurAvecActiviteMediateurId,
-    thematiquesDemarche: [
-      ThematiqueDemarcheAdministrative.FamilleScolarite,
-      ThematiqueDemarcheAdministrative.TransportsMobilite,
+    thematiques: [
+      Thematique.AideAuxDemarchesAdministratives,
+      Thematique.FamilleScolarite,
+      Thematique.TransportsMobilite,
     ],
     date: new Date('2024-08-05'),
     creation: new Date('2024-08-05T15:30:00'),
@@ -109,9 +112,10 @@ export const mediateurAvecActiviteCrasDemarchesAdministratives = [
     id: '36e41a5c-95ad-405d-8b59-8be586017924',
     beneficiaireId: beneficiaireMaximaleMediateurAvecActivite.id,
     mediateurId: mediateurAvecActiviteMediateurId,
-    thematiquesDemarche: [
-      ThematiqueDemarcheAdministrative.SocialSante,
-      ThematiqueDemarcheAdministrative.Justice,
+    thematiques: [
+      Thematique.AideAuxDemarchesAdministratives,
+      Thematique.SocialSante,
+      Thematique.Justice,
     ],
     date: new Date('2024-08-03'),
     creation: new Date('2024-08-03T16:00:00'),
@@ -209,9 +213,10 @@ export const conseillerNumeriqueCrasDemarchesAdministratives = [
     id: '26c0e764-1959-4ff5-b447-fd086e9120a7',
     beneficiaireId: beneficiaireMinimaleConseillerNumerique.id,
     mediateurId: conseillerNumeriqueMediateurId,
-    thematiquesDemarche: [
-      ThematiqueDemarcheAdministrative.SocialSante,
-      ThematiqueDemarcheAdministrative.EtrangersEurope,
+    thematiques: [
+      Thematique.AideAuxDemarchesAdministratives,
+      Thematique.SocialSante,
+      Thematique.EtrangersEurope,
     ],
     date: new Date('2024-08-02'),
     creation: new Date('2024-08-02T14:00:00'),
@@ -220,9 +225,10 @@ export const conseillerNumeriqueCrasDemarchesAdministratives = [
     id: 'bd477c86-9222-4997-bc7c-f109f401ccd8',
     beneficiaireId: beneficiaireMaximaleConseillerNumerique.id,
     mediateurId: conseillerNumeriqueMediateurId,
-    thematiquesDemarche: [
-      ThematiqueDemarcheAdministrative.SocialSante,
-      ThematiqueDemarcheAdministrative.Logement,
+    thematiques: [
+      Thematique.AideAuxDemarchesAdministratives,
+      Thematique.SocialSante,
+      Thematique.Logement,
     ],
     date: new Date('2024-08-03'),
     creation: new Date('2024-08-03T15:00:00'),
@@ -232,9 +238,10 @@ export const conseillerNumeriqueCrasDemarchesAdministratives = [
     id: '863d8cda-e020-4379-b222-5ae468ce6b4b',
     beneficiaireId: beneficiaireAnonymeConseillerNumerique.id,
     mediateurId: conseillerNumeriqueMediateurId,
-    thematiquesDemarche: [
-      ThematiqueDemarcheAdministrative.FamilleScolarite,
-      ThematiqueDemarcheAdministrative.TransportsMobilite,
+    thematiques: [
+      Thematique.AideAuxDemarchesAdministratives,
+      Thematique.FamilleScolarite,
+      Thematique.TransportsMobilite,
     ],
     date: new Date('2024-08-05'),
     creation: new Date('2024-08-05T15:30:00'),
@@ -247,9 +254,10 @@ export const conseillerNumeriqueCrasDemarchesAdministratives = [
     id: '3c91bec2-8828-4f52-801a-d9be09c2ae80',
     beneficiaireId: beneficiaireMaximaleConseillerNumerique.id,
     mediateurId: conseillerNumeriqueMediateurId,
-    thematiquesDemarche: [
-      ThematiqueDemarcheAdministrative.SocialSante,
-      ThematiqueDemarcheAdministrative.Justice,
+    thematiques: [
+      Thematique.AideAuxDemarchesAdministratives,
+      Thematique.SocialSante,
+      Thematique.Justice,
     ],
     date: new Date('2024-08-03'),
     creation: new Date('2024-08-03T16:00:00'),
@@ -318,9 +326,10 @@ export const coordinateurCrasDemarchesAdministratives = [
     id: 'd250af76-6ad2-4407-87a4-840ad6e593ed',
     beneficiaireId: beneficiaireMinimaleCoordinateur.id,
     mediateurId: beneficiaireMinimaleCoordinateur.mediateurId,
-    thematiquesDemarche: [
-      ThematiqueDemarcheAdministrative.SocialSante,
-      ThematiqueDemarcheAdministrative.EtrangersEurope,
+    thematiques: [
+      Thematique.AideAuxDemarchesAdministratives,
+      Thematique.SocialSante,
+      Thematique.EtrangersEurope,
     ],
     date: new Date('2024-08-02'),
     creation: new Date('2024-08-02T14:00:00'),

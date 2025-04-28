@@ -34,7 +34,3 @@
 .yesNoFieldset {
   grid-template-columns: repeat(2, 1fr);
 }
-
-.degreDeFinalisationFieldset {
-  grid-template-columns: repeat(4, 1fr);
-}

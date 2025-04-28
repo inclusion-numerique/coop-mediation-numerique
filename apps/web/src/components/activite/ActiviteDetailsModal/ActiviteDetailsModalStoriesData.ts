@@ -15,7 +15,6 @@ export const activiteIndividuelleInfosMinimum = {
     'PrendreEnMainDuMateriel',
     'InsertionProfessionnelle',
   ],
-  thematiquesDemarche: [],
   notes: null,
   accompagnements: [
     {
@@ -52,7 +51,6 @@ export const activiteIndividuelleInfosMinimum = {
   orienteVersStructure: null,
   structureDeRedirection: null,
   precisionsDemarche: null,
-  degreDeFinalisation: null,
   titreAtelier: null,
   niveau: null,
 } satisfies ActiviteForList
@@ -66,7 +64,6 @@ export const activiteIndividuelleBeneficiaireSuivi = {
   date: new Date('2024-03-22'),
   duree: 120,
   thematiques: ['NavigationSurInternet', 'Email'],
-  thematiquesDemarche: [],
   notes: null,
   accompagnements: [
     {
@@ -98,7 +95,6 @@ export const activiteIndividuelleBeneficiaireSuivi = {
   orienteVersStructure: true,
   structureDeRedirection: 'OperateurOuOrganismeEnCharge',
   precisionsDemarche: null,
-  degreDeFinalisation: null,
   titreAtelier: null,
   niveau: null,
 } satisfies ActiviteForList
@@ -113,7 +109,6 @@ export const activiteIndividuelleBeneficiaireAnonyme = {
   date: new Date('2024-03-22'),
   duree: 120,
   thematiques: ['NavigationSurInternet', 'Email'],
-  thematiquesDemarche: [],
   notes:
     '<p>Lörem ipsum ladeniliga douche <strong>plaledes</strong>. Nining son. Mipära kavun joskap juling lanar. Segyde snålsurfa då jevis. Dorade preng posad. Spefuv ter i kvasitiskap då mobilblottare dir. Häbel epihet i tegt. Ultrar. Digt hän. Polytt doskapet tempopatologi. Use betårta, tena. Biktiga pojuren.</p><p>Segyde snålsurfa då jevis. <strong>Dorade preng posad</strong>. Spefuv ter i kvasitiskap då mobilblottare dir. Häbel epihet i tegt. Ultrar. Digt hän. Polytt doskapet tempopatologi. Use betårta, tena. Biktiga pojuren</p>',
   accompagnements: [
@@ -146,7 +141,6 @@ export const activiteIndividuelleBeneficiaireAnonyme = {
   orienteVersStructure: true,
   structureDeRedirection: 'OperateurOuOrganismeEnCharge',
   precisionsDemarche: null,
-  degreDeFinalisation: null,
   titreAtelier: null,
   niveau: null,
 } satisfies ActiviteForList
@@ -161,7 +155,6 @@ export const activiteCollectifInfosRepliees = {
   date: new Date('2024-03-22'),
   duree: 120,
   thematiques: ['NavigationSurInternet', 'Email'],
-  thematiquesDemarche: [],
   notes:
     '<p>Lörem ipsum ladeniliga douche <strong>plaledes</strong>. Nining son. Mipära kavun joskap juling lanar. Segyde snålsurfa då jevis. Dorade preng posad. Spefuv ter i kvasitiskap då mobilblottare dir. Häbel epihet i tegt. Ultrar. Digt hän. Polytt doskapet tempopatologi. Use betårta, tena. Biktiga pojuren.</p><p>Segyde snålsurfa då jevis. <strong>Dorade preng posad</strong>. Spefuv ter i kvasitiskap då mobilblottare dir. Häbel epihet i tegt. Ultrar. Digt hän. Polytt doskapet tempopatologi. Use betårta, tena. Biktiga pojuren</p>',
   accompagnements: [
@@ -212,7 +205,6 @@ export const activiteCollectifInfosRepliees = {
   orienteVersStructure: null,
   structureDeRedirection: null,
   precisionsDemarche: null,
-  degreDeFinalisation: null,
   titreAtelier: 'Atelier de découverte de la vacuité de toute chose',
   niveau: 'Debutant',
 } satisfies ActiviteForList
@@ -227,7 +219,6 @@ export const activiteCollectifInfosDepliees = {
   date: new Date('2024-07-22'),
   duree: 120,
   thematiques: ['NavigationSurInternet', 'Email'],
-  thematiquesDemarche: [],
   notes: null,
   accompagnements: [
     ...createBeneficiairesForParticipantsAnonymes({
@@ -310,7 +301,6 @@ export const activiteCollectifInfosDepliees = {
   orienteVersStructure: null,
   structureDeRedirection: null,
   precisionsDemarche: null,
-  degreDeFinalisation: null,
   titreAtelier: null,
   niveau: 'Debutant',
 } satisfies ActiviteForList

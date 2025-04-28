@@ -43,9 +43,6 @@ import {
 } from '@app/web/cra/CraDemarcheAdministrativeValidation'
 import {
   autonomieOptionsWithExtras,
-  degreDeFinalisationDemarcheOptionsWithExtras,
-  structuresRedirectionOptions,
-  thematiqueDemarcheAdministrativeOptionsWithExtras,
   thematiqueOptionsWithExtras,
   typeLieuOptionsWithExtras,
 } from '@app/web/cra/cra'
@@ -139,10 +136,6 @@ const CraDemarcheAdministrativeForm = ({
   const typeLieu = form.watch('typeLieu')
   const showLieuCommuneData = typeLieu === 'Autre' || typeLieu === 'Domicile'
   const showStructure = typeLieu === 'LieuActivite'
-
-  const degreDeFinalisation = form.watch('degreDeFinalisation')
-  const showStructureOrientation =
-    degreDeFinalisation === 'OrienteVersStructure'
 
   const lieuActiviteRichOptions = useMemo(
     () => toLieuActiviteRichOptions(lieuActiviteOptions),
@@ -240,7 +233,9 @@ const CraDemarcheAdministrativeForm = ({
     useCallback(
       (data, { name }) => {
         replaceRouteWithoutRerender(
-          `/coop/mes-activites/cra/administratif?v=${encodeSerializableState(data)}`,
+          `/coop/mes-activites/cra/administratif?v=${encodeSerializableState(
+            data,
+          )}`,
         )
 
         // When changing the beneficiaire
@@ -369,19 +364,6 @@ const CraDemarcheAdministrativeForm = ({
       <p className="fr-text--medium fr-mb-4v fr-mt-12v">
         Thématique(s) de la démarche administrative <RedAsterisk />
       </p>
-      <CheckboxGroupFormField
-        control={control}
-        path="thematiques"
-        options={thematiqueDemarcheAdministrativeOptionsWithExtras}
-        disabled={isLoading}
-        components={{
-          label: RichCardLabel,
-        }}
-        classes={{
-          fieldsetElement: richCardFieldsetElementClassName,
-          fieldset: craFormFieldsetClassname(styles.thematiquesFieldset),
-        }}
-      />
       <InputFormField
         control={control}
         disabled={isLoading}
@@ -458,35 +440,6 @@ const CraDemarcheAdministrativeForm = ({
           radioGroup: richCardRadioGroupClassName,
         }}
       />
-      <p className="fr-text--medium fr-mb-4v fr-mt-12v">
-        La démarche est-elle finalisée&nbsp;?
-      </p>
-      <RadioFormField
-        control={control}
-        path="degreDeFinalisation"
-        options={degreDeFinalisationDemarcheOptionsWithExtras}
-        disabled={isLoading}
-        components={{
-          label: RichCardLabel,
-        }}
-        classes={{
-          fieldsetElement: richCardFieldsetElementClassName,
-          fieldset: craFormFieldsetClassname(
-            styles.degreDeFinalisationFieldset,
-          ),
-          radioGroup: richCardRadioGroupClassName,
-        }}
-      />
-      {showStructureOrientation && (
-        <CustomSelectFormField
-          label=" "
-          control={control}
-          path="structureDeRedirection"
-          placeholder="Structure de redirection"
-          options={structuresRedirectionOptions}
-        />
-      )}
-
       {showAnonymousForm && (
         <>
           <hr className="fr-separator-12v" />

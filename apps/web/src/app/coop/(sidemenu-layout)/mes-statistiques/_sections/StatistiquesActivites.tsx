@@ -39,9 +39,7 @@ export const StatistiquesActivites = ({
     setIsMediationNumeriqueAccompagnement,
   ] = useState(true)
 
-  const thematiquesToDisplay = isMediationNumeriqueAccompagnement
-    ? activites.thematiques
-    : activites.thematiquesDemarches
+  const thematiquesToDisplay = activites.thematiques
 
   const thematiquesToDisplayMaxProportion = thematiquesToDisplay.reduce(
     (max, thematique) =>

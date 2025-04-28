@@ -25,7 +25,6 @@ const nullActivite: Omit<
 > = {
   autonomie: null,
   creation: expect.any(Date),
-  degreDeFinalisation: null,
   lieuCodeInsee: null,
   lieuCodePostal: null,
   lieuCommune: null,
@@ -36,7 +35,6 @@ const nullActivite: Omit<
   precisionsDemarche: null,
   structureDeRedirection: null,
   thematiques: [],
-  thematiquesDemarche: [],
   typeLieu: 'ADistance',
   niveau: null,
   structure: null,
@@ -106,7 +104,6 @@ describe('createOrUpdateActivite', () => {
       ],
       autonomie: input.data.autonomie,
       date: new Date(input.data.date),
-      degreDeFinalisation: input.data.orienteVersStructure ?? null,
       duree: craDureeDataToMinutes(input.data.duree),
       lieuCodeInsee: input.data.lieuCommuneData?.codeInsee ?? null,
       lieuCodePostal: input.data.lieuCommuneData?.codePostal ?? null,
@@ -116,7 +113,6 @@ describe('createOrUpdateActivite', () => {
       orienteVersStructure: input.data.orienteVersStructure ?? null,
       structureDeRedirection: input.data.structureDeRedirection ?? null,
       thematiques: input.data.thematiques,
-      thematiquesDemarche: [],
       typeLieu: input.data.typeLieu,
     })
   })
@@ -251,7 +247,6 @@ describe('createOrUpdateActivite', () => {
       notes: input.data.notes ?? null,
       typeLieu: input.data.typeLieu,
       thematiques: input.data.thematiques,
-      thematiquesDemarche: [],
     })
   })
 })
