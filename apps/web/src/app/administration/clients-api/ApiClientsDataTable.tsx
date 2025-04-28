@@ -4,7 +4,7 @@ import type {
   DataTableConfiguration,
   DataTableFilterValues,
   DataTableSearchParams,
-} from '@app/web/data-table/DataTableConfiguration'
+} from '@app/web/libs/data-table/DataTableConfiguration'
 import { dateAsDayAndTime } from '@app/web/utils/dateAsDayAndTime'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { Prisma } from '@prisma/client'

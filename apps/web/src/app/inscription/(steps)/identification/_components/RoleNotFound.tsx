@@ -5,7 +5,7 @@ import {
   type ProfileInscriptionSlug,
   allProfileInscriptionLabels,
   profileInscriptionFromSlug,
-} from '@app/web/inscription/profilInscription'
+} from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import React from 'react'

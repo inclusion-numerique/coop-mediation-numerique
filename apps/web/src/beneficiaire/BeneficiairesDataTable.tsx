@@ -3,7 +3,7 @@ import type {
   DataTableConfiguration,
   DataTableFilterValues,
   DataTableSearchParams,
-} from '@app/web/data-table/DataTableConfiguration'
+} from '@app/web/libs/data-table/DataTableConfiguration'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { numberToString } from '@app/web/utils/formatNumber'
 import type { Prisma } from '@prisma/client'

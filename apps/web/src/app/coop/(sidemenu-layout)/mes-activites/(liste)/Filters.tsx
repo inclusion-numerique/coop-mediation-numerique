@@ -1,15 +1,15 @@
 'use client'
 
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import type { LieuActiviteOption } from '@app/web/app/lieu-activite/getMediateursLieuxActiviteOptions'
 import type { BeneficiaireOption } from '@app/web/beneficiaire/BeneficiaireOption'
 import { ActiviteTypeFilter } from '@app/web/components/filters/ActiviteTypeFilter'
 import { BeneficiaireFilter } from '@app/web/components/filters/BeneficiaireFilter'
 import { ConseillerNumeriqueFilter } from '@app/web/components/filters/ConseillerNumeriqueFilter'
-import { LieuFilter } from '@app/web/components/filters/LieuFilter'
 import { MediateurFilter } from '@app/web/components/filters/MediateurFilter'
 import { PeriodeFilter } from '@app/web/components/filters/PeriodeFilter'
 import type { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
+import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
+import { LieuFilter } from '@app/web/features/lieux-activite/use-cases/filter/LieuFilter'
 import { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import classNames from 'classnames'
 

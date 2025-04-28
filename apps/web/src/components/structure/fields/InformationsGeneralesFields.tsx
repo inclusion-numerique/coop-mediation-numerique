@@ -1,11 +1,11 @@
 import InputFormField from '@app/ui/components/Form/InputFormField'
 import RequiredFieldsDisclaimer from '@app/ui/components/Form/RequiredFieldsDisclaimer'
-import { InformationsGeneralesData } from '@app/web/app/structure/InformationsGeneralesValidation'
 import AdresseBanFormField, {
   type AdressBanFormFieldOption,
 } from '@app/web/components/form/AdresseBanFormField'
-import RnaInputInfo from '@app/web/rna/RnaInputInfo'
-import SiretInputInfo from '@app/web/siret/SiretInputInfo'
+import { InformationsGeneralesData } from '@app/web/features/structures/InformationsGeneralesValidation'
+import RnaInputInfo from '@app/web/features/structures/rna/RnaInputInfo'
+import SiretInputInfo from '@app/web/features/structures/siret/SiretInputInfo'
 import { UseFormReturn } from 'react-hook-form'
 
 export const InformationsGeneralesFields = <

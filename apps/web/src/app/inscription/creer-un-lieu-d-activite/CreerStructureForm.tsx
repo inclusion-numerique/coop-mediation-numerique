@@ -3,10 +3,6 @@
 import { useScrollToError } from '@app/ui/hooks/useScrollToError'
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
-import {
-  CreerStructureData,
-  CreerStructureValidation,
-} from '@app/web/app/structure/CreerStructureValidation'
 import { CompleteFields } from '@app/web/components/form/CompleteFields'
 import { DisplayOnCartography } from '@app/web/components/structure/DisplayOnCartography'
 import { DescriptionFields } from '@app/web/components/structure/fields/DescriptionFields'
@@ -23,7 +19,11 @@ import {
 import { LieuAccueillantPublicTitle } from '@app/web/components/structure/titles/LieuAccueillantPublicTitle'
 import { ServiceInclusionNumeriqueTitle } from '@app/web/components/structure/titles/ServiceInclusionNumeriqueTitle'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { siretOrRna } from '@app/web/rna/rnaValidation'
+import {
+  CreerStructureData,
+  CreerStructureValidation,
+} from '@app/web/features/structures/CreerStructureValidation'
+import { siretOrRna } from '@app/web/features/structures/rna/rnaValidation'
 import { trpc } from '@app/web/trpc'
 import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
 import Button from '@codegouvfr/react-dsfr/Button'

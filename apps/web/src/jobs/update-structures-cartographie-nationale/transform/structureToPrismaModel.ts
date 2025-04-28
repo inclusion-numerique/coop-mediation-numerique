@@ -1,13 +1,13 @@
-import { dispositifProgrammeNationalKeys } from '@app/web/app/structure/dispositifProgrammesNationaux'
-import { formationLabelKeys } from '@app/web/app/structure/formationLabel'
-import { fraisAChargeKeys } from '@app/web/app/structure/fraisACharge'
-import { itineranceKeys } from '@app/web/app/structure/itinerance'
-import { modaliteAccompagnementKeys } from '@app/web/app/structure/modaliteAccompagnement'
-import { modaliteAccesKeys } from '@app/web/app/structure/modalitesAcces'
-import { priseEnChargeSpecifiqueKeys } from '@app/web/app/structure/priseEnChargeSpecifique'
-import { publicSpecifiquementAdresseKeys } from '@app/web/app/structure/publicSpecifiquementAdresse'
-import { serviceKeys } from '@app/web/app/structure/service'
 import type { LieuStandardMediationNumerique } from '@app/web/data/standard-mediation-numerique/LieuStandardMediationNumerique'
+import { dispositifProgrammeNationalKeys } from '@app/web/features/structures/dispositifProgrammesNationaux'
+import { formationLabelKeys } from '@app/web/features/structures/formationLabel'
+import { fraisAChargeKeys } from '@app/web/features/structures/fraisACharge'
+import { itineranceKeys } from '@app/web/features/structures/itinerance'
+import { modaliteAccompagnementKeys } from '@app/web/features/structures/modaliteAccompagnement'
+import { modaliteAccesKeys } from '@app/web/features/structures/modalitesAcces'
+import { priseEnChargeSpecifiqueKeys } from '@app/web/features/structures/priseEnChargeSpecifique'
+import { publicSpecifiquementAdresseKeys } from '@app/web/features/structures/publicSpecifiquementAdresse'
+import { serviceKeys } from '@app/web/features/structures/service'
 import {
   DispositifProgrammeNational,
   FormationLabel,
