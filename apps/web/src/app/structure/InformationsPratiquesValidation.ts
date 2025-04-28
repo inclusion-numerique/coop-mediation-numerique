@@ -6,6 +6,9 @@ export const InformationsPratiquesShape = {
   siteWeb: z
     .string()
     .nullish()
+    .transform((value) =>
+      value == null || value === '' ? value : encodeURI(value),
+    )
     .refine(
       (value) =>
         value === '' ||
@@ -18,6 +21,9 @@ export const InformationsPratiquesShape = {
   ficheAccesLibre: z
     .string()
     .nullish()
+    .transform((value) =>
+      value == null || value === '' ? value : encodeURI(value),
+    )
     .refine(
       (value) =>
         value === '' ||
@@ -32,6 +38,9 @@ export const InformationsPratiquesShape = {
   priseRdv: z
     .string()
     .nullish()
+    .transform((value) =>
+      value == null || value === '' ? value : encodeURI(value),
+    )
     .refine(
       (value) =>
         value === '' ||

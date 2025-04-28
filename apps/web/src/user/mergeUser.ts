@@ -1,3 +1,4 @@
+import { conseillerNumeriqueMongoCollection } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
 import { prismaClient } from '@app/web/prismaClient'
 import { PrismaClient } from '@prisma/client'
 
@@ -386,6 +387,48 @@ const getUsers =
     }),
   })
 
+const syncWithMongo =
+  (prisma: PrismaTransaction) =>
+  async ({
+    id: userId,
+    email,
+    mediateur,
+  }: {
+    id: string
+    email: string
+    mediateur?: { id: string } | null
+  }) => {
+    const conseillerCollection =
+      await conseillerNumeriqueMongoCollection('conseillers')
+
+    const mongoConseiller = await conseillerCollection.findOne({
+      emailPro: email,
+    })
+
+    if (!mongoConseiller || !mediateur) return
+
+    await prisma.conseillerNumerique.upsert({
+      where: { id: mongoConseiller._id.toString() },
+      update: {
+        mediateurId: mediateur.id,
+        idPg: mongoConseiller.idPG,
+      },
+      create: {
+        id: mongoConseiller._id.toString(),
+        idPg: mongoConseiller.idPG,
+        mediateurId: mediateur.id,
+      },
+    })
+
+    await prisma.coordinateur.update({
+      where: { userId },
+      data: {
+        conseillerNumeriqueId: mongoConseiller._id.toString(),
+        conseillerNumeriqueIdPg: mongoConseiller.idPG,
+      },
+    })
+  }
+
 export const mergeUser = async (
   sourceUserId: string,
   targetUserId: string,
@@ -406,5 +449,6 @@ export const mergeUser = async (
     await mergeStructuresEmployeuses(prisma)(sourceUser, targetUser)
     await mergeMutations(prisma)(sourceUser, targetUser)
     await deleteUser(prisma)(sourceUser)
+    await syncWithMongo(prisma)(targetUser)
   })
 }

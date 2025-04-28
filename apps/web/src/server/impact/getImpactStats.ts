@@ -1,3 +1,4 @@
+import type { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
 import { prismaClient } from '@app/web/prismaClient'
 
 type ActiviteParMois = {
@@ -36,83 +37,104 @@ export type ImpactStats = {
   activitesParMois: ActiviteParMois[]
 }
 
-const getActivitesParMois = async (): Promise<ActiviteParMois[]> => {
-  const rawResult = await prismaClient.$queryRaw`
-      WITH mois AS (
-          SELECT DISTINCT date_trunc('month', date) AS mois
-          FROM activites
-          WHERE suppression IS NULL
-            AND date <= CURRENT_DATE
-          ORDER BY mois DESC
-          LIMIT 12
-      )
-      SELECT
-          to_char(m.mois, 'Month YYYY') as mois,
-          m.mois as date_mois,
-          COUNT(DISTINCT a.id)::int as total,
-          COUNT(DISTINCT CASE
-                             WHEN EXISTS (
-                                 SELECT 1
-                                 FROM accompagnements acc
-                                          JOIN beneficiaires b ON b.id = acc.beneficiaire_id
-                                 WHERE acc.activite_id = a.id
-                                   AND b.anonyme = false
-                             ) THEN a.id
-              END)::int as "avecBeneficiaire",
-          ROUND(
-                  COUNT(DISTINCT CASE
-                                     WHEN EXISTS (
-                                         SELECT 1
-                                         FROM accompagnements acc
-                                                  JOIN beneficiaires b ON b.id = acc.beneficiaire_id
-                                         WHERE acc.activite_id = a.id
-                                           AND b.anonyme = false
-                                     ) THEN a.id
-                      END)::numeric * 100.0 / NULLIF(COUNT(DISTINCT a.id), 0)
-          )::int as "pourcentageAvecBeneficiaire",
-          COUNT(DISTINCT CASE
-                             WHEN NOT EXISTS (
-                                 SELECT 1
-                                 FROM accompagnements acc
-                                          JOIN beneficiaires b ON b.id = acc.beneficiaire_id
-                                 WHERE acc.activite_id = a.id
-                                   AND b.anonyme = false
-                             ) THEN a.id
-              END)::int as "sansBeneficiaire",
-          ROUND(
-                  COUNT(DISTINCT CASE
-                                     WHEN NOT EXISTS (
-                                         SELECT 1
-                                         FROM accompagnements acc
-                                                  JOIN beneficiaires b ON b.id = acc.beneficiaire_id
-                                         WHERE acc.activite_id = a.id
-                                           AND b.anonyme = false
-                                     ) THEN a.id
-                      END)::numeric * 100.0 / NULLIF(COUNT(DISTINCT a.id), 0)
-          )::int as "pourcentageSansBeneficiaire"
-      FROM mois m
-               LEFT JOIN activites a ON date_trunc('month', a.date) = m.mois
-          AND a.suppression IS NULL
-          AND a.date <= CURRENT_DATE
-      GROUP BY m.mois
-      ORDER BY date_mois ASC
-  `
+const getActivitesParMois = async ({
+  du,
+  au,
+  departements,
+  communes,
+  lieux,
+}: ActivitesFilters): Promise<ActiviteParMois[]> => {
+  const lieuFilters: string[] = [
+    ...(departements?.map((dep) => `s.code_insee LIKE '${dep}%'`) ?? []),
+    ...(communes?.map((insee) => `s.code_insee = '${insee}'`) ?? []),
+    ...(lieux?.map((id) => `s.id = '${id}'`) ?? []),
+  ]
+
+  const conditions: (string | undefined)[] = [
+    `a.suppression IS NULL`,
+    `a.date <= CURRENT_DATE`,
+    du && au ? `a.date BETWEEN '${du}' AND '${au}'` : undefined,
+    lieuFilters.length > 0 ? `(${lieuFilters.join(' OR ')})` : undefined,
+  ].filter(Boolean)
+
+  const rawResult = await prismaClient.$queryRawUnsafe(`
+    WITH mois AS (
+      SELECT DISTINCT date_trunc('month', date) AS mois
+      FROM activites
+      WHERE suppression IS NULL
+        AND date <= CURRENT_DATE
+      ORDER BY mois DESC
+      LIMIT 12
+    )
+    SELECT
+      to_char(m.mois, 'Month YYYY') as mois,
+      m.mois as date_mois,
+      COUNT(DISTINCT a.id)::int as total,
+      COUNT(DISTINCT CASE
+                         WHEN EXISTS (
+                             SELECT 1
+                             FROM accompagnements acc
+                                      JOIN beneficiaires b ON b.id = acc.beneficiaire_id
+                             WHERE acc.activite_id = a.id
+                               AND b.anonyme = false
+                         ) THEN a.id
+          END)::int as "avecBeneficiaire",
+      ROUND(
+              COUNT(DISTINCT CASE
+                                 WHEN EXISTS (
+                                     SELECT 1
+                                     FROM accompagnements acc
+                                              JOIN beneficiaires b ON b.id = acc.beneficiaire_id
+                                     WHERE acc.activite_id = a.id
+                                       AND b.anonyme = false
+                                 ) THEN a.id
+                  END)::numeric * 100.0 / NULLIF(COUNT(DISTINCT a.id), 0)
+      )::int as "pourcentageAvecBeneficiaire",
+      COUNT(DISTINCT CASE
+                         WHEN NOT EXISTS (
+                             SELECT 1
+                             FROM accompagnements acc
+                                      JOIN beneficiaires b ON b.id = acc.beneficiaire_id
+                             WHERE acc.activite_id = a.id
+                               AND b.anonyme = false
+                         ) THEN a.id
+          END)::int as "sansBeneficiaire",
+      ROUND(
+              COUNT(DISTINCT CASE
+                                 WHEN NOT EXISTS (
+                                     SELECT 1
+                                     FROM accompagnements acc
+                                              JOIN beneficiaires b ON b.id = acc.beneficiaire_id
+                                     WHERE acc.activite_id = a.id
+                                       AND b.anonyme = false
+                                 ) THEN a.id
+                  END)::numeric * 100.0 / NULLIF(COUNT(DISTINCT a.id), 0)
+      )::int as "pourcentageSansBeneficiaire"
+    FROM mois m
+    LEFT JOIN activites a ON date_trunc('month', a.date) = m.mois
+    LEFT JOIN structures s ON a.structure_id = s.id
+    WHERE TRUE
+    ${conditions.length > 0 ? `AND ${conditions.join('\nAND ')}` : ''}
+    GROUP BY m.mois
+    ORDER BY date_mois ASC
+  `)
 
   return rawResult as any[]
 }
 
-const getMediateursAvecSuiviBeneficiaire = async (): Promise<number> => {
+const getMediateursAvecSuiviBeneficiaire = async (
+  activitesFilters: ActivitesFilters,
+): Promise<number> => {
   return prismaClient.mediateur.count({
     where: {
+      enActivite: matchLieuFrom(activitesFilters),
       AND: [
         // Exclu les conseillers numériques
         { conseillerNumerique: null },
         // Uniquement les médiateurs avec inscription validée
         {
           user: {
-            inscriptionValidee: {
-              not: null,
-            },
+            inscriptionValidee: matchPeriodFrom(activitesFilters),
           },
         },
         // Au moins une activité avec un bénéficiaire non anonyme
@@ -135,46 +157,73 @@ const getMediateursAvecSuiviBeneficiaire = async (): Promise<number> => {
   })
 }
 
-const getConseillersNumeriquesAvecSuiviBeneficiaire =
-  async (): Promise<number> => {
-    return prismaClient.mediateur.count({
-      where: {
-        AND: [
-          // Uniquement les conseillers numériques
-          {
-            conseillerNumerique: {
-              isNot: null,
-            },
+const getConseillersNumeriquesAvecSuiviBeneficiaire = async (
+  activitesFilters: ActivitesFilters,
+): Promise<number> => {
+  return prismaClient.mediateur.count({
+    where: {
+      enActivite: matchLieuFrom(activitesFilters),
+      AND: [
+        // Uniquement les conseillers numériques
+        {
+          conseillerNumerique: {
+            isNot: null,
           },
-          // Uniquement les médiateurs avec inscription validée
-          {
-            user: {
-              inscriptionValidee: {
-                not: null,
-              },
-            },
+        },
+        // Uniquement les médiateurs avec inscription validée
+        {
+          user: {
+            inscriptionValidee: matchPeriodFrom(activitesFilters),
           },
-          // Au moins une activité avec un bénéficiaire non anonyme
-          {
-            activites: {
-              some: {
-                suppression: null,
-                accompagnements: {
-                  some: {
-                    beneficiaire: {
-                      anonyme: false,
-                    },
+        },
+        // Au moins une activité avec un bénéficiaire non anonyme
+        {
+          activites: {
+            some: {
+              suppression: null,
+              accompagnements: {
+                some: {
+                  beneficiaire: {
+                    anonyme: false,
                   },
                 },
               },
             },
           },
-        ],
-      },
-    })
-  }
+        },
+      ],
+    },
+  })
+}
 
-export const getImpactStats = async (): Promise<ImpactStats> => {
+const matchPeriodFrom = ({ du, au }: ActivitesFilters) =>
+  du == null || au == null
+    ? { not: null }
+    : { gte: new Date(du), lte: new Date(au) }
+
+const matchLieuFrom = ({ departements, communes, lieux }: ActivitesFilters) => {
+  return departements == null && communes == null && lieux == null
+    ? {}
+    : {
+        some: {
+          structure: {
+            OR: [
+              ...(departements?.map((code) => ({
+                codeInsee: { startsWith: code },
+              })) ?? []),
+              ...(communes?.map((codeInsee) => ({ codeInsee })) ?? []),
+              ...(lieux?.map((id) => ({ id })) ?? []),
+            ],
+          },
+        },
+      }
+}
+
+export const getImpactStats = async ({
+  activitesFilters,
+}: {
+  activitesFilters: ActivitesFilters
+}): Promise<ImpactStats> => {
   const [
     conum,
     conumActifs,
@@ -191,10 +240,9 @@ export const getImpactStats = async (): Promise<ImpactStats> => {
     prismaClient.conseillerNumerique.count({
       where: {
         mediateur: {
+          enActivite: matchLieuFrom(activitesFilters),
           user: {
-            inscriptionValidee: {
-              not: null,
-            },
+            inscriptionValidee: matchPeriodFrom(activitesFilters),
           },
         },
       },
@@ -202,6 +250,7 @@ export const getImpactStats = async (): Promise<ImpactStats> => {
     prismaClient.conseillerNumerique.count({
       where: {
         mediateur: {
+          enActivite: matchLieuFrom(activitesFilters),
           activites: {
             some: {
               date: {
@@ -211,22 +260,19 @@ export const getImpactStats = async (): Promise<ImpactStats> => {
             },
           },
           user: {
-            inscriptionValidee: {
-              not: null,
-            },
+            inscriptionValidee: matchPeriodFrom(activitesFilters),
           },
         },
       },
     }),
-    getConseillersNumeriquesAvecSuiviBeneficiaire(),
+    getConseillersNumeriquesAvecSuiviBeneficiaire(activitesFilters),
     prismaClient.mediateur.count({
       where: {
+        enActivite: matchLieuFrom(activitesFilters),
         AND: [
           {
             user: {
-              inscriptionValidee: {
-                not: null,
-              },
+              inscriptionValidee: matchPeriodFrom(activitesFilters),
             },
           },
           {
@@ -237,12 +283,11 @@ export const getImpactStats = async (): Promise<ImpactStats> => {
     }),
     prismaClient.mediateur.count({
       where: {
+        enActivite: matchLieuFrom(activitesFilters),
         AND: [
           {
             user: {
-              inscriptionValidee: {
-                not: null,
-              },
+              inscriptionValidee: matchPeriodFrom(activitesFilters),
             },
           },
           {
@@ -261,16 +306,15 @@ export const getImpactStats = async (): Promise<ImpactStats> => {
         ],
       },
     }),
-    getMediateursAvecSuiviBeneficiaire(),
+    getMediateursAvecSuiviBeneficiaire(activitesFilters),
     prismaClient.coordinateur.count({
       where: {
         conseillerNumeriqueId: {
           not: null,
         },
         user: {
-          inscriptionValidee: {
-            not: null,
-          },
+          inscriptionValidee: matchPeriodFrom(activitesFilters),
+          emplois: matchLieuFrom(activitesFilters),
         },
       },
     }),
@@ -280,9 +324,8 @@ export const getImpactStats = async (): Promise<ImpactStats> => {
           not: null,
         },
         user: {
-          inscriptionValidee: {
-            not: null,
-          },
+          inscriptionValidee: matchPeriodFrom(activitesFilters),
+          emplois: matchLieuFrom(activitesFilters),
           lastLogin: {
             gte: new Date(new Date().setDate(new Date().getDate() - 31)),
           },
@@ -293,9 +336,8 @@ export const getImpactStats = async (): Promise<ImpactStats> => {
       where: {
         conseillerNumeriqueId: null,
         user: {
-          inscriptionValidee: {
-            not: null,
-          },
+          inscriptionValidee: matchPeriodFrom(activitesFilters),
+          emplois: matchLieuFrom(activitesFilters),
         },
       },
     }),
@@ -303,9 +345,8 @@ export const getImpactStats = async (): Promise<ImpactStats> => {
       where: {
         conseillerNumeriqueId: null,
         user: {
-          inscriptionValidee: {
-            not: null,
-          },
+          inscriptionValidee: matchPeriodFrom(activitesFilters),
+          emplois: matchLieuFrom(activitesFilters),
           lastLogin: {
             gte: new Date(new Date().setDate(new Date().getDate() - 31)),
           },
@@ -313,31 +354,35 @@ export const getImpactStats = async (): Promise<ImpactStats> => {
       },
     }),
 
-    getActivitesParMois(),
+    getActivitesParMois(activitesFilters),
   ])
 
   return {
     conum: {
       total: conum,
       actifs: conumActifs,
-      ratio: Math.round((conumActifs * 100) / conum),
+      ratio: conum === 0 ? 0 : Math.round((conumActifs * 100) / conum),
       avecSuiviBeneficiaire: conumAvecSuiviBeneficiaire,
     },
     mediateur: {
       total: mediateur,
       actifs: mediateurActifs,
-      ratio: Math.round((mediateurActifs * 100) / mediateur),
+      ratio:
+        mediateur === 0 ? 0 : Math.round((mediateurActifs * 100) / mediateur),
       avecSuiviBeneficiaire: mediateurAvecSuiviBeneficiaire,
     },
     coordoConum: {
       total: coordoConum,
       actifs: coordoConumActifs,
-      ratio: Math.round((coordoConumActifs * 100) / coordoConum),
+      ratio:
+        coordoConum === 0
+          ? 0
+          : Math.round((coordoConumActifs * 100) / coordoConum),
     },
     coordoHD: {
       total: coordoHD,
       actifs: coordoHDActifs,
-      ratio: Math.round((coordoHDActifs * 100) / coordoHD),
+      ratio: coordoHD === 0 ? 0 : Math.round((coordoHDActifs * 100) / coordoHD),
     },
     activitesParMois,
   }
