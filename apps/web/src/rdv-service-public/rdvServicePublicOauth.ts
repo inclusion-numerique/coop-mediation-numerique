@@ -17,13 +17,35 @@ export const rdvServicePublicOAuthConfig = {
 
 export const rdvServicePublicOAuthTokenEndpoint = `https://${rdvServicePublicOAuthConfig.oauthHostname}/oauth/token`
 
-export const rdvOauthLinkAccountFlowUrl = ({
-  redirectTo,
-}: {
-  redirectTo: string
-}) => {
+export const rdvOauthLinkAccountSuccessCallbackPath =
+  '/coop/mes-outils/rdv-service-public/connexion-reussie'
+
+export const rdvOauthLinkAccountErrorCallbackPath =
+  '/coop/mes-outils/rdv-service-public/connexion-erreur'
+
+// TODO replace with specific link for rdv integration when ready
+export const rdvIntegrationEnSavoirPlusLink = PublicWebAppConfig.centreAideUrl
+
+export const rdvWebsiteLink = PublicWebAppConfig.isMain
+  ? 'https://rdv.anct.gouv.fr'
+  : 'https://demo.rdv.anct.gouv.fr'
+
+export const rdvMyHomepageLink = `${rdvWebsiteLink}/agents/sign_in`
+
+export const rdvSupportEmail = 'support@rdv-service-public.fr'
+
+export const rdvOauthApplicationsIntegrationsManagementUrl = `${rdvWebsiteLink}/oauth/authorized_applications`
+
+export type RdvOauthLinkAccountState = {
+  redirectToSuccess?: string
+  redirectToError?: string
+}
+
+export const rdvOauthLinkAccountFlowUrl = (
+  options: RdvOauthLinkAccountState,
+) => {
   // Configuration de l'OAuth
-  const state = encodeSerializableState({ redirectTo })
+  const state = encodeSerializableState(options)
 
   // Construction de l'URL
   return `https://${rdvServicePublicOAuthConfig.oauthHostname}/oauth/authorize?client_id=${

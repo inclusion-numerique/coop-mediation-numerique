@@ -40,4 +40,7 @@ export type OutilPageData = {
   accessComponent?: ReactNode
   how?: ReactNode
   more?: ReactNode
+  classes?: {
+    access?: string
+  }
 }

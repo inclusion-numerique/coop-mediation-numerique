@@ -7,13 +7,13 @@ import {
   OauthRdvApiCreateRdvPlanMutationInputValidation,
   OauthRdvApiCreateRdvPlanResponse,
   OauthRdvApiMeInputValidation,
-  type OauthRdvApiMeResponse,
 } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
-import { createRdvServicePublicAccount } from '@app/web/rdv-service-public/createRdvServicePublicAccount'
-import { executeOAuthRdvApiCall } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
+import {
+  executeOAuthRdvApiCall,
+  oAuthRdvApiMe,
+} from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
-import { forbiddenError, invalidError } from '@app/web/server/rpc/trpcErrors'
-import z from 'zod'
+import { invalidError } from '@app/web/server/rpc/trpcErrors'
 
 const getContextForOAuthApiCall = async ({
   user,
@@ -36,49 +36,13 @@ const getContextForOAuthApiCall = async ({
   const { rdvAccount } = userWithSecretData
 
   if (!rdvAccount || !user.rdvAccount?.hasOauthTokens) {
-    throw invalidError('Compte RDV Aide Numérique non connecté')
+    throw invalidError('Compte RDV Service Public non connecté')
   }
 
   return { ...userWithSecretData, rdvAccount }
 }
 
 export const rdvServicePublicRouter = router({
-  createAccount: protectedProcedure
-    .input(
-      z.object({
-        userId: z.string().uuid(),
-      }),
-    )
-    .mutation(async ({ input: { userId }, ctx: { user } }) => {
-      if (user.id !== userId) {
-        throw forbiddenError("Vous n'avez pas accès à cette action")
-      }
-
-      const userWithSecretData = await prismaClient.user.findUnique({
-        where: {
-          id: userId,
-        },
-        include: {
-          rdvAccount: true,
-        },
-      })
-
-      if (!userWithSecretData) {
-        throw invalidError('Utilisateur introuvable')
-      }
-
-      const rdvAccount = await createRdvServicePublicAccount({
-        user,
-      })
-
-      return {
-        rdvAccount,
-        hasOauthTokens: !!(
-          userWithSecretData.rdvAccount?.accessToken &&
-          userWithSecretData.rdvAccount?.refreshToken
-        ),
-      }
-    }),
   executeOauthApiCall: protectedProcedure
     .input(OAuthRdvApiCallInputValidation)
     .mutation(async ({ input, ctx: { user } }) => {
@@ -96,15 +60,11 @@ export const rdvServicePublicRouter = router({
     }),
   oAuthApiMe: protectedProcedure
     .input(OauthRdvApiMeInputValidation)
-    .mutation(async ({ input, ctx: { user } }) => {
+    .mutation(async ({ ctx: { user } }) => {
       const oAuthCallUser = await getContextForOAuthApiCall({ user })
 
-      const result = await executeOAuthRdvApiCall<OauthRdvApiMeResponse>({
-        path: input.endpoint,
+      const result = await oAuthRdvApiMe({
         rdvAccount: oAuthCallUser.rdvAccount,
-        config: {
-          data: input.data,
-        },
       })
 
       return result
@@ -140,7 +100,7 @@ export const rdvServicePublicRouter = router({
               phone_number: beneficiaire.telephone ?? undefined,
               // birth_date: beneficiaire.anneeNaissance // We don't have this field in the beneficiaire
             },
-            // TODO Reactivate this after localhost is implemented in the RDV Aide Numérique
+            // TODO Reactivate this after localhost is implemented in the RDV Service Public
             // return_url: returnUrl,
             // dossier_url: getServerUrl(`/coop/beneficiaire/${beneficiaireId}`, {
             //   absolutePath: true,
@@ -158,7 +118,7 @@ export const rdvServicePublicRouter = router({
             },
           })
 
-        // Update beneficiaire with id from RDV Aide Numérique if needed
+        // Update beneficiaire with id from RDV Service Public if needed
         // The rest of beneficiaire data could be updated after
         // the plan is created (on redirection), to fetch email, tel, etc... if needed
 

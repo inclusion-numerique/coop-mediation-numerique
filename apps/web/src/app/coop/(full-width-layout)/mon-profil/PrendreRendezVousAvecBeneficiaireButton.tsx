@@ -2,9 +2,9 @@
 
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
-import { SessionUser } from '@app/web/auth/sessionUser'
+import type { SessionUser } from '@app/web/auth/sessionUser'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { useRdvOauthStatus } from '@app/web/hooks/useRdvOauthStatus'
+import { getRdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
 import { hasFeatureFlag } from '@app/web/security/hasFeatureFlag'
 import { trpc } from '@app/web/trpc'
 import { getServerUrl } from '@app/web/utils/baseUrl'
@@ -23,17 +23,13 @@ const PrendreRendezVousAvecBeneficiaireButton = ({
 
   const mutation = trpc.rdvServicePublic.oAuthApiCreateRdvPlan.useMutation()
 
-  const oauthStatus = useRdvOauthStatus({ user })
+  const oauthStatus = getRdvOauthIntegrationStatus({ user })
 
-  if (!hasFeatureFlag(user, 'RdvServicePublic')) {
+  if (!hasFeatureFlag(user, 'RdvServicePublic') || oauthStatus !== 'success') {
     return null
   }
 
   const onClick = async () => {
-    if (!oauthStatus.isSuccess) {
-      return
-    }
-
     try {
       const result = await mutation.mutateAsync({
         beneficiaireId: beneficiaire.id,
@@ -51,11 +47,10 @@ const PrendreRendezVousAvecBeneficiaireButton = ({
     }
   }
 
-  const isLoading = oauthStatus.isLoading || mutation.isPending
+  const isLoading = mutation.isPending || mutation.isSuccess
 
   return (
     <Button
-      disabled={oauthStatus.isEmpty || oauthStatus.isError}
       priority="secondary"
       iconId="fr-icon-calendar-line"
       {...buttonLoadingClassname(isLoading)}
