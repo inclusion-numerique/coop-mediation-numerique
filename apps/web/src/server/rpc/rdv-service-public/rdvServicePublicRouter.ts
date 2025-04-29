@@ -2,18 +2,18 @@ import type { SessionUser } from '@app/web/auth/sessionUser'
 import { getBeneficiaireAdresseString } from '@app/web/beneficiaire/getBeneficiaireAdresseString'
 import { prismaClient } from '@app/web/prismaClient'
 import {
-  OAuthRdvApiCallInputValidation,
-  OauthRdvApiCreateRdvPlanInput,
+  type OauthRdvApiCreateRdvPlanInput,
   OauthRdvApiCreateRdvPlanMutationInputValidation,
-  OauthRdvApiCreateRdvPlanResponse,
-  OauthRdvApiMeInputValidation,
 } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
 import {
-  executeOAuthRdvApiCall,
+  oAuthRdvApiCreateRdvPlan,
+  oAuthRdvApiGetOrganisations,
   oAuthRdvApiMe,
 } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
+import { refreshRdvAgentAccountData } from '@app/web/rdv-service-public/refreshRdvAgentAccountData'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { invalidError } from '@app/web/server/rpc/trpcErrors'
+import { getServerUrl } from '@app/web/utils/baseUrl'
 
 const getContextForOAuthApiCall = async ({
   user,
@@ -43,32 +43,67 @@ const getContextForOAuthApiCall = async ({
 }
 
 export const rdvServicePublicRouter = router({
-  executeOauthApiCall: protectedProcedure
-    .input(OAuthRdvApiCallInputValidation)
-    .mutation(async ({ input, ctx: { user } }) => {
+  oAuthApiMe: protectedProcedure.mutation(async ({ ctx: { user } }) => {
+    const oAuthCallUser = await getContextForOAuthApiCall({ user })
+
+    const result = await oAuthRdvApiMe({
+      rdvAccount: oAuthCallUser.rdvAccount,
+    })
+
+    return result
+  }),
+  oAuthApiGetOrganisations: protectedProcedure.mutation(
+    async ({ ctx: { user } }) => {
       const oAuthCallUser = await getContextForOAuthApiCall({ user })
 
-      const result = await executeOAuthRdvApiCall({
-        path: input.endpoint,
+      const result = await oAuthRdvApiGetOrganisations({
         rdvAccount: oAuthCallUser.rdvAccount,
-        config: {
-          data: input.data,
+      })
+
+      return result
+    },
+  ),
+  refreshRdvAccountData: protectedProcedure.mutation(
+    async ({ ctx: { user } }) => {
+      const oAuthCallUser = await getContextForOAuthApiCall({ user })
+
+      const result = await refreshRdvAgentAccountData({
+        rdvAccount: oAuthCallUser.rdvAccount,
+      })
+
+      return result
+    },
+  ),
+  deleteRdvAccount: protectedProcedure.mutation(async ({ ctx: { user } }) => {
+    const rdvAccount = await prismaClient.rdvAccount.findUnique({
+      where: {
+        userId: user.id,
+      },
+      select: {
+        id: true,
+      },
+    })
+
+    if (!rdvAccount) {
+      throw invalidError('Compte RDV Service Public introuvable')
+    }
+
+    await prismaClient.$transaction(async (transaction) => {
+      await transaction.rdvOrganisation.deleteMany({
+        where: {
+          accountId: rdvAccount.id,
         },
       })
 
-      return result
-    }),
-  oAuthApiMe: protectedProcedure
-    .input(OauthRdvApiMeInputValidation)
-    .mutation(async ({ ctx: { user } }) => {
-      const oAuthCallUser = await getContextForOAuthApiCall({ user })
-
-      const result = await oAuthRdvApiMe({
-        rdvAccount: oAuthCallUser.rdvAccount,
+      await transaction.rdvAccount.delete({
+        where: {
+          id: rdvAccount.id,
+        },
       })
+    })
 
-      return result
-    }),
+    return {}
+  }),
   oAuthApiCreateRdvPlan: protectedProcedure
     .input(OauthRdvApiCreateRdvPlanMutationInputValidation)
     .mutation(
@@ -88,35 +123,32 @@ export const rdvServicePublicRouter = router({
 
         const oAuthCallUser = await getContextForOAuthApiCall({ user })
 
-        const apiData = {
-          endpoint: '/rdv_plans',
-          data: {
-            user: {
-              id: beneficiaire.rdvServicePublicId ?? undefined,
-              first_name: beneficiaire.prenom ?? undefined,
-              last_name: beneficiaire.nom ?? undefined,
-              email: beneficiaire.telephone ?? undefined,
-              address: getBeneficiaireAdresseString(beneficiaire),
-              phone_number: beneficiaire.telephone ?? undefined,
-              // birth_date: beneficiaire.anneeNaissance // We don't have this field in the beneficiaire
-            },
-            // TODO Reactivate this after localhost is implemented in the RDV Service Public
-            // return_url: returnUrl,
-            // dossier_url: getServerUrl(`/coop/beneficiaire/${beneficiaireId}`, {
-            //   absolutePath: true,
-            // }),
+        const viewBeneficiaireUrl = getServerUrl(
+          `/coop/beneficiaire/${beneficiaireId}`,
+          {
+            absolutePath: true,
           },
+        )
+
+        const input = {
+          user: {
+            id: beneficiaire.rdvServicePublicId ?? undefined,
+            first_name: beneficiaire.prenom ?? undefined,
+            last_name: beneficiaire.nom ?? undefined,
+            email: beneficiaire.telephone ?? undefined,
+            address: getBeneficiaireAdresseString(beneficiaire),
+            phone_number: beneficiaire.telephone ?? undefined,
+            // birth_date: beneficiaire.anneeNaissance // We don't have this field in the beneficiaire
+          },
+          // TODO Reactivate this after localhost is implemented in the RDV Service Public
+          return_url: viewBeneficiaireUrl,
+          dossier_url: viewBeneficiaireUrl,
         } satisfies OauthRdvApiCreateRdvPlanInput
 
-        const result =
-          await executeOAuthRdvApiCall<OauthRdvApiCreateRdvPlanResponse>({
-            path: apiData.endpoint,
-            rdvAccount: oAuthCallUser.rdvAccount,
-            config: {
-              method: 'POST',
-              data: apiData.data,
-            },
-          })
+        const result = await oAuthRdvApiCreateRdvPlan({
+          rdvAccount: oAuthCallUser.rdvAccount,
+          input,
+        })
 
         // Update beneficiaire with id from RDV Service Public if needed
         // The rest of beneficiaire data could be updated after

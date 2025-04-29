@@ -1,11 +1,24 @@
 import RdvServicePubliqueConnexionCard from '@app/web/app/coop/(full-width-layout)/mes-outils/rdv-service-public/RdvServicePubliqueConnexionCard'
 import IconInSquare from '@app/web/components/IconInSquare'
-import { rdvIntegrationEnSavoirPlusLink } from '@app/web/rdv-service-public/rdvServicePublicOauth'
+import {
+  rdvIntegrationEnSavoirPlusLink,
+  rdvMyHomepageLink,
+} from '@app/web/rdv-service-public/rdvServicePublicOauth'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
 import React from 'react'
+import { getSessionUser } from '@app/web/auth/getSessionUser'
+import { notFound } from 'next/navigation'
+import { rdvAccountMetadata } from '@app/web/rdv-service-public/rdvAccountMetadata'
 
-const RdvServicePublicCreationReussiePage = () => {
+const RdvServicePublicCreationReussiePage = async () => {
+  const user = await getSessionUser()
+  if (!user) {
+    notFound()
+  }
+
+  const { hasOrganisations } = rdvAccountMetadata(user)
+
   return (
     <div className="fr-mb-32v fr-mt-10v">
       <RdvServicePubliqueConnexionCard
@@ -26,17 +39,39 @@ const RdvServicePublicCreationReussiePage = () => {
           <h1 className="fr-mt-6v fr-h2 fr-text-title--blue-france fr-mb-4v">
             Connexion réussie&nbsp;!
           </h1>
-          <p className="fr-text-mention--grey fr-mb-6v">
-            Vous pouvez maintenant programmer des rendez-vous avec vos
-            bénéficiaires suivis et les retrouver dans leur historiques
-            d’accompagnements.
-          </p>
+
+          {hasOrganisations ? (
+            <p className="fr-text-mention--grey fr-mb-6v">
+              Vous pouvez maintenant programmer des rendez-vous avec vos
+              bénéficiaires suivis et les retrouver dans leur historiques
+              d’accompagnements.
+            </p>
+          ) : (
+            <p className="fr-text-mention--grey fr-mb-6v">
+              Pour pouvoir programmer des rendez-vous avec vos bénéficiaires
+              suivis et les retrouver dans leur historiques d’accompagnements,
+              vous devez terminer la configuration de votre nouveau compte sur
+              le site RDV Service Public.
+              <br />
+              <br />
+              <Button
+                priority="tertiary"
+                linkProps={{
+                  target: '_blank',
+                  href: rdvMyHomepageLink,
+                }}
+              >
+                Terminer la configuration de mon nouveau compte
+                RDV&nbsp;Service&nbsp;Public
+              </Button>
+            </p>
+          )}
           <Link
             href={rdvIntegrationEnSavoirPlusLink}
             className="fr-link fr-text--center"
             target="_blank"
           >
-            En savoir plus
+            En savoir plus (centre d’aide de la Coop)
           </Link>
         </div>
         <div className="fr-btns-group fr-mt-8v">

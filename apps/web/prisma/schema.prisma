@@ -1119,6 +1119,8 @@ model RdvAccount {
   userId String @unique @map("user_id") @db.Uuid
   user   User   @relation(fields: [userId], references: [id])
 
+  organisations RdvOrganisation[] // Be careful as this may be out of sync with the data from oauth. Used as a cache and should be refreshed when needed.
+
   accessToken  String?   @map("access_token") // Empty if account created but oauth not linked or invalidated
   refreshToken String?   @map("refresh_token")
   expiresAt    DateTime? @map("expires_at")
@@ -1130,6 +1132,22 @@ model RdvAccount {
 
   @@index([userId])
   @@map("rdv_accounts")
+}
+
+// Organisations owned by RDV Service Public
+// Be careful as this may be out of sync with the data from oauth. Used as a cache and should be refreshed when needed.
+model RdvOrganisation {
+  id Int @id
+
+  accountId Int        @map("account_id")
+  account   RdvAccount @relation(fields: [accountId], references: [id])
+
+  name        String
+  email       String?
+  phoneNumber String? @map("phone_number")
+
+  @@index([accountId])
+  @@map("rdv_organisations")
 }
 
 enum MutationName {

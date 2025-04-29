@@ -4,6 +4,7 @@ import type {
   EmployeStructure,
   Mediateur,
   RdvAccount,
+  RdvOrganisation,
   Structure,
   User,
 } from '@prisma/client'
@@ -62,6 +63,7 @@ export type SessionUser = Pick<
         hasOauthTokens: boolean
         created: string | null
         updated: string | null
+        organisations: Pick<RdvOrganisation, 'id' | 'name' | 'email'>[]
       })
     | null
 }
