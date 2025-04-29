@@ -4,11 +4,6 @@ import { z } from 'zod'
  * Pour la documentation des API RDV, voir https://rdv.anct.gouv.fr/api-docs/index.html
  */
 
-export const OauthRdvApiMeInputValidation = z.object({
-  endpoint: z.literal('/agents/me'),
-  data: z.undefined(),
-})
-export type OauthRdvApiMeInput = z.infer<typeof OauthRdvApiMeInputValidation>
 export type OauthRdvApiMeResponse = {
   agent: {
     id: number
@@ -17,14 +12,6 @@ export type OauthRdvApiMeResponse = {
     last_name: string
   }
 }
-
-export const OAuthRdvApiCallInputValidation = z.discriminatedUnion('endpoint', [
-  OauthRdvApiMeInputValidation,
-])
-
-export type OAuthRdvApiCallInput = z.infer<
-  typeof OAuthRdvApiCallInputValidation
->
 
 export type OauthRdvApiGetUserResponse = {
   user: {
@@ -65,22 +52,19 @@ export type OauthRdvApiGetUserResponse = {
 }
 
 export const OauthRdvApiCreateRdvPlanInputValidation = z.object({
-  endpoint: z.literal('/rdv_plans'), // la route que tu vas appeler
-  data: z.object({
-    // 'user' est requis par le contrôleur
-    user: z.object({
-      id: z.number().optional(), // si on veut passer un user existant
-      first_name: z.string().optional(),
-      last_name: z.string().optional(),
-      email: z.string().email().optional(),
-      address: z.string().optional(),
-      phone_number: z.string().optional(),
-      birth_date: z.string().optional(),
-    }),
-    // paramètre optionnel utilisé par le contrôleur
-    return_url: z.string().url().optional(),
-    dossier_url: z.string().url().optional(),
+  // 'user' est requis par le contrôleur
+  user: z.object({
+    id: z.number().optional(), // si on veut passer un user existant
+    first_name: z.string().optional(),
+    last_name: z.string().optional(),
+    email: z.string().email().optional(),
+    address: z.string().optional(),
+    phone_number: z.string().optional(),
+    birth_date: z.string().optional(),
   }),
+  // paramètre optionnel utilisé par le contrôleur
+  return_url: z.string().url().optional(),
+  dossier_url: z.string().url().optional(),
 })
 export type OauthRdvApiCreateRdvPlanInput = z.infer<
   typeof OauthRdvApiCreateRdvPlanInputValidation
@@ -90,10 +74,6 @@ export const OauthRdvApiCreateRdvPlanMutationInputValidation = z.object({
   beneficiaireId: z.string().uuid(),
   returnUrl: z.string().url(),
 })
-
-export type OauthRdvApiCreateRdvPlanMutationInput = z.infer<
-  typeof OauthRdvApiCreateRdvPlanMutationInputValidation
->
 
 // format de la réponse retournée (simplifié, car la blueprint n’est pas visible)
 export type OauthRdvApiCreateRdvPlanResponse = {
@@ -108,4 +88,16 @@ export type OauthRdvApiCreateRdvPlanResponse = {
       status: string
     } | null
   }
+}
+
+export type RdvApiOrganisation = {
+  id: number
+  email: string | null
+  name: string
+  phone_number: string | null
+  verticale: string | null
+}
+
+export type OAuthRdvApiGetOrganisationsResponse = {
+  organisations: RdvApiOrganisation[]
 }

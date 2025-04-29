@@ -1,5 +1,8 @@
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import {
+  OAuthRdvApiGetOrganisationsResponse,
+  OauthRdvApiCreateRdvPlanInput,
+  OauthRdvApiCreateRdvPlanResponse,
   OauthRdvApiGetUserResponse,
   OauthRdvApiMeResponse,
 } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
@@ -18,7 +21,7 @@ export type OAuthRdvApiCredentials = Pick<
  * handles automatic token refresh, and retries once if the first call fails
  * Pour la documentation des API RDV, voir https://rdv.anct.gouv.fr/api-docs/index.html
  */
-export const executeOAuthRdvApiCall = async <ResponseType = unknown>({
+const executeOAuthRdvApiCall = async <ResponseType = unknown>({
   rdvAccount,
   path,
   config = {},
@@ -87,6 +90,23 @@ export const executeOAuthRdvApiCall = async <ResponseType = unknown>({
   }
 }
 
+export const oAuthRdvApiCreateRdvPlan = async ({
+  input,
+  rdvAccount,
+}: {
+  input: OauthRdvApiCreateRdvPlanInput
+  rdvAccount: OAuthRdvApiCredentials
+}) => {
+  return executeOAuthRdvApiCall<OauthRdvApiCreateRdvPlanResponse>({
+    path: '/rdv_plans',
+    rdvAccount,
+    config: {
+      method: 'POST',
+      data: input,
+    },
+  })
+}
+
 export const oAuthRdvApiGetUser = async ({
   userId,
   rdvAccount,
@@ -109,6 +129,19 @@ export const oAuthRdvApiMe = async ({
 }) =>
   executeOAuthRdvApiCall<OauthRdvApiMeResponse>({
     path: '/agents/me',
+    rdvAccount,
+    config: {
+      method: 'GET',
+    },
+  })
+
+export const oAuthRdvApiGetOrganisations = async ({
+  rdvAccount,
+}: {
+  rdvAccount: OAuthRdvApiCredentials
+}) =>
+  executeOAuthRdvApiCall<OAuthRdvApiGetOrganisationsResponse>({
+    path: '/organisations',
     rdvAccount,
     config: {
       method: 'GET',

@@ -9,6 +9,7 @@ import { hasFeatureFlag } from '@app/web/security/hasFeatureFlag'
 import { trpc } from '@app/web/trpc'
 import { getServerUrl } from '@app/web/utils/baseUrl'
 import Button from '@codegouvfr/react-dsfr/Button'
+import { useRouter } from 'next/navigation'
 
 const PrendreRendezVousAvecBeneficiaireButton = ({
   beneficiaire,
@@ -19,11 +20,11 @@ const PrendreRendezVousAvecBeneficiaireButton = ({
   user: SessionUser
   returnPath: string // path on the app (e.g. /beneficiaires/12)
 }) => {
-  // const router = useRouter()
-
   const mutation = trpc.rdvServicePublic.oAuthApiCreateRdvPlan.useMutation()
 
   const oauthStatus = getRdvOauthIntegrationStatus({ user })
+
+  const router = useRouter()
 
   if (!hasFeatureFlag(user, 'RdvServicePublic') || oauthStatus !== 'success') {
     return null
@@ -36,9 +37,7 @@ const PrendreRendezVousAvecBeneficiaireButton = ({
         returnUrl: getServerUrl(returnPath, { absolutePath: true }),
       })
 
-      // TODO push when return URL works (CF rdvRouter)
-      // router.push(result.rdv_plan.url)
-      window.open(result.rdv_plan.url, '_blank')
+      router.push(result.rdv_plan.url)
     } catch {
       createToast({
         priority: 'error',
@@ -57,7 +56,7 @@ const PrendreRendezVousAvecBeneficiaireButton = ({
       onClick={onClick}
       type="button"
     >
-      Planifier un rendez-vous
+      Planifier un rendez-vous avec RDV&nbsp;Service&nbsp;Public
     </Button>
   )
 }

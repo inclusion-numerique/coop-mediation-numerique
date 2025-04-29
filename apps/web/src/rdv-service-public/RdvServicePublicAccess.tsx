@@ -12,6 +12,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import Link from 'next/link'
 import React from 'react'
+import DeconnecterRdvServicePublicButton from '@app/web/rdv-service-public/DeconnecterRdvServicePublicButton'
 
 const RdvServicePublicAccess = async () => {
   const user = await getSessionUser()
@@ -90,16 +91,16 @@ const RdvServicePublicAccess = async () => {
               Compte connecté
             </Tag>
           </div>
-          <div className="fr-btns-group fr-btns-group--icon-right fr-mt-8v">
+          <div className="fr-btns-group fr-btns-group--icon-left fr-mt-8v">
             <Button
               linkProps={{
                 href: rdvMyHomepageLink,
               }}
               priority="tertiary no outline"
-              className="fr-mb-0"
             >
               Accédez à l’outil
             </Button>
+            <DeconnecterRdvServicePublicButton />
           </div>
         </>
       )}

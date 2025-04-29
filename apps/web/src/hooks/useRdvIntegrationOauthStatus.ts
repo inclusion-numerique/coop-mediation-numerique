@@ -1,4 +1,5 @@
 import { SessionUser } from '@app/web/auth/sessionUser'
+import { RdvApiOrganisation } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
 import { getRdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
 import { trpc } from '@app/web/trpc'
 import { useEffect, useState } from 'react'
@@ -10,21 +11,27 @@ export const useRdvIntegrationOauthStatus = ({
 }: {
   user: Pick<SessionUser, 'rdvAccount'>
 }) => {
-  const oauthApiCallMutation = trpc.rdvServicePublic.oAuthApiMe.useMutation()
+  const meOauthCall = trpc.rdvServicePublic.oAuthApiMe.useMutation()
+  const organisationsOauthCall =
+    trpc.rdvServicePublic.oAuthApiGetOrganisations.useMutation()
   const hasOauthTokens = user.rdvAccount?.hasOauthTokens ?? false
 
   const [status, setStatus] = useState<RdvOauthIntegrationStatus>(
     getRdvOauthIntegrationStatus({ user }),
   )
 
+  const [organisations, setOrganisations] = useState<RdvApiOrganisation[]>([])
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: oauthApiCallMutation.isPending is not in dependencies as it should not retrigger the call
   useEffect(() => {
-    if (!hasOauthTokens || oauthApiCallMutation.isPending) return
-    oauthApiCallMutation
-      .mutateAsync({
-        endpoint: '/agents/me',
-        data: undefined,
-      })
+    if (
+      !hasOauthTokens ||
+      meOauthCall.isPending ||
+      organisationsOauthCall.isPending
+    )
+      return
+    meOauthCall
+      .mutateAsync()
       .then((result) => {
         if (result?.agent?.id) {
           return 'success' as const
@@ -32,17 +39,28 @@ export const useRdvIntegrationOauthStatus = ({
         return 'none' as const
       })
       .catch(() => 'error' as const)
-      .then((result) => {
+      .then(async (result) => {
+        if (result === 'success') {
+          const organizationsResult = await organisationsOauthCall.mutateAsync()
+          setOrganisations(organizationsResult.organisations)
+        }
+
         setStatus(result)
       })
 
     return () => {
-      oauthApiCallMutation.reset()
+      meOauthCall.reset()
+      organisationsOauthCall.reset()
     }
-  }, [hasOauthTokens, oauthApiCallMutation.mutateAsync])
+  }, [
+    hasOauthTokens,
+    meOauthCall.mutateAsync,
+    organisationsOauthCall.mutateAsync,
+  ])
 
   return {
     status,
+    organisations,
     isLoading: status === 'loading',
     isError: status === 'error',
     isNone: status === 'none',

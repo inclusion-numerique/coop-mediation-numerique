@@ -7,6 +7,7 @@ import {
   rdvServicePublicOAuthConfig,
   rdvServicePublicOAuthTokenEndpoint,
 } from '@app/web/rdv-service-public/rdvServicePublicOauth'
+import { refreshRdvAgentAccountData } from '@app/web/rdv-service-public/refreshRdvAgentAccountData'
 import { getServerUrl } from '@app/web/utils/baseUrl'
 import {
   EncodedState,
@@ -146,7 +147,7 @@ export const GET = async (request: NextRequest) => {
     }
 
     // Update the rdv account
-    await prismaClient.rdvAccount.upsert({
+    const rdvAccount = await prismaClient.rdvAccount.upsert({
       where: { id: userData.agent.id },
       create: {
         ...authUserData,
@@ -161,7 +162,13 @@ export const GET = async (request: NextRequest) => {
         accessToken: true,
         refreshToken: true,
         expiresAt: true,
+        scope: true,
       },
+    })
+
+    // Synchronize rdv account data
+    await refreshRdvAgentAccountData({
+      rdvAccount,
     })
 
     // Rediriger vers une route de succès ou une page front.
