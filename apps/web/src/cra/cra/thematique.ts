@@ -1,6 +1,17 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
 import { Thematique } from '@prisma/client'
 
+export const thematiquesNonAdministrativesInfo = {
+  AideAuxDemarchesAdministratives:
+    'En sélectionnant cette thématique, vous pourrez ajouter des informations spécifiques sur la démarche concernée.',
+} as const
+
+export const thematiquesInfo: {
+  [key in Thematique]?: string
+} = {
+  ...thematiquesNonAdministrativesInfo,
+}
+
 export const thematiquesNonAdministrativesLabels = {
   DiagnosticNumerique: 'Diagnostic numérique',
   PrendreEnMainDuMateriel: 'Prendre en main du matériel',
@@ -27,13 +38,14 @@ export const thematiquesAdministrativesLabels = {
   PapiersElectionsCitoyennete: 'Papiers - Élections Citoyenneté',
   FamilleScolarite: 'Famille - Scolarité',
   SocialSante: 'Social - Santé',
-  TravailFormation: 'Travail - Formation',
+  TravailFormation: 'Travail - Formation - Entreprise',
   Logement: 'Logement',
   TransportsMobilite: 'Transports - Mobilité',
   ArgentImpots: 'Argent - Impôts',
   Justice: 'Justice',
   EtrangersEurope: 'Étrangers - Europe',
   LoisirsSportsCulture: 'Loisirs - Sports Culture',
+  Associations: 'Associations',
 } as const
 
 export const thematiqueLabels: {
@@ -126,9 +138,8 @@ export const thematiquesNonAdministrativesHints = {
     'RGPD, Open Source, Licences libres…',
   ],
   AideAuxDemarchesAdministratives: [
-    'Comprendre les démarches administratives',
-    'Utiliser les outils numériques pour réaliser ses démarches administratives',
-    'Utiliser France Connect',
+    'Aider le bénéficiaire à trouver la bonne plateforme pour sa démarche',
+    'Apprendre à s’inscrire et utiliser les services : CAF, Impôts, France Connect, etc...',
   ],
 } as const
 
@@ -178,6 +189,10 @@ export const thematiquesAdministrativesHints = {
     'Animaux, Permis bateau, Tourisme, Permis de chasser...',
     'Ariane',
   ],
+  Associations: [
+    'Statuts, Fonctionnement, Financement...',
+    'Familles rurales · Croix-Rouge Française · Les Restos du cœur · Emmaüs',
+  ],
 } as const
 
 export const thematiqueHints: {
@@ -221,6 +236,7 @@ export const thematiquesAdministrativesIllustrations = {
   Justice: '/images/iconographie/thematique-justice.svg',
   EtrangersEurope: '/images/iconographie/thematique-etranger.svg',
   LoisirsSportsCulture: '/images/iconographie/thematique-loisirs.svg',
+  Associations: '/images/iconographie/thematique-associations.svg',
 } as const
 
 export const thematiqueIllustrations: {
@@ -230,18 +246,29 @@ export const thematiqueIllustrations: {
   ...thematiquesAdministrativesIllustrations,
 }
 
-export const thematiqueOptions = labelsToOptions(thematiqueLabels)
+export const thematiqueNonAdministrativesOptionsWithExtras = labelsToOptions(
+  thematiquesNonAdministrativesLabels,
+).map(({ label, value }) => ({
+  label,
+  value,
+  hint: thematiquesInfo[value],
+  extra: {
+    tooltips: thematiqueHints[value],
+    illustration: thematiqueIllustrations[value],
+  },
+}))
 
-export const thematiqueOptionsWithExtras = thematiqueOptions.map(
-  ({ label, value }) => ({
-    label,
-    value,
-    extra: {
-      tooltips: thematiqueHints[value],
-      illustration: thematiqueIllustrations[value],
-    },
-  }),
-)
+export const thematiqueAdministrativesOptionsWithExtras = labelsToOptions(
+  thematiquesAdministrativesLabels,
+).map(({ label, value }) => ({
+  label,
+  value,
+  hint: thematiquesInfo[value],
+  extra: {
+    tooltips: thematiqueHints[value],
+    illustration: thematiqueIllustrations[value],
+  },
+}))
 
 export const thematiquesNonAdministrativesValues = Object.keys(
   thematiquesNonAdministrativesLabels,
@@ -289,6 +316,7 @@ export const thematiquesAdministrativesApiValues = {
   Justice: 'justice',
   EtrangersEurope: 'etrangers_europe',
   LoisirsSportsCulture: 'loisirs_sports_culture',
+  Associations: 'associations',
 } as const
 
 export const thematiqueApiValues = {

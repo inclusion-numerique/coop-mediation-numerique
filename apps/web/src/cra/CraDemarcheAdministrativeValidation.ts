@@ -2,11 +2,13 @@ import { BeneficiaireCraValidation } from '@app/web/beneficiaire/BeneficiaireVal
 import { CraDureeValidation } from '@app/web/cra/CraDureeValidation'
 import {
   autonomieValues,
+  materielValues,
   structuresRedirectionValues,
   thematiqueValues,
   typeLieuValues,
 } from '@app/web/cra/cra'
 import { AdresseBanValidation } from '@app/web/external-apis/ban/AdresseBanValidation'
+import { yesOrNo } from '@app/web/utils/yesNoBooleanOptions'
 import z from 'zod'
 
 export const CraDemarcheAdministrativeValidation = z
@@ -25,14 +27,15 @@ export const CraDemarcheAdministrativeValidation = z
     }),
     structureId: z.string().uuid().nullish(),
     lieuCommuneData: AdresseBanValidation.nullish(),
+    materiel: z.array(z.enum(materielValues)).default([]),
     thematiques: z
       .array(z.enum(thematiqueValues), {
         required_error: 'Veuillez renseigner au moins une thématique',
       })
       .min(1, 'Veuillez renseigner au moins une thématique'),
-    thematiquesMediationNumerique: z.array(z.enum(thematiqueValues)).nullish(),
     precisionsDemarche: z.string().nullish(),
     autonomie: z.enum(autonomieValues).nullish(),
+    orienteVersStructure: z.enum(yesOrNo).nullish(),
     structureDeRedirection: z.enum(structuresRedirectionValues).nullish(),
     notes: z.string().nullish(),
   })

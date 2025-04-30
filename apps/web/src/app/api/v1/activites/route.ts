@@ -93,6 +93,7 @@ type ActiviteAttributes = {
     | 'justice'
     | 'etrangers_europe'
     | 'loisirs_sports_culture'
+    | 'associations'
   )[]
 
   precisions_demarche: string | null

@@ -104,10 +104,6 @@ const emptyData: MesStatistiquesPageData = {
         total: 0,
         proportion: 0,
       },
-      demarches: {
-        total: 0,
-        proportion: 0,
-      },
     },
     activites: {
       total: 0,
@@ -119,10 +115,6 @@ const emptyData: MesStatistiquesPageData = {
         total: 0,
         proportion: 0,
         participants: 0,
-      },
-      demarches: {
-        total: 0,
-        proportion: 0,
       },
     },
     beneficiaires: {
@@ -273,17 +265,13 @@ describe('getMesStatistiquesPageData', () => {
             activites: {
               total: totalActivites,
               individuels: {
-                total: 4,
-                proportion: 40,
+                total: 8,
+                proportion: 80,
               },
               collectifs: {
                 total: 2,
                 proportion: 20,
                 participants: 14,
-              },
-              demarches: {
-                total: 4,
-                proportion: 40,
               },
             },
             beneficiaires: {
@@ -299,12 +287,8 @@ describe('getMesStatistiquesPageData', () => {
                 proportion: computeProportion(14, totalAccompagnements),
               },
               individuels: {
-                total: 4,
-                proportion: computeProportion(4, totalAccompagnements),
-              },
-              demarches: {
-                total: 4,
-                proportion: computeProportion(4, totalAccompagnements),
+                total: 8,
+                proportion: computeProportion(8, totalAccompagnements),
               },
             },
           }
@@ -376,20 +360,14 @@ describe('getMesStatistiquesPageData', () => {
           // after
           expectEnum(
             data.activites.typeActivites,
-            'Individuel',
-            4,
-            totalActivites,
-          )
-          expectEnum(
-            data.activites.typeActivites,
             'Collectif',
             2,
             totalActivites,
           )
           expectEnum(
             data.activites.typeActivites,
-            'Demarche',
-            4,
+            'Individuel',
+            8,
             totalActivites,
           )
 

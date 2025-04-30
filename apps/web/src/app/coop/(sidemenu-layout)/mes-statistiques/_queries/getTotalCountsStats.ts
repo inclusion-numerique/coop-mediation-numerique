@@ -20,10 +20,6 @@ export type AccompagnementsStats = {
       proportion: number
       participants: number
     }
-    demarches: {
-      total: number
-      proportion: number
-    }
   }
   accompagnements: {
     total: number
@@ -32,10 +28,6 @@ export type AccompagnementsStats = {
       proportion: number
     }
     collectifs: {
-      total: number
-      proportion: number
-    }
-    demarches: {
       total: number
       proportion: number
     }
@@ -53,13 +45,11 @@ const EMPTY_COUNT_STATS = {
     total: 0,
     individuels: { total: 0, proportion: 0 },
     collectifs: { total: 0, proportion: 0, participants: 0 },
-    demarches: { total: 0, proportion: 0 },
   },
   accompagnements: {
     total: 0,
     individuels: { total: 0, proportion: 0 },
     collectifs: { total: 0, proportion: 0 },
-    demarches: { total: 0, proportion: 0 },
   },
   beneficiaires: { total: 0, nouveaux: 0, anonymes: 0, suivis: 0 },
 }
@@ -81,7 +71,6 @@ export const getTotalCountsStats = async ({
         total_activites: number
         total_individuels: number
         total_collectifs: number
-        total_demarches: number
         total_beneficiaires: number
         total_accompagnements_nouveaux: number
         total_beneficiaires_suivis: number
@@ -94,7 +83,6 @@ export const getTotalCountsStats = async ({
         COUNT(DISTINCT act.id)::integer AS total_activites,
         COUNT(DISTINCT CASE WHEN act.type = 'individuel' THEN act.id END)::integer AS total_individuels,
         COUNT(DISTINCT CASE WHEN act.type = 'collectif' THEN act.id END)::integer AS total_collectifs,
-        COUNT(DISTINCT CASE WHEN act.type = 'demarche' THEN act.id END)::integer AS total_demarches,
         COUNT(DISTINCT ben.id)::integer AS total_beneficiaires,
         COUNT(DISTINCT CASE WHEN ben.anonyme = false THEN ben.id END)::integer AS total_beneficiaires_suivis,
         COUNT(DISTINCT CASE WHEN acc.premier_accompagnement = true
@@ -104,7 +92,9 @@ export const getTotalCountsStats = async ({
         COUNT(DISTINCT acc.id)::integer AS total_accompagnements,
         COUNT(DISTINCT CASE WHEN act.type = 'collectif' THEN acc.id END) ::integer AS total_accompagnements_collectifs
     FROM activites act
-         FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user?.coordinateur?.id}::UUID
+         FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${
+           user?.coordinateur?.id
+         }::UUID
          LEFT JOIN accompagnements acc ON acc.activite_id = act.id
          LEFT JOIN beneficiaires ben ON ben.id = acc.beneficiaire_id
          LEFT JOIN structures str ON str.id = act.structure_id
@@ -113,26 +103,19 @@ export const getTotalCountsStats = async ({
     WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
     AND act.suppression IS NULL
     AND (act.date <= mc.suppression OR mc.suppression IS NULL)
-    AND ${getActiviteFiltersSqlFragment(getActivitesFiltersWhereConditions(activitesFilters))}
+    AND ${getActiviteFiltersSqlFragment(
+      getActivitesFiltersWhereConditions(activitesFilters),
+    )}
   `.then(([result]) => {
-    const [
-      proportionActivitesIndividuels,
-      proportionActivitesCollectifs,
-      proportionActivitesDemarches,
-    ] = allocatePercentages([
-      result.total_individuels,
-      result.total_collectifs,
-      result.total_demarches,
-    ])
+    const [proportionActivitesIndividuels, proportionActivitesCollectifs] =
+      allocatePercentages([result.total_individuels, result.total_collectifs])
 
     const [
       proportionAccompagnementsIndividuels,
       proportionAccompagnementsCollectifs,
-      proportionAccompagnementsDemarches,
     ] = allocatePercentages([
       result.total_individuels, // Pour individuel, le nb d’accompagnements = nb d’activités
       result.total_accompagnements_collectifs,
-      result.total_demarches, // Pour démarches, le nb d’accompagnements = nb d’activités
     ])
 
     return {
@@ -147,10 +130,6 @@ export const getTotalCountsStats = async ({
           proportion: proportionActivitesCollectifs,
           participants: result.total_accompagnements_collectifs,
         },
-        demarches: {
-          total: result.total_demarches,
-          proportion: proportionActivitesDemarches,
-        },
       },
       accompagnements: {
         total: result.total_accompagnements,
@@ -161,10 +140,6 @@ export const getTotalCountsStats = async ({
         collectifs: {
           total: result.total_accompagnements_collectifs,
           proportion: proportionAccompagnementsCollectifs,
-        },
-        demarches: {
-          total: result.total_demarches,
-          proportion: proportionAccompagnementsDemarches,
         },
       },
       beneficiaires: {

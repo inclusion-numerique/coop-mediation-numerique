@@ -37,15 +37,16 @@ export const activitesBeneficiaireInnerJoin = (
   return Prisma.sql`
     INNER JOIN accompagnements acc 
     ON acc.activite_id = act.id 
-    AND acc.beneficiaire_id = ANY(ARRAY[${Prisma.join(beneficiaireIds)}]::UUID[])
+    AND acc.beneficiaire_id = ANY(ARRAY[${Prisma.join(
+      beneficiaireIds,
+    )}]::UUID[])
   `
 }
 
 export const crasTypeOrderSelect = Prisma.raw(
   `CASE
                  WHEN type = 'individuel' THEN 1
-                 WHEN type = 'demarche' THEN 2
-                 ELSE 3
+                 ELSE 2
                  END`,
 )
 
@@ -85,19 +86,25 @@ export const getActivitesFiltersWhereConditions = ({
   lieux:
     lieux && lieux.length > 0
       ? Prisma.raw(
-          `act.structure_id IN (${lieux.map((id) => `'${id}'::UUID`).join(', ')})`,
+          `act.structure_id IN (${lieux
+            .map((id) => `'${id}'::UUID`)
+            .join(', ')})`,
         )
       : null,
   communes:
     communes && communes.length > 0
       ? Prisma.raw(
-          `${activiteLieuCodeInseeSelect.text} IN (${communes.map((c) => `'${c}'`).join(', ')})`,
+          `${activiteLieuCodeInseeSelect.text} IN (${communes
+            .map((c) => `'${c}'`)
+            .join(', ')})`,
         )
       : null,
   departements:
     departements && departements.length > 0
       ? Prisma.raw(
-          `${activiteLieuCodeInseeSelect.text} LIKE ANY (ARRAY[${departements.map((d) => `'${d}%'`).join(', ')}])`,
+          `${activiteLieuCodeInseeSelect.text} LIKE ANY (ARRAY[${departements
+            .map((d) => `'${d}%'`)
+            .join(', ')}])`,
         )
       : null,
 
@@ -105,14 +112,18 @@ export const getActivitesFiltersWhereConditions = ({
     ? Prisma.raw(`EXISTS (
             SELECT 1
             FROM accompagnements acc
-            WHERE acc.beneficiaire_id IN (${beneficiaires.map((id) => `'${id}'::UUID`).join(', ')})
+            WHERE acc.beneficiaire_id IN (${beneficiaires
+              .map((id) => `'${id}'::UUID`)
+              .join(', ')})
               AND acc.activite_id = act.id
           ) `)
     : null,
   mediateurs:
     mediateurs && mediateurs.length > 0
       ? Prisma.raw(
-          `act.mediateur_id IN (${mediateurs.map((id) => `'${id}'::UUID`).join(', ')})`,
+          `act.mediateur_id IN (${mediateurs
+            .map((id) => `'${id}'::UUID`)
+            .join(', ')})`,
         )
       : null,
   conseiller_numerique: conseiller_numerique

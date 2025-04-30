@@ -160,7 +160,7 @@ const avecAccompagnements = {
           structure: null,
         },
         {
-          type: 'Demarche',
+          type: 'Individuel',
           id: '4',
           mediateurId: '3',
           accompagnements: [
@@ -189,7 +189,7 @@ const avecAccompagnements = {
           thematiques: ['SocialSante', 'Logement'],
         },
         {
-          type: 'Demarche',
+          type: 'Individuel',
           id: '5',
           mediateurId: '3',
           accompagnements: [

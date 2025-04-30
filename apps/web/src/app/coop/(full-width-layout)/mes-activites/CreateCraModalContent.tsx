@@ -55,7 +55,9 @@ const CreateCraModalContent = ({
   const navigateTo = (path: string) => {
     if (craDefaultValues) {
       push(
-        `${path}?v=${encodeSerializableState(craDefaultValues)}${retour ? `&retour=${retour}` : ''}`,
+        `${path}?v=${encodeSerializableState(craDefaultValues)}${
+          retour ? `&retour=${retour}` : ''
+        }`,
       )
     } else {
       push(retour ? `${path}?retour=${retour}` : path)
@@ -66,7 +68,6 @@ const CreateCraModalContent = ({
   useEffect(() => {
     prefetch('/coop/mes-activites/cra/individuel')
     prefetch('/coop/mes-activites/cra/collectif')
-    prefetch('/coop/mes-activites/cra/administratif')
   }, [prefetch])
 
   return (
@@ -89,13 +90,6 @@ const CreateCraModalContent = ({
           Ateliers collectif
         </ModalNavigationButton>
       )}
-
-      <ModalNavigationButton
-        illustration="/images/iconographie/demarche-administrative.svg"
-        onClick={() => navigateTo('/coop/mes-activites/cra/administratif')}
-      >
-        Aide aux démarches administratives
-      </ModalNavigationButton>
     </>
   )
 }

@@ -46,6 +46,7 @@ export const getCraCollectifDataDefaultValuesFromExisting = async ({
       thematiques: true,
       niveau: true,
       notes: true,
+      precisionsDemarche: true,
     },
   })
 
@@ -59,6 +60,7 @@ export const getCraCollectifDataDefaultValuesFromExisting = async ({
     notes,
     thematiques,
     materiel,
+    precisionsDemarche,
     lieuCommune,
     lieuCodePostal,
     lieuCodeInsee,
@@ -94,6 +96,7 @@ export const getCraCollectifDataDefaultValuesFromExisting = async ({
     notes: notes ?? undefined,
     materiel: materiel ?? undefined,
     thematiques: thematiques ?? undefined,
+    precisionsDemarche: precisionsDemarche ?? undefined,
     structureId: structureId ?? undefined,
     lieuCommuneData:
       lieuCommune && lieuCodePostal && lieuCodeInsee

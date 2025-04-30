@@ -72,10 +72,6 @@ const statistiquesPageData = {
         total: 1350,
         proportion: 40,
       },
-      demarches: {
-        total: 300,
-        proportion: 10,
-      },
     },
     activites: {
       total: 1000,
@@ -87,10 +83,6 @@ const statistiquesPageData = {
         total: 400,
         proportion: 40,
         participants: 2500,
-      },
-      demarches: {
-        total: 100,
-        proportion: 10,
       },
     },
     beneficiaires: {

@@ -83,7 +83,7 @@ export const TypesDePublicsAccueillisFields = <
         label="Tout public (tout sélectionner)"
         control={control}
         disabled={formState.isSubmitting}
-        className="fr-mb-0 fr-mt-4v"
+        className="fr-mb-2v fr-mt-4v"
       />
       <CheckboxGroupFormField
         key={publicsAccueillisKey}

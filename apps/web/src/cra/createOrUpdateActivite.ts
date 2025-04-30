@@ -187,10 +187,6 @@ export type CreateOrUpdateActiviteInput =
       type: 'Individuel'
       data: CraIndividuelData
     }
-  | {
-      type: 'Demarche'
-      data: CraDemarcheAdministrativeData
-    }
 
 const withoutDejaAccompagne = <T>({
   dejaAccompagne: _,
@@ -304,10 +300,7 @@ export const createOrUpdateActivite = async ({
           ? data.structureDeRedirection
           : undefined,
 
-    thematiques:
-      input.type === 'Demarche'
-        ? (input.data.thematiquesMediationNumerique ?? [])
-        : input.data.thematiques,
+    thematiques: input.data.thematiques,
     structure:
       // Only set structure if it is the correct type of lieuAccompagnement
       structure

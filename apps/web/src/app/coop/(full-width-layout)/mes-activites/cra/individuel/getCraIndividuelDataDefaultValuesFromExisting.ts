@@ -47,6 +47,7 @@ export const getCraIndividuelDataDefaultValuesFromExisting = async ({
       orienteVersStructure: true,
       structureDeRedirection: true,
       notes: true,
+      precisionsDemarche: true,
     },
   })
 
@@ -62,6 +63,7 @@ export const getCraIndividuelDataDefaultValuesFromExisting = async ({
     autonomie,
     thematiques,
     structureDeRedirection,
+    precisionsDemarche,
     typeLieu,
     lieuCodeInsee,
     lieuCodePostal,
@@ -89,6 +91,7 @@ export const getCraIndividuelDataDefaultValuesFromExisting = async ({
     materiel: materiel ?? undefined,
     thematiques: thematiques ?? undefined,
     structureDeRedirection: structureDeRedirection ?? undefined,
+    precisionsDemarche: precisionsDemarche ?? undefined,
     structureId: structureId ?? undefined,
     lieuCommuneData:
       lieuCommune && lieuCodePostal && lieuCodeInsee

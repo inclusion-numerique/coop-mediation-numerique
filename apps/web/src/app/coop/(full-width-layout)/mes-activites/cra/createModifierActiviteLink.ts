@@ -6,10 +6,6 @@ export const createModifierActiviteLink = (
 ) => {
   const retourQueryParam = retour ? `?retour=${retour}` : ''
 
-  if (type === 'Demarche') {
-    return `/coop/mes-activites/cra/administratif/${id}${retourQueryParam}`
-  }
-
   if (type === 'Individuel') {
     return `/coop/mes-activites/cra/individuel/${id}${retourQueryParam}`
   }

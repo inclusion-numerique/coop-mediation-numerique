@@ -73,7 +73,7 @@ export const givenCraDemarcheAdministrative = <
 ): {
   activite: Omit<T, 'id' | 'beneficiaireId'> & {
     id: string
-    type: 'Demarche'
+    type: 'Individuel'
     duree: number
     date: string | Date
     typeLieu: TypeLieu
@@ -91,7 +91,7 @@ export const givenCraDemarcheAdministrative = <
   const activite = {
     ...rest,
     id: givenId,
-    type: 'Demarche',
+    type: 'Individuel',
     duree,
     date,
     typeLieu,

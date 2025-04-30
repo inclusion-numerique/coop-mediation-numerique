@@ -942,7 +942,6 @@ model Beneficiaire {
 
 enum TypeActivite {
   Individuel @map("individuel")
-  Demarche   @map("demarche")
   Collectif  @map("collectif")
 
   @@map("type_activite")
@@ -1080,6 +1079,7 @@ enum Thematique {
   Justice                         @map("justice")
   EtrangersEurope                 @map("etrangers_europe")
   LoisirsSportsCulture            @map("loisirs_sports_culture")
+  Associations                    @map("associations")
 
   @@map("thematique")
 }

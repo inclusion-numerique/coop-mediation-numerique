@@ -32,10 +32,12 @@ import {
   type CraCollectifData,
   CraCollectifValidation,
 } from '@app/web/cra/CraCollectifValidation'
+import { clearAdministrativeData } from '@app/web/cra/clearAdministrativeData'
 import {
   materielOptions,
   niveauAtelierOptionsWithExtras,
-  thematiqueOptionsWithExtras,
+  thematiqueAdministrativesOptionsWithExtras,
+  thematiqueNonAdministrativesOptionsWithExtras,
   typeLieuOptionsWithExtras,
 } from '@app/web/cra/cra'
 import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
@@ -77,6 +79,11 @@ const CraCollectifForm = ({
 
   const router = useRouter()
 
+  const thematiques = form.watch('thematiques')
+  const showThematiquesAdministratives = thematiques?.includes(
+    'AideAuxDemarchesAdministratives',
+  )
+
   const typeLieu = form.watch('typeLieu')
   const showLieuCommuneData = typeLieu === 'Autre' || typeLieu === 'Domicile'
   const showStructure = typeLieu === 'LieuActivite'
@@ -103,7 +110,7 @@ const CraCollectifForm = ({
       return
     }
     try {
-      await mutation.mutateAsync(data)
+      await mutation.mutateAsync(clearAdministrativeData(data))
       createToast({
         priority: 'success',
         message: 'L’atelier collectif a bien été enregistré.',
@@ -139,7 +146,9 @@ const CraCollectifForm = ({
       // use idle callback to avoid blocking the main thread while typing
       requestIdleCallback(() => {
         replaceRouteWithoutRerender(
-          `/coop/mes-activites/cra/collectif?v=${encodeSerializableState(data)}`,
+          `/coop/mes-activites/cra/collectif?v=${encodeSerializableState(
+            data,
+          )}`,
         )
       })
     }, []),
@@ -249,7 +258,7 @@ const CraCollectifForm = ({
       <CheckboxGroupFormField
         control={control}
         path="thematiques"
-        options={thematiqueOptionsWithExtras}
+        options={thematiqueNonAdministrativesOptionsWithExtras}
         disabled={isLoading}
         components={{
           label: RichCardLabel,
@@ -259,6 +268,38 @@ const CraCollectifForm = ({
           fieldset: craFormFieldsetClassname(styles.thematiquesFieldset),
         }}
       />
+      {showThematiquesAdministratives && (
+        <>
+          <p className="fr-text--medium fr-mb-4v fr-mt-12v">
+            Thématique(s) de la démarche administrative
+          </p>
+          <CheckboxGroupFormField
+            control={control}
+            path="thematiques"
+            options={thematiqueAdministrativesOptionsWithExtras}
+            disabled={isLoading}
+            offset={thematiqueNonAdministrativesOptionsWithExtras.length}
+            components={{
+              label: RichCardLabel,
+            }}
+            classes={{
+              fieldsetElement: richCardFieldsetElementClassName,
+              fieldset: craFormFieldsetClassname(
+                styles.thematiquesAdministrativesFieldset,
+              ),
+            }}
+          />
+          <InputFormField
+            control={control}
+            disabled={isLoading}
+            path="precisionsDemarche"
+            label="Préciser le nom de la démarche administrative réalisée"
+            className="fr-flex-grow-1 fr-mt-12v"
+            classes={{ label: 'fr-text--medium fr-mb-3v' }}
+          />
+        </>
+      )}
+      <hr className="fr-separator-12v" />
       <p className="fr-text--medium fr-mb-4v fr-mt-12v">Niveau de l’atelier</p>
       <RadioFormField
         control={control}
@@ -270,7 +311,7 @@ const CraCollectifForm = ({
         }}
         classes={{
           fieldsetElement: richCardFieldsetElementClassName,
-          fieldset: craFormFieldsetClassname(styles.thematiquesFieldset),
+          fieldset: craFormFieldsetClassname(styles.autonomieFieldset),
           radioGroup: richCardRadioGroupClassName,
         }}
       />

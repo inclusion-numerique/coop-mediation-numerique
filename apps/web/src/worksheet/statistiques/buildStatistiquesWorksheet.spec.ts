@@ -32,13 +32,11 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
         total: 20,
         collectifs: { total: 4, proportion: 20, participants: 28 },
         individuels: { total: 8, proportion: 40 },
-        demarches: { total: 8, proportion: 40 },
       },
       accompagnements: {
         total: 44,
         individuels: { total: 8, proportion: 40 },
         collectifs: { total: 28, proportion: 20 },
-        demarches: { total: 8, proportion: 40 },
       },
       beneficiaires: {
         total: 23,
@@ -182,16 +180,19 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
           count: 16,
           proportion: 40,
         },
+      ],
+      thematiquesDemarches: [
         { label: 'Papiers - Élections Citoyenneté', count: 0, proportion: 0 },
         { label: 'Famille - Scolarité', count: 2, proportion: 12.5 },
         { label: 'Social - Santé', count: 6, proportion: 37.5 },
-        { label: 'Travail - Formation', count: 0, proportion: 0 },
+        { label: 'Travail - Formation - Entreprise', count: 0, proportion: 0 },
         { label: 'Logement', count: 2, proportion: 12.5 },
         { label: 'Transports - Mobilité', count: 2, proportion: 12.5 },
         { label: 'Argent - Impôts', count: 0, proportion: 0 },
         { label: 'Justice', count: 2, proportion: 12.5 },
         { label: 'Étrangers - Europe', count: 2, proportion: 12.5 },
         { label: 'Loisirs - Sports Culture', count: 0, proportion: 0 },
+        { label: 'Associations', count: 0, proportion: 0 },
       ],
       materiels: [
         {
@@ -402,7 +403,7 @@ const generales = {
 const activitesTitle = { start: generales.start + generales.length, length: 1 }
 const activites = {
   start: activitesTitle.start + activitesTitle.length,
-  length: 6,
+  length: 5,
 }
 const mediationNumeriqueTitle = {
   start: activites.start + activites.length,
@@ -410,10 +411,18 @@ const mediationNumeriqueTitle = {
 }
 const mediationNumerique = {
   start: mediationNumeriqueTitle.start + mediationNumeriqueTitle.length,
-  length: 26,
+  length: 16,
+}
+const demarcheAdministrativeTitle = {
+  start: mediationNumerique.start + mediationNumerique.length,
+  length: 1,
+}
+const demarcheAdministrative = {
+  start: demarcheAdministrativeTitle.start + demarcheAdministrativeTitle.length,
+  length: 12,
 }
 const materielTitle = {
-  start: mediationNumerique.start + mediationNumerique.length,
+  start: demarcheAdministrative.start + demarcheAdministrative.length,
   length: 1,
 }
 const materiel = {
@@ -623,7 +632,6 @@ describe('build statistiques worksheet for médiateur', () => {
       [undefined, 'Accompagnements individuels', 8, '40 %'],
       [undefined, 'Ateliers collectifs', 4, '20 %'],
       [undefined, 'Nombre total de participants aux ateliers', 28],
-      [undefined, 'Aide aux démarches administratives', 8, '40 %'],
       [undefined, 'Nombre total d’activités', 20],
       [],
     ])
@@ -663,17 +671,39 @@ describe('build statistiques worksheet for médiateur', () => {
         ['Culture numérique', 4],
         ['Aide aux démarches administratives', 16],
       ]),
+      [],
+    ])
+  })
+
+  it(`should contains bold 'Thématiques Démarches administratives' in Statistiques worksheet at position A${demarcheAdministrativeTitle.start}`, () => {
+    const exportTitleCell = worksheet.getCell(
+      `A${demarcheAdministrativeTitle.start}`,
+    )
+
+    expect(exportTitleCell?.value).toBe('Thématiques Démarches administratives')
+    expect(exportTitleCell?.font.bold).toBe(true)
+  })
+
+  it(`should contains Thématiques Démarches administratives ${range(
+    demarcheAdministrative,
+  )}`, () => {
+    const rows = worksheet
+      .getRows(demarcheAdministrative.start, demarcheAdministrative.length)
+      ?.map((row) => row.values)
+
+    expect(rows).toEqual([
       ...expectQuantifiedShareRows([
         ['Papiers - Élections Citoyenneté', 0],
         ['Famille - Scolarité', 2],
         ['Social - Santé', 6],
-        ['Travail - Formation', 0],
+        ['Travail - Formation - Entreprise', 0],
         ['Logement', 2],
         ['Transports - Mobilité', 2],
         ['Argent - Impôts', 0],
         ['Justice', 2],
         ['Étrangers - Europe', 2],
         ['Loisirs - Sports Culture', 0],
+        ['Associations', 0],
       ]),
       [],
     ])

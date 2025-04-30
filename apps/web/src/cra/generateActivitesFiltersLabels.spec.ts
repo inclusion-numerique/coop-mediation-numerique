@@ -137,7 +137,7 @@ describe('generate activites filters labels', () => {
   it('should generate all labels', () => {
     const labels = generateActivitesFiltersLabels(
       {
-        types: ['individuel', 'demarche', 'collectif'],
+        types: ['individuel', 'collectif'],
         mediateurs: [
           '379a0d7e-54ac-4db6-95c4-3752cdd05d32',
           '1ae07d95-316c-489f-893a-d17052c883b7',
@@ -208,11 +208,6 @@ describe('generate activites filters labels', () => {
       {
         label: 'Accompagnement individuel',
         key: 'individuel',
-        type: 'types',
-      },
-      {
-        label: 'Aide aux démarches administratives',
-        key: 'demarche',
         type: 'types',
       },
       {

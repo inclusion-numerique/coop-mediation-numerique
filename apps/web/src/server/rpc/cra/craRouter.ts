@@ -1,6 +1,6 @@
-import { CraCollectifValidation } from '@app/web/cra/CraCollectifValidation'
+import { CraCollectifServerValidation } from '@app/web/cra/CraCollectifServerValidation'
 import { CraDemarcheAdministrativeValidation } from '@app/web/cra/CraDemarcheAdministrativeValidation'
-import { CraIndividuelValidation } from '@app/web/cra/CraIndividuelValidation'
+import { CraIndividuelServerValidation } from '@app/web/cra/CraIndividuelServerValidation'
 import {
   createOrUpdateActivite,
   getBeneficiairesAnonymesWithOnlyAccompagnementsForThisActivite,
@@ -16,7 +16,7 @@ import z from 'zod'
 
 export const craRouter = router({
   individuel: protectedProcedure
-    .input(CraIndividuelValidation)
+    .input(CraIndividuelServerValidation)
     .mutation(async ({ input, ctx: { user } }) => {
       enforceIsMediateur(user)
 
@@ -45,14 +45,14 @@ export const craRouter = router({
 
       return createOrUpdateActivite({
         input: {
-          type: 'Demarche',
+          type: 'Individuel',
           data: input,
         },
         userId: user.id,
       })
     }),
   collectif: protectedProcedure
-    .input(CraCollectifValidation)
+    .input(CraCollectifServerValidation)
     .mutation(async ({ input, ctx: { user } }) => {
       enforceIsMediateur(user)
 

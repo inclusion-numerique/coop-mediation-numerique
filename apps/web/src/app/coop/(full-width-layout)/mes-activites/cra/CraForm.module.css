@@ -17,6 +17,18 @@
 
 .thematiquesFieldset {
   grid-template-columns: repeat(3, 1fr);
+
+  & > div:last-of-type {
+    grid-column: 1 / span 3;
+  }
+}
+
+.thematiquesAdministrativesFieldset {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.autonomieFieldset {
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .durationFieldset {

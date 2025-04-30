@@ -33,6 +33,7 @@ export const CraIndividuelValidation = z
         required_error: 'Veuillez renseigner au moins une thématique',
       })
       .min(1, 'Veuillez renseigner au moins une thématique'),
+    precisionsDemarche: z.string().nullish(),
     autonomie: z.enum(autonomieValues).nullish(),
     orienteVersStructure: z.enum(yesOrNo).nullish(),
     structureDeRedirection: z.enum(structuresRedirectionValues).nullish(),

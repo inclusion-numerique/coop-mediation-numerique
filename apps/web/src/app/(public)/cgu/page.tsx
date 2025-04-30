@@ -106,8 +106,7 @@ const ContentPolicyPage = () => (
           <ul>
             <li>
               Enregistrer une activité et la lier à un bénéficiaire :
-              accompagnement individuel, atelier collectif, aide aux démarches
-              administratives ;
+              accompagnement individuel ou atelier collectif ;
             </li>
             <li>
               Créer une fiche bénéficiaire en renseignant ses informations

@@ -43,7 +43,7 @@ export const CraCollectifValidation = z
         required_error: 'Veuillez renseigner au moins une thématique',
       })
       .min(1, 'Veuillez renseigner au moins une thématique'),
-
+    precisionsDemarche: z.string().nullish(),
     niveau: z.enum(niveauAtelierValues).nullish(),
     notes: z.string().nullish(),
   })

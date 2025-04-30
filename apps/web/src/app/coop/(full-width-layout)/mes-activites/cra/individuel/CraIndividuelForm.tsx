@@ -41,11 +41,13 @@ import {
   type CraIndividuelData,
   CraIndividuelValidation,
 } from '@app/web/cra/CraIndividuelValidation'
+import { clearAdministrativeData } from '@app/web/cra/clearAdministrativeData'
 import {
   autonomieOptionsWithExtras,
   materielOptions,
   structuresRedirectionOptions,
-  thematiqueOptionsWithExtras,
+  thematiqueAdministrativesOptionsWithExtras,
+  thematiqueNonAdministrativesOptionsWithExtras,
   typeLieuOptionsWithExtras,
 } from '@app/web/cra/cra'
 import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
@@ -72,7 +74,7 @@ import {
 import styles from '../CraForm.module.css'
 
 /**
- * Initial options can come from the field data it self or be pre-populated by beneficiaire data
+ * Initial options can come from the field data itself or be pre-populated by beneficiaire data
  */
 const lieuResidenceOptionsFromFormData = (
   data: DefaultValues<CraIndividuelData>,
@@ -129,6 +131,11 @@ const CraIndividuelForm = ({
   const showAnonymousForm =
     !beneficiaire || isBeneficiaireAnonymous(beneficiaire)
 
+  const thematiques = form.watch('thematiques')
+  const showThematiquesAdministratives = thematiques?.includes(
+    'AideAuxDemarchesAdministratives',
+  )
+
   const typeLieu = form.watch('typeLieu')
   const showLieuCommuneData = typeLieu === 'Autre' || typeLieu === 'Domicile'
   const showStructure = typeLieu === 'LieuActivite'
@@ -158,7 +165,7 @@ const CraIndividuelForm = ({
       return
     }
     try {
-      await mutation.mutateAsync(data)
+      await mutation.mutateAsync(clearAdministrativeData(data))
       createToast({
         priority: 'success',
         message: 'L’accompagnement individuel a bien été enregistré.',
@@ -370,7 +377,7 @@ const CraIndividuelForm = ({
       <CheckboxGroupFormField
         control={control}
         path="thematiques"
-        options={thematiqueOptionsWithExtras}
+        options={thematiqueNonAdministrativesOptionsWithExtras}
         disabled={isLoading}
         components={{
           label: RichCardLabel,
@@ -380,6 +387,38 @@ const CraIndividuelForm = ({
           fieldset: craFormFieldsetClassname(styles.thematiquesFieldset),
         }}
       />
+      {showThematiquesAdministratives && (
+        <>
+          <p className="fr-text--medium fr-mb-4v fr-mt-12v">
+            Thématique(s) de la démarche administrative
+          </p>
+          <CheckboxGroupFormField
+            control={control}
+            path="thematiques"
+            options={thematiqueAdministrativesOptionsWithExtras}
+            disabled={isLoading}
+            offset={thematiqueNonAdministrativesOptionsWithExtras.length}
+            components={{
+              label: RichCardLabel,
+            }}
+            classes={{
+              fieldsetElement: richCardFieldsetElementClassName,
+              fieldset: craFormFieldsetClassname(
+                styles.thematiquesAdministrativesFieldset,
+              ),
+            }}
+          />
+          <InputFormField
+            control={control}
+            disabled={isLoading}
+            path="precisionsDemarche"
+            label="Préciser le nom de la démarche administrative réalisée"
+            className="fr-flex-grow-1 fr-mt-12v"
+            classes={{ label: 'fr-text--medium fr-mb-3v' }}
+          />
+        </>
+      )}
+      <hr className="fr-separator-12v" />
       <p className="fr-text--medium fr-mb-4v fr-mt-12v">
         Niveau d’autonomie du bénéficiaire{' '}
         <Link
@@ -405,7 +444,7 @@ const CraIndividuelForm = ({
         }}
         classes={{
           fieldsetElement: richCardFieldsetElementClassName,
-          fieldset: craFormFieldsetClassname(styles.thematiquesFieldset),
+          fieldset: craFormFieldsetClassname(styles.autonomieFieldset),
           radioGroup: richCardRadioGroupClassName,
         }}
       />

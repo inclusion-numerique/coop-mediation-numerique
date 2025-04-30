@@ -1,7 +1,6 @@
 import CraCollectifPage from '@app/web/app/coop/(full-width-layout)/mes-activites/cra/collectif/CraCollectifPage'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/beneficiaire/getInitialBeneficiairesOptionsForSearch'
-import { AdressBanFormFieldOption } from '@app/web/components/form/AdresseBanFormField'
 import { CraCollectifData } from '@app/web/cra/CraCollectifValidation'
 import { getAdaptiveDureeOptions } from '@app/web/cra/getAdaptiveDureeOptions'
 import { participantsAnonymesDefault } from '@app/web/cra/participantsAnonymes'
@@ -60,9 +59,6 @@ const CreateCraCollectifPage = async ({
       mediateurId,
     })
 
-  // TODO: get most probable communes using the filter helper functions
-  const initialCommunesOptions: AdressBanFormFieldOption[] = []
-
   const dureeOptions = await getAdaptiveDureeOptions({
     mediateurId: user.mediateur.id,
     include: defaultValues.duree?.duree,
@@ -72,7 +68,7 @@ const CreateCraCollectifPage = async ({
     <CraCollectifPage
       defaultValues={defaultValues}
       initialBeneficiairesOptions={initialBeneficiairesOptions}
-      initialCommunesOptions={initialCommunesOptions}
+      initialCommunesOptions={[]}
       lieuxActiviteOptions={lieuxActiviteOptions}
       dureeOptions={dureeOptions}
       mediateurId={user.mediateur.id}

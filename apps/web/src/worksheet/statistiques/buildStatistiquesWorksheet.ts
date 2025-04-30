@@ -62,11 +62,6 @@ const addStatistiquesActivites =
       'Nombre total de participants aux ateliers',
       activites.collectifs.participants,
     ])
-    worksheet.addRow([
-      'Aide aux démarches administratives',
-      activites.demarches.total,
-      numberToPercentage(activites.demarches.proportion),
-    ])
     worksheet.addRow(['Nombre total d’activités', activites.total])
     worksheet.addRow([])
   }
@@ -85,6 +80,14 @@ const addStatistiquesThematiquesMediationNumerique =
   ({ activites: { thematiques } }: MesStatistiquesPageData) => {
     addTitleRow(worksheet)('Thématiques Médiation numérique')
     addQuantifiedShareRows(worksheet, thematiques)
+    worksheet.addRow([])
+  }
+
+const addStatistiquesThematiquesDemarchesAdministratives =
+  (worksheet: Excel.Worksheet) =>
+  ({ activites: { thematiquesDemarches } }: MesStatistiquesPageData) => {
+    addTitleRow(worksheet)('Thématiques Démarches administratives')
+    addQuantifiedShareRows(worksheet, thematiquesDemarches)
     worksheet.addRow([])
   }
 
@@ -184,6 +187,7 @@ export const buildStatistiquesWorksheet = ({
   addStatistiquesGenerales(worksheet)(statistiques)
   addStatistiquesActivites(worksheet)(statistiques)
   addStatistiquesThematiquesMediationNumerique(worksheet)(statistiques)
+  addStatistiquesThematiquesDemarchesAdministratives(worksheet)(statistiques)
   addStatistiquesMaterielUtilises(worksheet)(statistiques)
   addStatistiquesCanauxActivites(worksheet)(statistiques)
   addStatistiquesDureesActivites(worksheet)(statistiques)
