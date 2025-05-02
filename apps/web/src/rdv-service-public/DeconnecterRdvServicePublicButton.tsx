@@ -1,13 +1,13 @@
 'use client'
 
 import { createToast } from '@app/ui/toast/createToast'
-import { createModal } from '@codegouvfr/react-dsfr/Modal'
-import Button from '@codegouvfr/react-dsfr/Button'
-import React from 'react'
-import classNames from 'classnames'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import { trpc } from '@app/web/trpc'
+import Button from '@codegouvfr/react-dsfr/Button'
+import { createModal } from '@codegouvfr/react-dsfr/Modal'
+import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
+import React from 'react'
 
 const DeconnecterRdvServicePublicConfirmationModal = createModal({
   id: 'deconnecter-rdv-service-public',
@@ -65,13 +65,11 @@ const DeconnecterRdvServicePublicButton = () => {
         ]}
       >
         <p className="fr-mb-2v">
-          Vous allez déconnecter votre compte Coop de votre compte
-          RDV&nbsp;Service&nbsp;Public. Vous n’aurez plus accès aux
-          fonctionnalités de RDV&nbsp;Service&nbsp;Public.
+          En déconnectant votre compte, vous n’aurez plus accès aux
+          fonctionnalités de RDV&nbsp;Service&nbsp;Public dans la Coop.
           <br />
           <br />
-          Vous pourrez toujours reconnecter votre compte
-          RDV&nbsp;Service&nbsp;Public à la Coop ultérieurement.
+          Vous pourrez toujours reconnecter votre compte ultérieurement.
         </p>
       </DeconnecterRdvServicePublicConfirmationModal.Component>
     </>

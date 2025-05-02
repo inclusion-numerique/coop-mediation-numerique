@@ -1,15 +1,15 @@
 import RdvServicePubliqueConnexionCard from '@app/web/app/coop/(full-width-layout)/mes-outils/rdv-service-public/RdvServicePubliqueConnexionCard'
+import { getSessionUser } from '@app/web/auth/getSessionUser'
 import IconInSquare from '@app/web/components/IconInSquare'
+import { rdvAccountMetadata } from '@app/web/rdv-service-public/rdvAccountMetadata'
 import {
   rdvIntegrationEnSavoirPlusLink,
   rdvMyHomepageLink,
 } from '@app/web/rdv-service-public/rdvServicePublicOauth'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
-import React from 'react'
-import { getSessionUser } from '@app/web/auth/getSessionUser'
 import { notFound } from 'next/navigation'
-import { rdvAccountMetadata } from '@app/web/rdv-service-public/rdvAccountMetadata'
+import React from 'react'
 
 const RdvServicePublicCreationReussiePage = async () => {
   const user = await getSessionUser()

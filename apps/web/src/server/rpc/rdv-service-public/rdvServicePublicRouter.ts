@@ -1,4 +1,3 @@
-import type { SessionUser } from '@app/web/auth/sessionUser'
 import { getBeneficiaireAdresseString } from '@app/web/beneficiaire/getBeneficiaireAdresseString'
 import { prismaClient } from '@app/web/prismaClient'
 import {
@@ -10,41 +9,16 @@ import {
   oAuthRdvApiGetOrganisations,
   oAuthRdvApiMe,
 } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
+import { getUserContextForOAuthApiCall } from '@app/web/rdv-service-public/getUserContextForRdvApiCall'
 import { refreshRdvAgentAccountData } from '@app/web/rdv-service-public/refreshRdvAgentAccountData'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { invalidError } from '@app/web/server/rpc/trpcErrors'
 import { getServerUrl } from '@app/web/utils/baseUrl'
-
-const getContextForOAuthApiCall = async ({
-  user,
-}: {
-  user: Pick<SessionUser, 'id' | 'rdvAccount'>
-}) => {
-  const userWithSecretData = await prismaClient.user.findUnique({
-    where: {
-      id: user.id,
-    },
-    include: {
-      rdvAccount: true,
-    },
-  })
-
-  if (!userWithSecretData) {
-    throw invalidError('Utilisateur introuvable')
-  }
-
-  const { rdvAccount } = userWithSecretData
-
-  if (!rdvAccount || !user.rdvAccount?.hasOauthTokens) {
-    throw invalidError('Compte RDV Service Public non connecté')
-  }
-
-  return { ...userWithSecretData, rdvAccount }
-}
+import { AxiosError } from 'axios'
 
 export const rdvServicePublicRouter = router({
   oAuthApiMe: protectedProcedure.mutation(async ({ ctx: { user } }) => {
-    const oAuthCallUser = await getContextForOAuthApiCall({ user })
+    const oAuthCallUser = await getUserContextForOAuthApiCall({ user })
 
     const result = await oAuthRdvApiMe({
       rdvAccount: oAuthCallUser.rdvAccount,
@@ -54,7 +28,7 @@ export const rdvServicePublicRouter = router({
   }),
   oAuthApiGetOrganisations: protectedProcedure.mutation(
     async ({ ctx: { user } }) => {
-      const oAuthCallUser = await getContextForOAuthApiCall({ user })
+      const oAuthCallUser = await getUserContextForOAuthApiCall({ user })
 
       const result = await oAuthRdvApiGetOrganisations({
         rdvAccount: oAuthCallUser.rdvAccount,
@@ -65,7 +39,7 @@ export const rdvServicePublicRouter = router({
   ),
   refreshRdvAccountData: protectedProcedure.mutation(
     async ({ ctx: { user } }) => {
-      const oAuthCallUser = await getContextForOAuthApiCall({ user })
+      const oAuthCallUser = await getUserContextForOAuthApiCall({ user })
 
       const result = await refreshRdvAgentAccountData({
         rdvAccount: oAuthCallUser.rdvAccount,
@@ -121,10 +95,10 @@ export const rdvServicePublicRouter = router({
           throw invalidError('Bénéficiaire introuvable')
         }
 
-        const oAuthCallUser = await getContextForOAuthApiCall({ user })
+        const oAuthCallUser = await getUserContextForOAuthApiCall({ user })
 
         const viewBeneficiaireUrl = getServerUrl(
-          `/coop/beneficiaire/${beneficiaireId}`,
+          `/coop/mes-beneficiaires/${beneficiaireId}/accompagnements`,
           {
             absolutePath: true,
           },
@@ -140,28 +114,41 @@ export const rdvServicePublicRouter = router({
             phone_number: beneficiaire.telephone ?? undefined,
             // birth_date: beneficiaire.anneeNaissance // We don't have this field in the beneficiaire
           },
-          // TODO Reactivate this after localhost is implemented in the RDV Service Public
           return_url: viewBeneficiaireUrl,
           dossier_url: viewBeneficiaireUrl,
         } satisfies OauthRdvApiCreateRdvPlanInput
 
-        const result = await oAuthRdvApiCreateRdvPlan({
-          rdvAccount: oAuthCallUser.rdvAccount,
-          input,
-        })
-
-        // Update beneficiaire with id from RDV Service Public if needed
-        // The rest of beneficiaire data could be updated after
-        // the plan is created (on redirection), to fetch email, tel, etc... if needed
-
-        if (result.rdv_plan.user_id !== beneficiaire.rdvServicePublicId) {
-          await prismaClient.beneficiaire.update({
-            where: { id: beneficiaireId },
-            data: { rdvServicePublicId: result.rdv_plan.user_id },
+        try {
+          console.log('POST RDV plans', {
+            input,
+            agent: {
+              id: oAuthCallUser.rdvAccount.id,
+            },
           })
-        }
 
-        return result
+          const result = await oAuthRdvApiCreateRdvPlan({
+            rdvAccount: oAuthCallUser.rdvAccount,
+            input,
+          })
+
+          // Update beneficiaire with id from RDV Service Public if needed
+          // The rest of beneficiaire data could be updated after
+          // the plan is created (on redirection), to fetch email, tel, etc... if needed
+
+          if (result.rdv_plan.user_id !== beneficiaire.rdvServicePublicId) {
+            await prismaClient.beneficiaire.update({
+              where: { id: beneficiaireId },
+              data: { rdvServicePublicId: result.rdv_plan.user_id },
+            })
+          }
+
+          return result
+        } catch (error) {
+          if (error instanceof AxiosError) {
+            console.error('POST RDV plans error', error.toJSON())
+          }
+          throw error
+        }
       },
     ),
 })

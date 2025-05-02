@@ -13,6 +13,7 @@ const BeneficiaireInformationsPage = async ({
   const data = await getBeneficiaireInformationsPageData({
     beneficiaireId,
     mediateurId: user.mediateur.id,
+    user,
   })
 
   if (!data) {
