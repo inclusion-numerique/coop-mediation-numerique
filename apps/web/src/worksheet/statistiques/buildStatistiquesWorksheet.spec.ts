@@ -1,6 +1,6 @@
 import { computeProportion } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/allocatePercentages'
 import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
-import { dureeAccompagnementStatisticsRanges } from '@app/web/cra/cra'
+import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/use-cases/cra/fields/duree-accompagnement'
 import { numberToPercentage } from '@app/web/utils/formatNumber'
 import type { Workbook, Worksheet } from 'exceljs'
 import {

@@ -23,16 +23,14 @@ import {
   statutSocialLabels,
   trancheAgeLabels,
 } from '@app/web/beneficiaire/beneficiaire'
-import { getInitialBeneficiairesOptionsForSearch } from '@app/web/beneficiaire/getInitialBeneficiairesOptionsForSearch'
-import { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
-import {
-  dureeAccompagnementStatisticsRanges,
-  materielLabels,
-  thematiquesAdministrativesLabels,
-  thematiquesNonAdministrativesLabels,
-  typeActiviteLabels,
-  typeLieuLabels,
-} from '@app/web/cra/cra'
+import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/use-cases/cra/fields/duree-accompagnement'
+import { materielLabels } from '@app/web/features/activites/use-cases/cra/fields/materiel'
+import { thematiquesNonAdministrativesLabels } from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import { thematiquesAdministrativesLabels } from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import { typeActiviteLabels } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
+import { typeLieuLabels } from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
+import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaires/db/getInitialBeneficiairesOptionsForSearch'
 import { prismaClient } from '@app/web/prismaClient'
 import { UserDisplayName, UserProfile } from '@app/web/utils/user'
 import { cloneDeep } from 'lodash-es'

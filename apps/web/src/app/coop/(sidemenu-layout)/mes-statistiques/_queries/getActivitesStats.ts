@@ -5,25 +5,29 @@ import {
   createEnumArrayCountSelect,
   createEnumCountSelect,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/createEnumCountSelect'
-import type { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
+import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/use-cases/cra/fields/duree-accompagnement'
+import {
+  materielLabels,
+  materielValues,
+} from '@app/web/features/activites/use-cases/cra/fields/materiel'
+import {
+  thematiqueLabels,
+  thematiquesAdministrativesValues,
+  thematiquesNonAdministrativesValues,
+} from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import {
+  typeActiviteLabels,
+  typeActiviteValues,
+} from '@app/web/features/activites/use-cases/cra/fields/type-activite'
+import {
+  typeLieuLabels,
+  typeLieuValues,
+} from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
 import {
   getActiviteFiltersSqlFragment,
   getActivitesFiltersWhereConditions,
-} from '@app/web/cra/activitesFiltersSqlWhereConditions'
-import {
-  dureeAccompagnementStatisticsRanges,
-  materielLabels,
-  materielValues,
-  thematiqueLabels,
-  thematiqueValues,
-  thematiquesAdministrativesLabels,
-  thematiquesAdministrativesValues,
-  thematiquesNonAdministrativesValues,
-  typeActiviteLabels,
-  typeActiviteValues,
-  typeLieuLabels,
-  typeLieuValues,
-} from '@app/web/cra/cra'
+} from '@app/web/features/activites/use-cases/list/db/activitesFiltersSqlWhereConditions'
+import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { prismaClient } from '@app/web/prismaClient'
 import { UserProfile } from '@app/web/utils/user'
 import { Materiel, Thematique, TypeActivite, TypeLieu } from '@prisma/client'

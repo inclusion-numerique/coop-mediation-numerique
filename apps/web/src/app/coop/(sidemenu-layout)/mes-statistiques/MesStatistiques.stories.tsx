@@ -5,14 +5,14 @@ import {
   statutSocialLabels,
   trancheAgeLabels,
 } from '@app/web/beneficiaire/beneficiaire'
+import { dureeAccompagnementParDefautLabels } from '@app/web/features/activites/use-cases/cra/fields/duree-accompagnement'
+import { materielLabels } from '@app/web/features/activites/use-cases/cra/fields/materiel'
 import {
-  dureeAccompagnementParDefautLabels,
-  materielLabels,
   thematiquesAdministrativesLabels,
   thematiquesNonAdministrativesLabels,
-  typeActiviteLabels,
-  typeLieuLabels,
-} from '@app/web/cra/cra'
+} from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import { typeActiviteLabels } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
+import { typeLieuLabels } from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
 import { Meta, StoryObj } from '@storybook/react'
 import { MesStatistiques } from './MesStatistiques'
 

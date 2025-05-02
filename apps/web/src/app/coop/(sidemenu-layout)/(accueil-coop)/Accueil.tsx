@@ -2,12 +2,12 @@ import { CommunicationConum } from '@app/web/app/coop/(sidemenu-layout)/(accueil
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { EquipeVide } from '@app/web/app/coop/EquipeVide'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import ActiviteDetailsModal from '@app/web/components/activite/ActiviteDetailsModal/ActiviteDetailsModal'
+import ActiviteDetailsModal from '@app/web/features/activites/use-cases/list/components/ActiviteDetailsModal/ActiviteDetailsModal'
+import { DernieresActivites } from '@app/web/features/activites/use-cases/list/components/DernieresActivites'
 import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
 import React from 'react'
 import {
   ActionsRapides,
-  DernieresActivites,
   InformationsCoop,
   OnboardingInfo,
   Statistiques,

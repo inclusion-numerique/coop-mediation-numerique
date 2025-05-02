@@ -1,7 +1,5 @@
 import { StatistiquesImpact } from '@app/web/app/administration/statistiques/StatistiquesImpact'
 import { getUtilisateursListPageData } from '@app/web/app/administration/utilisateurs/getUtilisateursListPageData'
-import { FilterTags } from '@app/web/app/coop/(sidemenu-layout)/mes-activites/(liste)/FilterTags'
-import Filters from '@app/web/app/coop/(sidemenu-layout)/mes-activites/(liste)/Filters'
 import {
   getAccompagnementsCountByDay,
   getAccompagnementsCountByMonth,
@@ -13,10 +11,12 @@ import { StatistiquesActivites } from '@app/web/app/coop/(sidemenu-layout)/mes-s
 import { StatistiquesBeneficiaires } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesBeneficiaires'
 import { StatistiquesGenerales } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesGenerales'
 import { metadataTitle } from '@app/web/app/metadataTitle'
+import { FilterTags } from '@app/web/features/activites/use-cases/list/components/FilterTags'
+import Filters from '@app/web/features/activites/use-cases/list/components/Filters'
 import {
-  ActivitesFilters,
+  type ActivitesFilters,
   validateActivitesFilters,
-} from '@app/web/cra/ActivitesFilters'
+} from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { getImpactStats } from '@app/web/server/impact/getImpactStats'
 
 export const metadata = {

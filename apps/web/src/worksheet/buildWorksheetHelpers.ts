@@ -2,7 +2,7 @@ import type { SessionUser } from '@app/web/auth/sessionUser'
 import type {
   ActivitesFiltersLabels,
   FilterType,
-} from '@app/web/cra/generateActivitesFiltersLabels'
+} from '@app/web/features/activites/use-cases/list/components/generateActivitesFiltersLabels'
 import { addTitleRow } from '@app/web/libs/worksheet/addTitleRow'
 import type { Worksheet } from 'exceljs'
 

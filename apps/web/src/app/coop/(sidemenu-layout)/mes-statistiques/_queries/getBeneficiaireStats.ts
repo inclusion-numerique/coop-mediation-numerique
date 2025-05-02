@@ -9,11 +9,11 @@ import {
   trancheAgeLabels,
   trancheAgeValues,
 } from '@app/web/beneficiaire/beneficiaire'
-import type { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
 import {
   getActiviteFiltersSqlFragment,
   getActivitesFiltersWhereConditions,
-} from '@app/web/cra/activitesFiltersSqlWhereConditions'
+} from '@app/web/features/activites/use-cases/list/db/activitesFiltersSqlWhereConditions'
+import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { prismaClient } from '@app/web/prismaClient'
 import { UserProfile } from '@app/web/utils/user'
 import { Genre, StatutSocial, TrancheAge } from '@prisma/client'
@@ -52,14 +52,18 @@ export const getBeneficiaireStatsRaw = async ({
         FROM beneficiaires ben
           INNER JOIN accompagnements acc ON acc.beneficiaire_id = ben.id
           INNER JOIN activites act ON act.id = acc.activite_id
-          FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user?.coordinateur?.id}::UUID
+          FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${
+            user?.coordinateur?.id
+          }::UUID
           LEFT JOIN mediateurs med ON act.mediateur_id = med.id
           LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
           LEFT JOIN structures str ON str.id = act.structure_id
           WHERE (act.date <= mc.suppression OR mc.suppression IS NULL)
             AND act.suppression IS NULL
             AND ${activitesMediateurIdsWhereCondition(mediateurIds)}
-            AND ${getActiviteFiltersSqlFragment(getActivitesFiltersWhereConditions(activitesFilters))})
+            AND ${getActiviteFiltersSqlFragment(
+              getActivitesFiltersWhereConditions(activitesFilters),
+            )})
       
       SELECT COUNT(distinct_beneficiaires.id)::integer AS total_beneficiaires,
 
@@ -154,9 +158,13 @@ export const getBeneficiairesCommunesRaw = async ({
             LEFT JOIN structures str ON str.id = act.structure_id
             LEFT JOIN mediateurs med ON act.mediateur_id = med.id
             LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
-            FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user.coordinateur?.id}::UUID
+            FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${
+              user.coordinateur?.id
+            }::UUID
         WHERE (act.date <= mc.suppression OR mc.suppression IS NULL)
-          AND ${getActiviteFiltersSqlFragment(getActivitesFiltersWhereConditions(activitesFilters))}
+          AND ${getActiviteFiltersSqlFragment(
+            getActivitesFiltersWhereConditions(activitesFilters),
+          )}
       GROUP BY commune_code_insee
   `.then((result) =>
     // Filter out null codeInsee for when there is no commune in beneficiaire or activite

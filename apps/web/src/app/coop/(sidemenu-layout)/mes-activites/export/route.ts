@@ -1,13 +1,13 @@
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
 import type { MediateurUser } from '@app/web/auth/userTypeGuards'
+import { buildActivitesWorksheet } from '@app/web/features/activites/use-cases/list/export/buildActivitesWorksheet'
+import { getActivitesWorksheetInput } from '@app/web/features/activites/use-cases/list/export/getActivitesWorksheetInput'
 import {
   ActivitesFilterValidations,
   ActivitesFilters,
-} from '@app/web/cra/ActivitesFilters'
+} from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import { buildActivitesWorksheet } from '@app/web/worksheet/activites/buildActivitesWorksheet'
-import { getActivitesWorksheetInput } from '@app/web/worksheet/activites/getActivitesWorksheetInput'
 import type { NextRequest } from 'next/server'
 import { z } from 'zod'
 

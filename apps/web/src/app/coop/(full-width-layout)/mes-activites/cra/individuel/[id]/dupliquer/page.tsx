@@ -1,5 +1,5 @@
-import { getCraIndividuelDataDefaultValuesFromExisting } from '@app/web/app/coop/(full-width-layout)/mes-activites/cra/individuel/getCraIndividuelDataDefaultValuesFromExisting'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
+import { getCraIndividuelDataDefaultValuesFromExisting } from '@app/web/features/activites/use-cases/cra/individuel/db/getCraIndividuelDataDefaultValuesFromExisting'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { notFound, redirect } from 'next/navigation'
 
@@ -7,12 +7,8 @@ const DupliquerPage = async ({
   params: { id },
   searchParams: { retour } = {},
 }: {
-  params: {
-    id: string
-  }
-  searchParams?: {
-    retour?: string
-  }
+  params: { id: string }
+  searchParams?: { retour?: string }
 }) => {
   const user = await authenticateMediateur()
 
@@ -21,21 +17,18 @@ const DupliquerPage = async ({
     mediateurId: user.mediateur.id,
   })
 
-  if (!defaultValues) {
-    notFound()
-    return null
-  }
+  if (defaultValues == null) return notFound()
 
   const defaultValuesWithoutId = {
     ...defaultValues,
     id: undefined,
   }
 
-  redirect(
-    `/coop/mes-activites/cra/individuel?${retour ? `retour=${retour}&` : ''}v=${encodeSerializableState(defaultValuesWithoutId)}`,
+  return redirect(
+    `/coop/mes-activites/cra/individuel?${
+      retour ? `retour=${retour}&` : ''
+    }v=${encodeSerializableState(defaultValuesWithoutId)}`,
   )
-
-  return null
 }
 
 export default DupliquerPage

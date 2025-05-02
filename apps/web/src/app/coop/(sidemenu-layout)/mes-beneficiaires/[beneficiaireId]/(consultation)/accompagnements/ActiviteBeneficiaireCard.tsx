@@ -1,13 +1,13 @@
 import ActiviteBeneficiaireCardOpenModalLink from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/ActiviteBeneficiaireCardOpenModalLink'
 import Stars from '@app/web/components/Stars'
-import type { ActiviteForList } from '@app/web/cra/activitesQueries'
+import { niveauAtelierStars } from '@app/web/features/activites/use-cases/cra/collectif/fields/niveau-atelier'
+import { thematiqueLabels } from '@app/web/features/activites/use-cases/cra/fields/thematique'
 import {
-  autonomieStars,
-  niveauAtelierStars,
-  thematiqueLabels,
   typeActiviteIllustrations,
   typeActiviteLabels,
-} from '@app/web/cra/cra'
+} from '@app/web/features/activites/use-cases/cra/fields/type-activite'
+import { autonomieStars } from '@app/web/features/activites/use-cases/cra/individuel/fields/autonomie'
+import { ActiviteForList } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 
 const ActiviteBeneficiaireCard = ({

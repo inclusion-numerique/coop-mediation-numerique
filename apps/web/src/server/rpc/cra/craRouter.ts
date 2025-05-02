@@ -1,10 +1,9 @@
-import { CraCollectifServerValidation } from '@app/web/cra/CraCollectifServerValidation'
-import { CraDemarcheAdministrativeValidation } from '@app/web/cra/CraDemarcheAdministrativeValidation'
-import { CraIndividuelServerValidation } from '@app/web/cra/CraIndividuelServerValidation'
+import { CraCollectifServerValidation } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifServerValidation'
 import {
   createOrUpdateActivite,
   getBeneficiairesAnonymesWithOnlyAccompagnementsForThisActivite,
-} from '@app/web/cra/createOrUpdateActivite'
+} from '@app/web/features/activites/use-cases/cra/db/createOrUpdateActivite'
+import { CraIndividuelServerValidation } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelServerValidation'
 import { prismaClient } from '@app/web/prismaClient'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { enforceIsMediateur } from '@app/web/server/rpc/enforceIsMediateur'
@@ -17,24 +16,6 @@ import z from 'zod'
 export const craRouter = router({
   individuel: protectedProcedure
     .input(CraIndividuelServerValidation)
-    .mutation(async ({ input, ctx: { user } }) => {
-      enforceIsMediateur(user)
-
-      // Enforce user can create CRA for given mediateurId (for now only self)
-      if (input.mediateurId !== user.mediateur.id) {
-        throw forbiddenError('Cannot create CRA for another mediateur')
-      }
-
-      return createOrUpdateActivite({
-        input: {
-          type: 'Individuel',
-          data: input,
-        },
-        userId: user.id,
-      })
-    }),
-  demarcheAdministrative: protectedProcedure
-    .input(CraDemarcheAdministrativeValidation)
     .mutation(async ({ input, ctx: { user } }) => {
       enforceIsMediateur(user)
 

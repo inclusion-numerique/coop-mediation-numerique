@@ -1,10 +1,10 @@
-import {
-  type BeneficiaireData,
-  BeneficiaireValidation,
-} from '@app/web/beneficiaire/BeneficiaireValidation'
 import { AnalysisSchema } from '@app/web/beneficiaire/import/analyseImportBeneficiairesExcel'
 import { searchBeneficiaire } from '@app/web/beneficiaire/searchBeneficiaire'
 import { trancheAgeFromAnneeNaissance } from '@app/web/beneficiaire/trancheAgeFromAnneeNaissance'
+import {
+  BeneficiaireData,
+  BeneficiaireValidation,
+} from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
 import { prismaClient } from '@app/web/prismaClient'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { enforceIsMediateur } from '@app/web/server/rpc/enforceIsMediateur'

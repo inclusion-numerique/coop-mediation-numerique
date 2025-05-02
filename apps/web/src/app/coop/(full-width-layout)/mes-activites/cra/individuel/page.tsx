@@ -1,10 +1,8 @@
-import CraIndividuelPage from '@app/web/app/coop/(full-width-layout)/mes-activites/cra/individuel/CraIndividuelPage'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
-import { getInitialBeneficiairesOptionsForSearch } from '@app/web/beneficiaire/getInitialBeneficiairesOptionsForSearch'
-import type { CraIndividuelData } from '@app/web/cra/CraIndividuelValidation'
-import { getAdaptiveDureeOptions } from '@app/web/cra/getAdaptiveDureeOptions'
-import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
-import { getMediateursLieuxActiviteOptions } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
+import { getCraPageData } from '@app/web/features/activites/use-cases/cra/getCraPageData'
+import CraIndividuelPage from '@app/web/features/activites/use-cases/cra/individuel/CraIndividuelPage'
+import { craIndividuelDefaultValues } from '@app/web/features/activites/use-cases/cra/individuel/craIndividuelDefaultValues'
+import { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
 import {
   type EncodedState,
   decodeSerializableState,
@@ -19,60 +17,20 @@ const CreateCraIndividuelPage = async ({
     retour?: string
   }
 }) => {
-  const user = await authenticateMediateur()
+  const {
+    mediateur: { id: mediateurId },
+  } = await authenticateMediateur()
 
-  const urlFormState = v ? decodeSerializableState(v, {}) : {}
+  const stateFromUrl = v ? decodeSerializableState(v, {}) : {}
 
-  // delete sensitive data from urlFormState
-  delete urlFormState.mediateurId
-
-  const defaultValues: DefaultValues<CraIndividuelData> & {
-    mediateurId: string
-  } = {
-    ...urlFormState,
-    date: urlFormState.date ?? new Date().toISOString().slice(0, 10),
-    mediateurId: user.mediateur.id,
-    beneficiaire: {
-      // Could be from another mediateur ? is it safe ? check will be backend ?
-      mediateurId: user.mediateur.id,
-      ...urlFormState.beneficiaire,
-    },
-    duree: urlFormState.duree ?? {},
-    // If no value for domicile usager, then default to beneficiaire adresse
-    lieuCommuneData:
-      urlFormState.lieuCommuneData ??
-      (urlFormState.beneficiaire?.communeResidence
-        ? banDefaultValueToAdresseBanData(
-            urlFormState.beneficiaire.communeResidence,
-          )
-        : null),
-  }
-
-  const lieuxActiviteOptions = await getMediateursLieuxActiviteOptions({
-    mediateurIds: [user.mediateur.id],
-  })
-
-  if (!defaultValues.structureId) {
-    defaultValues.structureId = lieuxActiviteOptions.at(0)?.value ?? undefined
-  }
-
-  const initialBeneficiairesOptions =
-    await getInitialBeneficiairesOptionsForSearch({
-      mediateurId: user.mediateur.id,
-    })
-
-  const dureeOptions = await getAdaptiveDureeOptions({
-    mediateurId: user.mediateur.id,
-    include: defaultValues.duree?.duree,
-  })
+  const craPageData = await getCraPageData<CraIndividuelData>(
+    craIndividuelDefaultValues,
+  )(mediateurId, stateFromUrl)
 
   return (
     <CraIndividuelPage
-      lieuxActiviteOptions={lieuxActiviteOptions}
-      initialBeneficiairesOptions={initialBeneficiairesOptions}
-      mediateurId={user.mediateur.id}
-      defaultValues={defaultValues}
-      dureeOptions={dureeOptions}
+      {...craPageData}
+      mediateurId={mediateurId}
       retour={retour}
     />
   )

@@ -1,5 +1,5 @@
 import { createBeneficiairesForParticipantsAnonymes } from '@app/web/beneficiaire/createBeneficiairesForParticipantsAnonymes'
-import type { ParticipantsAnonymesCraCollectifData } from '@app/web/cra/ParticipantsAnonymesCraCollectifValidation'
+import { ParticipantsAnonymesCraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/ParticipantsAnonymesCraCollectifValidation'
 import type { Prisma, TypeLieu } from '@prisma/client'
 import { v4 } from 'uuid'
 import { mergeUuids } from './mergeUuids'

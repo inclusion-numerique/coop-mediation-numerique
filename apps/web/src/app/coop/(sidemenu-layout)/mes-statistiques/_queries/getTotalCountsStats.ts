@@ -1,12 +1,12 @@
 import { activitesMediateurIdsWhereCondition } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/activitesMediateurIdsWhereCondition'
 import { allocatePercentages } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/allocatePercentages'
-import type { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
 import {
   getActiviteFiltersSqlFragment,
   getActivitesFiltersWhereConditions,
-} from '@app/web/cra/activitesFiltersSqlWhereConditions'
+} from '@app/web/features/activites/use-cases/list/db/activitesFiltersSqlWhereConditions'
+import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { prismaClient } from '@app/web/prismaClient'
-import { UserProfile } from '@app/web/utils/user'
+import type { UserProfile } from '@app/web/utils/user'
 
 export type AccompagnementsStats = {
   activites: {

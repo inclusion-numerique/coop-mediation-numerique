@@ -1,9 +1,9 @@
 import { activitesMediateurIdsWhereCondition } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/activitesMediateurIdsWhereCondition'
-import type { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
 import {
   getActiviteFiltersSqlFragment,
   getActivitesFiltersWhereConditions,
-} from '@app/web/cra/activitesFiltersSqlWhereConditions'
+} from '@app/web/features/activites/use-cases/list/db/activitesFiltersSqlWhereConditions'
+import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   MonthShortLabel,
@@ -35,24 +35,32 @@ export const getAccompagnementsCountByMonth = async ({
   const endDate = periodEnd
     ? `TO_DATE('${periodEnd}', 'YYYY-MM')`
     : `CURRENT_DATE`
-  const fromDate = `DATE_TRUNC('month', ${endDate} - INTERVAL '${intervals - 1} months')`
+  const fromDate = `DATE_TRUNC('month', ${endDate} - INTERVAL '${
+    intervals - 1
+  } months')`
 
   return prismaClient.$queryRaw<{ month: number; count: number }[]>`
       WITH filtered_accompagnements AS (
           SELECT act.date
           FROM activites act
-            FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user?.coordinateur?.id}::UUID
+            FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${
+              user?.coordinateur?.id
+            }::UUID
             INNER JOIN accompagnements acc ON acc.activite_id = act.id
             LEFT JOIN mediateurs med ON act.mediateur_id = med.id
             LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
             LEFT JOIN structures str ON str.id = act.structure_id
           WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
             AND act.suppression IS NULL
-            AND ${getActiviteFiltersSqlFragment(getActivitesFiltersWhereConditions(activitesFilters))}
+            AND ${getActiviteFiltersSqlFragment(
+              getActivitesFiltersWhereConditions(activitesFilters),
+            )}
             AND act.date <= ${Prisma.raw(endDate)}
             AND act.date >= ${Prisma.raw(fromDate)}
             AND (act.date <= mc.suppression OR mc.suppression IS NULL)),
-           months AS (SELECT generate_series(${Prisma.raw(fromDate)}, ${Prisma.raw(endDate)}, '1 month'::interval) AS month)
+           months AS (SELECT generate_series(${Prisma.raw(
+             fromDate,
+           )}, ${Prisma.raw(endDate)}, '1 month'::interval) AS month)
       SELECT EXTRACT(MONTH FROM months.month)::int     AS month,
              COUNT(filtered_accompagnements.date)::int AS count
       FROM months
@@ -86,24 +94,32 @@ export const getAccompagnementsCountByDay = async ({
   const endDate = periodEnd
     ? `TO_DATE('${periodEnd}', 'YYYY-MM-DD')`
     : `CURRENT_DATE`
-  const fromDate = `DATE_TRUNC('day', ${endDate} - INTERVAL '${intervals - 1} days')`
+  const fromDate = `DATE_TRUNC('day', ${endDate} - INTERVAL '${
+    intervals - 1
+  } days')`
 
   return prismaClient.$queryRaw<LabelAndCount[]>`
       WITH filtered_accompagnements AS (
         SELECT DATE_TRUNC('day', act.date) AS date
             FROM activites act
-                FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user?.coordinateur?.id}::UUID
+                FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${
+                  user?.coordinateur?.id
+                }::UUID
                 INNER JOIN accompagnements ON accompagnements.activite_id = act.id
                 LEFT JOIN mediateurs med ON act.mediateur_id = med.id
                 LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
                 LEFT JOIN structures str ON str.id = act.structure_id
         WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
           AND act.suppression IS NULL
-          AND ${getActiviteFiltersSqlFragment(getActivitesFiltersWhereConditions(activitesFilters))}
+          AND ${getActiviteFiltersSqlFragment(
+            getActivitesFiltersWhereConditions(activitesFilters),
+          )}
           AND act.date <= ${Prisma.raw(endDate)}
           AND act.date >= ${Prisma.raw(fromDate)}
           AND (act.date <= mc.suppression OR mc.suppression IS NULL)),
-           days AS (SELECT generate_series(${Prisma.raw(fromDate)}, ${Prisma.raw(endDate)}, '1 day'::interval) AS date)
+           days AS (SELECT generate_series(${Prisma.raw(
+             fromDate,
+           )}, ${Prisma.raw(endDate)}, '1 day'::interval) AS date)
 
       SELECT TO_CHAR(days.date, 'DD/MM')               AS label,
              COUNT(filtered_accompagnements.date)::int AS count

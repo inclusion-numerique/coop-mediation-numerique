@@ -2,7 +2,7 @@ import { beneficiaireAccompagnementsCountSelect } from '@app/web/beneficiaire/be
 import {
   getAllActivites,
   groupActivitesByDate,
-} from '@app/web/cra/activitesQueries'
+} from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { prismaClient } from '@app/web/prismaClient'
 
 export const getBeneficiaireAccompagnementsPageData = async ({
