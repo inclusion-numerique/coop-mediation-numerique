@@ -1,20 +1,26 @@
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import {
+  OAuthApiOrganisationRdvsResponse,
   OAuthRdvApiGetOrganisationsResponse,
   OauthRdvApiCreateRdvPlanInput,
   OauthRdvApiCreateRdvPlanResponse,
   OauthRdvApiGetUserResponse,
   OauthRdvApiMeResponse,
+  RdvApiOrganisation,
 } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
 import { refreshRdvAccessToken } from '@app/web/rdv-service-public/refreshRdvAccessToken'
 import { removeUndefinedValues } from '@app/web/utils/removeUndefinedValues'
-import type { RdvAccount } from '@prisma/client'
+import { Beneficiaire, RdvAccount } from '@prisma/client'
 import axios, { AxiosError, AxiosRequestConfig } from 'axios'
 
 export type OAuthRdvApiCredentials = Pick<
   RdvAccount,
   'accessToken' | 'refreshToken' | 'expiresAt' | 'scope'
 > & { id?: number }
+
+export type OauthRdvApiCredentialsWithOrganisations = OAuthRdvApiCredentials & {
+  organisations: Pick<RdvApiOrganisation, 'id'>[]
+}
 
 /**
  * executes an API call to the rdv system using the rdvAccount's tokens,
@@ -105,6 +111,46 @@ export const oAuthRdvApiCreateRdvPlan = async ({
       data: input,
     },
   })
+}
+
+export const oAuthRdvApiListRdvs = async ({
+  rdvAccount,
+  beneficiaire,
+}: {
+  rdvAccount: OauthRdvApiCredentialsWithOrganisations
+  beneficiaire?: Pick<Beneficiaire, 'rdvServicePublicId'>
+}): Promise<OAuthApiOrganisationRdvsResponse['rdvs']> => {
+  const organisationIds = rdvAccount.organisations.map(({ id }) => id)
+
+  const rdvsPerOrganisation = await Promise.all(
+    organisationIds.map((organisationId) =>
+      executeOAuthRdvApiCall<OAuthApiOrganisationRdvsResponse>({
+        path: `/organisations/${organisationId}/rdvs`,
+        rdvAccount,
+        config: {
+          method: 'GET',
+        },
+      }),
+    ),
+  )
+
+  // No filters in query param, post processing :
+
+  const allRdvs = rdvsPerOrganisation.flatMap(({ rdvs }) => rdvs)
+
+  console.log('ALL RDVS', allRdvs)
+
+  const filteredRdvs = beneficiaire
+    ? allRdvs.filter((rdv) =>
+        rdv.participations.some(
+          ({ user }) => user.id === beneficiaire.rdvServicePublicId,
+        ),
+      )
+    : allRdvs
+
+  console.log('filtered', filteredRdvs)
+
+  return filteredRdvs
 }
 
 export const oAuthRdvApiGetUser = async ({

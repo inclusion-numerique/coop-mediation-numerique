@@ -1,4 +1,5 @@
 import { getSessionUser } from '@app/web/auth/getSessionUser'
+import DeconnecterRdvServicePublicButton from '@app/web/rdv-service-public/DeconnecterRdvServicePublicButton'
 import { getRdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
 import {
   rdvIntegrationEnSavoirPlusLink,
@@ -12,7 +13,6 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import Link from 'next/link'
 import React from 'react'
-import DeconnecterRdvServicePublicButton from '@app/web/rdv-service-public/DeconnecterRdvServicePublicButton'
 
 const RdvServicePublicAccess = async () => {
   const user = await getSessionUser()

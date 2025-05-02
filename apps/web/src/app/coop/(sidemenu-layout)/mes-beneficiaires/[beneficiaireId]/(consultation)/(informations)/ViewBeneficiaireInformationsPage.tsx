@@ -10,7 +10,7 @@ import Tag from '@codegouvfr/react-dsfr/Tag'
 import styles from './ViewBeneficiaireInformationsPage.module.css'
 
 const ViewBeneficiaireInformationsPage = ({
-  data: { beneficiaire, thematiquesCounts },
+  data: { beneficiaire, thematiquesCounts, totalActivitesCount },
 }: {
   data: BeneficiaireInformationsPageData
 }) => {
@@ -30,7 +30,7 @@ const ViewBeneficiaireInformationsPage = ({
     <>
       <BeneficiairePageNavigationBar
         beneficiaireId={beneficiaire.id}
-        accompagnementsCount={beneficiaire._count.accompagnements}
+        accompagnementsCount={totalActivitesCount}
         current="informations"
       />
       <div className="fr-border-radius--8 fr-border  fr-pt-8v fr-px-7v fr-pb-10v fr-mt-6v">

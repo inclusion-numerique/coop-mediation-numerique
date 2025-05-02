@@ -40,6 +40,7 @@ const sansInformations = {
   beneficiaire: beneficiaireSansInformations,
   thematiquesCounts: [],
   displayName: getBeneficiaireDisplayName(beneficiaireSansInformations),
+  totalActivitesCount: 0,
 } satisfies BeneficiaireInformationsPageData
 
 export const SansInformations: Story = {
@@ -86,6 +87,7 @@ const avecInformations = {
     },
   ],
   displayName: getBeneficiaireDisplayName(beneficiaireAvecInformations),
+  totalActivitesCount: 6,
 } satisfies BeneficiaireInformationsPageData
 
 export const AvecInformations: Story = {

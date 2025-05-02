@@ -17,7 +17,10 @@ const SuspensedContent = async ({
 }) => {
   const { searchParams, searchResult, isFiltered } = await data
 
-  const activitesByDate = groupActivitesByDate(searchResult.activites)
+  const activitesByDate = groupActivitesByDate({
+    activites: searchResult.activites,
+    rdvs: [],
+  })
 
   const baseHref = '/coop/mes-activites'
   return (
