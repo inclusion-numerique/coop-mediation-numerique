@@ -393,10 +393,12 @@ const syncWithMongo =
     id: userId,
     email,
     mediateur,
+    coordinateur,
   }: {
     id: string
     email: string
     mediateur?: { id: string } | null
+    coordinateur?: { id: string } | null
   }) => {
     const conseillerCollection =
       await conseillerNumeriqueMongoCollection('conseillers')
@@ -405,28 +407,32 @@ const syncWithMongo =
       emailPro: email,
     })
 
-    if (!mongoConseiller || !mediateur) return
+    if (!mongoConseiller) return
 
-    await prisma.conseillerNumerique.upsert({
-      where: { id: mongoConseiller._id.toString() },
-      update: {
-        mediateurId: mediateur.id,
-        idPg: mongoConseiller.idPG,
-      },
-      create: {
-        id: mongoConseiller._id.toString(),
-        idPg: mongoConseiller.idPG,
-        mediateurId: mediateur.id,
-      },
-    })
+    if (mediateur != null) {
+      await prisma.conseillerNumerique.upsert({
+        where: { id: mongoConseiller._id.toString() },
+        update: {
+          mediateurId: mediateur.id,
+          idPg: mongoConseiller.idPG,
+        },
+        create: {
+          id: mongoConseiller._id.toString(),
+          idPg: mongoConseiller.idPG,
+          mediateurId: mediateur.id,
+        },
+      })
+    }
 
-    await prisma.coordinateur.update({
-      where: { userId },
-      data: {
-        conseillerNumeriqueId: mongoConseiller._id.toString(),
-        conseillerNumeriqueIdPg: mongoConseiller.idPG,
-      },
-    })
+    if (coordinateur != null) {
+      await prisma.coordinateur.update({
+        where: { userId },
+        data: {
+          conseillerNumeriqueId: mongoConseiller._id.toString(),
+          conseillerNumeriqueIdPg: mongoConseiller.idPG,
+        },
+      })
+    }
   }
 
 export const mergeUser = async (
@@ -436,6 +442,7 @@ export const mergeUser = async (
   await prismaClient.$transaction(async (prisma) => {
     await initMediateurs(prisma)(sourceUserId, targetUserId)
     await initCoordinateurs(prisma)(sourceUserId, targetUserId)
+
     const { sourceUser, targetUser } = await getUsers(prisma)(
       sourceUserId,
       targetUserId,
