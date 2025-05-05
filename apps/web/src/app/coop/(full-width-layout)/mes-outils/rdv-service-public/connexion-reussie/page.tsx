@@ -1,11 +1,7 @@
 import RdvServicePubliqueConnexionCard from '@app/web/app/coop/(full-width-layout)/mes-outils/rdv-service-public/RdvServicePubliqueConnexionCard'
 import { getSessionUser } from '@app/web/auth/getSessionUser'
 import IconInSquare from '@app/web/components/IconInSquare'
-import { rdvAccountMetadata } from '@app/web/rdv-service-public/rdvAccountMetadata'
-import {
-  rdvIntegrationEnSavoirPlusLink,
-  rdvMyHomepageLink,
-} from '@app/web/rdv-service-public/rdvServicePublicOauth'
+import { rdvIntegrationEnSavoirPlusLink } from '@app/web/rdv-service-public/rdvServicePublicOauth'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -16,8 +12,6 @@ const RdvServicePublicCreationReussiePage = async () => {
   if (!user) {
     notFound()
   }
-
-  const { hasOrganisations } = rdvAccountMetadata(user)
 
   return (
     <div className="fr-mb-32v fr-mt-10v">
@@ -40,32 +34,12 @@ const RdvServicePublicCreationReussiePage = async () => {
             Connexion réussie&nbsp;!
           </h1>
 
-          {hasOrganisations ? (
-            <p className="fr-text-mention--grey fr-mb-6v">
-              Vous pouvez maintenant programmer des rendez-vous avec vos
-              bénéficiaires suivis et les retrouver dans leur historiques
-              d’accompagnements.
-            </p>
-          ) : (
-            <p className="fr-text-mention--grey fr-mb-6v">
-              Pour pouvoir programmer des rendez-vous avec vos bénéficiaires
-              suivis et les retrouver dans leur historiques d’accompagnements,
-              vous devez terminer la configuration de votre nouveau compte sur
-              le site RDV Service Public.
-              <br />
-              <br />
-              <Button
-                priority="tertiary"
-                linkProps={{
-                  target: '_blank',
-                  href: rdvMyHomepageLink,
-                }}
-              >
-                Terminer la configuration de mon nouveau compte
-                RDV&nbsp;Service&nbsp;Public
-              </Button>
-            </p>
-          )}
+          <p className="fr-text-mention--grey fr-mb-6v">
+            Vous pouvez maintenant programmer des rendez-vous avec vos
+            bénéficiaires suivis et les retrouver dans leur historiques
+            d’accompagnements.
+          </p>
+
           <Link
             href={rdvIntegrationEnSavoirPlusLink}
             className="fr-link fr-text--center"
