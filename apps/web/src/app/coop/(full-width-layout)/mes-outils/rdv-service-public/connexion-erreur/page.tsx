@@ -6,11 +6,10 @@ import Link from 'next/link'
 import React from 'react'
 
 // add params error_description and error from next query
-const RdvServicePublicCreationErreurPage = ({
-  searchParams: { error_description },
-}: {
-  searchParams: { error?: string; error_description?: string }
-}) => (
+const RdvServicePublicCreationErreurPage = () => (
+  //   {}: {
+  //   searchParams: { error?: string; error_description?: string }
+  // }
   <div className="fr-mb-32v fr-mt-10v">
     <RdvServicePubliqueConnexionCard
       header={false}
@@ -30,9 +29,6 @@ const RdvServicePublicCreationErreurPage = ({
         <h1 className="fr-mt-6v fr-h2 fr-text-title--blue-france fr-mb-4v">
           Erreur lors de la connexion
         </h1>
-        {!!error_description && (
-          <p className="fr-text-mention--grey fr-mb-4v">{error_description}</p>
-        )}
         <p className="fr-text-mention--grey fr-mb-6v">
           Contactez le support ou réessayer plus tard de connecter
           RDV&nbsp;Service&nbsp;Public à La&nbsp;Coop.
