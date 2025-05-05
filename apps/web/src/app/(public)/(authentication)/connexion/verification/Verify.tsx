@@ -2,8 +2,11 @@ import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { AuthCard } from '@app/web/app/(public)/(authentication)/AuthCard'
 import { cookies } from 'next/headers'
 
-export const Verify = () => {
-  const email = cookies().get('email-signin')?.value
+export const Verify = async () => {
+  const allCookies = await cookies()
+
+  const email = allCookies.get('email-signin')?.value
+
   return (
     <AuthCard>
       <div className="fr-grid-row fr-grid-row--center">

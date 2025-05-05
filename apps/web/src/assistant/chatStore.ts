@@ -29,7 +29,7 @@ export const chatStore = createStore({
           ? context.chatThreadHistory
           : (event.chatThreadHistory ?? []),
       chatThread: event.chatThread,
-      threadId: event.chatThread?.id,
+      threadId: event.chatThread?.id ?? null,
       messages:
         (event.chatThread?.messages as
           | ChatCompletionMessageWithToolCalls[]
