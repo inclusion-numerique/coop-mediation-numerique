@@ -1,13 +1,17 @@
 import { proConnectProviderId } from '@app/web/auth/proConnect'
 import { prismaClient } from '@app/web/prismaClient'
-import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import { PrismaAdapter } from '@auth/prisma-adapter'
 import type { Adapter, AdapterAccount, AdapterUser } from 'next-auth/adapters'
 import { v4 } from 'uuid'
 
 /**
  * Ensuring that needed methods are defined when creating adapter
  */
-const createAdapter = () => {
+const createAdapter = (): Adapter & {
+  createUser: Exclude<Adapter['createUser'], undefined>
+  deleteSession: Exclude<Adapter['deleteSession'], undefined>
+  linkAccount: Exclude<Adapter['linkAccount'], undefined>
+} => {
   const prismaAdapter = PrismaAdapter(prismaClient)
 
   const { createUser, deleteSession, linkAccount } = prismaAdapter
