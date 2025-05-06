@@ -6,7 +6,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": "^22.10"
+    "node": "^22.15"
   },
   "packageManager": "pnpm@10.10.0",
   "scripts": {
@@ -52,7 +52,7 @@
     "turbo-linux-arm64": "^2.5.2"
   },
   "volta": {
-    "node": "22.10.0"
+    "node": "22.15.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
