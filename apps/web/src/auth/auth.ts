@@ -7,7 +7,7 @@ import { SessionUser } from '@app/web/auth/sessionUser'
 import { updateUserData } from '@app/web/auth/updateUserData'
 import { registerLastLogin } from '@app/web/security/registerLastLogin'
 import * as Sentry from '@sentry/nextjs'
-import NextAuth from 'next-auth'
+import type { AuthOptions } from 'next-auth'
 import Email from 'next-auth/providers/email'
 
 const isOutdatedUserData =
@@ -21,7 +21,7 @@ const isOutdatedUserData =
     user.lastName !== profile.usual_name ||
     user.phone !== profile.phone_number
 
-export const { auth, handlers, signIn, signOut } = NextAuth({
+export const nextAuthOptions = {
   adapter: nextAuthAdapter,
   pages: {
     signIn: '/connexion',
@@ -89,4 +89,4 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return session
     },
   },
-})
+} satisfies AuthOptions

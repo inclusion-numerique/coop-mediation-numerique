@@ -1,24 +1,23 @@
 import { isFirewallUserAgent } from '@app/web/app/api/auth/[...nextauth]/isFirewallUserAgent'
-import { handlers } from '@app/web/auth/auth'
+import { nextAuthOptions } from '@app/web/auth/auth'
+import NextAuth from 'next-auth'
 import type { NextRequest } from 'next/server'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-export const GET = (request: NextRequest) => {
+const handler = (
+  request: NextRequest,
+  res: {
+    params: { nextauth: string[] }
+  },
+) => {
   // https://next-auth.js.org/tutorials/avoid-corporate-link-checking-email-provider
   if (isFirewallUserAgent(request)) {
     return new Response('Bad Request', { status: 400 })
   }
 
-  return handlers.GET(request)
+  return NextAuth(request, res, nextAuthOptions)
 }
 
-export const POST = (request: NextRequest) => {
-  // https://next-auth.js.org/tutorials/avoid-corporate-link-checking-email-provider
-  if (isFirewallUserAgent(request)) {
-    return new Response('Bad Request', { status: 400 })
-  }
-
-  return handlers.POST(request)
-}
+export { handler as GET, handler as POST }
