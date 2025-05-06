@@ -18,8 +18,8 @@ describe('API v1 documentation', () => {
     cy.contains('Pour obtenir votre bearer')
 
     // Check that css are loaded and applied
-    cy.get('.badge')
+    cy.get('.section-header')
       .first()
-      .should('have.css', 'background-color', 'rgb(26, 26, 26)')
+      .should('have.css', 'margin-bottom', '12px')
   })
 })
