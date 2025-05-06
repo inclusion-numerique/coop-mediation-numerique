@@ -75,6 +75,9 @@ export default withBundleAnalyzerConfig(
     hideSourceMaps: true,
     disableServerWebpackPlugin: true,
     disableClientWebpackPlugin: true,
+    reactComponentAnnotation: {
+      enabled: true,
+    },
     sourcemaps: {
       disable: !enableRelease,
     },
