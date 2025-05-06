@@ -76,7 +76,7 @@ export default withBundleAnalyzerConfig(
     disableServerWebpackPlugin: true,
     disableClientWebpackPlugin: true,
     reactComponentAnnotation: {
-      enabled: true,
+      enabled: false, // this fails mjml compilation
     },
     sourcemaps: {
       disable: !enableRelease,
