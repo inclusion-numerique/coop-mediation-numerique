@@ -1,6 +1,7 @@
 import { proConnectProviderId } from '@app/web/auth/proConnect'
 import { prismaClient } from '@app/web/prismaClient'
 import { PrismaAdapter } from '@auth/prisma-adapter'
+import type { Awaitable } from 'next-auth'
 import type { Adapter, AdapterAccount, AdapterUser } from 'next-auth/adapters'
 import { v4 } from 'uuid'
 
@@ -10,7 +11,9 @@ import { v4 } from 'uuid'
 const createAdapter = (): Adapter & {
   createUser: Exclude<Adapter['createUser'], undefined>
   deleteSession: Exclude<Adapter['deleteSession'], undefined>
-  linkAccount: Exclude<Adapter['linkAccount'], undefined>
+  linkAccount: (
+    account: AdapterAccount,
+  ) => Promise<void> | Awaitable<AdapterAccount | null | undefined>
 } => {
   const prismaAdapter = PrismaAdapter(prismaClient)
 
@@ -25,7 +28,9 @@ const createAdapter = (): Adapter & {
     ...prismaAdapter,
     createUser,
     deleteSession,
-    linkAccount,
+    linkAccount: linkAccount as (
+      account: AdapterAccount,
+    ) => Promise<void> | Awaitable<AdapterAccount | null | undefined>,
   }
 }
 
@@ -40,10 +45,10 @@ const removeNonStandardFields = <T extends AdapterAccount>(data: T): T => ({
 
 export const nextAuthAdapter = {
   ...prismaAdapter,
-  createUser: async (user) => {
+  createUser: async (user: Omit<AdapterUser, 'id'>) => {
     const { provider, ...rest } = user as Omit<AdapterUser, 'id'> & {
-      // We pass the provider along from Keycloak provider to be able to detect if the user comes from Inclusion Connect
-      provider?: typeof proConnectProviderId
+      // We pass the provider along
+      provider: typeof proConnectProviderId
     }
 
     const info = { id: v4(), ...rest }
@@ -72,6 +77,6 @@ export const nextAuthAdapter = {
     }
   },
   // Custom link account
-  linkAccount: (account) =>
+  linkAccount: (account: AdapterAccount) =>
     prismaAdapter.linkAccount(removeNonStandardFields(account)),
 } satisfies Adapter

@@ -2,9 +2,10 @@ import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { proConnectProviderId } from '@app/web/auth/proConnect'
 import { getServerUrl } from '@app/web/utils/baseUrl'
+import { OAuth2Config } from '@auth/core/providers'
 import axios from 'axios'
 import jwt from 'jsonwebtoken'
-import type { OAuth2Config, TokenEndpointHandler } from 'next-auth/providers'
+import type { TokenEndpointHandler } from 'next-auth/providers'
 
 const issuer = `https://${PublicWebAppConfig.ProConnect.hostname}`
 

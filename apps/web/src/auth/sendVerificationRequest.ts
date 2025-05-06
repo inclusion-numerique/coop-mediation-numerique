@@ -1,12 +1,12 @@
 import { compileMjml } from '@app/emails/mjml'
 import { emailSignin } from '@app/emails/templates/emailSignin'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import type { NodemailerConfig } from 'next-auth/providers/nodemailer'
+import type { EmailConfig } from 'next-auth/providers/email'
 import { createTransport } from 'nodemailer'
 
 const debugMagicLink = true
 
-export const sendVerificationRequest: NodemailerConfig['sendVerificationRequest'] =
+export const sendVerificationRequest: EmailConfig['sendVerificationRequest'] =
   async ({ url, provider, identifier }) => {
     // For quicker dev UX, display url in console in dev environment
     if (debugMagicLink) {

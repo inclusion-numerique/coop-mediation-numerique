@@ -8,7 +8,7 @@ import { updateUserData } from '@app/web/auth/updateUserData'
 import { registerLastLogin } from '@app/web/security/registerLastLogin'
 import * as Sentry from '@sentry/nextjs'
 import NextAuth from 'next-auth'
-import Nodemailer from 'next-auth/providers/nodemailer'
+import Email from 'next-auth/providers/email'
 
 const isOutdatedUserData =
   (user: SessionUser) =>
@@ -34,7 +34,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   providers: authenticationViaProconnect
     ? [ProConnectProvider()]
     : [
-        Nodemailer({
+        Email({
           ...ServerWebAppConfig.Email,
           sendVerificationRequest,
         }),
