@@ -20,6 +20,6 @@ describe('API v1 documentation', () => {
     // Check that css are loaded and applied
     cy.get('.section-header')
       .first()
-      .should('have.css', 'margin-bottom', '12px')
+      .should('have.css', 'margin-bottom', '6px')
   })
 })
