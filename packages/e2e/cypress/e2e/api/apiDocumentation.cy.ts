@@ -18,8 +18,6 @@ describe('API v1 documentation', () => {
     cy.contains('Pour obtenir votre bearer')
 
     // Check that css are loaded and applied
-    cy.get('.section-header')
-      .first()
-      .should('have.css', 'margin-bottom', '6px')
+    cy.get('.section-header').first().should('have.css', 'margin-bottom', '6px')
   })
 })
