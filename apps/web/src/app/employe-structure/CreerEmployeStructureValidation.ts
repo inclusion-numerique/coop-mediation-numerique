@@ -1,4 +1,4 @@
-import { StructureCreationValidationWithSiret } from '@app/web/app/structure/StructureValidation'
+import { StructureCreationValidationWithSiret } from '@app/web/features/structures/StructureValidation'
 import z from 'zod'
 
 export const CreerEmployeStructureValidation = z.object({

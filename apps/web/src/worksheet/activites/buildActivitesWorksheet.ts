@@ -20,15 +20,15 @@ import {
   typeLieuLabels,
 } from '@app/web/cra/cra'
 import { ActivitesFiltersLabels } from '@app/web/cra/generateActivitesFiltersLabels'
-import { htmlToText } from '@app/web/utils/htmlToText'
-import { booleanToYesNoLabel } from '@app/web/utils/yesNoBooleanOptions'
 import {
   WorksheetUser,
   addExportMetadata,
-  addFilters,
-  autosizeColumns,
-  setWorkbookMetadata,
-} from '@app/web/worksheet/buildWorksheetHelpers'
+} from '@app/web/libs/worksheet/addExportMetadata'
+import { autosizeColumns } from '@app/web/libs/worksheet/autosizeColumns'
+import { setWorkbookMetadata } from '@app/web/libs/worksheet/setWorkbookMetadata'
+import { htmlToText } from '@app/web/utils/htmlToText'
+import { booleanToYesNoLabel } from '@app/web/utils/yesNoBooleanOptions'
+import { addFilters } from '@app/web/worksheet/buildWorksheetHelpers'
 import * as Excel from 'exceljs'
 
 export type BuildActivitesWorksheetInput = {
@@ -71,7 +71,7 @@ export const buildActivitesWorksheet = ({
   addExportMetadata(worksheet)({
     user,
     date: worksheetGenerationDate,
-    activitesCount: activites.length,
+    total: activites.length,
   })
 
   addFilters(worksheet)(filters, {

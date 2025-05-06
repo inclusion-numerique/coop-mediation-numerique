@@ -1,7 +1,7 @@
-import { StructureCreationDataWithSiret } from '@app/web/app/structure/StructureValidation'
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import { searchAdresse } from '@app/web/external-apis/apiAdresse'
 import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
+import type { StructureCreationDataWithSiret } from '@app/web/features/structures/StructureValidation'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { v4 } from 'uuid'

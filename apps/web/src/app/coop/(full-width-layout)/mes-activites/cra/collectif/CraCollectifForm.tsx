@@ -14,7 +14,6 @@ import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import CraFormLabel from '@app/web/app/coop/(full-width-layout)/mes-activites/cra/CraFormLabel'
 import CraBeneficiairesMultiplesForm from '@app/web/app/coop/(full-width-layout)/mes-activites/cra/collectif/CraBeneficiairesMultiplesForm'
 import { craFormFieldsetClassname } from '@app/web/app/coop/(full-width-layout)/mes-activites/cra/craFormFieldsetClassname'
-import type { LieuActiviteOption } from '@app/web/app/lieu-activite/getMediateursLieuxActiviteOptions'
 import type { BeneficiaireOption } from '@app/web/beneficiaire/BeneficiaireOption'
 import {
   lieuActiviteFilterOption,
@@ -41,6 +40,7 @@ import {
 } from '@app/web/cra/cra'
 import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
 import { banMunicipalityLabel } from '@app/web/external-apis/ban/banMunicipalityLabel'
+import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
 import { trpc } from '@app/web/trpc'
 import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'

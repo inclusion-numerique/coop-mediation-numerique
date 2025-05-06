@@ -3,7 +3,7 @@ import {
   type ProfileInscriptionSlug,
   allProfileInscriptionLabels,
   profileInscriptionFromSlug,
-} from '@app/web/inscription/profilInscription'
+} from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'

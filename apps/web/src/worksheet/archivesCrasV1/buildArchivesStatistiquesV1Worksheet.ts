@@ -3,11 +3,9 @@ import {
   MonthlyStatistiquesV1,
   StatistiquesV1,
 } from '@app/web/app/coop/(full-width-layout)/archives-v1/computeStatistiquesCrasV1'
+import { autosizeColumns } from '@app/web/libs/worksheet/autosizeColumns'
+import { setWorkbookMetadata } from '@app/web/libs/worksheet/setWorkbookMetadata'
 import { dateAsMonth, dateAsMonthFull } from '@app/web/utils/dateAsMonth'
-import {
-  autosizeColumns,
-  setWorkbookMetadata,
-} from '@app/web/worksheet/buildWorksheetHelpers'
 import * as Excel from 'exceljs'
 
 export type BuildArchivesStatistiquesV1WorksheetInput = {

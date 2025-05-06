@@ -11,11 +11,11 @@ import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import {
   ChoisirProfilEtAccepterCguData,
   ChoisirProfilEtAccepterCguValidation,
-} from '@app/web/inscription/ChoisirProfilEtAccepterCguValidation'
+} from '@app/web/features/utilisateurs/use-cases/registration/ChoisirProfilEtAccepterCguValidation'
 import {
   profileInscriptionConseillerNumeriqueOptionsWithExtras,
   profileInscriptionOptionsWithExtras,
-} from '@app/web/inscription/profilInscription'
+} from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import { trpc } from '@app/web/trpc'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { zodResolver } from '@hookform/resolvers/zod'
