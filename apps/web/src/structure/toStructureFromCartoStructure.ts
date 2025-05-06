@@ -1,12 +1,12 @@
-import { fraisAChargeKeys } from '@app/web/app/structure/fraisACharge'
-import { itineranceKeys } from '@app/web/app/structure/itinerance'
-import { modaliteAccompagnementKeys } from '@app/web/app/structure/modaliteAccompagnement'
-import { modaliteAccesKeys } from '@app/web/app/structure/modalitesAcces'
-import { priseEnChargeSpecifiqueKeys } from '@app/web/app/structure/priseEnChargeSpecifique'
-import { publicSpecifiquementAdresseKeys } from '@app/web/app/structure/publicSpecifiquementAdresse'
-import { serviceKeys } from '@app/web/app/structure/service'
-import { validateValidRnaDigits } from '@app/web/rna/rnaValidation'
-import { validateValidSiretDigits } from '@app/web/siret/siretValidation'
+import { fraisAChargeKeys } from '@app/web/features/structures/fraisACharge'
+import { itineranceKeys } from '@app/web/features/structures/itinerance'
+import { modaliteAccompagnementKeys } from '@app/web/features/structures/modaliteAccompagnement'
+import { modaliteAccesKeys } from '@app/web/features/structures/modalitesAcces'
+import { priseEnChargeSpecifiqueKeys } from '@app/web/features/structures/priseEnChargeSpecifique'
+import { publicSpecifiquementAdresseKeys } from '@app/web/features/structures/publicSpecifiquementAdresse'
+import { validateValidRnaDigits } from '@app/web/features/structures/rna/rnaValidation'
+import { serviceKeys } from '@app/web/features/structures/service'
+import { validateValidSiretDigits } from '@app/web/features/structures/siret/siretValidation'
 import type {
   Frais,
   Itinerance,

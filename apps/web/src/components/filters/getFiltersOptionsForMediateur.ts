@@ -1,16 +1,18 @@
 import { getFirstAndLastActiviteDate } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getFirstAndLastActiviteDate'
-import { getMediateurCommunesAndDepartementsOptions } from '@app/web/app/lieu-activite/getMediateurCommunesOptions'
-import { getMediateursLieuxActiviteOptions } from '@app/web/app/lieu-activite/getMediateursLieuxActiviteOptions'
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/beneficiaire/getInitialBeneficiairesOptionsForSearch'
+import { getMediateurCommunesAndDepartementsOptions } from '@app/web/features/lieux-activite/getMediateurCommunesOptions'
+import { getMediateursLieuxActiviteOptions } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
 import { getInitialMediateursOptionsForSearch } from '@app/web/mediateurs/getInitialMediateursOptionsForSearch'
-import type { UserDisplayName, UserProfile } from '@app/web/utils/user'
 
 export const getFiltersOptionsForMediateur = async ({
   user,
   mediateurCoordonnesIds,
   includeBeneficiaireIds,
 }: {
-  user: UserDisplayName & UserProfile
+  user: {
+    mediateur?: { id: string } | null
+    coordinateur?: { id: string } | null
+  }
   mediateurCoordonnesIds?: string[]
   includeBeneficiaireIds?: string[]
 }) => {

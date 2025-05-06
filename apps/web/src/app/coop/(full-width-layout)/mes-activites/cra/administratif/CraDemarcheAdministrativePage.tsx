@@ -2,10 +2,10 @@ import RequiredFieldsDisclamer from '@app/ui/components/Form/RequiredFieldsDiscl
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import CraDemarcheAdministrativeForm from '@app/web/app/coop/(full-width-layout)/mes-activites/cra/administratif/CraDemarcheAdministrativeForm'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
-import type { LieuActiviteOption } from '@app/web/app/lieu-activite/getMediateursLieuxActiviteOptions'
 import { type MostUsedBeneficiairesForSearch } from '@app/web/beneficiaire/getInitialBeneficiairesOptionsForSearch'
 import BackButtonWithModal from '@app/web/components/BackButtonWithModal'
 import type { CraDemarcheAdministrativeData } from '@app/web/cra/CraDemarcheAdministrativeValidation'
+import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
 import React from 'react'
 import type { DefaultValues } from 'react-hook-form'
 

@@ -5,7 +5,7 @@ import {
   allProfileInscriptionLabels,
   lowerCaseProfileInscriptionLabels,
   profileInscriptionSlugs,
-} from '@app/web/inscription/profilInscription'
+} from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 
 export const startInscriptionAs = ({
   user,

@@ -3,14 +3,14 @@ import {
   type BeneficiairesDataTableSearchParams,
 } from '@app/web/beneficiaire/BeneficiairesDataTable'
 import { queryBeneficiairesForList } from '@app/web/beneficiaire/queryBeneficiairesForList'
-import { getDataTableOrderBy } from '@app/web/data-table/getDataTableOrderBy'
-import { takeAndSkipFromPage } from '@app/web/data-table/takeAndSkipFromPage'
+import { getDataTableOrderBy } from '@app/web/libs/data-table/getDataTableOrderBy'
+import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
 import {
   DEFAULT_PAGE,
   DEFAULT_PAGE_SIZE,
   toNumberOr,
-} from '@app/web/data-table/toNumberOr'
-import { toQueryParts } from '@app/web/data-table/toQueryParts'
+} from '@app/web/libs/data-table/toNumberOr'
+import { toQueryParts } from '@app/web/libs/data-table/toQueryParts'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
 

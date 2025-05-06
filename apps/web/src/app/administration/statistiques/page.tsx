@@ -1,4 +1,7 @@
 import { StatistiquesImpact } from '@app/web/app/administration/statistiques/StatistiquesImpact'
+import { getUtilisateursListPageData } from '@app/web/app/administration/utilisateurs/getUtilisateursListPageData'
+import { FilterTags } from '@app/web/app/coop/(sidemenu-layout)/mes-activites/(liste)/FilterTags'
+import Filters from '@app/web/app/coop/(sidemenu-layout)/mes-activites/(liste)/Filters'
 import {
   getAccompagnementsCountByDay,
   getAccompagnementsCountByMonth,
@@ -10,7 +13,10 @@ import { StatistiquesActivites } from '@app/web/app/coop/(sidemenu-layout)/mes-s
 import { StatistiquesBeneficiaires } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesBeneficiaires'
 import { StatistiquesGenerales } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesGenerales'
 import { metadataTitle } from '@app/web/app/metadataTitle'
-import { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
+import {
+  ActivitesFilters,
+  validateActivitesFilters,
+} from '@app/web/cra/ActivitesFilters'
 import { getImpactStats } from '@app/web/server/impact/getImpactStats'
 
 export const metadata = {
@@ -20,8 +26,19 @@ export const metadata = {
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const Page = async () => {
-  const activitesFilters = {} satisfies ActivitesFilters
+const Page = async ({
+  searchParams = {},
+}: {
+  searchParams?: ActivitesFilters & {
+    graphique_fin?: string
+  }
+}) => {
+  const activitesFilters = validateActivitesFilters(searchParams)
+
+  const { communesOptions, departementsOptions, lieuxActiviteOptions } =
+    await getUtilisateursListPageData({
+      searchParams,
+    })
 
   const [
     accompagnementsParJour,
@@ -36,11 +53,34 @@ const Page = async () => {
     getBeneficiaireStats({ activitesFilters }),
     getActivitesStats({ activitesFilters }),
     getTotalCountsStats({ activitesFilters }),
-    getImpactStats(),
+    getImpactStats({ activitesFilters }),
   ])
 
   return (
     <>
+      <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v fr-mb-3w">
+        <Filters
+          defaultFilters={activitesFilters}
+          communesOptions={communesOptions}
+          departementsOptions={departementsOptions}
+          lieuxActiviteOptions={lieuxActiviteOptions}
+          initialMediateursOptions={[]}
+          initialBeneficiairesOptions={[]}
+          minDate={new Date('2024-09-01')}
+          beneficiairesFilter={false}
+          isCoordinateur={false}
+          isMediateur={false}
+        />
+      </div>
+      <hr className="fr-pb-4v" />
+      <FilterTags
+        filters={activitesFilters}
+        communesOptions={communesOptions}
+        departementsOptions={departementsOptions}
+        lieuxActiviteOptions={lieuxActiviteOptions}
+        mediateursOptions={[]}
+        beneficiairesOptions={[]}
+      />
       <section className="fr-mb-6w">
         <StatistiquesGenerales
           wording="generique"

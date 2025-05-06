@@ -3,8 +3,8 @@
 import CustomSelectFormField from '@app/ui/components/Form/CustomSelectFormField'
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { SearchUserResult } from '@app/web/features/utilisateurs/use-cases/search/searchUser'
 import { trpc } from '@app/web/trpc'
-import { type SearchUserResult } from '@app/web/user/searchUser'
 import { ReactElement, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -49,8 +49,8 @@ const AdministrationSearchSingleUtilisateur = ({
         value: '',
       },
       ...result.users
-        .filter((user) => !excludeUserIds.includes(user.id))
-        .map((user) => ({
+        .filter((user: { id: string }) => !excludeUserIds.includes(user.id))
+        .map((user: { id: string; name: string | null; email: string }) => ({
           label: toLabel(user),
           value: user.id,
         })),

@@ -2,8 +2,8 @@
 
 import CreerStructureForm from '@app/web/app/inscription/creer-un-lieu-d-activite/CreerStructureForm'
 import CreerStructureSideMenu from '@app/web/app/inscription/creer-un-lieu-d-activite/CreerStructureSideMenu'
-import { CreerStructureData } from '@app/web/app/structure/CreerStructureValidation'
 import IconInSquare from '@app/web/components/IconInSquare'
+import { CreerStructureData } from '@app/web/features/structures/CreerStructureValidation'
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import React, { useState } from 'react'

@@ -1,7 +1,7 @@
 import BeneficiairesTable from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/(liste)/BeneficiairesTable'
 import { BeneficiairesListPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/(liste)/getBeneficiairesListPageData'
 import { getBeneficiairesResultCountLabel } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/(liste)/getBeneficiairesResultCountLabel'
-import DataSearchBar from '@app/web/data-table/DataSearchBar'
+import DataSearchBar from '@app/web/libs/data-table/DataSearchBar'
 import Button from '@codegouvfr/react-dsfr/Button'
 
 const MesBeneficiairesListePage = ({

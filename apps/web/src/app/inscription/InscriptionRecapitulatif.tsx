@@ -1,14 +1,14 @@
 import InscriptionInvalidInformationContactSupportLink from '@app/web/app/inscription/InscriptionInvalidInformationContactSupportLink'
 import ValiderInscriptionForm from '@app/web/app/inscription/ValiderInscriptionForm'
-import { StructureData } from '@app/web/app/structure/StructureValidation'
 import { SessionUser } from '@app/web/auth/sessionUser'
 import IconInSquare from '@app/web/components/IconInSquare'
 import InfoLabelValue from '@app/web/components/InfoLabelValue'
 import StructureCard from '@app/web/components/structure/StructureCard'
+import { StructureData } from '@app/web/features/structures/StructureValidation'
 import {
   allProfileInscriptionLabels,
   computeUserProfile,
-} from '@app/web/inscription/profilInscription'
+} from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import React, { ReactNode } from 'react'

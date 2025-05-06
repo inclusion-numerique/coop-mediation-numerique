@@ -3,14 +3,14 @@
 import CustomSelectFormField from '@app/ui/components/Form/CustomSelectFormField'
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
-import type { StructureCreationDataWithSiret } from '@app/web/app/structure/StructureValidation'
 import StructureCard from '@app/web/components/structure/StructureCard'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import type { StructureCreationDataWithSiret } from '@app/web/features/structures/StructureValidation'
+import SiretInputInfo from '@app/web/features/structures/siret/SiretInputInfo'
 import {
   type RenseignerStructureEmployeuseData,
   RenseignerStructureEmployeuseValidation,
-} from '@app/web/inscription/RenseignerStructureEmployeuse'
-import SiretInputInfo from '@app/web/siret/SiretInputInfo'
+} from '@app/web/features/utilisateurs/use-cases/registration/RenseignerStructureEmployeuse'
 import { trpc } from '@app/web/trpc'
 import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
 import Button from '@codegouvfr/react-dsfr/Button'

@@ -1,14 +1,14 @@
-import AdministrationBreadcrumbs from '@app/web/app/administration/AdministrationBreadcrumbs'
 import AdministrationInfoCard from '@app/web/app/administration/AdministrationInfoCard'
 import AdministrationInlineLabelsValues, {
   type LabelAndValue,
 } from '@app/web/app/administration/AdministrationInlineLabelsValues'
-import AdministrationTitle from '@app/web/app/administration/AdministrationTitle'
 import AdministrationStructureEmployeuseFromContratActifForm from '@app/web/app/administration/utilisateurs/[id]/emplois/AdministrationStructureEmployeuseFromContratActifForm'
-import { getUserLifecycleBadge } from '@app/web/app/administration/utilisateurs/getUserLifecycleBadge'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { findConseillerNumeriqueV1 } from '@app/web/external-apis/conseiller-numerique/searchConseillerNumeriqueV1'
+import { getUserLifecycleBadge } from '@app/web/features/utilisateurs/use-cases/list/getUserLifecycleBadge'
+import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
+import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { getUserDisplayName } from '@app/web/utils/user'

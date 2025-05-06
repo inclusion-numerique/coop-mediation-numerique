@@ -1,5 +1,5 @@
-import { StructureCreationDataWithSiret } from '@app/web/app/structure/StructureValidation'
-import { UniteLegale } from '@app/web/external-apis/apiEntrepriseApiModels'
+import type { UniteLegale } from '@app/web/external-apis/apiEntrepriseApiModels'
+import type { StructureCreationDataWithSiret } from '@app/web/features/structures/StructureValidation'
 import { getTypologieFromApiEntreprise } from '@app/web/structure/typologieFromApiEntreprise'
 import { toTitleCase } from '@app/web/utils/toTitleCase'
 

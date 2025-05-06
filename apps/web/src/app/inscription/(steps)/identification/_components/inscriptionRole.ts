@@ -1,4 +1,4 @@
-import type { ProfileInscriptionSlug } from '@app/web/inscription/profilInscription'
+import { ProfileInscriptionSlug } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 
 export const inscriptionRolesErrorTitles: {
   [key in ProfileInscriptionSlug]: string

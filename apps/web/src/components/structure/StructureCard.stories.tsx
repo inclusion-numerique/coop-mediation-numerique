@@ -1,5 +1,5 @@
 import { mediumContainerStory, mobileStory } from '@app/storybook/storyHelper'
-import type { StructureData } from '@app/web/app/structure/StructureValidation'
+import type { StructureData } from '@app/web/features/structures/StructureValidation'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { Meta, StoryObj } from '@storybook/react'
 import React from 'react'

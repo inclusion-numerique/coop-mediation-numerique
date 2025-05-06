@@ -9,11 +9,11 @@ import {
   CreerEmployeStructureValidation,
 } from '@app/web/app/employe-structure/CreerEmployeStructureValidation'
 import { debouncedLoadStructureEmployeuseOptions } from '@app/web/app/inscription/(steps)/_components/structure-employeuse/loadStructureEmployeuseOptions'
-import type { StructureCreationDataWithSiret } from '@app/web/app/structure/StructureValidation'
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import StructureCard from '@app/web/components/structure/StructureCard'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import SiretInputInfo from '@app/web/siret/SiretInputInfo'
+import type { StructureCreationDataWithSiret } from '@app/web/features/structures/StructureValidation'
+import SiretInputInfo from '@app/web/features/structures/siret/SiretInputInfo'
 import { trpc } from '@app/web/trpc'
 import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
 import Button from '@codegouvfr/react-dsfr/Button'

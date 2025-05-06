@@ -7,7 +7,7 @@ import { getStructureEmployeuseForInscription } from '@app/web/app/inscription/g
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import { fetchConseillersCoordonnes } from '@app/web/external-apis/conseiller-numerique/fetchConseillersCoordonnes'
-import { allProfileInscriptionLabels } from '@app/web/inscription/profilInscription'
+import { allProfileInscriptionLabels } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import { redirect } from 'next/navigation'
 import React from 'react'
 import {

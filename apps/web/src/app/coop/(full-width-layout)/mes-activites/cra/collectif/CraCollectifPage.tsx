@@ -2,11 +2,11 @@ import RequiredFieldsDisclamer from '@app/ui/components/Form/RequiredFieldsDiscl
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import CraCollectifForm from '@app/web/app/coop/(full-width-layout)/mes-activites/cra/collectif/CraCollectifForm'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
-import type { LieuActiviteOption } from '@app/web/app/lieu-activite/getMediateursLieuxActiviteOptions'
 import { type MostUsedBeneficiairesForSearch } from '@app/web/beneficiaire/getInitialBeneficiairesOptionsForSearch'
 import BackButtonWithModal from '@app/web/components/BackButtonWithModal'
 import { AdressBanFormFieldOption } from '@app/web/components/form/AdresseBanFormField'
 import { CraCollectifData } from '@app/web/cra/CraCollectifValidation'
+import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
 import React from 'react'
 import { DefaultValues } from 'react-hook-form'
 

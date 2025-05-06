@@ -1,9 +1,9 @@
-import AdministrationBreadcrumbs from '@app/web/app/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@app/web/app/administration/AdministrationTitle'
 import ApiClientsTable from '@app/web/app/administration/clients-api/ApiClientsTable'
 import { getApiClientsListPageData } from '@app/web/app/administration/clients-api/getApiClientsListPageData'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { metadataTitle } from '@app/web/app/metadataTitle'
+import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
+import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import Button from '@codegouvfr/react-dsfr/Button'
 
 export const metadata = {

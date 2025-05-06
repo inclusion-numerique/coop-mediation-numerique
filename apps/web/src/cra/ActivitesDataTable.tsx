@@ -3,7 +3,7 @@ import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiair
 import type { ActivitesDataTableConfiguration } from '@app/web/cra/ActivitesDataTableConfiguration'
 import type { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
 import { typeActiviteLabels } from '@app/web/cra/cra'
-import type { DataTableSearchParams } from '@app/web/data-table/DataTableConfiguration'
+import type { DataTableSearchParams } from '@app/web/libs/data-table/DataTableConfiguration'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 

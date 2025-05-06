@@ -36,8 +36,8 @@
     "overrides": {}
   },
   "optionalDependencies": {
-    "turbo-linux-64": "^2.3.3",
-    "turbo-linux-arm64": "^2.3.3"
+    "turbo-linux-64": "^2.5.2",
+    "turbo-linux-arm64": "^2.5.2"
   },
   "dependencies": {
     "@biomejs/biome": "^1.9.4",
@@ -45,7 +45,7 @@
     "dotenv": "^16.4.7",
     "dotenv-cli": "^7.4.4",
     "ts-node": "^10.9.2",
-    "turbo": "^2.3.3"
+    "turbo": "^2.5.2"
   },
   "volta": {
     "node": "22.10.0"

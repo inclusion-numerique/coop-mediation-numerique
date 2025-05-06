@@ -8,7 +8,7 @@ import RoleInscriptionNotice from '@app/web/app/inscription/RoleInscriptionNotic
 import { getStructureEmployeuseForInscription } from '@app/web/app/inscription/getStructureEmployeuseForInscription'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
-import { allProfileInscriptionLabels } from '@app/web/inscription/profilInscription'
+import { allProfileInscriptionLabels } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { redirect } from 'next/navigation'
 import React from 'react'

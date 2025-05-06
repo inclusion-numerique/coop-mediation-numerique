@@ -2,13 +2,13 @@
 
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { createToast } from '@app/ui/toast/createToast'
-import type { LieuActiviteOption } from '@app/web/app/lieu-activite/getMediateursLieuxActiviteOptions'
 import type { BeneficiaireOption } from '@app/web/beneficiaire/BeneficiaireOption'
 import type { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
 import {
   generateActivitesFiltersLabels,
   toLieuPrefix,
 } from '@app/web/cra/generateActivitesFiltersLabels'
+import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
 import { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import { download } from '@app/web/utils/download'
 import Button from '@codegouvfr/react-dsfr/Button'

@@ -1,4 +1,4 @@
-import type { ProfileInscriptionSlug } from '@app/web/inscription/profilInscription'
+import type { ProfileInscriptionSlug } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import React from 'react'
 import { AnotherRoleFound } from '../AnotherRoleFound'
 import { RoleFound } from '../RoleFound'

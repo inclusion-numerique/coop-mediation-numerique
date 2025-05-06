@@ -1,15 +1,15 @@
 'use client'
 
-import { Popover } from '@app/web/components/Popover'
 import Calendar from '@app/web/components/calendar/Calendar'
+import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
+import TriggerButton from '@app/web/libs/filters/TriggerButton'
+import { Popover } from '@app/web/libs/ui/elements/Popover'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import classNames from 'classnames'
 import { formatDate } from 'date-fns'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { ReactNode, useEffect, useState } from 'react'
 import { CalendarProps } from 'react-calendar/src/Calendar'
-import { FilterFooter } from './elements/FilterFooter'
-import TriggerButton from './elements/TriggerButton'
 
 type ValuePiece = Date | null
 type Value = ValuePiece | [ValuePiece, ValuePiece]

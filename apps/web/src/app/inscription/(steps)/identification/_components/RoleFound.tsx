@@ -1,4 +1,4 @@
-import { type ProfileInscriptionSlug } from '@app/web/inscription/profilInscription'
+import { type ProfileInscriptionSlug } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { ReactNode } from 'react'

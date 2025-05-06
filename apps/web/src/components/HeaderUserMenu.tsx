@@ -1,12 +1,12 @@
 'use client'
 
-import { isLimitedToInscription } from '@app/web/app/administration/utilisateurs/getUserLifecycle'
 import { SessionUser } from '@app/web/auth/sessionUser'
 import {
   isConseillerNumerique,
   isCoordinateurConseillerNumerique,
 } from '@app/web/auth/userTypeGuards'
 import TerminerUsurpationHeaderUserMenuItem from '@app/web/components/TerminerUsurpationHeaderUserMenuItem'
+import { isLimitedToInscription } from '@app/web/features/utilisateurs/use-cases/list/getUserLifecycle'
 import { getUserDisplayName } from '@app/web/utils/user'
 import classNames from 'classnames'
 import Link from 'next/link'

@@ -1,33 +1,33 @@
-import { CreerLieuActiviteValidation } from '@app/web/app/lieu-activite/CreerLieuActiviteValidation'
+import { SessionUser } from '@app/web/auth/sessionUser'
+import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite/CreerLieuActiviteValidation'
 import {
   DescriptionData,
   DescriptionValidation,
-} from '@app/web/app/structure/DescriptionValidation'
+} from '@app/web/features/structures/DescriptionValidation'
 import {
   InformationsGeneralesData,
   InformationsGeneralesValidation,
-} from '@app/web/app/structure/InformationsGeneralesValidation'
+} from '@app/web/features/structures/InformationsGeneralesValidation'
 import {
   InformationsPratiquesData,
   InformationsPratiquesValidation,
-} from '@app/web/app/structure/InformationsPratiquesValidation'
+} from '@app/web/features/structures/InformationsPratiquesValidation'
 import {
   ModalitesAccesAuServiceData,
   ModalitesAccesAuServiceValidation,
-} from '@app/web/app/structure/ModalitesAccesAuServiceValidation'
+} from '@app/web/features/structures/ModalitesAccesAuServiceValidation'
 import {
   ServicesEtAccompagnementData,
   ServicesEtAccompagnementValidation,
-} from '@app/web/app/structure/ServicesEtAccompagnementValidation'
+} from '@app/web/features/structures/ServicesEtAccompagnementValidation'
 import {
   TypesDePublicsAccueillisData,
   TypesDePublicsAccueillisValidation,
-} from '@app/web/app/structure/TypesDePublicsAccueillisValidation'
+} from '@app/web/features/structures/TypesDePublicsAccueillisValidation'
 import {
   VisiblePourCartographieNationaleData,
   VisiblePourCartographieNationaleValidation,
-} from '@app/web/app/structure/VisiblePourCartographieNationaleValidation'
-import { SessionUser } from '@app/web/auth/sessionUser'
+} from '@app/web/features/structures/VisiblePourCartographieNationaleValidation'
 import { prismaClient } from '@app/web/prismaClient'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { forbiddenError, invalidError } from '@app/web/server/rpc/trpcErrors'

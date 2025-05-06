@@ -1,4 +1,6 @@
 import { UpdateProfileValidation } from '@app/web/app/user/UpdateProfileValidation'
+import { mergeUser } from '@app/web/features/utilisateurs/use-cases/merge/mergeUser'
+import { searchUser } from '@app/web/features/utilisateurs/use-cases/search/searchUser'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   protectedProcedure,
@@ -10,8 +12,6 @@ import { invalidError } from '@app/web/server/rpc/trpcErrors'
 import { ResetInscriptionUtilisateurValidation } from '@app/web/server/rpc/user/ResetInscriptionUtilisateur'
 import { UserMergeValidation } from '@app/web/server/rpc/user/userMerge'
 import { ServerUserSignupValidation } from '@app/web/server/rpc/user/userSignup.server'
-import { mergeUser } from '@app/web/user/mergeUser'
-import { searchUser } from '@app/web/user/searchUser'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { fixTelephone } from '@app/web/utils/clean-operations'
 import { createStopwatch } from '@app/web/utils/stopwatch'

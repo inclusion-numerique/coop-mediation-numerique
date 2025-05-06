@@ -1,8 +1,8 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import type { BeneficiaireOption } from '@app/web/beneficiaire/BeneficiaireOption'
-import { LieuFilterType } from '@app/web/components/filters/LieuFilter'
 import type { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
 import { typeActiviteSlugLabels } from '@app/web/cra/cra'
+import { LieuFilterType } from '@app/web/features/lieux-activite/use-cases/filter/LieuFilter'
 import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 

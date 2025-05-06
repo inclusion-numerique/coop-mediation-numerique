@@ -1,4 +1,4 @@
-import { CreerStructureValidation } from '@app/web/app/structure/CreerStructureValidation'
+import { CreerStructureValidation } from '@app/web/features/structures/CreerStructureValidation'
 import { prismaClient } from '@app/web/prismaClient'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { searchStructure } from '@app/web/structure/searchStructure'
