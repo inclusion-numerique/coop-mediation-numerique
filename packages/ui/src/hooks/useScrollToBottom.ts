@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, RefObject } from 'react'
+import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 
 export const useScrollToBottom = ({
   containerRef,
