@@ -3,11 +3,13 @@ import { getBeneficiaireAccompagnementsPageData } from '@app/web/app/coop/(sidem
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import { notFound } from 'next/navigation'
 
-const BeneficiaireAccompagnementsPage = async ({
-  params: { beneficiaireId },
-}: {
-  params: { beneficiaireId: string }
+const BeneficiaireAccompagnementsPage = async (props: {
+  params: Promise<{ beneficiaireId: string }>
 }) => {
+  const params = await props.params
+
+  const { beneficiaireId } = params
+
   const user = await authenticateMediateur()
 
   const data = await getBeneficiaireAccompagnementsPageData({

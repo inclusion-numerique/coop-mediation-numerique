@@ -5,10 +5,12 @@ import { prismaClient } from '@app/web/prismaClient'
 import { redirect } from 'next/navigation'
 
 export const generateMetadata = async ({
-  params: { mediateurId },
+  params,
 }: {
-  params: { mediateurId: string }
+  params: Promise<{ mediateurId: string }>
 }) => {
+  const { mediateurId } = await params
+
   const mediateur = await prismaClient.mediateur.findUnique({
     where: { id: mediateurId },
     select: { user: { select: { name: true } } },
@@ -19,11 +21,13 @@ export const generateMetadata = async ({
   }
 }
 
-const Page = async ({
-  params: { coordinateurId, mediateurId },
-}: {
-  params: { coordinateurId: string; mediateurId: string }
+const Page = async (props: {
+  params: Promise<{ coordinateurId: string; mediateurId: string }>
 }) => {
+  const params = await props.params
+
+  const { coordinateurId, mediateurId } = params
+
   const mediateurPageData = await getMediateurPageData(
     mediateurId,
     coordinateurId,

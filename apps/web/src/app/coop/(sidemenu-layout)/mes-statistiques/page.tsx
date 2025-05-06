@@ -13,13 +13,14 @@ import { getMesStatistiquesPageData } from './getMesStatistiquesPageData'
 export const metadata: Metadata = {
   title: metadataTitle('Mes statistiques'),
 }
-const MesStatistiquesPage = async ({
-  searchParams = {},
-}: {
-  searchParams?: ActivitesFilters & {
-    graphique_fin?: string
-  }
+const MesStatistiquesPage = async (props: {
+  searchParams: Promise<
+    ActivitesFilters & {
+      graphique_fin?: string
+    }
+  >
 }) => {
+  const searchParams = await props.searchParams
   const user = await authenticateMediateurOrCoordinateur()
 
   const mediateurCoordonnesIds = mediateurCoordonnesIdsFor(user)

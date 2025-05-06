@@ -26,13 +26,14 @@ export const metadata = {
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const Page = async ({
-  searchParams = {},
-}: {
-  searchParams?: ActivitesFilters & {
-    graphique_fin?: string
-  }
+const Page = async (props: {
+  searchParams: Promise<
+    ActivitesFilters & {
+      graphique_fin?: string
+    }
+  >
 }) => {
+  const searchParams = await props.searchParams
   const activitesFilters = validateActivitesFilters(searchParams)
 
   const { communesOptions, departementsOptions, lieuxActiviteOptions } =

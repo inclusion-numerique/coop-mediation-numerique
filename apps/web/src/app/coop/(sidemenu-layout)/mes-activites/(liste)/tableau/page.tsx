@@ -10,10 +10,11 @@ import { getActivitesListPageData } from '@app/web/features/activites/use-cases/
 import { validateActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 
 const MesActivitesVueTableauPage = async ({
-  searchParams: rawSearchParams = {},
+  searchParams,
 }: {
-  searchParams?: ActivitesDataTableSearchParams
+  searchParams: Promise<ActivitesDataTableSearchParams>
 }) => {
+  const rawSearchParams = await searchParams
   const user = await authenticateMediateur()
 
   const hasActivites = await mediateurHasActivites({
