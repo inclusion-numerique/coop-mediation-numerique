@@ -10,13 +10,15 @@ import {
 import type { DefaultValues } from 'react-hook-form'
 
 const CreateCraCollectifPage = async ({
-  searchParams: { v, retour } = {},
+  searchParams,
 }: {
-  searchParams?: {
+  searchParams: Promise<{
     v?: EncodedState<DefaultValues<CraCollectifData>>
     retour?: string
-  }
+  }>
 }) => {
+  const { retour, v } = await searchParams
+
   const {
     mediateur: { id: mediateurId },
   } = await authenticateMediateur()
