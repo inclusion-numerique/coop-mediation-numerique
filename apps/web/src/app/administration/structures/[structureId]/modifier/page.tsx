@@ -12,7 +12,8 @@ export const metadata: Metadata = {
   title: metadataTitle('Modifier une structure'),
 }
 
-const Page = async ({ params }: { params: { structureId: string } }) => {
+const Page = async (props: { params: Promise<{ structureId: string }> }) => {
+  const params = await props.params
   const structure = await getStructureDataForForm({
     structureId: params.structureId,
   })

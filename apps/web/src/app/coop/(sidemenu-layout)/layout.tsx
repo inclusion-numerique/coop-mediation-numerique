@@ -1,9 +1,9 @@
-import CreateCraModal from '@app/web/app/coop/(full-width-layout)/mes-activites/CreateCraModal'
 import styles from '@app/web/app/coop/CoopLayout.module.css'
 import CoopSideMenu from '@app/web/app/coop/CoopSideMenu'
 import MinimalFooter from '@app/web/app/coop/MinimalFooter'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import Header from '@app/web/components/Header'
+import CreateCraModal from '@app/web/features/activites/use-cases/cra/components/CreateCraModal/CreateCraModal'
 import classNames from 'classnames'
 import React from 'react'
 

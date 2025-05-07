@@ -8,16 +8,7 @@ import { useScrollToError } from '@app/ui/hooks/useScrollToError'
 import { useWatchSubscription } from '@app/ui/hooks/useWatchSubscription'
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
-import CraFormLabel from '@app/web/app/coop/(full-width-layout)/mes-activites/cra/CraFormLabel'
-import { craFormFieldsetClassname } from '@app/web/app/coop/(full-width-layout)/mes-activites/cra/craFormFieldsetClassname'
 import FormSection from '@app/web/app/coop/(full-width-layout)/mes-beneficiaires/FormSection'
-import {
-  type BeneficiaireCraData,
-  type BeneficiaireData,
-  BeneficiaireValidation,
-  anneeNaissanceMax,
-  anneeNaissanceMin,
-} from '@app/web/beneficiaire/BeneficiaireValidation'
 import {
   genreOptions,
   statutSocialOptions,
@@ -33,8 +24,17 @@ import RichCardLabel, {
   richCardRadioGroupClassName,
 } from '@app/web/components/form/RichCardLabel'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import type { CraCollectifData } from '@app/web/cra/CraCollectifValidation'
-import { CraIndividuelData } from '@app/web/cra/CraIndividuelValidation'
+import { CraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
+import CraFormLabel from '@app/web/features/activites/use-cases/cra/components/CraFormLabel'
+import { craFormFieldsetClassname } from '@app/web/features/activites/use-cases/cra/components/craFormFieldsetClassname'
+import { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
+import {
+  BeneficiaireCraData,
+  BeneficiaireData,
+  BeneficiaireValidation,
+  anneeNaissanceMax,
+  anneeNaissanceMin,
+} from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
 import { trpc } from '@app/web/trpc'
 import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
@@ -139,7 +139,9 @@ const BeneficiaireForm = ({
       }
 
       router.push(
-        `${retour ?? `/coop/mes-beneficiaires/${beneficiaire.id}`}${queryParams}`,
+        `${
+          retour ?? `/coop/mes-beneficiaires/${beneficiaire.id}`
+        }${queryParams}`,
       )
       router.refresh()
     } catch (mutationError) {

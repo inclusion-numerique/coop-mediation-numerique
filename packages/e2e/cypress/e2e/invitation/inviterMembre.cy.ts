@@ -1,6 +1,37 @@
 import { appUrl } from '@app/e2e/support/helpers'
+import { conseillerNumerique } from '@app/fixtures/users/conseillerNumerique'
 import { coordinateurInscrit } from '@app/fixtures/users/coordinateurInscrit'
+import { mediateurInscription } from '@app/fixtures/users/mediateurInscription'
+import { getUserDisplayName } from '@app/web/utils/user'
 import { goToMostRecentEmailReceived } from '../goToMostRecentEmailReceived'
+
+const searchAndInviteUser = ({
+  displayName,
+  search,
+  slug,
+}: {
+  slug: string
+  search: string
+  displayName: string
+}) => {
+  // intercept the search query to avoid timing issues and insure that the search is executed
+  cy.intercept(
+    `/api/trpc/mediateur.search?batch=1&input=%7B%220%22%3A%7B%22json%22%3A%7B%22query%22%3A%22${encodeURIComponent(search)}%22%7D%7D%7D`,
+  ).as(`search-${slug}`)
+
+  cy.get('#custom-select-form-field__members').type(search)
+
+  // wait for the search query to be completed
+  cy.wait(`@search-${slug}`)
+
+  // select the first result on the dropdown and click on it
+  cy.get('#custom-select-form-field__members')
+    .type('{downarrow}')
+    .type('{enter}')
+
+  // selection tag should be present
+  cy.findByRole('button', { name: displayName })
+}
 
 describe('ETQ coordinateur, je peux inviter un médiateur à rejoindre mon équipe', () => {
   before(() => {
@@ -13,29 +44,33 @@ describe('ETQ coordinateur, je peux inviter un médiateur à rejoindre mon équi
     cy.visit(appUrl('/coop/mon-equipe'))
     cy.findAllByRole('link', { name: 'Inviter des membres' }).first().click()
 
+    cy.visit(appUrl('/coop/mon-equipe/inviter'))
+
     cy.contains('Rechercher par nom ou adresse e-mail').click()
 
-    cy.get('#custom-select-form-field__members')
-      .type('conseiller', {
-        delay: 150,
-      })
-      .type('{downarrow}')
-      .type('{enter}')
+    searchAndInviteUser({
+      search: 'conseiller',
+      slug: 'conseiller',
+      displayName: getUserDisplayName(conseillerNumerique),
+    })
 
-    cy.get('#custom-select-form-field__members')
-      .type('mediateur', {
-        delay: 150,
-      })
-      .type('{downarrow}')
-      .type('{enter}')
+    searchAndInviteUser({
+      search: 'mediateur',
+      slug: 'mediateur',
+      displayName: getUserDisplayName(mediateurInscription),
+    })
 
-    cy.get('#custom-select-form-field__members')
-      .type('leo@med.fr', {
-        delay: 150,
-      })
-      .type('{enter}')
+    searchAndInviteUser({
+      search: 'leo@med.fr',
+      slug: 'leo',
+      displayName: 'leo@med.fr',
+    })
+
+    cy.intercept('/api/trpc/mediateur.invite*').as('mutation')
 
     cy.get('form').submit()
+
+    cy.wait('@mutation')
 
     cy.findByRole('status').should(
       'contain',

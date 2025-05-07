@@ -1,7 +1,7 @@
-import { getActivitesListPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-activites/(liste)/getActivitesListPageData'
-import type { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
+import { getActivitesListPageData } from '@app/web/features/activites/use-cases/list/getActivitesListPageData'
+import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { countMediateursCoordonnesBy } from '@app/web/mediateurs/countMediateursCoordonnesBy'
-import { UserDisplayName, UserProfile } from '@app/web/utils/user'
+import type { UserDisplayName, UserProfile } from '@app/web/utils/user'
 import { getTotalCountsStats } from '../mes-statistiques/_queries/getTotalCountsStats'
 
 const activitesFiltersLastDays = (daysCount: number) => {

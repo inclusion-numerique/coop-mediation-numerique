@@ -2,7 +2,7 @@ import {
   createBeneficiairesForParticipantsAnonymes,
   createCounterUuid,
 } from '@app/web/beneficiaire/createBeneficiairesForParticipantsAnonymes'
-import { participantsAnonymesDefault } from '@app/web/cra/participantsAnonymes'
+import { participantsAnonymesDefault } from '@app/web/features/activites/use-cases/cra/collectif/validation/participantsAnonymes'
 import { v4 } from 'uuid'
 
 describe('createBeneficiairesForParticipantsAnonymes', () => {

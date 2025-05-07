@@ -9,7 +9,8 @@ export const metadata: Metadata = {
   title: metadataTitle('Anciens membres'),
 }
 
-const Page = async ({ searchParams }: { searchParams: EquipeSearchParams }) => {
+const Page = async (props: { searchParams: Promise<EquipeSearchParams> }) => {
+  const searchParams = await props.searchParams
   const authenticatedCoordinateur = await authenticateCoordinateur()
 
   const monEquipePageData = await getEquipePageData({

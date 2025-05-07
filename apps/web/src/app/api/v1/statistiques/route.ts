@@ -23,9 +23,9 @@ import {
   getTotalCountsStats,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getTotalCountsStats'
 import type { LabelAndCount } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/quantifiedShare'
-import { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
+import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import {
-  ChangeObjectKeysCaseRecursive,
+  type ChangeObjectKeysCaseRecursive,
   changeObjectKeysCaseRecursive,
 } from '@app/web/utils/changeObjectKeysCaseRecursive'
 import { NextResponse } from 'next/server'
@@ -99,10 +99,6 @@ import { NextResponse } from 'next/server'
  *           items:
  *             $ref: '#/components/schemas/ValueLabelCountProportion'
  *         thematiques:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/ValueLabelCountProportion'
- *         thematiques_demarches:
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/ValueLabelCountProportion'

@@ -1,19 +1,18 @@
-import { getCraCollectifDataDefaultValuesFromExisting } from '@app/web/app/coop/(full-width-layout)/mes-activites/cra/collectif/getCraCollectifDataDefaultValuesFromExisting'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
+import { getCraCollectifDataDefaultValuesFromExisting } from '@app/web/features/activites/use-cases/cra/collectif/db/getCraCollectifDataDefaultValuesFromExisting'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { notFound, redirect } from 'next/navigation'
 
 const DupliquerPage = async ({
-  params: { id },
-  searchParams: { retour } = {},
+  params,
+  searchParams,
 }: {
-  params: {
-    id: string
-  }
-  searchParams?: {
-    retour?: string
-  }
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ retour?: string }>
 }) => {
+  const { id } = await params
+  const { retour } = await searchParams
+
   const user = await authenticateMediateur()
 
   const defaultValues = await getCraCollectifDataDefaultValuesFromExisting({
@@ -21,27 +20,21 @@ const DupliquerPage = async ({
     mediateurId: user.mediateur.id,
   })
 
-  if (!defaultValues) {
-    notFound()
-    return null
-  }
+  if (defaultValues == null) return notFound()
 
   const defaultValuesWithoutIds = {
     ...defaultValues,
     id: undefined,
     participantsAnonymes: defaultValues.participantsAnonymes
-      ? {
-          ...defaultValues.participantsAnonymes,
-          id: undefined,
-        }
+      ? { ...defaultValues.participantsAnonymes, id: undefined }
       : undefined,
   }
 
-  redirect(
-    `/coop/mes-activites/cra/collectif?${retour ? `retour=${retour}&` : ''}v=${encodeSerializableState(defaultValuesWithoutIds)}`,
+  return redirect(
+    `/coop/mes-activites/cra/collectif?${
+      retour ? `retour=${retour}&` : ''
+    }v=${encodeSerializableState(defaultValuesWithoutIds)}`,
   )
-
-  return null
 }
 
 export default DupliquerPage

@@ -30,7 +30,11 @@ describe('ETQ visiteur, je peux donner suite à une invitation', () => {
       ),
     )
 
+    cy.intercept('/api/trpc/mediateur.acceptInvitation*').as('mutation')
+
     cy.findByText('Accepter l’invitation').click().allowNextRedirectException()
+
+    cy.wait('@mutation')
 
     cy.findByRole('status').should('contain', 'Vous avez accepté l’invitation')
 
@@ -52,7 +56,11 @@ describe('ETQ visiteur, je peux donner suite à une invitation', () => {
       ),
     )
 
+    cy.intercept('/api/trpc/mediateur.declineInvitation*').as('mutation')
+
     cy.findByText('Refuser l’invitation').click()
+
+    cy.wait('@mutation')
 
     cy.get('h1').should(
       'contain',
@@ -85,7 +93,11 @@ describe('ETQ médiateur inscrit, je peux donner suite à une invitation', () =>
       ),
     )
 
+    cy.intercept('/api/trpc/mediateur.acceptInvitation*').as('mutation')
+
     cy.findByText('Accepter l’invitation').click().allowNextRedirectException()
+
+    cy.wait('@mutation')
 
     cy.findByRole('status').should('contain', 'Vous avez accepté l’invitation')
 
@@ -120,7 +132,11 @@ describe('ETQ médiateur non inscrit, je peux donner suite à une invitation', (
       ),
     )
 
+    cy.intercept('/api/trpc/mediateur.acceptInvitation*').as('mutation')
+
     cy.findByText('Accepter l’invitation').click().allowNextRedirectException()
+
+    cy.wait('@mutation')
 
     cy.findByRole('status').should('contain', 'Vous avez accepté l’invitation')
 
@@ -133,13 +149,29 @@ describe('ETQ médiateur non inscrit, je peux donner suite à une invitation', (
 
     searchAndSelectStructureEmployeuse('France')
 
+    cy.intercept('/api/trpc/inscription.renseignerStructureEmployeuse*').as(
+      'inscription-2',
+    )
     cy.findByText('Suivant').click()
+    cy.wait('@inscription-2')
 
+    cy.intercept(
+      '/api/trpc/inscription.ajouterStructureEmployeuseEnLieuActivite*',
+    ).as('inscription-3')
     cy.findByText('Oui').click()
+    cy.wait('@inscription-3')
 
+    cy.intercept('/api/trpc/inscription.renseignerLieuxActivite*').as(
+      'inscription-4',
+    )
     cy.findByText('Suivant').click()
+    cy.wait('@inscription-4')
 
+    cy.intercept('/api/trpc/inscription.validerInscription*').as(
+      'inscription-5',
+    )
     cy.findByText('Valider mon inscription').click()
+    cy.wait('@inscription-5')
 
     cy.findByText('Voir plus tard').click()
 

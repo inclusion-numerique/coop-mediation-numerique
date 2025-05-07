@@ -2,7 +2,7 @@ import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout
 import {
   generateActivitesFiltersLabels,
   toLieuPrefix,
-} from '@app/web/cra/generateActivitesFiltersLabels'
+} from '@app/web/features/activites/use-cases/list/components/generateActivitesFiltersLabels'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import React from 'react'
 import { StatistiquesActivitesPrint } from '../_sections/StatistiquesActivitesPrint'

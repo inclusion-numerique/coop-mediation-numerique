@@ -4,7 +4,7 @@ import { SessionUser } from '@app/web/auth/sessionUser'
 import {
   ActivitesFilterValidations,
   ActivitesFilters,
-} from '@app/web/cra/ActivitesFilters'
+} from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { buildStatistiquesWorksheet } from '@app/web/worksheet/statistiques/buildStatistiquesWorksheet'
 import { getStatistiquesWorksheetInput } from '@app/web/worksheet/statistiques/getStatistiquesWorksheetInput'
@@ -61,7 +61,9 @@ export const GET = async (request: NextRequest) => {
   const workbook = buildStatistiquesWorksheet(statistiquesWorksheetInput)
 
   const data = await workbook.xlsx.writeBuffer()
-  const filename = `coop-numerique_statistiques_${dateAsIsoDay(new Date())}.xlsx`
+  const filename = `coop-numerique_statistiques_${dateAsIsoDay(
+    new Date(),
+  )}.xlsx`
 
   return new Response(data, {
     status: 200,

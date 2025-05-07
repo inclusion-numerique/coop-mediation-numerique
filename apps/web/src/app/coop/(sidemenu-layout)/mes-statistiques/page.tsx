@@ -3,7 +3,7 @@ import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateU
 import {
   type ActivitesFilters,
   validateActivitesFilters,
-} from '@app/web/cra/ActivitesFilters'
+} from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { mediateurCoordonnesIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
 import { getStructureEmployeuseAddress } from '@app/web/structure/getStructureEmployeuseAddress'
 import type { Metadata } from 'next'
@@ -13,13 +13,14 @@ import { getMesStatistiquesPageData } from './getMesStatistiquesPageData'
 export const metadata: Metadata = {
   title: metadataTitle('Mes statistiques'),
 }
-const MesStatistiquesPage = async ({
-  searchParams = {},
-}: {
-  searchParams?: ActivitesFilters & {
-    graphique_fin?: string
-  }
+const MesStatistiquesPage = async (props: {
+  searchParams: Promise<
+    ActivitesFilters & {
+      graphique_fin?: string
+    }
+  >
 }) => {
+  const searchParams = await props.searchParams
   const user = await authenticateMediateurOrCoordinateur()
 
   const mediateurCoordonnesIds = mediateurCoordonnesIdsFor(user)

@@ -8,11 +8,10 @@ import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
 import { redirect } from 'next/navigation'
 import React from 'react'
 
-const LieuActiviteDetailPage = async ({
-  params,
-}: {
-  params: { id: string }
+const LieuActiviteDetailPage = async (props: {
+  params: Promise<{ id: string }>
 }) => {
+  const params = await props.params
   await authenticateUser(`/connexion?suivant=/lieux-activite/${params.id}`)
 
   const lieuActivite = await getLieuActiviteById(params.id)

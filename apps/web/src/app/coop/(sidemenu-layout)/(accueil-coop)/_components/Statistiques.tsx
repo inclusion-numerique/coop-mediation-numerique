@@ -36,11 +36,9 @@ const BeneficiairesStatistiques = ({
 const AccompagnementsStatistiques = ({
   individuels,
   collectifs,
-  demarches,
 }: {
   individuels: { total: number; proportion: number }
   collectifs: { total: number; proportion: number; participants: number }
-  demarches: { total: number; proportion: number }
 }) => (
   <div className="fr-p-3w fr-border-radius--16 fr-background-alt--brown-caramel fr-height-full">
     <span
@@ -48,9 +46,8 @@ const AccompagnementsStatistiques = ({
       aria-hidden
     />
     <div className="fr-text--bold fr-my-1w fr-text--xl">
-      {collectifs.participants + individuels.total + demarches.total}{' '}
-      Accompagnement
-      {sPluriel(collectifs.participants + individuels.total + demarches.total)}
+      {collectifs.participants + individuels.total} Accompagnement
+      {sPluriel(collectifs.participants + individuels.total)}
     </div>
     <ul className="fr-text-mention--grey fr-text--sm fr-mb-0 fr-list-group">
       <li>
@@ -61,10 +58,6 @@ const AccompagnementsStatistiques = ({
         {collectifs.participants} participation
         {sPluriel(collectifs.participants)} lors de {collectifs.total} atelier
         {sPluriel(collectifs.total)}
-      </li>
-      <li>
-        {demarches.total} aide{sPluriel(demarches.total)} aux démarches
-        administratives
       </li>
     </ul>
   </div>

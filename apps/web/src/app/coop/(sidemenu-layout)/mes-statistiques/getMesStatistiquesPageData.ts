@@ -7,10 +7,10 @@ import {
   getActivitesStructuresStats,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getActivitesStats'
 import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFiltersOptionsForMediateur'
-import { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
+import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import { UserDisplayName, UserProfile } from '@app/web/utils/user'
+import type { UserDisplayName, UserProfile } from '@app/web/utils/user'
 import { getBeneficiaireStatsWithCommunes } from './_queries/getBeneficiaireStats'
 import { getTotalCountsStats } from './_queries/getTotalCountsStats'
 

@@ -16,11 +16,13 @@ export const metadata = {
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const Page = async ({
-  params: { id, emploiId },
-}: {
-  params: { id: string; emploiId: string }
+const Page = async (props: {
+  params: Promise<{ id: string; emploiId: string }>
 }) => {
+  const params = await props.params
+
+  const { id, emploiId } = params
+
   const user = await prismaClient.user.findUnique({
     where: {
       id,

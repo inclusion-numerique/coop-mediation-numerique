@@ -4,7 +4,7 @@ export const useScrollToBottom = ({
   containerRef,
   ignoreOffset: _ignoreOffset = 30,
 }: {
-  containerRef: RefObject<HTMLElement>
+  containerRef: RefObject<HTMLElement | null>
   ignoreOffset?: number // The offset above which a user not scrolled to the bottom will disable the behavior
 }) => {
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(true)

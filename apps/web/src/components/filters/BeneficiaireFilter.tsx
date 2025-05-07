@@ -2,7 +2,7 @@
 
 import CustomSelect from '@app/ui/components/CustomSelect/CustomSelect'
 import { SelectOption } from '@app/ui/components/Form/utils/options'
-import { BeneficiaireOption } from '@app/web/beneficiaire/BeneficiaireOption'
+import { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import { FilterSelection } from '@app/web/libs/filters/FilterSelection'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'

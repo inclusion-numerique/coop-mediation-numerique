@@ -17,10 +17,11 @@ export const metadata: Metadata = {
 }
 
 const SigninPage = async ({
-  searchParams: { error, suivant } = {},
+  searchParams,
 }: {
-  searchParams?: { error?: string; suivant?: Route }
+  searchParams: Promise<{ error?: string; suivant?: Route }>
 }) => {
+  const { error, suivant } = await searchParams
   const user = await getSessionUser()
 
   const callbackUrl = suivant ?? '/connexion/suivant'

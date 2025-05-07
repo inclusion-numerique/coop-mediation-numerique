@@ -9,11 +9,10 @@ import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
 import { redirect } from 'next/navigation'
 import React from 'react'
 
-const LieuActiviteDetailPage = async ({
-  params,
-}: {
-  params: { mediateurId: string; lieuId: string }
+const LieuActiviteDetailPage = async (props: {
+  params: Promise<{ mediateurId: string; lieuId: string }>
 }) => {
+  const params = await props.params
   await authenticateUser(`/connexion?suivant=/lieux-activite/${params.lieuId}`)
 
   const mediateur = await prismaClient.mediateur.findUnique({

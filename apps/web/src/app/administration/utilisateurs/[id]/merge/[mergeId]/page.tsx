@@ -12,11 +12,13 @@ export const metadata = {
   title: metadataTitle('Utilisateurs - Fusion'),
 }
 
-const Page = async ({
-  params: { id, mergeId },
-}: {
-  params: { id: string; mergeId: string }
+const Page = async (props: {
+  params: Promise<{ id: string; mergeId: string }>
 }) => {
+  const params = await props.params
+
+  const { id, mergeId } = params
+
   const mergeData = await getMergeData(mergeId, id)
 
   if (!mergeData) notFound()

@@ -1,5 +1,4 @@
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
-import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import BackButton from '@app/web/components/BackButton'
 import ContactSupportLink from '@app/web/components/ContactSupportLink'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -11,7 +10,7 @@ export const revalidate = 0
 
 // Add a search param "message" for the error message
 const ImportErreurPage = () => (
-  <CoopPageContainer size={794}>
+  <div className="fr-container fr-container--medium">
     <CoopBreadcrumbs
       parents={[
         {
@@ -86,7 +85,7 @@ const ImportErreurPage = () => (
         </ContactSupportLink>
       </div>
     </div>
-  </CoopPageContainer>
+  </div>
 )
 
 export default ImportErreurPage

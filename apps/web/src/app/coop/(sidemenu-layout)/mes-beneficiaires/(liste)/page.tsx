@@ -11,11 +11,10 @@ export const metadata: Metadata = {
   title: metadataTitle('Mes bénéficiaires'),
 }
 
-const MesBeneficiairesPage = async ({
-  searchParams = {},
-}: {
-  searchParams?: BeneficiairesDataTableSearchParams
+const MesBeneficiairesPage = async (props: {
+  searchParams: Promise<BeneficiairesDataTableSearchParams>
 }) => {
+  const searchParams = await props.searchParams
   const user = await authenticateMediateur()
 
   const hasBeneficiaires = await prismaClient.beneficiaire.count({

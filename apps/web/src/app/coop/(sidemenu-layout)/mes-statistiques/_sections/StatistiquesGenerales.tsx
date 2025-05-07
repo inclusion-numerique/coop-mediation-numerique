@@ -79,10 +79,6 @@ export const StatistiquesGenerales = ({
                     {numberToString(totalCounts.activites.collectifs.total)}{' '}
                     ateliers*
                   </li>
-                  <li>
-                    {totalCounts.accompagnements.demarches.total} aides aux
-                    démarches administratives
-                  </li>
                 </ul>
                 *Les ateliers collectifs comptent pour 1 accompagnement par
                 participant. Ex&nbsp;: Un atelier collectif avec 10 participants
@@ -154,8 +150,8 @@ export const StatistiquesGenerales = ({
                 aria-hidden
               >
                 Le nombre d’accompagnements correspond à la somme des 3 types
-                d’activités enregistrées (accompagnement individuel, atelier
-                collectif et aides aux démarches administratives).
+                d’activités enregistrées (accompagnement individuel et atelier
+                collectif).
                 <br />
                 <br />À noter&nbsp;: Les ateliers collectifs comptent pour 1
                 accompagnement par participant. Ex&nbsp;: Un atelier collectif

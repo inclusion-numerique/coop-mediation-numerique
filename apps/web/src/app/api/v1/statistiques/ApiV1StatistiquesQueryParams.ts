@@ -1,4 +1,4 @@
-import { ActivitesFilterValidations } from '@app/web/cra/ActivitesFilters'
+import { ActivitesFilterValidations } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import z from 'zod'
 
 export const ApiV1StatistiquesQueryParamsValidation = z.object({

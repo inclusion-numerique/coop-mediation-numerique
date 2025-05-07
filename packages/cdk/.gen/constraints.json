@@ -1,6 +1,6 @@
 {
-  "cdktf": "0.20.11",
+  "cdktf": "0.20.12",
   "providers": {
-    "scaleway": ">= 2.49.0"
+    "scaleway": ">= 2.53.0"
   }
 }

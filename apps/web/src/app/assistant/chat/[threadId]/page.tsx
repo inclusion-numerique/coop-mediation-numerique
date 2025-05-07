@@ -11,11 +11,13 @@ export const generateMetadata = (): Metadata => ({
   title: metadataTitle('Assistant - Chat'),
 })
 
-const Page = async ({
-  params: { threadId },
-}: {
-  params: { threadId: string }
+const Page = async (props: {
+  params: Promise<{ threadId: string }>
 }) => {
+  const params = await props.params
+
+  const { threadId } = params
+
   const user = await authenticateUser()
 
   const data = await getAssistantPageData({ threadId, userId: user.id })

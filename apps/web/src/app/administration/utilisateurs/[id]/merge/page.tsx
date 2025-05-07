@@ -11,7 +11,11 @@ export const metadata = {
   title: metadataTitle('Utilisateurs - Fusion'),
 }
 
-const Page = async ({ params: { id } }: { params: { id: string } }) => {
+const Page = async (props: { params: Promise<{ id: string }> }) => {
+  const params = await props.params
+
+  const { id } = params
+
   const user = await prismaClient.user.findUnique({
     where: { id },
   })

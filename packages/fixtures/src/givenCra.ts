@@ -1,5 +1,5 @@
 import { createBeneficiairesForParticipantsAnonymes } from '@app/web/beneficiaire/createBeneficiairesForParticipantsAnonymes'
-import type { ParticipantsAnonymesCraCollectifData } from '@app/web/cra/ParticipantsAnonymesCraCollectifValidation'
+import { ParticipantsAnonymesCraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/ParticipantsAnonymesCraCollectifValidation'
 import type { Prisma, TypeLieu } from '@prisma/client'
 import { v4 } from 'uuid'
 import { mergeUuids } from './mergeUuids'
@@ -73,7 +73,7 @@ export const givenCraDemarcheAdministrative = <
 ): {
   activite: Omit<T, 'id' | 'beneficiaireId'> & {
     id: string
-    type: 'Demarche'
+    type: 'Individuel'
     duree: number
     date: string | Date
     typeLieu: TypeLieu
@@ -91,7 +91,7 @@ export const givenCraDemarcheAdministrative = <
   const activite = {
     ...rest,
     id: givenId,
-    type: 'Demarche',
+    type: 'Individuel',
     duree,
     date,
     typeLieu,

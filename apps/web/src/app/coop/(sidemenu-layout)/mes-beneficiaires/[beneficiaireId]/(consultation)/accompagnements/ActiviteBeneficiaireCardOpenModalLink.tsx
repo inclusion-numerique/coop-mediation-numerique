@@ -1,7 +1,7 @@
 'use client'
 
-import { ActiviteDetailsDynamicModal } from '@app/web/components/activite/ActiviteDetailsModal/ActiviteDetailsDynamicModal'
-import type { ActiviteForList } from '@app/web/cra/activitesQueries'
+import { ActiviteDetailsDynamicModal } from '@app/web/features/activites/use-cases/list/components/ActiviteDetailsModal/ActiviteDetailsDynamicModal'
+import { ActiviteForList } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import type { MouseEventHandler } from 'react'
 
 const ActiviteBeneficiaireCardOpenModalLink = ({

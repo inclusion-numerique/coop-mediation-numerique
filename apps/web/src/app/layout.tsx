@@ -43,11 +43,11 @@ export const viewport: Viewport = {
   themeColor: '#000091',
 }
 
-const RootLayout = ({ children }: PropsWithChildren) => {
+const RootLayout = async ({ children }: PropsWithChildren) => {
   // Do we want to disable SSG for CSFR on this website ?
   // const nonce = headers().get('x-sde-script-nonce') ?? undefined
   const nonce = undefined
-  const theme = getServerDsfrTheme()
+  const theme = await getServerDsfrTheme()
   return (
     <html lang="fr" data-fr-theme={theme} data-fr-scheme={theme}>
       <head>

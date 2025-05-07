@@ -10,13 +10,15 @@ export const metadata: Metadata = {
   title: metadataTitle('Anciens membres'),
 }
 
-const Page = async ({
-  params: { coordinateurId },
-  searchParams,
-}: {
-  params: { coordinateurId: string }
-  searchParams: EquipeSearchParams
+const Page = async (props: {
+  params: Promise<{ coordinateurId: string }>
+  searchParams: Promise<EquipeSearchParams>
 }) => {
+  const searchParams = await props.searchParams
+  const params = await props.params
+
+  const { coordinateurId } = params
+
   const coordinateur = await prismaClient.coordinateur.findUnique({
     where: { id: coordinateurId },
     select: {

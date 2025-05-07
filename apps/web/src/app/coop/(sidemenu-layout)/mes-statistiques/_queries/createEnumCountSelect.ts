@@ -1,4 +1,4 @@
-import { dureeAccompagnementStatisticsRanges } from '@app/web/cra/cra'
+import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/use-cases/cra/fields/duree-accompagnement'
 import { Prisma } from '@prisma/client'
 import { snakeCase } from 'change-case'
 
@@ -55,7 +55,9 @@ export const createIntArrayCountSelect = ({
 }): Prisma.Sql => {
   const sumStatements = values.map(
     (value) =>
-      `COALESCE(SUM((${column} = ${value})::int), 0)::int AS ${as}_${value.toString(10)}_count`,
+      `COALESCE(SUM((${column} = ${value})::int), 0)::int AS ${as}_${value.toString(
+        10,
+      )}_count`,
   )
 
   return Prisma.raw(sumStatements.join(',\n'))
