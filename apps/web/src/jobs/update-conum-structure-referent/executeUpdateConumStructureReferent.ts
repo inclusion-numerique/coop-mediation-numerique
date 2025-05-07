@@ -1,52 +1,26 @@
 import { output } from '@app/cli/output'
-import { MiseEnRelationWithStructureAdministrativeInfo } from '@app/web/app/inscription/importFromConseillerNumerique/importFromConseillerNumerique.queries'
-import { MiseEnRelationV1MinimalProjection } from '@app/web/external-apis/conseiller-numerique/MiseEnRelationConseillerNumeriqueV1'
 import { conseillerNumeriqueMongoCollection } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
-import { prismaClient } from '@app/web/prismaClient'
-import { miseAJourStructureEmployeuseFor } from '@app/web/server/rpc/conseillers-numerique/miseAJourStructureEmployeuseFor'
-import { ObjectId } from 'mongodb'
+import { miseEnRelationFromCollectionFor } from '@app/web/features/conum/use-cases/update-structure-referent/db/miseEnRelationFromCollectionFor'
+import { usersWithoutStructureReferent } from '@app/web/features/conum/use-cases/update-structure-referent/db/usersWithoutStructureReferent'
+import { miseAJourStructureEmployeuseFor } from '@app/web/features/conum/use-cases/update-structure-referent/miseAJourStructureEmployeuseFor'
 
 export const executeUpdateConumStructureReferent = async () => {
   output('Starting update conseillers numériques structure referents...')
 
-  const users = await prismaClient.user.findMany({
-    where: {
-      mediateur: { conseillerNumerique: { isNot: null } },
-      emplois: {
-        every: {
-          structure: { nomReferent: null },
-        },
-      },
-    },
-    include: {
-      mediateur: {
-        include: { conseillerNumerique: true },
-      },
-      emplois: {
-        include: { structure: true },
-      },
-    },
-  })
+  const users = await usersWithoutStructureReferent()
 
   output(`${users.length} conseillers numériques found`)
 
-  const misesEnRelationCollection =
-    await conseillerNumeriqueMongoCollection('misesEnRelation')
+  const miseEnRelationFor = miseEnRelationFromCollectionFor(
+    await conseillerNumeriqueMongoCollection('misesEnRelation'),
+  )
 
   output('Find all mises en relation from mongo...')
 
   await Promise.allSettled(
     users.map(async (user) => {
-      const miseEnRelation = (await misesEnRelationCollection.findOne(
-        {
-          'conseillerObj._id': new ObjectId(
-            user.mediateur!.conseillerNumerique!.id,
-          ),
-        },
-        { projection: MiseEnRelationV1MinimalProjection },
-      )) as MiseEnRelationWithStructureAdministrativeInfo | null
-
-      if (miseEnRelation) {
+      const miseEnRelation = await miseEnRelationFor(user)
+      if (miseEnRelation != null) {
         return miseAJourStructureEmployeuseFor(user.id)(miseEnRelation)
       }
     }),

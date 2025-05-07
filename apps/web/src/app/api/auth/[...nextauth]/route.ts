@@ -7,17 +7,14 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 const handler = (
-  request: NextRequest,
-  res: {
-    params: { nextauth: string[] }
-  },
+  req: NextRequest,
+  res: { params: Promise<{ nextauth: string[] }> },
 ) => {
-  // https://next-auth.js.org/tutorials/avoid-corporate-link-checking-email-provider
-  if (isFirewallUserAgent(request)) {
+  if (isFirewallUserAgent(req)) {
     return new Response('Bad Request', { status: 400 })
   }
 
-  return NextAuth(request, res, nextAuthOptions)
+  return NextAuth(req, res, nextAuthOptions)
 }
 
 export { handler as GET, handler as POST }
