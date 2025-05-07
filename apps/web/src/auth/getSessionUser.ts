@@ -9,8 +9,8 @@ import {
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
 import type { SessionUser } from '@app/web/auth/sessionUser'
 
-export const getSessionToken = (): string | null => {
-  const allCookies = cookies()
+export const getSessionToken = async (): Promise<string | null> => {
+  const allCookies = await cookies()
   const sessionToken =
     allCookies.get(secureSessionCookie) ?? allCookies.get(sessionCookie)
 
@@ -20,8 +20,8 @@ export const getSessionToken = (): string | null => {
   return sessionToken.value
 }
 
-export const getAuthenticatedSessionToken = (): string => {
-  const token = getSessionToken()
+export const getAuthenticatedSessionToken = async (): Promise<string> => {
+  const token = await getSessionToken()
   if (!token) {
     throw new AuthenticationError('Unauthenticated user')
   }
@@ -34,7 +34,7 @@ const cachedGetSessionUserFromSessionToken = cache(
 )
 
 export const getSessionUser = async (): Promise<SessionUser | null> => {
-  const sessionToken = getSessionToken()
+  const sessionToken = await getSessionToken()
 
   if (!sessionToken) {
     return null

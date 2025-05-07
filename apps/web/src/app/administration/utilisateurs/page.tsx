@@ -14,11 +14,10 @@ export const metadata = {
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const Page = async ({
-  searchParams = {},
-}: {
-  searchParams?: UtilisateursDataTableSearchParams & UtilisateursFilters
+const Page = async (props: {
+  searchParams: Promise<UtilisateursDataTableSearchParams & UtilisateursFilters>
 }) => {
+  const searchParams = await props.searchParams
   const utilisateursListPageData = await getUtilisateursListPageData({
     searchParams,
   })

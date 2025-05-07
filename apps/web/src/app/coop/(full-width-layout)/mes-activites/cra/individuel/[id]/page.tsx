@@ -6,12 +6,15 @@ import { getCraIndividuelDataDefaultValuesFromExisting } from '@app/web/features
 import { notFound } from 'next/navigation'
 
 const UpdateCraIndividuelPage = async ({
-  params: { id },
-  searchParams: { retour } = {},
+  params,
+  searchParams,
 }: {
-  params: { id: string }
-  searchParams?: { retour?: string }
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ retour?: string }>
 }) => {
+  const { id } = await params
+  const { retour } = await searchParams
+
   const {
     mediateur: { id: mediateurId },
   } = await authenticateMediateur()

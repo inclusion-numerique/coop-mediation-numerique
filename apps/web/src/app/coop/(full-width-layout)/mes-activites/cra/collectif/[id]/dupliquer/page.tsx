@@ -4,12 +4,15 @@ import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { notFound, redirect } from 'next/navigation'
 
 const DupliquerPage = async ({
-  params: { id },
-  searchParams: { retour } = {},
+  params,
+  searchParams,
 }: {
-  params: { id: string }
-  searchParams?: { retour?: string }
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ retour?: string }>
 }) => {
+  const { id } = await params
+  const { retour } = await searchParams
+
   const user = await authenticateMediateur()
 
   const defaultValues = await getCraCollectifDataDefaultValuesFromExisting({

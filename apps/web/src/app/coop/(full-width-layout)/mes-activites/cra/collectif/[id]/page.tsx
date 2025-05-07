@@ -6,12 +6,15 @@ import { getCraPageData } from '@app/web/features/activites/use-cases/cra/getCra
 import { notFound } from 'next/navigation'
 
 const UpdateCraCollectifPage = async ({
-  params: { id },
-  searchParams: { retour } = {},
+  searchParams,
+  params,
 }: {
-  params: { id: string }
-  searchParams?: { retour?: string }
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ retour?: string }>
 }) => {
+  const { id } = await params
+  const { retour } = await searchParams
+
   const {
     mediateur: { id: mediateurId },
   } = await authenticateMediateur()

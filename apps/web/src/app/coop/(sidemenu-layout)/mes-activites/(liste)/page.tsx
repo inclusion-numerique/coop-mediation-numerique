@@ -16,10 +16,11 @@ export const metadata: Metadata = {
 }
 
 const MesActivitesPage = async ({
-  searchParams: rawSearchParams = {},
+  searchParams,
 }: {
-  searchParams?: ActivitesDataTableSearchParams
+  searchParams: Promise<ActivitesDataTableSearchParams>
 }) => {
+  const rawSearchParams = await searchParams
   const user = await authenticateMediateur()
 
   const hasActivites = await mediateurHasActivites({

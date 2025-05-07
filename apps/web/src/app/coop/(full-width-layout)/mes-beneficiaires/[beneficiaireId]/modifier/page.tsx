@@ -15,16 +15,16 @@ import { EncodedState } from '@app/web/utils/encodeSerializableState'
 import { notFound } from 'next/navigation'
 import { DefaultValues } from 'react-hook-form'
 
-const PageModifierBeneficiaire = async ({
-  searchParams: { retour } = {},
-  params: { beneficiaireId },
-}: {
-  searchParams?: {
+const PageModifierBeneficiaire = async (props: {
+  searchParams: Promise<{
     cra?: EncodedState<DefaultValues<CraIndividuelData>>
     retour?: string
-  }
-  params: { beneficiaireId: string }
+  }>
+  params: Promise<{ beneficiaireId: string }>
 }) => {
+  const { beneficiaireId } = await props.params
+  const { retour } = await props.searchParams
+
   const user = await authenticateMediateur()
 
   const beneficiaire = await prismaClient.beneficiaire.findUnique({

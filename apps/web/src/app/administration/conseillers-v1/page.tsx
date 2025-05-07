@@ -13,11 +13,10 @@ export const metadata = {
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const Page = ({
-  searchParams = {},
-}: {
-  searchParams?: { recherche?: string }
+const Page = async (props: {
+  searchParams: Promise<{ recherche?: string }>
 }) => {
+  const searchParams = await props.searchParams
   const executeV1Search =
     searchParams.recherche != null && searchParams.recherche.trim().length > 3
 

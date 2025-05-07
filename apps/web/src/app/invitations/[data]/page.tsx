@@ -24,11 +24,13 @@ const isWrongUserFor =
   (user: { email: string } | null): user is { email: string } =>
     user?.email != null && user.email !== email
 
-const InvitationPage = async ({
-  params: { data },
-}: {
-  params: { data: EncodedState<Invitation> }
+const InvitationPage = async (props: {
+  params: Promise<{ data: EncodedState<Invitation> }>
 }) => {
+  const params = await props.params
+
+  const { data } = params
+
   const invitation = decodeSerializableState(data, null)
 
   if (!isValid(invitation)) redirect('/')

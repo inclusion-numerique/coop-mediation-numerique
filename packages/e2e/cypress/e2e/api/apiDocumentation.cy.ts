@@ -15,10 +15,9 @@ describe('API v1 documentation', () => {
   it('La documentation de l’API est accessible', () => {
     cy.visit('/api/v1/documentation')
     cy.contains('La coop - API')
-    cy.contains('Endpoints')
+    cy.contains('Pour obtenir votre bearer')
 
-    cy.get(
-      '#mosaic-provider-react-aria-0-1 div.sl-flex.sl-overflow-y-auto.sl-flex-col.sl-sticky',
-    ).should('have.css', 'background-color', 'rgb(235, 238, 245)')
+    // Check that css are loaded and applied
+    cy.get('.section-header').first().should('have.css', 'margin-bottom', '6px')
   })
 })

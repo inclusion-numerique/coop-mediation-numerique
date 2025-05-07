@@ -8,14 +8,16 @@ export const metadata = {
 }
 
 // next js query params "profil": ProfilInscription
-const Page = async ({
-  searchParams: { nom, retour },
-}: {
-  searchParams: {
+const Page = async (props: {
+  searchParams: Promise<{
     nom?: string
     retour?: string
-  }
+  }>
 }) => {
+  const searchParams = await props.searchParams
+
+  const { nom, retour } = searchParams
+
   const user = await authenticateUser()
 
   if (!user.mediateur) {
