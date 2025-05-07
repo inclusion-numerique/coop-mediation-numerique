@@ -5,7 +5,7 @@ import {
   SelectOption,
   labelsToOptions,
 } from '@app/ui/components/Form/utils/options'
-import { locationTypeLabels } from '@app/web/cra/generateActivitesFiltersLabels'
+import { locationTypeLabels } from '@app/web/features/activites/use-cases/list/components/generateActivitesFiltersLabels'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import { FilterSelection } from '@app/web/libs/filters/FilterSelection'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'

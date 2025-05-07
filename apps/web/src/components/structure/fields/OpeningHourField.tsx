@@ -35,7 +35,9 @@ export const OpeningHourField = <T extends OpeningHourFieldFormValues>({
         {periodsTexts[period]}
       </div>
       <div
-        className={`fr-border fr-border-radius--4 ${disabled && 'fr-background-alt--grey'}`}
+        className={`fr-border fr-border-radius--4 ${
+          disabled && 'fr-background-alt--grey'
+        }`}
       >
         <div className="fr-flex fr-border-bottom">
           <InputFormField
@@ -59,7 +61,7 @@ export const OpeningHourField = <T extends OpeningHourFieldFormValues>({
             path={`openingHours.${day}.${period}.endTime`}
           />
         </div>
-        <div className="fr-px-6w">
+        <div className="fr-px-12v fr-py-2v">
           <ToggleFormField
             classes={{ fieldsetElement: 'fr-m-0' }}
             className="fr-m-0"

@@ -1,4 +1,4 @@
-import { materielIcons } from '@app/web/cra/cra'
+import { materielIcons } from '@app/web/features/activites/use-cases/cra/fields/materiel'
 import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
 import { Materiel } from '@prisma/client'
 import classNames from 'classnames'

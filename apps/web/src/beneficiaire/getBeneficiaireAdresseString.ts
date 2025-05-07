@@ -1,4 +1,4 @@
-import { BeneficiaireCraData } from '@app/web/beneficiaire/BeneficiaireValidation'
+import { BeneficiaireCraData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
 
 export const getBeneficiaireAdresseString = ({
   communeResidence,

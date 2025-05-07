@@ -1,10 +1,9 @@
-import { CraCollectifValidation } from '@app/web/cra/CraCollectifValidation'
-import { CraDemarcheAdministrativeValidation } from '@app/web/cra/CraDemarcheAdministrativeValidation'
-import { CraIndividuelValidation } from '@app/web/cra/CraIndividuelValidation'
+import { CraCollectifServerValidation } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifServerValidation'
 import {
   createOrUpdateActivite,
   getBeneficiairesAnonymesWithOnlyAccompagnementsForThisActivite,
-} from '@app/web/cra/createOrUpdateActivite'
+} from '@app/web/features/activites/use-cases/cra/db/createOrUpdateActivite'
+import { CraIndividuelServerValidation } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelServerValidation'
 import { prismaClient } from '@app/web/prismaClient'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { enforceIsMediateur } from '@app/web/server/rpc/enforceIsMediateur'
@@ -16,7 +15,7 @@ import z from 'zod'
 
 export const craRouter = router({
   individuel: protectedProcedure
-    .input(CraIndividuelValidation)
+    .input(CraIndividuelServerValidation)
     .mutation(async ({ input, ctx: { user } }) => {
       enforceIsMediateur(user)
 
@@ -33,26 +32,8 @@ export const craRouter = router({
         userId: user.id,
       })
     }),
-  demarcheAdministrative: protectedProcedure
-    .input(CraDemarcheAdministrativeValidation)
-    .mutation(async ({ input, ctx: { user } }) => {
-      enforceIsMediateur(user)
-
-      // Enforce user can create CRA for given mediateurId (for now only self)
-      if (input.mediateurId !== user.mediateur.id) {
-        throw forbiddenError('Cannot create CRA for another mediateur')
-      }
-
-      return createOrUpdateActivite({
-        input: {
-          type: 'Demarche',
-          data: input,
-        },
-        userId: user.id,
-      })
-    }),
   collectif: protectedProcedure
-    .input(CraCollectifValidation)
+    .input(CraCollectifServerValidation)
     .mutation(async ({ input, ctx: { user } }) => {
       enforceIsMediateur(user)
 

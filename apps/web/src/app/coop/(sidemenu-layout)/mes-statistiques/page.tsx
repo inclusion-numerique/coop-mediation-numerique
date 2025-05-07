@@ -3,7 +3,7 @@ import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateU
 import {
   type ActivitesFilters,
   validateActivitesFilters,
-} from '@app/web/cra/ActivitesFilters'
+} from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { mediateurCoordonnesIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
 import { getStructureEmployeuseAddress } from '@app/web/structure/getStructureEmployeuseAddress'
 import type { Metadata } from 'next'

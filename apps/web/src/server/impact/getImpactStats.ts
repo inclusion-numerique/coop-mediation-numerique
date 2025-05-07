@@ -1,4 +1,4 @@
-import type { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
+import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { prismaClient } from '@app/web/prismaClient'
 
 type ActiviteParMois = {

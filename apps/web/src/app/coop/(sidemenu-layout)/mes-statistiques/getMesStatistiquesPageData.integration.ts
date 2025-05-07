@@ -23,16 +23,14 @@ import {
   statutSocialLabels,
   trancheAgeLabels,
 } from '@app/web/beneficiaire/beneficiaire'
-import { getInitialBeneficiairesOptionsForSearch } from '@app/web/beneficiaire/getInitialBeneficiairesOptionsForSearch'
-import { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
-import {
-  dureeAccompagnementStatisticsRanges,
-  materielLabels,
-  thematiqueDemarcheAdministrativeLabels,
-  thematiqueLabels,
-  typeActiviteLabels,
-  typeLieuLabels,
-} from '@app/web/cra/cra'
+import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/use-cases/cra/fields/duree-accompagnement'
+import { materielLabels } from '@app/web/features/activites/use-cases/cra/fields/materiel'
+import { thematiquesNonAdministrativesLabels } from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import { thematiquesAdministrativesLabels } from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import { typeActiviteLabels } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
+import { typeLieuLabels } from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
+import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaires/db/getInitialBeneficiairesOptionsForSearch'
 import { prismaClient } from '@app/web/prismaClient'
 import { UserDisplayName, UserProfile } from '@app/web/utils/user'
 import { cloneDeep } from 'lodash-es'
@@ -104,10 +102,6 @@ const emptyData: MesStatistiquesPageData = {
         total: 0,
         proportion: 0,
       },
-      demarches: {
-        total: 0,
-        proportion: 0,
-      },
     },
     activites: {
       total: 0,
@@ -120,10 +114,6 @@ const emptyData: MesStatistiquesPageData = {
         proportion: 0,
         participants: 0,
       },
-      demarches: {
-        total: 0,
-        proportion: 0,
-      },
     },
     beneficiaires: {
       total: 0,
@@ -135,9 +125,11 @@ const emptyData: MesStatistiquesPageData = {
   activites: {
     total: 0,
     typeActivites: emptyQuantifiedSharesFromEnum(typeActiviteLabels),
-    thematiques: emptyQuantifiedSharesFromEnum(thematiqueLabels),
+    thematiques: emptyQuantifiedSharesFromEnum(
+      thematiquesNonAdministrativesLabels,
+    ),
     thematiquesDemarches: emptyQuantifiedSharesFromEnum(
-      thematiqueDemarcheAdministrativeLabels,
+      thematiquesAdministrativesLabels,
     ),
     materiels: emptyQuantifiedSharesFromEnum(materielLabels),
     typeLieu: emptyQuantifiedSharesFromEnum(typeLieuLabels),
@@ -271,17 +263,13 @@ describe('getMesStatistiquesPageData', () => {
             activites: {
               total: totalActivites,
               individuels: {
-                total: 4,
-                proportion: 40,
+                total: 8,
+                proportion: 80,
               },
               collectifs: {
                 total: 2,
                 proportion: 20,
                 participants: 14,
-              },
-              demarches: {
-                total: 4,
-                proportion: 40,
               },
             },
             beneficiaires: {
@@ -297,12 +285,8 @@ describe('getMesStatistiquesPageData', () => {
                 proportion: computeProportion(14, totalAccompagnements),
               },
               individuels: {
-                total: 4,
-                proportion: computeProportion(4, totalAccompagnements),
-              },
-              demarches: {
-                total: 4,
-                proportion: computeProportion(4, totalAccompagnements),
+                total: 8,
+                proportion: computeProportion(8, totalAccompagnements),
               },
             },
           }
@@ -329,18 +313,25 @@ describe('getMesStatistiquesPageData', () => {
           expectEnum(data.activites.materiels, 'Telephone', 2, 10)
           expectEnum(data.activites.materiels, 'Tablette', 2, 10)
           expectEnum(data.activites.materiels, 'Autre', 3, 10)
+          // before
 
-          expectEnum(data.activites.thematiques, 'Email', 3, 11)
-          expectEnum(data.activites.thematiques, 'ReseauxSociaux', 2, 11)
-          expectEnum(data.activites.thematiques, 'Sante', 2, 11)
+          expectEnum(data.activites.thematiques, 'Email', 3, 15)
+          expectEnum(data.activites.thematiques, 'ReseauxSociaux', 2, 15)
+          expectEnum(data.activites.thematiques, 'Sante', 2, 15)
           expectEnum(
             data.activites.thematiques,
             'InsertionProfessionnelle',
             1,
-            11,
+            15,
           )
-          expectEnum(data.activites.thematiques, 'Parentalite', 1, 11)
-          expectEnum(data.activites.thematiques, 'CultureNumerique', 2, 11)
+          expectEnum(data.activites.thematiques, 'Parentalite', 1, 15)
+          expectEnum(data.activites.thematiques, 'CultureNumerique', 2, 15)
+          expectEnum(
+            data.activites.thematiques,
+            'AideAuxDemarchesAdministratives',
+            4,
+            15,
+          )
 
           expectEnum(
             data.activites.thematiquesDemarches,
@@ -364,12 +355,7 @@ describe('getMesStatistiquesPageData', () => {
             8,
           )
 
-          expectEnum(
-            data.activites.typeActivites,
-            'Individuel',
-            4,
-            totalActivites,
-          )
+          // after
           expectEnum(
             data.activites.typeActivites,
             'Collectif',
@@ -378,8 +364,8 @@ describe('getMesStatistiquesPageData', () => {
           )
           expectEnum(
             data.activites.typeActivites,
-            'Demarche',
-            4,
+            'Individuel',
+            8,
             totalActivites,
           )
 

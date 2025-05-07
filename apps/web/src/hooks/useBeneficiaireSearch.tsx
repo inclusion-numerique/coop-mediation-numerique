@@ -1,7 +1,7 @@
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
-import type { BeneficiaireOption } from '@app/web/beneficiaire/BeneficiaireOption'
-import type { BeneficiaireData } from '@app/web/beneficiaire/BeneficiaireValidation'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
+import type { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
+import type { BeneficiaireData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
 import { trpc } from '@app/web/trpc'
 import { useCallback, useRef } from 'react'
 
@@ -70,7 +70,9 @@ export const useBeneficiaireSearch = ({
 
       return [
         {
-          label: `${result.matchesCount} résultat${sPluriel(result.matchesCount)}`,
+          label: `${result.matchesCount} résultat${sPluriel(
+            result.matchesCount,
+          )}`,
           value: null,
         },
         ...result.beneficiaires.map((beneficiaire) => ({
