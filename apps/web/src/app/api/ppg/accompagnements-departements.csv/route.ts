@@ -1,6 +1,7 @@
-import { fetchAccompagnement } from '@app/web/app/api/ppg/fetchAccompagnement'
+import { getAccompagnementsByDepartment } from '@app/web/app/api/ppg/getAccompagnementsByDepartment'
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
+import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { stringify } from 'csv-stringify/sync'
 import { NextRequest } from 'next/server'
 
@@ -18,15 +19,21 @@ export const GET = async (request: NextRequest) => {
     })
   }
 
-  const searchParams = request.nextUrl.searchParams
+  const searchParams = await request.nextUrl.searchParams
   const dateParam = searchParams.get('date')
-  const date = dateParam ?? undefined
+  const until = dateParam ? new Date(dateParam) : undefined
 
-  const data_conum = await fetchAccompagnement(true, date)
+  const dataConum = await getAccompagnementsByDepartment({
+    until,
+    isConseillerNumerique: true,
+  })
   await new Promise((resolve) => setTimeout(resolve, 100))
-  const data_mediateur = await fetchAccompagnement(false, date)
+  const dataMediateur = await getAccompagnementsByDepartment({
+    until,
+    isConseillerNumerique: false,
+  })
 
-  if (!data_conum || !data_mediateur) {
+  if (!dataConum || !dataMediateur) {
     return new Response('No data available', {
       status: 500,
     })
@@ -34,18 +41,23 @@ export const GET = async (request: NextRequest) => {
 
   const header = [
     'Département',
+    'Code',
     'Accompagnements conum',
     'Accompagnements médiateur',
   ]
   //add in rows the data from the fetchAccompagnement conseiller-numerique and mediateur on the same row
-  const rows = data_conum.map(({ departement, count }) => {
-    const mediateur = data_mediateur.find((d) => d.departement === departement)
-    return [departement, count, mediateur?.count || 0]
+  const rows = dataConum.map(({ departement, count }) => {
+    const mediateur = dataMediateur.find(
+      (d) => d.departement.code === departement.code,
+    )
+    return [departement.code, departement.nom, count, mediateur?.count ?? 0]
   })
 
   const csvData = stringify([header, ...rows])
 
-  const filename = date ? `accompagnements-${date}.csv` : 'accompagnements.csv'
+  const filename = until
+    ? `accompagnements_${dateAsIsoDay(until)}.csv`
+    : 'accompagnements.csv'
 
   return new Response(csvData, {
     headers: {
