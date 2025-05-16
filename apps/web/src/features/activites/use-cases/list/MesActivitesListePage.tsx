@@ -19,7 +19,6 @@ const SuspensedContent = async ({
 
   const activitesByDate = groupActivitesByDate({
     activites: searchResult.activites,
-    rdvs: [],
   })
 
   const baseHref = '/coop/mes-activites'

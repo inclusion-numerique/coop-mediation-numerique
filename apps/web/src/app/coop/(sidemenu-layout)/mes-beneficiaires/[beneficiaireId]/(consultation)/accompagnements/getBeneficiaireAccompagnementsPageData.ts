@@ -3,6 +3,7 @@ import type { SessionUser } from '@app/web/auth/sessionUser'
 import { beneficiaireAccompagnementsCountSelect } from '@app/web/beneficiaire/beneficiaireQueries'
 import {
   getAllActivites,
+  groupActivitesAndRdvsByDate,
   groupActivitesByDate,
 } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { prismaClient } from '@app/web/prismaClient'
@@ -45,7 +46,7 @@ export const getBeneficiaireAccompagnementsPageData = async ({
     beneficiaire,
   })
 
-  const activitesByDate = groupActivitesByDate({ activites, rdvs })
+  const activitesByDate = groupActivitesAndRdvsByDate({ activites, rdvs })
 
   return {
     beneficiaire,
