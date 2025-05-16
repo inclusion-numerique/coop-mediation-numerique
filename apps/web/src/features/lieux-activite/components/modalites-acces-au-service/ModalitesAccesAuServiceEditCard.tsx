@@ -92,7 +92,10 @@ const ModalitesAccesAuServiceEditCard = ({
         !modalitesAcces?.surPlace
       }
       emptyState={
-        <EmptyState title="Compléter ces informations pour permettre l’orientation des bénéficiaires vers vos services." />
+        <EmptyState
+          className="fr-mb-2v"
+          title="Compléter ces informations pour permettre l’orientation des bénéficiaires vers vos services."
+        />
       }
     />
   )

@@ -53,10 +53,7 @@ export const LieuActivitePageContent = ({
       </div>
       <div className="fr-container fr-container--narrow fr-ml-0 fr-mb-30v">
         {contentTop}
-        <span className="fr-flex fr-direction-row fr-align-items-center fr-flex-gap-6v fr-mb-5w">
-          <IconInSquare iconId="ri-home-office-line" />
-          <h1 className="fr-page-title fr-m-0 fr-h2">{structure.nom}</h1>
-        </span>
+        <h1 className="fr-page-title fr-h2">{structure.nom}</h1>
         <div className="fr-border fr-border-radius--8">
           <InformationsGeneralesEditCard {...structure} />
         </div>

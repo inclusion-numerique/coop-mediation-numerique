@@ -15,6 +15,7 @@ const Card = ({
   description,
   children,
   header,
+  action,
   contentSeparator = false,
   arrowTop = false,
   arrowSm = false,
@@ -31,6 +32,7 @@ const Card = ({
   description?: ReactNode
   children?: ReactNode
   header?: ReactNode
+  action?: ReactNode
   contentSeparator?: boolean
   arrowTop?: boolean
   arrowSm?: boolean
@@ -47,16 +49,26 @@ const Card = ({
   >
     <div className="fr-card__body">
       <div className="fr-card__content">
-        <CardTitle className="fr-card__title">
-          {href ? (
-            <Link href={href} target={isExternal ? '_blank' : ''}>
-              {title}
-            </Link>
-          ) : (
-            title
-          )}
-        </CardTitle>
-        {description && <div className="fr-card__desc">{description}</div>}
+        <div className="fr-flex fr-justify-content-space-between fr-flex-gap-6v">
+          <div>
+            <CardTitle className="fr-card__title">
+              {href ? (
+                <Link href={href} target={isExternal ? '_blank' : ''}>
+                  {title}
+                </Link>
+              ) : (
+                title
+              )}
+            </CardTitle>
+            {description && (
+              <div className="fr-card__desc fr-my-0 fr-text-mention--grey">
+                {description}
+              </div>
+            )}
+          </div>
+          {action && <div>{action}</div>}
+        </div>
+
         {children && (
           <div className="fr-card__end">
             {contentSeparator && <hr className="fr-pb-4w" />}
