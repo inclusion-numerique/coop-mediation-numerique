@@ -7,11 +7,23 @@
   .fr-lg-col {
     flex: 1;
   }
+
+  .fr-col-lg-auto {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: initial;
+  }
 }
 
 @media (min-width: 48em) {
   .fr-md-col {
     flex: 1;
+  }
+
+  .fr-col-md-auto {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: initial;
   }
 }
 

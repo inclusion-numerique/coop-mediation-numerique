@@ -32,7 +32,7 @@ export const UtilisateurListPage = ({
     <AdministrationBreadcrumbs currentPage="Utilisateurs" />
     <AdministrationTitle
       icon="fr-icon-team-line"
-      actions={[
+      actions={
         <ExportUtilisateursButton
           filters={filters}
           filterLabels={generateUtilisateursFiltersLabels(filters, {
@@ -42,8 +42,8 @@ export const UtilisateurListPage = ({
           })}
           matchesCount={searchResult.matchesCount}
           recherche={searchParams.recherche}
-        />,
-      ]}
+        />
+      }
     >
       Utilisateurs
     </AdministrationTitle>
