@@ -37,7 +37,7 @@ const LieuActiviteDetailPage = async (props: {
                   currentPage={lieuActivite.structure.nom}
                 />
                 <BackButton href="/coop/lieux-activite">
-                  Retour à mes lieux d&apos;activité
+                  Retour à la liste
                 </BackButton>
               </>
             }
