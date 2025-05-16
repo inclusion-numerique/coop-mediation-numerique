@@ -32,6 +32,10 @@ describe('getBeneficiaireAccompagnementsData', () => {
       await getBeneficiaireAccompagnementsPageData({
         mediateurId,
         beneficiaireId,
+        user: {
+          id: 'test',
+          rdvAccount: null,
+        },
       }),
     ).toEqual({
       beneficiaire: {
@@ -57,6 +61,10 @@ describe('getBeneficiaireAccompagnementsData', () => {
       await getBeneficiaireAccompagnementsPageData({
         mediateurId,
         beneficiaireId,
+        user: {
+          id: 'test',
+          rdvAccount: null,
+        },
       }),
     ).toEqual({
       beneficiaire: {

@@ -37,6 +37,7 @@ const beneficiaireSansAccompagnements = {
 const sansAccompagnements = {
   beneficiaire: beneficiaireSansAccompagnements,
   activitesByDate: [],
+  rdvs: [],
 } satisfies BeneficiaireAccompagnementsPageData
 
 export const SansAccompagnements: Story = {
@@ -259,6 +260,7 @@ const avecAccompagnements = {
       date: '2024-07-05',
     },
   ],
+  rdvs: [],
 } satisfies BeneficiaireAccompagnementsPageData
 
 export const AvecAccompagnements: Story = {

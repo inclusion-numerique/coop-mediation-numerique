@@ -1,3 +1,4 @@
+import { BeneficiaireRdv } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getBeneficiaireRdvsList'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { Prisma } from '@prisma/client'
@@ -123,9 +124,16 @@ export type ActivitesByDate = {
   activites: ActiviteForList[]
 }
 
-export const groupActivitesByDate = (
-  activites: ActiviteForList[],
-): ActivitesByDate[] => {
+export type ActivitesAndRdvsByDate = {
+  date: string
+  activites: (ActiviteForList | BeneficiaireRdv)[]
+}
+
+export const groupActivitesByDate = ({
+  activites,
+}: {
+  activites: ActiviteForList[]
+}): ActivitesByDate[] => {
   const byDateRecord = activites.reduce<Record<string, ActiviteForList[]>>(
     (accumulator, activity) => {
       const date = dateAsIsoDay(activity.date)
@@ -137,6 +145,30 @@ export const groupActivitesByDate = (
     },
     {},
   )
+
+  return Object.entries(byDateRecord).map(([date, groupedActivites]) => ({
+    date,
+    activites: groupedActivites,
+  }))
+}
+
+export const groupActivitesAndRdvsByDate = ({
+  activites,
+  rdvs,
+}: {
+  activites: ActiviteForList[]
+  rdvs: BeneficiaireRdv[]
+}): ActivitesAndRdvsByDate[] => {
+  const byDateRecord = [...activites, ...rdvs].reduce<
+    Record<string, (ActiviteForList | BeneficiaireRdv)[]>
+  >((accumulator, activity) => {
+    const date = dateAsIsoDay(activity.date)
+    if (!accumulator[date]) {
+      accumulator[date] = []
+    }
+    accumulator[date].push(activity)
+    return accumulator
+  }, {})
 
   return Object.entries(byDateRecord).map(([date, groupedActivites]) => ({
     date,
