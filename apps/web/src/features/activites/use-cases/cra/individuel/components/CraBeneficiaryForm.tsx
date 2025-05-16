@@ -7,7 +7,7 @@ import { isBeneficiaireAnonymous } from '@app/web/beneficiaire/isBeneficiaireAno
 import IconInSquare from '@app/web/components/IconInSquare'
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
-import { BeneficiaireCraData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
+import type { BeneficiaireCraData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
 import { useBeneficiaireSearch } from '@app/web/hooks/useBeneficiaireSearch'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import Button from '@codegouvfr/react-dsfr/Button'

@@ -48,9 +48,11 @@ const CraBeneficiairesMultiplesForm = ({
   })
 
   const router = useRouter()
+  const participants = watch('participants')
 
   const beneficiaireOptions = useCraBeneficiaireLoadOptions({
     initialOptions: initialBeneficiairesOptions,
+    participants,
   })
 
   const onCreer = () => {

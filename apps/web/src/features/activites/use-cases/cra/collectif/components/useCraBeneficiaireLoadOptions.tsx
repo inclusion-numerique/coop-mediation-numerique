@@ -25,12 +25,12 @@ const beneficiaireOptionRichLabel = (value: BeneficiaireData) => {
 
 export const useCraBeneficiaireLoadOptions = ({
   initialOptions: initialOptionsProperty,
+  participants,
 }: {
   initialOptions: BeneficiaireOption[]
+  participants: { id: string }[] // will be excluded from the search query
 }) => {
   const { client: trpcClient } = trpc.useContext()
-
-  const beneficiairesMapRef = useRef(new Map<string, BeneficiaireData>())
 
   const initialOptions = useMemo(
     () =>
@@ -58,19 +58,15 @@ export const useCraBeneficiaireLoadOptions = ({
 
       const result = await trpcClient.beneficiaires.search.query({
         query: search,
+        excludeIds: participants.map(({ id }) => id),
       })
 
       const hasMore = result.matchesCount - result.beneficiaires.length
       const hasMoreMessage = hasMore
         ? hasMore === 1
-          ? `Veuillez préciser votre recherche - 1 bénéficiaire n’est pas affichée`
-          : `Veuillez préciser votre recherche - ${hasMore} bénéficiaires ne sont pas affichées`
+          ? `Veuillez préciser votre recherche - 1 bénéficiaire n’est pas affiché`
+          : `Veuillez préciser votre recherche - ${hasMore} bénéficiaires ne sont pas affichés`
         : null
-
-      for (const beneficiaire of result.beneficiaires) {
-        if (beneficiaire.id)
-          beneficiairesMapRef.current.set(beneficiaire.id, beneficiaire)
-      }
 
       return [
         {
@@ -93,12 +89,11 @@ export const useCraBeneficiaireLoadOptions = ({
           : []),
       ]
     },
-    [trpcClient],
+    [trpcClient, participants],
   )
 
   return {
     initialOptions,
     loadOptions,
-    beneficiairesMapRef,
   }
 }

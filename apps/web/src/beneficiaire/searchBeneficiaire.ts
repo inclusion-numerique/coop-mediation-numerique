@@ -17,6 +17,7 @@ import type { Prisma } from '@prisma/client'
 type SearchBeneficiaireOptions = {
   mediateurId?: string
   searchParams?: BeneficiairesDataTableSearchParams
+  excludeIds?: string[]
 }
 
 // List beneficiaires not anonymous
@@ -40,6 +41,8 @@ export const searchBeneficiaire = async (
     pageSize: toNumberOr(searchParams?.lignes)(DEFAULT_PAGE_SIZE),
   })
 
+  const excludeIds = options.excludeIds ?? []
+
   const matchesWhere = {
     ...beneficiairesListWhere(mediateurId),
     AND: toQueryParts(searchParams).map((part) => ({
@@ -51,6 +54,7 @@ export const searchBeneficiaire = async (
         { communeCodePostal: { contains: part, mode: 'insensitive' } },
       ],
     })),
+    ...(excludeIds.length > 0 ? { id: { notIn: options.excludeIds } } : null),
   } satisfies Prisma.BeneficiaireWhereInput
 
   const beneficiaires = await queryBeneficiairesForList({

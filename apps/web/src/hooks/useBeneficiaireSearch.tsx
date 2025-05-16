@@ -28,8 +28,6 @@ export const useBeneficiaireSearch = ({
 }: {
   initialBeneficiairesOptions: BeneficiaireOption[]
 }) => {
-  const beneficiairesMapRef = useRef(new Map<string, BeneficiaireData>())
-
   const { client: trpcClient } = trpc.useContext()
 
   const initialOptions = initialBeneficiairesOptions.map((option) =>
@@ -62,11 +60,6 @@ export const useBeneficiaireSearch = ({
           ? `Veuillez préciser votre recherche - 1 bénéficiaire n’est pas affiché`
           : `Veuillez préciser votre recherche - ${hasMore} bénéficiaires ne sont pas affichés`
         : null
-
-      for (const beneficiaire of result.beneficiaires) {
-        if (beneficiaire.id)
-          beneficiairesMapRef.current.set(beneficiaire.id, beneficiaire)
-      }
 
       return [
         {
