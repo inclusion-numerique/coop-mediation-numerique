@@ -6,6 +6,10 @@ import { oAuthRdvApiListRdvs } from '@app/web/rdv-service-public/executeOAuthRdv
  * Our domain model for reprensenting a list of RDVS owned by OAUTH RDV Service Public
  */
 import { getUserContextForOAuthApiCall } from '@app/web/rdv-service-public/getUserContextForRdvApiCall'
+import {
+  rdvOauthLinkAccountFlowUrl,
+  rdvServicePublicOAuthConfig,
+} from '@app/web/rdv-service-public/rdvServicePublicOauth'
 import type { Beneficiaire } from '@prisma/client'
 
 export type BeneficiaireRdv = {
@@ -14,6 +18,11 @@ export type BeneficiaireRdv = {
   date: Date
   createdBy: string
   status: OAuthApiRdvStatus
+  motif: {
+    id: number
+    name: string
+  }
+  url: string
   agents: {
     id: number
     firstName: string
@@ -65,13 +74,20 @@ export const getBeneficiaireRdvsList = async ({
       participations,
       created_by,
       status,
+      motif,
+      organisation,
     }) =>
       ({
         id,
+        url: `https://${rdvServicePublicOAuthConfig.oauthHostname}/admin/organisations/${organisation.id}/rdvs/${id}`, // TODO RDV URL FROM API
         durationInMinutes: duration_in_min,
         date: new Date(starts_at),
         createdBy: created_by,
         status,
+        motif: {
+          id: motif.id,
+          name: motif.name,
+        },
         agents: agents.map(({ id: agentId, first_name, last_name, email }) => ({
           id: agentId,
           firstName: first_name,

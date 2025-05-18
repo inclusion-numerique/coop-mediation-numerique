@@ -1,4 +1,4 @@
-import ActiviteBeneficiaireCardOpenModalLink from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/ActiviteBeneficiaireCardOpenModalLink'
+import ActiviteCardOpenModalLink from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/ActiviteCardOpenModalLink'
 import Stars from '@app/web/components/Stars'
 import { niveauAtelierStars } from '@app/web/features/activites/use-cases/cra/collectif/fields/niveau-atelier'
 import { thematiqueLabels } from '@app/web/features/activites/use-cases/cra/fields/thematique'
@@ -69,7 +69,7 @@ const ActiviteBeneficiaireCard = ({
         </div>
       </div>
       <span className="fr-icon-more-line fr-pl-2v fr-ml-auto fr-text-title--blue-france" />
-      <ActiviteBeneficiaireCardOpenModalLink activite={activite} />
+      <ActiviteCardOpenModalLink activite={activite} />
     </div>
   )
 }

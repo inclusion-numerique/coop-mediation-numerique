@@ -4,10 +4,10 @@ import { Spinner } from '@app/web/ui/Spinner'
 import { formatActiviteDayDate } from '@app/web/utils/activiteDayDateFormat'
 import { Fragment, Suspense } from 'react'
 import ActiviteMediateurCard from './components/ActiviteMediateurCard'
+import RdvBeneficiaireMediateurCard from './components/RdvBeneficiaireMediateurCard'
 import { getActivitesResultCountLabel } from './components/getActivitesResultCountLabel'
 import { groupActivitesByDate } from './db/activitesQueries'
 import { ActivitesListPageData } from './getActivitesListPageData'
-import RdvBeneficiaireMediateurCard from './components/RdvBeneficiaireMediateurCard'
 
 const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
 
@@ -16,7 +16,8 @@ const SuspensedContent = async ({
 }: {
   data: Promise<ActivitesListPageData>
 }) => {
-  const { searchParams, searchResult, isFiltered, activitesByDate } = await data
+  const { searchParams, searchResult, isFiltered, activitesByDate, user } =
+    await data
 
   const baseHref = '/coop/mes-activites'
   return (
@@ -34,6 +35,7 @@ const SuspensedContent = async ({
               <RdvBeneficiaireMediateurCard
                 key={activite.id}
                 activite={activite}
+                user={user}
               />
             ) : (
               <ActiviteMediateurCard key={activite.id} activite={activite} />

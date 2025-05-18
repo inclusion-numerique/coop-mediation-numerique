@@ -321,6 +321,11 @@ export const givenRdv = ({
 >): BeneficiaireRdv => ({
   id: id ?? randomIntegerId(),
   createdBy: 'todo',
+  url: 'https://demo.rdv.anct.gouv.fr/admin/organisations/856/rdvs/11123',
+  motif: {
+    id: randomIntegerId(),
+    name: 'Accompagnement individuel',
+  },
   date: date ?? new Date(Date.now() - 1000 * 60 * 60 * 24),
   durationInMinutes: durationInMinutes ?? 120,
   status: status ?? 'unknown',

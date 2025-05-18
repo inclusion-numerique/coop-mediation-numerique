@@ -1,3 +1,5 @@
+import { groupActivitesAndRdvsByDate } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
+import { testSessionUser } from '@app/web/test/testSessionUser'
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
 import MesActivitesListePage from './MesActivitesListePage'
@@ -8,7 +10,6 @@ import {
   activitesForModalStories,
   rdvsForStories,
 } from './storybook/ActiviteDetailsStoriesData'
-import { groupActivitesAndRdvsByDate } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 
 const TemplateListe = ({ data }: { data: ActivitesListPageData }) => (
   <MesActivitesListeLayout vue="liste">
@@ -57,6 +58,7 @@ const dataAvecActivites = {
     activites: activitesForModalStories,
     rdvs: rdvsForStories,
   }),
+  user: testSessionUser,
 } satisfies ActivitesListPageData
 
 export const AvecActivites: Story = {

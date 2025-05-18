@@ -6,12 +6,12 @@ export const dureeAsString = (duree: number): string => {
   const minutes = Math.round(duree % 60)
 
   if (hours === 0) {
-    return `${minutes} min`
+    return `${minutes}mn`
   }
 
   if (minutes === 0) {
-    return `${hours} h`
+    return `${hours}h`
   }
 
-  return `${hours} h ${minutes}`
+  return `${hours}h${minutes}`
 }
