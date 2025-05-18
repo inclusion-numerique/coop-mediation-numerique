@@ -159,7 +159,7 @@ export const groupActivitesAndRdvsByDate = ({
   activites: ActiviteForList[]
   rdvs: BeneficiaireRdv[]
 }): ActivitesAndRdvsByDate[] => {
-  const byDateRecord = [...activites, ...rdvs].reduce<
+  const byDateRecord = [...rdvs, ...activites].reduce<
     Record<string, (ActiviteForList | BeneficiaireRdv)[]>
   >((accumulator, activity) => {
     const date = dateAsIsoDay(activity.date)
@@ -170,8 +170,13 @@ export const groupActivitesAndRdvsByDate = ({
     return accumulator
   }, {})
 
-  return Object.entries(byDateRecord).map(([date, groupedActivites]) => ({
-    date,
-    activites: groupedActivites,
-  }))
+  return (
+    Object.entries(byDateRecord)
+      .map(([date, groupedActivites]) => ({
+        date,
+        activites: groupedActivites,
+      }))
+      // sort by date desc
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  )
 }

@@ -1,14 +1,18 @@
+import { BeneficiaireRdv } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getBeneficiaireRdvsList'
+import { v4 } from 'uuid'
 import { createBeneficiairesForParticipantsAnonymes } from '../../../../../beneficiaire/createBeneficiairesForParticipantsAnonymes'
 import { participantsAnonymesDefault } from '../../cra/collectif/validation/participantsAnonymes'
 import { ActiviteForList } from '../db/activitesQueries'
+
+const yesterday = new Date(Date.now() - 1000 * 60 * 60 * 24)
 
 export const activiteIndividuelleInfosMinimum = {
   type: 'Individuel',
   id: '1',
   mediateurId: '2',
-  creation: new Date('2024-03-22'),
-  modification: new Date('2024-03-22'),
-  date: new Date('2024-03-22'),
+  creation: yesterday,
+  modification: yesterday,
+  date: yesterday,
   duree: 90,
   thematiques: [
     'CreerAvecLeNumerique',
@@ -59,9 +63,9 @@ export const activiteIndividuelleBeneficiaireSuivi = {
   type: 'Individuel',
   id: '1',
   mediateurId: '2',
-  creation: new Date('2024-03-22'),
-  modification: new Date('2024-03-22'),
-  date: new Date('2024-03-22'),
+  creation: yesterday,
+  modification: yesterday,
+  date: yesterday,
   duree: 120,
   thematiques: ['NavigationSurInternet', 'Email'],
   notes: null,
@@ -104,9 +108,9 @@ export const activiteIndividuelleBeneficiaireAnonyme = {
   type: 'Individuel',
   id: '1',
   mediateurId: '2',
-  creation: new Date('2024-03-22'),
-  modification: new Date('2024-03-22'),
-  date: new Date('2024-03-22'),
+  creation: yesterday,
+  modification: yesterday,
+  date: yesterday,
   duree: 120,
   thematiques: ['NavigationSurInternet', 'Email'],
   notes:
@@ -150,9 +154,9 @@ export const activiteCollectifInfosRepliees = {
   type: 'Collectif',
   id: '1',
   mediateurId: '2',
-  creation: new Date('2024-03-22'),
-  modification: new Date('2024-03-22'),
-  date: new Date('2024-03-22'),
+  creation: yesterday,
+  modification: yesterday,
+  date: yesterday,
   duree: 120,
   thematiques: ['NavigationSurInternet', 'Email'],
   notes:
@@ -214,9 +218,9 @@ export const activiteCollectifInfosDepliees = {
   type: 'Collectif',
   id: '1',
   mediateurId: '2',
-  creation: new Date('2024-07-22'),
-  modification: new Date('2024-07-22'),
-  date: new Date('2024-07-22'),
+  creation: yesterday,
+  modification: yesterday,
+  date: yesterday,
   duree: 120,
   thematiques: ['NavigationSurInternet', 'Email'],
   notes: null,
@@ -305,10 +309,82 @@ export const activiteCollectifInfosDepliees = {
   niveau: 'Debutant',
 } satisfies ActiviteForList
 
+const randomIntegerId = () => Math.floor(Math.random() * 1000000)
+
+export const givenRdv = ({
+  durationInMinutes,
+  id,
+  status,
+  date,
+}: Partial<
+  Pick<BeneficiaireRdv, 'id' | 'durationInMinutes' | 'status' | 'date'>
+>): BeneficiaireRdv => ({
+  id: id ?? randomIntegerId(),
+  createdBy: 'todo',
+  date: date ?? new Date(Date.now() - 1000 * 60 * 60 * 24),
+  durationInMinutes: durationInMinutes ?? 120,
+  status: status ?? 'unknown',
+  agents: [
+    {
+      id: randomIntegerId(),
+      firstName: 'John',
+      lastName: 'Médiateur',
+      displayName: 'John Médiateur',
+      email: 'john.mediateur@example.com',
+    },
+  ],
+  participations: [
+    {
+      id: randomIntegerId(),
+      status: status ?? 'unknown',
+      sendReminderNotification: false,
+      sendLifecycleNotifications: false,
+      user: {
+        id: randomIntegerId(),
+        firstName: 'Carlos',
+        lastName: 'Bénéficiaire',
+        displayName: 'Carlos Bénéficiaire',
+        email: 'carlos.beneficiaire@example.com',
+      },
+    },
+  ],
+})
+
+const rdvDansLeFutur = givenRdv({
+  date: new Date(Date.now() + 1000 * 60 * 60 * 24),
+})
+
+const rdvPasse = givenRdv({})
+
+const rdvAnnuleParBeneficiaire = givenRdv({
+  status: 'excused',
+})
+
+const rdvAnnuleParMediateur = givenRdv({
+  status: 'revoked',
+})
+
+const rdvHonore = givenRdv({
+  status: 'seen',
+})
+
+const rdvLapin = givenRdv({
+  status: 'noshow',
+})
+
 export const activitesForModalStories = [
   activiteIndividuelleInfosMinimum,
   activiteIndividuelleBeneficiaireSuivi,
   activiteIndividuelleBeneficiaireAnonyme,
   activiteCollectifInfosRepliees,
   activiteCollectifInfosDepliees,
+]
+
+export const rdvsForStories = [
+  rdvDansLeFutur,
+  rdvPasse,
+  rdvAnnuleParBeneficiaire,
+  rdvAnnuleParMediateur,
+  rdvHonore,
+  rdvLapin,
 ]

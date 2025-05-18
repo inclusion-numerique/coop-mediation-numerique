@@ -4,7 +4,11 @@ import MesActivitesListePage from './MesActivitesListePage'
 import MesActivitesListeEmptyPage from './components/MesActivitesListeEmptyPage'
 import MesActivitesListeLayout from './components/MesActivitesListeLayout'
 import { ActivitesListPageData } from './getActivitesListPageData'
-import { activitesForModalStories } from './storybook/ActiviteDetailsStoriesData'
+import {
+  activitesForModalStories,
+  rdvsForStories,
+} from './storybook/ActiviteDetailsStoriesData'
+import { groupActivitesAndRdvsByDate } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 
 const TemplateListe = ({ data }: { data: ActivitesListPageData }) => (
   <MesActivitesListeLayout vue="liste">
@@ -42,11 +46,17 @@ const dataAvecActivites = {
     moreResults: 0,
     totalPages: 1,
     activites: activitesForModalStories,
+    page: 1,
+    pageSize: 20,
   },
   activiteDates: {
     first: new Date('2024-03-02'),
     last: new Date('2024-08-30'),
   },
+  activitesByDate: groupActivitesAndRdvsByDate({
+    activites: activitesForModalStories,
+    rdvs: rdvsForStories,
+  }),
 } satisfies ActivitesListPageData
 
 export const AvecActivites: Story = {

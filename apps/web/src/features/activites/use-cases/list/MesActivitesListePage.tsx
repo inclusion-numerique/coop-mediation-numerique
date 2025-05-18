@@ -7,6 +7,7 @@ import ActiviteMediateurCard from './components/ActiviteMediateurCard'
 import { getActivitesResultCountLabel } from './components/getActivitesResultCountLabel'
 import { groupActivitesByDate } from './db/activitesQueries'
 import { ActivitesListPageData } from './getActivitesListPageData'
+import RdvBeneficiaireMediateurCard from './components/RdvBeneficiaireMediateurCard'
 
 const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
 
@@ -15,11 +16,7 @@ const SuspensedContent = async ({
 }: {
   data: Promise<ActivitesListPageData>
 }) => {
-  const { searchParams, searchResult, isFiltered } = await data
-
-  const activitesByDate = groupActivitesByDate({
-    activites: searchResult.activites,
-  })
+  const { searchParams, searchResult, isFiltered, activitesByDate } = await data
 
   const baseHref = '/coop/mes-activites'
   return (
@@ -32,9 +29,16 @@ const SuspensedContent = async ({
           <h3 className="fr-text--xs fr-text-mention--grey fr-text--bold fr-text--uppercase fr-my-4v">
             {formatActiviteDayDate(date)}
           </h3>
-          {activites.map((activite) => (
-            <ActiviteMediateurCard key={activite.id} activite={activite} />
-          ))}
+          {activites.map((activite) =>
+            'status' in activite ? (
+              <RdvBeneficiaireMediateurCard
+                key={activite.id}
+                activite={activite}
+              />
+            ) : (
+              <ActiviteMediateurCard key={activite.id} activite={activite} />
+            ),
+          )}
         </Fragment>
       ))}
       <PaginationNavWithPageSizeSelect

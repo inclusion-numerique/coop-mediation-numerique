@@ -1,6 +1,9 @@
+import { getBeneficiaireRdvsList } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getBeneficiaireRdvsList'
 import { isEmptySearchParams } from '@app/web/libs/data-table/isEmptySearchParams'
+import { getOptionalStartOfDay } from '@app/web/utils/getDatePeriodBounds'
 import { ActivitesDataTableSearchParams } from './components/ActivitesDataTable'
 import { getFirstAndLastActiviteDate } from './db/getFirstAndLastActiviteDate'
+import { groupActivitesAndRdvsByDate } from './db/activitesQueries'
 import { searchActivite } from './db/searchActivite'
 
 export const getActivitesListPageData = async ({
@@ -18,12 +21,35 @@ export const getActivitesListPageData = async ({
     getFirstAndLastActiviteDate({ mediateurIds: [mediateurId] }),
   ])
 
+  // If the list is paginated, we only fetch rdvs until the last activites date
+  const maxRdvDate = getOptionalStartOfDay(
+    searchResult.moreResults
+      ? (searchResult.activites.at(-1)?.date ?? null)
+      : null,
+  )
+
+  // If we are paginated and not on the first page, we only fetch rdvs until the first activite date
+  const minRdvDate =
+    searchResult.page > 1 ? (searchResult.activites.at(0)?.date ?? null) : null
+
+  const rdvs = await getBeneficiaireRdvsList({
+    user,
+    du: minRdvDate,
+    au: maxRdvDate,
+  })
+
+  const activitesByDate = groupActivitesAndRdvsByDate({
+    activites: searchResult.activites,
+    rdvs,
+  })
+
   return {
     isFiltered: !isEmptySearchParams(searchParams),
     searchResult,
     searchParams,
     mediateurId,
     activiteDates,
+    activitesByDate,
   }
 }
 
