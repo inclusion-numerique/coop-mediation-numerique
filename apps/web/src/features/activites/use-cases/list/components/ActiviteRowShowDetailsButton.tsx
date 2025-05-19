@@ -1,10 +1,10 @@
 'use client'
 
 import type { MouseEventHandler } from 'react'
-import { ActiviteForList } from '../db/activitesQueries'
+import { ActiviteListItem } from '../db/activitesQueries'
 import { ActiviteDetailsDynamicModal } from './ActiviteDetailsModal/ActiviteDetailsDynamicModal'
 
-const ActiviteRowShowDetailsButton = ({ row }: { row: ActiviteForList }) => {
+const ActiviteRowShowDetailsButton = ({ row }: { row: ActiviteListItem }) => {
   const open = ActiviteDetailsDynamicModal.useOpen()
 
   const onClick: MouseEventHandler = (event) => {

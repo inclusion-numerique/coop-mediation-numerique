@@ -1,9 +1,9 @@
+import { CreateCraModalDefinition } from '@app/web/features/activites/use-cases/cra/components/CreateCraModal/CreateCraModalDefinition'
+import { ActiviteListItem } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { Button } from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
 import React from 'react'
-import { CreateCraModalDefinition } from '../../cra/components/CreateCraModal/CreateCraModalDefinition'
-import { ActiviteForList } from '../db/activitesQueries'
-import ActiviteMediateurCard from './ActiviteMediateurCard'
+import ActiviteCard from './ActiviteCard'
 
 const ActiviteEmptyState = () => (
   <div className="fr-text--center fr-background-alt--blue-france fr-p-6w fr-border-radius--16">
@@ -27,7 +27,7 @@ const ActiviteEmptyState = () => (
 export const DernieresActivites = ({
   activites,
 }: {
-  activites: ActiviteForList[]
+  activites: ActiviteListItem[]
 }) => (
   <>
     <div className="fr-flex fr-flex-wrap fr-flex-gap-4v fr-align-items-center fr-justify-content-space-between fr-mb-3w">
@@ -45,8 +45,9 @@ export const DernieresActivites = ({
 
     {activites.length > 0 ? (
       activites.map((activite, index) => (
-        <ActiviteMediateurCard
+        <ActiviteCard
           key={activite.id}
+          variant="with-beneficiaire"
           activite={activite}
           displayDateDay
           stacked

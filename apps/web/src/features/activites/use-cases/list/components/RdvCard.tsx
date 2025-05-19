@@ -1,5 +1,6 @@
-import type { BeneficiaireRdv } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getBeneficiaireRdvsList'
+import type { Rdv } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getRdvs'
 import type { OAuthApiRdvStatus } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
+import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { dateAsTime } from '@app/web/utils/dateAsDayAndTime'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
@@ -9,6 +10,7 @@ import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { DefaultValues } from 'react-hook-form'
 import { CraIndividuelData } from '../../cra/individuel/validation/CraIndividuelValidation'
+import ActiviteCardSpacer from './ActiviteCardSpacer'
 import ActiviteOrRdvListCard from './ActiviteOrRdvListCard'
 
 type RdvStatusBadgeVariant = OAuthApiRdvStatus | 'past'
@@ -48,7 +50,7 @@ const createCraUrlFromRdv = ({
   date,
   durationInMinutes,
   participations,
-}: BeneficiaireRdv) => {
+}: Rdv) => {
   const participationBeneficiaireSuivi = participations.find(
     (participation) => !!participation.user.beneficiaire,
   )
@@ -67,13 +69,16 @@ const createCraUrlFromRdv = ({
   return `/coop/mes-activites/cra/individuel?v=${encodeSerializableState(defaultValues)}`
 }
 
-const RdvBeneficiaireMediateurCard = ({
+const RdvCard = ({
   activite,
   user,
+  displayBeneficiaire,
+  displayDate,
 }: {
-  activite: BeneficiaireRdv
-  displayDate?: boolean
+  activite: Rdv
   user: UserRdvAccount
+  displayBeneficiaire?: boolean
+  displayDate?: boolean
 }) => {
   const userRdvAgentId = user.rdvAccount?.id
 
@@ -100,7 +105,11 @@ const RdvBeneficiaireMediateurCard = ({
   const badgeVariant: RdvStatusBadgeVariant =
     status === 'unknown' && date < now ? 'past' : status
   const badge = (
-    <Badge small severity={statusBadgeProps[badgeVariant].severity}>
+    <Badge
+      small
+      severity={statusBadgeProps[badgeVariant].severity}
+      className="fr-mr-2v"
+    >
       {statusBadgeProps[badgeVariant].label}
     </Badge>
   )
@@ -120,16 +129,27 @@ const RdvBeneficiaireMediateurCard = ({
       enlargeLink
       contentTop={
         <>
-          Rendez-vous&nbsp;·&nbsp;
-          <span className="fr-icon-time-line fr-icon--sm " />
+          Rendez-vous
+          <ActiviteCardSpacer />
+          {displayDate && (
+            <>
+              le {dateAsDay(date)}
+              <ActiviteCardSpacer />
+            </>
+          )}
+          <span className="fr-icon-time-line fr-icon--xs " />
           &nbsp;
-          {startTime}&nbsp;-&nbsp;{endTime}
+          {startTime}&nbsp;à&nbsp;{endTime}
         </>
       }
       contentBottom={
-        <>
-          {motif.name} avec {participantsNames}
-        </>
+        displayBeneficiaire ? (
+          <>
+            {motif.name} avec {participantsNames}
+          </>
+        ) : (
+          motif.name
+        )
       }
       actions={
         <>
@@ -166,4 +186,4 @@ const RdvBeneficiaireMediateurCard = ({
   )
 }
 
-export default RdvBeneficiaireMediateurCard
+export default RdvCard

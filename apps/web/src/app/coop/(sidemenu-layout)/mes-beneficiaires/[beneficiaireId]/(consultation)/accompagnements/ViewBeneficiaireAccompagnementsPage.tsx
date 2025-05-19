@@ -1,47 +1,44 @@
 import BeneficiairePageNavigationBar from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/BeneficiairePageNavigationBar'
-import ActiviteBeneficiaireCard from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/ActiviteBeneficiaireCard'
-import ActiviteRdvBeneficiaireCard from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/ActiviteRdvBeneficiaireCard'
 import { BeneficiaireAccompagnementsPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getBeneficiaireAccompagnementsPageData'
+import ActiviteCard from '@app/web/features/activites/use-cases/list/components/ActiviteCard'
 import ActiviteDetailsModal from '@app/web/features/activites/use-cases/list/components/ActiviteDetailsModal/ActiviteDetailsModal'
-import { formatActiviteDayDate } from '@app/web/utils/activiteDayDateFormat'
-import { Fragment } from 'react'
+import RdvCard from '@app/web/features/activites/use-cases/list/components/RdvCard'
 
 const ViewBeneficiaireAccompagnementsPage = ({
-  data: { activitesByDate, beneficiaire, rdvs },
+  data: { activitesAndRdvs, beneficiaire, activites, user },
 }: {
   data: BeneficiaireAccompagnementsPageData
 }) => (
   <>
     <BeneficiairePageNavigationBar
       beneficiaireId={beneficiaire.id}
-      accompagnementsCount={beneficiaire._count.accompagnements + rdvs.length}
+      accompagnementsCount={activitesAndRdvs.length}
       current="accompagnements"
     />
-    {activitesByDate.length === 0 && (
+    {activitesAndRdvs.length === 0 && (
       <div className="fr-border-radius--8 fr-border  fr-py-8v fr-px-8v fr-mt-6v fr-text--center">
         <p className="fr-text--sm fr-mb-0">
           Aucun accompagnement pour le moment
         </p>
       </div>
     )}
-    {activitesByDate.map(({ date, activites }) => (
-      <Fragment key={new Date(date).toISOString()}>
-        <h3 className="fr-text--xs fr-text-mention--grey fr-text--bold fr-text--uppercase fr-my-4v">
-          {formatActiviteDayDate(date)}
-        </h3>
-        {activites.map((activite) =>
-          'agents' in activite ? (
-            <ActiviteRdvBeneficiaireCard
-              key={activite.id}
-              activite={activite}
-            />
-          ) : (
-            <ActiviteBeneficiaireCard key={activite.id} activite={activite} />
-          ),
-        )}
-      </Fragment>
-    ))}
-    {activitesByDate.length > 0 && <ActiviteDetailsModal />}
+    {activitesAndRdvs.map((activite) =>
+      'agents' in activite ? (
+        <RdvCard
+          key={activite.id}
+          activite={activite}
+          user={user}
+          displayDate
+        />
+      ) : (
+        <ActiviteCard
+          key={activite.id}
+          activite={activite}
+          variant="without-beneficiaire"
+        />
+      ),
+    )}
+    {activites.length > 0 && <ActiviteDetailsModal />}
   </>
 )
 

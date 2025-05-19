@@ -1,6 +1,7 @@
 import DataTable from '@app/web/libs/data-table/DataTable'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
+import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 import { SearchActiviteResult } from '../db/searchActivite'
 import ActiviteRowShowDetailsButton from './ActiviteRowShowDetailsButton'
 import {
@@ -8,7 +9,6 @@ import {
   ActivitesDataTableSearchParams,
 } from './ActivitesDataTable'
 import styles from './MesActivitesListePage.module.css'
-import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 
 const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
 

@@ -118,37 +118,23 @@ export const rdvServicePublicRouter = router({
           dossier_url: viewBeneficiaireUrl,
         } satisfies OauthRdvApiCreateRdvPlanInput
 
-        try {
-          console.log('POST RDV plans', {
-            input,
-            agent: {
-              id: oAuthCallUser.rdvAccount.id,
-            },
+        const result = await oAuthRdvApiCreateRdvPlan({
+          rdvAccount: oAuthCallUser.rdvAccount,
+          input,
+        })
+
+        // Update beneficiaire with id from RDV Service Public if needed
+        // The rest of beneficiaire data could be updated after
+        // the plan is created (on redirection), to fetch email, tel, etc... if needed
+
+        if (result.rdv_plan.user_id !== beneficiaire.rdvServicePublicId) {
+          await prismaClient.beneficiaire.update({
+            where: { id: beneficiaireId },
+            data: { rdvServicePublicId: result.rdv_plan.user_id },
           })
-
-          const result = await oAuthRdvApiCreateRdvPlan({
-            rdvAccount: oAuthCallUser.rdvAccount,
-            input,
-          })
-
-          // Update beneficiaire with id from RDV Service Public if needed
-          // The rest of beneficiaire data could be updated after
-          // the plan is created (on redirection), to fetch email, tel, etc... if needed
-
-          if (result.rdv_plan.user_id !== beneficiaire.rdvServicePublicId) {
-            await prismaClient.beneficiaire.update({
-              where: { id: beneficiaireId },
-              data: { rdvServicePublicId: result.rdv_plan.user_id },
-            })
-          }
-
-          return result
-        } catch (error) {
-          if (error instanceof AxiosError) {
-            console.error('POST RDV plans error', error.toJSON())
-          }
-          throw error
         }
+
+        return result
       },
     ),
 })

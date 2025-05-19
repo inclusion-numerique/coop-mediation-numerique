@@ -26,6 +26,10 @@ describe('getActivitesListPageData', () => {
       const data = await getActivitesListPageData({
         mediateurId: mediateurSansActivitesMediateurId,
         searchParams: {},
+        user: {
+          ...mediateurSansActivites,
+          rdvAccount: null,
+        },
       })
       expect(data).toEqual({
         mediateurId: mediateurSansActivitesMediateurId,
@@ -50,6 +54,10 @@ describe('getActivitesListPageData', () => {
       const data = await getActivitesListPageData({
         mediateurId: conseillerNumeriqueMediateurId,
         searchParams: {},
+        user: {
+          ...conseillerNumerique,
+          rdvAccount: null,
+        },
       })
 
       const sortedActivites = fixturesActivitesConseillerNumerique.sort(

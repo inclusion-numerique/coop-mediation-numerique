@@ -3,11 +3,9 @@ import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiair
 import { prismaClient } from '@app/web/prismaClient'
 import type { OAuthApiRdvStatus } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
 import { oAuthRdvApiListRdvs } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
-/**
- * Our domain model for reprensenting a list of RDVS owned by OAUTH RDV Service Public
- */
 import { getUserContextForOAuthApiCall } from '@app/web/rdv-service-public/getUserContextForRdvApiCall'
 import { rdvServicePublicOAuthConfig } from '@app/web/rdv-service-public/rdvServicePublicOauth'
+import type { UserId, UserRdvAccount } from '@app/web/utils/user'
 import type { Beneficiaire } from '@prisma/client'
 
 // Représente un bénéficiaire suivi côté coop qu'on a lié à un user de RDVSP
@@ -15,7 +13,10 @@ export type RdvUserBeneficiaire = {
   id: string
 }
 
-export type BeneficiaireRdv = {
+/**
+ * Our domain model for reprensenting a list of RDVS owned by OAUTH RDV Service Public
+ */
+export type Rdv = {
   id: number
   durationInMinutes: number
   date: Date
@@ -49,12 +50,12 @@ export type BeneficiaireRdv = {
   }[]
 }
 
-export const getBeneficiaireRdvsList = async ({
+export const getRdvs = async ({
   user,
   beneficiaire,
 }: {
   beneficiaire?: Pick<Beneficiaire, 'rdvServicePublicId'>
-  user: Pick<SessionUser, 'id' | 'rdvAccount'>
+  user: UserRdvAccount & UserId
   du: Date | null // TODO implement this
   au: Date | null // TODO implement this
 }) => {
@@ -127,7 +128,7 @@ export const getBeneficiaireRdvsList = async ({
             },
           }),
         ),
-      }) satisfies BeneficiaireRdv,
+      }) satisfies Rdv,
   )
 
   // beneficiaire ids côté RDVSP

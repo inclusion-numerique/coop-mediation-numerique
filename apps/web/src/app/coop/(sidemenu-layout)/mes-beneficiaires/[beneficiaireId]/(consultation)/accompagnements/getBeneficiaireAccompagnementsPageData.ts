@@ -1,12 +1,9 @@
-import { getBeneficiaireRdvsList } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getBeneficiaireRdvsList'
+import { getRdvs } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getRdvs'
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import { beneficiaireAccompagnementsCountSelect } from '@app/web/beneficiaire/beneficiaireQueries'
-import {
-  getAllActivites,
-  groupActivitesAndRdvsByDate,
-  groupActivitesByDate,
-} from '@app/web/features/activites/use-cases/list/db/activitesQueries'
+import { getAllActivites } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { prismaClient } from '@app/web/prismaClient'
+import type { UserId, UserRdvAccount } from '@app/web/utils/user'
 
 export const getBeneficiaireAccompagnementsPageData = async ({
   beneficiaireId,
@@ -16,7 +13,7 @@ export const getBeneficiaireAccompagnementsPageData = async ({
   beneficiaireId: string
   // The mediateur making the request (for security check)
   mediateurId: string
-  user: Pick<SessionUser, 'id' | 'rdvAccount'>
+  user: UserRdvAccount & UserId
 }) => {
   const beneficiaire = await prismaClient.beneficiaire.findUnique({
     where: {
@@ -41,17 +38,23 @@ export const getBeneficiaireAccompagnementsPageData = async ({
 
   const activites = await getAllActivites({ beneficiaireId, mediateurId })
 
-  const rdvs = await getBeneficiaireRdvsList({
+  const rdvs = await getRdvs({
     user,
     beneficiaire,
+    du: null,
+    au: null,
   })
 
-  const activitesByDate = groupActivitesAndRdvsByDate({ activites, rdvs })
+  const activitesAndRdvs = [...activites, ...rdvs].sort((a, b) => {
+    return a.date.getTime() - b.date.getTime()
+  })
 
   return {
     beneficiaire,
-    activitesByDate,
+    activites,
     rdvs,
+    activitesAndRdvs,
+    user,
   }
 }
 

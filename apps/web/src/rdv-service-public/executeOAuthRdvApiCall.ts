@@ -135,10 +135,7 @@ export const oAuthRdvApiListRdvs = async ({
   )
 
   // No filters in query param, post processing :
-
   const allRdvs = rdvsPerOrganisation.flatMap(({ rdvs }) => rdvs)
-
-  console.log('ALL RDVS', allRdvs)
 
   const filteredRdvs = beneficiaire
     ? allRdvs.filter((rdv) =>
@@ -147,8 +144,6 @@ export const oAuthRdvApiListRdvs = async ({
         ),
       )
     : allRdvs
-
-  console.log('filtered', filteredRdvs)
 
   return filteredRdvs
 }

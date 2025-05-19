@@ -7,7 +7,7 @@ import {
 import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
 import { prismaClient } from '@app/web/prismaClient'
 import {
-  ActiviteForList,
+  ActiviteListItem,
   activiteListSelect,
 } from '../../list/db/activitesQueries'
 import { CraCollectifData } from '../collectif/validation/CraCollectifValidation'
@@ -20,7 +20,7 @@ import {
 import { craDureeDataToMinutes } from './minutesToCraDuree'
 
 const nullActivite: Omit<
-  ActiviteForList,
+  ActiviteListItem,
   'id' | 'type' | 'mediateurId' | 'accompagnements' | 'date' | 'duree'
 > = {
   autonomie: null,

@@ -1,11 +1,11 @@
-import { getBeneficiaireRdvsList } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getBeneficiaireRdvsList'
+import { getRdvs } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getRdvs'
 import { isEmptySearchParams } from '@app/web/libs/data-table/isEmptySearchParams'
 import { getOptionalStartOfDay } from '@app/web/utils/getDatePeriodBounds'
+import type { UserId, UserRdvAccount } from '@app/web/utils/user'
 import { ActivitesDataTableSearchParams } from './components/ActivitesDataTable'
 import { groupActivitesAndRdvsByDate } from './db/activitesQueries'
 import { getFirstAndLastActiviteDate } from './db/getFirstAndLastActiviteDate'
 import { searchActivite } from './db/searchActivite'
-import type { UserId, UserRdvAccount } from '@app/web/utils/user'
 
 export const getActivitesListPageData = async ({
   mediateurId,
@@ -35,7 +35,7 @@ export const getActivitesListPageData = async ({
   const minRdvDate =
     searchResult.page > 1 ? (searchResult.activites.at(0)?.date ?? null) : null
 
-  const rdvs = await getBeneficiaireRdvsList({
+  const rdvs = await getRdvs({
     user,
     du: minRdvDate,
     au: maxRdvDate,

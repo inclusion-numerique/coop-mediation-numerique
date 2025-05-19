@@ -1,14 +1,14 @@
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
+import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 import { Spinner } from '@app/web/ui/Spinner'
 import { formatActiviteDayDate } from '@app/web/utils/activiteDayDateFormat'
 import { Fragment, Suspense } from 'react'
-import ActiviteMediateurCard from './components/ActiviteMediateurCard'
-import RdvBeneficiaireMediateurCard from './components/RdvBeneficiaireMediateurCard'
+import ActiviteCard from './components/ActiviteCard'
+import RdvCard from './components/RdvCard'
 import { getActivitesResultCountLabel } from './components/getActivitesResultCountLabel'
 import { groupActivitesByDate } from './db/activitesQueries'
 import { ActivitesListPageData } from './getActivitesListPageData'
-import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 
 const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
 
@@ -33,13 +33,18 @@ const SuspensedContent = async ({
           </h3>
           {activites.map((activite) =>
             'status' in activite ? (
-              <RdvBeneficiaireMediateurCard
+              <RdvCard
                 key={activite.id}
                 activite={activite}
                 user={user}
+                displayBeneficiaire
               />
             ) : (
-              <ActiviteMediateurCard key={activite.id} activite={activite} />
+              <ActiviteCard
+                key={activite.id}
+                activite={activite}
+                variant="with-beneficiaire"
+              />
             ),
           )}
         </Fragment>

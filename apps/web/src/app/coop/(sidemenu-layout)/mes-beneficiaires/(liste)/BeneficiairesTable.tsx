@@ -6,8 +6,8 @@ import { SearchBeneficiaireResult } from '@app/web/beneficiaire/searchBeneficiai
 import DataTable from '@app/web/libs/data-table/DataTable'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
-import styles from './MesBeneficiairesListePage.module.css'
 import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
+import styles from './MesBeneficiairesListePage.module.css'
 
 const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
 

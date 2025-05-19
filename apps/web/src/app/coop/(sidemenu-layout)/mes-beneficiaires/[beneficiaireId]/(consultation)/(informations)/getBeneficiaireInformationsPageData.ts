@@ -1,4 +1,4 @@
-import { getBeneficiaireRdvsList } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getBeneficiaireRdvsList'
+import { getRdvs } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getRdvs'
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import {
   beneficiaireAccompagnementsCountSelect,
@@ -57,9 +57,11 @@ export const getBeneficiaireInformationsPageData = async ({
     mediateurId,
   })
 
-  const rdvs = await getBeneficiaireRdvsList({
+  const rdvs = await getRdvs({
     user,
     beneficiaire,
+    du: null,
+    au: null,
   })
 
   return {

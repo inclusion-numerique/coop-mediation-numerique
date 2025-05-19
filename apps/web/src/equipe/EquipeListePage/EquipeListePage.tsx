@@ -6,6 +6,7 @@ import DataSearchBar from '@app/web/libs/data-table/DataSearchBar'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import SortSelect from '@app/web/libs/data-table/SortSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
+import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
@@ -13,7 +14,6 @@ import React from 'react'
 import LeaveTeamButton from './LeaveTeamButton'
 import { MediateurList } from './MediateurList'
 import { MonEquipePageData } from './getEquipePageData'
-import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 
 const pluralize = (expression: string, count: number) =>
   expression

@@ -4,7 +4,7 @@ import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { typeActiviteLabels } from '../../cra/fields/type-activite'
 import type { ActivitesDataTableConfiguration } from '../db/ActivitesDataTableConfiguration'
-import type { ActiviteForList } from '../db/activitesQueries'
+import type { ActiviteListItem } from '../db/activitesQueries'
 import type { ActivitesFilters } from '../validation/ActivitesFilters'
 import styles from './MesActivitesListePage.module.css'
 
@@ -27,7 +27,7 @@ export const ActivitesDataTable = {
       name: 'type',
       header: 'Type',
       csvHeaders: ['Type'],
-      csvValues: ({ type }: ActiviteForList) => [typeActiviteLabels[type]],
+      csvValues: ({ type }: ActiviteListItem) => [typeActiviteLabels[type]],
       cell: ({ type }) => typeActiviteLabels[type],
       cellClassName: styles.typeCell,
       sortable: true,

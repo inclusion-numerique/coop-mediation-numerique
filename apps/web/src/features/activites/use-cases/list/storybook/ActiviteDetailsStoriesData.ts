@@ -1,8 +1,8 @@
-import { BeneficiaireRdv } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getBeneficiaireRdvsList'
+import { Rdv } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getRdvs'
 import { v4 } from 'uuid'
 import { createBeneficiairesForParticipantsAnonymes } from '../../../../../beneficiaire/createBeneficiairesForParticipantsAnonymes'
 import { participantsAnonymesDefault } from '../../cra/collectif/validation/participantsAnonymes'
-import { ActiviteForList } from '../db/activitesQueries'
+import { ActiviteListItem } from '../db/activitesQueries'
 
 const yesterday = new Date(Date.now() - 1000 * 60 * 60 * 24)
 
@@ -57,7 +57,7 @@ export const activiteIndividuelleInfosMinimum = {
   precisionsDemarche: null,
   titreAtelier: null,
   niveau: null,
-} satisfies ActiviteForList
+} satisfies ActiviteListItem
 
 export const activiteIndividuelleBeneficiaireSuivi = {
   type: 'Individuel',
@@ -101,7 +101,7 @@ export const activiteIndividuelleBeneficiaireSuivi = {
   precisionsDemarche: null,
   titreAtelier: null,
   niveau: null,
-} satisfies ActiviteForList
+} satisfies ActiviteListItem
 
 // Refactored "Individuel" type activity with an anonymous beneficiary
 export const activiteIndividuelleBeneficiaireAnonyme = {
@@ -147,7 +147,7 @@ export const activiteIndividuelleBeneficiaireAnonyme = {
   precisionsDemarche: null,
   titreAtelier: null,
   niveau: null,
-} satisfies ActiviteForList
+} satisfies ActiviteListItem
 
 // Refactored "Collectif" type activity with minimal information
 export const activiteCollectifInfosRepliees = {
@@ -211,7 +211,7 @@ export const activiteCollectifInfosRepliees = {
   precisionsDemarche: null,
   titreAtelier: 'Atelier de découverte de la vacuité de toute chose',
   niveau: 'Debutant',
-} satisfies ActiviteForList
+} satisfies ActiviteListItem
 
 // Refactored "Collectif" type activity with expanded information
 export const activiteCollectifInfosDepliees = {
@@ -237,7 +237,7 @@ export const activiteCollectifInfosDepliees = {
         statutSocialNonCommunique: 40,
       },
     }).map(
-      (beneficiaire, index): ActiviteForList['accompagnements'][number] => ({
+      (beneficiaire, index): ActiviteListItem['accompagnements'][number] => ({
         premierAccompagnement: false,
         beneficiaire: {
           ...beneficiaire,
@@ -307,7 +307,7 @@ export const activiteCollectifInfosDepliees = {
   precisionsDemarche: null,
   titreAtelier: null,
   niveau: 'Debutant',
-} satisfies ActiviteForList
+} satisfies ActiviteListItem
 
 const randomIntegerId = () => Math.floor(Math.random() * 1000000)
 
@@ -317,8 +317,8 @@ export const givenRdv = ({
   status,
   date,
 }: Partial<
-  Pick<BeneficiaireRdv, 'id' | 'durationInMinutes' | 'status' | 'date'>
->): BeneficiaireRdv => ({
+  Pick<Rdv, 'id' | 'durationInMinutes' | 'status' | 'date'>
+>): Rdv => ({
   id: id ?? randomIntegerId(),
   createdBy: 'todo',
   url: 'https://demo.rdv.anct.gouv.fr/admin/organisations/856/rdvs/11123',
@@ -350,6 +350,7 @@ export const givenRdv = ({
         lastName: 'Bénéficiaire',
         displayName: 'Carlos Bénéficiaire',
         email: 'carlos.beneficiaire@example.com',
+        beneficiaire: null,
       },
     },
   ],
