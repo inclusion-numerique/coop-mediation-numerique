@@ -8,6 +8,7 @@ import RdvBeneficiaireMediateurCard from './components/RdvBeneficiaireMediateurC
 import { getActivitesResultCountLabel } from './components/getActivitesResultCountLabel'
 import { groupActivitesByDate } from './db/activitesQueries'
 import { ActivitesListPageData } from './getActivitesListPageData'
+import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 
 const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
 
@@ -48,7 +49,7 @@ const SuspensedContent = async ({
         totalPages={searchResult.totalPages}
         baseHref={baseHref}
         searchParams={searchParams}
-        defaultPageSize={10}
+        defaultPageSize={DEFAULT_PAGE_SIZE}
         pageSizeOptions={pageSizeOptions}
       />
     </>

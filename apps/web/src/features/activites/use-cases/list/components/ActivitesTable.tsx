@@ -8,6 +8,7 @@ import {
   ActivitesDataTableSearchParams,
 } from './ActivitesDataTable'
 import styles from './MesActivitesListePage.module.css'
+import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 
 const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
 
@@ -31,7 +32,7 @@ const ActivitesTable = ({
       rowButtonComponent={ActiviteRowShowDetailsButton}
     />
     <PaginationNavWithPageSizeSelect
-      defaultPageSize={10}
+      defaultPageSize={DEFAULT_PAGE_SIZE}
       pageSizeOptions={pageSizeOptions}
       totalPages={totalPages}
       searchParams={searchParams}

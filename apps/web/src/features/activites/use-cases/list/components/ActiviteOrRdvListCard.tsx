@@ -11,6 +11,9 @@ const ActiviteOrRdvListCard = ({
   illustrationSrc,
   enlargeButton,
   enlargeLink,
+  stacked,
+  firstOfStack,
+  lastOfStack,
 }: {
   illustrationSrc: string
   contentTop: ReactNode
@@ -18,13 +21,21 @@ const ActiviteOrRdvListCard = ({
   actions?: ReactNode
   enlargeButton?: boolean
   enlargeLink?: boolean
+  stacked?: boolean // Cards can be stacked, they will not have any margin between them and borders are collapsed
+  firstOfStack?: boolean // The first card of a stack will have top border radius
+  lastOfStack?: boolean // The last card of a stack will have bottom border radius
 }) => (
   <div
     className={classNames(
-      'fr-border fr-border-radius--8 fr-py-4v fr-px-6v fr-flex fr-align-items-center fr-flex-gap-4v fr-mt-4v fr-border-radius--8',
+      'fr-border fr-py-4v fr-px-6v fr-flex fr-align-items-center fr-flex-gap-4v fr-flex-grow-1',
       {
         'fr-enlarge-button': enlargeButton,
         'fr-enlarge-link': enlargeLink,
+        'fr-mt-4v': !stacked || firstOfStack,
+        'fr-mt-minus-1px': stacked && !firstOfStack,
+        'fr-border-radius--8': !stacked,
+        'fr-border-radius-top--8': stacked && firstOfStack,
+        'fr-border-radius-bottom--8': stacked && lastOfStack,
       },
     )}
   >

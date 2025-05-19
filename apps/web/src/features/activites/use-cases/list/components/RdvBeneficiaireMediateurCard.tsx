@@ -141,7 +141,7 @@ const RdvBeneficiaireMediateurCard = ({
               linkProps={{
                 href: newCraLink,
               }}
-              title="Compléter un CRA"
+              title="Compléter un CRA à partir de ce RDV"
             >
               {/* Layout is broken with fr-enlarge-link if icon is in button props, we put it in the title instead */}
               <span className="fr-icon-edit-line fr-icon--sm fr-mr-1-5v" />{' '}

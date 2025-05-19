@@ -33,7 +33,7 @@ export const DernieresActivites = ({
     <div className="fr-flex fr-flex-wrap fr-flex-gap-4v fr-align-items-center fr-justify-content-space-between fr-mb-3w">
       <h2 className="fr-h5 fr-text-mention--grey fr-mb-0">
         <span className="ri-service-line fr-mr-1w" aria-hidden />
-        Mes 3 dernières activités enregistrés
+        Mes 3 dernières activités enregistrées
       </h2>
       <Link
         className="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
@@ -44,11 +44,14 @@ export const DernieresActivites = ({
     </div>
 
     {activites.length > 0 ? (
-      activites.map((activite) => (
+      activites.map((activite, index) => (
         <ActiviteMediateurCard
           key={activite.id}
           activite={activite}
-          displayDate
+          displayDateDay
+          stacked
+          firstOfStack={index === 0}
+          lastOfStack={index === activites.length - 1}
         />
       ))
     ) : (

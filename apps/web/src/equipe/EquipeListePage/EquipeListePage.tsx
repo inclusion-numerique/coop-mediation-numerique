@@ -13,6 +13,7 @@ import React from 'react'
 import LeaveTeamButton from './LeaveTeamButton'
 import { MediateurList } from './MediateurList'
 import { MonEquipePageData } from './getEquipePageData'
+import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 
 const pluralize = (expression: string, count: number) =>
   expression
@@ -169,7 +170,7 @@ const EquipeListePage = ({
         )}
         <PaginationNavWithPageSizeSelect
           className="fr-mt-12v"
-          defaultPageSize={10}
+          defaultPageSize={DEFAULT_PAGE_SIZE}
           pageSizeOptions={pageSizeOptions}
           totalPages={totalPages}
           baseHref={baseHrefSearch}

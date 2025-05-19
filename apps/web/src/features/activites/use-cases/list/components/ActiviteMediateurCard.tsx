@@ -2,16 +2,15 @@ import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import ActiviteCardOpenModalLink from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/ActiviteCardOpenModalLink'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import { thematiqueLabels } from '@app/web/features/activites/use-cases/cra/fields/thematique'
-import { formatActiviteDayDate } from '@app/web/utils/activiteDayDateFormat'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { dureeAsString } from '@app/web/utils/dureeAsString'
-import classNames from 'classnames'
 import {
   typeActiviteIllustrations,
   typeActiviteLabels,
-} from '../../cra/fields/type-activite'
-import { ActiviteForList } from '../db/activitesQueries'
-import ActiviteOrRdvListCard from './ActiviteOrRdvListCard'
+} from '@app/web/features/activites/use-cases/cra/fields/type-activite'
+import { ActiviteForList } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
+import ActiviteOrRdvListCard from '@app/web/features/activites/use-cases/list/components/ActiviteOrRdvListCard'
+import { Fragment } from 'react'
 
 const MAX_THEMATIQUES_DISPLAYED = 2
 
@@ -20,8 +19,16 @@ const MAX_THEMATIQUES_DISPLAYED = 2
  */
 const ActiviteMediateurCard = ({
   activite,
+  stacked,
+  firstOfStack,
+  lastOfStack,
+  displayDateDay,
 }: {
   activite: ActiviteForList
+  stacked?: boolean
+  firstOfStack?: boolean
+  lastOfStack?: boolean
+  displayDateDay?: boolean
 }) => {
   const { type, titreAtelier, duree, accompagnements, date, thematiques } =
     activite
@@ -39,6 +46,9 @@ const ActiviteMediateurCard = ({
     <ActiviteOrRdvListCard
       enlargeButton
       illustrationSrc={typeActiviteIllustrations[type] ?? ''}
+      stacked={stacked}
+      firstOfStack={firstOfStack}
+      lastOfStack={lastOfStack}
       contentTop={
         <>
           {typeActiviteLabels[type]}
@@ -49,8 +59,12 @@ const ActiviteMediateurCard = ({
               {spacer}
             </>
           ) : null}
-          le {dateAsDay(date)}
-          {spacer}
+          {displayDateDay ? (
+            <>
+              le {dateAsDay(date)}
+              {spacer}
+            </>
+          ) : null}
           <span className="fr-icon-time-line fr-icon--xs" />
           &nbsp;
           {dureeAsString(duree)}
@@ -59,10 +73,10 @@ const ActiviteMediateurCard = ({
       contentBottom={
         <div className="fr-text--medium">
           {firstThematiques.map((thematique, index) => (
-            <>
+            <Fragment key={thematique}>
               {index > 0 && spacer}
               {thematiqueLabels[thematique]}
-            </>
+            </Fragment>
           ))}
           {hasMoreThematiques ? (
             <>

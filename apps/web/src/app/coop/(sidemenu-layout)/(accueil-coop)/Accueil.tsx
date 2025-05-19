@@ -68,9 +68,6 @@ export const Accueil = ({
       {isMediateur && (
         <>
           <section className="fr-my-6w">
-            <Statistiques {...statistiques} />
-          </section>
-          <section className="fr-my-6w">
             <DernieresActivites activites={activites} />
           </section>
           <hr className="fr-separator-1px" />
