@@ -1,7 +1,12 @@
 import { getActivitesListPageData } from '@app/web/features/activites/use-cases/list/getActivitesListPageData'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { countMediateursCoordonnesBy } from '@app/web/mediateurs/countMediateursCoordonnesBy'
-import type { UserDisplayName, UserProfile } from '@app/web/utils/user'
+import type {
+  UserDisplayName,
+  UserProfile,
+  UserRdvAccount,
+  UserId,
+} from '@app/web/utils/user'
 import { getTotalCountsStats } from '../mes-statistiques/_queries/getTotalCountsStats'
 
 const activitesFiltersLastDays = (daysCount: number) => {
@@ -33,7 +38,7 @@ const EMPTY_STATISTIQUES = {
   },
 }
 export const getAccueilPageDataFor = async (
-  user: UserDisplayName & UserProfile,
+  user: UserDisplayName & UserProfile & UserId & UserRdvAccount,
 ) => {
   const mediateurs = await countMediateursCoordonnesBy(user.coordinateur)
 
@@ -55,6 +60,7 @@ export const getAccueilPageDataFor = async (
     } = await getActivitesListPageData({
       mediateurId: user.mediateur.id,
       searchParams: { lignes: '3' },
+      user,
     })
 
     return {

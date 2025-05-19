@@ -9,6 +9,10 @@ export type UserDisplayName = Pick<
   'firstName' | 'lastName' | 'email' | 'name'
 >
 
+export type UserId = Pick<SessionUser, 'id'>
+
+export type UserRdvAccount = Pick<SessionUser, 'rdvAccount'>
+
 export const getUserDisplayName = (user: UserDisplayName): string => {
   const name = `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim()
   if (name) return name

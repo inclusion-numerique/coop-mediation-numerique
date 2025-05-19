@@ -1,16 +1,19 @@
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
+import { prismaClient } from '@app/web/prismaClient'
 import type { OAuthApiRdvStatus } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
 import { oAuthRdvApiListRdvs } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
 /**
  * Our domain model for reprensenting a list of RDVS owned by OAUTH RDV Service Public
  */
 import { getUserContextForOAuthApiCall } from '@app/web/rdv-service-public/getUserContextForRdvApiCall'
-import {
-  rdvOauthLinkAccountFlowUrl,
-  rdvServicePublicOAuthConfig,
-} from '@app/web/rdv-service-public/rdvServicePublicOauth'
+import { rdvServicePublicOAuthConfig } from '@app/web/rdv-service-public/rdvServicePublicOauth'
 import type { Beneficiaire } from '@prisma/client'
+
+// Représente un bénéficiaire suivi côté coop qu'on a lié à un user de RDVSP
+export type RdvUserBeneficiaire = {
+  id: string
+}
 
 export type BeneficiaireRdv = {
   id: number
@@ -41,6 +44,7 @@ export type BeneficiaireRdv = {
       lastName: string
       displayName: string
       email: string | null
+      beneficiaire: RdvUserBeneficiaire | null // coop uuidv4 du bénéficiaire suivi
     }
   }[]
 }
@@ -65,7 +69,7 @@ export const getBeneficiaireRdvsList = async ({
     beneficiaire,
   })
 
-  return rdvServicePublicRdvs.map(
+  const beneficiairesRdvs = rdvServicePublicRdvs.map(
     ({
       id,
       duration_in_min,
@@ -119,9 +123,46 @@ export const getBeneficiaireRdvsList = async ({
                 nom: user.last_name,
               }),
               email: user.email || null,
+              beneficiaire: null as RdvUserBeneficiaire | null,
             },
           }),
         ),
       }) satisfies BeneficiaireRdv,
   )
+
+  // beneficiaire ids côté RDVSP
+  const rdvUserIds = beneficiairesRdvs.flatMap(({ participations }) =>
+    participations.map(({ user }) => user.id),
+  )
+
+  // beneficiaire suivis côté coop avec un lien d'id avec RDVSP
+  const beneficiaires = await prismaClient.beneficiaire.findMany({
+    where: {
+      rdvServicePublicId: { in: rdvUserIds },
+    },
+    select: {
+      id: true,
+      rdvServicePublicId: true,
+    },
+  })
+
+  // Map beneficiaire ids for o(1) lookup
+  const beneficiaireMap = new Map(
+    beneficiaires.map((beneficiaire) => [
+      beneficiaire.rdvServicePublicId,
+      beneficiaire,
+    ]),
+  )
+
+  // Update beneficiaireId in beneficiairesRdvs
+  for (const { participations } of beneficiairesRdvs) {
+    for (const { user } of participations) {
+      const beneficiaire = beneficiaireMap.get(user.id)
+      if (beneficiaire) {
+        user.beneficiaire = { id: beneficiaire.id }
+      }
+    }
+  }
+
+  return beneficiairesRdvs
 }

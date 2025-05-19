@@ -27,7 +27,7 @@ const SuspensedContent = async ({
       </p>
       {activitesByDate.map(({ date, activites }) => (
         <Fragment key={new Date(date).toISOString()}>
-          <h3 className="fr-text--xs fr-text-mention--grey fr-text--bold fr-text--uppercase fr-my-4v">
+          <h3 className="fr-text--xs fr-text-mention--grey fr-text--bold fr-text--uppercase fr-mt-6v fr-mb-4v">
             {formatActiviteDayDate(date)}
           </h3>
           {activites.map((activite) =>

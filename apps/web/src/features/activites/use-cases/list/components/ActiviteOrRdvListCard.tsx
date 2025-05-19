@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import { ReactNode } from 'react'
 
 /**
@@ -8,13 +9,25 @@ const ActiviteOrRdvListCard = ({
   contentBottom,
   contentTop,
   illustrationSrc,
+  enlargeButton,
+  enlargeLink,
 }: {
   illustrationSrc: string
   contentTop: ReactNode
   contentBottom: ReactNode
   actions?: ReactNode
+  enlargeButton?: boolean
+  enlargeLink?: boolean
 }) => (
-  <div className="fr-border fr-border-radius--8 fr-py-4v fr-px-6v fr-flex fr-align-items-center fr-flex-gap-4v fr-my-2v fr-enlarge-button fr-border-radius--8">
+  <div
+    className={classNames(
+      'fr-border fr-border-radius--8 fr-py-4v fr-px-6v fr-flex fr-align-items-center fr-flex-gap-4v fr-mt-4v fr-border-radius--8',
+      {
+        'fr-enlarge-button': enlargeButton,
+        'fr-enlarge-link': enlargeLink,
+      },
+    )}
+  >
     <div className="fr-background-alt--blue-france fr-p-2v fr-border-radius--8 fr-flex">
       <img
         className="fr-display-block"
@@ -31,7 +44,9 @@ const ActiviteOrRdvListCard = ({
         {contentBottom}
       </div>
     </div>
-    <div className="fr-text--sm fr-text-mention--grey fr-mb-0">{actions}</div>
+    <div className="fr-text--sm fr-text-mention--grey fr-mb-0 fr-flex fr-align-items-center">
+      {actions}
+    </div>
   </div>
 )
 
