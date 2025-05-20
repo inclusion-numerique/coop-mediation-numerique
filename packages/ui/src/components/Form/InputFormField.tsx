@@ -173,7 +173,9 @@ const InputFormField = <T extends FieldValues = FieldValues>({
             {error && (
               <p
                 id={`${id}__error`}
-                className={classNames('fr-error-text', { 'fr-mt-1v': !!info })}
+                className={classNames('fr-error-text fr-width-full', {
+                  'fr-mt-1v': !!info,
+                })}
               >
                 {error.message}
               </p>

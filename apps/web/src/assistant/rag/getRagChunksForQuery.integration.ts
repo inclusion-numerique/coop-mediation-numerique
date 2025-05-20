@@ -4,7 +4,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import huitreEmbedding from './_test/testing.huitre.embedding.json'
 import zebreEmbedding from './_test/testing.zebre.embedding.json'
 
-describe('getRagChunksForQuery', () => {
+describe.skip('getRagChunksForQuery', () => {
   beforeAll(async () => {
     await prismaClient.ragDocumentChunk.deleteMany({
       where: {

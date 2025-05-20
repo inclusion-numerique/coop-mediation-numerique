@@ -3,7 +3,7 @@ import {
   statutSocialValues,
   trancheAgeValues,
 } from '@app/web/beneficiaire/beneficiaire'
-import type { ParticipantsAnonymesCraCollectifData } from '@app/web/cra/ParticipantsAnonymesCraCollectifValidation'
+import type { ParticipantsAnonymesCraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/ParticipantsAnonymesCraCollectifValidation'
 import type {
   Beneficiaire,
   Genre,

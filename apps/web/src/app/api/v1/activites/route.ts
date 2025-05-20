@@ -10,17 +10,13 @@ import type {
 } from '@app/web/app/api/v1/JsonApiTypes'
 import { apiV1Url } from '@app/web/app/api/v1/apiV1Url'
 import { createApiV1Route } from '@app/web/app/api/v1/createApiV1Route'
-import {
-  autonomieApiValues,
-  degreDeFinalisationDemarcheApiValues,
-  materielApiValues,
-  niveauAtelierApiValues,
-  structureDeRedirectionApiValues,
-  thematiqueApiValues,
-  thematiqueDemarcheAdministrativeApiValues,
-  typeActiviteApiValues,
-  typeLieuApiValues,
-} from '@app/web/cra/cra'
+import { niveauAtelierApiValues } from '@app/web/features/activites/use-cases/cra/collectif/fields/niveau-atelier'
+import { materielApiValues } from '@app/web/features/activites/use-cases/cra/fields/materiel'
+import { thematiqueApiValues } from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import { typeActiviteApiValues } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
+import { typeLieuApiValues } from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
+import { autonomieApiValues } from '@app/web/features/activites/use-cases/cra/individuel/fields/autonomie'
+import { structureDeRedirectionApiValues } from '@app/web/features/activites/use-cases/cra/individuel/fields/structures-redirection'
 import { prismaClient } from '@app/web/prismaClient'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { NextResponse } from 'next/server'
@@ -84,9 +80,7 @@ type ActiviteAttributes = {
     | 'creer_avec_le_numerique'
     | 'culture_numerique'
     | 'intelligence_artificielle'
-  )[]
-
-  thematiques_demarche_administrative: (
+    | 'aide_aux_demarches_administratives'
     | 'papiers_elections_citoyennete'
     | 'famille_scolarite'
     | 'social_sante'
@@ -97,15 +91,11 @@ type ActiviteAttributes = {
     | 'justice'
     | 'etrangers_europe'
     | 'loisirs_sports_culture'
+    | 'associations'
   )[]
 
   precisions_demarche: string | null
-  degre_de_finalisation_demarche:
-    | 'finalisee'
-    | 'a_finaliser_en_autonomie'
-    | 'doit_revenir'
-    | 'oriente_vers_structure'
-    | null // pour une demarche
+
   titre_atelier: string | null
 
   niveau_atelier: 'debutant' | 'intermediaire' | 'avance' | null // pour un atelier collectif uniquement
@@ -164,9 +154,7 @@ const ActiviteCursorValidation = z.object({
  *             - structure_de_redirection
  *             - materiel
  *             - thematiques
- *             - thematiques_demarche_administrative
  *             - precisions_demarche
- *             - degre_de_finalisation_demarche
  *             - titre_atelier
  *             - niveau_atelier
  *           properties:
@@ -259,26 +247,13 @@ const ActiviteCursorValidation = z.object({
  *               description: thématiques abordées lors de l'accompagnement
  *               items:
  *                 type: string
- *                 enum: [diagnostic_numerique, prendre_en_main_du_materiel, maintenance_de_materiel, navigation_sur_internet, email, bureautique, reseaux_sociaux, sante, banque_et_achats_en_ligne, entrepreneuriat, insertion_professionnelle, securite_numerique, parentalite, scolarite_et_numerique, creer_avec_le_numerique, culture_numerique, intelligence_artificielle]
+ *                 enum: [diagnostic_numerique, prendre_en_main_du_materiel, maintenance_de_materiel, navigation_sur_internet, email, bureautique, reseaux_sociaux, sante, banque_et_achats_en_ligne, entrepreneuriat, insertion_professionnelle, securite_numerique, parentalite, scolarite_et_numerique, creer_avec_le_numerique, culture_numerique, intelligence_artificielle, aide_aux_demarches_administratives, papiers_elections_citoyennete, famille_scolarite, social_sante, travail_formation, logement, transports_mobilite, argent_impots, justice, etrangers_europe, loisirs_sports_culture]
  *                 example: "diagnostic_numerique"
- *             thematiques_demarche_administrative:
- *               type: array
- *               description: thématiques de la démarche administrative abordées
- *               items:
- *                 type: string
- *                 enum: [papiers_elections_citoyennete, famille_scolarite, social_sante, travail_formation, logement, transports_mobilite, argent_impots, justice, etrangers_europe, loisirs_sports_culture]
- *                 example: "papiers_elections_citoyennete"
  *             precisions_demarche:
  *               type: string
  *               nullable: true
  *               description: précisions sur la démarche administrative
  *               example: "difficultés à compléter le formulaire"
- *             degre_de_finalisation_demarche:
- *               type: string
- *               nullable: true
- *               description: degré de finalisation de la démarche administrative
- *               enum: [finalisee, a_finaliser_en_autonomie, doit_revenir, oriente_vers_structure]
- *               example: "finalisee"
  *             titre_atelier:
  *               type: string
  *               nullable: true
@@ -426,9 +401,7 @@ export const GET = createApiV1Route
           materiel,
           thematiques,
           orienteVersStructure,
-          thematiquesDemarche,
           precisionsDemarche,
-          degreDeFinalisation,
           titreAtelier,
           niveau,
           _count: { accompagnements },
@@ -460,14 +433,7 @@ export const GET = createApiV1Route
                 (materielItem) => materielApiValues[materielItem],
               ),
               oriente_vers_structure: orienteVersStructure,
-              thematiques_demarche_administrative: thematiquesDemarche.map(
-                (thematiqueDemarche) =>
-                  thematiqueDemarcheAdministrativeApiValues[thematiqueDemarche],
-              ),
               precisions_demarche: precisionsDemarche,
-              degre_de_finalisation_demarche: degreDeFinalisation
-                ? degreDeFinalisationDemarcheApiValues[degreDeFinalisation]
-                : null,
               titre_atelier: titreAtelier,
               niveau_atelier: niveau ? niveauAtelierApiValues[niveau] : null,
               accompagnements,
@@ -479,10 +445,14 @@ export const GET = createApiV1Route
           href: cursorPagination.cursor
             ? cursorPagination.isBefore
               ? apiV1Url(
-                  `/activites?page[before]=${encodeSerializableState(cursorPagination.cursor)}`,
+                  `/activites?page[before]=${encodeSerializableState(
+                    cursorPagination.cursor,
+                  )}`,
                 )
               : apiV1Url(
-                  `/activites?page[after]=${encodeSerializableState(cursorPagination.cursor)}`,
+                  `/activites?page[after]=${encodeSerializableState(
+                    cursorPagination.cursor,
+                  )}`,
                 )
             : apiV1Url('/activites'),
         },
@@ -496,7 +466,9 @@ export const GET = createApiV1Route
         prev: previousCursor
           ? {
               href: apiV1Url(
-                `/activites?page[before]=${encodeSerializableState(previousCursor)}`,
+                `/activites?page[before]=${encodeSerializableState(
+                  previousCursor,
+                )}`,
               ),
             }
           : undefined,

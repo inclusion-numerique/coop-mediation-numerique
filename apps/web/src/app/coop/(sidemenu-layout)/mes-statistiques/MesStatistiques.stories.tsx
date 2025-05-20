@@ -5,14 +5,14 @@ import {
   statutSocialLabels,
   trancheAgeLabels,
 } from '@app/web/beneficiaire/beneficiaire'
+import { dureeAccompagnementParDefautLabels } from '@app/web/features/activites/use-cases/cra/fields/duree-accompagnement'
+import { materielLabels } from '@app/web/features/activites/use-cases/cra/fields/materiel'
 import {
-  dureeAccompagnementParDefautLabels,
-  materielLabels,
-  thematiqueDemarcheAdministrativeLabels,
-  thematiqueLabels,
-  typeActiviteLabels,
-  typeLieuLabels,
-} from '@app/web/cra/cra'
+  thematiquesAdministrativesLabels,
+  thematiquesNonAdministrativesLabels,
+} from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import { typeActiviteLabels } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
+import { typeLieuLabels } from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
 import { Meta, StoryObj } from '@storybook/react'
 import { MesStatistiques } from './MesStatistiques'
 
@@ -72,10 +72,6 @@ const statistiquesPageData = {
         total: 1350,
         proportion: 40,
       },
-      demarches: {
-        total: 300,
-        proportion: 10,
-      },
     },
     activites: {
       total: 1000,
@@ -87,10 +83,6 @@ const statistiquesPageData = {
         total: 400,
         proportion: 40,
         participants: 2500,
-      },
-      demarches: {
-        total: 100,
-        proportion: 10,
       },
     },
     beneficiaires: {
@@ -107,11 +99,11 @@ const statistiquesPageData = {
       fixedValues: [400, 350, 250],
     }),
     thematiques: quantifiedSharesFromFixedValues({
-      enumObject: thematiqueLabels,
+      enumObject: thematiquesNonAdministrativesLabels,
       fixedValues: [80, 100, 90, 70, 60, 40, 30, 20, 25, 10, 10, 10, 10, 5],
     }),
     thematiquesDemarches: quantifiedSharesFromFixedValues({
-      enumObject: thematiqueDemarcheAdministrativeLabels,
+      enumObject: thematiquesAdministrativesLabels,
       fixedValues: [100, 90, 80, 60, 50, 40, 30, 20, 10, 10],
     }),
     materiels: quantifiedSharesFromFixedValues({

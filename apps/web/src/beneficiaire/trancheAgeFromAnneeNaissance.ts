@@ -1,7 +1,7 @@
 import {
   anneeNaissanceMax,
   anneeNaissanceMin,
-} from '@app/web/beneficiaire/BeneficiaireValidation'
+} from '@app/web/features/beneficiaires/validation/BeneficiaireValidation' // Todo: move file to beneficiaires feature
 import type { TrancheAge } from '@prisma/client'
 
 export const trancheAgeFromAnneeNaissance = (

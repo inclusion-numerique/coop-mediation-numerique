@@ -1,6 +1,6 @@
 import { computeProportion } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/allocatePercentages'
 import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
-import { dureeAccompagnementStatisticsRanges } from '@app/web/cra/cra'
+import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/use-cases/cra/fields/duree-accompagnement'
 import { numberToPercentage } from '@app/web/utils/formatNumber'
 import type { Workbook, Worksheet } from 'exceljs'
 import {
@@ -32,13 +32,11 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
         total: 20,
         collectifs: { total: 4, proportion: 20, participants: 28 },
         individuels: { total: 8, proportion: 40 },
-        demarches: { total: 8, proportion: 40 },
       },
       accompagnements: {
         total: 44,
         individuels: { total: 8, proportion: 40 },
         collectifs: { total: 28, proportion: 20 },
-        demarches: { total: 8, proportion: 40 },
       },
       beneficiaires: {
         total: 23,
@@ -163,128 +161,38 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
     ],
     activites: {
       thematiques: [
+        { label: 'Prendre en main du matériel', count: 0, proportion: 0 },
+        { label: 'Navigation sur internet', count: 0, proportion: 0 },
+        { label: 'E-mail', count: 6, proportion: 15 },
+        { label: 'Bureautique', count: 0, proportion: 0 },
+        { label: 'Réseaux sociaux communication', count: 4, proportion: 10 },
+        { label: 'Santé', count: 6, proportion: 15 },
+        { label: 'Banque et achats en ligne', count: 0, proportion: 0 },
+        { label: 'Entrepreneuriat', count: 0, proportion: 0 },
+        { label: 'Insertion professionnelle', count: 2, proportion: 5 },
+        { label: 'Prévention en sécurité numérique', count: 0, proportion: 0 },
+        { label: 'Parentalité', count: 2, proportion: 5 },
+        { label: 'Scolarité et numérique', count: 0, proportion: 0 },
+        { label: 'Gérer ses contenus numériques', count: 0, proportion: 0 },
+        { label: 'Culture numérique', count: 4, proportion: 10 },
         {
-          label: 'Prendre en main du matériel',
-          count: 0,
-          proportion: 0,
-        },
-        {
-          label: 'Navigation sur internet',
-          count: 0,
-          proportion: 0,
-        },
-        {
-          label: 'E-mail',
-          count: 6,
-          proportion: 25,
-        },
-        {
-          label: 'Bureautique',
-          count: 0,
-          proportion: 0,
-        },
-        {
-          label: 'Réseaux sociaux communication',
-          count: 4,
-          proportion: 16.67,
-        },
-        {
-          label: 'Santé',
-          count: 6,
-          proportion: 25,
-        },
-        {
-          label: 'Banque et achats en ligne',
-          count: 0,
-          proportion: 0,
-        },
-        {
-          label: 'Entrepreneuriat',
-          count: 0,
-          proportion: 0,
-        },
-        {
-          label: 'Insertion professionnelle',
-          count: 2,
-          proportion: 8.33,
-        },
-        {
-          label: 'Prévention en sécurité numérique',
-          count: 0,
-          proportion: 0,
-        },
-        {
-          label: 'Parentalité',
-          count: 2,
-          proportion: 8.33,
-        },
-        {
-          label: 'Scolarité et numérique',
-          count: 0,
-          proportion: 0,
-        },
-        {
-          label: 'Gérer ses contenus numériques',
-          count: 0,
-          proportion: 0,
-        },
-        {
-          label: 'Culture numérique',
-          count: 4,
-          proportion: 16.67,
+          label: 'Aide aux démarches administratives',
+          count: 16,
+          proportion: 40,
         },
       ],
       thematiquesDemarches: [
-        {
-          label: 'Papiers - Élections Citoyenneté',
-          count: 0,
-          proportion: 0,
-        },
-        {
-          label: 'Famille - Scolarité',
-          count: 2,
-          proportion: 12.5,
-        },
-        {
-          label: 'Social - Santé',
-          count: 6,
-          proportion: 37.5,
-        },
-        {
-          label: 'Travail - Formation',
-          count: 0,
-          proportion: 0,
-        },
-        {
-          label: 'Logement',
-          count: 2,
-          proportion: 12.5,
-        },
-        {
-          label: 'Transports - Mobilité',
-          count: 2,
-          proportion: 12.5,
-        },
-        {
-          label: 'Argent - Impôts',
-          count: 0,
-          proportion: 0,
-        },
-        {
-          label: 'Justice',
-          count: 2,
-          proportion: 12.5,
-        },
-        {
-          label: 'Étrangers - Europe',
-          count: 2,
-          proportion: 12.5,
-        },
-        {
-          label: 'Loisirs - Sports Culture',
-          count: 0,
-          proportion: 0,
-        },
+        { label: 'Papiers - Élections Citoyenneté', count: 0, proportion: 0 },
+        { label: 'Famille - Scolarité', count: 2, proportion: 12.5 },
+        { label: 'Social - Santé', count: 6, proportion: 37.5 },
+        { label: 'Travail - Formation - Entreprise', count: 0, proportion: 0 },
+        { label: 'Logement', count: 2, proportion: 12.5 },
+        { label: 'Transports - Mobilité', count: 2, proportion: 12.5 },
+        { label: 'Argent - Impôts', count: 0, proportion: 0 },
+        { label: 'Justice', count: 2, proportion: 12.5 },
+        { label: 'Étrangers - Europe', count: 2, proportion: 12.5 },
+        { label: 'Loisirs - Sports Culture', count: 0, proportion: 0 },
+        { label: 'Associations', count: 0, proportion: 0 },
       ],
       materiels: [
         {
@@ -469,10 +377,7 @@ const STATISTIQUES_WORKSHEET_INPUT_FOR_COORDINATEUR: BuildStatistiquesWorksheetI
     ],
   }
 
-const expectQuantifiedShareRows = (
-  // label, count
-  expectedRows: [string, number][],
-) => {
+const expectQuantifiedShareRows = (expectedRows: [string, number][]) => {
   const proportionTotal = expectedRows.reduce(
     (total, [, count]) => total + count,
     0,
@@ -498,7 +403,7 @@ const generales = {
 const activitesTitle = { start: generales.start + generales.length, length: 1 }
 const activites = {
   start: activitesTitle.start + activitesTitle.length,
-  length: 6,
+  length: 5,
 }
 const mediationNumeriqueTitle = {
   start: activites.start + activites.length,
@@ -506,7 +411,7 @@ const mediationNumeriqueTitle = {
 }
 const mediationNumerique = {
   start: mediationNumeriqueTitle.start + mediationNumeriqueTitle.length,
-  length: 15,
+  length: 16,
 }
 const demarcheAdministrativeTitle = {
   start: mediationNumerique.start + mediationNumerique.length,
@@ -514,7 +419,7 @@ const demarcheAdministrativeTitle = {
 }
 const demarcheAdministrative = {
   start: demarcheAdministrativeTitle.start + demarcheAdministrativeTitle.length,
-  length: 11,
+  length: 12,
 }
 const materielTitle = {
   start: demarcheAdministrative.start + demarcheAdministrative.length,
@@ -727,7 +632,6 @@ describe('build statistiques worksheet for médiateur', () => {
       [undefined, 'Accompagnements individuels', 8, '40 %'],
       [undefined, 'Ateliers collectifs', 4, '20 %'],
       [undefined, 'Nombre total de participants aux ateliers', 28],
-      [undefined, 'Aide aux démarches administratives', 8, '40 %'],
       [undefined, 'Nombre total d’activités', 20],
       [],
     ])
@@ -742,7 +646,9 @@ describe('build statistiques worksheet for médiateur', () => {
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it(`should contains Thématiques Médiation numérique ${range(mediationNumerique)}`, () => {
+  it(`should contains Thématiques Médiation numérique ${range(
+    mediationNumerique,
+  )}`, () => {
     const rows = worksheet
       .getRows(mediationNumerique.start, mediationNumerique.length)
       ?.map((row) => row.values)
@@ -763,6 +669,7 @@ describe('build statistiques worksheet for médiateur', () => {
         ['Scolarité et numérique', 0],
         ['Gérer ses contenus numériques', 0],
         ['Culture numérique', 4],
+        ['Aide aux démarches administratives', 16],
       ]),
       [],
     ])
@@ -777,7 +684,9 @@ describe('build statistiques worksheet for médiateur', () => {
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it(`should contains Thématiques Démarches administratives ${range(demarcheAdministrative)}`, () => {
+  it(`should contains Thématiques Démarches administratives ${range(
+    demarcheAdministrative,
+  )}`, () => {
     const rows = worksheet
       .getRows(demarcheAdministrative.start, demarcheAdministrative.length)
       ?.map((row) => row.values)
@@ -787,13 +696,14 @@ describe('build statistiques worksheet for médiateur', () => {
         ['Papiers - Élections Citoyenneté', 0],
         ['Famille - Scolarité', 2],
         ['Social - Santé', 6],
-        ['Travail - Formation', 0],
+        ['Travail - Formation - Entreprise', 0],
         ['Logement', 2],
         ['Transports - Mobilité', 2],
         ['Argent - Impôts', 0],
         ['Justice', 2],
         ['Étrangers - Europe', 2],
         ['Loisirs - Sports Culture', 0],
+        ['Associations', 0],
       ]),
       [],
     ])
@@ -876,7 +786,9 @@ describe('build statistiques worksheet for médiateur', () => {
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it(`should contains Nombre d’activités par lieux ${range(nombreActivites)}`, () => {
+  it(`should contains Nombre d’activités par lieux ${range(
+    nombreActivites,
+  )}`, () => {
     const rows = worksheet
       .getRows(nombreActivites.start, nombreActivites.length)
       ?.map((row) => row.values)
@@ -900,7 +812,9 @@ describe('build statistiques worksheet for médiateur', () => {
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it(`should contains Statistiques bénéficiaires ${range(beneficiairesGenre)}`, () => {
+  it(`should contains Statistiques bénéficiaires ${range(
+    beneficiairesGenre,
+  )}`, () => {
     const rows = worksheet
       .getRows(beneficiairesGenre.start, beneficiairesGenre.length)
       ?.map((row) => row.values)

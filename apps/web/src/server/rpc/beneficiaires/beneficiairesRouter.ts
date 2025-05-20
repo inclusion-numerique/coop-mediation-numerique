@@ -1,10 +1,10 @@
-import {
-  type BeneficiaireData,
-  BeneficiaireValidation,
-} from '@app/web/beneficiaire/BeneficiaireValidation'
 import { AnalysisSchema } from '@app/web/beneficiaire/import/analyseImportBeneficiairesExcel'
 import { searchBeneficiaire } from '@app/web/beneficiaire/searchBeneficiaire'
 import { trancheAgeFromAnneeNaissance } from '@app/web/beneficiaire/trancheAgeFromAnneeNaissance'
+import {
+  BeneficiaireData,
+  BeneficiaireValidation,
+} from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
 import { prismaClient } from '@app/web/prismaClient'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { enforceIsMediateur } from '@app/web/server/rpc/enforceIsMediateur'
@@ -76,8 +76,13 @@ const beneficiaireCreateInputFromForm = ({
 
 export const beneficiairesRouter = router({
   search: protectedProcedure
-    .input(z.object({ query: z.string() }))
-    .query(({ input: { query }, ctx: { user } }) => {
+    .input(
+      z.object({
+        query: z.string(),
+        excludeIds: z.array(z.string()).default([]),
+      }),
+    )
+    .query(({ input: { query, excludeIds }, ctx: { user } }) => {
       if (!user.mediateur && user.role !== 'Admin') {
         throw forbiddenError('User is not a mediateur')
       }
@@ -86,6 +91,7 @@ export const beneficiairesRouter = router({
         searchParams: {
           recherche: query,
         },
+        excludeIds,
       })
     }),
   createOrUpdate: protectedProcedure

@@ -1,8 +1,8 @@
-import { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
-import { QuantifiedShare } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/quantifiedShare'
-import { ActivitesFiltersLabels } from '@app/web/cra/generateActivitesFiltersLabels'
+import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
+import type { QuantifiedShare } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/quantifiedShare'
+import type { ActivitesFiltersLabels } from '@app/web/features/activites/use-cases/list/components/generateActivitesFiltersLabels'
 import {
-  WorksheetUser,
+  type WorksheetUser,
   addExportMetadata,
 } from '@app/web/libs/worksheet/addExportMetadata'
 import { addTitleRow } from '@app/web/libs/worksheet/addTitleRow'
@@ -61,11 +61,6 @@ const addStatistiquesActivites =
     worksheet.addRow([
       'Nombre total de participants aux ateliers',
       activites.collectifs.participants,
-    ])
-    worksheet.addRow([
-      'Aide aux démarches administratives',
-      activites.demarches.total,
-      numberToPercentage(activites.demarches.proportion),
     ])
     worksheet.addRow(['Nombre total d’activités', activites.total])
     worksheet.addRow([])

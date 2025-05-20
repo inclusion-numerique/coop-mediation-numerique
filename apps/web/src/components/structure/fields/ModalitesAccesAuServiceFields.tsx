@@ -25,7 +25,7 @@ export const ModalitesAccesAuServiceFields = <
         Ces champs sont optionnels
       </p>
       <p className="fr-mb-1v">Modalités d’accès</p>
-      <p className="fr-text-mention--grey fr-text--sm fr-mb-0">
+      <p className="fr-text-mention--grey fr-text--sm fr-mb-4v">
         Indiquez comment bénéficier de ses services. Sélectionnez un ou
         plusieurs choix.
       </p>

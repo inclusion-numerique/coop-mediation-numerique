@@ -30,8 +30,14 @@ export const POST = async (request: NextRequest) => {
 
     const analysis = await analyseImportBeneficiairesExcel(sheet)
 
-    if (analysis.status === 'error' && analysis.rows.length === 0) {
-      throw new Error('Fichier invalide ou vide')
+    if (
+      analysis.rows.length === 0 ||
+      (analysis.status === 'error' && analysis.rows.length === 0)
+    ) {
+      return new Response(null, {
+        status: 400,
+        statusText: 'Fichier invalide ou vide',
+      })
     }
 
     const responseData: AnalyseResponse = {

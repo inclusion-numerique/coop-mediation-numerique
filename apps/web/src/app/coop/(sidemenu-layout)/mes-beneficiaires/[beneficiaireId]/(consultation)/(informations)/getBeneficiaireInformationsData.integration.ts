@@ -99,6 +99,12 @@ describe('getBeneficiaireInformationsData', () => {
 
     const expectedThematiqueCounts = [
       {
+        count: 2,
+        enumValue: 'aide_aux_demarches_administratives',
+        label: 'Aide aux démarches administratives',
+        thematique: 'AideAuxDemarchesAdministratives',
+      },
+      {
         count: 1,
         enumValue: 'culture_numerique',
         label: 'Culture numérique',

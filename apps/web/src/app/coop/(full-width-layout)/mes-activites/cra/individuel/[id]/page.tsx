@@ -1,62 +1,40 @@
-import CraIndividuelPage from '@app/web/app/coop/(full-width-layout)/mes-activites/cra/individuel/CraIndividuelPage'
-import { getCraIndividuelDataDefaultValuesFromExisting } from '@app/web/app/coop/(full-width-layout)/mes-activites/cra/individuel/getCraIndividuelDataDefaultValuesFromExisting'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
-import { getInitialBeneficiairesOptionsForSearch } from '@app/web/beneficiaire/getInitialBeneficiairesOptionsForSearch'
-import { getAdaptiveDureeOptions } from '@app/web/cra/getAdaptiveDureeOptions'
-import { getMediateursLieuxActiviteOptions } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
+import type { CraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
+import { getCraPageData } from '@app/web/features/activites/use-cases/cra/getCraPageData'
+import CraIndividuelPage from '@app/web/features/activites/use-cases/cra/individuel/CraIndividuelPage'
+import { getCraIndividuelDataDefaultValuesFromExisting } from '@app/web/features/activites/use-cases/cra/individuel/db/getCraIndividuelDataDefaultValuesFromExisting'
 import { notFound } from 'next/navigation'
 
 const UpdateCraIndividuelPage = async ({
-  params: { id },
-  searchParams: { retour } = {},
+  params,
+  searchParams,
 }: {
-  params: {
-    id: string
-  }
-  searchParams?: {
-    retour?: string
-  }
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ retour?: string }>
 }) => {
-  const user = await authenticateMediateur()
+  const { id } = await params
+  const { retour } = await searchParams
+
+  const {
+    mediateur: { id: mediateurId },
+  } = await authenticateMediateur()
 
   const defaultValues = await getCraIndividuelDataDefaultValuesFromExisting({
     id,
-    mediateurId: user.mediateur.id,
+    mediateurId,
   })
 
-  if (!defaultValues) {
-    notFound()
-    return null
-  }
+  if (defaultValues == null) return notFound()
 
-  const lieuxActiviteOptions = await getMediateursLieuxActiviteOptions({
-    mediateurIds: [user.mediateur.id],
-  })
-
-  if (!defaultValues.structureId) {
-    defaultValues.structureId = lieuxActiviteOptions.at(0)?.value ?? undefined
-  }
-
-  const initialBeneficiairesOptions =
-    await getInitialBeneficiairesOptionsForSearch({
-      mediateurId: user.mediateur.id,
-      includeBeneficiaireIds: defaultValues.beneficiaire?.id
-        ? [defaultValues.beneficiaire.id]
-        : [],
-    })
-
-  const dureeOptions = await getAdaptiveDureeOptions({
-    mediateurId: user.mediateur.id,
-    include: defaultValues.duree?.duree,
-  })
+  const craPageData = await getCraPageData<CraCollectifData>()(
+    mediateurId,
+    defaultValues,
+  )
 
   return (
     <CraIndividuelPage
-      defaultValues={defaultValues}
-      mediateurId={user.mediateur.id}
-      lieuxActiviteOptions={lieuxActiviteOptions}
-      initialBeneficiairesOptions={initialBeneficiairesOptions}
-      dureeOptions={dureeOptions}
+      {...craPageData}
+      mediateurId={mediateurId}
       retour={retour}
     />
   )

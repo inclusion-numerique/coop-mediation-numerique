@@ -30,12 +30,11 @@ export const OnboardingMesActivites = ({
   >
     <p className="fr-text--lg">
       Grâce à des comptes rendus d’activités adaptés à{' '}
-      <strong>3 types d’accompagnement</strong>&nbsp;:
+      <strong>2 types d’accompagnement</strong>&nbsp;:
     </p>
     <ul>
       <li>Accompagnement individuel</li>
-      <li>Ateliers collectif</li>
-      <li>Aide aux démarches administratives</li>
+      <li>Atelier collectif</li>
     </ul>
   </Onboarding>
 )

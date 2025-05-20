@@ -1,6 +1,6 @@
-import type { BeneficiaireData } from '@app/web/beneficiaire/BeneficiaireValidation'
 import { beneficiaireAccompagnementsCountSelect } from '@app/web/beneficiaire/beneficiaireQueries'
 import { beneficiaireCommuneResidenceToPreviewBanData } from '@app/web/beneficiaire/prismaBeneficiaireToBeneficiaireData'
+import { BeneficiaireData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation' // Todo: move file to beneficiaires feature
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
 

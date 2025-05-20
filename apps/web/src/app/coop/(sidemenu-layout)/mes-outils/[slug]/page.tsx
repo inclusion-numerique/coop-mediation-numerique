@@ -5,11 +5,10 @@ import { notFound } from 'next/navigation'
 import React from 'react'
 import { Outil } from './Outil'
 
-export const generateMetadata = ({
-  params,
-}: {
-  params: { slug: string }
-}): Metadata | null => {
+export const generateMetadata = async (props: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata | null> => {
+  const params = await props.params
   const pageData = getOutilsPageData(params.slug)
   if (!pageData) {
     notFound()
@@ -21,7 +20,8 @@ export const generateMetadata = ({
   }
 }
 
-const Page = ({ params }: { params: { slug: string } }) => {
+const Page = async (props: { params: Promise<{ slug: string }> }) => {
+  const params = await props.params
   const pageData = getOutilsPageData(params.slug)
 
   if (!pageData) {

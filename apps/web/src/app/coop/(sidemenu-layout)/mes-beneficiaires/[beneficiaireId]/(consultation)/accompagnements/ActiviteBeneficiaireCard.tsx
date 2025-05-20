@@ -1,14 +1,13 @@
 import ActiviteBeneficiaireCardOpenModalLink from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/ActiviteBeneficiaireCardOpenModalLink'
 import Stars from '@app/web/components/Stars'
-import type { ActiviteForList } from '@app/web/cra/activitesQueries'
+import { niveauAtelierStars } from '@app/web/features/activites/use-cases/cra/collectif/fields/niveau-atelier'
+import { thematiqueLabels } from '@app/web/features/activites/use-cases/cra/fields/thematique'
 import {
-  autonomieStars,
-  niveauAtelierStars,
-  thematiqueDemarcheAdministrativeLabels,
-  thematiqueLabels,
   typeActiviteIllustrations,
   typeActiviteLabels,
-} from '@app/web/cra/cra'
+} from '@app/web/features/activites/use-cases/cra/fields/type-activite'
+import { autonomieStars } from '@app/web/features/activites/use-cases/cra/individuel/fields/autonomie'
+import { ActiviteForList } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 
 const ActiviteBeneficiaireCard = ({
@@ -16,14 +15,7 @@ const ActiviteBeneficiaireCard = ({
 }: {
   activite: ActiviteForList
 }) => {
-  const {
-    titreAtelier,
-    niveau,
-    thematiques,
-    thematiquesDemarche,
-    autonomie,
-    type,
-  } = activite
+  const { titreAtelier, niveau, thematiques, autonomie, type } = activite
 
   const { hasStars, starsCount } = autonomie
     ? { hasStars: true, starsCount: autonomieStars[autonomie] }
@@ -34,12 +26,9 @@ const ActiviteBeneficiaireCard = ({
         }
       : { hasStars: false, starsCount: 0 }
 
-  const thematiqueTags = [
-    ...thematiques.map((thematique) => thematiqueLabels[thematique]),
-    ...thematiquesDemarche.map(
-      (thematique) => thematiqueDemarcheAdministrativeLabels[thematique],
-    ),
-  ]
+  const thematiqueTags = thematiques.map(
+    (thematique) => thematiqueLabels[thematique],
+  )
 
   return (
     <div className="fr-py-2v fr-px-4v fr-flex fr-align-items-center fr-flex-gap-4v fr-my-2v fr-enlarge-button fr-border-radius--8">

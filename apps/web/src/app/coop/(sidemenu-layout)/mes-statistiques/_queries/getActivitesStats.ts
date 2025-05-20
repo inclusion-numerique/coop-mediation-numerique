@@ -5,33 +5,32 @@ import {
   createEnumArrayCountSelect,
   createEnumCountSelect,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/createEnumCountSelect'
-import type { ActivitesFilters } from '@app/web/cra/ActivitesFilters'
+import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/use-cases/cra/fields/duree-accompagnement'
+import {
+  materielLabels,
+  materielValues,
+} from '@app/web/features/activites/use-cases/cra/fields/materiel'
+import {
+  thematiqueLabels,
+  thematiquesAdministrativesValues,
+  thematiquesNonAdministrativesValues,
+} from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import {
+  typeActiviteLabels,
+  typeActiviteValues,
+} from '@app/web/features/activites/use-cases/cra/fields/type-activite'
+import {
+  typeLieuLabels,
+  typeLieuValues,
+} from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
 import {
   getActiviteFiltersSqlFragment,
   getActivitesFiltersWhereConditions,
-} from '@app/web/cra/activitesFiltersSqlWhereConditions'
-import {
-  dureeAccompagnementStatisticsRanges,
-  materielLabels,
-  materielValues,
-  thematiqueDemarcheAdministrativeLabels,
-  thematiqueDemarcheAdministrativeValues,
-  thematiqueLabels,
-  thematiqueValues,
-  typeActiviteLabels,
-  typeActiviteValues,
-  typeLieuLabels,
-  typeLieuValues,
-} from '@app/web/cra/cra'
+} from '@app/web/features/activites/use-cases/list/db/activitesFiltersSqlWhereConditions'
+import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { prismaClient } from '@app/web/prismaClient'
 import { UserProfile } from '@app/web/utils/user'
-import {
-  Materiel,
-  Thematique,
-  ThematiqueDemarcheAdministrative,
-  TypeActivite,
-  TypeLieu,
-} from '@prisma/client'
+import { Materiel, Thematique, TypeActivite, TypeLieu } from '@prisma/client'
 import { snakeCase } from 'change-case'
 
 export type ActivitesStatsRaw = {
@@ -40,7 +39,6 @@ export type ActivitesStatsRaw = {
   [key: `duree_${string}_count`]: number
   [key: `type_lieu_${string}_count`]: number
   [key: `thematiques_${string}_count`]: number
-  [key: `thematiques_demarche_${string}_count`]: number
   [key: `materiel_${string}_count`]: number
 }
 
@@ -59,22 +57,41 @@ export const getActivitesStatsRaw = async ({
 
   return prismaClient.$queryRaw<[ActivitesStatsRaw]>`
       SELECT COALESCE(COUNT(*), 0)::integer AS total_activites,
-        -- Enum count selects for type, type_lieu, duree, thematiques, thematiques_demarche, materiel
-        ${createEnumCountSelect({ enumObj: TypeActivite, column: 'act.type', as: 'type' })},
+        -- Enum count selects for type, type_lieu, duree, thematiques, materiel
+        ${createEnumCountSelect({
+          enumObj: TypeActivite,
+          column: 'act.type',
+          as: 'type',
+        })},
         ${createDureesRangesSelect({ column: 'act.duree', as: 'duree' })},
-        ${createEnumCountSelect({ enumObj: TypeLieu, column: 'act.type_lieu', as: 'type_lieu' })},
-        ${createEnumArrayCountSelect({ enumObj: Thematique, column: 'act.thematiques', as: 'thematiques' })},
-        ${createEnumArrayCountSelect({ enumObj: ThematiqueDemarcheAdministrative, column: 'act.thematiques_demarche', as: 'thematiques_demarche' })},
-        ${createEnumArrayCountSelect({ enumObj: Materiel, column: 'act.materiel', as: 'materiel' })}
+        ${createEnumCountSelect({
+          enumObj: TypeLieu,
+          column: 'act.type_lieu',
+          as: 'type_lieu',
+        })},
+        ${createEnumArrayCountSelect({
+          enumObj: Thematique,
+          column: 'act.thematiques',
+          as: 'thematiques',
+        })},
+        ${createEnumArrayCountSelect({
+          enumObj: Materiel,
+          column: 'act.materiel',
+          as: 'materiel',
+        })}
       FROM activites act
         LEFT JOIN structures str ON str.id = act.structure_id
         LEFT JOIN mediateurs med ON act.mediateur_id = med.id
         LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
-        FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user?.coordinateur?.id}::UUID
+        FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${
+          user?.coordinateur?.id
+        }::UUID
       WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
         AND (act.date <= mc.suppression OR mc.suppression IS NULL)
         AND act.suppression IS NULL
-        AND ${getActiviteFiltersSqlFragment(getActivitesFiltersWhereConditions(activitesFilters))}
+        AND ${getActiviteFiltersSqlFragment(
+          getActivitesFiltersWhereConditions(activitesFilters),
+        )}
   `.then((result) => result[0])
 }
 
@@ -99,23 +116,20 @@ export const normalizeActivitesStatsRaw = (stats: ActivitesStatsRaw) => {
     count: stats[`type_lieu_${snakeCase(typeLieu)}_count`] ?? 0,
   }))
 
-  const thematiquesData = thematiqueValues.map((thematique) => ({
-    value: thematique,
-    label: thematiqueLabels[thematique],
-    count: stats[`thematiques_${snakeCase(thematique)}_count`] ?? 0,
-  }))
+  const thematiquesData = thematiquesNonAdministrativesValues.map(
+    (thematique) => ({
+      value: thematique,
+      label: thematiqueLabels[thematique],
+      count: stats[`thematiques_${snakeCase(thematique)}_count`] ?? 0,
+    }),
+  )
 
-  const thematiquesDemarchesData = thematiqueDemarcheAdministrativeValues.map(
-    (thematiqueDemarcheAdministrative) => ({
-      value: thematiqueDemarcheAdministrative,
-      label:
-        thematiqueDemarcheAdministrativeLabels[
-          thematiqueDemarcheAdministrative
-        ],
+  const thematiquesDemarchesData = thematiquesAdministrativesValues.map(
+    (thematiqueAdministrative) => ({
+      value: thematiqueAdministrative,
+      label: thematiqueLabels[thematiqueAdministrative],
       count:
-        stats[
-          `thematiques_demarche_${snakeCase(thematiqueDemarcheAdministrative)}_count`
-        ],
+        stats[`thematiques_${snakeCase(thematiqueAdministrative)}_count`] ?? 0,
     }),
   )
 
@@ -208,11 +222,15 @@ export const getActivitesStructuresStatsRaw = async ({
       INNER JOIN activites act ON act.structure_id = str.id
       LEFT JOIN mediateurs med ON act.mediateur_id = med.id
       LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
-      FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user?.coordinateur?.id}::UUID
+      FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${
+        user?.coordinateur?.id
+      }::UUID
       WHERE (act.date <= mc.suppression OR mc.suppression IS NULL)
         AND act.suppression IS NULL
         AND ${activitesMediateurIdsWhereCondition(mediateurIds)}
-        AND ${getActiviteFiltersSqlFragment(getActivitesFiltersWhereConditions(activitesFilters))}
+        AND ${getActiviteFiltersSqlFragment(
+          getActivitesFiltersWhereConditions(activitesFilters),
+        )}
     GROUP BY str.id`
 }
 

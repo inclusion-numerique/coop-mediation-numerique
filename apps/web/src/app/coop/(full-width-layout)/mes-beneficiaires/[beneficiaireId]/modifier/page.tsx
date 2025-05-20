@@ -2,29 +2,29 @@ import RequiredFieldsDisclamer from '@app/ui/components/Form/RequiredFieldsDiscl
 import BeneficiaireForm from '@app/web/app/coop/(full-width-layout)/mes-beneficiaires/BeneficiaireForm'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
-import { BeneficiaireData } from '@app/web/beneficiaire/BeneficiaireValidation'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import { beneficiaireCommuneResidenceToPreviewBanData } from '@app/web/beneficiaire/prismaBeneficiaireToBeneficiaireData'
 import BackButton from '@app/web/components/BackButton'
 import IconInSquare from '@app/web/components/IconInSquare'
 import { AdressBanFormFieldOption } from '@app/web/components/form/AdresseBanFormField'
-import { CraIndividuelData } from '@app/web/cra/CraIndividuelValidation'
 import { banMunicipalityLabel } from '@app/web/external-apis/ban/banMunicipalityLabel'
+import { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
+import { BeneficiaireData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
 import { prismaClient } from '@app/web/prismaClient'
 import { EncodedState } from '@app/web/utils/encodeSerializableState'
 import { notFound } from 'next/navigation'
 import { DefaultValues } from 'react-hook-form'
 
-const PageModifierBeneficiaire = async ({
-  searchParams: { retour } = {},
-  params: { beneficiaireId },
-}: {
-  searchParams?: {
+const PageModifierBeneficiaire = async (props: {
+  searchParams: Promise<{
     cra?: EncodedState<DefaultValues<CraIndividuelData>>
     retour?: string
-  }
-  params: { beneficiaireId: string }
+  }>
+  params: Promise<{ beneficiaireId: string }>
 }) => {
+  const { beneficiaireId } = await props.params
+  const { retour } = await props.searchParams
+
   const user = await authenticateMediateur()
 
   const beneficiaire = await prismaClient.beneficiaire.findUnique({

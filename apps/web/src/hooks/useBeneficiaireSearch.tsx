@@ -1,7 +1,7 @@
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
-import type { BeneficiaireOption } from '@app/web/beneficiaire/BeneficiaireOption'
-import type { BeneficiaireData } from '@app/web/beneficiaire/BeneficiaireValidation'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
+import type { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
+import type { BeneficiaireData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
 import { trpc } from '@app/web/trpc'
 import { useCallback, useRef } from 'react'
 
@@ -28,8 +28,6 @@ export const useBeneficiaireSearch = ({
 }: {
   initialBeneficiairesOptions: BeneficiaireOption[]
 }) => {
-  const beneficiairesMapRef = useRef(new Map<string, BeneficiaireData>())
-
   const { client: trpcClient } = trpc.useContext()
 
   const initialOptions = initialBeneficiairesOptions.map((option) =>
@@ -63,14 +61,11 @@ export const useBeneficiaireSearch = ({
           : `Veuillez préciser votre recherche - ${hasMore} bénéficiaires ne sont pas affichés`
         : null
 
-      for (const beneficiaire of result.beneficiaires) {
-        if (beneficiaire.id)
-          beneficiairesMapRef.current.set(beneficiaire.id, beneficiaire)
-      }
-
       return [
         {
-          label: `${result.matchesCount} résultat${sPluriel(result.matchesCount)}`,
+          label: `${result.matchesCount} résultat${sPluriel(
+            result.matchesCount,
+          )}`,
           value: null,
         },
         ...result.beneficiaires.map((beneficiaire) => ({

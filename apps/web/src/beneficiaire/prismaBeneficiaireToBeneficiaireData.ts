@@ -1,4 +1,4 @@
-import { BeneficiaireData } from '@app/web/beneficiaire/BeneficiaireValidation'
+import { BeneficiaireData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation' // Todo: move file to beneficiaires feature
 import type { Beneficiaire } from '@prisma/client'
 
 export const beneficiaireCommuneResidenceToPreviewBanData = ({
