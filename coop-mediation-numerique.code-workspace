@@ -1,7 +1,21 @@
 {
-    "folders": [
-        {
-            "path": "."
-        }
-    ]
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"sqltools.connections": [
+			{
+				"previewLimit": 50,
+				"server": "localhost",
+				"port": 5432,
+				"driver": "PostgreSQL",
+				"name": "coop - local",
+				"database": "coop-mediation-numerique",
+				"username": "h",
+				"password": ""
+			}
+		]
+	}
 }

@@ -29,6 +29,7 @@ export const activiteListSelect = {
   id: true,
   type: true,
   mediateurId: true,
+  rdvServicePublicId: true,
   accompagnements: {
     select: {
       beneficiaire: {
