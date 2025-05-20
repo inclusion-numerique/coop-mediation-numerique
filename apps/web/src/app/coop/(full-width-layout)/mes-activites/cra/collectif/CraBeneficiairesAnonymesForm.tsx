@@ -2,7 +2,6 @@
 
 import InlinePlusMinusNumberFormField from '@app/ui/components/Form/InlinePlusMinusNumberFormField'
 import PlusMinusNumberFormField from '@app/ui/components/Form/PlusMinusNumberFormField'
-import { useWatchSubscription } from '@app/ui/hooks/useWatchSubscription'
 import {
   genreLabels,
   genreValues,
@@ -13,14 +12,15 @@ import {
 } from '@app/web/beneficiaire/beneficiaire'
 import { CraCollectifData } from '@app/web/cra/CraCollectifValidation'
 import {
-  countNonCommunique,
-  countTotal,
+  countGenreNonCommunique,
+  countStatutSocialNonCommunique,
   countTotalGenre,
   countTotalStatutSocial,
   countTotalTrancheAge,
+  countTrancheAgeNonCommunique,
 } from '@app/web/cra/participantsAnonymes'
 import classNames from 'classnames'
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form'
 import styles from './CraBeneficiairesAnonymesForm.module.css'
 
@@ -62,77 +62,12 @@ const CraBeneficiairesMultiplesForm = ({
   watch: UseFormWatch<CraCollectifData>
   control: Control<CraCollectifData>
 }) => {
-  useWatchSubscription(
-    watch,
-    useCallback(
-      (data, { name }) => {
-        // Set values of non communique to right value if total changes
-        if (name === 'participantsAnonymes.total') {
-          // This is only for type safety
-          if (!data.participantsAnonymes) {
-            return
-          }
+  const participantsAnonymesCount = watch('participantsAnonymes')
 
-          for (const type of ['genre', 'trancheAge', 'statutSocial'] as const) {
-            const nonCommunique = Math.max(
-              countNonCommunique[type](data.participantsAnonymes),
-              0,
-            )
-
-            if (
-              nonCommunique !==
-              data.participantsAnonymes[`${type}NonCommunique`]
-            ) {
-              setValue(
-                `participantsAnonymes.${type}NonCommunique`,
-                nonCommunique,
-              )
-            }
-          }
-        }
-
-        /**
-         * If a count value for a sub type is changed, we need to update the "nonCommunique"
-         * for this type, and to update the total if needed
-         */
-        for (const type of ['genre', 'trancheAge', 'statutSocial'] as const) {
-          if (
-            name?.startsWith(`participantsAnonymes.${type}`) &&
-            name !== `participantsAnonymes.${type}NonCommunique` &&
-            data.participantsAnonymes
-          ) {
-            const nonCommunique = countNonCommunique[type](
-              data.participantsAnonymes,
-            )
-            setValue(
-              `participantsAnonymes.${type}NonCommunique`,
-              Math.max(nonCommunique, 0),
-            )
-
-            // If there is more type total than current total, we need to update the total
-            if (nonCommunique < 0) {
-              // Need to update the value of total
-              setValue(
-                'participantsAnonymes.total',
-                countTotal[type]({
-                  ...data.participantsAnonymes,
-                  [`${type}NonCommunique`]: 0,
-                }),
-              )
-            }
-          }
-        }
-      },
-      [setValue],
-    ),
-  )
-
-  const data = watch('participantsAnonymes')
-
-  const { total } = data
-  const totalGenre = countTotalGenre(data)
-  const totalTrancheAge = countTotalTrancheAge(data)
-  const totalStatutSocial = countTotalStatutSocial(data)
+  const { total } = participantsAnonymesCount
+  const totalGenre = countTotalGenre(participantsAnonymesCount)
+  const totalTrancheAge = countTotalTrancheAge(participantsAnonymesCount)
+  const totalStatutSocial = countTotalStatutSocial(participantsAnonymesCount)
 
   const genreNonCommuniqueCount = watch(
     'participantsAnonymes.genreNonCommunique',
@@ -156,6 +91,30 @@ const CraBeneficiairesMultiplesForm = ({
     totalGenre !== 0 ||
     totalTrancheAge !== 0 ||
     totalStatutSocial !== 0
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: we want to trigger when total or totalGenre value change
+  useEffect(() => {
+    setValue(
+      'participantsAnonymes.genreNonCommunique',
+      Math.max(countGenreNonCommunique(participantsAnonymesCount), 0),
+    )
+  }, [total, totalGenre, setValue, participantsAnonymesCount])
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: we want to trigger when total or totalTrancheAge value change
+  useEffect(() => {
+    setValue(
+      'participantsAnonymes.trancheAgeNonCommunique',
+      Math.max(countTrancheAgeNonCommunique(participantsAnonymesCount), 0),
+    )
+  }, [total, totalTrancheAge, setValue, participantsAnonymesCount])
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: we want to trigger when total or totalStatutSocial value change
+  useEffect(() => {
+    setValue(
+      'participantsAnonymes.statutSocialNonCommunique',
+      Math.max(countStatutSocialNonCommunique(participantsAnonymesCount), 0),
+    )
+  }, [total, totalStatutSocial, setValue, participantsAnonymesCount])
 
   return (
     <>
