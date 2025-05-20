@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch", "nativeDistinct", "relationJoins", "postgresqlExtensions"]
+  previewFeatures = ["fullTextSearchPostgres", "nativeDistinct", "relationJoins", "postgresqlExtensions"]
   binaryTargets   = ["native", "debian-openssl-1.1.x"]
   extensions      = [vector]
 }
@@ -962,6 +962,7 @@ model Activite {
   date            DateTime         @map("date") @db.Date
   duree           Int              @map("duree") // Durée en minutes
   notes           String?
+  rdvServicePublicId Int? @map("rdv_service_public_id") // id externe du RDV Service Public qui est à l'origine de cette Activité
 
   // Structure est renseigné
   // - si typeLieu = LieuActivite
