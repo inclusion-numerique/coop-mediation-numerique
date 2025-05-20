@@ -1,8 +1,8 @@
 'use client'
 
-import CustomTooltip from '@app/web/app/administration/statistiques/CustomTooltip'
-import { StatisticsLegend } from '@app/web/app/administration/statistiques/StatisticsLegend'
 import Card from '@app/web/components/Card'
+import CustomTooltip from '@app/web/libs/statistiques/CustomTooltip'
+import { StatisticsLegend } from '@app/web/libs/statistiques/StatisticsLegend'
 import { numberToString } from '@app/web/utils/formatNumber'
 import {
   Area,
