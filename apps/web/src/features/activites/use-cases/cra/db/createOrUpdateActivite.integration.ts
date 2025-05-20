@@ -39,6 +39,7 @@ const nullActivite: Omit<
   niveau: null,
   structure: null,
   titreAtelier: null,
+  rdvServicePublicId: null,
 }
 
 describe('createOrUpdateActivite', () => {
@@ -72,6 +73,7 @@ describe('createOrUpdateActivite', () => {
         beneficiaire: {
           mediateurId: mediateurAvecActiviteMediateurId,
         },
+        rdvServicePublicId: 12,
       },
     } satisfies CreateOrUpdateActiviteInput
 
@@ -114,6 +116,7 @@ describe('createOrUpdateActivite', () => {
       structureDeRedirection: input.data.structureDeRedirection ?? null,
       thematiques: input.data.thematiques,
       typeLieu: input.data.typeLieu,
+      rdvServicePublicId: input.data.rdvServicePublicId,
     })
   })
 
@@ -247,6 +250,7 @@ describe('createOrUpdateActivite', () => {
       notes: input.data.notes ?? null,
       typeLieu: input.data.typeLieu,
       thematiques: input.data.thematiques,
+      rdvServicePublicId: input.data.rdvServicePublicId,
     })
   })
 })

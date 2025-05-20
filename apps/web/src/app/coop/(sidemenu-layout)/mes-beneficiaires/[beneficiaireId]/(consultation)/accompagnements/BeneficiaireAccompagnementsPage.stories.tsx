@@ -89,6 +89,7 @@ const activites = [
     ],
     lieuCodeInsee: null,
     duree: 60,
+    rdvServicePublicId: 13,
   },
 
   {
@@ -119,6 +120,7 @@ const activites = [
     materiel: [],
     notes: null,
     structure: null,
+    rdvServicePublicId: null,
   },
   {
     type: 'Individuel',
@@ -157,6 +159,7 @@ const activites = [
     materiel: [],
     notes: null,
     structure: null,
+    rdvServicePublicId: 13,
   },
   {
     type: 'Individuel',
@@ -186,6 +189,7 @@ const activites = [
     orienteVersStructure: false,
     structure: null,
     thematiques: ['SocialSante', 'Logement'],
+    rdvServicePublicId: null,
   },
   {
     type: 'Individuel',
@@ -215,6 +219,7 @@ const activites = [
     orienteVersStructure: false,
     structure: null,
     thematiques: ['SocialSante', 'Justice'],
+    rdvServicePublicId: 13,
   },
   {
     type: 'Collectif',
@@ -253,6 +258,7 @@ const activites = [
     duree: 60,
     structure: null,
     notes: null,
+    rdvServicePublicId: 12,
   },
 ] satisfies ActiviteListItem[]
 

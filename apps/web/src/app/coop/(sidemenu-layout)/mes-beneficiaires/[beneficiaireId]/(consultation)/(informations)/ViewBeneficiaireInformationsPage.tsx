@@ -1,16 +1,16 @@
 import { BeneficiaireInformationsPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/(informations)/getBeneficiaireInformationsPageData'
 import BeneficiairePageNavigationBar from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/BeneficiairePageNavigationBar'
+import { DeleteBeneficiaireModal } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/DeleteBeneficiaireModal'
 import {
   genreLabels,
   statutSocialLabels,
   trancheAgeLabels,
 } from '@app/web/beneficiaire/beneficiaire'
 import InfoLabelValue from '@app/web/components/InfoLabelValue'
-import Tag from '@codegouvfr/react-dsfr/Tag'
-import styles from './ViewBeneficiaireInformationsPage.module.css'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { DeleteBeneficiaireModal } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/DeleteBeneficiaireModal'
+import Tag from '@codegouvfr/react-dsfr/Tag'
+import styles from './ViewBeneficiaireInformationsPage.module.css'
 
 const ViewBeneficiaireInformationsPage = ({
   data: { beneficiaire, thematiquesCounts, totalActivitesCount },

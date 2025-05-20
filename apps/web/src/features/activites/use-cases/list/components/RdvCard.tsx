@@ -47,6 +47,7 @@ const statusBadgeProps: {
 }
 
 const createCraUrlFromRdv = ({
+  id,
   date,
   durationInMinutes,
   participations,
@@ -64,6 +65,7 @@ const createCraUrlFromRdv = ({
     beneficiaire: participationBeneficiaireSuivi?.user.beneficiaire
       ? { id: participationBeneficiaireSuivi.user.beneficiaire.id }
       : undefined,
+    rdvServicePublicId: id,
   }
 
   return `/coop/mes-activites/cra/individuel?v=${encodeSerializableState(defaultValues)}`

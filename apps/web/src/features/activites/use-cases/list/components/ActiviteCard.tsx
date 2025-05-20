@@ -72,21 +72,22 @@ const ActiviteCard = ({
       contentTop={
         <>
           {typeActiviteLabels[type]}
-          <ActiviteCardSpacer />
+
           {titreAtelier ? (
             <>
-              {titreAtelier}
               <ActiviteCardSpacer />
+              {titreAtelier}
             </>
           ) : null}
           {displayDateDay ? (
             <>
-              le {dateAsDay(date)}
               <ActiviteCardSpacer />
+              le {dateAsDay(date)}
             </>
           ) : null}
           {variant === 'with-beneficiaire' ? (
             <>
+              <ActiviteCardSpacer />
               <span className="fr-icon-time-line fr-icon--xs" />
               &nbsp;
               {dureeAsString(duree)}

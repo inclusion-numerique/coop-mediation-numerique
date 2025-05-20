@@ -1,6 +1,7 @@
 import { Rdv } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getRdvs'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
+import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import type { Prisma } from '@prisma/client'
 
 /**
@@ -160,7 +161,15 @@ export const groupActivitesAndRdvsByDate = ({
   activites: ActiviteListItem[]
   rdvs: Rdv[]
 }): ActivitesAndRdvsByDate[] => {
-  const byDateRecord = [...rdvs, ...activites].reduce<
+  // When activites and rdvs are grouped, we do not display the Rdvs that have been "transformed" into an activite
+  const activiteRdvIds = new Set(
+    activites
+      .map((activite) => activite.rdvServicePublicId)
+      .filter(isDefinedAndNotNull),
+  )
+  const filteredRdvs = rdvs.filter((rdv) => !activiteRdvIds.has(rdv.id))
+
+  const byDateRecord = [...filteredRdvs, ...activites].reduce<
     Record<string, (ActiviteListItem | Rdv)[]>
   >((accumulator, activity) => {
     const date = dateAsIsoDay(activity.date)

@@ -57,6 +57,7 @@ export const activiteIndividuelleInfosMinimum = {
   precisionsDemarche: null,
   titreAtelier: null,
   niveau: null,
+  rdvServicePublicId: null,
 } satisfies ActiviteListItem
 
 export const activiteIndividuelleBeneficiaireSuivi = {
@@ -101,6 +102,7 @@ export const activiteIndividuelleBeneficiaireSuivi = {
   precisionsDemarche: null,
   titreAtelier: null,
   niveau: null,
+  rdvServicePublicId: null,
 } satisfies ActiviteListItem
 
 // Refactored "Individuel" type activity with an anonymous beneficiary
@@ -147,6 +149,7 @@ export const activiteIndividuelleBeneficiaireAnonyme = {
   precisionsDemarche: null,
   titreAtelier: null,
   niveau: null,
+  rdvServicePublicId: null,
 } satisfies ActiviteListItem
 
 // Refactored "Collectif" type activity with minimal information
@@ -211,6 +214,7 @@ export const activiteCollectifInfosRepliees = {
   precisionsDemarche: null,
   titreAtelier: 'Atelier de découverte de la vacuité de toute chose',
   niveau: 'Debutant',
+  rdvServicePublicId: 1234567890,
 } satisfies ActiviteListItem
 
 // Refactored "Collectif" type activity with expanded information
@@ -307,6 +311,7 @@ export const activiteCollectifInfosDepliees = {
   precisionsDemarche: null,
   titreAtelier: null,
   niveau: 'Debutant',
+  rdvServicePublicId: 1234567890,
 } satisfies ActiviteListItem
 
 const randomIntegerId = () => Math.floor(Math.random() * 1000000)

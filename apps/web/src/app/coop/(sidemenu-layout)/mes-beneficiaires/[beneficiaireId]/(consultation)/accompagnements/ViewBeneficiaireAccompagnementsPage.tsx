@@ -35,6 +35,7 @@ const ViewBeneficiaireAccompagnementsPage = ({
           key={activite.id}
           activite={activite}
           variant="without-beneficiaire"
+          displayDateDay
         />
       ),
     )}
