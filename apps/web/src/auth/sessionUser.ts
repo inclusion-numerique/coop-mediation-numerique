@@ -63,6 +63,7 @@ export type SessionUser = Pick<
         hasOauthTokens: boolean
         created: string | null
         updated: string | null
+        lastSynced: string | null
         organisations: Pick<RdvOrganisation, 'id' | 'name' | 'email'>[]
       })
     | null

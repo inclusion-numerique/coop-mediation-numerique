@@ -1,5 +1,5 @@
 import { getSessionUser } from '@app/web/auth/getSessionUser'
-import DeconnecterRdvServicePublicButton from '@app/web/rdv-service-public/DeconnecterRdvServicePublicButton'
+import GererRdvServicePublicButton from '@app/web/rdv-service-public/GererRdvServicePublicButton'
 import { getRdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
 import {
   rdvIntegrationEnSavoirPlusLink,
@@ -13,6 +13,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import Link from 'next/link'
 import React from 'react'
+import GererRdvServicePublicModal from './GererRdvServicePublicModal'
 
 const RdvServicePublicAccess = async () => {
   const user = await getSessionUser()
@@ -95,13 +96,15 @@ const RdvServicePublicAccess = async () => {
             <Button
               linkProps={{
                 href: rdvMyHomepageLink,
+                target: '_blank',
               }}
-              priority="tertiary no outline"
+              priority="primary"
             >
               Accédez à l’outil
             </Button>
-            <DeconnecterRdvServicePublicButton />
+            <GererRdvServicePublicButton />
           </div>
+          <GererRdvServicePublicModal user={user} />
         </>
       )}
       {status === 'error' && (

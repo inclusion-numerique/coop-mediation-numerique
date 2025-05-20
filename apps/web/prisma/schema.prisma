@@ -1130,6 +1130,7 @@ model RdvAccount {
 
   created DateTime @default(now()) @map("created")
   updated DateTime @updatedAt @map("updated")
+  lastSynced DateTime? @map("last_synced")
 
   @@index([userId])
   @@map("rdv_accounts")

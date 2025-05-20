@@ -78,6 +78,22 @@ export const rdvServicePublicRouter = router({
 
     return {}
   }),
+  syncRdvAccountData: protectedProcedure.mutation(async ({ ctx: { user } }) => {
+    const oAuthCallUser = await getUserContextForOAuthApiCall({ user })
+
+    // TODO fetch orgs and other data to sync ?
+
+    await prismaClient.rdvAccount.update({
+      where: {
+        id: oAuthCallUser.rdvAccount.id,
+      },
+      data: {
+        lastSynced: new Date(),
+      },
+    })
+
+    return {}
+  }),
   oAuthApiCreateRdvPlan: protectedProcedure
     .input(OauthRdvApiCreateRdvPlanMutationInputValidation)
     .mutation(
