@@ -11,10 +11,27 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { expect, within } from '@storybook/test'
 import React from 'react'
 
-const Template = ({ data }: { data: BeneficiaireInformationsPageData }) => (
+const Template = ({
+  data,
+  rdvIntegration,
+}: { data: BeneficiaireInformationsPageData; rdvIntegration?: boolean }) => (
   <ViewBeneficiaireLayout
     beneficiaire={data.beneficiaire}
-    user={testSessionUser}
+    user={
+      rdvIntegration
+        ? {
+            ...testSessionUser,
+            featureFlags: ['RdvServicePublic'],
+            rdvAccount: {
+              hasOauthTokens: true,
+              created: new Date().toISOString(),
+              id: 42,
+              organisations: [],
+              updated: new Date().toISOString(),
+            },
+          }
+        : testSessionUser
+    }
   >
     <ViewBeneficiaireInformationsPage data={data} />
   </ViewBeneficiaireLayout>
@@ -53,6 +70,8 @@ export const SansInformations: Story = {
 
 const beneficiaireAvecInformations = {
   ...beneficiaireMaximaleMediateurAvecActivite,
+  anneeNaissance: 1987,
+  rdvServicePublicId: 42,
   _count: {
     accompagnements: 6,
   },
@@ -92,7 +111,7 @@ const avecInformations = {
 
 export const AvecInformations: Story = {
   name: 'Avec informations',
-  render: (args) => <Template {...args} />,
+  render: (args) => <Template {...args} rdvIntegration />,
   args: {
     data: avecInformations,
   },

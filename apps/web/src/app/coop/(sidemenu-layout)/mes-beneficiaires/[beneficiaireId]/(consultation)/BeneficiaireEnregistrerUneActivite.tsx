@@ -10,20 +10,25 @@ export const CreateCraBeneficiaireModalDefinition = createModal({
   isOpenedByDefault: false,
 })
 
-const BeneficiaireAjouterUneActivite = ({
+const BeneficiaireEnregistrerUneActivite = ({
   beneficiaire,
   displayName,
+  label = 'Enregistrer une activité',
+  size,
 }: {
   beneficiaire: BeneficiaireCraData
   displayName: string
+  label?: string
+  size?: 'small' | 'medium' | 'large'
 }) => (
   <>
     <div className="fr-flex fr-direction-column fr-flex-gap-2v">
       <Button
         iconId="fr-icon-add-line"
+        size={size}
         onClick={CreateCraBeneficiaireModalDefinition.open}
       >
-        Ajouter une activité
+        {label}
       </Button>
     </div>
     <CreateCraBeneficiaireModalDefinition.Component
@@ -39,4 +44,4 @@ const BeneficiaireAjouterUneActivite = ({
   </>
 )
 
-export default BeneficiaireAjouterUneActivite
+export default BeneficiaireEnregistrerUneActivite

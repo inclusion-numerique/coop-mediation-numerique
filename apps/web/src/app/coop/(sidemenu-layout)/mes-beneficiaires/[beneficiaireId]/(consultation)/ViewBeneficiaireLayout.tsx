@@ -1,5 +1,5 @@
 import PrendreRendezVousAvecBeneficiaireButton from '@app/web/app/coop/(full-width-layout)/mon-profil/PrendreRendezVousAvecBeneficiaireButton'
-import BeneficiaireAjouterUneActivite from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/BeneficiaireAjouterUneActivite'
+import BeneficiaireEnregistrerUneActivite from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/BeneficiaireEnregistrerUneActivite'
 import { DeleteBeneficiaireModal } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/DeleteBeneficiaireModal'
 import DeleteBeneficiaireModalContent from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/DeleteBeneficiaireModalContent'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
@@ -44,6 +44,9 @@ const ViewBeneficiaireLayout = ({
   const canPrendreRendezVous =
     !!user && hasFeatureFlag(user, 'RdvServicePublic')
 
+  const hasRdvIntegration =
+    canPrendreRendezVous && user.rdvAccount?.hasOauthTokens
+
   return (
     <CoopPageContainer size={794}>
       <CoopBreadcrumbs
@@ -65,42 +68,39 @@ const ViewBeneficiaireLayout = ({
         )}
       >
         <div>
-          <h1 className="fr-text-title--blue-france fr-mb-0">{displayName}</h1>
+          <h1 className="fr-text-title--blue-france fr-h2 fr-mb-0">
+            {displayName}
+          </h1>
           {!!anneeNaissance && (
-            <p className="fr-mb-0 fr-mt-2v">
+            <p className="fr-text--sm fr-text-mention--grey fr-mb-0 fr-mt-1v">
               Année de naissance&nbsp;: {anneeNaissance}
             </p>
           )}
         </div>
-        <div className="fr-flex fr-flex-gap-4v fr-flex-nowrap fr-flex-shrink-0">
-          <BeneficiaireAjouterUneActivite
-            beneficiaire={beneficiaireCraData}
-            displayName={displayName}
-          />
-          <Button
-            iconId="fr-icon-edit-line"
-            priority="secondary"
-            title="Modifier"
-            linkProps={{
-              href: `/coop/mes-beneficiaires/${beneficiaire.id}/modifier`,
-            }}
-          />
-          <Button
-            iconId="fr-icon-delete-bin-line"
-            priority="secondary"
-            title="Supprimer"
-            type="button"
-            {...DeleteBeneficiaireModal.buttonProps}
-          />
-        </div>
+        {!hasRdvIntegration && (
+          <div className="fr-flex fr-flex-gap-4v fr-flex-nowrap fr-flex-shrink-0">
+            <BeneficiaireEnregistrerUneActivite
+              beneficiaire={beneficiaireCraData}
+              displayName={displayName}
+            />
+          </div>
+        )}
       </div>
-      {canPrendreRendezVous && (
-        <div className="fr-width-full fr-flex  fr-justify-content-end fr-mb-2v ">
-          <PrendreRendezVousAvecBeneficiaireButton
-            beneficiaire={{ id: beneficiaire.id }}
-            user={user}
-            returnPath={`/coop/mes-beneficiaires/${beneficiaire.id}`}
-          />
+      {hasRdvIntegration && (
+        <div className="fr-border--top fr-border--bottom fr-py-4v fr-width-full fr-my-6v ">
+          <div className="fr-flex fr-flex-gap-4v fr-flex-nowrap fr-flex-shrink-0">
+            <BeneficiaireEnregistrerUneActivite
+              beneficiaire={beneficiaireCraData}
+              displayName={displayName}
+              size="small"
+              label="Enregistrer un accompagnement individuel"
+            />
+            <PrendreRendezVousAvecBeneficiaireButton
+              beneficiaire={{ id: beneficiaire.id }}
+              user={user}
+              returnPath={`/coop/mes-beneficiaires/${beneficiaire.id}`}
+            />
+          </div>
         </div>
       )}
       {children}

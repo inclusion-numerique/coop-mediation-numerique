@@ -15,10 +15,12 @@ const PrendreRendezVousAvecBeneficiaireButton = ({
   beneficiaire,
   user,
   returnPath,
+  className,
 }: {
   beneficiaire: { id: string }
   user: SessionUser
   returnPath: string // path on the app (e.g. /beneficiaires/12)
+  className?: string
 }) => {
   const mutation = trpc.rdvServicePublic.oAuthApiCreateRdvPlan.useMutation()
 
@@ -50,13 +52,15 @@ const PrendreRendezVousAvecBeneficiaireButton = ({
 
   return (
     <Button
-      priority="secondary"
+      priority="primary"
+      size="small"
       iconId="fr-icon-calendar-line"
       {...buttonLoadingClassname(isLoading)}
       onClick={onClick}
       type="button"
+      className={className}
     >
-      Planifier un rendez-vous avec RDV&nbsp;Service&nbsp;Public
+      Planifier un rendez-vous
     </Button>
   )
 }
