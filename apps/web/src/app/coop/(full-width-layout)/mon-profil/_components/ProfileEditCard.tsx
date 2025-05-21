@@ -1,9 +1,12 @@
 'use client'
 
+import { secureSessionCookie } from '@app/web/auth/getSessionTokenFromCookies'
+import { sessionCookie } from '@app/web/auth/getSessionTokenFromCookies'
 import Card from '@app/web/components/Card'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
+import * as cookie from 'cookie'
 import { signOut } from 'next-auth/react'
 import React from 'react'
 import { ProfileView } from './ProfileView'
@@ -17,11 +20,12 @@ const {
   isOpenedByDefault: false,
 })
 
-const handleGoToProConnect = async () => {
-  await signOut({ redirect: true, callbackUrl: '/connexion' })
-  window
-    .open('https://identite.proconnect.gouv.fr/personal-information', '_blank')
-    ?.focus()
+const signoutAndGoToProconnectProfilePage = async () => {
+  await signOut({
+    redirect: true,
+    callbackUrl:
+      '/redirection?url=https://identite.proconnect.gouv.fr/personal-information',
+  })
 }
 
 const ProfileEditCard = (profileData: {
@@ -81,7 +85,7 @@ const ProfileEditCard = (profileData: {
         {
           type: 'button',
           children: 'Continuer',
-          onClick: handleGoToProConnect,
+          onClick: signoutAndGoToProconnectProfilePage,
         },
       ]}
     >
