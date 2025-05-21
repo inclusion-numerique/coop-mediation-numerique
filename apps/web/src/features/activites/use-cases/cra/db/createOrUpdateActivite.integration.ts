@@ -116,7 +116,7 @@ describe('createOrUpdateActivite', () => {
       structureDeRedirection: input.data.structureDeRedirection ?? null,
       thematiques: input.data.thematiques,
       typeLieu: input.data.typeLieu,
-      rdvServicePublicId: input.data.rdvServicePublicId,
+      rdvServicePublicId: input.data.rdvServicePublicId ?? null,
     })
   })
 
@@ -250,7 +250,7 @@ describe('createOrUpdateActivite', () => {
       notes: input.data.notes ?? null,
       typeLieu: input.data.typeLieu,
       thematiques: input.data.thematiques,
-      rdvServicePublicId: input.data.rdvServicePublicId,
+      rdvServicePublicId: input.data.rdvServicePublicId ?? null,
     })
   })
 })

@@ -37,7 +37,6 @@ export const givenUser = <T extends Partial<Prisma.UserCreateInput>>(
     name: givenName,
     role: givenRole,
     emailVerified: givenEmailVerified,
-    rdvAccount: null,
     ...rest,
   } satisfies Prisma.UserCreateInput
 }
