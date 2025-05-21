@@ -1,3 +1,4 @@
+import { UtilisateurSetFeatureFlagsValidation } from '@app/web/app/administration/utilisateurs/[id]/UtilisateurSetFeatureFlagsValidation'
 import { UpdateProfileValidation } from '@app/web/app/user/UpdateProfileValidation'
 import { mergeUser } from '@app/web/features/utilisateurs/use-cases/merge/mergeUser'
 import { searchUser } from '@app/web/features/utilisateurs/use-cases/search/searchUser'
@@ -129,6 +130,43 @@ export const userRouter = router({
         enforceIsAdmin(sessionUser)
 
         return mergeUser(sourceUserId, targetUserId)
+      },
+    ),
+  setFeatureFlags: protectedProcedure
+    .input(UtilisateurSetFeatureFlagsValidation)
+    .mutation(
+      async ({
+        input: { featureFlags, userId },
+        ctx: { user: sessionUser },
+      }) => {
+        enforceIsAdmin(sessionUser)
+
+        const user = await prismaClient.user.findUnique({
+          where: {
+            id: userId,
+          },
+          select: {
+            id: true,
+          },
+        })
+        if (!user) {
+          throw invalidError('User not found')
+        }
+
+        const updated = await prismaClient.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            featureFlags,
+          },
+          select: {
+            id: true,
+            featureFlags: true,
+          },
+        })
+
+        return updated
       },
     ),
 })
