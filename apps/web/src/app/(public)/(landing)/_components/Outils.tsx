@@ -1,3 +1,4 @@
+import { rdvWebsiteLink } from '@app/web/rdv-service-public/rdvServicePublicOauth'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -122,11 +123,11 @@ export const Outils = () => (
             className="fr-background-alt--blue-france fr-border-radius--16 fr-p-2w"
             width={88}
             height={88}
-            src="/images/services/rdv-aide-numerique.svg"
+            src="/images/services/rdv-service-public.svg"
             alt=""
           />
           <div className="fr-my-3w">
-            <h3 className="fr-h6 fr-mb-2w">RDV Aide Numérique</h3>
+            <h3 className="fr-h6 fr-mb-2w">RDV Service Public</h3>
             <p className="fr-mb-0 fr-text-mention--grey">
               Faciliter la gestion des rendez-vous avec vos bénéficiaires.
             </p>
@@ -134,10 +135,10 @@ export const Outils = () => (
           <span className="fr-mt-auto">
             <Link
               className="fr-link"
-              href="https://www.rdv-aide-numerique.fr"
+              href={rdvWebsiteLink}
               target="_blank"
               rel="noreferrer"
-              title="Accéder à RDV Aide Numérique - nouvel onglet"
+              title="Accéder à RDV Service Public - nouvel onglet"
             >
               Découvrir
             </Link>

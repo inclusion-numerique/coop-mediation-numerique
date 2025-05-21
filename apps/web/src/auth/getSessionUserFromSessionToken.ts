@@ -106,8 +106,16 @@ export const sessionUserSelect = {
       id: true,
       created: true,
       updated: true,
+      lastSynced: true,
       accessToken: true,
       refreshToken: true,
+      organisations: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
     },
   },
 } satisfies Prisma.UserSelect

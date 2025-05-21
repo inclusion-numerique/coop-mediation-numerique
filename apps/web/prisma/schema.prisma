@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch", "nativeDistinct", "relationJoins", "postgresqlExtensions"]
+  previewFeatures = ["fullTextSearchPostgres", "nativeDistinct", "relationJoins", "postgresqlExtensions"]
   binaryTargets   = ["native", "debian-openssl-1.1.x"]
   extensions      = [vector]
 }
@@ -892,7 +892,7 @@ enum StatutSocial {
 model Beneficiaire {
   id String @id @default(uuid()) @db.Uuid
 
-  // Identifiant chez RDV Aide Numérique si le bénéficiaire est synchronisé avec RDV Aide Numérique
+  // Identifiant chez RDV Service Public si le bénéficiaire est synchronisé avec RDV Service Public
   rdvServicePublicId Int? @map("rdv_service_public_id")
 
   // Relation avec le médiateur à qui est "rattaché" le bénéficiaire
@@ -962,6 +962,7 @@ model Activite {
   date            DateTime         @map("date") @db.Date
   duree           Int              @map("duree") // Durée en minutes
   notes           String?
+  rdvServicePublicId Int? @map("rdv_service_public_id") // id externe du RDV Service Public qui est à l'origine de cette Activité
 
   // Structure est renseigné
   // - si typeLieu = LieuActivite
@@ -1111,7 +1112,7 @@ enum NiveauAtelier {
 }
 
 // An account linked in the Rdv service
-// https://www.rdv-solidarites.fr
+// https://rdv.anct.gouv.fr
 // Stores the external id of the account and the oauth credentials
 model RdvAccount {
   id Int @id // external id of the "agent" account in rdv systems
@@ -1119,7 +1120,9 @@ model RdvAccount {
   userId String @unique @map("user_id") @db.Uuid
   user   User   @relation(fields: [userId], references: [id])
 
-  accessToken  String?   @map("access_token") // Empty if account created but oauth not linked
+  organisations RdvOrganisation[] // Be careful as this may be out of sync with the data from oauth. Used as a cache and should be refreshed when needed.
+
+  accessToken  String?   @map("access_token") // Empty if account created but oauth not linked or invalidated
   refreshToken String?   @map("refresh_token")
   expiresAt    DateTime? @map("expires_at")
   scope        String?
@@ -1127,9 +1130,26 @@ model RdvAccount {
 
   created DateTime @default(now()) @map("created")
   updated DateTime @updatedAt @map("updated")
+  lastSynced DateTime? @map("last_synced")
 
   @@index([userId])
   @@map("rdv_accounts")
+}
+
+// Organisations owned by RDV Service Public
+// Be careful as this may be out of sync with the data from oauth. Used as a cache and should be refreshed when needed.
+model RdvOrganisation {
+  id Int @id
+
+  accountId Int        @map("account_id")
+  account   RdvAccount @relation(fields: [accountId], references: [id])
+
+  name        String
+  email       String?
+  phoneNumber String? @map("phone_number")
+
+  @@index([accountId])
+  @@map("rdv_organisations")
 }
 
 enum MutationName {

@@ -1,75 +1,34 @@
 import { getActivitesListPageData } from '@app/web/features/activites/use-cases/list/getActivitesListPageData'
-import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { countMediateursCoordonnesBy } from '@app/web/mediateurs/countMediateursCoordonnesBy'
-import type { UserDisplayName, UserProfile } from '@app/web/utils/user'
-import { getTotalCountsStats } from '../mes-statistiques/_queries/getTotalCountsStats'
+import type {
+  UserDisplayName,
+  UserId,
+  UserProfile,
+  UserRdvAccount,
+} from '@app/web/utils/user'
 
-const activitesFiltersLastDays = (daysCount: number) => {
-  const currentDate = new Date()
-  currentDate.setDate(currentDate.getDate() - daysCount)
-  const activitesFilters: ActivitesFilters = {
-    du: currentDate.toISOString().split('T')[0],
-    au: new Date().toISOString().split('T')[0],
-  }
-  return activitesFilters
-}
-
-const EMPTY_STATISTIQUES = {
-  totalCountsStats7Days: {
-    beneficiaires: { total: 0, suivis: 0, anonymes: 0 },
-    activites: {
-      individuels: { total: 0, proportion: 0 },
-      collectifs: { total: 0, proportion: 0, participants: 0 },
-      demarches: { total: 0, proportion: 0 },
-    },
-  },
-  totalCountsStats30Days: {
-    beneficiaires: { total: 0, suivis: 0, anonymes: 0 },
-    activites: {
-      individuels: { total: 0, proportion: 0 },
-      collectifs: { total: 0, proportion: 0, participants: 0 },
-      demarches: { total: 0, proportion: 0 },
-    },
-  },
-}
 export const getAccueilPageDataFor = async (
-  user: UserDisplayName & UserProfile,
+  user: UserDisplayName & UserProfile & UserId & UserRdvAccount,
 ) => {
   const mediateurs = await countMediateursCoordonnesBy(user.coordinateur)
 
   if (user.mediateur?.id != null) {
-    const totalCountsStats7Days = await getTotalCountsStats({
-      user,
-      mediateurIds: [user.mediateur.id],
-      activitesFilters: activitesFiltersLastDays(7),
-    })
-
-    const totalCountsStats30Days = await getTotalCountsStats({
-      user,
-      mediateurIds: [user.mediateur.id],
-      activitesFilters: activitesFiltersLastDays(30),
-    })
-
     const {
       searchResult: { activites },
     } = await getActivitesListPageData({
       mediateurId: user.mediateur.id,
       searchParams: { lignes: '3' },
+      user,
     })
 
     return {
       mediateurs,
-      statistiques: {
-        totalCountsStats7Days,
-        totalCountsStats30Days,
-      },
       activites,
     }
   }
 
   return {
     mediateurs,
-    statistiques: EMPTY_STATISTIQUES,
     activites: [],
   }
 }

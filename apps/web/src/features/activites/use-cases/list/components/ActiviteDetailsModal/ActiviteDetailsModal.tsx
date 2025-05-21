@@ -34,7 +34,7 @@ import {
 } from '../../../cra/fields/type-activite'
 import { autonomieStars } from '../../../cra/individuel/fields/autonomie'
 import { structuresRedirectionLabels } from '../../../cra/individuel/fields/structures-redirection'
-import { ActiviteForList } from '../../db/activitesQueries'
+import { ActiviteListItem } from '../../db/activitesQueries'
 import {
   ActiviteDetailsDynamicModal,
   ActiviteDetailsDynamicModalState,
@@ -55,7 +55,7 @@ const ListItem = ({
   </li>
 )
 
-const getActiviteLocationString = (activite: ActiviteForList) => {
+const getActiviteLocationString = (activite: ActiviteListItem) => {
   const { structure, lieuCodePostal, lieuCommune, typeLieu } = activite
 
   if (structure) {

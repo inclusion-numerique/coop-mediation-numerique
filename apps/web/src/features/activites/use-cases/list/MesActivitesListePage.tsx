@@ -1,9 +1,11 @@
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
+import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 import { Spinner } from '@app/web/ui/Spinner'
 import { formatActiviteDayDate } from '@app/web/utils/activiteDayDateFormat'
 import { Fragment, Suspense } from 'react'
-import ActiviteMediateurCard from './components/ActiviteMediateurCard'
+import ActiviteCard from './components/ActiviteCard'
+import RdvCard from './components/RdvCard'
 import { getActivitesResultCountLabel } from './components/getActivitesResultCountLabel'
 import { groupActivitesByDate } from './db/activitesQueries'
 import { ActivitesListPageData } from './getActivitesListPageData'
@@ -15,9 +17,8 @@ const SuspensedContent = async ({
 }: {
   data: Promise<ActivitesListPageData>
 }) => {
-  const { searchParams, searchResult, isFiltered } = await data
-
-  const activitesByDate = groupActivitesByDate(searchResult.activites)
+  const { searchParams, searchResult, isFiltered, activitesByDate, user } =
+    await data
 
   const baseHref = '/coop/mes-activites'
   return (
@@ -27,12 +28,25 @@ const SuspensedContent = async ({
       </p>
       {activitesByDate.map(({ date, activites }) => (
         <Fragment key={new Date(date).toISOString()}>
-          <h3 className="fr-text--xs fr-text-mention--grey fr-text--bold fr-text--uppercase fr-my-4v">
+          <h3 className="fr-text--xs fr-text-mention--grey fr-text--bold fr-text--uppercase fr-mt-6v fr-mb-4v">
             {formatActiviteDayDate(date)}
           </h3>
-          {activites.map((activite) => (
-            <ActiviteMediateurCard key={activite.id} activite={activite} />
-          ))}
+          {activites.map((activite) =>
+            'status' in activite ? (
+              <RdvCard
+                key={activite.id}
+                activite={activite}
+                user={user}
+                displayBeneficiaire
+              />
+            ) : (
+              <ActiviteCard
+                key={activite.id}
+                activite={activite}
+                variant="with-beneficiaire"
+              />
+            ),
+          )}
         </Fragment>
       ))}
       <PaginationNavWithPageSizeSelect
@@ -40,7 +54,7 @@ const SuspensedContent = async ({
         totalPages={searchResult.totalPages}
         baseHref={baseHref}
         searchParams={searchParams}
-        defaultPageSize={10}
+        defaultPageSize={DEFAULT_PAGE_SIZE}
         pageSizeOptions={pageSizeOptions}
       />
     </>

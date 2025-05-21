@@ -1,29 +1,40 @@
-import { RdvAccount } from '@prisma/client'
-
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import { OauthRdvApiGetUserResponse } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
+import {
+  OAuthApiOrganisationRdvsResponse,
+  OAuthRdvApiGetOrganisationsResponse,
+  OauthRdvApiCreateRdvPlanInput,
+  OauthRdvApiCreateRdvPlanResponse,
+  OauthRdvApiGetUserResponse,
+  OauthRdvApiMeResponse,
+  RdvApiOrganisation,
+} from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
 import { refreshRdvAccessToken } from '@app/web/rdv-service-public/refreshRdvAccessToken'
 import { removeUndefinedValues } from '@app/web/utils/removeUndefinedValues'
+import { Beneficiaire, RdvAccount } from '@prisma/client'
 import axios, { AxiosError, AxiosRequestConfig } from 'axios'
 
-export type OAuthRdvApiCallRdvAccount = Pick<
+export type OAuthRdvApiCredentials = Pick<
   RdvAccount,
-  'id' | 'accessToken' | 'refreshToken' | 'scope' | 'expiresAt'
->
+  'accessToken' | 'refreshToken' | 'expiresAt' | 'scope'
+> & { id?: number }
+
+export type OauthRdvApiCredentialsWithOrganisations = OAuthRdvApiCredentials & {
+  organisations: Pick<RdvApiOrganisation, 'id'>[]
+}
 
 /**
  * executes an API call to the rdv system using the rdvAccount's tokens,
  * handles automatic token refresh, and retries once if the first call fails
  * Pour la documentation des API RDV, voir https://rdv.anct.gouv.fr/api-docs/index.html
  */
-export const executeOAuthRdvApiCall = async <ResponseType = unknown>({
+const executeOAuthRdvApiCall = async <ResponseType = unknown>({
   rdvAccount,
   path,
-  config,
+  config = {},
 }: {
   path: string
-  rdvAccount: OAuthRdvApiCallRdvAccount
-  config: Omit<AxiosRequestConfig, 'url'>
+  rdvAccount: OAuthRdvApiCredentials
+  config?: Omit<AxiosRequestConfig, 'url'>
 }) => {
   // check if token is expired or about to expire
   const now = Date.now()
@@ -34,8 +45,11 @@ export const executeOAuthRdvApiCall = async <ResponseType = unknown>({
   let accountToUse = rdvAccount
 
   // refresh if it's already expired or will soon expire
-  if (willExpireSoon) {
-    accountToUse = await refreshRdvAccessToken(rdvAccount)
+  if (willExpireSoon && rdvAccount.id) {
+    accountToUse = await refreshRdvAccessToken({
+      ...rdvAccount,
+      id: rdvAccount.id,
+    })
     currentAccessToken = accountToUse.accessToken
   }
 
@@ -58,9 +72,12 @@ export const executeOAuthRdvApiCall = async <ResponseType = unknown>({
     if (error instanceof AxiosError) {
       const status = error.response?.status
       // typical invalid token scenario: 401
-      if (status === 401) {
+      if (status === 401 && rdvAccount.id) {
         // refresh and retry once
-        const updated = await refreshRdvAccessToken(accountToUse)
+        const updated = await refreshRdvAccessToken({
+          ...accountToUse,
+          id: rdvAccount.id,
+        })
         const retryConfig: AxiosRequestConfig = {
           ...requestConfig,
           headers: {
@@ -79,15 +96,93 @@ export const executeOAuthRdvApiCall = async <ResponseType = unknown>({
   }
 }
 
+export const oAuthRdvApiCreateRdvPlan = async ({
+  input,
+  rdvAccount,
+}: {
+  input: OauthRdvApiCreateRdvPlanInput
+  rdvAccount: OAuthRdvApiCredentials
+}) => {
+  return executeOAuthRdvApiCall<OauthRdvApiCreateRdvPlanResponse>({
+    path: '/rdv_plans',
+    rdvAccount,
+    config: {
+      method: 'POST',
+      data: input,
+    },
+  })
+}
+
+export const oAuthRdvApiListRdvs = async ({
+  rdvAccount,
+  beneficiaire,
+}: {
+  rdvAccount: OauthRdvApiCredentialsWithOrganisations
+  beneficiaire?: Pick<Beneficiaire, 'rdvServicePublicId'>
+}): Promise<OAuthApiOrganisationRdvsResponse['rdvs']> => {
+  const organisationIds = rdvAccount.organisations.map(({ id }) => id)
+
+  const rdvsPerOrganisation = await Promise.all(
+    organisationIds.map((organisationId) =>
+      executeOAuthRdvApiCall<OAuthApiOrganisationRdvsResponse>({
+        path: `/organisations/${organisationId}/rdvs`,
+        rdvAccount,
+        config: {
+          method: 'GET',
+        },
+      }),
+    ),
+  )
+
+  // No filters in query param, post processing :
+  const allRdvs = rdvsPerOrganisation.flatMap(({ rdvs }) => rdvs)
+
+  const filteredRdvs = beneficiaire
+    ? allRdvs.filter((rdv) =>
+        rdv.participations.some(
+          ({ user }) => user.id === beneficiaire.rdvServicePublicId,
+        ),
+      )
+    : allRdvs
+
+  return filteredRdvs
+}
+
 export const oAuthRdvApiGetUser = async ({
   userId,
   rdvAccount,
 }: {
-  userId: string // RDV Aide Numérique user id
-  rdvAccount: OAuthRdvApiCallRdvAccount
+  userId: string // RDV Service Public user id
+  rdvAccount: OAuthRdvApiCredentials
 }) =>
   executeOAuthRdvApiCall<OauthRdvApiGetUserResponse>({
     path: `/users/${userId}`,
+    rdvAccount,
+    config: {
+      method: 'GET',
+    },
+  })
+
+export const oAuthRdvApiMe = async ({
+  rdvAccount,
+}: {
+  rdvAccount: OAuthRdvApiCredentials
+}) =>
+  executeOAuthRdvApiCall<OauthRdvApiMeResponse>({
+    path: '/agents/me',
+    rdvAccount,
+    config: {
+      method: 'GET',
+    },
+  })
+
+export const oAuthRdvApiGetOrganisations = async ({
+  rdvAccount,
+}: {
+  rdvAccount: OAuthRdvApiCredentials
+}) =>
+  executeOAuthRdvApiCall<OAuthRdvApiGetOrganisationsResponse>({
+    path: '/organisations',
     rdvAccount,
     config: {
       method: 'GET',

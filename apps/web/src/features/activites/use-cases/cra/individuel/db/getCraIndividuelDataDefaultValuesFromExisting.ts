@@ -48,6 +48,7 @@ export const getCraIndividuelDataDefaultValuesFromExisting = async ({
       structureDeRedirection: true,
       notes: true,
       precisionsDemarche: true,
+      rdvServicePublicId: true,
     },
   })
 
@@ -71,6 +72,7 @@ export const getCraIndividuelDataDefaultValuesFromExisting = async ({
     structureId,
     materiel,
     orienteVersStructure,
+    rdvServicePublicId,
   } = cra
 
   const beneficiaire = accompagnements[0]?.beneficiaire
@@ -102,6 +104,7 @@ export const getCraIndividuelDataDefaultValuesFromExisting = async ({
           })
         : undefined,
     typeLieu: typeLieu ?? undefined,
+    rdvServicePublicId: rdvServicePublicId ?? undefined,
   } satisfies DefaultValues<CraIndividuelData>
 
   return defaultValues

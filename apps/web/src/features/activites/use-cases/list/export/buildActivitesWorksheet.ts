@@ -28,7 +28,7 @@ import {
 } from '../../cra/individuel/fields/autonomie'
 import { structuresRedirectionLabels } from '../../cra/individuel/fields/structures-redirection'
 import type { ActivitesFiltersLabels } from '../components/generateActivitesFiltersLabels'
-import type { ActiviteForList } from '../db/activitesQueries'
+import type { ActiviteListItem } from '../db/activitesQueries'
 
 export type BuildActivitesWorksheetInput = {
   // This is the user that requested the worksheet, it might not be the same user as the one that owns the activites
@@ -36,17 +36,17 @@ export type BuildActivitesWorksheetInput = {
   // This is the user that owns the activites
   mediateur: WorksheetUser
   filters: ActivitesFiltersLabels
-  activites: ActiviteForList[]
+  activites: ActiviteListItem[]
   worksheetGenerationDate?: Date // Defaults to current date
 }
 
 const intraCellLineBreak = '\n'
 
 const beneficiairesListCellFormatter =
-  (activite: ActiviteForList) =>
+  (activite: ActiviteListItem) =>
   (
     toStringValue: (
-      beneficiaire: ActiviteForList['accompagnements'][number]['beneficiaire'],
+      beneficiaire: ActiviteListItem['accompagnements'][number]['beneficiaire'],
     ) => string,
   ) =>
     activite.accompagnements

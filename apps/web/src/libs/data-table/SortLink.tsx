@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import styles from './DataTable.module.css'
 
 export type SortDirection = 'asc' | 'desc'
 
@@ -29,7 +30,7 @@ const SortLink = ({
 
   return (
     <Link
-      className={`fr-btn fr-ml-2v fr-btn--tertiary-no-outline fr-btn--sm ${icon}`}
+      className={`fr-btn fr-ml-2v fr-btn--tertiary-no-outline fr-btn--sm ${icon} ${styles.sortLink}`}
       title={title}
       href={href}
       scroll={false}

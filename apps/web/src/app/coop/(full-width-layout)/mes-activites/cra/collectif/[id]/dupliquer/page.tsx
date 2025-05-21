@@ -25,6 +25,7 @@ const DupliquerPage = async ({
   const defaultValuesWithoutIds = {
     ...defaultValues,
     id: undefined,
+    rdvServicePublicId: undefined, // the rdvServicePublicId is not duplicated as it is "owned" by the duplicated activite
     participantsAnonymes: defaultValues.participantsAnonymes
       ? { ...defaultValues.participantsAnonymes, id: undefined }
       : undefined,

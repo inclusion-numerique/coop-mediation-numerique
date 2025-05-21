@@ -1,9 +1,9 @@
+import { CreateCraModalDefinition } from '@app/web/features/activites/use-cases/cra/components/CreateCraModal/CreateCraModalDefinition'
+import { ActiviteListItem } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { Button } from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
 import React from 'react'
-import { CreateCraModalDefinition } from '../../cra/components/CreateCraModal/CreateCraModalDefinition'
-import { ActiviteForList } from '../db/activitesQueries'
-import ActiviteMediateurCard from './ActiviteMediateurCard'
+import ActiviteCard from './ActiviteCard'
 
 const ActiviteEmptyState = () => (
   <div className="fr-text--center fr-background-alt--blue-france fr-p-6w fr-border-radius--16">
@@ -27,13 +27,13 @@ const ActiviteEmptyState = () => (
 export const DernieresActivites = ({
   activites,
 }: {
-  activites: ActiviteForList[]
+  activites: ActiviteListItem[]
 }) => (
   <>
     <div className="fr-flex fr-flex-wrap fr-flex-gap-4v fr-align-items-center fr-justify-content-space-between fr-mb-3w">
       <h2 className="fr-h5 fr-text-mention--grey fr-mb-0">
         <span className="ri-service-line fr-mr-1w" aria-hidden />
-        Mes 3 dernières activités enregistrés
+        Mes 3 dernières activités enregistrées
       </h2>
       <Link
         className="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
@@ -44,11 +44,15 @@ export const DernieresActivites = ({
     </div>
 
     {activites.length > 0 ? (
-      activites.map((activite) => (
-        <ActiviteMediateurCard
+      activites.map((activite, index) => (
+        <ActiviteCard
           key={activite.id}
+          variant="with-beneficiaire"
           activite={activite}
-          displayDate
+          displayDateDay
+          stacked
+          firstOfStack={index === 0}
+          lastOfStack={index === activites.length - 1}
         />
       ))
     ) : (

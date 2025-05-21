@@ -1,9 +1,9 @@
+import { Outil } from '@app/web/app/coop/(sidemenu-layout)/mes-outils/[slug]/Outil'
 import { getOutilsPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-outils/[slug]/outilsPageData'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import React from 'react'
-import { Outil } from './Outil'
 
 export const generateMetadata = async (props: {
   params: Promise<{ slug: string }>

@@ -47,6 +47,7 @@ export const getCraCollectifDataDefaultValuesFromExisting = async ({
       niveau: true,
       notes: true,
       precisionsDemarche: true,
+      rdvServicePublicId: true,
     },
   })
 
@@ -69,6 +70,7 @@ export const getCraCollectifDataDefaultValuesFromExisting = async ({
     typeLieu,
     niveau,
     titreAtelier,
+    rdvServicePublicId,
   } = cra
 
   const { beneficiairesSuivis, participantsAnonymes } =
@@ -110,6 +112,7 @@ export const getCraCollectifDataDefaultValuesFromExisting = async ({
     typeLieu: typeLieu ?? undefined,
     niveau: niveau ?? undefined,
     titreAtelier: titreAtelier ?? undefined,
+    rdvServicePublicId: rdvServicePublicId ?? undefined,
   } satisfies DefaultValues<CraCollectifData>
 
   return defaultValues
