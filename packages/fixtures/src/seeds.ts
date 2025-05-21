@@ -10,9 +10,9 @@ import { upsertCraFixtures } from '@app/fixtures/upsertCraFixtures'
 import {
   coordinations,
   fixtureUsers,
+  rdvServicePublicStagingUsers,
   teamAdministrateurs,
   teamMediateurs,
-  rdvServicePublicStagingUsers,
 } from '@app/fixtures/users'
 import type { Prisma } from '@prisma/client'
 import { upsertCoordinationFixtures } from './upsertCoordinationFixture'

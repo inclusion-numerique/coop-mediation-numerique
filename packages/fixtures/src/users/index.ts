@@ -1,3 +1,4 @@
+import { givenMediateur } from '@app/fixtures/givenMediateur'
 import { givenUser } from '@app/fixtures/givenUser'
 import type { Prisma } from '@prisma/client'
 import { administrateur } from './administrateur'
@@ -28,7 +29,6 @@ import {
 } from './mediateurAvecActivite'
 import { mediateurInscription } from './mediateurInscription'
 import { mediateurSansActivites } from './mediateurSansActivites'
-import { givenMediateur } from '@app/fixtures/givenMediateur'
 
 export const fixtureUsers = [
   administrateur,
