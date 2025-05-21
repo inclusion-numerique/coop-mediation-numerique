@@ -2,6 +2,7 @@ import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiair
 import type { DataTableSearchParams } from '@app/web/libs/data-table/DataTableConfiguration'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
+import { dureeAsString } from '@app/web/utils/dureeAsString'
 import { typeActiviteLabels } from '../../cra/fields/type-activite'
 import type { ActivitesDataTableConfiguration } from '../db/ActivitesDataTableConfiguration'
 import type { ActiviteListItem } from '../db/activitesQueries'
@@ -13,57 +14,54 @@ export const ActivitesDataTable = {
   rowKey: ({ id }) => id,
   columns: [
     {
+      name: 'activite',
+      header: 'Activité',
+      csvHeaders: ['activite', 'beneficiaire'],
+      csvValues: ({ type, accompagnements }: ActiviteListItem) => [
+        typeActiviteLabels[type],
+        type === 'Collectif'
+          ? `${accompagnements.length} participants`
+          : getBeneficiaireDisplayName(accompagnements[0]?.beneficiaire ?? {}),
+      ],
+      cell: ({ type, accompagnements }) => (
+        <>
+          <p className="fr-text-mention--grey fr-text--xs fr-mb-0-5v">
+            {typeActiviteLabels[type]}
+          </p>
+          <p className="fr-mb-0">
+            {type === 'Collectif'
+              ? `${accompagnements.length} participants`
+              : getBeneficiaireDisplayName(
+                  accompagnements[0]?.beneficiaire ?? {},
+                )}
+          </p>
+        </>
+      ),
+      cellClassName: styles.typeCell,
+    },
+    {
       name: 'date',
       header: 'Date',
-      csvHeaders: ['Date'],
-      defaultSortable: true,
-      defaultSortableDirection: 'desc',
-      cellAsTh: true,
-      sortable: true,
+      csvHeaders: ['date'],
       csvValues: ({ date }) => [dateAsIsoDay(date)],
       cell: ({ date }) => dateAsDay(date),
     },
     {
-      name: 'type',
-      header: 'Type',
-      csvHeaders: ['Type'],
-      csvValues: ({ type }: ActiviteListItem) => [typeActiviteLabels[type]],
-      cell: ({ type }) => typeActiviteLabels[type],
-      cellClassName: styles.typeCell,
-      sortable: true,
+      name: 'duree',
+      header: 'Durée',
+      csvHeaders: ['duree'],
+      csvValues: ({ duree }) => [duree ? dureeAsString(duree) : ''],
+      cell: ({ duree }) => (duree ? dureeAsString(duree) : ''),
     },
     {
-      name: 'beneficiaire',
-      header: 'Bénéficiaire',
-      csvHeaders: ['Bénéficiaire'],
-      csvValues: (activite) => [
-        activite.type === 'Collectif'
-          ? `${activite.accompagnements.length} participants`
-          : getBeneficiaireDisplayName(
-              activite.accompagnements[0]?.beneficiaire ?? {},
-            ),
+      name: 'lieu_d_activite',
+      header: 'Lieu d’activité',
+      csvHeaders: ['lieu_d_activite'],
+      csvValues: ({ structure, typeLieu }) => [
+        typeLieu === 'LieuActivite' && structure ? structure.nom : '-',
       ],
-      cell: (activite) =>
-        activite.type === 'Collectif'
-          ? `${activite.accompagnements.length} participants`
-          : getBeneficiaireDisplayName(
-              activite.accompagnements[0]?.beneficiaire ?? {},
-            ),
-      cellClassName: styles.beneficiaireCell,
-    },
-    {
-      name: 'lieu',
-      header: 'Lieu',
-      csvHeaders: ['Lieu'],
-      csvValues: () => [],
-      cell: ({ structure, lieuCommune, lieuCodePostal, typeLieu }) =>
-        typeLieu === 'LieuActivite' && structure
-          ? structure.nom
-          : typeLieu === 'ADistance'
-            ? 'À distance'
-            : lieuCommune
-              ? `${lieuCommune} · ${lieuCodePostal}`
-              : '-',
+      cell: ({ structure, typeLieu }) =>
+        typeLieu === 'LieuActivite' && structure ? structure.nom : '-',
       cellClassName: styles.lieuCell,
     },
   ],
