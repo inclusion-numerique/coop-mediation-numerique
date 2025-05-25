@@ -45,7 +45,6 @@ export const ActivitesDataTable = {
       csvHeaders: ['date'],
       csvValues: ({ date }) => [dateAsIsoDay(date)],
       cell: ({ date }) => dateAsDay(date),
-      sortable: true,
       defaultSortable: true,
       defaultSortableDirection: 'desc',
     },
