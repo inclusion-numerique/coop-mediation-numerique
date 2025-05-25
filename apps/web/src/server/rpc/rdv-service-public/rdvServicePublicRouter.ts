@@ -125,7 +125,7 @@ export const rdvServicePublicRouter = router({
             id: beneficiaire.rdvServicePublicId ?? undefined,
             first_name: beneficiaire.prenom ?? undefined,
             last_name: beneficiaire.nom ?? undefined,
-            email: beneficiaire.telephone ?? undefined,
+            email: beneficiaire.email ?? undefined,
             address: getBeneficiaireAdresseString(beneficiaire),
             phone_number: beneficiaire.telephone ?? undefined,
             // birth_date: beneficiaire.anneeNaissance // We don't have this field in the beneficiaire
