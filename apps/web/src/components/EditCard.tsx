@@ -62,22 +62,22 @@ const EditCard = <T extends FieldValues, V>({
       contentSeparator={contentSeparator}
       id={id}
       className={className}
-      title={
-        <div className="fr-flex fr-justify-content-space-between fr-align-items-center">
-          <CardTitle className="fr-mb-0 fr-py-1v fr-h5">{title}</CardTitle>
-          {!editMode && canEdit && (
-            <Button
-              data-testid="edit-card-button"
-              size="small"
-              priority="tertiary no outline"
-              iconId="fr-icon-edit-line"
-              title={isEmpty ? 'Compléter' : 'Modifier'}
-              onClick={() => setEditMode(true)}
-            >
-              {isEmpty ? 'Compléter' : 'Modifier'}
-            </Button>
-          )}
-        </div>
+      title={<CardTitle className="fr-h6 fr-mb-0">{title}</CardTitle>}
+      action={
+        !editMode &&
+        canEdit && (
+          <Button
+            data-testid="edit-card-button"
+            size="small"
+            priority="tertiary no outline"
+            iconId="fr-icon-edit-line"
+            iconPosition="right"
+            title={isEmpty ? 'Compléter' : 'Modifier'}
+            onClick={() => setEditMode(true)}
+          >
+            {isEmpty ? 'Compléter' : 'Modifier'}
+          </Button>
+        )
       }
       description={description}
       titleAs="div"
