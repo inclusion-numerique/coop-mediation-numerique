@@ -30,6 +30,10 @@ export const publicFooterProps = {
       text: `Budget`,
       linkProps: { href: '/budget' },
     },
+    {
+      text: `Statistiques`,
+      linkProps: { href: '/statistiques' },
+    },
   ],
 } satisfies Pick<
   FooterProps,

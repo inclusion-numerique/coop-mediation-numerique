@@ -96,7 +96,10 @@ const ServicesEtAccompagnementEditCard = ({
       }
       isEmpty={[services, modalitesAccompagnement].every(isEmpty)}
       emptyState={
-        <EmptyState title="Compléter ces informations pour rendre visible votre offre de services aux aidants qui souhaitent orienter un bénéficiaire." />
+        <EmptyState
+          className="fr-mb-2v"
+          title="Compléter ces informations pour rendre visible votre offre de services aux aidants qui souhaitent orienter un bénéficiaire."
+        />
       }
     />
   )

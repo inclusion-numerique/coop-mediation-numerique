@@ -3,6 +3,7 @@
 import { createToast } from '@app/ui/toast/createToast'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import { trpc } from '@app/web/trpc'
+import Button from '@codegouvfr/react-dsfr/Button'
 import ToggleSwitch from '@codegouvfr/react-dsfr/ToggleSwitch'
 import { Service } from '@prisma/client'
 import { useRouter } from 'next/navigation'
@@ -50,11 +51,14 @@ const VisiblePourCartographieNationaleFields = ({
         })
       }
 
-      await mutateCartographieNationaleVisibility.mutateAsync({
-        id,
-        visiblePourCartographieNationale: !visiblePourCartographieNationale,
-      })
-      router.refresh()
+      await mutateCartographieNationaleVisibility
+        .mutateAsync({
+          id,
+          visiblePourCartographieNationale: !visiblePourCartographieNationale,
+        })
+        .then(() => {
+          router.refresh()
+        })
       createToast({
         priority: 'success',
         message: (

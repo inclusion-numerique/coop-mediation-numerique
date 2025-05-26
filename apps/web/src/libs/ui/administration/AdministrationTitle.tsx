@@ -13,11 +13,10 @@ const AdministrationTitle = ({
   <div className="fr-flex fr-align-items-center fr-flex-gap-3v fr-my-6v">
     {!!icon && <IconInSquare iconId={icon} size="medium" />}
     <h1 className="fr-h3 fr-mb-0 fr-text-title--blue-france">{children}</h1>
-    {!!actions && (
-      <>
-        <span className="fr-flex-grow-1" />
-        <div>{actions}</div>
-      </>
+    {actions != null && (
+      <div className="fr-flex-grow-1 fr-flex fr-direction-column fr-align-items-end">
+        {actions}
+      </div>
     )}
   </div>
 )
