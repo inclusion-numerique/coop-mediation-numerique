@@ -25,6 +25,7 @@ export const appRouter = router({
   siret: siretRouter,
   structures: structuresRouter,
   beneficiaires: beneficiairesRouter,
+  conum: conumRouter,
   mediateur: mediateursRouter,
   cra: craRouter,
   usurpation: usurpationRouter,
@@ -34,7 +35,6 @@ export const appRouter = router({
   assistant: assistantRouter,
   rdvServicePublic: rdvServicePublicRouter,
   employeStructure: employeStructureRouter,
-  conum: conumRouter,
 })
 // export type definition of API
 export type AppRouter = typeof appRouter
