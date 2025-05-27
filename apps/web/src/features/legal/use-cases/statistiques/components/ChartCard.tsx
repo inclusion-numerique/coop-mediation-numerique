@@ -14,6 +14,7 @@ export type ChartCardUIProps = {
   title: string
   chartTitle: string
   titleAs?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'div'
+  legend?: string
   icon: string
   color: 'blue-france' | 'brown-caramel'
 }
@@ -31,6 +32,7 @@ export const ChartCard = ({
   title,
   chartTitle,
   titleAs: CardTitle = 'h3',
+  legend,
   icon,
   total,
   color,
@@ -61,6 +63,7 @@ export const ChartCard = ({
         {numberToString(total)}
       </span>
     </CardTitle>
+    {legend && <p className="fr-mb-8v">{legend}</p>}
     <div className="fr-border-radius--8 fr-p-8v fr-background-default--grey">
       <MonthChart
         title={chartTitle}
