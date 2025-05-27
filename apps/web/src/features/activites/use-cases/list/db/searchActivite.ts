@@ -36,9 +36,12 @@ export const searchActivite = async (options: SearchActiviteOptions) => {
     ActivitesDataTable,
   )
 
+  const page = toNumberOr(searchParams?.page)(DEFAULT_PAGE)
+  const pageSize = toNumberOr(searchParams?.lignes)(DEFAULT_PAGE_SIZE)
+
   const { take, skip } = takeAndSkipFromPage({
-    page: toNumberOr(searchParams?.page)(DEFAULT_PAGE),
-    pageSize: toNumberOr(searchParams?.lignes)(DEFAULT_PAGE_SIZE),
+    page,
+    pageSize,
   })
 
   const mediateurIdMatch = options?.mediateurId ?? '_any_'
@@ -113,6 +116,8 @@ export const searchActivite = async (options: SearchActiviteOptions) => {
     matchesCount,
     moreResults: Math.max(matchesCount - (take ?? 0), 0),
     totalPages,
+    page,
+    pageSize,
   }
 }
 

@@ -178,7 +178,7 @@ type Aidant = {
  *           type: string
  *           format: URL
  *           description: URL renvoyant vers le site de prise de rendez-vous en ligne avec les aidants du lieu.
- *           example: https://www.rdv-solidarites.fr/
+ *           example: https://rdv.anct.gouv.fr/
  * /lieux-activite:
  *   get:
  *     summary: liste des lieux d'activité

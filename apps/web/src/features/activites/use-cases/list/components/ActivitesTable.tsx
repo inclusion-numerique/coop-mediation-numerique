@@ -1,6 +1,7 @@
 import DataTable from '@app/web/libs/data-table/DataTable'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
+import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 import { SearchActiviteResult } from '../db/searchActivite'
 import ActiviteRowShowDetailsButton from './ActiviteRowShowDetailsButton'
 import {
@@ -31,7 +32,7 @@ const ActivitesTable = ({
       rowButtonComponent={ActiviteRowShowDetailsButton}
     />
     <PaginationNavWithPageSizeSelect
-      defaultPageSize={10}
+      defaultPageSize={DEFAULT_PAGE_SIZE}
       pageSizeOptions={pageSizeOptions}
       totalPages={totalPages}
       searchParams={searchParams}

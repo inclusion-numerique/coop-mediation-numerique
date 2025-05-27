@@ -6,6 +6,14 @@
   margin-bottom: 200px;
 }
 
+.fr-mt-minus-1px {
+  margin-top: -1px;
+}
+
+.fr-mb-minus-1px {
+  margin-bottom: -1px;
+}
+
 /* sm spaces */
 @media (min-width: 36em) {
   .fr-mt-sm-0 {

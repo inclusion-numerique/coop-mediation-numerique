@@ -1,15 +1,16 @@
 import { OutilPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-outils/outilPageData'
-import RdvServicePublicMesOutilsMore from '@app/web/rdv-service-public/RdvServicePublicMesOutilsMore'
+import RdvServicePublicAccessCard from '@app/web/rdv-service-public/RdvServicePublicAccess'
+import { rdvWebsiteLink } from '@app/web/rdv-service-public/rdvServicePublicOauth'
 
 export default {
   notice:
-    'Vos données seront partagées entre votre profil sur La Coop de la médiation numérique et RDV Aide Numérique afin d’éviter les doubles saisies.',
-  title: 'RDV Aide Numérique',
+    'Vos données seront partagées entre votre profil sur La Coop de la médiation numérique et RDV Service Public afin d’éviter les doubles saisies.',
+  title: 'RDV Service Public',
   description:
     'Un outil de prise de rendez-vous en ligne, simplifiant votre organisation et rappelant aux usagers leurs rendez-vous par SMS.',
-  website: 'https://www.rdv-aide-numerique.fr',
-  logo: '/images/services/rdv-aide-numerique.svg',
-  illustration: '/images/illustrations/mes-outils/rdv-aide-numerique.webp',
+  website: rdvWebsiteLink,
+  logo: '/images/services/rdv-service-public.svg',
+  illustration: '/images/illustrations/mes-outils/rdv-service-public.webp',
   features: [
     {
       title: 'Définir vos plages de disponibilités',
@@ -26,21 +27,12 @@ export default {
     {
       title: 'Importer vos RDVs sur votre agenda',
       description:
-        'Synchronisez RDV Aide Numérique et votre agenda du quotidien.',
+        'Synchronisez RDV Service Public et votre agenda du quotidien.',
       icon: 'ri-loop-right-line',
     },
   ],
-  access: {
-    how: 'Accédez à ce service grâce à ProConnect, votre identifiant unique pour accéder à plusieurs services de l’État.',
-    illustration: '/images/services/pro-connect-logo.svg',
-    info: {
-      label: 'En savoir plus sur ProConnect',
-      link: 'https://www.proconnect.gouv.fr',
-    },
-    callToAction: {
-      label: 'Se connecter',
-      link: '/coop/mes-outils/rdv-aide-numerique/se-connecter',
-    },
+  accessComponent: <RdvServicePublicAccessCard />,
+  classes: {
+    access: 'fr-background-alt--blue-ecume fr-border-none',
   },
-  more: <RdvServicePublicMesOutilsMore />,
 } satisfies OutilPageData

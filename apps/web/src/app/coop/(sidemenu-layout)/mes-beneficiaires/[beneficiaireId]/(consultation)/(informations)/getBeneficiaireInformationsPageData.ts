@@ -1,3 +1,5 @@
+import { getRdvs } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getRdvs'
+import type { SessionUser } from '@app/web/auth/sessionUser'
 import {
   beneficiaireAccompagnementsCountSelect,
   countThematiques,
@@ -8,10 +10,12 @@ import { prismaClient } from '@app/web/prismaClient'
 export const getBeneficiaireInformationsPageData = async ({
   beneficiaireId,
   mediateurId,
+  user,
 }: {
   beneficiaireId: string
   // The mediateur making the request (for security check)
   mediateurId: string
+  user: Pick<SessionUser, 'id' | 'rdvAccount'>
 }) => {
   const beneficiaire = await prismaClient.beneficiaire.findUnique({
     where: {
@@ -22,6 +26,7 @@ export const getBeneficiaireInformationsPageData = async ({
     },
     select: {
       id: true,
+      rdvServicePublicId: true,
       mediateurId: true,
       prenom: true,
       nom: true,
@@ -52,10 +57,18 @@ export const getBeneficiaireInformationsPageData = async ({
     mediateurId,
   })
 
+  const rdvs = await getRdvs({
+    user,
+    beneficiaire,
+    du: null,
+    au: null,
+  })
+
   return {
     displayName,
     beneficiaire,
     thematiquesCounts,
+    totalActivitesCount: rdvs.length + beneficiaire._count.accompagnements,
   }
 }
 

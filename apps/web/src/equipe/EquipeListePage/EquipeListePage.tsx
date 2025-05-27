@@ -6,6 +6,7 @@ import DataSearchBar from '@app/web/libs/data-table/DataSearchBar'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import SortSelect from '@app/web/libs/data-table/SortSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
+import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
@@ -169,7 +170,7 @@ const EquipeListePage = ({
         )}
         <PaginationNavWithPageSizeSelect
           className="fr-mt-12v"
-          defaultPageSize={10}
+          defaultPageSize={DEFAULT_PAGE_SIZE}
           pageSizeOptions={pageSizeOptions}
           totalPages={totalPages}
           baseHref={baseHrefSearch}

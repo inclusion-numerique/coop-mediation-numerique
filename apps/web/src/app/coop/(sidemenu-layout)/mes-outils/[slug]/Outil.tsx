@@ -4,6 +4,7 @@ import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import classNames from 'classnames'
 import React from 'react'
 import { OutilPageData } from '../outilPageData'
 import { Access } from './_components/Access'
@@ -22,6 +23,7 @@ export const Outil = ({
   access,
   accessComponent,
   more,
+  classes,
 }: OutilPageData) => (
   <CoopPageContainer size={894}>
     <CoopBreadcrumbs
@@ -49,7 +51,12 @@ export const Outil = ({
           </div>
         </div>
         <div className="fr-col-xl-5 fr-col-12">
-          <div className="fr-border fr-border-radius--8 fr-px-3w fr-py-4w fr-height-full">
+          <div
+            className={classNames(
+              'fr-border fr-border-radius--8 fr-px-3w fr-py-4w fr-height-full',
+              classes?.access,
+            )}
+          >
             {accessComponent || (access ? <Access {...access} /> : null)}
           </div>
         </div>

@@ -10,6 +10,7 @@ import { upsertCraFixtures } from '@app/fixtures/upsertCraFixtures'
 import {
   coordinations,
   fixtureUsers,
+  rdvServicePublicStagingUsers,
   teamAdministrateurs,
   teamMediateurs,
 } from '@app/fixtures/users'
@@ -72,7 +73,7 @@ export const seed = async (transaction: Prisma.TransactionClient) => {
   )
 
   await Promise.all(
-    teamMediateurs.map((team) =>
+    [...teamMediateurs, ...rdvServicePublicStagingUsers].map((team) =>
       transaction.user
         .upsert({
           where: { id: team.id },

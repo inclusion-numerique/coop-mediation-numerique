@@ -8,6 +8,7 @@ import { CraDureeValidation } from './CraDureeValidation'
 export const CraValidation = z.object({
   id: z.string().uuid().nullish(), // defined if update, nullish if create
   mediateurId: z.string().uuid(), // owner of the CRA
+  rdvServicePublicId: z.number().nullish(), // id externe du RDV Service Public qui est à l'origine de cette Activité
   date: z
     .string({ required_error: 'Veuillez renseigner une date' })
     .date('Veuillez renseigner une date valide'),

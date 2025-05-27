@@ -204,7 +204,15 @@ export const createOrUpdateActivite = async ({
 
   const { data } = input
 
-  const { date, duree, id, mediateurId, notes, structureId } = data
+  const {
+    date,
+    duree,
+    id,
+    mediateurId,
+    notes,
+    structureId,
+    rdvServicePublicId,
+  } = data
 
   const creationId = v4()
 
@@ -289,6 +297,7 @@ export const createOrUpdateActivite = async ({
     lieuCodeInsee,
     notes,
     orienteVersStructure,
+    rdvServicePublicId: rdvServicePublicId ?? null,
     structureDeRedirection:
       // For cra individuel, only set structure de redirection if orienteVersStructure is true
       input.type === 'Individuel'

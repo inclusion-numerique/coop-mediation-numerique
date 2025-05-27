@@ -10,7 +10,6 @@ import {
   ActionsRapides,
   InformationsCoop,
   OnboardingInfo,
-  Statistiques,
   Support,
 } from './_components'
 import { Equipe } from './_components/Equipe'
@@ -20,7 +19,6 @@ export const Accueil = ({
   firstName,
   name,
   email,
-  statistiques,
   mediateurs,
   activites,
   hasSeenOnboarding,
@@ -67,9 +65,6 @@ export const Accueil = ({
       )}
       {isMediateur && (
         <>
-          <section className="fr-my-6w">
-            <Statistiques {...statistiques} />
-          </section>
           <section className="fr-my-6w">
             <DernieresActivites activites={activites} />
           </section>
