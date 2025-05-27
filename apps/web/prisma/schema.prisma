@@ -274,6 +274,7 @@ model Mediateur {
   activites     Activite[]
   invitations   InvitationEquipe[]
 
+  @@index([userId])
   @@map("mediateurs")
 }
 
@@ -289,6 +290,8 @@ model InvitationEquipe {
   coordinateur    Coordinateur @relation(fields: [coordinateurId], references: [id])
 
   @@unique([email, coordinateurId])
+  @@index([mediateurId])
+  @@index([coordinateurId])
   @@map("invitations_equipes")
 }
 
@@ -301,6 +304,7 @@ model ConseillerNumerique {
   mediateurId String    @unique @map("mediateur_id") @db.Uuid
   mediateur   Mediateur @relation(fields: [mediateurId], references: [id])
 
+  @@index([mediateurId])
   @@map("conseillers_numeriques")
 }
 
@@ -1005,6 +1009,8 @@ model Activite {
   @@index([mediateurId])
   // descending sort on this cursor for api query performances
   @@index([creation(sort: Desc), id(sort: Desc)])
+  // performance indexes
+  @@index([date])
   @@map("activites")
 }
 

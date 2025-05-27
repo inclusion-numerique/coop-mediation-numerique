@@ -1,0 +1,2 @@
+
+VACUUM ANALYZE rdv_organisations, activites, _prisma_migrations, assistant_chat_threads, beneficiaires, api_clients, assistant_configurations, conseillers_numeriques, coordinateurs, accounts, employes_structures, images, cras_conseiller_numerique_v1, invitations_equipes, assistant_chat_messages, job_executions, rdv_accounts, rag_document_chunks, "sessions", structures_cartographie_nationale, uploads, mediateurs_coordonnes, mediateurs, verification_tokens, structures, mediateurs_en_activite, mutations, accompagnements, users;
