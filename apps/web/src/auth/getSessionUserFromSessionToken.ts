@@ -35,6 +35,7 @@ export const sessionUserSelect = {
           id: true,
           nom: true,
           codePostal: true,
+          codeInsee: true,
           commune: true,
           modification: true,
         },
