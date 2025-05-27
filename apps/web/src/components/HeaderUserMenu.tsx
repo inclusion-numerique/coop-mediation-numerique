@@ -158,6 +158,22 @@ export const HeaderUserMenu = ({ user }: { user: SessionUser }) => {
             </Link>
           </li>
         )}
+      {!restricted && (user.mediateur || user.coordinateur) && (
+        <li>
+          <Link
+            className="fr-nav__link fr-display-block"
+            href="/coop/tags"
+            style={{ boxShadow: 'none' }}
+          >
+            <span
+              className="ri-price-tag-3-line fr-mr-2v"
+              style={{ color: 'var(--blue-france-sun-113-625)' }}
+              aria-hidden
+            />
+            Voir mes tags
+          </Link>
+        </li>
+      )}
       {!restricted &&
         (isConseillerNumerique(user) ||
           isCoordinateurConseillerNumerique(user)) && (
