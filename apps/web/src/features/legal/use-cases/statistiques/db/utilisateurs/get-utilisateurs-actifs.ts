@@ -2,8 +2,13 @@ import { getUtilisateursActifsData } from '@app/web/features/legal/use-cases/sta
 import { getTotalUtilisateursActifs } from './get-total-utilisateurs-actifs'
 
 export const getUtilisateursActifs = async () => {
+  const [totalUtilisateursActifs, utilisateursActifsData] = await Promise.all([
+    getTotalUtilisateursActifs(),
+    getUtilisateursActifsData(),
+  ])
+
   const { total, mediateurs, conseillers, coordinateurs } =
-    await getTotalUtilisateursActifs()
+    totalUtilisateursActifs
 
   return {
     total,
@@ -27,6 +32,6 @@ export const getUtilisateursActifs = async () => {
         ...coordinateurs,
       },
     ],
-    ...(await getUtilisateursActifsData()),
+    ...utilisateursActifsData,
   }
 }

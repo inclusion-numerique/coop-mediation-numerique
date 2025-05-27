@@ -2,7 +2,11 @@ import { getAccompagnementsData } from './get-accompagnements-data'
 import { getTotalAccompagnements } from './get-total-accompagnements'
 
 export const getAccompagnements = async () => {
-  const accompagnements = await getTotalAccompagnements()
+  const [accompagnements, accompagnementsData] = await Promise.all([
+    getTotalAccompagnements(),
+    getAccompagnementsData(),
+  ])
+
   return {
     total: accompagnements.total,
     series: [
@@ -17,6 +21,6 @@ export const getAccompagnements = async () => {
         ...accompagnements.byConseillers,
       },
     ],
-    ...(await getAccompagnementsData()),
+    ...accompagnementsData,
   }
 }
