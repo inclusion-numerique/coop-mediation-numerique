@@ -11,20 +11,19 @@ export const getCommunesAndDepartementsOptions = async () => {
     }[]
   >`
       WITH calculated_insee AS (
-          SELECT
+          SELECT DISTINCT ON (COALESCE(str.code_insee, act.lieu_code_insee))
               COALESCE(str.code_insee, act.lieu_code_insee) AS code_insee,
               COALESCE(str.commune, act.lieu_commune) AS commune,
               COALESCE(str.code_postal, act.lieu_code_postal) AS code_postal
           FROM activites act
-                   LEFT JOIN structures str ON str.id = act.structure_id
+          LEFT JOIN structures str ON str.id = act.structure_id
+          WHERE COALESCE(str.code_insee, act.lieu_code_insee) IS NOT NULL
       )
       SELECT
           code_insee AS code,
-          MIN(commune) AS commune,
-          MIN(code_postal) AS code_postal
+          commune,
+          code_postal
       FROM calculated_insee
-      WHERE code_insee IS NOT NULL
-      GROUP BY code_insee
       ORDER BY commune ASC;
   `
 
