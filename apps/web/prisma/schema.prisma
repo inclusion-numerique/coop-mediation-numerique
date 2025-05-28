@@ -693,6 +693,8 @@ model Structure {
   // descending sort on this cursor for api query performances
   @@index([creation(sort: Desc), id(sort: Desc)])
   @@index([structureCartographieNationaleId])
+  // performance indexes
+  @@index([codeInsee])
   @@map("structures")
 }
 
@@ -1013,6 +1015,7 @@ model Activite {
   @@index([creation(sort: Desc), id(sort: Desc)])
   // performance indexes
   @@index([date])
+  @@index([lieuCodeInsee])
   @@map("activites")
 }
 
