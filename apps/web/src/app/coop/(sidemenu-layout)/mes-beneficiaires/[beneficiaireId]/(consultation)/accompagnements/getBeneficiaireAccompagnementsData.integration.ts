@@ -35,6 +35,7 @@ describe('getBeneficiaireAccompagnementsData', () => {
         user: {
           id: 'test',
           rdvAccount: null,
+          timezone: 'Europe/Paris',
         },
       }),
     ).toEqual({
@@ -99,6 +100,7 @@ describe('getBeneficiaireAccompagnementsData', () => {
         user: {
           id: 'test',
           rdvAccount: null,
+          timezone: 'Europe/Paris',
         },
       }),
     ).toEqual({

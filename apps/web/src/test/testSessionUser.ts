@@ -25,4 +25,5 @@ export const testSessionUser = {
   structureEmployeuseRenseignee: null,
   rdvAccount: null,
   featureFlags: [],
+  timezone: 'Europe/Paris',
 } satisfies SessionUser

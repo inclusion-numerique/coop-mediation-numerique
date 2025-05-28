@@ -4,7 +4,7 @@ import { beneficiaireAccompagnementsCountSelect } from '@app/web/beneficiaire/be
 import { getAllActivites } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { prismaClient } from '@app/web/prismaClient'
 import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
-import type { UserId, UserRdvAccount } from '@app/web/utils/user'
+import type { UserId, UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 
 export const getBeneficiaireAccompagnementsPageData = async ({
   beneficiaireId,
@@ -14,7 +14,7 @@ export const getBeneficiaireAccompagnementsPageData = async ({
   beneficiaireId: string
   // The mediateur making the request (for security check)
   mediateurId: string
-  user: UserRdvAccount & UserId
+  user: UserRdvAccount & UserId & UserTimezone
 }) => {
   const beneficiaire = await prismaClient.beneficiaire.findUnique({
     where: {

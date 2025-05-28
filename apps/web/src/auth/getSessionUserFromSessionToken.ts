@@ -27,6 +27,7 @@ export const sessionUserSelect = {
   lieuxActiviteRenseignes: true,
   inscriptionValidee: true,
   featureFlags: true,
+  timezone: true,
   emplois: {
     select: {
       id: true,

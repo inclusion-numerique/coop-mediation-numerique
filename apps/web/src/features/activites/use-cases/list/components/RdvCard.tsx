@@ -1,10 +1,14 @@
 import type { Rdv } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getRdvs'
 import type { OAuthApiRdvStatus } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
-import { dateAsTime } from '@app/web/utils/dateAsDayAndTime'
+import {
+  dateAsDayInTimeZone,
+  dateAsTime,
+  dateAsTimeInTimeZone,
+} from '@app/web/utils/dateAsDayAndTime'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
-import { UserRdvAccount } from '@app/web/utils/user'
+import { UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 import type { AlertProps } from '@codegouvfr/react-dsfr/Alert'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -34,7 +38,7 @@ const statusBadgeProps: {
   },
   excused: {
     severity: 'warning',
-    label: 'Annulé par bénéficiaire',
+    label: 'Annulé par bénéficiaire',
   },
   revoked: {
     severity: 'warning',
@@ -78,11 +82,13 @@ const RdvCard = ({
   displayDate,
 }: {
   activite: Rdv
-  user: UserRdvAccount
+  user: UserRdvAccount & UserTimezone
   displayBeneficiaire?: boolean
   displayDate?: boolean
 }) => {
   const userRdvAgentId = user.rdvAccount?.id
+
+  const { timezone } = user
 
   const now = new Date()
   const {
@@ -116,9 +122,10 @@ const RdvCard = ({
     </Badge>
   )
 
-  const startTime = dateAsTime(date)
-  const endTime = dateAsTime(
+  const startTime = dateAsTimeInTimeZone(date, timezone)
+  const endTime = dateAsTimeInTimeZone(
     new Date(date.getTime() + durationInMinutes * 1000 * 60),
+    timezone,
   )
 
   const canCompleteCra = badgeVariant === 'seen'
@@ -135,7 +142,7 @@ const RdvCard = ({
           <ActiviteCardSpacer />
           {displayDate && (
             <>
-              le {dateAsDay(date)}
+              le {dateAsDayInTimeZone(date, timezone)}
               <ActiviteCardSpacer />
             </>
           )}

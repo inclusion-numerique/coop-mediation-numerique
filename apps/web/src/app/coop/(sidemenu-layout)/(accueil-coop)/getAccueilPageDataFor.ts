@@ -5,10 +5,11 @@ import type {
   UserId,
   UserProfile,
   UserRdvAccount,
+  UserTimezone,
 } from '@app/web/utils/user'
 
 export const getAccueilPageDataFor = async (
-  user: UserDisplayName & UserProfile & UserId & UserRdvAccount,
+  user: UserDisplayName & UserProfile & UserId & UserRdvAccount & UserTimezone,
 ) => {
   const mediateurs = await countMediateursCoordonnesBy(user.coordinateur)
 

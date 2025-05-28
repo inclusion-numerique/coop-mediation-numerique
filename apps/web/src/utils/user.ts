@@ -13,6 +13,8 @@ export type UserId = Pick<SessionUser, 'id'>
 
 export type UserRdvAccount = Pick<SessionUser, 'rdvAccount'>
 
+export type UserTimezone = Pick<SessionUser, 'timezone'>
+
 export type UserFeatureFlags = Pick<SessionUser, 'featureFlags'>
 
 export const getUserDisplayName = (user: UserDisplayName): string => {

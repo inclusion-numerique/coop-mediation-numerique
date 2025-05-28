@@ -1,7 +1,7 @@
 import { getRdvs } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getRdvs'
 import { isEmptySearchParams } from '@app/web/libs/data-table/isEmptySearchParams'
 import { getOptionalStartOfDay } from '@app/web/utils/getDatePeriodBounds'
-import type { UserId, UserRdvAccount } from '@app/web/utils/user'
+import type { UserId, UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 import { ActivitesDataTableSearchParams } from './components/ActivitesDataTable'
 import { groupActivitesAndRdvsByDate } from './db/activitesQueries'
 import { getFirstAndLastActiviteDate } from './db/getFirstAndLastActiviteDate'
@@ -14,7 +14,7 @@ export const getActivitesListPageData = async ({
 }: {
   mediateurId: string
   searchParams: ActivitesDataTableSearchParams
-  user: UserId & UserRdvAccount
+  user: UserId & UserRdvAccount & UserTimezone
 }) => {
   const [searchResult, activiteDates] = await Promise.all([
     searchActivite({

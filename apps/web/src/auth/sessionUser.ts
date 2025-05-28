@@ -24,6 +24,7 @@ export type SessionUser = Pick<
   | 'checkedProfilInscription'
   | 'acceptationCgu'
   | 'featureFlags'
+  | 'timezone'
 > & {
   emailVerified: string | null
   created: string | null
