@@ -102,52 +102,6 @@ export type OAuthRdvApiGetOrganisationsResponse = {
   organisations: RdvApiOrganisation[]
 }
 
-/**
- * {
- *   "rdvs": [
- *     {
- *       "id": 12,
- *       "address": "1 rue de l'adresse, Ville, 12345",
- *       "agents": [
- *         {
- *           "id": 144,
- *           "email": "agent_1@lapin.fr",
- *           "first_name": "Amaranthe",
- *           "last_name": "Guyot"
- *         }
- *       ],
- *       "cancelled_at": null,
- *       "collectif": false,
- *       "context": null,
- *       "created_at": "2025-02-19 11:53:10 +0100",
- *       "created_by": "agent",
- *       "created_by_id": 144,
- *       "created_by_type": "Agent",
- *       "duration_in_min": 45,
- *       "ends_at": "2022-01-01 08:45:00 +0100",
- *       "lieu": {
- *         "id": 27,
- *         "address": "1 rue de l'adresse, Ville, 12345",
- *         "name": "Lieu n°1",
- *         "organisation_id": 188,
- *         "phone_number": null,
- *         "single_use": false
- *       },
- *       "max_participants_count": null,
- *       "users_count": 1,
- *       "uuid": "1eee9078-a9ca-424c-b227-fef530ad87d3"
- *     }
- *   ],
- *   "meta": {
- *     "current_page": 1,
- *     "next_page": null,
- *     "prev_page": null,
- *     "total_pages": 1,
- *     "total_count": 1
- *   }
- * }
- */
-
 export type OAuthApiRdvStatus =
   | 'unknown'
   | 'seen'
@@ -194,6 +148,7 @@ export type OAuthApiRdv = {
   address: string
   starts_at: string
   status: OAuthApiRdvStatus
+  url_for_agents: string
   agents: Array<{
     id: number
     email: string
