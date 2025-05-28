@@ -273,6 +273,7 @@ model Mediateur {
   beneficiaires Beneficiaire[]
   activites     Activite[]
   invitations   InvitationEquipe[]
+  Tag           Tag[]
 
   @@index([userId])
   @@map("mediateurs")
@@ -1013,6 +1014,23 @@ model Activite {
   // performance indexes
   @@index([date])
   @@map("activites")
+}
+
+model Tag {
+  id String @id @default(uuid()) @db.Uuid
+
+  nom         String  @map("nom")
+  description String? @map("description")
+
+  departement String?    @map("departement")
+  mediateurId String?    @map("mediateur_id") @db.Uuid
+  mediateur   Mediateur? @relation(fields: [mediateurId], references: [id])
+
+  creation     DateTime  @default(now())
+  modification DateTime  @default(now())
+  suppression  DateTime?
+
+  @@map("tags")
 }
 
 // Ce modèle représente un accompagnement d'un bénéficiare
