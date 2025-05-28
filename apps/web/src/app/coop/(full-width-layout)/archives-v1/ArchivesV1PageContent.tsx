@@ -22,10 +22,10 @@ const ArchivesV1PageContent = ({
     return hideEmptyDisclamer ? null : (
       <ArchivesV1Card>
         <h2 className="fr-h6 fr-mb-0">
-          Vos archives de compte-rendus d’activités
+          Vos archives de comptes rendus d’activité
         </h2>
         <p className="fr-mb-0">
-          Aucune archive de compte-rendus d’activités n’a été trouvée.
+          Aucune archive de comptes rendus d’activité n’a été trouvée.
           <br />
           Si vous pensez que c’est une erreur,{' '}
           <ContactSupportLink>veuillez contacter le support</ContactSupportLink>
@@ -42,7 +42,7 @@ const ArchivesV1PageContent = ({
       <div className="fr-border fr-border-radius--8 fr-p-10v">
         <IconInSquare iconId="ri-service-line" size="medium" />
         <h2 className="fr-h6 fr-text-title--blue-france fr-mt-6v fr-mb-1v">
-          Vos compte-rendus d’activités enregistrés jusqu’au{' '}
+          Vos comptes rendus d’activité enregistrés jusqu’au{' '}
           {dateAsDay(lastDate)}
         </h2>
         <p className="fr-text--xs fr-text-mention--grey fr-mb-6v">

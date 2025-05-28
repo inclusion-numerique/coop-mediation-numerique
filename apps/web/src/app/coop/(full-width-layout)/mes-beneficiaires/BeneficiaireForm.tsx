@@ -302,7 +302,7 @@ const BeneficiaireForm = ({
             Ces informations seront les seules qui seront utilisées dans un but
             statistique afin de comprendre les types de publics accompagnés sur
             un territoire. En les renseignant ici, ces informations seront
-            complétées automatiquement dans vos compte-rendus d’activités.{' '}
+            complétées automatiquement dans vos comptes rendus d’activité.{' '}
             {enSavoirPlusLink}
           </>
         }

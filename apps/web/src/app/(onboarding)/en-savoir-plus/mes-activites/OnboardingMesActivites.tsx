@@ -29,7 +29,7 @@ export const OnboardingMesActivites = ({
     closeHref="/coop"
   >
     <p className="fr-text--lg">
-      Grâce à des comptes rendus d’activités adaptés à{' '}
+      Grâce à des comptes rendus d’activité adaptés à{' '}
       <strong>2 types d’accompagnement</strong>&nbsp;:
     </p>
     <ul>

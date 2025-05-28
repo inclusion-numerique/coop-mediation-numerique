@@ -45,7 +45,7 @@ export const ListTagsPage = ({
             <div>
               <h1 className="fr-page-title fr-m-0 fr-h2">Mes Tags</h1>
               <p className="fr-text--sm fr-mb-0">
-                Utilisez les tags pour lier vos compte-rendus d’activités à des
+                Utilisez les tags pour lier vos comptes rendus d’activité à des
                 thématiques spécifiques / dispositifs locaux que vous avez
                 besoin de suivre dans vos statistiques. En savoir plus
               </p>
