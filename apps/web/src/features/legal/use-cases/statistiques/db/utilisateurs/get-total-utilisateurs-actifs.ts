@@ -33,9 +33,8 @@ const getDataUtilisateursActifs = async () =>
     SELECT 'coordinateurs' AS role, COUNT(*)::int AS value
     FROM users u
     JOIN coordinateurs c ON u.id = c.user_id
-    LEFT JOIN mediateurs m ON u.id = m.user_id
     JOIN last_month ON u.last_login > last_month.since
-    WHERE u.deleted IS NULL AND m.id IS NULL AND u.inscription_validee IS NOT NULL
+    WHERE u.deleted IS NULL AND u.inscription_validee IS NOT NULL
   ),
   totals AS (
     SELECT 'mediateurs' AS role, COUNT(*)::int AS total
@@ -55,8 +54,7 @@ const getDataUtilisateursActifs = async () =>
     SELECT 'coordinateurs' AS role, COUNT(*)::int AS total
     FROM users u
     JOIN coordinateurs c ON u.id = c.user_id
-    LEFT JOIN mediateurs m ON u.id = m.user_id
-    WHERE u.deleted IS NULL AND m.id IS NULL AND u.inscription_validee IS NOT NULL
+    WHERE u.deleted IS NULL AND u.inscription_validee IS NOT NULL
   )
   SELECT t.role, t.total, COALESCE(a.value, 0) AS value
   FROM totals t

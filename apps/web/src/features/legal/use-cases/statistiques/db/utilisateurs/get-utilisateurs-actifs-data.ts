@@ -89,9 +89,7 @@ export const getUtilisateursActifsPerMonth = async (): Promise<
         COUNT(*)::int AS value
       FROM users u
       JOIN coordinateurs c ON u.id = c.user_id
-      LEFT JOIN mediateurs m ON u.id = m.user_id
       WHERE u.deleted IS NULL
-        AND m.id IS NULL
         AND u.inscription_validee IS NOT NULL
         AND u.last_login IS NOT NULL
       GROUP BY 1
