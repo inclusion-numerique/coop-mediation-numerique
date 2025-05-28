@@ -94,7 +94,6 @@ export const buildActivitesWorksheet = ({
     'Niveau d’autonomie du bénéficiaire',
     'Niveau de l’atelier',
     'Le bénéficiaire est-il orienté vers une autre structure ?',
-    'La démarche est-elle finalisée ?',
     'Structure de redirection',
     'Commune de résidence du bénéficiaire',
     'Genre du bénéficiaire',
