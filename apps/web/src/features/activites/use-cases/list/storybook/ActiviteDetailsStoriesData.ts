@@ -111,7 +111,7 @@ export const activiteIndividuelleBeneficiaireAnonyme = {
   id: '1',
   mediateurId: '2',
   creation: yesterday,
-  modification: yesterday,
+  modification: new Date(yesterday.getTime() + 1000 * 60 * 60 * 24),
   date: yesterday,
   duree: 120,
   thematiques: ['NavigationSurInternet', 'Email'],

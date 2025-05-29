@@ -5,6 +5,8 @@ import {
   countThematiques,
 } from '@app/web/beneficiaire/beneficiaireQueries'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
+import { getAllActivites } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
+import { mergeRdvsWithActivites } from '@app/web/features/activites/use-cases/list/mergeRdvsWithActivites'
 import { prismaClient } from '@app/web/prismaClient'
 
 export const getBeneficiaireInformationsPageData = async ({
@@ -57,18 +59,26 @@ export const getBeneficiaireInformationsPageData = async ({
     mediateurId,
   })
 
+  const activites = await getAllActivites({ beneficiaireId, mediateurId })
+
   const rdvs = await getRdvs({
     user,
+    onlyForUser: false, // We want rdvs for this beneficiaire from all agents
     beneficiaire,
     du: null,
     au: null,
+  })
+
+  const { rdvsWithoutActivite, activitesWithRdv } = mergeRdvsWithActivites({
+    rdvs,
+    activites,
   })
 
   return {
     displayName,
     beneficiaire,
     thematiquesCounts,
-    totalActivitesCount: rdvs.length + beneficiaire._count.accompagnements,
+    totalActivitesCount: rdvsWithoutActivite.length + activitesWithRdv.length,
   }
 }
 

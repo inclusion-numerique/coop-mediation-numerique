@@ -5,6 +5,7 @@ import type { OAuthApiRdvStatus } from '@app/web/rdv-service-public/OAuthRdvApiC
 import { oAuthRdvApiListRdvs } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
 import { getUserContextForOAuthApiCall } from '@app/web/rdv-service-public/getUserContextForRdvApiCall'
 import { rdvServicePublicOAuthConfig } from '@app/web/rdv-service-public/rdvServicePublicOauth'
+import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { UserId, UserRdvAccount } from '@app/web/utils/user'
 import type { Beneficiaire } from '@prisma/client'
 
@@ -53,11 +54,17 @@ export type Rdv = {
 export const getRdvs = async ({
   user,
   beneficiaire,
+  du,
+  au,
+  organisationId,
+  onlyForUser,
 }: {
   beneficiaire?: Pick<Beneficiaire, 'rdvServicePublicId'>
   user: UserRdvAccount & UserId
-  du: Date | null // TODO implement this
-  au: Date | null // TODO implement this
+  onlyForUser: boolean // this will filter on rdvs for the User (RDV Agent) only
+  du?: Date | null
+  au?: Date | null
+  organisationId?: number // Id of organisation in RDV Service Public
 }) => {
   if (!user.rdvAccount) {
     return []
@@ -67,7 +74,11 @@ export const getRdvs = async ({
 
   const rdvServicePublicRdvs = await oAuthRdvApiListRdvs({
     rdvAccount: oAuthCallUser.rdvAccount,
-    beneficiaire,
+    userId: beneficiaire?.rdvServicePublicId ?? undefined,
+    agentId: onlyForUser ? user.rdvAccount.id : undefined,
+    startsAfter: du ? dateAsIsoDay(du) : undefined,
+    startsBefore: au ? dateAsIsoDay(au) : undefined,
+    organisationId,
   })
 
   const beneficiairesRdvs = rdvServicePublicRdvs.map(
@@ -80,11 +91,11 @@ export const getRdvs = async ({
       created_by,
       status,
       motif,
-      organisation,
+      url_for_agents,
     }) =>
       ({
         id,
-        url: `https://${rdvServicePublicOAuthConfig.oauthHostname}/admin/organisations/${organisation.id}/rdvs/${id}`, // TODO RDV URL FROM API
+        url: url_for_agents,
         durationInMinutes: duration_in_min,
         date: new Date(starts_at),
         createdBy: created_by,

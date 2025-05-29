@@ -17,6 +17,7 @@ import Stars from '@app/web/components/Stars'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import { trpc } from '@app/web/trpc'
 import { formatActiviteDayDate } from '@app/web/utils/activiteDayDateFormat'
+import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { dureeAsString } from '@app/web/utils/dureeAsString'
 import Accordion from '@codegouvfr/react-dsfr/Accordion'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -35,6 +36,7 @@ import {
 import { autonomieStars } from '../../../cra/individuel/fields/autonomie'
 import { structuresRedirectionLabels } from '../../../cra/individuel/fields/structures-redirection'
 import { ActiviteListItem } from '../../db/activitesQueries'
+import RdvStatusBadge from '../RdvStatusBadge'
 import {
   ActiviteDetailsDynamicModal,
   ActiviteDetailsDynamicModalState,
@@ -50,7 +52,7 @@ const ListItem = ({
   children: ReactNode
   className?: string
 }) => (
-  <li className={classNames('fr-mb-1v fr-text--sm fr-text--medium', className)}>
+  <li className={classNames('fr-mb-0 fr-text--sm fr-text--medium', className)}>
     <div className=" fr-flex fr-flex-gap-1v">{children}</div>
   </li>
 )
@@ -132,6 +134,9 @@ const ActiviteDetailsModal = ({
     precisionsDemarche,
     accompagnements,
     thematiques,
+    creation,
+    modification,
+    rdv,
   } = activite
 
   const onDelete = async () => {
@@ -174,17 +179,6 @@ const ActiviteDetailsModal = ({
       `Matériel utilisé : ${materiel
         .map((materielValue) => materielLabels[materielValue])
         .join(', ')}`,
-    // Thématiques
-    <>
-      Thématique{sPluriel(thematiqueTags.length)}&nbsp;:{' '}
-      <div className="fr-text--regular fr-flex fr-flex-wrap fr-flex-gap-2v">
-        {thematiqueTags.map((label) => (
-          <Tag small key={label}>
-            {label}
-          </Tag>
-        ))}
-      </div>
-    </>,
     // Demarche
     !!precisionsDemarche && `Démarche : ${precisionsDemarche}`,
     // Autonomie
@@ -324,21 +318,31 @@ const ActiviteDetailsModal = ({
         ]
       : null
 
+  const showUpdatedAt = creation !== modification
+
   return (
     <ActiviteDetailsDynamicModal.Component
       title={
-        <div
-          className={classNames(
-            'fr-background-alt--blue-france fr-p-2v fr-border-radius--8 fr-flex',
-            styles.titleIconContainer,
-          )}
-        >
-          <img
-            className="fr-display-block"
-            alt={typeActiviteLabels[type]}
-            src={typeActiviteIllustrations[type]}
-            style={{ width: 40, height: 40 }}
-          />
+        <div className="fr-flex fr-align-items-center">
+          <div
+            className={classNames(
+              'fr-background-alt--blue-france fr-p-1v fr-border-radius--8 fr-flex',
+              styles.titleIconContainer,
+            )}
+          >
+            <img
+              className="fr-display-block"
+              alt={typeActiviteLabels[type]}
+              src={typeActiviteIllustrations[type]}
+              style={{ width: 32, height: 32 }}
+            />
+          </div>
+          <p className="fr-ml-4v fr-text--xs fr-text--regular fr-text-mention--grey fr-mb-0">
+            Enregistrée le {dateAsDay(creation)}
+            {showUpdatedAt && (
+              <>&nbsp;&nbsp;|&nbsp; Modifiée le {dateAsDay(modification)}</>
+            )}
+          </p>
         </div>
       }
       className={styles.modal}
@@ -371,14 +375,22 @@ const ActiviteDetailsModal = ({
           : undefined
       }
     >
-      <div className="fr-mt-6v fr-flex fr-flex-gap-2v fr-justify-content-space-between fr-align-items-center">
+      <hr className="fr-separator fr-separator-6v" />
+      <div className="fr-flex fr-flex-gap-2v fr-justify-content-space-between fr-align-items-center">
         <div>
           <p className="fr-text--xs fr-text-mention--grey fr-text--bold fr-text--uppercase fr-mb-0">
             {formatActiviteDayDate(date)}
           </p>
-          <p className="fr-text--bold fr-mb-0">
-            {typeActiviteLabels[type]}
-            {!!titreAtelier && ` · ${titreAtelier}`}
+          <p className="fr-text--medium fr-mb-0">
+            {typeActiviteLabels[type]}&nbsp;·&nbsp;
+            <span className="fr-icon-time-line fr-icon--sm fr-mr-1-5v" />
+            {dureeString}
+            {!!titreAtelier && (
+              <>
+                <br />
+                {titreAtelier}
+              </>
+            )}
           </p>
         </div>
         {!deletionConfirmation && (
@@ -416,14 +428,50 @@ const ActiviteDetailsModal = ({
           </div>
         )}
       </div>
-      <p className="fr-mt-2v fr-text--sm fr-mb-0 fr-text-mention--grey">
-        <span className="fr-icon-time-line fr-icon--sm" /> Durée&nbsp;:{' '}
-        {dureeString} · <span className="fr-icon-map-pin-2-line fr-icon--sm" />{' '}
-        {locationString}
+      <p className="fr-mt-2v fr-text--sm fr-text--medium fr-mb-0 fr-text-mention--grey">
+        <span className="fr-icon-map-pin-2-line fr-icon--sm" /> {locationString}
       </p>
       {!deletionConfirmation && (
         <>
+          {!!rdv && (
+            <>
+              <hr className="fr-separator-6v" />
+              <div className="fr-flex fr-flex-gap-2v fr-align-items-center">
+                <div className="fr-background-alt--blue-france fr-p-1-5v fr-border-radius--8 fr-flex">
+                  <img
+                    className="fr-display-block"
+                    alt=""
+                    src="/images/services/rdv-service-public.svg"
+                    style={{ width: 20, height: 20 }}
+                  />
+                </div>
+                <p className="fr-text--sm fr-text--medium fr-mb-0 fr-flex-grow-1">
+                  RDV pris via RDV&nbsp;Service&nbsp;Public
+                </p>
+                <RdvStatusBadge rdv={rdv} />
+                <Button
+                  priority="tertiary no outline"
+                  size="small"
+                  title="Voir et modifier le RDV sur Rendez-vous Service Public"
+                  linkProps={{
+                    href: rdv.url,
+                    target: '_blank',
+                  }}
+                >
+                  Voir
+                </Button>
+              </div>
+            </>
+          )}
           <hr className="fr-separator-6v" />
+          <p className="fr-text--sm fr-text-mention-grey fr-mb-0">
+            Thématique{sPluriel(thematiqueTags.length)}&nbsp;d’accompagnement
+          </p>
+          <ul className="fr-ml-4v fr-mt-0">
+            {thematiqueTags.map((tag) => (
+              <ListItem key={tag}>{tag}</ListItem>
+            ))}
+          </ul>
           <ul>
             {donneesItems.map((item, index) => (
               <ListItem key={index}>{item}</ListItem>
@@ -432,7 +480,8 @@ const ActiviteDetailsModal = ({
 
           <hr className="fr-separator-6v" />
           {!!beneficiaireUnique &&
-            !isBeneficiaireAnonymous(beneficiaireUnique) && (
+            !infosBeneficiaireAnonyme &&
+            beneficiaireUnique.anonyme && (
               <div className="fr-flex fr-justify-content-space-between fr-flex-gap-4v fr-text-mention--grey">
                 <p className="fr-text--xs fr-mb-0 fr-text--bold fr-text--uppercase">
                   <span className="fr-icon-user-heart-line fr-icon--sm fr-mr-1w" />
@@ -445,10 +494,17 @@ const ActiviteDetailsModal = ({
             )}
           {!!infosBeneficiaireAnonyme && (
             <>
-              <p className="fr-text-mention--grey fr-text--xs fr-mb-0 fr-text--bold fr-text--uppercase">
-                <span className="fr-icon-user-heart-line fr-icon--sm fr-mr-1w" />
-                Infos bénéficiaire anonyme
-              </p>
+              <div className="fr-flex fr-justify-content-space-between fr-flex-gap-4v fr-text-mention--grey">
+                <p className="fr-text-mention--grey fr-text--xs fr-mb-0 fr-text--bold fr-text--uppercase">
+                  <span className="fr-icon-user-heart-line fr-icon--sm fr-mr-1w" />
+                  Infos bénéficiaire anonyme
+                </p>
+                {infosBeneficiaireAnonyme.length === 0 ? (
+                  <p className="fr-text--xs fr-mb-0 fr-text--medium">
+                    <i>Non renseignées</i>
+                  </p>
+                ) : null}
+              </div>
               <ul>
                 {infosBeneficiaireAnonyme.map((item, index) => (
                   <ListItem key={index}>{item}</ListItem>

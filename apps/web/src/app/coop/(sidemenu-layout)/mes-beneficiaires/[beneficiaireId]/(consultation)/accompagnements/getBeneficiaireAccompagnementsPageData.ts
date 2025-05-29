@@ -2,6 +2,7 @@ import { getRdvs } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import { beneficiaireAccompagnementsCountSelect } from '@app/web/beneficiaire/beneficiaireQueries'
 import { getAllActivites } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
+import { mergeRdvsWithActivites } from '@app/web/features/activites/use-cases/list/mergeRdvsWithActivites'
 import { prismaClient } from '@app/web/prismaClient'
 import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import type { UserId, UserRdvAccount, UserTimezone } from '@app/web/utils/user'
@@ -41,27 +42,27 @@ export const getBeneficiaireAccompagnementsPageData = async ({
 
   const rdvs = await getRdvs({
     user,
+    onlyForUser: false, // We want rdvs for this beneficiaire from all agents
     beneficiaire,
     du: null,
     au: null,
   })
 
-  // When activites and rdvs are grouped, we do not display the Rdvs that have been "transformed" into an activite
-  const activiteRdvIds = new Set(
-    activites
-      .map((activite) => activite.rdvServicePublicId)
-      .filter(isDefinedAndNotNull),
-  )
-  const filteredRdvs = rdvs.filter((rdv) => !activiteRdvIds.has(rdv.id))
-
-  const activitesAndRdvs = [...filteredRdvs, ...activites].sort((a, b) => {
-    return b.date.getTime() - a.date.getTime()
+  const { rdvsWithoutActivite, activitesWithRdv } = mergeRdvsWithActivites({
+    rdvs,
+    activites,
   })
+
+  const activitesAndRdvs = [...rdvsWithoutActivite, ...activitesWithRdv].sort(
+    (a, b) => {
+      return b.date.getTime() - a.date.getTime()
+    },
+  )
 
   return {
     beneficiaire,
-    activites,
-    rdvs,
+    activites: activitesWithRdv,
+    rdvs: rdvsWithoutActivite,
     activitesAndRdvs,
     user,
   }

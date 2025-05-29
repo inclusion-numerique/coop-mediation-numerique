@@ -6,6 +6,7 @@ import { ActivitesDataTableSearchParams } from './components/ActivitesDataTable'
 import { groupActivitesAndRdvsByDate } from './db/activitesQueries'
 import { getFirstAndLastActiviteDate } from './db/getFirstAndLastActiviteDate'
 import { searchActivite } from './db/searchActivite'
+import { mergeRdvsWithActivites } from './mergeRdvsWithActivites'
 
 export const getActivitesListPageData = async ({
   mediateurId,
@@ -37,13 +38,19 @@ export const getActivitesListPageData = async ({
 
   const rdvs = await getRdvs({
     user,
-    du: minRdvDate,
-    au: maxRdvDate,
+    du: minRdvDate ?? undefined,
+    au: maxRdvDate ?? undefined,
+    onlyForUser: true,
+  })
+
+  const { rdvsWithoutActivite, activitesWithRdv } = mergeRdvsWithActivites({
+    rdvs,
+    activites: searchResult.activites,
   })
 
   const activitesByDate = groupActivitesAndRdvsByDate({
-    activites: searchResult.activites,
-    rdvs,
+    activites: activitesWithRdv,
+    rdvs: rdvsWithoutActivite,
   })
 
   return {

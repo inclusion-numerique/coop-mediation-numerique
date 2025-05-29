@@ -16,39 +16,7 @@ import { DefaultValues } from 'react-hook-form'
 import { CraIndividuelData } from '../../cra/individuel/validation/CraIndividuelValidation'
 import ActiviteCardSpacer from './ActiviteCardSpacer'
 import ActiviteOrRdvListCard from './ActiviteOrRdvListCard'
-
-type RdvStatusBadgeVariant = OAuthApiRdvStatus | 'past'
-const statusBadgeProps: {
-  [key in RdvStatusBadgeVariant]: {
-    severity: AlertProps.Severity | 'new'
-    label: string
-  }
-} = {
-  unknown: {
-    severity: 'new',
-    label: 'À venir',
-  },
-  seen: {
-    severity: 'success',
-    label: 'Honoré',
-  },
-  noshow: {
-    severity: 'error',
-    label: 'Absence',
-  },
-  excused: {
-    severity: 'warning',
-    label: 'Annulé par bénéficiaire',
-  },
-  revoked: {
-    severity: 'warning',
-    label: 'Annulé',
-  },
-  past: {
-    severity: 'info',
-    label: 'Passé',
-  },
-}
+import RdvStatusBadge from './RdvStatusBadge'
 
 const createCraUrlFromRdv = ({
   id,
@@ -90,7 +58,7 @@ const RdvCard = ({
 
   const { timezone } = user
 
-  const now = new Date()
+  const now = Date.now()
   const {
     date,
     agents,
@@ -110,25 +78,12 @@ const RdvCard = ({
     .map((participant) => participant.displayName)
     .join(', ')
 
-  const badgeVariant: RdvStatusBadgeVariant =
-    status === 'unknown' && date < now ? 'past' : status
-  const badge = (
-    <Badge
-      small
-      severity={statusBadgeProps[badgeVariant].severity}
-      className="fr-mr-2v"
-    >
-      {statusBadgeProps[badgeVariant].label}
-    </Badge>
-  )
-
   const startTime = dateAsTimeInTimeZone(date, timezone)
   const endTime = dateAsTimeInTimeZone(
     new Date(date.getTime() + durationInMinutes * 1000 * 60),
     timezone,
   )
-
-  const canCompleteCra = badgeVariant === 'seen'
+  const canCompleteCra = status === 'seen' && date.getTime() < now
 
   const newCraLink = canCompleteCra ? createCraUrlFromRdv(activite) : ''
 
@@ -162,7 +117,7 @@ const RdvCard = ({
       }
       actions={
         <>
-          {badge}
+          <RdvStatusBadge rdv={activite} className="fr-mr-2v" />
           {canCompleteCra ? (
             <Button
               priority="tertiary no outline"

@@ -214,3 +214,8 @@ export type OAuthApiOrganisationRdvsResponse = {
   rdvs: OAuthApiRdv[]
   meta: OAuthApiListMeta
 }
+
+export type OAuthApiRdvsResponse = {
+  rdvs: OAuthApiRdv[]
+  meta: OAuthApiListMeta
+}

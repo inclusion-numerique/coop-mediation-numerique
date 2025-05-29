@@ -44,6 +44,7 @@ const ActiviteCard = ({
     thematiques,
     niveau,
     autonomie,
+    rdv,
   } = activite
 
   const { hasStars, starsCount } =
@@ -140,6 +141,21 @@ const ActiviteCard = ({
           ) : null}
           <ActiviteCardOpenModalLink activite={activite} />
         </>
+      }
+      footer={
+        rdv ? (
+          <div className="fr-text--xs fr-text-mention--grey fr-mb-0 fr-flex fr-align-items-center fr-mt-2v">
+            <div className="fr-background-alt--blue-france fr-p-1v fr-border-radius--4 fr-flex fr-mr-1-5v">
+              <img
+                className="fr-display-block"
+                alt=""
+                src="/images/services/rdv-service-public.svg"
+                style={{ width: 14, height: 14 }}
+              />
+            </div>
+            RDV pris via RDV&nbsp;Service&nbsp;Public
+          </div>
+        ) : null
       }
     />
   )

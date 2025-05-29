@@ -119,7 +119,9 @@ export const mediateurHasActivites = async ({
 
 export type ActiviteListItem = Awaited<
   ReturnType<typeof getAllActivites>
->[number]
+>[number] & {
+  rdv?: Rdv // If the activite was created from a rdv, we will merge the RDV with the activite item before displaying it
+}
 
 export type ActivitesByDate = {
   date: string

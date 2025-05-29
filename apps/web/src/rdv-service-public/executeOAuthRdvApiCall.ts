@@ -1,6 +1,8 @@
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import {
   OAuthApiOrganisationRdvsResponse,
+  OAuthApiRdv,
+  OAuthApiRdvsResponse,
   OAuthRdvApiGetOrganisationsResponse,
   OauthRdvApiCreateRdvPlanInput,
   OauthRdvApiCreateRdvPlanResponse,
@@ -115,37 +117,43 @@ export const oAuthRdvApiCreateRdvPlan = async ({
 
 export const oAuthRdvApiListRdvs = async ({
   rdvAccount,
-  beneficiaire,
+  organisationId,
+  userId,
+  agentId,
+  startsAfter,
+  startsBefore,
 }: {
   rdvAccount: OauthRdvApiCredentialsWithOrganisations
-  beneficiaire?: Pick<Beneficiaire, 'rdvServicePublicId'>
+  organisationId?: number
+  userId?: number // id beneficiaire chez RDVSP
+  agentId?: number // id user chez RDVSP
+  startsAfter?: string // ISO day e.g. "2025-05-28"
+  startsBefore?: string // ISO day e.g. "2025-05-28"
 }): Promise<OAuthApiOrganisationRdvsResponse['rdvs']> => {
-  const organisationIds = rdvAccount.organisations.map(({ id }) => id)
+  const rdvs: OAuthApiRdv[] = []
 
-  const rdvsPerOrganisation = await Promise.all(
-    organisationIds.map((organisationId) =>
-      executeOAuthRdvApiCall<OAuthApiOrganisationRdvsResponse>({
-        path: `/organisations/${organisationId}/rdvs`,
-        rdvAccount,
-        config: {
-          method: 'GET',
+  let nextPageUrl: string | null = '/rdvs'
+
+  while (nextPageUrl) {
+    const response = await executeOAuthRdvApiCall<OAuthApiRdvsResponse>({
+      path: `/rdvs`,
+      rdvAccount,
+      config: {
+        method: 'GET',
+        params: {
+          organisation_id: organisationId,
+          user_id: userId,
+          agent_id: agentId,
+          starts_after: startsAfter,
+          starts_before: startsBefore,
         },
-      }),
-    ),
-  )
+      },
+    })
+    nextPageUrl = response.meta.next_page
+    rdvs.push(...response.rdvs)
+  }
 
-  // No filters in query param, post processing :
-  const allRdvs = rdvsPerOrganisation.flatMap(({ rdvs }) => rdvs)
-
-  const filteredRdvs = beneficiaire
-    ? allRdvs.filter((rdv) =>
-        rdv.participations.some(
-          ({ user }) => user.id === beneficiaire.rdvServicePublicId,
-        ),
-      )
-    : allRdvs
-
-  return filteredRdvs
+  return rdvs
 }
 
 export const oAuthRdvApiGetUser = async ({
