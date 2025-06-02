@@ -56,6 +56,7 @@ describe('getBeneficiaireAccompagnementsData', () => {
       user: {
         id: 'test',
         rdvAccount: null,
+        timezone: 'Europe/Paris',
       },
     })
   })
@@ -107,6 +108,7 @@ describe('getBeneficiaireAccompagnementsData', () => {
       user: {
         id: 'test',
         rdvAccount: null,
+        timezone: 'Europe/Paris',
       },
       beneficiaire: {
         id: beneficiaire.id,
