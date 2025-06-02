@@ -12,7 +12,7 @@ import {
 import { getUserContextForOAuthApiCall } from '@app/web/rdv-service-public/getUserContextForRdvApiCall'
 import { refreshRdvAgentAccountData } from '@app/web/rdv-service-public/refreshRdvAgentAccountData'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
-import { invalidError } from '@app/web/server/rpc/trpcErrors'
+import { externalApiError, invalidError } from '@app/web/server/rpc/trpcErrors'
 import { getServerUrl } from '@app/web/utils/baseUrl'
 import { AxiosError } from 'axios'
 
@@ -24,7 +24,11 @@ export const rdvServicePublicRouter = router({
       rdvAccount: oAuthCallUser.rdvAccount,
     })
 
-    return result
+    if (result.status === 'error') {
+      throw externalApiError(result.error)
+    }
+
+    return result.data
   }),
   oAuthApiGetOrganisations: protectedProcedure.mutation(
     async ({ ctx: { user } }) => {
@@ -34,7 +38,11 @@ export const rdvServicePublicRouter = router({
         rdvAccount: oAuthCallUser.rdvAccount,
       })
 
-      return result
+      if (result.status === 'error') {
+        throw externalApiError(result.error)
+      }
+
+      return result.data
     },
   ),
   refreshRdvAccountData: protectedProcedure.mutation(
@@ -139,18 +147,22 @@ export const rdvServicePublicRouter = router({
           input,
         })
 
+        if (result.status === 'error') {
+          throw externalApiError(result.error)
+        }
+
         // Update beneficiaire with id from RDV Service Public if needed
         // The rest of beneficiaire data could be updated after
         // the plan is created (on redirection), to fetch email, tel, etc... if needed
 
-        if (result.rdv_plan.user_id !== beneficiaire.rdvServicePublicId) {
+        if (result.data.rdv_plan.user_id !== beneficiaire.rdvServicePublicId) {
           await prismaClient.beneficiaire.update({
             where: { id: beneficiaireId },
-            data: { rdvServicePublicId: result.rdv_plan.user_id },
+            data: { rdvServicePublicId: result.data.rdv_plan.user_id },
           })
         }
 
-        return result
+        return result.data
       },
     ),
 })

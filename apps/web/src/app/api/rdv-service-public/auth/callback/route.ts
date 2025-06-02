@@ -126,9 +126,19 @@ export const GET = async (request: NextRequest) => {
       metadata: {},
     }
 
-    const userData = await oAuthRdvApiMe({
+    const userResponse = await oAuthRdvApiMe({
       rdvAccount: authUserData,
     })
+
+    if (userResponse.status === 'error') {
+      return redirectToError({
+        error: 'api_error',
+        error_description:
+          'Impossible de récupérer l’identifiant de l’utilisateur',
+      })
+    }
+
+    const userData = userResponse.data
 
     if (!userData.agent?.id) {
       return redirectToError({

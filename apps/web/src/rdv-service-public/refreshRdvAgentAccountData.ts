@@ -15,7 +15,7 @@ export const refreshRdvAgentAccountData = async ({
 }) => {
   // Get agent data to be sure that the account is still linked to the user
   // Get organisations to have a "cache" of the status of the account
-  const [{ agent }, { organisations }] = await Promise.all([
+  const [meResponse, organisationsResponse] = await Promise.all([
     oAuthRdvApiMe({
       rdvAccount,
     }),
@@ -23,6 +23,17 @@ export const refreshRdvAgentAccountData = async ({
       rdvAccount,
     }),
   ])
+
+  if (
+    meResponse.status === 'error' ||
+    organisationsResponse.status === 'error'
+  ) {
+    // Update was unseccesful, we don't want to update the account
+    return { rdvAccount }
+  }
+
+  const { agent } = meResponse.data
+  const { organisations } = organisationsResponse.data
 
   const result = await prismaClient.$transaction(async (transaction) => {
     await transaction.rdvOrganisation.deleteMany({

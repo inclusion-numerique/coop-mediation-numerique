@@ -12,7 +12,8 @@ import {
 } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
 import { refreshRdvAccessToken } from '@app/web/rdv-service-public/refreshRdvAccessToken'
 import { removeUndefinedValues } from '@app/web/utils/removeUndefinedValues'
-import { Beneficiaire, RdvAccount } from '@prisma/client'
+import type { RdvAccount } from '@prisma/client'
+import * as Sentry from '@sentry/nextjs'
 import axios, { AxiosError, AxiosRequestConfig } from 'axios'
 
 export type OAuthRdvApiCredentials = Pick<
@@ -23,6 +24,18 @@ export type OAuthRdvApiCredentials = Pick<
 export type OauthRdvApiCredentialsWithOrganisations = OAuthRdvApiCredentials & {
   organisations: Pick<RdvApiOrganisation, 'id'>[]
 }
+
+export type OauthRdvApiResponseResult<T> =
+  | {
+      status: 'error'
+      error: string
+      data: undefined
+    }
+  | {
+      status: 'ok'
+      error: undefined
+      data: T
+    }
 
 /**
  * executes an API call to the rdv system using the rdvAccount's tokens,
@@ -37,7 +50,7 @@ const executeOAuthRdvApiCall = async <ResponseType = unknown>({
   path: string
   rdvAccount: OAuthRdvApiCredentials
   config?: Omit<AxiosRequestConfig, 'url'>
-}) => {
+}): Promise<OauthRdvApiResponseResult<ResponseType>> => {
   // check if token is expired or about to expire
   const now = Date.now()
   const willExpireSoon =
@@ -68,7 +81,11 @@ const executeOAuthRdvApiCall = async <ResponseType = unknown>({
   try {
     // first attempt
     const response = await axios<ResponseType>(requestConfig)
-    return response.data
+    return {
+      status: 'ok',
+      error: undefined,
+      data: response.data,
+    }
   } catch (error) {
     // if token was invalid or expired in the meantime, attempt a refresh and retry once
     if (error instanceof AxiosError) {
@@ -88,13 +105,25 @@ const executeOAuthRdvApiCall = async <ResponseType = unknown>({
           },
         }
         const retryResponse = await axios<ResponseType>(retryConfig)
-        return retryResponse.data
+        return {
+          status: 'ok',
+          error: undefined,
+          data: retryResponse.data,
+        }
       }
       // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
       console.error(`RDV API ERROR FOR ENDPOINT ${path}`, error.toJSON())
     }
-    // otherwise rethrow
-    throw error
+    // otherwise sentry log the error and return an error response
+    Sentry.captureException(error)
+    return {
+      status: 'error',
+      error:
+        'message' in (error as AxiosError)
+          ? (error as AxiosError).message
+          : 'An error occurred while calling the RDV API',
+      data: undefined,
+    }
   }
 }
 
@@ -149,8 +178,11 @@ export const oAuthRdvApiListRdvs = async ({
         },
       },
     })
-    nextPageUrl = response.meta.next_page
-    rdvs.push(...response.rdvs)
+    if (response.status === 'error') {
+      return []
+    }
+    nextPageUrl = response.data.meta.next_page
+    rdvs.push(...response.data.rdvs)
   }
 
   return rdvs
