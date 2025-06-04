@@ -17,11 +17,26 @@ export const useScrollToError = <TFieldValues extends FieldValues>({
   errors: FieldErrors<TFieldValues>
 }) => {
   useEffect(() => {
+    console.log(errors)
     const errorsvalues = Object.values(errors)
     if (errorsvalues.length > 0) {
       scrollToError()
     }
   }, [errors])
+
+  return {
+    trigger: scrollToError,
+  }
+}
+
+export const useScrollToInvalid = <TFieldValues extends FieldValues>({
+  isValid,
+}: {
+  isValid: boolean
+}) => {
+  useEffect(() => {
+    if (!isValid) scrollToError()
+  }, [isValid])
 
   return {
     trigger: scrollToError,
