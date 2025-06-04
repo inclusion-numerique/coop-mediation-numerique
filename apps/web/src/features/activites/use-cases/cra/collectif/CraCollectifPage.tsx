@@ -49,7 +49,6 @@ const CraCollectifPage = ({
       defaultValues={{ ...defaultValues, mediateurId }}
       lieuActiviteOptions={lieuxActiviteOptions}
       initialBeneficiairesOptions={initialBeneficiairesOptions}
-      initialCommunesOptions={[]}
       dureeOptions={dureeOptions}
       retour={retour}
     />

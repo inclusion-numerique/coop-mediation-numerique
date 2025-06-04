@@ -59,6 +59,8 @@ export const searchAdresses = async (
   adresse: string,
   options?: SearchAdresseOptions,
 ): Promise<Feature[]> => {
+  if (adresse.length < 3) return []
+
   const url = new URL(apiAdresseEndpoint)
 
   const limit = options?.limit ?? 1
