@@ -44,8 +44,11 @@ const ActiviteCard = ({
     thematiques,
     niveau,
     autonomie,
+    rdvServicePublicId,
     rdv,
   } = activite
+
+  const showRdvFooter = !!rdvServicePublicId || !!rdv
 
   const { hasStars, starsCount } =
     variant === 'without-beneficiaire'
@@ -143,7 +146,7 @@ const ActiviteCard = ({
         </>
       }
       footer={
-        rdv ? (
+        showRdvFooter ? (
           <div className="fr-text--xs fr-text-mention--grey fr-mb-0 fr-flex fr-align-items-center fr-mt-2v">
             <div className="fr-background-alt--blue-france fr-p-1v fr-border-radius--4 fr-flex fr-mr-1-5v">
               <img
