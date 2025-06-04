@@ -27,7 +27,7 @@ export type OauthRdvApiCredentialsWithOrganisations = OAuthRdvApiCredentials & {
 
 export type OauthRdvApiResponseResult<T> =
   | {
-      status: 'error'
+      status: 'error' // The RDV API is unreachable or the OAUTH Tokens are invalid
       error: string
       data: undefined
     }
@@ -59,13 +59,26 @@ const executeOAuthRdvApiCall = async <ResponseType = unknown>({
   let currentAccessToken = rdvAccount.accessToken
   let accountToUse = rdvAccount
 
-  // refresh if it's already expired or will soon expire
-  if (willExpireSoon && rdvAccount.id) {
-    accountToUse = await refreshRdvAccessToken({
-      ...rdvAccount,
-      id: rdvAccount.id,
-    })
-    currentAccessToken = accountToUse.accessToken
+  try {
+    // refresh if it's already expired or will soon expire
+    if (willExpireSoon && rdvAccount.id) {
+      accountToUse = await refreshRdvAccessToken({
+        ...rdvAccount,
+        id: rdvAccount.id,
+      })
+      currentAccessToken = accountToUse.accessToken
+    }
+  } catch (error) {
+    Sentry.captureException(error)
+    // We could not refresh token (service down or oauth revoked)
+    return {
+      status: 'error',
+      error:
+        'message' in (error as AxiosError)
+          ? (error as AxiosError).message
+          : 'An error occurred while calling the RDV API',
+      data: undefined,
+    }
   }
 
   const requestConfig: AxiosRequestConfig = {
@@ -89,31 +102,42 @@ const executeOAuthRdvApiCall = async <ResponseType = unknown>({
   } catch (error) {
     // if token was invalid or expired in the meantime, attempt a refresh and retry once
     if (error instanceof AxiosError) {
-      const status = error.response?.status
-      // typical invalid token scenario: 401
-      if (status === 401 && rdvAccount.id) {
-        // refresh and retry once
-        const updated = await refreshRdvAccessToken({
-          ...accountToUse,
-          id: rdvAccount.id,
-        })
-        const retryConfig: AxiosRequestConfig = {
-          ...requestConfig,
-          headers: {
-            ...requestConfig.headers,
-            Authorization: `Bearer ${updated.accessToken}`,
-          },
+      try {
+        const status = error.response?.status
+        // typical invalid token scenario: 401
+        if (status === 401 && rdvAccount.id) {
+          // refresh and retry once
+          const updated = await refreshRdvAccessToken({
+            ...accountToUse,
+            id: rdvAccount.id,
+          })
+          const retryConfig: AxiosRequestConfig = {
+            ...requestConfig,
+            headers: {
+              ...requestConfig.headers,
+              Authorization: `Bearer ${updated.accessToken}`,
+            },
+          }
+          const retryResponse = await axios<ResponseType>(retryConfig)
+          return {
+            status: 'ok',
+            error: undefined,
+            data: retryResponse.data,
+          }
         }
-        const retryResponse = await axios<ResponseType>(retryConfig)
+      } catch (error) {
+        Sentry.captureException(error)
         return {
-          status: 'ok',
-          error: undefined,
-          data: retryResponse.data,
+          status: 'error',
+          error:
+            'message' in (error as AxiosError)
+              ? (error as AxiosError).message
+              : 'An error occurred while calling the RDV API',
+          data: undefined,
         }
       }
-      // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
-      console.error(`RDV API ERROR FOR ENDPOINT ${path}`, error.toJSON())
     }
+
     // otherwise sentry log the error and return an error response
     Sentry.captureException(error)
     return {

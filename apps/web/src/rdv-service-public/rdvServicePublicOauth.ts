@@ -24,13 +24,16 @@ export const rdvOauthLinkAccountErrorCallbackPath =
   '/coop/mes-outils/rdv-service-public/connexion-erreur'
 
 // TODO replace with specific link for rdv integration when ready
-export const rdvIntegrationEnSavoirPlusLink = PublicWebAppConfig.centreAideUrl
+export const rdvIntegrationEnSavoirPlusLink =
+  'https://incubateurdesterritoires.notion.site/Int-gration-RDV-Service-Public-Phase-de-Beta-Test-206744bf03dd80bea28be3f43f7adddc'
 
 export const rdvWebsiteLink = PublicWebAppConfig.isMain
   ? 'https://rdv.anct.gouv.fr'
   : 'https://demo.rdv.anct.gouv.fr'
 
-export const rdvMyHomepageLink = `${rdvWebsiteLink}/agents/sign_in`
+export const rdvServicePublicGettingStartedLink = `https://aide.rdv-service-public.fr/demarrer-sur-rdv-service-public/configurer-son-espace`
+
+export const rdvMyHomepageLink = `${rdvWebsiteLink}/agents/agenda`
 
 export const rdvSupportEmail = 'support@rdv-service-public.fr'
 

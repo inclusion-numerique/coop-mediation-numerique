@@ -1,5 +1,5 @@
 import { serializePrismaSessionUser } from '@app/web/auth/serializePrismaSessionUser'
-import { SessionUser } from '@app/web/auth/sessionUser'
+import type { SessionUser } from '@app/web/auth/sessionUser'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
 
@@ -111,6 +111,7 @@ export const sessionUserSelect = {
       lastSynced: true,
       accessToken: true,
       refreshToken: true,
+      error: true,
       organisations: {
         select: {
           id: true,
@@ -165,4 +166,17 @@ export const getSessionUserFromSessionToken = async (
   }
 
   return serializePrismaSessionUser(res.user, res.usurper)
+}
+
+export const getSessionUserFromId = async (
+  userId: string,
+): Promise<SessionUser> => {
+  const prismaSessionUser = await prismaClient.user.findUniqueOrThrow({
+    where: {
+      id: userId,
+    },
+    select: sessionUserSelect,
+  })
+
+  return serializePrismaSessionUser(prismaSessionUser, null)
 }

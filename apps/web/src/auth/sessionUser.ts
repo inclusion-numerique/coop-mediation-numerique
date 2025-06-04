@@ -60,7 +60,7 @@ export type SessionUser = Pick<
       })
     | null
   rdvAccount:
-    | (Pick<RdvAccount, 'id'> & {
+    | (Pick<RdvAccount, 'id' | 'error'> & {
         hasOauthTokens: boolean
         created: string | null
         updated: string | null

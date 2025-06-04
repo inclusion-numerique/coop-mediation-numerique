@@ -29,6 +29,7 @@ const Template = ({
               organisations: [],
               updated: new Date().toISOString(),
               lastSynced: new Date().toISOString(),
+              error: null,
             },
           }
         : testSessionUser

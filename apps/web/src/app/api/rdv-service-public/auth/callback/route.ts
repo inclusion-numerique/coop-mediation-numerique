@@ -166,6 +166,7 @@ export const GET = async (request: NextRequest) => {
       },
       update: {
         ...authUserData,
+        error: null,
       },
       select: {
         id: true,

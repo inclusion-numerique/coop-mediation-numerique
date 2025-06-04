@@ -1,4 +1,5 @@
 import type { Rdv } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getRdvs'
+import { BeneficiaireCraData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
 import type { OAuthApiRdvStatus } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import {
@@ -26,7 +27,16 @@ const createCraUrlFromRdv = ({
 }: Rdv) => {
   const participationBeneficiaireSuivi = participations.find(
     (participation) => !!participation.user.beneficiaire,
-  )
+  )?.user.beneficiaire
+
+  const beneficiaire = participationBeneficiaireSuivi
+    ? ({
+        id: participationBeneficiaireSuivi.id,
+        prenom: participationBeneficiaireSuivi.prenom,
+        nom: participationBeneficiaireSuivi.nom,
+        mediateurId: participationBeneficiaireSuivi.mediateurId,
+      } satisfies BeneficiaireCraData)
+    : undefined
 
   const defaultValues: DefaultValues<CraIndividuelData> = {
     date: dateAsIsoDay(date),
@@ -34,9 +44,7 @@ const createCraUrlFromRdv = ({
       dureePersonnaliseeMinutes: durationInMinutes,
       duree: 'personnaliser',
     },
-    beneficiaire: participationBeneficiaireSuivi?.user.beneficiaire
-      ? { id: participationBeneficiaireSuivi.user.beneficiaire.id }
-      : undefined,
+    beneficiaire,
     rdvServicePublicId: id,
   }
 

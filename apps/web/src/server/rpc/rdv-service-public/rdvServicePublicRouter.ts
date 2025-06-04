@@ -1,3 +1,8 @@
+import { getSessionUser } from '@app/web/auth/getSessionUser'
+import {
+  getSessionUserFromId,
+  sessionUserSelect,
+} from '@app/web/auth/getSessionUserFromSessionToken'
 import { getBeneficiaireAdresseString } from '@app/web/beneficiaire/getBeneficiaireAdresseString'
 import { prismaClient } from '@app/web/prismaClient'
 import {
@@ -89,18 +94,42 @@ export const rdvServicePublicRouter = router({
   syncRdvAccountData: protectedProcedure.mutation(async ({ ctx: { user } }) => {
     const oAuthCallUser = await getUserContextForOAuthApiCall({ user })
 
-    // TODO fetch orgs and other data to sync ?
+    const [meResponse, organisationsResponse] = await Promise.all([
+      oAuthRdvApiMe({
+        rdvAccount: oAuthCallUser.rdvAccount,
+      }),
+      oAuthRdvApiGetOrganisations({
+        rdvAccount: oAuthCallUser.rdvAccount,
+      }),
+    ])
 
-    await prismaClient.rdvAccount.update({
-      where: {
-        id: oAuthCallUser.rdvAccount.id,
-      },
-      data: {
-        lastSynced: new Date(),
-      },
-    })
+    if (
+      meResponse.status === 'error' ||
+      organisationsResponse.status === 'error'
+    ) {
+      // Update the rdvAccount with sync error info
+      await prismaClient.rdvAccount.update({
+        where: {
+          id: oAuthCallUser.rdvAccount.id,
+        },
+        data: {
+          updated: new Date(),
+          lastSynced: new Date(),
+          error:
+            'Impossible de récupérer les données du compte RDV Service Public',
+        },
+      })
+    } else {
+      await prismaClient.rdvAccount.update({
+        where: {
+          id: oAuthCallUser.rdvAccount.id,
+        },
+        data: { updated: new Date(), lastSynced: new Date(), error: null },
+      })
+    }
 
-    return {}
+    // Returns the user with the updated rdvAccount
+    return getSessionUserFromId(user.id)
   }),
   oAuthApiCreateRdvPlan: protectedProcedure
     .input(OauthRdvApiCreateRdvPlanMutationInputValidation)

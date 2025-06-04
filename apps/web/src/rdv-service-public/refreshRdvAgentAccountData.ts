@@ -56,6 +56,8 @@ export const refreshRdvAgentAccountData = async ({
       where: { id: rdvAccount.id },
       data: {
         updated: new Date(),
+        lastSynced: new Date(),
+        error: null,
       },
       include: {
         organisations: true,

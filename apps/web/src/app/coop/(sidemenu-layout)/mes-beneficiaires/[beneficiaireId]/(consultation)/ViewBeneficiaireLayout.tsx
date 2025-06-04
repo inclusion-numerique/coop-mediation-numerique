@@ -96,7 +96,7 @@ const ViewBeneficiaireLayout = ({
               label="Enregistrer un accompagnement individuel"
             />
             <PrendreRendezVousAvecBeneficiaireButton
-              beneficiaire={{ id: beneficiaire.id }}
+              beneficiaire={beneficiaireCraData}
               user={user}
               returnPath={`/coop/mes-beneficiaires/${beneficiaire.id}`}
             />

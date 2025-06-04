@@ -12,6 +12,9 @@ import type { Beneficiaire } from '@prisma/client'
 // Représente un bénéficiaire suivi côté coop qu'on a lié à un user de RDVSP
 export type RdvUserBeneficiaire = {
   id: string
+  prenom: string
+  nom: string
+  mediateurId: string
 }
 
 /**
@@ -155,6 +158,11 @@ export const getRdvs = async ({
     select: {
       id: true,
       rdvServicePublicId: true,
+      mediateurId: true,
+      prenom: true,
+      nom: true,
+      email: true,
+      telephone: true,
     },
   })
 
@@ -171,7 +179,12 @@ export const getRdvs = async ({
     for (const { user } of participations) {
       const beneficiaire = beneficiaireMap.get(user.id)
       if (beneficiaire) {
-        user.beneficiaire = { id: beneficiaire.id }
+        user.beneficiaire = {
+          id: beneficiaire.id,
+          prenom: beneficiaire.prenom ?? '',
+          nom: beneficiaire.nom ?? '',
+          mediateurId: beneficiaire.mediateurId,
+        }
       }
     }
   }

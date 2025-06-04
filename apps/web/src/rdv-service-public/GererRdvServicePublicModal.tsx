@@ -14,6 +14,11 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { dateAsDay } from '../utils/dateAsDay'
 import { dateAsDayAndTime } from '../utils/dateAsDayAndTime'
+import RdvServicePublicStatusTag from './RdvServicePublicStatusTag'
+import {
+  type RdvOauthIntegrationStatus,
+  getRdvOauthIntegrationStatus,
+} from './rdvIntegrationOauthStatus'
 
 export const GererRdvServicePublicModalInstance = createModal({
   id: 'gerer-rdv-service-public',
@@ -28,6 +33,15 @@ const GererRdvServicePublicModal = ({
   const router = useRouter()
 
   const [state, setState] = useState<'gerer' | 'deconnecter'>('gerer')
+
+  const [status, setStatus] = useState<RdvOauthIntegrationStatus>(
+    getRdvOauthIntegrationStatus({ user: { rdvAccount } }),
+  )
+
+  const [lastSynced, setLastSynced] = useState<Date | null>(
+    rdvAccount?.lastSynced ? new Date(rdvAccount.lastSynced) : null,
+  )
+  const [error, setError] = useState<string | null>(rdvAccount?.error || null)
 
   const reset = () => {
     setState('gerer')
@@ -47,11 +61,20 @@ const GererRdvServicePublicModal = ({
   }
 
   const onSync = async () => {
-    await syncMutation.mutateAsync()
+    const syncResult = await syncMutation.mutateAsync()
+
     createToast({
       priority: 'success',
       message: `Les informations ont été synchronisées avec succès.`,
     })
+
+    setLastSynced(
+      syncResult.rdvAccount?.lastSynced
+        ? new Date(syncResult.rdvAccount.lastSynced)
+        : null,
+    )
+    setError(syncResult.rdvAccount?.error ?? null)
+    setStatus(getRdvOauthIntegrationStatus({ user: syncResult }))
   }
 
   useModalVisibility(GererRdvServicePublicModalInstance.id, {
@@ -133,23 +156,24 @@ const GererRdvServicePublicModal = ({
             <p className="fr-mb-0 fr-text-mention--grey">
               Statut de la connexion
             </p>
-            <Tag
-              iconId="fr-icon-check-line"
-              className="fr-background-contrast--success fr-text-default--success"
-            >
-              Compte connecté
-            </Tag>
+            <RdvServicePublicStatusTag status={status} />
           </div>
           <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v fr-mt-8v">
             <p className="fr-mb-0 fr-text-mention--grey">
               Dernière synchronisation
             </p>
             <Tag>
-              {rdvAccount.lastSynced
-                ? dateAsDayAndTime(new Date(rdvAccount.lastSynced))
+              {lastSynced
+                ? dateAsDayAndTime(lastSynced)
                 : 'Aucune synchronisation'}
             </Tag>
           </div>
+          {error && (
+            <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v fr-mt-8v">
+              <p className="fr-mb-0 fr-text-mention--grey">Erreur</p>
+              <p className="fr-text--sm fr-mb-0">{error}</p>
+            </div>
+          )}
           <div className="fr-btns-group fr-btns-group--icon-left fr-mt-8v fr-mb-8v">
             <Button
               type="button"
