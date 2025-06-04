@@ -10,13 +10,13 @@ export const CraDureeValidation = z
       required_error: 'Veuillez renseigner une durée',
     }),
     dureePersonnaliseeHeures: z
-      .number()
+      .number({ message: `De 0 à ${maxHeures} heures` })
       .max(maxHeures, {
         message: `De 0 à ${maxHeures} heures`,
       })
       .nullish(),
     dureePersonnaliseeMinutes: z
-      .number()
+      .number({ message: `De 0 à ${maxMinutes} minutes` })
       .max(maxMinutes, {
         message: `De 0 à ${maxMinutes} minutes`,
       })

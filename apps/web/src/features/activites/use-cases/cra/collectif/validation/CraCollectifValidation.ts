@@ -10,7 +10,7 @@ export const CraCollectifValidation = CraValidation.extend({
     .default([]),
   participantsAnonymes: ParticipantsAnonymesCraCollectifValidation,
   // Helper field only used in client form for type safety
-  addParticipant: BeneficiaireCraValidation.nullish(),
+  addParticipant: BeneficiaireCraValidation.nullish(), // todo: remove
   titreAtelier: z.string().nullish(),
   niveau: z.enum(niveauAtelierValues).nullish(),
 })
@@ -18,7 +18,7 @@ export const CraCollectifValidation = CraValidation.extend({
   .refine(
     (data) => {
       if (data.typeLieu === 'LieuActivite') {
-        return !!data.structureId
+        return !!data.structure?.id
       }
       return true
     },
