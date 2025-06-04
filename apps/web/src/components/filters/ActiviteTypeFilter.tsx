@@ -7,7 +7,7 @@ import {
 } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
-import { Popover } from '@app/web/libs/ui/elements/Popover'
+import { Popover } from '@app/web/libs/ui/primitives/Popover'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { ChangeEvent, useEffect, useState } from 'react'
