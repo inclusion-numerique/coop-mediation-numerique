@@ -13,6 +13,7 @@ import {
   Support,
 } from './_components'
 import { Equipe } from './_components/Equipe'
+import Rdvs from './_components/Rdvs'
 import { AccueilPageData } from './getAccueilPageDataFor'
 
 export const Accueil = ({
@@ -26,6 +27,8 @@ export const Accueil = ({
   isCoordinateur,
   isCoordinateurCoNum,
   isCoNum,
+  timezone,
+  rdvs,
 }: {
   firstName: string | null
   name: string | null
@@ -35,6 +38,7 @@ export const Accueil = ({
   isCoordinateur: boolean
   isCoordinateurCoNum: boolean
   isCoNum: boolean
+  timezone: string
 } & AccueilPageData) => (
   <CoopPageContainer size={794}>
     <SkipLinksPortal links={defaultSkipLinks} />
@@ -61,6 +65,11 @@ export const Accueil = ({
           ) : (
             <EquipeVide />
           )}
+        </section>
+      )}
+      {rdvs && (
+        <section className="fr-my-6w">
+          <Rdvs rdvs={rdvs} user={{ timezone }} />
         </section>
       )}
       {isMediateur && (

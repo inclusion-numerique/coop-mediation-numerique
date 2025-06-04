@@ -38,6 +38,10 @@ export type Rdv = {
     displayName: string
     email: string
   }[]
+  organisation: {
+    id: number
+    name: string
+  }
   participations: {
     id: number
     status: OAuthApiRdvStatus
@@ -94,6 +98,7 @@ export const getRdvs = async ({
       created_by,
       status,
       motif,
+      organisation,
       url_for_agents,
     }) =>
       ({
@@ -103,6 +108,10 @@ export const getRdvs = async ({
         date: new Date(starts_at),
         createdBy: created_by,
         status,
+        organisation: {
+          id: organisation.id,
+          name: organisation.name,
+        },
         motif: {
           id: motif.id,
           name: motif.name,

@@ -33,6 +33,12 @@ export const rdvWebsiteLink = PublicWebAppConfig.isMain
 
 export const rdvServicePublicGettingStartedLink = `https://aide.rdv-service-public.fr/demarrer-sur-rdv-service-public/configurer-son-espace`
 
+export const rdvServicePublicRdvsLink = ({
+  organisationId,
+}: {
+  organisationId: number
+}) => `${rdvWebsiteLink}/admin/organisations/${organisationId}/rdvs`
+
 export const rdvMyHomepageLink = `${rdvWebsiteLink}/agents/agenda`
 
 export const rdvSupportEmail = 'support@rdv-service-public.fr'

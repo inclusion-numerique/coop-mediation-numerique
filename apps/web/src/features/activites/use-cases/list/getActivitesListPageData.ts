@@ -61,6 +61,7 @@ export const getActivitesListPageData = async ({
     activiteDates,
     activitesByDate,
     user,
+    rdvsWithoutActivite,
   }
 }
 

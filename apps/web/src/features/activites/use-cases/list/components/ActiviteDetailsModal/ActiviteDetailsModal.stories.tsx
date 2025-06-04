@@ -94,6 +94,10 @@ export const IndividuelRdvBeneficiaireAnonyme: Story = {
         ...activiteIndividuelleBeneficiaireAnonyme,
         rdv: {
           agents: [],
+          organisation: {
+            id: 1,
+            name: 'Organisation 1',
+          },
           status: 'seen',
           date: activiteIndividuelleBeneficiaireAnonyme.date,
           durationInMinutes: 30,

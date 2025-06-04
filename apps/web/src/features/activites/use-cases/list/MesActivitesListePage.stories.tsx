@@ -59,6 +59,7 @@ const dataAvecActivites = {
     rdvs: rdvsForStories,
   }),
   user: testSessionUser,
+  rdvsWithoutActivite: [],
 } satisfies ActivitesListPageData
 
 export const AvecActivites: Story = {

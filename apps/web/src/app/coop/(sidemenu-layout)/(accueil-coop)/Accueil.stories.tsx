@@ -14,6 +14,7 @@ export const Statistiques: Story = {
     name: 'Doe',
     email: 'john@doe.com',
     activites: [],
+    timezone: 'Europe/Paris',
   },
 }
 Statistiques.storyName = 'Accueil'

@@ -38,6 +38,7 @@ const dataAvecActivites = {
   searchParams: {},
   mediateurId: '1',
   isFiltered: false,
+  rdvsWithoutActivite: [],
   searchResult: {
     matchesCount: activitesForModalStories.length,
     moreResults: 0,
