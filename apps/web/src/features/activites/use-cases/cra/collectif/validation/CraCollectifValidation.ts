@@ -18,7 +18,7 @@ export const CraCollectifValidation = CraValidation.extend({
   .refine(
     (data) => {
       if (data.typeLieu === 'LieuActivite') {
-        return !!data.structureId
+        return !!data.structure?.id
       }
       return true
     },

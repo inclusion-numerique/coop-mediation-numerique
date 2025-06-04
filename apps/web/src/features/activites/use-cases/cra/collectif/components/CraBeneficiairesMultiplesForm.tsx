@@ -27,7 +27,6 @@ const CraBeneficiairesMultiplesForm = ({
   setValue,
   getValues,
   watch,
-  mediateurId,
   initialBeneficiairesOptions,
   creerBeneficiaireRetourUrl,
   isLoading,
@@ -36,7 +35,6 @@ const CraBeneficiairesMultiplesForm = ({
   setValue: UseFormSetValue<CraCollectifData>
   watch: UseFormWatch<CraCollectifData>
   control: Control<CraCollectifData>
-  mediateurId: string
   creerBeneficiaireRetourUrl: string
   initialBeneficiairesOptions: BeneficiaireOption[]
   isLoading?: boolean
@@ -90,7 +88,7 @@ const CraBeneficiairesMultiplesForm = ({
             !participantsIds.current.has(participantToAdd.id)
           ) {
             participantsIds.current.add(participantToAdd.id)
-            append({ ...participantToAdd, mediateurId })
+            append(participantToAdd)
           }
           // cannot setvalue during useWatchSubscription
           setTimeout(() => {
@@ -98,7 +96,7 @@ const CraBeneficiairesMultiplesForm = ({
           }, 0)
         }
       },
-      [append, mediateurId, setValue],
+      [append, setValue],
     ),
   )
 

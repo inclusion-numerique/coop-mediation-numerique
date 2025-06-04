@@ -7,11 +7,19 @@ import { CraData } from './validation/CraValidation'
 const craDefaultValues = (
   mediateurId: string,
   stateFromUrl: DefaultValues<CraData>,
-  lieuxActiviteOptions: { value: string }[],
+  lieuxActiviteOptions: {
+    value: string
+    extra?: { nom: string; adresse: string }
+  }[],
 ) => ({
   ...stateFromUrl,
-  ...(stateFromUrl.structureId == null
-    ? { structureId: lieuxActiviteOptions.at(0)?.value }
+  ...(stateFromUrl.structure?.id == null
+    ? {
+        structure: {
+          id: lieuxActiviteOptions.at(0)?.value,
+          ...lieuxActiviteOptions.at(0)?.extra,
+        },
+      }
     : {}),
   date: stateFromUrl.date ?? new Date().toISOString().slice(0, 10),
   mediateurId: mediateurId,
@@ -21,7 +29,6 @@ const craDefaultValues = (
 export const getCraPageData =
   <T extends CraData>(
     craExtraDefaultValues?: (
-      mediateurId: string,
       stateFromUrl: DefaultValues<CraData>,
     ) => DefaultValues<T>,
   ) =>
@@ -33,10 +40,14 @@ export const getCraPageData =
     const defaultValues: DefaultValues<CraData> & {
       mediateurId: string
     } = {
-      ...craDefaultValues(mediateurId, stateFromUrl, lieuxActiviteOptions),
+      ...craDefaultValues(
+        mediateurId,
+        stateFromUrl,
+        lieuxActiviteOptions ?? [],
+      ),
       ...(craExtraDefaultValues == null
         ? {}
-        : craExtraDefaultValues(mediateurId, stateFromUrl)),
+        : craExtraDefaultValues(stateFromUrl)),
     }
 
     const initialBeneficiairesOptions =

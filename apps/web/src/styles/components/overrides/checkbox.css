@@ -1,0 +1,47 @@
+.fr-checkbox-buttons {
+  .fr-checkbox-group {
+    height: 100%;
+  }
+
+  input[type="checkbox"] + label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-default-grey);
+    box-sizing: border-box;
+    border: var(--slim-grey-border);
+    border-radius: 4px;
+    padding: 1rem;
+    width: 100%;
+    margin: 0;
+
+    &:hover {
+      background-color: var(--hover);
+    }
+  }
+
+  input[type="checkbox"]:checked + label {
+    border-color: var(--blue-france-sun-113-625);
+    box-shadow: 0 0 0 1px var(--blue-france-sun-113-625);
+  }
+
+  input[type="checkbox"]:focus-visible + label::before {
+    outline: none;
+  }
+
+  input[type="checkbox"]:focus-visible + label {
+    box-shadow: 0 0 0 2px #0a76f6;
+  }
+
+  .fr-checkbox-group input[type="checkbox"] + label::before {
+    background-image: none;
+    background-color: transparent;
+  }
+
+  &.fr-fieldset--inline .fr-checkbox-group:not(:last-child) {
+    margin: 0 !important;
+  }
+
+  .fr-message {
+    margin-top: 0.5rem;
+  }
+}

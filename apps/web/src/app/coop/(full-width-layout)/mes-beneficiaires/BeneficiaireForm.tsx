@@ -113,7 +113,6 @@ const BeneficiaireForm = ({
 
         const beneficiaireFormData: BeneficiaireCraData = {
           id: beneficiaire.id,
-          mediateurId: beneficiaire.mediateurId,
           prenom: beneficiaire.prenom,
           nom: beneficiaire.nom,
           communeResidence:
