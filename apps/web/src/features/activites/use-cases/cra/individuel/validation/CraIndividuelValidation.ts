@@ -6,19 +6,21 @@ import { autonomieValues } from '../fields/autonomie'
 import { structuresRedirectionValues } from '../fields/structures-redirection'
 
 export const CraIndividuelValidation = CraValidation.extend({
-  beneficiaire: BeneficiaireCraValidation,
+  beneficiaire: BeneficiaireCraValidation.nullish(),
   autonomie: z.enum(autonomieValues).nullish(),
   orienteVersStructure: z.enum(yesOrNo).nullish(),
   structureDeRedirection: z.enum(structuresRedirectionValues).nullish(),
 })
-  // structureId is required if typeLieu ===  LieuActivite
+  // structure is required if typeLieu ===  LieuActivite
   .refine(
     (data) => {
-      return data.typeLieu === 'LieuActivite' ? !!data.structureId : true
+      return data.typeLieu === 'LieuActivite'
+        ? data.structure?.id != null
+        : true
     },
     {
       message: 'Veuillez renseigner le lieu d’activité',
-      path: ['structureId'],
+      path: ['structure'],
     },
   )
   // lieuCommuneData is required if typeLieu === Domicile ou typeLieu === Autre

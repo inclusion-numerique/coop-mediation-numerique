@@ -30,7 +30,6 @@ import CraFormLabel from '@app/web/features/activites/use-cases/cra/components/C
 import { craFormFieldsetClassname } from '@app/web/features/activites/use-cases/cra/components/craFormFieldsetClassname'
 import { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
 import {
-  BeneficiaireCraData,
   BeneficiaireData,
   BeneficiaireValidation,
   anneeNaissanceMax,
@@ -112,9 +111,8 @@ const BeneficiaireForm = ({
       if (cra) {
         // We merge existing cra state with created / updated beneficiaire id
 
-        const beneficiaireFormData: BeneficiaireCraData = {
+        const beneficiaireFormData = {
           id: beneficiaire.id,
-          mediateurId: beneficiaire.mediateurId,
           prenom: beneficiaire.prenom,
           nom: beneficiaire.nom,
           communeResidence:

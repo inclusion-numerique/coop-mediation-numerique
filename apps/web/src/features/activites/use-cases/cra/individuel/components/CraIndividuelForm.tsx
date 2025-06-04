@@ -1,108 +1,45 @@
 'use client'
 
-import CheckboxFormField from '@app/ui/components/Form/CheckboxFormField'
-import CheckboxGroupFormField from '@app/ui/components/Form/CheckboxGroupFormField'
-import CustomSelectFormField from '@app/ui/components/Form/CustomSelectFormField'
-import InputFormField from '@app/ui/components/Form/InputFormField'
-import RadioFormField from '@app/ui/components/Form/RadioFormField'
-import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
-import RichTextFormField from '@app/ui/components/Form/RichText/RichTextFormField'
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import { useScrollToError } from '@app/ui/hooks/useScrollToError'
-import { useWatchSubscription } from '@app/ui/hooks/useWatchSubscription'
 import { createToast } from '@app/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import {
   genreOptions,
   statutSocialOptions,
   trancheAgeOptions,
 } from '@app/web/beneficiaire/beneficiaire'
-import { isBeneficiaireAnonymous } from '@app/web/beneficiaire/isBeneficiaireAnonymous'
-import AdresseBanFormField, {
-  type AdressBanFormFieldOption,
-} from '@app/web/components/form/AdresseBanFormField'
-import RichCardLabel, {
-  richCardFieldsetElementClassName,
-  richCardRadioGroupClassName,
-} from '@app/web/components/form/RichCardLabel'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
-import { banMunicipalityLabel } from '@app/web/external-apis/ban/banMunicipalityLabel'
+import { Commune } from '@app/web/features/adresse/combo-box/CommuneComboBox'
 import { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
+import { handleSubmit } from '@app/web/libs/form/handle-submit'
+import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { trpc } from '@app/web/trpc'
-import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { replaceRouteWithoutRerender } from '@app/web/utils/replaceRouteWithoutRerender'
 import { yesNoBooleanOptions } from '@app/web/utils/yesNoBooleanOptions'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { zodResolver } from '@hookform/resolvers/zod'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import React, { useCallback, useMemo, useState } from 'react'
-import {
-  Control,
-  DefaultValues,
-  UseFormGetValues,
-  UseFormSetValue,
-  UseFormWatch,
-  useForm,
-} from 'react-hook-form'
-import CraDureeSubForm from '../../components/CraDureeSubForm'
-import styles from '../../components/CraForm.module.css'
-import CraFormLabel from '../../components/CraFormLabel'
+import React from 'react'
+import { DefaultValues } from 'react-hook-form'
 import { clearAdministrativeData } from '../../components/clearAdministrativeData'
-import { craFormFieldsetClassname } from '../../components/craFormFieldsetClassname'
-import {
-  lieuActiviteFilterOption,
-  toLieuActiviteRichOptions,
-} from '../../components/lieuActiviteOptions'
+import { MaterielField } from '../../components/fields/MaterielField'
+import { RendezVousFields } from '../../components/fields/RendezVousFields'
+import { ThematiquesFields } from '../../components/fields/ThematiquesFields'
 import { materielOptions } from '../../fields/materiel'
 import {
   thematiqueAdministrativesOptionsWithExtras,
   thematiqueNonAdministrativesOptionsWithExtras,
 } from '../../fields/thematique'
-import { typeLieuOptionsWithExtras } from '../../fields/type-lieu'
 import { autonomieOptionsWithExtras } from '../fields/autonomie'
 import { structuresRedirectionOptions } from '../fields/structures-redirection'
 import {
   CraIndividuelData,
   CraIndividuelValidation,
 } from '../validation/CraIndividuelValidation'
-import CraBeneficiaryForm, {
-  CraDataWithBeneficiaire,
-} from './CraBeneficiaryForm'
-
-/**
- * Initial options can come from the field data itself or be pre-populated by beneficiaire data
- */
-const lieuResidenceOptionsFromFormData = (
-  data: DefaultValues<CraIndividuelData>,
-): AdressBanFormFieldOption[] => {
-  const result: AdressBanFormFieldOption[] = []
-  if (data.lieuCommuneData?.codeInsee) {
-    result.push({
-      label: banMunicipalityLabel(data.lieuCommuneData),
-      value: banDefaultValueToAdresseBanData(data.lieuCommuneData),
-    })
-  }
-
-  // Do not duplicate option
-  if (
-    !data.beneficiaire?.communeResidence?.codeInsee ||
-    data.beneficiaire?.communeResidence?.codeInsee ===
-      data.lieuCommuneData?.codeInsee
-  ) {
-    return result
-  }
-
-  result.push({
-    label: banMunicipalityLabel(data.beneficiaire.communeResidence),
-    value: banDefaultValueToAdresseBanData(data.beneficiaire.communeResidence),
-  })
-
-  return result
-}
+import { AutonomieBeneficiaireField } from './fields/AutonomieBeneficiaireField'
+import { BeneficiaireAnonymeFields } from './fields/BeneficiaireAnonymeFields'
+import { BeneficiaireFields, isAnonyme } from './fields/BeneficiaireFields'
+import { OrientationFields } from './fields/OrientationFields'
 
 const CraIndividuelForm = ({
   defaultValues,
@@ -117,490 +54,148 @@ const CraIndividuelForm = ({
   retour?: string
   dureeOptions: SelectOption[]
 }) => {
-  const form = useForm<CraIndividuelData>({
-    resolver: zodResolver(CraIndividuelValidation),
-    defaultValues: {
-      ...defaultValues,
-    },
-  })
-  const mutation = trpc.cra.individuel.useMutation()
-
   const router = useRouter()
 
-  const beneficiaire = form.watch('beneficiaire')
-  const showAnonymousForm =
-    !beneficiaire || isBeneficiaireAnonymous(beneficiaire)
+  const mutation = trpc.cra.individuel.useMutation()
+  const isPending = mutation.isPending
 
-  const thematiques = form.watch('thematiques')
-  const showThematiquesAdministratives = thematiques?.includes(
-    'AideAuxDemarchesAdministratives',
-  )
-
-  const typeLieu = form.watch('typeLieu')
-  const showLieuCommuneData = typeLieu === 'Autre' || typeLieu === 'Domicile'
-  const showStructure = typeLieu === 'LieuActivite'
-
-  const orienteVersStructure = form.watch('orienteVersStructure')
-  const showStructureOrientation = orienteVersStructure === 'yes'
-
-  const lieuActiviteRichOptions = useMemo(
-    () => toLieuActiviteRichOptions(lieuActiviteOptions),
-    [lieuActiviteOptions],
-  )
-
-  const {
-    control,
-    setError,
-    handleSubmit,
-    getValues,
-    setValue,
-    watch,
-    formState: { isSubmitting, isSubmitSuccessful, errors },
-  } = form
-
-  const isLoading = isSubmitting || isSubmitSuccessful
-
-  const onSubmit = async (data: CraIndividuelData) => {
-    if (isLoading) {
-      return
-    }
-    try {
-      await mutation.mutateAsync(clearAdministrativeData(data))
-      createToast({
-        priority: 'success',
-        message: 'L’accompagnement individuel a bien été enregistré.',
-      })
-      router.push(retour ?? '/coop/mes-activites')
-      router.refresh()
-    } catch (mutationError) {
-      if (applyZodValidationMutationErrorsToForm(mutationError, setError)) {
-        return
-      }
-      createToast({
-        priority: 'error',
-        message:
-          'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
-      })
-      // Throw again to fail the sumbit
-      throw mutationError
-    }
-  }
-
-  useScrollToError({ errors })
-
-  const [initialLieuResidenceOptions, setInitialLieuResidenceOptions] =
-    useState<AdressBanFormFieldOption[]>(
-      lieuResidenceOptionsFromFormData(defaultValues),
-    )
-
-  const [lieuCommuneDataDefaultValue, setLieuCommuneDataDefaultValue] =
-    useState<AdressBanFormFieldOption | undefined>(
-      defaultValues.lieuCommuneData
-        ? {
-            label: banMunicipalityLabel(defaultValues.lieuCommuneData),
-            value: banDefaultValueToAdresseBanData(
-              defaultValues.lieuCommuneData,
-            ),
-          }
-        : undefined,
-    )
-
-  const [
-    communeResidenceBeneficiaireDefaultValue,
-    setCommuneResidenceBeneficiaireDefaultValue,
-  ] = useState<AdressBanFormFieldOption | undefined>(
-    defaultValues.beneficiaire?.communeResidence
-      ? {
-          label: banMunicipalityLabel(
-            defaultValues.beneficiaire.communeResidence,
-          ),
-          value: banDefaultValueToAdresseBanData(
-            defaultValues.beneficiaire.communeResidence,
-          ),
-        }
-      : undefined,
-  )
-
-  useWatchSubscription(
-    watch,
-    useCallback(
-      (data, { name }) => {
+  const form = useAppForm({
+    validators: {
+      onChange: CraIndividuelValidation,
+    },
+    defaultValues,
+    listeners: {
+      onChange: ({ formApi }) => {
         replaceRouteWithoutRerender(
           `/coop/mes-activites/cra/individuel?v=${encodeSerializableState(
-            data,
+            formApi.state.values,
           )}`,
         )
-
-        // When changing the beneficiaire
-        // we populate the initial options for the lieu of the CRA
-        // and set the value
-        if (
-          name === 'beneficiaire' &&
-          data.beneficiaire?.communeResidence?.codeInsee
-        ) {
-          setInitialLieuResidenceOptions(lieuResidenceOptionsFromFormData(data))
-          const newDomicileValue = banDefaultValueToAdresseBanData(
-            data.beneficiaire.communeResidence,
-          )
-          setLieuCommuneDataDefaultValue({
-            label: banMunicipalityLabel(data.beneficiaire.communeResidence),
-            value: newDomicileValue,
-          })
-          setValue('lieuCommuneData', newDomicileValue)
-          setCommuneResidenceBeneficiaireDefaultValue({
-            label: banMunicipalityLabel(data.beneficiaire.communeResidence),
-            value: newDomicileValue,
-          })
-          setValue('beneficiaire.communeResidence', newDomicileValue)
-        }
-
-        // When changing the lieu of the CRA for a Domicile CRA
-        // we populate the initial options for the commune of the beneficiaire
-        // and set the value
-        if (
-          (name === 'lieuCommuneData' || name === 'typeLieu') &&
-          data.typeLieu === 'Domicile' &&
-          data.lieuCommuneData
-        ) {
-          setInitialLieuResidenceOptions(lieuResidenceOptionsFromFormData(data))
-          const newDomicileValue = banDefaultValueToAdresseBanData(
-            data.lieuCommuneData,
-          )
-          setCommuneResidenceBeneficiaireDefaultValue({
-            label: banMunicipalityLabel(data.lieuCommuneData),
-            value: newDomicileValue,
-          })
-          setValue('beneficiaire.communeResidence', newDomicileValue)
-        }
       },
-      [setValue],
-    ),
-  )
+    },
+    onSubmit: async (data) => {
+      if (isPending) return
+
+      try {
+        await mutation.mutateAsync(
+          clearAdministrativeData(data.value as CraIndividuelData),
+        )
+        createToast({
+          priority: 'success',
+          message: 'L’accompagnement individuel a bien été enregistré.',
+        })
+        router.push(retour ?? '/coop/mes-activites')
+        router.refresh()
+      } catch (mutationError) {
+        // form.setErrorMap([]) // todo: set mutation errors to form
+        // if (applyZodValidationMutationErrorsToForm(mutationError, setError)) {
+        //   return
+        // }
+        createToast({
+          priority: 'error',
+          message:
+            'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
+        })
+        throw mutationError
+      }
+    },
+  })
+
+  const syncWithCommuneResidenceBeneficiaire = (item: Commune) => {
+    const communeResidence = form.getFieldValue('beneficiaire.communeResidence')
+    const typeLieu = form.getFieldValue('typeLieu')
+    if (communeResidence?.id != null || typeLieu !== 'Domicile') return
+    form.setFieldValue('beneficiaire.communeResidence', item)
+  }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <CraBeneficiaryForm
-        // TODO These types are fragile. But hard to type a sub component that works for 2 form data types
-        getValues={
-          getValues as unknown as UseFormGetValues<CraDataWithBeneficiaire>
-        }
-        control={control as unknown as Control<CraDataWithBeneficiaire>}
-        mediateurId={defaultValues.mediateurId}
-        setValue={
-          setValue as unknown as UseFormSetValue<CraDataWithBeneficiaire>
-        }
-        watch={watch as unknown as UseFormWatch<CraDataWithBeneficiaire>}
-        creerBeneficiaireRetourUrl="/coop/mes-activites/cra/individuel"
-        initialBeneficiairesOptions={initialBeneficiairesOptions}
-      />
-      <div className="fr-flex fr-flex-gap-12v">
-        <InputFormField
-          control={control}
-          disabled={isLoading}
-          path="date"
-          type="date"
-          asterisk
-          label="Date de l’accompagnement"
-          className="fr-flex-basis-0 fr-flex-grow-1"
-          classes={{
-            label: 'fr-text--medium fr-mb-3v',
-            input: 'fr-input--white fr-input--14v',
-          }}
+    <form.AppForm>
+      <form onSubmit={handleSubmit(form)}>
+        <BeneficiaireFields
+          form={form}
+          isPending={isPending}
+          creerBeneficiaireRetourUrl="/coop/mes-activites/cra/individuel"
+          initialBeneficiairesOptions={initialBeneficiairesOptions}
         />
-        <div className="fr-flex-basis-0 fr-flex-grow-1">
-          <CraDureeSubForm form={form} dureeOptions={dureeOptions} />
+        <RendezVousFields
+          form={form as any}
+          isPending={isPending}
+          dureeOptions={dureeOptions}
+          lieuActiviteOptions={lieuActiviteOptions}
+          onSelectLieuCommuneData={syncWithCommuneResidenceBeneficiaire}
+        />
+        <hr className="fr-separator-12v" />
+        <MaterielField
+          form={form as any}
+          isPending={isPending}
+          materielOptions={materielOptions}
+        />
+        <ThematiquesFields
+          form={form as any}
+          isPending={isPending}
+          thematiqueAdministrativesOptionsWithExtras={
+            thematiqueAdministrativesOptionsWithExtras
+          }
+          thematiqueNonAdministrativesOptionsWithExtras={
+            thematiqueNonAdministrativesOptionsWithExtras
+          }
+        />
+        <hr className="fr-separator-12v" />
+        <AutonomieBeneficiaireField
+          form={form}
+          isPending={isPending}
+          autonomieOptionsWithExtras={autonomieOptionsWithExtras}
+        />
+        <OrientationFields
+          form={form}
+          isPending={isPending}
+          yesNoBooleanOptions={yesNoBooleanOptions}
+          structuresRedirectionOptions={structuresRedirectionOptions}
+        />
+        <form.AppField name="beneficiaire">
+          {(field) =>
+            isAnonyme(field) && (
+              <>
+                <hr className="fr-separator-12v" />
+                <BeneficiaireAnonymeFields
+                  form={form}
+                  isPending={isPending}
+                  genreOptions={genreOptions}
+                  trancheAgeOptions={trancheAgeOptions}
+                  statutSocialOptions={statutSocialOptions}
+                />
+              </>
+            )
+          }
+        </form.AppField>
+        <form.AppField name="notes">
+          {(field) => (
+            <field.RichTextarea
+              label="Notes sur l’accompagnement"
+              hint={
+                <>
+                  Il est interdit de stocker des informations sensibles (données
+                  de santé, mots de passe, etc).
+                  <br />
+                  Vous retrouverez ces notes dans votre historique d’activités
+                  ainsi que dans l’historique du bénéficiaire.
+                </>
+              }
+              isPending={isPending}
+              className="fr-mt-12v"
+            />
+          )}
+        </form.AppField>
+        <div className="fr-btns-group fr-mt-12v fr-mb-30v">
+          <form.Submit isPending={isPending}>
+            Enregistrer l’activité
+          </form.Submit>
+          <Button priority="secondary" linkProps={{ href: retour ?? '/coop' }}>
+            Annuler
+          </Button>
         </div>
-      </div>
-      <CraFormLabel required as="p" className="fr-mb-3v fr-mt-8v">
-        Lieu d’accompagnement
-      </CraFormLabel>
-      <RadioFormField
-        control={control}
-        path="typeLieu"
-        disabled={isLoading}
-        options={typeLieuOptionsWithExtras}
-        components={{
-          label: RichCardLabel,
-          labelProps: {
-            paddingRight: 16,
-          },
-        }}
-        classes={{
-          fieldsetElement: richCardFieldsetElementClassName,
-          fieldset: craFormFieldsetClassname(styles.lieuFieldset),
-          radioGroup: richCardRadioGroupClassName,
-        }}
-      />
-      {showLieuCommuneData && (
-        <AdresseBanFormField<CraIndividuelData>
-          label=" "
-          control={control}
-          path="lieuCommuneData"
-          disabled={isLoading}
-          placeholder="Rechercher une commune par son nom ou son code postal"
-          searchOptions={{ type: 'municipality' }}
-          defaultOptions={initialLieuResidenceOptions}
-          defaultValue={lieuCommuneDataDefaultValue}
-        />
-      )}
-      {showStructure && (
-        <CustomSelectFormField
-          label=" "
-          control={control}
-          path="structureId"
-          placeholder="Rechercher un lieu d’activité"
-          defaultValue={lieuActiviteRichOptions.at(0)}
-          options={lieuActiviteRichOptions}
-          filterOption={lieuActiviteFilterOption}
-        />
-      )}
-      <hr className="fr-separator-12v" />
-      <p className="fr-text--medium fr-mb-4v">Matériel numérique utilisé</p>
-      <CheckboxGroupFormField
-        control={control}
-        path="materiel"
-        options={materielOptions}
-        disabled={isLoading}
-        components={{
-          label: RichCardLabel,
-          labelProps: { paddingX: 16 },
-        }}
-        classes={{
-          fieldsetElement: richCardFieldsetElementClassName,
-          fieldset: craFormFieldsetClassname(styles.materielFieldset),
-          label: 'fr-py-4v',
-        }}
-      />
-      <p className="fr-text--medium fr-mb-4v fr-mt-12v">
-        Thématique(s) d’accompagnement de médiation numérique <RedAsterisk />
-      </p>
-      <CheckboxGroupFormField
-        control={control}
-        path="thematiques"
-        options={thematiqueNonAdministrativesOptionsWithExtras}
-        disabled={isLoading}
-        components={{
-          label: RichCardLabel,
-        }}
-        classes={{
-          fieldsetElement: richCardFieldsetElementClassName,
-          fieldset: craFormFieldsetClassname(styles.thematiquesFieldset),
-        }}
-      />
-      {showThematiquesAdministratives && (
-        <>
-          <p className="fr-text--medium fr-mb-4v fr-mt-12v">
-            Thématique(s) de la démarche administrative
-          </p>
-          <CheckboxGroupFormField
-            control={control}
-            path="thematiques"
-            options={thematiqueAdministrativesOptionsWithExtras}
-            disabled={isLoading}
-            offset={thematiqueNonAdministrativesOptionsWithExtras.length}
-            components={{
-              label: RichCardLabel,
-            }}
-            classes={{
-              fieldsetElement: richCardFieldsetElementClassName,
-              fieldset: craFormFieldsetClassname(
-                styles.thematiquesAdministrativesFieldset,
-              ),
-            }}
-          />
-          <InputFormField
-            control={control}
-            disabled={isLoading}
-            path="precisionsDemarche"
-            label="Préciser le nom de la démarche administrative réalisée"
-            className="fr-flex-grow-1 fr-mt-12v"
-            classes={{ label: 'fr-text--medium fr-mb-3v' }}
-          />
-        </>
-      )}
-      <hr className="fr-separator-12v" />
-      <p className="fr-text--medium fr-mb-4v fr-mt-12v">
-        Niveau d’autonomie du bénéficiaire{' '}
-        <Link
-          className="fr-link"
-          href="https://www.notion.so/incubateurdesterritoires/Accompagnement-individuel-de-m-diation-num-rique-94011d45a214412981168bdd5e9d66c7?pvs=4#492e5cab20aa4431b817be4e9f1a4329"
-          target="_blank"
-        >
-          En savoir plus
-        </Link>
-      </p>
-      <RadioFormField
-        control={control}
-        path="autonomie"
-        options={autonomieOptionsWithExtras}
-        disabled={isLoading}
-        components={{
-          label: RichCardLabel,
-          labelProps: {
-            classes: {
-              labelContainer: 'fr-justify-content-start',
-            },
-          },
-        }}
-        classes={{
-          fieldsetElement: richCardFieldsetElementClassName,
-          fieldset: craFormFieldsetClassname(styles.autonomieFieldset),
-          radioGroup: richCardRadioGroupClassName,
-        }}
-      />
-      <p className="fr-text--medium fr-mb-4v fr-mt-12v">
-        Le bénéficiaire est-il orienté vers une autre structure&nbsp;?
-      </p>
-      <RadioFormField
-        control={control}
-        path="orienteVersStructure"
-        options={yesNoBooleanOptions}
-        disabled={isLoading}
-        components={{
-          label: RichCardLabel,
-        }}
-        classes={{
-          fieldsetElement: richCardFieldsetElementClassName,
-          fieldset: craFormFieldsetClassname(styles.yesNoFieldset),
-          radioGroup: richCardRadioGroupClassName,
-        }}
-      />
-      {showStructureOrientation && (
-        <CustomSelectFormField
-          label=" "
-          control={control}
-          path="structureDeRedirection"
-          placeholder="Structure de redirection"
-          options={structuresRedirectionOptions}
-        />
-      )}
-
-      {showAnonymousForm && (
-        <>
-          <hr className="fr-separator-12v" />
-          <h2 className="fr-h3 fr-mb-1v fr-text-title--blue-france">
-            Informations optionnelles sur le bénéficiaire
-          </h2>
-          <p className="fr-text--xs fr-text-mention--grey fr-mb-12v">
-            Vous pouvez renseigner des informations anonymes sur le bénéficiaire
-            pour compléter vos statistiques.
-          </p>
-          <CheckboxFormField
-            className="fr-flex-grow-1 fr-flex-basis-0 fr-mt-12v fr-mb-8v"
-            control={control}
-            path="beneficiaire.dejaAccompagne"
-            label="J’ai déjà accompagné ce bénéficiaire"
-            disabled={isLoading}
-          />
-          <AdresseBanFormField<CraIndividuelData>
-            control={control}
-            path="beneficiaire.communeResidence"
-            disabled={isLoading}
-            isClearable
-            defaultOptions={initialLieuResidenceOptions}
-            defaultValue={
-              communeResidenceBeneficiaireDefaultValue ??
-              lieuCommuneDataDefaultValue
-            }
-            label={
-              <span className="fr-text--medium fr-mb-4v fr-display-block">
-                Commune de résidence du bénéficiaire
-              </span>
-            }
-            placeholder="Rechercher une commune par son nom ou son code postal"
-            searchOptions={{ type: 'municipality' }}
-          />
-          <CraFormLabel as="p" className="fr-mb-4v fr-mt-12v">
-            Genre
-          </CraFormLabel>
-          <RadioFormField
-            control={control}
-            path="beneficiaire.genre"
-            options={genreOptions}
-            disabled={isLoading}
-            components={{
-              label: RichCardLabel,
-            }}
-            classes={{
-              fieldsetElement: richCardFieldsetElementClassName,
-              fieldset: craFormFieldsetClassname(styles.genreFieldset),
-              radioGroup: richCardRadioGroupClassName,
-            }}
-          />
-          <div className="fr-flex fr-flex-gap-12v">
-            <div className="fr-flex-basis-0 fr-flex-grow-1">
-              <CraFormLabel as="p" className="fr-mb-4v fr-mt-12v">
-                Tranche d’âge
-              </CraFormLabel>
-              <RadioFormField
-                control={control}
-                path="beneficiaire.trancheAge"
-                options={trancheAgeOptions}
-                disabled={isLoading}
-                components={{
-                  label: RichCardLabel,
-                }}
-                classes={{
-                  fieldset: craFormFieldsetClassname(styles.columnFieldset),
-                  fieldsetElement: richCardFieldsetElementClassName,
-                  radioGroup: richCardRadioGroupClassName,
-                }}
-              />
-            </div>
-            <div className="fr-flex-basis-0 fr-flex-grow-1">
-              <CraFormLabel as="p" className="fr-mb-4v fr-mt-12v">
-                Statut du bénéficiaire
-              </CraFormLabel>
-              <RadioFormField
-                control={control}
-                path="beneficiaire.statutSocial"
-                options={statutSocialOptions}
-                disabled={isLoading}
-                components={{
-                  label: RichCardLabel,
-                }}
-                classes={{
-                  fieldset: craFormFieldsetClassname(styles.columnFieldset),
-                  fieldsetElement: richCardFieldsetElementClassName,
-                  radioGroup: richCardRadioGroupClassName,
-                }}
-              />
-            </div>
-          </div>
-        </>
-      )}
-      <RichTextFormField
-        className="fr-mt-12v"
-        form={form}
-        disabled={isLoading}
-        path="notes"
-        label={
-          <span className="fr-text--medium">Notes sur l’accompagnement</span>
-        }
-        hint={
-          <>
-            Il est interdit de stocker des informations sensibles (données de
-            santé, mots de passe, etc).
-            <br />
-            Vous retrouverez ces notes dans votre historique d’activités ainsi
-            que dans l’historique du bénéficiaire.
-          </>
-        }
-      />
-      <div className="fr-btns-group fr-mt-12v fr-mb-30v">
-        <Button type="submit" {...buttonLoadingClassname(isLoading)}>
-          Enregistrer l’activité
-        </Button>
-        <Button
-          priority="secondary"
-          linkProps={{
-            href: retour ?? '/coop',
-          }}
-        >
-          Annuler
-        </Button>
-      </div>
-    </form>
+      </form>
+    </form.AppForm>
   )
 }
 

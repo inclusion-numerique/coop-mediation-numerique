@@ -1,0 +1,30 @@
+.fr-menu-options {
+  --ul-type: none;
+  --ol-type: none;
+  --ul-start: 0;
+  --ol-start: 0;
+  --xl-block: 0;
+  --li-bottom: 0;
+  --ol-content: none;
+  --underline-img: none;
+  --text-spacing: 0;
+  --title-spacing: 0;
+  position: relative;
+  pointer-events: auto;
+  filter: drop-shadow(var(--overlap-shadow));
+  z-index: calc(var(--ground) + 1000);
+}
+
+.fr-menu-options__list {
+  font-weight: 500;
+  border-radius: 4px;
+  position: absolute;
+  background-color: var(--background-overlap-grey);
+  width: 100%;
+}
+
+.fr-menu-options__item {
+  padding: 12px;
+  position: relative;
+  cursor: default;
+}

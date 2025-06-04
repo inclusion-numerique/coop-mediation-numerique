@@ -8,3 +8,39 @@
     box-shadow: none;
   }
 }
+
+.fr-input-wrap--addin {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.fr-input--addin-start {
+  position: absolute;
+}
+
+.fr-input--addin-end {
+  position: absolute;
+  right: 0;
+  transform: translateX(-100%);
+}
+
+.fr-input--plus-minus {
+  text-align: right;
+  appearance: textfield;
+}
+
+.fr-input-control--plus-stacked {
+  min-height: 1rem;
+  padding-top: 0.145rem;
+  padding-bottom: 0.145rem;
+  border-top-right-radius: 4px;
+}
+
+.fr-input-control--minus-stacked {
+  margin-top: -1px !important;
+  min-height: 1rem;
+  padding-top: 0.145rem;
+  padding-bottom: 0.145rem;
+  border-bottom-right-radius: 4px;
+}

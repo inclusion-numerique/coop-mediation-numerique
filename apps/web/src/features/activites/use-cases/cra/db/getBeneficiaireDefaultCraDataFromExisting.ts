@@ -14,7 +14,6 @@ export const getBeneficiaireDefaultCraDataFromExisting =
     communeCodePostal,
     email,
     genre,
-    mediateurId,
     nom,
     pasDeTelephone,
     prenom,
@@ -22,7 +21,9 @@ export const getBeneficiaireDefaultCraDataFromExisting =
     telephone,
     trancheAge,
   }: Exclude<Beneficiaire, 'supression' | 'creation' | 'modification'>) =>
-  (premierAccompagnement?: boolean): DefaultValues<BeneficiaireCraData> => ({
+  (
+    premierAccompagnement?: boolean,
+  ): DefaultValues<BeneficiaireCraData> & { id?: string } => ({
     id: id ?? undefined,
     communeResidence:
       commune && communeCodeInsee && communeCodePostal
@@ -36,7 +37,6 @@ export const getBeneficiaireDefaultCraDataFromExisting =
     anneeNaissance: anneeNaissance ?? undefined,
     email: email ?? undefined,
     genre: genre ?? undefined,
-    mediateurId: mediateurId ?? undefined,
     nom: nom ?? undefined,
     pasDeTelephone: pasDeTelephone ?? undefined,
     prenom: prenom ?? undefined,

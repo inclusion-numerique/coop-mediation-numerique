@@ -22,6 +22,10 @@
   border-left: var(--slim-grey-border);
 }
 
+.fr-border-left-0 {
+  border-left: 0;
+}
+
 .fr-border--blue-france {
   border-color: var(--blue-france-main-525);
 }

@@ -80,19 +80,24 @@ export const ParticipantsAnonymesCraCollectifValidation = z
       maxMessage: `Le nombre de participants anonymes de statut social non communiqué ne doit pas dépasser ${participantsAnonymesMaxLocaleString}`,
     }),
   })
+  .refine((data) => data.dejaAccompagne <= (data.total ?? 0), {
+    message:
+      'La somme des données socio-démographiques dépasse le total des bénéficiaires anonymes',
+    path: ['total'],
+  })
   .refine((data) => countTotalGenre(data) <= (data.total ?? 0), {
     message:
-      'La somme des genres ne doit pas dépasser le total des participants anonymes',
+      'La somme des données socio-démographiques dépasse le total des bénéficiaires anonymes',
     path: ['total'],
   })
   .refine((data) => countTotalTrancheAge(data) <= (data.total ?? 0), {
     message:
-      'La somme des tranches d’âges ne doit pas dépasser le total des participants anonymes',
+      'La somme des données socio-démographiques dépasse le total des bénéficiaires anonymes',
     path: ['total'],
   })
   .refine((data) => countTotalStatutSocial(data) <= (data.total ?? 0), {
     message:
-      'La somme des statuts sociaux ne doit pas dépasser le total des participants anonymes',
+      'La somme des données socio-démographiques dépasse le total des bénéficiaires anonymes',
     path: ['total'],
   })
 

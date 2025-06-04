@@ -3,7 +3,6 @@ import { CraCollectifData } from './validation/CraCollectifValidation'
 import { participantsAnonymesDefault } from './validation/participantsAnonymes'
 
 export const craCollectifDefaultValues = (
-  mediateurId: string,
   stateFromUrl: DefaultValues<CraCollectifData>,
 ) => ({
   participantsAnonymes: {
@@ -11,8 +10,5 @@ export const craCollectifDefaultValues = (
     ...stateFromUrl.participantsAnonymes,
   },
   participants:
-    stateFromUrl.participants?.filter(
-      (participant) =>
-        !!participant?.id && participant.mediateurId === mediateurId,
-    ) ?? [],
+    stateFromUrl.participants?.filter((participant) => !!participant?.id) ?? [],
 })

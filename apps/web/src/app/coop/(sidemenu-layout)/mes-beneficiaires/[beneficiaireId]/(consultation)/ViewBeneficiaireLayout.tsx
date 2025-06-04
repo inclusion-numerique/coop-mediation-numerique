@@ -3,7 +3,7 @@ import BeneficiaireEnregistrerUneActivite from '@app/web/app/coop/(sidemenu-layo
 import DeleteBeneficiaireModalContent from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/DeleteBeneficiaireModalContent'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
-import type { SessionUser } from '@app/web/auth/sessionUser'
+import { SessionUser } from '@app/web/auth/sessionUser'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
@@ -26,19 +26,12 @@ const ViewBeneficiaireLayout = ({
   >
 }>) => {
   const displayName = getBeneficiaireDisplayName(beneficiaire)
-  const {
-    anneeNaissance,
-    id: beneficiaireId,
-    nom,
-    prenom,
-    mediateurId,
-  } = beneficiaire
+  const { anneeNaissance, id: beneficiaireId, nom, prenom } = beneficiaire
 
   const beneficiaireCraData = {
     id: beneficiaireId,
-    prenom,
-    nom,
-    mediateurId,
+    prenom: prenom ?? '',
+    nom: nom ?? '',
   } satisfies BeneficiaireCraData
 
   const canPrendreRendezVous =

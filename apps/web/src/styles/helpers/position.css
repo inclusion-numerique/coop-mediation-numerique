@@ -6,6 +6,19 @@
   position: absolute;
 }
 
+.fr-position-absolute--center-y {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.fr-top-0 {
+  top: 0;
+}
+
+.fr-right-0 {
+  right: 0;
+}
+
 .fr-overflow-visible {
   overflow: visible;
 }

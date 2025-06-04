@@ -2,6 +2,7 @@
 
 import CustomSelect from '@app/ui/components/CustomSelect/CustomSelect'
 import { SelectOption } from '@app/ui/components/Form/utils/options'
+import { Popover } from '@app/ui/components/Primitives/Popover'
 import { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import { FilterSelection } from '@app/web/libs/filters/FilterSelection'
@@ -12,7 +13,6 @@ import {
   matchingOption,
   update,
 } from '@app/web/libs/filters/helpers'
-import { Popover } from '@app/web/libs/ui/elements/Popover'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 

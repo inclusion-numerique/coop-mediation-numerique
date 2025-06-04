@@ -28,7 +28,6 @@ export const createCraDataFromRdv = async ({
         id: participationBeneficiaireSuivi.id,
         prenom: participationBeneficiaireSuivi.prenom,
         nom: participationBeneficiaireSuivi.nom,
-        mediateurId: participationBeneficiaireSuivi.mediateurId,
       } satisfies BeneficiaireCraData)
     : undefined
 
