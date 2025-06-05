@@ -49,6 +49,7 @@ describe('getActivitesListPageData', () => {
           last: undefined,
         },
         activitesByDate: [],
+        rdvsWithoutActivite: expect.toBeArray(),
         user: {
           ...mediateurSansActivites,
           rdvAccount: null,
@@ -100,6 +101,7 @@ describe('getActivitesListPageData', () => {
           last: sortedActivites.at(0)?.activite.date,
         },
         activitesByDate: expect.toBeArray(),
+        rdvsWithoutActivite: expect.toBeArray(),
         user: {
           ...conseillerNumerique,
           rdvAccount: null,
