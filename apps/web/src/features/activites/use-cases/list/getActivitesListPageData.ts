@@ -17,6 +17,19 @@ export const getActivitesListPageData = async ({
   searchParams: ActivitesDataTableSearchParams
   user: UserId & UserRdvAccount & UserTimezone
 }) => {
+  /**
+   * We search activites and rdvs in two different sources (database and rdv api)
+   * - if we filtered on rdvs only, we do not need to return activities
+   * - if we filtered on activites only, we do not need to return rdvs
+   */
+  const shouldFetchRdvs =
+    (searchParams.rdvs?.length ?? 0) > 0 || // we filtered on rdvs
+    (searchParams.types?.length ?? 0) === 0 // or we did not filter on activites
+
+  const shouldFetchActivites =
+    (searchParams.rdvs?.length ?? 0) === 0 || // we did not filter on rdvs
+    (searchParams.types?.length ?? 0) > 0 // or we filtered on activites
+
   const [searchResult, activiteDates] = await Promise.all([
     searchActivite({
       mediateurId,
@@ -41,6 +54,7 @@ export const getActivitesListPageData = async ({
     du: minRdvDate ?? undefined,
     au: maxRdvDate ?? undefined,
     onlyForUser: true,
+    statuses: searchParams.rdvs,
   })
 
   const { rdvsWithoutActivite, activitesWithRdv } = mergeRdvsWithActivites({
@@ -49,8 +63,8 @@ export const getActivitesListPageData = async ({
   })
 
   const activitesByDate = groupActivitesAndRdvsByDate({
-    activites: activitesWithRdv,
-    rdvs: rdvsWithoutActivite,
+    activites: shouldFetchActivites ? activitesWithRdv : [],
+    rdvs: shouldFetchRdvs ? rdvsWithoutActivite : [],
   })
 
   return {

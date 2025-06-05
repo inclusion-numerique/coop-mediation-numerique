@@ -99,6 +99,7 @@ export const IndividuelRdvBeneficiaireAnonyme: Story = {
             name: 'Organisation 1',
           },
           status: 'seen',
+          badgeStatus: 'seen',
           date: activiteIndividuelleBeneficiaireAnonyme.date,
           durationInMinutes: 30,
           id: 8,

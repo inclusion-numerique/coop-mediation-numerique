@@ -1,16 +1,21 @@
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
+import { ActivitesListPageData } from '../getActivitesListPageData'
 
 export const getActivitesResultCountLabel = ({
   isFiltered,
   searchResult: { matchesCount },
-}: {
-  isFiltered: boolean
-  searchResult: { matchesCount: number }
-}) =>
-  matchesCount === 0
+  rdvsWithoutActivite,
+}: Pick<
+  ActivitesListPageData,
+  'isFiltered' | 'searchResult' | 'rdvsWithoutActivite'
+>) => {
+  const totalCount = matchesCount + rdvsWithoutActivite.length
+
+  return totalCount === 0
     ? isFiltered
       ? 'Aucune activité ne correspond à votre recherche'
       : 'Aucune activité enregistrée'
     : isFiltered
-      ? `${matchesCount} activité${sPluriel(matchesCount)} correspond${matchesCount === 1 ? '' : 'ent'} à votre recherche`
-      : `${matchesCount} activité${sPluriel(matchesCount)} enregistrée${sPluriel(matchesCount)}`
+      ? `${totalCount} activité${sPluriel(totalCount)} correspond${totalCount === 1 ? '' : 'ent'} à votre recherche`
+      : `${totalCount} activité${sPluriel(totalCount)} enregistrée${sPluriel(totalCount)}`
+}

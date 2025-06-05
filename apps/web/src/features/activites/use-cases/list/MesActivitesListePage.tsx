@@ -17,14 +17,24 @@ const SuspensedContent = async ({
 }: {
   data: Promise<ActivitesListPageData>
 }) => {
-  const { searchParams, searchResult, isFiltered, activitesByDate, user } =
-    await data
+  const {
+    searchParams,
+    searchResult,
+    isFiltered,
+    activitesByDate,
+    user,
+    rdvsWithoutActivite,
+  } = await data
 
   const baseHref = '/coop/mes-activites'
   return (
     <>
       <p className="fr-text--bold fr-text--lg fr-mb-6v fr-mt-2v">
-        {getActivitesResultCountLabel({ isFiltered, searchResult })}
+        {getActivitesResultCountLabel({
+          isFiltered,
+          searchResult,
+          rdvsWithoutActivite,
+        })}
       </p>
       {activitesByDate.map(({ date, activites }) => (
         <Fragment key={new Date(date).toISOString()}>

@@ -15,6 +15,7 @@ const createRdv = (date: Date, status: 'unknown' | 'seen' = 'unknown') => ({
   date,
   createdBy: 'test-agent',
   status,
+  badgeStatus: status,
   organisation: {
     id: 1,
     name: 'Organisation 1',

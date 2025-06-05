@@ -50,6 +50,7 @@ const MesActivitesListeHeader = ({
         minDate={activiteDates.first ?? new Date()}
         isCoordinateur={false}
         isMediateur={true}
+        enableRdvsFilter
       />
       <Suspense fallback={<ExportActivitesDisabledButton />}>
         <ExportActivitesButtonWrapper

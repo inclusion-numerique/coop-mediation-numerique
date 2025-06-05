@@ -1,12 +1,11 @@
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import type { Rdv } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getRdvs'
-import type { OAuthApiRdvStatus } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
+import type { RdvStatus } from '@app/web/rdv-service-public/rdvStatus'
 import type { AlertProps } from '@codegouvfr/react-dsfr/Alert'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 
-type RdvStatusBadgeVariant = OAuthApiRdvStatus | 'past'
 const statusBadgeProps: {
-  [key in RdvStatusBadgeVariant]: {
+  [key in RdvStatus]: {
     severity: AlertProps.Severity | 'new'
     label: string
   }
@@ -47,7 +46,7 @@ const RdvStatusBadge = ({
   pluralize?: number
 }) => {
   const now = Date.now()
-  const badgeVariant: RdvStatusBadgeVariant =
+  const badgeVariant: RdvStatus =
     status === 'unknown' && date.getTime() < now ? 'past' : status
   return (
     <Badge

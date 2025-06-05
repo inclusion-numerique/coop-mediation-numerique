@@ -334,6 +334,7 @@ export const givenRdv = ({
   date: date ?? new Date(Date.now() - 1000 * 60 * 60 * 24),
   durationInMinutes: durationInMinutes ?? 120,
   status: status ?? 'unknown',
+  badgeStatus: status ?? 'unknown',
   organisation: {
     id: 1,
     name: 'Organisation 1',

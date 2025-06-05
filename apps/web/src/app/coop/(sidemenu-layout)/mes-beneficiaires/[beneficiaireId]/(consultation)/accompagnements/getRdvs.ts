@@ -1,10 +1,12 @@
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
+import { RdvStatusFilterValue } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { prismaClient } from '@app/web/prismaClient'
 import type { OAuthApiRdvStatus } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
 import { oAuthRdvApiListRdvs } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
 import { getUserContextForOAuthApiCall } from '@app/web/rdv-service-public/getUserContextForRdvApiCall'
 import { rdvServicePublicOAuthConfig } from '@app/web/rdv-service-public/rdvServicePublicOauth'
+import { type RdvStatus } from '@app/web/rdv-service-public/rdvStatus'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { UserId, UserRdvAccount } from '@app/web/utils/user'
 import type { Beneficiaire } from '@prisma/client'
@@ -26,6 +28,7 @@ export type Rdv = {
   date: Date
   createdBy: string
   status: OAuthApiRdvStatus
+  badgeStatus: RdvStatus
   motif: {
     id: number
     name: string
@@ -65,6 +68,7 @@ export const getRdvs = async ({
   au,
   organisationId,
   onlyForUser,
+  statuses,
 }: {
   beneficiaire?: Pick<Beneficiaire, 'rdvServicePublicId'>
   user: UserRdvAccount & UserId
@@ -72,10 +76,14 @@ export const getRdvs = async ({
   du?: Date | null
   au?: Date | null
   organisationId?: number // Id of organisation in RDV Service Public
+  statuses?: RdvStatusFilterValue[]
 }) => {
   if (!user.rdvAccount) {
     return []
   }
+
+  const shouldFilterStatuses =
+    (statuses?.length ?? 0) > 0 && !statuses?.includes('tous')
 
   const oAuthCallUser = await getUserContextForOAuthApiCall({ user })
 
@@ -88,71 +96,87 @@ export const getRdvs = async ({
     organisationId,
   })
 
-  const beneficiairesRdvs = rdvServicePublicRdvs.map(
-    ({
-      id,
-      duration_in_min,
-      starts_at,
-      agents,
-      participations,
-      created_by,
-      status,
-      motif,
-      organisation,
-      url_for_agents,
-    }) =>
+  const now = Date.now()
+
+  const beneficiairesRdvs = rdvServicePublicRdvs
+    .map(
       ({
         id,
-        url: url_for_agents,
-        durationInMinutes: duration_in_min,
-        date: new Date(starts_at),
-        createdBy: created_by,
+        duration_in_min,
+        starts_at,
+        agents,
+        participations,
+        created_by,
         status,
-        organisation: {
-          id: organisation.id,
-          name: organisation.name,
-        },
-        motif: {
-          id: motif.id,
-          name: motif.name,
-        },
-        agents: agents.map(({ id: agentId, first_name, last_name, email }) => ({
-          id: agentId,
-          firstName: first_name,
-          lastName: last_name,
-          displayName: getBeneficiaireDisplayName({
-            prenom: first_name,
-            nom: last_name,
-          }),
-          email,
-        })),
-        participations: participations.map(
-          ({
-            user,
-            id,
-            status,
-            send_reminder_notification,
-            send_lifecycle_notifications,
-          }) => ({
-            id,
-            sendReminderNotification: send_reminder_notification,
-            sendLifecycleNotifications: send_lifecycle_notifications,
-            status,
-            user: {
-              id: user.id,
-              firstName: user.first_name,
-              lastName: user.last_name,
+        motif,
+        organisation,
+        url_for_agents,
+      }) =>
+        ({
+          id,
+          url: url_for_agents,
+          durationInMinutes: duration_in_min,
+          date: new Date(starts_at),
+          createdBy: created_by,
+          status,
+          badgeStatus:
+            status === 'unknown' && new Date(starts_at).getTime() < now
+              ? 'past'
+              : status,
+          organisation: {
+            id: organisation.id,
+            name: organisation.name,
+          },
+          motif: {
+            id: motif.id,
+            name: motif.name,
+          },
+          agents: agents.map(
+            ({ id: agentId, first_name, last_name, email }) => ({
+              id: agentId,
+              firstName: first_name,
+              lastName: last_name,
               displayName: getBeneficiaireDisplayName({
-                prenom: user.first_name,
-                nom: user.last_name,
+                prenom: first_name,
+                nom: last_name,
               }),
-              email: user.email || null,
-              beneficiaire: null as RdvUserBeneficiaire | null,
-            },
-          }),
-        ),
-      }) satisfies Rdv,
-  )
+              email,
+            }),
+          ),
+          participations: participations.map(
+            ({
+              user,
+              id,
+              status,
+              send_reminder_notification,
+              send_lifecycle_notifications,
+            }) => ({
+              id,
+              sendReminderNotification: send_reminder_notification,
+              sendLifecycleNotifications: send_lifecycle_notifications,
+              status,
+              user: {
+                id: user.id,
+                firstName: user.first_name,
+                lastName: user.last_name,
+                displayName: getBeneficiaireDisplayName({
+                  prenom: user.first_name,
+                  nom: user.last_name,
+                }),
+                email: user.email || null,
+                beneficiaire: null as RdvUserBeneficiaire | null,
+              },
+            }),
+          ),
+        }) satisfies Rdv,
+    )
+    .filter((rdv) => {
+      if (!shouldFilterStatuses) {
+        return true
+      }
+
+      return statuses?.includes(rdv.badgeStatus)
+    })
 
   // beneficiaire ids côté RDVSP
   const rdvUserIds = beneficiairesRdvs.flatMap(({ participations }) =>

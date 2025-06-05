@@ -9,12 +9,17 @@ const SuspensedContent = async ({
 }: {
   data: Promise<ActivitesListPageData>
 }) => {
-  const { searchParams, searchResult, isFiltered } = await data
+  const { searchParams, searchResult, isFiltered, rdvsWithoutActivite } =
+    await data
 
   return (
     <>
       <p className="fr-text--bold fr-text--lg fr-mb-6v fr-mt-2v">
-        {getActivitesResultCountLabel({ isFiltered, searchResult })}
+        {getActivitesResultCountLabel({
+          isFiltered,
+          searchResult,
+          rdvsWithoutActivite,
+        })}
       </p>
       <ActivitesTable
         data={searchResult}

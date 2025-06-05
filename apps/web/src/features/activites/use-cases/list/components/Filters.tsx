@@ -25,6 +25,7 @@ const Filters = ({
   beneficiairesFilter = true,
   minDate,
   className,
+  enableRdvsFilter = false,
 }: {
   defaultFilters: ActivitesFilters
   initialMediateursOptions: MediateurOption[]
@@ -37,6 +38,7 @@ const Filters = ({
   beneficiairesFilter?: boolean
   minDate?: Date
   className?: string
+  enableRdvsFilter?: boolean
 }) => (
   <div
     className={classNames(
@@ -82,7 +84,13 @@ const Filters = ({
       communesOptions={communesOptions}
       departementsOptions={departementsOptions}
     />
-    <ActiviteTypeFilter defaultValue={defaultFilters.types ?? []} />
+    <ActiviteTypeFilter
+      defaultValue={{
+        types: defaultFilters.types ?? [],
+        rdvs: defaultFilters.rdvs ?? [],
+      }}
+      enableRdvsFilter={enableRdvsFilter}
+    />
     {isCoordinateur && (
       <ConseillerNumeriqueFilter
         defaultValue={defaultFilters.conseiller_numerique}
