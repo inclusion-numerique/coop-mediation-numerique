@@ -10,8 +10,28 @@ import type {
 } from '@app/web/app/api/v1/JsonApiTypes'
 import { apiV1Url } from '@app/web/app/api/v1/apiV1Url'
 import { createApiV1Route } from '@app/web/app/api/v1/createApiV1Route'
+import { dispositifProgrammeNationalLabels } from '@app/web/features/structures/dispositifProgrammesNationaux'
+import { formationLabelLabels } from '@app/web/features/structures/formationLabel'
+import { fraisAChargeLabels } from '@app/web/features/structures/fraisACharge'
+import { itineranceLabels } from '@app/web/features/structures/itinerance'
+import { modaliteAccompagnementLabels } from '@app/web/features/structures/modaliteAccompagnement'
+import { modaliteAccesLabels } from '@app/web/features/structures/modalitesAcces'
+import { priseEnChargeSpecifiqueLabels } from '@app/web/features/structures/priseEnChargeSpecifique'
+import { publicSpecifiquementAdresseLabels } from '@app/web/features/structures/publicSpecifiquementAdresse'
+import { serviceLabels } from '@app/web/features/structures/service'
 import { prismaClient } from '@app/web/prismaClient'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
+import {
+  DispositifProgrammeNational,
+  FormationLabel,
+  FraisACharge,
+  Itinerance,
+  ModaliteAcces,
+  ModaliteAccompagnement,
+  PriseEnChargeSpecifique,
+  PublicSpecifiquementAdresse,
+  Service,
+} from '@prisma/client'
 import { NextResponse } from 'next/server'
 import { type ZodError, z } from 'zod'
 
@@ -454,16 +474,40 @@ export const GET = createApiV1Route
           horaires: s.horaires,
           prise_rdv: s.priseRdv,
           structure_parente: s.structureParente,
-          services: s.services,
-          publics_specifiquement_adresses: s.publicsSpecifiquementAdresses,
-          prise_en_charge_specifique: s.priseEnChargeSpecifique,
-          frais_a_charge: s.fraisACharge,
-          dispositif_programmes_nationaux: s.dispositifProgrammesNationaux,
-          formations_labels: s.formationsLabels,
+          services: s.services.map(
+            (service: Service) => serviceLabels[service],
+          ),
+          publics_specifiquement_adresses: s.publicsSpecifiquementAdresses.map(
+            (publicSpecifiquementAdresse: PublicSpecifiquementAdresse) =>
+              publicSpecifiquementAdresseLabels[publicSpecifiquementAdresse],
+          ),
+          prise_en_charge_specifique: s.priseEnChargeSpecifique.map(
+            (priseEnChargeSpecifique: PriseEnChargeSpecifique) =>
+              priseEnChargeSpecifiqueLabels[priseEnChargeSpecifique],
+          ),
+          frais_a_charge: s.fraisACharge.map(
+            (fraisACharge: FraisACharge) => fraisAChargeLabels[fraisACharge],
+          ),
+          dispositif_programmes_nationaux: s.dispositifProgrammesNationaux.map(
+            (dispositifProgrammeNational: DispositifProgrammeNational) =>
+              dispositifProgrammeNationalLabels[dispositifProgrammeNational],
+          ),
+          formations_labels: s.formationsLabels.map(
+            (formationLabel: FormationLabel) =>
+              formationLabelLabels[formationLabel],
+          ),
           autres_formations_labels: s.autresFormationsLabels,
-          itinerance: s.itinerance,
-          modalites_acces: s.modalitesAcces,
-          modalites_accompagnement: s.modalitesAccompagnement,
+          itinerance: s.itinerance.map(
+            (itinerance: Itinerance) => itineranceLabels[itinerance],
+          ),
+          modalites_acces: s.modalitesAcces.map(
+            (modaliteAcces: ModaliteAcces) =>
+              modaliteAccesLabels[modaliteAcces],
+          ),
+          modalites_accompagnement: s.modalitesAccompagnement.map(
+            (modaliteAccompagnement: ModaliteAccompagnement) =>
+              modaliteAccompagnementLabels[modaliteAccompagnement],
+          ),
           mediateurs_en_activite: s._count.mediateursEnActivite,
           emplois: s._count.emplois,
         },
