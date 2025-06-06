@@ -1,7 +1,7 @@
-import { StatistiquesPage } from '@app/web/features/legal/use-cases/statistiques/StatistiquesPage'
+import StatistiquesPubliquesPage from '@app/web/features/legal/use-cases/statistiques/StatistiquesPubliquesPage'
 
 const Page = () => {
-  return <StatistiquesPage />
+  return <StatistiquesPubliquesPage />
 }
 
 export default Page

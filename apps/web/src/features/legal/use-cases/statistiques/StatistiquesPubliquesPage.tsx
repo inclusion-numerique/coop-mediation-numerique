@@ -7,16 +7,16 @@ import { Beneficiaires } from './components/page-sections/Beneficiaires'
 import { ChiffresCles } from './components/page-sections/ChiffresCles'
 import { Impact } from './components/page-sections/Impact'
 import { UtilisateursActifs } from './components/page-sections/UtilisateursActifs'
-import { getMesStatistiquesPageData } from './getMesStatistiquesPageData'
+import { getStatistiquesPubliquesPageData } from './getStatistiquesPubliquesPageData'
 
-export const StatistiquesPage = async () => {
+const StatistiquesPubliquesPage = async () => {
   const {
     chiffresCles,
     accompagnements,
     beneficiaires,
     suiviBeneficiaires,
     utilisateursActifs,
-  } = await getMesStatistiquesPageData()
+  } = await getStatistiquesPubliquesPageData()
 
   return (
     <div className="fr-container">
@@ -47,3 +47,5 @@ export const StatistiquesPage = async () => {
     </div>
   )
 }
+
+export default StatistiquesPubliquesPage
