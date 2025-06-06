@@ -21,12 +21,14 @@ export const getAccompagnementsCountByMonth = async ({
   user,
   mediateurIds,
   activitesFilters,
+  periodStart,
   periodEnd,
   intervals = 12,
 }: {
   user?: UserProfile
   mediateurIds?: string[] // Undefined means no filter, empty array means no mediateur / no data.
   activitesFilters: ActivitesFilters
+  periodStart?: string // Format should be 'YYYY-MM-DD'
   periodEnd?: string // Format should be 'YYYY-MM', defaults to CURRENT_DATE if not provided
   intervals?: number // Default to 12 if not provided
 }) => {
@@ -35,9 +37,9 @@ export const getAccompagnementsCountByMonth = async ({
   const endDate = periodEnd
     ? `TO_DATE('${periodEnd}', 'YYYY-MM')`
     : `CURRENT_DATE`
-  const fromDate = `DATE_TRUNC('month', ${endDate} - INTERVAL '${
-    intervals - 1
-  } months')`
+  const fromDate = periodStart
+    ? `TO_DATE('${periodStart}', 'YYYY-MM')`
+    : `DATE_TRUNC('month', ${endDate} - INTERVAL '${intervals - 1} months')`
 
   return prismaClient.$queryRaw<{ month: number; count: number }[]>`
       WITH filtered_accompagnements AS (
@@ -80,12 +82,14 @@ export const getAccompagnementsCountByDay = async ({
   user,
   mediateurIds,
   activitesFilters,
+  periodStart,
   periodEnd,
   intervals = 30,
 }: {
   user?: UserProfile
   mediateurIds?: string[] // Undefined means no filter, empty array means no mediateur / no data.
   activitesFilters: ActivitesFilters
+  periodStart?: string // Format should be 'YYYY-MM-DD'
   periodEnd?: string // Format should be 'YYYY-MM-DD', defaults to CURRENT_DATE if not provided
   intervals?: number // Default to 30 if not provided
 }) => {
@@ -94,9 +98,9 @@ export const getAccompagnementsCountByDay = async ({
   const endDate = periodEnd
     ? `TO_DATE('${periodEnd}', 'YYYY-MM-DD')`
     : `CURRENT_DATE`
-  const fromDate = `DATE_TRUNC('day', ${endDate} - INTERVAL '${
-    intervals - 1
-  } days')`
+  const fromDate = periodStart
+    ? `TO_DATE('${periodStart}', 'YYYY-MM-DD')`
+    : `DATE_TRUNC('day', ${endDate} - INTERVAL '${intervals - 1} days')`
 
   return prismaClient.$queryRaw<LabelAndCount[]>`
       WITH filtered_accompagnements AS (
