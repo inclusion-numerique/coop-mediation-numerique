@@ -25,11 +25,9 @@ const IconInSquare = ({
       styles[size],
       className,
     )}
+    aria-hidden
   >
-    <span
-      className={classNames(styles.icon, iconId, classes?.icon)}
-      aria-hidden
-    />
+    <span className={classNames(styles.icon, iconId, classes?.icon)} />
   </div>
 )
 
