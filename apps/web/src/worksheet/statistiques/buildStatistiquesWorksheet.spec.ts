@@ -24,6 +24,15 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
       id: '5',
       conseillerNumerique: { id: '4' },
     },
+    emplois: [
+      {
+        id: '2',
+        structure: {
+          codeInsee: '00000',
+          nom: 'Le duc',
+        },
+      },
+    ],
     coordinateur: null,
   },
   statistiques: {
@@ -272,6 +281,15 @@ const STATISTIQUES_WORKSHEET_INPUT_FOR_MEDIATEUR: BuildStatistiquesWorksheetInpu
         id: '5',
         conseillerNumerique: { id: '4' },
       },
+      emplois: [
+        {
+          id: '2',
+          structure: {
+            codeInsee: '00000',
+            nom: 'Le duc',
+          },
+        },
+      ],
       coordinateur: null,
     },
     filters: [
@@ -347,6 +365,15 @@ const STATISTIQUES_WORKSHEET_INPUT_FOR_COORDINATEUR: BuildStatistiquesWorksheetI
       lastName: 'Doe',
       role: 'User',
       mediateur: null,
+      emplois: [
+        {
+          id: '2',
+          structure: {
+            codeInsee: '00000',
+            nom: 'Le duc',
+          },
+        },
+      ],
       coordinateur: {
         id: '1',
         conseillerNumeriqueId: '2',

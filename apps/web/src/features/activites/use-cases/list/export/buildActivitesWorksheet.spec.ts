@@ -22,12 +22,30 @@ describe('buildActivitesWorksheet', () => {
           id: '1',
           conseillerNumerique: { id: '3' },
         },
+        emplois: [
+          {
+            id: '2',
+            structure: {
+              codeInsee: '00000',
+              nom: 'Le duc',
+            },
+          },
+        ],
       },
       mediateur: {
         firstName: 'Jane',
         lastName: 'Doe',
         role: 'User',
         id: '2',
+        emplois: [
+          {
+            id: '2',
+            structure: {
+              codeInsee: '00000',
+              nom: 'Le duc',
+            },
+          },
+        ],
         mediateur: {
           id: '2',
           conseillerNumerique: { id: '4' },
