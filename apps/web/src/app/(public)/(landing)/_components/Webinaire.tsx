@@ -33,8 +33,9 @@ const Webinaire = () => (
             Nous contacter
           </h2>
           <p>
-            En cas de questions, de suggestions, de propositions, n’hésitez pas
-            à nous contacter à l’adresse suivante :
+            En cas de questions, de suggestions, de propositions ou de problème
+            de sécurité détecté, n’hésitez pas à nous contacter à l’adresse
+            suivante&nbsp;:
           </p>
           <div className="fr-text--lg fr-text-label--blue-france">
             <span className="ri-mail-line fr-mr-1w" aria-hidden="true" />

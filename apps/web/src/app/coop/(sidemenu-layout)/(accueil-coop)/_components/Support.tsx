@@ -34,8 +34,8 @@ export const Support = () => (
         Contactez le support
       </h2>
       <p className="fr-text--sm fr-my-2w">
-        En cas de problèmes rencontrés sur la plateforme, n’hésitez pas à nous
-        contacter&nbsp;:
+        En cas de problèmes rencontrés sur la plateforme (ex&nbsp;: bugs,
+        problème de sécurité), n’hésitez pas à nous contacter&nbsp;:
       </p>
       <div className="fr-text-label--blue-france fr-flex fr-flex-gap-3v fr-align-items-center fr-mb-0">
         <span
