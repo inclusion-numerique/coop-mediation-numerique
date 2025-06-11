@@ -44,11 +44,6 @@ export const ActiviteTypeFilter = ({
   const [activiteTypes, setActiviteTypes] = useState(defaultValue.types ?? [])
   const [rdvs, setRdvs] = useState(defaultValue.rdvs ?? [])
 
-  useEffect(() => {
-    setActiviteTypes(defaultValue.types ?? [])
-    setRdvs(defaultValue.rdvs ?? [])
-  }, [defaultValue])
-
   const hasFilters = activiteTypes.length > 0 || rdvs.length > 0
 
   const closePopover = (close: boolean = false) => {
@@ -87,6 +82,7 @@ export const ActiviteTypeFilter = ({
   ) => {
     const value = option.target.value as RdvStatusFilterValue
 
+    // 'tous' checks and unchecks all rdvs
     if (value === rdvStatusTous) {
       option.target.checked
         ? setRdvs([rdvStatusTous, ...rdvStatusValues])
@@ -94,9 +90,24 @@ export const ActiviteTypeFilter = ({
       return
     }
 
-    option.target.checked
-      ? setRdvs([...rdvs, value])
-      : setRdvs(rdvs.filter((status) => status !== value))
+    if (option.target.checked) {
+      const newValues = [...rdvs, value]
+
+      // If all values are checked, we check "tous" also
+      if (
+        rdvStatusOptions.every((status) => newValues.includes(status.value))
+      ) {
+        setRdvs([rdvStatusTous, ...newValues])
+        return
+      }
+      setRdvs(newValues)
+      return
+    }
+
+    // If we uncheck a value, we uncheck "tous" also
+    setRdvs(
+      rdvs.filter((status) => status !== value && status !== rdvStatusTous),
+    )
   }
 
   return (

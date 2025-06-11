@@ -332,6 +332,10 @@ export const givenRdv = ({
     name: 'Accompagnement individuel',
   },
   date: date ?? new Date(Date.now() - 1000 * 60 * 60 * 24),
+  endDate: new Date(
+    (date ?? new Date(Date.now() - 1000 * 60 * 60 * 24)).getTime() +
+      (durationInMinutes ?? 120) * 60 * 1000,
+  ),
   durationInMinutes: durationInMinutes ?? 120,
   status: status ?? 'unknown',
   badgeStatus: status ?? 'unknown',

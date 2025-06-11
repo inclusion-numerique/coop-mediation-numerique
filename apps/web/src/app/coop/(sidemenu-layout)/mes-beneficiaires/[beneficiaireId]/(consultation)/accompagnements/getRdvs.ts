@@ -26,6 +26,7 @@ export type Rdv = {
   id: number
   durationInMinutes: number
   date: Date
+  endDate: Date
   createdBy: string
   status: OAuthApiRdvStatus
   badgeStatus: RdvStatus
@@ -111,18 +112,22 @@ export const getRdvs = async ({
         motif,
         organisation,
         url_for_agents,
-      }) =>
-        ({
+      }) => {
+        const startDate = new Date(starts_at)
+        const endDate = new Date(
+          startDate.getTime() + duration_in_min * 60 * 1000,
+        )
+
+        return {
           id,
           url: url_for_agents,
           durationInMinutes: duration_in_min,
-          date: new Date(starts_at),
+          date: startDate,
+          endDate,
           createdBy: created_by,
           status,
           badgeStatus:
-            status === 'unknown' && new Date(starts_at).getTime() < now
-              ? 'past'
-              : status,
+            status === 'unknown' && endDate.getTime() <= now ? 'past' : status,
           organisation: {
             id: organisation.id,
             name: organisation.name,
@@ -168,7 +173,8 @@ export const getRdvs = async ({
               },
             }),
           ),
-        }) satisfies Rdv,
+        } satisfies Rdv
+      },
     )
     .filter((rdv) => {
       if (!shouldFilterStatuses) {

@@ -68,7 +68,7 @@ const Rdvs = ({
                     priority="tertiary no outline"
                     size="small"
                     linkProps={{
-                      href: '/coop/mes-activites?rdvs=futur',
+                      href: '/coop/mes-activites?rdvs=unknown',
                     }}
                   >
                     Voir
@@ -159,7 +159,7 @@ const Rdvs = ({
                     priority="tertiary no outline"
                     size="small"
                     linkProps={{
-                      href: '/coop/mes-activites?rdvs=honores',
+                      href: '/coop/mes-activites?rdvs=seen',
                     }}
                   >
                     CRA à compléter

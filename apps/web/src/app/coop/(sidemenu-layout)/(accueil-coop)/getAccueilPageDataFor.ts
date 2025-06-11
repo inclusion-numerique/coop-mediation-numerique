@@ -24,9 +24,9 @@ export const getAccueilPageDataFor = async (
     })
 
     const now = new Date()
-    const rdvsFutur = rdvsWithoutActivite.filter((rdv) => rdv.date > now)
+    const rdvsFutur = rdvsWithoutActivite.filter((rdv) => rdv.endDate >= now)
     const rdvsPasses = rdvsWithoutActivite.filter(
-      (rdv) => rdv.status === 'unknown' && rdv.date < now,
+      (rdv) => rdv.status === 'unknown' && rdv.endDate < now,
     )
     const rdvsHonores = rdvsWithoutActivite.filter(
       (rdv) => rdv.status === 'seen',

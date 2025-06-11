@@ -67,15 +67,7 @@ const RdvCard = ({
   const { timezone } = user
 
   const now = Date.now()
-  const {
-    date,
-    agents,
-    durationInMinutes,
-    motif,
-    participations,
-    url,
-    status,
-  } = activite
+  const { date, endDate, agents, motif, participations, url, status } = activite
 
   // TODO display if rdv has been created by another agent ?
   const _agentIsUser = agents.some((agent) => agent.id === userRdvAgentId)
@@ -87,10 +79,7 @@ const RdvCard = ({
     .join(', ')
 
   const startTime = dateAsTimeInTimeZone(date, timezone)
-  const endTime = dateAsTimeInTimeZone(
-    new Date(date.getTime() + durationInMinutes * 1000 * 60),
-    timezone,
-  )
+  const endTime = dateAsTimeInTimeZone(endDate, timezone)
   const canCompleteCra = status === 'seen' && date.getTime() < now
 
   const newCraLink = canCompleteCra ? createCraUrlFromRdv(activite) : ''

@@ -13,6 +13,7 @@ const createRdv = (date: Date, status: 'unknown' | 'seen' = 'unknown') => ({
   id: Math.floor(Math.random() * 1000),
   durationInMinutes: 30,
   date,
+  endDate: new Date(date.getTime() + 30 * 60 * 1000),
   createdBy: 'test-agent',
   status,
   badgeStatus: status,

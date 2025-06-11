@@ -101,6 +101,10 @@ export const IndividuelRdvBeneficiaireAnonyme: Story = {
           status: 'seen',
           badgeStatus: 'seen',
           date: activiteIndividuelleBeneficiaireAnonyme.date,
+          endDate: new Date(
+            activiteIndividuelleBeneficiaireAnonyme.date.getTime() +
+              30 * 60 * 1000,
+          ),
           durationInMinutes: 30,
           id: 8,
           createdBy: 'hui',
