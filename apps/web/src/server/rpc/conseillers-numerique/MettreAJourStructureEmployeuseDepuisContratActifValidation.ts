@@ -36,6 +36,12 @@ export const MettreAJourStructureEmployeuseDepuisContratActifValidation =
           email: z.string().email(),
           telephone: z.string(),
         }),
+        location: z.object({
+          type: z.literal('Point'),
+          coordinates: z.array(z.number()).length(2, {
+            message: 'Les coordonnées doivent être un tableau de deux nombres',
+          }),
+        }),
       }),
       dateRecrutement: z.date().optional(),
       dateDebutDeContrat: z.date().optional(),
