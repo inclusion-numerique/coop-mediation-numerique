@@ -4,6 +4,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import { invalidError } from '@app/web/server/rpc/trpcErrors'
 import { getStructureEmployeuseAddressForMediateur } from '@app/web/structure/getStructureEmployeuseAddress'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
+import { fixTelephone } from '@app/web/utils/clean-operations'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import { yesNoToOptionalBoolean } from '@app/web/utils/yesNoBooleanOptions'
@@ -157,7 +158,7 @@ const beneficiaireAnonymeCreateDataFromForm = ({
   prenom: prenom ?? undefined,
   nom: nom ?? undefined,
   anonyme: true,
-  telephone: telephone ?? undefined,
+  telephone: telephone ? fixTelephone(telephone) : undefined,
   email: email ?? undefined,
   anneeNaissance: anneeNaissance ?? undefined,
   adresse: adresse ?? undefined,
