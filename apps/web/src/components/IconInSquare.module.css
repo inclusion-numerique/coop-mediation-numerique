@@ -28,14 +28,14 @@
   height: 56px;
 
   .icon {
-    line-height: 24px !important;
-    font-size: 24px !important;
-    max-height: 24px;
-    max-width: 24px;
+    line-height: 32px !important;
+    font-size: 32px !important;
+    max-height: 32px;
+    max-width: 32px;
 
     &::before {
-      max-height: 24px;
-      max-width: 24px;
+      max-height: 32px;
+      max-width: 32px;
     }
   }
 }
