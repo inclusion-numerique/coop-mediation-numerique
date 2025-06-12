@@ -15,7 +15,7 @@ import {
   matchingOption,
   update,
 } from '@app/web/libs/filters/helpers'
-import { Popover } from '@app/web/libs/ui/elements/Popover'
+import { Popover } from '@app/web/libs/ui/primitives/Popover'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 

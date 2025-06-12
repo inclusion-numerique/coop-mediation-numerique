@@ -11,7 +11,7 @@ import type {
 } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
-import { Popover } from '@app/web/libs/ui/elements/Popover'
+import { Popover } from '@app/web/libs/ui/primitives/Popover'
 import {
   type RdvStatus,
   rdvStatusOptions,
