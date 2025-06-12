@@ -1,4 +1,5 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
+import type { RdvStatusFilterValue } from '../features/activites/use-cases/list/validation/ActivitesFilters'
 import type { OAuthApiRdvStatus } from './OAuthRdvApiCallInput'
 
 // We use the same statuses as RDVSP but for an "unknown" status, we differenciate between "past" and "unknown" which means "to come"
@@ -24,6 +25,8 @@ export const rdvStatusPluralLabels: {
   excused: 'Annulés par bénéficiaire',
   noshow: 'Absence',
 }
+
+export const rdvStatusTous = 'tous' as const satisfies RdvStatusFilterValue
 
 export const rdvStatusOptions = labelsToOptions(rdvStatusPluralLabels)
 

@@ -13,15 +13,13 @@ import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import { Popover } from '@app/web/libs/ui/elements/Popover'
 import {
-  type RdvStatus,
   rdvStatusOptions,
+  rdvStatusTous,
   rdvStatusValues,
 } from '@app/web/rdv-service-public/rdvStatus'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { ChangeEvent, useEffect, useState } from 'react'
-
-const rdvStatusTous = 'tous' as const satisfies RdvStatusFilterValue
 
 const rdvFilterOptions = [
   { label: 'Voir tout les RDVs', value: rdvStatusTous },
@@ -43,6 +41,12 @@ export const ActiviteTypeFilter = ({
 
   const [activiteTypes, setActiviteTypes] = useState(defaultValue.types ?? [])
   const [rdvs, setRdvs] = useState(defaultValue.rdvs ?? [])
+
+  // If default values changes (e.g. router change), we reset the filters state
+  useEffect(() => {
+    setActiviteTypes(defaultValue.types ?? [])
+    setRdvs(defaultValue.rdvs ?? [])
+  }, [defaultValue.types, defaultValue.rdvs])
 
   const hasFilters = activiteTypes.length > 0 || rdvs.length > 0
 

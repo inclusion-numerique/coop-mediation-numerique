@@ -1,7 +1,6 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
-import { FilterTags } from '@app/web/features/utilisateurs/use-cases/filter/FilterTags'
 import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import classNames from 'classnames'
 import { Suspense } from 'react'
@@ -9,6 +8,7 @@ import type { ActiviteDates } from '../db/getFirstAndLastActiviteDate'
 import type { ActivitesFilters } from '../validation/ActivitesFilters'
 import ExportActivitesButtonWrapper from './ExportActivitesButtonWrapper'
 import ExportActivitesDisabledButton from './ExportActivitesDisabledButton'
+import { FilterTags } from './FilterTags'
 import Filters from './Filters'
 
 const MesActivitesListeHeader = ({
@@ -70,6 +70,8 @@ const MesActivitesListeHeader = ({
       communesOptions={communesOptions}
       departementsOptions={departementsOptions}
       lieuxActiviteOptions={lieuxActiviteOptions}
+      beneficiairesOptions={initialBeneficiairesOptions}
+      mediateursOptions={initialMediateursOptions}
     />
   </>
 )
