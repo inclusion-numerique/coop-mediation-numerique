@@ -32,6 +32,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { forbiddenError, invalidError } from '@app/web/server/rpc/trpcErrors'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
+import { fixTelephone } from '@app/web/utils/clean-operations'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import { Itinerance, ModaliteAcces } from '@prisma/client'
@@ -128,8 +129,8 @@ const setModalitesAccesAuServiceFields = ({
 }: Omit<ModalitesAccesAuServiceData, 'id'>) => ({
   telephone:
     modalitesAcces?.parTelephone && modalitesAcces?.numeroTelephone != null
-      ? modalitesAcces?.numeroTelephone
-      : '',
+      ? fixTelephone(modalitesAcces.numeroTelephone)
+      : null,
   courriels:
     modalitesAcces?.parMail && modalitesAcces?.adresseMail != null
       ? [modalitesAcces.adresseMail]
