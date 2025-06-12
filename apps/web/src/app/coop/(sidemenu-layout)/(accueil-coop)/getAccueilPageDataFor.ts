@@ -1,5 +1,6 @@
 import { getActivitesListPageData } from '@app/web/features/activites/use-cases/list/getActivitesListPageData'
 import { countMediateursCoordonnesBy } from '@app/web/mediateurs/countMediateursCoordonnesBy'
+import { getRdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
 import type {
   UserDisplayName,
   UserId,
@@ -13,6 +14,7 @@ export const getAccueilPageDataFor = async (
 ) => {
   const mediateurs = await countMediateursCoordonnesBy(user.coordinateur)
 
+  // TODO Return null for rdvs if user has no valid rdv account
   if (user.mediateur?.id != null) {
     const {
       searchResult: { activites },
@@ -24,6 +26,18 @@ export const getAccueilPageDataFor = async (
     })
 
     const now = new Date()
+
+    const rdvsIntegrationStatus = getRdvOauthIntegrationStatus({ user })
+
+    // Do not return rdvs if user has no valid rdv account
+    if (rdvsIntegrationStatus !== 'success') {
+      return {
+        mediateurs,
+        activites,
+        rdvs: null,
+      }
+    }
+
     const rdvsFutur = rdvsWithoutActivite.filter((rdv) => rdv.endDate >= now)
     const rdvsPasses = rdvsWithoutActivite.filter(
       (rdv) => rdv.status === 'unknown' && rdv.endDate < now,
@@ -32,6 +46,7 @@ export const getAccueilPageDataFor = async (
       (rdv) => rdv.status === 'seen',
     )
 
+    // Return rdvs for dashboard info if user has a valid rdv account
     return {
       mediateurs,
       activites,
