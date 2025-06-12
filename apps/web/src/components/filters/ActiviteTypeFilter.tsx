@@ -110,6 +110,10 @@ export const ActiviteTypeFilter = ({
     )
   }
 
+  // if "all" rdvs is checked, it counts as 1 even if there are other rdvs types checked
+  const filterValuesCount =
+    activiteTypes.length + (rdvs.includes(rdvStatusTous) ? 1 : rdvs.length)
+
   return (
     <Popover
       open={isOpen}
@@ -118,7 +122,7 @@ export const ActiviteTypeFilter = ({
       onEscapeKeyDown={() => handleSubmit()}
       trigger={
         <TriggerButton isOpen={isOpen} isFilled={hasFilters}>
-          Type{hasFilters && ` · ${activiteTypes.length + rdvs.length}`}
+          Type{hasFilters && ` · ${activiteTypes.length + filterValuesCount}`}
         </TriggerButton>
       }
     >
