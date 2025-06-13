@@ -56,6 +56,8 @@ type ActiviteAttributes = {
     | 'aide_aux_demarches_administratives'
     | 'administration'
     | 'mediation_numerique'
+    | 'aide_sociale'
+    | 'insertion_professionnelle'
     | 'autre'
     | null
 
