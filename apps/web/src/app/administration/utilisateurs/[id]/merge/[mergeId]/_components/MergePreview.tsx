@@ -60,11 +60,21 @@ export const MergePreview = ({
         />
       </li>
       <li>
-        Équipes&nbsp;: {merge.coordinationsIds.length ?? 0}
+        Membre équipes&nbsp;: {merge.coordinationsIds.length ?? 0}
         <MergeDiff
           isAddition={source != null}
           sourceIds={source?.coordinationsIds ?? merge.coordinationsIds}
           commonIds={common.coordinationsIds}
+        />
+      </li>
+      <li>
+        Équipe coordonnée&nbsp;: {merge.mediateursCoordonnesIds.length ?? 0}
+        <MergeDiff
+          isAddition={source != null}
+          sourceIds={
+            source?.mediateursCoordonnesIds ?? merge.mediateursCoordonnesIds
+          }
+          commonIds={common.mediateursCoordonnesIds}
         />
       </li>
       <li>
@@ -73,6 +83,14 @@ export const MergePreview = ({
           isAddition={source != null}
           sourceIds={source?.invitationsRecues ?? merge.invitationsRecues}
           commonIds={common.invitationsRecues}
+        />
+      </li>
+      <li>
+        Invitations envoyées&nbsp;: {merge.invitationsEnvoyees.length ?? 0}
+        <MergeDiff
+          isAddition={source != null}
+          sourceIds={source?.invitationsEnvoyees ?? merge.invitationsEnvoyees}
+          commonIds={common.invitationsEnvoyees}
         />
       </li>
       <li>
