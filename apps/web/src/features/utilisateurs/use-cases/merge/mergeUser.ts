@@ -229,7 +229,10 @@ const mergeInvitationEnvoyees =
     const targetEmails = targetCoordinateur.invitations.map(toMediateurEmail)
 
     await prisma.invitationEquipe.updateMany({
-      where: { email: { in: sourceEmails.filter(notIn(targetEmails)) } },
+      where: {
+        email: { in: sourceEmails.filter(notIn(targetEmails)) },
+        coordinateurId: sourceCoordinateur.id,
+      },
       data: { coordinateurId: targetCoordinateur.id },
     })
 
@@ -249,8 +252,11 @@ const mergeMediateursCoordonnes =
     const targetMedIds =
       targetCoordinateur?.mediateursCoordonnes.map(toMediateurCoordooneId) ?? []
 
-    await prisma.invitationEquipe.updateMany({
-      where: { mediateurId: { in: sourceMedIds.filter(notIn(targetMedIds)) } },
+    await prisma.mediateurCoordonne.updateMany({
+      where: {
+        mediateurId: { in: sourceMedIds.filter(notIn(targetMedIds)) },
+        coordinateurId: sourceCoordinateur.id,
+      },
       data: { coordinateurId: targetCoordinateur.id },
     })
 

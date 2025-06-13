@@ -15,16 +15,26 @@ type MergeUser = UserDisplayName & {
       mediateurId: string | null
     }[]
   } | null
+  coordinateur: {
+    invitations: {
+      email: string
+      coordinateurId: string
+      mediateurId: string | null
+    }[]
+    mediateursCoordonnes: { mediateur: { id: string } }[]
+  } | null
   mutations: { id: string }[]
 }
 
 export type MergeData = {
   coordinationsIds: string[]
+  mediateursCoordonnesIds: string[]
   beneficiaireIds: string[]
   activitesIds: string[]
   structureEmployeusesIds: string[]
   lieuxActiviteIds: string[]
   invitationsRecues: string[]
+  invitationsEnvoyees: string[]
   mutationsIds: string[]
 }
 
@@ -63,6 +73,19 @@ const include = {
       },
     },
   },
+  coordinateur: {
+    include: {
+      mediateursCoordonnes: {
+        where: { suppression: null },
+        include: {
+          mediateur: {
+            select: { id: true },
+          },
+        },
+      },
+      invitations: true,
+    },
+  },
   emplois: {
     where: { suppression: null },
     include: {
@@ -81,6 +104,9 @@ const toStructureId = ({ structure }: { structure: { id: string } }) =>
 
 const toCoordinateurId = ({ coordinateur }: { coordinateur: { id: string } }) =>
   coordinateur.id
+
+const toMediateurId = ({ mediateur }: { mediateur: { id: string } }) =>
+  mediateur.id
 
 const toMergedIds = ({
   email,
@@ -101,8 +127,11 @@ const toMergeInfo = (user: MergeUser) => ({
   structureEmployeusesIds: user.emplois.map(toStructureId) ?? [],
   lieuxActiviteIds: user.mediateur?.enActivite.map(toStructureId) ?? [],
   coordinationsIds: user.mediateur?.coordinations.map(toCoordinateurId) ?? [],
+  mediateursCoordonnesIds:
+    user.coordinateur?.mediateursCoordonnes.map(toMediateurId) ?? [],
   mutationsIds: user.mutations.map(toId) ?? [],
   invitationsRecues: user.mediateur?.invitations.map(toMergedIds) ?? [],
+  invitationsEnvoyees: user.coordinateur?.invitations.map(toMergedIds) ?? [],
 })
 
 const toMergeCommon = (mergeSource: MergeData, mergeTarget: MergeData) => ({
@@ -121,8 +150,14 @@ const toMergeCommon = (mergeSource: MergeData, mergeTarget: MergeData) => ({
   coordinationsIds: mergeSource.coordinationsIds.filter((id) =>
     mergeTarget.coordinationsIds.includes(id),
   ),
+  mediateursCoordonnesIds: mergeSource.mediateursCoordonnesIds.filter((id) =>
+    mergeTarget.mediateursCoordonnesIds.includes(id),
+  ),
   invitationsRecues: mergeSource.invitationsRecues.filter((id) =>
     mergeTarget.invitationsRecues.includes(id),
+  ),
+  invitationsEnvoyees: mergeSource.invitationsEnvoyees.filter((id) =>
+    mergeTarget.invitationsEnvoyees.includes(id),
   ),
   mutationsIds: mergeSource.mutationsIds.filter((id) =>
     mergeTarget.mutationsIds.includes(id),
