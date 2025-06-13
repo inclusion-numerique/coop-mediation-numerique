@@ -13,18 +13,21 @@ import styles from './MesActivitesListePage.module.css'
 const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
 
 const ActivitesTable = ({
-  data: { activites, totalPages },
+  data: { activites, totalPages, timezone },
   searchParams,
   baseHref,
 }: {
-  data: SearchActiviteResult
+  data: SearchActiviteResult & { timezone: string }
   searchParams: ActivitesDataTableSearchParams
   baseHref: string
 }) => (
   <>
     <DataTable
       className="fr-table--nowrap fr-width-full fr-mb-8v"
-      rows={activites}
+      rows={activites.map((activite) => ({
+        ...activite,
+        timezone,
+      }))}
       configuration={ActivitesDataTable}
       searchParams={searchParams}
       baseHref={baseHref}

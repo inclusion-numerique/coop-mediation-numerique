@@ -1,7 +1,7 @@
 'use client'
 
 import type { MouseEventHandler } from 'react'
-import { ActiviteListItem } from '../db/activitesQueries'
+import type { ActiviteListItem } from '../db/activitesQueries'
 import { ActiviteDetailsDynamicModal } from './ActiviteDetailsModal/ActiviteDetailsDynamicModal'
 
 const ActiviteRowShowDetailsButton = ({ row }: { row: ActiviteListItem }) => {

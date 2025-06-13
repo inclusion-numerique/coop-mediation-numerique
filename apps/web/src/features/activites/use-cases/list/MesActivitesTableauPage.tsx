@@ -9,7 +9,7 @@ const SuspensedContent = async ({
 }: {
   data: Promise<ActivitesListPageData>
 }) => {
-  const { searchParams, searchResult, isFiltered, rdvsWithoutActivite } =
+  const { searchParams, searchResult, isFiltered, rdvsWithoutActivite, user } =
     await data
 
   return (
@@ -22,7 +22,10 @@ const SuspensedContent = async ({
         })}
       </p>
       <ActivitesTable
-        data={searchResult}
+        data={{
+          ...searchResult,
+          timezone: user.timezone,
+        }}
         baseHref="/coop/mes-activites/tableau"
         searchParams={searchParams}
       />

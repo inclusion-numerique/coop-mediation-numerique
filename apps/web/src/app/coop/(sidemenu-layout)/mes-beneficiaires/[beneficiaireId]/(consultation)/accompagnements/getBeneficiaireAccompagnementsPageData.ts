@@ -1,7 +1,10 @@
 import { getRdvs } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getRdvs'
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import { beneficiaireAccompagnementsCountSelect } from '@app/web/beneficiaire/beneficiaireQueries'
-import { getAllActivites } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
+import {
+  type ActiviteListItem,
+  getAllActivites,
+} from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { mergeRdvsWithActivites } from '@app/web/features/activites/use-cases/list/mergeRdvsWithActivites'
 import { prismaClient } from '@app/web/prismaClient'
 import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
@@ -50,7 +53,13 @@ export const getBeneficiaireAccompagnementsPageData = async ({
 
   const { rdvsWithoutActivite, activitesWithRdv } = mergeRdvsWithActivites({
     rdvs,
-    activites,
+    activites: activites.map(
+      (activite) =>
+        ({
+          ...activite,
+          timezone: user.timezone,
+        }) satisfies ActiviteListItem,
+    ),
   })
 
   const activitesAndRdvs = [...rdvsWithoutActivite, ...activitesWithRdv].sort(

@@ -5,9 +5,13 @@ import {
   countThematiques,
 } from '@app/web/beneficiaire/beneficiaireQueries'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
-import { getAllActivites } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
+import {
+  ActiviteListItem,
+  getAllActivites,
+} from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { mergeRdvsWithActivites } from '@app/web/features/activites/use-cases/list/mergeRdvsWithActivites'
 import { prismaClient } from '@app/web/prismaClient'
+import type { UserId, UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 
 export const getBeneficiaireInformationsPageData = async ({
   beneficiaireId,
@@ -17,7 +21,7 @@ export const getBeneficiaireInformationsPageData = async ({
   beneficiaireId: string
   // The mediateur making the request (for security check)
   mediateurId: string
-  user: Pick<SessionUser, 'id' | 'rdvAccount'>
+  user: UserId & UserTimezone & UserRdvAccount
 }) => {
   const beneficiaire = await prismaClient.beneficiaire.findUnique({
     where: {
@@ -71,7 +75,13 @@ export const getBeneficiaireInformationsPageData = async ({
 
   const { rdvsWithoutActivite, activitesWithRdv } = mergeRdvsWithActivites({
     rdvs,
-    activites,
+    activites: activites.map(
+      (activite) =>
+        ({
+          ...activite,
+          timezone: user.timezone,
+        }) satisfies ActiviteListItem,
+    ),
   })
 
   return {

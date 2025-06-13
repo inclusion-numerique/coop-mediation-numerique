@@ -62,7 +62,6 @@ export const activiteListSelect = {
 
   materiel: true,
   thematiques: true,
-
   orienteVersStructure: true,
 
   precisionsDemarche: true,
@@ -121,6 +120,7 @@ export type ActiviteListItem = Awaited<
   ReturnType<typeof getAllActivites>
 >[number] & {
   rdv?: Rdv // If the activite was created from a rdv, we will merge the RDV with the activite item before displaying it
+  timezone: string
 }
 
 export type ActivitesByDate = {

@@ -318,6 +318,7 @@ export const createOrUpdateActivite = async ({
           : undefined, // no data if creation
   } satisfies Prisma.ActiviteUpdateInput
 
+  // If id is provided, it is an update operation
   if (id) {
     // We delete all the anonymes beneficiaires that have only this activite as accompagmements to ease the
     // merge logic of old and new anonymous beneficiaires
@@ -393,6 +394,7 @@ export const createOrUpdateActivite = async ({
           where: { id },
           data: {
             ...prismaData,
+            modification: new Date(),
           },
         }),
       ].filter(onlyDefinedAndNotNull),
@@ -412,6 +414,7 @@ export const createOrUpdateActivite = async ({
     }
   }
 
+  // Creation transaction
   await prismaClient.$transaction(
     [
       // Create beneficiaire anonyme for one to one cras,

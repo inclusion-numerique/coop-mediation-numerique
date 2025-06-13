@@ -2,8 +2,11 @@ import { getRdvs } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[
 import { isEmptySearchParams } from '@app/web/libs/data-table/isEmptySearchParams'
 import { getOptionalStartOfDay } from '@app/web/utils/getDatePeriodBounds'
 import type { UserId, UserRdvAccount, UserTimezone } from '@app/web/utils/user'
-import { ActivitesDataTableSearchParams } from './components/ActivitesDataTable'
-import { groupActivitesAndRdvsByDate } from './db/activitesQueries'
+import type { ActivitesDataTableSearchParams } from './components/ActivitesDataTable'
+import {
+  type ActiviteListItem,
+  groupActivitesAndRdvsByDate,
+} from './db/activitesQueries'
 import { getFirstAndLastActiviteDate } from './db/getFirstAndLastActiviteDate'
 import { searchActivite } from './db/searchActivite'
 import { mergeRdvsWithActivites } from './mergeRdvsWithActivites'
@@ -59,7 +62,13 @@ export const getActivitesListPageData = async ({
 
   const { rdvsWithoutActivite, activitesWithRdv } = mergeRdvsWithActivites({
     rdvs,
-    activites: searchResult.activites,
+    activites: searchResult.activites.map(
+      (activite) =>
+        ({
+          ...activite,
+          timezone: user.timezone,
+        }) satisfies ActiviteListItem,
+    ),
   })
 
   const activitesByDate = groupActivitesAndRdvsByDate({

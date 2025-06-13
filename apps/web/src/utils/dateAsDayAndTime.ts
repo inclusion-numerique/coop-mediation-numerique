@@ -12,4 +12,7 @@ export const dateAsTimeInTimeZone = (date: Date, timezone: string) =>
   formatInTimeZone(date, timezone, "HH'h'mm")
 
 export const dateAsDayInTimeZone = (date: Date, timezone: string) =>
+  formatInTimeZone(date, timezone, 'dd.MM.yyyy')
+
+export const dateAsDayConventionalInTimeZone = (date: Date, timezone: string) =>
   formatInTimeZone(date, timezone, 'dd/MM/yyyy')

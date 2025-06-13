@@ -19,7 +19,7 @@ describe('dateAsDayAndTime', () => {
     it('formats date in locale timezone', () => {
       expect(
         dateAsDayInTimeZone(new Date('2023-02-16T23:48:58'), 'Europe/Paris'),
-      ).toEqual('17/02/2023')
+      ).toEqual('17.02.2023')
     })
   })
 

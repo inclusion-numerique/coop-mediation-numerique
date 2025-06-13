@@ -7,6 +7,7 @@ import { ActiviteListItem } from '../db/activitesQueries'
 const yesterday = new Date(Date.now() - 1000 * 60 * 60 * 24)
 
 export const activiteIndividuelleInfosMinimum = {
+  timezone: 'Europe/Paris',
   type: 'Individuel',
   id: '1',
   mediateurId: '2',
@@ -61,6 +62,7 @@ export const activiteIndividuelleInfosMinimum = {
 } satisfies ActiviteListItem
 
 export const activiteIndividuelleBeneficiaireSuivi = {
+  timezone: 'Europe/Paris',
   type: 'Individuel',
   id: '1',
   mediateurId: '2',
@@ -107,6 +109,7 @@ export const activiteIndividuelleBeneficiaireSuivi = {
 
 // Refactored "Individuel" type activity with an anonymous beneficiary
 export const activiteIndividuelleBeneficiaireAnonyme = {
+  timezone: 'Europe/Paris',
   type: 'Individuel',
   id: '1',
   mediateurId: '2',
@@ -114,7 +117,14 @@ export const activiteIndividuelleBeneficiaireAnonyme = {
   modification: new Date(yesterday.getTime() + 1000 * 60 * 60 * 24),
   date: yesterday,
   duree: 120,
-  thematiques: ['NavigationSurInternet', 'Email'],
+  thematiques: [
+    'NavigationSurInternet',
+    'Email',
+    'AideAuxDemarchesAdministratives',
+    'TravailFormation',
+    'ArgentImpots',
+  ],
+  precisionsDemarche: 'Déclaration impots',
   notes:
     '<p>Lörem ipsum ladeniliga douche <strong>plaledes</strong>. Nining son. Mipära kavun joskap juling lanar. Segyde snålsurfa då jevis. Dorade preng posad. Spefuv ter i kvasitiskap då mobilblottare dir. Häbel epihet i tegt. Ultrar. Digt hän. Polytt doskapet tempopatologi. Use betårta, tena. Biktiga pojuren.</p><p>Segyde snålsurfa då jevis. <strong>Dorade preng posad</strong>. Spefuv ter i kvasitiskap då mobilblottare dir. Häbel epihet i tegt. Ultrar. Digt hän. Polytt doskapet tempopatologi. Use betårta, tena. Biktiga pojuren</p>',
   accompagnements: [
@@ -138,22 +148,22 @@ export const activiteIndividuelleBeneficiaireAnonyme = {
     },
   ],
   typeLieu: 'Domicile',
-  autonomie: null,
-  materiel: [],
+  autonomie: 'PartiellementAutonome',
+  materiel: ['Ordinateur'],
   lieuCommune: 'Lyon',
   lieuCodeInsee: '69382',
   lieuCodePostal: '69002',
   structure: null,
   orienteVersStructure: true,
   structureDeRedirection: 'OperateurOuOrganismeEnCharge',
-  precisionsDemarche: null,
   titreAtelier: null,
   niveau: null,
-  rdvServicePublicId: null,
+  rdvServicePublicId: 23,
 } satisfies ActiviteListItem
 
 // Refactored "Collectif" type activity with minimal information
 export const activiteCollectifInfosRepliees = {
+  timezone: 'Europe/Paris',
   type: 'Collectif',
   id: '1',
   mediateurId: '2',
@@ -219,6 +229,7 @@ export const activiteCollectifInfosRepliees = {
 
 // Refactored "Collectif" type activity with expanded information
 export const activiteCollectifInfosDepliees = {
+  timezone: 'Europe/Paris',
   type: 'Collectif',
   id: '1',
   mediateurId: '2',

@@ -1,3 +1,4 @@
+import { ActiviteListItem } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { getActivitesListPageData } from '@app/web/features/activites/use-cases/list/getActivitesListPageData'
 import { countMediateursCoordonnesBy } from '@app/web/mediateurs/countMediateursCoordonnesBy'
 import { getRdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
@@ -17,13 +18,21 @@ export const getAccueilPageDataFor = async (
   // TODO Return null for rdvs if user has no valid rdv account
   if (user.mediateur?.id != null) {
     const {
-      searchResult: { activites },
+      searchResult: { activites: activitesWithoutTimezone },
       rdvsWithoutActivite,
     } = await getActivitesListPageData({
       mediateurId: user.mediateur.id,
       searchParams: { lignes: '3' },
       user,
     })
+
+    const activites = activitesWithoutTimezone.map(
+      (activite) =>
+        ({
+          ...activite,
+          timezone: user.timezone,
+        }) satisfies ActiviteListItem,
+    )
 
     const now = new Date()
 

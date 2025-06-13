@@ -64,6 +64,7 @@ const activites = [
   {
     type: 'Collectif',
     id: '1',
+    timezone: 'Europe/Paris',
     mediateurId: '2',
     date: new Date('2024-07-07T00:00:00.000Z'),
     creation: new Date('2024-07-07T00:00:00.000Z'),
@@ -91,8 +92,8 @@ const activites = [
     duree: 60,
     rdvServicePublicId: 13,
   },
-
   {
+    timezone: 'Europe/Paris',
     type: 'Individuel',
     id: '2',
     mediateurId: '3',
@@ -123,6 +124,7 @@ const activites = [
     rdvServicePublicId: null,
   },
   {
+    timezone: 'Europe/Paris',
     type: 'Individuel',
     id: '3',
     mediateurId: '3',
@@ -162,6 +164,7 @@ const activites = [
     rdvServicePublicId: 13,
   },
   {
+    timezone: 'Europe/Paris',
     type: 'Individuel',
     id: '4',
     mediateurId: '3',
@@ -192,6 +195,7 @@ const activites = [
     rdvServicePublicId: null,
   },
   {
+    timezone: 'Europe/Paris',
     type: 'Individuel',
     id: '5',
     mediateurId: '3',
@@ -222,6 +226,7 @@ const activites = [
     rdvServicePublicId: 13,
   },
   {
+    timezone: 'Europe/Paris',
     type: 'Collectif',
     id: '6',
     mediateurId: '3',

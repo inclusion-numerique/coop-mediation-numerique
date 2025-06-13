@@ -1,6 +1,7 @@
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFiltersOptionsForMediateur'
 import { generateActivitesFiltersLabels } from '../components/generateActivitesFiltersLabels'
+import { ActiviteListItem } from '../db/activitesQueries'
 import { searchActivite } from '../db/searchActivite'
 import type { ActivitesFilters } from '../validation/ActivitesFilters'
 import type { BuildActivitesWorksheetInput } from './buildActivitesWorksheet'
@@ -45,7 +46,13 @@ export const getActivitesWorksheetInput = async ({
   })
 
   return {
-    activites,
+    activites: activites.map(
+      (activite) =>
+        ({
+          ...activite,
+          timezone: user.timezone,
+        }) satisfies ActiviteListItem,
+    ),
     user,
     mediateur: user,
     filters: activitesFiltersLabels,

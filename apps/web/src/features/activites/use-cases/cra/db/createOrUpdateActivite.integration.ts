@@ -21,7 +21,13 @@ import { craDureeDataToMinutes } from './minutesToCraDuree'
 
 const nullActivite: Omit<
   ActiviteListItem,
-  'id' | 'type' | 'mediateurId' | 'accompagnements' | 'date' | 'duree'
+  | 'id'
+  | 'type'
+  | 'mediateurId'
+  | 'accompagnements'
+  | 'date'
+  | 'duree'
+  | 'timezone'
 > = {
   autonomie: null,
   creation: expect.any(Date),
