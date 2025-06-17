@@ -91,10 +91,8 @@ export const buildActivitesWorksheet = ({
     'Matériel numérique utilisé',
     'Thématique(s) d’accompagnement',
     'Nom de la démarche administrative',
-    'Niveau d’autonomie du bénéficiaire',
-    'Niveau de l’atelier',
-    'Le bénéficiaire est-il orienté vers une autre structure ?',
-    'La démarche est-elle finalisée ?',
+    'Niveau d’autonomie (ou de l’atelier)',
+    'Bénéficiaire réorienté',
     'Structure de redirection',
     'Commune de résidence du bénéficiaire',
     'Genre du bénéficiaire',
@@ -102,6 +100,8 @@ export const buildActivitesWorksheet = ({
     'Statut du bénéficiaire',
     'Notes supplémentaires',
   ]
+
+  const structureEmployeuseLabel = user.emplois?.at(0)?.structure.nom ?? ''
 
   const separatorRowBeforeTable = worksheet.addRow([''])
 
@@ -137,17 +137,25 @@ export const buildActivitesWorksheet = ({
         structureDeRedirection,
       } = activite
 
+      const lieuCommuneString = structure
+        ? `${structure.codePostal} ${structure.commune}`
+        : lieuCommune
+          ? `${lieuCodePostal} ${lieuCommune}`
+          : ''
+
+      const lieuPrefix = structure
+        ? `${structure.nom}, `
+        : typeLieu === 'ADistance'
+          ? `Structure employeuse : ${structureEmployeuseLabel}, `
+          : ''
+
       return [
         date,
         typeActiviteLabels[type],
         activite.accompagnements.length,
         beneficiairesListCell(getBeneficiaireDisplayName),
         typeLieuLabels[typeLieu],
-        structure
-          ? `${structure.nom}, ${structure.codePostal} ${structure.commune}`
-          : lieuCommune
-            ? `${lieuCodePostal} ${lieuCommune}`
-            : '',
+        `${lieuPrefix}${lieuCommuneString}`,
         duree,
         titreAtelier || '',
         materiel
@@ -159,10 +167,9 @@ export const buildActivitesWorksheet = ({
         precisionsDemarche || '',
         autonomie
           ? `${autonomieStars[autonomie]}/${autonomieValues.length}`
-          : '',
-        niveau
-          ? `${niveauAtelierStars[niveau]}/${niveauAtelierValues.length}`
-          : '',
+          : niveau
+            ? `${niveauAtelierStars[niveau]}/${niveauAtelierValues.length}`
+            : '',
         orienteVersStructure === null
           ? ''
           : booleanToYesNoLabel(orienteVersStructure),

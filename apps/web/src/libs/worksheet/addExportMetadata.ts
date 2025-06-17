@@ -6,7 +6,7 @@ import { addTitleRow } from './addTitleRow'
 
 export type WorksheetUser = Pick<
   SessionUser,
-  'firstName' | 'lastName' | 'role' | 'id' | 'coordinateur'
+  'firstName' | 'lastName' | 'role' | 'id' | 'coordinateur' | 'emplois'
 > & {
   mediateur: Pick<
     MediateurUser['mediateur'],

@@ -27,22 +27,25 @@ export const startInscriptionAs = ({
   ).click()
   cy.contains('J’ai lu et j’accepte').click()
 
+  cy.intercept('/api/trpc/inscription.choisirProfilEtAccepterCgu*').as(
+    'choisirProfilMutation',
+  )
+
   cy.get('button').contains('Continuer').click()
 
-  cy.appUrlShouldBe(`/inscription/identification`, { timeout: 15_000 })
+  cy.wait('@choisirProfilMutation', { timeout: 15_000 })
+
+  cy.appUrlShouldBe(`/inscription/identification`)
 
   if (identificationResult === 'matching') {
     if (
       profilInscription === 'Mediateur' ||
       profilInscription === 'Coordinateur'
     ) {
-      cy.contains('Finaliser votre inscription pour accéder à votre espace', {
-        timeout: 15_000,
-      })
+      cy.contains('Finaliser votre inscription pour accéder à votre espace')
     } else {
       cy.contains(
         `Vous avez été identifié en tant que ${lowerCaseProfileInscriptionLabels[profilInscription]}`,
-        { timeout: 15_000 },
       )
     }
     cy.findByRole('link', { name: 'Continuer' })

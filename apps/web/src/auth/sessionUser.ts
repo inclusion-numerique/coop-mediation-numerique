@@ -33,7 +33,7 @@ export type SessionUser = Pick<
   lieuxActiviteRenseignes: string | null
   usurper: { id: string } | null
   emplois: (Pick<EmployeStructure, 'id'> & {
-    structure: Pick<Structure, 'nom'>
+    structure: Pick<Structure, 'nom' | 'codeInsee'>
   })[]
   mediateur:
     | (Pick<Mediateur, 'id' | 'isVisible'> & {

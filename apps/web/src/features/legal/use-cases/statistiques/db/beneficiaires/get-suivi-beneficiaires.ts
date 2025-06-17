@@ -71,11 +71,17 @@ const getPercentage = (
       10
 
 export const getSuiviBeneficiaires = async () => {
-  const totalAccompagnements = await getTotalAccompagnements()
-  const totalBeneficiairesSuivis = await getTotalBeneficiairesSuivis()
-  const totalMediateurs = await getTotalMediateurs()
-  const mediateursAvecBeneficiairesCount =
-    await getMediateursAvecBeneficiairesCount()
+  const [
+    totalAccompagnements,
+    totalBeneficiairesSuivis,
+    totalMediateurs,
+    mediateursAvecBeneficiairesCount,
+  ] = await Promise.all([
+    getTotalAccompagnements(),
+    getTotalBeneficiairesSuivis(),
+    getTotalMediateurs(),
+    getMediateursAvecBeneficiairesCount(),
+  ])
 
   return {
     moyenneAccompagnements: {

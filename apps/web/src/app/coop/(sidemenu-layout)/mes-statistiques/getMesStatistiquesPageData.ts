@@ -16,6 +16,7 @@ import { getTotalCountsStats } from './_queries/getTotalCountsStats'
 
 export type MesStatistiquesGraphOptions = {
   fin?: Date
+  debut?: Date
 }
 
 const toMediateurId = ({ mediateurId }: { mediateurId: string }) => mediateurId
@@ -44,6 +45,18 @@ export const getMesStatistiquesPageData = async ({
     ...(mediateurCoordonnesIds ?? []),
   ]
 
+  if (!graphOptions.debut) {
+    const filterStart = activitesFilters.du ?? undefined
+    graphOptions.debut = filterStart ? new Date(filterStart) : undefined
+  }
+
+  if (!graphOptions.fin) {
+    const filterEnd = activitesFilters.au ? activitesFilters.au : undefined
+
+    // end of graph defaults to now
+    graphOptions.fin = filterEnd ? new Date(filterEnd) : new Date()
+  }
+
   const [
     accompagnementsParJour,
     accompagnementsParMois,
@@ -56,12 +69,18 @@ export const getMesStatistiquesPageData = async ({
       user,
       mediateurIds,
       activitesFilters,
+      periodStart: graphOptions.debut
+        ? dateAsIsoDay(graphOptions.debut)
+        : undefined,
       periodEnd: graphOptions.fin ? dateAsIsoDay(graphOptions.fin) : undefined,
     }),
     getAccompagnementsCountByMonth({
       user,
       mediateurIds,
       activitesFilters,
+      periodStart: graphOptions.debut
+        ? dateAsIsoDay(graphOptions.debut)
+        : undefined,
       periodEnd: graphOptions.fin ? dateAsIsoDay(graphOptions.fin) : undefined,
     }),
     getBeneficiaireStatsWithCommunes({ user, mediateurIds, activitesFilters }),

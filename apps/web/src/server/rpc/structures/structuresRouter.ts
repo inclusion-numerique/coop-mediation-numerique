@@ -3,6 +3,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { searchStructure } from '@app/web/structure/searchStructure'
 import { searchStructureCartographieNationale } from '@app/web/structure/searchStructureCartographieNationale'
+import { fixTelephone } from '@app/web/utils/clean-operations'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import { Itinerance, ModaliteAcces } from '@prisma/client'
@@ -109,7 +110,9 @@ export const structuresRouter = router({
                   : undefined,
               ].filter(onlyDefinedAndNotNull)
             : undefined,
-          telephone: modalitesAcces?.numeroTelephone ?? undefined,
+          telephone: modalitesAcces?.numeroTelephone
+            ? fixTelephone(modalitesAcces.numeroTelephone)
+            : undefined,
           courriels: modalitesAcces?.adresseMail
             ? [modalitesAcces.adresseMail]
             : undefined,

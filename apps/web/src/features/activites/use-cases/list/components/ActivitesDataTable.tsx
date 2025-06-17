@@ -66,6 +66,13 @@ export const ActivitesDataTable = {
               : '-',
       cellClassName: styles.lieuCell,
     },
+    {
+      name: 'creation',
+      header: 'Enregistrée le',
+      csvHeaders: ['enregistree_le'],
+      csvValues: ({ creation }) => [dateAsIsoDay(creation)],
+      cell: ({ creation }) => dateAsDay(creation),
+    },
   ],
 } satisfies ActivitesDataTableConfiguration
 
