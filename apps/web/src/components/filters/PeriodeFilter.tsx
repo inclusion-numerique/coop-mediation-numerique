@@ -1,9 +1,9 @@
 'use client'
 
+import { Popover } from '@app/ui/components/Primitives/Popover'
 import Calendar from '@app/web/components/calendar/Calendar'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
-import { Popover } from '@app/web/libs/ui/elements/Popover'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import classNames from 'classnames'
 import { formatDate } from 'date-fns'

@@ -54,7 +54,6 @@ const CraBeneficiaryForm = ({
   setValue,
   getValues,
   watch,
-  mediateurId,
   initialBeneficiairesOptions,
   creerBeneficiaireRetourUrl,
 }: {
@@ -62,7 +61,6 @@ const CraBeneficiaryForm = ({
   setValue: UseFormSetValue<CraDataWithBeneficiaire>
   watch: UseFormWatch<CraDataWithBeneficiaire>
   control: Control<CraDataWithBeneficiaire>
-  mediateurId: string
   creerBeneficiaireRetourUrl: string
   initialBeneficiairesOptions: BeneficiaireOption[]
 }) => {
@@ -92,7 +90,7 @@ const CraBeneficiaryForm = ({
   }
 
   const onCancel = () => {
-    setValue('beneficiaire', { mediateurId })
+    setValue('beneficiaire', {})
     setState(CraBeneficiaryFormState.Empty)
   }
 

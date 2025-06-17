@@ -33,3 +33,11 @@
 .fr-no-hover-bg:active {
   background-color: transparent;
 }
+
+.fr-no-hover-bg-content:hover * {
+  background-color: transparent !important;
+}
+
+.fr-no-hover-bg-content:active * {
+  background-color: transparent !important;
+}

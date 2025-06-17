@@ -168,7 +168,6 @@ const CraCollectifForm = ({
       <CraBeneficiairesMultiplesForm
         getValues={getValues}
         control={control}
-        mediateurId={defaultValues.mediateurId}
         setValue={setValue}
         watch={watch}
         creerBeneficiaireRetourUrl="/coop/mes-activites/cra/collectif"
@@ -228,7 +227,7 @@ const CraCollectifForm = ({
         <CustomSelectFormField
           label=" "
           control={control}
-          path="structureId"
+          path="structure"
           placeholder="Rechercher un lieu d’activité"
           defaultValue={lieuActiviteRichOptions.at(0)}
           options={lieuActiviteRichOptions}
