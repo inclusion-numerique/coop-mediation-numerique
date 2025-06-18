@@ -6,13 +6,15 @@ import { ReactNode } from 'react'
 export const CardOutil = ({
   logo,
   title,
-  inforef,
+  slug,
+  accessUrl: _accessUrl,
   children,
   isNew,
 }: {
   logo: string
   title: string
-  inforef: string
+  slug: string
+  accessUrl?: string
   children: ReactNode
   isNew?: boolean
 }) => (
@@ -32,7 +34,7 @@ export const CardOutil = ({
         />
         {isNew && (
           <div>
-            <Badge severity="new">Nouvelle intégration</Badge>
+            <Badge severity="new">Intégration disponible&nbsp;!</Badge>
           </div>
         )}
       </div>
@@ -42,7 +44,7 @@ export const CardOutil = ({
         <a
           className="fr-flex-basis-0"
           title={`En savoir plus à propos de ${title}`}
-          href={`/coop/mes-outils/${inforef}`}
+          href={`/coop/mes-outils/${slug}`}
           aria-label={`En savoir plus à propos de ${title}`}
         />
       </div>
