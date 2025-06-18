@@ -7,6 +7,7 @@ export const structureCreationDataWithSiretFromUniteLegale = ({
   nature_juridique,
   complements,
   nom_raison_sociale,
+  nom_complet,
   matching_etablissements,
 }: UniteLegale): StructureCreationDataWithSiret[] => {
   const typologie = getTypologieFromApiEntreprise({
@@ -27,11 +28,15 @@ export const structureCreationDataWithSiretFromUniteLegale = ({
       }) => {
         const nomEnseigne = liste_enseignes?.at(0)
 
-        const nom = est_siege
+        let nom = est_siege
           ? nom_raison_sociale
           : nomEnseigne && nomEnseigne !== nom_raison_sociale
             ? `${nomEnseigne} · ${nom_raison_sociale}`
             : nom_raison_sociale
+
+        if (!nom) {
+          nom = nom_complet
+        }
 
         return {
           siret,
