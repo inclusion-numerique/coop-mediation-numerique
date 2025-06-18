@@ -86,7 +86,9 @@ const ProfileEditCard = (profileData: {
         },
         {
           type: 'button',
-          children: 'Continuer',
+          children: 'Continuer vers ProConnect',
+          iconId: 'fr-icon-external-link-line',
+          iconPosition: 'right',
           onClick: signoutAndGoToProconnectProfilePage,
         },
       ]}
