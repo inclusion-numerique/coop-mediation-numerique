@@ -29,16 +29,17 @@ export const getAccompagnementsCountByMonth = async ({
   mediateurIds?: string[] // Undefined means no filter, empty array means no mediateur / no data.
   activitesFilters: ActivitesFilters
   periodStart?: string // Format should be 'YYYY-MM-DD'
-  periodEnd?: string // Format should be 'YYYY-MM', defaults to CURRENT_DATE if not provided
+  periodEnd?: string // Format should be 'YYYY-MM-DD', defaults to CURRENT_DATE if not provided
   intervals?: number // Default to 12 if not provided
 }) => {
   if (mediateurIds?.length === 0) return EMPTY_ACCOMPAGNEMENTS_COUNT
 
+  // include dates until the end of the month if no default end date
   const endDate = periodEnd
-    ? `TO_DATE('${periodEnd}', 'YYYY-MM')`
+    ? `TO_DATE('${periodEnd}', 'YYYY-MM-DD')`
     : `CURRENT_DATE`
   const fromDate = periodStart
-    ? `TO_DATE('${periodStart}', 'YYYY-MM')`
+    ? `TO_DATE('${periodStart}', 'YYYY-MM-DD')`
     : `DATE_TRUNC('month', ${endDate} - INTERVAL '${intervals - 1} months')`
 
   return prismaClient.$queryRaw<{ month: number; count: number }[]>`
@@ -60,9 +61,14 @@ export const getAccompagnementsCountByMonth = async ({
             AND act.date <= ${Prisma.raw(endDate)}
             AND act.date >= ${Prisma.raw(fromDate)}
             AND (act.date <= mc.suppression OR mc.suppression IS NULL)),
-           months AS (SELECT generate_series(${Prisma.raw(
-             fromDate,
-           )}, ${Prisma.raw(endDate)}, '1 month'::interval) AS month)
+           months AS (SELECT DATE_TRUNC(
+            'month', 
+            generate_series(
+              ${Prisma.raw(fromDate)}, 
+              ${Prisma.raw(endDate)}, 
+              '1 month'::interval
+              )
+            ) AS month)
       SELECT EXTRACT(MONTH FROM months.month)::int     AS month,
              COUNT(filtered_accompagnements.date)::int AS count
       FROM months
@@ -104,7 +110,7 @@ export const getAccompagnementsCountByDay = async ({
 
   return prismaClient.$queryRaw<LabelAndCount[]>`
       WITH filtered_accompagnements AS (
-        SELECT DATE_TRUNC('day', act.date) AS date
+        SELECT act.date AS date
             FROM activites act
                 FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${
                   user?.coordinateur?.id
