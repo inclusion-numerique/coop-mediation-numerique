@@ -41,7 +41,7 @@ const StatistiquesPubliquesPage = async () => {
               Message important&nbsp;!
               <br />
               Cette page statistique n’a pas vocation à représenter l’impact du
-              dispositif Conseillers numériques.
+              dispositif Conseiller numérique.
             </h2>
           </div>
           <p className="fr-mt-8v">
