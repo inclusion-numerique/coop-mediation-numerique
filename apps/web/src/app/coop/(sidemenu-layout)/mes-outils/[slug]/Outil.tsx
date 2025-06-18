@@ -34,7 +34,7 @@ export const Outil = ({
     />
     <SkipLinksPortal links={defaultSkipLinks} />
     <main id={contentId}>
-      <BackButton href="/coop/mes-outils">Retour aux outils</BackButton>
+      <BackButton href="/coop/mes-outils">Retour</BackButton>
       {notice ? <ComingSoon text={notice} /> : null}
       <Hero
         title={title}
