@@ -1,6 +1,7 @@
 import classNames from 'classnames'
 import Link from 'next/link'
 import React, { ReactNode } from 'react'
+import styles from './Card.module.css'
 
 const Card = ({
   id,
@@ -51,7 +52,7 @@ const Card = ({
       <div className="fr-card__content">
         <div className="fr-flex fr-justify-content-space-between fr-flex-gap-6v">
           <div>
-            <CardTitle className="fr-card__title">
+            <CardTitle className="fr-card__title fr-flex fr-justify-content-space-between fr-flex-gap-6v">
               {href ? (
                 <Link href={href} target={isExternal ? '_blank' : ''}>
                   {title}
@@ -71,7 +72,9 @@ const Card = ({
 
         {children && (
           <div className="fr-card__end">
-            {contentSeparator && <hr className="fr-pb-4w" />}
+            {contentSeparator && (
+              <hr className={classNames('fr-pb-4w', styles.contentSeparator)} />
+            )}
             {children}
           </div>
         )}
