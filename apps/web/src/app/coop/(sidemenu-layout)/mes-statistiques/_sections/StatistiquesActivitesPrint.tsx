@@ -125,7 +125,7 @@ export const StatistiquesActivitesPrint = ({
           isAnimationActive={false}
         />
         <QuantifiedShareLegend
-          classeName="fr-pl-3w"
+          className="fr-pl-3w"
           quantifiedShares={activites.typeLieu}
           colors={canauxAccompagnementColors}
         />
@@ -142,7 +142,7 @@ export const StatistiquesActivitesPrint = ({
           isAnimationActive={false}
         />
         <QuantifiedShareLegend
-          classeName="fr-pl-3w"
+          className="fr-pl-3w"
           quantifiedShares={activites.durees}
           colors={dureesAccompagnementColors}
         />

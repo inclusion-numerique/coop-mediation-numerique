@@ -212,12 +212,14 @@ export const StatistiquesActivites = ({
             </div>
             <div className="fr-flex fr-align-items-center">
               <AccompagnementPieChart
-                size={128}
+                className="fr-flex-shrink-0"
+                size={80}
+                width={18}
                 data={activites.typeLieu}
                 colors={canauxAccompagnementColors}
               />
               <QuantifiedShareLegend
-                classeName="fr-pl-3w"
+                className="fr-pl-3w"
                 quantifiedShares={activites.typeLieu}
                 colors={canauxAccompagnementColors}
               />
@@ -249,12 +251,14 @@ export const StatistiquesActivites = ({
 
             <div className="fr-flex fr-align-items-center">
               <AccompagnementPieChart
-                size={128}
+                className="fr-flex-shrink-0"
+                size={80}
+                width={18}
                 data={activites.durees}
                 colors={dureesAccompagnementColors}
               />
               <QuantifiedShareLegend
-                classeName="fr-pl-3w"
+                className="fr-pl-3w"
                 quantifiedShares={activites.durees}
                 colors={dureesAccompagnementColors}
               />

@@ -140,7 +140,7 @@ const BudgetPage = () => {
             />
 
             <QuantifiedShareLegend
-              classeName="fr-pl-3w"
+              className="fr-pl-3w"
               quantifiedShares={legendData} // Passage des mêmes données à la légende
               colors={canauxAccompagnementColors}
             />

@@ -1,0 +1,27 @@
+.container {
+  width: 100%;
+  padding: 0;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 4px 12px;
+  align-items: center;
+}
+
+.row {
+  display: contents;
+}
+
+.label {
+  text-align: left;
+  margin-bottom: 0;
+}
+
+.count {
+  text-align: right;
+  margin-bottom: 0;
+}
+
+.proportion {
+  text-align: right;
+  margin-bottom: 0;
+}
