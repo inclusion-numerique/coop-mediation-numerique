@@ -66,7 +66,7 @@ export const FilterTags = ({
   return (
     filterLabelsToDisplay.length > 0 && (
       <>
-        <div className="fr-flex fr-justify-content-space-between fr-mb-2v">
+        <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-mb-2v">
           <ul className="fr-tags-group">
             {filterLabelsToDisplay.map((filter) => (
               <li

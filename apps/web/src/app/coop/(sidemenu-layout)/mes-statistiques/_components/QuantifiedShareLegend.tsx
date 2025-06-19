@@ -7,10 +7,14 @@ export const QuantifiedShareLegend = ({
   colors,
   quantifiedShares,
   className,
+  truncateLabel = false,
+  oneLineLabel = false,
 }: {
   colors: string[]
   quantifiedShares: QuantifiedShare[]
   className?: string
+  truncateLabel?: boolean // If true, the label will be truncated to the first line and an ellipsis will be added
+  oneLineLabel?: boolean // If true, the label will be displayed on one line only, may break the layout
 }) => (
   <div
     className={classNames('fr-width-full fr-px-0', styles.container, className)}
@@ -22,7 +26,13 @@ export const QuantifiedShareLegend = ({
           style={{ color: colors[index % colors.length] }}
         />
         <span
-          className={classNames('fr-text--sm fr-flex-grow-1', styles.label)}
+          className={classNames(
+            'fr-text--sm',
+            styles.label,
+            truncateLabel && styles.truncatedLabel,
+            oneLineLabel && styles.oneLineLabel,
+          )}
+          title={truncateLabel ? label : undefined}
         >
           {label}
         </span>

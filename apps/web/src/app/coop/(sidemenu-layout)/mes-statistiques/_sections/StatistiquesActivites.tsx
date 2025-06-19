@@ -12,7 +12,7 @@ import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { SegmentedControl } from '@codegouvfr/react-dsfr/SegmentedControl'
 import { useState } from 'react'
-import { ProgressListItem } from '../_components/ProgressListItem'
+import { ProgressItemList } from '../_components/ProgressItemList'
 import { QuantifiedShareList } from '../_components/QuantifiedShareList'
 import { StatistiqueAccompagnement } from '../_components/StatistiqueAccompagnement'
 import { StatistiqueMateriel } from '../_components/StatistiqueMateriel'
@@ -124,24 +124,14 @@ export const StatistiquesActivites = ({
             ]}
           />
         </div>
-        <ul className="fr-px-0 fr-mb-0">
-          {thematiquesToDisplay
-            .sort((a, b) => b.count - a.count)
-            .map(({ value, proportion, label, count }, index) => (
-              <ProgressListItem
-                key={value}
-                count={count}
-                proportion={proportion}
-                maxProportion={thematiquesToDisplayMaxProportion}
-                label={label}
-                colors={[
-                  thematiquesAccompagnementColors[
-                    index % thematiquesAccompagnementColors.length
-                  ],
-                ]}
-              />
-            ))}
-        </ul>
+
+        <ProgressItemList
+          items={thematiquesToDisplay.sort((a, b) => b.count - a.count)}
+          colors={thematiquesAccompagnementColors}
+          maxProportion={thematiquesToDisplayMaxProportion}
+          oneLineLabel
+        />
+
         {isMediationNumeriqueAccompagnement && (
           <>
             <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mt-10v fr-mb-3w">
@@ -261,6 +251,7 @@ export const StatistiquesActivites = ({
                 className="fr-pl-3w"
                 quantifiedShares={activites.durees}
                 colors={dureesAccompagnementColors}
+                oneLineLabel
               />
             </div>
           </div>
@@ -297,13 +288,19 @@ export const StatistiquesActivites = ({
             </div>
             <QuantifiedShareList
               limit={{
-                showLabel: 'Voir tout mes lieux',
+                showLabel: 'Voir tout les lieux',
                 hideLabel: 'Réduire',
                 count: 5,
               }}
+              truncateLabel
               order="desc"
               quantifiedShares={structures}
-              colors={[nombreAccompagnementParLieuColor]}
+              color={nombreAccompagnementParLieuColor}
+              style={{
+                label: {
+                  width: '244px',
+                },
+              }}
             />
           </>
         )}

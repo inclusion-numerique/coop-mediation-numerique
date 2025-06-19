@@ -2,7 +2,7 @@
 
 import classNames from 'classnames'
 import { motion } from 'framer-motion'
-import { Fragment } from 'react'
+import { type CSSProperties, Fragment } from 'react'
 
 const ProgressBar = ({
   progress = [],
@@ -13,6 +13,7 @@ const ProgressBar = ({
   colors = [],
   className,
   tooltopKey,
+  style,
 }: {
   progress?: { percentage: number; count?: number; label: string }[]
   displayProgress?: boolean
@@ -22,6 +23,7 @@ const ProgressBar = ({
   colors?: string[]
   className?: string
   tooltopKey?: string
+  style?: CSSProperties
 }) => (
   <span
     className={classNames(
@@ -30,6 +32,7 @@ const ProgressBar = ({
       size === 'small' && 'fr-progress--sm',
       size === 'large' && 'fr-progress--lg',
     )}
+    style={style}
   >
     {progress.map(({ percentage, label, count }, index) => (
       <Fragment key={label}>
