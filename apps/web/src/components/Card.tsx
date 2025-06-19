@@ -20,6 +20,7 @@ const Card = ({
   contentSeparator = false,
   arrowTop = false,
   arrowSm = false,
+  classes = {},
 }: {
   id?: string
   className?: string
@@ -37,6 +38,9 @@ const Card = ({
   contentSeparator?: boolean
   arrowTop?: boolean
   arrowSm?: boolean
+  classes?: {
+    content?: string
+  }
 }) => (
   <div
     id={id}
@@ -71,7 +75,7 @@ const Card = ({
         </div>
 
         {children && (
-          <div className="fr-card__end">
+          <div className={classNames('fr-card__end', classes.content)}>
             {contentSeparator && (
               <hr className={classNames('fr-pb-4w', styles.contentSeparator)} />
             )}
