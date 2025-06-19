@@ -56,10 +56,6 @@ export const Accueil = ({
       )}
       {isCoordinateur && (
         <section className="fr-my-6w">
-          <h2 className="fr-h5 fr-text-mention--grey">
-            <span className="ri-group-2-line fr-mr-1w" aria-hidden />
-            Mon équipe
-          </h2>
           {mediateurs.total > 0 ? (
             <Equipe mediateurs={mediateurs} />
           ) : (

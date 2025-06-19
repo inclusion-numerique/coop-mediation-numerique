@@ -35,12 +35,17 @@ export const DernieresActivites = ({
         <span className="ri-service-line fr-mr-1w" aria-hidden />
         Mes 3 dernières activités enregistrées
       </h2>
-      <Link
-        className="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
-        href="/coop/mes-activites"
+      <Button
+        priority="tertiary no outline"
+        size="small"
+        linkProps={{
+          href: '/coop/mes-activites',
+        }}
+        iconId="fr-icon-arrow-right-line"
+        iconPosition="right"
       >
         Voir toutes mes activités
-      </Link>
+      </Button>
     </div>
 
     {activites.length > 0 ? (
