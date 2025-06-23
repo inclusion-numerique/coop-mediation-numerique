@@ -80,7 +80,7 @@ const EquipeListePage = ({
         </div>
         <div>
           Équipe coordonnée par <span className="fr-text--bold">{name}</span>
-          <div className="fr-flex fr-text-mention--grey fr-text--sm fr-mb-0 fr-flex-gap-2v">
+          <div className="fr-flex fr-text-mention--grey fr-text--sm fr-mt-2v fr-mb-0 fr-flex-gap-2v">
             <span>
               <span className="ri-mail-line fr-mr-2v" aria-hidden />
               {email}
@@ -110,7 +110,7 @@ const EquipeListePage = ({
           totalAncien !== 0 ||
           (!!mediateurs && mediateurs.length > 0)) && (
           <>
-            <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-mb-4w">
+            <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-mb-4v">
               {totalAncien === 0 && (
                 <p className="fr-text--lg fr-text--bold fr-flex fr-flex-gap-2v fr-direction-column fr-direction-sm-row fr-mb-0">
                   <span>

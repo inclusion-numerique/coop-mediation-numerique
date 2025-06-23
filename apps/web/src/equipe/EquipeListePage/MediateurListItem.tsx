@@ -25,7 +25,7 @@ export const MediateurListItem = ({
 }: MediateurListProps) =>
   firstName || lastName ? (
     <div className="fr-py-5v fr-px-2v">
-      <div className="fr-mb-2w fr-flex fr-flex-gap-2v fr-justify-content-space-between fr-direction-md-row fr-direction-column">
+      <div className="fr-mb-2v fr-flex fr-flex-gap-2v fr-justify-content-space-between fr-direction-md-row fr-direction-column">
         <div className="fr-flex fr-flex-gap-2v fr-direction-md-row fr-direction-column">
           <span className="fr-text--bold ">
             {[firstName, lastName].filter(Boolean).join(' ')}
