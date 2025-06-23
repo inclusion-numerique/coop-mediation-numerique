@@ -11,7 +11,7 @@ export const ReferentStructure = ({
 }) => (
   <>
     <h2 className="fr-text-title--blue-france fr-text--xs fr-text--uppercase fr-mb-2v">
-      Référent de la structure
+      Contact principal de la structure
     </h2>
     <div className="fr-flex fr-direction-column fr-flex-gap-1v">
       <span className="fr-text--lg fr-text--bold fr-mb-0">{nomReferent}</span>
