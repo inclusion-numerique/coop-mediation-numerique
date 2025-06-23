@@ -3,8 +3,6 @@ import RdvServicePublicAccessCard from '@app/web/rdv-service-public/RdvServicePu
 import { rdvWebsiteLink } from '@app/web/rdv-service-public/rdvServicePublicOauth'
 
 export default {
-  notice:
-    'Vos données seront partagées entre votre profil sur La Coop de la médiation numérique et RDV Service Public afin d’éviter les doubles saisies.',
   title: 'RDV Service Public',
   description:
     'Un outil de prise de rendez-vous en ligne, simplifiant votre organisation et rappelant aux usagers leurs rendez-vous par SMS.',

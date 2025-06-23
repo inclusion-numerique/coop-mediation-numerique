@@ -39,7 +39,7 @@ const RdvServicePublicCreationReussiePage = async () => {
 
           <p className="fr-text-mention--grey fr-mb-0">
             Vous pouvez maintenant programmer des rendez-vous avec vos
-            bénéficiaires suivis et les retrouver dans leur historiques
+            bénéficiaires suivis et les retrouver dans leur historique
             d’accompagnements.
           </p>
 
