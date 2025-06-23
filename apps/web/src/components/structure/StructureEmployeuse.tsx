@@ -29,22 +29,7 @@ export const StructureEmployeuse = ({
   isLieuActivite: boolean
   children?: ReactNode
 }) => (
-  <Card
-    noBorder
-    className="fr-border fr-border-radius--8"
-    titleAs="div"
-    title={
-      <span className="fr-flex fr-flex-gap-3v fr-align-items-end fr-mb-0">
-        <span
-          className="ri-home-smile-2-line fr-line-height-1 fr-text--medium fr-text-label--blue-france fr-background-alt--blue-france fr-p-2v fr-border-radius--8"
-          aria-hidden
-        />
-        <h2 className="fr-text-title--blue-france fr-h6 fr-m-0">
-          Structure employeuse
-        </h2>
-      </span>
-    }
-  >
+  <Card noBorder className="fr-border fr-border-radius--8" titleAs="div">
     <span className="fr-text--lg fr-text--bold fr-mb-0">{nom}</span>
     <div className="fr-text--sm fr-mb-0 fr-text-mention--grey fr-flex fr-direction-column fr-flex-gap-1v">
       <div>

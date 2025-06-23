@@ -25,7 +25,7 @@ const Card = ({
   id?: string
   className?: string
   'data-testid'?: string
-  title: ReactNode
+  title?: ReactNode
   titleAs?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'div'
   href?: string
   isExternal?: boolean
@@ -54,28 +54,37 @@ const Card = ({
   >
     <div className="fr-card__body">
       <div className="fr-card__content">
-        <div className="fr-flex fr-justify-content-space-between fr-flex-gap-6v">
-          <div>
-            <CardTitle className="fr-card__title fr-flex fr-justify-content-space-between fr-flex-gap-6v">
-              {href ? (
-                <Link href={href} target={isExternal ? '_blank' : ''}>
-                  {title}
-                </Link>
-              ) : (
-                title
+        {title && (
+          <div className="fr-flex fr-justify-content-space-between fr-flex-gap-6v">
+            <div>
+              <CardTitle className="fr-card__title fr-flex fr-justify-content-space-between fr-flex-gap-6v">
+                {href ? (
+                  <Link href={href} target={isExternal ? '_blank' : ''}>
+                    {title}
+                  </Link>
+                ) : (
+                  title
+                )}
+              </CardTitle>
+              {description && (
+                <div className="fr-card__desc fr-my-0 fr-text-mention--grey">
+                  {description}
+                </div>
               )}
-            </CardTitle>
-            {description && (
-              <div className="fr-card__desc fr-my-0 fr-text-mention--grey">
-                {description}
-              </div>
-            )}
+            </div>
+            {action && <div>{action}</div>}
           </div>
-          {action && <div>{action}</div>}
-        </div>
+        )}
 
         {children && (
-          <div className={classNames('fr-card__end', classes.content)}>
+          <div
+            className={classNames(
+              'fr-card__end',
+              !title && 'fr-mt-0 fr-pt-0',
+              classes.content,
+              !title,
+            )}
+          >
             {contentSeparator && (
               <hr className={classNames('fr-pb-4w', styles.contentSeparator)} />
             )}
