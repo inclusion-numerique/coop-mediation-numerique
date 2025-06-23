@@ -42,6 +42,10 @@
   white-space: normal;
 }
 
+.fr-text-overflow--ellipsis {
+  text-overflow: ellipsis;
+}
+
 .fr-line-height-1 {
   line-height: 1 !important;
 }
