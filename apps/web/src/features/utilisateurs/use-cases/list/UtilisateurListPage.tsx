@@ -53,7 +53,7 @@ export const UtilisateurListPage = ({
       </p>
       <AdministrationSearchUtilisateur searchParams={searchParams} />
     </div>
-    <div className="fr-flex fr-justify-content-space-between fr-align-items-center">
+    <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-mb-6v">
       <Filters
         defaultFilters={filters}
         lieuxActiviteOptions={lieuxActiviteOptions}
@@ -65,7 +65,6 @@ export const UtilisateurListPage = ({
         {pluralize('utilisateur trouvé', searchResult.matchesCount)}
       </span>
     </div>
-    <hr className="fr-mt-6v fr-pb-4v" />
     <FilterTags
       filters={filters}
       communesOptions={communesOptions}

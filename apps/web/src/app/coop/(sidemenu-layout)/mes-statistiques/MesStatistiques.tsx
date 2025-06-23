@@ -62,7 +62,6 @@ export const MesStatistiques = (
             beneficiairesOptions={[]}
           />
         </div>
-        <hr className="fr-separator-1px" />
         <FilterTags
           filters={activitesFilters}
           communesOptions={communesOptions}

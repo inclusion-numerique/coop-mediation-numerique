@@ -63,40 +63,41 @@ export const FilterTags = ({
     router.replace('?', { scroll: false })
   }
 
-  return (
-    filterLabelsToDisplay.length > 0 && (
-      <>
-        <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-mb-2v">
-          <ul className="fr-tags-group">
-            {filterLabelsToDisplay.map((filter) => (
-              <li
-                className="fr-line-height-1"
-                key={`${filter.type}-${filter.key}`}
+  return filterLabelsToDisplay.length > 0 ? (
+    <>
+      <hr className="fr-separator-1px" />
+      <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-my-4v fr-flex-gap-4v">
+        <ul className="fr-flex fr-flex-wrap fr-flex-gap-2v fr-list-group">
+          {filterLabelsToDisplay.map((filter) => (
+            <li
+              className="fr-line-height-1 fr-p-0"
+              key={`${filter.type}-${filter.key}`}
+            >
+              <Tag
+                className="fr-pr-3v"
+                small
+                nativeButtonProps={{
+                  type: 'button',
+                  onClick: () =>
+                    handleRemoveFilter(filter.type, filter.key ?? []),
+                }}
               >
-                <Tag
-                  className="fr-pr-3v"
-                  small
-                  nativeButtonProps={{
-                    type: 'button',
-                    onClick: () =>
-                      handleRemoveFilter(filter.type, filter.key ?? []),
-                  }}
-                >
-                  <span className="fr-icon-close-line fr-icon--xs" />
-                  &nbsp;{filter.label}
-                </Tag>
-              </li>
-            ))}
-          </ul>
-          <div>
-            <Button priority="tertiary no outline" onClick={handleClearFilters}>
-              <span className="ri-close-circle-line" aria-hidden={true} />
-              &nbsp;Effacer&nbsp;les&nbsp;filtres
-            </Button>
-          </div>
+                <span className="fr-icon-close-line fr-icon--xs" />
+                &nbsp;{filter.label}
+              </Tag>
+            </li>
+          ))}
+        </ul>
+        <div>
+          <Button priority="tertiary no outline" onClick={handleClearFilters}>
+            <span className="ri-close-circle-line" aria-hidden={true} />
+            &nbsp;Effacer&nbsp;les&nbsp;filtres
+          </Button>
         </div>
-        <hr className="fr-mt-4v fr-pb-3v" />
-      </>
-    )
+      </div>
+      <hr className="fr-separator-1px" />
+    </>
+  ) : (
+    <hr className="fr-separator-1px" />
   )
 }

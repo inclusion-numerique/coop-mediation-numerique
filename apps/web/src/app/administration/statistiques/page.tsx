@@ -73,7 +73,6 @@ const Page = async (props: {
           isMediateur={false}
         />
       </div>
-      <hr className="fr-pb-4v" />
       <FilterTags
         filters={activitesFilters}
         communesOptions={communesOptions}

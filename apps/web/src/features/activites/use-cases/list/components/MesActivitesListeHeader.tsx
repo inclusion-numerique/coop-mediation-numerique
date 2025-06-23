@@ -35,7 +35,7 @@ const MesActivitesListeHeader = ({
   <>
     <div
       className={classNames(
-        'fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v',
+        'fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v fr-mb-6v',
         className,
       )}
     >
@@ -64,7 +64,6 @@ const MesActivitesListeHeader = ({
         />
       </Suspense>
     </div>
-    <hr className="fr-mt-6v fr-pb-3v" />
     <FilterTags
       filters={defaultFilters}
       communesOptions={communesOptions}
