@@ -62,6 +62,13 @@
     min-height: 56px !important;
     height: 56px !important;
   }
+
+  &[type="date"] {
+    /* show native icon only to avoid double calendar icon */
+    &::after {
+      display: none;
+    }
+  }
 }
 
 select.fr-select {
