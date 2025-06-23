@@ -420,14 +420,10 @@ const ActiviteDetailsModal = ({
       }
     >
       <hr className="fr-separator fr-separator-6v" />
-      <div className="fr-flex fr-flex-gap-2v fr-justify-content-space-between fr-align-items-center">
-        <div>
-          <p className="fr-text--lg fr-text--medium fr-mb-0">
-            {typeActiviteLabels[type]}
-            {!!titreAtelier && <>&nbsp;·&nbsp;{titreAtelier}</>}
-          </p>
-        </div>
-      </div>
+      <p className="fr-width-full fr-overflow-hidden fr-text--lg fr-text--medium fr-mb-0 fr-text--nowrap fr-text-overflow--ellipsis">
+        {typeActiviteLabels[type]}
+        {!!titreAtelier && <>&nbsp;·&nbsp;{titreAtelier}</>}
+      </p>
 
       <p className="fr-mt-2v fr-text--sm fr-text--medium fr-mb-0 fr-text-mention--grey">
         <span className="fr-icon-calendar-line fr-icon--sm fr-mr-1-5v" />
