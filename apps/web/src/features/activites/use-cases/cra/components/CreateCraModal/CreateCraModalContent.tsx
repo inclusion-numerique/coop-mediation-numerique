@@ -82,7 +82,7 @@ const CreateCraModalContent = ({
         illustration="/images/iconographie/accompagnement-collectif.svg"
         onClick={() => navigateTo('/coop/mes-activites/cra/collectif')}
       >
-        Ateliers collectif
+        Atelier collectif
       </ModalNavigationButton>
     </>
   )
