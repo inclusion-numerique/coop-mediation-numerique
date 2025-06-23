@@ -16,7 +16,7 @@ export const banDefaultValueToAdresseBanData = ({
   id: id ?? codeInsee ?? '',
   codeInsee: codeInsee ?? '',
   codePostal: codePostal ?? '',
-  label: label ?? '',
+  label: label ?? `${commune ?? ''} · ${codePostal}`,
   contexte: contexte ?? '',
   longitude: longitude ?? 0,
   latitude: latitude ?? 0,
