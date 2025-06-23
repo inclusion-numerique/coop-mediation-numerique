@@ -3,10 +3,12 @@
 import LieuActiviteSideMenu from '@app/web/app/coop/(full-width-layout)/lieux-activite/_components/LieuActiviteSideMenu'
 import IconInSquare from '@app/web/components/IconInSquare'
 import { DisplayOnCartography } from '@app/web/components/structure/DisplayOnCartography'
+import styles from '@app/web/components/structure/fields/StructureFormFields.module.css'
 import { LieuAccueillantPublicTitle } from '@app/web/components/structure/titles/LieuAccueillantPublicTitle'
 import { ServiceInclusionNumeriqueTitle } from '@app/web/components/structure/titles/ServiceInclusionNumeriqueTitle'
 import { FraisAChargeLabel } from '@app/web/features/structures/fraisACharge'
 import { Itinerance, ModaliteAcces } from '@prisma/client'
+import classNames from 'classnames'
 import React, { ReactNode, useState } from 'react'
 import VisiblePourCartographieNationaleFields from './VisiblePourCartographieNationaleFields'
 import DescriptionEditCard from './description/DescriptionEditCard'
@@ -51,7 +53,12 @@ export const LieuActivitePageContent = ({
           <LieuActiviteSideMenu className="fr-hidden fr-unhidden-lg fr-mt-16w" />
         )}
       </div>
-      <div className="fr-container fr-container--narrow fr-ml-0 fr-mb-30v">
+      <div
+        className={classNames(
+          'fr-container fr-container--narrow fr-ml-0 fr-mb-30v',
+          styles.structureForm,
+        )}
+      >
         {contentTop}
         <h1 className="fr-page-title fr-h2">{structure.nom}</h1>
         <div className="fr-border fr-border-radius--8">
