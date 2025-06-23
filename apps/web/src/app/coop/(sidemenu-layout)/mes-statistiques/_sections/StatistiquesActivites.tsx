@@ -56,7 +56,7 @@ export const StatistiquesActivites = ({
         Statistiques sur{' '}
         {wording === 'personnel' ? 'vos activités' : 'les activités'}
       </h2>
-      <div className="fr-background-alt--blue-france fr-p-4w fr-mb-3w fr-border-radius--16 fr-grid-row fr-flex-gap-4v">
+      <div className="fr-background-alt--blue-france fr-px-8v fr-py-6v fr-mb-3w fr-border-radius--16 fr-grid-row fr-flex-gap-4v">
         {activites.typeActivites.map(({ count, proportion, value }) => (
           <StatistiqueAccompagnement
             key={value}
@@ -66,13 +66,14 @@ export const StatistiquesActivites = ({
             proportion={proportion}
           >
             {value === 'Collectif' && (
-              <>
+              <span className="fr-text-mention--grey fr-text--sm fr-mb-0">
+                &nbsp;·&nbsp;
                 <span className="fr-text--bold">
                   {numberToString(totalCounts.accompagnements.collectifs.total)}
                 </span>{' '}
                 participation
                 {sPluriel(totalCounts.accompagnements.collectifs.total)}
-              </>
+              </span>
             )}
           </StatistiqueAccompagnement>
         ))}

@@ -30,17 +30,15 @@ export const StatistiqueAccompagnement = ({
       <img src={typeActiviteIllustrations[typeActivite]} />
     </div>
     <div>
-      <div className="fr-flex fr-direction-row fr-flex-gap-3v fr-align-items-baseline">
+      <div className="fr-flex fr-direction-row fr-align-items-baseline">
         <span className="fr-h4 fr-mb-0">{numberToString(count ?? 0)}</span>
-        <span className="fr-text-mention--grey ">
+        <span className="fr-ml-2v fr-text--sm fr-mb-0 fr-text-mention--grey ">
           {numberToPercentage(proportion)}
         </span>
+        {children}
       </div>
       <div className="fr-text--sm fr-mb-0">
         {typeActivitePluralLabels[typeActivite]}
-      </div>
-      <div className="fr-text--sm fr-text-mention--grey fr-mb-0">
-        {children}
       </div>
     </div>
   </div>
