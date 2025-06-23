@@ -99,11 +99,13 @@ const EquipeListePage = ({
           </div>
         </div>
         <div className="fr-my-12v">
+          <hr className="fr-separator-6v" />
           <DataSearchBar
             baseHref={baseHrefSearch}
             searchParams={searchParams}
             placeholder="Rechercher par nom ou adresse e-mail"
           />
+          <hr className="fr-separator-6v" />
         </div>
         {total === 0 && mediateurs?.length === 0 && <EquipeVide />}
         {(total !== 0 ||
