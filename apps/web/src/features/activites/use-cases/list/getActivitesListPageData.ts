@@ -8,8 +8,17 @@ import {
   groupActivitesAndRdvsByDate,
 } from './db/activitesQueries'
 import { getFirstAndLastActiviteDate } from './db/getFirstAndLastActiviteDate'
-import { searchActivite } from './db/searchActivite'
+import { type SearchActiviteResult, searchActivite } from './db/searchActivite'
 import { mergeRdvsWithActivites } from './mergeRdvsWithActivites'
+
+const emptySearchResult = {
+  activites: [],
+  matchesCount: 0,
+  moreResults: 0,
+  totalPages: 1,
+  page: 1,
+  pageSize: 50,
+} satisfies SearchActiviteResult
 
 export const getActivitesListPageData = async ({
   mediateurId,
@@ -34,10 +43,12 @@ export const getActivitesListPageData = async ({
     (searchParams.types?.length ?? 0) > 0 // or we filtered on activites
 
   const [searchResult, activiteDates] = await Promise.all([
-    searchActivite({
-      mediateurId,
-      searchParams,
-    }),
+    shouldFetchActivites
+      ? searchActivite({
+          mediateurId,
+          searchParams,
+        })
+      : emptySearchResult,
     getFirstAndLastActiviteDate({ mediateurIds: [mediateurId] }),
   ])
 
