@@ -206,22 +206,20 @@ export const HeaderUserMenu = ({ user }: { user: SessionUser }) => {
                 href={`/coop/mes-equipes/${coordination.coordinateur.id}`}
                 style={{ boxShadow: 'none' }}
               >
-                <span className="fr-flex fr-align-items-center">
+                <span className="fr-flex fr-align-items-center fr-width-full">
                   <span
                     className="ri-group-2-line fr-mr-1w"
                     style={{ color: 'var(--blue-france-sun-113-625)' }}
                     aria-hidden
                   />
-                  <span className="fr-flex fr-direction-column">
-                    <span>
-                      Équipe {index + 1} ·{' '}
-                      <span className="fr-text--bold">
-                        {coordination.coordinateur.mediateursCoordonnes.length}
-                      </span>
-                    </span>
-                    <small className="fr-text-mention--grey">
+                  <span className="fr-display-block fr-overflow-hidden">
+                    <span className="fr-display-block">Équipe {index + 1}</span>
+                    <span
+                      title={`Coordonnée par ${coordination.coordinateur.user.name}`}
+                      className="fr-display-block fr-text--xs fr-mb-0 fr-text-mention--grey fr-width-full fr-overflow-hidden fr-text--nowrap fr-text-overflow--ellipsis"
+                    >
                       Coordonnée par {coordination.coordinateur.user.name}
-                    </small>
+                    </span>
                   </span>
                 </span>
               </Link>
