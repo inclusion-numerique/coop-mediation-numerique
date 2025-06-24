@@ -3,6 +3,7 @@
 import CheckboxFormField from '@app/ui/components/Form/CheckboxFormField'
 import InputFormField from '@app/ui/components/Form/InputFormField'
 import RadioFormField from '@app/ui/components/Form/RadioFormField'
+import RequiredFieldsDisclaimer from '@app/ui/components/Form/RequiredFieldsDisclaimer'
 import RichTextFormField from '@app/ui/components/Form/RichText/RichTextFormField'
 import { useScrollToError } from '@app/ui/hooks/useScrollToError'
 import { useWatchSubscription } from '@app/ui/hooks/useWatchSubscription'
@@ -203,107 +204,115 @@ const BeneficiaireForm = ({
     <form onSubmit={handleSubmit(onSubmit)}>
       <FormSection
         title="Identité du bénéficiaire"
-        description={
-          <>
-            Ces informations ne sont partagés avec personne d’autre.{' '}
-            {enSavoirPlusLink}
-          </>
-        }
+        description={<RequiredFieldsDisclaimer />}
       >
-        <div className="fr-flex fr-flex-gap-6v">
-          <InputFormField
-            className="fr-flex-grow-1 fr-flex-basis-0"
-            control={control}
-            path="prenom"
-            label="Prénom(s)"
-            asterisk
-            disabled={isLoading}
-          />
-          <InputFormField
-            className="fr-flex-grow-1 fr-flex-basis-0"
-            control={control}
-            path="nom"
-            label="Nom d’usage"
-            asterisk
-            disabled={isLoading}
-          />
+        <div className="fr-grid-row fr-grid-row--gutters">
+          <div className="fr-col-12 fr-col-md-6">
+            <InputFormField
+              className="fr-flex-grow-1 fr-flex-basis-0"
+              control={control}
+              path="prenom"
+              label="Prénom(s)"
+              asterisk
+              disabled={isLoading}
+            />
+          </div>
+          <div className="fr-col-12 fr-col-md-6">
+            <InputFormField
+              className="fr-flex-grow-1 fr-flex-basis-0"
+              control={control}
+              path="nom"
+              label="Nom d’usage"
+              asterisk
+              disabled={isLoading}
+            />
+          </div>
         </div>
-        <InputFormField
-          control={control}
-          path="anneeNaissance"
-          type="number"
-          min={anneeNaissanceMin}
-          max={anneeNaissanceMax}
-          step={1}
-          disabled={isLoading}
-          label={
-            <>
-              Année de naissance
-              <button
-                type="button"
-                className="fr-btn--tooltip fr-btn"
-                aria-describedby="annee-naissance-tooltip"
-              >
-                Information typologies
-              </button>
-              <span
-                className="fr-tooltip fr-placement"
-                id="annee-naissance-tooltip"
-                role="tooltip"
-                aria-hidden="true"
-              >
-                L’année de naissance permet d’éviter les doublons de
-                bénéficiaires (en cas d’homonyme) et de compléter la tranche
-                d’âge automatiquement.
-              </span>
-            </>
-          }
-        />
+        <div className="fr-grid-row fr-grid-row--gutters">
+          <div className="fr-col-12 fr-col-md-6">
+            <InputFormField
+              control={control}
+              path="anneeNaissance"
+              type="number"
+              min={anneeNaissanceMin}
+              max={anneeNaissanceMax}
+              step={1}
+              disabled={isLoading}
+              label={
+                <>
+                  Année de naissance
+                  <button
+                    type="button"
+                    className="fr-btn--tooltip fr-btn"
+                    aria-describedby="annee-naissance-tooltip"
+                  >
+                    Information typologies
+                  </button>
+                  <span
+                    className="fr-tooltip fr-placement"
+                    id="annee-naissance-tooltip"
+                    role="tooltip"
+                    aria-hidden="true"
+                  >
+                    L’année de naissance permet d’éviter les doublons de
+                    bénéficiaires (en cas d’homonyme) et de compléter la tranche
+                    d’âge automatiquement.
+                  </span>
+                </>
+              }
+            />
+          </div>
+        </div>
       </FormSection>
 
       <FormSection
         title="Coordonnées"
         description={
           <>
-            Ces informations ne sont partagés avec personne d’autre.{' '}
+            Les coordonnées sont utiles notamment pour planifier un rendez-vous
+            via RDV Service Public et envoyer un rappel par SMS à vos
+            bénéficiaires.
             {enSavoirPlusLink}
           </>
         }
       >
-        <div className="fr-flex fr-flex-gap-6v">
-          <InputFormField
-            className="fr-flex-grow-1 fr-flex-basis-0"
-            control={control}
-            disabled={isLoading || disableTelephone}
-            path="telephone"
-            label="Numéro de téléphone"
-          />
-          <CheckboxFormField
-            className="fr-flex-grow-1 fr-flex-basis-0 fr-mt-9v"
-            control={control}
-            path="pasDeTelephone"
-            label="N’a pas de téléphone"
-            disabled={isLoading}
-          />
+        <div className="fr-grid-row fr-grid-row--gutters">
+          <div className="fr-col-12 fr-col-md-6">
+            <InputFormField
+              className="fr-flex-grow-1 fr-flex-basis-0 fr-mb-0"
+              control={control}
+              disabled={isLoading || disableTelephone}
+              path="telephone"
+              label="Numéro de téléphone"
+            />
+            <CheckboxFormField
+              className="fr-flex-grow-1 fr-flex-basis-0 fr-mt-4v"
+              control={control}
+              path="pasDeTelephone"
+              label="N’a pas de téléphone"
+              disabled={isLoading}
+            />
+          </div>
+          <div className="fr-col-12 fr-col-md-6">
+            <InputFormField
+              className="fr-flex-grow-1 fr-flex-basis-0"
+              control={control}
+              disabled={isLoading}
+              type="email"
+              path="email"
+              label="E-mail"
+            />
+          </div>
         </div>
-        <InputFormField
-          className="fr-flex-grow-1 fr-flex-basis-0"
-          control={control}
-          disabled={isLoading}
-          type="email"
-          path="email"
-          label="E-mail"
-        />
       </FormSection>
       <FormSection
-        title="Informations complémentaires"
+        title="Informations socio-démographiques"
         description={
           <>
-            Ces informations seront les seules qui seront utilisées dans un but
-            statistique afin de comprendre les types de publics accompagnés sur
-            un territoire. En les renseignant ici, ces informations seront
-            complétées automatiquement dans vos comptes rendus d’activité.{' '}
-            {enSavoirPlusLink}
+            Ces informations seront utiles dans un but statistique afin de
+            comprendre les types de publics accompagnés sur un territoire. En
+            les renseignant ici, elles seront automatiquement complétées dans
+            vos compte-rendus d’activités. {enSavoirPlusLink}
           </>
         }
       >
@@ -326,7 +335,7 @@ const BeneficiaireForm = ({
               : undefined
           }
         />
-        <CraFormLabel as="p" className="fr-mb-4v fr-mt-12v">
+        <CraFormLabel as="p" className="fr-mb-4v fr-mt-6v">
           Genre
         </CraFormLabel>
         <RadioFormField
@@ -343,9 +352,9 @@ const BeneficiaireForm = ({
             radioGroup: richCardRadioGroupClassName,
           }}
         />
-        <div className="fr-flex fr-flex-gap-12v">
+        <div className="fr-flex fr-flex-gap-6v">
           <div className="fr-flex-basis-0 fr-flex-grow-1">
-            <CraFormLabel as="p" className="fr-mb-4v fr-mt-6v">
+            <CraFormLabel as="p" className="fr-mb-4v fr-mt-4v">
               Tranche d’âge
             </CraFormLabel>
             <RadioFormField
