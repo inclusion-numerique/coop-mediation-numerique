@@ -87,7 +87,7 @@ horizontalement en fonction de la charge.
 
 | Source               | Destination                  | Protocole | Port | Localisation | Interne/URL Externe                                                  |
 |----------------------|------------------------------|-----------|------|--------------|----------------------------------------------------------------------|
-| Navigateur           | Container Applicatif         | HTTPS     | 443  | fr-par       | lesbases.anct.gouv.fr                                                |
+| Navigateur           | Container Applicatif         | HTTPS     | 443  | fr-par       | coop-numerique.anct.gouv.fr                                          |
 | Container Applicatif | Scaleway Postgresql          | TCP       | 5432 | fr-par       | Interne                                                              |
 | Navigateur           | Object Storage (S3) Scaleway | HTTPS     | 443  | fr-par       | s3.fr-par.scw.cloud                                                  |
 | Container Applicatif | Object Storage (S3) Scaleway | HTTPS     | 443  | fr-par       | Interne                                                              |
@@ -712,7 +712,7 @@ territoires, dans le projet "coop-mediation-numerique".
 L'équipe transverse de l'Incubateur des Territoires administre les droits d'accès via le système "IAM" utilisé par
 Scaleway.
 
-Les accès Scalingo sont octroyés uniquement à l'équipe technique (Développeurs et Product manager) pour :
+Les accès Scaleway sont octroyés uniquement à l'équipe technique (Développeurs et Product manager) pour :
 
 - surveiller la santé de l'app de production (logs et metrics)
 - ajouter ou mettre à jour des secrets
