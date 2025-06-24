@@ -100,7 +100,7 @@ const RdvServicePublicAccess = async () => {
               }}
               priority="primary"
             >
-              Accédez à l’outil
+              Accéder à l’outil
             </Button>
             <GererRdvServicePublicButton />
           </div>
