@@ -1,4 +1,3 @@
-import { getRdvs } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getRdvs'
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import { beneficiaireAccompagnementsCountSelect } from '@app/web/beneficiaire/beneficiaireQueries'
 import {
@@ -7,6 +6,7 @@ import {
 } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { mergeRdvsWithActivites } from '@app/web/features/activites/use-cases/list/mergeRdvsWithActivites'
 import { prismaClient } from '@app/web/prismaClient'
+import { getRdvs } from '@app/web/rdv-service-public/getRdvs'
 import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import type { UserId, UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 

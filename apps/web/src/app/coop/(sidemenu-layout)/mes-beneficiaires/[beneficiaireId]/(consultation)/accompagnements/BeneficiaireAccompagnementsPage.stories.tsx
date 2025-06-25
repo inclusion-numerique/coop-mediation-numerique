@@ -7,10 +7,10 @@ import ViewBeneficiaireAccompagnementsPage from '@app/web/app/coop/(sidemenu-lay
 import { BeneficiaireAccompagnementsPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getBeneficiaireAccompagnementsPageData'
 import { ActiviteListItem } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { rdvsForStories } from '@app/web/features/activites/use-cases/list/storybook/ActiviteDetailsStoriesData'
+import type { Rdv } from '@app/web/rdv-service-public/Rdv'
 import { testSessionUser } from '@app/web/test/testSessionUser'
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import { Rdv } from './getRdvs'
 
 const Template = ({ data }: { data: BeneficiaireAccompagnementsPageData }) => (
   <ViewBeneficiaireLayout

@@ -1,5 +1,5 @@
-import { Rdv } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getRdvs'
 import { prismaClient } from '@app/web/prismaClient'
+import type { Rdv } from '@app/web/rdv-service-public/Rdv'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import type { Prisma } from '@prisma/client'

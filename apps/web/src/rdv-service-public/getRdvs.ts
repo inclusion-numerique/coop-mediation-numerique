@@ -1,66 +1,12 @@
-import type { SessionUser } from '@app/web/auth/sessionUser'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import { RdvStatusFilterValue } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { prismaClient } from '@app/web/prismaClient'
-import type { OAuthApiRdvStatus } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
 import { oAuthRdvApiListRdvs } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
 import { getUserContextForOAuthApiCall } from '@app/web/rdv-service-public/getUserContextForRdvApiCall'
-import { rdvServicePublicOAuthConfig } from '@app/web/rdv-service-public/rdvServicePublicOauth'
-import { type RdvStatus } from '@app/web/rdv-service-public/rdvStatus'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { UserId, UserRdvAccount } from '@app/web/utils/user'
 import type { Beneficiaire } from '@prisma/client'
-
-// Représente un bénéficiaire suivi côté coop qu'on a lié à un user de RDVSP
-export type RdvUserBeneficiaire = {
-  id: string
-  prenom: string
-  nom: string
-  mediateurId: string
-}
-
-/**
- * Our domain model for reprensenting a list of RDVS owned by OAUTH RDV Service Public
- */
-export type Rdv = {
-  id: number
-  durationInMinutes: number
-  date: Date
-  endDate: Date
-  createdBy: string
-  status: OAuthApiRdvStatus
-  badgeStatus: RdvStatus
-  motif: {
-    id: number
-    name: string
-  }
-  url: string
-  agents: {
-    id: number
-    firstName: string
-    lastName: string
-    displayName: string
-    email: string
-  }[]
-  organisation: {
-    id: number
-    name: string
-  }
-  participations: {
-    id: number
-    status: OAuthApiRdvStatus
-    sendReminderNotification: boolean
-    sendLifecycleNotifications: boolean
-    user: {
-      id: number
-      firstName: string
-      lastName: string
-      displayName: string
-      email: string | null
-      beneficiaire: RdvUserBeneficiaire | null // coop uuidv4 du bénéficiaire suivi
-    }
-  }[]
-}
+import type { Rdv, RdvUserBeneficiaire } from './Rdv'
 
 export const getRdvs = async ({
   user,

@@ -1,4 +1,4 @@
-import type { Rdv } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getRdvs'
+import type { Rdv } from '@app/web/rdv-service-public/Rdv'
 import type { ActiviteListItem } from './db/activitesQueries'
 
 export const mergeRdvsWithActivites = ({

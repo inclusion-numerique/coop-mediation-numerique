@@ -1,5 +1,4 @@
-import { Rdv } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getRdvs'
-import { v4 } from 'uuid'
+import type { Rdv } from '@app/web/rdv-service-public/Rdv'
 import { createBeneficiairesForParticipantsAnonymes } from '../../../../../beneficiaire/createBeneficiairesForParticipantsAnonymes'
 import { participantsAnonymesDefault } from '../../cra/collectif/validation/participantsAnonymes'
 import { ActiviteListItem } from '../db/activitesQueries'

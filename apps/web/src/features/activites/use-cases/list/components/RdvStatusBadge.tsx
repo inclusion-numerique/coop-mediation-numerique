@@ -1,5 +1,5 @@
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
-import type { Rdv } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getRdvs'
+import type { Rdv } from '@app/web/rdv-service-public/Rdv'
 import type { RdvStatus } from '@app/web/rdv-service-public/rdvStatus'
 import type { AlertProps } from '@codegouvfr/react-dsfr/Alert'
 import Badge from '@codegouvfr/react-dsfr/Badge'
@@ -37,28 +37,23 @@ const statusBadgeProps: {
 }
 
 const RdvStatusBadge = ({
-  rdv: { status, date },
+  rdv: { badgeStatus },
   className,
   pluralize,
 }: {
-  rdv: Pick<Rdv, 'status' | 'date'>
+  rdv: Pick<Rdv, 'badgeStatus'>
   className?: string
   pluralize?: number
-}) => {
-  const now = Date.now()
-  const badgeVariant: RdvStatus =
-    status === 'unknown' && date.getTime() < now ? 'past' : status
-  return (
-    <Badge
-      small
-      severity={statusBadgeProps[badgeVariant].severity}
-      className={className}
-    >
-      {typeof pluralize === 'number'
-        ? `Rdv ${statusBadgeProps[badgeVariant].label.toLowerCase()}${badgeVariant === 'past' || badgeVariant === 'seen' ? sPluriel(pluralize) : ''}`
-        : statusBadgeProps[badgeVariant].label}
-    </Badge>
-  )
-}
+}) => (
+  <Badge
+    small
+    severity={statusBadgeProps[badgeStatus].severity}
+    className={className}
+  >
+    {typeof pluralize === 'number'
+      ? `Rdv ${statusBadgeProps[badgeStatus].label.toLowerCase()}${badgeStatus === 'past' || badgeStatus === 'seen' ? sPluriel(pluralize) : ''}`
+      : statusBadgeProps[badgeStatus].label}
+  </Badge>
+)
 
 export default RdvStatusBadge

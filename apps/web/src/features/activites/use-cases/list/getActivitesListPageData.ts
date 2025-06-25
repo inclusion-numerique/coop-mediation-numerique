@@ -1,5 +1,5 @@
-import { getRdvs } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getRdvs'
 import { isEmptySearchParams } from '@app/web/libs/data-table/isEmptySearchParams'
+import { getRdvs } from '@app/web/rdv-service-public/getRdvs'
 import { getOptionalStartOfDay } from '@app/web/utils/getDatePeriodBounds'
 import type { UserId, UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 import type { ActivitesDataTableSearchParams } from './components/ActivitesDataTable'

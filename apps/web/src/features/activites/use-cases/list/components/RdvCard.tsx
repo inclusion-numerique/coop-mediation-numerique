@@ -1,55 +1,14 @@
-import type { Rdv } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getRdvs'
-import { BeneficiaireCraData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
-import type { OAuthApiRdvStatus } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
-import { dateAsDay } from '@app/web/utils/dateAsDay'
+import type { Rdv } from '@app/web/rdv-service-public/Rdv'
 import {
   dateAsDayInTimeZone,
-  dateAsTime,
   dateAsTimeInTimeZone,
 } from '@app/web/utils/dateAsDayAndTime'
-import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { UserRdvAccount, UserTimezone } from '@app/web/utils/user'
-import type { AlertProps } from '@codegouvfr/react-dsfr/Alert'
-import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { DefaultValues } from 'react-hook-form'
-import { CraIndividuelData } from '../../cra/individuel/validation/CraIndividuelValidation'
 import ActiviteCardSpacer from './ActiviteCardSpacer'
 import ActiviteOrRdvListCard from './ActiviteOrRdvListCard'
 import RdvStatusBadge from './RdvStatusBadge'
-
-const createCraUrlFromRdv = ({
-  id,
-  date,
-  durationInMinutes,
-  participations,
-}: Rdv) => {
-  const participationBeneficiaireSuivi = participations.find(
-    (participation) => !!participation.user.beneficiaire,
-  )?.user.beneficiaire
-
-  const beneficiaire = participationBeneficiaireSuivi
-    ? ({
-        id: participationBeneficiaireSuivi.id,
-        prenom: participationBeneficiaireSuivi.prenom,
-        nom: participationBeneficiaireSuivi.nom,
-        mediateurId: participationBeneficiaireSuivi.mediateurId,
-      } satisfies BeneficiaireCraData)
-    : undefined
-
-  const defaultValues: DefaultValues<CraIndividuelData> = {
-    date: dateAsIsoDay(date),
-    duree: {
-      dureePersonnaliseeMinutes: durationInMinutes,
-      duree: 'personnaliser',
-    },
-    beneficiaire,
-    rdvServicePublicId: id,
-  }
-
-  return `/coop/mes-activites/cra/individuel?v=${encodeSerializableState(defaultValues)}`
-}
 
 const RdvCard = ({
   activite,
@@ -67,7 +26,16 @@ const RdvCard = ({
   const { timezone } = user
 
   const now = Date.now()
-  const { date, endDate, agents, motif, participations, url, status } = activite
+  const {
+    date,
+    endDate,
+    agents,
+    motif,
+    participations,
+    url,
+    status,
+    badgeStatus,
+  } = activite
 
   // TODO display if rdv has been created by another agent ?
   const _agentIsUser = agents.some((agent) => agent.id === userRdvAgentId)
@@ -82,7 +50,9 @@ const RdvCard = ({
   const endTime = dateAsTimeInTimeZone(endDate, timezone)
   const canCompleteCra = status === 'seen' && date.getTime() < now
 
-  const newCraLink = canCompleteCra ? createCraUrlFromRdv(activite) : ''
+  const newCraLink = canCompleteCra
+    ? `/coop/mes-activites/convertir-rdv-en-cra?rdv=${encodeSerializableState(activite)}`
+    : ''
 
   return (
     <ActiviteOrRdvListCard
@@ -138,7 +108,7 @@ const RdvCard = ({
                 target: '_blank',
               }}
             >
-              Voir
+              {badgeStatus === 'past' ? 'À valider sur RDV SP' : 'Voir'}
             </Button>
           )}
         </>
