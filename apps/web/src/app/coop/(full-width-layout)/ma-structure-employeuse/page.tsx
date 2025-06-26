@@ -80,23 +80,22 @@ const MaStructureEmployeusePage = async () => {
           </div>
 
           {structureEmployeuse ? (
-            <StructureEmployeuse
-              {...structureEmployeuse}
-              isLieuActivite={matchingLieuActivite != null}
-            >
-              {structureEmployeuse.nomReferent && (
-                <>
-                  <hr className="fr-mt-6v fr-pb-6v" />
+            <>
+              <StructureEmployeuse
+                {...structureEmployeuse}
+                isLieuActivite={matchingLieuActivite != null}
+              >
+                {structureEmployeuse.nomReferent && (
                   <ReferentStructure {...structureEmployeuse} />
-                </>
-              )}
+                )}
+              </StructureEmployeuse>
               {user.mediateur?.conseillerNumerique && (
+                // Les conseillers numériques peuvent mettre à jour la structure depuis leurs infos de contrat
                 <>
-                  <hr className="fr-mt-6v fr-pb-6v" />
                   <UpdateStructure />
                 </>
               )}
-            </StructureEmployeuse>
+            </>
           ) : (
             <div className="fr-text--center fr-background-alt--blue-france fr-border-radius--8 fr-p-6w">
               <h2 className="fr-h6 fr-mb-1v">

@@ -21,7 +21,7 @@ const UpdateStructure = () => {
 
   return (
     <Notice
-      className="fr-notice--flex fr-align-items-center"
+      className="fr-notice--flex fr-align-items-center fr-mt-4v"
       title={
         <>
           <span className="fr-text--regular fr-text-default--grey fr-text--sm">

@@ -30,8 +30,8 @@ export const StructureEmployeuse = ({
   children?: ReactNode
 }) => (
   <Card noBorder className="fr-border fr-border-radius--8" titleAs="div">
-    <span className="fr-text--lg fr-text--bold fr-mb-0">{nom}</span>
-    <div className="fr-text--sm fr-mb-0 fr-text-mention--grey fr-flex fr-direction-column fr-flex-gap-1v">
+    <span className="fr-text--lg fr-text--bold fr-mb-1v">{nom}</span>
+    <div className="fr-text--sm fr-mb-1v fr-text-mention--grey fr-flex fr-direction-column fr-flex-gap-1v">
       <div>
         <span className="ri-map-pin-2-line fr-mr-1v" />{' '}
         {[
