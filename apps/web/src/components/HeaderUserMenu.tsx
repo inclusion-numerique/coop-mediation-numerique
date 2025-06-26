@@ -158,7 +158,7 @@ export const HeaderUserMenu = ({ user }: { user: SessionUser }) => {
             </Link>
           </li>
         )}
-      {!restricted && (user.mediateur || user.coordinateur) && (
+      {/* {!restricted && (user.mediateur || user.coordinateur) && (
         <li>
           <Link
             className="fr-nav__link fr-display-block"
@@ -173,7 +173,7 @@ export const HeaderUserMenu = ({ user }: { user: SessionUser }) => {
             Voir mes tags
           </Link>
         </li>
-      )}
+      )} */}
       {!restricted &&
         (isConseillerNumerique(user) ||
           isCoordinateurConseillerNumerique(user)) && (

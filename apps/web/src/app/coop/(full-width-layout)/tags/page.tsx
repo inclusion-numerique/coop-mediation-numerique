@@ -4,11 +4,15 @@ import {
   TagSearchParams,
   getTagsPageDataFor,
 } from '@app/web/features/activites/use-cases/tags/list/get-tags-page-data-for'
+import { notFound } from 'next/navigation'
 
 const Page = async (props: { searchParams: Promise<TagSearchParams> }) => {
   const searchParams = await props.searchParams
   const user = await authenticateUser()
   const tags = await getTagsPageDataFor(user)(searchParams)
+
+  // This feature is temporary disabled
+  notFound()
 
   return (
     <ListTagsPage
