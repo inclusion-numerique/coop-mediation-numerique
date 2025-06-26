@@ -19,7 +19,7 @@ export const AccessInfoLink = ({
         aria-hidden
       />
     )}
-    <p className="fr-text fr-mb-1w">{how}</p>
+    <p className="fr-text fr-mb-4v">{how}</p>
 
     {info?.link.startsWith('http') ? (
       <Link

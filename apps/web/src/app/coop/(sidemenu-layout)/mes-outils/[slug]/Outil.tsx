@@ -19,6 +19,7 @@ export const Outil = ({
   logo,
   description,
   website,
+  websiteLinkLabel,
   features,
   access,
   accessComponent,
@@ -43,6 +44,7 @@ export const Outil = ({
         logo={logo}
         description={description}
         website={website}
+        websiteLinkLabel={websiteLinkLabel}
       />
       <section className="fr-grid-row fr-grid-row--gutters">
         <div className="fr-col-xl-7 fr-col-12">
