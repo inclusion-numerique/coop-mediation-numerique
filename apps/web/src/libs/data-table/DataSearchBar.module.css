@@ -1,0 +1,23 @@
+/* Overriding the DSFR search bar to match our design */
+.searchBar {
+  height: 40px !important;
+  input {
+    border-bottom-left-radius: 4px !important;
+    border-right: none;
+    height: 40px;
+  }
+  button {
+    height: 40px !important;
+    font-size: 0 !important;
+    color: transparent !important;
+    padding: 8px !important;
+    border-bottom-right-radius: 4px !important;
+    min-height: unset !important;
+  }
+  button::before {
+    font-size: initial !important;
+    color: var(--text-inverted-blue-france) !important;
+    margin-right: -.5px !important;
+    margin-left: .5px !important;
+  }
+}

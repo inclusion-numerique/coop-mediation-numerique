@@ -1,6 +1,7 @@
 import DataTable from '@app/web/libs/data-table/DataTable'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
+import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 import { SearchActiviteResult } from '../db/searchActivite'
 import ActiviteRowShowDetailsButton from './ActiviteRowShowDetailsButton'
 import {
@@ -12,18 +13,21 @@ import styles from './MesActivitesListePage.module.css'
 const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
 
 const ActivitesTable = ({
-  data: { activites, totalPages },
+  data: { activites, totalPages, timezone },
   searchParams,
   baseHref,
 }: {
-  data: SearchActiviteResult
+  data: SearchActiviteResult & { timezone: string }
   searchParams: ActivitesDataTableSearchParams
   baseHref: string
 }) => (
   <>
     <DataTable
       className="fr-table--nowrap fr-width-full fr-mb-8v"
-      rows={activites}
+      rows={activites.map((activite) => ({
+        ...activite,
+        timezone,
+      }))}
       configuration={ActivitesDataTable}
       searchParams={searchParams}
       baseHref={baseHref}
@@ -31,7 +35,7 @@ const ActivitesTable = ({
       rowButtonComponent={ActiviteRowShowDetailsButton}
     />
     <PaginationNavWithPageSizeSelect
-      defaultPageSize={10}
+      defaultPageSize={DEFAULT_PAGE_SIZE}
       pageSizeOptions={pageSizeOptions}
       totalPages={totalPages}
       searchParams={searchParams}

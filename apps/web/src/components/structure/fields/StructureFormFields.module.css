@@ -1,0 +1,7 @@
+.structureForm {
+  :global .fr-input-group:not([class^="fr-mb-"]),
+  :global .fr-select-group:not([class^="fr-mb-"]),
+  :global .fr-form-group:not([class^="fr-mb-"]) {
+    margin-bottom: 32px;
+  }
+}

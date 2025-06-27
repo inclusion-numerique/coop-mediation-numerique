@@ -77,6 +77,7 @@ export type StructureConseillerNumerique = {
   coselec: Array<Record<string, unknown>>
   estZRR: boolean
   prefet: Array<Record<string, unknown>>
+  // contact: represente le Responsable du conum, dans la structure dans le tableau de bord
   contact: {
     prenom: string
     nom: string

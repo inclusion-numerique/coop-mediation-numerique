@@ -20,25 +20,29 @@ export const CommunicationConum = () => (
           noBorder
           arrowTop
           arrowSm
-          className="fr-border fr-border-radius--16 "
+          className="fr-border fr-border-radius--16"
+          classes={{
+            content: 'fr-p-0 fr-text--sm fr-text--medium fr-mb-0',
+          }}
           title={
             <span className="fr-inline-flex fr-align-items-center">
               <Image
-                className="fr-mr-1w"
+                className="fr-mr-3v"
                 width={24}
                 height={24}
                 src="/images/services/mattermost.svg"
                 alt=""
               />
-              <span className="fr-text--uppercase fr-text--sm fr-mb-0 fr-text-label--grey">
+              <span className="fr-text--uppercase fr-text--xs fr-mb-0 fr-text-default--grey">
                 Mattermost
               </span>
             </span>
           }
-          description="Accédez à la plateforme de discussions des conseillers numériques"
           href="https://discussion.conseiller-numerique.gouv.fr/"
           isExternal
-        />
+        >
+          Accédez à la plateforme de discussions des conseillers numériques.
+        </Card>
       </div>
       <div className="fr-col-lg-6 fr-col-md-12 fr-col-sm-6 fr-col-12">
         <Card
@@ -46,21 +50,25 @@ export const CommunicationConum = () => (
           arrowTop
           arrowSm
           className="fr-border fr-border-radius--16"
+          classes={{
+            content: 'fr-p-0 fr-text--sm fr-text--medium fr-mb-0',
+          }}
           title={
             <span className="fr-inline-flex fr-align-items-center">
               <span
-                className="ri-megaphone-line fr-text-title--blue-france fr-mr-1w"
+                className="ri-megaphone-line fr-text--regular fr-text-title--blue-france fr-mr-3v"
                 aria-hidden
               />
-              <span className="fr-text--uppercase fr-text--sm fr-mb-0 fr-text-label--grey">
+              <span className="fr-text--uppercase fr-text--xs fr-mb-0 fr-text-default--grey">
                 Kit de communication
               </span>
             </span>
           }
-          description="Valorisez le dispositif sur vos différents canaux de communication."
           href="https://lesbases.anct.gouv.fr/ressources/kit-de-communication-conseiller-numerique"
           isExternal
-        />
+        >
+          Valorisez le dispositif sur vos différents canaux de communication.
+        </Card>
       </div>
     </div>
   </>

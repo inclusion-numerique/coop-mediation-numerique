@@ -3,7 +3,7 @@ import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout
 import { typeActivitePluralLabels } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
 import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
 import { AccompagnementPieChart } from '../_components/AccompagnementPieChart'
-import { ProgressListItem } from '../_components/ProgressListItem'
+import { ProgressItemList } from '../_components/ProgressItemList'
 import { QuantifiedShareLegend } from '../_components/QuantifiedShareLegend'
 import { QuantifiedShareList } from '../_components/QuantifiedShareList'
 import { StatistiqueMateriel } from '../_components/StatistiqueMateriel'
@@ -60,41 +60,17 @@ export const StatistiquesActivitesPrint = ({
         noter : une activité peut avoir plusieurs thématiques.
       </small>
       <h4 className="fr-h6 fr-mb-2v fr-mt-6v">Médiation numérique</h4>
-      <ul className="fr-px-0 fr-mb-0">
-        {thematiques.map(({ value, proportion, label, count }, index) => (
-          <ProgressListItem
-            key={value}
-            count={count}
-            proportion={proportion}
-            maxProportion={thematiquesMaxProportion}
-            label={label}
-            colors={[
-              thematiquesAccompagnementColors[
-                index % thematiquesAccompagnementColors.length
-              ],
-            ]}
-          />
-        ))}
-      </ul>
+      <ProgressItemList
+        items={thematiques}
+        maxProportion={thematiquesMaxProportion}
+        colors={thematiquesAccompagnementColors}
+      />
       <h4 className="fr-h6 fr-mb-2v fr-mt-6v">Démarches administratives</h4>
-      <ul className="fr-px-0 fr-mb-0">
-        {thematiquesDemarches.map(
-          ({ value, proportion, label, count }, index) => (
-            <ProgressListItem
-              key={value}
-              count={count}
-              proportion={proportion}
-              maxProportion={thematiquesDemarchesMaxProportion}
-              label={label}
-              colors={[
-                thematiquesAccompagnementColors[
-                  index % thematiquesAccompagnementColors.length
-                ],
-              ]}
-            />
-          ),
-        )}
-      </ul>
+      <ProgressItemList
+        items={thematiquesDemarches}
+        maxProportion={thematiquesDemarchesMaxProportion}
+        colors={thematiquesAccompagnementColors}
+      />
       <h3 className="fr-h5 fr-mb-2v fr-mt-6v">Matériel utilisé</h3>
       <small role="note" className="fr-mb-6v fr-display-block">
         Matériel utilisé lors d’un accompagnement de médiation numérique. À
@@ -125,7 +101,7 @@ export const StatistiquesActivitesPrint = ({
           isAnimationActive={false}
         />
         <QuantifiedShareLegend
-          classeName="fr-pl-3w"
+          className="fr-pl-3w"
           quantifiedShares={activites.typeLieu}
           colors={canauxAccompagnementColors}
         />
@@ -142,7 +118,7 @@ export const StatistiquesActivitesPrint = ({
           isAnimationActive={false}
         />
         <QuantifiedShareLegend
-          classeName="fr-pl-3w"
+          className="fr-pl-3w"
           quantifiedShares={activites.durees}
           colors={dureesAccompagnementColors}
         />

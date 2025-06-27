@@ -26,6 +26,7 @@ const MesActivitesVueTableauPage = async ({
     const data = getActivitesListPageData({
       mediateurId: user.mediateur.id,
       searchParams,
+      user,
     })
 
     const searchResultMatchesCount = data.then(

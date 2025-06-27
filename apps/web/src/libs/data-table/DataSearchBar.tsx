@@ -1,8 +1,10 @@
 'use client'
 
 import { SearchBar } from '@codegouvfr/react-dsfr/SearchBar'
+import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef } from 'react'
+import styles from './DataSearchBar.module.css'
 import type {
   DataTableConfiguration,
   DataTableRow,
@@ -52,7 +54,7 @@ const DataSearchBar = <
 
   return (
     <SearchBar
-      className="fr-flex-grow-1"
+      className={classNames('fr-flex-grow-1', styles.searchBar)}
       onButtonClick={onSearch}
       allowEmptySearch
       ref={searchBarRef}

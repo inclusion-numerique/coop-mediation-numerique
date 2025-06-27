@@ -6,6 +6,7 @@ import DataSearchBar from '@app/web/libs/data-table/DataSearchBar'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import SortSelect from '@app/web/libs/data-table/SortSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
+import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
@@ -79,7 +80,7 @@ const EquipeListePage = ({
         </div>
         <div>
           Équipe coordonnée par <span className="fr-text--bold">{name}</span>
-          <div className="fr-flex fr-text-mention--grey fr-text--sm fr-mb-0 fr-flex-gap-2v">
+          <div className="fr-flex fr-text-mention--grey fr-text--sm fr-mt-2v fr-mb-0 fr-flex-gap-2v">
             <span>
               <span className="ri-mail-line fr-mr-2v" aria-hidden />
               {email}
@@ -98,18 +99,20 @@ const EquipeListePage = ({
           </div>
         </div>
         <div className="fr-my-12v">
+          <hr className="fr-separator-6v" />
           <DataSearchBar
             baseHref={baseHrefSearch}
             searchParams={searchParams}
             placeholder="Rechercher par nom ou adresse e-mail"
           />
+          <hr className="fr-separator-6v" />
         </div>
         {total === 0 && mediateurs?.length === 0 && <EquipeVide />}
         {(total !== 0 ||
           totalAncien !== 0 ||
           (!!mediateurs && mediateurs.length > 0)) && (
           <>
-            <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-mb-4w">
+            <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-mb-4v">
               {totalAncien === 0 && (
                 <p className="fr-text--lg fr-text--bold fr-flex fr-flex-gap-2v fr-direction-column fr-direction-sm-row fr-mb-0">
                   <span>
@@ -169,7 +172,7 @@ const EquipeListePage = ({
         )}
         <PaginationNavWithPageSizeSelect
           className="fr-mt-12v"
-          defaultPageSize={10}
+          defaultPageSize={DEFAULT_PAGE_SIZE}
           pageSizeOptions={pageSizeOptions}
           totalPages={totalPages}
           baseHref={baseHrefSearch}

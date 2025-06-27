@@ -31,8 +31,12 @@ export const serializePrismaSessionUser = (
           prismaSessionUser.rdvAccount.accessToken &&
           prismaSessionUser.rdvAccount.refreshToken
         ),
+        error: prismaSessionUser.rdvAccount.error ?? null,
         created: prismaSessionUser.rdvAccount.created.toISOString(),
         updated: prismaSessionUser.rdvAccount.updated.toISOString(),
+        lastSynced:
+          prismaSessionUser.rdvAccount.lastSynced?.toISOString() ?? null,
+        organisations: prismaSessionUser.rdvAccount.organisations,
       }
     : null,
 })

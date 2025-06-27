@@ -1,3 +1,7 @@
+import {
+  type RdvStatus,
+  rdvStatusValues,
+} from '@app/web/rdv-service-public/rdvStatus'
 import z from 'zod'
 import {
   TypeActiviteSlug,
@@ -10,6 +14,13 @@ const conseillerNumeriqueValues = ['0', '1'] as const
 
 type ConseillerNumeriqueValue = (typeof conseillerNumeriqueValues)[number]
 
+export type RdvStatusFilterValue = RdvStatus | 'tous'
+
+const rdvStatusEnum = z.enum(['tous', ...rdvStatusValues] satisfies [
+  RdvStatusFilterValue,
+  ...RdvStatusFilterValue[],
+])
+
 export const ActivitesFilterValidations = {
   du: z.string().regex(isoDayRegex).optional(),
   au: z.string().regex(isoDayRegex).optional(),
@@ -17,6 +28,16 @@ export const ActivitesFilterValidations = {
     .union([
       z.string().transform((val) => val.split(',').map((id) => id.trim())),
       z.array(z.enum(typeActiviteSlugValues)),
+    ])
+    .optional(),
+  rdvs: z
+    .union([
+      z
+        .string()
+        .transform((val) =>
+          val.split(',').map((id) => id.trim() as RdvStatusFilterValue),
+        ),
+      z.array(rdvStatusEnum),
     ])
     .optional(),
   mediateurs: z
@@ -56,6 +77,7 @@ export type ActivitesFilters = {
   du?: string // Iso date e.g. '2022-01-01'
   au?: string // Iso date e.g. '2022-01-01'
   types?: TypeActiviteSlug[]
+  rdvs?: RdvStatusFilterValue[]
   mediateurs?: string[] // UUID of mediateurs
   beneficiaires?: string[] // UUID of beneficiaires
   communes?: string[] // Code INSEE des communes
@@ -89,6 +111,7 @@ export const validateActivitesFilters = <T extends ActivitesFilters>(
     ) {
       result[typedKey] = validatedFilterValue.data as ConseillerNumeriqueValue &
         TypeActiviteSlug[] &
+        RdvStatusFilterValue[] &
         string[]
     } else {
       delete result[typedKey]

@@ -1,3 +1,4 @@
+import { tagsRouter } from '@app/web/features/activites/use-cases/tags/tagsRouter'
 import { conumRouter } from '@app/web/features/conum/conumRouter'
 import { apiClientRouter } from '@app/web/server/rpc/apiClient/apiClientRouter'
 import { assistantRouter } from '@app/web/server/rpc/assistant/assistantRouter'
@@ -35,6 +36,7 @@ export const appRouter = router({
   assistant: assistantRouter,
   rdvServicePublic: rdvServicePublicRouter,
   employeStructure: employeStructureRouter,
+  tags: tagsRouter,
 })
 // export type definition of API
 export type AppRouter = typeof appRouter

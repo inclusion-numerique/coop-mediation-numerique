@@ -16,60 +16,48 @@ export const metadata: Metadata = {
 }
 
 const MesActivitesPage = async ({
-  searchParams,
+  searchParams: rawSearchParams,
 }: {
   searchParams: Promise<ActivitesDataTableSearchParams>
 }) => {
-  const rawSearchParams = await searchParams
   const user = await authenticateMediateur()
 
-  const hasActivites = await mediateurHasActivites({
+  const searchParams = validateActivitesFilters(await rawSearchParams)
+  const data = getActivitesListPageData({
     mediateurId: user.mediateur.id,
+    searchParams,
+    user,
   })
 
-  if (hasActivites) {
-    const searchParams = validateActivitesFilters(rawSearchParams)
-    const data = getActivitesListPageData({
-      mediateurId: user.mediateur.id,
-      searchParams,
-    })
+  const searchResultMatchesCount = data.then(
+    ({ searchResult: { matchesCount } }) => matchesCount,
+  )
 
-    const searchResultMatchesCount = data.then(
-      ({ searchResult: { matchesCount } }) => matchesCount,
-    )
-
-    const {
-      communesOptions,
-      departementsOptions,
-      initialBeneficiairesOptions,
-      initialMediateursOptions,
-      lieuxActiviteOptions,
-      activiteDates,
-    } = await getFiltersOptionsForMediateur({
-      user,
-      includeBeneficiaireIds: searchParams.beneficiaires,
-    })
-
-    return (
-      <MesActivitesListeLayout vue="liste">
-        <MesActivitesListeHeader
-          searchResultMatchesCount={searchResultMatchesCount}
-          defaultFilters={searchParams}
-          initialBeneficiairesOptions={initialBeneficiairesOptions}
-          initialMediateursOptions={initialMediateursOptions}
-          communesOptions={communesOptions}
-          departementsOptions={departementsOptions}
-          lieuxActiviteOptions={lieuxActiviteOptions}
-          activiteDates={activiteDates}
-        />
-        <MesActivitesListePage data={data} />
-      </MesActivitesListeLayout>
-    )
-  }
+  const {
+    communesOptions,
+    departementsOptions,
+    initialBeneficiairesOptions,
+    initialMediateursOptions,
+    lieuxActiviteOptions,
+    activiteDates,
+  } = await getFiltersOptionsForMediateur({
+    user,
+    includeBeneficiaireIds: searchParams.beneficiaires,
+  })
 
   return (
     <MesActivitesListeLayout vue="liste">
-      <MesActivitesListeEmptyPage />
+      <MesActivitesListeHeader
+        searchResultMatchesCount={searchResultMatchesCount}
+        defaultFilters={searchParams}
+        initialBeneficiairesOptions={initialBeneficiairesOptions}
+        initialMediateursOptions={initialMediateursOptions}
+        communesOptions={communesOptions}
+        departementsOptions={departementsOptions}
+        lieuxActiviteOptions={lieuxActiviteOptions}
+        activiteDates={activiteDates}
+      />
+      <MesActivitesListePage data={data} />
     </MesActivitesListeLayout>
   )
 }

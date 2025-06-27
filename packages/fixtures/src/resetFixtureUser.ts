@@ -79,6 +79,14 @@ export const resetFixtureUser = async (
       },
     })
 
+    if (user.rdvAccount) {
+      await prismaClient.rdvAccount.delete({
+        where: {
+          id: user.rdvAccount.id,
+        },
+      })
+    }
+
     // Delete mediateur, mediateurEnActivite, mediateurCoordonne, conseillerNumerique
     const mediateurId = user.mediateur?.id
 

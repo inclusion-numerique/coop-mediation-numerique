@@ -34,12 +34,14 @@ export const ModalitesAccesAuServiceFields = <
         label="Se présenter sur place"
         control={control}
         disabled={formState.isSubmitting}
+        className="fr-mb-0"
       />
       <CheckboxFormField
         path="modalitesAcces.parTelephone"
         label="Téléphoner"
         control={control}
         disabled={formState.isSubmitting}
+        className="fr-mb-0"
       />
       {showPhoneInput && (
         <InputFormField
@@ -49,6 +51,7 @@ export const ModalitesAccesAuServiceFields = <
           asterisk
           control={control}
           disabled={formState.isSubmitting}
+          className="fr-mb-0"
         />
       )}
       <CheckboxFormField
@@ -56,6 +59,7 @@ export const ModalitesAccesAuServiceFields = <
         label="Contacter par mail"
         control={control}
         disabled={formState.isSubmitting}
+        className="fr-mb-0"
       />
       {showEmailInput && (
         <InputFormField
@@ -65,6 +69,7 @@ export const ModalitesAccesAuServiceFields = <
           asterisk
           control={control}
           disabled={formState.isSubmitting}
+          className="fr-mb-0"
         />
       )}
       <CheckboxGroupFormField

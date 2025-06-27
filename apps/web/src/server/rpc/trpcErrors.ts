@@ -19,3 +19,11 @@ export const invalidError = (message?: string) =>
     message:
       message ?? 'Opération invalide. Veuillez réessayer ultérieurement.',
   })
+
+export const externalApiError = (message?: string) =>
+  new TRPCError({
+    code: 'SERVICE_UNAVAILABLE',
+    message:
+      message ??
+      'Une erreur est survenue lors de l’appel à l’API externe. Veuillez réessayer ultérieurement.',
+  })

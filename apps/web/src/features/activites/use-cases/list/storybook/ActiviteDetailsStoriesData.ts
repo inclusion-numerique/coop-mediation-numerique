@@ -1,14 +1,18 @@
+import type { Rdv } from '@app/web/rdv-service-public/Rdv'
 import { createBeneficiairesForParticipantsAnonymes } from '../../../../../beneficiaire/createBeneficiairesForParticipantsAnonymes'
 import { participantsAnonymesDefault } from '../../cra/collectif/validation/participantsAnonymes'
-import { ActiviteForList } from '../db/activitesQueries'
+import { ActiviteListItem } from '../db/activitesQueries'
+
+const yesterday = new Date(Date.now() - 1000 * 60 * 60 * 24)
 
 export const activiteIndividuelleInfosMinimum = {
+  timezone: 'Europe/Paris',
   type: 'Individuel',
   id: '1',
   mediateurId: '2',
-  creation: new Date('2024-03-22'),
-  modification: new Date('2024-03-22'),
-  date: new Date('2024-03-22'),
+  creation: yesterday,
+  modification: yesterday,
+  date: yesterday,
   duree: 90,
   thematiques: [
     'CreerAvecLeNumerique',
@@ -53,15 +57,17 @@ export const activiteIndividuelleInfosMinimum = {
   precisionsDemarche: null,
   titreAtelier: null,
   niveau: null,
-} satisfies ActiviteForList
+  rdvServicePublicId: null,
+} satisfies ActiviteListItem
 
 export const activiteIndividuelleBeneficiaireSuivi = {
+  timezone: 'Europe/Paris',
   type: 'Individuel',
   id: '1',
   mediateurId: '2',
-  creation: new Date('2024-03-22'),
-  modification: new Date('2024-03-22'),
-  date: new Date('2024-03-22'),
+  creation: yesterday,
+  modification: yesterday,
+  date: yesterday,
   duree: 120,
   thematiques: ['NavigationSurInternet', 'Email'],
   notes: null,
@@ -97,18 +103,27 @@ export const activiteIndividuelleBeneficiaireSuivi = {
   precisionsDemarche: null,
   titreAtelier: null,
   niveau: null,
-} satisfies ActiviteForList
+  rdvServicePublicId: null,
+} satisfies ActiviteListItem
 
 // Refactored "Individuel" type activity with an anonymous beneficiary
 export const activiteIndividuelleBeneficiaireAnonyme = {
+  timezone: 'Europe/Paris',
   type: 'Individuel',
   id: '1',
   mediateurId: '2',
-  creation: new Date('2024-03-22'),
-  modification: new Date('2024-03-22'),
-  date: new Date('2024-03-22'),
+  creation: yesterday,
+  modification: new Date(yesterday.getTime() + 1000 * 60 * 60 * 24),
+  date: yesterday,
   duree: 120,
-  thematiques: ['NavigationSurInternet', 'Email'],
+  thematiques: [
+    'NavigationSurInternet',
+    'Email',
+    'AideAuxDemarchesAdministratives',
+    'TravailFormation',
+    'ArgentImpots',
+  ],
+  precisionsDemarche: 'Déclaration impots',
   notes:
     '<p>Lörem ipsum ladeniliga douche <strong>plaledes</strong>. Nining son. Mipära kavun joskap juling lanar. Segyde snålsurfa då jevis. Dorade preng posad. Spefuv ter i kvasitiskap då mobilblottare dir. Häbel epihet i tegt. Ultrar. Digt hän. Polytt doskapet tempopatologi. Use betårta, tena. Biktiga pojuren.</p><p>Segyde snålsurfa då jevis. <strong>Dorade preng posad</strong>. Spefuv ter i kvasitiskap då mobilblottare dir. Häbel epihet i tegt. Ultrar. Digt hän. Polytt doskapet tempopatologi. Use betårta, tena. Biktiga pojuren</p>',
   accompagnements: [
@@ -132,27 +147,28 @@ export const activiteIndividuelleBeneficiaireAnonyme = {
     },
   ],
   typeLieu: 'Domicile',
-  autonomie: null,
-  materiel: [],
+  autonomie: 'PartiellementAutonome',
+  materiel: ['Ordinateur'],
   lieuCommune: 'Lyon',
   lieuCodeInsee: '69382',
   lieuCodePostal: '69002',
   structure: null,
   orienteVersStructure: true,
   structureDeRedirection: 'OperateurOuOrganismeEnCharge',
-  precisionsDemarche: null,
   titreAtelier: null,
   niveau: null,
-} satisfies ActiviteForList
+  rdvServicePublicId: 23,
+} satisfies ActiviteListItem
 
 // Refactored "Collectif" type activity with minimal information
 export const activiteCollectifInfosRepliees = {
+  timezone: 'Europe/Paris',
   type: 'Collectif',
   id: '1',
   mediateurId: '2',
-  creation: new Date('2024-03-22'),
-  modification: new Date('2024-03-22'),
-  date: new Date('2024-03-22'),
+  creation: yesterday,
+  modification: yesterday,
+  date: yesterday,
   duree: 120,
   thematiques: ['NavigationSurInternet', 'Email'],
   notes:
@@ -207,16 +223,18 @@ export const activiteCollectifInfosRepliees = {
   precisionsDemarche: null,
   titreAtelier: 'Atelier de découverte de la vacuité de toute chose',
   niveau: 'Debutant',
-} satisfies ActiviteForList
+  rdvServicePublicId: 1234567890,
+} satisfies ActiviteListItem
 
 // Refactored "Collectif" type activity with expanded information
 export const activiteCollectifInfosDepliees = {
+  timezone: 'Europe/Paris',
   type: 'Collectif',
   id: '1',
   mediateurId: '2',
-  creation: new Date('2024-07-22'),
-  modification: new Date('2024-07-22'),
-  date: new Date('2024-07-22'),
+  creation: yesterday,
+  modification: yesterday,
+  date: yesterday,
   duree: 120,
   thematiques: ['NavigationSurInternet', 'Email'],
   notes: null,
@@ -233,7 +251,7 @@ export const activiteCollectifInfosDepliees = {
         statutSocialNonCommunique: 40,
       },
     }).map(
-      (beneficiaire, index): ActiviteForList['accompagnements'][number] => ({
+      (beneficiaire, index): ActiviteListItem['accompagnements'][number] => ({
         premierAccompagnement: false,
         beneficiaire: {
           ...beneficiaire,
@@ -303,7 +321,86 @@ export const activiteCollectifInfosDepliees = {
   precisionsDemarche: null,
   titreAtelier: null,
   niveau: 'Debutant',
-} satisfies ActiviteForList
+  rdvServicePublicId: 1234567890,
+} satisfies ActiviteListItem
+
+const randomIntegerId = () => Math.floor(Math.random() * 1000000)
+
+export const givenRdv = ({
+  durationInMinutes,
+  id,
+  status,
+  date,
+}: Partial<
+  Pick<Rdv, 'id' | 'durationInMinutes' | 'status' | 'date'>
+>): Rdv => ({
+  id: id ?? randomIntegerId(),
+  createdBy: 'todo',
+  url: 'https://demo.rdv.anct.gouv.fr/admin/organisations/856/rdvs/11123',
+  motif: {
+    id: randomIntegerId(),
+    name: 'Accompagnement individuel',
+  },
+  date: date ?? new Date(Date.now() - 1000 * 60 * 60 * 24),
+  endDate: new Date(
+    (date ?? new Date(Date.now() - 1000 * 60 * 60 * 24)).getTime() +
+      (durationInMinutes ?? 120) * 60 * 1000,
+  ),
+  durationInMinutes: durationInMinutes ?? 120,
+  status: status ?? 'unknown',
+  badgeStatus: status ?? 'unknown',
+  organisation: {
+    id: 1,
+    name: 'Organisation 1',
+  },
+  agents: [
+    {
+      id: randomIntegerId(),
+      firstName: 'John',
+      lastName: 'Médiateur',
+      displayName: 'John Médiateur',
+      email: 'john.mediateur@example.com',
+    },
+  ],
+  participations: [
+    {
+      id: randomIntegerId(),
+      status: status ?? 'unknown',
+      sendReminderNotification: false,
+      sendLifecycleNotifications: false,
+      user: {
+        id: randomIntegerId(),
+        firstName: 'Carlos',
+        lastName: 'Bénéficiaire',
+        displayName: 'Carlos Bénéficiaire',
+        email: 'carlos.beneficiaire@example.com',
+        beneficiaire: null,
+      },
+    },
+  ],
+})
+
+const rdvDansLeFutur = givenRdv({
+  date: new Date(Date.now() + 1000 * 60 * 60 * 24),
+})
+
+const rdvPasse = givenRdv({})
+
+const rdvAnnuleParBeneficiaire = givenRdv({
+  status: 'excused',
+})
+
+const rdvAnnuleParMediateur = givenRdv({
+  status: 'revoked',
+})
+
+const rdvHonore = givenRdv({
+  status: 'seen',
+})
+
+const rdvLapin = givenRdv({
+  status: 'noshow',
+})
 
 export const activitesForModalStories = [
   activiteIndividuelleInfosMinimum,
@@ -311,4 +408,13 @@ export const activitesForModalStories = [
   activiteIndividuelleBeneficiaireAnonyme,
   activiteCollectifInfosRepliees,
   activiteCollectifInfosDepliees,
+]
+
+export const rdvsForStories = [
+  rdvDansLeFutur,
+  rdvPasse,
+  rdvAnnuleParBeneficiaire,
+  rdvAnnuleParMediateur,
+  rdvHonore,
+  rdvLapin,
 ]

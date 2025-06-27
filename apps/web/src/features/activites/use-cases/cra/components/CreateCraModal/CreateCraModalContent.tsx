@@ -37,12 +37,10 @@ const ModalNavigationButton = ({
 )
 
 const CreateCraModalContent = ({
-  atelier = true,
   craDefaultValues,
   onClose,
   retour,
 }: {
-  atelier?: boolean
   craDefaultValues?:
     | DefaultValues<CraIndividuelData>
     | DefaultValues<CraCollectifData>
@@ -80,14 +78,12 @@ const CreateCraModalContent = ({
         Accompagnement individuel
       </ModalNavigationButton>
 
-      {atelier && (
-        <ModalNavigationButton
-          illustration="/images/iconographie/accompagnement-collectif.svg"
-          onClick={() => navigateTo('/coop/mes-activites/cra/collectif')}
-        >
-          Ateliers collectif
-        </ModalNavigationButton>
-      )}
+      <ModalNavigationButton
+        illustration="/images/iconographie/accompagnement-collectif.svg"
+        onClick={() => navigateTo('/coop/mes-activites/cra/collectif')}
+      >
+        Atelier collectif
+      </ModalNavigationButton>
     </>
   )
 }

@@ -205,7 +205,15 @@ export const createOrUpdateActivite = async ({
 
   const { data } = input
 
-  const { date, duree, id, mediateurId, notes, structureId } = data
+  const {
+    date,
+    duree,
+    id,
+    mediateurId,
+    notes,
+    structureId,
+    rdvServicePublicId,
+  } = data
 
   const creationId = v4()
 
@@ -290,6 +298,7 @@ export const createOrUpdateActivite = async ({
     lieuCodeInsee,
     notes,
     orienteVersStructure,
+    rdvServicePublicId: rdvServicePublicId ?? null,
     structureDeRedirection:
       // For cra individuel, only set structure de redirection if orienteVersStructure is true
       input.type === 'Individuel'
@@ -310,6 +319,7 @@ export const createOrUpdateActivite = async ({
           : undefined, // no data if creation
   } satisfies Prisma.ActiviteUpdateInput
 
+  // If id is provided, it is an update operation
   if (id) {
     // We delete all the anonymes beneficiaires that have only this activite as accompagmements to ease the
     // merge logic of old and new anonymous beneficiaires
@@ -385,6 +395,7 @@ export const createOrUpdateActivite = async ({
           where: { id },
           data: {
             ...prismaData,
+            modification: new Date(),
           },
         }),
       ].filter(onlyDefinedAndNotNull),
@@ -404,6 +415,7 @@ export const createOrUpdateActivite = async ({
     }
   }
 
+  // Creation transaction
   await prismaClient.$transaction(
     [
       // Create beneficiaire anonyme for one to one cras,

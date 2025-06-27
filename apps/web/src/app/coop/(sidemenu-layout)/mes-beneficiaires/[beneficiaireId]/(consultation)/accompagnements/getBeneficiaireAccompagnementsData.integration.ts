@@ -32,6 +32,11 @@ describe('getBeneficiaireAccompagnementsData', () => {
       await getBeneficiaireAccompagnementsPageData({
         mediateurId,
         beneficiaireId,
+        user: {
+          id: 'test',
+          rdvAccount: null,
+          timezone: 'Europe/Paris',
+        },
       }),
     ).toEqual({
       beneficiaire: {
@@ -43,8 +48,16 @@ describe('getBeneficiaireAccompagnementsData', () => {
         _count: {
           accompagnements: 0,
         },
+        rdvServicePublicId: null,
       },
-      activitesByDate: [],
+      activites: [],
+      rdvs: [],
+      activitesAndRdvs: [],
+      user: {
+        id: 'test',
+        rdvAccount: null,
+        timezone: 'Europe/Paris',
+      },
     })
   })
 
@@ -53,12 +66,50 @@ describe('getBeneficiaireAccompagnementsData', () => {
     const beneficiaireId = beneficiaire.id
     const { mediateurId } = beneficiaire
 
+    const expectedActivites = [
+      // Collective CRA on 2024-08-04 (creation: 08:00:00)
+      expect.objectContaining({
+        id: mediateurAvecActiviteCrasCollectifs[0].activite.id,
+      }),
+
+      // Demarche Admin on 2024-08-03 (creation: 16:00:00)
+      expect.objectContaining({
+        id: mediateurAvecActiviteCrasDemarchesAdministratives[3].activite.id,
+      }),
+      // Demarche Admin on 2024-08-03 (creation: 15:00:00)
+      expect.objectContaining({
+        id: mediateurAvecActiviteCrasDemarchesAdministratives[1].activite.id,
+      }),
+      // Individuel CRA on 2024-07-28 (creation: 10:00:00)
+      expect.objectContaining({
+        id: mediateurAvecActiviteCrasIndividuels[2].activite.id,
+      }),
+      // Individuel CRA on 2024-07-28 (creation: 09:00:00)
+      expect.objectContaining({
+        id: mediateurAvecActiviteCrasIndividuels[3].activite.id,
+      }),
+      // Collective CRA on 2024-07-05 (creation: 09:00:00)
+      expect.objectContaining({
+        id: mediateurAvecActiviteCrasCollectifs[1].activite.id,
+      }),
+    ]
+
     expect(
       await getBeneficiaireAccompagnementsPageData({
         mediateurId,
         beneficiaireId,
+        user: {
+          id: 'test',
+          rdvAccount: null,
+          timezone: 'Europe/Paris',
+        },
       }),
     ).toEqual({
+      user: {
+        id: 'test',
+        rdvAccount: null,
+        timezone: 'Europe/Paris',
+      },
       beneficiaire: {
         id: beneficiaire.id,
         mediateurId,
@@ -68,55 +119,11 @@ describe('getBeneficiaireAccompagnementsData', () => {
         _count: {
           accompagnements: 6,
         },
+        rdvServicePublicId: null,
       },
-      activitesByDate: [
-        {
-          activites: [
-            // Collective CRA on 2024-08-04 (creation: 08:00:00)
-            expect.objectContaining({
-              id: mediateurAvecActiviteCrasCollectifs[0].activite.id,
-            }),
-          ],
-          date: '2024-08-04',
-        },
-        {
-          activites: [
-            // Demarche Admin on 2024-08-03 (creation: 16:00:00)
-            expect.objectContaining({
-              id: mediateurAvecActiviteCrasDemarchesAdministratives[3].activite
-                .id,
-            }),
-            // Demarche Admin on 2024-08-03 (creation: 15:00:00)
-            expect.objectContaining({
-              id: mediateurAvecActiviteCrasDemarchesAdministratives[1].activite
-                .id,
-            }),
-          ],
-          date: '2024-08-03',
-        },
-        {
-          activites: [
-            // Individuel CRA on 2024-07-28 (creation: 10:00:00)
-            expect.objectContaining({
-              id: mediateurAvecActiviteCrasIndividuels[2].activite.id,
-            }),
-            // Individuel CRA on 2024-07-28 (creation: 09:00:00)
-            expect.objectContaining({
-              id: mediateurAvecActiviteCrasIndividuels[3].activite.id,
-            }),
-          ],
-          date: '2024-07-28',
-        },
-        {
-          activites: [
-            // Collective CRA on 2024-07-05 (creation: 09:00:00)
-            expect.objectContaining({
-              id: mediateurAvecActiviteCrasCollectifs[1].activite.id,
-            }),
-          ],
-          date: '2024-07-05',
-        },
-      ],
+      activites: expectedActivites,
+      rdvs: [],
+      activitesAndRdvs: expectedActivites,
     })
   })
 })

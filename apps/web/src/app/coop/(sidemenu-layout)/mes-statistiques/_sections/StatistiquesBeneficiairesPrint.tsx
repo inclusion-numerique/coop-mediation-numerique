@@ -69,7 +69,7 @@ export const StatistiquesBeneficiairesPrint = ({
           isAnimationActive={false}
         />
         <QuantifiedShareLegend
-          classeName="fr-pl-3w"
+          className="fr-pl-3w"
           quantifiedShares={beneficiaires.genres}
           colors={genresColors}
         />

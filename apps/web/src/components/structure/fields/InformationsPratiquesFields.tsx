@@ -7,6 +7,7 @@ import Link from 'next/link'
 import React from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
+import { rdvWebsiteLink } from '@app/web/rdv-service-public/rdvServicePublicOauth'
 import { OpeningHourField } from './OpeningHourField'
 
 export const InformationsPratiquesFields = <
@@ -66,14 +67,14 @@ export const InformationsPratiquesFields = <
         hint={
           <>
             Si la structure dispose d’un outil en ligne de prise de rendez-vous
-            (par exemple RDV Aide Numérique{' '}
+            (par exemple RDV Service Public{' '}
             <Link
-              href="https://www.rdv-aide-numerique.fr/presentation_agent"
+              href={rdvWebsiteLink}
               target="_blank"
               className="fr-link fr-link--xs"
-              title="Site de RDV Aide Numérique (nouvel onglet)"
+              title="Site de RDV Service Public (nouvel onglet)"
             >
-              https://www.rdv-aide-numerique.fr/presentation_agent
+              {rdvWebsiteLink}
             </Link>
             ) , vous pouvez ajouter le lien ici.
           </>

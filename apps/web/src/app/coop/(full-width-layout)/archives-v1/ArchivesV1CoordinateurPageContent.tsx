@@ -23,10 +23,10 @@ const ArchivesV1CoordinateurPageContent = ({
     return (
       <ArchivesV1Card>
         <h2 className="fr-h6 fr-mb-0">
-          Vos archives de compte-rendus d’activités
+          Vos archives de comptes rendus d’activité
         </h2>
         <p className="fr-mb-0">
-          Aucune archive de compte-rendus d’activités n’a été trouvée.
+          Aucune archive de comptes rendus d’activité n’a été trouvée.
           <br />
           Si vous pensez que c’est une erreur,{' '}
           <ContactSupportLink>veuillez contacter le support</ContactSupportLink>
@@ -113,7 +113,7 @@ const ArchivesV1CoordinateurPageContent = ({
                   {conseillerData.conseiller.nom}
                 </span>
                 <span className="fr-text-mention--grey">
-                  &nbsp;&nbsp;·&nbsp; aucun compte-rendu d’activité
+                  &nbsp;&nbsp;·&nbsp; aucun compte rendu d’activité
                 </span>
               </div>
             ) : (
@@ -167,7 +167,7 @@ const ArchivesV1CoordinateurPageContent = ({
                   {communeData.commune.codePostal} {communeData.commune.nom}
                 </span>
                 <span className="fr-text-mention--grey">
-                  &nbsp;&nbsp;·&nbsp; aucun compte-rendu d’activité
+                  &nbsp;&nbsp;·&nbsp; aucun compte rendu d’activité
                 </span>
               </div>
             ) : (

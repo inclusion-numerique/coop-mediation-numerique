@@ -20,6 +20,16 @@ a.cellLink {
   padding: 0 !important;
 }
 
+.sortLink {
+  padding: 0 !important;
+  height: 16px !important;
+
+  &::before {
+    margin: 0 !important;
+    height: 16px !important;
+  }
+}
+
 .rowWithLink {
   cursor: pointer;
 

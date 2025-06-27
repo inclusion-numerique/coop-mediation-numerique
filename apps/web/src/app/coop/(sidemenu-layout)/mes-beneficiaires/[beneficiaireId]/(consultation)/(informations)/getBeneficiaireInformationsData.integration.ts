@@ -44,6 +44,11 @@ describe('getBeneficiaireInformationsData', () => {
       await getBeneficiaireInformationsPageData({
         mediateurId,
         beneficiaireId,
+        user: {
+          id: 'test',
+          rdvAccount: null,
+          timezone: 'Europe/Paris',
+        },
       }),
     ).toEqual({
       beneficiaire: {
@@ -64,12 +69,14 @@ describe('getBeneficiaireInformationsData', () => {
         statutSocial,
         telephone,
         trancheAge,
+        rdvServicePublicId: null,
         _count: {
           accompagnements: 0,
         },
       },
       displayName: getBeneficiaireDisplayName(beneficiaire),
       thematiquesCounts: [],
+      totalActivitesCount: 0,
     })
   })
 
@@ -152,6 +159,11 @@ describe('getBeneficiaireInformationsData', () => {
       await getBeneficiaireInformationsPageData({
         mediateurId,
         beneficiaireId,
+        user: {
+          id: 'test',
+          rdvAccount: null,
+          timezone: 'Europe/Paris',
+        },
       }),
     ).toEqual({
       beneficiaire: {
@@ -175,9 +187,11 @@ describe('getBeneficiaireInformationsData', () => {
         telephone,
         trancheAge,
         mediateurId,
+        rdvServicePublicId: null,
       },
       displayName: getBeneficiaireDisplayName(beneficiaire),
       thematiquesCounts: expectedThematiqueCounts,
+      totalActivitesCount: 6,
     })
   })
 })

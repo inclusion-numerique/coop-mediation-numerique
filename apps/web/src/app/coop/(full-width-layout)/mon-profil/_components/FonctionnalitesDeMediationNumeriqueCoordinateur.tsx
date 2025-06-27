@@ -59,8 +59,8 @@ const FonctionnalitesDeMediationNumeriqueCoordinateur = ({
           <div className="fr-text-mention--grey">
             En tant que coordinateur, vous pouvez également réaliser des
             accompagnements de médiation numérique et profiter des mêmes
-            fonctionnalités que les médiateurs numériques (compléter des
-            compte-rendu d’activités, suivre vos bénéficiaires...)
+            fonctionnalités que les médiateurs numériques (compléter des comptes
+            rendus d’activité, suivre vos bénéficiaires...)
           </div>
           {!isActive && (
             <div className="fr-mt-3w">

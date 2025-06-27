@@ -1,5 +1,7 @@
 import { prismaClient } from '@app/web/prismaClient'
+import type { Rdv } from '@app/web/rdv-service-public/Rdv'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
+import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import type { Prisma } from '@prisma/client'
 
 /**
@@ -28,6 +30,7 @@ export const activiteListSelect = {
   id: true,
   type: true,
   mediateurId: true,
+  rdvServicePublicId: true,
   accompagnements: {
     select: {
       beneficiaire: {
@@ -59,7 +62,6 @@ export const activiteListSelect = {
 
   materiel: true,
   thematiques: true,
-
   orienteVersStructure: true,
 
   precisionsDemarche: true,
@@ -114,19 +116,29 @@ export const mediateurHasActivites = async ({
     })
     .then((count) => count > 0)
 
-export type ActiviteForList = Awaited<
+export type ActiviteListItem = Awaited<
   ReturnType<typeof getAllActivites>
->[number]
+>[number] & {
+  rdv?: Rdv // If the activite was created from a rdv, we will merge the RDV with the activite item before displaying it
+  timezone: string
+}
 
 export type ActivitesByDate = {
   date: string
-  activites: ActiviteForList[]
+  activites: ActiviteListItem[]
 }
 
-export const groupActivitesByDate = (
-  activites: ActiviteForList[],
-): ActivitesByDate[] => {
-  const byDateRecord = activites.reduce<Record<string, ActiviteForList[]>>(
+export type ActivitesAndRdvsByDate = {
+  date: string
+  activites: (ActiviteListItem | Rdv)[]
+}
+
+export const groupActivitesByDate = ({
+  activites,
+}: {
+  activites: ActiviteListItem[]
+}): ActivitesByDate[] => {
+  const byDateRecord = activites.reduce<Record<string, ActiviteListItem[]>>(
     (accumulator, activity) => {
       const date = dateAsIsoDay(activity.date)
       if (!accumulator[date]) {
@@ -142,4 +154,41 @@ export const groupActivitesByDate = (
     date,
     activites: groupedActivites,
   }))
+}
+
+export const groupActivitesAndRdvsByDate = ({
+  activites,
+  rdvs,
+}: {
+  activites: ActiviteListItem[]
+  rdvs: Rdv[]
+}): ActivitesAndRdvsByDate[] => {
+  // When activites and rdvs are grouped, we do not display the Rdvs that have been "transformed" into an activite
+  const activiteRdvIds = new Set(
+    activites
+      .map((activite) => activite.rdvServicePublicId)
+      .filter(isDefinedAndNotNull),
+  )
+  const filteredRdvs = rdvs.filter((rdv) => !activiteRdvIds.has(rdv.id))
+
+  const byDateRecord = [...filteredRdvs, ...activites].reduce<
+    Record<string, (ActiviteListItem | Rdv)[]>
+  >((accumulator, activity) => {
+    const date = dateAsIsoDay(activity.date)
+    if (!accumulator[date]) {
+      accumulator[date] = []
+    }
+    accumulator[date].push(activity)
+    return accumulator
+  }, {})
+
+  return (
+    Object.entries(byDateRecord)
+      .map(([date, groupedActivites]) => ({
+        date,
+        activites: groupedActivites,
+      }))
+      // sort by date desc
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  )
 }

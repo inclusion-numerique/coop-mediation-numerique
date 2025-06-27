@@ -26,6 +26,7 @@ import type { Structure } from '@prisma/client'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Fragment } from 'react'
+import UtilisateurSetFeatureFlagsForm from './UtilisateurSetFeatureFlagsForm'
 
 export const metadata = {
   title: metadataTitle('Utilisateurs - Détails'),
@@ -386,6 +387,9 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
             },
           ]}
         />
+      </AdministrationInfoCard>
+      <AdministrationInfoCard title="Feature flags">
+        <UtilisateurSetFeatureFlagsForm user={user} />
       </AdministrationInfoCard>
       {isMediateur && mediateur && (
         <AdministrationInfoCard title="Rôle médiateur">

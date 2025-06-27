@@ -1,0 +1,7 @@
+.disabled {
+  color: var(--text-disabled-grey) !important;
+}
+
+.disabledBackground {
+  background-color: var(--background-disabled-grey) !important;
+}

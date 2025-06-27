@@ -1,3 +1,4 @@
+import { testSessionUser } from '@app/web/test/testSessionUser'
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
 import MesActivitesTableauPage from './MesActivitesTableauPage'
@@ -37,16 +38,21 @@ const dataAvecActivites = {
   searchParams: {},
   mediateurId: '1',
   isFiltered: false,
+  rdvsWithoutActivite: [],
   searchResult: {
     matchesCount: activitesForModalStories.length,
     moreResults: 0,
     totalPages: 1,
     activites: activitesForModalStories,
+    page: 1,
+    pageSize: 50,
   },
   activiteDates: {
     first: new Date('2024-03-02'),
     last: new Date('2024-08-30'),
   },
+  user: testSessionUser,
+  activitesByDate: [],
 } satisfies ActivitesListPageData
 
 export const AvecActivites: Story = {

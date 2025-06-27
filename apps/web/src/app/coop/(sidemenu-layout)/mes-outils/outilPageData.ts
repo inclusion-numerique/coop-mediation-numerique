@@ -32,6 +32,7 @@ export type OutilPageData = {
   title: string
   description: string
   website: string
+  websiteLinkLabel?: string
   logo: string
   illustration: string
   illustrationWidth?: number
@@ -40,4 +41,7 @@ export type OutilPageData = {
   accessComponent?: ReactNode
   how?: ReactNode
   more?: ReactNode
+  classes?: {
+    access?: string
+  }
 }

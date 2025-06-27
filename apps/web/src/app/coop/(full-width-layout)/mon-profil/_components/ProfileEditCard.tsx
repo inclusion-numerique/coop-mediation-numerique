@@ -40,7 +40,7 @@ const ProfileEditCard = (profileData: {
       className="fr-border fr-border-radius--8"
       id="description"
       title={
-        <div className="fr-flex fr-justify-content-space-between fr-align-items-center">
+        <div className="fr-flex fr-align-items-center">
           <span className="fr-flex fr-flex-gap-3v fr-align-items-center fr-h6 fr-mb-0">
             <span className="fr-flex fr-background-alt--blue-france fr-pl-2v fr-pr-1v fr-pt-1v fr-border-radius--8">
               <img
@@ -51,20 +51,22 @@ const ProfileEditCard = (profileData: {
               />
             </span>
             <span className="fr-text-title--blue-france">
-              Vos informations personnelles
+              Vos informations ProConnect
             </span>
           </span>
-          <Button
-            data-testid="edit-card-button"
-            size="small"
-            priority="tertiary no outline"
-            iconId="fr-icon-edit-line"
-            title="Modifier"
-            {...updateProfileWithProConnectModalNativeButtonProps}
-          >
-            Modifier
-          </Button>
         </div>
+      }
+      action={
+        <Button
+          data-testid="edit-card-button"
+          size="small"
+          priority="tertiary no outline"
+          iconId="fr-icon-edit-line"
+          title="Modifier"
+          {...updateProfileWithProConnectModalNativeButtonProps}
+        >
+          Modifier
+        </Button>
       }
     >
       <ProfileView {...profileData} />
@@ -84,7 +86,9 @@ const ProfileEditCard = (profileData: {
         },
         {
           type: 'button',
-          children: 'Continuer',
+          children: 'Continuer vers ProConnect',
+          iconId: 'fr-icon-external-link-line',
+          iconPosition: 'right',
           onClick: signoutAndGoToProconnectProfilePage,
         },
       ]}

@@ -126,9 +126,7 @@ export const MediateurDetailPage = ({
               {coordinateurView &&
                 structureEmployeuse.structure.nomReferent != null && (
                   <>
-                    <div className="fr-background-alt--blue-france fr-p-6v fr-border-radius--16 fr-mt-6v">
-                      <ReferentStructure {...structureEmployeuse.structure} />
-                    </div>
+                    <ReferentStructure {...structureEmployeuse.structure} />
                     {conseillerNumerique?.id != null && (
                       <em className="fr-text--xs fr-text-mention--grey fr-mb-0 fr-mt-6v">
                         Si vous constatez une erreur sur les informations

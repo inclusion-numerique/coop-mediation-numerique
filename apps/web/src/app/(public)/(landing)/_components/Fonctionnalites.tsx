@@ -22,7 +22,7 @@ export const Fonctionnalites = () => (
       <div className="fr-col-lg-5 fr-col-sm-6 fr-col-12 fr-flex fr-direction-column fr-flex-gap-4v fr-my-2w">
         <h3 className="fr-mb-0">Valoriser son activité</h3>
         <p className="fr-mb-0">
-          Des comptes rendus d’activités simples et une visualisation claire des
+          Des comptes rendus d’activité simples et une visualisation claire des
           statistiques pour faciliter le suivi d’activité et la communication
           auprès de différents partenaires.
         </p>
@@ -129,7 +129,7 @@ export const Fonctionnalites = () => (
         <p className="fr-mb-0">
           Créer des modèles d’ateliers, planifier des évènements et gérer la
           liste des participants. Retrouver automatiquement les informations
-          dans les comptes rendus d’activités ainsi que dans l’historique des
+          dans les comptes rendus d’activité ainsi que dans l’historique des
           bénéficiaires.
         </p>
       </div>
