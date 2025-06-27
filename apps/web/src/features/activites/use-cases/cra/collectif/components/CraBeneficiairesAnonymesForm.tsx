@@ -10,6 +10,10 @@ import {
   trancheAgeLabels,
   trancheAgeValues,
 } from '@app/web/beneficiaire/beneficiaire'
+import classNames from 'classnames'
+import React, { useEffect } from 'react'
+import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form'
+import { CraCollectifData } from '../validation/CraCollectifValidation'
 import {
   countGenreNonCommunique,
   countStatutSocialNonCommunique,
@@ -17,11 +21,7 @@ import {
   countTotalStatutSocial,
   countTotalTrancheAge,
   countTrancheAgeNonCommunique,
-} from '@app/web/features/activites/use-cases/cra/collectif/validation/participantsAnonymes'
-import classNames from 'classnames'
-import React, { useEffect } from 'react'
-import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form'
-import { CraCollectifData } from '../validation/CraCollectifValidation'
+} from '../validation/participantsAnonymes'
 import styles from './CraBeneficiairesAnonymesForm.module.css'
 
 const NonCommuniqueCount = ({
