@@ -1,3 +1,4 @@
+import { searchAdresses } from '@app/web/external-apis/apiAdresse'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 import { fixTelephone, fixUrl } from '@app/web/utils/clean-operations'
@@ -22,7 +23,7 @@ const toId = ({ id }: { id: string }) => id
 const isInvalidTelephone = ({ telephone }: { telephone: string | null }) =>
   telephone && !isValidTelephone(telephone)
 
-const fixLocation = (localisation: {
+const fixLocationFormat = (localisation: {
   latitude: number | null
   longitude: number | null
 }) => {
@@ -40,7 +41,31 @@ const fixLocation = (localisation: {
     : Localisation({ latitude, longitude })
 }
 
-const isInvalidLocation = ({
+const findLocationFor = async ({
+  adresse,
+  commune,
+  codePostal,
+}: {
+  adresse: string
+  commune: string
+  codePostal: string
+}) => {
+  const adressesFound = await searchAdresses(
+    commune === adresse ? commune : `${adresse}, ${codePostal} ${commune}`,
+    commune === adresse ? { type: 'municipality' } : {},
+  )
+
+  const address = adressesFound.find(
+    (feature) => feature.properties.score > 0.6,
+  )
+
+  return Localisation({
+    latitude: address?.geometry.coordinates[1] ?? 0,
+    longitude: address?.geometry.coordinates[0] ?? 0,
+  })
+}
+
+const isLocationWrongFormat = ({
   latitude,
   longitude,
 }: {
@@ -49,6 +74,15 @@ const isInvalidLocation = ({
 }) =>
   (latitude != null && (latitude > 90 || latitude < -90)) ||
   (longitude != null && (longitude > 180 || longitude < -180))
+
+const isInvalidLocation = ({
+  latitude,
+  longitude,
+}: {
+  latitude: number | null
+  longitude: number | null
+}) =>
+  (latitude === 0 && longitude === 0) || latitude == null || longitude == null
 
 const isInvalidFicheAccesLibre = ({
   ficheAccesLibre,
@@ -91,17 +125,30 @@ export const executeFixStructures = async (_job: FixStructuresJob) => {
     ),
   )
 
-  const invalidLocations = structures.filter(isInvalidLocation)
+  const wrongFormatLocations = structures.filter(isLocationWrongFormat)
 
   output.log(
-    `Found ${invalidLocations.length} structures with invalid location`,
+    `Found ${wrongFormatLocations.length} structures with invalid location format`,
   )
 
   await Promise.all(
-    invalidLocations.map(({ id, latitude, longitude }) =>
+    wrongFormatLocations.map(({ id, latitude, longitude }) =>
       prismaClient.structure.update({
         where: { id },
-        data: fixLocation({ latitude, longitude }),
+        data: fixLocationFormat({ latitude, longitude }),
+      }),
+    ),
+  )
+
+  const locations0 = structures.filter(isInvalidLocation)
+
+  output.log(`Found ${locations0.length} structures with location set to 0,0`)
+
+  await Promise.all(
+    locations0.map(async (location) =>
+      prismaClient.structure.update({
+        where: { id: location.id },
+        data: await findLocationFor(location),
       }),
     ),
   )
