@@ -1,7 +1,6 @@
 'use client'
 
 import LieuActiviteSideMenu from '@app/web/app/coop/(full-width-layout)/lieux-activite/_components/LieuActiviteSideMenu'
-import IconInSquare from '@app/web/components/IconInSquare'
 import { DisplayOnCartography } from '@app/web/components/structure/DisplayOnCartography'
 import styles from '@app/web/components/structure/fields/StructureFormFields.module.css'
 import { LieuAccueillantPublicTitle } from '@app/web/components/structure/titles/LieuAccueillantPublicTitle'
@@ -29,6 +28,8 @@ export const LieuActivitePageContent = ({
     commune: string
     codePostal: string
     codeInsee?: string | null
+    latitude: number | null
+    longitude: number | null
     complementAdresse?: string | null
     siret?: string | null
     rna?: string | null
