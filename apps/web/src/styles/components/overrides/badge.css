@@ -1,5 +1,5 @@
 .fr-badge {
-  text-transform: initial;
+  text-transform: initial !important;
 }
 
 .fr-badge--triumph {

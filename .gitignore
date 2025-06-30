@@ -43,8 +43,10 @@ build-storybook.log
 # typescript
 *.tsbuildinfo
 
+# IDE
 .vscode
 .idea
+.bruno
 
 storybook-static
 

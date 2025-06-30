@@ -9,6 +9,7 @@ export const Hero = ({
   logo,
   description,
   website,
+  websiteLinkLabel,
 }: OutilPageData) => (
   <section className="fr-p-5w fr-mb-3w fr-border-radius--16 fr-background-alt--brown-caramel fr-grid-row">
     <div className="fr-col-lg-8">
@@ -22,7 +23,7 @@ export const Hero = ({
         title={`Accéder à ${title} - nouvel onglet`}
         href={website}
       >
-        Voir le site
+        {websiteLinkLabel ?? 'Voir le site'}
       </Link>
     </div>
     <div className="fr-col-auto fr-mx-auto fr-mr-lg-0">

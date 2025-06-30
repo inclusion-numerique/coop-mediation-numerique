@@ -10,6 +10,7 @@ import { InformationsGeneralesFields } from '@app/web/components/structure/field
 import { InformationsPratiquesFields } from '@app/web/components/structure/fields/InformationsPratiquesFields'
 import { ModalitesAccesAuServiceFields } from '@app/web/components/structure/fields/ModalitesAccesAuServiceFields'
 import { ServicesEtAccompagnementFields } from '@app/web/components/structure/fields/ServicesEtAccompagnementFields'
+import styles from '@app/web/components/structure/fields/StructureFormFields.module.css'
 import { TypesDePublicsAccueillisFields } from '@app/web/components/structure/fields/TypesDePublicsAccueillisFields'
 import { VisiblePourCartographieNationaleFields } from '@app/web/components/structure/fields/VisiblePourCartographieNationaleFields'
 import {
@@ -101,7 +102,7 @@ const CreerStructureForm = ({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className={styles.structureForm}>
       <div className="fr-border fr-border-radius--8">
         <h2
           id="informations-generales"

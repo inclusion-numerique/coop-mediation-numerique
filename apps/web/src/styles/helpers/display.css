@@ -18,6 +18,10 @@
   display: inline-block;
 }
 
+.fr-overflow-hidden {
+  overflow: hidden;
+}
+
 /* md display rules */
 @media (min-width: 48em) {
   .fr-display-block-md {

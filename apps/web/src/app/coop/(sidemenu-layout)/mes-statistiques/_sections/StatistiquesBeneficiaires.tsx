@@ -245,7 +245,13 @@ export const StatistiquesBeneficiaires = ({
                 count: 5,
               }}
               quantifiedShares={beneficiaires.communes}
-              colors={[communeColor]}
+              oneLineLabel
+              color={communeColor}
+              style={{
+                label: {
+                  minWidth: '244px',
+                },
+              }}
             />
           </>
         )}

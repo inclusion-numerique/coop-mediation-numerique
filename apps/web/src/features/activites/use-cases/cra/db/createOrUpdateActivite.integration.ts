@@ -7,7 +7,7 @@ import {
 import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
 import { prismaClient } from '@app/web/prismaClient'
 import {
-  ActiviteForList,
+  ActiviteListItem,
   activiteListSelect,
 } from '../../list/db/activitesQueries'
 import { CraCollectifData } from '../collectif/validation/CraCollectifValidation'
@@ -20,8 +20,14 @@ import {
 import { craDureeDataToMinutes } from './minutesToCraDuree'
 
 const nullActivite: Omit<
-  ActiviteForList,
-  'id' | 'type' | 'mediateurId' | 'accompagnements' | 'date' | 'duree'
+  ActiviteListItem,
+  | 'id'
+  | 'type'
+  | 'mediateurId'
+  | 'accompagnements'
+  | 'date'
+  | 'duree'
+  | 'timezone'
 > = {
   autonomie: null,
   creation: expect.any(Date),
@@ -39,6 +45,7 @@ const nullActivite: Omit<
   niveau: null,
   structure: null,
   titreAtelier: null,
+  rdvServicePublicId: null,
 }
 
 describe('createOrUpdateActivite', () => {
@@ -72,6 +79,7 @@ describe('createOrUpdateActivite', () => {
         beneficiaire: {
           mediateurId: mediateurAvecActiviteMediateurId,
         },
+        rdvServicePublicId: 12,
       },
     } satisfies CreateOrUpdateActiviteInput
 
@@ -114,6 +122,7 @@ describe('createOrUpdateActivite', () => {
       structureDeRedirection: input.data.structureDeRedirection ?? null,
       thematiques: input.data.thematiques,
       typeLieu: input.data.typeLieu,
+      rdvServicePublicId: input.data.rdvServicePublicId ?? null,
     })
   })
 
@@ -247,6 +256,7 @@ describe('createOrUpdateActivite', () => {
       notes: input.data.notes ?? null,
       typeLieu: input.data.typeLieu,
       thematiques: input.data.thematiques,
+      rdvServicePublicId: input.data.rdvServicePublicId ?? null,
     })
   })
 })

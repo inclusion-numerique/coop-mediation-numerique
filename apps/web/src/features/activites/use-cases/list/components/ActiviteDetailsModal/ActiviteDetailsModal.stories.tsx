@@ -84,6 +84,39 @@ export const IndividuelBeneficiaireAnonyme: Story = {
   },
 }
 
+export const IndividuelRdvBeneficiaireAnonyme: Story = {
+  name: 'Individuel - RDV - Bénéficiaire anonyme',
+  play,
+  render: (args) => <Template {...args} />,
+  args: {
+    initialState: {
+      activite: {
+        ...activiteIndividuelleBeneficiaireAnonyme,
+        rdv: {
+          agents: [],
+          organisation: {
+            id: 1,
+            name: 'Organisation 1',
+          },
+          status: 'seen',
+          badgeStatus: 'seen',
+          date: activiteIndividuelleBeneficiaireAnonyme.date,
+          endDate: new Date(
+            activiteIndividuelleBeneficiaireAnonyme.date.getTime() +
+              30 * 60 * 1000,
+          ),
+          durationInMinutes: 30,
+          id: 8,
+          createdBy: 'hui',
+          motif: { id: 1, name: 'point' },
+          participations: [],
+          url: '/',
+        },
+      },
+    },
+  },
+}
+
 export const CollectifInfosRepliees: Story = {
   name: 'Collectif - Infos participants repliées',
   play,

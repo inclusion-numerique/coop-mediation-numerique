@@ -5,7 +5,7 @@
 export type UniteLegale = {
   siren: string // le numéro unique de l'entreprise
   nom_complet: string // Champs construit depuis les champs de dénomination
-  nom_raison_sociale: string // La raison sociale pour les personnes morales
+  nom_raison_sociale: string | null // La raison sociale pour les personnes morales
   sigle?: string // Forme réduite de la raison sociale ou de la dénomination (Nullable)
   nombre_etablissements: number // Nombre des établissements de l'unité légale
   nombre_etablissements_ouverts: number // Nombre des établissements ouverts de l'unité légale

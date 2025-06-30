@@ -20,21 +20,14 @@ const IconInSquare = ({
   <div
     className={classNames(
       background,
-      'fr-border-radius--8',
+      'fr-border-radius--8 fr-text-title--blue-france',
       styles.container,
       styles[size],
       className,
     )}
     aria-hidden
   >
-    <span
-      className={classNames(
-        'fr-text-title--blue-france',
-        styles.icon,
-        iconId,
-        classes?.icon,
-      )}
-    />
+    <span className={classNames(styles.icon, iconId, classes?.icon)} />
   </div>
 )
 

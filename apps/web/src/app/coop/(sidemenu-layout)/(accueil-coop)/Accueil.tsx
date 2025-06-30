@@ -10,17 +10,16 @@ import {
   ActionsRapides,
   InformationsCoop,
   OnboardingInfo,
-  Statistiques,
   Support,
 } from './_components'
 import { Equipe } from './_components/Equipe'
+import Rdvs from './_components/Rdvs'
 import { AccueilPageData } from './getAccueilPageDataFor'
 
 export const Accueil = ({
   firstName,
   name,
   email,
-  statistiques,
   mediateurs,
   activites,
   hasSeenOnboarding,
@@ -28,6 +27,8 @@ export const Accueil = ({
   isCoordinateur,
   isCoordinateurCoNum,
   isCoNum,
+  timezone,
+  rdvs,
 }: {
   firstName: string | null
   name: string | null
@@ -37,6 +38,7 @@ export const Accueil = ({
   isCoordinateur: boolean
   isCoordinateurCoNum: boolean
   isCoNum: boolean
+  timezone: string
 } & AccueilPageData) => (
   <CoopPageContainer size={794}>
     <SkipLinksPortal links={defaultSkipLinks} />
@@ -54,10 +56,6 @@ export const Accueil = ({
       )}
       {isCoordinateur && (
         <section className="fr-my-6w">
-          <h2 className="fr-h5 fr-text-mention--grey">
-            <span className="ri-group-2-line fr-mr-1w" aria-hidden />
-            Mon équipe
-          </h2>
           {mediateurs.total > 0 ? (
             <Equipe mediateurs={mediateurs} />
           ) : (
@@ -65,11 +63,13 @@ export const Accueil = ({
           )}
         </section>
       )}
+      {rdvs && (
+        <section className="fr-my-6w">
+          <Rdvs rdvs={rdvs} user={{ timezone }} />
+        </section>
+      )}
       {isMediateur && (
         <>
-          <section className="fr-my-6w">
-            <Statistiques {...statistiques} />
-          </section>
           <section className="fr-my-6w">
             <DernieresActivites activites={activites} />
           </section>

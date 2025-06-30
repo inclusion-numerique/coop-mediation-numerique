@@ -1,77 +1,80 @@
+import { ActiviteListItem } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { getActivitesListPageData } from '@app/web/features/activites/use-cases/list/getActivitesListPageData'
-import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { countMediateursCoordonnesBy } from '@app/web/mediateurs/countMediateursCoordonnesBy'
-import type { UserDisplayName, UserProfile } from '@app/web/utils/user'
-import { getTotalCountsStats } from '../mes-statistiques/_queries/getTotalCountsStats'
+import { getRdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
+import type {
+  UserDisplayName,
+  UserId,
+  UserProfile,
+  UserRdvAccount,
+  UserTimezone,
+} from '@app/web/utils/user'
 
-const activitesFiltersLastDays = (daysCount: number) => {
-  const currentDate = new Date()
-  currentDate.setDate(currentDate.getDate() - daysCount)
-  const activitesFilters: ActivitesFilters = {
-    du: currentDate.toISOString().split('T')[0],
-    au: new Date().toISOString().split('T')[0],
-  }
-  return activitesFilters
-}
-
-const EMPTY_STATISTIQUES = {
-  totalCountsStats7Days: {
-    beneficiaires: { total: 0, suivis: 0, anonymes: 0 },
-    activites: {
-      individuels: { total: 0, proportion: 0 },
-      collectifs: { total: 0, proportion: 0, participants: 0 },
-      demarches: { total: 0, proportion: 0 },
-    },
-  },
-  totalCountsStats30Days: {
-    beneficiaires: { total: 0, suivis: 0, anonymes: 0 },
-    activites: {
-      individuels: { total: 0, proportion: 0 },
-      collectifs: { total: 0, proportion: 0, participants: 0 },
-      demarches: { total: 0, proportion: 0 },
-    },
-  },
-}
 export const getAccueilPageDataFor = async (
-  user: UserDisplayName & UserProfile,
+  user: UserDisplayName & UserProfile & UserId & UserRdvAccount & UserTimezone,
 ) => {
   const mediateurs = await countMediateursCoordonnesBy(user.coordinateur)
 
+  // TODO Return null for rdvs if user has no valid rdv account
   if (user.mediateur?.id != null) {
-    const totalCountsStats7Days = await getTotalCountsStats({
-      user,
-      mediateurIds: [user.mediateur.id],
-      activitesFilters: activitesFiltersLastDays(7),
-    })
-
-    const totalCountsStats30Days = await getTotalCountsStats({
-      user,
-      mediateurIds: [user.mediateur.id],
-      activitesFilters: activitesFiltersLastDays(30),
-    })
-
     const {
-      searchResult: { activites },
+      searchResult: { activites: activitesWithoutTimezone },
+      rdvsWithoutActivite,
     } = await getActivitesListPageData({
       mediateurId: user.mediateur.id,
       searchParams: { lignes: '3' },
+      user,
     })
 
+    const activites = activitesWithoutTimezone.map(
+      (activite) =>
+        ({
+          ...activite,
+          timezone: user.timezone,
+        }) satisfies ActiviteListItem,
+    )
+
+    const now = new Date()
+
+    const rdvsIntegrationStatus = getRdvOauthIntegrationStatus({ user })
+
+    // Do not return rdvs if user has no valid rdv account
+    if (rdvsIntegrationStatus !== 'success') {
+      return {
+        mediateurs,
+        activites,
+        rdvs: null,
+      }
+    }
+
+    const rdvsFutur = rdvsWithoutActivite.filter((rdv) => rdv.endDate >= now)
+    const rdvsPasses = rdvsWithoutActivite.filter(
+      (rdv) => rdv.status === 'unknown' && rdv.endDate < now,
+    )
+    const rdvsHonores = rdvsWithoutActivite.filter(
+      (rdv) => rdv.status === 'seen',
+    )
+
+    // Return rdvs for dashboard info if user has a valid rdv account
     return {
       mediateurs,
-      statistiques: {
-        totalCountsStats7Days,
-        totalCountsStats30Days,
-      },
       activites,
+      rdvs: {
+        next: rdvsFutur.length > 0 ? rdvsFutur.at(-1) : null,
+        futur: rdvsFutur,
+        passes: rdvsPasses,
+        honores: rdvsHonores,
+      },
     }
   }
 
   return {
     mediateurs,
-    statistiques: EMPTY_STATISTIQUES,
     activites: [],
+    rdvs: null,
   }
 }
 
 export type AccueilPageData = Awaited<ReturnType<typeof getAccueilPageDataFor>>
+
+export type AccueilRdvsData = Exclude<AccueilPageData['rdvs'], null>

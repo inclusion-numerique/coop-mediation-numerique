@@ -62,7 +62,6 @@ export const MesStatistiques = (
             beneficiairesOptions={[]}
           />
         </div>
-        <hr className="fr-pb-4v" />
         <FilterTags
           filters={activitesFilters}
           communesOptions={communesOptions}
@@ -71,7 +70,7 @@ export const MesStatistiques = (
           mediateursOptions={initialMediateursOptions}
           beneficiairesOptions={[]}
         />
-        <section className="fr-mb-6w">
+        <section className="fr-mb-6w fr-mt-6v">
           <StatistiquesGenerales {...mesStatistiquesProps} />
         </section>
         <section className="fr-mb-6w">

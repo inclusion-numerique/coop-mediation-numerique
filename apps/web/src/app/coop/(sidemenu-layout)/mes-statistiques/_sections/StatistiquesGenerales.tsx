@@ -29,17 +29,20 @@ export const StatistiquesGenerales = ({
       </h2>
       <div className="fr-grid-row fr-flex-gap-6v">
         <div className="fr-flex fr-direction-column fr-flex-gap-6v fr-col-xl-4 fr-col-12">
-          <div className="fr-p-3w fr-border-radius--16 fr-background-alt--brown-caramel fr-width-full">
+          <div className="fr-px-8v fr-py-6v fr-border-radius--16 fr-background-alt--brown-caramel fr-width-full">
             <div className="fr-flex fr-align-items-center fr-justify-content-space-between">
               <span className="fr-h2 fr-mb-0">
                 {numberToString(totalCounts.accompagnements.total)}
               </span>
               <span
-                className="ri-service-line ri-2x fr-text-label--brown-caramel"
+                className="ri-service-line ri-2x"
+                style={{
+                  color: 'var(--brown-caramel-sun-425-moon-901-hover)',
+                }}
                 aria-hidden
               />
             </div>
-            <div className="fr-text--bold fr-mt-1w">
+            <div className="fr-text--bold fr-text--sm fr-mb-0 fr-mt-1v">
               Accompagnement{sPluriel(totalCounts.accompagnements.total)}{' '}
               <Button
                 className="fr-px-2v"
@@ -85,20 +88,22 @@ export const StatistiquesGenerales = ({
                 compte pour 10 accompagnements.
               </span>
             </div>
-            <div className="fr-text-mention--grey">au total</div>
           </div>
-          <div className="fr-p-3w fr-border-radius--16 fr-background-alt--brown-caramel">
+          <div className="fr-px-8v fr-py-6v fr-border-radius--16 fr-background-alt--brown-caramel fr-flex-grow-1">
             <div className="fr-flex fr-align-items-center fr-justify-content-space-between">
               <span className="fr-h2 fr-mb-0">
                 {numberToString(totalCounts.beneficiaires.total)}
               </span>
               <span
-                className="ri-user-heart-line ri-2x fr-text-label--brown-caramel"
+                className="ri-user-heart-line ri-2x"
+                style={{
+                  color: 'var(--brown-caramel-sun-425-moon-901-hover)',
+                }}
                 aria-hidden
               />
             </div>
-            <div className="fr-my-1w">
-              <div className="fr-text--bold">
+            <div className="fr-mt-2v">
+              <div className="fr-text--sm fr-text--bold fr-mb-4v">
                 Bénéficiaire{sPluriel(totalCounts.beneficiaires.total)}{' '}
                 accompagné{sPluriel(totalCounts.beneficiaires.total)}
               </div>
@@ -114,14 +119,19 @@ export const StatistiquesGenerales = ({
                 </div>
               )}
             </div>
-            <div className="fr-text-mention--grey">
+            <div className="fr-text-mention--grey fr-text--sm fr-mb-0">
               <div>
-                {numberToString(totalCounts.beneficiaires.suivis)} bénéficiaire
+                <strong>
+                  {numberToString(totalCounts.beneficiaires.suivis)}
+                </strong>{' '}
+                bénéficiaire
                 {sPluriel(totalCounts.beneficiaires.suivis)} suivi
                 {sPluriel(totalCounts.beneficiaires.suivis)}
               </div>
               <div>
-                {numberToString(totalCounts.beneficiaires.anonymes)}{' '}
+                <strong>
+                  {numberToString(totalCounts.beneficiaires.anonymes)}
+                </strong>{' '}
                 bénéficiaire
                 {sPluriel(totalCounts.beneficiaires.anonymes)} anonyme
                 {sPluriel(totalCounts.beneficiaires.anonymes)}
@@ -129,7 +139,7 @@ export const StatistiquesGenerales = ({
             </div>
           </div>
         </div>
-        <div className="fr-col fr-border fr-p-3w fr-border-radius--16">
+        <div className="fr-col fr-border fr-py-6v fr-px-8v fr-border-radius--16">
           <div className="fr-mb-3w">
             <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mb-1w">
               <h3 className="fr-text--lg fr-mb-0">Nombre d’accompagnements</h3>
@@ -149,9 +159,9 @@ export const StatistiquesGenerales = ({
                 role="tooltip"
                 aria-hidden
               >
-                Le nombre d’accompagnements correspond à la somme des 3 types
-                d’activités enregistrées (accompagnement individuel et atelier
-                collectif).
+                Le nombre d’accompagnements correspond à la somme des 2 types
+                d’activités enregistrées&nbsp;: (accompagnement individuel et
+                atelier collectif).
                 <br />
                 <br />À noter&nbsp;: Les ateliers collectifs comptent pour 1
                 accompagnement par participant. Ex&nbsp;: Un atelier collectif

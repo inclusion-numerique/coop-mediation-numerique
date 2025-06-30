@@ -1,38 +1,33 @@
-.fr-table__content table tbody th {
-  --idle: transparent;
-  --hover: transparent;
-  --active: transparent;
+.fr-table .fr-table__wrapper:after {
+  background-image: none;
+}
 
-  background-color: var(--background-default-grey);
+.fr-table .fr-table__content table thead tr th {
+  height: 44px;
+  color: var(--text-mention-grey);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500 !important;
+  line-height: 16px;
+  vertical-align: middle;
+  background-color: var(--grey-975-125);
   background-image: linear-gradient(
-    0deg,
-    var(--border-default-grey),
-    var(--border-default-grey)
-  );
+      0deg,
+      var(--grey-900-175) 0%,
+      var(--grey-900-175) 100%
+    ), linear-gradient(var(--grey-900-175) 0%, var(--grey-900-175) 100%);
+  background-size: 100% 3px;
   background-position: 0 100%;
   background-repeat: no-repeat;
-  background-size: 100% 1px;
 }
 
-.fr-table__content table thead th {
-  background-color: var(--background-default-grey);
-
-  &:last-child {
-    background-color: var(--background-default-grey);
-  }
-}
-
-.fr-table__content table tbody td {
+.fr-table .fr-table__content table tbody td,
+.fr-table .fr-table__content table tbody th {
   background-image: linear-gradient(
       0deg,
-      var(--border-default-grey),
-      var(--border-default-grey)
-    ),
-    linear-gradient(
-      0deg,
-      var(--border-default-grey),
-      var(--border-default-grey)
-    );
+      var(--grey-900-175),
+      var(--grey-900-175)
+    ), linear-gradient(0deg, var(--grey-900-175), var(--grey-900-175));
 }
 
 .fr-table__wrapper::after {

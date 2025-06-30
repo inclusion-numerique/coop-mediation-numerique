@@ -2,6 +2,11 @@ import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import type { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
 import type { LieuFilterType } from '@app/web/features/lieux-activite/use-cases/filter/LieuFilter'
 import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
+import {
+  type RdvStatus,
+  rdvStatusLabels,
+  rdvStatusTous,
+} from '@app/web/rdv-service-public/rdvStatus'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { typeActiviteSlugLabels } from '../../cra/fields/type-activite'
 import type { ActivitesFilters } from '../validation/ActivitesFilters'
@@ -15,6 +20,7 @@ export type FilterType =
   | 'periode'
   | 'types'
   | 'conseiller_numerique'
+  | 'rdvs'
 
 export const locationTypeLabels: {
   [key in LieuFilterType]: string
@@ -111,6 +117,7 @@ export const generateActivitesFiltersLabels = (
     departements,
     communes,
     lieux,
+    rdvs,
     au,
     du,
   }: ActivitesFilters,
@@ -142,6 +149,22 @@ export const generateActivitesFiltersLabels = (
         key: type,
         type: 'types' as const,
       }))
+    : []
+
+  const rdvsLabel = rdvs
+    ? rdvs.includes(rdvStatusTous)
+      ? [
+          {
+            label: 'Tout les RDVs',
+            key: rdvStatusTous,
+            type: 'rdvs' as const,
+          },
+        ]
+      : rdvs.map((rdv) => ({
+          label: `RDV ${rdvStatusLabels[rdv as RdvStatus]}`,
+          key: rdv,
+          type: 'rdvs' as const,
+        }))
     : []
 
   const roleLabel = conseiller_numerique
@@ -176,14 +199,15 @@ export const generateActivitesFiltersLabels = (
     ...(periode == null ? [] : [periode]),
     ...lieuxLabels,
     ...typesLabel,
+    ...rdvsLabel,
     ...beneficiairesLabels,
   ]
 }
 
 const labelPrefixes: Record<string, string> = {
-  communes: 'Commune : ',
-  departements: 'Département : ',
-  lieux: 'Lieu d’activité : ',
+  communes: 'Commune : ',
+  departements: 'Département : ',
+  lieux: 'Lieu d’activité : ',
 }
 
 export const toLieuPrefix = ({

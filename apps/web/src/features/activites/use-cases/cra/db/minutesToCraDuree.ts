@@ -50,3 +50,14 @@ export const minutesToCraDureeData = (
     dureePersonnaliseeMinutes: undefined,
   }
 }
+
+export const minutesToCustomCraDureeData = (minutes: number): CraDureeData => {
+  const hours = Math.floor(minutes / 60)
+  const remainingMinutes = minutes % 60
+
+  return {
+    duree: dureeAccompagnementPersonnaliseeValue,
+    dureePersonnaliseeHeures: hours,
+    dureePersonnaliseeMinutes: remainingMinutes,
+  }
+}

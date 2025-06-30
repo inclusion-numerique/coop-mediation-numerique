@@ -1,10 +1,10 @@
 'use client'
 
 import { createDynamicModal } from '@app/ui/components/Modal/createDynamicModal'
-import { ActiviteForList } from '../../db/activitesQueries'
+import type { ActiviteListItem } from '../../db/activitesQueries'
 
 export type ActiviteDetailsDynamicModalState = {
-  activite: ActiviteForList
+  activite: ActiviteListItem
 }
 
 export const ActiviteDetailsDynamicModal = createDynamicModal({
