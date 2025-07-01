@@ -9,7 +9,9 @@ describe('braveSearch', () => {
 
     expect(results).toHaveLength(20)
 
-    const found = results.find((result) => result.url.startsWith('https://lesbases.anct.gouv.fr/'))
+    const found = results.find((result) =>
+      result.url.startsWith('https://lesbases.anct.gouv.fr/'),
+    )
 
     expect(found).toBeDefined()
   })
