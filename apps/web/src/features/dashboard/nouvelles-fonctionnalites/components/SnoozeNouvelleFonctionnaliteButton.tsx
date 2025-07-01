@@ -14,8 +14,8 @@ const SupprimerNouvelleFonctionnaliteCardButton = ({
   const onClick = () => {
     setNouvelleFonctionnaliteSkipCookie({
       featureId,
-      // Snooze for 24h
-      expiration: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      // Snooze until browser closed
+      expiration: 'session',
     })
     router.refresh()
   }

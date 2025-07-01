@@ -14,9 +14,9 @@ export const getNouvelleFonctionnaliteSkipCookie = ({
 export const setNouvelleFonctionnaliteSkipCookie = ({
   featureId,
   expiration,
-}: { featureId: string; expiration?: number | Date }) => {
+}: { featureId: string; expiration: Date | 'session' }) => {
   Cookies.set(getNouvelleFonctionnaliteCookieName(featureId), 'skip', {
     sameSite: 'strict',
-    expires: expiration,
+    expires: expiration === 'session' ? undefined : expiration,
   })
 }

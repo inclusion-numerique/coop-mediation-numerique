@@ -10,7 +10,11 @@ const SupprimerNouvelleFonctionnaliteCardButton = ({
   const router = useRouter()
 
   const onClick = () => {
-    setNouvelleFonctionnaliteSkipCookie({ featureId })
+    setNouvelleFonctionnaliteSkipCookie({
+      featureId,
+      // 300 jours
+      expiration: new Date(Date.now() + 300 * 24 * 60 * 60 * 1000),
+    })
     router.refresh()
   }
 
