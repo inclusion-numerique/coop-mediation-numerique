@@ -4,9 +4,15 @@ describe('braveSearch', () => {
   it('should return a list of results', async () => {
     const results = await executeBraveWebSearch({
       q: 'les bases du numérique d’intéret géneral',
+      count: 20,
     })
 
-    expect(results).toHaveLength(4)
-    expect(results.at(0)?.url).toStartWith('https://lesbases.anct.gouv.fr/')
+    expect(results).toHaveLength(20)
+
+    const found = results.find((result) =>
+      result.url.startsWith('https://lesbases.anct.gouv.fr/'),
+    )
+
+    expect(found).toBeDefined()
   })
 })

@@ -1,6 +1,7 @@
 import { OutilPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-outils/outilPageData'
 import RdvServicePublicAccessCard from '@app/web/rdv-service-public/RdvServicePublicAccess'
 import { rdvWebsiteLink } from '@app/web/rdv-service-public/rdvServicePublicOauth'
+import RdvServicePublicMigrationNotice from '../_components/RdvServicePublicMigrationNotice'
 
 export default {
   title: 'RDV Service Public',
@@ -9,6 +10,7 @@ export default {
   website: rdvWebsiteLink,
   logo: '/images/services/rdv-service-public.svg',
   illustration: '/images/illustrations/mes-outils/rdv-service-public.webp',
+  noticeComponent: <RdvServicePublicMigrationNotice />,
   features: [
     {
       title: 'Définir vos plages de disponibilités',
