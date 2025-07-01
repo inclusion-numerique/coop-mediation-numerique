@@ -13,6 +13,7 @@ import { Hero } from './_components/Hero'
 
 export const Outil = ({
   notice,
+  noticeComponent,
   title,
   illustration,
   illustrationWidth,
@@ -36,6 +37,7 @@ export const Outil = ({
     <SkipLinksPortal links={defaultSkipLinks} />
     <main id={contentId}>
       <BackButton href="/coop/mes-outils">Retour</BackButton>
+      {noticeComponent}
       {notice ? <ComingSoon text={notice} /> : null}
       <Hero
         title={title}

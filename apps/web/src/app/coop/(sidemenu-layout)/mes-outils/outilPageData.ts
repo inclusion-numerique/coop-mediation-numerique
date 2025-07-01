@@ -29,6 +29,7 @@ export type OutilPageDataAccess = {
 
 export type OutilPageData = {
   notice?: string
+  noticeComponent?: ReactNode
   title: string
   description: string
   website: string
