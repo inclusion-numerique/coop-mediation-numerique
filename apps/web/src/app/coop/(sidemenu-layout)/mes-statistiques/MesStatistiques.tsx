@@ -6,7 +6,7 @@ import { SessionUser } from '@app/web/auth/sessionUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { FilterTags } from '@app/web/features/activites/use-cases/list/components/FilterTags'
 import Filters from '@app/web/features/activites/use-cases/list/components/Filters'
-import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import { contentId } from '@app/web/utils/skipLinks'
 import { ExportStatistiques } from './_components/ExportStatistiques'
 import { PrintStatistiques } from './_components/PrintStatistiques'
 import { StatistiquesTerritoriales } from './_components/StatistiquesTerritoriales'
@@ -34,7 +34,7 @@ export const MesStatistiques = (
   return (
     <CoopPageContainer size={794}>
       <CoopBreadcrumbs currentPage="Mes statistiques" />
-      <SkipLinksPortal links={defaultSkipLinks} />
+      <SkipLinksPortal />
       <PrintStatistiques {...mesStatistiquesProps} />
       <main className="fr-no-print" id={contentId}>
         <h1 className="fr-text-title--blue-france fr-mb-6v">

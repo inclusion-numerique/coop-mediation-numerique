@@ -3,7 +3,7 @@ import { authenticateUser } from '@app/web/auth/authenticateUser'
 import BackButton from '@app/web/components/BackButton'
 import IconInSquare from '@app/web/components/IconInSquare'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import { contentId } from '@app/web/utils/skipLinks'
 import { redirect } from 'next/navigation'
 import React from 'react'
 import LieuxActiviteForm from './_components/LieuxActiviteForm'
@@ -17,7 +17,7 @@ const AjouterLieuPage = async () => {
 
   return (
     <>
-      <SkipLinksPortal links={defaultSkipLinks} />
+      <SkipLinksPortal />
       <div id={contentId}>
         <div className="fr-container fr-container--narrow ">
           <CoopBreadcrumbs

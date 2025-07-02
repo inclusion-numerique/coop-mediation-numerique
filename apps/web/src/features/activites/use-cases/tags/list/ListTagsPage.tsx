@@ -4,7 +4,7 @@ import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/Pagination
 import SortSelect from '@app/web/libs/data-table/SortSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
 import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
-import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import { contentId } from '@app/web/utils/skipLinks'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import classNames from 'classnames'
 import React from 'react'
@@ -30,7 +30,7 @@ export const ListTagsPage = ({
   searchParams: { lignes?: string; page?: string; recherche?: string }
 }) => (
   <>
-    <SkipLinksPortal links={defaultSkipLinks} />
+    <SkipLinksPortal />
     <div className="fr-container fr-container--800 fr-pb-16w">
       <CoopBreadcrumbs currentPage="Mes tags" />
       <main id={contentId}>

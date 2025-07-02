@@ -4,7 +4,7 @@ import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { LieuActivitePageContent } from '@app/web/features/lieux-activite/components/LieuActivitePageContent'
 import { getLieuActiviteById } from '@app/web/features/lieux-activite/getLieuActiviteById'
-import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import { contentId } from '@app/web/utils/skipLinks'
 import { redirect } from 'next/navigation'
 import React from 'react'
 
@@ -20,7 +20,7 @@ const LieuActiviteDetailPage = async (props: {
     redirect('/coop/lieux-activite')
   ) : (
     <>
-      <SkipLinksPortal links={defaultSkipLinks} />
+      <SkipLinksPortal />
       <div className="fr-container">
         <main id={contentId} className="fr-container fr-flex">
           <LieuActivitePageContent

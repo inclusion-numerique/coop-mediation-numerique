@@ -3,7 +3,7 @@ import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import { contentId } from '@app/web/utils/skipLinks'
 import classNames from 'classnames'
 import React from 'react'
 import { OutilPageData } from '../outilPageData'
@@ -34,7 +34,7 @@ export const Outil = ({
       ]}
       currentPage={title}
     />
-    <SkipLinksPortal links={defaultSkipLinks} />
+    <SkipLinksPortal />
     <main id={contentId}>
       <BackButton href="/coop/mes-outils">Retour</BackButton>
       {noticeComponent}

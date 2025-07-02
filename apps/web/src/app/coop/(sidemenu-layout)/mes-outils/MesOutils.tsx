@@ -3,7 +3,7 @@ import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { getAuthenticatedSessionUser } from '@app/web/auth/getSessionUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { hasFeatureFlag } from '@app/web/security/hasFeatureFlag'
-import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import { contentId } from '@app/web/utils/skipLinks'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -17,7 +17,7 @@ export const MesOutils = async () => {
   return (
     <CoopPageContainer size={794}>
       <CoopBreadcrumbs currentPage="Mes outils" />
-      <SkipLinksPortal links={defaultSkipLinks} />
+      <SkipLinksPortal />
       <main id={contentId}>
         <h1 className="fr-text-title--blue-france">Mes outils</h1>
         <p>
