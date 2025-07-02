@@ -1,6 +1,6 @@
 import Breadcrumbs from '@app/web/components/Breadcrumbs'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import { contentId } from '@app/web/utils/skipLinks'
 import React from 'react'
 import { Accompagnements } from './components/page-sections/Accompagnements'
 import { Beneficiaires } from './components/page-sections/Beneficiaires'
@@ -20,7 +20,7 @@ const StatistiquesPubliquesPage = async () => {
 
   return (
     <div className="fr-container">
-      <SkipLinksPortal links={defaultSkipLinks} />
+      <SkipLinksPortal />
       <Breadcrumbs currentPage="Statistiques" />
       <main id={contentId} className="fr-mt-12v fr-mb-30v">
         <h1 className="fr-text-title--blue-france fr-mb-2v">

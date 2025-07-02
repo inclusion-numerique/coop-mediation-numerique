@@ -4,7 +4,7 @@ import Contract from '@app/web/components/conseiller-numerique/Contract'
 import { ReferentStructure } from '@app/web/components/structure/ReferentStructure'
 import { StructureEmployeuse } from '@app/web/components/structure/StructureEmployeuse'
 import { AlerteFinContrat } from '@app/web/conseiller-numerique/getContractInfo'
-import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import { contentId } from '@app/web/utils/skipLinks'
 import type { Typologie } from '@prisma/client'
 import classNames from 'classnames'
 import Link from 'next/link'
@@ -74,7 +74,7 @@ export const MediateurDetailPage = ({
   coordinateurView?: boolean
 }) => (
   <>
-    <SkipLinksPortal links={defaultSkipLinks} />
+    <SkipLinksPortal />
     <div className="fr-container fr-container--800">
       <CoopBreadcrumbs
         parents={[{ label: 'Mon équipe', linkProps: { href } }]}

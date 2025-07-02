@@ -62,6 +62,7 @@ const ProfileEditCard = (profileData: {
           size="small"
           priority="tertiary no outline"
           iconId="fr-icon-edit-line"
+          iconPosition="right"
           title="Modifier"
           {...updateProfileWithProConnectModalNativeButtonProps}
         >

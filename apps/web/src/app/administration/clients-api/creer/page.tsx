@@ -3,8 +3,10 @@ import ClientApiForm from '@app/web/app/administration/clients-api/ClientApiForm
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
+import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
+import { contentId } from '@app/web/utils/skipLinks'
 
 export const metadata = {
   title: metadataTitle('Clients API - Créer'),
@@ -17,6 +19,7 @@ const Page = async () => {
 
   return (
     <CoopPageContainer>
+      <SkipLinksPortal />
       <AdministrationBreadcrumbs
         currentPage="Créer un client API"
         parents={[
@@ -26,13 +29,14 @@ const Page = async () => {
           },
         ]}
       />
-      <AdministrationTitle icon="ri-key-2-line">
-        Créer un client API
-      </AdministrationTitle>
-
-      <AdministrationInfoCard>
-        <ClientApiForm />
-      </AdministrationInfoCard>
+      <main id={contentId}>
+        <AdministrationTitle icon="ri-key-2-line">
+          Créer un client API
+        </AdministrationTitle>
+        <AdministrationInfoCard>
+          <ClientApiForm />
+        </AdministrationInfoCard>
+      </main>
     </CoopPageContainer>
   )
 }

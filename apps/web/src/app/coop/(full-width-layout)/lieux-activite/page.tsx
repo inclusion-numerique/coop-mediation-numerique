@@ -3,7 +3,7 @@ import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { getLieuxActivite } from '@app/web/features/lieux-activite/getLieuxActivite'
-import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import { contentId } from '@app/web/utils/skipLinks'
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
@@ -27,7 +27,7 @@ const LieuActiviteListPage = async () => {
 
   return (
     <>
-      <SkipLinksPortal links={defaultSkipLinks} />
+      <SkipLinksPortal />
       <div className="fr-container fr-container--800 fr-mb-32v">
         <CoopBreadcrumbs currentPage="Mes lieux d'activités" />
         <main id={contentId} className="fr-mb-16w">

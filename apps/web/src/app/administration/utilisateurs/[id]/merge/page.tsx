@@ -1,8 +1,10 @@
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { metadataTitle } from '@app/web/app/metadataTitle'
+import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { prismaClient } from '@app/web/prismaClient'
+import { contentId } from '@app/web/utils/skipLinks'
 import { getUserDisplayName } from '@app/web/utils/user'
 import { notFound } from 'next/navigation'
 import { MergeWithUser } from './MergeWithUser'
@@ -29,6 +31,7 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
 
   return (
     <CoopPageContainer>
+      <SkipLinksPortal />
       <AdministrationBreadcrumbs
         currentPage="Fusionner"
         parents={[
@@ -42,10 +45,12 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
           },
         ]}
       />
-      <AdministrationTitle icon="fr-icon-git-merge-line">
-        Fusionner {name} avec un autre utilisateur
-      </AdministrationTitle>
-      <MergeWithUser userId={id} />
+      <main id={contentId}>
+        <AdministrationTitle icon="fr-icon-git-merge-line">
+          Fusionner {name} avec un autre utilisateur
+        </AdministrationTitle>
+        <MergeWithUser userId={id} />
+      </main>
     </CoopPageContainer>
   )
 }

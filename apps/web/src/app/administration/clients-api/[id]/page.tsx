@@ -1,14 +1,16 @@
 import AdministrationInfoCard from '@app/web/app/administration/AdministrationInfoCard'
 import ClientApiForm from '@app/web/app/administration/clients-api/ClientApiForm'
-import { ClientApiData } from '@app/web/app/administration/clients-api/ClientApiValidation'
+import type { ClientApiData } from '@app/web/app/administration/clients-api/ClientApiValidation'
 import GenerateUniqueClientApiSecretForm from '@app/web/app/administration/clients-api/RotateApiClientSecretForm'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
+import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
+import { contentId } from '@app/web/utils/skipLinks'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { notFound } from 'next/navigation'
 import { DefaultValues } from 'react-hook-form'
@@ -47,6 +49,7 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
 
   return (
     <CoopPageContainer>
+      <SkipLinksPortal />
       <AdministrationBreadcrumbs
         currentPage={client.name}
         parents={[
@@ -56,31 +59,31 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
           },
         ]}
       />
-      <AdministrationTitle
-        icon="ri-key-2-line"
-        actions={
-          <Button
-            iconId="fr-icon-file-text-line"
-            linkProps={{ href: '/api/v1/documentation', target: '_blank' }}
-            className="fr-mr-2v"
-            priority="secondary"
-          >
-            Documentation
-          </Button>
-        }
-      >
-        {client.name}
-      </AdministrationTitle>
-
-      <AdministrationInfoCard>
-        <h2 className="fr-h4">Générer un token secret unique</h2>
-        <GenerateUniqueClientApiSecretForm clientId={client.id} />
-      </AdministrationInfoCard>
-
-      <AdministrationInfoCard>
-        <h2 className="fr-h4">Modifier le client API</h2>
-        <ClientApiForm defaultValues={defaultValues} />
-      </AdministrationInfoCard>
+      <main id={contentId}>
+        <AdministrationTitle
+          icon="ri-key-2-line"
+          actions={
+            <Button
+              iconId="fr-icon-file-text-line"
+              linkProps={{ href: '/api/v1/documentation', target: '_blank' }}
+              className="fr-mr-2v"
+              priority="secondary"
+            >
+              Documentation
+            </Button>
+          }
+        >
+          {client.name}
+        </AdministrationTitle>
+        <AdministrationInfoCard>
+          <h2 className="fr-h4">Générer un token secret unique</h2>
+          <GenerateUniqueClientApiSecretForm clientId={client.id} />
+        </AdministrationInfoCard>
+        <AdministrationInfoCard>
+          <h2 className="fr-h4">Modifier le client API</h2>
+          <ClientApiForm defaultValues={defaultValues} />
+        </AdministrationInfoCard>
+      </main>
     </CoopPageContainer>
   )
 }

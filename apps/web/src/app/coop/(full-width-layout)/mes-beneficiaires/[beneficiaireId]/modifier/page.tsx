@@ -6,14 +6,16 @@ import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiair
 import { beneficiaireCommuneResidenceToPreviewBanData } from '@app/web/beneficiaire/prismaBeneficiaireToBeneficiaireData'
 import BackButton from '@app/web/components/BackButton'
 import IconInSquare from '@app/web/components/IconInSquare'
-import { AdressBanFormFieldOption } from '@app/web/components/form/AdresseBanFormField'
+import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import type { AdressBanFormFieldOption } from '@app/web/components/form/AdresseBanFormField'
 import { banMunicipalityLabel } from '@app/web/external-apis/ban/banMunicipalityLabel'
-import { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
-import { BeneficiaireData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
+import type { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
+import type { BeneficiaireData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
 import { prismaClient } from '@app/web/prismaClient'
-import { EncodedState } from '@app/web/utils/encodeSerializableState'
+import type { EncodedState } from '@app/web/utils/encodeSerializableState'
+import { contentId } from '@app/web/utils/skipLinks'
 import { notFound } from 'next/navigation'
-import { DefaultValues } from 'react-hook-form'
+import type { DefaultValues } from 'react-hook-form'
 
 const PageModifierBeneficiaire = async (props: {
   searchParams: Promise<{
@@ -116,6 +118,7 @@ const PageModifierBeneficiaire = async (props: {
 
   return (
     <div className="fr-container fr-container--medium">
+      <SkipLinksPortal />
       <CoopBreadcrumbs
         currentPage="Modifier"
         parents={[
@@ -131,23 +134,26 @@ const PageModifierBeneficiaire = async (props: {
           },
         ]}
       />
-      <BackButton href={`/coop/mes-beneficiaires/${beneficiaire.id}`}>
-        Retour à la fiche
-      </BackButton>
-      <div className="fr-flex fr-flex-gap-6v fr-align-items-start fr-mb-12v">
-        <IconInSquare iconId="fr-icon-user-setting-line" size="large" />
-        <div className="fr-flex-grow-1">
-          <h1 className="fr-text-title--blue-france fr-mb-2v">{displayName}</h1>
-          <RequiredFieldsDisclamer className="fr-my-0" />
+      <main id={contentId}>
+        <BackButton href={`/coop/mes-beneficiaires/${beneficiaire.id}`}>
+          Retour à la fiche
+        </BackButton>
+        <div className="fr-flex fr-flex-gap-6v fr-align-items-start fr-mb-12v">
+          <IconInSquare iconId="fr-icon-user-setting-line" size="large" />
+          <div className="fr-flex-grow-1">
+            <h1 className="fr-text-title--blue-france fr-mb-2v">
+              {displayName}
+            </h1>
+            <RequiredFieldsDisclamer className="fr-my-0" />
+          </div>
         </div>
-      </div>
-
-      <BeneficiaireForm
-        defaultValues={beneficiaireDefaultValues}
-        retour={retour}
-        communeResidenceDefaultOptions={communeResidenceDefaultOptions}
-        edit
-      />
+        <BeneficiaireForm
+          defaultValues={beneficiaireDefaultValues}
+          retour={retour}
+          communeResidenceDefaultOptions={communeResidenceDefaultOptions}
+          edit
+        />
+      </main>
     </div>
   )
 }

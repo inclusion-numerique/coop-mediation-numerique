@@ -1,12 +1,14 @@
 import ModifierEmployeStructureForm from '@app/web/app/administration/utilisateurs/[id]/emplois/[emploiId]/modifier/ModifierEmployeStructureForm'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { metadataTitle } from '@app/web/app/metadataTitle'
+import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { StructureCardStructure } from '@app/web/components/structure/StructureCard'
 import { findConseillerNumeriqueV1 } from '@app/web/external-apis/conseiller-numerique/searchConseillerNumeriqueV1'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
+import { contentId } from '@app/web/utils/skipLinks'
 import { getUserDisplayName } from '@app/web/utils/user'
 import { notFound, redirect } from 'next/navigation'
 
@@ -87,6 +89,7 @@ const Page = async (props: {
 
   return (
     <CoopPageContainer>
+      <SkipLinksPortal />
       <AdministrationBreadcrumbs
         currentPage="Modifier"
         parents={[
@@ -104,20 +107,23 @@ const Page = async (props: {
           },
         ]}
       />
-      <AdministrationTitle icon="fr-icon-user-line">
-        {name} - Modifier une structure employeuse <span className="fr-mx-1v" />{' '}
-      </AdministrationTitle>
-      <ModifierEmployeStructureForm
-        user={user}
-        structure={structure}
-        defaultValues={{
-          id: emploi.id,
-          creation: dateAsIsoDay(emploi.creation),
-          suppression: emploi.suppression
-            ? dateAsIsoDay(emploi.suppression)
-            : undefined,
-        }}
-      />
+      <main id={contentId}>
+        <AdministrationTitle icon="fr-icon-user-line">
+          {name} - Modifier une structure employeuse{' '}
+          <span className="fr-mx-1v" />{' '}
+        </AdministrationTitle>
+        <ModifierEmployeStructureForm
+          user={user}
+          structure={structure}
+          defaultValues={{
+            id: emploi.id,
+            creation: dateAsIsoDay(emploi.creation),
+            suppression: emploi.suppression
+              ? dateAsIsoDay(emploi.suppression)
+              : undefined,
+          }}
+        />
+      </main>
     </CoopPageContainer>
   )
 }

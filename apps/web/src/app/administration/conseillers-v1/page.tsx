@@ -1,10 +1,12 @@
 import AdministrationConseillersNumeriquesV1 from '@app/web/app/administration/conseillers-v1/AdministrationConseillersNumeriquesV1'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { metadataTitle } from '@app/web/app/metadataTitle'
+import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import AdministrationSearchUtilisateur from '@app/web/features/utilisateurs/components/AdministrationSearchUtilisateur'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { Spinner } from '@app/web/ui/Spinner'
+import { contentId } from '@app/web/utils/skipLinks'
 import { Suspense } from 'react'
 
 export const metadata = {
@@ -23,18 +25,20 @@ const Page = async (props: {
   return (
     <>
       <CoopPageContainer>
+        <SkipLinksPortal />
         <AdministrationBreadcrumbs currentPage="Conseillers V1" />
-        <AdministrationTitle icon="fr-icon-archive-line">
-          Conseillers numériques V1
-        </AdministrationTitle>
-
-        <div className="fr-border-radius--8 fr-py-8v fr-px-10v fr-background-alt--blue-france  fr-mb-6v">
-          <p className="fr-text--bold fr-mb-4v">
-            Rechercher dans la base MongoDB hébergée par l’ancien projet
+        <main id={contentId}>
+          <AdministrationTitle icon="fr-icon-archive-line">
             Conseillers numériques V1
-          </p>
-          <AdministrationSearchUtilisateur searchParams={searchParams} />
-        </div>
+          </AdministrationTitle>
+          <div className="fr-border-radius--8 fr-py-8v fr-px-10v fr-background-alt--blue-france  fr-mb-6v">
+            <p className="fr-text--bold fr-mb-4v">
+              Rechercher dans la base MongoDB hébergée par l’ancien projet
+              Conseillers numériques V1
+            </p>
+            <AdministrationSearchUtilisateur searchParams={searchParams} />
+          </div>
+        </main>
       </CoopPageContainer>
 
       {executeV1Search && (

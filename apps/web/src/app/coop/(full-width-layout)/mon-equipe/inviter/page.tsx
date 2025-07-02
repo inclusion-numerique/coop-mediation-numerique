@@ -2,9 +2,8 @@ import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
-import React from 'react'
 import { InviterMembresPage } from './InviterMembresPage'
 
 export const metadata: Metadata = {
@@ -16,7 +15,7 @@ const Page = () => (
     className="fr-flex fr-direction-column fr-background-alt--blue-ecume"
     style={{ minHeight: '100%' }}
   >
-    <SkipLinksPortal links={defaultSkipLinks} />
+    <SkipLinksPortal />
     <div className="fr-container fr-container--narrow">
       <CoopBreadcrumbs
         parents={[

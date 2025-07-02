@@ -7,7 +7,7 @@ import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/Pagination
 import SortSelect from '@app/web/libs/data-table/SortSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
 import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
-import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import { contentId } from '@app/web/utils/skipLinks'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
 import React from 'react'
@@ -49,7 +49,7 @@ const EquipeListePage = ({
   coordinateurView?: boolean
 }) => (
   <>
-    <SkipLinksPortal links={defaultSkipLinks} />
+    <SkipLinksPortal />
     <div className="fr-container fr-container--800">
       <CoopBreadcrumbs currentPage="Mon équipe" />
       <main id={contentId} className="fr-mb-16w">
