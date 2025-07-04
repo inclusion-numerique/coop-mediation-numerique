@@ -27,7 +27,7 @@ export const StatistiqueAccompagnement = ({
     )}
   >
     <div className="fr-py-1v fr-px-2v fr-border-radius--8 fr-background-default--grey">
-      <img src={typeActiviteIllustrations[typeActivite]} />
+      <img src={typeActiviteIllustrations[typeActivite]} alt="" />
     </div>
     <div>
       <div className="fr-flex fr-direction-row fr-align-items-baseline">
