@@ -1,5 +1,6 @@
 import { SessionUser } from '@app/web/auth/sessionUser'
 import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite/CreerLieuActiviteValidation'
+import { searchLieuxActivite } from '@app/web/features/lieux-activite/searchLieuxActivite'
 import {
   DescriptionData,
   DescriptionValidation,
@@ -30,6 +31,7 @@ import {
 } from '@app/web/features/structures/VisiblePourCartographieNationaleValidation'
 import { prismaClient } from '@app/web/prismaClient'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
+import { enforceIsMediateur } from '@app/web/server/rpc/enforceIsMediateur'
 import { forbiddenError, invalidError } from '@app/web/server/rpc/trpcErrors'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { fixTelephone } from '@app/web/utils/clean-operations'
@@ -406,5 +408,15 @@ export const lieuActiviteRouter = router({
       })
 
       return updated
+    }),
+  search: protectedProcedure
+    .input(z.object({ query: z.string() }))
+    .query(({ input: { query }, ctx: { user: sessionUser } }) => {
+      enforceIsMediateur(sessionUser)
+
+      return searchLieuxActivite({
+        mediateurId: sessionUser.mediateur.id,
+        searchParams: { recherche: query },
+      })
     }),
 })

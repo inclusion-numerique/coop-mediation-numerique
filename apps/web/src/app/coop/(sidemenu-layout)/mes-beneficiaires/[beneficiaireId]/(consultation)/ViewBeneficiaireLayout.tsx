@@ -1,6 +1,5 @@
 import PrendreRendezVousAvecBeneficiaireButton from '@app/web/app/coop/(full-width-layout)/mon-profil/PrendreRendezVousAvecBeneficiaireButton'
 import BeneficiaireEnregistrerUneActivite from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/BeneficiaireEnregistrerUneActivite'
-import { DeleteBeneficiaireModal } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/DeleteBeneficiaireModal'
 import DeleteBeneficiaireModalContent from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/DeleteBeneficiaireModalContent'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
@@ -9,7 +8,6 @@ import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiair
 import BackButton from '@app/web/components/BackButton'
 import type { BeneficiaireCraData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
 import { hasFeatureFlag } from '@app/web/security/hasFeatureFlag'
-import Button from '@codegouvfr/react-dsfr/Button'
 import type { Beneficiaire } from '@prisma/client'
 import classNames from 'classnames'
 import type { PropsWithChildren } from 'react'
@@ -26,19 +24,12 @@ const ViewBeneficiaireLayout = ({
   >
 }>) => {
   const displayName = getBeneficiaireDisplayName(beneficiaire)
-  const {
-    anneeNaissance,
-    id: beneficiaireId,
-    nom,
-    prenom,
-    mediateurId,
-  } = beneficiaire
+  const { anneeNaissance, id: beneficiaireId, nom, prenom } = beneficiaire
 
   const beneficiaireCraData = {
     id: beneficiaireId,
-    prenom,
-    nom,
-    mediateurId,
+    prenom: prenom ?? '',
+    nom: nom ?? '',
   } satisfies BeneficiaireCraData
 
   const canPrendreRendezVous =
