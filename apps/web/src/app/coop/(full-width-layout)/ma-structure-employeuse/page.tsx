@@ -6,7 +6,7 @@ import { ReferentStructure } from '@app/web/components/structure/ReferentStructu
 import { StructureEmployeuse } from '@app/web/components/structure/StructureEmployeuse'
 import UpdateStructure from '@app/web/components/structure/UpdateStructure'
 import { prismaClient } from '@app/web/prismaClient'
-import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import React from 'react'
@@ -67,7 +67,7 @@ const MaStructureEmployeusePage = async () => {
 
   return (
     <>
-      <SkipLinksPortal links={defaultSkipLinks} />
+      <SkipLinksPortal />
       <div className="fr-container fr-container--800">
         <CoopBreadcrumbs currentPage="Ma structure employeuse" />
         <main id={contentId} className="fr-mb-16w">

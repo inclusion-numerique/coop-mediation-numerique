@@ -2,9 +2,10 @@ import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import Breadcrumbs from '@app/web/components/Breadcrumbs'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import React from 'react'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mentions légales'),
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 
 const LegalPage = () => (
   <div className="fr-container">
-    <SkipLinksPortal links={defaultSkipLinks} />
+    <SkipLinksPortal />
     <Breadcrumbs currentPage="Mentions légales" />
     <main
       id={contentId}

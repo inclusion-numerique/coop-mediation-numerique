@@ -7,6 +7,7 @@ import ResetUserInscriptionButton from '@app/web/app/administration/utilisateurs
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { isUserInscriptionEnCours } from '@app/web/auth/isUserInscriptionEnCours'
+import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { isConseillerNumeriqueV1DataWithActiveMiseEnRelation } from '@app/web/external-apis/conseiller-numerique/isConseillerNumeriqueV1WithActiveMiseEnRelation'
 import { findConseillerNumeriqueV1 } from '@app/web/external-apis/conseiller-numerique/searchConseillerNumeriqueV1'
 import { getUserLifecycleBadge } from '@app/web/features/utilisateurs/use-cases/list/getUserLifecycleBadge'
@@ -16,6 +17,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { dateAsDayAndTime } from '@app/web/utils/dateAsDayAndTime'
 import { numberToString } from '@app/web/utils/formatNumber'
+import { contentId } from '@app/web/utils/skipLinks'
 import { getUserDisplayName } from '@app/web/utils/user'
 import { countCrasConseillerNumeriqueV1 } from '@app/web/v1/v1CraQueries'
 import Badge from '@codegouvfr/react-dsfr/Badge'
@@ -238,6 +240,7 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
 
   return (
     <CoopPageContainer>
+      <SkipLinksPortal />
       <AdministrationBreadcrumbs
         currentPage={`${name}`}
         parents={[
@@ -247,409 +250,415 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
           },
         ]}
       />
-      <AdministrationTitle
-        icon="fr-icon-user-line"
-        actions={<ResetUserInscriptionButton userId={id} />}
-      >
-        {name} <span className="fr-mx-1v" />{' '}
-        {getUserLifecycleBadge(user, { small: false })}
-      </AdministrationTitle>
-      {inscriptionEnCours && !isMediateur && !isCoordinateur && (
-        <Notice
-          className="fr-notice--warning fr-mb-8v"
-          title="Inscription restée à la première étape"
-        />
-      )}
-
-      <div className="fr-flex fr-flex-gap-2v fr-mb-6v">
-        {role === 'Admin' && <Tag small>Administrateur</Tag>}
-        {role === 'Support' && <Tag small>Support</Tag>}
-        {isMediateur && <Tag small>Médiateur</Tag>}
-        {mediateur?.conseillerNumerique && (
-          <Tag small>Conseiller numérique</Tag>
-        )}
-        {isCoordinateur && <Tag small>Coordinateur</Tag>}
-      </div>
-      {conseillerNumeriqueInfo ? (
-        isConseillerNumeriqueV1DataWithActiveMiseEnRelation(
-          conseillerNumeriqueInfo,
-        ) ? (
-          <Notice
-            className="fr-notice--success fr-mb-8v"
-            title={
-              <>
-                Dans la base de données des conseillers numériques V1 avec
-                contrat actif{' '}
-                <Button
-                  size="small"
-                  className="fr-ml-2v"
-                  priority="tertiary no outline"
-                  iconId="fr-icon-arrow-right-line"
-                  linkProps={{
-                    href: `/administration/conseillers-v1/${conseillerNumeriqueInfo.conseiller.id}`,
-                  }}
-                >
-                  Voir les détails du conseiller V1
-                </Button>
-              </>
-            }
-          />
-        ) : (
+      <main id={contentId}>
+        <AdministrationTitle
+          icon="fr-icon-user-line"
+          actions={<ResetUserInscriptionButton userId={id} />}
+        >
+          {name} <span className="fr-mx-1v" />{' '}
+          {getUserLifecycleBadge(user, { small: false })}
+        </AdministrationTitle>
+        {inscriptionEnCours && !isMediateur && !isCoordinateur && (
           <Notice
             className="fr-notice--warning fr-mb-8v"
-            title={
-              <>
-                Dans la base de données des conseillers numériques V1 sans
-                contrat actif{' '}
-                <Button
-                  size="small"
-                  className="fr-ml-2v"
-                  priority="tertiary no outline"
-                  iconId="fr-icon-arrow-right-line"
-                  linkProps={{
-                    href: `/administration/conseillers-v1/${conseillerNumeriqueInfo.conseiller.id}`,
-                  }}
-                >
-                  Voir les détails du conseiller V1
-                </Button>
-              </>
-            }
+            title="Inscription restée à la première étape"
           />
-        )
-      ) : (
-        <Notice
-          className="fr-notice--info fr-mb-8v"
-          title="Inexistant dans la base de données des conseillers numériques V1"
-        />
-      )}
-      <AdministrationInfoCard
-        title="Détails de l'utilisateur"
-        actions={
-          <Button
-            iconId="fr-icon-git-merge-line"
-            priority="tertiary"
-            size="small"
-            linkProps={{
-              href: `/administration/utilisateurs/${user.id}/merge`,
-            }}
-          >
-            Fusionner avec un autre utilisateur
-          </Button>
-        }
-      >
-        <AdministrationInlineLabelsValues
-          items={[
-            {
-              label: 'Id',
-              value: id,
-            },
-            {
-              label: 'Prénom',
-              value: firstName || 'Non renseigné',
-            },
-            {
-              label: 'Nom de famille',
-              value: lastName || 'Non renseigné',
-            },
-            {
-              label: 'Email',
-              value: email ? (
-                <AdministrationMailtoLink email={email} />
-              ) : (
-                'Non renseigné'
-              ),
-            },
-            {
-              label: 'Téléphone',
-              value: phone || 'Non renseigné',
-            },
-            {
-              label: 'Rôle sécurité',
-              value: role,
-            },
-            {
-              label: 'Créé le',
-              value: dateAsDay(created),
-            },
-            {
-              label: 'Dernière connexion',
-              value: lastLogin ? dateAsDayAndTime(lastLogin) : 'Jamais',
-            },
-            {
-              label: 'Profil d’inscription',
-              value: profilInscription || 'Non renseigné',
-            },
-            {
-              label: 'Inscription validée',
-              value: inscriptionValidee
-                ? dateAsDayAndTime(inscriptionValidee)
-                : 'Non',
-            },
-          ]}
-        />
-      </AdministrationInfoCard>
-      <AdministrationInfoCard title="Feature flags">
-        <UtilisateurSetFeatureFlagsForm user={user} />
-      </AdministrationInfoCard>
-      {isMediateur && mediateur && (
-        <AdministrationInfoCard title="Rôle médiateur">
-          <AdministrationInlineLabelsValues
-            items={[
-              {
-                label: 'ID Médiateur',
-                value: mediateur.id,
-              },
-              {
-                label: 'Créé le',
-                value: dateAsDay(mediateur.creation),
-              },
-              {
-                label: 'Modifié le',
-                value: dateAsDay(mediateur.modification),
-              },
-              {
-                label: 'Nombre de bénéficiaires',
-                value: numberToString(mediateur._count.beneficiaires),
-              },
-              {
-                label: 'Nombre d’activités',
-                value: numberToString(mediateur._count.activites),
-              },
-              {
-                label: 'Lieux d’activité',
-                value: mediateur.enActivite.length,
-              },
-              {
-                label: 'Coordoné(e) par',
-                value:
-                  !!coordinations && coordinations.length > 0 ? (
-                    coordinations.map((coordination) => (
-                      <Link
-                        key={coordination.id}
-                        href={`/administration/utilisateurs/${coordination.coordinateur.user.id}`}
-                        target="_blank"
-                      >
-                        {coordination.coordinateur.user.name}
-                      </Link>
-                    ))
-                  ) : (
-                    <Badge severity="warning">Aucune coordination</Badge>
-                  ),
-              },
-            ]}
-          />
-        </AdministrationInfoCard>
-      )}
-      {isMediateur && mediateur?.conseillerNumerique && (
-        <AdministrationInfoCard title="Rôle conseiller numérique">
-          <AdministrationInlineLabelsValues
-            items={[
-              {
-                label: 'ID Conseiller Numérique',
-                value: (
-                  <Link
-                    className="fr-link"
-                    href={`/administration/conseillers-v1/${mediateur.conseillerNumerique.id}`}
-                    target="_blank"
+        )}
+
+        <div className="fr-flex fr-flex-gap-2v fr-mb-6v">
+          {role === 'Admin' && <Tag small>Administrateur</Tag>}
+          {role === 'Support' && <Tag small>Support</Tag>}
+          {isMediateur && <Tag small>Médiateur</Tag>}
+          {mediateur?.conseillerNumerique && (
+            <Tag small>Conseiller numérique</Tag>
+          )}
+          {isCoordinateur && <Tag small>Coordinateur</Tag>}
+        </div>
+        {conseillerNumeriqueInfo ? (
+          isConseillerNumeriqueV1DataWithActiveMiseEnRelation(
+            conseillerNumeriqueInfo,
+          ) ? (
+            <Notice
+              className="fr-notice--success fr-mb-8v"
+              title={
+                <>
+                  Dans la base de données des conseillers numériques V1 avec
+                  contrat actif{' '}
+                  <Button
+                    size="small"
+                    className="fr-ml-2v"
+                    priority="tertiary no outline"
+                    iconId="fr-icon-arrow-right-line"
+                    linkProps={{
+                      href: `/administration/conseillers-v1/${conseillerNumeriqueInfo.conseiller.id}`,
+                    }}
                   >
-                    {mediateur.conseillerNumerique.id}
-                  </Link>
-                ),
-              },
-              {
-                label: 'Nombre de CRAs v1 importés',
-                value:
-                  crasConseillerNumeriqueV1Count === null
-                    ? 'Aucun'
-                    : numberToString(crasConseillerNumeriqueV1Count),
-              },
-            ]}
+                    Voir les détails du conseiller V1
+                  </Button>
+                </>
+              }
+            />
+          ) : (
+            <Notice
+              className="fr-notice--warning fr-mb-8v"
+              title={
+                <>
+                  Dans la base de données des conseillers numériques V1 sans
+                  contrat actif{' '}
+                  <Button
+                    size="small"
+                    className="fr-ml-2v"
+                    priority="tertiary no outline"
+                    iconId="fr-icon-arrow-right-line"
+                    linkProps={{
+                      href: `/administration/conseillers-v1/${conseillerNumeriqueInfo.conseiller.id}`,
+                    }}
+                  >
+                    Voir les détails du conseiller V1
+                  </Button>
+                </>
+              }
+            />
+          )
+        ) : (
+          <Notice
+            className="fr-notice--info fr-mb-8v"
+            title="Inexistant dans la base de données des conseillers numériques V1"
           />
-        </AdministrationInfoCard>
-      )}
-      {coordinateur && (
-        <AdministrationInfoCard title="Rôle coordinateur">
-          <AdministrationInlineLabelsValues
-            items={[
-              {
-                label: 'ID Coordinateur',
-                value: coordinateur.id,
-              },
-              {
-                label: 'Conseiller Numérique ID',
-                value: coordinateur.conseillerNumeriqueId,
-              },
-              {
-                label: 'Créé le',
-                value: dateAsDay(coordinateur.creation),
-              },
-              {
-                label: 'Modifié le',
-                value: dateAsDay(coordinateur.modification),
-              },
-              {
-                label: 'Nombre de médiateurs coordonnés',
-                value: numberToString(coordinateur.mediateursCoordonnes.length),
-              },
-              {
-                label: 'Médiateurs coordonés',
-                value:
-                  coordinateur.mediateursCoordonnes.length > 0 ? (
-                    coordinateur.mediateursCoordonnes.map(
-                      (coordination, index) => (
-                        <Fragment key={coordination.id}>
-                          {index > 0 && <br />}
-                          <Link
-                            key={id}
-                            href={`/administration/utilisateurs/${coordination.mediateur.user.id}`}
-                            target="_blank"
-                          >
-                            {coordination.mediateur.user.name}
-                            &nbsp;&nbsp;·&nbsp;&nbsp;
-                            {coordination.mediateur.user.email}
-                          </Link>
-                        </Fragment>
-                      ),
-                    )
-                  ) : (
-                    <Badge severity="warning">Aucun médiateur coordonné</Badge>
-                  ),
-              },
-            ]}
-          />
-        </AdministrationInfoCard>
-      )}
-      {emplois.length > 0 ? (
+        )}
         <AdministrationInfoCard
-          title="Structures employeuses"
+          title="Détails de l'utilisateur"
           actions={
             <Button
-              iconId="fr-icon-settings-5-line"
+              iconId="fr-icon-git-merge-line"
               priority="tertiary"
               size="small"
               linkProps={{
-                href: `/administration/utilisateurs/${user.id}/emplois`,
+                href: `/administration/utilisateurs/${user.id}/merge`,
               }}
             >
-              Paramétrer les structures employeuses
+              Fusionner avec un autre utilisateur
             </Button>
           }
         >
-          {emplois.map((emploi) => (
-            <div key={emploi.id}>
-              <p className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
-                {emploi.structure.nom}{' '}
-                {!!emploi.suppression && (
-                  <Badge className="fr-ml-2w" severity="warning" small>
-                    Emploi terminé
-                  </Badge>
-                )}
-              </p>
-              <AdministrationInlineLabelsValues
-                items={[
-                  {
-                    label: 'Lien d’emploi créé le',
-                    value: dateAsDay(emploi.creation),
-                  },
-                  {
-                    label: 'Lien d’emploi supprimé le',
-                    value: emploi.suppression
-                      ? dateAsDay(emploi.suppression)
-                      : '-',
-                  },
-                  ...getStructuresInfos(emploi.structure),
-                ]}
-              />
-            </div>
-          ))}
-        </AdministrationInfoCard>
-      ) : (
-        (!!coordinateur || !!mediateur) && (
-          <Notice
-            className="fr-notice--alert fr-mb-6v"
-            title={<>Aucune structure employeuse</>}
-          />
-        )
-      )}
-      {enActivite.length > 0 ? (
-        <AdministrationInfoCard title="Lieux d’activité">
-          {enActivite.map((activite) => (
-            <div key={activite.id}>
-              <p className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
-                {activite.structure.nom}
-              </p>
-              <AdministrationInlineLabelsValues
-                items={[
-                  ...getStructuresInfos(activite.structure),
-                  {
-                    label: 'Lien d’activité créé le',
-                    value: dateAsDay(activite.creation),
-                  },
-                  {
-                    label: 'Lien d’activité supprimé le',
-                    value: activite.suppression
-                      ? dateAsDay(activite.suppression)
-                      : '-',
-                  },
-                ]}
-              />
-            </div>
-          ))}
-        </AdministrationInfoCard>
-      ) : (
-        !!mediateur && (
-          <Notice
-            className="fr-notice--alert fr-mb-6v"
-            title={<>Aucun lieu d’activité</>}
-          />
-        )
-      )}
-
-      <AdministrationInfoCard title="Sessions de connexion et comptes liés">
-        <AdministrationInlineLabelsValues
-          items={[
-            ...(accounts.length > 0
-              ? accounts.map((account) => ({
-                  label: `Sub ID ${account.provider}`,
-                  value: `${account.providerAccountId}`,
-                }))
-              : [
-                  {
-                    label: 'Compte',
-                    value: "Aucun provider d'authentification lié",
-                  },
-                ]),
-            ...(sortedSessions.length > 0
-              ? sortedSessions.map((session) => ({
-                  label: `Session ${session.id}`,
-                  value: `Expire le ${dateAsDayAndTime(session.expires)}`,
-                }))
-              : [{ label: 'Session', value: 'Aucune session active' }]),
-          ]}
-        />
-      </AdministrationInfoCard>
-      <AdministrationInfoCard title="Mutations">
-        {sortedMutations.length > 0 ? (
           <AdministrationInlineLabelsValues
-            items={sortedMutations.map((mutation) => ({
-              label: `${mutation.nom}`,
-              value: `Date: ${dateAsDayAndTime(mutation.timestamp)}`,
-            }))}
+            items={[
+              {
+                label: 'Id',
+                value: id,
+              },
+              {
+                label: 'Prénom',
+                value: firstName || 'Non renseigné',
+              },
+              {
+                label: 'Nom de famille',
+                value: lastName || 'Non renseigné',
+              },
+              {
+                label: 'Email',
+                value: email ? (
+                  <AdministrationMailtoLink email={email} />
+                ) : (
+                  'Non renseigné'
+                ),
+              },
+              {
+                label: 'Téléphone',
+                value: phone || 'Non renseigné',
+              },
+              {
+                label: 'Rôle sécurité',
+                value: role,
+              },
+              {
+                label: 'Créé le',
+                value: dateAsDay(created),
+              },
+              {
+                label: 'Dernière connexion',
+                value: lastLogin ? dateAsDayAndTime(lastLogin) : 'Jamais',
+              },
+              {
+                label: 'Profil d’inscription',
+                value: profilInscription || 'Non renseigné',
+              },
+              {
+                label: 'Inscription validée',
+                value: inscriptionValidee
+                  ? dateAsDayAndTime(inscriptionValidee)
+                  : 'Non',
+              },
+            ]}
           />
-        ) : (
-          <p className="fr-mb-0">Aucune mutation enregistrée.</p>
+        </AdministrationInfoCard>
+        <AdministrationInfoCard title="Feature flags">
+          <UtilisateurSetFeatureFlagsForm user={user} />
+        </AdministrationInfoCard>
+        {isMediateur && mediateur && (
+          <AdministrationInfoCard title="Rôle médiateur">
+            <AdministrationInlineLabelsValues
+              items={[
+                {
+                  label: 'ID Médiateur',
+                  value: mediateur.id,
+                },
+                {
+                  label: 'Créé le',
+                  value: dateAsDay(mediateur.creation),
+                },
+                {
+                  label: 'Modifié le',
+                  value: dateAsDay(mediateur.modification),
+                },
+                {
+                  label: 'Nombre de bénéficiaires',
+                  value: numberToString(mediateur._count.beneficiaires),
+                },
+                {
+                  label: 'Nombre d’activités',
+                  value: numberToString(mediateur._count.activites),
+                },
+                {
+                  label: 'Lieux d’activité',
+                  value: mediateur.enActivite.length,
+                },
+                {
+                  label: 'Coordoné(e) par',
+                  value:
+                    !!coordinations && coordinations.length > 0 ? (
+                      coordinations.map((coordination) => (
+                        <Link
+                          key={coordination.id}
+                          href={`/administration/utilisateurs/${coordination.coordinateur.user.id}`}
+                          target="_blank"
+                        >
+                          {coordination.coordinateur.user.name}
+                        </Link>
+                      ))
+                    ) : (
+                      <Badge severity="warning">Aucune coordination</Badge>
+                    ),
+                },
+              ]}
+            />
+          </AdministrationInfoCard>
         )}
-      </AdministrationInfoCard>
-      {sortedUploads.length > 0 && (
-        <AdministrationInfoCard title="Uploads">
+        {isMediateur && mediateur?.conseillerNumerique && (
+          <AdministrationInfoCard title="Rôle conseiller numérique">
+            <AdministrationInlineLabelsValues
+              items={[
+                {
+                  label: 'ID Conseiller Numérique',
+                  value: (
+                    <Link
+                      className="fr-link"
+                      href={`/administration/conseillers-v1/${mediateur.conseillerNumerique.id}`}
+                      target="_blank"
+                    >
+                      {mediateur.conseillerNumerique.id}
+                    </Link>
+                  ),
+                },
+                {
+                  label: 'Nombre de CRAs v1 importés',
+                  value:
+                    crasConseillerNumeriqueV1Count === null
+                      ? 'Aucun'
+                      : numberToString(crasConseillerNumeriqueV1Count),
+                },
+              ]}
+            />
+          </AdministrationInfoCard>
+        )}
+        {coordinateur && (
+          <AdministrationInfoCard title="Rôle coordinateur">
+            <AdministrationInlineLabelsValues
+              items={[
+                {
+                  label: 'ID Coordinateur',
+                  value: coordinateur.id,
+                },
+                {
+                  label: 'Conseiller Numérique ID',
+                  value: coordinateur.conseillerNumeriqueId,
+                },
+                {
+                  label: 'Créé le',
+                  value: dateAsDay(coordinateur.creation),
+                },
+                {
+                  label: 'Modifié le',
+                  value: dateAsDay(coordinateur.modification),
+                },
+                {
+                  label: 'Nombre de médiateurs coordonnés',
+                  value: numberToString(
+                    coordinateur.mediateursCoordonnes.length,
+                  ),
+                },
+                {
+                  label: 'Médiateurs coordonés',
+                  value:
+                    coordinateur.mediateursCoordonnes.length > 0 ? (
+                      coordinateur.mediateursCoordonnes.map(
+                        (coordination, index) => (
+                          <Fragment key={coordination.id}>
+                            {index > 0 && <br />}
+                            <Link
+                              key={id}
+                              href={`/administration/utilisateurs/${coordination.mediateur.user.id}`}
+                              target="_blank"
+                            >
+                              {coordination.mediateur.user.name}
+                              &nbsp;&nbsp;·&nbsp;&nbsp;
+                              {coordination.mediateur.user.email}
+                            </Link>
+                          </Fragment>
+                        ),
+                      )
+                    ) : (
+                      <Badge severity="warning">
+                        Aucun médiateur coordonné
+                      </Badge>
+                    ),
+                },
+              ]}
+            />
+          </AdministrationInfoCard>
+        )}
+        {emplois.length > 0 ? (
+          <AdministrationInfoCard
+            title="Structures employeuses"
+            actions={
+              <Button
+                iconId="fr-icon-settings-5-line"
+                priority="tertiary"
+                size="small"
+                linkProps={{
+                  href: `/administration/utilisateurs/${user.id}/emplois`,
+                }}
+              >
+                Paramétrer les structures employeuses
+              </Button>
+            }
+          >
+            {emplois.map((emploi) => (
+              <div key={emploi.id}>
+                <p className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
+                  {emploi.structure.nom}{' '}
+                  {!!emploi.suppression && (
+                    <Badge className="fr-ml-2w" severity="warning" small>
+                      Emploi terminé
+                    </Badge>
+                  )}
+                </p>
+                <AdministrationInlineLabelsValues
+                  items={[
+                    {
+                      label: 'Lien d’emploi créé le',
+                      value: dateAsDay(emploi.creation),
+                    },
+                    {
+                      label: 'Lien d’emploi supprimé le',
+                      value: emploi.suppression
+                        ? dateAsDay(emploi.suppression)
+                        : '-',
+                    },
+                    ...getStructuresInfos(emploi.structure),
+                  ]}
+                />
+              </div>
+            ))}
+          </AdministrationInfoCard>
+        ) : (
+          (!!coordinateur || !!mediateur) && (
+            <Notice
+              className="fr-notice--alert fr-mb-6v"
+              title={<>Aucune structure employeuse</>}
+            />
+          )
+        )}
+        {enActivite.length > 0 ? (
+          <AdministrationInfoCard title="Lieux d’activité">
+            {enActivite.map((activite) => (
+              <div key={activite.id}>
+                <p className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
+                  {activite.structure.nom}
+                </p>
+                <AdministrationInlineLabelsValues
+                  items={[
+                    ...getStructuresInfos(activite.structure),
+                    {
+                      label: 'Lien d’activité créé le',
+                      value: dateAsDay(activite.creation),
+                    },
+                    {
+                      label: 'Lien d’activité supprimé le',
+                      value: activite.suppression
+                        ? dateAsDay(activite.suppression)
+                        : '-',
+                    },
+                  ]}
+                />
+              </div>
+            ))}
+          </AdministrationInfoCard>
+        ) : (
+          !!mediateur && (
+            <Notice
+              className="fr-notice--alert fr-mb-6v"
+              title={<>Aucun lieu d’activité</>}
+            />
+          )
+        )}
+
+        <AdministrationInfoCard title="Sessions de connexion et comptes liés">
           <AdministrationInlineLabelsValues
-            items={sortedUploads.map((upload) => ({
-              label: `Fichier ${upload.name}`,
-              value: `Uploadé le: ${dateAsDayAndTime(upload.created)}`,
-            }))}
+            items={[
+              ...(accounts.length > 0
+                ? accounts.map((account) => ({
+                    label: `Sub ID ${account.provider}`,
+                    value: `${account.providerAccountId}`,
+                  }))
+                : [
+                    {
+                      label: 'Compte',
+                      value: "Aucun provider d'authentification lié",
+                    },
+                  ]),
+              ...(sortedSessions.length > 0
+                ? sortedSessions.map((session) => ({
+                    label: `Session ${session.id}`,
+                    value: `Expire le ${dateAsDayAndTime(session.expires)}`,
+                  }))
+                : [{ label: 'Session', value: 'Aucune session active' }]),
+            ]}
           />
         </AdministrationInfoCard>
-      )}
+        <AdministrationInfoCard title="Mutations">
+          {sortedMutations.length > 0 ? (
+            <AdministrationInlineLabelsValues
+              items={sortedMutations.map((mutation) => ({
+                label: `${mutation.nom}`,
+                value: `Date: ${dateAsDayAndTime(mutation.timestamp)}`,
+              }))}
+            />
+          ) : (
+            <p className="fr-mb-0">Aucune mutation enregistrée.</p>
+          )}
+        </AdministrationInfoCard>
+        {sortedUploads.length > 0 && (
+          <AdministrationInfoCard title="Uploads">
+            <AdministrationInlineLabelsValues
+              items={sortedUploads.map((upload) => ({
+                label: `Fichier ${upload.name}`,
+                value: `Uploadé le: ${dateAsDayAndTime(upload.created)}`,
+              }))}
+            />
+          </AdministrationInfoCard>
+        )}
+      </main>
     </CoopPageContainer>
   )
 }
