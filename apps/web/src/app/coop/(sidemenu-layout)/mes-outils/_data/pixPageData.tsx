@@ -1,4 +1,5 @@
 import { OutilPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-outils/outilPageData'
+import { PixOrgaLogo } from '@app/web/features/pictograms/services/PixOrgaLogo'
 
 export default {
   title: 'Pix Orga',
@@ -6,7 +7,7 @@ export default {
     'Proposez des parcours de montée en compétences et des tests Pix adaptés à vos bénéficiaires et suivez leur progression.',
   website: 'https://pix.fr/mediation-numerique',
   websiteLinkLabel: 'Voir la page Pix dédiée à la médiation numérique',
-  logo: '/images/services/pix-orga.svg',
+  pictogram: PixOrgaLogo,
   illustration: '/images/illustrations/mes-outils/pix.webp',
   illustrationWidth: 100,
   features: [

@@ -1,0 +1,25 @@
+import { Pictogram } from '@app/web/features/pictograms/pictogram'
+
+export const ConseillersNumeriqueSmallLogo: Pictogram = ({
+  width = 21,
+  height = 24,
+  ...props
+}) => (
+  <svg
+    width={width}
+    height={height}
+    {...props}
+    viewBox="0 0 21 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M10.432 0 0 6v12l10.432 6 10.374-6V6z" fill="#E1000F" />
+    <path
+      d="M13.39 10.273h3.927V7.99l-6.886-3.98-6.945 3.98v7.961l6.945 4.04 6.887-4.04v-2.253H13.39z"
+      fill="#fff"
+    />
+    <path
+      d="M13.392 13.697v-3.424l-2.96-1.727-3.018 1.727v3.424l3.018 1.727z"
+      fill="#000091"
+    />
+  </svg>
+)

@@ -1,4 +1,5 @@
 import { OutilPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-outils/outilPageData'
+import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import RdvServicePublicAccessCard from '@app/web/rdv-service-public/RdvServicePublicAccess'
 import { rdvWebsiteLink } from '@app/web/rdv-service-public/rdvServicePublicOauth'
 import RdvServicePublicMigrationNotice from '../_components/RdvServicePublicMigrationNotice'
@@ -8,7 +9,7 @@ export default {
   description:
     'Un outil de prise de rendez-vous en ligne, simplifiant votre organisation et rappelant aux usagers leurs rendez-vous par SMS.',
   website: rdvWebsiteLink,
-  logo: '/images/services/rdv-service-public.svg',
+  pictogram: RDVServicePublicLogo,
   illustration: '/images/illustrations/mes-outils/rdv-service-public.webp',
   noticeComponent: <RdvServicePublicMigrationNotice />,
   features: [

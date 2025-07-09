@@ -1,4 +1,7 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
+import { Pictogram } from '@app/web/features/pictograms/pictogram'
+import { SittingAtATableIcon } from '@app/web/features/pictograms/user/SittingAtATableIcon'
+import { TeacherIcon } from '@app/web/features/pictograms/user/TeacherIcon'
 import { TypeActivite } from '@prisma/client'
 
 export const typeActivitePluralLabels: {
@@ -30,11 +33,9 @@ export const typeActiviteSlugLabels: {
   collectif: typeActiviteLabels[typeActiviteForSlug.collectif],
 }
 
-export const typeActiviteIllustrations: {
-  [key in TypeActivite]?: string
-} = {
-  Individuel: '/images/iconographie/accompagnement-individuel.svg',
-  Collectif: '/images/iconographie/accompagnement-collectif.svg',
+export const typeActivitePictograms: Record<TypeActivite, Pictogram> = {
+  Individuel: SittingAtATableIcon,
+  Collectif: TeacherIcon,
 }
 
 export const typeActiviteValues = Object.keys(typeActiviteLabels) as [

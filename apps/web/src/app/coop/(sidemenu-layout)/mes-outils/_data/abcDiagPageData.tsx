@@ -1,11 +1,12 @@
 import { OutilPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-outils/outilPageData'
+import { AbcDiagLogo } from '@app/web/features/pictograms/services/AbcDiagLogo'
 
 export default {
   title: 'ABC Diag',
   description:
     'Diagnostiquez en 10 questions la maîtrise de compétences numériques de base.',
   website: 'https://pix.fr/abc-diag',
-  logo: '/images/services/abc-diag.svg',
+  pictogram: AbcDiagLogo,
   illustration: '/images/illustrations/mes-outils/abc-diag.svg',
   illustrationWidth: 100,
   features: [

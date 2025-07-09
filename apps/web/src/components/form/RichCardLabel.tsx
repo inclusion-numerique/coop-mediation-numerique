@@ -2,11 +2,12 @@ import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import classNames from 'classnames'
 
 import Stars from '@app/web/components/Stars'
+import { Pictogram } from '@app/web/features/pictograms/pictogram'
 import { Fragment, type KeyboardEventHandler, memo } from 'react'
 import styles from './RichCardLabel.module.css'
 
 export type RichCardOptionExtras = {
-  illustration?: string
+  illustration?: string | Pictogram
   stars?: number
   maxStars?: number
   tooltips?: string[]
@@ -131,11 +132,15 @@ const RichCardLabel = memo(
                   'fr-flex-shrink-0 fr-flex fr-align-items-center',
                 )}
               >
-                <img
-                  className={styles.illustration}
-                  alt=""
-                  src={option.extra.illustration}
-                />
+                {typeof option.extra.illustration === 'string' ? (
+                  <img
+                    className={styles.illustration}
+                    alt=""
+                    src={option.extra.illustration}
+                  />
+                ) : (
+                  <option.extra.illustration width={56} height={56} />
+                )}
               </div>
             )}
           </div>

@@ -17,7 +17,7 @@ export const Outil = ({
   title,
   illustration,
   illustrationWidth,
-  logo,
+  pictogram,
   description,
   website,
   websiteLinkLabel,
@@ -43,7 +43,7 @@ export const Outil = ({
         title={title}
         illustration={illustration}
         illustrationWidth={illustrationWidth}
-        logo={logo}
+        pictogram={pictogram}
         description={description}
         website={website}
         websiteLinkLabel={websiteLinkLabel}
