@@ -75,7 +75,7 @@ const ProfileEditCard = (profileData: {
     <UpdateProfileWithProConnectModal
       title={
         <div className="fr-flex fr-flex-gap-2v">
-          <span className="ri-arrow-right-line" aria-hidden={true} /> Modifier
+          <span className="ri-arrow-right-line" aria-hidden /> Modifier
           informations ProConnect
         </div>
       }

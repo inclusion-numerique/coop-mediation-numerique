@@ -90,7 +90,7 @@ export const FilterTags = ({
         </ul>
         <div>
           <Button priority="tertiary no outline" onClick={handleClearFilters}>
-            <span className="ri-close-circle-line" aria-hidden={true} />
+            <span className="ri-close-circle-line" aria-hidden />
             &nbsp;Effacer&nbsp;les&nbsp;filtres
           </Button>
         </div>

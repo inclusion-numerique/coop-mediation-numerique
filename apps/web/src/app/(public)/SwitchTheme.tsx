@@ -76,6 +76,7 @@ const SwitchTheme = ({ initialTheme }: { initialTheme: 'light' | 'dark' }) => {
           'fr-icon--sm fr-mr-1-5v',
           changeThemeTo === 'light' ? 'fr-icon-sun-line' : 'fr-icon-moon-line',
         )}
+        aria-hidden
       />
       Basculer en thème {changeThemeTo === 'light' ? 'clair' : 'foncé'}
     </button>

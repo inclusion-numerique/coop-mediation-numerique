@@ -133,7 +133,7 @@ const StatisticsChart = <T extends object>({
             <span>
               <span
                 className="ri-checkbox-blank-circle-fill fr-mr-1w"
-                aria-hidden="true"
+                aria-hidden
                 style={{ color: chartColors[index].fill }}
               />
               {item.label}

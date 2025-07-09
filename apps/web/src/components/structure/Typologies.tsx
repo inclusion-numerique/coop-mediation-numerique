@@ -25,7 +25,7 @@ export const Typologies = ({
         className="fr-tooltip fr-placement"
         id={`tooltip-typologie-${id}`}
         role="tooltip"
-        aria-hidden="true"
+        aria-hidden
       >
         {typologies
           .map(

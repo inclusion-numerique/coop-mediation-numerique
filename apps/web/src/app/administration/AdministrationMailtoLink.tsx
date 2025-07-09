@@ -9,7 +9,7 @@ const AdministrationMailtoLink = ({
   className?: string
 }) => (
   <Link href={`mailto:${email}`} className={classNames('fr-link', className)}>
-    {email} <span className="fr-icon-mail-line fr-icon--sm" />
+    {email} <span className="fr-icon-mail-line fr-icon--sm" aria-hidden />
   </Link>
 )
 

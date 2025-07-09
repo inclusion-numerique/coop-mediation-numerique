@@ -30,7 +30,10 @@ const Layout = async ({ children }: PropsWithChildren) => {
             <Link className="fr-link" href="/administration/usurpation">
               Accéder à l’usurpation pour accéder aux fonctionnalités de la coop
               en tant qu’utilisateur de test
-              <span className="fr-icon-arrow-right-line fr-icon-arrow-right-line fr-icon--sm fr-ml-1w" />
+              <span
+                className="fr-icon-arrow-right-line fr-icon-arrow-right-line fr-icon--sm fr-ml-1w"
+                aria-hidden
+              />
             </Link>
           </div>
         </InscriptionStepsLayout>

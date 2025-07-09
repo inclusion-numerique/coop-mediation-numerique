@@ -60,7 +60,7 @@ const ImporterPage = () => (
                   title="Télécharger le modèle"
                   aria-label="Télécharger le modèle"
                 >
-                  <span className="fr-icon-download-line" />
+                  <span className="fr-icon-download-line" aria-hidden />
                 </a>
               </div>
             </div>

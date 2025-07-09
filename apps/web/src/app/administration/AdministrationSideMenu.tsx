@@ -12,7 +12,10 @@ const AdministrationSideMenu = () => {
     {
       text: (
         <>
-          <span className="fr-icon-team-line ri-xl fr-mr-1w fr-text--regular" />
+          <span
+            className="fr-icon-team-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
+          />
           Utilisateurs
         </>
       ),
@@ -24,7 +27,10 @@ const AdministrationSideMenu = () => {
     {
       text: (
         <>
-          <span className="fr-icon-archive-line ri-xl fr-mr-1w fr-text--regular" />
+          <span
+            className="fr-icon-archive-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
+          />
           Conseillers V1
         </>
       ),
@@ -36,7 +42,10 @@ const AdministrationSideMenu = () => {
     {
       text: (
         <>
-          <span className="fr-icon-home-4-line ri-xl fr-mr-1w fr-text--regular" />
+          <span
+            className="fr-icon-home-4-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
+          />
           Structures
         </>
       ),
@@ -72,7 +81,10 @@ const AdministrationSideMenu = () => {
     {
       text: (
         <>
-          <span className="fr-icon-line-chart-line ri-xl fr-mr-1w fr-text--regular" />
+          <span
+            className="fr-icon-line-chart-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
+          />
           Statistiques
         </>
       ),
@@ -84,7 +96,10 @@ const AdministrationSideMenu = () => {
     {
       text: (
         <>
-          <span className="fr-icon-settings-5-line ri-xl fr-mr-1w fr-text--regular" />
+          <span
+            className="fr-icon-settings-5-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
+          />
           Outils
         </>
       ),
@@ -96,7 +111,10 @@ const AdministrationSideMenu = () => {
     {
       text: (
         <>
-          <span className="fr-icon-chat-check-line ri-xl fr-mr-1w fr-text--regular" />
+          <span
+            className="fr-icon-chat-check-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
+          />
           Assistant
         </>
       ),

@@ -55,7 +55,7 @@ const StructureCard = ({
             className="fr-tooltip fr-placement"
             id={tooltipId}
             role="tooltip"
-            aria-hidden="true"
+            aria-hidden
           >
             {(typologies as Typologie[])
               .map((typologie) =>

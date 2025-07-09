@@ -14,7 +14,7 @@ export const MergePreview = ({
     <h2 className="fr-h6 fr-flex fr-flex-gap-2v">
       <span
         className={source == null ? 'ri-user-unfollow-line' : 'ri-group-line'}
-        aria-hidden={true}
+        aria-hidden
       />
       <span className="fr-flex fr-direction-column">
         {merge.name}
