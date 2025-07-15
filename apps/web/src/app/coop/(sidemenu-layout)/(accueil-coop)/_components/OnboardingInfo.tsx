@@ -45,7 +45,10 @@ export const OnboardingInfo = ({
               </span>
               <Link className="fr-link" href="/en-savoir-plus">
                 Découvrir{' '}
-                <span className="fr-icon-arrow-right-line fr-icon-arrow-right-line fr-icon--sm fr-ml-1v" />
+                <span
+                  className="fr-icon-arrow-right-line fr-icon-arrow-right-line fr-icon--sm fr-ml-1v"
+                  aria-hidden
+                />
               </Link>
             </span>
           </span>

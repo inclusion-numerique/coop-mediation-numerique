@@ -55,7 +55,7 @@ export const MesOutils = async () => {
         />
         <section className="fr-mt-6w">
           <h2 className="fr-h5 fr-text-mention--grey">
-            <span className="ri-service-line fr-mr-1w" aria-hidden="true" />
+            <span className="ri-service-line fr-mr-1w" aria-hidden />
             Des outils pour vos accompagnements
           </h2>
           <div className="fr-grid-row fr-grid-row--gutters">

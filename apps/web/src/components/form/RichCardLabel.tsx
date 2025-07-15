@@ -62,7 +62,7 @@ const RichCardLabel = memo(
         className="fr-tooltip fr-placement"
         id={tooltipId}
         role="tooltip"
-        aria-hidden="true"
+        aria-hidden
       >
         {option.extra.tooltips.map((tooltipContent) => (
           <Fragment key={tooltipContent}>

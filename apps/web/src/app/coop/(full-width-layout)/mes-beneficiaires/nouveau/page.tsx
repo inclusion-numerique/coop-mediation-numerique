@@ -59,7 +59,10 @@ const PageCreerBeneficiaire = async ({
           className="fr-notice--hint fr-notice--no-icon fr-notice--flex fr-border-radius--16 fr-mb-8v"
           title={
             <span className="fr-flex fr-align-items-center fr-flex-gap-8v fr-py-1w">
-              <span className="ri-admin-line ri-xl fr-mx-1w fr-text--regular" />
+              <span
+                className="ri-admin-line ri-xl fr-mx-1w fr-text--regular"
+                aria-hidden
+              />
 
               <span>
                 <span className="fr-notice__title fr-text--md fr-text-title--blue-france fr-mb-1w fr-display-block">

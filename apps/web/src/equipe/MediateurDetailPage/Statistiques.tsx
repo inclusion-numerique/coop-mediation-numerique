@@ -19,7 +19,7 @@ const StatistiqueElement = ({
           icon,
           'ri-lg fr-background-alt--brown-caramel-950 fr-text-label--brown-caramel fr-p-3v fr-border-radius--8 fr-line-height-1',
         )}
-        aria-hidden="true"
+        aria-hidden
       />
       <span className="fr-flex fr-direction-column">
         <span className="fr-text--lg fr-text--bold fr-mb-0">{count}</span>

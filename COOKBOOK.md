@@ -389,7 +389,7 @@ const TodoPage = async () => {
       <div className="fr-mb-6w fr-flex fr-justify-content-space-between fr-align-items-center">
         <h1 className="fr-mt-8v">Todo</h1>
         <Link
-          className="fr-btn fr-btn--icon-left fr-icon-add-line fr-btn--secondary"
+          className="fr-btn fr-btn--secondary"
           href={`/todo/ajouter`}
         >
           Ajouter une tâche
@@ -484,7 +484,7 @@ const TodoList = ({ todoList }: { todoList: TodoListItem[] }) => (
           <span className="fr-flex fr-direction-column">
             {todo.description}
             <span className="fr-text-mention--grey fr-text--sm fr-mb-0 fr-mt-1v">
-              <span className="fr-icon-calendar-line fr-icon--sm fr-pr-1v"></span>
+              <span className="fr-icon-calendar-line fr-icon--sm fr-pr-1v" aria-hidden />
               {todo.created.toDateString()}
             </span>
           </span>
@@ -538,7 +538,7 @@ const EmptyTodoList = () => (
       à faire. Vous pouvez ajouter une tâche et lui donner une description.
     </div>
     <Link
-      className="fr-btn fr-btn--icon-left fr-icon-add-line  fr-mt-4w"
+      className="fr-btn fr-mt-4w"
       href={`/todo/ajouter`}
     >
       Ajouter une tâche
@@ -647,7 +647,7 @@ const TodoList = ({ todoList }: { todoList: TodoListItem[] }) => (
             <span className="fr-flex fr-direction-column">
               {todo.description}
               <span className="fr-text-mention--grey fr-text--sm fr-mb-0 fr-mt-1v">
-                <span className="fr-icon-calendar-line fr-icon--sm fr-pr-1v"></span>
+                <span className="fr-icon-calendar-line fr-icon--sm fr-pr-1v" aria-hidden />
                 {todo.created.toDateString()}
               </span>
             </span>

@@ -26,7 +26,7 @@ const TriggerButton = forwardRef<HTMLButtonElement, TriggerButtonProps>(
           'fr-ml-1v fr-icon--sm',
           isOpen ? 'fr-icon-arrow-up-s-line' : 'fr-icon-arrow-down-s-line',
         )}
-        aria-hidden="true"
+        aria-hidden
       />
     </Button>
   ),

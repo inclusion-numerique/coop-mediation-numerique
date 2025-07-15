@@ -28,7 +28,7 @@ const EquipeCount = ({
             icon,
             'ri-lg fr-background-alt--brown-caramel-950 fr-text-label--blue-france fr-p-3v fr-border-radius--8 fr-line-height-1',
           )}
-          aria-hidden="true"
+          aria-hidden
         />
       )}
       <span className="fr-h2 fr-mb-0">{count}</span>

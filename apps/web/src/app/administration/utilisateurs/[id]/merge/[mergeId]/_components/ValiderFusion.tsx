@@ -47,7 +47,7 @@ const ValiderFusion = ({
       <ValiderFusionModal
         title={
           <>
-            <span className="fr-icon-git-merge-line" aria-hidden={true} />
+            <span className="fr-icon-git-merge-line" aria-hidden />
             &nbsp; Fusionner des utilisateurs
           </>
         }

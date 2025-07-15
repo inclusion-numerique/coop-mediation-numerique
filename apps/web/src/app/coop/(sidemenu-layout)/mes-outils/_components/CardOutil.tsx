@@ -47,7 +47,7 @@ export const CardOutil = ({
           aria-label={`En savoir plus à propos de ${title}`}
         />
       </div>
-      <div className="fr-flex fr-justify-content-end fr-width-full">
+      <div className="fr-flex fr-justify-content-end fr-width-full" aria-hidden>
         <span className="fr-icon-arrow-right-line fr-text-title--blue-france" />
       </div>
     </div>

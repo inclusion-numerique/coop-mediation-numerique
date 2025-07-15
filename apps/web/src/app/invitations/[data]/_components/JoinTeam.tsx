@@ -71,7 +71,7 @@ export const JoinTeam = ({
             <span className="fr-text--lg fr-mb-0 fr-text--bold fr-text-label--blue-france">
               <span
                 className="ri-group-2-line ri-lg fr-text--semi-bold fr-mr-2v"
-                aria-hidden="true"
+                aria-hidden
               />
               Mon équipe
             </span>
@@ -81,12 +81,12 @@ export const JoinTeam = ({
               Équipe coordonnée par {user.name}
             </div>
             <div className="fr-text--sm fr-mb-0 fr-text-mention--grey">
-              <span className="ri-mail-line fr-mr-1w" aria-hidden="true" />
+              <span className="ri-mail-line fr-mr-1w" aria-hidden />
               {user.email}
             </div>
             {user.phone != null && (
               <div className="fr-text--sm fr-mb-0 fr-text-mention--grey">
-                <span className="ri-phone-line fr-mr-1w" aria-hidden="true" />
+                <span className="ri-phone-line fr-mr-1w" aria-hidden />
                 {user.phone}
               </div>
             )}

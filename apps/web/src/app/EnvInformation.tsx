@@ -37,7 +37,8 @@ export const EnvInformation = () => {
               rel="noreferrer"
               target="_blank"
             >
-              <span className="fr-icon--sm fr-icon-github-fill" /> PR &#34;
+              <span className="fr-icon--sm fr-icon-github-fill" aria-hidden />{' '}
+              PR &#34;
               {branch}&#34; sur Github
             </a>
             <br className="fr-hidden-lg fr-mt-2v" />
@@ -47,14 +48,14 @@ export const EnvInformation = () => {
               rel="noreferrer"
               target="_blank"
             >
-              <span className="fr-icon--sm  fr-icon-image-line" /> Composants
-              &#34;
+              <span className="fr-icon--sm  fr-icon-image-line" aria-hidden />{' '}
+              Composants &#34;
               {branch}&#34; sur Storybook
             </a>
             <br className="fr-hidden-lg fr-mt-2v" />
             <a href={mainLiveUrl} target="_blank">
-              <span className="fr-icon--sm fr-icon-france-line" /> Version
-              officielle
+              <span className="fr-icon--sm fr-icon-france-line" aria-hidden />{' '}
+              Version officielle
             </a>
             <br className="fr-hidden-lg fr-mt-2v" />
           </p>

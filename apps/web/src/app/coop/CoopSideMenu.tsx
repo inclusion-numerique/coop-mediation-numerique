@@ -23,7 +23,10 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
     {
       text: (
         <>
-          <span className="ri-home-line ri-xl fr-mr-1w fr-text--regular" />
+          <span
+            className="ri-home-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
+          />
           Accueil
         </>
       ),
@@ -33,7 +36,10 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
     {
       text: (
         <>
-          <span className="ri-chat-poll-line ri-xl fr-mr-1w fr-text--regular" />
+          <span
+            className="ri-chat-poll-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
+          />
           Statistiques
         </>
       ),
@@ -43,7 +49,10 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
     {
       text: (
         <>
-          <span className="ri-service-line ri-xl fr-mr-1w fr-text--regular" />
+          <span
+            className="ri-service-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
+          />
           Mes activités
         </>
       ),
@@ -54,7 +63,10 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
     {
       text: (
         <>
-          <span className="ri-user-heart-line ri-xl fr-mr-1w fr-text--regular" />
+          <span
+            className="ri-user-heart-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
+          />
           Mes bénéficiaires
         </>
       ),
@@ -65,7 +77,10 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
     {
       text: (
         <>
-          <span className="ri-apps-2-line ri-xl fr-mr-1w fr-text--regular" />
+          <span
+            className="ri-apps-2-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
+          />
           Mes outils
         </>
       ),
@@ -78,7 +93,10 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
     items.push({
       text: (
         <>
-          <span className="fr-icon-chat-check-line ri-xl fr-mr-1w fr-text--regular" />
+          <span
+            className="fr-icon-chat-check-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
+          />
           Assistant
         </>
       ),

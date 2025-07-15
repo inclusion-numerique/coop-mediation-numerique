@@ -252,7 +252,7 @@ const BeneficiaireForm = ({
                     className="fr-tooltip fr-placement"
                     id="annee-naissance-tooltip"
                     role="tooltip"
-                    aria-hidden="true"
+                    aria-hidden
                   >
                     L’année de naissance permet d’éviter les doublons de
                     bénéficiaires (en cas d’homonyme) et de compléter la tranche
