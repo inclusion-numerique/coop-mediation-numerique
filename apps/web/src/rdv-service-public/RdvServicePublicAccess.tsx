@@ -1,4 +1,5 @@
 import { getSessionUser } from '@app/web/auth/getSessionUser'
+import { RDVServicePublicCoopConnexion } from '@app/web/features/pictograms/services/RDVServicePublicCoopConnexion'
 import GererRdvServicePublicButton from '@app/web/rdv-service-public/GererRdvServicePublicButton'
 import { getRdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
 import {
@@ -28,12 +29,10 @@ const RdvServicePublicAccess = async () => {
 
   return (
     <>
-      <div className="fr-flex fr-width-full fr-align-items-center fr-justify-content-center">
-        <img
-          src="/images/services/rdv-service-public-coop-connexion.svg"
-          alt=""
-        />
-      </div>
+      <RDVServicePublicCoopConnexion
+        className="fr-flex fr-width-full fr-align-items-center fr-justify-content-center"
+        aria-hidden
+      />
       <div className="fr-text--center">
         <p className="fr-text--bold fr-mt-8v fr-mb-2v">
           Connectez RDV Service Public à La Coop de la médiation numérique

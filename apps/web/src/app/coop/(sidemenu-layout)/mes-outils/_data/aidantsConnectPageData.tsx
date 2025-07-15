@@ -1,11 +1,12 @@
 import { OutilPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-outils/outilPageData'
+import { AidantsConnectLogo } from '@app/web/features/pictograms/services/AidantsConnectLogo'
 
 export default {
   title: 'Aidants Connect',
   description:
     "Sécuriser l'aidant et la personne accompagnée dans la réalisation de démarches administratives en ligne.",
   website: 'https://aidantsconnect.beta.gouv.fr',
-  logo: '/images/services/aidants-connect.svg',
+  pictogram: AidantsConnectLogo,
   illustration: '/images/illustrations/mes-outils/aidants-connect.webp',
   illustrationWidth: 70,
   features: [

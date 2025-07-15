@@ -1,4 +1,32 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
+import { HouseIcon } from '@app/web/features/pictograms/buildings/HouseIcon'
+import { AIIcon } from '@app/web/features/pictograms/digital/AIIcon'
+import { DevicesIcon } from '@app/web/features/pictograms/digital/DevicesIcon'
+import { InternetIcon } from '@app/web/features/pictograms/digital/InternetIcon'
+import { MailSendIcon } from '@app/web/features/pictograms/digital/MailSendIcon'
+import { MediaIcon } from '@app/web/features/pictograms/digital/MediaIcon'
+import { NetworkIcon } from '@app/web/features/pictograms/digital/NetworkIcon'
+import { DocumentContentIcon } from '@app/web/features/pictograms/document/DocumentContentIcon'
+import { DocumentSearchIcon } from '@app/web/features/pictograms/document/DocumentSearchIcon'
+import { NationalIdentityCardIcon } from '@app/web/features/pictograms/document/NationalIdentityCardIcon'
+import { PapersIcon } from '@app/web/features/pictograms/document/PapersIcon'
+import { HumanCooperationIcon } from '@app/web/features/pictograms/environment/HumanCooperationIcon'
+import { CareIcon } from '@app/web/features/pictograms/health/CareIcon'
+import { HealthIcon } from '@app/web/features/pictograms/health/HealthIcon'
+import { JusticeIcon } from '@app/web/features/pictograms/institutions/JusticeIcon'
+import { MoneyIcon } from '@app/web/features/pictograms/institutions/MoneyIcon'
+import { ActivitiesIcon } from '@app/web/features/pictograms/leisure/ActivitiesIcon'
+import { CommunityIcon } from '@app/web/features/pictograms/leisure/CommunityIcon'
+import { JourneyIcon } from '@app/web/features/pictograms/leisure/JourneyIcon'
+import { TransportationIcon } from '@app/web/features/pictograms/map/TransportationIcon'
+import { Pictogram } from '@app/web/features/pictograms/pictogram'
+import { PadlockIcon } from '@app/web/features/pictograms/system/PadlockIcon'
+import { SystemIcon } from '@app/web/features/pictograms/system/SystemIcon'
+import { ParentIcon } from '@app/web/features/pictograms/user/ParentIcon'
+import { UserStatsIcon } from '@app/web/features/pictograms/user/UserStatsIcon'
+import { PairIcon } from '@app/web/features/pictograms/work/PairIcon'
+import { ProfessionalIcon } from '@app/web/features/pictograms/work/ProfessionalIcon'
+import { ScolarshipIcon } from '@app/web/features/pictograms/work/ScolarshipIcon'
 import { Thematique } from '@prisma/client'
 
 export const thematiquesNonAdministrativesInfo = {
@@ -203,45 +231,42 @@ export const thematiqueHints: {
 }
 
 export const thematiquesNonAdministrativesIllustrations = {
-  DiagnosticNumerique: '/images/iconographie/mednum-diagnostic.svg',
-  PrendreEnMainDuMateriel: '/images/iconographie/mednum-materiel.svg',
-  MaintenanceDeMateriel: '/images/iconographie/mednum-maintenance.svg',
-  GereSesContenusNumeriques: '/images/iconographie/mednum-contenus.svg',
-  NavigationSurInternet: '/images/iconographie/mednum-internet.svg',
-  Email: '/images/iconographie/mednum-email.svg',
-  Bureautique: '/images/iconographie/mednum-bureautique.svg',
-  ReseauxSociaux: '/images/iconographie/mednum-reseaux-sociaux.svg',
-  Sante: '/images/iconographie/mednum-sante.svg',
-  BanqueEtAchatsEnLigne: '/images/iconographie/thematique-argent.svg',
-  Entrepreneuriat: '/images/iconographie/thematique-travail.svg',
-  InsertionProfessionnelle: '/images/iconographie/mednum-insertion.svg',
-  SecuriteNumerique: '/images/iconographie/mednum-securite.svg',
-  Parentalite: '/images/iconographie/mednum-parentalite.svg',
-  ScolariteEtNumerique: '/images/iconographie/mednum-scolarite.svg',
-  CreerAvecLeNumerique: '/images/iconographie/mednum-creer.svg',
-  CultureNumerique: '/images/iconographie/mednum-culture-numerique.svg',
-  IntelligenceArtificielle:
-    '/images/iconographie/intelligence-artificielle.svg',
-  AideAuxDemarchesAdministratives: '/images/iconographie/mednum-demarches.svg',
+  DiagnosticNumerique: UserStatsIcon,
+  PrendreEnMainDuMateriel: DevicesIcon,
+  MaintenanceDeMateriel: SystemIcon,
+  GereSesContenusNumeriques: DocumentSearchIcon,
+  NavigationSurInternet: InternetIcon,
+  Email: MailSendIcon,
+  Bureautique: DocumentContentIcon,
+  ReseauxSociaux: CommunityIcon,
+  Sante: CareIcon,
+  BanqueEtAchatsEnLigne: MoneyIcon,
+  Entrepreneuriat: PairIcon,
+  InsertionProfessionnelle: ProfessionalIcon,
+  SecuriteNumerique: PadlockIcon,
+  Parentalite: ParentIcon,
+  ScolariteEtNumerique: ScolarshipIcon,
+  CreerAvecLeNumerique: MediaIcon,
+  CultureNumerique: NetworkIcon,
+  IntelligenceArtificielle: AIIcon,
+  AideAuxDemarchesAdministratives: PapersIcon,
 } as const
 
 export const thematiquesAdministrativesIllustrations = {
-  PapiersElectionsCitoyennete: '/images/iconographie/thematique-papiers.svg',
-  FamilleScolarite: '/images/iconographie/mednum-scolarite.svg',
-  SocialSante: '/images/iconographie/thematique-sante.svg',
-  TravailFormation: '/images/iconographie/thematique-travail.svg',
-  Logement: '/images/iconographie/thematique-logement.svg',
-  TransportsMobilite: '/images/iconographie/thematique-transports.svg',
-  ArgentImpots: '/images/iconographie/thematique-argent.svg',
-  Justice: '/images/iconographie/thematique-justice.svg',
-  EtrangersEurope: '/images/iconographie/thematique-etranger.svg',
-  LoisirsSportsCulture: '/images/iconographie/thematique-loisirs.svg',
-  Associations: '/images/iconographie/thematique-associations.svg',
+  PapiersElectionsCitoyennete: NationalIdentityCardIcon,
+  FamilleScolarite: ScolarshipIcon,
+  SocialSante: HealthIcon,
+  TravailFormation: PairIcon,
+  Logement: HouseIcon,
+  TransportsMobilite: TransportationIcon,
+  ArgentImpots: MoneyIcon,
+  Justice: JusticeIcon,
+  EtrangersEurope: JourneyIcon,
+  LoisirsSportsCulture: ActivitiesIcon,
+  Associations: HumanCooperationIcon,
 } as const
 
-export const thematiqueIllustrations: {
-  [key in Thematique]: string
-} = {
+export const thematiqueIllustrations: Record<Thematique, Pictogram> = {
   ...thematiquesNonAdministrativesIllustrations,
   ...thematiquesAdministrativesIllustrations,
 }

@@ -12,12 +12,11 @@ import {
 } from '@app/web/beneficiaire/beneficiaire'
 import { createParticipantsAnonymesForBeneficiaires } from '@app/web/beneficiaire/createParticipantsAnonymesForBeneficiaires'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
-import { isBeneficiaireAnonymous } from '@app/web/beneficiaire/isBeneficiaireAnonymous'
 import Stars from '@app/web/components/Stars'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import { trpc } from '@app/web/trpc'
 import { formatActiviteDayDate } from '@app/web/utils/activiteDayDateFormat'
-import { dateAsDay } from '@app/web/utils/dateAsDay'
 import {
   dateAsDayInTimeZone,
   dateAsTimeInTimeZone,
@@ -26,7 +25,6 @@ import { dureeAsString } from '@app/web/utils/dureeAsString'
 import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import Accordion from '@codegouvfr/react-dsfr/Accordion'
 import Button from '@codegouvfr/react-dsfr/Button'
-import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
@@ -38,10 +36,7 @@ import {
   thematiquesAdministrativesLabels,
   thematiquesNonAdministrativesLabels,
 } from '../../../cra/fields/thematique'
-import {
-  typeActiviteIllustrations,
-  typeActiviteLabels,
-} from '../../../cra/fields/type-activite'
+import { typeActiviteLabels } from '../../../cra/fields/type-activite'
 import { autonomieStars } from '../../../cra/individuel/fields/autonomie'
 import { structuresRedirectionLabels } from '../../../cra/individuel/fields/structures-redirection'
 import { ActiviteListItem } from '../../db/activitesQueries'
@@ -486,12 +481,14 @@ const ActiviteDetailsModal = ({
             <>
               <hr className="fr-separator-6v" />
               <div className="fr-flex fr-flex-gap-2v fr-align-items-center">
-                <div className="fr-background-alt--blue-france fr-p-1-5v fr-border-radius--8 fr-flex">
-                  <img
+                <div
+                  className="fr-background-alt--blue-france fr-p-1-5v fr-border-radius--8 fr-flex"
+                  aria-hidden
+                >
+                  <RDVServicePublicLogo
                     className="fr-display-block"
-                    alt=""
-                    src="/images/services/rdv-service-public.svg"
-                    style={{ width: 20, height: 20 }}
+                    width={20}
+                    height={20}
                   />
                 </div>
                 <p className="fr-text--sm fr-text--medium fr-mb-0 fr-flex-grow-1">

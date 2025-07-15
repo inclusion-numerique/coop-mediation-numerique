@@ -1,17 +1,17 @@
+import { Pictogram } from '@app/web/features/pictograms/pictogram'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import classNames from 'classnames'
-import Image from 'next/image'
 import { ReactNode } from 'react'
 
 export const CardOutil = ({
-  logo,
+  pictogram: Pictogram,
   title,
   slug,
   accessUrl: _accessUrl,
   children,
   isNew,
 }: {
-  logo: string
+  pictogram: Pictogram
   title: string
   slug: string
   accessUrl?: string
@@ -25,12 +25,11 @@ export const CardOutil = ({
       )}
     >
       <div className="fr-flex fr-justify-content-space-between align-items-center fr-width-full">
-        <Image
-          className="fr-background-alt--blue-france fr-border-radius--16 fr-p-2w"
+        <Pictogram
+          className="fr-background-action-low--blue-france fr-border-radius--16 fr-p-2w"
           width={88}
           height={88}
-          src={logo}
-          alt=""
+          aria-hidden
         />
         {isNew && (
           <div>

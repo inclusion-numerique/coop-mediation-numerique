@@ -14,7 +14,7 @@ export const OutilEspaceFranceNumeriqueEnsemble = ({
   title,
   illustration,
   illustrationWidth,
-  logo,
+  pictogram,
   description,
   website,
   codeInsee,
@@ -36,7 +36,7 @@ export const OutilEspaceFranceNumeriqueEnsemble = ({
           title={title}
           illustration={illustration}
           illustrationWidth={illustrationWidth}
-          logo={logo}
+          pictogram={pictogram}
           description={description}
           website={website}
         />

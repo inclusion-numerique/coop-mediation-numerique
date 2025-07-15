@@ -1,5 +1,6 @@
 import ToolResultCard from '@app/web/assistant/components/tools/ToolResultCard'
 import type { AgenticSearchToolYamlResult } from '@app/web/assistant/tools/agenticSearchTool'
+import { LesBasesLogo } from '@app/web/features/pictograms/services/LesBasesLogo'
 import type { ToolInvocation } from 'ai'
 import he from 'he'
 import { type Tokens, marked } from 'marked'
@@ -22,16 +23,6 @@ renderer.link = (linkParameters: Tokens.Link) => {
     `<a target="_blank" class="fr-link" rel="noreferrer noopener nofollow" `,
   )
 }
-
-const LesBasesIcon = () => (
-  <img
-    className="fr-background-alt--blue-france fr-border-radius--8 fr-p-2v"
-    width={32}
-    height={32}
-    src="/images/services/les-bases.svg"
-    alt=""
-  />
-)
 
 const PageWebIcon = ({ src }: { src?: string }) =>
   src ? (
@@ -91,7 +82,7 @@ const ChatMessageAgenticSearchToolResult = ({
                 key={source.id}
                 title={source.title || 'Les bases - ressource'}
                 url={source.url}
-                icon={<LesBasesIcon />}
+                icon={<LesBasesLogo width={32} height={32} />}
                 isFirst={index === 0}
                 isLast={
                   index === sourcesLesBases.length - 1 &&

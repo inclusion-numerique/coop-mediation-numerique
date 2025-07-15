@@ -1,11 +1,12 @@
 import { OutilPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-outils/outilPageData'
+import { LesBasesLogo } from '@app/web/features/pictograms/services/LesBasesLogo'
 
 export default {
   title: 'Les Bases du numérique d’intérêt général',
   description:
     'La plateforme collaborative de partage de ressources & communs numériques à l’échelle nationale.',
   website: 'https://lesbases.anct.gouv.fr',
-  logo: '/images/services/les-bases.svg',
+  pictogram: LesBasesLogo,
   illustration: '/images/illustrations/mes-outils/les-bases.svg',
   features: [
     {

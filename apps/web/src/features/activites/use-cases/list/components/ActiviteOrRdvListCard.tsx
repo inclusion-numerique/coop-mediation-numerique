@@ -1,3 +1,4 @@
+import { Pictogram } from '@app/web/features/pictograms/pictogram'
 import classNames from 'classnames'
 import { ReactNode } from 'react'
 
@@ -8,7 +9,7 @@ const ActiviteOrRdvListCard = ({
   actions,
   contentBottom,
   contentTop,
-  illustrationSrc,
+  pictogram: Pictogram,
   enlargeButton,
   enlargeLink,
   stacked,
@@ -16,7 +17,7 @@ const ActiviteOrRdvListCard = ({
   lastOfStack,
   footer,
 }: {
-  illustrationSrc: string
+  pictogram: Pictogram
   contentTop: ReactNode
   contentBottom: ReactNode
   actions?: ReactNode
@@ -42,13 +43,11 @@ const ActiviteOrRdvListCard = ({
         },
       )}
     >
-      <div className="fr-background-alt--blue-france fr-p-2v fr-border-radius--8 fr-flex">
-        <img
-          className="fr-display-block"
-          alt=""
-          src={illustrationSrc}
-          style={{ width: 40, height: 40 }}
-        />
+      <div
+        className="fr-background-alt--blue-france fr-p-2v fr-border-radius--8 fr-flex"
+        aria-hidden
+      >
+        <Pictogram width={40} height={40} />
       </div>
       <div className="fr-flex-grow-1">
         <div className="fr-text--xs fr-text-mention--grey fr-mb-0">

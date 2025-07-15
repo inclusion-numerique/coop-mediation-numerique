@@ -1,3 +1,4 @@
+import { Pictogram } from '@app/web/features/pictograms/pictogram'
 import type { ReactNode } from 'react'
 
 export type OutilPageDataFeature = {
@@ -34,7 +35,7 @@ export type OutilPageData = {
   description: string
   website: string
   websiteLinkLabel?: string
-  logo: string
+  pictogram: Pictogram
   illustration: string
   illustrationWidth?: number
   features?: OutilPageDataFeature[]

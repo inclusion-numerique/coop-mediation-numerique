@@ -1,6 +1,7 @@
 import RdvServicePubliqueConnexionCard from '@app/web/app/coop/(full-width-layout)/mes-outils/rdv-service-public/RdvServicePubliqueConnexionCard'
 import { getSessionUser } from '@app/web/auth/getSessionUser'
 import IconInSquare from '@app/web/components/IconInSquare'
+import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import {
   rdvIntegrationEnSavoirPlusLink,
   rdvMyHomepageLink,
@@ -66,12 +67,14 @@ const RdvServicePublicCreationReussiePage = async () => {
         ) : (
           <>
             <div className="fr-background-alt--blue-france fr-border-radius--8 fr-flex fr-align-items-center fr-flex-gap-6v fr-p-6v fr-mt-10v">
-              <div className="fr-background-default--grey fr-p-1v fr-border-radius--8 fr-flex">
-                <img
+              <div
+                className="fr-background-default--grey fr-p-1v fr-border-radius--8 fr-flex"
+                aria-hidden
+              >
+                <RDVServicePublicLogo
                   className="fr-display-block"
-                  alt=""
-                  src="/images/services/rdv-service-public.svg"
-                  style={{ width: 32, height: 32 }}
+                  width={32}
+                  height={32}
                 />
               </div>
               <div>
