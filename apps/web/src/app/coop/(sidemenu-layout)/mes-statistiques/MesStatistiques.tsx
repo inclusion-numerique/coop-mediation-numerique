@@ -32,7 +32,7 @@ export const MesStatistiques = (
   } = mesStatistiquesProps
 
   return (
-    <CoopPageContainer size={794}>
+    <CoopPageContainer size={49}>
       <CoopBreadcrumbs currentPage="Mes statistiques" />
       <SkipLinksPortal />
       <PrintStatistiques {...mesStatistiquesProps} />

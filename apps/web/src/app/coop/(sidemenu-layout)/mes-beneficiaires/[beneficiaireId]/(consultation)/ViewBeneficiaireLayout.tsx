@@ -48,7 +48,7 @@ const ViewBeneficiaireLayout = ({
     canPrendreRendezVous && user.rdvAccount?.hasOauthTokens
 
   return (
-    <CoopPageContainer size={794}>
+    <CoopPageContainer size={49}>
       <SkipLinksPortal />
       <CoopBreadcrumbs
         parents={[

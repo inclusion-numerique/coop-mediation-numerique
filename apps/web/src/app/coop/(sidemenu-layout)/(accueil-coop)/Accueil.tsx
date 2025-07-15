@@ -41,7 +41,7 @@ export const Accueil = ({
   isCoNum: boolean
   timezone: string
 } & AccueilPageData) => (
-  <CoopPageContainer size={794}>
+  <CoopPageContainer size={49}>
     <SkipLinksPortal />
     <main id={contentId}>
       <h1 className="fr-text-title--blue-france fr-mt-10v">

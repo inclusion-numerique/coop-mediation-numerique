@@ -39,3 +39,32 @@ body {
   --hover-alpha: color-mix(in srgb, var(--hover), transparent 20%);
   --active-alpha: color-mix(in srgb, var(--active), transparent 20%);
 }
+
+.sideMenu {
+  min-width: 100%;
+
+  @media (min-width: 48em) {
+    min-width: fit-content;
+    width: 296px;
+  }
+}
+
+.contentContainer {
+  flex-grow: 1;
+}
+
+.contentContainer--59 {
+  max-width: 59rem;
+}
+
+.contentContainer--56 {
+  max-width: 56rem;
+}
+
+.contentContainer--49 {
+  max-width: 49rem;
+}
+
+.contentContainer--full {
+  max-width: 100%;
+}
