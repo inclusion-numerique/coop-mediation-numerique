@@ -1,21 +1,64 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
-		"sqltools.connections": [
-			{
-				"previewLimit": 50,
-				"server": "localhost",
-				"port": 5432,
-				"driver": "PostgreSQL",
-				"name": "coop - local",
-				"database": "coop-mediation-numerique",
-				"username": "h",
-				"password": ""
-			}
-		]
-	}
+  "folders": [
+    {
+      "name": "root",
+      "path": "."
+    },
+    {
+      "name": "apps/cli",
+      "path": "./apps/cli"
+    },
+    {
+      "name": "apps/web",
+      "path": "./apps/web"
+    },
+    {
+      "name": "packages/cdk",
+      "path": "./packages/cdk"
+    },
+    {
+      "name": "packages/config",
+      "path": "./packages/config"
+    },
+    {
+      "name": "packages/e2e",
+      "path": "./packages/e2e"
+    },
+    {
+      "name": "packages/emails",
+      "path": "./packages/emails"
+    },
+    {
+      "name": "packages/fixtures",
+      "path": "./packages/fixtures"
+    },
+    {
+      "name": "packages/storybook",
+      "path": "./packages/storybook"
+    },
+    {
+      "name": "packages/test",
+      "path": "./packages/test"
+    },
+    {
+      "name": "packages/ui",
+      "path": "./packages/ui"
+    }
+  ],
+  "settings": {
+    "jest.autoEnable": false,
+    "jest.disabledWorkspaceFolders": ["root"],
+    "sqltools.connections": [
+      {
+        "previewLimit": 50,
+        "server": "localhost",
+        "port": 5432,
+        "driver": "PostgreSQL",
+        "name": "coop - local",
+        "database": "coop-mediation-numerique",
+        "username": "h",
+        "password": ""
+      }
+    ]
+  }
 }
