@@ -84,7 +84,24 @@ const AdministrationSideMenu = () => {
     {
       text: (
         <>
-          <span className="fr-icon-settings-5-line ri-xl fr-mr-1w fr-text--regular" />
+          <span className="ri-calendar-check-line ri-xl fr-mr-1w fr-text--regular"
+                aria-hidden
+          />
+          Beta RDVSP
+        </>
+      ),
+      linkProps: {
+        href: '/administration/beta-rdvsp',
+      },
+      isActive: pathname?.startsWith('/administration/beta-rdvsp'),
+    },
+    {
+      text: (
+        <>
+          <span
+            className="fr-icon-settings-5-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
+          />
           Outils
         </>
       ),
