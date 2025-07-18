@@ -77,14 +77,14 @@ const CreateCraModalContent = ({
         Quel type d’accompagnement avez-vous réalisé&nbsp;?
       </p>
       <ModalNavigationButton
-        pictogram={<SittingAtATableIcon />}
+        pictogram={<SittingAtATableIcon width={56} height={56} />}
         onClick={() => navigateTo('/coop/mes-activites/cra/individuel')}
       >
         Accompagnement individuel
       </ModalNavigationButton>
 
       <ModalNavigationButton
-        pictogram={<TeacherIcon />}
+        pictogram={<TeacherIcon width={56} height={56} />}
         onClick={() => navigateTo('/coop/mes-activites/cra/collectif')}
       >
         Atelier collectif

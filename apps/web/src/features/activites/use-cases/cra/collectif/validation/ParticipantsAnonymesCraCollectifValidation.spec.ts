@@ -52,7 +52,7 @@ describe('ParticipantsAnonymesCraCollectifValidation', () => {
     expect(() =>
       ParticipantsAnonymesCraCollectifValidation.parse(invalidData),
     ).toThrow(
-      'La somme des genres ne doit pas dépasser le total des participants anonymes',
+      'La somme des données socio-démographiques dépasse le total des bénéficiaires anonymes',
     )
   })
 
@@ -65,7 +65,7 @@ describe('ParticipantsAnonymesCraCollectifValidation', () => {
     expect(() =>
       ParticipantsAnonymesCraCollectifValidation.parse(invalidData),
     ).toThrow(
-      'La somme des tranches d’âges ne doit pas dépasser le total des participants anonymes',
+      'La somme des données socio-démographiques dépasse le total des bénéficiaires anonymes',
     )
   })
 
@@ -78,7 +78,7 @@ describe('ParticipantsAnonymesCraCollectifValidation', () => {
     expect(() =>
       ParticipantsAnonymesCraCollectifValidation.parse(invalidData),
     ).toThrow(
-      'La somme des statuts sociaux ne doit pas dépasser le total des participants anonymes',
+      'La somme des données socio-démographiques dépasse le total des bénéficiaires anonymes',
     )
   })
 })

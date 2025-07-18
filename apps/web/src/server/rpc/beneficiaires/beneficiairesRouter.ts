@@ -42,20 +42,22 @@ const checkExistingBeneficiaire = async ({
   return existingBeneficiaire
 }
 
-const beneficiaireCreateInputFromForm = ({
-  mediateurId,
-  prenom,
-  nom,
-  telephone,
-  email,
-  anneeNaissance,
-  adresse,
-  communeResidence,
-  genre,
-  trancheAge,
-  statutSocial,
-  notes,
-}: BeneficiaireData): Prisma.BeneficiaireCreateInput => ({
+const beneficiaireCreateInputFromForm = (
+  {
+    prenom,
+    nom,
+    telephone,
+    email,
+    anneeNaissance,
+    adresse,
+    communeResidence,
+    genre,
+    trancheAge,
+    statutSocial,
+    notes,
+  }: BeneficiaireData,
+  mediateurId: string,
+): Prisma.BeneficiaireCreateInput => ({
   mediateur: {
     connect: { id: mediateurId },
   },
@@ -99,21 +101,16 @@ export const beneficiairesRouter = router({
     .mutation(async ({ input, ctx: { user } }) => {
       enforceIsMediateur(user)
 
-      const { id, mediateurId } = input
+      const { id } = input
 
       const stopwatch = createStopwatch()
 
-      // Enforce user can create CRA for given mediateurId (for now only self)
-      if (mediateurId !== user.mediateur.id) {
-        throw forbiddenError('Cannot beneficiary for another mediateur')
-      }
-
       await checkExistingBeneficiaire({
         beneficiaireId: id,
-        mediateurId,
+        mediateurId: user.mediateur.id,
       })
 
-      const data = beneficiaireCreateInputFromForm(input)
+      const data = beneficiaireCreateInputFromForm(input, user.mediateur.id)
 
       if (id) {
         const updated = await prismaClient.beneficiaire.update({
@@ -137,7 +134,7 @@ export const beneficiairesRouter = router({
           ...data,
           id: newId,
           mediateur: {
-            connect: { id: mediateurId },
+            connect: { id: user.mediateur.id },
           },
         },
       })

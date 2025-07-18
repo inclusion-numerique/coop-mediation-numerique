@@ -1,8 +1,8 @@
 'use client'
 
+import { Popover } from '@app/ui/components/Primitives/Popover'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
-import { Popover } from '@app/web/libs/ui/elements/Popover'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { ChangeEvent, useEffect, useState } from 'react'

@@ -73,15 +73,12 @@ const filterItemsNodes = <T extends { items: ReactNode[] | ReactNode }>({
 const getActiviteLocationString = (activite: ActiviteListItem) => {
   const { structure, lieuCodePostal, lieuCommune, typeLieu } = activite
 
-  if (structure) {
+  if (structure)
     return `${structure.nom} · ${structure.codePostal} ${structure.commune}`
-  }
 
-  return lieuCommune
-    ? `${lieuCodePostal} ${lieuCommune}`
-    : typeLieu === 'ADistance'
-      ? 'À distance'
-      : 'Non renseigné'
+  if (typeLieu === 'ADistance') return 'À distance'
+
+  return lieuCommune ? `${lieuCodePostal} ${lieuCommune}` : 'Non renseigné'
 }
 
 const premierAccompagnement = (
@@ -126,9 +123,8 @@ const ActiviteDetailsModal = ({
   const onDeleteButtonClick = () => {
     setDeletionConfirmation(true)
   }
-  if (!state) {
-    return null
-  }
+
+  if (!state) return null
 
   const { activite } = state
 

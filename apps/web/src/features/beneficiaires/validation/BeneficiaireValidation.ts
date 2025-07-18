@@ -34,8 +34,6 @@ export const anneeNaissanceValidation = z
 
 export const BeneficiaireValidation = z.object({
   id: z.string().uuid().nullish(), // defined if update, nullish if create
-  mediateurId: z.string().uuid(), // creator of the beneficiaire
-
   prenom: z
     .string({
       required_error: 'Veuillez renseigner un prénom',

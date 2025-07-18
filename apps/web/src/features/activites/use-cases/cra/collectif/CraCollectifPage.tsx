@@ -48,12 +48,10 @@ const CraCollectifPage = ({
           text: 'En savoir plus sur comment compléter un CRA',
         }}
       />
-
       <CraCollectifForm
         defaultValues={{ ...defaultValues, mediateurId }}
         lieuActiviteOptions={lieuxActiviteOptions}
         initialBeneficiairesOptions={initialBeneficiairesOptions}
-        initialCommunesOptions={[]}
         dureeOptions={dureeOptions}
         retour={retour}
       />
