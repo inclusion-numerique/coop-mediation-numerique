@@ -11,7 +11,7 @@ const MesActivitesListeLayout = ({
   vue,
   empty,
 }: PropsWithChildren<{ vue: 'liste' | 'tableau'; empty?: boolean }>) => (
-  <CoopPageContainer size={794}>
+  <CoopPageContainer size={49}>
     <SkipLinksPortal />
     <CoopBreadcrumbs currentPage="Mes activités" />
     <main id={contentId}>

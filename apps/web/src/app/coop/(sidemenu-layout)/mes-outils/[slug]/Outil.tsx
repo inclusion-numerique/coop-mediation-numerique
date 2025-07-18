@@ -27,7 +27,7 @@ export const Outil = ({
   more,
   classes,
 }: OutilPageData) => (
-  <CoopPageContainer size={894}>
+  <CoopPageContainer size={56}>
     <CoopBreadcrumbs
       parents={[
         { label: 'Mes outils', linkProps: { href: '/coop/mes-outils' } },

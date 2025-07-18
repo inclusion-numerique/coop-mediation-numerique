@@ -6,7 +6,8 @@
   width: 100%;
 
   @media (min-width: 48em) {
-    width: var(--side-nav-width);
+    min-width: var(--side-nav-width);
+    width: fit-content;
   }
 }
 
@@ -30,24 +31,4 @@
     padding: 0 80px 120px 48px;
     justify-content: flex-start;
   }
-}
-
-.contentContainer {
-  flex-grow: 1;
-}
-
-.contentContainer--944 {
-  max-width: 944px;
-}
-
-.contentContainer--894 {
-  max-width: 894px;
-}
-
-.contentContainer--794 {
-  max-width: 794px;
-}
-
-.contentContainer--full {
-  max-width: 100%;
 }

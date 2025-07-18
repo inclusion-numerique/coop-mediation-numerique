@@ -6,7 +6,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import type { PropsWithChildren } from 'react'
 
 const MesBeneficiairesListeLayout = ({ children }: PropsWithChildren) => (
-  <CoopPageContainer size={794}>
+  <CoopPageContainer size={49}>
     <SkipLinksPortal />
     <CoopBreadcrumbs currentPage="Mes bénéficiaires" />
     <main

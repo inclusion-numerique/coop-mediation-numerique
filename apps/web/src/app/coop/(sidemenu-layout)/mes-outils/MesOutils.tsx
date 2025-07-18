@@ -21,7 +21,7 @@ export const MesOutils = async () => {
   const hasAccessToRdvServicePublic = hasFeatureFlag(user, 'RdvServicePublic')
 
   return (
-    <CoopPageContainer size={794}>
+    <CoopPageContainer size={49}>
       <CoopBreadcrumbs currentPage="Mes outils" />
       <SkipLinksPortal />
       <main id={contentId}>

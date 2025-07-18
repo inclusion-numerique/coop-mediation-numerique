@@ -1,4 +1,6 @@
 .sideMenu {
+  padding: 0;
+
   /* md */
   @media (min-width: 48em) {
     :global .fr-sidemenu__inner {
