@@ -64,6 +64,7 @@ describe('createOrUpdateActivite', () => {
         mediateurId: mediateurAvecActiviteMediateurId,
         typeLieu: 'Domicile',
         thematiques: ['SecuriteNumerique'],
+        tags: [],
         date: '2024-08-01',
         materiel: [],
         lieuCommuneData: banDefaultValueToAdresseBanData({
@@ -134,6 +135,7 @@ describe('createOrUpdateActivite', () => {
         mediateurId: mediateurAvecActiviteMediateurId,
         typeLieu: 'Domicile',
         thematiques: ['SecuriteNumerique'],
+        tags: [],
         date: '2024-08-01',
         materiel: [],
         lieuCommuneData: banDefaultValueToAdresseBanData({
@@ -206,6 +208,7 @@ describe('createOrUpdateActivite', () => {
         },
         titreAtelier: 'Titre atelier',
         thematiques: ['SecuriteNumerique'],
+        tags: [],
         date: '2024-08-01',
         materiel: [],
         duree: {

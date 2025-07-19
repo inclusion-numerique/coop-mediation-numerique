@@ -14,6 +14,7 @@ import { replaceRouteWithoutRerender } from '@app/web/utils/replaceRouteWithoutR
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { type DefaultValues } from 'react-hook-form'
+import { Tag } from '../../../tags/components/TagsComboBox'
 import { MaterielField } from '../../components/fields/MaterielField'
 import { RendezVousFields } from '../../components/fields/RendezVousFields'
 import { ThematiquesFields } from '../../components/fields/ThematiquesFields'
@@ -34,12 +35,14 @@ const CraCollectifForm = ({
   defaultValues,
   lieuActiviteOptions,
   initialBeneficiairesOptions,
+  initialTagsOptions,
   dureeOptions,
   retour,
 }: {
   defaultValues: DefaultValues<CraCollectifData>
   lieuActiviteOptions: LieuActiviteOption[]
   initialBeneficiairesOptions: BeneficiaireOption[]
+  initialTagsOptions: Tag[]
   dureeOptions: SelectOption[]
   retour?: string
 }) => {
@@ -129,6 +132,7 @@ const CraCollectifForm = ({
           thematiqueNonAdministrativesOptionsWithExtras={
             thematiqueNonAdministrativesOptionsWithExtras
           }
+          initialTagsOptions={initialTagsOptions}
         />
         <hr className="fr-separator-12v" />
         <NiveauAtelierField

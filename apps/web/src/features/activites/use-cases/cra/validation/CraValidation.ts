@@ -29,6 +29,7 @@ export const CraValidation = z.object({
       required_error: 'Veuillez renseigner au moins une thématique',
     })
     .min(1, 'Veuillez renseigner au moins une thématique'),
+  tags: z.array(z.object({ id: z.string().uuid() })).default([]),
   precisionsDemarche: z.string().nullish(),
   materiel: z.array(z.enum(materielValues)).default([]),
   notes: z.string().nullish(),

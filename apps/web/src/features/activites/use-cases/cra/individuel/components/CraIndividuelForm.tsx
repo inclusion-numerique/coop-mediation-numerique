@@ -21,6 +21,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 import { DefaultValues } from 'react-hook-form'
+import { Tag } from '../../../tags/components/TagsComboBox'
 import { clearAdministrativeData } from '../../components/clearAdministrativeData'
 import { MaterielField } from '../../components/fields/MaterielField'
 import { RendezVousFields } from '../../components/fields/RendezVousFields'
@@ -45,12 +46,14 @@ const CraIndividuelForm = ({
   defaultValues,
   lieuActiviteOptions,
   initialBeneficiairesOptions,
+  initialTagsOptions,
   retour,
   dureeOptions,
 }: {
   defaultValues: DefaultValues<CraIndividuelData> & { mediateurId: string }
   lieuActiviteOptions: LieuActiviteOption[]
   initialBeneficiairesOptions: BeneficiaireOption[]
+  initialTagsOptions: Tag[]
   retour?: string
   dureeOptions: SelectOption[]
 }) => {
@@ -139,6 +142,7 @@ const CraIndividuelForm = ({
           thematiqueNonAdministrativesOptionsWithExtras={
             thematiqueNonAdministrativesOptionsWithExtras
           }
+          initialTagsOptions={initialTagsOptions}
         />
         <hr className="fr-separator-12v" />
         <AutonomieBeneficiaireField

@@ -28,7 +28,7 @@ export const beneficiairesListWhere = (mediateurId?: string) =>
     anonyme: false,
   }) satisfies Prisma.BeneficiaireWhereInput
 
-export const searchBeneficiaire = async (
+export const searchBeneficiaires = async (
   options: SearchBeneficiaireOptions,
 ) => {
   const searchParams = options.searchParams ?? {}
@@ -79,5 +79,5 @@ export const searchBeneficiaire = async (
 }
 
 export type SearchBeneficiaireResult = Awaited<
-  ReturnType<typeof searchBeneficiaire>
+  ReturnType<typeof searchBeneficiaires>
 >

@@ -8,6 +8,7 @@ import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMed
 import { contentId } from '@app/web/utils/skipLinks'
 import React from 'react'
 import type { DefaultValues } from 'react-hook-form'
+import { Tag } from '../../tags/components/TagsComboBox'
 import CraIndividuelForm from './components/CraIndividuelForm'
 import { CraIndividuelData } from './validation/CraIndividuelValidation'
 
@@ -16,6 +17,7 @@ export type CraIndividuelPageData = {
   mediateurId: string
   initialBeneficiairesOptions: MostUsedBeneficiairesForSearch
   lieuxActiviteOptions: LieuActiviteOption[]
+  initialTagsOptions: Tag[]
   dureeOptions: SelectOption[]
   retour?: string
 }
@@ -23,6 +25,7 @@ export type CraIndividuelPageData = {
 const CraIndividuelPage = ({
   defaultValues,
   initialBeneficiairesOptions,
+  initialTagsOptions,
   lieuxActiviteOptions,
   dureeOptions,
   mediateurId,
@@ -54,6 +57,7 @@ const CraIndividuelPage = ({
         defaultValues={{ ...defaultValues, mediateurId }}
         lieuActiviteOptions={lieuxActiviteOptions}
         initialBeneficiairesOptions={initialBeneficiairesOptions}
+        initialTagsOptions={initialTagsOptions}
         retour={retour}
         dureeOptions={dureeOptions}
       />

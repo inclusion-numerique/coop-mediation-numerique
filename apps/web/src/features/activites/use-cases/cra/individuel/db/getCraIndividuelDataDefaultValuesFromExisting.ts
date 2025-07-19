@@ -57,6 +57,16 @@ export const getCraIndividuelDataDefaultValuesFromExisting = async ({
       notes: true,
       precisionsDemarche: true,
       rdvServicePublicId: true,
+      tags: {
+        select: {
+          tag: {
+            select: {
+              id: true,
+              nom: true,
+            },
+          },
+        },
+      },
     },
   })
 
@@ -81,6 +91,7 @@ export const getCraIndividuelDataDefaultValuesFromExisting = async ({
     materiel,
     orienteVersStructure,
     rdvServicePublicId,
+    tags,
   } = cra
 
   const beneficiaire = accompagnements[0]?.beneficiaire
@@ -123,5 +134,6 @@ export const getCraIndividuelDataDefaultValuesFromExisting = async ({
         : undefined,
     typeLieu: typeLieu ?? undefined,
     rdvServicePublicId: rdvServicePublicId ?? undefined,
+    tags: tags.map(({ tag }) => tag) ?? [],
   } satisfies DefaultValues<CraIndividuelData>
 }
