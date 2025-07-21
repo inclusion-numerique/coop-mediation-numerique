@@ -3,12 +3,13 @@ import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButtonWithModal from '@app/web/components/BackButtonWithModal'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { MostUsedBeneficiairesForSearch } from '@app/web/features/beneficiaires/db/getInitialBeneficiairesOptionsForSearch'
+import type { MostUsedBeneficiairesForSearch } from '@app/web/features/beneficiaires/db/getInitialBeneficiairesOptionsForSearch'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
 import { contentId } from '@app/web/utils/skipLinks'
 import React from 'react'
 import type { DefaultValues } from 'react-hook-form'
-import { Tag } from '../../tags/components/TagsComboBox'
+import type { Tag } from '../../tags/components/TagsComboBox'
+import CreateTagModal from '../../tags/create/CreateTagModal'
 import CraIndividuelForm from './components/CraIndividuelForm'
 import { CraIndividuelData } from './validation/CraIndividuelValidation'
 
@@ -52,7 +53,7 @@ const CraIndividuelPage = ({
           text: 'En savoir plus sur comment compléter un CRA',
         }}
       />
-
+      <CreateTagModal isMediateur isCoordinateur={false} />
       <CraIndividuelForm
         defaultValues={{ ...defaultValues, mediateurId }}
         lieuActiviteOptions={lieuxActiviteOptions}

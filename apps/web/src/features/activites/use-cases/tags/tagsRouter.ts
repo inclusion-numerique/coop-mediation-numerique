@@ -30,9 +30,9 @@ export const tagsRouter = router({
     .input(CreateTagValidation)
     .mutation(async ({ input, ctx: { user: sessionUser } }) => {
       if (input.scope === TagScope.Personnel || !isCoordinateur(sessionUser))
-        await createTagPersonnel(sessionUser)(input)
+        return await createTagPersonnel(sessionUser)(input)
 
       if (input.scope === TagScope.Departemental || !isMediateur(sessionUser))
-        await createTagDepartemental(sessionUser)(input)
+        return await createTagDepartemental(sessionUser)(input)
     }),
 })

@@ -20,6 +20,7 @@ export namespace InputProps {
     className?: string
     id?: string
     label: ReactNode
+    info?: ReactNode
     hintText?: ReactNode
     hideLabel?: boolean
     disabled?: boolean
@@ -81,6 +82,7 @@ export const Input = memo(
       className,
       id,
       label,
+      info,
       hintText,
       hideLabel,
       disabled = false,
@@ -274,6 +276,7 @@ export const Input = memo(
             </p>
           )}
         </div>
+        {info && <span className="fr-hint-text fr-mt-1v fr-mb-0">{info}</span>}
       </div>
     )
   }),

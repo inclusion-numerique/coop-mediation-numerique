@@ -25,6 +25,7 @@ import { Tag } from '../../../tags/components/TagsComboBox'
 import { clearAdministrativeData } from '../../components/clearAdministrativeData'
 import { MaterielField } from '../../components/fields/MaterielField'
 import { RendezVousFields } from '../../components/fields/RendezVousFields'
+import { TagsFields } from '../../components/fields/TagsFields'
 import { ThematiquesFields } from '../../components/fields/ThematiquesFields'
 import { materielOptions } from '../../fields/materiel'
 import {
@@ -142,6 +143,10 @@ const CraIndividuelForm = ({
           thematiqueNonAdministrativesOptionsWithExtras={
             thematiqueNonAdministrativesOptionsWithExtras
           }
+        />
+        <TagsFields
+          form={form as any}
+          isPending={isPending}
           initialTagsOptions={initialTagsOptions}
         />
         <hr className="fr-separator-12v" />

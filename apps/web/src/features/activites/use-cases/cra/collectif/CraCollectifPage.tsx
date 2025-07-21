@@ -8,6 +8,7 @@ import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMed
 import { contentId } from '@app/web/utils/skipLinks'
 import type { DefaultValues } from 'react-hook-form'
 import { Tag } from '../../tags/components/TagsComboBox'
+import CreateTagModal from '../../tags/create/CreateTagModal'
 import CraCollectifForm from './components/CraCollectifForm'
 import type { CraCollectifData } from './validation/CraCollectifValidation'
 
@@ -51,6 +52,7 @@ const CraCollectifPage = ({
           text: 'En savoir plus sur comment compléter un CRA',
         }}
       />
+      <CreateTagModal isMediateur isCoordinateur={false} />
       <CraCollectifForm
         defaultValues={{ ...defaultValues, mediateurId }}
         lieuActiviteOptions={lieuxActiviteOptions}

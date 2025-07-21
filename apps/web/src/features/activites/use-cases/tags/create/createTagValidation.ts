@@ -16,12 +16,12 @@ export const CreateTagValidation = z.object({
       nomMaxLength,
       `Le nom du tag doit faire moins de ${nomMaxLength} caractères`,
     ),
-  scope: z.enum([TagScope.Personnel, TagScope.Departemental]).nullish(),
   description: z
     .string()
     .max(
       descriptionMaxLength,
       `La description du tag doit faire moins de ${descriptionMaxLength} caractères`,
     )
-    .nullish(),
+    .nullable(),
+  scope: z.enum([TagScope.Personnel, TagScope.Departemental]).nullable(),
 })

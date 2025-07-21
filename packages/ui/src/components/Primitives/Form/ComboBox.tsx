@@ -24,6 +24,7 @@ export type ComboBoxProps<TItem, TPayload extends object> = {
     getToggleButtonProps: UseComboboxReturnValue<TItem>['getToggleButtonProps']
     getInputProps: UseComboboxReturnValue<TItem>['getInputProps']
     getItemProps: UseComboboxReturnValue<TItem>['getItemProps']
+    inputValue: UseComboboxReturnValue<TItem>['inputValue']
     setInputValue: UseComboboxReturnValue<TItem>['setInputValue']
     isOpen: boolean
     selectedItem: TItem | null
@@ -53,6 +54,7 @@ export const ComboBox = <TItem, TPayload extends object>({
     getToggleButtonProps,
     getItemProps,
     setInputValue,
+    inputValue,
     isOpen,
     selectedItem,
     highlightedIndex,
@@ -88,6 +90,7 @@ export const ComboBox = <TItem, TPayload extends object>({
     getToggleButtonProps,
     getItemProps,
     setInputValue,
+    inputValue,
     isOpen,
     selectedItem,
     highlightedItem: items[highlightedIndex] ?? null,
