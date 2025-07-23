@@ -53,7 +53,7 @@ const atLeastOneCoopId = ({ id }: { id: string }) =>
 const groupCoopIdsByCartoghraphieId = (
   structure: SchemaLieuMediationNumerique,
 ): CoopIdsToMergeInSingleStructure => ({
-  coopIds: extractCoopIds(structure.id),
+  coopIds: Array.from(new Set(extractCoopIds(structure.id))),
   structure,
 })
 
