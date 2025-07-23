@@ -688,12 +688,21 @@ model Structure {
   courrielReferent  String? @map("courriel_referent")
   telephoneReferent String? @map("telephone_referent")
 
+  // Lors de l'import des cras v1, on a besoin d'importer les structures depuis la bdd legacy
+  // on track cette operation ici
+  v1Imported DateTime? @map("v1_imported")
+  v1StructureId String? @map("v1_structure_id")
+  v1StructureIdPg Int?  @map("v1_structure_id_pg")
+  v1PermanenceId  String? @map("v1_permanence_id")
+
   // "creation" cursor is used to paginate results for API queries
   @@unique([creation, id])
   // descending sort on this cursor for api query performances
   @@index([creation(sort: Desc), id(sort: Desc)])
   @@index([structureCartographieNationaleId])
   // performance indexes
+  @@index([v1StructureId])
+  @@index([v1PermanenceId])
   @@index([codeInsee])
   @@map("structures")
 }
@@ -1007,6 +1016,12 @@ model Activite {
   titreAtelier String?         @map("titre_atelier")
   niveau       NiveauAtelier?
   tags         ActivitesTags[]
+
+  // En cas d'import depuis les données v1
+  v1CraId String? @map("v1_cra_id")
+  v1CraIdPg Int? @map("v1_cra_id_pg")
+  v1StructureId String? @map("v1_structure_id")
+  v1PermanenceId String? @map("v1_permanence_id")
 
   // "creation" cursor is used to paginate results for API queries
   @@unique([creation, id])
