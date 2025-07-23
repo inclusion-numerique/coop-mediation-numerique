@@ -61,7 +61,7 @@ export const searchTags = async ({
         AND t.nom ILIKE ${`%${recherche}%`}
         AND (
         t.mediateur_id = ${mediateurId}::UUID
-        ${departement == null ? Prisma.empty : Prisma.sql`OR t.departement = ${departement}::text`}
+        ${departement == null ? Prisma.empty : Prisma.sql`OR t.departement = ${departement.code}::text`}
          OR (t.mediateur_id IS NULL AND t.departement IS NULL)
         )
       GROUP BY t.id
