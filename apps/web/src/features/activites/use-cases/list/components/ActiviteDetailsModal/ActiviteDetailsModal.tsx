@@ -144,6 +144,7 @@ const ActiviteDetailsModal = ({
     precisionsDemarche,
     accompagnements,
     thematiques,
+    tags,
     creation,
     modification,
     rdv,
@@ -203,6 +204,10 @@ const ActiviteDetailsModal = ({
     {
       title: `Thématique${sPluriel(thematiquesNonAdministratives.length)} d’accompagnement`,
       items: thematiquesNonAdministratives,
+    },
+    {
+      title: `Tag${sPluriel(tags.length)} spécifique${sPluriel(tags.length)}`,
+      items: tags.map(({ tag: { nom } }) => nom),
     },
     {
       title: 'Niveau d’autonomie du bénéficiaire',

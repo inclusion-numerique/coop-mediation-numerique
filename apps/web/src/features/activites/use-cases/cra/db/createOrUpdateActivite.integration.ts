@@ -41,6 +41,7 @@ const nullActivite: Omit<
   precisionsDemarche: null,
   structureDeRedirection: null,
   thematiques: [],
+  tags: [],
   typeLieu: 'ADistance',
   niveau: null,
   structure: null,

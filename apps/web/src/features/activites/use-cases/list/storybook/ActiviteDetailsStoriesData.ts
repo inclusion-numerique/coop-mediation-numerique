@@ -19,6 +19,7 @@ export const activiteIndividuelleInfosMinimum = {
     'PrendreEnMainDuMateriel',
     'InsertionProfessionnelle',
   ],
+  tags: [],
   notes: null,
   accompagnements: [
     {
@@ -70,6 +71,7 @@ export const activiteIndividuelleBeneficiaireSuivi = {
   date: yesterday,
   duree: 120,
   thematiques: ['NavigationSurInternet', 'Email'],
+  tags: [],
   notes: null,
   accompagnements: [
     {
@@ -123,6 +125,7 @@ export const activiteIndividuelleBeneficiaireAnonyme = {
     'TravailFormation',
     'ArgentImpots',
   ],
+  tags: [],
   precisionsDemarche: 'Déclaration impots',
   notes:
     '<p>Lörem ipsum ladeniliga douche <strong>plaledes</strong>. Nining son. Mipära kavun joskap juling lanar. Segyde snålsurfa då jevis. Dorade preng posad. Spefuv ter i kvasitiskap då mobilblottare dir. Häbel epihet i tegt. Ultrar. Digt hän. Polytt doskapet tempopatologi. Use betårta, tena. Biktiga pojuren.</p><p>Segyde snålsurfa då jevis. <strong>Dorade preng posad</strong>. Spefuv ter i kvasitiskap då mobilblottare dir. Häbel epihet i tegt. Ultrar. Digt hän. Polytt doskapet tempopatologi. Use betårta, tena. Biktiga pojuren</p>',
@@ -171,6 +174,7 @@ export const activiteCollectifInfosRepliees = {
   date: yesterday,
   duree: 120,
   thematiques: ['NavigationSurInternet', 'Email'],
+  tags: [],
   notes:
     '<p>Lörem ipsum ladeniliga douche <strong>plaledes</strong>. Nining son. Mipära kavun joskap juling lanar. Segyde snålsurfa då jevis. Dorade preng posad. Spefuv ter i kvasitiskap då mobilblottare dir. Häbel epihet i tegt. Ultrar. Digt hän. Polytt doskapet tempopatologi. Use betårta, tena. Biktiga pojuren.</p><p>Segyde snålsurfa då jevis. <strong>Dorade preng posad</strong>. Spefuv ter i kvasitiskap då mobilblottare dir. Häbel epihet i tegt. Ultrar. Digt hän. Polytt doskapet tempopatologi. Use betårta, tena. Biktiga pojuren</p>',
   accompagnements: [
@@ -237,6 +241,7 @@ export const activiteCollectifInfosDepliees = {
   date: yesterday,
   duree: 120,
   thematiques: ['NavigationSurInternet', 'Email'],
+  tags: [],
   notes: null,
   accompagnements: [
     ...createBeneficiairesForParticipantsAnonymes({
