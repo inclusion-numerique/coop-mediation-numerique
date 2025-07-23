@@ -963,13 +963,13 @@ model Activite {
 
   // CHAMPS COMMUNS
 
-  mediateurId     String           @map("mediateur_id") @db.Uuid
-  mediateur       Mediateur        @relation(fields: [mediateurId], references: [id])
-  accompagnements Accompagnement[]
-  date            DateTime         @map("date") @db.Date
-  duree           Int              @map("duree") // Durée en minutes
-  notes           String?
-  rdvServicePublicId Int? @map("rdv_service_public_id") // id externe du RDV Service Public qui est à l'origine de cette Activité
+  mediateurId        String           @map("mediateur_id") @db.Uuid
+  mediateur          Mediateur        @relation(fields: [mediateurId], references: [id])
+  accompagnements    Accompagnement[]
+  date               DateTime         @map("date") @db.Date
+  duree              Int              @map("duree") // Durée en minutes
+  notes              String?
+  rdvServicePublicId Int?             @map("rdv_service_public_id") // id externe du RDV Service Public qui est à l'origine de cette Activité
 
   // Structure est renseigné
   // - si typeLieu = LieuActivite
@@ -1003,8 +1003,9 @@ model Activite {
   precisionsDemarche String? @map("precisions_demarche")
 
   // CHAMPS CRA COLLECTIF
-  titreAtelier String?        @map("titre_atelier")
+  titreAtelier String?         @map("titre_atelier")
   niveau       NiveauAtelier?
+  tags         ActivitesTags[]
 
   // "creation" cursor is used to paginate results for API queries
   @@unique([creation, id])
@@ -1019,6 +1020,17 @@ model Activite {
   @@map("activites")
 }
 
+model ActivitesTags {
+  activiteId String @map("activite_id") @db.Uuid
+  tagId      String @map("tag_id") @db.Uuid
+
+  activite Activite @relation(fields: [activiteId], references: [id])
+  tag      Tag      @relation(fields: [tagId], references: [id])
+
+  @@id([activiteId, tagId])
+  @@map("activite_tags")
+}
+
 model Tag {
   id String @id @default(uuid()) @db.Uuid
 
@@ -1029,9 +1041,10 @@ model Tag {
   mediateurId String?    @map("mediateur_id") @db.Uuid
   mediateur   Mediateur? @relation(fields: [mediateurId], references: [id])
 
-  creation     DateTime  @default(now())
-  modification DateTime  @default(now())
+  creation     DateTime        @default(now())
+  modification DateTime        @default(now())
   suppression  DateTime?
+  activites    ActivitesTags[]
 
   @@map("tags")
 }
@@ -1157,10 +1170,10 @@ model RdvAccount {
   scope        String?
   metadata     Json? // metadata on the account coming from the rdv service
 
-  created DateTime @default(now()) @map("created")
-  updated DateTime @updatedAt @map("updated")
+  created    DateTime  @default(now()) @map("created")
+  updated    DateTime  @updatedAt @map("updated")
   lastSynced DateTime? @map("last_synced")
-  error      String?   // If on a sync operation, there was a invalid token error or external RDV API error (unreachable, etc...)
+  error      String? // If on a sync operation, there was a invalid token error or external RDV API error (unreachable, etc...)
 
   @@index([userId])
   @@map("rdv_accounts")

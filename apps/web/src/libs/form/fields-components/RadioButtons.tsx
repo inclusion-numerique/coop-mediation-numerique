@@ -6,7 +6,14 @@ import {
   RadioButtonsProps as DsfrRadioButtonsProps,
 } from '@codegouvfr/react-dsfr/RadioButtons'
 import classNames from 'classnames'
-import { ChangeEvent, DetailedHTMLProps, LabelHTMLAttributes } from 'react'
+import {
+  ChangeEvent,
+  DetailedHTMLProps,
+  LabelHTMLAttributes,
+  ReactNode,
+  createElement,
+  isValidElement,
+} from 'react'
 
 type RadioButtonsProps = Omit<DsfrRadioButtonsProps, 'name' | 'options'> & {
   isPending: boolean
@@ -14,7 +21,7 @@ type RadioButtonsProps = Omit<DsfrRadioButtonsProps, 'name' | 'options'> & {
     label: string
     value: string
     extra?: {
-      illustration?: string | Pictogram
+      illustration?: string | Pictogram | ReactNode
       disabled?: boolean
       hintText?: string
       stars?: number
@@ -31,15 +38,28 @@ const Illustration = ({
   extra,
 }: {
   extra?: {
-    illustration?: string | Pictogram
+    illustration?: string | Pictogram | ReactNode
   }
 }) => {
-  if (extra?.illustration == null) return null
-  return typeof extra.illustration === 'string' ? (
-    <img width={56} src={extra.illustration} alt="" className="fr-ml-2v" />
-  ) : (
-    <extra.illustration width={56} height={56} aria-hidden />
-  )
+  const illustration = extra?.illustration
+
+  if (typeof illustration === 'string') {
+    return <img width={56} src={illustration} alt="" className="fr-ml-2v" />
+  }
+
+  if (isValidElement(illustration)) {
+    return illustration
+  }
+
+  if (typeof illustration === 'function') {
+    return createElement(illustration, {
+      width: 56,
+      height: 56,
+      'aria-hidden': true,
+    })
+  }
+
+  return null
 }
 
 export const RadioButtons = ({
@@ -76,9 +96,7 @@ export const RadioButtons = ({
               {option.label}
             </>
           ) : (
-            <span className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v fr-width-full fr-height-full">
-              {option.label}
-            </span>
+            option.label
           ),
         value: option.value,
         ...(option.extra?.illustration != null

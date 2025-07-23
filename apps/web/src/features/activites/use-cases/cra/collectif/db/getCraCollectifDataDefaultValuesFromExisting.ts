@@ -56,6 +56,16 @@ export const getCraCollectifDataDefaultValuesFromExisting = async ({
       notes: true,
       precisionsDemarche: true,
       rdvServicePublicId: true,
+      tags: {
+        select: {
+          tag: {
+            select: {
+              id: true,
+              nom: true,
+            },
+          },
+        },
+      },
     },
   })
 
@@ -79,6 +89,7 @@ export const getCraCollectifDataDefaultValuesFromExisting = async ({
     niveau,
     titreAtelier,
     rdvServicePublicId,
+    tags,
   } = cra
 
   const { beneficiairesSuivis, participantsAnonymes } =
@@ -97,7 +108,7 @@ export const getCraCollectifDataDefaultValuesFromExisting = async ({
     undefined
   > satisfies DefaultValues<CraCollectifData>['participants']
 
-  const defaultValues = {
+  return {
     id,
     mediateurId,
     participants: participantsDefaultValues,
@@ -130,7 +141,6 @@ export const getCraCollectifDataDefaultValuesFromExisting = async ({
     niveau: niveau ?? undefined,
     titreAtelier: titreAtelier ?? undefined,
     rdvServicePublicId: rdvServicePublicId ?? undefined,
+    tags: tags.map(({ tag }) => tag) ?? [],
   } satisfies DefaultValues<CraCollectifData>
-
-  return defaultValues
 }

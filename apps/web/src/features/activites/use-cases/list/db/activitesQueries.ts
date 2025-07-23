@@ -62,6 +62,15 @@ export const activiteListSelect = {
 
   materiel: true,
   thematiques: true,
+  tags: {
+    select: {
+      tag: {
+        select: {
+          nom: true,
+        },
+      },
+    },
+  },
   orienteVersStructure: true,
 
   precisionsDemarche: true,

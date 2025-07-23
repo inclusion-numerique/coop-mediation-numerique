@@ -1,5 +1,5 @@
 import { AnalysisSchema } from '@app/web/beneficiaire/import/analyseImportBeneficiairesExcel'
-import { searchBeneficiaire } from '@app/web/beneficiaire/searchBeneficiaire'
+import { searchBeneficiaires } from '@app/web/beneficiaire/searchBeneficiaires'
 import { trancheAgeFromAnneeNaissance } from '@app/web/beneficiaire/trancheAgeFromAnneeNaissance'
 import {
   BeneficiaireData,
@@ -88,7 +88,7 @@ export const beneficiairesRouter = router({
       if (!user.mediateur && user.role !== 'Admin') {
         throw forbiddenError('User is not a mediateur')
       }
-      return searchBeneficiaire({
+      return searchBeneficiaires({
         mediateurId: user.mediateur?.id,
         searchParams: {
           recherche: query,

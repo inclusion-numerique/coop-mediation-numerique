@@ -311,7 +311,6 @@ export const createOrUpdateActivite = async ({
         : 'structureDeRedirection' in data
           ? data.structureDeRedirection
           : undefined,
-
     thematiques: input.data.thematiques,
     structure:
       // Only set structure if it is the correct type of lieuAccompagnement
@@ -393,6 +392,19 @@ export const createOrUpdateActivite = async ({
               : []),
           ],
         }),
+        // Delete existing tags for the activite
+        prismaClient.activitesTags.deleteMany({
+          where: {
+            activiteId: id,
+          },
+        }),
+        // Create tags for the activite
+        prismaClient.activitesTags.createMany({
+          data: input.data.tags.map((tag) => ({
+            activiteId: id,
+            tagId: tag.id,
+          })),
+        }),
         // Update the activite
         prismaClient.activite.update({
           where: { id },
@@ -444,6 +456,13 @@ export const createOrUpdateActivite = async ({
           id: creationId,
         },
         select: { id: true },
+      }),
+      // Create tags for the activite
+      prismaClient.activitesTags.createMany({
+        data: input.data.tags.map((tag) => ({
+          activiteId: creationId,
+          tagId: tag.id,
+        })),
       }),
       // Create accompagnements
       prismaClient.accompagnement.createMany({

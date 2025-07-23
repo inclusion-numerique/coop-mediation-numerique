@@ -4,7 +4,6 @@ import {
 } from '@app/ui/components/Primitives/Form/Input'
 import { useFieldContext } from '@app/web/libs/form/form-context'
 import { ChangeEvent, DetailedHTMLProps, LabelHTMLAttributes } from 'react'
-import { Label } from './Label'
 
 export type InputProps = Omit<DsfrInputProps, 'name'> & {
   isPending: boolean

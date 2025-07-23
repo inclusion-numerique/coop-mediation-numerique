@@ -1,3 +1,4 @@
+import { searchTags } from '@app/web/features/activites/use-cases/tags/search/searchTags'
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaires/db/getInitialBeneficiairesOptionsForSearch'
 import { getMediateursLieuxActiviteOptions } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
 import type { DefaultValues } from 'react-hook-form'
@@ -24,6 +25,7 @@ const craDefaultValues = (
   date: stateFromUrl.date ?? new Date().toISOString().slice(0, 10),
   mediateurId: mediateurId,
   duree: stateFromUrl.duree ?? {},
+  tags: stateFromUrl.tags ?? [],
 })
 
 export const getCraPageData =
@@ -55,6 +57,16 @@ export const getCraPageData =
         mediateurId,
       })
 
+    const initialTagsOptions = (
+      await searchTags({
+        mediateurId,
+        searchParams: { lignes: '10' },
+        excludeIds: defaultValues.tags
+          ?.map((tag) => tag?.id)
+          .filter((id): id is string => id != null),
+      })
+    ).items
+
     const dureeOptions = await getAdaptiveDureeOptions({
       mediateurId,
       include: defaultValues.duree?.duree,
@@ -64,6 +76,7 @@ export const getCraPageData =
       defaultValues,
       lieuxActiviteOptions,
       initialBeneficiairesOptions,
+      initialTagsOptions,
       dureeOptions,
     }
   }

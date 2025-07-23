@@ -12,11 +12,17 @@ export const createTagPersonnel =
     description?: string | null
   }) => {
     enforceIsMediateur(sessionUser)
-    await prismaClient.tag.create({
+    const tag = await prismaClient.tag.create({
       data: {
         nom,
         description,
         mediateurId: sessionUser.mediateur.id,
       },
     })
+
+    return {
+      id: tag.id,
+      nom: tag.nom,
+      description: tag.description,
+    }
   }

@@ -13,12 +13,17 @@ export const createTagDepartemental =
     description?: string | null
   }) => {
     enforceIsCoordinateur(sessionUser)
-
-    await prismaClient.tag.create({
+    const tag = await prismaClient.tag.create({
       data: {
         nom,
         description,
         departement: getUserDepartement(sessionUser).code,
       },
     })
+
+    return {
+      id: tag.id,
+      nom: tag.nom,
+      description: tag.description,
+    }
   }

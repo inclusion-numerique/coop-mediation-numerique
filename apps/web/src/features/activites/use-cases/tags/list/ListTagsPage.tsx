@@ -7,8 +7,7 @@ import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 import { contentId } from '@app/web/utils/skipLinks'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import classNames from 'classnames'
-import React from 'react'
-import CreateTag from '../create/CreateTag'
+import { CreateTag } from './CreateTag'
 
 const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
 

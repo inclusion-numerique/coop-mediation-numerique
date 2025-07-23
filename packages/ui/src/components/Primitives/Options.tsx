@@ -58,7 +58,7 @@ export const Options = <T,>({
                 {...getItemProps?.({ item, index })}
                 key={itemToKey(item)}
                 className={classNames(
-                  'fr-menu-options__item ',
+                  'fr-menu-options__item',
                   isHighlighted(item) && 'fr-background-alt--grey',
                   isSelected(item) && 'fr-text-label--blue-france',
                 )}
@@ -72,8 +72,10 @@ export const Options = <T,>({
               </li>
             ),
           )}
+        {isOpen && items.length === 0 && children && (
+          <li className="fr-menu-options__item">{children}</li>
+        )}
       </ul>
-      {children}
     </div>
   )
 }
