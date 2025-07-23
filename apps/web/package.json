@@ -83,7 +83,7 @@
     "escape-string-regexp": "^5.0.0",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
-    "form-data": "^4.0.2",
+    "form-data": "^4.0.4",
     "framer-motion": "^12.9.5",
     "fuse.js": "^7.1.0",
     "he": "^1.2.0",
