@@ -30,7 +30,13 @@ import {
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { prismaClient } from '@app/web/prismaClient'
 import { UserProfile } from '@app/web/utils/user'
-import { Materiel, Thematique, TypeActivite, TypeLieu } from '@prisma/client'
+import {
+  Materiel,
+  Prisma,
+  Thematique,
+  TypeActivite,
+  TypeLieu,
+} from '@prisma/client'
 import { snakeCase } from 'change-case'
 
 export type ActivitesStatsRaw = {
@@ -86,6 +92,7 @@ export const getActivitesStatsRaw = async ({
         FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${
           user?.coordinateur?.id
         }::UUID
+      
       WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
         AND (act.date <= mc.suppression OR mc.suppression IS NULL)
         AND act.suppression IS NULL
@@ -170,6 +177,29 @@ export const normalizeActivitesStatsRaw = (stats: ActivitesStatsRaw) => {
   }
 }
 
+const getActiviteTags = (mediateurIds?: string[]) => {
+  if (mediateurIds == null || mediateurIds.length === 0)
+    return Promise.resolve([])
+
+  return prismaClient.$queryRaw<
+    {
+      label: string
+      count: number
+    }[]
+  >(Prisma.sql`
+    SELECT t.nom AS                     label,
+           COUNT(DISTINCT a.id)::int AS count
+    FROM activites a
+           INNER JOIN activite_tags at ON at.activite_id = a.id
+           INNER JOIN tags t ON t.id = at.tag_id
+    WHERE a.mediateur_id IN (${Prisma.join(mediateurIds.map((id) => Prisma.sql`${id}::UUID`))})
+      AND a.suppression IS NULL
+      AND t.suppression IS NULL
+    GROUP BY t.id, t.nom
+    ORDER BY count DESC
+  `)
+}
+
 export const getActivitesStats = async ({
   user,
   mediateurIds,
@@ -179,13 +209,18 @@ export const getActivitesStats = async ({
   mediateurIds?: string[] // Undefined means no filter, empty array means no mediateur / no data.
   activitesFilters: ActivitesFilters
 }) => {
+  const activiteTags = await getActiviteTags(mediateurIds)
+
   const statsRaw = await getActivitesStatsRaw({
     user,
     mediateurIds,
     activitesFilters,
   })
 
-  return normalizeActivitesStatsRaw(statsRaw)
+  return {
+    ...normalizeActivitesStatsRaw(statsRaw),
+    tags: allocatePercentagesFromRecords(activiteTags, 'count', 'proportion'),
+  }
 }
 
 export type ActivitesStats = Awaited<ReturnType<typeof getActivitesStats>>

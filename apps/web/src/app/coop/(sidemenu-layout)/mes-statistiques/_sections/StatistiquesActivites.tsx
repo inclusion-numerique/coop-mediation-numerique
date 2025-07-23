@@ -11,7 +11,7 @@ import type { TotalCountsStats } from '@app/web/app/coop/(sidemenu-layout)/mes-s
 import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { SegmentedControl } from '@codegouvfr/react-dsfr/SegmentedControl'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { ProgressItemList } from '../_components/ProgressItemList'
 import { QuantifiedShareList } from '../_components/QuantifiedShareList'
 import { StatistiqueAccompagnement } from '../_components/StatistiqueAccompagnement'
@@ -20,8 +20,21 @@ import {
   canauxAccompagnementColors,
   dureesAccompagnementColors,
   nombreAccompagnementParLieuColor,
+  tagsColor,
   thematiquesAccompagnementColors,
 } from './colors'
+
+type AccompagnementCategory = 'thematiques' | 'demarches' | 'tags'
+
+const desc = (
+  { count: countA }: { count: number },
+  { count: countB }: { count: number },
+) => countB - countA
+
+const toMaxProportion = (
+  max: number,
+  { proportion }: { proportion: number },
+) => (proportion > max ? proportion : max)
 
 export const StatistiquesActivites = ({
   activites,
@@ -34,20 +47,48 @@ export const StatistiquesActivites = ({
   structures?: ActivitesStructuresStats
   totalCounts: TotalCountsStats
 }) => {
-  const [
-    isMediationNumeriqueAccompagnement,
-    setIsMediationNumeriqueAccompagnement,
-  ] = useState(true)
+  const [accompagnementCategory, setAccompagnementCategory] =
+    useState<AccompagnementCategory>('thematiques')
 
-  const thematiquesToDisplay = isMediationNumeriqueAccompagnement
-    ? activites.thematiques
-    : activites.thematiquesDemarches
-
-  const thematiquesToDisplayMaxProportion = thematiquesToDisplay.reduce(
-    (max, thematique) =>
-      thematique.proportion > max ? thematique.proportion : max,
-    0,
-  )
+  const accompagnementCategories = [
+    {
+      category: 'thematiques',
+      title: 'Thématiques des activités',
+      description:
+        'Thématiques sélectionnées lors de l’enregistrement d’une activité. À noter : une activité peut avoir plusieurs thématiques.',
+      items: activites.thematiques.sort(desc),
+      colors: thematiquesAccompagnementColors,
+      maxProportion: activites.thematiques.reduce(toMaxProportion, 0),
+    },
+    {
+      category: 'demarches',
+      title: 'Thématiques des démarches administratives',
+      description:
+        'Thématiques des démarches administratives sélectionnées lors de l’enregistrement d’une activité. À noter : une activité peut avoir plusieurs thématiques administratives.',
+      items: activites.thematiquesDemarches.sort(desc),
+      colors: thematiquesAccompagnementColors,
+      maxProportion: activites.thematiquesDemarches.reduce(toMaxProportion, 0),
+    },
+    {
+      category: 'tags',
+      title: 'Tags spécifiques',
+      description:
+        'Tags spécifiques sélectionnés lors de l’enregistrement d’une activité. À noter : une activité peut avoir plusieurs tags.',
+      items: activites.tags.sort(desc),
+      colors: tagsColor,
+      maxProportion: activites.tags.reduce(toMaxProportion, 0),
+      actions: (
+        <Button
+          priority="tertiary no outline"
+          size="small"
+          iconId="fr-icon-settings-5-line"
+          linkProps={{ href: '/coop/tags' }}
+        >
+          Gérer mes tags
+        </Button>
+      ),
+    },
+  ]
 
   return (
     <>
@@ -79,102 +120,124 @@ export const StatistiquesActivites = ({
         ))}
       </div>
       <div className="fr-border fr-p-4w fr-mb-3w fr-border-radius--16">
-        <div className="fr-grid-row fr-mb-3w fr-align-items-center">
-          <div className="fr-mb-0 fr-col fr-flex fr-align-items-center">
-            <h3 className="fr-text--lg fr-mb-0">Thématiques des activités</h3>
-            <Button
-              className="fr-px-1v fr-ml-1v"
-              title="Plus d’information à propos des thématiques d’accompagnements"
-              priority="tertiary no outline"
-              size="small"
-              type="button"
-              aria-describedby="tooltip-thematiques-accompagnement"
-            >
-              <span className="ri-information-line fr-text--lg" aria-hidden />
-            </Button>
-            <span
-              className="fr-tooltip fr-placement"
-              id="tooltip-thematiques-accompagnement"
-              role="tooltip"
-              aria-hidden
-            >
-              Thématiques sélectionnées lors de l’enregistrement d’une activité.
-              À noter&nbsp;: une activité peut avoir plusieurs thématiques.
-            </span>
-          </div>
-          <SegmentedControl
-            className="fr-md-col fr-col-12 fr-ml-auto"
-            hideLegend
-            small
-            legend="Bascule entre les thématiques"
-            segments={[
-              {
-                label: 'Médiation numérique',
-                nativeInputProps: {
-                  checked: isMediationNumeriqueAccompagnement,
-                  onChange: () => setIsMediationNumeriqueAccompagnement(true),
-                },
+        <SegmentedControl
+          className="fr-md-col fr-col-12 fr-ml-auto"
+          hideLegend
+          small
+          legend="Bascule entre les thématiques"
+          segments={[
+            {
+              label: 'Médiation numérique',
+              nativeInputProps: {
+                checked: accompagnementCategory === 'thematiques',
+                onChange: () => setAccompagnementCategory('thematiques'),
               },
-              {
-                label: 'Démarches administratives',
-                nativeInputProps: {
-                  checked: !isMediationNumeriqueAccompagnement,
-                  onChange: () => setIsMediationNumeriqueAccompagnement(false),
-                },
+            },
+            {
+              label: 'Démarches administratives',
+              nativeInputProps: {
+                checked: accompagnementCategory === 'demarches',
+                onChange: () => setAccompagnementCategory('demarches'),
               },
-            ]}
-          />
-        </div>
-
-        <ProgressItemList
-          items={thematiquesToDisplay.sort((a, b) => b.count - a.count)}
-          colors={thematiquesAccompagnementColors}
-          maxProportion={thematiquesToDisplayMaxProportion}
-          oneLineLabel
+            },
+            {
+              label: (
+                <>
+                  <span className="ri-price-tag-3-line" aria-hidden />
+                  &ensp;Tags spécifiques
+                </>
+              ),
+              nativeInputProps: {
+                checked: accompagnementCategory === 'tags',
+                onChange: () => setAccompagnementCategory('tags'),
+              },
+            },
+          ]}
         />
-
-        {isMediationNumeriqueAccompagnement && (
-          <>
-            <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mt-10v fr-mb-3w">
-              <h3 className="fr-text--lg fr-mb-0">Matériel utilisé</h3>
-              <Button
-                className="fr-px-1v fr-ml-1v"
-                title="Plus d’information à propos du matériel utilisé"
-                priority="tertiary no outline"
-                size="small"
-                type="button"
-                aria-describedby="tooltip-meteriel-utilise"
-              >
-                <span className="ri-information-line fr-text--lg" aria-hidden />
-              </Button>
-              <span
-                className="fr-tooltip fr-placement"
-                id="tooltip-meteriel-utilise"
-                role="tooltip"
-                aria-hidden
-              >
-                Matériel utilisé lors d’un accompagnement de médiation
-                numérique. À noter&nbsp;: Plusieurs matériels ont pu être
-                utilisés lors d’un même accompagnement.
-              </span>
-            </div>
-
-            <div className="fr-grid-row fr-grid-row--gutters fr-grid-row--center">
-              {activites.materiels.map(
-                ({ value, label, count, proportion }) => (
-                  <StatistiqueMateriel
-                    key={value}
-                    className="fr-col-xl fr-col-4"
-                    value={value}
-                    label={label}
-                    count={count}
-                    proportion={proportion}
-                  />
-                ),
-              )}
-            </div>
-          </>
+        <hr className="fr-separator-8v" />
+        {accompagnementCategories.map(
+          ({
+            category,
+            title,
+            description,
+            items,
+            colors,
+            maxProportion,
+            actions,
+          }) =>
+            category === accompagnementCategory && (
+              <Fragment key={category}>
+                <div className="fr-flex fr-align-items-center fr-justify-content-space-between fr-mb-6v">
+                  <div className="fr-mb-0 fr-flex fr-align-items-center">
+                    <h3 className="fr-text--lg fr-mb-0">{title}</h3>
+                    <Button
+                      className="fr-px-1v fr-ml-1v"
+                      title={`Plus d’information à propos des ${title.toLowerCase()}`}
+                      priority="tertiary no outline"
+                      size="small"
+                      type="button"
+                      aria-describedby={`tooltip-accompagnement-${category}`}
+                    >
+                      <span
+                        className="ri-information-line fr-text--lg"
+                        aria-hidden
+                      />
+                    </Button>
+                    <span
+                      className="fr-tooltip fr-placement"
+                      id={`tooltip-accompagnement-${category}`}
+                      role="tooltip"
+                      aria-hidden
+                    >
+                      {description}
+                    </span>
+                  </div>
+                  {actions && actions}
+                </div>
+                <ProgressItemList
+                  items={items}
+                  colors={colors}
+                  maxProportion={maxProportion}
+                  oneLineLabel
+                />
+              </Fragment>
+            ),
         )}
+        <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mt-10v fr-mb-3w">
+          <h3 className="fr-text--lg fr-mb-0">Matériel utilisé</h3>
+          <Button
+            className="fr-px-1v fr-ml-1v"
+            title="Plus d’information à propos du matériel utilisé"
+            priority="tertiary no outline"
+            size="small"
+            type="button"
+            aria-describedby="tooltip-meteriel-utilise"
+          >
+            <span className="ri-information-line fr-text--lg" aria-hidden />
+          </Button>
+          <span
+            className="fr-tooltip fr-placement"
+            id="tooltip-meteriel-utilise"
+            role="tooltip"
+            aria-hidden
+          >
+            Matériel utilisé lors d’un accompagnement de médiation numérique. À
+            noter&nbsp;: Plusieurs matériels ont pu être utilisés lors d’un même
+            accompagnement.
+          </span>
+        </div>
+        <div className="fr-grid-row fr-grid-row--gutters fr-grid-row--center">
+          {activites.materiels.map(({ value, label, count, proportion }) => (
+            <StatistiqueMateriel
+              key={value}
+              className="fr-col-xl fr-col-4"
+              value={value}
+              label={label}
+              count={count}
+              proportion={proportion}
+            />
+          ))}
+        </div>
       </div>
       <div className="fr-border fr-p-4w fr-border-radius--16">
         <div className="fr-grid-row fr-grid-row--gutters">
