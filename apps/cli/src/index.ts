@@ -18,7 +18,7 @@ import { listV1Emails } from '@app/cli/commands/v1/listEmails'
 import { fetchAccompagnements } from '@app/cli/fetchAccompagnement'
 import { output } from '@app/cli/output'
 import { Command } from '@commander-js/extra-typings'
-import { migrateCrasV1 } from './commands/v1/migrateCrasV1'
+import { migrateCrasV1Structures } from './commands/v1/migrateCrasV1Structures'
 
 if (
   process.env.DATABASE_URL &&
@@ -57,6 +57,6 @@ program.addCommand(locallyRestoreLatestMainBackup)
 program.addCommand(listV1Emails)
 program.addCommand(ingestNotionHelpCenterExportedMarkdown)
 program.addCommand(fetchAccompagnements)
-program.addCommand(migrateCrasV1)
+program.addCommand(migrateCrasV1Structures)
 
 program.parse()
