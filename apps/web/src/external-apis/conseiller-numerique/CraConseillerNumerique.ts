@@ -82,4 +82,5 @@ export type CraConseillerNumeriqueCollectionItem = {
   createdAt: Date
   updatedAt?: Date
   structure: DBRef
+  permanence?: DBRef | null
 }
