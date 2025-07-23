@@ -84,8 +84,9 @@ const AdministrationSideMenu = () => {
     {
       text: (
         <>
-          <span className="ri-calendar-check-line ri-xl fr-mr-1w fr-text--regular"
-                aria-hidden
+          <span
+            className="ri-calendar-check-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
           />
           Beta RDVSP
         </>
