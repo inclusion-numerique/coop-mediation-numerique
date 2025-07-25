@@ -2,6 +2,8 @@ import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
 import { typeActivitePluralLabels } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
 import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
+import Button from '@codegouvfr/react-dsfr/Button'
+import { Fragment } from 'react'
 import { AccompagnementPieChart } from '../_components/AccompagnementPieChart'
 import { ProgressItemList } from '../_components/ProgressItemList'
 import { QuantifiedShareLegend } from '../_components/QuantifiedShareLegend'
@@ -11,30 +13,48 @@ import {
   canauxAccompagnementColors,
   dureesAccompagnementColors,
   nombreAccompagnementParLieuColor,
+  tagsColor,
   thematiquesAccompagnementColors,
 } from './colors'
+
+const desc = (
+  { count: countA }: { count: number },
+  { count: countB }: { count: number },
+) => countB - countA
+
+const toMaxProportion = (
+  max: number,
+  { proportion }: { proportion: number },
+) => (proportion > max ? proportion : max)
 
 export const StatistiquesActivitesPrint = ({
   totalCounts,
   activites,
   structures,
 }: MesStatistiquesPageData) => {
-  const thematiques = activites.thematiques.sort((a, b) => b.count - a.count)
-  const thematiquesMaxProportion = activites.thematiques.reduce(
-    (max, thematique) =>
-      thematique.proportion > max ? thematique.proportion : max,
-    0,
-  )
-
-  const thematiquesDemarches = activites.thematiquesDemarches.sort(
-    (a, b) => b.count - a.count,
-  )
-  const thematiquesDemarchesMaxProportion =
-    activites.thematiquesDemarches.reduce(
-      (max, thematique) =>
-        thematique.proportion > max ? thematique.proportion : max,
-      0,
-    )
+  const accompagnementCategories = [
+    {
+      category: 'thematiques',
+      title: 'Médiation numérique',
+      items: activites.thematiques.sort(desc),
+      colors: thematiquesAccompagnementColors,
+      maxProportion: activites.thematiques.reduce(toMaxProportion, 0),
+    },
+    {
+      category: 'demarches',
+      title: 'Démarches administratives',
+      items: activites.thematiquesDemarches.sort(desc),
+      colors: thematiquesAccompagnementColors,
+      maxProportion: activites.thematiquesDemarches.reduce(toMaxProportion, 0),
+    },
+    {
+      category: 'tags',
+      title: 'Tags spécifiques',
+      items: activites.tags.sort(desc),
+      colors: tagsColor,
+      maxProportion: activites.tags.reduce(toMaxProportion, 0),
+    },
+  ]
 
   return (
     <>
@@ -56,21 +76,21 @@ export const StatistiquesActivitesPrint = ({
       </ul>
       <h3 className="fr-h5 fr-mb-2v fr-mt-6v">Thématiques des activités</h3>
       <small role="note" className="fr-mb-6v fr-display-block">
-        Thématiques sélectionnées lors de l’enregistrement d’une activité. À
-        noter : une activité peut avoir plusieurs thématiques.
+        Thématiques et tags sélectionnées lors de l’enregistrement d’une
+        activité. À noter : une activité peut avoir plusieurs thématiques.
       </small>
-      <h4 className="fr-h6 fr-mb-2v fr-mt-6v">Médiation numérique</h4>
-      <ProgressItemList
-        items={thematiques}
-        maxProportion={thematiquesMaxProportion}
-        colors={thematiquesAccompagnementColors}
-      />
-      <h4 className="fr-h6 fr-mb-2v fr-mt-6v">Démarches administratives</h4>
-      <ProgressItemList
-        items={thematiquesDemarches}
-        maxProportion={thematiquesDemarchesMaxProportion}
-        colors={thematiquesAccompagnementColors}
-      />
+      {accompagnementCategories.map(
+        ({ category, title, items, maxProportion, colors }) => (
+          <Fragment key={category}>
+            <h4 className="fr-h6 fr-mb-2v fr-mt-6v">{title}</h4>
+            <ProgressItemList
+              items={items}
+              maxProportion={maxProportion}
+              colors={colors}
+            />
+          </Fragment>
+        ),
+      )}
       <h3 className="fr-h5 fr-mb-2v fr-mt-6v">Matériel utilisé</h3>
       <small role="note" className="fr-mb-6v fr-display-block">
         Matériel utilisé lors d’un accompagnement de médiation numérique. À

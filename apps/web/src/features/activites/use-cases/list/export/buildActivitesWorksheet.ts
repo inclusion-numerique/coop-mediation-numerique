@@ -90,6 +90,7 @@ export const buildActivitesWorksheet = ({
     'Nom de l’atelier',
     'Matériel numérique utilisé',
     'Thématique(s) d’accompagnement',
+    'Tags',
     'Nom de la démarche administrative',
     'Niveau d’autonomie (ou de l’atelier)',
     'Bénéficiaire réorienté',
@@ -129,6 +130,7 @@ export const buildActivitesWorksheet = ({
         titreAtelier,
         materiel,
         thematiques,
+        tags,
         precisionsDemarche,
         autonomie,
         niveau,
@@ -164,6 +166,7 @@ export const buildActivitesWorksheet = ({
         thematiques
           .map((thematique) => thematiqueLabels[thematique])
           .join(intraCellLineBreak),
+        tags.map(({ tag: { nom } }) => nom).join(intraCellLineBreak),
         precisionsDemarche || '',
         autonomie
           ? `${autonomieStars[autonomie]}/${autonomieValues.length}`
