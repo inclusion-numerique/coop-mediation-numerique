@@ -6,7 +6,6 @@ import {
   toFulfilledValue,
 } from '@app/web/features/conum/use-cases/update-info/db/miseEnRelationFromCollectionFor'
 import { updateConseillersIdPg } from '@app/web/features/conum/use-cases/update-info/db/updateIdPg'
-import { updateNonAffichageCarto } from '@app/web/features/conum/use-cases/update-info/db/updateNonAffichageCarto'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 
 export const executeUpdateConumInfo = async () => {
@@ -32,12 +31,6 @@ export const executeUpdateConumInfo = async () => {
   )
 
   output(`Updated ${usersWithoutIdPg.length} conseillers numériques with idPg`)
-
-  const affectedMediateurs = await updateNonAffichageCarto(matchingConseillers)
-
-  output(
-    `Updated ${affectedMediateurs.count} conseillers numériques visibility`,
-  )
 
   output('All updates done')
 }
