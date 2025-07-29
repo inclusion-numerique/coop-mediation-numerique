@@ -966,6 +966,7 @@ model Activite {
   mediateurId     String           @map("mediateur_id") @db.Uuid
   mediateur       Mediateur        @relation(fields: [mediateurId], references: [id])
   accompagnements Accompagnement[]
+  accompagnementsCount Int         @map("accompagnements_count")
   date            DateTime         @map("date") @db.Date
   duree           Int              @map("duree") // Durée en minutes
   notes           String?
@@ -1016,6 +1017,7 @@ model Activite {
   // performance indexes
   @@index([date])
   @@index([lieuCodeInsee])
+  @@index([modification(sort: Desc)])
   @@map("activites")
 }
 

@@ -347,6 +347,12 @@ export const GET = createApiV1Route
       throw validatedCursor.error as ZodError
     }
 
+    console.log('SQL QUERY PARAMS', {
+      cursorCreationId: validatedCursor?.data?.creation_id,
+      take: cursorPagination.take,
+      skip: cursorPagination.skip,
+    })
+
     const cras = await prismaClient.activite.findMany({
       where: {
         suppression: null,
@@ -354,11 +360,6 @@ export const GET = createApiV1Route
       orderBy: [{ creation: 'desc' }],
       include: {
         mediateur: true,
-        _count: {
-          select: {
-            accompagnements: true,
-          },
-        },
       },
       take: cursorPagination.take,
       skip: cursorPagination.skip,
@@ -369,7 +370,12 @@ export const GET = createApiV1Route
         : undefined,
     })
 
-    const totalCount = await prismaClient.activite.count()
+    // const totalCountResult = await prismaClient.$queryRaw<{ count: number }[]>`
+    //   SELECT COUNT(*) AS countFROM activites WHERE activites.suppression IS NULL
+    // `
+    // const totalCount = totalCountResult.at(0)?.count ?? 0
+
+    const totalCount = 8
 
     const lastItem = cras.at(-1)
     const firstItem = cras.at(0)
@@ -406,7 +412,7 @@ export const GET = createApiV1Route
           precisionsDemarche,
           titreAtelier,
           niveau,
-          _count: { accompagnements },
+          accompagnementsCount,
         }) =>
           ({
             type: 'activite',
@@ -438,7 +444,7 @@ export const GET = createApiV1Route
               precisions_demarche: precisionsDemarche,
               titre_atelier: titreAtelier,
               niveau_atelier: niveau ? niveauAtelierApiValues[niveau] : null,
-              accompagnements,
+              accompagnements: accompagnementsCount,
             },
           }) satisfies ActiviteResource,
       ),
