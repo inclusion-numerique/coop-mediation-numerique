@@ -1,26 +1,19 @@
 'use client'
 
 import Button from '@codegouvfr/react-dsfr/Button'
-import CreateTagModal, {
-  CreateTagDynamicModal,
-} from '../../tags/create/CreateTagModal'
+import { SaveTagDynamicModal } from '../save/SaveTagModal'
 
-export const CreateTag = ({
-  isMediateur,
-  isCoordinateur,
-}: {
-  isMediateur: boolean
-  isCoordinateur: boolean
-}) => (
-  <>
-    <CreateTagModal isMediateur={isMediateur} isCoordinateur={isCoordinateur} />
+export const CreateTag = () => {
+  const openSaveTagModal = SaveTagDynamicModal.useOpen()
+
+  return (
     <Button
       type="button"
       priority="secondary"
       iconId="fr-icon-add-line"
-      onClick={CreateTagDynamicModal.open}
+      onClick={() => openSaveTagModal({})}
     >
       Créer&nbsp;un&nbsp;tag
     </Button>
-  </>
-)
+  )
+}
