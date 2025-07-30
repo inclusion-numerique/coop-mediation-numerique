@@ -25,9 +25,13 @@ export const OnboardingMesOutils = ({
       </>
     }
     stepIndex={4}
-    totalSteps={isConseillerNumerique ? 6 : 5}
+    totalSteps={isConseillerNumerique ? 5 : 4}
     previous={{ href: '/en-savoir-plus/mes-beneficiaires' }}
-    next={{ href: '/en-savoir-plus/france-numerique-ensemble' }}
+    next={
+      isConseillerNumerique
+        ? { href: '/en-savoir-plus/mes-archives' }
+        : { href: '/coop', isComplete: true }
+    }
     closeHref="/coop"
   >
     <p className="fr-text--lg">

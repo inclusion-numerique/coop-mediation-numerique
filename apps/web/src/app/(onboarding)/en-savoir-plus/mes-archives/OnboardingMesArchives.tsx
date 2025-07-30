@@ -19,9 +19,9 @@ export const OnboardingMesArchives = () => (
         Mes archives - Coop V.1
       </>
     }
-    stepIndex={6}
-    totalSteps={6}
-    previous={{ href: '/en-savoir-plus/france-numerique-ensemble' }}
+    stepIndex={5}
+    totalSteps={5}
+    previous={{ href: '/en-savoir-plus/mes-outils' }}
     next={{ href: '/coop', isComplete: true }}
     closeHref="/coop"
   >

@@ -20,10 +20,10 @@ export const OnboardingMesOutilsCoordinateur = () => (
         Mes outils
       </>
     }
-    stepIndex={5}
-    totalSteps={6}
+    stepIndex={4}
+    totalSteps={4}
     previous={{ href: '/en-savoir-plus/coordinateur/mes-archives' }}
-    next={{ href: '/en-savoir-plus/coordinateur/france-numerique-ensemble' }}
+    next={{ href: '/coop', isComplete: true }}
     closeHref="/coop"
   >
     <p className="fr-text--lg">
