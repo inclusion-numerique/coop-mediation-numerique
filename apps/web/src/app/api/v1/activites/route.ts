@@ -19,6 +19,7 @@ import { autonomieApiValues } from '@app/web/features/activites/use-cases/cra/in
 import { structureDeRedirectionApiValues } from '@app/web/features/activites/use-cases/cra/individuel/fields/structures-redirection'
 import { prismaClient } from '@app/web/prismaClient'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
+import type { Prisma } from '@prisma/client'
 import { NextResponse } from 'next/server'
 import { type ZodError, z } from 'zod'
 
@@ -356,11 +357,27 @@ export const GET = createApiV1Route
       throw validatedCursor.error as ZodError
     }
 
+    const where: Prisma.ActiviteWhereInput = {
+      suppression: null,
+    }
+
+    if (validatedCursor) {
+      // We manually recreate cursor pagination as the prisma way
+      // does not work with the indexes and times out
+      where.OR = [
+        { creation: { lt: validatedCursor.data.creation_id.creation } },
+        {
+          AND: [
+            { creation: validatedCursor.data.creation_id.creation },
+            { id: { lt: validatedCursor.data.creation_id.id } },
+          ],
+        },
+      ]
+    }
+
     const cras = await prismaClient.activite.findMany({
-      where: {
-        suppression: null,
-      },
-      orderBy: [{ creation: 'desc' }],
+      where,
+      orderBy: [{ creation: 'desc' }, { id: 'desc' }],
       include: {
         mediateur: true,
         tags: {
@@ -372,22 +389,15 @@ export const GET = createApiV1Route
             },
           },
         },
-        _count: {
-          select: {
-            accompagnements: true,
-          },
-        },
       },
       take: cursorPagination.take,
-      skip: cursorPagination.skip,
-      cursor: validatedCursor
-        ? {
-            creation_id: validatedCursor.data.creation_id,
-          }
-        : undefined,
     })
 
-    const totalCount = await prismaClient.activite.count()
+    // The prisma.count() was slower than the raw query
+    const totalCountResult = await prismaClient.$queryRaw<{ count: number }[]>`
+      SELECT COUNT(*)::INT AS count FROM activites WHERE activites.suppression IS NULL
+    `
+    const totalCount = totalCountResult.at(0)?.count ?? 0
 
     const lastItem = cras.at(-1)
     const firstItem = cras.at(0)
@@ -425,7 +435,7 @@ export const GET = createApiV1Route
           precisionsDemarche,
           titreAtelier,
           niveau,
-          _count: { accompagnements },
+          accompagnementsCount,
         }) =>
           ({
             type: 'activite',
@@ -458,7 +468,7 @@ export const GET = createApiV1Route
               precisions_demarche: precisionsDemarche,
               titre_atelier: titreAtelier,
               niveau_atelier: niveau ? niveauAtelierApiValues[niveau] : null,
-              accompagnements,
+              accompagnements: accompagnementsCount,
             },
           }) satisfies ActiviteResource,
       ),

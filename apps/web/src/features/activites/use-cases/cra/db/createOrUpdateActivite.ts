@@ -283,12 +283,19 @@ export const createOrUpdateActivite = async ({
             lieuCodeInsee: null,
           }
 
+  // We compute accompagenemnts count view to avoid a second query when querying activites
+  const accompagnementsCount =
+    existingBeneficiairesSuivis.length +
+    beneficiairesAnonymesCollectif.length +
+    (beneficiaireAnonymeToCreate ? 1 : 0)
+
   const prismaData = {
     autonomie: 'autonomie' in data ? data.autonomie : undefined,
     date: new Date(date),
     mediateur: {
       connect: { id: mediateurId },
     },
+    accompagnementsCount,
     duree: craDureeDataToMinutes(duree),
     typeLieu: data.typeLieu ?? undefined,
     niveau: 'niveau' in data ? data.niveau : undefined,

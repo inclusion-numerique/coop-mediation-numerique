@@ -26,7 +26,10 @@ const fetchUserRdvInfo = async (user: PrismaSessionUser) => {
     onlyForUser: true,
   })
 
-  return { rdvs, hasOauthTokens: sessionUser.rdvAccount?.hasOauthTokens }
+  return {
+    rdvs,
+    hasOauthTokens: !!sessionUser.rdvAccount?.hasOauthTokens,
+  }
 }
 
 const Page = async () => {
@@ -87,7 +90,8 @@ const Page = async () => {
                         <td>{email}</td>
                         <td>
                           <RdvServicePublicStatusTag
-                            status={hasOauthTokens ? 'success' : 'none'}
+                            status={hasOauthTokens ? 'success' : 'error'}
+                            small
                           />
                         </td>
                         <td>{numberToString(rdvs.length)}</td>

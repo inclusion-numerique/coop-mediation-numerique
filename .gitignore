@@ -72,3 +72,6 @@ packages/cdk/cdk.out.json
 /packages/ui/.next
 /packages/ui/public/dsfr
 
+# http rest client
+/*.http
+

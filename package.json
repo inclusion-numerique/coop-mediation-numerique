@@ -33,7 +33,9 @@
     "docker:reset": "pnpm docker:stop && docker volume rm coop_pgdata && pnpm docker:start && pnpm db:init"
   },
   "pnpm": {
-    "overrides": {},
+    "overrides": {
+      "stylus": "0.0.1-security"
+    },
     "onlyBuiltDependencies": [
       "@cdktf/node-pty-prebuilt-multiarch",
       "@prisma/client",
