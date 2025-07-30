@@ -21,6 +21,7 @@ export const givenCraIndividuel = <
     type: 'Individuel'
     date: string | Date
     typeLieu: TypeLieu
+    accompagnementsCount: number
   }
   accompagnements: Prisma.AccompagnementUncheckedCreateInput[]
 } => {
@@ -39,6 +40,7 @@ export const givenCraIndividuel = <
     duree,
     date,
     typeLieu,
+    accompagnementsCount: 1,
   } satisfies Omit<T, 'id' | 'beneficiaireId'> & {
     id: string
     duree: number
@@ -77,6 +79,7 @@ export const givenCraDemarcheAdministrative = <
     duree: number
     date: string | Date
     typeLieu: TypeLieu
+    accompagnementsCount: number
   }
   accompagnements: Prisma.AccompagnementUncheckedCreateInput[]
 } => {
@@ -95,6 +98,7 @@ export const givenCraDemarcheAdministrative = <
     duree,
     date,
     typeLieu,
+    accompagnementsCount: 1,
   } satisfies Omit<T, 'id' | 'beneficiaireId'> & {
     id: string
     duree: number
@@ -134,6 +138,7 @@ export const givenCraCollectif = <
     duree: number
     typeLieu: TypeLieu
     date: string | Date
+    accompagnementsCount: number
   }
   accompagnements: Prisma.AccompagnementUncheckedCreateInput[]
   beneficiairesAnonymes: Prisma.BeneficiaireUncheckedCreateInput[]
@@ -177,6 +182,7 @@ export const givenCraCollectif = <
     duree,
     date,
     typeLieu,
+    accompagnementsCount: accompagnements.length,
   } satisfies Omit<T, 'id' | 'participantsAnonymes' | 'beneficiaireIds'> & {
     id: string
   }
