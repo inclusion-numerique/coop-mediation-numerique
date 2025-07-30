@@ -1,4 +1,5 @@
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
+import { FrIconClassName } from '@codegouvfr/react-dsfr'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import { cookies } from 'next/headers'
 import type { PropsWithChildren, ReactNode } from 'react'
@@ -18,7 +19,7 @@ const NouvelleFonctionnaliteCard = async ({
   featureId: string // Identifiant unique de la fonctionnalité
   showFrom: Date // Date de début de l'affichage de la carte (toujours affichée en environnement de développement / preview)
   showUntil: Date // Date de fin de l'affichage de la carte
-  featureName: string // Nom de la fonctionnalité affichée en haut de la carte
+  featureName: NonNullable<ReactNode> // Nom de la fonctionnalité affichée en haut de la carte
   illustration: ReactNode // Illustration de la fonctionnalité affichée à gauche de la carte
   action: ReactNode // Action(s) à afficher en bas de la carte
 }>) => {
@@ -41,7 +42,10 @@ const NouvelleFonctionnaliteCard = async ({
 
   return (
     <div className="fr-background-alt--yellow-tournesol fr-px-8v fr-py-6v fr-border-radius--16 fr-flex fr-flex-gap-8v fr-align-items-center">
-      <div style={{ width: 128 }} className="fr-flex-shrink-0 fr-flex-grow-0">
+      <div
+        style={{ width: 128 }}
+        className="fr-flex-shrink-0 fr-flex-grow-0 fr-flex fr-align-items-center fr-justify-content-center"
+      >
         {illustration}
       </div>
       <div className="fr-flex-grow-1">
