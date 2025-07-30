@@ -1048,6 +1048,7 @@ model Tag {
   suppression  DateTime?
   activites    ActivitesTags[]
 
+  @@index([mediateurId])
   @@map("tags")
 }
 
