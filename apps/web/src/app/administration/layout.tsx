@@ -21,7 +21,7 @@ const AdministrationLayout = async ({ children }: PropsWithChildren) => {
         <div className="sideMenu">
           <AdministrationSideMenu />
         </div>
-        <div className="fr-p-8v fr-pb-24v">{children}</div>
+        <div className="fr-p-8v fr-pb-24v fr-width-full">{children}</div>
       </div>
       <MinimalFooter />
     </>
