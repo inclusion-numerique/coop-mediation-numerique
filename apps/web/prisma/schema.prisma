@@ -1014,10 +1014,10 @@ model Activite {
   @@index([mediateurId])
   // descending sort on this cursor for api query performances
   @@index([creation(sort: Desc), id(sort: Desc)])
+  @@index([modification(sort: Desc), id(sort: Desc)])
   // performance indexes
   @@index([date])
   @@index([lieuCodeInsee])
-  @@index([modification(sort: Desc)])
   @@map("activites")
 }
 
