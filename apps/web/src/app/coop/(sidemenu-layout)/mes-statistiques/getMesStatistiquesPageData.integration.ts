@@ -139,6 +139,7 @@ const emptyData: MesStatistiquesPageData = {
       count: 0,
       proportion: 0,
     })),
+    tags: [],
   },
   beneficiaires: {
     total: 0,

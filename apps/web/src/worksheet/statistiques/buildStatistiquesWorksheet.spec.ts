@@ -203,6 +203,12 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
         { label: 'Loisirs - Sports Culture', count: 0, proportion: 0 },
         { label: 'Associations', count: 0, proportion: 0 },
       ],
+      tags: [
+        { label: 'Tag 1', count: 2, proportion: 20 },
+        { label: 'Tag 2', count: 3, proportion: 30 },
+        { label: 'Tag 3', count: 1, proportion: 10 },
+        { label: 'Tag 4', count: 4, proportion: 40 },
+      ],
       materiels: [
         {
           label: 'Ordinateur',
@@ -448,8 +454,16 @@ const demarcheAdministrative = {
   start: demarcheAdministrativeTitle.start + demarcheAdministrativeTitle.length,
   length: 12,
 }
-const materielTitle = {
+const tagTitle = {
   start: demarcheAdministrative.start + demarcheAdministrative.length,
+  length: 1,
+}
+const tag = {
+  start: tagTitle.start + tagTitle.length,
+  length: 5,
+}
+const materielTitle = {
+  start: tag.start + tag.length,
   length: 1,
 }
 const materiel = {
@@ -731,6 +745,29 @@ describe('build statistiques worksheet for médiateur', () => {
         ['Étrangers - Europe', 2],
         ['Loisirs - Sports Culture', 0],
         ['Associations', 0],
+      ]),
+      [],
+    ])
+  })
+
+  it(`should contains bold 'Tags' in Statistiques worksheet at position A${tagTitle.start}`, () => {
+    const exportTitleCell = worksheet.getCell(`A${tagTitle.start}`)
+
+    expect(exportTitleCell?.value).toBe('Tags')
+    expect(exportTitleCell?.font.bold).toBe(true)
+  })
+
+  it(`should contains Tags ${range(tag)}`, () => {
+    const rows = worksheet
+      .getRows(tag.start, tag.length)
+      ?.map((row) => row.values)
+
+    expect(rows).toEqual([
+      ...expectQuantifiedShareRows([
+        ['Tag 1', 2],
+        ['Tag 2', 3],
+        ['Tag 3', 1],
+        ['Tag 4', 4],
       ]),
       [],
     ])
