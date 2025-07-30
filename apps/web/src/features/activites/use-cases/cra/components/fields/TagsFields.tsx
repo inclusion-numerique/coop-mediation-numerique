@@ -8,7 +8,7 @@ import {
   TagOptions,
   TagSelectedItems,
 } from '../../../tags/components/TagsComboBox'
-import { CreateTagDynamicModal } from '../../../tags/create/CreateTagModal'
+import { SaveTagDynamicModal } from '../../../tags/save/SaveTagModal'
 import { CraData } from '../../validation/CraValidation'
 
 const options = formOptions({
@@ -22,7 +22,7 @@ export const TagsFields = withForm({
     initialTagsOptions: Tag[]
   },
   render: ({ form, isPending, initialTagsOptions }) => {
-    const openCraModal = CreateTagDynamicModal.useOpen()
+    const openCraModal = SaveTagDynamicModal.useOpen()
 
     return (
       <form.AppField name="tags">
@@ -71,7 +71,7 @@ export const TagsFields = withForm({
                     onClick={() => {
                       openCraModal({
                         nom: options.inputValue,
-                        onTagCreated: (tag) => {
+                        onTagSaved: (tag) => {
                           field.setValue([...(field.state.value ?? []), tag])
                           options.setInputValue('')
                         },

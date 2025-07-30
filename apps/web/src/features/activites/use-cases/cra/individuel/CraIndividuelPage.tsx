@@ -9,7 +9,7 @@ import { contentId } from '@app/web/utils/skipLinks'
 import React from 'react'
 import type { DefaultValues } from 'react-hook-form'
 import type { Tag } from '../../tags/components/TagsComboBox'
-import CreateTagModal from '../../tags/create/CreateTagModal'
+import SaveTagModal from '../../tags/save/SaveTagModal'
 import CraIndividuelForm from './components/CraIndividuelForm'
 import { CraIndividuelData } from './validation/CraIndividuelValidation'
 
@@ -53,7 +53,7 @@ const CraIndividuelPage = ({
           text: 'En savoir plus sur comment compléter un CRA',
         }}
       />
-      <CreateTagModal isMediateur isCoordinateur={false} />
+      <SaveTagModal isMediateur isCoordinateur={false} />
       <CraIndividuelForm
         defaultValues={{ ...defaultValues, mediateurId }}
         lieuActiviteOptions={lieuxActiviteOptions}
