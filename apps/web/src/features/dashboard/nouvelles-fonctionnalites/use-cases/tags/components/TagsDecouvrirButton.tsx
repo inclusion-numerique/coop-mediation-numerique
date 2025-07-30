@@ -73,7 +73,7 @@ const TagsDecouvrirButton = () => {
             <div className="fr-mt-12v">
               <Button
                 linkProps={{
-                  href: 'https://incubateurdesterritoires.notion.site/Centre-d-aide-de-La-Coop-de-la-m-diation-num-rique-e2db421ac63249769c1a9aa155af5f2f',
+                  href: 'https://www.notion.so/incubateurdesterritoires/Les-Tags-20d744bf03dd80e2bc35d42a50ae3e69',
                   target: '_blank',
                 }}
               >
