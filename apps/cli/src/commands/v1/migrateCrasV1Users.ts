@@ -16,34 +16,26 @@ import {
   writeV1PermanencesIdsMap,
 } from './crasV1/migratePermanencesV1'
 import { PermanenceV1Document } from './crasV1/PermanenceV1Document'
+import { ConseillerNumeriqueV1Document } from '@app/web/external-apis/conseiller-numerique/ConseillerNumeriqueV1Document'
 
 export const migrateCrasV1Structures = new Command()
-  .command('v1:migrate-cras:structures')
+  .command('v1:migrate-cras:users')
   .action(async () => {
     try {
-      const structuresCollection =
-        await conseillerNumeriqueMongoCollection('structures')
-      const permanencesCollection =
-        await conseillerNumeriqueMongoCollection('permanences')
+      const conseillersCollection =
+        await conseillerNumeriqueMongoCollection('conseillers')
 
-      // write allPossibleThemes and allPossibleSousThemes to debugOutput, format pretty
-
-      // Fetch all structures and put them in a map by stringifyed id: Map<string, StructureV1>
-      const structures = (await structuresCollection
+      // Fetch all users and put them in a map by stringifyed id: Map<string, StructureV1>
+      const users = (await conseillersCollection
         .find()
         .sort({ updatedAt: 1 })
-        .toArray()) as StructureV1Document[]
-      const structuresMap = new Map(
-        structures.map((structure) => [structure._id.toString(), structure]),
+        .toArray()) as ConseillerNumeriqueV1Document[]
+      const conseillersMap = new Map(
+        users.map((user) => [user._id.toString(), user]),
       )
-      output(`Found ${structuresMap.size} structures`)
+      output(`Found ${conseillersMap.size} conseillers`)
 
-      // Create a map of v1 structure id to v2 structure id for deduplication and later cra mappings
-      const v1StructuresIdsMap = new Map<string, string>()
-
-      await migrateStructuresV1({ structures, v1StructuresIdsMap })
-
-      await writeV1StructuresIdsMap(v1StructuresIdsMap)
+      await migrateConseillersV1({ conseillers })
 
       const permanences = (await permanencesCollection
         .find()
