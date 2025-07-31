@@ -537,20 +537,20 @@ const ActiviteDetailsModal = ({
                 Informations sur la démarche administrative
               </p>
               {demarcheItems.map(({ title, items }, index) => (
-                <>
+                <Fragment key={index}>
                   <p className="fr-text--sm fr-text-mention-grey fr-mb-1v fr-mt-4v">
                     {title}
                   </p>
                   {Array.isArray(items) ? (
                     <ul className="fr-my-0">
-                      {items.map((item) => (
-                        <ListItem key={index}>{item}</ListItem>
+                      {items.map((item, itemIndex) => (
+                        <ListItem key={itemIndex}>{item}</ListItem>
                       ))}
                     </ul>
                   ) : (
                     items
                   )}
-                </>
+                </Fragment>
               ))}
             </>
           )}
