@@ -28,7 +28,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { Fragment, ReactNode, useEffect, useState } from 'react'
 import { niveauAtelierStars } from '../../../cra/collectif/fields/niveau-atelier'
 import { materielLabels } from '../../../cra/fields/materiel'
 import {
@@ -513,20 +513,20 @@ const ActiviteDetailsModal = ({
           <hr className="fr-separator-6v" />
 
           {donneesItems.map(({ title, items }, index) => (
-            <>
+            <Fragment key={index}>
               <p className="fr-text--sm fr-text-mention-grey fr-mb-1v fr-mt-4v">
                 {title}
               </p>
               {Array.isArray(items) ? (
                 <ul className="fr-my-0">
-                  {items.map((item) => (
-                    <ListItem key={index}>{item}</ListItem>
+                  {items.map((item, itemIndex) => (
+                    <ListItem key={itemIndex}>{item}</ListItem>
                   ))}
                 </ul>
               ) : (
                 items
               )}
-            </>
+            </Fragment>
           ))}
 
           {!!demarcheItems && demarcheItems.length > 0 && (
