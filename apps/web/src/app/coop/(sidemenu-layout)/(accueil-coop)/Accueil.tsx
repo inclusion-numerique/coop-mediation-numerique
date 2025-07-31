@@ -48,7 +48,7 @@ export const Accueil = ({
       <h1 className="fr-text-title--blue-france fr-mt-10v">
         👋 Bonjour {firstName || name || email}
       </h1>
-      <div className="fr-my-12v">
+      <div className="fr-my-12v fr-flex fr-flex-gap-6v fr-direction-column">
         <TagsNouvelleFonctionnaliteCard />
         <CafeIaNouvelleFonctionnaliteCard />
       </div>
