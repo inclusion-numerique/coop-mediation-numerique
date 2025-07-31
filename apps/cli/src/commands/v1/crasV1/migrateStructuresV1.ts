@@ -4,10 +4,37 @@ import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
 import { v4 } from 'uuid'
 import { chunk } from 'lodash-es'
 import { StructureV1Document } from './StructureV1Document'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { appendFile, writeFile } from 'node:fs/promises'
+
+export const writeV1StructuresIdsMap = async (map: Map<string, string>) => {
+  const __filename = fileURLToPath(import.meta.url)
+  const __dirname = path.dirname(__filename)
+  const mapFilePath = path.join(__dirname, 'v1StructuresIdsMap.ts')
+
+  // write file header and empty the file
+  await writeFile(
+    mapFilePath,
+    `// A list of v1 structure id to v2 structures uuid\nexport const v1StructuresIdsMap = new Map([\n`,
+  )
+
+  for (const [key, value] of map) {
+    await appendFile(mapFilePath, `  ['${key}', '${value}'],\n`)
+  }
+
+  await appendFile(mapFilePath, `])\n`)
+
+  output(`${map.size} V1 structures IDs map written to ${mapFilePath}`)
+}
 
 const findExistingStructure = async ({
   structure,
-}: { structure: StructureV1Document }) => {
+  v1StructuresIdsMap,
+}: {
+  structure: StructureV1Document
+  v1StructuresIdsMap: Map<string, string>
+}) => {
   const existingFromId = await prismaClient.structure.findFirst({
     where: {
       v1StructureId: structure._id.toString(),
@@ -15,6 +42,7 @@ const findExistingStructure = async ({
   })
 
   if (existingFromId) {
+    v1StructuresIdsMap.set(structure._id.toString(), existingFromId.id)
     return existingFromId
   }
 
@@ -36,6 +64,7 @@ const findExistingStructure = async ({
     : null
 
   if (existingFromSiret) {
+    v1StructuresIdsMap.set(structure._id.toString(), existingFromSiret.id)
     return existingFromSiret
   }
 
@@ -54,6 +83,11 @@ const findExistingStructure = async ({
       codeInsee: codeCommune,
     },
   })
+
+  if (existingFromAdresse) {
+    v1StructuresIdsMap.set(structure._id.toString(), existingFromAdresse.id)
+    return existingFromAdresse
+  }
 
   return existingFromAdresse
 }
@@ -75,10 +109,15 @@ const findCartographieNationaleStructure = async ({
 
 const migrateStructureV1 = async ({
   structure,
-}: { structure: StructureV1Document }) => {
+  v1StructuresIdsMap,
+}: {
+  structure: StructureV1Document
+  v1StructuresIdsMap: Map<string, string>
+}) => {
   // we search in our database if the structure already exists
   const existingStructure = await findExistingStructure({
     structure,
+    v1StructuresIdsMap,
   })
 
   // If structure exists in our database, we update it
@@ -101,9 +140,10 @@ const migrateStructureV1 = async ({
     await findCartographieNationaleStructure({ structure })
 
   // Create the structure in our database
+  const id = v4()
   await prismaClient.structure.create({
     data: {
-      id: v4(),
+      id,
       nom: structure.nom,
       structureCartographieNationaleId:
         existingStructureFromCartographieNationale?.id,
@@ -121,19 +161,30 @@ const migrateStructureV1 = async ({
       v1StructureId: structure._id.toString(),
       v1StructureIdPg: structure.idPG,
     },
+    select: {
+      id: true,
+    },
   })
+
+  v1StructuresIdsMap.set(structure._id.toString(), id)
 }
 
 const batchSize = 10
 export const migrateStructuresV1 = async ({
   structures,
-}: { structures: StructureV1Document[] }) => {
+  v1StructuresIdsMap,
+}: {
+  structures: StructureV1Document[]
+  v1StructuresIdsMap: Map<string, string> // used to map v1 structure id to v2 structure id for deduplication and later cra mappings
+}) => {
   const chunks = chunk(structures, batchSize)
 
   for (const chunkIndex in chunks) {
     const chunk = chunks[chunkIndex]
     await Promise.all(
-      chunk.map((structure) => migrateStructureV1({ structure })),
+      chunk.map((structure) =>
+        migrateStructureV1({ structure, v1StructuresIdsMap }),
+      ),
     )
 
     const done = Number(chunkIndex) * batchSize + chunk.length

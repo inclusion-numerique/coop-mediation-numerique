@@ -101,6 +101,9 @@ model User {
   deleted   DateTime?
   lastLogin DateTime? @map("last_login")
 
+  // User can be created from v1 data
+  v1Imported DateTime? @map("v1_imported")
+
   // Flux d’inscription
 
   // Le profil déclaré par l’utilisateur à la première étape de l’inscription
