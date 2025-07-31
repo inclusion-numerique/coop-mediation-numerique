@@ -5,6 +5,7 @@ import {
   SelectOption,
   labelsToOptions,
 } from '@app/ui/components/Form/utils/options'
+import { Popover } from '@app/ui/components/Primitives/Popover'
 import { locationTypeLabels } from '@app/web/features/activites/use-cases/list/components/generateActivitesFiltersLabels'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import { FilterSelection } from '@app/web/libs/filters/FilterSelection'
@@ -15,7 +16,6 @@ import {
   matchingOption,
   update,
 } from '@app/web/libs/filters/helpers'
-import { Popover } from '@app/web/libs/ui/elements/Popover'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 

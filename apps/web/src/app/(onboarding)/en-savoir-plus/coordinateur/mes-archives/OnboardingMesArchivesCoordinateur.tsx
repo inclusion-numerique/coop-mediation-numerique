@@ -19,8 +19,8 @@ export const OnboardingMesArchivesCoordinateur = () => (
         Mes archives - Coop V.1
       </>
     }
-    stepIndex={4}
-    totalSteps={6}
+    stepIndex={3}
+    totalSteps={4}
     previous={{ href: '/en-savoir-plus/coordinateur/mon-equipe' }}
     next={{ href: '/en-savoir-plus/coordinateur/mes-outils' }}
     closeHref="/coop"

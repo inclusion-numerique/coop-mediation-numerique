@@ -14,10 +14,9 @@ export const Features = ({
       {features?.map((feature) => (
         <li key={feature.title}>
           <div className="fr-flex fr-flex-gap-4v">
-            <span>
+            <span aria-hidden>
               <span
                 className={`${feature.icon} fr-background-contrast--info fr-text-label--blue-france fr-p-1w fr-border-radius--8 fr-display-inline-block ri-lg fr-line-height-1`}
-                aria-hidden
               />
             </span>
             <div>

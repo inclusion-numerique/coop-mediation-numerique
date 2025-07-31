@@ -142,7 +142,7 @@ const InviterMembreForm = () => {
                 }}
               >
                 {mediateurToAdd.nom ?? mediateurToAdd.email}&nbsp;
-                <span className="fr-icon-close-line fr-icon--sm" />
+                <span className="fr-icon-close-line fr-icon--sm" aria-hidden />
               </Tag>
             </li>
           ))}

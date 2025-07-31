@@ -12,12 +12,11 @@ import {
 } from '@app/web/beneficiaire/beneficiaire'
 import { createParticipantsAnonymesForBeneficiaires } from '@app/web/beneficiaire/createParticipantsAnonymesForBeneficiaires'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
-import { isBeneficiaireAnonymous } from '@app/web/beneficiaire/isBeneficiaireAnonymous'
 import Stars from '@app/web/components/Stars'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import { trpc } from '@app/web/trpc'
 import { formatActiviteDayDate } from '@app/web/utils/activiteDayDateFormat'
-import { dateAsDay } from '@app/web/utils/dateAsDay'
 import {
   dateAsDayInTimeZone,
   dateAsTimeInTimeZone,
@@ -26,7 +25,6 @@ import { dureeAsString } from '@app/web/utils/dureeAsString'
 import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import Accordion from '@codegouvfr/react-dsfr/Accordion'
 import Button from '@codegouvfr/react-dsfr/Button'
-import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
@@ -38,10 +36,7 @@ import {
   thematiquesAdministrativesLabels,
   thematiquesNonAdministrativesLabels,
 } from '../../../cra/fields/thematique'
-import {
-  typeActiviteIllustrations,
-  typeActiviteLabels,
-} from '../../../cra/fields/type-activite'
+import { typeActiviteLabels } from '../../../cra/fields/type-activite'
 import { autonomieStars } from '../../../cra/individuel/fields/autonomie'
 import { structuresRedirectionLabels } from '../../../cra/individuel/fields/structures-redirection'
 import { ActiviteListItem } from '../../db/activitesQueries'
@@ -78,15 +73,12 @@ const filterItemsNodes = <T extends { items: ReactNode[] | ReactNode }>({
 const getActiviteLocationString = (activite: ActiviteListItem) => {
   const { structure, lieuCodePostal, lieuCommune, typeLieu } = activite
 
-  if (structure) {
+  if (structure)
     return `${structure.nom} · ${structure.codePostal} ${structure.commune}`
-  }
 
-  return lieuCommune
-    ? `${lieuCodePostal} ${lieuCommune}`
-    : typeLieu === 'ADistance'
-      ? 'À distance'
-      : 'Non renseigné'
+  if (typeLieu === 'ADistance') return 'À distance'
+
+  return lieuCommune ? `${lieuCodePostal} ${lieuCommune}` : 'Non renseigné'
 }
 
 const premierAccompagnement = (
@@ -131,9 +123,8 @@ const ActiviteDetailsModal = ({
   const onDeleteButtonClick = () => {
     setDeletionConfirmation(true)
   }
-  if (!state) {
-    return null
-  }
+
+  if (!state) return null
 
   const { activite } = state
 
@@ -153,6 +144,7 @@ const ActiviteDetailsModal = ({
     precisionsDemarche,
     accompagnements,
     thematiques,
+    tags,
     creation,
     modification,
     rdv,
@@ -212,6 +204,10 @@ const ActiviteDetailsModal = ({
     {
       title: `Thématique${sPluriel(thematiquesNonAdministratives.length)} d’accompagnement`,
       items: thematiquesNonAdministratives,
+    },
+    {
+      title: `Tag${sPluriel(tags.length)} spécifique${sPluriel(tags.length)}`,
+      items: tags.map(({ tag: { nom } }) => nom),
     },
     {
       title: 'Niveau d’autonomie du bénéficiaire',
@@ -486,12 +482,14 @@ const ActiviteDetailsModal = ({
             <>
               <hr className="fr-separator-6v" />
               <div className="fr-flex fr-flex-gap-2v fr-align-items-center">
-                <div className="fr-background-alt--blue-france fr-p-1-5v fr-border-radius--8 fr-flex">
-                  <img
+                <div
+                  className="fr-background-alt--blue-france fr-p-1-5v fr-border-radius--8 fr-flex"
+                  aria-hidden
+                >
+                  <RDVServicePublicLogo
                     className="fr-display-block"
-                    alt=""
-                    src="/images/services/rdv-service-public.svg"
-                    style={{ width: 20, height: 20 }}
+                    width={20}
+                    height={20}
                   />
                 </div>
                 <p className="fr-text--sm fr-text--medium fr-mb-0 fr-flex-grow-1">

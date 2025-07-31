@@ -14,24 +14,17 @@ const AdministrationLayout = async ({ children }: PropsWithChildren) => {
     notFound()
   }
   return (
-    <div className="fr-layout">
-      <div className="fr-layout__inner">
-        <div id="skip-links" />
-        <Header user={user} variant="coop" />
-        <div
-          className={classNames(
-            'fr-grid-row fr-width-full fr-layout__main',
-            styles.container,
-          )}
-        >
-          <div className={styles.sideNavContainer}>
-            <AdministrationSideMenu />
-          </div>
-          <div className={styles.pageContainer}>{children}</div>
+    <>
+      <div id="skip-links" />
+      <Header user={user} variant="coop" />
+      <div className="fr-flex fr-direction-column fr-direction-md-row">
+        <div className="sideMenu">
+          <AdministrationSideMenu />
         </div>
-        <MinimalFooter />
+        <div className="fr-p-8v fr-pb-24v fr-width-full">{children}</div>
       </div>
-    </div>
+      <MinimalFooter />
+    </>
   )
 }
 

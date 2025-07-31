@@ -1,4 +1,9 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
+import { CityHallIcon } from '@app/web/features/pictograms/buildings/CityHallIcon'
+import { HouseIcon } from '@app/web/features/pictograms/buildings/HouseIcon'
+import { SchoolIcon } from '@app/web/features/pictograms/buildings/SchoolIcon'
+import { InternetIcon } from '@app/web/features/pictograms/digital/InternetIcon'
+import { Pictogram } from '@app/web/features/pictograms/pictogram'
 import { TypeLieu } from '@prisma/client'
 
 export const typeLieuLabels: { [key in TypeLieu]: string } = {
@@ -8,13 +13,11 @@ export const typeLieuLabels: { [key in TypeLieu]: string } = {
   ADistance: 'À distance',
 }
 
-export const typeLieuIllustrations: {
-  [key in TypeLieu]?: string
-} = {
-  LieuActivite: '/dsfr/artwork/pictograms/buildings/city-hall.svg',
-  Autre: '/dsfr/artwork/pictograms/buildings/school.svg',
-  Domicile: '/images/iconographie/thematique-logement.svg',
-  ADistance: '/images/iconographie/mednum-internet.svg',
+export const typeLieuIllustrations: Record<TypeLieu, Pictogram> = {
+  LieuActivite: CityHallIcon,
+  Autre: SchoolIcon,
+  Domicile: HouseIcon,
+  ADistance: InternetIcon,
 }
 
 export const typeLieuOptions = labelsToOptions(typeLieuLabels)

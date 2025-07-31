@@ -10,26 +10,17 @@ export const generateMetadata = async (props: {
 }): Promise<Metadata | null> => {
   const params = await props.params
   const pageData = getOutilsPageData(params.slug)
-  if (!pageData) {
-    notFound()
-    return null
-  }
 
-  return {
-    title: metadataTitle(`${pageData.title} - Mes outils`),
-  }
+  return pageData
+    ? { title: metadataTitle(`${pageData.title} - Mes outils`) }
+    : notFound()
 }
 
 const Page = async (props: { params: Promise<{ slug: string }> }) => {
   const params = await props.params
   const pageData = getOutilsPageData(params.slug)
 
-  if (!pageData) {
-    notFound()
-    return null
-  }
-
-  return <Outil {...pageData} />
+  return pageData ? <Outil {...pageData} /> : notFound()
 }
 
 export default Page

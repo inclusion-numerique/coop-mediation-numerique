@@ -44,9 +44,9 @@ build-storybook.log
 *.tsbuildinfo
 
 # IDE
-.vscode
-.idea
 .bruno
+.idea
+.vscode
 
 storybook-static
 

@@ -38,10 +38,7 @@ export const Support = () => (
         problème de sécurité), n’hésitez pas à nous contacter&nbsp;:
       </p>
       <div className="fr-text-label--blue-france fr-flex fr-flex-gap-3v fr-align-items-center fr-mb-0">
-        <span
-          className="ri-mail-line ri-lg fr-text--light"
-          aria-hidden="true"
-        />
+        <span className="ri-mail-line ri-lg fr-text--light" aria-hidden />
         <Link href={`mailto:${PublicWebAppConfig.contactEmail}`}>
           {PublicWebAppConfig.contactEmail}
         </Link>

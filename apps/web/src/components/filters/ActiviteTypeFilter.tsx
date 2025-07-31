@@ -1,5 +1,6 @@
 'use client'
 
+import { Popover } from '@app/ui/components/Primitives/Popover'
 import {
   TypeActiviteSlug,
   typeActiviteOptions,
@@ -9,9 +10,9 @@ import type {
   ActivitesFilters,
   RdvStatusFilterValue,
 } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
-import { Popover } from '@app/web/libs/ui/elements/Popover'
 import {
   rdvStatusOptions,
   rdvStatusTous,
@@ -175,12 +176,14 @@ export const ActiviteTypeFilter = ({
             <hr className="fr-separator-6v" />
             <fieldset className="fr-fieldset fr-mb-0">
               <div className="fr-flex fr-align-items-center fr-flex-gap-3v fr-mb-4v">
-                <div className="fr-background-alt--blue-france fr-p-1-5v fr-border-radius--8 fr-flex">
-                  <img
+                <div
+                  className="fr-background-alt--blue-france fr-p-1-5v fr-border-radius--8 fr-flex"
+                  aria-hidden
+                >
+                  <RDVServicePublicLogo
                     className="fr-display-block"
-                    alt=""
-                    src="/images/services/rdv-service-public.svg"
-                    style={{ width: 24, height: 24 }}
+                    height={24}
+                    width={24}
                   />
                 </div>
                 <label className="fr-label fr-mb-0 fr-text--bold">

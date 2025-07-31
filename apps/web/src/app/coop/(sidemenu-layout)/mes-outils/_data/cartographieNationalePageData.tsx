@@ -1,12 +1,13 @@
 import CartographieNationaleOutilAccess from '@app/web/app/coop/(sidemenu-layout)/mes-outils/_components/CartographieNationaleOutilAccess'
 import { OutilPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-outils/outilPageData'
+import { CartographieLogo } from '@app/web/features/pictograms/services/CartographieLogo'
 
 export default {
   title: 'La Cartographie Nationale des lieux d’inclusion numérique',
   description:
     'Rendre visible vos lieux et services d’inclusion numérique pour faciliter l’orientation des bénéficiaires.',
   website: 'https://cartographie.societenumerique.gouv.fr',
-  logo: '/images/services/cartographie-icon.svg',
+  pictogram: CartographieLogo,
   illustration: '/images/illustrations/mes-outils/cartographie-nationale.svg',
   features: [
     {

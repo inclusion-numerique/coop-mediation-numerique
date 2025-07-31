@@ -41,6 +41,7 @@ const nullActivite: Omit<
   precisionsDemarche: null,
   structureDeRedirection: null,
   thematiques: [],
+  tags: [],
   typeLieu: 'ADistance',
   niveau: null,
   structure: null,
@@ -64,6 +65,7 @@ describe('createOrUpdateActivite', () => {
         mediateurId: mediateurAvecActiviteMediateurId,
         typeLieu: 'Domicile',
         thematiques: ['SecuriteNumerique'],
+        tags: [],
         date: '2024-08-01',
         materiel: [],
         lieuCommuneData: banDefaultValueToAdresseBanData({
@@ -76,16 +78,14 @@ describe('createOrUpdateActivite', () => {
           dureePersonnaliseeMinutes: 90,
         },
         autonomie: 'EntierementAccompagne',
-        beneficiaire: {
-          mediateurId: mediateurAvecActiviteMediateurId,
-        },
         rdvServicePublicId: 12,
       },
     } satisfies CreateOrUpdateActiviteInput
 
     const result = await createOrUpdateActivite({
-      userId: mediateurAvecActivite.id,
       input,
+      userId: mediateurAvecActivite.id,
+      mediateurId: mediateurAvecActiviteMediateurId,
     })
 
     const activite = await prismaClient.activite.findUnique({
@@ -136,6 +136,7 @@ describe('createOrUpdateActivite', () => {
         mediateurId: mediateurAvecActiviteMediateurId,
         typeLieu: 'Domicile',
         thematiques: ['SecuriteNumerique'],
+        tags: [],
         date: '2024-08-01',
         materiel: [],
         lieuCommuneData: banDefaultValueToAdresseBanData({
@@ -147,19 +148,16 @@ describe('createOrUpdateActivite', () => {
           duree: '90',
         },
         autonomie: 'EntierementAccompagne',
-        beneficiaire: {
-          mediateurId: mediateurAvecActiviteMediateurId,
-        },
       },
     } satisfies CreateOrUpdateActiviteInput
 
     const resultToUpdate = await createOrUpdateActivite({
-      userId: mediateurAvecActivite.id,
       input,
+      userId: mediateurAvecActivite.id,
+      mediateurId: mediateurAvecActiviteMediateurId,
     })
 
     const result = await createOrUpdateActivite({
-      userId: mediateurAvecActivite.id,
       input: {
         ...input,
         data: {
@@ -167,6 +165,8 @@ describe('createOrUpdateActivite', () => {
           id: resultToUpdate.id,
         },
       },
+      userId: mediateurAvecActivite.id,
+      mediateurId: mediateurAvecActiviteMediateurId,
     })
 
     const beneficiaire = await prismaClient.beneficiaire.findMany({
@@ -209,6 +209,7 @@ describe('createOrUpdateActivite', () => {
         },
         titreAtelier: 'Titre atelier',
         thematiques: ['SecuriteNumerique'],
+        tags: [],
         date: '2024-08-01',
         materiel: [],
         duree: {
@@ -221,8 +222,9 @@ describe('createOrUpdateActivite', () => {
     } satisfies CreateOrUpdateActiviteInput
 
     const result = await createOrUpdateActivite({
-      userId: mediateurAvecActivite.id,
       input,
+      userId: mediateurAvecActivite.id,
+      mediateurId: mediateurAvecActiviteMediateurId,
     })
 
     const activite = await prismaClient.activite.findUnique({

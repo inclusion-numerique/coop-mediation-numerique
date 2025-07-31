@@ -1,0 +1,40 @@
+.twoPanesModal {
+  :global .fr-modal__body {
+    @media (min-width: 1240px) {
+      flex-direction: row;
+      width: 996px;
+      border-radius: 16px;
+      margin-left: -32.5%;
+    }
+  }
+
+  :global .fr-modal__content {
+    margin-top: -80px;
+    padding: 0;
+    margin-bottom: 0;
+  }
+}
+
+.panes {
+  display: flex;
+  flex-direction: column-reverse;
+  @media (min-width: 1240px) {
+    flex-direction: row;
+  }
+}
+
+.illustrationPane {
+  flex: 1;
+  background-color: var(--blue-france-925-125-hover);
+  z-index: -1;
+  padding: 56px;
+}
+
+.contentPane {
+  flex: 1;
+  padding: 24px;
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}

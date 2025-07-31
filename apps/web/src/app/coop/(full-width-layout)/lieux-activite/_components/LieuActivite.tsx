@@ -51,7 +51,7 @@ export const LieuActivite = ({
           className="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
           href={`lieux-activite/${mediateurEnActiviteId}`}
         >
-          Modifier <span className="ri-edit-line fr-ml-1w" />
+          Modifier <span className="ri-edit-line fr-ml-1w" aria-hidden />
         </Link>
         {canDelete && (
           <DeleteMediateurActivite
@@ -113,7 +113,7 @@ export const LieuActivite = ({
           className="fr-tooltip fr-placement"
           id={`tooltip-visible-no-id-${mediateurEnActiviteId}`}
           role="tooltip"
-          aria-hidden="true"
+          aria-hidden
         >
           Votre lieu d’activité sera visible sur la cartographie dans un délai
           de 24h.
@@ -135,7 +135,7 @@ export const LieuActivite = ({
           className="fr-tooltip fr-placement"
           id={`tooltip-visible-${mediateurEnActiviteId}`}
           role="tooltip"
-          aria-hidden="true"
+          aria-hidden
         >
           Pour que ce lieu soit visible sur la cartographie, renseignez des
           informations sur le lieu et les services d’inclusion numérique qui y

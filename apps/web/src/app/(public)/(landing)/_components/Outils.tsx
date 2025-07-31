@@ -1,3 +1,7 @@
+import { AidantsConnectLogo } from '@app/web/features/pictograms/services/AidantsConnectLogo'
+import { CartographieLogo } from '@app/web/features/pictograms/services/CartographieLogo'
+import { LesBasesLogo } from '@app/web/features/pictograms/services/LesBasesLogo'
+import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import { rdvWebsiteLink } from '@app/web/rdv-service-public/rdvServicePublicOauth'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -28,12 +32,11 @@ export const Outils = () => (
     <div className="fr-grid-row fr-grid-row--gutters">
       <div className="fr-col-lg-4 fr-col-md-6 fr-col-12">
         <div className="fr-background-default--grey fr-border-radius--16 fr-p-6w fr-height-full fr-flex fr-direction-column">
-          <Image
-            className="fr-background-alt--blue-france fr-border-radius--16 fr-p-2w"
+          <CartographieLogo
             width={88}
             height={88}
-            src="/images/services/cartographie-icon.svg"
-            alt=""
+            className="fr-background-action-low--blue-france fr-border-radius--16 fr-p-2w"
+            aria-hidden
           />
           <div className="fr-my-3w">
             <h3 className="fr-h6 fr-mb-2w">
@@ -59,12 +62,11 @@ export const Outils = () => (
       </div>
       <div className="fr-col-lg-4 fr-col-md-6 fr-col-12">
         <div className="fr-background-default--grey fr-border-radius--16 fr-p-6w fr-height-full fr-flex fr-direction-column">
-          <Image
-            className="fr-background-alt--blue-france fr-border-radius--16 fr-p-2w"
+          <LesBasesLogo
             width={88}
             height={88}
-            src="/images/services/les-bases.svg"
-            alt=""
+            className="fr-background-action-low--blue-france fr-border-radius--16 fr-p-2w"
+            aria-hidden
           />
           <div className="fr-my-3w">
             <h3 className="fr-h6 fr-mb-2w">
@@ -91,7 +93,7 @@ export const Outils = () => (
       <div className="fr-col-lg-4 fr-col-md-6 fr-col-12">
         <div className="fr-background-default--grey fr-border-radius--16 fr-p-6w fr-height-full fr-flex fr-direction-column">
           <Image
-            className="fr-background-alt--blue-france fr-border-radius--16 fr-p-2w"
+            className="fr-background-action-low--blue-france fr-border-radius--16 fr-p-2w"
             width={88}
             height={88}
             src="/images/services/conseillers-numerique-logo-small.svg"
@@ -119,12 +121,11 @@ export const Outils = () => (
       </div>
       <div className="fr-col-lg-4 fr-col-md-6 fr-col-12">
         <div className="fr-background-default--grey fr-border-radius--16 fr-p-6w fr-height-full fr-flex fr-direction-column">
-          <Image
-            className="fr-background-alt--blue-france fr-border-radius--16 fr-p-2w"
+          <RDVServicePublicLogo
             width={88}
             height={88}
-            src="/images/services/rdv-service-public.svg"
-            alt=""
+            className="fr-background-action-low--blue-france fr-border-radius--16 fr-p-2w"
+            aria-hidden
           />
           <div className="fr-my-3w">
             <h3 className="fr-h6 fr-mb-2w">RDV Service Public</h3>
@@ -147,12 +148,11 @@ export const Outils = () => (
       </div>
       <div className="fr-col-lg-4 fr-col-md-6 fr-col-12">
         <div className="fr-background-default--grey fr-border-radius--16 fr-p-6w fr-height-full fr-flex fr-direction-column">
-          <Image
-            className="fr-background-alt--blue-france fr-border-radius--16 fr-p-2w"
+          <AidantsConnectLogo
             width={88}
             height={88}
-            src="/images/services/aidants-connect.svg"
-            alt=""
+            className="fr-background-action-low--blue-france fr-border-radius--16 fr-p-2w"
+            aria-hidden
           />
           <div className="fr-my-3w">
             <h3 className="fr-h6 fr-mb-2w">Aidants Connect</h3>
@@ -177,7 +177,7 @@ export const Outils = () => (
       <div className="fr-col-lg-4 fr-col-md-6 fr-col-12">
         <div className="fr-background-default--grey fr-border-radius--16 fr-p-6w fr-height-full fr-flex fr-direction-column">
           <Image
-            className="fr-background-alt--blue-france fr-border-radius--16 fr-p-2w"
+            className="fr-background-action-low--blue-france fr-border-radius--16 fr-p-2w"
             width={88}
             height={88}
             src="/images/services/pix.svg"

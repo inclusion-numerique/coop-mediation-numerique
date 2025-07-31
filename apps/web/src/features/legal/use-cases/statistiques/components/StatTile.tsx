@@ -30,13 +30,12 @@ export const StatTile = ({
   <div className="fr-border fr-p-8v fr-border-radius--8 fr-height-full">
     <div className="fr-flex fr-align-items-center fr-flex-gap-4v fr-mb-4v">
       {rest.variant === 'icon' && (
-        <div>
+        <div aria-hidden>
           <span
             className={classNames(
               rest.iconId,
               'ri-lg fr-text-label--blue-france fr-background-alt--blue-france fr-p-2v fr-border-radius--8',
             )}
-            aria-hidden="true"
           ></span>
         </div>
       )}

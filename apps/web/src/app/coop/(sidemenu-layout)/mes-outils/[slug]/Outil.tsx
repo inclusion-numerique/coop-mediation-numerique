@@ -3,7 +3,7 @@ import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import { contentId } from '@app/web/utils/skipLinks'
 import classNames from 'classnames'
 import React from 'react'
 import { OutilPageData } from '../outilPageData'
@@ -17,7 +17,7 @@ export const Outil = ({
   title,
   illustration,
   illustrationWidth,
-  logo,
+  pictogram,
   description,
   website,
   websiteLinkLabel,
@@ -27,14 +27,14 @@ export const Outil = ({
   more,
   classes,
 }: OutilPageData) => (
-  <CoopPageContainer size={894}>
+  <CoopPageContainer size={56}>
     <CoopBreadcrumbs
       parents={[
         { label: 'Mes outils', linkProps: { href: '/coop/mes-outils' } },
       ]}
       currentPage={title}
     />
-    <SkipLinksPortal links={defaultSkipLinks} />
+    <SkipLinksPortal />
     <main id={contentId}>
       <BackButton href="/coop/mes-outils">Retour</BackButton>
       {noticeComponent}
@@ -43,7 +43,7 @@ export const Outil = ({
         title={title}
         illustration={illustration}
         illustrationWidth={illustrationWidth}
-        logo={logo}
+        pictogram={pictogram}
         description={description}
         website={website}
         websiteLinkLabel={websiteLinkLabel}

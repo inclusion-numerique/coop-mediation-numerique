@@ -1,10 +1,12 @@
 import CreerEmployeStructureForm from '@app/web/app/administration/utilisateurs/[id]/emplois/creer/CreerEmployeStructureForm'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { metadataTitle } from '@app/web/app/metadataTitle'
+import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { findConseillerNumeriqueV1 } from '@app/web/external-apis/conseiller-numerique/searchConseillerNumeriqueV1'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { prismaClient } from '@app/web/prismaClient'
+import { contentId } from '@app/web/utils/skipLinks'
 import { getUserDisplayName } from '@app/web/utils/user'
 import { notFound, redirect } from 'next/navigation'
 
@@ -58,6 +60,7 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
 
   return (
     <CoopPageContainer>
+      <SkipLinksPortal />
       <AdministrationBreadcrumbs
         currentPage="Ajouter"
         parents={[
@@ -75,10 +78,13 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
           },
         ]}
       />
-      <AdministrationTitle icon="fr-icon-user-line">
-        {name} - Ajouter une structure employeuse <span className="fr-mx-1v" />{' '}
-      </AdministrationTitle>
-      <CreerEmployeStructureForm user={user} />
+      <main id={contentId}>
+        <AdministrationTitle icon="fr-icon-user-line">
+          {name} - Ajouter une structure employeuse{' '}
+          <span className="fr-mx-1v" />{' '}
+        </AdministrationTitle>
+        <CreerEmployeStructureForm user={user} />
+      </main>
     </CoopPageContainer>
   )
 }

@@ -40,7 +40,15 @@ export const getCraIndividuelDataDefaultValuesFromExisting = async ({
       lieuCodeInsee: true,
       lieuCodePostal: true,
       lieuCommune: true,
-      structureId: true,
+      structure: {
+        select: {
+          id: true,
+          nom: true,
+          adresse: true,
+          codePostal: true,
+          commune: true,
+        },
+      },
       materiel: true,
       thematiques: true,
       autonomie: true,
@@ -49,6 +57,16 @@ export const getCraIndividuelDataDefaultValuesFromExisting = async ({
       notes: true,
       precisionsDemarche: true,
       rdvServicePublicId: true,
+      tags: {
+        select: {
+          tag: {
+            select: {
+              id: true,
+              nom: true,
+            },
+          },
+        },
+      },
     },
   })
 
@@ -69,22 +87,24 @@ export const getCraIndividuelDataDefaultValuesFromExisting = async ({
     lieuCodeInsee,
     lieuCodePostal,
     lieuCommune,
-    structureId,
+    structure,
     materiel,
     orienteVersStructure,
     rdvServicePublicId,
+    tags,
   } = cra
 
   const beneficiaire = accompagnements[0]?.beneficiaire
 
-  const defaultValues = {
+  return {
     id,
     mediateurId,
-    beneficiaire: beneficiaire
-      ? getBeneficiaireDefaultCraDataFromExisting(beneficiaire)(
-          accompagnements[0].premierAccompagnement,
-        )
-      : { mediateurId },
+    beneficiaire:
+      beneficiaire != null
+        ? getBeneficiaireDefaultCraDataFromExisting(beneficiaire)(
+            accompagnements[0].premierAccompagnement,
+          )
+        : {},
     date: dateAsIsoDay(date),
     duree: minutesToCraDureeData(duree) ?? {},
     notes: notes ?? undefined,
@@ -94,7 +114,16 @@ export const getCraIndividuelDataDefaultValuesFromExisting = async ({
     thematiques: thematiques ?? undefined,
     structureDeRedirection: structureDeRedirection ?? undefined,
     precisionsDemarche: precisionsDemarche ?? undefined,
-    structureId: structureId ?? undefined,
+    structure: structure
+      ? {
+          id: structure.id,
+          nom: structure.nom ?? undefined,
+          adresse:
+            structure.adresse && structure.codePostal && structure.commune
+              ? `${structure.adresse}, ${structure.codePostal} ${structure.commune}`
+              : undefined,
+        }
+      : undefined,
     lieuCommuneData:
       lieuCommune && lieuCodePostal && lieuCodeInsee
         ? banDefaultValueToAdresseBanData({
@@ -105,7 +134,6 @@ export const getCraIndividuelDataDefaultValuesFromExisting = async ({
         : undefined,
     typeLieu: typeLieu ?? undefined,
     rdvServicePublicId: rdvServicePublicId ?? undefined,
+    tags: tags.map(({ tag }) => tag) ?? [],
   } satisfies DefaultValues<CraIndividuelData>
-
-  return defaultValues
 }

@@ -5,7 +5,8 @@ import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import ActiviteDetailsModal from '@app/web/features/activites/use-cases/list/components/ActiviteDetailsModal/ActiviteDetailsModal'
 import { DernieresActivites } from '@app/web/features/activites/use-cases/list/components/DernieresActivites'
 import CafeIaNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/cafe-ia/components/CafeIaNouvelleFonctionnaliteCard'
-import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import TagsNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/tags/components/TagsNouvelleFonctionnaliteCard'
+import { contentId } from '@app/web/utils/skipLinks'
 import React from 'react'
 import {
   ActionsRapides,
@@ -41,13 +42,14 @@ export const Accueil = ({
   isCoNum: boolean
   timezone: string
 } & AccueilPageData) => (
-  <CoopPageContainer size={794}>
-    <SkipLinksPortal links={defaultSkipLinks} />
+  <CoopPageContainer size={49}>
+    <SkipLinksPortal />
     <main id={contentId}>
       <h1 className="fr-text-title--blue-france fr-mt-10v">
         👋 Bonjour {firstName || name || email}
       </h1>
       <div className="fr-my-12v">
+        <TagsNouvelleFonctionnaliteCard />
         <CafeIaNouvelleFonctionnaliteCard />
       </div>
       {isMediateur && (

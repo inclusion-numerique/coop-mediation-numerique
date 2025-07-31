@@ -41,13 +41,31 @@ export const getCraCollectifDataDefaultValuesFromExisting = async ({
       lieuCodeInsee: true,
       lieuCodePostal: true,
       lieuCommune: true,
-      structureId: true,
+      structure: {
+        select: {
+          id: true,
+          nom: true,
+          adresse: true,
+          codePostal: true,
+          commune: true,
+        },
+      },
       materiel: true,
       thematiques: true,
       niveau: true,
       notes: true,
       precisionsDemarche: true,
       rdvServicePublicId: true,
+      tags: {
+        select: {
+          tag: {
+            select: {
+              id: true,
+              nom: true,
+            },
+          },
+        },
+      },
     },
   })
 
@@ -62,15 +80,16 @@ export const getCraCollectifDataDefaultValuesFromExisting = async ({
     thematiques,
     materiel,
     precisionsDemarche,
-    lieuCommune,
-    lieuCodePostal,
     lieuCodeInsee,
-    structureId,
+    lieuCodePostal,
+    lieuCommune,
+    structure,
     accompagnements,
     typeLieu,
     niveau,
     titreAtelier,
     rdvServicePublicId,
+    tags,
   } = cra
 
   const { beneficiairesSuivis, participantsAnonymes } =
@@ -89,7 +108,7 @@ export const getCraCollectifDataDefaultValuesFromExisting = async ({
     undefined
   > satisfies DefaultValues<CraCollectifData>['participants']
 
-  const defaultValues = {
+  return {
     id,
     mediateurId,
     participants: participantsDefaultValues,
@@ -99,7 +118,16 @@ export const getCraCollectifDataDefaultValuesFromExisting = async ({
     materiel: materiel ?? undefined,
     thematiques: thematiques ?? undefined,
     precisionsDemarche: precisionsDemarche ?? undefined,
-    structureId: structureId ?? undefined,
+    structure: structure
+      ? {
+          id: structure.id,
+          nom: structure.nom ?? undefined,
+          adresse:
+            structure.adresse && structure.codePostal && structure.commune
+              ? `${structure.adresse}, ${structure.codePostal} ${structure.commune}`
+              : undefined,
+        }
+      : undefined,
     lieuCommuneData:
       lieuCommune && lieuCodePostal && lieuCodeInsee
         ? banDefaultValueToAdresseBanData({
@@ -113,7 +141,6 @@ export const getCraCollectifDataDefaultValuesFromExisting = async ({
     niveau: niveau ?? undefined,
     titreAtelier: titreAtelier ?? undefined,
     rdvServicePublicId: rdvServicePublicId ?? undefined,
+    tags: tags.map(({ tag }) => tag) ?? [],
   } satisfies DefaultValues<CraCollectifData>
-
-  return defaultValues
 }

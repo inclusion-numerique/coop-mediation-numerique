@@ -118,6 +118,7 @@ const statistiquesPageData = {
       enumObject: dureeAccompagnementParDefautLabels,
       fixedValues: [300, 400, 200, 100],
     }),
+    tags: [],
   },
   beneficiaires: {
     total: 550,

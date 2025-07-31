@@ -37,7 +37,6 @@ export const createEnumArrayCountSelect = <T extends string>({
 }): Prisma.Sql => {
   const sumStatements = Object.keys(enumObj).map((key) => {
     const snakeCaseValue = snakeCase(enumObj[key as T])
-
     return `COALESCE(SUM(('${snakeCaseValue}' = ANY(${column}))::int), 0)::int AS ${as}_${snakeCaseValue}_count`
   })
 

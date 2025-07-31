@@ -3,7 +3,7 @@ import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import HeaderBackLink from '@app/web/components/HeaderBackLink'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { getDepartementFromCodeInsee } from '@app/web/utils/getDepartementFromCodeInsee'
-import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import { contentId } from '@app/web/utils/skipLinks'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import React from 'react'
@@ -14,7 +14,7 @@ export const OutilEspaceFranceNumeriqueEnsemble = ({
   title,
   illustration,
   illustrationWidth,
-  logo,
+  pictogram,
   description,
   website,
   codeInsee,
@@ -22,7 +22,7 @@ export const OutilEspaceFranceNumeriqueEnsemble = ({
   const departement = codeInsee ? getDepartementFromCodeInsee(codeInsee) : null
 
   return (
-    <CoopPageContainer size={894}>
+    <CoopPageContainer size={56}>
       <CoopBreadcrumbs
         parents={[
           { label: 'Mes outils', linkProps: { href: '/coop/mes-outils' } },
@@ -30,13 +30,13 @@ export const OutilEspaceFranceNumeriqueEnsemble = ({
         currentPage={title}
       />
       <HeaderBackLink className="fr-mb-3w" />
-      <SkipLinksPortal links={defaultSkipLinks} />
+      <SkipLinksPortal />
       <main id={contentId}>
         <Hero
           title={title}
           illustration={illustration}
           illustrationWidth={illustrationWidth}
-          logo={logo}
+          pictogram={pictogram}
           description={description}
           website={website}
         />

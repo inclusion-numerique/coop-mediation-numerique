@@ -1,7 +1,7 @@
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import { prismaBeneficiaireToBeneficiaireData } from '@app/web/beneficiaire/prismaBeneficiaireToBeneficiaireData'
 import { searchBeneficiaireSelect } from '@app/web/beneficiaire/queryBeneficiairesForList'
-import { beneficiairesListWhere } from '@app/web/beneficiaire/searchBeneficiaire'
+import { beneficiairesListWhere } from '@app/web/beneficiaire/searchBeneficiaires'
 import { prismaClient } from '@app/web/prismaClient'
 import { BeneficiaireOption } from '../BeneficiaireOption'
 

@@ -97,6 +97,8 @@ type ActiviteAttributes = {
     | 'associations'
   )[]
 
+  tags: string[]
+
   precisions_demarche: string | null
 
   titre_atelier: string | null
@@ -157,6 +159,7 @@ const ActiviteCursorValidation = z.object({
  *             - structure_de_redirection
  *             - materiel
  *             - thematiques
+ *             - tags
  *             - precisions_demarche
  *             - titre_atelier
  *             - niveau_atelier
@@ -252,6 +255,12 @@ const ActiviteCursorValidation = z.object({
  *                 type: string
  *                 enum: [diagnostic_numerique, prendre_en_main_du_materiel, maintenance_de_materiel, navigation_sur_internet, email, bureautique, reseaux_sociaux, sante, banque_et_achats_en_ligne, entrepreneuriat, insertion_professionnelle, securite_numerique, parentalite, scolarite_et_numerique, creer_avec_le_numerique, culture_numerique, intelligence_artificielle, aide_aux_demarches_administratives, papiers_elections_citoyennete, famille_scolarite, social_sante, travail_formation, logement, transports_mobilite, argent_impots, justice, etrangers_europe, loisirs_sports_culture]
  *                 example: "diagnostic_numerique"
+ *             tags:
+ *               type: array
+ *               description: tags associés à l'activité
+ *               items:
+ *                 type: string
+ *                 example: "atelier de codage"
  *             precisions_demarche:
  *               type: string
  *               nullable: true
@@ -371,6 +380,15 @@ export const GET = createApiV1Route
       orderBy: [{ creation: 'desc' }, { id: 'desc' }],
       include: {
         mediateur: true,
+        tags: {
+          select: {
+            tag: {
+              select: {
+                nom: true,
+              },
+            },
+          },
+        },
       },
       take: cursorPagination.take,
     })
@@ -412,6 +430,7 @@ export const GET = createApiV1Route
           structureDeRedirection,
           materiel,
           thematiques,
+          tags,
           orienteVersStructure,
           precisionsDemarche,
           titreAtelier,
@@ -441,6 +460,7 @@ export const GET = createApiV1Route
               thematiques: thematiques.map(
                 (thematique) => thematiqueApiValues[thematique],
               ),
+              tags: tags.map(({ tag: { nom } }) => nom),
               materiel: materiel.map(
                 (materielItem) => materielApiValues[materielItem],
               ),

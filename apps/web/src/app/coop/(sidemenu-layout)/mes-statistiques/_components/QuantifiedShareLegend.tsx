@@ -24,6 +24,7 @@ export const QuantifiedShareLegend = ({
         <span
           className={classNames('ri-circle-fill', styles)}
           style={{ color: colors[index % colors.length] }}
+          aria-hidden
         />
         <span
           className={classNames(

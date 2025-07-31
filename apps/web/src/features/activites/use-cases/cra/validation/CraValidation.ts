@@ -16,13 +16,20 @@ export const CraValidation = z.object({
   typeLieu: z.enum(typeLieuValues, {
     required_error: 'Veuillez renseigner un lieu d’accompagnement',
   }),
-  structureId: z.string().uuid().nullish(),
+  structure: z
+    .object({
+      id: z.string().uuid(),
+      nom: z.string(),
+      adresse: z.string(),
+    })
+    .nullish(),
   lieuCommuneData: AdresseBanValidation.nullish(),
   thematiques: z
     .array(z.enum(thematiqueValues), {
       required_error: 'Veuillez renseigner au moins une thématique',
     })
     .min(1, 'Veuillez renseigner au moins une thématique'),
+  tags: z.array(z.object({ id: z.string().uuid() })).default([]),
   precisionsDemarche: z.string().nullish(),
   materiel: z.array(z.enum(materielValues)).default([]),
   notes: z.string().nullish(),

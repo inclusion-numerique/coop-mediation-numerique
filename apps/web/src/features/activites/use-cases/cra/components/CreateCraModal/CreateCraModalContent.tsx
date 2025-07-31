@@ -1,5 +1,7 @@
 'use client'
 
+import { SittingAtATableIcon } from '@app/web/features/pictograms/user/SittingAtATableIcon'
+import { TeacherIcon } from '@app/web/features/pictograms/user/TeacherIcon'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
@@ -10,12 +12,12 @@ import { CraIndividuelData } from '../../individuel/validation/CraIndividuelVali
 
 const ModalNavigationButton = ({
   children,
-  illustration,
+  pictogram,
   onClick,
   className,
 }: {
   children: ReactNode
-  illustration: string
+  pictogram: ReactNode
   className?: string
   onClick?: () => void
 }) => (
@@ -27,8 +29,11 @@ const ModalNavigationButton = ({
       className,
     )}
   >
-    <div className="fr-background-alt--blue-france fr-p-4v fr-border-radius-left--8">
-      <img className="fr-display-block" alt="" src={illustration} />
+    <div
+      className="fr-background-alt--blue-france fr-p-4v fr-border-radius-left--8"
+      aria-hidden
+    >
+      {pictogram}
     </div>
     <div className="fr-p-5v fr-flex fr-align-items-center fr-align-self-center fr-text--medium fr-height-full">
       {children}
@@ -72,14 +77,14 @@ const CreateCraModalContent = ({
         Quel type d’accompagnement avez-vous réalisé&nbsp;?
       </p>
       <ModalNavigationButton
-        illustration="/images/iconographie/accompagnement-individuel.svg"
+        pictogram={<SittingAtATableIcon width={56} height={56} />}
         onClick={() => navigateTo('/coop/mes-activites/cra/individuel')}
       >
         Accompagnement individuel
       </ModalNavigationButton>
 
       <ModalNavigationButton
-        illustration="/images/iconographie/accompagnement-collectif.svg"
+        pictogram={<TeacherIcon width={56} height={56} />}
         onClick={() => navigateTo('/coop/mes-activites/cra/collectif')}
       >
         Atelier collectif

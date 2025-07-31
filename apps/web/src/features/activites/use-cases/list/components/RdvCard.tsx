@@ -1,3 +1,4 @@
+import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import type { Rdv } from '@app/web/rdv-service-public/Rdv'
 import {
   dateAsDayInTimeZone,
@@ -56,7 +57,7 @@ const RdvCard = ({
 
   return (
     <ActiviteOrRdvListCard
-      illustrationSrc="/images/services/rdv-service-public.svg"
+      pictogram={RDVServicePublicLogo}
       enlargeLink
       contentTop={
         <>

@@ -5,11 +5,12 @@ import Stars from '@app/web/components/Stars'
 import { niveauAtelierStars } from '@app/web/features/activites/use-cases/cra/collectif/fields/niveau-atelier'
 import { thematiqueLabels } from '@app/web/features/activites/use-cases/cra/fields/thematique'
 import {
-  typeActiviteIllustrations,
   typeActiviteLabels,
+  typeActivitePictograms,
 } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
 import { autonomieStars } from '@app/web/features/activites/use-cases/cra/individuel/fields/autonomie'
 import type { ActiviteListItem } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
+import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { dureeAsString } from '@app/web/utils/dureeAsString'
 import { Fragment } from 'react'
@@ -69,7 +70,7 @@ const ActiviteCard = ({
   return (
     <ActiviteOrRdvListCard
       enlargeButton
-      illustrationSrc={typeActiviteIllustrations[type] ?? ''}
+      pictogram={typeActivitePictograms[type]}
       stacked={stacked}
       firstOfStack={firstOfStack}
       lastOfStack={lastOfStack}
@@ -148,12 +149,14 @@ const ActiviteCard = ({
       footer={
         showRdvFooter ? (
           <div className="fr-text--xs fr-text-mention--grey fr-mb-0 fr-flex fr-align-items-center fr-mt-2v">
-            <div className="fr-background-alt--blue-france fr-p-1v fr-border-radius--4 fr-flex fr-mr-1-5v">
-              <img
+            <div
+              className="fr-background-alt--blue-france fr-p-1v fr-border-radius--4 fr-flex fr-mr-1-5v"
+              aria-hidden
+            >
+              <RDVServicePublicLogo
                 className="fr-display-block"
-                alt=""
-                src="/images/services/rdv-service-public.svg"
-                style={{ width: 14, height: 14 }}
+                width={14}
+                height={14}
               />
             </div>
             RDV pris via RDV&nbsp;Service&nbsp;Public

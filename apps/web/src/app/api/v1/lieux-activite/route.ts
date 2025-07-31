@@ -1,4 +1,5 @@
 import { createApiV1Route } from '@app/web/app/api/v1/createApiV1Route'
+import { conseillerNumeriqueMongoCollection } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   DispositifProgrammeNational,
@@ -14,6 +15,7 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 type Aidant = {
+  id: string
   nom: string
   courriel: string
   telephone?: string
@@ -288,7 +290,8 @@ export const GET = createApiV1Route
               jsonb_strip_nulls(jsonb_build_object(
                 'nom', users.name,
                 'courriel', users.email,
-                'telephone', NULLIF(users.phone, '')
+                'telephone', NULLIF(users.phone, ''),
+                'id', conseillers_numeriques.id
               ))
             ) FILTER (WHERE users.id IS NOT NULL),
             '[]'::jsonb
@@ -308,12 +311,26 @@ export const GET = createApiV1Route
         ${dispositif_programmes_nationaux ? Prisma.sql`WHERE ${dispositif_programmes_nationaux}::text = ANY(dispositif_programmes_nationaux)` : Prisma.empty}
     `
 
-    const result = lieuxDeMediationNumerique.map((lieu) => ({
-      ...toSchemaLieuMediationNumerique(lieu),
-      ...(lieu.aidants && lieu.aidants.length > 0
-        ? { aidants: lieu.aidants }
-        : {}),
-    }))
+    const conseillerCollection =
+      await conseillerNumeriqueMongoCollection('conseillers')
+
+    const conseillersIds = new Set(
+      (await conseillerCollection.find().toArray())
+        .filter(({ statut }) => statut === 'RECRUTE')
+        .map((conseiller) => conseiller._id.toString()),
+    )
+
+    const result = lieuxDeMediationNumerique
+      .map((lieu) => {
+        const aidants =
+          lieu.aidants?.filter((aidant) => conseillersIds.has(aidant.id)) ?? []
+
+        return {
+          ...toSchemaLieuMediationNumerique(lieu),
+          ...(aidants && aidants.length > 0 ? { aidants } : {}),
+        }
+      })
+      .filter(({ aidants }) => (aidants?.length ?? 0) > 0)
 
     return NextResponse.json(result)
   })

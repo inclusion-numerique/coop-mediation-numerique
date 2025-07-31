@@ -1,5 +1,6 @@
 import RdvServicePubliqueConnexionCard from '@app/web/app/coop/(full-width-layout)/mes-outils/rdv-service-public/RdvServicePubliqueConnexionCard'
 import BackButton from '@app/web/components/BackButton'
+import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import {
   rdvOauthLinkAccountErrorCallbackPath,
   rdvOauthLinkAccountFlowUrl,
@@ -19,12 +20,11 @@ const RdvServicePublicSeConnecterPage = () => {
       </div>
       <RdvServicePubliqueConnexionCard title="Se connecter avec ProConnect">
         <div className="fr-flex fr-direction-column fr-align-items-center fr-text--center">
-          <Image
-            className="fr-background-alt--blue-france fr-border-radius--8 fr-p-3v"
-            width={64}
+          <RDVServicePublicLogo
+            className="fr-background-action-low--blue-france fr-border-radius--8 fr-p-3v"
             height={64}
-            src="/images/services/rdv-service-public.svg"
-            alt=""
+            width={64}
+            aria-hidden
           />
           <h1 className="fr-h3 fr-mb-2v fr-mt-6v fr-text-title--blue-france">
             Connectez-vous à RDV&nbsp;Service&nbsp;Public

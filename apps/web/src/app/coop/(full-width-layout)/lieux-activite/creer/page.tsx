@@ -1,7 +1,7 @@
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import { contentId } from '@app/web/utils/skipLinks'
 import React from 'react'
 import { CreerLieuActivitePageContent } from './_components/CreerLieuActivitePageContent'
 
@@ -10,7 +10,7 @@ const LieuActiviteCreerPage = async () => {
 
   return (
     <>
-      <SkipLinksPortal links={defaultSkipLinks} />
+      <SkipLinksPortal />
       <main id={contentId} className="fr-container fr-flex">
         <CreerLieuActivitePageContent
           contentTop={

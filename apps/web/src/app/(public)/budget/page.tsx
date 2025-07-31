@@ -4,7 +4,7 @@ import { canauxAccompagnementColors } from '@app/web/app/coop/(sidemenu-layout)/
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import Breadcrumbs from '@app/web/components/Breadcrumbs'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
 import budgetElement from './dataBudget'
 
@@ -35,7 +35,7 @@ const BudgetPage = () => {
 
   return (
     <div className="fr-container">
-      <SkipLinksPortal links={defaultSkipLinks} />
+      <SkipLinksPortal />
       <Breadcrumbs currentPage="Budget" />
       <main
         id={contentId}

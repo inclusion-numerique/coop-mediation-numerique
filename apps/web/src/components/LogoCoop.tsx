@@ -1,5 +1,5 @@
 const LogoCoop = ({
-  backgroundColor = 'var(--blue-france-975-75)',
+  backgroundColor = 'var(--background-action-low-blue-france)',
   className,
   width = 88,
   height = 88,
@@ -17,6 +17,7 @@ const LogoCoop = ({
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
+    <title>Logo coop</title>
     <rect
       y="-0.000488281"
       width="88"

@@ -24,7 +24,7 @@ export const OnboardingMesBeneficiaires = ({
       </>
     }
     stepIndex={3}
-    totalSteps={isConseillerNumerique ? 6 : 5}
+    totalSteps={isConseillerNumerique ? 5 : 4}
     previous={{ href: '/en-savoir-plus/mes-statistiques' }}
     next={{ href: '/en-savoir-plus/mes-outils' }}
     closeHref="/coop"

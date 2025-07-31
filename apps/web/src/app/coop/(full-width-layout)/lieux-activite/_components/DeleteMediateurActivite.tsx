@@ -56,7 +56,7 @@ const DeleteMediateurActivite = ({
         disabled={isLoading}
         {...deleteModalNativeButtonProps}
       >
-        <span className="ri-delete-bin-6-line" />
+        <span className="ri-delete-bin-6-line" aria-hidden />
         <span className="fr-sr-only">Supprimer</span>
       </Button>
       <DeleteModal

@@ -14,6 +14,7 @@ export const thematiquesAccompagnementColors = [
   '#009081',
   '#BD987A',
 ]
+export const tagsColor = ['#8ba7f8']
 export const nombreAccompagnementParLieuColor = '#009099'
 export const canauxAccompagnementColors = [
   '#C7F6FC',

@@ -12,7 +12,10 @@ const AdministrationSideMenu = () => {
     {
       text: (
         <>
-          <span className="fr-icon-team-line ri-xl fr-mr-1w fr-text--regular" />
+          <span
+            className="fr-icon-team-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
+          />
           Utilisateurs
         </>
       ),
@@ -24,7 +27,10 @@ const AdministrationSideMenu = () => {
     {
       text: (
         <>
-          <span className="fr-icon-archive-line ri-xl fr-mr-1w fr-text--regular" />
+          <span
+            className="fr-icon-archive-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
+          />
           Conseillers V1
         </>
       ),
@@ -36,7 +42,10 @@ const AdministrationSideMenu = () => {
     {
       text: (
         <>
-          <span className="fr-icon-home-4-line ri-xl fr-mr-1w fr-text--regular" />
+          <span
+            className="fr-icon-home-4-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
+          />
           Structures
         </>
       ),
@@ -72,7 +81,10 @@ const AdministrationSideMenu = () => {
     {
       text: (
         <>
-          <span className="fr-icon-line-chart-line ri-xl fr-mr-1w fr-text--regular" />
+          <span
+            className="fr-icon-line-chart-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
+          />
           Statistiques
         </>
       ),
@@ -85,16 +97,16 @@ const AdministrationSideMenu = () => {
       text: (
         <>
           <span
-            className="ri-calendar-check-line ri-xl fr-mr-1w fr-text--regular"
+            className="ri-list-check-3 ri-xl fr-mr-1w fr-text--regular"
             aria-hidden
           />
-          Beta RDVSP
+          Fonctionnalités
         </>
       ),
       linkProps: {
-        href: '/administration/beta-rdvsp',
+        href: '/administration/fonctionnalites',
       },
-      isActive: pathname?.startsWith('/administration/beta-rdvsp'),
+      isActive: pathname?.startsWith('/administration/fonctionnalites'),
     },
     {
       text: (
@@ -114,7 +126,10 @@ const AdministrationSideMenu = () => {
     {
       text: (
         <>
-          <span className="fr-icon-chat-check-line ri-xl fr-mr-1w fr-text--regular" />
+          <span
+            className="fr-icon-chat-check-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
+          />
           Assistant
         </>
       ),

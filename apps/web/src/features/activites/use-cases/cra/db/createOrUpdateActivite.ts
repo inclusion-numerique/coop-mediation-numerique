@@ -136,6 +136,7 @@ const getExistingStructure = async ({
 }
 
 const beneficiaireAnonymeCreateDataFromForm = ({
+  mediateurId,
   prenom,
   nom,
   telephone,
@@ -147,9 +148,10 @@ const beneficiaireAnonymeCreateDataFromForm = ({
   trancheAge,
   statutSocial,
   notes,
-  mediateurId,
   dejaAccompagne,
-}: BeneficiaireCraData): Prisma.BeneficiaireCreateInput & {
+}: Partial<BeneficiaireCraData> & {
+  mediateurId: string
+}): Prisma.BeneficiaireCreateInput & {
   id: string
   dejaAccompagne: boolean
 } => ({
@@ -197,23 +199,17 @@ const withoutDejaAccompagne = <T>({
 export const createOrUpdateActivite = async ({
   input,
   userId,
+  mediateurId,
 }: {
   input: CreateOrUpdateActiviteInput
   userId: string
+  mediateurId: string
 }) => {
   const stopwatch = createStopwatch()
 
   const { data } = input
 
-  const {
-    date,
-    duree,
-    id,
-    mediateurId,
-    notes,
-    structureId,
-    rdvServicePublicId,
-  } = data
+  const { date, duree, id, notes, structure, rdvServicePublicId } = data
 
   const creationId = v4()
 
@@ -222,7 +218,9 @@ export const createOrUpdateActivite = async ({
     beneficiaires:
       input.type === TypeActivite.Collectif
         ? input.data.participants
-        : [input.data.beneficiaire],
+        : input.data.beneficiaire
+          ? [input.data.beneficiaire]
+          : [],
     activiteId: id,
   })
 
@@ -241,12 +239,17 @@ export const createOrUpdateActivite = async ({
     // Do not create anonymous beneficiaire for one to one cra if it is "suivi"
     existingBeneficiairesSuivis.length > 0
       ? undefined
-      : beneficiaireAnonymeCreateDataFromForm(input.data.beneficiaire)
+      : beneficiaireAnonymeCreateDataFromForm({
+          mediateurId,
+          ...input.data.beneficiaire,
+          prenom: input.data.beneficiaire?.prenom ?? undefined,
+          nom: input.data.beneficiaire?.nom ?? undefined,
+        })
 
-  const structure =
+  const lieuActivite =
     data.typeLieu === 'LieuActivite'
       ? await getExistingStructure({
-          structureId,
+          structureId: structure?.id,
           mediateurId,
         })
       : null
@@ -315,12 +318,11 @@ export const createOrUpdateActivite = async ({
         : 'structureDeRedirection' in data
           ? data.structureDeRedirection
           : undefined,
-
     thematiques: input.data.thematiques,
     structure:
       // Only set structure if it is the correct type of lieuAccompagnement
-      structure
-        ? { connect: { id: structure.id } }
+      lieuActivite
+        ? { connect: { id: lieuActivite.id } }
         : id
           ? { disconnect: true } // disconnect if this is an update
           : undefined, // no data if creation
@@ -397,6 +399,19 @@ export const createOrUpdateActivite = async ({
               : []),
           ],
         }),
+        // Delete existing tags for the activite
+        prismaClient.activitesTags.deleteMany({
+          where: {
+            activiteId: id,
+          },
+        }),
+        // Create tags for the activite
+        prismaClient.activitesTags.createMany({
+          data: input.data.tags.map((tag) => ({
+            activiteId: id,
+            tagId: tag.id,
+          })),
+        }),
         // Update the activite
         prismaClient.activite.update({
           where: { id },
@@ -448,6 +463,13 @@ export const createOrUpdateActivite = async ({
           id: creationId,
         },
         select: { id: true },
+      }),
+      // Create tags for the activite
+      prismaClient.activitesTags.createMany({
+        data: input.data.tags.map((tag) => ({
+          activiteId: creationId,
+          tagId: tag.id,
+        })),
       }),
       // Create accompagnements
       prismaClient.accompagnement.createMany({

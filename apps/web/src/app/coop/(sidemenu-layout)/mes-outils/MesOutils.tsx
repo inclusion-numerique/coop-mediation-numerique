@@ -2,8 +2,14 @@ import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { getAuthenticatedSessionUser } from '@app/web/auth/getSessionUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import { AbcDiagLogo } from '@app/web/features/pictograms/services/AbcDiagLogo'
+import { AidantsConnectLogo } from '@app/web/features/pictograms/services/AidantsConnectLogo'
+import { CartographieLogo } from '@app/web/features/pictograms/services/CartographieLogo'
+import { LesBasesLogo } from '@app/web/features/pictograms/services/LesBasesLogo'
+import { PixOrgaLogo } from '@app/web/features/pictograms/services/PixOrgaLogo'
+import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import { hasFeatureFlag } from '@app/web/security/hasFeatureFlag'
-import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
+import { contentId } from '@app/web/utils/skipLinks'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -15,9 +21,9 @@ export const MesOutils = async () => {
   const hasAccessToRdvServicePublic = hasFeatureFlag(user, 'RdvServicePublic')
 
   return (
-    <CoopPageContainer size={794}>
+    <CoopPageContainer size={49}>
       <CoopBreadcrumbs currentPage="Mes outils" />
-      <SkipLinksPortal links={defaultSkipLinks} />
+      <SkipLinksPortal />
       <main id={contentId}>
         <h1 className="fr-text-title--blue-france">Mes outils</h1>
         <p>
@@ -49,13 +55,13 @@ export const MesOutils = async () => {
         />
         <section className="fr-mt-6w">
           <h2 className="fr-h5 fr-text-mention--grey">
-            <span className="ri-service-line fr-mr-1w" aria-hidden="true" />
+            <span className="ri-service-line fr-mr-1w" aria-hidden />
             Des outils pour vos accompagnements
           </h2>
           <div className="fr-grid-row fr-grid-row--gutters">
             <div className="fr-col-xl-6 fr-col-12">
               <CardOutil
-                logo="/images/services/rdv-service-public.svg"
+                pictogram={RDVServicePublicLogo}
                 title="RDV Service Public"
                 slug="rdv-service-public"
                 isNew={hasAccessToRdvServicePublic}
@@ -65,7 +71,7 @@ export const MesOutils = async () => {
             </div>
             <div className="fr-col-xl-6 fr-col-12">
               <CardOutil
-                logo="/images/services/aidants-connect.svg"
+                pictogram={AidantsConnectLogo}
                 title="Aidants Connect"
                 slug="aidants-connect"
               >
@@ -75,7 +81,7 @@ export const MesOutils = async () => {
             </div>
             <div className="fr-col-xl-6 fr-col-12">
               <CardOutil
-                logo="/images/services/cartographie-icon.svg"
+                pictogram={CartographieLogo}
                 title="La Cartographie Nationale des lieux d’inclusion numérique"
                 slug="cartographie-nationale-des-lieux-d-inclusion-numerique"
               >
@@ -85,7 +91,7 @@ export const MesOutils = async () => {
             </div>
             <div className="fr-col-xl-6 fr-col-12">
               <CardOutil
-                logo="/images/services/les-bases.svg"
+                pictogram={LesBasesLogo}
                 title="Les Bases du numérique d’intérêt général"
                 slug="les-bases-du-numerique-d-interet-general"
               >
@@ -108,18 +114,14 @@ export const MesOutils = async () => {
           </h2>
           <div className="fr-grid-row fr-grid-row--gutters">
             <div className="fr-col-xl-6 fr-col-12">
-              <CardOutil
-                logo="/images/services/pix-orga.svg"
-                title="Pix Orga"
-                slug="pix"
-              >
+              <CardOutil pictogram={PixOrgaLogo} title="Pix Orga" slug="pix">
                 Proposez des parcours PIX adaptés aux besoins de vos apprenants
                 et suivez leur progression.
               </CardOutil>
             </div>
             <div className="fr-col-xl-6 fr-col-12">
               <CardOutil
-                logo="/images/services/abc-diag.svg"
+                pictogram={AbcDiagLogo}
                 title="ABC Diag"
                 slug="abc-diag"
               >

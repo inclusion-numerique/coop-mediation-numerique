@@ -126,18 +126,14 @@ const RadioFormField = <
                     key={option.value}
                     className={classNames(
                       'fr-fieldset__element',
-                      {
-                        'fr-fieldset__element--inline': inline,
-                      },
+                      { 'fr-fieldset__element--inline': inline },
                       classes?.fieldsetElement,
                     )}
                   >
                     <div
                       className={classNames(
                         'fr-radio-group',
-                        {
-                          'fr-radio-group--sm': small,
-                        },
+                        { 'fr-radio-group--sm': small },
                         classes?.radioGroup,
                       )}
                     >

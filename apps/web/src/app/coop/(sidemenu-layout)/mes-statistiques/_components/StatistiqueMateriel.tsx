@@ -17,7 +17,10 @@ export const StatistiqueMateriel = ({
   className?: string
 }) => (
   <div className={classNames('fr-text--center', className)}>
-    <div className="fr-background-alt--blue-france fr-p-2w fr-mb-3v fr-border-radius--8 fr-display-inline-block">
+    <div
+      className="fr-background-alt--blue-france fr-p-2w fr-mb-3v fr-border-radius--8 fr-display-inline-block"
+      aria-hidden
+    >
       <div
         style={
           materielIcons[value].rotation
@@ -25,7 +28,6 @@ export const StatistiqueMateriel = ({
             : {}
         }
         className={`${materielIcons[value].icon} ri-lg fr-line-height-1 fr-text-label--blue-france`}
-        aria-hidden
       />
     </div>
     <div className="fr-flex fr-flex-gap-2v fr-justify-content-center">

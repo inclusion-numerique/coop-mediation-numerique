@@ -3,11 +3,9 @@ import type { DefaultValues } from 'react-hook-form'
 import { CraIndividuelData } from './validation/CraIndividuelValidation'
 
 export const craIndividuelDefaultValues = (
-  mediateurId: string,
   stateFromUrl: DefaultValues<CraIndividuelData>,
 ) => ({
   beneficiaire: {
-    mediateurId,
     ...stateFromUrl.beneficiaire,
   },
   lieuCommuneData:

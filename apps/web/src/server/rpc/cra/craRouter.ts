@@ -19,17 +19,13 @@ export const craRouter = router({
     .mutation(async ({ input, ctx: { user } }) => {
       enforceIsMediateur(user)
 
-      // Enforce user can create CRA for given mediateurId (for now only self)
-      if (input.mediateurId !== user.mediateur.id) {
-        throw forbiddenError('Cannot create CRA for another mediateur')
-      }
-
       return createOrUpdateActivite({
         input: {
           type: 'Individuel',
           data: input,
         },
         userId: user.id,
+        mediateurId: user.mediateur.id,
       })
     }),
   collectif: protectedProcedure
@@ -37,17 +33,13 @@ export const craRouter = router({
     .mutation(async ({ input, ctx: { user } }) => {
       enforceIsMediateur(user)
 
-      // Enforce user can create CRA for given mediateurId (for now only self)
-      if (input.mediateurId !== user.mediateur.id) {
-        throw forbiddenError('Cannot create CRA for another mediateur')
-      }
-
       return createOrUpdateActivite({
         input: {
           type: 'Collectif',
           data: input,
         },
         userId: user.id,
+        mediateurId: user.mediateur.id,
       })
     }),
   deleteActivite: protectedProcedure

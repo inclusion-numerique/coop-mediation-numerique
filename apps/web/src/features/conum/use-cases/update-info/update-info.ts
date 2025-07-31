@@ -6,7 +6,6 @@ import {
   toFulfilledValue,
 } from './db/miseEnRelationFromCollectionFor'
 import { updateConseillersIdPg } from './db/updateIdPg'
-import { updateNonAffichageCarto } from './db/updateNonAffichageCarto'
 
 export const updateInfo = async () => {
   const users = await conseillerNumeriqueUsers()
@@ -22,5 +21,4 @@ export const updateInfo = async () => {
     .filter(onlyDefinedAndNotNull)
 
   await updateConseillersIdPg(users, matchingConseillers)
-  await updateNonAffichageCarto(matchingConseillers)
 }

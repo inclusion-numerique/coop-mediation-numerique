@@ -1,14 +1,16 @@
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import DeleteTagModal from '@app/web/features/activites/use-cases/tags/delete/DeleteTagModal'
+import SaveTagModal from '@app/web/features/activites/use-cases/tags/save/SaveTagModal'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import SortSelect from '@app/web/libs/data-table/SortSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
 import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
-import { contentId, defaultSkipLinks } from '@app/web/utils/skipLinks'
-import Badge from '@codegouvfr/react-dsfr/Badge'
-import classNames from 'classnames'
-import React from 'react'
-import CreateTag from '../create/CreateTag'
+import { contentId } from '@app/web/utils/skipLinks'
+import { TagScope } from '../tagScope'
+import { CreateTag } from './CreateTag'
+import { TagActions } from './TagActions'
+import { TagList } from './TagList'
 
 const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
 
@@ -23,16 +25,18 @@ export const ListTagsPage = ({
 }: {
   isMediateur: boolean
   isCoordinateur: boolean
-  tags: { nom: string; scope: string; description?: string }[]
+  tags: { id: string; nom: string; scope: TagScope; description?: string }[]
   matchesCount: number
   totalPages: number
   baseHref: string
   searchParams: { lignes?: string; page?: string; recherche?: string }
 }) => (
   <>
-    <SkipLinksPortal links={defaultSkipLinks} />
+    <SkipLinksPortal />
     <div className="fr-container fr-container--800 fr-pb-16w">
       <CoopBreadcrumbs currentPage="Mes tags" />
+      <SaveTagModal isMediateur={isMediateur} isCoordinateur={isCoordinateur} />
+      <DeleteTagModal />
       <main id={contentId}>
         <div className="fr-flex fr-direction-column fr-direction-md-row fr-align-items-md-center fr-flex-gap-4v fr-mt-8v fr-mb-12v">
           <div className="fr-flex fr-direction-row fr-align-items-center fr-flex-gap-4v">
@@ -51,10 +55,7 @@ export const ListTagsPage = ({
               </p>
             </div>
           </div>
-          <CreateTag
-            isMediateur={isMediateur}
-            isCoordinateur={isCoordinateur}
-          />
+          <CreateTag />
         </div>
         <div className="fr-flex fr-direction-row fr-align-items-center fr-flex-gap-4v fr-justify-content-space-between fr-mb-8v">
           <h2 className="fr-h6 fr-mb-0">{matchesCount} Tags</h2>
@@ -67,37 +68,12 @@ export const ListTagsPage = ({
           />
         </div>
         <hr className="fr-separator-1px" />
-        <ul className="fr-raw-list">
-          {tags.map((tag, index) => (
-            <li
-              key={index}
-              className="fr-border--bottom fr-py-5v fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v"
-            >
-              <div>
-                <span className="fr-text--bold">{tag.nom}</span>
-                {tag.description && (
-                  <p className="fr-mb-0 fr-text--sm fr-text-mention--grey">
-                    {tag.description}
-                  </p>
-                )}
-              </div>
-              <div>
-                <Badge
-                  className={classNames(
-                    'fr-text--nowrap',
-                    tag.scope === 'personnel'
-                      ? 'fr-text-mention--grey'
-                      : undefined,
-                  )}
-                  severity={tag.scope === 'personnel' ? undefined : 'info'}
-                  noIcon
-                >
-                  Tag {tag.scope}
-                </Badge>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <TagList
+          tags={tags}
+          actions={(tag) => (
+            <TagActions isCoordinateur={isCoordinateur} tag={tag} />
+          )}
+        />
         <PaginationNavWithPageSizeSelect
           className="fr-mt-12v"
           defaultPageSize={DEFAULT_PAGE_SIZE}

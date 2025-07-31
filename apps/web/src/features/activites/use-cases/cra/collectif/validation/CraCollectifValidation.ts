@@ -9,19 +9,12 @@ export const CraCollectifValidation = CraValidation.extend({
     .array(BeneficiaireCraValidation.extend({ id: z.string().uuid() }))
     .default([]),
   participantsAnonymes: ParticipantsAnonymesCraCollectifValidation,
-  // Helper field only used in client form for type safety
-  addParticipant: BeneficiaireCraValidation.nullish(),
   titreAtelier: z.string().nullish(),
   niveau: z.enum(niveauAtelierValues).nullish(),
 })
   // structureId is required if typeLieu ===  LieuActivite
   .refine(
-    (data) => {
-      if (data.typeLieu === 'LieuActivite') {
-        return !!data.structureId
-      }
-      return true
-    },
+    (data) => (data.typeLieu === 'LieuActivite' ? !!data.structure?.id : true),
     {
       message: 'Veuillez renseigner le lieu d’activité',
       path: ['structureId'],

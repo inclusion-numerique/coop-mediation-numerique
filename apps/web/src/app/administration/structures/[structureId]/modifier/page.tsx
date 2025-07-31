@@ -26,21 +26,19 @@ const Page = async (props: { params: Promise<{ structureId: string }> }) => {
     <>
       <SkipLinksPortal />
 
-      <div className="">
-        <AdministrationBreadcrumbs
-          parents={[
-            {
-              label: 'Structures',
-              linkProps: { href: `/administration/structures` },
-            },
-          ]}
-          currentPage={toTitleCase(structure.nom, { noUpper: true })}
-        />
+      <AdministrationBreadcrumbs
+        parents={[
+          {
+            label: 'Structures',
+            linkProps: { href: `/administration/structures` },
+          },
+        ]}
+        currentPage={toTitleCase(structure.nom, { noUpper: true })}
+      />
 
-        <main id={contentId} className="fr-mt-12v fr-pb-20v">
-          <StructureEdition structure={structure} />
-        </main>
-      </div>
+      <main id={contentId} className="fr-mt-12v fr-pb-20v">
+        <StructureEdition structure={structure} />
+      </main>
     </>
   )
 }

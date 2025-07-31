@@ -1,10 +1,15 @@
 import Breadcrumbs from '@app/web/components/Breadcrumbs'
+import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import { contentId } from '@app/web/utils/skipLinks'
 
 const ContentPolicyPage = () => (
   <div className="fr-container">
+    <SkipLinksPortal />
     <Breadcrumbs currentPage="Conditions générales d'utilisation" />
-
-    <div className="fr-container landing-main-container fr-my-8w">
+    <main
+      id={contentId}
+      className="fr-container landing-main-container fr-my-8w"
+    >
       <div className="fr-grid-row fr-grid-row--center">
         <div className="fr-col-md-8">
           <h1>
@@ -206,7 +211,7 @@ const ContentPolicyPage = () => (
           </p>
         </div>
       </div>
-    </div>
+    </main>
   </div>
 )
 export default ContentPolicyPage

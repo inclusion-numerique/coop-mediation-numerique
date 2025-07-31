@@ -2,7 +2,7 @@ import {
   BeneficiairesDataTable,
   BeneficiairesDataTableSearchParams,
 } from '@app/web/beneficiaire/BeneficiairesDataTable'
-import { SearchBeneficiaireResult } from '@app/web/beneficiaire/searchBeneficiaire'
+import { SearchBeneficiaireResult } from '@app/web/beneficiaire/searchBeneficiaires'
 import DataTable from '@app/web/libs/data-table/DataTable'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
