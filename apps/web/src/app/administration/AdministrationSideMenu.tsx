@@ -97,16 +97,16 @@ const AdministrationSideMenu = () => {
       text: (
         <>
           <span
-            className="ri-calendar-check-line ri-xl fr-mr-1w fr-text--regular"
+            className="ri-list-check-3 ri-xl fr-mr-1w fr-text--regular"
             aria-hidden
           />
-          Beta RDVSP
+          Fonctionnalités
         </>
       ),
       linkProps: {
-        href: '/administration/beta-rdvsp',
+        href: '/administration/fonctionnalites',
       },
-      isActive: pathname?.startsWith('/administration/beta-rdvsp'),
+      isActive: pathname?.startsWith('/administration/fonctionnalites'),
     },
     {
       text: (
