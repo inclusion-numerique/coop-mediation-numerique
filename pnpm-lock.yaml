@@ -78,6 +78,9 @@ importers:
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
+      mongodb:
+        specifier: ^6.16.0
+        version: 6.16.0
       p-retry:
         specifier: ^6.2.1
         version: 6.2.1
@@ -96,6 +99,9 @@ importers:
       undici:
         specifier: ^7.8.0
         version: 7.8.0
+      uuid:
+        specifier: ^11.1.0
+        version: 11.1.0
       zod:
         specifier: ^3.24.4
         version: 3.24.4

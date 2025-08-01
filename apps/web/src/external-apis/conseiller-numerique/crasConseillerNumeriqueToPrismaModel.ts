@@ -56,7 +56,7 @@ const dureeToMinutes = (duree: string | number | null) => {
 }
 
 export const craConseillerNumeriqueToPrismaModel = ({
-  item: { id, conseillerId, cra, createdAt, updatedAt, structure },
+  item: { id, conseillerId, cra, createdAt, updatedAt, structure, permanence },
   importedAt,
 }: {
   item: ConseillerNumeriqueCraWithStructure
@@ -113,6 +113,10 @@ export const craConseillerNumeriqueToPrismaModel = ({
 
     organismes: flattenOrganismes(cra.organismes),
 
+    // Lieu d’activité
+    permanenceId: permanence?.id,
+
+    // Structure employeuse
     structureId: structure?.id,
     structureIdPg: structure?.idPG,
     structureType: structure?.type,
