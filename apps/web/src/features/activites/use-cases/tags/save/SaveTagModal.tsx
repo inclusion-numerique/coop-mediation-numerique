@@ -65,12 +65,9 @@ const SaveTagModal = ({
     title,
     content,
     selectVisibility,
-    info,
     cancelButtonLabel,
     submitButtonLabel,
   } = saveTagModalVariants(isMediateur, isCoordinateur, id)
-  const saveInfo = info?.(isCoordinateur)
-
   const router = useRouter()
   const mutation = trpc.tags.save.useMutation()
   const isPending = mutation.isPending
@@ -134,12 +131,13 @@ const SaveTagModal = ({
           ]}
         >
           {content && <p>{content}</p>}
-          {saveInfo && (
+          {scope === TagScope.Departemental && (
             <Notice
               className="fr-notice--flex fr-align-items-center fr-my-8v"
               title={
                 <span className="fr-text-default--grey fr-text--regular">
-                  {saveInfo}
+                  Les modifications seront visibles par l’ensemble des
+                  médiateurs numériques du département
                 </span>
               }
             />
@@ -172,7 +170,8 @@ const SaveTagModal = ({
                           label: 'Tag départemental',
                           value: TagScope.Departemental,
                           extra: {
-                            hintText: 'Visible uniquement par vous.',
+                            hintText:
+                              'Visible par l’ensemble des médiateurs numériques du département.',
                             illustration: (
                               <span
                                 className="ri-map-pin-range-line ri-xl fr-line-height-1 fr-text-default--info fr-background-contrast--info fr-p-2w fr-my-2w fr-border-radius--8"
@@ -185,8 +184,7 @@ const SaveTagModal = ({
                           label: 'Tag personnel',
                           value: TagScope.Personnel,
                           extra: {
-                            hintText:
-                              'Visible par l’ensemble des médiateurs numériques du département.',
+                            hintText: 'Visible uniquement par vous.',
                             illustration: (
                               <span
                                 className="ri-account-circle-line ri-xl fr-line-height-1 fr-text-mention--grey fr-background-contrast--grey fr-p-2w fr-my-2w fr-border-radius--8"
@@ -198,18 +196,21 @@ const SaveTagModal = ({
                       ]}
                       orientation="vertical"
                     />
-                    {id && scope === TagScope.Departemental && (
-                      <Notice
-                        className="fr-notice--warning fr-notice--flex fr-align-items-center fr-mb-8v"
-                        title={
-                          <span className="fr-text--regular fr-text-default--grey">
-                            En passant la visibilité de ce tag de départemental
-                            à personnel, Il ne sera plus visible par l’ensemble
-                            des médiateurs numériques du département.
-                          </span>
-                        }
-                      />
-                    )}
+                    {id &&
+                      scope === TagScope.Departemental &&
+                      field.state.value === TagScope.Personnel && (
+                        <Notice
+                          className="fr-notice--warning fr-notice--flex fr-align-items-center fr-mb-8v"
+                          title={
+                            <span className="fr-text--regular fr-text-default--grey">
+                              En passant la visibilité de ce tag de
+                              départemental à personnel, Il ne sera plus visible
+                              par l’ensemble des médiateurs numériques du
+                              département.
+                            </span>
+                          }
+                        />
+                      )}
                   </>
                 )}
               </form.AppField>
