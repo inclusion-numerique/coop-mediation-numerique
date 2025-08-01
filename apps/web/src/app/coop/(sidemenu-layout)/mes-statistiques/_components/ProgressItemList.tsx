@@ -43,7 +43,7 @@ export const ProgressItemList = ({
           : []
 
       return (
-        <div key={label} className={styles.row}>
+        <div key={index} className={styles.row}>
           <span
             className={classNames(
               'fr-text--sm',

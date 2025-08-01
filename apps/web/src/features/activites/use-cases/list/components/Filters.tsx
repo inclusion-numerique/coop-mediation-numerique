@@ -5,6 +5,7 @@ import { ActiviteTypeFilter } from '@app/web/components/filters/ActiviteTypeFilt
 import { BeneficiaireFilter } from '@app/web/components/filters/BeneficiaireFilter'
 import { ConseillerNumeriqueFilter } from '@app/web/components/filters/ConseillerNumeriqueFilter'
 import { MediateurFilter } from '@app/web/components/filters/MediateurFilter'
+import { MoreFilters } from '@app/web/components/filters/MoreFilters'
 import { PeriodeFilter } from '@app/web/components/filters/PeriodeFilter'
 import type { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
@@ -102,6 +103,7 @@ const Filters = ({
         defaultValue={defaultFilters.beneficiaires ?? []}
       />
     )}
+    {!isCoordinateur && <MoreFilters />}
   </div>
 )
 
