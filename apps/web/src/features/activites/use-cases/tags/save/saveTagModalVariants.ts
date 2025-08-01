@@ -19,10 +19,6 @@ const variants: SaveTagModalVariant[] = [
     title: (nom?: string | null) => `Modifier le tag ‘${nom}’`,
     selectVisibility: (isMediateur: boolean, isCoordinateur: boolean) =>
       isMediateur && isCoordinateur,
-    info: (isCoordinateur: boolean) =>
-      isCoordinateur
-        ? 'Les modifications seront visibles par l’ensemble des médiateurs numériques du département'
-        : null,
     cancelButtonLabel: 'Annuler les modifications',
     submitButtonLabel: 'Enregistrer',
   },
