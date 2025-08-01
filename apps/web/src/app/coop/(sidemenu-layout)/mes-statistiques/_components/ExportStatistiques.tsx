@@ -27,6 +27,7 @@ export const ExportStatistiques = ({
   beneficiairesOptions,
   departementsOptions,
   communesOptions,
+  tagsOptions,
 }: {
   filters: ActivitesFilters
   mediateursOptions: MediateurOption[]
@@ -34,6 +35,7 @@ export const ExportStatistiques = ({
   lieuxActiviteOptions: LieuActiviteOption[]
   departementsOptions: SelectOption[]
   communesOptions: SelectOption[]
+  tagsOptions: { id: string; nom: string }[]
 }) => {
   const onExportXlsx = () => {
     const exportPath = '/coop/mes-statistiques/export'
@@ -72,6 +74,7 @@ export const ExportStatistiques = ({
     lieuxActiviteOptions,
     beneficiairesOptions,
     mediateursOptions,
+    tagsOptions,
   }).map(toLieuPrefix)
 
   return (

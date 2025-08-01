@@ -5,12 +5,14 @@ import { ActiviteTypeFilter } from '@app/web/components/filters/ActiviteTypeFilt
 import { BeneficiaireFilter } from '@app/web/components/filters/BeneficiaireFilter'
 import { ConseillerNumeriqueFilter } from '@app/web/components/filters/ConseillerNumeriqueFilter'
 import { MediateurFilter } from '@app/web/components/filters/MediateurFilter'
+import { MoreFilters } from '@app/web/components/filters/MoreFilters'
 import { PeriodeFilter } from '@app/web/components/filters/PeriodeFilter'
 import type { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
 import { LieuFilter } from '@app/web/features/lieux-activite/use-cases/filter/LieuFilter'
 import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import classNames from 'classnames'
+import { TagScope } from '../../tags/tagScope'
 import type { ActivitesFilters } from '../validation/ActivitesFilters'
 
 const Filters = ({
@@ -20,6 +22,7 @@ const Filters = ({
   communesOptions,
   departementsOptions,
   lieuxActiviteOptions,
+  tagsOptions,
   isCoordinateur,
   isMediateur,
   beneficiairesFilter = true,
@@ -32,6 +35,7 @@ const Filters = ({
   initialBeneficiairesOptions: BeneficiaireOption[]
   communesOptions: SelectOption[]
   lieuxActiviteOptions: LieuActiviteOption[]
+  tagsOptions: { id: string; nom: string; scope: TagScope }[]
   departementsOptions: SelectOption[]
   isCoordinateur: boolean
   isMediateur: boolean
@@ -100,6 +104,18 @@ const Filters = ({
       <BeneficiaireFilter
         initialBeneficiairesOptions={initialBeneficiairesOptions}
         defaultValue={defaultFilters.beneficiaires ?? []}
+      />
+    )}
+    {!isCoordinateur && (
+      <MoreFilters
+        tagsOptions={tagsOptions}
+        defaultValues={{
+          thematiqueNonAdministratives:
+            defaultFilters.thematiqueNonAdministratives ?? [],
+          thematiqueAdministratives:
+            defaultFilters.thematiqueAdministratives ?? [],
+          tags: defaultFilters.tags ?? [],
+        }}
       />
     )}
   </div>

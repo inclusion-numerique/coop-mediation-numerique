@@ -153,6 +153,7 @@ const emptyData: MesStatistiquesPageData = {
   activitesFilters: {},
   communesOptions: [],
   departementsOptions: [],
+  tagsOptions: [],
   initialBeneficiairesOptions: [],
   initialMediateursOptions: [],
   lieuxActiviteOptions: [],
@@ -216,7 +217,14 @@ describe('getMesStatistiquesPageData', () => {
     test('should give empty data without filters', async () => {
       const user = await prismaClient.user.findUnique({
         where: { id: mediateurSansActivitesUserId },
-        select: { mediateur: true },
+        select: {
+          mediateur: true,
+          emplois: {
+            include: {
+              structure: true,
+            },
+          },
+        },
       })
 
       const data = await getMesStatistiquesPageData({
@@ -514,7 +522,14 @@ describe('getMesStatistiquesPageData', () => {
     test.each(cases)('$title', async ({ activitesFilters, expected }) => {
       const user = await prismaClient.user.findUnique({
         where: { id: mediateurAvecActiviteUserId },
-        select: { mediateur: true },
+        select: {
+          mediateur: true,
+          emplois: {
+            include: {
+              structure: true,
+            },
+          },
+        },
       })
 
       const data = await getMesStatistiquesPageData({

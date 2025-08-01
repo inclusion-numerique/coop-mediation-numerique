@@ -359,6 +359,36 @@ const STATISTIQUES_WORKSHEET_INPUT_FOR_MEDIATEUR: BuildStatistiquesWorksheetInpu
         key: '7d6091bc-dc91-4d1b-b357-f101e9eb6217',
         type: 'beneficiaires',
       },
+      {
+        label: 'Maintenance de matériel',
+        key: 'MaintenanceDeMateriel',
+        type: 'thematiqueNonAdministratives',
+      },
+      {
+        label: 'Diagnostic numérique',
+        key: 'DiagnosticNumerique',
+        type: 'thematiqueNonAdministratives',
+      },
+      {
+        label: 'Papiers - Élections Citoyenneté',
+        key: 'PapiersElectionsCitoyennete',
+        type: 'thematiqueAdministratives',
+      },
+      {
+        label: 'Social - Santé',
+        key: 'SocialSante',
+        type: 'thematiqueAdministratives',
+      },
+      {
+        label: 'Linux',
+        key: '303381cc-3da7-433d-a553-1a5f76465989',
+        type: 'tags',
+      },
+      {
+        label: 'Windows',
+        key: '303381cc-3da7-433d-a553-1a5f76465989',
+        type: 'tags',
+      },
     ],
   }
 
@@ -427,7 +457,7 @@ const expectQuantifiedShareRows = (expectedRows: [string, number][]) => {
 const mainTitle = { start: 1, length: 1 }
 const info = { start: mainTitle.start + mainTitle.length, length: 6 }
 const filterTitle = { start: info.start + info.length, length: 1 }
-const filters = { start: filterTitle.start + filterTitle.length, length: 8 }
+const filters = { start: filterTitle.start + filterTitle.length, length: 11 }
 const generalesTitle = { start: filters.start + filters.length, length: 1 }
 const generales = {
   start: generalesTitle.start + generalesTitle.length,
@@ -607,6 +637,17 @@ describe('build statistiques worksheet for médiateur', () => {
         'Accompagnement individuel, Atelier collectif',
       ],
       [undefined, 'Rôle', 'Médiateur'],
+      [
+        undefined,
+        'Thématiques non administratives',
+        'Maintenance de matériel, Diagnostic numérique',
+      ],
+      [
+        undefined,
+        'Thématiques administratives',
+        'Papiers - Élections Citoyenneté, Social - Santé',
+      ],
+      [undefined, 'Tags', 'Linux, Windows'],
       [
         undefined,
         'Médiateurs',
@@ -986,7 +1027,9 @@ describe('build statistiques worksheet for coordinateur', () => {
   })
 
   it('should contains médiateur filter in Statistiques worksheet in row 16 when', () => {
-    const rows = worksheet.getRows(15, 2)?.map((row) => row.values)
+    const rows = worksheet
+      .getRows(filters.start + filters.length - 2, 2)
+      ?.map((row) => row.values)
 
     expect(rows).toEqual([[undefined, 'Médiateurs', 'Marie Doe'], []])
   })

@@ -71,6 +71,30 @@ export const addFilters =
                 ?.label ?? '-',
             ]
           : undefined,
+        !excludeFilters.includes('thematiqueNonAdministratives')
+          ? [
+              'Thématiques non administratives',
+              filters
+                .filter(onlyType('thematiqueNonAdministratives'))
+                .map(toLabel)
+                .join(', ') || '-',
+            ]
+          : undefined,
+        !excludeFilters.includes('thematiqueAdministratives')
+          ? [
+              'Thématiques administratives',
+              filters
+                .filter(onlyType('thematiqueAdministratives'))
+                .map(toLabel)
+                .join(', ') || '-',
+            ]
+          : undefined,
+        !excludeFilters.includes('tags')
+          ? [
+              'Tags',
+              filters.filter(onlyType('tags')).map(toLabel).join(', ') || '-',
+            ]
+          : undefined,
         !excludeFilters.includes('beneficiaires') &&
         filters.filter(onlyType('beneficiaires')).length > 0
           ? [

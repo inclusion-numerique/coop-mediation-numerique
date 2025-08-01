@@ -39,6 +39,7 @@ const MesActivitesVueTableauPage = async ({
       initialMediateursOptions,
       initialBeneficiairesOptions,
       lieuxActiviteOptions,
+      tagsOptions,
       activiteDates,
     } = await getFiltersOptionsForMediateur({
       user,
@@ -55,6 +56,7 @@ const MesActivitesVueTableauPage = async ({
           communesOptions={communesOptions}
           departementsOptions={departementsOptions}
           lieuxActiviteOptions={lieuxActiviteOptions}
+          tagsOptions={tagsOptions}
           activiteDates={activiteDates}
         />
         <MesActivitesTableauPage data={data} />

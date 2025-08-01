@@ -1,7 +1,12 @@
 import {
+  thematiquesAdministrativesValues,
+  thematiquesNonAdministrativesValues,
+} from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import {
   type RdvStatus,
   rdvStatusValues,
 } from '@app/web/rdv-service-public/rdvStatus'
+import { Thematique } from '@prisma/client'
 import z from 'zod'
 import {
   TypeActiviteSlug,
@@ -71,6 +76,26 @@ export const ActivitesFilterValidations = {
     ])
     .optional(),
   conseiller_numerique: z.enum(conseillerNumeriqueValues).optional(),
+  thematiqueNonAdministratives: z
+    .union([
+      z.string().transform((val) => val.split(',').map((item) => item.trim())),
+      z.array(z.enum(thematiquesNonAdministrativesValues)),
+    ])
+    .optional(),
+  thematiqueAdministratives: z
+    .union([
+      z
+        .string()
+        .transform((val) => val.split(',').map((iitem) => iitem.trim())),
+      z.array(z.enum(thematiquesAdministrativesValues)),
+    ])
+    .optional(),
+  tags: z
+    .union([
+      z.string().transform((val) => val.split(',').map((id) => id.trim())),
+      z.array(z.string().uuid()),
+    ])
+    .optional(),
 }
 
 export type ActivitesFilters = {
@@ -84,6 +109,9 @@ export type ActivitesFilters = {
   departements?: string[] // Code INSEE des départements
   lieux?: string[] // UUID des lieux d’activités
   conseiller_numerique?: ConseillerNumeriqueValue // (0 = non, 1 = oui)
+  thematiqueNonAdministratives?: Thematique[]
+  thematiqueAdministratives?: Thematique[]
+  tags?: string[]
 }
 
 /**
@@ -112,6 +140,7 @@ export const validateActivitesFilters = <T extends ActivitesFilters>(
       result[typedKey] = validatedFilterValue.data as ConseillerNumeriqueValue &
         TypeActiviteSlug[] &
         RdvStatusFilterValue[] &
+        Thematique[] &
         string[]
     } else {
       delete result[typedKey]

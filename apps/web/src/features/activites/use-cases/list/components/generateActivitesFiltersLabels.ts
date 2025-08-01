@@ -1,4 +1,8 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
+import {
+  thematiqueLabels,
+  thematiquesAdministrativesLabels,
+} from '@app/web/features/activites/use-cases/cra/fields/thematique'
 import type { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
 import type { LieuFilterType } from '@app/web/features/lieux-activite/use-cases/filter/LieuFilter'
 import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
@@ -21,6 +25,9 @@ export type FilterType =
   | 'types'
   | 'conseiller_numerique'
   | 'rdvs'
+  | 'thematiqueNonAdministratives'
+  | 'thematiqueAdministratives'
+  | 'tags'
 
 export const locationTypeLabels: {
   [key in LieuFilterType]: string
@@ -113,6 +120,9 @@ export const generateActivitesFiltersLabels = (
     beneficiaires,
     mediateurs,
     types,
+    thematiqueAdministratives,
+    thematiqueNonAdministratives,
+    tags,
     conseiller_numerique,
     departements,
     communes,
@@ -127,12 +137,14 @@ export const generateActivitesFiltersLabels = (
     communesOptions,
     departementsOptions,
     lieuxActiviteOptions,
+    tagsOptions,
   }: {
     beneficiairesOptions: BeneficiaireOption[]
     mediateursOptions: MediateurOption[]
     communesOptions: SelectOption[]
     lieuxActiviteOptions: SelectOption[]
     departementsOptions: SelectOption[]
+    tagsOptions: { id: string; nom: string }[]
   },
 ) => {
   const periode =
@@ -144,12 +156,40 @@ export const generateActivitesFiltersLabels = (
       : null
 
   const typesLabel = types
-    ? types.map((type) => ({
-        label: typeActiviteSlugLabels[type],
-        key: type,
+    ? types.map((key) => ({
+        label: typeActiviteSlugLabels[key],
+        key,
         type: 'types' as const,
       }))
     : []
+
+  const thematiqueNonAdministrativeLabels =
+    thematiqueNonAdministratives?.map((key) => ({
+      label: thematiqueLabels[key],
+      key,
+      type: 'thematiqueNonAdministratives' as const,
+    })) ?? []
+
+  const thematiqueAdministrativeLabels =
+    thematiqueAdministratives?.map((key) => ({
+      label: thematiqueLabels[key],
+      key,
+      type: 'thematiqueAdministratives' as const,
+    })) ?? []
+
+  const tagLabels =
+    tags
+      ?.map((key) => {
+        const tagOption = tagsOptions?.find((option) => option.id === key)
+        return tagOption
+          ? {
+              label: tagOption.nom,
+              key,
+              type: 'tags' as const,
+            }
+          : null
+      })
+      .filter((tag) => tag != null) ?? []
 
   const rdvsLabel = rdvs
     ? rdvs.includes(rdvStatusTous)
@@ -201,6 +241,9 @@ export const generateActivitesFiltersLabels = (
     ...typesLabel,
     ...rdvsLabel,
     ...beneficiairesLabels,
+    ...thematiqueNonAdministrativeLabels,
+    ...thematiqueAdministrativeLabels,
+    ...tagLabels,
   ]
 }
 
