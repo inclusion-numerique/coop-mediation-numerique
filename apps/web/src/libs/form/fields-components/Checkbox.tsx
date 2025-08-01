@@ -6,13 +6,18 @@ import {
 } from '@codegouvfr/react-dsfr/Checkbox'
 import { Tooltip } from '@codegouvfr/react-dsfr/Tooltip'
 import classNames from 'classnames'
-import { ChangeEvent, DetailedHTMLProps, LabelHTMLAttributes } from 'react'
+import {
+  ChangeEvent,
+  DetailedHTMLProps,
+  LabelHTMLAttributes,
+  ReactNode,
+} from 'react'
 
 type CheckboxProps<T> = Omit<DsfrCheckboxProps, 'name' | 'options'> & {
   isPending: boolean
   isTiled?: boolean
   options: {
-    label: string
+    label: ReactNode
     value: T
     hint?: string
     extra?: {
