@@ -50,8 +50,8 @@ const TagsDecouvrirButton = () => {
               </h4>
               <p className="fr-mb-8v">
                 Créez vos tags personnalisés, utilisez des tags proposés par
-                votre coordinateur à l’échelle départemental, ainsi que des tags
-                nationaux.{' '}
+                votre coordinateur à l’échelle départementale, ainsi que des
+                tags nationaux.{' '}
               </p>
               <p className="fr-text--bold fr-text--uppercase fr-text--xs fr-mb-2v">
                 Comment ça marche&nbsp;?
