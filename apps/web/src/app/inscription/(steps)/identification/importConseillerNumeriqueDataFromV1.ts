@@ -6,16 +6,18 @@ import {
 } from '@app/web/app/inscription/importFromConseillerNumerique/importFromConseillerNumerique.queries'
 import { sessionUserSelect } from '@app/web/auth/getSessionUserFromSessionToken'
 import { SessionUser } from '@app/web/auth/sessionUser'
-import { ConseillerNumeriqueV1DataWithActiveMiseEnRelation } from '@app/web/external-apis/conseiller-numerique/isConseillerNumeriqueV1WithActiveMiseEnRelation'
+import type { ConseillerNumeriqueV1Data } from '@app/web/external-apis/conseiller-numerique/ConseillerNumeriqueV1Data'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
 
 export const importConseillerNumeriqueDataFromV1 = async ({
   user,
   v1Conseiller,
+  allowMissingMiseEnRelation = false,
 }: {
   user: Pick<SessionUser, 'id'>
-  v1Conseiller: ConseillerNumeriqueV1DataWithActiveMiseEnRelation
+  v1Conseiller: ConseillerNumeriqueV1Data
+  allowMissingMiseEnRelation?: boolean
 }) => {
   // 1. Create the mediateur and conseiller numerique objects
   const upsertedMediateur = await prismaClient.mediateur.upsert({
@@ -32,16 +34,38 @@ export const importConseillerNumeriqueDataFromV1 = async ({
     mediateurId: upsertedMediateur.id,
   } satisfies Prisma.ConseillerNumeriqueUncheckedCreateInput
 
-  await prismaClient.conseillerNumerique.upsert({
-    where: { id: v1Conseiller.conseiller.id },
-    create: conseillerData,
-    update: conseillerData,
-    select: {
-      id: true,
-      idPg: true,
-      mediateurId: true,
+  const existingConseiller = await prismaClient.conseillerNumerique.findFirst({
+    where: {
+      OR: [
+        { id: conseillerData.id },
+        { idPg: conseillerData.idPg },
+        { mediateurId: conseillerData.mediateurId },
+      ],
     },
   })
+
+  // If existing conseiller, we do nothing as to not change v2 conseiller ids from one user to another
+  if (!existingConseiller) {
+    await prismaClient.conseillerNumerique
+      .create({
+        data: conseillerData,
+        select: {
+          id: true,
+          idPg: true,
+          mediateurId: true,
+        },
+      })
+      .catch((error) => {
+        // biome-ignore lint/suspicious/noConsole: need this for cli scripts debug
+        console.error('Could not create conseiller numerique', {
+          id: v1Conseiller.conseiller.id,
+          idPg: v1Conseiller.conseiller.idPG,
+          error,
+        })
+
+        throw error
+      })
+  }
 
   // 2. Associate the coordinateurs to the conseiller
   const coordinateurs = await findCoordinateursFor(v1Conseiller)
@@ -52,20 +76,27 @@ export const importConseillerNumeriqueDataFromV1 = async ({
   })
 
   // 3. Import or link to structure employeuse
-  await importStructureEmployeuseFromV1Data({
-    user,
-    conseillerNumeriqueV1: v1Conseiller,
-  })
+  if (!allowMissingMiseEnRelation && !v1Conseiller.miseEnRelationActive) {
+    throw new Error('Mise en relation active is required')
+  }
+
+  if (v1Conseiller.miseEnRelationActive) {
+    await importStructureEmployeuseFromV1Data({
+      user,
+      conseillerNumeriqueV1: {
+        ...v1Conseiller,
+        miseEnRelationActive: v1Conseiller.miseEnRelationActive, // typescript does not track that it is defined
+      },
+    })
+  }
 
   // 4. Import or link to lieux activité
-
   const lieuxActivites = await importLieuxActivitesFromV1Data({
     mediateurId: upsertedMediateur.id,
     conseillerV1Data: v1Conseiller,
   })
 
   // 5. Update lifecycle data in user
-
   const userWithImportedData = await prismaClient.user.update({
     where: { id: user.id },
     data: {
