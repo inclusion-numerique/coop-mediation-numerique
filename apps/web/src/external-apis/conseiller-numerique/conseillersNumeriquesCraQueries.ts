@@ -71,9 +71,7 @@ export const getConseillerNumeriqueCrasFromMongo = async ({
   )
 
   const permanencesCollection =
-    await conseillerNumeriqueMongoCollection<PermanenceConseillerNumerique>(
-      'permanences',
-    )
+    await conseillerNumeriqueMongoCollection('permanences')
 
   const permanences = await permanencesCollection
     .find({
