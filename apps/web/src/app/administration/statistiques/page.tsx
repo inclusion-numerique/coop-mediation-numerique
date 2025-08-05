@@ -1,4 +1,3 @@
-import { StatistiquesImpact } from '@app/web/app/administration/statistiques/StatistiquesImpact'
 import { getUtilisateursListPageData } from '@app/web/app/administration/utilisateurs/getUtilisateursListPageData'
 import {
   getAccompagnementsCountByDay,
@@ -47,7 +46,7 @@ const Page = async (props: {
     beneficiaires,
     activites,
     totalCounts,
-    impactStats,
+    _impactStats,
   ] = await Promise.all([
     getAccompagnementsCountByDay({ activitesFilters }),
     getAccompagnementsCountByMonth({ activitesFilters }),
@@ -101,9 +100,6 @@ const Page = async (props: {
           beneficiaires={beneficiaires}
           wording="generique"
         />
-      </section>
-      <section>
-        <StatistiquesImpact stats={impactStats} />
       </section>
     </>
   )
