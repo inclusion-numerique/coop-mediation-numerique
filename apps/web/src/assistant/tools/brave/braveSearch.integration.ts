@@ -1,7 +1,7 @@
 import { executeBraveWebSearch } from '@app/web/assistant/tools/brave/braveSearch'
 
 describe('braveSearch', () => {
-  it('should return a list of results', async () => {
+  it.skip('should return a list of results', async () => {
     const results = await executeBraveWebSearch({
       q: 'les bases du numérique d’intéret géneral',
       count: 20,

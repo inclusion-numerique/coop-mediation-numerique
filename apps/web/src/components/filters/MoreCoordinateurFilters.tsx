@@ -1,21 +1,34 @@
 'use client'
 
 import {
-  thematiquesAdministrativesLabels,
-  thematiquesNonAdministrativesLabels,
-} from '@app/web/features/activites/use-cases/cra/fields/thematique'
+  RolesField,
+  roleCount,
+  updateRolesParams,
+} from '@app/web/components/filters/more-filters/RolesField'
 import {
-  TypeActiviteSlug,
-  typeActiviteSlugOptions,
-} from '@app/web/features/activites/use-cases/cra/fields/type-activite'
+  TagsField,
+  tagToArray,
+  updateTagsParams,
+} from '@app/web/components/filters/more-filters/TagsField'
+import {
+  ThematiqueAdministrativesFiled,
+  updateThematiqueAdministrativesParams,
+} from '@app/web/components/filters/more-filters/ThematiqueAdministrativesField'
+import {
+  ThematiqueNonAdministrativesFiled,
+  updateThematiqueNonAdministrativesParams,
+} from '@app/web/components/filters/more-filters/ThematiqueNonAdministrativesField'
+import {
+  TypesField,
+  updateTypesParams,
+} from '@app/web/components/filters/more-filters/TypesField'
+import type { TypeActiviteSlug } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
 import { TagScope } from '@app/web/features/activites/use-cases/tags/tagScope'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import Accordion from '@codegouvfr/react-dsfr/Accordion'
-import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
-import { Thematique } from '@prisma/client'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
@@ -24,12 +37,6 @@ const MoreFiltersModal = createModal({
   id: 'more-filters-modal',
   isOpenedByDefault: false,
 })
-
-const conseillerNumeriqueOptions = [
-  { label: 'Tous les rôles', value: '' },
-  { label: 'Conseillers numériques', value: '1' },
-  { label: 'Médiateurs numériques', value: '0' },
-]
 
 export const MoreCoordinateurFilters = ({
   tagsOptions,
@@ -49,77 +56,46 @@ export const MoreCoordinateurFilters = ({
   const params = new URLSearchParams(searchParams.toString())
 
   const activeFiltersCount =
-    (defaultValues.conseiller_numerique === '0' ||
-    defaultValues.conseiller_numerique === '1'
-      ? 1
-      : 0) +
+    roleCount(defaultValues) +
     defaultValues.tags.length +
     defaultValues.thematiqueNonAdministratives.length +
     defaultValues.thematiqueAdministratives.length
 
+  const dismissModal = () => {
+    router.replace(`?${params}`, { scroll: false })
+    MoreFiltersModal.close()
+    form.reset()
+  }
+
   const form = useAppForm({
     defaultValues: {
       ...defaultValues,
-      tags:
-        defaultValues.tags.length === 1 && tagsOptions.length === 1
-          ? defaultValues.tags.at(0)
-          : defaultValues.tags,
+      tags: tagToArray(tagsOptions)(defaultValues.tags),
     },
     onSubmit: (data) => {
-      data.value.conseiller_numerique !== '0' &&
-      data.value.conseiller_numerique !== '1'
-        ? params.delete('conseiller_numerique')
-        : params.set('conseiller_numerique', data.value.conseiller_numerique)
-
-      data.value.types.length > 0
-        ? params.set('types', data.value.types.join(','))
-        : params.delete('types')
-
-      data.value.thematiqueNonAdministratives.length > 0
-        ? params.set(
-            'thematiqueNonAdministratives',
-            data.value.thematiqueNonAdministratives.join(','),
-          )
-        : params.delete('thematiqueNonAdministratives')
-
-      data.value.thematiqueAdministratives.length > 0
-        ? params.set(
-            'thematiqueAdministratives',
-            data.value.thematiqueAdministratives.join(','),
-          )
-        : params.delete('thematiqueAdministratives')
-
-      const tags: string[] =
-        (data.value.tags == null || Array.isArray(data.value.tags)
-          ? data.value.tags
-          : [data.value.tags]) ?? []
-
-      tags.length > 0
-        ? params.set('tags', tags.join(','))
-        : params.delete('tags')
-
-      router.replace(`?${params}`, { scroll: false })
-
-      MoreFiltersModal.close()
-      form.reset()
+      updateRolesParams(params)(data)
+      updateTypesParams(params)(data)
+      updateThematiqueAdministrativesParams(params)(data)
+      updateThematiqueNonAdministrativesParams(params)(data)
+      updateTagsParams(params)(data)
+      dismissModal()
     },
   })
 
   const clearFilters = () => {
-    form.reset()
     params.delete('conseiller_numerique')
+    params.delete('types')
     params.delete('thematiqueNonAdministratives')
     params.delete('thematiqueAdministratives')
     params.delete('tags')
-    router.replace(`?${params}`, { scroll: false })
-    MoreFiltersModal.close()
+    dismissModal()
   }
 
   return (
     <form.AppForm>
       <form onSubmit={handleSubmit(form)}>
         <MoreFiltersModal.Component
-          title="Plus de filtres"
+          title="Filtrer par"
           size="large"
           buttons={[
             {
@@ -139,110 +115,31 @@ export const MoreCoordinateurFilters = ({
             },
           ]}
         >
-          <form.AppField name="conseiller_numerique">
-            {(field) => (
-              <field.RadioButtons
-                isPending={false}
-                isTiled={false}
-                legend={
-                  <h2 className="fr-h6 fr-mb-0">Filtrer par rôle&nbsp;:</h2>
-                }
-                options={conseillerNumeriqueOptions}
-              />
-            )}
-          </form.AppField>
+          <RolesField form={form as any} isPending={false} />
           <hr className="fr-separator-8v" />
-          <form.AppField name="types">
-            {(field) => (
-              <field.Checkbox
-                isPending={false}
-                isTiled={false}
-                legend={
-                  <h2 className="fr-h6 fr-mb-0">
-                    Filtrer par type d’activité&nbsp;:
-                  </h2>
-                }
-                options={typeActiviteSlugOptions}
-              />
-            )}
-          </form.AppField>
+          <TypesField form={form as any} isPending={false} />
           <hr className="fr-separator-8v" />
           <h2 className="fr-h6">Filtrer par thématique et/ou tags&nbsp;:</h2>
           <div className="fr-accordions-group">
             <Accordion label="Thématiques de médiation numérique">
-              <form.AppField name="thematiqueNonAdministratives">
-                {(field) => (
-                  <field.Checkbox
-                    classes={{
-                      content: 'fr-display-grid fr-grid--2x1 fr-grid-gap-0',
-                    }}
-                    isPending={false}
-                    isTiled={false}
-                    legend="Filtrer par thématique de médiation numérique"
-                    options={Object.entries(thematiquesNonAdministrativesLabels)
-                      .map(([value, label]) => ({ label, value }))
-                      .filter(
-                        ({ value }) =>
-                          value !== Thematique.AideAuxDemarchesAdministratives,
-                      )}
-                  />
-                )}
-              </form.AppField>
+              <ThematiqueNonAdministrativesFiled
+                form={form as any}
+                isPending={false}
+              />
             </Accordion>
             <Accordion label="Thématiques de démarches administratives">
-              <form.AppField name="thematiqueAdministratives">
-                {(field) => (
-                  <field.Checkbox
-                    classes={{
-                      content: 'fr-display-grid fr-grid--2x1 fr-grid-gap-0',
-                    }}
-                    isPending={false}
-                    isTiled={false}
-                    legend="Filtrer par thématique de démarches adminsitratives"
-                    options={Object.entries(
-                      thematiquesAdministrativesLabels,
-                    ).map(([value, label]) => ({ label, value }))}
-                  />
-                )}
-              </form.AppField>
+              <ThematiqueAdministrativesFiled
+                form={form as any}
+                isPending={false}
+              />
             </Accordion>
             {tagsOptions.length > 0 && (
               <Accordion label="Tags spécifiques">
-                <form.AppField name="tags">
-                  {(field) => (
-                    <field.Checkbox
-                      isPending={false}
-                      isTiled={false}
-                      legend="Filtrer par tags"
-                      options={tagsOptions.map(({ id, nom, scope }) => {
-                        return {
-                          label: (
-                            <span className="fr-flex fr-align-items-center fr-flex-gap-4v">
-                              {nom}
-                              <Badge
-                                className={classNames(
-                                  'fr-text--nowrap',
-                                  scope === TagScope.Personnel
-                                    ? 'fr-text-mention--grey'
-                                    : undefined,
-                                )}
-                                severity={
-                                  scope === TagScope.Personnel
-                                    ? undefined
-                                    : 'info'
-                                }
-                                noIcon
-                              >
-                                Tag {scope}
-                              </Badge>
-                            </span>
-                          ),
-                          value: id,
-                        }
-                      })}
-                    />
-                  )}
-                </form.AppField>
+                <TagsField
+                  form={form as any}
+                  tagsOptions={tagsOptions}
+                  isPending={false}
+                />
               </Accordion>
             )}
           </div>

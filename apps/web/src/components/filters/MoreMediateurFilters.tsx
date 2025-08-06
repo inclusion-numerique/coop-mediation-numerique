@@ -1,18 +1,26 @@
 'use client'
 
 import {
-  thematiquesAdministrativesLabels,
-  thematiquesNonAdministrativesLabels,
-} from '@app/web/features/activites/use-cases/cra/fields/thematique'
+  TagsField,
+  tagToArray,
+  updateTagsParams,
+} from '@app/web/components/filters/more-filters/TagsField'
+import {
+  ThematiqueAdministrativesFiled,
+  updateThematiqueAdministrativesParams,
+} from '@app/web/components/filters/more-filters/ThematiqueAdministrativesField'
+import {
+  ThematiqueNonAdministrativesFiled,
+  updateThematiqueNonAdministrativesParams,
+} from '@app/web/components/filters/more-filters/ThematiqueNonAdministrativesField'
 import { TagScope } from '@app/web/features/activites/use-cases/tags/tagScope'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
-import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
-import { Thematique } from '@prisma/client'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
+import React from 'react'
 
 const MoreFiltersModal = createModal({
   id: 'more-filters-modal',
@@ -39,59 +47,37 @@ export const MoreMediateurFilters = ({
     defaultValues.thematiqueNonAdministratives.length +
     defaultValues.thematiqueAdministratives.length
 
+  const dismissModal = () => {
+    router.replace(`?${params}`, { scroll: false })
+    MoreFiltersModal.close()
+    form.reset()
+  }
+
   const form = useAppForm({
     defaultValues: {
       ...defaultValues,
-      tags:
-        defaultValues.tags.length === 1 && tagsOptions.length === 1
-          ? defaultValues.tags.at(0)
-          : defaultValues.tags,
+      tags: tagToArray(tagsOptions)(defaultValues.tags),
     },
     onSubmit: (data) => {
-      data.value.thematiqueNonAdministratives.length > 0
-        ? params.set(
-            'thematiqueNonAdministratives',
-            data.value.thematiqueNonAdministratives.join(','),
-          )
-        : params.delete('thematiqueNonAdministratives')
-
-      data.value.thematiqueAdministratives.length > 0
-        ? params.set(
-            'thematiqueAdministratives',
-            data.value.thematiqueAdministratives.join(','),
-          )
-        : params.delete('thematiqueAdministratives')
-
-      const tags: string[] =
-        (data.value.tags == null || Array.isArray(data.value.tags)
-          ? data.value.tags
-          : [data.value.tags]) ?? []
-
-      tags.length > 0
-        ? params.set('tags', tags.join(','))
-        : params.delete('tags')
-
-      router.replace(`?${params}`, { scroll: false })
-
-      MoreFiltersModal.close()
-      form.reset()
+      updateThematiqueAdministrativesParams(params)(data)
+      updateThematiqueNonAdministrativesParams(params)(data)
+      updateTagsParams(params)(data)
+      dismissModal()
     },
   })
 
   const clearFilters = () => {
-    form.reset()
     params.delete('thematiqueNonAdministratives')
     params.delete('thematiqueAdministratives')
     params.delete('tags')
-    router.replace(`?${params}`, { scroll: false })
-    MoreFiltersModal.close()
+    dismissModal()
   }
 
   return (
     <form.AppForm>
       <form onSubmit={handleSubmit(form)}>
         <MoreFiltersModal.Component
-          title="Plus de filtres"
+          title="Filtrer par"
           size="large"
           buttons={[
             {
@@ -111,78 +97,30 @@ export const MoreMediateurFilters = ({
             },
           ]}
         >
-          <form.AppField name="thematiqueNonAdministratives">
-            {(field) => (
-              <field.Checkbox
-                classes={{
-                  content: 'fr-display-grid fr-grid--2x1 fr-grid-gap-0',
-                }}
-                isPending={false}
-                isTiled={false}
-                legend="Filtrer par thématique de médiation numérique"
-                options={Object.entries(thematiquesNonAdministrativesLabels)
-                  .map(([value, label]) => ({ label, value }))
-                  .filter(
-                    ({ value }) =>
-                      value !== Thematique.AideAuxDemarchesAdministratives,
-                  )}
-              />
-            )}
-          </form.AppField>
+          <h2 className="fr-h6">
+            Filtrer par thématique de médiation numérique
+          </h2>
+          <ThematiqueNonAdministrativesFiled
+            form={form as any}
+            isPending={false}
+          />
           <hr className="fr-separator-8v" />
-          <form.AppField name="thematiqueAdministratives">
-            {(field) => (
-              <field.Checkbox
-                classes={{
-                  content: 'fr-display-grid fr-grid--2x1 fr-grid-gap-0',
-                }}
-                isPending={false}
-                isTiled={false}
-                legend="Filtrer par thématique de démarches adminsitratives"
-                options={Object.entries(thematiquesAdministrativesLabels).map(
-                  ([value, label]) => ({ label, value }),
-                )}
-              />
-            )}
-          </form.AppField>
+          <h2 className="fr-h6">
+            Filtrer par thématique de démarches administratives
+          </h2>
+          <ThematiqueAdministrativesFiled
+            form={form as any}
+            isPending={false}
+          />
           {tagsOptions.length > 0 && (
             <>
               <hr className="fr-separator-8v" />
-              <form.AppField name="tags">
-                {(field) => (
-                  <field.Checkbox
-                    isPending={false}
-                    isTiled={false}
-                    legend="Filtrer par tags"
-                    options={tagsOptions.map(({ id, nom, scope }) => {
-                      return {
-                        label: (
-                          <span className="fr-flex fr-align-items-center fr-flex-gap-4v">
-                            {nom}
-                            <Badge
-                              className={classNames(
-                                'fr-text--nowrap',
-                                scope === TagScope.Personnel
-                                  ? 'fr-text-mention--grey'
-                                  : undefined,
-                              )}
-                              severity={
-                                scope === TagScope.Personnel
-                                  ? undefined
-                                  : 'info'
-                              }
-                              noIcon
-                            >
-                              Tag {scope}
-                            </Badge>
-                          </span>
-                        ),
-                        value: id,
-                      }
-                    })}
-                  />
-                )}
-              </form.AppField>
+              <h2 className="fr-h6">Filtrer par tags</h2>
+              <TagsField
+                form={form as any}
+                tagsOptions={tagsOptions}
+                isPending={false}
+              />
             </>
           )}
         </MoreFiltersModal.Component>
