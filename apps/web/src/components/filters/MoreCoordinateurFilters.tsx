@@ -4,6 +4,10 @@ import {
   thematiquesAdministrativesLabels,
   thematiquesNonAdministrativesLabels,
 } from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import {
+  TypeActiviteSlug,
+  typeActiviteSlugOptions,
+} from '@app/web/features/activites/use-cases/cra/fields/type-activite'
 import { TagScope } from '@app/web/features/activites/use-cases/tags/tagScope'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
@@ -34,6 +38,7 @@ export const MoreCoordinateurFilters = ({
   tagsOptions: { id: string; nom: string; scope: TagScope }[]
   defaultValues: {
     conseiller_numerique: '0' | '1' | undefined
+    types: TypeActiviteSlug[]
     thematiqueNonAdministratives: string[]
     thematiqueAdministratives: string[]
     tags: string[]
@@ -65,6 +70,10 @@ export const MoreCoordinateurFilters = ({
       data.value.conseiller_numerique !== '1'
         ? params.delete('conseiller_numerique')
         : params.set('conseiller_numerique', data.value.conseiller_numerique)
+
+      data.value.types.length > 0
+        ? params.set('types', data.value.types.join(','))
+        : params.delete('types')
 
       data.value.thematiqueNonAdministratives.length > 0
         ? params.set(
@@ -135,8 +144,25 @@ export const MoreCoordinateurFilters = ({
               <field.RadioButtons
                 isPending={false}
                 isTiled={false}
-                legend={<h2 className="fr-h6 fr-mb-0">Filtrer par rôle</h2>}
+                legend={
+                  <h2 className="fr-h6 fr-mb-0">Filtrer par rôle&nbsp;:</h2>
+                }
                 options={conseillerNumeriqueOptions}
+              />
+            )}
+          </form.AppField>
+          <hr className="fr-separator-8v" />
+          <form.AppField name="types">
+            {(field) => (
+              <field.Checkbox
+                isPending={false}
+                isTiled={false}
+                legend={
+                  <h2 className="fr-h6 fr-mb-0">
+                    Filtrer par type d’activité&nbsp;:
+                  </h2>
+                }
+                options={typeActiviteSlugOptions}
               />
             )}
           </form.AppField>

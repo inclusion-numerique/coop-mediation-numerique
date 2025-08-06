@@ -88,13 +88,15 @@ const Filters = ({
       communesOptions={communesOptions}
       departementsOptions={departementsOptions}
     />
-    <ActiviteTypeFilter
-      defaultValue={{
-        types: defaultFilters.types ?? [],
-        rdvs: defaultFilters.rdvs ?? [],
-      }}
-      enableRdvsFilter={enableRdvsFilter}
-    />
+    {!isCoordinateur && (
+      <ActiviteTypeFilter
+        defaultValue={{
+          types: defaultFilters.types ?? [],
+          rdvs: defaultFilters.rdvs ?? [],
+        }}
+        enableRdvsFilter={enableRdvsFilter}
+      />
+    )}
     {isMediateur && beneficiairesFilter && (
       <BeneficiaireFilter
         initialBeneficiairesOptions={initialBeneficiairesOptions}
@@ -118,6 +120,7 @@ const Filters = ({
         tagsOptions={tagsOptions}
         defaultValues={{
           conseiller_numerique: defaultFilters.conseiller_numerique,
+          types: defaultFilters.types ?? [],
           thematiqueNonAdministratives:
             defaultFilters.thematiqueNonAdministratives ?? [],
           thematiqueAdministratives:
