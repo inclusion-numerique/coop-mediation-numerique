@@ -698,14 +698,14 @@ describe('build statistiques worksheet for médiateur', () => {
     ])
   })
 
-  it(`should contains bold 'Statistiques sur vos activités' in Statistiques worksheet at position A${activitesTitle.start}`, () => {
+  it(`should contains bold 'Statistiques sur vos accompagnements' in Statistiques worksheet at position A${activitesTitle.start}`, () => {
     const exportTitleCell = worksheet.getCell(`A${activitesTitle.start}`)
 
-    expect(exportTitleCell?.value).toBe('Statistiques sur vos activités')
+    expect(exportTitleCell?.value).toBe('Statistiques sur vos accompagnements')
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 
-  it(`should contains statistiques activités ${range(activites)}`, () => {
+  it(`should contains statistiques accompagnements ${range(activites)}`, () => {
     const rows = worksheet
       .getRows(activites.start, activites.length)
       ?.map((row) => row.values)

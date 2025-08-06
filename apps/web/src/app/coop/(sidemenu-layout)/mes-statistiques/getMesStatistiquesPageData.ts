@@ -37,6 +37,7 @@ export const getMesStatistiquesPageData = async ({
           where: { coordinateurId: user.coordinateur.id },
           select: { mediateurId: true },
         })
+
   const mediateurCoordonnesIds = mediateurCoordonnes.map(toMediateurId)
 
   const mediateurIds = [

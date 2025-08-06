@@ -47,7 +47,7 @@ const addStatistiquesGenerales =
 const addStatistiquesActivites =
   (worksheet: Excel.Worksheet) =>
   ({ totalCounts: { activites } }: MesStatistiquesPageData) => {
-    addTitleRow(worksheet)('Statistiques sur vos activités')
+    addTitleRow(worksheet)('Statistiques sur vos accompagnements')
     worksheet.addRow([
       'Accompagnements individuels',
       activites.individuels.total,
