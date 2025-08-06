@@ -77,7 +77,7 @@ export const StatistiquesGenerales = ({
                       totalCounts.activites.collectifs.participants,
                     )}{' '}
                     participation
-                    {sPluriel(totalCounts.activites.collectifs.participants)}
+                    {sPluriel(totalCounts.activites.collectifs.participants)}{' '}
                     lors de{' '}
                     {numberToString(totalCounts.activites.collectifs.total)}{' '}
                     ateliers*

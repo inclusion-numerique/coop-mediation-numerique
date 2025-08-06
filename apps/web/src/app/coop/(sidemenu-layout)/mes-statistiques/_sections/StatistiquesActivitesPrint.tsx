@@ -58,7 +58,7 @@ export const StatistiquesActivitesPrint = ({
 
   return (
     <>
-      <h2 className="fr-h3">Statistiques sur vos activités</h2>
+      <h2 className="fr-h3">Statistiques sur vos accompagnements</h2>
       <h3 className="fr-h5">Types d’activités</h3>
       <ul>
         {activites.typeActivites.map(({ count, proportion, value }) => (
@@ -74,7 +74,9 @@ export const StatistiquesActivitesPrint = ({
           </li>
         ))}
       </ul>
-      <h3 className="fr-h5 fr-mb-2v fr-mt-6v">Thématiques des activités</h3>
+      <h3 className="fr-h5 fr-mb-2v fr-mt-6v">
+        Thématiques des accompagnements de médiation numérique
+      </h3>
       <small role="note" className="fr-mb-6v fr-display-block">
         Thématiques et tags sélectionnées lors de l’enregistrement d’une
         activité. À noter : une activité peut avoir plusieurs thématiques.
@@ -91,7 +93,9 @@ export const StatistiquesActivitesPrint = ({
           </Fragment>
         ),
       )}
-      <h3 className="fr-h5 fr-mb-2v fr-mt-6v">Matériel utilisé</h3>
+      <h3 className="fr-h5 fr-mb-2v fr-mt-6v">
+        Matériel utilisé lors des accompagnements
+      </h3>
       <small role="note" className="fr-mb-6v fr-display-block">
         Matériel utilisé lors d’un accompagnement de médiation numérique. À
         noter&nbsp;: Plusieurs matériels ont pu être utilisés lors d’un même
@@ -109,9 +113,9 @@ export const StatistiquesActivitesPrint = ({
           />
         ))}
       </div>
-      <h3 className="fr-h5 fr-mb-2v fr-mt-6v">Canaux des activités</h3>
+      <h3 className="fr-h5 fr-mb-2v fr-mt-6v">Canaux des accompagnements</h3>
       <small role="note" className="fr-mb-6v fr-display-block">
-        Répartition des activités enregistrées par canal.
+        Répartition des accompagnements enregistrées par canal.
       </small>
       <div className="fr-flex fr-align-items-center">
         <AccompagnementPieChart
@@ -126,9 +130,9 @@ export const StatistiquesActivitesPrint = ({
           colors={canauxAccompagnementColors}
         />
       </div>
-      <h3 className="fr-h5 fr-mb-2v fr-mt-6v">Durées des activités</h3>
+      <h3 className="fr-h5 fr-mb-2v fr-mt-6v">Durée des accompagnements</h3>
       <small role="note" className="fr-mb-6v fr-display-block">
-        Répartition des activités enregistrées par durée.
+        Répartition des accompagnements enregistrées par durée.
       </small>
       <div className="fr-flex fr-align-items-center">
         <AccompagnementPieChart
@@ -143,9 +147,11 @@ export const StatistiquesActivitesPrint = ({
           colors={dureesAccompagnementColors}
         />
       </div>
-      <h3 className="fr-h5 fr-mb-2v fr-mt-6v">Nombre d’activités par lieux</h3>
+      <h3 className="fr-h5 fr-mb-2v fr-mt-6v">
+        Nombre d’accompagnements par lieux
+      </h3>
       <small role="note" className="fr-mb-6v fr-display-block">
-        Répartition des activités enregistrées par lieu d’activité.
+        Répartition des accompagnements enregistrées par lieu d’activité.
       </small>
       <QuantifiedShareList
         order="desc"
