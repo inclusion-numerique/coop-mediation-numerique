@@ -7,24 +7,33 @@ import {
 import { TagScope } from '@app/web/features/activites/use-cases/tags/tagScope'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
+import Accordion from '@codegouvfr/react-dsfr/Accordion'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import { Thematique } from '@prisma/client'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
+import React from 'react'
 
 const MoreFiltersModal = createModal({
   id: 'more-filters-modal',
   isOpenedByDefault: false,
 })
 
-export const MoreFilters = ({
+const conseillerNumeriqueOptions = [
+  { label: 'Tous les rôles', value: '' },
+  { label: 'Conseillers numériques', value: '1' },
+  { label: 'Médiateurs numériques', value: '0' },
+]
+
+export const MoreCoordinateurFilters = ({
   tagsOptions,
   defaultValues,
 }: {
   tagsOptions: { id: string; nom: string; scope: TagScope }[]
   defaultValues: {
+    conseiller_numerique: '0' | '1' | undefined
     thematiqueNonAdministratives: string[]
     thematiqueAdministratives: string[]
     tags: string[]
@@ -35,6 +44,10 @@ export const MoreFilters = ({
   const params = new URLSearchParams(searchParams.toString())
 
   const activeFiltersCount =
+    (defaultValues.conseiller_numerique === '0' ||
+    defaultValues.conseiller_numerique === '1'
+      ? 1
+      : 0) +
     defaultValues.tags.length +
     defaultValues.thematiqueNonAdministratives.length +
     defaultValues.thematiqueAdministratives.length
@@ -48,6 +61,11 @@ export const MoreFilters = ({
           : defaultValues.tags,
     },
     onSubmit: (data) => {
+      data.value.conseiller_numerique !== '0' &&
+      data.value.conseiller_numerique !== '1'
+        ? params.delete('conseiller_numerique')
+        : params.set('conseiller_numerique', data.value.conseiller_numerique)
+
       data.value.thematiqueNonAdministratives.length > 0
         ? params.set(
             'thematiqueNonAdministratives',
@@ -74,11 +92,13 @@ export const MoreFilters = ({
       router.replace(`?${params}`, { scroll: false })
 
       MoreFiltersModal.close()
+      form.reset()
     },
   })
 
   const clearFilters = () => {
     form.reset()
+    params.delete('conseiller_numerique')
     params.delete('thematiqueNonAdministratives')
     params.delete('thematiqueAdministratives')
     params.delete('tags')
@@ -110,80 +130,96 @@ export const MoreFilters = ({
             },
           ]}
         >
-          <form.AppField name="thematiqueNonAdministratives">
+          <form.AppField name="conseiller_numerique">
             {(field) => (
-              <field.Checkbox
-                classes={{
-                  content: 'fr-display-grid fr-grid--2x1 fr-grid-gap-0',
-                }}
+              <field.RadioButtons
                 isPending={false}
                 isTiled={false}
-                legend="Filtrer par thématique de médiation numérique"
-                options={Object.entries(thematiquesNonAdministrativesLabels)
-                  .map(([value, label]) => ({ label, value }))
-                  .filter(
-                    ({ value }) =>
-                      value !== Thematique.AideAuxDemarchesAdministratives,
-                  )}
+                legend={<h2 className="fr-h6 fr-mb-0">Filtrer par rôle</h2>}
+                options={conseillerNumeriqueOptions}
               />
             )}
           </form.AppField>
           <hr className="fr-separator-8v" />
-          <form.AppField name="thematiqueAdministratives">
-            {(field) => (
-              <field.Checkbox
-                classes={{
-                  content: 'fr-display-grid fr-grid--2x1 fr-grid-gap-0',
-                }}
-                isPending={false}
-                isTiled={false}
-                legend="Filtrer par thématique de démarches adminsitratives"
-                options={Object.entries(thematiquesAdministrativesLabels).map(
-                  ([value, label]) => ({ label, value }),
-                )}
-              />
-            )}
-          </form.AppField>
-          {tagsOptions.length > 0 && (
-            <>
-              <hr className="fr-separator-8v" />
-              <form.AppField name="tags">
+          <h2 className="fr-h6">Filtrer par thématique et/ou tags&nbsp;:</h2>
+          <div className="fr-accordions-group">
+            <Accordion label="Thématiques de médiation numérique">
+              <form.AppField name="thematiqueNonAdministratives">
                 {(field) => (
                   <field.Checkbox
+                    classes={{
+                      content: 'fr-display-grid fr-grid--2x1 fr-grid-gap-0',
+                    }}
                     isPending={false}
                     isTiled={false}
-                    legend="Filtrer par tags"
-                    options={tagsOptions.map(({ id, nom, scope }) => {
-                      return {
-                        label: (
-                          <span className="fr-flex fr-align-items-center fr-flex-gap-4v">
-                            {nom}
-                            <Badge
-                              className={classNames(
-                                'fr-text--nowrap',
-                                scope === TagScope.Personnel
-                                  ? 'fr-text-mention--grey'
-                                  : undefined,
-                              )}
-                              severity={
-                                scope === TagScope.Personnel
-                                  ? undefined
-                                  : 'info'
-                              }
-                              noIcon
-                            >
-                              Tag {scope}
-                            </Badge>
-                          </span>
-                        ),
-                        value: id,
-                      }
-                    })}
+                    legend="Filtrer par thématique de médiation numérique"
+                    options={Object.entries(thematiquesNonAdministrativesLabels)
+                      .map(([value, label]) => ({ label, value }))
+                      .filter(
+                        ({ value }) =>
+                          value !== Thematique.AideAuxDemarchesAdministratives,
+                      )}
                   />
                 )}
               </form.AppField>
-            </>
-          )}
+            </Accordion>
+            <Accordion label="Thématiques de démarches administratives">
+              <form.AppField name="thematiqueAdministratives">
+                {(field) => (
+                  <field.Checkbox
+                    classes={{
+                      content: 'fr-display-grid fr-grid--2x1 fr-grid-gap-0',
+                    }}
+                    isPending={false}
+                    isTiled={false}
+                    legend="Filtrer par thématique de démarches adminsitratives"
+                    options={Object.entries(
+                      thematiquesAdministrativesLabels,
+                    ).map(([value, label]) => ({ label, value }))}
+                  />
+                )}
+              </form.AppField>
+            </Accordion>
+            {tagsOptions.length > 0 && (
+              <Accordion label="Tags spécifiques">
+                <form.AppField name="tags">
+                  {(field) => (
+                    <field.Checkbox
+                      isPending={false}
+                      isTiled={false}
+                      legend="Filtrer par tags"
+                      options={tagsOptions.map(({ id, nom, scope }) => {
+                        return {
+                          label: (
+                            <span className="fr-flex fr-align-items-center fr-flex-gap-4v">
+                              {nom}
+                              <Badge
+                                className={classNames(
+                                  'fr-text--nowrap',
+                                  scope === TagScope.Personnel
+                                    ? 'fr-text-mention--grey'
+                                    : undefined,
+                                )}
+                                severity={
+                                  scope === TagScope.Personnel
+                                    ? undefined
+                                    : 'info'
+                                }
+                                noIcon
+                              >
+                                Tag {scope}
+                              </Badge>
+                            </span>
+                          ),
+                          value: id,
+                        }
+                      })}
+                    />
+                  )}
+                </form.AppField>
+              </Accordion>
+            )}
+          </div>
         </MoreFiltersModal.Component>
         <Button
           type="button"

@@ -3,9 +3,9 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { ActiviteTypeFilter } from '@app/web/components/filters/ActiviteTypeFilter'
 import { BeneficiaireFilter } from '@app/web/components/filters/BeneficiaireFilter'
-import { ConseillerNumeriqueFilter } from '@app/web/components/filters/ConseillerNumeriqueFilter'
 import { MediateurFilter } from '@app/web/components/filters/MediateurFilter'
-import { MoreFilters } from '@app/web/components/filters/MoreFilters'
+import { MoreCoordinateurFilters } from '@app/web/components/filters/MoreCoordinateurFilters'
+import { MoreMediateurFilters } from '@app/web/components/filters/MoreMediateurFilters'
 import { PeriodeFilter } from '@app/web/components/filters/PeriodeFilter'
 import type { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
@@ -95,11 +95,6 @@ const Filters = ({
       }}
       enableRdvsFilter={enableRdvsFilter}
     />
-    {isCoordinateur && (
-      <ConseillerNumeriqueFilter
-        defaultValue={defaultFilters.conseiller_numerique}
-      />
-    )}
     {isMediateur && beneficiairesFilter && (
       <BeneficiaireFilter
         initialBeneficiairesOptions={initialBeneficiairesOptions}
@@ -107,9 +102,22 @@ const Filters = ({
       />
     )}
     {!isCoordinateur && (
-      <MoreFilters
+      <MoreMediateurFilters
         tagsOptions={tagsOptions}
         defaultValues={{
+          thematiqueNonAdministratives:
+            defaultFilters.thematiqueNonAdministratives ?? [],
+          thematiqueAdministratives:
+            defaultFilters.thematiqueAdministratives ?? [],
+          tags: defaultFilters.tags ?? [],
+        }}
+      />
+    )}
+    {isCoordinateur && (
+      <MoreCoordinateurFilters
+        tagsOptions={tagsOptions}
+        defaultValues={{
+          conseiller_numerique: defaultFilters.conseiller_numerique,
           thematiqueNonAdministratives:
             defaultFilters.thematiqueNonAdministratives ?? [],
           thematiqueAdministratives:
