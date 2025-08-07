@@ -18,6 +18,7 @@ export const PrintStatistiques = (
     departementsOptions,
     initialMediateursOptions,
     lieuxActiviteOptions,
+    tagsOptions,
   } = mesStatistiquesProps
 
   const filterLabelsToDisplay = generateActivitesFiltersLabels(
@@ -28,6 +29,7 @@ export const PrintStatistiques = (
       lieuxActiviteOptions,
       beneficiairesOptions: [],
       mediateursOptions: initialMediateursOptions,
+      tagsOptions,
     },
   ).map(toLieuPrefix)
 

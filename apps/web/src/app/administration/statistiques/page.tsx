@@ -64,6 +64,7 @@ const Page = async (props: {
           communesOptions={communesOptions}
           departementsOptions={departementsOptions}
           lieuxActiviteOptions={lieuxActiviteOptions}
+          tagsOptions={[]}
           initialMediateursOptions={[]}
           initialBeneficiairesOptions={[]}
           minDate={new Date('2024-09-01')}
@@ -77,6 +78,7 @@ const Page = async (props: {
         communesOptions={communesOptions}
         departementsOptions={departementsOptions}
         lieuxActiviteOptions={lieuxActiviteOptions}
+        tagsOptions={[]}
         mediateursOptions={[]}
         beneficiairesOptions={[]}
       />

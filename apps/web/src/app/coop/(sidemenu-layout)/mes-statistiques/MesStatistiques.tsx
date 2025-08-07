@@ -24,6 +24,7 @@ export const MesStatistiques = (
     activitesFilters,
     communesOptions,
     departementsOptions,
+    tagsOptions,
     initialMediateursOptions,
     initialBeneficiairesOptions,
     lieuxActiviteOptions,
@@ -46,6 +47,7 @@ export const MesStatistiques = (
             communesOptions={communesOptions}
             departementsOptions={departementsOptions}
             lieuxActiviteOptions={lieuxActiviteOptions}
+            tagsOptions={tagsOptions}
             initialMediateursOptions={initialMediateursOptions}
             initialBeneficiairesOptions={initialBeneficiairesOptions}
             beneficiairesFilter={false}
@@ -60,6 +62,7 @@ export const MesStatistiques = (
             lieuxActiviteOptions={lieuxActiviteOptions}
             mediateursOptions={initialMediateursOptions}
             beneficiairesOptions={[]}
+            tagsOptions={tagsOptions}
           />
         </div>
         <FilterTags
@@ -69,6 +72,7 @@ export const MesStatistiques = (
           lieuxActiviteOptions={lieuxActiviteOptions}
           mediateursOptions={initialMediateursOptions}
           beneficiairesOptions={[]}
+          tagsOptions={tagsOptions}
         />
         <section className="fr-mb-6w fr-mt-6v">
           <StatistiquesGenerales {...mesStatistiquesProps} />

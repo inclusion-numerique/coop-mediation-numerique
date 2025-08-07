@@ -17,6 +17,7 @@ import {
 
 type RadioButtonsProps = Omit<DsfrRadioButtonsProps, 'name' | 'options'> & {
   isPending: boolean
+  isTiled?: boolean
   options: {
     label: string
     value: string
@@ -64,6 +65,7 @@ const Illustration = ({
 
 export const RadioButtons = ({
   isPending,
+  isTiled = true,
   legend,
   options,
   className,
@@ -78,7 +80,7 @@ export const RadioButtons = ({
     <DsfrRadioButtons
       state={hasErrors ? 'error' : undefined}
       stateRelatedMessage={hasErrors ? errors[0].message : undefined}
-      className={classNames('fr-radio-buttons', className)}
+      className={classNames(isTiled ? 'fr-radio-buttons' : '', className)}
       legend={
         <span className="fr-label fr-text--medium fr-mb-2v">{legend}</span>
       }

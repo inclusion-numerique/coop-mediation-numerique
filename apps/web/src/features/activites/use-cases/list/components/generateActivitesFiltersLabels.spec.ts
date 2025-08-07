@@ -128,6 +128,7 @@ describe('generate activites filters labels', () => {
         lieuxActiviteOptions: LIEUX_ACTIVITE_OPTIONS,
         mediateursOptions: MEDIATEURS_OPTIONS,
         beneficiairesOptions: BENEFICIAIRES_OPTIONS,
+        tagsOptions: [],
       },
     )
 
@@ -161,6 +162,7 @@ describe('generate activites filters labels', () => {
         lieuxActiviteOptions: LIEUX_ACTIVITE_OPTIONS,
         mediateursOptions: MEDIATEURS_OPTIONS,
         beneficiairesOptions: BENEFICIAIRES_OPTIONS,
+        tagsOptions: [],
       },
     )
 

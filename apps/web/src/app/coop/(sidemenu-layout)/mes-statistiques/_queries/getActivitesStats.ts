@@ -177,7 +177,15 @@ export const normalizeActivitesStatsRaw = (stats: ActivitesStatsRaw) => {
   }
 }
 
-const getActiviteTags = (mediateurIds?: string[]) => {
+const getActiviteTags = ({
+  mediateurIds,
+  user,
+  activitesFilters,
+}: {
+  mediateurIds?: string[]
+  user?: UserProfile
+  activitesFilters: ActivitesFilters
+}) => {
   if (mediateurIds == null || mediateurIds.length === 0)
     return Promise.resolve([])
 
@@ -187,14 +195,24 @@ const getActiviteTags = (mediateurIds?: string[]) => {
       count: number
     }[]
   >(Prisma.sql`
-    SELECT t.nom AS                     label,
-           COUNT(DISTINCT a.id)::int AS count
-    FROM activites a
-           INNER JOIN activite_tags at ON at.activite_id = a.id
+    SELECT t.nom AS label,
+           COUNT(DISTINCT act.id)::int AS count
+    FROM activites act
+           LEFT JOIN structures str ON str.id = act.structure_id
+           LEFT JOIN mediateurs med ON act.mediateur_id = med.id
+           LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
+           INNER JOIN activite_tags at ON at.activite_id = act.id
            INNER JOIN tags t ON t.id = at.tag_id
-    WHERE a.mediateur_id IN (${Prisma.join(mediateurIds.map((id) => Prisma.sql`${id}::UUID`))})
-      AND a.suppression IS NULL
+     FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${
+       user?.coordinateur?.id
+     }::UUID
+    WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
+      AND (act.date <= mc.suppression OR mc.suppression IS NULL)
+      AND act.suppression IS NULL
       AND t.suppression IS NULL
+      AND ${getActiviteFiltersSqlFragment(
+        getActivitesFiltersWhereConditions(activitesFilters),
+      )}
     GROUP BY t.id, t.nom
     ORDER BY count DESC
   `)
@@ -209,7 +227,11 @@ export const getActivitesStats = async ({
   mediateurIds?: string[] // Undefined means no filter, empty array means no mediateur / no data.
   activitesFilters: ActivitesFilters
 }) => {
-  const activiteTags = await getActiviteTags(mediateurIds)
+  const activiteTags = await getActiviteTags({
+    user,
+    mediateurIds,
+    activitesFilters,
+  })
 
   const statsRaw = await getActivitesStatsRaw({
     user,

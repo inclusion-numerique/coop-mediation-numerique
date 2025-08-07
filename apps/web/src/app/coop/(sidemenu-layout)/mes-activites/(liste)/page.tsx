@@ -3,10 +3,8 @@ import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFiltersOptionsForMediateur'
 import MesActivitesListePage from '@app/web/features/activites/use-cases/list/MesActivitesListePage'
 import type { ActivitesDataTableSearchParams } from '@app/web/features/activites/use-cases/list/components/ActivitesDataTable'
-import MesActivitesListeEmptyPage from '@app/web/features/activites/use-cases/list/components/MesActivitesListeEmptyPage'
 import MesActivitesListeHeader from '@app/web/features/activites/use-cases/list/components/MesActivitesListeHeader'
 import MesActivitesListeLayout from '@app/web/features/activites/use-cases/list/components/MesActivitesListeLayout'
-import { mediateurHasActivites } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { getActivitesListPageData } from '@app/web/features/activites/use-cases/list/getActivitesListPageData'
 import { validateActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import type { Metadata } from 'next'
@@ -39,6 +37,7 @@ const MesActivitesPage = async ({
     initialBeneficiairesOptions,
     initialMediateursOptions,
     lieuxActiviteOptions,
+    tagsOptions,
     activiteDates,
   } = await getFiltersOptionsForMediateur({
     user,
@@ -55,6 +54,7 @@ const MesActivitesPage = async ({
         communesOptions={communesOptions}
         departementsOptions={departementsOptions}
         lieuxActiviteOptions={lieuxActiviteOptions}
+        tagsOptions={tagsOptions}
         activiteDates={activiteDates}
       />
       <MesActivitesListePage data={data} />

@@ -26,6 +26,7 @@ export const getStatistiquesWorksheetInput = async ({
     initialBeneficiairesOptions,
     initialMediateursOptions,
     lieuxActiviteOptions,
+    tagsOptions,
   } = await getFiltersOptionsForMediateur({
     user,
     mediateurCoordonnesIds,
@@ -38,6 +39,7 @@ export const getStatistiquesWorksheetInput = async ({
     lieuxActiviteOptions,
     beneficiairesOptions: initialBeneficiairesOptions,
     mediateursOptions: initialMediateursOptions,
+    tagsOptions,
   })
 
   return {

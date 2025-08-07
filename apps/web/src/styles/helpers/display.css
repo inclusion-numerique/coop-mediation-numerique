@@ -47,6 +47,11 @@
   align-items: center !important;
 }
 
+.fr-grid-gap-0 {
+  grid-gap: 0 !important;
+  align-items: baseline !important;
+}
+
 .fr-overflow-hidden {
   overflow: hidden;
 }
