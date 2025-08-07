@@ -1,5 +1,6 @@
+import { thematiqueApiValues } from '@app/web/features/activites/use-cases/cra/fields/thematique'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
-import { Prisma } from '@prisma/client'
+import { Prisma, Thematique } from '@prisma/client'
 import type { Sql } from '@prisma/client/runtime/library'
 import type { ActivitesFilters } from '../validation/ActivitesFilters'
 
@@ -74,61 +75,104 @@ export const getActivitesFiltersWhereConditions = ({
   lieux,
   types,
   conseiller_numerique,
-}: ActivitesFilters): ActivitesFiltersWhereConditions => ({
-  du: du ? Prisma.raw(`act.date >= '${du}'::timestamp`) : null,
-  au: au ? Prisma.raw(`act.date <= '${au}'::timestamp`) : null,
-  types:
-    types && types.length > 0
-      ? Prisma.raw(
-          `act.type IN (${types.map((type) => `'${type}'`).join(', ')})`,
-        )
-      : null,
-  lieux:
-    lieux && lieux.length > 0
-      ? Prisma.raw(
-          `act.structure_id IN (${lieux
-            .map((id) => `'${id}'::UUID`)
-            .join(', ')})`,
-        )
-      : null,
-  communes:
-    communes && communes.length > 0
-      ? Prisma.raw(
-          `${activiteLieuCodeInseeSelect.text} IN (${communes
-            .map((c) => `'${c}'`)
-            .join(', ')})`,
-        )
-      : null,
-  departements:
-    departements && departements.length > 0
-      ? Prisma.raw(
-          `${activiteLieuCodeInseeSelect.text} LIKE ANY (ARRAY[${departements
-            .map((d) => `'${d}%'`)
-            .join(', ')}])`,
-        )
-      : null,
+  thematiqueNonAdministratives,
+  thematiqueAdministratives,
+  tags,
+}: ActivitesFilters): {
+  du: any
+  au: any
+  types: any
+  lieux: any
+  communes: any
+  departements: any
+  beneficiaires: any
+  mediateurs: any
+  conseiller_numerique: any
+  thematiques: any
+  tags: any
+} => {
+  const thematiques = (
+    [
+      ...(thematiqueNonAdministratives ? thematiqueNonAdministratives : []),
+      ...(thematiqueAdministratives ? thematiqueAdministratives : []),
+    ] as Thematique[]
+  ).map((thematique: Thematique) => thematiqueApiValues[thematique])
 
-  beneficiaires: beneficiaires
-    ? Prisma.raw(`EXISTS (
-            SELECT 1
-            FROM accompagnements acc
-            WHERE acc.beneficiaire_id IN (${beneficiaires
+  return {
+    du: du ? Prisma.raw(`act.date >= '${du}'::timestamp`) : null,
+    au: au ? Prisma.raw(`act.date <= '${au}'::timestamp`) : null,
+    types:
+      types && types.length > 0
+        ? Prisma.raw(
+            `act.type IN (${types.map((type) => `'${type}'`).join(', ')})`,
+          )
+        : null,
+    lieux:
+      lieux && lieux.length > 0
+        ? Prisma.raw(
+            `act.structure_id IN (${lieux
               .map((id) => `'${id}'::UUID`)
-              .join(', ')})
-              AND acc.activite_id = act.id
-          ) `)
-    : null,
-  mediateurs:
-    mediateurs && mediateurs.length > 0
-      ? Prisma.raw(
-          `act.mediateur_id IN (${mediateurs
-            .map((id) => `'${id}'::UUID`)
-            .join(', ')})`,
-        )
+              .join(', ')})`,
+          )
+        : null,
+    communes:
+      communes && communes.length > 0
+        ? Prisma.raw(
+            `${activiteLieuCodeInseeSelect.text} IN (${communes
+              .map((c) => `'${c}'`)
+              .join(', ')})`,
+          )
+        : null,
+    departements:
+      departements && departements.length > 0
+        ? Prisma.raw(
+            `${activiteLieuCodeInseeSelect.text} LIKE ANY (ARRAY[${departements
+              .map((d) => `'${d}%'`)
+              .join(', ')}])`,
+          )
+        : null,
+
+    beneficiaires: beneficiaires
+      ? Prisma.raw(`EXISTS (
+              SELECT 1
+              FROM accompagnements acc
+              WHERE acc.beneficiaire_id IN (${beneficiaires
+                .map((id) => `'${id}'::UUID`)
+                .join(', ')})
+                AND acc.activite_id = act.id
+            ) `)
       : null,
-  conseiller_numerique: conseiller_numerique
-    ? conseiller_numerique === '1'
-      ? Prisma.raw(`cn.id IS NOT NULL`)
-      : Prisma.raw(`cn.id IS NULL`)
-    : null,
-})
+    mediateurs:
+      mediateurs && mediateurs.length > 0
+        ? Prisma.raw(
+            `act.mediateur_id IN (${mediateurs
+              .map((id) => `'${id}'::UUID`)
+              .join(', ')})`,
+          )
+        : null,
+    conseiller_numerique: conseiller_numerique
+      ? conseiller_numerique === '1'
+        ? Prisma.raw(`cn.id IS NOT NULL`)
+        : Prisma.raw(`cn.id IS NULL`)
+      : null,
+    thematiques:
+      thematiques && thematiques.length > 0
+        ? Prisma.raw(
+            `act.thematiques && ARRAY[${thematiques
+              .map((t) => `'${t}'`)
+              .join(', ')}]::thematique[]`,
+          )
+        : null,
+    tags:
+      tags && tags.length > 0
+        ? Prisma.raw(
+            `EXISTS (
+          SELECT 1
+          FROM activite_tags at
+          WHERE at.activite_id = act.id
+            AND at.tag_id IN (${tags.map((id) => `'${id}'::UUID`).join(', ')})
+        )`,
+          )
+        : null,
+  }
+}

@@ -24,6 +24,7 @@ export const MesStatistiques = (
     activitesFilters,
     communesOptions,
     departementsOptions,
+    tagsOptions,
     initialMediateursOptions,
     initialBeneficiairesOptions,
     lieuxActiviteOptions,
@@ -46,6 +47,7 @@ export const MesStatistiques = (
             communesOptions={communesOptions}
             departementsOptions={departementsOptions}
             lieuxActiviteOptions={lieuxActiviteOptions}
+            tagsOptions={tagsOptions}
             initialMediateursOptions={initialMediateursOptions}
             initialBeneficiairesOptions={initialBeneficiairesOptions}
             beneficiairesFilter={false}
@@ -60,6 +62,7 @@ export const MesStatistiques = (
             lieuxActiviteOptions={lieuxActiviteOptions}
             mediateursOptions={initialMediateursOptions}
             beneficiairesOptions={[]}
+            tagsOptions={tagsOptions}
           />
         </div>
         <FilterTags
@@ -69,6 +72,7 @@ export const MesStatistiques = (
           lieuxActiviteOptions={lieuxActiviteOptions}
           mediateursOptions={initialMediateursOptions}
           beneficiairesOptions={[]}
+          tagsOptions={tagsOptions}
         />
         <section className="fr-mb-6w fr-mt-6v">
           <StatistiquesGenerales {...mesStatistiquesProps} />
@@ -78,16 +82,6 @@ export const MesStatistiques = (
         </section>
         <section className="fr-mb-6w">
           <StatistiquesBeneficiaires {...mesStatistiquesProps} />
-        </section>
-        <section>
-          <h2 className="fr-h5 fr-text-mention--grey fr-flex fr-align-items-center fr-flex-gap-2v">
-            <img
-              src="/images/services/conseillers-numerique-logo-small.svg"
-              alt=""
-            />
-            Statistiques départementales France Numérique Ensemble
-          </h2>
-          <StatistiquesTerritoriales />
         </section>
       </main>
     </CoopPageContainer>

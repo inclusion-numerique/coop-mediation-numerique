@@ -16,12 +16,16 @@ export type TagSearchParams = {
   tri?: 'alphabetique' | 'visibilite'
 }
 
-const availableFor = (user: SessionUser) => ({
-  OR: [
-    { mediateurId: user.mediateur?.id },
-    { departement: getUserDepartement(user).code },
-  ],
-})
+const availableFor = (user: SessionUser) => {
+  const departement = getUserDepartement(user)
+  if (!departement) return { mediateurId: user.mediateur?.id }
+  return {
+    OR: [
+      { mediateurId: user.mediateur?.id },
+      { departement: departement.code },
+    ],
+  }
+}
 
 const sortOptionSelectedIn = (
   searchParams: TagSearchParams,

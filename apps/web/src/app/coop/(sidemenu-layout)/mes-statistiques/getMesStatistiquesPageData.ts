@@ -37,7 +37,6 @@ export const getMesStatistiquesPageData = async ({
           where: { coordinateurId: user.coordinateur.id },
           select: { mediateurId: true },
         })
-
   const mediateurCoordonnesIds = mediateurCoordonnes.map(toMediateurId)
 
   const mediateurIds = [
@@ -92,6 +91,7 @@ export const getMesStatistiquesPageData = async ({
   const {
     communesOptions,
     departementsOptions,
+    tagsOptions,
     initialMediateursOptions,
     initialBeneficiairesOptions,
     lieuxActiviteOptions,
@@ -112,6 +112,7 @@ export const getMesStatistiquesPageData = async ({
     activitesFilters,
     communesOptions,
     departementsOptions,
+    tagsOptions,
     initialMediateursOptions,
     initialBeneficiairesOptions,
     lieuxActiviteOptions,

@@ -13,6 +13,7 @@ const ExportActivitesButtonWrapper = async ({
   mediateursOptions,
   departementsOptions,
   communesOptions,
+  tagsOptions,
   filters,
   searchResultMatchesCount,
 }: {
@@ -22,6 +23,7 @@ const ExportActivitesButtonWrapper = async ({
   communesOptions: SelectOption[]
   lieuxActiviteOptions: LieuActiviteOption[]
   departementsOptions: SelectOption[]
+  tagsOptions: { id: string; nom: string }[]
   searchResultMatchesCount: Promise<number>
 }) => {
   const filterLabels = generateActivitesFiltersLabels(filters, {
@@ -30,6 +32,7 @@ const ExportActivitesButtonWrapper = async ({
     lieuxActiviteOptions,
     beneficiairesOptions,
     mediateursOptions,
+    tagsOptions,
   })
 
   const matchesCount = await searchResultMatchesCount

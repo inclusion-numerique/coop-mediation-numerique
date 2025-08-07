@@ -28,7 +28,11 @@ export const publicFooterProps = {
     },
     {
       text: `Budget`,
-      linkProps: { href: '/budget' },
+      linkProps: {
+        href: 'https://docs.numerique.gouv.fr/docs/88e3bfdf-4a7a-4331-8d13-3778dbb3ec5b/',
+        target: '_blank',
+        rel: 'noreferrer',
+      },
     },
     {
       text: `Statistiques`,

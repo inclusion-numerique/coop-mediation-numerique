@@ -217,6 +217,7 @@ const statistiquesPageData = {
   initialBeneficiairesOptions: [],
   initialMediateursOptions: [],
   lieuxActiviteOptions: [],
+  tagsOptions: [],
 } satisfies MesStatistiquesPageData
 
 export default {

@@ -18,6 +18,7 @@ const MesActivitesListeHeader = ({
   departementsOptions,
   initialMediateursOptions,
   initialBeneficiairesOptions,
+  tagsOptions,
   lieuxActiviteOptions,
   searchResultMatchesCount,
   activiteDates,
@@ -25,6 +26,7 @@ const MesActivitesListeHeader = ({
   defaultFilters: ActivitesFilters
   initialMediateursOptions: MediateurOption[]
   initialBeneficiairesOptions: BeneficiaireOption[]
+  tagsOptions: { id: string; nom: string }[]
   communesOptions: SelectOption[]
   lieuxActiviteOptions: LieuActiviteOption[]
   departementsOptions: SelectOption[]
@@ -47,6 +49,7 @@ const MesActivitesListeHeader = ({
         communesOptions={communesOptions}
         departementsOptions={departementsOptions}
         lieuxActiviteOptions={lieuxActiviteOptions}
+        tagsOptions={[]}
         minDate={activiteDates.first ?? new Date()}
         isCoordinateur={false}
         isMediateur={true}
@@ -55,6 +58,7 @@ const MesActivitesListeHeader = ({
       <Suspense fallback={<ExportActivitesDisabledButton />}>
         <ExportActivitesButtonWrapper
           filters={defaultFilters}
+          tagsOptions={tagsOptions}
           communesOptions={communesOptions}
           departementsOptions={departementsOptions}
           lieuxActiviteOptions={lieuxActiviteOptions}
@@ -71,6 +75,7 @@ const MesActivitesListeHeader = ({
       lieuxActiviteOptions={lieuxActiviteOptions}
       beneficiairesOptions={initialBeneficiairesOptions}
       mediateursOptions={initialMediateursOptions}
+      tagsOptions={tagsOptions}
     />
   </>
 )

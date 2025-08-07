@@ -20,6 +20,7 @@ export const FilterTags = ({
   beneficiairesOptions,
   departementsOptions,
   communesOptions,
+  tagsOptions,
 }: {
   filters: ActivitesFilters
   mediateursOptions: MediateurOption[]
@@ -27,6 +28,7 @@ export const FilterTags = ({
   lieuxActiviteOptions: LieuActiviteOption[]
   departementsOptions: SelectOption[]
   communesOptions: SelectOption[]
+  tagsOptions: { id: string; nom: string }[]
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -38,6 +40,7 @@ export const FilterTags = ({
     lieuxActiviteOptions,
     beneficiairesOptions,
     mediateursOptions,
+    tagsOptions,
   }).map(toLieuPrefix)
 
   const handleRemoveFilter = (key: string, value: string | string[]) => {
