@@ -28,6 +28,11 @@ export const updateTag =
       })
     }
 
+    const departement = getUserDepartement(sessionUser)
+    if (scope === TagScope.Departemental && !departement) {
+      throw new Error('No departement found for user')
+    }
+
     return await prismaClient.tag.update({
       where: { id },
       data: {
@@ -37,9 +42,7 @@ export const updateTag =
             ? (sessionUser.mediateur?.id ?? null)
             : null,
         departement:
-          scope === TagScope.Departemental
-            ? getUserDepartement(sessionUser).code
-            : null,
+          scope === TagScope.Departemental ? departement?.code : null,
         modification: new Date(),
       },
     })
