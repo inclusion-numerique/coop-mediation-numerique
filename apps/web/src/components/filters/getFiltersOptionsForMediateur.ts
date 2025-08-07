@@ -32,7 +32,7 @@ export const getFiltersOptionsForMediateur = async ({
     getMediateurCommunesAndDepartementsOptions({ mediateurIds }),
     getMediateursTags({
       mediateurIds,
-      departement: getUserDepartement(user).code,
+      departement: getUserDepartement(user)?.code,
     }),
     getInitialBeneficiairesOptionsForSearch({
       mediateurId: user.mediateur?.id,
