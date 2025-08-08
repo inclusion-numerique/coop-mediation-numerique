@@ -53,18 +53,18 @@ export const StatistiquesActivites = ({
   const accompagnementCategories = [
     {
       category: 'thematiques',
-      title: 'Thématiques des activités',
+      title: 'Thématiques des accompagnements de médiation numérique',
       description:
-        'Thématiques sélectionnées lors de l’enregistrement d’une activité. À noter : une activité peut avoir plusieurs thématiques.',
+        'Thématiques sélectionnées lors de l’enregistrement d’un accompagnement. À noter : un accompagnement peut avoir plusieurs thématiques.',
       items: activites.thematiques.sort(desc),
       colors: thematiquesAccompagnementColors,
       maxProportion: activites.thematiques.reduce(toMaxProportion, 0),
     },
     {
       category: 'demarches',
-      title: 'Thématiques des démarches administratives',
+      title: 'Thématiques des accompagnements de démarches administratives',
       description:
-        'Thématiques des démarches administratives sélectionnées lors de l’enregistrement d’une activité. À noter : une activité peut avoir plusieurs thématiques administratives.',
+        'Thématiques des démarches administratives sélectionnées lors de l’enregistrement d’un accompagnement. À noter : un accompagnement peut avoir plusieurs thématiques administratives.',
       items: activites.thematiquesDemarches.sort(desc),
       colors: thematiquesAccompagnementColors,
       maxProportion: activites.thematiquesDemarches.reduce(toMaxProportion, 0),
@@ -73,7 +73,7 @@ export const StatistiquesActivites = ({
       category: 'tags',
       title: 'Tags spécifiques',
       description:
-        'Tags spécifiques sélectionnés lors de l’enregistrement d’une activité. À noter : une activité peut avoir plusieurs tags.',
+        'Tags spécifiques sélectionnés lors de l’enregistrement d’un accompagnement. À noter : un accompagnement peut avoir plusieurs tags.',
       items: activites.tags.sort(desc),
       colors: tagsColor,
       maxProportion: activites.tags.reduce(toMaxProportion, 0),
@@ -95,7 +95,9 @@ export const StatistiquesActivites = ({
       <h2 className="fr-h5 fr-text-mention--grey">
         <span className="ri-service-line fr-mr-1w" aria-hidden />
         Statistiques sur{' '}
-        {wording === 'personnel' ? 'vos activités' : 'les activités'}
+        {wording === 'personnel'
+          ? 'vos accompagnements'
+          : 'les accompagnements'}
       </h2>
       <div className="fr-background-alt--blue-france fr-px-8v fr-py-6v fr-mb-3w fr-border-radius--16 fr-grid-row fr-flex-gap-4v">
         {activites.typeActivites.map(({ count, proportion, value }) => (
@@ -108,11 +110,11 @@ export const StatistiquesActivites = ({
           >
             {value === 'Collectif' && (
               <span className="fr-text-mention--grey fr-text--sm fr-mb-0">
-                &nbsp;·&nbsp;
+                &nbsp;·&nbsp;sur{' '}
                 <span className="fr-text--bold">
                   {numberToString(totalCounts.accompagnements.collectifs.total)}
                 </span>{' '}
-                participation
+                atelier
                 {sPluriel(totalCounts.accompagnements.collectifs.total)}
               </span>
             )}
@@ -204,7 +206,9 @@ export const StatistiquesActivites = ({
             ),
         )}
         <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mt-10v fr-mb-3w">
-          <h3 className="fr-text--lg fr-mb-0">Matériel utilisé</h3>
+          <h3 className="fr-text--lg fr-mb-0">
+            Matériel utilisé lors des accompagnements
+          </h3>
           <Button
             className="fr-px-1v fr-ml-1v"
             title="Plus d’information à propos du matériel utilisé"
@@ -243,7 +247,9 @@ export const StatistiquesActivites = ({
         <div className="fr-grid-row fr-grid-row--gutters">
           <div className="fr-col-xl-6 fr-col-12">
             <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mb-3w">
-              <h3 className="fr-text--lg fr-mb-0">Canaux des activités</h3>
+              <h3 className="fr-text--lg fr-mb-0">
+                Canaux des accompagnements
+              </h3>
               <Button
                 className="fr-px-1v fr-ml-1v"
                 title="Plus d’information à propos des canaux d’accompagnements"
@@ -260,7 +266,7 @@ export const StatistiquesActivites = ({
                 role="tooltip"
                 aria-hidden
               >
-                Il s’agit de la répartition des activités enregistrées par
+                Il s’agit de la répartition des accompagnements enregistrées par
                 canal.
               </span>
             </div>
@@ -281,7 +287,7 @@ export const StatistiquesActivites = ({
           </div>
           <div className="fr-col-xl-6 fr-col-12">
             <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mb-3w">
-              <h3 className="fr-text--lg fr-mb-0">Durées des activités</h3>
+              <h3 className="fr-text--lg fr-mb-0">Durée des accompagnements</h3>
               <Button
                 className="fr-px-1v fr-ml-1v"
                 title="Plus d’information à propos des durées d’accompagnements"
@@ -298,7 +304,7 @@ export const StatistiquesActivites = ({
                 role="tooltip"
                 aria-hidden
               >
-                Il s’agit de la répartition des activités enregistrées par
+                Il s’agit de la répartition des accompagnements enregistrées par
                 durée.
               </span>
             </div>
@@ -325,7 +331,7 @@ export const StatistiquesActivites = ({
             <hr className="fr-separator-1px fr-my-5w" />
             <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mb-3w">
               <h3 className="fr-text--lg fr-mb-0">
-                Nombre d’activités par lieux
+                Nombre d’accompagnements par lieux
               </h3>
               <Button
                 className="fr-px-1v fr-ml-1v"
@@ -343,8 +349,8 @@ export const StatistiquesActivites = ({
                 role="tooltip"
                 aria-hidden
               >
-                Il s’agit de la répartition des activités enregistrées par lieu
-                d’activité.
+                Il s’agit de la répartition des accompagnements enregistrées par
+                lieu d’activité.
               </span>
             </div>
             <div className="fr-text--bold fr-text--uppercase fr-text--sm fr-text-mention--grey fr-mb-1w">

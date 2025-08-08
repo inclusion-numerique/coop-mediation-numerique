@@ -85,14 +85,15 @@ export const getActivitesStatsRaw = async ({
           column: 'act.materiel',
           as: 'materiel',
         })}
-      FROM activites act
-        LEFT JOIN structures str ON str.id = act.structure_id
-        LEFT JOIN mediateurs med ON act.mediateur_id = med.id
-        LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
-        FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${
-          user?.coordinateur?.id
-        }::UUID
-      
+      FROM accompagnements acc
+             JOIN activites act ON acc.activite_id = act.id
+             LEFT JOIN structures str ON str.id = act.structure_id
+             LEFT JOIN mediateurs med ON act.mediateur_id = med.id
+             LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
+             FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${
+               user?.coordinateur?.id
+             }::UUID
+
       WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
         AND (act.date <= mc.suppression OR mc.suppression IS NULL)
         AND act.suppression IS NULL
