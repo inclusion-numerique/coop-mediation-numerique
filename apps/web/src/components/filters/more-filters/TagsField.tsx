@@ -5,8 +5,9 @@ import Checkbox from '@codegouvfr/react-dsfr/Checkbox'
 import { formOptions } from '@tanstack/react-form'
 import classNames from 'classnames'
 
-export const tagToArray = (tagsOptions: { id: string }[]) => (tags: string[]) =>
-  tags.length === 1 && tagsOptions.length === 1 ? tags.at(0) : tags
+export const tagToArray =
+  (tagsOptions: { id: string }[]) => (tags: string[]) =>
+    tags.length === 1 && tagsOptions.length === 1 ? tags.at(0) : tags
 
 export const updateTagsParams =
   (params: URLSearchParams) =>
@@ -35,24 +36,26 @@ export const TagsField = withForm({
     <form.AppField name="tags">
       {(field) => (
         <>
-          <Checkbox
-            className="fr-mb-6v"
-            options={[
-              {
-                label: 'Tous les tags',
-                nativeInputProps: {
-                  checked: field.state.value?.length === tagsOptions.length,
-                  onChange: (value) => {
-                    field.setValue(
-                      value.target.checked
-                        ? tagsOptions.map(({ id }) => id)
-                        : [],
-                    )
+          {tagsOptions.length > 1 && (
+            <Checkbox
+              className="fr-mb-6v"
+              options={[
+                {
+                  label: 'Tous les tags',
+                  nativeInputProps: {
+                    checked: field.state.value?.length === tagsOptions.length,
+                    onChange: (value) => {
+                      field.setValue(
+                        value.target.checked
+                          ? tagsOptions.map(({ id }) => id)
+                          : [],
+                      )
+                    },
                   },
                 },
-              },
-            ]}
-          />
+              ]}
+            />
+          )}
           <field.Checkbox
             isPending={isPending}
             isTiled={false}
