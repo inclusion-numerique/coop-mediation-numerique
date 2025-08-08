@@ -78,10 +78,10 @@ export const LieuActivite = ({
     </div>
     {visiblePourCartographieNationale && structureCartographieNationaleId && (
       <div className="fr-flex fr-align-items-center fr-flex-gap-4v">
-        <div className="fr-p-1w fr-background-contrast--info fr-border-radius--8">
+        <div>
           <Image
             className="fr-display-block"
-            src="/images/services/cartographie-icon.svg"
+            src="/images/services/cartographie-logo.svg"
             alt=""
             width={24}
             height={24}

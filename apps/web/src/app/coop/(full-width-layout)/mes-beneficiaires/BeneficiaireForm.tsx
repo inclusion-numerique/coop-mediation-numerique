@@ -350,9 +350,9 @@ const BeneficiaireForm = ({
             radioGroup: richCardRadioGroupClassName,
           }}
         />
-        <div className="fr-flex fr-flex-gap-6v">
+        <div className="fr-flex fr-flex-gap-6v fr-direction-column fr-direction-md-row">
           <div className="fr-flex-basis-0 fr-flex-grow-1">
-            <CraFormLabel as="p" className="fr-mb-4v fr-mt-4v">
+            <CraFormLabel as="p" className="fr-my-4v">
               Tranche d’âge
             </CraFormLabel>
             <RadioFormField
@@ -371,7 +371,7 @@ const BeneficiaireForm = ({
             />
           </div>
           <div className="fr-flex-basis-0 fr-flex-grow-1">
-            <CraFormLabel as="p" className="fr-mb-4v fr-mt-6v">
+            <CraFormLabel as="p" className="fr-my-4v">
               Statut du bénéficiaire
             </CraFormLabel>
             <RadioFormField

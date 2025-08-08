@@ -5,9 +5,8 @@ import Checkbox from '@codegouvfr/react-dsfr/Checkbox'
 import { formOptions } from '@tanstack/react-form'
 import classNames from 'classnames'
 
-export const tagToArray =
-  (tagsOptions: { id: string }[]) => (tags: string[]) =>
-    tags.length === 1 && tagsOptions.length === 1 ? tags.at(0) : tags
+export const tagToArray = (tagsOptions: { id: string }[]) => (tags: string[]) =>
+  tags.length === 1 && tagsOptions.length === 1 ? tags.at(0) : tags
 
 export const updateTagsParams =
   (params: URLSearchParams) =>
