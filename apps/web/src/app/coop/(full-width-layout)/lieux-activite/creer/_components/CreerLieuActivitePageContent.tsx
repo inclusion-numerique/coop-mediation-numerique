@@ -15,11 +15,13 @@ export const CreerLieuActivitePageContent = ({
 
   return (
     <>
-      <div style={{ minWidth: '19em' }}>
-        {showSideMenu && (
-          <LieuActiviteSideMenu className="fr-hidden fr-unhidden-lg fr-mt-16w" />
-        )}
-      </div>
+      {showSideMenu && (
+        <LieuActiviteSideMenu
+          className="fr-hidden fr-unhidden-lg fr-mt-16w"
+          style={{ minWidth: '19em' }}
+        />
+      )}
+
       <div className="fr-container fr-container--narrow fr-ml-0 fr-mb-30v">
         {contentTop}
         <Button
