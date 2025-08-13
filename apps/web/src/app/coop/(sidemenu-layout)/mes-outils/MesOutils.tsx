@@ -44,7 +44,7 @@ export const MesOutils = async () => {
                 fluidifier l’organisation du travail.  
                 <Link
                   className="fr-link fr-text--sm"
-                  href="https://incubateurdesterritoires.notion.site/105744bf03dd80349c26e76cd8459eac?v=8949acfdde544d12860f5c0ca89af72f"
+                  href="https://projets.suite.anct.gouv.fr/boards/1572441353164424613"
                   target="_blank"
                 >
                   En savoir plus sur les prochaines évolutions de la plateforme
