@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb')
+import { MongoClient } from 'mongodb'
 
 async function testMongoConnection() {
   const mongoUrl = process.env.CONSEILLER_NUMERIQUE_MONGODB_URL
