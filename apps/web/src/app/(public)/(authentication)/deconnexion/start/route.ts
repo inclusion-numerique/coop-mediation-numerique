@@ -15,7 +15,7 @@ import { v4 } from 'uuid'
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const isJwtUnexpired = (token: string, clockSkewSeconds = 60): boolean => {
+const isJwtUnexpired = (token: string, clockSkewSeconds = 3): boolean => {
   try {
     const [, payloadB64] = token.split('.')
     if (!payloadB64) return false
@@ -23,6 +23,7 @@ const isJwtUnexpired = (token: string, clockSkewSeconds = 60): boolean => {
     const payload = JSON.parse(payloadJson) as { exp?: number }
     if (!payload?.exp || typeof payload.exp !== 'number') return false
     const nowInSeconds = Math.floor(Date.now() / 1000)
+
     return payload.exp > nowInSeconds + clockSkewSeconds
   } catch {
     return false
