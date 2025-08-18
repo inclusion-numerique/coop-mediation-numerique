@@ -196,8 +196,9 @@ const getActiviteTags = ({
     }[]
   >(Prisma.sql`
     SELECT t.nom AS label,
-           COUNT(DISTINCT act.id)::int AS count
-    FROM activites act
+           COUNT(act.id)::int AS count
+    FROM accompagnements a
+           INNER JOIN activites act ON a.activite_id = act.id
            LEFT JOIN structures str ON str.id = act.structure_id
            LEFT JOIN mediateurs med ON act.mediateur_id = med.id
            LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
@@ -276,7 +277,8 @@ export const getActivitesStructuresStatsRaw = async ({
       str.code_insee,
       COALESCE(COUNT(*), 0) ::int AS count
     FROM structures str
-      INNER JOIN activites act ON act.structure_id = str.id
+      LEFT JOIN activites act ON act.structure_id = str.id
+      INNER JOIN accompagnements acc ON acc.activite_id = act.id
       LEFT JOIN mediateurs med ON act.mediateur_id = med.id
       LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
       FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${
