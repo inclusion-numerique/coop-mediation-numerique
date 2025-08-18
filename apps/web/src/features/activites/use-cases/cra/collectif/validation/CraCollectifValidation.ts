@@ -30,5 +30,13 @@ export const CraCollectifValidation = CraValidation.extend({
       path: ['lieuCommuneData'],
     },
   )
-
+  .refine(
+    (data) => {
+      return data.participants.length > 0 || data.participantsAnonymes.total > 0
+    },
+    {
+      message: 'Veuillez renseigner au moins un bénéficiaire suivi ou anonyme',
+      path: ['participants'],
+    },
+  )
 export type CraCollectifData = z.infer<typeof CraCollectifValidation>
