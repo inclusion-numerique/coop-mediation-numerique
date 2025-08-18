@@ -643,7 +643,8 @@ model Structure {
   // # Relations
   emplois              EmployeStructure[]
   mediateursEnActivite MediateurEnActivite[]
-
+  // activités liés aux employés de la structure (différent du lieu d'activité)
+  activitesEmployes            Activite[] @relation(name: "activite_structure_employeuse")
   // Champs métier
 
   nom String
@@ -984,6 +985,13 @@ model Activite {
   notes                String?
   rdvServicePublicId   Int?             @map("rdv_service_public_id") // id externe du RDV Service Public qui est à l'origine de cette Activité
 
+  // Structure employeuse
+  // - cette information aurait pu etre déduite des liens entre mediateur, emploi, et activité
+  // - elle est stockée directement ici pour des raisons de performance, et est mise à jour en cas de modification d'emploi
+  // - elle est également utile dans le cas des imports d'anciens cras v1 qui ont cette information en dur dans le cra v1
+  structureEmployeuseId String @map("structure_employeuse_id") @db.Uuid
+  structureEmployeuse   Structure @relation(fields: [structureEmployeuseId], references: [id], name: "activite_structure_employeuse")
+
   // Structure est renseigné
   // - si typeLieu = LieuActivite
   structureId    String?    @map("structure_id") @db.Uuid
@@ -1031,6 +1039,7 @@ model Activite {
   // index relations
   @@index([structureId])
   @@index([mediateurId])
+  @@index([structureEmployeuseId])
   // descending sort on this cursor for api query performances
   @@index([creation(sort: Desc), id(sort: Desc)])
   @@index([modification(sort: Desc), id(sort: Desc)])

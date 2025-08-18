@@ -70,6 +70,7 @@ describe('craConseillerNumeriqueToPrismaModel', () => {
         statut: 'VALIDATION_COSELEC',
         type: 'PRIVATE',
       },
+      permanence: null,
     } satisfies ConseillerNumeriqueCraWithStructure
 
     const importedAt = new Date()
