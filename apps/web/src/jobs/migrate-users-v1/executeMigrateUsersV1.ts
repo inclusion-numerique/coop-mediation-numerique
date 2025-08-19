@@ -1,5 +1,8 @@
 import { output } from '@app/cli/output'
+import { varFile } from '@app/config/varDirectory'
 import { closeMongoClient } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
+import { PermanenceV1Document } from '../migrate-structures-v1/PermanenceV1Document'
+import { ConseillerNumeriqueV1Document } from '@app/web/external-apis/conseiller-numerique/ConseillerNumeriqueV1Document'
 import { migrateConseillersV1 } from './migrateConseillersV1'
 import { prismaClient } from '@app/web/prismaClient'
 import { writeV1ConseillersIdsMap } from './migrateConseillersV1'
@@ -7,7 +10,7 @@ import { appendFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { writeFile } from 'node:fs/promises'
-import { v1ConseillersIdsMap } from './v1ConseillersIdsMap'
+import { v1ConseillersIds } from './v1ConseillersIds'
 import { MigrateUsersV1Job } from './MigrateUsersV1Job'
 
 /**
@@ -68,8 +71,12 @@ const mapV1ConseillersIds = async () => {
   await writeV1ConseillersIds(v1ConseillersIds)
 }
 
+const shouldWriteV1ConseillersIds = false
+
 export const executeMigrateUsersV1 = async (_job: MigrateUsersV1Job) => {
-  await mapV1ConseillersIds()
+  if (shouldWriteV1ConseillersIds) {
+    await mapV1ConseillersIds()
+  }
   try {
     output(`Found ${v1ConseillersIds.size} conseillers`)
 
