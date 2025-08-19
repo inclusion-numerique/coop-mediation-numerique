@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb'
-import type { DBRef } from './CraV1Document'
+import type { DBRef } from '../migrate-cras-v1/CraV1Document'
 
 export type PermanenceV1Document = {
   _id: ObjectId
