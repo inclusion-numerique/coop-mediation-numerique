@@ -4,11 +4,10 @@
 import { mainLiveUrl, projectTitle, repositoryUrl } from '@app/config/config'
 
 const isMain = process.env.BRANCH === 'main'
-const isSante = process.env.BRANCH === 'sante'
 const isDev = process.env.BRANCH === 'dev'
 const isLocal = !process.env.BRANCH
 const isE2e = !!process.env.IS_E2E
-const isPreview = !isMain && !isDev && !isSante && !isLocal && !isE2e
+const isPreview = !isMain && !isDev && !isLocal && !isE2e
 
 export const PublicWebAppConfig = {
   centreAideDomaine: 'https://docs.numerique.gouv.fr/',
@@ -19,7 +18,6 @@ export const PublicWebAppConfig = {
   isDev,
   isLocal,
   isPreview,
-  isSante,
   isE2e,
   Chromatic: {
     appId: process.env.CHROMATIC_APP_ID ?? '',
