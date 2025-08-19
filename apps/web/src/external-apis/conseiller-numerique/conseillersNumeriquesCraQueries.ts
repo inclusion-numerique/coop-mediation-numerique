@@ -166,7 +166,14 @@ export const getConseillerNumeriqueCrasFromMongo = async ({
         duree: duree?.toString() ?? '',
       },
       structure,
-      permanence,
+      permanence: permanence
+        ? {
+            ...permanence,
+            structure: indexedStructures.get(
+              permanence.structure.oid.toString(),
+            ),
+          }
+        : null,
     }
   })
 

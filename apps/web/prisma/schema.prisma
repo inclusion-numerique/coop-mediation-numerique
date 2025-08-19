@@ -363,6 +363,7 @@ model CraConseillerNumeriqueV1 {
   createdAt DateTime  @unique @map("created_at") // v1 field
   updatedAt DateTime? @map("updated_at") // v1 field
 
+  // Structure employeuse
   structureId              String? @map("structure_id")
   structureIdPg            Int?    @map("structure_id_pg")
   structureType            String? @map("structure_type")
@@ -374,6 +375,32 @@ model CraConseillerNumeriqueV1 {
   structureCodeCommune     String? @map("structure_code_commune")
   structureCodeDepartement String? @map("structure_code_departement")
   structureCodeRegion      String? @map("structure_code_region")
+
+  // Permanence (équivalent v1 à lieu d’activité)
+  permanenceId String? @map("permanence_id")
+  permanenceEstStructure Boolean? @map("permanence_est_structure")
+  permanenceNomEnseigne String? @map("permanence_nom_enseigne")
+  permanenceNumeroTelephone String? @map("permanence_numero_telephone")
+  permanenceEmail String? @map("permanence_email")
+  permanenceSiteWeb String? @map("permanence_site_web")
+  permanenceSiret String? @map("permanence_siret")
+  permanenceAdresse String? @map("permanence_adresse")
+  permanenceCodePostal String? @map("permanence_code_postal")
+  permanenceNomCommune String? @map("permanence_nom_commune")
+  permanenceCodeCommune String? @map("permanence_code_commune")
+  permanenceLatitude Float? @map("permanence_latitude")
+  permanenceLongitude Float? @map("permanence_longitude")
+  permanenceStructureId              String? @map("permanence_structure_id")
+  permanenceStructureIdPg            Int?    @map("permanence_structure_id_pg")
+  permanenceStructureType            String? @map("permanence_structure_type")
+  permanenceStructureStatut          String? @map("permanence_structure_statut")
+  permanenceStructureNom             String? @map("permanence_structure_nom")
+  permanenceStructureSiret           String? @map("permanence_structure_siret")
+  permanenceStructureCodePostal      String? @map("permanence_structure_code_postal")
+  permanenceStructureNomCommune      String? @map("permanence_structure_nom_commune")
+  permanenceStructureCodeCommune     String? @map("permanence_structure_code_commune")
+  permanenceStructureCodeDepartement String? @map("permanence_structure_code_departement")
+  permanenceStructureCodeRegion      String? @map("permanence_structure_code_region")
 
   @@index([v1ConseillerNumeriqueId])
   @@index([dateAccompagnement(sort: Asc)])

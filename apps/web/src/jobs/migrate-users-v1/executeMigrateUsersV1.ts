@@ -1,30 +1,14 @@
 import { output } from '@app/cli/output'
-import { varFile } from '@app/config/varDirectory'
-import {
-  closeMongoClient,
-  conseillerNumeriqueMongoCollection,
-  getMongoClient,
-} from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
-import { Command } from '@commander-js/extra-typings'
-import { StructureV1Document } from './crasV1/StructureV1Document'
-import {
-  migrateStructuresV1,
-  writeV1StructuresIdsMap,
-} from './crasV1/migrateStructuresV1'
-import {
-  migratePermanencesV1,
-  writeV1PermanencesIdsMap,
-} from './crasV1/migratePermanencesV1'
-import { PermanenceV1Document } from './crasV1/PermanenceV1Document'
-import { ConseillerNumeriqueV1Document } from '@app/web/external-apis/conseiller-numerique/ConseillerNumeriqueV1Document'
-import { migrateConseillersV1 } from './crasV1/migrateConseillersV1'
+import { closeMongoClient } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
+import { migrateConseillersV1 } from './migrateConseillersV1'
 import { prismaClient } from '@app/web/prismaClient'
-import { writeV1ConseillersIdsMap } from './crasV1/migrateConseillersV1'
+import { writeV1ConseillersIdsMap } from './migrateConseillersV1'
 import { appendFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { writeFile } from 'node:fs/promises'
-import { v1ConseillersIds } from './v1ConseillersIds'
+import { v1ConseillersIdsMap } from './v1ConseillersIdsMap'
+import { MigrateUsersV1Job } from './MigrateUsersV1Job'
 
 /**
  * Pour importer les cras v1, on a besoin d'importer les conseillers v1
@@ -84,45 +68,40 @@ const mapV1ConseillersIds = async () => {
   await writeV1ConseillersIds(v1ConseillersIds)
 }
 
-/**
- *
- */
-export const migrateCrasV1Users = new Command()
-  .command('v1:migrate-cras:users')
-  .action(async () => {
-    // await mapV1ConseillersIds()
-    try {
-      output(`Found ${v1ConseillersIds.size} conseillers`)
+export const executeMigrateUsersV1 = async (_job: MigrateUsersV1Job) => {
+  await mapV1ConseillersIds()
+  try {
+    output(`Found ${v1ConseillersIds.size} conseillers`)
 
-      const conseillersIdsMap = new Map<string, string>()
+    const conseillersIdsMap = new Map<string, string>()
 
-      const result = await migrateConseillersV1({
-        v1ConseillersIds,
-        conseillersIdsMap,
-      })
+    const result = await migrateConseillersV1({
+      v1ConseillersIds,
+      conseillersIdsMap,
+    })
 
-      const totalConseillersMissingInV1Mongo =
-        result.conseillerMissingInV1Mongo.length
-      const totalCrasFromConseillersMissingInV1Mongo =
-        result.conseillerMissingInV1Mongo.reduce(
-          (acc, item) => acc + item.cras,
-          0,
-        )
-
-      const finalResult = {
-        ...result,
-        totalConseillersMissingInV1Mongo,
-        totalCrasFromConseillersMissingInV1Mongo,
-      }
-
-      output(
-        `${totalConseillersMissingInV1Mongo} conseillers missing in v1 mongo`,
+    const totalConseillersMissingInV1Mongo =
+      result.conseillerMissingInV1Mongo.length
+    const totalCrasFromConseillersMissingInV1Mongo =
+      result.conseillerMissingInV1Mongo.reduce(
+        (acc, item) => acc + item.cras,
+        0,
       )
-      output(`Migration result: \n${JSON.stringify(finalResult, null, 2)}`)
-      await writeResult(result)
 
-      await writeV1ConseillersIdsMap(conseillersIdsMap)
-    } finally {
-      await closeMongoClient()
+    const finalResult = {
+      ...result,
+      totalConseillersMissingInV1Mongo,
+      totalCrasFromConseillersMissingInV1Mongo,
     }
-  })
+
+    output(
+      `${totalConseillersMissingInV1Mongo} conseillers missing in v1 mongo`,
+    )
+    output(`Migration result: \n${JSON.stringify(finalResult, null, 2)}`)
+    await writeResult(result)
+
+    await writeV1ConseillersIdsMap(conseillersIdsMap)
+  } finally {
+    await closeMongoClient()
+  }
+}

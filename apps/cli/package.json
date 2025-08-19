@@ -28,7 +28,7 @@
     "dotenv": "^16.5.0",
     "form-data": "^4.0.2",
     "lodash-es": "^4.17.21",
-    "mongodb": "^6.16.0",
+    "mongodb": "^5.9.2",
     "p-retry": "^6.2.1",
     "picocolors": "^1.1.1",
     "slug": "^10.0.0",
