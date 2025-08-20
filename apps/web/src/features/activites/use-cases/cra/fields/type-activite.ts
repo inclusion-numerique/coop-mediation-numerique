@@ -8,7 +8,7 @@ export const typeActivitePluralLabels: {
   [key in TypeActivite]: string
 } = {
   Individuel: 'Accompagnements individuels',
-  Collectif: 'Ateliers collectifs',
+  Collectif: 'Participants aux ateliers',
 }
 
 export type TypeActiviteSlug = 'individuel' | 'collectif'
