@@ -1,8 +1,8 @@
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
 import type { MediateurUser } from '@app/web/auth/userTypeGuards'
-import { buildActivitesWorksheet } from '@app/web/features/activites/use-cases/list/export/buildActivitesWorksheet'
-import { getActivitesWorksheetInput } from '@app/web/features/activites/use-cases/list/export/getActivitesWorksheetInput'
+import { buildAccompagnementsWorksheet } from '@app/web/features/activites/use-cases/list/export/buildAccompagnementsWorksheet'
+import { getAccompagenmentsWorksheetInput } from '@app/web/features/activites/use-cases/list/export/getAccompagenmentsWorksheetInput'
 import {
   ActivitesFilterValidations,
   ActivitesFilters,
@@ -64,16 +64,16 @@ export const GET = async (request: NextRequest) => {
     })
   }
 
-  const activitesWorksheetInput = await getActivitesWorksheetInput({
+  const activitesWorksheetInput = await getAccompagenmentsWorksheetInput({
     user: typedUser,
     filters,
   })
 
-  const workbook = buildActivitesWorksheet(activitesWorksheetInput)
+  const workbook = buildAccompagnementsWorksheet(activitesWorksheetInput)
 
   const data = await workbook.xlsx.writeBuffer()
 
-  const filename = `coop-numerique_activites_${dateAsIsoDay(new Date())}.xlsx`
+  const filename = `coop-numerique_accompagnements_${dateAsIsoDay(new Date())}.xlsx`
 
   return new Response(data, {
     status: 200,

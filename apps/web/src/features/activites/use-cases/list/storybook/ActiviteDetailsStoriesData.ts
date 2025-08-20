@@ -32,6 +32,7 @@ export const activiteIndividuelleInfosMinimum = {
         nom: null,
         commune: null,
         communeCodePostal: null,
+        communeCodeInsee: null,
         statutSocial: null,
         genre: null,
         trancheAge: null,
@@ -50,8 +51,10 @@ export const activiteIndividuelleInfosMinimum = {
   structure: {
     id: '1',
     nom: 'Bibliotheque Musee de l’Opera, au fond du couloir à droite',
+    adresse: '33 Rue de l’Opera',
     commune: 'Paris',
     codePostal: '75006',
+    codeInsee: '75106',
   },
   orienteVersStructure: null,
   structureDeRedirection: null,
@@ -84,6 +87,7 @@ export const activiteIndividuelleBeneficiaireSuivi = {
         nom: 'Dupont',
         commune: null,
         communeCodePostal: null,
+        communeCodeInsee: null,
         statutSocial: 'EnEmploi',
         genre: 'Masculin',
         trancheAge: 'NonCommunique',
@@ -140,6 +144,7 @@ export const activiteIndividuelleBeneficiaireAnonyme = {
         nom: null,
         commune: 'Lyon',
         communeCodePostal: '69002',
+        communeCodeInsee: '69382',
         statutSocial: 'EnEmploi',
         genre: 'Masculin',
         trancheAge: 'QuaranteCinquanteNeuf',
@@ -191,6 +196,7 @@ export const activiteCollectifInfosRepliees = {
         statutSocial: null,
         commune: null,
         communeCodePostal: null,
+        communeCodeInsee: null,
         _count: {
           accompagnements: 1,
         },
@@ -209,6 +215,7 @@ export const activiteCollectifInfosRepliees = {
         statutSocial: null,
         commune: null,
         communeCodePostal: null,
+        communeCodeInsee: null,
         _count: {
           accompagnements: 1,
         },
@@ -265,6 +272,7 @@ export const activiteCollectifInfosDepliees = {
           nom: null,
           commune: null,
           communeCodePostal: null,
+          communeCodeInsee: null,
           _count: {
             accompagnements: 1,
           },
@@ -284,6 +292,7 @@ export const activiteCollectifInfosDepliees = {
         statutSocial: null,
         commune: null,
         communeCodePostal: null,
+        communeCodeInsee: null,
         _count: {
           accompagnements: 1,
         },
@@ -302,6 +311,7 @@ export const activiteCollectifInfosDepliees = {
         statutSocial: null,
         commune: null,
         communeCodePostal: null,
+        communeCodeInsee: null,
         _count: {
           accompagnements: 1,
         },
@@ -318,8 +328,10 @@ export const activiteCollectifInfosDepliees = {
   structure: {
     id: '1',
     nom: 'Bibliotheque Musee de l’Opera, au fond du couloir à droite',
+    adresse: '33 Rue de l’Opera',
     commune: 'Paris',
     codePostal: '75006',
+    codeInsee: '75106',
   },
   orienteVersStructure: null,
   structureDeRedirection: null,
