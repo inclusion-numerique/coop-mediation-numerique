@@ -19,6 +19,7 @@ export const activiteListeBeneficiaireSelect = {
   genre: true,
   commune: true,
   communeCodePostal: true,
+  communeCodeInsee: true,
   _count: {
     select: {
       accompagnements: true,
@@ -47,7 +48,14 @@ export const activiteListSelect = {
   notes: true,
 
   structure: {
-    select: { id: true, commune: true, codePostal: true, nom: true },
+    select: {
+      id: true,
+      adresse: true,
+      commune: true,
+      codePostal: true,
+      codeInsee: true,
+      nom: true,
+    },
   },
   lieuCodePostal: true,
   lieuCommune: true,

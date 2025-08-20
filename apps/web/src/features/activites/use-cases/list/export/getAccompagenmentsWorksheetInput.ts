@@ -4,9 +4,9 @@ import { generateActivitesFiltersLabels } from '../components/generateActivitesF
 import { ActiviteListItem } from '../db/activitesQueries'
 import { searchActivite } from '../db/searchActivite'
 import type { ActivitesFilters } from '../validation/ActivitesFilters'
-import type { BuildActivitesWorksheetInput } from './buildActivitesWorksheet'
+import type { BuildActivitesWorksheetInput } from './buildAccompagnementsWorksheet'
 
-export const getActivitesWorksheetInput = async ({
+export const getAccompagenmentsWorksheetInput = async ({
   user,
   filters,
 }: {
