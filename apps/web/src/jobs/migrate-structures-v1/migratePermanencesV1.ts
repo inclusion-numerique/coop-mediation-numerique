@@ -79,18 +79,34 @@ const findCartographieNationaleStructure = async ({
   })
 }
 
-export const writeV1PermanencesIdsMap = async (map: Map<string, string>) => {
+export type V2PermanenceMapValue = {
+  id: string
+  codePostal?: string | null
+  commune?: string | null
+  codeInsee?: string | null
+}
+
+export const writeV1PermanencesIdsMap = async (
+  map: Map<string, V2PermanenceMapValue>,
+) => {
   const __filename = fileURLToPath(import.meta.url)
   const __dirname = path.dirname(__filename)
   const mapFilePath = path.join(__dirname, 'v1PermanencesIdsMap.ts')
 
   await writeFile(
     mapFilePath,
-    `// A list of v1 permanence id to v2 structures uuid\nexport const v1PermanencesIdsMap = new Map([\n`,
+    `// A list of v1 permanence id to v2 structure info\nexport const v1PermanencesIdsMap = new Map([\n`,
   )
 
   for (const [key, value] of map) {
-    await appendFile(mapFilePath, `  ['${key}', '${value}'],\n`)
+    await appendFile(
+      mapFilePath,
+      `  ['${key}', { id: '${value.id}', codePostal: ${JSON.stringify(
+        value.codePostal ?? null,
+      )}, commune: ${JSON.stringify(value.commune ?? null)}, codeInsee: ${JSON.stringify(
+        value.codeInsee ?? null,
+      )} }],\n`,
+    )
   }
 
   await appendFile(mapFilePath, `])\n`)
@@ -103,7 +119,7 @@ const migratePermanenceV1 = async ({
   v1PermanencesIdsMap,
 }: {
   permanence: PermanenceV1Document
-  v1PermanencesIdsMap: Map<string, string>
+  v1PermanencesIdsMap: Map<string, V2PermanenceMapValue>
 }) => {
   // we search in our database if the permanence already exists
   const existingStructure = await findExistingPermanence({
@@ -121,7 +137,12 @@ const migratePermanenceV1 = async ({
       },
     })
 
-    v1PermanencesIdsMap.set(permanence._id.toString(), existingStructure.id)
+    v1PermanencesIdsMap.set(permanence._id.toString(), {
+      id: existingStructure.id,
+      codePostal: existingStructure.codePostal,
+      commune: existingStructure.commune,
+      codeInsee: existingStructure.codeInsee,
+    })
 
     return
   }
@@ -161,7 +182,12 @@ const migratePermanenceV1 = async ({
     },
   })
 
-  v1PermanencesIdsMap.set(permanence._id.toString(), id)
+  v1PermanencesIdsMap.set(permanence._id.toString(), {
+    id,
+    codePostal: permanence.adresse.codePostal,
+    commune: permanence.adresse.ville,
+    codeInsee: permanence.adresse.codeCommune,
+  })
 }
 
 const batchSize = 10
@@ -170,7 +196,7 @@ export const migratePermanencesV1 = async ({
   v1PermanencesIdsMap,
 }: {
   permanences: PermanenceV1Document[]
-  v1PermanencesIdsMap: Map<string, string> // used to map v1 permanence id to v2 structure id for deduplication and later cra mappings
+  v1PermanencesIdsMap: Map<string, V2PermanenceMapValue> // used to map v1 permanence id to v2 structure info for deduplication and later cra mappings
 }) => {
   const chunks = chunk(permanences, batchSize)
 

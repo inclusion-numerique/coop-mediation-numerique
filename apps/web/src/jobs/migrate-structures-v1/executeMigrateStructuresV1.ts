@@ -7,10 +7,12 @@ import { StructureV1Document } from './StructureV1Document'
 import {
   migrateStructuresV1,
   writeV1StructuresIdsMap,
+  V2StructureMapValue,
 } from './migrateStructuresV1'
 import {
   migratePermanencesV1,
   writeV1PermanencesIdsMap,
+  V2PermanenceMapValue,
 } from './migratePermanencesV1'
 import { MigrateStructuresV1Job } from './MigrateStructuresV1Job'
 
@@ -35,8 +37,8 @@ export const executeMigrateStructuresV1 = async (
     )
     output(`Found ${structuresMap.size} structures`)
 
-    // Create a map of v1 structure id to v2 structure id for deduplication and later cra mappings
-    const v1StructuresIdsMap = new Map<string, string>()
+    // Create a map of v1 structure id to v2 structure info for deduplication and later cra mappings
+    const v1StructuresIdsMap = new Map<string, V2StructureMapValue>()
 
     await migrateStructuresV1({ structures, v1StructuresIdsMap })
 
@@ -52,8 +54,8 @@ export const executeMigrateStructuresV1 = async (
     )
     output(`Found ${permanencesMap.size} permanences`)
 
-    // Create a map of v1 permanence id to v2 structure id for deduplication and later cra mappings
-    const v1PermanencesIdsMap = new Map<string, string>()
+    // Create a map of v1 permanence id to v2 structure info for deduplication and later cra mappings
+    const v1PermanencesIdsMap = new Map<string, V2PermanenceMapValue>()
 
     await migratePermanencesV1({ permanences, v1PermanencesIdsMap })
 

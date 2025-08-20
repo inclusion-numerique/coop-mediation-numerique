@@ -80,7 +80,10 @@ export const executeMigrateUsersV1 = async (_job: MigrateUsersV1Job) => {
   try {
     output(`Found ${v1ConseillersIds.size} conseillers`)
 
-    const conseillersIdsMap = new Map<string, string>()
+    const conseillersIdsMap = new Map<
+      string,
+      { userId: string; mediateurId: string }
+    >()
 
     const result = await migrateConseillersV1({
       v1ConseillersIds,
