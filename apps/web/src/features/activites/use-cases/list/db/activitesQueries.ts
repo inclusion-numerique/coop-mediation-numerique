@@ -42,6 +42,18 @@ export const activiteListSelect = {
       premierAccompagnement: true,
     },
   },
+  mediateur: {
+    select: {
+      id: true,
+      conseillerNumerique: true,
+      user: {
+        select: {
+          firstName: true,
+          lastName: true,
+        },
+      },
+    },
+  },
   date: true,
 
   duree: true,

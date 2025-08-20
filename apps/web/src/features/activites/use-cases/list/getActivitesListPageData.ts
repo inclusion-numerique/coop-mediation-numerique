@@ -45,7 +45,7 @@ export const getActivitesListPageData = async ({
   const [searchResult, activiteDates] = await Promise.all([
     shouldFetchActivites
       ? searchActivite({
-          mediateurId,
+          mediateurIds: [mediateurId],
           searchParams,
         })
       : emptySearchResult,

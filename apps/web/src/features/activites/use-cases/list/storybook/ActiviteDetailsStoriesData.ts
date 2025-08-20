@@ -62,6 +62,14 @@ export const activiteIndividuelleInfosMinimum = {
   titreAtelier: null,
   niveau: null,
   rdvServicePublicId: null,
+  mediateur: {
+    id: '',
+    user: {
+      firstName: '',
+      lastName: '',
+    },
+    conseillerNumerique: null,
+  },
 } satisfies ActiviteListItem
 
 export const activiteIndividuelleBeneficiaireSuivi = {
@@ -110,6 +118,14 @@ export const activiteIndividuelleBeneficiaireSuivi = {
   titreAtelier: null,
   niveau: null,
   rdvServicePublicId: null,
+  mediateur: {
+    id: '',
+    user: {
+      firstName: '',
+      lastName: '',
+    },
+    conseillerNumerique: null,
+  },
 } satisfies ActiviteListItem
 
 // Refactored "Individuel" type activity with an anonymous beneficiary
@@ -166,6 +182,14 @@ export const activiteIndividuelleBeneficiaireAnonyme = {
   titreAtelier: null,
   niveau: null,
   rdvServicePublicId: 23,
+  mediateur: {
+    id: '',
+    user: {
+      firstName: '',
+      lastName: '',
+    },
+    conseillerNumerique: null,
+  },
 } satisfies ActiviteListItem
 
 // Refactored "Collectif" type activity with minimal information
@@ -235,6 +259,14 @@ export const activiteCollectifInfosRepliees = {
   titreAtelier: 'Atelier de découverte de la vacuité de toute chose',
   niveau: 'Debutant',
   rdvServicePublicId: 1234567890,
+  mediateur: {
+    id: '',
+    user: {
+      firstName: '',
+      lastName: '',
+    },
+    conseillerNumerique: null,
+  },
 } satisfies ActiviteListItem
 
 // Refactored "Collectif" type activity with expanded information
@@ -339,6 +371,14 @@ export const activiteCollectifInfosDepliees = {
   titreAtelier: null,
   niveau: 'Debutant',
   rdvServicePublicId: 1234567890,
+  mediateur: {
+    id: '',
+    user: {
+      firstName: '',
+      lastName: '',
+    },
+    conseillerNumerique: null,
+  },
 } satisfies ActiviteListItem
 
 const randomIntegerId = () => Math.floor(Math.random() * 1000000)

@@ -44,13 +44,16 @@ export type BuildActivitesWorksheetInput = {
 
 const intraCellLineBreak = '\n'
 
-export const buildAccompagnementsWorksheet = ({
-  activites,
-  user,
-  filters,
-  mediateur,
-  worksheetGenerationDate = new Date(),
-}: BuildActivitesWorksheetInput): Excel.Workbook => {
+export const buildAccompagnementsWorksheet = (
+  {
+    activites,
+    user,
+    filters,
+    mediateur,
+    worksheetGenerationDate = new Date(),
+  }: BuildActivitesWorksheetInput,
+  isSelfExport: boolean,
+): Excel.Workbook => {
   const workbook = new Excel.Workbook()
 
   setWorkbookMetadata(workbook)
@@ -66,16 +69,18 @@ export const buildAccompagnementsWorksheet = ({
   addFilters(worksheet)(filters, {
     // only display the mediateur name if the user is NOT the mediateur used for export
     mediateurScope: user.id === mediateur.id ? null : mediateur,
-    excludeFilters: ['conseiller_numerique'],
   })
 
   const activitesTableHeaders = [
     'Date',
     'Enregistré le',
     'Dernière modification le',
+    ...(!isSelfExport
+      ? ['Prénom du médiateur', 'Nom du médiateur', 'Rôle', 'ID - Conum']
+      : []),
     'Type',
     'Participants',
-    'Bénéficiaire',
+    ...(isSelfExport ? ['Bénéficiaire'] : []),
     'Canaux d’accompagnement',
     'Nom du lieu',
     'Adresse',
@@ -97,7 +102,7 @@ export const buildAccompagnementsWorksheet = ({
     'Genre du bénéficiaire',
     'Tranche d’âge du bénéficiaire',
     'Statut du bénéficiaire',
-    'Notes supplémentaires',
+    ...(isSelfExport ? ['Notes supplémentaires'] : []),
     ...(user.mediateur?.conseillerNumerique || user.coordinateur
       ? ['Source de la donnée']
       : []),
@@ -140,6 +145,7 @@ export const buildAccompagnementsWorksheet = ({
         orienteVersStructure,
         structureDeRedirection,
         id,
+        mediateur,
       } = activite
 
       return activite.accompagnements.map((accompagnement, index) => {
@@ -149,11 +155,23 @@ export const buildAccompagnementsWorksheet = ({
           isEqual(creation, modification)
             ? ''
             : format(modification, "dd/MM/yyyy 'à' HH:mm", { locale: fr }),
+          ...(!isSelfExport
+            ? [
+                mediateur.user.firstName,
+                mediateur.user.lastName,
+                mediateur.conseillerNumerique == null
+                  ? 'Médiateur'
+                  : 'Conseiller Numérique',
+                mediateur.conseillerNumerique?.id ?? '',
+              ]
+            : []),
           typeActiviteLabels[type],
           activite.accompagnements.length === 1
             ? 1
             : `${index + 1}/${activite.accompagnements.length}`,
-          getBeneficiaireDisplayName(accompagnement.beneficiaire),
+          ...(isSelfExport
+            ? [getBeneficiaireDisplayName(accompagnement.beneficiaire)]
+            : []),
           typeLieuLabels[typeLieu],
           structure?.nom ?? '',
           structure?.adresse ?? '',
@@ -191,7 +209,9 @@ export const buildAccompagnementsWorksheet = ({
           statutSocialLabels[
             accompagnement.beneficiaire.statutSocial ?? 'NonCommunique'
           ],
-          notes && index === 0 ? htmlToText(notes) : '',
+          ...(isSelfExport
+            ? [notes && index === 0 ? htmlToText(notes) : '']
+            : []),
           user.mediateur?.conseillerNumerique || user.coordinateur
             ? 'La Coop de la médiation numérique (V2)'
             : '',
