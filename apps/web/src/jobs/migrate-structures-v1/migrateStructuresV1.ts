@@ -8,7 +8,16 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { appendFile, writeFile } from 'node:fs/promises'
 
-export const writeV1StructuresIdsMap = async (map: Map<string, string>) => {
+export type V2StructureMapValue = {
+  id: string
+  codePostal?: string | null
+  commune?: string | null
+  codeInsee?: string | null
+}
+
+export const writeV1StructuresIdsMap = async (
+  map: Map<string, V2StructureMapValue>,
+) => {
   const __filename = fileURLToPath(import.meta.url)
   const __dirname = path.dirname(__filename)
   const mapFilePath = path.join(__dirname, 'v1StructuresIdsMap.ts')
@@ -16,11 +25,18 @@ export const writeV1StructuresIdsMap = async (map: Map<string, string>) => {
   // write file header and empty the file
   await writeFile(
     mapFilePath,
-    `// A list of v1 structure id to v2 structures uuid\nexport const v1StructuresIdsMap = new Map([\n`,
+    `// A list of v1 structure id to v2 structure info\nexport const v1StructuresIdsMap = new Map([\n`,
   )
 
   for (const [key, value] of map) {
-    await appendFile(mapFilePath, `  ['${key}', '${value}'],\n`)
+    await appendFile(
+      mapFilePath,
+      `  ['${key}', { id: '${value.id}', codePostal: ${JSON.stringify(
+        value.codePostal ?? null,
+      )}, commune: ${JSON.stringify(value.commune ?? null)}, codeInsee: ${JSON.stringify(
+        value.codeInsee ?? null,
+      )} }],\n`,
+    )
   }
 
   await appendFile(mapFilePath, `])\n`)
@@ -33,7 +49,7 @@ const findExistingStructure = async ({
   v1StructuresIdsMap,
 }: {
   structure: StructureV1Document
-  v1StructuresIdsMap: Map<string, string>
+  v1StructuresIdsMap: Map<string, V2StructureMapValue>
 }) => {
   const existingFromId = await prismaClient.structure.findFirst({
     where: {
@@ -42,7 +58,12 @@ const findExistingStructure = async ({
   })
 
   if (existingFromId) {
-    v1StructuresIdsMap.set(structure._id.toString(), existingFromId.id)
+    v1StructuresIdsMap.set(structure._id.toString(), {
+      id: existingFromId.id,
+      codePostal: existingFromId.codePostal,
+      commune: existingFromId.commune,
+      codeInsee: existingFromId.codeInsee,
+    })
     return existingFromId
   }
 
@@ -64,7 +85,12 @@ const findExistingStructure = async ({
     : null
 
   if (existingFromSiret) {
-    v1StructuresIdsMap.set(structure._id.toString(), existingFromSiret.id)
+    v1StructuresIdsMap.set(structure._id.toString(), {
+      id: existingFromSiret.id,
+      codePostal: existingFromSiret.codePostal,
+      commune: existingFromSiret.commune,
+      codeInsee: existingFromSiret.codeInsee,
+    })
     return existingFromSiret
   }
 
@@ -85,7 +111,12 @@ const findExistingStructure = async ({
   })
 
   if (existingFromAdresse) {
-    v1StructuresIdsMap.set(structure._id.toString(), existingFromAdresse.id)
+    v1StructuresIdsMap.set(structure._id.toString(), {
+      id: existingFromAdresse.id,
+      codePostal: existingFromAdresse.codePostal,
+      commune: existingFromAdresse.commune,
+      codeInsee: existingFromAdresse.codeInsee,
+    })
     return existingFromAdresse
   }
 
@@ -112,7 +143,7 @@ const migrateStructureV1 = async ({
   v1StructuresIdsMap,
 }: {
   structure: StructureV1Document
-  v1StructuresIdsMap: Map<string, string>
+  v1StructuresIdsMap: Map<string, V2StructureMapValue>
 }) => {
   // we search in our database if the structure already exists
   const existingStructure = await findExistingStructure({
@@ -141,7 +172,7 @@ const migrateStructureV1 = async ({
 
   // Create the structure in our database
   const id = v4()
-  await prismaClient.structure.create({
+  const created = await prismaClient.structure.create({
     data: {
       id,
       nom: structure.nom,
@@ -166,7 +197,12 @@ const migrateStructureV1 = async ({
     },
   })
 
-  v1StructuresIdsMap.set(structure._id.toString(), id)
+  v1StructuresIdsMap.set(structure._id.toString(), {
+    id: created.id,
+    codePostal: structure.adresseInsee2Ban?.postcode ?? '',
+    commune: structure.adresseInsee2Ban?.city ?? '',
+    codeInsee: structure.codeCommune ?? structure.adresseInsee2Ban?.citycode,
+  })
 }
 
 const batchSize = 10
@@ -175,7 +211,7 @@ export const migrateStructuresV1 = async ({
   v1StructuresIdsMap,
 }: {
   structures: StructureV1Document[]
-  v1StructuresIdsMap: Map<string, string> // used to map v1 structure id to v2 structure id for deduplication and later cra mappings
+  v1StructuresIdsMap: Map<string, V2StructureMapValue> // used to map v1 structure id to v2 structure info for deduplication and later cra mappings
 }) => {
   const chunks = chunk(structures, batchSize)
 

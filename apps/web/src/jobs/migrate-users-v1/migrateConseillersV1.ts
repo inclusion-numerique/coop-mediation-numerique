@@ -11,8 +11,11 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { appendFile, writeFile } from 'node:fs/promises'
 import { ConseillerNumeriqueV1Data } from '@app/web/external-apis/conseiller-numerique/ConseillerNumeriqueV1Data'
+import { createMissingConseillerV1 } from './missingConseillerV1'
 
-export const writeV1ConseillersIdsMap = async (map: Map<string, string>) => {
+export const writeV1ConseillersIdsMap = async (
+  map: Map<string, { userId: string; mediateurId: string }>,
+) => {
   const __filename = fileURLToPath(import.meta.url)
   const __dirname = path.dirname(__filename)
   const mapFilePath = path.join(__dirname, 'v1ConseillersIdsMap.ts')
@@ -20,16 +23,41 @@ export const writeV1ConseillersIdsMap = async (map: Map<string, string>) => {
   // write file header and empty the file
   await writeFile(
     mapFilePath,
-    `// A list of v1 conseiller id to v2 conseiller uuid\nexport const v1ConseillersIdsMap = new Map([\n`,
+    `// A list of v1 conseiller id to v2 user & mediateur ids\nexport const v1ConseillersIdsMap = new Map([\n`,
   )
 
   for (const [key, value] of map) {
-    await appendFile(mapFilePath, `  ['${key}', '${value}'],\n`)
+    await appendFile(
+      mapFilePath,
+      `  ['${key}', { userId: '${value.userId}', mediateurId: '${value.mediateurId}' }],\n`,
+    )
   }
 
-  await appendFile(mapFilePath, `]\n`)
+  await appendFile(mapFilePath, `])\n`)
 
   output(`${map.size} V1 conseillers IDs map written to ${mapFilePath}`)
+}
+
+const ensureMediateurForUser = async (
+  userId: string,
+  options?: { creation?: Date; modification?: Date },
+) => {
+  const existing = await prismaClient.mediateur.findUnique({
+    where: { userId },
+    select: { id: true },
+  })
+  if (existing) return existing
+
+  const mediateur = await prismaClient.mediateur.create({
+    data: {
+      id: v4(),
+      userId,
+      creation: options?.creation ?? new Date(),
+      modification: options?.modification ?? new Date(),
+    },
+    select: { id: true },
+  })
+  return mediateur
 }
 
 const findExistingConseiller = async ({
@@ -39,7 +67,7 @@ const findExistingConseiller = async ({
 }: {
   conseiller: ConseillerNumeriqueV1Data['conseiller']
   email: string
-  conseillersIdsMap: Map<string, string>
+  conseillersIdsMap: Map<string, { userId: string; mediateurId: string }>
 }) => {
   const existingFromId = await prismaClient.user.findFirst({
     where: {
@@ -55,7 +83,11 @@ const findExistingConseiller = async ({
   })
 
   if (existingFromId) {
-    conseillersIdsMap.set(id, existingFromId.id)
+    const mediateur = await ensureMediateurForUser(existingFromId.id)
+    conseillersIdsMap.set(id, {
+      userId: existingFromId.id,
+      mediateurId: mediateur.id,
+    })
     return existingFromId
   }
 
@@ -66,7 +98,11 @@ const findExistingConseiller = async ({
   })
 
   if (existingFromEmail) {
-    conseillersIdsMap.set(id, existingFromEmail.id)
+    const mediateur = await ensureMediateurForUser(existingFromEmail.id)
+    conseillersIdsMap.set(id, {
+      userId: existingFromEmail.id,
+      mediateurId: mediateur.id,
+    })
     return existingFromEmail
   }
 
@@ -92,8 +128,10 @@ const migrateConseillerV1 = async ({
 }: {
   v1ConseillerId: string
   cras: number
-  conseillersIdsMap: Map<string, string>
+  conseillersIdsMap: Map<string, { userId: string; mediateurId: string }>
 }): Promise<SingleConseillerResult> => {
+  await createMissingConseillerV1()
+
   const conseillerV1Data = await fetchConseillerNumeriqueV1Data({
     v1ConseillerId,
   })
@@ -162,6 +200,11 @@ const migrateConseillerV1 = async ({
       })
   }
 
+  const mediateur = await ensureMediateurForUser(user.id, {
+    creation: user.created ?? new Date(),
+    modification: user.updated ?? new Date(),
+  })
+
   const profilCheckedUser = await updateUserInscriptionProfileFromV1Data({
     user,
     v1Conseiller: conseillerV1Data,
@@ -173,7 +216,10 @@ const migrateConseillerV1 = async ({
     allowMissingMiseEnRelation: true,
   })
 
-  conseillersIdsMap.set(v1ConseillerId, user.id)
+  conseillersIdsMap.set(v1ConseillerId, {
+    userId: user.id,
+    mediateurId: mediateur.id,
+  })
 
   return result
 }
