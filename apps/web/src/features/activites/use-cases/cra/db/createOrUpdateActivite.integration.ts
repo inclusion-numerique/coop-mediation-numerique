@@ -47,6 +47,14 @@ const nullActivite: Omit<
   structure: null,
   titreAtelier: null,
   rdvServicePublicId: null,
+  mediateur: {
+    id: '303381cc-3da7-433d-a553-1a5f76465989',
+    user: {
+      firstName: 'Médiateur',
+      lastName: 'Avec activités',
+    },
+    conseillerNumerique: null,
+  },
 }
 
 describe('createOrUpdateActivite', () => {

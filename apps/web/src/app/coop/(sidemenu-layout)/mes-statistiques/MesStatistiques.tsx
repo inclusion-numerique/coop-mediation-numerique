@@ -79,23 +79,25 @@ export const MesStatistiques = (
           beneficiairesOptions={[]}
           tagsOptions={tagsOptions}
         />
-        <Notice
-          className="fr-notice--flex fr-mt-6v"
-          title={
-            <span className="fr-text--xs fr-text--regular fr-text-default--grey">
-              Les activités renseignées dans l’Espace Coop (V1) sont maintenant
-              visibles sur cette page statistique.{' '}
-              <Link
-                target="_blank"
-                rel="noreferrer"
-                href="https://www.notion.so/incubateurdesterritoires/Consolidation-des-statistiques-des-exports-Ao-t-2025-242744bf03dd80c18869d38bb6d983f2"
-                className="fr-link fr-text--xs"
-              >
-                En savoir plus
-              </Link>
-            </span>
-          }
-        />
+        {(user.coordinateur || user.mediateur?.conseillerNumerique) && (
+          <Notice
+            className="fr-notice--flex fr-align-items-center fr-mt-6v"
+            title={
+              <span className="fr-text--xs fr-text--regular fr-text-default--grey">
+                Les activités renseignées dans l’Espace Coop (V1) sont
+                maintenant visibles sur cette page statistique.{' '}
+                <Link
+                  target="_blank"
+                  rel="noreferrer"
+                  href="https://www.notion.so/incubateurdesterritoires/Consolidation-des-statistiques-des-exports-Ao-t-2025-242744bf03dd80c18869d38bb6d983f2"
+                  className="fr-link fr-text--xs"
+                >
+                  En savoir plus
+                </Link>
+              </span>
+            }
+          />
+        )}
         <section className="fr-mb-6w fr-mt-6v">
           <StatistiquesGenerales {...mesStatistiquesProps} />
         </section>

@@ -23,7 +23,7 @@ import {
 import { activiteListSelect } from './activitesQueries'
 
 type SearchActiviteOptions = {
-  mediateurId?: string
+  mediateurIds: string[]
   beneficiaireIds?: string[]
   searchParams?: ActivitesDataTableSearchParams
   havingRdvId?: boolean
@@ -45,7 +45,7 @@ export const searchActivite = async (options: SearchActiviteOptions) => {
     pageSize,
   })
 
-  const mediateurIdMatch = options?.mediateurId ?? '_any_'
+  const mediateurIds = options?.mediateurIds ?? []
 
   const orderByCondition =
     sortBy in ActivitesRawSqlConfiguration
@@ -72,7 +72,7 @@ export const searchActivite = async (options: SearchActiviteOptions) => {
                LEFT JOIN mediateurs med ON act.mediateur_id = med.id
                LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
 
-      WHERE (act.mediateur_id = ${mediateurIdMatch}::UUID OR ${mediateurIdMatch} = '_any_')
+      WHERE (${mediateurIds.length > 0}::BOOLEAN = FALSE OR act.mediateur_id = ANY(${mediateurIds}::UUID[]))
         AND act.suppression IS NULL
         AND ${filterFragment}
       ORDER BY ${orderByCondition},
@@ -103,7 +103,7 @@ export const searchActivite = async (options: SearchActiviteOptions) => {
           LEFT JOIN structures str ON act.structure_id = str.id
           LEFT JOIN mediateurs med ON act.mediateur_id = med.id
           LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
-      WHERE (act.mediateur_id = ${mediateurIdMatch}::UUID OR ${mediateurIdMatch} = '_any_')
+      WHERE (${mediateurIds.length > 0}::BOOLEAN = FALSE OR act.mediateur_id = ANY(${mediateurIds}::UUID[]))
         AND act.suppression IS NULL
         AND ${filterFragment}
   `

@@ -92,6 +92,14 @@ const activites = [
     lieuCodeInsee: null,
     duree: 60,
     rdvServicePublicId: 13,
+    mediateur: {
+      id: '',
+      user: {
+        firstName: '',
+        lastName: '',
+      },
+      conseillerNumerique: null,
+    },
   },
   {
     timezone: 'Europe/Paris',
@@ -124,6 +132,14 @@ const activites = [
     notes: null,
     structure: null,
     rdvServicePublicId: null,
+    mediateur: {
+      id: '',
+      user: {
+        firstName: '',
+        lastName: '',
+      },
+      conseillerNumerique: null,
+    },
   },
   {
     timezone: 'Europe/Paris',
@@ -165,6 +181,14 @@ const activites = [
     notes: null,
     structure: null,
     rdvServicePublicId: 13,
+    mediateur: {
+      id: '',
+      user: {
+        firstName: '',
+        lastName: '',
+      },
+      conseillerNumerique: null,
+    },
   },
   {
     timezone: 'Europe/Paris',
@@ -197,6 +221,14 @@ const activites = [
     thematiques: ['SocialSante', 'Logement'],
     tags: [],
     rdvServicePublicId: null,
+    mediateur: {
+      id: '',
+      user: {
+        firstName: '',
+        lastName: '',
+      },
+      conseillerNumerique: null,
+    },
   },
   {
     timezone: 'Europe/Paris',
@@ -229,6 +261,14 @@ const activites = [
     thematiques: ['SocialSante', 'Justice'],
     tags: [],
     rdvServicePublicId: 13,
+    mediateur: {
+      id: '',
+      user: {
+        firstName: '',
+        lastName: '',
+      },
+      conseillerNumerique: null,
+    },
   },
   {
     timezone: 'Europe/Paris',
@@ -270,6 +310,14 @@ const activites = [
     structure: null,
     notes: null,
     rdvServicePublicId: 12,
+    mediateur: {
+      id: '',
+      user: {
+        firstName: '',
+        lastName: '',
+      },
+      conseillerNumerique: null,
+    },
   },
 ] satisfies ActiviteListItem[]
 
