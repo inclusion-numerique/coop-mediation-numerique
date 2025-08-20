@@ -320,17 +320,15 @@ export const GET = createApiV1Route
         .map((conseiller) => conseiller._id.toString()),
     )
 
-    const result = lieuxDeMediationNumerique
-      .map((lieu) => {
-        const aidants =
-          lieu.aidants?.filter((aidant) => conseillersIds.has(aidant.id)) ?? []
+    const result = lieuxDeMediationNumerique.map((lieu) => {
+      const aidants =
+        lieu.aidants?.filter((aidant) => conseillersIds.has(aidant.id)) ?? []
 
-        return {
-          ...toSchemaLieuMediationNumerique(lieu),
-          ...(aidants && aidants.length > 0 ? { aidants } : {}),
-        }
-      })
-      .filter(({ aidants }) => (aidants?.length ?? 0) > 0)
+      return {
+        ...toSchemaLieuMediationNumerique(lieu),
+        ...(aidants && aidants.length > 0 ? { aidants } : {}),
+      }
+    })
 
     return NextResponse.json(result)
   })
