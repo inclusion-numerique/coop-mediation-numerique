@@ -1,4 +1,3 @@
-import { SessionUser } from '@app/web/auth/sessionUser'
 import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite/CreerLieuActiviteValidation'
 import { searchLieuxActivite } from '@app/web/features/lieux-activite/searchLieuxActivite'
 import {
@@ -42,23 +41,14 @@ import { v4 } from 'uuid'
 import z from 'zod'
 import { lieuActiviteValidation } from './lieuActiviteValidation'
 
-const lieuActiviteToUpdate = async (
-  user: SessionUser,
-  input: { id: string },
-) => {
-  if (user.mediateur == null) return null
-
-  const lieuActivite = await prismaClient.mediateurEnActivite.findFirst({
+const lieuActiviteToUpdate = async (input: { id: string }) => {
+  const structure = await prismaClient.structure.findFirst({
     where: {
-      mediateurId: user.mediateur.id,
-      structureId: input.id,
-    },
-    select: {
-      structure: true,
+      id: input.id,
     },
   })
 
-  return lieuActivite?.structure ?? null
+  return structure ?? null
 }
 
 const setInformationsGeneralesFields = ({
@@ -231,7 +221,7 @@ export const lieuActiviteRouter = router({
     .input(InformationsGeneralesValidation)
     .mutation(async ({ input, ctx: { user } }) => {
       const stopwatch = createStopwatch()
-      const structure = await lieuActiviteToUpdate(user, input)
+      const structure = await lieuActiviteToUpdate(input)
 
       if (structure == null) return
 
@@ -257,7 +247,7 @@ export const lieuActiviteRouter = router({
     .input(VisiblePourCartographieNationaleValidation)
     .mutation(async ({ input, ctx: { user } }) => {
       const stopwatch = createStopwatch()
-      const structure = await lieuActiviteToUpdate(user, input)
+      const structure = await lieuActiviteToUpdate(input)
 
       if (structure == null) return
 
@@ -283,7 +273,7 @@ export const lieuActiviteRouter = router({
     .input(InformationsPratiquesValidation)
     .mutation(async ({ input, ctx: { user } }) => {
       const stopwatch = createStopwatch()
-      const structure = await lieuActiviteToUpdate(user, input)
+      const structure = await lieuActiviteToUpdate(input)
 
       if (structure == null) return
 
@@ -309,7 +299,7 @@ export const lieuActiviteRouter = router({
     .input(DescriptionValidation)
     .mutation(async ({ input, ctx: { user } }) => {
       const stopwatch = createStopwatch()
-      const structure = await lieuActiviteToUpdate(user, input)
+      const structure = await lieuActiviteToUpdate(input)
 
       if (structure == null) return
 
@@ -335,7 +325,7 @@ export const lieuActiviteRouter = router({
     .input(ServicesEtAccompagnementValidation)
     .mutation(async ({ input, ctx: { user } }) => {
       const stopwatch = createStopwatch()
-      const structure = await lieuActiviteToUpdate(user, input)
+      const structure = await lieuActiviteToUpdate(input)
 
       if (structure == null) return
 
@@ -361,7 +351,7 @@ export const lieuActiviteRouter = router({
     .input(ModalitesAccesAuServiceValidation)
     .mutation(async ({ input, ctx: { user } }) => {
       const stopwatch = createStopwatch()
-      const structure = await lieuActiviteToUpdate(user, input)
+      const structure = await lieuActiviteToUpdate(input)
 
       if (structure == null) return
 
@@ -387,7 +377,7 @@ export const lieuActiviteRouter = router({
     .input(TypesDePublicsAccueillisValidation)
     .mutation(async ({ input, ctx: { user } }) => {
       const stopwatch = createStopwatch()
-      const structure = await lieuActiviteToUpdate(user, input)
+      const structure = await lieuActiviteToUpdate(input)
 
       if (structure == null) return
 
