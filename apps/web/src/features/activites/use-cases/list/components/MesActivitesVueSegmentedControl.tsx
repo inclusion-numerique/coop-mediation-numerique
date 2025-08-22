@@ -48,7 +48,6 @@ const MesActivitesVueSegmentedControl = ({
         name="vue"
         legend="Type de vue"
         hideLegend
-        small
         segments={[
           {
             iconId: 'fr-icon-list-unordered',

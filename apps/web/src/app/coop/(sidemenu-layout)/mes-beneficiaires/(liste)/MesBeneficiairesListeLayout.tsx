@@ -11,7 +11,7 @@ const MesBeneficiairesListeLayout = ({ children }: PropsWithChildren) => (
     <CoopBreadcrumbs currentPage="Mes bénéficiaires" />
     <main
       id={contentId}
-      className="fr-mt-6v fr-mb-4v fr-width-full fr-flex fr-justify-content-space-between fr-align-items-center"
+      className="fr-mt-4v fr-mb-4v fr-width-full fr-flex fr-justify-content-space-between fr-align-items-center"
     >
       <h1 className="fr-text-title--blue-france fr-mb-0">Mes bénéficiaires</h1>
       <Button

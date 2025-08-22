@@ -18,7 +18,7 @@ const CoopSidemenuLayout = async ({
         <div className="sideMenu">
           <CoopSideMenu user={user} />
         </div>
-        <div className="fr-p-8v fr-pb-24v fr-width-full fr-flex-grow-1 fr-overflow-scroll">
+        <div className="fr-px-20v fr-pb-24v fr-width-full fr-flex-grow-1 fr-overflow-scroll">
           {children}
         </div>
       </div>
