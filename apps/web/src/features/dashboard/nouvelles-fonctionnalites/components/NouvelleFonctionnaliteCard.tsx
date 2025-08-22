@@ -50,7 +50,10 @@ const NouvelleFonctionnaliteCard = async ({
       </div>
       <div className="fr-flex-grow-1">
         <div className="fr-flex fr-width-full fr-align-items-start fr-justify-content-space-between fr-mb-2v">
-          <Badge className="fr-badge--new fr-mb-0 fr-py-1v">
+          <Badge
+            small
+            className="fr-badge--new fr-mb-0 fr-py-1v fr-text--uppercase"
+          >
             {featureName}
           </Badge>
           <SupprimerNouvelleFonctionnaliteCardButton featureId={featureId} />

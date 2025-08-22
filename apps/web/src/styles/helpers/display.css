@@ -64,6 +64,10 @@
   flex: 0 !important;
 }
 
+.fr-flex-1 {
+  flex: 1 !important;
+}
+
 /* md display rules */
 @media (min-width: 48em) {
   .fr-display-block-md {

@@ -5,7 +5,7 @@ import { download } from '@app/web/utils/download'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Tag from '@codegouvfr/react-dsfr/Tag'
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import type { ActivitesFilters } from '../validation/ActivitesFilters'
 import type { ActivitesFiltersLabels } from './generateActivitesFiltersLabels'
 
@@ -23,7 +23,9 @@ const ExportActivitesButton = ({
   filterLabelsToDisplay: ActivitesFiltersLabels
   accompagnementsCount: number
 }) => {
-  const exportXlsx = (exportPath: string, message: string) => {
+  const router = useRouter()
+
+  const searchParamsFromFilters = () => {
     const searchParams = new URLSearchParams()
 
     for (const [key, value] of Object.entries(filters)) {
@@ -31,12 +33,17 @@ const ExportActivitesButton = ({
       searchParams.set(key, Array.isArray(value) ? value.join(',') : value)
     }
 
-    const pathWithSearchParams =
+    return searchParams
+  }
+
+  const exportXlsx = (exportPath: string, message: string) => {
+    const searchParams = searchParamsFromFilters()
+
+    download(
       searchParams.size > 0
         ? `${exportPath}?${searchParams.toString()}`
-        : exportPath
-
-    download(pathWithSearchParams)
+        : exportPath,
+    )
     ExportActiviteModal.close()
     createToast({
       priority: 'success',
@@ -57,8 +64,11 @@ const ExportActivitesButton = ({
     )
 
   const onExportStatistiquesPdf = () => {
+    const searchParams = searchParamsFromFilters()
     ExportActiviteModal.close()
-    redirect('/coop/mes-statistiques?print=true')
+    router.push(
+      `/coop/mes-statistiques?print=true${searchParams.size > 0 ? `&${searchParams.toString()}` : ''}`,
+    )
   }
 
   return (

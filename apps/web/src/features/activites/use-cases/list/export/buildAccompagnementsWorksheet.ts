@@ -103,7 +103,7 @@ export const buildAccompagnementsWorksheet = (
     'Tranche d’âge du bénéficiaire',
     'Statut du bénéficiaire',
     ...(isSelfExport ? ['Notes supplémentaires'] : []),
-    ...(user.mediateur?.conseillerNumerique || user.coordinateur
+    ...(user.mediateur?.conseillerNumerique != null || user.coordinateur != null
       ? ['Source de la donnée']
       : []),
     'ID CRA',
@@ -212,9 +212,10 @@ export const buildAccompagnementsWorksheet = (
           ...(isSelfExport
             ? [notes && index === 0 ? htmlToText(notes) : '']
             : []),
-          user.mediateur?.conseillerNumerique || user.coordinateur
-            ? 'La Coop de la médiation numérique (V2)'
-            : '',
+          ...(user.mediateur?.conseillerNumerique != null ||
+          user.coordinateur != null
+            ? ['La Coop de la médiation numérique (V2)']
+            : []),
           id,
         ]
       })

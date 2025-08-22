@@ -69,7 +69,7 @@ export const getActivitesListPageData = async ({
   const activitesForRdvs = shouldFetchActivites
     ? null
     : await searchActivite({
-        mediateurId,
+        mediateurIds: [mediateurId],
         searchParams,
         havingRdvId: true,
       })

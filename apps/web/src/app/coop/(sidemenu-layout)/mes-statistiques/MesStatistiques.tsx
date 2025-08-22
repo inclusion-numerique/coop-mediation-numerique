@@ -90,7 +90,7 @@ export const MesStatistiques = (
                 <Link
                   target="_blank"
                   rel="noreferrer"
-                  href="https://www.notion.so/incubateurdesterritoires/Consolidation-des-statistiques-des-exports-Ao-t-2025-242744bf03dd80c18869d38bb6d983f2"
+                  href="https://docs.numerique.gouv.fr/docs/e2e794bb-30b3-41ea-a24f-4ef5c8ec074c"
                   className="fr-link fr-text--xs"
                 >
                   En savoir plus
