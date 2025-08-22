@@ -43,7 +43,10 @@ const dataAvecActivites = {
   isFiltered: false,
   mediateurId: '1',
   searchResult: {
-    matchesCount: activitesForModalStories.length,
+    activitesMatchesCount: activitesForModalStories.length,
+    accompagnementsMatchesCount: activitesForModalStories
+      .map(({ accompagnements }) => accompagnements.length)
+      .reduce((a, b) => a + b, 0),
     moreResults: 0,
     totalPages: 1,
     activites: activitesForModalStories,

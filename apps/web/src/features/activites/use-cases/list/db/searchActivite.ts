@@ -96,7 +96,9 @@ export const searchActivite = async (options: SearchActiviteOptions) => {
     searchResultIds,
   )
 
-  const countQueryResult = await prismaClient.$queryRaw<{ count: number }[]>`
+  const countActivitesQueryResult = await prismaClient.$queryRaw<
+    { count: number }[]
+  >`
       SELECT COUNT(act.id)::INT as count
       FROM activites act
           ${activitesBeneficiaireInnerJoin(options.beneficiaireIds)}
@@ -108,14 +110,31 @@ export const searchActivite = async (options: SearchActiviteOptions) => {
         AND ${filterFragment}
   `
 
-  const matchesCount = countQueryResult.at(0)?.count ?? 0
+  const countAccompagnementsQueryResult = await prismaClient.$queryRaw<
+    { count: number }[]
+  >`
+      SELECT COUNT(act.id)::INT as count
+      FROM accompagnements acc
+          JOIN activites act ON acc.activite_id = act.id
+          LEFT JOIN structures str ON act.structure_id = str.id
+          LEFT JOIN mediateurs med ON act.mediateur_id = med.id
+          LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
+      WHERE (${mediateurIds.length > 0}::BOOLEAN = FALSE OR act.mediateur_id = ANY(${mediateurIds}::UUID[]))
+        AND act.suppression IS NULL
+        AND ${filterFragment}
+  `
 
-  const totalPages = take ? Math.ceil(matchesCount / take) : 1
+  const activitesMatchesCount = countActivitesQueryResult.at(0)?.count ?? 0
+  const accompagnementsMatchesCount =
+    countAccompagnementsQueryResult.at(0)?.count ?? 0
+
+  const totalPages = take ? Math.ceil(activitesMatchesCount / take) : 1
 
   return {
     activites: orderedActivites,
-    matchesCount,
-    moreResults: Math.max(matchesCount - (take ?? 0), 0),
+    activitesMatchesCount,
+    accompagnementsMatchesCount,
+    moreResults: Math.max(activitesMatchesCount - (take ?? 0), 0),
     totalPages,
     page,
     pageSize,

@@ -28,7 +28,8 @@ const MesActivitesPage = async ({
   })
 
   const searchResultMatchesCount = data.then(
-    ({ searchResult: { matchesCount } }) => matchesCount,
+    ({ searchResult: { accompagnementsMatchesCount } }) =>
+      accompagnementsMatchesCount,
   )
 
   const {

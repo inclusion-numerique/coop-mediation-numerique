@@ -45,13 +45,11 @@ export const Accueil = ({
   <CoopPageContainer size={49}>
     <SkipLinksPortal />
     <main id={contentId}>
-      <h1 className="fr-text-title--blue-france fr-mt-10v">
+      <h1 className="fr-text-title--blue-france fr-mt-12v fr-mb-0">
         👋 Bonjour {firstName || name || email}
       </h1>
-      <div className="fr-my-12v fr-flex fr-flex-gap-6v fr-direction-column">
-        <TagsNouvelleFonctionnaliteCard />
-        <CafeIaNouvelleFonctionnaliteCard />
-      </div>
+      <TagsNouvelleFonctionnaliteCard />
+      <CafeIaNouvelleFonctionnaliteCard />
       {isMediateur && (
         <>
           <OnboardingInfo hasSeenOnboarding={hasSeenOnboarding} />
