@@ -33,7 +33,7 @@ const SuspensedContent = async ({
   const baseHref = '/coop/mes-activites'
   return (
     <>
-      <p className="fr-text--bold fr-text--lg fr-mb-6v fr-mt-6v">
+      <p className="fr-text--bold fr-text--lg fr-my-6v">
         {getActivitesResultCountLabel({
           isFiltered,
           searchResult,

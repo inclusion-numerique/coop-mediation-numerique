@@ -9,9 +9,9 @@ import Filters from '@app/web/features/activites/use-cases/list/components/Filte
 import { contentId } from '@app/web/utils/skipLinks'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
+import { AutoPrint } from './AutoPrint'
 import { ExportStatistiques } from './_components/ExportStatistiques'
 import { PrintStatistiques } from './_components/PrintStatistiques'
-import { StatistiquesTerritoriales } from './_components/StatistiquesTerritoriales'
 import { StatistiquesGenerales } from './_sections/StatistiquesGenerales'
 import { MesStatistiquesPageData } from './getMesStatistiquesPageData'
 
@@ -38,9 +38,10 @@ export const MesStatistiques = (
     <CoopPageContainer size={49}>
       <CoopBreadcrumbs currentPage="Mes statistiques" />
       <SkipLinksPortal />
+      <AutoPrint />
       <PrintStatistiques {...mesStatistiquesProps} />
       <main className="fr-no-print" id={contentId}>
-        <h1 className="fr-text-title--blue-france fr-mb-6v">
+        <h1 className="fr-text-title--blue-france fr-mb-5v">
           Mes statistiques
         </h1>
         <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v fr-mb-3w">

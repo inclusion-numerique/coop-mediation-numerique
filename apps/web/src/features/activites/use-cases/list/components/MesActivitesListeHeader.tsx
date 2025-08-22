@@ -42,7 +42,6 @@ const MesActivitesListeHeader = ({
       )}
     >
       <Filters
-        className="fr-mt-0-5v"
         defaultFilters={defaultFilters}
         initialMediateursOptions={initialMediateursOptions}
         initialBeneficiairesOptions={initialBeneficiairesOptions}

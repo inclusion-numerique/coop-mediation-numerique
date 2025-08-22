@@ -41,7 +41,7 @@ const NouvelleFonctionnaliteCard = async ({
   }
 
   return (
-    <div className="fr-background-alt--yellow-tournesol fr-px-8v fr-py-6v fr-border-radius--16 fr-flex fr-flex-gap-8v fr-align-items-center">
+    <div className="fr-background-alt--yellow-tournesol fr-px-8v fr-py-6v fr-mt-6v fr-border-radius--16 fr-flex fr-flex-gap-8v fr-align-items-center">
       <div
         style={{ width: 128 }}
         className="fr-flex-shrink-0 fr-flex-grow-0 fr-flex fr-align-items-center fr-justify-content-center"
