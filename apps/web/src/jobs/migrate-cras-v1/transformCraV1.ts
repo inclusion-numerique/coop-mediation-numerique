@@ -8,7 +8,6 @@ import {
 } from '@prisma/client'
 import type { CraConseillerNumeriqueV1 } from '@prisma/client'
 import { v4 } from 'uuid'
-import { prismaClient } from '@app/web/prismaClient'
 import { missingConseillerV1 } from '../migrate-users-v1/missingConseillerV1'
 
 /**
@@ -29,30 +28,41 @@ type AgeDistribution = {
   plus60ans: number
 }
 
-export const transformCraV1 = async (
+export type TransformCraV1Output = {
+  activite: Prisma.ActiviteCreateInput
+  beneficiaires: Array<Prisma.BeneficiaireCreateInput & { id: string }>
+  accompagnements: Array<{
+    beneficiaireId: string
+    premierAccompagnement: boolean
+  }>
+}
+
+export type TransformCraV1Context = {
+  v1StructuresIdsMap: Map<
+    string,
+    {
+      id: string
+      codePostal?: string | null
+      commune?: string | null
+      codeInsee?: string | null
+    }
+  >
+  v1PermanencesIdsMap: Map<
+    string,
+    {
+      id: string
+      codePostal?: string | null
+      commune?: string | null
+      codeInsee?: string | null
+    }
+  >
+  v1ConseillersIdsMap: Map<string, { userId: string; mediateurId: string }>
+}
+
+export const transformCraV1 = (
   cra: CraConseillerNumeriqueV1,
-  context: {
-    v1StructuresIdsMap: Map<
-      string,
-      {
-        id: string
-        codePostal?: string | null
-        commune?: string | null
-        codeInsee?: string | null
-      }
-    >
-    v1PermanencesIdsMap: Map<
-      string,
-      {
-        id: string
-        codePostal?: string | null
-        commune?: string | null
-        codeInsee?: string | null
-      }
-    >
-    v1ConseillersIdsMap: Map<string, { userId: string; mediateurId: string }>
-  },
-): Promise<Prisma.ActiviteCreateInput> => {
+  context: TransformCraV1Context,
+): TransformCraV1Output => {
   const { v1StructuresIdsMap, v1PermanencesIdsMap, v1ConseillersIdsMap } =
     context
 
@@ -76,14 +86,13 @@ export const transformCraV1 = async (
 
   const typeLieu: TypeLieu = mapV1CanalToV2TypeLieu(cra.canal)
 
-  const { structureId, lieu } = await deriveLieuAndStructure({
+  const { structureId, lieu } = deriveLieuAndStructure({
     typeLieu,
     v1PermanenceId,
     v1StructureId,
     v1PermanencesIdsMap,
     v1StructuresIdsMap,
     cra,
-    structureEmployeuseId,
   })
 
   const dureeMinutes = cra.dureeMinutes ?? parseDureeToMinutes(cra.duree)
@@ -94,18 +103,18 @@ export const transformCraV1 = async (
     nbParticipants: cra.nbParticipants,
   })
 
-  const data: Prisma.ActiviteCreateInput = {
+  const activite: Prisma.ActiviteUncheckedCreateInput & { id: string } = {
     id: v4(),
     type,
-    mediateur: { connect: { id: mediateurId } },
+    mediateurId,
     accompagnementsCount,
     date: new Date(cra.dateAccompagnement),
     duree: dureeMinutes,
     notes: mapNotesFromAnnotations(cra),
     rdvServicePublicId: undefined,
-    structureEmployeuse: { connect: { id: structureEmployeuseId } },
+    structureEmployeuseId,
     typeLieu,
-    structure: structureId ? { connect: { id: structureId } } : undefined,
+    structureId,
     lieuCodePostal: lieu?.codePostal,
     lieuCommune: lieu?.commune,
     lieuCodeInsee: lieu?.codeInsee,
@@ -129,7 +138,54 @@ export const transformCraV1 = async (
     v1PermanenceId: v1PermanenceId ?? undefined,
   }
 
-  return data
+  // --- Build anonymous beneficiaires and accompagnements ---
+  const totalParticipants = type === 'Collectif' ? cra.nbParticipants : 1
+  const recurringParticipants = Math.min(
+    cra.nbParticipantsRecurrents ?? 0,
+    totalParticipants,
+  )
+
+  const age: AgeDistribution = {
+    moins12ans: cra.ageMoins12Ans ?? 0,
+    de12a18ans: cra.ageDe12a18Ans ?? 0,
+    de18a35ans: cra.ageDe18a35Ans ?? 0,
+    de35a60ans: cra.ageDe35a60Ans ?? 0,
+    plus60ans: cra.agePlus60Ans ?? 0,
+  }
+
+  const trancheAgeCounts = splitAgeDistribution(age, defaultAgeSplitProportions)
+  const trancheAgeAssignments: (TrancheAge | undefined)[] = []
+  for (const key of Object.keys(trancheAgeCounts) as TrancheAge[]) {
+    const count = trancheAgeCounts[key] ?? 0
+    for (let i = 0; i < count; i++) trancheAgeAssignments.push(key)
+  }
+  // Normalize to exactly totalParticipants length
+  if (trancheAgeAssignments.length < totalParticipants) {
+    while (trancheAgeAssignments.length < totalParticipants)
+      trancheAgeAssignments.push(undefined)
+  } else if (trancheAgeAssignments.length > totalParticipants) {
+    trancheAgeAssignments.length = totalParticipants
+  }
+
+  const beneficiaires: (Prisma.BeneficiaireUncheckedCreateInput & {
+    id: string
+  })[] = trancheAgeAssignments.map((assignedTranche) => ({
+    id: v4(),
+    mediateurId,
+    anonyme: true,
+    trancheAge: assignedTranche,
+  }))
+
+  const accompagnements: (Prisma.AccompagnementUncheckedCreateInput & {
+    id: string
+  })[] = beneficiaires.map((b, index) => ({
+    id: v4(),
+    beneficiaireId: b.id,
+    activiteId: activite.id,
+    premierAccompagnement: index >= recurringParticipants,
+  }))
+
+  return { activite, beneficiaires, accompagnements }
 }
 
 // Helpers: IDs and relations
@@ -214,14 +270,13 @@ const mapNotesFromAnnotations = (
   return cra.annotation ?? undefined
 }
 
-const deriveLieuAndStructure = async ({
+const deriveLieuAndStructure = ({
   typeLieu,
   v1PermanenceId,
   v1StructureId,
   v1PermanencesIdsMap,
   v1StructuresIdsMap,
   cra,
-  structureEmployeuseId,
 }: {
   typeLieu: TypeLieu
   v1PermanenceId?: string
@@ -245,11 +300,10 @@ const deriveLieuAndStructure = async ({
     }
   >
   cra: CraConseillerNumeriqueV1
-  structureEmployeuseId: string
-}): Promise<{
+}): {
   structureId?: string
   lieu?: { codePostal?: string; commune?: string; codeInsee?: string }
-}> => {
+} => {
   if (typeLieu === 'LieuActivite') {
     // Prefer permanence mapping when present, fallback to structure mapping
     const fromPerm = v1PermanenceId
@@ -264,15 +318,12 @@ const deriveLieuAndStructure = async ({
   }
 
   if (typeLieu === 'ADistance') {
-    // Assign to the commune of the structure employeuse
-    const se = await prismaClient.structure.findUnique({
-      where: { id: structureEmployeuseId },
-      select: { codePostal: true, commune: true, codeInsee: true },
-    })
+    // Assign to the commune of the structure employeuse using provided map
+    const se = v1StructureId ? v1StructuresIdsMap.get(v1StructureId) : undefined
     return {
       lieu: {
-        codePostal: se?.codePostal,
-        commune: se?.commune,
+        codePostal: se?.codePostal ?? undefined,
+        commune: se?.commune ?? undefined,
         codeInsee: se?.codeInsee ?? undefined,
       },
     }

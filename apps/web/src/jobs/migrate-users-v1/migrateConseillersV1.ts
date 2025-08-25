@@ -230,7 +230,7 @@ export const migrateConseillersV1 = async ({
   conseillersIdsMap,
 }: {
   v1ConseillersIds: Map<string, number> // map from v1id to number of cras
-  conseillersIdsMap: Map<string, string>
+  conseillersIdsMap: Map<string, { userId: string; mediateurId: string }>
 }) => {
   const chunks = chunk([...v1ConseillersIds.entries()], batchSize)
 
