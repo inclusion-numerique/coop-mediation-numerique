@@ -2,6 +2,7 @@ import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import type { ConseillerNumeriqueV1Collection } from '@app/web/external-apis/conseiller-numerique/ConseillerNumeriqueV1Document'
 import * as mongoDB from 'mongodb'
 import { type Collection, type Document, ObjectId } from 'mongodb'
+import { PermanenceV1Document } from '@app/web/jobs/migrate-structures-v1/PermanenceV1Document'
 
 let client: mongoDB.MongoClient
 
@@ -49,6 +50,9 @@ export type ConseillerNumeriqueMongoCollectionName =
 export function conseillerNumeriqueMongoCollection(
   collectionName: 'conseillers',
 ): Promise<ConseillerNumeriqueV1Collection>
+export function conseillerNumeriqueMongoCollection(
+  collectionName: 'permanences',
+): Promise<Collection<PermanenceV1Document>>
 export function conseillerNumeriqueMongoCollection<
   TSchema extends Document = Document,
 >(

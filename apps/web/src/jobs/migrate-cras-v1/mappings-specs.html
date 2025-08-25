@@ -1,0 +1,1304 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Tableaux comparatifs des données entre les CRA V1 et V2</title>
+  <style>
+      /* cspell:disable-file */
+      /* webkit printing magic: print all background colors */
+      html {
+          -webkit-print-color-adjust: exact;
+      }
+
+      * {
+          box-sizing: border-box;
+          -webkit-print-color-adjust: exact;
+      }
+
+      html,
+      body {
+          margin: 0;
+          padding: 0;
+      }
+
+      @media only screen {
+          body {
+              margin: 2em auto;
+              max-width: 900px;
+              color: rgb(55, 53, 47);
+          }
+      }
+
+      body {
+          line-height: 1.5;
+          white-space: pre-wrap;
+      }
+
+      a,
+      a.visited {
+          color: inherit;
+          text-decoration: underline;
+      }
+
+      .pdf-relative-link-path {
+          font-size: 80%;
+          color: #444;
+      }
+
+      h1,
+      h2,
+      h3 {
+          letter-spacing: -0.01em;
+          line-height: 1.2;
+          font-weight: 600;
+          margin-bottom: 0;
+      }
+
+      .page-title {
+          font-size: 2.5rem;
+          font-weight: 700;
+          margin-top: 0;
+          margin-bottom: 0.75em;
+      }
+
+      h1 {
+          font-size: 1.875rem;
+          margin-top: 1.875rem;
+      }
+
+      h2 {
+          font-size: 1.5rem;
+          margin-top: 1.5rem;
+      }
+
+      h3 {
+          font-size: 1.25rem;
+          margin-top: 1.25rem;
+      }
+
+      .source {
+          border: 1px solid #ddd;
+          border-radius: 3px;
+          padding: 1.5em;
+          word-break: break-all;
+      }
+
+      .callout {
+          border-radius: 3px;
+          padding: 1rem;
+      }
+
+      figure {
+          margin: 1.25em 0;
+          page-break-inside: avoid;
+      }
+
+      figcaption {
+          opacity: 0.5;
+          font-size: 85%;
+          margin-top: 0.5em;
+      }
+
+      mark {
+          background-color: transparent;
+      }
+
+      .indented {
+          padding-left: 1.5em;
+      }
+
+      hr {
+          background: transparent;
+          display: block;
+          width: 100%;
+          height: 1px;
+          visibility: visible;
+          border: none;
+          border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+      }
+
+      img {
+          max-width: 100%;
+      }
+
+      @media only print {
+          img {
+              max-height: 100vh;
+              object-fit: contain;
+          }
+      }
+
+      @page {
+          margin: 1in;
+      }
+
+      .collection-content {
+          font-size: 0.875rem;
+      }
+
+      .column-list {
+          display: flex;
+          justify-content: space-between;
+      }
+
+      .column {
+          padding: 0 1em;
+      }
+
+      .column:first-child {
+          padding-left: 0;
+      }
+
+      .column:last-child {
+          padding-right: 0;
+      }
+
+      .table_of_contents-item {
+          display: block;
+          font-size: 0.875rem;
+          line-height: 1.3;
+          padding: 0.125rem;
+      }
+
+      .table_of_contents-indent-1 {
+          margin-left: 1.5rem;
+      }
+
+      .table_of_contents-indent-2 {
+          margin-left: 3rem;
+      }
+
+      .table_of_contents-indent-3 {
+          margin-left: 4.5rem;
+      }
+
+      .table_of_contents-link {
+          text-decoration: none;
+          opacity: 0.7;
+          border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+      }
+
+      table,
+      th,
+      td {
+          border: 1px solid rgba(55, 53, 47, 0.09);
+          border-collapse: collapse;
+      }
+
+      table {
+          border-left: none;
+          border-right: none;
+      }
+
+      th,
+      td {
+          font-weight: normal;
+          padding: 0.25em 0.5em;
+          line-height: 1.5;
+          min-height: 1.5em;
+          text-align: left;
+      }
+
+      th {
+          color: rgba(55, 53, 47, 0.6);
+      }
+
+      ol,
+      ul {
+          margin: 0;
+          margin-block-start: 0.6em;
+          margin-block-end: 0.6em;
+      }
+
+      li > ol:first-child,
+      li > ul:first-child {
+          margin-block-start: 0.6em;
+      }
+
+      ul > li {
+          list-style: disc;
+      }
+
+      ul.to-do-list {
+          padding-inline-start: 0;
+      }
+
+      ul.to-do-list > li {
+          list-style: none;
+      }
+
+      .to-do-children-checked {
+          text-decoration: line-through;
+          opacity: 0.375;
+      }
+
+      ul.toggle > li {
+          list-style: none;
+      }
+
+      ul {
+          padding-inline-start: 1.7em;
+      }
+
+      ul > li {
+          padding-left: 0.1em;
+      }
+
+      ol {
+          padding-inline-start: 1.6em;
+      }
+
+      ol > li {
+          padding-left: 0.2em;
+      }
+
+      .mono ol {
+          padding-inline-start: 2em;
+      }
+
+      .mono ol > li {
+          text-indent: -0.4em;
+      }
+
+      .toggle {
+          padding-inline-start: 0em;
+          list-style-type: none;
+      }
+
+      /* Indent toggle children */
+      .toggle > li > details {
+          padding-left: 1.7em;
+      }
+
+      .toggle > li > details > summary {
+          margin-left: -1.1em;
+      }
+
+      .selected-value {
+          display: inline-block;
+          padding: 0 0.5em;
+          background: rgba(206, 205, 202, 0.5);
+          border-radius: 3px;
+          margin-right: 0.5em;
+          margin-top: 0.3em;
+          margin-bottom: 0.3em;
+          white-space: nowrap;
+      }
+
+      .collection-title {
+          display: inline-block;
+          margin-right: 1em;
+      }
+
+      .page-description {
+          margin-bottom: 2em;
+      }
+
+      .simple-table {
+          margin-top: 1em;
+          font-size: 0.875rem;
+          empty-cells: show;
+      }
+
+      .simple-table td {
+          height: 29px;
+          min-width: 120px;
+      }
+
+      .simple-table th {
+          height: 29px;
+          min-width: 120px;
+      }
+
+      .simple-table-header-color {
+          background: rgb(247, 246, 243);
+          color: black;
+      }
+
+      .simple-table-header {
+          font-weight: 500;
+      }
+
+      time {
+          opacity: 0.5;
+      }
+
+      .icon {
+          display: inline-block;
+          max-width: 1.2em;
+          max-height: 1.2em;
+          text-decoration: none;
+          vertical-align: text-bottom;
+          margin-right: 0.5em;
+      }
+
+      img.icon {
+          border-radius: 3px;
+      }
+
+      .user-icon {
+          width: 1.5em;
+          height: 1.5em;
+          border-radius: 100%;
+          margin-right: 0.5rem;
+      }
+
+      .user-icon-inner {
+          font-size: 0.8em;
+      }
+
+      .text-icon {
+          border: 1px solid #000;
+          text-align: center;
+      }
+
+      .page-cover-image {
+          display: block;
+          object-fit: cover;
+          width: 100%;
+          max-height: 30vh;
+      }
+
+      .page-header-icon {
+          font-size: 3rem;
+          margin-bottom: 1rem;
+      }
+
+      .page-header-icon-with-cover {
+          margin-top: -0.72em;
+          margin-left: 0.07em;
+      }
+
+      .page-header-icon img {
+          border-radius: 3px;
+      }
+
+      .link-to-page {
+          margin: 1em 0;
+          padding: 0;
+          border: none;
+          font-weight: 500;
+      }
+
+      p > .user {
+          opacity: 0.5;
+      }
+
+      td > .user,
+      td > time {
+          white-space: nowrap;
+      }
+
+      input[type="checkbox"] {
+          transform: scale(1.5);
+          margin-right: 0.6em;
+          vertical-align: middle;
+      }
+
+      p {
+          margin-top: 0.5em;
+          margin-bottom: 0.5em;
+      }
+
+      .image {
+          border: none;
+          margin: 1.5em 0;
+          padding: 0;
+          border-radius: 0;
+          text-align: center;
+      }
+
+      .code,
+      code {
+          background: rgba(135, 131, 120, 0.15);
+          border-radius: 3px;
+          padding: 0.2em 0.4em;
+          border-radius: 3px;
+          font-size: 85%;
+          tab-size: 2;
+      }
+
+      code {
+          color: #eb5757;
+      }
+
+      .code {
+          padding: 1.5em 1em;
+      }
+
+      .code-wrap {
+          white-space: pre-wrap;
+          word-break: break-all;
+      }
+
+      .code > code {
+          background: none;
+          padding: 0;
+          font-size: 100%;
+          color: inherit;
+      }
+
+      blockquote {
+          font-size: 1.25em;
+          margin: 1em 0;
+          padding-left: 1em;
+          border-left: 3px solid rgb(55, 53, 47);
+      }
+
+      .bookmark {
+          text-decoration: none;
+          max-height: 8em;
+          padding: 0;
+          display: flex;
+          width: 100%;
+          align-items: stretch;
+      }
+
+      .bookmark-title {
+          font-size: 0.85em;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          height: 1.75em;
+          white-space: nowrap;
+      }
+
+      .bookmark-text {
+          display: flex;
+          flex-direction: column;
+      }
+
+      .bookmark-info {
+          flex: 4 1 180px;
+          padding: 12px 14px 14px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+      }
+
+      .bookmark-image {
+          width: 33%;
+          flex: 1 1 180px;
+          display: block;
+          position: relative;
+          object-fit: cover;
+          border-radius: 1px;
+      }
+
+      .bookmark-description {
+          color: rgba(55, 53, 47, 0.6);
+          font-size: 0.75em;
+          overflow: hidden;
+          max-height: 4.5em;
+          word-break: break-word;
+      }
+
+      .bookmark-href {
+          font-size: 0.75em;
+          margin-top: 0.25em;
+      }
+
+      .sans {
+          font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+      }
+
+      .code {
+          font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace;
+      }
+
+      .serif {
+          font-family: Lyon-Text, Georgia, ui-serif, serif;
+      }
+
+      .mono {
+          font-family: iawriter-mono, Nitti, Menlo, Courier, monospace;
+      }
+
+      .pdf .sans {
+          font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP';
+      }
+
+      .pdf:lang(zh-CN) .sans {
+          font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC';
+      }
+
+      .pdf:lang(zh-TW) .sans {
+          font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC';
+      }
+
+      .pdf:lang(ko-KR) .sans {
+          font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR';
+      }
+
+      .pdf .code {
+          font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP';
+      }
+
+      .pdf:lang(zh-CN) .code {
+          font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC';
+      }
+
+      .pdf:lang(zh-TW) .code {
+          font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC';
+      }
+
+      .pdf:lang(ko-KR) .code {
+          font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR';
+      }
+
+      .pdf .serif {
+          font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP';
+      }
+
+      .pdf:lang(zh-CN) .serif {
+          font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC';
+      }
+
+      .pdf:lang(zh-TW) .serif {
+          font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC';
+      }
+
+      .pdf:lang(ko-KR) .serif {
+          font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR';
+      }
+
+      .pdf .mono {
+          font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP';
+      }
+
+      .pdf:lang(zh-CN) .mono {
+          font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC';
+      }
+
+      .pdf:lang(zh-TW) .mono {
+          font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC';
+      }
+
+      .pdf:lang(ko-KR) .mono {
+          font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR';
+      }
+
+      .highlight-default {
+          color: rgba(50, 48, 44, 1);
+      }
+
+      .highlight-gray {
+          color: rgba(115, 114, 110, 1);
+          fill: rgba(115, 114, 110, 1);
+      }
+
+      .highlight-brown {
+          color: rgba(159, 107, 83, 1);
+          fill: rgba(159, 107, 83, 1);
+      }
+
+      .highlight-orange {
+          color: rgba(217, 115, 13, 1);
+          fill: rgba(217, 115, 13, 1);
+      }
+
+      .highlight-yellow {
+          color: rgba(203, 145, 47, 1);
+          fill: rgba(203, 145, 47, 1);
+      }
+
+      .highlight-teal {
+          color: rgba(68, 131, 97, 1);
+          fill: rgba(68, 131, 97, 1);
+      }
+
+      .highlight-blue {
+          color: rgba(51, 126, 169, 1);
+          fill: rgba(51, 126, 169, 1);
+      }
+
+      .highlight-purple {
+          color: rgba(144, 101, 176, 1);
+          fill: rgba(144, 101, 176, 1);
+      }
+
+      .highlight-pink {
+          color: rgba(193, 76, 138, 1);
+          fill: rgba(193, 76, 138, 1);
+      }
+
+      .highlight-red {
+          color: rgba(205, 60, 58, 1);
+          fill: rgba(205, 60, 58, 1);
+      }
+
+      .highlight-default_background {
+          color: rgba(50, 48, 44, 1);
+      }
+
+      .highlight-gray_background {
+          background: rgba(248, 248, 247, 1);
+      }
+
+      .highlight-brown_background {
+          background: rgba(244, 238, 238, 1);
+      }
+
+      .highlight-orange_background {
+          background: rgba(251, 236, 221, 1);
+      }
+
+      .highlight-yellow_background {
+          background: rgba(251, 243, 219, 1);
+      }
+
+      .highlight-teal_background {
+          background: rgba(237, 243, 236, 1);
+      }
+
+      .highlight-blue_background {
+          background: rgba(231, 243, 248, 1);
+      }
+
+      .highlight-purple_background {
+          background: rgba(248, 243, 252, 1);
+      }
+
+      .highlight-pink_background {
+          background: rgba(252, 241, 246, 1);
+      }
+
+      .highlight-red_background {
+          background: rgba(253, 235, 236, 1);
+      }
+
+      .block-color-default {
+          color: inherit;
+          fill: inherit;
+      }
+
+      .block-color-gray {
+          color: rgba(115, 114, 110, 1);
+          fill: rgba(115, 114, 110, 1);
+      }
+
+      .block-color-brown {
+          color: rgba(159, 107, 83, 1);
+          fill: rgba(159, 107, 83, 1);
+      }
+
+      .block-color-orange {
+          color: rgba(217, 115, 13, 1);
+          fill: rgba(217, 115, 13, 1);
+      }
+
+      .block-color-yellow {
+          color: rgba(203, 145, 47, 1);
+          fill: rgba(203, 145, 47, 1);
+      }
+
+      .block-color-teal {
+          color: rgba(68, 131, 97, 1);
+          fill: rgba(68, 131, 97, 1);
+      }
+
+      .block-color-blue {
+          color: rgba(51, 126, 169, 1);
+          fill: rgba(51, 126, 169, 1);
+      }
+
+      .block-color-purple {
+          color: rgba(144, 101, 176, 1);
+          fill: rgba(144, 101, 176, 1);
+      }
+
+      .block-color-pink {
+          color: rgba(193, 76, 138, 1);
+          fill: rgba(193, 76, 138, 1);
+      }
+
+      .block-color-red {
+          color: rgba(205, 60, 58, 1);
+          fill: rgba(205, 60, 58, 1);
+      }
+
+      .block-color-default_background {
+          color: inherit;
+          fill: inherit;
+      }
+
+      .block-color-gray_background {
+          background: rgba(248, 248, 247, 1);
+      }
+
+      .block-color-brown_background {
+          background: rgba(244, 238, 238, 1);
+      }
+
+      .block-color-orange_background {
+          background: rgba(251, 236, 221, 1);
+      }
+
+      .block-color-yellow_background {
+          background: rgba(251, 243, 219, 1);
+      }
+
+      .block-color-teal_background {
+          background: rgba(237, 243, 236, 1);
+      }
+
+      .block-color-blue_background {
+          background: rgba(231, 243, 248, 1);
+      }
+
+      .block-color-purple_background {
+          background: rgba(248, 243, 252, 1);
+      }
+
+      .block-color-pink_background {
+          background: rgba(252, 241, 246, 1);
+      }
+
+      .block-color-red_background {
+          background: rgba(253, 235, 236, 1);
+      }
+
+      .select-value-color-default {
+          background-color: rgba(84, 72, 49, 0.08);
+      }
+
+      .select-value-color-gray {
+          background-color: rgba(84, 72, 49, 0.15);
+      }
+
+      .select-value-color-brown {
+          background-color: rgba(210, 162, 141, 0.35);
+      }
+
+      .select-value-color-orange {
+          background-color: rgba(224, 124, 57, 0.27);
+      }
+
+      .select-value-color-yellow {
+          background-color: rgba(236, 191, 66, 0.39);
+      }
+
+      .select-value-color-green {
+          background-color: rgba(123, 183, 129, 0.27);
+      }
+
+      .select-value-color-blue {
+          background-color: rgba(93, 165, 206, 0.27);
+      }
+
+      .select-value-color-purple {
+          background-color: rgba(168, 129, 197, 0.27);
+      }
+
+      .select-value-color-pink {
+          background-color: rgba(225, 136, 179, 0.27);
+      }
+
+      .select-value-color-red {
+          background-color: rgba(244, 171, 159, 0.4);
+      }
+
+      .checkbox {
+          display: inline-flex;
+          vertical-align: text-bottom;
+          width: 16;
+          height: 16;
+          background-size: 16px;
+          margin-left: 2px;
+          margin-right: 5px;
+      }
+
+      .checkbox-on {
+          background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+      }
+
+      .checkbox-off {
+          background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+      }
+
+  </style>
+</head>
+<body>
+<article id="231744bf-03dd-80cc-b4b3-cc3d4b32162d" class="page sans">
+  <header>
+    <div class="page-header-icon undefined"><span class="icon">ℹ️</span></div>
+    <h1 class="page-title">Tableaux comparatifs des données entre les CRA V1 et V2</h1>
+    <p class="page-description"></p></header>
+  <div class="page-body"><h1 id="231744bf-03dd-808e-a0d2-dfd2a39e65d7" class=""><strong>Tableau comparatif général des
+    données récoltées via les CRA V1 et V2</strong></h1>
+    <p id="242744bf-03dd-809e-a77f-d03dd739122b" class="">
+    </p>
+    <p id="242744bf-03dd-80dc-90ea-dad81be835ff" class=""><strong>Légendes : </strong></p>
+    <ul id="242744bf-03dd-8075-a01a-c9c8207ac068" class="bulleted-list">
+      <li style="list-style-type:disc">
+        <mark class="highlight-orange_background"><strong>Lignes oranges :</strong></mark>
+        <mark class="highlight-orange_background"> différence entre les données comparées, besoin de réaliser des
+          correspondances
+        </mark>
+      </li>
+    </ul>
+    <ul id="242744bf-03dd-8027-8813-c6f2205d430c" class="bulleted-list">
+      <li style="list-style-type:disc">❌ : Cette donnée existe uniquement dans une des versions</li>
+    </ul>
+    <p id="242744bf-03dd-8040-8047-dc28d46c2163" class="">
+    </p>
+    <table id="231744bf-03dd-80ca-ae6c-deefa684d029" class="simple-table">
+      <thead class="simple-table-header">
+      <tr id="231744bf-03dd-8091-b287-c562ceaf2bb7">
+        <th id="&gt;cA&lt;" class="simple-table-header-color simple-table-header"
+            style="width:235.66666666666666px"></th>
+        <th id="\;Gm" class="simple-table-header-color simple-table-header" style="width:235.66666666666666px">Espace
+          Coop - V1
+        </th>
+        <th id="`a\&gt;" class="simple-table-header-color simple-table-header" style="width:235.66666666666666px">La
+          Coop - V2
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr id="231744bf-03dd-803d-9a78-d45e3d6904eb">
+        <th id="&gt;cA&lt;" class="simple-table-header-color simple-table-header" style="width:235.66666666666666px">
+          Date d’accompagnement
+        </th>
+        <td id="\;Gm" class="" style="width:235.66666666666666px">JJ/MM/AAAA</td>
+        <td id="`a\&gt;" class="" style="width:235.66666666666666px">JJ/MM/AAAA</td>
+      </tr>
+      <tr id="231744bf-03dd-8072-b9e0-f0685fd07930">
+        <th id="&gt;cA&lt;" class="block-color-orange_background simple-table-header"
+            style="width:235.66666666666666px">Type d’accompagnement
+        </th>
+        <td id="\;Gm" class="block-color-orange_background" style="width:235.66666666666666px">- Accompagnement
+          individuel<br />- Atelier collectif<br />
+          <mark class="highlight-orange_background">- Demande ponctuelle</mark>
+        </td>
+        <td id="`a\&gt;" class="block-color-orange_background" style="width:235.66666666666666px">- Accompagnement
+          individuel<br />- Atelier collectif
+        </td>
+      </tr>
+      <tr id="231744bf-03dd-80a0-8695-cc2d93f32397">
+        <th id="&gt;cA&lt;" class="simple-table-header-color simple-table-header" style="width:235.66666666666666px">
+          Nombre de participants
+        </th>
+        <td id="\;Gm" class="" style="width:235.66666666666666px">XX</td>
+        <td id="`a\&gt;" class="" style="width:235.66666666666666px">XX</td>
+      </tr>
+      <tr id="231744bf-03dd-80a2-90a4-f5c8f9a6bbc9">
+        <th id="&gt;cA&lt;" class="simple-table-header-color simple-table-header" style="width:235.66666666666666px">
+          Récurrence des personnes (Bénéficiaires déjà accompagnés)
+        </th>
+        <td id="\;Gm" class="" style="width:235.66666666666666px">XX</td>
+        <td id="`a\&gt;" class="" style="width:235.66666666666666px">XX</td>
+      </tr>
+      <tr id="231744bf-03dd-80d7-bfaf-dd4f10aa0397">
+        <th id="&gt;cA&lt;" class="simple-table-header-color simple-table-header" style="width:235.66666666666666px">
+          Bénéficiaire
+        </th>
+        <td id="\;Gm" class="" style="width:235.66666666666666px">❌</td>
+        <td id="`a\&gt;" class="" style="width:235.66666666666666px">- Nom Prénom<br />- Anonyme</td>
+      </tr>
+      <tr id="231744bf-03dd-8052-b67b-dc5f7174cc12">
+        <th id="&gt;cA&lt;" class="simple-table-header-color simple-table-header" style="width:235.66666666666666px">
+          Canal d’accompagnement
+        </th>
+        <td id="\;Gm" class="" style="width:235.66666666666666px">- Lieu d’activité<br />- Autre lieu<br />- À
+          domicile<br />- À distance<br /></td>
+        <td id="`a\&gt;" class="" style="width:235.66666666666666px">- Lieu d’activité<br />- Autre lieu<br />- À
+          domicile<br />- À distance
+        </td>
+      </tr>
+      <tr id="231744bf-03dd-80fc-92c7-f37eba0c07d8">
+        <th id="&gt;cA&lt;" class="simple-table-header-color simple-table-header" style="width:235.66666666666666px">
+          Lieu d’accompagnement
+        </th>
+        <td id="\;Gm" class="" style="width:235.66666666666666px">- Lieu d’activité : Nom du lieu, commune, code
+          postal<br />- Autre lieu : Commune, code postal<br />- À domicile : Commune, code postal<br />- À distance : À
+          vérifier
+        </td>
+        <td id="`a\&gt;" class="" style="width:235.66666666666666px">- Lieu d’activité : Nom du lieu, commune, code
+          postal<br />- Autre lieu : Commune, code postal<br />- À domicile : Commune, code postal<br />- À distance :
+          Structure employeuse : Nom du lieu, commune, code postal
+        </td>
+      </tr>
+      <tr id="231744bf-03dd-802b-b3e0-c1d8a711110f">
+        <th id="&gt;cA&lt;" class="simple-table-header-color simple-table-header" style="width:235.66666666666666px">
+          Durée (min.)
+        </th>
+        <td id="\;Gm" class="" style="width:235.66666666666666px">XX</td>
+        <td id="`a\&gt;" class="" style="width:235.66666666666666px">XX</td>
+      </tr>
+      <tr id="231744bf-03dd-806c-aa3f-e139f2a9e9f7">
+        <th id="&gt;cA&lt;" class="simple-table-header-color simple-table-header" style="width:235.66666666666666px">Nom
+          de l’atelier
+        </th>
+        <td id="\;Gm" class="" style="width:235.66666666666666px">❌</td>
+        <td id="`a\&gt;" class="" style="width:235.66666666666666px">Nom de l’atelier (champs libre)</td>
+      </tr>
+      <tr id="231744bf-03dd-809c-a822-c3d926af9bf5">
+        <th id="&gt;cA&lt;" class="simple-table-header-color simple-table-header" style="width:235.66666666666666px">
+          Matériel numérique utilisé
+        </th>
+        <td id="\;Gm" class="" style="width:235.66666666666666px">❌</td>
+        <td id="`a\&gt;" class="" style="width:235.66666666666666px">- Ordinateur<br />- Téléphone<br />- Tablette<br />-
+          Autre<br />- Pas de matériel
+        </td>
+      </tr>
+      <tr id="231744bf-03dd-807a-8090-ebe9a5b605c0">
+        <th id="&gt;cA&lt;" class="block-color-orange_background simple-table-header"
+            style="width:235.66666666666666px">Thématique(s) d’accompagnement
+        </th>
+        <td id="\;Gm" class="block-color-orange_background" style="width:235.66666666666666px">- Diagnostic
+          numérique<br />- Prendre en main du matériel<br />- Budget<br />- Culture numérique<br />- Comment naviguer
+          sur internet<br />- Emploi, formation<br />- Gérer ses courriels<br />- Échanger avec ses proches<br />-
+          Assister un professionnel<br />- Sécuriser un équipement<br />- Contenus numériques<br />- Accompagner un
+          aidant<br />- Prévenir les fraudes, le harcèlement<br />- Bureautique<br />- Scolaire<br />- Santé<br />-
+          Démarches administratives<br />- Préciser la thématique cochée (champs libre)
+        </td>
+        <td id="`a\&gt;" class="block-color-orange_background" style="width:235.66666666666666px">- Diagnostic numérique<br />-
+          Prendre en main du matériel<br />- Maintenance de matériel<br />- Gérer ses contenus numériques<br />-
+          Navigation sur internet<br />- E-mail<br />- Bureautique<br />- Réseaux sociaux - communication<br />-
+          Santé<br />- Banque et achats en ligne<br />- Aide aux démarches administratives<br />- Accompagner un
+          professionnel<br />- Insertion professionnelle<br />- Prévention en sécurité numérique<br />-
+          Parentalité<br />- Scolarité et numérique<br />- Créer avec le numérique<br />- Culture numérique<br />-
+          Intelligence artificielle (IA)
+        </td>
+      </tr>
+      <tr id="231744bf-03dd-80b6-8863-d3dd700b6d21">
+        <th id="&gt;cA&lt;" class="simple-table-header-color simple-table-header" style="width:235.66666666666666px">
+          Thématique(s) d’accompagnement : Aide aux démarches administratives
+        </th>
+        <td id="\;Gm" class="" style="width:235.66666666666666px">❌</td>
+        <td id="`a\&gt;" class="" style="width:235.66666666666666px">- Papiers - Citoyenneté - Élections<br />- Famille
+          - Scolarité<br />- Social - Santé<br />- Travail - Formation - Entreprise<br />- Logement<br />- Transports -
+          Mobilité<br />- Argent - Impôts<br />- Justice<br />- Étrangers - Europe<br />- Loisirs - Sports -
+          Culture<br />- Associations
+        </td>
+      </tr>
+      <tr id="231744bf-03dd-80a5-9d8f-f91038bc05dd">
+        <th id="&gt;cA&lt;" class="simple-table-header-color simple-table-header" style="width:235.66666666666666px">Nom
+          de la démarche administrative
+        </th>
+        <td id="\;Gm" class="" style="width:235.66666666666666px">❌</td>
+        <td id="`a\&gt;" class="" style="width:235.66666666666666px">Nom démarche (champs libre)</td>
+      </tr>
+      <tr id="231744bf-03dd-8060-a3fb-d6bfb8d314e6">
+        <th id="&gt;cA&lt;" class="simple-table-header-color simple-table-header" style="width:235.66666666666666px">
+          Bénéficiaire réorienté
+        </th>
+        <td id="\;Gm" class="" style="width:235.66666666666666px">❌</td>
+        <td id="`a\&gt;" class="" style="width:235.66666666666666px">Oui / Non</td>
+      </tr>
+      <tr id="231744bf-03dd-80f6-98e0-ddf710160a82">
+        <th id="&gt;cA&lt;" class="simple-table-header-color simple-table-header" style="width:235.66666666666666px">
+          L’accompagnement va-t-il être poursuivi ?
+        </th>
+        <td id="\;Gm" class="" style="width:235.66666666666666px">- Accompagnement individuel<br />- Atelier
+          collectif<br />- Redirection vers une structure
+        </td>
+        <td id="`a\&gt;" class="" style="width:235.66666666666666px">❌</td>
+      </tr>
+      <tr id="231744bf-03dd-8003-a359-d40c5ab24b91">
+        <th id="&gt;cA&lt;" class="block-color-orange_background simple-table-header"
+            style="width:235.66666666666666px">Structure de redirection
+        </th>
+        <td id="\;Gm" class="block-color-orange_background" style="width:235.66666666666666px">- Tiers-lieu /
+          Fablab<br />- Pôle emploi<br />- CARSAT<br />- ANTS<br />- CEFS<br />- CCAS<br />- CAF<br />- DGFIP<br />-
+          France Services<br />- Autres
+        </td>
+        <td id="`a\&gt;" class="block-color-orange_background" style="width:235.66666666666666px">- Administration
+          (Mairie, préfecture...)<br />- Autre structure de médiation numérique<br />- Opérateur ou organisme en charge
+          de la démarche administrative<br />- Structure d&#x27;aide sociale (maison des solidarités, centre
+          social...)<br />- Structure d&#x27;insertion professionnelle (France Travail, mission locale, chambre de
+          commerce...)<br />- Structure d’aide aux démarches administratives (France Services...)<br />- Autre
+        </td>
+      </tr>
+      <tr id="231744bf-03dd-80cb-9917-e82a05a2e73e">
+        <th id="&gt;cA&lt;" class="simple-table-header-color simple-table-header" style="width:235.66666666666666px">
+          Niveau d’autonomie (ou de l’atelier)
+        </th>
+        <td id="\;Gm" class="" style="width:235.66666666666666px">❌</td>
+        <td id="`a\&gt;" class="" style="width:235.66666666666666px">- 1/3 : Avec guidage<br />- 2/3 : Autonome avec
+          guidage<br />en cas de besoin<br />- 3/3 : Autonome
+        </td>
+      </tr>
+      <tr id="231744bf-03dd-803c-8d5d-fa151f5167ca">
+        <th id="&gt;cA&lt;" class="simple-table-header-color simple-table-header" style="width:235.66666666666666px">
+          Commune de résidence du bénéficiaire
+        </th>
+        <td id="\;Gm" class="" style="width:235.66666666666666px">❌</td>
+        <td id="`a\&gt;" class="" style="width:235.66666666666666px">Commune, code postal</td>
+      </tr>
+      <tr id="231744bf-03dd-808c-a302-d0ec14e3c7f1">
+        <th id="&gt;cA&lt;" class="simple-table-header-color simple-table-header" style="width:235.66666666666666px">
+          Genre du bénéficiaire
+        </th>
+        <td id="\;Gm" class="" style="width:235.66666666666666px">❌</td>
+        <td id="`a\&gt;" class="" style="width:235.66666666666666px">- Féminin<br />- Masculin<br />- Non communiqué
+        </td>
+      </tr>
+      <tr id="231744bf-03dd-806a-831d-fdf63912cf28">
+        <th id="&gt;cA&lt;" class="block-color-orange_background simple-table-header"
+            style="width:235.66666666666666px">Tranche d’âge du bénéficiaire
+        </th>
+        <td id="\;Gm" class="block-color-orange_background" style="width:235.66666666666666px">- Moins de 12 ans<br />-
+          12-18 ans<br />- 18-35 ans<br />- 35-60 ans<br />- Plus de 60 ans
+        </td>
+        <td id="`a\&gt;" class="block-color-orange_background" style="width:235.66666666666666px">- Moins de 12
+          ans<br />- 12 - 17 ans<br />- 18 - 24 ans<br />- 25 - 39 ans<br />- 40 - 59 ans<br />- 60 - 69 ans<br />- 70
+          ans ou plus<br />- Non communiqué
+        </td>
+      </tr>
+      <tr id="231744bf-03dd-80bc-83ce-dd5b46d7f3e9">
+        <th id="&gt;cA&lt;" class="simple-table-header-color simple-table-header" style="width:235.66666666666666px">
+          Statut du bénéficiaire
+        </th>
+        <td id="\;Gm" class="" style="width:235.66666666666666px">- Scolarisé(e)<br />- Sans emploi<br />- En
+          emploi<br />- Retraité<br />- Non renseigné ou hétérogène
+        </td>
+        <td id="`a\&gt;" class="" style="width:235.66666666666666px">- Scolarisé(e)<br />- Sans emploi<br />- En
+          emploi<br />- Retraité(e)<br />- Non communiqué ou hétérogène
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <p id="231744bf-03dd-80f7-9cd5-f4eaabb60954" class="">
+    </p>
+    <h1 id="231744bf-03dd-80a8-91d7-e2b47cf69a81" class="">Tableaux comparatifs pour les 4 types de données où des
+      correspondances sont nécessaires</h1>
+    <p id="231744bf-03dd-80df-8404-d071bf2f4afb" class="">
+    </p>
+    <p id="231744bf-03dd-8096-b5d8-c48a09b2fc2a" class=""><strong>4 types de données où il faut réaliser des
+      correspondances :</strong></p>
+    <ul id="231744bf-03dd-802a-9d87-db82d6a0d5a4" class="bulleted-list">
+      <li style="list-style-type:disc"><a
+        href="https://www.notion.so/Tableaux-comparatifs-des-donn-es-entre-les-CRA-V1-et-V2-231744bf03dd80ccb4b3cc3d4b32162d?pvs=21">Type
+        d’accompagnement</a></li>
+    </ul>
+    <ul id="231744bf-03dd-8061-971b-c8cc4b61b760" class="bulleted-list">
+      <li style="list-style-type:disc"><a
+        href="https://www.notion.so/Tableaux-comparatifs-des-donn-es-entre-les-CRA-V1-et-V2-231744bf03dd80ccb4b3cc3d4b32162d?pvs=21">Thématiques
+        de médiation numérique</a></li>
+    </ul>
+    <ul id="231744bf-03dd-807f-b797-d57566331301" class="bulleted-list">
+      <li style="list-style-type:disc"><a
+        href="https://www.notion.so/Tableaux-comparatifs-des-donn-es-entre-les-CRA-V1-et-V2-231744bf03dd80ccb4b3cc3d4b32162d?pvs=21">Structure
+        de redirection</a></li>
+    </ul>
+    <ul id="231744bf-03dd-805a-b1e0-f947b918284b" class="bulleted-list">
+      <li style="list-style-type:disc"><a
+        href="https://www.notion.so/Tableaux-comparatifs-des-donn-es-entre-les-CRA-V1-et-V2-231744bf03dd80ccb4b3cc3d4b32162d?pvs=21">Tranche
+        d’âge</a></li>
+    </ul>
+    <p id="242744bf-03dd-80d3-8e61-c7bcf211d70c" class="">
+    </p>
+    <p id="242744bf-03dd-80cc-8f3b-c9d93b6d9b77" class=""><strong>Légendes : </strong></p>
+    <ul id="242744bf-03dd-801b-8675-fc663e49a667" class="bulleted-list">
+      <li style="list-style-type:disc">
+        <mark class="highlight-purple_background"><strong>Lignes violettes :</strong></mark>
+        <mark class="highlight-purple_background"> correspondances de données réalisés</mark>
+      </li>
+    </ul>
+    <ul id="242744bf-03dd-8036-8b99-d30c846c601f" class="bulleted-list">
+      <li style="list-style-type:disc">❌ : Cette donnée existe uniquement dans une des versions</li>
+    </ul>
+    <p id="231744bf-03dd-8010-91a2-c4f7afa0d350" class="">
+    </p>
+    <table id="231744bf-03dd-80b5-806c-e885054a4f4c" class="simple-table">
+      <thead class="simple-table-header">
+      <tr id="231744bf-03dd-8047-86bb-f50ccec44800">
+        <th id="oJt;" class="simple-table-header-color simple-table-header" style="width:353.5px"><strong>Type
+          d’accompagnement Coop V1</strong></th>
+        <th id="yZc&lt;" class="simple-table-header-color simple-table-header" style="width:353.5px"><strong>Type
+          d’accompagnement Coop V2</strong></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr id="231744bf-03dd-8004-8e2a-c5def28db6a8">
+        <td id="oJt;" class="block-color-purple_background" style="width:353.5px">Accompagnement individuel<br />
+          <mark class="highlight-default_background">Demande ponctuelle</mark>
+        </td>
+        <td id="yZc&lt;" class="block-color-purple_background" style="width:353.5px">Accompagnement individuel</td>
+      </tr>
+      <tr id="231744bf-03dd-804c-a2b7-fdeaa2ef00d1">
+        <td id="oJt;" class="" style="width:353.5px">Atelier collectif</td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Atelier collectif</td>
+      </tr>
+      </tbody>
+    </table>
+    <table id="231744bf-03dd-80a4-80ae-fab402d91942" class="simple-table">
+      <thead class="simple-table-header">
+      <tr id="231744bf-03dd-80fd-880f-e258d728b967">
+        <th id="oJt;" class="simple-table-header-color simple-table-header" style="width:353.5px"><strong>Thématiques
+          Coop V1</strong></th>
+        <th id="yZc&lt;" class="simple-table-header-color simple-table-header" style="width:353.5px"><strong>Thématiques
+          Coop V2</strong></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr id="231744bf-03dd-8090-9b38-dcf2a4995964">
+        <td id="oJt;" class="" style="width:353.5px">Diagnostic numérique</td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Diagnostic numérique<br /></td>
+      </tr>
+      <tr id="231744bf-03dd-80dd-ae33-f464142e8886">
+        <td id="oJt;" class="block-color-purple_background" style="width:353.5px">Prendre en main du matériel<br /></td>
+        <td id="yZc&lt;" class="block-color-purple_background" style="width:353.5px">Prendre en main du matériel<br />Gérer
+          ses contenus numériques
+        </td>
+      </tr>
+      <tr id="231744bf-03dd-80f6-93e8-d4eccfa4a9fe">
+        <td id="oJt;" class="" style="width:353.5px">Budget<br /></td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Banque et achats en ligne<br /></td>
+      </tr>
+      <tr id="231744bf-03dd-8057-9373-d3ce924e6cab">
+        <td id="oJt;" class="" style="width:353.5px">Culture numérique<br /></td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Culture numérique<br /></td>
+      </tr>
+      <tr id="231744bf-03dd-80ef-9b97-ca4580a57bd5">
+        <td id="oJt;" class="" style="width:353.5px">Comment naviguer sur internet<br /></td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Navigation sur internet<br /></td>
+      </tr>
+      <tr id="231744bf-03dd-80a1-bc3b-fb6bbc541d0d">
+        <td id="oJt;" class="" style="width:353.5px">Emploi, formation<br /></td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Insertion professionnelle<br /></td>
+      </tr>
+      <tr id="231744bf-03dd-80d2-8a67-dd655e9c18bc">
+        <td id="oJt;" class="" style="width:353.5px">Gérer ses courriels<br /></td>
+        <td id="yZc&lt;" class="" style="width:353.5px">E-mail<br /></td>
+      </tr>
+      <tr id="231744bf-03dd-80da-9ec0-f26729655ab9">
+        <td id="oJt;" class="" style="width:353.5px">Échanger avec ses proches<br /></td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Réseaux sociaux - communication<br /></td>
+      </tr>
+      <tr id="231744bf-03dd-8024-a749-ed8392706884">
+        <td id="oJt;" class="" style="width:353.5px">Assister un professionnel<br /></td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Accompagner un professionnel<br /></td>
+      </tr>
+      <tr id="231744bf-03dd-8044-84c2-dfbbab13e57c">
+        <td id="oJt;" class="block-color-purple_background" style="width:353.5px">Sécuriser un équipement<br />Prévenir
+          les fraudes, le harcèlement<br /></td>
+        <td id="yZc&lt;" class="block-color-purple_background" style="width:353.5px">Prévention en sécurité
+          numérique<br /></td>
+      </tr>
+      <tr id="231744bf-03dd-80b8-9048-ded810c86238">
+        <td id="oJt;" class="" style="width:353.5px">Contenus numériques<br /></td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Créer avec le numérique<br /></td>
+      </tr>
+      <tr id="231744bf-03dd-8087-85a7-eae2b7654f53">
+        <td id="oJt;" class="" style="width:353.5px">Accompagner un aidant<br /></td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Parentalité<br /></td>
+      </tr>
+      <tr id="231744bf-03dd-80d7-8422-df7ffbc07b80">
+        <td id="oJt;" class="" style="width:353.5px">Bureautique<br /></td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Bureautique<br /></td>
+      </tr>
+      <tr id="231744bf-03dd-802c-aa7d-d6e34149a529">
+        <td id="oJt;" class="" style="width:353.5px">Scolaire<br /></td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Scolarité et numérique<br /></td>
+      </tr>
+      <tr id="231744bf-03dd-8064-ba4e-ee3d1bc2ca47">
+        <td id="oJt;" class="" style="width:353.5px">Santé<br /></td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Santé<br /></td>
+      </tr>
+      <tr id="231744bf-03dd-80c0-bdc0-e1dae8952456">
+        <td id="oJt;" class="" style="width:353.5px">Démarches administratives<br /></td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Aide aux démarches administratives</td>
+      </tr>
+      <tr id="231744bf-03dd-80c2-b14e-d092348b34dc">
+        <td id="oJt;" class="" style="width:353.5px">Préciser la thématique cochée (champs libre)</td>
+        <td id="yZc&lt;" class="" style="width:353.5px">❌</td>
+      </tr>
+      <tr id="231744bf-03dd-8015-bbd3-fee2f78cdb40">
+        <td id="oJt;" class="" style="width:353.5px">❌</td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Intelligence artificielle (IA)</td>
+      </tr>
+      <tr id="231744bf-03dd-8087-99ba-f9dcbd3c3e09">
+        <td id="oJt;" class="" style="width:353.5px">❌</td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Maintenance de matériel</td>
+      </tr>
+      </tbody>
+    </table>
+    <table id="231744bf-03dd-8071-bb1a-cdb475cb91aa" class="simple-table">
+      <thead class="simple-table-header">
+      <tr id="231744bf-03dd-800a-819a-e2f8605dc584">
+        <th id="oJt;" class="simple-table-header-color simple-table-header" style="width:353.5px"><strong>Structure de
+          redirection Coop V1</strong></th>
+        <th id="yZc&lt;" class="simple-table-header-color simple-table-header" style="width:353.5px"><strong>Structure
+          de redirection Coop V2</strong></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr id="231744bf-03dd-80bd-8c96-d5cd0e428bc3">
+        <td id="oJt;" class="" style="width:353.5px">❌</td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Administration (Mairie, préfecture...)</td>
+      </tr>
+      <tr id="231744bf-03dd-802b-8e5f-c034563df7d5">
+        <td id="oJt;" class="block-color-purple_background" style="width:353.5px">
+          CARSAT<br />ANTS<br />CAF<br />DGFIP<br />CEFS
+        </td>
+        <td id="yZc&lt;" class="block-color-purple_background" style="width:353.5px">Opérateur ou organisme en charge de
+          la démarche administrative<br /></td>
+      </tr>
+      <tr id="231744bf-03dd-808f-9106-e4d72ee66a16">
+        <td id="oJt;" class="" style="width:353.5px">Tiers-lieu / Fablab<br /></td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Autre structure de médiation numérique<br /></td>
+      </tr>
+      <tr id="231744bf-03dd-80db-9872-e00e99d45a8d">
+        <td id="oJt;" class="" style="width:353.5px">CCAS<br /></td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Structure d&#x27;aide sociale (maison des solidarités, centre
+          social...)<br /></td>
+      </tr>
+      <tr id="231744bf-03dd-80d3-83f7-eaaf5cdaeac5">
+        <td id="oJt;" class="" style="width:353.5px">Pôle emploi<br /></td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Structure d&#x27;insertion professionnelle (France Travail,
+          mission locale, chambre de commerce...)<br /></td>
+      </tr>
+      <tr id="231744bf-03dd-8018-8efe-e3e4ad13cd6b">
+        <td id="oJt;" class="" style="width:353.5px">France Services</td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Structure d’aide aux démarches administratives (France
+          Services...)
+        </td>
+      </tr>
+      <tr id="231744bf-03dd-80d8-9add-f0b530b8968f">
+        <td id="oJt;" class="" style="width:353.5px">Autres</td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Autre</td>
+      </tr>
+      </tbody>
+    </table>
+    <table id="231744bf-03dd-80f5-82b5-dd744fa4c723" class="simple-table">
+      <thead class="simple-table-header">
+      <tr id="231744bf-03dd-8094-9e60-c3cbce8fba60">
+        <th id="oJt;" class="simple-table-header-color simple-table-header" style="width:353.5px"><strong>Tranche d’âge
+          Coop V1</strong></th>
+        <th id="yZc&lt;" class="simple-table-header-color simple-table-header" style="width:353.5px"><strong>Tranche
+          d’âge Coop V2</strong></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr id="231744bf-03dd-802d-bb38-c7299075b555">
+        <td id="oJt;" class="" style="width:353.5px">Moins de 12 ans</td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Moins de 12 ans</td>
+      </tr>
+      <tr id="231744bf-03dd-8035-b870-eed86ff9b848">
+        <td id="oJt;" class="" style="width:353.5px">12-18 ans</td>
+        <td id="yZc&lt;" class="" style="width:353.5px">12 - 17 ans</td>
+      </tr>
+      <tr id="231744bf-03dd-8071-9e11-ef1affd3140b">
+        <td id="oJt;" class="block-color-purple_background" style="width:353.5px">18-35 ans</td>
+        <td id="yZc&lt;" class="block-color-purple_background" style="width:353.5px">18 - 24 ans<br />25 - 39 ans</td>
+      </tr>
+      <tr id="231744bf-03dd-808a-8983-eb7b04323441">
+        <td id="oJt;" class="" style="width:353.5px">35-60 ans</td>
+        <td id="yZc&lt;" class="" style="width:353.5px">40 - 59 ans</td>
+      </tr>
+      <tr id="231744bf-03dd-80a9-9b2d-d474c3035254">
+        <td id="oJt;" class="block-color-purple_background" style="width:353.5px">Plus de 60 ans</td>
+        <td id="yZc&lt;" class="block-color-purple_background" style="width:353.5px">60 - 69 ans<br />70 ans ou plus
+        </td>
+      </tr>
+      <tr id="231744bf-03dd-800a-b0cd-e8a93041d161">
+        <td id="oJt;" class="" style="width:353.5px"></td>
+        <td id="yZc&lt;" class="" style="width:353.5px">Non communiqué</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</article>
+<span class="sans" style="font-size:14px;padding-top:2em"></span></body>
+</html>

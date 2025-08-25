@@ -1,4 +1,12 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["./src"]
+  "include": [
+    "./src",
+    "../web/src/jobs/migrate-users-v1/v1ConseillersIdsMap.ts",
+    "../web/src/jobs/migrate-structures-v1/v1PermanencesIdsMap.ts",
+    "../web/src/jobs/migrate-structures-v1/v1StructuresIdsMap.ts",
+    "../web/src/jobs/migrate-structures-v1/StructureV1Document.ts",
+    "../web/src/jobs/migrate-structures-v1/PermanenceV1Document.ts",
+    "../web/src/jobs/migrate-cras-v1/CraV1Document.ts"
+  ]
 }

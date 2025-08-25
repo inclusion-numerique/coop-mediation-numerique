@@ -11,21 +11,23 @@ export const givenCraIndividuel = <
   T extends Partial<Prisma.ActiviteUncheckedCreateInput> & {
     mediateurId: string
     beneficiaireId: string
+    structureEmployeuseId: string
   },
 >(
   data: T,
 ): {
-  activite: Omit<T, 'id' | 'beneficiaireId'> & {
+  activite: Omit<T, 'id' | 'beneficiaireId' | 'structureEmployeuseId'> & {
     id: string
     duree: number
     type: 'Individuel'
     date: string | Date
     typeLieu: TypeLieu
     accompagnementsCount: number
+    structureEmployeuseId: string
   }
   accompagnements: Prisma.AccompagnementUncheckedCreateInput[]
 } => {
-  const { id, beneficiaireId, ...rest } = data
+  const { id, beneficiaireId, structureEmployeuseId, ...rest } = data
 
   const duree = rest.duree ?? 90
   const date = rest.date ?? new Date().toISOString()
@@ -41,7 +43,8 @@ export const givenCraIndividuel = <
     date,
     typeLieu,
     accompagnementsCount: 1,
-  } satisfies Omit<T, 'id' | 'beneficiaireId'> & {
+    structureEmployeuseId,
+  } satisfies Omit<T, 'id' | 'beneficiaireId' | 'structureEmployeuseId'> & {
     id: string
     duree: number
     date: string | Date
@@ -69,21 +72,23 @@ export const givenCraDemarcheAdministrative = <
   T extends Partial<Prisma.ActiviteUncheckedCreateInput> & {
     mediateurId: string
     beneficiaireId: string
+    structureEmployeuseId: string
   },
 >(
   data: T,
 ): {
-  activite: Omit<T, 'id' | 'beneficiaireId'> & {
+  activite: Omit<T, 'id' | 'beneficiaireId' | 'structureEmployeuseId'> & {
     id: string
     type: 'Individuel'
     duree: number
     date: string | Date
     typeLieu: TypeLieu
     accompagnementsCount: number
+    structureEmployeuseId: string
   }
   accompagnements: Prisma.AccompagnementUncheckedCreateInput[]
 } => {
-  const { id, beneficiaireId, ...rest } = data
+  const { id, beneficiaireId, structureEmployeuseId, ...rest } = data
 
   const duree = rest.duree ?? 90
   const date = rest.date ?? new Date().toISOString()
@@ -99,11 +104,13 @@ export const givenCraDemarcheAdministrative = <
     date,
     typeLieu,
     accompagnementsCount: 1,
-  } satisfies Omit<T, 'id' | 'beneficiaireId'> & {
+    structureEmployeuseId,
+  } satisfies Omit<T, 'id' | 'beneficiaireId' | 'structureEmployeuseId'> & {
     id: string
     duree: number
     date: string | Date
     typeLieu: TypeLieu
+    structureEmployeuseId: string
   }
 
   const accompagnements = [
@@ -128,22 +135,33 @@ export const givenCraCollectif = <
     mediateurId: string
     beneficiaireIds: string[]
     participantsAnonymes: ParticipantsAnonymesCraCollectifData
+    structureEmployeuseId: string
   },
 >(
   data: T,
 ): {
-  activite: Omit<T, 'id' | 'participantsAnonymes' | 'beneficiaireIds'> & {
+  activite: Omit<
+    T,
+    'id' | 'participantsAnonymes' | 'beneficiaireIds' | 'structureEmployeuseId'
+  > & {
     id: string
     type: 'Collectif'
     duree: number
     typeLieu: TypeLieu
     date: string | Date
     accompagnementsCount: number
+    structureEmployeuseId: string
   }
   accompagnements: Prisma.AccompagnementUncheckedCreateInput[]
   beneficiairesAnonymes: Prisma.BeneficiaireUncheckedCreateInput[]
 } => {
-  const { id, beneficiaireIds, participantsAnonymes, ...rest } = data
+  const {
+    id,
+    beneficiaireIds,
+    participantsAnonymes,
+    structureEmployeuseId,
+    ...rest
+  } = data
 
   const duree = rest.duree ?? 90
   const date = rest.date ?? new Date().toISOString()
@@ -183,7 +201,11 @@ export const givenCraCollectif = <
     date,
     typeLieu,
     accompagnementsCount: accompagnements.length,
-  } satisfies Omit<T, 'id' | 'participantsAnonymes' | 'beneficiaireIds'> & {
+    structureEmployeuseId,
+  } satisfies Omit<
+    T,
+    'id' | 'participantsAnonymes' | 'beneficiaireIds' | 'structureEmployeuseId'
+  > & {
     id: string
   }
 
