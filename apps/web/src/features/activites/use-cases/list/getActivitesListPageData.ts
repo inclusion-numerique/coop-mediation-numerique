@@ -1,7 +1,12 @@
 import { isEmptySearchParams } from '@app/web/libs/data-table/isEmptySearchParams'
 import { getRdvs } from '@app/web/rdv-service-public/getRdvs'
-import { getOptionalStartOfDay } from '@app/web/utils/getDatePeriodBounds'
+import {
+  getEndOfDay,
+  getOptionalEndOfDay,
+  getOptionalStartOfDay,
+} from '@app/web/utils/getDatePeriodBounds'
 import type { UserId, UserRdvAccount, UserTimezone } from '@app/web/utils/user'
+import { addDays } from 'date-fns'
 import type { ActivitesDataTableSearchParams } from './components/ActivitesDataTable'
 import {
   type ActiviteListItem,
@@ -53,11 +58,11 @@ export const getActivitesListPageData = async ({
   ])
 
   // If the list is paginated, we only fetch rdvs until the last activites date
-  const maxRdvDate = getOptionalStartOfDay(
-    searchResult.moreResults
-      ? (searchResult.activites.at(-1)?.date ?? null)
-      : null,
-  )
+  const minRdvDate = searchResult.moreResults
+    ? getOptionalStartOfDay(searchResult.activites.at(-1)?.date ?? null)
+    : searchParams.du
+      ? new Date(searchParams.du)
+      : null
 
   // In the case of rdv only, we need to fetch activities that have a rdv_service_public_id to compute status/link between the two models
   const activitesForRdvs = shouldFetchActivites
@@ -69,8 +74,18 @@ export const getActivitesListPageData = async ({
       })
 
   // If we are paginated and not on the first page, we only fetch rdvs until the first activite date
-  const minRdvDate =
-    searchResult.page > 1 ? (searchResult.activites.at(0)?.date ?? null) : null
+  // Rdv api truncate the date to the day, so we need to add 1 day to the date
+  const maxRdvDateCurrentDay =
+    searchResult.page > 1
+      ? (searchResult.activites.at(0)?.date ?? null)
+      : searchParams.au
+        ? new Date(searchParams.au)
+        : null
+
+  // add one day to the date
+  const maxRdvDate = maxRdvDateCurrentDay
+    ? addDays(maxRdvDateCurrentDay, 1)
+    : null
 
   const rdvs = await getRdvs({
     user,

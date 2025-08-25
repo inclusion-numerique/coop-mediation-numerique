@@ -23,7 +23,10 @@ export type Rdv = {
   motif: {
     id: number
     name: string
+    collectif: boolean
   }
+  name: string | null // useful if motif.collectif is true (nom de l'atelier côté RDV Service Public)
+  maxParticipantsCount: number | null // useful if motif.collectif is true
   url: string
   agents: {
     id: number
