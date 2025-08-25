@@ -18,7 +18,8 @@ import { mergeRdvsWithActivites } from './mergeRdvsWithActivites'
 
 const emptySearchResult = {
   activites: [],
-  matchesCount: 0,
+  activitesMatchesCount: 0,
+  accompagnementsMatchesCount: 0,
   moreResults: 0,
   totalPages: 1,
   page: 1,
@@ -50,7 +51,7 @@ export const getActivitesListPageData = async ({
   const [searchResult, activiteDates] = await Promise.all([
     shouldFetchActivites
       ? searchActivite({
-          mediateurId,
+          mediateurIds: [mediateurId],
           searchParams,
         })
       : emptySearchResult,

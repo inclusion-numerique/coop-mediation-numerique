@@ -15,7 +15,7 @@ const MesActivitesListeLayout = ({
     <SkipLinksPortal />
     <CoopBreadcrumbs currentPage="Mes activités" />
     <main id={contentId}>
-      <div className="fr-mb-4v fr-width-full fr-flex fr-justify-content-space-between fr-align-items-center">
+      <div className="fr-mb-5v fr-width-full fr-flex fr-justify-content-space-between fr-align-items-center">
         <h1 className="fr-text-title--blue-france fr-mb-0">Mes activités</h1>
         {!empty && <MesActivitesVueSegmentedControl current={vue} />}
       </div>

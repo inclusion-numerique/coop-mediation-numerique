@@ -1,20 +1,25 @@
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFiltersOptionsForMediateur'
+import { mediateurCoordonnesIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
 import { generateActivitesFiltersLabels } from '../components/generateActivitesFiltersLabels'
 import { ActiviteListItem } from '../db/activitesQueries'
 import { searchActivite } from '../db/searchActivite'
 import type { ActivitesFilters } from '../validation/ActivitesFilters'
-import type { BuildActivitesWorksheetInput } from './buildActivitesWorksheet'
+import type { BuildActivitesWorksheetInput } from './buildAccompagnementsWorksheet'
 
-export const getActivitesWorksheetInput = async ({
+export const getAccompagenmentsWorksheetInput = async ({
   user,
   filters,
+  mediateurIds,
 }: {
   user: SessionUser
   filters: ActivitesFilters
+  mediateurIds: string[]
 }): Promise<BuildActivitesWorksheetInput> => {
+  const mediateurCoordonnesIds = mediateurCoordonnesIdsFor(user)
+
   const { activites, totalPages } = await searchActivite({
-    mediateurId: user.mediateur?.id,
+    mediateurIds,
     beneficiaireIds: filters.beneficiaires,
     searchParams: {
       ...filters,
@@ -35,6 +40,7 @@ export const getActivitesWorksheetInput = async ({
     tagsOptions,
   } = await getFiltersOptionsForMediateur({
     user,
+    mediateurCoordonnesIds,
     includeBeneficiaireIds: filters.beneficiaires,
   })
 

@@ -10,7 +10,7 @@ const MesBeneficiairesListePage = ({
   data: BeneficiairesListPageData
 }) => (
   <>
-    <div className="fr-flex fr-mt-8v fr-flex-gap-12v">
+    <div className="fr-flex fr-mt-5v fr-mb-6v fr-flex-gap-12v">
       <DataSearchBar
         baseHref="/coop/mes-beneficiaires"
         searchParams={searchParams}

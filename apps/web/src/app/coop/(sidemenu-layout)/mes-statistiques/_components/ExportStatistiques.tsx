@@ -28,6 +28,7 @@ export const ExportStatistiques = ({
   departementsOptions,
   communesOptions,
   tagsOptions,
+  accompagnementsCount,
 }: {
   filters: ActivitesFilters
   mediateursOptions: MediateurOption[]
@@ -36,9 +37,9 @@ export const ExportStatistiques = ({
   departementsOptions: SelectOption[]
   communesOptions: SelectOption[]
   tagsOptions: { id: string; nom: string }[]
+  accompagnementsCount: number
 }) => {
-  const onExportXlsx = () => {
-    const exportPath = '/coop/mes-statistiques/export'
+  const exportXlsx = (exportPath: string, message: string) => {
     const searchParams = new URLSearchParams()
 
     for (const [key, value] of Object.entries(filters)) {
@@ -55,11 +56,23 @@ export const ExportStatistiques = ({
     ExportStatistiquesModal.close()
     createToast({
       priority: 'success',
-      message: 'Le téléchargement de vos statistiques est en cours.',
+      message,
     })
   }
 
-  const onExportPdf = () => {
+  const onExportAccompagnementsXlsx = () =>
+    exportXlsx(
+      '/coop/mes-activites/export',
+      `Le téléchargement de vos ${accompagnementsCount} accompagnements est en cours.`,
+    )
+
+  const onExportStatistiquesXlsx = () =>
+    exportXlsx(
+      '/coop/mes-statistiques/export',
+      'Le téléchargement de vos statistiques est en cours.',
+    )
+
+  const onExportStatistiquesPdf = () => {
     ExportStatistiquesModal.close()
     window.print()
     createToast({
@@ -81,42 +94,16 @@ export const ExportStatistiques = ({
     <>
       <Button
         {...ExportStatistiquesModal.buttonProps}
-        title="Exporter les statistiques"
+        title="Exports de mes accompagnements"
         priority="secondary"
         iconId="fr-icon-download-line"
         iconPosition="right"
       >
         Exporter
       </Button>
-      <ExportStatistiquesModal.Component
-        title="Exporter les statistiques"
-        buttons={[
-          {
-            title: 'Annuler',
-            priority: 'secondary',
-            doClosesModal: true,
-            children: 'Annuler',
-            type: 'button',
-          },
-          {
-            title: 'Exporter pdf',
-            doClosesModal: true,
-            children: 'Exporter en pdf',
-            type: 'button',
-            priority: 'primary',
-            onClick: onExportPdf,
-          },
-          {
-            title: 'Exporter xlsx',
-            doClosesModal: false,
-            children: 'Exporter en xlsx',
-            type: 'button',
-            onClick: onExportXlsx,
-          },
-        ]}
-      >
+      <ExportStatistiquesModal.Component title="Exports de mes accompagnements">
         {filterLabelsToDisplay.length > 0 ? (
-          <>
+          <div className="fr-my-6v">
             <p className="fr-mb-2v">
               Vous avez appliqué les filtres suivants&nbsp;:
             </p>
@@ -130,13 +117,66 @@ export const ExportStatistiques = ({
                 </li>
               ))}
             </ul>
-          </>
+          </div>
         ) : (
-          <p className="fr-mb-2v">
-            Vous n’avez pas appliqué de filtre, les statistiques seront
-            exportées dans leur intégralité.
+          <p className="fr-my-6v">
+            Vous n’avez pas appliqué de filtre, tous vos accompagnements seront
+            exportés.
           </p>
         )}
+        <p className="fr-text-label--blue-france fr-text--sm">
+          <strong>{accompagnementsCount}</strong> accompagnements prêt à être
+          exportés
+        </p>
+        <div className="fr-border fr-py-4v fr-px-6v fr-flex fr-align-items-center fr-flex-gap-4v fr-flex-grow-1 fr-mt-4v fr-border-radius--8">
+          <div
+            className="fr-background-alt--blue-france fr-p-3v fr-border-radius--8 fr-flex"
+            aria-hidden="true"
+          >
+            <div className="fr-icon-table-line ri-lg fr-line-height-1 fr-text-label--blue-france"></div>
+          </div>
+          <div className="fr-flex fr-align-items-center fr-justify-content-start fr-text--medium fr-mb-0 fr-flex-grow-1">
+            Liste des accompagnements
+          </div>
+          <Button
+            title="Telécharger liste des accompagnements au format xlsx"
+            priority="tertiary no outline"
+            iconId="fr-icon-download-line"
+            iconPosition="right"
+            onClick={onExportAccompagnementsXlsx}
+          >
+            Tableur (xlsx)
+          </Button>
+        </div>
+        <div className="fr-border fr-py-4v fr-px-6v fr-flex fr-align-items-center fr-flex-gap-4v fr-flex-grow-1 fr-mt-4v fr-border-radius--8">
+          <div
+            className="fr-background-alt--blue-france fr-p-3v fr-border-radius--8 fr-flex"
+            aria-hidden="true"
+          >
+            <div className="fr-icon-chat-poll-fill ri-lg fr-line-height-1 fr-text-label--blue-france"></div>
+          </div>
+          <div className="fr-flex fr-align-items-center fr-justify-content-start fr-text--medium fr-mb-0 fr-flex-grow-1">
+            Statistiques
+          </div>
+          <Button
+            title="Telécharger les statistiques d’accompagnement au format PDF"
+            priority="tertiary no outline"
+            iconId="fr-icon-download-line"
+            iconPosition="right"
+            onClick={onExportStatistiquesPdf}
+          >
+            PDF
+          </Button>
+          <Button
+            title="Telécharger les statistiques d’accompagnement au format xlsx"
+            priority="tertiary no outline"
+            iconId="fr-icon-download-line"
+            iconPosition="right"
+            onClick={onExportStatistiquesXlsx}
+          >
+            Tableur (xlsx)
+          </Button>
+        </div>
       </ExportStatistiquesModal.Component>
     </>
   )
