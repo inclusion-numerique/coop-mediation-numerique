@@ -26,6 +26,7 @@ type SearchActiviteOptions = {
   mediateurId?: string
   beneficiaireIds?: string[]
   searchParams?: ActivitesDataTableSearchParams
+  havingRdvId?: boolean
 }
 
 export const searchActivite = async (options: SearchActiviteOptions) => {

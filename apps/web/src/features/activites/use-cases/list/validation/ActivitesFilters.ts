@@ -15,9 +15,9 @@ import {
 
 const isoDayRegex = /^\d{4}-\d{2}-\d{2}$/
 
-const conseillerNumeriqueValues = ['0', '1'] as const
+const booleanStringValues = ['0', '1'] as const
 
-type ConseillerNumeriqueValue = (typeof conseillerNumeriqueValues)[number]
+type BooleanString = (typeof booleanStringValues)[number]
 
 export type RdvStatusFilterValue = RdvStatus | 'tous'
 
@@ -75,7 +75,7 @@ export const ActivitesFilterValidations = {
       z.array(z.string().uuid()),
     ])
     .optional(),
-  conseiller_numerique: z.enum(conseillerNumeriqueValues).optional(),
+  conseiller_numerique: z.enum(booleanStringValues).optional(),
   thematiqueNonAdministratives: z
     .union([
       z.string().transform((val) => val.split(',').map((item) => item.trim())),
@@ -96,6 +96,7 @@ export const ActivitesFilterValidations = {
       z.array(z.string().uuid()),
     ])
     .optional(),
+  rdv: z.enum(booleanStringValues).optional(),
 }
 
 export type ActivitesFilters = {
@@ -108,10 +109,11 @@ export type ActivitesFilters = {
   communes?: string[] // Code INSEE des communes
   departements?: string[] // Code INSEE des départements
   lieux?: string[] // UUID des lieux d’activités
-  conseiller_numerique?: ConseillerNumeriqueValue // (0 = non, 1 = oui)
+  conseiller_numerique?: BooleanString // (0 = non, 1 = oui)
   thematiqueNonAdministratives?: Thematique[]
   thematiqueAdministratives?: Thematique[]
   tags?: string[]
+  rdv?: BooleanString // 0 = non, 1 = oui, donera les activites avec un id externe RDVSP
 }
 
 /**
@@ -137,7 +139,7 @@ export const validateActivitesFilters = <T extends ActivitesFilters>(
       validatedFilterValue.success &&
       validatedFilterValue.data !== undefined
     ) {
-      result[typedKey] = validatedFilterValue.data as ConseillerNumeriqueValue &
+      result[typedKey] = validatedFilterValue.data as BooleanString &
         TypeActiviteSlug[] &
         RdvStatusFilterValue[] &
         Thematique[] &

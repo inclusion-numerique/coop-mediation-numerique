@@ -59,6 +59,15 @@ export const getActivitesListPageData = async ({
       : null,
   )
 
+  // In the case of rdv only, we need to fetch activities that have a rdv_service_public_id to compute status/link between the two models
+  const activitesForRdvs = shouldFetchActivites
+    ? null
+    : await searchActivite({
+        mediateurId,
+        searchParams,
+        havingRdvId: true,
+      })
+
   // If we are paginated and not on the first page, we only fetch rdvs until the first activite date
   const minRdvDate =
     searchResult.page > 1 ? (searchResult.activites.at(0)?.date ?? null) : null
@@ -73,7 +82,10 @@ export const getActivitesListPageData = async ({
 
   const { rdvsWithoutActivite, activitesWithRdv } = mergeRdvsWithActivites({
     rdvs,
-    activites: searchResult.activites.map(
+    activites: (shouldFetchActivites
+      ? searchResult.activites
+      : (activitesForRdvs?.activites ?? [])
+    ).map(
       (activite) =>
         ({
           ...activite,
