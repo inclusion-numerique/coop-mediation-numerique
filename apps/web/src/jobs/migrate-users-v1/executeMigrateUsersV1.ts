@@ -73,7 +73,7 @@ const mapV1ConseillersIds = async () => {
 
 const shouldWriteV1ConseillersIds = false
 
-export const executeMigrateUsersV1 = async (_job: MigrateUsersV1Job) => {
+export const executeMigrateUsersV1 = async (job: MigrateUsersV1Job) => {
   if (shouldWriteV1ConseillersIds) {
     await mapV1ConseillersIds()
   }
@@ -88,6 +88,7 @@ export const executeMigrateUsersV1 = async (_job: MigrateUsersV1Job) => {
     const result = await migrateConseillersV1({
       v1ConseillersIds,
       conseillersIdsMap,
+      ...job.payload,
     })
 
     const totalConseillersMissingInV1Mongo =

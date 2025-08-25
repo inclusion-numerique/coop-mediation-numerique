@@ -1,15 +1,12 @@
-import { vacuumAnalyzeConseillerNumeriqueV1Cras } from '@app/web/external-apis/conseiller-numerique/conseillersNumeriquesCraQueries'
-import {
-  firstV1CrasMonth,
-  importCrasConseillerNumeriqueV1,
-} from '@app/web/external-apis/conseiller-numerique/importCrasConseillerNumeriqueV1'
 import type { MigrateCrasV1Job } from '@app/web/jobs/migrate-cras-v1/MigrateCrasV1Job'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
-import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { numberToString } from '@app/web/utils/formatNumber'
 import * as Sentry from '@sentry/nextjs'
-import { addWeeks } from 'date-fns'
+import { v1StructuresIdsMap } from '../migrate-structures-v1/v1StructuresIdsMap'
+import { v1PermanencesIdsMap } from '../migrate-structures-v1/v1PermanencesIdsMap'
+import { v1ConseillersIdsMap } from '../migrate-users-v1/v1ConseillersIdsMap'
+import { migrateCrasV1 } from './migrateCrasV1'
 
 const cleanupAfterImport = async () => {
   await prismaClient.$queryRaw`
@@ -17,40 +14,43 @@ const cleanupAfterImport = async () => {
 `
 }
 
-const migrateCrasV1BBatch = async () => {
-  // Reset table
-  await prismaClient.activite.deleteMany({
-    where: {
-      v1CraId: {
-        not: null,
-      },
-    },
-  })
-
+const migrateCrasV1ByBatch = async ({
+  skip,
+  take,
+  batch,
+}: MigrateCrasV1Job['payload']) => {
   const result = {
     totalImported: 0,
+    skip,
+    take,
+    batch,
   }
 
+  let rest = take ? take : undefined
   // TODO with prisma do pagination 10_000 items batch, while batch is not empty
-  let skip = 0
-  let batch = await prismaClient.craConseillerNumeriqueV1.findMany({
+  let items = await prismaClient.craConseillerNumeriqueV1.findMany({
     skip,
-    take: 10_000,
+    take: batch,
   })
 
-  while (batch.length > 0) {
+  while (items.length > 0 && (rest === undefined || rest > 0)) {
     output.log(
-      `import-cras-conseiller-numerique-v1: importing ${numberToString(skip)} to ${numberToString(skip + batch.length)} cras`,
+      `import-cras-conseiller-numerique-v1: importing ${numberToString(skip)} to ${numberToString(skip + items.length)} cras`,
     )
-    await migrateCrasConseillerNumeriqueV1({
-      crasV1: batch,
+    await migrateCrasV1(items, {
+      v1ConseillersIdsMap,
+      v1PermanencesIdsMap,
+      v1StructuresIdsMap,
     })
-    skip += batch.length
-    batch = await prismaClient.craConseillerNumeriqueV1.findMany({
+    skip += items.length
+    if (rest !== undefined) {
+      rest -= items.length
+    }
+    items = await prismaClient.craConseillerNumeriqueV1.findMany({
       skip,
       take: 10_000,
     })
-    result.totalImported += batch.length
+    result.totalImported += items.length
   }
 
   output.log(
@@ -68,11 +68,11 @@ const migrateCrasV1BBatch = async () => {
 /**
  * Wrapper to launch the execution asynchronously
  */
-export const executeMigrateCrasV1 = (_job: MigrateCrasV1Job) => {
+export const executeMigrateCrasV1 = (job: MigrateCrasV1Job) => {
   output.log(`migrate-cras-v1: importing`)
 
   // Async execution
-  migrateCrasV1BBatch().catch((error) => {
+  migrateCrasV1ByBatch(job.payload).catch((error) => {
     if (Sentry.captureException) {
       Sentry.captureException(error)
     }

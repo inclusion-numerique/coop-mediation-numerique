@@ -1,13 +1,5 @@
-import { Thematique, TypeActivite, TypeLieu } from '@prisma/client'
+import { Thematique, TypeActivite, TypeLieu, TrancheAge } from '@prisma/client'
 import type { CraConseillerNumeriqueV1 } from '@prisma/client'
-
-jest.mock('@app/web/prismaClient', () => ({
-  prismaClient: {
-    structure: { findUnique: jest.fn() },
-  },
-}))
-
-import { prismaClient } from '@app/web/prismaClient'
 import { transformCraV1 } from './transformCraV1'
 
 function createBaseCra(
@@ -124,28 +116,32 @@ describe('transformCraV1', () => {
       organismes: ['france services'] as unknown as any,
     })
 
-    const data = await transformCraV1(cra, {
+    const result = await transformCraV1(cra, {
       v1StructuresIdsMap,
       v1PermanencesIdsMap,
       v1ConseillersIdsMap,
     })
 
-    expect(data.type).toBe<TypeActivite>('Collectif')
-    expect(data.typeLieu).toBe<TypeLieu>('Autre')
-    expect(data.accompagnementsCount).toBe(cra.nbParticipants)
-    expect(data.duree).toBe(120)
-    expect(data.notes).toBe('note A')
-    expect(data.structureDeRedirection).toBe('AideAuxDemarchesAdministratives')
-    expect(data.thematiques).toEqual(
+    expect(result.activite.type).toBe<TypeActivite>('Collectif')
+    expect(result.activite.typeLieu).toBe<TypeLieu>('Autre')
+    expect(result.activite.accompagnementsCount).toBe(cra.nbParticipants)
+    expect(result.activite.duree).toBe(120)
+    expect(result.activite.notes).toBe('note A')
+    expect(result.activite.structureDeRedirection).toBe(
+      'AideAuxDemarchesAdministratives',
+    )
+    expect(result.activite.thematiques).toEqual(
       expect.arrayContaining<Thematique>([
         'AideAuxDemarchesAdministratives',
         'NavigationSurInternet',
         'Email',
       ]),
     )
-    expect(data.lieuCodePostal).toBe(cra.codePostal)
-    expect(data.lieuCommune).toBe(cra.nomCommune)
-    expect(data.lieuCodeInsee).toBe(cra.codeCommune)
+    expect(result.activite.lieuCodePostal).toBe(cra.codePostal)
+    expect(result.activite.lieuCommune).toBe(cra.nomCommune)
+    expect(result.activite.lieuCodeInsee).toBe(cra.codeCommune)
+    expect(result.beneficiaires.length).toBe(cra.nbParticipants)
+    expect(result.accompagnements.length).toBe(cra.nbParticipants)
   })
 
   it('maps rattachement to LieuActivite and prefers permanence mapping over structure mapping', async () => {
@@ -155,95 +151,162 @@ describe('transformCraV1', () => {
       permanenceId: 'v1-perm-1',
     })
 
-    const data = await transformCraV1(cra, {
+    const result = await transformCraV1(cra, {
       v1StructuresIdsMap,
       v1PermanencesIdsMap,
       v1ConseillersIdsMap,
     })
-
-    expect(data.type).toBe<TypeActivite>('Individuel')
-    expect(data.typeLieu).toBe<TypeLieu>('LieuActivite')
-    expect(data.accompagnementsCount).toBe(1)
-    expect(data.structure).toEqual({ connect: { id: 'v2-perm-1' } })
+    expect(result.activite.type).toBe<TypeActivite>('Individuel')
+    expect(result.activite.typeLieu).toBe<TypeLieu>('LieuActivite')
+    expect(result.activite.accompagnementsCount).toBe(1)
+    expect(result.activite.structure).toEqual({ connect: { id: 'v2-perm-1' } })
+    expect(result.beneficiaires.length).toBe(1)
+    expect(result.accompagnements.length).toBe(1)
   })
 
-  it('maps distance to ADistance and fetches lieu from structure employeuse via prisma', async () => {
-    ;(prismaClient.structure.findUnique as jest.Mock).mockResolvedValueOnce({
-      codePostal: '97460',
-      commune: 'Saint-Paul',
-      codeInsee: '97415',
-    })
-
+  it('maps distance to ADistance and fetches lieu from structure employeuse via provided map', async () => {
     const cra = createBaseCra({ canal: 'distance', permanenceId: null })
 
-    const data = await transformCraV1(cra, {
+    const result = await transformCraV1(cra, {
       v1StructuresIdsMap,
       v1PermanencesIdsMap,
       v1ConseillersIdsMap,
     })
-
-    expect(data.typeLieu).toBe<TypeLieu>('ADistance')
-    expect(data.lieuCodePostal).toBe('97460')
-    expect(data.lieuCommune).toBe('Saint-Paul')
-    expect(data.lieuCodeInsee).toBe('97415')
-    expect(data.structure).toBeUndefined()
+    expect(result.activite.typeLieu).toBe<TypeLieu>('ADistance')
+    // uses structure employeuse mapping from v1StructuresIdsMap
+    expect(result.activite.lieuCodePostal).toBe('33370')
+    expect(result.activite.lieuCommune).toBe('Tresses')
+    expect(result.activite.lieuCodeInsee).toBe('33535')
+    expect(result.activite.structure).toBeUndefined()
   })
 
   it('uses dureeMinutes if present and ignores duree string', async () => {
     const cra = createBaseCra({ duree: '0-30', dureeMinutes: 45 })
-    const data = await transformCraV1(cra, {
+    const result = await transformCraV1(cra, {
       v1StructuresIdsMap,
       v1PermanencesIdsMap,
       v1ConseillersIdsMap,
     })
-    expect(data.duree).toBe(45)
+    expect(result.activite.duree).toBe(45)
   })
 
   it('deduplicates thematiques when duplicate themes provided', async () => {
     const cra = createBaseCra({ themes: ['internet', 'internet'] })
-    const data = await transformCraV1(cra, {
+    const result = await transformCraV1(cra, {
       v1StructuresIdsMap,
       v1PermanencesIdsMap,
       v1ConseillersIdsMap,
     })
-    const thematiquesArr: Thematique[] = Array.isArray(data.thematiques)
-      ? (data.thematiques as Thematique[])
-      : ((data.thematiques as any)?.set ?? [])
+    const thematiquesArr: Thematique[] = Array.isArray(
+      result.activite.thematiques,
+    )
+      ? (result.activite.thematiques as Thematique[])
+      : ((result.activite.thematiques as any)?.set ?? [])
     const only = (thematiquesArr as Thematique[]).filter(
       (t: Thematique) => t === 'NavigationSurInternet',
     )
     expect(only.length).toBe(1)
   })
 
-  it('falls back to structure mapping when permanence is not provided for LieuActivite', async () => {
-    const cra = createBaseCra({ canal: 'autre lieu', permanenceId: null })
-    const data = await transformCraV1(cra, {
+  it('creates anonymous beneficiaires and accompagnements for collectif with premierAccompagnement set using nbParticipantsRecurrents', async () => {
+    const cra = createBaseCra({
+      nbParticipants: 5,
+      nbParticipantsRecurrents: 2,
+    })
+    const result = await transformCraV1(cra, {
       v1StructuresIdsMap,
       v1PermanencesIdsMap,
       v1ConseillersIdsMap,
     })
-    expect(data.typeLieu).toBe<TypeLieu>('Autre')
-    expect(data.structure).toEqual({ connect: { id: 'v2-struct-1' } })
+
+    // beneficiaries count
+    expect(result.beneficiaires.length).toBe(5)
+    // all anonymous and connected to mediateur
+    for (const b of result.beneficiaires) {
+      expect(b.anonyme).toBe(true)
+      expect((b.mediateur as any).connect.id).toBe('med-1')
+    }
+
+    // accompagnements count and premierAccompagnement logic: first 2 are recurring (false), rest true
+    expect(result.accompagnements.length).toBe(5)
+    const flags = result.accompagnements.map((a) => a.premierAccompagnement)
+    expect(flags).toEqual([false, false, true, true, true])
+    // linkage matches beneficiaires
+    const idsFromBeneficiaires = result.beneficiaires.map((b) => b.id)
+    const idsFromAccompagnements = result.accompagnements.map(
+      (a) => a.beneficiaireId,
+    )
+    expect(idsFromAccompagnements).toEqual(idsFromBeneficiaires)
+  })
+
+  it('creates one anonymous beneficiaire and one accompagnement for individuel with premierAccompagnement true', async () => {
+    const cra = createBaseCra({ activite: 'individuel', nbParticipants: 1 })
+    const result = await transformCraV1(cra, {
+      v1StructuresIdsMap,
+      v1PermanencesIdsMap,
+      v1ConseillersIdsMap,
+    })
+
+    expect(result.beneficiaires.length).toBe(1)
+    expect(result.accompagnements.length).toBe(1)
+    expect(result.accompagnements[0].premierAccompagnement).toBe(true)
+  })
+
+  it('assigns trancheAge from non-random age buckets exactly (no 18-35 to avoid randomness)', async () => {
+    const cra = createBaseCra({
+      nbParticipants: 5,
+      ageMoins12Ans: 2,
+      ageDe12a18Ans: 1,
+      ageDe18a35Ans: 0,
+      ageDe35a60Ans: 2,
+      agePlus60Ans: 0,
+    })
+
+    const result = await transformCraV1(cra, {
+      v1StructuresIdsMap,
+      v1PermanencesIdsMap,
+      v1ConseillersIdsMap,
+    })
+
+    const countByTranche = (t: TrancheAge) =>
+      result.beneficiaires.filter((b) => b.trancheAge === t).length
+
+    expect(countByTranche('MoinsDeDouze')).toBe(2)
+    expect(countByTranche('DouzeDixHuit')).toBe(1)
+    expect(countByTranche('QuaranteCinquanteNeuf')).toBe(2)
+  })
+
+  it('falls back to structure mapping when permanence is not provided for LieuActivite', async () => {
+    const cra = createBaseCra({ canal: 'autre lieu', permanenceId: null })
+    const result = await transformCraV1(cra, {
+      v1StructuresIdsMap,
+      v1PermanencesIdsMap,
+      v1ConseillersIdsMap,
+    })
+    expect(result.activite.typeLieu).toBe<TypeLieu>('Autre')
+    expect(result.activite.structure).toEqual({
+      connect: { id: 'v2-struct-1' },
+    })
   })
 
   it('maps domicile to Domicile', async () => {
     const cra = createBaseCra({ canal: 'domicile' })
-    const data = await transformCraV1(cra, {
+    const result = await transformCraV1(cra, {
       v1StructuresIdsMap,
       v1PermanencesIdsMap,
       v1ConseillersIdsMap,
     })
-    expect(data.typeLieu).toBe<TypeLieu>('Domicile')
+    expect(result.activite.typeLieu).toBe<TypeLieu>('Domicile')
   })
 
   it('parses duree in HH:MM when dureeMinutes is missing', async () => {
     const cra = createBaseCra({ duree: '01:30', dureeMinutes: null as any })
-    const data = await transformCraV1(cra, {
+    const result = await transformCraV1(cra, {
       v1StructuresIdsMap,
       v1PermanencesIdsMap,
       v1ConseillersIdsMap,
     })
-    expect(data.duree).toBe(90)
+    expect(result.activite.duree).toBe(90)
   })
 
   it('throws when structureEmployeuse mapping is missing', async () => {
@@ -269,12 +332,12 @@ describe('transformCraV1', () => {
 
     for (const c of cases) {
       const cra = createBaseCra({ organismes: c.orgs as unknown as any })
-      const data = await transformCraV1(cra, {
+      const result = await transformCraV1(cra, {
         v1StructuresIdsMap,
         v1PermanencesIdsMap,
         v1ConseillersIdsMap,
       })
-      expect(data.structureDeRedirection).toBe(c.expectCat)
+      expect(result.activite.structureDeRedirection).toBe(c.expectCat)
     }
   })
 })
