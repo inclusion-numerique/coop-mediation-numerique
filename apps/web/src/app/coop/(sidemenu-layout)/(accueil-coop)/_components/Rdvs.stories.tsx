@@ -24,7 +24,10 @@ const createRdv = (date: Date, status: 'unknown' | 'seen' = 'unknown') => ({
   motif: {
     id: 1,
     name: 'Accompagnement individuel',
+    collectif: false,
   },
+  name: null,
+  maxParticipantsCount: null,
   url: 'https://rdv.example.com',
   agents: [
     {

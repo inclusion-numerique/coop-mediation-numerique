@@ -46,7 +46,10 @@ export const getConseillerNumeriqueCrasFromMongo = async ({
     }
   }
   if (conseillerNumeriqueId) {
-    filter['conseiller._id'] = objectIdFromString(conseillerNumeriqueId)
+    const objectId = objectIdFromString(conseillerNumeriqueId)
+    if (objectId) {
+      ;(filter as any)['conseiller._id'] = objectId
+    }
   }
 
   const cras = await crasCollection

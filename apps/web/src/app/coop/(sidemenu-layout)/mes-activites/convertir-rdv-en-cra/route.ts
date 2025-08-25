@@ -37,13 +37,13 @@ export const GET = async (request: NextRequest) => {
     return new Response('Not found', { status: 404 })
   }
 
-  const craData = await createCraDataFromRdv({
+  const { type, defaultValues } = await createCraDataFromRdv({
     rdv,
     mediateurId: user.mediateur.id,
   })
 
   return redirect(
-    `/coop/mes-activites/cra/individuel?v=${encodeSerializableState(craData)}`,
+    `/coop/mes-activites/cra/${type}?v=${encodeSerializableState(defaultValues)}`,
   )
 }
 

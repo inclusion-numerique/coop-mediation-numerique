@@ -78,6 +78,7 @@ export const getActivitesFiltersWhereConditions = ({
   thematiqueNonAdministratives,
   thematiqueAdministratives,
   tags,
+  rdv,
 }: ActivitesFilters): {
   du: any
   au: any
@@ -90,6 +91,7 @@ export const getActivitesFiltersWhereConditions = ({
   conseiller_numerique: any
   thematiques: any
   tags: any
+  rdv: any
 } => {
   const thematiques = (
     [
@@ -154,6 +156,11 @@ export const getActivitesFiltersWhereConditions = ({
       ? conseiller_numerique === '1'
         ? Prisma.raw(`cn.id IS NOT NULL`)
         : Prisma.raw(`cn.id IS NULL`)
+      : null,
+    rdv: rdv
+      ? rdv === '1'
+        ? Prisma.raw(`act.rdv_service_public_id IS NOT NULL`)
+        : Prisma.raw(`act.rdv_service_public_id IS NULL`)
       : null,
     thematiques:
       thematiques && thematiques.length > 0

@@ -138,7 +138,7 @@ export const getTotalCountsStats = async ({
           proportion: proportionAccompagnementsIndividuels,
         },
         collectifs: {
-          total: result.total_accompagnements_collectifs,
+          total: result.total_collectifs,
           proportion: proportionAccompagnementsCollectifs,
         },
       },

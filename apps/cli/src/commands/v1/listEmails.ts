@@ -13,8 +13,8 @@ export const listV1Emails = new Command()
     const emails = await conseillersCollection
       .find(
         {
-          emailPro: { $exists: true, $ne: null },
-          'emailCN.address': { $exists: true, $ne: null },
+          emailPro: { $exists: true, $ne: null as any },
+          'emailCN.address': { $exists: true, $ne: null as any },
         },
         {
           projection: {

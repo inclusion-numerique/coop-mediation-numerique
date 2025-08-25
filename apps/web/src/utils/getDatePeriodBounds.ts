@@ -9,7 +9,7 @@ import {
   startOfWeek,
   startOfYear,
 } from 'date-fns'
-import { formatInTimeZone, toZonedTime } from 'date-fns-tz'
+import { formatInTimeZone } from 'date-fns-tz'
 
 type DateFunction<T = undefined> = (date: Date, options?: T) => Date
 

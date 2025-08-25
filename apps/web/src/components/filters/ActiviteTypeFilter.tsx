@@ -49,7 +49,8 @@ export const ActiviteTypeFilter = ({
     setRdvs(defaultValue.rdvs ?? [])
   }, [defaultValue.types, defaultValue.rdvs])
 
-  const hasFilters = activiteTypes.length > 0 || rdvs.length > 0
+  const filtersCount = activiteTypes.length + rdvs.length
+  const hasFilters = filtersCount > 0
 
   const closePopover = (close: boolean = false) => {
     close && setIsOpen(false)
@@ -123,7 +124,7 @@ export const ActiviteTypeFilter = ({
       onEscapeKeyDown={() => handleSubmit()}
       trigger={
         <TriggerButton isOpen={isOpen} isFilled={hasFilters}>
-          Type{hasFilters && ` · ${activiteTypes.length}`}
+          Type{hasFilters && ` · ${filtersCount}`}
         </TriggerButton>
       }
     >

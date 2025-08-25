@@ -2,9 +2,9 @@ import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
 import classNames from 'classnames'
 
 const RequiredFieldsDisclaimer = ({ className }: { className?: string }) => (
-  <p className={classNames('fr-text--sm fr-hint-text', className)}>
+  <span className={classNames('fr-text--sm fr-hint-text', className)}>
     Les champs avec <RedAsterisk /> sont obligatoires.
-  </p>
+  </span>
 )
 
 export default RequiredFieldsDisclaimer

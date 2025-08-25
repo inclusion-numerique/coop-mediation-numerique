@@ -73,7 +73,7 @@ export const RoleNotFound = ({
       Vous pouvez également essayer de retrouver votre profil en renseignant une
       autre adresse email.{' '}
       <Link
-        href="https://incubateurdesterritoires.notion.site/Cr-er-son-compte-se-connecter-cceb0f6bfb394b039c61c9251d8d7a6a?pvs=74"
+        href="https://docs.numerique.gouv.fr/docs/126f1452-8fac-4073-a86b-82e8559a1be0/"
         className="fr-link"
       >
         En savoir plus

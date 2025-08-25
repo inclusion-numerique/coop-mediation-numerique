@@ -28,7 +28,7 @@ export const InformationsCoop = () => (
               </span>
             </span>
           }
-          href="https://incubateurdesterritoires.notion.site/Centre-d-aide-de-La-Coop-de-la-m-diation-num-rique-e2db421ac63249769c1a9aa155af5f2f"
+          href="https://docs.numerique.gouv.fr/docs/1cf724be-c40c-4299-906d-df22c181c77b/"
           isExternal
         >
           Nous vous guidons dans la prise en main des différentes
@@ -55,7 +55,7 @@ export const InformationsCoop = () => (
               </span>
             </span>
           }
-          href="https://incubateurdesterritoires.notion.site/105744bf03dd80349c26e76cd8459eac?v=8949acfdde544d12860f5c0ca89af72f"
+          href="https://projets.suite.anct.gouv.fr/boards/1572441353164424613"
           isExternal
         >
           Retrouvez ici les prochaines évolutions de la plateforme et comment

@@ -29,7 +29,7 @@ export const ThematiquesFields = withForm({
             className="fr-flex-basis-0 fr-flex-grow-1 fr-mb-12v"
             classes={{
               content:
-                'fr-display-grid fr-grid--3x1 fr-grid--last-span-3 fr-grid-gap-2v',
+                'fr-display-grid fr-grid--2x1 fr-grid-md--3x1 fr-grid--last-span-2 fr-grid-md--last-span-3 fr-grid-gap-2v',
             }}
             isPending={isPending}
             options={thematiqueNonAdministrativesOptionsWithExtras}
@@ -51,7 +51,8 @@ export const ThematiquesFields = withForm({
                     <field.Checkbox
                       className="fr-flex-basis-0 fr-flex-grow-1 fr-mb-12v"
                       classes={{
-                        content: 'fr-display-grid fr-grid--3x1 fr-grid-gap-2v',
+                        content:
+                          'fr-display-grid fr-grid--2x1 fr-grid-md--3x1 fr-grid-gap-2v',
                       }}
                       isPending={isPending}
                       options={thematiqueAdministrativesOptionsWithExtras}

@@ -53,7 +53,7 @@ export const JoinTeam = ({
               className="fr-link"
               target="_blank"
               rel="noreferrer"
-              href="https://incubateurdesterritoires.notion.site/La-Coop-de-la-M-diation-Num-rique-de-quoi-parle-t-on-c57dea0441054c4183e21c886060ad78"
+              href="https://docs.numerique.gouv.fr/docs/cb90ba5c-6115-4996-8f1d-153be7eb4211/"
             >
               En savoir plus sur La Coop de la médiation numérique
             </Link>

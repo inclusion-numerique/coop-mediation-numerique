@@ -1,9 +1,16 @@
 import CompactNavigationSideMenu from '@app/ui/components/CompactNavigationSideMenu'
 import React from 'react'
 
-const LieuActiviteSideMenu = ({ className }: { className?: string }) => (
+const LieuActiviteSideMenu = ({
+  className,
+  style,
+}: {
+  className?: string
+  style?: object
+}) => (
   <CompactNavigationSideMenu
     className={className}
+    style={style}
     items={[
       {
         text: 'Informations générales',

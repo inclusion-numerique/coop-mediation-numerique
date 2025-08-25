@@ -48,7 +48,7 @@ const CraCollectifPage = ({
       <RequiredFieldsDisclamer
         className="fr-mb-12v"
         helpLink={{
-          href: 'https://incubateurdesterritoires.notion.site/Atelier-collectif-f2c9b66bd15a4c31b00343ee583a8832',
+          href: 'https://docs.numerique.gouv.fr/docs/c37dbaa4-f234-470c-8638-c91252784164/',
           text: 'En savoir plus sur comment compléter un CRA',
         }}
       />

@@ -75,7 +75,7 @@ const PageCreerBeneficiaire = async ({
                   dans notre centre d’aide.{' '}
                   <Link
                     className="fr-link fr-text--sm"
-                    href="https://incubateurdesterritoires.notion.site/Mod-le-de-mention-d-information-destination-des-b-n-ficiaires-accompagn-s-par-les-m-diateurs-num-r-1cf744bf03dd81f9845cd8a08112eecd"
+                    href="https://docs.numerique.gouv.fr/docs/640b3331-bd9f-43a7-a6e5-95757f63d532/"
                     target="_blank"
                   >
                     Consulter via ce lien

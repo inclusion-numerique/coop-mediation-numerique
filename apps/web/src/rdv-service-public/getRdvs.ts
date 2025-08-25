@@ -56,6 +56,8 @@ export const getRdvs = async ({
         created_by,
         status,
         motif,
+        name,
+        max_participants_count,
         organisation,
         url_for_agents,
       }) => {
@@ -78,9 +80,12 @@ export const getRdvs = async ({
             id: organisation.id,
             name: organisation.name,
           },
+          maxParticipantsCount: max_participants_count,
+          name,
           motif: {
             id: motif.id,
             name: motif.name,
+            collectif: motif.collectif,
           },
           agents: agents.map(
             ({ id: agentId, first_name, last_name, email }) => ({

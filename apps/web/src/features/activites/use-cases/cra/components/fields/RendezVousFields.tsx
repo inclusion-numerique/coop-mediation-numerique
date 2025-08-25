@@ -69,7 +69,7 @@ export const RendezVousFields = withForm({
 
     return (
       <>
-        <div className="fr-flex fr-flex-gap-12v">
+        <div className="fr-flex fr-direction-column fr-direction-md-row fr-flex-gap-0 fr-flex-gap-md-4v">
           <form.AppField name="date">
             {(field) => (
               <field.Input
@@ -162,7 +162,8 @@ export const RendezVousFields = withForm({
               <field.RadioButtons
                 className="fr-flex-basis-0 fr-flex-grow-1"
                 classes={{
-                  content: 'fr-display-grid fr-grid--4x1 fr-grid-gap-2v',
+                  content:
+                    'fr-display-grid fr-grid--2x1 fr-grid-md--4x1 fr-grid-gap-2v',
                 }}
                 isPending={isPending}
                 options={typeLieuOptionsWithExtras}

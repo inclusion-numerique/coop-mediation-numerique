@@ -47,7 +47,7 @@ export const Fonctionnalites = () => (
         </p>
         <span>
           <Link
-            href="https://incubateurdesterritoires.notion.site/Mes-b-n-ficiaires-bf63dd79e5344a06a72c243ef8cb6293"
+            href="https://docs.numerique.gouv.fr/docs/b8b9de2c-6ac4-4119-b6c4-0cb0b3b738d0/"
             target="_blank"
             className="fr-link"
           >
@@ -77,7 +77,7 @@ export const Fonctionnalites = () => (
         <span>
           <Link
             target="_blank"
-            href="https://incubateurdesterritoires.notion.site/Mes-outils-111744bf03dd80869445fe5ce3f07307"
+            href="https://docs.numerique.gouv.fr/docs/6593f536-3767-421a-a441-77169a2c7735/"
             className="fr-link"
           >
             Voir la liste des outils
@@ -113,7 +113,7 @@ export const Fonctionnalites = () => (
           iconPosition="right"
           iconId="fr-icon-arrow-right-line"
           linkProps={{
-            href: 'https://incubateurdesterritoires.notion.site/105744bf03dd80349c26e76cd8459eac?v=8949acfdde544d12860f5c0ca89af72f',
+            href: 'https://projets.suite.anct.gouv.fr/boards/1572441353164424613',
             target: '_blank',
           }}
         >

@@ -345,7 +345,10 @@ export const givenRdv = ({
   motif: {
     id: randomIntegerId(),
     name: 'Accompagnement individuel',
+    collectif: false,
   },
+  name: null,
+  maxParticipantsCount: null,
   date: date ?? new Date(Date.now() - 1000 * 60 * 60 * 24),
   endDate: new Date(
     (date ?? new Date(Date.now() - 1000 * 60 * 60 * 24)).getTime() +

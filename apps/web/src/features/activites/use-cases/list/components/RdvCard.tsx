@@ -5,6 +5,7 @@ import {
   dateAsTimeInTimeZone,
 } from '@app/web/utils/dateAsDayAndTime'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
+import { numberToString } from '@app/web/utils/formatNumber'
 import { UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 import Button from '@codegouvfr/react-dsfr/Button'
 import ActiviteCardSpacer from './ActiviteCardSpacer'
@@ -32,6 +33,7 @@ const RdvCard = ({
     endDate,
     agents,
     motif,
+    maxParticipantsCount,
     participations,
     url,
     status,
@@ -77,7 +79,15 @@ const RdvCard = ({
       contentBottom={
         displayBeneficiaire ? (
           <>
-            {motif.name} avec {participantsNames}
+            {motif.name}{' '}
+            {motif.collectif && activite.name ? <>{activite.name} </> : null}
+            {motif.collectif ? (
+              maxParticipantsCount ? (
+                <>({numberToString(maxParticipantsCount)} places)</>
+              ) : null
+            ) : (
+              <>avec {participantsNames}</>
+            )}
           </>
         ) : (
           motif.name

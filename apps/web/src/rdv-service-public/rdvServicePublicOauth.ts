@@ -25,7 +25,7 @@ export const rdvOauthLinkAccountErrorCallbackPath =
 
 // TODO replace with specific link for rdv integration when ready
 export const rdvIntegrationEnSavoirPlusLink =
-  'https://incubateurdesterritoires.notion.site/Int-gration-RDV-Service-Public-Phase-de-Beta-Test-206744bf03dd80bea28be3f43f7adddc'
+  'https://docs.numerique.gouv.fr/docs/49af7c6f-94c8-4160-b154-91b05ba2295a/'
 
 export const rdvWebsiteLink = PublicWebAppConfig.isMain
   ? 'https://rdv.anct.gouv.fr'

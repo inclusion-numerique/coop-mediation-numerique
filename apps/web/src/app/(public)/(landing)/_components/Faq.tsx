@@ -10,7 +10,7 @@ export const Faq = () => (
         <Link
           className="fr-link"
           target="_blank"
-          href="https://incubateurdesterritoires.notion.site/Centre-d-aide-de-La-Coop-de-la-m-diation-num-rique-e2db421ac63249769c1a9aa155af5f2f"
+          href="https://docs.numerique.gouv.fr/docs/1cf724be-c40c-4299-906d-df22c181c77b/"
         >
           centre d’aide
         </Link>
@@ -52,7 +52,7 @@ export const Faq = () => (
             <Link
               className="fr-link"
               target="_blank"
-              href="https://incubateurdesterritoires.notion.site/Cr-er-son-compte-se-connecter-cceb0f6bfb394b039c61c9251d8d7a6a?pvs=74"
+              href="https://docs.numerique.gouv.fr/docs/126f1452-8fac-4073-a86b-82e8559a1be0/"
             >
               En savoir plus sur les étapes à suivre en fonction de votre poste
             </Link>
@@ -90,7 +90,7 @@ export const Faq = () => (
         <p>
           <Link
             className="fr-link"
-            href="https://incubateurdesterritoires.notion.site/En-savoir-plus-sur-l-utilisation-des-donn-es-sur-la-Coop-de-la-m-diation-num-rique-82af14ef964b41c1bfb5cb4a01d6e40b"
+            href="https://docs.numerique.gouv.fr/docs/c97336c0-2ab3-4137-8d4d-b36f87d941de/"
             target="_blank"
           >
             En savoir plus sur l’utilisation des données sur la Coop de la
@@ -154,7 +154,7 @@ export const Faq = () => (
         via{' '}
         <Link
           className="fr-link"
-          href="https://incubateurdesterritoires.notion.site/105744bf03dd80349c26e76cd8459eac?v=8949acfdde544d12860f5c0ca89af72f"
+          href="https://projets.suite.anct.gouv.fr/boards/1572441353164424613"
           target="_blank"
         >
           notre feuille de route publique.
