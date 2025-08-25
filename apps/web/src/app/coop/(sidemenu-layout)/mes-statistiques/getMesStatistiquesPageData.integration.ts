@@ -440,12 +440,20 @@ describe('getMesStatistiquesPageData', () => {
 
           data.beneficiaires.communes = [
             {
+              codeInsee: null,
+              codePostal: null,
+              count: 12,
+              label: 'Non communiqué',
+              nom: null,
+              proportion: 92.308,
+            },
+            {
               codeInsee: '75101',
               codePostal: '75001',
               label: 'Paris · 75001',
               nom: 'Paris',
               count: 1,
-              proportion: 100,
+              proportion: 7.692,
             },
           ]
 
