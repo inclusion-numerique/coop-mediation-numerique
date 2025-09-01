@@ -41,8 +41,8 @@ const ExportActivitesButtonWrapper = async ({
     return (
       <ExportActivitesButton
         filters={filters}
-        filterLabels={filterLabels}
-        matchesCount={matchesCount}
+        filterLabelsToDisplay={filterLabels}
+        accompagnementsCount={matchesCount}
       />
     )
   }

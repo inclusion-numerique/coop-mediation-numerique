@@ -13,6 +13,8 @@ import { setWorkbookMetadata } from '@app/web/libs/worksheet/setWorkbookMetadata
 import { htmlToText } from '@app/web/utils/htmlToText'
 import { booleanToYesNoLabel } from '@app/web/utils/yesNoBooleanOptions'
 import { addFilters } from '@app/web/worksheet/buildWorksheetHelpers'
+import { format, isEqual } from 'date-fns'
+import { fr } from 'date-fns/locale'
 import * as Excel from 'exceljs'
 import {
   niveauAtelierStars,
@@ -42,25 +44,16 @@ export type BuildActivitesWorksheetInput = {
 
 const intraCellLineBreak = '\n'
 
-const beneficiairesListCellFormatter =
-  (activite: ActiviteListItem) =>
-  (
-    toStringValue: (
-      beneficiaire: ActiviteListItem['accompagnements'][number]['beneficiaire'],
-    ) => string,
-  ) =>
-    activite.accompagnements
-      .map((accompagnement) => accompagnement.beneficiaire)
-      .map(toStringValue)
-      .join(intraCellLineBreak)
-
-export const buildActivitesWorksheet = ({
-  activites,
-  user,
-  filters,
-  mediateur,
-  worksheetGenerationDate = new Date(),
-}: BuildActivitesWorksheetInput): Excel.Workbook => {
+export const buildAccompagnementsWorksheet = (
+  {
+    activites,
+    user,
+    filters,
+    mediateur,
+    worksheetGenerationDate = new Date(),
+  }: BuildActivitesWorksheetInput,
+  isSelfExport: boolean,
+): Excel.Workbook => {
   const workbook = new Excel.Workbook()
 
   setWorkbookMetadata(workbook)
@@ -70,22 +63,30 @@ export const buildActivitesWorksheet = ({
   addExportMetadata(worksheet)({
     user,
     date: worksheetGenerationDate,
-    total: activites.length,
+    total: activites.flatMap((activite) => activite.accompagnements).length,
   })
 
   addFilters(worksheet)(filters, {
     // only display the mediateur name if the user is NOT the mediateur used for export
     mediateurScope: user.id === mediateur.id ? null : mediateur,
-    excludeFilters: ['conseiller_numerique'],
   })
 
   const activitesTableHeaders = [
     'Date',
+    'Enregistré le',
+    'Dernière modification le',
+    ...(!isSelfExport
+      ? ['Prénom du médiateur', 'Nom du médiateur', 'Rôle', 'ID - Conum']
+      : []),
     'Type',
-    'Nombre de participants',
-    'Bénéficiaire',
+    'Participants',
+    ...(isSelfExport ? ['Bénéficiaire'] : []),
     'Canaux d’accompagnement',
-    'Lieu',
+    'Nom du lieu',
+    'Adresse',
+    'Commune',
+    'Code postal',
+    'Code Insee',
     'Durée (min)',
     'Nom de l’atelier',
     'Matériel numérique utilisé',
@@ -95,14 +96,18 @@ export const buildActivitesWorksheet = ({
     'Niveau d’autonomie (ou de l’atelier)',
     'Bénéficiaire réorienté',
     'Structure de redirection',
-    'Commune de résidence du bénéficiaire',
+    'Commune du bénéficiaire',
+    'Code postal du bénéficiaire',
+    'Code Insee du bénéficiaire',
     'Genre du bénéficiaire',
     'Tranche d’âge du bénéficiaire',
     'Statut du bénéficiaire',
-    'Notes supplémentaires',
+    ...(isSelfExport ? ['Notes supplémentaires'] : []),
+    ...(user.mediateur?.conseillerNumerique != null || user.coordinateur != null
+      ? ['Source de la donnée']
+      : []),
+    'ID CRA',
   ]
-
-  const structureEmployeuseLabel = user.emplois?.at(0)?.structure.nom ?? ''
 
   const separatorRowBeforeTable = worksheet.addRow([''])
 
@@ -117,14 +122,16 @@ export const buildActivitesWorksheet = ({
       name: label,
       filterButton: true,
     })),
-    rows: activites.map((activite) => {
-      const beneficiairesListCell = beneficiairesListCellFormatter(activite)
+    rows: activites.flatMap((activite) => {
       const {
         date,
+        creation,
+        modification,
         type,
         typeLieu,
         lieuCommune,
         lieuCodePostal,
+        lieuCodeInsee,
         structure,
         duree,
         titreAtelier,
@@ -137,63 +144,81 @@ export const buildActivitesWorksheet = ({
         notes,
         orienteVersStructure,
         structureDeRedirection,
+        id,
+        mediateur,
       } = activite
 
-      const lieuCommuneString = structure
-        ? `${structure.codePostal} ${structure.commune}`
-        : lieuCommune
-          ? `${lieuCodePostal} ${lieuCommune}`
-          : ''
-
-      const lieuPrefix = structure
-        ? `${structure.nom}, `
-        : typeLieu === 'ADistance'
-          ? `Structure employeuse : ${structureEmployeuseLabel}, `
-          : ''
-
-      return [
-        date,
-        typeActiviteLabels[type],
-        activite.accompagnements.length,
-        beneficiairesListCell(getBeneficiaireDisplayName),
-        typeLieuLabels[typeLieu],
-        `${lieuPrefix}${lieuCommuneString}`,
-        duree,
-        titreAtelier || '',
-        materiel
-          .map((materielValue) => materielLabels[materielValue])
-          .join(intraCellLineBreak),
-        thematiques
-          .map((thematique) => thematiqueLabels[thematique])
-          .join(intraCellLineBreak),
-        tags.map(({ tag: { nom } }) => nom).join(intraCellLineBreak),
-        precisionsDemarche || '',
-        autonomie
-          ? `${autonomieStars[autonomie]}/${autonomieValues.length}`
-          : niveau
-            ? `${niveauAtelierStars[niveau]}/${niveauAtelierValues.length}`
+      return activite.accompagnements.map((accompagnement, index) => {
+        return [
+          date,
+          format(creation, "dd/MM/yyyy 'à' HH:mm", { locale: fr }),
+          isEqual(creation, modification)
+            ? ''
+            : format(modification, "dd/MM/yyyy 'à' HH:mm", { locale: fr }),
+          ...(!isSelfExport
+            ? [
+                mediateur.user.firstName,
+                mediateur.user.lastName,
+                mediateur.conseillerNumerique == null
+                  ? 'Médiateur'
+                  : 'Conseiller Numérique',
+                mediateur.conseillerNumerique?.id ?? '',
+              ]
+            : []),
+          typeActiviteLabels[type],
+          activite.accompagnements.length === 1
+            ? 1
+            : `${index + 1}/${activite.accompagnements.length}`,
+          ...(isSelfExport
+            ? [getBeneficiaireDisplayName(accompagnement.beneficiaire)]
+            : []),
+          typeLieuLabels[typeLieu],
+          structure?.nom ?? '',
+          structure?.adresse ?? '',
+          structure?.commune ?? lieuCommune ?? '',
+          structure?.codePostal ?? lieuCodePostal ?? '',
+          structure?.codeInsee ?? lieuCodeInsee ?? '',
+          duree,
+          titreAtelier || '',
+          materiel
+            .map((materielValue) => materielLabels[materielValue])
+            .join(intraCellLineBreak),
+          thematiques
+            .map((thematique) => thematiqueLabels[thematique])
+            .join(intraCellLineBreak),
+          tags.map(({ tag: { nom } }) => nom).join(intraCellLineBreak),
+          precisionsDemarche || '',
+          autonomie
+            ? `${autonomieStars[autonomie]}/${autonomieValues.length}`
+            : niveau
+              ? `${niveauAtelierStars[niveau]}/${niveauAtelierValues.length}`
+              : '',
+          orienteVersStructure === null
+            ? ''
+            : booleanToYesNoLabel(orienteVersStructure),
+          structureDeRedirection
+            ? structuresRedirectionLabels[structureDeRedirection]
             : '',
-        orienteVersStructure === null
-          ? ''
-          : booleanToYesNoLabel(orienteVersStructure),
-        structureDeRedirection
-          ? structuresRedirectionLabels[structureDeRedirection]
-          : '',
-        beneficiairesListCell(({ commune, communeCodePostal }) =>
-          commune ? `${communeCodePostal} ${commune}` : '-',
-        ),
-        beneficiairesListCell(
-          ({ genre }) => genreLabels[genre ?? 'NonCommunique'],
-        ),
-        beneficiairesListCell(
-          ({ trancheAge }) => trancheAgeLabels[trancheAge ?? 'NonCommunique'],
-        ),
-        beneficiairesListCell(
-          ({ statutSocial }) =>
-            statutSocialLabels[statutSocial ?? 'NonCommunique'],
-        ),
-        notes ? htmlToText(notes) : '',
-      ]
+          accompagnement.beneficiaire.commune ?? '',
+          accompagnement.beneficiaire.communeCodePostal ?? '',
+          accompagnement.beneficiaire.communeCodeInsee ?? '',
+          genreLabels[accompagnement.beneficiaire.genre ?? 'NonCommunique'],
+          trancheAgeLabels[
+            accompagnement.beneficiaire.trancheAge ?? 'NonCommunique'
+          ],
+          statutSocialLabels[
+            accompagnement.beneficiaire.statutSocial ?? 'NonCommunique'
+          ],
+          ...(isSelfExport
+            ? [notes && index === 0 ? htmlToText(notes) : '']
+            : []),
+          ...(user.mediateur?.conseillerNumerique != null ||
+          user.coordinateur != null
+            ? ['La Coop de la médiation numérique (V2)']
+            : []),
+          id,
+        ]
+      })
     }),
   })
 

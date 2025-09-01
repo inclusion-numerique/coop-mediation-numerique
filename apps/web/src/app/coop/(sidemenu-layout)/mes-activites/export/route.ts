@@ -1,8 +1,8 @@
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
 import type { MediateurUser } from '@app/web/auth/userTypeGuards'
-import { buildActivitesWorksheet } from '@app/web/features/activites/use-cases/list/export/buildActivitesWorksheet'
-import { getActivitesWorksheetInput } from '@app/web/features/activites/use-cases/list/export/getActivitesWorksheetInput'
+import { buildAccompagnementsWorksheet } from '@app/web/features/activites/use-cases/list/export/buildAccompagnementsWorksheet'
+import { getAccompagenmentsWorksheetInput } from '@app/web/features/activites/use-cases/list/export/getAccompagenmentsWorksheetInput'
 import {
   ActivitesFilterValidations,
   ActivitesFilters,
@@ -13,6 +13,8 @@ import { z } from 'zod'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
+
+const toMediateurId = ({ mediateurId }: { mediateurId: string }) => mediateurId
 
 const ExportActivitesValidation = z
   .object({
@@ -26,20 +28,11 @@ export const GET = async (request: NextRequest) => {
   const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)
   const user = await getSessionUserFromSessionToken(sessionToken)
 
-  if (!user) {
+  if (!user?.mediateur && !user?.coordinateur) {
     return new Response('Unauthorized', {
       status: 401,
     })
   }
-
-  if (!user.mediateur) {
-    return new Response('Forbidden', {
-      status: 403,
-    })
-  }
-
-  // Do not know why but TS does not understand user.mediateur is not null after previous check
-  const typedUser = user as MediateurUser
 
   const parsedQueryParams = ExportActivitesValidation.safeParse(
     Object.fromEntries(request.nextUrl.searchParams.entries()),
@@ -51,29 +44,37 @@ export const GET = async (request: NextRequest) => {
     })
   }
 
-  const { mediateurs: exportForMediateurIds, ...filters } =
-    parsedQueryParams.data as ActivitesFilters
+  const filters = parsedQueryParams.data as ActivitesFilters
 
-  // For now we only support exporting for current user
-  if (
-    exportForMediateurIds &&
-    !exportForMediateurIds.includes(user.mediateur.id)
-  ) {
-    return new Response('Cannot export for another mediateur', {
-      status: 403,
-    })
-  }
+  const mediateurIds: string[] = [
+    ...(user.mediateur ? [user.mediateur.id] : []),
+    ...(user.coordinateur
+      ? user.coordinateur.mediateursCoordonnes.map(toMediateurId)
+      : []),
+  ]
 
-  const activitesWorksheetInput = await getActivitesWorksheetInput({
-    user: typedUser,
+  const activitesWorksheetInput = await getAccompagenmentsWorksheetInput({
+    user,
     filters,
+    mediateurIds:
+      (filters.mediateurs ?? []).length > 0
+        ? mediateurIds.filter((id) => filters.mediateurs?.includes(id))
+        : mediateurIds,
   })
 
-  const workbook = buildActivitesWorksheet(activitesWorksheetInput)
+  const isSelfExport =
+    user.mediateur != null &&
+    mediateurIds.includes(user.mediateur.id) &&
+    mediateurIds.length === 1
+
+  const workbook = buildAccompagnementsWorksheet(
+    activitesWorksheetInput,
+    isSelfExport,
+  )
 
   const data = await workbook.xlsx.writeBuffer()
 
-  const filename = `coop-numerique_activites_${dateAsIsoDay(new Date())}.xlsx`
+  const filename = `coop-numerique_accompagnements_${dateAsIsoDay(new Date())}.xlsx`
 
   return new Response(data, {
     status: 200,

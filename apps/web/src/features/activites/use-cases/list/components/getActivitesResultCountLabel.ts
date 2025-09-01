@@ -3,13 +3,13 @@ import { ActivitesListPageData } from '../getActivitesListPageData'
 
 export const getActivitesResultCountLabel = ({
   isFiltered,
-  searchResult: { matchesCount },
+  searchResult: { activitesMatchesCount },
   rdvsWithoutActivite,
 }: Pick<
   ActivitesListPageData,
   'isFiltered' | 'searchResult' | 'rdvsWithoutActivite'
 >) => {
-  const totalCount = matchesCount + rdvsWithoutActivite.length
+  const totalCount = activitesMatchesCount + rdvsWithoutActivite.length
 
   return totalCount === 0
     ? isFiltered

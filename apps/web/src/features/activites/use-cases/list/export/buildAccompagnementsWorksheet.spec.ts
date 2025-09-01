@@ -1,7 +1,7 @@
 import {
   BuildActivitesWorksheetInput,
-  buildActivitesWorksheet,
-} from './buildActivitesWorksheet'
+  buildAccompagnementsWorksheet,
+} from './buildAccompagnementsWorksheet'
 
 describe('buildActivitesWorksheet', () => {
   let mockInput: BuildActivitesWorksheetInput
@@ -79,7 +79,7 @@ describe('buildActivitesWorksheet', () => {
   })
 
   it('should create a workbook with correct structure', () => {
-    const workbook = buildActivitesWorksheet(mockInput)
+    const workbook = buildAccompagnementsWorksheet(mockInput, false)
     const worksheet = workbook.getWorksheet('Activités')
 
     expect(worksheet).toBeDefined()
@@ -111,7 +111,7 @@ describe('buildActivitesWorksheet', () => {
 
   it('should include the mediateur if different from user', () => {
     // The default mockInput as a mediateur different from the user
-    const workbook = buildActivitesWorksheet(mockInput)
+    const workbook = buildAccompagnementsWorksheet(mockInput, false)
     const rows = workbook.getWorksheet('Activités')?.getRows(1, 20)
     if (!rows) {
       throw new Error('Worksheet or rows not found')
@@ -129,7 +129,7 @@ describe('buildActivitesWorksheet', () => {
 
   it('should not include the mediateur if the mediateur is the same as the user', () => {
     mockInput.mediateur = mockInput.user // Make mediateur the same as the user
-    const workbook = buildActivitesWorksheet(mockInput)
+    const workbook = buildAccompagnementsWorksheet(mockInput, false)
     const rows = workbook.getWorksheet('Activités')?.getRows(1, 20)
     if (!rows) {
       throw new Error('Worksheet or rows not found')

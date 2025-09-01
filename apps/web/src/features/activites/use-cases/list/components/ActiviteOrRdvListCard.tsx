@@ -31,7 +31,7 @@ const ActiviteOrRdvListCard = ({
   <div>
     <div
       className={classNames(
-        'fr-border fr-py-4v fr-px-6v fr-flex fr-align-items-center fr-flex-gap-4v fr-flex-grow-1',
+        'fr-border fr-py-4v fr-px-4v fr-flex fr-align-items-center fr-flex-gap-4v fr-flex-grow-1',
         {
           'fr-enlarge-button': enlargeButton,
           'fr-enlarge-link': enlargeLink,
@@ -44,10 +44,10 @@ const ActiviteOrRdvListCard = ({
       )}
     >
       <div
-        className="fr-background-alt--blue-france fr-p-2v fr-border-radius--8 fr-flex"
+        className="fr-background-alt--blue-france fr-p-1v fr-border-radius--8 fr-flex"
         aria-hidden
       >
-        <Pictogram width={40} height={40} />
+        <Pictogram width={36} height={36} />
       </div>
       <div className="fr-flex-grow-1">
         <div className="fr-text--xs fr-text-mention--grey fr-mb-0">

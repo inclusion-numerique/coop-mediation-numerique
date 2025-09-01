@@ -41,7 +41,7 @@ const NouvelleFonctionnaliteCard = async ({
   }
 
   return (
-    <div className="fr-background-alt--yellow-tournesol fr-px-8v fr-py-6v fr-border-radius--16 fr-flex fr-flex-gap-8v fr-align-items-center">
+    <div className="fr-background-alt--yellow-tournesol fr-px-8v fr-py-6v fr-mt-6v fr-border-radius--16 fr-flex fr-flex-gap-8v fr-align-items-center">
       <div
         style={{ width: 128 }}
         className="fr-flex-shrink-0 fr-flex-grow-0 fr-flex fr-align-items-center fr-justify-content-center"
@@ -50,7 +50,10 @@ const NouvelleFonctionnaliteCard = async ({
       </div>
       <div className="fr-flex-grow-1">
         <div className="fr-flex fr-width-full fr-align-items-start fr-justify-content-space-between fr-mb-2v">
-          <Badge className="fr-badge--new fr-mb-0 fr-py-1v">
+          <Badge
+            small
+            className="fr-badge--new fr-mb-0 fr-py-1v fr-text--uppercase"
+          >
             {featureName}
           </Badge>
           <SupprimerNouvelleFonctionnaliteCardButton featureId={featureId} />

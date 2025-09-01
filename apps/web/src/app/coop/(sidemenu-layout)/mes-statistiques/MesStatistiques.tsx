@@ -7,9 +7,11 @@ import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { FilterTags } from '@app/web/features/activites/use-cases/list/components/FilterTags'
 import Filters from '@app/web/features/activites/use-cases/list/components/Filters'
 import { contentId } from '@app/web/utils/skipLinks'
+import Notice from '@codegouvfr/react-dsfr/Notice'
+import Link from 'next/link'
+import { AutoPrint } from './AutoPrint'
 import { ExportStatistiques } from './_components/ExportStatistiques'
 import { PrintStatistiques } from './_components/PrintStatistiques'
-import { StatistiquesTerritoriales } from './_components/StatistiquesTerritoriales'
 import { StatistiquesGenerales } from './_sections/StatistiquesGenerales'
 import { MesStatistiquesPageData } from './getMesStatistiquesPageData'
 
@@ -36,9 +38,10 @@ export const MesStatistiques = (
     <CoopPageContainer size={49}>
       <CoopBreadcrumbs currentPage="Mes statistiques" />
       <SkipLinksPortal />
+      <AutoPrint />
       <PrintStatistiques {...mesStatistiquesProps} />
       <main className="fr-no-print" id={contentId}>
-        <h1 className="fr-text-title--blue-france fr-mb-6v">
+        <h1 className="fr-text-title--blue-france fr-mb-5v">
           Mes statistiques
         </h1>
         <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v fr-mb-3w">
@@ -63,6 +66,9 @@ export const MesStatistiques = (
             mediateursOptions={initialMediateursOptions}
             beneficiairesOptions={[]}
             tagsOptions={tagsOptions}
+            accompagnementsCount={
+              mesStatistiquesProps.totalCounts.accompagnements.total
+            }
           />
         </div>
         <FilterTags
@@ -74,6 +80,25 @@ export const MesStatistiques = (
           beneficiairesOptions={[]}
           tagsOptions={tagsOptions}
         />
+        {(user.coordinateur || user.mediateur?.conseillerNumerique) && (
+          <Notice
+            className="fr-notice--flex fr-align-items-center fr-mt-6v"
+            title={
+              <span className="fr-text--xs fr-text--regular fr-text-default--grey">
+                Les activités renseignées dans l’Espace Coop (V1) sont
+                maintenant visibles sur cette page statistique.{' '}
+                <Link
+                  target="_blank"
+                  rel="noreferrer"
+                  href="https://docs.numerique.gouv.fr/docs/e2e794bb-30b3-41ea-a24f-4ef5c8ec074c"
+                  className="fr-link fr-text--xs"
+                >
+                  En savoir plus
+                </Link>
+              </span>
+            }
+          />
+        )}
         <section className="fr-mb-6w fr-mt-6v">
           <StatistiquesGenerales {...mesStatistiquesProps} />
         </section>

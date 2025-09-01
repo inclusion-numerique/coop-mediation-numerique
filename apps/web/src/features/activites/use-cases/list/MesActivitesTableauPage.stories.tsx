@@ -40,7 +40,10 @@ const dataAvecActivites = {
   isFiltered: false,
   rdvsWithoutActivite: [],
   searchResult: {
-    matchesCount: activitesForModalStories.length,
+    activitesMatchesCount: activitesForModalStories.length,
+    accompagnementsMatchesCount: activitesForModalStories
+      .map(({ accompagnements }) => accompagnements.length)
+      .reduce((a, b) => a + b, 0),
     moreResults: 0,
     totalPages: 1,
     activites: activitesForModalStories,

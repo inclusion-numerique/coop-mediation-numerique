@@ -5,6 +5,7 @@ import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import ActiviteDetailsModal from '@app/web/features/activites/use-cases/list/components/ActiviteDetailsModal/ActiviteDetailsModal'
 import { DernieresActivites } from '@app/web/features/activites/use-cases/list/components/DernieresActivites'
 import CafeIaNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/cafe-ia/components/CafeIaNouvelleFonctionnaliteCard'
+import ConsolidationStatistiquesNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/consolidation-statistiques/components/ConsolidationStatistiquesNouvelleFonctionnaliteCard'
 import TagsNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/tags/components/TagsNouvelleFonctionnaliteCard'
 import { contentId } from '@app/web/utils/skipLinks'
 import React from 'react'
@@ -45,13 +46,12 @@ export const Accueil = ({
   <CoopPageContainer size={49}>
     <SkipLinksPortal />
     <main id={contentId}>
-      <h1 className="fr-text-title--blue-france fr-mt-10v">
+      <h1 className="fr-text-title--blue-france fr-mt-12v fr-mb-0">
         👋 Bonjour {firstName || name || email}
       </h1>
-      <div className="fr-my-12v fr-flex fr-flex-gap-6v fr-direction-column">
-        <TagsNouvelleFonctionnaliteCard />
-        <CafeIaNouvelleFonctionnaliteCard />
-      </div>
+      <ConsolidationStatistiquesNouvelleFonctionnaliteCard />
+      <TagsNouvelleFonctionnaliteCard />
+      <CafeIaNouvelleFonctionnaliteCard />
       {isMediateur && (
         <>
           <OnboardingInfo hasSeenOnboarding={hasSeenOnboarding} />
