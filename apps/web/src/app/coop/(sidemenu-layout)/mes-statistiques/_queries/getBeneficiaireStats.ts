@@ -127,9 +127,9 @@ export const normalizeBeneficiairesStatsRaw = (
 }
 
 export type BeneficiairesCommunesRaw = {
-  commune: string
-  code_postal: string
-  code_insee: string
+  commune: string | null
+  code_postal: string | null
+  code_insee: string | null
   count_beneficiaires: number
 }
 
@@ -166,10 +166,7 @@ export const getBeneficiairesCommunesRaw = async ({
             getActivitesFiltersWhereConditions(activitesFilters),
           )}
       GROUP BY commune_code_insee
-  `.then((result) =>
-    // Filter out null codeInsee for when there is no commune in beneficiaire or activite
-    result.filter(({ code_insee }) => !!code_insee),
-  )
+  `
 }
 
 export const normalizeBeneficiairesCommunesRaw = (
@@ -184,7 +181,10 @@ export const normalizeBeneficiairesCommunesRaw = (
       codeInsee: code_insee,
       codePostal: code_postal,
       count: count_beneficiaires,
-      label: `${commune} · ${code_postal}`,
+      label:
+        commune && code_postal
+          ? `${commune} · ${code_postal}`
+          : 'Non communiqué',
     }),
   )
 
