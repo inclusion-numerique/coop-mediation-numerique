@@ -8,7 +8,6 @@ import {
 
 export type ComboBoxData<TItem, TPayload = {}> = {
   itemToString: (item: TItem | null) => string
-  beforeLoadSuggestions?: (inputValue: string) => Partial<TPayload>
   loadSuggestions: (
     inputValue: string,
   ) => Promise<{ items: TItem[] } & TPayload>
@@ -18,6 +17,12 @@ export type ComboBoxProps<TItem, TPayload extends object> = {
   defaultItems?: TItem[]
   defaultValue?: Partial<TItem>
   clearOnSelect?: boolean
+  beforeLoadSuggestions?: (inputValue: string) => Partial<TPayload>
+  loadSuggestionsOnOpenChange?: boolean
+  onSelectedItemChange?: (
+    item: TItem | null,
+    setInputValue: (inputValue: string) => void,
+  ) => void
   children: (props: {
     getLabelProps: UseComboboxReturnValue<TItem>['getLabelProps']
     getMenuProps: UseComboboxReturnValue<TItem>['getMenuProps']
@@ -40,8 +45,10 @@ export const ComboBox = <TItem, TPayload extends object>({
   defaultValue,
   beforeLoadSuggestions,
   loadSuggestions,
+  loadSuggestionsOnOpenChange = false,
   itemToString,
   clearOnSelect = false,
+  onSelectedItemChange,
   children,
 }: ComboBoxProps<TItem, TPayload>) => {
   const [items, setItems] = useState<TItem[]>(defaultItems)
@@ -75,12 +82,22 @@ export const ComboBox = <TItem, TPayload extends object>({
     },
     items,
     itemToString,
-    onSelectedItemChange: () => {
+    onSelectedItemChange: ({ selectedItem }) => {
+      onSelectedItemChange?.(selectedItem, setInputValue)
       if (!clearOnSelect) return
       setInputValue('')
       setItems([])
     },
     defaultInputValue: itemToString((defaultValue as TItem) ?? null),
+    onIsOpenChange: async ({ isOpen }) => {
+      if (!isOpen || !loadSuggestionsOnOpenChange) return
+
+      const { items: newItems, ...newPayload } =
+        await loadSuggestions(inputValue)
+
+      setItems(newItems)
+      setPayload(newPayload as TPayload)
+    },
   })
 
   return children({

@@ -12,6 +12,7 @@ services:
   db:
     image: pgvector/pgvector:pg17
     container_name: coop_pg
+    shm_size: 1g
     environment:
       - POSTGRES_DB=${NEXT_PUBLIC_APP_SLUG}
       - POSTGRES_USER=${NEXT_PUBLIC_APP_SLUG}

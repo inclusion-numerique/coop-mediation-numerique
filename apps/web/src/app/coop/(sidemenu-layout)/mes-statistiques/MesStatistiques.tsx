@@ -47,9 +47,6 @@ export const MesStatistiques = (
         <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v fr-mb-3w">
           <Filters
             defaultFilters={activitesFilters}
-            communesOptions={communesOptions}
-            departementsOptions={departementsOptions}
-            lieuxActiviteOptions={lieuxActiviteOptions}
             tagsOptions={tagsOptions}
             initialMediateursOptions={initialMediateursOptions}
             initialBeneficiairesOptions={initialBeneficiairesOptions}

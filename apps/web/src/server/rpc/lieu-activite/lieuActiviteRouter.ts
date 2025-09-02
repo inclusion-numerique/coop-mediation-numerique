@@ -1,4 +1,6 @@
 import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite/CreerLieuActiviteValidation'
+import { searchCommunesLieuxActivite } from '@app/web/features/lieux-activite/searchCommunesLieuxActivite'
+import { searchDepartementsLieuxActivite } from '@app/web/features/lieux-activite/searchDepartementsLieuxActivite'
 import { searchLieuxActivite } from '@app/web/features/lieux-activite/searchLieuxActivite'
 import {
   DescriptionData,
@@ -407,6 +409,44 @@ export const lieuActiviteRouter = router({
       return searchLieuxActivite({
         mediateurId: sessionUser.mediateur.id,
         searchParams: { recherche: query },
+      })
+    }),
+  searchCommunes: protectedProcedure
+    .input(
+      z.object({
+        query: z.string(),
+        excludeCodeInsee: z.array(z.string()).default([]),
+      }),
+    )
+    .query(({ input: { query, excludeCodeInsee }, ctx: { user } }) => {
+      if (!user.mediateur && user.role !== 'Admin') {
+        throw forbiddenError('User is not a mediateur')
+      }
+      return searchCommunesLieuxActivite({
+        mediateurId: user.mediateur?.id,
+        searchParams: {
+          recherche: query,
+        },
+        excludeCodeInsee: excludeCodeInsee,
+      })
+    }),
+  searchDepartements: protectedProcedure
+    .input(
+      z.object({
+        query: z.string(),
+        excludeCodeInsee: z.array(z.string()).default([]),
+      }),
+    )
+    .query(({ input: { query, excludeCodeInsee }, ctx: { user } }) => {
+      if (!user.mediateur && user.role !== 'Admin') {
+        throw forbiddenError('User is not a mediateur')
+      }
+      return searchDepartementsLieuxActivite({
+        mediateurId: user.mediateur?.id,
+        searchParams: {
+          recherche: query,
+        },
+        excludeCodeInsee,
       })
     }),
 })

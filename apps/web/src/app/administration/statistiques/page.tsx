@@ -1,4 +1,3 @@
-import { getUtilisateursListPageData } from '@app/web/app/administration/utilisateurs/getUtilisateursListPageData'
 import {
   getAccompagnementsCountByDay,
   getAccompagnementsCountByMonth,
@@ -10,12 +9,14 @@ import { StatistiquesActivites } from '@app/web/app/coop/(sidemenu-layout)/mes-s
 import { StatistiquesBeneficiaires } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesBeneficiaires'
 import { StatistiquesGenerales } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesGenerales'
 import { metadataTitle } from '@app/web/app/metadataTitle'
+import { authenticateUser } from '@app/web/auth/authenticateUser'
 import { FilterTags } from '@app/web/features/activites/use-cases/list/components/FilterTags'
 import Filters from '@app/web/features/activites/use-cases/list/components/Filters'
 import {
   type ActivitesFilters,
   validateActivitesFilters,
 } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { getTagsCollectifs } from '@app/web/features/activites/use-cases/tags/db/getTagsCollectifs'
 import { getImpactStats } from '@app/web/server/impact/getImpactStats'
 
 export const metadata = {
@@ -34,11 +35,8 @@ const Page = async (props: {
 }) => {
   const searchParams = await props.searchParams
   const activitesFilters = validateActivitesFilters(searchParams)
-
-  const { communesOptions, departementsOptions, lieuxActiviteOptions } =
-    await getUtilisateursListPageData({
-      searchParams,
-    })
+  const user = await authenticateUser()
+  const tagsOptions = await getTagsCollectifs()
 
   const [
     accompagnementsParJour,
@@ -51,7 +49,7 @@ const Page = async (props: {
     getAccompagnementsCountByDay({ activitesFilters }),
     getAccompagnementsCountByMonth({ activitesFilters }),
     getBeneficiaireStats({ activitesFilters }),
-    getActivitesStats({ activitesFilters }),
+    getActivitesStats({ activitesFilters, user }),
     getTotalCountsStats({ activitesFilters }),
     getImpactStats({ activitesFilters }),
   ])
@@ -61,10 +59,7 @@ const Page = async (props: {
       <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v fr-mb-3w">
         <Filters
           defaultFilters={activitesFilters}
-          communesOptions={communesOptions}
-          departementsOptions={departementsOptions}
-          lieuxActiviteOptions={lieuxActiviteOptions}
-          tagsOptions={[]}
+          tagsOptions={tagsOptions}
           initialMediateursOptions={[]}
           initialBeneficiairesOptions={[]}
           minDate={new Date('2024-09-01')}
@@ -75,14 +70,14 @@ const Page = async (props: {
       </div>
       <FilterTags
         filters={activitesFilters}
-        communesOptions={communesOptions}
-        departementsOptions={departementsOptions}
-        lieuxActiviteOptions={lieuxActiviteOptions}
+        communesOptions={[]}
+        departementsOptions={[]}
+        lieuxActiviteOptions={[]}
         tagsOptions={[]}
         mediateursOptions={[]}
         beneficiairesOptions={[]}
       />
-      <section className="fr-mb-6w">
+      <section className="fr-mb-6w fr-mt-6v">
         <StatistiquesGenerales
           wording="generique"
           totalCounts={totalCounts}
@@ -92,6 +87,7 @@ const Page = async (props: {
       </section>
       <section className="fr-mb-6w">
         <StatistiquesActivites
+          isAdmin
           wording="generique"
           totalCounts={totalCounts}
           activites={activites}
