@@ -7,6 +7,7 @@ import MesActivitesListeLayout from '@app/web/features/activites/use-cases/list/
 import { getActivitesListPageData } from '@app/web/features/activites/use-cases/list/getActivitesListPageData'
 import MesActivitesListePage from '@app/web/features/activites/use-cases/list/MesActivitesListePage'
 import { validateActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { hasFeatureFlag } from '@app/web/security/hasFeatureFlag'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -45,6 +46,8 @@ const MesActivitesPage = async ({
     includeBeneficiaireIds: searchParams.beneficiaires,
   })
 
+  const hasFeature = hasFeatureFlag(user, 'RdvServicePublic')
+
   return (
     <MesActivitesListeLayout vue="liste">
       <MesActivitesListeHeader
@@ -57,6 +60,7 @@ const MesActivitesPage = async ({
         lieuxActiviteOptions={lieuxActiviteOptions}
         tagsOptions={tagsOptions}
         activiteDates={activiteDates}
+        enableRdvsFilter={hasFeature}
       />
       <MesActivitesListePage data={data} />
     </MesActivitesListeLayout>

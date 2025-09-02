@@ -11,7 +11,7 @@ export type EquipeSearchParams = {
   lignes?: string
   page?: string
   recherche?: string
-  tri?: 'alphabetique' | 'recent' | 'ancien'
+  tri?: 'nomaz' | 'nomza' | 'recent' | 'ancien'
 }
 
 type MediateurFound = {
@@ -30,7 +30,8 @@ type MediateurFound = {
 const triMap: Record<NonNullable<EquipeSearchParams['tri']>, string> = {
   ancien: 'creation ASC',
   recent: 'creation DESC',
-  alphabetique: 'LOWER(last_name) ASC, LOWER(first_name) ASC',
+  nomaz: 'LOWER(last_name) ASC, LOWER(first_name) ASC',
+  nomza: 'LOWER(last_name) DESC, LOWER(first_name) DESC',
 }
 
 export const searchMediateursCoordonneBy =
@@ -94,7 +95,7 @@ export const searchMediateursCoordonneBy =
         `,
           )}
         )
-      ORDER BY ${Prisma.raw(searchParams.tri ? triMap[searchParams.tri] : triMap.alphabetique)} LIMIT ${take} OFFSET ${skip}
+      ORDER BY ${Prisma.raw(searchParams.tri ? triMap[searchParams.tri] : triMap.nomaz)} LIMIT ${take} OFFSET ${skip}
     `
 
     const result: [{ count: number }] = await prismaClient.$queryRaw`

@@ -8,6 +8,7 @@ import { mediateurHasActivites } from '@app/web/features/activites/use-cases/lis
 import { getActivitesListPageData } from '@app/web/features/activites/use-cases/list/getActivitesListPageData'
 import MesActivitesTableauPage from '@app/web/features/activites/use-cases/list/MesActivitesTableauPage'
 import { validateActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { hasFeatureFlag } from '@app/web/security/hasFeatureFlag'
 
 const MesActivitesVueTableauPage = async ({
   searchParams,
@@ -47,6 +48,8 @@ const MesActivitesVueTableauPage = async ({
       includeBeneficiaireIds: searchParams.beneficiaires,
     })
 
+    const hasFeature = hasFeatureFlag(user, 'RdvServicePublic')
+
     return (
       <MesActivitesListeLayout vue="tableau">
         <MesActivitesListeHeader
@@ -59,6 +62,7 @@ const MesActivitesVueTableauPage = async ({
           lieuxActiviteOptions={lieuxActiviteOptions}
           tagsOptions={tagsOptions}
           activiteDates={activiteDates}
+          enableRdvsFilter={hasFeature}
         />
         <MesActivitesTableauPage data={data} />
       </MesActivitesListeLayout>
