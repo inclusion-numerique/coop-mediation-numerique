@@ -29,57 +29,62 @@ export const ModalitesAccesAuServiceFields = <
         Indiquez comment bénéficier de ses services. Sélectionnez un ou
         plusieurs choix.
       </p>
-      <CheckboxFormField
-        path="modalitesAcces.surPlace"
-        label="Se présenter sur place"
-        control={control}
-        disabled={formState.isSubmitting}
-        className="fr-mb-0"
-      />
-      <CheckboxFormField
-        path="modalitesAcces.parTelephone"
-        label="Téléphoner"
-        control={control}
-        disabled={formState.isSubmitting}
-        className="fr-mb-0"
-      />
-      {showPhoneInput && (
-        <InputFormField
-          path="modalitesAcces.numeroTelephone"
-          label="Précisez le téléphone de contact"
-          hint="Exemples : 06 00 00 00 00 ou 0600000000"
-          asterisk
+      <div className="fr-flex fr-direction-column fr-flex-gap-4v">
+        <div>
+          <CheckboxFormField
+            path="modalitesAcces.surPlace"
+            label="Se présenter sur place"
+            control={control}
+            disabled={formState.isSubmitting}
+            className="fr-mb-0"
+          />
+          <CheckboxFormField
+            path="modalitesAcces.parTelephone"
+            label="Téléphoner"
+            control={control}
+            disabled={formState.isSubmitting}
+            className="fr-mb-0"
+          />
+          {showPhoneInput && (
+            <InputFormField
+              path="modalitesAcces.numeroTelephone"
+              label="Précisez le téléphone de contact"
+              hint="Exemples : 06 00 00 00 00 ou 0600000000"
+              asterisk
+              control={control}
+              disabled={formState.isSubmitting}
+              className="fr-mb-8v fr-mt-4v"
+            />
+          )}
+          <CheckboxFormField
+            path="modalitesAcces.parMail"
+            label="Contacter par mail"
+            control={control}
+            disabled={formState.isSubmitting}
+            className="fr-mb-0"
+          />
+          {showEmailInput && (
+            <InputFormField
+              path="modalitesAcces.adresseMail"
+              label="Précisez l’adresse mail de contact"
+              hint="Format attendu : nom@domaine.fr"
+              asterisk
+              control={control}
+              disabled={formState.isSubmitting}
+              className="fr-my-4v"
+            />
+          )}
+        </div>
+
+        <CheckboxGroupFormField
+          path="fraisACharge"
+          label="Frais à charge"
+          hint="Indiquez les conditions financières d'accès aux services."
+          options={fraisAChargeOptions}
           control={control}
           disabled={formState.isSubmitting}
-          className="fr-mb-0"
         />
-      )}
-      <CheckboxFormField
-        path="modalitesAcces.parMail"
-        label="Contacter par mail"
-        control={control}
-        disabled={formState.isSubmitting}
-        className="fr-mb-0"
-      />
-      {showEmailInput && (
-        <InputFormField
-          path="modalitesAcces.adresseMail"
-          label="Précisez l’adresse mail de contact"
-          hint="Format attendu : nom@domaine.fr"
-          asterisk
-          control={control}
-          disabled={formState.isSubmitting}
-          className="fr-mb-0"
-        />
-      )}
-      <CheckboxGroupFormField
-        path="fraisACharge"
-        label="Frais à charge"
-        hint="Indiquez les conditions financières d'accès aux services."
-        options={fraisAChargeOptions}
-        control={control}
-        disabled={formState.isSubmitting}
-      />
+      </div>
     </>
   )
 }

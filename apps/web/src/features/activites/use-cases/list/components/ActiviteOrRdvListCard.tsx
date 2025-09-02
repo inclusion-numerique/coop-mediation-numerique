@@ -28,21 +28,21 @@ const ActiviteOrRdvListCard = ({
   lastOfStack?: boolean // The last card of a stack will have bottom border radius
   footer?: ReactNode
 }) => (
-  <div>
-    <div
-      className={classNames(
-        'fr-border fr-py-4v fr-px-4v fr-flex fr-align-items-center fr-flex-gap-4v fr-flex-grow-1',
-        {
-          'fr-enlarge-button': enlargeButton,
-          'fr-enlarge-link': enlargeLink,
-          'fr-mt-4v': !stacked || firstOfStack,
-          'fr-mt-minus-1px': stacked && !firstOfStack,
-          'fr-border-radius--8': !stacked,
-          'fr-border-radius-top--8': stacked && firstOfStack,
-          'fr-border-radius-bottom--8': stacked && lastOfStack,
-        },
-      )}
-    >
+  <div
+    className={classNames(
+      'fr-border fr-p-4v fr-grid-row fr-flex-gap-2v fr-align-items-center',
+      {
+        'fr-enlarge-button': enlargeButton,
+        'fr-enlarge-link': enlargeLink,
+        'fr-mt-4v': !stacked || firstOfStack,
+        'fr-mt-minus-1px': stacked && !firstOfStack,
+        'fr-border-radius--8': !stacked,
+        'fr-border-radius-top--8': stacked && firstOfStack,
+        'fr-border-radius-bottom--8': stacked && lastOfStack,
+      },
+    )}
+  >
+    <div className="fr-flex fr-col fr-flex-gap-4v fr-align-items-center">
       <div
         className="fr-background-alt--blue-france fr-p-1v fr-border-radius--8 fr-flex"
         aria-hidden
@@ -58,9 +58,9 @@ const ActiviteOrRdvListCard = ({
         </div>
         {!!footer && footer}
       </div>
-      <div className="fr-text--sm fr-text-mention--grey fr-mb-0 fr-flex fr-align-items-center">
-        {actions}
-      </div>
+    </div>
+    <div className="fr-text--sm fr-text-mention--grey fr-mb-0 fr-col-12 fr-col-lg-3">
+      {actions}
     </div>
   </div>
 )
