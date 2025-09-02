@@ -33,25 +33,9 @@ const Filters = ({
     <DispositifFilter defaultValue={defaultFilters.conseiller_numerique} />
     <StatutFilter defaultValue={defaultFilters.statut} />
     <LieuFilter
-      defaultValue={[
-        ...(defaultFilters.lieux == null
-          ? []
-          : [{ type: 'lieu' as const, value: defaultFilters.lieux }]),
-        ...(defaultFilters.communes == null
-          ? []
-          : [{ type: 'commune' as const, value: defaultFilters.communes }]),
-        ...(defaultFilters.departements == null
-          ? []
-          : [
-              {
-                type: 'departement' as const,
-                value: defaultFilters.departements,
-              },
-            ]),
-      ]}
-      lieuxActiviteOptions={lieuxActiviteOptions}
-      communesOptions={communesOptions}
-      departementsOptions={departementsOptions}
+      lieuxParams={lieuxActiviteOptions}
+      communesParams={communesOptions}
+      departementsParams={departementsOptions}
     />
   </div>
 )

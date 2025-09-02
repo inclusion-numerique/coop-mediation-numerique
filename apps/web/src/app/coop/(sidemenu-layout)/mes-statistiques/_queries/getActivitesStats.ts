@@ -187,6 +187,28 @@ const getActiviteTags = ({
   user?: UserProfile
   activitesFilters: ActivitesFilters
 }) => {
+  if (user?.role === 'Admin') {
+    return prismaClient.$queryRaw<
+      {
+        label: string
+        count: number
+      }[]
+    >(Prisma.sql`
+      SELECT t.nom AS label, COUNT(act.id)::int AS count
+      FROM accompagnements a
+        INNER JOIN activites act ON a.activite_id = act.id
+         LEFT JOIN structures str ON str.id = act.structure_id
+         INNER JOIN activite_tags at ON at.activite_id = act.id
+         INNER JOIN tags t ON t.id = at.tag_id
+      WHERE act.suppression IS NULL
+        AND t.mediateur_id IS NULL
+        AND t.suppression IS NULL
+        AND ${getActiviteFiltersSqlFragment(getActivitesFiltersWhereConditions(activitesFilters))}
+      GROUP BY t.id, t.nom
+      ORDER BY count DESC
+  `)
+  }
+
   if (mediateurIds == null || mediateurIds.length === 0)
     return Promise.resolve([])
 
@@ -212,9 +234,7 @@ const getActiviteTags = ({
       AND (act.date <= mc.suppression OR mc.suppression IS NULL)
       AND act.suppression IS NULL
       AND t.suppression IS NULL
-      AND ${getActiviteFiltersSqlFragment(
-        getActivitesFiltersWhereConditions(activitesFilters),
-      )}
+      AND ${getActiviteFiltersSqlFragment(getActivitesFiltersWhereConditions(activitesFilters))}
     GROUP BY t.id, t.nom
     ORDER BY count DESC
   `)
