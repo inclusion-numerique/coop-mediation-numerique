@@ -29,12 +29,21 @@ type AgeDistribution = {
 }
 
 export type TransformCraV1Output = {
-  activite: Prisma.ActiviteCreateInput
-  beneficiaires: Array<Prisma.BeneficiaireCreateInput & { id: string }>
-  accompagnements: Array<{
-    beneficiaireId: string
-    premierAccompagnement: boolean
-  }>
+  activite: Prisma.ActiviteUncheckedCreateInput & {
+    id: string
+    v1CraId: string
+  }
+  beneficiaires: Array<
+    Prisma.BeneficiaireUncheckedCreateInput & {
+      id: string
+      mediateurId: string
+    }
+  >
+  accompagnements: Array<
+    Prisma.AccompagnementUncheckedCreateInput & {
+      id: string
+    }
+  >
 }
 
 export type TransformCraV1Context = {
@@ -103,7 +112,10 @@ export const transformCraV1 = (
     nbParticipants: cra.nbParticipants,
   })
 
-  const activite: Prisma.ActiviteUncheckedCreateInput & { id: string } = {
+  const activite: Prisma.ActiviteUncheckedCreateInput & {
+    id: string
+    v1CraId: string
+  } = {
     id: v4(),
     type,
     mediateurId,

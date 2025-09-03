@@ -1056,7 +1056,7 @@ model Activite {
   tags         ActivitesTags[]
 
   // En cas d'import depuis les données v1
-  v1CraId String? @map("v1_cra_id")
+  v1CraId String? @map("v1_cra_id") @unique
   v1CraIdPg Int? @map("v1_cra_id_pg")
   v1StructureId String? @map("v1_structure_id")
   v1PermanenceId String? @map("v1_permanence_id")
