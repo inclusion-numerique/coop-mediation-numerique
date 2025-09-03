@@ -23,38 +23,47 @@ export const createMissingConseillerV1 = async () => {
     v1Imported: missingConseillerV1.deleted,
   }
 
-  let user = await prismaClient.user.findUnique({
-    where: {
-      id: missingConseillerV1.userId,
-    },
-  })
-  if (!user) {
-    user = await prismaClient.user.create({
-      data: {
+  const user = await prismaClient.$transaction(async (tx) => {
+    const existingUser = await tx.user.findUnique({
+      where: {
         id: missingConseillerV1.userId,
-        ...userData,
       },
     })
-  }
 
+    if (existingUser) {
+      return existingUser
+    }
+
+    const createdUser = await tx.user.create({
+      data: {
+        ...userData,
+        id: missingConseillerV1.userId,
+      },
+    })
+    return createdUser
+  })
   const mediateurData = {
     userId: missingConseillerV1.userId,
     creation: missingConseillerV1.deleted,
     modification: missingConseillerV1.deleted,
   }
 
-  let mediateur = await prismaClient.mediateur.findUnique({
-    where: {
-      id: missingConseillerV1.mediateurId,
-    },
-  })
-  if (!mediateur) {
-    mediateur = await prismaClient.mediateur.create({
-      data: {
+  const mediateur = await prismaClient.$transaction(async (tx) => {
+    const existingMediateur = await tx.mediateur.findUnique({
+      where: {
         id: missingConseillerV1.mediateurId,
-        ...mediateurData,
       },
     })
-  }
+    if (existingMediateur) {
+      return existingMediateur
+    }
+    const createdMediateur = await tx.mediateur.create({
+      data: {
+        ...mediateurData,
+        id: missingConseillerV1.mediateurId,
+      },
+    })
+    return createdMediateur
+  })
   return { user, mediateur }
 }
