@@ -27,7 +27,6 @@ const migrateCrasV1ByBatch = async ({
   }
 
   let rest = take ? take : undefined
-  // TODO with prisma do pagination 10_000 items batch, while batch is not empty
   let items = await prismaClient.craConseillerNumeriqueV1.findMany({
     skip,
     take: batch,
@@ -48,7 +47,7 @@ const migrateCrasV1ByBatch = async ({
     }
     items = await prismaClient.craConseillerNumeriqueV1.findMany({
       skip,
-      take: 10_000,
+      take: rest !== undefined ? Math.min(rest, batch) : batch,
     })
     result.totalImported += items.length
   }
