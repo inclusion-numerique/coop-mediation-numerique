@@ -11,10 +11,10 @@ import { UpdateConumInfoValidation } from '@app/web/jobs/update-conum-info/Updat
 import { UpdateConumStructureReferentJobValidation } from '@app/web/jobs/update-conum-structure-referent/UpdateConumStructureReferentJob'
 import { UpdateLieuxActivitesAdistanceValidation } from '@app/web/jobs/update-lieu-activite-a-distance/updateLieuxActivitesAdistanceJob'
 import { UpdateStructuresCartographieNationaleJobValidation } from '@app/web/jobs/update-structures-cartographie-nationale/updateStructuresCartographieNationaleJob'
-import { MigrateUsersV1JobValidation } from './migrate-users-v1/MigrateUsersV1Job'
-import { MigrateStructuresV1JobValidation } from './migrate-structures-v1/MigrateStructuresV1Job'
-import { MigrateCrasV1JobValidation } from './migrate-cras-v1/MigrateCrasV1Job'
 import z from 'zod'
+import { MigrateCrasV1JobValidation } from './migrate-cras-v1/MigrateCrasV1Job'
+import { MigrateStructuresV1JobValidation } from './migrate-structures-v1/MigrateStructuresV1Job'
+import { MigrateUsersV1JobValidation } from './migrate-users-v1/MigrateUsersV1Job'
 
 /**
  * A job represents a task that can be executed asynchronously.

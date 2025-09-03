@@ -1,10 +1,10 @@
 import {
   Prisma,
   StructureDeRedirection,
-  TypeActivite,
-  TypeLieu,
   Thematique,
   TrancheAge,
+  TypeActivite,
+  TypeLieu,
 } from '@prisma/client'
 import type { CraConseillerNumeriqueV1 } from '@prisma/client'
 import { v4 } from 'uuid'
@@ -69,31 +69,30 @@ export type TransformCraV1Context = {
 }
 
 export const transformCraV1 = (
-  cra: CraConseillerNumeriqueV1,
+  craV1: CraConseillerNumeriqueV1,
   context: TransformCraV1Context,
 ): TransformCraV1Output => {
   const { v1StructuresIdsMap, v1PermanencesIdsMap, v1ConseillersIdsMap } =
     context
 
-  const v1CraId = cra.id
-  const v1ConseillerId = cra.v1ConseillerNumeriqueId
-  const v1StructureId = cra.structureId ?? undefined
-  const v1PermanenceId = cra.permanenceId ?? undefined
+  const v1CraId = craV1.id
+  const v1ConseillerId = craV1.v1ConseillerNumeriqueId
+  const v1StructureId = craV1.structureId ?? undefined
+  const v1PermanenceId = craV1.permanenceId ?? undefined
 
-  const mediateurId = v1ConseillerId
-    ? (v1ConseillersIdsMap.get(v1ConseillerId)?.mediateurId ??
-      missingConseillerV1.mediateurId)
-    : missingConseillerV1.mediateurId
+  const mediateurId =
+    v1ConseillersIdsMap.get(v1ConseillerId)?.mediateurId ??
+    missingConseillerV1.mediateurId
 
   const structureEmployeuseId = mapRequiredV1IdToV2({
     v1Id: v1StructureId,
-    map: v1StructuresIdsMap,
+    idsMap: v1StructuresIdsMap,
     field: 'structureEmployeuseId',
   })
 
-  const type: TypeActivite = mapV1ActiviteToV2Type(cra.activite)
+  const type: TypeActivite = mapV1ActiviteToV2Type(craV1.activite)
 
-  const typeLieu: TypeLieu = mapV1CanalToV2TypeLieu(cra.canal)
+  const typeLieu: TypeLieu = mapV1CanalToV2TypeLieu(craV1.canal)
 
   const { structureId, lieu } = deriveLieuAndStructure({
     typeLieu,
@@ -101,15 +100,15 @@ export const transformCraV1 = (
     v1StructureId,
     v1PermanencesIdsMap,
     v1StructuresIdsMap,
-    cra,
+    craV1,
   })
 
-  const dureeMinutes = cra.dureeMinutes ?? parseDureeToMinutes(cra.duree)
-  const thematiques = mapV1ThemesToV2Thematiques(cra.themes)
+  const dureeMinutes = craV1.dureeMinutes
+  const thematiques = mapV1ThemesToV2Thematiques(craV1.themes)
 
   const accompagnementsCount = computeAccompagnementsCount({
     type,
-    nbParticipants: cra.nbParticipants,
+    nbParticipants: craV1.nbParticipants,
   })
 
   const activite: Prisma.ActiviteUncheckedCreateInput & {
@@ -120,9 +119,9 @@ export const transformCraV1 = (
     type,
     mediateurId,
     accompagnementsCount,
-    date: new Date(cra.dateAccompagnement),
+    date: new Date(craV1.dateAccompagnement),
     duree: dureeMinutes,
-    notes: mapNotesFromAnnotations(cra),
+    notes: mapNotesFromAnnotations(craV1),
     rdvServicePublicId: undefined,
     structureEmployeuseId,
     typeLieu,
@@ -130,15 +129,13 @@ export const transformCraV1 = (
     lieuCodePostal: lieu?.codePostal,
     lieuCommune: lieu?.commune,
     lieuCodeInsee: lieu?.codeInsee,
-    creation: new Date(cra.createdAt),
-    modification: new Date(cra.createdAt),
+    creation: new Date(craV1.createdAt),
+    modification: new Date(craV1.createdAt),
     suppression: undefined,
     materiel: [],
     thematiques,
     structureDeRedirection: mapV1OrganismesToStructureDeRedirection(
-      Array.isArray(cra.organismes)
-        ? (cra.organismes as unknown as string[])
-        : null,
+      craV1.organismes,
     ),
     orienteVersStructure: undefined,
     precisionsDemarche: undefined,
@@ -151,25 +148,25 @@ export const transformCraV1 = (
   }
 
   // --- Build anonymous beneficiaires and accompagnements ---
-  const totalParticipants = type === 'Collectif' ? cra.nbParticipants : 1
+  const totalParticipants = type === 'Collectif' ? craV1.nbParticipants : 1
   const recurringParticipants = Math.min(
-    cra.nbParticipantsRecurrents ?? 0,
+    craV1.nbParticipantsRecurrents ?? 0,
     totalParticipants,
   )
 
   const age: AgeDistribution = {
-    moins12ans: cra.ageMoins12Ans ?? 0,
-    de12a18ans: cra.ageDe12a18Ans ?? 0,
-    de18a35ans: cra.ageDe18a35Ans ?? 0,
-    de35a60ans: cra.ageDe35a60Ans ?? 0,
-    plus60ans: cra.agePlus60Ans ?? 0,
+    moins12ans: craV1.ageMoins12Ans ?? 0,
+    de12a18ans: craV1.ageDe12a18Ans ?? 0,
+    de18a35ans: craV1.ageDe18a35Ans ?? 0,
+    de35a60ans: craV1.ageDe35a60Ans ?? 0,
+    plus60ans: craV1.agePlus60Ans ?? 0,
   }
 
   const trancheAgeCounts = splitAgeDistribution(age, defaultAgeSplitProportions)
   const trancheAgeAssignments: (TrancheAge | undefined)[] = []
   for (const key of Object.keys(trancheAgeCounts) as TrancheAge[]) {
     const count = trancheAgeCounts[key] ?? 0
-    for (let i = 0; i < count; i++) trancheAgeAssignments.push(key)
+    for (let index = 0; index < count; index++) trancheAgeAssignments.push(key)
   }
   // Normalize to exactly totalParticipants length
   if (trancheAgeAssignments.length < totalParticipants) {
@@ -190,9 +187,9 @@ export const transformCraV1 = (
 
   const accompagnements: (Prisma.AccompagnementUncheckedCreateInput & {
     id: string
-  })[] = beneficiaires.map((b, index) => ({
+  })[] = beneficiaires.map((beneficiaire, index) => ({
     id: v4(),
-    beneficiaireId: b.id,
+    beneficiaireId: beneficiaire.id,
     activiteId: activite.id,
     premierAccompagnement: index >= recurringParticipants,
   }))
@@ -204,14 +201,14 @@ export const transformCraV1 = (
 
 const mapRequiredV1IdToV2 = ({
   v1Id,
-  map,
+  idsMap,
   field,
 }: {
   v1Id?: string
-  map: Map<string, { id: string }>
+  idsMap: Map<string, { id: string }>
   field: string
 }): string => {
-  const v2Id = v1Id ? map.get(v1Id)?.id : undefined
+  const v2Id = v1Id ? idsMap.get(v1Id)?.id : undefined
   if (!v2Id) {
     throw new Error(
       `Missing required mapping for ${field} (v1Id=${v1Id ?? 'null'})`,
@@ -220,36 +217,17 @@ const mapRequiredV1IdToV2 = ({
   return v2Id
 }
 
-// Helpers: high-level mapping scaffolding
 const mapV1ActiviteToV2Type = (activite: string): TypeActivite => {
-  // TODO: refine rules. Default: 'individuel'|'collectif', map 'ponctuel' -> Individuel
+  // 'individuel'|'collectif', map 'ponctuel' -> Individuel
   if (activite === 'collectif') return 'Collectif'
   return 'Individuel'
 }
 
 const mapV1CanalToV2TypeLieu = (canal: string): TypeLieu => {
-  // TODO: refine mapping when specs are available
   if (canal === 'domicile') return 'Domicile'
   if (canal === 'distance') return 'ADistance'
   if (canal === 'autre lieu') return 'Autre'
   return 'LieuActivite'
-}
-
-const parseDureeToMinutes = (duree: string | number): number => {
-  // TODO: support more formats; for now, if number assume minutes; if HH:MM, parse
-  if (typeof duree === 'number') return Math.max(0, Math.floor(duree))
-  const trimmed = duree.trim()
-  const hhmm = /^([0-9]{1,2}):([0-9]{2})$/
-  const match = trimmed.match(hhmm)
-  if (match) {
-    const hours = Number(match[1])
-    const minutes = Number(match[2])
-    if (!Number.isNaN(hours) && !Number.isNaN(minutes))
-      return hours * 60 + minutes
-  }
-  const asNumber = Number(trimmed)
-  if (!Number.isNaN(asNumber)) return Math.max(0, Math.floor(asNumber))
-  return 0
 }
 
 const mapV1ThemesToV2Thematiques = (themes: string[]): Thematique[] => {
@@ -279,7 +257,7 @@ const computeAccompagnementsCount = ({
 const mapNotesFromAnnotations = (
   cra: CraConseillerNumeriqueV1,
 ): string | undefined => {
-  return cra.annotation ?? undefined
+  return cra.annotation?.trim() || undefined
 }
 
 const deriveLieuAndStructure = ({
@@ -288,7 +266,7 @@ const deriveLieuAndStructure = ({
   v1StructureId,
   v1PermanencesIdsMap,
   v1StructuresIdsMap,
-  cra,
+  craV1,
 }: {
   typeLieu: TypeLieu
   v1PermanenceId?: string
@@ -311,32 +289,34 @@ const deriveLieuAndStructure = ({
       codeInsee?: string | null
     }
   >
-  cra: CraConseillerNumeriqueV1
+  craV1: CraConseillerNumeriqueV1
 }): {
   structureId?: string
   lieu?: { codePostal?: string; commune?: string; codeInsee?: string }
 } => {
   if (typeLieu === 'LieuActivite') {
     // Prefer permanence mapping when present, fallback to structure mapping
-    const fromPerm = v1PermanenceId
+    const fromPermanence = v1PermanenceId
       ? v1PermanencesIdsMap.get(v1PermanenceId)
       : undefined
-    const fromStruct =
-      !fromPerm && v1StructureId
+    const fromStructure =
+      !fromPermanence && v1StructureId
         ? v1StructuresIdsMap.get(v1StructureId)
         : undefined
-    const chosen = fromPerm ?? fromStruct
+    const chosen = fromPermanence ?? fromStructure
     return { structureId: chosen?.id }
   }
 
   if (typeLieu === 'ADistance') {
     // Assign to the commune of the structure employeuse using provided map
-    const se = v1StructureId ? v1StructuresIdsMap.get(v1StructureId) : undefined
+    const structureEmployeuse = v1StructureId
+      ? v1StructuresIdsMap.get(v1StructureId)
+      : undefined
     return {
       lieu: {
-        codePostal: se?.codePostal ?? undefined,
-        commune: se?.commune ?? undefined,
-        codeInsee: se?.codeInsee ?? undefined,
+        codePostal: structureEmployeuse?.codePostal ?? undefined,
+        commune: structureEmployeuse?.commune ?? undefined,
+        codeInsee: structureEmployeuse?.codeInsee ?? undefined,
       },
     }
   }
@@ -344,14 +324,13 @@ const deriveLieuAndStructure = ({
   // Domicile or Autre -> use provided CRA location fields
   return {
     lieu: {
-      codePostal: cra.codePostal,
-      commune: cra.nomCommune,
-      codeInsee: cra.codeCommune,
+      codePostal: craV1.codePostal,
+      commune: craV1.nomCommune,
+      codeInsee: craV1.codeCommune,
     },
   }
 }
 
-// --- Mapping dictionaries (from specs) ---
 const V1_THEME_TO_V2_THEMATIQUES: Record<string, Thematique[]> = {
   diagnostic: ['DiagnosticNumerique'],
   'equipement informatique': [
@@ -377,7 +356,6 @@ const V1_THEME_TO_V2_THEMATIQUES: Record<string, Thematique[]> = {
   autre: [],
 }
 
-// --- Age distribution mapping scaffolding ---
 export type AgeSplitProportions = {
   eighteenToThirtyFiveToEighteenToTwentyFour: number // 0..1
   sixtyPlusToSixtyToSixtyNine: number // 0..1
@@ -403,9 +381,9 @@ export const splitAgeDistribution = (
   add('DouzeDixHuit', age.de12a18ans) // note: v2 is 12-17; adjustment can be applied later if needed
 
   // Split 18-35 -> 18-24 and 25-39 using random assignment with proportion
-  for (let i = 0; i < age.de18a35ans; i++) {
-    const r = Math.random()
-    if (r < proportions.eighteenToThirtyFiveToEighteenToTwentyFour) {
+  for (let index = 0; index < age.de18a35ans; index++) {
+    const randomValue = Math.random()
+    if (randomValue < proportions.eighteenToThirtyFiveToEighteenToTwentyFour) {
       add('DixHuitVingtQuatre', 1)
     } else {
       add('VingtCinqTrenteNeuf', 1)
@@ -415,9 +393,9 @@ export const splitAgeDistribution = (
   add('QuaranteCinquanteNeuf', age.de35a60ans)
 
   // Split 60+ -> 60-69 and 70+
-  for (let i = 0; i < age.plus60ans; i++) {
-    const r = Math.random()
-    if (r < proportions.sixtyPlusToSixtyToSixtyNine) {
+  for (let index = 0; index < age.plus60ans; index++) {
+    const randomValue = Math.random()
+    if (randomValue < proportions.sixtyPlusToSixtyToSixtyNine) {
       add('SoixanteSoixanteNeuf', 1)
     } else {
       add('SoixanteDixPlus', 1)
@@ -427,34 +405,91 @@ export const splitAgeDistribution = (
   return result
 }
 
-// --- Structure de redirection mapping scaffolding ---
-export const mapV1OrganismesToStructureDeRedirection = (
-  organismes: string[] | null | undefined,
-): StructureDeRedirection | undefined => {
-  if (!organismes || organismes.length === 0) return undefined
-  const normalized = organismes.map((o) => o.trim().toLowerCase())
+const extractAndNormalizeOrganismes = (organismes: unknown): string[] => {
+  if (!organismes) return []
 
-  if (
-    normalized.some((o) =>
-      ['cnav', 'carsat', 'ants', 'caf', 'dgfip', 'cefs'].includes(o),
+  // Test if object has keys, else return empty array
+  if (typeof organismes !== 'object' || organismes === null) return []
+  if (Object.keys(organismes as Record<string, unknown>).length === 0) return []
+
+  // Exctract keys and sort by values DESC
+  const entries = Object.entries(organismes as Record<string, number>).sort(
+    (a, b) => {
+      const va = a[1]
+      const vb = b[1]
+      if (typeof va === 'number' && typeof vb === 'number') return vb - va
+      return 0
+    },
+  )
+  return entries
+    .map(([k]) =>
+      k
+        .trim()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/\p{M}/gu, '') // strip diacritics
+        .replace(/\s+/g, ' '),
     )
+    .filter((k) => k.length > 0)
+}
+
+// --- Structure de redirection
+export const mapV1OrganismesToStructureDeRedirection = (
+  organismes: unknown,
+): StructureDeRedirection | undefined => {
+  const keys = extractAndNormalizeOrganismes(organismes)
+  if (keys.length === 0) return undefined
+
+  // V1 -> V2 mapping rules helper functions (order matters)
+  const matches = (re: RegExp) => keys.some((o) => re.test(o))
+  const matchesAny = (vals: string[]) => keys.some((o) => vals.includes(o))
+
+  // Operateurs ou organismes en charge de la demarche
+  if (
+    matchesAny(['cnav', 'carsat', 'ants', 'caf', 'dgfip', 'cefs']) ||
+    matches(/\bcpam\b|\bameli\b|assurance maladie/) ||
+    matches(
+      /assurance retraite|cnav|carsat|msa|urssaf|pension|retraite reunion/,
+    ) ||
+    matches(/ofii/) // Office français de l'immigration et de l'intégration
   ) {
     return 'OperateurOuOrganismeEnCharge'
   }
-  if (normalized.some((o) => /p[ôo]le emploi|france travail/.test(o))) {
+
+  // Insertion professionnelle (Pôle emploi / France Travail / Mission locale...)
+  if (
+    matches(
+      /p[ôo]le emploi|france travail|mission locale|\bcci\b|chambre de commerce/,
+    )
+  ) {
     return 'InsertionProfessionnelle'
   }
-  if (normalized.some((o) => /france services/.test(o))) {
+
+  // Aide aux démarches administratives (France Services...)
+  if (matches(/france services|maison de services au public|mdsp/)) {
     return 'AideAuxDemarchesAdministratives'
   }
-  if (normalized.some((o) => /ccas|solidarit|centre social/.test(o))) {
+
+  // Aide sociale (CCAS, maisons des solidarités, centre social...)
+  if (
+    matches(/\bccas\b|solidarit|centre social|maison des solidarit|\bmjc\b/)
+  ) {
     return 'AideSociale'
   }
-  if (normalized.some((o) => /tiers-lieu|fablab|m[ée]diation num/.test(o))) {
+
+  // Autre structure de médiation numérique (tiers-lieu, fablab, réseaux médiation)
+  if (
+    matches(
+      /tiers[- ]?lieu|fablab|mediati?on num|emmaus connect|emmausconnect|transnumeric|atelier informatique|cours d'informatique/,
+    )
+  ) {
     return 'MediationNumerique'
   }
-  if (normalized.some((o) => /mairie|pr[ée]fecture|d[ée]partement/.test(o))) {
+
+  // Administration (mairie, préfecture, département)
+  if (matches(/mairie|pr[ee]fecture|departement|conseil departemental/)) {
     return 'Administration'
   }
-  return 'Autre'
+
+  return undefined
 }

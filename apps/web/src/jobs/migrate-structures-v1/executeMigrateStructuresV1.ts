@@ -3,18 +3,18 @@ import {
   closeMongoClient,
   conseillerNumeriqueMongoCollection,
 } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
+import { MigrateStructuresV1Job } from './MigrateStructuresV1Job'
 import { StructureV1Document } from './StructureV1Document'
 import {
-  migrateStructuresV1,
-  writeV1StructuresIdsMap,
-  V2StructureMapValue,
-} from './migrateStructuresV1'
-import {
+  V2PermanenceMapValue,
   migratePermanencesV1,
   writeV1PermanencesIdsMap,
-  V2PermanenceMapValue,
 } from './migratePermanencesV1'
-import { MigrateStructuresV1Job } from './MigrateStructuresV1Job'
+import {
+  V2StructureMapValue,
+  migrateStructuresV1,
+  writeV1StructuresIdsMap,
+} from './migrateStructuresV1'
 
 export const executeMigrateStructuresV1 = async (
   _job: MigrateStructuresV1Job,

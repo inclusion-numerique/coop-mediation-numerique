@@ -1,12 +1,12 @@
+import { appendFile, writeFile } from 'node:fs/promises'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { output } from '@app/cli/output'
 import { prismaClient } from '@app/web/prismaClient'
 import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
-import { v4 } from 'uuid'
 import { chunk } from 'lodash-es'
+import { v4 } from 'uuid'
 import { StructureV1Document } from './StructureV1Document'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { appendFile, writeFile } from 'node:fs/promises'
 
 export type V2StructureMapValue = {
   id: string
@@ -25,7 +25,7 @@ export const writeV1StructuresIdsMap = async (
   // write file header and empty the file
   await writeFile(
     mapFilePath,
-    `// A list of v1 structure id to v2 structure info\nexport const v1StructuresIdsMap = new Map([\n`,
+    `// biome-ignore-all lint: generated migration map\n// A list of v1 structure id to v2 structure info\nexport const v1StructuresIdsMap = new Map([\n`,
   )
 
   for (const [key, value] of map) {

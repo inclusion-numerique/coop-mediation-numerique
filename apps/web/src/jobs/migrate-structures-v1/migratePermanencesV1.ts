@@ -1,12 +1,12 @@
-import { output } from '@app/cli/output'
-import { prismaClient } from '@app/web/prismaClient'
-import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
-import { v4 } from 'uuid'
-import { chunk } from 'lodash-es'
-import { PermanenceV1Document } from '../../../../../web/src/jobs/migrate-cras-conseiller-numerique-v1/PermanenceV1Document'
 import { appendFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { output } from '@app/cli/output'
+import { prismaClient } from '@app/web/prismaClient'
+import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
+import { chunk } from 'lodash-es'
+import { v4 } from 'uuid'
+import { PermanenceV1Document } from './PermanenceV1Document'
 
 const findExistingPermanence = async ({
   permanence,
@@ -95,7 +95,7 @@ export const writeV1PermanencesIdsMap = async (
 
   await writeFile(
     mapFilePath,
-    `// A list of v1 permanence id to v2 structure info\nexport const v1PermanencesIdsMap = new Map([\n`,
+    `// biome-ignore-all lint: generated migration map\n// A list of v1 permanence id to v2 structure info\nexport const v1PermanencesIdsMap = new Map([\n`,
   )
 
   for (const [key, value] of map) {

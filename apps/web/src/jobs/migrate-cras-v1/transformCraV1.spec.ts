@@ -1,4 +1,4 @@
-import { Thematique, TypeActivite, TypeLieu, TrancheAge } from '@prisma/client'
+import { Thematique, TrancheAge, TypeActivite, TypeLieu } from '@prisma/client'
 import type { CraConseillerNumeriqueV1 } from '@prisma/client'
 import { transformCraV1 } from './transformCraV1'
 

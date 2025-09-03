@@ -1,16 +1,16 @@
-import { output } from '@app/cli/output'
-import { prismaClient } from '@app/web/prismaClient'
-import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
-import { v4 } from 'uuid'
-import { chunk } from 'lodash-es'
-import { ConseillerNumeriqueV1Document } from '@app/web/external-apis/conseiller-numerique/ConseillerNumeriqueV1Document'
-import { importConseillerNumeriqueDataFromV1 } from '@app/web/app/inscription/(steps)/identification/importConseillerNumeriqueDataFromV1'
-import { fetchConseillerNumeriqueV1Data } from '@app/web/external-apis/conseiller-numerique/fetchConseillerNumeriqueV1Data'
-import { updateUserInscriptionProfileFromV1Data } from '@app/web/app/inscription/(steps)/identification/updateUserInscriptionProfileFromV1Data'
+import { appendFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { appendFile, writeFile } from 'node:fs/promises'
+import { output } from '@app/cli/output'
+import { importConseillerNumeriqueDataFromV1 } from '@app/web/app/inscription/(steps)/identification/importConseillerNumeriqueDataFromV1'
+import { updateUserInscriptionProfileFromV1Data } from '@app/web/app/inscription/(steps)/identification/updateUserInscriptionProfileFromV1Data'
 import { ConseillerNumeriqueV1Data } from '@app/web/external-apis/conseiller-numerique/ConseillerNumeriqueV1Data'
+import { ConseillerNumeriqueV1Document } from '@app/web/external-apis/conseiller-numerique/ConseillerNumeriqueV1Document'
+import { fetchConseillerNumeriqueV1Data } from '@app/web/external-apis/conseiller-numerique/fetchConseillerNumeriqueV1Data'
+import { prismaClient } from '@app/web/prismaClient'
+import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
+import { chunk } from 'lodash-es'
+import { v4 } from 'uuid'
 import { createMissingConseillerV1 } from './missingConseillerV1'
 
 export const writeV1ConseillersIdsMap = async (
@@ -23,7 +23,7 @@ export const writeV1ConseillersIdsMap = async (
   // write file header and empty the file
   await writeFile(
     mapFilePath,
-    `// A list of v1 conseiller id to v2 user & mediateur ids\nexport const v1ConseillersIdsMap = new Map([\n`,
+    `// biome-ignore-all lint: generated migration map\n// A list of v1 conseiller id to v2 user & mediateur ids\nexport const v1ConseillersIdsMap = new Map([\n`,
   )
 
   for (const [key, value] of map) {
