@@ -1,4 +1,7 @@
-import type { CraConseillerNumeriqueV1 } from '@prisma/client'
+import type {
+  CraConseillerNumeriqueV1,
+  StructureDeRedirection,
+} from '@prisma/client'
 import { Thematique, TrancheAge, TypeActivite, TypeLieu } from '@prisma/client'
 import { transformCraV1 } from './transformCraV1'
 
@@ -111,12 +114,12 @@ describe('transformCraV1', () => {
     const cra = createBaseCra({
       themes: ['demarche en ligne', 'internet', 'courriel'],
       duree: '120',
-      dureeMinutes: null as unknown as number, // force parse path
+      dureeMinutes: 120,
       annotation: 'note A',
-      organismes: ['france services'] as unknown as any,
+      organismes: { 'France Services': 1 },
     })
 
-    const result = await transformCraV1(cra, {
+    const result = transformCraV1(cra, {
       v1StructuresIdsMap,
       v1PermanencesIdsMap,
       v1ConseillersIdsMap,
@@ -151,7 +154,7 @@ describe('transformCraV1', () => {
       permanenceId: 'v1-perm-1',
     })
 
-    const result = await transformCraV1(cra, {
+    const result = transformCraV1(cra, {
       v1StructuresIdsMap,
       v1PermanencesIdsMap,
       v1ConseillersIdsMap,
@@ -167,7 +170,7 @@ describe('transformCraV1', () => {
   it('maps distance to ADistance and fetches lieu from structure employeuse via provided map', async () => {
     const cra = createBaseCra({ canal: 'distance', permanenceId: null })
 
-    const result = await transformCraV1(cra, {
+    const result = transformCraV1(cra, {
       v1StructuresIdsMap,
       v1PermanencesIdsMap,
       v1ConseillersIdsMap,
@@ -182,7 +185,7 @@ describe('transformCraV1', () => {
 
   it('uses dureeMinutes if present and ignores duree string', async () => {
     const cra = createBaseCra({ duree: '0-30', dureeMinutes: 45 })
-    const result = await transformCraV1(cra, {
+    const result = transformCraV1(cra, {
       v1StructuresIdsMap,
       v1PermanencesIdsMap,
       v1ConseillersIdsMap,
@@ -192,7 +195,7 @@ describe('transformCraV1', () => {
 
   it('deduplicates thematiques when duplicate themes provided', async () => {
     const cra = createBaseCra({ themes: ['internet', 'internet'] })
-    const result = await transformCraV1(cra, {
+    const result = transformCraV1(cra, {
       v1StructuresIdsMap,
       v1PermanencesIdsMap,
       v1ConseillersIdsMap,
@@ -213,7 +216,7 @@ describe('transformCraV1', () => {
       nbParticipants: 5,
       nbParticipantsRecurrents: 2,
     })
-    const result = await transformCraV1(cra, {
+    const result = transformCraV1(cra, {
       v1StructuresIdsMap,
       v1PermanencesIdsMap,
       v1ConseillersIdsMap,
@@ -241,7 +244,7 @@ describe('transformCraV1', () => {
 
   it('creates one anonymous beneficiaire and one accompagnement for individuel with premierAccompagnement true', async () => {
     const cra = createBaseCra({ activite: 'individuel', nbParticipants: 1 })
-    const result = await transformCraV1(cra, {
+    const result = transformCraV1(cra, {
       v1StructuresIdsMap,
       v1PermanencesIdsMap,
       v1ConseillersIdsMap,
@@ -262,7 +265,7 @@ describe('transformCraV1', () => {
       agePlus60Ans: 0,
     })
 
-    const result = await transformCraV1(cra, {
+    const result = transformCraV1(cra, {
       v1StructuresIdsMap,
       v1PermanencesIdsMap,
       v1ConseillersIdsMap,
@@ -278,18 +281,19 @@ describe('transformCraV1', () => {
 
   it('falls back to structure mapping when permanence is not provided for LieuActivite', async () => {
     const cra = createBaseCra({ canal: 'autre lieu', permanenceId: null })
-    const result = await transformCraV1(cra, {
+    const result = transformCraV1(cra, {
       v1StructuresIdsMap,
       v1PermanencesIdsMap,
       v1ConseillersIdsMap,
     })
     expect(result.activite.typeLieu).toBe<TypeLieu>('Autre')
-    expect(result.activite.structureId).toEqual('v2-struct-1')
+    expect(result.activite.structureEmployeuseId).toEqual('v2-struct-1')
+    expect(result.activite.structureId).toBeUndefined()
   })
 
   it('maps domicile to Domicile', async () => {
     const cra = createBaseCra({ canal: 'domicile' })
-    const result = await transformCraV1(cra, {
+    const result = transformCraV1(cra, {
       v1StructuresIdsMap,
       v1PermanencesIdsMap,
       v1ConseillersIdsMap,
@@ -297,40 +301,39 @@ describe('transformCraV1', () => {
     expect(result.activite.typeLieu).toBe<TypeLieu>('Domicile')
   })
 
-  it('parses duree in HH:MM when dureeMinutes is missing', async () => {
-    const cra = createBaseCra({ duree: '01:30', dureeMinutes: null as any })
-    const result = await transformCraV1(cra, {
-      v1StructuresIdsMap,
-      v1PermanencesIdsMap,
-      v1ConseillersIdsMap,
-    })
-    expect(result.activite.duree).toBe(90)
-  })
-
   it('throws when structureEmployeuse mapping is missing', async () => {
     const cra = createBaseCra({ structureId: 'unknown-struct' })
-    await expect(
+    expect(() =>
       transformCraV1(cra, {
         v1StructuresIdsMap,
         v1PermanencesIdsMap,
         v1ConseillersIdsMap,
       }),
-    ).rejects.toThrow(/Missing required mapping for structureEmployeuseId/)
+    ).toThrow(/Missing required mapping for structureEmployeuseId/)
   })
 
   it('classifies organismes into StructureDeRedirection categories', async () => {
-    const cases: Array<{ orgs: string[]; expectCat: string }> = [
-      { orgs: ['caf'], expectCat: 'OperateurOuOrganismeEnCharge' },
-      { orgs: ['pôle emploi'], expectCat: 'InsertionProfessionnelle' },
-      { orgs: ['ccas'], expectCat: 'AideSociale' },
-      { orgs: ['tiers-lieu'], expectCat: 'MediationNumerique' },
-      { orgs: ['mairie'], expectCat: 'Administration' },
-      { orgs: ['unknown'], expectCat: 'Autre' },
+    const cases: Array<{
+      orgs: Record<string, number>
+      expectCat: StructureDeRedirection | undefined
+    }> = [
+      {
+        orgs: { nimportequoi: 5, caf: 1 },
+        expectCat: 'OperateurOuOrganismeEnCharge',
+      },
+      {
+        orgs: { 'tiers-lieu': 1, 'pôle emploi': 5 },
+        expectCat: 'InsertionProfessionnelle',
+      },
+      { orgs: { ccas: 1 }, expectCat: 'AideSociale' },
+      { orgs: { 'tiers-lieu': 1 }, expectCat: 'MediationNumerique' },
+      { orgs: { mairie: 1 }, expectCat: 'Administration' },
+      { orgs: { unknown: 1 }, expectCat: undefined },
     ]
 
     for (const c of cases) {
       const cra = createBaseCra({ organismes: c.orgs as unknown as any })
-      const result = await transformCraV1(cra, {
+      const result = transformCraV1(cra, {
         v1StructuresIdsMap,
         v1PermanencesIdsMap,
         v1ConseillersIdsMap,
