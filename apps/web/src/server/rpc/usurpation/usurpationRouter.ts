@@ -1,6 +1,6 @@
 import { resetFixtureUser } from '@app/fixtures/resetFixtureUser'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { prismaClient } from '@app/web/prismaClient'
+import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { enforceIsAdmin } from '@app/web/server/rpc/enforceIsAdmin'
 import { forbiddenError, invalidError } from '@app/web/server/rpc/trpcErrors'

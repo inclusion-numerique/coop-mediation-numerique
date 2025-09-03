@@ -1,11 +1,11 @@
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import SignoutButton from '@app/web/app/(public)/(authentication)/deconnexion/SignoutButton'
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import {
-  type ProfileInscriptionSlug,
   allProfileInscriptionLabels,
+  type ProfileInscriptionSlug,
   profileInscriptionFromSlug,
 } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
+import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import React from 'react'

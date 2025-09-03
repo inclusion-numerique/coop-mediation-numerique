@@ -1,6 +1,6 @@
 import {
-  WorksheetUser,
   addExportMetadata,
+  WorksheetUser,
 } from '@app/web/libs/worksheet/addExportMetadata'
 import { addFilters } from '@app/web/libs/worksheet/addFilters'
 import { addTitleRow } from '@app/web/libs/worksheet/addTitleRow'
@@ -8,8 +8,8 @@ import { autosizeColumns } from '@app/web/libs/worksheet/autosizeColumns'
 import { setWorkbookMetadata } from '@app/web/libs/worksheet/setWorkbookMetadata'
 import * as Excel from 'exceljs'
 import { UtilisateursFiltersLabels } from '../filter/generateUtilisateursFiltersLabels'
-import { UtilisateursDataTable } from '../list/UtilisateursDataTable'
 import { UtilisateurForList } from '../list/queryUtilisateursForList'
+import { UtilisateursDataTable } from '../list/UtilisateursDataTable'
 
 const availableFilters = [
   { label: 'Rôles', type: 'roles' },

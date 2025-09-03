@@ -4,8 +4,8 @@ import CraIndividuelPage from '@app/web/features/activites/use-cases/cra/individ
 import { craIndividuelDefaultValues } from '@app/web/features/activites/use-cases/cra/individuel/craIndividuelDefaultValues'
 import { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
 import {
-  type EncodedState,
   decodeSerializableState,
+  type EncodedState,
 } from '@app/web/utils/encodeSerializableState'
 import type { DefaultValues } from 'react-hook-form'
 

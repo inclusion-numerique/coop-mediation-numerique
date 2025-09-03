@@ -1,10 +1,11 @@
 import type { CraConseillerNumeriqueCollectionItem } from '@app/web/external-apis/conseiller-numerique/CraConseillerNumerique'
-import type { StructureConseillerNumerique } from '@app/web/external-apis/conseiller-numerique/StructureConseillerNumerique'
 import {
   conseillerNumeriqueMongoCollection,
   objectIdFromString,
 } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
+import type { StructureConseillerNumerique } from '@app/web/external-apis/conseiller-numerique/StructureConseillerNumerique'
 import { prismaClient } from '@app/web/prismaClient'
+import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import { type Filter, ObjectId } from 'mongodb'
 
 export type GetConseillerNumeriqueCrasOptions = {
@@ -63,9 +64,37 @@ export const getConseillerNumeriqueCrasFromMongo = async ({
     }
   }
 
+  const uniquePermanenceId = new Set(
+    cras
+      .map(({ permanence }) => permanence?.oid.toString())
+      .filter(isDefinedAndNotNull),
+  )
+
+  const permanencesCollection =
+    await conseillerNumeriqueMongoCollection('permanences')
+
+  const permanences = await permanencesCollection
+    .find({
+      _id: { $in: [...uniquePermanenceId].map(ObjectId.createFromHexString) },
+    })
+    .toArray()
+
+  const indexedPermanences = new Map(
+    permanences.map((permanence) => [
+      (permanence as unknown as { id: string }).id,
+      permanence,
+    ]),
+  )
+
   const uniqueStructureIds = new Set(
     cras.map(({ structure }) => structure.oid.toString()),
   )
+
+  for (const permanence of permanences) {
+    uniqueStructureIds.add(
+      (permanence.structure as unknown as { oid: ObjectId }).oid.toString(),
+    )
+  }
 
   const structuresCollection =
     await conseillerNumeriqueMongoCollection<StructureConseillerNumerique>(
@@ -125,6 +154,10 @@ export const getConseillerNumeriqueCrasFromMongo = async ({
     const structure =
       indexedStructures.get(item.structure.oid.toString()) ?? null
 
+    const permanence =
+      indexedPermanences.get(item.permanence?.oid.toString() ?? '_missing') ??
+      null
+
     // const { duree, organismes, ...craRest } = item.cra
     // TODO Debug and format organismes in toPrismaModel
     const { duree, ...craRest } = item.cra
@@ -139,6 +172,16 @@ export const getConseillerNumeriqueCrasFromMongo = async ({
         duree: duree?.toString() ?? '',
       },
       structure,
+      permanence: permanence
+        ? {
+            ...permanence,
+            structure: indexedStructures.get(
+              (
+                permanence.structure as unknown as { oid: ObjectId }
+              ).oid.toString(),
+            ),
+          }
+        : null,
     }
   })
 

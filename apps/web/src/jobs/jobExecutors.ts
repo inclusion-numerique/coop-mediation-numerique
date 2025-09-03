@@ -19,6 +19,9 @@ import {
   downloadCartographieNationaleStructures,
   getStructuresCartographieNationaleFromLocalFile,
 } from '../data/cartographie-nationale/cartographieNationaleStructures'
+import { executeMigrateCrasV1 } from './migrate-cras-v1/executeMigrateCrasV1'
+import { executeMigrateStructuresV1 } from './migrate-structures-v1/executeMigrateStructuresV1'
+import { executeMigrateUsersV1 } from './migrate-users-v1/executeMigrateUsersV1'
 import { output } from './output'
 import { executeUpdateLieuxActivitesADistance } from './update-lieu-activite-a-distance/executeUpdateLieuxActivitesADistance'
 
@@ -61,6 +64,9 @@ export const jobExecutors: {
   'update-conum-info': executeUpdateConumInfo,
   'fix-users': executeFixUsers,
   'sync-conums': executeSyncConums,
+  'migrate-cras-v1': executeMigrateCrasV1,
+  'migrate-structures-v1': executeMigrateStructuresV1,
+  'migrate-users-v1': executeMigrateUsersV1,
 }
 
 export const executeJob = async (job: Job) => {

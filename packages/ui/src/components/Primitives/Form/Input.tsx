@@ -1,15 +1,15 @@
-import { FrIconClassName, RiIconClassName, fr } from '@codegouvfr/react-dsfr'
+import { FrIconClassName, fr, RiIconClassName } from '@codegouvfr/react-dsfr'
 import { cx } from '@codegouvfr/react-dsfr/tools/cx'
 import React, {
-  memo,
-  forwardRef,
-  useId,
   type CSSProperties,
   type DetailedHTMLProps,
+  forwardRef,
   type InputHTMLAttributes,
   type LabelHTMLAttributes,
+  memo,
   type ReactNode,
   type TextareaHTMLAttributes,
+  useId,
 } from 'react'
 import { assert, Equals } from 'tsafe/assert'
 import { symToStr } from 'tsafe/symToStr'
@@ -112,6 +112,7 @@ export const Input = memo(
     assert<Equals<keyof typeof rest, never>>()
 
     const inputId = (function useClosure() {
+      // biome-ignore lint/correctness/useHookAtTopLevel: XXX: this should be fixed ?
       const id = useId()
 
       return nativeInputOrTextAreaProps.id ?? `input-${id}`

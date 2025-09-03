@@ -1,7 +1,7 @@
 import LogoCoop from '@app/web/components/LogoCoop'
 import { Invitation } from '@app/web/equipe/InvitationValidation'
 import { EncodedState } from '@app/web/utils/encodeSerializableState'
-import { type UserDisplayName, getUserDisplayName } from '@app/web/utils/user'
+import { getUserDisplayName, type UserDisplayName } from '@app/web/utils/user'
 import Link from 'next/link'
 import InvitationButtons from './InvitationButtons'
 

@@ -3,9 +3,9 @@ import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 import { fixTelephone, fixUrl } from '@app/web/utils/clean-operations'
 import {
-  Localisation,
   isValidTelephone,
   isValidUrl,
+  Localisation,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import proj4 from 'proj4'
 import { FixStructuresJob } from './fixStructuresJob'

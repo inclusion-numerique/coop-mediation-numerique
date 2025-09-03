@@ -6,7 +6,9 @@ export const getNouvelleFonctionnaliteCookieName = (featureId: string) =>
 // If this cookie is set, the new feature card is masked
 export const getNouvelleFonctionnaliteSkipCookie = ({
   featureId,
-}: { featureId: string }) => {
+}: {
+  featureId: string
+}) => {
   return Cookies.get(getNouvelleFonctionnaliteCookieName(featureId))
 }
 
@@ -14,7 +16,10 @@ export const getNouvelleFonctionnaliteSkipCookie = ({
 export const setNouvelleFonctionnaliteSkipCookie = ({
   featureId,
   expiration,
-}: { featureId: string; expiration: Date | 'session' }) => {
+}: {
+  featureId: string
+  expiration: Date | 'session'
+}) => {
   Cookies.set(getNouvelleFonctionnaliteCookieName(featureId), 'skip', {
     sameSite: 'strict',
     expires: expiration === 'session' ? undefined : expiration,

@@ -1,11 +1,11 @@
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
-import type { Rdv } from '@app/web/rdv-service-public/Rdv'
 import { createCraDataFromRdv } from '@app/web/rdv-service-public/createCraDataFromRdv'
+import type { Rdv } from '@app/web/rdv-service-public/Rdv'
 import {
-  type EncodedState,
   decodeSerializableState,
+  type EncodedState,
   encodeSerializableState,
 } from '@app/web/utils/encodeSerializableState'
 import { redirect } from 'next/navigation'

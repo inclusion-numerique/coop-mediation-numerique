@@ -1,7 +1,9 @@
 'use client'
 
-import { secureSessionCookie } from '@app/web/auth/getSessionTokenFromCookies'
-import { sessionCookie } from '@app/web/auth/getSessionTokenFromCookies'
+import {
+  secureSessionCookie,
+  sessionCookie,
+} from '@app/web/auth/getSessionTokenFromCookies'
 import Card from '@app/web/components/Card'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import Button from '@codegouvfr/react-dsfr/Button'

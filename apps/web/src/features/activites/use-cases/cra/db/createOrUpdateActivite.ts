@@ -12,6 +12,7 @@ import { Prisma, Structure, TypeActivite } from '@prisma/client'
 import { v4 } from 'uuid'
 import { CraCollectifData } from '../collectif/validation/CraCollectifValidation'
 import { CraIndividuelData } from '../individuel/validation/CraIndividuelValidation'
+import { getCurrentEmploiForDate } from './getCurrentEmploiForDate'
 import { craDureeDataToMinutes } from './minutesToCraDuree'
 
 const getExistingBeneficiairesSuivis = async ({
@@ -213,6 +214,11 @@ export const createOrUpdateActivite = async ({
 
   const creationId = v4()
 
+  const emploi = await getCurrentEmploiForDate({
+    mediateurId,
+    date: new Date(date),
+  })
+
   const existingBeneficiairesSuivis = await getExistingBeneficiairesSuivis({
     mediateurId,
     beneficiaires:
@@ -298,6 +304,9 @@ export const createOrUpdateActivite = async ({
     accompagnementsCount,
     duree: craDureeDataToMinutes(duree),
     typeLieu: data.typeLieu ?? undefined,
+    structureEmployeuse: {
+      connect: { id: emploi.structureId },
+    },
     niveau: 'niveau' in data ? data.niveau : undefined,
     materiel: 'materiel' in data ? data.materiel : undefined,
     titreAtelier: 'titreAtelier' in data ? data.titreAtelier : undefined,

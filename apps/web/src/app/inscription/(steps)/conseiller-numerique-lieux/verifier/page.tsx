@@ -1,11 +1,11 @@
-import InscriptionCard from '@app/web/app/inscription/(steps)/InscriptionCard'
 import {
   conseillerNumeriqueLieuxInscriptionSteps,
   conseillerNumeriqueLieuxInscriptionStepsCount,
 } from '@app/web/app/inscription/(steps)/conseiller-numerique-lieux/conseillerNumeriqueLieuxInscriptionSteps'
+import InscriptionCard from '@app/web/app/inscription/(steps)/InscriptionCard'
+import { getStructureEmployeuseForInscription } from '@app/web/app/inscription/getStructureEmployeuseForInscription'
 import InscriptionRecapitulatif from '@app/web/app/inscription/InscriptionRecapitulatif'
 import RoleInscriptionNotice from '@app/web/app/inscription/RoleInscriptionNotice'
-import { getStructureEmployeuseForInscription } from '@app/web/app/inscription/getStructureEmployeuseForInscription'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import { allProfileInscriptionLabels } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'

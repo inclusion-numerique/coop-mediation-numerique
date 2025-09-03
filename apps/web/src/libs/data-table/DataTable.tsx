@@ -1,6 +1,7 @@
 import classNames from 'classnames'
 import Link from 'next/link'
 import React, { ComponentType } from 'react'
+import { createSortLinkProps } from './createSortLinkProps'
 import styles from './DataTable.module.css'
 import {
   DataTableConfiguration,
@@ -8,7 +9,6 @@ import {
   DataTableSearchParams,
 } from './DataTableConfiguration'
 import SortLink from './SortLink'
-import { createSortLinkProps } from './createSortLinkProps'
 
 export type DataTableClasses = {
   wrapper?: string

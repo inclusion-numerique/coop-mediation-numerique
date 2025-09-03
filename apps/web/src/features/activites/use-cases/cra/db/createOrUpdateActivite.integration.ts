@@ -177,18 +177,16 @@ describe('createOrUpdateActivite', () => {
       mediateurId: mediateurAvecActiviteMediateurId,
     })
 
-    const beneficiaire = await prismaClient.beneficiaire.findMany({
+    const accompagnementAnonyme = await prismaClient.accompagnement.findMany({
       where: {
-        anonyme: true,
-        accompagnements: {
-          every: {
-            activiteId: result.id,
-          },
+        activiteId: result.id,
+        beneficiaire: {
+          anonyme: true,
         },
       },
     })
 
-    expect(beneficiaire.length).toBe(1)
+    expect(accompagnementAnonyme.length).toBe(1)
   })
 
   it('should create atelier collectif for anonyme', async () => {

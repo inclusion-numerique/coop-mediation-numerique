@@ -73,7 +73,21 @@ export const importLieuxActivitesFromV1Data = async ({
   ]
 
   // We create the missing structures
-  await createStructures(structuresToCreate)
+  await createStructures(
+    structuresToCreate.map((structure) => ({
+      ...structure,
+      latitude:
+        // Invalid types in v1 data
+        typeof structure.latitude === 'string'
+          ? Number.parseFloat(structure.latitude)
+          : structure.latitude,
+      longitude:
+        typeof structure.longitude === 'string'
+          ? Number.parseFloat(structure.longitude)
+          : structure.longitude,
+      mediateurId: undefined,
+    })),
+  )
 
   // We concatenate the structure ids to create the "mediateurEnActivite" relation
   const lieuxActiviteStructureIds = [

@@ -49,6 +49,7 @@ const HistoryChatThreadButton = ({
 
   useEffect(() => {
     // Should run only once
+    // biome-ignore lint/suspicious/noConsole: useful for debugging
     generateTitle().catch(console.error)
   }, [generateTitle])
 

@@ -1,6 +1,6 @@
 import {
-  EncodedState,
   decodeSerializableState,
+  EncodedState,
 } from '@app/web/utils/encodeSerializableState'
 /**
  * We use cursor pagination for the v1 list endpoints

@@ -2,8 +2,8 @@
 
 import InputFormField from '@app/ui/components/Form/InputFormField'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import SiretInputInfo from '@app/web/features/structures/siret/SiretInputInfo'
 import { getSiretInfoUrl } from '@app/web/features/structures/siret/getSiretInfoUrl'
+import SiretInputInfo from '@app/web/features/structures/siret/SiretInputInfo'
 import { requiredSiretValidation } from '@app/web/features/structures/siret/siretValidation'
 import { trpc } from '@app/web/trpc'
 import { Spinner } from '@app/web/ui/Spinner'

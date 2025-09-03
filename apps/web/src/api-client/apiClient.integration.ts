@@ -1,6 +1,6 @@
 import {
-  CreateApiClientOutput,
   authenticateApiCient,
+  CreateApiClientOutput,
   createApiClient,
   rotateApiClientSecret,
 } from '@app/web/api-client/apiClient'

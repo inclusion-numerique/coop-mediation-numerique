@@ -1,9 +1,9 @@
 import CheckboxFormField from '@app/ui/components/Form/CheckboxFormField'
 import CheckboxGroupFormField from '@app/ui/components/Form/CheckboxGroupFormField'
 import { useWatchSubscription } from '@app/ui/hooks/useWatchSubscription'
-import { TypesDePublicsAccueillisData } from '@app/web/features/structures/TypesDePublicsAccueillisValidation'
 import { priseEnChargeSpecifiqueOptions } from '@app/web/features/structures/priseEnChargeSpecifique'
 import { publicSpecifiquementAdresseOptions } from '@app/web/features/structures/publicSpecifiquementAdresse'
+import { TypesDePublicsAccueillisData } from '@app/web/features/structures/TypesDePublicsAccueillisValidation'
 import React, { useCallback } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 

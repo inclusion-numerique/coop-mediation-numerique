@@ -56,5 +56,4 @@ program.addCommand(locallyRestoreLatestMainBackup)
 program.addCommand(listV1Emails)
 program.addCommand(ingestNotionHelpCenterExportedMarkdown)
 program.addCommand(fetchAccompagnements)
-
 program.parse()

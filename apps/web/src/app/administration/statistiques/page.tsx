@@ -10,8 +10,8 @@ import { StatistiquesActivites } from '@app/web/app/coop/(sidemenu-layout)/mes-s
 import { StatistiquesBeneficiaires } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesBeneficiaires'
 import { StatistiquesGenerales } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesGenerales'
 import { metadataTitle } from '@app/web/app/metadataTitle'
-import { FilterTags } from '@app/web/features/activites/use-cases/list/components/FilterTags'
 import Filters from '@app/web/features/activites/use-cases/list/components/Filters'
+import { FilterTags } from '@app/web/features/activites/use-cases/list/components/FilterTags'
 import {
   type ActivitesFilters,
   validateActivitesFilters,

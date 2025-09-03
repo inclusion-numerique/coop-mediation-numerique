@@ -95,6 +95,10 @@ const linkToCoopStructure = ({
           where: { structureId: { in: idsToDelete } },
           data: { structureId },
         }),
+        prisma.activite.updateMany({
+          where: { structureEmployeuseId: { in: idsToDelete } },
+          data: { structureEmployeuseId: structureId },
+        }),
       ])
 
       await prisma.structure.deleteMany({

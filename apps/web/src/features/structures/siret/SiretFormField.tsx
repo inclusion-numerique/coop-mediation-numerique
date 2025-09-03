@@ -12,8 +12,8 @@ import type {
   PathValue,
   UseFormReturn,
 } from 'react-hook-form'
-import SiretInputInfo from './SiretInputInfo'
 import { getSiretInfoUrl } from './getSiretInfoUrl'
+import SiretInputInfo from './SiretInputInfo'
 import { requiredSiretValidation } from './siretValidation'
 
 export type SiretFormFieldProps<

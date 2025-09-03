@@ -6,8 +6,8 @@ import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import { Invitation } from '@app/web/equipe/InvitationValidation'
 import { trpc } from '@app/web/trpc'
 import {
-  EncodedState,
   decodeSerializableState,
+  EncodedState,
 } from '@app/web/utils/encodeSerializableState'
 import ButtonsGroup from '@codegouvfr/react-dsfr/ButtonsGroup'
 import { useRouter } from 'next/navigation'

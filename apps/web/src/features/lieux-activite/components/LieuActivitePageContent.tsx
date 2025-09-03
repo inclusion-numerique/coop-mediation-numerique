@@ -9,13 +9,13 @@ import { FraisAChargeLabel } from '@app/web/features/structures/fraisACharge'
 import { Itinerance, ModaliteAcces } from '@prisma/client'
 import classNames from 'classnames'
 import React, { ReactNode, useState } from 'react'
-import VisiblePourCartographieNationaleFields from './VisiblePourCartographieNationaleFields'
 import DescriptionEditCard from './description/DescriptionEditCard'
 import InformationsGeneralesEditCard from './informations-generales/InformationsGeneralesEditCard'
 import InformationsPratiquesEditCard from './informations-pratiques/InformationsPratiquesEditCard'
 import ModalitesAccesAuServiceEditCard from './modalites-acces-au-service/ModalitesAccesAuServiceEditCard'
 import ServicesEtAccompagnementEditCard from './services-et-accompagnement/ServicesEtAccompagnementEditCard'
 import TypesDePublicsAccueillisEditCard from './types-de-publics-accueillis/TypesDePublicsAccueillisEditCard'
+import VisiblePourCartographieNationaleFields from './VisiblePourCartographieNationaleFields'
 
 export const LieuActivitePageContent = ({
   structure,

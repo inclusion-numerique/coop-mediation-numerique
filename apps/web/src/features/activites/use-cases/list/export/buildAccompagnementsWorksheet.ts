@@ -5,8 +5,8 @@ import {
 } from '@app/web/beneficiaire/beneficiaire'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import {
-  WorksheetUser,
   addExportMetadata,
+  WorksheetUser,
 } from '@app/web/libs/worksheet/addExportMetadata'
 import { autosizeColumns } from '@app/web/libs/worksheet/autosizeColumns'
 import { setWorkbookMetadata } from '@app/web/libs/worksheet/setWorkbookMetadata'

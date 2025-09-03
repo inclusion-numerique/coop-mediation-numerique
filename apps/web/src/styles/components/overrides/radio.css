@@ -7,13 +7,17 @@
     input[type="radio"]:checked ~ .fr-radio-rich__img {
       background-image: none !important;
       border-color: var(--blue-france-sun-113-625);
-      box-shadow: 1px 0 0 0 var(--blue-france-sun-113-625), 0 1px 0 0
-        var(--blue-france-sun-113-625), 0 -1px 0 0
-        var(--blue-france-sun-113-625);
+      box-shadow:
+        1px 0 0 0 var(--blue-france-sun-113-625),
+        0 1px 0 0 var(--blue-france-sun-113-625),
+        0 -1px 0 0 var(--blue-france-sun-113-625);
     }
 
     input[type="radio"]:focus-visible ~ .fr-radio-rich__img {
-      box-shadow: 2px 0 0 0 #0a76f6, 0 2px 0 0 #0a76f6, 0 -2px 0 0 #0a76f6;
+      box-shadow:
+        2px 0 0 0 #0a76f6,
+        0 2px 0 0 #0a76f6,
+        0 -2px 0 0 #0a76f6;
     }
 
     input[type="radio"] ~ .fr-radio-rich__img {

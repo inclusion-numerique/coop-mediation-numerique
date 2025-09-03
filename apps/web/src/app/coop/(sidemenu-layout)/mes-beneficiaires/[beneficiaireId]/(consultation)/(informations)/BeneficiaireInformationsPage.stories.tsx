@@ -2,8 +2,8 @@ import {
   beneficiaireMaximaleMediateurAvecActivite,
   beneficiaireMinimaleMediateurAvecActivite,
 } from '@app/fixtures/beneficiaires'
-import ViewBeneficiaireInformationsPage from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/(informations)/ViewBeneficiaireInformationsPage'
 import type { BeneficiaireInformationsPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/(informations)/getBeneficiaireInformationsPageData'
+import ViewBeneficiaireInformationsPage from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/(informations)/ViewBeneficiaireInformationsPage'
 import ViewBeneficiaireLayout from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/ViewBeneficiaireLayout'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import { testSessionUser } from '@app/web/test/testSessionUser'
@@ -14,7 +14,10 @@ import React from 'react'
 const Template = ({
   data,
   rdvIntegration,
-}: { data: BeneficiaireInformationsPageData; rdvIntegration?: boolean }) => (
+}: {
+  data: BeneficiaireInformationsPageData
+  rdvIntegration?: boolean
+}) => (
   <ViewBeneficiaireLayout
     beneficiaire={data.beneficiaire}
     user={

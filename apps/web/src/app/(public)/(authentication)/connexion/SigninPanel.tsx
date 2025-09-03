@@ -1,4 +1,3 @@
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { AuthCard } from '@app/web/app/(public)/(authentication)/AuthCard'
 import { signinErrorMessage } from '@app/web/app/(public)/(authentication)/authenticationErrorMessage'
 import { EmailSigninForm } from '@app/web/app/(public)/(authentication)/connexion/EmailSigninForm'
@@ -8,6 +7,7 @@ import {
   authenticationViaProconnect,
 } from '@app/web/auth/authenticationProvider'
 import LogoCoop from '@app/web/components/LogoCoop'
+import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { Route } from 'next'
 
 const SigninPanel = ({

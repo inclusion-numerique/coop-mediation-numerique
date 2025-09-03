@@ -10,7 +10,7 @@ import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { Message } from 'ai'
 import classNames from 'classnames'
-import React, { useRef, type FormEventHandler, useEffect } from 'react'
+import React, { type FormEventHandler, useEffect, useRef } from 'react'
 import { v4 } from 'uuid'
 import styles from './ChatThread.module.css'
 

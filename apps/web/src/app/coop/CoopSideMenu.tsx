@@ -1,9 +1,9 @@
 'use client'
 
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { canUseAssistant } from '@app/web/assistant/canUseAssistant'
 import { SessionUser } from '@app/web/auth/sessionUser'
 import { CreateCraModalDefinition } from '@app/web/features/activites/use-cases/cra/components/CreateCraModal/CreateCraModalDefinition'
+import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { SideMenuProps } from '@codegouvfr/react-dsfr/SideMenu'
 import SideMenu from '@codegouvfr/react-dsfr/SideMenu'
