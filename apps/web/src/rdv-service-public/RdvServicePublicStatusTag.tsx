@@ -4,7 +4,10 @@ import type { RdvOauthIntegrationStatus } from './rdvIntegrationOauthStatus'
 const RdvServicePublicStatusTag = ({
   status,
   small = false,
-}: { status: RdvOauthIntegrationStatus; small?: boolean }) => {
+}: {
+  status: RdvOauthIntegrationStatus
+  small?: boolean
+}) => {
   if (status === 'error') {
     return (
       <Tag

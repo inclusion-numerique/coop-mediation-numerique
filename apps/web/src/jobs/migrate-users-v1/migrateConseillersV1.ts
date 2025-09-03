@@ -185,6 +185,7 @@ const migrateConseillerV1 = async ({
         },
       })
       .catch((error) => {
+        // biome-ignore lint/suspicious/noConsole: useful for debugging
         console.error('Could not create conseiller in database', {
           id,
           emailPro: conseiller.emailPro,

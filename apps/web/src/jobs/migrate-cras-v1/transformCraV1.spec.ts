@@ -1,5 +1,5 @@
-import { Thematique, TrancheAge, TypeActivite, TypeLieu } from '@prisma/client'
 import type { CraConseillerNumeriqueV1 } from '@prisma/client'
+import { Thematique, TrancheAge, TypeActivite, TypeLieu } from '@prisma/client'
 import { transformCraV1 } from './transformCraV1'
 
 function createBaseCra(
@@ -159,7 +159,7 @@ describe('transformCraV1', () => {
     expect(result.activite.type).toBe<TypeActivite>('Individuel')
     expect(result.activite.typeLieu).toBe<TypeLieu>('LieuActivite')
     expect(result.activite.accompagnementsCount).toBe(1)
-    expect(result.activite.structure).toEqual({ connect: { id: 'v2-perm-1' } })
+    expect(result.activite.structureId).toEqual('v2-perm-1')
     expect(result.beneficiaires.length).toBe(1)
     expect(result.accompagnements.length).toBe(1)
   })
@@ -177,7 +177,7 @@ describe('transformCraV1', () => {
     expect(result.activite.lieuCodePostal).toBe('33370')
     expect(result.activite.lieuCommune).toBe('Tresses')
     expect(result.activite.lieuCodeInsee).toBe('33535')
-    expect(result.activite.structure).toBeUndefined()
+    expect(result.activite.structureId).toBeUndefined()
   })
 
   it('uses dureeMinutes if present and ignores duree string', async () => {
@@ -224,7 +224,7 @@ describe('transformCraV1', () => {
     // all anonymous and connected to mediateur
     for (const b of result.beneficiaires) {
       expect(b.anonyme).toBe(true)
-      expect((b.mediateur as any).connect.id).toBe('med-1')
+      expect(b.mediateurId).toBe('med-1')
     }
 
     // accompagnements count and premierAccompagnement logic: first 2 are recurring (false), rest true
@@ -284,9 +284,7 @@ describe('transformCraV1', () => {
       v1ConseillersIdsMap,
     })
     expect(result.activite.typeLieu).toBe<TypeLieu>('Autre')
-    expect(result.activite.structure).toEqual({
-      connect: { id: 'v2-struct-1' },
-    })
+    expect(result.activite.structureId).toEqual('v2-struct-1')
   })
 
   it('maps domicile to Domicile', async () => {

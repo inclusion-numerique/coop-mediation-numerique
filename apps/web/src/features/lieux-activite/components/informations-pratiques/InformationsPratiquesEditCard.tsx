@@ -13,8 +13,8 @@ import { trpc } from '@app/web/trpc'
 import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
 import { isEmpty } from '@app/web/utils/isEmpty'
 import {
-  Schedule,
   fromTimetableOpeningHours,
+  Schedule,
   toTimetableOpeningHours,
 } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import { zodResolver } from '@hookform/resolvers/zod'

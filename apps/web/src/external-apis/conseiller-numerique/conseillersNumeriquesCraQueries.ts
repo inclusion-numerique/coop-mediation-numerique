@@ -1,9 +1,9 @@
 import type { CraConseillerNumeriqueCollectionItem } from '@app/web/external-apis/conseiller-numerique/CraConseillerNumerique'
-import type { StructureConseillerNumerique } from '@app/web/external-apis/conseiller-numerique/StructureConseillerNumerique'
 import {
   conseillerNumeriqueMongoCollection,
   objectIdFromString,
 } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
+import type { StructureConseillerNumerique } from '@app/web/external-apis/conseiller-numerique/StructureConseillerNumerique'
 import { prismaClient } from '@app/web/prismaClient'
 import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import { type Filter, ObjectId } from 'mongodb'
@@ -80,7 +80,10 @@ export const getConseillerNumeriqueCrasFromMongo = async ({
     .toArray()
 
   const indexedPermanences = new Map(
-    permanences.map((permanence) => [permanence.id, permanence]),
+    permanences.map((permanence) => [
+      (permanence as unknown as { id: string }).id,
+      permanence,
+    ]),
   )
 
   const uniqueStructureIds = new Set(
@@ -88,7 +91,9 @@ export const getConseillerNumeriqueCrasFromMongo = async ({
   )
 
   for (const permanence of permanences) {
-    uniqueStructureIds.add(permanence.structure.oid.toString())
+    uniqueStructureIds.add(
+      (permanence.structure as unknown as { oid: ObjectId }).oid.toString(),
+    )
   }
 
   const structuresCollection =
@@ -150,7 +155,8 @@ export const getConseillerNumeriqueCrasFromMongo = async ({
       indexedStructures.get(item.structure.oid.toString()) ?? null
 
     const permanence =
-      indexedPermanences.get(item.permanence?.oid.toString()) ?? null
+      indexedPermanences.get(item.permanence?.oid.toString() ?? '_missing') ??
+      null
 
     // const { duree, organismes, ...craRest } = item.cra
     // TODO Debug and format organismes in toPrismaModel
@@ -170,7 +176,9 @@ export const getConseillerNumeriqueCrasFromMongo = async ({
         ? {
             ...permanence,
             structure: indexedStructures.get(
-              permanence.structure.oid.toString(),
+              (
+                permanence.structure as unknown as { oid: ObjectId }
+              ).oid.toString(),
             ),
           }
         : null,

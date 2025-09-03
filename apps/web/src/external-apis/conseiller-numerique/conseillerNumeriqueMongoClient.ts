@@ -1,6 +1,6 @@
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import type { ConseillerNumeriqueV1Collection } from '@app/web/external-apis/conseiller-numerique/ConseillerNumeriqueV1Document'
 import { PermanenceV1Document } from '@app/web/jobs/migrate-structures-v1/PermanenceV1Document'
+import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import * as mongoDB from 'mongodb'
 import { type Collection, type Document, ObjectId } from 'mongodb'
 

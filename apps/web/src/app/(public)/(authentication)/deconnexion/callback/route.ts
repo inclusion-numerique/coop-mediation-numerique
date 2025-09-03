@@ -7,8 +7,8 @@ import {
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
 import { prismaClient } from '@app/web/prismaClient'
 import {
-  type EncodedState,
   decodeSerializableState,
+  type EncodedState,
 } from '@app/web/utils/encodeSerializableState'
 import type { NextRequest } from 'next/server'
 

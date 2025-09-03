@@ -35,9 +35,7 @@ const formatParsedArgumentValue = (value: unknown) => {
   return '_unknown_'
 }
 
-const Page = async (props: {
-  params: Promise<{ threadId: string }>
-}) => {
+const Page = async (props: { params: Promise<{ threadId: string }> }) => {
   const params = await props.params
 
   const { threadId } = params

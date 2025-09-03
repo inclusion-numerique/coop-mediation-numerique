@@ -1,5 +1,4 @@
-import { appendFile } from 'node:fs/promises'
-import { writeFile } from 'node:fs/promises'
+import { appendFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { output } from '@app/cli/output'
@@ -9,8 +8,10 @@ import { closeMongoClient } from '@app/web/external-apis/conseiller-numerique/co
 import { prismaClient } from '@app/web/prismaClient'
 import { PermanenceV1Document } from '../migrate-structures-v1/PermanenceV1Document'
 import { MigrateUsersV1Job } from './MigrateUsersV1Job'
-import { migrateConseillersV1 } from './migrateConseillersV1'
-import { writeV1ConseillersIdsMap } from './migrateConseillersV1'
+import {
+  migrateConseillersV1,
+  writeV1ConseillersIdsMap,
+} from './migrateConseillersV1'
 import { v1ConseillersIds } from './v1ConseillersIds'
 
 /**

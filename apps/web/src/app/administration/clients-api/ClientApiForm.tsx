@@ -4,11 +4,11 @@ import CheckboxGroupFormField from '@app/ui/components/Form/CheckboxGroupFormFie
 import InputFormField from '@app/ui/components/Form/InputFormField'
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
+import { apiClientScopeOptions } from '@app/web/app/administration/clients-api/apiClient'
 import {
   ClientApiData,
   ClientApiValidation,
 } from '@app/web/app/administration/clients-api/ClientApiValidation'
-import { apiClientScopeOptions } from '@app/web/app/administration/clients-api/apiClient'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import { trpc } from '@app/web/trpc'
 import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'

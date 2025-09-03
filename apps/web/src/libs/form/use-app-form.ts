@@ -1,5 +1,5 @@
 import { createFormHook } from '@tanstack/react-form'
-import { type ReactNode, lazy } from 'react'
+import { lazy, type ReactNode } from 'react'
 import { type ComboBoxProps } from './fields-components/ComboBox'
 import { SelectedItemProps } from './fields-components/SelectedItems'
 import { fieldContext, formContext } from './form-context'

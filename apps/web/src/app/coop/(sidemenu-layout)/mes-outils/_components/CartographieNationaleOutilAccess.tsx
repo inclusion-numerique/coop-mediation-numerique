@@ -1,5 +1,5 @@
-import { Access } from '@app/web/app/coop/(sidemenu-layout)/mes-outils/[slug]/_components/Access'
 import { getLieuxActiviteForCartographie } from '@app/web/app/coop/(sidemenu-layout)/mes-outils/_data/getLieuxActiviteForCartographie'
+import { Access } from '@app/web/app/coop/(sidemenu-layout)/mes-outils/[slug]/_components/Access'
 import type { OutilPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-outils/outilPageData'
 import { getSessionUser } from '@app/web/auth/getSessionUser'
 

@@ -16,8 +16,8 @@ import { dateAsDay } from '../utils/dateAsDay'
 import { dateAsDayAndTime } from '../utils/dateAsDayAndTime'
 import RdvServicePublicStatusTag from './RdvServicePublicStatusTag'
 import {
-  type RdvOauthIntegrationStatus,
   getRdvOauthIntegrationStatus,
+  type RdvOauthIntegrationStatus,
 } from './rdvIntegrationOauthStatus'
 
 export const GererRdvServicePublicModalInstance = createModal({
@@ -27,7 +27,9 @@ export const GererRdvServicePublicModalInstance = createModal({
 
 const GererRdvServicePublicModal = ({
   user: { rdvAccount },
-}: { user: UserRdvAccount }) => {
+}: {
+  user: UserRdvAccount
+}) => {
   const deleteMutation = trpc.rdvServicePublic.deleteRdvAccount.useMutation()
   const syncMutation = trpc.rdvServicePublic.syncRdvAccountData.useMutation()
   const router = useRouter()

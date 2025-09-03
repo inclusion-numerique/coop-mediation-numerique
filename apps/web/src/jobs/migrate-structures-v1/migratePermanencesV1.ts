@@ -10,7 +10,9 @@ import { PermanenceV1Document } from './PermanenceV1Document'
 
 const findExistingPermanence = async ({
   permanence,
-}: { permanence: PermanenceV1Document }) => {
+}: {
+  permanence: PermanenceV1Document
+}) => {
   // Use adresse.codeCommune as city code
   const codeCommune = permanence.adresse.codeCommune
   if (!codeCommune) {
@@ -66,7 +68,9 @@ const findExistingPermanence = async ({
 
 const findCartographieNationaleStructure = async ({
   permanence,
-}: { permanence: PermanenceV1Document }) => {
+}: {
+  permanence: PermanenceV1Document
+}) => {
   if (!permanence.siret) {
     return null
   }

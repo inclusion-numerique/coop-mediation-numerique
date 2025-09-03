@@ -1,6 +1,6 @@
 import type { ProconnectUserInfo } from '@app/web/app/api/proconnect/users.csv/ProconnectUserInfoApiResponse'
-import { MiseEnRelationV1MinimalProjection } from '@app/web/external-apis/conseiller-numerique/MiseEnRelationConseillerNumeriqueV1'
 import { conseillerNumeriqueMongoCollection } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
+import { MiseEnRelationV1MinimalProjection } from '@app/web/external-apis/conseiller-numerique/MiseEnRelationConseillerNumeriqueV1'
 import { ObjectId } from 'mongodb'
 
 export const fetchProconnectUserInfosFromV1 = async (): Promise<{

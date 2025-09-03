@@ -30,10 +30,10 @@ import CraFormLabel from '@app/web/features/activites/use-cases/cra/components/C
 import { craFormFieldsetClassname } from '@app/web/features/activites/use-cases/cra/components/craFormFieldsetClassname'
 import { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
 import {
-  BeneficiaireData,
-  BeneficiaireValidation,
   anneeNaissanceMax,
   anneeNaissanceMin,
+  BeneficiaireData,
+  BeneficiaireValidation,
 } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
 import { trpc } from '@app/web/trpc'
 import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'

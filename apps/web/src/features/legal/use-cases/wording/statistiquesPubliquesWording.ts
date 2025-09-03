@@ -16,11 +16,7 @@ export const datesDonneesRecolteesEtMisesAJour = (
 }
 
 export const totalDepuis = (
-  {
-    since = '15.11.2024',
-  }: {
-    since?: string
-  } = { since: '15.11.2024' },
+  { since = '15.11.2024' }: { since?: string } = { since: '15.11.2024' },
 ) => {
   return `Total depuis le ${since}`
 }

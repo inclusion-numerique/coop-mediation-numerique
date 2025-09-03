@@ -1,9 +1,9 @@
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import {
-  type ProfileInscriptionSlug,
   allProfileInscriptionLabels,
+  type ProfileInscriptionSlug,
   profileInscriptionFromSlug,
 } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
+import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'

@@ -8,11 +8,11 @@ import {
 import classNames from 'classnames'
 import {
   ChangeEvent,
+  createElement,
   DetailedHTMLProps,
+  isValidElement,
   LabelHTMLAttributes,
   ReactNode,
-  createElement,
-  isValidElement,
 } from 'react'
 
 type RadioButtonsProps = Omit<DsfrRadioButtonsProps, 'name' | 'options'> & {

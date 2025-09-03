@@ -4,11 +4,11 @@ import { createToast } from '@app/ui/toast/createToast'
 import EditCard from '@app/web/components/EditCard'
 import { ModalitesAccesAuServiceFields } from '@app/web/components/structure/fields/ModalitesAccesAuServiceFields'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { FraisAChargeLabel } from '@app/web/features/structures/fraisACharge'
 import {
   ModalitesAccesAuServiceData,
   ModalitesAccesAuServiceValidation,
 } from '@app/web/features/structures/ModalitesAccesAuServiceValidation'
-import { FraisAChargeLabel } from '@app/web/features/structures/fraisACharge'
 import { trpc } from '@app/web/trpc'
 import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
 import { isEmpty } from '@app/web/utils/isEmpty'

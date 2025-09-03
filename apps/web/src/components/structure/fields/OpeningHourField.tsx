@@ -4,7 +4,7 @@ import { OpeningHoursData } from '@app/web/features/structures/OpeningHoursValid
 import { OsmDaysOfWeek } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import React, { useEffect } from 'react'
 import { UseFormReturn } from 'react-hook-form'
-import { Period, daysTexts, periodsTexts } from './openingHoursHelpers'
+import { daysTexts, Period, periodsTexts } from './openingHoursHelpers'
 
 export type OpeningHourFieldFormValues = { openingHours: OpeningHoursData }
 

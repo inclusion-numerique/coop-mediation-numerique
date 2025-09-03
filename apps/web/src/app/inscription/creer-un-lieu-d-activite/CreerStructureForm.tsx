@@ -9,14 +9,14 @@ import { DescriptionFields } from '@app/web/components/structure/fields/Descript
 import { InformationsGeneralesFields } from '@app/web/components/structure/fields/InformationsGeneralesFields'
 import { InformationsPratiquesFields } from '@app/web/components/structure/fields/InformationsPratiquesFields'
 import { ModalitesAccesAuServiceFields } from '@app/web/components/structure/fields/ModalitesAccesAuServiceFields'
-import { ServicesEtAccompagnementFields } from '@app/web/components/structure/fields/ServicesEtAccompagnementFields'
-import styles from '@app/web/components/structure/fields/StructureFormFields.module.css'
-import { TypesDePublicsAccueillisFields } from '@app/web/components/structure/fields/TypesDePublicsAccueillisFields'
-import { VisiblePourCartographieNationaleFields } from '@app/web/components/structure/fields/VisiblePourCartographieNationaleFields'
 import {
   appendComment,
   emptyOpeningHours,
 } from '@app/web/components/structure/fields/openingHoursHelpers'
+import { ServicesEtAccompagnementFields } from '@app/web/components/structure/fields/ServicesEtAccompagnementFields'
+import styles from '@app/web/components/structure/fields/StructureFormFields.module.css'
+import { TypesDePublicsAccueillisFields } from '@app/web/components/structure/fields/TypesDePublicsAccueillisFields'
+import { VisiblePourCartographieNationaleFields } from '@app/web/components/structure/fields/VisiblePourCartographieNationaleFields'
 import { LieuAccueillantPublicTitle } from '@app/web/components/structure/titles/LieuAccueillantPublicTitle'
 import { ServiceInclusionNumeriqueTitle } from '@app/web/components/structure/titles/ServiceInclusionNumeriqueTitle'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
@@ -29,8 +29,8 @@ import { trpc } from '@app/web/trpc'
 import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
 import Button from '@codegouvfr/react-dsfr/Button'
 import {
-  Schedule,
   fromTimetableOpeningHours,
+  Schedule,
 } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'

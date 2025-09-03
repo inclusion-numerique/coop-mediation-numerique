@@ -52,7 +52,7 @@ describe('executeRagSearch', () => {
     })
 
     for (const chunk of testRagDocumentChunks) {
-      const { embedding, ...chunkWithoutEmbedding } = chunk
+      const { embedding: _embedding, ...chunkWithoutEmbedding } = chunk
       await prismaClient.ragDocumentChunk.create({
         data: chunkWithoutEmbedding,
       })

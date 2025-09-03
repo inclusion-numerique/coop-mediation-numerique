@@ -1,9 +1,9 @@
+import { apiV1Url } from '@app/web/app/api/v1/apiV1Url'
+import { createApiV1Route } from '@app/web/app/api/v1/createApiV1Route'
 import type {
   JsonApiItemResponse,
   JsonApiResource,
 } from '@app/web/app/api/v1/JsonApiTypes'
-import { apiV1Url } from '@app/web/app/api/v1/apiV1Url'
-import { createApiV1Route } from '@app/web/app/api/v1/createApiV1Route'
 import { serializeApiRequestParams } from '@app/web/app/api/v1/serializeApiRequestParams'
 import { ApiV1StatistiquesQueryParamsValidation } from '@app/web/app/api/v1/statistiques/ApiV1StatistiquesQueryParams'
 import {
@@ -19,8 +19,8 @@ import {
   getBeneficiaireStats,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getBeneficiaireStats'
 import {
-  TotalCountsStats,
   getTotalCountsStats,
+  TotalCountsStats,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getTotalCountsStats'
 import type { LabelAndCount } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/quantifiedShare'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'

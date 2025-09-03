@@ -125,7 +125,9 @@ const findExistingStructure = async ({
 
 const findCartographieNationaleStructure = async ({
   structure,
-}: { structure: StructureV1Document }) => {
+}: {
+  structure: StructureV1Document
+}) => {
   if (!structure.siret) {
     return null
   }

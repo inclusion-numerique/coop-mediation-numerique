@@ -7,8 +7,8 @@ import {
 import { mediateurCoordonnesIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
 import { getStructureEmployeuseAddress } from '@app/web/structure/getStructureEmployeuseAddress'
 import type { Metadata } from 'next'
-import { MesStatistiques } from './MesStatistiques'
 import { getMesStatistiquesPageData } from './getMesStatistiquesPageData'
+import { MesStatistiques } from './MesStatistiques'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes statistiques'),

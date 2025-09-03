@@ -1,3 +1,4 @@
+import type { CraConseillerNumeriqueV1 } from '@prisma/client'
 import {
   Prisma,
   StructureDeRedirection,
@@ -6,7 +7,6 @@ import {
   TypeActivite,
   TypeLieu,
 } from '@prisma/client'
-import type { CraConseillerNumeriqueV1 } from '@prisma/client'
 import { v4 } from 'uuid'
 import { missingConseillerV1 } from '../migrate-users-v1/missingConseillerV1'
 

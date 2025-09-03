@@ -1,5 +1,5 @@
-import InscriptionCard from '@app/web/app/inscription/(steps)/InscriptionCard'
 import StructureEmployeuseLieuActiviteForm from '@app/web/app/inscription/(steps)/_components/structure-employeuse-lieu-activite/StructureEmployeuseLieuActiviteForm'
+import InscriptionCard from '@app/web/app/inscription/(steps)/InscriptionCard'
 import { mediateurinscriptionStepsCount } from '@app/web/app/inscription/(steps)/mediateur/mediateurinscriptionSteps'
 import { getStructureEmployeuseForInscription } from '@app/web/app/inscription/getStructureEmployeuseForInscription'
 import { authenticateUser } from '@app/web/auth/authenticateUser'

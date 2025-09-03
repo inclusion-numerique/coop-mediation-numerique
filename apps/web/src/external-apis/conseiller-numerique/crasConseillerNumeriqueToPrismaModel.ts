@@ -141,8 +141,10 @@ export const craConseillerNumeriqueToPrismaModel = ({
     permanenceCodePostal: permanence?.adresse?.codePostal,
     permanenceNomCommune: permanence?.adresse?.ville,
     permanenceCodeCommune: permanence?.adresse?.codeCommune,
-    permanenceLatitude: permanence?.location?.coordinates[1],
-    permanenceLongitude: permanence?.location?.coordinates[0],
+    permanenceLatitude:
+      Number(permanence?.location?.coordinates[1]) || undefined,
+    permanenceLongitude:
+      Number(permanence?.location?.coordinates[0]) || undefined,
     permanenceStructureId: permanence?.structure?.id,
     permanenceStructureIdPg: permanence?.structure?.idPG,
     permanenceStructureType: permanence?.structure?.type,

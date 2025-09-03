@@ -1,8 +1,8 @@
 import RoleInscriptionNotice from '@app/web/app/inscription/RoleInscriptionNotice'
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import {
-  ProfileInscriptionSlug,
   allProfileInscriptionLabels,
+  ProfileInscriptionSlug,
   profileInscriptionFromSlug,
 } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import React from 'react'

@@ -1,7 +1,7 @@
 import type { RagSearchChunkResult } from '@app/web/assistant/rag/executeRagSearch'
 import {
-  type RagChunkResultForAssistant,
   formatRagSearchResultToJsonForAssistant,
+  type RagChunkResultForAssistant,
 } from '@app/web/assistant/rag/formatRagSearchResultToMarkdown'
 import { getRagChunksForQuery } from '@app/web/assistant/rag/getRagChunksForQuery'
 import { ragSources } from '@app/web/assistant/rag/sources'

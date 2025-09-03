@@ -18,6 +18,7 @@ import { listV1Emails } from '@app/cli/commands/v1/listEmails'
 import { fetchAccompagnements } from '@app/cli/fetchAccompagnement'
 import { output } from '@app/cli/output'
 import { Command } from '@commander-js/extra-typings'
+
 if (
   process.env.DATABASE_URL &&
   process.env.CLI_TARGET_DEPLOYMENT_DATABASE_URL === process.env.DATABASE_URL

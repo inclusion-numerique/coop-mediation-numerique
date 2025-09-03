@@ -1,6 +1,6 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
-import { MediateurDetailPage } from '@app/web/equipe/MediateurDetailPage/MediateurDetailPage'
 import { getMediateurPageData } from '@app/web/equipe/MediateurDetailPage/getMediateurPageData'
+import { MediateurDetailPage } from '@app/web/equipe/MediateurDetailPage/MediateurDetailPage'
 import { prismaClient } from '@app/web/prismaClient'
 import { redirect } from 'next/navigation'
 

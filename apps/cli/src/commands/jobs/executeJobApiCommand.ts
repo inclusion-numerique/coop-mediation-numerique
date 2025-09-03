@@ -1,10 +1,10 @@
 import { DeploymentTargetOption } from '@app/cli/deploymentTarget'
 import { output } from '@app/cli/output'
 import { mainRootDomain, previewRootDomain } from '@app/config/config'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { executeJobApiTokenHeader } from '@app/web/app/api/jobs/executeJobApiTokenHeader'
 import { closeMongoClient } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
 import { jobExecutors } from '@app/web/jobs/jobExecutors'
+import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { Argument, Command } from '@commander-js/extra-typings'
 import axios from 'axios'
 

@@ -1,6 +1,6 @@
 import {
-  DeploymentTargetOption,
   configureDeploymentTarget,
+  DeploymentTargetOption,
 } from '@app/cli/deploymentTarget'
 import { output } from '@app/cli/output'
 import { closeMongoClient } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'

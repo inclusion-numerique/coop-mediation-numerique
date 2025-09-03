@@ -1,4 +1,3 @@
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
 import { prismaClient } from '@app/web/prismaClient'
@@ -8,10 +7,11 @@ import {
   rdvServicePublicOAuthTokenEndpoint,
 } from '@app/web/rdv-service-public/rdvServicePublicOauth'
 import { refreshRdvAgentAccountData } from '@app/web/rdv-service-public/refreshRdvAgentAccountData'
+import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { getServerUrl } from '@app/web/utils/baseUrl'
 import {
-  EncodedState,
   decodeSerializableState,
+  EncodedState,
 } from '@app/web/utils/encodeSerializableState'
 import * as Sentry from '@sentry/nextjs'
 import axios from 'axios'

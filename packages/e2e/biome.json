@@ -1,7 +1,6 @@
 {
-  "root": false,
   "$schema": "https://biomejs.dev/schemas/2.2.2/schema.json",
-  "extends": ["../../biome.json"],
+  "extends": "//",
   "overrides": [
     {
       "includes": ["**/*.ts", "**/*.tsx"],

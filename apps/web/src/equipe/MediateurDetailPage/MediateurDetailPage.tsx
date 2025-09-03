@@ -1,6 +1,6 @@
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import Contract from '@app/web/components/conseiller-numerique/Contract'
+import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { ReferentStructure } from '@app/web/components/structure/ReferentStructure'
 import { StructureEmployeuse } from '@app/web/components/structure/StructureEmployeuse'
 import { AlerteFinContrat } from '@app/web/conseiller-numerique/getContractInfo'

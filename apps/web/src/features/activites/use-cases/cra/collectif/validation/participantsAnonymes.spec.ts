@@ -48,7 +48,7 @@ describe('participantsAnonymes', () => {
     })
 
     it('has no additional counts', () => {
-      const { total, ...enumCounts } = participantsAnonymes
+      const { total: _total, ...enumCounts } = participantsAnonymes
 
       const modelKeys = [
         'dejaAccompagne',
