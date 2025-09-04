@@ -20,7 +20,8 @@ export const MaterielField = withForm({
         <field.Checkbox
           className="fr-flex-basis-0 fr-flex-grow-1 fr-mb-12v"
           classes={{
-            content: 'fr-display-grid fr-grid--5x1 fr-grid-gap-2v',
+            content:
+              'fr-display-grid fr-grid--2x1 fr-grid-md--5x1 fr-grid-gap-2v',
           }}
           isPending={isPending}
           options={materielOptions}

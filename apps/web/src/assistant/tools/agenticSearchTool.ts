@@ -1,10 +1,12 @@
 import {
-  type RagChunkResultForAssistant,
   formatRagSearchResultToJsonForAssistant,
   formatRagSearchResultToMarkdown,
+  type RagChunkResultForAssistant,
 } from '@app/web/assistant/rag/formatRagSearchResultToMarkdown'
 import { getRagChunksForQuery } from '@app/web/assistant/rag/getRagChunksForQuery'
 import { ragSources } from '@app/web/assistant/rag/sources'
+import { evaluateSource } from '@app/web/assistant/tasks/evaluateSource'
+import { preProcessHtmlForSummary } from '@app/web/assistant/tasks/preProcessHtmlForSummary'
 import { summarizeWebPage } from '@app/web/assistant/tasks/summarizeWebPage'
 import {
   agenticSearchToolDescription,
@@ -19,12 +21,9 @@ import {
   formatResultToMarkdownForAssistant,
 } from '@app/web/assistant/tools/brave/braveSearch'
 import type { ZodFunctionOptions } from '@app/web/assistant/tools/zodFunctionType'
+import { tool } from 'ai'
 import { stringify } from 'yaml'
 import { z } from 'zod'
-
-import { evaluateSource } from '@app/web/assistant/tasks/evaluateSource'
-import { preProcessHtmlForSummary } from '@app/web/assistant/tasks/preProcessHtmlForSummary'
-import { tool } from 'ai'
 
 const stringBooleanValidation = (description: string) =>
   z

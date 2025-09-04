@@ -1,6 +1,6 @@
 import type { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
 import type { DefaultValues } from 'react-hook-form'
-import { MediateurUser } from '../auth/userTypeGuards'
+import { CraCollectifData } from '../features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
 import { getAdaptiveDureeOptions } from '../features/activites/use-cases/cra/db/getAdaptiveDureeOptions'
 import {
   minutesToCraDureeData,
@@ -16,7 +16,10 @@ export const createCraDataFromRdv = async ({
 }: {
   rdv: Rdv
   mediateurId: string
-}): Promise<DefaultValues<CraIndividuelData>> => {
+}): Promise<{
+  defaultValues: DefaultValues<CraIndividuelData>
+  type: 'individuel' | 'collectif'
+}> => {
   const { date, durationInMinutes, participations, id } = rdv
 
   const participationBeneficiaireSuivi = participations.find(
@@ -47,6 +50,20 @@ export const createCraDataFromRdv = async ({
     ? (minutesToCraDureeData(durationInMinutes) ?? undefined)
     : minutesToCustomCraDureeData(durationInMinutes)
 
+  if (rdv.motif.collectif) {
+    const defaultValues: DefaultValues<CraCollectifData> = {
+      date: dateAsIsoDay(date),
+      duree,
+      rdvServicePublicId: id,
+      titreAtelier: rdv.name ?? undefined,
+    }
+
+    return {
+      defaultValues,
+      type: 'collectif',
+    }
+  }
+
   const defaultValues: DefaultValues<CraIndividuelData> = {
     date: dateAsIsoDay(date),
     duree,
@@ -54,5 +71,8 @@ export const createCraDataFromRdv = async ({
     rdvServicePublicId: id,
   }
 
-  return defaultValues
+  return {
+    defaultValues,
+    type: 'individuel',
+  }
 }

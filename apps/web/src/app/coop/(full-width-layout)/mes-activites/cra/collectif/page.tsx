@@ -4,8 +4,8 @@ import { craCollectifDefaultValues } from '@app/web/features/activites/use-cases
 import type { CraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
 import { getCraPageData } from '@app/web/features/activites/use-cases/cra/getCraPageData'
 import {
-  type EncodedState,
   decodeSerializableState,
+  type EncodedState,
 } from '@app/web/utils/encodeSerializableState'
 import type { DefaultValues } from 'react-hook-form'
 

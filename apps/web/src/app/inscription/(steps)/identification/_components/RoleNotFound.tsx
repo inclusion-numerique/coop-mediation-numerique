@@ -1,11 +1,11 @@
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import SignoutButton from '@app/web/app/(public)/(authentication)/deconnexion/SignoutButton'
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import {
-  type ProfileInscriptionSlug,
   allProfileInscriptionLabels,
+  type ProfileInscriptionSlug,
   profileInscriptionFromSlug,
 } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
+import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import React from 'react'
@@ -73,7 +73,7 @@ export const RoleNotFound = ({
       Vous pouvez également essayer de retrouver votre profil en renseignant une
       autre adresse email.{' '}
       <Link
-        href="https://incubateurdesterritoires.notion.site/Cr-er-son-compte-se-connecter-cceb0f6bfb394b039c61c9251d8d7a6a?pvs=74"
+        href="https://docs.numerique.gouv.fr/docs/126f1452-8fac-4073-a86b-82e8559a1be0/"
         className="fr-link"
       >
         En savoir plus

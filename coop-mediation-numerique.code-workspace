@@ -46,8 +46,13 @@
     }
   ],
   "settings": {
-    "jest.autoEnable": false,
-    "jest.disabledWorkspaceFolders": ["root"],
+    "jest.enable": true,
+    "jest.jestCommandLine": "pnpm test --",
+    "jest.runMode": "on-demand",
+    "jest.shell": { "path": "/bin/bash", "args": ["-l"] },
+    "jest.disabledWorkspaceFolders": ["root", "packages/e2e"],
+    "testing.automaticallyOpenTestResults": "neverOpen",
+    "jest.outputConfig": "terminal-based",
     "sqltools.connections": [
       {
         "previewLimit": 50,

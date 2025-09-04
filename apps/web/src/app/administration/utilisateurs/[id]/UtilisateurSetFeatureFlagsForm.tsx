@@ -33,7 +33,9 @@ const featureFlagOptions: SelectOption<UserFeatureFlag>[] = [
 
 const UtilisateurSetFeatureFlagsForm = ({
   user,
-}: { user: UserFeatureFlags & UserId }) => {
+}: {
+  user: UserFeatureFlags & UserId
+}) => {
   const form = useForm<UtilisateurSetFeatureFlagsData>({
     resolver: zodResolver(UtilisateurSetFeatureFlagsValidation),
     defaultValues: {

@@ -6,9 +6,9 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": "^22.15"
+    "node": "^24.5"
   },
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "pnpm@10.15.0",
   "scripts": {
     "build": "turbo build",
     "cli": "dotenv -- ./apps/cli/node_modules/.bin/tsx apps/cli/src/index.ts",
@@ -54,10 +54,10 @@
     "turbo-linux-arm64": "^2.5.2"
   },
   "volta": {
-    "node": "22.15.0"
+    "node": "24.5.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "^2.2.2",
     "@manypkg/cli": "^0.24.0",
     "dotenv": "^16.5.0",
     "dotenv-cli": "^8.0.0",

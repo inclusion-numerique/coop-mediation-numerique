@@ -70,6 +70,7 @@ describe('craConseillerNumeriqueToPrismaModel', () => {
         statut: 'VALIDATION_COSELEC',
         type: 'PRIVATE',
       },
+      permanence: null,
     } satisfies ConseillerNumeriqueCraWithStructure
 
     const importedAt = new Date()
@@ -138,6 +139,30 @@ describe('craConseillerNumeriqueToPrismaModel', () => {
       structureCodeCommune: givenCra.structure.codeCommune,
       structureCodeDepartement: givenCra.structure.codeDepartement,
       structureCodeRegion: givenCra.structure.codeRegion,
+      permanenceAdresse: null,
+      permanenceCodeCommune: undefined,
+      permanenceCodePostal: undefined,
+      permanenceEmail: undefined,
+      permanenceEstStructure: undefined,
+      permanenceId: undefined,
+      permanenceLatitude: undefined,
+      permanenceLongitude: undefined,
+      permanenceNomCommune: undefined,
+      permanenceNomEnseigne: undefined,
+      permanenceNumeroTelephone: undefined,
+      permanenceSiret: undefined,
+      permanenceSiteWeb: undefined,
+      permanenceStructureCodeCommune: undefined,
+      permanenceStructureCodeDepartement: undefined,
+      permanenceStructureCodePostal: undefined,
+      permanenceStructureCodeRegion: undefined,
+      permanenceStructureId: undefined,
+      permanenceStructureIdPg: undefined,
+      permanenceStructureNom: undefined,
+      permanenceStructureNomCommune: undefined,
+      permanenceStructureSiret: undefined,
+      permanenceStructureStatut: undefined,
+      permanenceStructureType: undefined,
     })
   })
 })

@@ -2,10 +2,10 @@ import { groupActivitesAndRdvsByDate } from '@app/web/features/activites/use-cas
 import { testSessionUser } from '@app/web/test/testSessionUser'
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import MesActivitesListePage from './MesActivitesListePage'
 import MesActivitesListeEmptyPage from './components/MesActivitesListeEmptyPage'
 import MesActivitesListeLayout from './components/MesActivitesListeLayout'
 import { ActivitesListPageData } from './getActivitesListPageData'
+import MesActivitesListePage from './MesActivitesListePage'
 import {
   activitesForModalStories,
   rdvsForStories,
@@ -43,7 +43,10 @@ const dataAvecActivites = {
   isFiltered: false,
   mediateurId: '1',
   searchResult: {
-    matchesCount: activitesForModalStories.length,
+    activitesMatchesCount: activitesForModalStories.length,
+    accompagnementsMatchesCount: activitesForModalStories
+      .map(({ accompagnements }) => accompagnements.length)
+      .reduce((a, b) => a + b, 0),
     moreResults: 0,
     totalPages: 1,
     activites: activitesForModalStories,

@@ -101,6 +101,12 @@ export const craRouter = router({
 
       await prismaClient.$transaction(
         [
+          // Delete associated tags
+          prismaClient.activitesTags.deleteMany({
+            where: {
+              activiteId,
+            },
+          }),
           // Delete accompagnements
           prismaClient.accompagnement.deleteMany({
             where: {

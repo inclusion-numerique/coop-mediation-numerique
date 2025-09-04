@@ -5,9 +5,9 @@ import { Spinner } from '@app/web/ui/Spinner'
 import { formatActiviteDayDate } from '@app/web/utils/activiteDayDateFormat'
 import { Fragment, Suspense } from 'react'
 import ActiviteCard from './components/ActiviteCard'
+import { getActivitesResultCountLabel } from './components/getActivitesResultCountLabel'
 import MesActivitesListeEmptyPage from './components/MesActivitesListeEmptyPage'
 import RdvCard from './components/RdvCard'
-import { getActivitesResultCountLabel } from './components/getActivitesResultCountLabel'
 import { ActivitesListPageData } from './getActivitesListPageData'
 
 const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
@@ -33,7 +33,7 @@ const SuspensedContent = async ({
   const baseHref = '/coop/mes-activites'
   return (
     <>
-      <p className="fr-text--bold fr-text--lg fr-mb-6v fr-mt-2v">
+      <p className="fr-text--bold fr-text--lg fr-my-6v">
         {getActivitesResultCountLabel({
           isFiltered,
           searchResult,

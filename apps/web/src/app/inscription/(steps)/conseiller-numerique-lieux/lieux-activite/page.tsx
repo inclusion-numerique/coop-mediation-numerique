@@ -1,10 +1,10 @@
-import InscriptionCard from '@app/web/app/inscription/(steps)/InscriptionCard'
 import {
   conseillerNumeriqueLieuxInscriptionSteps,
   conseillerNumeriqueLieuxInscriptionStepsCount,
 } from '@app/web/app/inscription/(steps)/conseiller-numerique-lieux/conseillerNumeriqueLieuxInscriptionSteps'
-import LieuxActiviteForm from '@app/web/app/inscription/LieuxActiviteForm'
+import InscriptionCard from '@app/web/app/inscription/(steps)/InscriptionCard'
 import { getLieuxActiviteForInscription } from '@app/web/app/inscription/getLieuxActiviteForInscription'
+import LieuxActiviteForm from '@app/web/app/inscription/LieuxActiviteForm'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import { redirect } from 'next/navigation'

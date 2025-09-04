@@ -3,8 +3,8 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { useRouter } from 'next/navigation'
 import type { FormEventHandler } from 'react'
-import type { PaginationNavProps } from './PaginationNav'
 import { createDataTableHref } from './createDataTableHref'
+import type { PaginationNavProps } from './PaginationNav'
 
 const PageSizeSelect = ({
   searchParams,

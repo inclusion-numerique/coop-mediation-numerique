@@ -12,6 +12,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { UserDisplayName, UserProfile } from '@app/web/utils/user'
 import { getBeneficiaireStatsWithCommunes } from './_queries/getBeneficiaireStats'
+import { getHasCrasV1 } from './_queries/getHasCrasV1'
 import { getTotalCountsStats } from './_queries/getTotalCountsStats'
 
 export type MesStatistiquesGraphOptions = {
@@ -37,6 +38,7 @@ export const getMesStatistiquesPageData = async ({
           where: { coordinateurId: user.coordinateur.id },
           select: { mediateurId: true },
         })
+
   const mediateurCoordonnesIds = mediateurCoordonnes.map(toMediateurId)
 
   const mediateurIds = [
@@ -63,6 +65,7 @@ export const getMesStatistiquesPageData = async ({
     activites,
     structures,
     totalCounts,
+    hasCrasV1,
   ] = await Promise.all([
     getAccompagnementsCountByDay({
       user,
@@ -86,6 +89,7 @@ export const getMesStatistiquesPageData = async ({
     getActivitesStats({ user, mediateurIds, activitesFilters }),
     getActivitesStructuresStats({ user, mediateurIds, activitesFilters }),
     getTotalCountsStats({ user, mediateurIds, activitesFilters }),
+    getHasCrasV1({ user, mediateurIds, activitesFilters }),
   ])
 
   const {
@@ -117,6 +121,7 @@ export const getMesStatistiquesPageData = async ({
     initialBeneficiairesOptions,
     lieuxActiviteOptions,
     activiteDates,
+    hasCrasV1,
   }
 }
 

@@ -14,7 +14,7 @@ const SuspensedContent = async ({
 
   return (
     <>
-      <p className="fr-text--bold fr-text--lg fr-mb-6v fr-mt-2v">
+      <p className="fr-text--bold fr-text--lg fr-my-6v">
         {getActivitesResultCountLabel({
           isFiltered,
           searchResult,

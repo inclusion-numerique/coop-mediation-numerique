@@ -1,4 +1,5 @@
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
+import { getServerUrl } from '@app/web/utils/baseUrl'
 
 const proconnectSignoutRedirectPath = '/deconnexion/callback'
 
@@ -13,11 +14,9 @@ export type ProconnectSignoutState = {
  * The proconnectSignoutRedirectPath callback will destroy the session and redirect to the callbackUrl
  */
 export const generateProconnectSignoutUrl = ({
-  origin,
   callbackUrl: _callbackUrl,
   idTokenHint,
 }: {
-  origin: string
   idTokenHint: string
   callbackUrl: string
 }) => {
@@ -28,8 +27,9 @@ export const generateProconnectSignoutUrl = ({
   //   nonce: v4(),
   // })
 
-  const postLogoutRedirectUri = `${origin}${proconnectSignoutRedirectPath}`
-
+  const postLogoutRedirectUri = getServerUrl(proconnectSignoutRedirectPath, {
+    absolutePath: true,
+  })
   const queryParams = new URLSearchParams({
     post_logout_redirect_uri: postLogoutRedirectUri,
     id_token_hint: idTokenHint,

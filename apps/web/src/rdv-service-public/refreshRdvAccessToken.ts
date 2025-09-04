@@ -1,9 +1,9 @@
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   rdvServicePublicOAuthConfig,
   rdvServicePublicOAuthTokenEndpoint,
 } from '@app/web/rdv-service-public/rdvServicePublicOauth'
+import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import type { RdvAccount } from '@prisma/client'
 import axios from 'axios'
 

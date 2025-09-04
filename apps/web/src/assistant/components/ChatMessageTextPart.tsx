@@ -1,4 +1,4 @@
-import { type Tokens, marked } from 'marked'
+import { marked, type Tokens } from 'marked'
 import type { CSSProperties } from 'react'
 
 const renderer = new marked.Renderer()

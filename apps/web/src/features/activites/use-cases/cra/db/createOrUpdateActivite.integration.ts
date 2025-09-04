@@ -47,6 +47,14 @@ const nullActivite: Omit<
   structure: null,
   titreAtelier: null,
   rdvServicePublicId: null,
+  mediateur: {
+    id: '303381cc-3da7-433d-a553-1a5f76465989',
+    user: {
+      firstName: 'Médiateur',
+      lastName: 'Avec activités',
+    },
+    conseillerNumerique: null,
+  },
 }
 
 describe('createOrUpdateActivite', () => {
@@ -169,18 +177,16 @@ describe('createOrUpdateActivite', () => {
       mediateurId: mediateurAvecActiviteMediateurId,
     })
 
-    const beneficiaire = await prismaClient.beneficiaire.findMany({
+    const accompagnementAnonyme = await prismaClient.accompagnement.findMany({
       where: {
-        anonyme: true,
-        accompagnements: {
-          every: {
-            activiteId: result.id,
-          },
+        activiteId: result.id,
+        beneficiaire: {
+          anonyme: true,
         },
       },
     })
 
-    expect(beneficiaire.length).toBe(1)
+    expect(accompagnementAnonyme.length).toBe(1)
   })
 
   it('should create atelier collectif for anonyme', async () => {

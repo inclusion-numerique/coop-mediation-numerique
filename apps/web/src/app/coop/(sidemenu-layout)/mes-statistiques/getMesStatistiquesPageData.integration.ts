@@ -12,9 +12,9 @@ import {
 } from '@app/fixtures/users/mediateurSansActivites'
 import { computeProportion } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/allocatePercentages'
 import {
+  getMesStatistiquesPageData,
   MesStatistiquesGraphOptions,
   MesStatistiquesPageData,
-  getMesStatistiquesPageData,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
 import { QuantifiedShare } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/quantifiedShare'
 import { emptyQuantifiedSharesFromEnum } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/statistiquesFixturesHelpers'
@@ -25,8 +25,10 @@ import {
 } from '@app/web/beneficiaire/beneficiaire'
 import { dureeAccompagnementStatisticsRanges } from '@app/web/features/activites/use-cases/cra/fields/duree-accompagnement'
 import { materielLabels } from '@app/web/features/activites/use-cases/cra/fields/materiel'
-import { thematiquesNonAdministrativesLabels } from '@app/web/features/activites/use-cases/cra/fields/thematique'
-import { thematiquesAdministrativesLabels } from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import {
+  thematiquesAdministrativesLabels,
+  thematiquesNonAdministrativesLabels,
+} from '@app/web/features/activites/use-cases/cra/fields/thematique'
 import { typeActiviteLabels } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
 import { typeLieuLabels } from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
@@ -161,6 +163,9 @@ const emptyData: MesStatistiquesPageData = {
     first: undefined,
     last: undefined,
   },
+  hasCrasV1: {
+    hasCrasV1: false,
+  },
 }
 
 const createExpectedData = (
@@ -260,8 +265,8 @@ describe('getMesStatistiquesPageData', () => {
         title: 'should compute all data without filters',
         activitesFilters: {},
         expected: createExpectedData((data) => {
-          // Should have 10 activites
-          const totalActivites = 10
+          // Should have 22 activites
+          const totalActivites = 22
 
           // Should have 13 beneficiaires
           const totalBeneficiaires = 13
@@ -270,7 +275,7 @@ describe('getMesStatistiquesPageData', () => {
 
           data.totalCounts = {
             activites: {
-              total: totalActivites,
+              total: 10,
               individuels: {
                 total: 8,
                 proportion: 80,
@@ -290,7 +295,7 @@ describe('getMesStatistiquesPageData', () => {
             accompagnements: {
               total: totalAccompagnements,
               collectifs: {
-                total: 14,
+                total: 2,
                 proportion: computeProportion(14, totalAccompagnements),
               },
               individuels: {
@@ -312,35 +317,35 @@ describe('getMesStatistiquesPageData', () => {
           expectMonthCount(data, 'Juil.', 14)
           expectMonthCount(data, 'Août', 7)
 
-          expectEnum(data.activites.typeLieu, 'Domicile', 2, 10)
-          expectEnum(data.activites.typeLieu, 'ADistance', 8, 10)
-          expectEnum(data.activites.typeLieu, 'LieuActivite', 0, 10)
-          expectEnum(data.activites.typeLieu, 'Autre', 0, 10)
+          expectEnum(data.activites.typeLieu, 'Domicile', 2, 22)
+          expectEnum(data.activites.typeLieu, 'ADistance', 20, 22)
+          expectEnum(data.activites.typeLieu, 'LieuActivite', 0, 22)
+          expectEnum(data.activites.typeLieu, 'Autre', 0, 22)
 
-          expectEnum(data.activites.durees, '120', 10, totalActivites)
+          expectEnum(data.activites.durees, '120', 22, totalActivites)
 
-          expectEnum(data.activites.materiels, 'Ordinateur', 3, 10)
-          expectEnum(data.activites.materiels, 'Telephone', 2, 10)
-          expectEnum(data.activites.materiels, 'Tablette', 2, 10)
-          expectEnum(data.activites.materiels, 'Autre', 3, 10)
+          expectEnum(data.activites.materiels, 'Ordinateur', 4, 13)
+          expectEnum(data.activites.materiels, 'Telephone', 2, 13)
+          expectEnum(data.activites.materiels, 'Tablette', 3, 13)
+          expectEnum(data.activites.materiels, 'Autre', 4, 13)
           // before
 
-          expectEnum(data.activites.thematiques, 'Email', 3, 15)
-          expectEnum(data.activites.thematiques, 'ReseauxSociaux', 2, 15)
-          expectEnum(data.activites.thematiques, 'Sante', 2, 15)
+          expectEnum(data.activites.thematiques, 'Email', 4, 39)
+          expectEnum(data.activites.thematiques, 'ReseauxSociaux', 14, 39)
+          expectEnum(data.activites.thematiques, 'Sante', 2, 39)
           expectEnum(
             data.activites.thematiques,
             'InsertionProfessionnelle',
             1,
-            15,
+            39,
           )
-          expectEnum(data.activites.thematiques, 'Parentalite', 1, 15)
-          expectEnum(data.activites.thematiques, 'CultureNumerique', 2, 15)
+          expectEnum(data.activites.thematiques, 'Parentalite', 1, 39)
+          expectEnum(data.activites.thematiques, 'CultureNumerique', 13, 39)
           expectEnum(
             data.activites.thematiques,
             'AideAuxDemarchesAdministratives',
             4,
-            15,
+            39,
           )
 
           expectEnum(
@@ -369,7 +374,7 @@ describe('getMesStatistiquesPageData', () => {
           expectEnum(
             data.activites.typeActivites,
             'Collectif',
-            2,
+            14,
             totalActivites,
           )
           expectEnum(
@@ -440,12 +445,20 @@ describe('getMesStatistiquesPageData', () => {
 
           data.beneficiaires.communes = [
             {
+              codeInsee: null,
+              codePostal: null,
+              count: 12,
+              label: 'Non communiqué',
+              nom: null,
+              proportion: 92.308,
+            },
+            {
               codeInsee: '75101',
               codePostal: '75001',
               label: 'Paris · 75001',
               nom: 'Paris',
               count: 1,
-              proportion: 100,
+              proportion: 7.692,
             },
           ]
 

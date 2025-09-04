@@ -19,7 +19,7 @@ import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodV
 import Button from '@codegouvfr/react-dsfr/Button'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 const CreerEmployeStructureForm = ({

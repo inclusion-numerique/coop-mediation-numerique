@@ -1,5 +1,4 @@
-import type { ZodType } from 'zod'
-import type { infer as zodInfer } from 'zod/lib/types'
+import type { ZodType, infer as zodInfer } from 'zod'
 
 export type ZodFunctionOptions<Parameters extends ZodType, Result = unknown> = {
   name: string

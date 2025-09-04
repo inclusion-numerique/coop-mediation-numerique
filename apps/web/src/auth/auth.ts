@@ -1,10 +1,12 @@
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
-import { ProConnectProvider } from '@app/web/auth/ProConnectProvider'
 import { authenticationViaProconnect } from '@app/web/auth/authenticationProvider'
 import { nextAuthAdapter } from '@app/web/auth/nextAuthAdapter'
+import { ProConnectProvider } from '@app/web/auth/ProConnectProvider'
+import { proConnectProviderId } from '@app/web/auth/proConnect'
 import { sendVerificationRequest } from '@app/web/auth/sendVerificationRequest'
 import { SessionUser } from '@app/web/auth/sessionUser'
+import { updateAccountTokens } from '@app/web/auth/updateAccountTokens'
 import { updateUserData } from '@app/web/auth/updateUserData'
+import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { registerLastLogin } from '@app/web/security/registerLastLogin'
 import * as Sentry from '@sentry/nextjs'
 import type { AuthOptions } from 'next-auth'
@@ -57,13 +59,38 @@ export const nextAuthOptions = {
 
       // The rest of this function will execute for ProConnect flow
 
-      const { user, profile } = params as unknown as {
+      const { user, profile, account } = params as unknown as {
         user: SessionUser
         profile: {
           given_name: string
           usual_name: string
           phone_number: string | null
         }
+        account: {
+          provider: string
+          access_token?: string
+          refresh_token?: string
+          expires_at?: number
+          id_token?: string
+          scope?: string
+        }
+      }
+
+      // Update account tokens if this is a ProConnect signin
+      if (account?.provider === proConnectProviderId && account.access_token) {
+        updateAccountTokens({
+          userId: user.id,
+          provider: proConnectProviderId,
+          tokens: {
+            access_token: account.access_token,
+            refresh_token: account.refresh_token,
+            expires_in: account.expires_at,
+            id_token: account.id_token,
+            scope: account.scope,
+          },
+        }).catch((error) => {
+          Sentry.captureException(error)
+        })
       }
 
       if (isOutdatedUserData(user)(profile)) {

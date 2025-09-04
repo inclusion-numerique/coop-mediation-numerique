@@ -1,8 +1,8 @@
 import CheckboxFormField from '@app/ui/components/Form/CheckboxFormField'
 import CheckboxGroupFormField from '@app/ui/components/Form/CheckboxGroupFormField'
 import InputFormField from '@app/ui/components/Form/InputFormField'
-import { ModalitesAccesAuServiceData } from '@app/web/features/structures/ModalitesAccesAuServiceValidation'
 import { fraisAChargeOptions } from '@app/web/features/structures/fraisACharge'
+import { ModalitesAccesAuServiceData } from '@app/web/features/structures/ModalitesAccesAuServiceValidation'
 import React from 'react'
 import { UseFormReturn } from 'react-hook-form'
 

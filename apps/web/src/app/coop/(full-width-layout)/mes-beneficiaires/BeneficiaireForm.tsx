@@ -30,10 +30,10 @@ import CraFormLabel from '@app/web/features/activites/use-cases/cra/components/C
 import { craFormFieldsetClassname } from '@app/web/features/activites/use-cases/cra/components/craFormFieldsetClassname'
 import { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
 import {
-  BeneficiaireData,
-  BeneficiaireValidation,
   anneeNaissanceMax,
   anneeNaissanceMin,
+  BeneficiaireData,
+  BeneficiaireValidation,
 } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
 import { trpc } from '@app/web/trpc'
 import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
@@ -73,7 +73,7 @@ const BeneficiaireForm = ({
 
   const enSavoirPlusLink = (
     <Link
-      href="https://incubateurdesterritoires.notion.site/Mes-b-n-ficiaires-bf63dd79e5344a06a72c243ef8cb6293"
+      href="https://docs.numerique.gouv.fr/docs/3d5bad76-8e02-4abc-b83a-c2f2965ae5d9/"
       target="_blank"
       className="fr-link fr-link--xs"
     >
@@ -350,9 +350,9 @@ const BeneficiaireForm = ({
             radioGroup: richCardRadioGroupClassName,
           }}
         />
-        <div className="fr-flex fr-flex-gap-6v">
+        <div className="fr-flex fr-flex-gap-6v fr-direction-column fr-direction-md-row">
           <div className="fr-flex-basis-0 fr-flex-grow-1">
-            <CraFormLabel as="p" className="fr-mb-4v fr-mt-4v">
+            <CraFormLabel as="p" className="fr-my-4v">
               Tranche d’âge
             </CraFormLabel>
             <RadioFormField
@@ -371,7 +371,7 @@ const BeneficiaireForm = ({
             />
           </div>
           <div className="fr-flex-basis-0 fr-flex-grow-1">
-            <CraFormLabel as="p" className="fr-mb-4v fr-mt-6v">
+            <CraFormLabel as="p" className="fr-my-4v">
               Statut du bénéficiaire
             </CraFormLabel>
             <RadioFormField

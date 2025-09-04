@@ -48,7 +48,11 @@ export const GET = async (request: NextRequest) => {
 
   const imageData = await getImageData({ image, quality, width: targetWidth })
 
-  return new Response(imageData, {
+  // Convert Buffer to Uint8Array if needed, or use ReadableStream directly
+  const body =
+    imageData instanceof ReadableStream ? imageData : new Uint8Array(imageData)
+
+  return new Response(body, {
     status: 200,
     headers: {
       'Content-Type': 'image/webp',

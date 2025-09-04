@@ -1,6 +1,6 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
-import { ReactNode, forwardRef } from 'react'
+import { forwardRef, ReactNode } from 'react'
 
 type TriggerButtonProps = {
   isOpen: boolean

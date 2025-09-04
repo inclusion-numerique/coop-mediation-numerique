@@ -2,8 +2,8 @@ import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout
 import type { QuantifiedShare } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/quantifiedShare'
 import type { ActivitesFiltersLabels } from '@app/web/features/activites/use-cases/list/components/generateActivitesFiltersLabels'
 import {
-  type WorksheetUser,
   addExportMetadata,
+  type WorksheetUser,
 } from '@app/web/libs/worksheet/addExportMetadata'
 import { addTitleRow } from '@app/web/libs/worksheet/addTitleRow'
 import { autosizeColumns } from '@app/web/libs/worksheet/autosizeColumns'
@@ -47,7 +47,7 @@ const addStatistiquesGenerales =
 const addStatistiquesActivites =
   (worksheet: Excel.Worksheet) =>
   ({ totalCounts: { activites } }: MesStatistiquesPageData) => {
-    addTitleRow(worksheet)('Statistiques sur vos activités')
+    addTitleRow(worksheet)('Statistiques sur vos accompagnements')
     worksheet.addRow([
       'Accompagnements individuels',
       activites.individuels.total,

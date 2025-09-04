@@ -32,6 +32,7 @@ export const activiteIndividuelleInfosMinimum = {
         nom: null,
         commune: null,
         communeCodePostal: null,
+        communeCodeInsee: null,
         statutSocial: null,
         genre: null,
         trancheAge: null,
@@ -50,8 +51,10 @@ export const activiteIndividuelleInfosMinimum = {
   structure: {
     id: '1',
     nom: 'Bibliotheque Musee de l’Opera, au fond du couloir à droite',
+    adresse: '33 Rue de l’Opera',
     commune: 'Paris',
     codePostal: '75006',
+    codeInsee: '75106',
   },
   orienteVersStructure: null,
   structureDeRedirection: null,
@@ -59,6 +62,14 @@ export const activiteIndividuelleInfosMinimum = {
   titreAtelier: null,
   niveau: null,
   rdvServicePublicId: null,
+  mediateur: {
+    id: '',
+    user: {
+      firstName: '',
+      lastName: '',
+    },
+    conseillerNumerique: null,
+  },
 } satisfies ActiviteListItem
 
 export const activiteIndividuelleBeneficiaireSuivi = {
@@ -84,6 +95,7 @@ export const activiteIndividuelleBeneficiaireSuivi = {
         nom: 'Dupont',
         commune: null,
         communeCodePostal: null,
+        communeCodeInsee: null,
         statutSocial: 'EnEmploi',
         genre: 'Masculin',
         trancheAge: 'NonCommunique',
@@ -106,6 +118,14 @@ export const activiteIndividuelleBeneficiaireSuivi = {
   titreAtelier: null,
   niveau: null,
   rdvServicePublicId: null,
+  mediateur: {
+    id: '',
+    user: {
+      firstName: '',
+      lastName: '',
+    },
+    conseillerNumerique: null,
+  },
 } satisfies ActiviteListItem
 
 // Refactored "Individuel" type activity with an anonymous beneficiary
@@ -140,6 +160,7 @@ export const activiteIndividuelleBeneficiaireAnonyme = {
         nom: null,
         commune: 'Lyon',
         communeCodePostal: '69002',
+        communeCodeInsee: '69382',
         statutSocial: 'EnEmploi',
         genre: 'Masculin',
         trancheAge: 'QuaranteCinquanteNeuf',
@@ -161,6 +182,14 @@ export const activiteIndividuelleBeneficiaireAnonyme = {
   titreAtelier: null,
   niveau: null,
   rdvServicePublicId: 23,
+  mediateur: {
+    id: '',
+    user: {
+      firstName: '',
+      lastName: '',
+    },
+    conseillerNumerique: null,
+  },
 } satisfies ActiviteListItem
 
 // Refactored "Collectif" type activity with minimal information
@@ -191,6 +220,7 @@ export const activiteCollectifInfosRepliees = {
         statutSocial: null,
         commune: null,
         communeCodePostal: null,
+        communeCodeInsee: null,
         _count: {
           accompagnements: 1,
         },
@@ -209,6 +239,7 @@ export const activiteCollectifInfosRepliees = {
         statutSocial: null,
         commune: null,
         communeCodePostal: null,
+        communeCodeInsee: null,
         _count: {
           accompagnements: 1,
         },
@@ -228,6 +259,14 @@ export const activiteCollectifInfosRepliees = {
   titreAtelier: 'Atelier de découverte de la vacuité de toute chose',
   niveau: 'Debutant',
   rdvServicePublicId: 1234567890,
+  mediateur: {
+    id: '',
+    user: {
+      firstName: '',
+      lastName: '',
+    },
+    conseillerNumerique: null,
+  },
 } satisfies ActiviteListItem
 
 // Refactored "Collectif" type activity with expanded information
@@ -265,6 +304,7 @@ export const activiteCollectifInfosDepliees = {
           nom: null,
           commune: null,
           communeCodePostal: null,
+          communeCodeInsee: null,
           _count: {
             accompagnements: 1,
           },
@@ -284,6 +324,7 @@ export const activiteCollectifInfosDepliees = {
         statutSocial: null,
         commune: null,
         communeCodePostal: null,
+        communeCodeInsee: null,
         _count: {
           accompagnements: 1,
         },
@@ -302,6 +343,7 @@ export const activiteCollectifInfosDepliees = {
         statutSocial: null,
         commune: null,
         communeCodePostal: null,
+        communeCodeInsee: null,
         _count: {
           accompagnements: 1,
         },
@@ -318,8 +360,10 @@ export const activiteCollectifInfosDepliees = {
   structure: {
     id: '1',
     nom: 'Bibliotheque Musee de l’Opera, au fond du couloir à droite',
+    adresse: '33 Rue de l’Opera',
     commune: 'Paris',
     codePostal: '75006',
+    codeInsee: '75106',
   },
   orienteVersStructure: null,
   structureDeRedirection: null,
@@ -327,6 +371,14 @@ export const activiteCollectifInfosDepliees = {
   titreAtelier: null,
   niveau: 'Debutant',
   rdvServicePublicId: 1234567890,
+  mediateur: {
+    id: '',
+    user: {
+      firstName: '',
+      lastName: '',
+    },
+    conseillerNumerique: null,
+  },
 } satisfies ActiviteListItem
 
 const randomIntegerId = () => Math.floor(Math.random() * 1000000)
@@ -345,7 +397,10 @@ export const givenRdv = ({
   motif: {
     id: randomIntegerId(),
     name: 'Accompagnement individuel',
+    collectif: false,
   },
+  name: null,
+  maxParticipantsCount: null,
   date: date ?? new Date(Date.now() - 1000 * 60 * 60 * 24),
   endDate: new Date(
     (date ?? new Date(Date.now() - 1000 * 60 * 60 * 24)).getTime() +

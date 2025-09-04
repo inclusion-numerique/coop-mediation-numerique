@@ -4,22 +4,20 @@
 import { mainLiveUrl, projectTitle, repositoryUrl } from '@app/config/config'
 
 const isMain = process.env.BRANCH === 'main'
-const isSante = process.env.BRANCH === 'sante'
 const isDev = process.env.BRANCH === 'dev'
 const isLocal = !process.env.BRANCH
 const isE2e = !!process.env.IS_E2E
-const isPreview = !isMain && !isDev && !isSante && !isLocal && !isE2e
+const isPreview = !isMain && !isDev && !isLocal && !isE2e
 
 export const PublicWebAppConfig = {
-  centreAideDomaine: 'https://incubateurdesterritoires.notion.site',
+  centreAideDomaine: 'https://docs.numerique.gouv.fr/',
   centreAideUrl:
-    'https://incubateurdesterritoires.notion.site/Centre-d-aide-de-La-Coop-de-la-m-diation-num-rique-e2db421ac63249769c1a9aa155af5f2f',
+    'https://docs.numerique.gouv.fr/docs/1cf724be-c40c-4299-906d-df22c181c77b/',
   Branch: process.env.BRANCH ?? '',
   isMain,
   isDev,
   isLocal,
   isPreview,
-  isSante,
   isE2e,
   Chromatic: {
     appId: process.env.CHROMATIC_APP_ID ?? '',

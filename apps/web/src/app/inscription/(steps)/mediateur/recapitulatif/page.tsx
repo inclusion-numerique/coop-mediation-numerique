@@ -3,9 +3,9 @@ import {
   mediateurInscriptionSteps,
   mediateurinscriptionStepsCount,
 } from '@app/web/app/inscription/(steps)/mediateur/mediateurinscriptionSteps'
-import InscriptionRecapitulatif from '@app/web/app/inscription/InscriptionRecapitulatif'
 import { getLieuxActiviteForInscription } from '@app/web/app/inscription/getLieuxActiviteForInscription'
 import { getStructureEmployeuseForInscription } from '@app/web/app/inscription/getStructureEmployeuseForInscription'
+import InscriptionRecapitulatif from '@app/web/app/inscription/InscriptionRecapitulatif'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import { redirect } from 'next/navigation'

@@ -3,7 +3,7 @@ import type { AgenticSearchToolYamlResult } from '@app/web/assistant/tools/agent
 import { LesBasesLogo } from '@app/web/features/pictograms/services/LesBasesLogo'
 import type { ToolInvocation } from 'ai'
 import he from 'he'
-import { type Tokens, marked } from 'marked'
+import { marked, type Tokens } from 'marked'
 import { parse } from 'yaml'
 
 const parseYamlToolContent = (content: string) => {

@@ -1,7 +1,7 @@
 import LogoCoop from '@app/web/components/LogoCoop'
 import { Invitation } from '@app/web/equipe/InvitationValidation'
 import { EncodedState } from '@app/web/utils/encodeSerializableState'
-import { type UserDisplayName, getUserDisplayName } from '@app/web/utils/user'
+import { getUserDisplayName, type UserDisplayName } from '@app/web/utils/user'
 import Link from 'next/link'
 import InvitationButtons from './InvitationButtons'
 
@@ -53,7 +53,7 @@ export const JoinTeam = ({
               className="fr-link"
               target="_blank"
               rel="noreferrer"
-              href="https://incubateurdesterritoires.notion.site/La-Coop-de-la-M-diation-Num-rique-de-quoi-parle-t-on-c57dea0441054c4183e21c886060ad78"
+              href="https://docs.numerique.gouv.fr/docs/cb90ba5c-6115-4996-8f1d-153be7eb4211/"
             >
               En savoir plus sur La Coop de la médiation numérique
             </Link>

@@ -6,7 +6,9 @@ import { setNouvelleFonctionnaliteSkipCookie } from '../nouvelleFonctionnaliteCo
 
 const SupprimerNouvelleFonctionnaliteCardButton = ({
   featureId,
-}: { featureId: string }) => {
+}: {
+  featureId: string
+}) => {
   const router = useRouter()
 
   const onClick = () => {

@@ -3,10 +3,10 @@ import { getAuthenticatedSessionUser } from '@app/web/auth/getSessionUser'
 import {
   type ConseillerNumeriqueUser,
   type CoordinateurUser,
-  type MediateurUser,
   isConseillerNumerique,
   isCoordinateur,
   isMediateur,
+  type MediateurUser,
 } from '@app/web/auth/userTypeGuards'
 import { redirect } from 'next/navigation'
 

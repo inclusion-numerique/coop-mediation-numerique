@@ -101,6 +101,9 @@ model User {
   deleted   DateTime?
   lastLogin DateTime? @map("last_login")
 
+  // User can be created from v1 data
+  v1Imported DateTime? @map("v1_imported")
+
   // Flux d’inscription
 
   // Le profil déclaré par l’utilisateur à la première étape de l’inscription
@@ -360,6 +363,7 @@ model CraConseillerNumeriqueV1 {
   createdAt DateTime  @unique @map("created_at") // v1 field
   updatedAt DateTime? @map("updated_at") // v1 field
 
+  // Structure employeuse
   structureId              String? @map("structure_id")
   structureIdPg            Int?    @map("structure_id_pg")
   structureType            String? @map("structure_type")
@@ -371,6 +375,32 @@ model CraConseillerNumeriqueV1 {
   structureCodeCommune     String? @map("structure_code_commune")
   structureCodeDepartement String? @map("structure_code_departement")
   structureCodeRegion      String? @map("structure_code_region")
+
+  // Permanence (équivalent v1 à lieu d’activité)
+  permanenceId String? @map("permanence_id")
+  permanenceEstStructure Boolean? @map("permanence_est_structure")
+  permanenceNomEnseigne String? @map("permanence_nom_enseigne")
+  permanenceNumeroTelephone String? @map("permanence_numero_telephone")
+  permanenceEmail String? @map("permanence_email")
+  permanenceSiteWeb String? @map("permanence_site_web")
+  permanenceSiret String? @map("permanence_siret")
+  permanenceAdresse String? @map("permanence_adresse")
+  permanenceCodePostal String? @map("permanence_code_postal")
+  permanenceNomCommune String? @map("permanence_nom_commune")
+  permanenceCodeCommune String? @map("permanence_code_commune")
+  permanenceLatitude Float? @map("permanence_latitude")
+  permanenceLongitude Float? @map("permanence_longitude")
+  permanenceStructureId              String? @map("permanence_structure_id")
+  permanenceStructureIdPg            Int?    @map("permanence_structure_id_pg")
+  permanenceStructureType            String? @map("permanence_structure_type")
+  permanenceStructureStatut          String? @map("permanence_structure_statut")
+  permanenceStructureNom             String? @map("permanence_structure_nom")
+  permanenceStructureSiret           String? @map("permanence_structure_siret")
+  permanenceStructureCodePostal      String? @map("permanence_structure_code_postal")
+  permanenceStructureNomCommune      String? @map("permanence_structure_nom_commune")
+  permanenceStructureCodeCommune     String? @map("permanence_structure_code_commune")
+  permanenceStructureCodeDepartement String? @map("permanence_structure_code_departement")
+  permanenceStructureCodeRegion      String? @map("permanence_structure_code_region")
 
   @@index([v1ConseillerNumeriqueId])
   @@index([dateAccompagnement(sort: Asc)])
@@ -640,7 +670,8 @@ model Structure {
   // # Relations
   emplois              EmployeStructure[]
   mediateursEnActivite MediateurEnActivite[]
-
+  // activités liés aux employés de la structure (différent du lieu d'activité)
+  activitesEmployes            Activite[] @relation(name: "activite_structure_employeuse")
   // Champs métier
 
   nom String
@@ -688,12 +719,21 @@ model Structure {
   courrielReferent  String? @map("courriel_referent")
   telephoneReferent String? @map("telephone_referent")
 
+  // Lors de l'import des cras v1, on a besoin d'importer les structures depuis la bdd legacy
+  // on track cette operation ici
+  v1Imported DateTime? @map("v1_imported")
+  v1StructureId String? @map("v1_structure_id")
+  v1StructureIdPg Int?  @map("v1_structure_id_pg")
+  v1PermanenceId  String? @map("v1_permanence_id")
+
   // "creation" cursor is used to paginate results for API queries
   @@unique([creation, id])
   // descending sort on this cursor for api query performances
   @@index([creation(sort: Desc), id(sort: Desc)])
   @@index([structureCartographieNationaleId])
   // performance indexes
+  @@index([v1StructureId])
+  @@index([v1PermanenceId])
   @@index([codeInsee])
   @@map("structures")
 }
@@ -972,6 +1012,13 @@ model Activite {
   notes                String?
   rdvServicePublicId   Int?             @map("rdv_service_public_id") // id externe du RDV Service Public qui est à l'origine de cette Activité
 
+  // Structure employeuse
+  // - cette information aurait pu etre déduite des liens entre mediateur, emploi, et activité
+  // - elle est stockée directement ici pour des raisons de performance, et est mise à jour en cas de modification d'emploi
+  // - elle est également utile dans le cas des imports d'anciens cras v1 qui ont cette information en dur dans le cra v1
+  structureEmployeuseId String @map("structure_employeuse_id") @db.Uuid
+  structureEmployeuse   Structure @relation(fields: [structureEmployeuseId], references: [id], name: "activite_structure_employeuse")
+
   // Structure est renseigné
   // - si typeLieu = LieuActivite
   structureId    String?    @map("structure_id") @db.Uuid
@@ -1008,11 +1055,18 @@ model Activite {
   niveau       NiveauAtelier?
   tags         ActivitesTags[]
 
+  // En cas d'import depuis les données v1
+  v1CraId String? @map("v1_cra_id") @unique
+  v1CraIdPg Int? @map("v1_cra_id_pg")
+  v1StructureId String? @map("v1_structure_id")
+  v1PermanenceId String? @map("v1_permanence_id")
+
   // "creation" cursor is used to paginate results for API queries
   @@unique([creation, id])
   // index relations
   @@index([structureId])
   @@index([mediateurId])
+  @@index([structureEmployeuseId])
   // descending sort on this cursor for api query performances
   @@index([creation(sort: Desc), id(sort: Desc)])
   @@index([modification(sort: Desc), id(sort: Desc)])

@@ -12,11 +12,11 @@ import {
   filterOnStatut,
 } from '../filter/filterUtilisateur'
 import { UtiliateursFilterValidations } from '../filter/utilisateursFilters'
+import { queryUtilisateursForList } from '../list/queryUtilisateursForList'
 import {
   UtilisateursDataTable,
   type UtilisateursDataTableSearchParams,
 } from '../list/UtilisateursDataTable'
-import { queryUtilisateursForList } from '../list/queryUtilisateursForList'
 
 type SearchUtilisateurOptions = {
   mediateurId?: string
@@ -26,11 +26,7 @@ type SearchUtilisateurOptions = {
 // List utilisateurs
 const utilisateursListWhere = (
   // TODO Does this need to be implemented ?
-  {
-    mediateurId: _mediateurId,
-  }: {
-    mediateurId?: string
-  },
+  { mediateurId: _mediateurId }: { mediateurId?: string },
 ) => ({}) satisfies Prisma.UserWhereInput
 
 const DEFAULT_PAGE_SIZE = 100

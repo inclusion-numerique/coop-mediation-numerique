@@ -31,7 +31,7 @@ export const AutonomieBeneficiaireField = withForm({
               Niveau d’autonomie du bénéficiaire{' '}
               <Link
                 className="fr-link"
-                href="https://incubateurdesterritoires.notion.site/Accompagnement-individuel-94011d45a214412981168bdd5e9d66c7"
+                href="https://docs.numerique.gouv.fr/docs/71878018-757b-4d89-a918-f29c8cf21bfb/"
                 target="_blank"
               >
                 En savoir plus

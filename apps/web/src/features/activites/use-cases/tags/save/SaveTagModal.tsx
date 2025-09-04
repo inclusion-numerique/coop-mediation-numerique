@@ -14,9 +14,9 @@ import React from 'react'
 import { TagScope } from '../tagScope'
 import { saveTagModalVariants } from './saveTagModalVariants'
 import {
-  SaveTagValidation,
   descriptionMaxLength,
   nomMaxLength,
+  SaveTagValidation,
 } from './saveTagValidation'
 
 type Tag = {

@@ -206,6 +206,7 @@ describe('updateStructureFromCartoDataApi', () => {
         date: NOW,
         duree: 60,
         structureId: COOP_NUMERIQUE_STRUCTURE2_TO_BE_MERGED.id,
+        structureEmployeuseId: COOP_NUMERIQUE_STRUCTURE2_TO_BE_MERGED.id,
         accompagnementsCount: 1,
       },
     })

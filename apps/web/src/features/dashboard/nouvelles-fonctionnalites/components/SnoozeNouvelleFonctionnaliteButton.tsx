@@ -8,7 +8,11 @@ const SupprimerNouvelleFonctionnaliteCardButton = ({
   featureId,
   label = 'Voir plus tard',
   className,
-}: { featureId: string; label?: string; className?: string }) => {
+}: {
+  featureId: string
+  label?: string
+  className?: string
+}) => {
   const router = useRouter()
 
   const onClick = () => {

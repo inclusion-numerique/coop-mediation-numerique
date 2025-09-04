@@ -8,8 +8,8 @@ import type { ActiviteDates } from '../db/getFirstAndLastActiviteDate'
 import type { ActivitesFilters } from '../validation/ActivitesFilters'
 import ExportActivitesButtonWrapper from './ExportActivitesButtonWrapper'
 import ExportActivitesDisabledButton from './ExportActivitesDisabledButton'
-import { FilterTags } from './FilterTags'
 import Filters from './Filters'
+import { FilterTags } from './FilterTags'
 
 const MesActivitesListeHeader = ({
   className,
@@ -42,7 +42,6 @@ const MesActivitesListeHeader = ({
       )}
     >
       <Filters
-        className="fr-mt-0-5v"
         defaultFilters={defaultFilters}
         initialMediateursOptions={initialMediateursOptions}
         initialBeneficiairesOptions={initialBeneficiairesOptions}

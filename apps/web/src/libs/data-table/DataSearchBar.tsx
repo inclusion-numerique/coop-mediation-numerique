@@ -4,13 +4,13 @@ import { SearchBar } from '@codegouvfr/react-dsfr/SearchBar'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef } from 'react'
+import { createSearchCallback } from './createSearchCallback'
 import styles from './DataSearchBar.module.css'
 import type {
   DataTableConfiguration,
   DataTableRow,
   DataTableSearchParams,
 } from './DataTableConfiguration'
-import { createSearchCallback } from './createSearchCallback'
 
 const DataSearchBar = <
   Data extends DataTableRow,

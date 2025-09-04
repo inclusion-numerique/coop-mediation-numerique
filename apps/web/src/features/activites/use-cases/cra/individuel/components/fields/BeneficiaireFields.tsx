@@ -56,7 +56,7 @@ export const BeneficiaireFields = withForm({
     return (
       <form.AppField name="beneficiaire">
         {(field) => (
-          <div className="fr-background-alt--blue-france fr-px-8v fr-py-6v fr-border-radius--8 fr-my-12v fr-flex fr-flex-gap-8v fr-align-items-center">
+          <div className="fr-background-alt--blue-france fr-px-8v fr-py-6v fr-border-radius--8 fr-my-12v fr-flex fr-flex-gap-8v fr-align-items-center fr-direction-sm-row fr-direction-column">
             <IconInSquare
               iconId="fr-icon-user-heart-line"
               size="large"

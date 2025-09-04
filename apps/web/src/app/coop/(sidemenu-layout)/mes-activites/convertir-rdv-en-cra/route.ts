@@ -1,11 +1,11 @@
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
-import type { Rdv } from '@app/web/rdv-service-public/Rdv'
 import { createCraDataFromRdv } from '@app/web/rdv-service-public/createCraDataFromRdv'
+import type { Rdv } from '@app/web/rdv-service-public/Rdv'
 import {
-  type EncodedState,
   decodeSerializableState,
+  type EncodedState,
   encodeSerializableState,
 } from '@app/web/utils/encodeSerializableState'
 import { redirect } from 'next/navigation'
@@ -37,13 +37,13 @@ export const GET = async (request: NextRequest) => {
     return new Response('Not found', { status: 404 })
   }
 
-  const craData = await createCraDataFromRdv({
+  const { type, defaultValues } = await createCraDataFromRdv({
     rdv,
     mediateurId: user.mediateur.id,
   })
 
   return redirect(
-    `/coop/mes-activites/cra/individuel?v=${encodeSerializableState(craData)}`,
+    `/coop/mes-activites/cra/${type}?v=${encodeSerializableState(defaultValues)}`,
   )
 }
 

@@ -1,10 +1,10 @@
 import { testSessionUser } from '@app/web/test/testSessionUser'
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
-import MesActivitesTableauPage from './MesActivitesTableauPage'
 import MesActivitesListeEmptyPage from './components/MesActivitesListeEmptyPage'
 import MesActivitesListeLayout from './components/MesActivitesListeLayout'
 import { ActivitesListPageData } from './getActivitesListPageData'
+import MesActivitesTableauPage from './MesActivitesTableauPage'
 import { activitesForModalStories } from './storybook/ActiviteDetailsStoriesData'
 
 const TemplateTableau = ({ data }: { data: ActivitesListPageData }) => (
@@ -40,7 +40,10 @@ const dataAvecActivites = {
   isFiltered: false,
   rdvsWithoutActivite: [],
   searchResult: {
-    matchesCount: activitesForModalStories.length,
+    activitesMatchesCount: activitesForModalStories.length,
+    accompagnementsMatchesCount: activitesForModalStories
+      .map(({ accompagnements }) => accompagnements.length)
+      .reduce((a, b) => a + b, 0),
     moreResults: 0,
     totalPages: 1,
     activites: activitesForModalStories,

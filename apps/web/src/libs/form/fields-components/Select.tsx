@@ -2,7 +2,9 @@ import {
   Select as DsfrSelect,
   SelectProps as DsfrSelectProps,
 } from '@codegouvfr/react-dsfr/SelectNext'
+
 import Option = DsfrSelectProps.Option
+
 import { useFieldContext } from '@app/web/libs/form/form-context'
 import { ChangeEvent } from 'react'
 import { Label } from './Label'

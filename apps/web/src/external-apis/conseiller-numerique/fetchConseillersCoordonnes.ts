@@ -2,11 +2,11 @@ import {
   ConseillerNumeriqueV1Collection,
   cleanConseillerNumeriqueV1Document,
 } from '@app/web/external-apis/conseiller-numerique/ConseillerNumeriqueV1Document'
+import { conseillerNumeriqueMongoCollection } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
 import {
   MiseEnRelationConseillerNumeriqueV1MinimalProjection,
   MiseEnRelationV1MinimalProjection,
 } from '@app/web/external-apis/conseiller-numerique/MiseEnRelationConseillerNumeriqueV1'
-import { conseillerNumeriqueMongoCollection } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
 import { ObjectId } from 'mongodb'
 
 export const fetchConseillersCoordonnes = async ({

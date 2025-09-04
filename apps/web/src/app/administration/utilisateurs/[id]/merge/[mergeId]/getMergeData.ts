@@ -1,5 +1,5 @@
 import { prismaClient } from '@app/web/prismaClient'
-import { UserDisplayName, getUserDisplayName } from '@app/web/utils/user'
+import { getUserDisplayName, UserDisplayName } from '@app/web/utils/user'
 
 type MergeUser = UserDisplayName & {
   id: string

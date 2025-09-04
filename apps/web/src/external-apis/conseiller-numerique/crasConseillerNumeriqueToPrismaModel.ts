@@ -56,7 +56,7 @@ const dureeToMinutes = (duree: string | number | null) => {
 }
 
 export const craConseillerNumeriqueToPrismaModel = ({
-  item: { id, conseillerId, cra, createdAt, updatedAt, structure },
+  item: { id, conseillerId, cra, createdAt, updatedAt, structure, permanence },
   importedAt,
 }: {
   item: ConseillerNumeriqueCraWithStructure
@@ -65,6 +65,7 @@ export const craConseillerNumeriqueToPrismaModel = ({
   if (!cra.nomCommune || !cra.codeCommune || !cra.codePostal) {
     throw new Error('Missing commune data for V1 cra')
   }
+
   const result = {
     importedAt,
     id,
@@ -113,6 +114,7 @@ export const craConseillerNumeriqueToPrismaModel = ({
 
     organismes: flattenOrganismes(cra.organismes),
 
+    // Structure employeuse
     structureId: structure?.id,
     structureIdPg: structure?.idPG,
     structureType: structure?.type,
@@ -124,6 +126,36 @@ export const craConseillerNumeriqueToPrismaModel = ({
     structureCodeCommune: structure?.codeCommune,
     structureCodeDepartement: structure?.codeDepartement,
     structureCodeRegion: structure?.codeRegion,
+
+    // Lieu d’activité / permanence
+    permanenceId: permanence?._id.toString(),
+    permanenceEstStructure: permanence?.estStructure,
+    permanenceNomEnseigne: permanence?.nomEnseigne,
+    permanenceNumeroTelephone: permanence?.numeroTelephone,
+    permanenceEmail: permanence?.email,
+    permanenceSiteWeb: permanence?.siteWeb,
+    permanenceSiret: permanence?.siret,
+    permanenceAdresse: permanence?.adresse
+      ? `${permanence.adresse.numeroRue} ${permanence.adresse.rue}`.trim()
+      : null,
+    permanenceCodePostal: permanence?.adresse?.codePostal,
+    permanenceNomCommune: permanence?.adresse?.ville,
+    permanenceCodeCommune: permanence?.adresse?.codeCommune,
+    permanenceLatitude:
+      Number(permanence?.location?.coordinates[1]) || undefined,
+    permanenceLongitude:
+      Number(permanence?.location?.coordinates[0]) || undefined,
+    permanenceStructureId: permanence?.structure?.id,
+    permanenceStructureIdPg: permanence?.structure?.idPG,
+    permanenceStructureType: permanence?.structure?.type,
+    permanenceStructureStatut: permanence?.structure?.statut,
+    permanenceStructureNom: permanence?.structure?.nom,
+    permanenceStructureSiret: permanence?.structure?.siret,
+    permanenceStructureCodePostal: permanence?.structure?.codePostal,
+    permanenceStructureNomCommune: permanence?.structure?.nomCommune,
+    permanenceStructureCodeCommune: permanence?.structure?.codeCommune,
+    permanenceStructureCodeDepartement: permanence?.structure?.codeDepartement,
+    permanenceStructureCodeRegion: permanence?.structure?.codeRegion,
   } satisfies Prisma.CraConseillerNumeriqueV1CreateManyInput
 
   return result

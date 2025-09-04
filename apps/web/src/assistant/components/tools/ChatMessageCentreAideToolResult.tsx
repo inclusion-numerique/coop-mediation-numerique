@@ -2,7 +2,7 @@ import ToolResultCard from '@app/web/assistant/components/tools/ToolResultCard'
 import { CentreAideToolResult } from '@app/web/assistant/tools/centreAideRagTool'
 import LogoCoop from '@app/web/components/LogoCoop'
 import type { ToolInvocation } from 'ai'
-import { type Tokens, marked } from 'marked'
+import { marked, type Tokens } from 'marked'
 import { parse } from 'yaml'
 
 const parseYamlToolContent = (content: string) => {

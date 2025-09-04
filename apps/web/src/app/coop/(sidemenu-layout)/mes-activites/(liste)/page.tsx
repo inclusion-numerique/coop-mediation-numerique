@@ -1,11 +1,11 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFiltersOptionsForMediateur'
-import MesActivitesListePage from '@app/web/features/activites/use-cases/list/MesActivitesListePage'
 import type { ActivitesDataTableSearchParams } from '@app/web/features/activites/use-cases/list/components/ActivitesDataTable'
 import MesActivitesListeHeader from '@app/web/features/activites/use-cases/list/components/MesActivitesListeHeader'
 import MesActivitesListeLayout from '@app/web/features/activites/use-cases/list/components/MesActivitesListeLayout'
 import { getActivitesListPageData } from '@app/web/features/activites/use-cases/list/getActivitesListPageData'
+import MesActivitesListePage from '@app/web/features/activites/use-cases/list/MesActivitesListePage'
 import { validateActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import type { Metadata } from 'next'
 
@@ -28,7 +28,8 @@ const MesActivitesPage = async ({
   })
 
   const searchResultMatchesCount = data.then(
-    ({ searchResult: { matchesCount } }) => matchesCount,
+    ({ searchResult: { accompagnementsMatchesCount } }) =>
+      accompagnementsMatchesCount,
   )
 
   const {
