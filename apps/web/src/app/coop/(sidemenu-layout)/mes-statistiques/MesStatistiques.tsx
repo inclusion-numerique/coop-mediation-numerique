@@ -32,6 +32,7 @@ export const MesStatistiques = (
     lieuxActiviteOptions,
     activiteDates,
     user,
+    hasCrasV1,
   } = mesStatistiquesProps
 
   return (
@@ -80,7 +81,7 @@ export const MesStatistiques = (
           beneficiairesOptions={[]}
           tagsOptions={tagsOptions}
         />
-        {(user.coordinateur || user.mediateur?.conseillerNumerique) && (
+        {hasCrasV1.hasCrasV1 && (
           <Notice
             className="fr-notice--flex fr-align-items-center fr-mt-6v"
             title={
