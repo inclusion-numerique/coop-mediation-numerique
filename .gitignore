@@ -51,6 +51,7 @@ build-storybook.log
 storybook-static
 
 # next
+/.next/
 /apps/web/.next/
 
 /apps/web/public/dsfr
