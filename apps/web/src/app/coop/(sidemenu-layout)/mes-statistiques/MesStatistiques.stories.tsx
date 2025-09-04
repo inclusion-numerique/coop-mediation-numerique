@@ -218,6 +218,9 @@ const statistiquesPageData = {
   initialMediateursOptions: [],
   lieuxActiviteOptions: [],
   tagsOptions: [],
+  hasCrasV1: {
+    hasCrasV1: false,
+  },
 } satisfies MesStatistiquesPageData
 
 export default {

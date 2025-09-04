@@ -163,6 +163,9 @@ const emptyData: MesStatistiquesPageData = {
     first: undefined,
     last: undefined,
   },
+  hasCrasV1: {
+    hasCrasV1: false,
+  },
 }
 
 const createExpectedData = (
