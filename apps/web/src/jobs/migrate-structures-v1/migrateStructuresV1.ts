@@ -7,6 +7,7 @@ import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
 import { chunk } from 'lodash-es'
 import { v4 } from 'uuid'
 import { StructureV1Document } from './StructureV1Document'
+import { v1StructuresCodesInseeMap } from './v1StructuresCodesInseeMap'
 
 export type V2StructureMapValue = {
   id: string
@@ -173,6 +174,14 @@ const migrateStructureV1 = async ({
     await findCartographieNationaleStructure({ structure })
 
   // Create the structure in our database
+  const v1StructureId = structure._id.toString()
+  const codeInsee =
+    structure.codeCommune ??
+    structure.adresseInsee2Ban?.citycode ??
+    v1StructuresCodesInseeMap.get(v1StructureId)
+  if (!codeInsee) {
+    throw new Error(`Code insee not found for v1 structure ${v1StructureId}`)
+  }
   const id = v4()
   const created = await prismaClient.structure.create({
     data: {
@@ -185,13 +194,13 @@ const migrateStructureV1 = async ({
       adresse: structure.adresseInsee2Ban?.name ?? '',
       latitude: structure.location.coordinates[1],
       longitude: structure.location.coordinates[0],
-      codeInsee: structure.codeCommune ?? structure.adresseInsee2Ban?.citycode,
+      codeInsee,
       siret: structure.siret,
       nomReferent: `${structure.contact?.prenom} ${structure.contact?.nom}`,
       courrielReferent: structure.contact?.email,
       telephoneReferent: structure.contact?.telephone,
       v1Imported: new Date(),
-      v1StructureId: structure._id.toString(),
+      v1StructureId,
       v1StructureIdPg: structure.idPG,
     },
     select: {
