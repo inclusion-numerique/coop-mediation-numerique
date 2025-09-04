@@ -1,7 +1,6 @@
 import { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { prismaClient } from '@app/web/prismaClient'
 import { UserProfile } from '@app/web/utils/user'
-import { Prisma } from '@prisma/client'
 
 export const getHasCrasV1 = async ({
   user,
@@ -28,17 +27,15 @@ export const getHasCrasV1 = async ({
 
   if (mediateurIds.length === 0) return { hasCrasV1: false }
 
-  const rows = await prismaClient.$queryRaw<{ exists: boolean }[]>`
-    SELECT EXISTS (
-      SELECT 1
-      FROM "activites"
-      WHERE "mediateur_id" IN (${Prisma.join(mediateurIds)})
-        AND "v1_cra_id" IS NOT NULL
-      LIMIT 1
-    ) AS "exists"
-  `
+  const activite = await prismaClient.activite.findFirst({
+    where: {
+      mediateurId: { in: mediateurIds },
+      v1CraId: { not: null },
+    },
+    select: { id: true },
+  })
 
-  return { hasCrasV1: rows[0]?.exists ?? false }
+  return { hasCrasV1: Boolean(activite) }
 }
 
 export type HasCrasV1 = Awaited<ReturnType<typeof getHasCrasV1>>
