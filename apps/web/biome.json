@@ -1,9 +1,5 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.2.2/schema.json",
   "extends": "//",
-  "overrides": [
-    {
-      "includes": ["!**/v1*IdsMap.ts"]
-    }
-  ]
+  "overrides": []
 }

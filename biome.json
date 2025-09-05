@@ -1,6 +1,65 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.2.2/schema.json",
+  "files": {
+    "includes": [
+      "**",
+      "**",
+      "!**/var",
+      "!**/.turbo",
+      "!**/node_modules",
+      "!**/.pnp",
+      "!**/.pnp.js",
+      "!coverage",
+      "!build",
+      "!**/.DS_Store",
+      "!**/*.pem",
+      "!**/.tfvars",
+      "!**/.tfvars.json",
+      "!**/npm-debug.log*",
+      "!**/yarn-debug.log*",
+      "!**/yarn-error.log*",
+      "!**/.pnpm-debug.log*",
+      "!**/.env*.local",
+      "!**/.env",
+      "!**/.env.remote",
+      "!**/.vercel",
+      "!**/build-storybook.log",
+      "!**/*.tsbuildinfo",
+      "!**/.vscode",
+      "!**/.idea",
+      "!**/storybook-static",
+      "!apps/web/.next/",
+      "!apps/web/public/dsfr",
+      "!packages/e2e/cypress/videos",
+      "!packages/e2e/cypress/screenshots",
+      "!packages/e2e/.next/",
+      "!packages/cdk/cdktf.out/",
+      "!**/terraform.*.tfstate",
+      "!**/.terraform.*",
+      "!**/packages/cdk/cdk.out.json",
+      "!packages/ui/.next",
+      "!packages/ui/public/dsfr",
+      "!var",
+      "!apps/web/.next",
+      "!apps/web/public",
+      "!packages/cdk/.gen",
+      "!apps/web/src/jobs/migrate-structures-v1/v1*IdsMap.ts",
+      "!apps/web/src/jobs/migrate-users-v1/v1ConseillersIdsMap.ts",
+      "!apps/web/src/jobs/migrate-users-v1/result.json"
+    ]
+  },
   "formatter": {
+    "includes": [
+      "**",
+      "!var",
+      "!apps/web/.next",
+      "!apps/web/public",
+      "!packages/cdk/.gen",
+      "!apps/web/src/jobs/migrate-structures-v1/v1StructuresIdsMap.ts",
+      "!apps/web/src/jobs/migrate-structures-v1/v1PermanencesIdsMap.ts",
+      "!apps/web/src/jobs/migrate-users-v1/v1ConseillersIdsMap.ts",
+      "!apps/web/src/jobs/migrate-users-v1/result.json"
+    ],
     "enabled": true,
     "useEditorconfig": true,
     "formatWithErrors": false,
@@ -9,14 +68,7 @@
     "lineEnding": "lf",
     "lineWidth": 80,
     "attributePosition": "auto",
-    "bracketSpacing": true,
-    "includes": [
-      "**",
-      "!**/var",
-      "!**/apps/web/.next",
-      "!**/apps/web/public",
-      "!**/packages/cdk/.gen"
-    ]
+    "bracketSpacing": true
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
@@ -204,45 +256,7 @@
         "noWith": "error",
         "noVar": "error"
       }
-    },
-    "includes": [
-      "**",
-      "!**/var",
-      "!**/.turbo",
-      "!**/node_modules",
-      "!**/.pnp",
-      "!**/.pnp.js",
-      "!coverage",
-      "!build",
-      "!**/.DS_Store",
-      "!**/*.pem",
-      "!**/.tfvars",
-      "!**/.tfvars.json",
-      "!**/npm-debug.log*",
-      "!**/yarn-debug.log*",
-      "!**/yarn-error.log*",
-      "!**/.pnpm-debug.log*",
-      "!**/.env*.local",
-      "!**/.env",
-      "!**/.env.remote",
-      "!**/.vercel",
-      "!**/build-storybook.log",
-      "!**/*.tsbuildinfo",
-      "!**/.vscode",
-      "!**/.idea",
-      "!**/storybook-static",
-      "!apps/web/.next/",
-      "!apps/web/public/dsfr",
-      "!packages/e2e/cypress/videos",
-      "!packages/e2e/cypress/screenshots",
-      "!packages/e2e/.next/",
-      "!packages/cdk/cdktf.out/",
-      "!**/terraform.*.tfstate",
-      "!**/.terraform.*",
-      "!**/packages/cdk/cdk.out.json",
-      "!packages/ui/.next",
-      "!packages/ui/public/dsfr"
-    ]
+    }
   },
   "javascript": {
     "formatter": {
@@ -280,7 +294,7 @@
       }
     },
     {
-      "includes": ["**/packages/e2e/**/*.ts", "**/packages/e2e/**/*.tsx"],
+      "includes": ["packages/e2e/**/*.ts", "packages/e2e/**/*.tsx"],
       "javascript": {
         "formatter": {
           "quoteStyle": "single"
