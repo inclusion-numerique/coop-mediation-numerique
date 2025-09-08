@@ -21,11 +21,11 @@ export const executeJobCommand = new Command()
   .addOption(DeploymentTargetOption)
   .action(async (name, dataAsString, options) => {
     await configureDeploymentTarget(options)
-    const data: unknown = dataAsString ? JSON.parse(dataAsString) : undefined
+    const payload: unknown = dataAsString ? JSON.parse(dataAsString) : undefined
 
     const jobPayload = await JobValidation.safeParseAsync({
       name,
-      data,
+      payload,
     })
 
     if (!jobPayload.success) {

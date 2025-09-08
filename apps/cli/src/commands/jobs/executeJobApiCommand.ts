@@ -37,7 +37,7 @@ export const executeJobApiCommand = new Command()
       endpoint,
       {
         name,
-        data: JSON.parse(dataAsString ?? ''),
+        payload: JSON.parse(dataAsString ?? ''),
       },
       {
         headers: {
