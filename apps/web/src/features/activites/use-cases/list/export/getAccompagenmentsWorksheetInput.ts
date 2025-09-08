@@ -11,10 +11,12 @@ export const getAccompagenmentsWorksheetInput = async ({
   user,
   filters,
   mediateurIds,
+  hasCraV1,
 }: {
   user: SessionUser
   filters: ActivitesFilters
   mediateurIds: string[]
+  hasCraV1: boolean
 }): Promise<BuildActivitesWorksheetInput> => {
   const mediateurCoordonnesIds = mediateurCoordonnesIdsFor(user)
 
@@ -64,5 +66,6 @@ export const getAccompagenmentsWorksheetInput = async ({
     user,
     mediateur: user,
     filters: activitesFiltersLabels,
+    hasCraV1,
   }
 }

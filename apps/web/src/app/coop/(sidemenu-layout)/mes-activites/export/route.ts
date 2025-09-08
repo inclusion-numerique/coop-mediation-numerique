@@ -1,6 +1,5 @@
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
-import type { MediateurUser } from '@app/web/auth/userTypeGuards'
 import { buildAccompagnementsWorksheet } from '@app/web/features/activites/use-cases/list/export/buildAccompagnementsWorksheet'
 import { getAccompagenmentsWorksheetInput } from '@app/web/features/activites/use-cases/list/export/getAccompagenmentsWorksheetInput'
 import {
@@ -10,6 +9,7 @@ import {
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { NextRequest } from 'next/server'
 import { z } from 'zod'
+import { getHasCrasV1 } from '../../mes-statistiques/_queries/getHasCrasV1'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -53,6 +53,12 @@ export const GET = async (request: NextRequest) => {
       : []),
   ]
 
+  const hasCraV1 = await getHasCrasV1({
+    user,
+    mediateurIds,
+    activitesFilters: {},
+  })
+
   const activitesWorksheetInput = await getAccompagenmentsWorksheetInput({
     user,
     filters,
@@ -60,6 +66,7 @@ export const GET = async (request: NextRequest) => {
       (filters.mediateurs ?? []).length > 0
         ? mediateurIds.filter((id) => filters.mediateurs?.includes(id))
         : mediateurIds,
+    hasCraV1: hasCraV1.hasCrasV1,
   })
 
   const isSelfExport =

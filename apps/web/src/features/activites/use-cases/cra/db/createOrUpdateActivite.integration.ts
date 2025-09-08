@@ -55,6 +55,7 @@ const nullActivite: Omit<
     },
     conseillerNumerique: null,
   },
+  v1CraId: null,
 }
 
 describe('createOrUpdateActivite', () => {
@@ -131,6 +132,7 @@ describe('createOrUpdateActivite', () => {
       thematiques: input.data.thematiques,
       typeLieu: input.data.typeLieu,
       rdvServicePublicId: input.data.rdvServicePublicId ?? null,
+      v1CraId: null,
     })
   })
 
@@ -265,6 +267,7 @@ describe('createOrUpdateActivite', () => {
       typeLieu: input.data.typeLieu,
       thematiques: input.data.thematiques,
       rdvServicePublicId: input.data.rdvServicePublicId ?? null,
+      v1CraId: null,
     })
   })
 })
