@@ -28,7 +28,7 @@ export const ActivitesDataTable = {
           <p className="fr-text-mention--grey fr-text--xs fr-mb-0-5v">
             {typeActiviteLabels[type]}
           </p>
-          <p className="fr-mb-0">
+          <p className="fr-text--sm fr-mb-0">
             {type === 'Collectif'
               ? `${accompagnements.length} participants`
               : getBeneficiaireDisplayName(

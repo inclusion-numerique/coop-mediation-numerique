@@ -128,7 +128,8 @@ const EquipeListePage = ({
               )}
               <SortSelect
                 options={[
-                  { label: 'Ordre alphabétique', value: 'alphabetique' },
+                  { label: 'Nom (A à Z)', value: 'nomaz' },
+                  { label: 'Nom (Z à A)', value: 'nomza' },
                   { label: 'Les plus récents', value: 'recent' },
                   { label: 'Les plus anciens', value: 'ancien' },
                 ]}

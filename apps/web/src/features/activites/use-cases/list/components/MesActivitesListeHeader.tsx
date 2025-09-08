@@ -22,6 +22,7 @@ const MesActivitesListeHeader = ({
   lieuxActiviteOptions,
   searchResultMatchesCount,
   activiteDates,
+  enableRdvsFilter,
 }: {
   defaultFilters: ActivitesFilters
   initialMediateursOptions: MediateurOption[]
@@ -33,6 +34,7 @@ const MesActivitesListeHeader = ({
   activiteDates: ActiviteDates
   className?: string
   searchResultMatchesCount: Promise<number>
+  enableRdvsFilter: boolean
 }) => (
   <>
     <div
@@ -52,7 +54,7 @@ const MesActivitesListeHeader = ({
         minDate={activiteDates.first ?? new Date()}
         isCoordinateur={false}
         isMediateur={true}
-        enableRdvsFilter
+        enableRdvsFilter={enableRdvsFilter}
       />
       <Suspense fallback={<ExportActivitesDisabledButton />}>
         <ExportActivitesButtonWrapper
