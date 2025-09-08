@@ -577,7 +577,7 @@ jobs:
             pnpm --silent -F @app/cdk cdktf diff project --var-file .tfvars.json
 
   project_infrastructure_deployment:
-    executor: node
+    executor: node22
     resource_class: large
     steps:
       - checkout
@@ -598,7 +598,7 @@ jobs:
             pnpm --silent -F @app/cdk cdktf deploy project --var-file .tfvars.json --auto-approve --outputs-file=cdk.out.json --outputs-file-include-sensitive-outputs
 
   web_app_preview_deletion:
-    executor: node
+    executor: node22
     resource_class: large
     steps:
       - checkout
