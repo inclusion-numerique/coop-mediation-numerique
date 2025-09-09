@@ -100,6 +100,7 @@ const activites = [
       },
       conseillerNumerique: null,
     },
+    v1CraId: null,
   },
   {
     timezone: 'Europe/Paris',
@@ -140,6 +141,7 @@ const activites = [
       },
       conseillerNumerique: null,
     },
+    v1CraId: null,
   },
   {
     timezone: 'Europe/Paris',
@@ -189,6 +191,7 @@ const activites = [
       },
       conseillerNumerique: null,
     },
+    v1CraId: null,
   },
   {
     timezone: 'Europe/Paris',
@@ -229,6 +232,7 @@ const activites = [
       },
       conseillerNumerique: null,
     },
+    v1CraId: null,
   },
   {
     timezone: 'Europe/Paris',
@@ -269,6 +273,7 @@ const activites = [
       },
       conseillerNumerique: null,
     },
+    v1CraId: null,
   },
   {
     timezone: 'Europe/Paris',
@@ -318,8 +323,9 @@ const activites = [
       },
       conseillerNumerique: null,
     },
+    v1CraId: null,
   },
-] satisfies ActiviteListItem[]
+] satisfies ActiviteListItem[] satisfies ActiviteListItem[]
 
 const rdvs = rdvsForStories satisfies Rdv[]
 

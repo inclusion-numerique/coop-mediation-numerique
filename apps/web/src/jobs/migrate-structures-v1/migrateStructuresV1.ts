@@ -175,9 +175,10 @@ const migrateStructureV1 = async ({
 
   // Create the structure in our database
   const v1StructureId = structure._id.toString()
+
   const codeInsee =
-    structure.codeCommune ??
-    structure.adresseInsee2Ban?.citycode ??
+    structure.codeCommune?.trim() ||
+    structure.adresseInsee2Ban?.citycode?.trim() ||
     v1StructuresCodesInseeMap.get(v1StructureId)
   if (!codeInsee) {
     throw new Error(`Code insee not found for v1 structure ${v1StructureId}`)
@@ -189,9 +190,9 @@ const migrateStructureV1 = async ({
       nom: structure.nom,
       structureCartographieNationaleId:
         existingStructureFromCartographieNationale?.id,
-      commune: structure.adresseInsee2Ban?.city ?? '',
-      codePostal: structure.adresseInsee2Ban?.postcode ?? '',
-      adresse: structure.adresseInsee2Ban?.name ?? '',
+      commune: structure.adresseInsee2Ban?.city || '',
+      codePostal: structure.adresseInsee2Ban?.postcode || '',
+      adresse: structure.adresseInsee2Ban?.name || '',
       latitude: structure.location.coordinates[1],
       longitude: structure.location.coordinates[0],
       codeInsee,

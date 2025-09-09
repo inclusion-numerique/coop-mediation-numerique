@@ -40,6 +40,7 @@ export type BuildActivitesWorksheetInput = {
   filters: ActivitesFiltersLabels
   activites: ActiviteListItem[]
   worksheetGenerationDate?: Date // Defaults to current date
+  hasCraV1: boolean
 }
 
 const intraCellLineBreak = '\n'
@@ -51,6 +52,7 @@ export const buildAccompagnementsWorksheet = (
     filters,
     mediateur,
     worksheetGenerationDate = new Date(),
+    hasCraV1,
   }: BuildActivitesWorksheetInput,
   isSelfExport: boolean,
 ): Excel.Workbook => {
@@ -103,9 +105,7 @@ export const buildAccompagnementsWorksheet = (
     'Tranche d’âge du bénéficiaire',
     'Statut du bénéficiaire',
     ...(isSelfExport ? ['Notes supplémentaires'] : []),
-    ...(user.mediateur?.conseillerNumerique != null || user.coordinateur != null
-      ? ['Source de la donnée']
-      : []),
+    ...(hasCraV1 ? ['Source de la donnée'] : []),
     'ID CRA',
   ]
 
@@ -212,9 +212,12 @@ export const buildAccompagnementsWorksheet = (
           ...(isSelfExport
             ? [notes && index === 0 ? htmlToText(notes) : '']
             : []),
-          ...(user.mediateur?.conseillerNumerique != null ||
-          user.coordinateur != null
-            ? ['La Coop de la médiation numérique (V2)']
+          ...(user.mediateur?.conseillerNumerique != null || hasCraV1
+            ? [
+                activite.v1CraId
+                  ? 'Espace coop (V1)'
+                  : 'La Coop de la médiation numérique (V2)',
+              ]
             : []),
           id,
         ]

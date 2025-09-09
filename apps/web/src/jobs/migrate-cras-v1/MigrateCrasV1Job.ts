@@ -6,7 +6,7 @@ export const MigrateCrasV1JobValidation = z.object({
     .object({
       skip: z.number().default(0),
       take: z.number().nullish(),
-      batch: z.number().default(4_000),
+      batch: z.number().default(1_000),
     })
     .default({}),
 })

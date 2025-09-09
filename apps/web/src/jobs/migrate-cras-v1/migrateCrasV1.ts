@@ -15,60 +15,60 @@ export const migrateCraV1 = async (
     v1PermanencesIdsMap,
     v1StructuresIdsMap,
   })
-  await prismaClient.$transaction(async (tx) => {
-    const existingActivite = await tx.activite.findUnique({
-      where: {
-        v1CraId: transformedCra.activite.v1CraId,
-      },
-      select: {
-        id: true,
-        accompagnements: {
-          select: {
-            id: true,
-            beneficiaireId: true,
-          },
-        },
-      },
-    })
-    if (existingActivite) {
-      // Reset data
-      tx.accompagnement.deleteMany({
+  try {
+    await prismaClient.$transaction(async (tx) => {
+      const existingActivite = await tx.activite.findUnique({
         where: {
-          activiteId: existingActivite.id,
+          v1CraId: transformedCra.activite.v1CraId,
         },
-      })
-      tx.beneficiaire.deleteMany({
-        where: {
-          id: {
-            in: existingActivite.accompagnements.map(
-              (accompagnement) => accompagnement.beneficiaireId,
-            ),
+        select: {
+          id: true,
+          accompagnements: {
+            select: {
+              id: true,
+              beneficiaireId: true,
+            },
           },
         },
       })
-      tx.activite.delete({
-        where: {
-          id: existingActivite.id,
-        },
-      })
-    }
+      if (existingActivite) {
+        // Reset data
+        tx.accompagnement.deleteMany({
+          where: {
+            activiteId: existingActivite.id,
+          },
+        })
+        tx.beneficiaire.deleteMany({
+          where: {
+            id: {
+              in: existingActivite.accompagnements.map(
+                (accompagnement) => accompagnement.beneficiaireId,
+              ),
+            },
+          },
+        })
+        tx.activite.delete({
+          where: {
+            id: existingActivite.id,
+          },
+        })
+      }
 
-    await tx.activite.upsert({
-      where: {
-        v1CraId: transformedCra.activite.v1CraId,
-      },
-      create: transformedCra.activite,
-      update: {
-        ...transformedCra.activite,
-      },
+      await tx.activite.create({
+        data: transformedCra.activite,
+      })
+      await tx.beneficiaire.createMany({
+        data: transformedCra.beneficiaires,
+      })
+      await tx.accompagnement.createMany({
+        data: transformedCra.accompagnements,
+      })
     })
-    await tx.beneficiaire.createMany({
-      data: transformedCra.beneficiaires,
-    })
-    await tx.accompagnement.createMany({
-      data: transformedCra.accompagnements,
-    })
-  })
+  } catch (error) {
+    // biome-ignore lint/suspicious/noConsole: we need output from job executions
+    console.error('Error migrating CRA V1', transformedCra)
+    throw error
+  }
 }
 
 export const migrateCrasV1 = async (

@@ -75,6 +75,7 @@ describe('buildActivitesWorksheet', () => {
         },
       ],
       activites: [], // empty activities for now
+      hasCraV1: false,
     } satisfies BuildActivitesWorksheetInput
   })
 

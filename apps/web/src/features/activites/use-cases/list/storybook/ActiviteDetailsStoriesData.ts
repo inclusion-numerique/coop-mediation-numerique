@@ -21,6 +21,7 @@ export const activiteIndividuelleInfosMinimum = {
   ],
   tags: [],
   notes: null,
+  v1CraId: null,
   accompagnements: [
     {
       premierAccompagnement: false,
@@ -84,6 +85,7 @@ export const activiteIndividuelleBeneficiaireSuivi = {
   thematiques: ['NavigationSurInternet', 'Email'],
   tags: [],
   notes: null,
+  v1CraId: null,
   accompagnements: [
     {
       premierAccompagnement: false,
@@ -149,6 +151,7 @@ export const activiteIndividuelleBeneficiaireAnonyme = {
   precisionsDemarche: 'Déclaration impots',
   notes:
     '<p>Lörem ipsum ladeniliga douche <strong>plaledes</strong>. Nining son. Mipära kavun joskap juling lanar. Segyde snålsurfa då jevis. Dorade preng posad. Spefuv ter i kvasitiskap då mobilblottare dir. Häbel epihet i tegt. Ultrar. Digt hän. Polytt doskapet tempopatologi. Use betårta, tena. Biktiga pojuren.</p><p>Segyde snålsurfa då jevis. <strong>Dorade preng posad</strong>. Spefuv ter i kvasitiskap då mobilblottare dir. Häbel epihet i tegt. Ultrar. Digt hän. Polytt doskapet tempopatologi. Use betårta, tena. Biktiga pojuren</p>',
+  v1CraId: null,
   accompagnements: [
     {
       premierAccompagnement: false,
@@ -206,6 +209,7 @@ export const activiteCollectifInfosRepliees = {
   tags: [],
   notes:
     '<p>Lörem ipsum ladeniliga douche <strong>plaledes</strong>. Nining son. Mipära kavun joskap juling lanar. Segyde snålsurfa då jevis. Dorade preng posad. Spefuv ter i kvasitiskap då mobilblottare dir. Häbel epihet i tegt. Ultrar. Digt hän. Polytt doskapet tempopatologi. Use betårta, tena. Biktiga pojuren.</p><p>Segyde snålsurfa då jevis. <strong>Dorade preng posad</strong>. Spefuv ter i kvasitiskap då mobilblottare dir. Häbel epihet i tegt. Ultrar. Digt hän. Polytt doskapet tempopatologi. Use betårta, tena. Biktiga pojuren</p>',
+  v1CraId: null,
   accompagnements: [
     {
       premierAccompagnement: false,
@@ -282,6 +286,7 @@ export const activiteCollectifInfosDepliees = {
   thematiques: ['NavigationSurInternet', 'Email'],
   tags: [],
   notes: null,
+  v1CraId: null,
   accompagnements: [
     ...createBeneficiairesForParticipantsAnonymes({
       mediateurId: '2',

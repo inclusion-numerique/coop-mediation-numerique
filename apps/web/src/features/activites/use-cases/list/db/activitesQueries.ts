@@ -82,6 +82,7 @@ export const activiteListSelect = {
 
   materiel: true,
   thematiques: true,
+  v1CraId: true,
   tags: {
     select: {
       tag: {

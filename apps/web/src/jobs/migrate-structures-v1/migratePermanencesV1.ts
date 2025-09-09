@@ -170,7 +170,7 @@ const migratePermanenceV1 = async ({
         existingStructureFromCartographieNationale?.id,
       commune: permanence.adresse.ville,
       codePostal: permanence.adresse.codePostal,
-      adresse: adresseString,
+      adresse: adresseString || '',
       latitude:
         typeof permanence.location.coordinates[1] === 'number'
           ? permanence.location.coordinates[1]
