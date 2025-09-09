@@ -149,7 +149,7 @@ export class ProjectStack extends TerraformStack {
       name: databaseInstanceName,
       engine: 'PostgreSQL-14',
       isHaCluster: true,
-      nodeType: 'db-dev-m',
+      nodeType: 'db-pro2-xs',
       disableBackup: false,
       backupSameRegion: false,
       backupScheduleFrequency: 24,
