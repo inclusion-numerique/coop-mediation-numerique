@@ -149,7 +149,8 @@ export class ProjectStack extends TerraformStack {
       name: databaseInstanceName,
       engine: 'PostgreSQL-14',
       isHaCluster: true,
-      nodeType: 'db-pro2-xs',
+      // nodeType: 'db-pro2-xs', // todo: go back to xs when september performance issues are fixed
+      nodeType: 'db-pro2-s',
       disableBackup: false,
       backupSameRegion: false,
       backupScheduleFrequency: 24,
