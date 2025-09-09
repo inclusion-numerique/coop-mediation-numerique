@@ -4,9 +4,12 @@ import type { Prisma } from '@prisma/client'
 export const searchUtilisateurSelect = {
   id: true,
   name: true,
+  firstName: true,
+  lastName: true,
   email: true,
   role: true,
   inscriptionValidee: true,
+  lastLogin: true,
   profilInscription: true,
   created: true,
   deleted: true,
@@ -16,12 +19,26 @@ export const searchUtilisateurSelect = {
       conseillerNumerique: {
         select: { id: true },
       },
+      activites: {
+        select: { date: true },
+        where: { suppression: null },
+        orderBy: { date: 'desc' },
+      },
+      beneficiaires: {
+        select: { creation: true },
+        where: { suppression: null },
+        orderBy: { creation: 'desc' },
+      },
       activitesCount: true,
       accompagnementsCount: true,
       beneficiairesCount: true,
       _count: {
         select: {
+          activites: true,
           enActivite: true,
+          beneficiaires: {
+            where: { anonyme: false },
+          },
           coordinations: true,
         },
       },
@@ -30,6 +47,13 @@ export const searchUtilisateurSelect = {
   coordinateur: {
     select: {
       conseillerNumeriqueId: true,
+      _count: {
+        select: {
+          mediateursCoordonnes: {
+            where: { suppression: null },
+          },
+        },
+      },
     },
   },
   emplois: {

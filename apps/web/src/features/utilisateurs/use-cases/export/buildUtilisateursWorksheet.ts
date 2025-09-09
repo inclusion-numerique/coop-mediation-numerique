@@ -61,13 +61,16 @@ export const buildUtilisateursWorksheet = ({
     ref: `A${tableStartRowNumber}`,
     headerRow: true,
     totalsRow: false,
-    columns: tableHeaders.flat().map((label) => ({
-      name: label,
-      filterButton: true,
-    })),
+    columns: tableHeaders
+      .flat()
+      .filter((label) => label != null)
+      .map((label) => ({
+        name: label,
+        filterButton: true,
+      })),
     rows: utilisateurs.map((utilisateur) =>
       UtilisateursDataTable.columns
-        .map(({ csvValues }) => csvValues(utilisateur))
+        .map(({ csvValues }) => csvValues?.(utilisateur))
         .filter(Boolean)
         .flat(),
     ),
