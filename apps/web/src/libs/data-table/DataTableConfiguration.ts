@@ -31,7 +31,7 @@ export type DataTableColumn<
   ColumnName extends string = string,
 > = {
   name: ColumnName
-  header: ReactNode
+  header?: ReactNode
   cellAsTh?: boolean
   cellClassName?: string
   headerClassName?: string
