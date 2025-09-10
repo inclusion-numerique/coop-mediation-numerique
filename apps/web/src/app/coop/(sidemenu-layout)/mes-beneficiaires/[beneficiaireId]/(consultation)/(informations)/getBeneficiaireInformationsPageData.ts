@@ -1,8 +1,4 @@
-import type { SessionUser } from '@app/web/auth/sessionUser'
-import {
-  beneficiaireAccompagnementsCountSelect,
-  countThematiques,
-} from '@app/web/beneficiaire/beneficiaireQueries'
+import { countThematiques } from '@app/web/beneficiaire/beneficiaireQueries'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import {
   ActiviteListItem,
@@ -49,7 +45,7 @@ export const getBeneficiaireInformationsPageData = async ({
       commune: true,
       communeCodePostal: true,
       communeCodeInsee: true,
-      ...beneficiaireAccompagnementsCountSelect,
+      accompagnementsCount: true,
     },
   })
   if (!beneficiaire) {

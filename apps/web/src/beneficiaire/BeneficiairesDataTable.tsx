@@ -62,17 +62,13 @@ export const BeneficiairesDataTable = {
       name: 'accompagnements',
       header: 'Accompagnements',
       csvHeaders: ['Accompagnements'],
-      csvValues: ({ _count: { accompagnements } }) => [accompagnements],
-      cell: ({ _count: { accompagnements } }) =>
-        numberToString(accompagnements),
+      csvValues: ({ accompagnementsCount }) => [accompagnementsCount],
+      cell: ({ accompagnementsCount }) => numberToString(accompagnementsCount),
       headerClassName: 'fr-text--right',
       cellClassName: 'fr-text--right',
       orderBy: (direction) => [
         {
-          accompagnements: {
-            // TODO Cannot sort by supression:null until: https://github.com/prisma/prisma/issues/20838
-            _count: direction,
-          },
+          accompagnementsCount: direction,
         },
       ],
     },

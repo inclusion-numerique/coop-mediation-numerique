@@ -1,4 +1,3 @@
-import { beneficiaireAccompagnementsCountSelect } from '@app/web/beneficiaire/beneficiaireQueries'
 import { beneficiaireCommuneResidenceToPreviewBanData } from '@app/web/beneficiaire/prismaBeneficiaireToBeneficiaireData'
 import { BeneficiaireData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation' // Todo: move file to beneficiaires feature
 import { prismaClient } from '@app/web/prismaClient'
@@ -15,7 +14,7 @@ export const searchBeneficiaireSelect = {
   communeCodePostal: true,
   communeCodeInsee: true,
   creation: true,
-  ...beneficiaireAccompagnementsCountSelect,
+  accompagnementsCount: true,
 } satisfies Prisma.BeneficiaireSelect
 
 export const queryBeneficiairesForList = async ({

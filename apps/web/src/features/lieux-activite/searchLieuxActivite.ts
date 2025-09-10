@@ -50,32 +50,19 @@ export const searchLieuxActivite = async ({
           adresse: true,
           commune: true,
           codePostal: true,
-          _count: {
-            select: {
-              activites: true,
-            },
-          },
+          activitesCount: true,
         },
       },
     },
     orderBy: [
-      { structure: { activites: { _count: 'desc' } } },
+      { structure: { activitesCount: 'desc' } },
       { structure: { nom: 'asc' } },
     ],
   })
 
   return lieuxActivite.map(
     (
-      {
-        structure: {
-          id,
-          nom,
-          commune,
-          codePostal,
-          adresse,
-          _count: { activites },
-        },
-      },
+      { structure: { id, nom, commune, codePostal, adresse, activitesCount } },
       index,
     ) =>
       ({
@@ -84,8 +71,8 @@ export const searchLieuxActivite = async ({
         extra: {
           nom,
           adresse: `${adresse}, ${codePostal} ${commune}`,
-          activites,
-          mostUsed: index === 0 && activites > 0,
+          activites: activitesCount,
+          mostUsed: index === 0 && activitesCount > 0,
         },
       }) satisfies LieuActiviteOption,
   )

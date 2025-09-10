@@ -70,9 +70,7 @@ describe('getBeneficiaireInformationsData', () => {
         telephone,
         trancheAge,
         rdvServicePublicId: null,
-        _count: {
-          accompagnements: 0,
-        },
+        accompagnementsCount: 0,
       },
       displayName: getBeneficiaireDisplayName(beneficiaire),
       thematiquesCounts: [],
@@ -167,9 +165,7 @@ describe('getBeneficiaireInformationsData', () => {
       }),
     ).toEqual({
       beneficiaire: {
-        _count: {
-          accompagnements: 6,
-        },
+        accompagnementsCount: 6,
         adresse,
         anneeNaissance,
         commune,

@@ -24,7 +24,7 @@ export const getInitialBeneficiairesOptionsForSearch = async ({
       : whereBeneficiaire,
     select: searchBeneficiaireSelect,
     orderBy: [
-      { accompagnements: { _count: 'desc' } },
+      { accompagnementsCount: 'desc' },
       { nom: 'asc' },
       { prenom: 'asc' },
     ],

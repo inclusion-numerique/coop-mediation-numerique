@@ -219,6 +219,22 @@ export const createOrUpdateActivite = async ({
     date: new Date(date),
   })
 
+  const existingActivite = id
+    ? await prismaClient.activite.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          structureId: true,
+          mediateurId: true,
+          accompagnements: {
+            select: {
+              beneficiaireId: true,
+            },
+          },
+        },
+      })
+    : null
+
   const existingBeneficiairesSuivis = await getExistingBeneficiairesSuivis({
     mediateurId,
     beneficiaires:
@@ -295,7 +311,7 @@ export const createOrUpdateActivite = async ({
     beneficiairesAnonymesCollectif.length +
     (beneficiaireAnonymeToCreate ? 1 : 0)
 
-  const prismaData = {
+  const activiteData = {
     autonomie: 'autonomie' in data ? data.autonomie : undefined,
     date: new Date(date),
     mediateur: {
@@ -337,100 +353,156 @@ export const createOrUpdateActivite = async ({
           : undefined, // no data if creation
   } satisfies Prisma.ActiviteUpdateInput
 
+  const accompagnementsCreationData = [
+    ...existingBeneficiairesSuivis.map((beneficiaire) => ({
+      id: v4(),
+      beneficiaireId: beneficiaire.id,
+      activiteId: existingActivite?.id ?? creationId,
+      premierAccompagnement: beneficiaire.premierAccompagnement,
+    })),
+    ...beneficiairesAnonymesCollectif.map((beneficiaire) => ({
+      id: v4(),
+      beneficiaireId: beneficiaire.id,
+      activiteId: existingActivite?.id ?? creationId,
+      premierAccompagnement: !beneficiaire.dejaAccompagne,
+    })),
+    ...(beneficiaireAnonymeToCreate
+      ? [
+          {
+            id: v4(),
+            beneficiaireId: beneficiaireAnonymeToCreate.id,
+            activiteId: existingActivite?.id ?? creationId,
+            premierAccompagnement: !beneficiaireAnonymeToCreate.dejaAccompagne,
+          },
+        ]
+      : []),
+  ] satisfies Prisma.AccompagnementCreateManyInput[]
+
   // If id is provided, it is an update operation
-  if (id) {
+  if (existingActivite) {
     // We delete all the anonymes beneficiaires that have only this activite as accompagmements to ease the
     // merge logic of old and new anonymous beneficiaires
     const anonymesIdsToDelete =
       await getBeneficiairesAnonymesWithOnlyAccompagnementsForThisActivite({
-        activiteId: id,
+        activiteId: existingActivite.id,
       })
 
-    // This is an Update operation
-    await prismaClient.$transaction(
-      [
-        // Delete all accompagnements as we recreate them after
-        prismaClient.accompagnement.deleteMany({
+    // We update all related data
+    await prismaClient.$transaction(async (transaction) => {
+      // Delete all accompagnements as we recreate them after
+      await prismaClient.accompagnement.deleteMany({
+        where: {
+          activiteId: existingActivite.id,
+        },
+      })
+
+      if (anonymesIdsToDelete.length > 0) {
+        await prismaClient.beneficiaire.deleteMany({
           where: {
-            activiteId: id,
+            anonyme: true,
+            id: { in: anonymesIdsToDelete },
           },
-        }),
-        anonymesIdsToDelete.length > 0
-          ? prismaClient.beneficiaire.deleteMany({
-              where: {
-                anonyme: true,
-                id: {
-                  in: anonymesIdsToDelete,
-                },
-              },
-            })
-          : null,
-        // (re)Create beneficiaire anonyme for one-to-one cra
-        beneficiaireAnonymeToCreate?.id
-          ? prismaClient.beneficiaire.create({
-              data: withoutDejaAccompagne(beneficiaireAnonymeToCreate),
-              select: { id: true },
-            })
-          : null,
-        // Create beneficiairesAnonymesCollectif
-        beneficiairesAnonymesCollectif.length > 0
-          ? prismaClient.beneficiaire.createMany({
-              data: beneficiairesAnonymesCollectif.map((beneficiaire) =>
-                withoutDejaAccompagne(beneficiaire),
-              ),
-            })
-          : null,
-        // Create accompagnements
-        prismaClient.accompagnement.createMany({
-          data: [
-            ...existingBeneficiairesSuivis.map((beneficiaire) => ({
-              id: v4(),
-              beneficiaireId: beneficiaire.id,
-              activiteId: id,
-              premierAccompagnement: beneficiaire.premierAccompagnement,
-            })),
-            ...beneficiairesAnonymesCollectif.map((beneficiaire) => ({
-              id: v4(),
-              beneficiaireId: beneficiaire.id,
-              activiteId: id,
-              premierAccompagnement: !beneficiaire.dejaAccompagne,
-            })),
-            ...(beneficiaireAnonymeToCreate
-              ? [
-                  {
-                    id: v4(),
-                    beneficiaireId: beneficiaireAnonymeToCreate.id,
-                    activiteId: id,
-                    premierAccompagnement:
-                      !beneficiaireAnonymeToCreate.dejaAccompagne,
-                  },
-                ]
-              : []),
-          ],
-        }),
-        // Delete existing tags for the activite
-        prismaClient.activitesTags.deleteMany({
+        })
+      }
+
+      // (re)Create beneficiaire anonyme for one-to-one cra
+      if (beneficiaireAnonymeToCreate?.id) {
+        await prismaClient.beneficiaire.create({
+          data: withoutDejaAccompagne(beneficiaireAnonymeToCreate),
+          select: { id: true },
+        })
+      }
+
+      if (beneficiairesAnonymesCollectif.length > 0) {
+        await prismaClient.beneficiaire.createMany({
+          data: beneficiairesAnonymesCollectif.map((beneficiaire) =>
+            withoutDejaAccompagne(beneficiaire),
+          ),
+        })
+      }
+
+      // Create accompagnements
+      const createdAccompagnements =
+        await prismaClient.accompagnement.createMany({
+          data: accompagnementsCreationData,
+        })
+
+      // Delete then create tags
+      await prismaClient.activitesTags.deleteMany({
+        where: {
+          activiteId: existingActivite.id,
+        },
+      })
+      await prismaClient.activitesTags.createMany({
+        data: input.data.tags.map((tag) => ({
+          activiteId: existingActivite.id,
+          tagId: tag.id,
+        })),
+      })
+
+      // Update the activite
+      await prismaClient.activite.update({
+        where: { id: existingActivite.id },
+        data: {
+          ...activiteData,
+          modification: new Date(),
+        },
+      })
+
+      // Update the lieu activite activites count
+      // - decrement for the old one
+      if (existingActivite.structureId) {
+        await prismaClient.structure.update({
+          where: { id: existingActivite.structureId },
+          data: { activitesCount: { decrement: 1 } },
+        })
+      }
+      // - increment for the new one
+      if (lieuActivite) {
+        await prismaClient.structure.update({
+          where: { id: lieuActivite.id },
+          data: { activitesCount: { increment: 1 } },
+        })
+      }
+      // Update the mediateur accompagnements count
+      // - (the activite count remain the same)
+      // - decrement for the old value
+      await prismaClient.mediateur.update({
+        where: { id: mediateurId },
+        data: {
+          accompagnementsCount: {
+            decrement: existingActivite.accompagnements.length,
+          },
+        },
+      })
+      // - increment for the new value
+      await prismaClient.mediateur.update({
+        where: { id: mediateurId },
+        data: {
+          accompagnementsCount: { increment: createdAccompagnements.count },
+        },
+      })
+
+      // update the beneficiaires accompagnements count
+      // - decrement for the old value
+      if (existingActivite.accompagnements.length > 0) {
+        await prismaClient.beneficiaire.updateMany({
           where: {
-            activiteId: id,
+            id: {
+              in: existingActivite.accompagnements.map((a) => a.beneficiaireId),
+            },
           },
-        }),
-        // Create tags for the activite
-        prismaClient.activitesTags.createMany({
-          data: input.data.tags.map((tag) => ({
-            activiteId: id,
-            tagId: tag.id,
-          })),
-        }),
-        // Update the activite
-        prismaClient.activite.update({
-          where: { id },
-          data: {
-            ...prismaData,
-            modification: new Date(),
-          },
-        }),
-      ].filter(onlyDefinedAndNotNull),
-    )
+          data: { accompagnementsCount: { decrement: 1 } },
+        })
+      }
+      // - increment for the new value
+      await prismaClient.beneficiaire.updateMany({
+        where: {
+          id: { in: accompagnementsCreationData.map((a) => a.beneficiaireId) },
+        },
+        data: { accompagnementsCount: { increment: 1 } },
+      })
+    })
 
     // Create mutation for audit log
     addMutationLog({
@@ -441,75 +513,81 @@ export const createOrUpdateActivite = async ({
     })
 
     return {
-      id,
+      id: existingActivite.id,
       type: input.type,
     }
   }
 
   // Creation transaction
-  await prismaClient.$transaction(
-    [
-      // Create beneficiaire anonyme for one to one cras,
-      beneficiaireAnonymeToCreate
-        ? prismaClient.beneficiaire.create({
-            data: withoutDejaAccompagne(beneficiaireAnonymeToCreate),
-            select: { id: true },
-          })
-        : null,
-      // Create beneficiaires anonymes
-      beneficiairesAnonymesCollectif.length > 0
-        ? prismaClient.beneficiaire.createMany({
-            data: beneficiairesAnonymesCollectif.map((beneficiaire) =>
-              withoutDejaAccompagne(beneficiaire),
-            ),
-          })
-        : null,
-      // Create activite
-      prismaClient.activite.create({
-        data: {
-          ...prismaData,
-          type: input.type,
-          id: creationId,
-        },
+  await prismaClient.$transaction(async (transaction) => {
+    // Create beneficiaire anonyme for one to one cras,
+    if (beneficiaireAnonymeToCreate) {
+      await transaction.beneficiaire.create({
+        data: withoutDejaAccompagne(beneficiaireAnonymeToCreate),
         select: { id: true },
-      }),
-      // Create tags for the activite
-      prismaClient.activitesTags.createMany({
-        data: input.data.tags.map((tag) => ({
-          activiteId: creationId,
-          tagId: tag.id,
-        })),
-      }),
-      // Create accompagnements
-      prismaClient.accompagnement.createMany({
-        data: [
-          ...existingBeneficiairesSuivis.map((beneficiaire) => ({
-            id: v4(),
-            beneficiaireId: beneficiaire.id,
-            activiteId: creationId,
-            premierAccompagnement: beneficiaire.premierAccompagnement,
-          })),
-          ...beneficiairesAnonymesCollectif.map((beneficiaire) => ({
-            id: v4(),
-            beneficiaireId: beneficiaire.id,
-            activiteId: creationId,
-            premierAccompagnement: !beneficiaire.dejaAccompagne,
-          })),
-          ...(beneficiaireAnonymeToCreate
-            ? [
-                {
-                  id: v4(),
-                  beneficiaireId: beneficiaireAnonymeToCreate.id,
-                  activiteId: creationId,
-                  premierAccompagnement:
-                    !beneficiaireAnonymeToCreate.dejaAccompagne,
-                },
-              ]
-            : []),
-        ],
-      }),
-    ].filter(onlyDefinedAndNotNull),
-  )
+      })
+    }
+    // Create beneficiaires anonymes
+    if (beneficiairesAnonymesCollectif.length > 0) {
+      await transaction.beneficiaire.createMany({
+        data: beneficiairesAnonymesCollectif.map((beneficiaire) =>
+          withoutDejaAccompagne(beneficiaire),
+        ),
+      })
+    }
+
+    // Create activite
+    prismaClient.activite.create({
+      data: {
+        ...activiteData,
+        type: input.type,
+        id: creationId,
+      },
+      select: { id: true },
+    })
+
+    // Create tags for the activite
+    await prismaClient.activitesTags.createMany({
+      data: input.data.tags.map((tag) => ({
+        activiteId: creationId,
+        tagId: tag.id,
+      })),
+    })
+
+    // Create accompagnements
+
+    // Create accompagnements
+    const createdAccompagnements = await prismaClient.accompagnement.createMany(
+      {
+        data: accompagnementsCreationData,
+      },
+    )
+
+    // Update the mediateur accompagnements count
+    await prismaClient.mediateur.update({
+      where: { id: mediateurId },
+      data: {
+        activitesCount: { increment: 1 },
+        accompagnementsCount: { increment: createdAccompagnements.count },
+      },
+    })
+
+    // Update the beneficiaires accompagnements count
+    await prismaClient.beneficiaire.updateMany({
+      where: {
+        id: { in: accompagnementsCreationData.map((a) => a.beneficiaireId) },
+      },
+      data: { accompagnementsCount: { increment: 1 } },
+    })
+
+    // Update the structure activites count
+    if (lieuActivite) {
+      await prismaClient.structure.update({
+        where: { id: lieuActivite.id },
+        data: { activitesCount: { increment: 1 } },
+      })
+    }
+  })
 
   // Create mutation for audit log
   addMutationLog({

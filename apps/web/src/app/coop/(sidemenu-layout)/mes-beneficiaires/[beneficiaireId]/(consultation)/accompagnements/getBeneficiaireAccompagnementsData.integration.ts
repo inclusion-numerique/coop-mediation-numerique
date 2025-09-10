@@ -45,9 +45,7 @@ describe('getBeneficiaireAccompagnementsData', () => {
         prenom: beneficiaire.prenom,
         nom: beneficiaire.nom,
         anneeNaissance: beneficiaire.anneeNaissance,
-        _count: {
-          accompagnements: 0,
-        },
+        accompagnementsCount: 0,
         rdvServicePublicId: null,
       },
       activites: [],
@@ -116,9 +114,7 @@ describe('getBeneficiaireAccompagnementsData', () => {
         prenom: beneficiaire.prenom,
         nom: beneficiaire.nom,
         anneeNaissance: beneficiaire.anneeNaissance,
-        _count: {
-          accompagnements: 6,
-        },
+        accompagnementsCount: 6,
         rdvServicePublicId: null,
       },
       activites: expectedActivites,

@@ -3,14 +3,6 @@ import { prismaClient } from '@app/web/prismaClient'
 import { Prisma, Thematique } from '@prisma/client'
 import { pascalCase } from 'change-case'
 
-export const beneficiaireAccompagnementsCountSelect = {
-  _count: {
-    select: {
-      accompagnements: true,
-    },
-  },
-} satisfies Prisma.BeneficiaireSelect
-
 export type ThematiqueCount = {
   thematique: Thematique
   count: number

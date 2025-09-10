@@ -37,9 +37,7 @@ export const activiteIndividuelleInfosMinimum = {
         statutSocial: null,
         genre: null,
         trancheAge: null,
-        _count: {
-          accompagnements: 5,
-        },
+        accompagnementsCount: 5,
       },
     },
   ],
@@ -101,9 +99,7 @@ export const activiteIndividuelleBeneficiaireSuivi = {
         statutSocial: 'EnEmploi',
         genre: 'Masculin',
         trancheAge: 'NonCommunique',
-        _count: {
-          accompagnements: 5,
-        },
+        accompagnementsCount: 5,
       },
     },
   ],
@@ -167,9 +163,7 @@ export const activiteIndividuelleBeneficiaireAnonyme = {
         statutSocial: 'EnEmploi',
         genre: 'Masculin',
         trancheAge: 'QuaranteCinquanteNeuf',
-        _count: {
-          accompagnements: 0,
-        },
+        accompagnementsCount: 0,
       },
     },
   ],
@@ -225,9 +219,7 @@ export const activiteCollectifInfosRepliees = {
         commune: null,
         communeCodePostal: null,
         communeCodeInsee: null,
-        _count: {
-          accompagnements: 1,
-        },
+        accompagnementsCount: 1,
       },
     },
     {
@@ -244,9 +236,7 @@ export const activiteCollectifInfosRepliees = {
         commune: null,
         communeCodePostal: null,
         communeCodeInsee: null,
-        _count: {
-          accompagnements: 1,
-        },
+        accompagnementsCount: 1,
       },
     },
   ],
@@ -310,9 +300,7 @@ export const activiteCollectifInfosDepliees = {
           commune: null,
           communeCodePostal: null,
           communeCodeInsee: null,
-          _count: {
-            accompagnements: 1,
-          },
+          accompagnementsCount: 1,
         },
       }),
     ),
@@ -330,9 +318,7 @@ export const activiteCollectifInfosDepliees = {
         commune: null,
         communeCodePostal: null,
         communeCodeInsee: null,
-        _count: {
-          accompagnements: 1,
-        },
+        accompagnementsCount: 1,
       },
     },
     {
@@ -349,9 +335,7 @@ export const activiteCollectifInfosDepliees = {
         commune: null,
         communeCodePostal: null,
         communeCodeInsee: null,
-        _count: {
-          accompagnements: 1,
-        },
+        accompagnementsCount: 1,
       },
     },
   ],

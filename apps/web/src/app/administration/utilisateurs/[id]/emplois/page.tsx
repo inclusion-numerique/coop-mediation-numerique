@@ -119,12 +119,6 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
               structure: true,
             },
           },
-          _count: {
-            select: {
-              activites: true,
-              beneficiaires: true,
-            },
-          },
         },
       },
       coordinateur: {
