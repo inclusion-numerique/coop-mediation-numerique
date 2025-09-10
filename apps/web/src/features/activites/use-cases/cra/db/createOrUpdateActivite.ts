@@ -357,13 +357,13 @@ export const createOrUpdateActivite = async ({
     ...existingBeneficiairesSuivis.map((beneficiaire) => ({
       id: v4(),
       beneficiaireId: beneficiaire.id,
-      activiteId: existingActivite?.id ?? creationId,
+      activiteId: existingActivite ? existingActivite.id : creationId,
       premierAccompagnement: beneficiaire.premierAccompagnement,
     })),
     ...beneficiairesAnonymesCollectif.map((beneficiaire) => ({
       id: v4(),
       beneficiaireId: beneficiaire.id,
-      activiteId: existingActivite?.id ?? creationId,
+      activiteId: existingActivite ? existingActivite.id : creationId,
       premierAccompagnement: !beneficiaire.dejaAccompagne,
     })),
     ...(beneficiaireAnonymeToCreate
@@ -371,7 +371,7 @@ export const createOrUpdateActivite = async ({
           {
             id: v4(),
             beneficiaireId: beneficiaireAnonymeToCreate.id,
-            activiteId: existingActivite?.id ?? creationId,
+            activiteId: existingActivite ? existingActivite.id : creationId,
             premierAccompagnement: !beneficiaireAnonymeToCreate.dejaAccompagne,
           },
         ]
@@ -537,7 +537,7 @@ export const createOrUpdateActivite = async ({
     }
 
     // Create activite
-    prismaClient.activite.create({
+    await prismaClient.activite.create({
       data: {
         ...activiteData,
         type: input.type,
@@ -553,8 +553,6 @@ export const createOrUpdateActivite = async ({
         tagId: tag.id,
       })),
     })
-
-    // Create accompagnements
 
     // Create accompagnements
     const createdAccompagnements = await prismaClient.accompagnement.createMany(
