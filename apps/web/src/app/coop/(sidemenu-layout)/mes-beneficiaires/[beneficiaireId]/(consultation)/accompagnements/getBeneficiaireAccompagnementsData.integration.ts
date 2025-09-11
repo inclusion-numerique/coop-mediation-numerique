@@ -7,6 +7,7 @@ import {
   beneficiaireMaximaleMediateurAvecActivite,
   beneficiaireSansAccompagnementsMediateurAvecActivite,
 } from '@app/fixtures/beneficiaires'
+import { refreshFixturesComputedFields } from '@app/fixtures/refreshFixturesComputedFields'
 import { resetFixtureUser } from '@app/fixtures/resetFixtureUser'
 import { seedStructures } from '@app/fixtures/structures'
 import { conseillerNumerique } from '@app/fixtures/users/conseillerNumerique'
@@ -21,7 +22,8 @@ describe('getBeneficiaireAccompagnementsData', () => {
     await resetFixtureUser(mediateurAvecActivite, false)
     await resetFixtureUser(mediateurSansActivites, false)
     await resetFixtureUser(conseillerNumerique, false)
-  })
+    await refreshFixturesComputedFields()
+  }, 100_000)
 
   it('returns no activites for beneficiaire with no data', async () => {
     const beneficiaire = beneficiaireSansAccompagnementsMediateurAvecActivite
