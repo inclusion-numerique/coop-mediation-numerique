@@ -31,28 +31,34 @@ export const Hero = () => (
       <div className="fr-col-xl-6 fr-col-12">
         <div className="fr-flex fr-direction-row fr-justify-content-center ">
           <div className="fr-flex fr-direction-column fr-mx-md-0 fr-mx-auto fr-pb-1w  fr-justify-content-space-between">
-            <Image
+            <img
               className="fr-border-radius--16 fr-responsive-img"
               src="/images/illustrations/landing-page/hero/besoin.webp"
               alt=""
-              width={282}
-              height={166}
+              style={{
+                width: 282,
+                height: 166,
+              }}
             />
-            <Image
+            <img
               className="fr-border-radius--16 fr-responsive-img"
               src="/images/illustrations/landing-page/hero/complexité.webp"
               alt=""
-              width={282}
-              height={166}
+              style={{
+                width: 282,
+                height: 166,
+              }}
             />
           </div>
           <div className="fr-ml-md-4w fr-ml-3w">
-            <Image
+            <img
               className="fr-border-radius--16 fr-responsive-img"
               src="/images/illustrations/landing-page/hero/solution.webp"
               alt=""
-              width={282}
-              height={356}
+              style={{
+                width: 282,
+                height: 356,
+              }}
             />
           </div>
         </div>
