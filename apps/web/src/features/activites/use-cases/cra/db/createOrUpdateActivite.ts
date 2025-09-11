@@ -8,7 +8,7 @@ import { fixTelephone } from '@app/web/utils/clean-operations'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import { yesNoToOptionalBoolean } from '@app/web/utils/yesNoBooleanOptions'
-import { Prisma, Structure, TypeActivite } from '@prisma/client'
+import { Beneficiaire, Prisma, Structure, TypeActivite } from '@prisma/client'
 import { v4 } from 'uuid'
 import { CraCollectifData } from '../collectif/validation/CraCollectifValidation'
 import { CraIndividuelData } from '../individuel/validation/CraIndividuelValidation'
@@ -390,14 +390,14 @@ export const createOrUpdateActivite = async ({
     // We update all related data
     await prismaClient.$transaction(async (transaction) => {
       // Delete all accompagnements as we recreate them after
-      await prismaClient.accompagnement.deleteMany({
+      await transaction.accompagnement.deleteMany({
         where: {
           activiteId: existingActivite.id,
         },
       })
 
       if (anonymesIdsToDelete.length > 0) {
-        await prismaClient.beneficiaire.deleteMany({
+        await transaction.beneficiaire.deleteMany({
           where: {
             anonyme: true,
             id: { in: anonymesIdsToDelete },
@@ -407,14 +407,14 @@ export const createOrUpdateActivite = async ({
 
       // (re)Create beneficiaire anonyme for one-to-one cra
       if (beneficiaireAnonymeToCreate?.id) {
-        await prismaClient.beneficiaire.create({
+        await transaction.beneficiaire.create({
           data: withoutDejaAccompagne(beneficiaireAnonymeToCreate),
           select: { id: true },
         })
       }
 
       if (beneficiairesAnonymesCollectif.length > 0) {
-        await prismaClient.beneficiaire.createMany({
+        await transaction.beneficiaire.createMany({
           data: beneficiairesAnonymesCollectif.map((beneficiaire) =>
             withoutDejaAccompagne(beneficiaire),
           ),
@@ -423,17 +423,17 @@ export const createOrUpdateActivite = async ({
 
       // Create accompagnements
       const createdAccompagnements =
-        await prismaClient.accompagnement.createMany({
+        await transaction.accompagnement.createMany({
           data: accompagnementsCreationData,
         })
 
       // Delete then create tags
-      await prismaClient.activitesTags.deleteMany({
+      await transaction.activitesTags.deleteMany({
         where: {
           activiteId: existingActivite.id,
         },
       })
-      await prismaClient.activitesTags.createMany({
+      await transaction.activitesTags.createMany({
         data: input.data.tags.map((tag) => ({
           activiteId: existingActivite.id,
           tagId: tag.id,
@@ -441,7 +441,7 @@ export const createOrUpdateActivite = async ({
       })
 
       // Update the activite
-      await prismaClient.activite.update({
+      await transaction.activite.update({
         where: { id: existingActivite.id },
         data: {
           ...activiteData,
@@ -452,14 +452,14 @@ export const createOrUpdateActivite = async ({
       // Update the lieu activite activites count
       // - decrement for the old one
       if (existingActivite.structureId) {
-        await prismaClient.structure.update({
+        await transaction.structure.update({
           where: { id: existingActivite.structureId },
           data: { activitesCount: { decrement: 1 } },
         })
       }
       // - increment for the new one
       if (lieuActivite) {
-        await prismaClient.structure.update({
+        await transaction.structure.update({
           where: { id: lieuActivite.id },
           data: { activitesCount: { increment: 1 } },
         })
@@ -467,7 +467,7 @@ export const createOrUpdateActivite = async ({
       // Update the mediateur accompagnements count
       // - (the activite count remain the same)
       // - decrement for the old value
-      await prismaClient.mediateur.update({
+      await transaction.mediateur.update({
         where: { id: mediateurId },
         data: {
           accompagnementsCount: {
@@ -476,7 +476,7 @@ export const createOrUpdateActivite = async ({
         },
       })
       // - increment for the new value
-      await prismaClient.mediateur.update({
+      await transaction.mediateur.update({
         where: { id: mediateurId },
         data: {
           accompagnementsCount: { increment: createdAccompagnements.count },
@@ -486,7 +486,7 @@ export const createOrUpdateActivite = async ({
       // update the beneficiaires accompagnements count
       // - decrement for the old value
       if (existingActivite.accompagnements.length > 0) {
-        await prismaClient.beneficiaire.updateMany({
+        await transaction.beneficiaire.updateMany({
           where: {
             id: {
               in: existingActivite.accompagnements.map((a) => a.beneficiaireId),
@@ -496,7 +496,7 @@ export const createOrUpdateActivite = async ({
         })
       }
       // - increment for the new value
-      await prismaClient.beneficiaire.updateMany({
+      await transaction.beneficiaire.updateMany({
         where: {
           id: { in: accompagnementsCreationData.map((a) => a.beneficiaireId) },
         },
@@ -520,7 +520,7 @@ export const createOrUpdateActivite = async ({
 
   // Creation transaction
   await prismaClient.$transaction(async (transaction) => {
-    // Create beneficiaire anonyme for one to one cras,
+    // Create beneficiaire anonyme for one to one cras
     if (beneficiaireAnonymeToCreate) {
       await transaction.beneficiaire.create({
         data: withoutDejaAccompagne(beneficiaireAnonymeToCreate),
@@ -537,7 +537,7 @@ export const createOrUpdateActivite = async ({
     }
 
     // Create activite
-    await prismaClient.activite.create({
+    await transaction.activite.create({
       data: {
         ...activiteData,
         type: input.type,
@@ -547,7 +547,7 @@ export const createOrUpdateActivite = async ({
     })
 
     // Create tags for the activite
-    await prismaClient.activitesTags.createMany({
+    await transaction.activitesTags.createMany({
       data: input.data.tags.map((tag) => ({
         activiteId: creationId,
         tagId: tag.id,
@@ -555,14 +555,12 @@ export const createOrUpdateActivite = async ({
     })
 
     // Create accompagnements
-    const createdAccompagnements = await prismaClient.accompagnement.createMany(
-      {
-        data: accompagnementsCreationData,
-      },
-    )
+    const createdAccompagnements = await transaction.accompagnement.createMany({
+      data: accompagnementsCreationData,
+    })
 
     // Update the mediateur accompagnements count
-    await prismaClient.mediateur.update({
+    await transaction.mediateur.update({
       where: { id: mediateurId },
       data: {
         activitesCount: { increment: 1 },
@@ -571,7 +569,7 @@ export const createOrUpdateActivite = async ({
     })
 
     // Update the beneficiaires accompagnements count
-    await prismaClient.beneficiaire.updateMany({
+    await transaction.beneficiaire.updateMany({
       where: {
         id: { in: accompagnementsCreationData.map((a) => a.beneficiaireId) },
       },
@@ -580,7 +578,7 @@ export const createOrUpdateActivite = async ({
 
     // Update the structure activites count
     if (lieuActivite) {
-      await prismaClient.structure.update({
+      await transaction.structure.update({
         where: { id: lieuActivite.id },
         data: { activitesCount: { increment: 1 } },
       })
