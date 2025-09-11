@@ -149,16 +149,7 @@ const emptyData: MesStatistiquesPageData = {
     genres: emptyQuantifiedSharesFromEnum(genreLabels),
     trancheAges: emptyQuantifiedSharesFromEnum(trancheAgeLabels),
     statutsSocial: emptyQuantifiedSharesFromEnum(statutSocialLabels),
-    communes: [
-      {
-        codeInsee: null,
-        codePostal: null,
-        count: 0,
-        label: 'Non communiqué',
-        nom: null,
-        proportion: 0,
-      },
-    ],
+    communes: [],
   },
   structures: [],
 
