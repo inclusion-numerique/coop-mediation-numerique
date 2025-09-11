@@ -72,6 +72,15 @@ const removeTooFewDigitsInPhone = (field: string): CleanOperation => ({
   field,
 })
 
+const removeLeading0InInternationalFormat = (
+  field: string,
+): CleanOperation => ({
+  name: 'remove leading 0 in international format',
+  selector: /^\+330(\d{9})/,
+  field,
+  fix: (toFix: string): string => toFix.replace(/^\+330(\d{9})/, '+33$1'),
+})
+
 const removeTooManyDigitsInPhone = (field: string): CleanOperation => ({
   name: 'too many digits in phone',
   selector: /^0.{10,}/,
@@ -120,6 +129,7 @@ export const cleanTelephone = (telephone: string | null): CleanOperation[] => [
   ...cleanOperationIfAny(fixShortCafPhone, telephone),
   ...cleanOperationIfAny(fixShortAssuranceRetraitePhone, telephone),
   ...cleanOperationIfAny(removeTooFewDigitsInPhone, telephone),
+  ...cleanOperationIfAny(removeLeading0InInternationalFormat, telephone),
   ...cleanOperationIfAny(removeTooManyDigitsInPhone, telephone),
   ...cleanOperationIfAny(removeOnly0ValueInPhone, telephone),
   ...cleanOperationIfAny(keepFirstNumberIfMultiple, telephone),
