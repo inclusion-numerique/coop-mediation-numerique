@@ -128,12 +128,6 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
               structure: true,
             },
           },
-          _count: {
-            select: {
-              activites: true,
-              beneficiaires: true,
-            },
-          },
         },
       },
       coordinateur: {
@@ -413,11 +407,11 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
                 },
                 {
                   label: 'Nombre de bénéficiaires',
-                  value: numberToString(mediateur._count.beneficiaires),
+                  value: numberToString(mediateur.beneficiairesCount),
                 },
                 {
                   label: 'Nombre d’activités',
-                  value: numberToString(mediateur._count.activites),
+                  value: numberToString(mediateur.activitesCount),
                 },
                 {
                   label: 'Lieux d’activité',

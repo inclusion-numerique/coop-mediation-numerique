@@ -16,13 +16,12 @@ export const searchUtilisateurSelect = {
       conseillerNumerique: {
         select: { id: true },
       },
+      activitesCount: true,
+      accompagnementsCount: true,
+      beneficiairesCount: true,
       _count: {
         select: {
-          activites: true,
           enActivite: true,
-          beneficiaires: {
-            where: { anonyme: false },
-          },
           coordinations: true,
         },
       },

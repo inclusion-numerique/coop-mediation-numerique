@@ -1,5 +1,3 @@
-import type { SessionUser } from '@app/web/auth/sessionUser'
-import { beneficiaireAccompagnementsCountSelect } from '@app/web/beneficiaire/beneficiaireQueries'
 import {
   type ActiviteListItem,
   getAllActivites,
@@ -34,7 +32,7 @@ export const getBeneficiaireAccompagnementsPageData = async ({
       prenom: true,
       nom: true,
       anneeNaissance: true,
-      ...beneficiaireAccompagnementsCountSelect,
+      accompagnementsCount: true,
     },
   })
   if (!beneficiaire) {

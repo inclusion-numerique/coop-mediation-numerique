@@ -41,9 +41,7 @@ const beneficiaire = {
   mediateurId: '1',
   anneeNaissance: null,
   trancheAge: null,
-  _count: {
-    accompagnements: 6,
-  },
+  accompagnementsCount: 6,
 } satisfies BeneficiairesListPageData['searchResult']['beneficiaires'][number]
 
 const dataAvecBeneficiaires = {
@@ -70,9 +68,7 @@ const dataAvecBeneficiaires = {
         id: '3',
         prenom: 'Paul',
         nom: 'Martin',
-        _count: {
-          accompagnements: 0,
-        },
+        accompagnementsCount: 0,
       },
     ],
   },

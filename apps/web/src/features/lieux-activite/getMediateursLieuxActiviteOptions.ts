@@ -2,26 +2,14 @@ import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
 
-export const mediateurStructureSelect = ({
-  mediateurIds,
-}: {
-  mediateurIds: string[]
-}) =>
+export const mediateurStructureSelect = () =>
   ({
     nom: true,
     id: true,
     adresse: true,
     codePostal: true,
     commune: true,
-    _count: {
-      select: {
-        activites: {
-          where: {
-            mediateurId: { in: mediateurIds },
-          },
-        },
-      },
-    },
+    activitesCount: true,
   }) satisfies Prisma.StructureSelect
 
 export type LieuActiviteOption = SelectOption<
@@ -39,9 +27,7 @@ export const getMediateursLieuxActiviteOptions = async ({
 }: {
   mediateurIds: string[]
 }): Promise<LieuActiviteOption[]> => {
-  const structureSelect = mediateurStructureSelect({
-    mediateurIds,
-  })
+  const structureSelect = mediateurStructureSelect()
 
   const lieuxActivite = await prismaClient.mediateurEnActivite.findMany({
     where: {
@@ -54,23 +40,14 @@ export const getMediateursLieuxActiviteOptions = async ({
     },
     distinct: ['structureId'],
     orderBy: [
-      { structure: { activites: { _count: 'desc' } } },
+      { structure: { activitesCount: 'desc' } },
       { structure: { nom: 'asc' } },
     ],
   })
 
   return lieuxActivite.map(
     (
-      {
-        structure: {
-          id,
-          nom,
-          commune,
-          codePostal,
-          adresse,
-          _count: { activites },
-        },
-      },
+      { structure: { id, nom, commune, codePostal, adresse, activitesCount } },
       index,
     ) =>
       ({
@@ -79,8 +56,8 @@ export const getMediateursLieuxActiviteOptions = async ({
         extra: {
           nom,
           adresse: `${adresse}, ${codePostal} ${commune}`,
-          activites,
-          mostUsed: index === 0 && activites > 0,
+          activites: activitesCount,
+          mostUsed: index === 0 && activitesCount > 0,
         },
       }) satisfies LieuActiviteOption,
   )

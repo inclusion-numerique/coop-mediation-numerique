@@ -32,9 +32,7 @@ type Story = StoryObj<typeof ViewBeneficiaireAccompagnementsPage>
 
 const beneficiaireSansAccompagnements = {
   ...beneficiaireMinimaleMediateurAvecActivite,
-  _count: {
-    accompagnements: 0,
-  },
+  accompagnementsCount: 0,
 } satisfies BeneficiaireAccompagnementsPageData['beneficiaire']
 
 const sansAccompagnements = {
@@ -55,9 +53,7 @@ export const SansAccompagnements: Story = {
 
 const beneficiaireAvecAccompagnements = {
   ...beneficiaireMaximaleMediateurAvecActivite,
-  _count: {
-    accompagnements: 6,
-  },
+  accompagnementsCount: 6,
 } satisfies BeneficiaireAccompagnementsPageData['beneficiaire']
 
 const activites = [

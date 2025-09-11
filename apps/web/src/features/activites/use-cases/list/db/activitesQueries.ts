@@ -20,11 +20,7 @@ export const activiteListeBeneficiaireSelect = {
   commune: true,
   communeCodePostal: true,
   communeCodeInsee: true,
-  _count: {
-    select: {
-      accompagnements: true,
-    },
-  },
+  accompagnementsCount: true,
 } satisfies Prisma.BeneficiaireSelect
 
 export const activiteListSelect = {

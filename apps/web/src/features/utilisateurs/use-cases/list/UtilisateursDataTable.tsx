@@ -83,13 +83,13 @@ export const UtilisateursDataTable = {
       name: 'activites',
       header: 'Activités',
       csvHeaders: ['Activités'],
-      csvValues: ({ mediateur }) => [mediateur?._count.activites],
+      csvValues: ({ mediateur }) => [mediateur?.activitesCount],
       cell: ({ mediateur }) =>
-        optionalNumberToString(mediateur?._count.activites, null),
+        optionalNumberToString(mediateur?.activitesCount, null),
       orderBy: (direction) => [
         {
           mediateur: {
-            activites: { _count: direction },
+            activitesCount: direction,
           },
         },
       ],
@@ -113,13 +113,13 @@ export const UtilisateursDataTable = {
       name: 'beneficiaires',
       header: 'Bénéficiaires suivis',
       csvHeaders: ['Bénéficiaires'],
-      csvValues: ({ mediateur }) => [mediateur?._count.beneficiaires],
+      csvValues: ({ mediateur }) => [mediateur?.beneficiairesCount],
       cell: ({ mediateur }) =>
-        optionalNumberToString(mediateur?._count.beneficiaires, null),
+        optionalNumberToString(mediateur?.beneficiairesCount, null),
       orderBy: (direction) => [
         {
           mediateur: {
-            beneficiaires: { _count: direction },
+            beneficiairesCount: direction,
           },
         },
       ],

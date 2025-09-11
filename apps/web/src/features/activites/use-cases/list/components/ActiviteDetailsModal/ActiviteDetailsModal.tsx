@@ -565,8 +565,8 @@ const ActiviteDetailsModal = ({
                   className="fr-link fr-text--sm fr-mb-0 fr-text--medium fr-link--underline-on-hover"
                 >
                   {getBeneficiaireDisplayName(beneficiaireUnique)}&nbsp;·&nbsp;
-                  {beneficiaireUnique._count.accompagnements} accompagnement
-                  {sPluriel(beneficiaireUnique._count.accompagnements)}
+                  {beneficiaireUnique.accompagnementsCount} accompagnement
+                  {sPluriel(beneficiaireUnique.accompagnementsCount)}
                 </Link>
               </div>
             </>

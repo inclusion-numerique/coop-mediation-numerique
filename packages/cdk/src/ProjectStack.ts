@@ -149,13 +149,15 @@ export class ProjectStack extends TerraformStack {
       name: databaseInstanceName,
       engine: 'PostgreSQL-14',
       isHaCluster: true,
-      nodeType: 'db-dev-m',
+      // nodeType: 'db-pro2-xs', // todo: go back to xs when september performance issues are fixed
+      nodeType: 'db-pro2-s',
       disableBackup: false,
       backupSameRegion: false,
       backupScheduleFrequency: 24,
       backupScheduleRetention: 14,
-      volumeType: 'bssd', // Block storage
-      volumeSizeInGb: 15,
+      volumeType: 'sbs_15k',
+      volumeSizeInGb: 30,
+      encryptionAtRest: true,
       settings: {
         // Custom max connections
         max_connections: '500',

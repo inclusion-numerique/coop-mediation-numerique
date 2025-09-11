@@ -2,6 +2,7 @@ import {
   beneficiaireMaximaleMediateurAvecActivite,
   beneficiaireSansAccompagnementsMediateurAvecActivite,
 } from '@app/fixtures/beneficiaires'
+import { refreshFixturesComputedFields } from '@app/fixtures/refreshFixturesComputedFields'
 import { resetFixtureUser } from '@app/fixtures/resetFixtureUser'
 import { seedStructures } from '@app/fixtures/structures'
 import { mediateurAvecActivite } from '@app/fixtures/users/mediateurAvecActivite'
@@ -14,6 +15,7 @@ describe('getBeneficiaireInformationsData', () => {
   beforeAll(async () => {
     await seedStructures(prismaClient)
     await resetFixtureUser(mediateurAvecActivite, false)
+    await refreshFixturesComputedFields()
   })
 
   it('returns no thematiques for beneficiaire with no data', async () => {
@@ -70,9 +72,7 @@ describe('getBeneficiaireInformationsData', () => {
         telephone,
         trancheAge,
         rdvServicePublicId: null,
-        _count: {
-          accompagnements: 0,
-        },
+        accompagnementsCount: 0,
       },
       displayName: getBeneficiaireDisplayName(beneficiaire),
       thematiquesCounts: [],
@@ -167,9 +167,7 @@ describe('getBeneficiaireInformationsData', () => {
       }),
     ).toEqual({
       beneficiaire: {
-        _count: {
-          accompagnements: 6,
-        },
+        accompagnementsCount: 6,
         adresse,
         anneeNaissance,
         commune,

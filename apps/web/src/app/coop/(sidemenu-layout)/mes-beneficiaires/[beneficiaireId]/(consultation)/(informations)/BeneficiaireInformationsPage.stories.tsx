@@ -53,9 +53,7 @@ type Story = StoryObj<typeof ViewBeneficiaireInformationsPage>
 
 const beneficiaireSansInformations = {
   ...beneficiaireMinimaleMediateurAvecActivite,
-  _count: {
-    accompagnements: 0,
-  },
+  accompagnementsCount: 0,
 } satisfies BeneficiaireInformationsPageData['beneficiaire']
 
 const sansInformations = {
@@ -77,9 +75,7 @@ const beneficiaireAvecInformations = {
   ...beneficiaireMaximaleMediateurAvecActivite,
   anneeNaissance: 1987,
   rdvServicePublicId: 42,
-  _count: {
-    accompagnements: 6,
-  },
+  accompagnementsCount: 6,
 } satisfies BeneficiaireInformationsPageData['beneficiaire']
 
 const avecInformations = {

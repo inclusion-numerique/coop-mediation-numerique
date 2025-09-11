@@ -76,7 +76,7 @@ const BENEFICIAIRES_OPTIONS = [
       trancheAge: 'VingtCinqTrenteNeuf' as const,
       anneeNaissance: null,
       creation: '2024-08-03T00:00:00.000Z',
-      _count: { accompagnements: 0 },
+      accompagnementsCount: 0,
     },
   },
   {
@@ -100,7 +100,7 @@ const BENEFICIAIRES_OPTIONS = [
       trancheAge: 'QuaranteCinquanteNeuf' as const,
       anneeNaissance: 1980,
       creation: '2024-01-01T00:00:00.000Z',
-      _count: { accompagnements: 1 },
+      accompagnementsCount: 1,
     },
   },
   {
@@ -113,7 +113,7 @@ const BENEFICIAIRES_OPTIONS = [
       trancheAge: null,
       anneeNaissance: null,
       creation: '2024-01-01T00:00:00.000Z',
-      _count: { accompagnements: 3 },
+      accompagnementsCount: 3,
     },
   },
 ]

@@ -82,6 +82,16 @@ const linkToCoopStructure = ({
     })
 
     if (idsToDelete.length > 0) {
+      // update the activitesCount field of the new structure
+      const activitesCount = await prisma.structure.aggregate({
+        _sum: {
+          activitesCount: true,
+        },
+        where: {
+          id: { in: idsToDelete },
+        },
+      })
+
       await Promise.all([
         prisma.employeStructure.updateMany({
           where: { structureId: { in: idsToDelete } },
@@ -98,6 +108,14 @@ const linkToCoopStructure = ({
         prisma.activite.updateMany({
           where: { structureEmployeuseId: { in: idsToDelete } },
           data: { structureEmployeuseId: structureId },
+        }),
+        prisma.structure.update({
+          where: { id: structureId },
+          data: {
+            activitesCount: {
+              increment: activitesCount._sum.activitesCount ?? 0,
+            },
+          },
         }),
       ])
 

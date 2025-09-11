@@ -67,7 +67,11 @@ export const craRouter = router({
 
       const accompagnements = await prismaClient.accompagnement.findMany({
         where: { activiteId },
-        select: { id: true, premierAccompagnement: true, beneficiaireId: true },
+        select: {
+          id: true,
+          premierAccompagnement: true,
+          beneficiaireId: true,
+        },
       })
 
       const premierAccompagnement = accompagnements.find(
@@ -99,6 +103,17 @@ export const craRouter = router({
           activiteId,
         })
 
+      // we need to decrement the accompagnements_count for the beneficiaires that will not be deleted
+      const beneficiairesIdsForAccompagnementCountDecrement = accompagnements
+        .map((a) => a.beneficiaireId)
+        .filter(
+          (beneficiaireId) =>
+            !beneficiairesAnonymesIdsToDelete.includes(beneficiaireId),
+        )
+
+      // TODO: update beneficiaires non anonymous from accompagnement, decrement accompagnements_count
+      // TODO: update mediateur from mediateur_id, decrement activites_count and accompagnements_count
+
       await prismaClient.$transaction(
         [
           // Delete associated tags
@@ -128,6 +143,32 @@ export const craRouter = router({
           prismaClient.activite.delete({
             where: { id: activiteId },
           }),
+          // Remove activite's lieu activite count
+          activite.structureId
+            ? prismaClient.structure.update({
+                where: { id: activite.structureId },
+                data: { activitesCount: { decrement: 1 } },
+              })
+            : null,
+          // Remove from mediateur's activites count
+          prismaClient.mediateur.update({
+            where: { id: activite.mediateurId },
+            data: {
+              activitesCount: { decrement: 1 },
+              accompagnementsCount: {
+                decrement: accompagnements.length,
+              },
+            },
+          }),
+          // Decrement the accompagnements_count for the beneficiaires that will not be deleted
+          beneficiairesIdsForAccompagnementCountDecrement.length > 0
+            ? prismaClient.beneficiaire.updateMany({
+                where: {
+                  id: { in: beneficiairesIdsForAccompagnementCountDecrement },
+                },
+                data: { accompagnementsCount: { decrement: 1 } },
+              })
+            : null,
         ].filter(onlyDefinedAndNotNull),
       )
 

@@ -27,7 +27,7 @@ export const Hero = ({
       </Link>
     </div>
     <div className="fr-col-auto fr-mx-auto fr-mr-lg-0">
-      <Image width={180} height={180} src={illustration} alt="" />
+      <img style={{ width: 180, height: 180 }} src={illustration} alt="" />
     </div>
   </section>
 )

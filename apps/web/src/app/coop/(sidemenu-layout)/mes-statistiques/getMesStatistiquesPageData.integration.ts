@@ -1,3 +1,4 @@
+import { refreshFixturesComputedFields } from '@app/fixtures/refreshFixturesComputedFields'
 import { resetFixtureUser } from '@app/fixtures/resetFixtureUser'
 import { mediateque, seedStructures } from '@app/fixtures/structures'
 import { conseillerNumerique } from '@app/fixtures/users/conseillerNumerique'
@@ -216,7 +217,8 @@ describe('getMesStatistiquesPageData', () => {
     await resetFixtureUser(mediateurAvecActivite, false)
     await resetFixtureUser(mediateurSansActivites, false)
     await resetFixtureUser(conseillerNumerique, false)
-  })
+    await refreshFixturesComputedFields()
+  }, 100_000)
 
   describe('mediateur sans activites', () => {
     test('should give empty data without filters', async () => {
@@ -244,9 +246,9 @@ describe('getMesStatistiquesPageData', () => {
             label: mediateque.nom,
             value: mediateque.id,
             extra: {
-              activites: 0,
+              activites: 4,
               adresse: '2 rue des livres, 69002 Lyon 2eme',
-              mostUsed: false,
+              mostUsed: true,
               nom: 'Exemple de Mediateque',
             },
           },
@@ -522,7 +524,7 @@ describe('getMesStatistiquesPageData', () => {
             label: mediateque.nom,
             value: mediateque.id,
             extra: {
-              activites: 2,
+              activites: 4,
               adresse: '2 rue des livres, 69002 Lyon 2eme',
               mostUsed: true,
               nom: 'Exemple de Mediateque',
