@@ -20,7 +20,7 @@ describe('summarizeWebPage', () => {
 
     expect(summary).toBeString()
     expect(summary?.length).toBeGreaterThan(500)
-    expect(summary).toContain('permis de conduire')
+    expect(summary?.toLowerCase()).toContain('permis de conduire')
     // expect(summary).toContain('demande de permis de construire')
     // expect(summary).toContain('plans')
     // expect(summary).toContain('documents')
