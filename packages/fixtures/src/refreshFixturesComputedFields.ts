@@ -1,8 +1,8 @@
 import { prismaClient } from '@app/web/prismaClient'
+import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import { Prisma } from '@prisma/client'
 import { fixtureCras } from './activites'
 import { fixtureBeneficiaires } from './beneficiaires'
-import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 
 /**
  * Fixtures insert data bypassing the business logic.
@@ -13,12 +13,6 @@ export const refreshFixturesComputedFields = async () => {
   // Update mediateurs beneficiaires count
   const fixtureBeneficiairesMediateurs = new Set(
     fixtureBeneficiaires.map((beneficiaire) => beneficiaire.mediateurId),
-  )
-
-  const start = Date.now()
-
-  console.log(
-    `Updating mediateurs beneficiaires count for ${fixtureBeneficiairesMediateurs.size} mediateurs`,
   )
 
   if (fixtureBeneficiairesMediateurs.size > 0) {
@@ -37,11 +31,6 @@ export const refreshFixturesComputedFields = async () => {
     `
   }
 
-  console.log(
-    `Time taken to update mediateurs beneficiaires count: ${Date.now() - start}ms`,
-  )
-
-  const start2 = Date.now()
   const beneficiaireIdParams = fixtureBeneficiaires.map(
     ({ id }) => Prisma.sql`${id}::uuid`,
   )
@@ -58,10 +47,6 @@ export const refreshFixturesComputedFields = async () => {
       )
       WHERE beneficiaires.id IN (${Prisma.join(beneficiaireIdParams)})
     `
-
-  console.log(
-    `Time taken to update beneficiaires accompagnements count: ${Date.now() - start2}ms`,
-  )
 
   // Update structures activites count
   const fixturesStructures = new Set(
@@ -86,7 +71,6 @@ export const refreshFixturesComputedFields = async () => {
     fixtureCras.map((cra) => cra.activite.mediateurId),
   )
 
-  const start3 = Date.now()
   // Update mediateur activites and accompagnements count
   if (fixtureMediateurIds.size > 0) {
     const mediateurIdParams = [...fixtureMediateurIds].map(
@@ -109,8 +93,4 @@ export const refreshFixturesComputedFields = async () => {
       WHERE mediateurs.id IN (${Prisma.join(mediateurIdParams)})
     `
   }
-
-  console.log(
-    `Time taken to update mediateur activites and accompagnements count: ${Date.now() - start3}ms`,
-  )
 }
