@@ -33,12 +33,12 @@ export const migrateCraV1 = async (
       })
       if (existingActivite) {
         // Reset data
-        tx.accompagnement.deleteMany({
+        await tx.accompagnement.deleteMany({
           where: {
             activiteId: existingActivite.id,
           },
         })
-        tx.beneficiaire.deleteMany({
+        await tx.beneficiaire.deleteMany({
           where: {
             id: {
               in: existingActivite.accompagnements.map(
@@ -47,7 +47,7 @@ export const migrateCraV1 = async (
             },
           },
         })
-        tx.activite.delete({
+        await tx.activite.delete({
           where: {
             id: existingActivite.id,
           },
