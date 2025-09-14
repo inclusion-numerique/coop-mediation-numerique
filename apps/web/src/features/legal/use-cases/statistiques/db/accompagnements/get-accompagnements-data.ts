@@ -28,9 +28,11 @@ const getAccompagnementsPerMonth = async () =>
     JOIN accompagnements acc ON acc.activite_id = act.id
     LEFT JOIN mediateurs med ON act.mediateur_id = med.id
     LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
-  WHERE act.suppression IS NULL AND act.date >= ${Prisma.raw(
-    fromDate,
-  )}),months AS (SELECT generate_series(${Prisma.raw(fromDate)}, ${Prisma.raw(
+  WHERE 
+    act.suppression IS NULL 
+    AND act.v1_cra_id IS NULL
+    AND act.date >= ${Prisma.raw(fromDate)}),
+  months AS (SELECT generate_series(${Prisma.raw(fromDate)}, ${Prisma.raw(
     'CURRENT_DATE',
   )}, '1 month'::interval) AS month), counts_per_month AS (
     SELECT DATE_TRUNC('month', date) AS month, role, COUNT(*)::int AS count

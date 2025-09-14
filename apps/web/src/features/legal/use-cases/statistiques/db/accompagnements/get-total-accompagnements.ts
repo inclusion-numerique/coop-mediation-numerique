@@ -15,7 +15,10 @@ export const getTotalAccompagnements = async () => {
       JOIN accompagnements acc ON acc.activite_id = act.id
       LEFT JOIN mediateurs med ON act.mediateur_id = med.id
       LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
-    WHERE act.suppression IS NULL AND DATE_TRUNC('month', act.date) <= DATE_TRUNC('month', CURRENT_DATE)
+    WHERE   
+      act.suppression IS NULL 
+      AND act.v1_cra_id IS NULL
+    AND DATE_TRUNC('month', act.date) <= DATE_TRUNC('month', CURRENT_DATE)
       GROUP BY
         CASE
           WHEN cn.id IS NOT NULL THEN 'conseiller'
