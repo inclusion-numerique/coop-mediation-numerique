@@ -84,7 +84,7 @@ function createBaseCra(
 }
 
 describe('transformCraV1', () => {
-  const v1StructuresIdsMap = new Map([
+  const v1DeduplicatedStructuresIdsMap = new Map([
     [
       'v1-struct-1',
       {
@@ -94,8 +94,6 @@ describe('transformCraV1', () => {
         codeInsee: '33535',
       },
     ],
-  ])
-  const v1PermanencesIdsMap = new Map([
     [
       'v1-perm-1',
       {
@@ -106,6 +104,7 @@ describe('transformCraV1', () => {
       },
     ],
   ])
+
   const v1ConseillersIdsMap = new Map([
     ['v1-cons-1', { userId: 'user-1', mediateurId: 'med-1' }],
   ])
@@ -120,8 +119,7 @@ describe('transformCraV1', () => {
     })
 
     const result = transformCraV1(cra, {
-      v1StructuresIdsMap,
-      v1PermanencesIdsMap,
+      v1DeduplicatedStructuresIdsMap,
       v1ConseillersIdsMap,
     })
 
@@ -155,8 +153,7 @@ describe('transformCraV1', () => {
     })
 
     const result = transformCraV1(cra, {
-      v1StructuresIdsMap,
-      v1PermanencesIdsMap,
+      v1DeduplicatedStructuresIdsMap,
       v1ConseillersIdsMap,
     })
     expect(result.activite.type).toBe<TypeActivite>('Individuel')
@@ -171,8 +168,7 @@ describe('transformCraV1', () => {
     const cra = createBaseCra({ canal: 'distance', permanenceId: null })
 
     const result = transformCraV1(cra, {
-      v1StructuresIdsMap,
-      v1PermanencesIdsMap,
+      v1DeduplicatedStructuresIdsMap,
       v1ConseillersIdsMap,
     })
     expect(result.activite.typeLieu).toBe<TypeLieu>('ADistance')
@@ -186,8 +182,7 @@ describe('transformCraV1', () => {
   it('uses dureeMinutes if present and ignores duree string', async () => {
     const cra = createBaseCra({ duree: '0-30', dureeMinutes: 45 })
     const result = transformCraV1(cra, {
-      v1StructuresIdsMap,
-      v1PermanencesIdsMap,
+      v1DeduplicatedStructuresIdsMap,
       v1ConseillersIdsMap,
     })
     expect(result.activite.duree).toBe(45)
@@ -196,8 +191,7 @@ describe('transformCraV1', () => {
   it('deduplicates thematiques when duplicate themes provided', async () => {
     const cra = createBaseCra({ themes: ['internet', 'internet'] })
     const result = transformCraV1(cra, {
-      v1StructuresIdsMap,
-      v1PermanencesIdsMap,
+      v1DeduplicatedStructuresIdsMap,
       v1ConseillersIdsMap,
     })
     const thematiquesArr: Thematique[] = Array.isArray(
@@ -217,8 +211,7 @@ describe('transformCraV1', () => {
       nbParticipantsRecurrents: 2,
     })
     const result = transformCraV1(cra, {
-      v1StructuresIdsMap,
-      v1PermanencesIdsMap,
+      v1DeduplicatedStructuresIdsMap,
       v1ConseillersIdsMap,
     })
 
@@ -245,8 +238,7 @@ describe('transformCraV1', () => {
   it('creates one anonymous beneficiaire and one accompagnement for individuel with premierAccompagnement true', async () => {
     const cra = createBaseCra({ activite: 'individuel', nbParticipants: 1 })
     const result = transformCraV1(cra, {
-      v1StructuresIdsMap,
-      v1PermanencesIdsMap,
+      v1DeduplicatedStructuresIdsMap,
       v1ConseillersIdsMap,
     })
 
@@ -266,8 +258,7 @@ describe('transformCraV1', () => {
     })
 
     const result = transformCraV1(cra, {
-      v1StructuresIdsMap,
-      v1PermanencesIdsMap,
+      v1DeduplicatedStructuresIdsMap,
       v1ConseillersIdsMap,
     })
 
@@ -282,8 +273,7 @@ describe('transformCraV1', () => {
   it('falls back to structure mapping when permanence is not provided for LieuActivite', async () => {
     const cra = createBaseCra({ canal: 'autre lieu', permanenceId: null })
     const result = transformCraV1(cra, {
-      v1StructuresIdsMap,
-      v1PermanencesIdsMap,
+      v1DeduplicatedStructuresIdsMap,
       v1ConseillersIdsMap,
     })
     expect(result.activite.typeLieu).toBe<TypeLieu>('Autre')
@@ -294,8 +284,7 @@ describe('transformCraV1', () => {
   it('maps domicile to Domicile', async () => {
     const cra = createBaseCra({ canal: 'domicile' })
     const result = transformCraV1(cra, {
-      v1StructuresIdsMap,
-      v1PermanencesIdsMap,
+      v1DeduplicatedStructuresIdsMap,
       v1ConseillersIdsMap,
     })
     expect(result.activite.typeLieu).toBe<TypeLieu>('Domicile')
@@ -305,8 +294,7 @@ describe('transformCraV1', () => {
     const cra = createBaseCra({ structureId: 'unknown-struct' })
     expect(() =>
       transformCraV1(cra, {
-        v1StructuresIdsMap,
-        v1PermanencesIdsMap,
+        v1DeduplicatedStructuresIdsMap,
         v1ConseillersIdsMap,
       }),
     ).toThrow(/Missing required mapping for structureEmployeuseId/)
@@ -334,8 +322,7 @@ describe('transformCraV1', () => {
     for (const c of cases) {
       const cra = createBaseCra({ organismes: c.orgs as unknown as any })
       const result = transformCraV1(cra, {
-        v1StructuresIdsMap,
-        v1PermanencesIdsMap,
+        v1DeduplicatedStructuresIdsMap,
         v1ConseillersIdsMap,
       })
       expect(result.activite.structureDeRedirection).toBe(c.expectCat)

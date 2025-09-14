@@ -6,6 +6,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
 import { chunk } from 'lodash-es'
 import { v4 } from 'uuid'
+import { StructureV1Document } from '../migrate-structures-v1/StructureV1Document'
 import { v1StructuresCodesInseeMap } from './v1DeduplicatedStructuresCodesInseeMap'
 
 /**
@@ -34,7 +35,12 @@ export const writeV1DeduplicatedStructuresIdsMap = async (
   // write file header and empty the file
   await writeFile(
     mapFilePath,
-    `// biome-ignore-all lint: generated migration map\n// A list of v1 structure id to v2 structure info\nexport const v1StructuresIdsMap = new Map([\n`,
+    `// biome-ignore-all lint: generated migration map\n// A list of v1 structure id to v2 structure info\nexport const v1DeduplicatedStructuresIdsMap = new Map<string, {
+  id: string
+  codePostal?: string | null
+  commune?: string | null
+  codeInsee?: string | null
+}>([\n`,
   )
 
   for (const [key, value] of map) {

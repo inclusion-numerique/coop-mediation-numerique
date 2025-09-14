@@ -15,6 +15,7 @@ import z from 'zod'
 import { MigrateCrasV1JobValidation } from './migrate-cras-v1/MigrateCrasV1Job'
 import { MigrateStructuresV1JobValidation } from './migrate-structures-v1/MigrateStructuresV1Job'
 import { MigrateUsersV1JobValidation } from './migrate-users-v1/MigrateUsersV1Job'
+import { RemapDuplicatedStructuresV1JobValidation } from './remap-duplicated-structures-v1/RemapDuplicatedStructuresV1Job'
 
 /**
  * A job represents a task that can be executed asynchronously.
@@ -49,6 +50,7 @@ export const JobValidation = z.discriminatedUnion('name', [
   MigrateCrasV1JobValidation,
   MigrateStructuresV1JobValidation,
   MigrateUsersV1JobValidation,
+  RemapDuplicatedStructuresV1JobValidation,
 ])
 
 export type Job = z.infer<typeof JobValidation>

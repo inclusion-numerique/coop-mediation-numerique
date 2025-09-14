@@ -47,16 +47,7 @@ export type TransformCraV1Output = {
 }
 
 export type TransformCraV1Context = {
-  v1StructuresIdsMap: Map<
-    string,
-    {
-      id: string
-      codePostal?: string | null
-      commune?: string | null
-      codeInsee?: string | null
-    }
-  >
-  v1PermanencesIdsMap: Map<
+  v1DeduplicatedStructuresIdsMap: Map<
     string,
     {
       id: string
@@ -72,8 +63,7 @@ export const transformCraV1 = (
   craV1: CraConseillerNumeriqueV1,
   context: TransformCraV1Context,
 ): TransformCraV1Output => {
-  const { v1StructuresIdsMap, v1PermanencesIdsMap, v1ConseillersIdsMap } =
-    context
+  const { v1DeduplicatedStructuresIdsMap, v1ConseillersIdsMap } = context
 
   const v1CraId = craV1.id
   const v1ConseillerId = craV1.v1ConseillerNumeriqueId
@@ -86,7 +76,7 @@ export const transformCraV1 = (
 
   const structureEmployeuseId = mapRequiredV1IdToV2({
     v1Id: v1StructureId,
-    idsMap: v1StructuresIdsMap,
+    idsMap: v1DeduplicatedStructuresIdsMap,
     field: 'structureEmployeuseId',
   })
 
@@ -98,8 +88,7 @@ export const transformCraV1 = (
     typeLieu,
     v1PermanenceId,
     v1StructureId,
-    v1PermanencesIdsMap,
-    v1StructuresIdsMap,
+    v1DeduplicatedStructuresIdsMap,
     craV1,
   })
 
@@ -264,23 +253,14 @@ const deriveLieuAndStructure = ({
   typeLieu,
   v1PermanenceId,
   v1StructureId,
-  v1PermanencesIdsMap,
+  v1DeduplicatedStructuresIdsMap,
   v1StructuresIdsMap,
   craV1,
 }: {
   typeLieu: TypeLieu
   v1PermanenceId?: string
   v1StructureId?: string
-  v1PermanencesIdsMap: Map<
-    string,
-    {
-      id: string
-      codePostal?: string | null
-      commune?: string | null
-      codeInsee?: string | null
-    }
-  >
-  v1StructuresIdsMap: Map<
+  v1DeduplicatedStructuresIdsMap: Map<
     string,
     {
       id: string
@@ -297,11 +277,11 @@ const deriveLieuAndStructure = ({
   if (typeLieu === 'LieuActivite') {
     // Prefer permanence mapping when present, fallback to structure mapping
     const fromPermanence = v1PermanenceId
-      ? v1PermanencesIdsMap.get(v1PermanenceId)
+      ? v1DeduplicatedStructuresIdsMap.get(v1PermanenceId)
       : undefined
     const fromStructure =
       !fromPermanence && v1StructureId
-        ? v1StructuresIdsMap.get(v1StructureId)
+        ? v1DeduplicatedStructuresIdsMap.get(v1StructureId)
         : undefined
     const chosen = fromPermanence ?? fromStructure
     return { structureId: chosen?.id }
@@ -310,7 +290,7 @@ const deriveLieuAndStructure = ({
   if (typeLieu === 'ADistance') {
     // Assign to the commune of the structure employeuse using provided map
     const structureEmployeuse = v1StructureId
-      ? v1StructuresIdsMap.get(v1StructureId)
+      ? v1DeduplicatedStructuresIdsMap.get(v1StructureId)
       : undefined
     return {
       lieu: {

@@ -45,7 +45,8 @@
       "!packages/cdk/.gen",
       "!apps/web/src/jobs/migrate-structures-v1/v1*IdsMap.ts",
       "!apps/web/src/jobs/migrate-users-v1/v1ConseillersIdsMap.ts",
-      "!apps/web/src/jobs/migrate-users-v1/result.json"
+      "!apps/web/src/jobs/migrate-users-v1/result.json",
+      "!apps/web/src/jobs/remap-duplicated-structures-v1/v1DeduplicatedStructuresIdsMap.ts"
     ]
   },
   "formatter": {

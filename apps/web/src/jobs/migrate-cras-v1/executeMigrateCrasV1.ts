@@ -5,9 +5,8 @@ import { dureeAsString } from '@app/web/utils/dureeAsString'
 import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import * as Sentry from '@sentry/nextjs'
-import { v1PermanencesIdsMap } from '../migrate-structures-v1/v1PermanencesIdsMap'
-import { v1StructuresIdsMap } from '../migrate-structures-v1/v1StructuresIdsMap'
 import { v1ConseillersIdsMap } from '../migrate-users-v1/v1ConseillersIdsMap'
+import { v1DeduplicatedStructuresIdsMap } from '../remap-duplicated-structures-v1/v1DeduplicatedStructuresIdsMap'
 import { migrateCrasV1 } from './migrateCrasV1'
 
 const cleanupAfterImport = async () => {
@@ -46,8 +45,7 @@ const migrateCrasV1ByBatch = async ({
     )
     await migrateCrasV1(items, {
       v1ConseillersIdsMap,
-      v1PermanencesIdsMap,
-      v1StructuresIdsMap,
+      v1DeduplicatedStructuresIdsMap,
     })
     skip += items.length
     processedCount += items.length
