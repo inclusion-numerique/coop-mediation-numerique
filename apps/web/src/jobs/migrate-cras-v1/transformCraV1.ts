@@ -254,7 +254,6 @@ const deriveLieuAndStructure = ({
   v1PermanenceId,
   v1StructureId,
   v1DeduplicatedStructuresIdsMap,
-  v1StructuresIdsMap,
   craV1,
 }: {
   typeLieu: TypeLieu

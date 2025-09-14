@@ -6,14 +6,12 @@ export const migrateCraV1 = async (
   cra: CraConseillerNumeriqueV1,
   {
     v1ConseillersIdsMap,
-    v1PermanencesIdsMap,
-    v1StructuresIdsMap,
+    v1DeduplicatedStructuresIdsMap,
   }: TransformCraV1Context,
 ) => {
   const transformedCra = transformCraV1(cra, {
     v1ConseillersIdsMap,
-    v1PermanencesIdsMap,
-    v1StructuresIdsMap,
+    v1DeduplicatedStructuresIdsMap,
   })
   try {
     await prismaClient.$transaction(async (tx) => {
