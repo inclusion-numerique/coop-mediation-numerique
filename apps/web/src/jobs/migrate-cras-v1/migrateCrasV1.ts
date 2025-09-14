@@ -2,6 +2,8 @@ import { prismaClient } from '@app/web/prismaClient'
 import { type CraConseillerNumeriqueV1 } from '@prisma/client'
 import { type TransformCraV1Context, transformCraV1 } from './transformCraV1'
 
+const resetOnExisting = false
+
 export const migrateCraV1 = async (
   cra: CraConseillerNumeriqueV1,
   {
@@ -30,6 +32,10 @@ export const migrateCraV1 = async (
         },
       })
       if (existingActivite) {
+        if (!resetOnExisting) {
+          // Skip
+          return
+        }
         // Reset data
         await tx.accompagnement.deleteMany({
           where: {
