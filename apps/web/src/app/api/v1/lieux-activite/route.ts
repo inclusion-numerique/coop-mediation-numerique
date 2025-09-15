@@ -181,6 +181,10 @@ type Aidant = {
  *           format: URL
  *           description: URL renvoyant vers le site de prise de rendez-vous en ligne avec les aidants du lieu.
  *           example: https://rdv.anct.gouv.fr/
+ *         visible_pour_cartographie_nationale:
+ *           type: boolean
+ *           description: Lieu affiché dans la cartographie nationale
+ *           example: true
  * /lieux-activite:
  *   get:
  *     summary: liste des lieux d'activité
@@ -231,7 +235,10 @@ export const GET = createApiV1Route
     const { dispositif_programmes_nationaux } = params.filter
 
     const lieuxDeMediationNumerique = await prismaClient.$queryRaw<
-      (LieuMediationNumerique & { aidants?: Aidant[] })[]
+      (LieuMediationNumerique & {
+        aidants?: Aidant[]
+        visible_pour_cartographie_nationale: boolean
+      })[]
     >`
     WITH base AS (
       SELECT structures.id,
@@ -295,7 +302,8 @@ export const GET = createApiV1Route
               ))
             ) FILTER (WHERE users.id IS NOT NULL),
             '[]'::jsonb
-          ) AS aidants
+          ) AS aidants,
+        structures.visible_pour_cartographie_nationale AS visible_pour_cartographie_nationale,
         FROM structures structures
           LEFT JOIN mediateurs_en_activite mediateurs_en_activite  ON structures.id = mediateurs_en_activite.structure_id
           LEFT JOIN conseillers_numeriques conseillers_numeriques ON mediateurs_en_activite.mediateur_id = conseillers_numeriques.mediateur_id
@@ -327,6 +335,8 @@ export const GET = createApiV1Route
       return {
         ...toSchemaLieuMediationNumerique(lieu),
         ...(aidants && aidants.length > 0 ? { aidants } : {}),
+        visible_pour_cartographie_nationale:
+          lieu.visible_pour_cartographie_nationale,
       }
     })
 
