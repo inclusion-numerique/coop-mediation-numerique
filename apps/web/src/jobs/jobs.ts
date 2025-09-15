@@ -3,7 +3,6 @@ import { FixCoordinationsV1JobValidation } from '@app/web/jobs/fix-coordinations
 import { FixStructuresJobValidation } from '@app/web/jobs/fix-structures/fixStructuresJob'
 import { FixUsersJobValidation } from '@app/web/jobs/fix-users/fixUsersJob'
 import { ImportContactsToBrevoValidation } from '@app/web/jobs/import-contacts-to-brevo/ImportContactsToBrevoJob'
-import { ImportCrasConseillerNumeriqueV1JobValidation } from '@app/web/jobs/import-cras-conseiller-numerique-v1/ImportCrasConseillerNumeriqueV1Job'
 import { IngestLesBasesInRagValidation } from '@app/web/jobs/ingest-les-bases-in-rag/ingestLesBasesInRagJob'
 import { SetServciesToSharedLieuxValidation } from '@app/web/jobs/set-servcies-to-shared-lieux/setServciesToSharedLieuxJob'
 import { SyncConumsJobValidation } from '@app/web/jobs/sync-conums/syncConumsJob'
@@ -12,10 +11,6 @@ import { UpdateConumStructureReferentJobValidation } from '@app/web/jobs/update-
 import { UpdateLieuxActivitesAdistanceValidation } from '@app/web/jobs/update-lieu-activite-a-distance/updateLieuxActivitesAdistanceJob'
 import { UpdateStructuresCartographieNationaleJobValidation } from '@app/web/jobs/update-structures-cartographie-nationale/updateStructuresCartographieNationaleJob'
 import z from 'zod'
-import { MigrateCrasV1JobValidation } from './migrate-cras-v1/MigrateCrasV1Job'
-import { MigrateStructuresV1JobValidation } from './migrate-structures-v1/MigrateStructuresV1Job'
-import { MigrateUsersV1JobValidation } from './migrate-users-v1/MigrateUsersV1Job'
-import { RemapDuplicatedStructuresV1JobValidation } from './remap-duplicated-structures-v1/RemapDuplicatedStructuresV1Job'
 
 /**
  * A job represents a task that can be executed asynchronously.
@@ -36,7 +31,6 @@ import { RemapDuplicatedStructuresV1JobValidation } from './remap-duplicated-str
 export const JobValidation = z.discriminatedUnion('name', [
   BackupDatabaseJobValidation,
   UpdateStructuresCartographieNationaleJobValidation,
-  ImportCrasConseillerNumeriqueV1JobValidation,
   FixCoordinationsV1JobValidation,
   UpdateConumStructureReferentJobValidation,
   ImportContactsToBrevoValidation,
@@ -47,10 +41,6 @@ export const JobValidation = z.discriminatedUnion('name', [
   UpdateConumInfoValidation,
   FixUsersJobValidation,
   SyncConumsJobValidation,
-  MigrateCrasV1JobValidation,
-  MigrateStructuresV1JobValidation,
-  MigrateUsersV1JobValidation,
-  RemapDuplicatedStructuresV1JobValidation,
 ])
 
 export type Job = z.infer<typeof JobValidation>

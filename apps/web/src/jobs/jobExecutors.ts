@@ -3,7 +3,6 @@ import { executeFixCoordinationsV1 } from '@app/web/jobs/fix-coordinations-v1/ex
 import { executeFixStructures } from '@app/web/jobs/fix-structures/executeFixStructures'
 import { executeFixUsers } from '@app/web/jobs/fix-users/executeFixUsers'
 import { executeImportContactsToBrevo } from '@app/web/jobs/import-contacts-to-brevo/executeImportContactsToBrevo'
-import { executeImportCrasConseillerNumeriqueV1 } from '@app/web/jobs/import-cras-conseiller-numerique-v1/executeImportCrasConseillerNumeriqueV1'
 import { executeIngestLesBasesInRag } from '@app/web/jobs/ingest-les-bases-in-rag/executeIngestLesBasesInRag'
 import type { Job, JobName, JobPayload } from '@app/web/jobs/jobs'
 import { executeSetServciesToSharedLieux } from '@app/web/jobs/set-servcies-to-shared-lieux/executeSetServciesToSharedLieux'
@@ -19,11 +18,7 @@ import {
   downloadCartographieNationaleStructures,
   getStructuresCartographieNationaleFromLocalFile,
 } from '../data/cartographie-nationale/cartographieNationaleStructures'
-import { executeMigrateCrasV1 } from './migrate-cras-v1/executeMigrateCrasV1'
-import { executeMigrateStructuresV1 } from './migrate-structures-v1/executeMigrateStructuresV1'
-import { executeMigrateUsersV1 } from './migrate-users-v1/executeMigrateUsersV1'
 import { output } from './output'
-import { executeRemapDuplicatedStructuresV1 } from './remap-duplicated-structures-v1/executeRemapDuplicatedStructuresV1'
 import { executeUpdateLieuxActivitesADistance } from './update-lieu-activite-a-distance/executeUpdateLieuxActivitesADistance'
 
 export type JobExecutor<Name extends JobName, Result = unknown> = (
@@ -54,7 +49,6 @@ export const jobExecutors: {
   'backup-database': executeBackupDatabaseJob,
   'update-structures-cartographie-nationale':
     executeUpdateStructuresCartographieNationale,
-  'import-cras-conseiller-numerique-v1': executeImportCrasConseillerNumeriqueV1,
   'fix-coordinations-v1': executeFixCoordinationsV1,
   'update-conum-structure-referent': executeUpdateConumStructureReferent,
   'import-contacts-to-brevo': executeImportContactsToBrevo,
@@ -65,10 +59,6 @@ export const jobExecutors: {
   'update-conum-info': executeUpdateConumInfo,
   'fix-users': executeFixUsers,
   'sync-conums': executeSyncConums,
-  'migrate-cras-v1': executeMigrateCrasV1,
-  'migrate-structures-v1': executeMigrateStructuresV1,
-  'remap-duplicated-structures-v1': executeRemapDuplicatedStructuresV1,
-  'migrate-users-v1': executeMigrateUsersV1,
 }
 
 export const executeJob = async (job: Job) => {
