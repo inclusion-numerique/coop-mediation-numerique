@@ -1,3 +1,4 @@
+// @ts-nocheck
 // biome-ignore-all lint: generated migration map
 // A list of v1 conseiller id to v2 user & mediateur ids
 export const v1ConseillersIdsMap = new Map([

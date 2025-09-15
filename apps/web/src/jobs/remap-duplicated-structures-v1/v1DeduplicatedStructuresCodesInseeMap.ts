@@ -1,3 +1,5 @@
+// @ts-nocheck
+// biome-ignore-all lint: generated migration map
 export const v1StructuresCodesInseeMap = new Map<string, string>([
   ['60461faf871498b5cec202c3', '35238'],
   ['60461fb1871498b5cec20304', '12202'],

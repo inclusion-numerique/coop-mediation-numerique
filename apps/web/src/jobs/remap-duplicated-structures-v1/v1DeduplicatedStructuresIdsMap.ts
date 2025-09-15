@@ -1,3 +1,4 @@
+// @ts-nocheck
 // biome-ignore-all lint: generated migration map
 // A list of v1 structure id to v2 structure info
 export const v1DeduplicatedStructuresIdsMap = new Map<string, {
