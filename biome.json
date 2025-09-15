@@ -42,11 +42,7 @@
       "!var",
       "!apps/web/.next",
       "!apps/web/public",
-      "!packages/cdk/.gen",
-      "!apps/web/src/jobs/migrate-structures-v1/v1*IdsMap.ts",
-      "!apps/web/src/jobs/migrate-users-v1/v1ConseillersIdsMap.ts",
-      "!apps/web/src/jobs/migrate-users-v1/result.json",
-      "!apps/web/src/jobs/remap-duplicated-structures-v1/v1DeduplicatedStructuresIdsMap.ts"
+      "!packages/cdk/.gen"
     ]
   },
   "formatter": {
@@ -55,11 +51,7 @@
       "!var",
       "!apps/web/.next",
       "!apps/web/public",
-      "!packages/cdk/.gen",
-      "!apps/web/src/jobs/migrate-structures-v1/v1StructuresIdsMap.ts",
-      "!apps/web/src/jobs/migrate-structures-v1/v1PermanencesIdsMap.ts",
-      "!apps/web/src/jobs/migrate-users-v1/v1ConseillersIdsMap.ts",
-      "!apps/web/src/jobs/migrate-users-v1/result.json"
+      "!packages/cdk/.gen"
     ],
     "enabled": true,
     "useEditorconfig": true,
