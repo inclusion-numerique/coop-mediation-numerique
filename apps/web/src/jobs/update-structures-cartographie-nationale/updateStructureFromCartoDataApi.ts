@@ -122,12 +122,12 @@ const linkToCoopStructure = ({
       return
     }
 
-    const mergedStructures = await mergeStructures([
-      structureId,
-      ...idsToDelete,
-    ])
-
     if (idsToDelete.length > 0) {
+      const mergedStructures = await mergeStructures([
+        structureId,
+        ...idsToDelete,
+      ])
+
       // update the activitesCount field of the new structure
       const activitesCount = await prisma.structure.aggregate({
         _sum: {
@@ -162,16 +162,26 @@ const linkToCoopStructure = ({
             ...(latestChangesFromCoop(structure)
               ? structureToPrismaModel(structure)
               : {}),
-            structureCartographieNationaleId: structure.id,
             activitesCount: {
               increment: activitesCount._sum.activitesCount ?? 0,
             },
+            structureCartographieNationaleId: structure.id,
           },
         }),
       ])
 
       await prisma.structure.deleteMany({
         where: { id: { in: idsToDelete } },
+      })
+    } else {
+      await prisma.structure.update({
+        where: { id: structureId },
+        data: {
+          ...(latestChangesFromCoop(structure)
+            ? structureToPrismaModel(structure)
+            : {}),
+          structureCartographieNationaleId: structure.id,
+        },
       })
     }
   })
