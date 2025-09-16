@@ -44,6 +44,10 @@ export const FilterTags = ({
   }).map(toLieuPrefix)
 
   const handleRemoveFilter = (key: string, value: string | string[]) => {
+    if (key === 'rdvs' && value === 'tous') {
+      params.delete('rdvs')
+    }
+
     if (Array.isArray(value)) {
       for (const param of value) params.delete(param)
       return router.replace(`?${params}`, { scroll: false })

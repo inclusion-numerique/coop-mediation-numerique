@@ -478,83 +478,6 @@ const ActiviteDetailsModal = ({
               Supprimer
             </Button>
           </div>
-          {!!rdv && (
-            <>
-              <hr className="fr-separator-6v" />
-              <div className="fr-flex fr-flex-gap-2v fr-align-items-center">
-                <div
-                  className="fr-background-alt--blue-france fr-p-1-5v fr-border-radius--8 fr-flex"
-                  aria-hidden
-                >
-                  <RDVServicePublicLogo
-                    className="fr-display-block"
-                    width={20}
-                    height={20}
-                  />
-                </div>
-                <p className="fr-text--sm fr-text--medium fr-mb-0 fr-flex-grow-1">
-                  RDV pris via RDV&nbsp;Service&nbsp;Public
-                </p>
-                <RdvStatusBadge rdv={rdv} />
-                <Button
-                  priority="tertiary no outline"
-                  size="small"
-                  title="Voir et modifier le RDV sur Rendez-vous Service Public"
-                  linkProps={{
-                    href: rdv.url,
-                    target: '_blank',
-                  }}
-                >
-                  Voir
-                </Button>
-              </div>
-            </>
-          )}
-          <hr className="fr-separator-6v" />
-
-          {donneesItems.map(({ title, items }, index) => (
-            <Fragment key={index}>
-              <p className="fr-text--sm fr-text-mention-grey fr-mb-1v fr-mt-4v">
-                {title}
-              </p>
-              {Array.isArray(items) ? (
-                <ul className="fr-my-0">
-                  {items.map((item, itemIndex) => (
-                    <ListItem key={itemIndex}>{item}</ListItem>
-                  ))}
-                </ul>
-              ) : (
-                items
-              )}
-            </Fragment>
-          ))}
-
-          {!!demarcheItems && demarcheItems.length > 0 && (
-            <>
-              <hr className="fr-separator-6v" />
-              <p className="fr-text-mention--grey fr-text--xs fr-mb-4v fr-text--bold fr-text--uppercase">
-                <span className="fr-icon-draft-line fr-icon--sm fr-mr-1w" />
-                Informations sur la démarche administrative
-              </p>
-              {demarcheItems.map(({ title, items }, index) => (
-                <Fragment key={index}>
-                  <p className="fr-text--sm fr-text-mention-grey fr-mb-1v fr-mt-4v">
-                    {title}
-                  </p>
-                  {Array.isArray(items) ? (
-                    <ul className="fr-my-0">
-                      {items.map((item, itemIndex) => (
-                        <ListItem key={itemIndex}>{item}</ListItem>
-                      ))}
-                    </ul>
-                  ) : (
-                    items
-                  )}
-                </Fragment>
-              ))}
-            </>
-          )}
-
           {!!beneficiaireUnique && !beneficiaireUnique.anonyme && (
             <>
               <hr className="fr-separator-6v" />
@@ -608,7 +531,6 @@ const ActiviteDetailsModal = ({
               </ul>
             </>
           )}
-
           {!!participants && (
             <>
               <hr className="fr-separator-6v" />
@@ -675,6 +597,80 @@ const ActiviteDetailsModal = ({
                     </>
                   )}
               </Accordion>
+            </>
+          )}
+          {!!rdv && (
+            <>
+              <hr className="fr-separator-6v" />
+              <div className="fr-flex fr-flex-gap-2v fr-align-items-center">
+                <div
+                  className="fr-background-alt--blue-france fr-p-1-5v fr-border-radius--8 fr-flex"
+                  aria-hidden
+                >
+                  <RDVServicePublicLogo
+                    className="fr-display-block"
+                    width={20}
+                    height={20}
+                  />
+                </div>
+                <p className="fr-text--sm fr-text--medium fr-mb-0 fr-flex-grow-1">
+                  RDV pris via RDV&nbsp;Service&nbsp;Public
+                </p>
+                <RdvStatusBadge rdv={rdv} />
+                <Button
+                  priority="tertiary no outline"
+                  size="small"
+                  title="Voir et modifier le RDV sur Rendez-vous Service Public"
+                  linkProps={{
+                    href: rdv.url,
+                    target: '_blank',
+                  }}
+                >
+                  Voir
+                </Button>
+              </div>
+            </>
+          )}
+          <hr className="fr-separator-6v" />
+          {donneesItems.map(({ title, items }, index) => (
+            <Fragment key={index}>
+              <p className="fr-text--sm fr-text-mention-grey fr-mb-1v fr-mt-4v">
+                {title}
+              </p>
+              {Array.isArray(items) ? (
+                <ul className="fr-my-0">
+                  {items.map((item, itemIndex) => (
+                    <ListItem key={itemIndex}>{item}</ListItem>
+                  ))}
+                </ul>
+              ) : (
+                items
+              )}
+            </Fragment>
+          ))}
+          {!!demarcheItems && demarcheItems.length > 0 && (
+            <>
+              <hr className="fr-separator-6v" />
+              <p className="fr-text-mention--grey fr-text--xs fr-mb-4v fr-text--bold fr-text--uppercase">
+                <span className="fr-icon-draft-line fr-icon--sm fr-mr-1w" />
+                Informations sur la démarche administrative
+              </p>
+              {demarcheItems.map(({ title, items }, index) => (
+                <Fragment key={index}>
+                  <p className="fr-text--sm fr-text-mention-grey fr-mb-1v fr-mt-4v">
+                    {title}
+                  </p>
+                  {Array.isArray(items) ? (
+                    <ul className="fr-my-0">
+                      {items.map((item, itemIndex) => (
+                        <ListItem key={itemIndex}>{item}</ListItem>
+                      ))}
+                    </ul>
+                  ) : (
+                    items
+                  )}
+                </Fragment>
+              ))}
             </>
           )}
           {!!notes && (

@@ -270,7 +270,6 @@ const BeneficiaireForm = ({
             Les coordonnées sont utiles notamment pour planifier un rendez-vous
             via RDV Service Public et envoyer un rappel par SMS à vos
             bénéficiaires.
-            {enSavoirPlusLink}
           </>
         }
       >

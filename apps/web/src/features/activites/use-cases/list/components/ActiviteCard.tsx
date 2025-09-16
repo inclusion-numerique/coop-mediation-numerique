@@ -1,3 +1,4 @@
+import { TruncateText } from '@app/ui/components/Primitives/TruncatedText'
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import ActiviteCardOpenModalLink from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/ActiviteCardOpenModalLink'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
@@ -81,7 +82,7 @@ const ActiviteCard = ({
           {titreAtelier ? (
             <>
               <ActiviteCardSpacer />
-              {titreAtelier}
+              <TruncateText text={titreAtelier} maxLength={40} />
             </>
           ) : null}
           {displayDateDay ? (
@@ -130,9 +131,12 @@ const ActiviteCard = ({
             ) : (
               <>
                 <span className="fr-icon-user-line fr-mr-1w fr-icon--sm" />
-                {getBeneficiaireDisplayName(
-                  accompagnements[0]?.beneficiaire ?? {},
-                )}
+                <TruncateText
+                  text={getBeneficiaireDisplayName(
+                    accompagnements[0]?.beneficiaire ?? {},
+                  )}
+                  maxLength={20}
+                />
               </>
             )
           ) : null}

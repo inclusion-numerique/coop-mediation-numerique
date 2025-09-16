@@ -28,8 +28,7 @@ export const MesOutils = async () => {
         <h1 className="fr-text-title--blue-france">Mes outils</h1>
         <p>
           Retrouvez des outils utiles dans votre pratique de la médiation
-          numérique. Découvrez leurs fonctionnalités clés et comment accéder à
-          ces outils en cliquant sur le bouton ‘En savoir plus’.
+          numérique. Découvrez leurs fonctionnalités clés et comment y accéder.
         </p>
         <Notice
           className="fr-notice--new fr-notice--flex"
