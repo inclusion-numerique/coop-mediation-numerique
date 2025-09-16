@@ -41,11 +41,13 @@ export const StatistiquesActivites = ({
   structures,
   totalCounts,
   wording = 'personnel',
+  isAdmin = false,
 }: {
   wording?: 'personnel' | 'generique'
   activites: ActivitesStats
   structures?: ActivitesStructuresStats
   totalCounts: TotalCountsStats
+  isAdmin?: boolean
 }) => {
   const [accompagnementCategory, setAccompagnementCategory] =
     useState<AccompagnementCategory>('thematiques')
@@ -77,16 +79,20 @@ export const StatistiquesActivites = ({
       items: activites.tags.sort(desc),
       colors: tagsColor,
       maxProportion: activites.tags.reduce(toMaxProportion, 0),
-      actions: (
-        <Button
-          priority="tertiary no outline"
-          size="small"
-          iconId="fr-icon-settings-5-line"
-          linkProps={{ href: '/coop/tags' }}
-        >
-          Gérer mes tags
-        </Button>
-      ),
+      ...(isAdmin
+        ? {}
+        : {
+            actions: (
+              <Button
+                priority="tertiary no outline"
+                size="small"
+                iconId="fr-icon-settings-5-line"
+                linkProps={{ href: '/coop/tags' }}
+              >
+                Gérer mes tags
+              </Button>
+            ),
+          }),
     },
   ]
 
