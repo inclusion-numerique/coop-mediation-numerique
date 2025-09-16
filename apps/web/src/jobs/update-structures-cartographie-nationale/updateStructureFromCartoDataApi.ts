@@ -57,6 +57,57 @@ const groupCoopIdsByCartoghraphieId = (
   structure,
 })
 
+type StructureForMerge = {
+  visiblePourCartographieNationale: boolean
+  nomReferent: string | null
+  courrielReferent: string | null
+  telephoneReferent: string | null
+  v1Imported: Date | null
+  v1StructureId: string | null
+  v1StructureIdPg: number | null
+  v1PermanenceId: string | null
+}
+
+const latestNonNull = <T, K extends keyof T>(
+  items: T[],
+  key: K,
+): T[K] | null => {
+  const found = items.find((item) => item[key] != null)?.[key]
+  return found != null ? found : null
+}
+
+const mergeStructures = async (
+  structureIds: string[],
+): Promise<StructureForMerge> => {
+  const structures = await prismaClient.structure.findMany({
+    where: { id: { in: structureIds } },
+    select: {
+      visiblePourCartographieNationale: true,
+      nomReferent: true,
+      courrielReferent: true,
+      telephoneReferent: true,
+      v1Imported: true,
+      v1StructureId: true,
+      v1StructureIdPg: true,
+      v1PermanenceId: true,
+    },
+    orderBy: { modification: 'desc' },
+  })
+
+  return {
+    visiblePourCartographieNationale: structures.some(
+      (s) => s.visiblePourCartographieNationale,
+    ),
+    nomReferent: latestNonNull(structures, 'nomReferent'),
+    courrielReferent: latestNonNull(structures, 'courrielReferent'),
+    telephoneReferent: latestNonNull(structures, 'telephoneReferent'),
+    v1Imported: latestNonNull(structures, 'v1Imported'),
+    v1StructureId: latestNonNull(structures, 'v1StructureId'),
+    v1StructureIdPg: latestNonNull(structures, 'v1StructureIdPg'),
+    v1PermanenceId: latestNonNull(structures, 'v1PermanenceId'),
+  }
+}
+
 const linkToCoopStructure = ({
   coopIds: [structureId, ...idsToDelete],
   structure,
@@ -71,15 +122,10 @@ const linkToCoopStructure = ({
       return
     }
 
-    await prisma.structure.update({
-      where: { id: structureId },
-      data: {
-        ...(latestChangesFromCoop(structure)
-          ? structureToPrismaModel(structure)
-          : {}),
-        structureCartographieNationaleId: structure.id,
-      },
-    })
+    const mergedStructures = await mergeStructures([
+      structureId,
+      ...idsToDelete,
+    ])
 
     if (idsToDelete.length > 0) {
       // update the activitesCount field of the new structure
@@ -112,6 +158,11 @@ const linkToCoopStructure = ({
         prisma.structure.update({
           where: { id: structureId },
           data: {
+            ...mergedStructures,
+            ...(latestChangesFromCoop(structure)
+              ? structureToPrismaModel(structure)
+              : {}),
+            structureCartographieNationaleId: structure.id,
             activitesCount: {
               increment: activitesCount._sum.activitesCount ?? 0,
             },
@@ -124,6 +175,68 @@ const linkToCoopStructure = ({
       })
     }
   })
+
+const removeMediateursEnActiviteLinks = async () => {
+  const duplicatedLieuxActiviteLinks = await prismaClient.$queryRaw<
+    { id: string }[]
+  >`
+    WITH ranked AS (
+      SELECT
+        id,
+        mediateur_id,
+        structure_id,
+        creation,
+        ROW_NUMBER() OVER (
+          PARTITION BY mediateur_id, structure_id
+          ORDER BY creation ASC
+        ) AS rn
+      FROM mediateurs_en_activite
+      WHERE suppression IS NULL
+    )
+    SELECT id FROM ranked WHERE rn > 1
+  `
+
+  if (duplicatedLieuxActiviteLinks.length > 0) {
+    await prismaClient.mediateurEnActivite.deleteMany({
+      where: {
+        id: { in: duplicatedLieuxActiviteLinks.map(({ id }) => id) },
+      },
+    })
+  }
+
+  return duplicatedLieuxActiviteLinks
+}
+
+const removeDuplicatedStructureEmployeuseLinks = async () => {
+  const duplicatedStructureEmployeuseLinks = await prismaClient.$queryRaw<
+    { id: string }[]
+  >`
+    WITH ranked AS (
+      SELECT
+        id,
+        user_id,
+        structure_id,
+        creation,
+        ROW_NUMBER() OVER (
+          PARTITION BY user_id, structure_id
+          ORDER BY creation ASC
+        ) AS rn
+      FROM employes_structures
+      WHERE suppression IS NULL
+    )
+    SELECT id FROM ranked WHERE rn > 1
+  `
+
+  if (duplicatedStructureEmployeuseLinks.length > 0) {
+    await prismaClient.employeStructure.deleteMany({
+      where: {
+        id: { in: duplicatedStructureEmployeuseLinks.map((d) => d.id) },
+      },
+    })
+  }
+
+  return duplicatedStructureEmployeuseLinks
+}
 
 export const updateStructureFromCartoDataApi =
   ({
@@ -152,7 +265,25 @@ export const updateStructureFromCartoDataApi =
     for (const structureLinkedToCarto of structuresLinkedToCarto) {
       await linkToCoopStructure(structureLinkedToCarto)
     }
-    output(`4. updated finished successfully`)
+
+    output(
+      '4. remove duplicates mediateurs en activite and employe structures links',
+    )
+
+    const duplicatedLieuxActiviteLinks = await removeMediateursEnActiviteLinks()
+
+    output(
+      `${duplicatedLieuxActiviteLinks.length} duplicated mediateurs_en_activite links removed`,
+    )
+
+    const duplicatedStructureEmployeuseLinks =
+      await removeDuplicatedStructureEmployeuseLinks()
+
+    output(
+      `${duplicatedStructureEmployeuseLinks.length} duplicated employes_structures links removed`,
+    )
+
+    output(`5. updated finished successfully`)
     addMutationLog({
       userId: null,
       nom: 'MiseAJourStructuresCartographieNationale',
