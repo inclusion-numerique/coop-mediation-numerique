@@ -10,6 +10,8 @@ import { optionalNumberToString } from '@app/web/utils/formatNumber'
 import { booleanToYesNo } from '@app/web/utils/yesNoBooleanOptions'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import type { Prisma } from '@prisma/client'
+import { getUserAccountStatus } from './getUserAccountStatus'
+import { getUserAccountStatusBadge } from './getUserAccountStatusBadge'
 import { getUserLifecycle } from './getUserLifecycle'
 import { getUserLifecycleBadge } from './getUserLifecycleBadge'
 import { UtilisateurForList } from './queryUtilisateursForList'
@@ -33,6 +35,13 @@ export const UtilisateursDataTable = {
       cell: (user) => getUserLifecycleBadge(user),
     },
     {
+      name: 'statut-compte',
+      header: 'Statut compte',
+      csvHeaders: ['Statut compte'],
+      csvValues: (user) => [getUserAccountStatus(user)],
+      cell: (user) => getUserAccountStatusBadge(user),
+    },
+    {
       name: 'creation',
       header: 'Créé',
       csvHeaders: ['Créé'],
@@ -47,16 +56,48 @@ export const UtilisateursDataTable = {
       ],
     },
     {
-      name: 'nom',
-      header: 'Nom',
-      csvHeaders: ['Nom'],
-      csvValues: ({ name }) => [name],
-      cell: ({ name }) => name,
+      name: 'lastLogin',
+      header: 'Dernière connexion',
+      csvHeaders: ['Dernière connexion'],
+      defaultSortable: true,
+      defaultSortableDirection: 'desc',
+      csvValues: ({ lastLogin }) => [lastLogin?.toISOString()],
+      cell: ({ lastLogin }) => dateAsDayAndTime(lastLogin),
       orderBy: (direction) => [
         {
-          lastName: direction,
+          lastLogin: direction,
         },
       ],
+    },
+    {
+      name: 'lastCra',
+      csvHeaders: ['Dernière complétion d’un CRA'],
+      csvValues: ({ mediateur }) => [
+        mediateur?.activites.at(0)?.date.toISOString(),
+      ],
+    },
+    {
+      name: 'lastBeneficiaire',
+      csvHeaders: ['Dernier ajout de bénéficiaire'],
+      csvValues: ({ mediateur }) => [
+        mediateur?.beneficiaires.at(0)?.creation.toISOString(),
+      ],
+    },
+    {
+      name: 'nom',
+      header: 'Nom',
+      cell: ({ name }) => name,
+      orderBy: (direction) => [{ name: direction }],
+    },
+    {
+      name: 'prenom',
+      csvHeaders: ['Prénom'],
+      csvValues: ({ firstName }) => [firstName],
+    },
+    {
+      name: 'nom',
+      csvHeaders: ['Nom'],
+      csvValues: ({ lastName }) => [lastName],
     },
     {
       name: 'email',
@@ -122,6 +163,13 @@ export const UtilisateursDataTable = {
             beneficiairesCount: direction,
           },
         },
+      ],
+    },
+    {
+      name: 'mediateursCoordonnes',
+      csvHeaders: ['Médiateurs coordonnés'],
+      csvValues: ({ coordinateur }) => [
+        coordinateur?._count.mediateursCoordonnes,
       ],
     },
     {

@@ -65,40 +65,42 @@ const DataTable = <
             >
               <thead className={classNames(classes?.thead)}>
                 <tr className={classNames(classes?.tr)}>
-                  {configuration.columns.map(
-                    ({
-                      name,
-                      header,
-                      sortInMemory,
-                      sortable,
-                      defaultSortable,
-                      defaultSortableDirection,
-                      headerClassName,
-                      orderBy,
-                    }) => (
-                      <th
-                        scope="col"
-                        key={name}
-                        className={classNames(headerClassName, classes?.th)}
-                      >
-                        {header}
-                        {(!!defaultSortable ||
-                          !!sortable ||
-                          !!sortInMemory ||
-                          !!orderBy) && (
-                          <SortLink
-                            {...sortLinkProps(
-                              {
-                                tri: name,
-                              } as DataTableSearchParams<Configuration>,
-                              defaultSortable,
-                              defaultSortableDirection,
-                            )}
-                          />
-                        )}
-                      </th>
-                    ),
-                  )}
+                  {configuration.columns
+                    .filter(({ header }) => header != null)
+                    .map(
+                      ({
+                        name,
+                        header,
+                        sortInMemory,
+                        sortable,
+                        defaultSortable,
+                        defaultSortableDirection,
+                        headerClassName,
+                        orderBy,
+                      }) => (
+                        <th
+                          scope="col"
+                          key={name}
+                          className={classNames(headerClassName, classes?.th)}
+                        >
+                          {header}
+                          {(!!defaultSortable ||
+                            !!sortable ||
+                            !!sortInMemory ||
+                            !!orderBy) && (
+                            <SortLink
+                              {...sortLinkProps(
+                                {
+                                  tri: name,
+                                } as DataTableSearchParams<Configuration>,
+                                defaultSortable,
+                                defaultSortableDirection,
+                              )}
+                            />
+                          )}
+                        </th>
+                      ),
+                    )}
                 </tr>
               </thead>
               <tbody className={classNames(classes?.tbody)}>
