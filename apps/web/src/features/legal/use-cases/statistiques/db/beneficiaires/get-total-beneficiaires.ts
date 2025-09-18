@@ -12,7 +12,7 @@ export const getTotalBeneficiaires = async () => {
         END AS type,
       COUNT(*)::int AS count
     FROM beneficiaires ben
-    WHERE ben.suppression IS NULL
+    WHERE ben.suppression IS NULL AND ben.v1_imported IS NULL
     GROUP BY
       CASE
         WHEN ben.anonyme IS TRUE THEN 'anonyme'

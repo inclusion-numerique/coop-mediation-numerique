@@ -81,7 +81,7 @@ const MesActivitesListePage = ({
   data: Promise<ActivitesListPageData>
 }) => (
   <>
-    <Suspense fallback={<Spinner />}>
+    <Suspense fallback={<Spinner className="fr-mt-6v" />}>
       <SuspensedContent data={data} />
     </Suspense>
   </>

@@ -29,7 +29,7 @@ const getBeneficiairesPerMonth = async () =>
       ELSE 'suivi'
       END AS type
   FROM beneficiaires ben
-  WHERE ben.suppression IS NULL AND ben.creation >= ${Prisma.raw(
+  WHERE ben.suppression IS NULL AND ben.v1_imported IS NULL AND ben.creation >= ${Prisma.raw(
     fromDate,
   )}),months AS (SELECT generate_series(${Prisma.raw(fromDate)}, ${Prisma.raw(
     'CURRENT_DATE',
@@ -62,7 +62,7 @@ const getInitialCountBeforePeriod = async () =>
               END AS type,
           COUNT(*)::int AS count
       FROM beneficiaires ben
-      WHERE ben.suppression IS NULL
+      WHERE ben.suppression IS NULL AND ben.v1_imported IS NULL
         AND ben.creation < ${Prisma.raw(fromDate)}
       GROUP BY
           CASE
