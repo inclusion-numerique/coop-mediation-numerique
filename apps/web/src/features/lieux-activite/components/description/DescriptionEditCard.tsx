@@ -37,7 +37,6 @@ const DescriptionEditCard = ({
     resolver: zodResolver(DescriptionValidation),
     defaultValues: {
       id,
-      typologies,
       presentationResume,
       presentationDetail,
     },
@@ -80,15 +79,12 @@ const DescriptionEditCard = ({
       edition={<DescriptionFields form={form} />}
       view={
         <DescriptionView
-          typologies={typologies}
           presentationResume={presentationResume}
           presentationDetail={presentationDetail}
           formationsLabels={formationsLabels}
         />
       }
-      isEmpty={[typologies, presentationResume, presentationDetail].every(
-        isEmpty,
-      )}
+      isEmpty={[presentationResume, presentationDetail].every(isEmpty)}
       emptyState={
         <EmptyState title="Compléter ces informations pour donner du contexte aux aidants qui découvrent ce lieu." />
       }

@@ -6,7 +6,6 @@ import {
   descriptionMaxLength,
 } from '@app/web/features/structures/DescriptionValidation'
 import { formationLabelOptions } from '@app/web/features/structures/formationLabel'
-import { typologieStructureOptions } from '@app/web/features/structures/typologieStructure'
 import React from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
@@ -26,13 +25,6 @@ export const DescriptionFields = <T extends Omit<DescriptionData, 'id'>>({
       <p className="fr-mb-4w fr-text--sm fr-text-mention--grey">
         Ces champs sont optionnels
       </p>
-      <MultipleSelectFormField
-        control={control}
-        disabled={formState.isSubmitting}
-        path="typologies"
-        label="Typologies de la structure"
-        options={optionsWithEmptyValue(typologieStructureOptions)}
-      />
       <InputFormField
         type="textarea"
         rows={3}

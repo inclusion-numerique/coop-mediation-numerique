@@ -15,6 +15,7 @@ import { siretOrRna } from '@app/web/features/structures/rna/rnaValidation'
 import { trpc } from '@app/web/trpc'
 import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
 import { zodResolver } from '@hookform/resolvers/zod'
+import type { Typologie } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { DefaultValues, useForm } from 'react-hook-form'
 import { InformationsGeneralesView } from './InformationsGeneralesView'
@@ -31,6 +32,7 @@ const InformationsGeneralesEditCard = (props: {
   complementAdresse?: string | null
   siret?: string | null
   rna?: string | null
+  typologies?: Typologie[] | null
 }) => {
   const mutation = trpc.lieuActivite.updateInformationsGenerales.useMutation()
   const router = useRouter()
@@ -56,6 +58,7 @@ const InformationsGeneralesEditCard = (props: {
   const defaultValues = {
     ...props,
     adresseBan: adresseBanData,
+    typologies: props.typologies ?? [],
   } satisfies DefaultValues<InformationsGeneralesData>
 
   const initialAdresseBanOption = {

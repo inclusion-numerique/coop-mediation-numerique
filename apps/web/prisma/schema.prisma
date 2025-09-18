@@ -966,6 +966,7 @@ model Beneficiaire {
   // Lorsqu’un médiateur ne spécifie pas de bénéficiaire suivi, un bénéficiaire
   // anonyme est créé, avec les memes informations mais sans prenom et nom
   anonyme Boolean @default(false)
+  v1Imported DateTime? @map("v1_imported") // beneficiaire anonyme importé depuis les données cra v1
 
   // Lorsqu’un bénéficiaire anonyme est ajouté via cra collectif
   // ses attributions de genre, tranche d’age et statut social sont aléatoire

@@ -112,79 +112,82 @@ const linkToCoopStructure = ({
   coopIds: [structureId, ...idsToDelete],
   structure,
 }: CoopIdsToMergeInSingleStructure) =>
-  prismaClient.$transaction(async (prisma) => {
-    const existingStructure = await prisma.structure.findUnique({
-      where: { id: structureId },
-    })
-
-    if (!existingStructure) {
-      output(`Skipping non-existent structureId: ${structureId}`)
-      return
-    }
-
-    if (idsToDelete.length > 0) {
-      const mergedStructures = await mergeStructures([
-        structureId,
-        ...idsToDelete,
-      ])
-
-      // update the activitesCount field of the new structure
-      const activitesCount = await prisma.structure.aggregate({
-        _sum: {
-          activitesCount: true,
-        },
-        where: {
-          id: { in: idsToDelete },
-        },
+  prismaClient.$transaction(
+    async (prisma) => {
+      const existingStructure = await prisma.structure.findUnique({
+        where: { id: structureId },
       })
 
-      await Promise.all([
-        prisma.employeStructure.updateMany({
-          where: { structureId: { in: idsToDelete } },
-          data: { structureId },
-        }),
-        prisma.mediateurEnActivite.updateMany({
-          where: { structureId: { in: idsToDelete } },
-          data: { structureId },
-        }),
-        prisma.activite.updateMany({
-          where: { structureId: { in: idsToDelete } },
-          data: { structureId },
-        }),
-        prisma.activite.updateMany({
-          where: { structureEmployeuseId: { in: idsToDelete } },
-          data: { structureEmployeuseId: structureId },
-        }),
-        prisma.structure.update({
+      if (!existingStructure) {
+        output(`Skipping non-existent structureId: ${structureId}`)
+        return
+      }
+
+      if (idsToDelete.length > 0) {
+        const mergedStructures = await mergeStructures([
+          structureId,
+          ...idsToDelete,
+        ])
+
+        // update the activitesCount field of the new structure
+        const activitesCount = await prisma.structure.aggregate({
+          _sum: {
+            activitesCount: true,
+          },
+          where: {
+            id: { in: idsToDelete },
+          },
+        })
+
+        await Promise.all([
+          prisma.employeStructure.updateMany({
+            where: { structureId: { in: idsToDelete } },
+            data: { structureId },
+          }),
+          prisma.mediateurEnActivite.updateMany({
+            where: { structureId: { in: idsToDelete } },
+            data: { structureId },
+          }),
+          prisma.activite.updateMany({
+            where: { structureId: { in: idsToDelete } },
+            data: { structureId },
+          }),
+          prisma.activite.updateMany({
+            where: { structureEmployeuseId: { in: idsToDelete } },
+            data: { structureEmployeuseId: structureId },
+          }),
+          prisma.structure.update({
+            where: { id: structureId },
+            data: {
+              ...mergedStructures,
+              ...(latestChangesFromCoop(structure)
+                ? structureToPrismaModel(structure)
+                : {}),
+              activitesCount: {
+                increment: activitesCount._sum.activitesCount ?? 0,
+              },
+              structureCartographieNationaleId: structure.id,
+            },
+          }),
+        ])
+
+        await prisma.structure.deleteMany({
+          where: { id: { in: idsToDelete } },
+        })
+      } else {
+        await prisma.structure.update({
           where: { id: structureId },
           data: {
-            ...mergedStructures,
             ...(latestChangesFromCoop(structure)
               ? structureToPrismaModel(structure)
               : {}),
-            activitesCount: {
-              increment: activitesCount._sum.activitesCount ?? 0,
-            },
             structureCartographieNationaleId: structure.id,
           },
-        }),
-      ])
-
-      await prisma.structure.deleteMany({
-        where: { id: { in: idsToDelete } },
-      })
-    } else {
-      await prisma.structure.update({
-        where: { id: structureId },
-        data: {
-          ...(latestChangesFromCoop(structure)
-            ? structureToPrismaModel(structure)
-            : {}),
-          structureCartographieNationaleId: structure.id,
-        },
-      })
-    }
-  })
+        })
+      }
+    },
+    { maxWait: 3000, timeout: 15 * 60 * 1000 },
+  )
 
 const removeMediateursEnActiviteLinks = async () => {
   const duplicatedLieuxActiviteLinks = await prismaClient.$queryRaw<

@@ -1,3 +1,8 @@
+import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
+import { typologieStructureLabels } from '@app/web/features/structures/typologieStructure'
+import Tag from '@codegouvfr/react-dsfr/Tag'
+import type { Typologie } from '@prisma/client'
+
 export const InformationsGeneralesView = ({
   nom,
   adresse,
@@ -6,6 +11,7 @@ export const InformationsGeneralesView = ({
   complementAdresse,
   siret,
   rna,
+  typologies,
 }: {
   nom: string
   adresse: string
@@ -14,6 +20,7 @@ export const InformationsGeneralesView = ({
   complementAdresse?: string | null
   siret?: string | null
   rna?: string | null
+  typologies?: Typologie[] | null
 }) => (
   <div className="fr-flex fr-direction-column fr-flex-gap-6v">
     <div>
@@ -41,6 +48,22 @@ export const InformationsGeneralesView = ({
           ? complementAdresse
           : 'Non renseigné'}
       </div>
+    </div>
+    <div>
+      <span className="fr-text-mention--grey">
+        Typologie{sPluriel(typologies?.length ?? 0)}
+      </span>
+      {(typologies?.length ?? 0) > 0 ? (
+        <ul className="fr-tags-group fr-mt-3v">
+          {typologies?.map((typologie) => (
+            <li key={typologie}>
+              <Tag>{typologieStructureLabels[typologie]}</Tag>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="fr-text--medium">Non renseigné</div>
+      )}
     </div>
     <div>
       <span className="fr-text-mention--grey">SIRET structure (ou RNA)</span>

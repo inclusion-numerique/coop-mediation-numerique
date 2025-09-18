@@ -1,11 +1,14 @@
 import InputFormField from '@app/ui/components/Form/InputFormField'
+import MultipleSelectFormField from '@app/ui/components/Form/MultipleSelectFormField'
 import RequiredFieldsDisclaimer from '@app/ui/components/Form/RequiredFieldsDisclaimer'
+import { optionsWithEmptyValue } from '@app/ui/components/Form/utils/options'
 import AdresseBanFormField, {
   type AdressBanFormFieldOption,
 } from '@app/web/components/form/AdresseBanFormField'
 import { InformationsGeneralesData } from '@app/web/features/structures/InformationsGeneralesValidation'
 import RnaInputInfo from '@app/web/features/structures/rna/RnaInputInfo'
 import SiretInputInfo from '@app/web/features/structures/siret/SiretInputInfo'
+import { typologieStructureOptions } from '@app/web/features/structures/typologieStructure'
 import { UseFormReturn } from 'react-hook-form'
 
 export const InformationsGeneralesFields = <
@@ -51,6 +54,14 @@ export const InformationsGeneralesFields = <
         label="Complément d’adresse"
         control={control}
         disabled={formState.isSubmitting}
+      />
+      <MultipleSelectFormField
+        asterisk
+        control={control}
+        disabled={formState.isSubmitting}
+        path="typologies"
+        label="Typologies de la structure"
+        options={optionsWithEmptyValue(typologieStructureOptions)}
       />
       <InputFormField
         path="siret"

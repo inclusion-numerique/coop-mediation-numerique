@@ -10,12 +10,14 @@ import { StatistiquesActivites } from '@app/web/app/coop/(sidemenu-layout)/mes-s
 import { StatistiquesBeneficiaires } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesBeneficiaires'
 import { StatistiquesGenerales } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesGenerales'
 import { metadataTitle } from '@app/web/app/metadataTitle'
+import { authenticateUser } from '@app/web/auth/authenticateUser'
 import Filters from '@app/web/features/activites/use-cases/list/components/Filters'
 import { FilterTags } from '@app/web/features/activites/use-cases/list/components/FilterTags'
 import {
   type ActivitesFilters,
   validateActivitesFilters,
 } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { getTagsCollectifs } from '@app/web/features/activites/use-cases/tags/db/getTagsCollectifs'
 import { getImpactStats } from '@app/web/server/impact/getImpactStats'
 
 export const metadata = {
@@ -34,6 +36,8 @@ const Page = async (props: {
 }) => {
   const searchParams = await props.searchParams
   const activitesFilters = validateActivitesFilters(searchParams)
+  const user = await authenticateUser()
+  const tagsOptions = await getTagsCollectifs()
 
   const { communesOptions, departementsOptions, lieuxActiviteOptions } =
     await getUtilisateursListPageData({
@@ -51,7 +55,7 @@ const Page = async (props: {
     getAccompagnementsCountByDay({ activitesFilters }),
     getAccompagnementsCountByMonth({ activitesFilters }),
     getBeneficiaireStats({ activitesFilters }),
-    getActivitesStats({ activitesFilters }),
+    getActivitesStats({ activitesFilters, user }),
     getTotalCountsStats({ activitesFilters }),
     getImpactStats({ activitesFilters }),
   ])
@@ -64,7 +68,7 @@ const Page = async (props: {
           communesOptions={communesOptions}
           departementsOptions={departementsOptions}
           lieuxActiviteOptions={lieuxActiviteOptions}
-          tagsOptions={[]}
+          tagsOptions={tagsOptions}
           initialMediateursOptions={[]}
           initialBeneficiairesOptions={[]}
           minDate={new Date('2024-09-01')}
@@ -92,6 +96,7 @@ const Page = async (props: {
       </section>
       <section className="fr-mb-6w">
         <StatistiquesActivites
+          isAdmin
           wording="generique"
           totalCounts={totalCounts}
           activites={activites}

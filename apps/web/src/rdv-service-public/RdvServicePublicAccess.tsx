@@ -43,7 +43,7 @@ const RdvServicePublicAccess = async () => {
           <div className="fr-text--center">
             <p className="fr-text--sm fr-mb-2v">
               Programmez des rendez-vous avec vos bénéficiaires suivis et
-              retrouvez-les dans leur historiques d’accompagnements.
+              retrouvez-les dans leurs historiques d’accompagnements.
             </p>
             <Link
               href={rdvIntegrationEnSavoirPlusLink}
@@ -60,10 +60,10 @@ const RdvServicePublicAccess = async () => {
                   href: '/coop/mes-outils/rdv-service-public/se-connecter',
                 }}
                 priority="primary"
-                iconId="fr-icon-link"
-                className="fr-mb-0"
+                className="fr-mb-0 fr-flex-gap-2v"
               >
-                Connecter à La Coop
+                Connecter à La Coop{' '}
+                <span className="ri-exchange-line" aria-hidden />
               </Button>
             ) : (
               <Button

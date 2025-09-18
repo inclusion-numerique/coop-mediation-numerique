@@ -160,8 +160,8 @@ export const StatistiquesGenerales = ({
                 aria-hidden
               >
                 Le nombre d’accompagnements correspond à la somme des 2 types
-                d’activités enregistrées&nbsp;: (accompagnement individuel et
-                atelier collectif).
+                d’activités enregistrées&nbsp;: accompagnement individuel et
+                atelier collectif.
                 <br />
                 <br />À noter&nbsp;: Les ateliers collectifs comptent pour 1
                 accompagnement par participant. Ex&nbsp;: Un atelier collectif

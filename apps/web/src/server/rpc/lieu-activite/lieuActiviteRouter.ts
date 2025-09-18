@@ -57,6 +57,7 @@ const setInformationsGeneralesFields = ({
   complementAdresse,
   siret,
   rna,
+  typologies,
 }: Omit<InformationsGeneralesData, 'id'>) => ({
   nom,
   adresse: adresseBan.nom,
@@ -68,6 +69,7 @@ const setInformationsGeneralesFields = ({
   complementAdresse,
   siret,
   rna,
+  typologies,
 })
 
 const setVisiblePourCartographieNationaleFields = ({
@@ -96,12 +98,10 @@ const setInformationsPratiquesFields = ({
 })
 
 const setDescriptionFields = ({
-  typologies,
   presentationResume,
   presentationDetail,
   formationsLabels,
 }: Omit<DescriptionData, 'id'>) => ({
-  typologies: typologies ?? undefined,
   presentationResume: presentationResume ?? undefined,
   presentationDetail: presentationDetail ?? undefined,
   formationsLabels: formationsLabels ?? undefined,

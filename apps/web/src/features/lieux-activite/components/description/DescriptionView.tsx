@@ -1,34 +1,17 @@
 import { formationLabelLabels } from '@app/web/features/structures/formationLabel'
-import { typologieStructureLabels } from '@app/web/features/structures/typologieStructure'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import type { FormationLabel, Typologie } from '@prisma/client'
 
 export const DescriptionView = ({
-  typologies,
   presentationResume,
   presentationDetail,
   formationsLabels,
 }: {
-  typologies?: Typologie[] | null
   presentationResume?: string | null
   presentationDetail?: string | null
   formationsLabels?: FormationLabel[] | null
 }) => (
   <div className="fr-flex fr-direction-column fr-flex-gap-6v">
-    <div>
-      <span className="fr-text-mention--grey">Typologie</span>
-      {(typologies?.length ?? 0) > 0 ? (
-        <ul className="fr-tags-group fr-mt-3v">
-          {typologies?.map((typologie) => (
-            <li key={typologie}>
-              <Tag>{typologieStructureLabels[typologie]}</Tag>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <div className="fr-text--medium">Non renseigné</div>
-      )}
-    </div>
     <div>
       <span className="fr-text-mention--grey">Résumé</span>
       <div

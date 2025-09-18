@@ -9,7 +9,7 @@ export const getDepartementCodeFromCodeInsee = (codeInsee: string): string =>
 export const getDepartementFromCode = (
   codeDepartement: string,
 ): Departement => {
-  const departement = departementsByCode.get(codeDepartement?.trim() || '75') // TODO repair data and revert this
+  const departement = departementsByCode.get(codeDepartement)
 
   if (!departement)
     throw new Error(`No departement found for code "${codeDepartement}"`)

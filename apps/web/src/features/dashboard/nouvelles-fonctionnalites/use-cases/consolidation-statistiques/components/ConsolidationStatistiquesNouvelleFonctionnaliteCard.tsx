@@ -1,4 +1,4 @@
-import NouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/components/NouvelleFonctionnaliteCard'
+import NouvelleFonctionnaliteCard from '../../../components/NouvelleFonctionnaliteCard'
 import SnoozeNouvelleFonctionnaliteButton from '../../../components/SnoozeNouvelleFonctionnaliteButton'
 import ConsolidationStatistiquesDecouvrirButton from './ConsolidationStatistiquesDecouvrirButton'
 

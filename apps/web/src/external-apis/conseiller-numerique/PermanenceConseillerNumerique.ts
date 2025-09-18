@@ -5,6 +5,9 @@ export type PermanenceConseillerNumerique = {
   nomEnseigne: string
   siteWeb: string | null
   siret: string
+  estStructure: boolean
+  numeroTelephone: string | null
+  email: string | null
   location: {
     type: 'Point'
     coordinates: number[]
@@ -17,4 +20,5 @@ export type PermanenceConseillerNumerique = {
     ville: string
   }
   nonAffichageCarto: boolean
+  structure: { _id: ObjectId }
 }
