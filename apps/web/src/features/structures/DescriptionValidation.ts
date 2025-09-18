@@ -1,11 +1,9 @@
 import z from 'zod'
 import { formationLabelValues } from './formationLabel'
-import { typologieStructureValue } from './typologieStructure'
 
 export const descriptionMaxLength = 280
 
 export const DescriptionShape = {
-  typologies: z.array(z.enum(typologieStructureValue)).nullish(),
   presentationResume: z
     .string()
     .max(
