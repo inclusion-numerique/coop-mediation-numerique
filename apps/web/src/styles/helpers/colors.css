@@ -5,3 +5,22 @@
 .fr-text-title--brown-caramel-sun-425 {
   color: var(--brown-caramel-sun-425-moon-901);
 }
+
+/* needed for design rules where light mode and dark mode have different colors */
+/* declar var for blue-france alt in light and action-low in dark mode */
+:root {
+  --blue-france-alt-light--action-low-dark: var(--blue-france-975-75);
+  --grey-default-light--alt-dark: var(--grey-1000-50);
+}
+:root[data-fr-theme="dark"] {
+  --blue-france-alt-light--action-low-dark: var(--blue-france-925-125);
+  --grey-default-light--alt-dark: var(--grey-975-75);
+}
+
+.fr-background-blue-france-alt-light--action-low-dark {
+  background: var(--blue-france-alt-light--action-low-dark);
+}
+
+.fr-background-grey-default-light--alt-dark {
+  background: var(--grey-default-light--alt-dark);
+}

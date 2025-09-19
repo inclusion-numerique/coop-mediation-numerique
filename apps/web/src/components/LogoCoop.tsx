@@ -1,5 +1,5 @@
 const LogoCoop = ({
-  backgroundColor = 'var(--background-action-low-blue-france)',
+  backgroundColor = 'var(--blue-france-alt-light--action-low-dark)',
   className,
   width = 88,
   height = 88,
