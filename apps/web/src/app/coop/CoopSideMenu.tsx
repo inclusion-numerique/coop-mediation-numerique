@@ -40,7 +40,7 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
             className="ri-chat-poll-line ri-xl fr-mr-1w fr-text--regular"
             aria-hidden
           />
-          Statistiques
+          Mes statistiques
         </>
       ),
       linkProps: { href: '/coop/mes-statistiques' },
