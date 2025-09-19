@@ -46,7 +46,9 @@ const MesActivitesPage = async ({
     includeBeneficiaireIds: searchParams.beneficiaires,
   })
 
-  const hasFeature = hasFeatureFlag(user, 'RdvServicePublic')
+  const hasRdvIntegration =
+    hasFeatureFlag(user, 'RdvServicePublic') &&
+    !!user.rdvAccount?.hasOauthTokens
 
   return (
     <MesActivitesListeLayout vue="liste">
@@ -60,7 +62,7 @@ const MesActivitesPage = async ({
         lieuxActiviteOptions={lieuxActiviteOptions}
         tagsOptions={tagsOptions}
         activiteDates={activiteDates}
-        enableRdvsFilter={hasFeature}
+        enableRdvsFilter={hasRdvIntegration}
       />
       <MesActivitesListePage data={data} />
     </MesActivitesListeLayout>
