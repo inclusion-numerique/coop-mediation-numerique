@@ -19,7 +19,7 @@ import { autonomieApiValues } from '@app/web/features/activites/use-cases/cra/in
 import { structureDeRedirectionApiValues } from '@app/web/features/activites/use-cases/cra/individuel/fields/structures-redirection'
 import { prismaClient } from '@app/web/prismaClient'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
-import type { Prisma } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import { NextResponse } from 'next/server'
 import { type ZodError, z } from 'zod'
 
@@ -308,6 +308,22 @@ const ActiviteCursorValidation = z.object({
  *           type: string
  *         required: false
  *         description: curseur de pagination pour obtenir les éléments précédents
+ *       - in: query
+ *         name: filter[creation][depuis]
+ *         schema:
+ *           type: string
+ *           format: date
+ *           example: "2025-09-01"
+ *         required: false
+ *         description: "retourne les activités avec une date de création supérieure ou égale à cette date
+ *       - in: query
+ *         name: filter[modification][depuis]
+ *         schema:
+ *           type: string
+ *           format: date
+ *           example: "2025-09-01"
+ *         required: false
+ *         description: "retourne les activités avec une date de dernière modification supérieure ou égale à cette date
  *     responses:
  *       200:
  *         description: liste des activités
@@ -331,7 +347,30 @@ export const GET = createApiV1Route
   .configure<ActiviteListResponse>({
     scopes: ['Activites'],
   })
-  .queryParams(JsonApiCursorPaginationQueryParamsValidation)
+  .queryParams(
+    JsonApiCursorPaginationQueryParamsValidation.extend({
+      filter: z
+        .object({
+          creation: z
+            .object({
+              depuis: z
+                .string()
+                .regex(/^\d{4}-\d{2}-\d{2}$/)
+                .optional(),
+            })
+            .default({}),
+          modification: z
+            .object({
+              depuis: z
+                .string()
+                .regex(/^\d{4}-\d{2}-\d{2}$/)
+                .optional(),
+            })
+            .default({}),
+        })
+        .default({}),
+    }),
+  )
   .handle(async ({ params }) => {
     const cursorPagination = prismaCursorPagination(params)
 
@@ -359,6 +398,26 @@ export const GET = createApiV1Route
 
     const where: Prisma.ActiviteWhereInput = {
       suppression: null,
+    }
+
+    // filters: creation/modification depuis (inclusive)
+    const creationSinceInput = params.filter?.creation?.depuis
+    const modificationSinceInput = params.filter?.modification?.depuis
+
+    const creationSinceDate = creationSinceInput
+      ? new Date(`${creationSinceInput}T00:00:00.000Z`)
+      : undefined
+    const modificationSinceDate = modificationSinceInput
+      ? new Date(`${modificationSinceInput}T00:00:00.000Z`)
+      : undefined
+
+    if (creationSinceDate) {
+      where.creation = { gte: creationSinceDate }
+    }
+    if (modificationSinceDate) {
+      where.modification = {
+        gte: modificationSinceDate,
+      }
     }
 
     if (validatedCursor) {
@@ -394,8 +453,23 @@ export const GET = createApiV1Route
     })
 
     // The prisma.count() was slower than the raw query
+    const sqlConditions = [
+      Prisma.sql`activites.suppression IS NULL`,
+    ] as Prisma.Sql[]
+
+    if (creationSinceDate) {
+      sqlConditions.push(Prisma.sql`activites.creation >= ${creationSinceDate}`)
+    }
+    if (modificationSinceDate) {
+      sqlConditions.push(
+        Prisma.sql`activites.modification >= ${modificationSinceDate}`,
+      )
+    }
+
+    const whereSql = Prisma.join(sqlConditions, ' AND ')
+
     const totalCountResult = await prismaClient.$queryRaw<{ count: number }[]>`
-      SELECT COUNT(*)::INT AS count FROM activites WHERE activites.suppression IS NULL
+      SELECT COUNT(*)::INT AS count FROM activites WHERE ${whereSql}
     `
     const totalCount = totalCountResult.at(0)?.count ?? 0
 

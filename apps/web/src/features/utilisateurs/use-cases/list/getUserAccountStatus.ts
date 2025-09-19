@@ -22,7 +22,7 @@ export const getUserAccountStatus = (
 
   if (daysSinceCreation <= 30) return 'Nouveau J-30'
 
-  if (!lastCra) return 'Inactif J180+'
+  if (!lastCra) return 'Inactif'
 
   const daysSinceLastCra = (now.getTime() - lastCra.getTime()) / MILISECONDS
 

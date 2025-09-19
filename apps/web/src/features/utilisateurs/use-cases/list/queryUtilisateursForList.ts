@@ -26,7 +26,7 @@ export const searchUtilisateurSelect = {
       },
       beneficiaires: {
         select: { creation: true },
-        where: { suppression: null },
+        where: { suppression: null, anonyme: false },
         orderBy: { creation: 'desc' },
       },
       activitesCount: true,

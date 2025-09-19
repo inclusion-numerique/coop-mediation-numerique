@@ -40,7 +40,7 @@ export const Popover = ({
           onEscapeKeyDown={onEscapeKeyDown}
           onInteractOutside={onInteractOutside}
           align="start"
-          className="fr-background-alt--grey fr-tile--shadow fr-rounded-md fr-mt-4v fr-p-8v fr-border-radius--8"
+          className="fr-background-default-light--alt-dark fr-tile--shadow fr-rounded-md fr-mt-4v fr-p-8v fr-border-radius--8"
         >
           {children}
         </RadixPopover.Content>

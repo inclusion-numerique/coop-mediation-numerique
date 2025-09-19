@@ -1,5 +1,6 @@
 import { StatistiquesActivites } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesActivites'
 import { StatistiquesBeneficiaires } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesBeneficiaires'
+import { statistiquesPageTitle } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/statistiquesPageTitle'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { SessionUser } from '@app/web/auth/sessionUser'
@@ -37,13 +38,13 @@ export const MesStatistiques = (
 
   return (
     <CoopPageContainer size={49}>
-      <CoopBreadcrumbs currentPage="Mes statistiques" />
+      <CoopBreadcrumbs currentPage={statistiquesPageTitle(user)} />
       <SkipLinksPortal />
       <AutoPrint />
       <PrintStatistiques {...mesStatistiquesProps} />
       <main className="fr-no-print" id={contentId}>
         <h1 className="fr-text-title--blue-france fr-mb-5v">
-          Mes statistiques
+          {statistiquesPageTitle(user)}
         </h1>
         <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v fr-mb-3w">
           <Filters

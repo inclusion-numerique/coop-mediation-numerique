@@ -26,7 +26,10 @@ export const CardOutil = ({
     >
       <div className="fr-flex fr-justify-content-space-between align-items-center fr-width-full">
         <Pictogram
-          className="fr-background-action-low--blue-france fr-border-radius--16 fr-p-2w"
+          className="fr-border-radius--16 fr-p-2w"
+          style={{
+            backgroundColor: 'var(--blue-france-alt-light--action-low-dark)',
+          }}
           width={88}
           height={88}
           aria-hidden

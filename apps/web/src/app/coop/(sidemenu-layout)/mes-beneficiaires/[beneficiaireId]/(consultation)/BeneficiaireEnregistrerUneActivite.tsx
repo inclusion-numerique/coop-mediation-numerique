@@ -3,7 +3,6 @@
 import type { BeneficiaireCraData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { createModal } from '@codegouvfr/react-dsfr/Modal'
 
 const BeneficiaireEnregistrerUneActivite = ({
   beneficiaire,

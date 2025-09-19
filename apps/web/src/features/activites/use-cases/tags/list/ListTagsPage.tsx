@@ -49,9 +49,27 @@ export const ListTagsPage = ({
             <div>
               <h1 className="fr-page-title fr-m-0 fr-h2">Mes Tags</h1>
               <p className="fr-text--sm fr-mb-0">
-                Utilisez les tags pour lier vos comptes rendus d’activité à des
-                thématiques spécifiques / dispositifs locaux que vous avez
-                besoin de suivre dans vos statistiques. En savoir plus
+                {isCoordinateur ? (
+                  <>
+                    Utilisez les tags pour permettre à votre équipe de lier des
+                    comptes rendus d’activités à des thématiques
+                    spécifiques&nbsp;/&nbsp; dispositifs locaux que vous avez
+                    besoin de suivre dans vos statistiques.
+                  </>
+                ) : (
+                  <>
+                    Utilisez les tags pour lier vos comptes rendus d’activité à
+                    des thématiques spécifiques / dispositifs locaux que vous
+                    avez besoin de suivre dans vos statistiques.
+                  </>
+                )}{' '}
+                <a
+                  className="fr-link fr-link--sm"
+                  href="https://docs.numerique.gouv.fr/docs/dcade515-17b9-4298-a2e5-bdf3ed22bf96/"
+                  target="_blank"
+                >
+                  En savoir plus
+                </a>
               </p>
             </div>
           </div>
