@@ -10,6 +10,7 @@ import SideMenu from '@codegouvfr/react-dsfr/SideMenu'
 import classNames from 'classnames'
 import { usePathname } from 'next/navigation'
 import styles from './CoopSideMenu.module.css'
+import { statistiquesPageTitle } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/statistiquesPageTitle'
 
 const onlyFor =
   (user: SessionUser) =>
@@ -18,8 +19,6 @@ const onlyFor =
 
 const CoopSideMenu = ({ user }: { user: SessionUser }) => {
   const pathname = usePathname()
-
-  const isCoordinateurOnly = !!user.coordinateur?.id && !user.mediateur?.id
 
   const items: (SideMenuProps.Item & { mediateurOnly?: true })[] = [
     {
@@ -42,7 +41,7 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
             className="ri-chat-poll-line ri-xl fr-mr-1w fr-text--regular"
             aria-hidden
           />
-          {isCoordinateurOnly ? 'Statistiques' : 'Mes statistiques'}
+          {statistiquesPageTitle(user)}
         </>
       ),
       linkProps: { href: '/coop/mes-statistiques' },
