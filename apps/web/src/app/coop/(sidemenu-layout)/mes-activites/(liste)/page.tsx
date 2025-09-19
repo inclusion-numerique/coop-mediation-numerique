@@ -36,7 +36,6 @@ const MesActivitesPage = async ({
   const {
     communesOptions,
     departementsOptions,
-    initialBeneficiairesOptions,
     initialMediateursOptions,
     lieuxActiviteOptions,
     tagsOptions,
@@ -55,7 +54,6 @@ const MesActivitesPage = async ({
       <MesActivitesListeHeader
         searchResultMatchesCount={searchResultMatchesCount}
         defaultFilters={searchParams}
-        initialBeneficiairesOptions={initialBeneficiairesOptions}
         initialMediateursOptions={initialMediateursOptions}
         communesOptions={communesOptions}
         departementsOptions={departementsOptions}

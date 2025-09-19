@@ -3,9 +3,9 @@
 import LieuActiviteSideMenu from '@app/web/app/coop/(full-width-layout)/lieux-activite/_components/LieuActiviteSideMenu'
 import IconInSquare from '@app/web/components/IconInSquare'
 import Button from '@codegouvfr/react-dsfr/Button'
+import classNames from 'classnames'
 import React, { ReactNode, useState } from 'react'
 import CreateLieuActiviteForm from './CreerLieuActiviteForm'
-import classNames from 'classnames'
 
 export const CreerLieuActivitePageContent = ({
   contentTop,

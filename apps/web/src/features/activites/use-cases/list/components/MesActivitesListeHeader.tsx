@@ -1,5 +1,4 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
 import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import classNames from 'classnames'
@@ -17,7 +16,6 @@ const MesActivitesListeHeader = ({
   defaultFilters,
   departementsOptions,
   initialMediateursOptions,
-  initialBeneficiairesOptions,
   tagsOptions,
   lieuxActiviteOptions,
   searchResultMatchesCount,
@@ -26,7 +24,6 @@ const MesActivitesListeHeader = ({
 }: {
   defaultFilters: ActivitesFilters
   initialMediateursOptions: MediateurOption[]
-  initialBeneficiairesOptions: BeneficiaireOption[]
   tagsOptions: { id: string; nom: string }[]
   communesOptions: SelectOption[]
   lieuxActiviteOptions: LieuActiviteOption[]
@@ -46,7 +43,8 @@ const MesActivitesListeHeader = ({
       <Filters
         defaultFilters={defaultFilters}
         initialMediateursOptions={initialMediateursOptions}
-        initialBeneficiairesOptions={initialBeneficiairesOptions}
+        beneficiairesFilter={false}
+        initialBeneficiairesOptions={[]}
         communesOptions={communesOptions}
         departementsOptions={departementsOptions}
         lieuxActiviteOptions={lieuxActiviteOptions}
@@ -63,7 +61,7 @@ const MesActivitesListeHeader = ({
           communesOptions={communesOptions}
           departementsOptions={departementsOptions}
           lieuxActiviteOptions={lieuxActiviteOptions}
-          beneficiairesOptions={initialBeneficiairesOptions}
+          beneficiairesOptions={[]}
           mediateursOptions={initialMediateursOptions}
           searchResultMatchesCount={searchResultMatchesCount}
         />
@@ -74,7 +72,7 @@ const MesActivitesListeHeader = ({
       communesOptions={communesOptions}
       departementsOptions={departementsOptions}
       lieuxActiviteOptions={lieuxActiviteOptions}
-      beneficiairesOptions={initialBeneficiairesOptions}
+      beneficiairesOptions={[]}
       mediateursOptions={initialMediateursOptions}
       tagsOptions={tagsOptions}
     />
