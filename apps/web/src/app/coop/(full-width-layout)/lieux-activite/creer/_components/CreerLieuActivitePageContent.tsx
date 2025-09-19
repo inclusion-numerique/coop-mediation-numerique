@@ -5,11 +5,14 @@ import IconInSquare from '@app/web/components/IconInSquare'
 import Button from '@codegouvfr/react-dsfr/Button'
 import React, { ReactNode, useState } from 'react'
 import CreateLieuActiviteForm from './CreerLieuActiviteForm'
+import classNames from 'classnames'
 
 export const CreerLieuActivitePageContent = ({
   contentTop,
+  variant = 'default',
 }: {
   contentTop?: ReactNode
+  variant?: 'default' | 'centered'
 }) => {
   const [showSideMenu, setShowSideMenu] = useState(false)
 
@@ -22,7 +25,13 @@ export const CreerLieuActivitePageContent = ({
         />
       )}
 
-      <div className="fr-container fr-container--narrow fr-ml-0 fr-mb-30v">
+      <div
+        className={classNames(
+          'fr-container fr-container--narrow fr-mb-30v',
+          variant === 'centered' && 'fr-mx-auto',
+          variant === 'default' && 'fr-ml-0',
+        )}
+      >
         {contentTop}
         <Button
           priority="tertiary no outline"

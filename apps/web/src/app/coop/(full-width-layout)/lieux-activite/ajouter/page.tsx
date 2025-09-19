@@ -19,7 +19,7 @@ const AjouterLieuPage = async () => {
     <>
       <SkipLinksPortal />
       <div id={contentId}>
-        <div className="fr-container fr-container--narrow ">
+        <div className="fr-container fr-container--narrow">
           <CoopBreadcrumbs
             parents={[
               {
