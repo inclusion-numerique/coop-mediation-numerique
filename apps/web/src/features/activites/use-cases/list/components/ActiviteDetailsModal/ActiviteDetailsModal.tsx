@@ -416,7 +416,7 @@ const ActiviteDetailsModal = ({
       }
     >
       <hr className="fr-separator fr-separator-6v" />
-      <p className="fr-width-full fr-overflow-hidden fr-text--lg fr-text--medium fr-mb-0 fr-text--nowrap fr-text-overflow--ellipsis">
+      <p className="fr-width-full fr-text--lg fr-text--medium fr-mb-0">
         {typeActiviteLabels[type]}
         {!!titreAtelier && <>&nbsp;·&nbsp;{titreAtelier}</>}
       </p>
