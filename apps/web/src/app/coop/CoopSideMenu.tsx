@@ -19,6 +19,8 @@ const onlyFor =
 const CoopSideMenu = ({ user }: { user: SessionUser }) => {
   const pathname = usePathname()
 
+  const isCoordinateurOnly = !!user.coordinateur?.id && !user.mediateur?.id
+
   const items: (SideMenuProps.Item & { mediateurOnly?: true })[] = [
     {
       text: (
@@ -40,7 +42,7 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
             className="ri-chat-poll-line ri-xl fr-mr-1w fr-text--regular"
             aria-hidden
           />
-          Mes statistiques
+          {isCoordinateurOnly ? 'Statistiques' : 'Mes statistiques'}
         </>
       ),
       linkProps: { href: '/coop/mes-statistiques' },
