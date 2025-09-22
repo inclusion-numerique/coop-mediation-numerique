@@ -8,7 +8,7 @@ import {
 } from '@app/web/libs/data-table/toNumberOr'
 import { prismaClient } from '@app/web/prismaClient'
 import { Prisma } from '@prisma/client'
-import { TagScope } from '../tagScope'
+import { getTagScope, TagScope } from '../tagScope'
 
 export type TagSearchParams = {
   lignes?: string
@@ -58,12 +58,15 @@ export const getTagsPageDataFor =
     })
 
     return {
-      tags: tags.map(({ id, nom, description, departement }) => ({
-        id,
-        nom,
-        scope: departement ? TagScope.Departemental : TagScope.Personnel,
-        description: description ?? undefined,
-      })),
+      tags: tags.map((tag) => {
+        const { id, nom, description } = tag
+        return {
+          id,
+          nom,
+          scope: getTagScope(tag),
+          description: description ?? undefined,
+        }
+      }),
       matchesCount: totalFilteredTags,
       totalPages: take ? Math.ceil(totalFilteredTags / take) : 1,
     }

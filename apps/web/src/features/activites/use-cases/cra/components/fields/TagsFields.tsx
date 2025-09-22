@@ -62,7 +62,14 @@ export const TagsFields = withForm({
                   hintText={
                     <>
                       Thématiques spécifiques, dispositifs locaux... Vous pouvez
-                      également créer vos tags personnalisés.
+                      également créer vos tags personnalisés.{' '}
+                      <a
+                        className="fr-link fr-link--xs"
+                        href="https://docs.numerique.gouv.fr/docs/dcade515-17b9-4298-a2e5-bdf3ed22bf96/"
+                        target="_blank"
+                      >
+                        En savoir plus
+                      </a>
                     </>
                   }
                 />
