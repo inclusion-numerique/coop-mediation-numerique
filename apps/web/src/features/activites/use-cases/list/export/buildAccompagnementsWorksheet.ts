@@ -212,7 +212,7 @@ export const buildAccompagnementsWorksheet = (
           ...(isSelfExport
             ? [notes && index === 0 ? htmlToText(notes) : '']
             : []),
-          ...(user.mediateur?.conseillerNumerique != null || hasCraV1
+          ...(hasCraV1
             ? [
                 activite.v1CraId
                   ? 'Espace coop (V1)'
