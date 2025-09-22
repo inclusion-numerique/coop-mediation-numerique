@@ -10,6 +10,7 @@ import {
 } from '../../../tags/components/TagsComboBox'
 import { SaveTagDynamicModal } from '../../../tags/save/SaveTagModal'
 import { CraData } from '../../validation/CraValidation'
+import styles from '../CraForm.module.css'
 
 const options = formOptions({
   defaultValues: {} as DefaultValues<CraData>,
@@ -43,7 +44,8 @@ export const TagsFields = withForm({
                   addonEnd={
                     <Button
                       title="Voir la liste des tags"
-                      className="fr-border-left-0"
+                      className="fr-border-left-0 fr-py-7v fr-pl-4v"
+                      style={{ width: 56, maxWidth: 56, minWidth: 56 }}
                       iconId="fr-icon-search-line"
                       {...getToggleButtonProps({ type: 'button' })}
                     />
@@ -51,6 +53,7 @@ export const TagsFields = withForm({
                   isConnected={false}
                   isPending={isPending}
                   nativeLabelProps={getLabelProps()}
+                  classes={{ nativeInputOrTextArea: styles.tallInput }}
                   nativeInputProps={{
                     ...getInputProps(),
                     placeholder: 'Sélectionnez un ou plusieurs tags',

@@ -1,5 +1,6 @@
 'use client'
 
+import { statistiquesPageTitle } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/statistiquesPageTitle'
 import { canUseAssistant } from '@app/web/assistant/canUseAssistant'
 import { SessionUser } from '@app/web/auth/sessionUser'
 import { CreateCraModalDefinition } from '@app/web/features/activites/use-cases/cra/components/CreateCraModal/CreateCraModalDefinition'
@@ -10,7 +11,6 @@ import SideMenu from '@codegouvfr/react-dsfr/SideMenu'
 import classNames from 'classnames'
 import { usePathname } from 'next/navigation'
 import styles from './CoopSideMenu.module.css'
-import { statistiquesPageTitle } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/statistiquesPageTitle'
 
 const onlyFor =
   (user: SessionUser) =>

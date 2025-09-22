@@ -16,6 +16,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { formOptions } from '@tanstack/react-form'
 import { typeLieuOptionsWithExtras } from '../../fields/type-lieu'
 import { CraData } from '../../validation/CraValidation'
+import styles from '../CraForm.module.css'
 
 const options = formOptions({
   defaultValues: {} as DefaultValues<CraData>,
@@ -76,6 +77,7 @@ export const RendezVousFields = withForm({
                 className="fr-flex-basis-0 fr-flex-grow-1 fr-mb-8v"
                 isPending={isPending}
                 nativeInputProps={{ type: 'date' }}
+                classes={{ nativeInputOrTextArea: styles.tallInput }}
                 label={
                   <>
                     Date de l’accompagnement <RedAsterisk />
@@ -90,6 +92,7 @@ export const RendezVousFields = withForm({
                 <field.Select
                   isPending={isPending}
                   options={dureeOptions}
+                  className={styles.tallInput}
                   placeholder="Sélectionnez une durée"
                   label={
                     <>
@@ -108,10 +111,16 @@ export const RendezVousFields = withForm({
                           <field.Input
                             isPending={isPending}
                             addinEnd={
-                              <span className="fr-mr-4v fr-line-height-2">
+                              <span
+                                className="fr-mr-4v"
+                                style={{ lineHeight: '56px' }}
+                              >
                                 h
                               </span>
                             }
+                            classes={{
+                              nativeInputOrTextArea: styles.tallInput,
+                            }}
                             nativeInputProps={{
                               type: 'number',
                               min: 0,
@@ -132,10 +141,16 @@ export const RendezVousFields = withForm({
                           <field.Input
                             isPending={isPending}
                             addinEnd={
-                              <span className="fr-mr-2v fr-line-height-2">
+                              <span
+                                className="fr-mr-2v"
+                                style={{ lineHeight: '56px' }}
+                              >
                                 min
                               </span>
                             }
+                            classes={{
+                              nativeInputOrTextArea: styles.tallInput,
+                            }}
                             nativeInputProps={{
                               type: 'number',
                               min: 0,

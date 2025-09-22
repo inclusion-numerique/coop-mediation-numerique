@@ -1,5 +1,6 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { Options } from '@app/ui/components/Primitives/Options'
+import styles from '@app/web/features/activites/use-cases/cra/components/CraForm.module.css'
 import {
   Commune,
   CommuneComboBox,
@@ -85,7 +86,8 @@ export const BeneficiaireAnonymeFields = withForm({
                       addonEnd={
                         <Button
                           title="Voir la liste des bénéficiaires"
-                          className="fr-border-left-0"
+                          className="fr-border-left-0 fr-py-7v fr-pl-4v"
+                          style={{ width: 56, maxWidth: 56, minWidth: 56 }}
                           iconId="fr-icon-search-line"
                           {...getToggleButtonProps({ type: 'button' })}
                         />
@@ -93,10 +95,11 @@ export const BeneficiaireAnonymeFields = withForm({
                       addinEnd={
                         field.state.value != null && (
                           <Button
-                            title="Déselectionner le bénéficiaire"
+                            title="Déselectionner la commune"
                             type="button"
                             iconId="fr-icon-close-line"
                             priority="tertiary no outline"
+                            className="fr-mt-2v fr-mr-2v"
                             onClick={() => {
                               field.setValue(null)
                               setInputValue('')
@@ -107,6 +110,7 @@ export const BeneficiaireAnonymeFields = withForm({
                       isPending={isPending}
                       isConnected={false}
                       nativeLabelProps={getLabelProps()}
+                      classes={{ nativeInputOrTextArea: styles.tallInput }}
                       nativeInputProps={{
                         ...getInputProps(),
                         placeholder:
