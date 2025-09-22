@@ -4,6 +4,7 @@ import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import { Thematique } from '@prisma/client'
 import { formOptions } from '@tanstack/react-form'
 import { CraData } from '../../validation/CraValidation'
+import styles from '../CraForm.module.css'
 
 const options = formOptions({
   defaultValues: {} as DefaultValues<CraData>,
@@ -68,6 +69,8 @@ export const ThematiquesFields = withForm({
                     <field.Input
                       isPending={isPending}
                       label="Préciser le nom de la démarche administrative réalisée"
+                      classes={{ nativeInputOrTextArea: styles.tallInput }}
+                      className="fr-mb-12v"
                     />
                   </>
                 )}
