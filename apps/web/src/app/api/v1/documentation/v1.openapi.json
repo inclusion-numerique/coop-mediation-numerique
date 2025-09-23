@@ -27,249 +27,13 @@
       }
     },
     "schemas": {
-      "Activite": {
-        "type": "object",
-        "required": ["type", "id", "attributes"],
-        "properties": {
-          "type": {
-            "type": "string",
-            "example": "activite",
-            "enum": ["activite"]
-          },
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "example": "123e4567-e89b-12d3-a456-426614174000"
-          },
-          "attributes": {
-            "type": "object",
-            "required": [
-              "type",
-              "mediateur_id",
-              "accompagnements",
-              "date",
-              "duree",
-              "type_lieu",
-              "structure_id",
-              "lieu_code_postal",
-              "lieu_commune",
-              "lieu_code_insee",
-              "creation",
-              "modification",
-              "autonomie",
-              "oriente_vers_structure",
-              "structure_de_redirection",
-              "materiel",
-              "thematiques",
-              "thematiques_demarche_administrative",
-              "precisions_demarche",
-              "degre_de_finalisation_demarche",
-              "titre_atelier",
-              "niveau_atelier"
-            ],
-            "properties": {
-              "type": {
-                "type": "string",
-                "description": "type d'activité",
-                "enum": ["individuel", "demarche_administrative", "collectif"],
-                "example": "individuel"
-              },
-              "mediateur_id": {
-                "type": "string",
-                "format": "uuid",
-                "description": "identifiant du médiateur",
-                "example": "123e4567-e89b-12d3-a456-426614174000"
-              },
-              "accompagnements": {
-                "type": "number",
-                "description": "nombre d'accompagnements",
-                "example": 2
-              },
-              "date": {
-                "type": "string",
-                "format": "date-time",
-                "description": "date à laquelle l'activité s'est déroulée",
-                "example": "2024-12-10T09:00:00Z"
-              },
-              "duree": {
-                "type": "number",
-                "description": "durée en minutes",
-                "example": 120
-              },
-              "type_lieu": {
-                "type": "string",
-                "description": "type de lieu où l'activité s'est déroulée",
-                "enum": ["lieu_activite", "domicile", "a_distance", "autre"],
-                "example": "lieu_activite"
-              },
-              "structure_id": {
-                "type": "string",
-                "format": "uuid",
-                "nullable": true,
-                "description": "identifiant de la structure (renseigné si type_lieu = lieu_activite)",
-                "example": "123e4567-e89b-12d3-a456-426614174001"
-              },
-              "lieu_code_postal": {
-                "type": "string",
-                "nullable": true,
-                "description": "code postal du lieu (renseigné si type_lieu = domicile, a_distance ou autre)",
-                "example": "69007"
-              },
-              "lieu_commune": {
-                "type": "string",
-                "nullable": true,
-                "description": "commune du lieu (renseignée si type_lieu = domicile, a_distance ou autre)",
-                "example": "Lyon"
-              },
-              "lieu_code_insee": {
-                "type": "string",
-                "nullable": true,
-                "description": "code INSEE de la commune (renseigné si type_lieu = domicile, a_distance ou autre)",
-                "example": "69123"
-              },
-              "creation": {
-                "type": "string",
-                "format": "date-time",
-                "description": "date de création de l'activité",
-                "example": "2024-12-10T12:00:00Z"
-              },
-              "modification": {
-                "type": "string",
-                "format": "date-time",
-                "nullable": true,
-                "description": "date de dernière modification de l'activité",
-                "example": "2024-12-10T15:00:00Z"
-              },
-              "autonomie": {
-                "type": "string",
-                "nullable": true,
-                "description": "niveau d'autonomie lors de l'activité",
-                "enum": [
-                  "entierement_accompagne",
-                  "partiellement_autonome",
-                  "autonome"
-                ],
-                "example": "autonome"
-              },
-              "oriente_vers_structure": {
-                "type": "boolean",
-                "nullable": true,
-                "description": "indique si l'utilisateur a été orienté vers une structure",
-                "example": true
-              },
-              "structure_de_redirection": {
-                "type": "string",
-                "nullable": true,
-                "description": "type de structure vers laquelle l'utilisateur a été redirigé",
-                "enum": [
-                  "operateur_ou_organisme_en_charge",
-                  "aide_aux_demarches_administratives",
-                  "administration",
-                  "mediation_numerique",
-                  "autre"
-                ],
-                "example": "administration"
-              },
-              "materiel": {
-                "type": "array",
-                "description": "matériel utilisé lors de l'accompagnement",
-                "items": {
-                  "type": "string",
-                  "enum": [
-                    "ordinateur",
-                    "telephone",
-                    "tablette",
-                    "autre",
-                    "aucun"
-                  ],
-                  "example": "ordinateur"
-                }
-              },
-              "thematiques": {
-                "type": "array",
-                "description": "thématiques abordées lors de l'accompagnement",
-                "items": {
-                  "type": "string",
-                  "enum": [
-                    "diagnostic_numerique",
-                    "prendre_en_main_du_materiel",
-                    "maintenance_de_materiel",
-                    "navigation_sur_internet",
-                    "email",
-                    "bureautique",
-                    "reseaux_sociaux",
-                    "sante",
-                    "banque_et_achats_en_ligne",
-                    "entrepreneuriat",
-                    "insertion_professionnelle",
-                    "securite_numerique",
-                    "parentalite",
-                    "scolarite_et_numerique",
-                    "creer_avec_le_numerique",
-                    "culture_numerique",
-                    "intelligence_artificielle"
-                  ],
-                  "example": "diagnostic_numerique"
-                }
-              },
-              "thematiques_demarche_administrative": {
-                "type": "array",
-                "description": "thématiques de la démarche administrative abordées",
-                "items": {
-                  "type": "string",
-                  "enum": [
-                    "papiers_elections_citoyennete",
-                    "famille_scolarite",
-                    "social_sante",
-                    "travail_formation",
-                    "logement",
-                    "transports_mobilite",
-                    "argent_impots",
-                    "justice",
-                    "etrangers_europe",
-                    "loisirs_sports_culture"
-                  ],
-                  "example": "papiers_elections_citoyennete"
-                }
-              },
-              "precisions_demarche": {
-                "type": "string",
-                "nullable": true,
-                "description": "précisions sur la démarche administrative",
-                "example": "difficultés à compléter le formulaire"
-              },
-              "degre_de_finalisation_demarche": {
-                "type": "string",
-                "nullable": true,
-                "description": "degré de finalisation de la démarche administrative",
-                "enum": [
-                  "finalisee",
-                  "a_finaliser_en_autonomie",
-                  "doit_revenir",
-                  "oriente_vers_structure"
-                ],
-                "example": "finalisee"
-              },
-              "titre_atelier": {
-                "type": "string",
-                "nullable": true,
-                "description": "titre de l'atelier (pour un atelier collectif)",
-                "example": "découverte de l'email"
-              },
-              "niveau_atelier": {
-                "type": "string",
-                "nullable": true,
-                "description": "niveau de l'atelier collectif",
-                "enum": ["debutant", "intermediaire", "avance"],
-                "example": "debutant"
-              }
-            }
-          }
-        }
-      },
       "ArchiveCraV1": {
         "type": "object",
-        "required": ["type", "id", "attributes"],
+        "required": [
+          "type",
+          "id",
+          "attributes"
+        ],
         "properties": {
           "type": {
             "type": "string",
@@ -696,7 +460,10 @@
           "itinerance": {
             "type": "string",
             "format": "Une ou plusieurs de ces valeurs séparées par `|`",
-            "enum": ["Itinérant", "Fixe"],
+            "enum": [
+              "Itinérant",
+              "Fixe"
+            ],
             "description": "Indique s'il s'agit un lieu de médiation itinérant comme un bus numérique",
             "example": "Itinérant"
           },
@@ -775,7 +542,7 @@
             "type": "string",
             "format": "URL",
             "description": "URL renvoyant vers le site de prise de rendez-vous en ligne avec les aidants du lieu.",
-            "example": "https://www.rdv-solidarites.fr/"
+            "example": "https://rdv.anct.gouv.fr/"
           }
         }
       },
@@ -1049,12 +816,18 @@
       },
       "Statistiques": {
         "type": "object",
-        "required": ["type", "id", "attributes"],
+        "required": [
+          "type",
+          "id",
+          "attributes"
+        ],
         "properties": {
           "type": {
             "type": "string",
             "example": "statistiques",
-            "enum": ["statistiques"]
+            "enum": [
+              "statistiques"
+            ]
           },
           "id": {
             "type": "string",
@@ -1067,12 +840,18 @@
       },
       "Structure": {
         "type": "object",
-        "required": ["type", "id", "attributes"],
+        "required": [
+          "type",
+          "id",
+          "attributes"
+        ],
         "properties": {
           "type": {
             "type": "string",
             "example": "structure",
-            "enum": ["structure"]
+            "enum": [
+              "structure"
+            ]
           },
           "id": {
             "type": "string",
@@ -1345,12 +1124,18 @@
       },
       "Utilisateur": {
         "type": "object",
-        "required": ["type", "id", "attributes"],
+        "required": [
+          "type",
+          "id",
+          "attributes"
+        ],
         "properties": {
           "type": {
             "type": "string",
             "example": "utilisateur",
-            "enum": ["utilisateur"]
+            "enum": [
+              "utilisateur"
+            ]
           },
           "id": {
             "type": "string",
@@ -1587,77 +1372,13 @@
     }
   ],
   "paths": {
-    "/activites": {
-      "get": {
-        "summary": "liste des activités",
-        "description": "retourne la liste des activités renseignées par les médiateurs sur la coop.\nles activités sont triées par date de création décroissante.\n",
-        "tags": ["Activités"],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "page[size]",
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 500,
-              "default": 500
-            },
-            "required": false,
-            "description": "nombre maximum d'éléments à retourner"
-          },
-          {
-            "in": "query",
-            "name": "page[after]",
-            "schema": {
-              "type": "string"
-            },
-            "required": false,
-            "description": "curseur de pagination pour obtenir les éléments suivants"
-          },
-          {
-            "in": "query",
-            "name": "page[before]",
-            "schema": {
-              "type": "string"
-            },
-            "required": false,
-            "description": "curseur de pagination pour obtenir les éléments précédents"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "liste des activités",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": ["data", "links", "meta"],
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Activite"
-                      }
-                    },
-                    "links": {
-                      "$ref": "#/components/schemas/PaginationLinks"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/ListMetadata"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/archives-v1/cras": {
       "get": {
         "summary": "liste les cras v1 archivés",
         "description": "Retourne la liste des cras importés depuis la version 1 de la coop réalisée par l'équipe du dispositif conseiller-numérique et importés dans cette version de la coop pour archivage. pour toute question sur les données, veuillez vous adresser à l'équipe du dispositif conseiller-numérique. les données suivent la spécification json:api.\nLes cras sont triés par date de création décroissante\n",
-        "tags": ["Activités"],
+        "tags": [
+          "Activités"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1697,11 +1418,17 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["data", "links", "meta"],
+                  "required": [
+                    "data",
+                    "links",
+                    "meta"
+                  ],
                   "properties": {
                     "jsonapi": {
                       "type": "object",
-                      "required": ["version"],
+                      "required": [
+                        "version"
+                      ],
                       "properties": {
                         "version": {
                           "type": "string",
@@ -1733,7 +1460,9 @@
       "get": {
         "summary": "health",
         "description": "Returns the server status info in JSON format.",
-        "tags": ["Utilitaires"],
+        "tags": [
+          "Utilitaires"
+        ],
         "responses": {
           "200": {
             "description": "API status message.",
@@ -1758,7 +1487,10 @@
       "get": {
         "summary": "liste des lieux d'activité",
         "description": "Retourne la liste des structures dans lesquels il y a une activité de médiation numérique au format définit par le schéma des lieux de médiation numérique.",
-        "tags": ["Structures", "Lieux d'activité"],
+        "tags": [
+          "Structures",
+          "Lieux d'activité"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1805,7 +1537,9 @@
       "get": {
         "summary": "obtenir des statistiques globales",
         "description": "retourne les données agrégées (accompagnements par jour, par mois, répartition des bénéficiaires, etc.)\n",
-        "tags": ["Statistiques"],
+        "tags": [
+          "Statistiques"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1836,7 +1570,11 @@
             "description": "Types d’activités (individuel, démarche et/ou collectif) séparés par des virgules",
             "schema": {
               "type": "string",
-              "enum": ["Individuel", "Demarche", "Collectif"],
+              "enum": [
+                "Individuel",
+                "Demarche",
+                "Collectif"
+              ],
               "example": "Individuel"
             }
           },
@@ -1901,7 +1639,10 @@
             "name": "filter[conseiller_numerique]",
             "schema": {
               "type": "string",
-              "enum": ["0", "1"]
+              "enum": [
+                "0",
+                "1"
+              ]
             },
             "required": false,
             "description": "Indique si l’activité a été effectuée par un médiateur dans le cadre du dispositif \"conseiller numérique\". '0' signifie hors dispositif, '1' signifie dans le dispositif."
@@ -1914,7 +1655,11 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["data", "links", "meta"],
+                  "required": [
+                    "data",
+                    "links",
+                    "meta"
+                  ],
                   "properties": {
                     "data": {
                       "$ref": "#/components/schemas/Statistiques"
@@ -1950,7 +1695,9 @@
       "get": {
         "summary": "liste des structures",
         "description": "retourne la liste des structures utilisées dans la coop.\nles structures sont triées par date de création décroissante.\n",
-        "tags": ["Structures"],
+        "tags": [
+          "Structures"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -1990,7 +1737,11 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["data", "links", "meta"],
+                  "required": [
+                    "data",
+                    "links",
+                    "meta"
+                  ],
                   "properties": {
                     "data": {
                       "type": "array",
@@ -2016,7 +1767,9 @@
       "get": {
         "summary": "liste des utilisateurs",
         "description": "Retourne la liste des utilisateurs dont l'inscription est terminée. Les utilisateurs sont triés par date de création décroissante.\n",
-        "tags": ["Utilisateurs"],
+        "tags": [
+          "Utilisateurs"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -2053,7 +1806,10 @@
             "name": "filter[soft_deleted]",
             "schema": {
               "type": "string",
-              "enum": ["0", "1"]
+              "enum": [
+                "0",
+                "1"
+              ]
             },
             "required": false,
             "description": "exclure les elements soft-deleted, ce qui permet de ne pas inclure les utilisateurs et leur données rattachées qui ne sont plus d’actualité. '0' pour exclure les utilisateurs supprimés, '1' pour inclure les utilisateurs supprimés uniquement"
@@ -2104,7 +1860,11 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["data", "links", "meta"],
+                  "required": [
+                    "data",
+                    "links",
+                    "meta"
+                  ],
                   "properties": {
                     "data": {
                       "type": "array",
