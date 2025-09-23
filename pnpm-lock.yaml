@@ -28,7 +28,7 @@ importers:
         version: 3.6.2
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@swc/core@1.13.3)(@types/node@24.2.1)(typescript@6.0.0-dev.20250922)
+        version: 10.9.2(@swc/core@1.13.3)(@types/node@24.2.1)(typescript@6.0.0-dev.20250923)
       turbo:
         specifier: ^2.5.2
         version: 2.5.5
@@ -158,8 +158,8 @@ importers:
         specifier: ^3.800.0
         version: 3.864.0
       '@codegouvfr/react-dsfr':
-        specifier: ^1.23.3
-        version: 1.26.0
+        specifier: ^1.27.0
+        version: 1.27.0
       '@fastify/busboy':
         specifier: ^3.1.1
         version: 3.1.1
@@ -170,8 +170,8 @@ importers:
         specifier: ^2.1.0
         version: 2.1.0(typescript@5.9.2)
       '@gouvfr/dsfr':
-        specifier: ^1.13.1
-        version: 1.14.0
+        specifier: ^1.14.2
+        version: 1.14.2
       '@hookform/resolvers':
         specifier: ^4.1.3
         version: 4.1.3(react-hook-form@7.62.0(react@19.1.1))
@@ -976,11 +976,11 @@ importers:
   packages/ui:
     dependencies:
       '@codegouvfr/react-dsfr':
-        specifier: ^1.23.3
-        version: 1.26.0
+        specifier: ^1.27.0
+        version: 1.27.0
       '@gouvfr/dsfr':
-        specifier: ^1.13.1
-        version: 1.14.0
+        specifier: ^1.14.2
+        version: 1.14.2
       '@hookform/resolvers':
         specifier: ^4.1.3
         version: 4.1.3(react-hook-form@7.62.0(react@19.1.1))
@@ -2078,8 +2078,8 @@ packages:
   '@cfworker/json-schema@4.1.1':
     resolution: {integrity: sha512-gAmrUZSGtKc3AiBL71iNWxDsyUC5uMaKKGdvzYsBoTW/xi42JQHl7eKV2OYzCUqvc+D2RCcf7EXY2iCyFIk6og==}
 
-  '@codegouvfr/react-dsfr@1.26.0':
-    resolution: {integrity: sha512-yfevs/blAVDqw03/w7Gb/rumTlFC2i//ly0SHwrs6ZXmxRayc+UiKoou71uZSAwu1lZ9J9wyCYUbvQug57uStg==}
+  '@codegouvfr/react-dsfr@1.27.0':
+    resolution: {integrity: sha512-/E3KfGMNpYWLelf807d1T8ek7fbZs7DqI/nWaGS2g1dBKxb3piFbTpATp2nf/Z0LUhliZbhPdvhfxhsJspgHhQ==}
     hasBin: true
     peerDependencies:
       '@gouvfr/dsfr-chart': ^1.0.0
@@ -2664,9 +2664,9 @@ packages:
   '@gouvfr-anct/timetable-to-osm-opening-hours@2.1.0':
     resolution: {integrity: sha512-P5UwarBy6BVtHdGFWGNsQa6gBRcIyo6PJH3iiPSr17Oua5FWokowSYfV0Tok86uD3V7tIlpfLS29H1Fg+xztNQ==}
 
-  '@gouvfr/dsfr@1.14.0':
-    resolution: {integrity: sha512-lF02JujHsr4J39gnC7y+qe0LLnh01cb6JwbMIKK2YcNjzvmfb26C0uW0+gyugD41wjFQQcIFWz07g6ynqxjNzA==}
-    engines: {node: '>=22.14.0'}
+  '@gouvfr/dsfr@1.14.2':
+    resolution: {integrity: sha512-EJ/ZZMLmSN4KISuuXp0X0lGf+gKVqYATyqgcM5IPhMQAkJ8s5pjzvthjv+Hu6zYk4jwf2NRVt+jQz7JRpw1yiA==}
+    engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
 
   '@hapi/hoek@9.3.0':
     resolution: {integrity: sha512-/c6rf4UJlmHlC9b5BaNvzAcFv7HZ2QHaV0D4/HNlBdvFnvQq8RI4kYdhyPCl7Xj+oWvTWQ8ujhqS53LIgAe6KQ==}
@@ -12458,8 +12458,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@6.0.0-dev.20250922:
-    resolution: {integrity: sha512-4jTznRR2W8ak4kgHlxhNEauwCS/O2O2AfS3yC+Y4VxkRDFIruwdcW4+UQflBJrLCFa42lhdAAMGl1td/99KTKg==}
+  typescript@6.0.0-dev.20250923:
+    resolution: {integrity: sha512-Aiy0yklpKnRJkElhXO/bB2DhosYfL+j4RiUinq6C58ncyDOjuKn5wk6O5rds4n4AOobAqMjLU55H5q7bEyDcMQ==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -14752,7 +14752,7 @@ snapshots:
 
   '@cfworker/json-schema@4.1.1': {}
 
-  '@codegouvfr/react-dsfr@1.26.0':
+  '@codegouvfr/react-dsfr@1.27.0':
     dependencies:
       tsafe: 1.8.5
       yargs-parser: 21.1.1
@@ -15327,7 +15327,7 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@gouvfr/dsfr@1.14.0': {}
+  '@gouvfr/dsfr@1.14.2': {}
 
   '@hapi/hoek@9.3.0': {}
 
@@ -21298,7 +21298,7 @@ snapshots:
     dependencies:
       semver: 7.7.2
       shelljs: 0.8.5
-      typescript: 6.0.0-dev.20250922
+      typescript: 6.0.0-dev.20250923
 
   downshift@9.0.10(react@19.1.1):
     dependencies:
@@ -27613,7 +27613,7 @@ snapshots:
     optionalDependencies:
       '@swc/core': 1.13.3
 
-  ts-node@10.9.2(@swc/core@1.13.3)(@types/node@24.2.1)(typescript@6.0.0-dev.20250922):
+  ts-node@10.9.2(@swc/core@1.13.3)(@types/node@24.2.1)(typescript@6.0.0-dev.20250923):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
@@ -27627,7 +27627,7 @@ snapshots:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 6.0.0-dev.20250922
+      typescript: 6.0.0-dev.20250923
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
     optionalDependencies:
@@ -27788,7 +27788,7 @@ snapshots:
 
   typescript@5.9.2: {}
 
-  typescript@6.0.0-dev.20250922: {}
+  typescript@6.0.0-dev.20250923: {}
 
   uc.micro@2.1.0: {}
 
