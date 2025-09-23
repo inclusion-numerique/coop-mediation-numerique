@@ -36,7 +36,6 @@ const MesActivitesPage = async ({
   const {
     communesOptions,
     departementsOptions,
-    initialBeneficiairesOptions,
     initialMediateursOptions,
     lieuxActiviteOptions,
     tagsOptions,
@@ -46,21 +45,22 @@ const MesActivitesPage = async ({
     includeBeneficiaireIds: searchParams.beneficiaires,
   })
 
-  const hasFeature = hasFeatureFlag(user, 'RdvServicePublic')
+  const hasRdvIntegration =
+    hasFeatureFlag(user, 'RdvServicePublic') &&
+    !!user.rdvAccount?.hasOauthTokens
 
   return (
     <MesActivitesListeLayout vue="liste">
       <MesActivitesListeHeader
         searchResultMatchesCount={searchResultMatchesCount}
         defaultFilters={searchParams}
-        initialBeneficiairesOptions={initialBeneficiairesOptions}
         initialMediateursOptions={initialMediateursOptions}
         communesOptions={communesOptions}
         departementsOptions={departementsOptions}
         lieuxActiviteOptions={lieuxActiviteOptions}
         tagsOptions={tagsOptions}
         activiteDates={activiteDates}
-        enableRdvsFilter={hasFeature}
+        enableRdvsFilter={hasRdvIntegration}
       />
       <MesActivitesListePage data={data} />
     </MesActivitesListeLayout>

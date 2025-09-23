@@ -90,7 +90,7 @@ const CreerLieuActiviteForm = ({
         <hr className="fr-separator fr-separator-1px" />
         <InformationsGeneralesFields className="fr-p-4w" form={form} />
       </div>
-      <div className="fr-border fr-border-radius--8 fr-mt-5w fr-mb-6w">
+      <div className="fr-border fr-border-radius--8 fr-mt-6v fr-mb-6v">
         <DisplayOnCartography />
         <hr className="fr-separator fr-separator-1px" />
         <VisiblePourCartographieNationaleFields
@@ -153,7 +153,7 @@ const CreerLieuActiviteForm = ({
         type="submit"
         {...buttonLoadingClassname(
           mutation.isPending,
-          'fr-display-block fr-width-full fr-mb-4w',
+          'fr-display-block fr-width-full fr-mt-12v fr-mb-4v',
         )}
       >
         Créer le lieu d’activité

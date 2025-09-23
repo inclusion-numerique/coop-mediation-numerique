@@ -23,7 +23,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import React, { ChangeEvent, useEffect, useState } from 'react'
 
 const rdvFilterOptions = [
-  { label: 'Voir tout les RDVs', value: rdvStatusTous },
+  { label: 'Voir tous les RDVs', value: rdvStatusTous },
   ...rdvStatusOptions,
 ]
 

@@ -6,6 +6,7 @@ import {
 import Option = DsfrSelectProps.Option
 
 import { useFieldContext } from '@app/web/libs/form/form-context'
+import classNames from 'classnames'
 import { ChangeEvent } from 'react'
 import { Label } from './Label'
 
@@ -37,7 +38,7 @@ export const Select = <T extends Option<string>[]>({
         onBlur: handleBlur,
         onChange: (e: ChangeEvent<HTMLSelectElement>) =>
           handleChange(e.target.value),
-        className: 'fr-select--white',
+        className: classNames('fr-select--white', props.className),
       }}
       {...props}
     />

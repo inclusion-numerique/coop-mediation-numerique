@@ -364,7 +364,7 @@ export const StatistiquesActivites = ({
             </div>
             <QuantifiedShareList
               limit={{
-                showLabel: 'Voir tout les lieux',
+                showLabel: 'Voir tous les lieux',
                 hideLabel: 'Réduire',
                 count: 5,
               }}

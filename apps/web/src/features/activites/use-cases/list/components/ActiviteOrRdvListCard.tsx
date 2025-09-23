@@ -59,7 +59,7 @@ const ActiviteOrRdvListCard = ({
         {!!footer && footer}
       </div>
     </div>
-    <div className="fr-text--sm fr-text-mention--grey fr-mb-0 fr-col-12 fr-col-lg-3">
+    <div className="fr-text--sm fr-text-mention--grey fr-mb-0 fr-col-12 fr-col-lg-3 fr-flex fr-justify-content-end">
       {actions}
     </div>
   </div>

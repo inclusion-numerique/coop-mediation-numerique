@@ -1,5 +1,6 @@
 'use client'
 
+import { statistiquesPageTitle } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/statistiquesPageTitle'
 import { canUseAssistant } from '@app/web/assistant/canUseAssistant'
 import { SessionUser } from '@app/web/auth/sessionUser'
 import { CreateCraModalDefinition } from '@app/web/features/activites/use-cases/cra/components/CreateCraModal/CreateCraModalDefinition'
@@ -40,7 +41,7 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
             className="ri-chat-poll-line ri-xl fr-mr-1w fr-text--regular"
             aria-hidden
           />
-          Statistiques
+          {statistiquesPageTitle(user)}
         </>
       ),
       linkProps: { href: '/coop/mes-statistiques' },

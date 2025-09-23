@@ -20,5 +20,9 @@ export const SaveTagValidation = z.object({
       `La description du tag doit faire moins de ${descriptionMaxLength} caractères`,
     )
     .nullable(),
-  scope: z.enum([TagScope.Personnel, TagScope.Departemental]),
+  scope: z.enum([
+    TagScope.Personnel,
+    TagScope.Departemental,
+    TagScope.National,
+  ]),
 })

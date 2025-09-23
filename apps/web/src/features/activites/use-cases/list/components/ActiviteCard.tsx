@@ -141,11 +141,14 @@ const ActiviteCard = ({
             )
           ) : null}
           {variant === 'without-beneficiaire' ? (
-            <>
+            <div
+              className="fr-flex fr-justify-content-start fr-align-items-center fr-flex-nowrap"
+              style={{ width: 72, minWidth: 72 }}
+            >
               <span className="fr-icon-time-line fr-icon--sm" />
               &nbsp;
               {dureeAsString(duree)}
-            </>
+            </div>
           ) : null}
           <ActiviteCardOpenModalLink activite={activite} />
         </>

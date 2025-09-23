@@ -2,11 +2,14 @@ import { OptionsData } from '@app/ui/components/Primitives/Options'
 import { SelectedItemsData } from '@app/ui/components/Primitives/SelectedItems'
 import { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
 import { vanillaTrpc } from '@app/web/trpc'
+import { TagScope } from '../tagScope'
+import TagScopeBadge from './TagScopeBadge'
 
 export type Tag = {
   id: string
   nom: string
   description?: string
+  scope: TagScope
 }
 
 const itemToKey = (item: { id: string }): string => item.id
@@ -24,17 +27,19 @@ const loadSuggestions =
 
 const itemToString = (item: Tag | null): string => item?.nom ?? ''
 
-const renderItem = ({ item }: { item: Tag }) =>
-  item.description ? (
+const renderItem = ({ item }: { item: Tag }) => (
+  <div className="fr-flex fr-direction-row fr-align-items-center fr-justify-content-space-between">
     <div className="fr-flex fr-direction-column">
       {item.nom}
-      <span className="fr-text--sm fr-text-mention--grey fr-mb-0">
-        {item.description}
-      </span>
+      {!!item.description && (
+        <span className="fr-text--xs fr-text-mention--grey fr-mb-0">
+          {item.description}
+        </span>
+      )}
     </div>
-  ) : (
-    item.nom
-  )
+    <TagScopeBadge small scope={item.scope} />
+  </div>
+)
 
 export const TagComboBox = (
   tags: ({ id?: string } | undefined)[] = [],

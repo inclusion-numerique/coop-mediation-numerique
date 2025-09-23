@@ -1,6 +1,7 @@
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import classNames from 'classnames'
 import { ReactNode } from 'react'
+import TagScopeBadge from '../components/TagScopeBadge'
 import { TagScope } from '../tagScope'
 
 export const TagList = ({
@@ -31,16 +32,7 @@ export const TagList = ({
         </div>
         <div className="fr-flex fr-align-items-center fr-flex-gap-4v">
           {actions?.(tag)}
-          <Badge
-            className={classNames(
-              'fr-text--nowrap',
-              tag.scope === 'personnel' ? 'fr-text-mention--grey' : undefined,
-            )}
-            severity={tag.scope === 'personnel' ? undefined : 'info'}
-            noIcon
-          >
-            Tag {tag.scope}
-          </Badge>
+          <TagScopeBadge scope={tag.scope} />
         </div>
       </li>
     ))}

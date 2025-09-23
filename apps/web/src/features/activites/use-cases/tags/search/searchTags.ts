@@ -7,6 +7,7 @@ import {
 } from '@app/web/libs/data-table/toNumberOr'
 import { prismaClient } from '@app/web/prismaClient'
 import { Prisma } from '@prisma/client'
+import { getTagScope } from '../tagScope'
 
 type SearchLieuActiviteOptions = {
   mediateurId?: string
@@ -39,12 +40,20 @@ export const searchTags = async ({
     : null
 
   const tags = await prismaClient.$queryRaw<
-    { id: string; nom: string; description: string | null }[]
+    {
+      id: string
+      nom: string
+      description: string | null
+      mediateurId: string | null
+      departement: string | null
+    }[]
   >`
       SELECT
         t.id,
         t.nom,
         t.description,
+        t.mediateur_id as "mediateurId",
+        t.departement,
         COUNT(a.id) AS usage_count
       FROM tags t
         LEFT JOIN activite_tags at ON at.tag_id = t.id
@@ -71,10 +80,11 @@ export const searchTags = async ({
     `
 
   return {
-    items: tags.map(({ id, nom, description }) => ({
+    items: tags.map(({ id, nom, description, mediateurId, departement }) => ({
       id,
       nom,
       description: description ?? undefined,
+      scope: getTagScope({ mediateurId, departement }),
     })),
   }
 }

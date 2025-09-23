@@ -1,4 +1,7 @@
-import { TagScope } from '@app/web/features/activites/use-cases/tags/tagScope'
+import {
+  getTagScope,
+  TagScope,
+} from '@app/web/features/activites/use-cases/tags/tagScope'
 import { prismaClient } from '@app/web/prismaClient'
 
 const getTagsCreators = async () => {
@@ -67,11 +70,11 @@ const getMostUsedTags = async () => {
     },
   })
 
-  return mostUsedTags.map(({ id, nom, description, departement }) => ({
-    id,
-    nom,
-    scope: departement ? TagScope.Departemental : TagScope.Personnel,
-    description: description ?? undefined,
+  return mostUsedTags.map((tag) => ({
+    id: tag.id,
+    nom: tag.nom,
+    scope: getTagScope(tag),
+    description: tag.description ?? undefined,
   }))
 }
 
