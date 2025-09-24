@@ -100,6 +100,7 @@ const RdvCard = ({
             <Button
               priority="tertiary no outline"
               size="small"
+              className="fr-flex-shrink-0"
               linkProps={{
                 href: newCraLink,
               }}
@@ -113,6 +114,7 @@ const RdvCard = ({
             <Button
               priority="tertiary no outline"
               size="small"
+              className="fr-flex-shrink-0"
               title="Voir et modifier le RDV sur Rendez-vous Service Public"
               linkProps={{
                 href: url,
