@@ -72,6 +72,12 @@ export const deleteSentryEnvironmentIssues = new Command()
       for (const name of zeroEnvs) output(`- ${name}`)
     }
 
+    // If environment is not present in allEnvs, no-op
+    if (!allEnvs.includes(environment)) {
+      output(`Environment "${environment}" is not present in Sentry`)
+      return
+    }
+
     output(
       `Fetching issues in Sentry environment "${environment}" for project ${config.org}/${config.project}...`,
     )
@@ -93,10 +99,6 @@ export const deleteSentryEnvironmentIssues = new Command()
       if (failedCount > 0)
         outputError(`Failed to delete ${failedCount} issue(s)`)
     }
-
-    output(
-      'Note: Hiding environments must be done manually in the Sentry UI; no public API is available.',
-    )
 
     try {
       const result = await updateProjectEnvironmentVisibility(
