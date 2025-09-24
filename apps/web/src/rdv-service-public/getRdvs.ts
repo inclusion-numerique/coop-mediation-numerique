@@ -29,6 +29,10 @@ export const getRdvs = async ({
     return []
   }
 
+  if (beneficiaire && beneficiaire.rdvServicePublicId === null) {
+    return []
+  }
+
   const shouldFilterStatuses =
     (statuses?.length ?? 0) > 0 && !statuses?.includes('tous')
 
