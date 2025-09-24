@@ -4,7 +4,7 @@ import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import { trpc } from '@app/web/trpc'
-import type { UserRdvAccount } from '@app/web/utils/user'
+import type { UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Notice from '@codegouvfr/react-dsfr/Notice'
@@ -13,7 +13,10 @@ import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { dateAsDay } from '../utils/dateAsDay'
-import { dateAsDayAndTime } from '../utils/dateAsDayAndTime'
+import {
+  dateAsDayAndTime,
+  dateAsDayAndTimeInTimeZone,
+} from '../utils/dateAsDayAndTime'
 import RdvServicePublicStatusTag from './RdvServicePublicStatusTag'
 import {
   getRdvOauthIntegrationStatus,
@@ -26,9 +29,9 @@ export const GererRdvServicePublicModalInstance = createModal({
 })
 
 const GererRdvServicePublicModal = ({
-  user: { rdvAccount },
+  user: { rdvAccount, timezone },
 }: {
-  user: UserRdvAccount
+  user: UserRdvAccount & UserTimezone
 }) => {
   const deleteMutation = trpc.rdvServicePublic.deleteRdvAccount.useMutation()
   const syncMutation = trpc.rdvServicePublic.syncRdvAccountData.useMutation()
@@ -166,7 +169,7 @@ const GererRdvServicePublicModal = ({
             </p>
             <Tag>
               {lastSynced
-                ? dateAsDayAndTime(lastSynced)
+                ? dateAsDayAndTimeInTimeZone(lastSynced, timezone)
                 : 'Aucune synchronisation'}
             </Tag>
           </div>
