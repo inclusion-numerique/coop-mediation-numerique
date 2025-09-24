@@ -28,7 +28,7 @@ importers:
         version: 3.6.2
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@swc/core@1.13.3)(@types/node@24.2.1)(typescript@6.0.0-dev.20250923)
+        version: 10.9.2(@swc/core@1.13.3)(@types/node@24.2.1)(typescript@6.0.0-dev.20250924)
       turbo:
         specifier: ^2.5.2
         version: 2.5.5
@@ -12458,8 +12458,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@6.0.0-dev.20250923:
-    resolution: {integrity: sha512-Aiy0yklpKnRJkElhXO/bB2DhosYfL+j4RiUinq6C58ncyDOjuKn5wk6O5rds4n4AOobAqMjLU55H5q7bEyDcMQ==}
+  typescript@6.0.0-dev.20250924:
+    resolution: {integrity: sha512-QvrEXTC2T4iiFMS9P+VCcrwH1I9PnbDBeQB6n8d/7Dnv+lEBcF4hU7T8Y2pBgBYo+JT3L6t74ifscyU8mdv8kw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -21298,7 +21298,7 @@ snapshots:
     dependencies:
       semver: 7.7.2
       shelljs: 0.8.5
-      typescript: 6.0.0-dev.20250923
+      typescript: 6.0.0-dev.20250924
 
   downshift@9.0.10(react@19.1.1):
     dependencies:
@@ -27613,7 +27613,7 @@ snapshots:
     optionalDependencies:
       '@swc/core': 1.13.3
 
-  ts-node@10.9.2(@swc/core@1.13.3)(@types/node@24.2.1)(typescript@6.0.0-dev.20250923):
+  ts-node@10.9.2(@swc/core@1.13.3)(@types/node@24.2.1)(typescript@6.0.0-dev.20250924):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
@@ -27627,7 +27627,7 @@ snapshots:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 6.0.0-dev.20250923
+      typescript: 6.0.0-dev.20250924
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
     optionalDependencies:
@@ -27788,7 +27788,7 @@ snapshots:
 
   typescript@5.9.2: {}
 
-  typescript@6.0.0-dev.20250923: {}
+  typescript@6.0.0-dev.20250924: {}
 
   uc.micro@2.1.0: {}
 
