@@ -320,18 +320,18 @@ const ActiviteCursorValidation = z.object({
  *         name: filter[creation][depuis]
  *         schema:
  *           type: string
- *           format: date
- *           example: "2025-09-01"
+ *           format: date-time
+ *           example: "2025-09-01T00:00:00Z"
  *         required: false
- *         description: "retourne les activités avec une date de création supérieure ou égale à cette date"
+ *         description: "retourne les activités avec une date de création supérieure ou égale à cette date-heure"
  *       - in: query
  *         name: filter[modification][depuis]
  *         schema:
  *           type: string
- *           format: date
- *           example: "2025-09-01"
+ *           format: date-time
+ *           example: "2025-09-01T00:00:00Z"
  *         required: false
- *         description: "retourne les activités avec une date de dernière modification supérieure ou égale à cette date"
+ *         description: "retourne les activités avec une date de dernière modification supérieure ou égale à cette date-heure"
  *     responses:
  *       200:
  *         description: liste des activités
@@ -361,18 +361,12 @@ export const GET = createApiV1Route
         .object({
           creation: z
             .object({
-              depuis: z
-                .string()
-                .regex(/^\d{4}-\d{2}-\d{2}$/)
-                .optional(),
+              depuis: z.string().datetime().optional(),
             })
             .default({}),
           modification: z
             .object({
-              depuis: z
-                .string()
-                .regex(/^\d{4}-\d{2}-\d{2}$/)
-                .optional(),
+              depuis: z.string().datetime().optional(),
             })
             .default({}),
         })
@@ -411,20 +405,15 @@ export const GET = createApiV1Route
     const modificationSinceInput = params.filter?.modification?.depuis
 
     const creationSinceDate = creationSinceInput
-      ? new Date(`${creationSinceInput}T00:00:00.000Z`)
+      ? new Date(creationSinceInput)
       : undefined
     const modificationSinceDate = modificationSinceInput
-      ? new Date(`${modificationSinceInput}T00:00:00.000Z`)
+      ? new Date(modificationSinceInput)
       : undefined
 
-    if (creationSinceDate) {
-      where.creation = { gte: creationSinceDate }
-    }
-    if (modificationSinceDate) {
-      where.modification = {
-        gte: modificationSinceDate,
-      }
-    }
+    if (creationSinceDate) where.creation = { gte: creationSinceDate }
+    if (modificationSinceDate)
+      where.modification = { gte: modificationSinceDate }
 
     if (validatedCursor) {
       // We manually recreate cursor pagination as the prisma way
@@ -491,14 +480,13 @@ export const GET = createApiV1Route
     // The prisma.count() was slower than the raw query
     const sqlConditions = [Prisma.sql`TRUE`] as Prisma.Sql[]
 
-    if (creationSinceDate) {
+    if (creationSinceDate)
       sqlConditions.push(Prisma.sql`activites.creation >= ${creationSinceDate}`)
-    }
-    if (modificationSinceDate) {
+
+    if (modificationSinceDate)
       sqlConditions.push(
         Prisma.sql`activites.modification >= ${modificationSinceDate}`,
       )
-    }
 
     const whereSql = Prisma.join(sqlConditions, ' AND ')
 

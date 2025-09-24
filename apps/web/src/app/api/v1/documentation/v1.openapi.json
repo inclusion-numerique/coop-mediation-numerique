@@ -1622,22 +1622,22 @@
             "name": "filter[creation][depuis]",
             "schema": {
               "type": "string",
-              "format": "date",
-              "example": "2025-09-01"
+              "format": "date-time",
+              "example": "2025-09-01T00:00:00Z"
             },
             "required": false,
-            "description": "retourne les activités avec une date de création supérieure ou égale à cette date"
+            "description": "retourne les activités avec une date de création supérieure ou égale à cette date-heure"
           },
           {
             "in": "query",
             "name": "filter[modification][depuis]",
             "schema": {
               "type": "string",
-              "format": "date",
-              "example": "2025-09-01"
+              "format": "date-time",
+              "example": "2025-09-01T00:00:00Z"
             },
             "required": false,
-            "description": "retourne les activités avec une date de dernière modification supérieure ou égale à cette date"
+            "description": "retourne les activités avec une date de dernière modification supérieure ou égale à cette date-heure"
           }
         ],
         "responses": {
