@@ -156,9 +156,16 @@ export const GET = async (request: NextRequest) => {
       })
     }
 
+    const existingRdvAccount = await prismaClient.rdvAccount.findFirst({
+      where: { OR: [{ id: userData.agent.id }, { userId: user.id }] },
+      select: {
+        id: true,
+      },
+    })
+
     // Update the rdv account
     const rdvAccount = await prismaClient.rdvAccount.upsert({
-      where: { id: userData.agent.id },
+      where: { id: existingRdvAccount?.id ?? userData.agent.id },
       create: {
         ...authUserData,
         id: userData.agent.id,
@@ -166,6 +173,8 @@ export const GET = async (request: NextRequest) => {
       },
       update: {
         ...authUserData,
+        id: userData.agent.id,
+        userId: user.id,
         error: null,
       },
       select: {
