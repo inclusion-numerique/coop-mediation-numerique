@@ -179,5 +179,5 @@ export const getRdvs = async ({
     }
   }
 
-  return beneficiairesRdvs
+  return beneficiairesRdvs.sort((a, b) => a.date.getTime() - b.date.getTime())
 }

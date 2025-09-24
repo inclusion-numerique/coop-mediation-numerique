@@ -60,7 +60,7 @@ export const getAccueilPageDataFor = async (
       mediateurs,
       activites,
       rdvs: {
-        next: rdvsFutur.length > 0 ? rdvsFutur.at(-1) : null,
+        next: rdvsFutur.length > 0 ? rdvsFutur.at(0) : null,
         futur: rdvsFutur,
         passes: rdvsPasses,
         honores: rdvsHonores,
