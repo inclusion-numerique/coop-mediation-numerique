@@ -119,7 +119,7 @@ const RdvCard = ({
                 target: '_blank',
               }}
             >
-              {badgeStatus === 'past' ? 'À valider sur RDV SP' : 'Voir'}
+              {badgeStatus === 'past' ? 'À valider sur RDV SP' : 'Voir'}
             </Button>
           )}
         </>
