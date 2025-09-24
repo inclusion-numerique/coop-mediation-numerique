@@ -14,6 +14,7 @@ import { getDatabasePasswordSecret } from '@app/cli/commands/secrets/getDatabase
 import { getSecretValue } from '@app/cli/commands/secrets/getSecretValue'
 import { listSecrets } from '@app/cli/commands/secrets/listSecrets'
 import { setupDatabaseSecret } from '@app/cli/commands/secrets/setupDatabaseSecret'
+import { deleteSentryEnvironmentIssues } from '@app/cli/commands/sentry/deleteSentryEnvironmentIssues'
 import { listV1Emails } from '@app/cli/commands/v1/listEmails'
 import { fetchAccompagnements } from '@app/cli/fetchAccompagnement'
 import { output } from '@app/cli/output'
@@ -56,4 +57,5 @@ program.addCommand(locallyRestoreLatestMainBackup)
 program.addCommand(listV1Emails)
 program.addCommand(ingestNotionHelpCenterExportedMarkdown)
 program.addCommand(fetchAccompagnements)
+program.addCommand(deleteSentryEnvironmentIssues)
 program.parse()
