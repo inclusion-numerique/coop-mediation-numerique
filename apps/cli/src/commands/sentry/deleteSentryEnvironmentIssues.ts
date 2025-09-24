@@ -1,4 +1,3 @@
-import { computeBranchNamespace } from '@app/cdk/utils'
 import { output, outputError } from '@app/cli/output'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { Command } from '@commander-js/extra-typings'
