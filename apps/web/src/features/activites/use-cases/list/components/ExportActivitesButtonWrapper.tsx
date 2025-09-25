@@ -16,6 +16,7 @@ const ExportActivitesButtonWrapper = async ({
   tagsOptions,
   filters,
   searchResultMatchesCount,
+  activiteSourceOptions,
 }: {
   filters: ActivitesFilters
   beneficiairesOptions: BeneficiaireOption[]
@@ -24,6 +25,7 @@ const ExportActivitesButtonWrapper = async ({
   lieuxActiviteOptions: LieuActiviteOption[]
   departementsOptions: SelectOption[]
   tagsOptions: { id: string; nom: string }[]
+  activiteSourceOptions: SelectOption[]
   searchResultMatchesCount: Promise<number>
 }) => {
   const filterLabels = generateActivitesFiltersLabels(filters, {
@@ -33,6 +35,7 @@ const ExportActivitesButtonWrapper = async ({
     beneficiairesOptions,
     mediateursOptions,
     tagsOptions,
+    activiteSourceOptions,
   })
 
   const matchesCount = await searchResultMatchesCount

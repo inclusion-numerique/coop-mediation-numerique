@@ -1,6 +1,10 @@
 'use client'
 
 import {
+  SourcesField,
+  updateSourcesParams,
+} from '@app/web/components/filters/more-filters/SourceField'
+import {
   TagsField,
   tagToArray,
   updateTagsParams,
@@ -13,6 +17,7 @@ import {
   ThematiqueNonAdministrativesFiled,
   updateThematiqueNonAdministrativesParams,
 } from '@app/web/components/filters/more-filters/ThematiqueNonAdministrativesField'
+import type { ActiviteSource } from '@app/web/features/activites/use-cases/source/activiteSource'
 import { TagScope } from '@app/web/features/activites/use-cases/tags/tagScope'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
@@ -30,13 +35,16 @@ const MoreFiltersModal = createModal({
 export const MoreMediateurFilters = ({
   tagsOptions,
   defaultValues,
+  hasCrasV1,
 }: {
   tagsOptions: { id: string; nom: string; scope: TagScope }[]
   defaultValues: {
     thematiqueNonAdministratives: string[]
     thematiqueAdministratives: string[]
     tags: string[]
+    source: ActiviteSource | undefined
   }
+  hasCrasV1: boolean
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -45,7 +53,8 @@ export const MoreMediateurFilters = ({
   const activeFiltersCount =
     defaultValues.tags.length +
     defaultValues.thematiqueNonAdministratives.length +
-    defaultValues.thematiqueAdministratives.length
+    defaultValues.thematiqueAdministratives.length +
+    (defaultValues.source ? 1 : 0)
 
   const dismissModal = () => {
     router.replace(`?${params}`, { scroll: false })
@@ -62,6 +71,7 @@ export const MoreMediateurFilters = ({
       updateThematiqueAdministrativesParams(params)(data)
       updateThematiqueNonAdministrativesParams(params)(data)
       updateTagsParams(params)(data)
+      updateSourcesParams(params)(data)
       dismissModal()
     },
   })
@@ -70,6 +80,7 @@ export const MoreMediateurFilters = ({
     params.delete('thematiqueNonAdministratives')
     params.delete('thematiqueAdministratives')
     params.delete('tags')
+    params.delete('source')
     dismissModal()
   }
 
@@ -97,6 +108,12 @@ export const MoreMediateurFilters = ({
             },
           ]}
         >
+          {hasCrasV1 && (
+            <>
+              <SourcesField form={form as any} isPending={false} />
+              <hr className="fr-separator-8v" />
+            </>
+          )}
           <h2 className="fr-h6">
             Filtrer par thématique de médiation numérique
           </h2>

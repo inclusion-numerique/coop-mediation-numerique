@@ -34,6 +34,7 @@ export const MesStatistiques = (
     activiteDates,
     user,
     hasCrasV1,
+    activiteSourceOptions,
   } = mesStatistiquesProps
 
   return (
@@ -59,6 +60,7 @@ export const MesStatistiques = (
             minDate={activiteDates.first}
             isCoordinateur={user.coordinateur?.id != null}
             isMediateur={user.mediateur?.id != null}
+            hasCrasV1={hasCrasV1.hasCrasV1}
           />
           <ExportStatistiques
             filters={activitesFilters}
@@ -71,6 +73,7 @@ export const MesStatistiques = (
             accompagnementsCount={
               mesStatistiquesProps.totalCounts.accompagnements.total
             }
+            activiteSourceOptions={activiteSourceOptions}
           />
         </div>
         <FilterTags
@@ -81,6 +84,7 @@ export const MesStatistiques = (
           mediateursOptions={initialMediateursOptions}
           beneficiairesOptions={[]}
           tagsOptions={tagsOptions}
+          activiteSourceOptions={activiteSourceOptions}
         />
         {hasCrasV1.hasCrasV1 && (
           <Notice

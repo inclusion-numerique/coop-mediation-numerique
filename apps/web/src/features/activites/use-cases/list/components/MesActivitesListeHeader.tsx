@@ -19,8 +19,10 @@ const MesActivitesListeHeader = ({
   tagsOptions,
   lieuxActiviteOptions,
   searchResultMatchesCount,
+  activiteSourceOptions,
   activiteDates,
   enableRdvsFilter,
+  hasCrasV1,
 }: {
   defaultFilters: ActivitesFilters
   initialMediateursOptions: MediateurOption[]
@@ -29,9 +31,11 @@ const MesActivitesListeHeader = ({
   lieuxActiviteOptions: LieuActiviteOption[]
   departementsOptions: SelectOption[]
   activiteDates: ActiviteDates
+  activiteSourceOptions: SelectOption[]
   className?: string
   searchResultMatchesCount: Promise<number>
   enableRdvsFilter: boolean
+  hasCrasV1: boolean
 }) => (
   <>
     <div
@@ -53,6 +57,7 @@ const MesActivitesListeHeader = ({
         isCoordinateur={false}
         isMediateur={true}
         enableRdvsFilter={enableRdvsFilter}
+        hasCrasV1={hasCrasV1}
       />
       <Suspense fallback={<ExportActivitesDisabledButton />}>
         <ExportActivitesButtonWrapper
@@ -64,6 +69,7 @@ const MesActivitesListeHeader = ({
           beneficiairesOptions={[]}
           mediateursOptions={initialMediateursOptions}
           searchResultMatchesCount={searchResultMatchesCount}
+          activiteSourceOptions={activiteSourceOptions}
         />
       </Suspense>
     </div>
@@ -75,6 +81,7 @@ const MesActivitesListeHeader = ({
       beneficiairesOptions={[]}
       mediateursOptions={initialMediateursOptions}
       tagsOptions={tagsOptions}
+      activiteSourceOptions={activiteSourceOptions}
     />
   </>
 )

@@ -3,15 +3,19 @@ import {
   thematiquesNonAdministrativesValues,
 } from '@app/web/features/activites/use-cases/cra/fields/thematique'
 import {
+  TypeActiviteSlug,
+  typeActiviteSlugValues,
+} from '@app/web/features/activites/use-cases/cra/fields/type-activite'
+import {
+  type ActiviteSource,
+  activiteSourceValues,
+} from '@app/web/features/activites/use-cases/source/activiteSource'
+import {
   type RdvStatus,
   rdvStatusValues,
 } from '@app/web/rdv-service-public/rdvStatus'
 import { Thematique } from '@prisma/client'
 import z from 'zod'
-import {
-  TypeActiviteSlug,
-  typeActiviteSlugValues,
-} from '../../cra/fields/type-activite'
 
 const isoDayRegex = /^\d{4}-\d{2}-\d{2}$/
 
@@ -97,6 +101,7 @@ export const ActivitesFilterValidations = {
     ])
     .optional(),
   rdv: z.enum(booleanStringValues).optional(),
+  source: z.enum(activiteSourceValues).optional(),
 }
 
 export type ActivitesFilters = {
@@ -114,6 +119,7 @@ export type ActivitesFilters = {
   thematiqueAdministratives?: Thematique[]
   tags?: string[]
   rdv?: BooleanString // 0 = non, 1 = oui, donera les activites avec un id externe RDVSP
+  source?: ActiviteSource
 }
 
 /**
@@ -143,7 +149,8 @@ export const validateActivitesFilters = <T extends ActivitesFilters>(
         TypeActiviteSlug[] &
         RdvStatusFilterValue[] &
         Thematique[] &
-        string[]
+        string[] &
+        ActiviteSource
     } else {
       delete result[typedKey]
     }

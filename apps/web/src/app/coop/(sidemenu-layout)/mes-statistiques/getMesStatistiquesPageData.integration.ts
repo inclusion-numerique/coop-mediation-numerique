@@ -160,6 +160,7 @@ const emptyData: MesStatistiquesPageData = {
   initialBeneficiairesOptions: [],
   initialMediateursOptions: [],
   lieuxActiviteOptions: [],
+  activiteSourceOptions: [],
   activiteDates: {
     first: undefined,
     last: undefined,
@@ -493,6 +494,7 @@ describe('getMesStatistiquesPageData', () => {
       | 'departementsOptions'
       | 'initialBeneficiairesOptions'
       | 'lieuxActiviteOptions'
+      | 'activiteSourceOptions'
     >
 
     beforeAll(async () => {
@@ -531,6 +533,7 @@ describe('getMesStatistiquesPageData', () => {
             },
           },
         ],
+        activiteSourceOptions: [],
       }
     })
 

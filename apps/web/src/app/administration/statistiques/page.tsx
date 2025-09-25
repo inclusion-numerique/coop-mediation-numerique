@@ -17,6 +17,7 @@ import {
   type ActivitesFilters,
   validateActivitesFilters,
 } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { activiteSourceOptions } from '@app/web/features/activites/use-cases/source/activiteSource'
 import { getTagsCollectifs } from '@app/web/features/activites/use-cases/tags/db/getTagsCollectifs'
 import { getImpactStats } from '@app/web/server/impact/getImpactStats'
 
@@ -75,6 +76,7 @@ const Page = async (props: {
           beneficiairesFilter={false}
           isCoordinateur={false}
           isMediateur={false}
+          hasCrasV1={true}
         />
       </div>
       <FilterTags
@@ -85,6 +87,7 @@ const Page = async (props: {
         tagsOptions={[]}
         mediateursOptions={[]}
         beneficiairesOptions={[]}
+        activiteSourceOptions={activiteSourceOptions}
       />
       <section className="fr-mb-6w">
         <StatistiquesGenerales
