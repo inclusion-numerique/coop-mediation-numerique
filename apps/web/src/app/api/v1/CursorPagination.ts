@@ -54,10 +54,16 @@ import { ZodError, z } from 'zod'
  *           description: lien vers la page précédente
  *           example: "https://api.example.com/v1/activites"
  */
+export const defaultJsonApiCursorPaginationSize = 500
+export const maxJsonApiCursorPaginationSize = 500
 export const JsonApiCursorPaginationQueryParamsValidation = z.object({
   page: z
     .object({
-      size: z.coerce.number().min(1).max(500).default(500),
+      size: z.coerce
+        .number()
+        .min(1)
+        .max(maxJsonApiCursorPaginationSize)
+        .default(defaultJsonApiCursorPaginationSize),
       after: z.string().optional(),
       before: z.string().optional(),
     })

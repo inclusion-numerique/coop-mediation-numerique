@@ -56,14 +56,14 @@
               "lieu_code_insee",
               "creation",
               "modification",
+              "suppression",
               "autonomie",
               "oriente_vers_structure",
               "structure_de_redirection",
               "materiel",
               "thematiques",
-              "thematiques_demarche_administrative",
+              "tags",
               "precisions_demarche",
-              "degre_de_finalisation_demarche",
               "titre_atelier",
               "niveau_atelier"
             ],
@@ -87,9 +87,9 @@
               },
               "date": {
                 "type": "string",
-                "format": "date-time",
+                "format": "date",
                 "description": "date à laquelle l'activité s'est déroulée",
-                "example": "2024-12-10T09:00:00Z"
+                "example": "2024-12-10"
               },
               "duree": {
                 "type": "number",
@@ -139,6 +139,13 @@
                 "nullable": true,
                 "description": "date de dernière modification de l'activité",
                 "example": "2024-12-10T15:00:00Z"
+              },
+              "suppression": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true,
+                "description": "date de suppression (si l’activité est supprimée)",
+                "example": "2025-01-05T10:00:00Z"
               },
               "autonomie": {
                 "type": "string",
@@ -207,17 +214,8 @@
                     "scolarite_et_numerique",
                     "creer_avec_le_numerique",
                     "culture_numerique",
-                    "intelligence_artificielle"
-                  ],
-                  "example": "diagnostic_numerique"
-                }
-              },
-              "thematiques_demarche_administrative": {
-                "type": "array",
-                "description": "thématiques de la démarche administrative abordées",
-                "items": {
-                  "type": "string",
-                  "enum": [
+                    "intelligence_artificielle",
+                    "aide_aux_demarches_administratives",
                     "papiers_elections_citoyennete",
                     "famille_scolarite",
                     "social_sante",
@@ -229,7 +227,15 @@
                     "etrangers_europe",
                     "loisirs_sports_culture"
                   ],
-                  "example": "papiers_elections_citoyennete"
+                  "example": "diagnostic_numerique"
+                }
+              },
+              "tags": {
+                "type": "array",
+                "description": "tags associés à l'activité",
+                "items": {
+                  "type": "string",
+                  "example": "atelier de codage"
                 }
               },
               "precisions_demarche": {
@@ -237,18 +243,6 @@
                 "nullable": true,
                 "description": "précisions sur la démarche administrative",
                 "example": "difficultés à compléter le formulaire"
-              },
-              "degre_de_finalisation_demarche": {
-                "type": "string",
-                "nullable": true,
-                "description": "degré de finalisation de la démarche administrative",
-                "enum": [
-                  "finalisee",
-                  "a_finaliser_en_autonomie",
-                  "doit_revenir",
-                  "oriente_vers_structure"
-                ],
-                "example": "finalisee"
               },
               "titre_atelier": {
                 "type": "string",
@@ -775,7 +769,7 @@
             "type": "string",
             "format": "URL",
             "description": "URL renvoyant vers le site de prise de rendez-vous en ligne avec les aidants du lieu.",
-            "example": "https://www.rdv-solidarites.fr/"
+            "example": "https://rdv.anct.gouv.fr/"
           }
         }
       },
@@ -1590,7 +1584,7 @@
     "/activites": {
       "get": {
         "summary": "liste des activités",
-        "description": "retourne la liste des activités renseignées par les médiateurs sur la coop.\nles activités sont triées par date de création décroissante.\n",
+        "description": "retourne la liste des activités renseignées par les médiateurs sur la coop. les activités sont triées par date de dernière modification décroissante.\n",
         "tags": ["Activités"],
         "parameters": [
           {
@@ -1622,6 +1616,28 @@
             },
             "required": false,
             "description": "curseur de pagination pour obtenir les éléments précédents"
+          },
+          {
+            "in": "query",
+            "name": "filter[creation][depuis]",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2025-09-01T00:00:00Z"
+            },
+            "required": false,
+            "description": "retourne les activités avec une date de création supérieure ou égale à cette date-heure"
+          },
+          {
+            "in": "query",
+            "name": "filter[modification][depuis]",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2025-09-01T00:00:00Z"
+            },
+            "required": false,
+            "description": "retourne les activités avec une date de dernière modification supérieure ou égale à cette date-heure"
           }
         ],
         "responses": {

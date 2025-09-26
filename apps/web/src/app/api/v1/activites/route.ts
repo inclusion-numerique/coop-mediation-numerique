@@ -1,6 +1,7 @@
 import { apiV1Url } from '@app/web/app/api/v1/apiV1Url'
 import {
   createCompositeCursor,
+  defaultJsonApiCursorPaginationSize,
   JsonApiCursorPaginationQueryParamsValidation,
   parseCompositeCursor,
   prismaCursorPagination,
@@ -45,6 +46,7 @@ type ActiviteAttributes = {
   lieu_code_insee: string | null
   creation: string
   modification: string
+  suppression: string | null
   autonomie:
     | 'entierement_accompagne'
     | 'partiellement_autonome'
@@ -117,8 +119,8 @@ export type ActiviteResource = JsonApiResource<
 export type ActiviteListResponse = JsonApiListResponse<ActiviteResource>
 
 const ActiviteCursorValidation = z.object({
-  creation_id: z.object({
-    creation: z.coerce.string().datetime(),
+  modification_id: z.object({
+    modification: z.coerce.string().datetime(),
     id: z.string().uuid(),
   }),
 })
@@ -154,6 +156,7 @@ const ActiviteCursorValidation = z.object({
  *             - lieu_code_insee
  *             - creation
  *             - modification
+ *             - suppression
  *             - autonomie
  *             - oriente_vers_structure
  *             - structure_de_redirection
@@ -180,9 +183,9 @@ const ActiviteCursorValidation = z.object({
  *               example: 2
  *             date:
  *               type: string
- *               format: date-time
+ *               format: date
  *               description: date à laquelle l'activité s'est déroulée
- *               example: "2024-12-10T09:00:00Z"
+ *               example: "2024-12-10"
  *             duree:
  *               type: number
  *               description: durée en minutes
@@ -224,6 +227,12 @@ const ActiviteCursorValidation = z.object({
  *               nullable: true
  *               description: date de dernière modification de l'activité
  *               example: "2024-12-10T15:00:00Z"
+ *             suppression:
+ *               type: string
+ *               format: date-time
+ *               nullable: true
+ *               description: date de suppression (si l’activité est supprimée)
+ *               example: "2025-01-05T10:00:00Z"
  *             autonomie:
  *               type: string
  *               nullable: true
@@ -282,8 +291,7 @@ const ActiviteCursorValidation = z.object({
  *     summary: liste des activités
  *     description: >
  *       retourne la liste des activités renseignées par les médiateurs sur la coop.
- *
- *       les activités sont triées par date de création décroissante.
+ *       les activités sont triées par date de dernière modification décroissante.
  *     tags:
  *       - Activités
  *     parameters:
@@ -312,18 +320,18 @@ const ActiviteCursorValidation = z.object({
  *         name: filter[creation][depuis]
  *         schema:
  *           type: string
- *           format: date
- *           example: "2025-09-01"
+ *           format: date-time
+ *           example: "2025-09-01T00:00:00Z"
  *         required: false
- *         description: "retourne les activités avec une date de création supérieure ou égale à cette date
+ *         description: "retourne les activités avec une date de création supérieure ou égale à cette date-heure"
  *       - in: query
  *         name: filter[modification][depuis]
  *         schema:
  *           type: string
- *           format: date
- *           example: "2025-09-01"
+ *           format: date-time
+ *           example: "2025-09-01T00:00:00Z"
  *         required: false
- *         description: "retourne les activités avec une date de dernière modification supérieure ou égale à cette date
+ *         description: "retourne les activités avec une date de dernière modification supérieure ou égale à cette date-heure"
  *     responses:
  *       200:
  *         description: liste des activités
@@ -353,18 +361,12 @@ export const GET = createApiV1Route
         .object({
           creation: z
             .object({
-              depuis: z
-                .string()
-                .regex(/^\d{4}-\d{2}-\d{2}$/)
-                .optional(),
+              depuis: z.string().datetime().optional(),
             })
             .default({}),
           modification: z
             .object({
-              depuis: z
-                .string()
-                .regex(/^\d{4}-\d{2}-\d{2}$/)
-                .optional(),
+              depuis: z.string().datetime().optional(),
             })
             .default({}),
         })
@@ -376,7 +378,7 @@ export const GET = createApiV1Route
 
     /**
      * We use a composite cursor to paginate results for API queries
-     * using the creation date and id of the activite to ensure unicity
+     * using the modification date and id of the activite to ensure unicity
      */
     const parsedCursor = cursorPagination.cursor
       ? parseCompositeCursor(cursorPagination.cursor)
@@ -385,8 +387,8 @@ export const GET = createApiV1Route
     // validate that parsedCursor 0 is a valid date and parsedCursor 1 is a valid id
     const validatedCursor = parsedCursor
       ? ActiviteCursorValidation.safeParse({
-          creation_id: {
-            creation: parsedCursor[0],
+          modification_id: {
+            modification: parsedCursor[0],
             id: parsedCursor[1],
           },
         })
@@ -396,39 +398,36 @@ export const GET = createApiV1Route
       throw validatedCursor.error as ZodError
     }
 
-    const where: Prisma.ActiviteWhereInput = {
-      suppression: null,
-    }
+    const where: Prisma.ActiviteWhereInput = {}
 
     // filters: creation/modification depuis (inclusive)
     const creationSinceInput = params.filter?.creation?.depuis
     const modificationSinceInput = params.filter?.modification?.depuis
 
     const creationSinceDate = creationSinceInput
-      ? new Date(`${creationSinceInput}T00:00:00.000Z`)
+      ? new Date(creationSinceInput)
       : undefined
     const modificationSinceDate = modificationSinceInput
-      ? new Date(`${modificationSinceInput}T00:00:00.000Z`)
+      ? new Date(modificationSinceInput)
       : undefined
 
-    if (creationSinceDate) {
-      where.creation = { gte: creationSinceDate }
-    }
-    if (modificationSinceDate) {
-      where.modification = {
-        gte: modificationSinceDate,
-      }
-    }
+    if (creationSinceDate) where.creation = { gte: creationSinceDate }
+    if (modificationSinceDate)
+      where.modification = { gte: modificationSinceDate }
 
     if (validatedCursor) {
       // We manually recreate cursor pagination as the prisma way
       // does not work with the indexes and times out
       where.OR = [
-        { creation: { lt: validatedCursor.data.creation_id.creation } },
+        {
+          modification: {
+            lt: validatedCursor.data.modification_id.modification,
+          },
+        },
         {
           AND: [
-            { creation: validatedCursor.data.creation_id.creation },
-            { id: { lt: validatedCursor.data.creation_id.id } },
+            { modification: validatedCursor.data.modification_id.modification },
+            { id: { lt: validatedCursor.data.modification_id.id } },
           ],
         },
       ]
@@ -436,9 +435,35 @@ export const GET = createApiV1Route
 
     const cras = await prismaClient.activite.findMany({
       where,
-      orderBy: [{ creation: 'desc' }, { id: 'desc' }],
-      include: {
-        mediateur: true,
+      orderBy: [{ modification: 'desc' }, { id: 'desc' }],
+      select: {
+        id: true,
+        type: true,
+        suppression: true,
+        modification: true,
+        creation: true,
+        date: true,
+        duree: true,
+        structureId: true,
+        lieuCodePostal: true,
+        lieuCommune: true,
+        lieuCodeInsee: true,
+        mediateurId: true,
+        typeLieu: true,
+        mediateur: {
+          select: {
+            userId: true,
+          },
+        },
+        autonomie: true,
+        structureDeRedirection: true,
+        materiel: true,
+        thematiques: true,
+        orienteVersStructure: true,
+        precisionsDemarche: true,
+        titreAtelier: true,
+        niveau: true,
+        accompagnementsCount: true,
         tags: {
           select: {
             tag: {
@@ -453,18 +478,15 @@ export const GET = createApiV1Route
     })
 
     // The prisma.count() was slower than the raw query
-    const sqlConditions = [
-      Prisma.sql`activites.suppression IS NULL`,
-    ] as Prisma.Sql[]
+    const sqlConditions = [Prisma.sql`TRUE`] as Prisma.Sql[]
 
-    if (creationSinceDate) {
+    if (creationSinceDate)
       sqlConditions.push(Prisma.sql`activites.creation >= ${creationSinceDate}`)
-    }
-    if (modificationSinceDate) {
+
+    if (modificationSinceDate)
       sqlConditions.push(
         Prisma.sql`activites.modification >= ${modificationSinceDate}`,
       )
-    }
 
     const whereSql = Prisma.join(sqlConditions, ' AND ')
 
@@ -477,12 +499,44 @@ export const GET = createApiV1Route
     const firstItem = cras.at(0)
 
     const nextCursor = lastItem
-      ? createCompositeCursor(lastItem.creation.toISOString(), lastItem.id)
+      ? createCompositeCursor(lastItem.modification.toISOString(), lastItem.id)
       : undefined
     const previousCursor =
       !!parsedCursor && firstItem
-        ? createCompositeCursor(firstItem.creation.toISOString(), firstItem.id)
+        ? createCompositeCursor(
+            firstItem.modification.toISOString(),
+            firstItem.id,
+          )
         : undefined
+
+    const currentQueryParams = new URLSearchParams()
+    if (cursorPagination.take !== defaultJsonApiCursorPaginationSize) {
+      currentQueryParams.set(
+        'page[size]',
+        String(Math.abs(cursorPagination.take)),
+      )
+    }
+    if (creationSinceInput)
+      currentQueryParams.set('filter[creation][depuis]', creationSinceInput)
+    if (modificationSinceInput)
+      currentQueryParams.set(
+        'filter[modification][depuis]',
+        modificationSinceInput,
+      )
+
+    const buildHref = (cursor?: {
+      direction: 'after' | 'before'
+      value: string
+    }) => {
+      const params = new URLSearchParams(currentQueryParams)
+      if (cursor) {
+        params.set(
+          `page[${cursor.direction}]`,
+          encodeSerializableState(cursor.value),
+        )
+      }
+      return apiV1Url('/activites', params)
+    }
 
     const response: ActiviteListResponse = {
       data: cras.map(
@@ -499,6 +553,7 @@ export const GET = createApiV1Route
           lieuCodeInsee,
           creation,
           modification,
+          suppression,
           typeLieu,
           autonomie,
           structureDeRedirection,
@@ -518,7 +573,7 @@ export const GET = createApiV1Route
               type: typeActiviteApiValues[type],
               mediateur_id: mediateurId,
               user_id: mediateur.userId,
-              date: date.toISOString(),
+              date: date.toISOString().slice(0, 10),
               duree,
               structure_id: structureId,
               lieu_code_postal: lieuCodePostal,
@@ -526,6 +581,7 @@ export const GET = createApiV1Route
               lieu_code_insee: lieuCodeInsee,
               creation: creation.toISOString(),
               modification: modification.toISOString(),
+              suppression: suppression ? suppression.toISOString() : null,
               type_lieu: typeLieuApiValues[typeLieu],
               autonomie: autonomie ? autonomieApiValues[autonomie] : null,
               structure_de_redirection: structureDeRedirection
@@ -548,34 +604,23 @@ export const GET = createApiV1Route
       ),
       links: {
         self: {
-          href: cursorPagination.cursor
-            ? cursorPagination.isBefore
-              ? apiV1Url(
-                  `/activites?page[before]=${encodeSerializableState(
-                    cursorPagination.cursor,
-                  )}`,
-                )
-              : apiV1Url(
-                  `/activites?page[after]=${encodeSerializableState(
-                    cursorPagination.cursor,
-                  )}`,
-                )
-            : apiV1Url('/activites'),
+          href: buildHref(
+            cursorPagination.cursor
+              ? {
+                  direction: cursorPagination.isBefore ? 'before' : 'after',
+                  value: cursorPagination.cursor,
+                }
+              : undefined,
+          ),
         },
         next: nextCursor
           ? {
-              href: apiV1Url(
-                `/activites?page[after]=${encodeSerializableState(nextCursor)}`,
-              ),
+              href: buildHref({ direction: 'after', value: nextCursor }),
             }
           : undefined,
         prev: previousCursor
           ? {
-              href: apiV1Url(
-                `/activites?page[before]=${encodeSerializableState(
-                  previousCursor,
-                )}`,
-              ),
+              href: buildHref({ direction: 'before', value: previousCursor }),
             }
           : undefined,
       },

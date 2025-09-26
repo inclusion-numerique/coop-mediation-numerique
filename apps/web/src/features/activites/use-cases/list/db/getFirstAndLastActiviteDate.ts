@@ -1,4 +1,5 @@
 import { prismaClient } from '@app/web/prismaClient'
+import { createStopwatch } from '@app/web/utils/stopwatch'
 import { Prisma } from '@prisma/client'
 
 export const getFirstAndLastActiviteDate = async ({
@@ -13,21 +14,30 @@ export const getFirstAndLastActiviteDate = async ({
     }
   }
 
-  const firstDate = await prismaClient.$queryRaw<{ date: Date }[]>`
-      SELECT MIN(date) AS date
-      FROM activites
-      WHERE mediateur_id = ANY(ARRAY[${Prisma.join(mediateurIds.map((id) => `${id}`))}]::UUID[])
-  `
-
-  const lastDate = await prismaClient.$queryRaw<{ date: Date }[]>`
-      SELECT MAX(date) AS date
-      FROM activites
-      WHERE mediateur_id = ANY(ARRAY[${Prisma.join(mediateurIds.map((id) => `${id}`))}]::UUID[])
-  `
+  const result =
+    mediateurIds.length === 1
+      ? await prismaClient.$queryRaw<
+          { first: Date | null; last: Date | null }[]
+        >`
+            SELECT
+              MIN(date) AS first,
+              MAX(date) AS last
+            FROM activites
+            WHERE mediateur_id = ${mediateurIds[0]}::UUID
+        `
+      : await prismaClient.$queryRaw<
+          { first: Date | null; last: Date | null }[]
+        >`
+            SELECT
+              MIN(date) AS first,
+              MAX(date) AS last
+            FROM activites
+            WHERE mediateur_id = ANY(ARRAY[${Prisma.join(mediateurIds)}]::UUID[])
+        `
 
   return {
-    first: firstDate.at(0)?.date ?? undefined,
-    last: lastDate.at(0)?.date ?? undefined,
+    first: result.at(0)?.first ?? undefined,
+    last: result.at(0)?.last ?? undefined,
   }
 }
 

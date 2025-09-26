@@ -114,6 +114,8 @@ export const craRouter = router({
       // TODO: update beneficiaires non anonymous from accompagnement, decrement accompagnements_count
       // TODO: update mediateur from mediateur_id, decrement activites_count and accompagnements_count
 
+      const now = new Date()
+
       await prismaClient.$transaction(
         [
           // Delete associated tags
@@ -140,8 +142,9 @@ export const craRouter = router({
               })
             : null,
           // Delete activité
-          prismaClient.activite.delete({
+          prismaClient.activite.update({
             where: { id: activiteId },
+            data: { suppression: now, modification: now },
           }),
           // Remove activite's lieu activite count
           activite.structureId

@@ -20,7 +20,7 @@ const Rdvs = ({
   <>
     <div className="fr-flex fr-flex-wrap fr-align-items-center fr-justify-content-space-between fr-mb-3w">
       <div
-        className="fr-background-action-low--blue-france fr-p-1-5v fr-border-radius--8 fr-flex fr-mr-1w"
+        className="fr-background-blue-france-alt-light--action-low-dark fr-p-1-5v fr-border-radius--8 fr-flex fr-mr-1w"
         aria-hidden
       >
         <RDVServicePublicLogo
@@ -129,7 +129,7 @@ const Rdvs = ({
                     target: '_blank',
                   }}
                 >
-                  À valider sur RDV SP
+                  À valider sur RDV&nbsp;SP
                 </Button>
               </>
             )}

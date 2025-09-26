@@ -109,4 +109,10 @@ export const ServerWebAppConfig = {
       apiKey: process.env.BRAVE_API_KEY ?? '',
     },
   },
+  Sentry: {
+    authToken: process.env.SENTRY_AUTH_TOKEN ?? '',
+    url: process.env.SENTRY_URL ?? '',
+    org: process.env.SENTRY_ORG ?? '',
+    project: process.env.SENTRY_PROJECT ?? '',
+  },
 }
