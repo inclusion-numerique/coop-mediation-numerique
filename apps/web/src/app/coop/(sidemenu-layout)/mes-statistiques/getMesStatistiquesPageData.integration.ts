@@ -33,6 +33,7 @@ import {
 import { typeActiviteLabels } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
 import { typeLieuLabels } from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { activiteSourceOptions } from '@app/web/features/activites/use-cases/source/activiteSource'
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaires/db/getInitialBeneficiairesOptionsForSearch'
 import { prismaClient } from '@app/web/prismaClient'
 import { UserDisplayName, UserProfile } from '@app/web/utils/user'
@@ -160,7 +161,7 @@ const emptyData: MesStatistiquesPageData = {
   initialBeneficiairesOptions: [],
   initialMediateursOptions: [],
   lieuxActiviteOptions: [],
-  activiteSourceOptions: [],
+  activiteSourceOptions,
   activiteDates: {
     first: undefined,
     last: undefined,

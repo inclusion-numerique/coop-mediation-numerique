@@ -104,8 +104,8 @@ describe('buildActivitesWorksheet', () => {
     expect(filtersTitleCell.font?.bold).toBe(true)
 
     // Check a specific filter, e.g., "Type de lieu: Commune"
-    const filterTypeLieuCell = worksheet.getCell('A12')
-    const filterTypeLieuValueCell = worksheet.getCell('B12')
+    const filterTypeLieuCell = worksheet.getCell('A13')
+    const filterTypeLieuValueCell = worksheet.getCell('B13')
     expect(filterTypeLieuCell.value).toBe('Communes')
     expect(filterTypeLieuValueCell.value).toBe('Commune : Lyon 2eme · 69002')
   })
@@ -113,7 +113,7 @@ describe('buildActivitesWorksheet', () => {
   it('should include the mediateur if different from user', () => {
     // The default mockInput as a mediateur different from the user
     const workbook = buildAccompagnementsWorksheet(mockInput, false)
-    const rows = workbook.getWorksheet('Activités')?.getRows(1, 20)
+    const rows = workbook.getWorksheet('Activités')?.getRows(1, 21)
     if (!rows) {
       throw new Error('Worksheet or rows not found')
     }
