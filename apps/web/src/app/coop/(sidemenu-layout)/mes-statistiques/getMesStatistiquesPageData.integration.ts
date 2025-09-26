@@ -534,7 +534,7 @@ describe('getMesStatistiquesPageData', () => {
             },
           },
         ],
-        activiteSourceOptions: [],
+        activiteSourceOptions,
       }
     })
 
