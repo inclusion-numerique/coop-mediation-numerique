@@ -17,6 +17,8 @@ export type UserTimezone = Pick<SessionUser, 'timezone'>
 
 export type UserFeatureFlags = Pick<SessionUser, 'featureFlags'>
 
+export type UserMediateur = Pick<SessionUser, 'mediateur'>
+
 export const getUserDisplayName = (user: UserDisplayName): string => {
   const name = `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim()
   if (name) return name

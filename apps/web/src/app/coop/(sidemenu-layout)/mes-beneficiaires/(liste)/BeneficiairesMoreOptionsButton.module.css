@@ -1,0 +1,21 @@
+.collapse {
+  position: absolute;
+  right: 0;
+  left: auto;
+  margin-top: 4px;
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 0;
+  }
+  li {
+    padding-bottom: 0;
+    a {
+      background-image: none;
+    }
+  }
+}
+.container {
+  position: relative;
+  height: 100%;
+}
