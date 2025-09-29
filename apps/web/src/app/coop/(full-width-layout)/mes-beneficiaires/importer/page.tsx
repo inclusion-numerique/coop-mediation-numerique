@@ -18,7 +18,9 @@ const ImporterPage = () => (
       className="fr-mb-12v"
     />
     <main id={contentId}>
-      <BackButton href="/coop/mes-beneficiaires">Retour à la liste</BackButton>
+      <BackButton href="/coop/mes-beneficiaires">
+        Retour à mes bénéficiaires
+      </BackButton>
       <h1 className="fr-h3 fr-text-title--blue-france fr-mb-2v">
         Importer des bénéficiaires
       </h1>
