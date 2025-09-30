@@ -40,11 +40,13 @@ export const getRdvs = async ({
 
   const rdvServicePublicRdvs = await oAuthRdvApiListRdvs({
     rdvAccount: oAuthCallUser.rdvAccount,
-    userId: beneficiaire?.rdvServicePublicId ?? undefined,
-    agentId: onlyForUser ? user.rdvAccount.id : undefined,
-    startsAfter: du ? dateAsIsoDay(du) : undefined,
-    startsBefore: au ? dateAsIsoDay(au) : undefined,
-    organisationId,
+    params: {
+      user_id: beneficiaire?.rdvServicePublicId ?? undefined,
+      agent_id: onlyForUser ? user.rdvAccount.id : undefined,
+      starts_after: du ? dateAsIsoDay(du) : undefined,
+      starts_before: au ? dateAsIsoDay(au) : undefined,
+      organisation_id: organisationId,
+    },
   })
 
   const now = Date.now()

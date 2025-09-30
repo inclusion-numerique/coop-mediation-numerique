@@ -13,42 +13,42 @@ export type OauthRdvApiMeResponse = {
   }
 }
 
-export type OauthRdvApiGetUserResponse = {
-  user: {
+export type RdvApiUserOrganisationProfile = {
+  organisation: {
     id: number
-    address: string
-    address_details: string | null
-    affiliation_number: string
-    birth_date: string
-    birth_name: string | null
-    caisse_affiliation: string
-    case_number: string | null
-    created_at: string
-    email: string
-    family_situation: string
-    first_name: string
-    invitation_accepted_at: string | null
-    invitation_created_at: string | null
-    last_name: string
-    logement: string
-    notes: string
-    notify_by_email: boolean
-    notify_by_sms: boolean
-    number_of_children: number
-    phone_number: string
-    phone_number_formatted: string
-    responsible: string | null
-    responsible_id: number | null
-    user_profiles: Array<{
-      organisation: {
-        id: number
-        email: string | null
-        name: string
-        phone_number: string | null
-        verticale: string
-      }
-    }>
+    email: string | null
+    name: string
+    phone_number: string | null
+    verticale: string | null
   }
+}
+
+export type RdvApiUser = {
+  id: number
+  address: string | null
+  address_details: string | null
+  affiliation_number: string | null
+  birth_date: string | null
+  birth_name: string | null
+  caisse_affiliation: 'aucun' | 'caf' | 'msa' | null
+  created_at: string
+  email: string | null
+  first_name: string
+  invitation_accepted_at: string | null
+  invitation_created_at: string | null
+  last_name: string
+  notification_email: string | null
+  notify_by_email: boolean
+  notify_by_sms: boolean
+  phone_number: string | null
+  phone_number_formatted: string | null
+  responsible: RdvApiUser | null
+  responsible_id: number | null
+  user_profiles: RdvApiUserOrganisationProfile[] | null
+}
+
+export type OauthRdvApiGetUserResponse = {
+  user: RdvApiUser | null
 }
 
 export const OauthRdvApiCreateRdvPlanInputValidation = z.object({
@@ -118,27 +118,7 @@ export type OAuthApiParticipation = {
   send_lifecycle_notifications: boolean
   send_reminder_notification: boolean
   status: OAuthApiRdvStatus
-  user: {
-    id: number
-    address: string
-    address_details: string | null
-    affiliation_number: string
-    birth_date: string
-    birth_name: string | null
-    created_at: string
-    email: string
-    first_name: string
-    invitation_accepted_at: string | null
-    invitation_created_at: string | null
-    last_name: string
-    notify_by_email: boolean
-    notify_by_sms: boolean
-    phone_number: string
-    phone_number_formatted: string
-    responsible: string | null
-    responsible_id: number | null
-    user_profiles: unknown | null
-  }
+  user: RdvApiUser
 }
 
 export type OAuthApiRdv = {
@@ -192,13 +172,7 @@ export type OAuthApiRdv = {
     service_id: number
   }
   name: string | null
-  organisation: {
-    id: number
-    email: string | null
-    name: string
-    phone_number: string | null
-    verticale: string | null
-  }
+  organisation: RdvApiOrganisation
   participations: OAuthApiParticipation[]
 }
 
@@ -219,3 +193,17 @@ export type OAuthApiRdvsResponse = {
   rdvs: OAuthApiRdv[]
   meta: OAuthApiListMeta
 }
+
+export const oauthRdvApiGetRdvsQueryValidation = z.object({
+  page: z.number().int().positive().optional(),
+  organisation_id: z.number().int().optional(),
+  user_id: z.number().int().optional(),
+  agent_id: z.number().int().optional(),
+  id: z.union([z.number().int(), z.array(z.number().int())]).optional(),
+  starts_after: z.string().optional(),
+  starts_before: z.string().optional(),
+})
+
+export type OauthRdvApiGetRdvsQuery = z.infer<
+  typeof oauthRdvApiGetRdvsQueryValidation
+>

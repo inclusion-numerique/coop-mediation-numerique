@@ -6,9 +6,12 @@ import {
   OAuthRdvApiGetOrganisationsResponse,
   OauthRdvApiCreateRdvPlanInput,
   OauthRdvApiCreateRdvPlanResponse,
+  OauthRdvApiGetRdvsQuery,
   OauthRdvApiGetUserResponse,
   OauthRdvApiMeResponse,
   RdvApiOrganisation,
+  RdvApiUser,
+  oauthRdvApiGetRdvsQueryValidation,
 } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
 import { refreshRdvAccessToken } from '@app/web/rdv-service-public/refreshRdvAccessToken'
 import { removeUndefinedValues } from '@app/web/utils/removeUndefinedValues'
@@ -42,7 +45,7 @@ export type OauthRdvApiResponseResult<T> =
  * handles automatic token refresh, and retries once if the first call fails
  * Pour la documentation des API RDV, voir https://rdv.anct.gouv.fr/api-docs/index.html
  */
-const executeOAuthRdvApiCall = async <ResponseType = unknown>({
+export const executeOAuthRdvApiCall = async <ResponseType = unknown>({
   rdvAccount,
   path,
   config = {},
@@ -170,43 +173,44 @@ export const oAuthRdvApiCreateRdvPlan = async ({
 
 export const oAuthRdvApiListRdvs = async ({
   rdvAccount,
-  organisationId,
-  userId,
-  agentId,
-  startsAfter,
-  startsBefore,
+  params,
 }: {
   rdvAccount: OauthRdvApiCredentialsWithOrganisations
-  organisationId?: number
-  userId?: number // id beneficiaire chez RDVSP
-  agentId?: number // id user chez RDVSP
-  startsAfter?: string // ISO day e.g. "2025-05-28"
-  startsBefore?: string // ISO day e.g. "2025-05-28"
+  params?: OauthRdvApiGetRdvsQuery
 }): Promise<OAuthApiOrganisationRdvsResponse['rdvs']> => {
   const rdvs: OAuthApiRdv[] = []
 
-  let nextPageUrl: string | null = '/rdvs'
+  let page = 1
 
-  while (nextPageUrl) {
+  const baseParams = params
+    ? oauthRdvApiGetRdvsQueryValidation.parse(params)
+    : undefined
+
+  while (page) {
     const response = await executeOAuthRdvApiCall<OAuthApiRdvsResponse>({
       path: `/rdvs`,
       rdvAccount,
       config: {
         method: 'GET',
         params: {
-          organisation_id: organisationId,
-          user_id: userId,
-          agent_id: agentId,
-          starts_after: startsAfter,
-          starts_before: startsBefore,
+          ...baseParams,
+          page,
         },
       },
     })
     if (response.status === 'error') {
       return []
     }
-    nextPageUrl = response.data.meta.next_page
+    const nextPage = response.data.meta.next_page
     rdvs.push(...response.data.rdvs)
+    if (typeof nextPage === 'number') {
+      page = nextPage
+    } else if (typeof nextPage === 'string') {
+      const parsed = Number(nextPage)
+      page = Number.isFinite(parsed) ? parsed : 0
+    } else {
+      page = 0
+    }
   }
 
   return rdvs
@@ -218,7 +222,7 @@ export const oAuthRdvApiGetUser = async ({
 }: {
   userId: string // RDV Service Public user id
   rdvAccount: OAuthRdvApiCredentials
-}) =>
+}): Promise<OauthRdvApiResponseResult<OauthRdvApiGetUserResponse>> =>
   executeOAuthRdvApiCall<OauthRdvApiGetUserResponse>({
     path: `/users/${userId}`,
     rdvAccount,
@@ -226,6 +230,23 @@ export const oAuthRdvApiGetUser = async ({
       method: 'GET',
     },
   })
+
+export const oAuthRdvApiGetUserById = async ({
+  userId,
+  rdvAccount,
+}: {
+  userId: number
+  rdvAccount: OAuthRdvApiCredentials
+}): Promise<RdvApiUser | null> => {
+  const response = await oAuthRdvApiGetUser({
+    userId: String(userId),
+    rdvAccount,
+  })
+  if (response.status === 'error') {
+    return null
+  }
+  return response.data.user
+}
 
 export const oAuthRdvApiMe = async ({
   rdvAccount,

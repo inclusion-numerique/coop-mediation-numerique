@@ -144,7 +144,7 @@ export const craRouter = router({
           // Delete activité
           prismaClient.activite.update({
             where: { id: activiteId },
-            data: { suppression: now, modification: now },
+            data: { suppression: now, modification: now, rdvId: null },
           }),
           // Remove activite's lieu activite count
           activite.structureId
