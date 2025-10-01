@@ -470,9 +470,20 @@ export const GET = createApiV1Route
 
     const users = await prismaClient.user.findMany({
       where: {
-        inscriptionValidee: {
-          not: null,
-        },
+        OR: [
+          {
+            inscriptionValidee: {
+              not: null,
+            },
+          },
+          {
+            mediateur: {
+              activitesCount: {
+                gt: 0,
+              },
+            },
+          },
+        ],
         role: 'User',
         ...deletedFilter,
         ...conseillerNumeriqueIdsFilter,
@@ -529,9 +540,21 @@ export const GET = createApiV1Route
 
     const totalCount = await prismaClient.user.count({
       where: {
-        inscriptionValidee: {
-          not: null,
-        },
+        OR: [
+          {
+            inscriptionValidee: {
+              not: null,
+            },
+          },
+          {
+            mediateur: {
+              activitesCount: {
+                gt: 0,
+              },
+            },
+          },
+        ],
+
         role: 'User',
         ...deletedFilter,
         ...conseillerNumeriqueIdsFilter,
