@@ -9,9 +9,9 @@ import {
   OauthRdvApiGetRdvsQuery,
   OauthRdvApiGetUserResponse,
   OauthRdvApiMeResponse,
+  oauthRdvApiGetRdvsQueryValidation,
   RdvApiOrganisation,
   RdvApiUser,
-  oauthRdvApiGetRdvsQueryValidation,
 } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
 import { refreshRdvAccessToken } from '@app/web/rdv-service-public/refreshRdvAccessToken'
 import { removeUndefinedValues } from '@app/web/utils/removeUndefinedValues'
@@ -174,10 +174,12 @@ export const oAuthRdvApiCreateRdvPlan = async ({
 export const oAuthRdvApiListRdvs = async ({
   rdvAccount,
   params,
+  onlyFirstPage = false,
 }: {
   rdvAccount: OauthRdvApiCredentialsWithOrganisations
   params?: OauthRdvApiGetRdvsQuery
-}): Promise<OAuthApiOrganisationRdvsResponse['rdvs']> => {
+  onlyFirstPage?: boolean
+}): Promise<OAuthApiOrganisationRdvsResponse> => {
   const rdvs: OAuthApiRdv[] = []
 
   let page = 1
@@ -185,6 +187,14 @@ export const oAuthRdvApiListRdvs = async ({
   const baseParams = params
     ? oauthRdvApiGetRdvsQueryValidation.parse(params)
     : undefined
+
+  let lastMeta: OAuthApiOrganisationRdvsResponse['meta'] = {
+    current_page: 0,
+    next_page: null,
+    prev_page: null,
+    total_pages: 0,
+    total_count: 0,
+  }
 
   while (page) {
     const response = await executeOAuthRdvApiCall<OAuthApiRdvsResponse>({
@@ -199,21 +209,28 @@ export const oAuthRdvApiListRdvs = async ({
       },
     })
     if (response.status === 'error') {
-      return []
+      return {
+        rdvs: [],
+        meta: lastMeta,
+      }
     }
     const nextPage = response.data.meta.next_page
     rdvs.push(...response.data.rdvs)
+    lastMeta = response.data.meta
+
+    if (onlyFirstPage) {
+      break
+    }
+
     if (typeof nextPage === 'number') {
       page = nextPage
-    } else if (typeof nextPage === 'string') {
-      const parsed = Number(nextPage)
-      page = Number.isFinite(parsed) ? parsed : 0
-    } else {
-      page = 0
+      continue
     }
+
+    page = 0
   }
 
-  return rdvs
+  return { rdvs, meta: lastMeta }
 }
 
 export const oAuthRdvApiGetUser = async ({

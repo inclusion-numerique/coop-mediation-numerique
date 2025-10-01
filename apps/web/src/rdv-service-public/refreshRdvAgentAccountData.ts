@@ -42,6 +42,8 @@ export const refreshRdvAgentAccountData = async ({
       },
     })
 
+    const now = new Date()
+
     await transaction.rdvOrganisation.createMany({
       data: organisations.map((organisation) => ({
         id: organisation.id,
@@ -49,14 +51,15 @@ export const refreshRdvAgentAccountData = async ({
         name: organisation.name,
         email: organisation.email,
         phoneNumber: organisation.phone_number,
+        syncedAt: now,
       })),
     })
 
     const updatedAccount = await transaction.rdvAccount.update({
       where: { id: rdvAccount.id },
       data: {
-        updated: new Date(),
-        lastSynced: new Date(),
+        updated: now,
+        lastSynced: now,
         error: null,
       },
       include: {

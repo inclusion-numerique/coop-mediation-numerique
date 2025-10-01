@@ -31,10 +31,12 @@ export const getActivitesListPageData = async ({
   mediateurId,
   searchParams,
   user,
+  includeRdvs = true,
 }: {
   mediateurId: string
   searchParams: ActivitesDataTableSearchParams
   user: UserId & UserRdvAccount & UserTimezone
+  includeRdvs?: boolean
 }) => {
   /**
    * We search activites and rdvs in two different sources (database and rdv api)
@@ -42,8 +44,9 @@ export const getActivitesListPageData = async ({
    * - if we filtered on activites only, we do not need to return rdvs
    */
   const shouldFetchRdvs =
-    (searchParams.rdvs?.length ?? 0) > 0 || // we filtered on rdvs
-    (searchParams.types?.length ?? 0) === 0 // or we did not filter on activites
+    includeRdvs &&
+    ((searchParams.rdvs?.length ?? 0) > 0 || // we filtered on rdvs
+      (searchParams.types?.length ?? 0) === 0) // or we did not filter on activites types
 
   const shouldFetchActivites =
     (searchParams.rdvs?.length ?? 0) === 0 || // we did not filter on rdvs
@@ -89,13 +92,15 @@ export const getActivitesListPageData = async ({
     ? addDays(maxRdvDateCurrentDay, 1)
     : null
 
-  const rdvs = await getRdvs({
-    user,
-    du: minRdvDate ?? undefined,
-    au: maxRdvDate ?? undefined,
-    onlyForUser: true,
-    statuses: searchParams.rdvs,
-  })
+  const rdvs = shouldFetchRdvs
+    ? await getRdvs({
+        user,
+        du: minRdvDate ?? undefined,
+        au: maxRdvDate ?? undefined,
+        onlyForUser: true,
+        statuses: searchParams.rdvs,
+      })
+    : []
 
   const { rdvsWithoutActivite, activitesWithRdv } = mergeRdvsWithActivites({
     rdvs,

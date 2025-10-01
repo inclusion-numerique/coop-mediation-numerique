@@ -51,7 +51,7 @@ export const getRdvs = async ({
 
   const now = Date.now()
 
-  const beneficiairesRdvs = rdvServicePublicRdvs
+  const beneficiairesRdvs = rdvServicePublicRdvs.rdvs
     .map(
       ({
         id,

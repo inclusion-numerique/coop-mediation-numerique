@@ -8,7 +8,7 @@ import ConsolidationStatistiquesNouvelleFonctionnaliteCard from '@app/web/featur
 import FormationContinueNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/formation-continue/components/FormationContinueNouvelleFonctionnaliteCard'
 import TagsNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/tags/components/TagsNouvelleFonctionnaliteCard'
 import { contentId } from '@app/web/utils/skipLinks'
-import React from 'react'
+import React, { Suspense } from 'react'
 import {
   ActionsRapides,
   InformationsCoop,
@@ -18,6 +18,8 @@ import {
 import { Equipe } from './_components/Equipe'
 import Rdvs from './_components/Rdvs'
 import { AccueilPageData } from './getAccueilPageDataFor'
+import { Spinner } from '@app/web/ui/Spinner'
+import RdvsHeader from './_components/RdvsHeader'
 
 export const Accueil = ({
   firstName,
@@ -69,9 +71,19 @@ export const Accueil = ({
           )}
         </section>
       )}
+
       {rdvs && (
         <section className="fr-my-6w">
-          <Rdvs rdvs={rdvs} user={{ timezone }} />
+          <Suspense
+            fallback={
+              <>
+                <RdvsHeader />
+                <Spinner />
+              </>
+            }
+          >
+            <Rdvs rdvs={rdvs} user={{ timezone }} />
+          </Suspense>
         </section>
       )}
       {isMediateur && (
