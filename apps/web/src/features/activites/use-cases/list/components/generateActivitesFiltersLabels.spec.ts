@@ -129,6 +129,7 @@ describe('generate activites filters labels', () => {
         mediateursOptions: MEDIATEURS_OPTIONS,
         beneficiairesOptions: BENEFICIAIRES_OPTIONS,
         tagsOptions: [],
+        activiteSourceOptions: [],
       },
     )
 
@@ -163,6 +164,7 @@ describe('generate activites filters labels', () => {
         mediateursOptions: MEDIATEURS_OPTIONS,
         beneficiairesOptions: BENEFICIAIRES_OPTIONS,
         tagsOptions: [],
+        activiteSourceOptions: [],
       },
     )
 

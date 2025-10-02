@@ -29,6 +29,7 @@ export const ExportStatistiques = ({
   communesOptions,
   tagsOptions,
   accompagnementsCount,
+  activiteSourceOptions,
 }: {
   filters: ActivitesFilters
   mediateursOptions: MediateurOption[]
@@ -38,6 +39,7 @@ export const ExportStatistiques = ({
   communesOptions: SelectOption[]
   tagsOptions: { id: string; nom: string }[]
   accompagnementsCount: number
+  activiteSourceOptions: SelectOption[]
 }) => {
   const exportXlsx = (exportPath: string, message: string) => {
     const searchParams = new URLSearchParams()
@@ -88,6 +90,7 @@ export const ExportStatistiques = ({
     beneficiairesOptions,
     mediateursOptions,
     tagsOptions,
+    activiteSourceOptions,
   }).map(toLieuPrefix)
 
   return (

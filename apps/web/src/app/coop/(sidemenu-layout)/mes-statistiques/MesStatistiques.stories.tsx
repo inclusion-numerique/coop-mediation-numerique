@@ -221,6 +221,7 @@ const statistiquesPageData = {
   hasCrasV1: {
     hasCrasV1: false,
   },
+  activiteSourceOptions: [],
 } satisfies MesStatistiquesPageData
 
 export default {

@@ -18,6 +18,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import { UserProfile } from '@app/web/utils/user'
 import { Genre, StatutSocial, TrancheAge } from '@prisma/client'
 import { snakeCase } from 'change-case'
+import { activitesSourceWhereCondition } from './activitesSourceWhereCondition'
 
 export type BeneficiairesStatsRaw = {
   total_beneficiaires: number
@@ -61,6 +62,7 @@ export const getBeneficiaireStatsRaw = async ({
           WHERE (act.date <= mc.suppression OR mc.suppression IS NULL)
             AND act.suppression IS NULL
             AND ${activitesMediateurIdsWhereCondition(mediateurIds)}
+            AND ${activitesSourceWhereCondition(activitesFilters.source)}
             AND ${getActiviteFiltersSqlFragment(
               getActivitesFiltersWhereConditions(activitesFilters),
             )})
@@ -154,6 +156,7 @@ export const getBeneficiairesCommunesRaw = async ({
         INNER JOIN accompagnements acc ON acc.beneficiaire_id = ben.id
         INNER JOIN activites act ON  act.id = acc.activite_id
           AND ${activitesMediateurIdsWhereCondition(mediateurIds)}
+          AND ${activitesSourceWhereCondition(activitesFilters.source)}
           AND act.suppression IS NULL
             LEFT JOIN structures str ON str.id = act.structure_id
             LEFT JOIN mediateurs med ON act.mediateur_id = med.id

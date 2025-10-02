@@ -33,6 +33,12 @@ export const addFilters =
               filters.find((filter) => filter.type === 'periode')?.label ?? '-',
             ]
           : undefined,
+        !excludeFilters.includes('source')
+          ? [
+              'Source',
+              filters.find((filter) => filter.type === 'source')?.label ?? '-',
+            ]
+          : undefined,
         !excludeFilters.includes('lieux')
           ? [
               'Lieux d’accompagnement',

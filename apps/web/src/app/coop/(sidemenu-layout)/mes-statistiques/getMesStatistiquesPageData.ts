@@ -6,14 +6,14 @@ import {
   getActivitesStats,
   getActivitesStructuresStats,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getActivitesStats'
+import { getHasCrasV1 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getHasCrasV1'
+import { getTotalCountsStats } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getTotalCountsStats'
 import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFiltersOptionsForMediateur'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { UserDisplayName, UserProfile } from '@app/web/utils/user'
 import { getBeneficiaireStatsWithCommunes } from './_queries/getBeneficiaireStats'
-import { getHasCrasV1 } from './_queries/getHasCrasV1'
-import { getTotalCountsStats } from './_queries/getTotalCountsStats'
 
 export type MesStatistiquesGraphOptions = {
   fin?: Date
@@ -99,6 +99,7 @@ export const getMesStatistiquesPageData = async ({
     initialMediateursOptions,
     initialBeneficiairesOptions,
     lieuxActiviteOptions,
+    activiteSourceOptions,
     activiteDates,
   } = await getFiltersOptionsForMediateur({
     user,
@@ -120,6 +121,7 @@ export const getMesStatistiquesPageData = async ({
     initialMediateursOptions,
     initialBeneficiairesOptions,
     lieuxActiviteOptions,
+    activiteSourceOptions,
     activiteDates,
     hasCrasV1,
   }

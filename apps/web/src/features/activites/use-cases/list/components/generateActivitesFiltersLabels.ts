@@ -13,6 +13,7 @@ import {
 } from '@app/web/rdv-service-public/rdvStatus'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { typeActiviteSlugLabels } from '../../cra/fields/type-activite'
+import { activiteSourceLabels } from '../../source/activiteSource'
 import type { ActivitesFilters } from '../validation/ActivitesFilters'
 
 export type FilterType =
@@ -28,7 +29,7 @@ export type FilterType =
   | 'thematiqueNonAdministratives'
   | 'thematiqueAdministratives'
   | 'tags'
-
+  | 'source'
 export const locationTypeLabels: {
   [key in LieuFilterType]: string
 } = {
@@ -74,6 +75,18 @@ const generateMediateurFilterLabel = (
       label,
       key: value?.mediateurId,
       type: 'mediateurs' as const,
+    }))
+
+const generateSourceFilterLabel = (
+  { source = '' }: Pick<ActivitesFilters, 'source'>,
+  { activiteSourceOptions = [] }: { activiteSourceOptions: SelectOption[] },
+) =>
+  activiteSourceOptions
+    .filter(({ value }) => value && source === value)
+    .map(({ label, value }) => ({
+      label,
+      key: value,
+      type: 'source' as const,
     }))
 
 const generateLieuxLabels = (
@@ -130,6 +143,7 @@ export const generateActivitesFiltersLabels = (
     rdvs,
     au,
     du,
+    source,
   }: ActivitesFilters,
   {
     beneficiairesOptions,
@@ -138,6 +152,7 @@ export const generateActivitesFiltersLabels = (
     departementsOptions,
     lieuxActiviteOptions,
     tagsOptions,
+    activiteSourceOptions,
   }: {
     beneficiairesOptions: BeneficiaireOption[]
     mediateursOptions: MediateurOption[]
@@ -145,6 +160,7 @@ export const generateActivitesFiltersLabels = (
     lieuxActiviteOptions: SelectOption[]
     departementsOptions: SelectOption[]
     tagsOptions: { id: string; nom: string }[]
+    activiteSourceOptions: SelectOption[]
   },
 ) => {
   const periode =
@@ -233,6 +249,11 @@ export const generateActivitesFiltersLabels = (
     { communesOptions, departementsOptions, lieuxActiviteOptions },
   )
 
+  const sourceLabel =
+    activiteSourceOptions && source
+      ? generateSourceFilterLabel({ source }, { activiteSourceOptions })
+      : null
+
   return [
     ...mediateursLabels,
     ...(roleLabel == null ? [] : [roleLabel]),
@@ -244,6 +265,7 @@ export const generateActivitesFiltersLabels = (
     ...thematiqueNonAdministrativeLabels,
     ...thematiqueAdministrativeLabels,
     ...tagLabels,
+    ...(sourceLabel == null ? [] : sourceLabel),
   ]
 }
 
