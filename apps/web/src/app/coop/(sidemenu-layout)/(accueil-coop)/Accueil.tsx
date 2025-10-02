@@ -7,6 +7,7 @@ import { DernieresActivites } from '@app/web/features/activites/use-cases/list/c
 import ConsolidationStatistiquesNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/consolidation-statistiques/components/ConsolidationStatistiquesNouvelleFonctionnaliteCard'
 import FormationContinueNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/formation-continue/components/FormationContinueNouvelleFonctionnaliteCard'
 import TagsNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/tags/components/TagsNouvelleFonctionnaliteCard'
+import { Spinner } from '@app/web/ui/Spinner'
 import { contentId } from '@app/web/utils/skipLinks'
 import React, { Suspense } from 'react'
 import {
@@ -17,9 +18,8 @@ import {
 } from './_components'
 import { Equipe } from './_components/Equipe'
 import Rdvs from './_components/Rdvs'
-import { AccueilPageData } from './getAccueilPageDataFor'
-import { Spinner } from '@app/web/ui/Spinner'
 import RdvsHeader from './_components/RdvsHeader'
+import { AccueilPageData } from './getAccueilPageDataFor'
 
 export const Accueil = ({
   firstName,

@@ -1,16 +1,16 @@
+import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import RdvStatusBadge from '@app/web/features/activites/use-cases/list/components/RdvStatusBadge'
+import { DashboardRdvData } from '@app/web/features/rdvsp/queries/getDashboardRdvData'
 import { rdvServicePublicRdvsLink } from '@app/web/rdv-service-public/rdvServicePublicOauth'
 import { dateAsDayFullWordsInTimezone } from '@app/web/utils/dateAsDay'
 import { dateAsTimeInTimeZone } from '@app/web/utils/dateAsDayAndTime'
+import { numberToString } from '@app/web/utils/formatNumber'
 import type { UserTimezone } from '@app/web/utils/user'
 import Button from '@codegouvfr/react-dsfr/Button'
+import * as Sentry from '@sentry/nextjs'
 import classNames from 'classnames'
 import styles from './Rdvs.module.css'
-import { numberToString } from '@app/web/utils/formatNumber'
-import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
-import { DashboardRdvData } from '@app/web/features/rdvsp/queries/getDashboardRdvData'
 import RdvsHeader from './RdvsHeader'
-import * as Sentry from '@sentry/nextjs'
 
 const Rdvs = async ({
   rdvs: rdvsPromise,
