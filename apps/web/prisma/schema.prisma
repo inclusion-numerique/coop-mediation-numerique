@@ -1275,7 +1275,7 @@ model RdvAccount {
 }
 
 model RdvSyncLog {
-  id Int @id
+  id String @id @default(uuid()) @db.Uuid
 
   rdvAccountId Int @map("rdv_account_id")
   rdvAccount   RdvAccount @relation(fields: [rdvAccountId], references: [id])
@@ -1304,12 +1304,10 @@ model RdvOrganisation {
   phoneNumber String? @map("phone_number")
   verticale   String?
 
-  motifs           RdvMotif[]
   lieux            RdvLieu[]
   rdvs             Rdv[]
   userProfiles     RdvUserProfile[]
   webhookEndpoints RdvWebhookEndpoint[]
-  absences         RdvAbsence[]
 
   syncedAt DateTime @updatedAt @map("synced_at")
 
@@ -1369,11 +1367,7 @@ model RdvAgent {
   firstName String? @map("first_name")
   lastName  String? @map("last_name")
 
-  rdvAssignments      RdvAgentAssignment[]
   participations      RdvParticipation[]
-  absences            RdvAbsence[]
-  referentAssignments RdvReferentAssignation[]
-  teamMemberships     RdvTeamAgent[]
 
   syncedAt DateTime @updatedAt @map("synced_at")
 
@@ -1407,7 +1401,6 @@ model RdvUser {
   userProfiles        RdvUserProfile[]
   participations      RdvParticipation[]
   rdvPlans            RdvPlan[]
-  referentAssignments RdvReferentAssignation[]
 
   syncedAt DateTime @updatedAt @map("synced_at")
 
@@ -1426,44 +1419,6 @@ model RdvUserProfile {
 
   @@id([organisationId, userId])
   @@map("rdv_user_profiles")
-}
-
-model RdvMotifCategory {
-  id        Int    @id
-  name      String
-  shortName String @map("short_name")
-
-  motifs      RdvMotif[]
-  territories RdvTerritoryMotifCategory[]
-
-  syncedAt DateTime @updatedAt @map("synced_at")
-
-  @@map("rdv_motif_categories")
-}
-
-model RdvMotif {
-  id                Int             @id
-  deletedAt         DateTime?       @map("deleted_at")
-  locationType      RdvLocationType @map("location_type")
-  name              String
-  organisationId    Int             @map("organisation_id")
-  motifCategoryId   Int?            @map("motif_category_id")
-  bookablePublicly  Boolean         @map("bookable_publicly")
-  bookableBy        RdvBookableBy   @map("bookable_by")
-  serviceId         Int?            @map("service_id")
-  collectif         Boolean?        @map("collectif")
-  followUp          Boolean?        @map("follow_up")
-  instructionForRdv String?         @map("instruction_for_rdv")
-
-  organisation RdvOrganisation  @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  motifCategory RdvMotifCategory? @relation(fields: [motifCategoryId], references: [id])
-  rdvs          Rdv[]
-
-  syncedAt DateTime @updatedAt @map("synced_at")
-
-  @@index([organisationId])
-  @@index([motifCategoryId])
-  @@map("rdv_motifs")
 }
 
 model RdvLieu {
@@ -1507,33 +1462,20 @@ model Rdv {
   lieuId         Int? @map("lieu_id")
 
   organisation RdvOrganisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  motif        RdvMotif?        @relation(fields: [motifId], references: [id])
   lieu         RdvLieu?         @relation(fields: [lieuId], references: [id])
 
   activite Activite?
   participations   RdvParticipation[]
-  agentAssignments RdvAgentAssignment[]
   plans            RdvPlan[]
 
   syncedAt DateTime @updatedAt @map("synced_at")
+
+  rawData Json @map("raw_data") // Raw data from the RDV API
 
   @@index([organisationId])
   @@index([startsAt])
   @@index([status])
   @@map("rdvs")
-}
-
-model RdvAgentAssignment {
-  rdvId   Int @map("rdv_id")
-  agentId Int @map("agent_id")
-
-  rdv   Rdv      @relation(fields: [rdvId], references: [id], onDelete: Cascade)
-  agent RdvAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
-
-  syncedAt DateTime @updatedAt @map("synced_at")
-
-  @@id([rdvId, agentId])
-  @@map("rdv_agent_assignments")
 }
 
 model RdvParticipation {
@@ -1562,29 +1504,6 @@ model RdvParticipation {
   @@map("rdv_participations")
 }
 
-model RdvAbsence {
-  id        Int    @id
-  icalUid   String @map("ical_uid")
-  title     String
-  firstDay  DateTime @map("first_day") @db.Date
-  endDay    DateTime @map("end_day") @db.Date
-  startTime String   @map("start_time")
-  endTime   String   @map("end_time")
-  ical      String?
-  rrule     String?
-
-  agentId        Int? @map("agent_id")
-  organisationId Int? @map("organisation_id")
-
-  agent        RdvAgent?        @relation(fields: [agentId], references: [id])
-  organisation RdvOrganisation? @relation(fields: [organisationId], references: [id])
-
-  syncedAt DateTime @updatedAt @map("synced_at")
-
-  @@index([agentId])
-  @@index([organisationId])
-  @@map("rdv_absences")
-}
 
 model RdvPlan {
   id        Int      @id
@@ -1607,19 +1526,6 @@ model RdvPlan {
   @@map("rdv_plans")
 }
 
-model RdvReferentAssignation {
-  agentId Int @map("agent_id")
-  userId  Int @map("user_id")
-
-  agent RdvAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
-  user  RdvUser  @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  syncedAt DateTime @updatedAt @map("synced_at")
-
-  @@id([agentId, userId])
-  @@map("rdv_referent_assignations")
-}
-
 model RdvWebhookEndpoint {
   id            Int      @id
   targetUrl     String   @map("target_url")
@@ -1634,60 +1540,6 @@ model RdvWebhookEndpoint {
 
   @@index([organisationId])
   @@map("rdv_webhook_endpoints")
-}
-
-model RdvTeam {
-  id          Int    @id
-  name        String
-  territoryId Int    @map("territory_id")
-
-  territory RdvTerritory @relation(fields: [territoryId], references: [id], onDelete: Cascade)
-  agents    RdvTeamAgent[]
-
-  syncedAt DateTime @updatedAt @map("synced_at")
-
-  @@index([territoryId])
-  @@map("rdv_teams")
-}
-
-model RdvTeamAgent {
-  teamId  Int @map("team_id")
-  agentId Int @map("agent_id")
-
-  team  RdvTeam  @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  agent RdvAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
-
-  syncedAt DateTime @updatedAt @map("synced_at")
-
-  @@id([teamId, agentId])
-  @@map("rdv_team_agents")
-}
-
-model RdvTerritory {
-  id                Int    @id
-  departementNumber String @map("departement_number")
-  name              String
-
-  motifCategories RdvTerritoryMotifCategory[]
-  teams           RdvTeam[]
-
-  syncedAt DateTime @updatedAt @map("synced_at")
-
-  @@index([departementNumber])
-  @@map("rdv_territories")
-}
-
-model RdvTerritoryMotifCategory {
-  territoryId     Int @map("territory_id")
-  motifCategoryId Int @map("motif_category_id")
-
-  territory     RdvTerritory     @relation(fields: [territoryId], references: [id], onDelete: Cascade)
-  motifCategory RdvMotifCategory @relation(fields: [motifCategoryId], references: [id], onDelete: Cascade)
-
-  syncedAt DateTime @updatedAt @map("synced_at")
-
-  @@id([territoryId, motifCategoryId])
-  @@map("rdv_territory_motif_categories")
 }
 
 enum MutationName {
