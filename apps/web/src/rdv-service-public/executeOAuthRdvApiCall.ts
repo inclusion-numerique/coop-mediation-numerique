@@ -1,15 +1,22 @@
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import {
+  OAuthApiListMeta,
   OAuthApiOrganisationRdvsResponse,
   OAuthApiRdv,
   OAuthApiRdvsResponse,
+  OAuthApiUsersResponse,
+  OAuthApiWebhookEndpointsResponse,
   OAuthRdvApiGetOrganisationsResponse,
   OauthRdvApiCreateRdvPlanInput,
   OauthRdvApiCreateRdvPlanResponse,
   OauthRdvApiGetRdvsQuery,
   OauthRdvApiGetUserResponse,
+  OauthRdvApiGetUsersQuery,
+  OauthRdvApiGetWebhookEndpointsQuery,
   OauthRdvApiMeResponse,
   oauthRdvApiGetRdvsQueryValidation,
+  oauthRdvApiGetUsersQueryValidation,
+  oauthRdvApiGetWebhookEndpointsQueryValidation,
   RdvApiOrganisation,
   RdvApiUser,
 } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
@@ -23,6 +30,10 @@ export type OAuthRdvApiCredentials = Pick<
   RdvAccount,
   'accessToken' | 'refreshToken' | 'expiresAt' | 'scope'
 > & { id?: number }
+
+export type OAuthRdvApiCredentialsWithId = OAuthRdvApiCredentials & {
+  id: number
+}
 
 export type OauthRdvApiCredentialsWithOrganisations = OAuthRdvApiCredentials & {
   organisations: Pick<RdvApiOrganisation, 'id'>[]
@@ -180,15 +191,71 @@ export const oAuthRdvApiListRdvs = async ({
   params?: OauthRdvApiGetRdvsQuery
   onlyFirstPage?: boolean
 }): Promise<OAuthApiOrganisationRdvsResponse> => {
-  const rdvs: OAuthApiRdv[] = []
-
-  let page = 1
-
-  const baseParams = params
+  const queryParams = params
     ? oauthRdvApiGetRdvsQueryValidation.parse(params)
     : undefined
 
-  let lastMeta: OAuthApiOrganisationRdvsResponse['meta'] = {
+  return executePaginatedOauthRdvApiCall<
+    'rdvs',
+    OAuthApiRdv,
+    OAuthApiOrganisationRdvsResponse
+  >({
+    rdvAccount,
+    path: '/rdvs',
+    config: {
+      method: 'GET',
+      params: queryParams,
+    },
+    dataKey: 'rdvs',
+    onlyFirstPage,
+  })
+}
+
+type PaginatedResponse<DataKey extends string, Item> = {
+  meta: OAuthApiListMeta
+} & { [Key in DataKey]: Item[] }
+
+type ExecutePaginatedOauthRdvApiCallParams<
+  DataKey extends string,
+  Item,
+  _ResponseType extends PaginatedResponse<DataKey, Item>,
+> = {
+  rdvAccount: OAuthRdvApiCredentials
+  path: string
+  config?: Omit<AxiosRequestConfig, 'url'>
+  dataKey: DataKey
+  onlyFirstPage?: boolean
+}
+
+export const executePaginatedOauthRdvApiCall = async <
+  DataKey extends string,
+  Item,
+  ResponseType extends PaginatedResponse<DataKey, Item>,
+>({
+  rdvAccount,
+  path,
+  config = {},
+  dataKey,
+  onlyFirstPage = false,
+}: ExecutePaginatedOauthRdvApiCallParams<
+  DataKey,
+  Item,
+  ResponseType
+>): Promise<ResponseType> => {
+  const collectedItems: Item[] = []
+
+  let page = 1
+
+  const baseParams =
+    config.params && typeof config.params === 'object'
+      ? { ...(config.params as Record<string, unknown>) }
+      : undefined
+
+  if (baseParams && 'page' in baseParams) {
+    delete (baseParams as Record<string, unknown>).page
+  }
+
+  const initialMeta: OAuthApiListMeta = {
     current_page: 0,
     next_page: null,
     prev_page: null,
@@ -196,32 +263,38 @@ export const oAuthRdvApiListRdvs = async ({
     total_count: 0,
   }
 
+  let lastMeta: OAuthApiListMeta = initialMeta
+
   while (page) {
-    const response = await executeOAuthRdvApiCall<OAuthApiRdvsResponse>({
-      path: `/rdvs`,
-      rdvAccount,
-      config: {
-        method: 'GET',
-        params: {
-          ...baseParams,
-          page,
-        },
+    const pageConfig: AxiosRequestConfig = {
+      ...config,
+      params: {
+        ...(baseParams ?? {}),
+        page,
       },
-    })
-    if (response.status === 'error') {
-      return {
-        rdvs: [],
-        meta: lastMeta,
-      }
     }
-    const nextPage = response.data.meta.next_page
-    rdvs.push(...response.data.rdvs)
+
+    const response = await executeOAuthRdvApiCall<ResponseType>({
+      rdvAccount,
+      path,
+      config: pageConfig,
+    })
+
+    if (response.status === 'error') {
+      throw new Error(response.error)
+    }
+
+    const pageItems = response.data[dataKey]
+    if (Array.isArray(pageItems)) {
+      collectedItems.push(...(pageItems as Item[]))
+    }
     lastMeta = response.data.meta
 
     if (onlyFirstPage) {
       break
     }
 
+    const nextPage = response.data.meta.next_page
     if (typeof nextPage === 'number') {
       page = nextPage
       continue
@@ -230,7 +303,10 @@ export const oAuthRdvApiListRdvs = async ({
     page = 0
   }
 
-  return { rdvs, meta: lastMeta }
+  return {
+    [dataKey]: collectedItems,
+    meta: lastMeta,
+  } as ResponseType
 }
 
 export const oAuthRdvApiGetUser = async ({
@@ -283,10 +359,75 @@ export const oAuthRdvApiGetOrganisations = async ({
 }: {
   rdvAccount: OAuthRdvApiCredentials
 }) =>
-  executeOAuthRdvApiCall<OAuthRdvApiGetOrganisationsResponse>({
+  executePaginatedOauthRdvApiCall<
+    'organisations',
+    RdvApiOrganisation,
+    OAuthRdvApiGetOrganisationsResponse
+  >({
     path: '/organisations',
+    dataKey: 'organisations',
     rdvAccount,
     config: {
       method: 'GET',
     },
   })
+
+export const oAuthRdvApiListWebhooks = async ({
+  rdvAccount,
+  organisationId,
+  params,
+  onlyFirstPage = false,
+}: {
+  rdvAccount: OauthRdvApiCredentialsWithOrganisations
+  organisationId: number
+  params?: OauthRdvApiGetWebhookEndpointsQuery
+  onlyFirstPage?: boolean
+}): Promise<OAuthApiWebhookEndpointsResponse> => {
+  const queryParams = params
+    ? oauthRdvApiGetWebhookEndpointsQueryValidation.parse(params)
+    : undefined
+
+  return executePaginatedOauthRdvApiCall<
+    'webhook_endpoints',
+    OAuthApiWebhookEndpointsResponse['webhook_endpoints'][number],
+    OAuthApiWebhookEndpointsResponse
+  >({
+    rdvAccount,
+    path: `/organisations/${organisationId}/webhook_endpoints`,
+    config: {
+      method: 'GET',
+      params: queryParams,
+    },
+    dataKey: 'webhook_endpoints',
+    onlyFirstPage,
+  })
+}
+
+export const oAuthRdvApiListUsers = async ({
+  rdvAccount,
+  params,
+  onlyFirstPage = false,
+}: {
+  rdvAccount: OauthRdvApiCredentialsWithOrganisations
+  params?: OauthRdvApiGetUsersQuery
+  onlyFirstPage?: boolean
+}): Promise<OAuthApiUsersResponse> => {
+  const queryParams = params
+    ? oauthRdvApiGetUsersQueryValidation.parse(params)
+    : undefined
+
+  return executePaginatedOauthRdvApiCall<
+    'users',
+    RdvApiUser,
+    OAuthApiUsersResponse
+  >({
+    rdvAccount,
+    path: '/users',
+    config: {
+      method: 'GET',
+      params: queryParams,
+    },
+    dataKey: 'users',
+    onlyFirstPage,
+  })
+}

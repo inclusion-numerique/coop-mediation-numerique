@@ -100,6 +100,7 @@ export type RdvApiOrganisation = {
 
 export type OAuthRdvApiGetOrganisationsResponse = {
   organisations: RdvApiOrganisation[]
+  meta: OAuthApiListMeta
 }
 
 export type OAuthApiRdvStatus =
@@ -206,4 +207,40 @@ export const oauthRdvApiGetRdvsQueryValidation = z.object({
 
 export type OauthRdvApiGetRdvsQuery = z.infer<
   typeof oauthRdvApiGetRdvsQueryValidation
+>
+
+export type RdvApiWebhookEndpoint = {
+  id: number
+  targetUrl: string
+  subscriptions: string[]
+  organisationId: number
+  secret: string | null
+}
+
+export type OAuthApiWebhookEndpointsResponse = {
+  webhook_endpoints: RdvApiWebhookEndpoint[]
+  meta: OAuthApiListMeta
+}
+
+export const oauthRdvApiGetWebhookEndpointsQueryValidation = z.object({
+  page: z.number().int().positive().optional(),
+  target_url: z.string().url().optional(),
+})
+
+export type OauthRdvApiGetWebhookEndpointsQuery = z.infer<
+  typeof oauthRdvApiGetWebhookEndpointsQueryValidation
+>
+
+export type OAuthApiUsersResponse = {
+  users: RdvApiUser[]
+  meta: OAuthApiListMeta
+}
+
+export const oauthRdvApiGetUsersQueryValidation = z.object({
+  page: z.number().int().positive().optional(),
+  ids: z.union([z.number().int(), z.array(z.number().int())]).optional(),
+})
+
+export type OauthRdvApiGetUsersQuery = z.infer<
+  typeof oauthRdvApiGetUsersQueryValidation
 >

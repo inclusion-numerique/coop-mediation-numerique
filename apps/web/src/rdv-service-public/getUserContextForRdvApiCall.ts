@@ -32,3 +32,7 @@ export const getUserContextForOAuthApiCall = async ({
 
   return { ...userWithSecretData, rdvAccount }
 }
+
+export type UserContextForRdvApiCall = Awaited<
+  ReturnType<typeof getUserContextForOAuthApiCall>
+>
