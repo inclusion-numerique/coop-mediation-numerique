@@ -36,7 +36,7 @@ export type OAuthRdvApiCredentialsWithId = OAuthRdvApiCredentials & {
 }
 
 export type OauthRdvApiCredentialsWithOrganisations = OAuthRdvApiCredentials & {
-  organisations: Pick<RdvApiOrganisation, 'id'>[]
+  organisations: { organisationId: number }[]
 }
 
 export type OauthRdvApiResponseResult<T> =
@@ -187,7 +187,7 @@ export const oAuthRdvApiListRdvs = async ({
   params,
   onlyFirstPage = false,
 }: {
-  rdvAccount: OauthRdvApiCredentialsWithOrganisations
+  rdvAccount: OAuthRdvApiCredentials
   params?: OauthRdvApiGetRdvsQuery
   onlyFirstPage?: boolean
 }): Promise<OAuthApiOrganisationRdvsResponse> => {
@@ -378,7 +378,7 @@ export const oAuthRdvApiListWebhooks = async ({
   params,
   onlyFirstPage = false,
 }: {
-  rdvAccount: OauthRdvApiCredentialsWithOrganisations
+  rdvAccount: OAuthRdvApiCredentials
   organisationId: number
   params?: OauthRdvApiGetWebhookEndpointsQuery
   onlyFirstPage?: boolean
@@ -400,6 +400,66 @@ export const oAuthRdvApiListWebhooks = async ({
     },
     dataKey: 'webhook_endpoints',
     onlyFirstPage,
+  })
+}
+
+export const oAuthRdvApiCreateWebhook = async ({
+  rdvAccount,
+  organisationId,
+  target_url,
+  subscriptions,
+  secret,
+}: {
+  rdvAccount: OAuthRdvApiCredentials
+  organisationId: number
+  target_url: string
+  subscriptions: string[]
+  secret: string
+}) => {
+  return executeOAuthRdvApiCall<{
+    webhook_endpoint: OAuthApiWebhookEndpointsResponse['webhook_endpoints'][number]
+  }>({
+    path: `/organisations/${organisationId}/webhook_endpoints`,
+    rdvAccount,
+    config: {
+      method: 'POST',
+      data: {
+        target_url,
+        subscriptions,
+        secret,
+      },
+    },
+  })
+}
+
+export const oAuthRdvApiPatchWebhook = async ({
+  rdvAccount,
+  organisationId,
+  webhookId,
+  target_url,
+  subscriptions,
+  secret,
+}: {
+  rdvAccount: OAuthRdvApiCredentials
+  organisationId: number
+  webhookId: number
+  target_url: string
+  subscriptions: string[]
+  secret: string
+}) => {
+  return executeOAuthRdvApiCall<{
+    webhook_endpoint: OAuthApiWebhookEndpointsResponse['webhook_endpoints'][number]
+  }>({
+    path: `/organisations/${organisationId}/webhook_endpoints/${webhookId}`,
+    rdvAccount,
+    config: {
+      method: 'PATCH',
+      data: {
+        target_url,
+        subscriptions,
+        secret,
+      },
+    },
   })
 }
 

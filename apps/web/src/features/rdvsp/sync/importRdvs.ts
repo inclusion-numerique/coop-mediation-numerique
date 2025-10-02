@@ -2,10 +2,11 @@ import { prismaClient } from '@app/web/prismaClient'
 import {
   executeOAuthRdvApiCall,
   OAuthRdvApiCredentials,
+  OAuthRdvApiCredentialsWithId,
   type OauthRdvApiResponseResult,
+  oAuthRdvApiGetOrganisations,
   oAuthRdvApiListRdvs,
   oAuthRdvApiListWebhooks,
-  oAuthRdvApiGetOrganisations,
 } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
 import {
   getUserContextForOAuthApiCall,
@@ -18,125 +19,161 @@ import type {
 } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { createStopwatch } from '@app/web/utils/stopwatch'
-import { UserId, UserRdvAccount } from '@app/web/utils/user'
+import {
+  UserId,
+  UserRdvAccount,
+  UserWithExistingRdvAccount,
+} from '@app/web/utils/user'
 import type { Prisma, RdvAccount } from '@prisma/client'
 import { v4 } from 'uuid'
+import { AppendLog } from './syncAllRdvData'
+import { chunk } from 'lodash-es'
 
-const parseDate = (value: string | null): Date | null =>
-  value ? new Date(value) : null
-
-const optional = (value: string | null | undefined) => value ?? null
-
-const isSuccessResponse = <T>(
-  result: OauthRdvApiResponseResult<T>,
-): result is { status: 'ok'; data: T; error: undefined } =>
-  result.status === 'ok'
-
-const fetchAllAccountDataFromRdvApi = async ({
-  oAuthCallUser,
-  startsAfter,
+const findExistingRdvs = async ({
+  rdvIds,
 }: {
-  oAuthCallUser: UserContextForRdvApiCall
-  startsAfter?: string // iso day of startsAfter
+  rdvIds: Pick<OAuthApiRdv, 'id'>[]
 }) => {
-  const [rdvs, organisations, webhooks] = await Promise.all([
-    oAuthRdvApiListRdvs({
-      rdvAccount: oAuthCallUser.rdvAccount,
-      params: {
-        agent_id: oAuthCallUser.rdvAccount.id,
-        starts_after: startsAfter,
+  return await prismaClient.rdv.findMany({
+    where: {
+      id: { in: rdvIds.map((rdv) => rdv.id) },
+    },
+    include: {
+      organisation: true,
+      lieu: true,
+      participations: {
+        include: {
+          user: true,
+          agent: true,
+        },
       },
-      onlyFirstPage: true,
-    }),
-    oAuthRdvApiGetOrganisations({ rdvAccount }),
-    oAuthRdvApiListWebhooks({ rdvAccount }),
-  ])
+    },
+  })
+}
+type ExistingRdv = Awaited<ReturnType<typeof findExistingRdvs>>[number]
 
-  return { rdvs, organisations, webhooks }
+// TODO more checks
+const hasDiff = (existing: ExistingRdv, rdv: OAuthApiRdv) => {
+  return existing.status !== rdv.status
+}
+
+const importRdv = async ({
+  rdv,
+  appendLog,
+  existing,
+}: {
+  rdv: OAuthApiRdv
+  existing?: ExistingRdv
+  appendLog: AppendLog
+}) => {
+  if (existing) {
+    if (!hasDiff(existing, rdv)) {
+      // No diff, no need to import
+      appendLog(`no diff for rdv ${rdv.id}, skipping`)
+      return
+    }
+
+    // Diff, delete the aggregate root (associated data), and update the aggregate root and re-create associated data
+    appendLog(`existing rdv ${rdv.id}, updating data`)
+    await prismaClient.$transaction(async (tx) => {
+      await tx.rdvParticipation.deleteMany({
+        where: {
+          rdvId: existing.id,
+        },
+      })
+      await tx.rdv.update({
+        where: {
+          id: existing.id,
+        },
+        data: {
+          status: rdv.status,
+        },
+      })
+
+      await tx.rdvParticipation.createMany({
+        data: rdv.participations.map((participation) => ({
+          rdvId: existing.id,
+          userId: participation.user.id,
+          agentId: participation.agent.id,
+        })),
+      })
+    })
+
+    return
+  }
+
+  // Not existing, create the aggregate root and associated data
+  appendLog(`importing rdv ${rdv.id}`)
+  await prismaClient.$transaction(async (tx) => {
+    await tx.rdv.create({
+      data: rdv,
+    })
+    await tx.rdvParticipation.createMany({
+      data: rdv.participations.map((participation) => ({
+        rdvId: existing.id,
+        userId: participation.user.id,
+        agentId: participation.agent.id,
+      })),
+    })
+  })
 }
 
 export const importRdvs = async ({
   user,
   mediateurId,
+  rdvAccount,
+  appendLog,
+  batchSize = 250,
 }: {
-  user: UserRdvAccount & UserId
+  user: UserId & UserWithExistingRdvAccount
+  rdvAccount: OAuthRdvApiCredentialsWithId
   mediateurId: string
+  appendLog: AppendLog
+  batchSize?: number
 }) => {
-  if (!user.rdvAccount?.hasOauthTokens) {
-    return null
-  }
-  const oAuthCallUser = await getUserContextForOAuthApiCall({ user })
-
-  const startsAfter = rdvAccount.syncFrom
-    ? dateAsIsoDay(rdvAccount.syncFrom)
+  appendLog('import rdvs')
+  const startsAfter = user.rdvAccount.syncFrom
+    ? dateAsIsoDay(new Date(user.rdvAccount.syncFrom))
     : undefined
 
-  const syncData: Prisma.RdvSyncLogUncheckedCreateInput = {
-    rdvAccountId: rdvAccount.id,
-    started: new Date(),
-    ended: null,
-    error: null,
-    log: '',
-  }
+  appendLog(
+    `fetching rdvs for account ${rdvAccount.id} from ${startsAfter ?? 'all time'}`,
+  )
 
-  syncData.log += `Fetching data from RDV API for account ${rdvAccount.id} from ${startsAfter ?? 'all time'}\n`
-  const fetchDataStart = createStopwatch()
-  const { rdvs, rdvUsers, rdvAgents, rdvOrganisations, rdvMotifs } =
-    await fetchAllAccountDataFromRdvApi({ oAuthCallUser, startsAfter })
-  syncData.log += `Data fetching from RDV API took ${fetchDataStart.stop().duration}ms\n`
-  syncData.log += `- organisations: ${rdvOrganisations.length}\n`
-  syncData.log += `- motifs: ${rdvMotifs.length}\n`
-  syncData.log += `- agents: ${rdvAgents.length}\n`
-  syncData.log += `- rdvs: ${rdvs.length}\n`
-  syncData.log += `- users: ${rdvUsers.length}\n`
+  const { rdvs: allRdvs } = await oAuthRdvApiListRdvs({
+    rdvAccount,
+    params: {
+      agent_id: rdvAccount.id,
+      starts_after: startsAfter,
+    },
+    onlyFirstPage: true,
+  })
 
-  try {
-    // First we fetch all the data from the external API
+  appendLog(`fetched ${allRdvs.length} rdvs from RDV API`)
 
-    const rdvs = await fetchAllAgentRdvs({ rdvAccount, startsAfter })
+  // We filter out the rdvs that have multiple agents and NOT the current agent as the first [0] one
+  const rdvs = allRdvs.filter((rdv) => rdv.agents.at(0)?.id === rdvAccount.id)
+  appendLog(`kept ${rdvs.length} rdvs assigned first to the current agent`)
+  const chunks = chunk(rdvs, batchSize)
+  appendLog(`importing ${chunks.length} chunks of ${batchSize} rdvs`)
 
-    const rdvUsers = new Map<number, OAuthApiParticipation['user']>()
-    const rdvAgents = new Map<number, OAuthApiRdv['agents'][number]>()
+  for (const chunkIndex in chunks) {
+    appendLog(`importing chunk ${chunkIndex} of ${chunks.length} rdvs`)
+    const chunkRdvs = chunks[chunkIndex]
+    const existingRdvs = await findExistingRdvs({
+      rdvIds: chunkRdvsv.id),
+      rdvAccount,
+    })
+    const existingRdvsMap = new Map(existingRdvs.map((rdv) => [rdv.id, rdv]))
 
-    for (const rdv of rdvs) {
-      for (const participation of rdv.participations) {
-        rdvUsers.set(participation.user.id, participation.user)
-      }
-
-      for (const agent of rdv.agents) {
-        rdvAgents.set(agent.id, agent)
-      }
-    }
-
-    await prismaClient.$transaction(async (tx) => {
-      for (const user of rdvUsers.values()) {
-        await syncRdvUser({ tx, mediateurId, user })
-      }
-
-      for (const agent of rdvAgents.values()) {
-        await syncAgent({ tx, agent })
-      }
-
-      for (const rdv of rdvs) {
-        await syncOrganisationGraph({
-          tx,
+    await Promise.all(
+      chunkRdvs.map(async (rdv) => {
+        await importRdv({
           rdv,
-          rdvAccountId: rdvAccount.id,
+          appendLog,
+          existing: existingRdvsMap.get(rdv.id),
         })
-        await syncRdvAggregate({ tx, rdv })
-      }
-    })
-
-    await prismaClient.rdvAccount.update({
-      where: { id: rdvAccount.id },
-      data: { lastSynced: new Date(), error: null },
-    })
-    syncData.ended = new Date()
-  } catch (error) {
-    syncData.error = error instanceof Error ? error.message : 'Unknown error'
-  } finally {
-    await prismaClient.rdvSyncLog.create({
-      data: syncData,
-    })
+      }),
+    )
   }
 }

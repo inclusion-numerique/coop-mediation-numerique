@@ -6,7 +6,7 @@ import {
   rdvServicePublicOAuthConfig,
   rdvServicePublicOAuthTokenEndpoint,
 } from '@app/web/rdv-service-public/rdvServicePublicOauth'
-import { refreshRdvAgentAccountData } from '@app/web/rdv-service-public/refreshRdvAgentAccountData'
+import { refreshRdvAgentAccountData } from '@app/web/features/rdvsp/sync/refreshRdvAgentAccountData'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { getServerUrl } from '@app/web/utils/baseUrl'
 import {

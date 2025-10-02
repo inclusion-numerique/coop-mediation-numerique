@@ -209,11 +209,21 @@ export type OauthRdvApiGetRdvsQuery = z.infer<
   typeof oauthRdvApiGetRdvsQueryValidation
 >
 
+export type RdvApiWebhookSubscription =
+  | 'rdv'
+  | 'user'
+  | 'user_profile'
+  | 'organisation'
+  | 'motif'
+  | 'lieu'
+  | 'agent'
+  | 'agent_role'
+
 export type RdvApiWebhookEndpoint = {
   id: number
-  targetUrl: string
-  subscriptions: string[]
-  organisationId: number
+  target_url: string
+  subscriptions: RdvApiWebhookSubscription[]
+  organisation_id: number
   secret: string | null
 }
 

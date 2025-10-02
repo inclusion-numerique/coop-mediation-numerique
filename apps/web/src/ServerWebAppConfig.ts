@@ -74,6 +74,7 @@ export const ServerWebAppConfig = {
   },
   RdvServicePublic: {
     apiKey: process.env.RDV_SERVICE_PUBLIC_API_KEY ?? '',
+    webhookSecret: process.env.RDV_SERVICE_PUBLIC_WEBHOOK_SECRET ?? '',
     OAuth: {
       clientSecret: process.env.RDV_SERVICE_PUBLIC_OAUTH_CLIENT_SECRET ?? '',
     },

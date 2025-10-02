@@ -1255,9 +1255,10 @@ model RdvAccount {
   // Timestamp from which we import RDVs for this account
   syncFrom DateTime? @map("sync_from")
 
-  organisations RdvOrganisation[] // Be careful as this may be out of sync with the data from oauth. Used as a cache and should be refreshed when needed.
+  organisations RdvAccountOrganisation[] // Be careful as this may be out of sync with the data from oauth. Used as a cache and should be refreshed when needed.
+  rdvs Rdv[]
   syncLogs RdvSyncLog[]
-
+  
   accessToken  String?   @map("access_token") // Empty if account created but oauth not linked or invalidated
   refreshToken String?   @map("refresh_token")
   expiresAt    DateTime? @map("expires_at")
@@ -1296,9 +1297,6 @@ model RdvSyncLog {
 model RdvOrganisation {
   id Int @id
 
-  accountId Int        @map("account_id")
-  account   RdvAccount @relation(fields: [accountId], references: [id])
-
   name        String
   email       String?
   phoneNumber String? @map("phone_number")
@@ -1308,11 +1306,24 @@ model RdvOrganisation {
   rdvs             Rdv[]
   userProfiles     RdvUserProfile[]
   webhookEndpoints RdvWebhookEndpoint[]
+  accounts         RdvAccountOrganisation[]
 
   syncedAt DateTime @updatedAt @map("synced_at")
 
-  @@index([accountId])
   @@map("rdv_organisations")
+}
+
+model RdvAccountOrganisation {
+  accountId      Int  @map("account_id")
+  organisationId Int  @map("organisation_id")
+  account        RdvAccount       @relation(fields: [accountId], references: [id])
+  organisation   RdvOrganisation  @relation(fields: [organisationId], references: [id])
+
+  syncedAt DateTime @default(now()) @map("synced_at")
+
+  @@id([accountId, organisationId])
+  @@index([organisationId])
+  @@map("rdv_accounts_organisations")
 }
 
 enum RdvAttendanceStatus {
@@ -1457,6 +1468,9 @@ model Rdv {
   usersCount           Int                 @map("users_count")
   uuid                 String              @unique
 
+  rdvAccountId Int @map("rdv_account_id")
+  rdvAccount   RdvAccount @relation(fields: [rdvAccountId], references: [id], onDelete: Cascade)
+
   organisationId Int @map("organisation_id")
   motifId        Int? @map("motif_id")
   lieuId         Int? @map("lieu_id")
@@ -1472,6 +1486,7 @@ model Rdv {
 
   rawData Json @map("raw_data") // Raw data from the RDV API
 
+  @@index([rdvAccountId])
   @@index([organisationId])
   @@index([startsAt])
   @@index([status])
