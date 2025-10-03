@@ -1,12 +1,12 @@
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
+import { refreshRdvAgentAccountData } from '@app/web/features/rdvsp/sync/refreshRdvAgentAccountData'
 import { prismaClient } from '@app/web/prismaClient'
 import { oAuthRdvApiMe } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
 import {
   rdvServicePublicOAuthConfig,
   rdvServicePublicOAuthTokenEndpoint,
 } from '@app/web/rdv-service-public/rdvServicePublicOauth'
-import { refreshRdvAgentAccountData } from '@app/web/features/rdvsp/sync/refreshRdvAgentAccountData'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { getServerUrl } from '@app/web/utils/baseUrl'
 import {

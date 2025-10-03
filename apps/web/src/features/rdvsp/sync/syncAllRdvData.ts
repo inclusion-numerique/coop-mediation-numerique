@@ -1,17 +1,16 @@
 import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
+import { prismaClient } from '@app/web/prismaClient'
+import { getUserContextForOAuthApiCall } from '@app/web/rdv-service-public/getUserContextForRdvApiCall'
 import {
   UserId,
   UserMediateur,
   UserWithExistingRdvAccount,
 } from '@app/web/utils/user'
-import { refreshRdvAgentAccountData } from './refreshRdvAgentAccountData'
+import type { Prisma } from '@prisma/client'
 import { importOrganisations } from './importOrganisations'
 import { importRdvs } from './importRdvs'
 import { installWebhooks } from './installWebhooks'
-import { getUserContextForOAuthApiCall } from '@app/web/rdv-service-public/getUserContextForRdvApiCall'
-import { prismaClient } from '@app/web/prismaClient'
-import { UserWithExistingMediateur } from '@app/web/utils/user'
-import type { Prisma } from '@prisma/client'
+import { refreshRdvAgentAccountData } from './refreshRdvAgentAccountData'
 
 export type AppendLog = (log: string | string[]) => void
 
@@ -34,8 +33,10 @@ export const syncAllRdvData = async ({
     if (Array.isArray(log)) {
       return log.forEach(appendLog)
     }
-    syncLog.log += `[rdv-sync:${rdvAccount.id}][${(Date.now() - start) / 1000}s]`
-    syncLog.log += log
+    const time = Math.round((Date.now() - start) / 1000)
+    const line = `[rdv-sync:${rdvAccount.id}][${time}s] ${log}`
+    console.log(line)
+    syncLog.log += line
     syncLog.log += '\n'
   }
 
@@ -64,12 +65,22 @@ export const syncAllRdvData = async ({
       })
     }
     await installWebhooks({ rdvAccount, appendLog })
+
+    await prismaClient.rdvAccount.update({
+      where: { id: rdvAccount.id },
+      data: {
+        lastSynced: new Date(),
+        error: null,
+      },
+    })
   } catch (error) {
+    appendLog('sync failed')
     syncLog.error = error instanceof Error ? error.message : 'Unknown error'
+    console.error(error)
+    throw error
   } finally {
-    const createdSyncLog = await prismaClient.rdvSyncLog.create({
+    await prismaClient.rdvSyncLog.create({
       data: syncLog,
     })
-    return createdSyncLog
   }
 }

@@ -152,7 +152,7 @@ export type OAuthApiRdv = {
     organisation_id: number
     phone_number: string | null
     single_use: boolean
-  }
+  } | null
   max_participants_count: number | null
   motif: {
     id: number

@@ -4,6 +4,8 @@ import {
   sessionUserSelect,
 } from '@app/web/auth/getSessionUserFromSessionToken'
 import { getBeneficiaireAdresseString } from '@app/web/beneficiaire/getBeneficiaireAdresseString'
+import { refreshRdvAgentAccountData } from '@app/web/features/rdvsp/sync/refreshRdvAgentAccountData'
+import { syncAllRdvData } from '@app/web/features/rdvsp/sync/syncAllRdvData'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   oAuthRdvApiCreateRdvPlan,
@@ -15,13 +17,11 @@ import {
   type OauthRdvApiCreateRdvPlanInput,
   OauthRdvApiCreateRdvPlanMutationInputValidation,
 } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
-import { refreshRdvAgentAccountData } from '@app/web/features/rdvsp/sync/refreshRdvAgentAccountData'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { externalApiError, invalidError } from '@app/web/server/rpc/trpcErrors'
 import { getServerUrl } from '@app/web/utils/baseUrl'
-import { AxiosError } from 'axios'
 import * as Sentry from '@sentry/nextjs'
-import { syncAllRdvData } from '@app/web/features/rdvsp/sync/syncAllRdvData'
+import { AxiosError } from 'axios'
 
 export const rdvServicePublicRouter = router({
   oAuthApiMe: protectedProcedure.mutation(async ({ ctx: { user } }) => {
@@ -63,6 +63,9 @@ export const rdvServicePublicRouter = router({
 
       const result = await refreshRdvAgentAccountData({
         rdvAccount: oAuthCallUser.rdvAccount,
+        appendLog: () => {
+          // no-op
+        },
       })
 
       return result
@@ -106,7 +109,9 @@ export const rdvServicePublicRouter = router({
     const oAuthCallUser = await getUserContextForOAuthApiCall({ user })
 
     try {
-      await syncAllRdvData({ user })
+      await syncAllRdvData({
+        user: { ...user, rdvAccount: user.rdvAccount },
+      })
     } catch (error) {
       Sentry.captureException(error)
       // Update the rdvAccount with sync error info

@@ -1353,38 +1353,6 @@ enum RdvCreatorType {
 
   @@map("rdv_creator_type")
 }
-
-enum RdvLocationType {
-  public_office @map("public_office")
-  phone        @map("phone")
-  home         @map("home")
-
-  @@map("rdv_location_type")
-}
-
-enum RdvBookableBy {
-  agents                          @map("agents")
-  agents_and_prescripteurs          @map("agents_and_prescripteurs")
-  agents_and_prescripteurs_and_invited_users @map("agents_and_prescripteurs_and_invited_users")
-  everyone                        @map("everyone")
-
-  @@map("rdv_bookable_by")
-}
-
-
-model RdvAgent {
-  id        Int     @id
-  email     String  @unique
-  firstName String? @map("first_name")
-  lastName  String? @map("last_name")
-
-  participations      RdvParticipation[]
-
-  syncedAt DateTime @updatedAt @map("synced_at")
-
-  @@map("rdv_agents")
-}
-
 model RdvUser {
   id                   Int                @id
   address              String?
@@ -1411,7 +1379,6 @@ model RdvUser {
   beneficiaire Beneficiaire[]
   userProfiles        RdvUserProfile[]
   participations      RdvParticipation[]
-  rdvPlans            RdvPlan[]
 
   syncedAt DateTime @updatedAt @map("synced_at")
 
@@ -1440,7 +1407,7 @@ model RdvLieu {
   phoneNumber    String? @map("phone_number")
   singleUse      Boolean @map("single_use")
 
-  organisation RdvOrganisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  organisation RdvOrganisation @relation(fields: [organisationId], references: [id])
   rdvs         Rdv[]
 
   syncedAt DateTime @updatedAt @map("synced_at")
@@ -1469,18 +1436,17 @@ model Rdv {
   uuid                 String              @unique
 
   rdvAccountId Int @map("rdv_account_id")
-  rdvAccount   RdvAccount @relation(fields: [rdvAccountId], references: [id], onDelete: Cascade)
+  rdvAccount   RdvAccount @relation(fields: [rdvAccountId], references: [id])
 
   organisationId Int @map("organisation_id")
   motifId        Int? @map("motif_id")
   lieuId         Int? @map("lieu_id")
 
-  organisation RdvOrganisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  organisation RdvOrganisation @relation(fields: [organisationId], references: [id])
   lieu         RdvLieu?         @relation(fields: [lieuId], references: [id])
 
-  activite Activite?
+  activite       Activite?
   participations   RdvParticipation[]
-  plans            RdvPlan[]
 
   syncedAt DateTime @updatedAt @map("synced_at")
 
@@ -1502,44 +1468,19 @@ model RdvParticipation {
   createdByType              RdvCreatorType?     @map("created_by_type")
   createdById                Int?                @map("created_by_id")
   createdByAgentPrescripteur Boolean?            @map("created_by_agent_prescripteur")
-
-  rdvId   Int  @map("rdv_id")
+  rdvId   Int  @map("rdv_id") 
   userId  Int  @map("user_id")
-  agentId Int? @map("agent_id")
 
   rdv   Rdv      @relation(fields: [rdvId], references: [id], onDelete: Cascade)
-  user  RdvUser  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  agent RdvAgent? @relation(fields: [agentId], references: [id])
+  user  RdvUser  @relation(fields: [userId], references: [id])
 
   syncedAt DateTime @updatedAt @map("synced_at")
 
   @@index([rdvId])
   @@index([userId])
-  @@index([agentId])
   @@map("rdv_participations")
 }
 
-
-model RdvPlan {
-  id        Int      @id
-  createdAt DateTime? @map("created_at")
-  updatedAt DateTime? @map("updated_at")
-  url       String?
-  returnUrl String?  @map("return_url")
-  dossierUrl String? @map("dossier_url")
-
-  userId Int? @map("user_id")
-  rdvId  Int? @map("rdv_id")
-
-  user RdvUser? @relation(fields: [userId], references: [id])
-  rdv  Rdv?     @relation(fields: [rdvId], references: [id])
-
-  syncedAt DateTime @updatedAt @map("synced_at")
-
-  @@index([userId])
-  @@index([rdvId])
-  @@map("rdv_plans")
-}
 
 model RdvWebhookEndpoint {
   id            Int      @id

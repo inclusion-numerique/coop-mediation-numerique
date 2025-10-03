@@ -38,8 +38,8 @@ const Rdvs = async ({
   const nextBeneficiaire = next?.participations.at(0)?.user
   const nextBeneficiaireDisplayName = nextBeneficiaire
     ? getBeneficiaireDisplayName({
-        prenom: nextBeneficiaire.first_name,
-        nom: nextBeneficiaire.last_name,
+        prenom: nextBeneficiaire.firstName,
+        nom: nextBeneficiaire.lastName,
       })
     : null
 
@@ -90,12 +90,9 @@ const Rdvs = async ({
               )}
             >
               {next
-                ? `Prochain le ${dateAsDayFullWordsInTimezone(new Date(next.starts_at), timezone)}
-               de ${dateAsTimeInTimeZone(new Date(next.starts_at), timezone)} à ${dateAsTimeInTimeZone(
-                 new Date(
-                   new Date(next.starts_at).getTime() +
-                     next.duration_in_min * 1000 * 60,
-                 ),
+                ? `Prochain le ${dateAsDayFullWordsInTimezone(new Date(next.startsAt), timezone)}
+               de ${dateAsTimeInTimeZone(new Date(next.startsAt), timezone)} à ${dateAsTimeInTimeZone(
+                 new Date(next.endsAt),
                  timezone,
                )}
                 avec ${nextBeneficiaireDisplayName ?? 'anonyme'}`
