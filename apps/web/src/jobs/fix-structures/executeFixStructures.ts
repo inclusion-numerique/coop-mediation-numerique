@@ -41,28 +41,41 @@ const fixLocationFormat = (localisation: {
     : Localisation({ latitude, longitude })
 }
 
-const findLocationFor = async ({
+const banDataFor = async ({
   adresse,
   commune,
   codePostal,
 }: {
-  adresse: string
-  commune: string
-  codePostal: string
+  adresse?: string
+  commune?: string
+  codePostal?: string
 }) => {
+  if (commune == null) return {}
+
   const adressesFound = await searchAdresses(
-    commune === adresse ? commune : `${adresse}, ${codePostal} ${commune}`,
+    commune === adresse || adresse == null
+      ? commune
+      : `${adresse.replace('null', '')} ${codePostal} ${commune}`,
     commune === adresse ? { type: 'municipality' } : {},
   )
 
-  const address = adressesFound.find(
-    (feature) => feature.properties.score > 0.6,
+  const adresseFound = adressesFound.find(
+    (feature) => feature.properties.score > 0.9,
   )
 
-  return Localisation({
-    latitude: address?.geometry.coordinates[1] ?? 0,
-    longitude: address?.geometry.coordinates[0] ?? 0,
-  })
+  if (adresseFound == null) return {}
+
+  return {
+    banId: adresseFound.properties.id,
+    adresse: adresseFound.properties.name,
+    codeInsee: adresseFound.properties.citycode,
+    codePostal: adresseFound.properties.postcode,
+    commune: adresseFound.properties.city,
+    ...Localisation({
+      latitude: adresseFound.geometry.coordinates[1] ?? 0,
+      longitude: adresseFound.geometry.coordinates[0] ?? 0,
+    }),
+  }
 }
 
 const isLocationWrongFormat = ({
@@ -75,14 +88,7 @@ const isLocationWrongFormat = ({
   (latitude != null && (latitude > 90 || latitude < -90)) ||
   (longitude != null && (longitude > 180 || longitude < -180))
 
-const isInvalidLocation = ({
-  latitude,
-  longitude,
-}: {
-  latitude: number | null
-  longitude: number | null
-}) =>
-  (latitude === 0 && longitude === 0) || latitude == null || longitude == null
+const noBanId = ({ banId }: { banId: string | null }) => banId == null
 
 const isInvalidFicheAccesLibre = ({
   ficheAccesLibre,
@@ -92,6 +98,8 @@ const isInvalidFicheAccesLibre = ({
 
 const isInvalidPriseRDV = ({ priseRdv }: { priseRdv: string | null }) =>
   priseRdv && !isValidUrl(priseRdv)
+
+const delay = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
 export const executeFixStructures = async (_job: FixStructuresJob) => {
   const structures = await prismaClient.structure.findMany()
@@ -140,18 +148,27 @@ export const executeFixStructures = async (_job: FixStructuresJob) => {
     ),
   )
 
-  const locations0 = structures.filter(isInvalidLocation)
+  const structuresWithoutBanId = structures.filter(noBanId)
 
-  output.log(`Found ${locations0.length} structures with location set to 0,0`)
+  output.log(`Found ${structuresWithoutBanId.length} structures without ban id`)
 
-  await Promise.all(
-    locations0.map(async (location) =>
-      prismaClient.structure.update({
-        where: { id: location.id },
-        data: await findLocationFor(location),
-      }),
-    ),
-  )
+  const BATCH_SIZE = 50
+  const PAUSE_MS = 1000
+
+  for (let i = 0; i < structuresWithoutBanId.length; i += BATCH_SIZE) {
+    const batch = structuresWithoutBanId.slice(i, i + BATCH_SIZE)
+
+    await Promise.all(
+      batch.map(async (structure) =>
+        prismaClient.structure.update({
+          where: { id: structure.id },
+          data: await banDataFor(structure),
+        }),
+      ),
+    )
+
+    if (i + BATCH_SIZE < structuresWithoutBanId.length) await delay(PAUSE_MS)
+  }
 
   const invalidFicheAccesLibre = structures.filter(isInvalidFicheAccesLibre)
 

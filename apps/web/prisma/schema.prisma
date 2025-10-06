@@ -272,9 +272,9 @@ model Mediateur {
   isVisible Boolean @default(false) @map("is_visible")
 
   // pre computed counts to avoid joins and counts on big tables
-  activitesCount Int @default(0) @map("activites_count")
+  activitesCount       Int @default(0) @map("activites_count")
   accompagnementsCount Int @default(0) @map("accompagnements_count")
-  beneficiairesCount Int @default(0) @map("beneficiaires_count")
+  beneficiairesCount   Int @default(0) @map("beneficiaires_count")
 
   coordinations MediateurCoordonne[]
   enActivite    MediateurEnActivite[]
@@ -388,30 +388,30 @@ model CraConseillerNumeriqueV1 {
   structureCodeRegion      String? @map("structure_code_region")
 
   // Permanence (équivalent v1 à lieu d’activité)
-  permanenceId String? @map("permanence_id")
-  permanenceEstStructure Boolean? @map("permanence_est_structure")
-  permanenceNomEnseigne String? @map("permanence_nom_enseigne")
-  permanenceNumeroTelephone String? @map("permanence_numero_telephone")
-  permanenceEmail String? @map("permanence_email")
-  permanenceSiteWeb String? @map("permanence_site_web")
-  permanenceSiret String? @map("permanence_siret")
-  permanenceAdresse String? @map("permanence_adresse")
-  permanenceCodePostal String? @map("permanence_code_postal")
-  permanenceNomCommune String? @map("permanence_nom_commune")
-  permanenceCodeCommune String? @map("permanence_code_commune")
-  permanenceLatitude Float? @map("permanence_latitude")
-  permanenceLongitude Float? @map("permanence_longitude")
-  permanenceStructureId              String? @map("permanence_structure_id")
-  permanenceStructureIdPg            Int?    @map("permanence_structure_id_pg")
-  permanenceStructureType            String? @map("permanence_structure_type")
-  permanenceStructureStatut          String? @map("permanence_structure_statut")
-  permanenceStructureNom             String? @map("permanence_structure_nom")
-  permanenceStructureSiret           String? @map("permanence_structure_siret")
-  permanenceStructureCodePostal      String? @map("permanence_structure_code_postal")
-  permanenceStructureNomCommune      String? @map("permanence_structure_nom_commune")
-  permanenceStructureCodeCommune     String? @map("permanence_structure_code_commune")
-  permanenceStructureCodeDepartement String? @map("permanence_structure_code_departement")
-  permanenceStructureCodeRegion      String? @map("permanence_structure_code_region")
+  permanenceId                       String?  @map("permanence_id")
+  permanenceEstStructure             Boolean? @map("permanence_est_structure")
+  permanenceNomEnseigne              String?  @map("permanence_nom_enseigne")
+  permanenceNumeroTelephone          String?  @map("permanence_numero_telephone")
+  permanenceEmail                    String?  @map("permanence_email")
+  permanenceSiteWeb                  String?  @map("permanence_site_web")
+  permanenceSiret                    String?  @map("permanence_siret")
+  permanenceAdresse                  String?  @map("permanence_adresse")
+  permanenceCodePostal               String?  @map("permanence_code_postal")
+  permanenceNomCommune               String?  @map("permanence_nom_commune")
+  permanenceCodeCommune              String?  @map("permanence_code_commune")
+  permanenceLatitude                 Float?   @map("permanence_latitude")
+  permanenceLongitude                Float?   @map("permanence_longitude")
+  permanenceStructureId              String?  @map("permanence_structure_id")
+  permanenceStructureIdPg            Int?     @map("permanence_structure_id_pg")
+  permanenceStructureType            String?  @map("permanence_structure_type")
+  permanenceStructureStatut          String?  @map("permanence_structure_statut")
+  permanenceStructureNom             String?  @map("permanence_structure_nom")
+  permanenceStructureSiret           String?  @map("permanence_structure_siret")
+  permanenceStructureCodePostal      String?  @map("permanence_structure_code_postal")
+  permanenceStructureNomCommune      String?  @map("permanence_structure_nom_commune")
+  permanenceStructureCodeCommune     String?  @map("permanence_structure_code_commune")
+  permanenceStructureCodeDepartement String?  @map("permanence_structure_code_departement")
+  permanenceStructureCodeRegion      String?  @map("permanence_structure_code_region")
 
   @@index([v1ConseillerNumeriqueId])
   @@index([dateAccompagnement(sort: Asc)])
@@ -682,7 +682,7 @@ model Structure {
   emplois              EmployeStructure[]
   mediateursEnActivite MediateurEnActivite[]
   // activités liés aux employés de la structure (différent du lieu d'activité)
-  activitesEmployes            Activite[] @relation(name: "activite_structure_employeuse")
+  activitesEmployes    Activite[]            @relation(name: "activite_structure_employeuse")
   // Champs métier
 
   nom String
@@ -694,6 +694,7 @@ model Structure {
   complementAdresse String? @map("complement_adresse")
   latitude          Float?
   longitude         Float?
+  banId             String? @map("ban_id")
 
   siret String?
   rna   String?
@@ -732,10 +733,10 @@ model Structure {
 
   // Lors de l'import des cras v1, on a besoin d'importer les structures depuis la bdd legacy
   // on track cette operation ici
-  v1Imported DateTime? @map("v1_imported")
-  v1StructureId String? @map("v1_structure_id")
-  v1StructureIdPg Int?  @map("v1_structure_id_pg")
-  v1PermanenceId  String? @map("v1_permanence_id")
+  v1Imported      DateTime? @map("v1_imported")
+  v1StructureId   String?   @map("v1_structure_id")
+  v1StructureIdPg Int?      @map("v1_structure_id_pg")
+  v1PermanenceId  String?   @map("v1_permanence_id")
 
   // pre computed counts to avoid joins and counts on big tables
   activitesCount Int @default(0) @map("activites_count")
@@ -965,7 +966,7 @@ model Beneficiaire {
 
   // Lorsqu’un médiateur ne spécifie pas de bénéficiaire suivi, un bénéficiaire
   // anonyme est créé, avec les memes informations mais sans prenom et nom
-  anonyme Boolean @default(false)
+  anonyme    Boolean   @default(false)
   v1Imported DateTime? @map("v1_imported") // beneficiaire anonyme importé depuis les données cra v1
 
   // Lorsqu’un bénéficiaire anonyme est ajouté via cra collectif
@@ -999,9 +1000,9 @@ model Beneficiaire {
   suppression  DateTime?
 
   // pre computed counts to avoid joins and counts on big tables
-  accompagnementsCount Int @default(0) @map("accompagnements_count")
-  accompagnements Accompagnement[]
-  
+  accompagnementsCount Int              @default(0) @map("accompagnements_count")
+  accompagnements      Accompagnement[]
+
   @@index([anonyme])
   @@index([mediateurId])
   @@map("beneficiaires")
@@ -1036,7 +1037,7 @@ model Activite {
   // - cette information aurait pu etre déduite des liens entre mediateur, emploi, et activité
   // - elle est stockée directement ici pour des raisons de performance, et est mise à jour en cas de modification d'emploi
   // - elle est également utile dans le cas des imports d'anciens cras v1 qui ont cette information en dur dans le cra v1
-  structureEmployeuseId String @map("structure_employeuse_id") @db.Uuid
+  structureEmployeuseId String    @map("structure_employeuse_id") @db.Uuid
   structureEmployeuse   Structure @relation(fields: [structureEmployeuseId], references: [id], name: "activite_structure_employeuse")
 
   // Structure est renseigné
@@ -1076,9 +1077,9 @@ model Activite {
   tags         ActivitesTags[]
 
   // En cas d'import depuis les données v1
-  v1CraId String? @map("v1_cra_id") @unique
-  v1CraIdPg Int? @map("v1_cra_id_pg")
-  v1StructureId String? @map("v1_structure_id")
+  v1CraId        String? @unique @map("v1_cra_id")
+  v1CraIdPg      Int?    @map("v1_cra_id_pg")
+  v1StructureId  String? @map("v1_structure_id")
   v1PermanenceId String? @map("v1_permanence_id")
 
   // "creation" cursor is used to paginate results for API queries
