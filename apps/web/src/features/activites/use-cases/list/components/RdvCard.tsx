@@ -11,37 +11,32 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import ActiviteCardSpacer from './ActiviteCardSpacer'
 import ActiviteOrRdvListCard from './ActiviteOrRdvListCard'
 import RdvStatusBadge from './RdvStatusBadge'
+import { SearchRdvResultItem } from '../db/searchActiviteAndRdvs'
 
 const RdvCard = ({
-  activite,
+  rdv,
   user,
   displayBeneficiaire,
   displayDate,
 }: {
-  activite: Rdv
+  rdv: SearchRdvResultItem
   user: UserRdvAccount & UserTimezone
   displayBeneficiaire?: boolean
   displayDate?: boolean
 }) => {
-  const userRdvAgentId = user.rdvAccount?.id
-
   const { timezone } = user
 
   const now = Date.now()
   const {
-    date,
-    endDate,
-    agents,
+    startsAt,
+    endsAt,
     motif,
     maxParticipantsCount,
     participations,
     url,
     status,
     badgeStatus,
-  } = activite
-
-  // TODO display if rdv has been created by another agent ?
-  const _agentIsUser = agents.some((agent) => agent.id === userRdvAgentId)
+  } = rdv
 
   const participants = participations.map((participation) => participation.user)
 

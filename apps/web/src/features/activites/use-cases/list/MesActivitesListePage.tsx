@@ -17,14 +17,8 @@ const SuspensedContent = async ({
 }: {
   data: Promise<ActivitesListPageData>
 }) => {
-  const {
-    searchParams,
-    searchResult,
-    isFiltered,
-    activitesByDate,
-    user,
-    rdvsWithoutActivite,
-  } = await data
+  const { searchParams, searchResult, isFiltered, activitesByDate, user } =
+    await data
 
   if (activitesByDate.length === 0 && !isFiltered) {
     return <MesActivitesListeEmptyPage />
@@ -37,19 +31,18 @@ const SuspensedContent = async ({
         {getActivitesResultCountLabel({
           isFiltered,
           searchResult,
-          rdvsWithoutActivite,
         })}
       </p>
-      {activitesByDate.map(({ date, activites }) => (
+      {activitesByDate.map(({ date, items }) => (
         <Fragment key={new Date(date).toISOString()}>
           <h3 className="fr-text--xs fr-text-mention--grey fr-text--bold fr-text--uppercase fr-mt-6v fr-mb-4v">
             {formatActiviteDayDate(date)}
           </h3>
-          {activites.map((activite) =>
-            'status' in activite ? (
+          {items.map((item) =>
+            item.kind === 'rdv' ? (
               <RdvCard
-                key={activite.id}
-                activite={activite}
+                key={item.id}
+                rdv={item}
                 user={user}
                 displayBeneficiaire
               />

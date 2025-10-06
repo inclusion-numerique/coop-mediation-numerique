@@ -3,6 +3,7 @@ import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import { Prisma, Thematique } from '@prisma/client'
 import type { Sql } from '@prisma/client/runtime/library'
 import type { ActivitesFilters } from '../validation/ActivitesFilters'
+import type { RdvFilters } from '../validation/RdvFilters'
 
 export type ActivitesFiltersWhereConditions = {
   [key in keyof ActivitesFilters]: Sql | null
@@ -10,6 +11,20 @@ export type ActivitesFiltersWhereConditions = {
 
 export const getActiviteFiltersSqlFragment = (
   conditions: ActivitesFiltersWhereConditions,
+) => {
+  const parts = Object.values(conditions).filter(onlyDefinedAndNotNull)
+
+  if (parts.length === 0) return Prisma.raw('1=1')
+
+  return Prisma.join(parts, ' AND ')
+}
+
+export type RdvFiltersWhereConditions = {
+  [key in keyof RdvFilters]: Sql | null
+}
+
+export const getRdvFiltersSqlFragment = (
+  conditions: RdvFiltersWhereConditions,
 ) => {
   const parts = Object.values(conditions).filter(onlyDefinedAndNotNull)
 

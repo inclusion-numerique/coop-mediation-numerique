@@ -3,19 +3,13 @@ import { ActivitesListPageData } from '../getActivitesListPageData'
 
 export const getActivitesResultCountLabel = ({
   isFiltered,
-  searchResult: { activitesMatchesCount },
-  rdvsWithoutActivite,
-}: Pick<
-  ActivitesListPageData,
-  'isFiltered' | 'searchResult' | 'rdvsWithoutActivite'
->) => {
-  const totalCount = activitesMatchesCount + rdvsWithoutActivite.length
-
-  return totalCount === 0
+  searchResult: { matchesCount },
+}: Pick<ActivitesListPageData, 'isFiltered' | 'searchResult'>) => {
+  return matchesCount === 0
     ? isFiltered
       ? 'Aucune activité ne correspond à votre recherche'
       : 'Aucune activité enregistrée'
     : isFiltered
-      ? `${totalCount} activité${sPluriel(totalCount)} correspond${totalCount === 1 ? '' : 'ent'} à votre recherche`
-      : `${totalCount} activité${sPluriel(totalCount)} enregistrée${sPluriel(totalCount)}`
+      ? `${matchesCount} activité${sPluriel(matchesCount)} correspond${matchesCount === 1 ? '' : 'ent'} à votre recherche`
+      : `${matchesCount} activité${sPluriel(matchesCount)} enregistrée${sPluriel(matchesCount)}`
 }

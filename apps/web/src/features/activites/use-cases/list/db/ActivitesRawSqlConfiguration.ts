@@ -1,6 +1,7 @@
 import type { RawDataTableSqlConfiguration } from '@app/web/libs/data-table/RawDataTableSqlConfiguration'
 import { Prisma } from '@prisma/client'
-import { ActivitesDataTableConfiguration } from './ActivitesDataTableConfiguration'
+import type { ActivitesDataTableConfiguration } from './ActivitesDataTableConfiguration'
+import { SortDirection } from '@app/web/libs/data-table/SortLink'
 
 export const ActivitesRawSqlConfiguration = {
   date: {
@@ -18,3 +19,10 @@ export const ActivitesRawSqlConfiguration = {
     },
   },
 } satisfies RawDataTableSqlConfiguration<ActivitesDataTableConfiguration>
+
+export const RdvRawSqlConfiguration = {
+  date: {
+    rawOrderBySql: (direction: SortDirection) =>
+      Prisma.raw(`rdv.starts_at ${direction}, rdv.created_at ${direction}`),
+  },
+}

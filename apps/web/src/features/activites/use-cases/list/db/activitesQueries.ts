@@ -1,8 +1,7 @@
 import { prismaClient } from '@app/web/prismaClient'
-import type { Rdv } from '@app/web/rdv-service-public/Rdv'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import type { Prisma } from '@prisma/client'
+import { SearchActiviteAndRdvResultItem } from './searchActiviteAndRdvs'
 
 /**
  * Helpers for activite detail modals and activité lists that merge data from all types of Cras
@@ -48,6 +47,11 @@ export const activiteListSelect = {
           lastName: true,
         },
       },
+    },
+  },
+  rdv: {
+    select: {
+      id: true,
     },
   },
   date: true,
@@ -145,7 +149,6 @@ export const mediateurHasActivites = async ({
 export type ActiviteListItem = Awaited<
   ReturnType<typeof getAllActivites>
 >[number] & {
-  rdv?: Rdv // If the activite was created from a rdv, we will merge the RDV with the activite item before displaying it
   timezone: string
 }
 
@@ -156,7 +159,7 @@ export type ActivitesByDate = {
 
 export type ActivitesAndRdvsByDate = {
   date: string
-  activites: (ActiviteListItem | Rdv)[]
+  items: SearchActiviteAndRdvResultItem[]
 }
 
 export const groupActivitesByDate = ({
@@ -180,41 +183,4 @@ export const groupActivitesByDate = ({
     date,
     activites: groupedActivites,
   }))
-}
-
-export const groupActivitesAndRdvsByDate = ({
-  activites,
-  rdvs,
-}: {
-  activites: ActiviteListItem[]
-  rdvs: Rdv[]
-}): ActivitesAndRdvsByDate[] => {
-  // When activites and rdvs are grouped, we do not display the Rdvs that have been "transformed" into an activite
-  const activiteRdvIds = new Set(
-    activites
-      .map((activite) => activite.rdvServicePublicId)
-      .filter(isDefinedAndNotNull),
-  )
-  const filteredRdvs = rdvs.filter((rdv) => !activiteRdvIds.has(rdv.id))
-
-  const byDateRecord = [...filteredRdvs, ...activites].reduce<
-    Record<string, (ActiviteListItem | Rdv)[]>
-  >((accumulator, activity) => {
-    const date = dateAsIsoDay(activity.date)
-    if (!accumulator[date]) {
-      accumulator[date] = []
-    }
-    accumulator[date].push(activity)
-    return accumulator
-  }, {})
-
-  return (
-    Object.entries(byDateRecord)
-      .map(([date, groupedActivites]) => ({
-        date,
-        activites: groupedActivites,
-      }))
-      // sort by date desc
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-  )
 }
