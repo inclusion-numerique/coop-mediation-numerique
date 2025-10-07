@@ -41,9 +41,8 @@ export const executeSetServciesToSharedLieux = async (
 
   const privateLieux = await prisma.structure.findMany({
     where: {
-      // todo: set it to AND and set visiblePourCartographieNationale to true after the update to get back to the correct state
-      OR: [
-        { visiblePourCartographieNationale: false },
+      AND: [
+        { visiblePourCartographieNationale: true },
         {
           services: {
             equals: ['AcquisitionDeMaterielInformatiqueAPrixSolidaire'],
@@ -61,8 +60,8 @@ export const executeSetServciesToSharedLieux = async (
     await prisma.structure.update({
       where: { id: lieu.id },
       data: {
-        services: ['AcquisitionDeMaterielInformatiqueAPrixSolidaire'], // todo: remove this temporary service
-        visiblePourCartographieNationale: true, // todo: set this to false
+        services: [],
+        visiblePourCartographieNationale: false,
       },
     })
   }
