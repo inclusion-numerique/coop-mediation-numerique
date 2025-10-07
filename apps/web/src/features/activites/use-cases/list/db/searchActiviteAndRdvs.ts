@@ -155,6 +155,9 @@ export const searchActiviteAndRdvs = async (
               startsAt: true,
               endsAt: true,
               name: true,
+              maxParticipantsCount: true,
+              organisationId: true,
+              urlForAgents: true,
               motif: {
                 select: {
                   name: true,

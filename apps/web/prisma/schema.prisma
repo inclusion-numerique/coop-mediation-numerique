@@ -1307,6 +1307,7 @@ model RdvOrganisation {
   userProfiles     RdvUserProfile[]
   webhookEndpoints RdvWebhookEndpoint[]
   accounts         RdvAccountOrganisation[]
+  motifs RdvMotif[]
 
   syncedAt DateTime @updatedAt @map("synced_at")
 
@@ -1416,6 +1417,23 @@ model RdvLieu {
   @@map("rdv_lieux")
 }
 
+model RdvMotif {
+
+  id             Int    @id
+  collectif      Boolean
+  name           String
+  organisationId Int    @map("organisation_id")
+  followUp Boolean @map("follow_up")
+  instructionForRdv String? @map("instruction_for_rdv")
+  locationType  String? @map("location_type")
+  motifCategoryId Int? @map("motif_category_id")
+
+  organisation RdvOrganisation @relation(fields: [organisationId], references: [id])
+  rdvs         Rdv[]
+  
+  @@map("rdv_motifs")
+}
+
 model Rdv {
   id                   Int                 @id
   address              String
@@ -1434,6 +1452,7 @@ model Rdv {
   status               RdvAttendanceStatus
   usersCount           Int                 @map("users_count")
   uuid                 String              @unique
+  urlForAgents          String @map("url_for_agents")
 
   rdvAccountId Int @map("rdv_account_id")
   rdvAccount   RdvAccount @relation(fields: [rdvAccountId], references: [id])
@@ -1444,6 +1463,7 @@ model Rdv {
 
   organisation RdvOrganisation @relation(fields: [organisationId], references: [id])
   lieu         RdvLieu?         @relation(fields: [lieuId], references: [id])
+  motif        RdvMotif?        @relation(fields: [motifId], references: [id])
 
   activite       Activite?
   participations   RdvParticipation[]

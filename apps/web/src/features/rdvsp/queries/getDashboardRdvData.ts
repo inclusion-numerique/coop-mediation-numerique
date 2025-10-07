@@ -72,8 +72,6 @@ export const getDashboardRdvData = async ({
 }): Promise<DashboardRdvData> => {
   const { rdvAccount } = user
 
-  const oAuthCallUser = await getUserContextForOAuthApiCall({ user })
-
   const now = new Date()
 
   const [futurRdvsCount, nextRdv, passesCount, crasTodoCount] =

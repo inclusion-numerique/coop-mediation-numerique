@@ -1,15 +1,14 @@
-import { getHasCrasV1 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getHasCrasV1'
+import { getFirstAndLastRdvDate } from '@app/web/features/rdvsp/queries/getFirstAndLastRdvDate'
 import { isEmptySearchParams } from '@app/web/libs/data-table/isEmptySearchParams'
 import type { UserId, UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 import type { ActivitesDataTableSearchParams } from './components/ActivitesDataTable'
-import { getFirstAndLastActiviteDate } from './db/getFirstAndLastActiviteDate'
-import {
-  searchActiviteAndRdvs,
-  type SearchActiviteAndRdvsResult,
-} from './db/searchActiviteAndRdvs'
-import { getFirstAndLastRdvDate } from '@app/web/features/rdvsp/queries/getFirstAndLastRdvDate'
-import { getWidestActiviteDatesRange } from './db/getWidestActiviteDatesRange'
 import { groupActivitesAndRdvsByDate } from './components/groupActivitesAndRdvsByDate'
+import { getFirstAndLastActiviteDate } from './db/getFirstAndLastActiviteDate'
+import { getWidestActiviteDatesRange } from './db/getWidestActiviteDatesRange'
+import {
+  type SearchActiviteAndRdvsResult,
+  searchActiviteAndRdvs,
+} from './db/searchActiviteAndRdvs'
 
 const emptySearchResult = {
   items: [],

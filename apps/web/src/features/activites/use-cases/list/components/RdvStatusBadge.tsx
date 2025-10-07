@@ -1,8 +1,8 @@
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
-import type { Rdv } from '@app/web/rdv-service-public/Rdv'
 import type { RdvStatus } from '@app/web/rdv-service-public/rdvStatus'
 import type { AlertProps } from '@codegouvfr/react-dsfr/Alert'
 import Badge from '@codegouvfr/react-dsfr/Badge'
+import type { SearchRdvResultItem } from '../db/searchActiviteAndRdvs'
 
 const statusBadgeProps: {
   [key in RdvStatus]: {
@@ -41,7 +41,7 @@ const RdvStatusBadge = ({
   className,
   pluralize,
 }: {
-  rdv: Pick<Rdv, 'badgeStatus'>
+  rdv: Pick<SearchRdvResultItem, 'badgeStatus'>
   className?: string
   pluralize?: number
 }) => (

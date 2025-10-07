@@ -39,6 +39,7 @@ const findExistingRdvs = async ({ rdvIds }: { rdvIds: number[] }) => {
     include: {
       organisation: true,
       lieu: true,
+      motif: true,
       participations: {
         include: {
           user: true,
@@ -69,11 +70,18 @@ const normalizeExistingRdvData = (existingRdvs: ExistingRdv[]) => {
     .map((rdv) => rdv.lieu)
     .filter(isDefinedAndNotNull)
   const existingLieuxMap = new Map(existingLieux.map((lieu) => [lieu.id, lieu]))
+  const existingMotifs = existingRdvs
+    .map((rdv) => rdv.motif)
+    .filter(isDefinedAndNotNull)
+  const existingMotifsMap = new Map(
+    existingMotifs.map((motif) => [motif.id, motif]),
+  )
   return {
     existingRdvsMap,
     existingParticipationsMap,
     existingUsersMap,
     existingLieuxMap,
+    existingMotifsMap,
   }
 }
 
@@ -109,6 +117,30 @@ const lieuHasDiff = (
   )
 }
 
+const motifHasDiff = (
+  existing: {
+    id: number
+    collectif: boolean
+    name: string
+    organisationId: number
+    followUp: boolean
+    instructionForRdv: string | null
+    locationType: string | null
+    motifCategoryId: number | null
+  },
+  motif: OAuthApiRdv['motif'],
+) => {
+  return (
+    existing.collectif !== motif.collectif ||
+    existing.name !== motif.name ||
+    existing.organisationId !== motif.organisation_id ||
+    existing.followUp !== motif.follow_up ||
+    existing.instructionForRdv !== motif.instruction_for_rdv ||
+    existing.locationType !== motif.location_type ||
+    existing.motifCategoryId !== motif.motif_category.id
+  )
+}
+
 const lieuPrismaDataFromOAuthApiLieu = (
   lieu: Exclude<OAuthApiRdv['lieu'], null>,
 ) => {
@@ -120,6 +152,19 @@ const lieuPrismaDataFromOAuthApiLieu = (
     singleUse: lieu.single_use,
     organisationId: lieu.organisation_id,
   } satisfies Prisma.RdvLieuUncheckedCreateInput
+}
+
+const motifPrismaDataFromOAuthApiMotif = (motif: OAuthApiRdv['motif']) => {
+  return {
+    id: motif.id,
+    collectif: motif.collectif,
+    name: motif.name,
+    organisationId: motif.organisation_id,
+    followUp: motif.follow_up,
+    instructionForRdv: motif.instruction_for_rdv,
+    locationType: motif.location_type,
+    motifCategoryId: motif.motif_category?.id,
+  } satisfies Prisma.RdvMotifUncheckedCreateInput
 }
 
 const importLieux = async ({
@@ -175,6 +220,71 @@ const importLieux = async ({
     `imported ${lieux.length} lieux, ${noop} noop, ${updated} updated, ${created} created`,
   )
   return lieux.map((lieu) => lieu.id)
+}
+
+const importMotifs = async ({
+  existingMotifsMap,
+  chunkRdvs,
+  appendLog,
+  skipExistingMotifIds,
+}: {
+  existingMotifsMap: Map<
+    number,
+    {
+      id: number
+      collectif: boolean
+      name: string
+      organisationId: number
+      followUp: boolean
+      instructionForRdv: string | null
+      locationType: string | null
+      motifCategoryId: number | null
+    }
+  >
+  chunkRdvs: OAuthApiRdv[]
+  appendLog: AppendLog
+  skipExistingMotifIds: Set<number>
+}) => {
+  const motifsWithDuplicates = chunkRdvs.map((rdv) => rdv.motif)
+  const motifs = [
+    ...new Map(motifsWithDuplicates.map((motif) => [motif.id, motif])).values(),
+  ].filter((motif) => !skipExistingMotifIds.has(motif.id))
+  appendLog(`importing ${motifs.length} motifs`)
+  let noop = 0
+  let updated = 0
+  let created = 0
+
+  for (const motif of motifs) {
+    const existingMotif = existingMotifsMap.get(motif.id)
+    if (existingMotif) {
+      // no-op if no diff
+      if (!motifHasDiff(existingMotif, motif)) {
+        noop++
+        continue
+      }
+
+      // update if existing
+      await prismaClient.rdvMotif.update({
+        where: { id: motif.id },
+        data: motifPrismaDataFromOAuthApiMotif(motif),
+      })
+      updated++
+      continue
+    }
+
+    // create if not existing
+    const data = motifPrismaDataFromOAuthApiMotif(motif)
+    await prismaClient.rdvMotif.upsert({
+      where: { id: motif.id },
+      update: data,
+      create: data,
+    })
+    created++
+  }
+  appendLog(
+    `imported ${motifs.length} motifs, ${noop} noop, ${updated} updated, ${created} created`,
+  )
+  return motifs.map((motif) => motif.id)
 }
 
 const userPrismaDataFromOAuthApiUser = (
@@ -312,6 +422,7 @@ const rdvPrismaDataFromOAuthApiRdv = (
     createdById: rdv.created_by_id,
     lieuId: rdv.lieu?.id,
     organisationId: rdv.organisation.id,
+    urlForAgents: rdv.url_for_agents,
     rawData: rdv,
   } satisfies Prisma.RdvUncheckedCreateInput
 }
@@ -442,10 +553,11 @@ export const importRdvs = async ({
   // We will delete the rdvs that are imported in the database but no more in the API
   const importedRdvsToDelete = new Set(importedRdvIds)
 
-  // This will keep track of the ids of the users and lieux that are imported in the database
+  // This will keep track of the ids of the users, lieux, and motifs that are imported in the database
   // To avoid doing the same thing twice in different chunks
   const importedUserIds = new Set<number>()
   const importedLieuIds = new Set<number>()
+  const importedMotifIds = new Set<number>()
 
   const chunks = chunk(rdvs, batchSize)
 
@@ -455,12 +567,17 @@ export const importRdvs = async ({
     const existingRdvs = await findExistingRdvs({
       rdvIds: chunkRdvs.map((rdv) => rdv.id),
     })
-    const { existingRdvsMap, existingUsersMap, existingLieuxMap } =
-      normalizeExistingRdvData(existingRdvs)
+    const {
+      existingRdvsMap,
+      existingUsersMap,
+      existingLieuxMap,
+      existingMotifsMap,
+    } = normalizeExistingRdvData(existingRdvs)
     // First step is to synchonize dependent data
     // Organisations are already synchronized
     // 1 - users
     // 2 - lieux
+    // 3 - motifs
     // The Rdv+Participations can be imported in the last step
 
     const chunkImportedUserIds = await importUsers({
@@ -477,6 +594,13 @@ export const importRdvs = async ({
       skipExistingLieuIds: importedLieuIds,
     })
     for (const id of chunkImportedLieuIds) importedLieuIds.add(id)
+    const chunkImportedMotifIds = await importMotifs({
+      existingMotifsMap,
+      chunkRdvs,
+      appendLog,
+      skipExistingMotifIds: importedMotifIds,
+    })
+    for (const id of chunkImportedMotifIds) importedMotifIds.add(id)
     await Promise.all(
       chunkRdvs.map(async (rdv) => {
         importedRdvsToDelete.delete(rdv.id)

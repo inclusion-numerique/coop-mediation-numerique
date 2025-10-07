@@ -1,5 +1,5 @@
+import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
-import type { Rdv } from '@app/web/rdv-service-public/Rdv'
 import {
   dateAsDayInTimeZone,
   dateAsTimeInTimeZone,
@@ -8,10 +8,10 @@ import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { numberToString } from '@app/web/utils/formatNumber'
 import { UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 import Button from '@codegouvfr/react-dsfr/Button'
+import { SearchRdvResultItem } from '../db/searchActiviteAndRdvs'
 import ActiviteCardSpacer from './ActiviteCardSpacer'
 import ActiviteOrRdvListCard from './ActiviteOrRdvListCard'
 import RdvStatusBadge from './RdvStatusBadge'
-import { SearchRdvResultItem } from '../db/searchActiviteAndRdvs'
 
 const RdvCard = ({
   rdv,
@@ -33,7 +33,7 @@ const RdvCard = ({
     motif,
     maxParticipantsCount,
     participations,
-    url,
+    urlForAgents,
     status,
     badgeStatus,
   } = rdv
@@ -41,15 +41,20 @@ const RdvCard = ({
   const participants = participations.map((participation) => participation.user)
 
   const participantsNames = participants
-    .map((participant) => participant.displayName)
+    .map((participant) =>
+      getBeneficiaireDisplayName({
+        nom: participant.lastName,
+        prenom: participant.firstName,
+      }),
+    )
     .join(', ')
 
-  const startTime = dateAsTimeInTimeZone(date, timezone)
-  const endTime = dateAsTimeInTimeZone(endDate, timezone)
-  const canCompleteCra = status === 'seen' && date.getTime() < now
+  const startTime = dateAsTimeInTimeZone(startsAt, timezone)
+  const endTime = dateAsTimeInTimeZone(endsAt, timezone)
+  const canCompleteCra = status === 'seen' && startsAt.getTime() < now
 
   const newCraLink = canCompleteCra
-    ? `/coop/mes-activites/convertir-rdv-en-cra?rdv=${encodeSerializableState(activite)}`
+    ? `/coop/mes-activites/convertir-rdv-en-cra?rdv=${encodeSerializableState(rdv)}`
     : ''
 
   return (
@@ -62,7 +67,7 @@ const RdvCard = ({
           <ActiviteCardSpacer />
           {displayDate && (
             <>
-              le {dateAsDayInTimeZone(date, timezone)}
+              le {dateAsDayInTimeZone(startsAt, timezone)}
               <ActiviteCardSpacer />
             </>
           )}
@@ -74,9 +79,9 @@ const RdvCard = ({
       contentBottom={
         displayBeneficiaire ? (
           <>
-            {motif.name}{' '}
-            {motif.collectif && activite.name ? <>{activite.name} </> : null}
-            {motif.collectif ? (
+            {motif?.name}{' '}
+            {motif?.collectif && rdv.name ? <>{rdv.name} </> : null}
+            {motif?.collectif ? (
               maxParticipantsCount ? (
                 <>({numberToString(maxParticipantsCount)} places)</>
               ) : null
@@ -85,12 +90,12 @@ const RdvCard = ({
             )}
           </>
         ) : (
-          motif.name
+          motif?.name
         )
       }
       actions={
         <>
-          <RdvStatusBadge rdv={activite} className="fr-mr-2v" />
+          <RdvStatusBadge rdv={rdv} className="fr-mr-2v" />
           {canCompleteCra ? (
             <Button
               priority="tertiary no outline"
@@ -112,7 +117,7 @@ const RdvCard = ({
               className="fr-flex-shrink-0"
               title="Voir et modifier le RDV sur Rendez-vous Service Public"
               linkProps={{
-                href: url,
+                href: urlForAgents,
                 target: '_blank',
               }}
             >

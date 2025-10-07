@@ -1,6 +1,6 @@
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import { SearchActiviteAndRdvResultItem } from '../db/searchActiviteAndRdvs'
 import { ActivitesAndRdvsByDate } from '../db/activitesQueries'
+import { SearchActiviteAndRdvResultItem } from '../db/searchActiviteAndRdvs'
 
 export const groupActivitesAndRdvsByDate = ({
   items,
