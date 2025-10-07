@@ -12,6 +12,7 @@ import {
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { getServerUrl } from '@app/web/utils/baseUrl'
 import type { AppendLog } from './syncAllRdvData'
+import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 
 const webhookUrl = getServerUrl('/api/rdv-service-public/webhook', {
   absolutePath: true,
@@ -74,6 +75,11 @@ export const installWebhookForOrganisation = async ({
   }
 
   if (!coopEndpoint) {
+    if (webhookUrl.includes('localhost')) {
+      appendLog(`skipping webhook installation for local environment`)
+      return
+    }
+
     appendLog(
       `no existing coop endpoint found for organisation ${organisationId}, creating new one`,
     )
