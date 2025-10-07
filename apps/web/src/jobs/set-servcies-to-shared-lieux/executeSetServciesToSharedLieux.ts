@@ -39,86 +39,30 @@ export const executeSetServciesToSharedLieux = async (
     })
   }
 
-  const privateLieuxWithoutService = await prisma.structure.findMany({
+  const privateLieux = await prisma.structure.findMany({
     where: {
+      // todo: set it to AND and set visiblePourCartographieNationale to true after the update to get back to the correct state
       OR: [
         { visiblePourCartographieNationale: false },
         {
-          AND: [
-            {
-              services: {
-                equals: ['AcquisitionDeMaterielInformatiqueAPrixSolidaire'],
-              },
-            },
-            { autresFormationsLabels: { has: 'Lieu privé' } },
-          ],
+          services: {
+            equals: ['AcquisitionDeMaterielInformatiqueAPrixSolidaire'],
+          },
         },
       ],
     },
   })
 
   output(
-    `Found ${privateLieuxWithoutService.length} private lieux to remove default services`,
+    `Found ${privateLieux.length} private lieux to remove default services`,
   )
 
-  for (const lieu of privateLieuxWithoutService) {
+  for (const lieu of privateLieux) {
     await prisma.structure.update({
       where: { id: lieu.id },
       data: {
-        services: [],
-        autresFormationsLabels: [],
-        visiblePourCartographieNationale: false,
-      },
-    })
-  }
-
-  const lieuxWithWrongService = await prisma.structure.findMany({
-    where: {
-      visiblePourCartographieNationale: true,
-      services: {
-        has: 'AcquisitionDeMaterielInformatiqueAPrixSolidaire',
-      },
-      autresFormationsLabels: {
-        has: 'Lieu privé',
-      },
-    },
-  })
-
-  output(
-    `Found ${lieuxWithWrongService.length} lieux with extra services to clean`,
-  )
-
-  for (const lieu of lieuxWithWrongService) {
-    await prisma.structure.update({
-      where: { id: lieu.id },
-      data: {
-        services: lieu.services.filter(
-          (s) => s !== 'AcquisitionDeMaterielInformatiqueAPrixSolidaire',
-        ),
-        autresFormationsLabels: lieu.autresFormationsLabels.filter(
-          (l) => l !== 'Lieu privé',
-        ),
-      },
-    })
-  }
-
-  const lieuxAvecLieuPrive = await prisma.structure.findMany({
-    where: {
-      autresFormationsLabels: {
-        has: 'Lieu privé',
-      },
-    },
-  })
-
-  output(`Found ${lieuxAvecLieuPrive.length} lieux with "Lieu privé"`)
-
-  for (const lieu of lieuxAvecLieuPrive) {
-    await prisma.structure.update({
-      where: { id: lieu.id },
-      data: {
-        autresFormationsLabels: lieu.autresFormationsLabels.filter(
-          (label) => label !== 'Lieu privé',
-        ),
+        services: ['AcquisitionDeMaterielInformatiqueAPrixSolidaire'], // todo: remove this temporary service
+        visiblePourCartographieNationale: true, // todo: set this to false
       },
     })
   }
