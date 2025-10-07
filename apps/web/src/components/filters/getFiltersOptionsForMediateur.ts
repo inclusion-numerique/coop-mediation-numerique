@@ -1,4 +1,6 @@
+import { getHasCrasV1 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getHasCrasV1'
 import { getFirstAndLastActiviteDate } from '@app/web/features/activites/use-cases/list/db/getFirstAndLastActiviteDate'
+import { activiteSourceOptions } from '@app/web/features/activites/use-cases/source/activiteSource'
 import { getMediateursTags } from '@app/web/features/activites/use-cases/tags/db/getMediateursTags'
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaires/db/getInitialBeneficiairesOptionsForSearch'
 import { getMediateurCommunesAndDepartementsOptions } from '@app/web/features/lieux-activite/getMediateurCommunesOptions'
@@ -28,6 +30,7 @@ export const getFiltersOptionsForMediateur = async ({
     initialMediateursOptions,
     lieuxActiviteOptions,
     activiteDates,
+    hasCrasV1,
   ] = await Promise.all([
     getMediateurCommunesAndDepartementsOptions({ mediateurIds }),
     getMediateursTags({
@@ -45,6 +48,7 @@ export const getFiltersOptionsForMediateur = async ({
     }),
     getMediateursLieuxActiviteOptions({ mediateurIds }),
     getFirstAndLastActiviteDate({ mediateurIds }),
+    getHasCrasV1({ mediateurIds }),
   ])
 
   return {
@@ -55,5 +59,7 @@ export const getFiltersOptionsForMediateur = async ({
     initialMediateursOptions,
     lieuxActiviteOptions,
     activiteDates,
+    hasCrasV1,
+    activiteSourceOptions: hasCrasV1 ? activiteSourceOptions : [],
   }
 }

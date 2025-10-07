@@ -20,6 +20,9 @@ const onlyFor =
 const CoopSideMenu = ({ user }: { user: SessionUser }) => {
   const pathname = usePathname()
 
+  const firstDayOfThisYear = `${new Date().getFullYear()}-01-01`
+  const today = new Date().toISOString().split('T')[0]
+
   const items: (SideMenuProps.Item & { mediateurOnly?: true })[] = [
     {
       text: (
@@ -44,7 +47,9 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
           {statistiquesPageTitle(user)}
         </>
       ),
-      linkProps: { href: '/coop/mes-statistiques' },
+      linkProps: {
+        href: `/coop/mes-statistiques?du=${firstDayOfThisYear}&au=${today}`,
+      },
       isActive: pathname?.startsWith('/coop/mes-statistiques'),
     },
     {

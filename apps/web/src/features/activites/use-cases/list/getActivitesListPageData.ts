@@ -1,3 +1,4 @@
+import { getHasCrasV1 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getHasCrasV1'
 import { isEmptySearchParams } from '@app/web/libs/data-table/isEmptySearchParams'
 import { getRdvs } from '@app/web/rdv-service-public/getRdvs'
 import {

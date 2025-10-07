@@ -40,6 +40,8 @@ const MesActivitesPage = async ({
     lieuxActiviteOptions,
     tagsOptions,
     activiteDates,
+    activiteSourceOptions,
+    hasCrasV1,
   } = await getFiltersOptionsForMediateur({
     user,
     includeBeneficiaireIds: searchParams.beneficiaires,
@@ -61,6 +63,8 @@ const MesActivitesPage = async ({
         tagsOptions={tagsOptions}
         activiteDates={activiteDates}
         enableRdvsFilter={hasRdvIntegration}
+        hasCrasV1={hasCrasV1.hasCrasV1}
+        activiteSourceOptions={activiteSourceOptions}
       />
       <MesActivitesListePage data={data} />
     </MesActivitesListeLayout>

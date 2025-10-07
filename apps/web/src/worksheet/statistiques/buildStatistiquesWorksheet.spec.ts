@@ -457,7 +457,7 @@ const expectQuantifiedShareRows = (expectedRows: [string, number][]) => {
 const mainTitle = { start: 1, length: 1 }
 const info = { start: mainTitle.start + mainTitle.length, length: 6 }
 const filterTitle = { start: info.start + info.length, length: 1 }
-const filters = { start: filterTitle.start + filterTitle.length, length: 11 }
+const filters = { start: filterTitle.start + filterTitle.length, length: 12 }
 const generalesTitle = { start: filters.start + filters.length, length: 1 }
 const generales = {
   start: generalesTitle.start + generalesTitle.length,
@@ -620,6 +620,7 @@ describe('build statistiques worksheet for médiateur', () => {
 
     expect(rows).toEqual([
       [undefined, 'Période', '29.01.2025 - 11.02.2025'],
+      [undefined, 'Source', '-'],
       [
         undefined,
         'Lieux d’accompagnement',

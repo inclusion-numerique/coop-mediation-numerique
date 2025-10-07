@@ -50,6 +50,10 @@ export const StatistiquesBeneficiairesPrint = ({
     0,
   )
 
+  const statutsSocialProgress = beneficiaires.statutsSocial.map(toProgress)
+  const trancheAgesProgress = beneficiaires.trancheAges.map(toProgress)
+  const beneficiairesGenres = beneficiaires.genres
+
   return (
     <>
       <h2 className="fr-h3">Statistiques sur vos bénéficiaires</h2>
@@ -70,7 +74,7 @@ export const StatistiquesBeneficiairesPrint = ({
         />
         <QuantifiedShareLegend
           className="fr-pl-3w"
-          quantifiedShares={beneficiaires.genres}
+          quantifiedShares={beneficiairesGenres}
           colors={genresColors}
         />
       </div>
@@ -88,7 +92,7 @@ export const StatistiquesBeneficiairesPrint = ({
         <div className="fr-mr-3w fr-mb-2w">
           <ProgressBar
             size="large"
-            progress={beneficiaires.trancheAges.map(toProgress)}
+            progress={trancheAgesProgress}
             colors={tranchesAgeColors}
             tooltopKey="tranches-age"
           />
@@ -110,7 +114,7 @@ export const StatistiquesBeneficiairesPrint = ({
       <div className="fr-mr-3w fr-mb-2w">
         <ProgressBar
           size="large"
-          progress={beneficiaires.statutsSocial.map(toProgress)}
+          progress={statutsSocialProgress}
           colors={statusColors}
           tooltopKey="status-beneficiaires"
         />

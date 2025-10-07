@@ -29,6 +29,7 @@ const Filters = ({
   minDate,
   className,
   enableRdvsFilter = false,
+  hasCrasV1,
 }: {
   defaultFilters: ActivitesFilters
   initialMediateursOptions: MediateurOption[]
@@ -43,6 +44,7 @@ const Filters = ({
   minDate?: Date
   className?: string
   enableRdvsFilter?: boolean
+  hasCrasV1: boolean
 }) => (
   <div
     className={classNames(
@@ -106,12 +108,14 @@ const Filters = ({
     {!isCoordinateur && (
       <MoreMediateurFilters
         tagsOptions={tagsOptions}
+        hasCrasV1={hasCrasV1}
         defaultValues={{
           thematiqueNonAdministratives:
             defaultFilters.thematiqueNonAdministratives ?? [],
           thematiqueAdministratives:
             defaultFilters.thematiqueAdministratives ?? [],
           tags: defaultFilters.tags ?? [],
+          source: defaultFilters.source ?? '',
         }}
       />
     )}
@@ -126,6 +130,7 @@ const Filters = ({
           thematiqueAdministratives:
             defaultFilters.thematiqueAdministratives ?? [],
           tags: defaultFilters.tags ?? [],
+          source: defaultFilters.source ?? '',
         }}
       />
     )}

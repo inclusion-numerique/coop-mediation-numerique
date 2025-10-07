@@ -79,6 +79,7 @@ export const getActivitesFiltersWhereConditions = ({
   thematiqueAdministratives,
   tags,
   rdv,
+  source,
 }: ActivitesFilters): {
   du: any
   au: any
@@ -92,6 +93,7 @@ export const getActivitesFiltersWhereConditions = ({
   thematiques: any
   tags: any
   rdv: any
+  source: any
 } => {
   const thematiques = (
     [
@@ -181,5 +183,11 @@ export const getActivitesFiltersWhereConditions = ({
         )`,
           )
         : null,
+    source:
+      source === 'v1'
+        ? Prisma.raw(`act.v1_cra_id IS NOT NULL`)
+        : source === 'v2'
+          ? Prisma.raw(`act.v1_cra_id IS NULL`)
+          : null,
   }
 }

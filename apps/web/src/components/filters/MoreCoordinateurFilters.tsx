@@ -23,6 +23,7 @@ import {
   updateTypesParams,
 } from '@app/web/components/filters/more-filters/TypesField'
 import type { TypeActiviteSlug } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
+import { ActiviteSource } from '@app/web/features/activites/use-cases/source/activiteSource'
 import { TagScope } from '@app/web/features/activites/use-cases/tags/tagScope'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
@@ -32,6 +33,7 @@ import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
+import { SourcesField, updateSourcesParams } from './more-filters/SourceField'
 
 const MoreFiltersModal = createModal({
   id: 'more-filters-modal',
@@ -49,6 +51,7 @@ export const MoreCoordinateurFilters = ({
     thematiqueNonAdministratives: string[]
     thematiqueAdministratives: string[]
     tags: string[]
+    source: ActiviteSource | undefined
   }
 }) => {
   const router = useRouter()
@@ -59,7 +62,8 @@ export const MoreCoordinateurFilters = ({
     roleCount(defaultValues) +
     defaultValues.tags.length +
     defaultValues.thematiqueNonAdministratives.length +
-    defaultValues.thematiqueAdministratives.length
+    defaultValues.thematiqueAdministratives.length +
+    (defaultValues.source ? 1 : 0)
 
   const dismissModal = () => {
     router.replace(`?${params}`, { scroll: false })
@@ -78,6 +82,7 @@ export const MoreCoordinateurFilters = ({
       updateThematiqueAdministrativesParams(params)(data)
       updateThematiqueNonAdministrativesParams(params)(data)
       updateTagsParams(params)(data)
+      updateSourcesParams(params)(data)
       dismissModal()
     },
   })
@@ -88,6 +93,7 @@ export const MoreCoordinateurFilters = ({
     params.delete('thematiqueNonAdministratives')
     params.delete('thematiqueAdministratives')
     params.delete('tags')
+    params.delete('source')
     dismissModal()
   }
 
@@ -118,6 +124,8 @@ export const MoreCoordinateurFilters = ({
           <RolesField form={form as any} isPending={false} />
           <hr className="fr-separator-8v" />
           <TypesField form={form as any} isPending={false} />
+          <hr className="fr-separator-8v" />
+          <SourcesField form={form as any} isPending={false} />
           <hr className="fr-separator-8v" />
           <h2 className="fr-h6">Filtrer par thématique et/ou tags&nbsp;:</h2>
           <div className="fr-accordions-group">

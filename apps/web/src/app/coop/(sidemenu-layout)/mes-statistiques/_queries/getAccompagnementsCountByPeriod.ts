@@ -12,6 +12,7 @@ import {
 import { UserProfile } from '@app/web/utils/user'
 import { Prisma } from '@prisma/client'
 import { LabelAndCount } from '../quantifiedShare'
+import { activitesSourceWhereCondition } from './activitesSourceWhereCondition'
 
 const EMPTY_ACCOMPAGNEMENTS_COUNT = monthShortLabels.map(
   (label: MonthShortLabel) => ({ label, count: 0 }),
@@ -54,6 +55,7 @@ export const getAccompagnementsCountByMonth = async ({
             LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
             LEFT JOIN structures str ON str.id = act.structure_id
           WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
+            AND ${activitesSourceWhereCondition(activitesFilters.source)}
             AND act.suppression IS NULL
             AND ${getActiviteFiltersSqlFragment(
               getActivitesFiltersWhereConditions(activitesFilters),
@@ -120,6 +122,7 @@ export const getAccompagnementsCountByDay = async ({
                 LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
                 LEFT JOIN structures str ON str.id = act.structure_id
         WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
+          AND ${activitesSourceWhereCondition(activitesFilters.source)}
           AND act.suppression IS NULL
           AND ${getActiviteFiltersSqlFragment(
             getActivitesFiltersWhereConditions(activitesFilters),
