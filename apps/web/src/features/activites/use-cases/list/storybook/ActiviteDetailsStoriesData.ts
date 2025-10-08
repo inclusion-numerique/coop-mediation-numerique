@@ -1,7 +1,8 @@
+import { RdvListItem } from '@app/web/features/rdvsp/administration/db/rdvQueries'
 import type { Rdv } from '@app/web/rdv-service-public/Rdv'
 import { createBeneficiairesForParticipantsAnonymes } from '../../../../../beneficiaire/createBeneficiairesForParticipantsAnonymes'
 import { participantsAnonymesDefault } from '../../cra/collectif/validation/participantsAnonymes'
-import { ActiviteListItem } from '../db/activitesQueries'
+import { ActiviteListItemWithTimezone } from '../db/activitesQueries'
 
 const yesterday = new Date(Date.now() - 1000 * 60 * 60 * 24)
 
@@ -69,7 +70,8 @@ export const activiteIndividuelleInfosMinimum = {
     },
     conseillerNumerique: null,
   },
-} satisfies ActiviteListItem
+  rdv: null,
+} satisfies ActiviteListItemWithTimezone
 
 export const activiteIndividuelleBeneficiaireSuivi = {
   timezone: 'Europe/Paris',
@@ -124,7 +126,8 @@ export const activiteIndividuelleBeneficiaireSuivi = {
     },
     conseillerNumerique: null,
   },
-} satisfies ActiviteListItem
+  rdv: null,
+} satisfies ActiviteListItemWithTimezone
 
 // Refactored "Individuel" type activity with an anonymous beneficiary
 export const activiteIndividuelleBeneficiaireAnonyme = {
@@ -187,7 +190,8 @@ export const activiteIndividuelleBeneficiaireAnonyme = {
     },
     conseillerNumerique: null,
   },
-} satisfies ActiviteListItem
+  rdv: null,
+} satisfies ActiviteListItemWithTimezone
 
 // Refactored "Collectif" type activity with minimal information
 export const activiteCollectifInfosRepliees = {
@@ -261,7 +265,8 @@ export const activiteCollectifInfosRepliees = {
     },
     conseillerNumerique: null,
   },
-} satisfies ActiviteListItem
+  rdv: null,
+} satisfies ActiviteListItemWithTimezone
 
 // Refactored "Collectif" type activity with expanded information
 export const activiteCollectifInfosDepliees = {
@@ -290,7 +295,10 @@ export const activiteCollectifInfosDepliees = {
         statutSocialNonCommunique: 40,
       },
     }).map(
-      (beneficiaire, index): ActiviteListItem['accompagnements'][number] => ({
+      (
+        beneficiaire,
+        index,
+      ): ActiviteListItemWithTimezone['accompagnements'][number] => ({
         premierAccompagnement: false,
         beneficiaire: {
           ...beneficiaire,
@@ -368,69 +376,52 @@ export const activiteCollectifInfosDepliees = {
     },
     conseillerNumerique: null,
   },
-} satisfies ActiviteListItem
+  rdv: null,
+} satisfies ActiviteListItemWithTimezone
 
 const randomIntegerId = () => Math.floor(Math.random() * 1000000)
 
 export const givenRdv = ({
-  durationInMinutes,
+  durationInMin,
   id,
   status,
-  date,
+  startsAt,
 }: Partial<
-  Pick<Rdv, 'id' | 'durationInMinutes' | 'status' | 'date'>
->): Rdv => ({
+  Pick<RdvListItem, 'id' | 'durationInMin' | 'status' | 'startsAt'>
+>): RdvListItem => ({
   id: id ?? randomIntegerId(),
-  createdBy: 'todo',
-  url: 'https://demo.rdv.anct.gouv.fr/admin/organisations/856/rdvs/11123',
+  urlForAgents:
+    'https://demo.rdv.anct.gouv.fr/admin/organisations/856/rdvs/11123',
   motif: {
-    id: randomIntegerId(),
     name: 'Accompagnement individuel',
     collectif: false,
   },
   name: null,
   maxParticipantsCount: null,
-  date: date ?? new Date(Date.now() - 1000 * 60 * 60 * 24),
-  endDate: new Date(
-    (date ?? new Date(Date.now() - 1000 * 60 * 60 * 24)).getTime() +
-      (durationInMinutes ?? 120) * 60 * 1000,
+  startsAt: startsAt ?? new Date(Date.now() - 1000 * 60 * 60 * 24),
+  endsAt: new Date(
+    (startsAt ?? new Date(Date.now() - 1000 * 60 * 60 * 24)).getTime() +
+      (durationInMin ?? 120) * 60 * 1000,
   ),
-  durationInMinutes: durationInMinutes ?? 120,
+  durationInMin: durationInMin ?? 120,
   status: status ?? 'unknown',
   badgeStatus: status ?? 'unknown',
-  organisation: {
-    id: 1,
-    name: 'Organisation 1',
-  },
-  agents: [
-    {
-      id: randomIntegerId(),
-      firstName: 'John',
-      lastName: 'Médiateur',
-      displayName: 'John Médiateur',
-      email: 'john.mediateur@example.com',
-    },
-  ],
+  organisationId: 1,
   participations: [
     {
-      id: randomIntegerId(),
-      status: status ?? 'unknown',
-      sendReminderNotification: false,
-      sendLifecycleNotifications: false,
       user: {
         id: randomIntegerId(),
         firstName: 'Carlos',
         lastName: 'Bénéficiaire',
-        displayName: 'Carlos Bénéficiaire',
         email: 'carlos.beneficiaire@example.com',
-        beneficiaire: null,
+        beneficiaire: [],
       },
     },
   ],
 })
 
 const rdvDansLeFutur = givenRdv({
-  date: new Date(Date.now() + 1000 * 60 * 60 * 24),
+  startsAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
 })
 
 const rdvPasse = givenRdv({})

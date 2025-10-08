@@ -12,16 +12,22 @@ export type UserDisplayName = Pick<
 export type UserId = Pick<SessionUser, 'id'>
 
 export type UserRdvAccount = Pick<SessionUser, 'rdvAccount'>
+export type UserWithExistingRdvAccount = UserRdvAccount & {
+  rdvAccount: Exclude<UserRdvAccount['rdvAccount'], null>
+}
+
+export type UserMediateur = Pick<SessionUser, 'mediateur'>
+export type UserWithExistingMediateur = UserMediateur & {
+  mediateur: Exclude<UserMediateur['mediateur'], null>
+}
+
+export type UserCoordinateur = Pick<SessionUser, 'coordinateur'>
 
 export type UserTimezone = Pick<SessionUser, 'timezone'>
 
 export type UserFeatureFlags = Pick<SessionUser, 'featureFlags'>
 
 export type UserWithRole = Pick<SessionUser, 'role'>
-
-export type UserMediateur = Pick<SessionUser, 'mediateur'>
-
-export type UserCoordinateur = Pick<SessionUser, 'coordinateur'>
 
 export const getUserDisplayName = (user: UserDisplayName): string => {
   const name = `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim()

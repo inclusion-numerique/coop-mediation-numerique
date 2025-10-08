@@ -65,6 +65,7 @@ export type SessionUser = Pick<
         created: string | null
         updated: string | null
         lastSynced: string | null
+        syncFrom: string | null
         organisations: Pick<RdvOrganisation, 'id' | 'name' | 'email'>[]
       })
     | null

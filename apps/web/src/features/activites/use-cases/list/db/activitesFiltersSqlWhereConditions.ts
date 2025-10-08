@@ -1,8 +1,12 @@
 import { thematiqueApiValues } from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import { Prisma, Thematique } from '@prisma/client'
 import type { Sql } from '@prisma/client/runtime/library'
-import type { ActivitesFilters } from '../validation/ActivitesFilters'
+import type {
+  ActivitesFilters,
+  RdvStatusFilterValue,
+} from '../validation/ActivitesFilters'
 
 export type ActivitesFiltersWhereConditions = {
   [key in keyof ActivitesFilters]: Sql | null
@@ -10,6 +14,20 @@ export type ActivitesFiltersWhereConditions = {
 
 export const getActiviteFiltersSqlFragment = (
   conditions: ActivitesFiltersWhereConditions,
+) => {
+  const parts = Object.values(conditions).filter(onlyDefinedAndNotNull)
+
+  if (parts.length === 0) return Prisma.raw('1=1')
+
+  return Prisma.join(parts, ' AND ')
+}
+
+export type RdvFiltersWhereConditions = {
+  [key in keyof ActivitesFilters]: Sql | null
+}
+
+export const getRdvFiltersSqlFragment = (
+  conditions: RdvFiltersWhereConditions,
 ) => {
   const parts = Object.values(conditions).filter(onlyDefinedAndNotNull)
 
@@ -103,8 +121,8 @@ export const getActivitesFiltersWhereConditions = ({
   ).map((thematique: Thematique) => thematiqueApiValues[thematique])
 
   return {
-    du: du ? Prisma.raw(`act.date >= '${du}'::timestamp`) : null,
-    au: au ? Prisma.raw(`act.date <= '${au}'::timestamp`) : null,
+    du: du ? Prisma.raw(`act.date::date >= '${du}'::date`) : null,
+    au: au ? Prisma.raw(`act.date::date <= '${au}'::date`) : null,
     types:
       types && types.length > 0
         ? Prisma.raw(
@@ -189,5 +207,50 @@ export const getActivitesFiltersWhereConditions = ({
         : source === 'v2'
           ? Prisma.raw(`act.v1_cra_id IS NULL`)
           : null,
+  }
+}
+
+const buildStatusClause = (statuses: RdvStatusFilterValue[]): Sql | null => {
+  if (statuses.includes('tous')) {
+    // include all values
+    return null
+  }
+
+  const conditions: Sql[] = [
+    statuses.includes('past')
+      ? Prisma.raw(`(rdv.status = 'unknown' AND rdv.starts_at < NOW())`)
+      : null,
+    statuses.includes('seen') ? Prisma.raw(`rdv.status = 'seen'`) : null,
+    statuses.includes('noshow') ? Prisma.raw(`rdv.status = 'noshow'`) : null,
+    statuses.includes('excused') ? Prisma.raw(`rdv.status = 'excused'`) : null,
+    statuses.includes('revoked') ? Prisma.raw(`rdv.status = 'revoked'`) : null,
+    statuses.includes('unknown')
+      ? Prisma.raw(`(rdv.status = 'unknown' AND rdv.starts_at >= NOW())`)
+      : null,
+  ].filter(isDefinedAndNotNull)
+
+  return Prisma.join(conditions, ' OR ')
+}
+
+export const getRdvFiltersWhereConditions = ({
+  du,
+  au,
+  rdvs,
+  beneficiaires,
+}: Pick<ActivitesFilters, 'du' | 'au' | 'rdvs' | 'beneficiaires'>): {
+  du: any
+  au: any
+  rdvs: any
+  beneficiaires: any
+} => {
+  const statusClause = rdvs && rdvs.length > 0 ? buildStatusClause(rdvs) : null
+
+  return {
+    du: du ? Prisma.raw(`rdv.starts_at::date >= '${du}'::date`) : null,
+    au: au ? Prisma.raw(`rdv.starts_at::date <= '${au}'::date`) : null,
+    rdvs: statusClause,
+    beneficiaires: beneficiaires
+      ? null // TODO implement with RdvAccompagnements and beneficiaires mappings
+      : null,
   }
 }

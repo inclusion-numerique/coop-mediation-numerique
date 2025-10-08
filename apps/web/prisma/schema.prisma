@@ -959,6 +959,9 @@ model Beneficiaire {
   // Identifiant chez RDV Service Public si le bénéficiaire est synchronisé avec RDV Service Public
   rdvServicePublicId Int? @map("rdv_service_public_id")
 
+  // Reference vers l'usager RDV Service Public synchronisé pour ce bénéficiaire
+  rdvUserId Int? @map("rdv_user_id")
+
   // Relation avec le médiateur à qui est "rattaché" le bénéficiaire
   // Si le beneficiaire est "partagé", cela gardera la trace du médiateur source
   mediateurId String    @map("mediateur_id") @db.Uuid
@@ -1002,9 +1005,11 @@ model Beneficiaire {
   // pre computed counts to avoid joins and counts on big tables
   accompagnementsCount Int              @default(0) @map("accompagnements_count")
   accompagnements      Accompagnement[]
+  rdvUser              RdvUser?         @relation(fields: [rdvUserId], references: [id])
 
   @@index([anonyme])
   @@index([mediateurId])
+  @@index([rdvUserId])
   @@map("beneficiaires")
 }
 
@@ -1032,6 +1037,10 @@ model Activite {
   duree                Int              @map("duree") // Durée en minutes
   notes                String?
   rdvServicePublicId   Int?             @map("rdv_service_public_id") // id externe du RDV Service Public qui est à l'origine de cette Activité
+
+  // Reference vers le RDV synchronisé lorsque l'activité provient de RDV Service Public
+  rdvId Int? @map("rdv_id") @unique
+  rdv   Rdv?  @relation(fields: [rdvId], references: [id])
 
   // Structure employeuse
   // - cette information aurait pu etre déduite des liens entre mediateur, emploi, et activité
@@ -1088,6 +1097,7 @@ model Activite {
   @@index([structureId])
   @@index([mediateurId])
   @@index([structureEmployeuseId])
+  @@index([rdvId])
   // descending sort on this cursor for api query performances
   @@index([creation(sort: Desc), id(sort: Desc)])
   @@index([modification(sort: Desc), id(sort: Desc)])
@@ -1242,8 +1252,13 @@ model RdvAccount {
   userId String @unique @map("user_id") @db.Uuid
   user   User   @relation(fields: [userId], references: [id])
 
-  organisations RdvOrganisation[] // Be careful as this may be out of sync with the data from oauth. Used as a cache and should be refreshed when needed.
+  // Timestamp from which we import RDVs for this account
+  syncFrom DateTime? @map("sync_from")
 
+  organisations RdvAccountOrganisation[] // Be careful as this may be out of sync with the data from oauth. Used as a cache and should be refreshed when needed.
+  rdvs Rdv[]
+  syncLogs RdvSyncLog[]
+  
   accessToken  String?   @map("access_token") // Empty if account created but oauth not linked or invalidated
   refreshToken String?   @map("refresh_token")
   expiresAt    DateTime? @map("expires_at")
@@ -1256,7 +1271,25 @@ model RdvAccount {
   error      String? // If on a sync operation, there was a invalid token error or external RDV API error (unreachable, etc...)
 
   @@index([userId])
+  @@index([lastSynced])
   @@map("rdv_accounts")
+}
+
+model RdvSyncLog {
+  id String @id @default(uuid()) @db.Uuid
+
+  rdvAccountId Int @map("rdv_account_id")
+  rdvAccount   RdvAccount @relation(fields: [rdvAccountId], references: [id])
+
+  started DateTime
+  ended DateTime?
+
+  error String?
+  log String?
+  output Json?
+
+  @@index([rdvAccountId])
+  @@map("rdv_sync_logs")
 }
 
 // Organisations owned by RDV Service Public
@@ -1264,15 +1297,225 @@ model RdvAccount {
 model RdvOrganisation {
   id Int @id
 
-  accountId Int        @map("account_id")
-  account   RdvAccount @relation(fields: [accountId], references: [id])
-
   name        String
   email       String?
   phoneNumber String? @map("phone_number")
+  verticale   String?
 
-  @@index([accountId])
+  lieux            RdvLieu[]
+  rdvs             Rdv[]
+  userProfiles     RdvUserProfile[]
+  webhookEndpoints RdvWebhookEndpoint[]
+  accounts         RdvAccountOrganisation[]
+  motifs RdvMotif[]
+
+  syncedAt DateTime @updatedAt @map("synced_at")
+
   @@map("rdv_organisations")
+}
+
+model RdvAccountOrganisation {
+  accountId      Int  @map("account_id")
+  organisationId Int  @map("organisation_id")
+  account        RdvAccount       @relation(fields: [accountId], references: [id])
+  organisation   RdvOrganisation  @relation(fields: [organisationId], references: [id])
+
+  syncedAt DateTime @default(now()) @map("synced_at")
+
+  @@id([accountId, organisationId])
+  @@index([organisationId])
+  @@map("rdv_accounts_organisations")
+}
+
+enum RdvAttendanceStatus {
+  unknown @map("unknown")
+  seen    @map("seen")
+  excused @map("excused")
+  revoked @map("revoked")
+  noshow  @map("noshow")
+
+  @@map("rdv_attendance_status")
+}
+
+enum RdvCreatorKind {
+  agent        @map("agent")
+  user         @map("user")
+  file_attente  @map("file_attente")
+  prescripteur @map("prescripteur")
+
+  @@map("rdv_creator_kind")
+}
+
+enum RdvCreatorType {
+  agent        @map("Agent")
+  user         @map("User")
+  file_attente  @map("FileAttente")
+  prescripteur @map("Prescripteur")
+
+  @@map("rdv_creator_type")
+}
+model RdvUser {
+  id                   Int                @id
+  address              String?
+  addressDetails       String?            @map("address_details")
+  affiliationNumber    String?            @map("affiliation_number")
+  birthDate            DateTime?          @map("birth_date") @db.Date
+  birthName            String?            @map("birth_name")
+  caisseAffiliation    String? @map("caisse_affiliation")
+  createdAt            DateTime?          @map("created_at")
+  email                String?
+  firstName            String             @map("first_name")
+  invitationAcceptedAt DateTime?          @map("invitation_accepted_at")
+  invitationCreatedAt  DateTime?          @map("invitation_created_at")
+  lastName             String             @map("last_name")
+  notifyByEmail        Boolean            @map("notify_by_email")
+  notifyBySms          Boolean            @map("notify_by_sms")
+  phoneNumber          String?            @map("phone_number")
+  phoneNumberFormatted String?            @map("phone_number_formatted")
+  responsibleId        Int?               @map("responsible_id")
+
+  responsible RdvUser?  @relation("RdvUserResponsible", fields: [responsibleId], references: [id])
+  dependents  RdvUser[] @relation("RdvUserResponsible")
+
+  beneficiaire        Beneficiaire[]
+  userProfiles        RdvUserProfile[]
+  participations      RdvParticipation[]
+
+  syncedAt DateTime @updatedAt @map("synced_at")
+
+  @@index([responsibleId])
+  @@map("rdv_users")
+}
+
+model RdvUserProfile {
+  organisationId Int @map("organisation_id")
+  userId         Int @map("user_id")
+
+  organisation RdvOrganisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  user         RdvUser         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  syncedAt DateTime @updatedAt @map("synced_at")
+
+  @@id([organisationId, userId])
+  @@map("rdv_user_profiles")
+}
+
+model RdvLieu {
+  id             Int    @id
+  address        String
+  name           String
+  organisationId Int    @map("organisation_id")
+  phoneNumber    String? @map("phone_number")
+  singleUse      Boolean @map("single_use")
+
+  organisation RdvOrganisation @relation(fields: [organisationId], references: [id])
+  rdvs         Rdv[]
+
+  syncedAt DateTime @updatedAt @map("synced_at")
+
+  @@index([organisationId])
+  @@map("rdv_lieux")
+}
+
+model RdvMotif {
+
+  id             Int    @id
+  collectif      Boolean
+  name           String
+  organisationId Int    @map("organisation_id")
+  followUp Boolean @map("follow_up")
+  instructionForRdv String? @map("instruction_for_rdv")
+  locationType  String? @map("location_type")
+  motifCategoryId Int? @map("motif_category_id")
+
+  organisation RdvOrganisation @relation(fields: [organisationId], references: [id])
+  rdvs         Rdv[]
+  
+  @@map("rdv_motifs")
+}
+
+model Rdv {
+  id                   Int                 @id
+  address              String
+  cancelledAt          DateTime?           @map("cancelled_at")
+  collectif            Boolean
+  context              String?
+  createdAt            DateTime?           @map("created_at")
+  createdBy            RdvCreatorKind?     @map("created_by")
+  createdByType        RdvCreatorType?     @map("created_by_type")
+  createdById          Int?                @map("created_by_id")
+  durationInMin        Int                 @map("duration_in_min")
+  endsAt               DateTime            @map("ends_at")
+  maxParticipantsCount Int?                @map("max_participants_count")
+  name                 String?
+  startsAt             DateTime            @map("starts_at")
+  status               RdvAttendanceStatus
+  usersCount           Int                 @map("users_count")
+  uuid                 String              @unique
+  urlForAgents          String @map("url_for_agents")
+
+  rdvAccountId Int @map("rdv_account_id")
+  rdvAccount   RdvAccount @relation(fields: [rdvAccountId], references: [id])
+
+  organisationId Int @map("organisation_id")
+  motifId        Int? @map("motif_id")
+  lieuId         Int? @map("lieu_id")
+
+  organisation RdvOrganisation @relation(fields: [organisationId], references: [id])
+  lieu         RdvLieu?         @relation(fields: [lieuId], references: [id])
+  motif        RdvMotif?        @relation(fields: [motifId], references: [id])
+
+  activite       Activite?
+  participations   RdvParticipation[]
+
+  syncedAt DateTime @updatedAt @map("synced_at")
+
+  rawData Json @map("raw_data") // Raw data from the RDV API
+
+  @@index([rdvAccountId])
+  @@index([organisationId])
+  @@index([startsAt])
+  @@index([status])
+  @@map("rdvs")
+}
+
+model RdvParticipation {
+  id                         Int                 @id
+  sendLifecycleNotifications Boolean             @map("send_lifecycle_notifications")
+  sendReminderNotification   Boolean             @map("send_reminder_notification")
+  status                     RdvAttendanceStatus
+  createdBy                  RdvCreatorKind?     @map("created_by")
+  createdByType              RdvCreatorType?     @map("created_by_type")
+  createdById                Int?                @map("created_by_id")
+  createdByAgentPrescripteur Boolean?            @map("created_by_agent_prescripteur")
+  rdvId   Int  @map("rdv_id") 
+  userId  Int  @map("user_id")
+
+  rdv   Rdv      @relation(fields: [rdvId], references: [id], onDelete: Cascade)
+  user  RdvUser  @relation(fields: [userId], references: [id])
+
+  syncedAt DateTime @updatedAt @map("synced_at")
+
+  @@index([rdvId])
+  @@index([userId])
+  @@map("rdv_participations")
+}
+
+
+model RdvWebhookEndpoint {
+  id            Int      @id
+  targetUrl     String   @map("target_url")
+  secret        String?
+  subscriptions String[]
+
+  organisationId Int @map("organisation_id")
+
+  organisation RdvOrganisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+
+  syncedAt DateTime @updatedAt @map("synced_at")
+
+  @@index([organisationId])
+  @@map("rdv_webhook_endpoints")
 }
 
 enum MutationName {

@@ -30,7 +30,7 @@ import {
 } from '../../cra/individuel/fields/autonomie'
 import { structuresRedirectionLabels } from '../../cra/individuel/fields/structures-redirection'
 import type { ActivitesFiltersLabels } from '../components/generateActivitesFiltersLabels'
-import type { ActiviteListItem } from '../db/activitesQueries'
+import type { ActiviteListItemWithTimezone } from '../db/activitesQueries'
 
 export type BuildActivitesWorksheetInput = {
   // This is the user that requested the worksheet, it might not be the same user as the one that owns the activites
@@ -38,7 +38,7 @@ export type BuildActivitesWorksheetInput = {
   // This is the user that owns the activites
   mediateur: WorksheetUser
   filters: ActivitesFiltersLabels
-  activites: ActiviteListItem[]
+  activites: Omit<ActiviteListItemWithTimezone, 'rdv'>[]
   worksheetGenerationDate?: Date // Defaults to current date
   hasCraV1: boolean
 }

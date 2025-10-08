@@ -1,8 +1,7 @@
-import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
+import { SearchRdvResultItem } from '@app/web/features/activites/use-cases/list/db/searchActiviteAndRdvs'
 import { createCraDataFromRdv } from '@app/web/rdv-service-public/createCraDataFromRdv'
-import type { Rdv } from '@app/web/rdv-service-public/Rdv'
 import {
   decodeSerializableState,
   type EncodedState,
@@ -24,7 +23,7 @@ export const GET = async (request: NextRequest) => {
   }
 
   const rdvSerialized = request.nextUrl.searchParams.get('rdv') as
-    | EncodedState<Rdv>
+    | EncodedState<SearchRdvResultItem>
     | undefined
 
   if (!rdvSerialized) {

@@ -10,7 +10,7 @@ import {
   typeActivitePictograms,
 } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
 import { autonomieStars } from '@app/web/features/activites/use-cases/cra/individuel/fields/autonomie'
-import type { ActiviteListItem } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
+import type { ActiviteListItemWithTimezone } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { dureeAsString } from '@app/web/utils/dureeAsString'
@@ -21,7 +21,7 @@ import ActiviteOrRdvListCard from './ActiviteOrRdvListCard'
 const MAX_THEMATIQUES_DISPLAYED = 2
 
 type ActiviteCardProps = {
-  activite: ActiviteListItem
+  activite: ActiviteListItemWithTimezone
   variant: 'with-beneficiaire' | 'without-beneficiaire'
   stacked?: boolean
   firstOfStack?: boolean

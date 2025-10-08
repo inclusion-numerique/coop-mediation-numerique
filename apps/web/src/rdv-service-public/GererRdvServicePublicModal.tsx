@@ -68,11 +68,6 @@ const GererRdvServicePublicModal = ({
   const onSync = async () => {
     const syncResult = await syncMutation.mutateAsync()
 
-    createToast({
-      priority: 'success',
-      message: `Les informations ont été synchronisées avec succès.`,
-    })
-
     setLastSynced(
       syncResult.rdvAccount?.lastSynced
         ? new Date(syncResult.rdvAccount.lastSynced)
@@ -80,6 +75,18 @@ const GererRdvServicePublicModal = ({
     )
     setError(syncResult.rdvAccount?.error ?? null)
     setStatus(getRdvOauthIntegrationStatus({ user: syncResult }))
+
+    if (syncResult.rdvAccount?.error) {
+      createToast({
+        priority: 'error',
+        message: `Une erreur est survenue lors de la synchronisation.`,
+      })
+    } else {
+      createToast({
+        priority: 'success',
+        message: `Les informations ont été synchronisées avec succès.`,
+      })
+    }
   }
 
   useModalVisibility(GererRdvServicePublicModalInstance.id, {
@@ -189,6 +196,12 @@ const GererRdvServicePublicModal = ({
             >
               Synchroniser les infos avec RDV Service Public
             </Button>
+            {isLoading && (
+              <p className="fr-text--sm fr-mb-0">
+                La synchronisation peut prendre jusqu'à 2 minutes, merci de
+                patienter...
+              </p>
+            )}
           </div>
           <hr className="fr-separator-1px" />
         </>
