@@ -50,9 +50,17 @@ describe('getBeneficiaireAccompagnementsData', () => {
         accompagnementsCount: 0,
         rdvServicePublicId: null,
       },
-      activites: [],
-      rdvs: [],
-      activitesAndRdvs: [],
+      searchResult: {
+        items: [],
+        accompagnementsMatchesCount: 0,
+        activitesMatchesCount: 0,
+        matchesCount: 0,
+        rdvMatchesCount: 0,
+        moreResults: 0,
+        page: 1,
+        pageSize: 10000,
+        totalPages: 0,
+      },
       user: {
         id: 'test',
         rdvAccount: null,
@@ -119,9 +127,17 @@ describe('getBeneficiaireAccompagnementsData', () => {
         accompagnementsCount: 6,
         rdvServicePublicId: null,
       },
-      activites: expectedActivites,
-      rdvs: [],
-      activitesAndRdvs: expectedActivites,
+      searchResult: {
+        items: expectedActivites,
+        accompagnementsMatchesCount: 18,
+        activitesMatchesCount: 6,
+        matchesCount: 6,
+        rdvMatchesCount: 0,
+        moreResults: 0,
+        page: 1,
+        pageSize: 10000,
+        totalPages: 1,
+      },
     })
   })
 })

@@ -245,7 +245,6 @@ export const getRdvFiltersWhereConditions = ({
 } => {
   const statusClause = rdvs && rdvs.length > 0 ? buildStatusClause(rdvs) : null
 
-  console.log('statusClause', statusClause)
   return {
     du: du ? Prisma.raw(`rdv.starts_at::date >= '${du}'::date`) : null,
     au: au ? Prisma.raw(`rdv.starts_at::date <= '${au}'::date`) : null,
