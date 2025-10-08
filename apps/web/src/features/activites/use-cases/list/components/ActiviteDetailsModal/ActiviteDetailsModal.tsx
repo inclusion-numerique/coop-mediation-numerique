@@ -39,7 +39,7 @@ import {
 import { typeActiviteLabels } from '../../../cra/fields/type-activite'
 import { autonomieStars } from '../../../cra/individuel/fields/autonomie'
 import { structuresRedirectionLabels } from '../../../cra/individuel/fields/structures-redirection'
-import { ActiviteListItem } from '../../db/activitesQueries'
+import { ActiviteListItemWithTimezone } from '../../db/activitesQueries'
 import RdvStatusBadge from '../RdvStatusBadge'
 import {
   ActiviteDetailsDynamicModal,
@@ -70,7 +70,7 @@ const filterItemsNodes = <T extends { items: ReactNode[] | ReactNode }>({
   items,
 }: T) => (Array.isArray(items) ? items.length > 0 : !!items)
 
-const getActiviteLocationString = (activite: ActiviteListItem) => {
+const getActiviteLocationString = (activite: ActiviteListItemWithTimezone) => {
   const { structure, lieuCodePostal, lieuCommune, typeLieu } = activite
 
   if (structure)
@@ -622,7 +622,7 @@ const ActiviteDetailsModal = ({
                   size="small"
                   title="Voir et modifier le RDV sur Rendez-vous Service Public"
                   linkProps={{
-                    href: rdv.url,
+                    href: rdv.urlForAgents,
                     target: '_blank',
                   }}
                 >

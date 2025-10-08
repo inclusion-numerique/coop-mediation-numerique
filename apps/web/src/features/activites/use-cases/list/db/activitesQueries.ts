@@ -1,3 +1,4 @@
+import { addRdvBadgeStatus } from '@app/web/features/rdvsp/administration/db/addRdvBadgeStatus'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { Prisma } from '@prisma/client'
@@ -52,6 +53,10 @@ export const activiteListSelect = {
   rdv: {
     select: {
       id: true,
+      startsAt: true,
+      endsAt: true,
+      status: true,
+      urlForAgents: true,
     },
   },
   date: true,
@@ -100,6 +105,23 @@ export const activiteListSelect = {
   niveau: true,
 } satisfies Prisma.ActiviteSelect
 
+export const getActivitesByIds = async ({ ids }: { ids: string[] }) =>
+  prismaClient.activite
+    .findMany({
+      where: { id: { in: ids } },
+      select: activiteListSelect,
+    })
+    .then((activites) =>
+      activites.map((activite) => ({
+        ...activite,
+        rdv: activite.rdv ? addRdvBadgeStatus(activite.rdv) : null,
+      })),
+    )
+
+export type ActiviteListItem = Awaited<
+  ReturnType<typeof getActivitesByIds>
+>[number]
+
 export const getAllActivites = async ({
   beneficiaireId,
   mediateurId,
@@ -146,15 +168,13 @@ export const mediateurHasActivites = async ({
     })
     .then((count) => count > 0)
 
-export type ActiviteListItem = Awaited<
-  ReturnType<typeof getAllActivites>
->[number] & {
+export type ActiviteListItemWithTimezone = ActiviteListItem & {
   timezone: string
 }
 
 export type ActivitesByDate = {
   date: string
-  activites: ActiviteListItem[]
+  activites: ActiviteListItemWithTimezone[]
 }
 
 export type ActivitesAndRdvsByDate = {
@@ -165,19 +185,18 @@ export type ActivitesAndRdvsByDate = {
 export const groupActivitesByDate = ({
   activites,
 }: {
-  activites: ActiviteListItem[]
+  activites: ActiviteListItemWithTimezone[]
 }): ActivitesByDate[] => {
-  const byDateRecord = activites.reduce<Record<string, ActiviteListItem[]>>(
-    (accumulator, activity) => {
-      const date = dateAsIsoDay(activity.date)
-      if (!accumulator[date]) {
-        accumulator[date] = []
-      }
-      accumulator[date].push(activity)
-      return accumulator
-    },
-    {},
-  )
+  const byDateRecord = activites.reduce<
+    Record<string, ActiviteListItemWithTimezone[]>
+  >((accumulator, activity) => {
+    const date = dateAsIsoDay(activity.date)
+    if (!accumulator[date]) {
+      accumulator[date] = []
+    }
+    accumulator[date].push(activity)
+    return accumulator
+  }, {})
 
   return Object.entries(byDateRecord).map(([date, groupedActivites]) => ({
     date,

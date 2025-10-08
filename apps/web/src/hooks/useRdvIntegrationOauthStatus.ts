@@ -42,7 +42,7 @@ export const useRdvIntegrationOauthStatus = ({
       .then(async (result) => {
         if (result === 'success') {
           const organizationsResult = await organisationsOauthCall.mutateAsync()
-          setOrganisations(organizationsResult.organisations)
+          setOrganisations(organizationsResult)
         }
 
         setStatus(result)

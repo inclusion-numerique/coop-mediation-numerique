@@ -1,9 +1,9 @@
 import type { DataTableConfiguration } from '@app/web/libs/data-table/DataTableConfiguration'
 import type { Prisma } from '@prisma/client'
-import { ActiviteListItem } from './activitesQueries'
+import type { ActiviteListItemWithTimezone } from './activitesQueries'
 
 export type ActivitesDataTableConfiguration = DataTableConfiguration<
-  ActiviteListItem,
+  ActiviteListItemWithTimezone,
   Prisma.ActiviteWhereInput,
   Prisma.ActiviteOrderByWithRelationInput
 >

@@ -10,18 +10,6 @@ import {
   searchActiviteAndRdvs,
 } from './db/searchActiviteAndRdvs'
 
-const emptySearchResult = {
-  items: [],
-  activitesMatchesCount: 0,
-  rdvMatchesCount: 0,
-  matchesCount: 0,
-  accompagnementsMatchesCount: 0,
-  moreResults: 0,
-  totalPages: 1,
-  page: 1,
-  pageSize: 50,
-} satisfies SearchActiviteAndRdvsResult
-
 export const getActivitesListPageData = async ({
   mediateurId,
   searchParams,

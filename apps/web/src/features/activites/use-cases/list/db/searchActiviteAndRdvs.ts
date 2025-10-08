@@ -1,3 +1,7 @@
+import {
+  getRdvsByIds,
+  type RdvListItem,
+} from '@app/web/features/rdvsp/administration/db/rdvQueries'
 import { getDataTableSortParams } from '@app/web/libs/data-table/getDefaultDataTableSortParams'
 import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
 import {
@@ -19,7 +23,7 @@ import {
   getRdvFiltersSqlFragment,
   getRdvFiltersWhereConditions,
 } from './activitesFiltersSqlWhereConditions'
-import { activiteListSelect } from './activitesQueries'
+import { type ActiviteListItem, getActivitesByIds } from './activitesQueries'
 import { rdvFiltersWhereClause } from './rdvFiltersSqlWhereConditions'
 
 type SearchActiviteAndRdvsOptions = {
@@ -127,73 +131,23 @@ export const searchActiviteAndRdvs = async (
     item.kind === 'activite' ? item.id : Number(item.id),
   )
 
-  const now = Date.now()
-
   // Hydrate full objects in parallel
   const [activites, rdvs] = await Promise.all([
     activiteIds.length > 0
-      ? prismaClient.activite
-          .findMany({
-            where: { id: { in: activiteIds } },
-            select: activiteListSelect,
-          })
-          .then((activites) =>
-            activites.map((activite) => ({
-              kind: 'activite' as const,
-              ...activite,
-            })),
-          )
+      ? getActivitesByIds({ ids: activiteIds }).then((activites) =>
+          activites.map((activite) => ({
+            kind: 'activite' as const,
+            ...activite,
+          })),
+        )
       : Promise.resolve([]),
     rdvIds.length > 0
-      ? prismaClient.rdv
-          .findMany({
-            where: { id: { in: rdvIds } },
-            select: {
-              id: true,
-              durationInMin: true,
-              status: true,
-              startsAt: true,
-              endsAt: true,
-              name: true,
-              maxParticipantsCount: true,
-              organisationId: true,
-              urlForAgents: true,
-              motif: {
-                select: {
-                  name: true,
-                  collectif: true,
-                },
-              },
-              participations: {
-                select: {
-                  user: {
-                    select: {
-                      id: true,
-                      firstName: true,
-                      lastName: true,
-                      beneficiaire: {
-                        select: {
-                          id: true,
-                          prenom: true,
-                          nom: true,
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          })
-          .then((rdvs) =>
-            rdvs.map((rdv) => ({
-              kind: 'rdv' as const,
-              ...rdv,
-              badgeStatus:
-                rdv.status === 'unknown' && rdv.endsAt.getTime() <= now
-                  ? ('past' as const)
-                  : rdv.status,
-            })),
-          )
+      ? getRdvsByIds({ ids: rdvIds }).then((rdvs) =>
+          rdvs.map((rdv) => ({
+            kind: 'rdv' as const,
+            ...rdv,
+          })),
+        )
       : Promise.resolve([]),
   ])
 
@@ -232,11 +186,6 @@ export const searchActiviteAndRdvs = async (
       `,
   ])
 
-  console.log('COUNTS', {
-    activitesCountResult,
-    rdvsCountResult,
-  })
-
   const activitesMatchesCount = activitesCountResult.at(0)?.count ?? 0
   const rdvMatchesCount = rdvsCountResult.at(0)?.count ?? 0
   const accompagnementsMatchesCount =
@@ -262,13 +211,14 @@ export type SearchActiviteAndRdvsResult = Awaited<
   ReturnType<typeof searchActiviteAndRdvs>
 >
 
-export type SearchActiviteAndRdvResultItem =
-  SearchActiviteAndRdvsResult['items'][number]
-
-export type SearchRdvResultItem = SearchActiviteAndRdvResultItem & {
+export type SearchRdvResultItem = RdvListItem & {
   kind: 'rdv'
 }
 
-export type SearchActiviteResultItem = SearchActiviteAndRdvResultItem & {
+export type SearchActiviteResultItem = ActiviteListItem & {
   kind: 'activite'
 }
+
+export type SearchActiviteAndRdvResultItem =
+  | SearchRdvResultItem
+  | SearchActiviteResultItem

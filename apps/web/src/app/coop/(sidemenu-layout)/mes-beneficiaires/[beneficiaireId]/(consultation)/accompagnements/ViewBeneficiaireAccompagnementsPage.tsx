@@ -5,41 +5,35 @@ import ActiviteDetailsModal from '@app/web/features/activites/use-cases/list/com
 import RdvCard from '@app/web/features/activites/use-cases/list/components/RdvCard'
 
 const ViewBeneficiaireAccompagnementsPage = ({
-  data: { activitesAndRdvs, beneficiaire, activites, user },
+  data: { searchResult, beneficiaire, user },
 }: {
   data: BeneficiaireAccompagnementsPageData
 }) => (
   <>
     <BeneficiairePageNavigationBar
       beneficiaireId={beneficiaire.id}
-      accompagnementsCount={activitesAndRdvs.length}
+      accompagnementsCount={searchResult.matchesCount}
       current="accompagnements"
     />
-    {activitesAndRdvs.length === 0 && (
+    {searchResult.matchesCount === 0 && (
       <div className="fr-border-radius--8 fr-border  fr-py-8v fr-px-8v fr-mt-6v fr-text--center">
         <p className="fr-text--sm fr-mb-0">
           Aucun accompagnement pour le moment
         </p>
       </div>
     )}
-    {activitesAndRdvs.map((activite) =>
-      'agents' in activite ? (
-        <RdvCard
-          key={activite.id}
-          activite={activite}
-          user={user}
-          displayDate
-        />
+    {searchResult.items.map((item) =>
+      item.kind === 'rdv' ? (
+        <RdvCard key={item.id} rdv={item} user={user} displayBeneficiaire />
       ) : (
         <ActiviteCard
-          key={activite.id}
-          activite={activite}
-          variant="without-beneficiaire"
-          displayDateDay
+          key={item.id}
+          activite={{ ...item, timezone: user.timezone }}
+          variant="with-beneficiaire"
         />
       ),
     )}
-    {activites.length > 0 && <ActiviteDetailsModal />}
+    {searchResult.items.length > 0 && <ActiviteDetailsModal />}
   </>
 )
 

@@ -1,8 +1,10 @@
 import {
-  ActiviteListItem,
+  ActiviteListItemWithTimezone,
   activiteListSelect,
 } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
+import { addTimezoneToActivite } from '@app/web/features/activites/use-cases/list/db/addTimezoneToActivite'
 import { getActivitesListPageData } from '@app/web/features/activites/use-cases/list/getActivitesListPageData'
+import { addRdvBadgeStatus } from '@app/web/features/rdvsp/administration/db/addRdvBadgeStatus'
 import { getDashboardRdvData } from '@app/web/features/rdvsp/queries/getDashboardRdvData'
 import { countMediateursCoordonnesBy } from '@app/web/mediateurs/countMediateursCoordonnesBy'
 import { prismaClient } from '@app/web/prismaClient'
@@ -69,13 +71,12 @@ export const getAccueilPageDataFor = async (
       take: 3,
     })
 
-    const activites = lastActivitesWithoutTimezone.map(
-      (activite) =>
-        ({
-          ...activite,
-          timezone: user.timezone,
-        }) satisfies ActiviteListItem,
-    )
+    const activites = lastActivitesWithoutTimezone
+      .map(addTimezoneToActivite(user))
+      .map((activite) => ({
+        ...activite,
+        rdv: activite.rdv ? addRdvBadgeStatus(activite.rdv) : null,
+      }))
 
     // Return rdvs for dashboard info if user has a valid rdv account
     return {

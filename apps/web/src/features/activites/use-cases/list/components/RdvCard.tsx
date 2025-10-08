@@ -1,5 +1,6 @@
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
+import type { RdvListItem } from '@app/web/features/rdvsp/administration/db/rdvQueries'
 import {
   dateAsDayInTimeZone,
   dateAsTimeInTimeZone,
@@ -8,7 +9,6 @@ import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { numberToString } from '@app/web/utils/formatNumber'
 import { UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { SearchRdvResultItem } from '../db/searchActiviteAndRdvs'
 import ActiviteCardSpacer from './ActiviteCardSpacer'
 import ActiviteOrRdvListCard from './ActiviteOrRdvListCard'
 import RdvStatusBadge from './RdvStatusBadge'
@@ -19,7 +19,7 @@ const RdvCard = ({
   displayBeneficiaire,
   displayDate,
 }: {
-  rdv: SearchRdvResultItem
+  rdv: RdvListItem
   user: UserRdvAccount & UserTimezone
   displayBeneficiaire?: boolean
   displayDate?: boolean

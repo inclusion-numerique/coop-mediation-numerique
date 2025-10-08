@@ -5,7 +5,10 @@ import MesActivitesListeEmptyPage from './components/MesActivitesListeEmptyPage'
 import MesActivitesListeLayout from './components/MesActivitesListeLayout'
 import { ActivitesListPageData } from './getActivitesListPageData'
 import MesActivitesTableauPage from './MesActivitesTableauPage'
-import { activitesForModalStories } from './storybook/ActiviteDetailsStoriesData'
+import {
+  activitesForModalStories,
+  rdvsForStories,
+} from './storybook/ActiviteDetailsStoriesData'
 
 const TemplateTableau = ({ data }: { data: ActivitesListPageData }) => (
   <MesActivitesListeLayout vue="tableau">
@@ -38,7 +41,6 @@ const dataAvecActivites = {
   searchParams: {},
   mediateurId: '1',
   isFiltered: false,
-  rdvsWithoutActivite: [],
   searchResult: {
     activitesMatchesCount: activitesForModalStories.length,
     accompagnementsMatchesCount: activitesForModalStories
@@ -46,7 +48,18 @@ const dataAvecActivites = {
       .reduce((a, b) => a + b, 0),
     moreResults: 0,
     totalPages: 1,
-    activites: activitesForModalStories,
+    items: [
+      ...activitesForModalStories.map((activite) => ({
+        kind: 'activite' as const,
+        ...activite,
+      })),
+      ...rdvsForStories.map((rdv) => ({
+        kind: 'rdv' as const,
+        ...rdv,
+      })),
+    ],
+    rdvMatchesCount: rdvsForStories.length,
+    matchesCount: activitesForModalStories.length + rdvsForStories.length,
     page: 1,
     pageSize: 50,
   },

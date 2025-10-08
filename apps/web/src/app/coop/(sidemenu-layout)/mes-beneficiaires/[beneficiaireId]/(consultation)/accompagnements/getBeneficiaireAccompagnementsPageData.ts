@@ -1,11 +1,5 @@
-import {
-  type ActiviteListItem,
-  getAllActivites,
-} from '@app/web/features/activites/use-cases/list/db/activitesQueries'
-import { mergeRdvsWithActivites } from '@app/web/features/activites/use-cases/list/mergeRdvsWithActivites'
+import { searchActiviteAndRdvs } from '@app/web/features/activites/use-cases/list/db/searchActiviteAndRdvs'
 import { prismaClient } from '@app/web/prismaClient'
-import { getRdvs } from '@app/web/rdv-service-public/getRdvs'
-import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import type { UserId, UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 
 export const getBeneficiaireAccompagnementsPageData = async ({
@@ -39,38 +33,20 @@ export const getBeneficiaireAccompagnementsPageData = async ({
     return null
   }
 
-  const activites = await getAllActivites({ beneficiaireId, mediateurId })
-
-  const rdvs = await getRdvs({
-    user,
-    onlyForUser: false, // We want rdvs for this beneficiaire from all agents
-    beneficiaire,
-    du: null,
-    au: null,
-  })
-
-  const { rdvsWithoutActivite, activitesWithRdv } = mergeRdvsWithActivites({
-    rdvs,
-    activites: activites.map(
-      (activite) =>
-        ({
-          ...activite,
-          timezone: user.timezone,
-        }) satisfies ActiviteListItem,
-    ),
-  })
-
-  const activitesAndRdvs = [...rdvsWithoutActivite, ...activitesWithRdv].sort(
-    (a, b) => {
-      return b.date.getTime() - a.date.getTime()
+  const searchResult = await searchActiviteAndRdvs({
+    mediateurIds: [mediateurId],
+    beneficiaireIds: [beneficiaireId],
+    rdvAccountIds: user.rdvAccount ? [user.rdvAccount.id] : [],
+    shouldFetchRdvs: !!user.rdvAccount?.hasOauthTokens,
+    shouldFetchActivites: true,
+    searchParams: {
+      lignes: '10000',
     },
-  )
+  })
 
   return {
     beneficiaire,
-    activites: activitesWithRdv,
-    rdvs: rdvsWithoutActivite,
-    activitesAndRdvs,
+    searchResult,
     user,
   }
 }

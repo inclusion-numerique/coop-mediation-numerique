@@ -189,6 +189,9 @@ export const GET = async (request: NextRequest) => {
     // Synchronize rdv account data
     await refreshRdvAgentAccountData({
       rdvAccount,
+      appendLog: () => {
+        // no-op
+      },
     })
 
     // Rediriger vers une route de succès ou une page front.

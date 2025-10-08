@@ -6,9 +6,9 @@ import {
   minutesToCraDureeData,
   minutesToCustomCraDureeData,
 } from '../features/activites/use-cases/cra/db/minutesToCraDuree'
+import { SearchRdvResultItem } from '../features/activites/use-cases/list/db/searchActiviteAndRdvs'
 import { BeneficiaireCraData } from '../features/beneficiaires/validation/BeneficiaireValidation'
 import { dateAsIsoDay } from '../utils/dateAsIsoDay'
-import { SearchRdvResultItem } from '../features/activites/use-cases/list/db/searchActiviteAndRdvs'
 
 export const createCraDataFromRdv = async ({
   rdv,

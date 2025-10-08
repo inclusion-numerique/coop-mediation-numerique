@@ -1,4 +1,4 @@
-import { ActiviteDates } from '@app/web/features/rdvsp/queries/getFirstAndLastRdvDate'
+import type { ActiviteDates } from './getFirstAndLastActiviteDate'
 
 export const getWidestActiviteDatesRange = (
   ...ranges: ActiviteDates[]

@@ -2,8 +2,8 @@ import { Spinner } from '@app/web/ui/Spinner'
 import { Suspense } from 'react'
 import ActivitesTable from './components/ActivitesTable'
 import { getActivitesResultCountLabel } from './components/getActivitesResultCountLabel'
-import type { ActivitesListPageData } from './getActivitesListPageData'
 import type { SearchActiviteResultItem } from './db/searchActiviteAndRdvs'
+import type { ActivitesListPageData } from './getActivitesListPageData'
 
 const SuspensedContent = async ({
   data,

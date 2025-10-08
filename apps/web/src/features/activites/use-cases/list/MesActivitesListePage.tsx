@@ -8,6 +8,7 @@ import ActiviteCard from './components/ActiviteCard'
 import { getActivitesResultCountLabel } from './components/getActivitesResultCountLabel'
 import MesActivitesListeEmptyPage from './components/MesActivitesListeEmptyPage'
 import RdvCard from './components/RdvCard'
+import { addTimezoneToActivite } from './db/addTimezoneToActivite'
 import { ActivitesListPageData } from './getActivitesListPageData'
 
 const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
@@ -49,7 +50,7 @@ const SuspensedContent = async ({
             ) : (
               <ActiviteCard
                 key={item.id}
-                activite={item}
+                activite={{ ...item, timezone: user.timezone }}
                 variant="with-beneficiaire"
               />
             ),

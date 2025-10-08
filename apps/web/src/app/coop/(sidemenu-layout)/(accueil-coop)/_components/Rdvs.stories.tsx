@@ -1,5 +1,4 @@
 import { Meta, StoryObj } from '@storybook/react'
-import type { AccueilRdvsData } from '../getAccueilPageDataFor'
 import Rdvs from './Rdvs'
 
 export default {
@@ -11,9 +10,9 @@ type Story = StoryObj<typeof Rdvs>
 
 const createRdv = (date: Date, status: 'unknown' | 'seen' = 'unknown') => ({
   id: Math.floor(Math.random() * 1000),
-  durationInMinutes: 30,
-  date,
-  endDate: new Date(date.getTime() + 30 * 60 * 1000),
+  durationInMin: 30,
+  startsAt: date,
+  endsAt: new Date(date.getTime() + 30 * 60 * 1000),
   createdBy: 'test-agent',
   status,
   badgeStatus: status,
@@ -21,6 +20,7 @@ const createRdv = (date: Date, status: 'unknown' | 'seen' = 'unknown') => ({
     id: 1,
     name: 'Organisation 1',
   },
+  lieu: null,
   motif: {
     id: 1,
     name: 'Accompagnement individuel',
@@ -28,7 +28,7 @@ const createRdv = (date: Date, status: 'unknown' | 'seen' = 'unknown') => ({
   },
   name: null,
   maxParticipantsCount: null,
-  url: 'https://rdv.example.com',
+  urlForAgents: 'https://rdv.example.com',
   agents: [
     {
       id: 1,
@@ -63,56 +63,67 @@ const createRdv = (date: Date, status: 'unknown' | 'seen' = 'unknown') => ({
 
 const now = new Date()
 const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000)
-const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000)
-const lastWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
 
 export const NoRdvs: Story = {
   args: {
-    rdvs: {
+    rdvs: Promise.resolve({
       next: null,
-      futur: [],
-      passes: [],
-      honores: [],
-    },
+      futur: 0,
+      passes: 0,
+      honores: 0,
+      organisation: {
+        id: 1,
+        name: 'Organisation 1',
+      },
+    }),
     user: { timezone: 'Europe/Paris' },
   },
 }
 
 export const FutureRdvs: Story = {
   args: {
-    rdvs: {
+    rdvs: Promise.resolve({
       next: createRdv(tomorrow),
-      futur: [
-        createRdv(tomorrow),
-        createRdv(new Date(tomorrow.getTime() + 24 * 60 * 60 * 1000)),
-      ],
-      passes: [],
-      honores: [],
-    },
+      futur: 2,
+      passes: 0,
+      honores: 0,
+      organisation: {
+        id: 1,
+        name: 'Organisation 1',
+      },
+    }),
     user: { timezone: 'Europe/Paris' },
   },
 }
 
 export const PastAndFutureRdvs: Story = {
   args: {
-    rdvs: {
+    rdvs: Promise.resolve({
       next: createRdv(tomorrow),
-      futur: [createRdv(tomorrow)],
-      passes: [createRdv(yesterday)],
-      honores: [],
-    },
+      futur: 1,
+      passes: 1,
+      honores: 1,
+      organisation: {
+        id: 1,
+        name: 'Organisation 1',
+      },
+    }),
     user: { timezone: 'Europe/Paris' },
   },
 }
 
 export const HonoredAndFutureRdvs: Story = {
   args: {
-    rdvs: {
+    rdvs: Promise.resolve({
       next: createRdv(tomorrow),
-      futur: [createRdv(tomorrow)],
-      passes: [],
-      honores: [createRdv(lastWeek, 'seen')],
-    },
+      futur: 1,
+      passes: 0,
+      honores: 1,
+      organisation: {
+        id: 1,
+        name: 'Organisation 1',
+      },
+    }),
     user: { timezone: 'Europe/Paris' },
   },
 }

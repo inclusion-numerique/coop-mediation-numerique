@@ -1,3 +1,4 @@
+import { addRdvBadgeStatus } from '@app/web/features/rdvsp/administration/db/addRdvBadgeStatus'
 import DataTable from '@app/web/libs/data-table/DataTable'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
@@ -27,6 +28,7 @@ const ActivitesTable = ({
       rows={activites.map((activite) => ({
         ...activite,
         timezone,
+        rdv: activite.rdv ? addRdvBadgeStatus(activite.rdv) : null,
       }))}
       configuration={ActivitesDataTable}
       searchParams={searchParams}

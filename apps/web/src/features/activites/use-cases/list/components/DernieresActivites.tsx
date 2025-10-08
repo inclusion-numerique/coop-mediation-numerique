@@ -1,5 +1,5 @@
 import { CreateCraModalDefinition } from '@app/web/features/activites/use-cases/cra/components/CreateCraModal/CreateCraModalDefinition'
-import { ActiviteListItem } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
+import { ActiviteListItemWithTimezone } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { Button } from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
 import React from 'react'
@@ -27,7 +27,7 @@ const ActiviteEmptyState = () => (
 export const DernieresActivites = ({
   activites,
 }: {
-  activites: ActiviteListItem[]
+  activites: ActiviteListItemWithTimezone[]
 }) => (
   <>
     <div className="fr-flex fr-flex-wrap fr-flex-gap-4v fr-align-items-center fr-justify-content-space-between fr-mb-3w">

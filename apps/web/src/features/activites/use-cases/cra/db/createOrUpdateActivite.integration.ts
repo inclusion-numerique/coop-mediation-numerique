@@ -8,7 +8,7 @@ import {
 import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
 import { prismaClient } from '@app/web/prismaClient'
 import {
-  ActiviteListItem,
+  ActiviteListItemWithTimezone,
   activiteListSelect,
 } from '../../list/db/activitesQueries'
 import { CraCollectifData } from '../collectif/validation/CraCollectifValidation'
@@ -21,7 +21,7 @@ import {
 import { craDureeDataToMinutes } from './minutesToCraDuree'
 
 const nullActivite: Omit<
-  ActiviteListItem,
+  ActiviteListItemWithTimezone,
   | 'id'
   | 'type'
   | 'mediateurId'
@@ -57,6 +57,7 @@ const nullActivite: Omit<
     conseillerNumerique: null,
   },
   v1CraId: null,
+  rdv: null,
 }
 
 describe('createOrUpdateActivite', () => {
