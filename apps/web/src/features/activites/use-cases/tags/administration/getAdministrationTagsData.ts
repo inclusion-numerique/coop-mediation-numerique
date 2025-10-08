@@ -59,7 +59,6 @@ const getMostUsedTags = async () => {
         tagId: 'desc',
       },
     },
-    take: 30,
   })
 
   const mostUsedTags = await prismaClient.tag.findMany({
