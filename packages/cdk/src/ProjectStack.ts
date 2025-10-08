@@ -312,14 +312,7 @@ export class ProjectStack extends TerraformStack {
       data: `v=spf1 ${transactionalEmailDomain.spfConfig} -all`,
       ttl: 3600,
     })
-    // DMARC
-    new DomainRecord(this, 'dmarc', {
-      dnsZone: emailDomainZone.id,
-      type: 'TXT',
-      name: '_dmarc',
-      data: `v=DMARC1; p=none`,
-      ttl: 3600,
-    })
+
     // MX is recommended for improved deverability
     new DomainRecord(this, 'mx', {
       dnsZone: emailDomainZone.id,
