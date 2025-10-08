@@ -11,6 +11,7 @@ import { getTagScope } from '../tagScope'
 
 type SearchLieuActiviteOptions = {
   mediateurId?: string
+  coordinateurId?: string
   excludeIds?: string[]
   searchParams?: {
     recherche?: string
@@ -21,6 +22,7 @@ type SearchLieuActiviteOptions = {
 
 export const searchTags = async ({
   mediateurId,
+  coordinateurId,
   excludeIds = [],
   searchParams,
 }: SearchLieuActiviteOptions) => {
@@ -45,6 +47,7 @@ export const searchTags = async ({
       nom: string
       description: string | null
       mediateurId: string | null
+      coordinateurId: string | null
       departement: string | null
     }[]
   >`
@@ -53,12 +56,13 @@ export const searchTags = async ({
         t.nom,
         t.description,
         t.mediateur_id as "mediateurId",
+        t.coordinateur_id as "coordinateurId",
         t.departement,
         COUNT(a.id) AS usage_count
       FROM tags t
         LEFT JOIN activite_tags at ON at.tag_id = t.id
         LEFT JOIN activites a ON a.id = at.activite_id
-        AND a.mediateur_id = ${mediateurId}::UUID
+        AND a.mediateur_id = ${mediateurId ?? null}::UUID
         AND a.suppression IS NULL
       WHERE
         t.suppression IS NULL
@@ -69,7 +73,7 @@ export const searchTags = async ({
         }
         AND t.nom ILIKE ${`%${recherche}%`}
         AND (
-        t.mediateur_id = ${mediateurId}::UUID
+        (t.mediateur_id = ${mediateurId ?? null}::UUID OR t.coordinateur_id = ${coordinateurId ?? null}::UUID)
         ${departement == null ? Prisma.empty : Prisma.sql`OR t.departement = ${departement.code}::text`}
          OR (t.mediateur_id IS NULL AND t.departement IS NULL)
         )
@@ -80,11 +84,13 @@ export const searchTags = async ({
     `
 
   return {
-    items: tags.map(({ id, nom, description, mediateurId, departement }) => ({
-      id,
-      nom,
-      description: description ?? undefined,
-      scope: getTagScope({ mediateurId, departement }),
-    })),
+    items: tags.map(
+      ({ id, nom, description, mediateurId, coordinateurId, departement }) => ({
+        id,
+        nom,
+        description: description ?? undefined,
+        scope: getTagScope({ mediateurId, coordinateurId, departement }),
+      }),
+    ),
   }
 }
