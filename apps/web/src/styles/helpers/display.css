@@ -26,6 +26,10 @@
   display: grid !important;
 }
 
+.fr-grid--1x1 {
+  grid-template-columns: repeat(1, 1fr);
+}
+
 .fr-grid--2x1 {
   grid-template-columns: repeat(2, 1fr);
 }

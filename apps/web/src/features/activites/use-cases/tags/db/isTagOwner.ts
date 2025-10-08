@@ -14,16 +14,22 @@ export const isTagOwner = (sessionUser: SessionUser) => (id: string) => {
       })
       .then((tag) => tag != null)
   }
+
   if (isCoordinateur(sessionUser)) {
     const departement = getUserDepartement(sessionUser)
-
-    if (!departement) return false
 
     return prismaClient.tag
       .findFirst({
         where: {
           id,
-          departement: departement.code,
+          ...(departement == null
+            ? { coordinateurId: sessionUser.coordinateur.id }
+            : {
+                OR: [
+                  { departement: departement.code },
+                  { coordinateurId: sessionUser.coordinateur.id },
+                ],
+              }),
         },
       })
       .then((tag) => tag != null)

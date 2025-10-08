@@ -77,6 +77,7 @@ const getMostUsedTags = async () => {
       nom: true,
       description: true,
       mediateurId: true,
+      coordinateurId: true,
       departement: true,
     },
   })
