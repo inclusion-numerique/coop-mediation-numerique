@@ -25,8 +25,8 @@ export const structureToPrismaModel = (
   structure: LieuStandardMediationNumerique,
 ): Prisma.StructureCreateManyInput => ({
   nom: structure.nom,
-  latitude: structure.latitude,
-  longitude: structure.longitude,
+  latitude: +`${structure.latitude}`,
+  longitude: +`${structure.longitude}`,
   presentationDetail: structure.presentation_detail,
   presentationResume: structure.presentation_resume,
   siteWeb: structure.site_web,

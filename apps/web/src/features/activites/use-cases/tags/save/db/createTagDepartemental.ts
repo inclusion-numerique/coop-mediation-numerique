@@ -17,17 +17,13 @@ export const createTagDepartemental =
 
     if (!departement) throw new Error('No departement found for user')
 
-    const tag = await prismaClient.tag.create({
+    return await prismaClient.tag.create({
       data: {
         nom,
         description,
         departement: departement.code,
+        mediateurId: null,
+        coordinateurId: null,
       },
     })
-
-    return {
-      id: tag.id,
-      nom: tag.nom,
-      description: tag.description,
-    }
   }
