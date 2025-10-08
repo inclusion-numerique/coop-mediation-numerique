@@ -1377,7 +1377,7 @@ model RdvUser {
   responsible RdvUser?  @relation("RdvUserResponsible", fields: [responsibleId], references: [id])
   dependents  RdvUser[] @relation("RdvUserResponsible")
 
-  beneficiaire Beneficiaire[]
+  beneficiaire        Beneficiaire[]
   userProfiles        RdvUserProfile[]
   participations      RdvParticipation[]
 

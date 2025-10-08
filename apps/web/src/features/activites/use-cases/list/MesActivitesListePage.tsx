@@ -48,8 +48,8 @@ const SuspensedContent = async ({
               />
             ) : (
               <ActiviteCard
-                key={activite.id}
-                activite={activite}
+                key={item.id}
+                activite={item}
                 variant="with-beneficiaire"
               />
             ),

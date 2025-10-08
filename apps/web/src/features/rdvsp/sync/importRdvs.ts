@@ -451,16 +451,14 @@ const importRdv = async ({
   existing?: ExistingRdv
   rdvAccountId: number
   appendLog: AppendLog
-}) => {
+}): Promise<'noop' | 'updated' | 'created'> => {
   if (existing) {
     if (!rdvHasDiff(existing, rdv)) {
       // No diff, no need to import
-      appendLog(`no diff for rdv ${rdv.id}, skipping`)
-      return
+      return 'noop'
     }
 
     // Diff, delete the aggregate root (associated data), and update the aggregate root and re-create associated data
-    appendLog(`existing rdv ${rdv.id}, updating data`)
     await prismaClient.$transaction(async (tx) => {
       await tx.rdvParticipation.deleteMany({
         where: {
@@ -483,11 +481,10 @@ const importRdv = async ({
       })
     })
 
-    return
+    return 'updated'
   }
 
   // Not existing, create the aggregate root and associated data
-  appendLog(`importing rdv ${rdv.id}`)
   await prismaClient.$transaction(async (tx) => {
     await tx.rdv.create({
       data: rdvPrismaDataFromOAuthApiRdv(rdv, rdvAccountId),
@@ -501,6 +498,7 @@ const importRdv = async ({
       ),
     })
   })
+  return 'created'
 }
 
 const deleteRdvs = async ({
@@ -561,6 +559,10 @@ export const importRdvs = async ({
 
   const chunks = chunk(rdvs, batchSize)
 
+  let rdvNoop = 0
+  let rdvUpdated = 0
+  let rdvCreated = 0
+
   for (const chunkIndex in chunks) {
     appendLog(`importing chunk ${chunkIndex} of ${chunks.length} rdvs`)
     const chunkRdvs = chunks[chunkIndex]
@@ -604,13 +606,19 @@ export const importRdvs = async ({
     await Promise.all(
       chunkRdvs.map(async (rdv) => {
         importedRdvsToDelete.delete(rdv.id)
-        await importRdv({
+        const operationDone = await importRdv({
           rdv,
           appendLog,
           existing: existingRdvsMap.get(rdv.id),
           rdvAccountId: rdvAccount.id,
         })
+        if (operationDone === 'noop') rdvNoop++
+        if (operationDone === 'updated') rdvUpdated++
+        if (operationDone === 'created') rdvCreated++
       }),
+    )
+    appendLog(
+      `imported ${chunkRdvs.length} rdvs, ${rdvNoop} noop, ${rdvUpdated} updated, ${rdvCreated} created`,
     )
   }
 

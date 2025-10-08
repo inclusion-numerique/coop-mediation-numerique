@@ -12,14 +12,12 @@ import {
   ActivitesDataTable,
   ActivitesDataTableSearchParams,
 } from '../components/ActivitesDataTable'
-import { ActivitesRawSqlConfiguration } from './ActivitesRawSqlConfiguration'
 import {
-  activiteAccompagnementsCountSelect,
   activitesBeneficiaireInnerJoin,
-  crasLieuLabelSelect,
-  crasTypeOrderSelect,
   getActiviteFiltersSqlFragment,
   getActivitesFiltersWhereConditions,
+  getRdvFiltersSqlFragment,
+  getRdvFiltersWhereConditions,
 } from './activitesFiltersSqlWhereConditions'
 import { activiteListSelect } from './activitesQueries'
 import { rdvFiltersWhereClause } from './rdvFiltersSqlWhereConditions'
@@ -61,8 +59,14 @@ export const searchActiviteAndRdvs = async (
 
   const mediateurIds = options?.mediateurIds ?? []
 
-  const filterConditions = getActivitesFiltersWhereConditions(searchParams)
-  const filterFragment = getActiviteFiltersSqlFragment(filterConditions)
+  const activitesFilterConditions =
+    getActivitesFiltersWhereConditions(searchParams)
+  const activitesFilterFragment = getActiviteFiltersSqlFragment(
+    activitesFilterConditions,
+  )
+
+  const rdvFilterConditions = getRdvFiltersWhereConditions(searchParams)
+  const rdvFilterFragment = getRdvFiltersSqlFragment(rdvFilterConditions)
 
   const mediateurIdsCondition =
     mediateurIds.length > 0
@@ -90,7 +94,7 @@ export const searchActiviteAndRdvs = async (
       WHERE ${mediateurIdsCondition}
         AND ${options.shouldFetchActivites ? Prisma.sql`TRUE` : Prisma.sql`FALSE`}
         AND act.suppression IS NULL
-        AND ${filterFragment}
+        AND (${activitesFilterFragment})
     ),
     filtered_rdvs AS (
       SELECT
@@ -99,7 +103,7 @@ export const searchActiviteAndRdvs = async (
         rdv.created_at AS creation
       FROM rdvs rdv
         LEFT JOIN activites act ON act.rdv_id = rdv.id
-      WHERE ${rdvWhereClause}
+      WHERE (${rdvWhereClause}) AND (${rdvFilterFragment})
     ),
     unioned AS (
       SELECT 'activite'::text AS kind, id::TEXT, event_date, creation FROM filtered_activites
@@ -111,9 +115,6 @@ export const searchActiviteAndRdvs = async (
     ORDER BY event_date ${Prisma.raw(sortDirection)}, creation ${Prisma.raw(sortDirection)}, id ${Prisma.raw(sortDirection)}
     LIMIT ${take} OFFSET ${skip}
   `
-
-  console.log('COMBINED ITEMS', combinedItems)
-
   // Separate activite and rdv IDs
   const activiteIds = combinedItems
     .filter((item) => item.kind === 'activite')
@@ -126,7 +127,6 @@ export const searchActiviteAndRdvs = async (
     item.kind === 'activite' ? item.id : Number(item.id),
   )
 
-  console.log('ordered ids', orderedActivitesAndRdvIds)
   const now = Date.now()
 
   // Hydrate full objects in parallel
@@ -171,6 +171,13 @@ export const searchActiviteAndRdvs = async (
                       id: true,
                       firstName: true,
                       lastName: true,
+                      beneficiaire: {
+                        select: {
+                          id: true,
+                          prenom: true,
+                          nom: true,
+                        },
+                      },
                     },
                   },
                 },
@@ -195,8 +202,6 @@ export const searchActiviteAndRdvs = async (
     orderedActivitesAndRdvIds,
   )
 
-  console.log('orderedActivitesAndRdvs', orderedActivitesAndRdvs)
-
   // Get counts
   const [activitesCountResult, rdvsCountResult] = await Promise.all([
     prismaClient.$queryRaw<{ count: number; accompagnements_count: number }[]>`
@@ -210,8 +215,9 @@ export const searchActiviteAndRdvs = async (
             LEFT JOIN mediateurs med ON act.mediateur_id = med.id
             LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
           WHERE ${mediateurIdsCondition}
+            AND ${options.shouldFetchActivites ? Prisma.sql`TRUE` : Prisma.sql`FALSE`}
             AND act.suppression IS NULL
-            AND ${filterFragment}
+            AND ${activitesFilterFragment}
         )
         SELECT 
           COUNT(id)::INT as count,
@@ -222,7 +228,7 @@ export const searchActiviteAndRdvs = async (
         SELECT COUNT(rdv.id)::INT as count
         FROM rdvs rdv
           LEFT JOIN activites act ON act.rdv_id = rdv.id
-        WHERE ${rdvWhereClause}
+        WHERE (${rdvWhereClause}) AND (${rdvFilterFragment})
       `,
   ])
 

@@ -1,3 +1,4 @@
+import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import {
   OAuthRdvApiCredentials,
   OauthRdvApiCredentialsWithOrganisations,
@@ -12,7 +13,6 @@ import {
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { getServerUrl } from '@app/web/utils/baseUrl'
 import type { AppendLog } from './syncAllRdvData'
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 
 const webhookUrl = getServerUrl('/api/rdv-service-public/webhook', {
   absolutePath: true,

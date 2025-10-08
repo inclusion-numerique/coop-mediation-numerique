@@ -1,7 +1,11 @@
-import { ActiviteListItem } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
+import {
+  ActiviteListItem,
+  activiteListSelect,
+} from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { getActivitesListPageData } from '@app/web/features/activites/use-cases/list/getActivitesListPageData'
 import { getDashboardRdvData } from '@app/web/features/rdvsp/queries/getDashboardRdvData'
 import { countMediateursCoordonnesBy } from '@app/web/mediateurs/countMediateursCoordonnesBy'
+import { prismaClient } from '@app/web/prismaClient'
 import { getRdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import type {
@@ -31,7 +35,10 @@ const getDashboardRdvDataFor = (
 
   // do not await and return a promise for using suspense in the frontend
   return getDashboardRdvData({
-    user: { ...user, rdvAccount: user.rdvAccount, mediateur: user.mediateur },
+    user: {
+      ...user,
+      rdvAccount: user.rdvAccount,
+    },
   })
 }
 
@@ -50,16 +57,19 @@ export const getAccueilPageDataFor = async (
 
   // TODO Return null for rdvs if user has no valid rdv account
   if (user.mediateur?.id != null) {
-    const {
-      searchResult: { activites: activitesWithoutTimezone },
-    } = await getActivitesListPageData({
-      mediateurId: user.mediateur.id,
-      searchParams: { lignes: '3' },
-      user,
-      includeRdvs: false,
+    const lastActivitesWithoutTimezone = await prismaClient.activite.findMany({
+      where: {
+        mediateurId: user.mediateur.id,
+        suppression: null,
+      },
+      select: activiteListSelect,
+      orderBy: {
+        creation: 'desc',
+      },
+      take: 3,
     })
 
-    const activites = activitesWithoutTimezone.map(
+    const activites = lastActivitesWithoutTimezone.map(
       (activite) =>
         ({
           ...activite,

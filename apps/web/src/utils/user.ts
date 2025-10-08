@@ -29,10 +29,6 @@ export type UserFeatureFlags = Pick<SessionUser, 'featureFlags'>
 
 export type UserWithRole = Pick<SessionUser, 'role'>
 
-export type UserMediateur = Pick<SessionUser, 'mediateur'>
-
-export type UserCoordinateur = Pick<SessionUser, 'coordinateur'>
-
 export const getUserDisplayName = (user: UserDisplayName): string => {
   const name = `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim()
   if (name) return name

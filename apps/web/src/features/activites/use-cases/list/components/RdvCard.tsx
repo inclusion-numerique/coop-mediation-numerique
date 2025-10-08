@@ -108,7 +108,7 @@ const RdvCard = ({
             >
               {/* Layout is broken with fr-enlarge-link if icon is in button props, we put it in the title instead */}
               <span className="fr-icon-edit-line fr-icon--sm fr-mr-1-5v" />{' '}
-              Compléter un CRA
+              Compléter&nbsp;un&nbsp;CRA
             </Button>
           ) : (
             <Button
@@ -121,7 +121,7 @@ const RdvCard = ({
                 target: '_blank',
               }}
             >
-              {badgeStatus === 'past' ? 'À valider sur RDV SP' : 'Voir'}
+              {badgeStatus === 'past' ? 'À valider sur RDVSP' : 'Voir'}
             </Button>
           )}
         </>

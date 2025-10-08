@@ -2,15 +2,15 @@ import { Spinner } from '@app/web/ui/Spinner'
 import { Suspense } from 'react'
 import ActivitesTable from './components/ActivitesTable'
 import { getActivitesResultCountLabel } from './components/getActivitesResultCountLabel'
-import { ActivitesListPageData } from './getActivitesListPageData'
+import type { ActivitesListPageData } from './getActivitesListPageData'
+import type { SearchActiviteResultItem } from './db/searchActiviteAndRdvs'
 
 const SuspensedContent = async ({
   data,
 }: {
   data: Promise<ActivitesListPageData>
 }) => {
-  const { searchParams, searchResult, isFiltered, rdvsWithoutActivite, user } =
-    await data
+  const { searchParams, searchResult, isFiltered, user } = await data
 
   return (
     <>
@@ -18,12 +18,16 @@ const SuspensedContent = async ({
         {getActivitesResultCountLabel({
           isFiltered,
           searchResult,
-          rdvsWithoutActivite,
+          only: 'activite',
         })}
       </p>
       <ActivitesTable
         data={{
           ...searchResult,
+          activites: searchResult.items.filter(
+            (item): item is SearchActiviteResultItem =>
+              item.kind === 'activite',
+          ),
           timezone: user.timezone,
         }}
         baseHref="/coop/mes-activites/tableau"

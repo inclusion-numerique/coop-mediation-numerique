@@ -56,15 +56,13 @@ export const getActivitesListPageData = async ({
   })
 
   const [searchResult, activiteDates, rdvDates] = await Promise.all([
-    shouldFetchActivites
-      ? searchActiviteAndRdvs({
-          mediateurIds: [mediateurId],
-          searchParams,
-          rdvAccountIds: user.rdvAccount ? [user.rdvAccount.id] : [],
-          shouldFetchRdvs,
-          shouldFetchActivites,
-        })
-      : emptySearchResult,
+    searchActiviteAndRdvs({
+      mediateurIds: [mediateurId],
+      searchParams,
+      rdvAccountIds: user.rdvAccount ? [user.rdvAccount.id] : [],
+      shouldFetchRdvs,
+      shouldFetchActivites,
+    }),
     getFirstAndLastActiviteDate({ mediateurIds: [mediateurId] }),
     getFirstAndLastRdvDate({
       rdvAccountIds: user.rdvAccount ? [user.rdvAccount.id] : [],

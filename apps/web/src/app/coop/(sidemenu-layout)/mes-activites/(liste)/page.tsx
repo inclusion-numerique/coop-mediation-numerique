@@ -39,7 +39,7 @@ const MesActivitesPage = async ({
     initialMediateursOptions,
     lieuxActiviteOptions,
     tagsOptions,
-    activiteDates,
+    activiteDates, // TODO include rdv dates
     activiteSourceOptions,
     hasCrasV1,
   } = await getFiltersOptionsForMediateur({
