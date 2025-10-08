@@ -442,6 +442,8 @@ model Coordinateur {
 
   mediateursCoordonnes MediateurCoordonne[]
   invitations          InvitationEquipe[]
+  Tag                  Tag[]
+  ActiviteCoordination ActiviteCoordination[]
 
   @@index([userId])
   @@map("coordinateurs")
@@ -1020,6 +1022,145 @@ enum TypeActivite {
   @@map("type_activite")
 }
 
+enum TypeActiviteCoordination {
+  Animation   @map("animation")
+  Evenement   @map("evenement")
+  Partenariat @map("partenariat")
+
+  @@map("type_activite_coordination")
+}
+
+enum TypeAnimation {
+  Assemblee           @map("assemblee")
+  Comite              @map("comite")
+  GroupeDeTravail     @map("groupe_de_travail")
+  Echange             @map("echange")
+  ReunionCoordination @map("reunion_coordination")
+  Webinaire           @map("webinaire")
+  Autre               @map("autre")
+
+  @@map("type_animation")
+}
+
+enum Initiative {
+  Initiative @map("initiative")
+  Demande    @map("demande")
+
+  @@map("initiative")
+}
+
+enum ThematiqueAnimation {
+  Partage       @map("partage")
+  Reseau        @map("reseau")
+  Soutien       @map("soutien")
+  Professionnel @map("professionnel")
+  RH            @map("rh")
+  Autre         @map("autre")
+
+  @@map("thematique_animation")
+}
+
+enum TypeEvenement {
+  GrandPublic        @map("grand_public")
+  National           @map("national")
+  InclusionNumerique @map("inclusion_numerique")
+  NecLocal           @map("nec_local")
+  Autre              @map("autre")
+
+  @@map("type_evenement")
+}
+
+enum Organisateur {
+  MaStructure @map("ma_structure")
+  Commune     @map("commune")
+  Epci        @map("epci")
+  Departement @map("departement")
+  Region      @map("region")
+  Association @map("association")
+  Entreprise  @map("entreprise")
+  Hub         @map("hub")
+  Etat        @map("etat")
+  Groupement  @map("groupement")
+  Autre       @map("autre")
+
+  @@map("organisateur")
+}
+
+enum EchelonTerritorial {
+  Communal      @map("communal")
+  Intercommunal @map("intercommunal")
+  Departemental @map("departemental")
+  Regional      @map("regional")
+  National      @map("national")
+
+  @@map("echelon_territorial")
+}
+
+enum NaturePartenariat {
+  ParcoursUsager             @map("parcours_usager")
+  Subvention                 @map("subvention")
+  CoordinationDepartementale @map("coordination_departementale")
+  RDVElu                     @map("rdv_elu")
+  Autre                      @map("autre")
+
+  @@map("nature_partenariat")
+}
+
+model ActiviteCoordination {
+  id String @id @default(uuid()) @db.Uuid
+
+  type TypeActiviteCoordination
+
+  coordinateurId String       @map("coordinateur_id") @db.Uuid
+  coordinateur   Coordinateur @relation(fields: [coordinateurId], references: [id])
+
+  date               DateTime                    @map("date") @db.Date
+  duree              Int?                        @map("duree") // Durée en minutes
+  tags               ActivitesCoordinationTags[]
+  notes              String?
+  echelonTerritorial EchelonTerritorial?         @map("echelon_territorial")
+
+  creation     DateTime  @default(now())
+  modification DateTime  @default(now())
+  suppression  DateTime?
+
+  // Animation
+  mediateurs               Int?                  @map("mediateurs")
+  structures               Int?                  @map("structures")
+  autresActeurs            Int?                  @map("autres_acteurs")
+  typeAnimation            TypeAnimation?        @map("type_animation")
+  typeAnimationAutre       String?               @map("type_animation_autre")
+  initiative               Initiative?           @map("initiative")
+  thematiquesAnimation     ThematiqueAnimation[] @default([]) @map("thematiques_animation")
+  thematiqueAnimationAutre String?               @map("thematique_animation_autre")
+
+  // Evénement
+  participants       Int?           @map("participants")
+  nomEvenement       String?        @map("nom_evenement")
+  typeEvenement      TypeEvenement? @map("type_evenement")
+  typeEvenementAutre String?        @map("type_evenement_autre")
+  organisateurs      Organisateur[] @default([]) @map("organisateurs")
+  organisateurAutre  String?        @map("organisateur_autre")
+
+  // Partenariat
+  naturePartenariat      NaturePartenariat[] @default([]) @map("nature_partenariat")
+  naturePartenariatAutre String?             @map("nature_partenariat_autre")
+  structuresPartenaires  Json?               @map("structures_partenaires")
+
+  // "creation" cursor is used to paginate results for API queries
+  @@unique([creation, id])
+  // index relations
+  @@index([coordinateurId])
+  // descending sort on this cursor for api query performances
+  @@index([creation(sort: Desc), id(sort: Desc)])
+  @@index([modification(sort: Desc), id(sort: Desc)])
+  // index on date PER coordinateur for query performances
+  @@index([coordinateurId, date(sort: Desc)])
+  // performance indexes
+  @@index([date])
+  @@map("activite_coordination")
+}
+
 model Activite {
   id String @id @default(uuid()) @db.Uuid
 
@@ -1120,22 +1261,37 @@ model ActivitesTags {
   @@map("activite_tags")
 }
 
+model ActivitesCoordinationTags {
+  activiteCoordinationId String @map("activite_coordination_id") @db.Uuid
+  tagId                  String @map("tag_id") @db.Uuid
+
+  activiteCoordination ActiviteCoordination @relation(fields: [activiteCoordinationId], references: [id])
+  tag                  Tag                  @relation(fields: [tagId], references: [id])
+
+  @@id([activiteCoordinationId, tagId])
+  @@map("activite_coordination_tags")
+}
+
 model Tag {
   id String @id @default(uuid()) @db.Uuid
 
   nom         String  @map("nom")
   description String? @map("description")
 
-  departement String?    @map("departement")
-  mediateurId String?    @map("mediateur_id") @db.Uuid
-  mediateur   Mediateur? @relation(fields: [mediateurId], references: [id])
+  departement    String?       @map("departement")
+  mediateurId    String?       @map("mediateur_id") @db.Uuid
+  mediateur      Mediateur?    @relation(fields: [mediateurId], references: [id])
+  coordinateurId String?       @map("coordinateur_id") @db.Uuid
+  coordinateur   Coordinateur? @relation(fields: [coordinateurId], references: [id])
 
-  creation     DateTime        @default(now())
-  modification DateTime        @default(now())
-  suppression  DateTime?
-  activites    ActivitesTags[]
+  creation                  DateTime                    @default(now())
+  modification              DateTime                    @default(now())
+  suppression               DateTime?
+  activites                 ActivitesTags[]
+  ActivitesCoordinationTags ActivitesCoordinationTags[]
 
   @@index([mediateurId])
+  @@index([coordinateurId])
   @@map("tags")
 }
 
@@ -1585,6 +1741,9 @@ enum MutationName {
   CreerActivite                            @map("creer_activite")
   ModifierActivite                         @map("modifier_activite")
   SupprimerActivite                        @map("supprimer_activite")
+  CreerActiviteCoordination                @map("creer_activite_coordination")
+  ModifierActiviteCoordination             @map("modifier_activite_coordination")
+  SupprimerActiviteCoordination            @map("supprimer_activite_coordination")
   CreerBeneficiaire                        @map("creer_beneficiaire")
   ImporterBeneficiaires                    @map("importer_beneficiaires")
   ModifierBeneficiaire                     @map("modifier_beneficiaire")

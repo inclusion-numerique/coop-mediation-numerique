@@ -13,6 +13,7 @@ import React, {
 } from 'react'
 import { assert, Equals } from 'tsafe/assert'
 import { symToStr } from 'tsafe/symToStr'
+
 export type InputProps = InputProps.RegularInput | InputProps.TextArea
 
 export namespace InputProps {

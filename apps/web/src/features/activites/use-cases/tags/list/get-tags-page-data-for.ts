@@ -21,7 +21,10 @@ const availableFor = (user: SessionUser) => {
   if (!departement) return { mediateurId: user.mediateur?.id }
   return {
     OR: [
-      { mediateurId: user.mediateur?.id },
+      ...(user.mediateur?.id ? [{ mediateurId: user.mediateur.id }] : []),
+      ...(user.coordinateur?.id
+        ? [{ coordinateurId: user.coordinateur.id }]
+        : []),
       { departement: departement.code },
     ],
   }
