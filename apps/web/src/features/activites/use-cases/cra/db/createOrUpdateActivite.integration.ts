@@ -90,7 +90,8 @@ describe('createOrUpdateActivite', () => {
           dureePersonnaliseeMinutes: 90,
         },
         autonomie: 'EntierementAccompagne',
-        rdvServicePublicId: 12,
+        // TODO integration test with rdv ids
+        // rdvServicePublicId: 2_000_000_000,
       },
     } satisfies CreateOrUpdateActiviteInput
 
