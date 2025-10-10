@@ -32,6 +32,8 @@ export const serializePrismaSessionUser = (
           prismaSessionUser.rdvAccount.refreshToken
         ),
         error: prismaSessionUser.rdvAccount.error ?? null,
+        includeRdvsInActivitesList:
+          prismaSessionUser.rdvAccount.includeRdvsInActivitesList,
         created: prismaSessionUser.rdvAccount.created.toISOString(),
         updated: prismaSessionUser.rdvAccount.updated.toISOString(),
         syncFrom: prismaSessionUser.rdvAccount.syncFrom?.toISOString() ?? null,

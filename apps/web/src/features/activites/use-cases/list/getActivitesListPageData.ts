@@ -29,19 +29,13 @@ export const getActivitesListPageData = async ({
   const shouldFetchRdvs =
     includeRdvs &&
     !!user.rdvAccount?.id &&
-    ((searchParams.rdvs?.length ?? 0) > 0 || // we filtered on rdvs
-      (searchParams.types?.length ?? 0) === 0) // or we did not filter on activites types
+    (user.rdvAccount.includeRdvsInActivitesList ||
+      (searchParams.rdvs?.length ?? 0) > 0) && // we display rdvs if there is a rdv filter enabled
+    (searchParams.types?.length ?? 0) === 0 // we did not filter on activites types
 
   const shouldFetchActivites =
     (searchParams.rdvs?.length ?? 0) === 0 || // we did not filter on rdvs
     (searchParams.types?.length ?? 0) > 0 // or we filtered on activites
-
-  console.log('query start', {
-    shouldFetchRdvs,
-    shouldFetchActivites,
-    mediateurId,
-    rdvAccountId: user.rdvAccount?.id,
-  })
 
   const [searchResult, activiteDates, rdvDates] = await Promise.all([
     searchActiviteAndRdvs({
@@ -56,12 +50,6 @@ export const getActivitesListPageData = async ({
       rdvAccountIds: user.rdvAccount ? [user.rdvAccount.id] : [],
     }),
   ])
-
-  console.log('query end', {
-    searchResult,
-    activiteDates,
-    rdvDates,
-  })
 
   const widestDatesRange = getWidestActiviteDatesRange(activiteDates, rdvDates)
 

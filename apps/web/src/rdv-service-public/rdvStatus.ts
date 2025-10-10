@@ -26,9 +26,7 @@ export const rdvStatusPluralLabels: {
   noshow: 'Absence',
 }
 
-export const rdvStatusTous = 'tous' as const satisfies RdvStatusFilterValue
-
-export const rdvStatusOptions = labelsToOptions(rdvStatusPluralLabels)
+export const rdvStatusOptions = labelsToOptions(rdvStatusLabels)
 
 export const rdvStatusValues = Object.keys(rdvStatusPluralLabels) as [
   RdvStatus,

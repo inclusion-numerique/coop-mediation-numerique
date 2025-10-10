@@ -1,8 +1,4 @@
-import { getSessionUser } from '@app/web/auth/getSessionUser'
-import {
-  getSessionUserFromId,
-  sessionUserSelect,
-} from '@app/web/auth/getSessionUserFromSessionToken'
+import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
 import { getBeneficiaireAdresseString } from '@app/web/beneficiaire/getBeneficiaireAdresseString'
 import { refreshRdvAgentAccountData } from '@app/web/features/rdvsp/sync/refreshRdvAgentAccountData'
 import { syncAllRdvData } from '@app/web/features/rdvsp/sync/syncAllRdvData'
@@ -22,6 +18,7 @@ import { externalApiError, invalidError } from '@app/web/server/rpc/trpcErrors'
 import { getServerUrl } from '@app/web/utils/baseUrl'
 import * as Sentry from '@sentry/nextjs'
 import { AxiosError } from 'axios'
+import z from 'zod'
 
 export const rdvServicePublicRouter = router({
   oAuthApiMe: protectedProcedure.mutation(async ({ ctx: { user } }) => {
@@ -101,6 +98,28 @@ export const rdvServicePublicRouter = router({
 
     return {}
   }),
+  updateIncludeRdvsInActivitesList: protectedProcedure
+    .input(
+      z.object({
+        includeRdvsInActivitesList: z.boolean(),
+        rdvAccountId: z.number(),
+      }),
+    )
+    .mutation(
+      async ({
+        ctx: { user },
+        input: { includeRdvsInActivitesList, rdvAccountId },
+      }) => {
+        if (!user.rdvAccount || user.rdvAccount.id !== rdvAccountId) {
+          throw invalidError('Compte RDV Service Public introuvable')
+        }
+
+        await prismaClient.rdvAccount.update({
+          where: { id: user.rdvAccount.id },
+          data: { includeRdvsInActivitesList },
+        })
+      },
+    ),
   syncRdvAccountData: protectedProcedure.mutation(async ({ ctx: { user } }) => {
     if (!user.rdvAccount) {
       throw invalidError('Compte RDV Service Public introuvable')

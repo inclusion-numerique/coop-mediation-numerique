@@ -113,6 +113,7 @@ export const sessionUserSelect = {
       refreshToken: true,
       error: true,
       syncFrom: true,
+      includeRdvsInActivitesList: true,
       organisations: {
         select: {
           organisation: {

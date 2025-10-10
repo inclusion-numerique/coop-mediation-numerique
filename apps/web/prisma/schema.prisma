@@ -1258,6 +1258,8 @@ model RdvAccount {
   organisations RdvAccountOrganisation[] // Be careful as this may be out of sync with the data from oauth. Used as a cache and should be refreshed when needed.
   rdvs Rdv[]
   syncLogs RdvSyncLog[]
+
+  includeRdvsInActivitesList Boolean @default(false) @map("include_rdvs_in_activites_list")
   
   accessToken  String?   @map("access_token") // Empty if account created but oauth not linked or invalidated
   refreshToken String?   @map("refresh_token")

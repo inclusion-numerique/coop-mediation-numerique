@@ -34,6 +34,7 @@ const Template = ({
               lastSynced: new Date().toISOString(),
               error: null,
               syncFrom: null,
+              includeRdvsInActivitesList: false,
             },
           }
         : testSessionUser
