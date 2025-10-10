@@ -12,7 +12,11 @@ import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFi
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import type { UserDisplayName, UserProfile } from '@app/web/utils/user'
+import type {
+  UserDisplayName,
+  UserProfile,
+  UserRdvAccount,
+} from '@app/web/utils/user'
 import { getBeneficiaireStatsWithCommunes } from './_queries/getBeneficiaireStats'
 
 export type MesStatistiquesGraphOptions = {
@@ -27,7 +31,7 @@ export const getMesStatistiquesPageData = async ({
   activitesFilters,
   graphOptions = {},
 }: {
-  user: UserDisplayName & UserProfile
+  user: UserDisplayName & UserProfile & UserRdvAccount
   activitesFilters: ActivitesFilters
   graphOptions?: MesStatistiquesGraphOptions
 }) => {

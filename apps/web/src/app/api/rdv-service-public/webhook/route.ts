@@ -1,13 +1,13 @@
 import { handleRdvModelWebhook } from '@app/web/features/rdvsp/webhook/handleRdvModelWebhook'
 import { handleUserModelWebhook } from '@app/web/features/rdvsp/webhook/handleUserModelWebhook'
 import {
+  RdvspWebhookAgentData,
+  RdvspWebhookEvent,
   RdvspWebhookModel,
   RdvspWebhookPayload,
   RdvspWebhookRdvData,
   RdvspWebhookUserData,
-  RdvspWebhookAgentData,
   RdvspWebhookUserProfileData,
-  RdvspWebhookEvent,
 } from '@app/web/features/rdvsp/webhook/rdvWebhook'
 import { NextRequest, NextResponse } from 'next/server'
 

@@ -13,6 +13,14 @@ import { UserId, UserWithExistingRdvAccount } from '@app/web/utils/user'
 import type { Prisma } from '@prisma/client'
 import { chunk } from 'lodash-es'
 import { AppendLog } from './syncAllRdvData'
+import {
+  createRdv,
+  deleteRdvs,
+  lieuPrismaDataFromOAuthApiLieu,
+  motifPrismaDataFromOAuthApiMotif,
+  updateRdv,
+  userPrismaDataFromOAuthApiUser,
+} from './syncRdv'
 
 const getImportedRdvIds = async ({
   rdvAccountId,
@@ -141,31 +149,7 @@ const motifHasDiff = (
   )
 }
 
-const lieuPrismaDataFromOAuthApiLieu = (
-  lieu: Exclude<OAuthApiRdv['lieu'], null>,
-) => {
-  return {
-    id: lieu.id,
-    name: lieu.name,
-    address: lieu.address,
-    phoneNumber: lieu.phone_number,
-    singleUse: lieu.single_use,
-    organisationId: lieu.organisation_id,
-  } satisfies Prisma.RdvLieuUncheckedCreateInput
-}
-
-const motifPrismaDataFromOAuthApiMotif = (motif: OAuthApiRdv['motif']) => {
-  return {
-    id: motif.id,
-    collectif: motif.collectif,
-    name: motif.name,
-    organisationId: motif.organisation_id,
-    followUp: motif.follow_up,
-    instructionForRdv: motif.instruction_for_rdv,
-    locationType: motif.location_type,
-    motifCategoryId: motif.motif_category?.id,
-  } satisfies Prisma.RdvMotifUncheckedCreateInput
-}
+// Moved to syncRdv.ts
 
 const importLieux = async ({
   existingLieuxMap,
@@ -287,35 +271,7 @@ const importMotifs = async ({
   return motifs.map((motif) => motif.id)
 }
 
-const userPrismaDataFromOAuthApiUser = (
-  user: OAuthApiRdv['participations'][number]['user'],
-) => {
-  return {
-    id: user.id,
-    firstName: user.first_name,
-    lastName: user.last_name,
-    email: user.email,
-    notifyByEmail: user.notify_by_email,
-    notifyBySms: user.notify_by_sms,
-    phoneNumber: user.phone_number,
-    phoneNumberFormatted: user.phone_number_formatted,
-    address: user.address,
-    addressDetails: user.address_details,
-    affiliationNumber: user.affiliation_number,
-    birthDate: user.birth_date ? new Date(user.birth_date) : null,
-    birthName: user.birth_name,
-    caisseAffiliation: user.caisse_affiliation,
-    createdAt: new Date(user.created_at),
-    invitationAcceptedAt: user.invitation_accepted_at
-      ? new Date(user.invitation_accepted_at)
-      : null,
-    invitationCreatedAt: user.invitation_created_at
-      ? new Date(user.invitation_created_at)
-      : null,
-    responsibleId: user.responsible_id,
-    syncedAt: new Date(),
-  } satisfies Prisma.RdvUserUncheckedCreateInput
-}
+// Moved to syncRdv.ts
 
 const importUsers = async ({
   existingUsersMap,
@@ -328,6 +284,7 @@ const importUsers = async ({
   appendLog: AppendLog
   skipExistingUserIds: Set<number>
 }) => {
+  // biome-ignore lint/suspicious/noConsole: debug logging
   console.log('skip users', skipExistingUserIds)
   const usersWithDuplicates = chunkRdvs.flatMap((rdv) =>
     rdv.participations.map((participation) => participation.user),
@@ -400,47 +357,6 @@ const rdvHasDiff = (existing: ExistingRdv, rdv: OAuthApiRdv) => {
   )
 }
 
-const rdvPrismaDataFromOAuthApiRdv = (
-  rdv: OAuthApiRdv,
-  rdvAccountId: number,
-) => {
-  return {
-    id: rdv.id,
-    uuid: rdv.uuid,
-    rdvAccountId,
-    status: rdv.status,
-    durationInMin: rdv.duration_in_min,
-    address: rdv.address,
-    startsAt: new Date(rdv.starts_at),
-    endsAt: new Date(rdv.ends_at),
-    usersCount: rdv.users_count,
-    maxParticipantsCount: rdv.max_participants_count,
-    name: rdv.name,
-    motifId: rdv.motif.id,
-    collectif: rdv.collectif,
-    context: rdv.context,
-    createdById: rdv.created_by_id,
-    lieuId: rdv.lieu?.id,
-    organisationId: rdv.organisation.id,
-    urlForAgents: rdv.url_for_agents,
-    rawData: rdv,
-  } satisfies Prisma.RdvUncheckedCreateInput
-}
-
-const rdvParticipationPrismaDataFromOAuthApiParticipation = (
-  participation: OAuthApiRdv['participations'][number],
-  rdvId: number,
-) => {
-  return {
-    id: participation.id,
-    rdvId,
-    userId: participation.user.id,
-    status: participation.status,
-    sendLifecycleNotifications: participation.send_lifecycle_notifications,
-    sendReminderNotification: participation.send_reminder_notification,
-  } satisfies Prisma.RdvParticipationUncheckedCreateInput
-}
-
 const importRdv = async ({
   rdv,
   appendLog,
@@ -458,50 +374,17 @@ const importRdv = async ({
       return 'noop'
     }
 
-    // Diff, delete the aggregate root (associated data), and update the aggregate root and re-create associated data
-    await prismaClient.$transaction(async (tx) => {
-      await tx.rdvParticipation.deleteMany({
-        where: {
-          rdvId: existing.id,
-        },
-      })
-      await tx.rdv.update({
-        where: {
-          id: existing.id,
-        },
-        data: rdvPrismaDataFromOAuthApiRdv(rdv, rdvAccountId),
-      })
-      await tx.rdvParticipation.createMany({
-        data: rdv.participations.map((participation) =>
-          rdvParticipationPrismaDataFromOAuthApiParticipation(
-            participation,
-            existing.id,
-          ),
-        ),
-      })
-    })
-
+    // Diff, update the RDV using the atomic update function
+    await updateRdv(rdv, rdvAccountId)
     return 'updated'
   }
 
-  // Not existing, create the aggregate root and associated data
-  await prismaClient.$transaction(async (tx) => {
-    await tx.rdv.create({
-      data: rdvPrismaDataFromOAuthApiRdv(rdv, rdvAccountId),
-    })
-    await tx.rdvParticipation.createMany({
-      data: rdv.participations.map((participation) =>
-        rdvParticipationPrismaDataFromOAuthApiParticipation(
-          participation,
-          rdv.id,
-        ),
-      ),
-    })
-  })
+  // Not existing, create using the atomic create function
+  await createRdv(rdv, rdvAccountId)
   return 'created'
 }
 
-const deleteRdvs = async ({
+const deleteRdvsWithLog = async ({
   rdvIds,
   appendLog,
 }: {
@@ -509,7 +392,7 @@ const deleteRdvs = async ({
   appendLog: AppendLog
 }) => {
   appendLog(`deleting ${rdvIds.length} rdvs`)
-  await prismaClient.rdv.deleteMany({ where: { id: { in: rdvIds } } })
+  await deleteRdvs(rdvIds)
   appendLog(`deleted ${rdvIds.length} rdvs`)
 }
 
@@ -622,7 +505,7 @@ export const importRdvs = async ({
     )
   }
 
-  await deleteRdvs({ rdvIds: [...importedRdvsToDelete], appendLog })
+  await deleteRdvsWithLog({ rdvIds: [...importedRdvsToDelete], appendLog })
 
   appendLog(`imported ${rdvs.length} rdvs`)
 }
