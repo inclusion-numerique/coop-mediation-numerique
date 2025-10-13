@@ -49,6 +49,7 @@ describe('getBeneficiaireAccompagnementsData', () => {
         anneeNaissance: beneficiaire.anneeNaissance,
         accompagnementsCount: 0,
         rdvServicePublicId: null,
+        rdvUserId: null,
       },
       searchResult: {
         items: [],
@@ -126,6 +127,7 @@ describe('getBeneficiaireAccompagnementsData', () => {
         anneeNaissance: beneficiaire.anneeNaissance,
         accompagnementsCount: 6,
         rdvServicePublicId: null,
+        rdvUserId: null,
       },
       searchResult: {
         items: expectedActivites,
