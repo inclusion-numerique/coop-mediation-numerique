@@ -52,7 +52,6 @@ export const beneficiaireMaximaleMediateurAvecActivite = givenBeneficiaire({
   modification: new Date('2024-05-05'),
   suppression: null,
   rdvUserId: null,
-  rdvUser: null,
 })
 
 export const beneficiaireSansAccompagnementsMediateurAvecActivite =
