@@ -3,10 +3,12 @@ import { Prisma } from '@prisma/client'
 export const rdvFiltersWhereClause = ({
   rdvAccountIds,
   shouldFetchRdvs,
+  rdvUserIds,
   includeRdvsWithAssociatedActivites = false,
 }: {
   rdvAccountIds: number[] // should always be 1 or more
   shouldFetchRdvs: boolean // disable the query at the sql level
+  rdvUserIds?: number[] // empty array will return no rdv, undefined will return all rdvs
   includeRdvsWithAssociatedActivites: boolean // include rdvs with associated activites
 }) => {
   const clauses = [
@@ -19,6 +21,11 @@ export const rdvFiltersWhereClause = ({
     includeRdvsWithAssociatedActivites
       ? Prisma.sql`TRUE`
       : Prisma.sql`act.id IS NULL`,
+    !rdvUserIds
+      ? Prisma.sql`TRUE`
+      : rdvUserIds.length === 0
+        ? Prisma.sql`FALSE`
+        : Prisma.sql`rdv.user_id = ANY(${rdvUserIds}::int[])`,
   ]
 
   return Prisma.join(clauses, ' AND ')

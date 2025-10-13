@@ -30,8 +30,11 @@ const BeneficiaireLayout = async (
       email: true,
       anneeNaissance: true,
       mediateurId: true,
+      rdvUserId: true,
     },
   })
+
+  console.log('beneficiaire', beneficiaire)
 
   if (!beneficiaire) {
     notFound()

@@ -28,7 +28,8 @@ import { rdvFiltersWhereClause } from './rdvFiltersSqlWhereConditions'
 
 type SearchActiviteAndRdvsOptions = {
   mediateurIds: string[]
-  beneficiaireIds?: string[]
+  beneficiaireIds?: string[] // empty array will return no activite, undefined will return all activites
+  rdvUserIds?: number[] // empty array will return no rdv, undefined will return all rdvs
   searchParams?: ActivitesDataTableSearchParams
   havingRdvId?: boolean
   rdvAccountIds: number[]
@@ -63,6 +64,9 @@ export const searchActiviteAndRdvs = async (
 
   const mediateurIds = options?.mediateurIds ?? []
 
+  console.log('PARAMS', searchParams)
+  console.log('OPTIONS', options)
+
   const activitesFilterConditions =
     getActivitesFiltersWhereConditions(searchParams)
   const activitesFilterFragment = getActiviteFiltersSqlFragment(
@@ -78,6 +82,7 @@ export const searchActiviteAndRdvs = async (
       : Prisma.sql`TRUE`
 
   const rdvWhereClause = rdvFiltersWhereClause({
+    rdvUserIds: options.rdvUserIds,
     rdvAccountIds: options.rdvAccountIds,
     shouldFetchRdvs: options.shouldFetchRdvs,
     includeRdvsWithAssociatedActivites: false,

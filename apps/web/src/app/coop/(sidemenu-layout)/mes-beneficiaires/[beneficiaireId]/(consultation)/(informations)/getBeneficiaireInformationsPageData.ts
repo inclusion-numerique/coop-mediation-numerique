@@ -23,6 +23,7 @@ export const getBeneficiaireInformationsPageData = async ({
     },
     select: {
       id: true,
+      rdvUserId: true,
       rdvServicePublicId: true,
       mediateurId: true,
       prenom: true,
@@ -58,6 +59,7 @@ export const getBeneficiaireInformationsPageData = async ({
   const searchResult = await searchActiviteAndRdvs({
     mediateurIds: [mediateurId],
     beneficiaireIds: [beneficiaireId],
+    rdvUserIds: beneficiaire.rdvUserId ? [beneficiaire.rdvUserId] : [],
     rdvAccountIds: user.rdvAccount ? [user.rdvAccount.id] : [],
     shouldFetchRdvs: !!user.rdvAccount?.hasOauthTokens,
     shouldFetchActivites: true,

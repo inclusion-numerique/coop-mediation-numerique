@@ -1,5 +1,6 @@
 import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
 import { getBeneficiaireAdresseString } from '@app/web/beneficiaire/getBeneficiaireAdresseString'
+import { mergeRdvUserFromRdvPlan } from '@app/web/features/rdvsp/sync/mergeRdvUserFromRdvPlan'
 import { refreshRdvAgentAccountData } from '@app/web/features/rdvsp/sync/refreshRdvAgentAccountData'
 import { syncAllRdvData } from '@app/web/features/rdvsp/sync/syncAllRdvData'
 import { prismaClient } from '@app/web/prismaClient'
@@ -161,6 +162,21 @@ export const rdvServicePublicRouter = router({
           where: {
             id: beneficiaireId,
           },
+          select: {
+            id: true,
+            prenom: true,
+            nom: true,
+            email: true,
+            commune: true,
+            adresse: true,
+            mediateurId: true,
+            telephone: true,
+            rdvUser: {
+              select: {
+                id: true,
+              },
+            },
+          },
         })
 
         if (!beneficiaire || beneficiaire.mediateurId !== user.mediateur?.id) {
@@ -178,7 +194,7 @@ export const rdvServicePublicRouter = router({
 
         const input = {
           user: {
-            id: beneficiaire.rdvServicePublicId ?? undefined,
+            id: beneficiaire.rdvUser?.id ?? undefined,
             first_name: beneficiaire.prenom ?? undefined,
             last_name: beneficiaire.nom ?? undefined,
             email: beneficiaire.email ?? undefined,
@@ -199,16 +215,18 @@ export const rdvServicePublicRouter = router({
           throw externalApiError(result.error)
         }
 
-        // Update beneficiaire with id from RDV Service Public if needed
-        // The rest of beneficiaire data could be updated after
-        // the plan is created (on redirection), to fetch email, tel, etc... if needed
+        // Extract user_id from the plan response
+        const rdvPlanUserId = result.data.rdv_plan.user_id
 
-        if (result.data.rdv_plan.user_id !== beneficiaire.rdvServicePublicId) {
-          await prismaClient.beneficiaire.update({
-            where: { id: beneficiaireId },
-            data: { rdvServicePublicId: result.data.rdv_plan.user_id },
-          })
-        }
+        console.log('rdvPlanData', result.data)
+
+        // Fetch user from API, create RdvUser if it doesn't exist, and link with beneficiaire
+        await mergeRdvUserFromRdvPlan({
+          rdvPlanUserId,
+          rdvAccount: oAuthCallUser.rdvAccount,
+          beneficiaireId,
+          currentRdvUserId: beneficiaire.rdvUser?.id,
+        })
 
         return result.data
       },

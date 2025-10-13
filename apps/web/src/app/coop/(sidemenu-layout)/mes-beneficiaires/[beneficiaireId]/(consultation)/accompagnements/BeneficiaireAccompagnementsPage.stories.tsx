@@ -341,7 +341,9 @@ const activites = [
 const rdvs = rdvsForStories satisfies RdvListItem[]
 
 const avecAccompagnements = {
-  beneficiaire: beneficiaireAvecAccompagnements,
+  beneficiaire: {
+    ...beneficiaireAvecAccompagnements,
+  },
   searchResult: {
     items: [
       ...rdvs.map((rdv) => ({ kind: 'rdv' as const, ...rdv })),
