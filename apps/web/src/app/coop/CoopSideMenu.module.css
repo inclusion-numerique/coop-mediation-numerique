@@ -8,7 +8,7 @@
       display: flex;
       flex-direction: column;
 
-      .fr-collapse {
+      > .fr-collapse {
         /* we want full height to display last button at the bottom */
 
         /* 72px for header, 48 for the 2 24px paddings */
