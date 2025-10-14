@@ -359,6 +359,19 @@ export class WebAppStack extends TerraformStack {
       })
     }
 
+    // Daily sync RDVSP data
+    // Only for dev and main environments
+    if (namespace === 'dev' || namespace === 'main') {
+      createJobExecutionCron(this, {
+        name: 'sync-rdvsp-data',
+        job: {
+          name: 'sync-rdvsp-data',
+        },
+        schedule: '0 2 * * *',
+        containerId: container.id,
+      })
+    }
+
     createJobExecutionCron(this, {
       name: `update-structures-cartographie-nationale`,
       job: {
