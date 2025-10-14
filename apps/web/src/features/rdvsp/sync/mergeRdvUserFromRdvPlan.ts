@@ -7,77 +7,52 @@ import * as Sentry from '@sentry/nextjs'
 
 export const mergeRdvUserFromRdvPlan = async ({
   rdvPlanUserId,
-  rdvAccount,
-  beneficiaireId,
-  currentRdvUserId,
+  beneficiaire: {
+    id: beneficiaireId,
+    prenom,
+    nom,
+    email,
+    telephone,
+    rdvUserId,
+  },
 }: {
   rdvPlanUserId: number
   rdvAccount: OAuthRdvApiCredentials
-  beneficiaireId: string
-  currentRdvUserId: number | undefined
+  beneficiaire: {
+    id: string
+    prenom: string | null
+    nom: string | null
+    email: string | null
+    telephone: string | null
+    rdvUserId: number | undefined
+  }
 }) => {
   try {
-    // Fetch the complete user data from RDV Service Public API
-    const userResponse = await oAuthRdvApiGetUser({
-      userId: String(rdvPlanUserId),
-      rdvAccount,
-    })
-
-    console.log('Api user response', userResponse)
-
-    if (userResponse.status === 'error') {
-      throw new Error(
-        `Failed to fetch user from RDV Service Public: ${userResponse.error}`,
-      )
-    }
-
-    const rdvApiUser = userResponse.data.user
-    if (!rdvApiUser) {
-      throw new Error('User not found in RDV Service Public response')
-    }
+    // The user from rdvsp is in "limbo" / without organisation so we cannot fetch its data for now
 
     await prismaClient.$transaction(async (transaction) => {
       // Check if RdvUser already exists
-      const existingRdvUser = await transaction.rdvUser.findUnique({
+      let rdvUser = await transaction.rdvUser.findUnique({
         where: { id: rdvPlanUserId },
       })
 
-      if (!existingRdvUser) {
-        // Create RdvUser with data from API
-        await transaction.rdvUser.create({
+      if (!rdvUser) {
+        // Create RdvUser with temporary data, it will be updated later by webhook process
+        rdvUser = await transaction.rdvUser.create({
           data: {
-            id: rdvApiUser.id,
-            address: rdvApiUser.address,
-            addressDetails: rdvApiUser.address_details,
-            affiliationNumber: rdvApiUser.affiliation_number,
-            birthDate: rdvApiUser.birth_date
-              ? new Date(rdvApiUser.birth_date)
-              : null,
-            birthName: rdvApiUser.birth_name,
-            caisseAffiliation: rdvApiUser.caisse_affiliation,
-            createdAt: rdvApiUser.created_at
-              ? new Date(rdvApiUser.created_at)
-              : null,
-            email: rdvApiUser.email,
-            firstName: rdvApiUser.first_name,
-            invitationAcceptedAt: rdvApiUser.invitation_accepted_at
-              ? new Date(rdvApiUser.invitation_accepted_at)
-              : null,
-            invitationCreatedAt: rdvApiUser.invitation_created_at
-              ? new Date(rdvApiUser.invitation_created_at)
-              : null,
-            lastName: rdvApiUser.last_name,
-            notifyByEmail: rdvApiUser.notify_by_email,
-            notifyBySms: rdvApiUser.notify_by_sms,
-            phoneNumber: rdvApiUser.phone_number,
-            phoneNumberFormatted: rdvApiUser.phone_number_formatted,
-            responsibleId: rdvApiUser.responsible_id,
+            id: rdvPlanUserId,
+            firstName: prenom ?? '-',
+            lastName: nom ?? '-',
+            email: email,
+            phoneNumber: telephone,
+            notifyByEmail: false,
+            notifyBySms: false,
           },
         })
       }
 
       // Link beneficiaire to RdvUser if not already linked
-      if (currentRdvUserId !== rdvPlanUserId) {
+      if (rdvUserId !== rdvPlanUserId) {
         await transaction.beneficiaire.update({
           where: { id: beneficiaireId },
           data: { rdvUserId: rdvPlanUserId },

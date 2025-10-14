@@ -25,7 +25,7 @@ export const rdvFiltersWhereClause = ({
       ? Prisma.sql`TRUE`
       : rdvUserIds.length === 0
         ? Prisma.sql`FALSE`
-        : Prisma.sql`rdv.user_id = ANY(${rdvUserIds}::int[])`,
+        : Prisma.sql`EXISTS (SELECT 1 FROM rdv_participations WHERE rdv_participations.rdv_id = rdv.id AND rdv_participations.user_id = ANY(${rdvUserIds}::int[]))`,
   ]
 
   return Prisma.join(clauses, ' AND ')

@@ -224,8 +224,14 @@ export const rdvServicePublicRouter = router({
         await mergeRdvUserFromRdvPlan({
           rdvPlanUserId,
           rdvAccount: oAuthCallUser.rdvAccount,
-          beneficiaireId,
-          currentRdvUserId: beneficiaire.rdvUser?.id,
+          beneficiaire: {
+            id: beneficiaireId,
+            prenom: beneficiaire.prenom,
+            nom: beneficiaire.nom,
+            email: beneficiaire.email,
+            telephone: beneficiaire.telephone,
+            rdvUserId: beneficiaire.rdvUser?.id,
+          },
         })
 
         return result.data

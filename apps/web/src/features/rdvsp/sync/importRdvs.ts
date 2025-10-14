@@ -145,7 +145,7 @@ const motifHasDiff = (
     existing.followUp !== motif.follow_up ||
     existing.instructionForRdv !== motif.instruction_for_rdv ||
     existing.locationType !== motif.location_type ||
-    existing.motifCategoryId !== motif.motif_category.id
+    existing.motifCategoryId !== motif.motif_category?.id
   )
 }
 
