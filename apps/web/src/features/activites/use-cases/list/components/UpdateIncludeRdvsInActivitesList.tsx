@@ -23,8 +23,6 @@ const UpdateIncludeRdvsInActivitesList = ({
     trpc.rdvServicePublic.updateIncludeRdvsInActivitesList.useMutation()
   const router = useRouter()
 
-  console.log({ rdvAccountId, includeRdvsInActivitesList, value })
-
   const onChange = async (option: ChangeEvent<HTMLInputElement>) => {
     setValue(option.target.checked)
 

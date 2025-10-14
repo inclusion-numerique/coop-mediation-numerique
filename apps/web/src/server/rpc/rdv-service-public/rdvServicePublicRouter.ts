@@ -238,8 +238,6 @@ export const rdvServicePublicRouter = router({
         // Extract user_id from the plan response
         const rdvPlanUserId = result.data.rdv_plan.user_id
 
-        console.log('rdvPlanData', result.data)
-
         // Fetch user from API, create RdvUser if it doesn't exist, and link with beneficiaire
         await mergeRdvUserFromRdvPlan({
           rdvPlanUserId,

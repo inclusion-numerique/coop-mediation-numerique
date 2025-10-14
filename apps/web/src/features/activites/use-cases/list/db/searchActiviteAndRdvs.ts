@@ -64,9 +64,6 @@ export const searchActiviteAndRdvs = async (
 
   const mediateurIds = options?.mediateurIds ?? []
 
-  console.log('PARAMS', searchParams)
-  console.log('OPTIONS', options)
-
   const activitesFilterConditions =
     getActivitesFiltersWhereConditions(searchParams)
   const activitesFilterFragment = getActiviteFiltersSqlFragment(

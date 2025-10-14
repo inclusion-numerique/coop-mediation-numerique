@@ -34,8 +34,6 @@ const BeneficiaireLayout = async (
     },
   })
 
-  console.log('beneficiaire', beneficiaire)
-
   if (!beneficiaire) {
     notFound()
     return null

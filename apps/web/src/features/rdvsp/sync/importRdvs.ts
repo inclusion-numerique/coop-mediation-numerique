@@ -246,12 +246,6 @@ const importMotifs = async ({
   for (const motif of motifs) {
     const existingMotif = existingMotifsMap.get(motif.id)
 
-    console.log('MOTIF DIFF COMPUTATION', {
-      motif,
-      existingMotif,
-      diff: existingMotif ? motifHasDiff(existingMotif, motif) : 'unexisting',
-    })
-
     if (existingMotif) {
       // no-op if no diff
       if (!motifHasDiff(existingMotif, motif)) {
@@ -349,28 +343,51 @@ const importUsers = async ({
 
 // TODO more checks
 const rdvHasDiff = (existing: ExistingRdv, rdv: OAuthApiRdv) => {
-  // compare existing vs API rdv
-  return (
-    existing.status !== rdv.status ||
-    existing.durationInMin !== rdv.duration_in_min ||
-    existing.name !== rdv.name ||
-    existing.endsAt.toISOString() !== rdv.ends_at ||
-    existing.startsAt.toISOString() !== rdv.starts_at ||
-    existing.lieuId !== rdv.lieu?.id ||
-    existing.lieu?.name !== rdv.lieu?.name ||
-    existing.lieu?.address !== rdv.lieu?.address ||
-    existing.lieu?.phoneNumber !== rdv.lieu?.phone_number ||
-    existing.lieu?.singleUse !== rdv.lieu?.single_use ||
-    existing.motifId !== rdv.motif.id ||
-    existing.organisationId !== rdv.organisation.id ||
-    existing.organisation?.name !== rdv.organisation.name ||
-    existing.organisation?.email !== rdv.organisation.email ||
-    existing.organisation?.phoneNumber !== rdv.organisation.phone_number ||
-    existing.participations.length !== rdv.participations.length ||
-    existing.participations.some((participation) =>
-      participationHasDiff(participation, rdv.participations[0]),
-    )
+  const sameInstant = (date: Date, apiDateString: string) =>
+    date.getTime() === new Date(apiDateString).getTime()
+
+  if (existing.status !== rdv.status) return true
+  if (existing.durationInMin !== rdv.duration_in_min) return true
+  if ((existing.name ?? null) !== (rdv.name ?? null)) return true
+  if (!sameInstant(existing.endsAt, rdv.ends_at)) return true
+  if (!sameInstant(existing.startsAt, rdv.starts_at)) return true
+
+  // Linked entity ids
+  if ((existing.lieuId ?? null) !== (rdv.lieu?.id ?? null)) return true
+  if (existing.motifId !== rdv.motif.id) return true
+  if (existing.organisationId !== rdv.organisation.id) return true
+
+  // We also check denormalized linked data to avoid stale nested objects
+  if (existing.lieu?.name !== rdv.lieu?.name) return true
+  if (existing.lieu?.address !== rdv.lieu?.address) return true
+  if ((existing.lieu?.phoneNumber ?? null) !== (rdv.lieu?.phone_number ?? null))
+    return true
+  if ((existing.lieu?.singleUse ?? null) !== (rdv.lieu?.single_use ?? null))
+    return true
+
+  if ((existing.organisation?.name ?? null) !== (rdv.organisation.name ?? null))
+    return true
+  if (
+    (existing.organisation?.email ?? null) !== (rdv.organisation.email ?? null)
   )
+    return true
+  if (
+    (existing.organisation?.phoneNumber ?? null) !==
+    (rdv.organisation.phone_number ?? null)
+  )
+    return true
+
+  // Participations: compare by id and content
+  if (existing.participations.length !== rdv.participations.length) return true
+  const apiParticipationById = new Map(rdv.participations.map((p) => [p.id, p]))
+  for (const existingParticipation of existing.participations) {
+    const apiParticipation = apiParticipationById.get(existingParticipation.id)
+    if (!apiParticipation) return true
+    if (participationHasDiff(existingParticipation, apiParticipation))
+      return true
+  }
+
+  return false
 }
 
 const importRdv = async ({
