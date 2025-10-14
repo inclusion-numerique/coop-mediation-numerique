@@ -144,9 +144,10 @@ const motifHasDiff = (
     existing.name !== motif.name ||
     existing.organisationId !== motif.organisation_id ||
     existing.followUp !== motif.follow_up ||
-    existing.instructionForRdv !== motif.instruction_for_rdv ||
-    existing.locationType !== motif.location_type ||
-    existing.motifCategoryId !== motif.motif_category?.id
+    (existing.instructionForRdv ?? null) !==
+      (motif.instruction_for_rdv ?? null) ||
+    (existing.locationType ?? null) !== (motif.location_type ?? null) ||
+    (existing.motifCategoryId ?? null) !== (motif.motif_category?.id ?? null)
   )
 }
 
@@ -244,6 +245,13 @@ const importMotifs = async ({
 
   for (const motif of motifs) {
     const existingMotif = existingMotifsMap.get(motif.id)
+
+    console.log('MOTIF DIFF COMPUTATION', {
+      motif,
+      existingMotif,
+      diff: existingMotif ? motifHasDiff(existingMotif, motif) : 'unexisting',
+    })
+
     if (existingMotif) {
       // no-op if no diff
       if (!motifHasDiff(existingMotif, motif)) {
