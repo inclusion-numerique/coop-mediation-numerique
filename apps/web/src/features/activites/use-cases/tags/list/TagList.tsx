@@ -1,3 +1,4 @@
+import { numberToString } from '@app/web/utils/formatNumber'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import classNames from 'classnames'
 import { ReactNode } from 'react'
@@ -8,7 +9,13 @@ export const TagList = ({
   tags,
   actions,
 }: {
-  tags: { id: string; nom: string; scope: TagScope; description?: string }[]
+  tags: {
+    id: string
+    nom: string
+    scope: TagScope
+    description?: string
+    usageCount?: number
+  }[]
   actions?: (tag: {
     id: string
     nom: string
@@ -31,6 +38,11 @@ export const TagList = ({
           )}
         </div>
         <div className="fr-flex fr-align-items-center fr-flex-gap-4v">
+          {tag.usageCount !== undefined && (
+            <span className="fr-text--sm fr-text-mention--grey fr-mb-0">
+              {numberToString(tag.usageCount)}
+            </span>
+          )}
           {actions?.(tag)}
           <TagScopeBadge scope={tag.scope} />
         </div>

@@ -2,6 +2,7 @@ import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
+import { numberToString } from '@app/web/utils/formatNumber'
 import { contentId } from '@app/web/utils/skipLinks'
 import { TagList } from '../list/TagList'
 import { TagScope } from '../tagScope'
@@ -24,6 +25,7 @@ export const AdministrationTagsPage = async ({
     id: string
     nom: string
     scope: TagScope
+    usageCount: number
     description?: string
   }[]
 }) => (
@@ -51,12 +53,12 @@ export const AdministrationTagsPage = async ({
           <div className="fr-grid-row fr-grid-row--gutters">
             <div className="fr-col-md-6 fr-col-12">
               <CounterCard icon="ri-user-line">
-                {tagsCreators.total}
+                {numberToString(tagsCreators.total)}
               </CounterCard>
             </div>
             <div className="fr-col-md-6 fr-col-12">
               <CounterCard icon="ri-percent-line">
-                {tagsCreators.percentage}
+                {numberToString(tagsCreators.percentage)}
               </CounterCard>
             </div>
           </div>
@@ -66,18 +68,20 @@ export const AdministrationTagsPage = async ({
           <div className="fr-grid-row fr-grid-row--gutters">
             <div className="fr-col-md-6 fr-col-12">
               <CounterCard icon="ri-service-line">
-                {tagsUsedInCRAs.total}
+                {numberToString(tagsUsedInCRAs.total)}
               </CounterCard>
             </div>
             <div className="fr-col-md-6 fr-col-12">
               <CounterCard icon="ri-percent-line">
-                {tagsUsedInCRAs.percentage}
+                {numberToString(tagsUsedInCRAs.percentage)}
               </CounterCard>
             </div>
           </div>
         </section>
         <section className="fr-mb-12v">
-          <h2 className="fr-h5">Tags les plus utilisés</h2>
+          <h2 className="fr-h5">
+            Les {numberToString(mostUsedTags.length)} tags les plus utilisés
+          </h2>
           <TagList tags={mostUsedTags} />
         </section>
       </div>
