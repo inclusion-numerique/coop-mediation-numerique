@@ -11,6 +11,11 @@ import { importOrganisations } from './importOrganisations'
 import { importRdvs } from './importRdvs'
 import { installWebhooks } from './installWebhooks'
 import { refreshRdvAgentAccountData } from './refreshRdvAgentAccountData'
+import {
+  computeSyncDrift,
+  emptySyncModelResult,
+  type SyncResult,
+} from './syncLog'
 
 export type AppendLog = (log: string | string[]) => void
 
@@ -21,13 +26,18 @@ export const syncAllRdvData = async ({
 }) => {
   const { rdvAccount } = await getUserContextForOAuthApiCall({ user })
 
-  const syncLog: Prisma.RdvSyncLogUncheckedCreateInput = {
+  const syncLogData: Prisma.RdvSyncLogUncheckedCreateInput = {
     rdvAccountId: rdvAccount.id,
     started: new Date(),
     ended: null,
     error: null,
     log: '',
   }
+
+  const createdSyncLog = await prismaClient.rdvSyncLog.create({
+    data: syncLogData,
+  })
+
   const start = Date.now()
   const appendLog = (log: string | string[]) => {
     if (Array.isArray(log)) {
@@ -35,14 +45,19 @@ export const syncAllRdvData = async ({
     }
     const time = Math.round((Date.now() - start) / 1000)
     const line = `[rdv-sync:${rdvAccount.id}][${time}s] ${log}`
-    console.log(line)
-    syncLog.log += line
-    syncLog.log += '\n'
+    syncLogData.log += line
+    syncLogData.log += '\n'
   }
 
   try {
-    await refreshRdvAgentAccountData({ rdvAccount, appendLog })
-    await importOrganisations({ rdvAccount, appendLog })
+    await refreshRdvAgentAccountData({
+      rdvAccount,
+      appendLog,
+    })
+    const organisationsImport = await importOrganisations({
+      rdvAccount,
+      appendLog,
+    })
     const updatedRdvAccountOrganisations =
       await prismaClient.rdvAccount.findUniqueOrThrow({
         where: { id: rdvAccount.id },
@@ -56,15 +71,32 @@ export const syncAllRdvData = async ({
       })
     rdvAccount.organisations = updatedRdvAccountOrganisations.organisations
 
-    if (user.mediateur) {
-      await importRdvs({
-        rdvAccount,
-        mediateurId: user.mediateur.id,
-        user,
-        appendLog,
-      })
+    const rdvsImport = user.mediateur
+      ? await importRdvs({
+          rdvAccount,
+          mediateurId: user.mediateur.id,
+          user,
+          appendLog,
+        })
+      : null
+
+    const webhooksImport = await installWebhooks({
+      rdvAccount,
+      appendLog,
+    })
+
+    // Build sync result
+    const syncResult: SyncResult = {
+      rdvs: rdvsImport?.rdvs ?? emptySyncModelResult,
+      organisations: organisationsImport.result,
+      webhooks: webhooksImport,
+      users: rdvsImport?.users ?? emptySyncModelResult,
+      motifs: rdvsImport?.motifs ?? emptySyncModelResult,
+      lieux: rdvsImport?.lieux ?? emptySyncModelResult,
     }
-    await installWebhooks({ rdvAccount, appendLog })
+
+    // Compute drift
+    const syncResultWithDrift = computeSyncDrift(syncResult)
 
     await prismaClient.rdvAccount.update({
       where: { id: rdvAccount.id },
@@ -73,14 +105,76 @@ export const syncAllRdvData = async ({
         error: null,
       },
     })
+
+    const updateData = {
+      ended: new Date(),
+      drift: syncResultWithDrift.drift,
+
+      rdvsDrift: syncResultWithDrift.rdvs.drift,
+      rdvsNoop: syncResultWithDrift.rdvs.noop,
+      rdvsCreated: syncResultWithDrift.rdvs.created,
+      rdvsUpdated: syncResultWithDrift.rdvs.updated,
+      rdvsDeleted: syncResultWithDrift.rdvs.deleted,
+
+      organisationsDrift: syncResultWithDrift.organisations.drift,
+      organisationsNoop: syncResultWithDrift.organisations.noop,
+      organisationsCreated: syncResultWithDrift.organisations.created,
+      organisationsUpdated: syncResultWithDrift.organisations.updated,
+      organisationsDeleted: syncResultWithDrift.organisations.deleted,
+
+      webhooksDrift: syncResultWithDrift.webhooks.drift,
+      webhooksNoop: syncResultWithDrift.webhooks.noop,
+      webhooksCreated: syncResultWithDrift.webhooks.created,
+      webhooksUpdated: syncResultWithDrift.webhooks.updated,
+      webhooksDeleted: syncResultWithDrift.webhooks.deleted,
+
+      usersDrift: syncResultWithDrift.users.drift,
+      usersNoop: syncResultWithDrift.users.noop,
+      usersCreated: syncResultWithDrift.users.created,
+      usersUpdated: syncResultWithDrift.users.updated,
+      usersDeleted: syncResultWithDrift.users.deleted,
+
+      motifsDrift: syncResultWithDrift.motifs.drift,
+      motifsNoop: syncResultWithDrift.motifs.noop,
+      motifsCreated: syncResultWithDrift.motifs.created,
+      motifsUpdated: syncResultWithDrift.motifs.updated,
+      motifsDeleted: syncResultWithDrift.motifs.deleted,
+
+      lieuxDrift: syncResultWithDrift.lieux.drift,
+      lieuxNoop: syncResultWithDrift.lieux.noop,
+      lieuxCreated: syncResultWithDrift.lieux.created,
+      lieuxUpdated: syncResultWithDrift.lieux.updated,
+      lieuxDeleted: syncResultWithDrift.lieux.deleted,
+      rdvsCount: rdvsImport?.rdvs.count ?? 0,
+      organisationsCount: organisationsImport.count,
+      webhooksCount: webhooksImport.count,
+      usersCount: rdvsImport?.users.count ?? 0,
+      motifsCount: rdvsImport?.motifs.count ?? 0,
+      lieuxCount: rdvsImport?.lieux.count ?? 0,
+
+      log: syncLogData.log,
+    } as any
+
+    await prismaClient.rdvSyncLog.update({
+      where: { id: createdSyncLog.id },
+      data: updateData,
+    })
   } catch (error) {
     appendLog('sync failed')
-    syncLog.error = error instanceof Error ? error.message : 'Unknown error'
-    console.error(error)
+    const message = error instanceof Error ? error.message : 'Unknown error'
+    try {
+      await prismaClient.rdvSyncLog.update({
+        where: { id: createdSyncLog.id },
+        data: {
+          ended: new Date(),
+          error: message,
+          log: syncLogData.log,
+        },
+      })
+    } catch {
+      appendLog('failed to persist error to rdvSyncLog')
+    }
+    // error already persisted above
     throw error
-  } finally {
-    await prismaClient.rdvSyncLog.create({
-      data: syncLog,
-    })
   }
 }

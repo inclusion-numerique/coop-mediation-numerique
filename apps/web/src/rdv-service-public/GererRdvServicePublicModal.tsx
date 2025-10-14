@@ -4,7 +4,7 @@ import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import { trpc } from '@app/web/trpc'
-import type { UserRdvAccount, UserTimezone } from '@app/web/utils/user'
+import type { UserId, UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Notice from '@codegouvfr/react-dsfr/Notice'
@@ -29,9 +29,9 @@ export const GererRdvServicePublicModalInstance = createModal({
 })
 
 const GererRdvServicePublicModal = ({
-  user: { rdvAccount, timezone },
+  user: { rdvAccount, timezone, id: userId },
 }: {
-  user: UserRdvAccount & UserTimezone
+  user: UserRdvAccount & UserTimezone & UserId
 }) => {
   const deleteMutation = trpc.rdvServicePublic.deleteRdvAccount.useMutation()
   const syncMutation = trpc.rdvServicePublic.syncRdvAccountData.useMutation()
@@ -66,7 +66,9 @@ const GererRdvServicePublicModal = ({
   }
 
   const onSync = async () => {
-    const syncResult = await syncMutation.mutateAsync()
+    const syncResult = await syncMutation.mutateAsync({
+      userId,
+    })
 
     setLastSynced(
       syncResult.rdvAccount?.lastSynced

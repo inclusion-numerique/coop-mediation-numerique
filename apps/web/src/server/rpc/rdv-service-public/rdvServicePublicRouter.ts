@@ -15,7 +15,11 @@ import {
   OauthRdvApiCreateRdvPlanMutationInputValidation,
 } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
-import { externalApiError, invalidError } from '@app/web/server/rpc/trpcErrors'
+import {
+  externalApiError,
+  forbiddenError,
+  invalidError,
+} from '@app/web/server/rpc/trpcErrors'
 import { getServerUrl } from '@app/web/utils/baseUrl'
 import * as Sentry from '@sentry/nextjs'
 import { AxiosError } from 'axios'
@@ -121,36 +125,52 @@ export const rdvServicePublicRouter = router({
         })
       },
     ),
-  syncRdvAccountData: protectedProcedure.mutation(async ({ ctx: { user } }) => {
-    if (!user.rdvAccount) {
-      throw invalidError('Compte RDV Service Public introuvable')
-    }
+  syncRdvAccountData: protectedProcedure
+    .input(
+      z.object({
+        userId: z.string().uuid(),
+      }),
+    )
+    .mutation(async ({ ctx: { user: sessionUser }, input: { userId } }) => {
+      if (
+        sessionUser.id !== userId &&
+        sessionUser.role !== 'Admin' &&
+        sessionUser.role !== 'Support'
+      ) {
+        throw forbiddenError()
+      }
 
-    const oAuthCallUser = await getUserContextForOAuthApiCall({ user })
+      const user = await getSessionUserFromId(userId)
 
-    try {
-      await syncAllRdvData({
-        user: { ...user, rdvAccount: user.rdvAccount },
-      })
-    } catch (error) {
-      Sentry.captureException(error)
-      // Update the rdvAccount with sync error info
-      await prismaClient.rdvAccount.update({
-        where: {
-          id: oAuthCallUser.rdvAccount.id,
-        },
-        data: {
-          updated: new Date(),
-          lastSynced: new Date(),
-          error:
-            'Impossible de récupérer les données du compte RDV Service Public',
-        },
-      })
-    }
+      if (!user.rdvAccount) {
+        throw invalidError('Compte RDV Service Public introuvable')
+      }
 
-    // Returns the user with the updated rdvAccount
-    return getSessionUserFromId(user.id)
-  }),
+      const oAuthCallUser = await getUserContextForOAuthApiCall({ user })
+
+      try {
+        await syncAllRdvData({
+          user: { ...user, rdvAccount: user.rdvAccount },
+        })
+      } catch (error) {
+        Sentry.captureException(error)
+        // Update the rdvAccount with sync error info
+        await prismaClient.rdvAccount.update({
+          where: {
+            id: oAuthCallUser.rdvAccount.id,
+          },
+          data: {
+            updated: new Date(),
+            lastSynced: new Date(),
+            error:
+              'Impossible de récupérer les données du compte RDV Service Public',
+          },
+        })
+      }
+
+      // Returns the user with the updated rdvAccount
+      return getSessionUserFromId(user.id)
+    }),
   oAuthApiCreateRdvPlan: protectedProcedure
     .input(OauthRdvApiCreateRdvPlanMutationInputValidation)
     .mutation(

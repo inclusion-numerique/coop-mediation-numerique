@@ -13,6 +13,7 @@ import {
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { getServerUrl } from '@app/web/utils/baseUrl'
 import type { AppendLog } from './syncAllRdvData'
+import type { SyncModelResult, SyncOperation } from './syncLog'
 
 const webhookUrl = getServerUrl('/api/rdv-service-public/webhook', {
   absolutePath: true,
@@ -47,7 +48,7 @@ export const installWebhookForOrganisation = async ({
   rdvAccount: OAuthRdvApiCredentials
   organisationId: number
   appendLog: AppendLog
-}) => {
+}): Promise<SyncOperation> => {
   const existing = await oAuthRdvApiListWebhooks({
     rdvAccount,
     organisationId,
@@ -71,32 +72,32 @@ export const installWebhookForOrganisation = async ({
     )
 
     // Already installed
-    return
+    return 'noop'
   }
 
   if (!coopEndpoint) {
     if (webhookUrl.includes('localhost')) {
       appendLog(`skipping webhook installation for local environment`)
-      return
+      return 'noop'
     }
 
     appendLog(
       `no existing coop endpoint found for organisation ${organisationId}, creating new one`,
     )
     // Create
-    const created = await oAuthRdvApiCreateWebhook({
+    await oAuthRdvApiCreateWebhook({
       rdvAccount,
       organisationId,
       target_url: webhookUrl,
       subscriptions: webhookSubscriptions,
       secret: ServerWebAppConfig.RdvServicePublic.webhookSecret,
     })
-    return created
+    return 'created'
   }
 
   // Update
   appendLog(`updating coop endpoint ${coopEndpoint.id}`)
-  const updated = await oAuthRdvApiPatchWebhook({
+  await oAuthRdvApiPatchWebhook({
     rdvAccount,
     organisationId,
     webhookId: coopEndpoint.id,
@@ -104,7 +105,7 @@ export const installWebhookForOrganisation = async ({
     subscriptions: webhookSubscriptions,
     secret: ServerWebAppConfig.RdvServicePublic.webhookSecret,
   })
-  return updated
+  return 'updated'
 }
 
 /**
@@ -117,11 +118,11 @@ export const installWebhooks = async ({
 }: {
   rdvAccount: OauthRdvApiCredentialsWithOrganisations
   appendLog: AppendLog
-}) => {
+}): Promise<SyncModelResult & { count: number }> => {
   appendLog(
     `installing webhooks for account ${rdvAccount.id} with ${rdvAccount.organisations.length} organisations`,
   )
-  const webhooks = await Promise.all(
+  const webhookOperations = await Promise.all(
     rdvAccount.organisations.map(async (organisation) => {
       return installWebhookForOrganisation({
         rdvAccount,
@@ -131,6 +132,15 @@ export const installWebhooks = async ({
     }),
   )
 
-  appendLog(`installed ${webhooks.length} webhooks`)
-  return webhooks
+  const result: SyncModelResult = {
+    noop: webhookOperations.filter((op) => op === 'noop').length,
+    created: webhookOperations.filter((op) => op === 'created').length,
+    updated: webhookOperations.filter((op) => op === 'updated').length,
+    deleted: 0,
+  }
+
+  appendLog(
+    `webhooks: ${result.noop} noop, ${result.created} created, ${result.updated} updated`,
+  )
+  return { ...result, count: rdvAccount.organisations.length }
 }

@@ -109,7 +109,6 @@ const AdministrationSideMenu = () => {
         '/administration/fonctionnalites',
       ),
       items: [
-        // Rdv et Tags
         {
           text: (
             <>

@@ -1290,6 +1290,50 @@ model RdvSyncLog {
   log String?
   output Json?
 
+  drift Int @default(0) @map("drift") // number of diffs that have been missed by wehbook sync. drift is ok for the first sync
+
+  rdvsCount Int @default(0) @map("rdvs_count") // rdvs total in rdvsp services
+  rdvsDrift Int @default(0) @map("rdvs_drift") // drift is ok for the first sync
+  rdvsNoop Int @default(0) @map("rdvs_noop") // rdvs already synced correctly
+  rdvsCreated Int @default(0) @map("rdvs_created") // rdvs created during this sync
+  rdvsUpdated Int @default(0) @map("rdvs_updated") // rdvs updated during this sync
+  rdvsDeleted Int @default(0) @map("rdvs_deleted") // rdvs deleted during this sync
+
+  organisationsCount Int @default(0) @map("organisations_count") // organisations total in rdvsp services
+  organisationsDrift Int @default(0) @map("organisations_drift") // drift is ok for the first sync
+  organisationsNoop Int @default(0) @map("organisations_noop") // organisations already synced correctly
+  organisationsCreated Int @default(0) @map("organisations_created") // organisations created during this sync
+  organisationsUpdated Int @default(0) @map("organisations_updated") // organisations updated during this sync
+  organisationsDeleted Int @default(0) @map("organisations_deleted") // organisations deleted during this sync
+
+  webhooksCount Int @default(0) @map("webhooks_count") // webhooks total in rdvsp services
+  webhooksDrift Int @default(0) @map("webhooks_drift") // drift is ok for the first sync
+  webhooksNoop Int @default(0) @map("webhooks_noop") // webhooks already synced correctly
+  webhooksCreated Int @default(0) @map("webhooks_created") // webhooks created during this sync
+  webhooksUpdated Int @default(0) @map("webhooks_updated") // webhooks updated during this sync
+  webhooksDeleted Int @default(0) @map("webhooks_deleted") // webhooks deleted during this sync
+
+  usersCount Int @default(0) @map("users_count") // users total in rdvsp services
+  usersDrift Int @default(0) @map("users_drift") // drift is ok for the first sync
+  usersNoop Int @default(0) @map("users_noop") // users already synced correctly
+  usersCreated Int @default(0) @map("users_created") // users created during this sync
+  usersUpdated Int @default(0) @map("users_updated") // users updated during this sync
+  usersDeleted Int @default(0) @map("users_deleted") // users deleted during this sync
+
+  motifsCount Int @default(0) @map("motifs_count") // motifs total in rdvsp services
+  motifsDrift Int @default(0) @map("motifs_drift") // drift is ok for the first sync
+  motifsNoop Int @default(0) @map("motifs_noop") // motifs already synced correctly
+  motifsCreated Int @default(0) @map("motifs_created") // motifs created during this sync
+  motifsUpdated Int @default(0) @map("motifs_updated") // motifs updated during this sync
+  motifsDeleted Int @default(0) @map("motifs_deleted") // motifs deleted during this sync
+
+  lieuxCount Int @default(0) @map("lieux_count") // lieux total in rdvsp services
+  lieuxDrift Int @default(0) @map("lieux_drift") // drift is ok for the first sync
+  lieuxNoop Int @default(0) @map("lieux_noop") // lieux already synced correctly
+  lieuxCreated Int @default(0) @map("lieux_created") // lieux created during this sync
+  lieuxUpdated Int @default(0) @map("lieux_updated") // lieux updated during this sync
+  lieuxDeleted Int @default(0) @map("lieux_deleted") // lieux deleted during this sync
+
   @@index([rdvAccountId])
   @@map("rdv_sync_logs")
 }

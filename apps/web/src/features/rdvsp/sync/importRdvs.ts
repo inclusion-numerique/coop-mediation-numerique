@@ -13,6 +13,7 @@ import { UserId, UserWithExistingRdvAccount } from '@app/web/utils/user'
 import type { Prisma } from '@prisma/client'
 import { chunk } from 'lodash-es'
 import { AppendLog } from './syncAllRdvData'
+import type { SyncModelResult } from './syncLog'
 import {
   createRdv,
   deleteRdvs,
@@ -161,7 +162,7 @@ const importLieux = async ({
   chunkRdvs: OAuthApiRdv[]
   appendLog: AppendLog
   skipExistingLieuIds: Set<number>
-}) => {
+}): Promise<{ importedIds: number[]; result: SyncModelResult }> => {
   const lieuxWithDuplicates = chunkRdvs
     .map((rdv) => rdv.lieu)
     .filter(isDefinedAndNotNull)
@@ -203,7 +204,10 @@ const importLieux = async ({
   appendLog(
     `imported ${lieux.length} lieux, ${noop} noop, ${updated} updated, ${created} created`,
   )
-  return lieux.map((lieu) => lieu.id)
+  return {
+    importedIds: lieux.map((lieu) => lieu.id),
+    result: { noop, created, updated, deleted: 0 },
+  }
 }
 
 const importMotifs = async ({
@@ -228,7 +232,7 @@ const importMotifs = async ({
   chunkRdvs: OAuthApiRdv[]
   appendLog: AppendLog
   skipExistingMotifIds: Set<number>
-}) => {
+}): Promise<{ importedIds: number[]; result: SyncModelResult }> => {
   const motifsWithDuplicates = chunkRdvs.map((rdv) => rdv.motif)
   const motifs = [
     ...new Map(motifsWithDuplicates.map((motif) => [motif.id, motif])).values(),
@@ -268,7 +272,10 @@ const importMotifs = async ({
   appendLog(
     `imported ${motifs.length} motifs, ${noop} noop, ${updated} updated, ${created} created`,
   )
-  return motifs.map((motif) => motif.id)
+  return {
+    importedIds: motifs.map((motif) => motif.id),
+    result: { noop, created, updated, deleted: 0 },
+  }
 }
 
 // Moved to syncRdv.ts
@@ -283,16 +290,15 @@ const importUsers = async ({
   chunkRdvs: OAuthApiRdv[]
   appendLog: AppendLog
   skipExistingUserIds: Set<number>
-}) => {
-  // biome-ignore lint/suspicious/noConsole: debug logging
-  console.log('skip users', skipExistingUserIds)
+}): Promise<{ importedIds: number[]; result: SyncModelResult }> => {
+  // skipExistingUserIds used to avoid duplicate imports across chunks
   const usersWithDuplicates = chunkRdvs.flatMap((rdv) =>
     rdv.participations.map((participation) => participation.user),
   )
   const users = [
     ...new Map(usersWithDuplicates.map((user) => [user.id, user])).values(),
   ].filter((user) => !skipExistingUserIds.has(user.id))
-  console.log('users', users)
+  // users length is logged through appendLog below
   appendLog(`importing ${users.length} users`)
   let noop = 0
   let updated = 0
@@ -327,13 +333,15 @@ const importUsers = async ({
   appendLog(
     `imported ${users.length} users, ${noop} noop, ${updated} updated, ${created} created`,
   )
-  return users.map((user) => user.id)
+  return {
+    importedIds: users.map((user) => user.id),
+    result: { noop, created, updated, deleted: 0 },
+  }
 }
 
 // TODO more checks
 const rdvHasDiff = (existing: ExistingRdv, rdv: OAuthApiRdv) => {
-  console.log('diff existing', existing)
-  console.log('diff api rdv', rdv)
+  // compare existing vs API rdv
   return (
     existing.status !== rdv.status ||
     existing.durationInMin !== rdv.duration_in_min ||
@@ -408,7 +416,12 @@ export const importRdvs = async ({
   mediateurId: string
   appendLog: AppendLog
   batchSize?: number
-}) => {
+}): Promise<{
+  rdvs: SyncModelResult & { count: number }
+  users: SyncModelResult & { count: number }
+  motifs: SyncModelResult & { count: number }
+  lieux: SyncModelResult & { count: number }
+}> => {
   appendLog('import rdvs')
   const startsAfter = user.rdvAccount.syncFrom
     ? dateAsIsoDay(new Date(user.rdvAccount.syncFrom))
@@ -446,6 +459,25 @@ export const importRdvs = async ({
   let rdvUpdated = 0
   let rdvCreated = 0
 
+  const usersResult: SyncModelResult = {
+    noop: 0,
+    created: 0,
+    updated: 0,
+    deleted: 0,
+  }
+  const lieuxResult: SyncModelResult = {
+    noop: 0,
+    created: 0,
+    updated: 0,
+    deleted: 0,
+  }
+  const motifsResult: SyncModelResult = {
+    noop: 0,
+    created: 0,
+    updated: 0,
+    deleted: 0,
+  }
+
   for (const chunkIndex in chunks) {
     appendLog(`importing chunk ${chunkIndex} of ${chunks.length} rdvs`)
     const chunkRdvs = chunks[chunkIndex]
@@ -465,27 +497,40 @@ export const importRdvs = async ({
     // 3 - motifs
     // The Rdv+Participations can be imported in the last step
 
-    const chunkImportedUserIds = await importUsers({
+    const usersImport = await importUsers({
       existingUsersMap,
       chunkRdvs,
       appendLog,
       skipExistingUserIds: importedUserIds,
     })
-    for (const id of chunkImportedUserIds) importedUserIds.add(id)
-    const chunkImportedLieuIds = await importLieux({
+    for (const id of usersImport.importedIds) importedUserIds.add(id)
+    usersResult.noop += usersImport.result.noop
+    usersResult.created += usersImport.result.created
+    usersResult.updated += usersImport.result.updated
+
+    const lieuxImport = await importLieux({
       existingLieuxMap,
       chunkRdvs,
       appendLog,
       skipExistingLieuIds: importedLieuIds,
     })
-    for (const id of chunkImportedLieuIds) importedLieuIds.add(id)
-    const chunkImportedMotifIds = await importMotifs({
+
+    for (const id of lieuxImport.importedIds) importedLieuIds.add(id)
+
+    lieuxResult.noop += lieuxImport.result.noop
+    lieuxResult.created += lieuxImport.result.created
+    lieuxResult.updated += lieuxImport.result.updated
+
+    const motifsImport = await importMotifs({
       existingMotifsMap,
       chunkRdvs,
       appendLog,
       skipExistingMotifIds: importedMotifIds,
     })
-    for (const id of chunkImportedMotifIds) importedMotifIds.add(id)
+    for (const id of motifsImport.importedIds) importedMotifIds.add(id)
+    motifsResult.noop += motifsImport.result.noop
+    motifsResult.created += motifsImport.result.created
+    motifsResult.updated += motifsImport.result.updated
     await Promise.all(
       chunkRdvs.map(async (rdv) => {
         importedRdvsToDelete.delete(rdv.id)
@@ -505,7 +550,21 @@ export const importRdvs = async ({
     )
   }
 
+  const rdvDeletedCount = importedRdvsToDelete.size
   await deleteRdvsWithLog({ rdvIds: [...importedRdvsToDelete], appendLog })
 
   appendLog(`imported ${rdvs.length} rdvs`)
+
+  return {
+    rdvs: {
+      noop: rdvNoop,
+      created: rdvCreated,
+      updated: rdvUpdated,
+      deleted: rdvDeletedCount,
+      count: rdvs.length,
+    },
+    users: { ...usersResult, count: importedUserIds.size },
+    motifs: { ...motifsResult, count: importedMotifIds.size },
+    lieux: { ...lieuxResult, count: importedLieuIds.size },
+  }
 }
