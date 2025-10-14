@@ -41,9 +41,7 @@ export const AdministrationTagsPage = async ({
       currentPage="Tags"
     />
     <main id={contentId}>
-      <AdministrationTitle icon="ri-calendar-check-line">
-        Tags
-      </AdministrationTitle>
+      <AdministrationTitle icon="ri-price-tag-3-line">Tags</AdministrationTitle>
       <div className="fr-my-16v">
         <section className="fr-mb-12v">
           <h2 className="fr-h5">
