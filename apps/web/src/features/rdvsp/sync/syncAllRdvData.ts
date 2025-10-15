@@ -24,10 +24,11 @@ export const syncAllRdvData = async ({
 }: {
   user: UserWithExistingRdvAccount & UserId & UserMediateur
 }) => {
-  const { rdvAccount } = await getUserContextForOAuthApiCall({ user })
+  const { rdvAccount: rdvAccountForFirstCall } =
+    await getUserContextForOAuthApiCall({ user })
 
   const syncLogData: Prisma.RdvSyncLogUncheckedCreateInput = {
-    rdvAccountId: rdvAccount.id,
+    rdvAccountId: rdvAccountForFirstCall.id,
     started: new Date(),
     ended: null,
     error: null,
@@ -44,16 +45,20 @@ export const syncAllRdvData = async ({
       return log.forEach(appendLog)
     }
     const time = Math.round((Date.now() - start) / 1000)
-    const line = `[rdv-sync:${rdvAccount.id}][${time}s] ${log}`
+    const line = `[rdv-sync:${rdvAccountForFirstCall.id}][${time}s] ${log}`
     syncLogData.log += line
     syncLogData.log += '\n'
   }
 
   try {
     await refreshRdvAgentAccountData({
-      rdvAccount,
+      rdvAccount: rdvAccountForFirstCall,
       appendLog,
     })
+
+    // After the first call, the credentials may have been refreshed, we grab the updated account
+    const { rdvAccount } = await getUserContextForOAuthApiCall({ user })
+
     const organisationsImport = await importOrganisations({
       rdvAccount,
       appendLog,
@@ -168,7 +173,7 @@ export const syncAllRdvData = async ({
         data: {
           ended: new Date(),
           error: message,
-          log: syncLogData.log,
+          log: `${syncLogData.log}\n\nError:|-\n${error}`,
         },
       })
     } catch {

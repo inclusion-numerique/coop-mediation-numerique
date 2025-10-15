@@ -1,14 +1,10 @@
-import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import AdministrationInfoCard from '@app/web/app/administration/AdministrationInfoCard'
 import AdministrationInlineLabelsValues from '@app/web/app/administration/AdministrationInlineLabelsValues'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
-import {
-  dateAsDayAndTime,
-  dateAsDayAndTimeInTimeZone,
-} from '@app/web/utils/dateAsDayAndTime'
+import { dateAsDayAndTimeInTimeZone } from '@app/web/utils/dateAsDayAndTime'
 import { numberToString } from '@app/web/utils/formatNumber'
 import { contentId } from '@app/web/utils/skipLinks'
 import AdministrationSyncUserDataButton from './AdministrationSyncUserDataButton'
