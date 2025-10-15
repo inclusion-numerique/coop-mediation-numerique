@@ -1,8 +1,13 @@
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
+import {
+  getSessionUserFromId,
+  getSessionUserFromSessionToken,
+} from '@app/web/auth/getSessionUserFromSessionToken'
 import { refreshRdvAgentAccountData } from '@app/web/features/rdvsp/sync/refreshRdvAgentAccountData'
+import { syncAllRdvData } from '@app/web/features/rdvsp/sync/syncAllRdvData'
 import { prismaClient } from '@app/web/prismaClient'
 import { oAuthRdvApiMe } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
+import { getUserContextForOAuthApiCall } from '@app/web/rdv-service-public/getUserContextForRdvApiCall'
 import {
   rdvServicePublicOAuthConfig,
   rdvServicePublicOAuthTokenEndpoint,
@@ -163,19 +168,21 @@ export const GET = async (request: NextRequest) => {
       },
     })
 
-    // Update the rdv account
-    const rdvAccount = await prismaClient.rdvAccount.upsert({
+    // Update or create the rdv account
+    await prismaClient.rdvAccount.upsert({
       where: { id: existingRdvAccount?.id ?? userData.agent.id },
       create: {
         ...authUserData,
         id: userData.agent.id,
         userId: user.id,
+        syncFrom: user.created,
       },
       update: {
         ...authUserData,
         id: userData.agent.id,
         userId: user.id,
         error: null,
+        deleted: null,
       },
       select: {
         id: true,
@@ -186,12 +193,33 @@ export const GET = async (request: NextRequest) => {
       },
     })
 
-    // Synchronize rdv account data
-    await refreshRdvAgentAccountData({
-      rdvAccount,
-      appendLog: () => {
-        // no-op
+    const updatedUserWithRdvAccount = await getSessionUserFromId(user.id)
+
+    if (!updatedUserWithRdvAccount.rdvAccount) {
+      Sentry.captureException(
+        new Error('No RDV account found after OAuth callback'),
+      )
+      return redirectToError({
+        error: 'server_error',
+        error_description: 'Une erreur est survenue lors de la connexion',
+      })
+    }
+
+    // Asynchronously synchronize rdv account data
+    syncAllRdvData({
+      user: {
+        ...updatedUserWithRdvAccount,
+        rdvAccount: updatedUserWithRdvAccount.rdvAccount,
       },
+    }).catch((error) => {
+      Sentry.captureException(error)
+      // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
+      console.error(
+        'Error while synchronizing RDV account data for user ',
+        user.id,
+        user.email,
+        error,
+      )
     })
 
     // Rediriger vers une route de succès ou une page front.

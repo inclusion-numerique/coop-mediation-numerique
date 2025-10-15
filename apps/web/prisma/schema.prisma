@@ -1269,6 +1269,7 @@ model RdvAccount {
 
   created    DateTime  @default(now()) @map("created")
   updated    DateTime  @updatedAt @map("updated")
+  deleted    DateTime? @map("deleted")
   lastSynced DateTime? @map("last_synced")
   error      String? // If on a sync operation, there was a invalid token error or external RDV API error (unreachable, etc...)
 

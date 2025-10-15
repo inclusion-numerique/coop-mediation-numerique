@@ -74,6 +74,7 @@ export const rdvServicePublicRouter = router({
     },
   ),
   deleteRdvAccount: protectedProcedure.mutation(async ({ ctx: { user } }) => {
+    // This is actually a soft delete
     const rdvAccount = await prismaClient.rdvAccount.findUnique({
       where: {
         userId: user.id,
@@ -87,18 +88,17 @@ export const rdvServicePublicRouter = router({
       throw invalidError('Compte RDV Service Public introuvable')
     }
 
-    await prismaClient.$transaction(async (transaction) => {
-      await transaction.rdvAccountOrganisation.deleteMany({
-        where: {
-          accountId: rdvAccount.id,
-        },
-      })
-
-      await transaction.rdvAccount.delete({
-        where: {
-          id: rdvAccount.id,
-        },
-      })
+    await prismaClient.rdvAccount.update({
+      where: {
+        id: rdvAccount.id,
+      },
+      data: {
+        deleted: new Date(),
+        accessToken: null,
+        refreshToken: null,
+        expiresAt: null,
+        updated: new Date(),
+      },
     })
 
     return {}

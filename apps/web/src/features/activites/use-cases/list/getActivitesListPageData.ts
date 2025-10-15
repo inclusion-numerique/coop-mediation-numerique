@@ -28,7 +28,7 @@ export const getActivitesListPageData = async ({
    */
   const shouldFetchRdvs =
     includeRdvs &&
-    !!user.rdvAccount?.id &&
+    !!user.rdvAccount?.hasOauthTokens &&
     (user.rdvAccount.includeRdvsInActivitesList ||
       (searchParams.rdvs?.length ?? 0) > 0) && // we display rdvs if there is a rdv filter enabled
     (searchParams.types?.length ?? 0) === 0 // we did not filter on activites types
