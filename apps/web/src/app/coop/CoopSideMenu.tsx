@@ -64,7 +64,6 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
       ),
       linkProps: { href: '/coop/mes-activites' },
       isActive: pathname?.startsWith('/coop/mes-activites'),
-      mediateurOnly: true,
     },
     {
       text: (
@@ -125,7 +124,6 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
       ),
       linkProps: undefined as unknown as { href: string },
       isActive: false,
-      mediateurOnly: true,
     },
     {
       text: (

@@ -13,7 +13,7 @@ export const SelectedItems = <T,>({
   const { state, setValue } = useFieldContext<T[]>()
 
   return (
-    <SelectedItemsBase
+    <SelectedItemsBase<T>
       values={state.value}
       onClick={(valueToRemove: T) => (): void => {
         setValue(

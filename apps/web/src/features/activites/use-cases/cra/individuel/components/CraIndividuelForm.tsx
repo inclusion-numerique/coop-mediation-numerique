@@ -59,7 +59,6 @@ const CraIndividuelForm = ({
   dureeOptions: SelectOption[]
 }) => {
   const router = useRouter()
-
   const mutation = trpc.cra.individuel.useMutation()
   const isPending = mutation.isPending
 

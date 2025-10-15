@@ -20,30 +20,26 @@ export const tagsRouter = router({
         excludeIds: z.array(z.string()).default([]),
       }),
     )
-    .query(({ input: { query, excludeIds }, ctx: { user } }) => {
-      if (!user.mediateur && user.role !== 'Admin') {
-        throw forbiddenError('User is not a mediateur')
-      }
-
-      return searchTags({
+    .query(({ input: { query, excludeIds }, ctx: { user } }) =>
+      searchTags({
         mediateurId: user.mediateur?.id,
+        coordinateurId: user.coordinateur?.id,
         searchParams: { lignes: '10', recherche: query },
         excludeIds,
-      })
-    }),
+      }),
+    ),
   save: protectedProcedure
     .input(SaveTagValidation)
     .mutation(async ({ input, ctx: { user: sessionUser } }) => {
       const { id, ...tag } = input
 
-      if (id != null && isTagOwner(sessionUser)(id)) {
+      if (id != null && isTagOwner(sessionUser)(id))
         return await updateTag(sessionUser)({ ...tag, id })
-      }
 
-      if (input.scope === TagScope.Personnel || !isCoordinateur(sessionUser))
+      if (input.scope === TagScope.Personnel)
         return await createTagPersonnel(sessionUser)(tag)
 
-      if (input.scope === TagScope.Departemental || !isMediateur(sessionUser))
+      if (input.scope === TagScope.Departemental && !isMediateur(sessionUser))
         return await createTagDepartemental(sessionUser)(tag)
     }),
   delete: protectedProcedure
