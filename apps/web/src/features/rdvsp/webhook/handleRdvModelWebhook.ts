@@ -61,22 +61,12 @@ export const handleRdvModelWebhook = async ({
     const rdv = webhookRdvToOAuthApiRdv(data)
 
     switch (event) {
-      case 'created': {
-        // Sync dependencies first (users, lieu, motif)
-        await syncRdvDependencies(rdv)
-        // Create the RDV
-        await createRdv(rdv, rdvAccountId)
-        // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
-        console.log(`[rdvsp webhook] Created RDV ${data.id}`)
-        break
-      }
-
+      case 'created':
       case 'updated': {
-        // Check if RDV exists in our database
+        // Check if RDV exists in our database even if created event (to avoid race condition)
         const existingRdv = await prismaClient.rdv.findUnique({
           where: { id: data.id },
         })
-
         if (!existingRdv) {
           // If RDV doesn't exist, treat as create
           await syncRdvDependencies(rdv)
