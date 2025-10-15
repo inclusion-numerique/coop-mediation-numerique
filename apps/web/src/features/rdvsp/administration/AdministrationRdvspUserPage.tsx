@@ -11,7 +11,6 @@ import {
 } from '@app/web/utils/dateAsDayAndTime'
 import { numberToString } from '@app/web/utils/formatNumber'
 import { contentId } from '@app/web/utils/skipLinks'
-import { userAgent } from 'next/server'
 import AdministrationSyncUserDataButton from './AdministrationSyncUserDataButton'
 import type { AdministrationRdvspUserData } from './getAdministrationRdvspUserData'
 
@@ -82,7 +81,7 @@ export const AdministrationRdvspUserPage = async ({
       />
       <main id={contentId}>
         <AdministrationTitle icon="ri-calendar-check-line">
-          Rendez-Vous Service Public - {userAgent.name ?? 'Détails'}
+          Rendez-Vous Service Public - {name ?? 'Détails'}
         </AdministrationTitle>
         <AdministrationInfoCard title="Détails de l’intégration">
           <AdministrationInlineLabelsValues
