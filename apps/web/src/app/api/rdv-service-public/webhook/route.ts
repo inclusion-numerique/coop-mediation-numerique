@@ -11,7 +11,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const outputLog = (label: string, payload: unknown) => {
   // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
-  console.log(`[rdvsp webhook] ${label}:\n${JSON.stringify(payload)}`)
+  console.log(`[rdvsp webhook] ${label}: ${JSON.stringify(payload)}`)
 }
 
 export const POST = async (request: NextRequest) => {
