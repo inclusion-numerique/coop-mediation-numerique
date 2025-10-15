@@ -1,4 +1,3 @@
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import {
   OAuthRdvApiCredentials,
   OauthRdvApiCredentialsWithOrganisations,
@@ -35,8 +34,9 @@ const isAlreadyInstalled = (webhook: RdvApiWebhookEndpoint) => {
     webhook.subscriptions.length === webhookSubscriptions.length &&
     webhookSubscriptions.every((subscription) =>
       webhook.subscriptions.includes(subscription),
-    ) &&
-    webhook.secret === ServerWebAppConfig.RdvServicePublic.webhookSecret
+    )
+    // TODO: secret does not work, it is not returned by rdvsp api
+    // && webhook.secret === ServerWebAppConfig.RdvServicePublic.webhookSecret
   )
 }
 
@@ -65,11 +65,6 @@ export const installWebhookForOrganisation = async ({
   const coopEndpoint = existing.webhook_endpoints.find(
     (webhook) => webhook.target_url === webhookUrl,
   )
-
-  console.log('ENDPOINT DIFF COMPUTATION', {
-    coopEndpoint,
-    alreadyInstalled: !!coopEndpoint && isAlreadyInstalled(coopEndpoint),
-  })
 
   if (coopEndpoint && isAlreadyInstalled(coopEndpoint)) {
     appendLog(
