@@ -66,6 +66,11 @@ export const installWebhookForOrganisation = async ({
     (webhook) => webhook.target_url === webhookUrl,
   )
 
+  console.log('ENDPOINT DIFF COMPUTATION', {
+    coopEndpoint,
+    alreadyInstalled: !!coopEndpoint && isAlreadyInstalled(coopEndpoint),
+  })
+
   if (coopEndpoint && isAlreadyInstalled(coopEndpoint)) {
     appendLog(
       `found existing coop endpoint ${coopEndpoint.id} with all subscriptions, skipping`,
