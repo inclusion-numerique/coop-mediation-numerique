@@ -57,7 +57,7 @@ export const getFiltersOptionsForMediateur = async ({
     getFirstAndLastRdvDate({
       rdvAccountIds: user.rdvAccount ? [user.rdvAccount.id] : [],
     }),
-    getHasCrasV1({ mediateurIds }),
+    getHasCrasV1({ user, mediateurIds }),
   ])
 
   return {
