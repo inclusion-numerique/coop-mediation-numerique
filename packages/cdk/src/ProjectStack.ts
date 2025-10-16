@@ -309,23 +309,59 @@ export class ProjectStack extends TerraformStack {
       dnsZone: emailDomainZone.id,
       type: 'TXT',
       name: '',
-      data: `v=spf1 ${transactionalEmailDomain.spfConfig} -all`,
+      data: `v=spf1 include:_spf.ox.numerique.gouv.fr ${transactionalEmailDomain.spfConfig} -all`,
       ttl: 3600,
     })
 
-    // MX is recommended for improved deverability
+    // MX record for email reception
     new DomainRecord(this, 'mx', {
       dnsZone: emailDomainZone.id,
       type: 'MX',
       name: '',
-      data: '1 blackhole.scw-tem.cloud.',
+      data: '1 mx.ox.numerique.gouv.fr.',
       ttl: 3600,
     })
+
+    // Transactional email DKIM
     new DomainRecord(this, 'dkim', {
       dnsZone: emailDomainZone.id,
       type: 'TXT',
       name: `${transactionalEmailDomain.projectId}._domainkey`,
       data: transactionalEmailDomain.dkimConfig,
+      ttl: 3600,
+    })
+
+    // OX email DKIM
+    new DomainRecord(this, 'ox_dkim', {
+      dnsZone: emailDomainZone.id,
+      type: 'TXT',
+      name: 'DIMAIL._DOMAINKEY',
+      data: 'v=DKIM1; h=sha256; k=rsa; p=MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAyuql/9+4fmFtkKbJTA7vBLGoMroWmvsj2eZvzvcKP+msDyRaSW0wRXb5SJVh+LL6N6NrjdemCt6KXZaU2UO0nMyZRepPQBkbzu5bYDUtf0FTRpab5Ii8nygrYw1PjqHqvcQOWBLHCzKTmB7PsCNnqmxOTeNziKBQp7FW4y/XavdOwDi3WB3Fz7PRXmrHAqEQPlt/W9TYIlNp4+rvRxzSErMkt4Z525r5aNCo8OfsET3avIG5E4rTWiS1Pat0ceOzEkOBROYxE1w9voSs5tVTanUq6TEbnB1SlY2hoO8BknSiSISn0vfNSUUoSv84nqb6gaCL9ByqZKxgvjWEf7TCnizDI7hZs0PgUBJnJaFSD79Bl4iv7x5292U0hnvtFXUuFwd0/PllHc3/40DWBL9cYN98VbkfhghO76NUN5LogPCnWyiPKnjYzBeV0AMvv45kYn/2yvUhlZNI4r7lETO+Q3+dVKdIdoHjSLDK0u9gmV9XNG/MIvi5dLMgqBvVH1OGDLcNJZv/+f4SBCgFk2Vc4BvaoUfz24Ii/HwkYNEwmo86rFNrHFCT+mWR7YpIe1uNpMiOJ8vrASrxAs5Y6Cp7SDw4SK6zPxY+A6ePpQDbXnAsGpFZKDAGPuD5HJWLZYALImt8+JLzmx5FCX/1YvolaywXqKhlN1MfL6DjAFyrMSUCAwEAAQ==',
+      ttl: 3600,
+    })
+
+    // OX email CNAME records
+    new DomainRecord(this, 'ox_imap', {
+      dnsZone: emailDomainZone.id,
+      type: 'CNAME',
+      name: 'imap',
+      data: 'imap.ox.numerique.gouv.fr.',
+      ttl: 3600,
+    })
+
+    new DomainRecord(this, 'ox_smtp', {
+      dnsZone: emailDomainZone.id,
+      type: 'CNAME',
+      name: 'smtp',
+      data: 'smtp.ox.numerique.gouv.fr.',
+      ttl: 3600,
+    })
+
+    new DomainRecord(this, 'ox_webmail', {
+      dnsZone: emailDomainZone.id,
+      type: 'CNAME',
+      name: 'webmail',
+      data: 'webmail.ox.numerique.gouv.fr.',
       ttl: 3600,
     })
 
