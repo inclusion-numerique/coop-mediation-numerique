@@ -1,15 +1,11 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import {
-  thematiqueLabels,
-  thematiquesAdministrativesLabels,
-} from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import { thematiqueLabels } from '@app/web/features/activites/use-cases/cra/fields/thematique'
 import type { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
 import type { LieuFilterType } from '@app/web/features/lieux-activite/use-cases/filter/LieuFilter'
 import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import {
   type RdvStatus,
   rdvStatusLabels,
-  rdvStatusTous,
 } from '@app/web/rdv-service-public/rdvStatus'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { typeActiviteSlugLabels } from '../../cra/fields/type-activite'
@@ -208,19 +204,11 @@ export const generateActivitesFiltersLabels = (
       .filter((tag) => tag != null) ?? []
 
   const rdvsLabel = rdvs
-    ? rdvs.includes(rdvStatusTous)
-      ? [
-          {
-            label: 'Tout les RDVs',
-            key: rdvStatusTous,
-            type: 'rdvs' as const,
-          },
-        ]
-      : rdvs.map((rdv) => ({
-          label: `RDV ${rdvStatusLabels[rdv as RdvStatus]}`,
-          key: rdv,
-          type: 'rdvs' as const,
-        }))
+    ? rdvs.map((rdv) => ({
+        label: `RDV ${rdvStatusLabels[rdv as RdvStatus]}`,
+        key: rdv,
+        type: 'rdvs' as const,
+      }))
     : []
 
   const roleLabel = conseiller_numerique

@@ -5,16 +5,21 @@ import { getMediateursTags } from '@app/web/features/activites/use-cases/tags/db
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaires/db/getInitialBeneficiairesOptionsForSearch'
 import { getMediateurCommunesAndDepartementsOptions } from '@app/web/features/lieux-activite/getMediateurCommunesOptions'
 import { getMediateursLieuxActiviteOptions } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
+import { getFirstAndLastRdvDate } from '@app/web/features/rdvsp/queries/getFirstAndLastRdvDate'
 import { getUserDepartement } from '@app/web/features/utilisateurs/utils/getUserDepartement'
 import { getInitialMediateursOptionsForSearch } from '@app/web/mediateurs/getInitialMediateursOptionsForSearch'
-import type { UserDisplayName, UserProfile } from '@app/web/utils/user'
+import type {
+  UserDisplayName,
+  UserProfile,
+  UserRdvAccount,
+} from '@app/web/utils/user'
 
 export const getFiltersOptionsForMediateur = async ({
   user,
   mediateurCoordonnesIds,
   includeBeneficiaireIds,
 }: {
-  user: UserDisplayName & UserProfile
+  user: UserDisplayName & UserProfile & UserRdvAccount
   mediateurCoordonnesIds?: string[]
   includeBeneficiaireIds?: string[]
 }) => {
@@ -30,6 +35,7 @@ export const getFiltersOptionsForMediateur = async ({
     initialMediateursOptions,
     lieuxActiviteOptions,
     activiteDates,
+    rdvDates,
     hasCrasV1,
   ] = await Promise.all([
     getMediateurCommunesAndDepartementsOptions({ mediateurIds }),
@@ -48,7 +54,10 @@ export const getFiltersOptionsForMediateur = async ({
     }),
     getMediateursLieuxActiviteOptions({ mediateurIds }),
     getFirstAndLastActiviteDate({ mediateurIds }),
-    getHasCrasV1({ mediateurIds }),
+    getFirstAndLastRdvDate({
+      rdvAccountIds: user.rdvAccount ? [user.rdvAccount.id] : [],
+    }),
+    getHasCrasV1({ user, mediateurIds }),
   ])
 
   return {
@@ -59,6 +68,7 @@ export const getFiltersOptionsForMediateur = async ({
     initialMediateursOptions,
     lieuxActiviteOptions,
     activiteDates,
+    rdvDates,
     hasCrasV1,
     activiteSourceOptions: hasCrasV1 ? activiteSourceOptions : [],
   }

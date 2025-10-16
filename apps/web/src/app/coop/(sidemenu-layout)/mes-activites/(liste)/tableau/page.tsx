@@ -5,6 +5,7 @@ import MesActivitesListeEmptyPage from '@app/web/features/activites/use-cases/li
 import MesActivitesListeHeader from '@app/web/features/activites/use-cases/list/components/MesActivitesListeHeader'
 import MesActivitesListeLayout from '@app/web/features/activites/use-cases/list/components/MesActivitesListeLayout'
 import { mediateurHasActivites } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
+import { getWidestActiviteDatesRange } from '@app/web/features/activites/use-cases/list/db/getWidestActiviteDatesRange'
 import { getActivitesListPageData } from '@app/web/features/activites/use-cases/list/getActivitesListPageData'
 import MesActivitesTableauPage from '@app/web/features/activites/use-cases/list/MesActivitesTableauPage'
 import { validateActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
@@ -35,6 +36,10 @@ const MesActivitesVueTableauPage = async ({
         accompagnementsMatchesCount,
     )
 
+    const includeRdvsFilter =
+      !!user.rdvAccount?.hasOauthTokens &&
+      user.rdvAccount.includeRdvsInActivitesList
+
     const {
       communesOptions,
       departementsOptions,
@@ -44,12 +49,16 @@ const MesActivitesVueTableauPage = async ({
       activiteDates,
       activiteSourceOptions,
       hasCrasV1,
+      rdvDates,
     } = await getFiltersOptionsForMediateur({
       user,
       includeBeneficiaireIds: searchParams.beneficiaires,
     })
 
-    const hasFeature = hasFeatureFlag(user, 'RdvServicePublic')
+    const filterPeriodDates = getWidestActiviteDatesRange(
+      activiteDates,
+      rdvDates,
+    )
 
     return (
       <MesActivitesListeLayout vue="tableau">
@@ -61,8 +70,8 @@ const MesActivitesVueTableauPage = async ({
           departementsOptions={departementsOptions}
           lieuxActiviteOptions={lieuxActiviteOptions}
           tagsOptions={tagsOptions}
-          activiteDates={activiteDates}
-          enableRdvsFilter={hasFeature}
+          activiteDates={filterPeriodDates}
+          enableRdvsFilter={includeRdvsFilter}
           hasCrasV1={hasCrasV1.hasCrasV1}
           activiteSourceOptions={activiteSourceOptions}
         />

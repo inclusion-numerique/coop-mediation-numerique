@@ -5,8 +5,9 @@ import {
 import { BeneficiaireAccompagnementsPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getBeneficiaireAccompagnementsPageData'
 import ViewBeneficiaireAccompagnementsPage from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/ViewBeneficiaireAccompagnementsPage'
 import ViewBeneficiaireLayout from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/ViewBeneficiaireLayout'
-import { ActiviteListItem } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
+import { ActiviteListItemWithTimezone } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { rdvsForStories } from '@app/web/features/activites/use-cases/list/storybook/ActiviteDetailsStoriesData'
+import { RdvListItem } from '@app/web/features/rdvsp/administration/db/rdvQueries'
 import type { Rdv } from '@app/web/rdv-service-public/Rdv'
 import { testSessionUser } from '@app/web/test/testSessionUser'
 import type { Meta, StoryObj } from '@storybook/react'
@@ -37,9 +38,17 @@ const beneficiaireSansAccompagnements = {
 
 const sansAccompagnements = {
   beneficiaire: beneficiaireSansAccompagnements,
-  activites: [],
-  rdvs: [],
-  activitesAndRdvs: [],
+  searchResult: {
+    items: [],
+    matchesCount: 0,
+    totalPages: 0,
+    activitesMatchesCount: 0,
+    rdvMatchesCount: 0,
+    accompagnementsMatchesCount: 0,
+    moreResults: 0,
+    page: 1,
+    pageSize: 10,
+  },
   user: testSessionUser,
 } satisfies BeneficiaireAccompagnementsPageData
 
@@ -97,6 +106,7 @@ const activites = [
       conseillerNumerique: null,
     },
     v1CraId: null,
+    rdv: null,
   },
   {
     timezone: 'Europe/Paris',
@@ -138,6 +148,7 @@ const activites = [
       conseillerNumerique: null,
     },
     v1CraId: null,
+    rdv: null,
   },
   {
     timezone: 'Europe/Paris',
@@ -188,6 +199,7 @@ const activites = [
       conseillerNumerique: null,
     },
     v1CraId: null,
+    rdv: null,
   },
   {
     timezone: 'Europe/Paris',
@@ -229,6 +241,7 @@ const activites = [
       conseillerNumerique: null,
     },
     v1CraId: null,
+    rdv: null,
   },
   {
     timezone: 'Europe/Paris',
@@ -270,6 +283,7 @@ const activites = [
       conseillerNumerique: null,
     },
     v1CraId: null,
+    rdv: null,
   },
   {
     timezone: 'Europe/Paris',
@@ -320,18 +334,33 @@ const activites = [
       conseillerNumerique: null,
     },
     v1CraId: null,
+    rdv: null,
   },
-] satisfies ActiviteListItem[] satisfies ActiviteListItem[]
+] satisfies ActiviteListItemWithTimezone[]
 
-const rdvs = rdvsForStories satisfies Rdv[]
+const rdvs = rdvsForStories satisfies RdvListItem[]
 
 const avecAccompagnements = {
-  beneficiaire: beneficiaireAvecAccompagnements,
-  activites,
-  rdvs,
-  activitesAndRdvs: [...rdvs, ...activites].sort((a, b) => {
-    return a.date.getTime() - b.date.getTime()
-  }),
+  beneficiaire: {
+    ...beneficiaireAvecAccompagnements,
+  },
+  searchResult: {
+    items: [
+      ...rdvs.map((rdv) => ({ kind: 'rdv' as const, ...rdv })),
+      ...activites.map((activite) => ({
+        kind: 'activite' as const,
+        ...activite,
+      })),
+    ],
+    matchesCount: rdvs.length + activites.length,
+    totalPages: 1,
+    activitesMatchesCount: activites.length,
+    rdvMatchesCount: rdvs.length,
+    accompagnementsMatchesCount: activites.length,
+    moreResults: 0,
+    page: 1,
+    pageSize: 10,
+  },
   user: testSessionUser,
 } satisfies BeneficiaireAccompagnementsPageData
 

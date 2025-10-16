@@ -1,8 +1,6 @@
-import {
-  getTagScope,
-  TagScope,
-} from '@app/web/features/activites/use-cases/tags/tagScope'
+import { getTagScope } from '@app/web/features/activites/use-cases/tags/tagScope'
 import { prismaClient } from '@app/web/prismaClient'
+import { orderItemsByIndexedValues } from '@app/web/utils/orderItemsByIndexedValues'
 
 const getTagsCreators = async () => {
   const tagCreators = await prismaClient.tag.findMany({
@@ -59,22 +57,41 @@ const getMostUsedTags = async () => {
         tagId: 'desc',
       },
     },
-    take: 30,
+    take: 300,
   })
 
-  const mostUsedTags = await prismaClient.tag.findMany({
+  const orderedTagIds = mostUsedTagsRaw.map(({ tagId }) => tagId)
+
+  const countsById = new Map(
+    mostUsedTagsRaw.map(({ tagId, _count }) => [tagId, _count.tagId]),
+  )
+
+  const mostUsedTagsUnsorted = await prismaClient.tag.findMany({
     where: {
       id: {
         in: mostUsedTagsRaw.map(({ tagId }) => tagId),
       },
     },
+    select: {
+      id: true,
+      nom: true,
+      description: true,
+      mediateurId: true,
+      departement: true,
+    },
   })
+
+  const mostUsedTags = orderItemsByIndexedValues(
+    mostUsedTagsUnsorted,
+    orderedTagIds,
+  )
 
   return mostUsedTags.map((tag) => ({
     id: tag.id,
     nom: tag.nom,
     scope: getTagScope(tag),
     description: tag.description ?? undefined,
+    usageCount: countsById.get(tag.id) ?? 0,
   }))
 }
 

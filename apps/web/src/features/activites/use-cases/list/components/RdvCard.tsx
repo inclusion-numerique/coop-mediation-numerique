@@ -1,5 +1,6 @@
+import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
-import type { Rdv } from '@app/web/rdv-service-public/Rdv'
+import type { RdvListItem } from '@app/web/features/rdvsp/administration/db/rdvQueries'
 import {
   dateAsDayInTimeZone,
   dateAsTimeInTimeZone,
@@ -13,48 +14,46 @@ import ActiviteOrRdvListCard from './ActiviteOrRdvListCard'
 import RdvStatusBadge from './RdvStatusBadge'
 
 const RdvCard = ({
-  activite,
+  rdv,
   user,
   displayBeneficiaire,
   displayDate,
 }: {
-  activite: Rdv
+  rdv: RdvListItem
   user: UserRdvAccount & UserTimezone
   displayBeneficiaire?: boolean
   displayDate?: boolean
 }) => {
-  const userRdvAgentId = user.rdvAccount?.id
-
   const { timezone } = user
 
-  const now = Date.now()
   const {
-    date,
-    endDate,
-    agents,
+    startsAt,
+    endsAt,
     motif,
     maxParticipantsCount,
     participations,
-    url,
+    urlForAgents,
     status,
     badgeStatus,
-  } = activite
-
-  // TODO display if rdv has been created by another agent ?
-  const _agentIsUser = agents.some((agent) => agent.id === userRdvAgentId)
+  } = rdv
 
   const participants = participations.map((participation) => participation.user)
 
   const participantsNames = participants
-    .map((participant) => participant.displayName)
+    .map((participant) =>
+      getBeneficiaireDisplayName({
+        nom: participant.lastName,
+        prenom: participant.firstName,
+      }),
+    )
     .join(', ')
 
-  const startTime = dateAsTimeInTimeZone(date, timezone)
-  const endTime = dateAsTimeInTimeZone(endDate, timezone)
-  const canCompleteCra = status === 'seen' && date.getTime() < now
+  const startTime = dateAsTimeInTimeZone(startsAt, timezone)
+  const endTime = dateAsTimeInTimeZone(endsAt, timezone)
+  const canCompleteCra = status === 'seen'
 
   const newCraLink = canCompleteCra
-    ? `/coop/mes-activites/convertir-rdv-en-cra?rdv=${encodeSerializableState(activite)}`
+    ? `/coop/mes-activites/convertir-rdv-en-cra?rdv=${encodeSerializableState(rdv)}`
     : ''
 
   return (
@@ -67,7 +66,7 @@ const RdvCard = ({
           <ActiviteCardSpacer />
           {displayDate && (
             <>
-              le {dateAsDayInTimeZone(date, timezone)}
+              le {dateAsDayInTimeZone(startsAt, timezone)}
               <ActiviteCardSpacer />
             </>
           )}
@@ -79,9 +78,9 @@ const RdvCard = ({
       contentBottom={
         displayBeneficiaire ? (
           <>
-            {motif.name}{' '}
-            {motif.collectif && activite.name ? <>{activite.name} </> : null}
-            {motif.collectif ? (
+            {motif?.name}{' '}
+            {motif?.collectif && rdv.name ? <>{rdv.name} </> : null}
+            {motif?.collectif ? (
               maxParticipantsCount ? (
                 <>({numberToString(maxParticipantsCount)} places)</>
               ) : null
@@ -90,12 +89,12 @@ const RdvCard = ({
             )}
           </>
         ) : (
-          motif.name
+          motif?.name
         )
       }
       actions={
         <>
-          <RdvStatusBadge rdv={activite} className="fr-mr-2v" />
+          <RdvStatusBadge rdv={rdv} className="fr-mr-2v" />
           {canCompleteCra ? (
             <Button
               priority="tertiary no outline"
@@ -108,7 +107,7 @@ const RdvCard = ({
             >
               {/* Layout is broken with fr-enlarge-link if icon is in button props, we put it in the title instead */}
               <span className="fr-icon-edit-line fr-icon--sm fr-mr-1-5v" />{' '}
-              Compléter un CRA
+              Compléter&nbsp;un&nbsp;CRA
             </Button>
           ) : (
             <Button
@@ -117,11 +116,11 @@ const RdvCard = ({
               className="fr-flex-shrink-0"
               title="Voir et modifier le RDV sur Rendez-vous Service Public"
               linkProps={{
-                href: url,
+                href: urlForAgents,
                 target: '_blank',
               }}
             >
-              {badgeStatus === 'past' ? 'À valider sur RDV SP' : 'Voir'}
+              {badgeStatus === 'past' ? 'À valider sur RDVSP' : 'Voir'}
             </Button>
           )}
         </>

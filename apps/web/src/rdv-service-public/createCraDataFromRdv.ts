@@ -6,25 +6,25 @@ import {
   minutesToCraDureeData,
   minutesToCustomCraDureeData,
 } from '../features/activites/use-cases/cra/db/minutesToCraDuree'
+import { SearchRdvResultItem } from '../features/activites/use-cases/list/db/searchActiviteAndRdvs'
 import { BeneficiaireCraData } from '../features/beneficiaires/validation/BeneficiaireValidation'
 import { dateAsIsoDay } from '../utils/dateAsIsoDay'
-import type { Rdv } from './Rdv'
 
 export const createCraDataFromRdv = async ({
   rdv,
   mediateurId,
 }: {
-  rdv: Rdv
+  rdv: SearchRdvResultItem
   mediateurId: string
 }): Promise<{
   defaultValues: DefaultValues<CraIndividuelData>
   type: 'individuel' | 'collectif'
 }> => {
-  const { date, durationInMinutes, participations, id } = rdv
+  const { startsAt, durationInMin, participations, id } = rdv
 
-  const participationBeneficiaireSuivi = participations.find(
-    (participation) => !!participation.user.beneficiaire,
-  )?.user.beneficiaire
+  const participationBeneficiaireSuivi = participations
+    .find((participation) => !!participation.user.beneficiaire)
+    ?.user.beneficiaire?.at(0)
 
   const beneficiaire = participationBeneficiaireSuivi
     ? ({
@@ -38,7 +38,7 @@ export const createCraDataFromRdv = async ({
     mediateurId,
   })
 
-  const durationInMinutesString = durationInMinutes.toString()
+  const durationInMinutesString = durationInMin.toString()
 
   // If rdv duration is one of the users durée options, we use it
   const existingDureeOption = dureeOptions.find(
@@ -47,12 +47,12 @@ export const createCraDataFromRdv = async ({
 
   // Else we use a "personnaliser" option
   const duree = existingDureeOption
-    ? (minutesToCraDureeData(durationInMinutes) ?? undefined)
-    : minutesToCustomCraDureeData(durationInMinutes)
+    ? (minutesToCraDureeData(durationInMin) ?? undefined)
+    : minutesToCustomCraDureeData(durationInMin)
 
-  if (rdv.motif.collectif) {
+  if (rdv.motif?.collectif) {
     const defaultValues: DefaultValues<CraCollectifData> = {
-      date: dateAsIsoDay(date),
+      date: dateAsIsoDay(startsAt),
       duree,
       rdvServicePublicId: id,
       titreAtelier: rdv.name ?? undefined,
@@ -65,7 +65,7 @@ export const createCraDataFromRdv = async ({
   }
 
   const defaultValues: DefaultValues<CraIndividuelData> = {
-    date: dateAsIsoDay(date),
+    date: dateAsIsoDay(startsAt),
     duree,
     beneficiaire,
     rdvServicePublicId: id,

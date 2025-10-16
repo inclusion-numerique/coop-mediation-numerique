@@ -7,7 +7,7 @@ export const getHasCrasV1 = async ({
   mediateurIds: otherMediateurIds,
   activitesFilters: _activitesFilters,
 }: {
-  user?: UserProfile
+  user: UserProfile
   mediateurIds?: string[] // Undefined means no filter, empty array means no mediateur / no data.
   activitesFilters?: ActivitesFilters
 }) => {

@@ -8,6 +8,7 @@ import {
   activiteIndividuelleBeneficiaireAnonyme,
   activiteIndividuelleBeneficiaireSuivi,
   activiteIndividuelleInfosMinimum,
+  givenRdv,
 } from '../../storybook/ActiviteDetailsStoriesData'
 import {
   ActiviteDetailsDynamicModal,
@@ -92,28 +93,11 @@ export const IndividuelRdvBeneficiaireAnonyme: Story = {
     initialState: {
       activite: {
         ...activiteIndividuelleBeneficiaireAnonyme,
-        rdv: {
-          agents: [],
-          organisation: {
-            id: 1,
-            name: 'Organisation 1',
-          },
-          status: 'seen',
-          badgeStatus: 'seen',
-          date: activiteIndividuelleBeneficiaireAnonyme.date,
-          endDate: new Date(
-            activiteIndividuelleBeneficiaireAnonyme.date.getTime() +
-              30 * 60 * 1000,
-          ),
-          durationInMinutes: 30,
+        rdv: givenRdv({
+          startsAt: activiteIndividuelleBeneficiaireAnonyme.date,
+          durationInMin: 30,
           id: 8,
-          createdBy: 'hui',
-          motif: { id: 1, name: 'point', collectif: false },
-          name: null,
-          maxParticipantsCount: null,
-          participations: [],
-          url: '/',
-        },
+        }),
       },
     },
   },

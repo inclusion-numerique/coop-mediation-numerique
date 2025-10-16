@@ -312,14 +312,7 @@ export class ProjectStack extends TerraformStack {
       data: `v=spf1 ${transactionalEmailDomain.spfConfig} -all`,
       ttl: 3600,
     })
-    // DMARC
-    new DomainRecord(this, 'dmarc', {
-      dnsZone: emailDomainZone.id,
-      type: 'TXT',
-      name: '_dmarc',
-      data: `v=DMARC1; p=none`,
-      ttl: 3600,
-    })
+
     // MX is recommended for improved deverability
     new DomainRecord(this, 'mx', {
       dnsZone: emailDomainZone.id,
@@ -333,6 +326,36 @@ export class ProjectStack extends TerraformStack {
       type: 'TXT',
       name: `${transactionalEmailDomain.projectId}._domainkey`,
       data: transactionalEmailDomain.dkimConfig,
+      ttl: 3600,
+    })
+
+    // Brevo records
+    new DomainRecord(this, 'brevo_code', {
+      dnsZone: emailDomainZone.id,
+      type: 'TXT',
+      name: '',
+      data: 'brevo-code:8ac99f620a9cf5718a8f484756b0d148',
+      ttl: 3600,
+    })
+    new DomainRecord(this, 'brevo_dkim1', {
+      dnsZone: emailDomainZone.id,
+      type: 'CNAME',
+      name: 'brevo1._domainkey',
+      data: 'b1.coop-numerique-anct-gouv-fr.dkim.brevo.com.',
+      ttl: 3600,
+    })
+    new DomainRecord(this, 'brevo_dkim2', {
+      dnsZone: emailDomainZone.id,
+      type: 'CNAME',
+      name: 'brevo2._domainkey',
+      data: 'b2.coop-numerique-anct-gouv-fr.dkim.brevo.com.',
+      ttl: 3600,
+    })
+    new DomainRecord(this, 'brevo_dmarc', {
+      dnsZone: emailDomainZone.id,
+      type: 'TXT',
+      name: '_dmarc',
+      data: 'v=DMARC1; p=none; rua=mailto:rua@dmarc.brevo.com',
       ttl: 3600,
     })
 

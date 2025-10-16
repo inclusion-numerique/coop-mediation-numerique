@@ -13,19 +13,10 @@ import type {
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
-import {
-  rdvStatusOptions,
-  rdvStatusTous,
-  rdvStatusValues,
-} from '@app/web/rdv-service-public/rdvStatus'
+import { rdvStatusOptions } from '@app/web/rdv-service-public/rdvStatus'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { ChangeEvent, useEffect, useState } from 'react'
-
-const rdvFilterOptions = [
-  { label: 'Voir tous les RDVs', value: rdvStatusTous },
-  ...rdvStatusOptions,
-]
 
 export const ActiviteTypeFilter = ({
   defaultValue = {},
@@ -88,32 +79,13 @@ export const ActiviteTypeFilter = ({
   ) => {
     const value = option.target.value as RdvStatusFilterValue
 
-    // 'tous' checks and unchecks all rdvs
-    if (value === rdvStatusTous) {
-      option.target.checked
-        ? setRdvs([rdvStatusTous, ...rdvStatusValues])
-        : setRdvs([])
-      return
-    }
-
     if (option.target.checked) {
       const newValues = [...rdvs, value]
-
-      // If all values are checked, we check "tous" also
-      if (
-        rdvStatusOptions.every((status) => newValues.includes(status.value))
-      ) {
-        setRdvs([rdvStatusTous, ...newValues])
-        return
-      }
       setRdvs(newValues)
       return
     }
 
-    // If we uncheck a value, we uncheck "tous" also
-    setRdvs(
-      rdvs.filter((status) => status !== value && status !== rdvStatusTous),
-    )
+    setRdvs(rdvs.filter((status) => status !== value))
   }
 
   return (
@@ -174,7 +146,7 @@ export const ActiviteTypeFilter = ({
             <fieldset className="fr-fieldset fr-mb-0">
               <div className="fr-flex fr-align-items-center fr-flex-gap-3v fr-mb-4v">
                 <div
-                  className="fr-background-alt--blue-france fr-p-1-5v fr-border-radius--8 fr-flex"
+                  className="fr-background-alt--blue-france fr-p-1-5v fr-border-radius--8 fr-flex fr-ml-2v"
                   aria-hidden
                 >
                   <RDVServicePublicLogo
@@ -187,21 +159,21 @@ export const ActiviteTypeFilter = ({
                   Rendez-vous via RDV&nbsp;Service&nbsp;Public
                 </label>
               </div>
-              {rdvFilterOptions.map(({ label, value: optionValue }, index) => {
+              {rdvStatusOptions.map(({ label, value: optionValue }, index) => {
                 const id = `rdv-status-filter-radio-${optionValue}`
-                const isSmall = optionValue !== rdvStatusTous
+                const isSmall = true
                 return (
                   <div
                     className={classNames(
                       'fr-fieldset__element',
-                      index === rdvFilterOptions.length - 1 && 'fr-mb-0',
+                      index === rdvStatusOptions.length - 1 && 'fr-mb-0',
                     )}
                     key={optionValue}
                   >
                     <div
                       className={classNames(
                         'fr-checkbox-group',
-                        isSmall && 'fr-checkbox-group--sm fr-ml-4w',
+                        isSmall && 'fr-checkbox-group--sm',
                       )}
                     >
                       <input

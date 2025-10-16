@@ -36,7 +36,11 @@ import type { ActivitesFilters } from '@app/web/features/activites/use-cases/lis
 import { activiteSourceOptions } from '@app/web/features/activites/use-cases/source/activiteSource'
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaires/db/getInitialBeneficiairesOptionsForSearch'
 import { prismaClient } from '@app/web/prismaClient'
-import { UserDisplayName, UserProfile } from '@app/web/utils/user'
+import {
+  UserDisplayName,
+  UserProfile,
+  UserRdvAccount,
+} from '@app/web/utils/user'
 import { cloneDeep } from 'lodash-es'
 
 /**
@@ -228,6 +232,7 @@ describe('getMesStatistiquesPageData', () => {
         where: { id: mediateurSansActivitesUserId },
         select: {
           mediateur: true,
+          rdvAccount: true,
           emplois: {
             include: {
               structure: true,
@@ -237,7 +242,7 @@ describe('getMesStatistiquesPageData', () => {
       })
 
       const data = await getMesStatistiquesPageData({
-        user: user as unknown as UserDisplayName & UserProfile,
+        user: user as unknown as UserDisplayName & UserProfile & UserRdvAccount,
         activitesFilters: {},
         graphOptions,
       })
@@ -543,6 +548,7 @@ describe('getMesStatistiquesPageData', () => {
         where: { id: mediateurAvecActiviteUserId },
         select: {
           mediateur: true,
+          rdvAccount: true,
           emplois: {
             include: {
               structure: true,
@@ -552,7 +558,7 @@ describe('getMesStatistiquesPageData', () => {
       })
 
       const data = await getMesStatistiquesPageData({
-        user: user as unknown as UserDisplayName & UserProfile,
+        user: user as unknown as UserDisplayName & UserProfile & UserRdvAccount,
         activitesFilters,
         graphOptions,
       })

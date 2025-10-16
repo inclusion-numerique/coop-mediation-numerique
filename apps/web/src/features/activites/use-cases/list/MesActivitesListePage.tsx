@@ -8,6 +8,7 @@ import ActiviteCard from './components/ActiviteCard'
 import { getActivitesResultCountLabel } from './components/getActivitesResultCountLabel'
 import MesActivitesListeEmptyPage from './components/MesActivitesListeEmptyPage'
 import RdvCard from './components/RdvCard'
+import UpdateIncludeRdvsInActivitesList from './components/UpdateIncludeRdvsInActivitesList'
 import { ActivitesListPageData } from './getActivitesListPageData'
 
 const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
@@ -17,46 +18,51 @@ const SuspensedContent = async ({
 }: {
   data: Promise<ActivitesListPageData>
 }) => {
-  const {
-    searchParams,
-    searchResult,
-    isFiltered,
-    activitesByDate,
-    user,
-    rdvsWithoutActivite,
-  } = await data
+  const { searchParams, searchResult, isFiltered, activitesByDate, user } =
+    await data
 
   if (activitesByDate.length === 0 && !isFiltered) {
     return <MesActivitesListeEmptyPage />
   }
 
+  const hasRdvIntegration = !!user.rdvAccount?.hasOauthTokens
+
   const baseHref = '/coop/mes-activites'
   return (
     <>
-      <p className="fr-text--bold fr-text--lg fr-my-6v">
-        {getActivitesResultCountLabel({
-          isFiltered,
-          searchResult,
-          rdvsWithoutActivite,
-        })}
-      </p>
-      {activitesByDate.map(({ date, activites }) => (
+      <div className="fr-flex fr-align-items-center fr-justify-content-space-between fr-width-full fr-my-6v">
+        <p className="fr-text--bold fr-text--lg fr-mb-0">
+          {getActivitesResultCountLabel({
+            isFiltered,
+            searchResult,
+          })}
+        </p>
+        {hasRdvIntegration && user.rdvAccount && (
+          <UpdateIncludeRdvsInActivitesList
+            rdvAccountId={user.rdvAccount.id}
+            includeRdvsInActivitesList={
+              user.rdvAccount.includeRdvsInActivitesList
+            }
+          />
+        )}
+      </div>
+      {activitesByDate.map(({ date, items }) => (
         <Fragment key={new Date(date).toISOString()}>
           <h3 className="fr-text--xs fr-text-mention--grey fr-text--bold fr-text--uppercase fr-mt-6v fr-mb-4v">
             {formatActiviteDayDate(date)}
           </h3>
-          {activites.map((activite) =>
-            'status' in activite ? (
+          {items.map((item) =>
+            item.kind === 'rdv' ? (
               <RdvCard
-                key={activite.id}
-                activite={activite}
+                key={item.id}
+                rdv={item}
                 user={user}
                 displayBeneficiaire
               />
             ) : (
               <ActiviteCard
-                key={activite.id}
-                activite={activite}
+                key={item.id}
+                activite={{ ...item, timezone: user.timezone }}
                 variant="with-beneficiaire"
               />
             ),

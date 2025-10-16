@@ -2,7 +2,7 @@ import type { SessionUser } from '@app/web/auth/sessionUser'
 import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFiltersOptionsForMediateur'
 import { mediateurCoordonnesIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
 import { generateActivitesFiltersLabels } from '../components/generateActivitesFiltersLabels'
-import { ActiviteListItem } from '../db/activitesQueries'
+import { addTimezoneToActivite } from '../db/addTimezoneToActivite'
 import { searchActivite } from '../db/searchActivite'
 import type { ActivitesFilters } from '../validation/ActivitesFilters'
 import type { BuildActivitesWorksheetInput } from './buildAccompagnementsWorksheet'
@@ -58,13 +58,7 @@ export const getAccompagenmentsWorksheetInput = async ({
   })
 
   return {
-    activites: activites.map(
-      (activite) =>
-        ({
-          ...activite,
-          timezone: user.timezone,
-        }) satisfies ActiviteListItem,
-    ),
+    activites: activites.map(addTimezoneToActivite(user)),
     user,
     mediateur: user,
     filters: activitesFiltersLabels,

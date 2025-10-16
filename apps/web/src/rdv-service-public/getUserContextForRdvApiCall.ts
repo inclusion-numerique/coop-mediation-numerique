@@ -5,7 +5,7 @@ import { invalidError } from '@app/web/server/rpc/trpcErrors'
 export const getUserContextForOAuthApiCall = async ({
   user,
 }: {
-  user: Pick<SessionUser, 'id' | 'rdvAccount'>
+  user: Pick<SessionUser, 'id'>
 }) => {
   const userWithSecretData = await prismaClient.user.findUnique({
     where: {
@@ -26,9 +26,13 @@ export const getUserContextForOAuthApiCall = async ({
 
   const { rdvAccount } = userWithSecretData
 
-  if (!rdvAccount || !user.rdvAccount?.hasOauthTokens) {
+  if (!rdvAccount) {
     throw invalidError('Compte RDV Service Public non connecté')
   }
 
   return { ...userWithSecretData, rdvAccount }
 }
+
+export type UserContextForRdvApiCall = Awaited<
+  ReturnType<typeof getUserContextForOAuthApiCall>
+>

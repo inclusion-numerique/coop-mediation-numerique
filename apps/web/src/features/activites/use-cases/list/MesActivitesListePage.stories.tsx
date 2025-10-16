@@ -1,7 +1,7 @@
-import { groupActivitesAndRdvsByDate } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { testSessionUser } from '@app/web/test/testSessionUser'
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
+import { groupActivitesAndRdvsByDate } from './components/groupActivitesAndRdvsByDate'
 import MesActivitesListeEmptyPage from './components/MesActivitesListeEmptyPage'
 import MesActivitesListeLayout from './components/MesActivitesListeLayout'
 import { ActivitesListPageData } from './getActivitesListPageData'
@@ -49,7 +49,18 @@ const dataAvecActivites = {
       .reduce((a, b) => a + b, 0),
     moreResults: 0,
     totalPages: 1,
-    activites: activitesForModalStories,
+    items: [
+      ...activitesForModalStories.map((activite) => ({
+        kind: 'activite' as const,
+        ...activite,
+      })),
+      ...rdvsForStories.map((rdv) => ({
+        kind: 'rdv' as const,
+        ...rdv,
+      })),
+    ],
+    rdvMatchesCount: rdvsForStories.length,
+    matchesCount: activitesForModalStories.length + rdvsForStories.length,
     page: 1,
     pageSize: 20,
   },
@@ -57,12 +68,19 @@ const dataAvecActivites = {
     first: new Date('2024-03-02'),
     last: new Date('2024-08-30'),
   },
-  activitesByDate: groupActivitesAndRdvsByDate({
-    activites: activitesForModalStories,
-    rdvs: rdvsForStories,
-  }),
   user: testSessionUser,
-  rdvsWithoutActivite: [],
+  activitesByDate: groupActivitesAndRdvsByDate({
+    items: [
+      ...activitesForModalStories.map((activite) => ({
+        kind: 'activite' as const,
+        ...activite,
+      })),
+      ...rdvsForStories.map((rdv) => ({
+        kind: 'rdv' as const,
+        ...rdv,
+      })),
+    ],
+  }),
 } satisfies ActivitesListPageData
 
 export const AvecActivites: Story = {

@@ -1,9 +1,8 @@
-import { getSessionUser } from '@app/web/auth/getSessionUser'
-import {
-  getSessionUserFromId,
-  sessionUserSelect,
-} from '@app/web/auth/getSessionUserFromSessionToken'
+import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
 import { getBeneficiaireAdresseString } from '@app/web/beneficiaire/getBeneficiaireAdresseString'
+import { mergeRdvUserFromRdvPlan } from '@app/web/features/rdvsp/sync/mergeRdvUserFromRdvPlan'
+import { refreshRdvAgentAccountData } from '@app/web/features/rdvsp/sync/refreshRdvAgentAccountData'
+import { syncAllRdvData } from '@app/web/features/rdvsp/sync/syncAllRdvData'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   oAuthRdvApiCreateRdvPlan,
@@ -15,11 +14,16 @@ import {
   type OauthRdvApiCreateRdvPlanInput,
   OauthRdvApiCreateRdvPlanMutationInputValidation,
 } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
-import { refreshRdvAgentAccountData } from '@app/web/rdv-service-public/refreshRdvAgentAccountData'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
-import { externalApiError, invalidError } from '@app/web/server/rpc/trpcErrors'
+import {
+  externalApiError,
+  forbiddenError,
+  invalidError,
+} from '@app/web/server/rpc/trpcErrors'
 import { getServerUrl } from '@app/web/utils/baseUrl'
+import * as Sentry from '@sentry/nextjs'
 import { AxiosError } from 'axios'
+import z from 'zod'
 
 export const rdvServicePublicRouter = router({
   oAuthApiMe: protectedProcedure.mutation(async ({ ctx: { user } }) => {
@@ -39,15 +43,20 @@ export const rdvServicePublicRouter = router({
     async ({ ctx: { user } }) => {
       const oAuthCallUser = await getUserContextForOAuthApiCall({ user })
 
-      const result = await oAuthRdvApiGetOrganisations({
-        rdvAccount: oAuthCallUser.rdvAccount,
-      })
-
-      if (result.status === 'error') {
-        throw externalApiError(result.error)
+      try {
+        const result = await oAuthRdvApiGetOrganisations({
+          rdvAccount: oAuthCallUser.rdvAccount,
+        })
+        return result.organisations
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          throw externalApiError(error.message)
+        }
+        Sentry.captureException(error)
+        throw externalApiError(
+          "Une erreur est survenue lors de l'appel à l'API RDV Service Public",
+        )
       }
-
-      return result.data
     },
   ),
   refreshRdvAccountData: protectedProcedure.mutation(
@@ -56,12 +65,16 @@ export const rdvServicePublicRouter = router({
 
       const result = await refreshRdvAgentAccountData({
         rdvAccount: oAuthCallUser.rdvAccount,
+        appendLog: () => {
+          // no-op
+        },
       })
 
       return result
     },
   ),
   deleteRdvAccount: protectedProcedure.mutation(async ({ ctx: { user } }) => {
+    // This is actually a soft delete
     const rdvAccount = await prismaClient.rdvAccount.findUnique({
       where: {
         userId: user.id,
@@ -75,62 +88,89 @@ export const rdvServicePublicRouter = router({
       throw invalidError('Compte RDV Service Public introuvable')
     }
 
-    await prismaClient.$transaction(async (transaction) => {
-      await transaction.rdvOrganisation.deleteMany({
-        where: {
-          accountId: rdvAccount.id,
-        },
-      })
-
-      await transaction.rdvAccount.delete({
-        where: {
-          id: rdvAccount.id,
-        },
-      })
+    await prismaClient.rdvAccount.update({
+      where: {
+        id: rdvAccount.id,
+      },
+      data: {
+        deleted: new Date(),
+        accessToken: null,
+        refreshToken: null,
+        expiresAt: null,
+        updated: new Date(),
+      },
     })
 
     return {}
   }),
-  syncRdvAccountData: protectedProcedure.mutation(async ({ ctx: { user } }) => {
-    const oAuthCallUser = await getUserContextForOAuthApiCall({ user })
-
-    const [meResponse, organisationsResponse] = await Promise.all([
-      oAuthRdvApiMe({
-        rdvAccount: oAuthCallUser.rdvAccount,
+  updateIncludeRdvsInActivitesList: protectedProcedure
+    .input(
+      z.object({
+        includeRdvsInActivitesList: z.boolean(),
+        rdvAccountId: z.number(),
       }),
-      oAuthRdvApiGetOrganisations({
-        rdvAccount: oAuthCallUser.rdvAccount,
+    )
+    .mutation(
+      async ({
+        ctx: { user },
+        input: { includeRdvsInActivitesList, rdvAccountId },
+      }) => {
+        if (!user.rdvAccount || user.rdvAccount.id !== rdvAccountId) {
+          throw invalidError('Compte RDV Service Public introuvable')
+        }
+
+        await prismaClient.rdvAccount.update({
+          where: { id: user.rdvAccount.id },
+          data: { includeRdvsInActivitesList },
+        })
+      },
+    ),
+  syncRdvAccountData: protectedProcedure
+    .input(
+      z.object({
+        userId: z.string().uuid(),
       }),
-    ])
+    )
+    .mutation(async ({ ctx: { user: sessionUser }, input: { userId } }) => {
+      if (
+        sessionUser.id !== userId &&
+        sessionUser.role !== 'Admin' &&
+        sessionUser.role !== 'Support'
+      ) {
+        throw forbiddenError()
+      }
 
-    if (
-      meResponse.status === 'error' ||
-      organisationsResponse.status === 'error'
-    ) {
-      // Update the rdvAccount with sync error info
-      await prismaClient.rdvAccount.update({
-        where: {
-          id: oAuthCallUser.rdvAccount.id,
-        },
-        data: {
-          updated: new Date(),
-          lastSynced: new Date(),
-          error:
-            'Impossible de récupérer les données du compte RDV Service Public',
-        },
-      })
-    } else {
-      await prismaClient.rdvAccount.update({
-        where: {
-          id: oAuthCallUser.rdvAccount.id,
-        },
-        data: { updated: new Date(), lastSynced: new Date(), error: null },
-      })
-    }
+      const user = await getSessionUserFromId(userId)
 
-    // Returns the user with the updated rdvAccount
-    return getSessionUserFromId(user.id)
-  }),
+      if (!user.rdvAccount) {
+        throw invalidError('Compte RDV Service Public introuvable')
+      }
+
+      const oAuthCallUser = await getUserContextForOAuthApiCall({ user })
+
+      try {
+        await syncAllRdvData({
+          user: { ...user, rdvAccount: user.rdvAccount },
+        })
+      } catch (error) {
+        Sentry.captureException(error)
+        // Update the rdvAccount with sync error info
+        await prismaClient.rdvAccount.update({
+          where: {
+            id: oAuthCallUser.rdvAccount.id,
+          },
+          data: {
+            updated: new Date(),
+            lastSynced: new Date(),
+            error:
+              'Impossible de récupérer les données du compte RDV Service Public',
+          },
+        })
+      }
+
+      // Returns the user with the updated rdvAccount
+      return getSessionUserFromId(user.id)
+    }),
   oAuthApiCreateRdvPlan: protectedProcedure
     .input(OauthRdvApiCreateRdvPlanMutationInputValidation)
     .mutation(
@@ -141,6 +181,21 @@ export const rdvServicePublicRouter = router({
         const beneficiaire = await prismaClient.beneficiaire.findUnique({
           where: {
             id: beneficiaireId,
+          },
+          select: {
+            id: true,
+            prenom: true,
+            nom: true,
+            email: true,
+            commune: true,
+            adresse: true,
+            mediateurId: true,
+            telephone: true,
+            rdvUser: {
+              select: {
+                id: true,
+              },
+            },
           },
         })
 
@@ -159,7 +214,7 @@ export const rdvServicePublicRouter = router({
 
         const input = {
           user: {
-            id: beneficiaire.rdvServicePublicId ?? undefined,
+            id: beneficiaire.rdvUser?.id ?? undefined,
             first_name: beneficiaire.prenom ?? undefined,
             last_name: beneficiaire.nom ?? undefined,
             email: beneficiaire.email ?? undefined,
@@ -180,16 +235,22 @@ export const rdvServicePublicRouter = router({
           throw externalApiError(result.error)
         }
 
-        // Update beneficiaire with id from RDV Service Public if needed
-        // The rest of beneficiaire data could be updated after
-        // the plan is created (on redirection), to fetch email, tel, etc... if needed
+        // Extract user_id from the plan response
+        const rdvPlanUserId = result.data.rdv_plan.user_id
 
-        if (result.data.rdv_plan.user_id !== beneficiaire.rdvServicePublicId) {
-          await prismaClient.beneficiaire.update({
-            where: { id: beneficiaireId },
-            data: { rdvServicePublicId: result.data.rdv_plan.user_id },
-          })
-        }
+        // Fetch user from API, create RdvUser if it doesn't exist, and link with beneficiaire
+        await mergeRdvUserFromRdvPlan({
+          rdvPlanUserId,
+          rdvAccount: oAuthCallUser.rdvAccount,
+          beneficiaire: {
+            id: beneficiaireId,
+            prenom: beneficiaire.prenom,
+            nom: beneficiaire.nom,
+            email: beneficiaire.email,
+            telephone: beneficiaire.telephone,
+            rdvUserId: beneficiaire.rdvUser?.id,
+          },
+        })
 
         return result.data
       },

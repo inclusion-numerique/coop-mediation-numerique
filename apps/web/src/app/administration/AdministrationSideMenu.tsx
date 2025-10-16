@@ -97,16 +97,47 @@ const AdministrationSideMenu = () => {
       text: (
         <>
           <span
-            className="ri-list-check-3 ri-xl fr-mr-1w fr-text--regular"
+            className="ri-list-check-3 ri-xl fr-mr-2v fr-text--regular"
+            style={{ marginLeft: '-4px' }}
             aria-hidden
           />
           Fonctionnalités
         </>
       ),
-      linkProps: {
-        href: '/administration/fonctionnalites',
-      },
       isActive: pathname?.startsWith('/administration/fonctionnalites'),
+      expandedByDefault: pathname?.startsWith(
+        '/administration/fonctionnalites',
+      ),
+      items: [
+        {
+          text: (
+            <>
+              <span className="ri-calendar-check-line ri-xl fr-mr-1w fr-text--regular" />
+              RDVSP
+            </>
+          ),
+          linkProps: {
+            href: '/administration/fonctionnalites/rdvsp',
+          },
+          isActive: pathname?.startsWith(
+            '/administration/fonctionnalites/rdvsp',
+          ),
+        },
+        {
+          text: (
+            <>
+              <span className="ri-price-tag-3-line ri-xl fr-mr-1w fr-text--regular" />
+              Tags
+            </>
+          ),
+          linkProps: {
+            href: '/administration/fonctionnalites/tags',
+          },
+          isActive: pathname?.startsWith(
+            '/administration/fonctionnalites/tags',
+          ),
+        },
+      ],
     },
     {
       text: (

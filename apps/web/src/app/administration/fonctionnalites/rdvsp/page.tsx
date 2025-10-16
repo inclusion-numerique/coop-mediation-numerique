@@ -1,7 +1,6 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
-import { AdministrationRDVSPPage } from '@app/web/features/rdvsp/administration/AdministrationRDVSPPage'
-import { usersRDV } from '@app/web/features/rdvsp/administration/db/usersRDV'
-import { usersWithFeatureFlag } from '@app/web/features/rdvsp/administration/db/usersWithFeatureFlag'
+import AdministrationRdvspPage from '@app/web/features/rdvsp/administration/AdministrationRdvspPage'
+import { getAdministrationRdvspData } from '@app/web/features/rdvsp/administration/getAdministrationRdvspData'
 
 export const metadata = {
   title: metadataTitle('Rendez-vous Service Public'),
@@ -11,10 +10,9 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 const Page = async () => {
-  const users = await usersWithFeatureFlag()
-  const sortedData = await usersRDV(users)
+  const data = await getAdministrationRdvspData()
 
-  return <AdministrationRDVSPPage users={users} sortedData={sortedData} />
+  return <AdministrationRdvspPage data={data} />
 }
 
 export default Page

@@ -1,13 +1,13 @@
 'use client'
 
 import { ActiviteDetailsDynamicModal } from '@app/web/features/activites/use-cases/list/components/ActiviteDetailsModal/ActiviteDetailsDynamicModal'
-import { ActiviteListItem } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
+import type { ActiviteListItemWithTimezone } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import type { MouseEventHandler } from 'react'
 
 const ActiviteCardOpenModalLink = ({
   activite,
 }: {
-  activite: ActiviteListItem
+  activite: ActiviteListItemWithTimezone
 }) => {
   const open = ActiviteDetailsDynamicModal.useOpen()
 

@@ -60,11 +60,12 @@ export type SessionUser = Pick<
       })
     | null
   rdvAccount:
-    | (Pick<RdvAccount, 'id' | 'error'> & {
+    | (Pick<RdvAccount, 'id' | 'error' | 'includeRdvsInActivitesList'> & {
         hasOauthTokens: boolean
         created: string | null
         updated: string | null
         lastSynced: string | null
+        syncFrom: string | null
         organisations: Pick<RdvOrganisation, 'id' | 'name' | 'email'>[]
       })
     | null

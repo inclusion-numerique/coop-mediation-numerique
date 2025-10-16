@@ -10,7 +10,6 @@ import {
   mediateurSansActivites,
   mediateurSansActivitesMediateurId,
 } from '@app/fixtures/users/mediateurSansActivites'
-import { groupActivitesByDate } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { prismaClient } from '@app/web/prismaClient'
 import { getActivitesListPageData } from './getActivitesListPageData'
 
@@ -20,7 +19,7 @@ describe('getActivitesListPageData', () => {
     await resetFixtureUser(mediateurAvecActivite, false)
     await resetFixtureUser(mediateurSansActivites, false)
     await resetFixtureUser(conseillerNumerique, false)
-  })
+  }, 30_000)
 
   describe('mediateur sans activites', () => {
     test('should give empty data', async () => {
@@ -37,9 +36,11 @@ describe('getActivitesListPageData', () => {
         searchParams: {},
         isFiltered: false,
         searchResult: {
-          activites: [],
+          items: [],
           accompagnementsMatchesCount: 0,
           activitesMatchesCount: 0,
+          matchesCount: 0,
+          rdvMatchesCount: 0,
           moreResults: 0,
           totalPages: 0,
           page: 1,
@@ -50,7 +51,6 @@ describe('getActivitesListPageData', () => {
           last: undefined,
         },
         activitesByDate: [],
-        rdvsWithoutActivite: expect.toBeArray(),
         user: {
           ...mediateurSansActivites,
           rdvAccount: null,
@@ -86,13 +86,15 @@ describe('getActivitesListPageData', () => {
         searchParams: {},
         isFiltered: false,
         searchResult: {
-          activites: sortedActivites.map((fixture) =>
+          items: sortedActivites.map((fixture) =>
             expect.objectContaining({
               id: fixture.activite.id,
             }),
           ),
           activitesMatchesCount: 10,
           accompagnementsMatchesCount: 22,
+          matchesCount: 10,
+          rdvMatchesCount: 0,
           moreResults: 0,
           totalPages: 1,
           page: 1,
@@ -103,7 +105,6 @@ describe('getActivitesListPageData', () => {
           last: sortedActivites.at(0)?.activite.date,
         },
         activitesByDate: expect.toBeArray(),
-        rdvsWithoutActivite: expect.toBeArray(),
         user: {
           ...conseillerNumerique,
           rdvAccount: null,

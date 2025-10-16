@@ -27,6 +27,7 @@ export const beneficiaireMinimaleMediateurAvecActivite = givenBeneficiaire({
   creation: new Date('2024-01-01'),
   modification: new Date('2024-05-05'),
   suppression: null,
+  rdvUserId: null,
 })
 
 export const beneficiaireMaximaleMediateurAvecActivite = givenBeneficiaire({
@@ -50,6 +51,7 @@ export const beneficiaireMaximaleMediateurAvecActivite = givenBeneficiaire({
   creation: new Date('2024-01-01'),
   modification: new Date('2024-05-05'),
   suppression: null,
+  rdvUserId: null,
 })
 
 export const beneficiaireSansAccompagnementsMediateurAvecActivite =
@@ -70,6 +72,7 @@ export const beneficiaireSansAccompagnementsMediateurAvecActivite =
     creation: new Date('2024-03-03'),
     modification: new Date('2024-06-06'),
     suppression: null,
+    rdvUserId: null,
   })
 
 export const beneficiaireAnonymeMediateurAvecActivite =
@@ -116,6 +119,7 @@ export const beneficiaireMinimaleConseillerNumerique = givenBeneficiaire({
   creation: new Date('2024-01-01'),
   modification: new Date('2024-05-05'),
   suppression: null,
+  rdvUserId: null,
 })
 
 export const beneficiaireMaximaleConseillerNumerique = givenBeneficiaire({
@@ -159,6 +163,7 @@ export const beneficiaireSansAccompagnementsConseillerNumerique =
     creation: new Date('2024-08-03'),
     modification: new Date('2024-08-06'),
     suppression: null,
+    rdvUserId: null,
   })
 
 export const beneficiaireAnonymeConseillerNumerique = givenBeneficiaireAnonyme({
@@ -174,6 +179,7 @@ export const beneficiaireAnonymeConseillerNumerique = givenBeneficiaireAnonyme({
   creation: new Date('2024-08-08'),
   modification: new Date('2024-08-12'),
   suppression: null,
+  rdvUserId: null,
 })
 
 export const beneficiairesConseillerNumerique = [
@@ -227,6 +233,7 @@ export const beneficiaireMaximaleCoordinateur = givenBeneficiaire({
   creation: new Date('2024-01-01'),
   modification: new Date('2024-05-05'),
   suppression: null,
+  rdvUserId: null,
 })
 
 export const beneficiaireSansAccompagnementsCoordinateur = givenBeneficiaire({
@@ -246,6 +253,7 @@ export const beneficiaireSansAccompagnementsCoordinateur = givenBeneficiaire({
   creation: new Date('2024-08-03'),
   modification: new Date('2024-08-06'),
   suppression: null,
+  rdvUserId: null,
 })
 
 export const beneficiaireAnonymeCoordinateur = givenBeneficiaireAnonyme({
@@ -261,6 +269,7 @@ export const beneficiaireAnonymeCoordinateur = givenBeneficiaireAnonyme({
   creation: new Date('2024-08-08'),
   modification: new Date('2024-08-12'),
   suppression: null,
+  rdvUserId: null,
 })
 
 export const beneficiairesCoordinateur = [

@@ -5,7 +5,7 @@ import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { dureeAsString } from '@app/web/utils/dureeAsString'
 import { typeActiviteLabels } from '../../cra/fields/type-activite'
 import type { ActivitesDataTableConfiguration } from '../db/ActivitesDataTableConfiguration'
-import type { ActiviteListItem } from '../db/activitesQueries'
+import type { ActiviteListItemWithTimezone } from '../db/activitesQueries'
 import type { ActivitesFilters } from '../validation/ActivitesFilters'
 import styles from './MesActivitesListePage.module.css'
 
@@ -17,7 +17,7 @@ export const ActivitesDataTable = {
       name: 'activite',
       header: 'Activité',
       csvHeaders: ['activite', 'beneficiaire'],
-      csvValues: ({ type, accompagnements }: ActiviteListItem) => [
+      csvValues: ({ type, accompagnements }: ActiviteListItemWithTimezone) => [
         typeActiviteLabels[type],
         type === 'Collectif'
           ? `${accompagnements.length} participants`

@@ -30,6 +30,7 @@ const BeneficiaireLayout = async (
       email: true,
       anneeNaissance: true,
       mediateurId: true,
+      rdvUserId: true,
     },
   })
 

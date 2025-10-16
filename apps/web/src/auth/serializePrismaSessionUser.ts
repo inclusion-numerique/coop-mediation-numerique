@@ -32,11 +32,16 @@ export const serializePrismaSessionUser = (
           prismaSessionUser.rdvAccount.refreshToken
         ),
         error: prismaSessionUser.rdvAccount.error ?? null,
+        includeRdvsInActivitesList:
+          prismaSessionUser.rdvAccount.includeRdvsInActivitesList,
         created: prismaSessionUser.rdvAccount.created.toISOString(),
         updated: prismaSessionUser.rdvAccount.updated.toISOString(),
+        syncFrom: prismaSessionUser.rdvAccount.syncFrom?.toISOString() ?? null,
         lastSynced:
           prismaSessionUser.rdvAccount.lastSynced?.toISOString() ?? null,
-        organisations: prismaSessionUser.rdvAccount.organisations,
+        organisations: prismaSessionUser.rdvAccount.organisations.map(
+          ({ organisation }) => organisation,
+        ),
       }
     : null,
 })

@@ -112,11 +112,17 @@ export const sessionUserSelect = {
       accessToken: true,
       refreshToken: true,
       error: true,
+      syncFrom: true,
+      includeRdvsInActivitesList: true,
       organisations: {
         select: {
-          id: true,
-          name: true,
-          email: true,
+          organisation: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
         },
       },
     },

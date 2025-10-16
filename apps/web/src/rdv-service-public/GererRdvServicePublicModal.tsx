@@ -4,7 +4,7 @@ import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import { trpc } from '@app/web/trpc'
-import type { UserRdvAccount, UserTimezone } from '@app/web/utils/user'
+import type { UserId, UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Notice from '@codegouvfr/react-dsfr/Notice'
@@ -29,9 +29,9 @@ export const GererRdvServicePublicModalInstance = createModal({
 })
 
 const GererRdvServicePublicModal = ({
-  user: { rdvAccount, timezone },
+  user: { rdvAccount, timezone, id: userId },
 }: {
-  user: UserRdvAccount & UserTimezone
+  user: UserRdvAccount & UserTimezone & UserId
 }) => {
   const deleteMutation = trpc.rdvServicePublic.deleteRdvAccount.useMutation()
   const syncMutation = trpc.rdvServicePublic.syncRdvAccountData.useMutation()
@@ -66,11 +66,8 @@ const GererRdvServicePublicModal = ({
   }
 
   const onSync = async () => {
-    const syncResult = await syncMutation.mutateAsync()
-
-    createToast({
-      priority: 'success',
-      message: `Les informations ont été synchronisées avec succès.`,
+    const syncResult = await syncMutation.mutateAsync({
+      userId,
     })
 
     setLastSynced(
@@ -80,6 +77,18 @@ const GererRdvServicePublicModal = ({
     )
     setError(syncResult.rdvAccount?.error ?? null)
     setStatus(getRdvOauthIntegrationStatus({ user: syncResult }))
+
+    if (syncResult.rdvAccount?.error) {
+      createToast({
+        priority: 'error',
+        message: `Une erreur est survenue lors de la synchronisation.`,
+      })
+    } else {
+      createToast({
+        priority: 'success',
+        message: `Les informations ont été synchronisées avec succès.`,
+      })
+    }
   }
 
   useModalVisibility(GererRdvServicePublicModalInstance.id, {
@@ -189,6 +198,12 @@ const GererRdvServicePublicModal = ({
             >
               Synchroniser les infos avec RDV Service Public
             </Button>
+            {isLoading && (
+              <p className="fr-text--sm fr-mb-0">
+                La synchronisation peut prendre jusqu'à 2 minutes, merci de
+                patienter...
+              </p>
+            )}
           </div>
           <hr className="fr-separator-1px" />
         </>

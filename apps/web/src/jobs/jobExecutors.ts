@@ -7,6 +7,7 @@ import { executeIngestLesBasesInRag } from '@app/web/jobs/ingest-les-bases-in-ra
 import type { Job, JobName, JobPayload } from '@app/web/jobs/jobs'
 import { executeSetServciesToSharedLieux } from '@app/web/jobs/set-servcies-to-shared-lieux/executeSetServciesToSharedLieux'
 import { executeSyncConums } from '@app/web/jobs/sync-conums/executeSyncConums'
+import { executeSyncRdvspData } from '@app/web/jobs/sync-rdvsp-data/executeSyncRdvspData'
 import { executeUpdateConumInfo } from '@app/web/jobs/update-conum-info/executeUpdateConumInfo'
 import { executeUpdateConumStructureReferent } from '@app/web/jobs/update-conum-structure-referent/executeUpdateConumStructureReferent'
 import { updateStructureFromCartoDataApi } from '@app/web/jobs/update-structures-cartographie-nationale/updateStructureFromCartoDataApi'
@@ -59,6 +60,7 @@ export const jobExecutors: {
   'update-conum-info': executeUpdateConumInfo,
   'fix-users': executeFixUsers,
   'sync-conums': executeSyncConums,
+  'sync-rdvsp-data': executeSyncRdvspData,
 }
 
 export const executeJob = async (job: Job) => {
