@@ -3,6 +3,7 @@ import {
   OAuthRdvApiCredentialsWithId,
   oAuthRdvApiGetOrganisations,
 } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
+import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import type { AppendLog } from './syncAllRdvData'
 import type { SyncModelResult } from './syncLog'
 
@@ -45,51 +46,31 @@ export const importOrganisations = async ({
   appendLog(`found ${organisations.length} organisations from api`)
 
   const result = await prismaClient.$transaction(async (tx) => {
-    const existingOrganisations = await tx.rdvAccountOrganisation.findMany({
+    const organisationIds = organisations.map((o) => o.id)
+
+    // Fetch all organisations with these IDs, including their account links
+    const existingOrganisations = await tx.rdvOrganisation.findMany({
       where: {
-        accountId: rdvAccount.id,
+        id: { in: organisationIds },
       },
       include: {
-        organisation: true,
-      },
-    })
-
-    const accountOrganisationsToDelete = existingOrganisations.filter(
-      (organisation) =>
-        !organisations.some((o) => o.id === organisation.organisationId),
-    )
-
-    await tx.rdvAccountOrganisation.deleteMany({
-      where: {
-        accountId: rdvAccount.id,
-        organisationId: {
-          in: accountOrganisationsToDelete.map((o) => o.organisationId),
+        accounts: {
+          where: {
+            accountId: rdvAccount.id,
+          },
         },
       },
     })
 
-    const accountOrganisationsToCreate = organisations.filter(
-      (organisation) =>
-        !existingOrganisations.some(
-          (o) => o.organisationId === organisation.id,
-        ),
-    )
-
-    await tx.rdvAccountOrganisation.createMany({
-      data: accountOrganisationsToCreate.map((organisation) => ({
-        accountId: rdvAccount.id,
-        organisationId: organisation.id,
-      })),
-    })
-
+    // STEP 1: Create or update all RdvOrganisation records first
     let noop = 0
     let updated = 0
     let created = 0
 
     for (const organisation of organisations) {
       const existingOrganisation = existingOrganisations.find(
-        (o) => o.organisationId === organisation.id,
-      )?.organisation
+        (o) => o.id === organisation.id,
+      )
 
       const organisationData = {
         id: organisation.id,
@@ -120,6 +101,47 @@ export const importOrganisations = async ({
         created++
       }
     }
+
+    // STEP 2: Now handle the account-organisation links
+    // Get currently linked organisations for this account
+    const existingOrganisationsForAccount = existingOrganisations
+      .map((o) => o.accounts.find((a) => a.accountId === rdvAccount.id))
+      .filter(isDefinedAndNotNull)
+
+    // Delete links that should no longer exist
+    const accountOrganisationsToDelete = existingOrganisationsForAccount.filter(
+      (o) => !organisationIds.includes(o.organisationId),
+    )
+
+    await tx.rdvAccountOrganisation.deleteMany({
+      where: {
+        accountId: rdvAccount.id,
+        organisationId: {
+          in: accountOrganisationsToDelete.map(
+            ({ organisationId }) => organisationId,
+          ),
+        },
+      },
+    })
+
+    updated += accountOrganisationsToDelete.length
+
+    // Create new links
+    const currentlyLinkedIds = existingOrganisationsForAccount.map(
+      ({ organisationId }) => organisationId,
+    )
+    const accountOrganisationsToCreate = organisations.filter(
+      (organisation) => !currentlyLinkedIds.includes(organisation.id),
+    )
+
+    await tx.rdvAccountOrganisation.createMany({
+      data: accountOrganisationsToCreate.map((organisation) => ({
+        accountId: rdvAccount.id,
+        organisationId: organisation.id,
+      })),
+    })
+
+    updated += accountOrganisationsToCreate.length
 
     // Return result
     return {
