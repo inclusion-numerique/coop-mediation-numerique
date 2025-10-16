@@ -51,7 +51,7 @@ const RdvCard = ({
 
   const startTime = dateAsTimeInTimeZone(startsAt, timezone)
   const endTime = dateAsTimeInTimeZone(endsAt, timezone)
-  const canCompleteCra = status === 'seen' && startsAt.getTime() < now
+  const canCompleteCra = status === 'seen'
 
   const newCraLink = canCompleteCra
     ? `/coop/mes-activites/convertir-rdv-en-cra?rdv=${encodeSerializableState(rdv)}`
