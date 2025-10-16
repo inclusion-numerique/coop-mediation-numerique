@@ -94,7 +94,8 @@ const AdministrationRdvspPage = async ({
                                 lastSync.started,
                                 timezone,
                               )}{' '}
-                              {lastSync.duration &&
+                              {!!lastSync.ended &&
+                                typeof lastSync.duration === 'number' &&
                                 `(${numberToString(lastSync.duration)}s)`}
                               <br />
                               {!lastSync.error && !!lastSync.drift && (
@@ -110,7 +111,7 @@ const AdministrationRdvspPage = async ({
                               )}
                               {lastSync.error && (
                                 <span className="fr-text--error fr-text--xs fr-mb-0">
-                                  ⚠️ {lastSync.error}
+                                  ⚠️ La synchronisation a échoué
                                 </span>
                               )}
                             </>
