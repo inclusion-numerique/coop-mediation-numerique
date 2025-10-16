@@ -1,7 +1,7 @@
 import CheckboxFormField from '@app/ui/components/Form/CheckboxFormField'
 import InputFormField from '@app/ui/components/Form/InputFormField'
 import { InformationsPratiquesData } from '@app/web/features/structures/InformationsPratiquesValidation'
-import { rdvWebsiteLink } from '@app/web/rdv-service-public/rdvServicePublicOauth'
+import { rdvWebsiteLink } from '@app/web/rdv-service-public/rdvServicePublicUrls'
 import { OSM_DAYS_OF_WEEK } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import { OsmDaysOfWeek } from '@gouvfr-anct/timetable-to-osm-opening-hours/lib/cjs/utilities'
 import Link from 'next/link'

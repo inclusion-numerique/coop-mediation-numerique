@@ -1,7 +1,7 @@
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import RdvStatusBadge from '@app/web/features/activites/use-cases/list/components/RdvStatusBadge'
 import { DashboardRdvData } from '@app/web/features/rdvsp/queries/getDashboardRdvData'
-import { rdvServicePublicRdvsLink } from '@app/web/rdv-service-public/rdvServicePublicOauth'
+import { rdvServicePublicRdvsLink } from '@app/web/rdv-service-public/rdvServicePublicUrls'
 import { dateAsDayFullWordsInTimezone } from '@app/web/utils/dateAsDay'
 import { dateAsTimeInTimeZone } from '@app/web/utils/dateAsDayAndTime'
 import { numberToString } from '@app/web/utils/formatNumber'
@@ -128,6 +128,7 @@ const Rdvs = async ({
                     linkProps={{
                       href: rdvServicePublicRdvsLink({
                         organisationId: organisation.id,
+                        status: 'unknown_past',
                       }),
                       target: '_blank',
                     }}

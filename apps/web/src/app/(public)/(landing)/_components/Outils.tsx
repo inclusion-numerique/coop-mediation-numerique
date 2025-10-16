@@ -2,7 +2,7 @@ import { AidantsConnectLogo } from '@app/web/features/pictograms/services/Aidant
 import { CartographieLogo } from '@app/web/features/pictograms/services/CartographieLogo'
 import { LesBasesLogo } from '@app/web/features/pictograms/services/LesBasesLogo'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
-import { rdvWebsiteLink } from '@app/web/rdv-service-public/rdvServicePublicOauth'
+import { rdvWebsiteLink } from '@app/web/rdv-service-public/rdvServicePublicUrls'
 import Image from 'next/image'
 import Link from 'next/link'
 

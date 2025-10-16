@@ -3,12 +3,14 @@ import { RDVServicePublicCoopConnexion } from '@app/web/features/pictograms/serv
 import GererRdvServicePublicButton from '@app/web/rdv-service-public/GererRdvServicePublicButton'
 import { getRdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
 import {
-  rdvIntegrationEnSavoirPlusLink,
-  rdvMyHomepageLink,
   rdvOauthLinkAccountErrorCallbackPath,
   rdvOauthLinkAccountFlowUrl,
   rdvOauthLinkAccountSuccessCallbackPath,
 } from '@app/web/rdv-service-public/rdvServicePublicOauth'
+import {
+  rdvIntegrationEnSavoirPlusLink,
+  rdvMyHomepageLink,
+} from '@app/web/rdv-service-public/rdvServicePublicUrls'
 import { hasFeatureFlag } from '@app/web/security/hasFeatureFlag'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'

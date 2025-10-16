@@ -1,6 +1,6 @@
 import RdvServicePubliqueConnexionCard from '@app/web/app/coop/(full-width-layout)/mes-outils/rdv-service-public/RdvServicePubliqueConnexionCard'
 import IconInSquare from '@app/web/components/IconInSquare'
-import { rdvSupportEmail } from '@app/web/rdv-service-public/rdvServicePublicOauth'
+import { rdvSupportEmail } from '@app/web/rdv-service-public/rdvServicePublicUrls'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
 import React from 'react'

@@ -1,7 +1,7 @@
 import { OutilPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-outils/outilPageData'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import RdvServicePublicAccessCard from '@app/web/rdv-service-public/RdvServicePublicAccess'
-import { rdvWebsiteLink } from '@app/web/rdv-service-public/rdvServicePublicOauth'
+import { rdvWebsiteLink } from '@app/web/rdv-service-public/rdvServicePublicUrls'
 import RdvServicePublicMigrationNotice from '../_components/RdvServicePublicMigrationNotice'
 
 export default {

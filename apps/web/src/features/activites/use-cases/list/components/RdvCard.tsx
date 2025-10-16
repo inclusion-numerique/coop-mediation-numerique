@@ -26,7 +26,6 @@ const RdvCard = ({
 }) => {
   const { timezone } = user
 
-  const now = Date.now()
   const {
     startsAt,
     endsAt,

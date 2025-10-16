@@ -6,7 +6,7 @@ import {
   rdvIntegrationEnSavoirPlusLink,
   rdvMyHomepageLink,
   rdvServicePublicGettingStartedLink,
-} from '@app/web/rdv-service-public/rdvServicePublicOauth'
+} from '@app/web/rdv-service-public/rdvServicePublicUrls'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
