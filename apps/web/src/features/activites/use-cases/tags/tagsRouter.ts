@@ -39,7 +39,7 @@ export const tagsRouter = router({
       if (input.scope === TagScope.Personnel)
         return await createTagPersonnel(sessionUser)(tag)
 
-      if (input.scope === TagScope.Departemental && !isMediateur(sessionUser))
+      if (input.scope === TagScope.Departemental && isCoordinateur(sessionUser))
         return await createTagDepartemental(sessionUser)(tag)
     }),
   delete: protectedProcedure

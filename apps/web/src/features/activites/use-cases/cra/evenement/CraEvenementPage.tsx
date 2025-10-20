@@ -2,13 +2,13 @@ import RequiredFieldsDisclamer from '@app/ui/components/Form/RequiredFieldsDiscl
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButtonWithModal from '@app/web/components/BackButtonWithModal'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import CraEvenementForm from '@app/web/features/activites/use-cases/cra/evenement/components/CraEvenementForm'
 import { contentId } from '@app/web/utils/skipLinks'
 import React from 'react'
 import type { DefaultValues } from 'react-hook-form'
 import type { Tag } from '../../tags/components/TagsComboBox'
 import SaveTagModal from '../../tags/save/SaveTagModal'
 import { CraAnimationData } from '../animation/validation/CraAnimationValidation'
+import CraEvenementForm from './components/CraEvenementForm'
 
 type CraEvenementPageProps = {
   defaultValues: DefaultValues<CraAnimationData>

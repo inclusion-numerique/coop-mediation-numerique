@@ -106,7 +106,7 @@ const CreateCraModalContent = ({
           </ModalNavigationButton>
         </>
       )}
-      {isCoordinateur && isCoordinateur && (
+      {isMediateur && isCoordinateur && (
         <div className="fr-mt-8v fr-text-mention--grey fr-flex fr-flex-gap-2v fr-align-items-center">
           <span className="ri-xl ri-group-2-line" aria-hidden="true" />
           <span className="fr-text--xs fr-text--uppercase fr-text--bold fr-mb-0">

@@ -21,11 +21,9 @@ export const updateTag =
           tagId: id,
           activite: {
             NOT: {
-              OR: [
-                ...(sessionUser.mediateur?.id
-                  ? [{ mediateurId: sessionUser.mediateur.id }]
-                  : []),
-              ],
+              ...(sessionUser.mediateur?.id
+                ? { mediateurId: sessionUser.mediateur.id }
+                : {}),
             },
           },
         },
