@@ -1,14 +1,14 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
+import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
 import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFiltersOptionsForMediateur'
 import type { ActivitesDataTableSearchParams } from '@app/web/features/activites/use-cases/list/components/ActivitesDataTable'
+import ActivitesListeLayout from '@app/web/features/activites/use-cases/list/components/ActivitesListeLayout'
 import MesActivitesListeHeader from '@app/web/features/activites/use-cases/list/components/MesActivitesListeHeader'
-import MesActivitesListeLayout from '@app/web/features/activites/use-cases/list/components/MesActivitesListeLayout'
 import { getWidestActiviteDatesRange } from '@app/web/features/activites/use-cases/list/db/getWidestActiviteDatesRange'
 import { getActivitesListPageData } from '@app/web/features/activites/use-cases/list/getActivitesListPageData'
 import MesActivitesListePage from '@app/web/features/activites/use-cases/list/MesActivitesListePage'
 import { validateActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import { hasFeatureFlag } from '@app/web/security/hasFeatureFlag'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -57,7 +57,15 @@ const MesActivitesPage = async ({
       (searchParams.rdvs?.length ?? 0) > 0)
 
   return (
-    <MesActivitesListeLayout vue="liste">
+    <ActivitesListeLayout
+      vue="liste"
+      href="/coop/mes-activites"
+      subtitle={
+        isCoordinateur(user) && isMediateur(user)
+          ? 'Médiation numérique'
+          : undefined
+      }
+    >
       <MesActivitesListeHeader
         searchResultMatchesCount={searchResultMatchesCount}
         defaultFilters={searchParams}
@@ -72,7 +80,7 @@ const MesActivitesPage = async ({
         activiteSourceOptions={activiteSourceOptions}
       />
       <MesActivitesListePage data={data} />
-    </MesActivitesListeLayout>
+    </ActivitesListeLayout>
   )
 }
 

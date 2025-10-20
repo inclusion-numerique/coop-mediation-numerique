@@ -2,10 +2,7 @@ import { Pictogram } from '@app/web/features/pictograms/pictogram'
 import classNames from 'classnames'
 import { ReactNode } from 'react'
 
-/**
- * Composant générique pour les listes d'activités d'un médiateur ou d'un bénéficiaire
- */
-const ActiviteOrRdvListCard = ({
+const ListCard = ({
   actions,
   contentBottom,
   contentTop,
@@ -65,4 +62,4 @@ const ActiviteOrRdvListCard = ({
   </div>
 )
 
-export default ActiviteOrRdvListCard
+export default ListCard

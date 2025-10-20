@@ -80,8 +80,7 @@ const SaveTagModal = ({
       id: id ?? null,
       nom: nom ?? '',
       description: (description ?? null) as string | null,
-      scope:
-        scope ?? (isMediateur ? TagScope.Personnel : TagScope.Departemental),
+      scope: scope ?? TagScope.Personnel,
     },
     onSubmit: async (data) => {
       if (isPending) return

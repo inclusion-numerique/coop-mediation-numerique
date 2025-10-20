@@ -1,8 +1,7 @@
-import { CreateCraModalDefinition } from '@app/web/features/activites/use-cases/cra/components/CreateCraModal/CreateCraModalDefinition'
-import { ActiviteListItemWithTimezone } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { Button } from '@codegouvfr/react-dsfr/Button'
-import Link from 'next/link'
 import React from 'react'
+import { CreateCraModalDefinition } from '../../cra/components/CreateCraModal/CreateCraModalDefinition'
+import { ActiviteListItemWithTimezone } from '../db/activitesQueries'
 import ActiviteCard from './ActiviteCard'
 
 const ActiviteEmptyState = () => (
