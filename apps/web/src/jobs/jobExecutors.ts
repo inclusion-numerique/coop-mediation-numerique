@@ -126,7 +126,9 @@ export const executeJob = async (job: Job) => {
         },
       })
       .catch((persistenceError) => {
-        Sentry.captureException(persistenceError)
+        if (Sentry?.captureException) {
+          Sentry.captureException(persistenceError)
+        }
       })
 
     return {
