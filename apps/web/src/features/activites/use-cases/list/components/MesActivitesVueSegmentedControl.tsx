@@ -5,17 +5,12 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { type ComponentProps, FormEvent, FormEventHandler } from 'react'
 
 const MesActivitesVueSegmentedControl = ({
+  href,
   current,
 }: {
+  href: string
   current: 'liste' | 'tableau'
 }) => {
-  /**
-   * On change redirect to :
-   *    href: '/coop/mes-activites',
-   *     or
-   *    href: '/coop/mes-activites/tableau',
-   */
-
   const router = useRouter()
 
   const searchParams = useSearchParams()
@@ -26,8 +21,8 @@ const MesActivitesVueSegmentedControl = ({
     if (checked) {
       router.push(
         dataset.vue === 'tableau'
-          ? `/coop/mes-activites/tableau?${searchParams.toString()}`
-          : `/coop/mes-activites?${searchParams.toString()}`,
+          ? `${href}/tableau?${searchParams.toString()}`
+          : `${href}?${searchParams.toString()}`,
       )
     }
   }

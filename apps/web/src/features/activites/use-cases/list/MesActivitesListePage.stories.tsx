@@ -1,9 +1,9 @@
 import { testSessionUser } from '@app/web/test/testSessionUser'
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
+import ActivitesListeLayout from './components/ActivitesListeLayout'
 import { groupActivitesAndRdvsByDate } from './components/groupActivitesAndRdvsByDate'
 import MesActivitesListeEmptyPage from './components/MesActivitesListeEmptyPage'
-import MesActivitesListeLayout from './components/MesActivitesListeLayout'
 import { ActivitesListPageData } from './getActivitesListPageData'
 import MesActivitesListePage from './MesActivitesListePage'
 import {
@@ -12,15 +12,15 @@ import {
 } from './storybook/ActiviteDetailsStoriesData'
 
 const TemplateListe = ({ data }: { data: ActivitesListPageData }) => (
-  <MesActivitesListeLayout vue="liste">
+  <ActivitesListeLayout vue="liste" href="/coop/mes-activites">
     <MesActivitesListePage data={Promise.resolve(data)} />
-  </MesActivitesListeLayout>
+  </ActivitesListeLayout>
 )
 
 const TemplateEmpty = () => (
-  <MesActivitesListeLayout vue="liste" empty>
+  <ActivitesListeLayout vue="liste" empty href="/coop/mes-activites">
     <MesActivitesListeEmptyPage />
-  </MesActivitesListeLayout>
+  </ActivitesListeLayout>
 )
 
 const meta: Meta<typeof MesActivitesListePage> = {

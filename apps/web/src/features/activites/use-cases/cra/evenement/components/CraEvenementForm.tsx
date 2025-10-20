@@ -1,7 +1,6 @@
 'use client'
 
 import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
-import { SelectOption } from '@app/ui/components/Form/utils/options'
 import { createToast } from '@app/ui/toast/createToast'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
@@ -17,11 +16,13 @@ import { Tag } from '../../../tags/components/TagsComboBox'
 import styles from '../../components/CraForm.module.css'
 import { TagsFields } from '../../components/fields/TagsFields'
 import {
+  ECHELON_TERRITORIAL_OPTIONS,
+  ORGANISATEURS_OPTIONS,
+  TYPE_EVENEMENT_OPTIONS,
+} from '../labels'
+import {
   CraEvenementData,
   CraEvenementValidation,
-  EchelonTerritorialValue,
-  OrganisateursValue,
-  TypeEvenementValue,
 } from '../validation/CraEvenementValidation'
 
 type CraEvenementFormProps = {
@@ -29,50 +30,6 @@ type CraEvenementFormProps = {
   initialTagsOptions: Tag[]
   retour?: string
 }
-
-const TYPE_EVENEMENT_OPTIONS: SelectOption<TypeEvenementValue>[] = [
-  {
-    label:
-      'Évènement grand public (Ex : Forums, salons, journées départementales, ateliers collectifs...)',
-    value: 'GrandPublic',
-  },
-  {
-    label: 'Évènement national (Ex : NEC, ANCTour, etc...)',
-    value: 'National',
-  },
-  {
-    label:
-      'Journée d’inclusion numérique (Ex : Séminaire, rencontre, intervention...)',
-    value: 'InclusionNumerique',
-  },
-  { label: 'NEC local', value: 'NecLocal' },
-  { label: 'Autre', value: 'Autre' },
-]
-
-const ORGANISATEURS_OPTIONS: SelectOption<OrganisateursValue>[] = [
-  { label: 'Ma structure (moi - même)', value: 'MaStructure' },
-  { label: 'Une commune', value: 'Commune' },
-  { label: 'Un EPCI', value: 'Epci' },
-  { label: 'Le département', value: 'Departement' },
-  { label: 'La région', value: 'Region' },
-  { label: 'Une association', value: 'Association' },
-  { label: 'Une entreprise', value: 'Entreprise' },
-  { label: 'Un Hub', value: 'Hub' },
-  { label: 'État (Préfecture, ANCT, Opérateur...)', value: 'Etat' },
-  {
-    label: 'Un groupement (Syndicat mixte, consortium...)',
-    value: 'Groupement',
-  },
-  { label: 'Autre', value: 'Autre' },
-]
-
-const ECHELON_TERRITORIAL_OPTIONS: SelectOption<EchelonTerritorialValue>[] = [
-  { label: 'Communal', value: 'Communal' },
-  { label: 'Intercommunal', value: 'Intercommunal' },
-  { label: 'Départemental', value: 'Departemental' },
-  { label: 'Régional', value: 'Regional' },
-  { label: 'National', value: 'National' },
-]
 
 const valueMatching =
   (item: string) =>
@@ -96,7 +53,7 @@ const CraEvenementForm = ({
     listeners: {
       onChange: ({ formApi }) => {
         replaceRouteWithoutRerender(
-          `/coop/mes-activites/cra/evenement?v=${encodeSerializableState(
+          `/coop/mes-coordinations/cra/evenement?v=${encodeSerializableState(
             formApi.state.values,
           )}`,
         )
@@ -111,7 +68,7 @@ const CraEvenementForm = ({
           priority: 'success',
           message: 'L’événement a bien été enregistré.',
         })
-        router.push(retour ?? '/coop/mes-activites')
+        router.push(retour ?? '/coop/mes-coordinations')
         router.refresh()
       } catch (mutationError) {
         createToast({
