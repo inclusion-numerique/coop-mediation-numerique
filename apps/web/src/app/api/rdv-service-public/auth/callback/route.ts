@@ -168,6 +168,8 @@ export const GET = async (request: NextRequest) => {
       },
     })
 
+    const startOfThisDay = new Date(new Date().setHours(0, 0, 0, 0))
+
     // Update or create the rdv account
     await prismaClient.rdvAccount.upsert({
       where: { id: existingRdvAccount?.id ?? userData.agent.id },
@@ -175,7 +177,7 @@ export const GET = async (request: NextRequest) => {
         ...authUserData,
         id: userData.agent.id,
         userId: user.id,
-        syncFrom: user.created,
+        syncFrom: startOfThisDay,
       },
       update: {
         ...authUserData,
