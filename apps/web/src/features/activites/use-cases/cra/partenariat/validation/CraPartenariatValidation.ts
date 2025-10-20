@@ -8,7 +8,7 @@ const natureValues = [
   'Autre',
 ] as const
 
-export type NatureValue = (typeof natureValues)[number]
+export type NaturePartenariatValue = (typeof natureValues)[number]
 
 const echelonTerritorialValues = [
   'Communal',

@@ -16,7 +16,7 @@ import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { dureeAsString } from '@app/web/utils/dureeAsString'
 import { Fragment } from 'react'
 import ActiviteCardSpacer from './ActiviteCardSpacer'
-import ActiviteOrRdvListCard from './ActiviteOrRdvListCard'
+import ListCard from './ListCard'
 
 const MAX_THEMATIQUES_DISPLAYED = 2
 
@@ -69,7 +69,7 @@ const ActiviteCard = ({
       : 0
 
   return (
-    <ActiviteOrRdvListCard
+    <ListCard
       enlargeButton
       pictogram={typeActivitePictograms[type]}
       stacked={stacked}

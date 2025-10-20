@@ -5,7 +5,6 @@ import {
   dateAsDayInTimeZone,
   dateAsTimeInTimeZone,
 } from '@app/web/utils/dateAsDayAndTime'
-import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { numberToString } from '@app/web/utils/formatNumber'
 import { UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 import Button from '@codegouvfr/react-dsfr/Button'

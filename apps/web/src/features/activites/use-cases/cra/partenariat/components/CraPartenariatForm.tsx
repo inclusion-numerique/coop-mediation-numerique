@@ -1,7 +1,6 @@
 'use client'
 
 import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
-import { SelectOption } from '@app/ui/components/Form/utils/options'
 import { createToast } from '@app/ui/toast/createToast'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
@@ -16,11 +15,13 @@ import { Tag } from '../../../tags/components/TagsComboBox'
 import styles from '../../components/CraForm.module.css'
 import { TagsFields } from '../../components/fields/TagsFields'
 import {
+  ECHELON_TERRITORIAL_OPTIONS,
+  NATURE_OPTIONS,
+  TYPE_DE_STRUCTURE_PARTENAIRE_OPTIONS,
+} from '../labels'
+import {
   CraPartenariatData,
   CraPartenariatValidation,
-  EchelonTerritorialValue,
-  NatureValue,
-  TypeStructurePartenairesValue,
 } from '../validation/CraPartenariatValidation'
 
 type CraPartenariatFormProps = {
@@ -28,42 +29,6 @@ type CraPartenariatFormProps = {
   initialTagsOptions: Tag[]
   retour?: string
 }
-
-const NATURE_OPTIONS: SelectOption<NatureValue>[] = [
-  { label: 'Conception de parcours usager', value: 'ParcoursUsager' },
-  { label: 'Recherche de subvention', value: 'Subvention' },
-  {
-    label: 'Journée de coordination départementale',
-    value: 'CoordinationDepartementale',
-  },
-  { label: 'Rendez-vous avec un·e élu·e', value: 'RDVElu' },
-  { label: 'Autre', value: 'Autre' },
-]
-
-const ECHELON_TERRITORIAL_OPTIONS: SelectOption<EchelonTerritorialValue>[] = [
-  { label: 'Communal', value: 'Communal' },
-  { label: 'Intercommunal', value: 'Intercommunal' },
-  { label: 'Départemental', value: 'Departemental' },
-  { label: 'Régional', value: 'Regional' },
-  { label: 'National', value: 'National' },
-]
-
-const TYPE_DE_STRUCTURE_PARTENAIRE_OPTIONS: SelectOption<TypeStructurePartenairesValue>[] =
-  [
-    { label: 'Une commune', value: 'Commune' },
-    { label: 'Un EPCI', value: 'Epci' },
-    { label: 'Le département', value: 'Departement' },
-    { label: 'La région', value: 'Region' },
-    { label: 'Une association', value: 'Association' },
-    { label: 'Une entreprise', value: 'Entreprise' },
-    { label: 'Un Hub', value: 'Hub' },
-    { label: 'État (Préfecture, ANCT, Opérateur...)', value: 'Etat' },
-    {
-      label: 'Un groupement (Syndicat mixte, consortium...)',
-      value: 'Groupement',
-    },
-    { label: 'Autre', value: 'Autre' },
-  ]
 
 const valueMatching =
   (item: string) =>
@@ -87,7 +52,7 @@ const CraPartenariatForm = ({
     listeners: {
       onChange: ({ formApi }) => {
         replaceRouteWithoutRerender(
-          `/coop/mes-activites/cra/partenariat?v=${encodeSerializableState(
+          `/coop/mes-coordinations/cra/partenariat?v=${encodeSerializableState(
             formApi.state.values,
           )}`,
         )
@@ -102,7 +67,7 @@ const CraPartenariatForm = ({
           priority: 'success',
           message: 'Le partenariat a bien été enregistré.',
         })
-        router.push(retour ?? '/coop/mes-activites')
+        router.push(retour ?? '/coop/mes-coordinations')
         router.refresh()
       } catch (mutationError) {
         createToast({
