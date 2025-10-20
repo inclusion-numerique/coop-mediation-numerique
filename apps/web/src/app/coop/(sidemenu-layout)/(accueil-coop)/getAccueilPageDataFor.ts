@@ -47,7 +47,7 @@ export const getAccueilPageDataFor = async (
     UserTimezone &
     UserMediateur,
 ) => {
-  const [mediateurs, dashboardRdvData, lastActivitesWithoutTimezone] =
+  const [mediateurs, dashboardRdvData, lastActivitesWithoutTimezone,activitesCoordination] =
     await Promise.all([
       countMediateursCoordonnesBy(user.coordinateur),
       getDashboardRdvDataFor(user),
@@ -65,6 +65,23 @@ export const getAccueilPageDataFor = async (
             take: 3,
           })
         : null,
+      user.coordinateur?.id == null
+        ? []
+        : (
+          await prismaClient.activiteCoordination.groupBy({
+            by: ['type'],
+            where: {
+              coordinateurId: user.coordinateur.id,
+              suppression: null,
+            },
+            _count: {
+              _all: true,
+            },
+          })
+        ).map((activite) => ({
+          type: activite.type,
+          count: activite._count._all,
+        }))
     ])
 
   if (lastActivitesWithoutTimezone != null) {
@@ -87,6 +104,7 @@ export const getAccueilPageDataFor = async (
     mediateurs,
     activites: [],
     rdvs: null,
+    activitesCoordination,
     syncDataOnLoad: false,
   }
 }

@@ -1,9 +1,6 @@
 import { CreateCraModalDefinition } from '@app/web/features/activites/use-cases/cra/components/CreateCraModal/CreateCraModalDefinition'
-import { ActiviteListItem } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { Button } from '@codegouvfr/react-dsfr/Button'
-import Link from 'next/link'
 import React from 'react'
-import ActiviteCard from './ActiviteCard'
 
 const ActiviteEmptyState = () => (
   <div className="fr-text--center fr-background-alt--blue-france fr-p-6w fr-border-radius--16">
@@ -27,7 +24,10 @@ const ActiviteEmptyState = () => (
 export const ActivitesCoordination = ({
   activites,
 }: {
-  activites: ActiviteListItem[]
+  activites: {
+    type: 'Animation' | 'Evenement' | 'Partenariat'
+    count: number
+  }[]
 }) => (
   <>
     <h2 className="fr-h5 fr-text-mention--grey fr-mb-3w">
@@ -36,7 +36,19 @@ export const ActivitesCoordination = ({
     </h2>
 
     {activites.length > 0 ? (
-      activites.map(() => <div>Todo</div>)
+      <div className="fr-flex fr-flex-gap-6v fr-direction-lg-row fr-direction-column">
+        {activites.map(({ type, count }) => (
+          <div
+            key={type}
+            className="fr-flex fr-flex-1 fr-direction-column fr-background-alt--blue-france fr-p-6v fr-border-radius--8"
+          >
+            <span className="fr-text--uppercase fr-text--xs fr-text--bold fr-mb-0 fr-text-default--grey">
+              {type === 'Evenement' ? 'Évènement' : type}
+            </span>
+            <span className="fr-text--lg fr-text--bold fr-mb-0">{count}</span>
+          </div>
+        ))}
+      </div>
     ) : (
       <ActiviteEmptyState />
     )}

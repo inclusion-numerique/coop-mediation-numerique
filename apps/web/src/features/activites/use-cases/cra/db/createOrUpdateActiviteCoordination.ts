@@ -1,12 +1,12 @@
-import { CraAnimationData } from '@app/web/features/activites/use-cases/cra/animation/validation/CraAnimationValidation'
-import { craDureeDataToMinutes } from '@app/web/features/activites/use-cases/cra/db/minutesToCraDuree'
-import { CraEvenementData } from '@app/web/features/activites/use-cases/cra/evenement/validation/CraEvenementValidation'
-import { CraPartenariatData } from '@app/web/features/activites/use-cases/cra/partenariat/validation/CraPartenariatValidation'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import { Prisma } from '@prisma/client'
 import { v4 } from 'uuid'
+import { CraAnimationData } from '../animation/validation/CraAnimationValidation'
+import { craDureeDataToMinutes } from '../db/minutesToCraDuree'
+import { CraEvenementData } from '../evenement/validation/CraEvenementValidation'
+import { CraPartenariatData } from '../partenariat/validation/CraPartenariatValidation'
 
 export type CreateOrUpdateActiviteCoordinationInput =
   | {
