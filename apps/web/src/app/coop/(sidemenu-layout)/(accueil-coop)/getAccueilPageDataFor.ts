@@ -57,39 +57,52 @@ export const getAccueilPageDataFor = async (
   // keep this as a promise for using suspense in the frontend
   const dashboardRdvData = getDashboardRdvDataFor(user)
 
-  // TODO Return null for rdvs if user has no valid rdv account
-  if (user.mediateur?.id != null) {
-    const lastActivitesWithoutTimezone = await prismaClient.activite.findMany({
-      where: {
-        mediateurId: user.mediateur.id,
-        suppression: null,
-      },
-      select: activiteListSelect,
-      orderBy: {
-        creation: 'desc',
-      },
-      take: 3,
-    })
+  const activites =
+    user.mediateur?.id == null
+      ? []
+      : (
+          await prismaClient.activite.findMany({
+            where: {
+              mediateurId: user.mediateur.id,
+              suppression: null,
+            },
+            select: activiteListSelect,
+            orderBy: {
+              creation: 'desc',
+            },
+            take: 3,
+          })
+        )
+          .map(addTimezoneToActivite(user))
+          .map((activite) => ({
+            ...activite,
+            rdv: activite.rdv ? addRdvBadgeStatus(activite.rdv) : null,
+          }))
 
-    const activites = lastActivitesWithoutTimezone
-      .map(addTimezoneToActivite(user))
-      .map((activite) => ({
-        ...activite,
-        rdv: activite.rdv ? addRdvBadgeStatus(activite.rdv) : null,
-      }))
-
-    // Return rdvs for dashboard info if user has a valid rdv account
-    return {
-      mediateurs,
-      activites,
-      rdvs: dashboardRdvData,
-    }
-  }
+  const activitesCoordination =
+    user.coordinateur?.id == null
+      ? []
+      : (
+          await prismaClient.activiteCoordination.groupBy({
+            by: ['type'],
+            where: {
+              coordinateurId: user.coordinateur.id,
+              suppression: null,
+            },
+            _count: {
+              _all: true,
+            },
+          })
+        ).map((activite) => ({
+          type: activite.type,
+          count: activite._count._all,
+        }))
 
   return {
     mediateurs,
-    activites: [],
-    rdvs: null,
+    activites,
+    activitesCoordination,
+    rdvs: dashboardRdvData,
   }
 }
 
