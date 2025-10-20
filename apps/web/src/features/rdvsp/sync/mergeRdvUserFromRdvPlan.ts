@@ -1,8 +1,5 @@
 import { prismaClient } from '@app/web/prismaClient'
-import {
-  type OAuthRdvApiCredentials,
-  oAuthRdvApiGetUser,
-} from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
+import { type OAuthRdvApiCredentials } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
 import * as Sentry from '@sentry/nextjs'
 
 export const mergeRdvUserFromRdvPlan = async ({
