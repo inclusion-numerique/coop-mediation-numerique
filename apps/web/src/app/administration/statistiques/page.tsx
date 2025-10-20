@@ -19,7 +19,6 @@ import {
 } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { activiteSourceOptions } from '@app/web/features/activites/use-cases/source/activiteSource'
 import { getTagsCollectifs } from '@app/web/features/activites/use-cases/tags/db/getTagsCollectifs'
-import { getImpactStats } from '@app/web/server/impact/getImpactStats'
 
 export const metadata = {
   title: metadataTitle('Usurpation'),
@@ -51,14 +50,12 @@ const Page = async (props: {
     beneficiaires,
     activites,
     totalCounts,
-    _impactStats,
   ] = await Promise.all([
     getAccompagnementsCountByDay({ activitesFilters }),
     getAccompagnementsCountByMonth({ activitesFilters }),
     getBeneficiaireStats({ activitesFilters }),
     getActivitesStats({ activitesFilters, user }),
     getTotalCountsStats({ activitesFilters }),
-    getImpactStats({ activitesFilters }),
   ])
 
   return (
