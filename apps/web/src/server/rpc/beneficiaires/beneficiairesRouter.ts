@@ -182,6 +182,7 @@ export const beneficiairesRouter = router({
             anonyme: true,
             suppression: new Date(),
             modification: new Date(),
+            rdvUserId: null,
             // Anonymize the beneficiaire but keep anonymous data for stats
             prenom: null,
             nom: null,

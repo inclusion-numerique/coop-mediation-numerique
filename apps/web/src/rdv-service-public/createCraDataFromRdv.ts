@@ -1,38 +1,42 @@
 import type { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
 import type { DefaultValues } from 'react-hook-form'
-import { CraCollectifData } from '../features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
+import type { CraCollectifData } from '../features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
 import { getAdaptiveDureeOptions } from '../features/activites/use-cases/cra/db/getAdaptiveDureeOptions'
 import {
   minutesToCraDureeData,
   minutesToCustomCraDureeData,
 } from '../features/activites/use-cases/cra/db/minutesToCraDuree'
-import { SearchRdvResultItem } from '../features/activites/use-cases/list/db/searchActiviteAndRdvs'
-import { BeneficiaireCraData } from '../features/beneficiaires/validation/BeneficiaireValidation'
+import type { RdvUserMergedBeneficiaire } from '../features/rdvsp/sync/createOrMergeBeneficiaireFromRdvUsers'
 import { dateAsIsoDay } from '../utils/dateAsIsoDay'
 
 export const createCraDataFromRdv = async ({
   rdv,
   mediateurId,
+  beneficiaires,
 }: {
-  rdv: SearchRdvResultItem
+  rdv: {
+    id: number
+    durationInMin: number
+    name: string | null
+    startsAt: Date
+    endsAt: Date
+    motif: {
+      name: string
+      collectif: boolean
+    } | null
+    organisation: {
+      id: number
+      name: string
+    }
+  }
   mediateurId: string
+  // beneficiaires from this Rdv's participations should have been created/merged before calling this function
+  beneficiaires: RdvUserMergedBeneficiaire[]
 }): Promise<{
   defaultValues: DefaultValues<CraIndividuelData>
   type: 'individuel' | 'collectif'
 }> => {
-  const { startsAt, durationInMin, participations, id } = rdv
-
-  const participationBeneficiaireSuivi = participations
-    .find((participation) => !!participation.user.beneficiaire)
-    ?.user.beneficiaire?.at(0)
-
-  const beneficiaire = participationBeneficiaireSuivi
-    ? ({
-        id: participationBeneficiaireSuivi.id,
-        prenom: participationBeneficiaireSuivi.prenom,
-        nom: participationBeneficiaireSuivi.nom,
-      } satisfies BeneficiaireCraData)
-    : undefined
+  const { startsAt, durationInMin, id } = rdv
 
   const dureeOptions = await getAdaptiveDureeOptions({
     mediateurId,
@@ -56,6 +60,11 @@ export const createCraDataFromRdv = async ({
       duree,
       rdvServicePublicId: id,
       titreAtelier: rdv.name ?? undefined,
+      participants: beneficiaires.map((beneficiaire) => ({
+        id: beneficiaire.id,
+        prenom: beneficiaire.prenom,
+        nom: beneficiaire.nom,
+      })),
     }
 
     return {
@@ -67,7 +76,7 @@ export const createCraDataFromRdv = async ({
   const defaultValues: DefaultValues<CraIndividuelData> = {
     date: dateAsIsoDay(startsAt),
     duree,
-    beneficiaire,
+    beneficiaire: beneficiaires.at(0),
     rdvServicePublicId: id,
   }
 

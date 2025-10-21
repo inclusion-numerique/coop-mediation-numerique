@@ -33,8 +33,7 @@ export const getRdvs = async ({
     return []
   }
 
-  const shouldFilterStatuses =
-    (statuses?.length ?? 0) > 0 && !statuses?.includes('tous')
+  const shouldFilterStatuses = (statuses?.length ?? 0) > 0
 
   const oAuthCallUser = await getUserContextForOAuthApiCall({ user })
 
