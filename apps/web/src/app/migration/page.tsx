@@ -62,12 +62,14 @@ const MigrationPage = () => (
                 La Coop de la médiation numérique
               </div>
             </div>
-            <Image
-              className="fr-border-radius--16"
+            <img
+              className="fr-border-radius--16 fr-responsive-img"
               src="/images/illustrations/landing-page/hero/solution.webp"
               alt=""
-              width={282}
-              height={353}
+              style={{
+                width: 282,
+                height: 356,
+              }}
             />
           </div>
         </div>
