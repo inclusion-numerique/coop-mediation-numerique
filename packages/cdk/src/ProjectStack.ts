@@ -156,7 +156,7 @@ export class ProjectStack extends TerraformStack {
       backupScheduleFrequency: 24,
       backupScheduleRetention: 14,
       volumeType: 'sbs_15k',
-      volumeSizeInGb: 30,
+      volumeSizeInGb: 60,
       encryptionAtRest: true,
       settings: {
         // Custom max connections
