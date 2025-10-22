@@ -19,6 +19,7 @@ import {
   deleteRdvs,
   lieuPrismaDataFromOAuthApiLieu,
   motifPrismaDataFromOAuthApiMotif,
+  syncRdvUser,
   updateRdv,
   userPrismaDataFromOAuthApiUser,
 } from './syncRdv'

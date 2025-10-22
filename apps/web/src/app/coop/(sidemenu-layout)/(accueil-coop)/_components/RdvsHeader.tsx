@@ -1,4 +1,5 @@
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
+import { rdvStatusValues } from '@app/web/rdv-service-public/rdvStatus'
 import Link from 'next/link'
 
 const RdvsHeader = () => (
@@ -17,7 +18,7 @@ const RdvsHeader = () => (
     <span className="fr-flex-grow-1" />
     <Link
       className="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
-      href="/coop/mes-activites?rdvs=tous"
+      href={`/coop/mes-activites?rdvs=${rdvStatusValues.join(',')}`}
     >
       Voir tous mes rendez-vous
     </Link>

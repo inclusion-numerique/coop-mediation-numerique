@@ -11,6 +11,7 @@ import { UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 import Button from '@codegouvfr/react-dsfr/Button'
 import ActiviteCardSpacer from './ActiviteCardSpacer'
 import ActiviteOrRdvListCard from './ActiviteOrRdvListCard'
+import CraFromRdvButton from './CraFromRdvButton'
 import RdvStatusBadge from './RdvStatusBadge'
 
 const RdvCard = ({
@@ -52,10 +53,6 @@ const RdvCard = ({
   const endTime = dateAsTimeInTimeZone(endsAt, timezone)
   const canCompleteCra = status === 'seen'
 
-  const newCraLink = canCompleteCra
-    ? `/coop/mes-activites/convertir-rdv-en-cra?rdv=${encodeSerializableState(rdv)}`
-    : ''
-
   return (
     <ActiviteOrRdvListCard
       pictogram={RDVServicePublicLogo}
@@ -96,19 +93,7 @@ const RdvCard = ({
         <>
           <RdvStatusBadge rdv={rdv} className="fr-mr-2v" />
           {canCompleteCra ? (
-            <Button
-              priority="tertiary no outline"
-              size="small"
-              className="fr-flex-shrink-0"
-              linkProps={{
-                href: newCraLink,
-              }}
-              title="Compléter un CRA à partir de ce RDV"
-            >
-              {/* Layout is broken with fr-enlarge-link if icon is in button props, we put it in the title instead */}
-              <span className="fr-icon-edit-line fr-icon--sm fr-mr-1-5v" />{' '}
-              Compléter&nbsp;un&nbsp;CRA
-            </Button>
+            <CraFromRdvButton className="fr-flex-shrink-0" rdvId={rdv.id} />
           ) : (
             <Button
               priority="tertiary no outline"

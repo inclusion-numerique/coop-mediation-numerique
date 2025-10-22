@@ -211,11 +211,6 @@ export const getActivitesFiltersWhereConditions = ({
 }
 
 const buildStatusClause = (statuses: RdvStatusFilterValue[]): Sql | null => {
-  if (statuses.includes('tous')) {
-    // include all values
-    return null
-  }
-
   const conditions: Sql[] = [
     statuses.includes('past')
       ? Prisma.raw(`(rdv.status = 'unknown' AND rdv.starts_at < NOW())`)

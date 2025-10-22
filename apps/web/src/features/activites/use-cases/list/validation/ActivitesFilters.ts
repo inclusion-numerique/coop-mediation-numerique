@@ -23,12 +23,11 @@ const booleanStringValues = ['0', '1'] as const
 
 type BooleanString = (typeof booleanStringValues)[number]
 
-export type RdvStatusFilterValue = RdvStatus | 'tous'
+export type RdvStatusFilterValue = RdvStatus
 
-const rdvStatusEnum = z.enum(['tous', ...rdvStatusValues] satisfies [
-  RdvStatusFilterValue,
-  ...RdvStatusFilterValue[],
-])
+const rdvStatusEnum = z.enum(
+  rdvStatusValues satisfies [RdvStatusFilterValue, ...RdvStatusFilterValue[]],
+)
 
 export const ActivitesFilterValidations = {
   du: z.string().regex(isoDayRegex).optional(),
