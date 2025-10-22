@@ -40,7 +40,10 @@ export const createHandlerWithValidation =
     const isAuthenticated = await isAuthenticatedApiClientRequest(
       request,
       scopes,
-    )
+    ).catch((error) => {
+      Sentry.captureException(error)
+      return false
+    })
 
     if (!isAuthenticated) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
