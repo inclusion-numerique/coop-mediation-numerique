@@ -1,13 +1,5 @@
 import { prismaClient } from '@app/web/prismaClient'
-import { oAuthRdvApiListRdvs } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
-import { getUserContextForOAuthApiCall } from '@app/web/rdv-service-public/getUserContextForRdvApiCall'
-import { OAuthApiRdv } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
-import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import {
-  UserId,
-  UserWithExistingMediateur,
-  UserWithExistingRdvAccount,
-} from '@app/web/utils/user'
+import { UserId, UserWithExistingRdvAccount } from '@app/web/utils/user'
 
 const findNextRdv = async ({
   rdvAccountId,

@@ -30,6 +30,7 @@ export const getBeneficiaireAccompagnementsPageData = async ({
       accompagnementsCount: true,
     },
   })
+
   if (!beneficiaire) {
     return null
   }

@@ -1,9 +1,11 @@
 import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
 import { getBeneficiaireAdresseString } from '@app/web/beneficiaire/getBeneficiaireAdresseString'
+import { createOrMergeBeneficiairesFromRdvUsers } from '@app/web/features/rdvsp/sync/createOrMergeBeneficiaireFromRdvUsers'
 import { mergeRdvUserFromRdvPlan } from '@app/web/features/rdvsp/sync/mergeRdvUserFromRdvPlan'
 import { refreshRdvAgentAccountData } from '@app/web/features/rdvsp/sync/refreshRdvAgentAccountData'
 import { syncAllRdvData } from '@app/web/features/rdvsp/sync/syncAllRdvData'
 import { prismaClient } from '@app/web/prismaClient'
+import { createCraDataFromRdv } from '@app/web/rdv-service-public/createCraDataFromRdv'
 import {
   oAuthRdvApiCreateRdvPlan,
   oAuthRdvApiGetOrganisations,
@@ -21,6 +23,7 @@ import {
   invalidError,
 } from '@app/web/server/rpc/trpcErrors'
 import { getServerUrl } from '@app/web/utils/baseUrl'
+import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import * as Sentry from '@sentry/nextjs'
 import { AxiosError } from 'axios'
 import z from 'zod'
@@ -255,4 +258,108 @@ export const rdvServicePublicRouter = router({
         return result.data
       },
     ),
+  createActiviteFromRdv: protectedProcedure
+    .input(
+      z.object({
+        rdvId: z.number(),
+      }),
+    )
+    .mutation(async ({ input, ctx: { user } }) => {
+      if (!user.mediateur) {
+        throw forbiddenError(
+          "Vous n'avez pas les permissions pour créer une activité à partir d'un RDV",
+        )
+      }
+
+      // Fetching the rdv with all relevent data to create Activite and Beneficiaires
+      const rdv = await prismaClient.rdv.findUnique({
+        where: { id: input.rdvId },
+        select: {
+          id: true,
+          rdvAccountId: true,
+          name: true,
+          durationInMin: true,
+          startsAt: true,
+          endsAt: true,
+          motif: {
+            select: {
+              name: true,
+              collectif: true,
+            },
+          },
+          organisation: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          participations: {
+            select: {
+              id: true,
+              user: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  email: true,
+                  phoneNumber: true,
+                  address: true,
+                  birthDate: true,
+                  beneficiaire: {
+                    select: {
+                      id: true,
+                      prenom: true,
+                      nom: true,
+                      email: true,
+                      telephone: true,
+                      mediateurId: true,
+                      adresse: true,
+                      anneeNaissance: true,
+                    },
+                    where: {
+                      mediateurId: user.mediateur.id, // Important so we don't handle shared beneficiaires
+                      suppression: null, // Important so we don't link to deleted beneficiaires
+                      anonyme: false, // filter out anonyme beneficiaires
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      })
+
+      if (!rdv) {
+        throw invalidError('RDV introuvable')
+      }
+
+      if (rdv.rdvAccountId !== user.rdvAccount?.id) {
+        throw forbiddenError(
+          'RDV non associé à votre compte RDV Service Public',
+        )
+      }
+
+      const beneficiaires = await createOrMergeBeneficiairesFromRdvUsers({
+        rdvUsers: rdv.participations.map((participation) => ({
+          ...participation.user,
+          beneficiaire: participation.user.beneficiaire.at(0) ?? null,
+        })),
+        mediateurId: user.mediateur.id,
+      })
+
+      const { type, defaultValues } = await createCraDataFromRdv({
+        rdv,
+        mediateurId: user.mediateur.id,
+        beneficiaires,
+      })
+
+      const createCraUrl = getServerUrl(
+        `/coop/mes-activites/cra/${type}?v=${encodeSerializableState(defaultValues)}`,
+        {
+          absolutePath: true,
+        },
+      )
+
+      return { createCraUrl }
+    }),
 })
