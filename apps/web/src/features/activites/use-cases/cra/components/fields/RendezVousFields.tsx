@@ -102,10 +102,7 @@ export const RendezVousFields = withForm({
                 />
                 {field.state.value === 'personnaliser' && (
                   <div className="fr-flex fr-flex-gap-4v">
-                    <form.AppField
-                      name="duree.dureePersonnaliseeHeures"
-                      defaultValue={0}
-                    >
+                    <form.AppField name="duree.dureePersonnaliseeHeures">
                       {(field) => (
                         <div className="fr-flex-basis-0 fr-flex-grow-1">
                           <field.Input
@@ -132,10 +129,7 @@ export const RendezVousFields = withForm({
                         </div>
                       )}
                     </form.AppField>
-                    <form.AppField
-                      name="duree.dureePersonnaliseeMinutes"
-                      defaultValue={0}
-                    >
+                    <form.AppField name="duree.dureePersonnaliseeMinutes">
                       {(field) => (
                         <div className="fr-flex-basis-0 fr-flex-grow-1">
                           <field.Input
