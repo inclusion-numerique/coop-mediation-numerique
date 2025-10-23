@@ -18,7 +18,7 @@ const RdvsHeader = () => (
     <span className="fr-flex-grow-1" />
     <Link
       className="fr-btn fr-btn--sm fr-btn--tertiary-no-outline"
-      href={`/coop/mes-activites?rdvs=${rdvStatusValues.join(',')}`}
+      href={`/coop/mes-activites?rdvs=${rdvStatusValues.join(',')}&voir-rdvs=1`}
     >
       Voir tous mes rendez-vous
     </Link>

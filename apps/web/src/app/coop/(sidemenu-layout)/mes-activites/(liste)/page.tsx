@@ -8,7 +8,6 @@ import { getWidestActiviteDatesRange } from '@app/web/features/activites/use-cas
 import { getActivitesListPageData } from '@app/web/features/activites/use-cases/list/getActivitesListPageData'
 import MesActivitesListePage from '@app/web/features/activites/use-cases/list/MesActivitesListePage'
 import { validateActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import { hasFeatureFlag } from '@app/web/security/hasFeatureFlag'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -18,15 +17,21 @@ export const metadata: Metadata = {
 const MesActivitesPage = async ({
   searchParams: rawSearchParams,
 }: {
-  searchParams: Promise<ActivitesDataTableSearchParams>
+  searchParams: Promise<
+    ActivitesDataTableSearchParams & { 'voir-rdvs'?: string }
+  >
 }) => {
   const user = await authenticateMediateur()
 
-  const searchParams = validateActivitesFilters(await rawSearchParams)
+  const unvalidatedSearchParams = await rawSearchParams
+  const searchParams = validateActivitesFilters(unvalidatedSearchParams)
+  const showRdvsInList = unvalidatedSearchParams['voir-rdvs'] === '1'
+
   const data = getActivitesListPageData({
     mediateurId: user.mediateur.id,
     searchParams,
     user,
+    showRdvsInList,
   })
 
   const searchResultMatchesCount = data.then(
