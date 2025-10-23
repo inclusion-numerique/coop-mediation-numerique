@@ -6,30 +6,32 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import React, { ReactNode, useState } from 'react'
 import CreateLieuActiviteForm from './CreerLieuActiviteForm'
+import styles from './CreerLieuActivitePageContent.module.css'
 
 export const CreerLieuActivitePageContent = ({
   contentTop,
-  variant = 'default',
 }: {
   contentTop?: ReactNode
-  variant?: 'default' | 'centered'
 }) => {
   const [showSideMenu, setShowSideMenu] = useState(false)
 
   return (
-    <>
-      {showSideMenu && (
-        <LieuActiviteSideMenu
-          className="fr-hidden fr-unhidden-lg fr-mt-16w"
-          style={{ minWidth: '19em' }}
-        />
-      )}
-
+    <div
+      className={classNames('fr-container', styles.container)}
+      style={{ flex: 1 }}
+    >
+      <div
+        className={classNames(
+          'fr-hidden fr-unhidden-lg fr-mt-30v fr-pt-23v',
+          styles.sideNavContainer,
+        )}
+      >
+        {showSideMenu && <LieuActiviteSideMenu />}
+      </div>
       <div
         className={classNames(
           'fr-container fr-container--narrow fr-mb-30v',
-          variant === 'centered' && 'fr-mx-auto',
-          variant === 'default' && 'fr-ml-0',
+          styles.pageContainer,
         )}
       >
         {contentTop}
@@ -52,6 +54,6 @@ export const CreerLieuActivitePageContent = ({
           onVisiblePourCartographieNationaleChange={setShowSideMenu}
         />
       </div>
-    </>
+    </div>
   )
 }
