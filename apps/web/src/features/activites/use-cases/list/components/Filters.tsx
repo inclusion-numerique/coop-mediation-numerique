@@ -27,6 +27,7 @@ const Filters = ({
   isMediateur,
   beneficiairesFilter = true,
   minDate,
+  maxDate,
   className,
   enableRdvsFilter = false,
   hasCrasV1,
@@ -42,6 +43,7 @@ const Filters = ({
   isMediateur: boolean
   beneficiairesFilter?: boolean
   minDate?: Date
+  maxDate?: Date
   className?: string
   enableRdvsFilter?: boolean
   hasCrasV1: boolean
@@ -60,6 +62,7 @@ const Filters = ({
     )}
     <PeriodeFilter
       minDate={minDate ?? new Date()}
+      maxDate={maxDate}
       defaultValue={
         defaultFilters.au && defaultFilters.du
           ? {

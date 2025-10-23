@@ -59,7 +59,8 @@ const MesActivitesPage = async ({
   const enableRdvsFilter =
     !!user.rdvAccount?.hasOauthTokens &&
     (user.rdvAccount.includeRdvsInActivitesList ||
-      (searchParams.rdvs?.length ?? 0) > 0)
+      (searchParams.rdvs?.length ?? 0) > 0 ||
+      showRdvsInList)
 
   return (
     <MesActivitesListeLayout vue="liste">

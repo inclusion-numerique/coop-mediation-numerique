@@ -45,9 +45,11 @@ const FilterCalendar = ({
 
 export const PeriodeFilter = ({
   minDate,
+  maxDate,
   defaultValue,
 }: {
   minDate?: Date
+  maxDate?: Date
   defaultValue?: PeriodFilterValue
 }) => {
   const router = useRouter()
@@ -135,12 +137,14 @@ export const PeriodeFilter = ({
       <div className="fr-flex fr-flex-gap-4v">
         <FilterCalendar
           minDate={minDate}
+          maxDate={maxDate}
           onChange={onStartChange}
           title="Début"
           value={start}
         />
         <FilterCalendar
           minDate={minDate}
+          maxDate={maxDate}
           onChange={onEndChange}
           title="Fin"
           value={end}
