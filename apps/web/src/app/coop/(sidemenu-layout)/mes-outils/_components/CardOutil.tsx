@@ -10,6 +10,7 @@ export const CardOutil = ({
   accessUrl: _accessUrl,
   children,
   isNew,
+  topRight,
 }: {
   pictogram: Pictogram
   title: string
@@ -17,6 +18,7 @@ export const CardOutil = ({
   accessUrl?: string
   children: ReactNode
   isNew?: boolean
+  topRight?: ReactNode
 }) => (
   <div className="fr-border-radius--16 fr-border fr-py-10v fr-px-8v fr-height-full fr-flex fr-direction-column fr-enlarge-link">
     <div
@@ -39,6 +41,7 @@ export const CardOutil = ({
             <Badge severity="new">Intégration disponible&nbsp;!</Badge>
           </div>
         )}
+        {topRight && <div>{topRight}</div>}
       </div>
       <div className=" fr-flex-grow-1">
         <h3 className="fr-h6 fr-mb-2w">{title}</h3>

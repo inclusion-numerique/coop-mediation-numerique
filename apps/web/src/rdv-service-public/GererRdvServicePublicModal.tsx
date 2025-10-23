@@ -13,10 +13,7 @@ import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { dateAsDay } from '../utils/dateAsDay'
-import {
-  dateAsDayAndTime,
-  dateAsDayAndTimeInTimeZone,
-} from '../utils/dateAsDayAndTime'
+import { dateAsDayAndTimeInTimeZone } from '../utils/dateAsDayAndTime'
 import RdvServicePublicStatusTag from './RdvServicePublicStatusTag'
 import {
   getRdvOauthIntegrationStatus,

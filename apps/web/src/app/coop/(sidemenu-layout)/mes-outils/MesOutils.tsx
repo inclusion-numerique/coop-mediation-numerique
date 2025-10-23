@@ -8,6 +8,8 @@ import { CartographieLogo } from '@app/web/features/pictograms/services/Cartogra
 import { LesBasesLogo } from '@app/web/features/pictograms/services/LesBasesLogo'
 import { PixOrgaLogo } from '@app/web/features/pictograms/services/PixOrgaLogo'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
+import RdvServicePublicStatusTag from '@app/web/rdv-service-public/RdvServicePublicStatusTag'
+import { getRdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
 import { hasFeatureFlag } from '@app/web/security/hasFeatureFlag'
 import { contentId } from '@app/web/utils/skipLinks'
 import Notice from '@codegouvfr/react-dsfr/Notice'
@@ -18,7 +20,8 @@ import { CardOutil } from './_components/CardOutil'
 
 export const MesOutils = async () => {
   const user = await getAuthenticatedSessionUser()
-  const hasAccessToRdvServicePublic = hasFeatureFlag(user, 'RdvServicePublic')
+
+  const rdvServicePublicStatus = getRdvOauthIntegrationStatus({ user })
 
   return (
     <CoopPageContainer size={49}>
@@ -63,7 +66,14 @@ export const MesOutils = async () => {
                 pictogram={RDVServicePublicLogo}
                 title="RDV Service Public"
                 slug="rdv-service-public"
-                isNew={hasAccessToRdvServicePublic}
+                isNew={rdvServicePublicStatus === 'none'}
+                topRight={
+                  rdvServicePublicStatus !== 'none' && (
+                    <RdvServicePublicStatusTag
+                      status={rdvServicePublicStatus}
+                    />
+                  )
+                }
               >
                 Faciliter la gestion des rendez-vous avec vos bénéficiaires.
               </CardOutil>

@@ -8,7 +8,7 @@ const RdvServicePublicStatusTag = ({
   status: RdvOauthIntegrationStatus
   small?: boolean
 }) => {
-  if (status === 'error') {
+  if (status === 'error' || status === 'none') {
     return (
       <Tag
         iconId="fr-icon-close-line"
