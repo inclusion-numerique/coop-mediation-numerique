@@ -281,6 +281,8 @@ export const rdvServicePublicRouter = router({
           durationInMin: true,
           startsAt: true,
           endsAt: true,
+          maxParticipantsCount: true,
+          collectif: true,
           motif: {
             select: {
               name: true,
@@ -296,6 +298,7 @@ export const rdvServicePublicRouter = router({
           participations: {
             select: {
               id: true,
+              status: true,
               user: {
                 select: {
                   id: true,
@@ -340,10 +343,12 @@ export const rdvServicePublicRouter = router({
       }
 
       const beneficiaires = await createOrMergeBeneficiairesFromRdvUsers({
-        rdvUsers: rdv.participations.map((participation) => ({
-          ...participation.user,
-          beneficiaire: participation.user.beneficiaire.at(0) ?? null,
-        })),
+        rdvUsers: rdv.participations
+          .filter((participation) => participation.status === 'seen')
+          .map((participation) => ({
+            ...participation.user,
+            beneficiaire: participation.user.beneficiaire.at(0) ?? null,
+          })),
         mediateurId: user.mediateur.id,
       })
 

@@ -1,6 +1,7 @@
 import type { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
 import type { DefaultValues } from 'react-hook-form'
 import type { CraCollectifData } from '../features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
+import { createEmptyParticipantsAnonymes } from '../features/activites/use-cases/cra/collectif/validation/participantsAnonymes'
 import { getAdaptiveDureeOptions } from '../features/activites/use-cases/cra/db/getAdaptiveDureeOptions'
 import {
   minutesToCraDureeData,
@@ -20,6 +21,8 @@ export const createCraDataFromRdv = async ({
     name: string | null
     startsAt: Date
     endsAt: Date
+    collectif: boolean
+    maxParticipantsCount: number | null
     motif: {
       name: string
       collectif: boolean
@@ -54,7 +57,12 @@ export const createCraDataFromRdv = async ({
     ? (minutesToCraDureeData(durationInMin) ?? undefined)
     : minutesToCustomCraDureeData(durationInMin)
 
-  if (rdv.motif?.collectif) {
+  if (rdv.collectif) {
+    const participantsAnonymes = Math.max(
+      0,
+      (rdv.maxParticipantsCount ?? 0) - beneficiaires.length,
+    )
+
     const defaultValues: DefaultValues<CraCollectifData> = {
       date: dateAsIsoDay(startsAt),
       duree,
@@ -65,6 +73,8 @@ export const createCraDataFromRdv = async ({
         prenom: beneficiaire.prenom,
         nom: beneficiaire.nom,
       })),
+      participantsAnonymes:
+        createEmptyParticipantsAnonymes(participantsAnonymes),
     }
 
     return {
