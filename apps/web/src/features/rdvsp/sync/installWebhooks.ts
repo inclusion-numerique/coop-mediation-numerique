@@ -84,6 +84,12 @@ export const installWebhookForOrganisation = async ({
     appendLog(
       `no existing coop endpoint found for organisation ${organisationId}, creating new one`,
     )
+    appendLog(`existing webhooks: ${existing.webhook_endpoints.length}`)
+    for (const webhook of existing.webhook_endpoints) {
+      appendLog(
+        `webhook ${rdvAccount.id}:${webhook.id} - ${webhook.target_url} - ${webhook.subscriptions.join(', ')}`,
+      )
+    }
     // Create
     await oAuthRdvApiCreateWebhook({
       rdvAccount,
