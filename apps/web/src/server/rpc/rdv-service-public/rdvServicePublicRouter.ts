@@ -308,7 +308,7 @@ export const rdvServicePublicRouter = router({
                   phoneNumber: true,
                   address: true,
                   birthDate: true,
-                  beneficiaire: {
+                  beneficiaires: {
                     select: {
                       id: true,
                       prenom: true,
@@ -347,7 +347,7 @@ export const rdvServicePublicRouter = router({
           .filter((participation) => participation.status === 'seen')
           .map((participation) => ({
             ...participation.user,
-            beneficiaire: participation.user.beneficiaire.at(0) ?? null,
+            beneficiaire: participation.user.beneficiaires.at(0) ?? null,
           })),
         mediateurId: user.mediateur.id,
       })

@@ -12,6 +12,7 @@ import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import { UserId, UserWithExistingRdvAccount } from '@app/web/utils/user'
 import type { Prisma } from '@prisma/client'
 import { chunk } from 'lodash-es'
+import { createOrMergeBeneficiairesFromRdvUserIds } from './createOrMergeBeneficiaireFromRdvUsers'
 import { AppendLog } from './syncAllRdvData'
 import type { SyncModelResult } from './syncLog'
 import {
@@ -41,7 +42,13 @@ const getImportedRdvIds = async ({
     .then((rdvs) => rdvs.map((rdv) => rdv.id))
 }
 
-const findExistingRdvs = async ({ rdvIds }: { rdvIds: number[] }) => {
+const findExistingRdvs = async ({
+  rdvIds,
+  mediateurId,
+}: {
+  rdvIds: number[]
+  mediateurId: string
+}) => {
   return await prismaClient.rdv.findMany({
     where: {
       id: { in: rdvIds },
@@ -52,7 +59,17 @@ const findExistingRdvs = async ({ rdvIds }: { rdvIds: number[] }) => {
       motif: true,
       participations: {
         include: {
-          user: true,
+          user: {
+            include: {
+              beneficiaires: {
+                where: {
+                  mediateurId,
+                  anonyme: false,
+                  suppression: null,
+                },
+              },
+            },
+          },
         },
       },
     },
@@ -281,8 +298,6 @@ const importMotifs = async ({
   }
 }
 
-// Moved to syncRdv.ts
-
 const importUsers = async ({
   existingUsersMap,
   chunkRdvs,
@@ -336,6 +351,7 @@ const importUsers = async ({
   appendLog(
     `imported ${users.length} users, ${noop} noop, ${updated} updated, ${created} created`,
   )
+
   return {
     importedIds: users.map((user) => user.id),
     result: { noop, created, updated, deleted: 0 },
@@ -509,6 +525,7 @@ export const importRdvs = async ({
     const chunkRdvs = chunks[chunkIndex]
     const existingRdvs = await findExistingRdvs({
       rdvIds: chunkRdvs.map((rdv) => rdv.id),
+      mediateurId,
     })
     const {
       existingRdvsMap,
@@ -533,6 +550,11 @@ export const importRdvs = async ({
     usersResult.noop += usersImport.result.noop
     usersResult.created += usersImport.result.created
     usersResult.updated += usersImport.result.updated
+
+    await createOrMergeBeneficiairesFromRdvUserIds({
+      rdvUsers: usersImport.importedIds.map((id) => ({ id })),
+      mediateurId,
+    })
 
     const lieuxImport = await importLieux({
       existingLieuxMap,

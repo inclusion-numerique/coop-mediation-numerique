@@ -114,11 +114,16 @@ export const syncRdvUser = async (
   user: OAuthApiRdv['participations'][number]['user'],
 ) => {
   const data = userPrismaDataFromOAuthApiUser(user)
-  await prismaClient.rdvUser.upsert({
+  const upserted = await prismaClient.rdvUser.upsert({
     where: { id: user.id },
     update: data,
     create: data,
+    include: {
+      beneficiaires: true,
+    },
   })
+
+  return upserted
 }
 
 // Sync lieu (create or update)
@@ -203,7 +208,7 @@ export const deleteRdvs = async (rdvIds: number[]) => {
 // Sync RDV dependencies (users, lieu, motif) before syncing the RDV itself
 export const syncRdvDependencies = async (rdv: OAuthApiRdv) => {
   // Sync all users from participations
-  await Promise.all(
+  const rdvUsers = await Promise.all(
     rdv.participations.map((participation) => syncRdvUser(participation.user)),
   )
 
@@ -216,4 +221,6 @@ export const syncRdvDependencies = async (rdv: OAuthApiRdv) => {
   if (rdv.motif) {
     await syncRdvMotif(rdv.motif)
   }
+
+  return { rdvUsers }
 }
