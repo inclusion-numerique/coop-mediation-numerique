@@ -91,13 +91,15 @@ export const installWebhookForOrganisation = async ({
       )
     }
     // Create
-    await oAuthRdvApiCreateWebhook({
+    const created = await oAuthRdvApiCreateWebhook({
       rdvAccount,
       organisationId,
       target_url: webhookUrl,
       subscriptions: webhookSubscriptions,
       secret: ServerWebAppConfig.RdvServicePublic.webhookSecret,
     })
+
+    appendLog(`created webhook ${JSON.stringify(created)}`)
     return 'created'
   }
 
