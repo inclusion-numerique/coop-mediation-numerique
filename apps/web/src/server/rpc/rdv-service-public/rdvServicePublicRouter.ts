@@ -344,7 +344,11 @@ export const rdvServicePublicRouter = router({
 
       const beneficiaires = await createOrMergeBeneficiairesFromRdvUsers({
         rdvUsers: rdv.participations
-          .filter((participation) => participation.status === 'seen')
+          .filter(
+            (participation) =>
+              participation.status === 'seen' ||
+              participation.status === 'unknown',
+          )
           .map((participation) => ({
             ...participation.user,
             beneficiaire: participation.user.beneficiaires.at(0) ?? null,
