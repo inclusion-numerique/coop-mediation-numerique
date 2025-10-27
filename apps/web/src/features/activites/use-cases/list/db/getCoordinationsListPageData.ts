@@ -1,3 +1,4 @@
+import { CoordinateurUser } from '@app/web/auth/userTypeGuards'
 import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
 import {
   DEFAULT_PAGE,
@@ -5,11 +6,17 @@ import {
 } from '@app/web/libs/data-table/toNumberOr'
 import { prismaClient } from '@app/web/prismaClient'
 import {
+  Prisma,
   TypeActiviteCoordination,
   TypeAnimation,
   TypeEvenement,
 } from '@prisma/client'
 import { CoordinationsFilters } from '../validation/CoordinationsFilters'
+
+type TypeStructurePartenaires = {
+  nom: string
+  type: string
+}[]
 
 export type ActivitesByDate = {
   date: string
@@ -17,23 +24,37 @@ export type ActivitesByDate = {
     id: string
     type: TypeActiviteCoordination
     creation: Date
+    modification: Date
     typeAnimation: TypeAnimation | null
     typeAnimationAutre: string | null
+    thematiquesAnimation: string[] | null
+    thematiqueAnimationAutre: string | null
+    organisateurs: string[] | null
+    organisateurAutre: string | null
+    initiative: string | null
     nomEvenement: string | null
     typeEvenement: TypeEvenement | null
     typeEvenementAutre: string | null
     naturePartenariat?: string[]
     naturePartenariatAutre: string | null
-    partenaires: number
-    participants: number
+    structuresPartenaires: TypeStructurePartenaires | null
+    partenaires: number | null
+    participants: number | null
+    mediateurs: number | null
+    structures: number | null
+    autresActeurs: number | null
+    echelonTerritorial: string | null
+    duree: number | null
+    tags: { id: string; nom: string }[]
+    notes: string | null
   }[]
 }
 
 export const getCoordinationsListPageData = async ({
-  coordinateurId,
+  user,
   searchParams,
 }: {
-  coordinateurId: string
+  user: CoordinateurUser
   searchParams: CoordinationsFilters
 }) => {
   const page = searchParams.page ?? DEFAULT_PAGE
@@ -43,14 +64,14 @@ export const getCoordinationsListPageData = async ({
 
   const totalCount = await prismaClient.activiteCoordination.count({
     where: {
-      coordinateurId,
+      coordinateurId: user.coordinateur.id,
       suppression: null,
     },
   })
 
   const activites = await prismaClient.activiteCoordination.findMany({
     where: {
-      coordinateurId,
+      coordinateurId: user.coordinateur.id,
       suppression: null,
     },
     orderBy: {
@@ -62,9 +83,16 @@ export const getCoordinationsListPageData = async ({
       id: true,
       type: true,
       date: true,
+      duree: true,
       creation: true,
+      modification: true,
       typeAnimation: true,
       typeAnimationAutre: true,
+      thematiquesAnimation: true,
+      thematiqueAnimationAutre: true,
+      organisateurs: true,
+      organisateurAutre: true,
+      initiative: true,
       nomEvenement: true,
       typeEvenement: true,
       typeEvenementAutre: true,
@@ -74,6 +102,19 @@ export const getCoordinationsListPageData = async ({
       structures: true,
       autresActeurs: true,
       structuresPartenaires: true,
+      participants: true,
+      echelonTerritorial: true,
+      tags: {
+        select: {
+          tag: {
+            select: {
+              id: true,
+              nom: true,
+            },
+          },
+        },
+      },
+      notes: true,
     },
   })
 
@@ -82,9 +123,10 @@ export const getCoordinationsListPageData = async ({
       const date = activite.date.toISOString().split('T')[0]
 
       const participants =
+        activite.participants ??
         (activite.mediateurs ?? 0) +
-        (activite.structures ?? 0) +
-        (activite.autresActeurs ?? 0)
+          (activite.structures ?? 0) +
+          (activite.autresActeurs ?? 0)
 
       const partenaires = Array.isArray(activite.structuresPartenaires)
         ? activite.structuresPartenaires.length
@@ -96,7 +138,14 @@ export const getCoordinationsListPageData = async ({
           date,
           activites: [
             ...(acc[date]?.activites ?? []),
-            { ...activite, participants, partenaires },
+            {
+              ...activite,
+              participants,
+              partenaires,
+              tags: activite.tags.map((t) => t.tag),
+              structuresPartenaires:
+                activite.structuresPartenaires as TypeStructurePartenaires,
+            },
           ],
         },
       }
@@ -113,5 +162,6 @@ export const getCoordinationsListPageData = async ({
       lignes: searchParams.lignes?.toString(),
     },
     activitesByDate,
+    timezone: user.timezone,
   }
 }

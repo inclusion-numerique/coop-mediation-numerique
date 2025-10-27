@@ -21,7 +21,7 @@ const MesCoordinationsPage = async ({
   const searchParams = validateCoordinationsFilters(await rawSearchParams)
 
   const data = getCoordinationsListPageData({
-    coordinateurId: user.coordinateur.id,
+    user,
     searchParams,
   })
 
