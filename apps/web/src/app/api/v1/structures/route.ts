@@ -377,9 +377,32 @@ export const GET = createApiV1Route
   .configure<StructureListResponse>({
     scopes: ['Structures'],
   })
-  .queryParams(JsonApiCursorPaginationQueryParamsValidation)
+  .queryParams(
+    JsonApiCursorPaginationQueryParamsValidation.extend({
+      /**
+       * Liste d'identifiants de structures, séparés par des virgules (CSV).
+       * Exemple: ids=uuid1,uuid2
+       * Maximum 100 ids.
+       */
+      ids: z
+        .union([z.string(), z.array(z.string())])
+        .optional()
+        .transform((v) =>
+          Array.isArray(v)
+            ? v
+            : v
+            ? v.split(',')
+            : [],
+        )
+        .transform((arr) => arr.map((s) => s.trim()).filter(Boolean))
+        .transform((arr) => Array.from(new Set(arr)))
+        .pipe(z.array(z.string().uuid()).max(100))
+        .default([]),
+    }),
+  )
   .handle(async ({ params }) => {
     const cursorPagination = prismaCursorPagination(params)
+    const ids = params.ids as string[]
 
     const parsedCursor = cursorPagination.cursor
       ? parseCompositeCursor(cursorPagination.cursor)
@@ -399,10 +422,15 @@ export const GET = createApiV1Route
     }
 
     // include all structures, even if suppression != null
+    const where = {
+      ...(ids.length > 0 ? { id: { in: ids } } : {}),
+    }
+
     const structures = await prismaClient.structure.findMany({
       orderBy: [{ creation: 'desc' }],
       take: cursorPagination.take,
       skip: cursorPagination.skip,
+      where,
       include: {
         _count: {
           select: {
@@ -429,18 +457,22 @@ export const GET = createApiV1Route
         : undefined,
     })
 
-    const totalCount = await prismaClient.structure.count()
+    const totalCount = await prismaClient.structure.count({ where })
 
     const lastItem = structures.at(-1)
     const firstItem = structures.at(0)
 
-    const nextCursor = lastItem
-      ? createCompositeCursor(lastItem.creation.toISOString(), lastItem.id)
-      : undefined
+    // next page exists only if we filled the page size
+    const nextCursor =
+      structures.length === cursorPagination.take && lastItem
+        ? createCompositeCursor(lastItem.creation.toISOString(), lastItem.id)
+        : undefined
     const previousCursor =
       !!parsedCursor && firstItem
         ? createCompositeCursor(firstItem.creation.toISOString(), firstItem.id)
         : undefined
+
+    const queryIdsSuffix = ids.length > 0 ? `&ids=${ids.join(',')}` : ''
 
     const response: StructureListResponse = {
       data: structures.map((s) => ({
@@ -519,19 +551,19 @@ export const GET = createApiV1Route
               ? apiV1Url(
                   `/structures?page[before]=${encodeSerializableState(
                     cursorPagination.cursor,
-                  )}`,
+                  )}${queryIdsSuffix}`,
                 )
               : apiV1Url(
                   `/structures?page[after]=${encodeSerializableState(
                     cursorPagination.cursor,
-                  )}`,
+                  )}${queryIdsSuffix}`,
                 )
-            : apiV1Url('/structures'),
+            : apiV1Url(`/structures${queryIdsSuffix ? `?${queryIdsSuffix.slice(1)}` : ''}`),
         },
         next: nextCursor
           ? {
               href: apiV1Url(
-                `/structures?page[after]=${encodeSerializableState(nextCursor)}`,
+                `/structures?page[after]=${encodeSerializableState(nextCursor)}${queryIdsSuffix}`,
               ),
             }
           : undefined,
@@ -540,7 +572,7 @@ export const GET = createApiV1Route
               href: apiV1Url(
                 `/structures?page[before]=${encodeSerializableState(
                   previousCursor,
-                )}`,
+                )}${queryIdsSuffix}`,
               ),
             }
           : undefined,
