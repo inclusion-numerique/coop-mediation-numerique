@@ -1,6 +1,10 @@
 import { prismaClient } from '@app/web/prismaClient'
 import type { OAuthApiRdv } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
 import {
+  createOrMergeBeneficiairesFromRdvUserIds,
+  createOrMergeBeneficiairesFromRdvUsers,
+} from '../sync/createOrMergeBeneficiaireFromRdvUsers'
+import {
   createRdv,
   deleteRdv,
   syncRdvDependencies,
@@ -47,6 +51,17 @@ export const handleRdvModelWebhook = async ({
   // Check if we have this RDV account in our system
   const rdvAccount = await prismaClient.rdvAccount.findUnique({
     where: { id: rdvAccountId },
+    include: {
+      user: {
+        select: {
+          mediateur: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      },
+    },
   })
 
   if (!rdvAccount) {
@@ -67,17 +82,22 @@ export const handleRdvModelWebhook = async ({
         const existingRdv = await prismaClient.rdv.findUnique({
           where: { id: data.id },
         })
+        const { rdvUsers } = await syncRdvDependencies(rdv)
+        if (rdvAccount.user?.mediateur?.id) {
+          await createOrMergeBeneficiairesFromRdvUserIds({
+            rdvUsers,
+            mediateurId: rdvAccount.user.mediateur.id,
+          })
+        }
+
         if (!existingRdv) {
           // If RDV doesn't exist, treat as create
-          await syncRdvDependencies(rdv)
           await createRdv(rdv, rdvAccountId)
           // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
           console.log(
             `[rdvsp webhook] Created RDV ${data.id} (was updated but didn't exist)`,
           )
         } else {
-          // Sync dependencies and update
-          await syncRdvDependencies(rdv)
           await updateRdv(rdv, rdvAccountId)
           // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
           console.log(`[rdvsp webhook] Updated RDV ${data.id}`)

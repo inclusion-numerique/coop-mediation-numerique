@@ -162,3 +162,37 @@ export const createOrMergeBeneficiairesFromRdvUsers = async ({
       createOrMergeBeneficiaireFromRdvUser({ rdvUser, mediateurId }),
     ),
   )
+
+export const createOrMergeBeneficiairesFromRdvUserIds = async ({
+  rdvUsers,
+  mediateurId,
+}: {
+  rdvUsers: { id: number }[]
+  mediateurId: string
+}): Promise<RdvUserMergedBeneficiaire[]> => {
+  const rdvUsersToMerge = await prismaClient.rdvUser.findMany({
+    where: {
+      id: {
+        in: rdvUsers.map((rdvUser) => rdvUser.id),
+      },
+    },
+    include: {
+      beneficiaires: {
+        where: {
+          mediateurId,
+          suppression: null,
+          anonyme: false,
+        },
+        select: mergedBeneficiaireSelect,
+      },
+    },
+  })
+
+  return createOrMergeBeneficiairesFromRdvUsers({
+    rdvUsers: rdvUsersToMerge.map((rdvUser) => ({
+      ...rdvUser,
+      beneficiaire: rdvUser.beneficiaires.at(0) ?? null,
+    })),
+    mediateurId,
+  })
+}

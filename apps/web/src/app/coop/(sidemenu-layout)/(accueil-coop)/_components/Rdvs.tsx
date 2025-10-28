@@ -75,7 +75,7 @@ const Rdvs = async ({
                     priority="tertiary no outline"
                     size="small"
                     linkProps={{
-                      href: '/coop/mes-activites?rdvs=unknown',
+                      href: '/coop/mes-activites?rdvs=unknown&voir-rdvs=1',
                     }}
                   >
                     Voir
@@ -165,7 +165,7 @@ const Rdvs = async ({
                     priority="tertiary no outline"
                     size="small"
                     linkProps={{
-                      href: '/coop/mes-activites?rdvs=seen',
+                      href: '/coop/mes-activites?rdvs=seen&voir-rdvs=1',
                     }}
                   >
                     CRA à compléter

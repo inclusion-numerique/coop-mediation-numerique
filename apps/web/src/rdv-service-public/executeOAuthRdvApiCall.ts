@@ -3,7 +3,6 @@ import {
   OAuthApiListMeta,
   OAuthApiOrganisationRdvsResponse,
   OAuthApiRdv,
-  OAuthApiRdvsResponse,
   OAuthApiUsersResponse,
   OAuthApiWebhookEndpointsResponse,
   OAuthRdvApiGetOrganisationsResponse,
@@ -42,11 +41,13 @@ export type OauthRdvApiCredentialsWithOrganisations = OAuthRdvApiCredentials & {
 export type OauthRdvApiResponseResult<T> =
   | {
       status: 'error' // The RDV API is unreachable or the OAUTH Tokens are invalid
+      statusCode: number
       error: string
       data: undefined
     }
   | {
       status: 'ok'
+      statusCode: number
       error: undefined
       data: T
     }
@@ -87,6 +88,7 @@ export const executeOAuthRdvApiCall = async <ResponseType = unknown>({
     // We could not refresh token (service down or oauth revoked)
     return {
       status: 'error',
+      statusCode: (error as AxiosError).response?.status ?? 500,
       error:
         'message' in (error as AxiosError)
           ? (error as AxiosError).message
@@ -110,6 +112,7 @@ export const executeOAuthRdvApiCall = async <ResponseType = unknown>({
     const response = await axios<ResponseType>(requestConfig)
     return {
       status: 'ok',
+      statusCode: response.status,
       error: undefined,
       data: response.data,
     }
@@ -135,6 +138,7 @@ export const executeOAuthRdvApiCall = async <ResponseType = unknown>({
           const retryResponse = await axios<ResponseType>(retryConfig)
           return {
             status: 'ok',
+            statusCode: retryResponse.status,
             error: undefined,
             data: retryResponse.data,
           }
@@ -143,6 +147,7 @@ export const executeOAuthRdvApiCall = async <ResponseType = unknown>({
         Sentry.captureException(error)
         return {
           status: 'error',
+          statusCode: (error as AxiosError).response?.status ?? 500,
           error:
             'message' in (error as AxiosError)
               ? (error as AxiosError).message
@@ -156,6 +161,7 @@ export const executeOAuthRdvApiCall = async <ResponseType = unknown>({
     Sentry.captureException(error)
     return {
       status: 'error',
+      statusCode: (error as AxiosError).response?.status ?? 500,
       error:
         'message' in (error as AxiosError)
           ? (error as AxiosError).message

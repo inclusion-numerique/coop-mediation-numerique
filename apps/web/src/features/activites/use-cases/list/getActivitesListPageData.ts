@@ -5,21 +5,20 @@ import type { ActivitesDataTableSearchParams } from './components/ActivitesDataT
 import { groupActivitesAndRdvsByDate } from './components/groupActivitesAndRdvsByDate'
 import { getFirstAndLastActiviteDate } from './db/getFirstAndLastActiviteDate'
 import { getWidestActiviteDatesRange } from './db/getWidestActiviteDatesRange'
-import {
-  type SearchActiviteAndRdvsResult,
-  searchActiviteAndRdvs,
-} from './db/searchActiviteAndRdvs'
+import { searchActiviteAndRdvs } from './db/searchActiviteAndRdvs'
 
 export const getActivitesListPageData = async ({
   mediateurId,
   searchParams,
   user,
   includeRdvs = true,
+  showRdvsInList = false,
 }: {
   mediateurId: string
   searchParams: ActivitesDataTableSearchParams
   user: UserId & UserRdvAccount & UserTimezone
   includeRdvs?: boolean
+  showRdvsInList?: boolean // only used for ui overrides
 }) => {
   /**
    * We search activites and rdvs in two different sources (database and rdv api)
@@ -30,7 +29,8 @@ export const getActivitesListPageData = async ({
     includeRdvs &&
     !!user.rdvAccount?.hasOauthTokens &&
     (user.rdvAccount.includeRdvsInActivitesList ||
-      (searchParams.rdvs?.length ?? 0) > 0) && // we display rdvs if there is a rdv filter enabled
+      (searchParams.rdvs?.length ?? 0) > 0 ||
+      showRdvsInList) && // we display rdvs if there is a rdv filter enabled
     (searchParams.types?.length ?? 0) === 0 // we did not filter on activites types
 
   const shouldFetchActivites =

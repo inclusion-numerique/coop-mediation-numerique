@@ -13,7 +13,6 @@ const LieuActiviteCreerPage = async () => {
       <SkipLinksPortal />
       <main id={contentId}>
         <CreerLieuActivitePageContent
-          variant="centered"
           contentTop={
             <CoopBreadcrumbs
               parents={[

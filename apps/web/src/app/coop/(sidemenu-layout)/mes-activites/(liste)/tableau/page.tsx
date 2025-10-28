@@ -9,15 +9,18 @@ import { getWidestActiviteDatesRange } from '@app/web/features/activites/use-cas
 import { getActivitesListPageData } from '@app/web/features/activites/use-cases/list/getActivitesListPageData'
 import MesActivitesTableauPage from '@app/web/features/activites/use-cases/list/MesActivitesTableauPage'
 import { validateActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import { hasFeatureFlag } from '@app/web/security/hasFeatureFlag'
 
 const MesActivitesVueTableauPage = async ({
   searchParams,
 }: {
-  searchParams: Promise<ActivitesDataTableSearchParams>
+  searchParams: Promise<
+    ActivitesDataTableSearchParams & { 'voir-rdvs'?: string }
+  >
 }) => {
   const rawSearchParams = await searchParams
   const user = await authenticateMediateur()
+
+  const showRdvsInList = rawSearchParams['voir-rdvs'] === '1'
 
   const hasActivites = await mediateurHasActivites({
     mediateurId: user.mediateur.id,
@@ -29,6 +32,7 @@ const MesActivitesVueTableauPage = async ({
       mediateurId: user.mediateur.id,
       searchParams,
       user,
+      showRdvsInList,
     })
 
     const searchResultMatchesCount = data.then(
@@ -38,7 +42,7 @@ const MesActivitesVueTableauPage = async ({
 
     const includeRdvsFilter =
       !!user.rdvAccount?.hasOauthTokens &&
-      user.rdvAccount.includeRdvsInActivitesList
+      (user.rdvAccount.includeRdvsInActivitesList || showRdvsInList)
 
     const {
       communesOptions,

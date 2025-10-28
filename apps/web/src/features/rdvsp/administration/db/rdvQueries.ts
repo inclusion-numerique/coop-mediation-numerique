@@ -26,11 +26,15 @@ export const rdvListSelect = {
           firstName: true,
           lastName: true,
           email: true,
-          beneficiaire: {
+          beneficiaires: {
             select: {
               id: true,
               prenom: true,
               nom: true,
+            },
+            where: {
+              anonyme: false,
+              suppression: null,
             },
           },
         },

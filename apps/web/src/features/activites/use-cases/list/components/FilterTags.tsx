@@ -13,6 +13,9 @@ import {
   toLieuPrefix,
 } from './generateActivitesFiltersLabels'
 
+// certains query params n'ont pas de rapport avec les filtres et ne doivent pas etre clear
+const queryParamsToKeep = ['voir-rdvs']
+
 export const FilterTags = ({
   filters,
   lieuxActiviteOptions,
@@ -70,7 +73,13 @@ export const FilterTags = ({
   }
 
   const handleClearFilters = () => {
-    router.replace('?', { scroll: false })
+    const newQueryParams = new URLSearchParams()
+    for (const paramToKeep of queryParamsToKeep) {
+      if (searchParams.has(paramToKeep)) {
+        newQueryParams.set(paramToKeep, searchParams.get(paramToKeep) ?? '')
+      }
+    }
+    router.replace(`?${newQueryParams}`, { scroll: false })
   }
 
   return filterLabelsToDisplay.length > 0 ? (

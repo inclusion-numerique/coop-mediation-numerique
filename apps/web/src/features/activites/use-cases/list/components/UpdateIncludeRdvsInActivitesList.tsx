@@ -16,7 +16,9 @@ const UpdateIncludeRdvsInActivitesList = ({
   const queryParams = useSearchParams()
 
   const [value, setValue] = useState(
-    includeRdvsInActivitesList || !!queryParams.get('rdvs'),
+    includeRdvsInActivitesList ||
+      !!queryParams.get('rdvs') ||
+      !!queryParams.get('voir-rdvs'),
   )
 
   const mutation =
@@ -35,6 +37,7 @@ const UpdateIncludeRdvsInActivitesList = ({
     const params = new URLSearchParams(queryParams.toString())
 
     params.delete('rdvs')
+    params.delete('voir-rdvs')
 
     // Router.replace() to trigger refresh
     router.replace(`?${params.toString()}`, { scroll: false })

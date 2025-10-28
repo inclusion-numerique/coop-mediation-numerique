@@ -414,7 +414,7 @@ export const givenRdv = ({
         firstName: 'Carlos',
         lastName: 'Bénéficiaire',
         email: 'carlos.beneficiaire@example.com',
-        beneficiaire: [],
+        beneficiaires: [],
       },
     },
   ],

@@ -116,3 +116,13 @@ export const countTotal = {
   trancheAge: countTotalTrancheAge,
   statutSocial: countTotalStatutSocial,
 }
+
+export const createEmptyParticipantsAnonymes = (
+  total: number,
+): ParticipantsAnonymesCraCollectifData => ({
+  ...participantsAnonymesDefault,
+  total,
+  genreNonCommunique: total,
+  trancheAgeNonCommunique: total,
+  statutSocialNonCommunique: total,
+})
