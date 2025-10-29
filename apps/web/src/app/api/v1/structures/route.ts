@@ -387,13 +387,7 @@ export const GET = createApiV1Route
       ids: z
         .union([z.string(), z.array(z.string())])
         .optional()
-        .transform((v) =>
-          Array.isArray(v)
-            ? v
-            : v
-            ? v.split(',')
-            : [],
-        )
+        .transform((v) => (Array.isArray(v) ? v : v ? v.split(',') : []))
         .transform((arr) => arr.map((s) => s.trim()).filter(Boolean))
         .transform((arr) => Array.from(new Set(arr)))
         .pipe(z.array(z.string().uuid()).max(100))
@@ -558,7 +552,9 @@ export const GET = createApiV1Route
                     cursorPagination.cursor,
                   )}${queryIdsSuffix}`,
                 )
-            : apiV1Url(`/structures${queryIdsSuffix ? `?${queryIdsSuffix.slice(1)}` : ''}`),
+            : apiV1Url(
+                `/structures${queryIdsSuffix ? `?${queryIdsSuffix.slice(1)}` : ''}`,
+              ),
         },
         next: nextCursor
           ? {
