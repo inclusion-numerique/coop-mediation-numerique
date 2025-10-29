@@ -102,7 +102,7 @@
     "mongodb": "^5.9.2",
     "nanoid": "^5.1.5",
     "next": "^15.5.4",
-    "next-auth": "^4.24.11",
+    "next-auth": "^4.24.12",
     "next-swagger-doc": "^0.4.1",
     "node-html-parser": "^7.0.1",
     "nodemailer": "^7.0.2",
