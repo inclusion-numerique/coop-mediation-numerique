@@ -221,13 +221,7 @@ export const GET = createApiV1Route
       ids: z
         .union([z.string(), z.array(z.string())])
         .optional()
-        .transform((v) =>
-          Array.isArray(v)
-            ? v
-            : v
-            ? v.split(',')
-            : [],
-        )
+        .transform((v) => (Array.isArray(v) ? v : v ? v.split(',') : []))
         .transform((arr) => arr.map((s) => s.trim()).filter(Boolean))
         .transform((arr) => Array.from(new Set(arr)))
         .pipe(z.array(z.string().uuid()).max(100))
@@ -323,12 +317,13 @@ export const GET = createApiV1Route
           LEFT JOIN users ON mediateurs.user_id = users.id
       WHERE structures.suppression IS NULL
         AND mediateurs_en_activite.suppression IS NULL
+        AND structures.visible_pour_cartographie_nationale IS true
       GROUP BY structures.id
     )
     SELECT *
     FROM base
         ${
-          (ids.length > 0 || dispositif_programmes_nationaux)
+          ids.length > 0 || dispositif_programmes_nationaux
             ? Prisma.sql`WHERE ${
                 ids.length > 0
                   ? Prisma.sql`id IN (${Prisma.join(ids.map((id) => Prisma.sql`${id}::uuid`))})`
