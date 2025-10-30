@@ -187,6 +187,16 @@ const ActiviteCoordinationModal = ({ timezone }: { timezone: string }) => {
               Modifier
             </Button>
             <Button
+              linkProps={{
+                href: `/coop/mes-activites/cra/${activite.type.toLowerCase()}/${id}/dupliquer${actionsRetourPath ? `?retour=${actionsRetourPath}` : ''}`,
+              }}
+              priority="secondary"
+              size="small"
+            >
+              <span className="ri-file-copy-line fr-mr-2v" aria-hidden />
+              Dupliquer
+            </Button>
+            <Button
               type="button"
               iconId="fr-icon-delete-bin-line"
               priority="secondary"
