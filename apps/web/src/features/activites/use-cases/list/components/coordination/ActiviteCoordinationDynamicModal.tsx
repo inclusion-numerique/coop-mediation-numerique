@@ -11,7 +11,7 @@ import {
 } from '@app/web/utils/dateAsDayAndTime'
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import React, { useState } from 'react'
 import { INITIATIVE_OPTIONS } from '../../../cra/animation/labels'
 import { ECHELON_TERRITORIAL_OPTIONS } from '../../../cra/evenement/labels'
@@ -57,6 +57,10 @@ const ActiviteCoordinationModal = ({ timezone }: { timezone: string }) => {
 
   const router = useRouter()
   const mutation = trpc.cra.deleteActiviteCoordination.useMutation()
+
+  const currentPath = usePathname()
+  const searchParamsString = useSearchParams().toString()
+  const actionsRetourPath = `${currentPath}${searchParamsString ? `?${searchParamsString}` : ''}`
 
   const [deletionConfirmation, setDeletionConfirmation] = useState(false)
 
@@ -173,6 +177,15 @@ const ActiviteCoordinationModal = ({ timezone }: { timezone: string }) => {
           </div>
           <hr className="fr-separator-6v" />
           <div className="fr-flex fr-flex-gap-2v">
+            <Button
+              iconId="fr-icon-edit-line"
+              linkProps={{
+                href: `/coop/mes-activites/cra/${activite.type.toLowerCase()}/${id}${actionsRetourPath ? `?retour=${actionsRetourPath}` : ''}`,
+              }}
+              size="small"
+            >
+              Modifier
+            </Button>
             <Button
               type="button"
               iconId="fr-icon-delete-bin-line"

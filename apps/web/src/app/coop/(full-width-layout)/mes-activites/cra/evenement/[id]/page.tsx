@@ -1,32 +1,33 @@
 import { authenticateCoordinateur } from '@app/web/auth/authenticateUser'
 import CraEvenementPage from '@app/web/features/activites/use-cases/cra/evenement/CraEvenementPage'
-import { CraEvenementData } from '@app/web/features/activites/use-cases/cra/evenement/validation/CraEvenementValidation'
+import { getCraEvenementDataDefaultValuesFromExisting } from '@app/web/features/activites/use-cases/cra/evenement/db/getCraEvenementDataDefaultValuesFromExisting'
 import { getCraCoordinationPageData } from '@app/web/features/activites/use-cases/cra/getCraCoordinationPageData'
-import {
-  decodeSerializableState,
-  type EncodedState,
-} from '@app/web/utils/encodeSerializableState'
-import type { DefaultValues } from 'react-hook-form'
+import { notFound } from 'next/navigation'
 
-const CreateCraEvenementPage = async ({
+const UpdateCraEvenementPage = async ({
   searchParams,
+  params,
 }: {
-  searchParams: Promise<{
-    v?: EncodedState<DefaultValues<CraEvenementData>>
-    retour?: string
-  }>
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ retour?: string }>
 }) => {
-  const { retour, v } = await searchParams
+  const { id } = await params
+  const { retour } = await searchParams
 
   const {
     coordinateur: { id: coordinateurId },
   } = await authenticateCoordinateur()
 
-  const stateFromUrl = v ? decodeSerializableState(v, {}) : {}
+  const defaultValues = await getCraEvenementDataDefaultValuesFromExisting({
+    id,
+    coordinateurId,
+  })
+
+  if (defaultValues == null) return notFound()
 
   const craPageData = await getCraCoordinationPageData(
     coordinateurId,
-    stateFromUrl,
+    defaultValues,
   )
 
   return (
@@ -38,4 +39,4 @@ const CreateCraEvenementPage = async ({
   )
 }
 
-export default CreateCraEvenementPage
+export default UpdateCraEvenementPage

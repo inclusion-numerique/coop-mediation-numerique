@@ -32,10 +32,14 @@ export const searchTags = async ({
   })
   const recherche = searchParams?.recherche?.trim() ?? ''
 
-  const mediateur = await prismaClient.mediateur.findUnique({
-    where: { id: mediateurId },
-    select: { user: { select: { emplois: { select: { structure: true } } } } },
-  })
+  const mediateur = mediateurId
+    ? await prismaClient.mediateur.findUnique({
+        where: { id: mediateurId },
+        select: {
+          user: { select: { emplois: { select: { structure: true } } } },
+        },
+      })
+    : undefined
 
   const departement = mediateur?.user
     ? getUserDepartement(mediateur.user)
