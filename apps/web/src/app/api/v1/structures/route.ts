@@ -33,7 +33,7 @@ import {
   Service,
 } from '@prisma/client'
 import { NextResponse } from 'next/server'
-import { type ZodError, z } from 'zod'
+import { z, type ZodError } from 'zod'
 
 /**
  * @openapi
@@ -292,6 +292,13 @@ import { type ZodError, z } from 'zod'
  *           type: string
  *         required: false
  *         description: curseur de pagination pour obtenir les éléments précédents
+ *       - in: query
+ *         name: ids
+ *         schema:
+ *           type: string
+ *           description: |
+ *             Liste d'identifiants de structures (uuid) séparés par des virgules. Exemple : ids=uuid1,uuid2. Maximum 100 ids.
+ *         required: false
  *     responses:
  *       200:
  *         description: liste des structures
@@ -381,7 +388,7 @@ export const GET = createApiV1Route
     JsonApiCursorPaginationQueryParamsValidation.extend({
       /**
        * Liste d'identifiants de structures, séparés par des virgules (CSV).
-       * Exemple: ids=uuid1,uuid2
+       * Exemple : ids=uuid1,uuid2
        * Maximum 100 ids.
        */
       ids: z

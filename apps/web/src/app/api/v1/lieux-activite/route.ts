@@ -197,6 +197,13 @@ type Aidant = {
  *           type: string
  *           enum: [Aidants Connect, Bibliothèques numérique de référence, Certification PIX, Conseillers numériques, Emmaüs Connect, France Services, Grande école du numérique, La Croix Rouge, Point d'accès numérique CAF, Promeneurs du net, Relais numérique (Emmaüs Connect)]
  *           example: 'Conseillers numériques'
+ *       - in: query
+ *         name: ids
+ *         schema:
+ *           type: string
+ *           description: |
+ *             Liste d'identifiants de structures (uuid) séparés par des virgules. Exemple : ids=uuid1,uuid2. Maximum 100 ids.
+ *         required: false
  *     responses:
  *       200:
  *         description: La liste des lieux d'inclusion numérique.
