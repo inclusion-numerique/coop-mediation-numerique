@@ -27,7 +27,7 @@ export const Accueil = ({
   email,
   mediateurs,
   activites,
-  activitesCoordination,
+  activitesCoordinationByQuarter,
   hasSeenOnboarding,
   isMediateur,
   isCoordinateur,
@@ -86,7 +86,7 @@ export const Accueil = ({
       {isCoordinateur && (
         <>
           <section className="fr-my-6w">
-            <ActivitesCoordination activites={activitesCoordination} />
+            <ActivitesCoordination activites={activitesCoordinationByQuarter} />
           </section>
           <hr className="fr-separator-1px" />
         </>

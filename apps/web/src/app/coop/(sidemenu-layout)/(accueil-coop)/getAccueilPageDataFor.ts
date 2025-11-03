@@ -13,6 +13,50 @@ import type {
   UserRdvAccount,
   UserTimezone,
 } from '@app/web/utils/user'
+import { getQuarter } from 'date-fns'
+
+type ActiviteType = 'Evenement' | 'Partenariat' | 'Animation'
+
+type ActiviteCount = { type: ActiviteType; count: number }
+
+type ActiviteGrouped = Record<string, ActiviteCount[]>
+
+const ACTIVITE_TYPES: ActiviteType[] = ['Evenement', 'Partenariat', 'Animation']
+
+const initCounts = (): ActiviteCount[] =>
+  ACTIVITE_TYPES.map((type) => ({ type, count: 0 }))
+
+const increment =
+  (type: ActiviteType) =>
+  (activiteCounts?: ActiviteCount[]): ActiviteCount[] =>
+    (activiteCounts ?? initCounts()).map((activiteCount) =>
+      activiteCount.type === type
+        ? { ...activiteCount, count: activiteCount.count + 1 }
+        : activiteCount,
+    )
+
+const quarterKey = (date: Date) => `${date.getFullYear()}-q${getQuarter(date)}`
+
+export const getActivitesCoordinationByQuarter = async (
+  coordinateurId: string,
+): Promise<ActiviteGrouped> => {
+  const activites = await prismaClient.activiteCoordination.findMany({
+    where: { coordinateurId, suppression: null },
+    select: { type: true, date: true },
+  })
+
+  return activites.reduce<ActiviteGrouped>(
+    (acc, { date, type }) => {
+      const key = quarterKey(new Date(date))
+      return {
+        ...acc,
+        [key]: increment(type)(acc[key]),
+        all: increment(type)(acc.all),
+      }
+    },
+    { all: initCounts() },
+  )
+}
 
 /**
  * Only here for correct typings for the user parameter
@@ -47,7 +91,7 @@ export const getAccueilPageDataFor = async (
     UserTimezone &
     UserMediateur,
 ) => {
-  const [mediateurs, dashboardRdvData, lastActivitesWithoutTimezone,activitesCoordination] =
+  const [mediateurs, dashboardRdvData, lastActivitesWithoutTimezone,activitesCoordinationByQuarter] =
     await Promise.all([
       countMediateursCoordonnesBy(user.coordinateur),
       getDashboardRdvDataFor(user),
@@ -66,22 +110,9 @@ export const getAccueilPageDataFor = async (
           })
         : null,
       user.coordinateur?.id == null
-        ? []
+        ? {}
         : (
-          await prismaClient.activiteCoordination.groupBy({
-            by: ['type'],
-            where: {
-              coordinateurId: user.coordinateur.id,
-              suppression: null,
-            },
-            _count: {
-              _all: true,
-            },
-          })
-        ).map((activite) => ({
-          type: activite.type,
-          count: activite._count._all,
-        }))
+          await getActivitesCoordinationByQuarter(user.coordinateur.id))
     ])
 
   if (lastActivitesWithoutTimezone != null) {
@@ -104,7 +135,7 @@ export const getAccueilPageDataFor = async (
     mediateurs,
     activites: [],
     rdvs: null,
-    activitesCoordination,
+    activitesCoordinationByQuarter,
     syncDataOnLoad: false,
   }
 }

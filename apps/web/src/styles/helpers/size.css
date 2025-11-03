@@ -2,6 +2,10 @@
   width: 100% !important;
 }
 
+.fr-width-auto {
+  width: auto !important;
+}
+
 .fr-height-full {
   height: 100% !important;
 }
