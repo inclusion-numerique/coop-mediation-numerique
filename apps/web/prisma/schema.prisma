@@ -1007,10 +1007,16 @@ model Beneficiaire {
   modification DateTime  @default(now())
   suppression  DateTime?
 
+  // Lorsqu'un bénéficiaire est dedoublonné, il est supprimé et on garde le lien (pour historique) vers
+  // le bénéficiaire vers lequel il a été dedoublonné (supression est également renseigné à la date de fusion)
+  fusionVers Beneficiaire? @relation(name: "fusion", fields: [fusionVersId], references: [id])
+  fusionVersId String? @map("fusion_vers_id") @db.Uuid
+
   // pre computed counts to avoid joins and counts on big tables
   accompagnementsCount Int              @default(0) @map("accompagnements_count")
   accompagnements      Accompagnement[]
   rdvUser              RdvUser?         @relation(fields: [rdvUserId], references: [id], onDelete: SetNull)
+  fusions      Beneficiaire[] @relation("fusion")
 
   @@index([anonyme])
   @@index([mediateurId])

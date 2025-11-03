@@ -1,5 +1,6 @@
 import { prismaClient } from '@app/web/prismaClient'
 import { UserMediateur } from '@app/web/utils/user'
+import { findDuplicateForBeneficiaire } from '../../db/findDuplicateForBeneficiaire'
 
 export type BeneficiaireDoublon = {
   id: string // unique id for the duplicate object
@@ -62,12 +63,14 @@ export const getBeneficiairesDoublonsPageData = async ({
       telephone,
       email,
       creation,
-      lower(unaccent(nom)) as nom_search,
-      lower(unaccent(prenom)) as prenom_search,
-      lower(regexp_replace(unaccent(telephone), '\\s', '', 'g')) as telephone_search,
-      lower(unaccent(email)) as email_search
+      NULLIF(TRIM(lower(unaccent(nom))), '') as nom_search,
+      NULLIF(TRIM(lower(unaccent(prenom))), '') as prenom_search,
+      NULLIF(lower(regexp_replace(unaccent(telephone), '\\s', '', 'g')), '') as telephone_search,
+      NULLIF(TRIM(lower(unaccent(email))), '') as email_search
     FROM "beneficiaires"
-    WHERE mediateur_id = ${user.mediateur.id}::uuid AND anonyme = false
+    WHERE mediateur_id = ${user.mediateur.id}::uuid 
+      AND anonyme = false
+      AND suppression IS NULL
     ORDER BY nom ASC, creation DESC
   )
   SELECT
@@ -85,12 +88,14 @@ export const getBeneficiairesDoublonsPageData = async ({
     b.creation as b_creation
   FROM "all" a
   JOIN "all" b ON a.id < b.id
-  WHERE (
-    (CASE WHEN a.nom_search IS NOT NULL AND b.nom_search IS NOT NULL AND a.nom_search = b.nom_search THEN 1 ELSE 0 END) +
-    (CASE WHEN a.prenom_search IS NOT NULL AND b.prenom_search IS NOT NULL AND a.prenom_search = b.prenom_search THEN 1 ELSE 0 END) +
-    (CASE WHEN a.telephone_search IS NOT NULL AND b.telephone_search IS NOT NULL AND a.telephone_search = b.telephone_search THEN 1 ELSE 0 END) +
-    (CASE WHEN a.email_search IS NOT NULL AND b.email_search IS NOT NULL AND a.email_search = b.email_search THEN 1 ELSE 0 END)
-  ) >= 2
+  WHERE 
+    /* At least 2 matching fields (null fields don't count as matches) */
+    (
+      (CASE WHEN a.nom_search IS NOT NULL AND b.nom_search IS NOT NULL AND a.nom_search = b.nom_search THEN 1 ELSE 0 END) +
+      (CASE WHEN a.prenom_search IS NOT NULL AND b.prenom_search IS NOT NULL AND a.prenom_search = b.prenom_search THEN 1 ELSE 0 END) +
+      (CASE WHEN a.telephone_search IS NOT NULL AND b.telephone_search IS NOT NULL AND a.telephone_search = b.telephone_search THEN 1 ELSE 0 END) +
+      (CASE WHEN a.email_search IS NOT NULL AND b.email_search IS NOT NULL AND a.email_search = b.email_search THEN 1 ELSE 0 END)
+    ) >= 2
   ORDER BY a_nom ASC, b_nom ASC
   `
 
@@ -131,6 +136,26 @@ export const getBeneficiairesDoublonsPageData = async ({
 
   console.log('Duplicates', rawDuplicates)
   console.log('Normalized Duplicates', normalizedDuplicates)
+
+  // debugging why we have no duplicates found */
+  const allbeneficiaires = await prismaClient.beneficiaire.findMany({
+    where: {
+      mediateurId: user.mediateur.id,
+      anonyme: false,
+      suppression: null,
+    },
+  })
+
+  for (const beneficiaire of allbeneficiaires) {
+    const duplicates = await findDuplicateForBeneficiaire({
+      beneficiaire,
+      withConflictingFields: 'include',
+    })
+    console.log(
+      `duplicates for ${beneficiaire.prenom} ${beneficiaire.nom}`,
+      duplicates,
+    )
+  }
 
   return {
     count: normalizedDuplicates.length,

@@ -1,12 +1,21 @@
 'use client'
 
-import { BeneficiairesDoublonsPageData } from '../getBeneficiairesDoublonsPageData'
+import type {
+  BeneficiaireDoublon,
+  BeneficiairesDoublonsPageData,
+} from '../getBeneficiairesDoublonsPageData'
 import { useMemo, useState } from 'react'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import { numberToString } from '@app/web/utils/formatNumber'
-import Link from 'next/link'
 import classNames from 'classnames'
+import styles from './BeneficiaireFusionDoublons.module.css'
+import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { trpc } from '@app/web/trpc'
+import { useRouter } from 'next/navigation'
+import { createToast } from '@app/ui/toast/createToast'
+import * as Sentry from '@sentry/nextjs'
+import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 
 export type FusionItemToKeep = 'a' | 'b'
 
@@ -17,11 +26,51 @@ type FusionItemState = {
 
 type FusionItemsState = Map<string, FusionItemState>
 
+const fusionDataFromFusionItems = ({
+  duplicates,
+  fusionItems,
+}: {
+  duplicates: BeneficiaireDoublon[]
+  fusionItems: FusionItemsState
+}): { sourceId: string; targetId: string }[] =>
+  [...fusionItems.entries()]
+    .filter(([_, { selected }]) => selected)
+    .map(([id, { keep }]) => ({
+      id,
+      keep,
+      duplicate: duplicates.find((duplicate) => duplicate.id === id),
+    }))
+    .filter(
+      (
+        element,
+      ): element is {
+        id: string
+        keep: FusionItemToKeep
+        duplicate: BeneficiaireDoublon
+      } => element.duplicate !== undefined,
+    )
+    .map(({ duplicate, keep }) => {
+      if (keep === 'a') {
+        return {
+          destinationId: duplicate.a.id,
+          sourceId: duplicate.b.id,
+        }
+      }
+
+      return {
+        destinationId: duplicate.b.id,
+        sourceId: duplicate.a.id,
+      }
+    })
+
 const BeneficiaireFusionDoublons = ({
   data: { count: totalCount, duplicates },
 }: {
   data: BeneficiairesDoublonsPageData
 }) => {
+  const mutation = trpc.beneficiaires.fusionner.useMutation()
+  const router = useRouter()
+
   const [fusionItems, setFusionItems] = useState<FusionItemsState>(
     new Map(
       duplicates.map((duplicate) => [
@@ -75,14 +124,40 @@ const BeneficiaireFusionDoublons = ({
     setFusionItems(newFusionItems)
   }
 
-  const executeFusion = () => {
-    console.log('executeFusion')
+  const executeFusion = async () => {
+    const fusionData = fusionDataFromFusionItems({
+      duplicates,
+      fusionItems,
+    })
+
+    console.log('fusionData', fusionData)
+
+    try {
+      await mutation.mutateAsync({
+        fusions: fusionData,
+      })
+
+      createToast({
+        priority: 'success',
+        message: `${fusionData.length} doublon${sPluriel(fusionData.length)} fusionné${sPluriel(fusionData.length)}`,
+      })
+
+      router.push(`/coop/mes-beneficiaires`)
+    } catch (error) {
+      createToast({
+        priority: 'error',
+        message: 'Une erreur est survenue lors de la fusion des doublons',
+      })
+      Sentry.captureException(error)
+    }
   }
+
+  const isLoading = mutation.isPending || mutation.isSuccess
 
   return (
     <>
       <div className="fr-p-6v fr-my-6v fr-border fr-border-radius--8 fr-flex fr-align-items-center fr-justify-content-space-between">
-        <div className="fr-checkbox-group fr-checkbox-group--sm fr-mb-0">
+        <div className="fr-checkbox-group fr-checkbox-group--sm fr-mb-0 fr-py-2v">
           <input
             type="checkbox"
             id="select-all-duplicates"
@@ -97,12 +172,12 @@ const BeneficiaireFusionDoublons = ({
           </label>
         </div>
 
-        {selectedCount === 0 ? (
-          <Button type="button" disabled>
-            Fusionner
-          </Button>
-        ) : (
-          <Button type="button" onClick={executeFusion}>
+        {selectedCount !== 0 && (
+          <Button
+            type="button"
+            onClick={executeFusion}
+            {...buttonLoadingClassname(isLoading)}
+          >
             Fusionner {numberToString(selectedCount)} doublon
             {sPluriel(selectedCount)}
           </Button>
@@ -126,15 +201,24 @@ const BeneficiaireFusionDoublons = ({
               selected && 'fr-border--blue-france',
             )}
           >
-            <div className="fr-px-6v fr-flex fr-align-items-center">
+            <div
+              className={classNames(
+                'fr-pr-6v fr-pl-8v fr-flex fr-align-items-center fr-justify-content-center',
+                styles.checkboxContainer,
+              )}
+            >
               <div className="fr-checkbox-group fr-checkbox-group--sm fr-mb-0">
                 <input
                   type="checkbox"
                   id={checkboxId}
                   checked={selected}
                   onChange={() => onSelectItem(duplicate.id)}
+                  aria-label="Sélectionner"
                 />
-                <label className="" htmlFor={checkboxId}>
+                <label
+                  className={classNames(styles.labelNoText)}
+                  htmlFor={checkboxId}
+                >
                   Sélectionner
                 </label>
               </div>
@@ -162,7 +246,7 @@ const BeneficiaireFusionDoublons = ({
   )
 }
 
-export default BeneficiaireFusionDoublons
+export default withTrpc(BeneficiaireFusionDoublons)
 
 type BeneficiaireColumnProps = {
   columnId: string
@@ -175,6 +259,7 @@ type BeneficiaireColumnProps = {
   prenom: string
   telephone: string
   email: string
+  className?: string
 }
 
 const BeneficiaireRadioColumn = ({
@@ -188,9 +273,15 @@ const BeneficiaireRadioColumn = ({
   prenom,
   telephone,
   email,
+  className,
 }: BeneficiaireColumnProps) => (
-  <div className="fr-border-left fr-px-4v fr-py-3v fr-flex fr-align-items-center fr-flex-gap-4v">
-    <div className="fr-radio-group fr-radio-group--sm fr-mb-0 fr-flex fr-align-items-center fr-flex-gap-4v">
+  <div
+    className={classNames(
+      'fr-border-left fr-px-4v fr-py-3v fr-flex fr-align-items-center fr-justify-content-space-between fr-flex-gap-4v fr-flex-grow-1 fr-flex-basis-0',
+      className,
+    )}
+  >
+    <div className="fr-radio-group fr-radio-group--vertical-center fr-justify-content-center fr-radio-group--sm fr-mb-0 fr-flex fr-align-items-center fr-flex-grow-1">
       <input
         type="radio"
         id={columnId}
@@ -225,7 +316,7 @@ const BeneficiaireRadioColumn = ({
               !isActive && 'fr-text-mention--grey',
             )}
           >
-            {email || 'Adresse e-mail non renseignée'}
+            {email || '/'}
           </span>
         </span>
       </label>
@@ -254,6 +345,4 @@ const formatDisplayName = (
 }
 
 const formatDisplayPhone = (telephone?: string | null): string =>
-  telephone && telephone.trim().length > 0
-    ? telephone
-    : 'Téléphone non renseigné'
+  telephone && telephone.trim().length > 0 ? telephone : '/'

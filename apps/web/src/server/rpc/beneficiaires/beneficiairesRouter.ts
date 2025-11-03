@@ -1,6 +1,7 @@
 import { AnalysisSchema } from '@app/web/beneficiaire/import/analyseImportBeneficiairesExcel'
 import { searchBeneficiaires } from '@app/web/beneficiaire/searchBeneficiaires'
 import { trancheAgeFromAnneeNaissance } from '@app/web/beneficiaire/trancheAgeFromAnneeNaissance'
+import { fusionnerBeneficiaires } from '@app/web/features/beneficiaires/use-cases/fusion/fusionnerBeneficiaires'
 import {
   BeneficiaireData,
   BeneficiaireValidation,
@@ -262,5 +263,30 @@ export const beneficiairesRouter = router({
       })
 
       return { created: created.count }
+    }),
+  fusionner: protectedProcedure
+    .input(
+      z.object({
+        fusions: z.array(
+          z.object({ sourceId: z.string(), targetId: z.string() }),
+        ),
+      }),
+    )
+    .mutation(async ({ input, ctx: { user } }) => {
+      enforceIsMediateur(user)
+
+      const { fusions } = input
+
+      const result = await Promise.all(
+        fusions.map(async ({ sourceId, targetId }) => {
+          return fusionnerBeneficiaires({
+            source: { id: sourceId },
+            destination: { id: targetId },
+            mediateurId: user.mediateur.id,
+          })
+        }),
+      )
+
+      return result
     }),
 })
