@@ -4,6 +4,8 @@ import {
 } from '@app/web/libs/data-table/toNumberOr'
 import { z } from 'zod'
 
+const activiteTypes = ['Evenement', 'Partenariat', 'Animation'] as const
+
 const coordinationsFiltersSchema = z.object({
   page: z
     .string()
@@ -18,6 +20,17 @@ const coordinationsFiltersSchema = z.object({
     .refine((val) => !Number.isNaN(val) && val > 0, {
       message: 'le nombre de lignes doit être > 0',
     })
+    .optional(),
+  types: z
+    .string()
+    .transform((type: string) =>
+      type
+        .split(',')
+        .map((v) => v.trim())
+        .filter((v): v is (typeof activiteTypes)[number] =>
+          activiteTypes.includes(v as (typeof activiteTypes)[number]),
+        ),
+    )
     .optional(),
 })
 

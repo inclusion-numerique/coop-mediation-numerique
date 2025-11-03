@@ -73,6 +73,9 @@ export const getCoordinationsListPageData = async ({
     where: {
       coordinateurId: user.coordinateur.id,
       suppression: null,
+      ...((searchParams.types?.length ?? 0) > 0
+        ? { type: { in: searchParams.types } }
+        : {}),
     },
     orderBy: {
       date: 'desc',
