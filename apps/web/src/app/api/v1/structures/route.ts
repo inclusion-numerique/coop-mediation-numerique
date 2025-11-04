@@ -33,7 +33,7 @@ import {
   Service,
 } from '@prisma/client'
 import { NextResponse } from 'next/server'
-import { z, type ZodError } from 'zod'
+import { type ZodError, z } from 'zod'
 
 /**
  * @openapi
