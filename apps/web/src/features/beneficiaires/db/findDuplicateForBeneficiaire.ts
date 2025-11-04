@@ -42,8 +42,6 @@ export const findDuplicateForBeneficiaire = async ({
           (CASE WHEN t.email_search IS NOT NULL AND c.email_search IS NOT NULL AND t.email_search != c.email_search THEN 1 ELSE 0 END)
         ) = 0`
 
-  console.log('mediateur id falining', beneficiaire.mediateurId)
-
   const duplicates = await prismaClient.$queryRaw<DuplicateBeneficiaire[]>`
     WITH "target" AS (
       SELECT

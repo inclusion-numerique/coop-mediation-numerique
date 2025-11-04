@@ -1,14 +1,14 @@
-import { BeneficiairesDoublonsPageData } from '@app/web/features/beneficiaires/use-cases/doublons/getBeneficiairesDoublonsPageData'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButton from '@app/web/components/BackButton'
+import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import { BeneficiairesDoublonsPageData } from '@app/web/features/beneficiaires/use-cases/doublons/getBeneficiairesDoublonsPageData'
+import { numberToString } from '@app/web/utils/formatNumber'
 import { contentId } from '@app/web/utils/skipLinks'
 import Alert from '@codegouvfr/react-dsfr/Alert'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import BeneficiaireFusionDoublons from './BeneficiaireFusionDoublons'
-import { numberToString } from '@app/web/utils/formatNumber'
 
 const BeneficiairesDoublonsPage = ({
   data,

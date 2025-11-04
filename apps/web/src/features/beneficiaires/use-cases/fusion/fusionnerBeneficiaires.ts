@@ -1,6 +1,39 @@
 import { prismaClient } from '@app/web/prismaClient'
 import type { Beneficiaire } from '@prisma/client'
 
+const isValuePresent = (value: unknown) => {
+  if (value === null || value === undefined) return false
+  if (typeof value === 'string') return value.trim() !== ''
+  return true
+}
+
+/**
+ * Pendant une fusion, on préfère les données du beneficiaire en "destination"
+ * mais si la donnée n'existe pas dans la "destination", on la prend dans la "source"
+ */
+const mergeField = <T, K extends keyof T>({
+  source,
+  destination,
+  key,
+  mergedData,
+}: {
+  source: T
+  destination: T
+  key: K
+  mergedData: Partial<T>
+}) => {
+  const destValue = destination[key]
+  if (isValuePresent(destValue)) {
+    mergedData[key] = destValue
+    return
+  }
+
+  const sourceValue = source[key]
+  if (isValuePresent(sourceValue)) {
+    mergedData[key] = sourceValue
+  }
+}
+
 /**
  * Fusionne deux bénéficiaires en transférant toutes les données du source vers le destination
  * Le source est marqué comme supprimé et lié au destination via fusionVersId
@@ -54,8 +87,8 @@ export const fusionnerBeneficiaires = async ({
       // remplir avec celles du source si destination est null/empty
       const mergedData: Partial<Beneficiaire> = {}
 
-      // Champs textuels : on préfère destination, sinon source si destination est null/empty
-      const textFields = [
+      // Champs à fusionner
+      const fieldsToMerge = [
         'prenom',
         'nom',
         'telephone',
@@ -65,78 +98,22 @@ export const fusionnerBeneficiaires = async ({
         'communeCodePostal',
         'communeCodeInsee',
         'notes',
-      ] as const
+        'pasDeTelephone',
+        'anneeNaissance',
+        'rdvServicePublicId',
+        'rdvUserId',
+        'genre',
+        'trancheAge',
+        'statutSocial',
+      ] as const satisfies (keyof Beneficiaire)[]
 
-      for (const field of textFields) {
-        const destValue = destinationBeneficiaire[field]
-        const sourceValue = sourceBeneficiaire[field]
-
-        if (
-          destValue &&
-          destValue.toString().trim() !== '' &&
-          destValue.toString().trim() !== '/'
-        ) {
-          mergedData[field] = destValue
-        } else if (
-          sourceValue &&
-          sourceValue.toString().trim() !== '' &&
-          sourceValue.toString().trim() !== '/'
-        ) {
-          mergedData[field] = sourceValue
-        }
-      }
-
-      // Champs booléens : préférer destination, sinon source
-      if (destinationBeneficiaire.pasDeTelephone !== null) {
-        mergedData.pasDeTelephone = destinationBeneficiaire.pasDeTelephone
-      } else if (sourceBeneficiaire.pasDeTelephone !== null) {
-        mergedData.pasDeTelephone = sourceBeneficiaire.pasDeTelephone
-      }
-
-      // Champs numériques : préférer destination, sinon source
-      if (destinationBeneficiaire.anneeNaissance !== null) {
-        mergedData.anneeNaissance = destinationBeneficiaire.anneeNaissance
-      } else if (sourceBeneficiaire.anneeNaissance !== null) {
-        mergedData.anneeNaissance = sourceBeneficiaire.anneeNaissance
-      }
-
-      if (
-        destinationBeneficiaire.rdvServicePublicId !== null &&
-        destinationBeneficiaire.rdvServicePublicId !== undefined
-      ) {
-        mergedData.rdvServicePublicId =
-          destinationBeneficiaire.rdvServicePublicId
-      } else if (
-        sourceBeneficiaire.rdvServicePublicId !== null &&
-        sourceBeneficiaire.rdvServicePublicId !== undefined
-      ) {
-        mergedData.rdvServicePublicId = sourceBeneficiaire.rdvServicePublicId
-      }
-
-      if (
-        destinationBeneficiaire.rdvUserId === null &&
-        sourceBeneficiaire.rdvUserId !== null
-      ) {
-        mergedData.rdvUserId = sourceBeneficiaire.rdvUserId
-      }
-
-      // Enums : préférer destination, sinon source
-      if (destinationBeneficiaire.genre !== null) {
-        mergedData.genre = destinationBeneficiaire.genre
-      } else if (sourceBeneficiaire.genre !== null) {
-        mergedData.genre = sourceBeneficiaire.genre
-      }
-
-      if (destinationBeneficiaire.trancheAge !== null) {
-        mergedData.trancheAge = destinationBeneficiaire.trancheAge
-      } else if (sourceBeneficiaire.trancheAge !== null) {
-        mergedData.trancheAge = sourceBeneficiaire.trancheAge
-      }
-
-      if (destinationBeneficiaire.statutSocial !== null) {
-        mergedData.statutSocial = destinationBeneficiaire.statutSocial
-      } else if (sourceBeneficiaire.statutSocial !== null) {
-        mergedData.statutSocial = sourceBeneficiaire.statutSocial
+      for (const field of fieldsToMerge) {
+        mergeField({
+          source: sourceBeneficiaire,
+          destination: destinationBeneficiaire,
+          key: field,
+          mergedData,
+        })
       }
 
       // Utiliser la date de création la plus ancienne
@@ -156,7 +133,17 @@ export const fusionnerBeneficiaires = async ({
         },
       })
 
-      // 4. Transférer tous les accompagnements du source vers le destination
+      // 4.a. si les beneficiaires avaient participé au meme atelier, il faut supprimer les accompagnements du source
+      // pour éviter d'avoir un doublon d'accompagnement
+      await transaction.$executeRaw`
+      DELETE FROM accompagnements a
+      USING accompagnements b
+      WHERE a.beneficiaire_id = ${source.id}::uuid
+      AND b.beneficiaire_id = ${destination.id}::uuid
+      AND a.activite_id = b.activite_id
+      `
+
+      // 4.b. Transférer tous les accompagnements du source vers le destination
       await transaction.accompagnement.updateMany({
         where: {
           beneficiaireId: source.id,
@@ -167,26 +154,25 @@ export const fusionnerBeneficiaires = async ({
       })
 
       // 5. Mettre à jour tous les bénéficiaires qui avaient fusionVersId = source.id
-      // pour qu'ils pointent vers destination.id
+      // pour qu'ils pointent vers destination.id (en cas de fusions successives)
       await transaction.$executeRaw`UPDATE beneficiaires 
       SET fusion_vers_id = ${destination.id}::uuid 
       WHERE fusion_vers_id = ${source.id}::uuid 
       AND mediateur_id = ${mediateurId}::uuid 
       AND anonyme = false`
 
-      // 6. Nettoyer le rdvUserId du source
-      // 7. Marquer le source comme supprimé et lier au destination
-      transaction.beneficiaire.update({
+      // 6. Marquer le source comme supprimé et lier au destination
+      await transaction.beneficiaire.update({
         where: { id: source.id },
         data: {
           suppression: now,
           modification: now,
-          rdvUserId: null,
+          rdvUserId: null, // on retire le lien vers le RDV Service Public
           fusionVersId: destination.id,
         },
       })
 
-      // 8. Update the destination accompagnements to have only the oldest one as premierAccompagnement
+      // 7. Update the destination accompagnements to have only the oldest one as premierAccompagnement
       // The oldest accompagnement should have premierAccompagnement = true
       await transaction.$executeRaw`
       UPDATE accompagnements 
@@ -198,7 +184,14 @@ export const fusionnerBeneficiaires = async ({
       UPDATE accompagnements 
       SET premier_accompagnement = true 
       WHERE beneficiaire_id = ${destination.id}::uuid 
-      AND id = (SELECT id FROM accompagnements WHERE beneficiaire_id = ${destination.id}::uuid ORDER BY date ASC LIMIT 1)
+      AND id = (
+        SELECT a.id 
+        FROM accompagnements a 
+        JOIN activites act ON act.id = a.activite_id 
+        WHERE a.beneficiaire_id = ${destination.id}::uuid 
+        ORDER BY act.date ASC, act.creation ASC 
+        LIMIT 1
+      )
       `
 
       return updatedDestination

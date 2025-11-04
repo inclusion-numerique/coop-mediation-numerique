@@ -1,5 +1,6 @@
 'use client'
 
+import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import Link from 'next/link'
 import {
@@ -10,7 +11,6 @@ import {
 } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
 import styles from './BeneficiairesMoreOptionsButton.module.css'
-import Button from '@codegouvfr/react-dsfr/Button'
 
 const BeneficiairesMoreOptionsButton = () => {
   // The click outside default behavior from dsfr js do not work in this case 🤷‍

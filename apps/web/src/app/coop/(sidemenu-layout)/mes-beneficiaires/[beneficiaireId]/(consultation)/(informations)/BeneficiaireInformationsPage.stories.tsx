@@ -20,6 +20,7 @@ const Template = ({
 }) => (
   <ViewBeneficiaireLayout
     beneficiaire={data.beneficiaire}
+    duplicates={[]}
     user={
       rdvIntegration
         ? {

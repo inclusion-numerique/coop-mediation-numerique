@@ -1,9 +1,9 @@
+import Dropdown from '@app/ui/components/Dropdown/Dropdown'
 import BeneficiairesTable from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/(liste)/BeneficiairesTable'
 import { BeneficiairesListPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/(liste)/getBeneficiairesListPageData'
 import { getBeneficiairesResultCountLabel } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/(liste)/getBeneficiairesResultCountLabel'
 import DataSearchBar from '@app/web/libs/data-table/DataSearchBar'
 import Button from '@codegouvfr/react-dsfr/Button'
-import Dropdown from '@app/ui/components/Dropdown/Dropdown'
 import Link from 'next/link'
 import BeneficiairesMoreOptionsButton from './BeneficiairesMoreOptionsButton'
 

@@ -8,14 +8,14 @@ import ViewBeneficiaireLayout from '@app/web/app/coop/(sidemenu-layout)/mes-bene
 import { ActiviteListItemWithTimezone } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { rdvsForStories } from '@app/web/features/activites/use-cases/list/storybook/ActiviteDetailsStoriesData'
 import { RdvListItem } from '@app/web/features/rdvsp/administration/db/rdvQueries'
-import type { Rdv } from '@app/web/rdv-service-public/Rdv'
 import { testSessionUser } from '@app/web/test/testSessionUser'
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
 
 const Template = ({ data }: { data: BeneficiaireAccompagnementsPageData }) => (
   <ViewBeneficiaireLayout
-    beneficiaire={data.beneficiaire}
+    beneficiaire={{ ...data.beneficiaire, telephone: null }}
+    duplicates={[]}
     user={testSessionUser}
   >
     <ViewBeneficiaireAccompagnementsPage data={data} />

@@ -1,21 +1,21 @@
 'use client'
 
+import { createToast } from '@app/ui/toast/createToast'
+import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
+import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
+import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { trpc } from '@app/web/trpc'
+import { numberToString } from '@app/web/utils/formatNumber'
+import Button from '@codegouvfr/react-dsfr/Button'
+import * as Sentry from '@sentry/nextjs'
+import classNames from 'classnames'
+import { useRouter } from 'next/navigation'
+import { useMemo, useState } from 'react'
 import type {
   BeneficiaireDoublon,
   BeneficiairesDoublonsPageData,
 } from '../getBeneficiairesDoublonsPageData'
-import { useMemo, useState } from 'react'
-import Button from '@codegouvfr/react-dsfr/Button'
-import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
-import { numberToString } from '@app/web/utils/formatNumber'
-import classNames from 'classnames'
 import styles from './BeneficiaireFusionDoublons.module.css'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { trpc } from '@app/web/trpc'
-import { useRouter } from 'next/navigation'
-import { createToast } from '@app/ui/toast/createToast'
-import * as Sentry from '@sentry/nextjs'
-import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 
 export type FusionItemToKeep = 'a' | 'b'
 
@@ -40,6 +40,7 @@ const fusionDataFromFusionItems = ({
       keep,
       duplicate: duplicates.find((duplicate) => duplicate.id === id),
     }))
+    // only here for typesafety, should never happen
     .filter(
       (
         element,
@@ -52,13 +53,13 @@ const fusionDataFromFusionItems = ({
     .map(({ duplicate, keep }) => {
       if (keep === 'a') {
         return {
-          destinationId: duplicate.a.id,
+          targetId: duplicate.a.id,
           sourceId: duplicate.b.id,
         }
       }
 
       return {
-        destinationId: duplicate.b.id,
+        targetId: duplicate.b.id,
         sourceId: duplicate.a.id,
       }
     })
@@ -129,8 +130,6 @@ const BeneficiaireFusionDoublons = ({
       duplicates,
       fusionItems,
     })
-
-    console.log('fusionData', fusionData)
 
     try {
       await mutation.mutateAsync({

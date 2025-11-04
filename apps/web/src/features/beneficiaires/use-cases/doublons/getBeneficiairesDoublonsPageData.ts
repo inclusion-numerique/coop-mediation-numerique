@@ -1,6 +1,5 @@
 import { prismaClient } from '@app/web/prismaClient'
-import { UserMediateur } from '@app/web/utils/user'
-import { findDuplicateForBeneficiaire } from '../../db/findDuplicateForBeneficiaire'
+import type { UserMediateur } from '@app/web/utils/user'
 
 export type BeneficiaireDoublon = {
   id: string // unique id for the duplicate object
@@ -133,29 +132,6 @@ export const getBeneficiairesDoublonsPageData = async ({
       },
     }),
   )
-
-  console.log('Duplicates', rawDuplicates)
-  console.log('Normalized Duplicates', normalizedDuplicates)
-
-  // debugging why we have no duplicates found */
-  const allbeneficiaires = await prismaClient.beneficiaire.findMany({
-    where: {
-      mediateurId: user.mediateur.id,
-      anonyme: false,
-      suppression: null,
-    },
-  })
-
-  for (const beneficiaire of allbeneficiaires) {
-    const duplicates = await findDuplicateForBeneficiaire({
-      beneficiaire,
-      withConflictingFields: 'include',
-    })
-    console.log(
-      `duplicates for ${beneficiaire.prenom} ${beneficiaire.nom}`,
-      duplicates,
-    )
-  }
 
   return {
     count: normalizedDuplicates.length,
