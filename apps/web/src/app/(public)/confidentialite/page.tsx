@@ -32,8 +32,8 @@ const ConfidentialityPage = () => (
         médiation numérique.
       </p>
       <p>
-        Le responsable de traitement est l’ANCT représentée par Monsieur
-        Stanislas Bourron, Directeur général de l’Agence.
+        Le responsable de traitement est l’ANCT représentée par Henri Prévost,
+        Directeur général de l’Agence.
       </p>
 
       <h2>Pourquoi traitons-nous des données à caractère personnel ?</h2>
@@ -45,24 +45,22 @@ const ConfidentialityPage = () => (
         d’accompagnement à la montée en compétence de la population sur les
         compétences numériques.
       </p>
-      <p>Les données sont notamment traitées pour :</p>
+      <p>Les données sont notamment traitées pour&nbsp;:</p>
       <ul>
         <li>
-          Fournir un accès authentifié à la plateforme aux médiateurs numériques
-          professionnels ;
+          Fournir un accès authentifié à la plateforme aux médiateur.trice.s
+          numériques et leurs coordinateurs&nbsp;;
         </li>
         <li>
-          Transmettre les données des bénéficiaires à l’entrepôt de données
-          partagé de l’inclusion numérique notamment pour mesurer la montée en
-          compétence de la population dans le numérique et s’interconnecter avec
-          d’autres dispositifs ;
+          Evaluer la politique d'inclusion numérique grâce à des données
+          d’accompagnement.
         </li>
         <li>Gérer l’inscription et la diffusion de la newsletter ;</li>
         <li>Recueillir les demandes au sein d’un formulaire de contact.</li>
       </ul>
       <p>
-        Les médiateurs numériques professionnels sont responsables de traitement
-        des données des bénéficiaires uniquement pour assurer leur suivi.
+        Les médiateur.trice.s numériques sont responsables de traitement des
+        données des bénéficiaires uniquement pour assurer leur suivi.
       </p>
 
       <br />
@@ -125,14 +123,24 @@ const ConfidentialityPage = () => (
           <tbody>
             <tr>
               <th>Données relatives aux comptes des médiateurs</th>
-              <td>1 an après le dernier contact avec l’utilisateur</td>
+              <td>
+                1 an après le dernier contact avec l'utilisateur, puis
+                anonymisation totale
+              </td>
             </tr>
             <tr>
               <th>Données relatives aux bénéficiaires</th>
-              <td>1 an après la dernière mise à jour des données</td>
+              <td>
+                1 an après la dernière mise à jour des données, puis
+                anonymisation totale
+              </td>
             </tr>
             <tr>
-              <th>Données relatives à la lettre d’information</th>
+              <th>Données d'accompagnement</th>
+              <td>Conservation illimitée (anonymisées après 1 an)</td>
+            </tr>
+            <tr>
+              <th>Données relatives à la lettre d'information</th>
               <td>
                 Jusqu’à la désinscription de l’utilisateur et 1 an après sa
                 demande de désinscription
