@@ -121,16 +121,16 @@ export const UtilisateursDataTable = {
       ],
     },
     {
-      name: 'activites',
-      header: 'Activités',
-      csvHeaders: ['Activités'],
-      csvValues: ({ mediateur }) => [mediateur?.activitesCount],
+      name: 'accompagnements',
+      header: 'Accompagnements',
+      csvHeaders: ['Accompagnements'],
+      csvValues: ({ mediateur }) => [mediateur?.accompagnementsCount],
       cell: ({ mediateur }) =>
-        optionalNumberToString(mediateur?.activitesCount, null),
+        optionalNumberToString(mediateur?.accompagnementsCount, null),
       orderBy: (direction) => [
         {
           mediateur: {
-            activitesCount: direction,
+            accompagnementsCount: direction,
           },
         },
       ],

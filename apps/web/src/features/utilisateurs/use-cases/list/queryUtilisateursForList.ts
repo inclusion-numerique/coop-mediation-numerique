@@ -23,18 +23,18 @@ export const searchUtilisateurSelect = {
         select: { date: true },
         where: { suppression: null },
         orderBy: { date: 'desc' },
+        take: 1,
       },
       beneficiaires: {
         select: { creation: true },
         where: { suppression: null, anonyme: false },
         orderBy: { creation: 'desc' },
+        take: 1,
       },
-      activitesCount: true,
       accompagnementsCount: true,
       beneficiairesCount: true,
       _count: {
         select: {
-          activites: true,
           enActivite: true,
           beneficiaires: {
             where: { anonyme: false },
