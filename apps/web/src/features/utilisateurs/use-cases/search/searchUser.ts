@@ -10,6 +10,7 @@ import { Prisma } from '@prisma/client'
 
 type SearchUserOptions = {
   searchParams?: { recherche?: string; page?: string; lignes?: string }
+  includeDeleted?: boolean
 }
 
 export const searchUser = async (options: SearchUserOptions) => {
@@ -21,7 +22,7 @@ export const searchUser = async (options: SearchUserOptions) => {
   })
 
   const where = {
-    deleted: null,
+    deleted: options.includeDeleted ? undefined : { not: null },
     AND: toQueryParts(searchParams).map((part) => ({
       OR: [
         { name: { contains: part, mode: 'insensitive' } },
@@ -34,14 +35,17 @@ export const searchUser = async (options: SearchUserOptions) => {
     where,
     take,
     skip,
-    select: { id: true, name: true, email: true },
+    select: { id: true, name: true, email: true, deleted: true },
     orderBy: [{ name: 'asc' }],
   })
 
   const matchesCount = await prismaClient.user.count({ where })
 
   return {
-    users,
+    users: users.map((user) => ({
+      ...user,
+      deleted: user.deleted?.toISOString() ?? null,
+    })),
     matchesCount,
     moreResults: Math.max(matchesCount - (take ?? 0), 0),
     totalPages: take ? Math.ceil(matchesCount / take) : 1,

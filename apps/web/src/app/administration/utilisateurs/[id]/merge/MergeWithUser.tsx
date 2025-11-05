@@ -8,7 +8,12 @@ export const MergeWithUser = ({
   defaultMergeUser,
 }: {
   userId: string
-  defaultMergeUser?: { id: string; name: string | null; email: string }
+  defaultMergeUser?: {
+    id: string
+    name: string | null
+    email: string
+    deleted: string | null
+  }
 }) => {
   const router = useRouter()
 
@@ -23,6 +28,7 @@ export const MergeWithUser = ({
         onSelect={handleSearchUserSelect}
         defaultUser={defaultMergeUser}
         excludeUserIds={[userId]}
+        includeDeleted
       />
     </div>
   )
