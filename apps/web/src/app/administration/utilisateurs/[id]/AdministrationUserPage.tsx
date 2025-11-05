@@ -5,7 +5,6 @@ import AdministrationInlineLabelsValues, {
 import AdministrationMailtoLink from '@app/web/app/administration/AdministrationMailtoLink'
 import ResetUserInscriptionButton from '@app/web/app/administration/utilisateurs/[id]/ResetUserInscriptionButton'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
-import { metadataTitle } from '@app/web/app/metadataTitle'
 import { isUserInscriptionEnCours } from '@app/web/auth/isUserInscriptionEnCours'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { isConseillerNumeriqueV1DataWithActiveMiseEnRelation } from '@app/web/external-apis/conseiller-numerique/isConseillerNumeriqueV1WithActiveMiseEnRelation'
@@ -27,8 +26,6 @@ import Notice from '@codegouvfr/react-dsfr/Notice'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import type { Structure } from '@prisma/client'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
-import { Fragment } from 'react'
 import { type AdministrationUserPageData } from './getAdministrationUserPageData'
 import RenvoyerInvitationButton from './RenvoyerInvitationButton'
 import UtilisateurSetFeatureFlagsForm from './UtilisateurSetFeatureFlagsForm'
@@ -159,7 +156,7 @@ const AdministrationUserPage = async ({
   )
 
   return (
-    <CoopPageContainer>
+    <CoopPageContainer size={64}>
       <SkipLinksPortal />
       <AdministrationBreadcrumbs
         currentPage={`${name}`}
@@ -463,7 +460,7 @@ const AdministrationUserPage = async ({
                                   {mediateur.user.deleted ? (
                                     <Badge small severity="warning">
                                       Supprimé le{' '}
-                                      {dateAsDayAndTime(mediateur.user.deleted)}
+                                      {dateAsDay(mediateur.user.deleted)}
                                     </Badge>
                                   ) : (
                                     getUserAccountStatusBadge({
@@ -547,8 +544,8 @@ const AdministrationUserPage = async ({
                                     </Badge>
                                   ) : utilisateurInvite.deleted ? (
                                     <Badge small severity="warning">
-                                      Utilisateur supprimé le{' '}
-                                      {dateAsDayAndTime(
+                                      Supprimé le{' '}
+                                      {dateAsDay(
                                         invitation.mediateurInvite?.user
                                           ?.deleted,
                                       )}
@@ -562,6 +559,15 @@ const AdministrationUserPage = async ({
                                     Envoyée le{' '}
                                     {dateAsDayAndTime(invitation.creation)}
                                   </span>
+                                  {!!invitation.renvoyee && (
+                                    <>
+                                      <br />
+                                      <span className="fr-text--xs fr-text-mention--grey">
+                                        Renvoyée le{' '}
+                                        {dateAsDayAndTime(invitation.renvoyee)}
+                                      </span>
+                                    </>
+                                  )}
                                   <br />
                                   {getInvitationStatusBadge({
                                     acceptee: invitation.acceptee,
