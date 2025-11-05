@@ -22,14 +22,13 @@ const ExportActiviteModal = createModal({
 const ExportActivitesCoordinationButton = ({
   filters,
   searchParams,
-  activitesCount: activitesCountPromise,
+  activitesCount,
 }: {
   filters: Filter[]
   searchParams: Promise<Record<string, string>>
-  activitesCount: Promise<number>
+  activitesCount: number
 }) => {
   const onExportActivitesXlsx = async () => {
-    const activitesCount = await activitesCountPromise
     const exportPath = '/coop/mes-coordinations/export'
     const queryString = new URLSearchParams(await searchParams).toString()
 
@@ -47,6 +46,7 @@ const ExportActivitesCoordinationButton = ({
     <>
       <Button
         {...ExportActiviteModal.buttonProps}
+        disabled={activitesCount === 0}
         priority="secondary"
         iconId="fr-icon-download-line"
         iconPosition="right"
@@ -77,8 +77,7 @@ const ExportActivitesCoordinationButton = ({
           </p>
         )}
         <p className="fr-text-label--blue-france fr-text--sm">
-          <strong>{activitesCountPromise}</strong> activités prêtes à être
-          exportées
+          <strong>{activitesCount}</strong> activités prêtes à être exportées
         </p>
         <div className="fr-border fr-py-4v fr-px-6v fr-flex fr-align-items-center fr-flex-gap-4v fr-flex-grow-1 fr-mt-4v fr-border-radius--8">
           <div

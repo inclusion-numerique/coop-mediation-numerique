@@ -32,7 +32,7 @@ const MesCoordinationsPage = async ({
     searchParams,
   })
 
-  const activitesCount = data.then(
+  const activitesCount = await data.then(
     ({ searchResult: { totalCount } }) => totalCount,
   )
 

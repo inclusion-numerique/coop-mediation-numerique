@@ -81,6 +81,7 @@ export const Checkbox = <T,>({
   options,
   isTiled = true,
   className,
+  classes,
   ...props
 }: CheckboxProps<T>) => {
   const { name, state, handleBlur, handleChange } = useFieldContext<
@@ -96,10 +97,15 @@ export const Checkbox = <T,>({
       stateRelatedMessage={hasErrors ? errors[0].message : undefined}
       className={classNames(isTiled ? 'fr-checkbox-buttons' : '', className)}
       legend={
-        legend && (
-          <span className="fr-label fr-text--medium fr-mb-2v">{legend}</span>
-        )
+        legend && <span className="fr-label fr-text--medium">{legend}</span>
       }
+      classes={{
+        ...classes,
+        content: classNames(
+          classes?.content,
+          props.hintText ? 'fr-mt-1v' : 'fr-mt-0',
+        ),
+      }}
       disabled={isPending}
       options={options.map((option) => ({
         label: (
