@@ -6,6 +6,12 @@ import { fieldContext, formContext } from './form-context'
 
 export type DefaultValues<T> = { [K in keyof T]?: DefaultValues<T[K]> }
 
+const Calendar = lazy(() =>
+  import('./fields-components/Calendar').then((module) => ({
+    default: module.Calendar,
+  })),
+)
+
 const Checkbox = lazy(() =>
   import('./fields-components/Checkbox').then((module) => ({
     default: module.Checkbox,
@@ -78,6 +84,7 @@ export const { useAppForm, withForm } = createFormHook({
   fieldContext,
   formContext,
   fieldComponents: {
+    Calendar,
     Checkbox,
     ComboBox,
     Input,

@@ -23,45 +23,45 @@ export const ActiviteCoordinationTypeFilter = () => {
 
   const types = searchParams.get('types')?.split(',').filter(Boolean) ?? []
 
-  const closePopover = () => {
-    router.replace(`?${params}`, { scroll: false })
-  }
-
-  const updateParamsAndClose = () => {
+  const setFilters = () => {
     form.state.values.types.length > 0
       ? params.set('types', form.state.values.types.join(','))
       : params.delete('types')
-    closePopover()
+    router.replace(`?${params}`, { scroll: false })
   }
-
-  const form = useAppForm({
-    defaultValues: { types },
-    onSubmit: updateParamsAndClose,
-  })
 
   const clearFilters = () => {
     form.reset()
     params.delete('types')
-    closePopover()
+    router.replace(`?${params}`, { scroll: false })
+    setIsOpen(false)
   }
+
+  const form = useAppForm({
+    defaultValues: { types },
+    onSubmit: setFilters,
+  })
 
   return (
     <Popover
       open={isOpen}
       onOpenChange={(openState) => {
-        if (openState) form.reset({ types })
+        openState && form.reset({ types })
         setIsOpen(openState)
       }}
-      onEscapeKeyDown={updateParamsAndClose}
-      onInteractOutside={updateParamsAndClose}
+      onEscapeKeyDown={() => form.handleSubmit()}
+      onInteractOutside={() => form.handleSubmit()}
       trigger={
-        <TriggerButton isOpen={isOpen}>
+        <TriggerButton isOpen={isOpen} isFilled={types.length > 0}>
           Type
           {types.length > 0 && ` · ${types.length}`}
         </TriggerButton>
       }
     >
-      <form style={{ width: 384 }} onSubmit={handleSubmit(form)}>
+      <form
+        style={{ width: 384 }}
+        onSubmit={(e) => handleSubmit(form)(e).then(() => setIsOpen(false))}
+      >
         <form.AppForm>
           <form.AppField name="types">
             {(field) => (

@@ -39,14 +39,14 @@ const coordinationItem = (
   if (user.coordinateur?.id == null) {
     return {
       text: mesActivitesItemTitle,
-      ...activiteLink(pathname)('/coop/mes-coordinations'),
+      ...activiteLink(pathname)('/coop/mes-activites'),
     }
   }
 
   if (user.mediateur?.id == null) {
     return {
       text: mesActivitesItemTitle,
-      ...activiteLink(pathname)('/coop/mes-activites'),
+      ...activiteLink(pathname)('/coop/mes-coordinations'),
     }
   }
 

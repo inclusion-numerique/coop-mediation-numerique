@@ -13,7 +13,7 @@ import { ActivitesByDate } from './db/getCoordinationsListPageData'
 type CoordinationListePageData = {
   activitesByDate: ActivitesByDate[]
   searchParams: { page?: string; lignes?: string }
-  searchResult: { totalPages: number; totalCount: number }
+  searchResult: { totalPages: number; totalCount: number; isFiltered: boolean }
   timezone: string
 }
 
@@ -27,12 +27,15 @@ const SuspensedContent = async ({
   const { searchParams, searchResult, activitesByDate, timezone } = await data
 
   return activitesByDate.length === 0 ? (
-    <CoordinationEmptyState />
+    <CoordinationEmptyState isFiltered={searchResult.isFiltered} />
   ) : (
     <div>
       <div className="fr-flex fr-align-items-center fr-justify-content-space-between fr-width-full fr-my-6v">
         <h2 className="fr-text--bold fr-text--lg fr-mb-0">
-          {`${searchResult.totalCount} activité${sPluriel(searchResult.totalCount)} enregistrée${sPluriel(searchResult.totalCount)}`}
+          {searchResult.totalCount}{' '}
+          {searchResult.isFiltered
+            ? `activité${sPluriel(searchResult.totalCount)} correspond${searchResult.totalCount === 1 ? '' : 'ent'} à votre recherche`
+            : `activité${sPluriel(searchResult.totalCount)} enregistrée${sPluriel(searchResult.totalCount)}`}
         </h2>
       </div>
       <ActiviteCoordinationModal timezone={timezone} />

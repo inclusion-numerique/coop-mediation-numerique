@@ -62,10 +62,21 @@ export const getCoordinationsListPageData = async ({
 
   const { take, skip } = takeAndSkipFromPage({ page, pageSize })
 
+  const hasTypesFilter = (searchParams.types?.length ?? 0) > 0
+
   const totalCount = await prismaClient.activiteCoordination.count({
     where: {
       coordinateurId: user.coordinateur.id,
       suppression: null,
+      ...(hasTypesFilter ? { type: { in: searchParams.types } } : {}),
+      ...(searchParams.du && searchParams.au
+        ? {
+            date: {
+              gte: new Date(searchParams.du),
+              lte: new Date(searchParams.au),
+            },
+          }
+        : {}),
     },
   })
 
@@ -73,8 +84,14 @@ export const getCoordinationsListPageData = async ({
     where: {
       coordinateurId: user.coordinateur.id,
       suppression: null,
-      ...((searchParams.types?.length ?? 0) > 0
-        ? { type: { in: searchParams.types } }
+      ...(hasTypesFilter ? { type: { in: searchParams.types } } : {}),
+      ...(searchParams.du && searchParams.au
+        ? {
+            date: {
+              gte: new Date(searchParams.du),
+              lte: new Date(searchParams.au),
+            },
+          }
         : {}),
     },
     orderBy: {
@@ -159,6 +176,8 @@ export const getCoordinationsListPageData = async ({
     searchResult: {
       totalCount,
       totalPages: Math.ceil(totalCount / pageSize),
+      isFiltered:
+        hasTypesFilter || (searchParams.du != null && searchParams.au != null),
     },
     searchParams: {
       page: searchParams.page?.toString(),

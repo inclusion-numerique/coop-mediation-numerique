@@ -32,13 +32,43 @@ const coordinationsFiltersSchema = z.object({
         ),
     )
     .optional(),
+  du: z
+    .preprocess(
+      (val) => (val ? new Date(val as string) : undefined),
+      z.date().optional(),
+    )
+    .refine((date) => !date || !Number.isNaN(date.getTime()), {
+      message: 'La date de début est invalide',
+    }),
+  au: z
+    .preprocess(
+      (val) => (val ? new Date(val as string) : undefined),
+      z.date().optional(),
+    )
+    .refine((date) => !date || !Number.isNaN(date.getTime()), {
+      message: 'La date de fin est invalide',
+    }),
 })
 
-export const validateCoordinationsFilters = (raw: unknown) => {
-  const result = coordinationsFiltersSchema.safeParse(raw)
-  return result.success
-    ? result.data
-    : { page: DEFAULT_PAGE, lignes: DEFAULT_PAGE_SIZE }
+export type CoordinationsFilters = {
+  du?: Date
+  au?: Date
+  page: number
+  lignes: number
+  types: ('Animation' | 'Evenement' | 'Partenariat')[]
 }
 
-export type CoordinationsFilters = z.infer<typeof coordinationsFiltersSchema>
+const DEFAULT_COORDINATION_FILTERS = {
+  types: [],
+  page: DEFAULT_PAGE,
+  lignes: DEFAULT_PAGE_SIZE,
+}
+
+export const validateCoordinationsFilters = (
+  raw: unknown,
+): CoordinationsFilters => {
+  const result = coordinationsFiltersSchema.safeParse(raw)
+  return result.success
+    ? { ...DEFAULT_COORDINATION_FILTERS, ...result.data }
+    : DEFAULT_COORDINATION_FILTERS
+}

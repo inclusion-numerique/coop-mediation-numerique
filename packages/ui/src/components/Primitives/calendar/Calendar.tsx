@@ -2,12 +2,12 @@ import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { dateFormatter } from '@app/web/utils/formatDate'
 import classNames from 'classnames'
 import ReactCalendar from 'react-calendar'
-import { CalendarProps } from 'react-calendar/src/Calendar'
+import { CalendarProps as ReactCalendarProps } from 'react-calendar/src/Calendar'
 import styles from './Calendar.module.css'
 
 const today = dateAsIsoDay(new Date())
 
-const tileClassName: CalendarProps['tileClassName'] = ({ date }) => {
+const tileClassName: ReactCalendarProps['tileClassName'] = ({ date }) => {
   if (dateAsIsoDay(date) === today) {
     return styles.today
   }
@@ -17,16 +17,16 @@ const tileClassName: CalendarProps['tileClassName'] = ({ date }) => {
 // date-fn date (vendredi) -> V
 const dayLetterFormatter = dateFormatter('E')
 
-const formatShortWeekday: CalendarProps['formatShortWeekday'] = (
+const formatShortWeekday: ReactCalendarProps['formatShortWeekday'] = (
   _locale,
   date,
 ) => dayLetterFormatter(date).charAt(0).toUpperCase()
 
-const Calendar = ({
+export const Calendar = ({
   className,
   tileClassName: tileClassNameProperty,
   ...calendarProps
-}: CalendarProps) => (
+}: ReactCalendarProps) => (
   <ReactCalendar
     className={classNames(styles.calendar, className)}
     tileClassName={tileClassNameProperty ?? tileClassName}
@@ -35,4 +35,4 @@ const Calendar = ({
   />
 )
 
-export default Calendar
+export type CalendarProps = ReactCalendarProps
