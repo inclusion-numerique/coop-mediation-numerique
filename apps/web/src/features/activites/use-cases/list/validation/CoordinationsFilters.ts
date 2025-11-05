@@ -6,7 +6,7 @@ import { z } from 'zod'
 
 const activiteTypes = ['Evenement', 'Partenariat', 'Animation'] as const
 
-const coordinationsFiltersSchema = z.object({
+export const coordinationsFiltersSchema = z.object({
   page: z
     .string()
     .transform((val) => Number.parseInt(val, 10))

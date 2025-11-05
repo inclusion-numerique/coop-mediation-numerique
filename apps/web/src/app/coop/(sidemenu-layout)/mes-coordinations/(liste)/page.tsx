@@ -1,8 +1,10 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateCoordinateur } from '@app/web/auth/authenticateUser'
 import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
+import { TYPE_ACTIVITE_OPTIONS } from '@app/web/features/activites/use-cases/cra/coordination/labels'
 import ActivitesListeLayout from '@app/web/features/activites/use-cases/list/components/ActivitesListeLayout'
 import { CoordinationFilterTags } from '@app/web/features/activites/use-cases/list/components/CoordinationFilterTags'
+import ExportActivitesCoordinationButton from '@app/web/features/activites/use-cases/list/components/ExportActivitesCoordinationButton'
 import { ActiviteCoordinationPeriodeFilter } from '@app/web/features/activites/use-cases/list/components/filters/ActiviteCoordinationPeriodeFilter'
 import { ActiviteCoordinationTypeFilter } from '@app/web/features/activites/use-cases/list/components/filters/ActiviteCoordinationTypeFilter'
 import { getCoordinationsDateRange } from '@app/web/features/activites/use-cases/list/db/getCoordinationsDateRange'
@@ -30,8 +32,29 @@ const MesCoordinationsPage = async ({
     searchParams,
   })
 
+  const activitesCount = data.then(
+    ({ searchResult: { totalCount } }) => totalCount,
+  )
+
   const dateRange = await getCoordinationsDateRange({ user })
   const now = new Date()
+
+  const filters = [
+    ...(searchParams.du != null && searchParams.au != null
+      ? [
+          {
+            params: ['du', 'au'],
+            label: `${dateAsIsoDay(searchParams.du)} - ${dateAsIsoDay(searchParams.au)}`,
+          },
+        ]
+      : []),
+    ...searchParams.types.map((type) => ({
+      params: ['types'],
+      value: type,
+      label:
+        TYPE_ACTIVITE_OPTIONS.find(({ value }) => type === value)?.label ?? '',
+    })),
+  ]
 
   return (
     <ActivitesListeLayout
@@ -42,32 +65,23 @@ const MesCoordinationsPage = async ({
         isCoordinateur(user) && isMediateur(user) ? 'Coordination' : undefined
       }
     >
-      <div className="fr-flex fr-align-items-center fr-flex-gap-2v fr-mb-6v">
-        <ActiviteCoordinationPeriodeFilter
-          minDate={new Date(dateRange._min.date ?? now)}
-          maxDate={new Date(dateRange._max.date ?? now)}
+      <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-2v fr-mb-6v">
+        <div className="fr-flex fr-align-items-center fr-flex-gap-2v">
+          <ActiviteCoordinationPeriodeFilter
+            minDate={new Date(dateRange._min.date ?? now)}
+            maxDate={new Date(dateRange._max.date ?? now)}
+          />
+          <ActiviteCoordinationTypeFilter />
+        </div>
+        <ExportActivitesCoordinationButton
+          filters={filters}
+          searchParams={rawSearchParams}
+          activitesCount={activitesCount}
         />
-        <ActiviteCoordinationTypeFilter />
       </div>
       <CoordinationFilterTags
         ignoreParams={['page', 'lignes']}
-        filters={[
-          ...(searchParams.du != null && searchParams.au != null
-            ? [
-                {
-                  params: ['du', 'au'],
-                  label: `${dateAsIsoDay(searchParams.du)} - ${dateAsIsoDay(searchParams.au)}`,
-                },
-              ]
-            : []),
-          ...searchParams.types.map((type) => {
-            return {
-              params: ['types'],
-              value: type,
-              label: type,
-            }
-          }),
-        ]}
+        filters={filters}
       />
       <MesCoordinationsListePage data={data} />
     </ActivitesListeLayout>

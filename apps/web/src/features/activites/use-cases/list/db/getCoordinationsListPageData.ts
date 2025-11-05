@@ -6,7 +6,6 @@ import {
 } from '@app/web/libs/data-table/toNumberOr'
 import { prismaClient } from '@app/web/prismaClient'
 import {
-  Prisma,
   TypeActiviteCoordination,
   TypeAnimation,
   TypeEvenement,

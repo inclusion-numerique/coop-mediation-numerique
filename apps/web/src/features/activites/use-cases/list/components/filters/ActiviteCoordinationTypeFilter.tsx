@@ -7,12 +7,7 @@ import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
-
-const TYPE_ACTIVITE_OPTIONS = [
-  { label: 'Évènement', value: 'Evenement' },
-  { label: 'Partenariat', value: 'Partenariat' },
-  { label: 'Animation', value: 'Animation' },
-]
+import { TYPE_ACTIVITE_OPTIONS } from '../../../cra/coordination/labels'
 
 export const ActiviteCoordinationTypeFilter = () => {
   const router = useRouter()
