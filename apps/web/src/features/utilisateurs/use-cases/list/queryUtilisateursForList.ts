@@ -20,9 +20,9 @@ export const searchUtilisateurSelect = {
         select: { id: true },
       },
       activites: {
-        select: { date: true },
+        select: { creation: true },
         where: { suppression: null },
-        orderBy: { date: 'desc' },
+        orderBy: { creation: 'desc' },
         take: 1,
       },
       beneficiaires: {

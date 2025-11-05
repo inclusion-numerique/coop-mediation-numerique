@@ -2,8 +2,18 @@ import { UtilisateurForList } from '@app/web/features/utilisateurs/use-cases/lis
 
 const MILISECONDS = 1000 * 60 * 60 * 24
 
+export type UserAccountStatusInput = Pick<
+  UtilisateurForList,
+  'deleted' | 'role' | 'inscriptionValidee' | 'created'
+> & {
+  mediateur: Pick<
+    NonNullable<UtilisateurForList['mediateur']>,
+    'activites'
+  > | null
+}
+
 export const getUserAccountStatus = (
-  user: UtilisateurForList,
+  user: UserAccountStatusInput,
 ): string | null => {
   if (
     user.deleted ||
@@ -16,7 +26,7 @@ export const getUserAccountStatus = (
 
   const now = new Date()
   const created = user.created
-  const lastCra = user.mediateur?.activites[0]?.date
+  const lastCra = user.mediateur?.activites[0]?.creation
 
   const daysSinceCreation = (now.getTime() - created.getTime()) / MILISECONDS
 

@@ -7,8 +7,10 @@ import { findInvitationFrom } from '@app/web/mediateurs/findInvitationFrom'
 import { inviteToJoinTeamOf } from '@app/web/mediateurs/inviteToJoinTeamOf'
 import { leaveTeamOf } from '@app/web/mediateurs/leaveTeamOf'
 import { removeMediateurFromTeamOf } from '@app/web/mediateurs/removeMediateurFromTeamOf'
+import { resendInvitation } from '@app/web/mediateurs/resendInvitation'
 import { searchMediateur } from '@app/web/mediateurs/searchMediateurs'
 import { setVisibility } from '@app/web/mediateurs/setVisibility'
+import { prismaClient } from '@app/web/prismaClient'
 import {
   protectedProcedure,
   publicProcedure,
@@ -131,6 +133,49 @@ export const mediateursRouter = router({
       addMutationLog({
         userId: user?.id ?? null,
         nom: 'AccepterInvitationMediateurCoordonne',
+        duration: stopwatch.stop().duration,
+        data: {
+          email,
+          coordinateurId,
+        },
+      })
+    }),
+  resendInvitation: protectedProcedure
+    .input(z.object({ email: z.string(), coordinateurId: z.string() }))
+    .mutation(async ({ input: { email, coordinateurId }, ctx: { user } }) => {
+      if (user.role !== 'Admin') {
+        if (!isCoordinateur(user))
+          throw forbiddenError('User is not a coordinateur')
+
+        if (user.coordinateur.id !== coordinateurId)
+          throw forbiddenError('Coordinateur mismatch')
+      }
+
+      const coordinateurUser = await prismaClient.user.findFirst({
+        where: {
+          coordinateur: {
+            id: coordinateurId,
+          },
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+        },
+      })
+      if (!coordinateurUser) throw forbiddenError('Coordinateur not found')
+
+      const stopwatch = createStopwatch()
+
+      await resendInvitation({
+        email,
+        coordinateurId,
+        coordinateurName: coordinateurUser.name ?? 'Coordinateur', // fallback will never happen, here for type safety
+      })
+
+      addMutationLog({
+        userId: user.id,
+        nom: 'RenvoyerInvitationMediateurCoordonne' as const,
         duration: stopwatch.stop().duration,
         data: {
           email,

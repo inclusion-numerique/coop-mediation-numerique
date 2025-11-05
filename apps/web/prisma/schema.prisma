@@ -297,9 +297,10 @@ model InvitationEquipe {
   email          String
   coordinateurId String    @map("coordinateur_id") @db.Uuid
   mediateurId    String?   @map("mediateur_id") @db.Uuid
-  creation       DateTime? @default(now())
+  creation       DateTime @default(now())
   acceptee       DateTime?
   refusee        DateTime?
+  renvoyee       DateTime?
 
   mediateurInvite Mediateur?   @relation(fields: [mediateurId], references: [id])
   coordinateur    Coordinateur @relation(fields: [coordinateurId], references: [id])
@@ -1581,6 +1582,7 @@ enum MutationName {
   InviterMediateursCoordonnes              @map("inviter_mediateurs_coordonnes")
   AccepterInvitationMediateurCoordonne     @map("accepter_invitation_mediateur_coordonne")
   RefuserInvitationMediateurCoordonne      @map("refuser_invitation_mediateur_coordonne")
+  RenvoyerInvitationMediateurCoordonne     @map("renvoyer_invitation_mediateur_coordonne")
   SetMediateurVisibility                   @map("set_mediateur_visibility")
   CreerActivite                            @map("creer_activite")
   ModifierActivite                         @map("modifier_activite")
