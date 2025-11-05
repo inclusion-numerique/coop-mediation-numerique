@@ -31,7 +31,7 @@ export type ActivitesByDate = {
     organisateurs: string[] | null
     organisateurAutre: string | null
     initiative: string | null
-    nomEvenement: string | null
+    nom: string | null
     typeEvenement: TypeEvenement | null
     typeEvenementAutre: string | null
     naturePartenariat?: string[]
@@ -112,7 +112,7 @@ export const getCoordinationsListPageData = async ({
       organisateurs: true,
       organisateurAutre: true,
       initiative: true,
-      nomEvenement: true,
+      nom: true,
       typeEvenement: true,
       typeEvenementAutre: true,
       naturePartenariat: true,

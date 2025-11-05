@@ -16,7 +16,7 @@ const select = {
   organisateurs: true,
   organisateurAutre: true,
   initiative: true,
-  nomEvenement: true,
+  nom: true,
   typeEvenement: true,
   typeEvenementAutre: true,
   naturePartenariat: true,

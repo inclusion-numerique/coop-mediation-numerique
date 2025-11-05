@@ -119,7 +119,7 @@ export const buildActivitesCoordinationWorksheet = (
       activite.mediateurs ?? emptyFor('Animation')(activite),
       activite.structures ?? emptyFor('Animation')(activite),
       activite.autresActeurs ?? emptyFor('Animation')(activite),
-      activite.nomEvenement ?? emptyFor('Evenement')(activite),
+      activite.nom ?? emptyFor('Evenement', 'Partenariat')(activite),
       [
         ...[activite.typeAnimation]
           .map(

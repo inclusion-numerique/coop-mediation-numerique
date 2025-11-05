@@ -119,7 +119,7 @@ const CraEvenementForm = ({
           )}
         </form.AppField>
         <hr className="fr-separator-12v" />
-        <form.AppField name="nomEvenement">
+        <form.AppField name="nom">
           {(field) => (
             <field.Input
               label="Nom de l’évènement"

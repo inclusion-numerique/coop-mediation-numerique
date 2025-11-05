@@ -10,6 +10,7 @@ import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { replaceRouteWithoutRerender } from '@app/web/utils/replaceRouteWithoutRerender'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
+import React from 'react'
 import { DefaultValues } from 'react-hook-form'
 import { Tag } from '../../../tags/components/TagsComboBox'
 import styles from '../../components/CraForm.module.css'
@@ -96,6 +97,19 @@ const CraPartenariatForm = ({
                 </>
               }
               hintText="Renseignez la date à laquelle le partenariat avec la ou les structure·s partenaire·s a commencé."
+            />
+          )}
+        </form.AppField>
+        <form.AppField name="nom">
+          {(field) => (
+            <field.Input
+              label="Nom du partenariat"
+              className="fr-mb-8v"
+              size="x-large"
+              nativeInputProps={{
+                placeholder: 'Renseignez le nom du partenariat',
+              }}
+              isPending={isPending}
             />
           )}
         </form.AppField>

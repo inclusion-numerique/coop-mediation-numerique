@@ -47,7 +47,7 @@ export const CraEvenementValidation = z
       .number()
       .int({ message: 'Veuillez renseigner un nombre entier' })
       .min(0, 'Le nombre de participants doit être positif'),
-    nomEvenement: z.string().nullish(),
+    nom: z.string().nullish(),
     typeEvenement: z.enum(typeEvenementValues, {
       required_error: 'Veuillez renseigner un type d’événement',
     }),

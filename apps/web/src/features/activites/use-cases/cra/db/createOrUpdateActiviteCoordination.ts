@@ -48,7 +48,7 @@ const activiteDataForType = (
     const data = input.data
     return {
       participants: data.participants,
-      nomEvenement: data.nomEvenement,
+      nom: data.nom,
       typeEvenement: data.typeEvenement,
       ...(data.typeEvenement === 'Autre'
         ? { typeEvenementAutre: data.typeEvenementAutre }
@@ -64,6 +64,7 @@ const activiteDataForType = (
   if (input.type === 'Partenariat') {
     const data = input.data
     return {
+      nom: data.nom,
       naturePartenariat: data.naturePartenariat,
       ...(data.naturePartenariat.includes('Autre')
         ? { naturePartenariatAutre: data.naturePartenariatAutre }

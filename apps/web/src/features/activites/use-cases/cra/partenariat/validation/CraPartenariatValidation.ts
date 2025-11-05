@@ -43,6 +43,7 @@ export const CraPartenariatValidation = z
     date: z
       .string({ required_error: 'Veuillez renseigner une date' })
       .date('Veuillez renseigner une date valide'),
+    nom: z.string().nullish(),
     naturePartenariat: z
       .array(z.enum(natureValues), {
         required_error:

@@ -8,6 +8,6 @@ export const ActiviteTitle = ({
 }) => (
   <>
     {displayTypeActivite[activite.type].label}
-    {activite.nomEvenement ? <>&nbsp;·&nbsp;{activite.nomEvenement}</> : null}
+    {activite.nom ? <>&nbsp;·&nbsp;{activite.nom}</> : null}
   </>
 )
