@@ -297,8 +297,24 @@ import { type ZodError, z } from 'zod'
  *         schema:
  *           type: string
  *           description: |
- *             Liste d'identifiants de structures (uuid) séparés par des virgules. Exemple : ids=uuid1,uuid2. Maximum 100 ids.
+ *             Liste d'identifiants de structures (uuid) séparés par des virgules. Exemple : ids=uuid1,uuid2. Maximum 100 ids.
  *         required: false
+ *       - in: query
+ *         name: filter[creation][depuis]
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *           example: "2025-09-01T00:00:00Z"
+ *         required: false
+ *         description: "retourne les structures avec une date de création supérieure ou égale à cette date-heure"
+ *       - in: query
+ *         name: filter[modification][depuis]
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *           example: "2025-09-01T00:00:00Z"
+ *         required: false
+ *         description: "retourne les structures avec une date de dernière modification supérieure ou égale à cette date-heure"
  *     responses:
  *       200:
  *         description: liste des structures
@@ -399,6 +415,20 @@ export const GET = createApiV1Route
         .transform((arr) => Array.from(new Set(arr)))
         .pipe(z.array(z.string().uuid()).max(100))
         .default([]),
+      filter: z
+        .object({
+          creation: z
+            .object({
+              depuis: z.string().datetime().optional(),
+            })
+            .default({}),
+          modification: z
+            .object({
+              depuis: z.string().datetime().optional(),
+            })
+            .default({}),
+        })
+        .default({}),
     }),
   )
   .handle(async ({ params }) => {
@@ -422,9 +452,24 @@ export const GET = createApiV1Route
       throw validatedCursor.error as ZodError
     }
 
+    // filters: creation/modification depuis (inclusive)
+    const creationSinceInput = params.filter?.creation?.depuis
+    const modificationSinceInput = params.filter?.modification?.depuis
+
+    const creationSinceDate = creationSinceInput
+      ? new Date(creationSinceInput)
+      : undefined
+    const modificationSinceDate = modificationSinceInput
+      ? new Date(modificationSinceInput)
+      : undefined
+
     // include all structures, even if suppression != null
     const where = {
       ...(ids.length > 0 ? { id: { in: ids } } : {}),
+      ...(creationSinceDate ? { creation: { gte: creationSinceDate } } : {}),
+      ...(modificationSinceDate
+        ? { modification: { gte: modificationSinceDate } }
+        : {}),
     }
 
     const structures = await prismaClient.structure.findMany({
@@ -473,7 +518,22 @@ export const GET = createApiV1Route
         ? createCompositeCursor(firstItem.creation.toISOString(), firstItem.id)
         : undefined
 
-    const queryIdsSuffix = ids.length > 0 ? `&ids=${ids.join(',')}` : ''
+    const currentQueryParams = new URLSearchParams()
+    if (ids.length > 0) {
+      currentQueryParams.set('ids', ids.join(','))
+    }
+    if (creationSinceInput) {
+      currentQueryParams.set('filter[creation][depuis]', creationSinceInput)
+    }
+    if (modificationSinceInput) {
+      currentQueryParams.set(
+        'filter[modification][depuis]',
+        modificationSinceInput,
+      )
+    }
+
+    const queryString = currentQueryParams.toString()
+    const queryIdsSuffix = queryString ? `&${queryString}` : ''
 
     const response: StructureListResponse = {
       data: structures.map((s) => ({
