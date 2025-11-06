@@ -143,6 +143,7 @@ export const beneficiairesRouter = router({
           where: { id: user.mediateur.id },
           data: {
             beneficiairesCount: { increment: 1 },
+            derniereCreationBeneficiaire: new Date(),
           },
         })
         return createdBeneficiaire

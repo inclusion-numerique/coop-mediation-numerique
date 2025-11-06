@@ -416,11 +416,23 @@ const AdministrationUserPage = async ({
                 },
               ]}
             />
-            <h5 className="fr-mt-8v">
-              Équipe{' '}
-              {coordinateur.mediateursCoordonnes.length > 0 &&
-                ` · ${numberToString(coordinateur.mediateursCoordonnes.length)}`}
-            </h5>
+            <div className="fr-flex fr-mt-8v fr-mb-6v fr-align-items-center fr-justify-content-space-between">
+              <h5 className="fr-mb-0">
+                Équipe{' '}
+                {coordinateur.mediateursCoordonnes.length > 0 &&
+                  ` · ${numberToString(coordinateur.mediateursCoordonnes.length)}`}
+              </h5>
+              <Button
+                iconId="fr-icon-user-add-line"
+                priority="secondary"
+                size="small"
+                linkProps={{
+                  href: `/administration/utilisateurs/${user.id}/equipe-coordonnee/ajouter`,
+                }}
+              >
+                Ajouter un membre
+              </Button>
+            </div>
             {coordinateur.mediateursCoordonnes.length === 0 ? (
               <tr>
                 <td colSpan={5}>

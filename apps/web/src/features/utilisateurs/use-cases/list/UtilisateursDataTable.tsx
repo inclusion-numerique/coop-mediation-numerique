@@ -73,14 +73,14 @@ export const UtilisateursDataTable = {
       name: 'lastCra',
       csvHeaders: ['Dernière complétion d’un CRA'],
       csvValues: ({ mediateur }) => [
-        mediateur?.activites.at(0)?.creation.toISOString(),
+        mediateur?.derniereCreationActivite?.toISOString(),
       ],
     },
     {
       name: 'lastBeneficiaire',
       csvHeaders: ['Dernier ajout de bénéficiaire'],
       csvValues: ({ mediateur }) => [
-        mediateur?.beneficiaires.at(0)?.creation.toISOString(),
+        mediateur?.derniereCreationBeneficiaire?.toISOString(),
       ],
     },
     {

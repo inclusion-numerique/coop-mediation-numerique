@@ -49,15 +49,6 @@ export const getAdministrationUserPageData = async ({ id }: { id: string }) => {
                       inscriptionValidee: true,
                     },
                   },
-                  activites: {
-                    select: {
-                      creation: true,
-                    },
-                    orderBy: {
-                      creation: 'desc',
-                    },
-                    take: 1,
-                  },
                 },
               },
             },
@@ -81,15 +72,6 @@ export const getAdministrationUserPageData = async ({ id }: { id: string }) => {
                       created: true,
                       inscriptionValidee: true,
                     },
-                  },
-                  activites: {
-                    select: {
-                      creation: true,
-                    },
-                    orderBy: {
-                      creation: 'desc',
-                    },
-                    take: 1,
                   },
                 },
               },

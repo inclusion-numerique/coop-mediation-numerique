@@ -276,6 +276,10 @@ model Mediateur {
   accompagnementsCount Int @default(0) @map("accompagnements_count")
   beneficiairesCount   Int @default(0) @map("beneficiaires_count")
 
+  // pre computed dates to avoid joins on big tables
+  derniereCreationActivite DateTime?  @map("derniere_creation_activite")
+  derniereCreationBeneficiaire DateTime?  @map("derniere_creation_beneficiaire")
+
   coordinations MediateurCoordonne[]
   enActivite    MediateurEnActivite[]
   beneficiaires Beneficiaire[]
