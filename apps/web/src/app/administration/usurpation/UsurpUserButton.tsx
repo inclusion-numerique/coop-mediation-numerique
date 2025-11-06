@@ -12,10 +12,12 @@ const UsurpUserButton = ({
   userId,
   disabled,
   size = 'medium',
+  className,
 }: {
   userId: string
   disabled?: boolean
   size?: 'small' | 'large' | 'medium'
+  className?: string
 }) => {
   const mutation = trpc.usurpation.usurpUser.useMutation()
   const router = useRouter()
@@ -48,7 +50,10 @@ const UsurpUserButton = ({
       size={size}
       disabled={disabled}
       onClick={usurpUser}
-      {...buttonLoadingClassname(mutation.isPending || mutation.isSuccess)}
+      {...buttonLoadingClassname(
+        mutation.isPending || mutation.isSuccess,
+        className,
+      )}
     >
       Usurper
     </Button>

@@ -14,6 +14,7 @@ import { getUserAccountStatusBadge } from '@app/web/features/utilisateurs/use-ca
 import { getUserLifecycleBadge } from '@app/web/features/utilisateurs/use-cases/list/getUserLifecycleBadge'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
+import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { dateAsDayAndTime } from '@app/web/utils/dateAsDayAndTime'
 import { numberToString } from '@app/web/utils/formatNumber'
@@ -26,6 +27,7 @@ import Notice from '@codegouvfr/react-dsfr/Notice'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import type { Structure } from '@prisma/client'
 import Link from 'next/link'
+import UsurpUserButton from '../../usurpation/UsurpUserButton'
 import { type AdministrationUserPageData } from './getAdministrationUserPageData'
 import RenvoyerInvitationButton from './RenvoyerInvitationButton'
 import UtilisateurSetFeatureFlagsForm from './UtilisateurSetFeatureFlagsForm'
@@ -246,16 +248,25 @@ const AdministrationUserPage = async ({
         <AdministrationInfoCard
           title="Détails de l'utilisateur"
           actions={
-            <Button
-              iconId="fr-icon-git-merge-line"
-              priority="tertiary"
-              size="small"
-              linkProps={{
-                href: `/administration/utilisateurs/${user.id}/merge`,
-              }}
-            >
-              Fusionner avec un autre utilisateur
-            </Button>
+            <div>
+              {ServerWebAppConfig.Sudo.usurpation && (
+                <UsurpUserButton
+                  userId={user.id}
+                  size="small"
+                  className="fr-mr-2v"
+                />
+              )}
+              <Button
+                iconId="fr-icon-git-merge-line"
+                priority="tertiary"
+                size="small"
+                linkProps={{
+                  href: `/administration/utilisateurs/${user.id}/merge`,
+                }}
+              >
+                Fusionner avec un autre utilisateur
+              </Button>
+            </div>
           }
         >
           <AdministrationInlineLabelsValues
