@@ -14,6 +14,14 @@
   display: none !important;
 }
 
+.fr-overflow-hidden {
+  overflow: hidden;
+}
+
+.fr-min-width-0 {
+  min-width: 0;
+}
+
 .fr-display-grid {
   display: grid !important;
 }

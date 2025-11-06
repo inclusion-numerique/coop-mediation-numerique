@@ -223,6 +223,7 @@ const BeneficiaireFusionDoublons = ({
               </div>
             </div>
             <BeneficiaireRadioColumn
+              disabled={!selected}
               columnId={keepAId}
               duplicateId={duplicate.id}
               isActive={keep === 'a'}
@@ -231,6 +232,7 @@ const BeneficiaireFusionDoublons = ({
               {...duplicate.a}
             />
             <BeneficiaireRadioColumn
+              disabled={!selected}
               columnId={keepBId}
               duplicateId={duplicate.id}
               isActive={keep === 'b'}
@@ -248,6 +250,7 @@ const BeneficiaireFusionDoublons = ({
 export default withTrpc(BeneficiaireFusionDoublons)
 
 type BeneficiaireColumnProps = {
+  disabled?: boolean
   columnId: string
   duplicateId: string
   isActive: boolean
@@ -273,14 +276,15 @@ const BeneficiaireRadioColumn = ({
   telephone,
   email,
   className,
+  disabled,
 }: BeneficiaireColumnProps) => (
   <div
     className={classNames(
-      'fr-border-left fr-px-4v fr-py-3v fr-flex fr-align-items-center fr-justify-content-space-between fr-flex-gap-4v fr-flex-grow-1 fr-flex-basis-0',
+      'fr-border-left fr-px-4v fr-py-3v fr-flex fr-align-items-center fr-justify-content-space-between fr-flex-gap-4v fr-flex-grow-1 fr-flex-basis-0 fr-min-width-0',
       className,
     )}
   >
-    <div className="fr-radio-group fr-radio-group--vertical-center fr-justify-content-center fr-radio-group--sm fr-mb-0 fr-flex fr-align-items-center fr-flex-grow-1">
+    <div className="fr-radio-group fr-radio-group--vertical-center fr-justify-content-center fr-radio-group--sm fr-mb-0 fr-flex fr-align-items-center fr-flex-grow-1 fr-min-width-0">
       <input
         type="radio"
         id={columnId}
@@ -288,31 +292,34 @@ const BeneficiaireRadioColumn = ({
         value={side}
         checked={isActive}
         onChange={() => onSelect(duplicateId, side)}
+        disabled={disabled}
       />
-      <label htmlFor={columnId}>
-        <span className="fr-pl-2v">
+      <label
+        htmlFor={columnId}
+        className="fr-min-width-0"
+        style={{ width: '100%' }}
+      >
+        <span className="fr-display-block fr-pl-2v">
           <span
             className={classNames(
-              'fr-text--bold fr-mb-0 fr-text-title--grey-700',
-              !isActive && 'fr-text-mention--grey',
+              'fr-display-block fr-text--bold fr-mb-0 fr-text--break-all',
+              isActive ? 'fr-text-title--grey-700' : 'fr-text-disabled-grey',
             )}
           >
             {formatDisplayName(nom, prenom)}
           </span>
-          <br />
           <span
             className={classNames(
-              'fr-text--sm fr-mb-0',
-              !isActive && 'fr-text-mention--grey',
+              'fr-display-block fr-text--sm fr-mb-0 fr-text--break-all',
+              !isActive && 'fr-text-disabled-grey',
             )}
           >
             {formatDisplayPhone(telephone)}
           </span>
-          <br />
           <span
             className={classNames(
-              'fr-text--sm fr-mb-0',
-              !isActive && 'fr-text-mention--grey',
+              'fr-display-block fr-text--sm fr-mb-0 fr-text--break-all',
+              !isActive && 'fr-text-disabled-grey',
             )}
           >
             {email || '/'}
