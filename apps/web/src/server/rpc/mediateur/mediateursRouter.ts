@@ -2,6 +2,7 @@ import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
 import { InvitationValidation } from '@app/web/equipe/InvitationValidation'
 import { InviterMembreValidation } from '@app/web/equipe/InviterMembreValidation'
 import { acceptInvitation } from '@app/web/mediateurs/acceptInvitation'
+import { addUserToTeam } from '@app/web/mediateurs/addUserToTeam'
 import { declineInvitation } from '@app/web/mediateurs/declineInvitation'
 import { findInvitationFrom } from '@app/web/mediateurs/findInvitationFrom'
 import { inviteToJoinTeamOf } from '@app/web/mediateurs/inviteToJoinTeamOf'
@@ -182,6 +183,19 @@ export const mediateursRouter = router({
           coordinateurId,
         },
       })
+    }),
+  addToTeam: protectedProcedure
+    .input(
+      z.object({
+        userId: z.string().uuid(), // id du model User (pas Mediateur)
+        coordinateurId: z.string().uuid(), // id du model Coordinateur (pas User)
+      }),
+    )
+    .mutation(async ({ input: { userId, coordinateurId }, ctx: { user } }) => {
+      // uniquement accessible par les admins
+      if (user.role !== 'Admin') throw forbiddenError()
+
+      return addUserToTeam({ userId, coordinateurId })
     }),
   setVisibility: protectedProcedure
     .input(z.object({ isVisible: z.boolean() }))

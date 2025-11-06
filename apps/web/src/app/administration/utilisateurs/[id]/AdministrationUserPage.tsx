@@ -389,7 +389,7 @@ const AdministrationUserPage = async ({
           </AdministrationInfoCard>
         )}
         {coordinateur && (
-          <AdministrationInfoCard title="Rôle coordinateur">
+          <AdministrationInfoCard title="Rôle coordinateur" id="coordinateur">
             <AdministrationInlineLabelsValues
               items={[
                 {

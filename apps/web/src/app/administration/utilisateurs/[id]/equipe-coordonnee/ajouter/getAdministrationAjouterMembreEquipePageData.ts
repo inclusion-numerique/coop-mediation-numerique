@@ -5,21 +5,46 @@ export const getAdministrationAjouterMembreEquipePageData = async ({
 }: {
   id: string
 }) => {
-  const coordinateur = await prismaClient.user.findUnique({
+  const coordinateurUser = await prismaClient.user.findUnique({
     where: {
       id,
     },
-    include: {
-      coordinateur: true,
+    select: {
+      id: true,
+      name: true,
+      coordinateur: {
+        select: {
+          id: true,
+          mediateursCoordonnes: {
+            select: {
+              mediateur: {
+                select: {
+                  id: true,
+                  userId: true,
+                },
+              },
+            },
+            where: {
+              suppression: null,
+            },
+          },
+        },
+      },
     },
   })
 
+  const coordinateur = coordinateurUser?.coordinateur
   if (!coordinateur) {
     return null
   }
 
+  const userIdsInEquipe = coordinateur.mediateursCoordonnes.map(
+    (mc) => mc.mediateur.userId,
+  )
+
   return {
-    coordinateur,
+    coordinateurUser: { ...coordinateurUser, coordinateur }, // here for type safety
+    userIdsInEquipe,
   }
 }
 

@@ -36,14 +36,14 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
               linkProps: { href: '/administration/utilisateurs' },
             },
             {
-              label: data.coordinateur.name ?? 'Coordinateur',
+              label: data.coordinateurUser.name ?? 'Coordinateur',
               linkProps: { href: `/administration/utilisateurs/${id}` },
             },
           ]}
         />
         <main id={contentId}>
           <AdministrationTitle icon="fr-icon-user-add-line">
-            Ajouter un membre à l’équipe de {data.coordinateur.name}
+            Ajouter un membre à l’équipe de {data.coordinateurUser.name}
           </AdministrationTitle>
           <AdministrationAjoutMembreEquipe data={data} />
         </main>
