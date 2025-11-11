@@ -1267,6 +1267,7 @@ model RdvAccount {
   syncFrom DateTime? @map("sync_from")
 
   organisations RdvAccountOrganisation[] // Be careful as this may be out of sync with the data from oauth. Used as a cache and should be refreshed when needed.
+  invalidWebhookOrganisationIds Int[] @map("invalid_webhook_organisation_ids") @default([]) // Organisation ids for which the webhook installation failed, will need polling rdv sync strategy
   rdvs Rdv[]
   syncLogs RdvSyncLog[]
 

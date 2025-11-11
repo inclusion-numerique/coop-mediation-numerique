@@ -48,7 +48,11 @@ export const installWebhookForOrganisation = async ({
   rdvAccount: OAuthRdvApiCredentials
   organisationId: number
   appendLog: AppendLog
-}): Promise<SyncOperation> => {
+}): Promise<{
+  syncOperation: SyncOperation
+  invalidInstallation: boolean
+  organisationId: number
+}> => {
   const existing = await oAuthRdvApiListWebhooks({
     rdvAccount,
     organisationId,
@@ -72,13 +76,17 @@ export const installWebhookForOrganisation = async ({
     )
 
     // Already installed
-    return 'noop'
+    return { syncOperation: 'noop', invalidInstallation: false, organisationId }
   }
 
   if (!coopEndpoint) {
     if (webhookUrl.includes('localhost')) {
       appendLog(`skipping webhook installation for local environment`)
-      return 'noop'
+      return {
+        syncOperation: 'noop',
+        invalidInstallation: false,
+        organisationId,
+      }
     }
 
     appendLog(
@@ -100,7 +108,32 @@ export const installWebhookForOrganisation = async ({
     })
 
     appendLog(`created webhook ${JSON.stringify(created)}`)
-    return 'created'
+
+    // RDVSP does not allows webhook creation for agents that are not admin of the organisation
+    // we have to fetch again to see if it exists after creation (successful install)
+
+    const existingWebhooksPostInstallation = await oAuthRdvApiListWebhooks({
+      rdvAccount,
+      organisationId,
+      params: {
+        target_url: webhookUrl,
+      },
+    })
+
+    if (existingWebhooksPostInstallation.webhook_endpoints.length > 0) {
+      return {
+        syncOperation: 'created',
+        invalidInstallation: false,
+        organisationId,
+      }
+    }
+
+    // webhook does not exist after creation, it means it was not successful
+    return {
+      syncOperation: 'created',
+      invalidInstallation: true,
+      organisationId,
+    }
   }
 
   // Update
@@ -113,7 +146,12 @@ export const installWebhookForOrganisation = async ({
     subscriptions: webhookSubscriptions,
     secret: ServerWebAppConfig.RdvServicePublic.webhookSecret,
   })
-  return 'updated'
+
+  return {
+    syncOperation: 'updated',
+    invalidInstallation: false,
+    organisationId,
+  }
 }
 
 /**
@@ -126,7 +164,12 @@ export const installWebhooks = async ({
 }: {
   rdvAccount: OauthRdvApiCredentialsWithOrganisations
   appendLog: AppendLog
-}): Promise<SyncModelResult & { count: number }> => {
+}): Promise<
+  SyncModelResult & {
+    count: number
+    invalidInstallationOrganisationIds: number[]
+  }
+> => {
   appendLog(
     `installing webhooks for account ${rdvAccount.id} with ${rdvAccount.organisations.length} organisations`,
   )
@@ -141,14 +184,20 @@ export const installWebhooks = async ({
   )
 
   const result: SyncModelResult = {
-    noop: webhookOperations.filter((op) => op === 'noop').length,
-    created: webhookOperations.filter((op) => op === 'created').length,
-    updated: webhookOperations.filter((op) => op === 'updated').length,
+    noop: webhookOperations.filter((op) => op.syncOperation === 'noop').length,
+    created: webhookOperations.filter((op) => op.syncOperation === 'created')
+      .length,
+    updated: webhookOperations.filter((op) => op.syncOperation === 'updated')
+      .length,
     deleted: 0,
   }
+  const invalidInstallationOrganisationIds = webhookOperations
+    .filter((op) => op.invalidInstallation)
+    .map((op) => op.organisationId)
 
-  appendLog(
-    `webhooks: ${result.noop} noop, ${result.created} created, ${result.updated} updated`,
-  )
-  return { ...result, count: rdvAccount.organisations.length }
+  return {
+    ...result,
+    count: rdvAccount.organisations.length,
+    invalidInstallationOrganisationIds,
+  }
 }
