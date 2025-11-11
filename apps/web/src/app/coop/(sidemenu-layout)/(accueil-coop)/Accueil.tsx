@@ -4,7 +4,6 @@ import { EquipeVide } from '@app/web/app/coop/EquipeVide'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import ActiviteDetailsModal from '@app/web/features/activites/use-cases/list/components/ActiviteDetailsModal/ActiviteDetailsModal'
 import { DernieresActivites } from '@app/web/features/activites/use-cases/list/components/DernieresActivites'
-import ConsolidationStatistiquesNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/consolidation-statistiques/components/ConsolidationStatistiquesNouvelleFonctionnaliteCard'
 import FormationContinueNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/formation-continue/components/FormationContinueNouvelleFonctionnaliteCard'
 import TagsNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/tags/components/TagsNouvelleFonctionnaliteCard'
 import { Spinner } from '@app/web/ui/Spinner'
@@ -52,7 +51,6 @@ export const Accueil = ({
         👋 Bonjour {firstName || name || email}
       </h1>
       <FormationContinueNouvelleFonctionnaliteCard />
-      <ConsolidationStatistiquesNouvelleFonctionnaliteCard />
       <TagsNouvelleFonctionnaliteCard />
       {isMediateur && (
         <>
