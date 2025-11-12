@@ -2,6 +2,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import {
   OAuthRdvApiCredentialsWithId,
   oAuthRdvApiListRdvs,
+  oAuthRdvApiListRdvsForOrganisations,
 } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
 import type {
   OAuthApiParticipation,
@@ -10,7 +11,6 @@ import type {
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import { UserId, UserWithExistingRdvAccount } from '@app/web/utils/user'
-import type { Prisma } from '@prisma/client'
 import { chunk } from 'lodash-es'
 import { createOrMergeBeneficiairesFromRdvUserIds } from './createOrMergeBeneficiaireFromRdvUsers'
 import { AppendLog } from './syncAllRdvData'
@@ -27,13 +27,16 @@ import {
 
 const getImportedRdvIds = async ({
   rdvAccountId,
+  organisationIds,
 }: {
   rdvAccountId: number
+  organisationIds?: number[] // scopes the refresh to only these organisations, empty array means: no-op do nothing
 }) => {
   return await prismaClient.rdv
     .findMany({
       where: {
         rdvAccountId,
+        organisationId: organisationIds ? { in: organisationIds } : undefined,
       },
       select: {
         id: true,
@@ -45,13 +48,16 @@ const getImportedRdvIds = async ({
 const findExistingRdvs = async ({
   rdvIds,
   mediateurId,
+  organisationIds,
 }: {
   rdvIds: number[]
   mediateurId: string
+  organisationIds?: number[] // scopes the refresh to only these organisations, empty array means: no-op do nothing
 }) => {
   return await prismaClient.rdv.findMany({
     where: {
       id: { in: rdvIds },
+      organisationId: organisationIds ? { in: organisationIds } : undefined,
     },
     include: {
       organisation: true,
@@ -452,12 +458,14 @@ export const importRdvs = async ({
   rdvAccount,
   appendLog,
   batchSize = 250,
+  organisationIds,
 }: {
   user: UserId & UserWithExistingRdvAccount
   rdvAccount: OAuthRdvApiCredentialsWithId
   mediateurId: string
   appendLog: AppendLog
   batchSize?: number
+  organisationIds?: number[] // scopes the refresh to only these organisations, empty array means: no-op do nothing
 }): Promise<{
   rdvs: SyncModelResult & { count: number }
   users: SyncModelResult & { count: number }
@@ -473,15 +481,30 @@ export const importRdvs = async ({
     `fetching rdvs for account ${rdvAccount.id} from ${startsAfter ?? 'all time'}`,
   )
 
+  if (organisationIds && organisationIds.length > 0) {
+    appendLog(
+      `syncing rdvs for organisations ${organisationIds.join(', ')} only`,
+    )
+  }
+
   const [importedRdvIds, { rdvs }] = await Promise.all([
-    getImportedRdvIds({ rdvAccountId: rdvAccount.id }),
-    oAuthRdvApiListRdvs({
-      rdvAccount,
-      params: {
-        agent_id: rdvAccount.id,
-        starts_after: startsAfter,
-      },
-    }),
+    getImportedRdvIds({ rdvAccountId: rdvAccount.id, organisationIds }),
+    organisationIds
+      ? oAuthRdvApiListRdvsForOrganisations({
+          rdvAccount,
+          organisationIds,
+          params: {
+            agent_id: rdvAccount.id,
+            starts_after: startsAfter,
+          },
+        })
+      : oAuthRdvApiListRdvs({
+          rdvAccount,
+          params: {
+            agent_id: rdvAccount.id,
+            starts_after: startsAfter,
+          },
+        }),
   ])
   appendLog(`already imported ${importedRdvIds.length} rdvs in database`)
   appendLog(`fetched ${rdvs.length} rdvs from RDV API`)
@@ -526,6 +549,7 @@ export const importRdvs = async ({
     const existingRdvs = await findExistingRdvs({
       rdvIds: chunkRdvs.map((rdv) => rdv.id),
       mediateurId,
+      organisationIds,
     })
     const {
       existingRdvsMap,

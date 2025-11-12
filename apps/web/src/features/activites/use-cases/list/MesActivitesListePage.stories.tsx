@@ -90,3 +90,30 @@ export const AvecActivites: Story = {
     data: dataAvecActivites,
   },
 }
+
+const dataAvecActivitesEtRdvs = {
+  ...dataAvecActivites,
+  user: {
+    ...testSessionUser,
+    rdvAccount: {
+      error: null,
+      id: 1,
+      invalidWebhookOrganisationIds: [2],
+      hasOauthTokens: true,
+      includeRdvsInActivitesList: true,
+      syncFrom: null,
+      updated: new Date().toISOString(),
+      created: new Date().toISOString(),
+      lastSynced: new Date().toISOString(),
+      organisations: [],
+    },
+  },
+} satisfies ActivitesListPageData
+
+export const AvecActivitesEtRdvsButton: Story = {
+  name: 'Avec activités et rendez-vous',
+  render: (args) => <TemplateListe {...args} />,
+  args: {
+    data: dataAvecActivitesEtRdvs,
+  },
+}

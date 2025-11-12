@@ -217,6 +217,29 @@ export const oAuthRdvApiListRdvs = async ({
   })
 }
 
+// Fetches all pages of rdvs but for N organisations
+export const oAuthRdvApiListRdvsForOrganisations = async ({
+  rdvAccount,
+  organisationIds,
+  params,
+}: {
+  rdvAccount: OAuthRdvApiCredentials
+  organisationIds: number[]
+  params?: OauthRdvApiGetRdvsQuery
+}) => {
+  const organisationResults = await Promise.all(
+    organisationIds.map(async (organisationId) => {
+      return oAuthRdvApiListRdvs({
+        rdvAccount,
+        params: { ...params, organisation_id: organisationId },
+      })
+    }),
+  )
+  return {
+    rdvs: organisationResults.flatMap((result) => result.rdvs),
+  }
+}
+
 type PaginatedResponse<DataKey extends string, Item> = {
   meta: OAuthApiListMeta
 } & { [Key in DataKey]: Item[] }

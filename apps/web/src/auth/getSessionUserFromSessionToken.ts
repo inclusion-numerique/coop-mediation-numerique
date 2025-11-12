@@ -125,6 +125,7 @@ export const sessionUserSelect = {
           },
         },
       },
+      invalidWebhookOrganisationIds: true,
     },
   },
 } satisfies Prisma.UserSelect

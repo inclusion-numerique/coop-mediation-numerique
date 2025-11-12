@@ -36,6 +36,7 @@ const Template = ({
               error: null,
               syncFrom: null,
               includeRdvsInActivitesList: false,
+              invalidWebhookOrganisationIds: [],
             },
           }
         : testSessionUser

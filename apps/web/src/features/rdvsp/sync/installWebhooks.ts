@@ -1,3 +1,4 @@
+import { prismaClient } from '@app/web/prismaClient'
 import {
   OAuthRdvApiCredentials,
   OauthRdvApiCredentialsWithOrganisations,
@@ -48,7 +49,11 @@ export const installWebhookForOrganisation = async ({
   rdvAccount: OAuthRdvApiCredentials
   organisationId: number
   appendLog: AppendLog
-}): Promise<SyncOperation> => {
+}): Promise<{
+  syncOperation: SyncOperation
+  invalidInstallation: boolean
+  organisationId: number
+}> => {
   const existing = await oAuthRdvApiListWebhooks({
     rdvAccount,
     organisationId,
@@ -72,13 +77,17 @@ export const installWebhookForOrganisation = async ({
     )
 
     // Already installed
-    return 'noop'
+    return { syncOperation: 'noop', invalidInstallation: false, organisationId }
   }
 
   if (!coopEndpoint) {
     if (webhookUrl.includes('localhost')) {
       appendLog(`skipping webhook installation for local environment`)
-      return 'noop'
+      return {
+        syncOperation: 'noop',
+        invalidInstallation: false,
+        organisationId,
+      }
     }
 
     appendLog(
@@ -100,7 +109,32 @@ export const installWebhookForOrganisation = async ({
     })
 
     appendLog(`created webhook ${JSON.stringify(created)}`)
-    return 'created'
+
+    // RDVSP does not allows webhook creation for agents that are not admin of the organisation
+    // we have to fetch again to see if it exists after creation (successful install)
+
+    const existingWebhooksPostInstallation = await oAuthRdvApiListWebhooks({
+      rdvAccount,
+      organisationId,
+      params: {
+        target_url: webhookUrl,
+      },
+    })
+
+    if (existingWebhooksPostInstallation.webhook_endpoints.length > 0) {
+      return {
+        syncOperation: 'created',
+        invalidInstallation: false,
+        organisationId,
+      }
+    }
+
+    // webhook does not exist after creation, it means it was not successful
+    return {
+      syncOperation: 'created',
+      invalidInstallation: true,
+      organisationId,
+    }
   }
 
   // Update
@@ -113,7 +147,12 @@ export const installWebhookForOrganisation = async ({
     subscriptions: webhookSubscriptions,
     secret: ServerWebAppConfig.RdvServicePublic.webhookSecret,
   })
-  return 'updated'
+
+  return {
+    syncOperation: 'updated',
+    invalidInstallation: false,
+    organisationId,
+  }
 }
 
 /**
@@ -123,32 +162,63 @@ export const installWebhookForOrganisation = async ({
 export const installWebhooks = async ({
   rdvAccount,
   appendLog,
+  organisationIds,
 }: {
   rdvAccount: OauthRdvApiCredentialsWithOrganisations
   appendLog: AppendLog
-}): Promise<SyncModelResult & { count: number }> => {
+  organisationIds?: number[] // scopes the refresh to only these organisations, empty array means: no-op do nothing
+}): Promise<
+  SyncModelResult & {
+    count: number
+    invalidWebhookOrganisationIds: number[] | null // null means we did not check for invalid webhooks
+  }
+> => {
   appendLog(
     `installing webhooks for account ${rdvAccount.id} with ${rdvAccount.organisations.length} organisations`,
   )
   const webhookOperations = await Promise.all(
-    rdvAccount.organisations.map(async (organisation) => {
-      return installWebhookForOrganisation({
-        rdvAccount,
-        organisationId: organisation.organisationId,
-        appendLog,
-      })
-    }),
+    rdvAccount.organisations
+      .filter((organisation) =>
+        organisationIds
+          ? organisationIds.includes(organisation.organisationId)
+          : true,
+      )
+      .map(async (organisation) => {
+        return installWebhookForOrganisation({
+          rdvAccount,
+          organisationId: organisation.organisationId,
+          appendLog,
+        })
+      }),
   )
 
   const result: SyncModelResult = {
-    noop: webhookOperations.filter((op) => op === 'noop').length,
-    created: webhookOperations.filter((op) => op === 'created').length,
-    updated: webhookOperations.filter((op) => op === 'updated').length,
+    noop: webhookOperations.filter((op) => op.syncOperation === 'noop').length,
+    created: webhookOperations.filter((op) => op.syncOperation === 'created')
+      .length,
+    updated: webhookOperations.filter((op) => op.syncOperation === 'updated')
+      .length,
     deleted: 0,
   }
 
-  appendLog(
-    `webhooks: ${result.noop} noop, ${result.created} created, ${result.updated} updated`,
-  )
-  return { ...result, count: rdvAccount.organisations.length }
+  // Only update invalid state if full sync was performed
+  let invalidWebhookOrganisationIds: number[] | null = null
+  if (!organisationIds) {
+    invalidWebhookOrganisationIds = webhookOperations
+      .filter((op) => op.invalidInstallation)
+      .map((op) => op.organisationId)
+
+    await prismaClient.rdvAccount.update({
+      where: { id: rdvAccount.id },
+      data: {
+        invalidWebhookOrganisationIds,
+      },
+    })
+  }
+
+  return {
+    ...result,
+    count: rdvAccount.organisations.length,
+    invalidWebhookOrganisationIds,
+  }
 }

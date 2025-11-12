@@ -1,15 +1,10 @@
-import {
-  ActiviteListItemWithTimezone,
-  activiteListSelect,
-} from '@app/web/features/activites/use-cases/list/db/activitesQueries'
+import { activiteListSelect } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { addTimezoneToActivite } from '@app/web/features/activites/use-cases/list/db/addTimezoneToActivite'
-import { getActivitesListPageData } from '@app/web/features/activites/use-cases/list/getActivitesListPageData'
 import { addRdvBadgeStatus } from '@app/web/features/rdvsp/administration/db/addRdvBadgeStatus'
 import { getDashboardRdvData } from '@app/web/features/rdvsp/queries/getDashboardRdvData'
 import { countMediateursCoordonnesBy } from '@app/web/mediateurs/countMediateursCoordonnesBy'
 import { prismaClient } from '@app/web/prismaClient'
 import { getRdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
-import { createStopwatch } from '@app/web/utils/stopwatch'
 import type {
   UserDisplayName,
   UserId,
@@ -52,25 +47,27 @@ export const getAccueilPageDataFor = async (
     UserTimezone &
     UserMediateur,
 ) => {
-  const mediateurs = await countMediateursCoordonnesBy(user.coordinateur)
+  const [mediateurs, dashboardRdvData, lastActivitesWithoutTimezone] =
+    await Promise.all([
+      countMediateursCoordonnesBy(user.coordinateur),
+      getDashboardRdvDataFor(user),
+      user.mediateur?.id != null
+        ? prismaClient.activite.findMany({
+            where: {
+              mediateurId: user.mediateur.id,
+              suppression: null,
+            },
 
-  // keep this as a promise for using suspense in the frontend
-  const dashboardRdvData = getDashboardRdvDataFor(user)
+            select: activiteListSelect,
+            orderBy: {
+              creation: 'desc',
+            },
+            take: 3,
+          })
+        : null,
+    ])
 
-  // TODO Return null for rdvs if user has no valid rdv account
-  if (user.mediateur?.id != null) {
-    const lastActivitesWithoutTimezone = await prismaClient.activite.findMany({
-      where: {
-        mediateurId: user.mediateur.id,
-        suppression: null,
-      },
-      select: activiteListSelect,
-      orderBy: {
-        creation: 'desc',
-      },
-      take: 3,
-    })
-
+  if (lastActivitesWithoutTimezone != null) {
     const activites = lastActivitesWithoutTimezone
       .map(addTimezoneToActivite(user))
       .map((activite) => ({
@@ -90,6 +87,7 @@ export const getAccueilPageDataFor = async (
     mediateurs,
     activites: [],
     rdvs: null,
+    syncDataOnLoad: false,
   }
 }
 

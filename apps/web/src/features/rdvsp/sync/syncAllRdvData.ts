@@ -21,15 +21,30 @@ export type AppendLog = (log: string | string[]) => void
 
 export const syncAllRdvData = async ({
   user,
+  organisationIds,
 }: {
   user: UserWithExistingRdvAccount & UserId & UserMediateur
+  organisationIds?: number[] // scopes the refresh to only these organisations, empty array means: no-op do nothing
 }) => {
+  if (organisationIds && organisationIds.length > 0) {
+    // if we are only syncing a subset of organisations, we return an empty sync result if no organisations are passed in params
+    return computeSyncDrift({
+      rdvs: emptySyncModelResult,
+      organisations: emptySyncModelResult,
+      webhooks: emptySyncModelResult,
+      users: emptySyncModelResult,
+      motifs: emptySyncModelResult,
+      lieux: emptySyncModelResult,
+      invalidWebhookOrganisationIds: undefined,
+    })
+  }
   const { rdvAccount: rdvAccountForFirstCall } =
     await getUserContextForOAuthApiCall({ user })
 
   const syncLogData: Prisma.RdvSyncLogUncheckedCreateInput = {
     rdvAccountId: rdvAccountForFirstCall.id,
     started: new Date(),
+    organisationIds,
     ended: null,
     error: null,
     log: '',
@@ -62,6 +77,7 @@ export const syncAllRdvData = async ({
     const organisationsImport = await importOrganisations({
       rdvAccount,
       appendLog,
+      organisationIds,
     })
     const updatedRdvAccountOrganisations =
       await prismaClient.rdvAccount.findUniqueOrThrow({
@@ -82,12 +98,14 @@ export const syncAllRdvData = async ({
           mediateurId: user.mediateur.id,
           user,
           appendLog,
+          organisationIds,
         })
       : null
 
     const webhooksImport = await installWebhooks({
       rdvAccount,
       appendLog,
+      organisationIds,
     })
 
     // Build sync result
@@ -98,6 +116,10 @@ export const syncAllRdvData = async ({
       users: rdvsImport?.users ?? emptySyncModelResult,
       motifs: rdvsImport?.motifs ?? emptySyncModelResult,
       lieux: rdvsImport?.lieux ?? emptySyncModelResult,
+      invalidWebhookOrganisationIds:
+        webhooksImport.invalidWebhookOrganisationIds === null
+          ? undefined
+          : webhooksImport.invalidWebhookOrganisationIds,
     }
 
     // Compute drift
@@ -158,12 +180,16 @@ export const syncAllRdvData = async ({
       lieuxCount: rdvsImport?.lieux.count ?? 0,
 
       log: syncLogData.log,
-    } as any
+
+      organisationIds,
+    }
 
     await prismaClient.rdvSyncLog.update({
       where: { id: createdSyncLog.id },
       data: updateData,
     })
+
+    return syncResultWithDrift
   } catch (error) {
     appendLog('sync failed')
     const message = error instanceof Error ? error.message : 'Unknown error'

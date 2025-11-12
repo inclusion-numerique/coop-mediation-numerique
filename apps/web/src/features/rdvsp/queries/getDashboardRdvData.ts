@@ -55,6 +55,7 @@ export type DashboardRdvData = {
     id: number
     name: string
   }
+  syncDataOnLoad: boolean
 }
 
 export const getDashboardRdvData = async ({
@@ -104,5 +105,6 @@ export const getDashboardRdvData = async ({
     passes: passesCount,
     honores: crasTodoCount,
     organisation: rdvAccount.organisations.at(0) ?? { id: 0, name: '' },
+    syncDataOnLoad: rdvAccount.invalidWebhookOrganisationIds.length > 0,
   }
 }

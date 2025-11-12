@@ -66,7 +66,8 @@ const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000)
 
 export const NoRdvs: Story = {
   args: {
-    rdvs: Promise.resolve({
+    rdvs: {
+      syncDataOnLoad: false,
       next: null,
       futur: 0,
       passes: 0,
@@ -75,14 +76,15 @@ export const NoRdvs: Story = {
         id: 1,
         name: 'Organisation 1',
       },
-    }),
-    user: { timezone: 'Europe/Paris' },
+    },
+    user: { id: '1', timezone: 'Europe/Paris' },
   },
 }
 
 export const FutureRdvs: Story = {
   args: {
-    rdvs: Promise.resolve({
+    rdvs: {
+      syncDataOnLoad: false,
       next: createRdv(tomorrow),
       futur: 2,
       passes: 0,
@@ -91,14 +93,15 @@ export const FutureRdvs: Story = {
         id: 1,
         name: 'Organisation 1',
       },
-    }),
-    user: { timezone: 'Europe/Paris' },
+    },
+    user: { id: '1', timezone: 'Europe/Paris' },
   },
 }
 
 export const PastAndFutureRdvs: Story = {
   args: {
-    rdvs: Promise.resolve({
+    rdvs: {
+      syncDataOnLoad: false,
       next: createRdv(tomorrow),
       futur: 1,
       passes: 1,
@@ -107,14 +110,15 @@ export const PastAndFutureRdvs: Story = {
         id: 1,
         name: 'Organisation 1',
       },
-    }),
-    user: { timezone: 'Europe/Paris' },
+    },
+    user: { id: '1', timezone: 'Europe/Paris' },
   },
 }
 
 export const HonoredAndFutureRdvs: Story = {
   args: {
-    rdvs: Promise.resolve({
+    rdvs: {
+      syncDataOnLoad: false,
       next: createRdv(tomorrow),
       futur: 1,
       passes: 0,
@@ -123,7 +127,7 @@ export const HonoredAndFutureRdvs: Story = {
         id: 1,
         name: 'Organisation 1',
       },
-    }),
-    user: { timezone: 'Europe/Paris' },
+    },
+    user: { id: '1', timezone: 'Europe/Paris' },
   },
 }

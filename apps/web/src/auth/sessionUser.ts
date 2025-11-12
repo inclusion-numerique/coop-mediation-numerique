@@ -60,7 +60,13 @@ export type SessionUser = Pick<
       })
     | null
   rdvAccount:
-    | (Pick<RdvAccount, 'id' | 'error' | 'includeRdvsInActivitesList'> & {
+    | (Pick<
+        RdvAccount,
+        | 'id'
+        | 'error'
+        | 'includeRdvsInActivitesList'
+        | 'invalidWebhookOrganisationIds'
+      > & {
         hasOauthTokens: boolean
         created: string | null
         updated: string | null

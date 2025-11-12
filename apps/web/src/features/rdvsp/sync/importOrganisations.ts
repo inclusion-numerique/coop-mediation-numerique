@@ -34,9 +34,11 @@ const organisationHasDiff = (
 export const importOrganisations = async ({
   rdvAccount,
   appendLog,
+  organisationIds,
 }: {
   rdvAccount: OAuthRdvApiCredentialsWithId
   appendLog: AppendLog
+  organisationIds?: number[] // scopes the refresh to only these organisations, empty array means: no-op do nothing
 }): Promise<{ result: SyncModelResult; count: number }> => {
   appendLog('import organisations')
   const { organisations } = await oAuthRdvApiGetOrganisations({
@@ -46,12 +48,15 @@ export const importOrganisations = async ({
   appendLog(`found ${organisations.length} organisations from api`)
 
   const result = await prismaClient.$transaction(async (tx) => {
-    const organisationIds = organisations.map((o) => o.id)
+    const organisationsToImport = organisationIds
+      ? organisations.filter((o) => organisationIds.includes(o.id))
+      : organisations
+    const organisationIdsToImport = organisationsToImport.map((o) => o.id)
 
     // Fetch all organisations with these IDs, including their account links
     const existingOrganisations = await tx.rdvOrganisation.findMany({
       where: {
-        id: { in: organisationIds },
+        id: { in: organisationIdsToImport },
       },
       include: {
         accounts: {
@@ -63,11 +68,11 @@ export const importOrganisations = async ({
     })
 
     // STEP 1: Create or update all RdvOrganisation records first
-    let noop = 0
+    let noop = existingOrganisations.length - organisationIdsToImport.length
     let updated = 0
     let created = 0
 
-    for (const organisation of organisations) {
+    for (const organisation of organisationsToImport) {
       const existingOrganisation = existingOrganisations.find(
         (o) => o.id === organisation.id,
       )
@@ -110,7 +115,7 @@ export const importOrganisations = async ({
 
     // Delete links that should no longer exist
     const accountOrganisationsToDelete = existingOrganisationsForAccount.filter(
-      (o) => !organisationIds.includes(o.organisationId),
+      (o) => !existingOrganisations.map((o) => o.id).includes(o.organisationId),
     )
 
     await tx.rdvAccountOrganisation.deleteMany({
