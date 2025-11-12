@@ -42,8 +42,8 @@ const BeneficiairesDoublonsPage = ({
           2 bénéficiaires, leurs informations et leur historique
           d’accompagnement seront fusionnés en une seul fiche.{' '}
           <a
-            href="https://docs.numerique.gouv.fr/docs/b8b9de2c-6ac4-4119-b6c4-0cb0b3b738d0/"
-            className="fr-link fr-link--sm wip"
+            href="https://docs.numerique.gouv.fr/docs/be9e9d70-17a4-42b4-a07e-7b3e95e2574e/"
+            className="fr-link fr-link--sm"
             target="_blank"
           >
             En savoir plus
