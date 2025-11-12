@@ -428,7 +428,7 @@ const CraAnimationForm = ({
         <form.AppField name="notes">
           {(field) => (
             <field.RichTextarea
-              label="Notes sur l’accompagnement"
+              label="Notes sur l’animation"
               hint={
                 <>
                   Vous pouvez rédiger ici une note contextuelle sur l’activité

@@ -221,7 +221,7 @@ const CraEvenementForm = ({
         <form.AppField name="notes">
           {(field) => (
             <field.RichTextarea
-              label="Notes sur l’accompagnement"
+              label="Notes sur l’évènement"
               hint={
                 <>
                   Vous pouvez rédiger ici une note contextuelle sur l’activité
