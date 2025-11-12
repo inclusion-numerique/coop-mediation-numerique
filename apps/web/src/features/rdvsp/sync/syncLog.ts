@@ -60,7 +60,9 @@ export const computeSyncDrift = (
     lieux: { ...syncResult.lieux, drift: 0 },
   }
 
-  for (const modelUntyped of Object.keys(syncResult)) {
+  for (const modelUntyped of Object.keys(syncResult).filter(
+    (key) => key !== 'invalidWebhookOrganisationIds',
+  )) {
     const model = modelUntyped as Exclude<
       keyof SyncResult,
       'invalidWebhookOrganisationIds'

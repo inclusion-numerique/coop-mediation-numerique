@@ -35,6 +35,7 @@ export const syncAllRdvData = async ({
       users: emptySyncModelResult,
       motifs: emptySyncModelResult,
       lieux: emptySyncModelResult,
+      invalidWebhookOrganisationIds: undefined,
     })
   }
   const { rdvAccount: rdvAccountForFirstCall } =

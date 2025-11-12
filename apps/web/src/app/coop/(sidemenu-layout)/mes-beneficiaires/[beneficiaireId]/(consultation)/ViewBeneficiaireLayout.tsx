@@ -15,6 +15,7 @@ import type { Beneficiaire } from '@prisma/client'
 import classNames from 'classnames'
 import Link from 'next/link'
 import type { PropsWithChildren } from 'react'
+import BeneficiairePageRefreshRdvs from './BeneficiairePageRefreshRdvs'
 
 const ViewBeneficiaireLayout = ({
   beneficiaire,
@@ -125,6 +126,10 @@ const ViewBeneficiaireLayout = ({
           displayName={displayName}
         />
       </main>
+      {user.rdvAccount?.hasOauthTokens &&
+        user.rdvAccount?.invalidWebhookOrganisationIds.length > 0 && (
+          <BeneficiairePageRefreshRdvs userId={user.id} syncDataOnLoad={true} />
+        )}
     </CoopPageContainer>
   )
 }
