@@ -61,13 +61,17 @@ export const createOrMergeBeneficiaireFromRdvUser = async ({
 
   if (!beneficiaireToMerge) {
     // We find a suiting Beneficiaire to avoid duplicates
+    // Using 'exclude' to ensure no conflicting fields when merging
     const duplicates = await findDuplicateForBeneficiaire({
-      id: null,
-      nom: rdvUser.lastName,
-      prenom: rdvUser.firstName,
-      telephone: rdvUser.phoneNumber,
-      email: rdvUser.email,
-      mediateurId,
+      beneficiaire: {
+        id: null,
+        nom: rdvUser.lastName,
+        prenom: rdvUser.firstName,
+        telephone: rdvUser.phoneNumber,
+        email: rdvUser.email,
+        mediateurId,
+      },
+      withConflictingFields: 'exclude',
     })
 
     beneficiaireToMerge = duplicates.at(0) ?? null // most recent duplicate
