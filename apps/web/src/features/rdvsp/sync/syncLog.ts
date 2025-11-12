@@ -21,6 +21,7 @@ export type SyncResult = {
   users: SyncModelResult
   motifs: SyncModelResult
   lieux: SyncModelResult
+  invalidWebhookOrganisationIds: number[]
 }
 
 export const emptySyncResult: SyncResult = {
@@ -30,6 +31,7 @@ export const emptySyncResult: SyncResult = {
   users: emptySyncModelResult,
   motifs: emptySyncModelResult,
   lieux: emptySyncModelResult,
+  invalidWebhookOrganisationIds: [],
 }
 
 export type SyncModelResultWithDrift = SyncModelResult & {
@@ -59,7 +61,10 @@ export const computeSyncDrift = (
   }
 
   for (const modelUntyped of Object.keys(syncResult)) {
-    const model = modelUntyped as keyof SyncResult
+    const model = modelUntyped as Exclude<
+      keyof SyncResult,
+      'invalidWebhookOrganisationIds'
+    >
     const modelDrift =
       syncResult[model].created +
       syncResult[model].deleted +

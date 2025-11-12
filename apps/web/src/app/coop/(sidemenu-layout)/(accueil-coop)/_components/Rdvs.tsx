@@ -1,3 +1,5 @@
+'use client'
+
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import RdvStatusBadge from '@app/web/features/activites/use-cases/list/components/RdvStatusBadge'
 import { DashboardRdvData } from '@app/web/features/rdvsp/queries/getDashboardRdvData'
@@ -5,28 +7,40 @@ import { rdvServicePublicRdvsLink } from '@app/web/rdv-service-public/rdvService
 import { dateAsDayFullWordsInTimezone } from '@app/web/utils/dateAsDay'
 import { dateAsTimeInTimeZone } from '@app/web/utils/dateAsDayAndTime'
 import { numberToString } from '@app/web/utils/formatNumber'
-import type { UserTimezone } from '@app/web/utils/user'
+import type { UserId, UserTimezone } from '@app/web/utils/user'
 import Button from '@codegouvfr/react-dsfr/Button'
-import * as Sentry from '@sentry/nextjs'
 import classNames from 'classnames'
 import styles from './Rdvs.module.css'
 import RdvsHeader from './RdvsHeader'
+import { trpc } from '@app/web/trpc'
+import { useEffect, useState } from 'react'
 
 const Rdvs = async ({
-  rdvs: rdvsPromise,
-  user: { timezone },
+  rdvs: initialRdvs,
+  user: { timezone, id: userId },
+  syncDataOnLoad,
 }: {
-  rdvs: Promise<DashboardRdvData | null>
-  user: UserTimezone
+  rdvs: DashboardRdvData | null
+  user: UserId & UserTimezone
+  syncDataOnLoad: boolean
 }) => {
-  const rdvs = await rdvsPromise.catch((error) => {
-    Sentry.captureException(error)
-    return null
-  })
-  if (!rdvs) {
+  const [dashboardRdvData, setDashboardRdvData] =
+    useState<DashboardRdvData | null>(initialRdvs)
+
+  const mutation = trpc.rdvServicePublic.refreshDashboardRdvData.useMutation()
+
+  // Trigger a refresh on component mount if needed
+  // biome-ignore lint/correctness/useExhaustiveDependencies: mutation is not in dependencies as it should not retrigger the call
+  useEffect(() => {
+    if (syncDataOnLoad) {
+      mutation.mutateAsync({ userId }).then((data) => setDashboardRdvData(data))
+    }
+  }, [syncDataOnLoad])
+
+  if (!dashboardRdvData) {
     return (
       <>
-        <RdvsHeader />
+        <RdvsHeader isLoading={false} />
         <p className="fr-text--sm fr-text-error fr-mb-0">
           Une erreur est survenue lors de la récupération des données de
           rendez-vous.
@@ -34,7 +48,10 @@ const Rdvs = async ({
       </>
     )
   }
-  const { futur, honores, next, passes, organisation } = rdvs
+
+  const isLoading = mutation.isPending
+
+  const { futur, honores, next, passes, organisation } = dashboardRdvData
   const nextBeneficiaire = next?.participations.at(0)?.user
   const nextBeneficiaireDisplayName = nextBeneficiaire
     ? getBeneficiaireDisplayName({
@@ -45,7 +62,7 @@ const Rdvs = async ({
 
   return (
     <>
-      <RdvsHeader />
+      <RdvsHeader isLoading={isLoading} />
       <div className="fr-grid-row fr-grid-row--gutters">
         <div className="fr-col-6">
           <div className="fr-border-radius--16 fr-border fr-p-6v fr-height-full">

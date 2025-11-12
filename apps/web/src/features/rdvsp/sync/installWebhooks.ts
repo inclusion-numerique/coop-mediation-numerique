@@ -1,3 +1,4 @@
+import { prismaClient } from '@app/web/prismaClient'
 import {
   OAuthRdvApiCredentials,
   OauthRdvApiCredentialsWithOrganisations,
@@ -167,7 +168,7 @@ export const installWebhooks = async ({
 }): Promise<
   SyncModelResult & {
     count: number
-    invalidInstallationOrganisationIds: number[]
+    invalidWebhookOrganisationIds: number[]
   }
 > => {
   appendLog(
@@ -191,13 +192,20 @@ export const installWebhooks = async ({
       .length,
     deleted: 0,
   }
-  const invalidInstallationOrganisationIds = webhookOperations
+  const invalidWebhookOrganisationIds = webhookOperations
     .filter((op) => op.invalidInstallation)
     .map((op) => op.organisationId)
+
+  await prismaClient.rdvAccount.update({
+    where: { id: rdvAccount.id },
+    data: {
+      invalidWebhookOrganisationIds,
+    },
+  })
 
   return {
     ...result,
     count: rdvAccount.organisations.length,
-    invalidInstallationOrganisationIds,
+    invalidWebhookOrganisationIds,
   }
 }

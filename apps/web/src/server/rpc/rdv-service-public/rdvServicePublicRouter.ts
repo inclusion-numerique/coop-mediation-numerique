@@ -1,5 +1,7 @@
 import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
+import { SessionUser } from '@app/web/auth/sessionUser'
 import { getBeneficiaireAdresseString } from '@app/web/beneficiaire/getBeneficiaireAdresseString'
+import { getDashboardRdvData } from '@app/web/features/rdvsp/queries/getDashboardRdvData'
 import { createOrMergeBeneficiairesFromRdvUsers } from '@app/web/features/rdvsp/sync/createOrMergeBeneficiaireFromRdvUsers'
 import { mergeRdvUserFromRdvPlan } from '@app/web/features/rdvsp/sync/mergeRdvUserFromRdvPlan'
 import { refreshRdvAgentAccountData } from '@app/web/features/rdvsp/sync/refreshRdvAgentAccountData'
@@ -27,6 +29,53 @@ import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import * as Sentry from '@sentry/nextjs'
 import { AxiosError } from 'axios'
 import z from 'zod'
+
+const getContextForSynchronization = async ({
+  sessionUser,
+  userId,
+}: {
+  sessionUser: SessionUser
+  userId: string
+}) => {
+  if (
+    sessionUser.id !== userId &&
+    sessionUser.role !== 'Admin' &&
+    sessionUser.role !== 'Support'
+  ) {
+    throw forbiddenError()
+  }
+
+  const user = await getSessionUserFromId(userId)
+
+  if (!user.rdvAccount) {
+    throw invalidError('Compte RDV Service Public introuvable')
+  }
+
+  const oAuthCallUser = await getUserContextForOAuthApiCall({ user })
+
+  return { user: { ...user, rdvAccount: user.rdvAccount }, oAuthCallUser }
+}
+
+const handleSynchronizationError = async ({
+  error,
+  rdvAccountId,
+}: {
+  error: unknown
+  rdvAccountId: number
+}) => {
+  Sentry.captureException(error)
+  // Update the rdvAccount with sync error info
+  await prismaClient.rdvAccount.update({
+    where: {
+      id: rdvAccountId,
+    },
+    data: {
+      updated: new Date(),
+      lastSynced: new Date(),
+      error: 'Impossible de récupérer les données du compte RDV Service Public',
+    },
+  })
+}
 
 export const rdvServicePublicRouter = router({
   oAuthApiMe: protectedProcedure.mutation(async ({ ctx: { user } }) => {
@@ -135,44 +184,52 @@ export const rdvServicePublicRouter = router({
       }),
     )
     .mutation(async ({ ctx: { user: sessionUser }, input: { userId } }) => {
-      if (
-        sessionUser.id !== userId &&
-        sessionUser.role !== 'Admin' &&
-        sessionUser.role !== 'Support'
-      ) {
-        throw forbiddenError()
-      }
-
-      const user = await getSessionUserFromId(userId)
-
-      if (!user.rdvAccount) {
-        throw invalidError('Compte RDV Service Public introuvable')
-      }
-
-      const oAuthCallUser = await getUserContextForOAuthApiCall({ user })
+      const { user, oAuthCallUser } = await getContextForSynchronization({
+        sessionUser,
+        userId,
+      })
 
       try {
         await syncAllRdvData({
-          user: { ...user, rdvAccount: user.rdvAccount },
+          user,
         })
       } catch (error) {
-        Sentry.captureException(error)
-        // Update the rdvAccount with sync error info
-        await prismaClient.rdvAccount.update({
-          where: {
-            id: oAuthCallUser.rdvAccount.id,
-          },
-          data: {
-            updated: new Date(),
-            lastSynced: new Date(),
-            error:
-              'Impossible de récupérer les données du compte RDV Service Public',
-          },
+        await handleSynchronizationError({
+          error,
+          rdvAccountId: oAuthCallUser.rdvAccount.id,
         })
       }
 
       // Returns the user with the updated rdvAccount
       return getSessionUserFromId(user.id)
+    }),
+  refreshDashboardRdvData: protectedProcedure
+    .input(
+      z.object({
+        userId: z.string().uuid(),
+      }),
+    )
+    .mutation(async ({ ctx: { user: sessionUser }, input: { userId } }) => {
+      const { user, oAuthCallUser } = await getContextForSynchronization({
+        sessionUser,
+        userId,
+      })
+
+      try {
+        await syncAllRdvData({
+          user,
+        })
+      } catch (error) {
+        await handleSynchronizationError({
+          error,
+          rdvAccountId: oAuthCallUser.rdvAccount.id,
+        })
+      }
+
+      const data = await getDashboardRdvData({
+        user,
+      })
+      return data
     }),
   oAuthApiCreateRdvPlan: protectedProcedure
     .input(OauthRdvApiCreateRdvPlanMutationInputValidation)

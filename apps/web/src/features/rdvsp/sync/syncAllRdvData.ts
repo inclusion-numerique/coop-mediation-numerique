@@ -98,6 +98,8 @@ export const syncAllRdvData = async ({
       users: rdvsImport?.users ?? emptySyncModelResult,
       motifs: rdvsImport?.motifs ?? emptySyncModelResult,
       lieux: rdvsImport?.lieux ?? emptySyncModelResult,
+      invalidWebhookOrganisationIds:
+        webhooksImport.invalidWebhookOrganisationIds,
     }
 
     // Compute drift
