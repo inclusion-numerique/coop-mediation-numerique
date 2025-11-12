@@ -18,9 +18,15 @@ const RdvsHeader = ({ isLoading }: { isLoading: boolean }) => (
     <h2 className="fr-h5 fr-text-mention--grey fr-mb-0">RDV Service Public</h2>
     <span className="fr-flex-grow-1" />
     {isLoading && (
-      <div>
-        <Spinner size="small" inline />
-        Synchronisation des rendez-vous
+      <div className="fr-flex fr-align-items-center fr-flex-gap-2v">
+        <Spinner
+          className="fr-text-mention--grey fr-mb-0"
+          size="small"
+          inline
+        />
+        <span className="fr-text--xs fr-text-mention--grey fr-mb-0 fr-mr-4v">
+          Synchronisation des rendez-vous
+        </span>
       </div>
     )}
     <Link

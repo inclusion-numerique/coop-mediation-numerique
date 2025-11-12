@@ -42,6 +42,8 @@ export const serializePrismaSessionUser = (
         organisations: prismaSessionUser.rdvAccount.organisations.map(
           ({ organisation }) => organisation,
         ),
+        invalidWebhookOrganisationIds:
+          prismaSessionUser.rdvAccount.invalidWebhookOrganisationIds ?? [],
       }
     : null,
 })

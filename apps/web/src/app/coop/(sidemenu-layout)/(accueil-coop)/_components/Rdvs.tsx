@@ -1,21 +1,22 @@
 'use client'
 
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
+import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import RdvStatusBadge from '@app/web/features/activites/use-cases/list/components/RdvStatusBadge'
 import { DashboardRdvData } from '@app/web/features/rdvsp/queries/getDashboardRdvData'
 import { rdvServicePublicRdvsLink } from '@app/web/rdv-service-public/rdvServicePublicUrls'
+import { trpc } from '@app/web/trpc'
 import { dateAsDayFullWordsInTimezone } from '@app/web/utils/dateAsDay'
 import { dateAsTimeInTimeZone } from '@app/web/utils/dateAsDayAndTime'
 import { numberToString } from '@app/web/utils/formatNumber'
 import type { UserId, UserTimezone } from '@app/web/utils/user'
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
+import { useEffect, useState } from 'react'
 import styles from './Rdvs.module.css'
 import RdvsHeader from './RdvsHeader'
-import { trpc } from '@app/web/trpc'
-import { useEffect, useState } from 'react'
 
-const Rdvs = async ({
+const Rdvs = ({
   rdvs: initialRdvs,
   user: { timezone, id: userId },
   syncDataOnLoad,
@@ -33,7 +34,11 @@ const Rdvs = async ({
   // biome-ignore lint/correctness/useExhaustiveDependencies: mutation is not in dependencies as it should not retrigger the call
   useEffect(() => {
     if (syncDataOnLoad) {
-      mutation.mutateAsync({ userId }).then((data) => setDashboardRdvData(data))
+      mutation
+        .mutateAsync({ userId })
+        .then(({ dashboardRdvData, hasDiff }) =>
+          hasDiff ? setDashboardRdvData(dashboardRdvData) : null,
+        )
     }
   }, [syncDataOnLoad])
 
@@ -197,4 +202,4 @@ const Rdvs = async ({
   )
 }
 
-export default Rdvs
+export default withTrpc(Rdvs)

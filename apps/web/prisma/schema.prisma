@@ -1303,6 +1303,8 @@ model RdvSyncLog {
   log String?
   output Json?
 
+  organisationIds Int[] @default([])  @map("organisation_ids") // if the sync was only scoped to a subset of organisations, this will be the ids of the organisations that were synced
+
   drift Int @default(0) @map("drift") // number of diffs that have been missed by wehbook sync. drift is ok for the first sync
 
   rdvsCount Int @default(0) @map("rdvs_count") // rdvs total in rdvsp services

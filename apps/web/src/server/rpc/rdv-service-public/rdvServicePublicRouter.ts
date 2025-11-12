@@ -203,6 +203,7 @@ export const rdvServicePublicRouter = router({
       // Returns the user with the updated rdvAccount
       return getSessionUserFromId(user.id)
     }),
+  // Refresh dashboard data ONLY FOR FAILED WEBHOOK INSTALLATIONS
   refreshDashboardRdvData: protectedProcedure
     .input(
       z.object({
@@ -215,10 +216,12 @@ export const rdvServicePublicRouter = router({
         userId,
       })
 
+      let hasDiff = false
       try {
-        await syncAllRdvData({
+        const result = await syncAllRdvData({
           user,
         })
+        hasDiff = result.drift > 0 || result.drift === result.webhooks.drift
       } catch (error) {
         await handleSynchronizationError({
           error,
@@ -226,10 +229,40 @@ export const rdvServicePublicRouter = router({
         })
       }
 
-      const data = await getDashboardRdvData({
+      const dashboardRdvData = await getDashboardRdvData({
         user,
       })
-      return data
+      return { dashboardRdvData, hasDiff }
+    }),
+  // Refresh RDVS ONLY FOR FAILED WEBHOOK INSTALLATIONS
+  refreshRdvData: protectedProcedure
+    .input(
+      z.object({
+        userId: z.string().uuid(),
+      }),
+    )
+    .mutation(async ({ ctx: { user: sessionUser }, input: { userId } }) => {
+      const { user, oAuthCallUser } = await getContextForSynchronization({
+        sessionUser,
+        userId,
+      })
+
+      let hasDiff = false
+      try {
+        const syncResult = await syncAllRdvData({
+          user,
+        })
+        hasDiff =
+          syncResult.drift > 0 || syncResult.drift === syncResult.webhooks.drift
+        return { syncResult, hasDiff }
+      } catch (error) {
+        await handleSynchronizationError({
+          error,
+          rdvAccountId: oAuthCallUser.rdvAccount.id,
+        })
+      }
+
+      return null
     }),
   oAuthApiCreateRdvPlan: protectedProcedure
     .input(OauthRdvApiCreateRdvPlanMutationInputValidation)

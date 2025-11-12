@@ -32,8 +32,10 @@ export const Accueil = ({
   isCoordinateurCoNum,
   isCoNum,
   timezone,
+  userId,
   rdvs,
 }: {
+  userId: string
   firstName: string | null
   name: string | null
   hasSeenOnboarding: string | null
@@ -72,16 +74,11 @@ export const Accueil = ({
 
       {rdvs && (
         <section className="fr-my-6w">
-          <Suspense
-            fallback={
-              <>
-                <RdvsHeader />
-                <Spinner />
-              </>
-            }
-          >
-            <Rdvs rdvs={rdvs} user={{ timezone }} />
-          </Suspense>
+          <Rdvs
+            rdvs={rdvs}
+            user={{ id: userId, timezone }}
+            syncDataOnLoad={rdvs.syncDataOnLoad}
+          />
         </section>
       )}
       {isMediateur && (

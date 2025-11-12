@@ -162,26 +162,34 @@ export const installWebhookForOrganisation = async ({
 export const installWebhooks = async ({
   rdvAccount,
   appendLog,
+  organisationIds,
 }: {
   rdvAccount: OauthRdvApiCredentialsWithOrganisations
   appendLog: AppendLog
+  organisationIds?: number[] // scopes the refresh to only these organisations, empty array means: no-op do nothing
 }): Promise<
   SyncModelResult & {
     count: number
-    invalidWebhookOrganisationIds: number[]
+    invalidWebhookOrganisationIds: number[] | null // null means we did not check for invalid webhooks
   }
 > => {
   appendLog(
     `installing webhooks for account ${rdvAccount.id} with ${rdvAccount.organisations.length} organisations`,
   )
   const webhookOperations = await Promise.all(
-    rdvAccount.organisations.map(async (organisation) => {
-      return installWebhookForOrganisation({
-        rdvAccount,
-        organisationId: organisation.organisationId,
-        appendLog,
-      })
-    }),
+    rdvAccount.organisations
+      .filter((organisation) =>
+        organisationIds
+          ? organisationIds.includes(organisation.organisationId)
+          : true,
+      )
+      .map(async (organisation) => {
+        return installWebhookForOrganisation({
+          rdvAccount,
+          organisationId: organisation.organisationId,
+          appendLog,
+        })
+      }),
   )
 
   const result: SyncModelResult = {
@@ -192,16 +200,21 @@ export const installWebhooks = async ({
       .length,
     deleted: 0,
   }
-  const invalidWebhookOrganisationIds = webhookOperations
-    .filter((op) => op.invalidInstallation)
-    .map((op) => op.organisationId)
 
-  await prismaClient.rdvAccount.update({
-    where: { id: rdvAccount.id },
-    data: {
-      invalidWebhookOrganisationIds,
-    },
-  })
+  // Only update invalid state if full sync was performed
+  let invalidWebhookOrganisationIds: number[] | null = null
+  if (!organisationIds) {
+    invalidWebhookOrganisationIds = webhookOperations
+      .filter((op) => op.invalidInstallation)
+      .map((op) => op.organisationId)
+
+    await prismaClient.rdvAccount.update({
+      where: { id: rdvAccount.id },
+      data: {
+        invalidWebhookOrganisationIds,
+      },
+    })
+  }
 
   return {
     ...result,

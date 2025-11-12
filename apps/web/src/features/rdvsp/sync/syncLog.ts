@@ -21,7 +21,7 @@ export type SyncResult = {
   users: SyncModelResult
   motifs: SyncModelResult
   lieux: SyncModelResult
-  invalidWebhookOrganisationIds: number[]
+  invalidWebhookOrganisationIds: number[] | undefined // undefined means we did not check for invalid webhooks
 }
 
 export const emptySyncResult: SyncResult = {
@@ -31,7 +31,7 @@ export const emptySyncResult: SyncResult = {
   users: emptySyncModelResult,
   motifs: emptySyncModelResult,
   lieux: emptySyncModelResult,
-  invalidWebhookOrganisationIds: [],
+  invalidWebhookOrganisationIds: undefined,
 }
 
 export type SyncModelResultWithDrift = SyncModelResult & {
