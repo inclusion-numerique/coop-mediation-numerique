@@ -6,9 +6,11 @@ import ActivitesListeLayout from '@app/web/features/activites/use-cases/list/com
 import { CoordinationFilterTags } from '@app/web/features/activites/use-cases/list/components/CoordinationFilterTags'
 import ExportActivitesCoordinationButton from '@app/web/features/activites/use-cases/list/components/ExportActivitesCoordinationButton'
 import { ActiviteCoordinationPeriodeFilter } from '@app/web/features/activites/use-cases/list/components/filters/ActiviteCoordinationPeriodeFilter'
+import { ActiviteCoordinationTagFilter } from '@app/web/features/activites/use-cases/list/components/filters/ActiviteCoordinationTagFilter'
 import { ActiviteCoordinationTypeFilter } from '@app/web/features/activites/use-cases/list/components/filters/ActiviteCoordinationTypeFilter'
 import { getCoordinationsDateRange } from '@app/web/features/activites/use-cases/list/db/getCoordinationsDateRange'
 import { getCoordinationsListPageData } from '@app/web/features/activites/use-cases/list/db/getCoordinationsListPageData'
+import { getCoordinationsTagsOptions } from '@app/web/features/activites/use-cases/list/db/getCoordinationsTagsOptions'
 import MesCoordinationsListePage from '@app/web/features/activites/use-cases/list/MesCoordinationsListePage'
 import { validateCoordinationsFilters } from '@app/web/features/activites/use-cases/list/validation/CoordinationsFilters'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
@@ -36,6 +38,7 @@ const MesCoordinationsPage = async ({
     ({ searchResult: { totalCount } }) => totalCount,
   )
 
+  const tagOptions = await getCoordinationsTagsOptions({ user })
   const dateRange = await getCoordinationsDateRange({ user })
   const now = new Date()
 
@@ -53,6 +56,11 @@ const MesCoordinationsPage = async ({
       value: type,
       label:
         TYPE_ACTIVITE_OPTIONS.find(({ value }) => type === value)?.label ?? '',
+    })),
+    ...searchParams.tags.map((tag) => ({
+      params: ['tags'],
+      value: tag,
+      label: `Tag : ${tagOptions.find(({ value }) => value === tag)?.label ?? tag}`,
     })),
   ]
 
@@ -72,6 +80,7 @@ const MesCoordinationsPage = async ({
             maxDate={new Date(dateRange._max.date ?? now)}
           />
           <ActiviteCoordinationTypeFilter />
+          <ActiviteCoordinationTagFilter tagOptions={tagOptions} />
         </div>
         <ExportActivitesCoordinationButton
           filters={filters}

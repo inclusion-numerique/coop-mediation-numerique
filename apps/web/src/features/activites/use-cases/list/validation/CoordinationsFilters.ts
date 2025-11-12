@@ -32,6 +32,10 @@ export const coordinationsFiltersSchema = z.object({
         ),
     )
     .optional(),
+  tags: z
+    .string()
+    .transform((type: string) => type.split(',').map((v) => v.trim()))
+    .optional(),
   du: z
     .preprocess(
       (val) => (val ? new Date(val as string) : undefined),
@@ -56,10 +60,12 @@ export type CoordinationsFilters = {
   page: number
   lignes: number
   types: ('Animation' | 'Evenement' | 'Partenariat')[]
+  tags: string[]
 }
 
 const DEFAULT_COORDINATION_FILTERS = {
   types: [],
+  tags: [],
   page: DEFAULT_PAGE,
   lignes: DEFAULT_PAGE_SIZE,
 }

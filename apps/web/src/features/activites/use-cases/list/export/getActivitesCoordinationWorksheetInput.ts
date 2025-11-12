@@ -54,6 +54,9 @@ const getActivitesCoordination = async ({
       ...((searchParams.types?.length ?? 0) > 0
         ? { type: { in: searchParams.types } }
         : {}),
+      ...((searchParams.tags?.length ?? 0) > 0
+        ? { tags: { some: { tagId: { in: searchParams.tags } } } }
+        : {}),
       ...(searchParams.du && searchParams.au
         ? {
             date: {

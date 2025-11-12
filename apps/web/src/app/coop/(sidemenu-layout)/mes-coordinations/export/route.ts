@@ -2,6 +2,7 @@ import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionT
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
 import { isCoordinateur } from '@app/web/auth/userTypeGuards'
 import { TYPE_ACTIVITE_OPTIONS } from '@app/web/features/activites/use-cases/cra/coordination/labels'
+import { getCoordinationsTagsOptions } from '@app/web/features/activites/use-cases/list/db/getCoordinationsTagsOptions'
 import { buildActivitesCoordinationWorksheet } from '@app/web/features/activites/use-cases/list/export/buildActivitesCoordinationWorksheet'
 import { getActivitesCoordinationWorksheetInput } from '@app/web/features/activites/use-cases/list/export/getActivitesCoordinationWorksheetInput'
 import { validateCoordinationsFilters } from '@app/web/features/activites/use-cases/list/validation/CoordinationsFilters'
@@ -25,6 +26,8 @@ export const GET = async (request: NextRequest) => {
     Object.fromEntries(request.nextUrl.searchParams.entries()),
   )
 
+  const tagOptions = await getCoordinationsTagsOptions({ user })
+
   const filters = [
     {
       label: 'Période',
@@ -40,6 +43,12 @@ export const GET = async (request: NextRequest) => {
           (type) =>
             TYPE_ACTIVITE_OPTIONS.find(({ value }) => type === value)?.label,
         )
+        .join(', '),
+    },
+    {
+      label: 'Tags',
+      value: searchParams.tags
+        .map((type) => tagOptions.find(({ value }) => type === value)?.label)
         .join(', '),
     },
   ]

@@ -62,40 +62,32 @@ export const getCoordinationsListPageData = async ({
   const { take, skip } = takeAndSkipFromPage({ page, pageSize })
 
   const hasTypesFilter = (searchParams.types?.length ?? 0) > 0
+  const hasTagsFilter = (searchParams.tags?.length ?? 0) > 0
+
+  const whereClause = {
+    coordinateurId: user.coordinateur.id,
+    suppression: null,
+    ...(hasTypesFilter ? { type: { in: searchParams.types } } : {}),
+    ...(hasTagsFilter
+      ? { tags: { some: { tagId: { in: searchParams.tags } } } }
+      : {}),
+    ...(searchParams.du && searchParams.au
+      ? {
+          date: {
+            gte: new Date(searchParams.du),
+            lte: new Date(searchParams.au),
+          },
+        }
+      : {}),
+  }
 
   const totalCount = await prismaClient.activiteCoordination.count({
-    where: {
-      coordinateurId: user.coordinateur.id,
-      suppression: null,
-      ...(hasTypesFilter ? { type: { in: searchParams.types } } : {}),
-      ...(searchParams.du && searchParams.au
-        ? {
-            date: {
-              gte: new Date(searchParams.du),
-              lte: new Date(searchParams.au),
-            },
-          }
-        : {}),
-    },
+    where: whereClause,
   })
 
   const activites = await prismaClient.activiteCoordination.findMany({
-    where: {
-      coordinateurId: user.coordinateur.id,
-      suppression: null,
-      ...(hasTypesFilter ? { type: { in: searchParams.types } } : {}),
-      ...(searchParams.du && searchParams.au
-        ? {
-            date: {
-              gte: new Date(searchParams.du),
-              lte: new Date(searchParams.au),
-            },
-          }
-        : {}),
-    },
-    orderBy: {
-      date: 'desc',
-    },
+    where: whereClause,
+    orderBy: [{ date: 'desc' }, { creation: 'desc' }],
     take,
     skip,
     select: {
@@ -176,7 +168,9 @@ export const getCoordinationsListPageData = async ({
       totalCount,
       totalPages: Math.ceil(totalCount / pageSize),
       isFiltered:
-        hasTypesFilter || (searchParams.du != null && searchParams.au != null),
+        hasTypesFilter ||
+        hasTagsFilter ||
+        (searchParams.du != null && searchParams.au != null),
     },
     searchParams: {
       page: searchParams.page?.toString(),
