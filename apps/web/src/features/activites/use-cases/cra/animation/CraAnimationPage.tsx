@@ -48,9 +48,9 @@ const CraAnimationPage = ({
         leurs structures en leur apportant des informations clés.
       </p>
       <RequiredFieldsDisclamer
-        className="fr-mb-12v wip"
+        className="fr-mb-12v"
         helpLink={{
-          href: 'https://docs.numerique.gouv.fr/docs/',
+          href: 'https://docs.numerique.gouv.fr/docs/94c9fa9c-32db-499f-bfed-3645ca8b4246/',
           text: 'En savoir plus sur comment compléter un CRA',
         }}
       />
