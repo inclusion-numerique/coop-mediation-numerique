@@ -13,22 +13,22 @@ type CraCoordinationData =
 
 const craDefaultValues = (
   coordinateurId: string,
-  stateFromUrl: DefaultValues<CraCoordinationData>,
+  defaultValues: DefaultValues<CraCoordinationData>,
 ) => ({
-  ...stateFromUrl,
-  date: stateFromUrl.date ?? new Date().toISOString().slice(0, 10),
+  ...defaultValues,
+  date: defaultValues.date ?? new Date().toISOString().slice(0, 10),
   coordinateurId,
-  duree: (stateFromUrl as CraAnimationData).duree ?? {},
-  tags: stateFromUrl.tags ?? [],
+  duree: (defaultValues as CraAnimationData).duree ?? {},
+  tags: defaultValues.tags ?? [],
 })
 
 export const getCraCoordinationPageData = async (
   coordinateurId: string,
-  stateFromUrl: DefaultValues<CraCoordinationData>,
+  initialDefaultValues: DefaultValues<CraCoordinationData>,
 ) => {
   const defaultValues: DefaultValues<CraCoordinationData> & {
     coordinateurId: string
-  } = craDefaultValues(coordinateurId, stateFromUrl)
+  } = craDefaultValues(coordinateurId, initialDefaultValues)
 
   const initialTagsOptions = (
     await searchTags({

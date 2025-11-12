@@ -24,10 +24,10 @@ const CreateCraPartenariatPage = async ({
 
   const stateFromUrl = v ? decodeSerializableState(v, {}) : {}
 
-  const craPageData = await getCraCoordinationPageData(
-    coordinateurId,
-    stateFromUrl,
-  )
+  const craPageData = await getCraCoordinationPageData(coordinateurId, {
+    structuresPartenaires: [{}],
+    ...stateFromUrl,
+  })
 
   return (
     <CraPartenariatPage
