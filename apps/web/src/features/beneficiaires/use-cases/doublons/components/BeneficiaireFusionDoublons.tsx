@@ -171,7 +171,7 @@ const BeneficiaireFusionDoublons = ({
           </label>
         </div>
 
-        {selectedCount !== 0 && (
+        {selectedCount !== 0 ? (
           <Button
             type="button"
             onClick={executeFusion}
@@ -179,6 +179,10 @@ const BeneficiaireFusionDoublons = ({
           >
             Fusionner {numberToString(selectedCount)} doublon
             {sPluriel(selectedCount)}
+          </Button>
+        ) : (
+          <Button type="button" disabled>
+            Fusionner
           </Button>
         )}
       </div>
