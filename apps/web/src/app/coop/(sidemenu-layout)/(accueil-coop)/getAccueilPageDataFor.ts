@@ -91,52 +91,48 @@ export const getAccueilPageDataFor = async (
     UserTimezone &
     UserMediateur,
 ) => {
-  const [mediateurs, dashboardRdvData, lastActivitesWithoutTimezone,activitesCoordinationByQuarter] =
-    await Promise.all([
-      countMediateursCoordonnesBy(user.coordinateur),
-      getDashboardRdvDataFor(user),
-      user.mediateur?.id != null
-        ? prismaClient.activite.findMany({
-            where: {
-              mediateurId: user.mediateur.id,
-              suppression: null,
-            },
+  const [
+    mediateurs,
+    dashboardRdvData,
+    lastActivitesWithoutTimezone,
+    activitesCoordinationByQuarter,
+  ] = await Promise.all([
+    countMediateursCoordonnesBy(user.coordinateur),
+    getDashboardRdvDataFor(user),
+    user.mediateur?.id != null
+      ? prismaClient.activite.findMany({
+          where: {
+            mediateurId: user.mediateur.id,
+            suppression: null,
+          },
 
-            select: activiteListSelect,
-            orderBy: {
-              creation: 'desc',
-            },
-            take: 3,
-          })
-        : null,
-      user.coordinateur?.id == null
-        ? {}
-        : (
-          await getActivitesCoordinationByQuarter(user.coordinateur.id))
-    ])
+          select: activiteListSelect,
+          orderBy: {
+            creation: 'desc',
+          },
+          take: 3,
+        })
+      : null,
+    user.coordinateur?.id == null
+      ? {}
+      : await getActivitesCoordinationByQuarter(user.coordinateur.id),
+  ])
 
-  if (lastActivitesWithoutTimezone != null) {
-    const activites = lastActivitesWithoutTimezone
-      .map(addTimezoneToActivite(user))
-      .map((activite) => ({
-        ...activite,
-        rdv: activite.rdv ? addRdvBadgeStatus(activite.rdv) : null,
-      }))
-
-    // Return rdvs for dashboard info if user has a valid rdv account
-    return {
-      mediateurs,
-      activites,
-      rdvs: dashboardRdvData,
-    }
-  }
+  const activites = lastActivitesWithoutTimezone
+    ? lastActivitesWithoutTimezone
+        .map(addTimezoneToActivite(user))
+        .map((activite) => ({
+          ...activite,
+          rdv: activite.rdv ? addRdvBadgeStatus(activite.rdv) : null,
+        }))
+    : []
 
   return {
     mediateurs,
-    activites: [],
-    rdvs: null,
+    activites,
+    rdvs: dashboardRdvData,
     activitesCoordinationByQuarter,
-    syncDataOnLoad: false,
+    syncDataOnLoad: dashboardRdvData ? dashboardRdvData.syncDataOnLoad : false,
   }
 }
 
