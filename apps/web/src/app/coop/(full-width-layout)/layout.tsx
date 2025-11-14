@@ -14,7 +14,10 @@ const CoopFullWidthLayout = async ({
     <div className="fr-layout__inner">
       <Header user={user} fullWidth variant="coop" />
       <div className="fr-layout__main">{children}</div>
-      <CreateCraModal />
+      <CreateCraModal
+        isCoordinateur={user.coordinateur?.id != null}
+        isMediateur={user.mediateur?.id != null}
+      />
       <MinimalFooter />
     </div>
   )

@@ -13,6 +13,50 @@ import type {
   UserRdvAccount,
   UserTimezone,
 } from '@app/web/utils/user'
+import { getQuarter } from 'date-fns'
+
+type ActiviteType = 'Evenement' | 'Partenariat' | 'Animation'
+
+type ActiviteCount = { type: ActiviteType; count: number }
+
+type ActiviteGrouped = Record<string, ActiviteCount[]>
+
+const ACTIVITE_TYPES: ActiviteType[] = ['Evenement', 'Partenariat', 'Animation']
+
+const initCounts = (): ActiviteCount[] =>
+  ACTIVITE_TYPES.map((type) => ({ type, count: 0 }))
+
+const increment =
+  (type: ActiviteType) =>
+  (activiteCounts?: ActiviteCount[]): ActiviteCount[] =>
+    (activiteCounts ?? initCounts()).map((activiteCount) =>
+      activiteCount.type === type
+        ? { ...activiteCount, count: activiteCount.count + 1 }
+        : activiteCount,
+    )
+
+const quarterKey = (date: Date) => `${date.getFullYear()}-q${getQuarter(date)}`
+
+export const getActivitesCoordinationByQuarter = async (
+  coordinateurId: string,
+): Promise<ActiviteGrouped> => {
+  const activites = await prismaClient.activiteCoordination.findMany({
+    where: { coordinateurId, suppression: null },
+    select: { type: true, date: true },
+  })
+
+  return activites.reduce<ActiviteGrouped>(
+    (acc, { date, type }) => {
+      const key = quarterKey(new Date(date))
+      return {
+        ...acc,
+        [key]: increment(type)(acc[key]),
+        all: increment(type)(acc.all),
+      }
+    },
+    { all: initCounts() },
+  )
+}
 
 /**
  * Only here for correct typings for the user parameter
@@ -47,47 +91,48 @@ export const getAccueilPageDataFor = async (
     UserTimezone &
     UserMediateur,
 ) => {
-  const [mediateurs, dashboardRdvData, lastActivitesWithoutTimezone] =
-    await Promise.all([
-      countMediateursCoordonnesBy(user.coordinateur),
-      getDashboardRdvDataFor(user),
-      user.mediateur?.id != null
-        ? prismaClient.activite.findMany({
-            where: {
-              mediateurId: user.mediateur.id,
-              suppression: null,
-            },
+  const [
+    mediateurs,
+    dashboardRdvData,
+    lastActivitesWithoutTimezone,
+    activitesCoordinationByQuarter,
+  ] = await Promise.all([
+    countMediateursCoordonnesBy(user.coordinateur),
+    getDashboardRdvDataFor(user),
+    user.mediateur?.id != null
+      ? prismaClient.activite.findMany({
+          where: {
+            mediateurId: user.mediateur.id,
+            suppression: null,
+          },
 
-            select: activiteListSelect,
-            orderBy: {
-              creation: 'desc',
-            },
-            take: 3,
-          })
-        : null,
-    ])
+          select: activiteListSelect,
+          orderBy: {
+            creation: 'desc',
+          },
+          take: 3,
+        })
+      : null,
+    user.coordinateur?.id == null
+      ? {}
+      : await getActivitesCoordinationByQuarter(user.coordinateur.id),
+  ])
 
-  if (lastActivitesWithoutTimezone != null) {
-    const activites = lastActivitesWithoutTimezone
-      .map(addTimezoneToActivite(user))
-      .map((activite) => ({
-        ...activite,
-        rdv: activite.rdv ? addRdvBadgeStatus(activite.rdv) : null,
-      }))
-
-    // Return rdvs for dashboard info if user has a valid rdv account
-    return {
-      mediateurs,
-      activites,
-      rdvs: dashboardRdvData,
-    }
-  }
+  const activites = lastActivitesWithoutTimezone
+    ? lastActivitesWithoutTimezone
+        .map(addTimezoneToActivite(user))
+        .map((activite) => ({
+          ...activite,
+          rdv: activite.rdv ? addRdvBadgeStatus(activite.rdv) : null,
+        }))
+    : []
 
   return {
     mediateurs,
-    activites: [],
-    rdvs: null,
-    syncDataOnLoad: false,
+    activites,
+    rdvs: dashboardRdvData,
+    activitesCoordinationByQuarter,
+    syncDataOnLoad: dashboardRdvData ? dashboardRdvData.syncDataOnLoad : false,
   }
 }
 

@@ -22,7 +22,10 @@ const CoopSidemenuLayout = async ({
           {children}
         </div>
       </div>
-      <CreateCraModal />
+      <CreateCraModal
+        isMediateur={user.mediateur?.id != null}
+        isCoordinateur={user.coordinateur?.id != null}
+      />
       <MinimalFooter />
     </>
   )

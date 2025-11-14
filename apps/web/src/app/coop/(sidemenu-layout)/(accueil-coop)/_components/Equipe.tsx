@@ -11,34 +11,31 @@ const EquipeCount = ({
   count: number
   icon: string
 }) => (
-  <div
-    style={{ flex: '1 1 0px' }}
-    className="fr-background-default--grey fr-border-radius--8 fr-p-3w"
-  >
-    <div className="fr-flex fr-flex-gap-3v fr-align-items-end">
-      {icon.startsWith('/') ? (
-        <img
-          className="fr-background-alt--brown-caramel-950 fr-p-3v fr-border-radius--8 fr-line-height-1"
-          alt=""
-          src={icon}
-        />
-      ) : (
-        <span
-          className={classNames(
-            icon,
-            'ri-lg fr-background-alt--brown-caramel-950 fr-text-label--blue-france fr-p-3v fr-border-radius--8 fr-line-height-1',
-          )}
-          aria-hidden
-        />
-      )}
-      <span className="fr-h2 fr-mb-0">{count}</span>
+  <div className="fr-background-alt--brown-caramel fr-border-radius--8 fr-px-6v fr-py-4v fr-flex fr-justify-content-space-between fr-flex-1 fr-flex-gap-3v">
+    <div>
+      <div className="fr-text--sm fr-mb-0">{label}</div>
+      <div className="fr-text--semi-bold fr-mb-0">{count}</div>
     </div>
-    <div className="fr-mt-2w fr-text--semi-bold">{label}</div>
+    {icon.startsWith('/') ? (
+      <img
+        className="fr-background-default--grey fr-p-3v fr-border-radius--8 fr-line-height-1"
+        alt=""
+        src={icon}
+      />
+    ) : (
+      <span
+        className={classNames(
+          icon,
+          'ri-lg fr-background-default--grey fr-text-label--blue-france fr-p-3v fr-border-radius--8 fr-line-height-1',
+        )}
+        aria-hidden
+      />
+    )}
   </div>
 )
 
 export const Equipe = ({
-  mediateurs: { total, conseillersNumeriques, mediateursNumeriques },
+  mediateurs: { conseillersNumeriques, mediateursNumeriques },
 }: {
   mediateurs: {
     total: number
@@ -64,12 +61,7 @@ export const Equipe = ({
         Voir mon équipe
       </Button>
     </div>
-    <div className="fr-background-alt--brown-caramel-950 fr-border-radius--8 fr-flex fr-p-3w fr-flex-gap-6v fr-direction-lg-row fr-direction-column">
-      <EquipeCount
-        label="Membres au total"
-        count={total}
-        icon="ri-group-2-line"
-      />
+    <div className="fr-flex fr-flex-gap-6v fr-direction-lg-row fr-direction-column">
       <EquipeCount
         label="Conseillers numériques"
         count={conseillersNumeriques}

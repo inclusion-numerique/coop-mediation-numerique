@@ -38,6 +38,10 @@
   text-transform: uppercase !important;
 }
 
+.fr-text--capitalize {
+  text-transform: capitalize !important;
+}
+
 .fr-whitespace-nowrap {
   white-space: nowrap;
 }

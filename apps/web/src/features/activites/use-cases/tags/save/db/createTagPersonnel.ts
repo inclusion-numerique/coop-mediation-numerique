@@ -1,6 +1,20 @@
 import { SessionUser } from '@app/web/auth/sessionUser'
+import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
 import { prismaClient } from '@app/web/prismaClient'
-import { enforceIsMediateur } from '@app/web/server/rpc/enforceIsMediateur'
+
+const createTag = async (data: {
+  nom: string
+  description?: string | null
+  mediateurId?: string
+  coordinateurId?: string
+}) => {
+  return prismaClient.tag.create({
+    data: {
+      ...data,
+      departement: null,
+    },
+  })
+}
 
 export const createTagPersonnel =
   (sessionUser: SessionUser) =>
@@ -11,18 +25,13 @@ export const createTagPersonnel =
     nom: string
     description?: string | null
   }) => {
-    enforceIsMediateur(sessionUser)
-    const tag = await prismaClient.tag.create({
-      data: {
-        nom,
-        description,
-        mediateurId: sessionUser.mediateur.id,
-      },
-    })
+    const data = { nom, description }
 
-    return {
-      id: tag.id,
-      nom: tag.nom,
-      description: tag.description,
-    }
+    if (isMediateur(sessionUser))
+      return createTag({ ...data, mediateurId: sessionUser.mediateur.id })
+
+    if (isCoordinateur(sessionUser))
+      return createTag({ ...data, coordinateurId: sessionUser.coordinateur.id })
+
+    throw new Error('User not allowed to create tag')
   }

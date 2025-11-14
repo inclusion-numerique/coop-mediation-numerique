@@ -1,5 +1,4 @@
 import { prismaClient } from '@app/web/prismaClient'
-import { createStopwatch } from '@app/web/utils/stopwatch'
 import { Prisma } from '@prisma/client'
 
 export const getFirstAndLastActiviteDate = async ({

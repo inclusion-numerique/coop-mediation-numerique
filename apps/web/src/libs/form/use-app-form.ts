@@ -6,6 +6,12 @@ import { fieldContext, formContext } from './form-context'
 
 export type DefaultValues<T> = { [K in keyof T]?: DefaultValues<T[K]> }
 
+const Calendar = lazy(() =>
+  import('./fields-components/Calendar').then((module) => ({
+    default: module.Calendar,
+  })),
+)
+
 const Checkbox = lazy(() =>
   import('./fields-components/Checkbox').then((module) => ({
     default: module.Checkbox,
@@ -44,11 +50,17 @@ const Select = lazy(() =>
   })),
 )
 
+const MultiSelect = lazy(() =>
+  import('./fields-components/MultiSelect').then((module) => ({
+    default: module.default,
+  })),
+)
+
 const SelectedItems = lazy(() =>
   import('./fields-components/SelectedItems').then((module) => ({
     default: module.SelectedItems,
   })),
-) as <TItem extends object>(props: SelectedItemProps<TItem>) => ReactNode
+) as <TItem>(props: SelectedItemProps<TItem>) => ReactNode
 
 const Stepper = lazy(() =>
   import('./fields-components/Stepper').then((module) => ({
@@ -72,12 +84,14 @@ export const { useAppForm, withForm } = createFormHook({
   fieldContext,
   formContext,
   fieldComponents: {
+    Calendar,
     Checkbox,
     ComboBox,
     Input,
     RadioButtons,
     RichTextarea,
     Select,
+    MultiSelect,
     SelectedItems,
     Stepper,
     StepperStacked,

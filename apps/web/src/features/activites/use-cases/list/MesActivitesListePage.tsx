@@ -31,12 +31,12 @@ const SuspensedContent = async ({
   return (
     <>
       <div className="fr-flex fr-align-items-center fr-justify-content-space-between fr-width-full fr-my-6v">
-        <p className="fr-text--bold fr-text--lg fr-mb-0">
+        <h2 className="fr-text--bold fr-text--lg fr-mb-0">
           {getActivitesResultCountLabel({
             isFiltered,
             searchResult,
           })}
-        </p>
+        </h2>
         {hasRdvIntegration && user.rdvAccount && (
           <UpdateIncludeRdvsInActivitesList
             rdvAccountId={user.rdvAccount.id}
@@ -90,11 +90,9 @@ const MesActivitesListePage = ({
 }: {
   data: Promise<ActivitesListPageData>
 }) => (
-  <>
-    <Suspense fallback={<Spinner className="fr-mt-6v" />}>
-      <SuspensedContent data={data} />
-    </Suspense>
-  </>
+  <Suspense fallback={<Spinner className="fr-mt-6v" />}>
+    <SuspensedContent data={data} />
+  </Suspense>
 )
 
 export default MesActivitesListePage

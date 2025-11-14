@@ -6,9 +6,10 @@ export enum TagScope {
 
 export const getTagScope = (tag: {
   mediateurId: string | null
+  coordinateurId: string | null
   departement: string | null
 }) => {
-  if (tag.mediateurId) return TagScope.Personnel
+  if (tag.mediateurId || tag.coordinateurId) return TagScope.Personnel
   if (tag.departement) return TagScope.Departemental
   return TagScope.National
 }

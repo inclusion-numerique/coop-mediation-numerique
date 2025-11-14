@@ -433,6 +433,7 @@ export const createOrUpdateActivite = async ({
           activiteId: existingActivite.id,
         },
       })
+
       await transaction.activitesTags.createMany({
         data: input.data.tags.map((tag) => ({
           activiteId: existingActivite.id,

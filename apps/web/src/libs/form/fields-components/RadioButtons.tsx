@@ -69,6 +69,7 @@ export const RadioButtons = ({
   legend,
   options,
   className,
+  classes,
   ...props
 }: RadioButtonsProps) => {
   const { name, state, handleBlur, handleChange, form } =
@@ -81,9 +82,14 @@ export const RadioButtons = ({
       state={hasErrors ? 'error' : undefined}
       stateRelatedMessage={hasErrors ? errors[0].message : undefined}
       className={classNames(isTiled ? 'fr-radio-buttons' : '', className)}
-      legend={
-        <span className="fr-label fr-text--medium fr-mb-2v">{legend}</span>
-      }
+      legend={<span className="fr-label fr-text--medium">{legend}</span>}
+      classes={{
+        ...classes,
+        content: classNames(
+          classes?.content,
+          props.hintText ? 'fr-mt-1v' : 'fr-mt-0',
+        ),
+      }}
       disabled={isPending}
       name={name}
       options={options.map((option) => ({
