@@ -9,7 +9,6 @@ import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import type { DuplicateBeneficiaire } from '@app/web/features/beneficiaires/db/findDuplicateForBeneficiaire'
 import type { BeneficiaireCraData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
-import { hasFeatureFlag } from '@app/web/security/hasFeatureFlag'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { Beneficiaire } from '@prisma/client'
 import classNames from 'classnames'
@@ -23,7 +22,7 @@ const ViewBeneficiaireLayout = ({
   children,
   duplicates,
 }: PropsWithChildren<{
-  user: SessionUser
+  user: Pick<SessionUser, 'id' | 'rdvAccount'>
   beneficiaire: Pick<
     Beneficiaire,
     'id' | 'prenom' | 'nom' | 'anneeNaissance' | 'mediateurId' | 'telephone'
@@ -39,11 +38,7 @@ const ViewBeneficiaireLayout = ({
     nom: nom ?? '',
   } satisfies BeneficiaireCraData
 
-  const canPrendreRendezVous =
-    !!user && hasFeatureFlag(user, 'RdvServicePublic')
-
-  const hasRdvIntegration =
-    canPrendreRendezVous && user.rdvAccount?.hasOauthTokens
+  const hasRdvIntegration = user.rdvAccount?.hasOauthTokens
 
   return (
     <CoopPageContainer size={49}>
@@ -64,7 +59,7 @@ const ViewBeneficiaireLayout = ({
         <div
           className={classNames(
             'fr-width-full fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-8v',
-            canPrendreRendezVous ? 'fr-mb-2v' : 'fr-mb-4v',
+            hasRdvIntegration ? 'fr-mb-2v' : 'fr-mb-4v',
           )}
         >
           <div>
