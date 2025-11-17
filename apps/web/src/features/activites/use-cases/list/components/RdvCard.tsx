@@ -5,13 +5,12 @@ import {
   dateAsDayInTimeZone,
   dateAsTimeInTimeZone,
 } from '@app/web/utils/dateAsDayAndTime'
-import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { numberToString } from '@app/web/utils/formatNumber'
 import { UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 import Button from '@codegouvfr/react-dsfr/Button'
 import ActiviteCardSpacer from './ActiviteCardSpacer'
-import ActiviteOrRdvListCard from './ActiviteOrRdvListCard'
 import CraFromRdvButton from './CraFromRdvButton'
+import ListCard from './ListCard'
 import RdvStatusBadge from './RdvStatusBadge'
 
 const RdvCard = ({
@@ -54,7 +53,7 @@ const RdvCard = ({
   const canCompleteCra = status === 'seen'
 
   return (
-    <ActiviteOrRdvListCard
+    <ListCard
       pictogram={RDVServicePublicLogo}
       enlargeLink
       contentTop={

@@ -72,7 +72,9 @@
     box-shadow: 0 0 0 2px #0a76f6;
   }
 
-  .fr-radio-group input[type="radio"] + label::before {
+  .fr-radio-group:not(.fr-radio-group--vertical-center)
+    input[type="radio"]
+    + label::before {
     background-image: none;
     background-color: transparent;
   }
@@ -87,5 +89,12 @@
 
   &.fr-fieldset--error .fr-radio-rich input[type="radio"] + label {
     background-image: none;
+  }
+}
+
+.fr-radio-group.fr-radio-group--vertical-center {
+  input[type="radio"] + label {
+    /* Centrer le background-image verticalement au lieu de .25rem depuis le haut */
+    background-position: 0 center !important;
   }
 }

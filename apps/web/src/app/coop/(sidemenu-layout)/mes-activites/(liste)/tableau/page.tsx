@@ -1,9 +1,10 @@
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
+import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
 import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFiltersOptionsForMediateur'
 import type { ActivitesDataTableSearchParams } from '@app/web/features/activites/use-cases/list/components/ActivitesDataTable'
+import ActivitesListeLayout from '@app/web/features/activites/use-cases/list/components/ActivitesListeLayout'
 import MesActivitesListeEmptyPage from '@app/web/features/activites/use-cases/list/components/MesActivitesListeEmptyPage'
 import MesActivitesListeHeader from '@app/web/features/activites/use-cases/list/components/MesActivitesListeHeader'
-import MesActivitesListeLayout from '@app/web/features/activites/use-cases/list/components/MesActivitesListeLayout'
 import { mediateurHasActivites } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { getWidestActiviteDatesRange } from '@app/web/features/activites/use-cases/list/db/getWidestActiviteDatesRange'
 import { getActivitesListPageData } from '@app/web/features/activites/use-cases/list/getActivitesListPageData'
@@ -65,7 +66,15 @@ const MesActivitesVueTableauPage = async ({
     )
 
     return (
-      <MesActivitesListeLayout vue="tableau">
+      <ActivitesListeLayout
+        vue="tableau"
+        href="/coop/mes-activites"
+        subtitle={
+          isCoordinateur(user) && isMediateur(user)
+            ? 'Médiation numérique'
+            : undefined
+        }
+      >
         <MesActivitesListeHeader
           searchResultMatchesCount={searchResultMatchesCount}
           defaultFilters={searchParams}
@@ -80,14 +89,14 @@ const MesActivitesVueTableauPage = async ({
           activiteSourceOptions={activiteSourceOptions}
         />
         <MesActivitesTableauPage data={data} />
-      </MesActivitesListeLayout>
+      </ActivitesListeLayout>
     )
   }
 
   return (
-    <MesActivitesListeLayout vue="tableau">
+    <ActivitesListeLayout vue="tableau" href="/coop/mes-activites">
       <MesActivitesListeEmptyPage />
-    </MesActivitesListeLayout>
+    </ActivitesListeLayout>
   )
 }
 

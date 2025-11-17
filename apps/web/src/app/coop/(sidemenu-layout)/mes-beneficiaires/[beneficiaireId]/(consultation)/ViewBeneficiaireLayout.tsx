@@ -7,23 +7,28 @@ import { SessionUser } from '@app/web/auth/sessionUser'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import type { DuplicateBeneficiaire } from '@app/web/features/beneficiaires/db/findDuplicateForBeneficiaire'
 import type { BeneficiaireCraData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
 import { hasFeatureFlag } from '@app/web/security/hasFeatureFlag'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { Beneficiaire } from '@prisma/client'
 import classNames from 'classnames'
+import Link from 'next/link'
 import type { PropsWithChildren } from 'react'
+import BeneficiairePageRefreshRdvs from './BeneficiairePageRefreshRdvs'
 
 const ViewBeneficiaireLayout = ({
   beneficiaire,
   user,
   children,
+  duplicates,
 }: PropsWithChildren<{
   user: SessionUser
   beneficiaire: Pick<
     Beneficiaire,
-    'id' | 'prenom' | 'nom' | 'anneeNaissance' | 'mediateurId'
+    'id' | 'prenom' | 'nom' | 'anneeNaissance' | 'mediateurId' | 'telephone'
   >
+  duplicates: DuplicateBeneficiaire[]
 }>) => {
   const displayName = getBeneficiaireDisplayName(beneficiaire)
   const { anneeNaissance, id: beneficiaireId, nom, prenom } = beneficiaire
@@ -71,6 +76,23 @@ const ViewBeneficiaireLayout = ({
                 Année de naissance&nbsp;: {anneeNaissance}
               </p>
             )}
+            {duplicates.length > 0 && (
+              <Link
+                href="/coop/mes-beneficiaires/doublons"
+                className="fr-link--no-underline fr-text--xs fr-text-default--info fr-mb-0 fr-mt-2v fr-text--info fr-background-contrast--info fr-border-radius--4 fr-px-1-5v fr-inline-flex fr-align-items-center fr-text-blue-france-925"
+              >
+                <span className="fr-icon--xs fr-icon-error-warning-line fr-mr-1v" />{' '}
+                <span
+                  style={{
+                    textDecoration: 'underline',
+                    textDecorationThickness: '1px',
+                    textUnderlineOffset: '2px',
+                  }}
+                >
+                  Doublon potentiel détecté
+                </span>
+              </Link>
+            )}
           </div>
           {!hasRdvIntegration && (
             <div className="fr-flex fr-flex-gap-4v fr-flex-nowrap fr-flex-shrink-0">
@@ -104,6 +126,10 @@ const ViewBeneficiaireLayout = ({
           displayName={displayName}
         />
       </main>
+      {user.rdvAccount?.hasOauthTokens &&
+        user.rdvAccount?.invalidWebhookOrganisationIds.length > 0 && (
+          <BeneficiairePageRefreshRdvs userId={user.id} syncDataOnLoad={true} />
+        )}
     </CoopPageContainer>
   )
 }

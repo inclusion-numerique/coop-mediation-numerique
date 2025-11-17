@@ -9,6 +9,7 @@ describe('syncLog', () => {
       users: { noop: 8, created: 2, updated: 0, deleted: 0 },
       motifs: { noop: 10, created: 0, updated: 0, deleted: 0 },
       lieux: { noop: 1, created: 1, updated: 2, deleted: 2 },
+      invalidWebhookOrganisationIds: [1, 2, 3],
     }
 
     const syncResultWithDrift = computeSyncDrift(syncResult)

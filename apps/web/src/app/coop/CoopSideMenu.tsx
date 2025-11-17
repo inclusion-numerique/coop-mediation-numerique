@@ -17,6 +17,55 @@ const onlyFor =
   ({ mediateurOnly }: { mediateurOnly?: true }) =>
     (mediateurOnly && user.mediateur?.id != null) || !mediateurOnly
 
+const mesActivitesItemTitle = (
+  <>
+    <span
+      className="ri-service-line ri-xl fr-mr-1w fr-text--regular"
+      aria-hidden
+    />
+    Mes activités
+  </>
+)
+
+const activiteLink = (pathname?: string) => (href: string) => ({
+  linkProps: { href },
+  isActive: pathname?.startsWith(href),
+})
+
+const coordinationItem = (
+  user: SessionUser,
+  pathname?: string,
+): SideMenuProps.Item => {
+  if (user.coordinateur?.id == null) {
+    return {
+      text: mesActivitesItemTitle,
+      ...activiteLink(pathname)('/coop/mes-activites'),
+    }
+  }
+
+  if (user.mediateur?.id == null) {
+    return {
+      text: mesActivitesItemTitle,
+      ...activiteLink(pathname)('/coop/mes-coordinations'),
+    }
+  }
+
+  return {
+    text: mesActivitesItemTitle,
+    expandedByDefault: true,
+    items: [
+      {
+        text: 'Médiation numérique',
+        ...activiteLink(pathname)('/coop/mes-activites'),
+      },
+      {
+        text: 'Coordination',
+        ...activiteLink(pathname)('/coop/mes-coordinations'),
+      },
+    ],
+  }
+}
+
 const CoopSideMenu = ({ user }: { user: SessionUser }) => {
   const pathname = usePathname()
 
@@ -52,20 +101,7 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
       },
       isActive: pathname?.startsWith('/coop/mes-statistiques'),
     },
-    {
-      text: (
-        <>
-          <span
-            className="ri-service-line ri-xl fr-mr-1w fr-text--regular"
-            aria-hidden
-          />
-          Mes activités
-        </>
-      ),
-      linkProps: { href: '/coop/mes-activites' },
-      isActive: pathname?.startsWith('/coop/mes-activites'),
-      mediateurOnly: true,
-    },
+    coordinationItem(user, pathname),
     {
       text: (
         <>
@@ -125,7 +161,6 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
       ),
       linkProps: undefined as unknown as { href: string },
       isActive: false,
-      mediateurOnly: true,
     },
     {
       text: (

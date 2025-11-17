@@ -1,10 +1,12 @@
-import { getUserAccountStatus } from '@app/web/features/utilisateurs/use-cases/list/getUserAccountStatus'
-import { UtilisateurForList } from '@app/web/features/utilisateurs/use-cases/list/queryUtilisateursForList'
+import {
+  getUserAccountStatus,
+  type UserAccountStatusInput,
+} from '@app/web/features/utilisateurs/use-cases/list/getUserAccountStatus'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import { ReactNode } from 'react'
 
 export const getUserAccountStatusBadge = (
-  user: UtilisateurForList,
+  user: UserAccountStatusInput,
 ): ReactNode => {
   const accountStatus = getUserAccountStatus(user)
 

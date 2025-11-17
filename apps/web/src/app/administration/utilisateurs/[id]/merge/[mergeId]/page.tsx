@@ -45,7 +45,13 @@ const Page = async (props: {
         <AdministrationTitle icon="fr-icon-git-merge-line">
           Fusionner {mergeData.mergeTarget.name} avec un autre utilisateur
         </AdministrationTitle>
-        <MergeWithUser userId={id} defaultMergeUser={mergeData.mergeSource} />
+        <MergeWithUser
+          userId={id}
+          defaultMergeUser={{
+            ...mergeData.mergeSource,
+            deleted: mergeData.mergeSource.deleted?.toISOString() ?? null,
+          }}
+        />
         <div className="fr-flex fr-flex-gap-6v fr-mb-6v fr-direction-lg-row fr-direction-column">
           <div className="fr-border-radius--8 fr-border fr-p-8v fr-width-full">
             <MergePreview

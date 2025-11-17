@@ -1,8 +1,8 @@
 import { testSessionUser } from '@app/web/test/testSessionUser'
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
+import ActivitesListeLayout from './components/ActivitesListeLayout'
 import MesActivitesListeEmptyPage from './components/MesActivitesListeEmptyPage'
-import MesActivitesListeLayout from './components/MesActivitesListeLayout'
 import { ActivitesListPageData } from './getActivitesListPageData'
 import MesActivitesTableauPage from './MesActivitesTableauPage'
 import {
@@ -11,15 +11,15 @@ import {
 } from './storybook/ActiviteDetailsStoriesData'
 
 const TemplateTableau = ({ data }: { data: ActivitesListPageData }) => (
-  <MesActivitesListeLayout vue="tableau">
+  <ActivitesListeLayout vue="tableau" href="/coop/mes-activites">
     <MesActivitesTableauPage data={Promise.resolve(data)} />
-  </MesActivitesListeLayout>
+  </ActivitesListeLayout>
 )
 
 const TemplateEmpty = () => (
-  <MesActivitesListeLayout vue="tableau" empty>
+  <ActivitesListeLayout vue="tableau" href="/coop/mes-activites" empty>
     <MesActivitesListeEmptyPage />
-  </MesActivitesListeLayout>
+  </ActivitesListeLayout>
 )
 
 const meta: Meta<typeof MesActivitesTableauPage> = {

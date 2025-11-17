@@ -2,6 +2,10 @@
   font-weight: 500 !important;
 }
 
+.fr-text-disabled-grey {
+  color: var(--text-disabled-grey) !important;
+}
+
 .fr-text--center {
   text-align: center;
 }
@@ -32,6 +36,10 @@
 
 .fr-text--uppercase {
   text-transform: uppercase !important;
+}
+
+.fr-text--capitalize {
+  text-transform: capitalize !important;
 }
 
 .fr-whitespace-nowrap {

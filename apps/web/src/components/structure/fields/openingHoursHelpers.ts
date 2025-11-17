@@ -48,5 +48,7 @@ export const appendComment = (
 ) =>
   [
     osmOpeningHours,
-    ...((comment?.length ?? 0) > 1 ? [`"${comment?.replace('"', "'")}"`] : []),
+    ...((comment?.length ?? 0) > 1
+      ? [`"${comment?.replaceAll('"', "'")}"`]
+      : []),
   ].join(' ')

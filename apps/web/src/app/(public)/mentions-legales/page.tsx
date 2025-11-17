@@ -35,8 +35,8 @@ const LegalPage = () => (
       </p>
       <h2>Directeur de la publication</h2>
       <p>
-        Le directeur de publication est Monsieur Stanislas BOURRON, Directeur
-        général de l’ANCT
+        Le directeur de publication est Henri Prevost, Directeur général de
+        l’ANCT
       </p>
 
       <h2>Hébergement de la plateforme</h2>

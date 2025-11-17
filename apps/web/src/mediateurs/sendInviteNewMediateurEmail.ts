@@ -13,7 +13,7 @@ export const sendInviteNewMediateurEmail = async ({
 }: {
   url: string
   email: string
-  from: SessionUser
+  from: Pick<SessionUser, 'name'>
 }) => {
   const result = await emailTransport.sendMail({
     to: email,

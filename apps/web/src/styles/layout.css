@@ -57,6 +57,10 @@ body {
   max-width: 59rem;
 }
 
+.contentContainer--64 {
+  max-width: 64rem;
+}
+
 .contentContainer--56 {
   max-width: 56rem;
 }

@@ -73,14 +73,14 @@ export const UtilisateursDataTable = {
       name: 'lastCra',
       csvHeaders: ['Dernière complétion d’un CRA'],
       csvValues: ({ mediateur }) => [
-        mediateur?.activites.at(0)?.date.toISOString(),
+        mediateur?.derniereCreationActivite?.toISOString(),
       ],
     },
     {
       name: 'lastBeneficiaire',
       csvHeaders: ['Dernier ajout de bénéficiaire'],
       csvValues: ({ mediateur }) => [
-        mediateur?.beneficiaires.at(0)?.creation.toISOString(),
+        mediateur?.derniereCreationBeneficiaire?.toISOString(),
       ],
     },
     {
@@ -121,16 +121,16 @@ export const UtilisateursDataTable = {
       ],
     },
     {
-      name: 'activites',
-      header: 'Activités',
-      csvHeaders: ['Activités'],
-      csvValues: ({ mediateur }) => [mediateur?.activitesCount],
+      name: 'accompagnements',
+      header: 'Accompagnements',
+      csvHeaders: ['Accompagnements'],
+      csvValues: ({ mediateur }) => [mediateur?.accompagnementsCount],
       cell: ({ mediateur }) =>
-        optionalNumberToString(mediateur?.activitesCount, null),
+        optionalNumberToString(mediateur?.accompagnementsCount, null),
       orderBy: (direction) => [
         {
           mediateur: {
-            activitesCount: direction,
+            accompagnementsCount: direction,
           },
         },
       ],

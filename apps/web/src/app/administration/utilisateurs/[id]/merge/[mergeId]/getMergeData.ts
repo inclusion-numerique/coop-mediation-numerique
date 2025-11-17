@@ -24,6 +24,7 @@ type MergeUser = UserDisplayName & {
     mediateursCoordonnes: { mediateur: { id: string } }[]
   } | null
   mutations: { id: string }[]
+  deleted: Date | null
 }
 
 export type MergeData = {
@@ -132,6 +133,7 @@ const toMergeInfo = (user: MergeUser) => ({
   mutationsIds: user.mutations.map(toId) ?? [],
   invitationsRecues: user.mediateur?.invitations.map(toMergedIds) ?? [],
   invitationsEnvoyees: user.coordinateur?.invitations.map(toMergedIds) ?? [],
+  deleted: user.deleted,
 })
 
 const toMergeCommon = (mergeSource: MergeData, mergeTarget: MergeData) => ({
@@ -189,3 +191,5 @@ export const getMergeData = async (
     mergeCommon: toMergeCommon(mergeSource, mergeTarget),
   }
 }
+
+export type MergeSourceAndTargetData = Awaited<ReturnType<typeof getMergeData>>

@@ -20,6 +20,7 @@ const Template = ({
 }) => (
   <ViewBeneficiaireLayout
     beneficiaire={data.beneficiaire}
+    duplicates={[]}
     user={
       rdvIntegration
         ? {
@@ -35,6 +36,7 @@ const Template = ({
               error: null,
               syncFrom: null,
               includeRdvsInActivitesList: false,
+              invalidWebhookOrganisationIds: [],
             },
           }
         : testSessionUser

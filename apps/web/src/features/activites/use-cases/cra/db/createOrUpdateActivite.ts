@@ -433,6 +433,7 @@ export const createOrUpdateActivite = async ({
           activiteId: existingActivite.id,
         },
       })
+
       await transaction.activitesTags.createMany({
         data: input.data.tags.map((tag) => ({
           activiteId: existingActivite.id,
@@ -479,6 +480,7 @@ export const createOrUpdateActivite = async ({
       await transaction.mediateur.update({
         where: { id: mediateurId },
         data: {
+          derniereCreationActivite: new Date(),
           accompagnementsCount: { increment: createdAccompagnements.count },
         },
       })
@@ -565,6 +567,7 @@ export const createOrUpdateActivite = async ({
       data: {
         activitesCount: { increment: 1 },
         accompagnementsCount: { increment: createdAccompagnements.count },
+        derniereCreationActivite: new Date(),
       },
     })
 

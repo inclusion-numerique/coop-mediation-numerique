@@ -110,16 +110,24 @@ export const userRouter = router({
       return updated
     }),
   search: protectedProcedure
-    .input(z.object({ query: z.string() }))
-    .query(({ input: { query }, ctx: { user: sessionUser } }) => {
-      enforceIsAdmin(sessionUser)
+    .input(
+      z.object({
+        query: z.string(),
+        includeDeleted: z.boolean().optional().default(false),
+      }),
+    )
+    .query(
+      ({ input: { query, includeDeleted }, ctx: { user: sessionUser } }) => {
+        enforceIsAdmin(sessionUser)
 
-      return searchUser({
-        searchParams: {
-          recherche: query,
-        },
-      })
-    }),
+        return searchUser({
+          searchParams: {
+            recherche: query,
+          },
+          includeDeleted,
+        })
+      },
+    ),
   merge: protectedProcedure
     .input(UserMergeValidation)
     .mutation(

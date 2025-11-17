@@ -16,19 +16,31 @@ export type DuplicateBeneficiaire = {
 /**
  * Finds duplicate beneficiaires for a given beneficiaire based on matching fields.
  * Requires at least 2 out of 4 fields to match (nom, prenom, telephone, email).
- * Also ensures there are no conflicting fields: if both beneficiaires have a non-null value
- * for a field, they must match. Uses normalized search to handle accents and spacing differences.
+ * Uses normalized search to handle accents and spacing differences.
+ *
+ * @param withConflictingFields - 'include': allows conflicts on non-matching fields (only requires 2 matches).
+ *                                 'exclude': ensures no conflicting fields (both non-null but different).
  */
-export const findDuplicateForBeneficiaire = async (
+export const findDuplicateForBeneficiaire = async ({
+  beneficiaire,
+  withConflictingFields,
+}: {
   beneficiaire: Pick<
     Beneficiaire,
     'nom' | 'prenom' | 'telephone' | 'email' | 'mediateurId'
-  > & { id: string | null },
-): Promise<DuplicateBeneficiaire[]> => {
-  // We don't want to compare the beneficiaire with itself
-  const beneficiaireIdWhereClause = beneficiaire.id
-    ? Prisma.sql`id != '${beneficiaire.id}'::uuid`
-    : Prisma.sql`TRUE`
+  > & { id: string | null }
+  withConflictingFields: 'include' | 'exclude'
+}): Promise<DuplicateBeneficiaire[]> => {
+  // Build the conflict check clause conditionally based on withConflictingFields
+  const conflictCheckClause =
+    withConflictingFields === 'include'
+      ? Prisma.sql`TRUE`
+      : Prisma.sql`(
+          (CASE WHEN t.nom_search IS NOT NULL AND c.nom_search IS NOT NULL AND t.nom_search != c.nom_search THEN 1 ELSE 0 END) +
+          (CASE WHEN t.prenom_search IS NOT NULL AND c.prenom_search IS NOT NULL AND t.prenom_search != c.prenom_search THEN 1 ELSE 0 END) +
+          (CASE WHEN t.telephone_search IS NOT NULL AND c.telephone_search IS NOT NULL AND t.telephone_search != c.telephone_search THEN 1 ELSE 0 END) +
+          (CASE WHEN t.email_search IS NOT NULL AND c.email_search IS NOT NULL AND t.email_search != c.email_search THEN 1 ELSE 0 END)
+        ) = 0`
 
   const duplicates = await prismaClient.$queryRaw<DuplicateBeneficiaire[]>`
     WITH "target" AS (
@@ -60,7 +72,7 @@ export const findDuplicateForBeneficiaire = async (
       WHERE mediateur_id = ${beneficiaire.mediateurId}::uuid 
         AND suppression IS NULL
         AND anonyme = false
-        AND ${beneficiaireIdWhereClause}
+        ${beneficiaire.id ? Prisma.sql`AND id != ${beneficiaire.id}::uuid` : Prisma.sql``}
     )
     SELECT
       c.id,
@@ -74,20 +86,15 @@ export const findDuplicateForBeneficiaire = async (
     FROM "candidates" c
     CROSS JOIN "target" t
     WHERE 
-      /* At least 2 matching fields */
+      /* At least 2 matching fields (null fields don't count as matches) */
       (
         (CASE WHEN t.nom_search IS NOT NULL AND c.nom_search IS NOT NULL AND t.nom_search = c.nom_search THEN 1 ELSE 0 END) +
         (CASE WHEN t.prenom_search IS NOT NULL AND c.prenom_search IS NOT NULL AND t.prenom_search = c.prenom_search THEN 1 ELSE 0 END) +
         (CASE WHEN t.telephone_search IS NOT NULL AND c.telephone_search IS NOT NULL AND t.telephone_search = c.telephone_search THEN 1 ELSE 0 END) +
         (CASE WHEN t.email_search IS NOT NULL AND c.email_search IS NOT NULL AND t.email_search = c.email_search THEN 1 ELSE 0 END)
       ) >= 2
-      /* No conflicting fields (both non-null but different) */
-      AND (
-        (CASE WHEN t.nom_search IS NOT NULL AND c.nom_search IS NOT NULL AND t.nom_search != c.nom_search THEN 1 ELSE 0 END) +
-        (CASE WHEN t.prenom_search IS NOT NULL AND c.prenom_search IS NOT NULL AND t.prenom_search != c.prenom_search THEN 1 ELSE 0 END) +
-        (CASE WHEN t.telephone_search IS NOT NULL AND c.telephone_search IS NOT NULL AND t.telephone_search != c.telephone_search THEN 1 ELSE 0 END) +
-        (CASE WHEN t.email_search IS NOT NULL AND c.email_search IS NOT NULL AND t.email_search != c.email_search THEN 1 ELSE 0 END)
-      ) = 0
+      /* Conditionally check for conflicts: if withConflictingFields is 'exclude', ensure no conflicting fields */
+      AND ${conflictCheckClause}
     ORDER BY c.nom ASC, c.creation DESC
   `
 

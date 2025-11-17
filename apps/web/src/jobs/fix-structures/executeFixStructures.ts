@@ -7,8 +7,26 @@ import {
   isValidUrl,
   Localisation,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import Oh, { nominatim_object } from 'opening_hours'
 import proj4 from 'proj4'
 import { FixStructuresJob } from './fixStructuresJob'
+
+const OSM_COMMENT_REGEX =
+  /^(?!.*\b(?:PH|Mo|Tu|We|Th|Fr|Sa|Su)\s+(?:closed|off)\b)(?:\s*(?:Mo|Tu|We|Th|Fr|Sa|Su|PH|SH)(?:[-,](?:Mo|Tu|We|Th|Fr|Sa|Su|PH|SH))?\s+\d{2}:\d{2}(?:-\d{2}:\d{2})(?:,\d{2}:\d{2}-\d{2}:\d{2})?(?:\s*;\s*)?)+\s*(?!")(.+?\S)\s*$/i
+
+const fixHoraires = (horaires?: string | null): string | null => {
+  if (!horaires) return null
+
+  const match = horaires.match(OSM_COMMENT_REGEX)
+
+  if (!match) return horaires
+
+  const commentaire = match[1]
+  const safeComment = `"${commentaire.replace(/"/g, "'")}"`
+
+  const prefix = horaires.slice(0, match.index! + match[0].indexOf(commentaire))
+  return `${prefix}${safeComment}`.replace(/PH closed;$/, 'PH closed')
+}
 
 const isInvalidPivot = ({
   siret,
@@ -101,6 +119,22 @@ const isInvalidPriseRDV = ({ priseRdv }: { priseRdv: string | null }) =>
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
+const isInvalidOsmOpeningHours = ({
+  horaires,
+}: {
+  horaires: string | null
+}) => {
+  if (horaires == null || horaires.trim() === '') return false
+
+  try {
+    new Oh(horaires)
+  } catch {
+    return true
+  }
+
+  return false
+}
+
 export const executeFixStructures = async (_job: FixStructuresJob) => {
   const structures = await prismaClient.structure.findMany()
 
@@ -119,6 +153,21 @@ export const executeFixStructures = async (_job: FixStructuresJob) => {
   })
 
   const invalidPhones = structures.filter(isInvalidTelephone)
+
+  const invalidOSMOpeningHours = structures.filter(isInvalidOsmOpeningHours)
+
+  output.log(
+    `Found ${invalidOSMOpeningHours.length} structures with invalid OSM opening hours`,
+  )
+
+  await Promise.all(
+    invalidOSMOpeningHours.map(({ id, horaires }) =>
+      prismaClient.structure.update({
+        where: { id },
+        data: { horaires: fixHoraires(horaires) },
+      }),
+    ),
+  )
 
   output.log(
     `Found ${invalidPhones.length} structures with invalid phone number`,

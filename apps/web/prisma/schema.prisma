@@ -276,6 +276,10 @@ model Mediateur {
   accompagnementsCount Int @default(0) @map("accompagnements_count")
   beneficiairesCount   Int @default(0) @map("beneficiaires_count")
 
+  // pre computed dates to avoid joins on big tables
+  derniereCreationActivite DateTime?  @map("derniere_creation_activite")
+  derniereCreationBeneficiaire DateTime?  @map("derniere_creation_beneficiaire")
+
   coordinations MediateurCoordonne[]
   enActivite    MediateurEnActivite[]
   beneficiaires Beneficiaire[]
@@ -297,9 +301,10 @@ model InvitationEquipe {
   email          String
   coordinateurId String    @map("coordinateur_id") @db.Uuid
   mediateurId    String?   @map("mediateur_id") @db.Uuid
-  creation       DateTime? @default(now())
+  creation       DateTime @default(now())
   acceptee       DateTime?
   refusee        DateTime?
+  renvoyee       DateTime?
 
   mediateurInvite Mediateur?   @relation(fields: [mediateurId], references: [id])
   coordinateur    Coordinateur @relation(fields: [coordinateurId], references: [id])
@@ -442,6 +447,8 @@ model Coordinateur {
 
   mediateursCoordonnes MediateurCoordonne[]
   invitations          InvitationEquipe[]
+  Tag                  Tag[]
+  ActiviteCoordination ActiviteCoordination[]
 
   @@index([userId])
   @@map("coordinateurs")
@@ -1002,10 +1009,16 @@ model Beneficiaire {
   modification DateTime  @default(now())
   suppression  DateTime?
 
+  // Lorsqu'un bénéficiaire est dedoublonné, il est supprimé et on garde le lien (pour historique) vers
+  // le bénéficiaire vers lequel il a été dedoublonné (supression est également renseigné à la date de fusion)
+  fusionVers Beneficiaire? @relation(name: "fusion", fields: [fusionVersId], references: [id])
+  fusionVersId String? @map("fusion_vers_id") @db.Uuid
+
   // pre computed counts to avoid joins and counts on big tables
   accompagnementsCount Int              @default(0) @map("accompagnements_count")
   accompagnements      Accompagnement[]
   rdvUser              RdvUser?         @relation(fields: [rdvUserId], references: [id], onDelete: SetNull)
+  fusions      Beneficiaire[] @relation("fusion")
 
   @@index([anonyme])
   @@index([mediateurId])
@@ -1018,6 +1031,145 @@ enum TypeActivite {
   Collectif  @map("collectif")
 
   @@map("type_activite")
+}
+
+enum TypeActiviteCoordination {
+  Animation   @map("animation")
+  Evenement   @map("evenement")
+  Partenariat @map("partenariat")
+
+  @@map("type_activite_coordination")
+}
+
+enum TypeAnimation {
+  Assemblee           @map("assemblee")
+  Comite              @map("comite")
+  GroupeDeTravail     @map("groupe_de_travail")
+  Echange             @map("echange")
+  ReunionCoordination @map("reunion_coordination")
+  Webinaire           @map("webinaire")
+  Autre               @map("autre")
+
+  @@map("type_animation")
+}
+
+enum Initiative {
+  Initiative @map("initiative")
+  Demande    @map("demande")
+
+  @@map("initiative")
+}
+
+enum ThematiqueAnimation {
+  Partage       @map("partage")
+  Reseau        @map("reseau")
+  Soutien       @map("soutien")
+  Professionnel @map("professionnel")
+  RH            @map("rh")
+  Autre         @map("autre")
+
+  @@map("thematique_animation")
+}
+
+enum TypeEvenement {
+  GrandPublic        @map("grand_public")
+  National           @map("national")
+  InclusionNumerique @map("inclusion_numerique")
+  NecLocal           @map("nec_local")
+  Autre              @map("autre")
+
+  @@map("type_evenement")
+}
+
+enum Organisateur {
+  MaStructure @map("ma_structure")
+  Commune     @map("commune")
+  Epci        @map("epci")
+  Departement @map("departement")
+  Region      @map("region")
+  Association @map("association")
+  Entreprise  @map("entreprise")
+  Hub         @map("hub")
+  Etat        @map("etat")
+  Groupement  @map("groupement")
+  Autre       @map("autre")
+
+  @@map("organisateur")
+}
+
+enum EchelonTerritorial {
+  Communal      @map("communal")
+  Intercommunal @map("intercommunal")
+  Departemental @map("departemental")
+  Regional      @map("regional")
+  National      @map("national")
+
+  @@map("echelon_territorial")
+}
+
+enum NaturePartenariat {
+  ParcoursUsager             @map("parcours_usager")
+  Subvention                 @map("subvention")
+  CoordinationDepartementale @map("coordination_departementale")
+  RDVElu                     @map("rdv_elu")
+  Autre                      @map("autre")
+
+  @@map("nature_partenariat")
+}
+
+model ActiviteCoordination {
+  id String @id @default(uuid()) @db.Uuid
+
+  type TypeActiviteCoordination
+
+  coordinateurId String       @map("coordinateur_id") @db.Uuid
+  coordinateur   Coordinateur @relation(fields: [coordinateurId], references: [id])
+
+  date               DateTime                    @map("date") @db.Date
+  duree              Int?                        @map("duree") // Durée en minutes
+  tags               ActivitesCoordinationTags[]
+  notes              String?
+  echelonTerritorial EchelonTerritorial?         @map("echelon_territorial")
+  nom                String?                     @map("nom")
+
+  creation     DateTime  @default(now())
+  modification DateTime  @default(now())
+  suppression  DateTime?
+
+  // Animation
+  mediateurs               Int?                  @map("mediateurs")
+  structures               Int?                  @map("structures")
+  autresActeurs            Int?                  @map("autres_acteurs")
+  typeAnimation            TypeAnimation?        @map("type_animation")
+  typeAnimationAutre       String?               @map("type_animation_autre")
+  initiative               Initiative?           @map("initiative")
+  thematiquesAnimation     ThematiqueAnimation[] @default([]) @map("thematiques_animation")
+  thematiqueAnimationAutre String?               @map("thematique_animation_autre")
+
+  // Evénement
+  participants       Int?           @map("participants")
+  typeEvenement      TypeEvenement? @map("type_evenement")
+  typeEvenementAutre String?        @map("type_evenement_autre")
+  organisateurs      Organisateur[] @default([]) @map("organisateurs")
+  organisateurAutre  String?        @map("organisateur_autre")
+
+  // Partenariat
+  naturePartenariat      NaturePartenariat[] @default([]) @map("nature_partenariat")
+  naturePartenariatAutre String?             @map("nature_partenariat_autre")
+  structuresPartenaires  Json?               @map("structures_partenaires")
+
+  // "creation" cursor is used to paginate results for API queries
+  @@unique([creation, id])
+  // index relations
+  @@index([coordinateurId])
+  // descending sort on this cursor for api query performances
+  @@index([creation(sort: Desc), id(sort: Desc)])
+  @@index([modification(sort: Desc), id(sort: Desc)])
+  // index on date PER coordinateur for query performances
+  @@index([coordinateurId, date(sort: Desc)])
+  // performance indexes
+  @@index([date])
+  @@map("activite_coordination")
 }
 
 model Activite {
@@ -1040,7 +1192,7 @@ model Activite {
 
   // Reference vers le RDV synchronisé lorsque l'activité provient de RDV Service Public
   rdvId Int? @map("rdv_id") @unique
-  rdv   Rdv?  @relation(fields: [rdvId], references: [id])
+  rdv   Rdv? @relation(fields: [rdvId], references: [id])
 
   // Structure employeuse
   // - cette information aurait pu etre déduite des liens entre mediateur, emploi, et activité
@@ -1120,22 +1272,37 @@ model ActivitesTags {
   @@map("activite_tags")
 }
 
+model ActivitesCoordinationTags {
+  activiteCoordinationId String @map("activite_coordination_id") @db.Uuid
+  tagId                  String @map("tag_id") @db.Uuid
+
+  activiteCoordination ActiviteCoordination @relation(fields: [activiteCoordinationId], references: [id])
+  tag                  Tag                  @relation(fields: [tagId], references: [id])
+
+  @@id([activiteCoordinationId, tagId])
+  @@map("activite_coordination_tags")
+}
+
 model Tag {
   id String @id @default(uuid()) @db.Uuid
 
   nom         String  @map("nom")
   description String? @map("description")
 
-  departement String?    @map("departement")
-  mediateurId String?    @map("mediateur_id") @db.Uuid
-  mediateur   Mediateur? @relation(fields: [mediateurId], references: [id])
+  departement    String?       @map("departement")
+  mediateurId    String?       @map("mediateur_id") @db.Uuid
+  mediateur      Mediateur?    @relation(fields: [mediateurId], references: [id])
+  coordinateurId String?       @map("coordinateur_id") @db.Uuid
+  coordinateur   Coordinateur? @relation(fields: [coordinateurId], references: [id])
 
-  creation     DateTime        @default(now())
-  modification DateTime        @default(now())
-  suppression  DateTime?
-  activites    ActivitesTags[]
+  creation                  DateTime                    @default(now())
+  modification              DateTime                    @default(now())
+  suppression               DateTime?
+  activites                 ActivitesTags[]
+  ActivitesCoordinationTags ActivitesCoordinationTags[]
 
   @@index([mediateurId])
+  @@index([coordinateurId])
   @@map("tags")
 }
 
@@ -1256,11 +1423,12 @@ model RdvAccount {
   syncFrom DateTime? @map("sync_from")
 
   organisations RdvAccountOrganisation[] // Be careful as this may be out of sync with the data from oauth. Used as a cache and should be refreshed when needed.
-  rdvs Rdv[]
-  syncLogs RdvSyncLog[]
+  invalidWebhookOrganisationIds Int[] @map("invalid_webhook_organisation_ids") @default([]) // Organisation ids for which the webhook installation failed, will need polling rdv sync strategy
+  rdvs          Rdv[]
+  syncLogs      RdvSyncLog[]
 
   includeRdvsInActivitesList Boolean @default(false) @map("include_rdvs_in_activites_list")
-  
+
   accessToken  String?   @map("access_token") // Empty if account created but oauth not linked or invalidated
   refreshToken String?   @map("refresh_token")
   expiresAt    DateTime? @map("expires_at")
@@ -1281,56 +1449,58 @@ model RdvAccount {
 model RdvSyncLog {
   id String @id @default(uuid()) @db.Uuid
 
-  rdvAccountId Int @map("rdv_account_id")
+  rdvAccountId Int        @map("rdv_account_id")
   rdvAccount   RdvAccount @relation(fields: [rdvAccountId], references: [id])
 
   started DateTime
-  ended DateTime?
+  ended   DateTime?
 
-  error String?
-  log String?
+  error  String?
+  log    String?
   output Json?
+
+  organisationIds Int[] @default([])  @map("organisation_ids") // if the sync was only scoped to a subset of organisations, this will be the ids of the organisations that were synced
 
   drift Int @default(0) @map("drift") // number of diffs that have been missed by wehbook sync. drift is ok for the first sync
 
-  rdvsCount Int @default(0) @map("rdvs_count") // rdvs total in rdvsp services
-  rdvsDrift Int @default(0) @map("rdvs_drift") // drift is ok for the first sync
-  rdvsNoop Int @default(0) @map("rdvs_noop") // rdvs already synced correctly
+  rdvsCount   Int @default(0) @map("rdvs_count") // rdvs total in rdvsp services
+  rdvsDrift   Int @default(0) @map("rdvs_drift") // drift is ok for the first sync
+  rdvsNoop    Int @default(0) @map("rdvs_noop") // rdvs already synced correctly
   rdvsCreated Int @default(0) @map("rdvs_created") // rdvs created during this sync
   rdvsUpdated Int @default(0) @map("rdvs_updated") // rdvs updated during this sync
   rdvsDeleted Int @default(0) @map("rdvs_deleted") // rdvs deleted during this sync
 
-  organisationsCount Int @default(0) @map("organisations_count") // organisations total in rdvsp services
-  organisationsDrift Int @default(0) @map("organisations_drift") // drift is ok for the first sync
-  organisationsNoop Int @default(0) @map("organisations_noop") // organisations already synced correctly
+  organisationsCount   Int @default(0) @map("organisations_count") // organisations total in rdvsp services
+  organisationsDrift   Int @default(0) @map("organisations_drift") // drift is ok for the first sync
+  organisationsNoop    Int @default(0) @map("organisations_noop") // organisations already synced correctly
   organisationsCreated Int @default(0) @map("organisations_created") // organisations created during this sync
   organisationsUpdated Int @default(0) @map("organisations_updated") // organisations updated during this sync
   organisationsDeleted Int @default(0) @map("organisations_deleted") // organisations deleted during this sync
 
-  webhooksCount Int @default(0) @map("webhooks_count") // webhooks total in rdvsp services
-  webhooksDrift Int @default(0) @map("webhooks_drift") // drift is ok for the first sync
-  webhooksNoop Int @default(0) @map("webhooks_noop") // webhooks already synced correctly
+  webhooksCount   Int @default(0) @map("webhooks_count") // webhooks total in rdvsp services
+  webhooksDrift   Int @default(0) @map("webhooks_drift") // drift is ok for the first sync
+  webhooksNoop    Int @default(0) @map("webhooks_noop") // webhooks already synced correctly
   webhooksCreated Int @default(0) @map("webhooks_created") // webhooks created during this sync
   webhooksUpdated Int @default(0) @map("webhooks_updated") // webhooks updated during this sync
   webhooksDeleted Int @default(0) @map("webhooks_deleted") // webhooks deleted during this sync
 
-  usersCount Int @default(0) @map("users_count") // users total in rdvsp services
-  usersDrift Int @default(0) @map("users_drift") // drift is ok for the first sync
-  usersNoop Int @default(0) @map("users_noop") // users already synced correctly
+  usersCount   Int @default(0) @map("users_count") // users total in rdvsp services
+  usersDrift   Int @default(0) @map("users_drift") // drift is ok for the first sync
+  usersNoop    Int @default(0) @map("users_noop") // users already synced correctly
   usersCreated Int @default(0) @map("users_created") // users created during this sync
   usersUpdated Int @default(0) @map("users_updated") // users updated during this sync
   usersDeleted Int @default(0) @map("users_deleted") // users deleted during this sync
 
-  motifsCount Int @default(0) @map("motifs_count") // motifs total in rdvsp services
-  motifsDrift Int @default(0) @map("motifs_drift") // drift is ok for the first sync
-  motifsNoop Int @default(0) @map("motifs_noop") // motifs already synced correctly
+  motifsCount   Int @default(0) @map("motifs_count") // motifs total in rdvsp services
+  motifsDrift   Int @default(0) @map("motifs_drift") // drift is ok for the first sync
+  motifsNoop    Int @default(0) @map("motifs_noop") // motifs already synced correctly
   motifsCreated Int @default(0) @map("motifs_created") // motifs created during this sync
   motifsUpdated Int @default(0) @map("motifs_updated") // motifs updated during this sync
   motifsDeleted Int @default(0) @map("motifs_deleted") // motifs deleted during this sync
 
-  lieuxCount Int @default(0) @map("lieux_count") // lieux total in rdvsp services
-  lieuxDrift Int @default(0) @map("lieux_drift") // drift is ok for the first sync
-  lieuxNoop Int @default(0) @map("lieux_noop") // lieux already synced correctly
+  lieuxCount   Int @default(0) @map("lieux_count") // lieux total in rdvsp services
+  lieuxDrift   Int @default(0) @map("lieux_drift") // drift is ok for the first sync
+  lieuxNoop    Int @default(0) @map("lieux_noop") // lieux already synced correctly
   lieuxCreated Int @default(0) @map("lieux_created") // lieux created during this sync
   lieuxUpdated Int @default(0) @map("lieux_updated") // lieux updated during this sync
   lieuxDeleted Int @default(0) @map("lieux_deleted") // lieux deleted during this sync
@@ -1354,7 +1524,7 @@ model RdvOrganisation {
   userProfiles     RdvUserProfile[]
   webhookEndpoints RdvWebhookEndpoint[]
   accounts         RdvAccountOrganisation[]
-  motifs RdvMotif[]
+  motifs           RdvMotif[]
 
   syncedAt DateTime @updatedAt @map("synced_at")
 
@@ -1362,10 +1532,10 @@ model RdvOrganisation {
 }
 
 model RdvAccountOrganisation {
-  accountId      Int  @map("account_id")
-  organisationId Int  @map("organisation_id")
-  account        RdvAccount       @relation(fields: [accountId], references: [id])
-  organisation   RdvOrganisation  @relation(fields: [organisationId], references: [id])
+  accountId      Int             @map("account_id")
+  organisationId Int             @map("organisation_id")
+  account        RdvAccount      @relation(fields: [accountId], references: [id])
+  organisation   RdvOrganisation @relation(fields: [organisationId], references: [id])
 
   syncedAt DateTime @default(now()) @map("synced_at")
 
@@ -1387,7 +1557,7 @@ enum RdvAttendanceStatus {
 enum RdvCreatorKind {
   agent        @map("agent")
   user         @map("user")
-  file_attente  @map("file_attente")
+  file_attente @map("file_attente")
   prescripteur @map("prescripteur")
 
   @@map("rdv_creator_kind")
@@ -1396,37 +1566,37 @@ enum RdvCreatorKind {
 enum RdvCreatorType {
   agent        @map("Agent")
   user         @map("User")
-  file_attente  @map("FileAttente")
+  file_attente @map("FileAttente")
   prescripteur @map("Prescripteur")
 
   @@map("rdv_creator_type")
 }
 model RdvUser {
-  id                   Int                @id
+  id                   Int       @id
   address              String?
-  addressDetails       String?            @map("address_details")
-  affiliationNumber    String?            @map("affiliation_number")
-  birthDate            DateTime?          @map("birth_date") @db.Date
-  birthName            String?            @map("birth_name")
-  caisseAffiliation    String? @map("caisse_affiliation")
-  createdAt            DateTime?          @map("created_at")
+  addressDetails       String?   @map("address_details")
+  affiliationNumber    String?   @map("affiliation_number")
+  birthDate            DateTime? @map("birth_date") @db.Date
+  birthName            String?   @map("birth_name")
+  caisseAffiliation    String?   @map("caisse_affiliation")
+  createdAt            DateTime? @map("created_at")
   email                String?
-  firstName            String             @map("first_name")
-  invitationAcceptedAt DateTime?          @map("invitation_accepted_at")
-  invitationCreatedAt  DateTime?          @map("invitation_created_at")
-  lastName             String             @map("last_name")
-  notifyByEmail        Boolean            @map("notify_by_email")
-  notifyBySms          Boolean            @map("notify_by_sms")
-  phoneNumber          String?            @map("phone_number")
-  phoneNumberFormatted String?            @map("phone_number_formatted")
-  responsibleId        Int?               @map("responsible_id")
+  firstName            String    @map("first_name")
+  invitationAcceptedAt DateTime? @map("invitation_accepted_at")
+  invitationCreatedAt  DateTime? @map("invitation_created_at")
+  lastName             String    @map("last_name")
+  notifyByEmail        Boolean   @map("notify_by_email")
+  notifyBySms          Boolean   @map("notify_by_sms")
+  phoneNumber          String?   @map("phone_number")
+  phoneNumberFormatted String?   @map("phone_number_formatted")
+  responsibleId        Int?      @map("responsible_id")
 
   responsible RdvUser?  @relation("RdvUserResponsible", fields: [responsibleId], references: [id])
   dependents  RdvUser[] @relation("RdvUserResponsible")
 
-  beneficiaires       Beneficiaire[]
-  userProfiles        RdvUserProfile[]
-  participations      RdvParticipation[]
+  beneficiaires  Beneficiaire[]
+  userProfiles   RdvUserProfile[]
+  participations RdvParticipation[]
 
   syncedAt DateTime @updatedAt @map("synced_at")
 
@@ -1448,10 +1618,10 @@ model RdvUserProfile {
 }
 
 model RdvLieu {
-  id             Int    @id
+  id             Int     @id
   address        String
   name           String
-  organisationId Int    @map("organisation_id")
+  organisationId Int     @map("organisation_id")
   phoneNumber    String? @map("phone_number")
   singleUse      Boolean @map("single_use")
 
@@ -1465,19 +1635,18 @@ model RdvLieu {
 }
 
 model RdvMotif {
-
-  id             Int    @id
-  collectif      Boolean
-  name           String
-  organisationId Int    @map("organisation_id")
-  followUp Boolean @map("follow_up")
+  id                Int     @id
+  collectif         Boolean
+  name              String
+  organisationId    Int     @map("organisation_id")
+  followUp          Boolean @map("follow_up")
   instructionForRdv String? @map("instruction_for_rdv")
-  locationType  String? @map("location_type")
-  motifCategoryId Int? @map("motif_category_id")
+  locationType      String? @map("location_type")
+  motifCategoryId   Int?    @map("motif_category_id")
 
   organisation RdvOrganisation @relation(fields: [organisationId], references: [id])
   rdvs         Rdv[]
-  
+
   @@map("rdv_motifs")
 }
 
@@ -1499,21 +1668,21 @@ model Rdv {
   status               RdvAttendanceStatus
   usersCount           Int                 @map("users_count")
   uuid                 String              @unique
-  urlForAgents          String @map("url_for_agents")
+  urlForAgents         String              @map("url_for_agents")
 
-  rdvAccountId Int @map("rdv_account_id")
+  rdvAccountId Int        @map("rdv_account_id")
   rdvAccount   RdvAccount @relation(fields: [rdvAccountId], references: [id])
 
-  organisationId Int @map("organisation_id")
+  organisationId Int  @map("organisation_id")
   motifId        Int? @map("motif_id")
   lieuId         Int? @map("lieu_id")
 
   organisation RdvOrganisation @relation(fields: [organisationId], references: [id])
-  lieu         RdvLieu?         @relation(fields: [lieuId], references: [id])
-  motif        RdvMotif?        @relation(fields: [motifId], references: [id])
+  lieu         RdvLieu?        @relation(fields: [lieuId], references: [id])
+  motif        RdvMotif?       @relation(fields: [motifId], references: [id])
 
   activite       Activite?
-  participations   RdvParticipation[]
+  participations RdvParticipation[]
 
   syncedAt DateTime @updatedAt @map("synced_at")
 
@@ -1535,11 +1704,11 @@ model RdvParticipation {
   createdByType              RdvCreatorType?     @map("created_by_type")
   createdById                Int?                @map("created_by_id")
   createdByAgentPrescripteur Boolean?            @map("created_by_agent_prescripteur")
-  rdvId   Int  @map("rdv_id") 
-  userId  Int  @map("user_id")
+  rdvId                      Int                 @map("rdv_id")
+  userId                     Int                 @map("user_id")
 
-  rdv   Rdv      @relation(fields: [rdvId], references: [id], onDelete: Cascade)
-  user  RdvUser  @relation(fields: [userId], references: [id])
+  rdv  Rdv     @relation(fields: [rdvId], references: [id], onDelete: Cascade)
+  user RdvUser @relation(fields: [userId], references: [id])
 
   syncedAt DateTime @updatedAt @map("synced_at")
 
@@ -1547,7 +1716,6 @@ model RdvParticipation {
   @@index([userId])
   @@map("rdv_participations")
 }
-
 
 model RdvWebhookEndpoint {
   id            Int      @id
@@ -1581,10 +1749,14 @@ enum MutationName {
   InviterMediateursCoordonnes              @map("inviter_mediateurs_coordonnes")
   AccepterInvitationMediateurCoordonne     @map("accepter_invitation_mediateur_coordonne")
   RefuserInvitationMediateurCoordonne      @map("refuser_invitation_mediateur_coordonne")
+  RenvoyerInvitationMediateurCoordonne     @map("renvoyer_invitation_mediateur_coordonne")
   SetMediateurVisibility                   @map("set_mediateur_visibility")
   CreerActivite                            @map("creer_activite")
   ModifierActivite                         @map("modifier_activite")
   SupprimerActivite                        @map("supprimer_activite")
+  CreerActiviteCoordination                @map("creer_activite_coordination")
+  ModifierActiviteCoordination             @map("modifier_activite_coordination")
+  SupprimerActiviteCoordination            @map("supprimer_activite_coordination")
   CreerBeneficiaire                        @map("creer_beneficiaire")
   ImporterBeneficiaires                    @map("importer_beneficiaires")
   ModifierBeneficiaire                     @map("modifier_beneficiaire")

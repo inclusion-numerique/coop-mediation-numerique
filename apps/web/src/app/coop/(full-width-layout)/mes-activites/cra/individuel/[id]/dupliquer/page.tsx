@@ -13,11 +13,13 @@ const DupliquerPage = async ({
   const { id } = await params
   const { retour } = await searchParams
 
-  const user = await authenticateMediateur()
+  const {
+    mediateur: { id: mediateurId },
+  } = await authenticateMediateur()
 
   const defaultValues = await getCraIndividuelDataDefaultValuesFromExisting({
     id,
-    mediateurId: user.mediateur.id,
+    mediateurId,
   })
 
   if (defaultValues == null) return notFound()

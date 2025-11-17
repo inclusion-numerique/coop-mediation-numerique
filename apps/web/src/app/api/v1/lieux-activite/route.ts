@@ -197,6 +197,13 @@ type Aidant = {
  *           type: string
  *           enum: [Aidants Connect, Bibliothèques numérique de référence, Certification PIX, Conseillers numériques, Emmaüs Connect, France Services, Grande école du numérique, La Croix Rouge, Point d'accès numérique CAF, Promeneurs du net, Relais numérique (Emmaüs Connect)]
  *           example: 'Conseillers numériques'
+ *       - in: query
+ *         name: ids
+ *         schema:
+ *           type: string
+ *           description: |
+ *             Liste d'identifiants de structures (uuid) séparés par des virgules. Exemple : ids=uuid1,uuid2. Maximum 100 ids.
+ *         required: false
  *     responses:
  *       200:
  *         description: La liste des lieux d'inclusion numérique.
@@ -213,6 +220,19 @@ export const GET = createApiV1Route
   })
   .queryParams(
     z.object({
+      /**
+       * Liste d'identifiants de structures (uuid) séparés par des virgules.
+       * Exemple: ids=uuid1,uuid2
+       * Maximum 100 ids.
+       */
+      ids: z
+        .union([z.string(), z.array(z.string())])
+        .optional()
+        .transform((v) => (Array.isArray(v) ? v : v ? v.split(',') : []))
+        .transform((arr) => arr.map((s) => s.trim()).filter(Boolean))
+        .transform((arr) => Array.from(new Set(arr)))
+        .pipe(z.array(z.string().uuid()).max(100))
+        .default([]),
       filter: z
         .object({
           dispositif_programmes_nationaux: z
@@ -229,6 +249,7 @@ export const GET = createApiV1Route
   )
   .handle(async ({ params }) => {
     const { dispositif_programmes_nationaux } = params.filter
+    const ids = params.ids as string[]
 
     const lieuxDeMediationNumerique = await prismaClient.$queryRaw<
       (LieuMediationNumerique & { aidants?: Aidant[] })[]
@@ -308,7 +329,23 @@ export const GET = createApiV1Route
     )
     SELECT *
     FROM base
-        ${dispositif_programmes_nationaux ? Prisma.sql`WHERE ${dispositif_programmes_nationaux}::text = ANY(dispositif_programmes_nationaux)` : Prisma.empty}
+        ${
+          ids.length > 0 || dispositif_programmes_nationaux
+            ? Prisma.sql`WHERE ${
+                ids.length > 0
+                  ? Prisma.sql`id IN (${Prisma.join(ids.map((id) => Prisma.sql`${id}::uuid`))})`
+                  : Prisma.empty
+              } ${
+                ids.length > 0 && dispositif_programmes_nationaux
+                  ? Prisma.sql`AND`
+                  : Prisma.empty
+              } ${
+                dispositif_programmes_nationaux
+                  ? Prisma.sql`${dispositif_programmes_nationaux}::text = ANY(dispositif_programmes_nationaux)`
+                  : Prisma.empty
+              }`
+            : Prisma.empty
+        }
     `
 
     const conseillerCollection =

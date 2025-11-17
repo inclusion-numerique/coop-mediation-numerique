@@ -1,7 +1,10 @@
 'use client'
 
+import {
+  Calendar,
+  type CalendarProps,
+} from '@app/ui/components/Primitives/calendar/Calendar'
 import { Popover } from '@app/ui/components/Primitives/Popover'
-import Calendar from '@app/web/components/calendar/Calendar'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
@@ -9,7 +12,6 @@ import classNames from 'classnames'
 import { formatDate } from 'date-fns'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { ReactNode, useEffect, useState } from 'react'
-import { CalendarProps } from 'react-calendar/src/Calendar'
 
 type ValuePiece = Date | null
 type Value = ValuePiece | [ValuePiece, ValuePiece]

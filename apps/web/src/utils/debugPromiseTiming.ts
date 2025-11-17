@@ -11,7 +11,9 @@ export const debugPromiseTiming = <T>(
   return promise.then((result) => {
     const duration = performance.now() - startTime
     // biome-ignore lint/suspicious/noConsole: this is a debug function used to output timing to console
-    console.log(`Promise "${name}" took ${numberToString(duration)}ms`)
+    console.log(
+      `Promise "${name}" took ${numberToString(Math.round(duration))} ms`,
+    )
     return result
   })
 }

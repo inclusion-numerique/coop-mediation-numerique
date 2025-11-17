@@ -21,7 +21,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { formOptions, useStore } from '@tanstack/react-form'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
-import { Fragment } from 'react'
+import { Fragment, useCallback } from 'react'
 import { CraCollectifData } from '../../validation/CraCollectifValidation'
 import {
   countGenreNonCommunique,
@@ -81,10 +81,64 @@ export const BeneficiairesAtelierFields = withForm({
       router.push(creationUrl)
     }
 
-    const clearBeneficiairesAnonymes = ({ value }: { value?: number }) => {
-      if ((value ?? 0) > 0) return
-      form.setFieldValue('participantsAnonymes', participantsAnonymesDefault)
-    }
+    const onGenreStepperChange = useCallback(() => {
+      // Update non communique count
+      if (!form.state.values.participantsAnonymes) return // should not happen but here for type safety
+
+      form.setFieldValue(
+        'participantsAnonymes.genreNonCommunique',
+        countGenreNonCommunique(form.state.values.participantsAnonymes),
+      )
+    }, [form])
+
+    const onTrancheAgeStepperChange = useCallback(() => {
+      // Update non communique count
+      if (!form.state.values.participantsAnonymes) return // should not happen but here for type safety
+      form.setFieldValue(
+        'participantsAnonymes.trancheAgeNonCommunique',
+        countTrancheAgeNonCommunique(form.state.values.participantsAnonymes),
+      )
+    }, [form])
+
+    const onStatutSocialStepperChange = useCallback(() => {
+      // Update non communique count
+      if (!form.state.values.participantsAnonymes) return // should not happen but here for type safety
+      form.setFieldValue(
+        'participantsAnonymes.statutSocialNonCommunique',
+        countStatutSocialNonCommunique(form.state.values.participantsAnonymes),
+      )
+    }, [form])
+
+    const onTotalStepperChange = useCallback(
+      ({ value = 0 }: { value?: number }) => {
+        // Safety if negative value
+        if (value <= 0) {
+          form.setFieldValue(
+            'participantsAnonymes',
+            participantsAnonymesDefault,
+          )
+          return
+        }
+        // Recompute nonCommunique counts
+        if (!form.state.values.participantsAnonymes) return // should not happen but here for type safety
+
+        form.setFieldValue(
+          'participantsAnonymes.genreNonCommunique',
+          countGenreNonCommunique(form.state.values.participantsAnonymes),
+        )
+        form.setFieldValue(
+          'participantsAnonymes.trancheAgeNonCommunique',
+          countTrancheAgeNonCommunique(form.state.values.participantsAnonymes),
+        )
+        form.setFieldValue(
+          'participantsAnonymes.statutSocialNonCommunique',
+          countStatutSocialNonCommunique(
+            form.state.values.participantsAnonymes,
+          ),
+        )
+      },
+      [form],
+    )
 
     return (
       <div className="fr-my-12v fr-border fr-border-radius--8 fr-width-full">
@@ -170,7 +224,7 @@ export const BeneficiairesAtelierFields = withForm({
         <div className="fr-p-8v">
           <form.AppField
             name="participantsAnonymes.total"
-            listeners={{ onChange: clearBeneficiairesAnonymes }}
+            listeners={{ onChange: onTotalStepperChange }}
           >
             {(field) => (
               <>
@@ -225,7 +279,7 @@ export const BeneficiairesAtelierFields = withForm({
                     <p
                       className={classNames(
                         'fr-text--medium fr-mb-3v fr-mt-6v',
-                        countGenreNonCommunique(participantsAnonymes) < 0 &&
+                        (participantsAnonymes.genreNonCommunique ?? 0) < 0 &&
                           'fr-text-default--error',
                       )}
                     >
@@ -238,13 +292,16 @@ export const BeneficiairesAtelierFields = withForm({
                             <NonCommuniqueCount
                               className="fr-col-sm-4 fr-col-12"
                               label={genreLabels[genre]}
-                              count={countGenreNonCommunique(
-                                participantsAnonymes,
-                              )}
+                              count={
+                                participantsAnonymes.genreNonCommunique ?? 0
+                              }
                             />
                           ) : (
                             <form.AppField
                               name={`participantsAnonymes.genre${genre}`}
+                              listeners={{
+                                onChange: onGenreStepperChange,
+                              }}
                             >
                               {(field) => (
                                 <field.StepperStacked
@@ -256,9 +313,8 @@ export const BeneficiairesAtelierFields = withForm({
                                   addTitle={`Ajouter un genre ${genreLabels[genre]}`}
                                   removeTitle={`Retirer un genre ${genreLabels[genre]}`}
                                   max={
-                                    countGenreNonCommunique(
-                                      participantsAnonymes,
-                                    ) + (field.state.value ?? 0)
+                                    participantsAnonymes.genreNonCommunique ??
+                                    0 + (field.state.value ?? 0)
                                   }
                                   isPending={isPending}
                                 />
@@ -267,7 +323,7 @@ export const BeneficiairesAtelierFields = withForm({
                           )}
                         </Fragment>
                       ))}
-                      {countGenreNonCommunique(participantsAnonymes) < 0 && (
+                      {(participantsAnonymes.genreNonCommunique ?? 0) < 0 && (
                         <p className="fr-error-text fr-my-0 fr-mx-3v">
                           Le nombre de genres renseignés dépasse le nombre de
                           bénéficiaires anonymes
@@ -279,8 +335,8 @@ export const BeneficiairesAtelierFields = withForm({
                         <p
                           className={classNames(
                             'fr-text--medium fr-mb-3v fr-mt-6v',
-                            countTrancheAgeNonCommunique(participantsAnonymes) <
-                              0 && 'fr-text-default--error',
+                            (participantsAnonymes.trancheAgeNonCommunique ??
+                              0) < 0 && 'fr-text-default--error',
                           )}
                         >
                           Tranche d’âge
@@ -290,13 +346,17 @@ export const BeneficiairesAtelierFields = withForm({
                             {trancheAge === 'NonCommunique' ? (
                               <NonCommuniqueCount
                                 label={trancheAgeLabels[trancheAge]}
-                                count={countTrancheAgeNonCommunique(
-                                  participantsAnonymes,
-                                )}
+                                count={
+                                  participantsAnonymes.trancheAgeNonCommunique ??
+                                  0
+                                }
                               />
                             ) : (
                               <form.AppField
                                 name={`participantsAnonymes.trancheAge${trancheAge}`}
+                                listeners={{
+                                  onChange: onTrancheAgeStepperChange,
+                                }}
                               >
                                 {(field) => (
                                   <field.StepperStacked
@@ -304,9 +364,8 @@ export const BeneficiairesAtelierFields = withForm({
                                     addTitle={`Ajouter une tranche d’âge ${trancheAgeLabels[trancheAge]}`}
                                     removeTitle={`Retirer une tranche d’âge ${trancheAgeLabels[trancheAge]}`}
                                     max={
-                                      countTrancheAgeNonCommunique(
-                                        participantsAnonymes,
-                                      ) + (field.state.value ?? 0)
+                                      (participantsAnonymes.trancheAgeNonCommunique ??
+                                        0) + (field.state.value ?? 0)
                                     }
                                     isPending={isPending}
                                   />
@@ -315,7 +374,7 @@ export const BeneficiairesAtelierFields = withForm({
                             )}
                           </Fragment>
                         ))}
-                        {countTrancheAgeNonCommunique(participantsAnonymes) <
+                        {(participantsAnonymes.trancheAgeNonCommunique ?? 0) <
                           0 && (
                           <p className="fr-error-text">
                             Le nombre de tranches d’âge renseignées dépasse le
@@ -327,9 +386,8 @@ export const BeneficiairesAtelierFields = withForm({
                         <p
                           className={classNames(
                             'fr-text--medium fr-mb-3v fr-mt-6v',
-                            countStatutSocialNonCommunique(
-                              participantsAnonymes,
-                            ) < 0 && 'fr-text-default--error',
+                            (participantsAnonymes.statutSocialNonCommunique ??
+                              0) < 0 && 'fr-text-default--error',
                           )}
                         >
                           Statut du bénéficiaire
@@ -339,13 +397,17 @@ export const BeneficiairesAtelierFields = withForm({
                             {statutSocial === 'NonCommunique' ? (
                               <NonCommuniqueCount
                                 label={statutSocialLabels[statutSocial]}
-                                count={countStatutSocialNonCommunique(
-                                  participantsAnonymes,
-                                )}
+                                count={
+                                  participantsAnonymes.statutSocialNonCommunique ??
+                                  0
+                                }
                               />
                             ) : (
                               <form.AppField
                                 name={`participantsAnonymes.statutSocial${statutSocial}`}
+                                listeners={{
+                                  onChange: onStatutSocialStepperChange,
+                                }}
                               >
                                 {(field) => (
                                   <field.StepperStacked
@@ -353,9 +415,8 @@ export const BeneficiairesAtelierFields = withForm({
                                     addTitle={`Ajouter un statut social ${statutSocialLabels[statutSocial]}`}
                                     removeTitle={`Retirer un statut social ${statutSocialLabels[statutSocial]}`}
                                     max={
-                                      countStatutSocialNonCommunique(
-                                        participantsAnonymes,
-                                      ) + (field.state.value ?? 0)
+                                      (participantsAnonymes.statutSocialNonCommunique ??
+                                        0) + (field.state.value ?? 0)
                                     }
                                     isPending={isPending}
                                   />
@@ -364,7 +425,7 @@ export const BeneficiairesAtelierFields = withForm({
                             )}
                           </Fragment>
                         ))}
-                        {countStatutSocialNonCommunique(participantsAnonymes) <
+                        {(participantsAnonymes.statutSocialNonCommunique ?? 0) <
                           0 && (
                           <p className="fr-error-text">
                             Le nombre de statuts renseignés dépasse le nombre de

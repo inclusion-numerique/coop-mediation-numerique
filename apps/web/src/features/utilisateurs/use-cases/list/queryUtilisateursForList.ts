@@ -19,22 +19,12 @@ export const searchUtilisateurSelect = {
       conseillerNumerique: {
         select: { id: true },
       },
-      activites: {
-        select: { date: true },
-        where: { suppression: null },
-        orderBy: { date: 'desc' },
-      },
-      beneficiaires: {
-        select: { creation: true },
-        where: { suppression: null, anonyme: false },
-        orderBy: { creation: 'desc' },
-      },
-      activitesCount: true,
+      derniereCreationActivite: true,
+      derniereCreationBeneficiaire: true,
       accompagnementsCount: true,
       beneficiairesCount: true,
       _count: {
         select: {
-          activites: true,
           enActivite: true,
           beneficiaires: {
             where: { anonyme: false },

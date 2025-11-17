@@ -3,8 +3,8 @@ import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { EquipeVide } from '@app/web/app/coop/EquipeVide'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import ActiviteDetailsModal from '@app/web/features/activites/use-cases/list/components/ActiviteDetailsModal/ActiviteDetailsModal'
+import { ActivitesCoordination } from '@app/web/features/activites/use-cases/list/components/ActivitesCoordination'
 import { DernieresActivites } from '@app/web/features/activites/use-cases/list/components/DernieresActivites'
-import ConsolidationStatistiquesNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/consolidation-statistiques/components/ConsolidationStatistiquesNouvelleFonctionnaliteCard'
 import FormationContinueNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/formation-continue/components/FormationContinueNouvelleFonctionnaliteCard'
 import TagsNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/tags/components/TagsNouvelleFonctionnaliteCard'
 import { Spinner } from '@app/web/ui/Spinner'
@@ -27,14 +27,17 @@ export const Accueil = ({
   email,
   mediateurs,
   activites,
+  activitesCoordinationByQuarter,
   hasSeenOnboarding,
   isMediateur,
   isCoordinateur,
   isCoordinateurCoNum,
   isCoNum,
   timezone,
+  userId,
   rdvs,
 }: {
+  userId: string
   firstName: string | null
   name: string | null
   hasSeenOnboarding: string | null
@@ -52,7 +55,6 @@ export const Accueil = ({
         👋 Bonjour {firstName || name || email}
       </h1>
       <FormationContinueNouvelleFonctionnaliteCard />
-      <ConsolidationStatistiquesNouvelleFonctionnaliteCard />
       <TagsNouvelleFonctionnaliteCard />
       {isMediateur && (
         <>
@@ -74,17 +76,20 @@ export const Accueil = ({
 
       {rdvs && (
         <section className="fr-my-6w">
-          <Suspense
-            fallback={
-              <>
-                <RdvsHeader />
-                <Spinner />
-              </>
-            }
-          >
-            <Rdvs rdvs={rdvs} user={{ timezone }} />
-          </Suspense>
+          <Rdvs
+            rdvs={rdvs}
+            user={{ id: userId, timezone }}
+            syncDataOnLoad={rdvs.syncDataOnLoad}
+          />
         </section>
+      )}
+      {isCoordinateur && (
+        <>
+          <section className="fr-my-6w">
+            <ActivitesCoordination activites={activitesCoordinationByQuarter} />
+          </section>
+          <hr className="fr-separator-1px" />
+        </>
       )}
       {isMediateur && (
         <>

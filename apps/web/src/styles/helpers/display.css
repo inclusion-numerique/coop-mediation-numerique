@@ -14,8 +14,20 @@
   display: none !important;
 }
 
+.fr-overflow-hidden {
+  overflow: hidden;
+}
+
+.fr-min-width-0 {
+  min-width: 0;
+}
+
 .fr-display-grid {
   display: grid !important;
+}
+
+.fr-grid--1x1 {
+  grid-template-columns: repeat(1, 1fr);
 }
 
 .fr-grid--2x1 {

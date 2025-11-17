@@ -5,7 +5,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 
 const FormationContinueModalInstance = createModal({
-  id: 'consolidation-statistiques-decouvrir',
+  id: 'formation-continue-decouvrir',
   isOpenedByDefault: false,
 })
 
