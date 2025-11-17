@@ -8,13 +8,18 @@ export const searchBeneficiaireSelect = {
   mediateurId: true,
   prenom: true,
   nom: true,
+  telephone: true,
+  email: true,
   anneeNaissance: true,
   trancheAge: true,
+  genre: true,
+  statutSocial: true,
   commune: true,
   communeCodePostal: true,
   communeCodeInsee: true,
   creation: true,
   accompagnementsCount: true,
+  notes: true,
 } satisfies Prisma.BeneficiaireSelect
 
 export const queryBeneficiairesForList = async ({
