@@ -130,8 +130,9 @@ export const installWebhookForOrganisation = async ({
     }
 
     // webhook does not exist after creation, it means it was not successful
+    // we mark as noop to avoid a "drift" count on the sync (as it is not a real drift)
     return {
-      syncOperation: 'created',
+      syncOperation: 'noop',
       invalidInstallation: true,
       organisationId,
     }
@@ -183,13 +184,13 @@ export const installWebhooks = async ({
           ? organisationIds.includes(organisation.organisationId)
           : true,
       )
-      .map(async (organisation) => {
-        return installWebhookForOrganisation({
+      .map((organisation) =>
+        installWebhookForOrganisation({
           rdvAccount,
           organisationId: organisation.organisationId,
           appendLog,
-        })
-      }),
+        }),
+      ),
   )
 
   const result: SyncModelResult = {

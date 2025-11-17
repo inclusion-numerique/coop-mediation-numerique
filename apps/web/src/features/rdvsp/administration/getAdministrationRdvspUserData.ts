@@ -76,6 +76,7 @@ export const getAdministrationRdvspUserData = async ({
           error: true,
           syncFrom: true,
           includeRdvsInActivitesList: true,
+          invalidWebhookOrganisationIds: true,
           organisations: {
             select: {
               organisation: {
@@ -92,12 +93,43 @@ export const getAdministrationRdvspUserData = async ({
     },
   })
 
-  if (!user || !user.rdvAccount) {
+  const rdvAccount = user?.rdvAccount
+
+  if (!user || !rdvAccount) {
     return null
   }
 
+  // Valid and invalid webhook organisations
+  const validWebhookOrganisations = rdvAccount.organisations.filter(
+    (organisation) =>
+      !rdvAccount.invalidWebhookOrganisationIds.includes(
+        organisation.organisation.id,
+      ),
+  )
+  const invalidWebhookOrganisations = rdvAccount.organisations.filter(
+    (organisation) =>
+      rdvAccount.invalidWebhookOrganisationIds.includes(
+        organisation.organisation.id,
+      ),
+  )
+
+  const webhookStatus = {
+    valid: {
+      count: validWebhookOrganisations.length,
+      organisations: validWebhookOrganisations,
+    },
+    invalid: {
+      count: invalidWebhookOrganisations.length,
+      organisations: invalidWebhookOrganisations,
+    },
+    status:
+      invalidWebhookOrganisations.length > 0
+        ? ('error' as const)
+        : ('success' as const),
+  }
+
   return {
-    user: { ...user, rdvAccount: user.rdvAccount },
+    user: { ...user, rdvAccount, webhookStatus },
   }
 }
 
