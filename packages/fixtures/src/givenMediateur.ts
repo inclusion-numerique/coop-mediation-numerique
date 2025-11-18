@@ -21,7 +21,7 @@ export const givenMediateur = ({
   mediateurId,
   enActiviteId,
   emploiId,
-  featureFlags = ['RdvServicePublic'],
+  featureFlags = [],
 }: GivenMediateurInput) =>
   givenUser({
     id,

@@ -6,7 +6,6 @@ import type { SessionUser } from '@app/web/auth/sessionUser'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import { BeneficiaireCraData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
 import { getRdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
-import { hasFeatureFlag } from '@app/web/security/hasFeatureFlag'
 import { trpc } from '@app/web/trpc'
 import { getServerUrl } from '@app/web/utils/baseUrl'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -19,7 +18,7 @@ const PrendreRendezVousAvecBeneficiaireButton = ({
   className,
 }: {
   beneficiaire: { id: string }
-  user: SessionUser
+  user: Pick<SessionUser, 'id' | 'rdvAccount'>
   returnPath: string // path on the app (e.g. /beneficiaires/12)
   className?: string
 }) => {
@@ -29,7 +28,7 @@ const PrendreRendezVousAvecBeneficiaireButton = ({
 
   const router = useRouter()
 
-  if (!hasFeatureFlag(user, 'RdvServicePublic') || oauthStatus !== 'success') {
+  if (oauthStatus !== 'success') {
     return null
   }
 

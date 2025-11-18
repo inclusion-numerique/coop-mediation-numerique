@@ -67,8 +67,7 @@ enum ProfilInscription {
 }
 
 enum UserFeatureFlag {
-  RdvServicePublic @map("rdv-service-public")
-  Assistant        @map("assistant")
+  Assistant @map("assistant")
 
   @@map("user_feature_flag")
 }
