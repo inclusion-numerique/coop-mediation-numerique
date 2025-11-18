@@ -25,7 +25,6 @@ const Template = ({
       rdvIntegration
         ? {
             ...testSessionUser,
-            featureFlags: ['RdvServicePublic'],
             rdvAccount: {
               hasOauthTokens: true,
               created: new Date().toISOString(),

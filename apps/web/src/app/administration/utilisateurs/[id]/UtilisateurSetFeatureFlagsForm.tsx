@@ -20,11 +20,6 @@ import {
 
 const featureFlagOptions: SelectOption<UserFeatureFlag>[] = [
   {
-    value: 'RdvServicePublic',
-    label: 'Rendez-vous Service Public',
-    hint: 'Permet de lier son compte à RDV Service Public et de prendre RDV avec des bénéficiaires',
-  },
-  {
     value: 'Assistant',
     label: 'Assistant',
     hint: 'Autorise l’accès à l’assistant IA',

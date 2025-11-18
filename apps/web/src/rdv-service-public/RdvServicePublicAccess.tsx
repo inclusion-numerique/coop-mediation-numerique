@@ -11,7 +11,6 @@ import {
   rdvIntegrationEnSavoirPlusLink,
   rdvMyHomepageLink,
 } from '@app/web/rdv-service-public/rdvServicePublicUrls'
-import { hasFeatureFlag } from '@app/web/security/hasFeatureFlag'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import Link from 'next/link'
@@ -26,8 +25,6 @@ const RdvServicePublicAccess = async () => {
   }
 
   const status = getRdvOauthIntegrationStatus({ user })
-
-  const hasFeature = hasFeatureFlag(user, 'RdvServicePublic')
 
   return (
     <>
@@ -56,27 +53,16 @@ const RdvServicePublicAccess = async () => {
             </Link>
           </div>
           <div className="fr-btns-group fr-btns-group--icon-right fr-mt-8v">
-            {hasFeature ? (
-              <Button
-                linkProps={{
-                  href: '/coop/mes-outils/rdv-service-public/se-connecter',
-                }}
-                priority="primary"
-                className="fr-mb-0 fr-flex-gap-2v"
-              >
-                Connecter à La Coop{' '}
-                <span className="ri-exchange-line" aria-hidden />
-              </Button>
-            ) : (
-              <Button
-                disabled
-                type="button"
-                priority="secondary"
-                className="fr-mb-0"
-              >
-                Disponible prochainement
-              </Button>
-            )}
+            <Button
+              linkProps={{
+                href: '/coop/mes-outils/rdv-service-public/se-connecter',
+              }}
+              priority="primary"
+              className="fr-mb-0 fr-flex-gap-2v"
+            >
+              Connecter à La Coop{' '}
+              <span className="ri-exchange-line" aria-hidden />
+            </Button>
           </div>
         </>
       )}
