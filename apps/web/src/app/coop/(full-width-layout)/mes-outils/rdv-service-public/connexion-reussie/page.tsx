@@ -8,6 +8,7 @@ import {
   rdvServicePublicGettingStartedLink,
 } from '@app/web/rdv-service-public/rdvServicePublicUrls'
 import Button from '@codegouvfr/react-dsfr/Button'
+import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import React from 'react'
@@ -52,6 +53,14 @@ const RdvServicePublicCreationReussiePage = async () => {
             En savoir plus
           </Link>
         </div>
+
+        <Notice
+          className="fr-my-12v"
+          severity="info"
+          title="À partir de maintenant, retrouvez vos prochains RDV planifiés sur La
+          Coop. Nous n’importons pas les rdv qui ont eu lieu avant la connexion
+          des outils."
+        />
 
         {hasSetupRdvspAccount ? (
           <div className="fr-btns-group fr-mt-8v">

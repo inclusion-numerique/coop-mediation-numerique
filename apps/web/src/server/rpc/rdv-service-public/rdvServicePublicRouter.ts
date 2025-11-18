@@ -216,12 +216,27 @@ export const rdvServicePublicRouter = router({
         userId,
       })
 
+      // Only refresh dashboard if there are invalid webhook organisations
+      const invalidWebhookOrganisationIds =
+        user.rdvAccount?.invalidWebhookOrganisationIds
+
+      if (
+        !invalidWebhookOrganisationIds ||
+        invalidWebhookOrganisationIds.length === 0
+      ) {
+        return {
+          dashboardRdvData: null,
+          hasDiff: false,
+        }
+      }
+
       let hasDiff = false
       try {
         const result = await syncAllRdvData({
           user,
+          organisationIds: invalidWebhookOrganisationIds,
         })
-        hasDiff = result.drift > 0 || result.drift === result.webhooks.drift
+        hasDiff = result.drift > 0
       } catch (error) {
         await handleSynchronizationError({
           error,
@@ -246,14 +261,27 @@ export const rdvServicePublicRouter = router({
         sessionUser,
         userId,
       })
+      // Only refresh dashboard if there are invalid webhook organisations
+      const invalidWebhookOrganisationIds =
+        user.rdvAccount?.invalidWebhookOrganisationIds
+
+      if (
+        !invalidWebhookOrganisationIds ||
+        invalidWebhookOrganisationIds.length === 0
+      ) {
+        return {
+          dashboardRdvData: null,
+          hasDiff: false,
+        }
+      }
 
       let hasDiff = false
       try {
         const syncResult = await syncAllRdvData({
           user,
+          organisationIds: invalidWebhookOrganisationIds,
         })
-        hasDiff =
-          syncResult.drift > 0 || syncResult.drift === syncResult.webhooks.drift
+        hasDiff = syncResult.drift > 0
         return { syncResult, hasDiff }
       } catch (error) {
         await handleSynchronizationError({

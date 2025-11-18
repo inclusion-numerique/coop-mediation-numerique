@@ -313,8 +313,8 @@ export const BeneficiairesAtelierFields = withForm({
                                   addTitle={`Ajouter un genre ${genreLabels[genre]}`}
                                   removeTitle={`Retirer un genre ${genreLabels[genre]}`}
                                   max={
-                                    participantsAnonymes.genreNonCommunique ??
-                                    0 + (field.state.value ?? 0)
+                                    (participantsAnonymes.genreNonCommunique ??
+                                      0) + (field.state.value ?? 0)
                                   }
                                   isPending={isPending}
                                 />

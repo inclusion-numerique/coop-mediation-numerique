@@ -7,6 +7,7 @@ import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationT
 import { dateAsDayAndTimeInTimeZone } from '@app/web/utils/dateAsDayAndTime'
 import { numberToString } from '@app/web/utils/formatNumber'
 import { contentId } from '@app/web/utils/skipLinks'
+import Badge from '@codegouvfr/react-dsfr/Badge'
 import AdministrationSyncUserDataButton from './AdministrationSyncUserDataButton'
 import type { AdministrationRdvspUserData } from './getAdministrationRdvspUserData'
 
@@ -49,7 +50,7 @@ const renderDriftRow = ({
 
 export const AdministrationRdvspUserPage = async ({
   data: {
-    user: { name, rdvAccount, id: userId },
+    user: { name, rdvAccount, id: userId, webhookStatus },
   },
   timezone = 'Europe/Paris',
 }: {
@@ -89,7 +90,10 @@ export const AdministrationRdvspUserPage = async ({
               {
                 label: `${numberToString(rdvAccount.organisations.length)} organisations`,
                 value: rdvAccount.organisations
-                  .map((organisation) => organisation.organisation.name)
+                  .map(
+                    (organisation) =>
+                      `${organisation.organisation.name} (${organisation.organisation.id})`,
+                  )
                   .join(', '),
               },
               {
@@ -117,6 +121,31 @@ export const AdministrationRdvspUserPage = async ({
               {
                 label: 'Affichage des RDVs dans "mes activités"',
                 value: rdvAccount.includeRdvsInActivitesList ? 'Oui' : 'Non',
+              },
+              {
+                label: 'Statut des webhooks',
+                value: (
+                  <div className="fr-flex fr-flex-wrap fr-flex-gap-2v">
+                    {webhookStatus.valid.organisations.map((organisation) => (
+                      <Badge
+                        key={organisation.organisation.id}
+                        severity="success"
+                      >
+                        {organisation.organisation.name} (
+                        {organisation.organisation.id}) ok
+                      </Badge>
+                    ))}
+                    {webhookStatus.invalid.organisations.map((organisation) => (
+                      <Badge
+                        key={organisation.organisation.id}
+                        severity="error"
+                      >
+                        {organisation.organisation.name} (
+                        {organisation.organisation.id}) ko
+                      </Badge>
+                    ))}
+                  </div>
+                ),
               },
             ]}
           />

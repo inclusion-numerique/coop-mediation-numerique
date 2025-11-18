@@ -26,7 +26,7 @@ export const syncAllRdvData = async ({
   user: UserWithExistingRdvAccount & UserId & UserMediateur
   organisationIds?: number[] // scopes the refresh to only these organisations, empty array means: no-op do nothing
 }) => {
-  if (organisationIds && organisationIds.length > 0) {
+  if (organisationIds && organisationIds.length === 0) {
     // if we are only syncing a subset of organisations, we return an empty sync result if no organisations are passed in params
     return computeSyncDrift({
       rdvs: emptySyncModelResult,
@@ -74,11 +74,14 @@ export const syncAllRdvData = async ({
     // After the first call, the credentials may have been refreshed, we grab the updated account
     const { rdvAccount } = await getUserContextForOAuthApiCall({ user })
 
-    const organisationsImport = await importOrganisations({
-      rdvAccount,
-      appendLog,
-      organisationIds,
-    })
+    // Only import organisations if we are syncing all organisations
+    let organisationsImport = { result: emptySyncModelResult, count: 0 }
+    if (!organisationIds) {
+      organisationsImport = await importOrganisations({
+        rdvAccount,
+        appendLog,
+      })
+    }
     const updatedRdvAccountOrganisations =
       await prismaClient.rdvAccount.findUniqueOrThrow({
         where: { id: rdvAccount.id },

@@ -32,13 +32,13 @@ const RdvServicePublicMigrationNotice = async () => {
             </Link>{' '}
             et de retrouver votre historique, mais l’intégration avec La Coop
             sera disponible uniquement avec RDV Service Public. Pour en savoir
-            plus, contactez{' '}
+            plus, consultez le{' '}
             <Link
               className="fr-link fr-text--sm"
-              href="https://rdv.anct.gouv.fr/aide/demande_support/new?role=agent"
+              href="https://betagouv.github.io/rdv-service-public/scenario_3cee8bd2b.html"
               target="_blank"
             >
-              RDV&nbsp;Service&nbsp;Public
+              guide de migration
             </Link>
           </span>
         </span>
