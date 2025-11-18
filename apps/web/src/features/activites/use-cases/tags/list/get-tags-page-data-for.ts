@@ -26,6 +26,11 @@ const availableFor = (user: SessionUser) => {
         ? [{ coordinateurId: user.coordinateur.id }]
         : []),
       { departement: departement.code },
+      {
+        departement: null,
+        coordinateurId: null,
+        mediateurId: null,
+      },
     ],
   }
 }
@@ -34,7 +39,12 @@ const sortOptionSelectedIn = (
   searchParams: TagSearchParams,
 ): Prisma.TagOrderByWithRelationInput[] | Prisma.TagOrderByWithRelationInput =>
   searchParams?.tri === 'visibilite'
-    ? [{ departement: 'asc' }, { mediateurId: 'asc' }]
+    ? [
+        { departement: 'asc' },
+        { mediateurId: 'asc' },
+        { coordinateurId: 'asc' },
+        { nom: 'asc' },
+      ]
     : { nom: 'asc' }
 
 const paginationConfigFrom = (searchParams: TagSearchParams) => ({

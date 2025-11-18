@@ -1,3 +1,4 @@
+import { getSessionUser } from '@app/web/auth/getSessionUser'
 import { getUserDepartement } from '@app/web/features/utilisateurs/utils/getUserDepartement'
 import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
 import {
@@ -10,8 +11,6 @@ import { Prisma } from '@prisma/client'
 import { getTagScope } from '../tagScope'
 
 type SearchLieuActiviteOptions = {
-  mediateurId?: string
-  coordinateurId?: string
   excludeIds?: string[]
   searchParams?: {
     recherche?: string
@@ -21,8 +20,6 @@ type SearchLieuActiviteOptions = {
 }
 
 export const searchTags = async ({
-  mediateurId,
-  coordinateurId,
   excludeIds = [],
   searchParams,
 }: SearchLieuActiviteOptions) => {
@@ -32,18 +29,9 @@ export const searchTags = async ({
   })
   const recherche = searchParams?.recherche?.trim() ?? ''
 
-  const mediateur = mediateurId
-    ? await prismaClient.mediateur.findUnique({
-        where: { id: mediateurId },
-        select: {
-          user: { select: { emplois: { select: { structure: true } } } },
-        },
-      })
-    : undefined
+  const user = await getSessionUser()
 
-  const departement = mediateur?.user
-    ? getUserDepartement(mediateur.user)
-    : null
+  const departement = user ? getUserDepartement(user) : null
 
   const tags = await prismaClient.$queryRaw<
     {
@@ -62,12 +50,16 @@ export const searchTags = async ({
         t.mediateur_id as "mediateurId",
         t.coordinateur_id as "coordinateurId",
         t.departement,
-        COUNT(a.id) AS usage_count
+        COUNT(DISTINCT COALESCE(a.id, ac.id)) AS usage_count
       FROM tags t
         LEFT JOIN activite_tags at ON at.tag_id = t.id
         LEFT JOIN activites a ON a.id = at.activite_id
-        AND a.mediateur_id = ${mediateurId ?? null}::UUID
+        AND a.mediateur_id = ${user?.mediateur?.id ?? null}::UUID
         AND a.suppression IS NULL
+        LEFT JOIN activite_coordination_tags act ON act.tag_id = t.id
+        LEFT JOIN activite_coordination ac ON ac.id = act.activite_coordination_id
+        AND ac.coordinateur_id = ${user?.coordinateur?.id ?? null}::UUID
+        AND ac.suppression IS NULL
       WHERE
         t.suppression IS NULL
         ${
@@ -77,12 +69,12 @@ export const searchTags = async ({
         }
         AND t.nom ILIKE ${`%${recherche}%`}
         AND (
-        (t.mediateur_id = ${mediateurId ?? null}::UUID OR t.coordinateur_id = ${coordinateurId ?? null}::UUID)
+        (t.mediateur_id = ${user?.mediateur?.id ?? null}::UUID OR t.coordinateur_id = ${user?.coordinateur?.id ?? null}::UUID)
         ${departement == null ? Prisma.empty : Prisma.sql`OR t.departement = ${departement.code}::text`}
-         OR (t.mediateur_id IS NULL AND t.departement IS NULL)
+         OR (t.mediateur_id IS NULL AND t.coordinateur_id IS NULL AND t.departement IS NULL)
         )
       GROUP BY t.id
-      ORDER BY usage_count DESC
+      ORDER BY usage_count DESC, t.nom ASC
       LIMIT ${take}
       OFFSET ${skip}
     `

@@ -32,7 +32,6 @@ export const getCraCoordinationPageData = async (
 
   const initialTagsOptions = (
     await searchTags({
-      coordinateurId,
       searchParams: { lignes: '10' },
       excludeIds: defaultValues.tags
         ?.map((tag) => tag?.id)

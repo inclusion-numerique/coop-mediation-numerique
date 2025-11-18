@@ -59,7 +59,6 @@ export const getCraPageData =
 
     const initialTagsOptions = (
       await searchTags({
-        mediateurId,
         searchParams: { lignes: '10' },
         excludeIds: defaultValues.tags
           ?.map((tag) => tag?.id)
