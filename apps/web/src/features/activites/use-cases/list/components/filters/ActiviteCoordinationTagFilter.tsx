@@ -1,14 +1,13 @@
 'use client'
 
 import { Popover } from '@app/ui/components/Primitives/Popover'
+import TagScopeBadge from '@app/web/features/activites/use-cases/tags/components/TagScopeBadge'
 import { TagScope } from '@app/web/features/activites/use-cases/tags/tagScope'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
-import Badge from '@codegouvfr/react-dsfr/Badge'
 import Checkbox from '@codegouvfr/react-dsfr/Checkbox'
-import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 
@@ -105,21 +104,8 @@ export const ActiviteCoordinationTagFilter = ({
                   options={tagOptions.map(({ value, label, scope }) => ({
                     label: (
                       <span className="fr-flex fr-align-items-center fr-flex-gap-4v">
-                        {label}{' '}
-                        <Badge
-                          className={classNames(
-                            'fr-text--nowrap',
-                            scope === TagScope.Personnel
-                              ? 'fr-text-mention--grey'
-                              : undefined,
-                          )}
-                          severity={
-                            scope === TagScope.Personnel ? undefined : 'info'
-                          }
-                          noIcon
-                        >
-                          Tag {scope}
-                        </Badge>
+                        {label}
+                        <TagScopeBadge scope={scope} />
                       </span>
                     ),
                     value,
