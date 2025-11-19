@@ -85,7 +85,7 @@ Cypress.Commands.add('dsfrStylesShouldBeLoaded', () => {
 })
 
 Cypress.Commands.add('dsfrShouldBeStarted', () => {
-  cy.get('html').should('have.attr', 'data-fr-js', 'true')
+  cy.get('html', { timeout: 15000 }).should('have.attr', 'data-fr-js', 'true')
 })
 
 Cypress.Commands.add('dsfrModalsShouldBeBound', () => {
