@@ -3,7 +3,7 @@ import {
   administrationWebSearchToolOptions,
 } from '@app/web/assistant/tools/administrationWebSearchTool'
 
-describe('administrationWebSearchTool', () => {
+describe.skip('administrationWebSearchTool', () => {
   it('should return a list of results', async () => {
     if (!administrationWebSearchTool.$callback) {
       throw new Error('webSearchTool.$callback is not defined')

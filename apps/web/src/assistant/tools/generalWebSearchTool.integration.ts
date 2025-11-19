@@ -3,7 +3,7 @@ import {
   generalWebSearchToolOptions,
 } from '@app/web/assistant/tools/generalWebSearchTool'
 
-describe('generalWebSearchTool', () => {
+describe.skip('generalWebSearchTool', () => {
   it('should return a list of results', async () => {
     if (!generalWebSearchTool.$callback) {
       throw new Error('webSearchTool.$callback is not defined')

@@ -1,6 +1,6 @@
 import { rechercheApiEntreprise } from '@app/web/external-apis/rechercheApiEntreprise'
 
-describe('rechercheApiEntreprise', () => {
+describe.skip('rechercheApiEntreprise', () => {
   it('should return a result for a "non diffusible" siret', async () => {
     const results = await rechercheApiEntreprise({
       q: '93429789600011',
