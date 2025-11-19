@@ -7,7 +7,7 @@ import {
   isValidUrl,
   Localisation,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import Oh, { nominatim_object } from 'opening_hours'
+import Oh from 'opening_hours'
 import proj4 from 'proj4'
 import { FixStructuresJob } from './fixStructuresJob'
 
@@ -106,7 +106,7 @@ const isLocationWrongFormat = ({
   (latitude != null && (latitude > 90 || latitude < -90)) ||
   (longitude != null && (longitude > 180 || longitude < -180))
 
-const noBanId = ({ banId }: { banId: string | null }) => banId == null
+// const noBanId = ({ banId }: { banId: string | null }) => banId == null
 
 const isInvalidFicheAccesLibre = ({
   ficheAccesLibre,
@@ -197,7 +197,7 @@ export const executeFixStructures = async (_job: FixStructuresJob) => {
     ),
   )
 
-  const structuresWithoutBanId = structures.filter(noBanId)
+  const structuresWithoutBanId = structures //.filter(noBanId)
 
   output.log(`Found ${structuresWithoutBanId.length} structures without ban id`)
 
