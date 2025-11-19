@@ -1,6 +1,7 @@
 import { executeBackupDatabaseJob } from '@app/web/jobs/backup-database/executeBackupDatabaseJob'
 import { executeFixCoordinationsV1 } from '@app/web/jobs/fix-coordinations-v1/executeFixCoordinationsV1'
 import { executeFixStructures } from '@app/web/jobs/fix-structures/executeFixStructures'
+import { executeFixTags } from '@app/web/jobs/fix-tags/executeFixTags'
 import { executeFixUsers } from '@app/web/jobs/fix-users/executeFixUsers'
 import { executeImportContactsToBrevo } from '@app/web/jobs/import-contacts-to-brevo/executeImportContactsToBrevo'
 import { executeIngestLesBasesInRag } from '@app/web/jobs/ingest-les-bases-in-rag/executeIngestLesBasesInRag'
@@ -59,6 +60,7 @@ export const jobExecutors: {
   'fix-structures': executeFixStructures,
   'update-conum-info': executeUpdateConumInfo,
   'fix-users': executeFixUsers,
+  'fix-tags': executeFixTags,
   'sync-conums': executeSyncConums,
   'sync-rdvsp-data': executeSyncRdvspData,
 }

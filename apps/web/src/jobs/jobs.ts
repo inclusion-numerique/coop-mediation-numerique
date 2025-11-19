@@ -1,6 +1,7 @@
 import { BackupDatabaseJobValidation } from '@app/web/jobs/backup-database/backupDatabaseJob'
 import { FixCoordinationsV1JobValidation } from '@app/web/jobs/fix-coordinations-v1/FixCoordinationsV1Job'
 import { FixStructuresJobValidation } from '@app/web/jobs/fix-structures/fixStructuresJob'
+import { FixTagsJobValidation } from '@app/web/jobs/fix-tags/fixTagsJob'
 import { FixUsersJobValidation } from '@app/web/jobs/fix-users/fixUsersJob'
 import { ImportContactsToBrevoValidation } from '@app/web/jobs/import-contacts-to-brevo/ImportContactsToBrevoJob'
 import { IngestLesBasesInRagValidation } from '@app/web/jobs/ingest-les-bases-in-rag/ingestLesBasesInRagJob'
@@ -43,6 +44,7 @@ export const JobValidation = z.discriminatedUnion('name', [
   FixUsersJobValidation,
   SyncConumsJobValidation,
   SyncRdvspDataJobValidation,
+  FixTagsJobValidation,
 ])
 
 export type Job = z.infer<typeof JobValidation>
