@@ -2,6 +2,12 @@ import Badge from '@codegouvfr/react-dsfr/Badge'
 import classNames from 'classnames'
 import { TagScope } from '../tagScope'
 
+const TAG_SEVERITY: Record<TagScope, string> = {
+  [TagScope.Personnel]: 'fr-text-mention--grey',
+  [TagScope.Departemental]: 'fr-badge--info',
+  [TagScope.National]: 'fr-badge--green-menthe',
+}
+
 const TagScopeBadge = ({
   scope,
   small,
@@ -13,12 +19,7 @@ const TagScopeBadge = ({
 }) => (
   <Badge
     small={small}
-    className={classNames(
-      'fr-text--nowrap',
-      scope === 'personnel' ? 'fr-text-mention--grey' : undefined,
-      className,
-    )}
-    severity={scope === TagScope.Personnel ? undefined : 'info'}
+    className={classNames('fr-text--nowrap', TAG_SEVERITY[scope], className)}
     noIcon
   >
     Tag {scope}

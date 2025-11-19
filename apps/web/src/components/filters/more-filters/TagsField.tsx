@@ -1,9 +1,8 @@
+import TagScopeBadge from '@app/web/features/activites/use-cases/tags/components/TagScopeBadge'
 import { TagScope } from '@app/web/features/activites/use-cases/tags/tagScope'
 import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
-import Badge from '@codegouvfr/react-dsfr/Badge'
 import Checkbox from '@codegouvfr/react-dsfr/Checkbox'
 import { formOptions } from '@tanstack/react-form'
-import classNames from 'classnames'
 
 export const tagToArray = (tagsOptions: { id: string }[]) => (tags: string[]) =>
   tags.length === 1 && tagsOptions.length === 1 ? tags.at(0) : tags
@@ -63,20 +62,7 @@ export const TagsField = withForm({
                 label: (
                   <span className="fr-flex fr-align-items-center fr-flex-gap-4v">
                     {nom}
-                    <Badge
-                      className={classNames(
-                        'fr-text--nowrap',
-                        scope === TagScope.Personnel
-                          ? 'fr-text-mention--grey'
-                          : undefined,
-                      )}
-                      severity={
-                        scope === TagScope.Personnel ? undefined : 'info'
-                      }
-                      noIcon
-                    >
-                      Tag {scope}
-                    </Badge>
+                    <TagScopeBadge scope={scope} />
                   </span>
                 ),
                 value: id,

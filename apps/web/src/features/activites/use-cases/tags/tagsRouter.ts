@@ -20,10 +20,8 @@ export const tagsRouter = router({
         excludeIds: z.array(z.string()).default([]),
       }),
     )
-    .query(({ input: { query, excludeIds }, ctx: { user } }) =>
+    .query(({ input: { query, excludeIds } }) =>
       searchTags({
-        mediateurId: user.mediateur?.id,
-        coordinateurId: user.coordinateur?.id,
         searchParams: { lignes: '10', recherche: query },
         excludeIds,
       }),

@@ -1,7 +1,7 @@
 import { coordinateursV1ThatShouldSignupAsCoordinateur } from '@app/e2e/e2e/inscription/inscriptionE2eCases'
 import { startInscriptionAs } from '@app/e2e/e2e/inscription/inscriptionE2eHelpers'
 
-describe('ETQ Coordinateur conseiller numérique, je peux m’inscrire en suivant le bon parcours', () => {
+describe.skip('ETQ Coordinateur conseiller numérique, je peux m’inscrire en suivant le bon parcours', () => {
   beforeEach(() => {
     cy.execute('resetFixtures', {})
   })

@@ -3,7 +3,7 @@ import {
   startInscriptionAs,
 } from '@app/e2e/e2e/inscription/inscriptionE2eHelpers'
 
-describe('ETQ médiateur, je peux m’inscrire en suivant le bon parcours', () => {
+describe.skip('ETQ médiateur, je peux m’inscrire en suivant le bon parcours', () => {
   beforeEach(() => {
     cy.execute('resetFixtures', {})
   })

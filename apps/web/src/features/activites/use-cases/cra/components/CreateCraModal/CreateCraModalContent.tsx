@@ -81,7 +81,7 @@ const CreateCraModalContent = ({
 
   return (
     <>
-      <p>Quel type d’accompagnement avez-vous réalisé&nbsp;?</p>
+      <p>Quel type d’activité avez-vous réalisé&nbsp;?</p>
       {isMediateur && isCoordinateur && (
         <div className="fr-mt-8v fr-text-mention--grey fr-flex fr-flex-gap-2v fr-align-items-center">
           <span className="ri-xl ri-service-line" aria-hidden="true" />

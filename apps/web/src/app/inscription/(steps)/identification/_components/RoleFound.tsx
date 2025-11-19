@@ -34,31 +34,35 @@ export const RoleFound = ({
   role: ProfileInscriptionSlug
   lieuActiviteCount?: number
   children: ReactNode
-}) => (
-  <div className="fr-flex fr-direction-column fr-flex-gap-12v">
-    <div className="fr-text--center">
-      <Image
-        className="fr-mb-6v"
-        width={94}
-        height={88}
-        src="/images/illustrations/landing-page/contexte/identifier.svg"
-        alt=""
-      />
-      <h1 className="fr-h3 fr-mb-0 fr-text-title--blue-france">
-        Finaliser votre inscription pour accéder à votre espace
-      </h1>
+}) => {
+  const continuerPath = `/inscription/${nextPageFor(role)(lieuActiviteCount)}`
+
+  return (
+    <div className="fr-flex fr-direction-column fr-flex-gap-12v">
+      <div className="fr-text--center">
+        <Image
+          className="fr-mb-6v"
+          width={94}
+          height={88}
+          src="/images/illustrations/landing-page/contexte/identifier.svg"
+          alt=""
+        />
+        <h1 className="fr-h3 fr-mb-0 fr-text-title--blue-france">
+          Finaliser votre inscription pour accéder à votre espace
+        </h1>
+      </div>
+      {children}
+      <div className="fr-text--center">
+        <Link
+          className="fr-width-full fr-display-block fr-mb-3w fr-btn fr-btn--lg"
+          href={continuerPath}
+        >
+          Continuer
+        </Link>
+        <Link href="/" className="fr-link ">
+          Revenir plus tard
+        </Link>
+      </div>
     </div>
-    {children}
-    <div className="fr-text--center">
-      <Link
-        className="fr-width-full fr-display-block fr-mb-3w fr-btn fr-btn--lg"
-        href={`/inscription/${nextPageFor(role)(lieuActiviteCount)}`}
-      >
-        Continuer
-      </Link>
-      <Link href="/" className="fr-link ">
-        Revenir plus tard
-      </Link>
-    </div>
-  </div>
-)
+  )
+}
