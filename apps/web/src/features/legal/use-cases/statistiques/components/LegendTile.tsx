@@ -1,4 +1,4 @@
-import { numberToString } from '@app/web/utils/formatNumber'
+import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
 import classNames from 'classnames'
 import React from 'react'
 
@@ -36,7 +36,7 @@ export const LegendTile = ({
       <span>
         {numberToString(value)}
         <span className="fr-text-mention--grey fr-text--regular">
-          &nbsp;·&nbsp;{percent}&nbsp;%
+          &nbsp;·&nbsp;{numberToPercentage(percent)}
         </span>
       </span>
     </p>
