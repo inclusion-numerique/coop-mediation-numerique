@@ -106,7 +106,7 @@ const isLocationWrongFormat = ({
   (latitude != null && (latitude > 90 || latitude < -90)) ||
   (longitude != null && (longitude > 180 || longitude < -180))
 
-// const noBanId = ({ banId }: { banId: string | null }) => banId == null
+const noBanId = ({ banId }: { banId: string | null }) => banId == null
 
 const isInvalidFicheAccesLibre = ({
   ficheAccesLibre,
@@ -197,7 +197,7 @@ export const executeFixStructures = async (_job: FixStructuresJob) => {
     ),
   )
 
-  const structuresWithoutBanId = structures //.filter(noBanId)
+  const structuresWithoutBanId = structures.filter(noBanId)
 
   output.log(`Found ${structuresWithoutBanId.length} structures without ban id`)
 
