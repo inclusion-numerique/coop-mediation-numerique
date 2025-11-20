@@ -1,7 +1,54 @@
 import { SessionUser } from '@app/web/auth/sessionUser'
+import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
 import { getUserDepartement } from '@app/web/features/utilisateurs/utils/getUserDepartement'
 import { prismaClient } from '@app/web/prismaClient'
 import { TagScope } from '../../tagScope'
+
+const updateTagDepartemental =
+  (id: string) =>
+  async (data: {
+    nom: string
+    description?: string | null
+    mediateurId?: string | null
+    coordinateurId?: string | null
+    departement?: string
+  }) => {
+    if (!data.departement) {
+      throw new Error('No departement found for user')
+    }
+
+    return prismaClient.tag.update({
+      where: { id },
+      data: {
+        ...data,
+        modification: new Date(),
+        mediateurId: null,
+        coordinateurId: null,
+      },
+    })
+  }
+
+const updateTagPersonnel =
+  (id: string) =>
+  async (data: {
+    nom: string
+    description?: string | null
+    mediateurId?: string | null
+    coordinateurId?: string | null
+  }) => {
+    if (data.mediateurId == null && data.coordinateurId == null) {
+      throw new Error('Either mediateurId or coordinateurId must be provided')
+    }
+
+    return prismaClient.tag.update({
+      where: { id },
+      data: {
+        ...data,
+        modification: new Date(),
+        departement: null,
+      },
+    })
+  }
 
 export const updateTag =
   (sessionUser: SessionUser) =>
@@ -30,26 +77,23 @@ export const updateTag =
       })
     }
 
-    const departement = getUserDepartement(sessionUser)
-    if (scope === TagScope.Departemental && !departement) {
-      throw new Error('No departement found for user')
-    }
-
-    return prismaClient.tag.update({
-      where: { id },
-      data: {
+    if (scope === TagScope.Personnel && isMediateur(sessionUser))
+      return updateTagPersonnel(id)({
         ...data,
-        mediateurId:
-          scope === TagScope.Personnel && sessionUser.mediateur?.id
-            ? sessionUser.mediateur.id
-            : null,
-        coordinateurId:
-          scope === TagScope.Personnel && sessionUser.coordinateur?.id
-            ? sessionUser.coordinateur.id
-            : null,
-        departement:
-          scope === TagScope.Departemental ? departement?.code : null,
-        modification: new Date(),
-      },
-    })
+        mediateurId: sessionUser.mediateur.id,
+        coordinateurId: null,
+      })
+
+    if (scope === TagScope.Personnel && isCoordinateur(sessionUser))
+      return updateTagPersonnel(id)({
+        ...data,
+        mediateurId: null,
+        coordinateurId: sessionUser.coordinateur.id,
+      })
+
+    if (scope === TagScope.Departemental && isCoordinateur(sessionUser))
+      return updateTagDepartemental(id)({
+        ...data,
+        departement: getUserDepartement(sessionUser)?.code,
+      })
   }

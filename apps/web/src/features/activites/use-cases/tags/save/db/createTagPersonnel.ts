@@ -8,6 +8,10 @@ const createTag = async (data: {
   mediateurId?: string
   coordinateurId?: string
 }) => {
+  if (data.mediateurId == null && data.coordinateurId == null) {
+    throw new Error('Either mediateurId or coordinateurId must be provided')
+  }
+
   return prismaClient.tag.create({
     data: {
       ...data,

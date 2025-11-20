@@ -1,6 +1,5 @@
-import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
+import { isCoordinateur } from '@app/web/auth/userTypeGuards'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
-import { forbiddenError } from '@app/web/server/rpc/trpcErrors'
 import { z } from 'zod'
 import { isTagOwner } from './db/isTagOwner'
 import { deleteTag } from './delete/db/deleteTag'
