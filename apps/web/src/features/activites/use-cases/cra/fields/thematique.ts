@@ -191,7 +191,7 @@ export const thematiquesAdministrativesHints = {
   ],
   TravailFormation: [
     'CDD, Concours, Retraite, Démission, Période d’essai...',
-    'Pôle Emploi · Mon compte formation · info-retraite.fr',
+    'France Travail · Mon compte formation · info-retraite.fr',
   ],
   Logement: [
     'Allocations logement, Permis de construire, Logement social, Fin de bail...',
