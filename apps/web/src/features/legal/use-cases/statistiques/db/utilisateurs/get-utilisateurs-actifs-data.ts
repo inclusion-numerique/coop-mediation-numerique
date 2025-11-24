@@ -39,89 +39,82 @@ const formatDataForGraph = (
 export const getUtilisateursActifsPerMonth = async (): Promise<
   UtilisateursActifsParMois[]
 > => {
-  const rawData = await prismaClient.$queryRaw<UtilisateursActifsRaw[]>`
+  const rawData = await prismaClient.$queryRawUnsafe<UtilisateursActifsRaw[]>(
+    `
     WITH months AS (
       SELECT generate_series(
         date_trunc('month', CURRENT_DATE - INTERVAL '11 months'),
         date_trunc('month', CURRENT_DATE),
         '1 month'
-      ) AS month_start
+      ) AS month
     ),
-    roles AS (
-      SELECT 'mediateurs'::text AS role
-      UNION ALL SELECT 'conseillers'
-      UNION ALL SELECT 'coordinateurs'
-    ),
-
-    -- médiateurs actifs par mois (au moins une des deux dates tombe dans le mois)
-    mediateurs_m AS (
+    mediateurs_actifs AS (
       SELECT
-        ms.month_start,
-        COUNT(DISTINCT m.id)::int AS value
-      FROM months ms
-      JOIN users u ON u.deleted IS NULL AND u.inscription_validee IS NOT NULL
-      JOIN mediateurs m ON m.user_id = u.id
+        date_trunc('month', a.date) AS month,
+        'mediateurs' AS role,
+        COUNT(DISTINCT a.mediateur_id)::int AS value
+      FROM users u
+      JOIN mediateurs m ON u.id = m.user_id
       LEFT JOIN conseillers_numeriques cn ON cn.mediateur_id = m.id
-      LEFT JOIN coordinateurs c ON c.user_id = u.id
-      WHERE cn.mediateur_id IS NULL
+      LEFT JOIN coordinateurs c ON u.id = c.user_id
+      JOIN activites a ON a.mediateur_id = m.id
+      WHERE a.suppression IS NULL
+        AND cn.mediateur_id IS NULL
         AND c.id IS NULL
-        AND (
-          (m.derniere_creation_activite >= ms.month_start
-           AND m.derniere_creation_activite <  ms.month_start + INTERVAL '1 month')
-          OR
-          (m.derniere_creation_beneficiaire >= ms.month_start
-           AND m.derniere_creation_beneficiaire <  ms.month_start + INTERVAL '1 month')
-        )
-      GROUP BY ms.month_start
+        AND u.deleted IS NULL
+        AND u.inscription_validee IS NOT NULL
+      GROUP BY 1
     ),
-
-    -- conseillers actifs par mois (même critère d’activité via le médiateur)
-    conseillers_m AS (
+    conseillers_actifs AS (
       SELECT
-        ms.month_start,
+        date_trunc('month', a.date) AS month,
+        'conseillers' AS role,
         COUNT(DISTINCT cn.id)::int AS value
-      FROM months ms
-      JOIN users u ON u.deleted IS NULL AND u.inscription_validee IS NOT NULL
-      JOIN mediateurs m ON m.user_id = u.id
+      FROM users u
+      JOIN mediateurs m ON u.id = m.user_id
       JOIN conseillers_numeriques cn ON cn.mediateur_id = m.id
-      LEFT JOIN coordinateurs c ON c.user_id = u.id
-      WHERE c.id IS NULL
-        AND (
-          (m.derniere_creation_activite >= ms.month_start
-           AND m.derniere_creation_activite <  ms.month_start + INTERVAL '1 month')
-          OR
-          (m.derniere_creation_beneficiaire >= ms.month_start
-           AND m.derniere_creation_beneficiaire <  ms.month_start + INTERVAL '1 month')
-        )
-      GROUP BY ms.month_start
+      LEFT JOIN coordinateurs c ON u.id = c.user_id
+      JOIN activites a ON a.mediateur_id = m.id
+      WHERE a.suppression IS NULL
+        AND c.id IS NULL
+        AND u.deleted IS NULL
+        AND u.inscription_validee IS NOT NULL
+      GROUP BY 1
     ),
-
-    -- coordinateurs actifs par mois (last_login dans le mois)
-    coordinateurs_m AS (
+    coordinateurs_actifs AS (
       SELECT
-        ms.month_start,
+        date_trunc('month', u.last_login) AS month,
+        'coordinateurs' AS role,
         COUNT(*)::int AS value
-      FROM months ms
-      JOIN users u ON u.deleted IS NULL AND u.inscription_validee IS NOT NULL
-      JOIN coordinateurs c ON c.user_id = u.id
-      WHERE u.last_login IS NOT NULL
-        AND u.last_login >= ms.month_start
-        AND u.last_login <  ms.month_start + INTERVAL '1 month'
-      GROUP BY ms.month_start
+      FROM users u
+      JOIN coordinateurs c ON u.id = c.user_id
+      WHERE u.deleted IS NULL
+        AND u.inscription_validee IS NOT NULL
+        AND u.last_login IS NOT NULL
+      GROUP BY 1
+    ),
+    all_data AS (
+      SELECT * FROM mediateurs_actifs
+      UNION ALL
+      SELECT * FROM conseillers_actifs
+      UNION ALL
+      SELECT * FROM coordinateurs_actifs
     )
-
-    SELECT to_char(ms.month_start, 'YYYY-MM') AS month, r.role,
-           COALESCE(
-             CASE r.role
-               WHEN 'mediateurs'    THEN (SELECT value FROM mediateurs_m    mm WHERE mm.month_start = ms.month_start)
-               WHEN 'conseillers'   THEN (SELECT value FROM conseillers_m   cm WHERE cm.month_start = ms.month_start)
-               WHEN 'coordinateurs' THEN (SELECT value FROM coordinateurs_m co WHERE co.month_start = ms.month_start)
-             END, 0
-           )::int AS value
-    FROM months ms
-    CROSS JOIN roles r
-    ORDER BY ms.month_start, r.role;
-  `
+    SELECT
+      to_char(m.month, 'YYYY-MM') AS month,
+      r.role,
+      COALESCE(SUM(a.value), 0)::int AS value
+    FROM months m
+    CROSS JOIN (
+      SELECT 'mediateurs' AS role
+      UNION SELECT 'conseillers'
+      UNION SELECT 'coordinateurs'
+    ) r
+    LEFT JOIN all_data a ON a.month = m.month AND a.role = r.role
+    GROUP BY m.month, r.role
+    ORDER BY m.month ASC, r.role ASC
+    `,
+  )
 
   return formatDataForGraph(rawData)
 }
