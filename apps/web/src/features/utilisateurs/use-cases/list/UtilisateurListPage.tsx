@@ -10,7 +10,10 @@ import Filters from '../filter/Filters'
 import { FilterTags } from '../filter/FilterTags'
 import { generateUtilisateursFiltersLabels } from '../filter/generateUtilisateursFiltersLabels'
 import { UtilisateursFilters } from '../filter/utilisateursFilters'
-import { SearchUtilisateurResult } from '../search/searchUtilisateur'
+import {
+  SearchUtilisateurResult,
+  UtilisateurWithStatutCompte,
+} from '../search/searchUtilisateur'
 import ExportUtilisateursButton from './ExportUtilisateursButton'
 import { type UtilisateursDataTableSearchParams } from './UtilisateursDataTable'
 import UtilisateursTable from './UtilisateursTable'
@@ -28,7 +31,9 @@ export const UtilisateurListPage = ({
   communesOptions: SelectOption[]
   lieuxActiviteOptions: LieuActiviteOption[]
   departementsOptions: SelectOption[]
-  searchResult: SearchUtilisateurResult
+  searchResult: SearchUtilisateurResult & {
+    utilisateurs: UtilisateurWithStatutCompte[]
+  }
 }) => (
   <>
     <SkipLinksPortal />

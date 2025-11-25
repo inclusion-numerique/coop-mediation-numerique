@@ -1,5 +1,5 @@
-import { type LabelAndValue } from '@app/web/app/administration/AdministrationInlineLabelsValues'
 import { metadataTitle } from '@app/web/app/metadataTitle'
+import { statutCompte } from '@app/web/features/utilisateurs/use-cases/list/statut-compte'
 import { notFound } from 'next/navigation'
 import AdministrationUserPage from './AdministrationUserPage'
 import { getAdministrationUserPageData } from './getAdministrationUserPageData'
@@ -20,7 +20,17 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
     notFound()
   }
 
-  return <AdministrationUserPage data={data} />
+  return (
+    <AdministrationUserPage
+      data={{
+        ...data,
+        user: {
+          ...data.user,
+          statutCompte: statutCompte(new Date())(data.user),
+        },
+      }}
+    />
+  )
 }
 
 export default Page

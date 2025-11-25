@@ -89,3 +89,8 @@ export const searchUtilisateur = async (options: SearchUtilisateurOptions) => {
 export type SearchUtilisateurResult = Awaited<
   ReturnType<typeof searchUtilisateur>
 >
+
+export type UtilisateurWithStatutCompte =
+  SearchUtilisateurResult['utilisateurs'][number] & {
+    statutCompte: string
+  }

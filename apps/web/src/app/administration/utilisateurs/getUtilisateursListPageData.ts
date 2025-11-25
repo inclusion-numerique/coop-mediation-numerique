@@ -15,12 +15,9 @@ export const getUtilisateursListPageData = async ({
     { communesOptions, departementsOptions },
     lieuxActiviteOptions,
   ] = await Promise.all([
-    debugPromiseTiming(
-      searchUtilisateur({
-        searchParams,
-      }),
-      { name: 'searchUtilisateur' },
-    ),
+    debugPromiseTiming(searchUtilisateur({ searchParams }), {
+      name: 'searchUtilisateur',
+    }),
     debugPromiseTiming(getCommunesAndDepartementsOptions(), {
       name: 'getCommunesAndDepartementsOptions',
     }),

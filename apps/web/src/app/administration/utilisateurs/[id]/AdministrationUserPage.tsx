@@ -93,7 +93,7 @@ const getStructuresInfos = ({
 const AdministrationUserPage = async ({
   data: { user },
 }: {
-  data: AdministrationUserPageData
+  data: AdministrationUserPageData & { user: { statutCompte: string } }
 }) => {
   const name = getUserDisplayName(user)
 
@@ -114,6 +114,7 @@ const AdministrationUserPage = async ({
     mutations,
     uploads,
     emplois,
+    statutCompte,
   } = user
 
   const crasConseillerNumeriqueV1Count = mediateur?.conseillerNumerique
@@ -492,10 +493,7 @@ const AdministrationUserPage = async ({
                                       {dateAsDay(mediateur.user.deleted)}
                                     </Badge>
                                   ) : (
-                                    getUserAccountStatusBadge({
-                                      ...mediateur.user,
-                                      mediateur,
-                                    })
+                                    getUserAccountStatusBadge(statutCompte)
                                   )}
                                 </td>
                                 <td>{dateAsDayAndTime(creation)}</td>
@@ -600,7 +598,7 @@ const AdministrationUserPage = async ({
                                       )}
                                     </Badge>
                                   ) : (
-                                    getUserAccountStatusBadge(utilisateurInvite)
+                                    getUserAccountStatusBadge(statutCompte)
                                   )}
                                 </td>
                                 <td>

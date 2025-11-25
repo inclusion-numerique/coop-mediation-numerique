@@ -10,14 +10,13 @@ import { optionalNumberToString } from '@app/web/utils/formatNumber'
 import { booleanToYesNo } from '@app/web/utils/yesNoBooleanOptions'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import type { Prisma } from '@prisma/client'
-import { getUserAccountStatus } from './getUserAccountStatus'
 import { getUserAccountStatusBadge } from './getUserAccountStatusBadge'
 import { getUserLifecycle } from './getUserLifecycle'
 import { getUserLifecycleBadge } from './getUserLifecycleBadge'
 import { UtilisateurForList } from './queryUtilisateursForList'
 
 export type UtilisateursDataTableConfiguration = DataTableConfiguration<
-  UtilisateurForList,
+  UtilisateurForList & { statutCompte: string },
   Prisma.UserWhereInput,
   Prisma.UserOrderByWithRelationInput
 >
@@ -38,8 +37,8 @@ export const UtilisateursDataTable = {
       name: 'statut-compte',
       header: 'Statut compte',
       csvHeaders: ['Statut compte'],
-      csvValues: (user) => [getUserAccountStatus(user)],
-      cell: (user) => getUserAccountStatusBadge(user),
+      csvValues: (user) => [user.statutCompte],
+      cell: (user) => getUserAccountStatusBadge(user.statutCompte),
     },
     {
       name: 'creation',

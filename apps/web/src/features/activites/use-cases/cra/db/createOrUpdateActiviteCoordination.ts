@@ -158,6 +158,13 @@ export const createOrUpdateActiviteCoordination = async ({
         tagId: tag.id,
       })),
     })
+
+    await transaction.coordinateur.update({
+      where: { id: coordinateurId },
+      data: {
+        derniereCreationActivite: new Date(),
+      },
+    })
   })
 
   // Create mutation for audit log
