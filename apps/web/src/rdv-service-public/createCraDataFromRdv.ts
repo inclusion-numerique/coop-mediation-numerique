@@ -58,11 +58,6 @@ export const createCraDataFromRdv = async ({
     : minutesToCustomCraDureeData(durationInMin)
 
   if (rdv.collectif) {
-    const participantsAnonymes = Math.max(
-      0,
-      (rdv.maxParticipantsCount ?? 0) - beneficiaires.length,
-    )
-
     const defaultValues: DefaultValues<CraCollectifData> = {
       date: dateAsIsoDay(startsAt),
       duree,
@@ -73,8 +68,8 @@ export const createCraDataFromRdv = async ({
         prenom: beneficiaire.prenom,
         nom: beneficiaire.nom,
       })),
-      participantsAnonymes:
-        createEmptyParticipantsAnonymes(participantsAnonymes),
+      // Ne pas ajouter de participants anonymes automatiquement pour les ateliers incomplets
+      participantsAnonymes: createEmptyParticipantsAnonymes(0),
     }
 
     return {
