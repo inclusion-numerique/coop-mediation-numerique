@@ -39,7 +39,7 @@ flowchart TB
     subgraph "La Coop"
         App[Application Next.js]
         DB[(PostgreSQL)]
-        WebhookEndpoint[/api/rdv-service-public/webhook]
+        WebhookEndpoint["Webhook Endpoint<br/>/api/rdv-service-public/webhook"]
     end
     
     subgraph "RDV Service Public"
