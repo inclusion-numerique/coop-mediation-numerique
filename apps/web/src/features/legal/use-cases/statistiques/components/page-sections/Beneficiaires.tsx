@@ -26,6 +26,7 @@ export const Beneficiaires = ({
       chartTitle="Évolution du nombre de bénéficiaires accompagnés"
       color="blue-france"
       icon="ri-user-heart-line"
+      showCumulativeToggle={false}
       {...beneficiaires}
     />
     <div className="fr-grid-row fr-grid-row--gutters fr-mt-8v fr-align-items-stretch">

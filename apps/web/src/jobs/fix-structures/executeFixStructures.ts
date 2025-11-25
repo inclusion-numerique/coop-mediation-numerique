@@ -7,7 +7,7 @@ import {
   isValidUrl,
   Localisation,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import Oh, { nominatim_object } from 'opening_hours'
+import Oh from 'opening_hours'
 import proj4 from 'proj4'
 import { FixStructuresJob } from './fixStructuresJob'
 
