@@ -3,6 +3,7 @@ version: 2.1
 orbs:
   skip: theodo/skip@0.1.2
   queue: eddiewebb/queue@3.2.1
+  coveralls: coveralls/coveralls@2.2.1
 executors:
   node:
     docker:
@@ -279,7 +280,7 @@ jobs:
           command: pnpm --silent -F @app/web prisma generate
       - run:
           name: 'Test all packages except @app/web with coverage'
-          command: pnpm -F '!@app/web' -F '!@app/e2e' test -- --coverage
+          command: pnpm -F '!@app/web' -F '!@app/e2e' -F '!@app/storybook' exec jest --coverage --passWithNoTests
       - run:
           name: 'Collect coverage reports'
           command: |
@@ -307,7 +308,7 @@ jobs:
           command: pnpm --silent -F @app/web prisma generate
       - run:
           name: 'Test @app/web with coverage'
-          command: pnpm --silent -F @app/web test -- --coverage
+          command: pnpm --silent -F @app/web exec jest --coverage -c jest.unit.config.ts
       - run:
           name: 'Collect coverage reports'
           command: |
@@ -505,7 +506,7 @@ jobs:
       - run:
           name: 'Run web integrations jest test with coverage'
           command: |
-            pnpm --silent -F @app/web test:integration -- --coverage
+            pnpm --silent -F @app/web exec jest --coverage -c jest.integration.config.ts
       - run:
           name: 'Collect coverage reports'
           command: |
@@ -522,6 +523,9 @@ jobs:
     steps:
       - checkout
       - install_dependencies
+      - create_dotenv_file
+      - add_secrets_to_dotenv_file
+      - add_dotenv_vars_to_bash_env
       - attach_workspace:
           at: .
       - run:
@@ -530,10 +534,8 @@ jobs:
             mkdir -p coverage/.nyc_output
             npx nyc merge ./coverage-reports ./coverage/.nyc_output/out.json
             npx nyc report --temp-dir ./coverage/.nyc_output --reporter=lcov --report-dir=./coverage
-      - run:
-          name: 'Upload to Coveralls'
-          command: |
-            cat ./coverage/lcov.info | npx coveralls
+      - coveralls/upload:
+          file: ./coverage/lcov.info
 
   deploy_web:
     executor: node22
