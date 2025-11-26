@@ -535,7 +535,7 @@ jobs:
             npx nyc merge ./coverage-reports ./coverage/.nyc_output/out.json
             npx nyc report --temp-dir ./coverage/.nyc_output --reporter=lcov --report-dir=./coverage
       - coveralls/upload:
-          file: ./coverage/lcov.info
+          path_to_lcov: ./coverage/lcov.info
 
   deploy_web:
     executor: node22
