@@ -31,6 +31,9 @@ const include = {
           },
         },
       },
+      ActiviteCoordination: {
+        select: { id: true },
+      },
     },
   },
   mutations: {
@@ -78,6 +81,7 @@ type Coordinateur = {
   mediateursCoordonnes: {
     mediateur: { id: string }
   }[]
+  ActiviteCoordination: { id: string }[]
   invitations: { email: string; coordinateurId: string }[]
 }
 
@@ -201,6 +205,10 @@ const mergeMediateurs =
       where: { id: { in: sourceUser.mediateur.activites.map(toId) } },
       data: { mediateurId: targetUser.mediateur.id },
     })
+    await prisma.tag.updateMany({
+      where: { mediateurId: sourceUser.mediateur.id },
+      data: { mediateurId: targetUser.mediateur.id },
+    })
     await prisma.beneficiaire.updateMany({
       where: { id: { in: sourceUser.mediateur.beneficiaires.map(toId) } },
       data: { mediateurId: targetUser.mediateur.id },
@@ -275,6 +283,15 @@ const mergeCoordinateurs =
 
     await mergeInvitationEnvoyees(prisma)(sourceCoord, targetCoord)
     await mergeMediateursCoordonnes(prisma)(sourceCoord, targetCoord)
+
+    await prisma.activiteCoordination.updateMany({
+      where: { id: { in: sourceCoord.ActiviteCoordination.map(toId) } },
+      data: { coordinateurId: targetCoord.id },
+    })
+    await prisma.tag.updateMany({
+      where: { coordinateurId: sourceCoord.id },
+      data: { coordinateurId: targetCoord.id },
+    })
   }
 
 const mergeStructuresEmployeuses =
