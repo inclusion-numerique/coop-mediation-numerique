@@ -11,8 +11,6 @@ import { booleanToYesNo } from '@app/web/utils/yesNoBooleanOptions'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import type { Prisma } from '@prisma/client'
 import { getUserAccountStatusBadge } from './getUserAccountStatusBadge'
-import { getUserLifecycle } from './getUserLifecycle'
-import { getUserLifecycleBadge } from './getUserLifecycleBadge'
 import { UtilisateurForList } from './queryUtilisateursForList'
 
 export type UtilisateursDataTableConfiguration = DataTableConfiguration<
@@ -30,13 +28,6 @@ export const UtilisateursDataTable = {
       name: 'statut',
       header: 'Statut',
       csvHeaders: ['Statut'],
-      csvValues: (user) => [getUserLifecycle(user)],
-      cell: (user) => getUserLifecycleBadge(user),
-    },
-    {
-      name: 'statut-compte',
-      header: 'Statut compte',
-      csvHeaders: ['Statut compte'],
       csvValues: (user) => [user.statutCompte],
       cell: (user) => getUserAccountStatusBadge(user.statutCompte),
     },

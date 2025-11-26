@@ -33,19 +33,26 @@ export const statutCompte =
   ({
     lastLogin,
     created,
+    deleted,
     inscriptionValidee,
+    role,
     mediateur,
     coordinateur,
   }: {
     created: Date
+    deleted: Date | null
     lastLogin: Date | null
     inscriptionValidee: Date | null
+    role: string
     mediateur: { derniereCreationActivite: Date | null } | null
     coordinateur: {
       derniereCreationActivite: Date | null
       _count: { mediateursCoordonnes: number }
     } | null
   }) => {
+    if (deleted != null) return 'Supprimé'
+    if (role === 'Admin') return 'Admin'
+
     if (inscriptionValidee == null) {
       const createdDiff = now.getTime() - created.getTime()
       return INSCRIPTION_STATUTS.reduce(
@@ -55,11 +62,10 @@ export const statutCompte =
     }
 
     if (
-      lastLogin != null &&
-      ((coordinateur?._count.mediateursCoordonnes ?? 0) > 0 ||
-        coordinateur?.derniereCreationActivite != null)
+      (coordinateur?._count.mediateursCoordonnes ?? 0) > 0 ||
+      coordinateur?.derniereCreationActivite != null
     ) {
-      const lastLoginDiff = now.getTime() - lastLogin.getTime()
+      const lastLoginDiff = now.getTime() - (lastLogin ?? created).getTime()
       return INACTIVITE_STATUTS.reduce(
         toStatutFromDateDiff(lastLoginDiff),
         'Actif',

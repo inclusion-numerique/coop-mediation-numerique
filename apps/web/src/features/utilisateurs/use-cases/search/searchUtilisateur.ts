@@ -60,7 +60,7 @@ export const searchUtilisateur = async (options: SearchUtilisateurOptions) => {
       },
       filterOnRoles(parsedQueryParams.data),
       filterOnDispositif(parsedQueryParams.data),
-      filterOnStatut(parsedQueryParams.data),
+      filterOnStatut(new Date())(parsedQueryParams.data),
       filterOnLieux(parsedQueryParams.data),
     ],
   } satisfies Prisma.UserWhereInput

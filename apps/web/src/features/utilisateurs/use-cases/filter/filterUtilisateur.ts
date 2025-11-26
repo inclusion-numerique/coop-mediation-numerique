@@ -2,23 +2,124 @@ import type { Prisma } from '@prisma/client'
 import { RoleSlug } from '../list/role'
 import { StatutSlug } from '../list/statut'
 
-type StatutFilters = {
-  inscriptionValidee?: { not: null } | null
-  deleted?: { not: null }
-}
+const inscriptionFilter = (created: {
+  lt?: Date
+  gte?: Date
+}): Prisma.UserWhereInput => ({
+  inscriptionValidee: null,
+  role: { not: 'Admin' },
+  deleted: null,
+  created,
+})
 
-const statutFiltersMap: Map<StatutSlug, StatutFilters> = new Map([
-  ['inscrit', { inscriptionValidee: { not: null } }],
-  ['inscription', { inscriptionValidee: null }],
-  ['deleted', { deleted: { not: null } }],
-])
+const nouveauFilter = (inscriptionValidee: {
+  lt?: Date
+  gte?: Date
+}): Prisma.UserWhereInput => ({
+  inscriptionValidee,
+  role: { not: 'Admin' },
+  deleted: null,
+  OR: [
+    {
+      mediateur: { is: null },
+      coordinateur: {
+        is: {
+          derniereCreationActivite: null,
+          mediateursCoordonnes: { none: {} },
+        },
+      },
+    },
+    {
+      coordinateur: { is: null },
+      mediateur: { is: { derniereCreationActivite: null } },
+    },
+    {
+      mediateur: { is: { derniereCreationActivite: null } },
+      coordinateur: {
+        is: {
+          derniereCreationActivite: null,
+          mediateursCoordonnes: { none: {} },
+        },
+      },
+    },
+  ],
+})
 
-export const filterOnStatut = (queryParams?: {
-  statut?: StatutSlug
-}): {} | { statut: Prisma.UserWhereInput } =>
-  queryParams?.statut == null
-    ? {}
-    : (statutFiltersMap.get(queryParams.statut) ?? {})
+const actifFilter = (lastActivity: {
+  lt?: Date
+  gte?: Date
+}): Prisma.UserWhereInput => ({
+  role: { not: 'Admin' },
+  deleted: null,
+  inscriptionValidee: { not: null },
+  OR: [
+    {
+      lastLogin: lastActivity,
+      mediateur: { is: null },
+      coordinateur: {
+        is: {
+          OR: [
+            { derniereCreationActivite: { not: null } },
+            { mediateursCoordonnes: { some: {} } },
+          ],
+        },
+      },
+    },
+    {
+      coordinateur: { is: null },
+      mediateur: { is: { derniereCreationActivite: lastActivity } },
+    },
+    {
+      lastLogin: lastActivity,
+      mediateur: { is: { derniereCreationActivite: lastActivity } },
+      coordinateur: {
+        is: {
+          OR: [
+            { derniereCreationActivite: { not: null } },
+            { mediateursCoordonnes: { some: {} } },
+          ],
+        },
+      },
+    },
+  ],
+})
+
+const daysAgo = (now: Date, days: number) =>
+  new Date(now.getTime() - days * 24 * 60 * 60 * 1000)
+
+export const filterOnStatut =
+  (now: Date) =>
+  (queryParams?: {
+    statut?: StatutSlug
+  }): {} | { statut: Prisma.UserWhereInput } => {
+    const daysAgo7 = daysAgo(now, 7)
+    const daysAgo30 = daysAgo(now, 30)
+    const daysAgo60 = daysAgo(now, 60)
+    const daysAgo90 = daysAgo(now, 90)
+    const daysAgo180 = daysAgo(now, 180)
+
+    const statutFiltersMap: Map<StatutSlug, Prisma.UserWhereInput> = new Map([
+      ['inscription0', inscriptionFilter({ gte: daysAgo7 })],
+      ['inscription7', inscriptionFilter({ lt: daysAgo7, gte: daysAgo30 })],
+      ['inscription30', inscriptionFilter({ lt: daysAgo30, gte: daysAgo60 })],
+      ['inscription60', inscriptionFilter({ lt: daysAgo60, gte: daysAgo90 })],
+      ['inscription90', inscriptionFilter({ lt: daysAgo90 })],
+      ['nouveau0', nouveauFilter({ gte: daysAgo7 })],
+      ['nouveau7', nouveauFilter({ lt: daysAgo7, gte: daysAgo30 })],
+      ['nouveau30', nouveauFilter({ lt: daysAgo30, gte: daysAgo60 })],
+      ['nouveau60', nouveauFilter({ lt: daysAgo60, gte: daysAgo90 })],
+      ['nouveau90', nouveauFilter({ lt: daysAgo90 })],
+      ['actif', actifFilter({ gte: daysAgo30 })],
+      ['inactif30', actifFilter({ lt: daysAgo30, gte: daysAgo90 })],
+      ['inactif90', actifFilter({ lt: daysAgo90, gte: daysAgo180 })],
+      ['inactif180', actifFilter({ lt: daysAgo180 })],
+      ['deleted', { deleted: { not: null } }],
+    ])
+
+    return queryParams?.statut == null
+      ? {}
+      : (statutFiltersMap.get(queryParams.statut) ?? {})
+  }
 
 const roleFilter: Record<
   RoleSlug,
