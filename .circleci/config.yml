@@ -3,7 +3,7 @@ version: 2.1
 orbs:
   skip: theodo/skip@0.1.2
   queue: eddiewebb/queue@3.2.1
-  coveralls: coveralls/coveralls@2.2.1
+  coveralls: coveralls/coveralls@2.2.5
 executors:
   node:
     docker:
@@ -535,7 +535,7 @@ jobs:
             npx nyc merge ./coverage-reports ./coverage/.nyc_output/out.json
             npx nyc report --temp-dir ./coverage/.nyc_output --reporter=lcov --report-dir=./coverage
       - coveralls/upload:
-          path_to_lcov: ./coverage/lcov.info
+          coverage_file: ./coverage/lcov.info
 
   deploy_web:
     executor: node22
