@@ -506,7 +506,7 @@ jobs:
       - run:
           name: 'Run web integrations jest test with coverage'
           command: |
-            pnpm --silent -F @app/web exec jest --coverage -c jest.integration.config.ts
+            pnpm --silent -F @app/web exec jest --coverage -c jest.integration.config.ts --runInBand
       - run:
           name: 'Collect coverage reports'
           command: |
