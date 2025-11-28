@@ -1,5 +1,7 @@
 # La coop de la médiation numérique
 
+[![Coverage Status](https://coveralls.io/repos/github/inclusion-numerique/coop-mediation-numerique/badge.svg?branch=main)](https://coveralls.io/github/inclusion-numerique/coop-mediation-numerique?branch=main)
+
 <h2 id="à-propos">🪧 À propos</h2>
 
 Bienvenue sur la coop de la médiation numérique, développé par le [Pôle Inclusion numérique de l'ANCT](https://societenumerique.gouv.fr/fr/les-services-de-linclusion-numerique/). \
