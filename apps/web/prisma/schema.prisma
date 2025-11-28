@@ -1257,6 +1257,8 @@ model Activite {
   // performance indexes
   @@index([date])
   @@index([lieuCodeInsee])
+  // performance index for public statistics queries
+  @@index([suppression, date], map: "activites_suppression_date_idx")
   @@map("activites")
 }
 
