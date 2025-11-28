@@ -466,7 +466,6 @@ model MediateurCoordonne {
   modification DateTime  @default(now())
   suppression  DateTime?
 
-  @@unique([coordinateurId, mediateurId])
   @@index([mediateurId])
   @@index([coordinateurId])
   @@map("mediateurs_coordonnes")

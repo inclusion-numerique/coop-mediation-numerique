@@ -471,9 +471,15 @@ const AdministrationUserPage = async ({
                             ({ mediateur, creation, suppression }) => (
                               <tr key={mediateur.id}>
                                 <td>
-                                  <span className="fr-text--sm fr-text--medium fr-mb-0">
-                                    {mediateur.user.name}
-                                  </span>
+                                  <a
+                                    href={`/administration/utilisateurs/${mediateur.userId}`}
+                                    target="_blank"
+                                    className="fr-link"
+                                  >
+                                    <span className="fr-text--sm fr-text--medium fr-mb-0">
+                                      {mediateur.user.name}
+                                    </span>
+                                  </a>
                                   <br />
                                   <span className="fr-text--xs fr-text-mention--grey">
                                     {mediateur.user.email}
@@ -552,13 +558,33 @@ const AdministrationUserPage = async ({
                                 key={`${invitation.email}-${invitation.coordinateurId}`}
                               >
                                 <td>
-                                  <span className="fr-text--sm fr-text--medium fr-mb-0">
-                                    {displayName}
-                                  </span>
-                                  <br />
-                                  <span className="fr-text--xs fr-text-mention--grey">
-                                    {invitation.email}
-                                  </span>
+                                  {utilisateurInvite ? (
+                                    <>
+                                      <a
+                                        href={`/administration/utilisateurs/${utilisateurInvite?.mediateur?.userId ?? ''}`}
+                                        target="_blank"
+                                        className="fr-link"
+                                      >
+                                        <span className="fr-text--sm fr-text--medium fr-mb-0">
+                                          {displayName}
+                                        </span>{' '}
+                                      </a>
+                                      <br />
+                                      <span className="fr-text--xs fr-text-mention--grey">
+                                        {invitation.email}
+                                      </span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <span className="fr-text--sm fr-text--medium fr-mb-0">
+                                        {displayName}
+                                      </span>
+                                      <br />
+                                      <span className="fr-text--xs fr-text-mention--grey">
+                                        {invitation.email}
+                                      </span>
+                                    </>
+                                  )}
                                 </td>
                                 <td>
                                   {!utilisateurInvite ? (

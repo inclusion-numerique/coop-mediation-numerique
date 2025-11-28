@@ -62,6 +62,7 @@ const AdministrationSearchSingleUtilisateur = ({
     const result = await trpcClient.user.search.query({
       query: search,
       includeDeleted,
+      excludeUserIds,
     })
 
     for (const user of result.users) {
@@ -73,12 +74,10 @@ const AdministrationSearchSingleUtilisateur = ({
         label: `${result.matchesCount} résultat${sPluriel(result.matchesCount)}`,
         value: '',
       },
-      ...result.users
-        .filter((user: { id: string }) => !excludeUserIds.includes(user.id))
-        .map((user) => ({
-          label: toLabel(user),
-          value: user.id,
-        })),
+      ...result.users.map((user) => ({
+        label: toLabel(user),
+        value: user.id,
+      })),
     ] as {
       label: ReactElement
       value: string
@@ -98,7 +97,6 @@ const AdministrationSearchSingleUtilisateur = ({
           : { label: toLabel(defaultUser), value: defaultUser.id }
       }
       isOptionDisabled={(option) => option.value === ''}
-      cacheOptions
       onChange={(option) => {
         if (option == null || option.value === '') return
         onSelect?.(option)

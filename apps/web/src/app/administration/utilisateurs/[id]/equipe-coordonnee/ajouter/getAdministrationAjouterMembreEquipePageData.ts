@@ -17,6 +17,7 @@ export const getAdministrationAjouterMembreEquipePageData = async ({
           id: true,
           mediateursCoordonnes: {
             select: {
+              suppression: true,
               mediateur: {
                 select: {
                   id: true,
@@ -38,9 +39,10 @@ export const getAdministrationAjouterMembreEquipePageData = async ({
     return null
   }
 
-  const userIdsInEquipe = coordinateur.mediateursCoordonnes.map(
-    (mc) => mc.mediateur.userId,
-  )
+  const now = new Date()
+  const userIdsInEquipe = coordinateur.mediateursCoordonnes
+    .filter((mc) => mc.suppression === null || mc.suppression <= now)
+    .map((mc) => mc.mediateur.userId)
 
   return {
     coordinateurUser: { ...coordinateurUser, coordinateur }, // here for type safety

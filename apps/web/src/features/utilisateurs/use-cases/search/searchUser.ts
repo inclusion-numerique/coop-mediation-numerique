@@ -11,6 +11,7 @@ import { Prisma } from '@prisma/client'
 type SearchUserOptions = {
   searchParams?: { recherche?: string; page?: string; lignes?: string }
   includeDeleted?: boolean
+  excludeUserIds?: string[]
 }
 
 export const searchUser = async (options: SearchUserOptions) => {
@@ -22,6 +23,10 @@ export const searchUser = async (options: SearchUserOptions) => {
   })
 
   const where = {
+    id:
+      options.excludeUserIds && options.excludeUserIds.length > 0
+        ? { notIn: options.excludeUserIds }
+        : undefined,
     deleted: options.includeDeleted ? undefined : { not: null },
     AND: toQueryParts(searchParams).map((part) => ({
       OR: [
