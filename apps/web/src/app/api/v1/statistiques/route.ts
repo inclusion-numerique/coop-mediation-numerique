@@ -28,6 +28,7 @@ import {
   type ChangeObjectKeysCaseRecursive,
   changeObjectKeysCaseRecursive,
 } from '@app/web/utils/changeObjectKeysCaseRecursive'
+import { debugPromiseTiming } from '@app/web/utils/debugPromiseTiming'
 import { NextResponse } from 'next/server'
 
 /**
@@ -398,11 +399,21 @@ export const GET = createApiV1Route
       activites,
       totalCounts,
     ] = await Promise.all([
-      getAccompagnementsCountByDay({ activitesFilters }),
-      getAccompagnementsCountByMonth({ activitesFilters }),
-      getBeneficiaireStats({ activitesFilters }),
-      getActivitesStats({ activitesFilters }),
-      getTotalCountsStats({ activitesFilters }),
+      debugPromiseTiming(getAccompagnementsCountByDay({ activitesFilters }), {
+        name: '/api/v1/statistiques: getAccompagnementsCountByDay',
+      }),
+      debugPromiseTiming(getAccompagnementsCountByMonth({ activitesFilters }), {
+        name: '/api/v1/statistiques: getAccompagnementsCountByMonth',
+      }),
+      debugPromiseTiming(getBeneficiaireStats({ activitesFilters }), {
+        name: '/api/v1/statistiques: getBeneficiaireStats',
+      }),
+      debugPromiseTiming(getActivitesStats({ activitesFilters }), {
+        name: '/api/v1/statistiques: getActivitesStats',
+      }),
+      debugPromiseTiming(getTotalCountsStats({ activitesFilters }), {
+        name: '/api/v1/statistiques: getTotalCountsStats',
+      }),
     ])
 
     const attributes = changeObjectKeysCaseRecursive(

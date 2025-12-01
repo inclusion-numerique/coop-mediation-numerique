@@ -1,6 +1,6 @@
 import { activitesMediateurIdsWhereCondition } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/activitesMediateurIdsWhereCondition'
 import { allocatePercentagesFromRecords } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/allocatePercentages'
-import { createEnumCountSelect } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/createEnumCountSelect'
+import { createEnumDistinctCountSelect } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/createEnumCountSelect'
 import {
   genreLabels,
   genreValues,
@@ -16,9 +16,21 @@ import {
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { prismaClient } from '@app/web/prismaClient'
 import { UserProfile } from '@app/web/utils/user'
-import { Genre, StatutSocial, TrancheAge } from '@prisma/client'
+import { Genre, Prisma, StatutSocial, TrancheAge } from '@prisma/client'
 import { snakeCase } from 'change-case'
 import { activitesSourceWhereCondition } from './activitesSourceWhereCondition'
+
+/**
+ * Determines which JOINs are needed based on filter values:
+ * - conseiller_numerique filter requires mediateurs + conseillers_numeriques tables
+ * - communes/departements filters require structures table
+ */
+const getRequiredJoins = (activitesFilters: ActivitesFilters) => ({
+  needsConseillerNumeriqueJoin: !!activitesFilters.conseiller_numerique,
+  needsStructureJoin:
+    (activitesFilters.communes?.length ?? 0) > 0 ||
+    (activitesFilters.departements?.length ?? 0) > 0,
+})
 
 export type BeneficiairesStatsRaw = {
   total_beneficiaires: number
@@ -40,55 +52,60 @@ export const getBeneficiaireStatsRaw = async ({
 }) => {
   if (mediateurIds?.length === 0) return EMPTY_BENEFICIAIRES_STATS
 
-  return prismaClient.$queryRaw<[BeneficiairesStatsRaw]>`
-      WITH distinct_beneficiaires AS (
-        SELECT DISTINCT
-          ben.id,
-          ben.genre,
-          ben.statut_social,
-          ben.tranche_age,
-          ben.commune,
-          ben.commune_code_postal,
-          ben.commune_code_insee
-        FROM beneficiaires ben
-          INNER JOIN accompagnements acc ON acc.beneficiaire_id = ben.id
-          INNER JOIN activites act ON act.id = acc.activite_id
-          FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${
-            user?.coordinateur?.id
-          }::UUID
-          LEFT JOIN mediateurs med ON act.mediateur_id = med.id
-          LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
-          LEFT JOIN structures str ON str.id = act.structure_id
-          WHERE (act.date <= mc.suppression OR mc.suppression IS NULL)
-            AND act.suppression IS NULL
-            AND ${activitesMediateurIdsWhereCondition(mediateurIds)}
-            AND ${activitesSourceWhereCondition(activitesFilters.source)}
-            AND ${getActiviteFiltersSqlFragment(
-              getActivitesFiltersWhereConditions(activitesFilters),
-            )})
-      
-      SELECT COUNT(distinct_beneficiaires.id)::integer AS total_beneficiaires,
+  const hasCoordinateurContext = !!user?.coordinateur?.id
+  const { needsConseillerNumeriqueJoin, needsStructureJoin } =
+    getRequiredJoins(activitesFilters)
 
-             -- Enum count selects for genre, statut_social, tranche_age
-             ${createEnumCountSelect({
-               enumObj: Genre,
-               column: 'distinct_beneficiaires.genre',
-               as: 'genre',
-               defaultEnumValue: Genre.NonCommunique,
-             })},
-             ${createEnumCountSelect({
-               enumObj: StatutSocial,
-               column: 'distinct_beneficiaires.statut_social',
-               as: 'statut_social',
-               defaultEnumValue: StatutSocial.NonCommunique,
-             })},
-             ${createEnumCountSelect({
-               enumObj: TrancheAge,
-               column: 'distinct_beneficiaires.tranche_age',
-               as: 'tranche_age',
-               defaultEnumValue: TrancheAge.NonCommunique,
-             })}
-      FROM distinct_beneficiaires`.then((result) => result[0])
+  // Uses COUNT(DISTINCT CASE ...) for single-pass aggregation
+  // JOINs are conditional based on which filters are actually used
+  return prismaClient.$queryRaw<[BeneficiairesStatsRaw]>`
+      SELECT 
+        COUNT(DISTINCT ben.id)::integer AS total_beneficiaires,
+        -- Count distinct beneficiaires by genre, statut_social, tranche_age
+        ${createEnumDistinctCountSelect({
+          idColumn: 'ben.id',
+          enumColumn: 'ben.genre',
+          as: 'genre',
+          enumObj: Genre,
+          defaultEnumValue: Genre.NonCommunique,
+        })},
+        ${createEnumDistinctCountSelect({
+          idColumn: 'ben.id',
+          enumColumn: 'ben.statut_social',
+          as: 'statut_social',
+          enumObj: StatutSocial,
+          defaultEnumValue: StatutSocial.NonCommunique,
+        })},
+        ${createEnumDistinctCountSelect({
+          idColumn: 'ben.id',
+          enumColumn: 'ben.tranche_age',
+          as: 'tranche_age',
+          enumObj: TrancheAge,
+          defaultEnumValue: TrancheAge.NonCommunique,
+        })}
+      FROM activites act
+        ${
+          hasCoordinateurContext
+            ? Prisma.sql`FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user?.coordinateur?.id}::UUID`
+            : Prisma.empty
+        }
+        INNER JOIN accompagnements acc ON acc.activite_id = act.id
+        INNER JOIN beneficiaires ben ON ben.id = acc.beneficiaire_id
+        ${needsConseillerNumeriqueJoin ? Prisma.sql`LEFT JOIN mediateurs med ON act.mediateur_id = med.id` : Prisma.empty}
+        ${needsConseillerNumeriqueJoin ? Prisma.sql`LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id` : Prisma.empty}
+        ${needsStructureJoin ? Prisma.sql`LEFT JOIN structures str ON str.id = act.structure_id` : Prisma.empty}
+      WHERE act.suppression IS NULL
+        ${
+          hasCoordinateurContext
+            ? Prisma.sql`AND (act.date <= mc.suppression OR mc.suppression IS NULL)`
+            : Prisma.empty
+        }
+        AND ${activitesMediateurIdsWhereCondition(mediateurIds)}
+        AND ${activitesSourceWhereCondition(activitesFilters.source)}
+        AND ${getActiviteFiltersSqlFragment(
+          getActivitesFiltersWhereConditions(activitesFilters),
+        )}
+  `.then((result) => result[0])
 }
 
 export const normalizeBeneficiairesStatsRaw = (

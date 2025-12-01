@@ -61,41 +61,58 @@ export const getActivitesStatsRaw = async ({
 }) => {
   if (mediateurIds?.length === 0) return EMPTY_ACTIVITES_STATS
 
+  const hasCoordinateurContext = !!user?.coordinateur?.id
+
+  // Uses pre-computed accompagnements_count column for weighted aggregations
+  // instead of joining with accompagnements table (avoids scanning 6M+ rows)
   return prismaClient.$queryRaw<[ActivitesStatsRaw]>`
-      SELECT COALESCE(COUNT(*), 0)::integer AS total_activites,
-        -- Enum count selects for type, type_lieu, duree, thematiques, materiel
+      SELECT COALESCE(SUM(act.accompagnements_count), 0)::integer AS total_activites,
+        -- Aggregate stats weighted by accompagnements_count
         ${createEnumCountSelect({
           enumObj: TypeActivite,
           column: 'act.type',
           as: 'type',
+          weightColumn: 'act.accompagnements_count',
         })},
-        ${createDureesRangesSelect({ column: 'act.duree', as: 'duree' })},
+        ${createDureesRangesSelect({
+          column: 'act.duree',
+          as: 'duree',
+          weightColumn: 'act.accompagnements_count',
+        })},
         ${createEnumCountSelect({
           enumObj: TypeLieu,
           column: 'act.type_lieu',
           as: 'type_lieu',
+          weightColumn: 'act.accompagnements_count',
         })},
         ${createEnumArrayCountSelect({
           enumObj: Thematique,
           column: 'act.thematiques',
           as: 'thematiques',
+          weightColumn: 'act.accompagnements_count',
         })},
         ${createEnumArrayCountSelect({
           enumObj: Materiel,
           column: 'act.materiel',
           as: 'materiel',
+          weightColumn: 'act.accompagnements_count',
         })}
-      FROM accompagnements acc
-             JOIN activites act ON acc.activite_id = act.id
+      FROM activites act
              LEFT JOIN structures str ON str.id = act.structure_id
              LEFT JOIN mediateurs med ON act.mediateur_id = med.id
              LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
-             FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${
-               user?.coordinateur?.id
-             }::UUID
+             ${
+               hasCoordinateurContext
+                 ? Prisma.sql`FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user?.coordinateur?.id}::UUID`
+                 : Prisma.empty
+             }
 
       WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
-        AND (act.date <= mc.suppression OR mc.suppression IS NULL)
+        ${
+          hasCoordinateurContext
+            ? Prisma.sql`AND (act.date <= mc.suppression OR mc.suppression IS NULL)`
+            : Prisma.empty
+        }
         AND act.suppression IS NULL
         AND ${getActiviteFiltersSqlFragment(
           getActivitesFiltersWhereConditions(activitesFilters),
@@ -211,6 +228,8 @@ const getActiviteTags = ({
   if (mediateurIds == null || mediateurIds.length === 0)
     return Promise.resolve([])
 
+  const hasCoordinateurContext = !!user?.coordinateur?.id
+
   return prismaClient.$queryRaw<
     {
       label: string
@@ -226,11 +245,17 @@ const getActiviteTags = ({
            LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
            INNER JOIN activite_tags at ON at.activite_id = act.id
            INNER JOIN tags t ON t.id = at.tag_id
-     FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${
-       user?.coordinateur?.id
-     }::UUID
+           ${
+             hasCoordinateurContext
+               ? Prisma.sql`FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user?.coordinateur?.id}::UUID`
+               : Prisma.empty
+           }
     WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
-      AND (act.date <= mc.suppression OR mc.suppression IS NULL)
+      ${
+        hasCoordinateurContext
+          ? Prisma.sql`AND (act.date <= mc.suppression OR mc.suppression IS NULL)`
+          : Prisma.empty
+      }
       AND act.suppression IS NULL
       AND t.suppression IS NULL
       AND ${getActiviteFiltersSqlFragment(
