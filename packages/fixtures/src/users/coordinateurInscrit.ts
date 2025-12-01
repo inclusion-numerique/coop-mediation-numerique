@@ -8,6 +8,7 @@ export const coordinateurInscrit = givenUser({
   id: '28bd02a6-7096-4453-9cc3-5eb4f6efc955',
   firstName: 'Coordinateur',
   lastName: 'Inscrit',
+  lastLogin: new Date(),
   isFixture: true,
   role: 'User',
   coordinateur: {

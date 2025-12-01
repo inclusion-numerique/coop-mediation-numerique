@@ -62,10 +62,11 @@ export const statutCompte =
     }
 
     if (
-      (coordinateur?._count.mediateursCoordonnes ?? 0) > 0 ||
-      coordinateur?.derniereCreationActivite != null
+      lastLogin &&
+      ((coordinateur?._count.mediateursCoordonnes ?? 0) > 0 ||
+        coordinateur?.derniereCreationActivite != null)
     ) {
-      const lastLoginDiff = now.getTime() - (lastLogin ?? created).getTime()
+      const lastLoginDiff = now.getTime() - lastLogin.getTime()
       return INACTIVITE_STATUTS.reduce(
         toStatutFromDateDiff(lastLoginDiff),
         'Actif',
