@@ -104,10 +104,10 @@ const getActivityStatsQuery = ({
   return prismaClient.$queryRaw<[ActivityStatsResult]>`
     SELECT
       COUNT(*)::integer AS total_activites,
-      SUM(CASE WHEN act.type = 'individuel' THEN 1 ELSE 0 END)::integer AS total_individuels,
-      SUM(CASE WHEN act.type = 'collectif' THEN 1 ELSE 0 END)::integer AS total_collectifs,
+      COALESCE(SUM(CASE WHEN act.type = 'individuel' THEN 1 ELSE 0 END), 0)::integer AS total_individuels,
+      COALESCE(SUM(CASE WHEN act.type = 'collectif' THEN 1 ELSE 0 END), 0)::integer AS total_collectifs,
       COALESCE(SUM(act.accompagnements_count), 0)::integer AS total_accompagnements,
-      SUM(CASE WHEN act.type = 'collectif' THEN act.accompagnements_count ELSE 0 END)::integer AS total_accompagnements_collectifs
+      COALESCE(SUM(CASE WHEN act.type = 'collectif' THEN act.accompagnements_count ELSE 0 END), 0)::integer AS total_accompagnements_collectifs
     FROM activites act
       ${
         hasCoordinateurContext
