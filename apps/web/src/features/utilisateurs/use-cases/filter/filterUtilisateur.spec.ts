@@ -12,35 +12,64 @@ describe('filter utilisateur', () => {
     it('should not filter when statut filter is empty', () => {
       const statut: StatutSlug | undefined = undefined
 
-      const filters = filterOnStatut({ statut })
+      const filters = filterOnStatut(new Date('2025-11-19'))({ statut })
 
       expect(filters).toEqual({})
     })
 
-    it('should filter when statut filter is set to inscrit', () => {
-      const statut: StatutSlug | undefined = 'inscrit'
+    it('should filter when statut filter is set to nouveau0', () => {
+      const statut: StatutSlug | undefined = 'nouveau0'
 
-      const filters = filterOnStatut({ statut })
+      const filters = filterOnStatut(new Date('2025-11-19'))({ statut })
 
       expect(filters).toEqual({
-        inscriptionValidee: { not: null },
+        inscriptionValidee: { gte: new Date('2025-11-12') },
+        role: { not: 'Admin' },
+        deleted: null,
+        OR: [
+          {
+            mediateur: { is: null },
+            coordinateur: {
+              is: {
+                derniereCreationActivite: null,
+                mediateursCoordonnes: { none: {} },
+              },
+            },
+          },
+          {
+            coordinateur: { is: null },
+            mediateur: { is: { derniereCreationActivite: null } },
+          },
+          {
+            mediateur: { is: { derniereCreationActivite: null } },
+            coordinateur: {
+              is: {
+                derniereCreationActivite: null,
+                mediateursCoordonnes: { none: {} },
+              },
+            },
+          },
+        ],
       })
     })
 
     it('should filter when statut filter is set to inscription', () => {
-      const statut: StatutSlug | undefined = 'inscription'
+      const statut: StatutSlug | undefined = 'inscription0'
 
-      const filters = filterOnStatut({ statut })
+      const filters = filterOnStatut(new Date('2025-11-19'))({ statut })
 
       expect(filters).toEqual({
         inscriptionValidee: null,
+        role: { not: 'Admin' },
+        deleted: null,
+        created: { gte: new Date('2025-11-12') },
       })
     })
 
     it('should filter when statut filter is set to deleted', () => {
       const statut: StatutSlug | undefined = 'deleted'
 
-      const filters = filterOnStatut({ statut })
+      const filters = filterOnStatut(new Date('2025-11-19'))({ statut })
 
       expect(filters).toEqual({
         deleted: { not: null },

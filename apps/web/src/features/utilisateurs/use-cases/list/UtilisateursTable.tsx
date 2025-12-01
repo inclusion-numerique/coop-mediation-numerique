@@ -1,7 +1,10 @@
 import DataTable from '@app/web/libs/data-table/DataTable'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
-import { type SearchUtilisateurResult } from '../search/searchUtilisateur'
+import {
+  type SearchUtilisateurResult,
+  UtilisateurWithStatutCompte,
+} from '../search/searchUtilisateur'
 import {
   UtilisateursDataTable,
   type UtilisateursDataTableSearchParams,
@@ -19,7 +22,9 @@ const UtilisateursTable = ({
   searchParams,
   baseHref,
 }: {
-  data: SearchUtilisateurResult
+  data: SearchUtilisateurResult & {
+    utilisateurs: UtilisateurWithStatutCompte[]
+  }
   searchParams: UtilisateursDataTableSearchParams
   baseHref: string
 }) => (

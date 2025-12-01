@@ -276,8 +276,8 @@ model Mediateur {
   beneficiairesCount   Int @default(0) @map("beneficiaires_count")
 
   // pre computed dates to avoid joins on big tables
-  derniereCreationActivite DateTime?  @map("derniere_creation_activite")
-  derniereCreationBeneficiaire DateTime?  @map("derniere_creation_beneficiaire")
+  derniereCreationActivite     DateTime? @map("derniere_creation_activite")
+  derniereCreationBeneficiaire DateTime? @map("derniere_creation_beneficiaire")
 
   coordinations MediateurCoordonne[]
   enActivite    MediateurEnActivite[]
@@ -300,7 +300,7 @@ model InvitationEquipe {
   email          String
   coordinateurId String    @map("coordinateur_id") @db.Uuid
   mediateurId    String?   @map("mediateur_id") @db.Uuid
-  creation       DateTime @default(now())
+  creation       DateTime  @default(now())
   acceptee       DateTime?
   refusee        DateTime?
   renvoyee       DateTime?
@@ -443,6 +443,9 @@ model Coordinateur {
   creation     DateTime @default(now())
   modification DateTime @default(now())
   // Cannot soft delete as we need to keep userId and conseillerNumeriqueId unique
+
+  // pre computed dates to avoid joins on big tables
+  derniereCreationActivite DateTime? @map("derniere_creation_activite")
 
   mediateursCoordonnes MediateurCoordonne[]
   invitations          InvitationEquipe[]
@@ -1009,14 +1012,14 @@ model Beneficiaire {
 
   // Lorsqu'un bénéficiaire est dedoublonné, il est supprimé et on garde le lien (pour historique) vers
   // le bénéficiaire vers lequel il a été dedoublonné (supression est également renseigné à la date de fusion)
-  fusionVers Beneficiaire? @relation(name: "fusion", fields: [fusionVersId], references: [id])
-  fusionVersId String? @map("fusion_vers_id") @db.Uuid
+  fusionVers   Beneficiaire? @relation(name: "fusion", fields: [fusionVersId], references: [id])
+  fusionVersId String?       @map("fusion_vers_id") @db.Uuid
 
   // pre computed counts to avoid joins and counts on big tables
   accompagnementsCount Int              @default(0) @map("accompagnements_count")
   accompagnements      Accompagnement[]
   rdvUser              RdvUser?         @relation(fields: [rdvUserId], references: [id], onDelete: SetNull)
-  fusions      Beneficiaire[] @relation("fusion")
+  fusions              Beneficiaire[]   @relation("fusion")
 
   @@index([anonyme])
   @@index([mediateurId])
@@ -1189,7 +1192,7 @@ model Activite {
   rdvServicePublicId   Int?             @map("rdv_service_public_id") // id externe du RDV Service Public qui est à l'origine de cette Activité
 
   // Reference vers le RDV synchronisé lorsque l'activité provient de RDV Service Public
-  rdvId Int? @map("rdv_id") @unique
+  rdvId Int? @unique @map("rdv_id")
   rdv   Rdv? @relation(fields: [rdvId], references: [id])
 
   // Structure employeuse
@@ -1422,10 +1425,10 @@ model RdvAccount {
   // Timestamp from which we import RDVs for this account
   syncFrom DateTime? @map("sync_from")
 
-  organisations RdvAccountOrganisation[] // Be careful as this may be out of sync with the data from oauth. Used as a cache and should be refreshed when needed.
-  invalidWebhookOrganisationIds Int[] @map("invalid_webhook_organisation_ids") @default([]) // Organisation ids for which the webhook installation failed, will need polling rdv sync strategy
-  rdvs          Rdv[]
-  syncLogs      RdvSyncLog[]
+  organisations                 RdvAccountOrganisation[] // Be careful as this may be out of sync with the data from oauth. Used as a cache and should be refreshed when needed.
+  invalidWebhookOrganisationIds Int[]                    @default([]) @map("invalid_webhook_organisation_ids") // Organisation ids for which the webhook installation failed, will need polling rdv sync strategy
+  rdvs                          Rdv[]
+  syncLogs                      RdvSyncLog[]
 
   includeRdvsInActivitesList Boolean @default(false) @map("include_rdvs_in_activites_list")
 
@@ -1459,7 +1462,7 @@ model RdvSyncLog {
   log    String?
   output Json?
 
-  organisationIds Int[] @default([])  @map("organisation_ids") // if the sync was only scoped to a subset of organisations, this will be the ids of the organisations that were synced
+  organisationIds Int[] @default([]) @map("organisation_ids") // if the sync was only scoped to a subset of organisations, this will be the ids of the organisations that were synced
 
   drift Int @default(0) @map("drift") // number of diffs that have been missed by wehbook sync. drift is ok for the first sync
 
@@ -1571,6 +1574,7 @@ enum RdvCreatorType {
 
   @@map("rdv_creator_type")
 }
+
 model RdvUser {
   id                   Int       @id
   address              String?

@@ -5,6 +5,7 @@ import {
   UtilisateursFilters,
   utilisateursFilters,
 } from '@app/web/features/utilisateurs/use-cases/filter/utilisateursFilters'
+import { statutCompte } from '@app/web/features/utilisateurs/use-cases/list/statut-compte'
 import { UtilisateurListPage } from '@app/web/features/utilisateurs/use-cases/list/UtilisateurListPage'
 import { UtilisateursDataTableSearchParams } from '@app/web/features/utilisateurs/use-cases/list/UtilisateursDataTable'
 
@@ -22,11 +23,27 @@ const Page = async (props: {
     searchParams,
   })
 
+  const utilisateurs = utilisateursListPageData.searchResult.utilisateurs.map(
+    (user) => ({
+      ...user,
+      statutCompte: statutCompte(new Date())(user),
+    }),
+  )
+
   const filters = utilisateursFilters(searchParams)
 
   return (
     <CoopPageContainer size="full">
-      <UtilisateurListPage {...utilisateursListPageData} filters={filters} />
+      <UtilisateurListPage
+        {...{
+          ...utilisateursListPageData,
+          searchResult: {
+            ...utilisateursListPageData.searchResult,
+            utilisateurs,
+          },
+        }}
+        filters={filters}
+      />
     </CoopPageContainer>
   )
 }

@@ -7,7 +7,22 @@ export const getAdministrationUserPageData = async ({ id }: { id: string }) => {
     },
     include: {
       mediateur: {
-        include: {
+        select: {
+          id: true,
+          derniereCreationActivite: true,
+          creation: true,
+          modification: true,
+          beneficiairesCount: true,
+          activitesCount: true,
+          _count: {
+            select: {
+              enActivite: true,
+              beneficiaires: {
+                where: { anonyme: false },
+              },
+              coordinations: true,
+            },
+          },
           conseillerNumerique: true,
           coordinations: {
             include: {
@@ -33,7 +48,19 @@ export const getAdministrationUserPageData = async ({ id }: { id: string }) => {
         },
       },
       coordinateur: {
-        include: {
+        select: {
+          id: true,
+          conseillerNumeriqueId: true,
+          derniereCreationActivite: true,
+          creation: true,
+          modification: true,
+          _count: {
+            select: {
+              mediateursCoordonnes: {
+                where: { suppression: null },
+              },
+            },
+          },
           mediateursCoordonnes: {
             include: {
               mediateur: {

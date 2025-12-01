@@ -37,6 +37,7 @@ export const searchUtilisateurSelect = {
   coordinateur: {
     select: {
       conseillerNumeriqueId: true,
+      derniereCreationActivite: true,
       _count: {
         select: {
           mediateursCoordonnes: {
@@ -71,26 +72,13 @@ export const queryUtilisateursForList = async ({
   skip?: number
   orderBy?: Prisma.UserOrderByWithRelationInput[]
 }) =>
-  prismaClient.user
-    .findMany({
-      where,
-      take,
-      skip,
-      select: searchUtilisateurSelect,
-      orderBy: [
-        ...(orderBy ?? []),
-        {
-          lastName: 'asc',
-        },
-      ],
-    })
-    .then((utilisateurs) =>
-      utilisateurs.map(
-        (user) =>
-          // TODO transform for easier use ?
-          user,
-      ),
-    )
+  prismaClient.user.findMany({
+    where,
+    take,
+    skip,
+    select: searchUtilisateurSelect,
+    orderBy: [...(orderBy ?? []), { lastName: 'asc' }],
+  })
 
 export type UtilisateurForList = Awaited<
   ReturnType<typeof queryUtilisateursForList>
