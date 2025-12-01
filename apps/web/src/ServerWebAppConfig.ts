@@ -116,4 +116,8 @@ export const ServerWebAppConfig = {
     org: process.env.SENTRY_ORG ?? '',
     project: process.env.SENTRY_PROJECT ?? '',
   },
+  Dataspace: {
+    // Documentation: https://gitlab.com/incubateur-territoires/startups/data-space-societe-numerique/scripts/-/wikis/api/coop
+    apiKey: process.env.DATA_SPACE_API_KEY ?? '',
+  },
 }
