@@ -1258,6 +1258,8 @@ model Activite {
   @@index([lieuCodeInsee])
   // performance index for public statistics queries
   @@index([suppression, date], map: "activites_suppression_date_idx")
+  // performance index for thematiques array filtering
+  @@index([thematiques], type: Gin)
   @@map("activites")
 }
 

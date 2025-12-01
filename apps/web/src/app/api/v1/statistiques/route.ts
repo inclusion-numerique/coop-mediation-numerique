@@ -271,10 +271,10 @@ import { NextResponse } from 'next/server'
  *       - in: query
  *         name: filter[types]
  *         required: false
- *         description: Types d’activités (individuel, démarche et/ou collectif) séparés par des virgules
+ *         description: Types d’activités (individuel et/ou collectif) séparés par des virgules
  *         schema:
  *           type: string
- *           enum: [Individuel, Demarche, Collectif]
+ *           enum: [Individuel, Collectif]
  *           example: 'Individuel'
  *
  *       - in: query
@@ -329,7 +329,15 @@ import { NextResponse } from 'next/server'
  *           type: string
  *           enum: ['0', '1']
  *         required: false
- *         description: Indique si l’activité a été effectuée par un médiateur dans le cadre du dispositif "conseiller numérique". '0' signifie hors dispositif, '1' signifie dans le dispositif.
+ *         description: Indique si l'activité a été effectuée par un médiateur dans le cadre du dispositif "conseiller numérique". '0' signifie hors dispositif, '1' signifie dans le dispositif.
+ *
+ *       - in: query
+ *         name: filter[demarches_administratives]
+ *         schema:
+ *           type: string
+ *           enum: ['0', '1']
+ *         required: false
+ *         description: Indique si l'activité concerne une aide aux démarches administratives. '0' signifie que la thématique n'est pas présente, '1' signifie qu'elle est présente.
  *
  *     responses:
  *       200:

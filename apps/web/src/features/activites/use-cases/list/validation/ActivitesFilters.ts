@@ -79,6 +79,7 @@ export const ActivitesFilterValidations = {
     ])
     .optional(),
   conseiller_numerique: z.enum(booleanStringValues).optional(),
+  demarches_administratives: z.enum(booleanStringValues).optional(),
   thematiqueNonAdministratives: z
     .union([
       z.string().transform((val) => val.split(',').map((item) => item.trim())),
@@ -114,6 +115,7 @@ export type ActivitesFilters = {
   departements?: string[] // Code INSEE des départements
   lieux?: string[] // UUID des lieux d’activités
   conseiller_numerique?: BooleanString // (0 = non, 1 = oui)
+  demarches_administratives?: BooleanString // 0 = not in thematiques, 1 = in thematiques
   thematiqueNonAdministratives?: Thematique[]
   thematiqueAdministratives?: Thematique[]
   tags?: string[]
