@@ -1261,6 +1261,10 @@ model Activite {
   @@index([lieuCodeInsee])
   // performance index for public statistics queries
   @@index([suppression, date], map: "activites_suppression_date_idx")
+  // performance index for type-based filtering on non-deleted activites
+  @@index([suppression, type], map: "activites_suppression_type_idx")
+  // performance index for thematiques array filtering
+  @@index([thematiques], type: Gin)
   @@map("activites")
 }
 
@@ -1327,6 +1331,8 @@ model Accompagnement {
   @@unique([beneficiaireId, activiteId])
   @@index([beneficiaireId])
   @@index([activiteId])
+  @@index([activiteId, beneficiaireId], map: "accompagnements_activite_beneficiaire_idx")
+  @@index([premierAccompagnement], map: "accompagnements_premier_accompagnement_idx")
   @@map("accompagnements")
 }
 
