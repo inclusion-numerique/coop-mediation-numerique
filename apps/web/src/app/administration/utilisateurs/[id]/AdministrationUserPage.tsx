@@ -93,7 +93,7 @@ const getStructuresInfos = ({
 const AdministrationUserPage = async ({
   data: { user },
 }: {
-  data: AdministrationUserPageData
+  data: AdministrationUserPageData & { user: { statutCompte: string } }
 }) => {
   const name = getUserDisplayName(user)
 
@@ -114,6 +114,7 @@ const AdministrationUserPage = async ({
     mutations,
     uploads,
     emplois,
+    statutCompte,
   } = user
 
   const crasConseillerNumeriqueV1Count = mediateur?.conseillerNumerique
@@ -471,9 +472,15 @@ const AdministrationUserPage = async ({
                             ({ mediateur, creation, suppression }) => (
                               <tr key={mediateur.id}>
                                 <td>
-                                  <span className="fr-text--sm fr-text--medium fr-mb-0">
-                                    {mediateur.user.name}
-                                  </span>
+                                  <a
+                                    href={`/administration/utilisateurs/${mediateur.userId}`}
+                                    target="_blank"
+                                    className="fr-link"
+                                  >
+                                    <span className="fr-text--sm fr-text--medium fr-mb-0">
+                                      {mediateur.user.name}
+                                    </span>
+                                  </a>
                                   <br />
                                   <span className="fr-text--xs fr-text-mention--grey">
                                     {mediateur.user.email}
@@ -486,10 +493,7 @@ const AdministrationUserPage = async ({
                                       {dateAsDay(mediateur.user.deleted)}
                                     </Badge>
                                   ) : (
-                                    getUserAccountStatusBadge({
-                                      ...mediateur.user,
-                                      mediateur,
-                                    })
+                                    getUserAccountStatusBadge(statutCompte)
                                   )}
                                 </td>
                                 <td>{dateAsDayAndTime(creation)}</td>
@@ -552,13 +556,33 @@ const AdministrationUserPage = async ({
                                 key={`${invitation.email}-${invitation.coordinateurId}`}
                               >
                                 <td>
-                                  <span className="fr-text--sm fr-text--medium fr-mb-0">
-                                    {displayName}
-                                  </span>
-                                  <br />
-                                  <span className="fr-text--xs fr-text-mention--grey">
-                                    {invitation.email}
-                                  </span>
+                                  {utilisateurInvite ? (
+                                    <>
+                                      <a
+                                        href={`/administration/utilisateurs/${utilisateurInvite?.mediateur?.userId ?? ''}`}
+                                        target="_blank"
+                                        className="fr-link"
+                                      >
+                                        <span className="fr-text--sm fr-text--medium fr-mb-0">
+                                          {displayName}
+                                        </span>{' '}
+                                      </a>
+                                      <br />
+                                      <span className="fr-text--xs fr-text-mention--grey">
+                                        {invitation.email}
+                                      </span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <span className="fr-text--sm fr-text--medium fr-mb-0">
+                                        {displayName}
+                                      </span>
+                                      <br />
+                                      <span className="fr-text--xs fr-text-mention--grey">
+                                        {invitation.email}
+                                      </span>
+                                    </>
+                                  )}
                                 </td>
                                 <td>
                                   {!utilisateurInvite ? (
@@ -574,7 +598,7 @@ const AdministrationUserPage = async ({
                                       )}
                                     </Badge>
                                   ) : (
-                                    getUserAccountStatusBadge(utilisateurInvite)
+                                    getUserAccountStatusBadge(statutCompte)
                                   )}
                                 </td>
                                 <td>

@@ -10,3 +10,8 @@ packages:
   - packages/storybook
   - packages/test
   - packages/fixtures
+
+minimumReleaseAge: 21600
+minimumReleaseAgeExclude:
+  - typescript
+  - react

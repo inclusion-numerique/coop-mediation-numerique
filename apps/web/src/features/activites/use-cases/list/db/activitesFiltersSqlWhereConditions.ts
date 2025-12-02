@@ -93,6 +93,7 @@ export const getActivitesFiltersWhereConditions = ({
   lieux,
   types,
   conseiller_numerique,
+  demarches_administratives,
   thematiqueNonAdministratives,
   thematiqueAdministratives,
   tags,
@@ -108,6 +109,7 @@ export const getActivitesFiltersWhereConditions = ({
   beneficiaires: any
   mediateurs: any
   conseiller_numerique: any
+  demarches_administratives: any
   thematiques: any
   tags: any
   rdv: any
@@ -176,6 +178,15 @@ export const getActivitesFiltersWhereConditions = ({
       ? conseiller_numerique === '1'
         ? Prisma.raw(`cn.id IS NOT NULL`)
         : Prisma.raw(`cn.id IS NULL`)
+      : null,
+    demarches_administratives: demarches_administratives
+      ? demarches_administratives === '1'
+        ? Prisma.raw(
+            `'aide_aux_demarches_administratives' = ANY(act.thematiques)`,
+          )
+        : Prisma.raw(
+            `NOT ('aide_aux_demarches_administratives' = ANY(act.thematiques))`,
+          )
       : null,
     rdv: rdv
       ? rdv === '1'

@@ -1,11 +1,12 @@
 import { getUtilisateursActifs } from '@app/web/features/legal/use-cases/statistiques/db/utilisateurs/get-utilisateurs-actifs'
 import { debugPromiseTiming } from '@app/web/utils/debugPromiseTiming'
+import { unstable_cache } from 'next/cache'
 import { getAccompagnements } from './db/accompagnements/get-accompagnements'
 import { getBeneficiaires } from './db/beneficiaires/get-beneficiaires'
 import { getSuiviBeneficiaires } from './db/beneficiaires/get-suivi-beneficiaires'
 import { getTotalUtilisateursActifs } from './db/utilisateurs/get-total-utilisateurs-actifs'
 
-export const getStatistiquesPubliquesPageData = async () => {
+const getStatistiquesPubliquesPageDataUncached = async () => {
   const [
     chiffresCles,
     accompagnements,
@@ -38,3 +39,9 @@ export const getStatistiquesPubliquesPageData = async () => {
     utilisateursActifs,
   }
 }
+
+export const getStatistiquesPubliquesPageData = unstable_cache(
+  getStatistiquesPubliquesPageDataUncached,
+  ['statistiques-publiques'],
+  { revalidate: 3600 }, // 1 hour cache
+)

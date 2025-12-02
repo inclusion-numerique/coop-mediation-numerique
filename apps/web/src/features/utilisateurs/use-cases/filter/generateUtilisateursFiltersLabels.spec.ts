@@ -51,7 +51,6 @@ describe('generate activites filters labels', () => {
         lieux: ['36929ed7-3b6f-4ed3-9924-b5e1a6c27096'],
         communes: ['69382'],
         departements: ['69'],
-        statut: 'inscription',
       },
       {
         communesOptions: COMMUNES_OPTIONS,
@@ -61,11 +60,6 @@ describe('generate activites filters labels', () => {
     )
 
     expect(labels).toEqual([
-      {
-        key: 'inscription',
-        label: 'Inscription en cours',
-        type: 'statut',
-      },
       {
         label: 'Exemple de Mediateque',
         key: '36929ed7-3b6f-4ed3-9924-b5e1a6c27096',

@@ -8,36 +8,41 @@ export const acceptInvitation = async (invitation: {
   coordinateur: { user: { email: string } }
   mediateurInvite: { id: string; user: { email: string } } | null
 }) => {
-  await prismaClient.invitationEquipe.update({
-    where: {
-      email_coordinateurId: {
-        email: invitation.email,
-        coordinateurId: invitation.coordinateurId,
-      },
-    },
-    data: {
-      acceptee: new Date(),
-    },
-  })
-
-  if (invitation.mediateurInvite != null) {
-    await prismaClient.mediateurCoordonne.upsert({
+  await prismaClient.$transaction(async (transaction) => {
+    await transaction.invitationEquipe.update({
       where: {
-        coordinateurId_mediateurId: {
-          mediateurId: invitation.mediateurInvite.id,
+        email_coordinateurId: {
+          email: invitation.email,
           coordinateurId: invitation.coordinateurId,
         },
       },
-      create: {
-        id: v4(),
-        mediateurId: invitation.mediateurInvite.id,
-        coordinateurId: invitation.coordinateurId,
-      },
-      update: {
-        suppression: null,
+      data: {
+        acceptee: new Date(),
       },
     })
-  }
+
+    if (invitation.mediateurInvite != null) {
+      const existing = await transaction.mediateurCoordonne.findFirst({
+        where: {
+          mediateurId: invitation.mediateurInvite.id,
+          coordinateurId: invitation.coordinateurId,
+          suppression: null,
+        },
+      })
+
+      if (existing) {
+        return existing
+      }
+
+      await transaction.mediateurCoordonne.create({
+        data: {
+          id: v4(),
+          mediateurId: invitation.mediateurInvite.id,
+          coordinateurId: invitation.coordinateurId,
+        },
+      })
+    }
+  })
 
   await sendAcceptInvitation({
     email: invitation.coordinateur.user.email,

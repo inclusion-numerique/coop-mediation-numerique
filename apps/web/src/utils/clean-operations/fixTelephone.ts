@@ -158,10 +158,17 @@ const toFixedTelephone = (
     ? applyOperation(cleanOperation)(telephone)
     : telephone
 
-const toInternationalFormat = (phone: string): string =>
+const transformToInternationalFormat = (phone: string): string =>
   /^0\d{9}$/.test(phone) ? `+33${phone.slice(1)}` : phone
 
-export const fixTelephone = (telephone: string | null) => {
+export const fixTelephone = (
+  telephone: string | null,
+  { toInternationalFormat = true }: { toInternationalFormat?: boolean } = {},
+) => {
   const fixed = cleanTelephone(telephone).reduce(toFixedTelephone, telephone)
-  return fixed == null ? null : toInternationalFormat(fixed)
+  return fixed == null
+    ? null
+    : toInternationalFormat
+      ? transformToInternationalFormat(fixed)
+      : fixed
 }

@@ -3,6 +3,7 @@ version: 2.1
 orbs:
   skip: theodo/skip@0.1.2
   queue: eddiewebb/queue@3.2.1
+  coveralls: coveralls/coveralls@2.2.5
 executors:
   node:
     docker:
@@ -106,6 +107,12 @@ workflows:
           requires:
             - prepare_workspace_dependencies
 
+      - upload_coverage:
+          requires:
+            - test_packages
+            - test_web
+            - test_web_integration
+
       - deploy_web:
           requires:
             - lint
@@ -115,6 +122,7 @@ workflows:
             - test_web_integration
             - test_components
             - test_web_e2e
+            - upload_coverage
 
   chromatic_deployment:
     when:
@@ -271,8 +279,22 @@ jobs:
           name: 'Prisma generate'
           command: pnpm --silent -F @app/web prisma generate
       - run:
-          name: 'Test all packages except @app/web'
-          command: pnpm -F '!@app/web' test
+          name: 'Test all packages except @app/web with coverage'
+          command: pnpm -F '!@app/web' -F '!@app/e2e' -F '!@app/storybook' exec jest --coverage --passWithNoTests
+      - run:
+          name: 'Collect coverage reports'
+          command: |
+            mkdir -p coverage-reports/packages
+            for dir in packages/*/coverage; do
+              if [ -d "$dir" ]; then
+                pkg=$(basename $(dirname $dir))
+                cp "$dir/coverage-final.json" "coverage-reports/packages/$pkg.json" 2>/dev/null || true
+              fi
+            done
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage-reports/packages
 
   test_web:
     executor: node
@@ -285,8 +307,17 @@ jobs:
           name: 'Prisma generate'
           command: pnpm --silent -F @app/web prisma generate
       - run:
-          name: 'Test @app/web'
-          command: pnpm --silent -F @app/web test
+          name: 'Test @app/web with coverage'
+          command: pnpm --silent -F @app/web exec jest --coverage -c jest.unit.config.ts
+      - run:
+          name: 'Collect coverage reports'
+          command: |
+            mkdir -p coverage-reports/web-unit
+            cp apps/web/coverage/coverage-final.json coverage-reports/web-unit/coverage.json 2>/dev/null || true
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage-reports/web-unit
 
   build_web:
     executor: node
@@ -473,9 +504,39 @@ jobs:
           key: << pipeline.id >>-web-build
       - add_dotenv_vars_to_bash_env
       - run:
-          name: 'Run web integrations jest test'
+          name: 'Run web integrations jest test with coverage'
           command: |
-            pnpm --silent -F @app/web test:integration
+            pnpm --silent -F @app/web exec jest --coverage -c jest.integration.config.ts --runInBand
+      - run:
+          name: 'Collect coverage reports'
+          command: |
+            mkdir -p coverage-reports/web-integration
+            cp apps/web/coverage/coverage-final.json coverage-reports/web-integration/coverage.json 2>/dev/null || true
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage-reports/web-integration
+
+  upload_coverage:
+    executor: node
+    resource_class: medium
+    steps:
+      - checkout
+      - install_dependencies
+      - create_dotenv_file
+      - add_secrets_to_dotenv_file
+      - add_dotenv_vars_to_bash_env
+      - attach_workspace:
+          at: .
+      - run:
+          name: 'Merge coverage reports'
+          command: |
+            rm -rf coverage/.nyc_output
+            mkdir -p coverage/.nyc_output
+            find coverage-reports -name '*.json' -exec cp {} coverage/.nyc_output/ \;
+            npx nyc report --temp-dir ./coverage/.nyc_output --reporter=lcov --reporter=text-summary --report-dir=./coverage
+      - coveralls/upload:
+          coverage_file: ./coverage/lcov.info
 
   deploy_web:
     executor: node22

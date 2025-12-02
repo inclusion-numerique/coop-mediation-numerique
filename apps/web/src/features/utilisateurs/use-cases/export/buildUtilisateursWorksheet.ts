@@ -9,6 +9,7 @@ import { setWorkbookMetadata } from '@app/web/libs/worksheet/setWorkbookMetadata
 import * as Excel from 'exceljs'
 import { UtilisateursFiltersLabels } from '../filter/generateUtilisateursFiltersLabels'
 import { UtilisateurForList } from '../list/queryUtilisateursForList'
+import { statutCompte } from '../list/statut-compte'
 import { UtilisateursDataTable } from '../list/UtilisateursDataTable'
 
 const availableFilters = [
@@ -68,12 +69,15 @@ export const buildUtilisateursWorksheet = ({
         name: label,
         filterButton: true,
       })),
-    rows: utilisateurs.map((utilisateur) =>
-      UtilisateursDataTable.columns
-        .map(({ csvValues }) => csvValues?.(utilisateur))
+    rows: utilisateurs.map((utilisateur) => {
+      const status = statutCompte(new Date())(utilisateur)
+      return UtilisateursDataTable.columns
+        .map(({ csvValues }) =>
+          csvValues?.({ ...utilisateur, statutCompte: status }),
+        )
         .filter(Boolean)
-        .flat(),
-    ),
+        .flat()
+    }),
   })
 
   const dateColumnIndex = 1

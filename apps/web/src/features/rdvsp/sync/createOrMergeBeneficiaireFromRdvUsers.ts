@@ -3,6 +3,7 @@ import {
   findDuplicateForBeneficiaire,
 } from '@app/web/features/beneficiaires/db/findDuplicateForBeneficiaire'
 import { prismaClient } from '@app/web/prismaClient'
+import { fixTelephone } from '@app/web/utils/clean-operations'
 import type { Beneficiaire, Prisma, RdvUser } from '@prisma/client'
 import { v4 } from 'uuid'
 
@@ -91,7 +92,9 @@ export const createOrMergeBeneficiaireFromRdvUser = async ({
       beneficiaireUpdateData.email = rdvUser.email
 
     if (!!rdvUser.phoneNumber && !beneficiaireToMerge.telephone)
-      beneficiaireUpdateData.telephone = rdvUser.phoneNumber
+      beneficiaireUpdateData.telephone = fixTelephone(rdvUser.phoneNumber, {
+        toInternationalFormat: false,
+      })
 
     if (!!rdvUser.firstName && !beneficiaireToMerge.prenom)
       beneficiaireUpdateData.prenom = rdvUser.firstName

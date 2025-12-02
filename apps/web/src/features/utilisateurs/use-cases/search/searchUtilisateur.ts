@@ -60,7 +60,7 @@ export const searchUtilisateur = async (options: SearchUtilisateurOptions) => {
       },
       filterOnRoles(parsedQueryParams.data),
       filterOnDispositif(parsedQueryParams.data),
-      filterOnStatut(parsedQueryParams.data),
+      filterOnStatut(new Date())(parsedQueryParams.data),
       filterOnLieux(parsedQueryParams.data),
     ],
   } satisfies Prisma.UserWhereInput
@@ -89,3 +89,8 @@ export const searchUtilisateur = async (options: SearchUtilisateurOptions) => {
 export type SearchUtilisateurResult = Awaited<
   ReturnType<typeof searchUtilisateur>
 >
+
+export type UtilisateurWithStatutCompte =
+  SearchUtilisateurResult['utilisateurs'][number] & {
+    statutCompte: string
+  }
