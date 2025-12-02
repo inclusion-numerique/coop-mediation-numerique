@@ -37,7 +37,7 @@ export type Statut =
 
 export type StatutSlug = (typeof statutSlugs)[number]
 
-export const statutLabels: {
+const statutLabels: {
   [key in Statut]: string
 } = {
   Inscription0: 'Inscription en cours',
@@ -57,7 +57,7 @@ export const statutLabels: {
   Deleted: 'Supprimé',
 }
 
-export const statutForSlug: { [key in StatutSlug]: Statut } = {
+const statutForSlug: { [key in StatutSlug]: Statut } = {
   inscription0: 'Inscription0',
   inscription7: 'Inscription7',
   inscription30: 'Inscription30',

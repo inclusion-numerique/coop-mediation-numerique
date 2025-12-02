@@ -23,12 +23,23 @@ import {
   coordinateurInscritAvecTout,
   coordinateurInscritAvecToutCoordinateurId,
 } from './coordinateurInscritAvecTout'
+import { coordinateurInscritJ30 } from './coordinateurInscritJ30'
+import { coordinateurInscritJ90 } from './coordinateurInscritJ90'
+import { coordinateurInscritJ180 } from './coordinateurInscritJ180'
 import {
   mediateurAvecActivite,
   mediateurAvecActiviteMediateurId,
 } from './mediateurAvecActivite'
 import { mediateurInscription } from './mediateurInscription'
+import { mediateurInscriptionJ7 } from './mediateurInscriptionJ7'
+import { mediateurInscriptionJ30 } from './mediateurInscriptionJ30'
+import { mediateurInscriptionJ60 } from './mediateurInscriptionJ60'
+import { mediateurInscriptionJ90 } from './mediateurInscriptionJ90'
 import { mediateurSansActivites } from './mediateurSansActivites'
+import { mediateurSansActivitesJ7 } from './mediateurSansActivitesJ7'
+import { mediateurSansActivitesJ30 } from './mediateurSansActivitesJ30'
+import { mediateurSansActivitesJ60 } from './mediateurSansActivitesJ60'
+import { mediateurSansActivitesJ90 } from './mediateurSansActivitesJ90'
 
 export const fixtureUsers = [
   administrateur,
@@ -38,11 +49,22 @@ export const fixtureUsers = [
   coordinateurHorsDispositifInscription,
   coordinateurHorsDispositifInscritAvecTout,
   mediateurInscription,
+  mediateurInscriptionJ7,
+  mediateurInscriptionJ30,
+  mediateurInscriptionJ60,
+  mediateurInscriptionJ90,
   mediateurSansActivites,
+  mediateurSansActivitesJ7,
+  mediateurSansActivitesJ30,
+  mediateurSansActivitesJ60,
+  mediateurSansActivitesJ90,
   mediateurAvecActivite,
   coordinateurInscription,
   coordinateurInscriptionAvecTout,
   coordinateurInscrit,
+  coordinateurInscritJ30,
+  coordinateurInscritJ90,
+  coordinateurInscritJ180,
   coordinateurInscritAvecTout,
 ]
 

@@ -71,7 +71,7 @@ const actifFilter = (lastActivity: {
     },
     {
       lastLogin: lastActivity,
-      mediateur: { is: { derniereCreationActivite: lastActivity } },
+      mediateur: { isNot: null },
       coordinateur: {
         is: {
           OR: [

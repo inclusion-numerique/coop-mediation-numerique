@@ -11,7 +11,6 @@ import { isConseillerNumeriqueV1DataWithActiveMiseEnRelation } from '@app/web/ex
 import { findConseillerNumeriqueV1 } from '@app/web/external-apis/conseiller-numerique/searchConseillerNumeriqueV1'
 import { getInvitationStatusBadge } from '@app/web/features/utilisateurs/use-cases/list/getInvitationStatusBadge'
 import { getUserAccountStatusBadge } from '@app/web/features/utilisateurs/use-cases/list/getUserAccountStatusBadge'
-import { getUserLifecycleBadge } from '@app/web/features/utilisateurs/use-cases/list/getUserLifecycleBadge'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
@@ -176,7 +175,7 @@ const AdministrationUserPage = async ({
           actions={<ResetUserInscriptionButton userId={user.id} />}
         >
           {name} <span className="fr-mx-1v" />{' '}
-          {getUserLifecycleBadge(user, { small: false })}
+          {getUserAccountStatusBadge(statutCompte)}
         </AdministrationTitle>
         {inscriptionEnCours && !isMediateur && !isCoordinateur && (
           <Notice
