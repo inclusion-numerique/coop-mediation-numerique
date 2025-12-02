@@ -1,17 +1,3 @@
-import { executeBackupDatabaseJob } from '@app/web/jobs/backup-database/executeBackupDatabaseJob'
-import { executeFixCoordinationsV1 } from '@app/web/jobs/fix-coordinations-v1/executeFixCoordinationsV1'
-import { executeFixStructures } from '@app/web/jobs/fix-structures/executeFixStructures'
-import { executeFixTags } from '@app/web/jobs/fix-tags/executeFixTags'
-import { executeFixUsers } from '@app/web/jobs/fix-users/executeFixUsers'
-import { executeImportContactsToBrevo } from '@app/web/jobs/import-contacts-to-brevo/executeImportContactsToBrevo'
-import { executeIngestLesBasesInRag } from '@app/web/jobs/ingest-les-bases-in-rag/executeIngestLesBasesInRag'
-import type { Job, JobName, JobPayload } from '@app/web/jobs/jobs'
-import { executeSetServciesToSharedLieux } from '@app/web/jobs/set-servcies-to-shared-lieux/executeSetServciesToSharedLieux'
-import { executeSyncConums } from '@app/web/jobs/sync-conums/executeSyncConums'
-import { executeSyncRdvspData } from '@app/web/jobs/sync-rdvsp-data/executeSyncRdvspData'
-import { executeUpdateConumInfo } from '@app/web/jobs/update-conum-info/executeUpdateConumInfo'
-import { executeUpdateConumStructureReferent } from '@app/web/jobs/update-conum-structure-referent/executeUpdateConumStructureReferent'
-import { updateStructureFromCartoDataApi } from '@app/web/jobs/update-structures-cartographie-nationale/updateStructureFromCartoDataApi'
 import { prismaClient } from '@app/web/prismaClient'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import * as Sentry from '@sentry/nextjs'
@@ -20,9 +6,24 @@ import {
   downloadCartographieNationaleStructures,
   getStructuresCartographieNationaleFromLocalFile,
 } from '../data/cartographie-nationale/cartographieNationaleStructures'
+import { executeBackupDatabaseJob } from './backup-database/executeBackupDatabaseJob'
+import { executeFixCoordinationsV1 } from './fix-coordinations-v1/executeFixCoordinationsV1'
+import { executeFixStructures } from './fix-structures/executeFixStructures'
+import { executeFixTags } from './fix-tags/executeFixTags'
+import { executeFixUsers } from './fix-users/executeFixUsers'
 import { executeFixUsersRoles } from './fix-users-roles/executeFixUsersRoles'
+import { executeImportContactsToBrevo } from './import-contacts-to-brevo/executeImportContactsToBrevo'
+import { executeIncompleteSignupReminders } from './incomplete-signup-reminders/executeIncompleteSignupReminders'
+import { executeIngestLesBasesInRag } from './ingest-les-bases-in-rag/executeIngestLesBasesInRag'
+import type { Job, JobName, JobPayload } from './jobs'
 import { output } from './output'
+import { executeSetServciesToSharedLieux } from './set-servcies-to-shared-lieux/executeSetServciesToSharedLieux'
+import { executeSyncConums } from './sync-conums/executeSyncConums'
+import { executeSyncRdvspData } from './sync-rdvsp-data/executeSyncRdvspData'
+import { executeUpdateConumInfo } from './update-conum-info/executeUpdateConumInfo'
+import { executeUpdateConumStructureReferent } from './update-conum-structure-referent/executeUpdateConumStructureReferent'
 import { executeUpdateLieuxActivitesADistance } from './update-lieu-activite-a-distance/executeUpdateLieuxActivitesADistance'
+import { updateStructureFromCartoDataApi } from './update-structures-cartographie-nationale/updateStructureFromCartoDataApi'
 
 export type JobExecutor<Name extends JobName, Result = unknown> = (
   job: Job & { name: Name; payload: JobPayload<Name> },
@@ -64,6 +65,7 @@ export const jobExecutors: {
   'fix-tags': executeFixTags,
   'sync-conums': executeSyncConums,
   'sync-rdvsp-data': executeSyncRdvspData,
+  'incomplete-signup-reminders': executeIncompleteSignupReminders,
   'fix-users-roles': executeFixUsersRoles,
 }
 

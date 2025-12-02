@@ -1,5 +1,6 @@
 import { tagsRouter } from '@app/web/features/activites/use-cases/tags/tagsRouter'
 import { conumRouter } from '@app/web/features/conum/conumRouter'
+import { utilisateursRouter } from '@app/web/features/utilisateurs/use-cases/utilisateursRouter'
 import { apiClientRouter } from '@app/web/server/rpc/apiClient/apiClientRouter'
 import { assistantRouter } from '@app/web/server/rpc/assistant/assistantRouter'
 import { beneficiairesRouter } from '@app/web/server/rpc/beneficiaires/beneficiairesRouter'
@@ -37,6 +38,7 @@ export const appRouter = router({
   rdvServicePublic: rdvServicePublicRouter,
   employeStructure: employeStructureRouter,
   tags: tagsRouter,
+  utilisateurs: utilisateursRouter,
 })
 // export type definition of API
 export type AppRouter = typeof appRouter
