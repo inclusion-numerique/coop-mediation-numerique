@@ -1,10 +1,13 @@
-import { initializeAndimportUserDataFromV1 } from '@app/web/app/inscription/(steps)/identification/initializeAndimportUserDataFromV1'
-import { updateUserInscriptionProfileFromV1Data } from '@app/web/app/inscription/(steps)/identification/updateUserInscriptionProfileFromV1Data'
 import { getLieuxActiviteForInscription } from '@app/web/app/inscription/getLieuxActiviteForInscription'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import BackButton from '@app/web/components/BackButton'
-import { fetchConseillerNumeriqueV1Data } from '@app/web/external-apis/conseiller-numerique/fetchConseillerNumeriqueV1Data'
+import {
+  getMediateurFromDataspaceApi,
+  isDataspaceApiError,
+} from '@app/web/external-apis/dataspace/dataSpaceApiClient'
+import { initializeAndImportUserDataFromDataspace } from '@app/web/features/dataspace/initializeAndImportUserDataFromDataspace'
+import { updateUserInscriptionProfileFromDataspace } from '@app/web/features/dataspace/updateUserInscriptionProfileFromDataspace'
 import { profileInscriptionSlugs } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import { getProconnectIdToken } from '@app/web/security/getProconnectIdToken'
 import { redirect } from 'next/navigation'
@@ -22,9 +25,9 @@ export const metadata = {
 
 /**
  * Cette page :
- *  - vérifie si l’utilisateur a des données dans la base de données conseiller-numerique-v1
+ *  - vérifie si l'utilisateur a des données dans l'API Dataspace
  *  - affiche un message d'erreur si le role ne correspond pas
- *  - importe les données de la base de données conseiller-numerique-v1 si le role correspond
+ *  - importe les données de l'API Dataspace si le role correspond
  *  - créé l'objet "mediateur" si le role correspond
  */
 const IdentificationPage = async () => {
@@ -37,23 +40,34 @@ const IdentificationPage = async () => {
     return null
   }
 
-  const existingV1Conseiller = await fetchConseillerNumeriqueV1Data({
+  // Fetch from Dataspace API instead of MongoDB
+  const dataspaceResult = await getMediateurFromDataspaceApi({
     email: user.email,
   })
 
-  const profilCheckedUser = await updateUserInscriptionProfileFromV1Data({
+  // Handle API errors
+  if (isDataspaceApiError(dataspaceResult)) {
+    throw new Error(
+      `Dataspace API error: ${dataspaceResult.error.message}`,
+    )
+  }
+
+  // dataspaceResult is either DataspaceMediateur or null (not found)
+  const dataspaceData = dataspaceResult
+
+  const profilCheckedUser = await updateUserInscriptionProfileFromDataspace({
     user,
-    v1Conseiller: existingV1Conseiller,
+    dataspaceData,
   })
 
   const { checkedProfilInscription } = profilCheckedUser
 
-  const userWithImportedData = await initializeAndimportUserDataFromV1({
+  const userWithImportedData = await initializeAndImportUserDataFromDataspace({
     user: {
       ...profilCheckedUser,
       profilInscription: intendedProfileInscription,
     },
-    v1Conseiller: existingV1Conseiller,
+    dataspaceData,
   })
 
   const lieuxActivite = user.mediateur?.conseillerNumerique

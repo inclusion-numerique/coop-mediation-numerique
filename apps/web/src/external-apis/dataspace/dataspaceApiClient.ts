@@ -7,10 +7,6 @@ import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 
 const dataspaceApiBaseUrl = 'https://api.inclusion-numerique.anct.gouv.fr/rpc'
 
-// ============================================================================
-// Types
-// ============================================================================
-
 export type DataspaceMediateurAdresse = {
   nom_voie: string
   code_insee: string
@@ -90,7 +86,8 @@ export type DataspaceApiError = {
   }
 }
 
-export type DataspaceApiResult<T> = T | DataspaceApiError
+// Result can be data, null (not found), or error
+export type DataspaceApiResult<T> = T | null | DataspaceApiError
 
 export const isDataspaceApiError = <T>(
   result: DataspaceApiResult<T>,
@@ -100,6 +97,15 @@ export const isDataspaceApiError = <T>(
   'error' in result &&
   typeof (result as DataspaceApiError).error === 'object'
 
+export const isDataspaceApiNotFound = <T>(
+  result: DataspaceApiResult<T>,
+): result is null => result === null
+
+/**
+ * Fetch mediateur data from Dataspace API by email
+ * Returns null if the mediateur is not found (404)
+ * Returns DataspaceApiError for other errors
+ */
 export const getMediateurFromDataspaceApi = async ({
   email,
 }: {
@@ -130,13 +136,18 @@ export const getMediateurFromDataspaceApi = async ({
     return response.data
   } catch (error) {
     if (error instanceof AxiosError) {
+      // 404 means mediateur not found - return null instead of error
+      if (error.response?.status === 404) {
+        return null
+      }
+
       return {
         error: {
           statusCode: error.response?.status ?? 500,
           message:
             error.response?.data?.message ??
             error.message ??
-            'Unknown error from Data Space API',
+            'Unknown error from Dataspace API',
         },
       }
     }
