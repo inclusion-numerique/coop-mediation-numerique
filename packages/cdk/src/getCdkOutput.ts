@@ -27,6 +27,8 @@ export type ProjectCdkOutput = {
   mainDomainZoneId: string
   transactionalEmailDomainStatus: string
   webContainersId: string
+  maildevWebUrl: string
+  maildevSmtp: string
 }
 
 export type CdkOutput = {

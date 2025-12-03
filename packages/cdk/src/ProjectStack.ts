@@ -1,5 +1,6 @@
 import { environmentVariablesFromList } from '@app/cdk/environmentVariable'
 import { ProjectCdkOutput } from '@app/cdk/getCdkOutput'
+import { MaildevInstance } from '@app/cdk/MaildevInstance'
 import { createOutput } from '@app/cdk/output'
 import { terraformBackend } from '@app/cdk/terraformBackend'
 import {
@@ -228,7 +229,10 @@ export class ProjectStack extends TerraformStack {
       data: database.id,
     })
 
-    // Containers namespace for web containers
+    const maildev = new MaildevInstance(this, 'maildev')
+    const maildevWebUrl = maildev.getMaildevWebUrl()
+    const maildevSmtp = maildev.getMaildevSmtp()
+
     const webContainers = new ContainerNamespace(this, 'webContainers', {
       name: containerNamespaceName,
       description: 'Web application containers',
@@ -402,5 +406,7 @@ export class ProjectStack extends TerraformStack {
     output('databaseInstanceId', database.id)
     output('databaseEndpointIp', database.endpointIp)
     output('databaseEndpointPort', database.endpointPort)
+    output('maildevWebUrl', maildevWebUrl)
+    output('maildevSmtp', maildevSmtp)
   }
 }
