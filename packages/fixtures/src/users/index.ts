@@ -35,6 +35,8 @@ import { mediateurInscriptionJ7 } from './mediateurInscriptionJ7'
 import { mediateurInscriptionJ30 } from './mediateurInscriptionJ30'
 import { mediateurInscriptionJ60 } from './mediateurInscriptionJ60'
 import { mediateurInscriptionJ90 } from './mediateurInscriptionJ90'
+import { mediateurInscriptionJ100 } from './mediateurInscriptionJ100'
+import { mediateurInscriptionJ110 } from './mediateurInscriptionJ110'
 import { mediateurSansActivites } from './mediateurSansActivites'
 import { mediateurSansActivitesJ7 } from './mediateurSansActivitesJ7'
 import { mediateurSansActivitesJ30 } from './mediateurSansActivitesJ30'
@@ -53,6 +55,8 @@ export const fixtureUsers = [
   mediateurInscriptionJ30,
   mediateurInscriptionJ60,
   mediateurInscriptionJ90,
+  mediateurInscriptionJ100,
+  mediateurInscriptionJ110,
   mediateurSansActivites,
   mediateurSansActivitesJ7,
   mediateurSansActivitesJ30,
