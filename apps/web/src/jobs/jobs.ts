@@ -13,6 +13,7 @@ import { UpdateConumStructureReferentJobValidation } from '@app/web/jobs/update-
 import { UpdateLieuxActivitesAdistanceValidation } from '@app/web/jobs/update-lieu-activite-a-distance/updateLieuxActivitesAdistanceJob'
 import { UpdateStructuresCartographieNationaleJobValidation } from '@app/web/jobs/update-structures-cartographie-nationale/updateStructuresCartographieNationaleJob'
 import z from 'zod'
+import { FixUsersRolesJobValidation } from './fix-users-roles/fixUsersRolesJob'
 
 /**
  * A job represents a task that can be executed asynchronously.
@@ -45,6 +46,7 @@ export const JobValidation = z.discriminatedUnion('name', [
   SyncConumsJobValidation,
   SyncRdvspDataJobValidation,
   FixTagsJobValidation,
+  FixUsersRolesJobValidation,
 ])
 
 export type Job = z.infer<typeof JobValidation>

@@ -344,6 +344,16 @@ export class WebAppStack extends TerraformStack {
         containerId: container.id,
       })
 
+      // Daily update fix users roles
+      createJobExecutionCron(this, {
+        name: 'fix-users-roles',
+        job: {
+          name: 'fix-users-roles',
+        },
+        schedule: '0 0 * * *',
+        containerId: container.id,
+      })
+
       // Hourly backup job
       createJobExecutionCron(this, {
         name: `backup-${namespace}-database-hourly`,

@@ -20,6 +20,7 @@ import {
   downloadCartographieNationaleStructures,
   getStructuresCartographieNationaleFromLocalFile,
 } from '../data/cartographie-nationale/cartographieNationaleStructures'
+import { executeFixUsersRoles } from './fix-users-roles/executeFixUsersRoles'
 import { output } from './output'
 import { executeUpdateLieuxActivitesADistance } from './update-lieu-activite-a-distance/executeUpdateLieuxActivitesADistance'
 
@@ -63,6 +64,7 @@ export const jobExecutors: {
   'fix-tags': executeFixTags,
   'sync-conums': executeSyncConums,
   'sync-rdvsp-data': executeSyncRdvspData,
+  'fix-users-roles': executeFixUsersRoles,
 }
 
 export const executeJob = async (job: Job) => {
