@@ -11,6 +11,7 @@ export const coordinateurHorsDispositifInscritAvecTout = givenUser({
   id: 'f878b0e1-f31e-4a15-bbca-e8be80b0d19e',
   firstName: 'Coordinateur hors dispositif',
   lastName: 'Inscrit avec tout',
+  lastLogin: new Date(),
   isFixture: true,
   role: 'User',
   coordinateur: {

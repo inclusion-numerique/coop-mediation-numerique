@@ -477,6 +477,25 @@ export const importRdvs = async ({
     ? dateAsIsoDay(new Date(user.rdvAccount.syncFrom))
     : undefined
 
+  // DEBUG: Log syncFrom and query params
+  const queryParams = {
+    agent_id: rdvAccount.id,
+    starts_after: startsAfter,
+    ...(organisationIds ? { organisation_ids: organisationIds } : {}),
+  }
+  const logPrefix = `[RDV-SYNC-DEBUG][account:${rdvAccount.id}]`
+  // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
+  console.log(`${logPrefix} ===============================`)
+  // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
+  console.log(`${logPrefix} syncFrom raw value:`, user.rdvAccount.syncFrom)
+  // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
+  console.log(`${logPrefix} startsAfter (formatted):`, startsAfter)
+  // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
+  console.log(
+    `${logPrefix} Query params sent to API:`,
+    JSON.stringify(queryParams, null, 2),
+  )
+
   appendLog(
     `fetching rdvs for account ${rdvAccount.id} from ${startsAfter ?? 'all time'}`,
   )
@@ -506,6 +525,57 @@ export const importRdvs = async ({
           },
         }),
   ])
+
+  // DEBUG: Log returned RDVs info
+  const sortedRdvsByDate = [...rdvs].sort(
+    (a, b) => new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime(),
+  )
+  const firstRdv = sortedRdvsByDate[0]
+  const lastRdv = sortedRdvsByDate[sortedRdvsByDate.length - 1]
+
+  // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
+  console.log(`${logPrefix} Total RDVs returned by API:`, rdvs.length)
+  // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
+  console.log(
+    `${logPrefix} First RDV date (earliest):`,
+    firstRdv?.starts_at ?? 'N/A',
+  )
+  // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
+  console.log(
+    `${logPrefix} Last RDV date (latest):`,
+    lastRdv?.starts_at ?? 'N/A',
+  )
+
+  // Check for RDVs before syncFrom date
+  if (startsAfter && rdvs.length > 0) {
+    const startsAfterDate = new Date(startsAfter)
+    const rdvsBeforeSyncFrom = rdvs.filter(
+      (rdv) => new Date(rdv.starts_at) < startsAfterDate,
+    )
+    if (rdvsBeforeSyncFrom.length > 0) {
+      // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
+      console.log(
+        `${logPrefix} ⚠️ WARNING: Found`,
+        rdvsBeforeSyncFrom.length,
+        'RDVs BEFORE starts_after date!',
+      )
+      // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
+      console.log(
+        `${logPrefix} Example RDVs before syncFrom:`,
+        rdvsBeforeSyncFrom.slice(0, 3).map((rdv) => ({
+          id: rdv.id,
+          starts_at: rdv.starts_at,
+          name: rdv.name,
+        })),
+      )
+    } else {
+      // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
+      console.log(`${logPrefix} ✓ All RDVs are on or after starts_after date`)
+    }
+  }
+  // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
+  console.log(`${logPrefix} ===============================`)
+
   appendLog(`already imported ${importedRdvIds.length} rdvs in database`)
   appendLog(`fetched ${rdvs.length} rdvs from RDV API`)
 
