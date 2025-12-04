@@ -9,6 +9,7 @@ type MergeUser = UserDisplayName & {
     beneficiaires: { id: string }[]
     enActivite: { structure: { id: string } }[]
     coordinations: { coordinateur: { id: string } }[]
+    tags: { id: string }[]
     invitations: {
       email: string
       coordinateurId: string
@@ -16,6 +17,7 @@ type MergeUser = UserDisplayName & {
     }[]
   } | null
   coordinateur: {
+    Tag: { id: string }[]
     invitations: {
       email: string
       coordinateurId: string
@@ -37,6 +39,7 @@ export type MergeData = {
   invitationsRecues: string[]
   invitationsEnvoyees: string[]
   mutationsIds: string[]
+  tags: string[]
 }
 
 export type MergeInfo = MergeData & {
@@ -54,6 +57,9 @@ const include = {
       },
       activites: {
         where: { suppression: null },
+      },
+      tags: {
+        select: { id: true },
       },
       invitations: true,
       coordinations: {
@@ -83,6 +89,9 @@ const include = {
             select: { id: true },
           },
         },
+      },
+      Tag: {
+        select: { id: true },
       },
       invitations: true,
     },
@@ -131,6 +140,10 @@ const toMergeInfo = (user: MergeUser) => ({
   mediateursCoordonnesIds:
     user.coordinateur?.mediateursCoordonnes.map(toMediateurId) ?? [],
   mutationsIds: user.mutations.map(toId) ?? [],
+  tags: [
+    ...(user.mediateur?.tags.map(toId) ?? []),
+    ...(user.coordinateur?.Tag.map(toId) ?? []),
+  ],
   invitationsRecues: user.mediateur?.invitations.map(toMergedIds) ?? [],
   invitationsEnvoyees: user.coordinateur?.invitations.map(toMergedIds) ?? [],
   deleted: user.deleted,
@@ -164,6 +177,7 @@ const toMergeCommon = (mergeSource: MergeData, mergeTarget: MergeData) => ({
   mutationsIds: mergeSource.mutationsIds.filter((id) =>
     mergeTarget.mutationsIds.includes(id),
   ),
+  tags: mergeSource.tags.filter((id) => mergeTarget.tags.includes(id)),
 })
 
 export const getMergeData = async (
