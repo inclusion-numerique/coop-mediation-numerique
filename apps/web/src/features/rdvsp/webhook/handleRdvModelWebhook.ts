@@ -32,7 +32,9 @@ export const handleRdvModelWebhook = async ({
   event: RdvspWebhookEvent
 }) => {
   // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
-  console.log(`[rdvsp webhook] Processing RDV ${event} for RDV id ${data.id} (starts_at: ${data.starts_at})`)
+  console.log(
+    `[rdvsp webhook] Processing RDV ${event} for RDV id ${data.id} (starts_at: ${data.starts_at})`,
+  )
 
   // Find the RDV account from one of the agents in the RDV
   // The webhook includes agents who are associated with the RDV
