@@ -1,9 +1,6 @@
 import { prismaClient } from '@app/web/prismaClient'
 import type { OAuthApiRdv } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
-import {
-  createOrMergeBeneficiairesFromRdvUserIds,
-  createOrMergeBeneficiairesFromRdvUsers,
-} from '../sync/createOrMergeBeneficiaireFromRdvUsers'
+import { createOrMergeBeneficiairesFromRdvUserIds } from '../sync/createOrMergeBeneficiaireFromRdvUsers'
 import {
   createRdv,
   deleteRdv,
@@ -35,7 +32,9 @@ export const handleRdvModelWebhook = async ({
   event: RdvspWebhookEvent
 }) => {
   // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
-  console.log(`[rdvsp webhook] Processing RDV ${event} for RDV id ${data.id}`)
+  console.log(
+    `[rdvsp webhook] Processing RDV ${event} for RDV id ${data.id} (starts_at: ${data.starts_at})`,
+  )
 
   // Find the RDV account from one of the agents in the RDV
   // The webhook includes agents who are associated with the RDV
@@ -51,7 +50,9 @@ export const handleRdvModelWebhook = async ({
   // Check if we have this RDV account in our system
   const rdvAccount = await prismaClient.rdvAccount.findUnique({
     where: { id: rdvAccountId },
-    include: {
+    select: {
+      id: true,
+      syncFrom: true,
       user: {
         select: {
           mediateur: {
@@ -72,6 +73,12 @@ export const handleRdvModelWebhook = async ({
     return
   }
 
+  // Check if the RDV starts_at is before the syncFrom date
+  // If so, we should not create/update this RDV (or delete it if it exists)
+  const rdvStartsAt = new Date(data.starts_at)
+  const isBelowSyncFrom =
+    rdvAccount.syncFrom && rdvStartsAt < rdvAccount.syncFrom
+
   try {
     const rdv = webhookRdvToOAuthApiRdv(data)
 
@@ -82,6 +89,25 @@ export const handleRdvModelWebhook = async ({
         const existingRdv = await prismaClient.rdv.findUnique({
           where: { id: data.id },
         })
+
+        // If RDV is before syncFrom date
+        if (isBelowSyncFrom) {
+          if (existingRdv) {
+            // Delete existing RDV that is now below syncFrom threshold
+            await deleteRdv(data.id)
+            // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
+            console.log(
+              `[rdvsp webhook] Deleted RDV ${data.id} (starts_at ${data.starts_at} is before syncFrom ${rdvAccount.syncFrom?.toISOString()})`,
+            )
+          } else {
+            // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
+            console.log(
+              `[rdvsp webhook] Skipping RDV ${data.id} creation (starts_at ${data.starts_at} is before syncFrom ${rdvAccount.syncFrom?.toISOString()})`,
+            )
+          }
+          break
+        }
+
         const { rdvUsers } = await syncRdvDependencies(rdv)
         if (rdvAccount.user?.mediateur?.id) {
           await createOrMergeBeneficiairesFromRdvUserIds({
