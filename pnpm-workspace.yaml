@@ -15,3 +15,8 @@ minimumReleaseAge: 21600
 minimumReleaseAgeExclude:
   - typescript
   - react
+  - react-dom
+  - "@types/react"
+  - "@types/react-dom"
+  - next
+  - "@next/env"
