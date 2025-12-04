@@ -38,6 +38,7 @@ export const AdministrationAjoutMembreEquipe = ({
       router.push(
         `/administration/utilisateurs/${data.coordinateurUser.id}#coordinateur`,
       )
+      router.refresh()
     } catch {
       createToast({
         priority: 'error',
