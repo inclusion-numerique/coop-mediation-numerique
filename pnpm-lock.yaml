@@ -76,7 +76,7 @@ importers:
         specifier: ^6.5.2
         version: 6.6.0
       dotenv:
-        specifier: ^16.5.0
+        specifier: ^16.6.1
         version: 16.6.1
       form-data:
         specifier: ^4.0.2
@@ -278,7 +278,7 @@ importers:
         specifier: ^1.1.9
         version: 1.1.9
       dotenv:
-        specifier: ^16.5.0
+        specifier: ^16.6.1
         version: 16.6.1
       dotenv-cli:
         specifier: ^8.0.0
@@ -612,7 +612,7 @@ importers:
         specifier: ^10.4.2
         version: 10.4.2
       dotenv:
-        specifier: ^16.5.0
+        specifier: ^16.6.1
         version: 16.6.1
       dotenv-cli:
         specifier: ^8.0.0
@@ -649,7 +649,7 @@ importers:
         specifier: ^1.9.0
         version: 1.11.0
       dotenv:
-        specifier: ^16.5.0
+        specifier: ^16.6.1
         version: 16.6.1
       dotenv-cli:
         specifier: ^8.0.0
@@ -796,7 +796,7 @@ importers:
         specifier: 6.13.0
         version: 6.13.0(prisma@6.13.0(typescript@5.9.2))(typescript@5.9.2)
       dotenv:
-        specifier: ^16.5.0
+        specifier: ^16.6.1
         version: 16.6.1
       tsx:
         specifier: ^4.19.4
@@ -863,7 +863,7 @@ importers:
         specifier: ^11.28.2
         version: 11.29.0
       dotenv:
-        specifier: ^16.5.0
+        specifier: ^16.6.1
         version: 16.6.1
       jest-mock:
         specifier: ^29.7.0
@@ -927,7 +927,7 @@ importers:
         specifier: ^1.9.0
         version: 1.11.0
       dotenv:
-        specifier: ^16.5.0
+        specifier: ^16.6.1
         version: 16.6.1
     devDependencies:
       '@swc/core':
@@ -1000,7 +1000,7 @@ importers:
         specifier: ^2.5.1
         version: 2.5.1
       dotenv:
-        specifier: ^16.5.0
+        specifier: ^16.6.1
         version: 16.6.1
       downshift:
         specifier: ^9.0.9
