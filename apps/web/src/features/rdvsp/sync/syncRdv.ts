@@ -36,6 +36,8 @@ export const motifPrismaDataFromOAuthApiMotif = (
 }
 
 // Helper to convert API user to Prisma data (exported for use in importRdvs.ts)
+// Note: responsibleId is intentionally not stored to avoid FK constraint issues
+// (it's a self-referential FK and the responsible user may not exist in our DB)
 export const userPrismaDataFromOAuthApiUser = (
   user: OAuthApiRdv['participations'][number]['user'],
 ) => {
@@ -61,9 +63,9 @@ export const userPrismaDataFromOAuthApiUser = (
     invitationCreatedAt: user.invitation_created_at
       ? new Date(user.invitation_created_at)
       : null,
-    responsibleId: user.responsible_id,
+    // responsibleId intentionally not stored (self-referential FK constraint issues)
     syncedAt: new Date(),
-  } satisfies Prisma.RdvUserUncheckedCreateInput
+  } satisfies Omit<Prisma.RdvUserUncheckedCreateInput, 'responsibleId'>
 }
 
 // Helper to convert API rdv to Prisma data

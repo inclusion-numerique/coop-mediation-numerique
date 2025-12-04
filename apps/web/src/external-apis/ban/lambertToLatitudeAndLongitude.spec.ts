@@ -15,12 +15,14 @@ const testCases = [
 }[]
 
 describe('coordinatesToLatitudeAndLongitude', () => {
-  test.each(testCases)(
-    'should convert Lambert 93 coordinates $lambert to WGS84 $wgs84',
-    ({ lambert, wgs84 }) => {
-      const result = lambertToLatitudeAndLongitude(lambert)
-      expect(result.latitude).toBeCloseTo(wgs84.latitude, 4)
-      expect(result.longitude).toBeCloseTo(wgs84.longitude, 4)
-    },
-  )
+  test.each(
+    testCases,
+  )('should convert Lambert 93 coordinates $lambert to WGS84 $wgs84', ({
+    lambert,
+    wgs84,
+  }) => {
+    const result = lambertToLatitudeAndLongitude(lambert)
+    expect(result.latitude).toBeCloseTo(wgs84.latitude, 4)
+    expect(result.longitude).toBeCloseTo(wgs84.longitude, 4)
+  })
 })

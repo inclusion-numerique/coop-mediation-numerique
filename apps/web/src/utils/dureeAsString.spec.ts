@@ -14,10 +14,10 @@ describe('dureeAsString', () => {
     { value: 0, expected: '0mn' },
   ]
 
-  test.each(cases)(
-    'should format $value to $expected',
-    ({ value, expected }) => {
-      expect(dureeAsString(value)).toEqual(expected)
-    },
-  )
+  test.each(cases)('should format $value to $expected', ({
+    value,
+    expected,
+  }) => {
+    expect(dureeAsString(value)).toEqual(expected)
+  })
 })

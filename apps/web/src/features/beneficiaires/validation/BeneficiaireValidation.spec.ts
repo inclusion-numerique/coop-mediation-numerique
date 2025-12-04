@@ -15,12 +15,12 @@ describe('BeneficiaireValidation', () => {
       { number: '+91-9876543210', isValid: true },
       { number: '(+61) 3 1234 5678', isValid: true },
       { number: '+39 02 12345678', isValid: true },
-    ])(
-      'should validate international phone number $number as $isValid',
-      ({ number, isValid }) => {
-        expect(telephoneRegex.test(number)).toBe(isValid)
-      },
-    )
+    ])('should validate international phone number $number as $isValid', ({
+      number,
+      isValid,
+    }) => {
+      expect(telephoneRegex.test(number)).toBe(isValid)
+    })
   })
 
   describe('telephoneValidation', () => {
