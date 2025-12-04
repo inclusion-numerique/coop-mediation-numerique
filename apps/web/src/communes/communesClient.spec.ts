@@ -9,13 +9,10 @@ describe('findCommune', () => {
       ],
       ['01082', { codeInsee: '01082', nom: 'Chanay', codePostal: '01420' }],
       ['99999', null], // non-existent commune
-    ])(
-      'findCommuneByInsee(%s) should return %o',
-      async (inseeCode, expectedResult) => {
-        const client = await createCommunesClient()
-        const result = client.findCommuneByInsee(inseeCode)
-        expect(result).toEqual(expectedResult)
-      },
-    )
+    ])('findCommuneByInsee(%s) should return %o', async (inseeCode, expectedResult) => {
+      const client = await createCommunesClient()
+      const result = client.findCommuneByInsee(inseeCode)
+      expect(result).toEqual(expectedResult)
+    })
   })
 })

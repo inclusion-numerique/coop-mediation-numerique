@@ -19,12 +19,14 @@ describe('createBeneficiairesForParticipantsAnonymes', () => {
     ]
 
     // create test with index in the test case label
-    test.each(cases)(
-      'should generate a uuid with the right length and counter at the end for index $index',
-      ({ index, expected }) => {
-        expect(createCounterUuid(uuid, index)).toEqual(expected)
-      },
-    )
+    test.each(
+      cases,
+    )('should generate a uuid with the right length and counter at the end for index $index', ({
+      index,
+      expected,
+    }) => {
+      expect(createCounterUuid(uuid, index)).toEqual(expected)
+    })
   })
 
   it('should work for 0 beneficiaires', () => {
