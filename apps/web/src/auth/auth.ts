@@ -12,16 +12,20 @@ import * as Sentry from '@sentry/nextjs'
 import type { AuthOptions } from 'next-auth'
 import Email from 'next-auth/providers/email'
 
-const isOutdatedUserData =
-  (user: SessionUser) =>
-  (profile: {
+const sessionUserHasOutdatedData = ({
+  user,
+  profile,
+}: {
+  user: SessionUser
+  profile: {
     given_name: string
     usual_name: string
     phone_number: string | null
-  }) =>
-    user.firstName !== profile.given_name ||
-    user.lastName !== profile.usual_name ||
-    user.phone !== profile.phone_number
+  }
+}) =>
+  user.firstName !== profile.given_name ||
+  user.lastName !== profile.usual_name ||
+  user.phone !== profile.phone_number
 
 export const nextAuthOptions = {
   adapter: nextAuthAdapter,
@@ -93,7 +97,7 @@ export const nextAuthOptions = {
         })
       }
 
-      if (isOutdatedUserData(user)(profile)) {
+      if (sessionUserHasOutdatedData({ user, profile })) {
         updateUserData({
           userId: user.id,
           firstName: profile.given_name,
