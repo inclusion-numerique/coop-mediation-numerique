@@ -5,7 +5,7 @@ import BackButton from '@app/web/components/BackButton'
 import {
   getMediateurFromDataspaceApi,
   isDataspaceApiError,
-} from '@app/web/external-apis/dataspace/dataSpaceApiClient'
+} from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import { initializeAndImportUserDataFromDataspace } from '@app/web/features/dataspace/initializeAndImportUserDataFromDataspace'
 import { updateUserInscriptionProfileFromDataspace } from '@app/web/features/dataspace/updateUserInscriptionProfileFromDataspace'
 import { profileInscriptionSlugs } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'

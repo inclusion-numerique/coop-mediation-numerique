@@ -1,4 +1,4 @@
-import type { DataspaceLieuActivite } from '@app/web/external-apis/dataspace/dataSpaceApiClient'
+import type { DataspaceLieuActivite } from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import { findOrCreateStructure } from '@app/web/features/structures/findOrCreateStructure'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'

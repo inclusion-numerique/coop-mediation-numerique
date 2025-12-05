@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
+import { getMediateurFromDataspaceApiMock } from './dataspaceApiClientMock'
 
 /**
  * Documentation: https://gitlab.com/incubateur-territoires/startups/data-space-societe-numerique/scripts/-/wikis/api/coop
@@ -105,12 +106,20 @@ export const isDataspaceApiNotFound = <T>(
  * Fetch mediateur data from Dataspace API by email
  * Returns null if the mediateur is not found (404)
  * Returns DataspaceApiError for other errors
+ *
+ * Uses mock implementation when ServerWebAppConfig.Dataspace.isMocked is true
+ * (automatically enabled for e2e tests, or when DATASPACE_API_MOCK=1)
  */
 export const getMediateurFromDataspaceApi = async ({
   email,
 }: {
   email: string
 }): Promise<DataspaceApiResult<DataspaceMediateur>> => {
+  // Use mock implementation if enabled
+  if (ServerWebAppConfig.Dataspace.isMocked) {
+    return getMediateurFromDataspaceApiMock({ email })
+  }
+
   const apiKey = ServerWebAppConfig.Dataspace.apiKey
 
   if (!apiKey) {
@@ -129,7 +138,7 @@ export const getMediateurFromDataspaceApi = async ({
     const response = await axios.get<DataspaceMediateur>(url.toString(), {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: apiKey,
       },
     })
 
