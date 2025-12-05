@@ -2,6 +2,7 @@
 // import 'server-only'
 
 import { ScalewayChatModel } from '@app/web/assistant/ScalewayChatModel'
+import { PublicWebAppConfig } from './PublicWebAppConfig'
 
 /**
  * Only use ServerWebAppConfig on server side
@@ -118,6 +119,8 @@ export const ServerWebAppConfig = {
   },
   Dataspace: {
     // Documentation: https://gitlab.com/incubateur-territoires/startups/data-space-societe-numerique/scripts/-/wikis/api/coop
-    apiKey: process.env.DATA_SPACE_API_KEY ?? '',
+    apiKey: process.env.DATASPACE_API_KEY ?? '',
+    isMocked:
+      process.env.DATASPACE_API_MOCK === '1' || PublicWebAppConfig.isE2e,
   },
 }

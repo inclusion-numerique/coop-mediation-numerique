@@ -2,7 +2,7 @@ import {
   PrismaSessionUser,
   sessionUserSelect,
 } from '@app/web/auth/getSessionUserFromSessionToken'
-import type { DataspaceMediateur } from '@app/web/external-apis/dataspace/dataSpaceApiClient'
+import type { DataspaceMediateur } from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import { getProfileFromDataspace } from '@app/web/features/dataspace/getProfileFromDataspace'
 import { prismaClient } from '@app/web/prismaClient'
 import type { ProfilInscription } from '@prisma/client'

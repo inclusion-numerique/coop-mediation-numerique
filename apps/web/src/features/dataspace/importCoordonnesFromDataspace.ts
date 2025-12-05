@@ -1,4 +1,4 @@
-import type { DataspaceConseillerNumeriqueCoordonne } from '@app/web/external-apis/dataspace/dataSpaceApiClient'
+import type { DataspaceConseillerNumeriqueCoordonne } from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
 

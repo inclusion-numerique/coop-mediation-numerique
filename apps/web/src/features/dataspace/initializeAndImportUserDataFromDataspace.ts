@@ -1,6 +1,6 @@
 import { sessionUserSelect } from '@app/web/auth/getSessionUserFromSessionToken'
 import type { SessionUser } from '@app/web/auth/sessionUser'
-import type { DataspaceMediateur } from '@app/web/external-apis/dataspace/dataSpaceApiClient'
+import type { DataspaceMediateur } from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import { hasActiveContractFromDataspace } from '@app/web/features/dataspace/getProfileFromDataspace'
 import {
   importCoordinateurFromDataspace,

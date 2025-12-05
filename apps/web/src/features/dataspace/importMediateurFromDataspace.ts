@@ -1,4 +1,4 @@
-import type { DataspaceMediateur } from '@app/web/external-apis/dataspace/dataSpaceApiClient'
+import type { DataspaceMediateur } from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import {
   importCoordonnesFromDataspace,
   importConseillersCooordonnesForCoordinateur,
