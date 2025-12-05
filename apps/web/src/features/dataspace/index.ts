@@ -15,7 +15,7 @@ export {
   type DataspaceLieuActivite,
   type DataspaceConseillerNumeriqueCoordonne,
   type DataspaceApiResult,
-} from '@app/web/external-apis/dataspace/dataSpaceApiClient'
+} from '@app/web/external-apis/dataspace/dataspaceApiClient'
 
 // Profile detection
 export {

@@ -1,7 +1,7 @@
 import type {
   DataspaceContrat,
   DataspaceStructureEmployeuse,
-} from '@app/web/external-apis/dataspace/dataSpaceApiClient'
+} from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import { findOrCreateStructure } from '@app/web/features/structures/findOrCreateStructure'
 import { prismaClient } from '@app/web/prismaClient'
 

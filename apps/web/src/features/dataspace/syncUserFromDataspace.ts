@@ -2,7 +2,7 @@ import {
   getMediateurFromDataspaceApi,
   isDataspaceApiError,
   type DataspaceMediateur,
-} from '@app/web/external-apis/dataspace/dataSpaceApiClient'
+} from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import {
   importCoordinateurFromDataspace,
   importMediateurFromDataspace,
