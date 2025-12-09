@@ -32,7 +32,7 @@ export class MaildevInstance extends Construct {
     new InstanceServer(this, 'maildevServer', {
       name: 'maildev',
       type: 'STARDUST1-S',
-      image: 'docker',
+      image: 'ubuntu_jammy',
       ipId: publicIp.id,
       securityGroupId: sg.id,
       userData: {
@@ -40,7 +40,13 @@ export class MaildevInstance extends Construct {
 runcmd:
   - mkdir -p ${MAILDEV_VOLUME}
   - chown 1000:1000 ${MAILDEV_VOLUME}
-  - docker run -d --restart always --name maildev -p ${MAILDEV_WEB_PORT}:${MAILDEV_WEB_PORT} -p ${MAILDEV_SMTP_PORT}:${MAILDEV_SMTP_PORT} -v ${MAILDEV_VOLUME}:/maildev maildev/maildev:latest
+  - docker run -d --restart always --name maildev \
+      -p ${MAILDEV_WEB_PORT}:${MAILDEV_WEB_PORT} \
+      -p ${MAILDEV_SMTP_PORT}:${MAILDEV_SMTP_PORT} \
+      -v ${MAILDEV_VOLUME}:/maildev \
+      -e MAILDEV_INCOMING_USER=mailuser \
+      -e MAILDEV_INCOMING_PASS=mailpassword \
+      maildev/maildev:latest
 `,
       },
     })
