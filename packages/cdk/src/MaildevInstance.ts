@@ -32,7 +32,7 @@ export class MaildevInstance extends Construct {
     new InstanceServer(this, 'maildevServer', {
       name: 'maildev',
       type: 'STARDUST1-S',
-      image: 'docker',
+      image: 'ubuntu',
       ipId: publicIp.id,
       securityGroupId: sg.id,
       userData: {
