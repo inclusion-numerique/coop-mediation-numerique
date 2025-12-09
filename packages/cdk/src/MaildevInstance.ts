@@ -39,12 +39,12 @@ export class MaildevInstance extends Construct {
         'cloud-init': `
 runcmd:
   - mkdir -p ${MAILDEV_VOLUME}
+  - chown 1000:1000 ${MAILDEV_VOLUME}
   - docker run -d --restart always --name maildev \\
       -p ${MAILDEV_WEB_PORT}:${MAILDEV_WEB_PORT} \\
       -p ${MAILDEV_SMTP_PORT}:${MAILDEV_SMTP_PORT} \\
       -v ${MAILDEV_VOLUME}:/maildev \\
-      maildev/maildev:latest
-        `,
+      maildev/maildev:latest`,
       },
     })
 
