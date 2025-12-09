@@ -37,7 +37,12 @@ export class MaildevInstance extends Construct {
       securityGroupId: sg.id,
       userData: {
         'cloud-init': `#cloud-config
+packages:
+  - docker.io
 runcmd:
+  - systemctl enable docker
+  - systemctl start docker
+  - while ! docker info >/dev/null 2>&1; do sleep 2; done
   - mkdir -p ${MAILDEV_VOLUME}
   - chown 1000:1000 ${MAILDEV_VOLUME}
   - docker run -d --restart always --name maildev \\
