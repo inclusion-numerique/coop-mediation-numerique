@@ -36,7 +36,7 @@ export class MaildevInstance extends Construct {
       ipId: publicIp.id,
       securityGroupId: sg.id,
       userData: {
-        'cloud-init': `
+        'cloud-init': `#cloud-config
 runcmd:
   - mkdir -p ${MAILDEV_VOLUME}
   - chown 1000:1000 ${MAILDEV_VOLUME}
@@ -44,7 +44,8 @@ runcmd:
       -p ${MAILDEV_WEB_PORT}:${MAILDEV_WEB_PORT} \\
       -p ${MAILDEV_SMTP_PORT}:${MAILDEV_SMTP_PORT} \\
       -v ${MAILDEV_VOLUME}:/maildev \\
-      maildev/maildev:latest`,
+      maildev/maildev:latest
+`,
       },
     })
 
