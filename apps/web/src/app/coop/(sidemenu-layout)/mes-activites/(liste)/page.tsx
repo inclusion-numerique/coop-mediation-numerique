@@ -7,6 +7,7 @@ import ActivitesListeLayout from '@app/web/features/activites/use-cases/list/com
 import MesActivitesListeHeader from '@app/web/features/activites/use-cases/list/components/MesActivitesListeHeader'
 import { getWidestActiviteDatesRange } from '@app/web/features/activites/use-cases/list/db/getWidestActiviteDatesRange'
 import { getActivitesListPageData } from '@app/web/features/activites/use-cases/list/getActivitesListPageData'
+import { getActivitesTagsOptions } from '@app/web/features/activites/use-cases/list/getActivitesTagsOptions'
 import MesActivitesListePage from '@app/web/features/activites/use-cases/list/MesActivitesListePage'
 import { validateActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import type { Metadata } from 'next'
@@ -45,7 +46,6 @@ const MesActivitesPage = async ({
     departementsOptions,
     initialMediateursOptions,
     lieuxActiviteOptions,
-    tagsOptions,
     activiteDates, // TODO include rdv dates
     rdvDates,
     activiteSourceOptions,
@@ -54,6 +54,8 @@ const MesActivitesPage = async ({
     user,
     includeBeneficiaireIds: searchParams.beneficiaires,
   })
+
+  const tagsOptions = await getActivitesTagsOptions(user.mediateur.id)
 
   const datesForFilters = getWidestActiviteDatesRange(activiteDates, rdvDates)
 

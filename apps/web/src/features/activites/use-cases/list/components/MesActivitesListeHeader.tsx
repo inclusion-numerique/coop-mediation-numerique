@@ -3,6 +3,7 @@ import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMed
 import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import classNames from 'classnames'
 import { Suspense } from 'react'
+import { TagScope } from '../../tags/tagScope'
 import type { ActiviteDates } from '../db/getFirstAndLastActiviteDate'
 import type { ActivitesFilters } from '../validation/ActivitesFilters'
 import ExportActivitesButtonWrapper from './ExportActivitesButtonWrapper'
@@ -26,7 +27,7 @@ const MesActivitesListeHeader = ({
 }: {
   defaultFilters: ActivitesFilters
   initialMediateursOptions: MediateurOption[]
-  tagsOptions: { id: string; nom: string }[]
+  tagsOptions: { id: string; nom: string; scope: TagScope }[]
   communesOptions: SelectOption[]
   lieuxActiviteOptions: LieuActiviteOption[]
   departementsOptions: SelectOption[]
@@ -52,7 +53,7 @@ const MesActivitesListeHeader = ({
         communesOptions={communesOptions}
         departementsOptions={departementsOptions}
         lieuxActiviteOptions={lieuxActiviteOptions}
-        tagsOptions={[]}
+        tagsOptions={tagsOptions}
         minDate={activiteDates.first}
         maxDate={activiteDates.last}
         isCoordinateur={false}

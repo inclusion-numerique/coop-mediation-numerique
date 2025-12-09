@@ -8,6 +8,7 @@ import MesActivitesListeHeader from '@app/web/features/activites/use-cases/list/
 import { mediateurHasActivites } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { getWidestActiviteDatesRange } from '@app/web/features/activites/use-cases/list/db/getWidestActiviteDatesRange'
 import { getActivitesListPageData } from '@app/web/features/activites/use-cases/list/getActivitesListPageData'
+import { getActivitesTagsOptions } from '@app/web/features/activites/use-cases/list/getActivitesTagsOptions'
 import MesActivitesTableauPage from '@app/web/features/activites/use-cases/list/MesActivitesTableauPage'
 import { validateActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 
@@ -50,7 +51,6 @@ const MesActivitesVueTableauPage = async ({
       departementsOptions,
       initialMediateursOptions,
       lieuxActiviteOptions,
-      tagsOptions,
       activiteDates,
       activiteSourceOptions,
       hasCrasV1,
@@ -59,6 +59,8 @@ const MesActivitesVueTableauPage = async ({
       user,
       includeBeneficiaireIds: searchParams.beneficiaires,
     })
+
+    const tagsOptions = await getActivitesTagsOptions(user.mediateur.id)
 
     const filterPeriodDates = getWidestActiviteDatesRange(
       activiteDates,
