@@ -32,16 +32,12 @@ export class MaildevInstance extends Construct {
     new InstanceServer(this, 'maildevServer', {
       name: 'maildev',
       type: 'STARDUST1-S',
-      image: 'ubuntu_jammy',
+      image: 'docker',
       ipId: publicIp.id,
       securityGroupId: sg.id,
       userData: {
         'cloud-init': `#cloud-config
-packages:
-  - docker.io
 runcmd:
-  - systemctl enable docker
-  - systemctl start docker
   - while ! docker info >/dev/null 2>&1; do sleep 2; done
   - mkdir -p ${MAILDEV_VOLUME}
   - chown 1000:1000 ${MAILDEV_VOLUME}
