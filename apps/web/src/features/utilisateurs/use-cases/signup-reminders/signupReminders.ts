@@ -40,16 +40,28 @@ const daysAgo = (now: Date, days: number) =>
 
 const deleteAndNotify = async (now: Date) => {
   const usersToDelete = await prismaClient.user.findMany({
-    select,
+    select: {
+      id: true,
+      email: true,
+      firstName: true,
+      mediateur: { select: { id: true } },
+      coordinateur: { select: { id: true } },
+    },
     where: inscriptionFilter({ lt: daysAgo(now, 105) }, 'warning_j90_sent'),
   })
 
-  await prismaClient.user.updateMany({
-    where: { id: { in: usersToDelete.map((user) => user.id) } },
-    data: { deleted: now },
-  })
-
   for (const user of usersToDelete) {
+    const { id: userId, mediateur, coordinateur } = user
+
+    await prismaClient.$transaction(async (tx) => {
+      if (mediateur) await tx.mediateur.delete({ where: { id: mediateur.id } })
+
+      if (coordinateur)
+        await tx.coordinateur.delete({ where: { id: coordinateur.id } })
+
+      await tx.user.delete({ where: { id: userId } })
+    })
+
     await sendAccountDeletedEmail({
       email: user.email,
       firstname: user.firstName,
