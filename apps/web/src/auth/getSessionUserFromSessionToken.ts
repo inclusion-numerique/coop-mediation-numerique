@@ -7,6 +7,7 @@ export const sessionUserSelect = {
   id: true,
   email: true,
   phone: true,
+  siret: true,
   firstName: true,
   lastName: true,
   name: true,

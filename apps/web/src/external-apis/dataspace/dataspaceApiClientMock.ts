@@ -11,6 +11,12 @@ import {
   mockDataspaceMediateurMinimal,
   mockDataspaceMediateurNonConseillerNumerique,
   mockDataspaceTestEmails,
+  mockDataspaceMediateurConseillerInscription,
+  mockDataspaceMediateurCoordinateurInscription,
+  mockDataspaceMediateurCoordinateurInscriptionAvecTout,
+  mockDataspaceMediateurCoordinateurHorsDispositifInscription,
+  mockDataspaceMediateurMediateurInscription,
+  mockDataspaceMediateurConseillerSansLieuInscription,
 } from './dataspaceApiClientMocks'
 
 /**
@@ -43,6 +49,20 @@ const mockDataspaceDatabase: Record<string, DataspaceMediateur | null> = {
   // Fixture users (add your fixture user emails here)
   'conseiller.numerique.inscrit@example.fr':
     mockDataspaceMediateurConseillerNumerique,
+
+  // Inscription test fixture users
+  [mockDataspaceTestEmails.conseillerInscription]:
+    mockDataspaceMediateurConseillerInscription,
+  [mockDataspaceTestEmails.coordinateurInscription]:
+    mockDataspaceMediateurCoordinateurInscription,
+  [mockDataspaceTestEmails.coordinateurInscriptionAvecTout]:
+    mockDataspaceMediateurCoordinateurInscriptionAvecTout,
+  [mockDataspaceTestEmails.coordinateurHorsDispositifInscription]:
+    mockDataspaceMediateurCoordinateurHorsDispositifInscription,
+  [mockDataspaceTestEmails.mediateurInscription]:
+    mockDataspaceMediateurMediateurInscription,
+  [mockDataspaceTestEmails.conseillerSansLieuInscription]:
+    mockDataspaceMediateurConseillerSansLieuInscription,
 }
 
 /**

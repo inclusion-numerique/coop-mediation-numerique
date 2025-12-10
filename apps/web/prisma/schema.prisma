@@ -114,6 +114,9 @@ model User {
   // Dataspace API integration
   dataspaceId Int? @unique @map("dataspace_id")
 
+  // SIRET from ProConnect authentication
+  siret String?
+
   // Flux d'inscription
 
   // Le profil déclaré par l’utilisateur à la première étape de l’inscription

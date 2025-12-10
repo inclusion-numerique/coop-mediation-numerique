@@ -1,14 +1,20 @@
 import { givenUser } from '../givenUser'
+import { previewBranchAuthFallbacks } from '@app/web/auth/previewBranchAuthFallbacks'
 
 export const mediateurInscriptionMediateurId =
   '77ae444f-574c-4fcc-87cb-4f792725a496'
+
+export const mediateurInscriptionEmail =
+  'mediateur-inscription@coop-numerique.anct.gouv.fr'
 
 export const mediateurInscription = givenUser({
   id: '1c8a6a72-c912-4eff-a45f-1252fa09f1b9',
   firstName: 'Médiateur',
   lastName: 'Inscription',
   isFixture: true,
+  email: mediateurInscriptionEmail,
   role: 'User',
+  siret: previewBranchAuthFallbacks.anctSiret,
   mediateur: {
     connectOrCreate: {
       where: {

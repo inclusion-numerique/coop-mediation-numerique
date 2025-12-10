@@ -237,6 +237,100 @@ export const mockDataspaceMediateurCoordinateurHorsDispositif: DataspaceMediateu
     ],
   }
 
+// Inscription test mocks
+
+/**
+ * Mock for conseiller inscription test user
+ */
+export const mockDataspaceMediateurConseillerInscription: DataspaceMediateur = {
+  id: 10001,
+  is_coordinateur: false,
+  is_conseiller_numerique: true,
+  structures_employeuses: [mockDataspaceStructureEmployeuse],
+  lieux_activite: [
+    mockDataspaceLieuActivite,
+    mockDataspaceLieuActiviteWithoutContact,
+  ],
+  conseillers_numeriques_coordonnes: [],
+}
+
+/**
+ * Mock for coordinateur inscription test user
+ */
+export const mockDataspaceMediateurCoordinateurInscription: DataspaceMediateur =
+  {
+    id: 10002,
+    is_coordinateur: true,
+    is_conseiller_numerique: true,
+    structures_employeuses: [mockDataspaceStructureEmployeuse],
+    lieux_activite: [mockDataspaceLieuActivite],
+    conseillers_numeriques_coordonnes: [
+      mockDataspaceConseillerNumeriqueCoordonne,
+    ],
+  }
+
+/**
+ * Mock for coordinateur inscription avec tout test user
+ */
+export const mockDataspaceMediateurCoordinateurInscriptionAvecTout: DataspaceMediateur =
+  {
+    id: 10003,
+    is_coordinateur: true,
+    is_conseiller_numerique: true,
+    structures_employeuses: [
+      mockDataspaceStructureEmployeuse,
+      mockDataspaceStructureEmployeuseWithMultipleContrats,
+    ],
+    lieux_activite: [
+      mockDataspaceLieuActivite,
+      mockDataspaceLieuActiviteWithoutContact,
+    ],
+    conseillers_numeriques_coordonnes: [
+      mockDataspaceConseillerNumeriqueCoordonne,
+      mockDataspaceConseillerNumeriqueCoordonneMinimal,
+    ],
+  }
+
+/**
+ * Mock for coordinateur hors dispositif inscription test user
+ */
+export const mockDataspaceMediateurCoordinateurHorsDispositifInscription: DataspaceMediateur =
+  {
+    id: 10004,
+    is_coordinateur: true,
+    is_conseiller_numerique: false,
+    structures_employeuses: [mockDataspaceStructureEmployeuse],
+    lieux_activite: [mockDataspaceLieuActivite],
+    conseillers_numeriques_coordonnes: [
+      mockDataspaceConseillerNumeriqueCoordonne,
+    ],
+  }
+
+/**
+ * Mock for mediateur inscription test user
+ */
+export const mockDataspaceMediateurMediateurInscription: DataspaceMediateur = {
+  id: 10005,
+  is_coordinateur: false,
+  is_conseiller_numerique: false,
+  structures_employeuses: [mockDataspaceStructureEmployeuseWithoutContact],
+  lieux_activite: [mockDataspaceLieuActiviteWithoutContact],
+  conseillers_numeriques_coordonnes: [],
+}
+
+/**
+ * Mock for conseiller sans lieu inscription test user
+ */
+export const mockDataspaceMediateurConseillerSansLieuInscription: DataspaceMediateur =
+  {
+    id: 10006,
+    is_coordinateur: false,
+    is_conseiller_numerique: true,
+    structures_employeuses: [mockDataspaceStructureEmployeuse],
+    lieux_activite: [],
+    conseillers_numeriques_coordonnes: [],
+  }
+
 // API Error mocks
 
 /**
@@ -296,4 +390,15 @@ export const mockDataspaceTestEmails = {
   mediateurNonCN: 'mediateur.standard@example.fr',
   notFound: 'nonexistent.test@example.com',
   invalid: 'invalid-email',
+  // Inscription test emails
+  conseillerInscription: 'conseiller-inscription@coop-numerique.anct.gouv.fr',
+  coordinateurInscription:
+    'coordinateur-inscription@coop-numerique.anct.gouv.fr',
+  coordinateurInscriptionAvecTout:
+    'coordinateur-inscription-avec-tout@coop-numerique.anct.gouv.fr',
+  coordinateurHorsDispositifInscription:
+    'coordinateur-hors-dispositif-inscription@coop-numerique.anct.gouv.fr',
+  mediateurInscription: 'mediateur-inscription@coop-numerique.anct.gouv.fr',
+  conseillerSansLieuInscription:
+    'conseiller-sans-lieu-inscription@coop-numerique.anct.gouv.fr',
 } as const

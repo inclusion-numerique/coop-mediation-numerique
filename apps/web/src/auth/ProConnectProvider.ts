@@ -15,6 +15,7 @@ export type ProConnectProfile = {
   given_name: string
   usual_name: string
   phone_number: string
+  siret: string
   aud: string
   exp: number
   iat: number
@@ -99,13 +100,14 @@ export const ProConnectProvider = () =>
         return jwt.decode(r.data) as ProConnectProfile
       },
     },
-    profile: ({ email, sub, given_name, usual_name, phone_number }) => ({
+    profile: ({ email, sub, given_name, usual_name, phone_number, siret }) => ({
       id: sub,
       name: `${given_name} ${usual_name}`.trim(),
       firstName: given_name,
       lastName: usual_name,
       email: email.toLowerCase(),
       phone: phone_number,
+      siret: siret || null,
       provider: proConnectProviderId,
     }),
   }) satisfies OAuth2Config<ProConnectProfile>

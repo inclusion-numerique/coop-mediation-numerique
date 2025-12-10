@@ -1,6 +1,7 @@
 import type { Prisma } from '@prisma/client'
 import { givenUser } from '../givenUser'
 import { centreSocial, mediateque, structureEmployeuse } from '../structures'
+import { previewBranchAuthFallbacks } from '@app/web/auth/previewBranchAuthFallbacks'
 
 export const coordinateurInscriptionAvecToutCoordinateurId =
   'b0ebe56a-b1eb-49c0-9963-26dbbaa1c15e'
@@ -8,13 +9,17 @@ export const coordinateurInscriptionAvecToutCoordinateurId =
 export const coordinateurInscriptionAvecToutConseillerNumeriqueId =
   '6656ef7e6c7471084348131a'
 
+export const coordinateurInscriptionAvecToutEmail =
+  'coordinateur-inscription-avec-tout@coop-numerique.anct.gouv.fr'
+
 export const coordinateurInscriptionAvecTout = givenUser({
   id: '057c3fce-3c7e-4bc7-9596-8d30ef559c1a',
   firstName: 'Coordinateur',
   lastName: 'Inscription avec tout',
-  email: 'mlemonnier@vosges.fr',
+  email: coordinateurInscriptionAvecToutEmail,
   isFixture: true,
   role: 'User',
+  siret: previewBranchAuthFallbacks.anctSiret,
   coordinateur: {
     connectOrCreate: {
       where: {

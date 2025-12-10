@@ -1,4 +1,4 @@
-import { importCoordinateurMediationDataFromV1 } from '@app/web/app/inscription/(steps)/identification/importCoordinateurMediationDataFromV1'
+import { importCoordinateurMediationDataFromV1 } from '@app/web/app/inscription/legacy/identification/importCoordinateurMediationDataFromV1'
 import { sessionUserSelect } from '@app/web/auth/getSessionUserFromSessionToken'
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import {
