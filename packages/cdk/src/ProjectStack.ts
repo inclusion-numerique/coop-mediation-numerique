@@ -53,9 +53,6 @@ export const projectStackSensitiveVariables = [
   'SCW_ACCESS_KEY',
   'SCW_SECRET_KEY',
   'SENTRY_AUTH_TOKEN',
-  'SMTP_PASSWORD',
-  'SMTP_SERVER',
-  'SMTP_USERNAME',
   'SMTP_MAILDEV_USERNAME',
   'SMTP_MAILDEV_PASSWORD',
 ] as const
@@ -269,9 +266,6 @@ export class ProjectStack extends TerraformStack {
           sensitiveEnvironmentVariables.SCW_SECRET_KEY.value,
         SENTRY_AUTH_TOKEN:
           sensitiveEnvironmentVariables.SENTRY_AUTH_TOKEN.value,
-        SMTP_PASSWORD: sensitiveEnvironmentVariables.SMTP_PASSWORD.value,
-        SMTP_SERVER: sensitiveEnvironmentVariables.SMTP_SERVER.value,
-        SMTP_USERNAME: sensitiveEnvironmentVariables.SMTP_USERNAME.value,
       },
     })
 

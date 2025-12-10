@@ -215,6 +215,7 @@ export class WebAppStack extends TerraformStack {
         SCALEWAY_GENERATIVE_API_SERVICE_URL:
           environmentVariables.SCALEWAY_GENERATIVE_API_SERVICE_URL.value,
         ALBERT_SERVICE_URL: environmentVariables.ALBERT_SERVICE_URL.value,
+        SMTP_PORT: isMain ? smtpPort : '1025',
       },
       secretEnvironmentVariables: {
         BREVO_API_KEY: isMain
@@ -248,7 +249,6 @@ export class WebAppStack extends TerraformStack {
         HMAC_SECRET_KEY: sensitiveEnvironmentVariables.HMAC_SECRET_KEY.value,
         ALBERT_API_KEY: sensitiveEnvironmentVariables.ALBERT_API_KEY.value,
         BRAVE_API_KEY: sensitiveEnvironmentVariables.BRAVE_API_KEY.value,
-        SMTP_PORT: isMain ? smtpPort : '1025',
         SMTP_USERNAME: isMain
           ? sensitiveEnvironmentVariables.SMTP_USERNAME.value
           : sensitiveEnvironmentVariables.SMTP_MAILDEV_USERNAME.value,
