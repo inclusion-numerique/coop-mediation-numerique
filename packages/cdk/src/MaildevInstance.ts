@@ -32,6 +32,7 @@ export class MaildevInstance extends Construct {
 
       inboundRule: [
         { action: 'accept', port: MAILDEV_WEB_PORT },
+        { action: 'accept', port: 443 },
         { action: 'accept', port: MAILDEV_SMTP_PORT },
         { action: 'accept', port: 22 },
       ],
