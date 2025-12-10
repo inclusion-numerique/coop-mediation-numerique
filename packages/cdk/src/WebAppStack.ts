@@ -248,7 +248,7 @@ export class WebAppStack extends TerraformStack {
         HMAC_SECRET_KEY: sensitiveEnvironmentVariables.HMAC_SECRET_KEY.value,
         ALBERT_API_KEY: sensitiveEnvironmentVariables.ALBERT_API_KEY.value,
         BRAVE_API_KEY: sensitiveEnvironmentVariables.BRAVE_API_KEY.value,
-        SMTP_PORT: isMain ? smtpPort! : '1025',
+        SMTP_PORT: isMain ? smtpPort : '1025',
         SMTP_USERNAME: isMain
           ? sensitiveEnvironmentVariables.SMTP_USERNAME.value
           : sensitiveEnvironmentVariables.SMTP_MAILDEV_USERNAME.value,
