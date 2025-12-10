@@ -138,9 +138,15 @@ export const getMediateurFromDataspaceApi = async ({
     const response = await axios.get<DataspaceMediateur>(url.toString(), {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: apiKey,
+        Authorization: `Bearer ${apiKey}`,
       },
     })
+
+    // Handle unexpected empty array response from Dataspace API
+    // API returns [] instead of 404 when mediateur is not found
+    if (Array.isArray(response.data) && response.data.length === 0) {
+      return null
+    }
 
     return response.data
   } catch (error) {

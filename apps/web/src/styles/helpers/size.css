@@ -13,3 +13,11 @@
 .fr-min-height-full {
   height: 100% !important;
 }
+
+.fr-max-width-full {
+  max-width: 100% !important;
+}
+
+.fr-min-width-full {
+  min-width: 100% !important;
+}
