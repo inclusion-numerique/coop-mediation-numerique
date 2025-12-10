@@ -235,7 +235,6 @@ export class ProjectStack extends TerraformStack {
       username: sensitiveEnvironmentVariables.SMTP_MAILDEV_USERNAME.value,
       password: sensitiveEnvironmentVariables.SMTP_MAILDEV_PASSWORD.value,
     })
-    const maildevWebUrl = maildev.getMaildevWebUrl()
     const maildevSmtp = maildev.getMaildevSmtp()
     const publicIpAddress = maildev.getPublicIpAddress()
 
@@ -419,7 +418,6 @@ export class ProjectStack extends TerraformStack {
     output('databaseInstanceId', database.id)
     output('databaseEndpointIp', database.endpointIp)
     output('databaseEndpointPort', database.endpointPort)
-    output('maildevWebUrl', maildevWebUrl)
     output('maildevSmtp', maildevSmtp)
   }
 }

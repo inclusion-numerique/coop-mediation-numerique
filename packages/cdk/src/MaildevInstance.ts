@@ -4,7 +4,7 @@ import { InstanceServer } from '@app/scaleway/instance-server'
 import { TerraformOutput } from 'cdktf'
 import { Construct } from 'constructs'
 
-const MAILDEV_WEB_PORT = 1080
+const MAILDEV_WEB_PORT = 80
 const MAILDEV_SMTP_PORT = 1025
 const MAILDEV_VOLUME = '/home/scaleway/maildev'
 
@@ -70,7 +70,7 @@ runcmd:
     
     echo "[4/5] Starting maildev container..."
     docker run -d --restart always --name maildev \
-      -p 80:${MAILDEV_WEB_PORT} \
+      -p ${MAILDEV_WEB_PORT}:1080 \
       -p ${MAILDEV_SMTP_PORT}:${MAILDEV_SMTP_PORT} \
       -v ${MAILDEV_VOLUME}:/maildev \
       -e MAILDEV_INCOMING_USER=${smtpCredentials.username} \
@@ -106,10 +106,6 @@ write_files:
     this.publicIpAddress = new TerraformOutput(this, 'publicIpAddress', {
       value: publicIp.address,
     })
-  }
-
-  getMaildevWebUrl() {
-    return this.webUrl.value as string
   }
 
   getMaildevSmtp() {
