@@ -56,6 +56,8 @@ export const projectStackSensitiveVariables = [
   'SMTP_PASSWORD',
   'SMTP_SERVER',
   'SMTP_USERNAME',
+  'SMTP_MAILDEV_USERNAME',
+  'SMTP_MAILDEV_PASSWORD',
 ] as const
 
 /**
@@ -229,9 +231,13 @@ export class ProjectStack extends TerraformStack {
       data: database.id,
     })
 
-    const maildev = new MaildevInstance(this, 'maildev')
+    const maildev = new MaildevInstance(this, 'maildev', {
+      username: sensitiveEnvironmentVariables.SMTP_MAILDEV_USERNAME.value,
+      password: sensitiveEnvironmentVariables.SMTP_MAILDEV_PASSWORD.value,
+    })
     const maildevWebUrl = maildev.getMaildevWebUrl()
     const maildevSmtp = maildev.getMaildevSmtp()
+    const publicIpAddress = maildev.getPublicIpAddress()
 
     const webContainers = new ContainerNamespace(this, 'webContainers', {
       name: containerNamespaceName,
@@ -396,6 +402,13 @@ export class ProjectStack extends TerraformStack {
       type: 'TXT',
       name: '_dmarc',
       data: 'v=DMARC1; p=none; rua=mailto:rua@dmarc.brevo.com',
+      ttl: 3600,
+    })
+    new DomainRecord(this, 'maildevDns', {
+      dnsZone: mainDomainZone.id,
+      type: 'A',
+      name: 'maildev',
+      data: publicIpAddress,
       ttl: 3600,
     })
 
