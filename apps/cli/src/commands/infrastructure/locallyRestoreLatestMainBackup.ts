@@ -48,7 +48,18 @@ export const locallyRestoreLatestMainBackup = new Command(
   .description(
     'Restore the latest main backup from Scaleway to the local (DATABASE_URL env var) database ',
   )
-  .action(async () => {
+  .option(
+    '-d, --date <date>',
+    'Date of the backup to restore (format: YYYY-MM-DD). If not provided, restores the latest backup.',
+  )
+  .action(async (options) => {
+    const targetDate = options.date ? new Date(options.date) : null
+
+    if (targetDate && Number.isNaN(targetDate.getTime())) {
+      throw new Error(
+        'Invalid date format. Please use YYYY-MM-DD format (e.g., 2025-12-09)',
+      )
+    }
     const databaseInstanceIdWithRegion = process.env.DATABASE_INSTANCE_ID ?? ''
     const databaseInstanceId = databaseInstanceIdWithRegion.split('/')[1]
     const backupDatabaseName = process.env.BACKUP_DATABASE_NAME ?? ''
@@ -93,7 +104,7 @@ export const locallyRestoreLatestMainBackup = new Command(
     }>('/backups', {
       params: {
         order_by: 'created_at_desc',
-        page_size: 5,
+        page_size: 100,
         instance_id: databaseInstanceId,
         database_name: backupDatabaseName,
       },
@@ -110,26 +121,53 @@ export const locallyRestoreLatestMainBackup = new Command(
       throw new Error('Invalid status for all backups')
     }
 
-    let latestBackup = elligibleBackups[0]
+    let selectedBackup: ScalewayDatabaseBackup
 
-    output(
-      `Found latest backup : ${latestBackup.name} - ${latestBackup.created_at}`,
-    )
+    if (targetDate) {
+      // Find backup matching the target date (same day)
+      const matchingBackup = elligibleBackups.find((backup) => {
+        const backupDate = new Date(backup.created_at)
+        return (
+          backupDate.getFullYear() === targetDate.getFullYear() &&
+          backupDate.getMonth() === targetDate.getMonth() &&
+          backupDate.getDate() === targetDate.getDate()
+        )
+      })
 
-    if (latestBackup.download_url) {
+      if (!matchingBackup) {
+        const availableDates = elligibleBackups
+          .map((b) => b.created_at.split('T')[0])
+          .join(', ')
+        throw new Error(
+          `No backup found for date ${options.date}. Available backups: ${availableDates}`,
+        )
+      }
+
+      selectedBackup = matchingBackup
+      output(
+        `Found backup for ${options.date}: ${selectedBackup.name} - ${selectedBackup.created_at}`,
+      )
+    } else {
+      selectedBackup = elligibleBackups[0]
+      output(
+        `Found latest backup: ${selectedBackup.name} - ${selectedBackup.created_at}`,
+      )
+    }
+
+    if (selectedBackup.download_url) {
       output('Backup already exported')
     } else {
       output('Exporting backup')
       // It takes some time, status should be 'exporting' for a while
       const exportResponse = await client.post<ScalewayDatabaseBackup>(
-        `/backups/${latestBackup.id}/export`,
+        `/backups/${selectedBackup.id}/export`,
       )
 
-      latestBackup = exportResponse.data
+      selectedBackup = exportResponse.data
     }
 
     let waitCount = 0
-    while (!latestBackup.download_url) {
+    while (!selectedBackup.download_url) {
       if (waitCount > 10) {
         throw new Error('Timeout waiting for backup export')
       }
@@ -137,23 +175,23 @@ export const locallyRestoreLatestMainBackup = new Command(
         setTimeout(resolve, 3000)
       })
       const statusResponse = await client.get<ScalewayDatabaseBackup>(
-        `/backups/${latestBackup.id}`,
+        `/backups/${selectedBackup.id}`,
       )
-      latestBackup = statusResponse.data
+      selectedBackup = statusResponse.data
       waitCount += 1
     }
 
-    if (!latestBackup.download_url) {
+    if (!selectedBackup.download_url) {
       throw new Error('No download url available')
     }
 
-    output(`Backup is ready for download at ${latestBackup.download_url}`)
+    output(`Backup is ready for download at ${selectedBackup.download_url}`)
     output(`Downloading backup to ${mainBackupFile}`)
 
     createVarDirectory()
 
     const downloadResponse = await axios.get<NodeJS.ReadableStream>(
-      latestBackup.download_url,
+      selectedBackup.download_url,
       {
         // Downloading as stream to keep encoding of pgdump file (binary) and avoid memory issues
         responseType: 'stream',

@@ -1,16 +1,10 @@
 'use client'
 
-import {
-  secureSessionCookie,
-  sessionCookie,
-} from '@app/web/auth/getSessionTokenFromCookies'
 import Card from '@app/web/components/Card'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
-import * as cookie from 'cookie'
 import { signOut } from 'next-auth/react'
-import React from 'react'
 import { ProfileView } from './ProfileView'
 
 const {

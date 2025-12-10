@@ -6,10 +6,10 @@ import ActiviteDetailsModal from '@app/web/features/activites/use-cases/list/com
 import { ActivitesCoordination } from '@app/web/features/activites/use-cases/list/components/ActivitesCoordination'
 import { DernieresActivites } from '@app/web/features/activites/use-cases/list/components/DernieresActivites'
 import FormationContinueNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/formation-continue/components/FormationContinueNouvelleFonctionnaliteCard'
+import RdvNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/rdv/components/RdvNouvelleFonctionnaliteCard'
 import TagsNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/tags/components/TagsNouvelleFonctionnaliteCard'
-import { Spinner } from '@app/web/ui/Spinner'
 import { contentId } from '@app/web/utils/skipLinks'
-import React, { Suspense } from 'react'
+import React from 'react'
 import {
   ActionsRapides,
   InformationsCoop,
@@ -18,7 +18,6 @@ import {
 } from './_components'
 import { Equipe } from './_components/Equipe'
 import Rdvs from './_components/Rdvs'
-import RdvsHeader from './_components/RdvsHeader'
 import { AccueilPageData } from './getAccueilPageDataFor'
 
 export const Accueil = ({
@@ -54,6 +53,7 @@ export const Accueil = ({
       <h1 className="fr-text-title--blue-france fr-mt-12v fr-mb-0">
         👋 Bonjour {firstName || name || email}
       </h1>
+      <RdvNouvelleFonctionnaliteCard />
       <FormationContinueNouvelleFonctionnaliteCard />
       <TagsNouvelleFonctionnaliteCard />
       {isMediateur && (

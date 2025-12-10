@@ -101,6 +101,14 @@ export const MergePreview = ({
           commonIds={common.mutationsIds}
         />
       </li>
+      <li>
+        Tags&nbsp;: {merge.tags.length ?? 0}
+        <MergeDiff
+          isAddition={source != null}
+          sourceIds={source?.tags ?? merge.tags}
+          commonIds={common.tags}
+        />
+      </li>
     </ul>
   </>
 )
