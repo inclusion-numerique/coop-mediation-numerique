@@ -23,14 +23,14 @@ type ScalewayDatabaseBackup = {
   database_name: string
   name: string
   status:
-  | 'unknown'
-  | 'creating'
-  | 'ready'
-  | 'restoring'
-  | 'deleting'
-  | 'error'
-  | 'exporting'
-  | 'locked'
+    | 'unknown'
+    | 'creating'
+    | 'ready'
+    | 'restoring'
+    | 'deleting'
+    | 'error'
+    | 'exporting'
+    | 'locked'
   size: number
   expires_at: string
   created_at: string
