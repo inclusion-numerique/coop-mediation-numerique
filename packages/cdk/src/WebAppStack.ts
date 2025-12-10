@@ -20,6 +20,7 @@ import {
   projectSlug,
   projectTitle,
   region,
+  smtpPort,
 } from '@app/config/config'
 import { Container } from '@app/scaleway/container'
 import { ContainerDomain } from '@app/scaleway/container-domain'
@@ -62,6 +63,11 @@ export const webAppStackSensitiveVariables = [
   'RDV_SERVICE_PUBLIC_MAIN_OAUTH_CLIENT_ID',
   'RDV_SERVICE_PUBLIC_MAIN_OAUTH_CLIENT_SECRET',
   'RDV_SERVICE_PUBLIC_WEBHOOK_SECRET',
+  'SMTP_PASSWORD',
+  'SMTP_SERVER',
+  'SMTP_USERNAME',
+  'SMTP_MAILDEV_USERNAME',
+  'SMTP_MAILDEV_PASSWORD',
 ] as const
 
 /**
@@ -242,6 +248,16 @@ export class WebAppStack extends TerraformStack {
         HMAC_SECRET_KEY: sensitiveEnvironmentVariables.HMAC_SECRET_KEY.value,
         ALBERT_API_KEY: sensitiveEnvironmentVariables.ALBERT_API_KEY.value,
         BRAVE_API_KEY: sensitiveEnvironmentVariables.BRAVE_API_KEY.value,
+        SMTP_PORT: isMain ? smtpPort! : '1025',
+        SMTP_USERNAME: isMain
+          ? sensitiveEnvironmentVariables.SMTP_USERNAME.value
+          : sensitiveEnvironmentVariables.SMTP_MAILDEV_USERNAME.value,
+        SMTP_PASSWORD: isMain
+          ? sensitiveEnvironmentVariables.SMTP_PASSWORD.value
+          : sensitiveEnvironmentVariables.SMTP_MAILDEV_PASSWORD.value,
+        SMTP_SERVER: isMain
+          ? sensitiveEnvironmentVariables.SMTP_SERVER.value
+          : 'maildev.coop-numerique.anct.gouv.fr',
       },
       name: containerName,
       minScale: isMain ? 2 : namespace === 'dev' ? 1 : 0,

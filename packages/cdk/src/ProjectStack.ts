@@ -288,6 +288,7 @@ export class ProjectStack extends TerraformStack {
       data: 'ns0.dom.scw.cloud.',
       ttl: 1800,
     })
+
     new DomainRecord(this, 'main_ns1', {
       dnsZone: mainDomainZone.id,
       type: 'NS',
@@ -295,6 +296,7 @@ export class ProjectStack extends TerraformStack {
       data: 'ns1.dom.scw.cloud.',
       ttl: 1800,
     })
+
     // Preview domain DNS Records
     if (previewDomain !== mainDomain) {
       new DomainRecord(this, 'preview_ns0', {
@@ -382,6 +384,7 @@ export class ProjectStack extends TerraformStack {
       data: 'brevo-code:8ac99f620a9cf5718a8f484756b0d148',
       ttl: 3600,
     })
+
     new DomainRecord(this, 'brevo_dkim1', {
       dnsZone: emailDomainZone.id,
       type: 'CNAME',
@@ -389,6 +392,7 @@ export class ProjectStack extends TerraformStack {
       data: 'b1.coop-numerique-anct-gouv-fr.dkim.brevo.com.',
       ttl: 3600,
     })
+
     new DomainRecord(this, 'brevo_dkim2', {
       dnsZone: emailDomainZone.id,
       type: 'CNAME',
@@ -396,6 +400,7 @@ export class ProjectStack extends TerraformStack {
       data: 'b2.coop-numerique-anct-gouv-fr.dkim.brevo.com.',
       ttl: 3600,
     })
+
     new DomainRecord(this, 'brevo_dmarc', {
       dnsZone: emailDomainZone.id,
       type: 'TXT',
@@ -403,6 +408,7 @@ export class ProjectStack extends TerraformStack {
       data: 'v=DMARC1; p=none; rua=mailto:rua@dmarc.brevo.com',
       ttl: 3600,
     })
+
     new DomainRecord(this, 'maildevDns', {
       dnsZone: mainDomainZone.id,
       type: 'A',
