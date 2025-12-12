@@ -370,6 +370,16 @@ export class WebAppStack extends TerraformStack {
         containerId: container.id,
       })
 
+      // Daily send reminders emails for incomplete signups
+      createJobExecutionCron(this, {
+        name: 'incomplete-signup-reminders',
+        job: {
+          name: 'incomplete-signup-reminders',
+        },
+        schedule: '0 0 * * *',
+        containerId: container.id,
+      })
+
       // Hourly backup job
       createJobExecutionCron(this, {
         name: `backup-${namespace}-database-hourly`,
