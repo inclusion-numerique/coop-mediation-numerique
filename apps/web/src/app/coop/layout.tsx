@@ -1,5 +1,5 @@
 import PublicFooter from '@app/web/app/(public)/PublicFooter'
-import InscriptionStepsLayout from '@app/web/app/inscription/(steps)/layout'
+import InscriptionStepsLayout from '@app/web/app/inscription/legacy/layout'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import Header from '@app/web/components/Header'
 import Link from 'next/link'

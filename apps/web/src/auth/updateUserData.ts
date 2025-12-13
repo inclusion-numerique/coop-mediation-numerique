@@ -6,11 +6,13 @@ export const updateUserData = async ({
   firstName,
   lastName,
   phone,
+  siret,
 }: {
   userId: string
   firstName: string
   lastName: string
   phone: string | null
+  siret?: string | null
 }) => {
   await prismaClient.user.update({
     data: {
@@ -18,6 +20,7 @@ export const updateUserData = async ({
       lastName,
       phone: fixTelephone(phone),
       name: `${firstName} ${lastName}`,
+      siret: siret ?? undefined,
     },
     where: {
       id: userId,

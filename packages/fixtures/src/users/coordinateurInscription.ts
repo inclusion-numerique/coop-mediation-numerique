@@ -1,14 +1,19 @@
 import type { Prisma } from '@prisma/client'
 import { givenUser } from '../givenUser'
 import { structureEmployeuse } from '../structures'
+import { previewBranchAuthFallbacks } from '@app/web/auth/previewBranchAuthFallbacks'
+
+export const coordinateurInscriptionEmail =
+  'coordinateur-inscription@coop-numerique.anct.gouv.fr'
 
 export const coordinateurInscription = givenUser({
   id: '0d4e2e67-ac69-4955-b227-8f4f2ef34673',
   firstName: 'Coordinateur',
   lastName: 'Inscription',
   isFixture: true,
-  email: 'vbousset@var.fr',
+  email: coordinateurInscriptionEmail,
   role: 'User',
+  siret: previewBranchAuthFallbacks.anctSiret,
   coordinateur: {
     connectOrCreate: {
       where: {

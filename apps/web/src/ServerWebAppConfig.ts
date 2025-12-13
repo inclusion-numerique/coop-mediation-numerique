@@ -2,6 +2,7 @@
 // import 'server-only'
 
 import { ScalewayChatModel } from '@app/web/assistant/ScalewayChatModel'
+import { PublicWebAppConfig } from './PublicWebAppConfig'
 
 /**
  * Only use ServerWebAppConfig on server side
@@ -115,5 +116,11 @@ export const ServerWebAppConfig = {
     url: process.env.SENTRY_URL ?? '',
     org: process.env.SENTRY_ORG ?? '',
     project: process.env.SENTRY_PROJECT ?? '',
+  },
+  Dataspace: {
+    // Documentation: https://gitlab.com/incubateur-territoires/startups/data-space-societe-numerique/scripts/-/wikis/api/coop
+    apiKey: process.env.DATASPACE_API_KEY ?? '',
+    isMocked:
+      process.env.DATASPACE_API_MOCK === '1' || PublicWebAppConfig.isE2e,
   },
 }

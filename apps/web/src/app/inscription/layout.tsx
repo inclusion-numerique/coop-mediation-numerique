@@ -1,5 +1,5 @@
 import MinimalFooter from '@app/web/app/coop/MinimalFooter'
-import InscriptionStepsLayout from '@app/web/app/inscription/(steps)/layout'
+import InscriptionStepsLayout from '@app/web/app/inscription/legacy/layout'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import Header from '@app/web/components/Header'
 import Link from 'next/link'
@@ -18,7 +18,7 @@ const InscriptionLayout = async ({ children }: PropsWithChildren) => {
       <div className="fr-layout__inner">
         <div id="skip-links" />
         <Header user={user} variant="coop" />
-        {user.role === 'Admin' ? (
+        {user.role === 'Admin' || user.role === 'Support' ? (
           // Admins cannot access the inscription process
           <InscriptionStepsLayout>
             <div className="fr-mb-32v fr-p-12v fr-width-full fr-border-radius--8 fr-background-default--grey fr-mt-32v">

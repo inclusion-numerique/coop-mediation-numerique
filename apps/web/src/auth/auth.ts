@@ -11,17 +11,24 @@ import { registerLastLogin } from '@app/web/security/registerLastLogin'
 import * as Sentry from '@sentry/nextjs'
 import type { AuthOptions } from 'next-auth'
 import Email from 'next-auth/providers/email'
+import { previewBranchAuthFallbacks } from './previewBranchAuthFallbacks'
 
-const isOutdatedUserData =
-  (user: SessionUser) =>
-  (profile: {
+const sessionUserHasOutdatedData = ({
+  user,
+  profile,
+}: {
+  user: SessionUser
+  profile: {
     given_name: string
     usual_name: string
     phone_number: string | null
-  }) =>
-    user.firstName !== profile.given_name ||
-    user.lastName !== profile.usual_name ||
-    user.phone !== profile.phone_number
+    siret?: string | null
+  }
+}) =>
+  user.firstName !== profile.given_name ||
+  user.lastName !== profile.usual_name ||
+  user.phone !== profile.phone_number ||
+  (profile.siret && user.siret !== profile.siret)
 
 export const nextAuthOptions = {
   adapter: nextAuthAdapter,
@@ -51,6 +58,33 @@ export const nextAuthOptions = {
 
       // For an email signin, we don't have a "profile" object
       if (params.account?.provider === 'email' && params.user.id) {
+        // Generate fallback data for email authentication
+        const user = params.user as {
+          id: string
+          email: string
+          firstName?: string | null
+          lastName?: string | null
+          phone?: string | null
+          siret?: string | null
+        }
+        const emailParts = user.email.split('@')[0].split('.')
+        const fallbackFirstName = emailParts[0] || 'User'
+        const fallbackLastName = emailParts[1] || '-'
+        const fallbackSiret = previewBranchAuthFallbacks.anctSiret
+
+        // Update user with fallback data if not set
+        if (!user.firstName || !user.lastName || !user.siret) {
+          updateUserData({
+            userId: user.id,
+            firstName: user.firstName || fallbackFirstName,
+            lastName: user.lastName || fallbackLastName,
+            phone: user.phone || null,
+            siret: user.siret || fallbackSiret,
+          }).catch((error) => {
+            Sentry.captureException(error)
+          })
+        }
+
         registerLastLogin({ userId: params.user.id }).catch((error) => {
           Sentry.captureException(error)
         })
@@ -65,6 +99,7 @@ export const nextAuthOptions = {
           given_name: string
           usual_name: string
           phone_number: string | null
+          siret?: string | null
         }
         account: {
           provider: string
@@ -93,12 +128,13 @@ export const nextAuthOptions = {
         })
       }
 
-      if (isOutdatedUserData(user)(profile)) {
+      if (sessionUserHasOutdatedData({ user, profile })) {
         updateUserData({
           userId: user.id,
           firstName: profile.given_name,
           lastName: profile.usual_name,
           phone: profile.phone_number,
+          siret: profile.siret || null,
         }).catch((error) => {
           Sentry.captureException(error)
         })
