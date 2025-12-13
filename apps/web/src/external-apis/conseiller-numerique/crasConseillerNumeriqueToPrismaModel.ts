@@ -128,7 +128,7 @@ export const craConseillerNumeriqueToPrismaModel = ({
     structureCodeRegion: structure?.codeRegion,
 
     // Lieu d’activité / permanence
-    permanenceId: permanence?._id.toString(),
+    permanenceId: permanence?.id,
     permanenceEstStructure: permanence?.estStructure,
     permanenceNomEnseigne: permanence?.nomEnseigne,
     permanenceNumeroTelephone: permanence?.numeroTelephone,

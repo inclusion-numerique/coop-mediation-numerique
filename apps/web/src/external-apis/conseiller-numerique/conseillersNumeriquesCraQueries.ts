@@ -5,13 +5,25 @@ import {
 } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
 import type { StructureConseillerNumerique } from '@app/web/external-apis/conseiller-numerique/StructureConseillerNumerique'
 import { prismaClient } from '@app/web/prismaClient'
-import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import { type Filter, ObjectId } from 'mongodb'
 
 export type GetConseillerNumeriqueCrasOptions = {
   conseillerNumeriqueId?: string
   createdAtSince?: Date // included bound
   createdAtUntil?: Date // excluded bound
+}
+
+/**
+ * Transforms a MongoDB document with _id: ObjectId to an object with id: string
+ */
+export const objectIdToId = <T extends { _id: ObjectId }>(
+  document: T,
+): Omit<T, '_id'> & { id: string } => {
+  const { _id, ...rest } = document
+  return {
+    ...rest,
+    id: _id.toString(),
+  } as Omit<T, '_id'> & { id: string }
 }
 
 export const vacuumAnalyzeConseillerNumeriqueV1Cras = async () => {
@@ -25,16 +37,7 @@ export const getConseillerNumeriqueCrasFromMongo = async ({
   createdAtUntil,
   conseillerNumeriqueId,
 }: GetConseillerNumeriqueCrasOptions) => {
-  const crasCollection =
-    await conseillerNumeriqueMongoCollection<CraConseillerNumeriqueCollectionItem>(
-      'cras',
-    )
-
-  // Cras collection has _id, conseiller as an ref object {$ref: "conseillers", $id: ObjectId}, createdAt, structure as an ref object {$ref: "structures", $id: ObjectId}
-  // and "cra" as an object with the fields of the CRA
-  // We want to join with structure, but no need to join with conseiller
-  // Order by createdAt ASC
-
+  // Build filter for CRAs
   const filter: Filter<CraConseillerNumeriqueCollectionItem> = {}
 
   if (createdAtSince) {
@@ -53,10 +56,60 @@ export const getConseillerNumeriqueCrasFromMongo = async ({
     }
   }
 
-  const cras = await crasCollection
-    .find(filter)
-    .sort({ createdAt: 1 })
-    .toArray()
+  // Fetch all data in parallel: CRAs, structures, and permanences
+  const [cras, allStructures, allPermanences] = await Promise.all([
+    conseillerNumeriqueMongoCollection<CraConseillerNumeriqueCollectionItem>(
+      'cras',
+    ).then((collection) =>
+      collection
+        .find(filter)
+        .sort({ createdAt: 1 })
+        .toArray()
+        .then((documents) => documents.map(objectIdToId)),
+    ),
+    conseillerNumeriqueMongoCollection<StructureConseillerNumerique>(
+      'structures',
+    ).then((collection) =>
+      collection
+        .find()
+        .project<
+          Pick<
+            StructureConseillerNumerique,
+            | '_id'
+            | 'idPG'
+            | 'type'
+            | 'statut'
+            | 'nom'
+            | 'siret'
+            | 'codePostal'
+            | 'nomCommune'
+            | 'codeCommune'
+            | 'codeDepartement'
+            | 'codeRegion'
+          >
+        >({
+          _id: 1,
+          idPG: 1,
+          type: 1,
+          statut: 1,
+          nom: 1,
+          siret: 1,
+          codePostal: 1,
+          nomCommune: 1,
+          codeCommune: 1,
+          codeDepartement: 1,
+          codeRegion: 1,
+        })
+        .toArray()
+        .then((documents) => documents.map(objectIdToId)),
+    ),
+    conseillerNumeriqueMongoCollection('permanences').then((collection) =>
+      collection
+        .find()
+        .toArray()
+        .then((documents) => documents.map(objectIdToId)),
+    ),
+  ])
 
   if (cras.length === 0) {
     return {
@@ -64,109 +117,33 @@ export const getConseillerNumeriqueCrasFromMongo = async ({
     }
   }
 
-  const uniquePermanenceId = new Set(
-    cras
-      .map(({ permanence }) => permanence?.oid.toString())
-      .filter(isDefinedAndNotNull),
+  // Index structures and permanences for fast lookup
+  const indexedStructures = new Map(
+    allStructures.map((structure) => [structure.id, structure]),
   )
-
-  const permanencesCollection =
-    await conseillerNumeriqueMongoCollection('permanences')
-
-  const permanences = await permanencesCollection
-    .find({
-      _id: { $in: [...uniquePermanenceId].map(ObjectId.createFromHexString) },
-    })
-    .toArray()
 
   const indexedPermanences = new Map(
-    permanences.map((permanence) => [
-      (permanence as unknown as { id: string }).id,
-      permanence,
-    ]),
+    allPermanences.map((permanence) => [permanence.id, permanence]),
   )
 
-  const uniqueStructureIds = new Set(
-    cras.map(({ structure }) => structure.oid.toString()),
-  )
-
-  for (const permanence of permanences) {
-    uniqueStructureIds.add(
-      (permanence.structure as unknown as { oid: ObjectId }).oid.toString(),
-    )
-  }
-
-  const structuresCollection =
-    await conseillerNumeriqueMongoCollection<StructureConseillerNumerique>(
-      'structures',
-    )
-
-  const structures = (await structuresCollection
-    // Projection, just get the fields _id, idPG, type, statut, nom, siret, codePostal, nomCommune, codeCommune,codeDepartement,codeRegion,
-    .find({
-      _id: {
-        $in: [...uniqueStructureIds].map(ObjectId.createFromHexString),
-      },
-    })
-    .project({
-      _id: 1,
-      idPG: 1,
-      type: 1,
-      statut: 1,
-      nom: 1,
-      siret: 1,
-      codePostal: 1,
-      nomCommune: 1,
-      codeCommune: 1,
-      codeDepartement: 1,
-      codeRegion: 1,
-    })
-    .toArray()
-    .then((documents) =>
-      documents.map((structure) => {
-        // flatten oid
-        const { _id: oid, ...rest } = structure
-
-        return {
-          id: (oid as ObjectId).toString(),
-          ...rest,
-        }
-      }),
-    )) as (Pick<
-    StructureConseillerNumerique,
-    | 'idPG'
-    | 'type'
-    | 'statut'
-    | 'nom'
-    | 'siret'
-    | 'codePostal'
-    | 'nomCommune'
-    | 'codeCommune'
-    | 'codeDepartement'
-    | 'codeRegion'
-  > & { id: string })[]
-
-  const indexedStructures = new Map(
-    structures.map((structure) => [structure.id, structure]),
-  )
-
-  const cleanCrasWithStructures = cras.map((item) => {
+  // Map CRAs with their related data
+  const cleanCrasWithStructures = cras.map((cra) => {
     const structure =
-      indexedStructures.get(item.structure.oid.toString()) ?? null
+      indexedStructures.get(cra.structure.oid.toString()) ?? null
 
     const permanence =
-      indexedPermanences.get(item.permanence?.oid.toString() ?? '_missing') ??
+      indexedPermanences.get(cra.permanence?.oid.toString() ?? '_missing') ??
       null
 
-    // const { duree, organismes, ...craRest } = item.cra
+    // const { duree, organismes, ...craRest } = cra.cra
     // TODO Debug and format organismes in toPrismaModel
-    const { duree, ...craRest } = item.cra
+    const { duree, ...craRest } = cra.cra
 
     return {
-      id: item._id.toString(),
-      createdAt: item.createdAt,
-      updatedAt: item.updatedAt,
-      conseillerId: item.conseiller.oid.toString(),
+      id: cra.id,
+      createdAt: cra.createdAt,
+      updatedAt: cra.updatedAt,
+      conseillerId: cra.conseiller.oid.toString(),
       cra: {
         ...craRest,
         duree: duree?.toString() ?? '',
@@ -187,8 +164,7 @@ export const getConseillerNumeriqueCrasFromMongo = async ({
 
   return {
     cras: cleanCrasWithStructures,
-    structures,
-    expectedStructures: uniqueStructureIds.size,
+    structures: allStructures,
     empty: false as const,
   }
 }

@@ -15,7 +15,9 @@ import { getSecretValue } from '@app/cli/commands/secrets/getSecretValue'
 import { listSecrets } from '@app/cli/commands/secrets/listSecrets'
 import { setupDatabaseSecret } from '@app/cli/commands/secrets/setupDatabaseSecret'
 import { deleteSentryEnvironmentIssues } from '@app/cli/commands/sentry/deleteSentryEnvironmentIssues'
+import { importCras } from '@app/cli/commands/v1/importCras'
 import { listV1Emails } from '@app/cli/commands/v1/listEmails'
+import { testFetchCras } from '@app/cli/commands/v1/testFetchCras'
 import { fetchAccompagnements } from '@app/cli/fetchAccompagnement'
 import { output } from '@app/cli/output'
 import { Command } from '@commander-js/extra-typings'
@@ -55,6 +57,8 @@ program.addCommand(createTfVarsFileFromEnvironment)
 program.addCommand(checkDeploymentStatus)
 program.addCommand(locallyRestoreLatestMainBackup)
 program.addCommand(listV1Emails)
+program.addCommand(testFetchCras)
+program.addCommand(importCras)
 program.addCommand(ingestNotionHelpCenterExportedMarkdown)
 program.addCommand(fetchAccompagnements)
 program.addCommand(deleteSentryEnvironmentIssues)
