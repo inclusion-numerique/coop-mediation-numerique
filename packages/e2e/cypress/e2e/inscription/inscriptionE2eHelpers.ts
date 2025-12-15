@@ -3,7 +3,6 @@ import { CreateUserInput } from '@app/e2e/tasks/handlers/user.tasks'
 import {
   allProfileInscriptionLabels,
   lowerCaseProfileInscriptionLabels,
-  profileInscriptionSlugs,
 } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 
 export const startInscriptionAs = ({
@@ -19,7 +18,7 @@ export const startInscriptionAs = ({
 }) => {
   if (user != null) cy.createUserAndSignin(user)
 
-  cy.visit(appUrl('/inscription'))
+  cy.visit(appUrl('/inscription/choisir-role'))
 
   cy.contains(
     new RegExp(`^${allProfileInscriptionLabels[profilInscription]}$`),
