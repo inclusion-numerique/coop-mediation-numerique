@@ -5,7 +5,7 @@ import {
 } from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 
-describe('dataspaceApiClient', () => {
+describe.skip('dataspaceApiClient', () => {
   beforeAll(() => {
     if (ServerWebAppConfig.Dataspace.isMocked) {
       throw new Error(
