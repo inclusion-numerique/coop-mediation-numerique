@@ -4,7 +4,6 @@ import type { ProfilInscription } from '@prisma/client'
 /**
  * Determine the profile from Dataspace API response
  * Similar to getProfileInscriptionFromV1Data but using Dataspace fields
- * 
  * null means no profile found from dataspace
  */
 export const getProfileFromDataspace = ({
@@ -61,4 +60,3 @@ export const hasActiveContractFromDataspace = (
     }),
   )
 }
-

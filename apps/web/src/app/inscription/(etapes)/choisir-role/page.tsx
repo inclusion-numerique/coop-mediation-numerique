@@ -1,6 +1,6 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
-import ChoisirRolePage from '@app/web/features/inscription/components/ChoisirRolePage'
+import ChoisirRolePage from '@app/web/features/inscription/use-cases/choisir-role/ChoisirRolePage'
 import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'

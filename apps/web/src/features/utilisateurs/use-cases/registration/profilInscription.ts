@@ -28,7 +28,10 @@ export const profileInscriptionConseillerNumeriqueLabels = {
   ConseillerNumerique: 'Conseiller·ère numérique',
   CoordinateurConseillerNumerique:
     'Coordinateur·rice de conseillers numériques',
-}
+} as const
+
+export type ProfileInscriptionConseillerNumeriqueType =
+  keyof typeof profileInscriptionConseillerNumeriqueLabels
 
 export const allProfileInscriptionLabels: {
   [key in ProfilInscription]: string

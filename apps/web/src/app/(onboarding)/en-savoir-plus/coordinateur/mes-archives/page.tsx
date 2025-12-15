@@ -11,11 +11,11 @@ export const metadata: Metadata = {
 const Page = async () => {
   const user = await authenticateUser()
 
-  return user.coordinateur ? (
-    <OnboardingMesArchivesCoordinateur />
-  ) : (
-    redirect('/')
-  )
+  if (!user.coordinateur) {
+    redirect('/coop')
+  }
+
+  return <OnboardingMesArchivesCoordinateur />
 }
 
 export default Page

@@ -57,7 +57,7 @@ const LieuxActiviteForm = ({
 
   const reversedFields = structureFields
     .map((field, index) => ({ field, index }))
-    .reverse()
+    .toReversed()
 
   const mutation = trpc.inscription.ajouterLieuxActivite.useMutation()
 

@@ -8,10 +8,10 @@ import {
   CreerEmployeStructureData,
   CreerEmployeStructureValidation,
 } from '@app/web/app/employe-structure/CreerEmployeStructureValidation'
-import { debouncedLoadStructureEmployeuseOptions } from '@app/web/app/inscription/legacy/_components/structure-employeuse/loadStructureEmployeuseOptions'
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import StructureCard from '@app/web/components/structure/StructureCard'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { debouncedLoadStructureEmployeuseOptions } from '@app/web/features/structures/loadStructureEmployeuseOptions'
 import type { StructureCreationDataWithSiret } from '@app/web/features/structures/StructureValidation'
 import SiretInputInfo from '@app/web/features/structures/siret/SiretInputInfo'
 import { trpc } from '@app/web/trpc'

@@ -15,10 +15,7 @@ export const executeSyncConums = async (_job: SyncConumsJob) => {
   // Get all users that have a mediateur or coordinateur
   const usersToSync = await prismaClient.user.findMany({
     where: {
-      OR: [
-        { mediateur: { isNot: null } },
-        { coordinateur: { isNot: null } },
-      ],
+      OR: [{ mediateur: { isNot: null } }, { coordinateur: { isNot: null } }],
       deleted: null,
     },
     select: {

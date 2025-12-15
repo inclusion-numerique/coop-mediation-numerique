@@ -56,6 +56,9 @@ export const getNextInscriptionStep = ({
       case 'initialize':
         return 'choisir-role'
       case 'choisir-role':
+        if (profilInscription === 'Coordinateur') {
+          return 'recapitulatif'
+        }
         return 'verifier-informations'
       case 'verifier-informations':
         // If mediateur, go to lieux activite
@@ -117,4 +120,3 @@ export const getStepPath = (step: InscriptionStep): string => {
       return '/inscription'
   }
 }
-

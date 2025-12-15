@@ -128,6 +128,11 @@ export const importConseillersCooordonnesForCoordinateur = async ({
     .map((c) => c.ids.conseiller_numerique)
     .filter((id): id is string => id !== null)
 
+  console.log({
+    coopIds,
+    conseillerNumeriqueIds,
+  })
+
   const mediateurs = await prismaClient.mediateur.findMany({
     where: {
       OR: [
@@ -180,4 +185,3 @@ export const importConseillersCooordonnesForCoordinateur = async ({
     mediateurIds: mediateurs.map((m) => m.id),
   }
 }
-

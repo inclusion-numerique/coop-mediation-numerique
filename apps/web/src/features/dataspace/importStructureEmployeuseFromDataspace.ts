@@ -53,7 +53,8 @@ const getActiveOrMostRecentContract = (
 
   // No active contract - return the most recent one by date_debut
   return contrats.toSorted(
-    (a, b) => new Date(b.date_debut).getTime() - new Date(a.date_debut).getTime(),
+    (a, b) =>
+      new Date(b.date_debut).getTime() - new Date(a.date_debut).getTime(),
   )[0]
 }
 
@@ -188,4 +189,3 @@ export const getPrimaryStructureEmployeuse = (
 
   return withActiveContract ?? structuresEmployeuses[0]
 }
-

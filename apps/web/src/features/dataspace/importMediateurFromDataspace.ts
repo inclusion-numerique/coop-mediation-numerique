@@ -1,7 +1,7 @@
 import type { DataspaceMediateur } from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import {
-  importCoordonnesFromDataspace,
   importConseillersCooordonnesForCoordinateur,
+  importCoordonnesFromDataspace,
 } from '@app/web/features/dataspace/importCoordonnesFromDataspace'
 import { importLieuxActiviteFromDataspace } from '@app/web/features/dataspace/importLieuxActiviteFromDataspace'
 import {
@@ -158,4 +158,3 @@ export const importCoordinateurFromDataspace = async ({
     mediateursCoordonnesIds: mediateurIds,
   }
 }
-

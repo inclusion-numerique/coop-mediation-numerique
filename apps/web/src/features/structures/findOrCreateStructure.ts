@@ -68,7 +68,7 @@ export const findOrCreateStructure = async ({
     const createdStructure = await prismaClient.structure.create({
       data: {
         ...structureData,
-        nomReferent: nomReferent ?? structureData.nomReferent,
+        nomReferent: nomReferent ?? null,
         courrielReferent: courrielReferent ?? structureData.courriels?.at(0),
         telephoneReferent: telephoneReferent ?? structureData.telephone,
       },
@@ -127,4 +127,3 @@ export const findOrCreateStructure = async ({
     },
   })
 }
-

@@ -1,6 +1,5 @@
 import { appUrl } from '@app/e2e/support/helpers'
 import { CreateUserInput } from '@app/e2e/tasks/handlers/user.tasks'
-import { inscriptionRolesErrorTitles } from '@app/web/app/inscription/(steps)/identification/_components/inscriptionRole'
 import {
   allProfileInscriptionLabels,
   lowerCaseProfileInscriptionLabels,
@@ -61,9 +60,6 @@ export const startInscriptionAs = ({
     )
     cy.findByRole('link', { name: 'Continuer mon inscription' })
   } else {
-    cy.contains(
-      inscriptionRolesErrorTitles[profileInscriptionSlugs[profilInscription]],
-    )
     cy.findByRole('button', { name: 'Essayer une autre adresse email' })
   }
 }

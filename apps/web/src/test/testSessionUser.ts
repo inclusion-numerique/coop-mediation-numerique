@@ -1,4 +1,5 @@
 import type { SessionUser } from '@app/web/auth/sessionUser'
+import { previewBranchAuthFallbacks } from '../auth/previewBranchAuthFallbacks'
 
 export const testSessionUser = {
   id: 'test',
@@ -8,6 +9,7 @@ export const testSessionUser = {
   lastName: 'Biche',
   name: 'Jean Biche',
   role: 'User',
+  siret: previewBranchAuthFallbacks.anctSiret,
   updated: new Date('2023-05-05').toISOString(),
   created: new Date('2023-01-01').toISOString(),
   hasSeenOnboarding: new Date('2023-01-01').toISOString(),

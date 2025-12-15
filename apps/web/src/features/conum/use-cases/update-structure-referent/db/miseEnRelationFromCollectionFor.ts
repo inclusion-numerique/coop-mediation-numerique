@@ -1,5 +1,5 @@
-import { MiseEnRelationWithStructureAdministrativeInfo } from '@app/web/app/inscription/importFromConseillerNumerique/importFromConseillerNumerique.queries'
 import { MiseEnRelationV1MinimalProjection } from '@app/web/external-apis/conseiller-numerique/MiseEnRelationConseillerNumeriqueV1'
+import { MiseEnRelationWithStructureAdministrativeInfo } from '@app/web/features/legacy-mongo-v1/importFromConseillerNumerique.queries'
 import { Document, ObjectId } from 'mongodb'
 
 export const miseEnRelationFromCollectionFor =

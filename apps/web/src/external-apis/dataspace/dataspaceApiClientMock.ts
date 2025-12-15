@@ -1,23 +1,21 @@
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
+import { conseillerInscriptionEmail } from '@app/fixtures/users/conseillerInscription'
+import { conseillerSansLieuInscriptionEmail } from '@app/fixtures/users/conseillerSansLieuInscription'
+import { coordinateurHorsDispositifInscriptionEmail } from '@app/fixtures/users/coordinateurHorsDispositifInscription'
+import { coordinateurInscriptionEmail } from '@app/fixtures/users/coordinateurInscription'
+import { coordinateurInscriptionAvecToutEmail } from '@app/fixtures/users/coordinateurInscriptionAvecTout'
+import { mediateurInscriptionEmail } from '@app/fixtures/users/mediateurInscription'
 import type {
   DataspaceApiResult,
   DataspaceMediateur,
 } from './dataspaceApiClient'
 import {
-  mockDataspaceApiError404,
-  mockDataspaceMediateurConseillerNumerique,
-  mockDataspaceMediateurCoordinateur,
-  mockDataspaceMediateurCoordinateurHorsDispositif,
-  mockDataspaceMediateurMinimal,
-  mockDataspaceMediateurNonConseillerNumerique,
-  mockDataspaceTestEmails,
-  mockDataspaceMediateurConseillerInscription,
-  mockDataspaceMediateurCoordinateurInscription,
-  mockDataspaceMediateurCoordinateurInscriptionAvecTout,
-  mockDataspaceMediateurCoordinateurHorsDispositifInscription,
-  mockDataspaceMediateurMediateurInscription,
-  mockDataspaceMediateurConseillerSansLieuInscription,
-} from './dataspaceApiClientMocks'
+  mockDataspaceConseillerNumeriqueInscription,
+  mockDataspaceConseillerSansLieuInscription,
+  mockDataspaceCoordinateurConumInscription,
+  mockDataspaceCoordinateurConumInscriptionAvecTout,
+  mockDataspaceCoordinateurHorsDispositifInscription,
+  mockDataspaceMediateurInscription,
+} from './dataspaceApiClientMockData'
 
 /**
  * Mock implementation of Dataspace API for e2e tests and local development
@@ -34,35 +32,15 @@ import {
  * Add new email mappings here for your tests and fixtures
  */
 const mockDataspaceDatabase: Record<string, DataspaceMediateur | null> = {
-  // Test emails with predefined responses
-  [mockDataspaceTestEmails.conseillerNumerique]:
-    mockDataspaceMediateurConseillerNumerique,
-  [mockDataspaceTestEmails.coordinateur]: mockDataspaceMediateurCoordinateur,
-  [mockDataspaceTestEmails.mediateurNonCN]:
-    mockDataspaceMediateurNonConseillerNumerique,
-
-  // Additional test cases
-  'coordinateur.horsdispositif@example.fr':
-    mockDataspaceMediateurCoordinateurHorsDispositif,
-  'mediateur.minimal@example.fr': mockDataspaceMediateurMinimal,
-
-  // Fixture users (add your fixture user emails here)
-  'conseiller.numerique.inscrit@example.fr':
-    mockDataspaceMediateurConseillerNumerique,
-
-  // Inscription test fixture users
-  [mockDataspaceTestEmails.conseillerInscription]:
-    mockDataspaceMediateurConseillerInscription,
-  [mockDataspaceTestEmails.coordinateurInscription]:
-    mockDataspaceMediateurCoordinateurInscription,
-  [mockDataspaceTestEmails.coordinateurInscriptionAvecTout]:
-    mockDataspaceMediateurCoordinateurInscriptionAvecTout,
-  [mockDataspaceTestEmails.coordinateurHorsDispositifInscription]:
-    mockDataspaceMediateurCoordinateurHorsDispositifInscription,
-  [mockDataspaceTestEmails.mediateurInscription]:
-    mockDataspaceMediateurMediateurInscription,
-  [mockDataspaceTestEmails.conseillerSansLieuInscription]:
-    mockDataspaceMediateurConseillerSansLieuInscription,
+  [conseillerInscriptionEmail]: mockDataspaceConseillerNumeriqueInscription,
+  [coordinateurHorsDispositifInscriptionEmail]:
+    mockDataspaceCoordinateurHorsDispositifInscription,
+  [coordinateurInscriptionEmail]: mockDataspaceCoordinateurConumInscription,
+  [coordinateurInscriptionAvecToutEmail]:
+    mockDataspaceCoordinateurConumInscriptionAvecTout,
+  [mediateurInscriptionEmail]: mockDataspaceMediateurInscription,
+  [conseillerSansLieuInscriptionEmail]:
+    mockDataspaceConseillerSansLieuInscription,
 }
 
 /**

@@ -5,6 +5,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import type { Typologie } from '@prisma/client'
 import classNames from 'classnames'
 import type { ReactNode } from 'react'
+import styles from './StructureCard.module.css'
 
 export type StructureCardStructure = Pick<
   StructureData,
@@ -27,7 +28,8 @@ const StructureCard = ({
   return (
     <div
       className={classNames(
-        'fr-width-full fr-border-radius--8 fr-border fr-p-6v fr-p-md-8v fr-mt-12v',
+        'fr-width-full fr-border-radius--8 fr-border fr-p-6v fr-p-md-8v',
+        styles.container,
         className,
       )}
     >

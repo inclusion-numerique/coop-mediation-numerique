@@ -126,7 +126,9 @@ export const initializeAndImportUserDataFromDataspace = async ({
     data: {
       donneesConseillerNumeriqueV1Importees: new Date(),
       structureEmployeuseRenseignee:
-        dataspaceData.structures_employeuses.length > 0 ? new Date() : undefined,
+        dataspaceData.structures_employeuses.length > 0
+          ? new Date()
+          : undefined,
       lieuxActiviteRenseignes:
         dataspaceData.lieux_activite.length > 0 ? new Date() : undefined,
     },
@@ -135,4 +137,3 @@ export const initializeAndImportUserDataFromDataspace = async ({
 
   return updatedUser
 }
-

@@ -1,7 +1,7 @@
 import {
+  type DataspaceMediateur,
   getMediateurFromDataspaceApi,
   isDataspaceApiError,
-  type DataspaceMediateur,
 } from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import {
   importCoordinateurFromDataspace,
@@ -194,4 +194,3 @@ export const syncUsersFromDataspace = async ({
     results,
   }
 }
-

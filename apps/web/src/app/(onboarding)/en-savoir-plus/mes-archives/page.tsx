@@ -1,5 +1,7 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
+import { authenticateUser } from '@app/web/auth/authenticateUser'
 import { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 import { OnboardingMesArchives } from './OnboardingMesArchives'
 
 export const dynamic = 'force-dynamic'
@@ -9,6 +11,14 @@ export const metadata: Metadata = {
   title: metadataTitle('En savoir plus - Mes activités'),
 }
 
-const Page = () => <OnboardingMesArchives />
+const Page = async () => {
+  const user = await authenticateUser()
+
+  if (!user.mediateur) {
+    redirect('/coop')
+  }
+
+  return <OnboardingMesArchives />
+}
 
 export default Page

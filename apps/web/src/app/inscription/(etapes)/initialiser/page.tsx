@@ -1,8 +1,8 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
-import { initializeInscription } from '@app/web/features/inscription/initializeInscription'
-import { redirect } from 'next/navigation'
+import { initializeInscription } from '@app/web/features/inscription/use-cases/initialize/initializeInscription'
 import * as Sentry from '@sentry/nextjs'
+import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

@@ -1,6 +1,6 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
-import VerifierInformationsPage from '@app/web/features/inscription/components/VerifierInformationsPage'
+import VerifierInformationsPage from '@app/web/features/inscription/use-cases/verifier-informations/VerifierInformationsPage'
 import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'

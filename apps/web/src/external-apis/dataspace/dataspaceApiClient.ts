@@ -1,5 +1,5 @@
-import axios, { AxiosError } from 'axios'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
+import axios, { AxiosError } from 'axios'
 import { getMediateurFromDataspaceApiMock } from './dataspaceApiClientMock'
 
 /**

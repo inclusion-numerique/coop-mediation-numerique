@@ -97,4 +97,3 @@ export const importLieuxActiviteFromDataspace = async ({
     structureIds: results.map((result) => result.structureId),
   }
 }
-
