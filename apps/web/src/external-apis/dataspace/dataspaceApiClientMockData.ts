@@ -167,7 +167,7 @@ export const mockDataspaceConseillerNumeriqueCoordonneMinimal: DataspaceConseill
 /**
  * Mock for a typical conseiller numerique mediateur
  */
-export const mockDataspaceMediateurConseillerNumerique: DataspaceMediateur = {
+export const mockDataspaceConseillerNumerique: DataspaceMediateur = {
   id: 12345,
   is_coordinateur: false,
   is_conseiller_numerique: true,
@@ -262,9 +262,7 @@ export const mockDataspaceCoordinateurConumInscription: DataspaceMediateur = {
   is_conseiller_numerique: true,
   structures_employeuses: [mockDataspaceStructureEmployeuse],
   lieux_activite: [mockDataspaceLieuActivite],
-  conseillers_numeriques_coordonnes: [
-    mockDataspaceConseillerNumeriqueCoordonne,
-  ],
+  conseillers_numeriques_coordonnes: [],
 }
 
 /**

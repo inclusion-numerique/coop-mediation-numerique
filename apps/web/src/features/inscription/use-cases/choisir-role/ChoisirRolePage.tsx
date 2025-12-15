@@ -67,6 +67,7 @@ const ChoisirRolePage = ({ userId }: { userId: string }) => {
         flowType: 'withoutDataspace',
         profilInscription: data.profil,
         hasLieuxActivite: false,
+        isConseillerNumerique: false,
       })
 
       if (nextStep) {

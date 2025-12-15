@@ -93,13 +93,10 @@ export const getInscriptionRecapitulatifPageData = async ({
       user.profilInscription !== 'CoordinateurConseillerNumerique',
     conseillerNumeriqueRole:
       user.profilInscription === 'ConseillerNumerique'
-        ? 'ConseillerNumerique'
-        : undefined,
-    editStructureEmployeuseHref:
-      user.profilInscription === 'Mediateur' ||
-      user.profilInscription === 'ConseillerNumerique'
-        ? '/inscription/structure-employeuse'
-        : undefined,
+        ? ('ConseillerNumerique' as const)
+        : user.profilInscription === 'CoordinateurConseillerNumerique'
+          ? ('CoordinateurConseillerNumerique' as const)
+          : undefined,
     showConseillerNumeriqueSupportLink:
       user.profilInscription === 'CoordinateurConseillerNumerique',
     showInscriptionSteps:

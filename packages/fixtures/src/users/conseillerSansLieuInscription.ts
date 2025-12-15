@@ -1,6 +1,5 @@
-import { givenUser } from '../givenUser'
-import { structureEmployeuse } from '../structures'
 import { previewBranchAuthFallbacks } from '@app/web/auth/previewBranchAuthFallbacks'
+import { givenUser } from '../givenUser'
 
 export const conseillerSansLieuInscriptionEmail =
   'conseiller-sans-lieu-inscription@coop-numerique.anct.gouv.fr'
@@ -13,35 +12,4 @@ export const conseillerSansLieuInscription = givenUser({
   email: conseillerSansLieuInscriptionEmail,
   role: 'User',
   siret: previewBranchAuthFallbacks.anctSiret,
-  mediateur: {
-    connectOrCreate: {
-      where: {
-        id: '01b4db6b-457f-4fa3-a1b2-3a78c9db60d5',
-      },
-      create: {
-        id: '01b4db6b-457f-4fa3-a1b2-3a78c9db60d5',
-        conseillerNumerique: {
-          connectOrCreate: {
-            where: {
-              id: 'conseiller-numerique-sans-lieu-inscription',
-            },
-            create: {
-              id: 'conseiller-numerique-sans-lieu-inscription',
-            },
-          },
-        },
-      },
-    },
-  },
-  emplois: {
-    connectOrCreate: {
-      where: {
-        id: '3e45dfd3-a73d-4e52-acc1-892283642e07',
-      },
-      create: {
-        id: '3e45dfd3-a73d-4e52-acc1-892283642e07',
-        structureId: structureEmployeuse.id,
-      },
-    },
-  },
 })

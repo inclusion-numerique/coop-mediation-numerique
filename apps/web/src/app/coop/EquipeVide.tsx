@@ -1,12 +1,10 @@
+import MonEquipeHeader from '@app/web/app/coop/(sidemenu-layout)/(accueil-coop)/_components/MonEquipeHeader'
 import Button from '@codegouvfr/react-dsfr/Button'
 import React from 'react'
 
-export const EquipeVide = () => (
+const EquipeVide = ({ withHeader = false }: { withHeader?: boolean }) => (
   <>
-    <h2 className="fr-h5 fr-text-mention--grey">
-      <span className="ri-group-2-line fr-mr-1w" aria-hidden />
-      Mon équipe
-    </h2>
+    {withHeader && <MonEquipeHeader />}
     <div className="fr-text--center fr-background-alt--blue-france fr-p-12v fr-border-radius--8 fr-mb-4w">
       <span className="fr-text--bold fr-text--xl">
         Actuellement, vous n’avez aucun membre dans votre équipe.
@@ -26,3 +24,5 @@ export const EquipeVide = () => (
     </div>
   </>
 )
+
+export default EquipeVide

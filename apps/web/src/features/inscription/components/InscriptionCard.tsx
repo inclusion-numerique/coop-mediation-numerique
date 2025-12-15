@@ -57,7 +57,7 @@ const InscriptionCard = ({
           <b>Étape suivante&nbsp;:</b> {nextStepTitle}
         </p>
       )}
-      {subtitle && <p className="fr-mt-4v fr-mb-12v">{subtitle}</p>}
+      {subtitle && <div className="fr-mt-4v fr-mb-12v">{subtitle}</div>}
       {children}
     </div>
   </>

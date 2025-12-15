@@ -45,12 +45,22 @@ export const getNextInscriptionStep = ({
   flowType,
   profilInscription,
   hasLieuxActivite,
+  isConseillerNumerique,
 }: {
   currentStep: InscriptionStep
   flowType: InscriptionFlowType
   profilInscription: ProfilInscription | null
   hasLieuxActivite: boolean
+  isConseillerNumerique: boolean
 }): InscriptionStep | null => {
+  console.log('GET NEXT STEP', {
+    currentStep,
+    flowType,
+    profilInscription,
+    hasLieuxActivite,
+    isConseillerNumerique,
+  })
+
   if (flowType === 'withoutDataspace') {
     switch (currentStep) {
       case 'initialize':
@@ -82,16 +92,19 @@ export const getNextInscriptionStep = ({
   // Flow with Dataspace
   switch (currentStep) {
     case 'initialize':
-      // If mediateur without lieux, go to lieux activite
-      if (
-        (profilInscription === 'Mediateur' ||
-          profilInscription === 'ConseillerNumerique') &&
-        !hasLieuxActivite
-      ) {
-        return 'lieux-activite'
+      // Si conseiller numerique sans lieu, on fait un flow total
+      if (profilInscription === 'ConseillerNumerique' && !hasLieuxActivite) {
+        return 'verifier-informations'
       }
-      // Otherwise go directly to recap
-      return 'recapitulatif'
+      if (profilInscription === 'ConseillerNumerique' && hasLieuxActivite) {
+        return 'recapitulatif'
+      }
+
+      if (profilInscription === 'CoordinateurConseillerNumerique') {
+        return 'recapitulatif'
+      }
+
+      return 'choisir-role'
     case 'lieux-activite':
       return 'recapitulatif'
     case 'recapitulatif':

@@ -11,11 +11,15 @@ const ConseillerNumeriqueRoleNotice = ({
 }) => (
   <div
     className={classNames(
-      'fr-background-contrast--info fr-flex fr-flex-gap-4v fr-border-radius--8 fr-p-3w',
+      'fr-width-full fr-border-radius--8 fr-p-6v fr-my-6v fr-flex fr-align-items-center fr-flex-gap-3v fr-background-contrast--info',
       className,
     )}
   >
-    <img alt="" src="/images/illustrations/role/conseillers-numerique.svg" />
+    <img
+      alt=""
+      className="flex-shrink-0"
+      src="/images/iconographie/profil-conseiller-numerique.svg"
+    />
     <div>
       <p className="fr-text--bold fr-mb-0">
         Vous avez été identifié en tant que {conseillerNumeriqueRole}

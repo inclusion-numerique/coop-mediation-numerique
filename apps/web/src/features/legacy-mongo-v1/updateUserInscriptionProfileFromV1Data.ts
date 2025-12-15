@@ -30,24 +30,22 @@ export const updateUserInscriptionProfileFromV1Data = async ({
 }: {
   user: { id: string }
   v1Conseiller: ConseillerNumeriqueV1Data | null
-}): Promise<
-  PrismaSessionUser & { checkedProfilInscription: ProfilInscription }
-> =>
+}): Promise<PrismaSessionUser & { profilInscription: ProfilInscription }> =>
   prismaClient.user
     .update({
       where: { id: user.id },
       data: {
-        checkedProfilInscription: getProfileInscriptionFromV1Data({
+        profilInscription: getProfileInscriptionFromV1Data({
           v1Conseiller,
         }),
       },
       select: sessionUserSelect,
     })
     .then((updatedUser) => {
-      if (!updatedUser.checkedProfilInscription) {
+      if (!updatedUser.profilInscription) {
         throw new Error('Could not update user profile')
       }
       return updatedUser as PrismaSessionUser & {
-        checkedProfilInscription: ProfilInscription
+        profilInscription: ProfilInscription
       }
     })

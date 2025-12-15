@@ -1,3 +1,4 @@
+import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import classNames from 'classnames'
 import Link from 'next/link'
 import React from 'react'
@@ -14,10 +15,9 @@ const InscriptionInvalidInformationContactSupportLink = ({
   >
     <Link
       className={classNames('fr-link fr-link--sm fr-mb-0 ', linkClassName)}
-      href="mailto:conseiller-numerique@anct.gouv.fr"
+      href={`mailto:${PublicWebAppConfig.contactEmail}`}
     >
-      Ce ne sont pas vos informations&nbsp;? Vous pouvez contactez le support du
-      dispositif Conseiller Numérique
+      Ce ne sont pas vos informations&nbsp;? Contactez le support
     </Link>
   </div>
 )

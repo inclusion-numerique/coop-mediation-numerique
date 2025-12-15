@@ -21,33 +21,13 @@ export const initializeAndImportUserDataFromDataspace = async ({
 }: {
   user: Pick<SessionUser, 'id' | 'email'> & {
     profilInscription: ProfilInscription
-    checkedProfilInscription: ProfilInscription
   }
   dataspaceData: DataspaceMediateur | null
 }) => {
-  const {
-    profilInscription: intendedProfileInscription,
-    checkedProfilInscription,
-  } = user
-
-  // Depending on the mismatch between intendedProfileInscription and checkedProfilInscription,
-  // we either do nothing or we import the data from Dataspace to the user
-  if (intendedProfileInscription !== checkedProfilInscription) {
-    // We allow conseiller numerique to continue, even if intent is different
-    if (checkedProfilInscription === 'ConseillerNumerique') {
-      // continue with import
-    }
-    // We allow coordinateur to continue, even if intent is different
-    else if (checkedProfilInscription === 'Coordinateur') {
-      // continue with import
-    } else {
-      // We disallow mediateur to continue if intent is different
-      return user
-    }
-  }
+  const { profilInscription } = user
 
   // Nothing to import if the profileInscription has nothing to do with Dataspace data
-  if (checkedProfilInscription === 'Mediateur') {
+  if (profilInscription === 'Mediateur') {
     const initializedMediateur = await prismaClient.user.update({
       where: { id: user.id },
       data: {
@@ -67,7 +47,7 @@ export const initializeAndImportUserDataFromDataspace = async ({
   // Error if the dataspaceData is null and needed for the intendedProfileInscription
   if (!dataspaceData || !hasActiveContractFromDataspace(dataspaceData)) {
     throw new Error(
-      `Active Dataspace conseiller not found for checked profil inscription ${checkedProfilInscription}`,
+      `Active Dataspace conseiller not found for checked profil inscription ${profilInscription}`,
     )
   }
 
@@ -79,8 +59,8 @@ export const initializeAndImportUserDataFromDataspace = async ({
 
   // Import based on profile
   if (
-    checkedProfilInscription === 'Coordinateur' ||
-    checkedProfilInscription === 'CoordinateurConseillerNumerique'
+    profilInscription === 'Coordinateur' ||
+    profilInscription === 'CoordinateurConseillerNumerique'
   ) {
     // Import coordinateur data
     await importCoordinateurFromDataspace({

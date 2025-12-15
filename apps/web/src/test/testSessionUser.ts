@@ -22,7 +22,6 @@ export const testSessionUser = {
   lieuxActiviteRenseignes: null,
   mediateur: null,
   profilInscription: null,
-  checkedProfilInscription: null,
   acceptationCgu: null,
   structureEmployeuseRenseignee: null,
   rdvAccount: null,

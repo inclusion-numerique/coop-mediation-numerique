@@ -21,7 +21,6 @@ export const sessionUserSelect = {
   role: true,
   isFixture: true,
   profilInscription: true,
-  checkedProfilInscription: true,
   acceptationCgu: true,
   hasSeenOnboarding: true,
   structureEmployeuseRenseignee: true,

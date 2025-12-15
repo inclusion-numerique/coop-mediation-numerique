@@ -1,5 +1,6 @@
 'use client'
 
+import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import IconInSquare from '@app/web/components/IconInSquare'
 import InfoLabelValue from '@app/web/components/InfoLabelValue'
 import StructureCard from '@app/web/components/structure/StructureCard'
@@ -10,6 +11,7 @@ import ValiderInscriptionForm from '@app/web/features/inscription/use-cases/reca
 import {
   allProfileInscriptionLabels,
   computeUserProfile,
+  profileInscriptionConseillerNumeriqueLabels,
 } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
@@ -25,7 +27,6 @@ const RecapitulatifPage = ({
     backHref,
     mustAcceptCgu = false,
     conseillerNumeriqueRole,
-    editStructureEmployeuseHref,
     showConseillerNumeriqueSupportLink,
     canCancelInscription,
     showInscriptionSteps,
@@ -42,7 +43,9 @@ const RecapitulatifPage = ({
   >
     {conseillerNumeriqueRole ? (
       <ConseillerNumeriqueRoleNotice
-        conseillerNumeriqueRole={conseillerNumeriqueRole}
+        conseillerNumeriqueRole={profileInscriptionConseillerNumeriqueLabels[
+          conseillerNumeriqueRole
+        ].toLowerCase()}
       />
     ) : null}
     <div className="fr-flex fr-align-items-center fr-flex-gap-3v fr-mt-12v">
@@ -69,7 +72,8 @@ const RecapitulatifPage = ({
         value={user.email}
       />
     </div>
-    {mediateursCoordonnesCount != null &&
+    {!!conseillerNumeriqueRole &&
+      mediateursCoordonnesCount != null &&
       user.coordinateur?.conseillerNumeriqueId != null && (
         <>
           <hr className="fr-separator-12v" />
@@ -87,7 +91,11 @@ const RecapitulatifPage = ({
                   src="/images/iconographie/profil-conseiller-numerique.svg"
                 />
                 <div className="fr-h2 fr-mb-0">{mediateursCoordonnesCount}</div>
-                <div>Conseillers numériques identifiés</div>
+                <div>
+                  Conseiller{sPluriel(mediateursCoordonnesCount)} numérique
+                  {sPluriel(mediateursCoordonnesCount)} identifié
+                  {sPluriel(mediateursCoordonnesCount)}
+                </div>
               </div>
               <Notice
                 className="fr-notice--flex"
@@ -129,22 +137,6 @@ const RecapitulatifPage = ({
           <h2 className="fr-h6 fr-mb-0 fr-text-title--blue-france">
             Ma structure employeuse
           </h2>
-          {!!editStructureEmployeuseHref && (
-            <>
-              <span className="fr-flex-grow-1" />
-              <Button
-                priority="tertiary no outline"
-                linkProps={{
-                  href: editStructureEmployeuseHref,
-                }}
-                iconId="fr-icon-edit-line"
-                iconPosition="right"
-                size="small"
-              >
-                Modifier
-              </Button>
-            </>
-          )}
         </div>
         <StructureCard structure={structureEmployeuse} className="fr-mt-4v" />
       </>

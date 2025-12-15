@@ -18,11 +18,6 @@ const VerifierInformationsPageRoute = async () => {
     redirect('/coop')
   }
 
-  // If role not chosen, redirect back
-  if (!user.profilInscription || !user.acceptationCgu) {
-    redirect('/inscription/choisir-role')
-  }
-
   return <VerifierInformationsPage user={user} />
 }
 

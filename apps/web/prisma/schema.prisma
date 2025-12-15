@@ -121,11 +121,10 @@ model User {
 
   // Le profil déclaré par l’utilisateur à la première étape de l’inscription
   profilInscription ProfilInscription? @map("profil_inscription")
+  syncedFromDataspace DateTime? @map("synced_from_dataspace")
+  lastSyncedFromDataspace DateTime? @map("last_synced_from_dataspace")
   importedLieuxFromDataspace DateTime? @map("imported_lieux_from_dataspace") // useful for customizing the inscription flow
   acceptationCgu    DateTime?          @map("acceptation_cgu")
-
-  // Checked profil vérifié avec la base de données conseiller-numerique-v1
-  checkedProfilInscription ProfilInscription? @map("checked_profil_inscription")
 
   // Timestamp des imports de données v1 à l'inscription
   donneesConseillerNumeriqueV1Importees             DateTime? @map("donnees_conseiller_numerique_v1_importees")

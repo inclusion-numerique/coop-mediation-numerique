@@ -23,18 +23,20 @@ const LieuxActivitePage = ({
           Vos lieux d'activité sont les lieux où vous accueillez et accompagnez
           vos bénéficiaires (ex : lieu de permanence...)
         </span>
-        <span
-          className="fr-display-block fr-mt-4v fr-mb-12v fr-px-6v fr-py-4v fr-width-full fr-border-radius--8"
-          style={{ backgroundColor: 'var(--background-contrast-info)' }}
-        >
-          <span className="fr-display-block fr-text--bold fr-mb-1v">
-            Renseignez au moins un lieu d’activité pour finaliser votre
-            inscription.
+        {lieuxActivite.length === 0 && (
+          <span
+            className="fr-display-block fr-mt-4v fr-mb-12v fr-px-6v fr-py-4v fr-width-full fr-border-radius--8"
+            style={{ backgroundColor: 'var(--background-contrast-info)' }}
+          >
+            <span className="fr-display-block fr-text--bold fr-mb-1v">
+              Renseignez au moins un lieu d’activité pour finaliser votre
+              inscription.
+            </span>
+            <span className="fr-text--sm fr-mb-2v">
+              Vous pourrez également les renseigner plus tard via votre espace.
+            </span>
           </span>
-          <span className="fr-text--sm fr-mb-2v">
-            Vous pourrez également les renseigner plus tard via votre espace.
-          </span>
-        </span>
+        )}
       </>
     }
   >

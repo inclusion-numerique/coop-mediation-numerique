@@ -19,11 +19,6 @@ const RecapitulatifPageRoute = async () => {
     redirect('/coop')
   }
 
-  // If role not chosen, redirect back
-  if (!user.profilInscription || !user.acceptationCgu) {
-    redirect('/inscription/choisir-role')
-  }
-
   const data = await getInscriptionRecapitulatifPageData({
     user,
   })

@@ -8,6 +8,7 @@ import {
   importMediateurFromDataspace,
 } from '@app/web/features/dataspace/importMediateurFromDataspace'
 import { prismaClient } from '@app/web/prismaClient'
+import { getProfileFromDataspace } from './getProfileFromDataspace'
 
 export type SyncUserFromDataspaceResult = {
   success: boolean
@@ -56,7 +57,7 @@ export const syncUserFromDataspace = async ({
   }
 
   // Handle not found (null result)
-  if (result === null) {
+  if (result === null || !result.is_conseiller_numerique) {
     // User not found in Dataspace - not a conseiller numérique
     // Remove ConseillerNumerique if it exists
     await removeConseillerNumeriqueIfExists({ userId })
@@ -76,7 +77,9 @@ export const syncUserFromDataspace = async ({
   // 2. Update User.dataspaceId
   await prismaClient.user.update({
     where: { id: userId },
-    data: { dataspaceId: dataspaceData.id },
+    data: {
+      dataspaceId: dataspaceData.id,
+    },
   })
 
   let mediateurId: string | null = null

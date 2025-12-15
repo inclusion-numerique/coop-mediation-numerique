@@ -1,6 +1,6 @@
 import { CommunicationConum } from '@app/web/app/coop/(sidemenu-layout)/(accueil-coop)/_components/CommunicationConum'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
-import { EquipeVide } from '@app/web/app/coop/EquipeVide'
+import EquipeVide from '@app/web/app/coop/EquipeVide'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import ActiviteDetailsModal from '@app/web/features/activites/use-cases/list/components/ActiviteDetailsModal/ActiviteDetailsModal'
 import { ActivitesCoordination } from '@app/web/features/activites/use-cases/list/components/ActivitesCoordination'
@@ -69,7 +69,7 @@ export const Accueil = ({
           {mediateurs.total > 0 ? (
             <Equipe mediateurs={mediateurs} />
           ) : (
-            <EquipeVide />
+            <EquipeVide withHeader />
           )}
         </section>
       )}

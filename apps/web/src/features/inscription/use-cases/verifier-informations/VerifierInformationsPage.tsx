@@ -24,6 +24,9 @@ const VerifierInformationsPage = ({ user }: { user: SessionUser }) => {
       flowType: 'withoutDataspace',
       profilInscription: user.profilInscription,
       hasLieuxActivite: false,
+      isConseillerNumerique:
+        !!user.coordinateur?.conseillerNumeriqueId ||
+        !!user.mediateur?.conseillerNumerique,
     })
 
     if (nextStep === 'lieux-activite') {

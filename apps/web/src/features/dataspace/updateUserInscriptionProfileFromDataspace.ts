@@ -18,24 +18,22 @@ export const updateUserInscriptionProfileFromDataspace = async ({
 }: {
   user: { id: string }
   dataspaceData: DataspaceMediateur | null
-}): Promise<
-  PrismaSessionUser & { checkedProfilInscription: ProfilInscription }
-> =>
+}): Promise<PrismaSessionUser & { profilInscription: ProfilInscription }> =>
   prismaClient.user
     .update({
       where: { id: user.id },
       data: {
-        checkedProfilInscription: getProfileFromDataspace({
+        profilInscription: getProfileFromDataspace({
           dataspaceData,
         }),
       },
       select: sessionUserSelect,
     })
     .then((updatedUser) => {
-      if (!updatedUser.checkedProfilInscription) {
+      if (!updatedUser.profilInscription) {
         throw new Error('Could not update user profile')
       }
       return updatedUser as PrismaSessionUser & {
-        checkedProfilInscription: ProfilInscription
+        profilInscription: ProfilInscription
       }
     })

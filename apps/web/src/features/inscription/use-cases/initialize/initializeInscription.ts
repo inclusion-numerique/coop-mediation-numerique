@@ -10,6 +10,7 @@ import {
   importStructureEmployeuseFromDataspace,
 } from '@app/web/features/dataspace/importStructureEmployeuseFromDataspace'
 import { syncUserFromDataspace } from '@app/web/features/dataspace/syncUserFromDataspace'
+import { updateUserInscriptionProfileFromDataspace } from '@app/web/features/dataspace/updateUserInscriptionProfileFromDataspace'
 import { importStructureEmployeuseFromSiret } from '@app/web/features/structures/importStructureEmployeuseFromSiret'
 import { prismaClient } from '@app/web/prismaClient'
 import { getNextInscriptionStep, getStepPath } from '../../inscriptionFlow'
@@ -35,6 +36,8 @@ export const initializeInscription = async ({
     console.error('Dataspace API error:', dataspaceResult.error.message)
   }
 
+  console.log('DATASPACE RESULT', dataspaceResult)
+
   // If found in Dataspace (and not an error)
   if (
     dataspaceResult &&
@@ -44,6 +47,10 @@ export const initializeInscription = async ({
     const dataspaceData = dataspaceResult
 
     // Sync user roles from Dataspace
+    await updateUserInscriptionProfileFromDataspace({
+      user: { id: userId },
+      dataspaceData,
+    })
     const syncResult = await syncUserFromDataspace({ userId, email })
 
     // Import structures employeuses if user doesn't have one yet
@@ -99,6 +106,7 @@ export const initializeInscription = async ({
     // Import lieux d'activité if user is mediateur
     if (
       syncResult.mediateurId &&
+      !dataspaceData.is_coordinateur &&
       dataspaceData.lieux_activite &&
       dataspaceData.lieux_activite.length > 0
     ) {
@@ -137,6 +145,7 @@ export const initializeInscription = async ({
       flowType: 'withDataspace',
       profilInscription: updatedUser.profilInscription,
       hasLieuxActivite,
+      isConseillerNumerique: dataspaceData.is_conseiller_numerique,
     })
 
     console.log('USER DURING INITIALIZATION WITH DATA SPACE', updatedUser)
@@ -183,6 +192,7 @@ export const initializeInscription = async ({
     flowType: 'withoutDataspace',
     profilInscription: null,
     hasLieuxActivite: false,
+    isConseillerNumerique: false,
   })
   console.log('USER DURING INITIALIZATION WITHOUT DATA SPACE', user)
   console.log('EMPLOIS WITHOUT DATA SPACE', user?.emplois)

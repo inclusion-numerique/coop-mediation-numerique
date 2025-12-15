@@ -36,39 +36,6 @@ export const conseillerInscription = givenUser({
             },
           },
         },
-        enActivite: {
-          connectOrCreate: [
-            {
-              where: {
-                id: 'ed40a144-bae0-43fe-9694-3621779d2eca',
-              },
-              create: {
-                id: 'ed40a144-bae0-43fe-9694-3621779d2eca',
-                structureId: mediateque.id,
-              },
-            },
-            {
-              where: {
-                id: '9050bc28-8c5e-46fc-ae21-2be797c6fb73',
-              },
-              create: {
-                id: '9050bc28-8c5e-46fc-ae21-2be797c6fb73',
-                structureId: centreSocial.id,
-              },
-            },
-          ],
-        },
-      },
-    },
-  },
-  emplois: {
-    connectOrCreate: {
-      where: {
-        id: '17a2868d-a690-4004-b4cc-7fe132706ae6',
-      },
-      create: {
-        id: '17a2868d-a690-4004-b4cc-7fe132706ae6',
-        structureId: structureEmployeuse.id,
       },
     },
   },
