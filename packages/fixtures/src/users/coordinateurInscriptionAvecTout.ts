@@ -1,7 +1,7 @@
+import { previewBranchAuthFallbacks } from '@app/web/auth/previewBranchAuthFallbacks'
 import type { Prisma } from '@prisma/client'
 import { givenUser } from '../givenUser'
 import { centreSocial, mediateque, structureEmployeuse } from '../structures'
-import { previewBranchAuthFallbacks } from '@app/web/auth/previewBranchAuthFallbacks'
 
 export const coordinateurInscriptionAvecToutCoordinateurId =
   'b0ebe56a-b1eb-49c0-9963-26dbbaa1c15e'

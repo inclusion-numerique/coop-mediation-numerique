@@ -1,6 +1,6 @@
+import { previewBranchAuthFallbacks } from '@app/web/auth/previewBranchAuthFallbacks'
 import { givenUser } from '../givenUser'
 import { centreSocial, mediateque, structureEmployeuse } from '../structures'
-import { previewBranchAuthFallbacks } from '@app/web/auth/previewBranchAuthFallbacks'
 
 export const conseillerInscriptionMediateurId =
   'b119ef9d-5732-4429-8138-5452fe248497'

@@ -1,7 +1,7 @@
+import { previewBranchAuthFallbacks } from '@app/web/auth/previewBranchAuthFallbacks'
 import type { Prisma } from '@prisma/client'
 import { givenUser } from '../givenUser'
 import { structureEmployeuse } from '../structures'
-import { previewBranchAuthFallbacks } from '@app/web/auth/previewBranchAuthFallbacks'
 
 export const coordinateurInscriptionEmail =
   'coordinateur-inscription@coop-numerique.anct.gouv.fr'

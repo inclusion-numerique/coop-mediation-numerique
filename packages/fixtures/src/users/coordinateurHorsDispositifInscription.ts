@@ -1,5 +1,5 @@
-import { givenUser } from '../givenUser'
 import { previewBranchAuthFallbacks } from '@app/web/auth/previewBranchAuthFallbacks'
+import { givenUser } from '../givenUser'
 
 export const coordinateurHorsDispositifInscriptionEmail =
   'coordinateur-hors-dispositif-inscription@coop-numerique.anct.gouv.fr'
