@@ -213,6 +213,10 @@ const mergeMediateurs =
       where: { id: { in: sourceUser.mediateur.beneficiaires.map(toId) } },
       data: { mediateurId: targetUser.mediateur.id },
     })
+    await prisma.partageStatistiques.updateMany({
+      where: { mediateurId: sourceUser.mediateur.id },
+      data: { mediateurId: targetUser.mediateur.id },
+    })
     await mergeInvitationsRecues(prisma)(
       { email: sourceUser.email, mediateur: sourceUser.mediateur },
       { email: targetUser.email, mediateur: targetUser.mediateur },

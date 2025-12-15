@@ -1,6 +1,7 @@
 import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
 import { InvitationValidation } from '@app/web/equipe/InvitationValidation'
 import { InviterMembreValidation } from '@app/web/equipe/InviterMembreValidation'
+import { togglePartageStatistiques } from '@app/web/features/mediateurs/use-cases/partage-statistiques/db/togglePartageStatistiques'
 import { acceptInvitation } from '@app/web/mediateurs/acceptInvitation'
 import { addUserToTeam } from '@app/web/mediateurs/addUserToTeam'
 import { declineInvitation } from '@app/web/mediateurs/declineInvitation'
@@ -216,4 +217,22 @@ export const mediateursRouter = router({
         },
       })
     }),
+  shareStats: protectedProcedure.mutation(async ({ ctx: { user } }) => {
+    const stopwatch = createStopwatch()
+
+    if (!isMediateur(user)) throw forbiddenError('User is not a mediateur')
+
+    const result = await togglePartageStatistiques(user.mediateur.id)
+
+    addMutationLog({
+      userId: user?.id ?? null,
+      nom: 'SetMediateurVisibility',
+      duration: stopwatch.stop().duration,
+      data: {
+        email: user.email,
+      },
+    })
+
+    return result.active
+  }),
 })

@@ -1,13 +1,3 @@
-import {
-  getAccompagnementsCountByDay,
-  getAccompagnementsCountByMonth,
-} from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getAccompagnementsCountByPeriod'
-import {
-  getActivitesStats,
-  getActivitesStructuresStats,
-} from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getActivitesStats'
-import { getHasCrasV1 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getHasCrasV1'
-import { getTotalCountsStats } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getTotalCountsStats'
 import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFiltersOptionsForMediateur'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { prismaClient } from '@app/web/prismaClient'
@@ -17,7 +7,18 @@ import type {
   UserProfile,
   UserRdvAccount,
 } from '@app/web/utils/user'
+import {
+  getAccompagnementsCountByDay,
+  getAccompagnementsCountByMonth,
+} from './_queries/getAccompagnementsCountByPeriod'
+import {
+  getActivitesStats,
+  getActivitesStructuresStats,
+} from './_queries/getActivitesStats'
 import { getBeneficiaireStatsWithCommunes } from './_queries/getBeneficiaireStats'
+import { getHasCrasV1 } from './_queries/getHasCrasV1'
+import { getPartageStatistiquesId } from './_queries/getPartageStatistiquesId'
+import { getTotalCountsStats } from './_queries/getTotalCountsStats'
 
 export type MesStatistiquesGraphOptions = {
   fin?: Date
@@ -70,6 +71,7 @@ export const getMesStatistiquesPageData = async ({
     structures,
     totalCounts,
     hasCrasV1,
+    partageStatistiquesId,
   ] = await Promise.all([
     getAccompagnementsCountByDay({
       user,
@@ -94,6 +96,7 @@ export const getMesStatistiquesPageData = async ({
     getActivitesStructuresStats({ user, mediateurIds, activitesFilters }),
     getTotalCountsStats({ user, mediateurIds, activitesFilters }),
     getHasCrasV1({ user, mediateurIds, activitesFilters }),
+    getPartageStatistiquesId({ user }),
   ])
 
   const {
@@ -128,6 +131,7 @@ export const getMesStatistiquesPageData = async ({
     activiteSourceOptions,
     activiteDates,
     hasCrasV1,
+    partageStatistiquesId,
   }
 }
 
