@@ -8,7 +8,7 @@ export const StatistiquesGeneralesPrint = ({
   accompagnementsParJour,
 }: MesStatistiquesPageData) => (
   <>
-    <h2 className="fr-h3">Statistiques générales sur vos accompagnements</h2>
+    <h2 className="fr-h3">Statistiques générales</h2>
     <h3 className="fr-h5">Accompagnements et bénéficiaires</h3>
     <p>
       <strong>

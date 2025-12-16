@@ -2,10 +2,11 @@
 
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
+import { CaptureButton } from '@app/web/libs/statistiques/CaptureButton'
 import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { SegmentedControl } from '@codegouvfr/react-dsfr/SegmentedControl'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { AccompagnementBarChart } from '../_components/AccompagnementBarChart'
 
 export const StatistiquesGenerales = ({
@@ -17,17 +18,31 @@ export const StatistiquesGenerales = ({
   MesStatistiquesPageData,
   'accompagnementsParJour' | 'accompagnementsParMois' | 'totalCounts'
 >) => {
+  const captureRef = useRef<HTMLDivElement | null>(null)
   const [isAccompagnementCountByMonth, setIsAccompagnementCountByMonth] =
     useState(true)
 
   return (
-    <>
-      <h2 className="fr-h5 fr-text-mention--grey">
-        <span className="ri-line-chart-line fr-mr-1w" aria-hidden />
-        Statistiques générales{' '}
-        {wording === 'personnel' && 'sur vos accompagnements'}
-      </h2>
-      <div className="fr-grid-row fr-flex-gap-6v">
+    <div>
+      <div className="fr-flex fr-align-items-center fr-justify-content-space-between fr-mb-6v fr-no-print">
+        <h2 className="fr-h5 fr-text-mention--grey fr-mb-0">
+          <span className="ri-line-chart-line fr-mr-1w" aria-hidden />
+          Statistiques générales{' '}
+          {wording === 'personnel' && 'sur vos accompagnements'}
+        </h2>
+        <CaptureButton
+          captureRef={captureRef}
+          captureName="statistiques-generales"
+          title="Télécharger l’image des statistiques générales"
+          iconId="fr-icon-download-line"
+          size="small"
+          priority="tertiary no outline"
+        />
+      </div>
+      <div
+        ref={captureRef}
+        className="fr-grid-row fr-flex-gap-6v fr-background-default--grey fr-border-radius--16"
+      >
         <div className="fr-flex fr-direction-column fr-flex-gap-6v fr-col-xl-4 fr-col-12">
           <div className="fr-px-8v fr-py-6v fr-border-radius--16 fr-background-alt--brown-caramel fr-width-full">
             <div className="fr-flex fr-align-items-center fr-justify-content-space-between">
@@ -45,7 +60,7 @@ export const StatistiquesGenerales = ({
             <div className="fr-text--bold fr-text--sm fr-mb-0 fr-mt-1v">
               Accompagnement{sPluriel(totalCounts.accompagnements.total)}{' '}
               <Button
-                className="fr-px-2v"
+                className="fr-px-2v fr-no-print"
                 title="Plus d’information à propos des accompagnements"
                 priority="tertiary no outline"
                 size="small"
@@ -91,7 +106,7 @@ export const StatistiquesGenerales = ({
           </div>
           <div className="fr-px-8v fr-py-6v fr-border-radius--16 fr-background-alt--brown-caramel fr-flex-grow-1">
             <div className="fr-flex fr-align-items-center fr-justify-content-space-between">
-              <span className="fr-h2 fr-mb-0">
+              <span className="fr-h2 fr-mb-0 fr-text--nowrap">
                 {numberToString(totalCounts.beneficiaires.total)}
               </span>
               <span
@@ -144,7 +159,7 @@ export const StatistiquesGenerales = ({
             <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mb-1w">
               <h3 className="fr-text--lg fr-mb-0">Nombre d’accompagnements</h3>
               <Button
-                className="fr-px-1v fr-ml-1v"
+                className="fr-px-1v fr-ml-1v fr-no-print"
                 title="Plus d’information à propos du nombre d’accompagnements"
                 priority="tertiary no outline"
                 size="small"
@@ -200,6 +215,6 @@ export const StatistiquesGenerales = ({
           />
         </div>
       </div>
-    </>
+    </div>
   )
 }

@@ -36,7 +36,7 @@ export const StatistiqueAccompagnement = ({
         <Pictogram width={56} height={56} />
       </div>
       <div>
-        <div className="fr-flex fr-direction-row fr-align-items-baseline">
+        <div className="fr-flex fr-direction-row fr-align-items-baseline fr-text--nowrap">
           <span className="fr-h4 fr-mb-0">{numberToString(count ?? 0)}</span>
           <span className="fr-ml-2v fr-text--sm fr-mb-0 fr-text-mention--grey ">
             {numberToPercentage(proportion)}

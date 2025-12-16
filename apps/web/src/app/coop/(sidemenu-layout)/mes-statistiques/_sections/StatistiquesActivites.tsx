@@ -8,10 +8,11 @@ import type {
   ActivitesStructuresStats,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getActivitesStats'
 import type { TotalCountsStats } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getTotalCountsStats'
+import { CaptureButton } from '@app/web/libs/statistiques/CaptureButton'
 import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { SegmentedControl } from '@codegouvfr/react-dsfr/SegmentedControl'
-import { Fragment, useState } from 'react'
+import { Fragment, useRef, useState } from 'react'
 import { ProgressItemList } from '../_components/ProgressItemList'
 import { QuantifiedShareList } from '../_components/QuantifiedShareList'
 import { StatistiqueAccompagnement } from '../_components/StatistiqueAccompagnement'
@@ -49,6 +50,13 @@ export const StatistiquesActivites = ({
   totalCounts: TotalCountsStats
   isAdmin?: boolean
 }) => {
+  const captureTypesAccompagnementsRef = useRef<HTMLDivElement | null>(null)
+  const captureThematiquesAccompagnementsRef = useRef<HTMLDivElement | null>(
+    null,
+  )
+  const captureMaterielAccompagnementsRef = useRef<HTMLDivElement | null>(null)
+  const captureCreneauxAccompagnementsRef = useRef<HTMLDivElement | null>(null)
+
   const [accompagnementCategory, setAccompagnementCategory] =
     useState<AccompagnementCategory>('thematiques')
 
@@ -105,7 +113,20 @@ export const StatistiquesActivites = ({
           ? 'vos accompagnements'
           : 'les accompagnements'}
       </h2>
-      <div className="fr-background-alt--blue-france fr-px-8v fr-py-6v fr-mb-3w fr-border-radius--16 fr-grid-row fr-flex-gap-4v">
+      <div
+        ref={captureTypesAccompagnementsRef}
+        className="fr-background-alt--blue-france fr-px-8v fr-py-6v fr-mb-3w fr-border-radius--16 fr-grid-row fr-flex-gap-4v fr-position-relative"
+      >
+        <span className="fr-no-print fr-position-absolute fr-top-0 fr-right-0 fr-p-4v">
+          <CaptureButton
+            captureRef={captureTypesAccompagnementsRef}
+            captureName="types-accompagnements"
+            title="Télécharger l’image des types d’accompagnements"
+            iconId="fr-icon-download-line"
+            size="small"
+            priority="tertiary no outline"
+          />
+        </span>
         {activites.typeActivites.map(({ count, proportion, value }) => (
           <StatistiqueAccompagnement
             key={value}
@@ -127,41 +148,56 @@ export const StatistiquesActivites = ({
           </StatistiqueAccompagnement>
         ))}
       </div>
-      <div className="fr-border fr-p-4w fr-mb-3w fr-border-radius--16">
-        <SegmentedControl
-          className="fr-md-col fr-col-12 fr-ml-auto"
-          hideLegend
-          small
-          legend="Bascule entre les thématiques"
-          segments={[
-            {
-              label: 'Médiation numérique',
-              nativeInputProps: {
-                checked: accompagnementCategory === 'thematiques',
-                onChange: () => setAccompagnementCategory('thematiques'),
+      <div
+        className="fr-border fr-p-4w fr-mb-3w fr-border-radius--16 fr-background-default--grey fr-border-radius--16"
+        ref={captureThematiquesAccompagnementsRef}
+      >
+        <div className="fr-flex">
+          <SegmentedControl
+            className="fr-md-col fr-col-12 fr-ml-auto"
+            hideLegend
+            small
+            legend="Bascule entre les thématiques"
+            segments={[
+              {
+                label: 'Médiation numérique',
+                nativeInputProps: {
+                  checked: accompagnementCategory === 'thematiques',
+                  onChange: () => setAccompagnementCategory('thematiques'),
+                },
               },
-            },
-            {
-              label: 'Démarches administratives',
-              nativeInputProps: {
-                checked: accompagnementCategory === 'demarches',
-                onChange: () => setAccompagnementCategory('demarches'),
+              {
+                label: 'Démarches administratives',
+                nativeInputProps: {
+                  checked: accompagnementCategory === 'demarches',
+                  onChange: () => setAccompagnementCategory('demarches'),
+                },
               },
-            },
-            {
-              label: (
-                <>
-                  <span className="ri-price-tag-3-line" aria-hidden />
-                  &ensp;Tags spécifiques
-                </>
-              ),
-              nativeInputProps: {
-                checked: accompagnementCategory === 'tags',
-                onChange: () => setAccompagnementCategory('tags'),
+              {
+                label: (
+                  <>
+                    <span className="ri-price-tag-3-line" aria-hidden />
+                    &ensp;Tags spécifiques
+                  </>
+                ),
+                nativeInputProps: {
+                  checked: accompagnementCategory === 'tags',
+                  onChange: () => setAccompagnementCategory('tags'),
+                },
               },
-            },
-          ]}
-        />
+            ]}
+          />
+          <span className="fr-no-print">
+            <CaptureButton
+              captureRef={captureThematiquesAccompagnementsRef}
+              captureName="thematiques-accompagnements"
+              title="Télécharger l’image des thematiques d’accompagnements"
+              iconId="fr-icon-download-line"
+              size="small"
+              priority="tertiary no outline"
+            />
+          </span>
+        </div>
         <hr className="fr-separator-8v" />
         {accompagnementCategories.map(
           ({
@@ -177,9 +213,11 @@ export const StatistiquesActivites = ({
               <Fragment key={category}>
                 <div className="fr-flex fr-align-items-center fr-justify-content-space-between fr-mb-6v">
                   <div className="fr-mb-0 fr-flex fr-align-items-center">
-                    <h3 className="fr-text--lg fr-mb-0">{title}</h3>
+                    <h3 className="fr-text--lg fr-mb-0 fr-text--nowrap">
+                      {title}
+                    </h3>
                     <Button
-                      className="fr-px-1v fr-ml-1v"
+                      className="fr-px-1v fr-ml-1v fr-no-print"
                       title={`Plus d’information à propos des ${title.toLowerCase()}`}
                       priority="tertiary no outline"
                       size="small"
@@ -200,7 +238,7 @@ export const StatistiquesActivites = ({
                       {description}
                     </span>
                   </div>
-                  {actions && actions}
+                  <div className="fr-no-print">{actions && actions}</div>
                 </div>
                 <ProgressItemList
                   items={items}
@@ -211,12 +249,17 @@ export const StatistiquesActivites = ({
               </Fragment>
             ),
         )}
-        <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mt-10v fr-mb-3w">
+      </div>
+      <div
+        className="fr-border fr-p-4w fr-mb-3w fr-border-radius--16 fr-background-default--grey fr-border-radius--16 fr-position-relative"
+        ref={captureMaterielAccompagnementsRef}
+      >
+        <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mb-3w">
           <h3 className="fr-text--lg fr-mb-0">
             Matériel utilisé lors des accompagnements
           </h3>
           <Button
-            className="fr-px-1v fr-ml-1v"
+            className="fr-px-1v fr-ml-1v fr-no-print"
             title="Plus d’information à propos du matériel utilisé"
             priority="tertiary no outline"
             size="small"
@@ -235,6 +278,16 @@ export const StatistiquesActivites = ({
             noter&nbsp;: Plusieurs matériels ont pu être utilisés lors d’un même
             accompagnement.
           </span>
+          <span className="fr-no-print fr-position-absolute fr-top-0 fr-right-0 fr-p-4v">
+            <CaptureButton
+              captureRef={captureMaterielAccompagnementsRef}
+              captureName="meteriel-accompagnements"
+              title="Télécharger l’image des matériels utilisés lors des accompagnements"
+              iconId="fr-icon-download-line"
+              size="small"
+              priority="tertiary no outline"
+            />
+          </span>
         </div>
         <div className="fr-grid-row fr-grid-row--gutters fr-grid-row--center">
           {activites.materiels.map(({ value, label, count, proportion }) => (
@@ -249,7 +302,10 @@ export const StatistiquesActivites = ({
           ))}
         </div>
       </div>
-      <div className="fr-border fr-p-4w fr-border-radius--16">
+      <div
+        ref={captureCreneauxAccompagnementsRef}
+        className="fr-border fr-p-4w fr-background-default--grey fr-border-radius--16 fr-position-relative"
+      >
         <div className="fr-grid-row fr-grid-row--gutters">
           <div className="fr-col-xl-6 fr-col-12">
             <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mb-3w">
@@ -257,7 +313,7 @@ export const StatistiquesActivites = ({
                 Canaux des accompagnements
               </h3>
               <Button
-                className="fr-px-1v fr-ml-1v"
+                className="fr-px-1v fr-ml-1v fr-no-print"
                 title="Plus d’information à propos des canaux d’accompagnements"
                 priority="tertiary no outline"
                 size="small"
@@ -295,7 +351,7 @@ export const StatistiquesActivites = ({
             <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mb-3w">
               <h3 className="fr-text--lg fr-mb-0">Durée des accompagnements</h3>
               <Button
-                className="fr-px-1v fr-ml-1v"
+                className="fr-px-1v fr-ml-1v fr-no-print"
                 title="Plus d’information à propos des durées d’accompagnements"
                 priority="tertiary no outline"
                 size="small"
@@ -340,7 +396,7 @@ export const StatistiquesActivites = ({
                 Nombre d’accompagnements par lieux
               </h3>
               <Button
-                className="fr-px-1v fr-ml-1v"
+                className="fr-px-1v fr-ml-1v fr-no-print"
                 title="Plus d’information à propos du nombre d’accompagnements par lieux"
                 priority="tertiary no outline"
                 size="small"
@@ -380,6 +436,16 @@ export const StatistiquesActivites = ({
             />
           </>
         )}
+        <span className="fr-no-print fr-position-absolute fr-top-0 fr-right-0 fr-p-4v">
+          <CaptureButton
+            captureRef={captureCreneauxAccompagnementsRef}
+            captureName="creneaux-accompagnements"
+            title="Télécharger l’image des crénaux d’accompagnements"
+            iconId="fr-icon-download-line"
+            size="small"
+            priority="tertiary no outline"
+          />
+        </span>
       </div>
     </>
   )

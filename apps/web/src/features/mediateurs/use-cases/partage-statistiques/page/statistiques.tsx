@@ -55,7 +55,7 @@ export const StatistiquesPage = (
               <Link
                 target="_blank"
                 rel="noreferrer"
-                href=""
+                href="https://docs.numerique.gouv.fr/docs/ef6cbecf-1091-467d-8039-73dfec1d3acf/"
                 className="fr-link fr-text--xs"
               >
                 En savoir plus sur les statistiques
@@ -124,13 +124,16 @@ export const StatistiquesPage = (
           />
         )}
         <section className="fr-mb-6w fr-mt-6v">
-          <StatistiquesGenerales {...statistiquesProps} />
+          <StatistiquesGenerales {...statistiquesProps} wording="generique" />
         </section>
         <section className="fr-mb-6w">
-          <StatistiquesActivites {...statistiquesProps} />
+          <StatistiquesActivites {...statistiquesProps} wording="generique" />
         </section>
         <section className="fr-mb-6w">
-          <StatistiquesBeneficiaires {...statistiquesProps} />
+          <StatistiquesBeneficiaires
+            {...statistiquesProps}
+            wording="generique"
+          />
         </section>
       </main>
     </>
