@@ -22,10 +22,12 @@ const LayoutWithFooter = ({
   headerLogoOnly = false,
   title,
   preview,
+  showDivider = true,
 }: PropsWithChildren<{
   headerLogoOnly?: boolean
   title: ReactNode
   preview: ReactNode
+  showDivider?: boolean
 }>) => (
   <Mjml>
     <Head title={title} preview={preview} />
@@ -68,15 +70,17 @@ const LayoutWithFooter = ({
               </MjmlText>
             </MjmlColumn>
           </MjmlSection>
-          <MjmlSection padding="8px 15px">
-            <MjmlColumn>
-              <MjmlDivider
-                border-width="1px"
-                border-style="solid"
-                border-color="#DDD"
-              />
-            </MjmlColumn>
-          </MjmlSection>
+          {showDivider && (
+            <MjmlSection padding="8px 15px">
+              <MjmlColumn>
+                <MjmlDivider
+                  border-width="1px"
+                  border-style="solid"
+                  border-color="#DDD"
+                />
+              </MjmlColumn>
+            </MjmlSection>
+          )}
         </>
       )}
       {children}
