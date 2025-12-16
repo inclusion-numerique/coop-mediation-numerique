@@ -1,5 +1,3 @@
-'use client'
-
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import IconInSquare from '@app/web/components/IconInSquare'
 import InfoLabelValue from '@app/web/components/InfoLabelValue'
@@ -11,34 +9,28 @@ import {
 } from '@app/web/features/inscription/inscriptionFlow'
 import { allProfileInscriptionLabels } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import Button from '@codegouvfr/react-dsfr/Button'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import InscriptionCard from '../../components/InscriptionCard'
 
 const VerifierInformationsPage = ({ user }: { user: SessionUser }) => {
-  const router = useRouter()
+  const nextStep = getNextInscriptionStep({
+    currentStep: 'verifier-informations',
+    flowType: 'withoutDataspace',
+    profilInscription: user.profilInscription,
+    hasLieuxActivite: false,
+    isConseillerNumerique:
+      !!user.coordinateur?.conseillerNumeriqueId ||
+      !!user.mediateur?.conseillerNumerique,
+  })
 
-  const handleContinue = () => {
-    const nextStep = getNextInscriptionStep({
-      currentStep: 'verifier-informations',
-      flowType: 'withoutDataspace',
-      profilInscription: user.profilInscription,
-      hasLieuxActivite: false,
-      isConseillerNumerique:
-        !!user.coordinateur?.conseillerNumeriqueId ||
-        !!user.mediateur?.conseillerNumerique,
-    })
-
-    if (nextStep === 'lieux-activite') {
-      // Redirect to the structure-employeuse sub-step first
-      router.push('/inscription/lieux-activite/structure-employeuse')
-      return
-    }
-
-    if (nextStep) {
-      router.push(getStepPath(nextStep))
-    }
+  if (!nextStep) {
+    // Should never happen, here for type safety
+    throw new Error('No next step found for inscription')
   }
+
+  const nextStepPath =
+    nextStep === 'lieux-activite'
+      ? `${getStepPath('lieux-activite')}/structure-employeuse`
+      : getStepPath(nextStep)
 
   const profilLabel = user.profilInscription
     ? allProfileInscriptionLabels[user.profilInscription]
@@ -90,7 +82,12 @@ const VerifierInformationsPage = ({ user }: { user: SessionUser }) => {
       )}
       <hr className="fr-separator-12v" />
       <div className="fr-btns-group">
-        <Button type="button" priority="primary" onClick={handleContinue}>
+        <Button
+          priority="primary"
+          linkProps={{
+            href: nextStepPath,
+          }}
+        >
           Continuer
         </Button>
         <Button

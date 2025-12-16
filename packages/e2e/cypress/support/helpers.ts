@@ -13,3 +13,8 @@ export const createTestUser = () =>
     name: 'Jean Biche',
     emailVerified: new Date('2023-04-01'),
   }) satisfies CreateUserInput
+
+export const shouldBeOnCoopHomepage = () => {
+  cy.appUrlShouldBe(appUrl('/coop'))
+  cy.get('h1').should('contain', 'Bonjour')
+}

@@ -22,14 +22,8 @@ export type InscriptionFlowConfig = {
  */
 export const getInscriptionFlow = ({
   hasDataspaceData,
-  profilInscription,
-  lieuxActiviteRenseignes,
-  hasLieuxActivite,
 }: {
   hasDataspaceData: boolean
-  profilInscription: ProfilInscription | null
-  lieuxActiviteRenseignes: Date | null
-  hasLieuxActivite: boolean
 }): InscriptionFlowType => {
   if (hasDataspaceData) {
     return 'withDataspace'

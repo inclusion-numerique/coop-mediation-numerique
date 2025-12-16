@@ -43,8 +43,7 @@ export const givenUser = <T extends Partial<Prisma.UserCreateInput>>(
   const givenSlug = createSlug(givenName)
   const givenRole = role ?? 'User'
   const givenEmailVerified = emailVerified ?? new Date('2024-04-11')
-  const givenEmail =
-    email ?? `${givenSlug}@coop-mediation-numerique.anct.gouv.fr`
+  const givenEmail = email ?? `${givenSlug}@coop-numerique.anct.gouv.fr`
   const givenTimezone = timezone ?? 'Europe/Paris'
 
   return {

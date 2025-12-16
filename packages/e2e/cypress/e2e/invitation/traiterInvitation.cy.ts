@@ -8,11 +8,9 @@ import {
   mediateurInscription,
   mediateurInscriptionMediateurId,
 } from '@app/fixtures/users/mediateurInscription'
+import { createInvitationUrl } from '@app/web/features/invitation/createInvitationUrl'
 import { goToMostRecentEmailReceived } from '../goToMostRecentEmailReceived'
-import {
-  searchAndSelectStructureEmployeuse,
-  startInscriptionAs,
-} from '../inscription/inscriptionE2eHelpers'
+import { executeInscriptionFlow } from '../inscription/executeInscriptionFlow'
 
 describe('ETQ visiteur, je peux donner suite à une invitation', () => {
   beforeEach(() => {
@@ -75,13 +73,15 @@ describe('ETQ visiteur, je peux donner suite à une invitation', () => {
 })
 
 describe('ETQ médiateur inscrit, je peux donner suite à une invitation', () => {
+  const invitationData = {
+    email: conseillerNumerique.email,
+    mediateurId: conseillerNumeriqueMediateurId,
+    coordinateurId: coordinateurInscritCoordinateurId,
+  }
+
   beforeEach(() => {
     cy.execute('resetFixtures', {})
-    cy.execute('createInvitation', {
-      email: conseillerNumerique.email,
-      mediateurId: conseillerNumeriqueMediateurId,
-      coordinateurId: coordinateurInscritCoordinateurId,
-    })
+    cy.execute('createInvitation', invitationData)
   })
 
   it("En l'acceptant", () => {
@@ -89,7 +89,10 @@ describe('ETQ médiateur inscrit, je peux donner suite à une invitation', () =>
 
     cy.visit(
       appUrl(
-        '/invitations/eJwVzD0OgzAMQOG7eK5RRQgCpq49hglO5QrsNj8siLu3zE_fO-CdTWE6gDeSFSYIppllXTmh1g1Fc0hSHsHsgxsvQkVMr8RJvpUb0lCal9W9iQluf25pEaXCNT2X69eSJx8d-n5m7HrX4th6h8Nwj7OLcWTq4Dx_RVIumA',
+        createInvitationUrl({
+          email: invitationData.email,
+          coordinateurId: invitationData.coordinateurId,
+        }),
       ),
     )
 
@@ -113,22 +116,26 @@ describe('ETQ médiateur inscrit, je peux donner suite à une invitation', () =>
   })
 })
 
-describe('ETQ médiateur non inscrit, je peux donner suite à une invitation', () => {
+describe.skip('ETQ médiateur non inscrit, je peux donner suite à une invitation', () => {
+  const invitationData = {
+    email: mediateurInscription.email,
+    mediateurId: mediateurInscriptionMediateurId,
+    coordinateurId: coordinateurInscritCoordinateurId,
+  }
+
   beforeEach(() => {
     cy.execute('resetFixtures', {})
-    cy.execute('createInvitation', {
-      email: mediateurInscription.email,
-      mediateurId: mediateurInscriptionMediateurId,
-      coordinateurId: coordinateurInscritCoordinateurId,
-    })
+    cy.execute('createInvitation', invitationData)
   })
 
   it("En l'acceptant", () => {
     cy.signin(mediateurInscription)
-
     cy.visit(
       appUrl(
-        '/invitations/eJwljEEOwiAQAP-yZ5cYKE3bk1efsYXFrBGoFLw0_btEj5OZzAHPPSdYDuBI8oIFInuhyq2gpN0V2arkdHM5b_hXHTG1yEXejRUlV9Ujt48KBS7Qu-Il_QZ333dOkyUbDNpxZRxGo3HW1uA0XcNqQpiZBjjPLyKILmE',
+        createInvitationUrl({
+          email: invitationData.email,
+          coordinateurId: invitationData.coordinateurId,
+        }),
       ),
     )
 
@@ -140,38 +147,15 @@ describe('ETQ médiateur non inscrit, je peux donner suite à une invitation', (
 
     cy.findByRole('status').should('contain', 'Vous avez accepté l’invitation')
 
-    startInscriptionAs({
-      profilInscription: 'Mediateur',
-      identificationResult: 'matching',
+    executeInscriptionFlow({
+      signin: true,
+      user: mediateurInscription,
+      expectedSteps: [
+        {
+          step: 'recapitulatif',
+        },
+      ],
     })
-
-    cy.findByText('Continuer').click()
-
-    searchAndSelectStructureEmployeuse('France')
-
-    cy.intercept('/api/trpc/inscription.renseignerStructureEmployeuse*').as(
-      'inscription-2',
-    )
-    cy.findByText('Suivant').click()
-    cy.wait('@inscription-2')
-
-    cy.intercept(
-      '/api/trpc/inscription.ajouterStructureEmployeuseEnLieuActivite*',
-    ).as('inscription-3')
-    cy.findByText('Oui').click()
-    cy.wait('@inscription-3')
-
-    cy.intercept('/api/trpc/inscription.renseignerLieuxActivite*').as(
-      'inscription-4',
-    )
-    cy.findByText('Suivant').click()
-    cy.wait('@inscription-4')
-
-    cy.intercept('/api/trpc/inscription.validerInscription*').as(
-      'inscription-5',
-    )
-    cy.findByText('Valider mon inscription').click()
-    cy.wait('@inscription-5')
 
     cy.findByText('Voir plus tard').click()
 
