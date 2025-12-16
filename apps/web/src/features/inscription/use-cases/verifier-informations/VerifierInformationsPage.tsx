@@ -101,4 +101,4 @@ const VerifierInformationsPage = ({ user }: { user: SessionUser }) => {
   )
 }
 
-VerifierInformationsPage
+export default VerifierInformationsPage
