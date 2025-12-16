@@ -2,7 +2,6 @@ import type { SessionUser } from '@app/web/auth/sessionUser'
 import IconInSquare from '@app/web/components/IconInSquare'
 import InfoLabelValue from '@app/web/components/InfoLabelValue'
 import StructureCard from '@app/web/components/structure/StructureCard'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import {
   getNextInscriptionStep,
   getStepPath,
@@ -102,4 +101,4 @@ const VerifierInformationsPage = ({ user }: { user: SessionUser }) => {
   )
 }
 
-export default withTrpc(VerifierInformationsPage)
+VerifierInformationsPage
