@@ -29,6 +29,8 @@ const PartageStatistiques = ({ shareId }: { shareId?: string }) => {
           ? 'Lien de partage activé'
           : 'Lien de partage désactivé',
       })
+
+      if (!isActive) PartageStatistiquesModal.close()
     } catch {
       createToast({
         priority: 'error',
@@ -57,12 +59,23 @@ const PartageStatistiques = ({ shareId }: { shareId?: string }) => {
 
   return (
     <>
-      <Button
-        {...PartageStatistiquesModal.buttonProps}
-        title="Partage de mes statistiques"
-        priority="secondary"
-        iconId="fr-icon-link"
-      />
+      <div className="fr-position-relative">
+        <Button
+          {...PartageStatistiquesModal.buttonProps}
+          title={`${shared ? 'Desactiver' : 'Activer'} le partage de mes statistiques`}
+          priority="secondary"
+          iconId="fr-icon-link"
+        ></Button>
+        {shared && (
+          <div
+            aria-hidden={true}
+            className="fr-background-default--grey fr-position-absolute fr-top-0 fr-right-0 fr-icon fr-mr-n2v fr-mt-n2v fr-flex fr-align-items-center fr-border-radius--8"
+            style={{ height: '18px' }}
+          >
+            <span className="ri-checkbox-circle-fill fr-text-default--success" />
+          </div>
+        )}
+      </div>
       <PartageStatistiquesModal.Component title="Partager vos statistiques via un lien">
         <div className="fr-flex fr-flex-gap-6v fr-align-items-center fr-border fr-border-radius--4 fr-my-8v fr-px-6v fr-py-4v">
           {shared ? (

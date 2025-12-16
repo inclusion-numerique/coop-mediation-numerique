@@ -33,6 +33,8 @@ export const ExportStatistiques = ({
   exportListAccompagnements = true,
   exportStatistiques = true,
   publicExportId,
+  title = 'Exports des accompagnements',
+  emptyFilterMessage = 'Vous n’avez pas appliqué de filtre, tous les accompagnements seront exportés.',
 }: {
   filters: ActivitesFilters
   mediateursOptions: MediateurOption[]
@@ -46,6 +48,8 @@ export const ExportStatistiques = ({
   exportListAccompagnements?: boolean
   exportStatistiques?: boolean
   publicExportId?: string
+  title?: string
+  emptyFilterMessage?: string
 }) => {
   const exportXlsx = (exportPath: string, message: string) => {
     const searchParams = new URLSearchParams()
@@ -103,14 +107,14 @@ export const ExportStatistiques = ({
     <>
       <Button
         {...ExportStatistiquesModal.buttonProps}
-        title="Exports des accompagnements"
+        title={title}
         priority="secondary"
         iconId="fr-icon-download-line"
         iconPosition="right"
       >
         Exporter
       </Button>
-      <ExportStatistiquesModal.Component title="Exports des accompagnements">
+      <ExportStatistiquesModal.Component title={title}>
         {filterLabelsToDisplay.length > 0 ? (
           <div className="fr-my-6v">
             <p className="fr-mb-2v">
@@ -128,10 +132,7 @@ export const ExportStatistiques = ({
             </ul>
           </div>
         ) : (
-          <p className="fr-my-6v">
-            Vous n’avez pas appliqué de filtre, tous les accompagnements seront
-            exportés.
-          </p>
+          <p className="fr-my-6v">{emptyFilterMessage}</p>
         )}
         {exportListAccompagnements && (
           <>

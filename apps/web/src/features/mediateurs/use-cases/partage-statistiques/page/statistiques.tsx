@@ -91,6 +91,8 @@ export const StatistiquesPage = (
               activiteSourceOptions={activiteSourceOptions}
               exportListAccompagnements={false}
               publicExportId={shareId}
+              title="Export des statistiques"
+              emptyFilterMessage="Vous n’avez pas appliqué de filtre, l’intégralité des statistiques sera exportée."
             />
           </div>
         </div>
