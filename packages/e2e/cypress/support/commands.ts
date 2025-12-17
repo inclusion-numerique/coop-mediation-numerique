@@ -162,9 +162,12 @@ Cypress.Commands.add(
     })
   },
 )
-Cypress.Commands.add('appUrlShouldBe', (url: string, options) => {
-  cy.url().should('equal', appUrl(url), options)
-})
+Cypress.Commands.add(
+  'appUrlShouldBe',
+  (url: string, options?: { timeout?: number }) => {
+    cy.url(options).should('equal', appUrl(url))
+  },
+)
 
 Cypress.Commands.add('allowNextRedirectException', () => {
   Cypress.on('uncaught:exception', (error) => {

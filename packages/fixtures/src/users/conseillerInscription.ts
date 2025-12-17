@@ -19,24 +19,4 @@ export const conseillerInscription = givenUser({
   email: conseillerInscriptionEmail,
   role: 'User',
   siret: previewBranchAuthFallbacks.anctSiret,
-  mediateur: {
-    connectOrCreate: {
-      where: {
-        id: conseillerInscriptionMediateurId,
-      },
-      create: {
-        id: conseillerInscriptionMediateurId,
-        conseillerNumerique: {
-          connectOrCreate: {
-            where: {
-              id: conseillerInscriptionConseillerNumeriqueId,
-            },
-            create: {
-              id: conseillerInscriptionConseillerNumeriqueId,
-            },
-          },
-        },
-      },
-    },
-  },
 })

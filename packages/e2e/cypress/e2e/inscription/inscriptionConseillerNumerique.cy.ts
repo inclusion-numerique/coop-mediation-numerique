@@ -1,13 +1,13 @@
 import { executeInscriptionFlow } from '@app/e2e/e2e/inscription/executeInscriptionFlow'
-import { shouldBeOnCoopHomepage } from '@app/e2e/support/helpers'
 import { conseillerInscription } from '@app/fixtures/users/conseillerInscription'
+import { conseillerSansLieuInscription } from '@app/fixtures/users/conseillerSansLieuInscription'
 
-describe.skip('ETQ Conseiller numérique, je peux m’inscrire en suivant le bon parcours', () => {
+describe("ETQ Conseiller numérique, je peux m'inscrire en suivant le bon parcours", () => {
   beforeEach(() => {
     cy.execute('resetFixtures', {})
   })
 
-  it(`ETQ Conseiller numérique avec données sur le dataspace, je peux m’inscrire en tant que conseiller numérique`, () => {
+  it("ETQ Conseiller numérique avec lieux d'activité sur le dataspace, je vais directement au récapitulatif", () => {
     executeInscriptionFlow({
       signin: true,
       user: conseillerInscription,
@@ -16,12 +16,77 @@ describe.skip('ETQ Conseiller numérique, je peux m’inscrire en suivant le bon
       skipOnboarding: true,
       expectedSteps: [
         {
-          step: 'verifier-informations',
-          accept: true,
+          step: 'recapitulatif',
+          check: () => {
+            cy.contains('Récapitulatif de vos informations').should(
+              'be.visible',
+            )
+            cy.contains('Mes informations').should('be.visible')
+            cy.contains('Conseiller·ère numérique').should('be.visible')
+            cy.contains(conseillerInscription.name).should('be.visible')
+            cy.contains('Ma structure employeuse').should('be.visible')
+            // lieux activite imported from dataspace
+            cy.contains("Mes lieux d'activité").should('be.visible')
+            cy.contains('Valider mon inscription').should('be.visible')
+          },
         },
       ],
     })
+  })
 
-    shouldBeOnCoopHomepage()
+  it("ETQ Conseiller numérique sans lieux d'activité sur le dataspace, je dois renseigner mes lieux", () => {
+    executeInscriptionFlow({
+      signin: true,
+      user: conseillerSansLieuInscription,
+      expectSuccessToast: true,
+      expectOnboarding: 'mediateur',
+      skipOnboarding: true,
+      expectedSteps: [
+        {
+          step: 'verifier-informations',
+          accept: true,
+          check: () => {
+            cy.contains('Vérifiez vos informations').should('be.visible')
+            cy.contains('Mes informations').should('be.visible')
+            cy.contains('Conseiller·ère numérique').should('be.visible')
+            cy.contains(conseillerSansLieuInscription.name).should('be.visible')
+            cy.contains('Ma structure employeuse').should('be.visible')
+          },
+        },
+        {
+          step: 'lieux-activite',
+          structureEmployeuseIsLieuActivite: true,
+          check: () => {
+            cy.contains("Renseignez vos lieux d'activité").should('be.visible')
+            cy.contains(
+              "Est-ce que votre structure employeuse est également un de vos lieux d'activité",
+            ).should('be.visible')
+          },
+        },
+        {
+          step: 'lieux-activite',
+          check: () => {
+            cy.contains("Renseignez vos lieux d'activité").should('be.visible')
+            cy.contains('Rechercher par nom du lieu, adresse ou SIRET.').should(
+              'be.visible',
+            )
+          },
+        },
+        {
+          step: 'recapitulatif',
+          check: () => {
+            cy.contains('Récapitulatif de vos informations').should(
+              'be.visible',
+            )
+            cy.contains('Mes informations').should('be.visible')
+            cy.contains('Conseiller·ère numérique').should('be.visible')
+            cy.contains(conseillerSansLieuInscription.name).should('be.visible')
+            cy.contains('Ma structure employeuse').should('be.visible')
+            cy.contains("Mon lieu d'activité").should('be.visible')
+            cy.contains('Valider mon inscription').should('be.visible')
+          },
+        },
+      ],
+    })
   })
 })

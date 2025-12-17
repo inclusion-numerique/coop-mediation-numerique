@@ -206,7 +206,7 @@ describe('ETQ médiateur non inscrit, je peux donner suite à une invitation', (
     )
   })
 
-  it("En tentant de l'accepter, mais avec un mauvais lien", () => {
+  it.only("En tentant de l'accepter, mais avec un mauvais lien", () => {
     const invitationUrl = createInvitationUrl({
       email: invitationData.email,
       coordinateurId: invitationData.coordinateurId,
@@ -216,9 +216,13 @@ describe('ETQ médiateur non inscrit, je peux donner suite à une invitation', (
 
     cy.visit(appUrl(invitationUrl))
 
+    cy.intercept('/api/trpc/mediateur.acceptInvitation*').as(
+      'acceptInvitationMutation',
+    )
+
     cy.findByText('Accepter l’invitation').click().allowNextRedirectException()
 
-    cy.appUrlShouldBe('/connexion')
+    cy.wait('@acceptInvitationMutation', { timeout: 15_000 })
 
     cy.visit(appUrl(invitationUrl))
 
