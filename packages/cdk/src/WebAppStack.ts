@@ -216,6 +216,7 @@ export class WebAppStack extends TerraformStack {
           environmentVariables.SCALEWAY_GENERATIVE_API_SERVICE_URL.value,
         ALBERT_SERVICE_URL: environmentVariables.ALBERT_SERVICE_URL.value,
         SMTP_PORT: isMain ? smtpPort : '1025',
+        DATASPACE_API_MOCK: isMain ? '0' : '1',
       },
       secretEnvironmentVariables: {
         BREVO_API_KEY: isMain
