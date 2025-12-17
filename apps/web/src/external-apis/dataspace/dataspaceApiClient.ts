@@ -34,12 +34,20 @@ export type DataspaceContrat = {
   date_rupture: string | null
 }
 
+export type DataspaceStructureIds = {
+  coop: string | null
+  dataspace: number | null
+  pg_id: number | null
+  aidant_connect: string | null
+}
+
 export type DataspaceStructureEmployeuse = {
   nom: string
   siret: string
+  ids: DataspaceStructureIds | null
   contact: DataspaceContact | null
   adresse: DataspaceMediateurAdresse
-  contrats: DataspaceContrat[]
+  contrats: DataspaceContrat[] | null
 }
 
 export type DataspaceLieuActivite = {
@@ -135,7 +143,7 @@ export const getMediateurFromDataspaceApi = async ({
   url.searchParams.append('email', email.toLowerCase().trim())
 
   try {
-    const response = await axios.get<DataspaceMediateur>(url.toString(), {
+    const response = await axios.get<DataspaceMediateur[]>(url.toString(), {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${apiKey}`,
@@ -144,11 +152,11 @@ export const getMediateurFromDataspaceApi = async ({
 
     // Handle unexpected empty array response from Dataspace API
     // API returns [] instead of 404 when mediateur is not found
-    if (Array.isArray(response.data) && response.data.length === 0) {
+    if (!Array.isArray(response.data)) {
       return null
     }
 
-    return response.data
+    return response.data.at(0) ?? null
   } catch (error) {
     if (error instanceof AxiosError) {
       // 404 means mediateur not found - return null instead of error

@@ -5,7 +5,7 @@ import {
 } from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 
-describe.skip('dataspaceApiClient', () => {
+describe('dataspaceApiClient', () => {
   beforeAll(() => {
     if (ServerWebAppConfig.Dataspace.isMocked) {
       throw new Error(
@@ -14,113 +14,101 @@ describe.skip('dataspaceApiClient', () => {
     }
   })
 
-  describe('getMediateurFromDataspaceApi', () => {
-    it.only('should return null for a test email that does not exist', async () => {
-      const result = await getMediateurFromDataspaceApi({
-        email: 'nonexistent.test@coop-numerique.anct.gouv.fr',
-      })
-      console.log('result', result)
-
-      expect(isDataspaceApiNotFound(result)).toBe(true)
-      expect(result).toBeNull()
+  it('should return null for a test email that does not exist', async () => {
+    const result = await getMediateurFromDataspaceApi({
+      email: 'nonexistent.test@coop-numerique.anct.gouv.fr',
     })
 
-    it('should return conseiller_numerique mediateur data for patrick.morie@conseiller-numerique.fr', async () => {
-      const result = await getMediateurFromDataspaceApi({
-        email: 'patrick.morie@conseiller-numerique.fr',
-      })
+    expect(isDataspaceApiNotFound(result)).toBe(true)
+    expect(result).toBeNull()
+  })
 
-      // Verify it's not an error or null
-      expect(isDataspaceApiError(result)).toBe(false)
-      expect(isDataspaceApiNotFound(result)).toBe(false)
-      expect(result).not.toBeNull()
+  it('coordinateur - should return conseiller_numerique coordinateur data', async () => {
+    const result = await getMediateurFromDataspaceApi({
+      email: 'a.chretien@sommenumerique.fr',
+    })
 
-      // Type guard to access mediateur properties
-      if (result === null || isDataspaceApiError(result)) {
-        throw new Error('Expected mediateur data but got null or error')
-      }
+    // Verify it's not an error or null
+    expect(isDataspaceApiError(result)).toBe(false)
+    expect(isDataspaceApiNotFound(result)).toBe(false)
+    expect(result).not.toBeNull()
 
-      // Verify mediateur structure
-      expect(result).toEqual(
-        expect.objectContaining({
-          id: expect.any(Number),
-          is_coordinateur: expect.any(Boolean),
-          is_conseiller_numerique: expect.any(Boolean),
-          structures_employeuses: expect.any(Array),
-          lieux_activite: expect.any(Array),
-          conseillers_numeriques_coordonnes: expect.any(Array),
+    // Type guard to access mediateur properties
+    if (result === null || isDataspaceApiError(result)) {
+      throw new Error('Expected mediateur data but got null or error')
+    }
+
+    // Verify mediateur structure
+    expect(result).toEqual(
+      expect.objectContaining({
+        id: expect.any(Number),
+        is_coordinateur: true,
+        is_conseiller_numerique: true,
+        structures_employeuses: expect.any(Array),
+        lieux_activite: expect.any(Array),
+        conseillers_numeriques_coordonnes: expect.any(Array),
+      }),
+    )
+
+    expect(result.structures_employeuses.length).toBeGreaterThan(0)
+    expect(result.structures_employeuses[0]).toEqual(
+      expect.objectContaining({
+        nom: expect.any(String),
+        siret: expect.any(String),
+        ids: expect.objectContaining({
+          coop: expect.any(String),
+          dataspace: expect.any(Number),
+          pg_id: expect.any(Number),
         }),
-      )
+        adresse: expect.objectContaining({
+          nom_voie: expect.any(String),
+          code_insee: expect.any(String),
+          code_postal: expect.any(String),
+          nom_commune: expect.any(String),
+        }),
+      }),
+    )
 
-      // Verify this is a conseiller numerique
-      expect(result.is_conseiller_numerique).toBe(true)
+    expect(result.lieux_activite[0]).toEqual(
+      expect.objectContaining({
+        nom: expect.any(String),
+        siret: expect.any(String),
+        adresse: expect.objectContaining({
+          nom_voie: expect.any(String),
+          code_insee: expect.any(String),
+          code_postal: expect.any(String),
+          nom_commune: expect.any(String),
+          numero_voie: expect.any(Number),
+        }),
+      }),
+    )
+  })
 
-      // Verify structures_employeuses structure if present
-      if (result.structures_employeuses.length > 0) {
-        expect(result.structures_employeuses[0]).toEqual(
-          expect.objectContaining({
-            nom: expect.any(String),
-            siret: expect.any(String),
-            adresse: expect.objectContaining({
-              nom_voie: expect.any(String),
-              code_insee: expect.any(String),
-              code_postal: expect.any(String),
-              nom_commune: expect.any(String),
-              numero_voie: expect.any(Number),
-            }),
-            contrats: expect.any(Array),
-          }),
-        )
-      }
-
-      // Verify lieux_activite structure if present
-      if (result.lieux_activite.length > 0) {
-        expect(result.lieux_activite[0]).toEqual(
-          expect.objectContaining({
-            nom: expect.any(String),
-            siret: expect.any(String),
-            adresse: expect.objectContaining({
-              nom_voie: expect.any(String),
-              code_insee: expect.any(String),
-              code_postal: expect.any(String),
-              nom_commune: expect.any(String),
-              numero_voie: expect.any(Number),
-            }),
-          }),
-        )
-      }
+  it('conseiller numerique - should handle email case insensitivity', async () => {
+    const resultLowercase = await getMediateurFromDataspaceApi({
+      email: 'a.gibout@ai-stefi.fr',
     })
 
-    it('should handle email case insensitivity', async () => {
-      const resultLowercase = await getMediateurFromDataspaceApi({
-        email: 'patrick.morie@conseiller-numerique.fr',
-      })
-
-      const resultUppercase = await getMediateurFromDataspaceApi({
-        email: 'PATRICK.MORIE@CONSEILLER-NUMERIQUE.FR',
-      })
-
-      // Both should return the same result (or both should be valid mediateur data)
-      if (
-        resultLowercase !== null &&
-        !isDataspaceApiError(resultLowercase) &&
-        resultUppercase !== null &&
-        !isDataspaceApiError(resultUppercase)
-      ) {
-        expect(resultLowercase.id).toBe(resultUppercase.id)
-      }
+    const resultUppercase = await getMediateurFromDataspaceApi({
+      email: 'A.GIBOUT@AI-STEFI.FR',
     })
 
-    it.only('should handle email with leading/trailing spaces', async () => {
-      const result = await getMediateurFromDataspaceApi({
-        email: '  patrick.morie@conseiller-numerique.fr  ',
-      })
+    // Both should return the same result (or both should be valid mediateur data)
+    expect(resultLowercase).not.toBeNull()
+    expect(resultUppercase).not.toBeNull()
+    expect(isDataspaceApiError(resultLowercase)).toBe(false)
+    expect(isDataspaceApiError(resultUppercase)).toBe(false)
 
-      // This email likely doesn't exist in the real Dataspace API
-      // API returns [] which we convert to null
-      // If you want to test with a real email, replace this with an actual email from the Dataspace database
-      expect(isDataspaceApiNotFound(result)).toBe(true)
-      expect(result).toBeNull()
-    })
+    if (
+      isDataspaceApiError(resultLowercase) ||
+      isDataspaceApiError(resultUppercase)
+    ) {
+      throw new Error('Expected mediateur data but got error')
+    }
+
+    expect(resultLowercase?.is_conseiller_numerique).toBe(true)
+    expect(resultLowercase?.is_coordinateur).toBe(false)
+
+    expect(resultLowercase).toEqual(resultUppercase)
   })
 })
