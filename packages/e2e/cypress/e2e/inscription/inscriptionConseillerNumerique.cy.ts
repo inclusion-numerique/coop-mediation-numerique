@@ -17,6 +17,7 @@ describe("ETQ Conseiller numérique, je peux m'inscrire en suivant le bon parcou
       expectedSteps: [
         {
           step: 'recapitulatif',
+          acceptCgu: true,
           check: () => {
             cy.contains('Récapitulatif de vos informations').should(
               'be.visible',
@@ -26,7 +27,7 @@ describe("ETQ Conseiller numérique, je peux m'inscrire en suivant le bon parcou
             cy.contains(conseillerInscription.name).should('be.visible')
             cy.contains('Ma structure employeuse').should('be.visible')
             // lieux activite imported from dataspace
-            cy.contains("Mes lieux d'activité").should('be.visible')
+            cy.contains('Mes lieux d’activité').should('be.visible')
             cy.contains('Valider mon inscription').should('be.visible')
           },
         },
@@ -74,6 +75,7 @@ describe("ETQ Conseiller numérique, je peux m'inscrire en suivant le bon parcou
         },
         {
           step: 'recapitulatif',
+          acceptCgu: true,
           check: () => {
             cy.contains('Récapitulatif de vos informations').should(
               'be.visible',
@@ -82,7 +84,9 @@ describe("ETQ Conseiller numérique, je peux m'inscrire en suivant le bon parcou
             cy.contains('Conseiller·ère numérique').should('be.visible')
             cy.contains(conseillerSansLieuInscription.name).should('be.visible')
             cy.contains('Ma structure employeuse').should('be.visible')
-            cy.contains("Mon lieu d'activité").should('be.visible')
+
+            // We added structure employeuse as lieu activite
+            cy.contains('Mon lieu d’activité').should('be.visible')
             cy.contains('Valider mon inscription').should('be.visible')
           },
         },

@@ -27,6 +27,7 @@ export type InscriptionFlowE2eExpectedStep =
     }
   | {
       step: 'recapitulatif'
+      acceptCgu?: boolean // if undefined, it should not be existing on page, else check
       check?: () => void
     }
 
@@ -119,6 +120,14 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
   }
 
   if (step.step === 'recapitulatif') {
+    if (step.acceptCgu === undefined) {
+      cy.get('label').contains('J’ai lu et j’accepte').should('not.exist')
+    } else if (step.acceptCgu) {
+      cy.get('label').contains('J’ai lu et j’accepte').click()
+    } else {
+      cy.get('label').contains('J’ai lu et j’accepte') // should exist but do not click
+    }
+
     cy.appUrlShouldBe(getStepPath('recapitulatif'), {
       timeout: mutationAndNavigationTimeout,
     })
