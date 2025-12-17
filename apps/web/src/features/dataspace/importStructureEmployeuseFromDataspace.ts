@@ -109,7 +109,9 @@ export const importStructureEmployeuseFromDataspace = async ({
   })
 
   // Get the active or most recent contract
-  const contract = getActiveOrMostRecentContract(structureEmployeuse.contrats)
+  const contract = getActiveOrMostRecentContract(
+    structureEmployeuse.contrats ?? [],
+  )
 
   // Calculate dates from contract
   const creationDate = contract ? new Date(contract.date_debut) : new Date()
@@ -183,8 +185,8 @@ export const getPrimaryStructureEmployeuse = (
   }
 
   // Find structure with active contract
-  const withActiveContract = structuresEmployeuses.find((structure) =>
-    structure.contrats.some(isContractActive),
+  const withActiveContract = structuresEmployeuses.find(
+    (structure) => structure.contrats?.some(isContractActive) ?? false,
   )
 
   return withActiveContract ?? structuresEmployeuses[0]

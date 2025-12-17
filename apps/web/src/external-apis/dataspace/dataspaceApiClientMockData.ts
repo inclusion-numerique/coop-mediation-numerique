@@ -79,6 +79,12 @@ export const mockDataspaceContratTermine: DataspaceContrat = {
 export const mockDataspaceStructureEmployeuse: DataspaceStructureEmployeuse = {
   nom: 'Centre Social de Lyon',
   siret: '12345678901234',
+  ids: {
+    coop: '58ef4a83-b8b2-4253-958a-4e3348c9b6dc', // random uuid
+    dataspace: 789,
+    pg_id: 123,
+    aidant_connect: 'random-uuid',
+  },
   contact: mockDataspaceContact,
   adresse: mockDataspaceAdresse,
   contrats: [mockDataspaceContratCDI],
@@ -88,6 +94,12 @@ export const mockDataspaceStructureEmployeuseWithMultipleContrats: DataspaceStru
   {
     nom: 'Mairie de Paris',
     siret: '98765432109876',
+    ids: {
+      coop: '58ef4a83-b8b2-4253-958a-4e3348c9b6dc', // random uuid
+      dataspace: 789,
+      pg_id: 123,
+      aidant_connect: null,
+    },
     contact: mockDataspaceContactMinimal,
     adresse: mockDataspaceAdresseWithRepetition,
     contrats: [mockDataspaceContratCDD, mockDataspaceContratTermine],
@@ -97,6 +109,12 @@ export const mockDataspaceStructureEmployeuseWithoutContact: DataspaceStructureE
   {
     nom: 'Association Inclusion Numérique',
     siret: '11122233344455',
+    ids: {
+      coop: null,
+      dataspace: 789,
+      pg_id: 123,
+      aidant_connect: null,
+    },
     contact: null,
     adresse: mockDataspaceAdresse,
     contrats: [mockDataspaceContratCDD],
