@@ -15,6 +15,6 @@ export const createTestUser = () =>
   }) satisfies CreateUserInput
 
 export const shouldBeOnCoopHomepage = () => {
-  cy.appUrlShouldBe(appUrl('/coop'))
+  cy.appUrlShouldBe('/coop')
   cy.get('h1').should('contain', 'Bonjour')
 }
