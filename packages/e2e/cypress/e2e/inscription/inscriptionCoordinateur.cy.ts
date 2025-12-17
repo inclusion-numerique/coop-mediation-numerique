@@ -1,15 +1,15 @@
 import { executeInscriptionFlow } from '@app/e2e/e2e/inscription/executeInscriptionFlow'
-import { coordinateurInscription } from '@app/fixtures/users/coordinateurInscription'
+import { coordinateurHorsDispositifInscription } from '@app/fixtures/users/coordinateurHorsDispositifInscription'
 
-describe('ETQ Coordinateur conseiller numérique, je peux m’inscrire en suivant le bon parcours', () => {
+describe("ETQ Coordinateur hors dispositif, je peux m'inscrire en suivant le bon parcours", () => {
   beforeEach(() => {
     cy.execute('resetFixtures', {})
   })
 
-  it(`ETQ Coordinateur conseiller numérique, je peux m’inscrire en suivant le bon parcours`, () => {
+  it("ETQ Coordinateur hors dispositif, je peux m'inscrire en suivant le bon parcours", () => {
     executeInscriptionFlow({
       signin: true,
-      user: coordinateurInscription,
+      user: coordinateurHorsDispositifInscription,
       expectSuccessToast: true,
       expectOnboarding: 'coordinateur',
       skipOnboarding: true,
@@ -25,10 +25,12 @@ describe('ETQ Coordinateur conseiller numérique, je peux m’inscrire en suivan
               'be.visible',
             )
             cy.contains('Mes informations').should('be.visible')
-            cy.contains(coordinateurInscription.name).should('be.visible')
-            cy.contains('Mon équipe').should('be.visible')
+            cy.contains(coordinateurHorsDispositifInscription.name).should(
+              'be.visible',
+            )
+            // Coordinateur hors dispositif does not have Mon équipe section
+            cy.contains('Mon équipe').should('not.exist')
             cy.contains('Ma structure employeuse').should('be.visible')
-            cy.contains('Valider mon inscription').should('be.visible')
           },
         },
       ],

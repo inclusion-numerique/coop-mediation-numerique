@@ -32,6 +32,7 @@ export type InscriptionFlowE2eExpectedStep =
     }
 
 const mutationAndNavigationTimeout = 15_000
+const cguLabelMatch = /J’ai lu et j’accepte/
 
 const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
   if (step.step === 'choisir-role') {
@@ -46,7 +47,7 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
     cy.contains(profileInscriptionLabels[step.role]).click()
 
     if (step.acceptCgu) {
-      cy.get('label').contains('J’ai lu et j’accepte').click()
+      cy.findByRole('checkbox', { name: cguLabelMatch }).check({ force: true })
     }
 
     step.check?.()
@@ -121,11 +122,11 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
 
   if (step.step === 'recapitulatif') {
     if (step.acceptCgu === undefined) {
-      cy.get('label').contains('J’ai lu et j’accepte').should('not.exist')
+      cy.findByRole('checkbox', { name: cguLabelMatch }).should('not.exist')
     } else if (step.acceptCgu) {
-      cy.get('label').contains('J’ai lu et j’accepte').click()
+      cy.findByRole('checkbox', { name: cguLabelMatch }).check({ force: true })
     } else {
-      cy.get('label').contains('J’ai lu et j’accepte') // should exist but do not click
+      cy.findByRole('checkbox', { name: cguLabelMatch }).should('be.visible')
     }
 
     cy.appUrlShouldBe(getStepPath('recapitulatif'), {
