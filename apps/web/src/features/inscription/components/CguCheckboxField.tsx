@@ -14,7 +14,7 @@ const CguCheckboxField = <T extends FieldValues>({
     path={path}
     label={
       <>
-        J’ai lu et j'accepte les{' '}
+        J’ai lu et j’accepte les{' '}
         <a href="/cgu" className="fr-link" target="_blank">
           conditions générales d'utilisation du service
         </a>

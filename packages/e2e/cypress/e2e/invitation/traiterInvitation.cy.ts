@@ -13,18 +13,22 @@ import { goToMostRecentEmailReceived } from '../goToMostRecentEmailReceived'
 import { executeInscriptionFlow } from '../inscription/executeInscriptionFlow'
 
 describe('ETQ visiteur, je peux donner suite à une invitation', () => {
+  const invitationData = {
+    email: 'une-nouvelle-personne@coop-numerique.anct.gouv.fr',
+    coordinateurId: coordinateurInscritCoordinateurId,
+  }
   beforeEach(() => {
     cy.execute('resetFixtures', {})
-    cy.execute('createInvitation', {
-      email: 'leo@med.fr',
-      coordinateurId: coordinateurInscritCoordinateurId,
-    })
+    cy.execute('createInvitation', invitationData)
   })
 
   it("En l'acceptant", () => {
     cy.visit(
       appUrl(
-        '/invitations/eJwNyTEOgCAMAMC_dBZjwBJ0cvUZFdoEAzZBnYx_11vvgf3UA-YHuFIuMENhXSqnXhp0EFVbygddfLc1_RstIaE4g35jM3pnzWTRmRAG2ZzIxDTC-37U_xrV',
+        createInvitationUrl({
+          email: invitationData.email,
+          coordinateurId: coordinateurInscritCoordinateurId,
+        }),
       ),
     )
 
@@ -42,17 +46,12 @@ describe('ETQ visiteur, je peux donner suite à une invitation', () => {
     )
 
     goToMostRecentEmailReceived({
-      subjectInclude:
-        'leo@med.fr a accepté votre invitation à rejoindre votre équipe',
+      subjectInclude: `${invitationData.email} a accepté votre invitation à rejoindre votre équipe`,
     })
   })
 
   it('En la refusant', () => {
-    cy.visit(
-      appUrl(
-        '/invitations/eJwNyTEOgCAMAMC_dBZjwBJ0cvUZFdoEAzZBnYx_11vvgf3UA-YHuFIuMENhXSqnXhp0EFVbygddfLc1_RstIaE4g35jM3pnzWTRmRAG2ZzIxDTC-37U_xrV',
-      ),
-    )
+    cy.visit(appUrl(createInvitationUrl(invitationData)))
 
     cy.intercept('/api/trpc/mediateur.declineInvitation*').as('mutation')
 
@@ -66,8 +65,7 @@ describe('ETQ visiteur, je peux donner suite à une invitation', () => {
     )
 
     goToMostRecentEmailReceived({
-      subjectInclude:
-        'leo@med.fr a refusé l‘invitation à rejoindre votre équipe',
+      subjectInclude: `${invitationData.email} a refusé l‘invitation à rejoindre votre équipe`,
     })
   })
 })
@@ -116,7 +114,7 @@ describe('ETQ médiateur inscrit, je peux donner suite à une invitation', () =>
   })
 })
 
-describe.skip('ETQ médiateur non inscrit, je peux donner suite à une invitation', () => {
+describe('ETQ médiateur non inscrit, je peux donner suite à une invitation', () => {
   const invitationData = {
     email: mediateurInscription.email,
     mediateurId: mediateurInscriptionMediateurId,
@@ -150,14 +148,32 @@ describe.skip('ETQ médiateur non inscrit, je peux donner suite à une invitatio
     executeInscriptionFlow({
       signin: true,
       user: mediateurInscription,
+      expectSuccessToast: true,
+      expectOnboarding: 'mediateur',
+      skipOnboarding: true,
       expectedSteps: [
+        // quickly do the steps without any check() that are done in other cypress e2e inscription tests
+        {
+          step: 'choisir-role',
+          role: 'Mediateur',
+          acceptCgu: true,
+        },
+        {
+          step: 'verifier-informations',
+          accept: true,
+        },
+        {
+          step: 'lieux-activite',
+          structureEmployeuseIsLieuActivite: true,
+        },
+        {
+          step: 'lieux-activite',
+        },
         {
           step: 'recapitulatif',
         },
       ],
     })
-
-    cy.findByText('Voir plus tard').click()
 
     cy.visit(appUrl(`/coop/mes-equipes/${coordinateurInscritCoordinateurId}`))
 
@@ -177,7 +193,10 @@ describe.skip('ETQ médiateur non inscrit, je peux donner suite à une invitatio
 
     cy.visit(
       appUrl(
-        '/invitations/eJwljEEOwiAQAP-yZ5cYKE3bk1efsYXFrBGoFLw0_btEj5OZzAHPPSdYDuBI8oIFInuhyq2gpN0V2arkdHM5b_hXHTG1yEXejRUlV9Ujt48KBS7Qu-Il_QZ333dOkyUbDNpxZRxGo3HW1uA0XcNqQpiZBjjPLyKILmE',
+        createInvitationUrl({
+          email: invitationData.email,
+          coordinateurId: invitationData.coordinateurId,
+        }),
       ),
     )
 
@@ -188,21 +207,20 @@ describe.skip('ETQ médiateur non inscrit, je peux donner suite à une invitatio
   })
 
   it("En tentant de l'accepter, mais avec un mauvais lien", () => {
+    const invitationUrl = createInvitationUrl({
+      email: invitationData.email,
+      coordinateurId: invitationData.coordinateurId,
+    })
+
     cy.visit(appUrl('/invitations/error'))
 
-    cy.visit(
-      appUrl(
-        '/invitations/eJwljEEOwiAQAP-yZ5cYKE3bk1efsYXFrBGoFLw0_btEj5OZzAHPPSdYDuBI8oIFInuhyq2gpN0V2arkdHM5b_hXHTG1yEXejRUlV9Ujt48KBS7Qu-Il_QZ333dOkyUbDNpxZRxGo3HW1uA0XcNqQpiZBjjPLyKILmE',
-      ),
-    )
+    cy.visit(appUrl(invitationUrl))
 
     cy.findByText('Accepter l’invitation').click().allowNextRedirectException()
 
-    cy.visit(
-      appUrl(
-        '/invitations/eJwljEEOwiAQAP-yZ5cYKE3bk1efsYXFrBGoFLw0_btEj5OZzAHPPSdYDuBI8oIFInuhyq2gpN0V2arkdHM5b_hXHTG1yEXejRUlV9Ujt48KBS7Qu-Il_QZ333dOkyUbDNpxZRxGo3HW1uA0XcNqQpiZBjjPLyKILmE',
-      ),
-    )
+    cy.appUrlShouldBe('/connexion')
+
+    cy.visit(appUrl(invitationUrl))
 
     cy.get('h1').should('contain', 'Cette invitation n’est plus valide.')
   })

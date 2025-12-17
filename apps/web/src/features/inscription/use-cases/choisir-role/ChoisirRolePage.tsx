@@ -18,6 +18,7 @@ import {
   type ChoisirProfilEtAccepterCguData,
   ChoisirProfilEtAccepterCguValidation,
 } from '@app/web/features/utilisateurs/use-cases/registration/ChoisirProfilEtAccepterCguValidation'
+import { profileInscriptionLabels } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import { trpc } from '@app/web/trpc'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -27,7 +28,7 @@ import { useForm } from 'react-hook-form'
 
 const roleOptions: RichCardOption<'Mediateur' | 'Coordinateur'>[] = [
   {
-    label: 'Médiateur·rice numérique',
+    label: profileInscriptionLabels.Mediateur,
     hint: "Bénéficiez de fonctionnalités et d'outils utiles à votre pratique de la médiation numérique.",
     extra: {
       illustration: '/images/iconographie/profil-mediateur.svg',
@@ -35,7 +36,7 @@ const roleOptions: RichCardOption<'Mediateur' | 'Coordinateur'>[] = [
     value: 'Mediateur' as const,
   },
   {
-    label: 'Coordinateur·rice',
+    label: profileInscriptionLabels.Coordinateur,
     hint: 'Suivez les activités de médiation numérique de votre équipe.',
     extra: {
       illustration: '/images/iconographie/profil-coordinateur.svg',

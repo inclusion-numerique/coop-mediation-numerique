@@ -30,9 +30,13 @@ export type InscriptionFlowE2eExpectedStep =
       check?: () => void
     }
 
+const mutationAndNavigationTimeout = 15_000
+
 const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
   if (step.step === 'choisir-role') {
-    cy.appUrlShouldBe(appUrl(getStepPath('choisir-role')))
+    cy.appUrlShouldBe(getStepPath('choisir-role'), {
+      timeout: mutationAndNavigationTimeout,
+    })
 
     cy.intercept('/api/trpc/inscription.choisirProfilEtAccepterCgu*').as(
       'choisirProfilMutation',
@@ -41,20 +45,22 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
     cy.contains(profileInscriptionLabels[step.role]).click()
 
     if (step.acceptCgu) {
-      cy.contains('J’ai lu et j’accepte').click()
+      cy.get('label').contains('J’ai lu et j’accepte').click()
     }
 
     step.check?.()
 
     cy.get('button').contains('Continuer').click()
 
-    cy.wait('@choisirProfilMutation', { timeout: 15_000 })
+    cy.wait('@choisirProfilMutation', { timeout: mutationAndNavigationTimeout })
 
     return
   }
 
   if (step.step === 'verifier-informations') {
-    cy.appUrlShouldBe(appUrl(getStepPath('verifier-informations')))
+    cy.appUrlShouldBe(getStepPath('verifier-informations'), {
+      timeout: mutationAndNavigationTimeout,
+    })
     step.check?.()
     if (step.accept) {
       cy.contains('Continuer').click()
@@ -68,9 +74,9 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
     step.step === 'lieux-activite' &&
     'structureEmployeuseIsLieuActivite' in step
   ) {
-    cy.appUrlShouldBe(
-      appUrl(`${getStepPath('lieux-activite')}/structure-employeuse`),
-    )
+    cy.appUrlShouldBe(`${getStepPath('lieux-activite')}/structure-employeuse`, {
+      timeout: mutationAndNavigationTimeout,
+    })
 
     cy.intercept(
       '/api/trpc/inscription.ajouterStructureEmployeuseEnLieuActivite*',
@@ -83,7 +89,9 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
       cy.contains('Non').click()
     }
 
-    cy.wait('@ajouterStructureEmployeuseMutation', { timeout: 15_000 })
+    cy.wait('@ajouterStructureEmployeuseMutation', {
+      timeout: mutationAndNavigationTimeout,
+    })
 
     return
   }
@@ -91,7 +99,9 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
     step.step === 'lieux-activite' &&
     !('structureEmployeuseIsLieuActivite' in step)
   ) {
-    cy.appUrlShouldBe(appUrl(getStepPath('lieux-activite')))
+    cy.appUrlShouldBe(getStepPath('lieux-activite'), {
+      timeout: mutationAndNavigationTimeout,
+    })
 
     cy.intercept('/api/trpc/inscription.renseignerLieuxActivite*').as(
       'renseignerLieuxActiviteMutation',
@@ -99,15 +109,19 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
 
     step.check?.()
 
-    cy.contains('Continuer').click()
+    cy.contains('Suivant').click()
 
-    cy.wait('@renseignerLieuxActiviteMutation', { timeout: 15_000 })
+    cy.wait('@renseignerLieuxActiviteMutation', {
+      timeout: mutationAndNavigationTimeout,
+    })
 
     return
   }
 
   if (step.step === 'recapitulatif') {
-    cy.appUrlShouldBe(appUrl(getStepPath('recapitulatif')))
+    cy.appUrlShouldBe(getStepPath('recapitulatif'), {
+      timeout: mutationAndNavigationTimeout,
+    })
 
     cy.intercept('/api/trpc/inscription.validerInscription*').as(
       'validerInscriptionMutation',
@@ -116,7 +130,9 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
     step.check?.()
     cy.contains('Valider mon inscription').click()
 
-    cy.wait('@validerInscriptionMutation', { timeout: 15_000 })
+    cy.wait('@validerInscriptionMutation', {
+      timeout: mutationAndNavigationTimeout,
+    })
 
     return
   }
@@ -128,6 +144,9 @@ export const executeInscriptionFlow = ({
   signin,
   user,
   expectedSteps,
+  expectSuccessToast,
+  expectOnboarding,
+  skipOnboarding = false,
 }: {
   signin: boolean
   user: CreateUserInput
@@ -135,9 +154,12 @@ export const executeInscriptionFlow = ({
     InscriptionFlowE2eExpectedStep,
     ...InscriptionFlowE2eExpectedStep[],
   ]
+  expectSuccessToast: boolean
+  expectOnboarding?: 'none' | 'mediateur' | 'coordinateur'
+  skipOnboarding?: boolean
 }) => {
   if (signin) {
-    cy.createUserAndSignin(user)
+    cy.signin(user)
   }
 
   cy.visit(appUrl(getStepPath('initialize')))
@@ -145,6 +167,27 @@ export const executeInscriptionFlow = ({
   for (const step of expectedSteps) {
     handleStep(step)
   }
+  if (expectSuccessToast) {
+    cy.getToast(/Votre inscription a bien été validée/i).should('exist')
+  }
 
-  cy.appUrlShouldBe(appUrl('/coop'))
+  if (expectOnboarding) {
+    if (
+      expectOnboarding === 'mediateur' ||
+      expectOnboarding === 'coordinateur'
+    ) {
+      // Same onboarding landing for mediateur and coordinateur
+      cy.appUrlShouldBe('/en-savoir-plus', {
+        timeout: mutationAndNavigationTimeout,
+      })
+    } else {
+      cy.appUrlShouldBe('/coop', { timeout: mutationAndNavigationTimeout })
+    }
+  }
+
+  if (skipOnboarding) {
+    // find link with text "Voir plus tard"
+    cy.findByRole('link', { name: 'Voir plus tard' }).click()
+    cy.appUrlShouldBe('/coop', { timeout: mutationAndNavigationTimeout })
+  }
 }

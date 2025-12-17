@@ -11,6 +11,9 @@ describe.skip('ETQ Conseiller numérique, je peux m’inscrire en suivant le bon
     executeInscriptionFlow({
       signin: true,
       user: conseillerInscription,
+      expectSuccessToast: true,
+      expectOnboarding: 'mediateur',
+      skipOnboarding: true,
       expectedSteps: [
         {
           step: 'verifier-informations',

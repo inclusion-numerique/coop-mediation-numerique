@@ -39,7 +39,6 @@ export const getNextInscriptionStep = ({
   flowType,
   profilInscription,
   hasLieuxActivite,
-  isConseillerNumerique,
 }: {
   currentStep: InscriptionStep
   flowType: InscriptionFlowType
@@ -47,14 +46,6 @@ export const getNextInscriptionStep = ({
   hasLieuxActivite: boolean
   isConseillerNumerique: boolean
 }): InscriptionStep | null => {
-  console.log('GET NEXT STEP', {
-    currentStep,
-    flowType,
-    profilInscription,
-    hasLieuxActivite,
-    isConseillerNumerique,
-  })
-
   if (flowType === 'withoutDataspace') {
     switch (currentStep) {
       case 'initialize':

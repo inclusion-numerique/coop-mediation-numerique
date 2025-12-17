@@ -11,6 +11,9 @@ describe.skip('ETQ Coordinateur conseiller numérique, je peux m’inscrire en s
     executeInscriptionFlow({
       signin: true,
       user: coordinateurInscription,
+      expectSuccessToast: true,
+      expectOnboarding: 'coordinateur',
+      skipOnboarding: true,
       expectedSteps: [
         {
           step: 'recapitulatif',
