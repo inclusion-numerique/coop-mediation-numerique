@@ -30,7 +30,7 @@ export const StatistiqueMateriel = ({
         className={`${materielIcons[value].icon} ri-lg fr-line-height-1 fr-text-label--blue-france`}
       />
     </div>
-    <div className="fr-flex fr-flex-gap-2v fr-justify-content-center">
+    <div className="fr-flex fr-flex-gap-2v fr-justify-content-center fr-text--nowrap">
       <span className="fr-text--bold">{numberToString(count)}</span>
       <span className="fr-text-mention--grey">
         {numberToPercentage(proportion)}

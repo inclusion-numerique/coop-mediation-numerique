@@ -96,7 +96,6 @@ const Page = async (props: {
       </section>
       <section className="fr-mb-6w">
         <StatistiquesActivites
-          isAdmin
           wording="generique"
           totalCounts={totalCounts}
           activites={activites}

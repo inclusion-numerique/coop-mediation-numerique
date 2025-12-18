@@ -30,6 +30,11 @@ export const ExportStatistiques = ({
   tagsOptions,
   accompagnementsCount,
   activiteSourceOptions,
+  exportListAccompagnements = true,
+  exportStatistiques = true,
+  publicExportId,
+  title = 'Exports des accompagnements',
+  emptyFilterMessage = 'Vous n’avez pas appliqué de filtre, tous les accompagnements seront exportés.',
 }: {
   filters: ActivitesFilters
   mediateursOptions: MediateurOption[]
@@ -40,6 +45,11 @@ export const ExportStatistiques = ({
   tagsOptions: { id: string; nom: string }[]
   accompagnementsCount: number
   activiteSourceOptions: SelectOption[]
+  exportListAccompagnements?: boolean
+  exportStatistiques?: boolean
+  publicExportId?: string
+  title?: string
+  emptyFilterMessage?: string
 }) => {
   const exportXlsx = (exportPath: string, message: string) => {
     const searchParams = new URLSearchParams()
@@ -64,13 +74,13 @@ export const ExportStatistiques = ({
 
   const onExportAccompagnementsXlsx = () =>
     exportXlsx(
-      '/coop/mes-activites/export',
+      `/coop/mes-activites/export/${publicExportId}`,
       `Le téléchargement de vos ${accompagnementsCount} accompagnements est en cours.`,
     )
 
   const onExportStatistiquesXlsx = () =>
     exportXlsx(
-      '/coop/mes-statistiques/export',
+      `/coop/mes-statistiques/export/${publicExportId}`,
       'Le téléchargement de vos statistiques est en cours.',
     )
 
@@ -97,14 +107,14 @@ export const ExportStatistiques = ({
     <>
       <Button
         {...ExportStatistiquesModal.buttonProps}
-        title="Exports de mes accompagnements"
+        title={title}
         priority="secondary"
         iconId="fr-icon-download-line"
         iconPosition="right"
       >
         Exporter
       </Button>
-      <ExportStatistiquesModal.Component title="Exports de mes accompagnements">
+      <ExportStatistiquesModal.Component title={title}>
         {filterLabelsToDisplay.length > 0 ? (
           <div className="fr-my-6v">
             <p className="fr-mb-2v">
@@ -122,64 +132,67 @@ export const ExportStatistiques = ({
             </ul>
           </div>
         ) : (
-          <p className="fr-my-6v">
-            Vous n’avez pas appliqué de filtre, tous vos accompagnements seront
-            exportés.
-          </p>
+          <p className="fr-my-6v">{emptyFilterMessage}</p>
         )}
-        <p className="fr-text-label--blue-france fr-text--sm">
-          <strong>{accompagnementsCount}</strong> accompagnements prêt à être
-          exportés
-        </p>
-        <div className="fr-border fr-py-4v fr-px-6v fr-flex fr-align-items-center fr-flex-gap-4v fr-flex-grow-1 fr-mt-4v fr-border-radius--8">
-          <div
-            className="fr-background-alt--blue-france fr-p-3v fr-border-radius--8 fr-flex"
-            aria-hidden="true"
-          >
-            <div className="fr-icon-table-line ri-lg fr-line-height-1 fr-text-label--blue-france"></div>
+        {exportListAccompagnements && (
+          <>
+            <p className="fr-text-label--blue-france fr-text--sm">
+              <strong>{accompagnementsCount}</strong> accompagnements prêt à
+              être exportés
+            </p>
+            <div className="fr-border fr-py-4v fr-px-6v fr-flex fr-align-items-center fr-flex-gap-4v fr-flex-grow-1 fr-mt-4v fr-border-radius--8">
+              <div
+                className="fr-background-alt--blue-france fr-p-3v fr-border-radius--8 fr-flex"
+                aria-hidden="true"
+              >
+                <div className="fr-icon-table-line ri-lg fr-line-height-1 fr-text-label--blue-france"></div>
+              </div>
+              <div className="fr-flex fr-align-items-center fr-justify-content-start fr-text--medium fr-mb-0 fr-flex-grow-1">
+                Liste des accompagnements
+              </div>
+              <Button
+                title="Telécharger liste des accompagnements au format xlsx"
+                priority="tertiary no outline"
+                iconId="fr-icon-download-line"
+                iconPosition="right"
+                onClick={onExportAccompagnementsXlsx}
+              >
+                Tableur (xlsx)
+              </Button>
+            </div>
+          </>
+        )}
+        {exportStatistiques && (
+          <div className="fr-border fr-py-4v fr-px-6v fr-flex fr-align-items-center fr-flex-gap-4v fr-flex-grow-1 fr-mt-4v fr-border-radius--8">
+            <div
+              className="fr-background-alt--blue-france fr-p-3v fr-border-radius--8 fr-flex"
+              aria-hidden="true"
+            >
+              <div className="fr-icon-chat-poll-fill ri-lg fr-line-height-1 fr-text-label--blue-france"></div>
+            </div>
+            <div className="fr-flex fr-align-items-center fr-justify-content-start fr-text--medium fr-mb-0 fr-flex-grow-1">
+              Statistiques
+            </div>
+            <Button
+              title="Telécharger les statistiques d’accompagnement au format PDF"
+              priority="tertiary no outline"
+              iconId="fr-icon-download-line"
+              iconPosition="right"
+              onClick={onExportStatistiquesPdf}
+            >
+              PDF
+            </Button>
+            <Button
+              title="Telécharger les statistiques d’accompagnement au format xlsx"
+              priority="tertiary no outline"
+              iconId="fr-icon-download-line"
+              iconPosition="right"
+              onClick={onExportStatistiquesXlsx}
+            >
+              Tableur (xlsx)
+            </Button>
           </div>
-          <div className="fr-flex fr-align-items-center fr-justify-content-start fr-text--medium fr-mb-0 fr-flex-grow-1">
-            Liste des accompagnements
-          </div>
-          <Button
-            title="Telécharger liste des accompagnements au format xlsx"
-            priority="tertiary no outline"
-            iconId="fr-icon-download-line"
-            iconPosition="right"
-            onClick={onExportAccompagnementsXlsx}
-          >
-            Tableur (xlsx)
-          </Button>
-        </div>
-        <div className="fr-border fr-py-4v fr-px-6v fr-flex fr-align-items-center fr-flex-gap-4v fr-flex-grow-1 fr-mt-4v fr-border-radius--8">
-          <div
-            className="fr-background-alt--blue-france fr-p-3v fr-border-radius--8 fr-flex"
-            aria-hidden="true"
-          >
-            <div className="fr-icon-chat-poll-fill ri-lg fr-line-height-1 fr-text-label--blue-france"></div>
-          </div>
-          <div className="fr-flex fr-align-items-center fr-justify-content-start fr-text--medium fr-mb-0 fr-flex-grow-1">
-            Statistiques
-          </div>
-          <Button
-            title="Telécharger les statistiques d’accompagnement au format PDF"
-            priority="tertiary no outline"
-            iconId="fr-icon-download-line"
-            iconPosition="right"
-            onClick={onExportStatistiquesPdf}
-          >
-            PDF
-          </Button>
-          <Button
-            title="Telécharger les statistiques d’accompagnement au format xlsx"
-            priority="tertiary no outline"
-            iconId="fr-icon-download-line"
-            iconPosition="right"
-            onClick={onExportStatistiquesXlsx}
-          >
-            Tableur (xlsx)
-          </Button>
-        </div>
+        )}
       </ExportStatistiquesModal.Component>
     </>
   )

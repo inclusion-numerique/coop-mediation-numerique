@@ -173,6 +173,7 @@ const emptyData: MesStatistiquesPageData = {
   hasCrasV1: {
     hasCrasV1: false,
   },
+  partageStatistiquesId: undefined,
 }
 
 const createExpectedData = (
