@@ -42,13 +42,13 @@ export const StatistiquesActivites = ({
   structures,
   totalCounts,
   wording = 'personnel',
-  isAdmin = false,
+  canManageTags = false,
 }: {
   wording?: 'personnel' | 'generique'
   activites: ActivitesStats
   structures?: ActivitesStructuresStats
   totalCounts: TotalCountsStats
-  isAdmin?: boolean
+  canManageTags?: boolean
 }) => {
   const captureTypesAccompagnementsRef = useRef<HTMLDivElement | null>(null)
   const captureThematiquesAccompagnementsRef = useRef<HTMLDivElement | null>(
@@ -87,9 +87,8 @@ export const StatistiquesActivites = ({
       items: activites.tags.sort(desc),
       colors: tagsColor,
       maxProportion: activites.tags.reduce(toMaxProportion, 0),
-      ...(isAdmin
-        ? {}
-        : {
+      ...(canManageTags
+        ? {
             actions: (
               <Button
                 priority="tertiary no outline"
@@ -100,7 +99,8 @@ export const StatistiquesActivites = ({
                 Gérer mes tags
               </Button>
             ),
-          }),
+          }
+        : {}),
     },
   ]
 
