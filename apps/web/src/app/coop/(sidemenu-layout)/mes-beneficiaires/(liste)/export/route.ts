@@ -31,7 +31,7 @@ export const GET = async (request: NextRequest) => {
 
   const beneficiairesWorksheetInput = await searchBeneficiaires({
     mediateurId: user.mediateur.id,
-    searchParams: { ...filters, page: '1', pageSize: 10000 },
+    searchParams: { ...filters, page: '1', lignes: '10000' },
   })
 
   const workbook = buildBeneficiairesWorksheet({
