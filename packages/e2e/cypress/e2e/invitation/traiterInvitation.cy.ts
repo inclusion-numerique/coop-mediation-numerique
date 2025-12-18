@@ -171,6 +171,7 @@ describe('ETQ médiateur non inscrit, je peux donner suite à une invitation', (
         },
         {
           step: 'recapitulatif',
+          conseillerNumeriqueRoleNotice: 'none',
         },
       ],
     })
