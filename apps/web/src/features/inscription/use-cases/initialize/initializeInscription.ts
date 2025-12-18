@@ -36,8 +36,6 @@ export const initializeInscription = async ({
     console.error('Dataspace API error:', dataspaceResult.error.message)
   }
 
-  console.log('DATASPACE RESULT', dataspaceResult)
-
   // If found in Dataspace (and not an error)
   if (
     dataspaceResult &&
@@ -148,9 +146,6 @@ export const initializeInscription = async ({
       isConseillerNumerique: dataspaceData.is_conseiller_numerique,
     })
 
-    console.log('USER DURING INITIALIZATION WITH DATA SPACE', updatedUser)
-    console.log('NEXT STEP WITH DATA SPACE', nextStep)
-
     return {
       nextStepPath: nextStep ? getStepPath(nextStep) : null,
     }
@@ -194,10 +189,6 @@ export const initializeInscription = async ({
     hasLieuxActivite: false,
     isConseillerNumerique: false,
   })
-  console.log('USER DURING INITIALIZATION WITHOUT DATA SPACE', user)
-  console.log('EMPLOIS WITHOUT DATA SPACE', user?.emplois)
-  console.log('NEXT STEP WITHOUT DATA SPACE', nextStep)
-
   return {
     nextStepPath: nextStep ? getStepPath(nextStep) : null,
   }
