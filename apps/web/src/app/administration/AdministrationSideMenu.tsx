@@ -28,21 +28,6 @@ const AdministrationSideMenu = () => {
       text: (
         <>
           <span
-            className="fr-icon-archive-line ri-xl fr-mr-1w fr-text--regular"
-            aria-hidden
-          />
-          Conseillers V1
-        </>
-      ),
-      linkProps: {
-        href: '/administration/conseillers-v1',
-      },
-      isActive: pathname?.startsWith('/administration/conseillers-v1'),
-    },
-    {
-      text: (
-        <>
-          <span
             className="fr-icon-home-4-line ri-xl fr-mr-1w fr-text--regular"
             aria-hidden
           />
@@ -92,6 +77,21 @@ const AdministrationSideMenu = () => {
         href: '/administration/statistiques',
       },
       isActive: pathname?.startsWith('/administration/statistiques'),
+    },
+    {
+      text: (
+        <>
+          <span
+            className="ri-database-2-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
+          />
+          Dataspace
+        </>
+      ),
+      linkProps: {
+        href: '/administration/dataspace',
+      },
+      isActive: pathname?.startsWith('/administration/dataspace'),
     },
     {
       text: (

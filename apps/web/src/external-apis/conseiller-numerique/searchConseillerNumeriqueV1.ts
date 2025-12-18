@@ -2,16 +2,12 @@ import {
   ConseillerNumeriqueV1Document,
   cleanConseillerNumeriqueV1Document,
 } from '@app/web/external-apis/conseiller-numerique/ConseillerNumeriqueV1Document'
-import {
-  conseillerNumeriqueMongoCollection,
-  objectIdFromString,
-} from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
+import { conseillerNumeriqueMongoCollection } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
 import { getActiveMiseEnRelation } from '@app/web/external-apis/conseiller-numerique/getActiveMiseEnRelation'
 import {
   MiseEnRelationConseillerNumeriqueV1MinimalProjection,
   MiseEnRelationV1MinimalProjection,
 } from '@app/web/external-apis/conseiller-numerique/MiseEnRelationConseillerNumeriqueV1'
-import escapeStringRegexp from 'escape-string-regexp'
 import { Filter, ObjectId } from 'mongodb'
 
 export type FindConseillerNumeriqueV1Input =
@@ -126,64 +122,6 @@ export const findConseillerNumeriqueV1 = async (
         permanences: permanenceDocuments,
       }
     : null
-}
-
-const mongoRegex = (value: string) => ({
-  // escape value so it is valid regex
-  // e.g. { $regex: 'ic.bliaux@ville-draguignan.fr', $options: 'i' }
-  $regex: escapeStringRegexp(value),
-  $options: 'i',
-})
-
-export const searchConseillerNumeriqueV1 = async ({
-  recherche,
-}: {
-  recherche: string
-}) => {
-  const conseillerCollection =
-    await conseillerNumeriqueMongoCollection('conseillers')
-
-  const rechercheParts = recherche.trim().toLowerCase().split(' ')
-  if (rechercheParts.length === 0) {
-    return []
-  }
-
-  const filter = {
-    $and: rechercheParts.map((part) => {
-      const regex = mongoRegex(part)
-
-      // Check if it is a valid mongo id
-      const searchId = objectIdFromString(part)
-
-      if (searchId) {
-        return {
-          _id: searchId,
-        }
-      }
-
-      return {
-        $or: [
-          { nom: regex },
-          { prenom: regex },
-          { nomCommune: regex },
-          {
-            email: regex,
-          },
-          {
-            emailPro: regex,
-          },
-          {
-            'emailCN.address': regex,
-          },
-        ],
-      }
-    }),
-  }
-
-  // Mongodb select but only the fields we need
-  const conseillers = await conseillerCollection.find(filter).toArray()
-
-  return conseillers.map(cleanConseillerNumeriqueV1Document)
 }
 
 export type FindConseillerNumeriqueV1Result = Awaited<
