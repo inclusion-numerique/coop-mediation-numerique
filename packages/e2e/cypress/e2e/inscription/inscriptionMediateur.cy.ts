@@ -93,6 +93,7 @@ describe("ETQ médiateur, je peux m'inscrire en suivant le bon parcours", () => 
         },
         {
           step: 'recapitulatif',
+          conseillerNumeriqueRoleNotice: 'none',
           check: () => {
             cy.contains('Récapitulatif de vos informations').should(
               'be.visible',

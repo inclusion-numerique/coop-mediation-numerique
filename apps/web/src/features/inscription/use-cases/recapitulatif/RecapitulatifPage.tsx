@@ -11,7 +11,6 @@ import ValiderInscriptionForm from '@app/web/features/inscription/use-cases/reca
 import {
   allProfileInscriptionLabels,
   computeUserProfile,
-  profileInscriptionConseillerNumeriqueLabels,
 } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
@@ -43,9 +42,7 @@ const RecapitulatifPage = ({
   >
     {conseillerNumeriqueRole ? (
       <ConseillerNumeriqueRoleNotice
-        conseillerNumeriqueRole={profileInscriptionConseillerNumeriqueLabels[
-          conseillerNumeriqueRole
-        ].toLowerCase()}
+        conseillerNumeriqueRole={conseillerNumeriqueRole}
       />
     ) : null}
     <div className="fr-flex fr-align-items-center fr-flex-gap-3v fr-mt-12v">

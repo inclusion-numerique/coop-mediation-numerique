@@ -39,6 +39,7 @@ export const getNextInscriptionStep = ({
   flowType,
   profilInscription,
   hasLieuxActivite,
+  isConseillerNumerique,
 }: {
   currentStep: InscriptionStep
   flowType: InscriptionFlowType
@@ -46,7 +47,7 @@ export const getNextInscriptionStep = ({
   hasLieuxActivite: boolean
   isConseillerNumerique: boolean
 }): InscriptionStep | null => {
-  if (flowType === 'withoutDataspace') {
+  if (flowType === 'withoutDataspace' || !isConseillerNumerique) {
     switch (currentStep) {
       case 'initialize':
         return 'choisir-role'

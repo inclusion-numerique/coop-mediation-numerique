@@ -22,7 +22,7 @@ export const getProfileFromDataspace = ({
 
   // User is only coordinateur (coordinating conseillers numériques)
   if (dataspaceData.is_coordinateur) {
-    return 'CoordinateurConseillerNumerique'
+    return 'Coordinateur'
   }
 
   // User is conseiller numérique

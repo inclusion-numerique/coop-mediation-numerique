@@ -17,6 +17,7 @@ describe("ETQ Conseiller numérique, je peux m'inscrire en suivant le bon parcou
       expectedSteps: [
         {
           step: 'recapitulatif',
+          conseillerNumeriqueRoleNotice: 'conseiller-numerique',
           acceptCgu: true,
           check: () => {
             cy.contains('Récapitulatif de vos informations').should(
@@ -76,6 +77,7 @@ describe("ETQ Conseiller numérique, je peux m'inscrire en suivant le bon parcou
         {
           step: 'recapitulatif',
           acceptCgu: true,
+          conseillerNumeriqueRoleNotice: 'conseiller-numerique',
           check: () => {
             cy.contains('Récapitulatif de vos informations').should(
               'be.visible',

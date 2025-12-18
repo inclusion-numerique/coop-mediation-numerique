@@ -15,13 +15,21 @@ describe("ETQ Coordinateur hors dispositif, je peux m'inscrire en suivant le bon
       skipOnboarding: true,
       expectedSteps: [
         {
-          step: 'recapitulatif',
+          step: 'choisir-role',
+          role: 'Coordinateur',
           acceptCgu: true,
           check: () => {
+            cy.contains(
+              'Inscription à La Coop de la médiation numérique',
+            ).should('be.visible')
+          },
+        },
+        {
+          step: 'recapitulatif',
+          acceptCgu: true,
+          conseillerNumeriqueRoleNotice: 'none',
+          check: () => {
             cy.contains('Récapitulatif de vos informations').should(
-              'be.visible',
-            )
-            cy.contains('coordinateur·rice de conseillers numériques').should(
               'be.visible',
             )
             cy.contains('Mes informations').should('be.visible')

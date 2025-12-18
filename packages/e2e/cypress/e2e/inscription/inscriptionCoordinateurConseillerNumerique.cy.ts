@@ -16,6 +16,7 @@ describe('ETQ Coordinateur conseiller numérique, je peux m’inscrire en suivan
       expectedSteps: [
         {
           step: 'recapitulatif',
+          conseillerNumeriqueRoleNotice: 'coordinateur-conseiller-numerique',
           acceptCgu: true,
           check: () => {
             cy.contains('Récapitulatif de vos informations').should(

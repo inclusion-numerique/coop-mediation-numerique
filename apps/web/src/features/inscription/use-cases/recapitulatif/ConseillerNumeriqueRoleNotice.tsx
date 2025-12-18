@@ -1,3 +1,7 @@
+import {
+  lowerCaseProfileInscriptionLabels,
+  type ProfileInscriptionConseillerNumeriqueType,
+} from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import classNames from 'classnames'
 import Link from 'next/link'
 import React from 'react'
@@ -6,7 +10,7 @@ const ConseillerNumeriqueRoleNotice = ({
   conseillerNumeriqueRole,
   className,
 }: {
-  conseillerNumeriqueRole: string
+  conseillerNumeriqueRole: ProfileInscriptionConseillerNumeriqueType
   className?: string
 }) => (
   <div
@@ -22,7 +26,8 @@ const ConseillerNumeriqueRoleNotice = ({
     />
     <div>
       <p className="fr-text--bold fr-mb-0">
-        Vous avez été identifié en tant que {conseillerNumeriqueRole}
+        Vous avez été identifié en tant que{' '}
+        {lowerCaseProfileInscriptionLabels[conseillerNumeriqueRole]}
       </p>
       <div className="fr-text--xs fr-mb-0 fr-text-mention--grey">
         Source&nbsp;:{' '}

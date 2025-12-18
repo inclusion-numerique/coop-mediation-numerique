@@ -1,7 +1,11 @@
 import { appUrl } from '@app/e2e/support/helpers'
 import { CreateUserInput } from '@app/e2e/tasks/handlers/user.tasks'
 import { getStepPath } from '@app/web/features/inscription/inscriptionFlow'
-import { profileInscriptionLabels } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
+import {
+  lowerCaseProfileInscriptionLabels,
+  profileInscriptionConseillerNumeriqueLabels,
+  profileInscriptionLabels,
+} from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 
 export type InscriptionFlowE2eExpectedStep =
   | {
@@ -29,6 +33,10 @@ export type InscriptionFlowE2eExpectedStep =
       step: 'recapitulatif'
       acceptCgu?: boolean // if undefined, it should not be existing on page, else check
       check?: () => void
+      conseillerNumeriqueRoleNotice:
+        | 'none'
+        | 'conseiller-numerique'
+        | 'coordinateur-conseiller-numerique'
     }
 
 const mutationAndNavigationTimeout = 15_000
@@ -132,6 +140,20 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
     cy.appUrlShouldBe(getStepPath('recapitulatif'), {
       timeout: mutationAndNavigationTimeout,
     })
+
+    if (step.conseillerNumeriqueRoleNotice === 'conseiller-numerique') {
+      cy.contains(
+        `Vous avez été identifié en tant que ${lowerCaseProfileInscriptionLabels.ConseillerNumerique}`,
+      ).should('be.visible')
+    } else if (
+      step.conseillerNumeriqueRoleNotice === 'coordinateur-conseiller-numerique'
+    ) {
+      cy.contains(
+        `Vous avez été identifié en tant que ${lowerCaseProfileInscriptionLabels.CoordinateurConseillerNumerique}`,
+      ).should('be.visible')
+    } else {
+      cy.contains('Vous avez été identifié en tant que').should('not.exist')
+    }
 
     cy.intercept('/api/trpc/inscription.validerInscription*').as(
       'validerInscriptionMutation',
