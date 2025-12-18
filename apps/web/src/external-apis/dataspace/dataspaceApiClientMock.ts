@@ -31,17 +31,18 @@ import {
  * In-memory mock database mapping emails to mediateur data
  * Add new email mappings here for your tests and fixtures
  */
-const mockDataspaceDatabase: Record<string, DataspaceMediateur | null> = {
-  [conseillerInscriptionEmail]: mockDataspaceConseillerNumeriqueInscription,
-  [coordinateurHorsDispositifInscriptionEmail]:
-    mockDataspaceCoordinateurHorsDispositifInscription,
-  [coordinateurInscriptionEmail]: mockDataspaceCoordinateurConumInscription,
-  [coordinateurInscriptionAvecToutEmail]:
-    mockDataspaceCoordinateurConumInscriptionAvecTout,
-  [mediateurInscriptionEmail]: mockDataspaceMediateurInscription,
-  [conseillerSansLieuInscriptionEmail]:
-    mockDataspaceConseillerSansLieuInscription,
-}
+export const mockDataspaceDatabase: Record<string, DataspaceMediateur | null> =
+  {
+    [conseillerInscriptionEmail]: mockDataspaceConseillerNumeriqueInscription,
+    [coordinateurHorsDispositifInscriptionEmail]:
+      mockDataspaceCoordinateurHorsDispositifInscription,
+    [coordinateurInscriptionEmail]: mockDataspaceCoordinateurConumInscription,
+    [coordinateurInscriptionAvecToutEmail]:
+      mockDataspaceCoordinateurConumInscriptionAvecTout,
+    [mediateurInscriptionEmail]: mockDataspaceMediateurInscription,
+    [conseillerSansLieuInscriptionEmail]:
+      mockDataspaceConseillerSansLieuInscription,
+  }
 
 /**
  * Mock implementation of getMediateurFromDataspaceApi

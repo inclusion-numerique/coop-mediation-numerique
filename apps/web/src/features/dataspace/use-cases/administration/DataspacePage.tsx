@@ -5,17 +5,22 @@ import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import { DataspaceSearchValidation } from '@app/web/features/dataspace/use-cases/administration/DataspaceSearchValidation'
-import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
+import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
+import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { trpc } from '@app/web/trpc'
 import { contentId } from '@app/web/utils/skipLinks'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 
-const DataspacePage = () => {
+const DataspacePage = ({
+  apiIsMocked,
+  mockedApiEmails,
+}: {
+  apiIsMocked: boolean
+  mockedApiEmails?: string[]
+}) => {
   const getMediateurMutation = trpc.dataspaceAdmin.getMediateur.useMutation()
   const isPending = getMediateurMutation.isPending
 
@@ -50,16 +55,23 @@ const DataspacePage = () => {
         <AdministrationTitle icon="ri-database-2-line">
           Dataspace
         </AdministrationTitle>
-        {ServerWebAppConfig.Dataspace.isMocked && (
-          <Notice
-            className="fr-notice--info fr-mb-4v"
-            title="L'API Dataspace est mockée (données de démo) sur les branches de preview. Pour utiliser l'API, rendez-vous sur l'administration en prod."
-          />
+        {apiIsMocked && (
+          <>
+            <Notice
+              className="fr-notice--info fr-mb-4v"
+              title="L'API Dataspace est mockée (données de démo) sur les branches de preview. Pour utiliser l'API, rendez-vous sur l'administration en prod."
+            />
+            <div className="fr-mb-4v fr-border-radius--8 fr-py-4v fr-px-6v  fr-border">
+              <p className="fr-text--sm fr-mb-2v">Emails mockés :</p>
+              <ul className="fr-text--xs fr-mb-0 fr-list-unstyled">
+                {mockedApiEmails?.map((email) => (
+                  <li key={email}>{email}</li>
+                ))}
+              </ul>
+            </div>
+          </>
         )}
-        <div className="fr-border-radius--8 fr-py-8v fr-px-10v fr-background-alt--blue-france fr-mb-6v">
-          <p className="fr-text--bold fr-mb-4v">
-            Rechercher les données d'un médiateur dans le Dataspace
-          </p>
+        <div className="fr-border-radius--8 fr-py-4v fr-px-6v fr-background-alt--blue-france fr-mb-6v">
           <form.AppForm>
             <form
               onSubmit={handleSubmit(form)}
@@ -68,7 +80,7 @@ const DataspacePage = () => {
               <form.AppField name="email">
                 {(field) => (
                   <field.Input
-                    label="Email"
+                    label="Rechercher un médiateur dans le Dataspace par email"
                     isPending={isPending}
                     classes={{ root: 'fr-mb-0 fr-flex-grow-1' }}
                     nativeInputProps={{
