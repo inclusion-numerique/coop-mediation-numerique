@@ -18,11 +18,7 @@ const Page = async () => {
     redirect('/coop')
   }
 
-  return (
-    <OnboardingMesActivites
-      isConseillerNumerique={user.mediateur.conseillerNumerique?.id != null}
-    />
-  )
+  return <OnboardingMesActivites />
 }
 
 export default Page
