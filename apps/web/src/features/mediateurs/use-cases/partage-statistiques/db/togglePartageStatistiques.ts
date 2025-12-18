@@ -6,15 +6,27 @@ export const togglePartageStatistiques = async (mediateurId: string) =>
       where: { mediateurId },
     })
 
-    if (existing) {
-      await tx.partageStatistiques.delete({
-        where: { mediateurId },
-      })
-      return { active: false }
-    } else {
+    if (!existing) {
       await tx.partageStatistiques.create({
         data: { mediateurId },
       })
+
       return { active: true }
     }
+
+    if (!existing.deleted) {
+      await tx.partageStatistiques.update({
+        where: { mediateurId },
+        data: { deleted: new Date() },
+      })
+
+      return { active: false }
+    }
+
+    await tx.partageStatistiques.update({
+      where: { mediateurId },
+      data: { deleted: null },
+    })
+
+    return { active: true }
   })

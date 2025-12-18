@@ -57,7 +57,7 @@ export const PrintStatistiques = (
         <StatistiquesGeneralesPrint {...mesStatistiquesProps} />
       </section>
       <section className="fr-pt-6v">
-        <StatistiquesActivitesPrint {...mesStatistiquesProps} canManageTags />
+        <StatistiquesActivitesPrint {...mesStatistiquesProps} />
       </section>
       <section className="fr-pt-6v">
         <StatistiquesBeneficiairesPrint {...mesStatistiquesProps} />

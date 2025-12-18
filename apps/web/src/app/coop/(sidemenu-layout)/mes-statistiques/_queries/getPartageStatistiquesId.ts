@@ -14,7 +14,7 @@ export const getPartageStatistiquesId = async ({
 
   const partageStatistiques = await prismaClient.partageStatistiques.findUnique(
     {
-      where: { mediateurId: userMediateurId },
+      where: { mediateurId: userMediateurId, deleted: null },
       select: { id: true },
     },
   )

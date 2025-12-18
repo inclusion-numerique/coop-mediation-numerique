@@ -311,6 +311,8 @@ model PartageStatistiques {
   mediateurId String    @unique @map("mediateur_id") @db.Uuid
   mediateur   Mediateur @relation(fields: [mediateurId], references: [id])
 
+  deleted DateTime? @map("deleted")
+
   @@map("partage_statistiques")
 }
 

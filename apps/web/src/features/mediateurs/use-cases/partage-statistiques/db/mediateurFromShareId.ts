@@ -2,8 +2,11 @@ import { prismaClient } from '@app/web/prismaClient'
 
 export const mediateurFromShareId = async (id: string) =>
   prismaClient.partageStatistiques
-    .findUnique({
-      where: { id },
+    .findFirst({
+      where: {
+        id,
+        deleted: null,
+      },
       select: {
         mediateur: {
           select: {
