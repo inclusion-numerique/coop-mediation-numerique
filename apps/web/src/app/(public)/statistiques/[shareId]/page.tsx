@@ -20,7 +20,12 @@ type PageProps = {
 
 const Page = async ({ params, searchParams }: PageProps) => {
   const shareId = (await params).shareId
-  const search = await searchParams
+  const searchParamsResolved = await searchParams
+
+  const search = {
+    ...searchParamsResolved,
+    au: searchParamsResolved.au ?? new Date().toISOString().slice(0, 10),
+  }
 
   const mediateur = await mediateurFromShareId(shareId)
   if (!mediateur) return notFound()
