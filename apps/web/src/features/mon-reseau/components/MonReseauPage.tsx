@@ -4,6 +4,7 @@ import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { Departement } from '@app/web/data/collectivites-territoriales/departements'
 import MonReseauCountStatCard from '@app/web/features/mon-reseau/components/MonReseauCountStatCard'
 import DepartementComboBox from '@app/web/features/mon-reseau/DepartementComboBox'
+import { getInclusionNumeriqueDepartementDataUrl } from '@app/web/features/mon-reseau/getInclusionNumeriqueDepartementDataUrl'
 import { UserStatsIcon } from '@app/web/features/pictograms/user/UserStatsIcon'
 import { contentId } from '@app/web/utils/skipLinks'
 import Image from 'next/image'
@@ -52,7 +53,7 @@ const MonReseauPage = ({
         référencées sur La Coop de la médiation numérique, par département.
       </p>
 
-      <div className="fr-grid-row fr-grid-row--gutters fr-mt-12v fr-mb-8v">
+      <div className="fr-grid-row fr-grid-row--gutters fr-my-12v">
         <div className="fr-col-lg-6 fr-col-12">
           <MonReseauCountStatCard
             count={acteursCount}
@@ -74,10 +75,15 @@ const MonReseauPage = ({
       </div>
 
       <section className="fr-mb-8v">
-        <h2 className="fr-h5 fr-text-mention--grey fr-flex fr-align-items-center">
-          <span className="ri-chat-3-line ri-lg fr-mr-2v" aria-hidden />
-          Les canaux de discussion
-        </h2>
+        <div className="fr-flex fr-align-items-center fr-mb-6v">
+          <span
+            className="fr-text-mention--grey fr-icon-chat-3-line ri-lg fr-mr-2v"
+            aria-hidden
+          />
+          <h2 className="fr-h6 fr-mb-0 fr-text-mention--grey fr-flex fr-align-items-center">
+            Les canaux de discussion
+          </h2>
+        </div>
         <Card
           noBorder
           arrowTop
@@ -114,23 +120,32 @@ const MonReseauPage = ({
         </Card>
       </section>
 
-      <section className="fr-mb-8v">
-        <h2 className="fr-h5 fr-text-mention--grey fr-flex fr-align-items-center">
-          <span className="ri-star-line ri-lg fr-mr-2v" aria-hidden />
-          Les données publiques de l'inclusion numérique sur votre département
-        </h2>
-        <div className="fr-p-6w fr-border-radius--16 fr-background-alt--brown-caramel">
-          <div className="fr-flex fr-flex-gap-6v fr-align-items-center">
-            <UserStatsIcon width={100} height={100} />
+      <section className="fr-mb-8v fr-mt-12v">
+        <div className="fr-flex fr-align-items-center fr-mb-6v">
+          <span
+            className="fr-text-mention--grey fr-icon-france-line ri-lg fr-mr-2v"
+            aria-hidden
+          />
+          <h2 className="fr-text-mention--grey fr-h6 fr-mb-0 fr-flex fr-align-items-center">
+            Les données publiques de l'inclusion numérique sur votre département
+          </h2>
+        </div>
+        <div className="fr-p-8v fr-border-radius--16 fr-background-alt--brown-caramel">
+          <div className="fr-flex fr-flex-gap-12v fr-align-items-center">
+            <img
+              src="/images/services/mon-inclusion-numerique.svg"
+              alt=""
+              width={140}
+            />
             <div>
-              <p className="fr-mb-2v">
+              <p className="fr-mb-4v">
                 Vos statistiques d'activités contribuent à valoriser et
                 comprendre l'impact de l'inclusion numérique sur votre
                 territoire.
               </p>
               <Link
-                className="fr-btn fr-btn--secondary wip-outline"
-                href="https://media.istockphoto.com/id/486869012/th/%E0%B8%A3%E0%B8%B9%E0%B8%9B%E0%B8%96%E0%B9%88%E0%B8%B2%E0%B8%A2/%E0%B9%81%E0%B8%9E%E0%B8%B0%E0%B8%A1%E0%B8%AD%E0%B8%87%E0%B8%A1%E0%B8%B2%E0%B9%80%E0%B8%A3%E0%B8%B2.jpg?s=612x612&w=0&k=20&c=c3MaHxhELfsV5Fg_s_YLwu3dUqYxYttEY3NWxsmJ3UA="
+                className="fr-btn fr-btn--secondary"
+                href={getInclusionNumeriqueDepartementDataUrl(departement.code)}
                 target="_blank"
               >
                 Voir les données de mon département
