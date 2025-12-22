@@ -5,7 +5,6 @@ import { Departement } from '@app/web/data/collectivites-territoriales/departeme
 import MonReseauCountStatCard from '@app/web/features/mon-reseau/components/MonReseauCountStatCard'
 import DepartementComboBox from '@app/web/features/mon-reseau/DepartementComboBox'
 import { getInclusionNumeriqueDepartementDataUrl } from '@app/web/features/mon-reseau/getInclusionNumeriqueDepartementDataUrl'
-import { UserStatsIcon } from '@app/web/features/pictograms/user/UserStatsIcon'
 import { contentId } from '@app/web/utils/skipLinks'
 import Image from 'next/image'
 import Link from 'next/link'

@@ -1,0 +1,16 @@
+.card {
+  cursor: pointer;
+}
+
+.card:hover {
+  background-color: var(--background-contrast-grey);
+}
+
+.card:active {
+  background-color: var(--background-contrast-grey-active);
+}
+
+/* Inner links need position relative to be clickable above the enlarged link */
+.innerLink {
+  position: relative;
+}
