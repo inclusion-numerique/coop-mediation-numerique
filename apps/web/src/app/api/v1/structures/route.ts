@@ -54,6 +54,7 @@ import { type ZodError, z } from 'zod'
  *         attributes:
  *           type: object
  *           required:
+ *             - id_pg
  *             - structure_cartographie_nationale_id
  *             - creation
  *             - modification
@@ -90,6 +91,11 @@ import { type ZodError, z } from 'zod'
  *             - modalites_acces
  *             - modalites_accompagnement
  *           properties:
+ *             id_pg:
+ *               type: integer
+ *               nullable: true
+ *               description: identifiant postgres v1 de la structure (si importée depuis v1)
+ *               example: 12345
  *             structure_cartographie_nationale_id:
  *               type: string
  *               nullable: true
@@ -335,6 +341,7 @@ import { type ZodError, z } from 'zod'
  */
 
 type StructureAttributes = {
+  id_pg: number | null
   structure_cartographie_nationale_id: string | null
   creation: string
   modification: string
@@ -540,6 +547,7 @@ export const GET = createApiV1Route
         type: 'structure',
         id: s.id,
         attributes: {
+          id_pg: s.v1StructureIdPg,
           structure_cartographie_nationale_id:
             s.structureCartographieNationaleId,
           creation: s.creation.toISOString(),
