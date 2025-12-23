@@ -24,6 +24,7 @@ const Page = async (props: { searchParams: Promise<EquipeSearchParams> }) => {
       searchParams={searchParams}
       baseHref="/coop/mon-equipe"
       baseHrefSearch="/coop/mon-equipe"
+      baseRetour="/coop/mon-equipe"
       coordinateur={{
         id: authenticatedCoordinateur.coordinateur.id,
         user: authenticatedCoordinateur,

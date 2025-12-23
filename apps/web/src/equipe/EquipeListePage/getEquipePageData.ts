@@ -69,6 +69,7 @@ export const getEquipePageData = async ({
     mediateurs: mediateurs.map(
       ({
         mediateur_id,
+        user_id,
         email,
         phone,
         first_name,
@@ -79,6 +80,7 @@ export const getEquipePageData = async ({
         type,
       }) => ({
         id: mediateur_id ?? undefined,
+        userId: user_id ?? undefined,
         firstName: first_name ?? undefined,
         lastName: last_name ?? undefined,
         phone: phone ?? undefined,

@@ -42,6 +42,7 @@ const Page = async (props: {
       coordinateurView={false}
       baseHref={`/coop/mes-equipes/${coordinateurId}`}
       baseHrefSearch={`/coop/mes-equipes/${coordinateurId}`}
+      baseRetour={`/coop/mes-equipes/${coordinateurId}`}
       coordinateur={coordinateur}
     />
   )

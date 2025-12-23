@@ -30,6 +30,7 @@ const EquipeListePage = ({
   totalPages,
   baseHref,
   baseHrefSearch,
+  baseRetour,
   coordinateur: {
     id: coordinateurId,
     user: { name, email, phone },
@@ -42,6 +43,7 @@ const EquipeListePage = ({
   totalPages: number
   baseHref: string
   baseHrefSearch: string
+  baseRetour: string
   coordinateur: {
     id: string
     user: { name: string | null; email: string | null; phone: string | null }
@@ -138,7 +140,11 @@ const EquipeListePage = ({
             </div>
 
             {totalAncien === 0 ? (
-              <MediateurList mediateurs={mediateurs} baseHref={baseHref} />
+              <MediateurList
+                mediateurs={mediateurs}
+                baseHref={baseHref}
+                baseRetour={baseRetour}
+              />
             ) : (
               <div className="fr-tabs">
                 <ul className="fr-tabs__list">
@@ -165,7 +171,11 @@ const EquipeListePage = ({
                   className="fr-tabs__panel fr-tabs__panel--selected fr-p-0"
                   style={{ marginTop: '-1px' }}
                 >
-                  <MediateurList mediateurs={mediateurs} baseHref={baseHref} />
+                  <MediateurList
+                    mediateurs={mediateurs}
+                    baseHref={baseHref}
+                    baseRetour={baseRetour}
+                  />
                 </div>
               </div>
             )}

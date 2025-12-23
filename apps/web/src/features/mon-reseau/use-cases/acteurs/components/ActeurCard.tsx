@@ -1,6 +1,7 @@
 import classNames from 'classnames'
 import Link from 'next/link'
 import type { ActeurForList } from '../db/searchActeurs'
+import { getActeurPageUrl } from '../getActeurPageUrl'
 import { acteurRoleLabels } from '../validation/ActeursFilters'
 import styles from './ActeurCard.module.css'
 
@@ -54,8 +55,10 @@ const ActeurCard = ({
   const coordinateurInfo = getCoordinateurInfo(acteur)
   const lieuxActiviteCount = acteur.mediateur?._count.enActivite ?? 0
 
-  const retourParam = encodeURIComponent(currentPath)
-  const acteurHref = `/coop/mon-reseau/acteurs/${acteur.id}?retour=${retourParam}`
+  const acteurHref = getActeurPageUrl({
+    userId: acteur.id,
+    retour: currentPath,
+  })
 
   return (
     <div
@@ -86,7 +89,10 @@ const ActeurCard = ({
                   'fr-link fr-link--sm fr-ml-1v',
                   styles.innerLink,
                 )}
-                href={`/coop/mon-reseau/acteurs/${coordinateurInfo.userId}?retour=${retourParam}`}
+                href={getActeurPageUrl({
+                  userId: coordinateurInfo.userId,
+                  retour: currentPath,
+                })}
                 prefetch={false}
               >
                 {coordinateurInfo.name}
@@ -114,7 +120,11 @@ const ActeurCard = ({
 
       {lieuxActiviteCount > 0 && (
         <Link
-          href={`/coop/mon-reseau/acteurs/${acteur.id}?retour=${retourParam}#lieux-activite`}
+          href={getActeurPageUrl({
+            userId: acteur.id,
+            retour: currentPath,
+            anchor: 'lieux-activite',
+          })}
           prefetch={false}
           className={classNames('fr-tag fr-tag--sm', styles.innerLink)}
         >

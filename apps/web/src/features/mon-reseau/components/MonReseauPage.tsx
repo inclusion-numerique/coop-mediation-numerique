@@ -59,7 +59,7 @@ const MonReseauPage = ({
             label="Acteurs de l'inclusion numérique"
             iconId="fr-icon-account-line"
             href={`/coop/mon-reseau/acteurs?departement=${departement.code}`}
-            linkLabel="Voir l'annuaire des acteurs"
+            linkLabel="Voir l’annuaire des acteurs"
           />
         </div>
         <div className="fr-col-lg-6 fr-col-12">
@@ -68,7 +68,7 @@ const MonReseauPage = ({
             label="Lieux d'inclusion numérique"
             iconId="ri-home-office-line"
             href={`/coop/mon-reseau/lieux?departement=${departement.code}`}
-            linkLabel="Voir l'annuaire des lieux"
+            linkLabel="Voir l’annuaire des lieux"
           />
         </div>
       </div>

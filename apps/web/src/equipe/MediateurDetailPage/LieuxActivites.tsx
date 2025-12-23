@@ -113,7 +113,7 @@ export const LieuxActivites = ({
                       iconPosition="right"
                       priority="tertiary no outline"
                       linkProps={{
-                        href: `${mediateurId}/${structureId}`,
+                        href: `/coop/mon-equipe/${mediateurId}/${structureId}`,
                       }}
                     >
                       Voir
