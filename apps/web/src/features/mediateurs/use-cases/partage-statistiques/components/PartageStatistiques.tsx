@@ -42,7 +42,7 @@ const PartageStatistiques = ({ shareId }: { shareId?: string }) => {
 
   const handleCopy = async () => {
     try {
-      const url = `${window.location.origin}/statistiques/${shareId}?du=2025-01-01`
+      const url = `${window.location.origin}/statistiques/${shareId}`
       await navigator.clipboard.writeText(url)
       createToast({
         priority: 'success',
