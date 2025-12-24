@@ -1,9 +1,13 @@
+'use client'
+
 import type {
   BeneficiaireStats,
   BeneficiairesStatsWithCommunes,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getBeneficiaireStats'
+import { CaptureButton } from '@app/web/libs/statistiques/CaptureButton'
 import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
+import { useRef } from 'react'
 import { AccompagnementPieChart } from '../_components/AccompagnementPieChart'
 import ProgressBar from '../_components/ProgressBar'
 import { QuantifiedShareLegend } from '../_components/QuantifiedShareLegend'
@@ -36,6 +40,8 @@ export const StatistiquesBeneficiaires = ({
   wording?: 'personnel' | 'generique'
   beneficiaires: BeneficiairesStatsWithCommunes | BeneficiaireStats
 }) => {
+  const capture = useRef<HTMLDivElement | null>(null)
+
   const totalWithGenre = beneficiaires.genres.reduce(
     (total: number, { count, value }) =>
       value === 'NonCommunique' ? total : total + count,
@@ -69,13 +75,16 @@ export const StatistiquesBeneficiaires = ({
         Statistiques sur{' '}
         {wording === 'personnel' ? 'vos bénéficiaires' : 'les bénéficiaires'}
       </h2>
-      <div className="fr-border fr-p-4w fr-border-radius--16">
+      <div
+        ref={capture}
+        className="fr-border fr-p-4w fr-background-default--grey fr-border-radius--16 fr-position-relative"
+      >
         <div className="fr-grid-row fr-grid-row--gutters">
           <div className="fr-col-lg-6 fr-col-12">
             <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mb-3w">
-              <h3 className="fr-text--lg fr-mb-0">Genres</h3>
+              <h3 className="fr-text--lg fr-text--nowrap fr-mb-0">Genres</h3>
               <Button
-                className="fr-px-1v fr-ml-1v"
+                className="fr-px-1v fr-ml-1v fr-no-print"
                 title="Plus d’information à propos des genres"
                 priority="tertiary no outline"
                 size="small"
@@ -118,9 +127,11 @@ export const StatistiquesBeneficiaires = ({
         <div className="fr-grid-row fr-grid-row--gutters">
           <div className="fr-col-lg-6 fr-col-12">
             <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mb-3w">
-              <h3 className="fr-text--lg fr-mb-0">Tranches d’âge</h3>
+              <h3 className="fr-text--lg fr-text--nowrap fr-mb-0">
+                Tranches d’âge
+              </h3>
               <Button
-                className="fr-px-1v fr-ml-1v"
+                className="fr-px-1v fr-ml-1v fr-no-print"
                 title="Plus d’information à propos des tranches d’âge"
                 priority="tertiary no outline"
                 size="small"
@@ -160,9 +171,9 @@ export const StatistiquesBeneficiaires = ({
           </div>
           <div className="fr-col-lg-6 fr-col-12">
             <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mb-3w">
-              <h3 className="fr-text--lg fr-mb-0">Statuts</h3>
+              <h3 className="fr-text--lg fr-text--nowrap fr-mb-0">Statuts</h3>
               <Button
-                className="fr-px-1v fr-ml-1v"
+                className="fr-px-1v fr-ml-1v fr-no-print"
                 title="Plus d’information à propos des statuts"
                 priority="tertiary no outline"
                 size="small"
@@ -201,7 +212,6 @@ export const StatistiquesBeneficiaires = ({
           </div>
         </div>
         <hr className="fr-separator-1px fr-my-5w" />
-
         {'communes' in beneficiaires && (
           <>
             <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mb-3w">
@@ -209,7 +219,7 @@ export const StatistiquesBeneficiaires = ({
                 Commune de résidence des bénéficiaires
               </h3>
               <Button
-                className="fr-px-1v fr-ml-1v"
+                className="fr-px-1v fr-ml-1v fr-no-print"
                 title="Plus d’information à propos des communes de résidence des bénéficiaires"
                 priority="tertiary no outline"
                 size="small"
@@ -255,6 +265,16 @@ export const StatistiquesBeneficiaires = ({
             />
           </>
         )}
+        <span className="fr-no-print fr-position-absolute fr-top-0 fr-right-0 fr-p-4v">
+          <CaptureButton
+            captureRef={capture}
+            captureName="beneficiaires"
+            title="Télécharger l’image des statistiques sur les bénéficiaires"
+            iconId="fr-icon-download-line"
+            size="small"
+            priority="tertiary no outline"
+          />
+        </span>
       </div>
     </>
   )

@@ -72,6 +72,13 @@ enum UserFeatureFlag {
   @@map("user_feature_flag")
 }
 
+enum OnboardingStatus {
+  reminder_j7_sent
+  reminder_j30_sent
+  reminder_j60_sent
+  warning_j90_sent
+}
+
 model User {
   id                String            @id @default(uuid()) @db.Uuid
   firstName         String?           @map("first_name")
@@ -89,6 +96,7 @@ model User {
   accounts          Account[]
   sessions          Session[]
   hasSeenOnboarding DateTime?         @map("has_seen_onboarding")
+  onboardingStatus  OnboardingStatus? @map("onboarding_status")
   timezone          String            @default("Europe/Paris")
   featureFlags      UserFeatureFlag[] @default([]) @map("feature_flags")
 
@@ -279,12 +287,13 @@ model Mediateur {
   derniereCreationActivite     DateTime? @map("derniere_creation_activite")
   derniereCreationBeneficiaire DateTime? @map("derniere_creation_beneficiaire")
 
-  coordinations MediateurCoordonne[]
-  enActivite    MediateurEnActivite[]
-  beneficiaires Beneficiaire[]
-  activites     Activite[]
-  invitations   InvitationEquipe[]
-  tags          Tag[]
+  coordinations       MediateurCoordonne[]
+  enActivite          MediateurEnActivite[]
+  beneficiaires       Beneficiaire[]
+  activites           Activite[]
+  invitations         InvitationEquipe[]
+  tags                Tag[]
+  partageStatistiques PartageStatistiques[]
 
   @@index([activitesCount(sort: Asc)], map: "mediateurs_activites_count_asc_idx")
   @@index([activitesCount(sort: Desc)], map: "mediateurs_activites_count_desc_idx")
@@ -294,6 +303,17 @@ model Mediateur {
   @@index([beneficiairesCount(sort: Desc)], map: "mediateurs_beneficiaires_count_desc_idx")
   @@index([userId])
   @@map("mediateurs")
+}
+
+model PartageStatistiques {
+  id String @id @default(uuid()) @db.Uuid
+
+  mediateurId String    @unique @map("mediateur_id") @db.Uuid
+  mediateur   Mediateur @relation(fields: [mediateurId], references: [id])
+
+  deleted DateTime? @map("deleted")
+
+  @@map("partage_statistiques")
 }
 
 model InvitationEquipe {

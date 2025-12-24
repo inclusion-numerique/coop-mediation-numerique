@@ -222,6 +222,7 @@ const statistiquesPageData = {
     hasCrasV1: false,
   },
   activiteSourceOptions: [],
+  partageStatistiquesId: undefined,
 } satisfies MesStatistiquesPageData
 
 export default {

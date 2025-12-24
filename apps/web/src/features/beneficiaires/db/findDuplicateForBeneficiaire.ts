@@ -49,8 +49,8 @@ export const findDuplicateForBeneficiaire = async ({
         ${beneficiaire.prenom} as prenom,
         ${beneficiaire.telephone} as telephone,
         ${beneficiaire.email} as email,
-        NULLIF(TRIM(lower(unaccent(${beneficiaire.nom}))), '') as nom_search,
-        NULLIF(TRIM(lower(unaccent(${beneficiaire.prenom}))), '') as prenom_search,
+        NULLIF(regexp_replace(lower(unaccent(${beneficiaire.nom})), '[\\s-]', '', 'g'), '') as nom_search,
+        NULLIF(regexp_replace(lower(unaccent(${beneficiaire.prenom})), '[\\s-]', '', 'g'), '') as prenom_search,
         NULLIF(lower(regexp_replace(unaccent(${beneficiaire.telephone}), '\\s', '', 'g')), '') as telephone_search,
         NULLIF(TRIM(lower(unaccent(${beneficiaire.email}))), '') as email_search
     ),
@@ -64,8 +64,8 @@ export const findDuplicateForBeneficiaire = async ({
         creation,
         annee_naissance as "anneeNaissance",
         adresse,
-        NULLIF(TRIM(lower(unaccent(nom))), '') as nom_search,
-        NULLIF(TRIM(lower(unaccent(prenom))), '') as prenom_search,
+        NULLIF(regexp_replace(lower(unaccent(nom)), '[\\s-]', '', 'g'), '') as nom_search,
+        NULLIF(regexp_replace(lower(unaccent(prenom)), '[\\s-]', '', 'g'), '') as prenom_search,
         NULLIF(lower(regexp_replace(unaccent(telephone), '\\s', '', 'g')), '') as telephone_search,
         NULLIF(TRIM(lower(unaccent(email))), '') as email_search
       FROM "beneficiaires"

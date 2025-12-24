@@ -1076,6 +1076,7 @@
           "attributes": {
             "type": "object",
             "required": [
+              "id_pg",
               "structure_cartographie_nationale_id",
               "creation",
               "modification",
@@ -1113,6 +1114,12 @@
               "modalites_accompagnement"
             ],
             "properties": {
+              "id_pg": {
+                "type": "integer",
+                "nullable": true,
+                "description": "identifiant postgres v1 de la structure (si importée depuis v1)",
+                "example": 12345
+              },
               "structure_cartographie_nationale_id": {
                 "type": "string",
                 "nullable": true,

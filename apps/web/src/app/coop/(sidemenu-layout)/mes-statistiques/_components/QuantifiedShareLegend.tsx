@@ -1,3 +1,5 @@
+'use client'
+
 import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
 import classNames from 'classnames'
 import type { QuantifiedShare } from '../quantifiedShare'
@@ -37,12 +39,17 @@ export const QuantifiedShareLegend = ({
         >
           {label}
         </span>
-        <span className={classNames('fr-text--sm fr-text--bold', styles.count)}>
+        <span
+          className={classNames(
+            'fr-text--sm fr-text--bold fr-text--nowrap',
+            styles.count,
+          )}
+        >
           {numberToString(count ?? 0)}
         </span>
         <span
           className={classNames(
-            'fr-text--sm fr-text--medium fr-text-mention--grey',
+            'fr-text--sm fr-text--medium fr-text-mention--grey fr-text--nowrap',
             styles.proportion,
           )}
         >

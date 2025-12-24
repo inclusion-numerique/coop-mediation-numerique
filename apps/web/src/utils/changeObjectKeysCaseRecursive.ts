@@ -25,10 +25,8 @@ type PascalCase<S extends string> = S extends `${infer First}${infer Rest}`
   : S
 
 // CONSTANT_CASE (tout majuscule, underscore)
-type ConstantCase<S extends string> = SnakeCase<S> extends infer R extends
-  string
-  ? Uppercase<R>
-  : never
+type ConstantCase<S extends string> =
+  SnakeCase<S> extends infer R extends string ? Uppercase<R> : never
 
 // on choisit la transformation
 type ChangeCase<S extends string, C extends CaseType> = C extends 'snake'

@@ -16,7 +16,7 @@ import { addFilters } from '../buildWorksheetHelpers'
 const addStatistiquesGenerales =
   (worksheet: Excel.Worksheet) =>
   ({ totalCounts, accompagnementsParMois }: MesStatistiquesPageData) => {
-    addTitleRow(worksheet)('Statistiques générales sur vos accompagnements')
+    addTitleRow(worksheet)('Statistiques générales')
     worksheet.addRow([
       'Accompagnements au total',
       totalCounts.accompagnements.total,

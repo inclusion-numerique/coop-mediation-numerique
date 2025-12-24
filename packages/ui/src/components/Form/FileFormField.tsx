@@ -104,7 +104,7 @@ const FileFormField = <T extends FieldValues>({
 
             {info && (
               <p id={`${id}__info`} className="fr-hint-text fr-mt-1v fr-mb-0">
-                {typeof info === 'string' ? info : info(value)}
+                {typeof info === 'string' ? info : value && info(value)}
               </p>
             )}
             {error && (

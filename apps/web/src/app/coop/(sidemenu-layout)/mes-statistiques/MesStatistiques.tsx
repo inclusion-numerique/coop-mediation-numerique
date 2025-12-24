@@ -1,20 +1,21 @@
-import { StatistiquesActivites } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesActivites'
-import { StatistiquesBeneficiaires } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesBeneficiaires'
-import { statistiquesPageTitle } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/statistiquesPageTitle'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { SessionUser } from '@app/web/auth/sessionUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import Filters from '@app/web/features/activites/use-cases/list/components/Filters'
 import { FilterTags } from '@app/web/features/activites/use-cases/list/components/FilterTags'
+import PartageStatistiques from '@app/web/features/mediateurs/use-cases/partage-statistiques/components/PartageStatistiques'
 import { contentId } from '@app/web/utils/skipLinks'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import { ExportStatistiques } from './_components/ExportStatistiques'
 import { PrintStatistiques } from './_components/PrintStatistiques'
+import { StatistiquesActivites } from './_sections/StatistiquesActivites'
+import { StatistiquesBeneficiaires } from './_sections/StatistiquesBeneficiaires'
 import { StatistiquesGenerales } from './_sections/StatistiquesGenerales'
 import { AutoPrint } from './AutoPrint'
 import { MesStatistiquesPageData } from './getMesStatistiquesPageData'
+import { statistiquesPageTitle } from './statistiquesPageTitle'
 
 export const MesStatistiques = (
   mesStatistiquesProps: MesStatistiquesPageData & {
@@ -35,6 +36,7 @@ export const MesStatistiques = (
     user,
     hasCrasV1,
     activiteSourceOptions,
+    partageStatistiquesId,
   } = mesStatistiquesProps
 
   return (
@@ -62,19 +64,24 @@ export const MesStatistiques = (
             isMediateur={user.mediateur?.id != null}
             hasCrasV1={hasCrasV1.hasCrasV1}
           />
-          <ExportStatistiques
-            filters={activitesFilters}
-            communesOptions={communesOptions}
-            departementsOptions={departementsOptions}
-            lieuxActiviteOptions={lieuxActiviteOptions}
-            mediateursOptions={initialMediateursOptions}
-            beneficiairesOptions={[]}
-            tagsOptions={tagsOptions}
-            accompagnementsCount={
-              mesStatistiquesProps.totalCounts.accompagnements.total
-            }
-            activiteSourceOptions={activiteSourceOptions}
-          />
+          <div className="fr-flex fr-flex-gap-2v">
+            {user.mediateur?.id != null && (
+              <PartageStatistiques shareId={partageStatistiquesId} />
+            )}
+            <ExportStatistiques
+              filters={activitesFilters}
+              communesOptions={communesOptions}
+              departementsOptions={departementsOptions}
+              lieuxActiviteOptions={lieuxActiviteOptions}
+              mediateursOptions={initialMediateursOptions}
+              beneficiairesOptions={[]}
+              tagsOptions={tagsOptions}
+              accompagnementsCount={
+                mesStatistiquesProps.totalCounts.accompagnements.total
+              }
+              activiteSourceOptions={activiteSourceOptions}
+            />
+          </div>
         </div>
         <FilterTags
           filters={activitesFilters}
@@ -109,7 +116,7 @@ export const MesStatistiques = (
           <StatistiquesGenerales {...mesStatistiquesProps} />
         </section>
         <section className="fr-mb-6w">
-          <StatistiquesActivites {...mesStatistiquesProps} />
+          <StatistiquesActivites {...mesStatistiquesProps} canManageTags />
         </section>
         <section className="fr-mb-6w">
           <StatistiquesBeneficiaires {...mesStatistiquesProps} />

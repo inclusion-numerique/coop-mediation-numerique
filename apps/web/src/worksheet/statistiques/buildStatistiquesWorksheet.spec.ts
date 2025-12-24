@@ -658,12 +658,10 @@ describe('build statistiques worksheet for médiateur', () => {
     ])
   })
 
-  it(`should contains bold 'Statistiques générales sur vos accompagnements' in Statistiques worksheet at position A${generalesTitle.start}`, () => {
+  it(`should contains bold 'Statistiques générales' in Statistiques worksheet at position A${generalesTitle.start}`, () => {
     const exportTitleCell = worksheet.getCell(`A${generalesTitle.start}`)
 
-    expect(exportTitleCell?.value).toBe(
-      'Statistiques générales sur vos accompagnements',
-    )
+    expect(exportTitleCell?.value).toBe('Statistiques générales')
     expect(exportTitleCell?.font.bold).toBe(true)
   })
 

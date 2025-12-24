@@ -5,6 +5,7 @@ const countBeneficiaires = async (anonyme: boolean) =>
   prismaClient.beneficiaire.count({
     where: {
       anonyme,
+      v1Imported: null,
       accompagnements: {
         some: { activite: { suppression: null } },
       },

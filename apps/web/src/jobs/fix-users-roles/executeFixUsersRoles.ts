@@ -1,8 +1,10 @@
 import { output } from '@app/cli/output'
 import { prismaClient } from '@app/web/prismaClient'
 
+const MILLISECONDS_IN_A_DAY = 24 * 60 * 60 * 1000
+
 const daysAgo = (now: Date, days: number) =>
-  new Date(now.getTime() - days * 24 * 60 * 60 * 1000)
+  new Date(now.getTime() - days * MILLISECONDS_IN_A_DAY)
 
 const fixCoordinateurRoles = async (now: Date) => {
   const coordinateursToDelete = await prismaClient.user.findMany({
@@ -19,9 +21,11 @@ const fixCoordinateurRoles = async (now: Date) => {
         is: {
           mediateursCoordonnes: { none: {} },
           ActiviteCoordination: { none: {} },
+          invitations: { none: {} },
+          conseillerNumeriqueId: null,
         },
       },
-      inscriptionValidee: { gte: daysAgo(now, 30) },
+      inscriptionValidee: { lte: daysAgo(now, 30) },
     },
   })
 
@@ -30,10 +34,6 @@ const fixCoordinateurRoles = async (now: Date) => {
       if (coordinateur == null || mediateur == null) return
 
       return prismaClient.$transaction(async (tx) => {
-        await tx.invitationEquipe.deleteMany({
-          where: { coordinateurId: coordinateur.id },
-        })
-
         await tx.tag.updateMany({
           where: { coordinateurId: coordinateur.id },
           data: {
@@ -67,10 +67,11 @@ const fixMediateurRoles = async (now: Date) => {
           enActivite: { none: {} },
           beneficiaires: { none: {} },
           activites: { none: {} },
+          conseillerNumerique: null,
         },
       },
       coordinateur: { isNot: null },
-      inscriptionValidee: { gte: daysAgo(now, 30) },
+      inscriptionValidee: { lte: daysAgo(now, 30) },
     },
   })
 
