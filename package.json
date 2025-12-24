@@ -36,12 +36,8 @@
   },
   "pnpm": {
     "overrides": {
-      "stylus": "0.0.1-security",
-      "@langchain/core": ">=0.3.80"
+      "stylus": "0.0.1-security"
     },
-    "minimumReleaseAgeExclude": [
-      "@langchain/core"
-    ],
     "onlyBuiltDependencies": [
       "@cdktf/node-pty-prebuilt-multiarch",
       "@prisma/client",

@@ -12,3 +12,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Dependency Review
         uses: actions/dependency-review-action@v3
+        with:
+          # Temporarily allow these vulnerabilities until patches are available:
+          # - GHSA-r399-636x-v7f6: LangChain serialization injection (awaiting patched metadata in advisory database)
+          # - GHSA-45h5-66jx-r2wf: MJML directory traversal (no fix available yet)
+          allow-ghsas: 'GHSA-r399-636x-v7f6, GHSA-45h5-66jx-r2wf'

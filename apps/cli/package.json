@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "@commander-js/extra-typings": "^13.1.0",
-    "@langchain/core": "^0.3.80",
     "@langchain/textsplitters": "^0.1.0",
     "@octokit/core": "^6.1.5",
     "@octokit/plugin-rest-endpoint-methods": "^14.0.0",
