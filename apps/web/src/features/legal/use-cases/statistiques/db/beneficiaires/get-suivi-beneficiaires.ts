@@ -7,6 +7,7 @@ const getTotalAccompagnements = async () =>
         AND: {
           suppression: null,
           anonyme: false,
+          v1Imported: null,
         },
       },
     },
@@ -18,6 +19,7 @@ const getTotalBeneficiairesSuivis = async () =>
       AND: {
         suppression: null,
         anonyme: false,
+        v1Imported: null,
       },
     },
   })
@@ -29,6 +31,7 @@ const getMediateursAvecBeneficiairesCount = async () => {
         some: {
           beneficiaire: {
             anonyme: false,
+            v1Imported: null,
           },
         },
       },

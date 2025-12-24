@@ -12,7 +12,7 @@ export const CoordinationEmptyState = ({
       Aucune activité ne correspond à votre recherche
     </div>
   ) : (
-    <div className="fr-text--center fr-background-alt--blue-france fr-p-6w fr-border-radius--16">
+    <div className="fr-text--center fr-background-alt--blue-france fr-p-12v fr-mt-6v fr-border-radius--8">
       <p className="fr-h6 fr-text--lg fr-mb-1w">
         Vous n’avez pas encore enregistré d’activité de coordination
       </p>
