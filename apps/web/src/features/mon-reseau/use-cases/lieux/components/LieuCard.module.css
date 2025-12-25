@@ -1,0 +1,13 @@
+.card:hover {
+  background-color: var(--background-contrast-grey);
+}
+
+.innerLink {
+  position: relative;
+  z-index: 1;
+}
+
+.tagGrey {
+  background-color: var(--background-contrast-grey);
+  color: var(--text-mention-grey);
+}

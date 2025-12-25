@@ -46,7 +46,10 @@ const Page = async ({
       departementCode,
       searchParams: { ...searchParams, departement: departementCode },
     }),
-    getActeursFiltersOptions({ departementCode }),
+    getActeursFiltersOptions({
+      departementCode,
+      currentLieuxFilter: searchParams.lieux,
+    }),
   ])
 
   // Build current path with all search params for return URLs

@@ -16,8 +16,10 @@ const departementCodeFromInseeRegex = Prisma.raw(
 
 export const getActeursFiltersOptions = async ({
   departementCode,
+  currentLieuxFilter = [],
 }: {
   departementCode: string
+  currentLieuxFilter?: string[] // UUIDs of currently filtered lieux
 }) => {
   // Get communes from structures in the department
   const communes = await prismaClient.$queryRaw<
@@ -99,6 +101,46 @@ export const getActeursFiltersOptions = async ({
         },
       }),
     )
+
+  // If there are filtered lieux that are not in the options, fetch them separately
+  // This ensures tags can be displayed for structures not in the top 100
+  const existingLieuxIds = new Set(lieuxActiviteOptions.map((l) => l.value))
+  const missingLieuxIds = currentLieuxFilter.filter(
+    (id) => !existingLieuxIds.has(id),
+  )
+
+  if (missingLieuxIds.length > 0) {
+    const missingStructures = await prismaClient.structure.findMany({
+      where: {
+        id: { in: missingLieuxIds },
+        suppression: null,
+      },
+      select: {
+        id: true,
+        nom: true,
+        adresse: true,
+        codePostal: true,
+        commune: true,
+        activitesCount: true,
+      },
+    })
+
+    const missingOptions: LieuActiviteOption[] = missingStructures.map(
+      ({ id, nom, commune, codePostal, adresse, activitesCount }) => ({
+        value: id,
+        label: nom,
+        extra: {
+          nom,
+          adresse:
+            `${adresse ?? ''}, ${codePostal ?? ''} ${commune ?? ''}`.trim(),
+          activites: activitesCount,
+          mostUsed: false,
+        },
+      }),
+    )
+
+    lieuxActiviteOptions.push(...missingOptions)
+  }
 
   return {
     communesOptions,
