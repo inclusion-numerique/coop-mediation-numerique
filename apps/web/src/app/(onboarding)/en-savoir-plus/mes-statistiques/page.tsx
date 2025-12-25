@@ -14,13 +14,11 @@ export const metadata: Metadata = {
 const Page = async () => {
   const user = await authenticateUser()
 
-  return user.mediateur ? (
-    <OnboardingMesStatistiques
-      isConseillerNumerique={user.mediateur.conseillerNumerique?.id != null}
-    />
-  ) : (
-    redirect('/')
-  )
+  if (!user.mediateur) {
+    redirect('/coop')
+  }
+
+  return <OnboardingMesStatistiques />
 }
 
 export default Page

@@ -14,7 +14,11 @@ export const metadata: Metadata = {
 const Page = async () => {
   const user = await authenticateUser()
 
-  return user.coordinateur ? <OnboardingMonEquipeCoordinateur /> : redirect('/')
+  if (!user.coordinateur) {
+    redirect('/coop')
+  }
+
+  return <OnboardingMonEquipeCoordinateur />
 }
 
 export default Page

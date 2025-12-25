@@ -1,7 +1,7 @@
 import PublicFooter from '@app/web/app/(public)/PublicFooter'
-import InscriptionStepsLayout from '@app/web/app/inscription/(steps)/layout'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import Header from '@app/web/components/Header'
+import InscriptionStepsLayout from '@app/web/features/inscription/components/InscriptionStepsLayout'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import React, { PropsWithChildren } from 'react'

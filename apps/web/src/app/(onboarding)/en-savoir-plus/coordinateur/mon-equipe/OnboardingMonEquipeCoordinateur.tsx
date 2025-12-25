@@ -20,9 +20,9 @@ export const OnboardingMonEquipeCoordinateur = () => (
       </>
     }
     stepIndex={2}
-    totalSteps={4}
+    totalSteps={3}
     previous={{ href: '/en-savoir-plus/coordinateur/mes-statistiques' }}
-    next={{ href: '/en-savoir-plus/coordinateur/mes-archives' }}
+    next={{ href: '/en-savoir-plus/coordinateur/mes-outils' }}
     closeHref="/coop"
   >
     <p className="fr-text--lg">

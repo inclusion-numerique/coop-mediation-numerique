@@ -1,6 +1,6 @@
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
-import { EquipeVide } from '@app/web/app/coop/EquipeVide'
+import EquipeVide from '@app/web/app/coop/EquipeVide'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import DataSearchBar from '@app/web/libs/data-table/DataSearchBar'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'

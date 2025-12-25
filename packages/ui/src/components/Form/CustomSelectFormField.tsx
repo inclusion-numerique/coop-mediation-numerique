@@ -204,17 +204,17 @@ const CustomSelectFormField = <
               instanceId={customSelectProps.instanceId ?? id}
             />
             {info && (
-              <p id={`${id}__info`} className="fr-hint-text fr-mt-1v fr-mb-0">
+              <p id={`${id}__info`} className="fr-hint-text fr-mb-0">
                 {info}
               </p>
             )}
             {error && (
-              <p id={`${id}__error`} className="fr-error-text">
+              <p id={`${id}__error`} className="fr-error-text fr-mb-0">
                 {error.message}
               </p>
             )}
             {valid && isDirty && !invalid && (
-              <p id={`${id}__valid`} className="fr-valid-text">
+              <p id={`${id}__valid`} className="fr-valid-text fr-mb-0">
                 {valid}
               </p>
             )}

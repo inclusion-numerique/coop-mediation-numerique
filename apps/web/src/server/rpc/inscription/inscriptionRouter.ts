@@ -1,4 +1,3 @@
-import { importCoordinateurMediationDataFromV1 } from '@app/web/app/inscription/(steps)/identification/importCoordinateurMediationDataFromV1'
 import { sessionUserSelect } from '@app/web/auth/getSessionUserFromSessionToken'
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import {
@@ -7,10 +6,12 @@ import {
 } from '@app/web/external-apis/brevo/contact'
 import { fetchConseillerNumeriqueV1Data } from '@app/web/external-apis/conseiller-numerique/fetchConseillerNumeriqueV1Data'
 import { isConseillerNumeriqueV1DataWithActiveMiseEnRelation } from '@app/web/external-apis/conseiller-numerique/isConseillerNumeriqueV1WithActiveMiseEnRelation'
+import { importCoordinateurMediationDataFromV1 } from '@app/web/features/legacy-mongo-v1/importCoordinateurMediationDataFromV1'
 import { ChoisirProfilEtAccepterCguValidation } from '@app/web/features/utilisateurs/use-cases/registration/ChoisirProfilEtAccepterCguValidation'
 import { LieuxActiviteValidation } from '@app/web/features/utilisateurs/use-cases/registration/LieuxActivite'
 import { RenseignerStructureEmployeuseValidation } from '@app/web/features/utilisateurs/use-cases/registration/RenseignerStructureEmployeuse'
 import { StructureEmployeuseLieuActiviteValidation } from '@app/web/features/utilisateurs/use-cases/registration/StructureEmployeuseLieuActivite'
+import { ValiderInscriptionValidation } from '@app/web/features/utilisateurs/use-cases/registration/ValiderInscriptionValidation'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
@@ -23,7 +24,6 @@ import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import { ProfilInscription } from '@prisma/client'
 import { v4 } from 'uuid'
-import z from 'zod'
 
 const inscriptionGuard = (
   targetUserId: string,
@@ -564,7 +564,7 @@ export const inscriptionRouter = router({
       },
     ),
   validerInscription: protectedProcedure
-    .input(z.object({ userId: z.string().uuid() }))
+    .input(ValiderInscriptionValidation)
     .mutation(async ({ input: { userId }, ctx: { user: sessionUser } }) => {
       inscriptionGuard(userId, sessionUser)
 

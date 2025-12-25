@@ -18,10 +18,10 @@ export type SessionUser = Pick<
   | 'name'
   | 'email'
   | 'phone'
+  | 'siret'
   | 'role'
   | 'isFixture'
   | 'profilInscription'
-  | 'checkedProfilInscription'
   | 'acceptationCgu'
   | 'featureFlags'
   | 'timezone'
@@ -75,4 +75,25 @@ export type SessionUser = Pick<
         organisations: Pick<RdvOrganisation, 'id' | 'name' | 'email'>[]
       })
     | null
+}
+
+/**
+ * Type guard to check if user has at least one structure employeuse (emploi)
+ * Narrows the type to ensure emplois is a non-empty array
+ */
+export const sessionUserHasStructureEmployeuse = <
+  T extends Pick<SessionUser, 'emplois'>,
+>(
+  user: T,
+): user is T & {
+  emplois: [
+    Pick<EmployeStructure, 'id'> & {
+      structure: Pick<Structure, 'nom' | 'codeInsee'>
+    },
+    ...(Pick<EmployeStructure, 'id'> & {
+      structure: Pick<Structure, 'nom' | 'codeInsee'>
+    })[],
+  ]
+} => {
+  return user.emplois.length > 0
 }

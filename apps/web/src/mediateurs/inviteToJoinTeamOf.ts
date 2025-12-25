@@ -1,13 +1,13 @@
 import type { CoordinateurUser } from '@app/web/auth/userTypeGuards'
+import { createInvitationUrl } from '@app/web/features/invitation/createInvitationUrl'
 import { prismaClient } from '@app/web/prismaClient'
-import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { sendInviteMediateurEmail } from './sendInviteMediateurEmail'
 import { sendInviteNewMediateurEmail } from './sendInviteNewMediateurEmail'
 
 const withInvitationFrom =
   (user: CoordinateurUser) =>
   ({ email }: { email: string }) => ({
-    url: `/invitations/${encodeSerializableState({ email, coordinateurId: user.coordinateur.id })}`,
+    url: createInvitationUrl({ email, coordinateurId: user.coordinateur.id }),
     email,
     from: user,
   })

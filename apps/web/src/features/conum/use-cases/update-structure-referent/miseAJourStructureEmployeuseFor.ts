@@ -3,7 +3,7 @@ import {
   findExistingStructureForMiseEnRelationActive,
   findStructureCartographieNationaleFromMiseEnRelation,
   MiseEnRelationWithStructureAdministrativeInfo,
-} from '@app/web/app/inscription/importFromConseillerNumerique/importFromConseillerNumerique.queries'
+} from '@app/web/features/legacy-mongo-v1/importFromConseillerNumerique.queries'
 import { prismaClient } from '@app/web/prismaClient'
 
 const createStructureFrom = async (

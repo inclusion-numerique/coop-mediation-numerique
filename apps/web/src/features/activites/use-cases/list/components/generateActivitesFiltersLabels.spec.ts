@@ -35,22 +35,21 @@ const MEDIATEURS_OPTIONS = [
     label: 'Coordinateur Inscrit avec tout (Mes statistiques)',
     value: {
       mediateurId: '379a0d7e-54ac-4db6-95c4-3752cdd05d32',
-      email:
-        'coordinateur-inscrit-avec-tout@coop-mediation-numerique.anct.gouv.fr',
+      email: 'coordinateur-inscrit-avec-tout@coop-numerique.anct.gouv.fr',
     },
   },
   {
     label: 'Médiateur Avec activités',
     value: {
       mediateurId: '303381cc-3da7-433d-a553-1a5f76465989',
-      email: 'mediateur-avec-activites@coop-mediation-numerique.anct.gouv.fr',
+      email: 'mediateur-avec-activites@coop-numerique.anct.gouv.fr',
     },
   },
   {
     label: 'Conseiller Num Inscrit',
     value: {
       mediateurId: '1ae07d95-316c-489f-893a-d17052c883b7',
-      email: 'conseiller-num-inscrit@coop-mediation-numerique.anct.gouv.fr',
+      email: 'conseiller-num-inscrit@coop-numerique.anct.gouv.fr',
     },
   },
 ]

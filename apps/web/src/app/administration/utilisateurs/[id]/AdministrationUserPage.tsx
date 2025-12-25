@@ -199,44 +199,12 @@ const AdministrationUserPage = async ({
           ) ? (
             <Notice
               className="fr-notice--success fr-mb-8v"
-              title={
-                <>
-                  Dans la base de données des conseillers numériques V1 avec
-                  contrat actif{' '}
-                  <Button
-                    size="small"
-                    className="fr-ml-2v"
-                    priority="tertiary no outline"
-                    iconId="fr-icon-arrow-right-line"
-                    linkProps={{
-                      href: `/administration/conseillers-v1/${conseillerNumeriqueInfo.conseiller.id}`,
-                    }}
-                  >
-                    Voir les détails du conseiller V1
-                  </Button>
-                </>
-              }
+              title="Dans la base de données des conseillers numériques V1 avec contrat actif"
             />
           ) : (
             <Notice
               className="fr-notice--warning fr-mb-8v"
-              title={
-                <>
-                  Dans la base de données des conseillers numériques V1 sans
-                  contrat actif{' '}
-                  <Button
-                    size="small"
-                    className="fr-ml-2v"
-                    priority="tertiary no outline"
-                    iconId="fr-icon-arrow-right-line"
-                    linkProps={{
-                      href: `/administration/conseillers-v1/${conseillerNumeriqueInfo.conseiller.id}`,
-                    }}
-                  >
-                    Voir les détails du conseiller V1
-                  </Button>
-                </>
-              }
+              title="Dans la base de données des conseillers numériques V1 sans contrat actif"
             />
           )
         ) : (
@@ -378,15 +346,7 @@ const AdministrationUserPage = async ({
               items={[
                 {
                   label: 'ID Conseiller Numérique',
-                  value: (
-                    <Link
-                      className="fr-link"
-                      href={`/administration/conseillers-v1/${mediateur.conseillerNumerique.id}`}
-                      target="_blank"
-                    >
-                      {mediateur.conseillerNumerique.id}
-                    </Link>
-                  ),
+                  value: mediateur.conseillerNumerique.id,
                 },
                 {
                   label: 'Nombre de CRAs v1 importés',
