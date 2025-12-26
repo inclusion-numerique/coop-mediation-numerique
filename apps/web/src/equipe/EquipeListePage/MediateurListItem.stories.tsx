@@ -15,6 +15,7 @@ const Template = (props: MediateurListProps) => (
 )
 
 export const conseillerNumeriqueFinDeContrat: Story = {
+  name: 'Conseiller numérique fin de contrat',
   args: {
     firstName: 'Henri',
     lastName: 'Doe',
@@ -26,10 +27,9 @@ export const conseillerNumeriqueFinDeContrat: Story = {
   },
   render: Template,
 }
-conseillerNumeriqueFinDeContrat.storyName =
-  'Conseiller numérique fin de contrat'
 
 export const ConseillerNumeriqueActif: Story = {
+  name: 'Conseiller numérique actif',
   args: {
     firstName: 'Alice',
     lastName: 'Doe',
@@ -40,9 +40,9 @@ export const ConseillerNumeriqueActif: Story = {
   },
   render: Template,
 }
-ConseillerNumeriqueActif.storyName = 'Conseiller numérique actif'
 
 export const ConseillerNumeriqueInactif: Story = {
+  name: 'Conseiller numérique inactif',
   args: {
     firstName: 'Olivier',
     lastName: 'Doe',
@@ -53,9 +53,9 @@ export const ConseillerNumeriqueInactif: Story = {
   },
   render: Template,
 }
-ConseillerNumeriqueInactif.storyName = 'Conseiller numérique inactif'
 
 export const MediateurIvitationEnoyee: Story = {
+  name: 'Invitation envoyé à un médiateur',
   args: {
     firstName: 'Mary',
     lastName: 'Doe',
@@ -65,9 +65,9 @@ export const MediateurIvitationEnoyee: Story = {
   },
   render: Template,
 }
-MediateurIvitationEnoyee.storyName = 'Invitation envoyé à un médiateur'
 
 export const MediateurActif: Story = {
+  name: 'Médiateur actif',
   args: {
     firstName: 'Alfred',
     lastName: 'Doe',
@@ -77,14 +77,12 @@ export const MediateurActif: Story = {
   },
   render: Template,
 }
-MediateurActif.storyName = 'Médiateur actif'
 
 export const MediateurIvitationEnoyeeMailOnly: Story = {
+  name: 'Invitation envoyé à un médiateur non inscrit',
   args: {
     email: 'john@doe.com',
     status: 'Invitation envoyée',
   },
   render: Template,
 }
-MediateurIvitationEnoyeeMailOnly.storyName =
-  'Invitation envoyé à un médiateur non inscrit'

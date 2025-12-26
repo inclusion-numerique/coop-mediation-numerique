@@ -30,18 +30,14 @@ export default {
   framework: {
     name: '@storybook/nextjs',
     options: {
-      nextConfigPath: path.resolve(dirname, '../../../apps/web/next.config.js'),
+      nextConfigPath: path.resolve(
+        dirname,
+        '../../../apps/web/next.config.mjs',
+      ),
     },
   },
   staticDirs: ['../../../apps/web/public', '../public'],
-  features: {
-    interactionsDebugger: true,
-    storyStoreV7: true,
-  },
-  docs: {
-    docsPage: true,
-    autodocs: true,
-  },
+  docs: {},
   env: (config) => ({
     ...config,
     ...dotenvVariables(),
