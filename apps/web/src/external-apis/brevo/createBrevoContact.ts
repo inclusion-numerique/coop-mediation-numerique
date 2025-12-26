@@ -1,3 +1,4 @@
+import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import axios, { AxiosResponse } from 'axios'
 import pThrottle from 'p-throttle'
@@ -85,4 +86,7 @@ const createContactImmediate = ({
     },
   )
 
-export const createContact = brevoApiThrottle(createContactImmediate)
+export const createBrevoContact = brevoApiThrottle(createContactImmediate)
+
+export const deploymentCanCreateBrevoContact = () =>
+  PublicWebAppConfig.isMain && !PublicWebAppConfig.isE2e
