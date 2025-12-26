@@ -20,7 +20,7 @@ export const profileInscriptionFromSlug = {
 } as const satisfies { [key in ProfileInscriptionSlug]: ProfilInscription }
 
 export const profileInscriptionLabels = {
-  Mediateur: 'Médiateur·rice numérique professionnel·le',
+  Mediateur: 'Médiateur·rice numérique',
   Coordinateur: 'Coordinateur·rice',
 }
 
@@ -28,7 +28,10 @@ export const profileInscriptionConseillerNumeriqueLabels = {
   ConseillerNumerique: 'Conseiller·ère numérique',
   CoordinateurConseillerNumerique:
     'Coordinateur·rice de conseillers numériques',
-}
+} as const
+
+export type ProfileInscriptionConseillerNumeriqueType =
+  keyof typeof profileInscriptionConseillerNumeriqueLabels
 
 export const allProfileInscriptionLabels: {
   [key in ProfilInscription]: string
@@ -50,44 +53,16 @@ export const lowerCaseProfileInscriptionLabels: {
 
 export const profileInscriptionValues = Object.keys({
   ...profileInscriptionLabels,
-  ...profileInscriptionConseillerNumeriqueLabels,
 }) as [ProfilInscription, ...ProfilInscription[]]
-
-export const profileInscriptionIllustrations: {
-  [key in ProfilInscription]: string
-} = {
-  Mediateur: '/images/iconographie/profil-mediateur.svg',
-  Coordinateur: '/images/iconographie/profil-coordinateur.svg',
-  ConseillerNumerique: '/images/iconographie/profil-conseiller-numerique.svg',
-  CoordinateurConseillerNumerique:
-    '/images/iconographie/profil-coordinateur-conseiller-numerique.svg',
-}
-
-export const profileInscriptionOptionsWithExtras = labelsToOptions(
-  profileInscriptionLabels,
-).map(({ label, value }) => ({
-  label,
-  value,
-  extra: {
-    illustration: profileInscriptionIllustrations[value],
-  },
-}))
-
-export const profileInscriptionConseillerNumeriqueOptionsWithExtras =
-  labelsToOptions(profileInscriptionConseillerNumeriqueLabels).map(
-    ({ label, value }) => ({
-      label,
-      value,
-      extra: {
-        illustration: profileInscriptionIllustrations[value],
-      },
-    }),
-  )
 
 export const computeUserProfile = (
   user: Pick<SessionUser, 'mediateur' | 'coordinateur'>,
 ): ProfilInscription => {
   if (user.coordinateur) {
+    if (user.coordinateur.conseillerNumeriqueId) {
+      return 'CoordinateurConseillerNumerique'
+    }
+
     return 'Coordinateur'
   }
 

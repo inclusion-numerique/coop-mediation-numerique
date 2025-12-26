@@ -20,7 +20,7 @@ export const OnboardingMesStatistiquesCoordinateur = () => (
       </>
     }
     stepIndex={1}
-    totalSteps={4}
+    totalSteps={3}
     previous={{ href: '/en-savoir-plus/' }}
     next={{ href: '/en-savoir-plus/coordinateur/mon-equipe' }}
     closeHref="/coop"

@@ -1,11 +1,7 @@
 import Image from 'next/image'
 import Onboarding from '../../_components/Onboarding'
 
-export const OnboardingMesStatistiques = ({
-  isConseillerNumerique,
-}: {
-  isConseillerNumerique: boolean
-}) => (
+export const OnboardingMesStatistiques = () => (
   <Onboarding
     image={
       <Image
@@ -16,7 +12,7 @@ export const OnboardingMesStatistiques = ({
         alt=""
       />
     }
-    title="Profitez de statistiques pour comprendre et suivre l’évolution de votre activité"
+    title="Profitez de statistiques pour comprendre et suivre l'évolution de votre activité"
     label={
       <>
         <span className="ri-chat-poll-line ri-lg fr-mr-1w" aria-hidden />
@@ -24,7 +20,7 @@ export const OnboardingMesStatistiques = ({
       </>
     }
     stepIndex={2}
-    totalSteps={isConseillerNumerique ? 5 : 4}
+    totalSteps={4}
     previous={{ href: '/en-savoir-plus/mes-activites' }}
     next={{ href: '/en-savoir-plus/mes-beneficiaires' }}
     closeHref="/coop"

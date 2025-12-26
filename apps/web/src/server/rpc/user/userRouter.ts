@@ -90,7 +90,6 @@ export const userRouter = router({
           donneesConseillerNumeriqueV1Importees: null,
           profilInscription: null,
           structureEmployeuseRenseignee: null,
-          checkedProfilInscription: null,
         },
       })
 

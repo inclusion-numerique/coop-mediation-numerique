@@ -1,11 +1,7 @@
 import Image from 'next/image'
 import Onboarding from '../../_components/Onboarding'
 
-export const OnboardingMesBeneficiaires = ({
-  isConseillerNumerique,
-}: {
-  isConseillerNumerique: boolean
-}) => (
+export const OnboardingMesBeneficiaires = () => (
   <Onboarding
     image={
       <Image
@@ -24,7 +20,7 @@ export const OnboardingMesBeneficiaires = ({
       </>
     }
     stepIndex={3}
-    totalSteps={isConseillerNumerique ? 5 : 4}
+    totalSteps={4}
     previous={{ href: '/en-savoir-plus/mes-statistiques' }}
     next={{ href: '/en-savoir-plus/mes-outils' }}
     closeHref="/coop"

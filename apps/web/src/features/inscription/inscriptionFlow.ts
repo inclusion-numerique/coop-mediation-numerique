@@ -1,0 +1,121 @@
+import type { ProfilInscription } from '@prisma/client'
+
+export type InscriptionFlowType = 'withDataspace' | 'withoutDataspace'
+
+export type InscriptionStep =
+  | 'initialize'
+  | 'choisir-role'
+  | 'verifier-informations'
+  | 'lieux-activite'
+  | 'recapitulatif'
+
+export type InscriptionFlowConfig = {
+  type: InscriptionFlowType
+  steps: InscriptionStep[]
+  currentStep: InscriptionStep
+  nextStep: InscriptionStep | null
+  previousStep: InscriptionStep | null
+}
+
+/**
+ * Get the inscription flow configuration based on user state
+ */
+export const getInscriptionFlow = ({
+  hasDataspaceData,
+}: {
+  hasDataspaceData: boolean
+}): InscriptionFlowType => {
+  if (hasDataspaceData) {
+    return 'withDataspace'
+  }
+  return 'withoutDataspace'
+}
+
+/**
+ * Get the next step in the inscription flow
+ */
+export const getNextInscriptionStep = ({
+  currentStep,
+  flowType,
+  profilInscription,
+  hasLieuxActivite,
+  isConseillerNumerique,
+}: {
+  currentStep: InscriptionStep
+  flowType: InscriptionFlowType
+  profilInscription: ProfilInscription | null
+  hasLieuxActivite: boolean
+  isConseillerNumerique: boolean
+}): InscriptionStep | null => {
+  if (flowType === 'withoutDataspace' || !isConseillerNumerique) {
+    switch (currentStep) {
+      case 'initialize':
+        return 'choisir-role'
+      case 'choisir-role':
+        if (profilInscription === 'Coordinateur') {
+          return 'recapitulatif'
+        }
+        return 'verifier-informations'
+      case 'verifier-informations':
+        // If mediateur, go to lieux activite
+        if (
+          profilInscription === 'Mediateur' ||
+          profilInscription === 'ConseillerNumerique'
+        ) {
+          return 'lieux-activite'
+        }
+        // If coordinateur, go directly to recap
+        return 'recapitulatif'
+      case 'lieux-activite':
+        return 'recapitulatif'
+      case 'recapitulatif':
+        return null
+      default:
+        return null
+    }
+  }
+
+  // Flow with Dataspace
+  switch (currentStep) {
+    case 'initialize':
+      // Si conseiller numerique sans lieu, on fait un flow total
+      if (profilInscription === 'ConseillerNumerique' && !hasLieuxActivite) {
+        return 'verifier-informations'
+      }
+      if (profilInscription === 'ConseillerNumerique' && hasLieuxActivite) {
+        return 'recapitulatif'
+      }
+
+      if (profilInscription === 'CoordinateurConseillerNumerique') {
+        return 'recapitulatif'
+      }
+
+      return 'choisir-role'
+    case 'lieux-activite':
+      return 'recapitulatif'
+    case 'recapitulatif':
+      return null
+    default:
+      return null
+  }
+}
+
+/**
+ * Get the URL path for a step
+ */
+export const getStepPath = (step: InscriptionStep): string => {
+  switch (step) {
+    case 'initialize':
+      return '/inscription/initialiser'
+    case 'choisir-role':
+      return '/inscription/choisir-role'
+    case 'verifier-informations':
+      return '/inscription/verifier-informations'
+    case 'lieux-activite':
+      return '/inscription/lieux-activite'
+    case 'recapitulatif':
+      return '/inscription/recapitulatif'
+    default:
+      return '/inscription'
+  }
+}
