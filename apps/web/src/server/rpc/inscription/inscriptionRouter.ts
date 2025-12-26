@@ -1,9 +1,10 @@
 import { sessionUserSelect } from '@app/web/auth/getSessionUserFromSessionToken'
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import {
-  createContact,
+  createBrevoContact,
+  deploymentCanCreateBrevoContact,
   toBrevoContact,
-} from '@app/web/external-apis/brevo/contact'
+} from '@app/web/external-apis/brevo/createBrevoContact'
 import { fetchConseillerNumeriqueV1Data } from '@app/web/external-apis/conseiller-numerique/fetchConseillerNumeriqueV1Data'
 import { isConseillerNumeriqueV1DataWithActiveMiseEnRelation } from '@app/web/external-apis/conseiller-numerique/isConseillerNumeriqueV1WithActiveMiseEnRelation'
 import { importCoordinateurMediationDataFromV1 } from '@app/web/features/legacy-mongo-v1/importCoordinateurMediationDataFromV1'
@@ -594,8 +595,8 @@ export const inscriptionRouter = router({
         },
       })
 
-      if (user != null && PublicWebAppConfig.isMain) {
-        await createContact({
+      if (user != null && deploymentCanCreateBrevoContact()) {
+        await createBrevoContact({
           contact: toBrevoContact(user),
           listIds: [ServerWebAppConfig.Brevo.usersListId],
         })
@@ -643,8 +644,11 @@ export const inscriptionRouter = router({
         update: {},
       })
 
-      if (sessionUser.inscriptionValidee != null && PublicWebAppConfig.isMain) {
-        await createContact({
+      if (
+        sessionUser.inscriptionValidee != null &&
+        deploymentCanCreateBrevoContact()
+      ) {
+        await createBrevoContact({
           contact: toBrevoContact({
             ...sessionUser,
             mediateur: { ...upsertedMediateur, conseillerNumerique: null },

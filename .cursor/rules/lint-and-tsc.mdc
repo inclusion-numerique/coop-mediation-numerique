@@ -1,0 +1,4 @@
+---
+alwaysApply: true
+---
+To run lints and typescript check in the web package (even only for one file), use the command `pnpm -F web lint:fix && pnpm -F web tsc`

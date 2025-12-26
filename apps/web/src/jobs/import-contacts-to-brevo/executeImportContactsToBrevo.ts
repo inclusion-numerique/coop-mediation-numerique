@@ -1,9 +1,9 @@
 import { output } from '@app/cli/output'
 import {
-  createContact,
+  createBrevoContact,
   onlyWithBrevoRole,
   toBrevoContact,
-} from '@app/web/external-apis/brevo/contact'
+} from '@app/web/external-apis/brevo/createBrevoContact'
 import { PrismaClient } from '@prisma/client'
 
 const userListId = Number.parseInt(process.env.BREVO_USERS_LIST_ID!, 10)
@@ -28,7 +28,7 @@ export const executeImportContactsToBrevo = async () => {
 
   const results = await Promise.allSettled(
     contacts.map((contact) =>
-      createContact({ contact, listIds: [userListId] }),
+      createBrevoContact({ contact, listIds: [userListId] }),
     ),
   )
 
