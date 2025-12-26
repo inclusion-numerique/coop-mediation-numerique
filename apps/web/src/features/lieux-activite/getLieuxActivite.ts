@@ -5,6 +5,7 @@ export const getLieuxActivite = async (mediateurId: string) =>
     where: {
       mediateurId,
       suppression: null,
+      fin: null,
     },
     select: {
       id: true,

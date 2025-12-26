@@ -53,7 +53,7 @@ export const getLieuxFiltersOptions = async ({
       u.email
     FROM mediateurs m
     INNER JOIN users u ON u.id = m.user_id
-    INNER JOIN mediateurs_en_activite mea ON mea.mediateur_id = m.id AND mea.suppression IS NULL
+    INNER JOIN mediateurs_en_activite mea ON mea.mediateur_id = m.id AND mea.suppression IS NULL AND mea.fin_activite IS NULL
     INNER JOIN structures s ON s.id = mea.structure_id AND s.suppression IS NULL
     WHERE u.deleted IS NULL
       AND SUBSTRING(s.code_insee FROM ${departementCodeFromInseeRegex}) = ${departementCode}

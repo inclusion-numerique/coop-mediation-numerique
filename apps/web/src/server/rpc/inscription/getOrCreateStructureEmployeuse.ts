@@ -47,6 +47,7 @@ export const getOrCreateStructureEmployeuse = async (
         adresse: structureEmployeuse.adresse,
         commune: structureEmployeuse.commune,
         codePostal: '',
+        creationParId: user?.id,
       },
       select: {
         id: true,
@@ -87,6 +88,7 @@ export const getOrCreateStructureEmployeuse = async (
       codePostal,
       longitude,
       latitude,
+      creationParId: user?.id,
     },
   })
 }

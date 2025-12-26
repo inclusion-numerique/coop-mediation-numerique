@@ -1,9 +1,7 @@
-import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
-import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { LieuActivitePageContent } from '@app/web/features/lieux-activite/components/LieuActivitePageContent'
-import { getLieuActiviteById } from '@app/web/features/lieux-activite/getLieuActiviteById'
+import { getLieuActivitePageData } from '@app/web/features/lieux-activite/getLieuActivitePageData'
 import { contentId } from '@app/web/utils/skipLinks'
 import { redirect } from 'next/navigation'
 import React from 'react'
@@ -14,33 +12,32 @@ const LieuActiviteDetailPage = async (props: {
   const params = await props.params
   await authenticateUser(`/connexion?suivant=/lieux-activite/${params.id}`)
 
-  const lieuActivite = await getLieuActiviteById(params.id)
+  const data = await getLieuActivitePageData({ id: params.id })
 
-  return lieuActivite?.structure == null ? (
+  if (!data) {
     redirect('/coop/lieux-activite')
-  ) : (
+  }
+
+  return (
     <>
       <SkipLinksPortal />
       <div className="fr-container">
         <main id={contentId} className="fr-container fr-flex">
           <LieuActivitePageContent
-            structure={lieuActivite.structure}
-            contentTop={
-              <>
-                <CoopBreadcrumbs
-                  parents={[
-                    {
-                      label: "Mes lieux d'activités",
-                      linkProps: { href: '/coop/lieux-activite/' },
-                    },
-                  ]}
-                  currentPage={lieuActivite.structure.nom}
-                />
-                <BackButton href="/coop/lieux-activite">
-                  Retour à la liste
-                </BackButton>
-              </>
-            }
+            data={data}
+            breadcrumbs={{
+              currentPage: data.structure.nom,
+              parents: [
+                {
+                  label: "Mes lieux d'activités",
+                  linkProps: { href: '/coop/lieux-activite/' },
+                },
+              ],
+            }}
+            backButton={{
+              label: 'Retour à la liste',
+              href: '/coop/lieux-activite',
+            }}
           />
         </main>
       </div>

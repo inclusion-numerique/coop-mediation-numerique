@@ -1,10 +1,15 @@
 'use client'
 
 import LieuActiviteSideMenu from '@app/web/app/coop/(full-width-layout)/lieux-activite/_components/LieuActiviteSideMenu'
+import CoopBreadcrumbs, {
+  type CoopBreadcrumbsProps,
+} from '@app/web/app/coop/CoopBreadcrumbs'
+import BackButton from '@app/web/components/BackButton'
 import { DisplayOnCartography } from '@app/web/components/structure/DisplayOnCartography'
 import styles from '@app/web/components/structure/fields/StructureFormFields.module.css'
 import { LieuAccueillantPublicTitle } from '@app/web/components/structure/titles/LieuAccueillantPublicTitle'
 import { ServiceInclusionNumeriqueTitle } from '@app/web/components/structure/titles/ServiceInclusionNumeriqueTitle'
+import { LieuActivitePageData } from '@app/web/features/lieux-activite/getLieuActivitePageData'
 import { FraisAChargeLabel } from '@app/web/features/structures/fraisACharge'
 import { Itinerance, ModaliteAcces } from '@prisma/client'
 import classNames from 'classnames'
@@ -18,30 +23,16 @@ import TypesDePublicsAccueillisEditCard from './types-de-publics-accueillis/Type
 import VisiblePourCartographieNationaleFields from './VisiblePourCartographieNationaleFields'
 
 export const LieuActivitePageContent = ({
-  structure,
-  contentTop,
+  data: { structure },
+  breadcrumbs,
+  backButton,
 }: {
-  structure: {
-    id: string
-    nom: string
-    adresse: string
-    commune: string
-    codePostal: string
-    codeInsee?: string | null
-    latitude: number | null
-    longitude: number | null
-    complementAdresse?: string | null
-    siret?: string | null
-    rna?: string | null
-    telephone?: string | null
-    structureCartographieNationaleId: string | null
-    visiblePourCartographieNationale: boolean
-    itinerance: Itinerance[]
-    fraisACharge: FraisAChargeLabel[]
-    modalitesAcces: ModaliteAcces[]
-    courriels: string[]
+  data: LieuActivitePageData
+  breadcrumbs: CoopBreadcrumbsProps
+  backButton: {
+    label: string
+    href: string
   }
-  contentTop?: ReactNode
 }) => {
   const [showSideMenu, setShowSideMenu] = useState(
     structure.visiblePourCartographieNationale,
@@ -60,7 +51,8 @@ export const LieuActivitePageContent = ({
           styles.structureForm,
         )}
       >
-        {contentTop}
+        <CoopBreadcrumbs {...breadcrumbs} />
+        <BackButton href={backButton.href}>{backButton.label}</BackButton>
         <h1 className="fr-page-title fr-h2">{structure.nom}</h1>
         <div className="fr-border fr-border-radius--8">
           <InformationsGeneralesEditCard {...structure} />

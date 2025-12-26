@@ -1,4 +1,5 @@
 import { Typologies } from '@app/web/components/structure/Typologies'
+import { getStructureCartographieLink } from '@app/web/features/mon-reseau/use-cases/lieux/getStructureLink'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { Typologie } from '@prisma/client'
@@ -91,7 +92,9 @@ export const LieuActivite = ({
           className="fr-link"
           target="_blank"
           rel="noreferrer"
-          href={`https://cartographie.societenumerique.gouv.fr/cartographie/${structureCartographieNationaleId}/details`}
+          href={getStructureCartographieLink({
+            structureCartographieNationaleId,
+          })}
         >
           Voir sur la cartographie nationale des lieux d’inclusion numérique
         </Link>

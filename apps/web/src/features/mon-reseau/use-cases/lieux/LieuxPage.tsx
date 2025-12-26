@@ -150,6 +150,7 @@ const LieuxPage = ({
               key={lieu.id}
               lieu={lieu}
               departementCode={departement?.code ?? ''}
+              lieuPageRetourHref={retourHref}
             />
           ))}
 

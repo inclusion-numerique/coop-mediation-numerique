@@ -58,7 +58,7 @@ const getLieuxByIds = async ({
       FROM mediateurs_en_activite mea
       JOIN mediateurs m ON m.id = mea.mediateur_id
       JOIN users u ON u.id = m.user_id
-      WHERE mea.suppression IS NULL
+      WHERE mea.suppression IS NULL AND mea.fin_activite IS NULL
         AND u.deleted IS NULL
         AND u.inscription_validee IS NOT NULL
         AND mea.structure_id = ANY(${ids}::UUID[])
@@ -70,7 +70,7 @@ const getLieuxByIds = async ({
       FROM employes_structures es
       JOIN users u ON u.id = es.user_id
       JOIN mediateurs m ON m.user_id = u.id
-      WHERE es.suppression IS NULL
+      WHERE es.suppression IS NULL AND es.fin_emploi IS NULL
         AND u.deleted IS NULL
         AND u.inscription_validee IS NOT NULL
         AND es.structure_id = ANY(${ids}::UUID[])
@@ -150,7 +150,7 @@ export const searchLieux = async ({
             s.id,
             s.modification
           FROM structures s
-          LEFT JOIN mediateurs_en_activite mea ON mea.structure_id = s.id AND mea.suppression IS NULL
+          LEFT JOIN mediateurs_en_activite mea ON mea.structure_id = s.id AND mea.suppression IS NULL AND mea.fin_activite IS NULL
           WHERE s.suppression IS NULL
             AND SUBSTRING(s.code_insee FROM ${departementCodeFromInseeRegex}) = ${departementCode}
             AND ${searchCondition}
@@ -168,7 +168,7 @@ export const searchLieux = async ({
             s.id,
             s.nom
           FROM structures s
-          LEFT JOIN mediateurs_en_activite mea ON mea.structure_id = s.id AND mea.suppression IS NULL
+          LEFT JOIN mediateurs_en_activite mea ON mea.structure_id = s.id AND mea.suppression IS NULL AND mea.fin_activite IS NULL
           WHERE s.suppression IS NULL
             AND SUBSTRING(s.code_insee FROM ${departementCodeFromInseeRegex}) = ${departementCode}
             AND ${searchCondition}
@@ -187,7 +187,7 @@ export const searchLieux = async ({
   const countResult = await prismaClient.$queryRaw<[{ count: number }]>`
     SELECT COUNT(DISTINCT s.id)::integer AS count
     FROM structures s
-    LEFT JOIN mediateurs_en_activite mea ON mea.structure_id = s.id AND mea.suppression IS NULL
+    LEFT JOIN mediateurs_en_activite mea ON mea.structure_id = s.id AND mea.suppression IS NULL AND mea.fin_activite IS NULL
     WHERE s.suppression IS NULL
       AND SUBSTRING(s.code_insee FROM ${departementCodeFromInseeRegex}) = ${departementCode}
       AND ${searchCondition}

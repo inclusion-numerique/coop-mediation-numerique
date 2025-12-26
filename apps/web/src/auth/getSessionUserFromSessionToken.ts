@@ -44,6 +44,7 @@ export const sessionUserSelect = {
     },
     where: {
       suppression: null,
+      fin: null,
     },
     orderBy: {
       modification: 'desc',
@@ -84,7 +85,7 @@ export const sessionUserSelect = {
       },
       _count: {
         select: {
-          enActivite: { where: { suppression: null } },
+          enActivite: { where: { suppression: null, fin: null } },
         },
       },
     },

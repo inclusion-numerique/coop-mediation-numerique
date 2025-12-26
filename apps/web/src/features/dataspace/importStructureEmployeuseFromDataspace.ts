@@ -163,8 +163,8 @@ export const importStructureEmployeuseFromDataspace = async ({
     },
     select: {
       id: true,
-      creation: true,
-      suppression: true,
+      debut: true,
+      fin: true,
     },
   })
 
@@ -177,8 +177,8 @@ export const importStructureEmployeuseFromDataspace = async ({
 
     // Update existing emploi with contract dates if different
     if (
-      existingEmploi.creation.getTime() !== creationDate.getTime() ||
-      existingEmploi.suppression?.getTime() !== suppressionDate?.getTime()
+      existingEmploi.debut.getTime() !== creationDate.getTime() ||
+      existingEmploi.fin?.getTime() !== suppressionDate?.getTime()
     ) {
       log('Updating emploi dates', {
         emploiId: existingEmploi.id,
@@ -191,7 +191,8 @@ export const importStructureEmployeuseFromDataspace = async ({
       await prismaClient.employeStructure.update({
         where: { id: existingEmploi.id },
         data: {
-          creation: creationDate,
+          debut: creationDate,
+          fin: suppressionDate,
           suppression: suppressionDate,
         },
       })
@@ -211,7 +212,8 @@ export const importStructureEmployeuseFromDataspace = async ({
       data: {
         userId,
         structureId: structure.id,
-        creation: creationDate,
+        debut: creationDate,
+        fin: suppressionDate,
         suppression: suppressionDate,
       },
     })

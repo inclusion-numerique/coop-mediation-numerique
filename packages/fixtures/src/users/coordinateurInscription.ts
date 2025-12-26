@@ -33,6 +33,7 @@ export const coordinateurInscription = givenUser({
       create: {
         id: 'c9501fea-d9de-4020-9763-59e5ccd41275',
         structureId: structureEmployeuse.id,
+        debut: new Date(),
       },
     },
   },

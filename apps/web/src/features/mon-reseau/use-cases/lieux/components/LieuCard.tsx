@@ -2,7 +2,6 @@ import classNames from 'classnames'
 import { formatDate } from 'date-fns'
 import Link from 'next/link'
 import type { LieuForList } from '../db/searchLieux'
-import { getStructureLink } from '../getStructureLink'
 import CartographyIndicator, {
   getCartographyStatus,
 } from './CartographyIndicator'
@@ -11,15 +10,15 @@ import styles from './LieuCard.module.css'
 const LieuCard = ({
   lieu,
   departementCode,
+  lieuPageRetourHref,
 }: {
   lieu: LieuForList
   departementCode: string
+  lieuPageRetourHref: string
 }) => {
   const mediateursCount = lieu.mediateursCount
 
-  const lieuHref = getStructureLink({
-    structureId: lieu.id,
-  })
+  const lieuHref = `/coop/mon-reseau/lieux/${lieu.id}?retour=${encodeURIComponent(lieuPageRetourHref)}`
 
   const formattedDate = formatDate(new Date(lieu.modification), 'dd.MM.yyyy')
 

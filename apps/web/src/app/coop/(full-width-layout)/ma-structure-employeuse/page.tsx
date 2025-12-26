@@ -26,6 +26,7 @@ const MaStructureEmployeusePage = async () => {
     where: {
       userId: user.id,
       suppression: null,
+      fin: null,
     },
     orderBy: {
       modification: 'desc',
@@ -61,6 +62,7 @@ const MaStructureEmployeusePage = async () => {
             mediateurId: user.mediateur.id,
             structureId: structureEmployeuse.id,
             suppression: null,
+            fin: null,
           },
         })
       : null

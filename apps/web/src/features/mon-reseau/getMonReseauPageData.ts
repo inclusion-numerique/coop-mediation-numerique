@@ -18,10 +18,10 @@ const countActeursInDepartement = ({
   prismaClient.$queryRaw<[{ count: number }]>`
     SELECT COUNT(DISTINCT u.id)::integer AS count
     FROM users u
-    LEFT JOIN employes_structures es ON es.user_id = u.id AND es.suppression IS NULL
+    LEFT JOIN employes_structures es ON es.user_id = u.id AND es.suppression IS NULL AND es.fin_emploi IS NULL
     LEFT JOIN structures s1 ON s1.id = es.structure_id
     LEFT JOIN mediateurs m ON m.user_id = u.id
-    LEFT JOIN mediateurs_en_activite mea ON mea.mediateur_id = m.id AND mea.suppression IS NULL
+    LEFT JOIN mediateurs_en_activite mea ON mea.mediateur_id = m.id AND mea.suppression IS NULL AND mea.fin_activite IS NULL
     LEFT JOIN structures s2 ON s2.id = mea.structure_id
     WHERE u.deleted IS NULL
       AND u.inscription_validee IS NOT NULL

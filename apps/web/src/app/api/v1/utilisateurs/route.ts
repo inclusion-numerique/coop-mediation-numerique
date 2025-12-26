@@ -289,6 +289,8 @@ export type UtilisateurAttributes = {
   emplois: Array<{
     id: string
     structure_id: string
+    debut: string
+    fin: string | null
     creation: string
     modification: string
     suppression: string | null
@@ -300,6 +302,8 @@ export type UtilisateurAttributes = {
     en_activite: Array<{
       id: string
       structure_id: string
+      debut: string
+      fin: string | null
       creation: string
       modification: string
       suppression: string | null
@@ -590,6 +594,8 @@ export const GET = createApiV1Route
           emplois: u.emplois.map((emploi) => ({
             id: emploi.id,
             structure_id: emploi.structureId,
+            debut: emploi.debut.toISOString(),
+            fin: emploi.fin?.toISOString() ?? null,
             creation: emploi.creation.toISOString(),
             modification: emploi.modification.toISOString(),
             suppression: emploi.suppression?.toISOString() ?? null,
@@ -603,6 +609,8 @@ export const GET = createApiV1Route
                 en_activite: u.mediateur.enActivite.map((ma) => ({
                   id: ma.id,
                   structure_id: ma.structureId,
+                  debut: ma.debut.toISOString(),
+                  fin: ma.fin?.toISOString() ?? null,
                   creation: ma.creation.toISOString(),
                   modification: ma.modification.toISOString(),
                   suppression: ma.suppression

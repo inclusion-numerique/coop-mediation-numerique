@@ -1,25 +1,22 @@
-import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
-import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { LieuActivitePageContent } from '@app/web/features/lieux-activite/components/LieuActivitePageContent'
 import { getLieuActivitePageData } from '@app/web/features/lieux-activite/getLieuActivitePageData'
-import { prismaClient } from '@app/web/prismaClient'
 import { contentId } from '@app/web/utils/skipLinks'
 import { redirect } from 'next/navigation'
+import React from 'react'
 
 const LieuActiviteDetailPage = async (props: {
-  params: Promise<{ mediateurId: string; lieuId: string }>
+  params: Promise<{ id: string; retour?: string }>
 }) => {
   const params = await props.params
-  await authenticateUser(`/connexion?suivant=/lieux-activite/${params.lieuId}`)
+  await authenticateUser(`/connexion?suivant=/lieux-activite/${params.id}`)
+  const { retour } = params
 
-  const mediateur = await prismaClient.mediateur.findUnique({
-    where: { id: params.mediateurId },
-    select: { user: { select: { name: true } } },
-  })
+  const data = await getLieuActivitePageData({ id: params.id })
 
-  const data = await getLieuActivitePageData({ id: params.lieuId })
+  const retourHref = retour ?? '/coop/mon-reseau/lieux'
+  const retourLabel = 'Retour'
 
   if (!data) {
     redirect('/coop/lieux-activite')
@@ -28,7 +25,7 @@ const LieuActiviteDetailPage = async (props: {
   return (
     <>
       <SkipLinksPortal />
-      <div className="fr-container ">
+      <div className="fr-container">
         <main id={contentId} className="fr-container fr-flex">
           <LieuActivitePageContent
             data={data}
@@ -36,18 +33,18 @@ const LieuActiviteDetailPage = async (props: {
               currentPage: data.structure.nom,
               parents: [
                 {
-                  label: 'Mon équipe',
-                  linkProps: { href: '/coop/mon-equipe/' },
+                  label: 'Mon réseau',
+                  linkProps: { href: '/coop/mon-reseau/' },
                 },
                 {
-                  label: mediateur?.user.name ?? 'Médiateur',
-                  linkProps: { href: `/coop/mon-equipe/${params.mediateurId}` },
+                  label: 'Annuaire des lieux d’activités',
+                  linkProps: { href: '/coop/mon-reseau/lieux' },
                 },
               ],
             }}
             backButton={{
-              label: `Retour à la fiche de ${mediateur?.user.name}`,
-              href: `/coop/mon-equipe/${params.mediateurId}`,
+              label: retourLabel,
+              href: retourHref,
             }}
           />
         </main>

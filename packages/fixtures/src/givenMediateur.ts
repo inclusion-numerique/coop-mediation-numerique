@@ -48,6 +48,7 @@ export const givenMediateur = ({
               create: {
                 id: enActiviteId,
                 structureId: mediateque.id,
+                debut: new Date(),
               },
             },
           },
@@ -62,6 +63,7 @@ export const givenMediateur = ({
         create: {
           id: emploiId,
           structureId: structureEmployeuse.id,
+          debut: new Date(),
         },
       },
     },

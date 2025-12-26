@@ -139,8 +139,7 @@ export const importStructureEmployeuseFromSiret = async ({
     data: {
       userId,
       structureId: structure.id,
-      creation: new Date(),
-      suppression: null,
+      debut: new Date(),
     },
   })
 

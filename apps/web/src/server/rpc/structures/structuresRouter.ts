@@ -84,11 +84,14 @@ export const structuresRouter = router({
           siteWeb,
           ficheAccesLibre,
           horaires,
+          creationParId: user.id,
           mediateursEnActivite: lieuActiviteMediateurId
             ? {
                 create: {
                   id: v4(),
                   mediateurId: lieuActiviteMediateurId,
+                  debut: new Date(),
+                  creationParId: user.id,
                 },
               }
             : undefined,
