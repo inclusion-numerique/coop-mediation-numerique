@@ -9,6 +9,7 @@ export default {
 type Story = StoryObj<typeof Accueil>
 
 export const Statistiques: Story = {
+  name: 'Accueil',
   args: {
     firstName: 'John',
     name: 'Doe',
@@ -17,4 +18,3 @@ export const Statistiques: Story = {
     timezone: 'Europe/Paris',
   },
 }
-Statistiques.storyName = 'Accueil'

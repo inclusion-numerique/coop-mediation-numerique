@@ -233,7 +233,7 @@ export default {
 type Story = StoryObj<typeof MesStatistiques>
 
 export const Statistiques: Story = {
-  storyName: 'Statistiques',
+  name: 'Statistiques',
   args: {
     ...statistiquesPageData,
     codeInsee: '75101',
