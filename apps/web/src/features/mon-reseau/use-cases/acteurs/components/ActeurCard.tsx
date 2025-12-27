@@ -1,8 +1,10 @@
+import { getActeurIconUrl } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurIcon'
+import { allProfileInscriptionLabels } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
+import { getUserProfil } from '@app/web/features/utilisateurs/utils/getUserProfil'
 import classNames from 'classnames'
 import Link from 'next/link'
 import type { ActeurForList } from '../db/searchActeurs'
 import { getActeurPageUrl } from '../getActeurPageUrl'
-import { acteurRoleLabels } from '../validation/ActeursFilters'
 import styles from './ActeurCard.module.css'
 
 const getActeurDisplayName = (acteur: ActeurForList): string => {
@@ -10,18 +12,6 @@ const getActeurDisplayName = (acteur: ActeurForList): string => {
     return `${acteur.firstName} ${acteur.lastName}`
   }
   return acteur.name ?? acteur.email ?? 'Acteur inconnu'
-}
-
-const getActeurRole = (
-  acteur: ActeurForList,
-): 'conseiller_numerique' | 'mediateur_numerique' | null => {
-  if (acteur.mediateur?.conseillerNumerique) {
-    return 'conseiller_numerique'
-  }
-  if (acteur.mediateur) {
-    return 'mediateur_numerique'
-  }
-  return null
 }
 
 const getCoordinateurInfo = (
@@ -51,58 +41,67 @@ const ActeurCard = ({
   currentPath: string
 }) => {
   const displayName = getActeurDisplayName(acteur)
-  const role = getActeurRole(acteur)
+  const profil = getUserProfil(acteur)
   const coordinateurInfo = getCoordinateurInfo(acteur)
   const lieuxActiviteCount = acteur.mediateur?._count.enActivite ?? 0
 
-  const acteurHref = getActeurPageUrl({
+  const retour = `${currentPath}#${acteur.id}`
+
+  const acteurPageUrl = getActeurPageUrl({
     userId: acteur.id,
-    retour: currentPath,
+    retour,
+    anchor: acteur.id,
   })
 
+  const acteurIconUrl = getActeurIconUrl(profil)
+
   return (
-    <div
+    <article
+      id={acteur.id}
       className={classNames(
         'fr-enlarge-link fr-border-bottom fr-pt-4v fr-px-2v fr-pb-6v',
         styles.card,
       )}
     >
-      <p className="fr-text--bold fr-text--lg fr-mb-1v fr-text-title--blue-france">
-        <Link href={acteurHref} prefetch={false}>
+      <p className="fr-text--bold fr-text--lg fr-mb-2v fr-text-title--blue-france">
+        <Link href={acteurPageUrl} prefetch={false}>
           {displayName}
         </Link>
       </p>
 
-      {role && (
-        <p className="fr-text--sm fr-mb-1v fr-flex fr-align-items-center">
-          <span
-            className="ri-map-pin-user-line fr-mr-1w fr-text-label--red-marianne"
-            aria-hidden
+      <p className="fr-text--sm fr-mb-2v fr-flex fr-align-items-center">
+        {!!acteurIconUrl && (
+          <img
+            src={acteurIconUrl}
+            alt={allProfileInscriptionLabels[profil]}
+            className="fr-mr-1w"
+            width={18}
+            height={18}
           />
-          {acteurRoleLabels[role]}
-          {coordinateurInfo && (
-            <>
-              {' '}
-              coordonné par{' '}
-              <Link
-                className={classNames(
-                  'fr-link fr-link--sm fr-ml-1v',
-                  styles.innerLink,
-                )}
-                href={getActeurPageUrl({
-                  userId: coordinateurInfo.userId,
-                  retour: currentPath,
-                })}
-                prefetch={false}
-              >
-                {coordinateurInfo.name}
-              </Link>
-            </>
-          )}
-        </p>
-      )}
+        )}
+        {allProfileInscriptionLabels[profil]}
+        {coordinateurInfo && (
+          <>
+            {' '}
+            coordonné par{' '}
+            <Link
+              className={classNames(
+                'fr-link fr-link--sm fr-ml-1v',
+                styles.innerLink,
+              )}
+              href={getActeurPageUrl({
+                userId: coordinateurInfo.userId,
+                retour,
+              })}
+              prefetch={false}
+            >
+              {coordinateurInfo.name}
+            </Link>
+          </>
+        )}
+      </p>
 
-      <div className="fr-flex fr-flex-wrap fr-flex-gap-2v fr-text--sm fr-text-mention--grey fr-mb-2v">
+      <div className="fr-flex fr-flex-wrap fr-flex-gap-2v fr-text--sm fr-text-mention--grey fr-mb-4v">
         {acteur.phone && (
           <span className="fr-flex fr-align-items-center">
             <span className="ri-phone-line fr-mr-1v" aria-hidden />
@@ -122,7 +121,7 @@ const ActeurCard = ({
         <Link
           href={getActeurPageUrl({
             userId: acteur.id,
-            retour: currentPath,
+            retour,
             anchor: 'lieux-activite',
           })}
           prefetch={false}
@@ -130,10 +129,10 @@ const ActeurCard = ({
         >
           <span className="ri-home-office-fill fr-mr-1v" aria-hidden />
           {lieuxActiviteCount} {lieuxActiviteCount === 1 ? 'lieu' : 'lieux'}{' '}
-          d'activité
+          d’activité
         </Link>
       )}
-    </div>
+    </article>
   )
 }
 

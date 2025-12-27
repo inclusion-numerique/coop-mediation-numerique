@@ -1,18 +1,8 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
+import { departementCodeFromInseeRegex } from '@app/web/features/mon-reseau/departementCodeFromInseeRegex'
 import { prismaClient } from '@app/web/prismaClient'
 import { getDepartementsFromCodesInsee } from '@app/web/utils/getDepartementFromCodeInsee'
-import { Prisma } from '@prisma/client'
-
-/**
- * Regex pattern for extracting department code from INSEE code
- * - 97x or 98x → DOM-TOM (3 digits)
- * - 2A / 2B → Corsica
- * - 00-95 → Metropolitan France
- */
-const departementCodeFromInseeRegex = Prisma.raw(
-  "'^(97[0-9]|98[0-9]|[0-9]{2}|2[AB])'",
-)
 
 export const getActeursFiltersOptions = async ({
   departementCode,
@@ -41,12 +31,17 @@ export const getActeursFiltersOptions = async ({
     ORDER BY s.commune ASC
   `
 
-  const communesOptions: SelectOption[] = communes.map(
-    ({ code, code_postal, commune }) => ({
+  const communesOptions: SelectOption[] = communes
+    .filter(
+      ({ code_postal, commune }) => !!code_postal?.trim() && !!commune?.trim(),
+    ) // Filter out missing communes
+    .map(({ code, code_postal, commune }) => ({
       value: code,
-      label: `${commune} · ${code_postal}`,
-    }),
-  )
+      label:
+        !!commune && !!code_postal
+          ? `${commune} · ${code_postal}`
+          : `${commune}${code_postal}`,
+    }))
 
   // Get departements from communes found
   const departementsOptions: SelectOption[] = getDepartementsFromCodesInsee(

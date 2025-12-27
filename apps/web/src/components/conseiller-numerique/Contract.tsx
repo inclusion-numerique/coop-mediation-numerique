@@ -9,15 +9,15 @@ const showContratInfoFeatureFlag = true
 const Contract = ({
   isCoordinateur,
   type,
-  start,
-  end,
+  debut,
+  fin,
   finDeContrat,
   idPGConum,
 }: {
   isCoordinateur: boolean
   type: string
-  start: string | null
-  end: string | null
+  debut: string | null
+  fin: string | null
   finDeContrat: AlerteFinContrat | null
   idPGConum?: number | null
 }) =>
@@ -78,20 +78,20 @@ const Contract = ({
             <span className="fr-text-mention--grey">Type de contrat</span>
             <span className="fr-text--semi-bold">{type}</span>
           </div>
-          {start && (
+          {debut && (
             <div
               className={`fr-col-${idPGConum == null ? '4' : '3'} fr-flex fr-direction-column`}
             >
               <span className="fr-text-mention--grey">Date de début</span>
-              <span className="fr-text--semi-bold">{start}</span>
+              <span className="fr-text--semi-bold">{debut}</span>
             </div>
           )}
-          {end && (
+          {fin && (
             <div
               className={`fr-col-${idPGConum == null ? '4' : '3'} fr-flex fr-direction-column`}
             >
               <span className="fr-text-mention--grey">Date de fin</span>
-              <span className="fr-text--semi-bold">{end}</span>
+              <span className="fr-text--semi-bold">{fin}</span>
             </div>
           )}
         </div>

@@ -7,7 +7,7 @@ export const acteurRoleValues = [
 
 export type ActeurRole = (typeof acteurRoleValues)[number]
 
-export const acteurRoleLabels: Record<ActeurRole, string> = {
+export const acteurRoleLabels: { [key in ActeurRole]: string } = {
   conseiller_numerique: 'Conseiller Numérique',
   mediateur_numerique: 'Médiateur numérique',
 }

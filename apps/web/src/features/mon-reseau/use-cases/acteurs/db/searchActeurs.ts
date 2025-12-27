@@ -20,6 +20,12 @@ const acteurSelect = {
   name: true,
   email: true,
   phone: true,
+  coordinateur: {
+    select: {
+      id: true,
+      conseillerNumeriqueId: true,
+    },
+  },
   mediateur: {
     select: {
       id: true,

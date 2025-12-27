@@ -1,7 +1,6 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
-import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import type { Departement } from '@app/web/data/collectivites-territoriales/departements'
@@ -12,7 +11,6 @@ import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/Pagination
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
 import SortSelect from '@app/web/libs/data-table/SortSelect'
 import { contentId } from '@app/web/utils/skipLinks'
-import Link from 'next/link'
 import ActeurCard from './components/ActeurCard'
 import Filters from './components/Filters'
 import { FilterTags } from './components/FilterTags'
@@ -106,8 +104,8 @@ const ActeursPage = ({
             <Filters
               defaultFilters={searchParams}
               communesOptions={communesOptions}
-              departementsOptions={departementsOptions}
               lieuxActiviteOptions={lieuxActiviteOptions}
+              departementsOptions={null}
             />
           </div>
 

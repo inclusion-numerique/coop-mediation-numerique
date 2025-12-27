@@ -48,8 +48,8 @@ export const MediateurDetailPage = ({
   } | null
   contract: {
     type: string
-    start: string | null
-    end: string | null
+    debut: string | null
+    fin: string | null
     finDeContrat: AlerteFinContrat | null
   } | null
   lieuxActivites: {

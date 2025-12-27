@@ -17,7 +17,7 @@ const Filters = ({
   defaultFilters: ActeursFilters
   communesOptions: SelectOption[]
   lieuxActiviteOptions: LieuActiviteOption[]
-  departementsOptions: SelectOption[]
+  departementsOptions: SelectOption[] | null // if null, disables the departements filter
   className?: string
 }) => (
   <div

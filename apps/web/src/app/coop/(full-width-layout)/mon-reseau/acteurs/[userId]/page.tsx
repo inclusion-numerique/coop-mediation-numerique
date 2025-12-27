@@ -28,30 +28,22 @@ export const generateMetadata = async ({
 }
 
 const parseRetourParams = (retour?: string) => {
-  let retourHref = '/coop/mon-reseau'
-  let retourLabel = 'Mon réseau'
-
-  if (retour) {
-    try {
-      const retourUrl = new URL(retour, 'http://localhost')
-      retourHref = retour
-
-      // Determine label based on the retour path
-      if (retourUrl.pathname.includes('/mon-equipe')) {
-        retourLabel = 'Mon équipe'
-      } else if (retourUrl.pathname.includes('/mes-equipes')) {
-        retourLabel = 'Mon équipe'
-      } else if (retourUrl.pathname.includes('/mon-reseau/acteurs')) {
-        retourLabel = 'Annuaire des acteurs'
-      } else if (retourUrl.pathname.includes('/mon-reseau')) {
-        retourLabel = 'Mon réseau'
-      }
-    } catch {
-      // Invalid URL, use defaults
-    }
+  if (!retour) {
+    return { retourHref: '/coop/mon-reseau', retourLabel: 'Mon réseau' }
+  }
+  if (retour.includes('/mon-equipe') || retour.includes('/mes-equipes')) {
+    return { retourHref: retour, retourLabel: 'Mon équipe' }
   }
 
-  return { retourHref, retourLabel }
+  if (retour.includes('/mon-reseau/acteurs')) {
+    return { retourHref: retour, retourLabel: 'Annuaire des acteurs' }
+  }
+
+  if (retour.includes('/mon-reseau')) {
+    return { retourHref: retour, retourLabel: 'Mon réseau' }
+  }
+
+  return { retourHref: retour, retourLabel: 'Retour' }
 }
 
 const Page = async ({
