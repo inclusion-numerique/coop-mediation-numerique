@@ -9,7 +9,7 @@ import type { Typologie } from '@prisma/client'
 import classNames from 'classnames'
 import Link from 'next/link'
 import React from 'react'
-import Identity from './Identity'
+import Identity from '../../features/mon-reseau/use-cases/acteurs/components/ActeurIdentity'
 import { LieuxActivites } from './LieuxActivites'
 import { Statistiques } from './Statistiques'
 
@@ -83,11 +83,20 @@ export const MediateurDetailPage = ({
       <main id={contentId} className="fr-mb-16w">
         <section className="fr-my-10v">
           <Identity
-            {...user}
             coordinationEnd={coordinationEnd}
-            mediateurId={id}
-            isConseillerNumerique={conseillerNumerique?.id != null}
-            href={href}
+            acteur={{
+              id,
+              coordinateur: user.coordinateur,
+              mediateur: user.mediateur,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              name: user.name,
+              email: user.email,
+              phone: user.phone,
+            }}
+            retourHref={href}
+            retourLabel="Retour à la liste"
+            removeFromTeamSuccessHref={href}
             coordinateurView={coordinateurView}
           />
         </section>

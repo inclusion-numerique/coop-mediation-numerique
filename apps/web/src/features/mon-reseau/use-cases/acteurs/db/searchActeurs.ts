@@ -13,7 +13,7 @@ export type SearchActeursOptions = {
   searchParams: ActeursSearchParams
 }
 
-const acteurSelect = {
+export const acteurSelectForList = {
   id: true,
   firstName: true,
   lastName: true,
@@ -33,6 +33,7 @@ const acteurSelect = {
       coordinations: {
         where: { suppression: null },
         select: {
+          creation: true,
           coordinateur: {
             select: {
               user: {
@@ -55,13 +56,13 @@ const acteurSelect = {
 } satisfies Prisma.UserSelect
 
 export type ActeurForList = Prisma.UserGetPayload<{
-  select: typeof acteurSelect
+  select: typeof acteurSelectForList
 }>
 
 const getActeursByIds = async ({ ids }: { ids: string[] }) =>
   prismaClient.user.findMany({
     where: { id: { in: ids } },
-    select: acteurSelect,
+    select: acteurSelectForList,
   })
 
 export const searchActeurs = async ({

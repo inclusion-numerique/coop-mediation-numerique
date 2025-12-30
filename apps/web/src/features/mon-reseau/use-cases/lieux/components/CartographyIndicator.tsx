@@ -1,6 +1,6 @@
+import TooltipIcon from '@app/ui/components/TooltipIcon'
 import { getStructureCartographieLink } from '@app/web/features/mon-reseau/use-cases/lieux/getStructureLink'
 import classNames from 'classnames'
-import Image from 'next/image'
 import Link from 'next/link'
 import styles from './CartographyIndicator.module.css'
 
@@ -31,24 +31,6 @@ export const getCartographyStatus = ({
   }
   return 'not_visible'
 }
-
-const TooltipIcon = ({
-  tooltipId,
-  className,
-}: {
-  tooltipId: string
-  className?: string
-}) => (
-  <>
-    <button
-      type="button"
-      className={classNames(styles.tooltipButton, className)}
-      aria-describedby={tooltipId}
-    >
-      <span className="ri-question-line" aria-hidden />
-    </button>
-  </>
-)
 
 const CartographyIndicator = ({
   status,

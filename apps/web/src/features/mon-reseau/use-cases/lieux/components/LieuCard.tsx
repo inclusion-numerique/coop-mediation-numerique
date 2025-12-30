@@ -13,16 +13,19 @@ const LieuCard = ({
   lieuPageRetourHref,
 }: {
   lieu: LieuForList
-  departementCode: string
+  departementCode: string | null
   lieuPageRetourHref: string
 }) => {
-  const mediateursCount = lieu.mediateursCount
+  const mediateursCount = lieu._count.mediateursEnActivite ?? 0
 
   const lieuHref = `/coop/mon-reseau/lieux/${lieu.id}?retour=${encodeURIComponent(lieuPageRetourHref)}`
 
   const formattedDate = formatDate(new Date(lieu.modification), 'dd.MM.yyyy')
 
-  const acteursFilteredByLieuHref = `/coop/mon-reseau/acteurs?departement=${departementCode}&lieux=${lieu.id}`
+  const acteursFilteredByLieuHref =
+    departementCode != null
+      ? `/coop/mon-reseau/acteurs?departement=${departementCode}&lieux=${lieu.id}`
+      : `/coop/mon-reseau/acteurs?lieux=${lieu.id}`
 
   const cartographyStatus = getCartographyStatus({
     visiblePourCartographieNationale: lieu.visiblePourCartographieNationale,

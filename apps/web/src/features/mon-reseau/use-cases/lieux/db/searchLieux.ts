@@ -13,7 +13,7 @@ export type SearchLieuxOptions = {
   searchParams: LieuxSearchParams
 }
 
-const lieuBaseSelect = {
+export const lieuxForListSelect = {
   id: true,
   nom: true,
   adresse: true,
@@ -24,15 +24,21 @@ const lieuBaseSelect = {
   modification: true,
   visiblePourCartographieNationale: true,
   structureCartographieNationaleId: true,
+  _count: {
+    select: {
+      mediateursEnActivite: {
+        where: {
+          suppression: null,
+          fin: null,
+        },
+      },
+    },
+  },
 } satisfies Prisma.StructureSelect
 
-type LieuBaseForList = Prisma.StructureGetPayload<{
-  select: typeof lieuBaseSelect
+export type LieuForList = Prisma.StructureGetPayload<{
+  select: typeof lieuxForListSelect
 }>
-
-export type LieuForList = LieuBaseForList & {
-  mediateursCount: number
-}
 
 const getLieuxByIds = async ({
   ids,
@@ -41,51 +47,10 @@ const getLieuxByIds = async ({
 }): Promise<LieuForList[]> => {
   const lieux = await prismaClient.structure.findMany({
     where: { id: { in: ids } },
-    select: lieuBaseSelect,
+    select: lieuxForListSelect,
   })
 
-  // Count mediateurs with proper validation (matching acteurs search logic)
-  // Uses both employes_structures and mediateurs_en_activite like acteurs search
-  const mediateursCountsResult = await prismaClient.$queryRaw<
-    { structure_id: string; count: number }[]
-  >`
-    SELECT 
-      structure_id,
-      COUNT(DISTINCT user_id)::integer AS count
-    FROM (
-      -- Mediateurs en activité
-      SELECT mea.structure_id, u.id AS user_id
-      FROM mediateurs_en_activite mea
-      JOIN mediateurs m ON m.id = mea.mediateur_id
-      JOIN users u ON u.id = m.user_id
-      WHERE mea.suppression IS NULL AND mea.fin_activite IS NULL
-        AND u.deleted IS NULL
-        AND u.inscription_validee IS NOT NULL
-        AND mea.structure_id = ANY(${ids}::UUID[])
-      
-      UNION
-      
-      -- Employes structures (who are also mediateurs)
-      SELECT es.structure_id, u.id AS user_id
-      FROM employes_structures es
-      JOIN users u ON u.id = es.user_id
-      JOIN mediateurs m ON m.user_id = u.id
-      WHERE es.suppression IS NULL AND es.fin_emploi IS NULL
-        AND u.deleted IS NULL
-        AND u.inscription_validee IS NOT NULL
-        AND es.structure_id = ANY(${ids}::UUID[])
-    ) combined
-    GROUP BY structure_id
-  `
-
-  const countsMap = new Map(
-    mediateursCountsResult.map((r) => [r.structure_id, r.count]),
-  )
-
-  return lieux.map((lieu) => ({
-    ...lieu,
-    mediateursCount: countsMap.get(lieu.id) ?? 0,
-  }))
+  return lieux
 }
 
 export const searchLieux = async ({
@@ -139,47 +104,30 @@ export const searchLieux = async ({
       : Prisma.raw('ASC')
 
   // Determine sort column for CTE
-  const isSortByModification =
+  const sortColumn =
     searchParams.tri === 'majrecent' || searchParams.tri === 'majancien'
+      ? Prisma.raw('modification')
+      : Prisma.raw('nom')
 
   // Get paginated structure IDs using CTE to handle DISTINCT + ORDER BY
-  const structureIds = isSortByModification
-    ? await prismaClient.$queryRaw<{ id: string }[]>`
-        WITH distinct_lieux AS (
-          SELECT DISTINCT ON (s.id)
-            s.id,
-            s.modification
-          FROM structures s
-          LEFT JOIN mediateurs_en_activite mea ON mea.structure_id = s.id AND mea.suppression IS NULL AND mea.fin_activite IS NULL
-          WHERE s.suppression IS NULL
-            AND SUBSTRING(s.code_insee FROM ${departementCodeFromInseeRegex}) = ${departementCode}
-            AND ${searchCondition}
-            AND ${communesCondition}
-            AND ${departementsFilterCondition}
-            AND ${mediateursCondition}
-        )
-        SELECT id FROM distinct_lieux
-        ORDER BY modification ${sortDirection}, id ASC
-        LIMIT ${take} OFFSET ${skip}
-      `
-    : await prismaClient.$queryRaw<{ id: string }[]>`
-        WITH distinct_lieux AS (
-          SELECT DISTINCT ON (s.id)
-            s.id,
-            s.nom
-          FROM structures s
-          LEFT JOIN mediateurs_en_activite mea ON mea.structure_id = s.id AND mea.suppression IS NULL AND mea.fin_activite IS NULL
-          WHERE s.suppression IS NULL
-            AND SUBSTRING(s.code_insee FROM ${departementCodeFromInseeRegex}) = ${departementCode}
-            AND ${searchCondition}
-            AND ${communesCondition}
-            AND ${departementsFilterCondition}
-            AND ${mediateursCondition}
-        )
-        SELECT id FROM distinct_lieux
-        ORDER BY nom ${sortDirection}, id ASC
-        LIMIT ${take} OFFSET ${skip}
-      `
+  const structureIds = await prismaClient.$queryRaw<{ id: string }[]>`
+    WITH distinct_lieux AS (
+      SELECT DISTINCT ON (s.id)
+        s.id,
+        s.${sortColumn}
+      FROM structures s
+      LEFT JOIN mediateurs_en_activite mea ON mea.structure_id = s.id AND mea.suppression IS NULL AND mea.fin_activite IS NULL
+      WHERE s.suppression IS NULL
+        AND SUBSTRING(s.code_insee FROM ${departementCodeFromInseeRegex}) = ${departementCode}
+        AND ${searchCondition}
+        AND ${communesCondition}
+        AND ${departementsFilterCondition}
+        AND ${mediateursCondition}
+    )
+    SELECT id FROM distinct_lieux
+    ORDER BY ${sortColumn} ${sortDirection}, id ASC
+    LIMIT ${take} OFFSET ${skip}
+  `
 
   const ids = structureIds.map((row) => row.id)
 

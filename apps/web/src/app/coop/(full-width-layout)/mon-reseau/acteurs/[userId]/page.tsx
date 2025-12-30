@@ -51,15 +51,15 @@ const Page = async ({
   searchParams: rawSearchParams,
 }: {
   params: Promise<{ userId: string }>
-  searchParams: Promise<{ retour?: string }>
+  searchParams: Promise<{ retour?: string; departement?: string }>
 }) => {
-  await authenticateMediateurOrCoordinateur()
+  const sessionUser = await authenticateMediateurOrCoordinateur()
 
   const params = await rawParams
   const searchParams = await rawSearchParams
 
   const { userId } = params
-  const { retour } = searchParams
+  const { retour, departement } = await searchParams
 
   const { retourHref, retourLabel } = parseRetourParams(retour)
 
@@ -67,13 +67,14 @@ const Page = async ({
     userId,
     retourHref,
     retourLabel,
+    sessionUser,
   })
 
   if (data == null) {
     return notFound()
   }
 
-  return <ActeurDetailPage data={data} />
+  return <ActeurDetailPage data={data} departementCode={departement ?? null} />
 }
 
 export default Page

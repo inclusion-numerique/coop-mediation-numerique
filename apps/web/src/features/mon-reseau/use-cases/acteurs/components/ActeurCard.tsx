@@ -1,37 +1,10 @@
-import { getActeurIconUrl } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurIcon'
-import { allProfileInscriptionLabels } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
-import { getUserProfil } from '@app/web/features/utilisateurs/utils/getUserProfil'
+import ActeurProfilAndContact from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurProfilAndContact'
+import type { ActeurForList } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
+import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
+import { getActeurPageUrl } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurPageUrl'
 import classNames from 'classnames'
 import Link from 'next/link'
-import type { ActeurForList } from '../db/searchActeurs'
-import { getActeurPageUrl } from '../getActeurPageUrl'
 import styles from './ActeurCard.module.css'
-
-const getActeurDisplayName = (acteur: ActeurForList): string => {
-  if (acteur.firstName && acteur.lastName) {
-    return `${acteur.firstName} ${acteur.lastName}`
-  }
-  return acteur.name ?? acteur.email ?? 'Acteur inconnu'
-}
-
-const getCoordinateurInfo = (
-  acteur: ActeurForList,
-): { name: string; userId: string } | null => {
-  const coordination = acteur.mediateur?.coordinations?.[0]
-  if (!coordination?.coordinateur?.user) {
-    return null
-  }
-
-  const { id, firstName, lastName, name } = coordination.coordinateur.user
-  const displayName =
-    firstName && lastName ? `${firstName} ${lastName}` : (name ?? null)
-
-  if (!displayName) {
-    return null
-  }
-
-  return { name: displayName, userId: id }
-}
 
 const ActeurCard = ({
   acteur,
@@ -41,19 +14,15 @@ const ActeurCard = ({
   currentPath: string
 }) => {
   const displayName = getActeurDisplayName(acteur)
-  const profil = getUserProfil(acteur)
-  const coordinateurInfo = getCoordinateurInfo(acteur)
   const lieuxActiviteCount = acteur.mediateur?._count.enActivite ?? 0
 
-  const retour = `${currentPath}#${acteur.id}`
+  const retour = currentPath
 
   const acteurPageUrl = getActeurPageUrl({
     userId: acteur.id,
     retour,
     anchor: acteur.id,
   })
-
-  const acteurIconUrl = getActeurIconUrl(profil)
 
   return (
     <article
@@ -69,53 +38,7 @@ const ActeurCard = ({
         </Link>
       </p>
 
-      <p className="fr-text--sm fr-mb-2v fr-flex fr-align-items-center">
-        {!!acteurIconUrl && (
-          <img
-            src={acteurIconUrl}
-            alt={allProfileInscriptionLabels[profil]}
-            className="fr-mr-1w"
-            width={18}
-            height={18}
-          />
-        )}
-        {allProfileInscriptionLabels[profil]}
-        {coordinateurInfo && (
-          <>
-            {' '}
-            coordonné par{' '}
-            <Link
-              className={classNames(
-                'fr-link fr-link--sm fr-ml-1v',
-                styles.innerLink,
-              )}
-              href={getActeurPageUrl({
-                userId: coordinateurInfo.userId,
-                retour,
-              })}
-              prefetch={false}
-            >
-              {coordinateurInfo.name}
-            </Link>
-          </>
-        )}
-      </p>
-
-      <div className="fr-flex fr-flex-wrap fr-flex-gap-2v fr-text--sm fr-text-mention--grey fr-mb-4v">
-        {acteur.phone && (
-          <span className="fr-flex fr-align-items-center">
-            <span className="ri-phone-line fr-mr-1v" aria-hidden />
-            {acteur.phone}
-          </span>
-        )}
-        {acteur.phone && acteur.email && <span aria-hidden>·</span>}
-        {acteur.email && (
-          <span className="fr-flex fr-align-items-center">
-            <span className="ri-mail-line fr-mr-1v" aria-hidden />
-            {acteur.email}
-          </span>
-        )}
-      </div>
+      <ActeurProfilAndContact acteur={acteur} retour={retour} compact />
 
       {lieuxActiviteCount > 0 && (
         <Link

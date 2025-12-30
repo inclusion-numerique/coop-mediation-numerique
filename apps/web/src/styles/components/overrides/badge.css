@@ -20,3 +20,9 @@
     --icon-size: 1.5rem;
   }
 }
+
+.fr-badge--no-icon {
+  &::before {
+    display: none;
+  }
+}

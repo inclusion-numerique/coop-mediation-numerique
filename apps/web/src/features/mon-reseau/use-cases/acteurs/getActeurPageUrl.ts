@@ -10,7 +10,8 @@ export const getActeurPageUrl = ({
   const anchorString = anchor ? `#${anchor}` : ''
   const base = `/coop/mon-reseau/acteurs/${userId}`
   if (retour) {
-    return `${base}?retour=${retour}${anchorString}`
+    const retourWithAnchor = anchor ? `${retour}#${anchor}` : retour
+    return `${base}?retour=${encodeURIComponent(retourWithAnchor)}${anchorString}`
   }
   return `${base}${anchorString}`
 }
