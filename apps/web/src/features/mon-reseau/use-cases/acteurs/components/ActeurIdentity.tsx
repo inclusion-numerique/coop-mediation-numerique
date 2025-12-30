@@ -17,6 +17,20 @@ import React from 'react'
 import { ActeurDetailPageData } from '../getActeurDetailPageData'
 import ActeurProfilAndContact from './ActeurProfilAndContact'
 
+export type ActeurIdentityData = Omit<
+  ActeurForList,
+  'mediateur' | 'coordinateur'
+> & {
+  mediateur: Pick<
+    NonNullable<ActeurForList['mediateur']>,
+    'id' | 'conseillerNumerique'
+  > | null
+  coordinateur: Pick<
+    NonNullable<ActeurForList['coordinateur']>,
+    'id' | 'conseillerNumeriqueId'
+  > | null
+}
+
 const ActeurIdentity = ({
   displayName,
   acteur,
@@ -27,17 +41,7 @@ const ActeurIdentity = ({
   retourLabel,
   removeFromTeamSuccessHref,
 }: {
-  acteur: Pick<
-    ActeurForList,
-    | 'id'
-    | 'coordinateur'
-    | 'mediateur'
-    | 'firstName'
-    | 'lastName'
-    | 'name'
-    | 'email'
-    | 'phone'
-  >
+  acteur: ActeurIdentityData
   displayName: string
   coordinationFeatures: ActeurDetailPageData['coordinationFeatures']
   creation: Date
@@ -184,10 +188,14 @@ const ActeurIdentity = ({
       children: (
         <span className="fr-flex fr-flex-gap-2v">
           <span className="ri-user-add-line" aria-hidden />
-          Invitation envoyée
+          Invitation envoyée le{' '}
+          {dateAsDay(
+            coordinationFeatures.coordinationDetails?.invitation?.creation,
+          )}
         </span>
       ),
       priority: 'tertiary' as const,
+      className: 'fr-mb-0',
     })
   }
 
@@ -243,7 +251,7 @@ const ActeurIdentity = ({
             />
           </div>
           <h1 className="fr-h2 fr-page-title fr-mb-3v">{displayName}</h1>
-          <ActeurProfilAndContact acteur={acteur} retour={retourHref} />
+          <ActeurProfilAndContact acteur={acteur} />
         </div>
       </div>
       <ButtonsGroup

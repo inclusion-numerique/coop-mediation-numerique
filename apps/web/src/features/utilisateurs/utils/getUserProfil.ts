@@ -1,4 +1,3 @@
-import type { SessionUser } from '@app/web/auth/sessionUser'
 import type { ProfilInscription } from '@prisma/client'
 
 /**
@@ -8,14 +7,8 @@ export const getUserProfil = ({
   mediateur,
   coordinateur,
 }: {
-  mediateur: null | Pick<
-    Exclude<SessionUser['mediateur'], null>,
-    'conseillerNumerique'
-  >
-  coordinateur: null | Pick<
-    Exclude<SessionUser['coordinateur'], null>,
-    'conseillerNumeriqueId'
-  >
+  mediateur: { conseillerNumerique: {} | null } | null
+  coordinateur: { conseillerNumeriqueId: string | null } | null
 }): ProfilInscription => {
   if (coordinateur) {
     return coordinateur.conseillerNumeriqueId

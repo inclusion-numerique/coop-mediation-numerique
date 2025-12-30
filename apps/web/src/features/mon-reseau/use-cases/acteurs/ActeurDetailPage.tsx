@@ -3,9 +3,9 @@ import Contract from '@app/web/components/conseiller-numerique/Contract'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { ReferentStructure } from '@app/web/components/structure/ReferentStructure'
 import { StructureEmployeuse } from '@app/web/components/structure/StructureEmployeuse'
-import { LieuxActivites } from '@app/web/equipe/MediateurDetailPage/LieuxActivites'
-import { Statistiques } from '@app/web/equipe/MediateurDetailPage/Statistiques'
 import ActeurIdentity from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurIdentity'
+import ActeurLieuxActivites from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurLieuxActivites'
+import ActeurStatistiques from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurStatistiques'
 import type { ActeurDetailPageData } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDetailPageData'
 import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
 import { contentId } from '@app/web/utils/skipLinks'
@@ -69,7 +69,7 @@ export const ActeurDetailPage = ({
                   : 'fr-background-alt--grey',
               )}
             >
-              <Statistiques
+              <ActeurStatistiques
                 mediateurId={mediateurId}
                 coordinationEnd={
                   coordinationFeatures.coordinationDetails?.coordinations
@@ -117,7 +117,7 @@ export const ActeurDetailPage = ({
           )}
           {mediateurId && (
             <section className="fr-mt-6v" id="lieux-activite">
-              <LieuxActivites
+              <ActeurLieuxActivites
                 lieux={lieuxActivites}
                 departementCode={departementCode}
                 lieuPageRetourHref={retourHref}

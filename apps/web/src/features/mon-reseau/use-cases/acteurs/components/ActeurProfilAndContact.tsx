@@ -1,15 +1,17 @@
+import type { ActeurIdentityData } from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurIdentity'
 import type { ActeurForList } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
 import { getActeurIconUrl } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurIcon'
+import { getActeurPageUrl } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurPageUrl'
 import { allProfileInscriptionLabels } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import { getUserProfil } from '@app/web/features/utilisateurs/utils/getUserProfil'
 import classNames from 'classnames'
 import Link from 'next/link'
-import { getActeurPageUrl } from '../getActeurPageUrl'
 
 const getCoordinateurInfo = (
-  acteur: Pick<ActeurForList, 'mediateur'>,
+  acteur: ActeurIdentityData,
 ): { name: string; userId: string } | null => {
-  const coordination = acteur.mediateur?.coordinations?.[0]
+  const mediateur = acteur.mediateur as ActeurForList['mediateur'] | null
+  const coordination = mediateur?.coordinations?.[0]
   if (!coordination?.coordinateur?.user) {
     return null
   }
@@ -24,25 +26,17 @@ const getCoordinateurInfo = (
 
   return { name: displayName, userId: id }
 }
+
 const ActeurProfilAndContact = ({
   acteur,
   retour,
   compact = false,
 }: {
-  acteur: Pick<
-    ActeurForList,
-    | 'coordinateur'
-    | 'mediateur'
-    | 'firstName'
-    | 'lastName'
-    | 'name'
-    | 'email'
-    | 'phone'
-  >
+  acteur: ActeurIdentityData
+  retour?: string
   compact?: boolean
-  retour: string
 }) => {
-  const coordinateurInfo = getCoordinateurInfo(acteur)
+  const coordinateurInfo = retour ? getCoordinateurInfo(acteur) : null
 
   const profil = getUserProfil(acteur)
   const acteurIconUrl = getActeurIconUrl(profil)

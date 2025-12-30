@@ -54,6 +54,7 @@ export const getActeurDetailPageData = async ({
       coordinateur: {
         select: {
           id: true,
+          conseillerNumeriqueId: true,
           _count: {
             select: {
               mediateursCoordonnes: {

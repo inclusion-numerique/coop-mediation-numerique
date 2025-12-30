@@ -31,7 +31,7 @@ const StatistiqueElement = ({
   </div>
 )
 
-export const Statistiques = ({
+const ActeurStatistiques = ({
   mediateurId,
   beneficiairesAccompagnes,
   accompagnements,
@@ -86,3 +86,5 @@ export const Statistiques = ({
     </div>
   </>
 )
+
+export default ActeurStatistiques

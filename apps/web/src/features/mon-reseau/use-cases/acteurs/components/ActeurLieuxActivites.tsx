@@ -8,7 +8,7 @@ import { useState } from 'react'
 
 const initialLieuCount = 3
 
-export const LieuxActivites = ({
+export const ActeurLieuxActivites = ({
   lieux,
   departementCode,
   lieuPageRetourHref,
@@ -67,3 +67,5 @@ export const LieuxActivites = ({
     </Card>
   )
 }
+
+export default ActeurLieuxActivites
