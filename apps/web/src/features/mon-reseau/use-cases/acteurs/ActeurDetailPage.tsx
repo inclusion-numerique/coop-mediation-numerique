@@ -1,16 +1,14 @@
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import Contract from '@app/web/components/conseiller-numerique/Contract'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { ReferentStructure } from '@app/web/components/structure/ReferentStructure'
-import { StructureEmployeuse } from '@app/web/components/structure/StructureEmployeuse'
 import ActeurIdentity from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurIdentity'
 import ActeurLieuxActivites from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurLieuxActivites'
 import ActeurStatistiques from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurStatistiques'
+import ActeurStructureEmployeuse from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurStructureEmployeuse'
 import type { ActeurDetailPageData } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDetailPageData'
 import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
 import { contentId } from '@app/web/utils/skipLinks'
 import classNames from 'classnames'
-import Link from 'next/link'
 
 export const ActeurDetailPage = ({
   data,
@@ -25,7 +23,7 @@ export const ActeurDetailPage = ({
     activityDates,
     conseillerNumerique,
     statistiques,
-    structureEmployeuse,
+    emploi,
     contract,
     lieuxActivites,
     retourHref,
@@ -88,31 +86,16 @@ export const ActeurDetailPage = ({
               />
             </section>
           )}
-          {structureEmployeuse != null && (
-            <section className="fr-mt-6v">
-              <StructureEmployeuse
-                isLieuActivite={false}
-                id={structureEmployeuse.id}
-                {...structureEmployeuse.structure}
-              >
-                {showReferentStructure &&
-                  structureEmployeuse.structure.nomReferent != null && (
-                    <>
-                      <ReferentStructure {...structureEmployeuse.structure} />
-                      {conseillerNumerique?.id != null && (
-                        <em className="fr-text--xs fr-text-mention--grey fr-mb-0 fr-mt-6v">
-                          Si vous constatez une erreur sur les informations
-                          concernant cette structure, veuillez contacter le
-                          support du dispositif conseiller
-                          numérique&nbsp;:&nbsp;
-                          <Link href="mailto:conseiller-numerique@anct.gouv.fr">
-                            conseiller-numerique@anct.gouv.fr
-                          </Link>
-                        </em>
-                      )}
-                    </>
-                  )}
-              </StructureEmployeuse>
+          {emploi != null && (
+            <section className="fr-mt-6v" id="structure-employeuse">
+              <ActeurStructureEmployeuse
+                emploi={emploi}
+                showIsLieuActiviteNotice={false}
+                showReferentStructure={showReferentStructure}
+                showReferentStructureConseillerNumeriqueSupportNotice={
+                  conseillerNumerique?.id != null
+                }
+              />
             </section>
           )}
           {mediateurId && (

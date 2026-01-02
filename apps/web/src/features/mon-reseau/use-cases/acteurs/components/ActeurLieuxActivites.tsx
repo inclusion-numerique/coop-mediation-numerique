@@ -28,7 +28,7 @@ export const ActeurLieuxActivites = ({
       className="fr-border fr-border-radius--8"
       titleAs="div"
       title={
-        <span className="fr-flex fr-flex-gap-3v fr-align-items-end fr-mb-0">
+        <span className="fr-flex fr-flex-gap-3v fr-align-items-center fr-mb-0">
           <span
             className="ri-home-office-line fr-line-height-1 fr-text--medium fr-text-label--blue-france fr-background-alt--blue-france fr-p-2v fr-border-radius--8"
             aria-hidden
@@ -39,7 +39,8 @@ export const ActeurLieuxActivites = ({
         </span>
       }
     >
-      <ul className="fr-list-group">
+      <hr className="fr-separator-1px" />
+      <ul className="fr-list-group fr-my-0">
         {lieuxToDisplay.map((lieu) => (
           <LieuCard
             key={lieu.id}
@@ -50,9 +51,9 @@ export const ActeurLieuxActivites = ({
         ))}
       </ul>
       {showMoreButton && (
-        <div className="fr-border--top fr-pt-6v">
+        <div className="fr-pt-6v">
           <Button
-            title="Afficher toutes les lieux d'activités"
+            title="Afficher tous les lieux d'activités"
             priority="tertiary no outline"
             iconId={
               showMore ? 'fr-icon-arrow-up-s-line' : 'fr-icon-arrow-down-s-line'

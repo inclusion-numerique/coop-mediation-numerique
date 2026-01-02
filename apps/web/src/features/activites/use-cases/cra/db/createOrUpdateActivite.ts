@@ -1,8 +1,10 @@
 import { createBeneficiairesForParticipantsAnonymes } from '@app/web/beneficiaire/createBeneficiairesForParticipantsAnonymes'
+import type { CraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
+import type { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
 import { BeneficiaireCraData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
+import { getActeurEmploiForDate } from '@app/web/features/mon-reseau/use-cases/acteurs/db/getActeurEmploiForDate'
 import { prismaClient } from '@app/web/prismaClient'
 import { invalidError } from '@app/web/server/rpc/trpcErrors'
-import { getStructureEmployeuseAddressForMediateur } from '@app/web/structure/getStructureEmployeuseAddress'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { fixTelephone } from '@app/web/utils/clean-operations'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
@@ -10,9 +12,6 @@ import { createStopwatch } from '@app/web/utils/stopwatch'
 import { yesNoToOptionalBoolean } from '@app/web/utils/yesNoBooleanOptions'
 import { Prisma, Structure, TypeActivite } from '@prisma/client'
 import { v4 } from 'uuid'
-import { CraCollectifData } from '../collectif/validation/CraCollectifValidation'
-import { CraIndividuelData } from '../individuel/validation/CraIndividuelValidation'
-import { getCurrentEmploiForDate } from './getCurrentEmploiForDate'
 import { craDureeDataToMinutes } from './minutesToCraDuree'
 
 // Timeout for interactive transactions (15 seconds)
@@ -203,12 +202,14 @@ const withoutDejaAccompagne = <T>({
 // TODO more integration test cases on this critical function
 export const createOrUpdateActivite = async ({
   input,
-  userId,
+  sessionUserId,
   mediateurId,
+  mediateurUserId,
 }: {
   input: CreateOrUpdateActiviteInput
-  userId: string
-  mediateurId: string
+  sessionUserId: string // The user who triggered the mutation
+  mediateurId: string // The mediateur who is associated with the activite
+  mediateurUserId: string // The user id who is associated with the mediateur
 }) => {
   const stopwatch = createStopwatch()
 
@@ -218,9 +219,10 @@ export const createOrUpdateActivite = async ({
 
   const creationId = v4()
 
-  const emploi = await getCurrentEmploiForDate({
-    mediateurId,
+  const emploi = await getActeurEmploiForDate({
+    userId: mediateurUserId,
     date: new Date(date),
+    strictDateBounds: false,
   })
 
   const existingActivite = id
@@ -280,11 +282,9 @@ export const createOrUpdateActivite = async ({
         })
       : null
 
-  // If accompagnement is "A distance", we fetch the structure employeuse to assign location
+  // If accompagnement is "A distance", we assign the location to the structure employeuse
   const structureEmployeuse =
-    data.typeLieu === 'ADistance'
-      ? await getStructureEmployeuseAddressForMediateur(mediateurId)
-      : null
+    data.typeLieu === 'ADistance' ? emploi.structure : null
 
   const orienteVersStructure = yesNoToOptionalBoolean(
     'orienteVersStructure' in data ? data.orienteVersStructure : undefined,
@@ -299,9 +299,9 @@ export const createOrUpdateActivite = async ({
         }
       : data.typeLieu === 'ADistance'
         ? {
-            lieuCommune: structureEmployeuse?.structure.commune ?? null,
-            lieuCodePostal: structureEmployeuse?.structure.codePostal ?? null,
-            lieuCodeInsee: structureEmployeuse?.structure.codeInsee ?? null,
+            lieuCommune: structureEmployeuse?.commune ?? null,
+            lieuCodePostal: structureEmployeuse?.codePostal ?? null,
+            lieuCodeInsee: structureEmployeuse?.codeInsee ?? null,
           }
         : {
             lieuCommune: null,
@@ -325,7 +325,7 @@ export const createOrUpdateActivite = async ({
     duree: craDureeDataToMinutes(duree),
     typeLieu: data.typeLieu ?? undefined,
     structureEmployeuse: {
-      connect: { id: emploi.structureId },
+      connect: { id: emploi.structure.id },
     },
     niveau: 'niveau' in data ? data.niveau : undefined,
     materiel: 'materiel' in data ? data.materiel : undefined,
@@ -515,7 +515,7 @@ export const createOrUpdateActivite = async ({
 
     // Create mutation for audit log
     addMutationLog({
-      userId,
+      userId: sessionUserId,
       nom: 'ModifierActivite',
       duration: stopwatch.stop().duration,
       data: input,
@@ -612,7 +612,7 @@ export const createOrUpdateActivite = async ({
 
   // Create mutation for audit log
   addMutationLog({
-    userId,
+    userId: sessionUserId,
     nom: 'CreerActivite',
     duration: stopwatch.stop().duration,
     data: input,
