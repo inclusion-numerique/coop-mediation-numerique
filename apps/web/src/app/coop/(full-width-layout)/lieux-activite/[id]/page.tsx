@@ -24,6 +24,7 @@ const LieuActiviteDetailPage = async (props: {
       <div className="fr-container">
         <main id={contentId} className="fr-container fr-flex">
           <LieuActivitePageContent
+            currentPath={`/coop/lieux-activite/${data.structure.id}`}
             data={data}
             breadcrumbs={{
               currentPage: data.structure.nom,

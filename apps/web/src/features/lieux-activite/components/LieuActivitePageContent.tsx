@@ -10,10 +10,12 @@ import styles from '@app/web/components/structure/fields/StructureFormFields.mod
 import { LieuAccueillantPublicTitle } from '@app/web/components/structure/titles/LieuAccueillantPublicTitle'
 import { ServiceInclusionNumeriqueTitle } from '@app/web/components/structure/titles/ServiceInclusionNumeriqueTitle'
 import { LieuActivitePageData } from '@app/web/features/lieux-activite/getLieuActivitePageData'
-import { FraisAChargeLabel } from '@app/web/features/structures/fraisACharge'
+import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
+import LieuMediateursEnActivite from '@app/web/features/mon-reseau/use-cases/lieux/components/LieuMediateursEnActivite'
+import { formatDate } from '@app/web/utils/formatDate'
 import { Itinerance, ModaliteAcces } from '@prisma/client'
 import classNames from 'classnames'
-import React, { ReactNode, useState } from 'react'
+import React, { useState } from 'react'
 import DescriptionEditCard from './description/DescriptionEditCard'
 import InformationsGeneralesEditCard from './informations-generales/InformationsGeneralesEditCard'
 import InformationsPratiquesEditCard from './informations-pratiques/InformationsPratiquesEditCard'
@@ -25,10 +27,12 @@ import VisiblePourCartographieNationaleFields from './VisiblePourCartographieNat
 export const LieuActivitePageContent = ({
   data: { structure },
   breadcrumbs,
+  currentPath,
   backButton,
 }: {
   data: LieuActivitePageData
   breadcrumbs: CoopBreadcrumbsProps
+  currentPath: string
   backButton: {
     label: string
     href: string
@@ -37,6 +41,15 @@ export const LieuActivitePageContent = ({
   const [showSideMenu, setShowSideMenu] = useState(
     structure.visiblePourCartographieNationale,
   )
+
+  const formattedModificationDate = formatDate(
+    new Date(structure.modification),
+    'dd.MM.yyyy',
+  )
+
+  const derniereModificationPar = structure.derniereModificationPar
+    ? getActeurDisplayName(structure.derniereModificationPar)
+    : null
 
   return (
     <>
@@ -53,11 +66,22 @@ export const LieuActivitePageContent = ({
       >
         <CoopBreadcrumbs {...breadcrumbs} />
         <BackButton href={backButton.href}>{backButton.label}</BackButton>
+        <p className="fr-text--xs fr-mb-3v">
+          Mis à jour le {formattedModificationDate}{' '}
+          {derniereModificationPar ? `par ${derniereModificationPar}` : ''}
+        </p>
         <h1 className="fr-page-title fr-h2">{structure.nom}</h1>
-        <div className="fr-border fr-border-radius--8">
+        <div className="fr-border fr-border-radius--8 fr-mb-6v">
           <InformationsGeneralesEditCard {...structure} />
         </div>
-        <div className="fr-border fr-border-radius--8 fr-mt-5w">
+        <LieuMediateursEnActivite
+          mediateurs={structure.mediateursEnActivite.map(
+            (mediateurEnActivite) => mediateurEnActivite.mediateur.user,
+          )}
+          currentPath={currentPath}
+          canRemoveMediateurFromLieuId={structure.id}
+        />
+        <div className="fr-border fr-border-radius--8 fr-mt-6v">
           <DisplayOnCartography
             canChangeVisibility={
               structure.structureCartographieNationaleId == null

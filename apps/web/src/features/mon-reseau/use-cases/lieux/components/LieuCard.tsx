@@ -1,6 +1,7 @@
 import classNames from 'classnames'
 import { formatDate } from 'date-fns'
 import Link from 'next/link'
+import { getActeurDisplayName } from '../../acteurs/getActeurDisplayName'
 import type { LieuForList } from '../db/searchLieux'
 import CartographyIndicator, {
   getCartographyStatus,
@@ -20,7 +21,10 @@ const LieuCard = ({
 
   const lieuHref = `/coop/mon-reseau/lieux/${lieu.id}?retour=${encodeURIComponent(lieuPageRetourHref)}`
 
-  const formattedDate = formatDate(new Date(lieu.modification), 'dd.MM.yyyy')
+  const formattedModificationDate = formatDate(
+    new Date(lieu.modification),
+    'dd.MM.yyyy',
+  )
 
   const acteursFilteredByLieuHref =
     departementCode != null
@@ -32,16 +36,21 @@ const LieuCard = ({
     structureCartographieNationaleId: lieu.structureCartographieNationaleId,
   })
 
+  const derniereModificationPar = lieu.derniereModificationPar
+    ? getActeurDisplayName(lieu.derniereModificationPar)
+    : null
+
   return (
     <div
       className={classNames(
-        'fr-enlarge-link fr-border-bottom fr-pt-4v fr-px-2v fr-pb-6v',
+        'fr-border-bottom fr-pt-4v fr-px-2v fr-pb-6v',
         styles.card,
       )}
     >
       <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-mb-2v">
         <p className="fr-text--xs fr-mb-0 fr-text-mention--grey">
-          Mis à jour le {formattedDate}
+          Mis à jour le {formattedModificationDate}{' '}
+          {derniereModificationPar ? `par ${derniereModificationPar}` : ''}
         </p>
         <Link
           href={lieuHref}

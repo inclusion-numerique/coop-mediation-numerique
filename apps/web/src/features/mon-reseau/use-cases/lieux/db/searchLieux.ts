@@ -22,6 +22,15 @@ export const lieuxForListSelect = {
   codePostal: true,
   codeInsee: true,
   modification: true,
+  derniereModificationPar: {
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      name: true,
+      email: true,
+    },
+  },
   visiblePourCartographieNationale: true,
   structureCartographieNationaleId: true,
   _count: {

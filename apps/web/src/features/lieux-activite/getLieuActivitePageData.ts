@@ -1,10 +1,21 @@
 import { prismaClient } from '@app/web/prismaClient'
+import { acteurSelectForList } from '../mon-reseau/use-cases/acteurs/db/searchActeurs'
 
 export const getLieuActivitePageData = async ({ id }: { id: string }) => {
   const structure = await prismaClient.structure.findUnique({
     where: { id },
     select: {
       id: true,
+      modification: true,
+      derniereModificationPar: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          name: true,
+          email: true,
+        },
+      },
       nom: true,
       adresse: true,
       commune: true,
@@ -37,6 +48,20 @@ export const getLieuActivitePageData = async ({ id }: { id: string }) => {
       dispositifProgrammesNationaux: true,
       formationsLabels: true,
       autresFormationsLabels: true,
+      mediateursEnActivite: {
+        where: {
+          suppression: null,
+          fin: null,
+        },
+        select: {
+          id: true,
+          mediateur: {
+            select: {
+              user: { select: acteurSelectForList },
+            },
+          },
+        },
+      },
     },
   })
   if (!structure) {

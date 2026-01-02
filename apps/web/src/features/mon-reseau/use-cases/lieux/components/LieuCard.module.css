@@ -1,7 +1,3 @@
-.card:hover {
-  background-color: var(--background-contrast-grey);
-}
-
 .innerLink {
   position: relative;
   z-index: 1;

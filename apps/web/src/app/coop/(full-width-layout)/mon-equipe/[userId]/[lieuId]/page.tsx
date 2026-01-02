@@ -1,6 +1,4 @@
-import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
-import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { LieuActivitePageContent } from '@app/web/features/lieux-activite/components/LieuActivitePageContent'
 import { getLieuActivitePageData } from '@app/web/features/lieux-activite/getLieuActivitePageData'
@@ -9,13 +7,13 @@ import { contentId } from '@app/web/utils/skipLinks'
 import { redirect } from 'next/navigation'
 
 const LieuActiviteDetailPage = async (props: {
-  params: Promise<{ mediateurId: string; lieuId: string }>
+  params: Promise<{ userId: string; lieuId: string }>
 }) => {
   const params = await props.params
   await authenticateUser(`/connexion?suivant=/lieux-activite/${params.lieuId}`)
 
   const mediateur = await prismaClient.mediateur.findUnique({
-    where: { id: params.mediateurId },
+    where: { userId: params.userId },
     select: { user: { select: { name: true } } },
   })
 
@@ -31,6 +29,7 @@ const LieuActiviteDetailPage = async (props: {
       <div className="fr-container ">
         <main id={contentId} className="fr-container fr-flex">
           <LieuActivitePageContent
+            currentPath={`/coop/mon-equipe/${params.userId}/${params.lieuId}`}
             data={data}
             breadcrumbs={{
               currentPage: data.structure.nom,
@@ -41,13 +40,13 @@ const LieuActiviteDetailPage = async (props: {
                 },
                 {
                   label: mediateur?.user.name ?? 'Médiateur',
-                  linkProps: { href: `/coop/mon-equipe/${params.mediateurId}` },
+                  linkProps: { href: `/coop/mon-equipe/${params.userId}` },
                 },
               ],
             }}
             backButton={{
               label: `Retour à la fiche de ${mediateur?.user.name}`,
-              href: `/coop/mon-equipe/${params.mediateurId}`,
+              href: `/coop/mon-equipe/${params.userId}`,
             }}
           />
         </main>

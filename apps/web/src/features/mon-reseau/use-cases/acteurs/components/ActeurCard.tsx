@@ -5,13 +5,16 @@ import { getActeurPageUrl } from '@app/web/features/mon-reseau/use-cases/acteurs
 import classNames from 'classnames'
 import Link from 'next/link'
 import styles from './ActeurCard.module.css'
+import RemoveMediateurFromLieuButton from './RemoveMediateurFromLieuButton'
 
 const ActeurCard = ({
   acteur,
   currentPath,
+  canRemoveMediateurFromLieuId,
 }: {
   acteur: ActeurForList
   currentPath: string
+  canRemoveMediateurFromLieuId?: string // id of a lieux d'activité from which a mediateur can be removed. if undefined, the mediateur cannot be removed from the lieu
 }) => {
   const displayName = getActeurDisplayName(acteur)
   const lieuxActiviteCount = acteur.mediateur?._count.enActivite ?? 0
@@ -32,11 +35,19 @@ const ActeurCard = ({
         styles.card,
       )}
     >
-      <p className="fr-text--bold fr-text--lg fr-mb-2v fr-text-title--blue-france">
-        <Link href={acteurPageUrl} prefetch={false}>
-          {displayName}
-        </Link>
-      </p>
+      <div className="fr-flex fr-flex-gap-2v fr-mb-2v fr-align-items-center fr-justify-content-space-between">
+        <p className="fr-text--bold fr-text--lg fr-mb-0 fr-text-title--blue-france">
+          <Link href={acteurPageUrl} prefetch={false}>
+            {displayName}
+          </Link>
+        </p>
+        {canRemoveMediateurFromLieuId && acteur.mediateur && (
+          <RemoveMediateurFromLieuButton
+            structureId={canRemoveMediateurFromLieuId}
+            mediateurId={acteur.mediateur.id}
+          />
+        )}
+      </div>
 
       <ActeurProfilAndContact acteur={acteur} retour={retour} compact />
 
