@@ -13,7 +13,6 @@ import { LieuxActiviteValidation } from '@app/web/features/utilisateurs/use-case
 import { RenseignerStructureEmployeuseValidation } from '@app/web/features/utilisateurs/use-cases/registration/RenseignerStructureEmployeuse'
 import { StructureEmployeuseLieuActiviteValidation } from '@app/web/features/utilisateurs/use-cases/registration/StructureEmployeuseLieuActivite'
 import { ValiderInscriptionValidation } from '@app/web/features/utilisateurs/use-cases/registration/ValiderInscriptionValidation'
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
@@ -603,6 +602,17 @@ export const inscriptionRouter = router({
       }
 
       if (!isMediateur(user)) return
+
+      await prismaClient.invitationEquipe.updateMany({
+        where: {
+          email: user.email,
+          acceptee: null,
+          refusee: null,
+        },
+        data: {
+          acceptee: new Date(),
+        },
+      })
 
       const invitations = await prismaClient.invitationEquipe.findMany({
         where: {

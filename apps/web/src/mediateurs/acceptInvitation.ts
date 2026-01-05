@@ -8,6 +8,25 @@ export const acceptInvitation = async (invitation: {
   coordinateur: { user: { email: string } }
   mediateurInvite: { id: string; user: { email: string } } | null
 }) => {
+  const mediateur = invitation.mediateurInvite?.id
+    ? await prismaClient.mediateur.findUnique({
+        select: {
+          user: {
+            select: {
+              inscriptionValidee: true,
+            },
+          },
+        },
+        where: {
+          id: invitation.mediateurInvite.id,
+        },
+      })
+    : null
+
+  if (mediateur?.user.inscriptionValidee == null) {
+    return
+  }
+
   await prismaClient.$transaction(async (transaction) => {
     await transaction.invitationEquipe.update({
       where: {
