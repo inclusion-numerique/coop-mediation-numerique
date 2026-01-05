@@ -39,14 +39,17 @@ export type ActeurEmploi = EmploiContract & {
 }
 
 /**
- * Rules for finding the current emploi for a user and a date, handling edge cases :
- * - if there is only one emploi for the user, it is always valid (no date bounds)
- * - if there are multiple emplois for the user:
- *   - The first emploi (earliest creation) is valid for all past dates
- *   - Each emploi is valid from its debut date until the day before the next emploi's debut
- *   - The last emploi (latest debut) is valid for all future dates
+ * Rules for finding the current emploi for a user and a date.
  *
- * - on strict mode, if no emploi is found for the date, null is returned
+ * Non-strict mode (handles gaps gracefully, each emploi is valid until the next one starts):
+ * - If date <= first emploi debut, return first emploi
+ * - Iterate through emplois ordered by debut ASC:
+ *   - If date < next emploi debut, return current emploi
+ *   - If no next emploi (last one), return it
+ *
+ * Strict mode:
+ * - Only returns an emploi if the date falls within its debut/fin bounds
+ * - Returns null if no emploi matches the date
  */
 // add typescript overrides: if strict is true, the return type is EmploiData, otherwise it is EmploiData | null
 export const getActeurEmploiForDate = async <T extends boolean>({
@@ -110,36 +113,34 @@ export const getActeurEmploiForDate = async <T extends boolean>({
     return emploi
   }
 
-  // non strict mode
+  // Non-strict mode: find the emploi valid for the given date
+  // Emplois are ordered by debut ASC
   const firstEmploi = emplois.at(0)
   if (!firstEmploi) {
-    throw new Error('No emploi found for user and date')
+    throw new Error('No emploi found for user')
   }
 
-  // if only one emploi, return it
-  if (firstEmploi && emplois.length === 1) {
-    return firstEmploi
-  }
-
-  const lastEmploi = emplois.at(-1)
-  if (!lastEmploi) {
-    // will not happen, here for type safety
-    throw new Error('No emploi found for user and date')
-  }
-
-  // if there is a current emploi, return it
-  const currentEmploiForDate = emplois.reverse().find((emploi) => {
-    return (emploi.fin === null || emploi.fin > date) && emploi.debut <= date
-  })
-  if (currentEmploiForDate) {
-    return currentEmploiForDate
-  }
-
-  // no emploi for the given date, if the date is before the first emploi, return the first emploi
+  // If date <= first emploi debut, return first emploi
   if (date <= firstEmploi.debut) {
     return firstEmploi
   }
 
-  // else, the date is after the last emploi, return the last emploi
-  return lastEmploi
+  // Iterate through emplois: each emploi is valid until the next one starts
+  for (let i = 0; i < emplois.length; i++) {
+    const currentEmploi = emplois[i]
+    const nextEmploi = emplois[i + 1]
+
+    // If no next emploi (last one), return current
+    if (!nextEmploi) {
+      return currentEmploi
+    }
+
+    // If date < next emploi debut, current emploi is still valid
+    if (date < nextEmploi.debut) {
+      return currentEmploi
+    }
+  }
+
+  // Fallback (should not be reached due to loop logic)
+  return firstEmploi
 }
