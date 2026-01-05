@@ -1,5 +1,6 @@
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import Contract from '@app/web/components/conseiller-numerique/Contract'
+import IconInSquare from '@app/web/components/IconInSquare'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import ActeurIdentity from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurIdentity'
 import ActeurLieuxActivites from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurLieuxActivites'
@@ -33,9 +34,6 @@ export const ActeurDetailPage = ({
 
   const displayName = getActeurDisplayName(acteur)
 
-  const { showStats, showContract, showReferentStructure } =
-    coordinationFeatures
-
   return (
     <>
       <SkipLinksPortal />
@@ -58,42 +56,56 @@ export const ActeurDetailPage = ({
             />
           </section>
 
-          {showStats && mediateurId && (
-            <section
-              className={classNames(
-                'fr-p-8v fr-border-radius--16',
-                coordinationFeatures.acteurIsMediateurCoordonnne
-                  ? 'fr-background-alt--brown-caramel'
-                  : 'fr-background-alt--grey',
-              )}
-            >
-              <ActeurStatistiques
-                mediateurId={mediateurId}
-                coordinationEnd={
-                  coordinationFeatures.coordinationDetails?.coordinations
-                    .coordinationEnded?.suppression ?? undefined
-                }
-                {...statistiques}
-              />
-            </section>
-          )}
-          {showContract && contract && (
-            <section className="fr-mt-6v">
-              <Contract
-                isCoordinateur={false}
-                {...contract}
-                idPGConum={conseillerNumerique?.idPg ?? null}
-              />
-            </section>
-          )}
+          {coordinationFeatures &&
+            coordinationFeatures.showStats &&
+            mediateurId && (
+              <section
+                className={classNames(
+                  'fr-p-8v fr-border-radius--16',
+                  coordinationFeatures.acteurIsMediateurCoordonnne
+                    ? 'fr-background-alt--brown-caramel'
+                    : 'fr-background-alt--grey',
+                )}
+              >
+                <ActeurStatistiques
+                  mediateurId={mediateurId}
+                  coordinationEnd={
+                    coordinationFeatures.coordinationDetails?.coordinations
+                      .coordinationEnded?.suppression ?? undefined
+                  }
+                  {...statistiques}
+                />
+              </section>
+            )}
+          {coordinationFeatures &&
+            coordinationFeatures.showContract &&
+            contract && (
+              <section className="fr-mt-6v">
+                <Contract
+                  isCoordinateur={false}
+                  {...contract}
+                  idPGConum={conseillerNumerique?.idPg ?? null}
+                />
+              </section>
+            )}
           {emploi != null && (
             <section className="fr-mt-6v" id="structure-employeuse">
               <ActeurStructureEmployeuse
                 emploi={emploi}
                 showIsLieuActiviteNotice={false}
-                showReferentStructure={showReferentStructure}
+                showReferentStructure={
+                  coordinationFeatures?.showReferentStructure ?? false
+                }
                 showReferentStructureConseillerNumeriqueSupportNotice={
                   conseillerNumerique?.id != null
+                }
+                title={
+                  <div className="fr-flex fr-flex-gap-3v fr-align-items-center fr-mb-6v">
+                    <IconInSquare iconId="ri-home-smile-2-line" size="small" />
+                    <h2 className="fr-text-title--blue-france fr-h6 fr-m-0">
+                      Structure employeuse
+                    </h2>
+                  </div>
                 }
               />
             </section>

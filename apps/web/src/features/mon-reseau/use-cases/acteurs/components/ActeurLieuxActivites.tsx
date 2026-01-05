@@ -1,6 +1,7 @@
 'use client'
 
 import Card from '@app/web/components/Card'
+import IconInSquare from '@app/web/components/IconInSquare'
 import LieuCard from '@app/web/features/mon-reseau/use-cases/lieux/components/LieuCard'
 import type { LieuForList } from '@app/web/features/mon-reseau/use-cases/lieux/db/searchLieux'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -21,6 +22,7 @@ export const ActeurLieuxActivites = ({
 
   const lieuxToDisplay = showMore ? lieux : lieux.slice(0, initialLieuCount)
   const showMoreButton = lieux.length > initialLieuCount
+  const hideLastLieuBorderBottom = !showMoreButton
 
   return (
     <Card
@@ -29,10 +31,7 @@ export const ActeurLieuxActivites = ({
       titleAs="div"
       title={
         <span className="fr-flex fr-flex-gap-3v fr-align-items-center fr-mb-0">
-          <span
-            className="ri-home-office-line fr-line-height-1 fr-text--medium fr-text-label--blue-france fr-background-alt--blue-france fr-p-2v fr-border-radius--8"
-            aria-hidden
-          />
+          <IconInSquare iconId="ri-home-office-line" size="small" />
           <h2 className="fr-text-title--blue-france fr-h6 fr-m-0">
             Lieux d’activité · {lieux.length}
           </h2>
@@ -41,12 +40,17 @@ export const ActeurLieuxActivites = ({
     >
       <hr className="fr-separator-1px" />
       <ul className="fr-list-group fr-my-0">
-        {lieuxToDisplay.map((lieu) => (
+        {lieuxToDisplay.map((lieu, index) => (
           <LieuCard
             key={lieu.id}
             lieu={lieu}
             departementCode={departementCode}
             lieuPageRetourHref={lieuPageRetourHref}
+            className={
+              hideLastLieuBorderBottom && index === lieuxToDisplay.length - 1
+                ? 'fr-border-none'
+                : undefined
+            }
           />
         ))}
       </ul>

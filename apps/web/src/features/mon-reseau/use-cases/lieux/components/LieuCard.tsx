@@ -12,10 +12,12 @@ const LieuCard = ({
   lieu,
   departementCode,
   lieuPageRetourHref,
+  className,
 }: {
   lieu: LieuForList
   departementCode: string | null
   lieuPageRetourHref: string
+  className?: string
 }) => {
   const mediateursCount = lieu._count.mediateursEnActivite ?? 0
 
@@ -45,6 +47,7 @@ const LieuCard = ({
       className={classNames(
         'fr-border-bottom fr-pt-4v fr-px-2v fr-pb-6v',
         styles.card,
+        className,
       )}
     >
       <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-mb-2v">

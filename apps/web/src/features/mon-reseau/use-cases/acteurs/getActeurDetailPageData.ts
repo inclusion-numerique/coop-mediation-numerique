@@ -92,21 +92,24 @@ export const getActeurDetailPageData = async ({
   const acteurIsMediateurCoordonnne =
     !!coordinationDetails?.coordinations.current
   const acteurIsInvitedToTeam = !!coordinationDetails?.invitation
-  const coordinationFeatures = {
-    coordinationDetails,
-    acteurIsMediateurCoordonnne,
-    acteurIsInvitedToTeam,
-    showStats: acteurIsMediateurCoordonnne,
-    showContract:
-      acteurIsMediateurCoordonnne &&
-      acteur.mediateur?.conseillerNumerique != null,
-    showReferentStructure: acteurIsMediateurCoordonnne,
-    canInviteToTeam: !acteurIsMediateurCoordonnne && !acteurIsInvitedToTeam,
-    canRemoveFromTeam: acteurIsMediateurCoordonnne,
-    canRemoveFromArchives:
-      !acteurIsMediateurCoordonnne &&
-      (coordinationDetails?.coordinations.history.length ?? 0) > 0,
-  }
+
+  const coordinationFeatures = sessionUser.coordinateur
+    ? {
+        coordinationDetails,
+        acteurIsMediateurCoordonnne,
+        acteurIsInvitedToTeam,
+        showStats: acteurIsMediateurCoordonnne,
+        showContract:
+          acteurIsMediateurCoordonnne &&
+          acteur.mediateur?.conseillerNumerique != null,
+        showReferentStructure: acteurIsMediateurCoordonnne,
+        canInviteToTeam: !acteurIsMediateurCoordonnne && !acteurIsInvitedToTeam,
+        canRemoveFromTeam: acteurIsMediateurCoordonnne,
+        canRemoveFromArchives:
+          !acteurIsMediateurCoordonnne &&
+          (coordinationDetails?.coordinations.history.length ?? 0) > 0,
+      }
+    : null
 
   // Fetch conseiller numerique idPg if needed
   // XXX Mongo V1 legacy feature to replace with dataspace info that will be sync in our db (contracts info)
@@ -119,9 +122,10 @@ export const getActeurDetailPageData = async ({
     conseillerNumerique.idPg = conumV1?.conseiller.idPG ?? null
   }
 
-  const contract = coordinationFeatures.showContract
-    ? await getContractInfo(acteur.email)
-    : null
+  const contract =
+    !!coordinationFeatures && coordinationFeatures.showContract
+      ? await getContractInfo(acteur.email)
+      : null
 
   // Get statistics only if showStats
   let statistiques = {
@@ -129,7 +133,7 @@ export const getActeurDetailPageData = async ({
     accompagnements: 0,
   }
 
-  if (coordinationFeatures.showStats && mediateurId) {
+  if (!!coordinationFeatures && coordinationFeatures.showStats && mediateurId) {
     const { beneficiaires, accompagnements } = await getTotalCountsStats({
       user: sessionUser,
       mediateurIds: [mediateurId],

@@ -76,12 +76,6 @@ const ActeurIdentity = ({
 
   const mediateurId = mediateur?.id
 
-  const {
-    canRemoveFromTeam,
-    canInviteToTeam,
-    canRemoveFromArchives: _canRemoveFromArchives,
-    acteurIsInvitedToTeam,
-  } = coordinationFeatures
   const onRemoveFromTeam = async () => {
     if (!mediateurId) {
       return
@@ -145,7 +139,7 @@ const ActeurIdentity = ({
     },
   ]
 
-  if (canRemoveFromTeam) {
+  if (coordinationFeatures && coordinationFeatures.canRemoveFromTeam) {
     actionButtons.unshift({
       type: 'button',
       children: (
@@ -163,7 +157,7 @@ const ActeurIdentity = ({
     })
   }
 
-  if (canInviteToTeam) {
+  if (coordinationFeatures && coordinationFeatures.canInviteToTeam) {
     actionButtons.unshift({
       type: 'button',
       children: (
@@ -181,7 +175,11 @@ const ActeurIdentity = ({
     })
   }
 
-  if (acteurIsInvitedToTeam) {
+  if (
+    coordinationFeatures &&
+    coordinationFeatures.acteurIsInvitedToTeam &&
+    !coordinationFeatures.acteurIsMediateurCoordonnne
+  ) {
     actionButtons.unshift({
       type: 'button',
       disabled: true,
@@ -240,7 +238,7 @@ const ActeurIdentity = ({
       <BackButton href={retourHref}>{retourLabel}</BackButton>
       <div className="fr-flex fr-flex-wrap fr-direction-row fr-align-items-center fr-flex-gap-4v">
         <div className="fr-flex fr-direction-column">
-          <div className="fr-flex fr-align-items-center">
+          <div className="fr-flex fr-align-items-center fr-mb-3v">
             <p className="fr-mb-0 fr-text-mention--grey fr-text--sm">
               Profil créé le {dateAsDay(creation)}  ·  
             </p>

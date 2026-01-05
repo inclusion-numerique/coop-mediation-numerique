@@ -37,9 +37,7 @@ const ActeurCard = ({
     >
       <div className="fr-flex fr-flex-gap-2v fr-mb-2v fr-align-items-center fr-justify-content-space-between">
         <p className="fr-text--bold fr-text--lg fr-mb-0 fr-text-title--blue-france">
-          <Link href={acteurPageUrl} prefetch={false}>
-            {displayName}
-          </Link>
+          {displayName}
         </p>
         {canRemoveMediateurFromLieuId && acteur.mediateur && (
           <RemoveMediateurFromLieuButton
@@ -66,6 +64,7 @@ const ActeurCard = ({
           d’activité
         </Link>
       )}
+      <Link href={acteurPageUrl} prefetch={false} />
     </article>
   )
 }

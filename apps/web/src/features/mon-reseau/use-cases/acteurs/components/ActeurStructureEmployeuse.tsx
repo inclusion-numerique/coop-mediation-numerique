@@ -5,6 +5,7 @@ import UpdateStructure from '@app/web/components/structure/UpdateStructure'
 import type { ActeurEmploi } from '@app/web/features/mon-reseau/use-cases/acteurs/db/getActeurEmploiForDate'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Link from 'next/link'
+import { ReactNode } from 'react'
 
 export type ActeurStructureEmployeuseProps = {
   emploi: ActeurEmploi
@@ -12,6 +13,7 @@ export type ActeurStructureEmployeuseProps = {
   showReferentStructure: boolean
   showReferentStructureConseillerNumeriqueSupportNotice: boolean
   canUpdateStructure?: boolean
+  title?: ReactNode
 }
 
 const ActeurStructureEmployeuse = ({
@@ -36,6 +38,7 @@ const ActeurStructureEmployeuse = ({
   showReferentStructure,
   showReferentStructureConseillerNumeriqueSupportNotice,
   canUpdateStructure,
+  title,
 }: ActeurStructureEmployeuseProps) => {
   const addresseString = complementAdresse
     ? `${adresse} (${complementAdresse})`
@@ -43,6 +46,7 @@ const ActeurStructureEmployeuse = ({
 
   return (
     <Card noBorder className="fr-border fr-border-radius--8" titleAs="div">
+      {title}
       <span className="fr-text--lg fr-text--bold fr-mb-1v">{nom}</span>
       <div className="fr-text--sm fr-mb-1v fr-text-mention--grey fr-flex fr-direction-column fr-flex-gap-1v">
         <div>
