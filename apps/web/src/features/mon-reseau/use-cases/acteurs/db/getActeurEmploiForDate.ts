@@ -84,20 +84,14 @@ export const getActeurEmploiForDate = async <T extends boolean>({
           orderBy: { debut: 'desc' },
         }),
       ].filter(isDefinedAndNotNull)
-    : await prismaClient.employeStructure.findMany({
+    : // In non-strict mode, fetch ALL emplois for the user (without date filtering)
+      // The date logic is applied in code below to handle edge cases like:
+      // - dates before the first emploi's debut
+      // - dates after the last emploi's fin
+      await prismaClient.employeStructure.findMany({
         where: {
           userId,
           suppression: null,
-          OR: [
-            {
-              debut: { lte: date },
-              fin: null,
-            },
-            {
-              debut: { lte: date },
-              fin: { gte: date },
-            },
-          ],
         },
         select: {
           ...emploiContractSelect,
