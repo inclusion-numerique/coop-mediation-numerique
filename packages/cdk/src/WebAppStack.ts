@@ -68,6 +68,7 @@ export const webAppStackSensitiveVariables = [
   'SMTP_USERNAME',
   'SMTP_MAILDEV_USERNAME',
   'SMTP_MAILDEV_PASSWORD',
+  'DATASPACE_API_KEY',
 ] as const
 
 /**
@@ -259,6 +260,8 @@ export class WebAppStack extends TerraformStack {
         SMTP_SERVER: isMain
           ? sensitiveEnvironmentVariables.SMTP_SERVER.value
           : 'maildev.coop-numerique.anct.gouv.fr',
+        DATASPACE_API_KEY:
+          sensitiveEnvironmentVariables.DATASPACE_API_KEY.value,
       },
       name: containerName,
       minScale: isMain ? 2 : namespace === 'dev' ? 1 : 0,
