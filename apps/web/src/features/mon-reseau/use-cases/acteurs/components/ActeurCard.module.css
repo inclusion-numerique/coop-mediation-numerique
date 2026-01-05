@@ -9,3 +9,8 @@
 .card:active {
   background-color: var(--background-contrast-grey-active);
 }
+
+.innerLink {
+  position: relative;
+  z-index: 2;
+}

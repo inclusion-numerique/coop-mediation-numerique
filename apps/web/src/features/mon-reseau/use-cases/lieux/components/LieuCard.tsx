@@ -22,16 +22,12 @@ const LieuCard = ({
   const mediateursCount = lieu._count.mediateursEnActivite ?? 0
 
   const lieuHref = `/coop/mon-reseau/lieux/${lieu.id}?retour=${encodeURIComponent(lieuPageRetourHref)}`
+  const lieuMediateursHref = `${lieuHref}#mediateurs`
 
   const formattedModificationDate = formatDate(
     new Date(lieu.modification),
     'dd.MM.yyyy',
   )
-
-  const acteursFilteredByLieuHref =
-    departementCode != null
-      ? `/coop/mon-reseau/acteurs?departement=${departementCode}&lieux=${lieu.id}`
-      : `/coop/mon-reseau/acteurs?lieux=${lieu.id}`
 
   const cartographyStatus = getCartographyStatus({
     visiblePourCartographieNationale: lieu.visiblePourCartographieNationale,
@@ -88,7 +84,7 @@ const LieuCard = ({
         />
         {mediateursCount > 0 ? (
           <Link
-            href={acteursFilteredByLieuHref}
+            href={lieuMediateursHref}
             prefetch={false}
             className={classNames('fr-tag fr-tag--sm', styles.innerLink)}
           >

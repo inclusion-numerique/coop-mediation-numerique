@@ -29,6 +29,7 @@ export const LieuMediateursEnActivite = ({
       noBorder
       className="fr-border fr-border-radius--8"
       titleAs="div"
+      id="mediateurs"
       title={
         <span className="fr-flex fr-flex-gap-3v fr-align-items-center fr-mb-0">
           <span
