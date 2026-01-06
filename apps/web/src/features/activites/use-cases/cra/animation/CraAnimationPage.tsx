@@ -32,6 +32,7 @@ const CraAnimationPage = ({
       className="fr-mb-8v"
       currentPage="Enregistrer un accompagnement structure(s)"
     />
+
     <BackButtonWithModal
       href="/coop"
       modalTitle="Quitter sans enregistrer"
@@ -39,6 +40,7 @@ const CraAnimationPage = ({
     >
       Retour
     </BackButtonWithModal>
+
     <main id={contentId}>
       <h1 className="fr-h2 fr-text-title--blue-france fr-mb-2v fr-mt-4v">
         Animation (aide, réunion, moment d’échange...)

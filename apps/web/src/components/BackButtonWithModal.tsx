@@ -5,6 +5,11 @@ import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import classNames from 'classnames'
 import React, { ReactNode } from 'react'
 
+const BackButtonModalDefinition = createModal({
+  id: 'back-button-modal',
+  isOpenedByDefault: false,
+})
+
 const BackButtonWithModal = ({
   modalTitle,
   modalContent,
@@ -21,45 +26,34 @@ const BackButtonWithModal = ({
   href: string
   children?: ReactNode
   className?: string
-}) => {
-  const {
-    Component: BackButtonModal,
-    close: closeBackButtonModal,
-    buttonProps: backButtonModalNativeButtonProps,
-  } = createModal({
-    id: 'back-button-modal',
-    isOpenedByDefault: false,
-  })
-
-  return (
-    <>
-      <Button
-        priority="tertiary no outline"
-        size="small"
-        className={classNames('fr-mt-4v fr-mb-4v', className)}
-        iconId="fr-icon-arrow-left-line"
-        {...backButtonModalNativeButtonProps}
-      >
-        {children}
-      </Button>
-      <BackButtonModal
-        title={modalTitle}
-        buttons={[
-          {
-            children: modalCancelButtonLabel,
-            priority: 'secondary',
-            onClick: closeBackButtonModal,
-          },
-          {
-            children: modalConfirmButtonLabel,
-            linkProps: { href },
-          },
-        ]}
-      >
-        {modalContent}
-      </BackButtonModal>
-    </>
-  )
-}
+}) => (
+  <>
+    <Button
+      priority="tertiary no outline"
+      size="small"
+      className={classNames('fr-mt-4v fr-mb-4v', className)}
+      iconId="fr-icon-arrow-left-line"
+      {...BackButtonModalDefinition.buttonProps}
+    >
+      {children}
+    </Button>
+    <BackButtonModalDefinition.Component
+      title={modalTitle}
+      buttons={[
+        {
+          children: modalCancelButtonLabel,
+          priority: 'secondary',
+          onClick: BackButtonModalDefinition.close,
+        },
+        {
+          children: modalConfirmButtonLabel,
+          linkProps: { href },
+        },
+      ]}
+    >
+      {modalContent}
+    </BackButtonModalDefinition.Component>
+  </>
+)
 
 export default BackButtonWithModal
