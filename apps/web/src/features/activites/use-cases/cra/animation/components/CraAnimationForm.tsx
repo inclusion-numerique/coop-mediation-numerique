@@ -11,7 +11,7 @@ import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { replaceRouteWithoutRerender } from '@app/web/utils/replaceRouteWithoutRerender'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
-import React, { useId } from 'react'
+import React from 'react'
 import { DefaultValues } from 'react-hook-form'
 import { Tag } from '../../../tags/components/TagsComboBox'
 import styles from '../../components/CraForm.module.css'
@@ -41,7 +41,7 @@ const CraAnimationForm = ({
 }: CraAnimationFormProps) => {
   const router = useRouter()
   const mutation = trpc.cra.animation.useMutation()
-  const participantsId = useId()
+  const participantsId = 'participants-fieldset'
   const isPending = mutation.isPending
 
   const form = useAppForm({
