@@ -103,7 +103,7 @@ export const buildActivitesCoordinationWorksheet = (
   const tableStartRowNumber = separatorRowBeforeTable.number + 1
 
   worksheet.addTable({
-    name: 'Activités de coordination',
+    name: 'Activites_de_coordination',
     ref: `A${tableStartRowNumber}`,
     headerRow: true,
     totalsRow: false,

@@ -74,13 +74,17 @@ export const ExportStatistiques = ({
 
   const onExportAccompagnementsXlsx = () =>
     exportXlsx(
-      `/coop/mes-activites/export/${publicExportId}`,
+      publicExportId
+        ? `/coop/mes-activites/export/${publicExportId}`
+        : '/coop/mes-activites/export',
       `Le téléchargement de vos ${accompagnementsCount} accompagnements est en cours.`,
     )
 
   const onExportStatistiquesXlsx = () =>
     exportXlsx(
-      `/coop/mes-statistiques/export/${publicExportId}`,
+      publicExportId
+        ? `/coop/mes-statistiques/export/${publicExportId}`
+        : '/coop/mes-statistiques/export',
       'Le téléchargement de vos statistiques est en cours.',
     )
 
