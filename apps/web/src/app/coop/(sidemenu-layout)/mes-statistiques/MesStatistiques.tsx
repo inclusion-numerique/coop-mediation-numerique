@@ -111,7 +111,11 @@ export const MesStatistiques = (
           />
         )}
         <section className="fr-mb-6w fr-mt-6v">
-          <StatistiquesGenerales {...mesStatistiquesProps} />
+          <StatistiquesGenerales
+            {...mesStatistiquesProps}
+            debut={activitesFilters.du}
+            fin={activitesFilters.au}
+          />
         </section>
         <section className="fr-mb-6w">
           <StatistiquesActivites {...mesStatistiquesProps} canManageTags />
