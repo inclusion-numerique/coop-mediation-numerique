@@ -1,7 +1,9 @@
+import { createHash } from 'node:crypto'
 import { UtilisateurSetFeatureFlagsValidation } from '@app/web/app/administration/utilisateurs/[id]/UtilisateurSetFeatureFlagsValidation'
 import { UpdateProfileValidation } from '@app/web/app/user/UpdateProfileValidation'
 import { mergeUser } from '@app/web/features/utilisateurs/use-cases/merge/mergeUser'
 import { searchUser } from '@app/web/features/utilisateurs/use-cases/search/searchUser'
+import { signupReminders } from '@app/web/features/utilisateurs/use-cases/signup-reminders/signupReminders'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   protectedProcedure,
@@ -37,6 +39,13 @@ export const userRouter = router({
         },
       }),
     ),
+  signupReminders: protectedProcedure.mutation(
+    async ({ ctx: { user: sessionUser } }) => {
+      enforceIsAdmin(sessionUser)
+
+      await signupReminders()
+    },
+  ),
   updateProfile: protectedProcedure
     .input(UpdateProfileValidation)
     .mutation(
@@ -65,6 +74,24 @@ export const userRouter = router({
         return updated
       },
     ),
+  deleteProfile: protectedProcedure.mutation(({ ctx: { user } }) => {
+    const hash = createHash('sha256')
+      .update(`${user.id}-${user.email}`)
+      .digest('base64url')
+      .slice(0, 12)
+
+    return prismaClient.user.update({
+      where: { id: user.id },
+      data: {
+        deleted: new Date(),
+        email: `deleted+${hash}@coop-numerique.anct.gouv.fr`,
+        firstName: 'Utilisateur',
+        lastName: 'Supprimé',
+        name: 'Utilisateur Supprimé',
+        phone: null,
+      },
+    })
+  }),
   markOnboardingAsSeen: protectedProcedure.mutation(({ ctx: { user } }) =>
     prismaClient.user.update({
       where: { id: user.id },
