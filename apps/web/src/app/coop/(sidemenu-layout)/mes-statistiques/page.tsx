@@ -41,8 +41,8 @@ const MesStatistiquesPage = async (props: {
     <MesStatistiques
       user={user}
       mediateurCoordonnesCount={mediateurCoordonnesIds.length}
-      {...mesStatistiques}
       codeInsee={employeStructure?.structure.codeInsee}
+      {...mesStatistiques}
     />
   )
 }

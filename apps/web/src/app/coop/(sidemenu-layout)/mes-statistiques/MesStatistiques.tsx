@@ -65,9 +65,7 @@ export const MesStatistiques = (
             hasCrasV1={hasCrasV1.hasCrasV1}
           />
           <div className="fr-flex fr-flex-gap-2v">
-            {user.mediateur?.id != null && (
-              <PartageStatistiques shareId={partageStatistiquesId} />
-            )}
+            <PartageStatistiques shareId={partageStatistiquesId} />
             <ExportStatistiques
               filters={activitesFilters}
               communesOptions={communesOptions}

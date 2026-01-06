@@ -3,7 +3,7 @@ import {
   type ActivitesFilters,
   validateActivitesFilters,
 } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import { mediateurFromShareId } from '@app/web/features/mediateurs/use-cases/partage-statistiques/db/mediateurFromShareId'
+import { userFromShareId } from '@app/web/features/mediateurs/use-cases/partage-statistiques/db/userFromShareId'
 import { StatistiquesPage } from '@app/web/features/mediateurs/use-cases/partage-statistiques/page/statistiques'
 import { notFound } from 'next/navigation'
 
@@ -27,14 +27,22 @@ const Page = async ({ params, searchParams }: PageProps) => {
     au: searchParamsResolved.au ?? new Date().toISOString().slice(0, 10),
   }
 
-  const mediateur = await mediateurFromShareId(shareId)
-  if (!mediateur) return notFound()
+  const shareStatsUser = await userFromShareId(shareId)
+  const user =
+    shareStatsUser?.mediateur?.user ?? shareStatsUser?.coordinateur?.user
+
+  if (
+    user == null ||
+    (shareStatsUser?.mediateur == null && shareStatsUser?.coordinateur == null)
+  )
+    return notFound()
 
   const mesStatistiquesProps = await getMesStatistiquesPageData({
     user: {
-      ...mediateur.user,
+      ...user,
       rdvAccount: null,
-      mediateur: mediateur,
+      mediateur: shareStatsUser?.mediateur,
+      coordinateur: shareStatsUser?.coordinateur,
     },
     activitesFilters: validateActivitesFilters(search),
     graphOptions: {
@@ -45,7 +53,7 @@ const Page = async ({ params, searchParams }: PageProps) => {
   return (
     <StatistiquesPage
       {...mesStatistiquesProps}
-      username={mediateur.user.name ?? ''}
+      username={user.name ?? ''}
       shareId={shareId}
     />
   )
