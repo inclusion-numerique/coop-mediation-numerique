@@ -8,12 +8,16 @@ import { fixTelephone } from '@app/web/utils/clean-operations'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import { yesNoToOptionalBoolean } from '@app/web/utils/yesNoBooleanOptions'
-import { Beneficiaire, Prisma, Structure, TypeActivite } from '@prisma/client'
+import { Prisma, Structure, TypeActivite } from '@prisma/client'
 import { v4 } from 'uuid'
 import { CraCollectifData } from '../collectif/validation/CraCollectifValidation'
 import { CraIndividuelData } from '../individuel/validation/CraIndividuelValidation'
 import { getCurrentEmploiForDate } from './getCurrentEmploiForDate'
 import { craDureeDataToMinutes } from './minutesToCraDuree'
+
+// Timeout for interactive transactions (15 seconds)
+// This is increased from default 5s to handle large ateliers with many beneficiaires
+const TRANSACTION_TIMEOUT_MS = 20_000
 
 const getExistingBeneficiairesSuivis = async ({
   beneficiaires,
@@ -387,124 +391,127 @@ export const createOrUpdateActivite = async ({
         activiteId: existingActivite.id,
       })
 
-    // We update all related data
-    await prismaClient.$transaction(async (transaction) => {
-      // Delete all accompagnements as we recreate them after
-      await transaction.accompagnement.deleteMany({
-        where: {
-          activiteId: existingActivite.id,
-        },
-      })
+    // We update all related data with an extended timeout for large ateliers
+    await prismaClient.$transaction(
+      async (transaction) => {
+        // Step 1: Delete accompagnements and tags in parallel (must happen before beneficiaires due to FK)
+        await Promise.all([
+          transaction.accompagnement.deleteMany({
+            where: { activiteId: existingActivite.id },
+          }),
+          transaction.activitesTags.deleteMany({
+            where: { activiteId: existingActivite.id },
+          }),
+        ])
 
-      if (anonymesIdsToDelete.length > 0) {
-        await transaction.beneficiaire.deleteMany({
-          where: {
-            anonyme: true,
-            id: { in: anonymesIdsToDelete },
-          },
-        })
-      }
+        // Step 1b: Delete anonymous beneficiaires (after accompagnements due to FK constraint)
+        if (anonymesIdsToDelete.length > 0) {
+          await transaction.beneficiaire.deleteMany({
+            where: { anonyme: true, id: { in: anonymesIdsToDelete } },
+          })
+        }
 
-      // (re)Create beneficiaire anonyme for one-to-one cra
-      if (beneficiaireAnonymeToCreate?.id) {
-        await transaction.beneficiaire.create({
-          data: withoutDejaAccompagne(beneficiaireAnonymeToCreate),
-          select: { id: true },
-        })
-      }
+        // Step 2: Create new beneficiaires (must be before accompagnements for FK)
+        if (beneficiaireAnonymeToCreate?.id) {
+          await transaction.beneficiaire.create({
+            data: withoutDejaAccompagne(beneficiaireAnonymeToCreate),
+            select: { id: true },
+          })
+        }
 
-      if (beneficiairesAnonymesCollectif.length > 0) {
-        await transaction.beneficiaire.createMany({
-          data: beneficiairesAnonymesCollectif.map((beneficiaire) =>
-            withoutDejaAccompagne(beneficiaire),
-          ),
-        })
-      }
+        if (beneficiairesAnonymesCollectif.length > 0) {
+          await transaction.beneficiaire.createMany({
+            data: beneficiairesAnonymesCollectif.map((beneficiaire) =>
+              withoutDejaAccompagne(beneficiaire),
+            ),
+          })
+        }
 
-      // Create accompagnements
-      const createdAccompagnements =
-        await transaction.accompagnement.createMany({
-          data: accompagnementsCreationData,
-        })
+        // Step 3: Create accompagnements and tags in parallel
+        const [createdAccompagnements] = await Promise.all([
+          transaction.accompagnement.createMany({
+            data: accompagnementsCreationData,
+          }),
+          input.data.tags.length > 0
+            ? transaction.activitesTags.createMany({
+                data: input.data.tags.map((tag) => ({
+                  activiteId: existingActivite.id,
+                  tagId: tag.id,
+                })),
+              })
+            : Promise.resolve(),
+        ])
 
-      // Delete then create tags
-      await transaction.activitesTags.deleteMany({
-        where: {
-          activiteId: existingActivite.id,
-        },
-      })
+        // Step 4: All updates can run in parallel (no FK dependencies between them)
+        const accompagnementsDelta =
+          createdAccompagnements.count - existingActivite.accompagnements.length
 
-      await transaction.activitesTags.createMany({
-        data: input.data.tags.map((tag) => ({
-          activiteId: existingActivite.id,
-          tagId: tag.id,
-        })),
-      })
-
-      // Update the activite
-      await transaction.activite.update({
-        where: { id: existingActivite.id },
-        data: {
-          ...activiteData,
-          modification: new Date(),
-        },
-      })
-
-      // Update the lieu activite activites count
-      // - decrement for the old one
-      if (existingActivite.structureId) {
-        await transaction.structure.update({
-          where: { id: existingActivite.structureId },
-          data: { activitesCount: { decrement: 1 } },
-        })
-      }
-      // - increment for the new one
-      if (lieuActivite) {
-        await transaction.structure.update({
-          where: { id: lieuActivite.id },
-          data: { activitesCount: { increment: 1 } },
-        })
-      }
-      // Update the mediateur accompagnements count
-      // - (the activite count remain the same)
-      // - decrement for the old value
-      await transaction.mediateur.update({
-        where: { id: mediateurId },
-        data: {
-          accompagnementsCount: {
-            decrement: existingActivite.accompagnements.length,
-          },
-        },
-      })
-      // - increment for the new value
-      await transaction.mediateur.update({
-        where: { id: mediateurId },
-        data: {
-          derniereCreationActivite: new Date(),
-          accompagnementsCount: { increment: createdAccompagnements.count },
-        },
-      })
-
-      // update the beneficiaires accompagnements count
-      // - decrement for the old value
-      if (existingActivite.accompagnements.length > 0) {
-        await transaction.beneficiaire.updateMany({
-          where: {
-            id: {
-              in: existingActivite.accompagnements.map((a) => a.beneficiaireId),
+        const updateOperations: Promise<unknown>[] = [
+          // Update activite
+          transaction.activite.update({
+            where: { id: existingActivite.id },
+            data: { ...activiteData, modification: new Date() },
+          }),
+          // Update mediateur counts (single combined update)
+          transaction.mediateur.update({
+            where: { id: mediateurId },
+            data: {
+              derniereCreationActivite: new Date(),
+              accompagnementsCount: { increment: accompagnementsDelta },
             },
-          },
-          data: { accompagnementsCount: { decrement: 1 } },
-        })
-      }
-      // - increment for the new value
-      await transaction.beneficiaire.updateMany({
-        where: {
-          id: { in: accompagnementsCreationData.map((a) => a.beneficiaireId) },
-        },
-        data: { accompagnementsCount: { increment: 1 } },
-      })
-    })
+          }),
+        ]
+
+        // Structure count updates
+        if (existingActivite.structureId) {
+          updateOperations.push(
+            transaction.structure.update({
+              where: { id: existingActivite.structureId },
+              data: { activitesCount: { decrement: 1 } },
+            }),
+          )
+        }
+        if (lieuActivite) {
+          updateOperations.push(
+            transaction.structure.update({
+              where: { id: lieuActivite.id },
+              data: { activitesCount: { increment: 1 } },
+            }),
+          )
+        }
+
+        // Beneficiaires count updates
+        if (existingActivite.accompagnements.length > 0) {
+          updateOperations.push(
+            transaction.beneficiaire.updateMany({
+              where: {
+                id: {
+                  in: existingActivite.accompagnements.map(
+                    (a) => a.beneficiaireId,
+                  ),
+                },
+              },
+              data: { accompagnementsCount: { decrement: 1 } },
+            }),
+          )
+        }
+        if (accompagnementsCreationData.length > 0) {
+          updateOperations.push(
+            transaction.beneficiaire.updateMany({
+              where: {
+                id: {
+                  in: accompagnementsCreationData.map((a) => a.beneficiaireId),
+                },
+              },
+              data: { accompagnementsCount: { increment: 1 } },
+            }),
+          )
+        }
+
+        await Promise.all(updateOperations)
+      },
+      { timeout: TRANSACTION_TIMEOUT_MS },
+    )
 
     // Create mutation for audit log
     addMutationLog({
@@ -520,73 +527,88 @@ export const createOrUpdateActivite = async ({
     }
   }
 
-  // Creation transaction
-  await prismaClient.$transaction(async (transaction) => {
-    // Create beneficiaire anonyme for one to one cras
-    if (beneficiaireAnonymeToCreate) {
-      await transaction.beneficiaire.create({
-        data: withoutDejaAccompagne(beneficiaireAnonymeToCreate),
+  // Creation transaction with extended timeout for large workshops
+  await prismaClient.$transaction(
+    async (transaction) => {
+      // Step 1: Create beneficiaires (must be before accompagnements for FK)
+      if (beneficiaireAnonymeToCreate) {
+        await transaction.beneficiaire.create({
+          data: withoutDejaAccompagne(beneficiaireAnonymeToCreate),
+          select: { id: true },
+        })
+      }
+
+      if (beneficiairesAnonymesCollectif.length > 0) {
+        await transaction.beneficiaire.createMany({
+          data: beneficiairesAnonymesCollectif.map((beneficiaire) =>
+            withoutDejaAccompagne(beneficiaire),
+          ),
+        })
+      }
+
+      // Step 2: Create activite
+      await transaction.activite.create({
+        data: {
+          ...activiteData,
+          type: input.type,
+          id: creationId,
+        },
         select: { id: true },
       })
-    }
-    // Create beneficiaires anonymes
-    if (beneficiairesAnonymesCollectif.length > 0) {
-      await transaction.beneficiaire.createMany({
-        data: beneficiairesAnonymesCollectif.map((beneficiaire) =>
-          withoutDejaAccompagne(beneficiaire),
-        ),
-      })
-    }
 
-    // Create activite
-    await transaction.activite.create({
-      data: {
-        ...activiteData,
-        type: input.type,
-        id: creationId,
-      },
-      select: { id: true },
-    })
+      // Step 3: Create accompagnements and tags in parallel
+      const [createdAccompagnements] = await Promise.all([
+        transaction.accompagnement.createMany({
+          data: accompagnementsCreationData,
+        }),
+        input.data.tags.length > 0
+          ? transaction.activitesTags.createMany({
+              data: input.data.tags.map((tag) => ({
+                activiteId: creationId,
+                tagId: tag.id,
+              })),
+            })
+          : Promise.resolve(),
+      ])
 
-    // Create tags for the activite
-    await transaction.activitesTags.createMany({
-      data: input.data.tags.map((tag) => ({
-        activiteId: creationId,
-        tagId: tag.id,
-      })),
-    })
+      // Step 4: All count updates in parallel (no FK dependencies)
+      const updateOperations: Promise<unknown>[] = [
+        transaction.mediateur.update({
+          where: { id: mediateurId },
+          data: {
+            activitesCount: { increment: 1 },
+            accompagnementsCount: { increment: createdAccompagnements.count },
+            derniereCreationActivite: new Date(),
+          },
+        }),
+      ]
 
-    // Create accompagnements
-    const createdAccompagnements = await transaction.accompagnement.createMany({
-      data: accompagnementsCreationData,
-    })
+      if (accompagnementsCreationData.length > 0) {
+        updateOperations.push(
+          transaction.beneficiaire.updateMany({
+            where: {
+              id: {
+                in: accompagnementsCreationData.map((a) => a.beneficiaireId),
+              },
+            },
+            data: { accompagnementsCount: { increment: 1 } },
+          }),
+        )
+      }
 
-    // Update the mediateur accompagnements count
-    await transaction.mediateur.update({
-      where: { id: mediateurId },
-      data: {
-        activitesCount: { increment: 1 },
-        accompagnementsCount: { increment: createdAccompagnements.count },
-        derniereCreationActivite: new Date(),
-      },
-    })
+      if (lieuActivite) {
+        updateOperations.push(
+          transaction.structure.update({
+            where: { id: lieuActivite.id },
+            data: { activitesCount: { increment: 1 } },
+          }),
+        )
+      }
 
-    // Update the beneficiaires accompagnements count
-    await transaction.beneficiaire.updateMany({
-      where: {
-        id: { in: accompagnementsCreationData.map((a) => a.beneficiaireId) },
-      },
-      data: { accompagnementsCount: { increment: 1 } },
-    })
-
-    // Update the structure activites count
-    if (lieuActivite) {
-      await transaction.structure.update({
-        where: { id: lieuActivite.id },
-        data: { activitesCount: { increment: 1 } },
-      })
-    }
-  })
+      await Promise.all(updateOperations)
+    },
+    { timeout: TRANSACTION_TIMEOUT_MS },
+  )
 
   // Create mutation for audit log
   addMutationLog({
