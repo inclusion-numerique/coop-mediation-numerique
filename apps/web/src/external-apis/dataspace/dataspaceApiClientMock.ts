@@ -1,4 +1,5 @@
 import { conseillerInscriptionEmail } from '@app/fixtures/users/conseillerInscription'
+import { conseillerInscriptionSansContratEmail } from '@app/fixtures/users/conseillerInscriptionSansContrat'
 import { conseillerSansLieuInscriptionEmail } from '@app/fixtures/users/conseillerSansLieuInscription'
 import { coordinateurHorsDispositifInscriptionEmail } from '@app/fixtures/users/coordinateurHorsDispositifInscription'
 import { coordinateurInscriptionEmail } from '@app/fixtures/users/coordinateurInscription'
@@ -10,6 +11,7 @@ import type {
 } from './dataspaceApiClient'
 import {
   mockDataspaceConseillerNumeriqueInscription,
+  mockDataspaceConseillerNumeriqueSansContratInscription,
   mockDataspaceConseillerSansLieuInscription,
   mockDataspaceCoordinateurConumInscription,
   mockDataspaceCoordinateurConumInscriptionAvecTout,
@@ -34,6 +36,8 @@ import {
 export const mockDataspaceDatabase: Record<string, DataspaceMediateur | null> =
   {
     [conseillerInscriptionEmail]: mockDataspaceConseillerNumeriqueInscription,
+    [conseillerInscriptionSansContratEmail]:
+      mockDataspaceConseillerNumeriqueSansContratInscription,
     [coordinateurHorsDispositifInscriptionEmail]:
       mockDataspaceCoordinateurHorsDispositifInscription,
     [coordinateurInscriptionEmail]: mockDataspaceCoordinateurConumInscription,

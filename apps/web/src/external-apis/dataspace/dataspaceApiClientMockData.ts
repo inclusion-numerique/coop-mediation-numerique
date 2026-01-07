@@ -90,6 +90,21 @@ export const mockDataspaceStructureEmployeuse: DataspaceStructureEmployeuse = {
   contrats: [mockDataspaceContratCDI],
 }
 
+export const mockDataspaceStructureEmployeuseWithNoContrat: DataspaceStructureEmployeuse =
+  {
+    nom: 'Centre Social du Vercors',
+    siret: '12345678901238',
+    ids: {
+      coop: 'aaaf4a83-b8b2-4253-958a-4e3348c9b6dc', // random uuid
+      dataspace: 790,
+      pg_id: 125,
+      aidant_connect: null,
+    },
+    contact: mockDataspaceContact,
+    adresse: mockDataspaceAdresse,
+    contrats: [],
+  }
+
 export const mockDataspaceStructureEmployeuseWithMultipleContrats: DataspaceStructureEmployeuse =
   {
     nom: 'Mairie de Paris',
@@ -334,6 +349,20 @@ export const mockDataspaceConseillerSansLieuInscription: DataspaceMediateur = {
   lieux_activite: [],
   conseillers_numeriques_coordonnes: [],
 }
+
+/**
+ * Mock for conseiller sans contrat inscription test user
+ * Uses structure employeuse with no contracts (contrats: [])
+ */
+export const mockDataspaceConseillerNumeriqueSansContratInscription: DataspaceMediateur =
+  {
+    id: 10007,
+    is_coordinateur: false,
+    is_conseiller_numerique: true,
+    structures_employeuses: [mockDataspaceStructureEmployeuseWithNoContrat],
+    lieux_activite: [mockDataspaceLieuActivite],
+    conseillers_numeriques_coordonnes: [],
+  }
 
 // API Error mocks
 
