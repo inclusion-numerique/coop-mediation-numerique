@@ -83,6 +83,9 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
           {name} - Ajouter une structure employeuse{' '}
           <span className="fr-mx-1v" />{' '}
         </AdministrationTitle>
+        <p>
+          Siret ProConnect : <b>{user.siret || '-'}</b>
+        </p>
         <CreerEmployeStructureForm user={user} />
       </main>
     </CoopPageContainer>
