@@ -6,8 +6,11 @@ import {
   RdvspWebhookRdvData,
   RdvspWebhookUserData,
 } from '@app/web/features/rdvsp/webhook/rdvWebhook'
+import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import * as Sentry from '@sentry/nextjs'
 import { NextRequest, NextResponse } from 'next/server'
+
+const logDebug = ServerWebAppConfig.RdvServicePublic.log.webhook.debug
 
 const outputLog = (label: string, payload: unknown) => {
   // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
@@ -20,7 +23,7 @@ export const POST = async (request: NextRequest) => {
 
     // Validate the structure
     if (!body.data || !body.meta) {
-      outputLog('Invalid webhook payload structure', body)
+      if (logDebug) outputLog('Invalid webhook payload structure', body)
       return NextResponse.json(
         { error: 'Invalid webhook payload structure' },
         { status: 400 },
@@ -31,7 +34,7 @@ export const POST = async (request: NextRequest) => {
     // Using type assertions because TypeScript cannot narrow discriminated unions with nested discriminants
     switch (body.meta.model) {
       case RdvspWebhookModel.Rdv:
-        outputLog('Processing RDV webhook', body.meta)
+        if (logDebug) outputLog('Processing RDV webhook', body.meta)
         await handleRdvModelWebhook({
           data: body.data as RdvspWebhookRdvData,
           event: body.meta.event,
@@ -39,7 +42,7 @@ export const POST = async (request: NextRequest) => {
         break
 
       case RdvspWebhookModel.User:
-        outputLog('Processing User webhook', body.meta)
+        if (logDebug) outputLog('Processing User webhook', body.meta)
         await handleUserModelWebhook({
           data: body.data as RdvspWebhookUserData,
           event: body.meta.event,
@@ -48,7 +51,7 @@ export const POST = async (request: NextRequest) => {
 
       default: {
         // We no-op on models we don't need to sync
-        outputLog('No-op on model', body.meta)
+        if (logDebug) outputLog('No-op on model', body.meta)
       }
     }
 
