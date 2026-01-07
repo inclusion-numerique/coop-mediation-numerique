@@ -47,17 +47,42 @@ const deleteAndNotify = async (now: Date) => {
       mediateur: { select: { id: true } },
       coordinateur: { select: { id: true } },
     },
-    where: inscriptionFilter({ lt: daysAgo(now, 105) }, 'warning_j90_sent'),
+    where: {
+      ...inscriptionFilter({ lt: daysAgo(now, 105) }, 'warning_j90_sent'),
+      AND: [
+        { NOT: { mediateur: { activites: { some: {} } } } },
+        { NOT: { coordinateur: { mediateursCoordonnes: { some: {} } } } },
+      ],
+    },
   })
 
   for (const user of usersToDelete) {
     const { id: userId, mediateur, coordinateur } = user
 
     await prismaClient.$transaction(async (tx) => {
-      if (mediateur) await tx.mediateur.delete({ where: { id: mediateur.id } })
+      await tx.employeStructure.deleteMany({
+        where: { userId: userId },
+      })
 
-      if (coordinateur)
+      if (mediateur) {
+        await tx.mediateurCoordonne.deleteMany({
+          where: { mediateurId: mediateur.id },
+        })
+
+        await tx.mediateurEnActivite.deleteMany({
+          where: { mediateurId: mediateur.id },
+        })
+
+        await tx.conseillerNumerique.deleteMany({
+          where: { mediateurId: mediateur.id },
+        })
+
+        await tx.mediateur.delete({ where: { id: mediateur.id } })
+      }
+
+      if (coordinateur) {
         await tx.coordinateur.delete({ where: { id: coordinateur.id } })
+      }
 
       await tx.user.delete({ where: { id: userId } })
     })
@@ -81,15 +106,21 @@ const warnBeforeDeletion = async (now: Date) => {
   })
 
   for (const user of usersToWarnBeforeDeletion) {
-    const deletionDate = new Date(user.created)
-    deletionDate.setDate(deletionDate.getDate() + 105)
-    const timeDiff = deletionDate.getTime() - now.getTime()
+    const expectedDeletionDate =
+      new Date(user.created).getTime() + 105 * MILLISECONDS_IN_DAY
+
+    const timeDiff = expectedDeletionDate - now.getTime()
 
     await sendDeletionWarningEmail({
       email: user.email,
       firstname: user.firstName,
-      deletionDate: deletionDate.toLocaleDateString('fr-FR'),
-      daysRemaining: Math.ceil(timeDiff / MILLISECONDS_IN_DAY),
+      deletionDate: new Date(
+        timeDiff < 0
+          ? now.getTime() + MILLISECONDS_IN_DAY
+          : expectedDeletionDate,
+      ).toLocaleDateString('fr-FR'),
+      daysRemaining:
+        timeDiff < 0 ? 1 : Math.ceil(timeDiff / MILLISECONDS_IN_DAY),
       matomoCampaignId: 'finaliser_inscription_j90',
     })
   }

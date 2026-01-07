@@ -79,6 +79,11 @@ export const ServerWebAppConfig = {
     OAuth: {
       clientSecret: process.env.RDV_SERVICE_PUBLIC_OAUTH_CLIENT_SECRET ?? '',
     },
+    log: {
+      webhook: {
+        debug: false,
+      },
+    },
   },
   Security: {
     hmacSecretKey: process.env.HMAC_SECRET_KEY ?? '',

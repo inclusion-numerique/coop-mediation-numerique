@@ -1,6 +1,9 @@
 import { prismaClient } from '@app/web/prismaClient'
+import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { userPrismaDataFromOAuthApiUser } from '../sync/syncRdv'
 import type { RdvspWebhookEvent, RdvspWebhookUserData } from './rdvWebhook'
+
+const logDebug = ServerWebAppConfig.RdvServicePublic.log.webhook.debug
 
 /**
  * Converts webhook user data to the format expected by userPrismaDataFromOAuthApiUser
@@ -40,8 +43,12 @@ export const handleUserModelWebhook = async ({
   data: RdvspWebhookUserData
   event: RdvspWebhookEvent
 }) => {
-  // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
-  console.log(`[rdvsp webhook] Processing User ${event} for User id ${data.id}`)
+  if (logDebug) {
+    // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
+    console.log(
+      `[rdvsp webhook] Processing User ${event} for User id ${data.id}`,
+    )
+  }
 
   try {
     switch (event) {
@@ -52,10 +59,12 @@ export const handleUserModelWebhook = async ({
          * - RdvUsers are created during RDV sync when we have the full context
          * - A user without any RDV appointments is not relevant to our system yet
          */
-        // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
-        console.log(
-          `[rdvsp webhook] Skipping User creation for id ${data.id} (users are created during RDV sync)`,
-        )
+        if (logDebug) {
+          // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
+          console.log(
+            `[rdvsp webhook] Skipping User creation for id ${data.id} (users are created during RDV sync)`,
+          )
+        }
         break
       }
 
@@ -75,9 +84,11 @@ export const handleUserModelWebhook = async ({
             where: { id: data.id },
             data: userData,
           })
-          // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
-          console.log(`[rdvsp webhook] Updated RdvUser ${data.id}`)
-        } else {
+          if (logDebug) {
+            // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
+            console.log(`[rdvsp webhook] Updated RdvUser ${data.id}`)
+          }
+        } else if (logDebug) {
           // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
           console.log(
             `[rdvsp webhook] Skipping User update for id ${data.id} (not linked to any beneficiaire)`,
@@ -97,10 +108,12 @@ export const handleUserModelWebhook = async ({
         await prismaClient.rdvUser.delete({
           where: { id: data.id },
         })
-        // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
-        console.log(
-          `[rdvsp webhook] Deleted RdvUser ${data.id} and unlinked beneficiaires`,
-        )
+        if (logDebug) {
+          // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
+          console.log(
+            `[rdvsp webhook] Deleted RdvUser ${data.id} and unlinked beneficiaires`,
+          )
+        }
         break
       }
 

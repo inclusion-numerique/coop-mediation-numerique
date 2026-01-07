@@ -9,6 +9,7 @@ import { isUserInscriptionEnCours } from '@app/web/auth/isUserInscriptionEnCours
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { isConseillerNumeriqueV1DataWithActiveMiseEnRelation } from '@app/web/external-apis/conseiller-numerique/isConseillerNumeriqueV1WithActiveMiseEnRelation'
 import { findConseillerNumeriqueV1 } from '@app/web/external-apis/conseiller-numerique/searchConseillerNumeriqueV1'
+import { getMediateurFromDataspaceApi } from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import { getInvitationStatusBadge } from '@app/web/features/utilisateurs/use-cases/list/getInvitationStatusBadge'
 import { getUserAccountStatusBadge } from '@app/web/features/utilisateurs/use-cases/list/getUserAccountStatusBadge'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
@@ -101,6 +102,7 @@ const AdministrationUserPage = async ({
     mediateur,
     coordinateur,
     inscriptionValidee,
+    siret,
     firstName,
     lastName,
     email,
@@ -145,17 +147,22 @@ const AdministrationUserPage = async ({
     (a, b) => b.created.getTime() - a.created.getTime(),
   )
 
-  const conseillerNumeriqueInfo = await findConseillerNumeriqueV1(
-    user.mediateur?.conseillerNumerique?.id
-      ? {
-          id: user.mediateur.conseillerNumerique.id,
-          includeDeleted: true,
-        }
-      : {
-          email: user.email,
-          includeDeleted: true,
-        },
-  )
+  const [conseillerNumeriqueInfo, dataspaceInfo] = await Promise.all([
+    findConseillerNumeriqueV1(
+      user.mediateur?.conseillerNumerique?.id
+        ? {
+            id: user.mediateur.conseillerNumerique.id,
+            includeDeleted: true,
+          }
+        : {
+            email: user.email,
+            includeDeleted: true,
+          },
+    ),
+    getMediateurFromDataspaceApi({
+      email: user.email,
+    }),
+  ])
 
   return (
     <CoopPageContainer size={64}>
@@ -267,6 +274,7 @@ const AdministrationUserPage = async ({
                 label: 'Rôle sécurité',
                 value: role,
               },
+              { label: 'Siret ProConnect', value: siret || '-' },
               {
                 label: 'Créé le',
                 value: dateAsDay(created),
@@ -405,13 +413,9 @@ const AdministrationUserPage = async ({
               </Button>
             </div>
             {coordinateur.mediateursCoordonnes.length === 0 ? (
-              <tr>
-                <td colSpan={5}>
-                  <Badge severity="warning" className="fr-mb-8v">
-                    Aucun médiateur coordonné
-                  </Badge>
-                </td>
-              </tr>
+              <Badge severity="warning" className="fr-mb-8v">
+                Aucun médiateur coordonné
+              </Badge>
             ) : (
               <div className="fr-table" data-fr-js-table="true">
                 <div className="fr-table__wrapper">
@@ -477,11 +481,7 @@ const AdministrationUserPage = async ({
                 ` · ${numberToString(coordinateur.invitations.length)}`}
             </h5>
             {coordinateur.invitations.length === 0 ? (
-              <tr>
-                <td colSpan={5}>
-                  <Badge severity="info">Aucune invitation envoyée</Badge>
-                </td>
-              </tr>
+              <Badge severity="info">Aucune invitation envoyée</Badge>
             ) : (
               <div className="fr-table fr-mb-0" data-fr-js-table="true">
                 <div className="fr-table__wrapper">
@@ -649,10 +649,26 @@ const AdministrationUserPage = async ({
           </AdministrationInfoCard>
         ) : (
           (!!coordinateur || !!mediateur) && (
-            <Notice
-              className="fr-notice--alert fr-mb-6v"
-              title={<>Aucune structure employeuse</>}
-            />
+            <AdministrationInfoCard
+              title="Structure employeuse"
+              actions={
+                <Button
+                  iconId="fr-icon-settings-5-line"
+                  priority="tertiary"
+                  size="small"
+                  linkProps={{
+                    href: `/administration/utilisateurs/${user.id}/emplois`,
+                  }}
+                >
+                  Paramétrer les structures employeuses
+                </Button>
+              }
+            >
+              <Notice
+                className="fr-notice--alert fr-mt-4v fr-mb-0"
+                title={<>Aucune structure employeuse</>}
+              />
+            </AdministrationInfoCard>
           )
         )}
         {enActivite.length > 0 ? (
@@ -688,6 +704,24 @@ const AdministrationUserPage = async ({
             />
           )
         )}
+        <AdministrationInfoCard title="API Dataspace">
+          {!dataspaceInfo && (
+            <Notice
+              className="fr-notice--warning fr-mb-6v"
+              title={<>Utilisateur non trouvé dans l’API Dataspace</>}
+            />
+          )}
+          {dataspaceInfo && (
+            <div className="fr-border-radius--8 fr-p-4v fr-background-alt--grey">
+              <pre
+                className="fr-text--sm fr-mb-0"
+                style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+              >
+                {JSON.stringify(dataspaceInfo, null, 2)}
+              </pre>
+            </div>
+          )}
+        </AdministrationInfoCard>
 
         <AdministrationInfoCard title="Sessions de connexion et comptes liés">
           <AdministrationInlineLabelsValues

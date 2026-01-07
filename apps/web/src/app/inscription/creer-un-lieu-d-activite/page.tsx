@@ -22,12 +22,8 @@ const Page = async (props: {
 
   const user = await authenticateUser()
 
-  if (!user.mediateur) {
-    redirect('/')
-  }
-
-  if (user.emplois.length === 0 || !retour) {
-    redirect(`/inscription`)
+  if (!user.mediateur || !retour) {
+    redirect('/inscription')
   }
 
   return (

@@ -3,6 +3,7 @@ import { givenUser } from '@app/fixtures/givenUser'
 import type { Prisma } from '@prisma/client'
 import { administrateur } from './administrateur'
 import { conseillerInscription } from './conseillerInscription'
+import { conseillerInscriptionSansContrat } from './conseillerInscriptionSansContrat'
 import {
   conseillerNumerique,
   conseillerNumeriqueMediateurId,
@@ -46,6 +47,7 @@ import { mediateurSansActivitesJ90 } from './mediateurSansActivitesJ90'
 export const fixtureUsers = [
   administrateur,
   conseillerInscription,
+  conseillerInscriptionSansContrat,
   conseillerSansLieuInscription,
   conseillerNumerique,
   coordinateurHorsDispositifInscription,

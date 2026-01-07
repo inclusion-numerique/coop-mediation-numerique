@@ -2,6 +2,7 @@
 
 import { createToast } from '@app/ui/toast/createToast'
 import { download } from '@app/web/utils/download'
+import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Tag from '@codegouvfr/react-dsfr/Tag'
@@ -38,7 +39,7 @@ const ExportActivitesCoordinationButton = ({
     ExportActiviteModal.close()
     createToast({
       priority: 'success',
-      message: `Le téléchargement de vos ${activitesCount} activités est en cours.`,
+      message: `Le téléchargement de vos ${numberToString(activitesCount)} activités est en cours.`,
     })
   }
 

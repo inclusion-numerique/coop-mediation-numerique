@@ -1,5 +1,6 @@
 import { executeInscriptionFlow } from '@app/e2e/e2e/inscription/executeInscriptionFlow'
 import { conseillerInscription } from '@app/fixtures/users/conseillerInscription'
+import { conseillerInscriptionSansContrat } from '@app/fixtures/users/conseillerInscriptionSansContrat'
 import { conseillerSansLieuInscription } from '@app/fixtures/users/conseillerSansLieuInscription'
 
 describe("ETQ Conseiller numérique, je peux m'inscrire en suivant le bon parcours", () => {
@@ -88,6 +89,37 @@ describe("ETQ Conseiller numérique, je peux m'inscrire en suivant le bon parcou
             cy.contains('Ma structure employeuse').should('be.visible')
 
             // We added structure employeuse as lieu activite
+            cy.contains('Mon lieu d’activité').should('be.visible')
+            cy.contains('Valider mon inscription').should('be.visible')
+          },
+        },
+      ],
+    })
+  })
+
+  it("ETQ Conseiller numérique sans contrat actif, je peux m'inscrire", () => {
+    executeInscriptionFlow({
+      signin: true,
+      user: conseillerInscriptionSansContrat,
+      expectSuccessToast: true,
+      expectOnboarding: 'mediateur',
+      skipOnboarding: true,
+      expectedSteps: [
+        {
+          step: 'recapitulatif',
+          conseillerNumeriqueRoleNotice: 'conseiller-numerique',
+          acceptCgu: true,
+          check: () => {
+            cy.contains('Récapitulatif de vos informations').should(
+              'be.visible',
+            )
+            cy.contains('Mes informations').should('be.visible')
+            cy.contains('Conseiller·ère numérique').should('be.visible')
+            cy.contains(conseillerInscriptionSansContrat.name).should(
+              'be.visible',
+            )
+            cy.contains('Ma structure employeuse').should('be.visible')
+            // lieux activite imported from dataspace
             cy.contains('Mon lieu d’activité').should('be.visible')
             cy.contains('Valider mon inscription').should('be.visible')
           },

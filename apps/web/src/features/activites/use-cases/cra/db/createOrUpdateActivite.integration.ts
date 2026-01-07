@@ -1,12 +1,13 @@
 import { refreshFixturesComputedFields } from '@app/fixtures/refreshFixturesComputedFields'
 import { resetFixtureUser } from '@app/fixtures/resetFixtureUser'
-import { seedStructures } from '@app/fixtures/structures'
+import { mediateque, seedStructures } from '@app/fixtures/structures'
 import {
   mediateurAvecActivite,
   mediateurAvecActiviteMediateurId,
 } from '@app/fixtures/users/mediateurAvecActivite'
 import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
 import { prismaClient } from '@app/web/prismaClient'
+import { v4 } from 'uuid'
 import {
   ActiviteListItemWithTimezone,
   activiteListSelect,
@@ -19,6 +20,44 @@ import {
   createOrUpdateActivite,
 } from './createOrUpdateActivite'
 import { craDureeDataToMinutes } from './minutesToCraDuree'
+
+// Helper to get counts for verification
+const getCounts = async (ids: {
+  mediateurId: string
+  structureId?: string
+  beneficiaireIds?: string[]
+}) => {
+  const [mediateur, structure, beneficiaires] = await Promise.all([
+    prismaClient.mediateur.findUnique({
+      where: { id: ids.mediateurId },
+      select: { activitesCount: true, accompagnementsCount: true },
+    }),
+    ids.structureId
+      ? prismaClient.structure.findUnique({
+          where: { id: ids.structureId },
+          select: { activitesCount: true },
+        })
+      : null,
+    ids.beneficiaireIds && ids.beneficiaireIds.length > 0
+      ? prismaClient.beneficiaire.findMany({
+          where: { id: { in: ids.beneficiaireIds } },
+          select: { id: true, accompagnementsCount: true },
+        })
+      : [],
+  ])
+
+  return {
+    mediateur,
+    structure,
+    beneficiaires: beneficiaires.reduce(
+      (acc, b) => {
+        acc[b.id] = b.accompagnementsCount
+        return acc
+      },
+      {} as Record<string, number>,
+    ),
+  }
+}
 
 const nullActivite: Omit<
   ActiviteListItemWithTimezone,
@@ -272,6 +311,401 @@ describe('createOrUpdateActivite', () => {
       thematiques: input.data.thematiques,
       rdvServicePublicId: input.data.rdvServicePublicId ?? null,
       v1CraId: null,
+    })
+  })
+
+  it('should create and update large atelier collectif (50+ participants) without timeout', async () => {
+    const totalParticipants = 60
+
+    const input: CreateOrUpdateActiviteInput = {
+      type: 'Collectif',
+      data: {
+        mediateurId: mediateurAvecActiviteMediateurId,
+        typeLieu: 'Autre',
+        participants: [],
+        participantsAnonymes: {
+          ...participantsAnonymesDefault,
+          total: totalParticipants,
+          genreNonCommunique: totalParticipants,
+          statutSocialNonCommunique: totalParticipants,
+          trancheAgeNonCommunique: totalParticipants,
+        },
+        titreAtelier: 'Grand atelier collectif',
+        thematiques: ['SecuriteNumerique', 'DiagnosticNumerique'],
+        tags: [],
+        date: '2024-09-15',
+        materiel: ['Ordinateur', 'Telephone'],
+        duree: { duree: '180' },
+        niveau: 'Debutant',
+      },
+    }
+
+    // Test creation
+    const createResult = await createOrUpdateActivite({
+      input,
+      userId: mediateurAvecActivite.id,
+      mediateurId: mediateurAvecActiviteMediateurId,
+    })
+
+    const createdActivite = await prismaClient.activite.findUnique({
+      where: { id: createResult.id },
+      select: {
+        accompagnementsCount: true,
+        _count: { select: { accompagnements: true } },
+      },
+    })
+
+    expect(createdActivite?.accompagnementsCount).toBe(totalParticipants)
+    expect(createdActivite?._count.accompagnements).toBe(totalParticipants)
+
+    // Test update with different participant count
+    const updatedTotalParticipants = 45
+    const updateInput: CreateOrUpdateActiviteInput = {
+      type: 'Collectif',
+      data: {
+        ...input.data,
+        id: createResult.id,
+        participantsAnonymes: {
+          ...participantsAnonymesDefault,
+          total: updatedTotalParticipants,
+          genreNonCommunique: updatedTotalParticipants,
+          statutSocialNonCommunique: updatedTotalParticipants,
+          trancheAgeNonCommunique: updatedTotalParticipants,
+        },
+        titreAtelier: 'Grand atelier collectif modifié',
+      },
+    }
+
+    const updateResult = await createOrUpdateActivite({
+      input: updateInput,
+      userId: mediateurAvecActivite.id,
+      mediateurId: mediateurAvecActiviteMediateurId,
+    })
+
+    expect(updateResult.id).toBe(createResult.id)
+
+    const updatedActivite = await prismaClient.activite.findUnique({
+      where: { id: updateResult.id },
+      select: {
+        accompagnementsCount: true,
+        titreAtelier: true,
+        _count: { select: { accompagnements: true } },
+      },
+    })
+
+    expect(updatedActivite?.accompagnementsCount).toBe(updatedTotalParticipants)
+    expect(updatedActivite?._count.accompagnements).toBe(
+      updatedTotalParticipants,
+    )
+    expect(updatedActivite?.titreAtelier).toBe(
+      'Grand atelier collectif modifié',
+    )
+  })
+
+  describe('counts verification', () => {
+    // Test IDs for this suite - fresh IDs to avoid conflicts with other tests
+    const beneficiaireA_Id = v4()
+    const beneficiaireB_Id = v4()
+    const beneficiaireC_Id = v4()
+
+    beforeAll(async () => {
+      // Create 3 non-anonymous beneficiaires (suivis) for testing
+      await prismaClient.beneficiaire.createMany({
+        data: [
+          {
+            id: beneficiaireA_Id,
+            mediateurId: mediateurAvecActiviteMediateurId,
+            prenom: 'Test',
+            nom: 'BeneficiaireA',
+            anonyme: false,
+          },
+          {
+            id: beneficiaireB_Id,
+            mediateurId: mediateurAvecActiviteMediateurId,
+            prenom: 'Test',
+            nom: 'BeneficiaireB',
+            anonyme: false,
+          },
+          {
+            id: beneficiaireC_Id,
+            mediateurId: mediateurAvecActiviteMediateurId,
+            prenom: 'Test',
+            nom: 'BeneficiaireC',
+            anonyme: false,
+          },
+        ],
+      })
+    })
+
+    afterAll(async () => {
+      // Clean up test beneficiaires
+      await prismaClient.accompagnement.deleteMany({
+        where: {
+          beneficiaireId: {
+            in: [beneficiaireA_Id, beneficiaireB_Id, beneficiaireC_Id],
+          },
+        },
+      })
+      await prismaClient.beneficiaire.deleteMany({
+        where: {
+          id: { in: [beneficiaireA_Id, beneficiaireB_Id, beneficiaireC_Id] },
+        },
+      })
+    })
+
+    it('should correctly update all counts when switching beneficiaires suivis on update', async () => {
+      // Get initial counts
+      const initialCounts = await getCounts({
+        mediateurId: mediateurAvecActiviteMediateurId,
+        structureId: mediateque.id,
+        beneficiaireIds: [beneficiaireA_Id, beneficiaireB_Id, beneficiaireC_Id],
+      })
+
+      // Step 1: Create activity with beneficiaire A at mediateque
+      const createInput: CreateOrUpdateActiviteInput = {
+        type: 'Individuel',
+        data: {
+          mediateurId: mediateurAvecActiviteMediateurId,
+          typeLieu: 'LieuActivite',
+          structure: {
+            id: mediateque.id,
+            nom: mediateque.nom,
+            adresse: mediateque.adresse,
+          },
+          thematiques: ['SecuriteNumerique'],
+          tags: [],
+          date: '2024-10-01',
+          materiel: [],
+          duree: { duree: '60' },
+          autonomie: 'EntierementAccompagne',
+          beneficiaire: { id: beneficiaireA_Id },
+        },
+      }
+
+      const createResult = await createOrUpdateActivite({
+        input: createInput,
+        userId: mediateurAvecActivite.id,
+        mediateurId: mediateurAvecActiviteMediateurId,
+      })
+
+      // Verify counts after creation
+      const afterCreateCounts = await getCounts({
+        mediateurId: mediateurAvecActiviteMediateurId,
+        structureId: mediateque.id,
+        beneficiaireIds: [beneficiaireA_Id, beneficiaireB_Id, beneficiaireC_Id],
+      })
+
+      expect(afterCreateCounts.mediateur?.activitesCount).toBe(
+        (initialCounts.mediateur?.activitesCount ?? 0) + 1,
+      )
+      expect(afterCreateCounts.mediateur?.accompagnementsCount).toBe(
+        (initialCounts.mediateur?.accompagnementsCount ?? 0) + 1,
+      )
+      expect(afterCreateCounts.structure?.activitesCount).toBe(
+        (initialCounts.structure?.activitesCount ?? 0) + 1,
+      )
+      expect(afterCreateCounts.beneficiaires[beneficiaireA_Id]).toBe(
+        (initialCounts.beneficiaires[beneficiaireA_Id] ?? 0) + 1,
+      )
+      expect(afterCreateCounts.beneficiaires[beneficiaireB_Id]).toBe(
+        initialCounts.beneficiaires[beneficiaireB_Id] ?? 0,
+      )
+
+      // Step 2: Update activity - change from beneficiaire A to beneficiaire B
+      const updateInput: CreateOrUpdateActiviteInput = {
+        type: 'Individuel',
+        data: {
+          ...createInput.data,
+          id: createResult.id,
+          beneficiaire: { id: beneficiaireB_Id },
+        },
+      }
+
+      await createOrUpdateActivite({
+        input: updateInput,
+        userId: mediateurAvecActivite.id,
+        mediateurId: mediateurAvecActiviteMediateurId,
+      })
+
+      // Verify counts after switching beneficiaire
+      const afterSwitchCounts = await getCounts({
+        mediateurId: mediateurAvecActiviteMediateurId,
+        structureId: mediateque.id,
+        beneficiaireIds: [beneficiaireA_Id, beneficiaireB_Id, beneficiaireC_Id],
+      })
+
+      // Mediateur counts should stay the same (1 activite, 1 accompagnement)
+      expect(afterSwitchCounts.mediateur?.activitesCount).toBe(
+        afterCreateCounts.mediateur?.activitesCount,
+      )
+      expect(afterSwitchCounts.mediateur?.accompagnementsCount).toBe(
+        afterCreateCounts.mediateur?.accompagnementsCount,
+      )
+      // Structure count should stay the same
+      expect(afterSwitchCounts.structure?.activitesCount).toBe(
+        afterCreateCounts.structure?.activitesCount,
+      )
+      // Beneficiaire A should be decremented back to initial
+      expect(afterSwitchCounts.beneficiaires[beneficiaireA_Id]).toBe(
+        initialCounts.beneficiaires[beneficiaireA_Id] ?? 0,
+      )
+      // Beneficiaire B should be incremented
+      expect(afterSwitchCounts.beneficiaires[beneficiaireB_Id]).toBe(
+        (initialCounts.beneficiaires[beneficiaireB_Id] ?? 0) + 1,
+      )
+
+      // Step 3: Update activity - change structure (from mediateque to no structure)
+      const updateNoStructureInput: CreateOrUpdateActiviteInput = {
+        type: 'Individuel',
+        data: {
+          ...updateInput.data,
+          typeLieu: 'Domicile',
+          structure: undefined,
+          lieuCommuneData: banDefaultValueToAdresseBanData({
+            commune: 'Paris',
+            codePostal: '75001',
+            codeInsee: '75056',
+          }),
+        },
+      }
+
+      await createOrUpdateActivite({
+        input: updateNoStructureInput,
+        userId: mediateurAvecActivite.id,
+        mediateurId: mediateurAvecActiviteMediateurId,
+      })
+
+      // Verify structure count is decremented
+      const afterStructureChangeCounts = await getCounts({
+        mediateurId: mediateurAvecActiviteMediateurId,
+        structureId: mediateque.id,
+        beneficiaireIds: [beneficiaireA_Id, beneficiaireB_Id],
+      })
+
+      expect(afterStructureChangeCounts.structure?.activitesCount).toBe(
+        initialCounts.structure?.activitesCount ?? 0,
+      )
+
+      // Clean up: soft-delete the test activity
+      await prismaClient.activite.update({
+        where: { id: createResult.id },
+        data: { suppression: new Date() },
+      })
+    })
+
+    it('should correctly handle collectif with mixed suivis and anonymes', async () => {
+      const initialCounts = await getCounts({
+        mediateurId: mediateurAvecActiviteMediateurId,
+        beneficiaireIds: [beneficiaireA_Id, beneficiaireB_Id, beneficiaireC_Id],
+      })
+
+      // Create collectif with 2 suivis (A, B) + 5 anonymes
+      const createInput: CreateOrUpdateActiviteInput = {
+        type: 'Collectif',
+        data: {
+          mediateurId: mediateurAvecActiviteMediateurId,
+          typeLieu: 'Autre',
+          participants: [{ id: beneficiaireA_Id }, { id: beneficiaireB_Id }],
+          participantsAnonymes: {
+            ...participantsAnonymesDefault,
+            total: 5,
+            genreNonCommunique: 5,
+            statutSocialNonCommunique: 5,
+            trancheAgeNonCommunique: 5,
+          },
+          titreAtelier: 'Test counts mixed',
+          thematiques: ['SecuriteNumerique'],
+          tags: [],
+          date: '2024-10-02',
+          materiel: [],
+          duree: { duree: '90' },
+          niveau: 'Debutant',
+        },
+      }
+
+      const createResult = await createOrUpdateActivite({
+        input: createInput,
+        userId: mediateurAvecActivite.id,
+        mediateurId: mediateurAvecActiviteMediateurId,
+      })
+
+      const afterCreateCounts = await getCounts({
+        mediateurId: mediateurAvecActiviteMediateurId,
+        beneficiaireIds: [beneficiaireA_Id, beneficiaireB_Id, beneficiaireC_Id],
+      })
+
+      // Mediateur: +1 activite, +7 accompagnements (2 suivis + 5 anonymes)
+      expect(afterCreateCounts.mediateur?.activitesCount).toBe(
+        (initialCounts.mediateur?.activitesCount ?? 0) + 1,
+      )
+      expect(afterCreateCounts.mediateur?.accompagnementsCount).toBe(
+        (initialCounts.mediateur?.accompagnementsCount ?? 0) + 7,
+      )
+      // Beneficiaire A and B: +1 each
+      expect(afterCreateCounts.beneficiaires[beneficiaireA_Id]).toBe(
+        (initialCounts.beneficiaires[beneficiaireA_Id] ?? 0) + 1,
+      )
+      expect(afterCreateCounts.beneficiaires[beneficiaireB_Id]).toBe(
+        (initialCounts.beneficiaires[beneficiaireB_Id] ?? 0) + 1,
+      )
+      // Beneficiaire C: unchanged
+      expect(afterCreateCounts.beneficiaires[beneficiaireC_Id]).toBe(
+        initialCounts.beneficiaires[beneficiaireC_Id] ?? 0,
+      )
+
+      // Update: change to 1 suivi (B, C) + 3 anonymes (remove A, add C)
+      const updateInput: CreateOrUpdateActiviteInput = {
+        type: 'Collectif',
+        data: {
+          ...createInput.data,
+          id: createResult.id,
+          participants: [{ id: beneficiaireB_Id }, { id: beneficiaireC_Id }],
+          participantsAnonymes: {
+            ...participantsAnonymesDefault,
+            total: 3,
+            genreNonCommunique: 3,
+            statutSocialNonCommunique: 3,
+            trancheAgeNonCommunique: 3,
+          },
+        },
+      }
+
+      await createOrUpdateActivite({
+        input: updateInput,
+        userId: mediateurAvecActivite.id,
+        mediateurId: mediateurAvecActiviteMediateurId,
+      })
+
+      const afterUpdateCounts = await getCounts({
+        mediateurId: mediateurAvecActiviteMediateurId,
+        beneficiaireIds: [beneficiaireA_Id, beneficiaireB_Id, beneficiaireC_Id],
+      })
+
+      // Mediateur: same activites, accompagnements changed from 7 to 5
+      expect(afterUpdateCounts.mediateur?.activitesCount).toBe(
+        afterCreateCounts.mediateur?.activitesCount,
+      )
+      expect(afterUpdateCounts.mediateur?.accompagnementsCount).toBe(
+        (initialCounts.mediateur?.accompagnementsCount ?? 0) + 5,
+      )
+      // Beneficiaire A: back to initial (was removed)
+      expect(afterUpdateCounts.beneficiaires[beneficiaireA_Id]).toBe(
+        initialCounts.beneficiaires[beneficiaireA_Id] ?? 0,
+      )
+      // Beneficiaire B: still +1 (was kept)
+      expect(afterUpdateCounts.beneficiaires[beneficiaireB_Id]).toBe(
+        (initialCounts.beneficiaires[beneficiaireB_Id] ?? 0) + 1,
+      )
+      // Beneficiaire C: now +1 (was added)
+      expect(afterUpdateCounts.beneficiaires[beneficiaireC_Id]).toBe(
+        (initialCounts.beneficiaires[beneficiaireC_Id] ?? 0) + 1,
+      )
+
+      // Clean up
+      await prismaClient.activite.update({
+        where: { id: createResult.id },
+        data: { suppression: new Date() },
+      })
     })
   })
 })
