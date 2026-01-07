@@ -2,6 +2,7 @@
 
 import { createToast } from '@app/ui/toast/createToast'
 import { download } from '@app/web/utils/download'
+import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Tag from '@codegouvfr/react-dsfr/Tag'
@@ -54,7 +55,7 @@ const ExportActivitesButton = ({
   const onExportAccompagnementsXlsx = () =>
     exportXlsx(
       '/coop/mes-activites/export',
-      `Le téléchargement de vos ${accompagnementsCount} accompagnements est en cours.`,
+      `Le téléchargement de vos ${numberToString(accompagnementsCount)} accompagnements est en cours.`,
     )
 
   const onExportStatistiquesXlsx = () =>

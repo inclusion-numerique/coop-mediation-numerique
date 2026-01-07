@@ -11,6 +11,7 @@ import type { BeneficiaireOption } from '@app/web/features/beneficiaires/Benefic
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
 import { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import { download } from '@app/web/utils/download'
+import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Tag from '@codegouvfr/react-dsfr/Tag'
@@ -77,7 +78,7 @@ export const ExportStatistiques = ({
       publicExportId
         ? `/coop/mes-activites/export/${publicExportId}`
         : '/coop/mes-activites/export',
-      `Le téléchargement de vos ${accompagnementsCount} accompagnements est en cours.`,
+      `Le téléchargement de vos ${numberToString(accompagnementsCount)} accompagnements est en cours.`,
     )
 
   const onExportStatistiquesXlsx = () =>
