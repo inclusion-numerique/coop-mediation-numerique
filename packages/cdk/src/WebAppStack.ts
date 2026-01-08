@@ -45,6 +45,7 @@ export const webAppStackVariables = [
   'WEB_CONTAINER_IMAGE',
 ] as const
 export const webAppStackSensitiveVariables = [
+  'API_ENTREPRISE_TOKEN',
   'BREVO_API_KEY',
   'SCW_ACCESS_KEY',
   'SCW_SECRET_KEY',
@@ -220,6 +221,8 @@ export class WebAppStack extends TerraformStack {
         DATASPACE_API_MOCK: isMain ? '0' : '1',
       },
       secretEnvironmentVariables: {
+        API_ENTREPRISE_TOKEN:
+          sensitiveEnvironmentVariables.API_ENTREPRISE_TOKEN.value,
         BREVO_API_KEY: isMain
           ? sensitiveEnvironmentVariables.BREVO_API_KEY.value
           : '',
