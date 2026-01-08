@@ -41,23 +41,6 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
 
   const name = getUserDisplayName(user)
 
-  const conseillerNumeriqueInfo = await findConseillerNumeriqueV1(
-    user.mediateur?.conseillerNumerique?.id
-      ? {
-          id: user.mediateur.conseillerNumerique.id,
-          includeDeleted: true,
-        }
-      : {
-          email: user.email,
-          includeDeleted: true,
-        },
-  )
-
-  if (conseillerNumeriqueInfo) {
-    redirect(`/administration/utilisateurs/${user.id}/emplois`)
-    return null
-  }
-
   return (
     <CoopPageContainer>
       <SkipLinksPortal />
