@@ -100,7 +100,7 @@ export const craRouter = router({
 
       return deleteActivite({
         activiteId,
-        userId: user.id,
+        sessionUserId: user.id,
         mediateurId: user.mediateur.id,
       })
     }),
