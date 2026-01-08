@@ -23,7 +23,6 @@ const LieuCard = ({
   const mediateursCount = lieu._count.mediateursEnActivite ?? 0
 
   const lieuHref = `/coop/mon-reseau/lieux/${lieu.id}?retour=${encodeURIComponent(lieuPageRetourHref)}`
-  const lieuMediateursHref = `${lieuHref}#mediateurs`
 
   const formattedModificationDate = formatDate(
     new Date(lieu.modification),
