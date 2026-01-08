@@ -79,6 +79,15 @@ import { type ZodError, z } from 'zod'
  *                   structure_id:
  *                     type: string
  *                     format: uuid
+ *                   debut:
+ *                     type: string
+ *                     format: date-time
+ *                     description: date de début de l'emploi dans la structure
+ *                   fin:
+ *                     type: string
+ *                     format: date-time
+ *                     nullable: true
+ *                     description: date de fin de l'emploi dans la structure
  *                   creation:
  *                     type: string
  *                     format: date-time
@@ -115,6 +124,15 @@ import { type ZodError, z } from 'zod'
  *                       structure_id:
  *                         type: string
  *                         format: uuid
+ *                       debut:
+ *                         type: string
+ *                         format: date-time
+ *                         description: date de début de l'activité dans la structure
+ *                       fin:
+ *                         type: string
+ *                         format: date-time
+ *                         nullable: true
+ *                         description: date de fin de l'activité dans la structure
  *                       creation:
  *                         type: string
  *                         format: date-time
