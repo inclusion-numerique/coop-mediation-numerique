@@ -3,11 +3,7 @@
 }
 
 .card:hover {
-  background-color: var(--background-contrast-grey);
-}
-
-.card:active {
-  background-color: var(--background-contrast-grey-active);
+  background-color: var(--background-alt-grey);
 }
 
 .innerLink {

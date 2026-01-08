@@ -31,10 +31,14 @@ const ActeurProfilAndContact = ({
   acteur,
   retour,
   compact = false,
+  classes,
 }: {
   acteur: ActeurIdentityData
   retour?: string
   compact?: boolean
+  classes?: {
+    link?: string
+  }
 }) => {
   const coordinateurInfo = retour ? getCoordinateurInfo(acteur) : null
 
@@ -64,7 +68,10 @@ const ActeurProfilAndContact = ({
             {' '}
             coordonné par{' '}
             <Link
-              className="fr-link fr-link--sm fr-ml-1v fr-position-relative"
+              className={classNames(
+                'fr-link fr-link--sm fr-ml-1v fr-position-relative',
+                classes?.link,
+              )}
               href={getActeurPageUrl({
                 userId: coordinateurInfo.userId,
                 retour,

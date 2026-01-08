@@ -1,3 +1,4 @@
+import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
 import { formatDate } from 'date-fns'
 import Link from 'next/link'
@@ -82,24 +83,13 @@ const LieuCard = ({
           }
           structureId={lieu.id}
         />
-        {mediateursCount > 0 ? (
-          <Link
-            href={lieuMediateursHref}
-            prefetch={false}
-            className={classNames('fr-tag fr-tag--sm', styles.innerLink)}
-          >
-            <span className="ri-account-circle-fill fr-mr-1v" aria-hidden />
-            {mediateursCount}{' '}
-            {mediateursCount === 1
-              ? 'médiateur numérique référencé'
-              : 'médiateurs numériques référencés'}
-          </Link>
-        ) : (
-          <span className={classNames('fr-tag fr-tag--sm', styles.tagGrey)}>
-            <span className="ri-account-circle-line fr-mr-1v" aria-hidden />0
-            médiateurs numériques référencés
-          </span>
-        )}
+        <Tag small className={styles.innerLink}>
+          <span className="ri-account-circle-fill fr-mr-1v" aria-hidden />
+          {mediateursCount}{' '}
+          {mediateursCount === 1
+            ? 'médiateur numérique référencé'
+            : 'médiateurs numériques référencés'}
+        </Tag>
       </div>
     </div>
   )

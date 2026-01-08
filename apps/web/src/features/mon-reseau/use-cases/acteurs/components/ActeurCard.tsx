@@ -2,6 +2,7 @@ import ActeurProfilAndContact from '@app/web/features/mon-reseau/use-cases/acteu
 import type { ActeurForList } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
 import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
 import { getActeurPageUrl } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurPageUrl'
+import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
 import Link from 'next/link'
 import styles from './ActeurCard.module.css'
@@ -47,22 +48,22 @@ const ActeurCard = ({
         )}
       </div>
 
-      <ActeurProfilAndContact acteur={acteur} retour={retour} compact />
+      <ActeurProfilAndContact
+        acteur={acteur}
+        retour={retour}
+        compact
+        classes={{ link: styles.innerLink }}
+      />
 
       {lieuxActiviteCount > 0 && (
-        <Link
-          href={getActeurPageUrl({
-            userId: acteur.id,
-            retour,
-            anchor: 'lieux-activite',
-          })}
-          prefetch={false}
+        <Tag
+          small
           className={classNames('fr-tag fr-tag--sm', styles.innerLink)}
         >
           <span className="ri-home-office-fill fr-mr-1v" aria-hidden />
           {lieuxActiviteCount} {lieuxActiviteCount === 1 ? 'lieu' : 'lieux'}{' '}
           d’activité
-        </Link>
+        </Tag>
       )}
       <Link href={acteurPageUrl} prefetch={false} />
     </article>
