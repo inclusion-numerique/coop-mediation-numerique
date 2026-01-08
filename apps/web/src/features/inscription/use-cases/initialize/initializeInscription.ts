@@ -19,6 +19,26 @@ export type InitializeInscriptionResult = {
   nextStepPath: string | null
 }
 
+const debugStructureEmployeuseCreation = true
+
+// Debug logger type for tracking structure employeuse creation flow
+export type InitializeDebugLogger = (
+  message: string,
+  ...rest: unknown[]
+) => void
+
+const createDebugLogger = (enabled: boolean): InitializeDebugLogger => {
+  if (!enabled) {
+    return () => {
+      // Intentional no-op when debug is disabled
+    }
+  }
+  return (message: string, ...rest: unknown[]) => {
+    // biome-ignore lint/suspicious/noConsole: Intentional debug logging
+    console.log(`[initialize] ${message}`, ...rest)
+  }
+}
+
 export const initializeInscription = async ({
   userId,
   email,
@@ -26,8 +46,30 @@ export const initializeInscription = async ({
   userId: string
   email: string
 }): Promise<InitializeInscriptionResult> => {
+  const log = createDebugLogger(debugStructureEmployeuseCreation)
+
+  log('Starting initialization for user', { userId, email })
+
   // Step 1: Try Dataspace API
   const dataspaceResult = await getMediateurFromDataspaceApi({ email })
+
+  log('Dataspace API result', {
+    isError: isDataspaceApiError(dataspaceResult),
+    isNull: dataspaceResult === null,
+    hasData: !!dataspaceResult && !isDataspaceApiError(dataspaceResult),
+    ...(isDataspaceApiError(dataspaceResult)
+      ? { error: dataspaceResult.error }
+      : {}),
+    ...(dataspaceResult && !isDataspaceApiError(dataspaceResult)
+      ? {
+          structuresEmployeusesCount:
+            dataspaceResult.structures_employeuses?.length ?? 0,
+          lieuxActiviteCount: dataspaceResult.lieux_activite?.length ?? 0,
+          isCoordinateur: dataspaceResult.is_coordinateur,
+          isConseillerNumerique: dataspaceResult.is_conseiller_numerique,
+        }
+      : {}),
+  })
 
   // If Dataspace API error (not just not found), log but continue
   if (isDataspaceApiError(dataspaceResult)) {
@@ -73,9 +115,21 @@ export const initializeInscription = async ({
       },
     })
 
+    log('User state before structure import', {
+      siret: userBeforeStructureImport?.siret ?? null,
+      emploisCount: userBeforeStructureImport?.emplois.length ?? 0,
+      emplois: userBeforeStructureImport?.emplois.map((e) => ({
+        id: e.id,
+        structureNom: e.structure.nom,
+        structureCodeInsee: e.structure.codeInsee,
+      })),
+    })
+
     const hasStructureEmployeuse =
       userBeforeStructureImport &&
       sessionUserHasStructureEmployeuse(userBeforeStructureImport)
+
+    log('Has structure employeuse check', { hasStructureEmployeuse })
 
     if (!hasStructureEmployeuse) {
       // Try dataspace structures first
@@ -86,17 +140,59 @@ export const initializeInscription = async ({
         const primaryStructure = getPrimaryStructureEmployeuse(
           dataspaceData.structures_employeuses,
         )
+
+        log('Dataspace structures employeuses', {
+          count: dataspaceData.structures_employeuses.length,
+          structures: dataspaceData.structures_employeuses.map((s) => ({
+            nom: s.nom,
+            siret: s.siret,
+            contratsCount: s.contrats?.length ?? 0,
+            contrats: s.contrats?.map((c) => ({
+              type: c.type,
+              dateDebut: c.date_debut,
+              dateFin: c.date_fin,
+              dateRupture: c.date_rupture,
+            })),
+          })),
+          primaryStructure: primaryStructure
+            ? {
+                nom: primaryStructure.nom,
+                siret: primaryStructure.siret,
+              }
+            : null,
+        })
+
         if (primaryStructure) {
-          await importStructureEmployeuseFromDataspace({
+          log('Importing structure employeuse from Dataspace', {
+            nom: primaryStructure.nom,
+            siret: primaryStructure.siret,
+          })
+          const importResult = await importStructureEmployeuseFromDataspace({
             userId,
             structureEmployeuse: primaryStructure,
+            log,
           })
+          log('Import structure employeuse from Dataspace result', importResult)
+        } else {
+          log(
+            'No primary structure found despite having structures_employeuses',
+          )
         }
       } else if (userBeforeStructureImport?.siret) {
         // Fallback: no structure from dataspace but user has SIRET
-        await importStructureEmployeuseFromSiret({
+        log('Fallback: importing structure employeuse from SIRET', {
+          siret: userBeforeStructureImport.siret,
+        })
+        const importResult = await importStructureEmployeuseFromSiret({
           userId,
           siret: userBeforeStructureImport.siret,
+          log,
+        })
+        log('Import structure employeuse from SIRET result', importResult)
+      } else {
+        log('No structure employeuse source available', {
+          hasDataspaceStructures: false,
+          userSiret: null,
         })
       }
     }
@@ -138,6 +234,18 @@ export const initializeInscription = async ({
     // Determine next step
     const hasLieuxActivite = (updatedUser.mediateur?._count.enActivite ?? 0) > 0
 
+    log('User state after initialization', {
+      hasStructureEmployeuse: sessionUserHasStructureEmployeuse(updatedUser),
+      emploisCount: updatedUser.emplois.length,
+      emplois: updatedUser.emplois.map((e) => ({
+        id: e.id,
+        structureNom: e.structure.nom,
+        structureId: e.structure.id,
+      })),
+      hasLieuxActivite,
+      profilInscription: updatedUser.profilInscription,
+    })
+
     const nextStep = getNextInscriptionStep({
       currentStep: 'initialize',
       flowType: 'withDataspace',
@@ -146,12 +254,16 @@ export const initializeInscription = async ({
       isConseillerNumerique: dataspaceData.is_conseiller_numerique,
     })
 
+    log('Initialization complete (with Dataspace)', { nextStep })
+
     return {
       nextStepPath: nextStep ? getStepPath(nextStep) : null,
     }
   }
 
   // User not found in Dataspace
+  log('User not found in Dataspace, checking for SIRET fallback')
+
   // If user has SIRET and no structure employeuse yet, create from SIRET
   const user = await prismaClient.user.findUnique({
     where: { id: userId },
@@ -174,11 +286,26 @@ export const initializeInscription = async ({
     },
   })
 
+  log('User state for SIRET fallback', {
+    siret: user?.siret ?? null,
+    emploisCount: user?.emplois.length ?? 0,
+    hasStructureEmployeuse: user
+      ? sessionUserHasStructureEmployeuse(user)
+      : false,
+  })
+
   if (user && !sessionUserHasStructureEmployeuse(user) && user.siret) {
-    await importStructureEmployeuseFromSiret({
-      userId,
+    log('Importing structure employeuse from SIRET (no Dataspace)', {
       siret: user.siret,
     })
+    const importResult = await importStructureEmployeuseFromSiret({
+      userId,
+      siret: user.siret,
+      log,
+    })
+    log('Import structure employeuse from SIRET result', importResult)
+  } else if (user && !user.siret) {
+    log('User has no SIRET, cannot create structure employeuse')
   }
 
   // Determine next step for users without Dataspace data
@@ -189,6 +316,9 @@ export const initializeInscription = async ({
     hasLieuxActivite: false,
     isConseillerNumerique: false,
   })
+
+  log('Initialization complete (no Dataspace)', { nextStep })
+
   return {
     nextStepPath: nextStep ? getStepPath(nextStep) : null,
   }

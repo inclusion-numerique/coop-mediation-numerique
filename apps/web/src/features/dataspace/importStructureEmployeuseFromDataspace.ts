@@ -2,8 +2,14 @@ import type {
   DataspaceContrat,
   DataspaceStructureEmployeuse,
 } from '@app/web/external-apis/dataspace/dataspaceApiClient'
+import type { InitializeDebugLogger } from '@app/web/features/inscription/use-cases/initialize/initializeInscription'
 import { findOrCreateStructure } from '@app/web/features/structures/findOrCreateStructure'
 import { prismaClient } from '@app/web/prismaClient'
+
+// No-op logger for when debug logging is not needed
+const noopLogger: InitializeDebugLogger = () => {
+  // Intentional no-op
+}
 
 /**
  * Build full address from Dataspace address format
@@ -86,11 +92,24 @@ const getEmploiEndDate = (contrat: DataspaceContrat): Date | null => {
 export const importStructureEmployeuseFromDataspace = async ({
   userId,
   structureEmployeuse,
+  log = noopLogger,
 }: {
   userId: string
   structureEmployeuse: DataspaceStructureEmployeuse
+  log?: InitializeDebugLogger
 }): Promise<{ structureId: string }> => {
   const adresse = buildAdresseFromDataspace(structureEmployeuse.adresse)
+
+  log('Building structure from Dataspace data', {
+    siret: structureEmployeuse.siret,
+    nom: structureEmployeuse.nom,
+    adresse,
+    codePostal: structureEmployeuse.adresse.code_postal,
+    codeInsee: structureEmployeuse.adresse.code_insee,
+    commune: structureEmployeuse.adresse.nom_commune,
+    hasContact: !!structureEmployeuse.contact,
+    contratsCount: structureEmployeuse.contrats?.length ?? 0,
+  })
 
   // Use generic helper to find or create structure
   const structure = await findOrCreateStructure({
@@ -108,14 +127,33 @@ export const importStructureEmployeuseFromDataspace = async ({
     telephoneReferent: structureEmployeuse.contact?.telephone ?? null,
   })
 
+  log('Structure found or created', { structureId: structure.id })
+
   // Get the active or most recent contract
   const contract = getActiveOrMostRecentContract(
     structureEmployeuse.contrats ?? [],
   )
 
+  log('Contract analysis', {
+    totalContrats: structureEmployeuse.contrats?.length ?? 0,
+    selectedContract: contract
+      ? {
+          type: contract.type,
+          dateDebut: contract.date_debut,
+          dateFin: contract.date_fin,
+          dateRupture: contract.date_rupture,
+        }
+      : null,
+  })
+
   // Calculate dates from contract
   const creationDate = contract ? new Date(contract.date_debut) : new Date()
   const suppressionDate = contract ? getEmploiEndDate(contract) : null
+
+  log('Emploi dates calculated', {
+    creationDate: creationDate.toISOString(),
+    suppressionDate: suppressionDate?.toISOString() ?? null,
+  })
 
   // Check if emploi already exists
   const existingEmploi = await prismaClient.employeStructure.findFirst({
@@ -131,11 +169,25 @@ export const importStructureEmployeuseFromDataspace = async ({
   })
 
   if (existingEmploi) {
+    log('Existing emploi found', {
+      emploiId: existingEmploi.id,
+      existingCreation: existingEmploi.creation.toISOString(),
+      existingSuppression: existingEmploi.suppression?.toISOString() ?? null,
+    })
+
     // Update existing emploi with contract dates if different
     if (
       existingEmploi.creation.getTime() !== creationDate.getTime() ||
       existingEmploi.suppression?.getTime() !== suppressionDate?.getTime()
     ) {
+      log('Updating emploi dates', {
+        emploiId: existingEmploi.id,
+        oldCreation: existingEmploi.creation.toISOString(),
+        newCreation: creationDate.toISOString(),
+        oldSuppression: existingEmploi.suppression?.toISOString() ?? null,
+        newSuppression: suppressionDate?.toISOString() ?? null,
+      })
+
       await prismaClient.employeStructure.update({
         where: { id: existingEmploi.id },
         data: {
@@ -143,8 +195,17 @@ export const importStructureEmployeuseFromDataspace = async ({
           suppression: suppressionDate,
         },
       })
+    } else {
+      log('Emploi dates unchanged, skipping update')
     }
   } else {
+    log('Creating new emploi', {
+      userId,
+      structureId: structure.id,
+      creation: creationDate.toISOString(),
+      suppression: suppressionDate?.toISOString() ?? null,
+    })
+
     // Create new emploi with contract dates
     await prismaClient.employeStructure.create({
       data: {
@@ -154,6 +215,8 @@ export const importStructureEmployeuseFromDataspace = async ({
         suppression: suppressionDate,
       },
     })
+
+    log('Emploi created successfully')
   }
 
   return { structureId: structure.id }
