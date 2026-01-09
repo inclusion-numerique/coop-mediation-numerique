@@ -3,6 +3,7 @@ import { authenticateCoordinateur } from '@app/web/auth/authenticateUser'
 import EquipeListePage from '@app/web/equipe/EquipeListePage/EquipeListePage'
 import { getEquipePageData } from '@app/web/equipe/EquipeListePage/getEquipePageData'
 import type { EquipeSearchParams } from '@app/web/equipe/EquipeListePage/searchMediateursCoordonneBy'
+import { getDepartementCodeForActeur } from '@app/web/features/mon-reseau/getDepartementCodeForActeur'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -18,17 +19,21 @@ const Page = async (props: { searchParams: Promise<EquipeSearchParams> }) => {
     coordinateur: authenticatedCoordinateur.coordinateur,
   })
 
+  const departementCode = getDepartementCodeForActeur({
+    emplois: authenticatedCoordinateur.emplois,
+  })
+
   return (
     <EquipeListePage
       {...equipePageData}
       searchParams={searchParams}
       baseHref="/coop/mon-equipe"
       baseHrefSearch="/coop/mon-equipe"
-      baseRetour="/coop/mon-equipe"
       coordinateur={{
         id: authenticatedCoordinateur.coordinateur.id,
         user: authenticatedCoordinateur,
       }}
+      departementCode={departementCode}
     />
   )
 }

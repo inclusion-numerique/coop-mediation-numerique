@@ -1,4 +1,5 @@
 import { findConseillersNumeriquesContractInfoByEmails } from '@app/web/external-apis/conseiller-numerique/fetchConseillersCoordonnes'
+import { getDepartementCodeForActeur } from '@app/web/features/mon-reseau/getDepartementCodeForActeur'
 import { getUserPublicActivityStatus } from '@app/web/features/utilisateurs/utils/getUserPublicActivityStatus'
 import { countMediateursCoordonnesBy } from '@app/web/mediateurs/countMediateursCoordonnesBy'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
