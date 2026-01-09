@@ -13,6 +13,39 @@ export type SearchActeursOptions = {
   searchParams: ActeursSearchParams
 }
 
+export const acteurCoordinationSelect = {
+  creation: true,
+  coordinateur: {
+    select: {
+      user: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          name: true,
+          emplois: {
+            select: {
+              structure: {
+                select: {
+                  codeInsee: true,
+                },
+              },
+            },
+            where: {
+              suppression: null,
+              fin: null,
+            },
+            orderBy: {
+              debut: 'desc',
+            },
+            take: 1,
+          },
+        },
+      },
+    },
+  },
+} satisfies Prisma.MediateurCoordonneSelect
+
 export const acteurSelectForList = {
   id: true,
   firstName: true,
@@ -32,21 +65,7 @@ export const acteurSelectForList = {
       conseillerNumerique: { select: { id: true } },
       coordinations: {
         where: { suppression: null },
-        select: {
-          creation: true,
-          coordinateur: {
-            select: {
-              user: {
-                select: {
-                  id: true,
-                  firstName: true,
-                  lastName: true,
-                  name: true,
-                },
-              },
-            },
-          },
-        },
+        select: acteurCoordinationSelect,
       },
       _count: {
         select: { enActivite: { where: { suppression: null, fin: null } } },

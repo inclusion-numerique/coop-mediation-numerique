@@ -1,13 +1,20 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
-import { departementsByCode } from '@app/web/data/collectivites-territoriales/departements'
 import MonReseauPage from '@app/web/features/mon-reseau/components/MonReseauPage'
+import { getDepartementFromCodeOrThrowNotFound } from '@app/web/features/mon-reseau/getDepartementFromCodeOrThrowNotFound'
 import { getMonReseauPageData } from '@app/web/features/mon-reseau/getMonReseauPageData'
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
 
-export const metadata: Metadata = {
-  title: metadataTitle('Mon réseau'),
+export const generateMetadata = async ({
+  params,
+}: {
+  params: Promise<{ departement: string }>
+}): Promise<Metadata> => {
+  const { departement: departementCode } = await params
+  const departement = getDepartementFromCodeOrThrowNotFound(departementCode)
+  return {
+    title: metadataTitle(`Mon réseau - ${departement.nom}`),
+  }
 }
 
 const Page = async ({
@@ -18,12 +25,9 @@ const Page = async ({
   await authenticateMediateurOrCoordinateur()
 
   const { departement: departementCode } = await params
+  const departement = getDepartementFromCodeOrThrowNotFound(departementCode)
+  const data = await getMonReseauPageData({ departementCode: departement.code })
 
-  if (!departementsByCode.has(departementCode)) {
-    return notFound()
-  }
-
-  const data = await getMonReseauPageData({ departementCode })
   return <MonReseauPage {...data} />
 }
 

@@ -10,13 +10,14 @@ import type { ActeurDetailPageData } from '@app/web/features/mon-reseau/use-case
 import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
 import { contentId } from '@app/web/utils/skipLinks'
 import classNames from 'classnames'
+import { getMonReseauBreadcrumbParents } from '../../getMonReseauBreadcrumbParents'
 
 export const ActeurDetailPage = ({
   data,
   departementCode,
 }: {
   data: ActeurDetailPageData
-  departementCode: string | null
+  departementCode: string
 }) => {
   const {
     mediateurId,
@@ -27,8 +28,6 @@ export const ActeurDetailPage = ({
     emploi,
     contract,
     lieuxActivites,
-    retourHref,
-    retourLabel,
     coordinationFeatures,
   } = data
 
@@ -39,20 +38,26 @@ export const ActeurDetailPage = ({
       <SkipLinksPortal />
       <div className="fr-container fr-container--800">
         <CoopBreadcrumbs
-          parents={[{ label: retourLabel, linkProps: { href: retourHref } }]}
+          parents={[
+            ...getMonReseauBreadcrumbParents({ code: departementCode }),
+            {
+              label: 'Annuaire des acteurs',
+              linkProps: {
+                href: `/coop/mon-reseau/${departementCode}/acteurs`,
+              },
+            },
+          ]}
           currentPage={displayName}
         />
         <main id={contentId} className="fr-mb-16w">
           <section className="fr-mt-8v">
             <ActeurIdentity
+              departementCode={departementCode}
               displayName={displayName}
               acteur={acteur}
               coordinationFeatures={coordinationFeatures}
               creation={activityDates.created}
               lastActivityDate={activityDates.lastActivity}
-              retourHref={retourHref}
-              retourLabel={retourLabel}
-              removeFromTeamSuccessHref={null}
             />
           </section>
 
@@ -112,11 +117,7 @@ export const ActeurDetailPage = ({
           )}
           {mediateurId && (
             <section className="fr-mt-6v" id="lieux-activite">
-              <ActeurLieuxActivites
-                lieux={lieuxActivites}
-                departementCode={departementCode}
-                lieuPageRetourHref={retourHref}
-              />
+              <ActeurLieuxActivites lieux={lieuxActivites} />
             </section>
           )}
         </main>

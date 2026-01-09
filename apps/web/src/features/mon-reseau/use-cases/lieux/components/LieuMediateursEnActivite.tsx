@@ -1,20 +1,20 @@
 'use client'
 
 import Card from '@app/web/components/Card'
+import ActeurCard from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurCard'
 import type { ActeurForList } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useState } from 'react'
-import ActeurCard from '../../acteurs/components/ActeurCard'
 
 const initialMediateurCount = 3
 
 export const LieuMediateursEnActivite = ({
   mediateurs,
-  currentPath,
+  departementCode,
   canRemoveMediateurFromLieuId,
 }: {
   mediateurs: ActeurForList[]
-  currentPath: string
+  departementCode: string
   canRemoveMediateurFromLieuId: string | null // if null, mediateurs cannot be removed from the lieu
 }) => {
   const [showMore, setShowMore] = useState(false)
@@ -48,7 +48,7 @@ export const LieuMediateursEnActivite = ({
           <ActeurCard
             key={mediateur.id}
             acteur={mediateur}
-            currentPath={currentPath}
+            departementCode={departementCode}
             canRemoveMediateurFromLieuId={
               canRemoveMediateurFromLieuId ?? undefined
             }

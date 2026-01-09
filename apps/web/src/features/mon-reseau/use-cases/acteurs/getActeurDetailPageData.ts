@@ -4,7 +4,10 @@ import { getContractInfo } from '@app/web/conseiller-numerique/getContractInfo'
 import { findConseillerNumeriqueV1 } from '@app/web/external-apis/conseiller-numerique/searchConseillerNumeriqueV1'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { getActeurEmploiForDate } from '@app/web/features/mon-reseau/use-cases/acteurs/db/getActeurEmploiForDate'
-import { acteurSelectForList } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
+import {
+  acteurCoordinationSelect,
+  acteurSelectForList,
+} from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
 import { lieuxForListSelect } from '@app/web/features/mon-reseau/use-cases/lieux/db/searchLieux'
 import { prismaClient } from '@app/web/prismaClient'
 import { getLastUserActivityDate } from '@app/web/security/getLastUserActivityDate'
@@ -48,6 +51,9 @@ export const getActeurDetailPageData = async ({
           id: true,
           conseillerNumerique: {
             select: { id: true, idPg: true },
+          },
+          coordinations: {
+            select: acteurCoordinationSelect,
           },
         },
       },

@@ -1,5 +1,6 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
+import { getDepartementCodeForLieu } from '@app/web/features/mon-reseau/getDepartementCodeForLieu'
 import { ActeurDetailPage } from '@app/web/features/mon-reseau/use-cases/acteurs/ActeurDetailPage'
 import { getActeurDetailPageData } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDetailPageData'
 import { prismaClient } from '@app/web/prismaClient'
@@ -57,7 +58,12 @@ const Page = async ({
     return notFound()
   }
 
-  return <ActeurDetailPage data={data} departementCode={null} />
+  // Get departement from first lieu d'activité or emploi structure
+  const departementCode = getDepartementCodeForLieu(
+    data.lieuxActivites[0] ?? data.emploi?.structure ?? { codeInsee: null },
+  )
+
+  return <ActeurDetailPage data={data} departementCode={departementCode} />
 }
 
 export default Page

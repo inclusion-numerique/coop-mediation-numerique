@@ -47,7 +47,7 @@ export const sessionUserSelect = {
       fin: null,
     },
     orderBy: {
-      modification: 'desc',
+      debut: 'desc',
     },
   },
   mediateur: {

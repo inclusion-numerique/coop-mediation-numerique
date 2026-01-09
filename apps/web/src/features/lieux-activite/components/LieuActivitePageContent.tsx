@@ -1,15 +1,15 @@
 'use client'
 
 import LieuActiviteSideMenu from '@app/web/app/coop/(full-width-layout)/lieux-activite/_components/LieuActiviteSideMenu'
-import CoopBreadcrumbs, {
-  type CoopBreadcrumbsProps,
-} from '@app/web/app/coop/CoopBreadcrumbs'
+import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButton from '@app/web/components/BackButton'
 import { DisplayOnCartography } from '@app/web/components/structure/DisplayOnCartography'
 import styles from '@app/web/components/structure/fields/StructureFormFields.module.css'
 import { LieuAccueillantPublicTitle } from '@app/web/components/structure/titles/LieuAccueillantPublicTitle'
 import { ServiceInclusionNumeriqueTitle } from '@app/web/components/structure/titles/ServiceInclusionNumeriqueTitle'
 import { LieuActivitePageData } from '@app/web/features/lieux-activite/getLieuActivitePageData'
+import { getDepartementCodeForLieu } from '@app/web/features/mon-reseau/getDepartementCodeForLieu'
+import { getMonReseauBreadcrumbParents } from '@app/web/features/mon-reseau/getMonReseauBreadcrumbParents'
 import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
 import LieuMediateursEnActivite from '@app/web/features/mon-reseau/use-cases/lieux/components/LieuMediateursEnActivite'
 import { formatDate } from '@app/web/utils/formatDate'
@@ -26,18 +26,11 @@ import VisiblePourCartographieNationaleFields from './VisiblePourCartographieNat
 
 export const LieuActivitePageContent = ({
   data: { structure },
-  breadcrumbs,
-  currentPath,
-  backButton,
 }: {
   data: LieuActivitePageData
-  breadcrumbs: CoopBreadcrumbsProps
-  currentPath: string
-  backButton: {
-    label: string
-    href: string
-  }
 }) => {
+  const departementCode = getDepartementCodeForLieu(structure)
+
   const [showSideMenu, setShowSideMenu] = useState(
     structure.visiblePourCartographieNationale,
   )
@@ -53,19 +46,28 @@ export const LieuActivitePageContent = ({
 
   return (
     <>
-      <div style={{ minWidth: '19em' }}>
-        {showSideMenu && (
-          <LieuActiviteSideMenu className="fr-hidden fr-unhidden-lg fr-mt-16w" />
-        )}
+      <div className="fr-hidden fr-unhidden-lg" style={{ minWidth: '180px' }}>
+        {showSideMenu && <LieuActiviteSideMenu className="fr-mt-16w" />}
       </div>
       <div
         className={classNames(
-          'fr-container fr-container--narrow fr-ml-0 fr-mb-30v',
+          'fr-container fr-container--medium fr-pr-0 fr-ml-0 fr-mb-30v',
           styles.structureForm,
         )}
       >
-        <CoopBreadcrumbs {...breadcrumbs} />
-        <BackButton href={backButton.href}>{backButton.label}</BackButton>
+        <CoopBreadcrumbs
+          parents={[
+            ...getMonReseauBreadcrumbParents({ code: departementCode }),
+            {
+              label: "Annuaire des lieux d'activités",
+              linkProps: {
+                href: `/coop/mon-reseau/${departementCode}/lieux`,
+              },
+            },
+          ]}
+          currentPage={structure.nom}
+        />
+        <BackButton />
         <p className="fr-text--xs fr-mb-3v">
           Mis à jour le {formattedModificationDate}{' '}
           {derniereModificationPar ? `par ${derniereModificationPar}` : ''}
@@ -78,7 +80,7 @@ export const LieuActivitePageContent = ({
           mediateurs={structure.mediateursEnActivite.map(
             (mediateurEnActivite) => mediateurEnActivite.mediateur.user,
           )}
-          currentPath={currentPath}
+          departementCode={departementCode}
           canRemoveMediateurFromLieuId={structure.id}
         />
         <div className="fr-border fr-border-radius--8 fr-mt-6v">

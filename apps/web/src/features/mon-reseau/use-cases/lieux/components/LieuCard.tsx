@@ -1,28 +1,27 @@
+import { getDepartementCodeForLieu } from '@app/web/features/mon-reseau/getDepartementCodeForLieu'
+import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
+import type { LieuForList } from '@app/web/features/mon-reseau/use-cases/lieux/db/searchLieux'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
 import { formatDate } from 'date-fns'
 import Link from 'next/link'
-import { getActeurDisplayName } from '../../acteurs/getActeurDisplayName'
-import type { LieuForList } from '../db/searchLieux'
 import CartographyIndicator, {
   getCartographyStatus,
 } from './CartographyIndicator'
+
 import styles from './LieuCard.module.css'
 
 const LieuCard = ({
   lieu,
-  departementCode,
-  lieuPageRetourHref,
   className,
 }: {
   lieu: LieuForList
-  departementCode: string | null
-  lieuPageRetourHref: string
   className?: string
 }) => {
+  const departementCode = getDepartementCodeForLieu(lieu)
   const mediateursCount = lieu._count.mediateursEnActivite ?? 0
 
-  const lieuHref = `/coop/mon-reseau/lieux/${lieu.id}?retour=${encodeURIComponent(lieuPageRetourHref)}`
+  const lieuHref = `/coop/mon-reseau/${departementCode}/lieux/${lieu.id}`
 
   const formattedModificationDate = formatDate(
     new Date(lieu.modification),

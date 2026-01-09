@@ -2,6 +2,7 @@
 
 import Card from '@app/web/components/Card'
 import IconInSquare from '@app/web/components/IconInSquare'
+import { getDepartementCodeForLieu } from '@app/web/features/mon-reseau/getDepartementCodeForLieu'
 import LieuCard from '@app/web/features/mon-reseau/use-cases/lieux/components/LieuCard'
 import type { LieuForList } from '@app/web/features/mon-reseau/use-cases/lieux/db/searchLieux'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -9,15 +10,7 @@ import { useState } from 'react'
 
 const initialLieuCount = 3
 
-export const ActeurLieuxActivites = ({
-  lieux,
-  departementCode,
-  lieuPageRetourHref,
-}: {
-  lieux: LieuForList[]
-  departementCode: string | null
-  lieuPageRetourHref: string
-}) => {
+export const ActeurLieuxActivites = ({ lieux }: { lieux: LieuForList[] }) => {
   const [showMore, setShowMore] = useState(false)
 
   const lieuxToDisplay = showMore ? lieux : lieux.slice(0, initialLieuCount)
@@ -44,8 +37,6 @@ export const ActeurLieuxActivites = ({
           <LieuCard
             key={lieu.id}
             lieu={lieu}
-            departementCode={departementCode}
-            lieuPageRetourHref={lieuPageRetourHref}
             className={
               hideLastLieuBorderBottom && index === lieuxToDisplay.length - 1
                 ? 'fr-border-none'

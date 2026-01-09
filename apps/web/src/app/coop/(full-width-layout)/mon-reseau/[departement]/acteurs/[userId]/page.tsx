@@ -1,5 +1,6 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
+import { getDepartementFromCodeOrThrowNotFound } from '@app/web/features/mon-reseau/getDepartementFromCodeOrThrowNotFound'
 import { ActeurDetailPage } from '@app/web/features/mon-reseau/use-cases/acteurs/ActeurDetailPage'
 import { getActeurDetailPageData } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDetailPageData'
 import { prismaClient } from '@app/web/prismaClient'
@@ -9,7 +10,7 @@ import { notFound } from 'next/navigation'
 export const generateMetadata = async ({
   params,
 }: {
-  params: Promise<{ userId: string }>
+  params: Promise<{ userId: string; departement: string }>
 }): Promise<Metadata> => {
   const { userId } = await params
 
@@ -27,15 +28,21 @@ export const generateMetadata = async ({
   }
 }
 
-const parseRetourParams = (retour?: string) => {
+const parseRetourParams = (
+  retour: string | undefined,
+  departementCode: string,
+) => {
   if (!retour) {
-    return { retourHref: '/coop/mon-reseau', retourLabel: 'Mon réseau' }
+    return {
+      retourHref: `/coop/mon-reseau/${departementCode}`,
+      retourLabel: 'Mon réseau',
+    }
   }
   if (retour.includes('/mon-equipe') || retour.includes('/mes-equipes')) {
     return { retourHref: retour, retourLabel: 'Mon équipe' }
   }
 
-  if (retour.includes('/mon-reseau/acteurs')) {
+  if (retour.includes('/mon-reseau/') && retour.includes('/acteurs')) {
     return { retourHref: retour, retourLabel: 'Annuaire des acteurs' }
   }
 
@@ -50,18 +57,19 @@ const Page = async ({
   params: rawParams,
   searchParams: rawSearchParams,
 }: {
-  params: Promise<{ userId: string }>
-  searchParams: Promise<{ retour?: string; departement?: string }>
+  params: Promise<{ userId: string; departement: string }>
+  searchParams: Promise<{ retour?: string }>
 }) => {
   const sessionUser = await authenticateMediateurOrCoordinateur()
 
   const params = await rawParams
   const searchParams = await rawSearchParams
 
-  const { userId } = params
-  const { retour, departement } = await searchParams
+  const { userId, departement: departementCode } = params
+  getDepartementFromCodeOrThrowNotFound(departementCode)
 
-  const { retourHref, retourLabel } = parseRetourParams(retour)
+  const { retour } = searchParams
+  const { retourHref, retourLabel } = parseRetourParams(retour, departementCode)
 
   const data = await getActeurDetailPageData({
     userId,
@@ -74,7 +82,7 @@ const Page = async ({
     return notFound()
   }
 
-  return <ActeurDetailPage data={data} departementCode={departement ?? null} />
+  return <ActeurDetailPage data={data} departementCode={departementCode} />
 }
 
 export default Page

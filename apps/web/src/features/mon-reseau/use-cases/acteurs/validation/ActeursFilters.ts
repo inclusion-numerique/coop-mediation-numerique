@@ -46,7 +46,6 @@ export type ActeursFilters = {
 }
 
 export type ActeursSearchParams = ActeursFilters & {
-  departement: string // Required department context from URL
   page?: string
   lignes?: string
   tri?: ActeursSortOption

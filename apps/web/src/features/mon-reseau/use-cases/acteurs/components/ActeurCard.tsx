@@ -10,21 +10,19 @@ import RemoveMediateurFromLieuButton from './RemoveMediateurFromLieuButton'
 
 const ActeurCard = ({
   acteur,
-  currentPath,
+  departementCode,
   canRemoveMediateurFromLieuId,
 }: {
   acteur: ActeurForList
-  currentPath: string
+  departementCode: string
   canRemoveMediateurFromLieuId?: string // id of a lieux d'activité from which a mediateur can be removed. if undefined, the mediateur cannot be removed from the lieu
 }) => {
   const displayName = getActeurDisplayName(acteur)
   const lieuxActiviteCount = acteur.mediateur?._count.enActivite ?? 0
 
-  const retour = currentPath
-
   const acteurPageUrl = getActeurPageUrl({
+    departementCode,
     userId: acteur.id,
-    retour,
     anchor: acteur.id,
   })
 
@@ -50,9 +48,12 @@ const ActeurCard = ({
 
       <ActeurProfilAndContact
         acteur={acteur}
-        retour={retour}
+        departementCode={departementCode}
         compact
-        classes={{ link: styles.innerLink }}
+        className={lieuxActiviteCount > 0 ? 'fr-mb-4v' : undefined}
+        classes={{
+          link: styles.innerLink,
+        }}
       />
 
       {lieuxActiviteCount > 0 && (

@@ -1,3 +1,4 @@
+import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import Card from '@app/web/components/Card'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
@@ -8,6 +9,7 @@ import { getInclusionNumeriqueDepartementDataUrl } from '@app/web/features/mon-r
 import { contentId } from '@app/web/utils/skipLinks'
 import Image from 'next/image'
 import Link from 'next/link'
+import { getMonReseauBreadcrumbLabel } from '../getMonReseauBreadcrumbParents'
 
 const MonReseauPage = ({
   departement,
@@ -20,26 +22,10 @@ const MonReseauPage = ({
 }) => (
   <CoopPageContainer size={49}>
     <SkipLinksPortal />
+    <CoopBreadcrumbs
+      currentPage={getMonReseauBreadcrumbLabel({ code: departement.code })}
+    />
     <main id={contentId}>
-      <nav
-        className="fr-breadcrumb fr-mt-4v"
-        role="navigation"
-        aria-label="vous êtes ici"
-      >
-        <ol className="fr-breadcrumb__list">
-          <li>
-            <Link className="fr-breadcrumb__link" href="/coop">
-              Accueil
-            </Link>
-          </li>
-          <li>
-            <span className="fr-breadcrumb__link" aria-current="page">
-              Mon réseau
-            </span>
-          </li>
-        </ol>
-      </nav>
-
       <div className="fr-flex fr-flex-wrap fr-align-items-center fr-justify-content-space-between fr-flex-gap-4v fr-mt-8v fr-mb-4v">
         <h1 className="fr-text-title--blue-france fr-mb-0">Mon réseau</h1>
         <div style={{ minWidth: '280px' }}>
@@ -58,7 +44,7 @@ const MonReseauPage = ({
             count={acteursCount}
             label="Acteurs de l'inclusion numérique"
             iconId="fr-icon-account-line"
-            href={`/coop/mon-reseau/acteurs?departement=${departement.code}`}
+            href={`/coop/mon-reseau/${departement.code}/acteurs`}
             linkLabel="Voir l’annuaire des acteurs"
           />
         </div>
@@ -67,7 +53,7 @@ const MonReseauPage = ({
             count={lieuxCount}
             label="Lieux d'inclusion numérique"
             iconId="ri-home-office-line"
-            href={`/coop/mon-reseau/lieux?departement=${departement.code}`}
+            href={`/coop/mon-reseau/${departement.code}/lieux`}
             linkLabel="Voir l’annuaire des lieux"
           />
         </div>

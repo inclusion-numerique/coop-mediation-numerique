@@ -3,6 +3,7 @@ import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import type { Departement } from '@app/web/data/collectivites-territoriales/departements'
+import { getMonReseauBreadcrumbParents } from '@app/web/features/mon-reseau/getMonReseauBreadcrumbParents'
 import DataSearchBar from '@app/web/libs/data-table/DataSearchBar'
 import type { DataTableSearchParams } from '@app/web/libs/data-table/DataTableConfiguration'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
@@ -45,7 +46,7 @@ const LieuxPage = ({
   departementsOptions,
   mediateursOptions,
 }: {
-  departement?: Departement
+  departement: Departement
   searchResult: SearchLieuxResult
   searchParams: LieuxSearchParams
   isFiltered: boolean
@@ -53,19 +54,11 @@ const LieuxPage = ({
   departementsOptions: SelectOption[]
   mediateursOptions: MediateurOption[]
 }) => {
-  const baseHref = '/coop/mon-reseau/lieux'
+  const baseHref = `/coop/mon-reseau/${departement.code}/lieux`
 
-  const departementLabel = departement
-    ? `${departement.nom} (${departement.code})`
-    : null
+  const departementLabel = `${departement.nom} (${departement.code})`
 
-  const retourHref = departement
-    ? `/coop/mon-reseau/${departement.code}`
-    : '/coop/mon-reseau'
-
-  const breadcrumbLabel = departementLabel
-    ? `Annuaire des lieux d'activités · ${departementLabel}`
-    : "Annuaire des lieux d'activités"
+  const breadcrumbLabel = 'Annuaire des lieux d’activités'
 
   return (
     <>
@@ -73,10 +66,10 @@ const LieuxPage = ({
       <div className="fr-container fr-container--800">
         <CoopBreadcrumbs
           currentPage={breadcrumbLabel}
-          parents={[{ label: 'Mon réseau', linkProps: { href: retourHref } }]}
+          parents={getMonReseauBreadcrumbParents({ code: departement.code })}
         />
         <main id={contentId} className="fr-mb-16w">
-          <BackButton href={retourHref} />
+          <BackButton />
           <div className="fr-flex fr-align-items-center fr-flex-gap-4v fr-mb-6v">
             <span
               className="ri-home-office-line ri-lg fr-line-height-1 fr-text-label--blue-france fr-background-alt--blue-france fr-p-2w fr-m-0 fr-border-radius--8"
@@ -86,11 +79,9 @@ const LieuxPage = ({
               <h1 className="fr-page-title fr-m-0">
                 Annuaire des lieux d’activités
               </h1>
-              {departementLabel && (
-                <p className="fr-text--sm fr-text--bold fr-text-mention--grey fr-mb-0 fr-mt-1v">
-                  {departementLabel.toUpperCase()}
-                </p>
-              )}
+              <p className="fr-text--sm fr-text--bold fr-text-mention--grey fr-mb-0 fr-mt-1v">
+                {departementLabel}
+              </p>
             </div>
           </div>
 
@@ -146,12 +137,7 @@ const LieuxPage = ({
           <hr className="fr-separator-1px" />
 
           {searchResult.lieux.map((lieu) => (
-            <LieuCard
-              key={lieu.id}
-              lieu={lieu}
-              departementCode={departement?.code ?? ''}
-              lieuPageRetourHref={retourHref}
-            />
+            <LieuCard key={lieu.id} lieu={lieu} />
           ))}
 
           <PaginationNavWithPageSizeSelect

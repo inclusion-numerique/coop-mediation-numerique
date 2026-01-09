@@ -1,17 +1,14 @@
 export const getActeurPageUrl = ({
+  departementCode,
   userId,
-  retour,
   anchor,
 }: {
+  departementCode: string
   userId: string
-  retour?: string
   anchor?: string
 }) => {
   const anchorString = anchor ? `#${anchor}` : ''
-  const base = `/coop/mon-reseau/acteurs/${userId}`
-  if (retour) {
-    const retourWithAnchor = anchor ? `${retour}#${anchor}` : retour
-    return `${base}?retour=${encodeURIComponent(retourWithAnchor)}${anchorString}`
-  }
+  const base = `/coop/mon-reseau/${departementCode}/acteurs/${userId}`
+
   return `${base}${anchorString}`
 }

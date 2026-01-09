@@ -37,18 +37,14 @@ const ActeurIdentity = ({
   coordinationFeatures,
   creation,
   lastActivityDate,
-  retourHref,
-  retourLabel,
-  removeFromTeamSuccessHref,
+  departementCode,
 }: {
   acteur: ActeurIdentityData
   displayName: string
   coordinationFeatures: ActeurDetailPageData['coordinationFeatures']
   creation: Date
   lastActivityDate: Date | null
-  retourHref: string
-  retourLabel: string
-  removeFromTeamSuccessHref: string | null
+  departementCode: string
 }) => {
   const { mediateur, email } = acteur
 
@@ -82,9 +78,6 @@ const ActeurIdentity = ({
     }
     try {
       await removeFromTeamMutation.mutateAsync({ mediateurId })
-      if (removeFromTeamSuccessHref != null) {
-        router.push(retourHref)
-      }
       router.refresh()
       createToast({
         priority: 'success',
@@ -235,7 +228,7 @@ const ActeurIdentity = ({
       >
         <strong>{displayName}</strong> va recevoir une invitation par mail.
       </InviteToTeamModal>
-      <BackButton href={retourHref}>{retourLabel}</BackButton>
+      <BackButton />
       <div className="fr-flex fr-flex-wrap fr-direction-row fr-align-items-center fr-flex-gap-4v">
         <div className="fr-flex fr-direction-column">
           <div className="fr-flex fr-align-items-center fr-mb-3v">
@@ -249,7 +242,11 @@ const ActeurIdentity = ({
             />
           </div>
           <h1 className="fr-h2 fr-page-title fr-mb-3v">{displayName}</h1>
-          <ActeurProfilAndContact acteur={acteur} />
+          <ActeurProfilAndContact
+            acteur={acteur}
+            departementCode={departementCode}
+            className="fr-mb-4v"
+          />
         </div>
       </div>
       <ButtonsGroup

@@ -5,6 +5,7 @@ import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import type { Departement } from '@app/web/data/collectivites-territoriales/departements'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
+import { getMonReseauBreadcrumbParents } from '@app/web/features/mon-reseau/getMonReseauBreadcrumbParents'
 import DataSearchBar from '@app/web/libs/data-table/DataSearchBar'
 import type { DataTableSearchParams } from '@app/web/libs/data-table/DataTableConfiguration'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
@@ -47,7 +48,7 @@ const ActeursPage = ({
   lieuxActiviteOptions,
   currentPath,
 }: {
-  departement?: Departement
+  departement: Departement
   searchResult: SearchActeursResult
   searchParams: ActeursSearchParams
   isFiltered: boolean
@@ -56,19 +57,13 @@ const ActeursPage = ({
   lieuxActiviteOptions: LieuActiviteOption[]
   currentPath: string
 }) => {
-  const baseHref = '/coop/mon-reseau/acteurs'
+  const baseHref = `/coop/mon-reseau/${departement.code}/acteurs`
 
-  const departementLabel = departement
-    ? `${departement.nom} (${departement.code})`
-    : null
+  const departementLabel = `${departement.nom} (${departement.code})`
 
-  const retourHref = departement
-    ? `/coop/mon-reseau/${departement.code}`
-    : '/coop/mon-reseau'
+  const retourHref = `/coop/mon-reseau/${departement.code}`
 
-  const breadcrumbLabel = departementLabel
-    ? `Annuaire des acteurs · ${departementLabel}`
-    : 'Annuaire des acteurs'
+  const breadcrumbLabel = 'Annuaire des acteurs'
 
   return (
     <>
@@ -76,7 +71,7 @@ const ActeursPage = ({
       <div className="fr-container fr-container--800">
         <CoopBreadcrumbs
           currentPage={breadcrumbLabel}
-          parents={[{ label: 'Mon réseau', linkProps: { href: retourHref } }]}
+          parents={getMonReseauBreadcrumbParents({ code: departement.code })}
         />
         <main id={contentId} className="fr-mb-16w">
           <BackButton href={retourHref} />
@@ -87,11 +82,9 @@ const ActeursPage = ({
             />
             <div>
               <h1 className="fr-page-title fr-m-0">Annuaire des acteurs</h1>
-              {departementLabel && (
-                <p className="fr-text--sm fr-text--bold fr-text-mention--grey fr-mb-0 fr-mt-1v">
-                  {departementLabel.toUpperCase()}
-                </p>
-              )}
+              <p className="fr-text--sm fr-text--bold fr-text-mention--grey fr-mb-0 fr-mt-1v">
+                {departementLabel.toUpperCase()}
+              </p>
             </div>
           </div>
 
@@ -136,11 +129,11 @@ const ActeursPage = ({
 
           <hr className="fr-separator-1px" />
 
-          {searchResult.acteurs.map((acteur, index) => (
+          {searchResult.acteurs.map((acteur) => (
             <ActeurCard
               key={acteur.id}
               acteur={acteur}
-              currentPath={currentPath}
+              departementCode={departement.code}
             />
           ))}
 

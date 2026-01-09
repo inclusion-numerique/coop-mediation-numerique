@@ -1,3 +1,4 @@
+import { getDepartementCodeForActeur } from '@app/web/features/mon-reseau/getDepartementCodeForActeur'
 import type { ActeurIdentityData } from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurIdentity'
 import type { ActeurForList } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
 import { getActeurIconUrl } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurIcon'
@@ -9,14 +10,15 @@ import Link from 'next/link'
 
 const getCoordinateurInfo = (
   acteur: ActeurIdentityData,
-): { name: string; userId: string } | null => {
+): { name: string; userId: string; departementCode: string } | null => {
   const mediateur = acteur.mediateur as ActeurForList['mediateur'] | null
   const coordination = mediateur?.coordinations?.[0]
   if (!coordination?.coordinateur?.user) {
     return null
   }
 
-  const { id, firstName, lastName, name } = coordination.coordinateur.user
+  const coordinateurUser = coordination.coordinateur.user
+  const { id, firstName, lastName, name } = coordinateurUser
   const displayName =
     firstName && lastName ? `${firstName} ${lastName}` : (name ?? null)
 
@@ -24,29 +26,35 @@ const getCoordinateurInfo = (
     return null
   }
 
-  return { name: displayName, userId: id }
+  return {
+    name: displayName,
+    userId: id,
+    departementCode: getDepartementCodeForActeur(coordinateurUser),
+  }
 }
 
 const ActeurProfilAndContact = ({
   acteur,
-  retour,
+  className,
   compact = false,
   classes,
 }: {
   acteur: ActeurIdentityData
-  retour?: string
+  departementCode: string
   compact?: boolean
+  className?: string
   classes?: {
     link?: string
+    contactInfo?: string
   }
 }) => {
-  const coordinateurInfo = retour ? getCoordinateurInfo(acteur) : null
+  const coordinateurInfo = getCoordinateurInfo(acteur)
 
   const profil = getUserProfil(acteur)
   const acteurIconUrl = getActeurIconUrl(profil)
 
   return (
-    <>
+    <div className={className}>
       <p
         className={classNames(
           'fr-text--sm fr-flex fr-align-items-center',
@@ -73,8 +81,8 @@ const ActeurProfilAndContact = ({
                 classes?.link,
               )}
               href={getActeurPageUrl({
+                departementCode: coordinateurInfo.departementCode,
                 userId: coordinateurInfo.userId,
-                retour,
               })}
               prefetch={false}
             >
@@ -84,7 +92,12 @@ const ActeurProfilAndContact = ({
         )}
       </p>
 
-      <div className="fr-flex fr-flex-wrap fr-flex-gap-2v fr-text--sm fr-text-mention--grey fr-mb-4v">
+      <div
+        className={classNames(
+          'fr-flex fr-flex-wrap fr-flex-gap-2v fr-text--sm fr-text-mention--grey fr-mb-0',
+          classes?.contactInfo,
+        )}
+      >
         {acteur.phone && (
           <span className="fr-flex fr-align-items-center">
             <span className="ri-phone-line fr-mr-1v" aria-hidden />
@@ -99,7 +112,7 @@ const ActeurProfilAndContact = ({
           </span>
         )}
       </div>
-    </>
+    </div>
   )
 }
 

@@ -32,7 +32,6 @@ export type LieuxFilters = {
 }
 
 export type LieuxSearchParams = LieuxFilters & {
-  departement: string // Required department context from URL
   page?: string
   lignes?: string
   tri?: LieuxSortOption
