@@ -46,7 +46,6 @@ const ActeursPage = ({
   communesOptions,
   departementsOptions,
   lieuxActiviteOptions,
-  currentPath,
 }: {
   departement: Departement
   searchResult: SearchActeursResult
@@ -55,13 +54,10 @@ const ActeursPage = ({
   communesOptions: SelectOption[]
   departementsOptions: SelectOption[]
   lieuxActiviteOptions: LieuActiviteOption[]
-  currentPath: string
 }) => {
   const baseHref = `/coop/mon-reseau/${departement.code}/acteurs`
 
   const departementLabel = `${departement.nom} (${departement.code})`
-
-  const retourHref = `/coop/mon-reseau/${departement.code}`
 
   const breadcrumbLabel = 'Annuaire des acteurs'
 
@@ -74,7 +70,7 @@ const ActeursPage = ({
           parents={getMonReseauBreadcrumbParents({ code: departement.code })}
         />
         <main id={contentId} className="fr-mb-16w">
-          <BackButton href={retourHref} />
+          <BackButton />
           <div className="fr-flex fr-align-items-center fr-flex-gap-4v fr-mb-6v">
             <span
               className="fr-icon-team-line ri-lg fr-line-height-1 fr-text-label--blue-france fr-background-alt--blue-france fr-p-2w fr-m-0 fr-border-radius--8"

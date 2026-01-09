@@ -30,27 +30,17 @@ export const generateMetadata = async ({
 
 const Page = async ({
   params: rawParams,
-  searchParams: rawSearchParams,
 }: {
   params: Promise<{ coordinateurId: string; userId: string }>
-  searchParams: Promise<{ retour?: string }>
 }) => {
   const sessionUser = await authenticateMediateurOrCoordinateur()
 
   const params = await rawParams
-  const searchParams = await rawSearchParams
 
-  const { coordinateurId, userId } = params
-  const { retour } = searchParams
-
-  // Default retour for mes-equipes context
-  const retourHref = retour ?? `/coop/mes-equipes/${coordinateurId}`
-  const retourLabel = 'Mon équipe'
+  const { coordinateurId: _coordinateurId, userId } = params
 
   const data = await getActeurDetailPageData({
     userId,
-    retourHref,
-    retourLabel,
     sessionUser,
   })
 

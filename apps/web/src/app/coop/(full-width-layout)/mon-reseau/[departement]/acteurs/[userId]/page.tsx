@@ -28,53 +28,20 @@ export const generateMetadata = async ({
   }
 }
 
-const parseRetourParams = (
-  retour: string | undefined,
-  departementCode: string,
-) => {
-  if (!retour) {
-    return {
-      retourHref: `/coop/mon-reseau/${departementCode}`,
-      retourLabel: 'Mon réseau',
-    }
-  }
-  if (retour.includes('/mon-equipe') || retour.includes('/mes-equipes')) {
-    return { retourHref: retour, retourLabel: 'Mon équipe' }
-  }
-
-  if (retour.includes('/mon-reseau/') && retour.includes('/acteurs')) {
-    return { retourHref: retour, retourLabel: 'Annuaire des acteurs' }
-  }
-
-  if (retour.includes('/mon-reseau')) {
-    return { retourHref: retour, retourLabel: 'Mon réseau' }
-  }
-
-  return { retourHref: retour, retourLabel: 'Retour' }
-}
-
 const Page = async ({
   params: rawParams,
-  searchParams: rawSearchParams,
 }: {
   params: Promise<{ userId: string; departement: string }>
-  searchParams: Promise<{ retour?: string }>
 }) => {
   const sessionUser = await authenticateMediateurOrCoordinateur()
 
   const params = await rawParams
-  const searchParams = await rawSearchParams
 
   const { userId, departement: departementCode } = params
   getDepartementFromCodeOrThrowNotFound(departementCode)
 
-  const { retour } = searchParams
-  const { retourHref, retourLabel } = parseRetourParams(retour, departementCode)
-
   const data = await getActeurDetailPageData({
     userId,
-    retourHref,
-    retourLabel,
     sessionUser,
   })
 

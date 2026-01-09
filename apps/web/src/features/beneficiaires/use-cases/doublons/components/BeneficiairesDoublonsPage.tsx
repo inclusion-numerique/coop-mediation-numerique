@@ -31,9 +31,7 @@ const BeneficiairesDoublonsPage = ({
         className="fr-mb-12v"
       />
       <main id={contentId}>
-        <BackButton href="/coop/mes-beneficiaires">
-          Retour à mes bénéficiaires
-        </BackButton>
+        <BackButton />
         <h1 className="fr-h3 fr-text-title--blue-france fr-mb-2v">
           Gérer les doublons de bénéficiaires
         </h1>
@@ -58,15 +56,7 @@ const BeneficiairesDoublonsPage = ({
                 title={<>Aucun doublon de bénéficiaires n’a été détecté</>}
               ></Notice>
               <div className="fr-btns-group fr-mt-10v fr-mb-0">
-                <Button
-                  priority="secondary"
-                  className="fr-mb-0"
-                  linkProps={{
-                    href: '/coop/mes-beneficiaires',
-                  }}
-                >
-                  Retour à mes bénéficiaires
-                </Button>
+                <BackButton />
               </div>
             </>
           ) : (

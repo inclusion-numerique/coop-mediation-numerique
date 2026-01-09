@@ -40,20 +40,6 @@ const Page = async ({
     }),
   ])
 
-  // Build current path with all search params for return URLs
-  const currentPathBase = `/coop/mon-reseau/${departementCode}/acteurs`
-  const currentPathParams = new URLSearchParams()
-  for (const [key, value] of Object.entries(searchParams)) {
-    if (value != null) {
-      currentPathParams.set(key, String(value))
-    }
-  }
-
-  const currentPath =
-    currentPathParams.size > 0
-      ? `${currentPathBase}?${currentPathParams.toString()}`
-      : currentPathBase
-
   return (
     <ActeursPage
       departement={departement}
@@ -63,7 +49,6 @@ const Page = async ({
       communesOptions={filtersOptions.communesOptions}
       departementsOptions={filtersOptions.departementsOptions}
       lieuxActiviteOptions={filtersOptions.lieuxActiviteOptions}
-      currentPath={currentPath}
     />
   )
 }

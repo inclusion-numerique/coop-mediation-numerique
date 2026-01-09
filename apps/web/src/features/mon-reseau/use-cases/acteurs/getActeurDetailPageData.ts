@@ -25,13 +25,9 @@ const activitesFiltersLastDays = (daysCount: number) => {
 
 export const getActeurDetailPageData = async ({
   userId,
-  retourHref,
-  retourLabel,
   sessionUser,
 }: {
   userId: string
-  retourHref: string
-  retourLabel: string
   sessionUser: Pick<SessionUser, 'coordinateur'>
 }) => {
   // Fetch user with mediateur and coordinateur relations
@@ -183,8 +179,6 @@ export const getActeurDetailPageData = async ({
     acteurRole,
     emploi,
     lieuxActivites,
-    retourHref,
-    retourLabel,
     coordinationFeatures,
     conseillerNumerique,
     statistiques,

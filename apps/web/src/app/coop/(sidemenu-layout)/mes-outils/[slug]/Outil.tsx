@@ -36,7 +36,7 @@ export const Outil = ({
     />
     <SkipLinksPortal />
     <main id={contentId}>
-      <BackButton href="/coop/mes-outils">Retour</BackButton>
+      <BackButton />
       {noticeComponent}
       {notice ? <ComingSoon text={notice} /> : null}
       <Hero
