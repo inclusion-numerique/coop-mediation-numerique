@@ -23,6 +23,9 @@ export type LieuFilterType = 'lieu' | 'commune' | 'departement'
 export type LieuFilterValue = { type: LieuFilterType; value: string[] }
 
 const lieuTypeOptions = labelsToOptions(locationTypeLabels)
+const lieuTypeOptionsWithoutDepartement = lieuTypeOptions.filter(
+  (option) => option.value !== 'departement',
+)
 
 const lieuPlaceholder: Record<LieuFilterType, string> = {
   lieu: 'Choisir un lieu d’activité',
@@ -39,7 +42,7 @@ export const LieuFilter = ({
   defaultValue?: LieuFilterValue[]
   communesOptions: SelectOption[]
   lieuxActiviteOptions: SelectOption[]
-  departementsOptions: SelectOption[]
+  departementsOptions: SelectOption[] | null // if null, disables the departements filter
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -55,9 +58,8 @@ export const LieuFilter = ({
     defautValuesFrom(defaultValueSet),
   )
 
-  const filteredDepartementsOptions = departementsOptions.filter(
-    defautValuesFrom(defaultValueSet),
-  )
+  const filteredDepartementsOptions =
+    departementsOptions?.filter(defautValuesFrom(defaultValueSet)) ?? []
 
   const filteredLieuxActiviteOptions = lieuxActiviteOptions.filter(
     defautValuesFrom(defaultValueSet),
@@ -81,7 +83,8 @@ export const LieuFilter = ({
 
   const optionsForType: Record<LieuFilterType, SelectOption[]> = {
     commune: communesOptions.filter(availableOptionsIn(communes)),
-    departement: departementsOptions.filter(availableOptionsIn(departements)),
+    departement:
+      departementsOptions?.filter(availableOptionsIn(departements)) ?? [],
     lieu: lieuxActiviteOptions.filter(availableOptionsIn(lieuxActivite)),
   }
 
@@ -150,7 +153,11 @@ export const LieuFilter = ({
           instanceId="location-filter-type"
           placeholder="Choisir un type de localisation"
           className="fr-mb-2v fr-mt-3v"
-          options={lieuTypeOptions}
+          options={
+            departementsOptions
+              ? lieuTypeOptions
+              : lieuTypeOptionsWithoutDepartement
+          }
           onChange={(option) => setLieuFilterType(option?.value ?? null)}
         />
         {lieuFilterType && (

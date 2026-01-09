@@ -24,9 +24,7 @@ const ImportErreurPage = () => (
       ]}
       currentPage="Erreur"
     />
-    <BackButton href="/coop/mes-beneficiaires/importer">
-      Retour à l’import
-    </BackButton>
+    <BackButton />
 
     <div className="fr-mb-12v fr-border fr-border-radius--8 fr-p-12v">
       <img

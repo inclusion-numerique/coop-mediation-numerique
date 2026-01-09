@@ -14,9 +14,7 @@ const RdvServicePublicSeConnecterPage = () => {
   return (
     <div className="fr-mb-32v">
       <div className="fr-mb-6v fr-mt-10v">
-        <BackButton href="/coop/mes-outils/rdv-service-public">
-          Retour
-        </BackButton>
+        <BackButton />
       </div>
       <RdvServicePubliqueConnexionCard title="Se connecter avec ProConnect">
         <div className="fr-flex fr-direction-column fr-align-items-center fr-text--center">

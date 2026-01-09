@@ -19,13 +19,13 @@ export const DisplayOnCartography = ({
       <p className="fr-text--lg fr-mb-0 fr-text-title--blue-france fr-text--bold">
         {canChangeVisibility ? (
           <>
-            Vous souhaitez apparaître sur la cartographie nationale des lieux
-            d’inclusion numérique&nbsp;?
+            Vous souhaitez rendre visible ce lieu sur la cartographie nationale
+            des lieux d’inclusion numérique&nbsp;?
           </>
         ) : (
           <>
-            Votre lieu d’activité apparait sur la cartographie nationale des
-            lieux d’inclusion numérique
+            Ce lieu apparait sur la cartographie nationale des lieux d’inclusion
+            numérique
           </>
         )}
       </p>

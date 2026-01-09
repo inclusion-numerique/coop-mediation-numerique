@@ -10,9 +10,10 @@ export const getLieuxActiviteForInscription = async ({
     where: {
       mediateurId,
       suppression: null,
+      fin: null,
     },
     orderBy: {
-      creation: 'asc',
+      debut: 'asc',
     },
     select: {
       id: true,

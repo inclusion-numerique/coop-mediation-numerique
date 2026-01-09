@@ -117,10 +117,8 @@ const Page = async (props: {
           structure={structure}
           defaultValues={{
             id: emploi.id,
-            creation: dateAsIsoDay(emploi.creation),
-            suppression: emploi.suppression
-              ? dateAsIsoDay(emploi.suppression)
-              : undefined,
+            debut: dateAsIsoDay(emploi.debut),
+            fin: emploi.fin ? dateAsIsoDay(emploi.fin) : undefined,
           }}
         />
       </main>

@@ -44,6 +44,7 @@ export const conseillerNumerique = givenUser({
               create: {
                 id: '86643b16-de10-421e-b056-d820994572d1',
                 structureId: mediateque.id,
+                debut: new Date(),
               },
             },
             {
@@ -53,6 +54,7 @@ export const conseillerNumerique = givenUser({
               create: {
                 id: 'ef672b71-807b-41a6-9aca-3fac76478616',
                 structureId: centreSocial.id,
+                debut: new Date(),
               },
             },
           ],
@@ -68,6 +70,7 @@ export const conseillerNumerique = givenUser({
       create: {
         id: '4ee97bab-74eb-4776-b222-0ac40ed0f445',
         structureId: structureEmployeuse.id,
+        debut: new Date(),
       },
     },
   },

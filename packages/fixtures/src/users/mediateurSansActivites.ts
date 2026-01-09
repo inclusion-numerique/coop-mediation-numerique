@@ -34,6 +34,7 @@ export const mediateurSansActivites = givenUser({
             create: {
               id: '10a8ef22-2b40-41cb-a093-ae82686f24b1',
               structureId: mediateque.id,
+              debut: new Date(),
             },
           },
         },
@@ -48,6 +49,7 @@ export const mediateurSansActivites = givenUser({
       create: {
         id: 'b32c0dea-0ca7-4a52-917a-77663ecc65f9',
         structureId: structureEmployeuse.id,
+        debut: new Date(),
       },
     },
   },

@@ -58,6 +58,7 @@ const importSingleLieuActivite = async ({
       mediateurId,
       structureId: structure.id,
       suppression: null,
+      fin: null,
     },
     select: {
       id: true,
@@ -70,6 +71,7 @@ const importSingleLieuActivite = async ({
         id: v4(),
         mediateurId,
         structureId: structure.id,
+        debut: new Date(),
       },
     })
   }

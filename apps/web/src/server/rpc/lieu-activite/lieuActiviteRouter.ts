@@ -163,10 +163,13 @@ export const lieuActiviteRouter = router({
           ...setServicesEtAccompagnementFields(input),
           ...setModalitesAccesAuServiceFields(input),
           ...setTypesDePublicsAccueillisFields(input),
+          creationParId: user.id,
           mediateursEnActivite: {
             create: {
               id: v4(),
               mediateurId: user.mediateur.id,
+              debut: new Date(),
+              creationParId: user.id,
             },
           },
         },
@@ -190,6 +193,7 @@ export const lieuActiviteRouter = router({
           id: mediateurEnActiviteId,
           mediateurId: user.mediateur.id,
           suppression: null,
+          fin: null,
         },
       })
 
@@ -203,8 +207,11 @@ export const lieuActiviteRouter = router({
           id: mediateurEnActiviteId,
         },
         data: {
+          fin: timestamp,
           suppression: timestamp,
           modification: timestamp,
+          suppressionParId: user.id,
+          derniereModificationParId: user.id,
         },
       })
 
@@ -231,6 +238,7 @@ export const lieuActiviteRouter = router({
           ...structure,
           ...setInformationsGeneralesFields(input),
           modification: new Date(),
+          derniereModificationParId: user.id,
         },
       })
 
@@ -257,6 +265,7 @@ export const lieuActiviteRouter = router({
           ...structure,
           ...setVisiblePourCartographieNationaleFields(input),
           modification: new Date(),
+          derniereModificationParId: user.id,
         },
       })
 
@@ -283,6 +292,7 @@ export const lieuActiviteRouter = router({
           ...structure,
           ...setInformationsPratiquesFields(input),
           modification: new Date(),
+          derniereModificationParId: user.id,
         },
       })
 
@@ -309,6 +319,7 @@ export const lieuActiviteRouter = router({
           ...structure,
           ...setDescriptionFields(input),
           modification: new Date(),
+          derniereModificationParId: user.id,
         },
       })
 
@@ -335,6 +346,7 @@ export const lieuActiviteRouter = router({
           ...structure,
           ...setServicesEtAccompagnementFields(input),
           modification: new Date(),
+          derniereModificationParId: user.id,
         },
       })
 
@@ -361,6 +373,7 @@ export const lieuActiviteRouter = router({
           ...structure,
           ...setModalitesAccesAuServiceFields(input),
           modification: new Date(),
+          derniereModificationParId: user.id,
         },
       })
 
@@ -387,6 +400,7 @@ export const lieuActiviteRouter = router({
           ...structure,
           ...setTypesDePublicsAccueillisFields(input),
           modification: new Date(),
+          derniereModificationParId: user.id,
         },
       })
 

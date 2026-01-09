@@ -18,6 +18,7 @@ type MediateurFound = {
   email: string
   phone: string | null
   mediateur_id: string | null
+  user_id: string | null
   first_name: string | null
   last_name: string | null
   conseiller_numerique_id: string | null
@@ -47,6 +48,7 @@ export const searchMediateursCoordonneBy =
         SELECT
           invitations.email,
           invitations.mediateur_id AS mediateur_id,
+          users.id AS user_id,
           users.first_name AS first_name,
           users.last_name AS last_name,
           users.phone AS phone,
@@ -65,6 +67,7 @@ export const searchMediateursCoordonneBy =
         SELECT
           users.email AS email,
           mediateurs.id AS mediateurId,
+          users.id AS user_id,
           users.first_name AS first_name,
           users.last_name AS last_name,
           users.phone AS phone,

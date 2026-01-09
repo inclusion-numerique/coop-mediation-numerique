@@ -60,8 +60,8 @@ export const getContractInfo = async (email: string) =>
 
     return {
       type: typeWithDuration(miseEnRelationActive).replaceAll('_', ' '),
-      start: formatDate(miseEnRelationActive.dateDebutDeContrat),
-      end: formatDate(miseEnRelationActive.dateFinDeContrat),
+      debut: formatDate(miseEnRelationActive.dateDebutDeContrat),
+      fin: formatDate(miseEnRelationActive.dateFinDeContrat),
       finDeContrat: alerteFinDeContrat(miseEnRelationActive),
     }
   })

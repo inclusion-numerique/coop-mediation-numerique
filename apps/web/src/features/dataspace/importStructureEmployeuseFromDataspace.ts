@@ -163,35 +163,36 @@ export const importStructureEmployeuseFromDataspace = async ({
     },
     select: {
       id: true,
-      creation: true,
-      suppression: true,
+      debut: true,
+      fin: true,
     },
   })
 
   if (existingEmploi) {
     log('Existing emploi found', {
       emploiId: existingEmploi.id,
-      existingCreation: existingEmploi.creation.toISOString(),
-      existingSuppression: existingEmploi.suppression?.toISOString() ?? null,
+      existingDebut: existingEmploi.debut.toISOString(),
+      existingFin: existingEmploi.fin?.toISOString() ?? null,
     })
 
     // Update existing emploi with contract dates if different
     if (
-      existingEmploi.creation.getTime() !== creationDate.getTime() ||
-      existingEmploi.suppression?.getTime() !== suppressionDate?.getTime()
+      existingEmploi.debut.getTime() !== creationDate.getTime() ||
+      existingEmploi.fin?.getTime() !== suppressionDate?.getTime()
     ) {
       log('Updating emploi dates', {
         emploiId: existingEmploi.id,
-        oldCreation: existingEmploi.creation.toISOString(),
-        newCreation: creationDate.toISOString(),
-        oldSuppression: existingEmploi.suppression?.toISOString() ?? null,
-        newSuppression: suppressionDate?.toISOString() ?? null,
+        oldDebut: existingEmploi.debut.toISOString(),
+        newDebut: creationDate.toISOString(),
+        oldFin: existingEmploi.fin?.toISOString() ?? null,
+        newFin: suppressionDate?.toISOString() ?? null,
       })
 
       await prismaClient.employeStructure.update({
         where: { id: existingEmploi.id },
         data: {
-          creation: creationDate,
+          debut: creationDate,
+          fin: suppressionDate,
           suppression: suppressionDate,
         },
       })
@@ -211,7 +212,8 @@ export const importStructureEmployeuseFromDataspace = async ({
       data: {
         userId,
         structureId: structure.id,
-        creation: creationDate,
+        debut: creationDate,
+        fin: suppressionDate,
         suppression: suppressionDate,
       },
     })

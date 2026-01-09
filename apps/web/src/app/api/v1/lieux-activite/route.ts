@@ -323,7 +323,7 @@ export const GET = createApiV1Route
           LEFT JOIN mediateurs ON mediateurs_en_activite.mediateur_id = mediateurs.id AND mediateurs.is_visible = TRUE
           LEFT JOIN users ON mediateurs.user_id = users.id
       WHERE structures.suppression IS NULL
-        AND mediateurs_en_activite.suppression IS NULL
+        AND mediateurs_en_activite.suppression IS NULL AND mediateurs_en_activite.fin_activite IS NULL
         AND structures.visible_pour_cartographie_nationale IS true
       GROUP BY structures.id
     )

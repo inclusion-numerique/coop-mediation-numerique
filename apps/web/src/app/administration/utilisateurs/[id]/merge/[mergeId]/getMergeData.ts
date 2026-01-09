@@ -71,7 +71,7 @@ const include = {
         },
       },
       enActivite: {
-        where: { suppression: null },
+        where: { suppression: null, fin: null },
         include: {
           structure: {
             select: { id: true },
@@ -97,7 +97,7 @@ const include = {
     },
   },
   emplois: {
-    where: { suppression: null },
+    where: { suppression: null, fin: null },
     include: {
       structure: {
         select: { id: true },

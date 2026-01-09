@@ -33,6 +33,7 @@ export const getMediateursLieuxActiviteOptions = async ({
     where: {
       mediateurId: { in: mediateurIds },
       suppression: null,
+      fin: null,
     },
     select: {
       id: true,

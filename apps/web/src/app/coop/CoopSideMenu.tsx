@@ -129,6 +129,19 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
       linkProps: { href: '/coop/mes-outils' },
       isActive: pathname?.startsWith('/coop/mes-outils'),
     },
+    {
+      text: (
+        <>
+          <span
+            className="ri-team-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
+          />
+          Mon réseau
+        </>
+      ),
+      linkProps: { href: '/coop/mon-reseau' },
+      isActive: pathname?.startsWith('/coop/mon-reseau'),
+    },
   ]
 
   if (canUseAssistant(user)) {

@@ -30,6 +30,7 @@ export const importStructureEmployeuseFromV1Data = async ({
         userId: user.id,
         structureId: existingStructure.id,
         suppression: null,
+        fin: null,
       },
       select: {
         id: true,
@@ -44,6 +45,7 @@ export const importStructureEmployeuseFromV1Data = async ({
       data: {
         userId: user.id,
         structureId: existingStructure.id,
+        debut: new Date(),
       },
     })
 
@@ -64,6 +66,7 @@ export const importStructureEmployeuseFromV1Data = async ({
     data: {
       userId: user.id,
       structureId: structure.id,
+      debut: new Date(),
     },
   })
 

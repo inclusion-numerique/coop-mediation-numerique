@@ -40,6 +40,7 @@ export const coordinateurHorsDispositifInscritAvecTout = givenUser({
               create: {
                 id: '088db964-eb01-4738-bd4c-511fbe2eda65',
                 structureId: mediateque.id,
+                debut: new Date(),
               },
             },
             {
@@ -49,6 +50,7 @@ export const coordinateurHorsDispositifInscritAvecTout = givenUser({
               create: {
                 id: '80a86dd3-b358-4abb-9757-eb23b0fb32e4',
                 structureId: centreSocial.id,
+                debut: new Date(),
               },
             },
           ],
@@ -64,6 +66,7 @@ export const coordinateurHorsDispositifInscritAvecTout = givenUser({
       create: {
         id: 'aeb106f5-72b2-4a1b-8cb4-844c1fd85f95',
         structureId: structureEmployeuse.id,
+        debut: new Date(),
       },
     },
   },

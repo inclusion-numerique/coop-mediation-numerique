@@ -54,6 +54,7 @@ const existingActiviteFor = (userId: string) => ({
   where: {
     mediateur: { userId },
     suppression: null,
+    fin: null,
   },
   select: {
     id: true,
@@ -118,6 +119,7 @@ export const inscriptionRouter = router({
         const transactionResult = await prismaClient.$transaction(
           async (transaction) => {
             // Remove link between user and structureEmployeuse if it already exists
+            const now = new Date()
             await transaction.employeStructure.updateMany({
               where: {
                 userId,
@@ -125,9 +127,11 @@ export const inscriptionRouter = router({
                   id: { not: structure.id },
                 },
                 suppression: null,
+                fin: null,
               },
               data: {
-                suppression: new Date(),
+                fin: now,
+                suppression: now,
               },
             })
 
@@ -141,6 +145,7 @@ export const inscriptionRouter = router({
                   create: {
                     id: v4(),
                     structureId: structure.id,
+                    debut: new Date(),
                   },
                 },
               },
@@ -184,6 +189,7 @@ export const inscriptionRouter = router({
               },
               structureId: structureEmployeuseId,
               suppression: null,
+              fin: null,
             },
             select: {
               id: true,
@@ -217,6 +223,7 @@ export const inscriptionRouter = router({
                   id: structureEmployeuseId,
                 },
               },
+              debut: new Date(),
             },
             select: {
               id: true,
@@ -235,6 +242,7 @@ export const inscriptionRouter = router({
         })
 
         // Remove the link between the user and the structure if it exists
+        const now = new Date()
         await prismaClient.mediateurEnActivite.updateMany({
           where: {
             mediateur: {
@@ -242,9 +250,12 @@ export const inscriptionRouter = router({
             },
             structureId: structureEmployeuseId,
             suppression: null,
+            fin: null,
           },
           data: {
-            suppression: new Date(),
+            fin: now,
+            suppression: now,
+            suppressionParId: sessionUser.id,
           },
         })
 
@@ -310,12 +321,15 @@ export const inscriptionRouter = router({
         )
 
         return prismaClient.$transaction(async (transaction) => {
+          const now = new Date()
           const deleted = await transaction.mediateurEnActivite.updateMany({
             where: {
               id: { in: toDelete.map(({ id }) => id) },
             },
             data: {
-              suppression: new Date(),
+              fin: now,
+              suppression: now,
+              suppressionParId: sessionUser.id,
             },
           })
 
@@ -347,6 +361,7 @@ export const inscriptionRouter = router({
                           id: lieu.id,
                         },
                       },
+                      debut: new Date(),
                     },
                   })
                 }
@@ -382,6 +397,7 @@ export const inscriptionRouter = router({
                           id: existingStructure.id,
                         },
                       },
+                      debut: new Date(),
                     },
                   })
                 }
@@ -409,6 +425,7 @@ export const inscriptionRouter = router({
                     structure: {
                       create: toStructureFromCartoStructure(cartoStructure),
                     },
+                    debut: new Date(),
                   },
                 })
               }),
@@ -486,6 +503,7 @@ export const inscriptionRouter = router({
                           id: lieu.id,
                         },
                       },
+                      debut: new Date(),
                     },
                   })
                 }
@@ -522,6 +540,7 @@ export const inscriptionRouter = router({
                           id: existingStructure.id,
                         },
                       },
+                      debut: new Date(),
                     },
                   })
                 }
@@ -555,6 +574,7 @@ export const inscriptionRouter = router({
                         id: createdStructure.id,
                       },
                     },
+                    debut: new Date(),
                   },
                 })
               }),

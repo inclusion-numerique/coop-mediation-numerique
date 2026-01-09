@@ -30,6 +30,7 @@ export const getLieuxActiviteOptions = async (): Promise<
   const lieuxActivite = await prismaClient.mediateurEnActivite.findMany({
     where: {
       suppression: null,
+      fin: null,
     },
     select: {
       id: true,
