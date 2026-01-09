@@ -23,7 +23,7 @@ describe('dataspaceApiClient', () => {
     expect(result).toBeNull()
   })
 
-  it('coordinateur - should return conseiller_numerique coordinateur data', async () => {
+  it('coordinateur - should return conseiller_numerique coordinateur data as conum: false', async () => {
     const result = await getMediateurFromDataspaceApi({
       email: 'a.chretien@sommenumerique.fr',
     })
@@ -43,7 +43,7 @@ describe('dataspaceApiClient', () => {
       expect.objectContaining({
         id: expect.any(Number),
         is_coordinateur: true,
-        is_conseiller_numerique: true,
+        is_conseiller_numerique: false,
         structures_employeuses: expect.any(Array),
         lieux_activite: expect.any(Array),
         conseillers_numeriques_coordonnes: expect.any(Array),
