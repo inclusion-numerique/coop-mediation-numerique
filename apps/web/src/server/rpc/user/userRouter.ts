@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto'
 import { UtilisateurSetFeatureFlagsValidation } from '@app/web/app/administration/utilisateurs/[id]/UtilisateurSetFeatureFlagsValidation'
 import { UpdateProfileValidation } from '@app/web/app/user/UpdateProfileValidation'
 import { mergeUser } from '@app/web/features/utilisateurs/use-cases/merge/mergeUser'
+import { nouveauReminders } from '@app/web/features/utilisateurs/use-cases/nouveau-reminders/nouveauReminders'
 import { searchUser } from '@app/web/features/utilisateurs/use-cases/search/searchUser'
 import { signupReminders } from '@app/web/features/utilisateurs/use-cases/signup-reminders/signupReminders'
 import { prismaClient } from '@app/web/prismaClient'
@@ -44,6 +45,13 @@ export const userRouter = router({
       enforceIsAdmin(sessionUser)
 
       await signupReminders()
+    },
+  ),
+  inactiveReminders: protectedProcedure.mutation(
+    async ({ ctx: { user: sessionUser } }) => {
+      enforceIsAdmin(sessionUser)
+
+      await nouveauReminders()
     },
   ),
   updateProfile: protectedProcedure

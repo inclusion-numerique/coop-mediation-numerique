@@ -76,6 +76,9 @@ enum OnboardingStatus {
   reminder_j7_sent
   reminder_j30_sent
   reminder_j60_sent
+  nouveau_j7_sent
+  nouveau_j30_sent
+  nouveau_j60_sent
   warning_j90_sent
 }
 
