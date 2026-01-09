@@ -1,88 +1,9 @@
 import type { Prisma } from '@prisma/client'
 import { RoleSlug } from '../list/role'
 import { StatutSlug } from '../list/statut'
-
-const inscriptionFilter = (created: {
-  lt?: Date
-  gte?: Date
-}): Prisma.UserWhereInput => ({
-  inscriptionValidee: null,
-  role: { not: 'Admin' },
-  deleted: null,
-  created,
-})
-
-const nouveauFilter = (inscriptionValidee: {
-  lt?: Date
-  gte?: Date
-}): Prisma.UserWhereInput => ({
-  inscriptionValidee,
-  role: { not: 'Admin' },
-  deleted: null,
-  OR: [
-    {
-      mediateur: { is: null },
-      coordinateur: {
-        is: {
-          derniereCreationActivite: null,
-          mediateursCoordonnes: { none: {} },
-        },
-      },
-    },
-    {
-      coordinateur: { is: null },
-      mediateur: { is: { derniereCreationActivite: null } },
-    },
-    {
-      mediateur: { is: { derniereCreationActivite: null } },
-      coordinateur: {
-        is: {
-          derniereCreationActivite: null,
-          mediateursCoordonnes: { none: {} },
-        },
-      },
-    },
-  ],
-})
-
-const actifFilter = (lastActivity: {
-  lt?: Date
-  gte?: Date
-}): Prisma.UserWhereInput => ({
-  role: { not: 'Admin' },
-  deleted: null,
-  inscriptionValidee: { not: null },
-  OR: [
-    {
-      lastLogin: lastActivity,
-      mediateur: { is: null },
-      coordinateur: {
-        is: {
-          OR: [
-            { derniereCreationActivite: { not: null } },
-            { mediateursCoordonnes: { some: {} } },
-          ],
-        },
-      },
-    },
-    {
-      coordinateur: { is: null },
-      mediateur: { is: { derniereCreationActivite: lastActivity } },
-    },
-    {
-      lastLogin: lastActivity,
-      mediateur: { isNot: null },
-      coordinateur: {
-        is: {
-          OR: [
-            { derniereCreationActivite: { not: null } },
-            { mediateursCoordonnes: { some: {} } },
-          ],
-        },
-      },
-    },
-  ],
-})
+import { actifFilter } from './db/actif-filter'
+import { inscriptionFilter } from './db/inscription-filter'
+import { nouveauFilter } from './db/nouveau-filter'
 
 const daysAgo = (now: Date, days: number) =>
   new Date(now.getTime() - days * 24 * 60 * 60 * 1000)
