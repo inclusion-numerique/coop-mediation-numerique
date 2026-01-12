@@ -16,7 +16,7 @@ export const sendNouveauAccountDeletedEmail = async ({
     to: email,
     from: ServerWebAppConfig.Email.from,
     replyTo: PublicWebAppConfig.contactEmail,
-    subject: 'Votre compte La Coop a été supprimé',
+    subject: 'Votre compte a été supprimé',
     text: nouveauAccountDeletedEmail.text({ isMediateur }),
     html: compileMjml(nouveauAccountDeletedEmail.mjml({ isMediateur })),
   })

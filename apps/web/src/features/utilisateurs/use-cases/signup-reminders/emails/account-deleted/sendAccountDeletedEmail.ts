@@ -17,7 +17,7 @@ export const sendAccountDeletedEmail = async ({
     from: ServerWebAppConfig.Email.from,
     replyTo: PublicWebAppConfig.contactEmail,
 
-    subject: 'Votre compte La Coop a été supprimé',
+    subject: 'Votre compte a été supprimé',
     text: finishYourSignupAccountDeletedEmail.text({ firstname }),
     html: compileMjml(finishYourSignupAccountDeletedEmail.mjml({ firstname })),
   })

@@ -22,7 +22,7 @@ export const sendDeletionWarningEmail = async ({
     to: email,
     from: ServerWebAppConfig.Email.from,
     replyTo: PublicWebAppConfig.contactEmail,
-    subject: `${firstname}, votre compte La Coop va bientôt être supprimé ⚠️`,
+    subject: `Votre compte va bientôt être supprimé ⚠️`,
     text: finishYourSignupDeletionWarningEmail.text({
       firstname,
       deletionDate,

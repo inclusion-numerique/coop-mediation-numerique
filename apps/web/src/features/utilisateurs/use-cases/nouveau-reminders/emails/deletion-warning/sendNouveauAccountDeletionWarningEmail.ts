@@ -26,7 +26,7 @@ export const sendNouveauAccountDeletionWarningEmail = async ({
     to: email,
     from: ServerWebAppConfig.Email.from,
     replyTo: PublicWebAppConfig.contactEmail,
-    subject: `${firstname ?? 'Bonjour'}, votre compte La Coop va bientôt être supprimé ⚠️`,
+    subject: `Votre compte va bientôt être supprimé ⚠️`,
     text: nouveauAccountDeletionWarningEmail.text({
       firstname,
       deletionDate,

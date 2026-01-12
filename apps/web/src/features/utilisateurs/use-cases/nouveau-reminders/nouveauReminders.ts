@@ -86,7 +86,7 @@ const warnBeforeDeletion = async (now: Date) => {
       ).toLocaleDateString('fr-FR'),
       daysRemaining:
         timeDiff < 0 ? 1 : Math.ceil(timeDiff / MILLISECONDS_IN_DAY),
-      matomoCampaignId: 'compte_nouveau_j90',
+      matomoCampaignId: 'nouveau_j90',
       isMediateur,
       isCoordinateur,
     })
@@ -115,7 +115,7 @@ const remindersAfterXDays =
         email: user.email,
         firstname: user.firstName,
         totalUsers,
-        matomoCampaignId: `compte_nouveau_j${days}`,
+        matomoCampaignId: `nouveau_j${days}`,
         isMediateur,
         isCoordinateur,
         monthsCount: days === 30 ? 1 : 2,
@@ -141,7 +141,7 @@ const gettingStartedReminder = async (now: Date) => {
     await sendGettingStartedEmail({
       email: user.email,
       firstname: user.firstName,
-      matomoCampaignId: 'compte_nouveau_j7',
+      matomoCampaignId: 'nouveau_j7',
       isMediateur,
       isCoordinateur,
     })

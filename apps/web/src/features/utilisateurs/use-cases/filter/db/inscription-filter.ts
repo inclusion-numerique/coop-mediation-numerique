@@ -8,7 +8,7 @@ export const inscriptionFilter = (
   role: { not: 'Admin' },
   deleted: null,
   created,
-  ...(previousOnboardingStatus !== undefined
+  ...(previousOnboardingStatus.length > 0
     ? {
         OR: previousOnboardingStatus.map((status) => ({
           onboardingStatus: status,

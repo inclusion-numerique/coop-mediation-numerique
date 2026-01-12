@@ -2,35 +2,36 @@ import { givenUser } from '../givenUser'
 import { structureEmployeuse } from '../structures'
 
 const day = 24 * 60 * 60 * 1000
-const date = new Date(Date.now() - 90 * day)
+const date = new Date(Date.now() - 100 * day)
 
-export const coordinateurInscritJ90CoordinateurId =
-  'fb09c71e-1b69-434d-9def-60695236d1fe'
+export const coordinateurInscritJ100CoordinateurId =
+  'c5f4e0d3-7d96-4b8e-9f3c-8e0d5f6a4c29'
 
-export const coordinateurInscritJ90 = givenUser({
-  id: 'b6c95181-850b-43eb-adc6-251d45642a82',
+export const coordinateurInscritJ100 = givenUser({
+  id: 'e9f6c1d4-5d7a-4f93-8e0b-4c3a7d9e2f56',
   firstName: 'Coordinateur',
-  lastName: 'Inscrit J+90',
+  lastName: 'Inscrit J+100',
   lastLogin: date,
   isFixture: true,
   role: 'User',
+  onboardingStatus: 'warning_j90_sent',
   coordinateur: {
     connectOrCreate: {
       where: {
-        id: coordinateurInscritJ90CoordinateurId,
+        id: coordinateurInscritJ100CoordinateurId,
       },
       create: {
-        id: coordinateurInscritJ90CoordinateurId,
+        id: coordinateurInscritJ100CoordinateurId,
       },
     },
   },
   emplois: {
     connectOrCreate: {
       where: {
-        id: '670cc148-6e5f-4c93-88d0-29349d61ebc4',
+        id: 'f7d5c4e3-9b06-4d0e-0f3b-5e8c7f0a6b49',
       },
       create: {
-        id: '670cc148-6e5f-4c93-88d0-29349d61ebc4',
+        id: 'f7d5c4e3-9b06-4d0e-0f3b-5e8c7f0a6b49',
         structureId: structureEmployeuse.id,
       },
     },

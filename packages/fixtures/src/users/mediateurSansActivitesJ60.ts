@@ -15,7 +15,6 @@ export const mediateurSansActivitesJ60 = givenUser({
   firstName: 'Médiateur',
   lastName: 'Sans activités J+60',
   name: 'Médiateur Sans activités J+60',
-  email: 'mediation@numeriqueJ60.fr',
   isFixture: true,
   role: 'User',
   created: date,

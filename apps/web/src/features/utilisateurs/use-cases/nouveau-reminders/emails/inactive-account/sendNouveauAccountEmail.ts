@@ -26,7 +26,7 @@ export const sendNouveauAccountEmail = async ({
     to: email,
     from: ServerWebAppConfig.Email.from,
     replyTo: PublicWebAppConfig.contactEmail,
-    subject: `${firstname ?? 'Bonjour'}, votre compte est prêt, il ne manque que vous ! 💌`,
+    subject: 'Votre compte est prêt, il ne manque que vous !',
     text: nouveauAccountEmail.text({
       firstname,
       totalUsers,

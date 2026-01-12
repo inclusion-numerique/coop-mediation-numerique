@@ -32,7 +32,7 @@ export const nouveauFilter = (
   inscriptionValidee,
   role: { not: 'Admin' },
   deleted: null,
-  ...(previousOnboardingStatus !== undefined
+  ...(previousOnboardingStatus.length > 0
     ? {
         OR: previousOnboardingStatus.map((status) => ({
           onboardingStatus: status,
