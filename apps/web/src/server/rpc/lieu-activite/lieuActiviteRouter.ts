@@ -29,6 +29,7 @@ import {
   VisiblePourCartographieNationaleValidation,
 } from '@app/web/features/structures/VisiblePourCartographieNationaleValidation'
 import { prismaClient } from '@app/web/prismaClient'
+import { sendRemovedFromLieuEmail } from '@app/web/server/email/sendRemovedFromLieuEmail'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { enforceIsMediateur } from '@app/web/server/rpc/enforceIsMediateur'
 import { forbiddenError, invalidError } from '@app/web/server/rpc/trpcErrors'
@@ -445,7 +446,7 @@ export const lieuActiviteRouter = router({
 
         const stopwatch = createStopwatch()
 
-        // Find the active MediateurEnActivite record
+        // Find the active MediateurEnActivite record with related data
         const mediateurEnActivite =
           await prismaClient.mediateurEnActivite.findFirst({
             where: {
@@ -454,6 +455,25 @@ export const lieuActiviteRouter = router({
               fin: null,
               suppression: null,
             },
+            include: {
+              mediateur: {
+                include: {
+                  user: {
+                    select: {
+                      email: true,
+                      firstName: true,
+                      lastName: true,
+                      name: true,
+                    },
+                  },
+                },
+              },
+              structure: {
+                select: {
+                  nom: true,
+                },
+              },
+            },
           })
 
         if (!mediateurEnActivite) {
@@ -461,6 +481,21 @@ export const lieuActiviteRouter = router({
             "Ce médiateur n'est pas actuellement en activité sur ce lieu",
           )
         }
+
+        // Get the display name of the user who is removing the mediateur
+        const removedByName = user?.name
+          ? user.name
+          : user.firstName && user.lastName
+            ? `${user.firstName} ${user.lastName}`
+            : user.email
+
+        // Send email BEFORE database update (if email fails, no deletion happens)
+        await sendRemovedFromLieuEmail({
+          mediateurEmail: mediateurEnActivite.mediateur.user.email,
+          mediateurFirstname: mediateurEnActivite.mediateur.user.firstName,
+          structureNom: mediateurEnActivite.structure.nom,
+          removedByName,
+        })
 
         const timestamp = new Date()
 

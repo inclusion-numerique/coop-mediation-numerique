@@ -44,21 +44,25 @@ export const LieuMediateursEnActivite = ({
         </span>
       }
     >
-      <hr className="fr-separator-1px" />
-      <ul className="fr-list-group fr-my-0">
-        {mediateursToDisplay.map((acteur) => (
-          <ActeurCard
-            key={acteur.id}
-            acteur={acteur.mediateur.user}
-            departementCode={departementCode}
-            canRemoveMediateurFromLieuId={
-              canRemoveMediateurFromLieuId ?? undefined
-            }
-            structureNom={structureNom}
-            derniereActivite={acteur.mediateur.derniereActivite}
-          />
-        ))}
-      </ul>
+      {mediateurs.length > 0 && (
+        <>
+          <hr className="fr-separator-1px" />
+          <ul className="fr-list-group fr-my-0">
+            {mediateursToDisplay.map((acteur) => (
+              <ActeurCard
+                key={acteur.id}
+                acteur={acteur.mediateur.user}
+                departementCode={departementCode}
+                canRemoveMediateurFromLieuId={
+                  canRemoveMediateurFromLieuId ?? undefined
+                }
+                structureNom={structureNom}
+                derniereActivite={acteur.mediateur.derniereActivite}
+              />
+            ))}
+          </ul>
+        </>
+      )}
       {showMoreButton && (
         <div className="fr-pt-6v">
           <Button
