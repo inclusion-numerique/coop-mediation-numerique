@@ -49,14 +49,15 @@ export const LieuActivitePageContent = ({
 
   return (
     <>
-      <div className="fr-hidden fr-unhidden-lg" style={{ minWidth: '180px' }}>
+      <div className="fr-hidden fr-unhidden-lg" style={{ minWidth: '302px' }}>
         {showSideMenu && <LieuActiviteSideMenu className="fr-mt-16w" />}
       </div>
       <div
         className={classNames(
-          'fr-container fr-container--medium fr-pr-0 fr-ml-0 fr-mb-30v',
+          'fr-pr-0 fr-ml-0 fr-mb-30v',
           styles.structureForm,
         )}
+        style={{ maxWidth: 792 }}
       >
         <CoopBreadcrumbs
           parents={[
@@ -140,6 +141,10 @@ export const LieuActivitePageContent = ({
           </VisiblePourCartographieNationaleFields>
         </div>
       </div>
+      <div
+        className="fr-hidden fr-unhidden-lg"
+        style={{ minWidth: '302px' }}
+      ></div>
     </>
   )
 }

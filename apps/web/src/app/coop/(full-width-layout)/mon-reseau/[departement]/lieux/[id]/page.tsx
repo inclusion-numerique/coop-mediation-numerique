@@ -29,7 +29,11 @@ const LieuActiviteDetailPage = async (props: {
   return (
     <>
       <SkipLinksPortal />
-      <main id={contentId} className="fr-container fr-flex">
+      <main
+        id={contentId}
+        className="fr-container fr-flex fr-justify-content-center"
+        style={{ maxWidth: 2500 }}
+      >
         <LieuActivitePageContent
           data={data}
           canRemoveMediateurFromLieu={canRemoveMediateurFromLieu}
