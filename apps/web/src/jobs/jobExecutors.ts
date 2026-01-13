@@ -13,7 +13,7 @@ import { executeFixTags } from './fix-tags/executeFixTags'
 import { executeFixUsers } from './fix-users/executeFixUsers'
 import { executeFixUsersRoles } from './fix-users-roles/executeFixUsersRoles'
 import { executeImportContactsToBrevo } from './import-contacts-to-brevo/executeImportContactsToBrevo'
-import { executeIncompleteSignupReminders } from './incomplete-signup-reminders/executeIncompleteSignupReminders'
+import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
 import { executeIngestLesBasesInRag } from './ingest-les-bases-in-rag/executeIngestLesBasesInRag'
 import type { Job, JobName, JobPayload } from './jobs'
 import { output } from './output'
@@ -65,7 +65,7 @@ export const jobExecutors: {
   'fix-tags': executeFixTags,
   'sync-conums': executeSyncConums,
   'sync-rdvsp-data': executeSyncRdvspData,
-  'incomplete-signup-reminders': executeIncompleteSignupReminders,
+  'inactive-users-reminders': executeInactiveUsersReminders,
   'fix-users-roles': executeFixUsersRoles,
 }
 

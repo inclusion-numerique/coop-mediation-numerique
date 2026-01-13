@@ -28,7 +28,7 @@ const FINALIZE_PATH = '/coop?mtm_campaign=reinscription'
 const HELP_URL =
   'https://docs.numerique.gouv.fr/docs/09e84488-ad22-4495-abcc-dd813a20ddd5/'
 
-export const accountDeletedEmail = {
+export const finishYourSignupAccountDeletedEmail = {
   text: ({ firstname }: { firstname: string | null }): string =>
     `Bonjour ${firstname},
 

@@ -21,7 +21,6 @@ export const coordinateurInscritJ30 = givenUser({
       },
       create: {
         id: coordinateurInscritJ30CoordinateurId,
-        derniereCreationActivite: date,
       },
     },
   },

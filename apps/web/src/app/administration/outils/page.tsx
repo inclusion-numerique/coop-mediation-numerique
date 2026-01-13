@@ -5,6 +5,7 @@ import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import SyncProfiles from '@app/web/features/conum/use-cases/sync-profiles/SyncProfiles'
 import UpdateInfo from '@app/web/features/conum/use-cases/update-info/UpdateInfo'
 import UpdateStructureReferent from '@app/web/features/conum/use-cases/update-structure-referent/UpdateStructureReferent'
+import NouveauReminders from '@app/web/features/utilisateurs/use-cases/nouveau-reminders/components/NouveauReminders'
 import SignupReminders from '@app/web/features/utilisateurs/use-cases/signup-reminders/components/SignupReminders'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
@@ -41,6 +42,7 @@ const Page = () => {
                   <UpdateInfo />
                   <SyncProfiles />
                   <SignupReminders />
+                  <NouveauReminders />
                 </div>
               </Card>
             </div>
