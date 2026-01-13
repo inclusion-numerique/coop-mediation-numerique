@@ -4,8 +4,8 @@ import RadioFormField from '@app/ui/components/Form/RadioFormField'
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import RichCardLabel, {
-  richCardFieldsetElementClassName,
   type RichCardOption,
+  richCardFieldsetElementClassName,
 } from '@app/web/components/form/RichCardLabel'
 import LogoCoop from '@app/web/components/LogoCoop'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
