@@ -423,4 +423,68 @@ export const lieuActiviteRouter = router({
         searchParams: { recherche: query },
       })
     }),
+  removeMediateurFromLieu: protectedProcedure
+    .input(
+      z.object({
+        mediateurId: z.string().uuid(),
+        structureId: z.string().uuid(),
+      }),
+    )
+    .mutation(
+      async ({ input: { mediateurId, structureId }, ctx: { user } }) => {
+        // Check permissions: admin, support, or coordinateur
+        if (
+          user.role !== 'Admin' &&
+          user.role !== 'Support' &&
+          !user.coordinateur
+        ) {
+          throw forbiddenError(
+            "Vous n'avez pas les droits pour retirer un médiateur d'un lieu",
+          )
+        }
+
+        const stopwatch = createStopwatch()
+
+        // Find the active MediateurEnActivite record
+        const mediateurEnActivite =
+          await prismaClient.mediateurEnActivite.findFirst({
+            where: {
+              mediateurId,
+              structureId,
+              fin: null,
+              suppression: null,
+            },
+          })
+
+        if (!mediateurEnActivite) {
+          throw invalidError(
+            "Ce médiateur n'est pas actuellement en activité sur ce lieu",
+          )
+        }
+
+        const timestamp = new Date()
+
+        // Set fin date to mark end of activity (but not suppression)
+        await prismaClient.mediateurEnActivite.update({
+          where: {
+            id: mediateurEnActivite.id,
+          },
+          data: {
+            fin: timestamp,
+            modification: timestamp,
+            derniereModificationParId: user.id,
+          },
+        })
+
+        addMutationLog({
+          userId: user.id,
+          nom: 'SupprimerMediateurEnActivite',
+          duration: stopwatch.stop().duration,
+          data: {
+            mediateurId,
+            structureId,
+          },
+        })
+      },
+    ),
 })

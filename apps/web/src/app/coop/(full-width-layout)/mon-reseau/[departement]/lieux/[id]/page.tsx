@@ -11,7 +11,7 @@ const LieuActiviteDetailPage = async (props: {
   params: Promise<{ id: string; departement: string }>
 }) => {
   const params = await props.params
-  await authenticateUser(
+  const user = await authenticateUser(
     `/connexion?suivant=/mon-reseau/${params.departement}/lieux/${params.id}`,
   )
 
@@ -24,11 +24,16 @@ const LieuActiviteDetailPage = async (props: {
     redirect('/coop/lieux-activite')
   }
 
+  const canRemoveMediateurFromLieu = user.coordinateur !== null
+
   return (
     <>
       <SkipLinksPortal />
       <main id={contentId} className="fr-container fr-flex">
-        <LieuActivitePageContent data={data} />
+        <LieuActivitePageContent
+          data={data}
+          canRemoveMediateurFromLieu={canRemoveMediateurFromLieu}
+        />
       </main>
     </>
   )

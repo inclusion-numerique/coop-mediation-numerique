@@ -10,6 +10,7 @@ import { ServiceInclusionNumeriqueTitle } from '@app/web/components/structure/ti
 import { LieuActivitePageData } from '@app/web/features/lieux-activite/getLieuActivitePageData'
 import { getDepartementCodeForLieu } from '@app/web/features/mon-reseau/getDepartementCodeForLieu'
 import { getMonReseauBreadcrumbParents } from '@app/web/features/mon-reseau/getMonReseauBreadcrumbParents'
+import RemoveMediateurFromLieuModal from '@app/web/features/mon-reseau/use-cases/acteurs/components/RemoveMediateurFromLieuModal/RemoveMediateurFromLieuModal'
 import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
 import LieuMediateursEnActivite from '@app/web/features/mon-reseau/use-cases/lieux/components/LieuMediateursEnActivite'
 import { formatDate } from '@app/web/utils/formatDate'
@@ -26,8 +27,10 @@ import VisiblePourCartographieNationaleFields from './VisiblePourCartographieNat
 
 export const LieuActivitePageContent = ({
   data: { structure },
+  canRemoveMediateurFromLieu,
 }: {
   data: LieuActivitePageData
+  canRemoveMediateurFromLieu: boolean
 }) => {
   const departementCode = getDepartementCodeForLieu(structure)
 
@@ -77,12 +80,14 @@ export const LieuActivitePageContent = ({
           <InformationsGeneralesEditCard {...structure} />
         </div>
         <LieuMediateursEnActivite
-          mediateurs={structure.mediateursEnActivite.map(
-            (mediateurEnActivite) => mediateurEnActivite.mediateur.user,
-          )}
+          mediateurs={structure.mediateursEnActivite}
           departementCode={departementCode}
-          canRemoveMediateurFromLieuId={structure.id}
+          canRemoveMediateurFromLieuId={
+            canRemoveMediateurFromLieu ? structure.id : null
+          }
+          structureNom={structure.nom}
         />
+        {canRemoveMediateurFromLieu && <RemoveMediateurFromLieuModal />}
         <div className="fr-border fr-border-radius--8 fr-mt-6v">
           <DisplayOnCartography
             canChangeVisibility={

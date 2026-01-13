@@ -12,10 +12,14 @@ const ActeurCard = ({
   acteur,
   departementCode,
   canRemoveMediateurFromLieuId,
+  structureNom,
+  derniereActivite,
 }: {
   acteur: ActeurForList
   departementCode: string
   canRemoveMediateurFromLieuId?: string // id of a lieux d'activité from which a mediateur can be removed. if undefined, the mediateur cannot be removed from the lieu
+  structureNom?: string // used only on the remove mediateur from lieu button
+  derniereActivite?: { date: Date } | null // used only on the remove mediateur from lieu button
 }) => {
   const displayName = getActeurDisplayName(acteur)
   const lieuxActiviteCount = acteur.mediateur?._count.enActivite ?? 0
@@ -38,10 +42,13 @@ const ActeurCard = ({
         <p className="fr-text--bold fr-text--lg fr-mb-0 fr-text-title--blue-france">
           {displayName}
         </p>
-        {canRemoveMediateurFromLieuId && acteur.mediateur && (
+        {canRemoveMediateurFromLieuId && acteur.mediateur && structureNom && (
           <RemoveMediateurFromLieuButton
             structureId={canRemoveMediateurFromLieuId}
             mediateurId={acteur.mediateur.id}
+            mediateurDisplayName={displayName}
+            structureNom={structureNom}
+            derniereActiviteDate={derniereActivite?.date ?? null}
           />
         )}
       </div>

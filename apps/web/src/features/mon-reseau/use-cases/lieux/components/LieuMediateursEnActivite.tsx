@@ -1,8 +1,8 @@
 'use client'
 
 import Card from '@app/web/components/Card'
+import type { LieuActivitePageDataMediateurEnActivite } from '@app/web/features/lieux-activite/getLieuActivitePageData'
 import ActeurCard from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurCard'
-import type { ActeurForList } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useState } from 'react'
 
@@ -12,10 +12,12 @@ export const LieuMediateursEnActivite = ({
   mediateurs,
   departementCode,
   canRemoveMediateurFromLieuId,
+  structureNom,
 }: {
-  mediateurs: ActeurForList[]
+  mediateurs: LieuActivitePageDataMediateurEnActivite[]
   departementCode: string
   canRemoveMediateurFromLieuId: string | null // if null, mediateurs cannot be removed from the lieu
+  structureNom: string
 }) => {
   const [showMore, setShowMore] = useState(false)
 
@@ -44,14 +46,16 @@ export const LieuMediateursEnActivite = ({
     >
       <hr className="fr-separator-1px" />
       <ul className="fr-list-group fr-my-0">
-        {mediateursToDisplay.map((mediateur) => (
+        {mediateursToDisplay.map((acteur) => (
           <ActeurCard
-            key={mediateur.id}
-            acteur={mediateur}
+            key={acteur.id}
+            acteur={acteur.mediateur.user}
             departementCode={departementCode}
             canRemoveMediateurFromLieuId={
               canRemoveMediateurFromLieuId ?? undefined
             }
+            structureNom={structureNom}
+            derniereActivite={acteur.mediateur.derniereActivite}
           />
         ))}
       </ul>

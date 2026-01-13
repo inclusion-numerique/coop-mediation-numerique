@@ -58,6 +58,19 @@ export const getLieuActivitePageData = async ({ id }: { id: string }) => {
           mediateur: {
             select: {
               user: { select: acteurSelectForList },
+              activites: {
+                take: 1,
+                orderBy: {
+                  date: 'desc',
+                },
+                select: {
+                  id: true,
+                  date: true,
+                },
+                where: {
+                  structureId: id,
+                },
+              },
             },
           },
         },
@@ -69,7 +82,20 @@ export const getLieuActivitePageData = async ({ id }: { id: string }) => {
   }
 
   return {
-    structure,
+    structure: {
+      ...structure,
+      mediateursEnActivite: structure.mediateursEnActivite.map(
+        (mediateurEnActivite) => ({
+          ...mediateurEnActivite,
+          mediateur: {
+            ...mediateurEnActivite.mediateur,
+            derniereActivite: {
+              date: mediateurEnActivite.mediateur.activites[0]?.date ?? null,
+            },
+          },
+        }),
+      ),
+    },
   }
 }
 
@@ -77,3 +103,6 @@ export type LieuActivitePageData = Exclude<
   Awaited<ReturnType<typeof getLieuActivitePageData>>,
   null
 >
+
+export type LieuActivitePageDataMediateurEnActivite =
+  LieuActivitePageData['structure']['mediateursEnActivite'][number]
