@@ -47,7 +47,7 @@ executors:
 parameters:
   cache_version:
     type: string
-    default: '2025-10-31-01'
+    default: '2026-01-13-01'
   virtual_store_dir:
     type: string
     default: './.pnpm'
