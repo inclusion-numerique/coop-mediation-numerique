@@ -1,4 +1,3 @@
-import CheckboxFormField from '@app/ui/components/Form/CheckboxFormField'
 import InputFormField from '@app/ui/components/Form/InputFormField'
 import { InformationsPratiquesData } from '@app/web/features/structures/InformationsPratiquesValidation'
 import { rdvWebsiteLink } from '@app/web/rdv-service-public/rdvServicePublicUrls'
@@ -31,13 +30,6 @@ export const InformationsPratiquesFields = <
         control={control}
         disabled={formState.isSubmitting}
       />
-      <CheckboxFormField
-        className="fr-mt-6v fr-mb-2v"
-        path="lieuItinerant"
-        label="Lieu d’activité itinérant (exemple : bus)"
-        control={control}
-        disabled={formState.isSubmitting}
-      />
       <InputFormField
         path="ficheAccesLibre"
         label="Accessibilité"
@@ -65,7 +57,7 @@ export const InformationsPratiquesFields = <
         label="Prise de rendez-vous en ligne"
         hint={
           <>
-            Si la structure dispose d’un outil en ligne de prise de rendez-vous
+            Si la structure dispose d'un outil en ligne de prise de rendez-vous
             (par exemple RDV Service Public{' '}
             <Link
               href={rdvWebsiteLink}

@@ -25,14 +25,12 @@ import { InformationsPratiquesView } from './InformationsPratiquesView'
 
 const InformationsPratiquesEditCard = ({
   id,
-  lieuItinerant,
   siteWeb,
   ficheAccesLibre,
   priseRdv,
   horaires,
 }: {
   id: string
-  lieuItinerant?: boolean | null
   siteWeb?: string | null
   ficheAccesLibre?: string | null
   priseRdv?: string | null
@@ -45,7 +43,6 @@ const InformationsPratiquesEditCard = ({
     resolver: zodResolver(InformationsPratiquesValidation),
     defaultValues: {
       id,
-      lieuItinerant,
       siteWeb,
       ficheAccesLibre,
       priseRdv,
@@ -100,17 +97,13 @@ const InformationsPratiquesEditCard = ({
       edition={<InformationsPratiquesFields form={form} />}
       view={
         <InformationsPratiquesView
-          lieuItinerant={lieuItinerant}
           siteWeb={siteWeb}
           ficheAccesLibre={ficheAccesLibre}
           priseRdv={priseRdv}
           horaires={horaires}
         />
       }
-      isEmpty={
-        !lieuItinerant &&
-        [siteWeb, ficheAccesLibre, horaires, priseRdv].every(isEmpty)
-      }
+      isEmpty={[siteWeb, ficheAccesLibre, horaires, priseRdv].every(isEmpty)}
       emptyState={
         <EmptyState title="Compléter ces informations pour faciliter l’accès du public." />
       }

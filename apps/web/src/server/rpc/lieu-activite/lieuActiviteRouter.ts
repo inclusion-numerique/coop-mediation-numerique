@@ -55,6 +55,7 @@ const lieuActiviteToUpdate = async (input: { id: string }) => {
 const setInformationsGeneralesFields = ({
   nom,
   adresseBan,
+  lieuItinerant,
   complementAdresse,
   siret,
   rna,
@@ -67,6 +68,12 @@ const setInformationsGeneralesFields = ({
   codeInsee: adresseBan.codeInsee,
   latitude: adresseBan.latitude,
   longitude: adresseBan.longitude,
+  itinerance:
+    lieuItinerant == null
+      ? undefined
+      : lieuItinerant
+        ? [Itinerance.Itinerant]
+        : [Itinerance.Fixe],
   complementAdresse,
   siret,
   rna,
@@ -80,18 +87,11 @@ const setVisiblePourCartographieNationaleFields = ({
 })
 
 const setInformationsPratiquesFields = ({
-  lieuItinerant,
   siteWeb,
   ficheAccesLibre,
   horaires,
   priseRdv,
 }: Omit<InformationsPratiquesData, 'id'>) => ({
-  itinerance:
-    lieuItinerant == null
-      ? undefined
-      : lieuItinerant
-        ? [Itinerance.Itinerant]
-        : [Itinerance.Fixe],
   siteWeb: siteWeb ?? undefined,
   ficheAccesLibre: ficheAccesLibre ?? undefined,
   horaires: horaires ?? undefined,

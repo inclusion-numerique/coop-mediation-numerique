@@ -7,6 +7,7 @@ import { typologieStructureValue } from './typologieStructure'
 export const InformationsGeneralesShape = {
   nom: z.string().trim().min(1, 'Veuillez renseigner le nom de la structure'),
   adresseBan: AdresseBanValidation,
+  lieuItinerant: z.boolean().nullish(),
   complementAdresse: z.string().nullish(),
   typologies: z
     .array(z.enum(typologieStructureValue))

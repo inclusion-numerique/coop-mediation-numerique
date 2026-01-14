@@ -78,7 +78,10 @@ export const LieuActivitePageContent = ({
         </p>
         <h1 className="fr-page-title fr-h2">{structure.nom}</h1>
         <div className="fr-border fr-border-radius--8 fr-mb-6v">
-          <InformationsGeneralesEditCard {...structure} />
+          <InformationsGeneralesEditCard
+            {...structure}
+            lieuItinerant={structure.itinerance.includes(Itinerance.Itinerant)}
+          />
         </div>
         <LieuMediateursEnActivite
           mediateurs={structure.mediateursEnActivite}
@@ -108,12 +111,7 @@ export const LieuActivitePageContent = ({
             <hr className="fr-separator-1px" />
             <DescriptionEditCard {...structure} />
             <hr className="fr-separator-1px fr-mx-4w" />
-            <InformationsPratiquesEditCard
-              {...structure}
-              lieuItinerant={structure.itinerance.includes(
-                Itinerance.Itinerant,
-              )}
-            />
+            <InformationsPratiquesEditCard {...structure} />
             <hr className="fr-separator-1px" />
             <ServiceInclusionNumeriqueTitle />
             <hr className="fr-separator-1px" />
