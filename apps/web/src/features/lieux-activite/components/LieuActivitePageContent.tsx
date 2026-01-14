@@ -71,7 +71,7 @@ export const LieuActivitePageContent = ({
           ]}
           currentPage={structure.nom}
         />
-        <BackButton />
+        <BackButton className="fr-mt-8v" />
         <p className="fr-text--xs fr-mb-3v">
           Mis à jour le {formattedModificationDate}{' '}
           {derniereModificationPar ? `par ${derniereModificationPar}` : ''}

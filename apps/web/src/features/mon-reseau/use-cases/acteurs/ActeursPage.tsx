@@ -69,7 +69,7 @@ const ActeursPage = ({
           currentPage={breadcrumbLabel}
           parents={getMonReseauBreadcrumbParents({ code: departement.code })}
         />
-        <main id={contentId} className="fr-mb-16w">
+        <main id={contentId} className="fr-mb-16w fr-mt-8v">
           <BackButton />
           <div className="fr-flex fr-align-items-center fr-flex-gap-4v fr-mb-6v">
             <span
