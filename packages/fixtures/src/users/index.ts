@@ -20,10 +20,7 @@ import {
   coordinateurInscriptionAvecToutCoordinateurId,
 } from './coordinateurInscriptionAvecTout'
 import { coordinateurInscrit } from './coordinateurInscrit'
-import {
-  coordinateurInscritAvecTout,
-  coordinateurInscritAvecToutCoordinateurId,
-} from './coordinateurInscritAvecTout'
+import { coordinateurInscritAvecTout } from './coordinateurInscritAvecTout'
 import { coordinateurInscritJ7 } from './coordinateurInscritJ7'
 import { coordinateurInscritJ30 } from './coordinateurInscritJ30'
 import { coordinateurInscritJ60 } from './coordinateurInscritJ60'
@@ -101,13 +98,6 @@ export const fixtureUsers = [
 export const coordinations = [
   {
     coordinateurId: coordinateurInscriptionAvecToutCoordinateurId,
-    mediateurIds: [
-      conseillerNumeriqueMediateurId,
-      mediateurAvecActiviteMediateurId,
-    ],
-  },
-  {
-    coordinateurId: coordinateurInscritAvecToutCoordinateurId,
     mediateurIds: [
       conseillerNumeriqueMediateurId,
       mediateurAvecActiviteMediateurId,

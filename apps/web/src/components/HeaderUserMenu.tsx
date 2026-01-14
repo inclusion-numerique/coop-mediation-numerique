@@ -127,10 +127,7 @@ export const HeaderUserMenu = ({ user }: { user: SessionUser }) => {
               style={{ color: 'var(--blue-france-sun-113-625)' }}
               aria-hidden
             />
-            Voir mon équipe ·{' '}
-            <span className="fr-text--bold">
-              {user.coordinateur.mediateursCoordonnes.length}
-            </span>
+            Voir mon équipe
           </Link>
         </li>
       )}
@@ -148,13 +145,7 @@ export const HeaderUserMenu = ({ user }: { user: SessionUser }) => {
                 style={{ color: 'var(--blue-france-sun-113-625)' }}
                 aria-hidden
               />
-              Voir mon équipe ·{' '}
-              <span className="fr-text--bold">
-                {
-                  mediateurCoordinations.at(0)?.coordinateur
-                    .mediateursCoordonnes.length
-                }
-              </span>
+              Voir mon équipe
             </Link>
           </li>
         )}

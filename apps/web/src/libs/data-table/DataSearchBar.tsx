@@ -18,10 +18,12 @@ const DataSearchBar = <
 >({
   searchParams,
   baseHref,
+  className,
   placeholder,
 }: {
   searchParams: DataTableSearchParams<Configuration>
   baseHref: string
+  className?: string
   placeholder?: string
 }) => {
   const router = useRouter()
@@ -54,7 +56,7 @@ const DataSearchBar = <
 
   return (
     <SearchBar
-      className={classNames('fr-flex-grow-1', styles.searchBar)}
+      className={classNames(className, styles.searchBar)}
       onButtonClick={onSearch}
       allowEmptySearch
       ref={searchBarRef}

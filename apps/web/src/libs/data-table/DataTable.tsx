@@ -104,46 +104,56 @@ const DataTable = <
                 </tr>
               </thead>
               <tbody className={classNames(classes?.tbody)}>
-                {rows.map((row) => (
-                  <tr
-                    key={configuration.rowKey(row)}
-                    className={classNames(
-                      classes?.tr,
-                      !!configuration.rowLink && 'fr-enlarge-link',
-                      !!configuration.rowLink && styles.rowWithLink,
-                      !!RowButtonComponent && 'fr-enlarge-button',
-                      !!RowButtonComponent && styles.rowWithButton,
-                    )}
-                  >
-                    {configuration.columns.map(
-                      ({ name, cellAsTh, cell, cellClassName }) => {
-                        if (!cell) {
-                          return null
-                        }
-                        const Component = cellAsTh ? 'th' : 'td'
+                {rows.map((row) => {
+                  const rowLink = configuration.rowLink?.(row)
+                  return (
+                    <tr
+                      key={configuration.rowKey(row)}
+                      className={classNames(
+                        classes?.tr,
+                        !!rowLink && 'fr-enlarge-link',
+                        !!rowLink && styles.rowWithLink,
+                        !!RowButtonComponent && 'fr-enlarge-button',
+                        !!RowButtonComponent && styles.rowWithButton,
+                      )}
+                    >
+                      {configuration.columns.map(
+                        ({
+                          name,
+                          cellAsTh,
+                          cell,
+                          cellClassName,
+                          cellStyle,
+                        }) => {
+                          if (!cell) {
+                            return null
+                          }
+                          const Component = cellAsTh ? 'th' : 'td'
 
-                        return (
-                          <Component
-                            className={classNames(styles.cell, cellClassName)}
-                            key={name}
-                          >
-                            {cell(row)}
-                          </Component>
-                        )
-                      },
-                    )}
-                    {!!configuration.rowLink && (
-                      <td className={styles.rowLinkCell}>
-                        <Link {...configuration.rowLink(row)} />
-                      </td>
-                    )}
-                    {!!RowButtonComponent && (
-                      <td className={styles.rowButtonCell}>
-                        <RowButtonComponent row={row} />
-                      </td>
-                    )}
-                  </tr>
-                ))}
+                          return (
+                            <Component
+                              className={classNames(styles.cell, cellClassName)}
+                              style={cellStyle}
+                              key={name}
+                            >
+                              {cell(row)}
+                            </Component>
+                          )
+                        },
+                      )}
+                      {!!rowLink && (
+                        <td className={styles.rowLinkCell}>
+                          <Link {...rowLink} />
+                        </td>
+                      )}
+                      {!!RowButtonComponent && (
+                        <td className={styles.rowButtonCell}>
+                          <RowButtonComponent row={row} />
+                        </td>
+                      )}
+                    </tr>
+                  )
+                })}
                 {rows.length === 0 && (
                   <tr>
                     <td colSpan={configuration.columns.length}>

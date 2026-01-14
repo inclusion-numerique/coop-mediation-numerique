@@ -1,12 +1,5 @@
 import { previewBranchAuthFallbacks } from '@app/web/auth/previewBranchAuthFallbacks'
 import { givenUser } from '../givenUser'
-import { centreSocial, mediateque, structureEmployeuse } from '../structures'
-
-export const conseillerInscriptionMediateurId =
-  'b119ef9d-5732-4429-8138-5452fe248497'
-
-export const conseillerInscriptionConseillerNumeriqueId =
-  '630346008f4a3696aee73cfd'
 
 export const conseillerInscriptionEmail =
   'conseiller-inscription@coop-numerique.anct.gouv.fr'

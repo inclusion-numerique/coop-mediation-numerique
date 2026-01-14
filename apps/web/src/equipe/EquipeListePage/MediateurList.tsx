@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import type { MemberStatus } from './getEquipePageData'
 import { MediateurListItem } from './MediateurListItem'
 
 export type MediateurListProps = {
@@ -11,8 +12,15 @@ export type MediateurListProps = {
   phone?: string
   isConseillerNumerique: boolean
   status: string
+  memberStatus: MemberStatus
+  lastActivityDate: Date | null
   finDeContrat?: string
   type: 'coordinated' | 'invited'
+  structureEmployeuse?: string
+  coordinateurId: string
+  sentAt: Date
+  archivedFrom: Date
+  archivedTo?: Date
 }
 
 export const MediateurList = ({
