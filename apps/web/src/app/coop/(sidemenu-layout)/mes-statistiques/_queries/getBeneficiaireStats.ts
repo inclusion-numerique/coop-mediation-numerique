@@ -192,7 +192,10 @@ export const getBeneficiairesCommunesRaw = async ({
 export const normalizeBeneficiairesCommunesRaw = (
   rawCommunes: BeneficiairesCommunesRaw[],
 ) => {
-  const sortedCommunes = rawCommunes.sort(
+  const communesWithBeneficiaires = rawCommunes.filter(
+    (commune) => commune.count_beneficiaires > 0,
+  )
+  const sortedCommunes = communesWithBeneficiaires.sort(
     (a, b) => b.count_beneficiaires - a.count_beneficiaires,
   )
   const normalizedCommunes = sortedCommunes.map(

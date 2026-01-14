@@ -55,13 +55,15 @@ export type DataTableConfiguration<
   csvFilename?: string | (() => string)
   columns: DataTableColumn<DataRow, Where, OrderBy>[]
   rowKey: (row: DataRow) => string
-  rowLink?: (row: DataRow) => {
-    href: string
-    replace?: boolean
-    scroll?: boolean
-    shallow?: boolean
-    prefetch?: boolean
-  }
+  rowLink?: (row: DataRow) =>
+    | {
+        href: string
+        replace?: boolean
+        scroll?: boolean
+        shallow?: boolean
+        prefetch?: boolean
+      }
+    | undefined
   rowInMemorySearchableString?: (row: DataRow) => string
   defaultSortableInMemory?: (a: DataRow, b: DataRow) => number
 }

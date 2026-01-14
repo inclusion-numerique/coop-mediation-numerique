@@ -1,6 +1,6 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { sessionUserSelect } from '@app/web/auth/getSessionUserFromSessionToken'
-import EquipeListePage from '@app/web/equipe/EquipeListePage/EquipeListePage'
+import MonEquipeListePage from '@app/web/equipe/EquipeListePage/EquipeListePage'
 import { getEquipePageData } from '@app/web/equipe/EquipeListePage/getEquipePageData'
 import type { EquipeSearchParams } from '@app/web/equipe/EquipeListePage/searchMediateursCoordonneBy'
 import { getDepartementCodeForActeur } from '@app/web/features/mon-reseau/getDepartementCodeForActeur'
@@ -9,7 +9,7 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
-  title: metadataTitle('Anciens membres'),
+  title: metadataTitle('Mon équipe'),
 }
 
 const Page = async (props: {
@@ -41,24 +41,22 @@ const Page = async (props: {
 
   const monEquipePageData = await getEquipePageData({
     searchParams,
-    anciensMembres: true,
     coordinateur,
   })
 
   const departementCode = getDepartementCodeForActeur({
-    emplois: coordinateur.user.emplois,
+    emplois: coordinateur?.user.emplois,
   })
 
   return (
-    <EquipeListePage
+    <MonEquipeListePage
       {...monEquipePageData}
-      departementCode={departementCode}
       searchParams={searchParams}
       coordinateurView={false}
       baseHref={`/coop/mes-equipes/${coordinateurId}`}
-      baseHrefSearch={`/coop/mes-equipes/${coordinateurId}/anciens-membres`}
-      anciensMembres
+      baseHrefSearch={`/coop/mes-equipes/${coordinateurId}`}
       coordinateur={coordinateur}
+      departementCode={departementCode}
     />
   )
 }

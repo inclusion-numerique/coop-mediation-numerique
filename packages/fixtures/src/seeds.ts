@@ -4,6 +4,12 @@ import {
   fixtureCrasIndividuels,
 } from '@app/fixtures/activites'
 import { fixtureBeneficiaires } from '@app/fixtures/beneficiaires'
+import {
+  equipeCoordonnee,
+  equipeCordonneeIds,
+  invitationsEquipe,
+  quitterEquipe,
+} from '@app/fixtures/equipeCoordonnee'
 import { output } from '@app/fixtures/output'
 import { seedStructures } from '@app/fixtures/structures'
 import { upsertCraFixtures } from '@app/fixtures/upsertCraFixtures'
@@ -14,8 +20,11 @@ import {
   teamAdministrateurs,
   teamMediateurs,
 } from '@app/fixtures/users'
+import { coordinateurInscritAvecToutCoordinateurId } from '@app/fixtures/users/coordinateurInscritAvecTout'
 import type { Prisma } from '@prisma/client'
 import { upsertCoordinationFixtures } from './upsertCoordinationFixture'
+import { upsertInvitationEquipeFixtures } from './upsertInvitationEquipeFixture'
+import { upsertMediateurCoordonneFixtures } from './upsertMediateurCoordonneFixture'
 
 export const deleteAll = async (transaction: Prisma.TransactionClient) => {
   const tables = await transaction.$queryRaw<
@@ -102,7 +111,33 @@ export const seed = async (transaction: Prisma.TransactionClient) => {
     ),
   )
 
-  await upsertCoordinationFixtures(transaction)(coordinations)
+  await Promise.all(
+    equipeCoordonnee.map((user) =>
+      transaction.user
+        .upsert({
+          where: { id: user.id },
+          create: user,
+          update: user,
+        })
+        .catch((error) => {
+          output.error('Error upserting equipe user fixture', user)
+          throw error
+        }),
+    ),
+  )
+
+  const allCoordinations = [
+    ...coordinations,
+    {
+      coordinateurId: coordinateurInscritAvecToutCoordinateurId,
+      mediateurIds: equipeCordonneeIds,
+    },
+  ]
+  await upsertCoordinationFixtures(transaction)(allCoordinations)
+
+  await upsertMediateurCoordonneFixtures(transaction)(quitterEquipe)
+
+  await upsertInvitationEquipeFixtures(transaction)(invitationsEquipe)
 
   await upsertCraFixtures({
     transaction,

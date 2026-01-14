@@ -97,7 +97,7 @@ describe('ETQ médiateur inscrit, je peux donner suite à une invitation', () =>
 
     cy.findByRole('status').should('contain', 'Vous avez accepté l’invitation')
 
-    cy.get('ul.fr-list-group>li')
+    cy.get('tbody tr')
       .eq(0)
       .should('contain', 'Inscrit')
       .should('contain', 'Conseiller numérique')
