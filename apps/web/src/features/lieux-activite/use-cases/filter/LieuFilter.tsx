@@ -13,6 +13,7 @@ import {
   availableOptionsIn,
   defautValuesFrom,
   matchingOption,
+  resetPagination,
   update,
 } from '@app/web/libs/filters/helpers'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
@@ -98,6 +99,7 @@ export const LieuFilter = ({
     update(params)('lieux', lieuxActivite)
     update(params)('communes', communes)
     update(params)('departements', departements)
+    resetPagination(params)
 
     closePopover(close)
   }
@@ -110,6 +112,7 @@ export const LieuFilter = ({
     update(params)('lieux', [])
     update(params)('communes', [])
     update(params)('departements', [])
+    resetPagination(params)
 
     closePopover(true)
   }
