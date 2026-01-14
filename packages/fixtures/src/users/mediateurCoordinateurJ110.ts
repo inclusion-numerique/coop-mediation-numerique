@@ -46,6 +46,7 @@ export const mediateurCoordinateurJ110 = givenUser({
       create: {
         id: '4f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c',
         structureId: structureEmployeuse.id,
+        debut: date,
       },
     },
   },

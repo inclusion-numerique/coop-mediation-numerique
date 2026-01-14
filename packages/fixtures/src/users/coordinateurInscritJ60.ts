@@ -32,6 +32,7 @@ export const coordinateurInscritJ60 = givenUser({
       create: {
         id: 'e6c4b3d2-8a95-4c9f-9e2a-4d7c6e9b5a38',
         structureId: structureEmployeuse.id,
+        debut: date,
       },
     },
   },
