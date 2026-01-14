@@ -2,7 +2,9 @@ import Link from 'next/link'
 import { MediateurListItem } from './MediateurListItem'
 
 export type MediateurListProps = {
+  departementCode: string
   id?: string
+  userId?: string
   email: string
   firstName?: string
   lastName?: string
@@ -15,19 +17,19 @@ export type MediateurListProps = {
 
 export const MediateurList = ({
   mediateurs,
-  baseHref,
 }: {
   mediateurs: MediateurListProps[]
-  baseHref: string
 }) => (
   <ul className="fr-list-group fr-border--top fr-my-0">
     {mediateurs.map((mediateur) =>
-      mediateur.type === 'coordinated' ? (
+      mediateur.type === 'coordinated' && mediateur.userId ? (
         <li
           className="fr-border--bottom fr-link--background-on-hover"
           key={mediateur.email}
         >
-          <Link href={`${baseHref}/${mediateur.id}`}>
+          <Link
+            href={`/coop/mon-reseau/${mediateur.departementCode}/acteurs/${mediateur.userId}`}
+          >
             <MediateurListItem {...mediateur} />
           </Link>
         </li>

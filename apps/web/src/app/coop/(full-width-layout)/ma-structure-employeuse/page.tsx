@@ -2,9 +2,7 @@ import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { ReferentStructure } from '@app/web/components/structure/ReferentStructure'
-import { StructureEmployeuse } from '@app/web/components/structure/StructureEmployeuse'
-import UpdateStructure from '@app/web/components/structure/UpdateStructure'
+import ActeurStructureEmployeuse from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurStructureEmployeuse'
 import { prismaClient } from '@app/web/prismaClient'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
@@ -26,11 +24,23 @@ const MaStructureEmployeusePage = async () => {
     where: {
       userId: user.id,
       suppression: null,
+      OR: [
+        {
+          fin: null,
+        },
+        {
+          fin: { gte: new Date() },
+        },
+      ],
     },
     orderBy: {
-      modification: 'desc',
+      debut: 'desc',
     },
     select: {
+      id: true,
+      userId: true,
+      debut: true,
+      fin: true,
       creation: true,
       modification: true,
       structure: {
@@ -40,6 +50,7 @@ const MaStructureEmployeusePage = async () => {
           adresse: true,
           commune: true,
           codePostal: true,
+          codeInsee: true,
           complementAdresse: true,
           siret: true,
           rna: true,
@@ -52,7 +63,8 @@ const MaStructureEmployeusePage = async () => {
     },
   })
 
-  const structureEmployeuse = structuresEmployeuses.at(0)?.structure
+  const emploi = structuresEmployeuses.at(0)
+  const structureEmployeuse = emploi?.structure
 
   const matchingLieuActivite =
     structureEmployeuse && user.mediateur
@@ -61,6 +73,7 @@ const MaStructureEmployeusePage = async () => {
             mediateurId: user.mediateur.id,
             structureId: structureEmployeuse.id,
             suppression: null,
+            fin: null,
           },
         })
       : null
@@ -80,22 +93,13 @@ const MaStructureEmployeusePage = async () => {
           </div>
 
           {structureEmployeuse ? (
-            <>
-              <StructureEmployeuse
-                {...structureEmployeuse}
-                isLieuActivite={matchingLieuActivite != null}
-              >
-                {structureEmployeuse.nomReferent && (
-                  <ReferentStructure {...structureEmployeuse} />
-                )}
-              </StructureEmployeuse>
-              {user.mediateur?.conseillerNumerique && (
-                // Les conseillers numériques peuvent mettre à jour la structure depuis leurs infos de contrat
-                <>
-                  <UpdateStructure />
-                </>
-              )}
-            </>
+            <ActeurStructureEmployeuse
+              emploi={emploi}
+              showIsLieuActiviteNotice={matchingLieuActivite != null}
+              showReferentStructure={true}
+              showReferentStructureConseillerNumeriqueSupportNotice={false}
+              canUpdateStructure={user.mediateur?.conseillerNumerique != null}
+            />
           ) : (
             <div className="fr-text--center fr-background-alt--blue-france fr-border-radius--8 fr-p-6w">
               <h2 className="fr-h6 fr-mb-1v">

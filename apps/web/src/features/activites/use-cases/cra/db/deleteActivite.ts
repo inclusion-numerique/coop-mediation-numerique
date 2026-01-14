@@ -10,12 +10,12 @@ const TRANSACTION_TIMEOUT_MS = 20_000
 
 export const deleteActivite = async ({
   activiteId,
-  userId,
+  sessionUserId,
   mediateurId,
 }: {
   activiteId: string
-  userId: string
   mediateurId: string
+  sessionUserId: string
 }) => {
   const stopwatch = createStopwatch()
 
@@ -145,7 +145,7 @@ export const deleteActivite = async ({
   )
 
   addMutationLog({
-    userId,
+    userId: sessionUserId,
     nom: 'SupprimerActivite',
     duration: stopwatch.stop().duration,
     data: {

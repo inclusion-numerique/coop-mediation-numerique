@@ -1,19 +1,13 @@
 import { findConseillersNumeriquesContractInfoByEmails } from '@app/web/external-apis/conseiller-numerique/fetchConseillersCoordonnes'
+import { getDepartementCodeForActeur } from '@app/web/features/mon-reseau/getDepartementCodeForActeur'
+import { getUserPublicActivityStatus } from '@app/web/features/utilisateurs/utils/getUserPublicActivityStatus'
 import { countMediateursCoordonnesBy } from '@app/web/mediateurs/countMediateursCoordonnesBy'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
-import { addMonths, format, isAfter, isBefore, subMonths } from 'date-fns'
+import { addMonths, format, isBefore } from 'date-fns'
 import {
   type EquipeSearchParams,
   searchMediateursCoordonneBy,
 } from './searchMediateursCoordonneBy'
-
-const statusFor = (date: Date | null) => {
-  if (date == null) return 'Inactif'
-
-  return isAfter(date, subMonths(new Date(), 2))
-    ? 'Actif'
-    : `Inactif depuis le ${dateAsDay(date)}`
-}
 
 const toUserEmail = ({ email }: { email: string }) => email
 
@@ -69,6 +63,7 @@ export const getEquipePageData = async ({
     mediateurs: mediateurs.map(
       ({
         mediateur_id,
+        user_id,
         email,
         phone,
         first_name,
@@ -79,6 +74,7 @@ export const getEquipePageData = async ({
         type,
       }) => ({
         id: mediateur_id ?? undefined,
+        userId: user_id ?? undefined,
         firstName: first_name ?? undefined,
         lastName: last_name ?? undefined,
         phone: phone ?? undefined,
@@ -86,7 +82,9 @@ export const getEquipePageData = async ({
         isConseillerNumerique: conseiller_numerique_id != null,
         status:
           suppression == null
-            ? statusFor(date_derniere_activite)
+            ? getUserPublicActivityStatus({
+                lastActivityDate: date_derniere_activite,
+              }).label
             : `Ancien membre depuis le ${dateAsDay(suppression)}`,
         finDeContrat: finDeContratFor(conseiller_numerique_id)(
           conseillersNumeriquesWithContrats,

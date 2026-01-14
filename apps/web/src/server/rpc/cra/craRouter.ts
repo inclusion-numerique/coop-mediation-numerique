@@ -27,8 +27,9 @@ export const craRouter = router({
           type: 'Individuel',
           data: input,
         },
-        userId: user.id,
+        sessionUserId: user.id,
         mediateurId: user.mediateur.id,
+        mediateurUserId: user.id,
       })
     }),
   collectif: protectedProcedure
@@ -41,8 +42,9 @@ export const craRouter = router({
           type: 'Collectif',
           data: input,
         },
-        userId: user.id,
+        sessionUserId: user.id,
         mediateurId: user.mediateur.id,
+        mediateurUserId: user.id,
       })
     }),
   animation: protectedProcedure
@@ -98,7 +100,7 @@ export const craRouter = router({
 
       return deleteActivite({
         activiteId,
-        userId: user.id,
+        sessionUserId: user.id,
         mediateurId: user.mediateur.id,
       })
     }),

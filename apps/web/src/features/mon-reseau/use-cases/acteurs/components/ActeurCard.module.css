@@ -1,0 +1,12 @@
+.card {
+  cursor: pointer;
+}
+
+.card:hover {
+  background-color: var(--background-alt-grey);
+}
+
+.innerLink {
+  position: relative;
+  z-index: 2;
+}

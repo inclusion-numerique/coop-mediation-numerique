@@ -30,6 +30,7 @@ export const searchLieuxActivite = async ({
   const where = {
     mediateurId,
     suppression: null,
+    fin: null,
     AND: toQueryParts(searchParams ?? {}).map((part) => ({
       OR: [{ structure: { nom: { contains: part, mode: 'insensitive' } } }],
     })),

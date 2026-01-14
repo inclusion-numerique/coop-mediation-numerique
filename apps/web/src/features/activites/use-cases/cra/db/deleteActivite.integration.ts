@@ -89,7 +89,8 @@ describe('deleteActivite', () => {
 
       const createResult = await createOrUpdateActivite({
         input: createInput,
-        userId: mediateurAvecActivite.id,
+        sessionUserId: mediateurAvecActivite.id,
+        mediateurUserId: mediateurAvecActivite.id,
         mediateurId: mediateurAvecActiviteMediateurId,
       })
 
@@ -114,7 +115,7 @@ describe('deleteActivite', () => {
       // Delete the activity
       await deleteActivite({
         activiteId: createResult.id,
-        userId: mediateurAvecActivite.id,
+        sessionUserId: mediateurAvecActivite.id,
         mediateurId: mediateurAvecActiviteMediateurId,
       })
 
@@ -173,7 +174,8 @@ describe('deleteActivite', () => {
 
       const createResult = await createOrUpdateActivite({
         input: createInput,
-        userId: mediateurAvecActivite.id,
+        sessionUserId: mediateurAvecActivite.id,
+        mediateurUserId: mediateurAvecActivite.id,
         mediateurId: mediateurAvecActiviteMediateurId,
       })
 
@@ -190,7 +192,7 @@ describe('deleteActivite', () => {
       // Delete the activity
       await deleteActivite({
         activiteId: createResult.id,
-        userId: mediateurAvecActivite.id,
+        sessionUserId: mediateurAvecActivite.id,
         mediateurId: mediateurAvecActiviteMediateurId,
       })
 
@@ -241,7 +243,8 @@ describe('deleteActivite', () => {
 
       const createResult = await createOrUpdateActivite({
         input: createInput,
-        userId: mediateurAvecActivite.id,
+        sessionUserId: mediateurAvecActivite.id,
+        mediateurUserId: mediateurAvecActivite.id,
         mediateurId: mediateurAvecActiviteMediateurId,
       })
 
@@ -272,7 +275,7 @@ describe('deleteActivite', () => {
       // Delete the activity
       await deleteActivite({
         activiteId: createResult.id,
-        userId: mediateurAvecActivite.id,
+        sessionUserId: mediateurAvecActivite.id,
         mediateurId: mediateurAvecActiviteMediateurId,
       })
 
@@ -372,8 +375,9 @@ describe('deleteActivite', () => {
 
       const createResult = await createOrUpdateActivite({
         input: createInput,
-        userId: mediateurAvecActivite.id,
+        mediateurUserId: mediateurAvecActivite.id,
         mediateurId: mediateurAvecActiviteMediateurId,
+        sessionUserId: mediateurAvecActivite.id,
       })
 
       // Verify counts after creation
@@ -395,7 +399,7 @@ describe('deleteActivite', () => {
       // Delete the activity
       await deleteActivite({
         activiteId: createResult.id,
-        userId: mediateurAvecActivite.id,
+        sessionUserId: mediateurAvecActivite.id,
         mediateurId: mediateurAvecActiviteMediateurId,
       })
 
@@ -464,8 +468,9 @@ describe('deleteActivite', () => {
 
       const createResult = await createOrUpdateActivite({
         input: createInput,
-        userId: mediateurAvecActivite.id,
+        mediateurUserId: mediateurAvecActivite.id,
         mediateurId: mediateurAvecActiviteMediateurId,
+        sessionUserId: mediateurAvecActivite.id,
       })
 
       // Verify counts after creation
@@ -512,7 +517,7 @@ describe('deleteActivite', () => {
       // Delete the activity
       await deleteActivite({
         activiteId: createResult.id,
-        userId: mediateurAvecActivite.id,
+        sessionUserId: mediateurAvecActivite.id,
         mediateurId: mediateurAvecActiviteMediateurId,
       })
 

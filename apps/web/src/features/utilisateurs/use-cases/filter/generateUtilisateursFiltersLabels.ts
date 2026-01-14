@@ -110,9 +110,9 @@ export const generateUtilisateursFiltersLabels = (
 }
 
 const labelPrefixes: Record<string, string> = {
-  communes: 'Commune : ',
-  departements: 'Département : ',
-  lieux: 'Structure : ',
+  communes: 'Commune : ',
+  departements: 'Département : ',
+  lieux: 'Structure : ',
 }
 
 export const toLieuPrefix = ({

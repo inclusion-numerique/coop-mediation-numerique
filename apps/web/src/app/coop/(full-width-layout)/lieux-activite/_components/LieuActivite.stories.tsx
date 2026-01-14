@@ -13,14 +13,17 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 const mediateurEnActiviteId = v4()
+const structureId = v4()
 
 export const Full: Story = {
   args: {
     mediateurEnActiviteId,
+    id: structureId,
     nom: "Bibliotheque Musee de l'Opera · Bibliotheque Nationale de France",
     adresse: '19 Rue Proudhon',
     complementAdresse: 'Bâtiment 5',
     codePostal: '93210',
+    codeInsee: '93066',
     commune: 'Saint-Denis',
     typologies: [
       Typologie.ASSO,
@@ -41,9 +44,11 @@ export const Full: Story = {
 export const Minimal: Story = {
   args: {
     mediateurEnActiviteId,
+    id: structureId,
     nom: "Bibliotheque Musee de l'Opera · Bibliotheque Nationale de France",
     adresse: '19 Rue Proudhon',
     codePostal: '93210',
+    codeInsee: '93066',
     commune: 'Saint-Denis',
     creation: new Date('2018-03-01'),
     modification: new Date('2018-03-01'),
@@ -53,9 +58,11 @@ export const Minimal: Story = {
 export const LieuEnCoursDAjout: Story = {
   args: {
     mediateurEnActiviteId,
+    id: structureId,
     nom: "Bibliotheque Musee de l'Opera · Bibliotheque Nationale de France",
     adresse: '19 Rue Proudhon',
     codePostal: '93210',
+    codeInsee: '93066',
     commune: 'Saint-Denis',
     creation: new Date('2018-03-01'),
     modification: new Date('2018-03-01'),
@@ -66,9 +73,11 @@ export const LieuEnCoursDAjout: Story = {
 export const LieuNonSupprimable: Story = {
   args: {
     mediateurEnActiviteId,
+    id: structureId,
     nom: "Bibliotheque Musee de l'Opera · Bibliotheque Nationale de France",
     adresse: '19 Rue Proudhon',
     codePostal: '93210',
+    codeInsee: '93066',
     commune: 'Saint-Denis',
     creation: new Date('2018-03-01'),
     modification: new Date('2018-03-01'),

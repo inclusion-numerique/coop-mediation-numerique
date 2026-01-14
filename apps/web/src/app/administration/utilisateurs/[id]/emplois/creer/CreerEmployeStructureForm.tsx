@@ -129,17 +129,17 @@ const CreerEmployeStructureForm = ({
       )}
       <InputFormField
         control={control}
-        path="creation"
-        label="Date de début de l’emploi"
+        path="debut"
+        label="Date de début de l'emploi"
         asterisk
         disabled={isLoading}
         type="date"
       />
       <InputFormField
         control={control}
-        hint="Renseigner uniquement si c’est une structure employeuse historique qui n’est plus d’actualité"
-        path="suppression"
-        label="Date de fin de l’emploi"
+        hint="Renseigner uniquement si c'est une structure employeuse historique qui n'est plus d'actualité"
+        path="fin"
+        label="Date de fin de l'emploi"
         disabled={isLoading}
         type="date"
       />

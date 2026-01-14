@@ -9,9 +9,10 @@ export const getStructureEmployeuseForInscription = ({
     where: {
       userId,
       suppression: null,
+      fin: null,
     },
     orderBy: {
-      creation: 'desc',
+      debut: 'desc',
     },
     select: {
       id: true,

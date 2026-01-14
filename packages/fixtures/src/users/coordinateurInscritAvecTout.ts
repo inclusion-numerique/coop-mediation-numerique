@@ -51,6 +51,7 @@ export const coordinateurInscritAvecTout = givenUser({
               create: {
                 id: '205a4bcb-d5e8-48e2-ba18-9601cd057ba9',
                 structureId: mediateque.id,
+                debut: new Date(),
               },
             },
             {
@@ -60,6 +61,7 @@ export const coordinateurInscritAvecTout = givenUser({
               create: {
                 id: 'b8e84702-10c3-4497-8960-8079aed42b23',
                 structureId: centreSocial.id,
+                debut: new Date(),
               },
             },
           ],
@@ -75,6 +77,7 @@ export const coordinateurInscritAvecTout = givenUser({
       create: {
         id: '2511530d-a8f1-49e2-b62e-cca5f3b3d9e4',
         structureId: structureEmployeuse.id,
+        debut: new Date(),
       },
     },
   },

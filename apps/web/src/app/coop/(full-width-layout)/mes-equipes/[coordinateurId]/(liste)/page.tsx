@@ -1,7 +1,9 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
+import { sessionUserSelect } from '@app/web/auth/getSessionUserFromSessionToken'
 import MonEquipeListePage from '@app/web/equipe/EquipeListePage/EquipeListePage'
 import { getEquipePageData } from '@app/web/equipe/EquipeListePage/getEquipePageData'
 import type { EquipeSearchParams } from '@app/web/equipe/EquipeListePage/searchMediateursCoordonneBy'
+import { getDepartementCodeForActeur } from '@app/web/features/mon-reseau/getDepartementCodeForActeur'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
@@ -24,7 +26,14 @@ const Page = async (props: {
     select: {
       id: true,
       mediateursCoordonnes: { select: { mediateurId: true } },
-      user: { select: { name: true, email: true, phone: true } },
+      user: {
+        select: {
+          name: true,
+          email: true,
+          phone: true,
+          emplois: sessionUserSelect.emplois,
+        },
+      },
     },
   })
 
@@ -35,6 +44,10 @@ const Page = async (props: {
     coordinateur,
   })
 
+  const departementCode = getDepartementCodeForActeur({
+    emplois: coordinateur.user.emplois,
+  })
+
   return (
     <MonEquipeListePage
       {...monEquipePageData}
@@ -43,6 +56,7 @@ const Page = async (props: {
       baseHref={`/coop/mes-equipes/${coordinateurId}`}
       baseHrefSearch={`/coop/mes-equipes/${coordinateurId}`}
       coordinateur={coordinateur}
+      departementCode={departementCode}
     />
   )
 }

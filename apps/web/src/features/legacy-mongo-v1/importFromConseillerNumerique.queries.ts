@@ -138,6 +138,8 @@ export const upsertMediateurEnActivite = async ({
     where: {
       mediateurId,
       structureId,
+      suppression: null,
+      fin: null,
     },
   })
 
@@ -150,6 +152,7 @@ export const upsertMediateurEnActivite = async ({
       id: v4(),
       mediateurId,
       structureId,
+      debut: new Date(),
     },
   })
 }

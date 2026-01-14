@@ -79,6 +79,15 @@ import { type ZodError, z } from 'zod'
  *                   structure_id:
  *                     type: string
  *                     format: uuid
+ *                   debut:
+ *                     type: string
+ *                     format: date-time
+ *                     description: date de début de l'emploi dans la structure
+ *                   fin:
+ *                     type: string
+ *                     format: date-time
+ *                     nullable: true
+ *                     description: date de fin de l'emploi dans la structure
  *                   creation:
  *                     type: string
  *                     format: date-time
@@ -115,6 +124,15 @@ import { type ZodError, z } from 'zod'
  *                       structure_id:
  *                         type: string
  *                         format: uuid
+ *                       debut:
+ *                         type: string
+ *                         format: date-time
+ *                         description: date de début de l'activité dans la structure
+ *                       fin:
+ *                         type: string
+ *                         format: date-time
+ *                         nullable: true
+ *                         description: date de fin de l'activité dans la structure
  *                       creation:
  *                         type: string
  *                         format: date-time
@@ -289,6 +307,8 @@ export type UtilisateurAttributes = {
   emplois: Array<{
     id: string
     structure_id: string
+    debut: string
+    fin: string | null
     creation: string
     modification: string
     suppression: string | null
@@ -300,6 +320,8 @@ export type UtilisateurAttributes = {
     en_activite: Array<{
       id: string
       structure_id: string
+      debut: string
+      fin: string | null
       creation: string
       modification: string
       suppression: string | null
@@ -590,6 +612,8 @@ export const GET = createApiV1Route
           emplois: u.emplois.map((emploi) => ({
             id: emploi.id,
             structure_id: emploi.structureId,
+            debut: emploi.debut.toISOString(),
+            fin: emploi.fin?.toISOString() ?? null,
             creation: emploi.creation.toISOString(),
             modification: emploi.modification.toISOString(),
             suppression: emploi.suppression?.toISOString() ?? null,
@@ -603,6 +627,8 @@ export const GET = createApiV1Route
                 en_activite: u.mediateur.enActivite.map((ma) => ({
                   id: ma.id,
                   structure_id: ma.structureId,
+                  debut: ma.debut.toISOString(),
+                  fin: ma.fin?.toISOString() ?? null,
                   creation: ma.creation.toISOString(),
                   modification: ma.modification.toISOString(),
                   suppression: ma.suppression
