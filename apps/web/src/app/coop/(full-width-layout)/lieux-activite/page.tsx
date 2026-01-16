@@ -50,7 +50,7 @@ const LieuActiviteListPage = async () => {
               Ajouter un lieu
             </Button>
           </span>
-          {user.mediateur.conseillerNumerique && (
+          {user.isConseillerNumerique && (
             <VisibiliteMediateur isVisible={user.mediateur.isVisible} />
           )}
           <div className="fr-flex fr-direction-column fr-flex-gap-4v">

@@ -165,11 +165,10 @@ export const UtilisateursDataTable = {
     {
       name: 'roles',
       header: 'Rôles',
-      csvHeaders: ['Rôle', 'Médiateur', 'Conseiller numérique', 'Coordinateur'],
+      csvHeaders: ['Rôle', 'Médiateur', 'Coordinateur'],
       csvValues: ({ role, mediateur, coordinateur }) => [
         role,
         booleanToYesNo(!!mediateur),
-        booleanToYesNo(!!mediateur?.conseillerNumerique),
         booleanToYesNo(!!coordinateur),
       ],
       cell: ({ role, mediateur, coordinateur }) => (
@@ -177,12 +176,19 @@ export const UtilisateursDataTable = {
           {role === 'Admin' && <Tag small>Administrateur</Tag>}
           {role === 'Support' && <Tag small>Support</Tag>}
           {!!mediateur && <Tag small>Médiateur</Tag>}
-          {!!mediateur?.conseillerNumerique && (
-            <Tag small>Conseiller numérique</Tag>
-          )}
           {!!coordinateur && <Tag small>Coordinateur</Tag>}
         </div>
       ),
+    },
+    {
+      name: 'dispositif',
+      header: 'Dispositif',
+      csvHeaders: ['Dispositif'],
+      csvValues: ({ isConseillerNumerique }) => [
+        isConseillerNumerique ? 'Conseiller numérique' : '',
+      ],
+      cell: ({ isConseillerNumerique }) =>
+        isConseillerNumerique ? <Tag small>Conseiller numérique</Tag> : '',
     },
     {
       name: 'departement',

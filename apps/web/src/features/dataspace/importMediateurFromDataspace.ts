@@ -9,11 +9,9 @@ import {
   importStructureEmployeuseFromDataspace,
 } from '@app/web/features/dataspace/importStructureEmployeuseFromDataspace'
 import { prismaClient } from '@app/web/prismaClient'
-import { v4 } from 'uuid'
 
 export type ImportMediateurFromDataspaceResult = {
   mediateurId: string
-  conseillerNumeriqueId: string | null
   coordinateurId: string | null
   structureEmployeuseId: string | null
   lieuxActiviteIds: string[]
@@ -22,7 +20,8 @@ export type ImportMediateurFromDataspaceResult = {
 
 /**
  * Main orchestrator to import a mediateur from Dataspace API data
- * Creates/updates Mediateur, ConseillerNumerique, structure employeuse, lieux d'activité
+ * Creates/updates Mediateur, structure employeuse, lieux d'activité
+ * Note: isConseillerNumerique is set on User separately (not here)
  */
 export const importMediateurFromDataspace = async ({
   userId,
@@ -39,45 +38,7 @@ export const importMediateurFromDataspace = async ({
     select: { id: true },
   })
 
-  let conseillerNumeriqueId: string | null = null
-
-  // 2. Create ConseillerNumerique if user is conseiller numérique
-  if (dataspaceData.is_conseiller_numerique) {
-    // Use dataspaceData.id as idPg (integer ID from Dataspace)
-    const existingConseiller = await prismaClient.conseillerNumerique.findFirst(
-      {
-        where: {
-          OR: [{ mediateurId: mediateur.id }, { idPg: dataspaceData.id }],
-        },
-        select: { id: true },
-      },
-    )
-
-    if (existingConseiller) {
-      // Update existing
-      await prismaClient.conseillerNumerique.update({
-        where: { id: existingConseiller.id },
-        data: {
-          mediateurId: mediateur.id,
-          idPg: dataspaceData.id,
-        },
-      })
-      conseillerNumeriqueId = existingConseiller.id
-    } else {
-      // Create new - generate ID since we don't have MongoDB ObjectId from Dataspace
-      const newConseiller = await prismaClient.conseillerNumerique.create({
-        data: {
-          id: v4(),
-          mediateurId: mediateur.id,
-          idPg: dataspaceData.id,
-        },
-        select: { id: true },
-      })
-      conseillerNumeriqueId = newConseiller.id
-    }
-  }
-
-  // 3. Import structure employeuse
+  // 2. Import structure employeuse
   let structureEmployeuseId: string | null = null
   const primaryStructure = getPrimaryStructureEmployeuse(
     dataspaceData.structures_employeuses,
@@ -91,14 +52,14 @@ export const importMediateurFromDataspace = async ({
     structureEmployeuseId = result.structureId
   }
 
-  // 4. Import lieux d'activité
+  // 3. Import lieux d'activité
   const { structureIds: lieuxActiviteIds } =
     await importLieuxActiviteFromDataspace({
       mediateurId: mediateur.id,
       lieuxActivite: dataspaceData.lieux_activite,
     })
 
-  // 5. Import coordinations (link to coordinateurs)
+  // 4. Import coordinations (link to coordinateurs)
   const { coordinateurIds } = await importCoordonnesFromDataspace({
     mediateurId: mediateur.id,
     conseillersCoordonnes: dataspaceData.conseillers_numeriques_coordonnes,
@@ -106,7 +67,6 @@ export const importMediateurFromDataspace = async ({
 
   return {
     mediateurId: mediateur.id,
-    conseillerNumeriqueId,
     coordinateurId: null, // Not creating coordinateur in this flow
     structureEmployeuseId,
     lieuxActiviteIds,
@@ -117,7 +77,7 @@ export const importMediateurFromDataspace = async ({
 /**
  * Import coordinateur data from Dataspace API
  * Creates/updates Coordinateur, imports conseillers coordonnés
- * Sets conseillerNumeriqueIdPg if is_conseiller_numerique
+ * Note: isConseillerNumerique is set on User separately (not here)
  */
 export const importCoordinateurFromDataspace = async ({
   userId,
@@ -129,21 +89,13 @@ export const importCoordinateurFromDataspace = async ({
   coordinateurId: string
   mediateursCoordonnesIds: string[]
 }> => {
-  // Set conseillerNumeriqueIdPg if user is also a conseiller numérique
-  const conseillerNumeriqueIdPg = dataspaceData.is_conseiller_numerique
-    ? dataspaceData.id
-    : null
-
   // 1. Create or update coordinateur
   const coordinateur = await prismaClient.coordinateur.upsert({
     where: { userId },
     create: {
       userId,
-      conseillerNumeriqueIdPg,
     },
-    update: {
-      conseillerNumeriqueIdPg,
-    },
+    update: {},
     select: { id: true },
   })
 

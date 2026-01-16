@@ -60,6 +60,7 @@ export const getInscriptionRecapitulatifPageData = async ({
     | 'mediateur'
     | 'coordinateur'
     | 'acceptationCgu'
+    | 'isConseillerNumerique'
   >
 }) => {
   const {

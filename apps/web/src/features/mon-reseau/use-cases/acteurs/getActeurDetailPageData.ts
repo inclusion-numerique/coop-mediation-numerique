@@ -1,7 +1,6 @@
 import { getTotalCountsStats } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getTotalCountsStats'
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import { getContractInfo } from '@app/web/conseiller-numerique/getContractInfo'
-import { findConseillerNumeriqueV1 } from '@app/web/external-apis/conseiller-numerique/searchConseillerNumeriqueV1'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { getActeurEmploiForDate } from '@app/web/features/mon-reseau/use-cases/acteurs/db/getActeurEmploiForDate'
 import {
@@ -42,12 +41,10 @@ export const getActeurDetailPageData = async ({
       email: true,
       phone: true,
       created: true,
+      isConseillerNumerique: true,
       mediateur: {
         select: {
           id: true,
-          conseillerNumerique: {
-            select: { id: true, idPg: true },
-          },
           coordinations: {
             select: acteurCoordinationSelect,
           },
@@ -56,7 +53,6 @@ export const getActeurDetailPageData = async ({
       coordinateur: {
         select: {
           id: true,
-          conseillerNumeriqueId: true,
           _count: {
             select: {
               mediateursCoordonnes: {
@@ -76,7 +72,7 @@ export const getActeurDetailPageData = async ({
   // Determine acteur role
   const acteurRole = acteur.coordinateur
     ? 'coordinateur'
-    : acteur.mediateur?.conseillerNumerique
+    : acteur.isConseillerNumerique
       ? 'conseiller_numerique'
       : acteur.mediateur
         ? 'mediateur'
@@ -102,8 +98,7 @@ export const getActeurDetailPageData = async ({
         acteurIsInvitedToTeam,
         showStats: acteurIsMediateurCoordonnne,
         showContract:
-          acteurIsMediateurCoordonnne &&
-          acteur.mediateur?.conseillerNumerique != null,
+          acteurIsMediateurCoordonnne && acteur.isConseillerNumerique,
         showReferentStructure: acteurIsMediateurCoordonnne,
         canInviteToTeam: !acteurIsMediateurCoordonnne && !acteurIsInvitedToTeam,
         canRemoveFromTeam: acteurIsMediateurCoordonnne,
@@ -112,17 +107,6 @@ export const getActeurDetailPageData = async ({
           (coordinationDetails?.coordinations.history.length ?? 0) > 0,
       }
     : null
-
-  // Fetch conseiller numerique idPg if needed
-  // XXX Mongo V1 legacy feature to replace with dataspace info that will be sync in our db (contracts info)
-  const conseillerNumerique = acteur.mediateur?.conseillerNumerique ?? null
-  if (conseillerNumerique != null && conseillerNumerique.idPg == null) {
-    const conumV1 = await findConseillerNumeriqueV1({
-      id: conseillerNumerique.id,
-      includeDeleted: true,
-    })
-    conseillerNumerique.idPg = conumV1?.conseiller.idPG ?? null
-  }
 
   const contract =
     !!coordinationFeatures && coordinationFeatures.showContract
@@ -180,7 +164,6 @@ export const getActeurDetailPageData = async ({
     emploi,
     lieuxActivites,
     coordinationFeatures,
-    conseillerNumerique,
     statistiques,
     contract,
   }

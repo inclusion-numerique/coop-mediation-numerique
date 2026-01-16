@@ -71,7 +71,7 @@ const RecapitulatifPage = ({
     </div>
     {!!conseillerNumeriqueRole &&
       mediateursCoordonnesCount != null &&
-      user.coordinateur?.conseillerNumeriqueId != null && (
+      user.isConseillerNumerique && (
         <>
           <hr className="fr-separator-12v" />
           <div className="fr-flex fr-align-items-center fr-flex-gap-3v fr-mt-12v fr-mb-6v">

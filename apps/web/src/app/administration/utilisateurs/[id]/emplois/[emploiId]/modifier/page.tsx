@@ -3,14 +3,13 @@ import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { StructureCardStructure } from '@app/web/components/structure/StructureCard'
-import { findConseillerNumeriqueV1 } from '@app/web/external-apis/conseiller-numerique/searchConseillerNumeriqueV1'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { contentId } from '@app/web/utils/skipLinks'
 import { getUserDisplayName } from '@app/web/utils/user'
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 
 export const metadata = {
   title: metadataTitle('Utilisateurs - Modifier une structure employeuse'),
@@ -30,11 +29,7 @@ const Page = async (props: {
       id,
     },
     include: {
-      mediateur: {
-        include: {
-          conseillerNumerique: true,
-        },
-      },
+      mediateur: true,
     },
   })
 
@@ -59,23 +54,6 @@ const Page = async (props: {
   }
 
   const name = getUserDisplayName(user)
-
-  const conseillerNumeriqueInfo = await findConseillerNumeriqueV1(
-    user.mediateur?.conseillerNumerique?.id
-      ? {
-          id: user.mediateur.conseillerNumerique.id,
-          includeDeleted: true,
-        }
-      : {
-          email: user.email,
-          includeDeleted: true,
-        },
-  )
-
-  if (conseillerNumeriqueInfo) {
-    redirect(`/administration/utilisateurs/${user.id}/emplois`)
-    return null
-  }
 
   const structure: StructureCardStructure = {
     nom: emploi.structure.nom,

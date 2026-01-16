@@ -41,11 +41,11 @@ export const activiteListSelect = {
   mediateur: {
     select: {
       id: true,
-      conseillerNumerique: true,
       user: {
         select: {
           firstName: true,
           lastName: true,
+          isConseillerNumerique: true,
         },
       },
     },

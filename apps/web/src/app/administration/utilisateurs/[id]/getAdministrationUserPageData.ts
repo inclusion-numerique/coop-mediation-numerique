@@ -23,7 +23,6 @@ export const getAdministrationUserPageData = async ({ id }: { id: string }) => {
               coordinations: true,
             },
           },
-          conseillerNumerique: true,
           coordinations: {
             include: {
               coordinateur: {
@@ -50,7 +49,6 @@ export const getAdministrationUserPageData = async ({ id }: { id: string }) => {
       coordinateur: {
         select: {
           id: true,
-          conseillerNumeriqueId: true,
           derniereCreationActivite: true,
           creation: true,
           modification: true,

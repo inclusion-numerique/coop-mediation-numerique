@@ -8,7 +8,6 @@ import {
   importMediateurFromDataspace,
 } from '@app/web/features/dataspace/importMediateurFromDataspace'
 import { prismaClient } from '@app/web/prismaClient'
-import { getProfileFromDataspace } from './getProfileFromDataspace'
 
 export type SyncUserFromDataspaceResult = {
   success: boolean
@@ -25,11 +24,9 @@ export type SyncUserFromDataspaceResult = {
  *
  * For a given user:
  * 1. Fetch from Dataspace API by email
- * 2. Update User.dataspaceId
+ * 2. Update User.dataspaceId and isConseillerNumerique
  * 3. If is_coordinateur → create Coordinateur (no Mediateur - no double roles)
  * 4. If NOT is_coordinateur → create Mediateur
- * 5. If is_conseiller_numerique → create ConseillerNumerique (requires Mediateur)
- * 6. Remove ConseillerNumerique if no longer is_conseiller_numerique
  *
  * This helper is reusable for signup, nightly sync, and manual sync.
  */
@@ -59,8 +56,11 @@ export const syncUserFromDataspace = async ({
   // Handle not found (null result)
   if (result === null || !result.is_conseiller_numerique) {
     // User not found in Dataspace - not a conseiller numérique
-    // Remove ConseillerNumerique if it exists
-    await removeConseillerNumeriqueIfExists({ userId })
+    // Set isConseillerNumerique to false
+    await prismaClient.user.update({
+      where: { id: userId },
+      data: { isConseillerNumerique: false },
+    })
 
     return {
       success: true,
@@ -74,11 +74,12 @@ export const syncUserFromDataspace = async ({
 
   const dataspaceData: DataspaceMediateur = result
 
-  // 2. Update User.dataspaceId
+  // 2. Update User.dataspaceId and isConseillerNumerique
   await prismaClient.user.update({
     where: { id: userId },
     data: {
       dataspaceId: dataspaceData.id,
+      isConseillerNumerique: dataspaceData.is_conseiller_numerique,
     },
   })
 
@@ -94,18 +95,12 @@ export const syncUserFromDataspace = async ({
     })
     coordinateurId = coordinateurResult.coordinateurId
   } else {
-    // Create Mediateur (and ConseillerNumerique if is_conseiller_numerique)
+    // Create Mediateur
     const mediateurResult = await importMediateurFromDataspace({
       userId,
       dataspaceData,
     })
     mediateurId = mediateurResult.mediateurId
-  }
-
-  // 4. Handle ConseillerNumerique removal if no longer is_conseiller_numerique
-  // (only relevant for non-coordinateurs who have a Mediateur)
-  if (!dataspaceData.is_conseiller_numerique) {
-    await removeConseillerNumeriqueIfExists({ userId })
   }
 
   return {
@@ -115,26 +110,6 @@ export const syncUserFromDataspace = async ({
     isCoordinateur: dataspaceData.is_coordinateur,
     mediateurId,
     coordinateurId,
-  }
-}
-
-/**
- * Remove ConseillerNumerique linked to a user's mediateur if it exists
- */
-const removeConseillerNumeriqueIfExists = async ({
-  userId,
-}: {
-  userId: string
-}) => {
-  const mediateur = await prismaClient.mediateur.findUnique({
-    where: { userId },
-    select: { id: true, conseillerNumerique: { select: { id: true } } },
-  })
-
-  if (mediateur?.conseillerNumerique) {
-    await prismaClient.conseillerNumerique.delete({
-      where: { id: mediateur.conseillerNumerique.id },
-    })
   }
 }
 

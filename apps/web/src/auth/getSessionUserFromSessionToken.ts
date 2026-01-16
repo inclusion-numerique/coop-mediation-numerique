@@ -28,6 +28,7 @@ export const sessionUserSelect = {
   inscriptionValidee: true,
   featureFlags: true,
   timezone: true,
+  isConseillerNumerique: true,
   emplois: {
     select: {
       id: true,
@@ -54,11 +55,6 @@ export const sessionUserSelect = {
     select: {
       id: true,
       isVisible: true,
-      conseillerNumerique: {
-        select: {
-          id: true,
-        },
-      },
       coordinations: {
         select: {
           coordinateur: {
@@ -93,7 +89,6 @@ export const sessionUserSelect = {
   coordinateur: {
     select: {
       id: true,
-      conseillerNumeriqueId: true,
       mediateursCoordonnes: {
         select: {
           mediateurId: true,

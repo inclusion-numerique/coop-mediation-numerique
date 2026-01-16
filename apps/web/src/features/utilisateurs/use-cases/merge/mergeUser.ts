@@ -8,12 +8,9 @@ type PrismaTransaction = Omit<
 >
 
 const includeCoordinateur = {
+  isConseillerNumerique: true,
   mediateur: {
-    include: {
-      conseillerNumerique: {
-        select: { id: true },
-      },
-    },
+    select: { id: true },
   },
   coordinateur: {
     select: { id: true },
@@ -21,6 +18,7 @@ const includeCoordinateur = {
 }
 
 const include = {
+  isConseillerNumerique: true,
   coordinateur: {
     include: {
       invitations: true,
@@ -48,9 +46,6 @@ const include = {
         select: { id: true },
       },
       invitations: true,
-      conseillerNumerique: {
-        select: { id: true },
-      },
       coordinations: {
         include: {
           coordinateur: {
@@ -342,21 +337,10 @@ const mergeMutations =
 
 const deleteUser =
   (prisma: PrismaTransaction) =>
-  async ({
-    id: userId,
-    mediateur,
-  }: {
-    id: string
-    mediateur: { id: string } | null
-  }) => {
+  async ({ id: userId }: { id: string; mediateur: { id: string } | null }) => {
     await prisma.rdvAccount.deleteMany({ where: { userId } })
     await prisma.session.deleteMany({ where: { userId } })
     await prisma.account.deleteMany({ where: { userId } })
-    if (mediateur?.id != null) {
-      await prisma.conseillerNumerique.deleteMany({
-        where: { mediateurId: mediateur.id },
-      })
-    }
     await prisma.coordinateur.deleteMany({ where: { userId } })
     await prisma.mediateur.deleteMany({ where: { userId } })
     await prisma.user.deleteMany({ where: { id: userId } })
@@ -395,7 +379,6 @@ const initCoordinateurs =
       await prisma.coordinateur.create({
         data: {
           userId: targetUserId,
-          conseillerNumeriqueId: targetUser?.mediateur?.conseillerNumerique?.id,
         },
       })
     }
@@ -419,8 +402,6 @@ const syncWithMongo =
   async ({
     id: userId,
     email,
-    mediateur,
-    coordinateur,
   }: {
     id: string
     email: string
@@ -436,30 +417,13 @@ const syncWithMongo =
 
     if (!mongoConseiller) return
 
-    if (mediateur != null) {
-      await prisma.conseillerNumerique.upsert({
-        where: { id: mongoConseiller._id.toString() },
-        update: {
-          mediateurId: mediateur.id,
-          idPg: mongoConseiller.idPG,
-        },
-        create: {
-          id: mongoConseiller._id.toString(),
-          idPg: mongoConseiller.idPG,
-          mediateurId: mediateur.id,
-        },
-      })
-    }
-
-    if (coordinateur != null) {
-      await prisma.coordinateur.update({
-        where: { userId },
-        data: {
-          conseillerNumeriqueId: mongoConseiller._id.toString(),
-          conseillerNumeriqueIdPg: mongoConseiller.idPG,
-        },
-      })
-    }
+    // Set isConseillerNumerique on User
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        isConseillerNumerique: true,
+      },
+    })
   }
 
 export const mergeUser = async (

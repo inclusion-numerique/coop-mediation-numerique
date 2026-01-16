@@ -23,7 +23,6 @@ export const ActeurDetailPage = ({
     mediateurId,
     acteur,
     activityDates,
-    conseillerNumerique,
     statistiques,
     emploi,
     contract,
@@ -86,11 +85,7 @@ export const ActeurDetailPage = ({
             coordinationFeatures.showContract &&
             contract && (
               <section className="fr-mt-6v">
-                <Contract
-                  isCoordinateur={false}
-                  {...contract}
-                  idPGConum={conseillerNumerique?.idPg ?? null}
-                />
+                <Contract isCoordinateur={false} {...contract} />
               </section>
             )}
           {emploi != null && (
@@ -102,7 +97,7 @@ export const ActeurDetailPage = ({
                   coordinationFeatures?.showReferentStructure ?? false
                 }
                 showReferentStructureConseillerNumeriqueSupportNotice={
-                  conseillerNumerique?.id != null
+                  acteur.isConseillerNumerique
                 }
                 title={
                   <div className="fr-flex fr-flex-gap-3v fr-align-items-center fr-mb-6v">

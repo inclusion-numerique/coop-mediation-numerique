@@ -20,7 +20,6 @@ import { dateAsDayAndTime } from '@app/web/utils/dateAsDayAndTime'
 import { numberToString } from '@app/web/utils/formatNumber'
 import { contentId } from '@app/web/utils/skipLinks'
 import { getUserDisplayName } from '@app/web/utils/user'
-import { countCrasConseillerNumeriqueV1 } from '@app/web/v1/v1CraQueries'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
@@ -118,11 +117,7 @@ const AdministrationUserPage = async ({
     statutCompte,
   } = user
 
-  const crasConseillerNumeriqueV1Count = mediateur?.conseillerNumerique
-    ? await countCrasConseillerNumeriqueV1({
-        conseillerNumeriqueIds: [mediateur.conseillerNumerique.id],
-      })
-    : null
+  // V1 CRA count removed - no longer using V1 data
 
   const enActivite = mediateur ? mediateur.enActivite : []
 
@@ -148,17 +143,10 @@ const AdministrationUserPage = async ({
   )
 
   const [conseillerNumeriqueInfo, dataspaceInfo] = await Promise.all([
-    findConseillerNumeriqueV1(
-      user.mediateur?.conseillerNumerique?.id
-        ? {
-            id: user.mediateur.conseillerNumerique.id,
-            includeDeleted: true,
-          }
-        : {
-            email: user.email,
-            includeDeleted: true,
-          },
-    ),
+    findConseillerNumeriqueV1({
+      email: user.email,
+      includeDeleted: true,
+    }),
     getMediateurFromDataspaceApi({
       email: user.email,
     }),
@@ -195,9 +183,7 @@ const AdministrationUserPage = async ({
           {role === 'Admin' && <Tag small>Administrateur</Tag>}
           {role === 'Support' && <Tag small>Support</Tag>}
           {isMediateur && <Tag small>Médiateur</Tag>}
-          {mediateur?.conseillerNumerique && (
-            <Tag small>Conseiller numérique</Tag>
-          )}
+          {user.isConseillerNumerique && <Tag small>Conseiller numérique</Tag>}
           {isCoordinateur && <Tag small>Coordinateur</Tag>}
         </div>
         {conseillerNumeriqueInfo ? (
@@ -348,20 +334,13 @@ const AdministrationUserPage = async ({
             />
           </AdministrationInfoCard>
         )}
-        {isMediateur && mediateur?.conseillerNumerique && (
+        {isMediateur && user.isConseillerNumerique && (
           <AdministrationInfoCard title="Rôle conseiller numérique">
             <AdministrationInlineLabelsValues
               items={[
                 {
-                  label: 'ID Conseiller Numérique',
-                  value: mediateur.conseillerNumerique.id,
-                },
-                {
-                  label: 'Nombre de CRAs v1 importés',
-                  value:
-                    crasConseillerNumeriqueV1Count === null
-                      ? 'Aucun'
-                      : numberToString(crasConseillerNumeriqueV1Count),
+                  label: 'Est Conseiller Numérique',
+                  value: 'Oui',
                 },
               ]}
             />
@@ -376,8 +355,8 @@ const AdministrationUserPage = async ({
                   value: coordinateur.id,
                 },
                 {
-                  label: 'Conseiller Numérique ID',
-                  value: coordinateur.conseillerNumeriqueId,
+                  label: 'Est Conseiller Numérique',
+                  value: user.isConseillerNumerique ? 'Oui' : 'Non',
                 },
                 {
                   label: 'Créé le',

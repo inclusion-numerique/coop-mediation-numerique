@@ -27,11 +27,7 @@ export const userFromShareId = async (id: string) =>
               email: true,
               name: true,
               role: true,
-            },
-          },
-          conseillerNumerique: {
-            select: {
-              id: true,
+              isConseillerNumerique: true,
             },
           },
           coordinations: {
@@ -81,9 +77,9 @@ export const userFromShareId = async (id: string) =>
               email: true,
               name: true,
               role: true,
+              isConseillerNumerique: true,
             },
           },
-          conseillerNumeriqueId: true,
           mediateursCoordonnes: true,
         },
       },
