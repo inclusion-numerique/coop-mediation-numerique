@@ -3,6 +3,7 @@
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import type { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
 import { CaptureButton } from '@app/web/libs/statistiques/CaptureButton'
+import { dateAsDayConventional } from '@app/web/utils/dateAsDay'
 import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { SegmentedControl } from '@codegouvfr/react-dsfr/SegmentedControl'
@@ -14,7 +15,9 @@ export const StatistiquesGenerales = ({
   accompagnementsParMois,
   accompagnementsParJour,
   wording = 'personnel',
-}: { wording?: 'personnel' | 'generique' } & Pick<
+  debut,
+  fin,
+}: { wording?: 'personnel' | 'generique'; debut?: string; fin?: string } & Pick<
   MesStatistiquesPageData,
   'accompagnementsParJour' | 'accompagnementsParMois' | 'totalCounts'
 >) => {
@@ -118,7 +121,7 @@ export const StatistiquesGenerales = ({
               />
             </div>
             <div className="fr-mt-2v">
-              <div className="fr-text--sm fr-text--bold fr-mb-4v">
+              <div className="fr-text--sm fr-text--bold fr-mb-0">
                 Bénéficiaire{sPluriel(totalCounts.beneficiaires.total)}{' '}
                 accompagné{sPluriel(totalCounts.beneficiaires.total)}
               </div>
@@ -131,10 +134,35 @@ export const StatistiquesGenerales = ({
                   {totalCounts.beneficiaires.nouveaux === 1
                     ? 'nouveau'
                     : 'nouveaux'}
+                  <Button
+                    className="fr-px-1v fr-ml-1v fr-no-print"
+                    title="Plus d’information à propos du nombre de nouveaux bénéficiaires accompagnés"
+                    priority="tertiary no outline"
+                    size="small"
+                    type="button"
+                    aria-describedby="tooltip-nombre-nouveaux-beneficiaires"
+                  >
+                    <span
+                      className="ri-information-line fr-text--lg"
+                      aria-hidden
+                    />
+                  </Button>
+                  {debut && fin && (
+                    <span
+                      className="fr-tooltip fr-placement"
+                      id="tooltip-nombre-nouveaux-beneficiaires"
+                      role="tooltip"
+                      aria-hidden
+                    >
+                      Nombre de nouveaux bénéficiaires entre le{' '}
+                      {dateAsDayConventional(new Date(debut))} et le{' '}
+                      {dateAsDayConventional(new Date(fin))}.
+                    </span>
+                  )}
                 </div>
               )}
             </div>
-            <div className="fr-text-mention--grey fr-text--sm fr-mb-0">
+            <div className="fr-text-mention--grey fr-text--sm fr-mb-0 fr-mt-4v">
               <div>
                 <strong>
                   {numberToString(totalCounts.beneficiaires.suivis)}
@@ -143,13 +171,35 @@ export const StatistiquesGenerales = ({
                 {sPluriel(totalCounts.beneficiaires.suivis)} suivi
                 {sPluriel(totalCounts.beneficiaires.suivis)}
               </div>
-              <div>
+              <div className="fr-whitespace-nowrap">
                 <strong>
                   {numberToString(totalCounts.beneficiaires.anonymes)}
                 </strong>{' '}
                 bénéficiaire
                 {sPluriel(totalCounts.beneficiaires.anonymes)} anonyme
                 {sPluriel(totalCounts.beneficiaires.anonymes)}
+                <Button
+                  className="fr-px-1v fr-ml-1v fr-no-print"
+                  title="Plus d’information à propos des bénéficiaires anonymes"
+                  priority="tertiary no outline"
+                  size="small"
+                  type="button"
+                  aria-describedby="tooltip-nombre-beneficiaires-anonymes"
+                >
+                  <span
+                    className="ri-information-line fr-text--lg"
+                    aria-hidden
+                  />
+                </Button>
+                <span
+                  className="fr-tooltip fr-placement"
+                  id="tooltip-nombre-beneficiaires-anonymes"
+                  role="tooltip"
+                  aria-hidden
+                >
+                  Les bénéficiaires anonymes sont comptabilisés comme 1 nouveau
+                  bénéficiaire à chaque accompagnement.
+                </span>
               </div>
             </div>
           </div>
