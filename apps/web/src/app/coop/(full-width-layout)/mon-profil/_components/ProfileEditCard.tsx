@@ -1,7 +1,6 @@
 'use client'
 
 import Card from '@app/web/components/Card'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import { signOut } from 'next-auth/react'
@@ -33,7 +32,7 @@ const ProfileEditCard = (profileData: {
     <Card
       noBorder
       contentSeparator
-      className="fr-border fr-border-radius--8"
+      className="fr-border fr-border-radius--8 fr-mb-4v"
       id="description"
       title={
         <div className="fr-flex fr-align-items-center">
@@ -52,6 +51,7 @@ const ProfileEditCard = (profileData: {
           </span>
         </div>
       }
+      titleAs="h2"
       action={
         <Button
           data-testid="edit-card-button"
@@ -97,4 +97,4 @@ const ProfileEditCard = (profileData: {
   </>
 )
 
-export default withTrpc(ProfileEditCard)
+export default ProfileEditCard

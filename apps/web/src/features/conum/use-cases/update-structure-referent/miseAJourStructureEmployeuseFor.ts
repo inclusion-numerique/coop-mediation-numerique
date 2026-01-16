@@ -50,16 +50,19 @@ export const miseAJourStructureEmployeuseFor =
     }
 
     // On retire les anciens emplois
+    const now = new Date()
     await prismaClient.employeStructure.updateMany({
       where: {
         userId,
         suppression: null,
+        fin: null,
         structureId: {
           not: structure.id,
         },
       },
       data: {
-        suppression: new Date(),
+        fin: now,
+        suppression: now,
       },
     })
 
@@ -70,6 +73,7 @@ export const miseAJourStructureEmployeuseFor =
         userId,
         structureId: structure.id,
         suppression: null,
+        fin: null,
       },
       select: {
         id: true,
@@ -86,6 +90,7 @@ export const miseAJourStructureEmployeuseFor =
       data: {
         userId,
         structureId: structure.id,
+        debut: new Date(),
       },
     })
 

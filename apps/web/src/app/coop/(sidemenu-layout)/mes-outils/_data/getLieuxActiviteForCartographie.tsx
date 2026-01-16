@@ -5,6 +5,7 @@ export const getLieuxActiviteForCartographie = async (mediateurId: string) =>
     where: {
       mediateurId,
       suppression: null,
+      fin: null,
     },
     select: {
       creation: true,

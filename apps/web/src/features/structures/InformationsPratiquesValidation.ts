@@ -2,7 +2,6 @@ import z from 'zod'
 import { OpeningHoursValidation } from './OpeningHoursValidation'
 
 export const InformationsPratiquesShape = {
-  lieuItinerant: z.boolean().nullish(),
   siteWeb: z
     .string()
     .nullish()

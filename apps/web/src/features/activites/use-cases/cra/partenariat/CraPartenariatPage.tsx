@@ -30,12 +30,9 @@ const CraPartenariatPage = ({
       currentPage="Enregistrer un partenariat"
     />
     <BackButtonWithModal
-      href="/coop"
       modalTitle="Quitter sans enregistrer"
       modalContent="Êtes-vous sur de vouloir quitter votre compe-rendu d’activité sans enregistrer ?"
-    >
-      Retour
-    </BackButtonWithModal>
+    />
     <main id={contentId}>
       <h1 className="fr-h2 fr-text-title--blue-france fr-mb-2v fr-mt-4v">
         Partenariat

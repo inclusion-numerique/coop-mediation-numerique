@@ -89,12 +89,12 @@ const VisiblePourCartographieNationaleFields = ({
       {canChangeVisibility && (
         <div className={className}>
           <ToggleSwitch
-            inputTitle="Visibilité du lieu d’activité sur la cartographie"
+            inputTitle="Visibilité du lieu sur la cartographie"
             disabled={mutateCartographieNationaleVisibility.isPending}
             checked={visiblePourCartographieNationale}
             label={
               <span className="fr-text--medium fr-my-auto">
-                Rendre mon lieu d’activité visible sur la cartographie
+                Rendre ce lieu visible sur la cartographie
               </span>
             }
             labelPosition="left"

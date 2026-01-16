@@ -490,11 +490,13 @@ export const GET = createApiV1Route
             mediateursEnActivite: {
               where: {
                 suppression: null,
+                fin: null,
               },
             },
             emplois: {
               where: {
                 suppression: null,
+                fin: null,
               },
             },
           },

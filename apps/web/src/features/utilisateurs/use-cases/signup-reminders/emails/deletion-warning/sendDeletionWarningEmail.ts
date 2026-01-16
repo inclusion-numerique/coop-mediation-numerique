@@ -1,5 +1,5 @@
 import { compileMjml } from '@app/emails/mjml'
-import { deletionWarningEmail } from '@app/emails/templates/deletionWarningEmail'
+import { finishYourSignupDeletionWarningEmail } from '@app/emails/templates/finishYourSignupDeletionWarningEmail'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { emailTransport } from '@app/web/server/email/emailTransport'
@@ -22,15 +22,15 @@ export const sendDeletionWarningEmail = async ({
     to: email,
     from: ServerWebAppConfig.Email.from,
     replyTo: PublicWebAppConfig.contactEmail,
-    subject: `${firstname}, votre compte La Coop va bientôt être supprimé ⚠️`,
-    text: deletionWarningEmail.text({
+    subject: `Votre compte va bientôt être supprimé ⚠️`,
+    text: finishYourSignupDeletionWarningEmail.text({
       firstname,
       deletionDate,
       daysRemaining,
       matomoCampaignId,
     }),
     html: compileMjml(
-      deletionWarningEmail.mjml({
+      finishYourSignupDeletionWarningEmail.mjml({
         firstname,
         deletionDate,
         daysRemaining,

@@ -10,6 +10,7 @@ import {
   availableOptionsIn,
   defautValuesFrom,
   matchingOption,
+  resetPagination,
   update,
 } from '@app/web/libs/filters/helpers'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
@@ -70,12 +71,14 @@ export const BeneficiaireFilter = ({
 
   const handleSubmit = (close: boolean = false) => {
     update(params)('beneficiaires', beneficiaires)
+    resetPagination(params)
     closePopover(close)
   }
 
   const handleClearFilters = () => {
     setBeneficiaires([])
     update(params)('beneficiaires', [])
+    resetPagination(params)
     closePopover(true)
   }
 

@@ -4,6 +4,7 @@ import { mediateque, seedStructures } from '@app/fixtures/structures'
 import {
   mediateurAvecActivite,
   mediateurAvecActiviteMediateurId,
+  mediateurAvecActiviteUserId,
 } from '@app/fixtures/users/mediateurAvecActivite'
 import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
 import { prismaClient } from '@app/web/prismaClient'
@@ -136,7 +137,8 @@ describe('createOrUpdateActivite', () => {
 
     const result = await createOrUpdateActivite({
       input,
-      userId: mediateurAvecActivite.id,
+      sessionUserId: mediateurAvecActiviteUserId,
+      mediateurUserId: mediateurAvecActiviteUserId,
       mediateurId: mediateurAvecActiviteMediateurId,
     })
 
@@ -206,7 +208,8 @@ describe('createOrUpdateActivite', () => {
 
     const resultToUpdate = await createOrUpdateActivite({
       input,
-      userId: mediateurAvecActivite.id,
+      sessionUserId: mediateurAvecActiviteUserId,
+      mediateurUserId: mediateurAvecActiviteUserId,
       mediateurId: mediateurAvecActiviteMediateurId,
     })
 
@@ -218,7 +221,8 @@ describe('createOrUpdateActivite', () => {
           id: resultToUpdate.id,
         },
       },
-      userId: mediateurAvecActivite.id,
+      sessionUserId: mediateurAvecActiviteUserId,
+      mediateurUserId: mediateurAvecActiviteUserId,
       mediateurId: mediateurAvecActiviteMediateurId,
     })
 
@@ -274,7 +278,8 @@ describe('createOrUpdateActivite', () => {
 
     const result = await createOrUpdateActivite({
       input,
-      userId: mediateurAvecActivite.id,
+      sessionUserId: mediateurAvecActiviteUserId,
+      mediateurUserId: mediateurAvecActiviteUserId,
       mediateurId: mediateurAvecActiviteMediateurId,
     })
 
@@ -343,7 +348,8 @@ describe('createOrUpdateActivite', () => {
     // Test creation
     const createResult = await createOrUpdateActivite({
       input,
-      userId: mediateurAvecActivite.id,
+      sessionUserId: mediateurAvecActivite.id,
+      mediateurUserId: mediateurAvecActivite.id,
       mediateurId: mediateurAvecActiviteMediateurId,
     })
 
@@ -378,7 +384,8 @@ describe('createOrUpdateActivite', () => {
 
     const updateResult = await createOrUpdateActivite({
       input: updateInput,
-      userId: mediateurAvecActivite.id,
+      sessionUserId: mediateurAvecActivite.id,
+      mediateurUserId: mediateurAvecActivite.id,
       mediateurId: mediateurAvecActiviteMediateurId,
     })
 
@@ -484,7 +491,8 @@ describe('createOrUpdateActivite', () => {
 
       const createResult = await createOrUpdateActivite({
         input: createInput,
-        userId: mediateurAvecActivite.id,
+        sessionUserId: mediateurAvecActivite.id,
+        mediateurUserId: mediateurAvecActivite.id,
         mediateurId: mediateurAvecActiviteMediateurId,
       })
 
@@ -523,7 +531,8 @@ describe('createOrUpdateActivite', () => {
 
       await createOrUpdateActivite({
         input: updateInput,
-        userId: mediateurAvecActivite.id,
+        sessionUserId: mediateurAvecActivite.id,
+        mediateurUserId: mediateurAvecActivite.id,
         mediateurId: mediateurAvecActiviteMediateurId,
       })
 
@@ -571,7 +580,8 @@ describe('createOrUpdateActivite', () => {
 
       await createOrUpdateActivite({
         input: updateNoStructureInput,
-        userId: mediateurAvecActivite.id,
+        sessionUserId: mediateurAvecActivite.id,
+        mediateurUserId: mediateurAvecActivite.id,
         mediateurId: mediateurAvecActiviteMediateurId,
       })
 
@@ -625,7 +635,8 @@ describe('createOrUpdateActivite', () => {
 
       const createResult = await createOrUpdateActivite({
         input: createInput,
-        userId: mediateurAvecActivite.id,
+        sessionUserId: mediateurAvecActivite.id,
+        mediateurUserId: mediateurAvecActivite.id,
         mediateurId: mediateurAvecActiviteMediateurId,
       })
 
@@ -672,7 +683,8 @@ describe('createOrUpdateActivite', () => {
 
       await createOrUpdateActivite({
         input: updateInput,
-        userId: mediateurAvecActivite.id,
+        sessionUserId: mediateurAvecActivite.id,
+        mediateurUserId: mediateurAvecActivite.id,
         mediateurId: mediateurAvecActiviteMediateurId,
       })
 

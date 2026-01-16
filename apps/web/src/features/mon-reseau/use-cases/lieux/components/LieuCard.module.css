@@ -1,0 +1,9 @@
+.innerLink {
+  position: relative;
+  z-index: 2;
+}
+
+.tagGrey {
+  background-color: var(--background-contrast-grey);
+  color: var(--text-mention-grey);
+}

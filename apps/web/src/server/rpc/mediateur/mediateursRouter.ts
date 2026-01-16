@@ -220,9 +220,10 @@ export const mediateursRouter = router({
   shareStats: protectedProcedure.mutation(async ({ ctx: { user } }) => {
     const stopwatch = createStopwatch()
 
-    if (!isMediateur(user)) throw forbiddenError('User is not a mediateur')
+    if (!isMediateur(user) && !isCoordinateur(user))
+      throw forbiddenError('User cannot share stats')
 
-    const result = await togglePartageStatistiques(user.mediateur.id)
+    const result = await togglePartageStatistiques(user)
 
     addMutationLog({
       userId: user?.id ?? null,
@@ -233,6 +234,6 @@ export const mediateursRouter = router({
       },
     })
 
-    return result.active
+    return result?.active
   }),
 })

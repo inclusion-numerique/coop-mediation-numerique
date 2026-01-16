@@ -15,6 +15,7 @@ export type StructureInput = {
   nomReferent?: string | null
   courrielReferent?: string | null
   telephoneReferent?: string | null
+  creationParId?: string | null
 }
 
 /**
@@ -35,6 +36,7 @@ export const findOrCreateStructure = async ({
   nomReferent,
   courrielReferent,
   telephoneReferent,
+  creationParId,
 }: StructureInput): Promise<{ id: string }> => {
   // Step 1: Find existing Structure by SIRET + nom
   const existingStructure = await prismaClient.structure.findFirst({
@@ -71,6 +73,7 @@ export const findOrCreateStructure = async ({
         nomReferent: nomReferent ?? null,
         courrielReferent: courrielReferent ?? structureData.courriels?.at(0),
         telephoneReferent: telephoneReferent ?? structureData.telephone,
+        creationParId,
       },
       select: {
         id: true,
@@ -101,6 +104,7 @@ export const findOrCreateStructure = async ({
         nomReferent,
         courrielReferent,
         telephoneReferent,
+        creationParId,
       },
       select: {
         id: true,
@@ -121,6 +125,7 @@ export const findOrCreateStructure = async ({
       nomReferent,
       courrielReferent,
       telephoneReferent,
+      creationParId,
     },
     select: {
       id: true,

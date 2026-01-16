@@ -2,7 +2,7 @@ import {
   ActivitesFilters,
   ActivitesFilterValidations,
 } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import { mediateurFromShareId } from '@app/web/features/mediateurs/use-cases/partage-statistiques/db/mediateurFromShareId'
+import { userFromShareId } from '@app/web/features/mediateurs/use-cases/partage-statistiques/db/userFromShareId'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { buildStatistiquesWorksheet } from '@app/web/worksheet/statistiques/buildStatistiquesWorksheet'
 import { getStatistiquesWorksheetInput } from '@app/web/worksheet/statistiques/getStatistiquesWorksheetInput'
@@ -20,8 +20,15 @@ export const GET = async (
   { params }: { params: Promise<{ shareId: string }> },
 ) => {
   const shareId = (await params).shareId
-  const mediateur = await mediateurFromShareId(shareId)
-  if (!mediateur) return notFound()
+  const shareStatsUser = await userFromShareId(shareId)
+  const user =
+    shareStatsUser?.mediateur?.user ?? shareStatsUser?.coordinateur?.user
+
+  if (
+    user == null ||
+    (shareStatsUser?.mediateur == null && shareStatsUser?.coordinateur == null)
+  )
+    return notFound()
 
   const parsedQueryParams = ExportActivitesValidation.safeParse(
     Object.fromEntries(request.nextUrl.searchParams.entries()),
@@ -35,11 +42,11 @@ export const GET = async (
 
   const statistiquesWorksheetInput = await getStatistiquesWorksheetInput({
     user: {
-      ...mediateur.user,
+      ...user,
       emplois: [],
       rdvAccount: null,
-      coordinateur: null,
-      mediateur,
+      coordinateur: shareStatsUser.coordinateur,
+      mediateur: shareStatsUser.mediateur,
     },
     filters,
   })

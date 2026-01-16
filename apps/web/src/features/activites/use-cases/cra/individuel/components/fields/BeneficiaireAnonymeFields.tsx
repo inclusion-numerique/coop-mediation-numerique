@@ -57,7 +57,34 @@ export const BeneficiaireAnonymeFields = withForm({
               isTiled={false}
               options={[
                 {
-                  label: 'J’ai déjà accompagné ce bénéficiaire',
+                  label: (
+                    <span className="fr-flex">
+                      J’ai déjà accompagné ce bénéficiaire{' '}
+                      <Button
+                        className="fr-px-1v fr-ml-1v fr-mt-n1v fr-no-print"
+                        title="Plus d’information à propos des bénéficiaires déjà accompagnés"
+                        priority="tertiary no outline"
+                        size="small"
+                        type="button"
+                        aria-describedby="tooltip-beneficiaire-deja-accompagne"
+                      >
+                        <span
+                          className="ri-information-line fr-text--lg"
+                          aria-hidden
+                        />
+                      </Button>
+                      <span
+                        className="fr-tooltip fr-placement"
+                        id="tooltip-beneficiaire-deja-accompagne"
+                        role="tooltip"
+                        aria-hidden
+                      >
+                        Cette case à cocher permet, lorsque vous filtrez vos
+                        statistiques sur une période donnée, de compter le
+                        nombre de nouveaux bénéficiaires sur cette période
+                      </span>
+                    </span>
+                  ),
                   value: true,
                 },
               ]}

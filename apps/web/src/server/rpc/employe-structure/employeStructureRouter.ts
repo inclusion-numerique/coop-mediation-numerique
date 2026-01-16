@@ -16,8 +16,8 @@ export const employeStructureRouter = router({
         input: {
           userId,
           structureEmployeuse,
-          creation: creationString,
-          suppression: suppressionString,
+          debut: debutString,
+          fin: finString,
         },
         ctx: { user: sessionUser },
       }) => {
@@ -32,18 +32,18 @@ export const employeStructureRouter = router({
           sessionUser,
         )
 
-        const creation = creationString ? new Date(creationString) : undefined
-        const suppression = suppressionString
-          ? new Date(suppressionString)
-          : null
+        const debut = debutString ? new Date(debutString) : new Date()
+        const fin = finString ? new Date(finString) : null
 
         const created = await prismaClient.employeStructure.create({
           data: {
             id,
             userId,
             structureId: structure.id,
-            creation,
-            suppression,
+            debut,
+            fin,
+            suppression: fin,
+            creationParId: sessionUser.id,
           },
         })
 
@@ -56,8 +56,8 @@ export const employeStructureRouter = router({
               id,
               userId,
               structureId: structure.id,
-              creation,
-              suppression,
+              debut,
+              fin,
             },
           },
         })
@@ -69,25 +69,25 @@ export const employeStructureRouter = router({
     .input(ModifierEmployeStructureValidation)
     .mutation(
       async ({
-        input: { id, creation: creationString, suppression: suppressionString },
+        input: { id, debut: debutString, fin: finString },
         ctx: { user },
       }) => {
         enforceIsAdmin(user)
 
         const stopwatch = createStopwatch()
 
-        const creation = creationString ? new Date(creationString) : undefined
-        const suppression = suppressionString
-          ? new Date(suppressionString)
-          : null
+        const debut = debutString ? new Date(debutString) : undefined
+        const fin = finString ? new Date(finString) : null
 
         const updated = await prismaClient.employeStructure.update({
           where: {
             id,
           },
           data: {
-            creation,
-            suppression,
+            debut,
+            fin,
+            suppression: fin,
+            modificationParId: user.id,
           },
         })
 
@@ -98,8 +98,8 @@ export const employeStructureRouter = router({
             duration: stopwatch.stop().duration,
             data: {
               id,
-              creation,
-              suppression,
+              debut,
+              fin,
             },
           },
         })

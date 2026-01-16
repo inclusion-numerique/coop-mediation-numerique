@@ -29,6 +29,7 @@ const InformationsGeneralesEditCard = (props: {
   longitude: number | null
   codePostal: string
   codeInsee?: string | null
+  lieuItinerant?: boolean | null
   complementAdresse?: string | null
   siret?: string | null
   rna?: string | null
@@ -42,7 +43,15 @@ const InformationsGeneralesEditCard = (props: {
    * Also we have to create initial AdressBanData Option for the search select
    * to have it pre-populated with the existing structure data.
    */
-  const { codeInsee, codePostal, commune, adresse, latitude, longitude } = props
+  const {
+    codeInsee,
+    codePostal,
+    commune,
+    adresse,
+    latitude,
+    longitude,
+    lieuItinerant,
+  } = props
 
   const adresseBanData = banDefaultValueToAdresseBanData({
     codeInsee: codeInsee ?? undefined,
@@ -58,6 +67,7 @@ const InformationsGeneralesEditCard = (props: {
   const defaultValues = {
     ...props,
     adresseBan: adresseBanData,
+    lieuItinerant,
     typologies: props.typologies ?? [],
   } satisfies DefaultValues<InformationsGeneralesData>
 

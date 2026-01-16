@@ -8,6 +8,7 @@ export const InformationsGeneralesView = ({
   adresse,
   commune,
   codePostal,
+  lieuItinerant,
   complementAdresse,
   siret,
   rna,
@@ -17,6 +18,7 @@ export const InformationsGeneralesView = ({
   adresse: string
   commune: string
   codePostal: string
+  lieuItinerant?: boolean | null
   complementAdresse?: string | null
   siret?: string | null
   rna?: string | null
@@ -38,6 +40,15 @@ export const InformationsGeneralesView = ({
         {adresse}, {codePostal} {commune}
       </div>
     </div>
+    {lieuItinerant && (
+      <div data-testid="informations-generales-lieu-itinerant">
+        <span
+          className="fr-icon-bus-line ri-lg fr-text-label--blue-france fr-mr-1w"
+          aria-hidden
+        />
+        <span className="fr-text-mention--grey">Lieu itinérant</span>
+      </div>
+    )}
     <div>
       <span className="fr-text-mention--grey">Complément d’adresse</span>
       <div

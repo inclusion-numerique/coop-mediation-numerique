@@ -1,5 +1,5 @@
 import { compileMjml } from '@app/emails/mjml'
-import { accountDeletedEmail } from '@app/emails/templates/accountDeletedEmail'
+import { finishYourSignupAccountDeletedEmail } from '@app/emails/templates/finishYourSignupAccountDeletedEmail'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { emailTransport } from '@app/web/server/email/emailTransport'
@@ -17,9 +17,9 @@ export const sendAccountDeletedEmail = async ({
     from: ServerWebAppConfig.Email.from,
     replyTo: PublicWebAppConfig.contactEmail,
 
-    subject: 'Votre compte La Coop a été supprimé',
-    text: accountDeletedEmail.text({ firstname }),
-    html: compileMjml(accountDeletedEmail.mjml({ firstname })),
+    subject: 'Votre compte a été supprimé',
+    text: finishYourSignupAccountDeletedEmail.text({ firstname }),
+    html: compileMjml(finishYourSignupAccountDeletedEmail.mjml({ firstname })),
   })
 
   throwOnSendMailFailure(result)

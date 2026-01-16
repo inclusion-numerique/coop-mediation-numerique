@@ -5,6 +5,7 @@ export const getLieuxActivite = async (mediateurId: string) =>
     where: {
       mediateurId,
       suppression: null,
+      fin: null,
     },
     select: {
       id: true,
@@ -17,6 +18,7 @@ export const getLieuxActivite = async (mediateurId: string) =>
           adresse: true,
           commune: true,
           codePostal: true,
+          codeInsee: true,
           complementAdresse: true,
           visiblePourCartographieNationale: true,
           structureCartographieNationaleId: true,

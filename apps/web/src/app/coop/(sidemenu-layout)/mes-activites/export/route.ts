@@ -13,6 +13,33 @@ import { getHasCrasV1 } from '../../mes-statistiques/_queries/getHasCrasV1'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
+export const maxDuration = 300
+
+// Debug logging for production performance analysis
+const debugExport = true
+
+export type ExportDebugLogger = (message: string, data?: unknown) => void
+
+const createExportDebugLogger = (enabled: boolean): ExportDebugLogger => {
+  if (!enabled) {
+    return () => {
+      // Intentional no-op when debug is disabled
+    }
+  }
+  const start = performance.now()
+  let lastMark = start
+  return (message: string, data?: unknown) => {
+    const now = performance.now()
+    const total = (now - start).toFixed(0)
+    const delta = (now - lastMark).toFixed(0)
+    lastMark = now
+    // biome-ignore lint/suspicious/noConsole: Intentional debug logging for production performance analysis
+    console.log(
+      `[export activites] +${delta}ms (total: ${total}ms) ${message}`,
+      data ?? '',
+    )
+  }
+}
 
 const toMediateurId = ({ mediateurId }: { mediateurId: string }) => mediateurId
 
@@ -25,8 +52,14 @@ const ExportActivitesValidation = z
   .extend(ActivitesFilterValidations)
 
 export const GET = async (request: NextRequest) => {
+  const log = createExportDebugLogger(debugExport)
+
+  log('Starting export request')
+
   const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)
   const user = await getSessionUserFromSessionToken(sessionToken)
+
+  log('Auth complete', { userId: user?.id })
 
   if (!user?.mediateur && !user?.coordinateur) {
     return new Response('Unauthorized', {
@@ -59,14 +92,23 @@ export const GET = async (request: NextRequest) => {
     activitesFilters: {},
   })
 
+  log('getHasCrasV1 complete', { hasCrasV1: hasCraV1.hasCrasV1 })
+
+  const filteredMediateurIds =
+    (filters.mediateurs ?? []).length > 0
+      ? mediateurIds.filter((id) => filters.mediateurs?.includes(id))
+      : mediateurIds
+
   const activitesWorksheetInput = await getAccompagenmentsWorksheetInput({
     user,
     filters,
-    mediateurIds:
-      (filters.mediateurs ?? []).length > 0
-        ? mediateurIds.filter((id) => filters.mediateurs?.includes(id))
-        : mediateurIds,
+    mediateurIds: filteredMediateurIds,
     hasCraV1: hasCraV1.hasCrasV1,
+    log,
+  })
+
+  log('getAccompagenmentsWorksheetInput complete', {
+    activitesCount: activitesWorksheetInput.activites.length,
   })
 
   const isSelfExport =
@@ -79,9 +121,18 @@ export const GET = async (request: NextRequest) => {
     isSelfExport,
   )
 
+  log('buildAccompagnementsWorksheet complete')
+
   const data = await workbook.xlsx.writeBuffer()
 
+  log('writeBuffer complete', { bufferSize: data.byteLength })
+
   const filename = `coop-numerique_accompagnements_${dateAsIsoDay(new Date())}.xlsx`
+
+  log('Export complete', {
+    activitesCount: activitesWorksheetInput.activites.length,
+    filename,
+  })
 
   return new Response(data, {
     status: 200,
