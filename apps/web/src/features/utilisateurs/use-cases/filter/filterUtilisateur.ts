@@ -69,26 +69,36 @@ export const filterOnRoles = (queryParams?: {
   }
 }
 
+// Filter for users NOT in conseiller numérique program (by role)
 const horsDispositifFilter: Record<
   Exclude<RoleSlug, 'administrateur'>,
   {
-    mediateur?: { conseillerNumerique: null }
-    coordinateur?: { conseillerNumeriqueId: null }
+    isConseillerNumerique: false
+    mediateur?: { isNot: null }
+    coordinateur?: { isNot: null }
   }
 > = {
-  mediateur: { mediateur: { conseillerNumerique: null } },
-  coordinateur: { coordinateur: { conseillerNumeriqueId: null } },
+  mediateur: { isConseillerNumerique: false, mediateur: { isNot: null } },
+  coordinateur: { isConseillerNumerique: false, coordinateur: { isNot: null } },
 }
 
+// Filter for users IN conseiller numérique program (by role)
 const conseillerNumeriqueFilter: Record<
   Exclude<RoleSlug, 'administrateur'>,
   {
-    mediateur?: { conseillerNumerique: { isNot: null } }
-    coordinateur?: { conseillerNumeriqueId: { not: null } }
+    isConseillerNumerique: true
+    mediateur?: { isNot: null }
+    coordinateur?: { isNot: null }
   }
 > = {
-  mediateur: { mediateur: { conseillerNumerique: { isNot: null } } },
-  coordinateur: { coordinateur: { conseillerNumeriqueId: { not: null } } },
+  mediateur: {
+    isConseillerNumerique: true,
+    mediateur: { isNot: null },
+  },
+  coordinateur: {
+    isConseillerNumerique: true,
+    coordinateur: { isNot: null },
+  },
 }
 
 const onlyUsers = (
@@ -101,21 +111,31 @@ export const filterOnDispositif = (queryParams?: {
 }): {} | { dispositif: Prisma.UserWhereInput } => {
   if (queryParams?.conseiller_numerique == null) return {}
 
-  if (queryParams.conseiller_numerique === '0') {
-    const filters = queryParams.roles
-      .filter(onlyUsers)
-      .map((role) => horsDispositifFilter[role])
-    return filters.length === 1
-      ? filters[0]
-      : { OR: Object.values(horsDispositifFilter) }
+  const isConseillerNumerique = queryParams.conseiller_numerique === '1'
+  const filterMap = isConseillerNumerique
+    ? conseillerNumeriqueFilter
+    : horsDispositifFilter
+
+  // Get roles that are not 'administrateur'
+  const userRoles = queryParams.roles.filter(onlyUsers)
+
+  // If no roles specified, return OR of all role variants (or just CN check for conseiller_numerique=1 with no roles)
+  if (userRoles.length === 0) {
+    if (isConseillerNumerique) {
+      // Special case: conseiller_numerique=1 with no roles -> just check isConseillerNumerique
+      return { OR: [{ isConseillerNumerique: true }] }
+    }
+    // hors dispositif with no roles -> OR of both role variants
+    return { OR: Object.values(filterMap) }
   }
 
-  const filters = queryParams.roles
-    .filter(onlyUsers)
-    .map((role) => conseillerNumeriqueFilter[role])
-  return filters.length === 1
-    ? filters[0]
-    : { OR: Object.values(conseillerNumeriqueFilter) }
+  // If single role, return that filter directly (not wrapped in OR)
+  if (userRoles.length === 1) {
+    return filterMap[userRoles[0]]
+  }
+
+  // Multiple roles -> OR of selected role filters
+  return { OR: userRoles.map((role) => filterMap[role]) }
 }
 
 const canFilterOnLieux = ({

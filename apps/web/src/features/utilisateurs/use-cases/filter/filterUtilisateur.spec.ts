@@ -152,10 +152,7 @@ describe('filter utilisateur', () => {
       const filters = filterOnDispositif({ conseiller_numerique, roles })
 
       expect(filters).toEqual({
-        OR: [
-          { mediateur: { conseillerNumerique: { isNot: null } } },
-          { coordinateur: { conseillerNumeriqueId: { not: null } } },
-        ],
+        OR: [{ isConseillerNumerique: true }],
       })
     })
 
@@ -166,7 +163,8 @@ describe('filter utilisateur', () => {
       const filters = filterOnDispositif({ conseiller_numerique, roles })
 
       expect(filters).toEqual({
-        mediateur: { conseillerNumerique: { isNot: null } },
+        isConseillerNumerique: true,
+        mediateur: { isNot: null },
       })
     })
 
@@ -177,7 +175,8 @@ describe('filter utilisateur', () => {
       const filters = filterOnDispositif({ conseiller_numerique, roles })
 
       expect(filters).toEqual({
-        coordinateur: { conseillerNumeriqueId: { not: null } },
+        isConseillerNumerique: true,
+        coordinateur: { isNot: null },
       })
     })
 
@@ -189,8 +188,11 @@ describe('filter utilisateur', () => {
 
       expect(filters).toEqual({
         OR: [
-          { mediateur: { conseillerNumerique: { isNot: null } } },
-          { coordinateur: { conseillerNumeriqueId: { not: null } } },
+          { isConseillerNumerique: true, mediateur: { isNot: null } },
+          {
+            isConseillerNumerique: true,
+            coordinateur: { isNot: null },
+          },
         ],
       })
     })
@@ -203,8 +205,8 @@ describe('filter utilisateur', () => {
 
       expect(filters).toEqual({
         OR: [
-          { mediateur: { conseillerNumerique: null } },
-          { coordinateur: { conseillerNumeriqueId: null } },
+          { isConseillerNumerique: false, mediateur: { isNot: null } },
+          { isConseillerNumerique: false, coordinateur: { isNot: null } },
         ],
       })
     })
@@ -216,7 +218,8 @@ describe('filter utilisateur', () => {
       const filters = filterOnDispositif({ conseiller_numerique, roles })
 
       expect(filters).toEqual({
-        mediateur: { conseillerNumerique: null },
+        isConseillerNumerique: false,
+        mediateur: { isNot: null },
       })
     })
 
@@ -226,7 +229,10 @@ describe('filter utilisateur', () => {
 
       const filters = filterOnDispositif({ conseiller_numerique, roles })
 
-      expect(filters).toEqual({ coordinateur: { conseillerNumeriqueId: null } })
+      expect(filters).toEqual({
+        isConseillerNumerique: false,
+        coordinateur: { isNot: null },
+      })
     })
 
     it('should filter when dispositif filter is set to hors dispositif with role mediateur and coordinateur', () => {
@@ -237,8 +243,8 @@ describe('filter utilisateur', () => {
 
       expect(filters).toEqual({
         OR: [
-          { mediateur: { conseillerNumerique: null } },
-          { coordinateur: { conseillerNumeriqueId: null } },
+          { isConseillerNumerique: false, mediateur: { isNot: null } },
+          { isConseillerNumerique: false, coordinateur: { isNot: null } },
         ],
       })
     })

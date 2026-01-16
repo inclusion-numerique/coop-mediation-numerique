@@ -21,8 +21,9 @@ export const GET = async (
 ) => {
   const shareId = (await params).shareId
   const shareStatsUser = await userFromShareId(shareId)
-  const user =
-    shareStatsUser?.mediateur?.user ?? shareStatsUser?.coordinateur?.user
+  const mediateurUser = shareStatsUser?.mediateur?.user
+  const coordinateurUser = shareStatsUser?.coordinateur?.user
+  const user = mediateurUser ?? coordinateurUser
 
   if (
     user == null ||
@@ -43,10 +44,11 @@ export const GET = async (
   const statistiquesWorksheetInput = await getStatistiquesWorksheetInput({
     user: {
       ...user,
+      isConseillerNumerique: user.isConseillerNumerique,
       emplois: [],
       rdvAccount: null,
-      coordinateur: shareStatsUser.coordinateur,
-      mediateur: shareStatsUser.mediateur,
+      coordinateur: shareStatsUser.coordinateur ?? null,
+      mediateur: shareStatsUser.mediateur ?? null,
     },
     filters,
   })

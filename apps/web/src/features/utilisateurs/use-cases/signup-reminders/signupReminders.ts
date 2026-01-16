@@ -52,10 +52,6 @@ const deleteAndNotify = async (now: Date) => {
           where: { mediateurId: mediateur.id },
         })
 
-        await tx.conseillerNumerique.deleteMany({
-          where: { mediateurId: mediateur.id },
-        })
-
         await tx.mediateur.delete({ where: { id: mediateur.id } })
       }
 

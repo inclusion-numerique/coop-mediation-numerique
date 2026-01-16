@@ -22,14 +22,9 @@ export type ActeurIdentityData = Omit<
   ActeurForList,
   'mediateur' | 'coordinateur'
 > & {
-  mediateur: Pick<
-    NonNullable<ActeurForList['mediateur']>,
-    'id' | 'conseillerNumerique'
-  > | null
-  coordinateur: Pick<
-    NonNullable<ActeurForList['coordinateur']>,
-    'id' | 'conseillerNumeriqueId'
-  > | null
+  isConseillerNumerique: boolean
+  mediateur: Pick<NonNullable<ActeurForList['mediateur']>, 'id'> | null
+  coordinateur: Pick<NonNullable<ActeurForList['coordinateur']>, 'id'> | null
 }
 
 const ActeurIdentity = ({

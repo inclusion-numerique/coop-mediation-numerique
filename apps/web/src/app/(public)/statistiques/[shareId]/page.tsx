@@ -28,8 +28,9 @@ const Page = async ({ params, searchParams }: PageProps) => {
   }
 
   const shareStatsUser = await userFromShareId(shareId)
-  const user =
-    shareStatsUser?.mediateur?.user ?? shareStatsUser?.coordinateur?.user
+  const mediateurUser = shareStatsUser?.mediateur?.user
+  const coordinateurUser = shareStatsUser?.coordinateur?.user
+  const user = mediateurUser ?? coordinateurUser
 
   if (
     user == null ||
@@ -40,9 +41,10 @@ const Page = async ({ params, searchParams }: PageProps) => {
   const mesStatistiquesProps = await getMesStatistiquesPageData({
     user: {
       ...user,
+      isConseillerNumerique: user.isConseillerNumerique,
       rdvAccount: null,
-      mediateur: shareStatsUser?.mediateur,
-      coordinateur: shareStatsUser?.coordinateur,
+      mediateur: shareStatsUser?.mediateur ?? null,
+      coordinateur: shareStatsUser?.coordinateur ?? null,
     },
     activitesFilters: validateActivitesFilters(search),
     graphOptions: {

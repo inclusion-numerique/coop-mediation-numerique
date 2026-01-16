@@ -28,11 +28,7 @@ const queryUserFromShareId = (id: string) =>
               email: true,
               name: true,
               role: true,
-            },
-          },
-          conseillerNumerique: {
-            select: {
-              id: true,
+              isConseillerNumerique: true,
             },
           },
           coordinations: {
@@ -82,9 +78,9 @@ const queryUserFromShareId = (id: string) =>
               email: true,
               name: true,
               role: true,
+              isConseillerNumerique: true,
             },
           },
-          conseillerNumeriqueId: true,
           mediateursCoordonnes: {
             select: {
               mediateurId: true,

@@ -18,17 +18,6 @@ export const metadata: Metadata = {
   title: metadataTitle('Mon profil'),
 }
 
-const getConumIdPgFor = async (user: SessionUser) => {
-  if (user.mediateur?.conseillerNumerique == null) return null
-
-  const conumV1 = await findConseillerNumeriqueV1({
-    id: user.mediateur.conseillerNumerique.id,
-    includeDeleted: true,
-  })
-
-  return conumV1?.conseiller.idPG ?? null
-}
-
 const MonProfilPage = async () => {
   const user = await authenticateUser()
 
@@ -40,12 +29,9 @@ const MonProfilPage = async () => {
     ? await getContractInfo(user.email)
     : null
 
-  const contratConum =
-    user.mediateur?.conseillerNumerique?.id == null
-      ? null
-      : await getContractInfo(user.email)
-
-  const conumIdPg = await getConumIdPgFor(user)
+  const contratConum = !user.isConseillerNumerique
+    ? null
+    : await getContractInfo(user.email)
 
   return (
     <>
@@ -83,14 +69,10 @@ const MonProfilPage = async () => {
           ) : null}
           {!!contratConum && (
             <section className="fr-mb-4v">
-              <Contract
-                isCoordinateur={false}
-                {...contratConum}
-                idPGConum={conumIdPg}
-              />
+              <Contract isCoordinateur={false} {...contratConum} />
             </section>
           )}
-          {user.mediateur?.conseillerNumerique?.id == null && (
+          {!user.isConseillerNumerique && (
             <section className="fr-mb-4v">
               <ProfileDeleteCard />
             </section>

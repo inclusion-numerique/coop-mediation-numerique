@@ -347,8 +347,7 @@ export type UtilisateurAttributes = {
     }>
   } | null
   conseiller_numerique: {
-    id: string
-    id_pg: number | null
+    is_conseiller_numerique: true
   } | null
 }
 
@@ -444,50 +443,13 @@ export const GET = createApiV1Route
             }
           : undefined
 
-    const conseillerNumeriqueIds = params.filter.conseiller_numerique_id
-    const conseillerNumeriqueIdsPg =
-      params.filter.conseiller_numerique_id_pg?.map((id) =>
-        Number.parseInt(id, 10),
-      )
+    // Filter by conseiller numérique status (IDs no longer available, use boolean)
     const hasConseillerNumeriqueFilter =
-      conseillerNumeriqueIds || conseillerNumeriqueIdsPg
+      (params.filter.conseiller_numerique_id?.length ?? 0) > 0 ||
+      (params.filter.conseiller_numerique_id_pg?.length ?? 0) > 0
 
-    // Used to filter by conseiller_numerique_id or conseiller_numerique_id_pg
-    const conseillerNumeriqueIdsFilter = hasConseillerNumeriqueFilter
-      ? {
-          OR: [
-            {
-              mediateur: {
-                conseillerNumerique: {
-                  id: conseillerNumeriqueIds
-                    ? {
-                        in: conseillerNumeriqueIds,
-                      }
-                    : undefined,
-                  idPg: conseillerNumeriqueIdsPg
-                    ? {
-                        in: conseillerNumeriqueIdsPg,
-                      }
-                    : undefined,
-                },
-              },
-            },
-            {
-              coordinateur: {
-                conseillerNumeriqueId: conseillerNumeriqueIds
-                  ? {
-                      in: conseillerNumeriqueIds,
-                    }
-                  : undefined,
-                conseillerNumeriqueIdPg: conseillerNumeriqueIdsPg
-                  ? {
-                      in: conseillerNumeriqueIdsPg,
-                    }
-                  : undefined,
-              },
-            },
-          ],
-        }
+    const isConseillerNumeriquesFilter = hasConseillerNumeriqueFilter
+      ? { isConseillerNumerique: true }
       : null
 
     const users = await prismaClient.user.findMany({
@@ -508,7 +470,7 @@ export const GET = createApiV1Route
         ],
         role: 'User',
         ...deletedFilter,
-        ...conseillerNumeriqueIdsFilter,
+        ...isConseillerNumeriquesFilter,
       },
       orderBy: [{ created: 'desc' }],
       take: cursorPagination.take,
@@ -529,7 +491,6 @@ export const GET = createApiV1Route
         },
         mediateur: {
           include: {
-            conseillerNumerique: true,
             enActivite: {
               where: {
                 ...supressionFilter,
@@ -579,7 +540,7 @@ export const GET = createApiV1Route
 
         role: 'User',
         ...deletedFilter,
-        ...conseillerNumeriqueIdsFilter,
+        ...isConseillerNumeriquesFilter,
       },
     })
 
@@ -665,23 +626,11 @@ export const GET = createApiV1Route
                 ),
               }
             : null,
-          conseiller_numerique: u.mediateur?.conseillerNumerique?.id
+          conseiller_numerique: u.isConseillerNumerique
             ? {
-                id: u.mediateur.conseillerNumerique.id,
-                id_pg:
-                  u.mediateur.conseillerNumerique.idPg ??
-                  u.coordinateur?.conseillerNumeriqueIdPg ?? // wierd edge case where we may not have id_pg depending on timing of signup
-                  null,
+                is_conseiller_numerique: true,
               }
-            : u.coordinateur?.conseillerNumeriqueId
-              ? {
-                  id: u.coordinateur.conseillerNumeriqueId,
-                  id_pg:
-                    u.coordinateur.conseillerNumeriqueIdPg ??
-                    u.mediateur?.conseillerNumerique?.idPg ?? // wierd edge case where we may not have id_pg depending on timing of signup
-                    null,
-                }
-              : null,
+            : null,
         },
       })),
       links: {

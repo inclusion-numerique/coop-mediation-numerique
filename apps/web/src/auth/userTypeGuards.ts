@@ -13,14 +13,9 @@ export type CoordinateurUser<
 }
 
 export type ConseillerNumeriqueUser<
-  T extends Pick<SessionUser, 'mediateur'> = SessionUser,
+  T extends Pick<SessionUser, 'isConseillerNumerique'> = SessionUser,
 > = T & {
-  mediateur: Exclude<T['mediateur'], null> & {
-    conseillerNumerique: Exclude<
-      Exclude<T['mediateur'], null>['conseillerNumerique'],
-      null
-    >
-  }
+  isConseillerNumerique: true
 }
 
 export const isMediateur = <
@@ -30,10 +25,10 @@ export const isMediateur = <
 ): user is MediateurUser<T> => !!user.mediateur
 
 export const isConseillerNumerique = <
-  T extends Pick<SessionUser, 'mediateur' | 'emplois'> = SessionUser,
+  T extends Pick<SessionUser, 'isConseillerNumerique'> = SessionUser,
 >(
   user: T | null,
-): user is ConseillerNumeriqueUser<T> => !!user?.mediateur?.conseillerNumerique
+): user is ConseillerNumeriqueUser<T> => !!user?.isConseillerNumerique
 
 export const isCoordinateur = <
   T extends Pick<SessionUser, 'coordinateur' | 'emplois'> = SessionUser,
@@ -42,7 +37,11 @@ export const isCoordinateur = <
 ): user is CoordinateurUser<T> => !!user.coordinateur
 
 export const isCoordinateurConseillerNumerique = <
-  T extends Pick<SessionUser, 'coordinateur' | 'emplois'> = SessionUser,
+  T extends Pick<
+    SessionUser,
+    'coordinateur' | 'isConseillerNumerique'
+  > = SessionUser,
 >(
   user: T,
-): user is CoordinateurUser<T> => !!user.coordinateur?.conseillerNumeriqueId
+): user is CoordinateurUser<T> & ConseillerNumeriqueUser<T> =>
+  !!user.coordinateur && !!user.isConseillerNumerique

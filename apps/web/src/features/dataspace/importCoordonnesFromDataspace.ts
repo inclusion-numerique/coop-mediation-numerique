@@ -4,7 +4,7 @@ import { v4 } from 'uuid'
 
 /**
  * Find coordinateurs in our database that coordinate this mediateur
- * Uses the conseiller IDs from Dataspace to match with our Coordinateur records
+ * Uses the coop IDs from Dataspace to match with our Coordinateur records
  */
 const findCoordinateursForMediateur = async ({
   conseillersCoordonnes,
@@ -15,36 +15,23 @@ const findCoordinateursForMediateur = async ({
     return []
   }
 
-  // Extract all possible IDs to search for coordinateurs
+  // Extract coop IDs to search for coordinateurs
   const coopIds = conseillersCoordonnes
     .map((c) => c.ids.coop)
     .filter((id): id is string => id !== null)
 
-  const conseillerNumeriqueIds = conseillersCoordonnes
-    .map((c) => c.ids.conseiller_numerique)
-    .filter((id): id is string => id !== null)
+  if (coopIds.length === 0) {
+    return []
+  }
 
-  // Find coordinateurs that match any of these IDs
+  // Find coordinateurs that match by coop UUID through mediateur
   return prismaClient.coordinateur.findMany({
     where: {
-      OR: [
-        // Match by conseiller_numerique ID (MongoDB ObjectId style)
-        ...(conseillerNumeriqueIds.length > 0
-          ? [{ conseillerNumeriqueId: { in: conseillerNumeriqueIds } }]
-          : []),
-        // Match by coop UUID through mediateur
-        ...(coopIds.length > 0
-          ? [
-              {
-                user: {
-                  mediateur: {
-                    id: { in: coopIds },
-                  },
-                },
-              },
-            ]
-          : []),
-      ],
+      user: {
+        mediateur: {
+          id: { in: coopIds },
+        },
+      },
     },
     select: {
       id: true,
@@ -119,25 +106,18 @@ export const importConseillersCooordonnesForCoordinateur = async ({
     return { mediateurIds: [] }
   }
 
-  // Find mediateurs by their coop ID or conseiller numerique ID
+  // Find mediateurs by their coop ID only
   const coopIds = conseillersCoordonnes
     .map((c) => c.ids.coop)
     .filter((id): id is string => id !== null)
 
-  const conseillerNumeriqueIds = conseillersCoordonnes
-    .map((c) => c.ids.conseiller_numerique)
-    .filter((id): id is string => id !== null)
+  if (coopIds.length === 0) {
+    return { mediateurIds: [] }
+  }
 
   const mediateurs = await prismaClient.mediateur.findMany({
     where: {
-      OR: [
-        // Match by coop UUID (mediateur.id)
-        ...(coopIds.length > 0 ? [{ id: { in: coopIds } }] : []),
-        // Match by conseiller numerique ID
-        ...(conseillerNumeriqueIds.length > 0
-          ? [{ conseillerNumerique: { id: { in: conseillerNumeriqueIds } } }]
-          : []),
-      ],
+      id: { in: coopIds },
     },
     select: {
       id: true,

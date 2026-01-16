@@ -93,8 +93,8 @@ const nullActivite: Omit<
     user: {
       firstName: 'Médiateur',
       lastName: 'Avec activités',
+      isConseillerNumerique: false,
     },
-    conseillerNumerique: null,
   },
   v1CraId: null,
   rdv: null,
