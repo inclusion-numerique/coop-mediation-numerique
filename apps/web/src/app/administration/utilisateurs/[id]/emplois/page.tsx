@@ -96,7 +96,6 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
     include: {
       mediateur: {
         include: {
-          conseillerNumerique: true,
           coordinations: {
             include: {
               coordinateur: {
@@ -169,9 +168,7 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
   })
 
   // TODO use helper after annuaire mon-reseau feature merge
-  const isConseillerNumerique =
-    user.mediateur?.conseillerNumerique !== null ||
-    user.coordinateur?.conseillerNumeriqueId !== null
+  const isConseillerNumerique = user.isConseillerNumerique !== null
 
   return (
     <CoopPageContainer>

@@ -123,12 +123,6 @@ export const resetFixtureUser = async (
         },
       })
 
-      await prismaClient.conseillerNumerique.deleteMany({
-        where: {
-          mediateurId,
-        },
-      })
-
       await prismaClient.beneficiaire.deleteMany({
         where: {
           mediateurId,

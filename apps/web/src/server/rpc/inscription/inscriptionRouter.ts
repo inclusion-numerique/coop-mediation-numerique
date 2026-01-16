@@ -5,9 +5,6 @@ import {
   deploymentCanCreateBrevoContact,
   toBrevoContact,
 } from '@app/web/external-apis/brevo/createBrevoContact'
-import { fetchConseillerNumeriqueV1Data } from '@app/web/external-apis/conseiller-numerique/fetchConseillerNumeriqueV1Data'
-import { isConseillerNumeriqueV1DataWithActiveMiseEnRelation } from '@app/web/external-apis/conseiller-numerique/isConseillerNumeriqueV1WithActiveMiseEnRelation'
-import { importCoordinateurMediationDataFromV1 } from '@app/web/features/legacy-mongo-v1/importCoordinateurMediationDataFromV1'
 import { ChoisirProfilEtAccepterCguValidation } from '@app/web/features/utilisateurs/use-cases/registration/ChoisirProfilEtAccepterCguValidation'
 import { LieuxActiviteValidation } from '@app/web/features/utilisateurs/use-cases/registration/LieuxActivite'
 import { RenseignerStructureEmployeuseValidation } from '@app/web/features/utilisateurs/use-cases/registration/RenseignerStructureEmployeuse'
@@ -610,7 +607,8 @@ export const inscriptionRouter = router({
           lastName: true,
           phone: true,
           coordinateur: true,
-          mediateur: { select: { id: true, conseillerNumerique: true } },
+          mediateur: { select: { id: true } },
+          isConseillerNumerique: true,
         },
       })
 
@@ -681,28 +679,13 @@ export const inscriptionRouter = router({
         await createBrevoContact({
           contact: toBrevoContact({
             ...sessionUser,
-            mediateur: { ...upsertedMediateur, conseillerNumerique: null },
+            mediateur: { ...upsertedMediateur },
           }),
           listIds: [ServerWebAppConfig.Brevo.usersListId],
         })
       }
 
-      if (sessionUser.coordinateur.conseillerNumeriqueId != null) {
-        const v1Conseiller = await fetchConseillerNumeriqueV1Data({
-          v1ConseillerId: sessionUser.coordinateur.conseillerNumeriqueId,
-        })
-
-        if (
-          v1Conseiller &&
-          isConseillerNumeriqueV1DataWithActiveMiseEnRelation(v1Conseiller)
-        ) {
-          await importCoordinateurMediationDataFromV1({
-            user: sessionUser,
-            upsertedMediateur,
-            v1Conseiller,
-          })
-        }
-      }
+      // V1 import logic removed - Dataspace is now source of truth
 
       addMutationLog({
         userId: sessionUser.id,
@@ -734,8 +717,11 @@ export const inscriptionRouter = router({
         where: { mediateurId: mediateur.id },
       })
 
-      await prismaClient.conseillerNumerique.deleteMany({
-        where: { mediateurId: mediateur.id },
+      await prismaClient.user.update({
+        where: { id: sessionUser.id },
+        data: {
+          isConseillerNumerique: false,
+        },
       })
 
       await prismaClient.mediateur.delete({

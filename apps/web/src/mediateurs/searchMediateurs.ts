@@ -54,10 +54,8 @@ export const searchMediateur = async (options: SearchMediateurOptions) => {
           firstName: true,
           name: true,
           email: true,
+          isConseillerNumerique: true,
         },
-      },
-      conseillerNumerique: {
-        select: { id: true },
       },
     },
     orderBy: [{ user: { lastName: 'asc' } }, { user: { firstName: 'asc' } }],

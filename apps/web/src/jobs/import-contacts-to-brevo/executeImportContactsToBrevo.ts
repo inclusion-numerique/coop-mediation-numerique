@@ -15,7 +15,7 @@ export const executeImportContactsToBrevo = async () => {
   const users = await prisma.user.findMany({
     where: { role: 'User', inscriptionValidee: { not: null } },
     include: {
-      mediateur: { include: { conseillerNumerique: true } },
+      mediateur: true,
       coordinateur: true,
     },
   })

@@ -1,7 +1,6 @@
 import Card from '@app/web/components/Card'
 import { ReferentStructure } from '@app/web/components/structure/ReferentStructure'
 import { Typologies } from '@app/web/components/structure/Typologies'
-import UpdateStructure from '@app/web/components/structure/UpdateStructure'
 import type { ActeurEmploi } from '@app/web/features/mon-reseau/use-cases/acteurs/db/getActeurEmploiForDate'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Link from 'next/link'
@@ -97,7 +96,7 @@ const ActeurStructureEmployeuse = ({
           )}
         </>
       )}
-      {canUpdateStructure && <UpdateStructure />}
+      {/* Structure update now happens via Dataspace API sync */}
     </Card>
   )
 }

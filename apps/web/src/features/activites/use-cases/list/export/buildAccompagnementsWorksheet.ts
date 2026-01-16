@@ -159,10 +159,10 @@ export const buildAccompagnementsWorksheet = (
             ? [
                 mediateur.user.firstName,
                 mediateur.user.lastName,
-                mediateur.conseillerNumerique == null
+                mediateur.user.isConseillerNumerique == null
                   ? 'Médiateur'
                   : 'Conseiller Numérique',
-                mediateur.conseillerNumerique?.id ?? '',
+                mediateur.user.isConseillerNumerique ?? '',
               ]
             : []),
           typeActiviteLabels[type],

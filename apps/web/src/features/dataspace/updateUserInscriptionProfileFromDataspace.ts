@@ -26,6 +26,8 @@ export const updateUserInscriptionProfileFromDataspace = async ({
         profilInscription: getProfileFromDataspace({
           dataspaceData,
         }),
+        isConseillerNumerique: dataspaceData?.is_conseiller_numerique ?? false,
+        dataspaceUserId: dataspaceData?.id,
       },
       select: sessionUserSelect,
     })

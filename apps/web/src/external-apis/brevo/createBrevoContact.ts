@@ -9,15 +9,9 @@ type User = {
   firstName: string | null
   lastName: string | null
   phone: string | null
-  mediateur:
-    | ({ conseillerNumerique: { id: string | null } | null } & {
-        id: string | null
-      })
-    | null
-  coordinateur: {
-    id: string | null
-    conseillerNumeriqueId: string | null
-  } | null
+  isConseillerNumerique: boolean
+  mediateur: { id: string | null } | null
+  coordinateur: { id: string | null } | null
 }
 
 type BrevoContactAttibutes = {
@@ -42,13 +36,8 @@ export const toBrevoContact = (user: User): BrevoContact => ({
     SMS: user.phone ?? '',
     ROLES: [
       ...(user.mediateur?.id == null ? [] : ['Médiateur']),
-      ...(user.mediateur?.conseillerNumerique?.id == null
-        ? []
-        : ['Conseiller numérique']),
-      ...(user.coordinateur?.id == null ? [] : ['Coordinateur']),
-      ...(user.coordinateur?.conseillerNumeriqueId == null
-        ? []
-        : ['Coordinateur de conseiller numérique']),
+      ...(user.isConseillerNumerique ? ['Conseiller numérique'] : []),
+      ...(user.coordinateur?.id != null ? ['Coordinateur'] : []),
     ],
   },
 })

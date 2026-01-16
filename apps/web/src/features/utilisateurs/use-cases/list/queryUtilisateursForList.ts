@@ -13,12 +13,10 @@ export const searchUtilisateurSelect = {
   profilInscription: true,
   created: true,
   deleted: true,
+  isConseillerNumerique: true,
   mediateur: {
     select: {
       id: true,
-      conseillerNumerique: {
-        select: { id: true },
-      },
       derniereCreationActivite: true,
       derniereCreationBeneficiaire: true,
       accompagnementsCount: true,
@@ -36,7 +34,7 @@ export const searchUtilisateurSelect = {
   },
   coordinateur: {
     select: {
-      conseillerNumeriqueId: true,
+      id: true,
       derniereCreationActivite: true,
       _count: {
         select: {
