@@ -279,6 +279,9 @@ export const beneficiairesCoordinateur = [
   beneficiaireAnonymeCoordinateur,
 ]
 
+const sixMonthsAgo = new Date()
+sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
+
 export const fixtureBeneficiaires = [
   ...beneficiairesMediateurAvecActivite,
   ...beneficiairesConseillerNumerique,

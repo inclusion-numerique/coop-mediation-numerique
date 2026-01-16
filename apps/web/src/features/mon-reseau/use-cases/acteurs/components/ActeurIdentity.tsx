@@ -12,6 +12,7 @@ import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { ButtonProps } from '@codegouvfr/react-dsfr/Button'
 import ButtonsGroup from '@codegouvfr/react-dsfr/ButtonsGroup'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
+import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 import { ActeurDetailPageData } from '../getActeurDetailPageData'
@@ -201,15 +202,30 @@ const ActeurIdentity = ({
             onClick: closeRemoveFromTeamModal,
           },
           {
-            className: 'fr-background-action-high--error',
             children: 'Retirer de mon équipe',
             onClick: onRemoveFromTeam,
           },
         ]}
       >
         Êtes-vous sûr de vouloir retirer ce médiateur numérique de votre
-        équipe&nbsp;? Vous n’aurez plus accès à ses informations de profil ainsi
-        qu’à ses statistiques.
+        équipe&nbsp;?
+        <Notice
+          className="fr-notice--flex fr-mt-4v"
+          title={
+            <span className="fr-text--left fr-text-default--grey fr-text--regular">
+              Vous n’aurez plus accès aux prochaines activités et statistiques
+              enregistrés{' '}
+              <b>
+                à partir du moment où vous aurez retiré ‘{displayName}’ de votre
+                équipe.
+              </b>
+              <br />
+              <br />
+              Vous conserverez uniquement l’accès à ses activités et
+              statistiques archivés <b>jusqu’à ce jour.</b>
+            </span>
+          }
+        />
       </RemoveFromTeamModal>
       <InviteToTeamModal
         title={`Inviter "${displayName}" à rejoindre votre équipe de coordination.`}

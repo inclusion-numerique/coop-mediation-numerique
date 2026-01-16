@@ -375,6 +375,9 @@ export const coordinateurCrasCollectifs = [
   }),
 ]
 
+const sixMonthsAgo = new Date()
+sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
+
 export const fixtureCrasIndividuels = [
   ...mediateurAvecActiviteCrasIndividuels,
   ...conseillerNumeriqueCrasIndividuels,
