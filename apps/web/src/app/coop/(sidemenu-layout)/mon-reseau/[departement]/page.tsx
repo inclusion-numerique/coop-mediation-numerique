@@ -31,10 +31,7 @@ const Page = async ({
   return (
     <MonReseauPage
       {...data}
-      isConseillerNumerique={
-        user.mediateur?.conseillerNumerique != null ||
-        user.coordinateur?.conseillerNumeriqueId != null
-      }
+      isConseillerNumerique={user.isConseillerNumerique}
     />
   )
 }
