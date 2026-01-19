@@ -117,16 +117,14 @@ const LieuxPage = ({
             </h2>
             <SortSelect
               options={[
-                { label: 'Nom (A à Z)', value: 'nomaz' },
-                { label: 'Nom (Z à A)', value: 'nomza' },
+                { label: 'Alphabétique (A à Z)', value: 'nomaz' },
+                { label: 'Alphabétique (Z à A)', value: 'nomza' },
                 {
-                  label:
-                    'Par date de mise à jour (du plus récent au plus ancien)',
+                  label: 'Mise à jour récente',
                   value: 'majrecent',
                 },
                 {
-                  label:
-                    'Par date de mise à jour (du plus ancien au plus récent)',
+                  label: 'Mise à jour ancienne',
                   value: 'majancien',
                 },
               ]}
