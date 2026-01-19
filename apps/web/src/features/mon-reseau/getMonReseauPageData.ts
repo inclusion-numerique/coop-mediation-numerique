@@ -33,6 +33,9 @@ const countActeursInDepartement = ({
 
 /**
  * Count structures (lieux) in a department
+ * Only count lieux where:
+ * - At least one active mediateur_en_activite exists
+ * - OR visible_pour_cartographie_nationale is true
  */
 const countLieuxInDepartement = ({
   departementCode,
@@ -41,9 +44,19 @@ const countLieuxInDepartement = ({
 }) =>
   prismaClient.$queryRaw<[{ count: number }]>`
     SELECT COUNT(*)::integer AS count
-    FROM structures
-    WHERE suppression IS NULL
-      AND SUBSTRING(code_insee FROM ${departementCodeFromInseeRegex}) = ${departementCode}
+    FROM structures s
+    WHERE s.suppression IS NULL
+      AND SUBSTRING(s.code_insee FROM ${departementCodeFromInseeRegex}) = ${departementCode}
+      AND (
+        s.visible_pour_cartographie_nationale = true
+        OR EXISTS (
+          SELECT 1
+          FROM mediateurs_en_activite mea
+          WHERE mea.structure_id = s.id
+            AND mea.suppression IS NULL
+            AND mea.fin_activite IS NULL
+        )
+      )
   `
 
 export type MonReseauPageData = {

@@ -62,6 +62,11 @@ const getLieuxByIds = async ({
   return lieux
 }
 
+/**
+ * Lieux in this annuaire contexts are only lieux that have:
+ * - At least one active mediateur_en_activite
+ * - OR visible_pour_cartographie_nationale is true
+ */
 export const searchLieux = async ({
   departementCode,
   searchParams,
@@ -132,6 +137,16 @@ export const searchLieux = async ({
         AND ${communesCondition}
         AND ${departementsFilterCondition}
         AND ${mediateursCondition}
+        AND (
+          s.visible_pour_cartographie_nationale = true
+          OR EXISTS (
+            SELECT 1
+            FROM mediateurs_en_activite mea2
+            WHERE mea2.structure_id = s.id
+              AND mea2.suppression IS NULL
+              AND mea2.fin_activite IS NULL
+          )
+        )
     )
     SELECT id FROM distinct_lieux
     ORDER BY ${sortColumn} ${sortDirection}, id ASC
@@ -151,6 +166,16 @@ export const searchLieux = async ({
       AND ${communesCondition}
       AND ${departementsFilterCondition}
       AND ${mediateursCondition}
+      AND (
+        s.visible_pour_cartographie_nationale = true
+        OR EXISTS (
+          SELECT 1
+          FROM mediateurs_en_activite mea2
+          WHERE mea2.structure_id = s.id
+            AND mea2.suppression IS NULL
+            AND mea2.fin_activite IS NULL
+        )
+      )
   `
 
   const totalCount = countResult[0]?.count ?? 0
