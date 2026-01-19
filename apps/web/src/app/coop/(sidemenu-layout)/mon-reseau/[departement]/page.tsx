@@ -22,13 +22,21 @@ const Page = async ({
 }: {
   params: Promise<{ departement: string }>
 }) => {
-  await authenticateMediateurOrCoordinateur()
+  const user = await authenticateMediateurOrCoordinateur()
 
   const { departement: departementCode } = await params
   const departement = getDepartementFromCodeOrThrowNotFound(departementCode)
   const data = await getMonReseauPageData({ departementCode: departement.code })
 
-  return <MonReseauPage {...data} />
+  return (
+    <MonReseauPage
+      {...data}
+      isConseillerNumerique={
+        user.mediateur?.conseillerNumerique != null ||
+        user.coordinateur?.conseillerNumeriqueId != null
+      }
+    />
+  )
 }
 
 export default Page
