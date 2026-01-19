@@ -3,7 +3,11 @@ import { seedStructures } from '@app/fixtures/structures'
 import { conseillerNumerique } from '@app/fixtures/users/conseillerNumerique'
 import { mediateurAvecActivite } from '@app/fixtures/users/mediateurAvecActivite'
 import { mediateurSansActivites } from '@app/fixtures/users/mediateurSansActivites'
-import type { DataspaceMediateur } from '@app/web/external-apis/dataspace/dataspaceApiClient'
+import {
+  type DataspaceMediateur,
+  forceMockDataspaceApi,
+  resetMockDataspaceApiFromEnv,
+} from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import {
   resetMockDataspaceDatabase,
   setMockDataspaceData,
@@ -32,7 +36,13 @@ const createUniqueMockData = (
 describe('updateUserFromDataspaceData', () => {
   beforeAll(async () => {
     resetMockDataspaceDatabase()
+    forceMockDataspaceApi({ mocked: true })
     await seedStructures(prismaClient)
+  })
+
+  afterAll(async () => {
+    resetMockDataspaceDatabase()
+    resetMockDataspaceApiFromEnv()
   })
 
   afterEach(async () => {

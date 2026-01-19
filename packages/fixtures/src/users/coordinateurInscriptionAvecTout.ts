@@ -28,8 +28,6 @@ export const coordinateurInscriptionAvecTout = givenUser({
       },
       create: {
         id: coordinateurInscriptionAvecToutCoordinateurId,
-        conseillerNumeriqueId:
-          coordinateurInscriptionAvecToutConseillerNumeriqueId,
       },
     },
   },

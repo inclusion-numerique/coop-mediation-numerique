@@ -1,5 +1,4 @@
 import { createApiV1Route } from '@app/web/app/api/v1/createApiV1Route'
-import { conseillerNumeriqueMongoCollection } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   DispositifProgrammeNational,
@@ -297,7 +296,7 @@ export const GET = createApiV1Route
         NULLIF(structures.prise_en_charge_specifique, '{}') AS prise_en_charge_specifique,
         NULLIF(structures.frais_a_charge, '{}') AS frais_a_charge,
           CASE
-            WHEN COUNT(conseillers_numeriques.id) > 0 THEN ARRAY['Conseillers numériques']
+            WHEN COUNT(CASE WHEN users.is_conseiller_numerique THEN 1 END) > 0 THEN ARRAY['Conseillers numériques']
           END
         AS dispositif_programmes_nationaux,
         NULLIF(structures.formations_labels, '{}') AS formations_labels,
@@ -312,14 +311,13 @@ export const GET = createApiV1Route
                 'nom', users.name,
                 'courriel', users.email,
                 'telephone', NULLIF(users.phone, ''),
-                'id', conseillers_numeriques.id
+                'id', users.id
               ))
-            ) FILTER (WHERE users.id IS NOT NULL),
+            ) FILTER (WHERE users.id IS NOT NULL AND users.is_conseiller_numerique = TRUE),
             '[]'::jsonb
           ) AS aidants
         FROM structures structures
           LEFT JOIN mediateurs_en_activite mediateurs_en_activite  ON structures.id = mediateurs_en_activite.structure_id
-          LEFT JOIN conseillers_numeriques conseillers_numeriques ON mediateurs_en_activite.mediateur_id = conseillers_numeriques.mediateur_id
           LEFT JOIN mediateurs ON mediateurs_en_activite.mediateur_id = mediateurs.id AND mediateurs.is_visible = TRUE
           LEFT JOIN users ON mediateurs.user_id = users.id
       WHERE structures.suppression IS NULL
@@ -348,18 +346,8 @@ export const GET = createApiV1Route
         }
     `
 
-    const conseillerCollection =
-      await conseillerNumeriqueMongoCollection('conseillers')
-
-    const conseillersIds = new Set(
-      (await conseillerCollection.find().toArray())
-        .filter(({ statut }) => statut === 'RECRUTE')
-        .map((conseiller) => conseiller._id.toString()),
-    )
-
     const result = lieuxDeMediationNumerique.map((lieu) => {
-      const aidants =
-        lieu.aidants?.filter((aidant) => conseillersIds.has(aidant.id)) ?? []
+      const aidants = lieu.aidants ?? []
 
       return {
         ...toSchemaLieuMediationNumerique(lieu),

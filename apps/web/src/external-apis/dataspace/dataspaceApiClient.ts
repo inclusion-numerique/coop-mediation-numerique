@@ -110,6 +110,14 @@ export const isDataspaceApiNotFound = <T>(
   result: DataspaceApiResult<T>,
 ): result is null => result === null
 
+let mockDataspaceApiEnabled = ServerWebAppConfig.Dataspace.isMocked
+export const forceMockDataspaceApi = ({ mocked }: { mocked: boolean }) => {
+  mockDataspaceApiEnabled = mocked
+}
+
+export const resetMockDataspaceApiFromEnv = () => {
+  mockDataspaceApiEnabled = ServerWebAppConfig.Dataspace.isMocked
+}
 /**
  * Fetch mediateur data from Dataspace API by email
  * Returns null if the mediateur is not found (404)
@@ -124,7 +132,7 @@ export const getMediateurFromDataspaceApi = async ({
   email: string
 }): Promise<DataspaceApiResult<DataspaceMediateur>> => {
   // Use mock implementation if enabled
-  if (ServerWebAppConfig.Dataspace.isMocked) {
+  if (mockDataspaceApiEnabled) {
     return getMediateurFromDataspaceApiMock({ email })
   }
 

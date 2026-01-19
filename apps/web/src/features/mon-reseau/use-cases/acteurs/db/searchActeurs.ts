@@ -109,9 +109,9 @@ export const searchActeurs = async ({
   // Build role condition
   const roleCondition =
     searchParams.role === 'conseiller_numerique'
-      ? Prisma.sql`u.conseiller_numerique_id IS NOT NULL AND m.id IS NOT NULL`
+      ? Prisma.sql`u.is_conseiller_numerique = TRUE AND m.id IS NOT NULL`
       : searchParams.role === 'mediateur_numerique'
-        ? Prisma.sql`u.conseiller_numerique_id IS NULL AND m.id IS NOT NULL`
+        ? Prisma.sql`u.is_conseiller_numerique = FALSE AND m.id IS NOT NULL`
         : Prisma.sql`TRUE`
 
   // Build lieu filter conditions
@@ -179,7 +179,6 @@ export const searchActeurs = async ({
     LEFT JOIN mediateurs m ON m.user_id = u.id
     LEFT JOIN mediateurs_en_activite mea ON mea.mediateur_id = m.id AND mea.suppression IS NULL AND mea.fin_activite IS NULL
     LEFT JOIN structures s2 ON s2.id = mea.structure_id
-    LEFT JOIN conseillers_numeriques cn ON cn.mediateur_id = m.id
     WHERE u.deleted IS NULL
       AND u.inscription_validee IS NOT NULL
       AND (

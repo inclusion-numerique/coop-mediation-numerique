@@ -70,7 +70,7 @@ export const searchActivite = async (options: SearchActiviteOptions) => {
                ${activitesBeneficiaireInnerJoin(options.beneficiaireIds)}
                LEFT JOIN structures str ON act.structure_id = str.id
                LEFT JOIN mediateurs med ON act.mediateur_id = med.id
-               LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
+               LEFT JOIN users u ON med.user_id = u.id
 
       WHERE (${mediateurIds.length > 0}::BOOLEAN = FALSE OR act.mediateur_id = ANY(${mediateurIds}::UUID[]))
         AND act.suppression IS NULL
@@ -104,7 +104,7 @@ export const searchActivite = async (options: SearchActiviteOptions) => {
           ${activitesBeneficiaireInnerJoin(options.beneficiaireIds)}
           LEFT JOIN structures str ON act.structure_id = str.id
           LEFT JOIN mediateurs med ON act.mediateur_id = med.id
-          LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
+          LEFT JOIN users u ON med.user_id = u.id
       WHERE (${mediateurIds.length > 0}::BOOLEAN = FALSE OR act.mediateur_id = ANY(${mediateurIds}::UUID[]))
         AND act.suppression IS NULL
         AND ${filterFragment}
@@ -118,7 +118,7 @@ export const searchActivite = async (options: SearchActiviteOptions) => {
           JOIN activites act ON acc.activite_id = act.id
           LEFT JOIN structures str ON act.structure_id = str.id
           LEFT JOIN mediateurs med ON act.mediateur_id = med.id
-          LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
+          LEFT JOIN users u ON med.user_id = u.id
       WHERE (${mediateurIds.length > 0}::BOOLEAN = FALSE OR act.mediateur_id = ANY(${mediateurIds}::UUID[]))
         AND act.suppression IS NULL
         AND ${filterFragment}

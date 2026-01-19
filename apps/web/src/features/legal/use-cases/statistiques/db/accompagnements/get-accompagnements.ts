@@ -35,11 +35,11 @@ export const getAccompagnements = async () => {
     base_accompagnements AS (
       SELECT 
         act.date,
-        CASE WHEN cn.id IS NOT NULL THEN 'conseiller' ELSE 'mediateur' END AS role
+        CASE WHEN u.is_conseiller_numerique THEN 'conseiller' ELSE 'mediateur' END AS role
       FROM activites act
         JOIN accompagnements acc ON acc.activite_id = act.id
         LEFT JOIN mediateurs med ON act.mediateur_id = med.id
-        LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
+        LEFT JOIN users u ON med.user_id = u.id
       WHERE act.suppression IS NULL 
         AND act.v1_cra_id IS NULL
     ),

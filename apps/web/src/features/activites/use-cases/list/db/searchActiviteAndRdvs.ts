@@ -96,7 +96,7 @@ export const searchActiviteAndRdvs = async (
            ${activitesBeneficiaireInnerJoin(options.beneficiaireIds)}
            LEFT JOIN structures str ON act.structure_id = str.id
            LEFT JOIN mediateurs med ON act.mediateur_id = med.id
-           LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
+           LEFT JOIN users u ON med.user_id = u.id
       WHERE ${mediateurIdsCondition}
         AND ${options.shouldFetchActivites ? Prisma.sql`TRUE` : Prisma.sql`FALSE`}
         AND act.suppression IS NULL
@@ -169,7 +169,7 @@ export const searchActiviteAndRdvs = async (
             ${activitesBeneficiaireInnerJoin(options.beneficiaireIds)}
             LEFT JOIN structures str ON act.structure_id = str.id
             LEFT JOIN mediateurs med ON act.mediateur_id = med.id
-            LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
+            LEFT JOIN users u ON med.user_id = u.id
           WHERE ${mediateurIdsCondition}
             AND ${options.shouldFetchActivites ? Prisma.sql`TRUE` : Prisma.sql`FALSE`}
             AND act.suppression IS NULL
