@@ -17,8 +17,8 @@ import { executeIngestLesBasesInRag } from './ingest-les-bases-in-rag/executeIng
 import type { Job, JobName, JobPayload } from './jobs'
 import { output } from './output'
 import { executeSetServciesToSharedLieux } from './set-servcies-to-shared-lieux/executeSetServciesToSharedLieux'
-import { executeSyncConums } from './sync-conums/executeSyncConums'
 import { executeSyncRdvspData } from './sync-rdvsp-data/executeSyncRdvspData'
+import { executeSyncUsersFromDataspace } from './sync-users-from-dataspace/executeSyncUsersFromDataspace'
 import { executeUpdateLieuxActivitesADistance } from './update-lieu-activite-a-distance/executeUpdateLieuxActivitesADistance'
 import { updateStructureFromCartoDataApi } from './update-structures-cartographie-nationale/updateStructureFromCartoDataApi'
 
@@ -57,7 +57,7 @@ export const jobExecutors: {
   'fix-structures': executeFixStructures,
   'fix-users': executeFixUsers,
   'fix-tags': executeFixTags,
-  'sync-conums': executeSyncConums,
+  'sync-users-from-dataspace': executeSyncUsersFromDataspace,
   'sync-rdvsp-data': executeSyncRdvspData,
   'inactive-users-reminders': executeInactiveUsersReminders,
   'fix-users-roles': executeFixUsersRoles,

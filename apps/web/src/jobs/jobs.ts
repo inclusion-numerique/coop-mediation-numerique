@@ -8,8 +8,8 @@ import { ImportContactsToBrevoValidation } from './import-contacts-to-brevo/Impo
 import { InactiveUsersRemindersJobValidation } from './inactive-users-reminders/inactiveUsersJob'
 import { IngestLesBasesInRagValidation } from './ingest-les-bases-in-rag/ingestLesBasesInRagJob'
 import { SetServciesToSharedLieuxValidation } from './set-servcies-to-shared-lieux/setServciesToSharedLieuxJob'
-import { SyncConumsJobValidation } from './sync-conums/syncConumsJob'
 import { SyncRdvspDataJobValidation } from './sync-rdvsp-data/syncRdvspDataJob'
+import { SyncUsersFromDataspaceJobValidation } from './sync-users-from-dataspace/syncUsersFromDataspaceJob'
 import { UpdateLieuxActivitesAdistanceValidation } from './update-lieu-activite-a-distance/updateLieuxActivitesAdistanceJob'
 import { UpdateStructuresCartographieNationaleJobValidation } from './update-structures-cartographie-nationale/updateStructuresCartographieNationaleJob'
 
@@ -38,7 +38,7 @@ export const JobValidation = z.discriminatedUnion('name', [
   UpdateLieuxActivitesAdistanceValidation,
   FixStructuresJobValidation,
   FixUsersJobValidation,
-  SyncConumsJobValidation,
+  SyncUsersFromDataspaceJobValidation,
   SyncRdvspDataJobValidation,
   FixTagsJobValidation,
   InactiveUsersRemindersJobValidation,
