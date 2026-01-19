@@ -33,7 +33,7 @@ const LieuActiviteListPage = async () => {
   return (
     <>
       <SkipLinksPortal />
-      <div className="fr-container fr-container--800 fr-mb-32v">
+      <div className="fr-container fr-container--medium fr-mb-32v">
         <CoopBreadcrumbs currentPage="Mes lieux d'activités" />
         <main id={contentId} className="fr-mb-16w">
           <span className="fr-flex fr-flex-wrap fr-direction-row fr-align-items-center fr-flex-gap-4v fr-my-12v">

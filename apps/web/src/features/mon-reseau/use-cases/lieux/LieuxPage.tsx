@@ -63,7 +63,7 @@ const LieuxPage = ({
   return (
     <>
       <SkipLinksPortal />
-      <div className="fr-container fr-container--800">
+      <div className="fr-container fr-container--medium">
         <CoopBreadcrumbs
           currentPage={breadcrumbLabel}
           parents={getMonReseauBreadcrumbParents({ code: departement.code })}
