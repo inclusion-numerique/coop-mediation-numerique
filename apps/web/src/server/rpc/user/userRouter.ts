@@ -5,6 +5,7 @@ import { mergeUser } from '@app/web/features/utilisateurs/use-cases/merge/mergeU
 import { nouveauReminders } from '@app/web/features/utilisateurs/use-cases/nouveau-reminders/nouveauReminders'
 import { searchUser } from '@app/web/features/utilisateurs/use-cases/search/searchUser'
 import { signupReminders } from '@app/web/features/utilisateurs/use-cases/signup-reminders/signupReminders'
+import { updateUserFromDataspaceData } from '@app/web/features/utilisateurs/use-cases/update-from-dataspace/updateUserFromDataspaceData'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   protectedProcedure,
@@ -216,4 +217,11 @@ export const userRouter = router({
         return updated
       },
     ),
+  updateFromDataspace: protectedProcedure
+    .input(z.object({ userId: z.string().uuid() }))
+    .mutation(async ({ input: { userId }, ctx: { user: sessionUser } }) => {
+      enforceIsAdmin(sessionUser)
+
+      return updateUserFromDataspaceData({ userId })
+    }),
 })

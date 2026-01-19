@@ -4,12 +4,7 @@ import {
   getMediateurFromDataspaceApi,
   isDataspaceApiError,
 } from '@app/web/external-apis/dataspace/dataspaceApiClient'
-import { importLieuxActiviteFromDataspace } from '@app/web/features/dataspace/importLieuxActiviteFromDataspace'
-import {
-  getPrimaryStructureEmployeuse,
-  importStructureEmployeuseFromDataspace,
-} from '@app/web/features/dataspace/importStructureEmployeuseFromDataspace'
-import { syncUserFromDataspace } from '@app/web/features/dataspace/syncUserFromDataspace'
+import { syncFromDataspaceCore } from '@app/web/features/dataspace/syncFromDataspaceCore'
 import { updateUserInscriptionProfileFromDataspace } from '@app/web/features/dataspace/updateUserInscriptionProfileFromDataspace'
 import { importStructureEmployeuseFromSiret } from '@app/web/features/structures/importStructureEmployeuseFromSiret'
 import { prismaClient } from '@app/web/prismaClient'
@@ -39,6 +34,16 @@ const createDebugLogger = (enabled: boolean): InitializeDebugLogger => {
   }
 }
 
+/**
+ * Initialize inscription for a user
+ *
+ * This function uses the shared syncFromDataspaceCore for idempotent sync:
+ * - Coordinateur: Only created if is_coordinateur is true (never deleted)
+ * - Mediateur: Only created if lieux_activite exists (never deleted)
+ * - Structures employeuses: Only synced if is_conseiller_numerique is true
+ *
+ * For users not in Dataspace, falls back to SIRET-based structure import.
+ */
 export const initializeInscription = async ({
   userId,
   email,
@@ -86,15 +91,50 @@ export const initializeInscription = async ({
   ) {
     const dataspaceData = dataspaceResult
 
-    // Sync user roles from Dataspace
+    // Update user's profile inscription based on Dataspace data
     await updateUserInscriptionProfileFromDataspace({
       user: { id: userId },
       dataspaceData,
     })
-    const syncResult = await syncUserFromDataspace({ userId, email })
 
-    // Import structures employeuses if user doesn't have one yet
-    const userBeforeStructureImport = await prismaClient.user.findUnique({
+    log('Updated user inscription profile from Dataspace', {
+      isConseillerNumerique: dataspaceData.is_conseiller_numerique,
+      isCoordinateur: dataspaceData.is_coordinateur,
+    })
+
+    // Use shared core for idempotent sync
+    // This handles:
+    // - Coordinateur creation (only if is_coordinateur is true)
+    // - Mediateur creation (only if lieux_activite exists)
+    // - Structures employeuses sync (only if is_conseiller_numerique is true)
+    // - Lieux d'activité sync
+    const syncResult = await syncFromDataspaceCore({
+      userId,
+      dataspaceData,
+      wasConseillerNumerique: false, // First time initialization
+    })
+
+    log('Sync from Dataspace core result', {
+      success: syncResult.success,
+      noOp: syncResult.noOp,
+      mediateurId: syncResult.mediateurId,
+      coordinateurId: syncResult.coordinateurId,
+      changes: syncResult.changes,
+    })
+
+    // Mark lieux as imported if we synced any
+    if (syncResult.changes.lieuxActiviteSynced > 0) {
+      await prismaClient.user.update({
+        where: { id: userId },
+        data: {
+          importedLieuxFromDataspace: new Date(),
+        },
+      })
+    }
+
+    // For non-CN users (or CN users), check SIRET fallback for structure employeuse
+    // This handles the case where Dataspace doesn't have structures but user has SIRET
+    const userAfterSync = await prismaClient.user.findUnique({
       where: { id: userId },
       select: {
         siret: true,
@@ -108,120 +148,28 @@ export const initializeInscription = async ({
               },
             },
           },
-          where: {
-            suppression: null,
-          },
+          where: { suppression: null },
         },
       },
     })
 
-    log('User state before structure import', {
-      siret: userBeforeStructureImport?.siret ?? null,
-      emploisCount: userBeforeStructureImport?.emplois.length ?? 0,
-      emplois: userBeforeStructureImport?.emplois.map((e) => ({
-        id: e.id,
-        structureNom: e.structure.nom,
-        structureCodeInsee: e.structure.codeInsee,
-      })),
-    })
-
-    const hasStructureEmployeuse =
-      userBeforeStructureImport &&
-      sessionUserHasStructureEmployeuse(userBeforeStructureImport)
-
-    log('Has structure employeuse check', { hasStructureEmployeuse })
-
-    if (!hasStructureEmployeuse) {
-      // Try dataspace structures first
-      if (
-        dataspaceData.structures_employeuses &&
-        dataspaceData.structures_employeuses.length > 0
-      ) {
-        const primaryStructure = getPrimaryStructureEmployeuse(
-          dataspaceData.structures_employeuses,
-        )
-
-        log('Dataspace structures employeuses', {
-          count: dataspaceData.structures_employeuses.length,
-          structures: dataspaceData.structures_employeuses.map((s) => ({
-            nom: s.nom,
-            siret: s.siret,
-            contratsCount: s.contrats?.length ?? 0,
-            contrats: s.contrats?.map((c) => ({
-              type: c.type,
-              dateDebut: c.date_debut,
-              dateFin: c.date_fin,
-              dateRupture: c.date_rupture,
-            })),
-          })),
-          primaryStructure: primaryStructure
-            ? {
-                nom: primaryStructure.nom,
-                siret: primaryStructure.siret,
-              }
-            : null,
-        })
-
-        if (primaryStructure) {
-          log('Importing structure employeuse from Dataspace', {
-            nom: primaryStructure.nom,
-            siret: primaryStructure.siret,
-          })
-          const importResult = await importStructureEmployeuseFromDataspace({
-            userId,
-            structureEmployeuse: primaryStructure,
-            log,
-          })
-          log('Import structure employeuse from Dataspace result', importResult)
-        } else {
-          log(
-            'No primary structure found despite having structures_employeuses',
-          )
-        }
-      } else if (userBeforeStructureImport?.siret) {
-        // Fallback: no structure from dataspace but user has SIRET
-        log('Fallback: importing structure employeuse from SIRET', {
-          siret: userBeforeStructureImport.siret,
-        })
-        const importResult = await importStructureEmployeuseFromSiret({
-          userId,
-          siret: userBeforeStructureImport.siret,
-          log,
-        })
-        log('Import structure employeuse from SIRET result', importResult)
-      } else {
-        log('No structure employeuse source available', {
-          hasDataspaceStructures: false,
-          userSiret: null,
-        })
-      }
-    }
-
-    // Import lieux d'activité if user is mediateur
     if (
-      syncResult.mediateurId &&
-      !dataspaceData.is_coordinateur &&
-      dataspaceData.lieux_activite &&
-      dataspaceData.lieux_activite.length > 0
+      userAfterSync &&
+      !sessionUserHasStructureEmployeuse(userAfterSync) &&
+      userAfterSync.siret
     ) {
-      const dataspaceImportLieuxResult = await importLieuxActiviteFromDataspace(
-        {
-          mediateurId: syncResult.mediateurId,
-          lieuxActivite: dataspaceData.lieux_activite,
-        },
-      )
-      if (dataspaceImportLieuxResult.structureIds.length > 0) {
-        // Mark lieux as imported to customize the inscription flow
-        await prismaClient.user.update({
-          where: { id: userId },
-          data: {
-            importedLieuxFromDataspace: new Date(),
-          },
-        })
-      }
+      log('Fallback: importing structure employeuse from SIRET', {
+        siret: userAfterSync.siret,
+      })
+      const importResult = await importStructureEmployeuseFromSiret({
+        userId,
+        siret: userAfterSync.siret,
+        log,
+      })
+      log('Import structure employeuse from SIRET result', importResult)
     }
 
-    // Fetch updated user
+    // Fetch updated user for next step determination
     const updatedUser = await prismaClient.user.findUnique({
       where: { id: userId },
       select: sessionUserSelect,

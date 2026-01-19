@@ -25,8 +25,7 @@ export type SyncUserFromDataspaceResult = {
  * For a given user:
  * 1. Fetch from Dataspace API by email
  * 2. Update User.dataspaceId and isConseillerNumerique
- * 3. If is_coordinateur → create Coordinateur (no Mediateur - no double roles)
- * 4. If NOT is_coordinateur → create Mediateur
+ * 3. If is_coordinateur → create Coordinateur
  *
  * This helper is reusable for signup, nightly sync, and manual sync.
  */
