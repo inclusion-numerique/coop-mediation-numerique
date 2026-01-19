@@ -6,6 +6,7 @@ export type RemoveMediateurFromLieuModalState = {
   mediateurDisplayName: string
   structureNom: string
   derniereActiviteDate: Date | null
+  variant: 'mediateur' | 'lieu'
 }
 
 export const RemoveMediateurFromLieuDynamicModal =
@@ -18,5 +19,6 @@ export const RemoveMediateurFromLieuDynamicModal =
       mediateurDisplayName: '',
       structureNom: '',
       derniereActiviteDate: null,
+      variant: 'mediateur',
     },
   })

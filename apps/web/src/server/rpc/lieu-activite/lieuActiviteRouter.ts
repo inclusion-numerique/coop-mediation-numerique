@@ -176,55 +176,6 @@ export const lieuActiviteRouter = router({
         },
       })
     }),
-  delete: protectedProcedure
-    .input(
-      z.object({
-        mediateurEnActiviteId: lieuActiviteValidation,
-      }),
-    )
-    .mutation(async ({ input: { mediateurEnActiviteId }, ctx: { user } }) => {
-      if (!user.mediateur) {
-        throw forbiddenError("Cet utilisateur n'est pas un médiateur")
-      }
-
-      const stopwatch = createStopwatch()
-
-      const lieuActivite = await prismaClient.mediateurEnActivite.findUnique({
-        where: {
-          id: mediateurEnActiviteId,
-          mediateurId: user.mediateur.id,
-          suppression: null,
-          fin: null,
-        },
-      })
-
-      if (!lieuActivite) {
-        throw invalidError("Ce lieu d’activité n'existe pas pour ce médiateur")
-      }
-
-      const timestamp = new Date()
-      await prismaClient.mediateurEnActivite.updateMany({
-        where: {
-          id: mediateurEnActiviteId,
-        },
-        data: {
-          fin: timestamp,
-          suppression: timestamp,
-          modification: timestamp,
-          suppressionParId: user.id,
-          derniereModificationParId: user.id,
-        },
-      })
-
-      addMutationLog({
-        userId: user.id,
-        nom: 'SupprimerMediateurEnActivite',
-        duration: stopwatch.stop().duration,
-        data: {
-          mediateurEnActiviteId,
-        },
-      })
-    }),
   updateInformationsGenerales: protectedProcedure
     .input(InformationsGeneralesValidation)
     .mutation(async ({ input, ctx: { user } }) => {
@@ -433,8 +384,12 @@ export const lieuActiviteRouter = router({
     )
     .mutation(
       async ({ input: { mediateurId, structureId }, ctx: { user } }) => {
+        const userIsDeletingItsOwnLieuActivite =
+          user.mediateur?.id === mediateurId
+
         // Check permissions: admin, support, or coordinateur
         if (
+          !userIsDeletingItsOwnLieuActivite &&
           user.role !== 'Admin' &&
           user.role !== 'Support' &&
           !user.coordinateur
@@ -482,21 +437,23 @@ export const lieuActiviteRouter = router({
           )
         }
 
-        // Get the display name of the user who is removing the mediateur
-        const removedByName = user?.name
-          ? user.name
-          : user.firstName && user.lastName
-            ? `${user.firstName} ${user.lastName}`
-            : user.email
+        // only send email if not userIsDeletingItsOwnLieuActivite
+        if (!userIsDeletingItsOwnLieuActivite) {
+          // Get the display name of the user who is removing the mediateur
+          const removedByName = user?.name
+            ? user.name
+            : user.firstName && user.lastName
+              ? `${user.firstName} ${user.lastName}`
+              : user.email
 
-        // Send email BEFORE database update (if email fails, no deletion happens)
-        await sendRemovedFromLieuEmail({
-          mediateurEmail: mediateurEnActivite.mediateur.user.email,
-          mediateurFirstname: mediateurEnActivite.mediateur.user.firstName,
-          structureNom: mediateurEnActivite.structure.nom,
-          removedByName,
-        })
-
+          // Send email BEFORE database update (if email fails, no deletion happens)
+          await sendRemovedFromLieuEmail({
+            mediateurEmail: mediateurEnActivite.mediateur.user.email,
+            mediateurFirstname: mediateurEnActivite.mediateur.user.firstName,
+            structureNom: mediateurEnActivite.structure.nom,
+            removedByName,
+          })
+        }
         const timestamp = new Date()
 
         // Set fin date to mark end of activity (but not suppression)

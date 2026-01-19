@@ -17,6 +17,7 @@ const RemoveMediateurFromLieuModal = () => {
     mediateurDisplayName,
     structureNom,
     derniereActiviteDate,
+    variant,
   } = RemoveMediateurFromLieuDynamicModal.useState()
 
   const router = useRouter()
@@ -36,14 +37,20 @@ const RemoveMediateurFromLieuModal = () => {
 
       createToast({
         priority: 'success',
-        message: `${mediateurDisplayName} a bien été retiré du lieu ${structureNom}.`,
+        message:
+          variant === 'mediateur'
+            ? `${mediateurDisplayName} a bien été retiré du lieu ${structureNom}.`
+            : `${structureNom} a bien été retiré de votre liste de lieux d’activité.`,
       })
 
       router.refresh()
     } catch {
       createToast({
         priority: 'error',
-        message: 'Une erreur est survenue lors du retrait du médiateur.',
+        message:
+          variant === 'mediateur'
+            ? 'Une erreur est survenue lors du retrait du médiateur.'
+            : 'Une erreur est survenue lors du retrait du lieu.',
       })
     }
   }
@@ -54,7 +61,11 @@ const RemoveMediateurFromLieuModal = () => {
 
   return (
     <RemoveMediateurFromLieuDynamicModal.Component
-      title={`Retirer ${mediateurDisplayName} du lieu ${structureNom} ?`}
+      title={
+        variant === 'mediateur'
+          ? `Retirer ${mediateurDisplayName} du lieu ${structureNom} ?`
+          : `Retirer ${structureNom} de votre liste`
+      }
       buttons={[
         {
           children: 'Annuler',
@@ -63,37 +74,51 @@ const RemoveMediateurFromLieuModal = () => {
           type: 'button',
         },
         {
-          children: 'Retirer du lieu',
+          children: variant === 'mediateur' ? 'Retirer du lieu' : 'Retirer',
           type: 'button',
           onClick: handleConfirm,
-          ...buttonLoadingClassname(isPending),
+          ...buttonLoadingClassname(
+            isPending,
+            variant === 'mediateur' ? undefined : 'fr-btn--danger',
+          ),
           doClosesModal: false,
         },
       ]}
     >
       <p className="fr-mb-4v">
-        Êtes-vous sur que {mediateurDisplayName} ne travaille plus dans ce
-        lieu ? Il sera notifié par email que vous l'avez retiré de ce lieu
-        d’activité.
+        {variant === 'mediateur' ? (
+          <>
+            Êtes-vous sur que {mediateurDisplayName} ne travaille plus dans ce
+            lieu ? Il sera notifié par email que vous l'avez retiré de ce lieu
+            d’activité.
+          </>
+        ) : (
+          <>
+            Êtes-vous sûr de vouloir supprimer ce lieu de votre liste de lieux
+            d’activité ?
+          </>
+        )}
       </p>
-      <Notice
-        className="fr-notice--info fr-notice--flex fr-align-items-center fr-my-4v"
-        title={
-          <span className="fr-text-default--grey fr-text--regular">
-            {formattedDate ? (
-              <>
-                Date de la dernière activité enregistrée par{' '}
-                {mediateurDisplayName} sur ce lieu&nbsp;: {formattedDate}
-              </>
-            ) : (
-              <>
-                Aucune activité enregistrée par {mediateurDisplayName} sur ce
-                lieu
-              </>
-            )}
-          </span>
-        }
-      />
+      {variant === 'mediateur' && (
+        <Notice
+          className="fr-notice--info fr-notice--flex fr-align-items-center fr-my-4v"
+          title={
+            <span className="fr-text-default--grey fr-text--regular">
+              {formattedDate ? (
+                <>
+                  Date de la dernière activité enregistrée par{' '}
+                  {mediateurDisplayName} sur ce lieu&nbsp;: {formattedDate}
+                </>
+              ) : (
+                <>
+                  Aucune activité enregistrée par {mediateurDisplayName} sur ce
+                  lieu
+                </>
+              )}
+            </span>
+          }
+        />
+      )}
     </RemoveMediateurFromLieuDynamicModal.Component>
   )
 }

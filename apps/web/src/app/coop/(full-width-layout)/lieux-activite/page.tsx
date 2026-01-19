@@ -2,14 +2,15 @@ import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { getLieuxActivite } from '@app/web/features/lieux-activite/getLieuxActivite'
+import { getLieuxActiviteListPageData } from '@app/web/features/lieux-activite/getLieuxActiviteListPageData'
+import RemoveMediateurFromLieuModal from '@app/web/features/mon-reseau/use-cases/acteurs/components/RemoveMediateurFromLieuModal/RemoveMediateurFromLieuModal'
+import LieuCard from '@app/web/features/mon-reseau/use-cases/lieux/components/LieuCard'
 import { contentId } from '@app/web/utils/skipLinks'
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import React from 'react'
 import { AucunLieu } from './_components/AucunLieu'
-import { LieuActivite } from './_components/LieuActivite'
 import VisibiliteMediateur from './_components/VisibiliteMediateur'
 
 export const metadata: Metadata = {
@@ -18,12 +19,16 @@ export const metadata: Metadata = {
 
 const LieuActiviteListPage = async () => {
   const user = await authenticateUser()
+  const mediateur = user.mediateur
+  const mediateurId = user.mediateur?.id
 
-  if (!user.mediateur) {
+  if (!mediateur || !mediateurId) {
     return redirect('/')
   }
 
-  const lieuxActivites = await getLieuxActivite(user.mediateur.id)
+  const lieuxActivites = await getLieuxActiviteListPageData({
+    mediateurId,
+  })
 
   return (
     <>
@@ -37,7 +42,7 @@ const LieuActiviteListPage = async () => {
               aria-hidden
             />
             <h1 className="fr-page-title fr-m-0">
-              Mes lieux d’activités · {user.mediateur._count.enActivite}
+              Mes lieux d’activités · {mediateur._count.enActivite}
             </h1>
             <Button
               className="fr-ml-auto"
@@ -50,23 +55,27 @@ const LieuActiviteListPage = async () => {
               Ajouter un lieu
             </Button>
           </span>
-          {user.mediateur.conseillerNumerique && (
-            <VisibiliteMediateur isVisible={user.mediateur.isVisible} />
+          {mediateur.conseillerNumerique && (
+            <VisibiliteMediateur
+              isVisible={user.mediateur?.isVisible ?? false}
+            />
           )}
           <div className="fr-flex fr-direction-column fr-flex-gap-4v">
             {lieuxActivites.length === 0 ? (
               <AucunLieu />
             ) : (
-              lieuxActivites.map((lieuActivite) => (
-                <LieuActivite
-                  key={lieuActivite.id}
-                  {...lieuActivite.structure}
-                  mediateurEnActiviteId={lieuActivite.id}
-                  canDelete={lieuxActivites.length > 1}
-                  creation={lieuActivite.creation}
-                  modification={lieuActivite.modification}
-                />
-              ))
+              <>
+                {lieuxActivites.map(({ id, structure: lieu }) => (
+                  <LieuCard
+                    key={id}
+                    lieu={lieu}
+                    removeMediateurFromLieu={{
+                      mediateurId,
+                    }}
+                  />
+                ))}
+                <RemoveMediateurFromLieuModal />
+              </>
             )}
           </div>
         </main>

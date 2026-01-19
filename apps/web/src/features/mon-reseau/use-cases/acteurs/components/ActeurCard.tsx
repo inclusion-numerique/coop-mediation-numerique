@@ -49,6 +49,7 @@ const ActeurCard = ({
             mediateurDisplayName={displayName}
             structureNom={structureNom}
             derniereActiviteDate={derniereActivite?.date ?? null}
+            variant="mediateur"
           />
         )}
       </div>

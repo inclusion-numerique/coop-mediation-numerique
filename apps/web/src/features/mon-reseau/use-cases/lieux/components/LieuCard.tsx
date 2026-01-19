@@ -1,4 +1,5 @@
 import { getDepartementCodeForLieu } from '@app/web/features/mon-reseau/getDepartementCodeForLieu'
+import RemoveMediateurFromLieuButton from '@app/web/features/mon-reseau/use-cases/acteurs/components/RemoveMediateurFromLieuButton'
 import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
 import type { LieuForList } from '@app/web/features/mon-reseau/use-cases/lieux/db/searchLieux'
 import Tag from '@codegouvfr/react-dsfr/Tag'
@@ -8,15 +9,19 @@ import Link from 'next/link'
 import CartographyIndicator, {
   getCartographyStatus,
 } from './CartographyIndicator'
-
 import styles from './LieuCard.module.css'
 
 const LieuCard = ({
   lieu,
   className,
+  removeMediateurFromLieu,
 }: {
   lieu: LieuForList
   className?: string
+  // Allow button feature to remove mediateur from lieu
+  removeMediateurFromLieu?: {
+    mediateurId: string
+  }
 }) => {
   const departementCode = getDepartementCodeForLieu(lieu)
   const mediateursCount = lieu._count.mediateursEnActivite ?? 0
@@ -50,16 +55,29 @@ const LieuCard = ({
           Mis à jour le {formattedModificationDate}{' '}
           {derniereModificationPar ? `par ${derniereModificationPar}` : ''}
         </p>
-        <Link
-          href={lieuHref}
-          className={classNames(
-            'fr-btn fr-btn--sm fr-btn--tertiary-no-outline',
-            styles.innerLink,
+        <div>
+          <Link
+            href={lieuHref}
+            className={classNames(
+              'fr-btn fr-btn--sm fr-btn--tertiary-no-outline',
+              styles.innerLink,
+            )}
+            prefetch={false}
+          >
+            Modifier <span className="ri-edit-line fr-ml-1v" aria-hidden />
+          </Link>
+          {removeMediateurFromLieu && (
+            <RemoveMediateurFromLieuButton
+              className="fr-ml-2v"
+              mediateurId={removeMediateurFromLieu.mediateurId}
+              structureId={lieu.id}
+              variant="lieu"
+              mediateurDisplayName=""
+              structureNom={lieu.nom}
+              derniereActiviteDate={null}
+            />
           )}
-          prefetch={false}
-        >
-          Modifier <span className="ri-edit-line fr-ml-1v" aria-hidden />
-        </Link>
+        </div>
       </div>
 
       <p className="fr-text--bold fr-text--lg fr-mb-2v fr-text-title--blue-france">
