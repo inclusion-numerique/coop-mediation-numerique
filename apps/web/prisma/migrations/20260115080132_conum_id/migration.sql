@@ -8,23 +8,24 @@ ALTER TABLE "public"."users" ADD COLUMN "conseiller_numerique_id_pg" INTEGER;
 -- Step 2: Migrate data from Coordinateur to User (for users who are coordinateurs)
 -- This populates users.conseiller_numerique_id and users.conseiller_numerique_id_pg
 -- from coordinateurs table where the coordinateur has these values set
-UPDATE "public"."users" u
+UPDATE "public"."users"
 SET 
-    "conseiller_numerique_id" = c."conseiller_numerique_id"
-FROM "public"."coordinateurs" c
-WHERE u."id" = c."user_id"
-  AND (c."conseiller_numerique_id" IS NOT NULL);
+    "conseiller_numerique_id" = "coordinateurs"."conseiller_numerique_id"
+FROM "public"."coordinateurs"
+WHERE "users"."id" = "coordinateurs"."user_id"
+  AND ("coordinateurs"."conseiller_numerique_id" IS NOT NULL);
 
 -- Step 3: Migrate data from ConseillerNumerique to User (for users who are mediateurs with CN)
 -- This populates users.conseiller_numerique_id and users.conseiller_numerique_id_pg
 -- from conseillers_numeriques table via the mediateurs join
 -- Note: This will NOT overwrite values already set from Coordinateur (COALESCE ensures we keep existing values)
-UPDATE "public"."users" u
+UPDATE "public"."users"
 SET 
-    u."conseiller_numerique_id" = cn."id"
-FROM "public"."mediateurs" m
-INNER JOIN "public"."conseillers_numeriques" cn ON cn."mediateur_id" = m."id"
-WHERE cn."id" IS NOT NULL;
+    "conseiller_numerique_id" = "conseillers_numeriques"."id"
+FROM "public"."mediateurs"
+INNER JOIN "public"."conseillers_numeriques" ON "conseillers_numeriques"."mediateur_id" = "mediateurs"."id"
+WHERE "users"."id" = "mediateurs"."user_id"
+  AND "conseillers_numeriques"."id" IS NOT NULL;
 
 -- Step 4: Now safe to drop old columns and table
 
