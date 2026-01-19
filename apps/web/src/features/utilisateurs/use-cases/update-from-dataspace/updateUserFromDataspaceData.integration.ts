@@ -278,7 +278,7 @@ describe('updateUserFromDataspaceData', () => {
       await resetFixtureUser(mediateurAvecActivite, false)
     })
 
-    test('should not sync emplois from Dataspace (local is source of truth)', async () => {
+    test('should not sync emplois or lieux from Dataspace (local is source of truth)', async () => {
       const user = await prismaClient.user.findUniqueOrThrow({
         where: { id: mediateurAvecActivite.id },
         select: {
@@ -307,6 +307,8 @@ describe('updateUserFromDataspaceData', () => {
       expect(result.changes.conseillerNumeriqueRemoved).toBe(false)
       // Should NOT sync structures because is_conseiller_numerique is false
       expect(result.changes.structuresSynced).toBe(0)
+      // Should NOT sync lieux d'activité because is_conseiller_numerique is false
+      expect(result.changes.lieuxActiviteSynced).toBe(0)
 
       // Verify emplois unchanged (local is source of truth)
       const userAfter = await prismaClient.user.findUniqueOrThrow({
@@ -452,7 +454,7 @@ describe('updateUserFromDataspaceData', () => {
       await resetFixtureUser(mediateurSansActivites, false)
     })
 
-    test('should create Mediateur if lieux_activite exists', async () => {
+    test('should create Mediateur if lieux_activite exists AND is_conseiller_numerique is true', async () => {
       const user = await prismaClient.user.findUniqueOrThrow({
         where: { id: mediateurSansActivites.id },
         select: { id: true, email: true, mediateur: { select: { id: true } } },
@@ -475,7 +477,7 @@ describe('updateUserFromDataspaceData', () => {
       })
       expect(userBefore.mediateur).toBeNull()
 
-      // Set up mock with lieux_activite (use unique ID)
+      // Set up mock with lieux_activite AND is_conseiller_numerique=true (use unique ID)
       const uniqueMockData = createUniqueMockData(
         mockDataspaceConseillerNumerique,
         90002,
@@ -544,6 +546,53 @@ describe('updateUserFromDataspaceData', () => {
       expect(userAfter.mediateur).toBeNull()
     })
 
+    test('should NOT create Mediateur if lieux_activite exists but is_conseiller_numerique is false', async () => {
+      const user = await prismaClient.user.findUniqueOrThrow({
+        where: { id: mediateurSansActivites.id },
+        select: { id: true, email: true, mediateur: { select: { id: true } } },
+      })
+
+      // Delete existing mediateur and related records for clean test
+      if (user.mediateur) {
+        await prismaClient.mediateurEnActivite.deleteMany({
+          where: { mediateurId: user.mediateur.id },
+        })
+        await prismaClient.mediateur.deleteMany({
+          where: { userId: user.id },
+        })
+      }
+
+      // Verify no mediateur
+      const userBefore = await prismaClient.user.findUniqueOrThrow({
+        where: { id: user.id },
+        select: { mediateur: { select: { id: true } } },
+      })
+      expect(userBefore.mediateur).toBeNull()
+
+      // Set up mock with lieux_activite BUT is_conseiller_numerique=false (use unique ID)
+      const uniqueMockData = createUniqueMockData(
+        mockDataspaceMediateurNonConseillerNumerique,
+        90005,
+      )
+      setMockDataspaceData(user.email, uniqueMockData)
+
+      const result = await updateUserFromDataspaceData({ userId: user.id })
+
+      expect(result.success).toBe(true)
+      // Should NOT create mediateur because is_conseiller_numerique is false
+      expect(result.changes.mediateurCreated).toBe(false)
+      // Should NOT sync lieux because is_conseiller_numerique is false
+      expect(result.changes.lieuxActiviteSynced).toBe(0)
+
+      // Verify mediateur was NOT created
+      const userAfter = await prismaClient.user.findUniqueOrThrow({
+        where: { id: user.id },
+        select: { mediateur: { select: { id: true } } },
+      })
+
+      expect(userAfter.mediateur).toBeNull()
+    })
+
     test('should NOT delete Mediateur if lieux_activite becomes empty', async () => {
       const user = await prismaClient.user.findUniqueOrThrow({
         where: { id: mediateurSansActivites.id },
@@ -556,7 +605,7 @@ describe('updateUserFromDataspaceData', () => {
         90004,
       )
 
-      // First, create mediateur with lieux
+      // First, create mediateur with lieux (is_conseiller_numerique=true)
       setMockDataspaceData(user.email, uniqueMockData)
       await updateUserFromDataspaceData({ userId: user.id })
 
@@ -567,7 +616,7 @@ describe('updateUserFromDataspaceData', () => {
       expect(userWithMed.mediateur).not.toBeNull()
       const mediateurId = userWithMed.mediateur?.id
 
-      // Now change mock to have no lieux (keep same dataspace ID)
+      // Now change mock to have no lieux (keep same dataspace ID and is_conseiller_numerique=true)
       const mockDataNoLieux: DataspaceMediateur = {
         ...mockDataspaceConseillerNumerique,
         id: 90004,
@@ -587,6 +636,62 @@ describe('updateUserFromDataspaceData', () => {
 
       expect(userAfter.mediateur).not.toBeNull()
       expect(userAfter.mediateur?.id).toBe(mediateurId)
+    })
+
+    test('should NOT delete Mediateur if user becomes non-CN (never delete rule)', async () => {
+      const user = await prismaClient.user.findUniqueOrThrow({
+        where: { id: mediateurSansActivites.id },
+        select: { id: true, email: true },
+      })
+
+      // Use unique dataspace ID for this test
+      const uniqueMockData = createUniqueMockData(
+        mockDataspaceConseillerNumerique,
+        90006,
+      )
+
+      // First, create mediateur with lieux as CN user
+      setMockDataspaceData(user.email, uniqueMockData)
+      await updateUserFromDataspaceData({ userId: user.id })
+
+      const userWithMed = await prismaClient.user.findUniqueOrThrow({
+        where: { id: user.id },
+        select: {
+          mediateur: { select: { id: true } },
+          isConseillerNumerique: true,
+        },
+      })
+      expect(userWithMed.mediateur).not.toBeNull()
+      expect(userWithMed.isConseillerNumerique).toBe(true)
+      const mediateurId = userWithMed.mediateur?.id
+
+      // Now user becomes non-CN (keep same dataspace ID)
+      const mockDataNonCN: DataspaceMediateur = {
+        ...mockDataspaceMediateurNonConseillerNumerique,
+        id: 90006,
+        lieux_activite: mockDataspaceConseillerNumerique.lieux_activite, // Keep lieux in API
+      }
+      setMockDataspaceData(user.email, mockDataNonCN)
+      const result = await updateUserFromDataspaceData({ userId: user.id })
+
+      expect(result.success).toBe(true)
+      expect(result.changes.conseillerNumeriqueRemoved).toBe(true)
+      expect(result.changes.mediateurCreated).toBe(false)
+      // Lieux should not be synced because user is no longer CN
+      expect(result.changes.lieuxActiviteSynced).toBe(0)
+
+      // Verify mediateur was NOT deleted (never delete rule)
+      const userAfter = await prismaClient.user.findUniqueOrThrow({
+        where: { id: user.id },
+        select: {
+          mediateur: { select: { id: true } },
+          isConseillerNumerique: true,
+        },
+      })
+
+      expect(userAfter.mediateur).not.toBeNull()
+      expect(userAfter.mediateur?.id).toBe(mediateurId)
+      expect(userAfter.isConseillerNumerique).toBe(false)
     })
   })
 
@@ -618,7 +723,15 @@ describe('updateUserFromDataspaceData', () => {
           isConseillerNumerique: true,
           dataspaceId: true,
           emplois: { select: { id: true, structureId: true } },
-          mediateur: { select: { id: true } },
+          mediateur: {
+            select: {
+              id: true,
+              enActivite: {
+                select: { id: true },
+                where: { suppression: null, fin: null },
+              },
+            },
+          },
           coordinateur: { select: { id: true } },
         },
       })
@@ -633,7 +746,15 @@ describe('updateUserFromDataspaceData', () => {
           isConseillerNumerique: true,
           dataspaceId: true,
           emplois: { select: { id: true, structureId: true } },
-          mediateur: { select: { id: true } },
+          mediateur: {
+            select: {
+              id: true,
+              enActivite: {
+                select: { id: true },
+                where: { suppression: null, fin: null },
+              },
+            },
+          },
           coordinateur: { select: { id: true } },
         },
       })
@@ -645,6 +766,9 @@ describe('updateUserFromDataspaceData', () => {
       expect(userAfterSecond.dataspaceId).toBe(userAfterFirst.dataspaceId)
       expect(userAfterSecond.emplois.length).toBe(userAfterFirst.emplois.length)
       expect(userAfterSecond.mediateur?.id).toBe(userAfterFirst.mediateur?.id)
+      expect(userAfterSecond.mediateur?.enActivite.length).toBe(
+        userAfterFirst.mediateur?.enActivite.length,
+      )
       expect(userAfterSecond.coordinateur?.id).toBe(
         userAfterFirst.coordinateur?.id,
       )
@@ -686,6 +810,53 @@ describe('updateUserFromDataspaceData', () => {
 
       // Should not have duplicates
       expect(structureIds.length).toBe(uniqueStructureIds.size)
+    })
+
+    test('calling sync multiple times should not duplicate lieux activite (MediateurEnActivite)', async () => {
+      const user = await prismaClient.user.findUniqueOrThrow({
+        where: { id: mediateurSansActivites.id },
+        select: { id: true, email: true },
+      })
+
+      // Set up mock with unique ID and lieux_activite
+      const uniqueMockData = createUniqueMockData(
+        mockDataspaceConseillerNumerique,
+        95003,
+      )
+      setMockDataspaceData(user.email, uniqueMockData)
+
+      // Sync three times
+      await updateUserFromDataspaceData({ userId: user.id })
+      await updateUserFromDataspaceData({ userId: user.id })
+      await updateUserFromDataspaceData({ userId: user.id })
+
+      const userAfter = await prismaClient.user.findUniqueOrThrow({
+        where: { id: user.id },
+        select: {
+          mediateur: {
+            select: {
+              id: true,
+              enActivite: {
+                select: { id: true, structureId: true },
+                where: { suppression: null, fin: null },
+              },
+            },
+          },
+        },
+      })
+
+      expect(userAfter.mediateur).not.toBeNull()
+
+      // Count unique structure IDs in lieux activite
+      const lieuxStructureIds =
+        userAfter.mediateur?.enActivite.map(
+          (activite) => activite.structureId,
+        ) ?? []
+      const uniqueLieuxStructureIds = new Set(lieuxStructureIds)
+
+      // Should not have duplicates
+      expect(lieuxStructureIds.length).toBe(uniqueLieuxStructureIds.size)
+      expect(lieuxStructureIds.length).toBeGreaterThan(0)
     })
   })
 })

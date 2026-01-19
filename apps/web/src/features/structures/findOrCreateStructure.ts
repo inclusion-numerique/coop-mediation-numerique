@@ -43,7 +43,7 @@ export const findOrCreateStructure = async ({
     const existingStructure = await prismaClient.structure.findFirst({
       where: {
         siret,
-        nom,
+        codeInsee,
         suppression: null,
       },
       select: {
@@ -103,6 +103,20 @@ export const findOrCreateStructure = async ({
     if (existingByNom) {
       return existingByNom
     }
+  }
+
+  if (!adresse) {
+    console.log('INVALID ADDRESSE INPUT', {
+      siret,
+      nom,
+      adresse,
+      codePostal,
+      codeInsee,
+      commune,
+      nomReferent,
+      courrielReferent,
+      telephoneReferent,
+    })
   }
 
   // Step 3: Fallback - geocode via BAN API and create

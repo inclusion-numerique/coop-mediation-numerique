@@ -16,7 +16,7 @@ import { v4 } from 'uuid'
  * - is_conseiller_numerique: true → Dataspace is source of truth for emplois/structures
  * - is_conseiller_numerique: false → Local is source of truth, only update flag
  * - is_coordinateur: true → Create Coordinateur (never delete)
- * - lieux_activite exists → Create Mediateur (never delete)
+ * - lieux_activite exists AND is_conseiller_numerique: true → Create Mediateur (never delete)
  */
 
 // ============================================================================
@@ -381,6 +381,30 @@ export const syncLieuxActiviteFromDataspace = async ({
   const structureIds: string[] = []
 
   for (const lieuActivite of lieuxActivite) {
+    // Some lieux activite from dataspace are lacking required data, we ignore them :
+    // e.g :     {
+    //   "nom": "Médiathèque de Saint-Quentin-la-Poterie",
+    //   "siret": null,
+    //   "adresse": {
+    //     "nom_voie": null,
+    //     "code_insee": null,
+    //     "repetition": null,
+    //     "code_postal": null,
+    //     "nom_commune": null,
+    //     "numero_voie": null
+    //   },
+    //   "contact": null
+    // },
+
+    if (
+      !lieuActivite.adresse.code_insee ||
+      !lieuActivite.adresse.code_postal ||
+      !lieuActivite.adresse.nom_commune ||
+      !lieuActivite.adresse.nom_voie.trim()
+    ) {
+      continue
+    }
+
     const adresse = buildAdresseFromDataspace(lieuActivite.adresse)
 
     // Find or create structure
@@ -440,9 +464,9 @@ export const syncLieuxActiviteFromDataspace = async ({
  *
  * This function handles:
  * 1. Coordinateur creation (only if is_coordinateur is true, never delete)
- * 2. Mediateur creation (only if lieux_activite exists, never delete)
+ * 2. Mediateur creation (only if lieux_activite exists AND is_conseiller_numerique is true, never delete)
  * 3. Structures employeuses sync (only if is_conseiller_numerique is true)
- * 4. Lieux d'activité sync (if mediateur and lieux_activite exist)
+ * 4. Lieux d'activité sync (if mediateur, lieux_activite exist AND is_conseiller_numerique is true)
  *
  * @param userId - The user ID to sync
  * @param dataspaceData - The Dataspace API response (null = no-op)
@@ -517,8 +541,8 @@ export const syncFromDataspaceCore = async ({
     }
   }
 
-  // --- Mediateur: Only create if lieux_activite exists (never delete) ---
-  if (hasLieuxActivite) {
+  // --- Mediateur: Only create if lieux_activite exists AND is_conseiller_numerique (never delete) ---
+  if (hasLieuxActivite && isConseillerNumeriqueInApi) {
     const { mediateurId: upsertedMediateurId, created: mediateurCreated } =
       await upsertMediateur({ userId })
     mediateurId = upsertedMediateurId

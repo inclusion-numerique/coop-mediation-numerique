@@ -39,7 +39,7 @@ const createDebugLogger = (enabled: boolean): InitializeDebugLogger => {
  *
  * This function uses the shared syncFromDataspaceCore for idempotent sync:
  * - Coordinateur: Only created if is_coordinateur is true (never deleted)
- * - Mediateur: Only created if lieux_activite exists (never deleted)
+ * - Mediateur: Only created if lieux_activite exists AND is_conseiller_numerique is true (never deleted)
  * - Structures employeuses: Only synced if is_conseiller_numerique is true
  *
  * For users not in Dataspace, falls back to SIRET-based structure import.
@@ -105,9 +105,9 @@ export const initializeInscription = async ({
     // Use shared core for idempotent sync
     // This handles:
     // - Coordinateur creation (only if is_coordinateur is true)
-    // - Mediateur creation (only if lieux_activite exists)
+    // - Mediateur creation (only if lieux_activite exists AND is_conseiller_numerique is true)
     // - Structures employeuses sync (only if is_conseiller_numerique is true)
-    // - Lieux d'activité sync
+    // - Lieux d'activité sync (only if lieux_activite exists AND is_conseiller_numerique is true)
     const syncResult = await syncFromDataspaceCore({
       userId,
       dataspaceData,
