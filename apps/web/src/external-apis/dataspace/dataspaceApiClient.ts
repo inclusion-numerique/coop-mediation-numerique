@@ -83,8 +83,8 @@ export type DataspaceMediateur = {
   id: number
   is_coordinateur: boolean
   is_conseiller_numerique: boolean
-  structures_employeuses: DataspaceStructureEmployeuse[]
-  lieux_activite: DataspaceLieuActivite[]
+  structures_employeuses?: DataspaceStructureEmployeuse[] | null
+  lieux_activite?: DataspaceLieuActivite[] | null
   conseillers_numeriques_coordonnes: DataspaceConseillerNumeriqueCoordonne[]
 }
 

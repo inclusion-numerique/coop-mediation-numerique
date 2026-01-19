@@ -487,8 +487,8 @@ export const syncFromDataspaceCore = async ({
 
   const isConseillerNumeriqueInApi = dataspaceData.is_conseiller_numerique
   const isCoordinateurInApi = dataspaceData.is_coordinateur
-  const hasLieuxActivite =
-    dataspaceData.lieux_activite && dataspaceData.lieux_activite.length > 0
+  const lieuxActivite = dataspaceData.lieux_activite ?? []
+  const hasLieuxActivite = lieuxActivite.length > 0
 
   let mediateurId: string | null = null
   let coordinateurId: string | null = null
@@ -530,7 +530,7 @@ export const syncFromDataspaceCore = async ({
     const { structureIds: lieuxActiviteStructureIds } =
       await syncLieuxActiviteFromDataspace({
         mediateurId: upsertedMediateurId,
-        lieuxActivite: dataspaceData.lieux_activite,
+        lieuxActivite,
       })
     changes.lieuxActiviteSynced = lieuxActiviteStructureIds.length
   }
@@ -545,7 +545,7 @@ export const syncFromDataspaceCore = async ({
     const { structureIds, removed } =
       await syncStructuresEmployeusesFromDataspace({
         userId,
-        structuresEmployeuses: dataspaceData.structures_employeuses,
+        structuresEmployeuses: dataspaceData.structures_employeuses ?? [],
       })
     changes.structuresSynced = structureIds.length
     changes.structuresRemoved = removed
@@ -557,7 +557,7 @@ export const syncFromDataspaceCore = async ({
     const { structureIds, removed } =
       await syncStructuresEmployeusesFromDataspace({
         userId,
-        structuresEmployeuses: dataspaceData.structures_employeuses,
+        structuresEmployeuses: dataspaceData.structures_employeuses ?? [],
       })
     changes.structuresSynced = structureIds.length
     changes.structuresRemoved = removed

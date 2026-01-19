@@ -19,11 +19,13 @@ export const executeSyncUsersFromDataspace = async (
   const usersToSync = await prismaClient.user.findMany({
     where: {
       deleted: null,
+      inscriptionValidee: {
+        not: null,
+      },
     },
     select: {
       id: true,
       email: true,
-      isConseillerNumerique: true,
     },
     orderBy: {
       email: 'asc',
