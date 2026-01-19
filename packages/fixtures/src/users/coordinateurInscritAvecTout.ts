@@ -32,16 +32,6 @@ export const coordinateurInscritAvecTout = givenUser({
       },
       create: {
         id: coordinateurInscritAvecToutMediateurId,
-        conseillerNumerique: {
-          connectOrCreate: {
-            where: {
-              id: '657070ed7a10c4da5bdd1d57',
-            },
-            create: {
-              id: '657070ed7a10c4da5bdd1d57',
-            },
-          },
-        },
         enActivite: {
           connectOrCreate: [
             {
