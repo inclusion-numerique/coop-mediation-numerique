@@ -8,7 +8,7 @@ import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMed
 import { contentId } from '@app/web/utils/skipLinks'
 import type { DefaultValues } from 'react-hook-form'
 import { Tag } from '../../tags/components/TagsComboBox'
-import SaveTagModal from '../../tags/save/SaveTagModal'
+import SaveTagModal, { Equipe } from '../../tags/save/SaveTagModal'
 import CraCollectifForm from './components/CraCollectifForm'
 import type { CraCollectifData } from './validation/CraCollectifValidation'
 
@@ -19,6 +19,7 @@ export type CraCollectifPageData = {
   initialTagsOptions: Tag[]
   initialBeneficiairesOptions: MostUsedBeneficiairesForSearch
   dureeOptions: SelectOption[]
+  equipes: Equipe[]
   retour?: string
 }
 
@@ -29,6 +30,7 @@ const CraCollectifPage = ({
   dureeOptions,
   lieuxActiviteOptions,
   mediateurId,
+  equipes,
   retour,
 }: CraCollectifPageData) => (
   <div className="fr-container fr-container--800">
@@ -49,7 +51,7 @@ const CraCollectifPage = ({
           text: 'En savoir plus sur comment compléter un CRA',
         }}
       />
-      <SaveTagModal isMediateur isCoordinateur={false} />
+      <SaveTagModal isMediateur isCoordinateur={false} equipes={equipes} />
       <CraCollectifForm
         defaultValues={{ ...defaultValues, mediateurId }}
         lieuActiviteOptions={lieuxActiviteOptions}

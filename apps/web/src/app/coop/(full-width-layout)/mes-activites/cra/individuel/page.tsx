@@ -3,6 +3,7 @@ import { getCraPageData } from '@app/web/features/activites/use-cases/cra/getCra
 import CraIndividuelPage from '@app/web/features/activites/use-cases/cra/individuel/CraIndividuelPage'
 import { craIndividuelDefaultValues } from '@app/web/features/activites/use-cases/cra/individuel/craIndividuelDefaultValues'
 import { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
+import { getEquipesFromSessionUser } from '@app/web/features/activites/use-cases/tags/save/getEquipesFromSessionUser'
 import {
   decodeSerializableState,
   type EncodedState,
@@ -19,9 +20,9 @@ const CreateCraIndividuelPage = async ({
 }) => {
   const { retour, v } = await searchParams
 
-  const {
-    mediateur: { id: mediateurId },
-  } = await authenticateMediateur()
+  const user = await authenticateMediateur()
+  const mediateurId = user.mediateur.id
+  const equipes = getEquipesFromSessionUser(user)
 
   const stateFromUrl = v ? decodeSerializableState(v, {}) : {}
 
@@ -33,6 +34,7 @@ const CreateCraIndividuelPage = async ({
     <CraIndividuelPage
       {...craPageData}
       mediateurId={mediateurId}
+      equipes={equipes}
       retour={retour}
     />
   )

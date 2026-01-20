@@ -41,6 +41,7 @@ export const searchTags = async ({
       mediateurId: string | null
       coordinateurId: string | null
       departement: string | null
+      equipe: boolean | null
     }[]
   >`
       SELECT
@@ -50,6 +51,7 @@ export const searchTags = async ({
         t.mediateur_id as "mediateurId",
         t.coordinateur_id as "coordinateurId",
         t.departement,
+        t.equipe,
         COUNT(DISTINCT COALESCE(a.id, ac.id)) AS usage_count
       FROM tags t
         LEFT JOIN activite_tags at ON at.tag_id = t.id
@@ -81,11 +83,24 @@ export const searchTags = async ({
 
   return {
     items: tags.map(
-      ({ id, nom, description, mediateurId, coordinateurId, departement }) => ({
+      ({
+        id,
+        nom,
+        description,
+        mediateurId,
+        coordinateurId,
+        departement,
+        equipe,
+      }) => ({
         id,
         nom,
         description: description ?? undefined,
-        scope: getTagScope({ mediateurId, coordinateurId, departement }),
+        scope: getTagScope({
+          mediateurId,
+          coordinateurId,
+          departement,
+          equipe,
+        }),
       }),
     ),
   }

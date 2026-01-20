@@ -7,7 +7,7 @@ import { contentId } from '@app/web/utils/skipLinks'
 import React from 'react'
 import type { DefaultValues } from 'react-hook-form'
 import type { Tag } from '../../tags/components/TagsComboBox'
-import SaveTagModal from '../../tags/save/SaveTagModal'
+import SaveTagModal, { Equipe } from '../../tags/save/SaveTagModal'
 import CraAnimationForm from './components/CraAnimationForm'
 import { CraAnimationData } from './validation/CraAnimationValidation'
 
@@ -16,6 +16,7 @@ type CraAnimationPageProps = {
   coordinateurId: string
   dureeOptions: SelectOption[]
   initialTagsOptions: Tag[]
+  equipes: Equipe[]
   retour?: string
 }
 
@@ -24,6 +25,7 @@ const CraAnimationPage = ({
   coordinateurId,
   dureeOptions,
   initialTagsOptions,
+  equipes,
   retour,
 }: CraAnimationPageProps) => (
   <div className="fr-container fr-container--800">
@@ -53,7 +55,7 @@ const CraAnimationPage = ({
           text: 'En savoir plus sur comment compléter un CRA',
         }}
       />
-      <SaveTagModal isMediateur={false} isCoordinateur />
+      <SaveTagModal isMediateur={false} isCoordinateur equipes={equipes} />
       <CraAnimationForm
         defaultValues={{ ...defaultValues, coordinateurId }}
         dureeOptions={dureeOptions}

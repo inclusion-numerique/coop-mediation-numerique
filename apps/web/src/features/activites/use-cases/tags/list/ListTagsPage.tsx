@@ -1,7 +1,9 @@
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import DeleteTagModal from '@app/web/features/activites/use-cases/tags/delete/DeleteTagModal'
-import SaveTagModal from '@app/web/features/activites/use-cases/tags/save/SaveTagModal'
+import SaveTagModal, {
+  Equipe,
+} from '@app/web/features/activites/use-cases/tags/save/SaveTagModal'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
 import SortSelect from '@app/web/libs/data-table/SortSelect'
@@ -17,6 +19,7 @@ const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
 export const ListTagsPage = ({
   isMediateur,
   isCoordinateur,
+  equipes,
   tags,
   matchesCount,
   totalPages,
@@ -25,7 +28,15 @@ export const ListTagsPage = ({
 }: {
   isMediateur: boolean
   isCoordinateur: boolean
-  tags: { id: string; nom: string; scope: TagScope; description?: string }[]
+  equipes: Equipe[]
+  tags: {
+    id: string
+    nom: string
+    scope: TagScope
+    description?: string
+    accompagnementsCount: number
+    equipeId?: string
+  }[]
   matchesCount: number
   totalPages: number
   baseHref: string
@@ -35,7 +46,11 @@ export const ListTagsPage = ({
     <SkipLinksPortal />
     <div className="fr-container fr-container--medium fr-pb-16w">
       <CoopBreadcrumbs currentPage="Mes tags" />
-      <SaveTagModal isMediateur={isMediateur} isCoordinateur={isCoordinateur} />
+      <SaveTagModal
+        isMediateur={isMediateur}
+        isCoordinateur={isCoordinateur}
+        equipes={equipes}
+      />
       <DeleteTagModal />
       <main id={contentId}>
         <div className="fr-flex fr-direction-column fr-direction-md-row fr-align-items-md-center fr-flex-gap-4v fr-mt-8v fr-mb-12v">

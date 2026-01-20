@@ -18,12 +18,30 @@ export type TagSearchParams = {
 
 const availableFor = (user: SessionUser) => {
   const departement = getUserDepartement(user)
-  if (!departement) return { mediateurId: user.mediateur?.id }
+  const equipeCoordinateurIds =
+    user.mediateur?.coordinations.map(
+      (coordination) => coordination.coordinateur.id,
+    ) ?? []
+
+  if (!departement) {
+    return {
+      OR: [
+        ...(user.mediateur?.id ? [{ mediateurId: user.mediateur.id }] : []),
+        ...(equipeCoordinateurIds.length > 0
+          ? [{ equipe: true, coordinateurId: { in: equipeCoordinateurIds } }]
+          : []),
+      ],
+    }
+  }
+
   return {
     OR: [
       ...(user.mediateur?.id ? [{ mediateurId: user.mediateur.id }] : []),
       ...(user.coordinateur?.id
         ? [{ coordinateurId: user.coordinateur.id }]
+        : []),
+      ...(equipeCoordinateurIds.length > 0
+        ? [{ equipe: true, coordinateurId: { in: equipeCoordinateurIds } }]
         : []),
       { departement: departement.code },
       {
@@ -64,6 +82,17 @@ export const getTagsPageDataFor =
       take,
       skip,
       orderBy,
+      include: {
+        activites: {
+          include: {
+            activite: {
+              select: {
+                accompagnementsCount: true,
+              },
+            },
+          },
+        },
+      },
     })
 
     const totalFilteredTags = await prismaClient.tag.count({
@@ -72,12 +101,18 @@ export const getTagsPageDataFor =
 
     return {
       tags: tags.map((tag) => {
-        const { id, nom, description } = tag
+        const { id, nom, description, coordinateurId, activites } = tag
+        const accompagnementsCount = activites.reduce(
+          (acc, { activite }) => acc + activite.accompagnementsCount,
+          0,
+        )
         return {
           id,
           nom,
           scope: getTagScope(tag),
           description: description ?? undefined,
+          accompagnementsCount,
+          equipeId: coordinateurId ?? undefined,
         }
       }),
       matchesCount: totalFilteredTags,

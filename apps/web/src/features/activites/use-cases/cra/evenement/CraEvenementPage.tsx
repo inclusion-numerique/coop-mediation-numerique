@@ -6,7 +6,7 @@ import { contentId } from '@app/web/utils/skipLinks'
 import React from 'react'
 import type { DefaultValues } from 'react-hook-form'
 import type { Tag } from '../../tags/components/TagsComboBox'
-import SaveTagModal from '../../tags/save/SaveTagModal'
+import SaveTagModal, { Equipe } from '../../tags/save/SaveTagModal'
 import { CraAnimationData } from '../animation/validation/CraAnimationValidation'
 import CraEvenementForm from './components/CraEvenementForm'
 
@@ -14,6 +14,7 @@ type CraEvenementPageProps = {
   defaultValues: DefaultValues<CraAnimationData>
   coordinateurId: string
   initialTagsOptions: Tag[]
+  equipes: Equipe[]
   retour?: string
 }
 
@@ -21,6 +22,7 @@ const CraEvenementPage = ({
   defaultValues,
   coordinateurId,
   initialTagsOptions,
+  equipes,
   retour,
 }: CraEvenementPageProps) => (
   <div className="fr-container fr-container--800">
@@ -48,7 +50,7 @@ const CraEvenementPage = ({
           text: 'En savoir plus sur comment compléter un CRA',
         }}
       />
-      <SaveTagModal isMediateur={false} isCoordinateur />
+      <SaveTagModal isMediateur={false} isCoordinateur equipes={equipes} />
       <CraEvenementForm
         defaultValues={{ ...defaultValues, coordinateurId }}
         initialTagsOptions={initialTagsOptions}

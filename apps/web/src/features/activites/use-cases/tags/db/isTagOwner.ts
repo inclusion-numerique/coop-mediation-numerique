@@ -3,18 +3,11 @@ import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
 import { getUserDepartement } from '@app/web/features/utilisateurs/utils/getUserDepartement'
 import { prismaClient } from '@app/web/prismaClient'
 
-export const isTagOwner = (sessionUser: SessionUser) => (id: string) => {
-  if (isMediateur(sessionUser)) {
-    return prismaClient.tag
-      .findFirst({
-        where: {
-          id,
-          mediateurId: sessionUser.mediateur.id,
-        },
-      })
-      .then((tag) => tag != null)
-  }
+const toEquipeCoordinateurIds = (coordination: {
+  coordinateur: { id: string }
+}) => coordination.coordinateur.id
 
+export const isTagOwner = (sessionUser: SessionUser) => (id: string) => {
   if (isCoordinateur(sessionUser)) {
     const departement = getUserDepartement(sessionUser)
 
@@ -30,6 +23,31 @@ export const isTagOwner = (sessionUser: SessionUser) => (id: string) => {
                   { coordinateurId: sessionUser.coordinateur.id },
                 ],
               }),
+        },
+      })
+      .then((tag) => tag != null)
+  }
+
+  if (isMediateur(sessionUser)) {
+    const equipeCoordinateurIds = sessionUser.mediateur.coordinations.map(
+      toEquipeCoordinateurIds,
+    )
+
+    return prismaClient.tag
+      .findFirst({
+        where: {
+          id,
+          OR: [
+            { mediateurId: sessionUser.mediateur.id },
+            ...(equipeCoordinateurIds.length > 0
+              ? [
+                  {
+                    equipe: true,
+                    coordinateurId: { in: equipeCoordinateurIds },
+                  },
+                ]
+              : []),
+          ],
         },
       })
       .then((tag) => tag != null)

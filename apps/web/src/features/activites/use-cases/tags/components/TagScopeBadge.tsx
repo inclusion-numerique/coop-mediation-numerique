@@ -4,6 +4,7 @@ import { TagScope } from '../tagScope'
 
 const TAG_SEVERITY: Record<TagScope, string> = {
   [TagScope.Personnel]: 'fr-text-mention--grey',
+  [TagScope.Equipe]: 'fr-badge--brown-caramel',
   [TagScope.Departemental]: 'fr-badge--info',
   [TagScope.National]: 'fr-badge--green-menthe',
 }

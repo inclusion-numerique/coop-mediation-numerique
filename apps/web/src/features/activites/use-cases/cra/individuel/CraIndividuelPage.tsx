@@ -9,7 +9,7 @@ import { contentId } from '@app/web/utils/skipLinks'
 import React from 'react'
 import type { DefaultValues } from 'react-hook-form'
 import type { Tag } from '../../tags/components/TagsComboBox'
-import SaveTagModal from '../../tags/save/SaveTagModal'
+import SaveTagModal, { Equipe } from '../../tags/save/SaveTagModal'
 import CraIndividuelForm from './components/CraIndividuelForm'
 import { CraIndividuelData } from './validation/CraIndividuelValidation'
 
@@ -20,6 +20,7 @@ export type CraIndividuelPageData = {
   lieuxActiviteOptions: LieuActiviteOption[]
   initialTagsOptions: Tag[]
   dureeOptions: SelectOption[]
+  equipes: Equipe[]
   retour?: string
 }
 
@@ -30,6 +31,7 @@ const CraIndividuelPage = ({
   lieuxActiviteOptions,
   dureeOptions,
   mediateurId,
+  equipes,
   retour,
 }: CraIndividuelPageData) => (
   <div className="fr-container fr-container--800">
@@ -50,7 +52,7 @@ const CraIndividuelPage = ({
           text: 'En savoir plus sur comment compléter un CRA',
         }}
       />
-      <SaveTagModal isMediateur isCoordinateur={false} />
+      <SaveTagModal isMediateur isCoordinateur={false} equipes={equipes} />
       <CraIndividuelForm
         defaultValues={{ ...defaultValues, mediateurId }}
         lieuActiviteOptions={lieuxActiviteOptions}
