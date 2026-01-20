@@ -23,6 +23,11 @@ export const getLastUserActivityDate = async ({
         orderBy: { timestamp: 'desc' },
         take: 1,
       },
+      mediateur: {
+        select: {
+          derniereCreationActivite: true,
+        },
+      },
     },
   })
 
@@ -33,15 +38,17 @@ export const getLastUserActivityDate = async ({
   const created = user.created
   const lastLogin = user.lastLogin
   const lastMutation = user.mutations?.[0]?.timestamp ?? null
+  const lastCraActivity = user.mediateur?.derniereCreationActivite ?? null
 
-  const lastActivity = max(
-    [created, lastLogin, lastMutation].filter(isDefinedAndNotNull),
-  )
+  const lastActivity = user.mediateur
+    ? lastCraActivity
+    : max([created, lastLogin, lastMutation].filter(isDefinedAndNotNull))
 
   return {
     lastActivity,
     created,
     lastLogin,
     lastMutation,
+    lastCraActivity,
   }
 }

@@ -57,6 +57,7 @@ export type SessionUser = Pick<
   coordinateur:
     | (Pick<Coordinateur, 'id' | 'conseillerNumeriqueId'> & {
         mediateursCoordonnes: { mediateurId: string }[]
+        ancienMediateursCoordonnes: { mediateurId: string }[]
       })
     | null
   rdvAccount:

@@ -1,6 +1,7 @@
+import { splitMediateursCoordonnes } from '@app/web/features/mediateurs/splitMediateursCoordonnes'
 import { prismaClient } from '@app/web/prismaClient'
 
-export const userFromShareId = async (id: string) =>
+const queryUserFromShareId = (id: string) =>
   prismaClient.partageStatistiques.findFirst({
     where: {
       id,
@@ -84,8 +85,24 @@ export const userFromShareId = async (id: string) =>
             },
           },
           conseillerNumeriqueId: true,
-          mediateursCoordonnes: true,
+          mediateursCoordonnes: {
+            select: {
+              mediateurId: true,
+              suppression: true,
+            },
+          },
         },
       },
     },
   })
+
+export const userFromShareId = async (id: string) => {
+  const result = await queryUserFromShareId(id)
+
+  if (!result) return null
+
+  return {
+    ...result,
+    coordinateur: splitMediateursCoordonnes(result.coordinateur),
+  }
+}

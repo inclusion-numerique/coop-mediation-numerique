@@ -414,6 +414,7 @@ const STATISTIQUES_WORKSHEET_INPUT_FOR_COORDINATEUR: BuildStatistiquesWorksheetI
         id: '1',
         conseillerNumeriqueId: '2',
         mediateursCoordonnes: [],
+        ancienMediateursCoordonnes: [],
       },
     },
     filters: [

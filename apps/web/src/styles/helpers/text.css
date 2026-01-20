@@ -46,8 +46,8 @@
   white-space: nowrap;
 }
 
-.fr-whitespace-wrap {
-  white-space: normal;
+.fr-whitespace-normal {
+  white-space: normal !important;
 }
 
 .fr-text-overflow--ellipsis {

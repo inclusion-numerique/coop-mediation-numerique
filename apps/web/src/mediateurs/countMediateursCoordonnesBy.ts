@@ -1,4 +1,5 @@
 import { prismaClient } from '@app/web/prismaClient'
+import { subMonths } from 'date-fns'
 
 export const countMediateursCoordonnesBy = async (
   coordinateur?: { id: string } | null,
@@ -7,6 +8,10 @@ export const countMediateursCoordonnesBy = async (
   totalAncien: number
   conseillersNumeriques: number
   mediateursNumeriques: number
+  actifs: number
+  inactifs: number
+  invitations: number
+  archives: number
 }> => {
   if (!coordinateur?.id) {
     return {
@@ -14,10 +19,24 @@ export const countMediateursCoordonnesBy = async (
       totalAncien: 0,
       conseillersNumeriques: 0,
       mediateursNumeriques: 0,
+      actifs: 0,
+      inactifs: 0,
+      invitations: 0,
+      archives: 0,
     }
   }
 
-  const [total, totalAncien, conseillersNumeriques] = await Promise.all([
+  const twoMonthsAgo = subMonths(new Date(), 2)
+
+  const [
+    total,
+    totalAncien,
+    conseillersNumeriques,
+    invitations,
+    actifs,
+    inactifs,
+    archives,
+  ] = await Promise.all([
     prismaClient.mediateurCoordonne.count({
       where: { coordinateurId: coordinateur.id, suppression: null },
     }),
@@ -31,6 +50,45 @@ export const countMediateursCoordonnesBy = async (
         mediateur: { conseillerNumerique: { isNot: null } },
       },
     }),
+    prismaClient.invitationEquipe.count({
+      where: {
+        coordinateurId: coordinateur.id,
+        acceptee: null,
+        refusee: null,
+      },
+    }),
+    prismaClient.mediateurCoordonne.count({
+      where: {
+        coordinateurId: coordinateur.id,
+        suppression: null,
+        mediateur: {
+          user: { deleted: null },
+          derniereCreationActivite: { gte: twoMonthsAgo },
+        },
+      },
+    }),
+    prismaClient.mediateurCoordonne.count({
+      where: {
+        coordinateurId: coordinateur.id,
+        suppression: null,
+        mediateur: {
+          user: { deleted: null },
+          OR: [
+            { derniereCreationActivite: null },
+            { derniereCreationActivite: { lt: twoMonthsAgo } },
+          ],
+        },
+      },
+    }),
+    prismaClient.mediateurCoordonne.count({
+      where: {
+        coordinateurId: coordinateur.id,
+        OR: [
+          { suppression: { not: null } },
+          { mediateur: { user: { deleted: { not: null } } } },
+        ],
+      },
+    }),
   ])
 
   return {
@@ -38,5 +96,9 @@ export const countMediateursCoordonnesBy = async (
     totalAncien,
     conseillersNumeriques,
     mediateursNumeriques: total - conseillersNumeriques,
+    actifs,
+    inactifs,
+    invitations,
+    archives,
   }
 }

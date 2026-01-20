@@ -15,6 +15,7 @@ const MesBeneficiairesListePage = ({
   <>
     <div className="fr-flex fr-mt-5v fr-mb-6v fr-flex-gap-4v">
       <DataSearchBar
+        className="fr-flex-grow-1"
         baseHref="/coop/mes-beneficiaires"
         searchParams={searchParams}
         placeholder="Rechercher parmi vos bénéficiaires enregistrés"

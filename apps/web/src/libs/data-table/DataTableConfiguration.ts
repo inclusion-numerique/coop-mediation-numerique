@@ -1,6 +1,6 @@
 import type { SelectInputOption } from '@app/ui/components/Form/utils/options'
 import type { Sql } from '@prisma/client/runtime/library'
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import type { SortDirection } from './SortLink'
 
 export type DataTableRow = any
@@ -34,6 +34,7 @@ export type DataTableColumn<
   header?: ReactNode
   cellAsTh?: boolean
   cellClassName?: string
+  cellStyle?: CSSProperties
   headerClassName?: string
   csvHeaders?: string[]
   csvValues?: (row: DataRow) => (string | number | null | undefined)[]
@@ -55,13 +56,15 @@ export type DataTableConfiguration<
   csvFilename?: string | (() => string)
   columns: DataTableColumn<DataRow, Where, OrderBy>[]
   rowKey: (row: DataRow) => string
-  rowLink?: (row: DataRow) => {
-    href: string
-    replace?: boolean
-    scroll?: boolean
-    shallow?: boolean
-    prefetch?: boolean
-  }
+  rowLink?: (row: DataRow) =>
+    | {
+        href: string
+        replace?: boolean
+        scroll?: boolean
+        shallow?: boolean
+        prefetch?: boolean
+      }
+    | undefined
   rowInMemorySearchableString?: (row: DataRow) => string
   defaultSortableInMemory?: (a: DataRow, b: DataRow) => number
 }

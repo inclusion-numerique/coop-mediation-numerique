@@ -17,6 +17,7 @@ describe('buildActivitesWorksheet', () => {
           id: '1',
           conseillerNumeriqueId: '2',
           mediateursCoordonnes: [],
+          ancienMediateursCoordonnes: [],
         },
         mediateur: {
           id: '1',

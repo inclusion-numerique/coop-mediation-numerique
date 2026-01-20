@@ -25,6 +25,11 @@ const disallowExportFor =
     !exportForMediateurIds.includes(user.mediateur.id) &&
     !exportForMediateurIds.some((id) =>
       user.coordinateur?.mediateursCoordonnes.map(toMediateurId).includes(id),
+    ) &&
+    !exportForMediateurIds.some((id) =>
+      user.coordinateur?.ancienMediateursCoordonnes
+        .map(toMediateurId)
+        .includes(id),
     )
 
 export const GET = async (request: NextRequest) => {

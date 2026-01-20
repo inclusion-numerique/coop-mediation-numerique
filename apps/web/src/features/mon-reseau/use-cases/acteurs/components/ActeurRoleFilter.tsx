@@ -43,11 +43,7 @@ export const ActeurRoleFilter = ({
   }
 
   const handleSubmit = (close: boolean = false) => {
-    if (role) {
-      params.set('role', role)
-    } else {
-      params.delete('role')
-    }
+    role ? params.set('role', role) : params.delete('role')
     closePopover(close)
   }
 

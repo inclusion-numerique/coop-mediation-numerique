@@ -1,4 +1,7 @@
+import type { SessionUser } from '@app/web/auth/sessionUser'
 import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
+import { cancelInvitation } from '@app/web/equipe/cancelInvitation'
+import { deleteFromArchive } from '@app/web/equipe/deleteFromArchive'
 import { InvitationValidation } from '@app/web/equipe/InvitationValidation'
 import { InviterMembreValidation } from '@app/web/equipe/InviterMembreValidation'
 import { togglePartageStatistiques } from '@app/web/features/mediateurs/use-cases/partage-statistiques/db/togglePartageStatistiques'
@@ -22,6 +25,15 @@ import { forbiddenError } from '@app/web/server/rpc/trpcErrors'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import { z } from 'zod'
+
+const assertAdminOrOwnerCoordinateur =
+  (user: SessionUser) => (coordinateurId: string) => {
+    if (user.role === 'Admin') return
+    if (!isCoordinateur(user))
+      throw forbiddenError('User is not a coordinateur')
+    if (user.coordinateur.id !== coordinateurId)
+      throw forbiddenError('Coordinateur mismatch')
+  }
 
 export const mediateursRouter = router({
   search: protectedProcedure
@@ -145,13 +157,7 @@ export const mediateursRouter = router({
   resendInvitation: protectedProcedure
     .input(z.object({ email: z.string(), coordinateurId: z.string() }))
     .mutation(async ({ input: { email, coordinateurId }, ctx: { user } }) => {
-      if (user.role !== 'Admin') {
-        if (!isCoordinateur(user))
-          throw forbiddenError('User is not a coordinateur')
-
-        if (user.coordinateur.id !== coordinateurId)
-          throw forbiddenError('Coordinateur mismatch')
-      }
+      assertAdminOrOwnerCoordinateur(user)(coordinateurId)
 
       const coordinateurUser = await prismaClient.user.findFirst({
         where: {
@@ -185,6 +191,52 @@ export const mediateursRouter = router({
         },
       })
     }),
+  cancelInvitation: protectedProcedure
+    .input(z.object({ email: z.string(), coordinateurId: z.string() }))
+    .mutation(async ({ input: { email, coordinateurId }, ctx: { user } }) => {
+      assertAdminOrOwnerCoordinateur(user)(coordinateurId)
+
+      const stopwatch = createStopwatch()
+
+      await cancelInvitation({
+        email,
+        coordinateurId,
+      })
+
+      addMutationLog({
+        userId: user.id,
+        nom: 'AnnulerInvitationMediateurCoordonne' as const,
+        duration: stopwatch.stop().duration,
+        data: {
+          email,
+          coordinateurId,
+        },
+      })
+    }),
+  deleteFromArchive: protectedProcedure
+    .input(z.object({ mediateurId: z.string(), coordinateurId: z.string() }))
+    .mutation(
+      async ({ input: { mediateurId, coordinateurId }, ctx: { user } }) => {
+        assertAdminOrOwnerCoordinateur(user)(coordinateurId)
+
+        const stopwatch = createStopwatch()
+
+        await deleteFromArchive({
+          mediateurId,
+          coordinateurId,
+        })
+
+        addMutationLog({
+          userId: user.id,
+          nom: 'SupprimerDefinitivementMediateurCoordonne' as const,
+          duration: stopwatch.stop().duration,
+          data: {
+            mediateurId,
+            coordinateurId,
+          },
+        })
+      },
+    ),
   addToTeam: protectedProcedure
     .input(
       z.object({

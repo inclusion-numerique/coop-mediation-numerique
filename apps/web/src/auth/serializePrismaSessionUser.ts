@@ -3,6 +3,7 @@ import type {
   PrismaSessionUsupper,
 } from '@app/web/auth/getSessionUserFromSessionToken'
 import type { SessionUser } from '@app/web/auth/sessionUser'
+import { splitMediateursCoordonnes } from '@app/web/features/mediateurs/splitMediateursCoordonnes'
 
 /**
  * This is the session user that will be publicly sent to the client.
@@ -13,6 +14,7 @@ export const serializePrismaSessionUser = (
   usurper?: PrismaSessionUsupper,
 ): SessionUser => ({
   ...prismaSessionUser,
+  coordinateur: splitMediateursCoordonnes(prismaSessionUser.coordinateur),
   emailVerified: prismaSessionUser.emailVerified?.toISOString() ?? null,
   created: prismaSessionUser.created.toISOString(),
   updated: prismaSessionUser.updated.toISOString(),

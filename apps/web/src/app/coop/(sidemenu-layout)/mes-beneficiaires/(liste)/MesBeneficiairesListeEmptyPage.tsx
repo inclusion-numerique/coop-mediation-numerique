@@ -16,16 +16,29 @@ const MesBeneficiairesListeEmptyPage = () => (
         Vous pouvez également importer une liste de bénéficiaires au format
         Excel.
       </p>
-      <div className="fr-flex fr-justify-content-center fr-width-full">
-        <Button
-          iconId="fr-icon-download-line"
-          priority="secondary"
-          linkProps={{
-            href: '/coop/mes-beneficiaires/importer',
-          }}
-        >
-          Importer des bénéficiaires
-        </Button>
+      <div className="fr-flex fr-direction-column fr-width-full fr-flex-gap-2v fr-text--center">
+        <div>
+          <Button
+            iconId="fr-icon-download-line"
+            priority="secondary"
+            linkProps={{
+              href: '/coop/mes-beneficiaires/importer',
+            }}
+          >
+            Importer des bénéficiaires
+          </Button>
+        </div>
+        OU
+        <div>
+          <Button
+            iconId="fr-icon-user-add-line"
+            linkProps={{
+              href: '/coop/mes-beneficiaires/nouveau',
+            }}
+          >
+            Créer un bénéficiaire
+          </Button>
+        </div>
       </div>
     </div>
   </>
