@@ -56,17 +56,20 @@ export const profileInscriptionValues = Object.keys({
 }) as [ProfilInscription, ...ProfilInscription[]]
 
 export const computeUserProfile = (
-  user: Pick<SessionUser, 'mediateur' | 'coordinateur'>,
+  user: Pick<
+    SessionUser,
+    'isConseillerNumerique' | 'mediateur' | 'coordinateur'
+  >,
 ): ProfilInscription => {
   if (user.coordinateur) {
-    if (user.coordinateur.conseillerNumeriqueId) {
+    if (user.isConseillerNumerique) {
       return 'CoordinateurConseillerNumerique'
     }
 
     return 'Coordinateur'
   }
 
-  if (user?.mediateur?.conseillerNumerique) {
+  if (user.isConseillerNumerique) {
     return 'ConseillerNumerique'
   }
 

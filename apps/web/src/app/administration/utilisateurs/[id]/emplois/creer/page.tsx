@@ -26,11 +26,7 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
       id,
     },
     include: {
-      mediateur: {
-        include: {
-          conseillerNumerique: true,
-        },
-      },
+      mediateur: true,
     },
   })
 

@@ -28,7 +28,7 @@ export type MediateurFound = {
   name: string | null
   first_name: string | null
   last_name: string | null
-  conseiller_numerique_id: string | null
+  is_conseiller_numerique: boolean | null
   date_derniere_activite: Date | null
   creation: Date
   suppression: Date | null
@@ -96,9 +96,9 @@ const getStatutFilterClause = (statut: string | undefined): string => {
 const getRoleFilterClause = (role: RoleFiltre | undefined): string => {
   switch (role) {
     case 'conseiller-numerique':
-      return `conseiller_numerique_id IS NOT NULL`
+      return `is_conseiller_numerique = TRUE`
     case 'mediateur-numerique':
-      return `conseiller_numerique_id IS NULL`
+      return `is_conseiller_numerique = FALSE`
     default:
       return 'TRUE'
   }
@@ -147,7 +147,7 @@ const userInfoColumns = `
   users.last_name AS last_name,
   users.name AS name,
   users.phone AS phone,
-  conseillers.id AS conseiller_numerique_id`
+  users.is_conseiller_numerique AS is_conseiller_numerique`
 
 const pendingInvitationsQuery = (coordinateurId: string) => `
   SELECT
@@ -163,7 +163,6 @@ const pendingInvitationsQuery = (coordinateurId: string) => `
   FROM "invitations_equipes" AS invitations
     LEFT JOIN "mediateurs" AS mediateurs ON mediateurs.id = invitations.mediateur_id
     LEFT JOIN "users" AS users ON users.id = mediateurs.user_id
-    LEFT JOIN "conseillers_numeriques" AS conseillers ON conseillers."mediateur_id" = mediateurs."id"
   WHERE invitations."coordinateur_id" = '${coordinateurId}'::uuid
     AND invitations.acceptee IS NULL
     AND invitations.refusee IS NULL`
@@ -181,7 +180,6 @@ const coordinatedMediateursQuery = (coordinateurId: string) => `
     ${structureEmployeuseColumns('users.id')}
   FROM "mediateurs" AS mediateurs
     LEFT JOIN "users" AS users ON users."id" = mediateurs."user_id"
-    LEFT JOIN "conseillers_numeriques" AS conseillers ON conseillers."mediateur_id" = mediateurs."id"
     INNER JOIN "mediateurs_coordonnes" AS mc ON mc."mediateur_id" = mediateurs."id"
   WHERE mc.coordinateur_id = '${coordinateurId}'::uuid`
 

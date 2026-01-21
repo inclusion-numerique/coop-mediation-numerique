@@ -1,5 +1,5 @@
 import { exec as callbackExec } from 'node:child_process'
-import { createWriteStream } from 'node:fs'
+import { createWriteStream, existsSync } from 'node:fs'
 import path from 'node:path'
 import { promisify } from 'node:util'
 import { output } from '@app/cli/output'
@@ -52,6 +52,10 @@ export const locallyRestoreLatestMainBackup = new Command(
     '-d, --date <date>',
     'Date of the backup to restore (format: YYYY-MM-DD). If not provided, restores the latest backup.',
   )
+  .option(
+    '-l, --local',
+    'Restore from previously already downloaded backup file',
+  )
   .action(async (options) => {
     const targetDate = options.date ? new Date(options.date) : null
 
@@ -87,125 +91,137 @@ export const locallyRestoreLatestMainBackup = new Command(
       }
     }
 
-    const client = axios.create({
-      baseURL: 'https://api.scaleway.com/rdb/v1/regions/fr-par',
-      headers: {
-        'X-Auth-Token': process.env.SCW_SECRET_KEY,
-      },
-    })
-    axiosRetry(client, {
-      retries: 3,
-      retryDelay: (retryCount) => retryCount * 3000,
-    })
-
-    output('Listing backups')
-    const backups = await client.get<{
-      database_backups: ScalewayDatabaseBackup[]
-    }>('/backups', {
-      params: {
-        order_by: 'created_at_desc',
-        page_size: 100,
-        instance_id: databaseInstanceId,
-        database_name: backupDatabaseName,
-      },
-    })
-
-    if (backups.data.database_backups.length === 0) {
-      throw new Error('No backups found')
-    }
-    const elligibleBackups = backups.data.database_backups.filter(
-      ({ status }) => status === 'ready' || status === 'exporting',
-    )
-
-    if (elligibleBackups.length === 0) {
-      throw new Error('Invalid status for all backups')
-    }
-
-    let selectedBackup: ScalewayDatabaseBackup
-
-    if (targetDate) {
-      // Find backup matching the target date (same day)
-      const matchingBackup = elligibleBackups.find((backup) => {
-        const backupDate = new Date(backup.created_at)
-        return (
-          backupDate.getFullYear() === targetDate.getFullYear() &&
-          backupDate.getMonth() === targetDate.getMonth() &&
-          backupDate.getDate() === targetDate.getDate()
-        )
-      })
-
-      if (!matchingBackup) {
-        const availableDates = elligibleBackups
-          .map((b) => b.created_at.split('T')[0])
-          .join(', ')
+    // If local flag is provided, verify the backup file exists locally
+    if (options.local) {
+      output(`Using local backup file: ${mainBackupFile}`)
+      if (!existsSync(mainBackupFile)) {
         throw new Error(
-          `No backup found for date ${options.date}. Available backups: ${availableDates}`,
+          `Local backup file not found at ${mainBackupFile}. Please download the backup first by running without the --local flag.`,
+        )
+      }
+      output('Local backup file found')
+    } else {
+      // Only download if local flag is not provided
+      const client = axios.create({
+        baseURL: 'https://api.scaleway.com/rdb/v1/regions/fr-par',
+        headers: {
+          'X-Auth-Token': process.env.SCW_SECRET_KEY,
+        },
+      })
+      axiosRetry(client, {
+        retries: 3,
+        retryDelay: (retryCount) => retryCount * 3000,
+      })
+
+      output('Listing backups')
+      const backups = await client.get<{
+        database_backups: ScalewayDatabaseBackup[]
+      }>('/backups', {
+        params: {
+          order_by: 'created_at_desc',
+          page_size: 100,
+          instance_id: databaseInstanceId,
+          database_name: backupDatabaseName,
+        },
+      })
+
+      if (backups.data.database_backups.length === 0) {
+        throw new Error('No backups found')
+      }
+      const elligibleBackups = backups.data.database_backups.filter(
+        ({ status }) => status === 'ready' || status === 'exporting',
+      )
+
+      if (elligibleBackups.length === 0) {
+        throw new Error('Invalid status for all backups')
+      }
+
+      let selectedBackup: ScalewayDatabaseBackup
+
+      if (targetDate) {
+        // Find backup matching the target date (same day)
+        const matchingBackup = elligibleBackups.find((backup) => {
+          const backupDate = new Date(backup.created_at)
+          return (
+            backupDate.getFullYear() === targetDate.getFullYear() &&
+            backupDate.getMonth() === targetDate.getMonth() &&
+            backupDate.getDate() === targetDate.getDate()
+          )
+        })
+
+        if (!matchingBackup) {
+          const availableDates = elligibleBackups
+            .map((b) => b.created_at.split('T')[0])
+            .join(', ')
+          throw new Error(
+            `No backup found for date ${options.date}. Available backups: ${availableDates}`,
+          )
+        }
+
+        selectedBackup = matchingBackup
+        output(
+          `Found backup for ${options.date}: ${selectedBackup.name} - ${selectedBackup.created_at}`,
+        )
+      } else {
+        selectedBackup = elligibleBackups[0]
+        output(
+          `Found latest backup: ${selectedBackup.name} - ${selectedBackup.created_at}`,
         )
       }
 
-      selectedBackup = matchingBackup
-      output(
-        `Found backup for ${options.date}: ${selectedBackup.name} - ${selectedBackup.created_at}`,
-      )
-    } else {
-      selectedBackup = elligibleBackups[0]
-      output(
-        `Found latest backup: ${selectedBackup.name} - ${selectedBackup.created_at}`,
-      )
-    }
+      if (selectedBackup.download_url) {
+        output('Backup already exported')
+      } else {
+        output('Exporting backup')
+        // It takes some time, status should be 'exporting' for a while
+        const exportResponse = await client.post<ScalewayDatabaseBackup>(
+          `/backups/${selectedBackup.id}/export`,
+        )
 
-    if (selectedBackup.download_url) {
-      output('Backup already exported')
-    } else {
-      output('Exporting backup')
-      // It takes some time, status should be 'exporting' for a while
-      const exportResponse = await client.post<ScalewayDatabaseBackup>(
-        `/backups/${selectedBackup.id}/export`,
-      )
-
-      selectedBackup = exportResponse.data
-    }
-
-    let waitCount = 0
-    while (!selectedBackup.download_url) {
-      if (waitCount > 10) {
-        throw new Error('Timeout waiting for backup export')
+        selectedBackup = exportResponse.data
       }
-      await new Promise((resolve) => {
-        setTimeout(resolve, 3000)
-      })
-      const statusResponse = await client.get<ScalewayDatabaseBackup>(
-        `/backups/${selectedBackup.id}`,
+
+      let waitCount = 0
+      while (!selectedBackup.download_url) {
+        if (waitCount > 10) {
+          throw new Error('Timeout waiting for backup export')
+        }
+        await new Promise((resolve) => {
+          setTimeout(resolve, 3000)
+        })
+        const statusResponse = await client.get<ScalewayDatabaseBackup>(
+          `/backups/${selectedBackup.id}`,
+        )
+        selectedBackup = statusResponse.data
+        waitCount += 1
+      }
+
+      if (!selectedBackup.download_url) {
+        throw new Error('No download url available')
+      }
+
+      output(`Backup is ready for download at ${selectedBackup.download_url}`)
+      output(`Downloading backup to ${mainBackupFile}`)
+
+      createVarDirectory()
+
+      const downloadResponse = await axios.get<NodeJS.ReadableStream>(
+        selectedBackup.download_url,
+        {
+          // Downloading as stream to keep encoding of pgdump file (binary) and avoid memory issues
+          responseType: 'stream',
+        },
       )
-      selectedBackup = statusResponse.data
-      waitCount += 1
+
+      const writeStream = createWriteStream(mainBackupFile)
+
+      downloadResponse.data.pipe(writeStream)
+
+      await new Promise((resolve, reject) => {
+        writeStream.on('finish', () => resolve(true))
+        writeStream.on('error', reject)
+      })
     }
-
-    if (!selectedBackup.download_url) {
-      throw new Error('No download url available')
-    }
-
-    output(`Backup is ready for download at ${selectedBackup.download_url}`)
-    output(`Downloading backup to ${mainBackupFile}`)
-
-    createVarDirectory()
-
-    const downloadResponse = await axios.get<NodeJS.ReadableStream>(
-      selectedBackup.download_url,
-      {
-        // Downloading as stream to keep encoding of pgdump file (binary) and avoid memory issues
-        responseType: 'stream',
-      },
-    )
-
-    const writeStream = createWriteStream(mainBackupFile)
-
-    downloadResponse.data.pipe(writeStream)
-
-    await new Promise((resolve, reject) => {
-      writeStream.on('finish', () => resolve(true))
-      writeStream.on('error', reject)
-    })
 
     output('Clearing database tables and enum types before loading data')
 

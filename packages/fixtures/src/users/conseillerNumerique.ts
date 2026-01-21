@@ -9,6 +9,7 @@ export const conseillerNumeriqueConseillerNumeriqueId =
 
 export const conseillerNumerique = givenUser({
   id: 'b66d2370-4245-4492-a630-02749a98237d',
+  isConseillerNumerique: true,
   firstName: 'Conseiller Num',
   lastName: 'Inscrit',
   isFixture: true,
@@ -25,16 +26,6 @@ export const conseillerNumerique = givenUser({
       },
       create: {
         id: conseillerNumeriqueMediateurId,
-        conseillerNumerique: {
-          connectOrCreate: {
-            where: {
-              id: conseillerNumeriqueConseillerNumeriqueId,
-            },
-            create: {
-              id: conseillerNumeriqueConseillerNumeriqueId,
-            },
-          },
-        },
         enActivite: {
           connectOrCreate: [
             {

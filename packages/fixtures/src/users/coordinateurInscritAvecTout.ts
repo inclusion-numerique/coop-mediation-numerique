@@ -14,6 +14,7 @@ export const coordinateurInscritAvecTout = givenUser({
   lastLogin: new Date(),
   isFixture: true,
   role: 'User',
+  isConseillerNumerique: true,
   coordinateur: {
     connectOrCreate: {
       where: {
@@ -21,7 +22,6 @@ export const coordinateurInscritAvecTout = givenUser({
       },
       create: {
         id: coordinateurInscritAvecToutCoordinateurId,
-        conseillerNumeriqueId: '657070ed7a10c4da5bdd1d57',
       },
     },
   },
@@ -32,16 +32,6 @@ export const coordinateurInscritAvecTout = givenUser({
       },
       create: {
         id: coordinateurInscritAvecToutMediateurId,
-        conseillerNumerique: {
-          connectOrCreate: {
-            where: {
-              id: '657070ed7a10c4da5bdd1d57',
-            },
-            create: {
-              id: '657070ed7a10c4da5bdd1d57',
-            },
-          },
-        },
         enActivite: {
           connectOrCreate: [
             {

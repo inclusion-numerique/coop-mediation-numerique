@@ -1,5 +1,4 @@
 import type {
-  ConseillerNumerique,
   Coordinateur,
   EmployeStructure,
   Mediateur,
@@ -25,6 +24,7 @@ export type SessionUser = Pick<
   | 'acceptationCgu'
   | 'featureFlags'
   | 'timezone'
+  | 'isConseillerNumerique'
 > & {
   emailVerified: string | null
   created: string | null
@@ -50,12 +50,11 @@ export type SessionUser = Pick<
             }[]
           }
         }[]
-        conseillerNumerique: Pick<ConseillerNumerique, 'id'> | null
         _count: { enActivite: number }
       })
     | null
   coordinateur:
-    | (Pick<Coordinateur, 'id' | 'conseillerNumeriqueId'> & {
+    | (Pick<Coordinateur, 'id'> & {
         mediateursCoordonnes: { mediateurId: string }[]
         ancienMediateursCoordonnes: { mediateurId: string }[]
       })

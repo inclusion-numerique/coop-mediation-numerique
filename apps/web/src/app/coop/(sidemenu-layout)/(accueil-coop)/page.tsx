@@ -21,8 +21,10 @@ const Page = async () => {
       {...dashboardPageData}
       isMediateur={user.mediateur?.id != null}
       isCoordinateur={user.coordinateur?.id != null}
-      isCoordinateurCoNum={user.coordinateur?.conseillerNumeriqueId != null}
-      isCoNum={user.mediateur?.conseillerNumerique != null}
+      isCoordinateurCoNum={
+        user.coordinateur != null && user.isConseillerNumerique
+      }
+      isCoNum={user.isConseillerNumerique}
     />
   )
 }

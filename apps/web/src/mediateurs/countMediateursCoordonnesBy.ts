@@ -47,7 +47,7 @@ export const countMediateursCoordonnesBy = async (
       where: {
         coordinateurId: coordinateur.id,
         suppression: null,
-        mediateur: { conseillerNumerique: { isNot: null } },
+        mediateur: { user: { isConseillerNumerique: true } },
       },
     }),
     prismaClient.invitationEquipe.count({

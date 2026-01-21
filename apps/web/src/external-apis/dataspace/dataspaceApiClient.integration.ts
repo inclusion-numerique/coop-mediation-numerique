@@ -50,8 +50,8 @@ describe('dataspaceApiClient', () => {
       }),
     )
 
-    expect(result.structures_employeuses.length).toBeGreaterThan(0)
-    expect(result.structures_employeuses[0]).toEqual(
+    expect(result.structures_employeuses?.length).toBeGreaterThan(0)
+    expect(result.structures_employeuses?.[0]).toEqual(
       expect.objectContaining({
         nom: expect.any(String),
         siret: expect.any(String),
@@ -69,7 +69,7 @@ describe('dataspaceApiClient', () => {
       }),
     )
 
-    expect(result.lieux_activite[0]).toEqual(
+    expect(result.lieux_activite?.[0]).toEqual(
       expect.objectContaining({
         nom: expect.any(String),
         siret: expect.any(String),

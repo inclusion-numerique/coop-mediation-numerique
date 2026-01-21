@@ -20,6 +20,7 @@ export const coordinateurInscriptionAvecTout = givenUser({
   isFixture: true,
   role: 'User',
   siret: previewBranchAuthFallbacks.anctSiret,
+  isConseillerNumerique: true,
   coordinateur: {
     connectOrCreate: {
       where: {
@@ -27,8 +28,6 @@ export const coordinateurInscriptionAvecTout = givenUser({
       },
       create: {
         id: coordinateurInscriptionAvecToutCoordinateurId,
-        conseillerNumeriqueId:
-          coordinateurInscriptionAvecToutConseillerNumeriqueId,
       },
     },
   },
@@ -39,16 +38,6 @@ export const coordinateurInscriptionAvecTout = givenUser({
       },
       create: {
         id: 'add33310-e93b-46c1-98ee-aa926bae993d',
-        conseillerNumerique: {
-          connectOrCreate: {
-            where: {
-              id: coordinateurInscriptionAvecToutConseillerNumeriqueId,
-            },
-            create: {
-              id: coordinateurInscriptionAvecToutConseillerNumeriqueId,
-            },
-          },
-        },
         enActivite: {
           connectOrCreate: [
             {

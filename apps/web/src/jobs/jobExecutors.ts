@@ -7,7 +7,6 @@ import {
   getStructuresCartographieNationaleFromLocalFile,
 } from '../data/cartographie-nationale/cartographieNationaleStructures'
 import { executeBackupDatabaseJob } from './backup-database/executeBackupDatabaseJob'
-import { executeFixCoordinationsV1 } from './fix-coordinations-v1/executeFixCoordinationsV1'
 import { executeFixStructures } from './fix-structures/executeFixStructures'
 import { executeFixTags } from './fix-tags/executeFixTags'
 import { executeFixUsers } from './fix-users/executeFixUsers'
@@ -18,10 +17,8 @@ import { executeIngestLesBasesInRag } from './ingest-les-bases-in-rag/executeIng
 import type { Job, JobName, JobPayload } from './jobs'
 import { output } from './output'
 import { executeSetServciesToSharedLieux } from './set-servcies-to-shared-lieux/executeSetServciesToSharedLieux'
-import { executeSyncConums } from './sync-conums/executeSyncConums'
 import { executeSyncRdvspData } from './sync-rdvsp-data/executeSyncRdvspData'
-import { executeUpdateConumInfo } from './update-conum-info/executeUpdateConumInfo'
-import { executeUpdateConumStructureReferent } from './update-conum-structure-referent/executeUpdateConumStructureReferent'
+import { executeSyncUsersFromDataspace } from './sync-users-from-dataspace/executeSyncUsersFromDataspace'
 import { executeUpdateLieuxActivitesADistance } from './update-lieu-activite-a-distance/executeUpdateLieuxActivitesADistance'
 import { updateStructureFromCartoDataApi } from './update-structures-cartographie-nationale/updateStructureFromCartoDataApi'
 
@@ -53,17 +50,14 @@ export const jobExecutors: {
   'backup-database': executeBackupDatabaseJob,
   'update-structures-cartographie-nationale':
     executeUpdateStructuresCartographieNationale,
-  'fix-coordinations-v1': executeFixCoordinationsV1,
-  'update-conum-structure-referent': executeUpdateConumStructureReferent,
   'import-contacts-to-brevo': executeImportContactsToBrevo,
   'ingest-les-bases-in-rag': executeIngestLesBasesInRag,
   'set-servcies-to-shared-lieux': executeSetServciesToSharedLieux,
   'update-lieux-activites-a-distance': executeUpdateLieuxActivitesADistance,
   'fix-structures': executeFixStructures,
-  'update-conum-info': executeUpdateConumInfo,
   'fix-users': executeFixUsers,
   'fix-tags': executeFixTags,
-  'sync-conums': executeSyncConums,
+  'sync-users-from-dataspace': executeSyncUsersFromDataspace,
   'sync-rdvsp-data': executeSyncRdvspData,
   'inactive-users-reminders': executeInactiveUsersReminders,
   'fix-users-roles': executeFixUsersRoles,

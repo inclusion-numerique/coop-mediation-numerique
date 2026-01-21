@@ -55,11 +55,10 @@ export const getUtilisateursActifsPerMonth = async (): Promise<
         COUNT(DISTINCT a.mediateur_id)::int AS value
       FROM users u
       JOIN mediateurs m ON u.id = m.user_id
-      LEFT JOIN conseillers_numeriques cn ON cn.mediateur_id = m.id
       LEFT JOIN coordinateurs c ON u.id = c.user_id
       JOIN activites a ON a.mediateur_id = m.id
       WHERE a.suppression IS NULL
-        AND cn.mediateur_id IS NULL
+        AND u.is_conseiller_numerique = FALSE
         AND c.id IS NULL
         AND u.deleted IS NULL
         AND u.inscription_validee IS NOT NULL
@@ -69,13 +68,13 @@ export const getUtilisateursActifsPerMonth = async (): Promise<
       SELECT
         date_trunc('month', a.date) AS month,
         'conseillers' AS role,
-        COUNT(DISTINCT cn.id)::int AS value
+        COUNT(DISTINCT m.id)::int AS value
       FROM users u
       JOIN mediateurs m ON u.id = m.user_id
-      JOIN conseillers_numeriques cn ON cn.mediateur_id = m.id
       LEFT JOIN coordinateurs c ON u.id = c.user_id
       JOIN activites a ON a.mediateur_id = m.id
       WHERE a.suppression IS NULL
+        AND u.is_conseiller_numerique = TRUE
         AND c.id IS NULL
         AND u.deleted IS NULL
         AND u.inscription_validee IS NOT NULL

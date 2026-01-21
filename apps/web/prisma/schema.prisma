@@ -120,6 +120,11 @@ model User {
   // SIRET from ProConnect authentication
   siret String?
 
+  // Internal Dataspace ID for the user
+  dataspaceUserId Int? @unique @map("dataspace_user_id") @db.Integer
+  // If user is in the Conseiller Numerique program. Dataspace API is the source of truth for this data
+  isConseillerNumerique Boolean @default(false) @map("is_conseiller_numerique")
+
   // Flux d'inscription
 
   // Le profil déclaré par l’utilisateur à la première étape de l’inscription
@@ -291,9 +296,6 @@ model Mediateur {
   userId String @unique @map("user_id") @db.Uuid
   user   User   @relation(fields: [userId], references: [id])
 
-  // Un médiateur peut être un conseiller numérique
-  conseillerNumerique ConseillerNumerique?
-
   creation     DateTime @default(now())
   modification DateTime @default(now())
   // Cannot soft delete as we need to keep userId and conseillerNumerique.mediateurId unique
@@ -357,19 +359,6 @@ model InvitationEquipe {
   @@index([mediateurId])
   @@index([coordinateurId])
   @@map("invitations_equipes")
-}
-
-// Source de vérité https://api.conseiller-numerique.gouv.fr
-model ConseillerNumerique {
-  // IDs externe chez conseiller-numerique
-  id   String @id
-  idPg Int?   @unique @map("id_pg") @db.Integer
-
-  mediateurId String    @unique @map("mediateur_id") @db.Uuid
-  mediateur   Mediateur @relation(fields: [mediateurId], references: [id])
-
-  @@index([mediateurId])
-  @@map("conseillers_numeriques")
 }
 
 model CraConseillerNumeriqueV1 {
@@ -473,10 +462,6 @@ model CraConseillerNumeriqueV1 {
 // ou non. Ils peuvent être associés à plusieurs médiateurs.
 model Coordinateur {
   id String @id @default(uuid()) @db.Uuid
-
-  // Clé primaire chez conseiller-numerique
-  conseillerNumeriqueId   String? @unique @map("conseiller_numerique_id")
-  conseillerNumeriqueIdPg Int?    @unique @map("conseiller_numerique_id_pg")
 
   // utilisé pour ajouter à la main des conseillers v1 dans les archives de stats coordo
   // ids mongo des conseillers v1 à ajouter

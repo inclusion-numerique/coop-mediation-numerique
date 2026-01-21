@@ -16,6 +16,7 @@ export const testSessionUser = {
   emailVerified: null,
   isFixture: false,
   usurper: null,
+  isConseillerNumerique: false,
   coordinateur: null,
   emplois: [],
   inscriptionValidee: null,

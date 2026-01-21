@@ -337,33 +337,13 @@ export class WebAppStack extends TerraformStack {
         containerId: container.id,
       })
 
-      // Daily update of the structure referent
+      // Daily sync users from Dataspace API at 2 AM
       createJobExecutionCron(this, {
-        name: 'update-conum-structure-referent',
+        name: 'sync-users-from-dataspace',
         job: {
-          name: 'update-conum-structure-referent',
+          name: 'sync-users-from-dataspace',
         },
-        schedule: '0 0 * * *',
-        containerId: container.id,
-      })
-
-      // Daily update conseillers numériques info
-      createJobExecutionCron(this, {
-        name: 'update-conum-info',
-        job: {
-          name: 'update-conum-info',
-        },
-        schedule: '0 0 * * *',
-        containerId: container.id,
-      })
-
-      // Daily update synchronize conseillers numériques
-      createJobExecutionCron(this, {
-        name: 'sync-conums',
-        job: {
-          name: 'sync-conums',
-        },
-        schedule: '0 0 * * *',
+        schedule: '0 2 * * *',
         containerId: container.id,
       })
 

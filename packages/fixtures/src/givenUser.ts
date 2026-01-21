@@ -14,6 +14,7 @@ export const givenUser = <T extends Partial<Prisma.UserCreateInput>>(
   | 'emailVerified'
   | 'role'
   | 'timezone'
+  | 'isConseillerNumerique'
 > & {
   id: string
   email: string
@@ -23,6 +24,7 @@ export const givenUser = <T extends Partial<Prisma.UserCreateInput>>(
   emailVerified: string | Date
   role: UserRole
   timezone: string
+  isConseillerNumerique: boolean
 } => {
   const {
     role,
@@ -33,6 +35,7 @@ export const givenUser = <T extends Partial<Prisma.UserCreateInput>>(
     name,
     id,
     timezone,
+    isConseillerNumerique,
     ...rest
   } = data
 
@@ -45,6 +48,7 @@ export const givenUser = <T extends Partial<Prisma.UserCreateInput>>(
   const givenEmailVerified = emailVerified ?? new Date('2024-04-11')
   const givenEmail = email ?? `${givenSlug}@coop-numerique.anct.gouv.fr`
   const givenTimezone = timezone ?? 'Europe/Paris'
+  const givenIsConseillerNumerique = isConseillerNumerique ?? false
 
   return {
     id: givenId,
@@ -55,6 +59,7 @@ export const givenUser = <T extends Partial<Prisma.UserCreateInput>>(
     role: givenRole,
     emailVerified: givenEmailVerified,
     timezone: givenTimezone,
+    isConseillerNumerique: givenIsConseillerNumerique,
     ...rest,
   } satisfies Prisma.UserCreateInput
 }

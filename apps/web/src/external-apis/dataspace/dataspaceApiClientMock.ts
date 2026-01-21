@@ -30,10 +30,9 @@ import {
  */
 
 /**
- * In-memory mock database mapping emails to mediateur data
- * Add new email mappings here for your tests and fixtures
+ * Original mock database - used to reset after tests
  */
-export const mockDataspaceDatabase: Record<string, DataspaceMediateur | null> =
+const originalMockDataspaceDatabase: Record<string, DataspaceMediateur | null> =
   {
     [conseillerInscriptionEmail]: mockDataspaceConseillerNumeriqueInscription,
     [conseillerInscriptionSansContratEmail]:
@@ -47,6 +46,52 @@ export const mockDataspaceDatabase: Record<string, DataspaceMediateur | null> =
     [conseillerSansLieuInscriptionEmail]:
       mockDataspaceConseillerSansLieuInscription,
   }
+
+/**
+ * In-memory mock database mapping emails to mediateur data
+ * Add new email mappings here for your tests and fixtures
+ * This is mutable for testing purposes - use setMockDataspaceData to modify
+ */
+export const mockDataspaceDatabase: Record<string, DataspaceMediateur | null> =
+  { ...originalMockDataspaceDatabase }
+
+/**
+ * Set mock data for a specific email in the mock database
+ * Useful for integration tests to simulate different Dataspace scenarios
+ *
+ * @param email - The email to set mock data for
+ * @param data - The mock data to return for this email (null = not found)
+ */
+export const setMockDataspaceData = (
+  email: string,
+  data: DataspaceMediateur | null,
+): void => {
+  mockDataspaceDatabase[email.toLowerCase().trim()] = data
+}
+
+/**
+ * Remove mock data for a specific email from the mock database
+ * After removal, queries for this email will return null (not found)
+ *
+ * @param email - The email to remove from mock database
+ */
+export const removeMockDataspaceData = (email: string): void => {
+  const normalizedEmail = email.toLowerCase().trim()
+  delete mockDataspaceDatabase[normalizedEmail]
+}
+
+/**
+ * Reset the mock database to its original state
+ * Should be called in afterEach/afterAll to clean up test modifications
+ */
+export const resetMockDataspaceDatabase = (): void => {
+  // Clear all current entries
+  for (const key of Object.keys(mockDataspaceDatabase)) {
+    delete mockDataspaceDatabase[key]
+  }
+  // Restore original entries
+  Object.assign(mockDataspaceDatabase, originalMockDataspaceDatabase)
+}
 
 /**
  * Mock implementation of getMediateurFromDataspaceApi

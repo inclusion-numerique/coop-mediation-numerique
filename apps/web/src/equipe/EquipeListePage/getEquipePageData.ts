@@ -70,21 +70,16 @@ const statusForMembre = (
 
 const toUserEmail = ({ email }: { email: string }) => email
 
-const byConseillerNumeriqueId =
-  (id: string | null) =>
-  ({ conseillerNumeriqueId }: { conseillerNumeriqueId: string }) =>
-    conseillerNumeriqueId === id
-
 const finDeContratFor =
-  (id: string | null) =>
+  (userEmail: string) =>
   (
     contracts: {
-      conseillerNumeriqueId: string
+      email: string | null
       contractInfo: { dateFinDeContrat: Date | null } | null
     }[],
   ) => {
     const contractInfo = contracts.find(
-      byConseillerNumeriqueId(id),
+      ({ email }) => email === userEmail.toLowerCase(),
     )?.contractInfo
 
     return contractInfo?.dateFinDeContrat &&
@@ -122,7 +117,7 @@ export const getEquipePageData = async ({
         phone,
         first_name,
         last_name,
-        conseiller_numerique_id,
+        is_conseiller_numerique,
         date_derniere_activite,
         suppression,
         deleted,
@@ -144,11 +139,11 @@ export const getEquipePageData = async ({
           lastName: last_name ?? undefined,
           phone: phone ?? undefined,
           email,
-          isConseillerNumerique: conseiller_numerique_id != null,
+          isConseillerNumerique: is_conseiller_numerique === true,
           status: status.label,
           memberStatus: status.memberStatus,
           lastActivityDate: date_derniere_activite,
-          finDeContrat: finDeContratFor(conseiller_numerique_id)(
+          finDeContrat: finDeContratFor(email)(
             conseillersNumeriquesWithContrats,
           ),
           type,

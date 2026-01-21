@@ -19,6 +19,7 @@ export const mediateurSansActivites = givenUser({
   inscriptionValidee: new Date(),
   lieuxActiviteRenseignes: new Date(),
   structureEmployeuseRenseignee: new Date(),
+  isConseillerNumerique: false,
   mediateur: {
     connectOrCreate: {
       where: {

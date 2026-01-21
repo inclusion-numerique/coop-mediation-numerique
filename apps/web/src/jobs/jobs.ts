@@ -1,6 +1,5 @@
 import z from 'zod'
 import { BackupDatabaseJobValidation } from './backup-database/backupDatabaseJob'
-import { FixCoordinationsV1JobValidation } from './fix-coordinations-v1/FixCoordinationsV1Job'
 import { FixStructuresJobValidation } from './fix-structures/fixStructuresJob'
 import { FixTagsJobValidation } from './fix-tags/fixTagsJob'
 import { FixUsersJobValidation } from './fix-users/fixUsersJob'
@@ -9,10 +8,8 @@ import { ImportContactsToBrevoValidation } from './import-contacts-to-brevo/Impo
 import { InactiveUsersRemindersJobValidation } from './inactive-users-reminders/inactiveUsersJob'
 import { IngestLesBasesInRagValidation } from './ingest-les-bases-in-rag/ingestLesBasesInRagJob'
 import { SetServciesToSharedLieuxValidation } from './set-servcies-to-shared-lieux/setServciesToSharedLieuxJob'
-import { SyncConumsJobValidation } from './sync-conums/syncConumsJob'
 import { SyncRdvspDataJobValidation } from './sync-rdvsp-data/syncRdvspDataJob'
-import { UpdateConumInfoValidation } from './update-conum-info/UpdateConumInfoJob'
-import { UpdateConumStructureReferentJobValidation } from './update-conum-structure-referent/UpdateConumStructureReferentJob'
+import { SyncUsersFromDataspaceJobValidation } from './sync-users-from-dataspace/syncUsersFromDataspaceJob'
 import { UpdateLieuxActivitesAdistanceValidation } from './update-lieu-activite-a-distance/updateLieuxActivitesAdistanceJob'
 import { UpdateStructuresCartographieNationaleJobValidation } from './update-structures-cartographie-nationale/updateStructuresCartographieNationaleJob'
 
@@ -35,16 +32,13 @@ import { UpdateStructuresCartographieNationaleJobValidation } from './update-str
 export const JobValidation = z.discriminatedUnion('name', [
   BackupDatabaseJobValidation,
   UpdateStructuresCartographieNationaleJobValidation,
-  FixCoordinationsV1JobValidation,
-  UpdateConumStructureReferentJobValidation,
   ImportContactsToBrevoValidation,
   IngestLesBasesInRagValidation,
   SetServciesToSharedLieuxValidation,
   UpdateLieuxActivitesAdistanceValidation,
   FixStructuresJobValidation,
-  UpdateConumInfoValidation,
   FixUsersJobValidation,
-  SyncConumsJobValidation,
+  SyncUsersFromDataspaceJobValidation,
   SyncRdvspDataJobValidation,
   FixTagsJobValidation,
   InactiveUsersRemindersJobValidation,

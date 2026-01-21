@@ -104,11 +104,11 @@ type FormeJuridique = {
 // Represents the address of the establishment
 type Adresse = {
   // Fields representing various components of the address
-  numero_voie: string // Number in the street
-  indice_repetition_voie?: 'bis' | 'ter' | 'quarter' | 'quinquies' // Repetition index in the street, nullable
-  type_voie?: string // Type of street, nullable
+  numero_voie: string | null // Number in the street (can be null)
+  indice_repetition_voie?: 'bis' | 'ter' | 'quarter' | 'quinquies' | null // Repetition index in the street, nullable
+  type_voie?: string | null // Type of street, nullable
   libelle_voie: string // Street name
-  complement_adresse?: string // Additional address information, nullable
+  complement_adresse?: string | null // Additional address information, nullable
   code_commune?: string // Code of the commune, nullable
   code_postal: string // Postal code
   distribution_speciale?: string // Special distribution information, nullable

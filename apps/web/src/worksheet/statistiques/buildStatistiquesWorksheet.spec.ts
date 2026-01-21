@@ -20,9 +20,9 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
     firstName: 'John',
     lastName: 'Doe',
     role: 'User',
+    isConseillerNumerique: true,
     mediateur: {
       id: '5',
-      conseillerNumerique: { id: '4' },
     },
     emplois: [
       {
@@ -283,9 +283,9 @@ const STATISTIQUES_WORKSHEET_INPUT_FOR_MEDIATEUR: BuildStatistiquesWorksheetInpu
       firstName: 'John',
       lastName: 'Doe',
       role: 'User',
+      isConseillerNumerique: true,
       mediateur: {
         id: '5',
-        conseillerNumerique: { id: '4' },
       },
       emplois: [
         {
@@ -400,6 +400,7 @@ const STATISTIQUES_WORKSHEET_INPUT_FOR_COORDINATEUR: BuildStatistiquesWorksheetI
       firstName: 'John',
       lastName: 'Doe',
       role: 'User',
+      isConseillerNumerique: true,
       mediateur: null,
       emplois: [
         {
@@ -412,7 +413,6 @@ const STATISTIQUES_WORKSHEET_INPUT_FOR_COORDINATEUR: BuildStatistiquesWorksheetI
       ],
       coordinateur: {
         id: '1',
-        conseillerNumeriqueId: '2',
         mediateursCoordonnes: [],
         ancienMediateursCoordonnes: [],
       },
@@ -601,8 +601,8 @@ describe('build statistiques worksheet for médiateur', () => {
       [undefined, 'Nom', 'Doe'],
       [undefined, 'Prénom', 'John'],
       [undefined, 'Rôle', 'Conseiller Numérique'],
-      [undefined, 'Date d’export', '11/09/2024'],
-      [undefined, 'Heure d’export', '17:42'],
+      [undefined, "Date d'export", '11/09/2024'],
+      [undefined, "Heure d'export", '17:42'],
       [],
     ])
   })
