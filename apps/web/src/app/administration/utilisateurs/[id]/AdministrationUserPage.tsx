@@ -4,11 +4,10 @@ import AdministrationInlineLabelsValues, {
 } from '@app/web/app/administration/AdministrationInlineLabelsValues'
 import AdministrationMailtoLink from '@app/web/app/administration/AdministrationMailtoLink'
 import ResetUserInscriptionButton from '@app/web/app/administration/utilisateurs/[id]/ResetUserInscriptionButton'
+import UpdateUserDataFromDataspaceButton from '@app/web/app/administration/utilisateurs/[id]/UpdateUserDataFromDataspaceButton'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { isUserInscriptionEnCours } from '@app/web/auth/isUserInscriptionEnCours'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { isConseillerNumeriqueV1DataWithActiveMiseEnRelation } from '@app/web/external-apis/conseiller-numerique/isConseillerNumeriqueV1WithActiveMiseEnRelation'
-import { findConseillerNumeriqueV1 } from '@app/web/external-apis/conseiller-numerique/searchConseillerNumeriqueV1'
 import { getMediateurFromDataspaceApi } from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import { getInvitationStatusBadge } from '@app/web/features/utilisateurs/use-cases/list/getInvitationStatusBadge'
 import { getUserAccountStatusBadge } from '@app/web/features/utilisateurs/use-cases/list/getUserAccountStatusBadge'
@@ -142,15 +141,9 @@ const AdministrationUserPage = async ({
     (a, b) => b.created.getTime() - a.created.getTime(),
   )
 
-  const [conseillerNumeriqueInfo, dataspaceInfo] = await Promise.all([
-    findConseillerNumeriqueV1({
-      email: user.email,
-      includeDeleted: true,
-    }),
-    getMediateurFromDataspaceApi({
-      email: user.email,
-    }),
-  ])
+  const dataspaceInfo = await getMediateurFromDataspaceApi({
+    email: user.email,
+  })
 
   return (
     <CoopPageContainer size={64}>
@@ -186,26 +179,7 @@ const AdministrationUserPage = async ({
           {user.isConseillerNumerique && <Tag small>Conseiller numérique</Tag>}
           {isCoordinateur && <Tag small>Coordinateur</Tag>}
         </div>
-        {conseillerNumeriqueInfo ? (
-          isConseillerNumeriqueV1DataWithActiveMiseEnRelation(
-            conseillerNumeriqueInfo,
-          ) ? (
-            <Notice
-              className="fr-notice--success fr-mb-8v"
-              title="Dans la base de données des conseillers numériques V1 avec contrat actif"
-            />
-          ) : (
-            <Notice
-              className="fr-notice--warning fr-mb-8v"
-              title="Dans la base de données des conseillers numériques V1 sans contrat actif"
-            />
-          )
-        ) : (
-          <Notice
-            className="fr-notice--info fr-mb-8v"
-            title="Inexistant dans la base de données des conseillers numériques V1"
-          />
-        )}
+
         <AdministrationInfoCard
           title="Détails de l'utilisateur"
           actions={
@@ -683,7 +657,10 @@ const AdministrationUserPage = async ({
             />
           )
         )}
-        <AdministrationInfoCard title="API Dataspace">
+        <AdministrationInfoCard
+          title="API Dataspace"
+          actions={<UpdateUserDataFromDataspaceButton userId={user.id} />}
+        >
           {!dataspaceInfo && (
             <Notice
               className="fr-notice--warning fr-mb-6v"
