@@ -5,15 +5,11 @@ import {
   deploymentCanCreateBrevoContact,
   toBrevoContact,
 } from '@app/web/external-apis/brevo/createBrevoContact'
-import { fetchConseillerNumeriqueV1Data } from '@app/web/external-apis/conseiller-numerique/fetchConseillerNumeriqueV1Data'
-import { isConseillerNumeriqueV1DataWithActiveMiseEnRelation } from '@app/web/external-apis/conseiller-numerique/isConseillerNumeriqueV1WithActiveMiseEnRelation'
-import { importCoordinateurMediationDataFromV1 } from '@app/web/features/legacy-mongo-v1/importCoordinateurMediationDataFromV1'
 import { ChoisirProfilEtAccepterCguValidation } from '@app/web/features/utilisateurs/use-cases/registration/ChoisirProfilEtAccepterCguValidation'
 import { LieuxActiviteValidation } from '@app/web/features/utilisateurs/use-cases/registration/LieuxActivite'
 import { RenseignerStructureEmployeuseValidation } from '@app/web/features/utilisateurs/use-cases/registration/RenseignerStructureEmployeuse'
 import { StructureEmployeuseLieuActiviteValidation } from '@app/web/features/utilisateurs/use-cases/registration/StructureEmployeuseLieuActivite'
 import { ValiderInscriptionValidation } from '@app/web/features/utilisateurs/use-cases/registration/ValiderInscriptionValidation'
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
@@ -54,6 +50,7 @@ const existingActiviteFor = (userId: string) => ({
   where: {
     mediateur: { userId },
     suppression: null,
+    fin: null,
   },
   select: {
     id: true,
@@ -118,6 +115,7 @@ export const inscriptionRouter = router({
         const transactionResult = await prismaClient.$transaction(
           async (transaction) => {
             // Remove link between user and structureEmployeuse if it already exists
+            const now = new Date()
             await transaction.employeStructure.updateMany({
               where: {
                 userId,
@@ -125,9 +123,11 @@ export const inscriptionRouter = router({
                   id: { not: structure.id },
                 },
                 suppression: null,
+                fin: null,
               },
               data: {
-                suppression: new Date(),
+                fin: now,
+                suppression: now,
               },
             })
 
@@ -141,6 +141,7 @@ export const inscriptionRouter = router({
                   create: {
                     id: v4(),
                     structureId: structure.id,
+                    debut: new Date(),
                   },
                 },
               },
@@ -184,6 +185,7 @@ export const inscriptionRouter = router({
               },
               structureId: structureEmployeuseId,
               suppression: null,
+              fin: null,
             },
             select: {
               id: true,
@@ -217,6 +219,7 @@ export const inscriptionRouter = router({
                   id: structureEmployeuseId,
                 },
               },
+              debut: new Date(),
             },
             select: {
               id: true,
@@ -235,6 +238,7 @@ export const inscriptionRouter = router({
         })
 
         // Remove the link between the user and the structure if it exists
+        const now = new Date()
         await prismaClient.mediateurEnActivite.updateMany({
           where: {
             mediateur: {
@@ -242,9 +246,12 @@ export const inscriptionRouter = router({
             },
             structureId: structureEmployeuseId,
             suppression: null,
+            fin: null,
           },
           data: {
-            suppression: new Date(),
+            fin: now,
+            suppression: now,
+            suppressionParId: sessionUser.id,
           },
         })
 
@@ -310,12 +317,15 @@ export const inscriptionRouter = router({
         )
 
         return prismaClient.$transaction(async (transaction) => {
+          const now = new Date()
           const deleted = await transaction.mediateurEnActivite.updateMany({
             where: {
               id: { in: toDelete.map(({ id }) => id) },
             },
             data: {
-              suppression: new Date(),
+              fin: now,
+              suppression: now,
+              suppressionParId: sessionUser.id,
             },
           })
 
@@ -347,6 +357,7 @@ export const inscriptionRouter = router({
                           id: lieu.id,
                         },
                       },
+                      debut: new Date(),
                     },
                   })
                 }
@@ -382,6 +393,7 @@ export const inscriptionRouter = router({
                           id: existingStructure.id,
                         },
                       },
+                      debut: new Date(),
                     },
                   })
                 }
@@ -409,6 +421,7 @@ export const inscriptionRouter = router({
                     structure: {
                       create: toStructureFromCartoStructure(cartoStructure),
                     },
+                    debut: new Date(),
                   },
                 })
               }),
@@ -486,6 +499,7 @@ export const inscriptionRouter = router({
                           id: lieu.id,
                         },
                       },
+                      debut: new Date(),
                     },
                   })
                 }
@@ -522,6 +536,7 @@ export const inscriptionRouter = router({
                           id: existingStructure.id,
                         },
                       },
+                      debut: new Date(),
                     },
                   })
                 }
@@ -555,6 +570,7 @@ export const inscriptionRouter = router({
                         id: createdStructure.id,
                       },
                     },
+                    debut: new Date(),
                   },
                 })
               }),
@@ -591,7 +607,8 @@ export const inscriptionRouter = router({
           lastName: true,
           phone: true,
           coordinateur: true,
-          mediateur: { select: { id: true, conseillerNumerique: true } },
+          mediateur: { select: { id: true } },
+          isConseillerNumerique: true,
         },
       })
 
@@ -603,6 +620,17 @@ export const inscriptionRouter = router({
       }
 
       if (!isMediateur(user)) return
+
+      await prismaClient.invitationEquipe.updateMany({
+        where: {
+          email: user.email,
+          acceptee: null,
+          refusee: null,
+        },
+        data: {
+          acceptee: new Date(),
+        },
+      })
 
       const invitations = await prismaClient.invitationEquipe.findMany({
         where: {
@@ -651,28 +679,13 @@ export const inscriptionRouter = router({
         await createBrevoContact({
           contact: toBrevoContact({
             ...sessionUser,
-            mediateur: { ...upsertedMediateur, conseillerNumerique: null },
+            mediateur: { ...upsertedMediateur },
           }),
           listIds: [ServerWebAppConfig.Brevo.usersListId],
         })
       }
 
-      if (sessionUser.coordinateur.conseillerNumeriqueId != null) {
-        const v1Conseiller = await fetchConseillerNumeriqueV1Data({
-          v1ConseillerId: sessionUser.coordinateur.conseillerNumeriqueId,
-        })
-
-        if (
-          v1Conseiller &&
-          isConseillerNumeriqueV1DataWithActiveMiseEnRelation(v1Conseiller)
-        ) {
-          await importCoordinateurMediationDataFromV1({
-            user: sessionUser,
-            upsertedMediateur,
-            v1Conseiller,
-          })
-        }
-      }
+      // V1 import logic removed - Dataspace is now source of truth
 
       addMutationLog({
         userId: sessionUser.id,
@@ -704,8 +717,11 @@ export const inscriptionRouter = router({
         where: { mediateurId: mediateur.id },
       })
 
-      await prismaClient.conseillerNumerique.deleteMany({
-        where: { mediateurId: mediateur.id },
+      await prismaClient.user.update({
+        where: { id: sessionUser.id },
+        data: {
+          isConseillerNumerique: false,
+        },
       })
 
       await prismaClient.mediateur.delete({

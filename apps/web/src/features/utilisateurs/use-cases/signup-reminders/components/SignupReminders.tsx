@@ -8,7 +8,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import React from 'react'
 
 const SignupReminders = () => {
-  const mutation = trpc.utilisateurs.signupReminders.useMutation()
+  const mutation = trpc.user.signupReminders.useMutation()
 
   const handleAction = async () => {
     try {

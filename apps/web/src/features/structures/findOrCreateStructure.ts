@@ -5,7 +5,8 @@ import { toStructureFromCartoStructure } from '@app/web/structure/toStructureFro
 import { v4 } from 'uuid'
 
 export type StructureInput = {
-  siret: string
+  coopId?: string | null
+  siret: string | null
   nom: string
   adresse: string
   codePostal: string
@@ -15,6 +16,25 @@ export type StructureInput = {
   nomReferent?: string | null
   courrielReferent?: string | null
   telephoneReferent?: string | null
+  creationParId?: string | null
+}
+
+const undeleteStructureIfDeleted = async ({
+  id,
+  suppression,
+}: {
+  id: string
+  suppression: Date | null
+}) => {
+  if (suppression) {
+    await prismaClient.structure.update({
+      where: { id },
+      data: {
+        suppression: null,
+        suppressionParId: null,
+      },
+    })
+  }
 }
 
 /**
@@ -26,6 +46,7 @@ export type StructureInput = {
  * This is reusable for both V1 imports and Dataspace imports.
  */
 export const findOrCreateStructure = async ({
+  coopId,
   siret,
   nom,
   adresse,
@@ -35,49 +56,115 @@ export const findOrCreateStructure = async ({
   nomReferent,
   courrielReferent,
   telephoneReferent,
+  creationParId,
 }: StructureInput): Promise<{ id: string }> => {
-  // Step 1: Find existing Structure by SIRET + nom
-  const existingStructure = await prismaClient.structure.findFirst({
-    where: {
-      siret,
-      nom,
-      suppression: null,
-    },
-    select: {
-      id: true,
-    },
-  })
-
-  if (existingStructure) {
-    return existingStructure
-  }
-
-  // Step 2: Find StructureCartographieNationale by pivot (SIRET)
-  const cartoStructure =
-    await prismaClient.structureCartographieNationale.findFirst({
+  // If coopId is provided, it is the surest way to find the structure
+  if (coopId) {
+    const existingStructure = await prismaClient.structure.findFirst({
       where: {
-        pivot: siret,
-      },
-    })
-
-  if (cartoStructure) {
-    // Create structure from cartographie nationale data (has coordinates)
-    const structureData = toStructureFromCartoStructure(cartoStructure)
-
-    // Override with referent info if provided
-    const createdStructure = await prismaClient.structure.create({
-      data: {
-        ...structureData,
-        nomReferent: nomReferent ?? null,
-        courrielReferent: courrielReferent ?? structureData.courriels?.at(0),
-        telephoneReferent: telephoneReferent ?? structureData.telephone,
+        id: coopId,
       },
       select: {
         id: true,
+        suppression: true,
       },
     })
+    if (existingStructure) {
+      await undeleteStructureIfDeleted(existingStructure)
+      return existingStructure
+    }
+  }
 
-    return createdStructure
+  // Step 1: Find existing Structure by SIRET + nom (only if siret is provided)
+  if (siret) {
+    const existingStructure = await prismaClient.structure.findFirst({
+      where: {
+        siret,
+        codeInsee,
+        suppression: null,
+      },
+      select: {
+        id: true,
+        suppression: true,
+      },
+      orderBy: [
+        {
+          suppression: {
+            sort: 'desc',
+            nulls: 'last',
+          },
+        },
+        {
+          creation: 'desc',
+        },
+      ],
+    })
+
+    if (existingStructure) {
+      await undeleteStructureIfDeleted(existingStructure)
+      return existingStructure
+    }
+  }
+
+  // Step 2: Find StructureCartographieNationale by pivot (SIRET) - only if siret is provided
+  if (siret) {
+    const cartoStructure =
+      await prismaClient.structureCartographieNationale.findFirst({
+        where: {
+          pivot: siret,
+        },
+      })
+
+    if (cartoStructure) {
+      // Create structure from cartographie nationale data (has coordinates)
+      const structureData = toStructureFromCartoStructure(cartoStructure)
+
+      // Override with referent info if provided
+      const createdStructure = await prismaClient.structure.create({
+        data: {
+          ...structureData,
+          nomReferent: nomReferent ?? null,
+          courrielReferent: courrielReferent ?? structureData.courriels?.at(0),
+          telephoneReferent: telephoneReferent ?? structureData.telephone,
+          creationParId,
+        },
+        select: {
+          id: true,
+        },
+      })
+
+      return createdStructure
+    }
+  }
+
+  // Step 2b: Try to find existing structure by nom if no siret
+  if (!siret) {
+    const existingByNom = await prismaClient.structure.findFirst({
+      where: {
+        nom,
+        codeInsee,
+      },
+      select: {
+        id: true,
+        suppression: true,
+      },
+      orderBy: [
+        {
+          suppression: {
+            sort: 'desc',
+            nulls: 'last',
+          },
+        },
+        {
+          creation: 'desc',
+        },
+      ],
+    })
+
+    if (existingByNom) {
+      await undeleteStructureIfDeleted(existingByNom)
+      return existingByNom
+    }
   }
 
   // Step 3: Fallback - geocode via BAN API and create
@@ -101,6 +188,7 @@ export const findOrCreateStructure = async ({
         nomReferent,
         courrielReferent,
         telephoneReferent,
+        creationParId,
       },
       select: {
         id: true,
@@ -121,6 +209,7 @@ export const findOrCreateStructure = async ({
       nomReferent,
       courrielReferent,
       telephoneReferent,
+      creationParId,
     },
     select: {
       id: true,

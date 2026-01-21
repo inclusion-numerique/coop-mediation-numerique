@@ -1,88 +1,9 @@
 import type { Prisma } from '@prisma/client'
 import { RoleSlug } from '../list/role'
 import { StatutSlug } from '../list/statut'
-
-const inscriptionFilter = (created: {
-  lt?: Date
-  gte?: Date
-}): Prisma.UserWhereInput => ({
-  inscriptionValidee: null,
-  role: { not: 'Admin' },
-  deleted: null,
-  created,
-})
-
-const nouveauFilter = (inscriptionValidee: {
-  lt?: Date
-  gte?: Date
-}): Prisma.UserWhereInput => ({
-  inscriptionValidee,
-  role: { not: 'Admin' },
-  deleted: null,
-  OR: [
-    {
-      mediateur: { is: null },
-      coordinateur: {
-        is: {
-          derniereCreationActivite: null,
-          mediateursCoordonnes: { none: {} },
-        },
-      },
-    },
-    {
-      coordinateur: { is: null },
-      mediateur: { is: { derniereCreationActivite: null } },
-    },
-    {
-      mediateur: { is: { derniereCreationActivite: null } },
-      coordinateur: {
-        is: {
-          derniereCreationActivite: null,
-          mediateursCoordonnes: { none: {} },
-        },
-      },
-    },
-  ],
-})
-
-const actifFilter = (lastActivity: {
-  lt?: Date
-  gte?: Date
-}): Prisma.UserWhereInput => ({
-  role: { not: 'Admin' },
-  deleted: null,
-  inscriptionValidee: { not: null },
-  OR: [
-    {
-      lastLogin: lastActivity,
-      mediateur: { is: null },
-      coordinateur: {
-        is: {
-          OR: [
-            { derniereCreationActivite: { not: null } },
-            { mediateursCoordonnes: { some: {} } },
-          ],
-        },
-      },
-    },
-    {
-      coordinateur: { is: null },
-      mediateur: { is: { derniereCreationActivite: lastActivity } },
-    },
-    {
-      lastLogin: lastActivity,
-      mediateur: { isNot: null },
-      coordinateur: {
-        is: {
-          OR: [
-            { derniereCreationActivite: { not: null } },
-            { mediateursCoordonnes: { some: {} } },
-          ],
-        },
-      },
-    },
-  ],
-})
+import { actifFilter } from './db/actif-filter'
+import { inscriptionFilter } from './db/inscription-filter'
+import { nouveauFilter } from './db/nouveau-filter'
 
 const daysAgo = (now: Date, days: number) =>
   new Date(now.getTime() - days * 24 * 60 * 60 * 1000)
@@ -148,26 +69,36 @@ export const filterOnRoles = (queryParams?: {
   }
 }
 
+// Filter for users NOT in conseiller numérique program (by role)
 const horsDispositifFilter: Record<
   Exclude<RoleSlug, 'administrateur'>,
   {
-    mediateur?: { conseillerNumerique: null }
-    coordinateur?: { conseillerNumeriqueId: null }
+    isConseillerNumerique: false
+    mediateur?: { isNot: null }
+    coordinateur?: { isNot: null }
   }
 > = {
-  mediateur: { mediateur: { conseillerNumerique: null } },
-  coordinateur: { coordinateur: { conseillerNumeriqueId: null } },
+  mediateur: { isConseillerNumerique: false, mediateur: { isNot: null } },
+  coordinateur: { isConseillerNumerique: false, coordinateur: { isNot: null } },
 }
 
+// Filter for users IN conseiller numérique program (by role)
 const conseillerNumeriqueFilter: Record<
   Exclude<RoleSlug, 'administrateur'>,
   {
-    mediateur?: { conseillerNumerique: { isNot: null } }
-    coordinateur?: { conseillerNumeriqueId: { not: null } }
+    isConseillerNumerique: true
+    mediateur?: { isNot: null }
+    coordinateur?: { isNot: null }
   }
 > = {
-  mediateur: { mediateur: { conseillerNumerique: { isNot: null } } },
-  coordinateur: { coordinateur: { conseillerNumeriqueId: { not: null } } },
+  mediateur: {
+    isConseillerNumerique: true,
+    mediateur: { isNot: null },
+  },
+  coordinateur: {
+    isConseillerNumerique: true,
+    coordinateur: { isNot: null },
+  },
 }
 
 const onlyUsers = (
@@ -180,21 +111,31 @@ export const filterOnDispositif = (queryParams?: {
 }): {} | { dispositif: Prisma.UserWhereInput } => {
   if (queryParams?.conseiller_numerique == null) return {}
 
-  if (queryParams.conseiller_numerique === '0') {
-    const filters = queryParams.roles
-      .filter(onlyUsers)
-      .map((role) => horsDispositifFilter[role])
-    return filters.length === 1
-      ? filters[0]
-      : { OR: Object.values(horsDispositifFilter) }
+  const isConseillerNumerique = queryParams.conseiller_numerique === '1'
+  const filterMap = isConseillerNumerique
+    ? conseillerNumeriqueFilter
+    : horsDispositifFilter
+
+  // Get roles that are not 'administrateur'
+  const userRoles = queryParams.roles.filter(onlyUsers)
+
+  // If no roles specified, return OR of all role variants (or just CN check for conseiller_numerique=1 with no roles)
+  if (userRoles.length === 0) {
+    if (isConseillerNumerique) {
+      // Special case: conseiller_numerique=1 with no roles -> just check isConseillerNumerique
+      return { OR: [{ isConseillerNumerique: true }] }
+    }
+    // hors dispositif with no roles -> OR of both role variants
+    return { OR: Object.values(filterMap) }
   }
 
-  const filters = queryParams.roles
-    .filter(onlyUsers)
-    .map((role) => conseillerNumeriqueFilter[role])
-  return filters.length === 1
-    ? filters[0]
-    : { OR: Object.values(conseillerNumeriqueFilter) }
+  // If single role, return that filter directly (not wrapped in OR)
+  if (userRoles.length === 1) {
+    return filterMap[userRoles[0]]
+  }
+
+  // Multiple roles -> OR of selected role filters
+  return { OR: userRoles.map((role) => filterMap[role]) }
 }
 
 const canFilterOnLieux = ({

@@ -9,6 +9,7 @@ import {
   availableOptionsIn,
   defautValuesFrom,
   matchingOption,
+  resetPagination,
   update,
 } from '@app/web/libs/filters/helpers'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
@@ -70,12 +71,14 @@ export const MediateurFilter = ({
 
   const handleSubmit = (close: boolean = false) => {
     update(params)('mediateurs', mediateurs)
+    resetPagination(params)
     closePopover(close)
   }
 
   const handleClearFilters = () => {
     setMediateurs([])
     update(params)('mediateurs', [])
+    resetPagination(params)
     closePopover(true)
   }
 

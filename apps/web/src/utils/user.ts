@@ -1,7 +1,10 @@
 import { SessionUser } from '@app/web/auth/sessionUser'
 
 export type UserProfile = Partial<
-  Pick<SessionUser, 'mediateur' | 'coordinateur' | 'emplois' | 'role'>
+  Pick<
+    SessionUser,
+    'mediateur' | 'coordinateur' | 'emplois' | 'role' | 'isConseillerNumerique'
+  >
 >
 
 export type UserDisplayName = Pick<

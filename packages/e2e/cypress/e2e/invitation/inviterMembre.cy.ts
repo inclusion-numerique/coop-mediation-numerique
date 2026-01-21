@@ -42,7 +42,7 @@ describe('ETQ coordinateur, je peux inviter un médiateur à rejoindre mon équi
     cy.signin(coordinateurInscrit)
 
     cy.visit(appUrl('/coop/mon-equipe'))
-    cy.findAllByRole('link', { name: 'Inviter des membres' }).first().click()
+    cy.findAllByRole('link', { name: 'Inviter une personne' }).first().click()
 
     cy.visit(appUrl('/coop/mon-equipe/inviter'))
 
@@ -77,22 +77,18 @@ describe('ETQ coordinateur, je peux inviter un médiateur à rejoindre mon équi
       'Un email d’invitation a été envoyé aux membres que vous souhaitez ajouter à votre équipe',
     )
 
-    cy.get('ul.fr-list-group>li')
-      .eq(0)
-      .should('contain', 'Inscription')
-      .should('contain', 'Médiateur numérique')
+    cy.contains('tbody tr', 'Médiateur Inscription')
+      .should('contain', 'Invitation en attente')
       .should('contain', 'Invitation envoyée')
 
-    cy.get('ul.fr-list-group>li')
-      .eq(1)
-      .should('contain', 'Inscrit')
-      .should('contain', 'Conseiller numérique')
+    cy.contains('tbody tr', 'Conseiller Num Inscrit')
+      .should('contain', 'Invitation en attente')
       .should('contain', 'Invitation envoyée')
 
-    cy.get('ul.fr-list-group>li')
-      .eq(2)
-      .should('contain', 'leo@med.fr')
-      .should('contain', 'Invitation envoyée')
+    cy.contains('tbody tr', 'leo@med.fr').should(
+      'contain',
+      'Invitation envoyée',
+    )
 
     goToMostRecentEmailReceived({
       subjectInclude:

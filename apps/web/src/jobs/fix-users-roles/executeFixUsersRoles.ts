@@ -22,9 +22,9 @@ const fixCoordinateurRoles = async (now: Date) => {
           mediateursCoordonnes: { none: {} },
           ActiviteCoordination: { none: {} },
           invitations: { none: {} },
-          conseillerNumeriqueId: null,
         },
       },
+      isConseillerNumerique: false,
       inscriptionValidee: { lte: daysAgo(now, 30) },
     },
   })
@@ -54,8 +54,7 @@ const fixCoordinateurRoles = async (now: Date) => {
 
 const fixMediateurRoles = async (now: Date) => {
   const mediateursToDelete = await prismaClient.user.findMany({
-    select: {
-      id: true,
+    include: {
       mediateur: { select: { id: true } },
       coordinateur: { select: { id: true } },
     },
@@ -67,9 +66,9 @@ const fixMediateurRoles = async (now: Date) => {
           enActivite: { none: {} },
           beneficiaires: { none: {} },
           activites: { none: {} },
-          conseillerNumerique: null,
         },
       },
+      isConseillerNumerique: false,
       coordinateur: { isNot: null },
       inscriptionValidee: { lte: daysAgo(now, 30) },
     },

@@ -1,0 +1,23 @@
+.tagVisible {
+  background-color: var(--background-action-high-blue-france);
+  color: var(--text-inverted-grey);
+}
+
+.tagVisible:hover {
+  background-color: var(--background-action-high-blue-france-hover);
+}
+
+.tagPending {
+  background-color: var(--background-contrast-orange-terre-battue);
+  color: var(--text-label-orange-terre-battue);
+}
+
+.tagUpdating {
+  background-color: var(--background-contrast-orange-terre-battue);
+  color: var(--text-label-orange-terre-battue);
+}
+
+.tagNotVisible {
+  background-color: var(--background-contrast-grey);
+  color: var(--text-mention-grey);
+}

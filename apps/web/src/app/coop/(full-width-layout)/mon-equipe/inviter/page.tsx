@@ -26,7 +26,7 @@ const Page = () => (
         ]}
         currentPage="Inviter des membres"
       />
-      <BackButton href="/coop/mon-equipe">Retour à la liste</BackButton>
+      <BackButton />
       <main id={contentId} className="fr-mb-16w">
         <InviterMembresPage />
       </main>

@@ -135,9 +135,7 @@ const PageModifierBeneficiaire = async (props: {
         ]}
       />
       <main id={contentId}>
-        <BackButton href={`/coop/mes-beneficiaires/${beneficiaire.id}`}>
-          Retour à la fiche
-        </BackButton>
+        <BackButton />
         <div className="fr-flex fr-flex-gap-6v fr-align-items-start fr-mb-12v">
           <IconInSquare iconId="fr-icon-user-setting-line" size="large" />
           <div className="fr-flex-grow-1">

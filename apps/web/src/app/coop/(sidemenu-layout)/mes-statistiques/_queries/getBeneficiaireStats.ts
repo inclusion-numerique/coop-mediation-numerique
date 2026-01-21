@@ -22,7 +22,7 @@ import { activitesSourceWhereCondition } from './activitesSourceWhereCondition'
 
 /**
  * Determines which JOINs are needed based on filter values:
- * - conseiller_numerique filter requires mediateurs + conseillers_numeriques tables
+ * - conseiller_numerique filter requires mediateurs + users tables
  * - communes/departements filters require structures table
  */
 const getRequiredJoins = (activitesFilters: ActivitesFilters) => ({
@@ -92,7 +92,7 @@ export const getBeneficiaireStatsRaw = async ({
         INNER JOIN accompagnements acc ON acc.activite_id = act.id
         INNER JOIN beneficiaires ben ON ben.id = acc.beneficiaire_id
         ${needsConseillerNumeriqueJoin ? Prisma.sql`LEFT JOIN mediateurs med ON act.mediateur_id = med.id` : Prisma.empty}
-        ${needsConseillerNumeriqueJoin ? Prisma.sql`LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id` : Prisma.empty}
+        ${needsConseillerNumeriqueJoin ? Prisma.sql`LEFT JOIN users u ON med.user_id = u.id` : Prisma.empty}
         ${needsStructureJoin ? Prisma.sql`LEFT JOIN structures str ON str.id = act.structure_id` : Prisma.empty}
       WHERE act.suppression IS NULL
         ${
@@ -177,7 +177,7 @@ export const getBeneficiairesCommunesRaw = async ({
           AND act.suppression IS NULL
             LEFT JOIN structures str ON str.id = act.structure_id
             LEFT JOIN mediateurs med ON act.mediateur_id = med.id
-            LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
+            LEFT JOIN users u ON med.user_id = u.id
             FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${
               user.coordinateur?.id
             }::UUID
@@ -192,7 +192,10 @@ export const getBeneficiairesCommunesRaw = async ({
 export const normalizeBeneficiairesCommunesRaw = (
   rawCommunes: BeneficiairesCommunesRaw[],
 ) => {
-  const sortedCommunes = rawCommunes.sort(
+  const communesWithBeneficiaires = rawCommunes.filter(
+    (commune) => commune.count_beneficiaires > 0,
+  )
+  const sortedCommunes = communesWithBeneficiaires.sort(
     (a, b) => b.count_beneficiaires - a.count_beneficiaires,
   )
   const normalizedCommunes = sortedCommunes.map(

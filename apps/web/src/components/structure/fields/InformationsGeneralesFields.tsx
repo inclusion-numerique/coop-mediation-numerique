@@ -1,3 +1,4 @@
+import CheckboxFormField from '@app/ui/components/Form/CheckboxFormField'
 import InputFormField from '@app/ui/components/Form/InputFormField'
 import MultipleSelectFormField from '@app/ui/components/Form/MultipleSelectFormField'
 import RequiredFieldsDisclaimer from '@app/ui/components/Form/RequiredFieldsDisclaimer'
@@ -48,6 +49,13 @@ export const InformationsGeneralesFields = <
         disabled={formState.isSubmitting}
         defaultOptions={initialAdresseBanOptions}
         defaultValue={adresseBanDefaultValue}
+      />
+      <CheckboxFormField
+        className="fr-mt-6v fr-mb-2v"
+        path="lieuItinerant"
+        label="Lieu d’activité itinérant (exemple : bus)"
+        control={control}
+        disabled={formState.isSubmitting}
       />
       <InputFormField
         path="complementAdresse"

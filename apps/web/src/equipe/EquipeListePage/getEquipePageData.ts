@@ -1,37 +1,85 @@
 import { findConseillersNumeriquesContractInfoByEmails } from '@app/web/external-apis/conseiller-numerique/fetchConseillersCoordonnes'
+import { getUserPublicActivityStatus } from '@app/web/features/utilisateurs/utils/getUserPublicActivityStatus'
 import { countMediateursCoordonnesBy } from '@app/web/mediateurs/countMediateursCoordonnesBy'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
-import { addMonths, format, isAfter, isBefore, subMonths } from 'date-fns'
+import { addMonths, format, isBefore } from 'date-fns'
 import {
   type EquipeSearchParams,
   searchMediateursCoordonneBy,
 } from './searchMediateursCoordonneBy'
 
-const statusFor = (date: Date | null) => {
-  if (date == null) return 'Inactif'
+export type MemberStatus =
+  | 'invitation'
+  | 'actif'
+  | 'inactif'
+  | 'autre'
+  | 'supprime'
 
-  return isAfter(date, subMonths(new Date(), 2))
-    ? 'Actif'
-    : `Inactif depuis le ${dateAsDay(date)}`
+type StatusInput = {
+  type: 'coordinated' | 'invited'
+  creation: Date
+  suppression: Date | null
+  deleted: Date | null
+  dateDerniereActivite: Date | null
 }
+
+type StatusRule = (
+  input: StatusInput,
+) => { label: string; memberStatus: MemberStatus } | null
+
+const statusRules: StatusRule[] = [
+  ({ type, creation }) =>
+    type === 'invited'
+      ? {
+          label: `Invitation envoyée le ${dateAsDay(creation)}`,
+          memberStatus: 'invitation',
+        }
+      : null,
+  ({ deleted }) =>
+    deleted != null
+      ? {
+          label: `Profil supprimé le ${dateAsDay(deleted)}`,
+          memberStatus: 'supprime',
+        }
+      : null,
+  ({ suppression }) =>
+    suppression != null
+      ? {
+          label: `Ancien membre depuis le ${dateAsDay(suppression)}`,
+          memberStatus: 'autre',
+        }
+      : null,
+  ({ dateDerniereActivite }) => {
+    const activityStatus = getUserPublicActivityStatus({
+      lastActivityDate: dateDerniereActivite,
+    })
+    return {
+      label: activityStatus.label,
+      memberStatus: activityStatus.status,
+    }
+  },
+]
+
+const statusForMembre = (
+  input: StatusInput,
+): { label: string; memberStatus: MemberStatus } =>
+  statusRules.reduce<{ label: string; memberStatus: MemberStatus } | null>(
+    (result, rule) => result ?? rule(input),
+    null,
+  ) ?? { label: '', memberStatus: 'autre' }
 
 const toUserEmail = ({ email }: { email: string }) => email
 
-const byConseillerNumeriqueId =
-  (id: string | null) =>
-  ({ conseillerNumeriqueId }: { conseillerNumeriqueId: string }) =>
-    conseillerNumeriqueId === id
-
 const finDeContratFor =
-  (id: string | null) =>
+  (userEmail: string) =>
   (
     contracts: {
-      conseillerNumeriqueId: string
+      email: string | null
       contractInfo: { dateFinDeContrat: Date | null } | null
     }[],
   ) => {
     const contractInfo = contracts.find(
-      byConseillerNumeriqueId(id),
+      ({ email }) => email === userEmail.toLowerCase(),
     )?.contractInfo
 
     return contractInfo?.dateFinDeContrat &&
@@ -42,21 +90,16 @@ const finDeContratFor =
 
 export const getEquipePageData = async ({
   searchParams,
-  anciensMembres = false,
   coordinateur,
 }: {
   searchParams: EquipeSearchParams
-  anciensMembres?: boolean
   coordinateur: {
     id: string
     mediateursCoordonnes: { mediateurId: string }[]
   }
 }) => {
   const { mediateurs, matchesCount, totalPages } =
-    await searchMediateursCoordonneBy(coordinateur)(
-      searchParams,
-      anciensMembres,
-    )
+    await searchMediateursCoordonneBy(coordinateur)(searchParams)
 
   const conseillersNumeriquesWithContrats =
     await findConseillersNumeriquesContractInfoByEmails(
@@ -69,30 +112,48 @@ export const getEquipePageData = async ({
     mediateurs: mediateurs.map(
       ({
         mediateur_id,
+        user_id,
         email,
         phone,
         first_name,
         last_name,
-        conseiller_numerique_id,
+        is_conseiller_numerique,
         date_derniere_activite,
         suppression,
+        deleted,
+        creation,
         type,
-      }) => ({
-        id: mediateur_id ?? undefined,
-        firstName: first_name ?? undefined,
-        lastName: last_name ?? undefined,
-        phone: phone ?? undefined,
-        email,
-        isConseillerNumerique: conseiller_numerique_id != null,
-        status:
-          suppression == null
-            ? statusFor(date_derniere_activite)
-            : `Ancien membre depuis le ${dateAsDay(suppression)}`,
-        finDeContrat: finDeContratFor(conseiller_numerique_id)(
-          conseillersNumeriquesWithContrats,
-        ),
-        type,
-      }),
+        structure_employeuse,
+      }) => {
+        const status = statusForMembre({
+          type,
+          creation,
+          suppression,
+          deleted,
+          dateDerniereActivite: date_derniere_activite,
+        })
+        return {
+          id: mediateur_id ?? undefined,
+          userId: user_id ?? undefined,
+          firstName: first_name ?? undefined,
+          lastName: last_name ?? undefined,
+          phone: phone ?? undefined,
+          email,
+          isConseillerNumerique: is_conseiller_numerique === true,
+          status: status.label,
+          memberStatus: status.memberStatus,
+          lastActivityDate: date_derniere_activite,
+          finDeContrat: finDeContratFor(email)(
+            conseillersNumeriquesWithContrats,
+          ),
+          type,
+          structureEmployeuse: structure_employeuse ?? undefined,
+          coordinateurId: coordinateur.id,
+          sentAt: creation,
+          archivedFrom: creation,
+          archivedTo: deleted ?? suppression ?? undefined,
+        }
+      },
     ),
     stats,
     matchesCount,

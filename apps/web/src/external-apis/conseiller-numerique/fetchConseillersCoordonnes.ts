@@ -69,8 +69,7 @@ export const findConseillersNumeriquesContractInfoByEmails = async (
       )) as unknown as MiseEnRelationConseillerNumeriqueV1MinimalProjection | null
 
       return {
-        conseillerNumeriqueId:
-          cleanConseillerNumeriqueV1Document(conseillerDocument).id,
+        email: conseillerDocument.emailPro?.toLowerCase() ?? null,
         contractInfo: contractInfo
           ? {
               dateDebutDeContrat: contractInfo.dateDebutDeContrat,

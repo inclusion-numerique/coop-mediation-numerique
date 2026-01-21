@@ -13,14 +13,14 @@ describe('buildActivitesWorksheet', () => {
         lastName: 'Doe',
         role: 'Admin',
         id: '1',
+        isConseillerNumerique: true,
         coordinateur: {
           id: '1',
-          conseillerNumeriqueId: '2',
           mediateursCoordonnes: [],
+          ancienMediateursCoordonnes: [],
         },
         mediateur: {
           id: '1',
-          conseillerNumerique: { id: '3' },
         },
         emplois: [
           {
@@ -37,6 +37,7 @@ describe('buildActivitesWorksheet', () => {
         lastName: 'Doe',
         role: 'User',
         id: '2',
+        isConseillerNumerique: true,
         emplois: [
           {
             id: '2',
@@ -48,7 +49,6 @@ describe('buildActivitesWorksheet', () => {
         ],
         mediateur: {
           id: '2',
-          conseillerNumerique: { id: '4' },
         },
         coordinateur: null,
       },

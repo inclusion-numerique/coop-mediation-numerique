@@ -29,9 +29,7 @@ const AjouterLieuPage = async () => {
             ]}
             currentPage={"Ajouter un lieu d'activité"}
           />
-          <BackButton href="/coop/lieux-activite">
-            Retour à mes lieux d&apos;activité
-          </BackButton>
+          <BackButton />
 
           <div className="fr-mb-32v fr-p-12v fr-width-full fr-border-radius--8 fr-background-default--grey">
             <span className="fr-flex fr-direction-row fr-align-items-center fr-flex-gap-6v fr-mb-5w">

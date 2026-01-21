@@ -88,7 +88,7 @@ export const importStructureEmployeuseFromSiret = async ({
     adresse.libelle_voie,
     adresse.complement_adresse,
   ]
-    .filter(Boolean)
+    .filter((part) => Boolean(part) && part !== 'null')
     .join(' ')
 
   log('Finding or creating structure', {
@@ -139,8 +139,7 @@ export const importStructureEmployeuseFromSiret = async ({
     data: {
       userId,
       structureId: structure.id,
-      creation: new Date(),
-      suppression: null,
+      debut: new Date(),
     },
   })
 

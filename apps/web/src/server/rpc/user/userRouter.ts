@@ -1,7 +1,11 @@
+import { createHash } from 'node:crypto'
 import { UtilisateurSetFeatureFlagsValidation } from '@app/web/app/administration/utilisateurs/[id]/UtilisateurSetFeatureFlagsValidation'
 import { UpdateProfileValidation } from '@app/web/app/user/UpdateProfileValidation'
 import { mergeUser } from '@app/web/features/utilisateurs/use-cases/merge/mergeUser'
+import { nouveauReminders } from '@app/web/features/utilisateurs/use-cases/nouveau-reminders/nouveauReminders'
 import { searchUser } from '@app/web/features/utilisateurs/use-cases/search/searchUser'
+import { signupReminders } from '@app/web/features/utilisateurs/use-cases/signup-reminders/signupReminders'
+import { updateUserFromDataspaceData } from '@app/web/features/utilisateurs/use-cases/update-from-dataspace/updateUserFromDataspaceData'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   protectedProcedure,
@@ -37,6 +41,20 @@ export const userRouter = router({
         },
       }),
     ),
+  signupReminders: protectedProcedure.mutation(
+    async ({ ctx: { user: sessionUser } }) => {
+      enforceIsAdmin(sessionUser)
+
+      await signupReminders()
+    },
+  ),
+  inactiveReminders: protectedProcedure.mutation(
+    async ({ ctx: { user: sessionUser } }) => {
+      enforceIsAdmin(sessionUser)
+
+      await nouveauReminders()
+    },
+  ),
   updateProfile: protectedProcedure
     .input(UpdateProfileValidation)
     .mutation(
@@ -65,6 +83,24 @@ export const userRouter = router({
         return updated
       },
     ),
+  deleteProfile: protectedProcedure.mutation(({ ctx: { user } }) => {
+    const hash = createHash('sha256')
+      .update(`${user.id}-${user.email}`)
+      .digest('base64url')
+      .slice(0, 12)
+
+    return prismaClient.user.update({
+      where: { id: user.id },
+      data: {
+        deleted: new Date(),
+        email: `deleted+${hash}@coop-numerique.anct.gouv.fr`,
+        firstName: 'Utilisateur',
+        lastName: 'Supprimé',
+        name: 'Utilisateur Supprimé',
+        phone: null,
+      },
+    })
+  }),
   markOnboardingAsSeen: protectedProcedure.mutation(({ ctx: { user } }) =>
     prismaClient.user.update({
       where: { id: user.id },
@@ -181,4 +217,11 @@ export const userRouter = router({
         return updated
       },
     ),
+  updateFromDataspace: protectedProcedure
+    .input(z.object({ userId: z.string().uuid() }))
+    .mutation(async ({ input: { userId }, ctx: { user: sessionUser } }) => {
+      enforceIsAdmin(sessionUser)
+
+      return updateUserFromDataspaceData({ userId })
+    }),
 })

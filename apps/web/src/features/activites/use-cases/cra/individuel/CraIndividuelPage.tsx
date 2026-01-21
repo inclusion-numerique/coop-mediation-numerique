@@ -36,12 +36,9 @@ const CraIndividuelPage = ({
     <SkipLinksPortal />
     <CoopBreadcrumbs currentPage="Enregistrer un accompagnement individuel" />
     <BackButtonWithModal
-      href="/coop"
       modalTitle="Quitter sans enregistrer"
       modalContent="Êtes-vous sur de vouloir quitter votre compe-rendu d’activité sans enregistrer ?"
-    >
-      Retour à l&apos;accueil
-    </BackButtonWithModal>
+    />
     <main id={contentId}>
       <h1 className="fr-text-title--blue-france fr-mb-2v ">
         Accompagnement individuel

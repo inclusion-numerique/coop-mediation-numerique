@@ -33,7 +33,7 @@ export const ListTagsPage = ({
 }) => (
   <>
     <SkipLinksPortal />
-    <div className="fr-container fr-container--800 fr-pb-16w">
+    <div className="fr-container fr-container--medium fr-pb-16w">
       <CoopBreadcrumbs currentPage="Mes tags" />
       <SaveTagModal isMediateur={isMediateur} isCoordinateur={isCoordinateur} />
       <DeleteTagModal />

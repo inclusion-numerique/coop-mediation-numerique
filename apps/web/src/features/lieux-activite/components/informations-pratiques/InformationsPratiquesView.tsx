@@ -2,13 +2,11 @@ import Link from 'next/link'
 import { OpeningHours } from './OpeningHours'
 
 export const InformationsPratiquesView = ({
-  lieuItinerant,
   siteWeb,
   ficheAccesLibre,
   priseRdv,
   horaires,
 }: {
-  lieuItinerant?: boolean | null
   siteWeb?: string | null
   ficheAccesLibre?: string | null
   priseRdv?: string | null
@@ -32,15 +30,6 @@ export const InformationsPratiquesView = ({
         )}
       </div>
     </div>
-    {lieuItinerant && (
-      <div data-testid="informations-pratiques-lieu-itinerant">
-        <span
-          className="fr-icon-bus-line ri-lg fr-text-label--blue-france fr-mr-1w"
-          aria-hidden
-        />
-        <span className="fr-text-mention--grey">Lieu itinérant</span>
-      </div>
-    )}
     <div>
       <span className="fr-text-mention--grey">Accessibilité</span>
       <div data-testid="informations-pratiques-accessibilite">
@@ -79,7 +68,7 @@ export const InformationsPratiquesView = ({
     </div>
     <div>
       <span className="fr-text-mention--grey">
-        Horaires d’ouverture du lieu
+        Horaires d'ouverture du lieu
       </span>
       <div data-testid="informations-pratiques-horaires">
         {horaires ? (

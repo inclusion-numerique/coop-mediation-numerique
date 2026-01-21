@@ -203,7 +203,7 @@ const removeMediateursEnActiviteLinks = async () => {
           ORDER BY creation ASC
         ) AS rn
       FROM mediateurs_en_activite
-      WHERE suppression IS NULL
+      WHERE suppression IS NULL AND fin_activite IS NULL
     )
     SELECT id FROM ranked WHERE rn > 1
   `
@@ -234,7 +234,7 @@ const removeDuplicatedStructureEmployeuseLinks = async () => {
           ORDER BY creation ASC
         ) AS rn
       FROM employes_structures
-      WHERE suppression IS NULL
+      WHERE suppression IS NULL AND fin_emploi IS NULL
     )
     SELECT id FROM ranked WHERE rn > 1
   `

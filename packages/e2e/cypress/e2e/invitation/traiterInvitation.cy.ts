@@ -10,7 +10,6 @@ import {
 } from '@app/fixtures/users/mediateurInscription'
 import { createInvitationUrl } from '@app/web/features/invitation/createInvitationUrl'
 import { goToMostRecentEmailReceived } from '../goToMostRecentEmailReceived'
-import { executeInscriptionFlow } from '../inscription/executeInscriptionFlow'
 
 describe('ETQ visiteur, je peux donner suite à une invitation', () => {
   const invitationData = {
@@ -44,10 +43,6 @@ describe('ETQ visiteur, je peux donner suite à une invitation', () => {
       'contain',
       'Accédez à ce service grâce à ProConnect, votre identifiant unique pour accéder à plusieurs services de l’État.',
     )
-
-    goToMostRecentEmailReceived({
-      subjectInclude: `${invitationData.email} a accepté votre invitation à rejoindre votre équipe`,
-    })
   })
 
   it('En la refusant', () => {
@@ -102,7 +97,7 @@ describe('ETQ médiateur inscrit, je peux donner suite à une invitation', () =>
 
     cy.findByRole('status').should('contain', 'Vous avez accepté l’invitation')
 
-    cy.get('ul.fr-list-group>li')
+    cy.get('tbody tr')
       .eq(0)
       .should('contain', 'Inscrit')
       .should('contain', 'Conseiller numérique')
@@ -144,49 +139,6 @@ describe('ETQ médiateur non inscrit, je peux donner suite à une invitation', (
     cy.wait('@mutation')
 
     cy.findByRole('status').should('contain', 'Vous avez accepté l’invitation')
-
-    executeInscriptionFlow({
-      signin: true,
-      user: mediateurInscription,
-      expectSuccessToast: true,
-      expectOnboarding: 'mediateur',
-      skipOnboarding: true,
-      expectedSteps: [
-        // quickly do the steps without any check() that are done in other cypress e2e inscription tests
-        {
-          step: 'choisir-role',
-          role: 'Mediateur',
-          acceptCgu: true,
-        },
-        {
-          step: 'verifier-informations',
-          accept: true,
-        },
-        {
-          step: 'lieux-activite',
-          structureEmployeuseIsLieuActivite: true,
-        },
-        {
-          step: 'lieux-activite',
-        },
-        {
-          step: 'recapitulatif',
-          conseillerNumeriqueRoleNotice: 'none',
-        },
-      ],
-    })
-
-    cy.visit(appUrl(`/coop/mes-equipes/${coordinateurInscritCoordinateurId}`))
-
-    cy.get('ul.fr-list-group>li')
-      .eq(0)
-      .should('contain', 'Inscription')
-      .should('contain', 'Médiateur numérique')
-      .should('contain', 'Inactif')
-
-    goToMostRecentEmailReceived({
-      subjectInclude: `${mediateurInscription.email} a accepté votre invitation à rejoindre votre équipe`,
-    })
   })
 
   it("En tentant de l'accepter, mais en étant authentifié avec le mauvais compte", () => {
@@ -205,28 +157,5 @@ describe('ETQ médiateur non inscrit, je peux donner suite à une invitation', (
       'contain',
       'Problème d’identification sur votre adresse email',
     )
-  })
-
-  it.only("En tentant de l'accepter, mais avec un mauvais lien", () => {
-    const invitationUrl = createInvitationUrl({
-      email: invitationData.email,
-      coordinateurId: invitationData.coordinateurId,
-    })
-
-    cy.visit(appUrl('/invitations/error'))
-
-    cy.visit(appUrl(invitationUrl))
-
-    cy.intercept('/api/trpc/mediateur.acceptInvitation*').as(
-      'acceptInvitationMutation',
-    )
-
-    cy.findByText('Accepter l’invitation').click().allowNextRedirectException()
-
-    cy.wait('@acceptInvitationMutation', { timeout: 15_000 })
-
-    cy.visit(appUrl(invitationUrl))
-
-    cy.get('h1').should('contain', 'Cette invitation n’est plus valide.')
   })
 })

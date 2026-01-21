@@ -176,8 +176,8 @@ export const getActivitesFiltersWhereConditions = ({
         : null,
     conseiller_numerique: conseiller_numerique
       ? conseiller_numerique === '1'
-        ? Prisma.raw(`cn.id IS NOT NULL`)
-        : Prisma.raw(`cn.id IS NULL`)
+        ? Prisma.raw(`u.is_conseiller_numerique = TRUE`)
+        : Prisma.raw(`u.is_conseiller_numerique = FALSE`)
       : null,
     demarches_administratives: demarches_administratives
       ? demarches_administratives === '1'

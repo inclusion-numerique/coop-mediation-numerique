@@ -6,20 +6,27 @@ export const getPartageStatistiquesId = async ({
 }: {
   user: UserProfile
 }) => {
-  if (!user.mediateur?.id) {
+  if (!user.mediateur?.id && !user.coordinateur?.id) {
     return undefined
   }
 
-  const userMediateurId = user.mediateur.id
+  if (user.mediateur?.id) {
+    const partageStatistiques =
+      await prismaClient.partageStatistiques.findUnique({
+        where: { mediateurId: user.mediateur?.id, deleted: null },
+        select: { id: true },
+      })
+    return partageStatistiques?.id
+  }
 
-  const partageStatistiques = await prismaClient.partageStatistiques.findUnique(
-    {
-      where: { mediateurId: userMediateurId, deleted: null },
-      select: { id: true },
-    },
-  )
-
-  return partageStatistiques?.id
+  if (user.coordinateur?.id) {
+    const partageStatistiques =
+      await prismaClient.partageStatistiques.findUnique({
+        where: { coordinateurId: user.coordinateur?.id, deleted: null },
+        select: { id: true },
+      })
+    return partageStatistiques?.id
+  }
 }
 
 export type PartageStatistiquesId = Awaited<

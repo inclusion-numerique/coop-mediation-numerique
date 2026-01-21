@@ -20,6 +20,7 @@ export const coordinateurInscriptionAvecTout = givenUser({
   isFixture: true,
   role: 'User',
   siret: previewBranchAuthFallbacks.anctSiret,
+  isConseillerNumerique: true,
   coordinateur: {
     connectOrCreate: {
       where: {
@@ -27,8 +28,6 @@ export const coordinateurInscriptionAvecTout = givenUser({
       },
       create: {
         id: coordinateurInscriptionAvecToutCoordinateurId,
-        conseillerNumeriqueId:
-          coordinateurInscriptionAvecToutConseillerNumeriqueId,
       },
     },
   },
@@ -39,16 +38,6 @@ export const coordinateurInscriptionAvecTout = givenUser({
       },
       create: {
         id: 'add33310-e93b-46c1-98ee-aa926bae993d',
-        conseillerNumerique: {
-          connectOrCreate: {
-            where: {
-              id: coordinateurInscriptionAvecToutConseillerNumeriqueId,
-            },
-            create: {
-              id: coordinateurInscriptionAvecToutConseillerNumeriqueId,
-            },
-          },
-        },
         enActivite: {
           connectOrCreate: [
             {
@@ -58,6 +47,7 @@ export const coordinateurInscriptionAvecTout = givenUser({
               create: {
                 id: '0a090e89-4ac6-477b-8bf9-4c7252142270',
                 structureId: mediateque.id,
+                debut: new Date(),
               },
             },
             {
@@ -67,6 +57,7 @@ export const coordinateurInscriptionAvecTout = givenUser({
               create: {
                 id: 'ec85721f-2d0f-4bbb-8450-e417cdae15b5',
                 structureId: centreSocial.id,
+                debut: new Date(),
               },
             },
           ],
@@ -82,6 +73,7 @@ export const coordinateurInscriptionAvecTout = givenUser({
       create: {
         id: '39c2e445-6eec-4964-aea3-0b7c6b20caef',
         structureId: structureEmployeuse.id,
+        debut: new Date(),
       },
     },
   },

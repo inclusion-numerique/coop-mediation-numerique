@@ -9,6 +9,7 @@ export const conseillerNumeriqueConseillerNumeriqueId =
 
 export const conseillerNumerique = givenUser({
   id: 'b66d2370-4245-4492-a630-02749a98237d',
+  isConseillerNumerique: true,
   firstName: 'Conseiller Num',
   lastName: 'Inscrit',
   isFixture: true,
@@ -25,16 +26,6 @@ export const conseillerNumerique = givenUser({
       },
       create: {
         id: conseillerNumeriqueMediateurId,
-        conseillerNumerique: {
-          connectOrCreate: {
-            where: {
-              id: conseillerNumeriqueConseillerNumeriqueId,
-            },
-            create: {
-              id: conseillerNumeriqueConseillerNumeriqueId,
-            },
-          },
-        },
         enActivite: {
           connectOrCreate: [
             {
@@ -44,6 +35,7 @@ export const conseillerNumerique = givenUser({
               create: {
                 id: '86643b16-de10-421e-b056-d820994572d1',
                 structureId: mediateque.id,
+                debut: new Date(),
               },
             },
             {
@@ -53,6 +45,7 @@ export const conseillerNumerique = givenUser({
               create: {
                 id: 'ef672b71-807b-41a6-9aca-3fac76478616',
                 structureId: centreSocial.id,
+                debut: new Date(),
               },
             },
           ],
@@ -68,6 +61,7 @@ export const conseillerNumerique = givenUser({
       create: {
         id: '4ee97bab-74eb-4776-b222-0ac40ed0f445',
         structureId: structureEmployeuse.id,
+        debut: new Date(),
       },
     },
   },

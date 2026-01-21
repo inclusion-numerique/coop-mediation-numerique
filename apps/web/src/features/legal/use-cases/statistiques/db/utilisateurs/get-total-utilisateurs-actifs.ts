@@ -22,9 +22,8 @@ export const getDataUtilisateursActifs = async (
       )::int AS value
     FROM users u
     JOIN mediateurs m ON m.user_id = u.id
-    LEFT JOIN conseillers_numeriques cn ON cn.mediateur_id = m.id
     LEFT JOIN coordinateurs c ON c.user_id = u.id
-    WHERE cn.mediateur_id IS NULL
+    WHERE u.is_conseiller_numerique = FALSE
       AND c.id IS NULL
       AND u.deleted IS NULL
       AND u.inscription_validee IS NOT NULL
@@ -41,9 +40,9 @@ export const getDataUtilisateursActifs = async (
       )::int AS value
     FROM users u
     JOIN mediateurs m ON m.user_id = u.id
-    JOIN conseillers_numeriques cn ON cn.mediateur_id = m.id
     LEFT JOIN coordinateurs c ON c.user_id = u.id
-    WHERE c.id IS NULL
+    WHERE u.is_conseiller_numerique = TRUE
+      AND c.id IS NULL
       AND u.deleted IS NULL
       AND u.inscription_validee IS NOT NULL
 

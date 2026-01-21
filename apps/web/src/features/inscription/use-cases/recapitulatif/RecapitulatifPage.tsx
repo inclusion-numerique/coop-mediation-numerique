@@ -71,7 +71,7 @@ const RecapitulatifPage = ({
     </div>
     {!!conseillerNumeriqueRole &&
       mediateursCoordonnesCount != null &&
-      user.coordinateur?.conseillerNumeriqueId != null && (
+      user.isConseillerNumerique && (
         <>
           <hr className="fr-separator-12v" />
           <div className="fr-flex fr-align-items-center fr-flex-gap-3v fr-mt-12v fr-mb-6v">
@@ -148,18 +148,6 @@ const RecapitulatifPage = ({
               ? 'Mon lieu d’activité'
               : `Mes lieux d’activité · ${lieuxActivite.length}`}
           </h2>
-          <span className="fr-flex-grow-1" />
-          <Button
-            priority="tertiary no outline"
-            linkProps={{
-              href: getStepPath('lieux-activite'),
-            }}
-            iconId="fr-icon-edit-line"
-            iconPosition="right"
-            size="small"
-          >
-            Modifier
-          </Button>
         </div>
         {/* Les lieux sont affichés dans l'ordre inverse (le plus récent en haut) dans la formulaire lieux activité, on reproduit cela pour */}
         {/* que l'affichage soit cohérent */}

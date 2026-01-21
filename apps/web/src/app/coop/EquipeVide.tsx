@@ -11,7 +11,14 @@ const EquipeVide = ({ withHeader = false }: { withHeader?: boolean }) => (
       </span>
       <p className="fr-mb-8v">
         Invitez les médiateurs et médiatrices numériques que vous souhaitez
-        coordonnez à rejoindre votre équipe.
+        coordonnez à rejoindre votre équipe.{' '}
+        <a
+          href="https://docs.numerique.gouv.fr/docs/0a862dcc-9cd1-4d5d-a713-571cc5aa5197/"
+          className="fr-link fr-link--sm"
+          target="_blank"
+        >
+          En savoir plus
+        </a>
       </p>
       <Button
         linkProps={{
@@ -19,7 +26,7 @@ const EquipeVide = ({ withHeader = false }: { withHeader?: boolean }) => (
         }}
         iconId="fr-icon-user-add-line"
       >
-        Inviter des membres
+        Inviter une personne
       </Button>
     </div>
   </>

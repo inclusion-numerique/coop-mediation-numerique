@@ -19,9 +19,9 @@ export const fetchAccompagnement = async (
                LEFT JOIN accompagnements acc ON acc.activite_id = act.id
                LEFT JOIN structures str ON str.id = act.structure_id
                LEFT JOIN mediateurs med ON act.mediateur_id = med.id
-               LEFT JOIN conseillers_numeriques cn ON med.id = cn.mediateur_id
+               LEFT JOIN users u ON med.user_id = u.id
       WHERE act.suppression IS NULL
-        AND ${isConseillerNumerique ? Prisma.sql`cn.id IS NOT NULL` : Prisma.sql`cn.id IS NULL`}
+        AND ${isConseillerNumerique ? Prisma.sql`u.is_conseiller_numerique = TRUE` : Prisma.sql`u.is_conseiller_numerique = FALSE`}
           ${dateCondition ? Prisma.sql`AND DATE(act.date) <= ${dateCondition}::date` : Prisma.empty}
         AND SUBSTRING(COALESCE(str.code_insee, act.lieu_code_insee), 1, 2) IS NOT NULL
       GROUP BY SUBSTRING(COALESCE(str.code_insee, act.lieu_code_insee), 1, 2)

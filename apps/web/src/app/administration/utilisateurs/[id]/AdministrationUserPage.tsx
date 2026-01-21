@@ -4,11 +4,10 @@ import AdministrationInlineLabelsValues, {
 } from '@app/web/app/administration/AdministrationInlineLabelsValues'
 import AdministrationMailtoLink from '@app/web/app/administration/AdministrationMailtoLink'
 import ResetUserInscriptionButton from '@app/web/app/administration/utilisateurs/[id]/ResetUserInscriptionButton'
+import UpdateUserDataFromDataspaceButton from '@app/web/app/administration/utilisateurs/[id]/UpdateUserDataFromDataspaceButton'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { isUserInscriptionEnCours } from '@app/web/auth/isUserInscriptionEnCours'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { isConseillerNumeriqueV1DataWithActiveMiseEnRelation } from '@app/web/external-apis/conseiller-numerique/isConseillerNumeriqueV1WithActiveMiseEnRelation'
-import { findConseillerNumeriqueV1 } from '@app/web/external-apis/conseiller-numerique/searchConseillerNumeriqueV1'
 import { getMediateurFromDataspaceApi } from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import { getInvitationStatusBadge } from '@app/web/features/utilisateurs/use-cases/list/getInvitationStatusBadge'
 import { getUserAccountStatusBadge } from '@app/web/features/utilisateurs/use-cases/list/getUserAccountStatusBadge'
@@ -20,7 +19,6 @@ import { dateAsDayAndTime } from '@app/web/utils/dateAsDayAndTime'
 import { numberToString } from '@app/web/utils/formatNumber'
 import { contentId } from '@app/web/utils/skipLinks'
 import { getUserDisplayName } from '@app/web/utils/user'
-import { countCrasConseillerNumeriqueV1 } from '@app/web/v1/v1CraQueries'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
@@ -118,11 +116,7 @@ const AdministrationUserPage = async ({
     statutCompte,
   } = user
 
-  const crasConseillerNumeriqueV1Count = mediateur?.conseillerNumerique
-    ? await countCrasConseillerNumeriqueV1({
-        conseillerNumeriqueIds: [mediateur.conseillerNumerique.id],
-      })
-    : null
+  // V1 CRA count removed - no longer using V1 data
 
   const enActivite = mediateur ? mediateur.enActivite : []
 
@@ -147,22 +141,9 @@ const AdministrationUserPage = async ({
     (a, b) => b.created.getTime() - a.created.getTime(),
   )
 
-  const [conseillerNumeriqueInfo, dataspaceInfo] = await Promise.all([
-    findConseillerNumeriqueV1(
-      user.mediateur?.conseillerNumerique?.id
-        ? {
-            id: user.mediateur.conseillerNumerique.id,
-            includeDeleted: true,
-          }
-        : {
-            email: user.email,
-            includeDeleted: true,
-          },
-    ),
-    getMediateurFromDataspaceApi({
-      email: user.email,
-    }),
-  ])
+  const dataspaceInfo = await getMediateurFromDataspaceApi({
+    email: user.email,
+  })
 
   return (
     <CoopPageContainer size={64}>
@@ -195,31 +176,10 @@ const AdministrationUserPage = async ({
           {role === 'Admin' && <Tag small>Administrateur</Tag>}
           {role === 'Support' && <Tag small>Support</Tag>}
           {isMediateur && <Tag small>Médiateur</Tag>}
-          {mediateur?.conseillerNumerique && (
-            <Tag small>Conseiller numérique</Tag>
-          )}
+          {user.isConseillerNumerique && <Tag small>Conseiller numérique</Tag>}
           {isCoordinateur && <Tag small>Coordinateur</Tag>}
         </div>
-        {conseillerNumeriqueInfo ? (
-          isConseillerNumeriqueV1DataWithActiveMiseEnRelation(
-            conseillerNumeriqueInfo,
-          ) ? (
-            <Notice
-              className="fr-notice--success fr-mb-8v"
-              title="Dans la base de données des conseillers numériques V1 avec contrat actif"
-            />
-          ) : (
-            <Notice
-              className="fr-notice--warning fr-mb-8v"
-              title="Dans la base de données des conseillers numériques V1 sans contrat actif"
-            />
-          )
-        ) : (
-          <Notice
-            className="fr-notice--info fr-mb-8v"
-            title="Inexistant dans la base de données des conseillers numériques V1"
-          />
-        )}
+
         <AdministrationInfoCard
           title="Détails de l'utilisateur"
           actions={
@@ -348,20 +308,13 @@ const AdministrationUserPage = async ({
             />
           </AdministrationInfoCard>
         )}
-        {isMediateur && mediateur?.conseillerNumerique && (
+        {isMediateur && user.isConseillerNumerique && (
           <AdministrationInfoCard title="Rôle conseiller numérique">
             <AdministrationInlineLabelsValues
               items={[
                 {
-                  label: 'ID Conseiller Numérique',
-                  value: mediateur.conseillerNumerique.id,
-                },
-                {
-                  label: 'Nombre de CRAs v1 importés',
-                  value:
-                    crasConseillerNumeriqueV1Count === null
-                      ? 'Aucun'
-                      : numberToString(crasConseillerNumeriqueV1Count),
+                  label: 'Est Conseiller Numérique',
+                  value: 'Oui',
                 },
               ]}
             />
@@ -376,8 +329,8 @@ const AdministrationUserPage = async ({
                   value: coordinateur.id,
                 },
                 {
-                  label: 'Conseiller Numérique ID',
-                  value: coordinateur.conseillerNumeriqueId,
+                  label: 'Est Conseiller Numérique',
+                  value: user.isConseillerNumerique ? 'Oui' : 'Non',
                 },
                 {
                   label: 'Créé le',
@@ -704,7 +657,10 @@ const AdministrationUserPage = async ({
             />
           )
         )}
-        <AdministrationInfoCard title="API Dataspace">
+        <AdministrationInfoCard
+          title="API Dataspace"
+          actions={<UpdateUserDataFromDataspaceButton userId={user.id} />}
+        >
           {!dataspaceInfo && (
             <Notice
               className="fr-notice--warning fr-mb-6v"

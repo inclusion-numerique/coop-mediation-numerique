@@ -1,5 +1,15 @@
 import { SelectOption } from '@app/ui/components/Form/utils/options'
 
+/**
+ * Removes the page parameter from URLSearchParams.
+ * Should be called when filters change to reset pagination to page 1,
+ * otherwise users may end up on an empty page if the new filtered results
+ * have fewer pages than the current page number.
+ */
+export const resetPagination = (params: URLSearchParams) => {
+  params.delete('page')
+}
+
 export const matchingOption =
   (option: SelectOption) =>
   ({ value }: { value: string }) =>

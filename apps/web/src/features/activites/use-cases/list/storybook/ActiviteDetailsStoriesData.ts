@@ -67,8 +67,8 @@ export const activiteIndividuelleInfosMinimum = {
     user: {
       firstName: '',
       lastName: '',
+      isConseillerNumerique: false,
     },
-    conseillerNumerique: null,
   },
   rdv: null,
 } satisfies ActiviteListItemWithTimezone
@@ -123,8 +123,8 @@ export const activiteIndividuelleBeneficiaireSuivi = {
     user: {
       firstName: '',
       lastName: '',
+      isConseillerNumerique: false,
     },
-    conseillerNumerique: null,
   },
   rdv: null,
 } satisfies ActiviteListItemWithTimezone
@@ -187,8 +187,8 @@ export const activiteIndividuelleBeneficiaireAnonyme = {
     user: {
       firstName: '',
       lastName: '',
+      isConseillerNumerique: false,
     },
-    conseillerNumerique: null,
   },
   rdv: null,
 } satisfies ActiviteListItemWithTimezone
@@ -262,8 +262,8 @@ export const activiteCollectifInfosRepliees = {
     user: {
       firstName: '',
       lastName: '',
+      isConseillerNumerique: false,
     },
-    conseillerNumerique: null,
   },
   rdv: null,
 } satisfies ActiviteListItemWithTimezone
@@ -373,8 +373,8 @@ export const activiteCollectifInfosDepliees = {
     user: {
       firstName: '',
       lastName: '',
+      isConseillerNumerique: false,
     },
-    conseillerNumerique: null,
   },
   rdv: null,
 } satisfies ActiviteListItemWithTimezone

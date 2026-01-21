@@ -76,6 +76,9 @@ enum OnboardingStatus {
   reminder_j7_sent
   reminder_j30_sent
   reminder_j60_sent
+  nouveau_j7_sent
+  nouveau_j30_sent
+  nouveau_j60_sent
   warning_j90_sent
 }
 
@@ -117,14 +120,19 @@ model User {
   // SIRET from ProConnect authentication
   siret String?
 
+  // Internal Dataspace ID for the user
+  dataspaceUserId Int? @unique @map("dataspace_user_id") @db.Integer
+  // If user is in the Conseiller Numerique program. Dataspace API is the source of truth for this data
+  isConseillerNumerique Boolean @default(false) @map("is_conseiller_numerique")
+
   // Flux d'inscription
 
   // Le profil déclaré par l’utilisateur à la première étape de l’inscription
-  profilInscription ProfilInscription? @map("profil_inscription")
-  syncedFromDataspace DateTime? @map("synced_from_dataspace")
-  lastSyncedFromDataspace DateTime? @map("last_synced_from_dataspace")
-  importedLieuxFromDataspace DateTime? @map("imported_lieux_from_dataspace") // useful for customizing the inscription flow
-  acceptationCgu    DateTime?          @map("acceptation_cgu")
+  profilInscription          ProfilInscription? @map("profil_inscription")
+  syncedFromDataspace        DateTime?          @map("synced_from_dataspace")
+  lastSyncedFromDataspace    DateTime?          @map("last_synced_from_dataspace")
+  importedLieuxFromDataspace DateTime?          @map("imported_lieux_from_dataspace") // useful for customizing the inscription flow
+  acceptationCgu             DateTime?          @map("acceptation_cgu")
 
   // Timestamp des imports de données v1 à l'inscription
   donneesConseillerNumeriqueV1Importees             DateTime? @map("donnees_conseiller_numerique_v1_importees")
@@ -140,15 +148,28 @@ model User {
   mediateur    Mediateur?
   coordinateur Coordinateur?
   mutations    Mutation[]
-  emplois      EmployeStructure[]
-  usurpateur   Session?              @relation(name: "usurper")
-  rdvAccount   RdvAccount?
-  chatThreads  AssistantChatThread[]
+
+  emplois          EmployeStructure[] @relation(name: "employe_structure")
+  emploisCrees     EmployeStructure[] @relation(name: "emplois_crees")
+  emploisModifies  EmployeStructure[] @relation(name: "emplois_modifies")
+  emploisSupprimes EmployeStructure[] @relation(name: "emplois_supprimes")
+
+  usurpateur  Session?              @relation(name: "usurper")
+  rdvAccount  RdvAccount?
+  chatThreads AssistantChatThread[]
 
   currentAssistantConfiguration   AssistantConfiguration? @relation(name: "user_current_configuration", fields: [currentAssistantConfigurationId], references: [id]) // The configuration used by default for a new chat thread
   currentAssistantConfigurationId String?                 @unique @map("current_assistant_configuration_id") @db.Uuid
 
   assistantConfigurations AssistantConfiguration[]
+
+  structuresCrees     Structure[] @relation(name: "structure_crees")
+  structuresModifies  Structure[] @relation(name: "structure_modifiees")
+  structuresSupprimes Structure[] @relation(name: "structure_supprimees")
+
+  mediateursEnActiviteCrees     MediateurEnActivite[] @relation(name: "mediateur_en_activite_crees")
+  mediateursEnActiviteModifies  MediateurEnActivite[] @relation(name: "mediateur_en_activite_modifies")
+  mediateursEnActiviteSupprimes MediateurEnActivite[] @relation(name: "mediateur_en_activite_supprimees")
 
   // "creation" cursor is used to paginate results for API queries
   @@unique([created, id])
@@ -275,9 +296,6 @@ model Mediateur {
   userId String @unique @map("user_id") @db.Uuid
   user   User   @relation(fields: [userId], references: [id])
 
-  // Un médiateur peut être un conseiller numérique
-  conseillerNumerique ConseillerNumerique?
-
   creation     DateTime @default(now())
   modification DateTime @default(now())
   // Cannot soft delete as we need to keep userId and conseillerNumerique.mediateurId unique
@@ -314,8 +332,11 @@ model Mediateur {
 model PartageStatistiques {
   id String @id @default(uuid()) @db.Uuid
 
-  mediateurId String    @unique @map("mediateur_id") @db.Uuid
-  mediateur   Mediateur @relation(fields: [mediateurId], references: [id])
+  mediateurId    String? @unique @map("mediateur_id") @db.Uuid
+  coordinateurId String? @unique @map("coordinateur_id") @db.Uuid
+
+  mediateur    Mediateur?    @relation(fields: [mediateurId], references: [id])
+  coordinateur Coordinateur? @relation(fields: [coordinateurId], references: [id])
 
   deleted DateTime? @map("deleted")
 
@@ -338,19 +359,6 @@ model InvitationEquipe {
   @@index([mediateurId])
   @@index([coordinateurId])
   @@map("invitations_equipes")
-}
-
-// Source de vérité https://api.conseiller-numerique.gouv.fr
-model ConseillerNumerique {
-  // IDs externe chez conseiller-numerique
-  id   String @id
-  idPg Int?   @unique @map("id_pg") @db.Integer
-
-  mediateurId String    @unique @map("mediateur_id") @db.Uuid
-  mediateur   Mediateur @relation(fields: [mediateurId], references: [id])
-
-  @@index([mediateurId])
-  @@map("conseillers_numeriques")
 }
 
 model CraConseillerNumeriqueV1 {
@@ -455,10 +463,6 @@ model CraConseillerNumeriqueV1 {
 model Coordinateur {
   id String @id @default(uuid()) @db.Uuid
 
-  // Clé primaire chez conseiller-numerique
-  conseillerNumeriqueId   String? @unique @map("conseiller_numerique_id")
-  conseillerNumeriqueIdPg Int?    @unique @map("conseiller_numerique_id_pg")
-
   // utilisé pour ajouter à la main des conseillers v1 dans les archives de stats coordo
   // ids mongo des conseillers v1 à ajouter
   autresConseillersV1Coordonnes String[] @default([]) @map("autres_conseillers_v1_coordonnes")
@@ -477,6 +481,7 @@ model Coordinateur {
   invitations          InvitationEquipe[]
   Tag                  Tag[]
   ActiviteCoordination ActiviteCoordination[]
+  PartageStatistiques  PartageStatistiques?
 
   @@index([userId])
   @@map("coordinateurs")
@@ -708,9 +713,17 @@ model Structure {
   structureCartographieNationale   StructureCartographieNationale? @relation(fields: [structureCartographieNationaleId], references: [id], onDelete: SetNull)
 
   // Timestamps internes à coop-mediation-numerique
-  creation     DateTime  @default(now())
-  modification DateTime  @default(now())
-  suppression  DateTime?
+  creation      DateTime @default(now())
+  creationParId String?  @map("creation_par_id") @db.Uuid
+  creationPar   User?    @relation(name: "structure_crees", fields: [creationParId], references: [id])
+
+  modification              DateTime @default(now())
+  derniereModificationParId String?  @map("derniere_modification_par_id") @db.Uuid
+  derniereModificationPar   User?    @relation(name: "structure_modifiees", fields: [derniereModificationParId], references: [id])
+
+  suppression      DateTime?
+  suppressionParId String?   @map("suppression_par_id") @db.Uuid
+  suppressionPar   User?     @relation(name: "structure_supprimees", fields: [suppressionParId], references: [id])
 
   // # Relations
   emplois              EmployeStructure[]
@@ -923,15 +936,26 @@ model StructureCartographieNationale {
 model EmployeStructure {
   id String @id @default(uuid()) @db.Uuid
 
-  userId String @map("user_id") @db.Uuid
-  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id") @db.Uuid // Employé de la structure
+  user   User   @relation(name: "employe_structure", fields: [userId], references: [id])
 
   structureId String    @map("structure_id") @db.Uuid
   structure   Structure @relation(fields: [structureId], references: [id])
 
-  creation     DateTime  @default(now()) // Représente la date de début de l'emploi
-  modification DateTime  @default(now())
-  suppression  DateTime? // Représente la date de fin de l'emploi
+  debut DateTime  @map("debut_emploi") // date de début de l'emploi dans la structure
+  fin   DateTime? @map("fin_emploi") // date de fin de l'emploi dans la structure
+
+  creation      DateTime @default(now()) // Représente la date de début de l'emploi
+  creationParId String?  @map("creation_par_id") @db.Uuid
+  creationPar   User?    @relation(name: "emplois_crees", fields: [creationParId], references: [id])
+
+  modification      DateTime @default(now())
+  modificationParId String?  @map("modification_par_id") @db.Uuid
+  modificationPar   User?    @relation(name: "emplois_modifies", fields: [modificationParId], references: [id])
+
+  suppression      DateTime? // Représente la date de fin de l'emploi
+  suppressionParId String?   @map("suppression_par_id") @db.Uuid
+  suppressionPar   User?     @relation(name: "emplois_supprimes", fields: [suppressionParId], references: [id])
 
   @@index([userId])
   @@index([structureId])
@@ -947,9 +971,20 @@ model MediateurEnActivite {
   structureId String    @map("structure_id") @db.Uuid
   structure   Structure @relation(fields: [structureId], references: [id])
 
-  creation     DateTime  @default(now())
-  modification DateTime  @default(now())
-  suppression  DateTime?
+  debut DateTime  @map("debut_activite") // date de début de l'activité dans la structure
+  fin   DateTime? @map("fin_activite") // date de fin de l'activité dans la structure
+
+  creation      DateTime @default(now())
+  creationParId String?  @map("creation_par_id") @db.Uuid
+  creationPar   User?    @relation(name: "mediateur_en_activite_crees", fields: [creationParId], references: [id])
+
+  modification              DateTime @default(now())
+  derniereModificationParId String?  @map("derniere_modification_par_id") @db.Uuid
+  derniereModificationPar   User?    @relation(name: "mediateur_en_activite_modifies", fields: [derniereModificationParId], references: [id])
+
+  suppression      DateTime?
+  suppressionParId String?   @map("suppression_par_id") @db.Uuid
+  suppressionPar   User?     @relation(name: "mediateur_en_activite_supprimees", fields: [suppressionParId], references: [id])
 
   @@index([mediateurId])
   @@index([structureId])
@@ -1770,41 +1805,43 @@ model RdvWebhookEndpoint {
 }
 
 enum MutationName {
-  ValiderInscription                       @map("valider_inscription")
-  ModifierUtilisateur                      @map("modifier_utilisateur")
-  ResetInscription                         @map("reset_inscription")
-  UsurperUtilisateur                       @map("usurper_utilisateur")
-  CreerMediateur                           @map("creer_mediateur")
-  ModifierMediateur                        @map("modifier_mediateur")
-  SupprimerMediateur                       @map("supprimer_mediateur")
-  CreerCoordinateur                        @map("creer_coordinateur")
-  ModifierCoordinateur                     @map("modifier_coordinateur")
-  SupprimerCoordinateur                    @map("supprimer_coordinateur")
-  CreerMediateurCoordonne                  @map("creer_mediateur_coordonne")
-  SupprimerMediateurCoordonne              @map("supprimer_mediateur_coordonne")
-  InviterMediateursCoordonnes              @map("inviter_mediateurs_coordonnes")
-  AccepterInvitationMediateurCoordonne     @map("accepter_invitation_mediateur_coordonne")
-  RefuserInvitationMediateurCoordonne      @map("refuser_invitation_mediateur_coordonne")
-  RenvoyerInvitationMediateurCoordonne     @map("renvoyer_invitation_mediateur_coordonne")
-  SetMediateurVisibility                   @map("set_mediateur_visibility")
-  CreerActivite                            @map("creer_activite")
-  ModifierActivite                         @map("modifier_activite")
-  SupprimerActivite                        @map("supprimer_activite")
-  CreerActiviteCoordination                @map("creer_activite_coordination")
-  ModifierActiviteCoordination             @map("modifier_activite_coordination")
-  SupprimerActiviteCoordination            @map("supprimer_activite_coordination")
-  CreerBeneficiaire                        @map("creer_beneficiaire")
-  ImporterBeneficiaires                    @map("importer_beneficiaires")
-  ModifierBeneficiaire                     @map("modifier_beneficiaire")
-  SupprimerBeneficiaire                    @map("supprimer_beneficiaire")
-  CreerStructure                           @map("creer_structure")
-  ModifierStructure                        @map("modifier_structure")
-  MiseAJourStructuresCartographieNationale @map("mise_a_jour_structures_cartographie_nationale")
-  CreerEmployeStructure                    @map("creer_employe_structure")
-  ModifierEmployeStructure                 @map("modifier_employe_structure")
-  SupprimerEmployeStructure                @map("supprimer_employe_structure")
-  CreerMediateurEnActivite                 @map("creer_mediateur_en_activite")
-  SupprimerMediateurEnActivite             @map("supprimer_mediateur_en_activite")
+  ValiderInscription                        @map("valider_inscription")
+  ModifierUtilisateur                       @map("modifier_utilisateur")
+  ResetInscription                          @map("reset_inscription")
+  UsurperUtilisateur                        @map("usurper_utilisateur")
+  CreerMediateur                            @map("creer_mediateur")
+  ModifierMediateur                         @map("modifier_mediateur")
+  SupprimerMediateur                        @map("supprimer_mediateur")
+  CreerCoordinateur                         @map("creer_coordinateur")
+  ModifierCoordinateur                      @map("modifier_coordinateur")
+  SupprimerCoordinateur                     @map("supprimer_coordinateur")
+  CreerMediateurCoordonne                   @map("creer_mediateur_coordonne")
+  SupprimerMediateurCoordonne               @map("supprimer_mediateur_coordonne")
+  InviterMediateursCoordonnes               @map("inviter_mediateurs_coordonnes")
+  AccepterInvitationMediateurCoordonne      @map("accepter_invitation_mediateur_coordonne")
+  AnnulerInvitationMediateurCoordonne       @map("annuler_invitation_mediateur_coordonne")
+  SupprimerDefinitivementMediateurCoordonne @map("supprimer_definitivement_mediateur_coordonne")
+  RefuserInvitationMediateurCoordonne       @map("refuser_invitation_mediateur_coordonne")
+  RenvoyerInvitationMediateurCoordonne      @map("renvoyer_invitation_mediateur_coordonne")
+  SetMediateurVisibility                    @map("set_mediateur_visibility")
+  CreerActivite                             @map("creer_activite")
+  ModifierActivite                          @map("modifier_activite")
+  SupprimerActivite                         @map("supprimer_activite")
+  CreerActiviteCoordination                 @map("creer_activite_coordination")
+  ModifierActiviteCoordination              @map("modifier_activite_coordination")
+  SupprimerActiviteCoordination             @map("supprimer_activite_coordination")
+  CreerBeneficiaire                         @map("creer_beneficiaire")
+  ImporterBeneficiaires                     @map("importer_beneficiaires")
+  ModifierBeneficiaire                      @map("modifier_beneficiaire")
+  SupprimerBeneficiaire                     @map("supprimer_beneficiaire")
+  CreerStructure                            @map("creer_structure")
+  ModifierStructure                         @map("modifier_structure")
+  MiseAJourStructuresCartographieNationale  @map("mise_a_jour_structures_cartographie_nationale")
+  CreerEmployeStructure                     @map("creer_employe_structure")
+  ModifierEmployeStructure                  @map("modifier_employe_structure")
+  SupprimerEmployeStructure                 @map("supprimer_employe_structure")
+  CreerMediateurEnActivite                  @map("creer_mediateur_en_activite")
+  SupprimerMediateurEnActivite              @map("supprimer_mediateur_en_activite")
 
   @@map("mutation_name")
 }

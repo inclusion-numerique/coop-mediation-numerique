@@ -8,10 +8,10 @@ export const CreerEmployeStructureValidation = z.object({
     })
     .uuid(),
   structureEmployeuse: StructureCreationValidationWithSiret,
-  creation: z
-    .string({ required_error: 'Veuillez renseigner une de début de l’emploi' })
+  debut: z
+    .string({ required_error: "Veuillez renseigner une de début de l'emploi" })
     .date('Veuillez renseigner une date valide'),
-  suppression: z.string().nullish(),
+  fin: z.string().nullish(),
 })
 
 export type CreerEmployeStructureData = z.infer<

@@ -125,6 +125,7 @@ const createStructureFor =
       data: {
         userId: user.id,
         structureId: structure.id,
+        debut: new Date(),
       },
     })
 
@@ -138,6 +139,7 @@ const createStructureFor =
       data: {
         mediateurId: mediateur.id,
         structureId: structure.id,
+        debut: new Date(),
       },
     })
   }
@@ -182,6 +184,7 @@ describe('updateStructureFromCartoDataApi', () => {
       data: {
         userId: user.id,
         structureId: COOP_NUMERIQUE_STRUCTURE2_TO_BE_MERGED.id,
+        debut: new Date(),
       },
     })
 
@@ -195,6 +198,7 @@ describe('updateStructureFromCartoDataApi', () => {
       data: {
         mediateurId: mediateur.id,
         structureId: COOP_NUMERIQUE_STRUCTURE2_TO_BE_MERGED.id,
+        debut: new Date(),
       },
     })
 

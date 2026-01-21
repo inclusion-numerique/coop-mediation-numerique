@@ -99,11 +99,6 @@ export const Accueil = ({
           <hr className="fr-separator-1px" />
         </>
       )}
-      {(isCoNum || isCoordinateurCoNum) && (
-        <section className="fr-my-6w">
-          <CommunicationConum />
-        </section>
-      )}
       <section className="fr-my-6w">
         <InformationsCoop />
       </section>

@@ -28,6 +28,7 @@ export const sessionUserSelect = {
   inscriptionValidee: true,
   featureFlags: true,
   timezone: true,
+  isConseillerNumerique: true,
   emplois: {
     select: {
       id: true,
@@ -44,20 +45,16 @@ export const sessionUserSelect = {
     },
     where: {
       suppression: null,
+      fin: null,
     },
     orderBy: {
-      modification: 'desc',
+      debut: 'desc',
     },
   },
   mediateur: {
     select: {
       id: true,
       isVisible: true,
-      conseillerNumerique: {
-        select: {
-          id: true,
-        },
-      },
       coordinations: {
         select: {
           coordinateur: {
@@ -84,7 +81,7 @@ export const sessionUserSelect = {
       },
       _count: {
         select: {
-          enActivite: { where: { suppression: null } },
+          enActivite: { where: { suppression: null, fin: null } },
         },
       },
     },
@@ -92,13 +89,10 @@ export const sessionUserSelect = {
   coordinateur: {
     select: {
       id: true,
-      conseillerNumeriqueId: true,
       mediateursCoordonnes: {
         select: {
           mediateurId: true,
-        },
-        where: {
-          suppression: null,
+          suppression: true,
         },
       },
     },

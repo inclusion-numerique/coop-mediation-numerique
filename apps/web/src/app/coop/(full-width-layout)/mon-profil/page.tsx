@@ -11,21 +11,11 @@ import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import React from 'react'
+import ProfileDeleteCard from './_components/ProfileDeleteCard'
 import ProfileEditCard from './_components/ProfileEditCard'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mon profil'),
-}
-
-const getConumIdPgFor = async (user: SessionUser) => {
-  if (user.mediateur?.conseillerNumerique == null) return null
-
-  const conumV1 = await findConseillerNumeriqueV1({
-    id: user.mediateur.conseillerNumerique.id,
-    includeDeleted: true,
-  })
-
-  return conumV1?.conseiller.idPG ?? null
 }
 
 const MonProfilPage = async () => {
@@ -39,12 +29,9 @@ const MonProfilPage = async () => {
     ? await getContractInfo(user.email)
     : null
 
-  const contratConum =
-    user.mediateur?.conseillerNumerique?.id == null
-      ? null
-      : await getContractInfo(user.email)
-
-  const conumIdPg = await getConumIdPgFor(user)
+  const contratConum = !user.isConseillerNumerique
+    ? null
+    : await getContractInfo(user.email)
 
   return (
     <>
@@ -59,7 +46,7 @@ const MonProfilPage = async () => {
             />
             <h1 className="fr-page-title fr-m-0">Mon profil</h1>
           </div>
-          <section className="fr-mb-2w">
+          <section className="fr-mb-4v">
             <ProfileEditCard
               name={user.name}
               email={user.email}
@@ -69,11 +56,11 @@ const MonProfilPage = async () => {
           {user.coordinateur ? (
             <>
               {!!contratCoordinateur && (
-                <section className="fr-mb-2w">
+                <section className="fr-mb-4v">
                   <Contract isCoordinateur {...contratCoordinateur} />
                 </section>
               )}
-              <section>
+              <section className="fr-mb-4v">
                 <FonctionnalitesDeMediationNumeriqueCoordinateur
                   isActive={user.mediateur?.id != null}
                 />
@@ -81,12 +68,13 @@ const MonProfilPage = async () => {
             </>
           ) : null}
           {!!contratConum && (
-            <section className="fr-mt-6v">
-              <Contract
-                isCoordinateur={false}
-                {...contratConum}
-                idPGConum={conumIdPg}
-              />
+            <section className="fr-mb-4v">
+              <Contract isCoordinateur={false} {...contratConum} />
+            </section>
+          )}
+          {!user.isConseillerNumerique && (
+            <section className="fr-mb-4v">
+              <ProfileDeleteCard />
             </section>
           )}
         </main>

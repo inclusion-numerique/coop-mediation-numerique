@@ -29,7 +29,7 @@ import { useForm } from 'react-hook-form'
 const roleOptions: RichCardOption<'Mediateur' | 'Coordinateur'>[] = [
   {
     label: profileInscriptionLabels.Mediateur,
-    hint: "Bénéficiez de fonctionnalités et d'outils utiles à votre pratique de la médiation numérique.",
+    hint: 'Accompagnez vos bénéficiaires et valorisez votre activité de médiation numérique.',
     extra: {
       illustration: '/images/iconographie/profil-mediateur.svg',
     },
@@ -37,7 +37,7 @@ const roleOptions: RichCardOption<'Mediateur' | 'Coordinateur'>[] = [
   },
   {
     label: profileInscriptionLabels.Coordinateur,
-    hint: 'Suivez les activités de médiation numérique de votre équipe.',
+    hint: 'Coordonnez une équipe de médiateur·rice numérique et suivez leurs activités.',
     extra: {
       illustration: '/images/iconographie/profil-coordinateur.svg',
     },

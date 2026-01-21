@@ -1,30 +1,9 @@
 import { prismaClient } from '@app/web/prismaClient'
-import type { Prisma } from '@prisma/client'
+import { countTotalActifUsers } from '../filter/db/count-total-actif-users'
+import { inscriptionFilter } from '../filter/db/inscription-filter'
 import { sendAccountDeletedEmail } from './emails/account-deleted/sendAccountDeletedEmail'
 import { sendDeletionWarningEmail } from './emails/deletion-warning/sendDeletionWarningEmail'
 import { sendFinishYourSignupEmail } from './emails/finish-your-signup/sendFinishYourSignupEmail'
-
-const inscriptionFilter = (
-  created: {
-    lt?: Date
-    gte?: Date
-  },
-  previousOnboardingStatus:
-    | 'reminder_j7_sent'
-    | 'reminder_j30_sent'
-    | 'reminder_j60_sent'
-    | 'warning_j90_sent'
-    | null,
-): Prisma.UserWhereInput => ({
-  inscriptionValidee: null,
-  OR: [
-    { onboardingStatus: previousOnboardingStatus },
-    { onboardingStatus: null },
-  ],
-  role: { not: 'Admin' },
-  deleted: null,
-  created,
-})
 
 const select = {
   id: true,
@@ -48,7 +27,7 @@ const deleteAndNotify = async (now: Date) => {
       coordinateur: { select: { id: true } },
     },
     where: {
-      ...inscriptionFilter({ lt: daysAgo(now, 105) }, 'warning_j90_sent'),
+      ...inscriptionFilter({ lt: daysAgo(now, 105) }, ['warning_j90_sent']),
       AND: [
         { NOT: { mediateur: { activites: { some: {} } } } },
         { NOT: { coordinateur: { mediateursCoordonnes: { some: {} } } } },
@@ -73,10 +52,6 @@ const deleteAndNotify = async (now: Date) => {
           where: { mediateurId: mediateur.id },
         })
 
-        await tx.conseillerNumerique.deleteMany({
-          where: { mediateurId: mediateur.id },
-        })
-
         await tx.mediateur.delete({ where: { id: mediateur.id } })
       }
 
@@ -97,7 +72,10 @@ const deleteAndNotify = async (now: Date) => {
 const warnBeforeDeletion = async (now: Date) => {
   const usersToWarnBeforeDeletion = await prismaClient.user.findMany({
     select,
-    where: inscriptionFilter({ lt: daysAgo(now, 90) }, 'reminder_j60_sent'),
+    where: inscriptionFilter({ lt: daysAgo(now, 90) }, [
+      null,
+      'reminder_j60_sent',
+    ]),
   })
 
   await prismaClient.user.updateMany({
@@ -128,9 +106,20 @@ const warnBeforeDeletion = async (now: Date) => {
 
 const remindersAfterXDays =
   (now: Date, totalUsers: number) => async (days: 7 | 30 | 60) => {
+    const statusByDays: Record<
+      number,
+      'reminder_j7_sent' | 'reminder_j30_sent' | null
+    > = {
+      7: null,
+      30: 'reminder_j7_sent',
+      60: 'reminder_j30_sent',
+    }
+
     const usersToRemind = await prismaClient.user.findMany({
       select,
-      where: inscriptionFilter({ lt: daysAgo(now, days) }, null),
+      where: inscriptionFilter({ lt: daysAgo(now, days) }, [
+        statusByDays[days],
+      ]),
     })
 
     await prismaClient.user.updateMany({
@@ -148,23 +137,34 @@ const remindersAfterXDays =
     }
   }
 
+const resetOnboardingStatus = async (now: Date) => {
+  const usersToReset = await prismaClient.user.findMany({
+    select,
+    where: inscriptionFilter({ gte: daysAgo(now, 7) }, [
+      'reminder_j7_sent',
+      'reminder_j30_sent',
+      'reminder_j60_sent',
+      'warning_j90_sent',
+    ]),
+  })
+
+  await prismaClient.user.updateMany({
+    where: { id: { in: usersToReset.map((user) => user.id) } },
+    data: { onboardingStatus: null },
+  })
+}
+
 export const signupReminders = async () => {
   const now = new Date()
 
-  const totalUsers = await prismaClient.user.count({
-    where: {
-      role: 'User',
-      isFixture: false,
-      deleted: null,
-      inscriptionValidee: { not: null },
-    },
-  })
+  const totalUsers = await countTotalActifUsers()
 
   await deleteAndNotify(now)
   await warnBeforeDeletion(now)
   await remindersAfterXDays(now, totalUsers)(60)
   await remindersAfterXDays(now, totalUsers)(30)
   await remindersAfterXDays(now, totalUsers)(7)
+  await resetOnboardingStatus(now)
 
   return {
     success: true,

@@ -21,7 +21,6 @@ export const coordinateurInscritJ90 = givenUser({
       },
       create: {
         id: coordinateurInscritJ90CoordinateurId,
-        derniereCreationActivite: date,
       },
     },
   },
@@ -33,6 +32,7 @@ export const coordinateurInscritJ90 = givenUser({
       create: {
         id: '670cc148-6e5f-4c93-88d0-29349d61ebc4',
         structureId: structureEmployeuse.id,
+        debut: date,
       },
     },
   },

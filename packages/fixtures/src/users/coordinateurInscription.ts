@@ -14,6 +14,7 @@ export const coordinateurInscription = givenUser({
   email: coordinateurInscriptionEmail,
   role: 'User',
   siret: previewBranchAuthFallbacks.anctSiret,
+  isConseillerNumerique: true,
   coordinateur: {
     connectOrCreate: {
       where: {
@@ -21,7 +22,6 @@ export const coordinateurInscription = givenUser({
       },
       create: {
         id: '2e4d546c-9312-4ac1-a771-a6ec48180136',
-        conseillerNumeriqueId: '60c89697838083d3399c9f7f',
       },
     },
   },
@@ -33,6 +33,7 @@ export const coordinateurInscription = givenUser({
       create: {
         id: 'c9501fea-d9de-4020-9763-59e5ccd41275',
         structureId: structureEmployeuse.id,
+        debut: new Date(),
       },
     },
   },

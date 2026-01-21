@@ -11,6 +11,7 @@ export const coordinateurInscrit = givenUser({
   lastLogin: new Date(),
   isFixture: true,
   role: 'User',
+  isConseillerNumerique: true,
   coordinateur: {
     connectOrCreate: {
       where: {
@@ -18,7 +19,6 @@ export const coordinateurInscrit = givenUser({
       },
       create: {
         id: coordinateurInscritCoordinateurId,
-        conseillerNumeriqueId: 'coordinateur-inscrit',
       },
     },
   },
@@ -30,6 +30,7 @@ export const coordinateurInscrit = givenUser({
       create: {
         id: '29c6b7f2-9ef3-48f2-898e-ae471b5e0fa3',
         structureId: structureEmployeuse.id,
+        debut: new Date(),
       },
     },
   },

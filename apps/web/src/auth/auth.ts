@@ -1,17 +1,18 @@
 import { authenticationViaProconnect } from '@app/web/auth/authenticationProvider'
 import { nextAuthAdapter } from '@app/web/auth/nextAuthAdapter'
 import { ProConnectProvider } from '@app/web/auth/ProConnectProvider'
+import { previewBranchAuthFallbacks } from '@app/web/auth/previewBranchAuthFallbacks'
 import { proConnectProviderId } from '@app/web/auth/proConnect'
 import { sendVerificationRequest } from '@app/web/auth/sendVerificationRequest'
 import { SessionUser } from '@app/web/auth/sessionUser'
 import { updateAccountTokens } from '@app/web/auth/updateAccountTokens'
 import { updateUserData } from '@app/web/auth/updateUserData'
+import { updateUserFromDataspaceData } from '@app/web/features/utilisateurs/use-cases/update-from-dataspace/updateUserFromDataspaceData'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { registerLastLogin } from '@app/web/security/registerLastLogin'
 import * as Sentry from '@sentry/nextjs'
 import type { AuthOptions } from 'next-auth'
 import Email from 'next-auth/providers/email'
-import { previewBranchAuthFallbacks } from './previewBranchAuthFallbacks'
 
 const sessionUserHasOutdatedData = ({
   user,
@@ -85,6 +86,10 @@ export const nextAuthOptions = {
           })
         }
 
+        updateUserFromDataspaceData({ userId: user.id }).catch((error) => {
+          Sentry.captureException(error)
+        })
+
         registerLastLogin({ userId: params.user.id }).catch((error) => {
           Sentry.captureException(error)
         })
@@ -139,6 +144,10 @@ export const nextAuthOptions = {
           Sentry.captureException(error)
         })
       }
+
+      updateUserFromDataspaceData({ userId: user.id }).catch((error) => {
+        Sentry.captureException(error)
+      })
 
       registerLastLogin({ userId: user.id }).catch((error) => {
         Sentry.captureException(error)
