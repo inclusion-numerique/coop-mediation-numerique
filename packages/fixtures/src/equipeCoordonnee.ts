@@ -56,6 +56,7 @@ const conseillerNumeriqueActif = givenUser({
   email: 'conum-actif@coop-numerique.anct.gouv.fr',
   isFixture: true,
   role: 'User',
+  isConseillerNumerique: true,
   profilInscription: 'ConseillerNumerique',
   acceptationCgu: new Date(),
   structureEmployeuseRenseignee: new Date(),
@@ -66,12 +67,6 @@ const conseillerNumeriqueActif = givenUser({
       where: { id: conseillerNumeriqueActifId },
       create: {
         id: conseillerNumeriqueActifId,
-        conseillerNumerique: {
-          connectOrCreate: {
-            where: { id: '1234567890abcdef12345678' },
-            create: { id: '1234567890abcdef12345678' },
-          },
-        },
         activitesCount: 15,
         derniereCreationActivite: new Date(),
         enActivite: {
@@ -158,6 +153,7 @@ const conseillerNumeriqueInactif = givenUser({
   email: 'conum-inactif@coop-numerique.anct.gouv.fr',
   isFixture: true,
   role: 'User',
+  isConseillerNumerique: true,
   profilInscription: 'ConseillerNumerique',
   created: sixMonthsAgo,
   lastLogin: sixMonthsAgo,
@@ -171,12 +167,6 @@ const conseillerNumeriqueInactif = givenUser({
       create: {
         id: conseillerNumeriqueInactifMediateurId,
         creation: sixMonthsAgo,
-        conseillerNumerique: {
-          connectOrCreate: {
-            where: { id: 'abcdef1234567890abcdef12' },
-            create: { id: 'abcdef1234567890abcdef12' },
-          },
-        },
         activitesCount: 2,
         derniereCreationActivite: sixMonthsAgo,
         enActivite: {
@@ -309,6 +299,7 @@ const conseillerNumeriqueAQuitte = givenUser({
   email: 'conum-a-quitte@coop-numerique.anct.gouv.fr',
   isFixture: true,
   role: 'User',
+  isConseillerNumerique: true,
   profilInscription: 'ConseillerNumerique',
   acceptationCgu: new Date(),
   structureEmployeuseRenseignee: new Date(),
@@ -319,12 +310,6 @@ const conseillerNumeriqueAQuitte = givenUser({
       where: { id: conseillerNumeriqueAQuitteId },
       create: {
         id: conseillerNumeriqueAQuitteId,
-        conseillerNumerique: {
-          connectOrCreate: {
-            where: { id: 'fedcba0987654321fedcba09' },
-            create: { id: 'fedcba0987654321fedcba09' },
-          },
-        },
         activitesCount: 8,
         enActivite: {
           connectOrCreate: {
@@ -409,6 +394,7 @@ const conseillerNumeriqueProfilSupprime = givenUser({
   email: 'conum-supprime@coop-numerique.anct.gouv.fr',
   isFixture: true,
   role: 'User',
+  isConseillerNumerique: true,
   profilInscription: 'ConseillerNumerique',
   created: sixMonthsAgo,
   lastLogin: sixMonthsAgo,
@@ -422,12 +408,6 @@ const conseillerNumeriqueProfilSupprime = givenUser({
       where: { id: conseillerNumeriqueProfilSupprimeId },
       create: {
         id: conseillerNumeriqueProfilSupprimeId,
-        conseillerNumerique: {
-          connectOrCreate: {
-            where: { id: '0123456789abcdef01234567' },
-            create: { id: '0123456789abcdef01234567' },
-          },
-        },
         activitesCount: 6,
         enActivite: {
           connectOrCreate: {
