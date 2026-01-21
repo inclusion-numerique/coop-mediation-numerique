@@ -132,6 +132,19 @@ export const initializeInscription = async ({
     const lieuxActivite = dataspaceData.lieux_activite ?? []
     const hasLieuxActiviteInDataspace = lieuxActivite.length > 0
 
+    // We create mediateur if we are importing data from dataspace
+    // - if user is a conseiller_numerique and NOT "only a coordinateur"
+    // - only a coordinateur means "coordinateur is true" and "NO lieux activites in dataspace"
+    let mediateurId: string | null = null
+    if (
+      dataspaceData.is_conseiller_numerique &&
+      (!dataspaceData.is_coordinateur || hasLieuxActiviteInDataspace)
+    ) {
+      // Create or get mediateur
+      const upsertedMediateur = await upsertMediateur({ userId })
+      mediateurId = upsertedMediateur.mediateurId
+    }
+
     if (dataspaceData.is_conseiller_numerique && hasLieuxActiviteInDataspace) {
       // Check if user already has lieux d'activité
       const existingMediateur = await prismaClient.mediateur.findUnique({
@@ -156,10 +169,13 @@ export const initializeInscription = async ({
           lieuxCount: lieuxActivite.length,
         })
 
-        // Create or get mediateur
-        const { mediateurId } = await upsertMediateur({ userId })
-
         // Import lieux d'activité
+        if (!mediateurId) {
+          // will never happen, needed for type safety
+          throw new Error(
+            'Mediateur not found for initialization of lieux activite',
+          )
+        }
         const { structureIds } = await importLieuxActiviteFromDataspace({
           mediateurId,
           lieuxActivite,
