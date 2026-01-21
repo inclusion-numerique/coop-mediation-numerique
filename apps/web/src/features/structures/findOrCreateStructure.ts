@@ -87,13 +87,17 @@ export const findOrCreateStructure = async ({
         id: true,
         suppression: true,
       },
-      orderBy: {
-        suppression: {
-          sort: 'desc',
-          nulls: 'last',
+      orderBy: [
+        {
+          suppression: {
+            sort: 'desc',
+            nulls: 'last',
+          },
         },
-        creation: 'desc',
-      },
+        {
+          creation: 'desc',
+        },
+      ],
     })
 
     if (existingStructure) {
@@ -144,13 +148,17 @@ export const findOrCreateStructure = async ({
         id: true,
         suppression: true,
       },
-      orderBy: {
-        suppression: {
-          sort: 'desc',
-          nulls: 'last',
+      orderBy: [
+        {
+          suppression: {
+            sort: 'desc',
+            nulls: 'last',
+          },
         },
-        creation: 'desc',
-      },
+        {
+          creation: 'desc',
+        },
+      ],
     })
 
     if (existingByNom) {
