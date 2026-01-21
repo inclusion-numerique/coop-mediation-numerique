@@ -229,6 +229,13 @@ export const teamAdministrateurs = [
     role: 'Admin',
   }),
   givenUser({
+    id: '99afd613-9d54-4110-9062-065c627eda8b',
+    firstName: 'Kévin',
+    lastName: 'Gallet',
+    email: 'kevin.gallet@beta.gouv.fr',
+    role: 'Admin',
+  }),
+  givenUser({
     id: 'eecac657-f415-47e1-8087-c4508ea16191',
     firstName: 'Marc',
     lastName: 'Gavanier',

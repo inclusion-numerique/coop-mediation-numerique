@@ -26,7 +26,7 @@ const EquipeVide = ({ withHeader = false }: { withHeader?: boolean }) => (
         }}
         iconId="fr-icon-user-add-line"
       >
-        Inviter une personne
+        Inviter des membres
       </Button>
     </div>
   </>
