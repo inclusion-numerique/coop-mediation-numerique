@@ -5,6 +5,7 @@ import { toStructureFromCartoStructure } from '@app/web/structure/toStructureFro
 import { v4 } from 'uuid'
 
 export type StructureInput = {
+  coopId?: string | null
   siret: string | null
   nom: string
   adresse: string
@@ -18,6 +19,24 @@ export type StructureInput = {
   creationParId?: string | null
 }
 
+const undeleteStructureIfDeleted = async ({
+  id,
+  suppression,
+}: {
+  id: string
+  suppression: Date | null
+}) => {
+  if (suppression) {
+    await prismaClient.structure.update({
+      where: { id },
+      data: {
+        suppression: null,
+        suppressionParId: null,
+      },
+    })
+  }
+}
+
 /**
  * Generic helper to find or create a structure following this hierarchy:
  * 1. Find existing Structure by SIRET + nom
@@ -27,6 +46,7 @@ export type StructureInput = {
  * This is reusable for both V1 imports and Dataspace imports.
  */
 export const findOrCreateStructure = async ({
+  coopId,
   siret,
   nom,
   adresse,
@@ -38,6 +58,23 @@ export const findOrCreateStructure = async ({
   telephoneReferent,
   creationParId,
 }: StructureInput): Promise<{ id: string }> => {
+  // If coopId is provided, it is the surest way to find the structure
+  if (coopId) {
+    const existingStructure = await prismaClient.structure.findFirst({
+      where: {
+        id: coopId,
+      },
+      select: {
+        id: true,
+        suppression: true,
+      },
+    })
+    if (existingStructure) {
+      await undeleteStructureIfDeleted(existingStructure)
+      return existingStructure
+    }
+  }
+
   // Step 1: Find existing Structure by SIRET + nom (only if siret is provided)
   if (siret) {
     const existingStructure = await prismaClient.structure.findFirst({
@@ -48,10 +85,19 @@ export const findOrCreateStructure = async ({
       },
       select: {
         id: true,
+        suppression: true,
+      },
+      orderBy: {
+        suppression: {
+          sort: 'desc',
+          nulls: 'last',
+        },
+        creation: 'desc',
       },
     })
 
     if (existingStructure) {
+      await undeleteStructureIfDeleted(existingStructure)
       return existingStructure
     }
   }
@@ -93,30 +139,24 @@ export const findOrCreateStructure = async ({
       where: {
         nom,
         codeInsee,
-        suppression: null,
       },
       select: {
         id: true,
+        suppression: true,
+      },
+      orderBy: {
+        suppression: {
+          sort: 'desc',
+          nulls: 'last',
+        },
+        creation: 'desc',
       },
     })
 
     if (existingByNom) {
+      await undeleteStructureIfDeleted(existingByNom)
       return existingByNom
     }
-  }
-
-  if (!adresse) {
-    console.log('INVALID ADDRESSE INPUT', {
-      siret,
-      nom,
-      adresse,
-      codePostal,
-      codeInsee,
-      commune,
-      nomReferent,
-      courrielReferent,
-      telephoneReferent,
-    })
   }
 
   // Step 3: Fallback - geocode via BAN API and create

@@ -4,7 +4,11 @@ import {
   getMediateurFromDataspaceApi,
   isDataspaceApiError,
 } from '@app/web/external-apis/dataspace/dataspaceApiClient'
-import { syncFromDataspaceCore } from '@app/web/features/dataspace/syncFromDataspaceCore'
+import {
+  importLieuxActiviteFromDataspace,
+  syncFromDataspaceCore,
+  upsertMediateur,
+} from '@app/web/features/dataspace/syncFromDataspaceCore'
 import { updateUserInscriptionProfileFromDataspace } from '@app/web/features/dataspace/updateUserInscriptionProfileFromDataspace'
 import { importStructureEmployeuseFromSiret } from '@app/web/features/structures/importStructureEmployeuseFromSiret'
 import { prismaClient } from '@app/web/prismaClient'
@@ -39,8 +43,11 @@ const createDebugLogger = (enabled: boolean): InitializeDebugLogger => {
  *
  * This function uses the shared syncFromDataspaceCore for idempotent sync:
  * - Coordinateur: Only created if is_coordinateur is true (never deleted)
- * - Mediateur: Only created if lieux_activite exists AND is_conseiller_numerique is true (never deleted)
  * - Structures employeuses: Only synced if is_conseiller_numerique is true
+ *
+ * Lieux d'activité import (one-time only during inscription):
+ * - Import if is_conseiller_numerique is true AND has lieux_activite in dataspace AND user has NO existing lieux
+ * - Never synced again after first import
  *
  * For users not in Dataspace, falls back to SIRET-based structure import.
  */
@@ -105,9 +112,7 @@ export const initializeInscription = async ({
     // Use shared core for idempotent sync
     // This handles:
     // - Coordinateur creation (only if is_coordinateur is true)
-    // - Mediateur creation (only if lieux_activite exists AND is_conseiller_numerique is true)
     // - Structures employeuses sync (only if is_conseiller_numerique is true)
-    // - Lieux d'activité sync (only if lieux_activite exists AND is_conseiller_numerique is true)
     const syncResult = await syncFromDataspaceCore({
       userId,
       dataspaceData,
@@ -117,19 +122,67 @@ export const initializeInscription = async ({
     log('Sync from Dataspace core result', {
       success: syncResult.success,
       noOp: syncResult.noOp,
-      mediateurId: syncResult.mediateurId,
       coordinateurId: syncResult.coordinateurId,
       changes: syncResult.changes,
     })
 
-    // Mark lieux as imported if we synced any
-    if (syncResult.changes.lieuxActiviteSynced > 0) {
-      await prismaClient.user.update({
-        where: { id: userId },
-        data: {
-          importedLieuxFromDataspace: new Date(),
+    // --- One-time lieux d'activité import during inscription ---
+    // Only import if: is_conseiller_numerique AND has lieux_activite AND user has NO existing lieux
+    let lieuxActiviteSynced = 0
+    const lieuxActivite = dataspaceData.lieux_activite ?? []
+    const hasLieuxActiviteInDataspace = lieuxActivite.length > 0
+
+    if (dataspaceData.is_conseiller_numerique && hasLieuxActiviteInDataspace) {
+      // Check if user already has lieux d'activité
+      const existingMediateur = await prismaClient.mediateur.findUnique({
+        where: { userId },
+        select: {
+          id: true,
+          _count: {
+            select: {
+              enActivite: {
+                where: { suppression: null, fin: null },
+              },
+            },
+          },
         },
       })
+
+      const hasExistingLieux =
+        existingMediateur && existingMediateur._count.enActivite > 0
+
+      if (!hasExistingLieux) {
+        log('Importing lieux activite from Dataspace (first time only)', {
+          lieuxCount: lieuxActivite.length,
+        })
+
+        // Create or get mediateur
+        const { mediateurId } = await upsertMediateur({ userId })
+
+        // Import lieux d'activité
+        const { structureIds } = await importLieuxActiviteFromDataspace({
+          mediateurId,
+          lieuxActivite,
+        })
+
+        lieuxActiviteSynced = structureIds.length
+
+        // Mark as imported
+        await prismaClient.user.update({
+          where: { id: userId },
+          data: {
+            importedLieuxFromDataspace: new Date(),
+          },
+        })
+
+        log('Lieux activite imported', {
+          count: lieuxActiviteSynced,
+        })
+      } else {
+        log('User already has lieux activite, skipping import', {
+          existingCount: existingMediateur._count.enActivite,
+        })
+      }
     }
 
     // For non-CN users (or CN users), check SIRET fallback for structure employeuse

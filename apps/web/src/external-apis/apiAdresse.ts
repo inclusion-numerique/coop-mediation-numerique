@@ -74,9 +74,6 @@ export const searchAdresses = async (
   const response = await fetch(url.toString())
   const body = (await response.json()) as FeatureCollection
 
-  console.log('SERACH ADDRESSES', adresse)
-  console.log('body', body)
-
   return body.features || []
 }
 

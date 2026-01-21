@@ -24,12 +24,13 @@ export type UpdateUserFromDataspaceResult = {
  * - Was not Conum, becomes Conum → Set isConseillerNumerique = true, sync structures
  * - Was not Conum, still not → Don't touch emplois (Local = source of truth)
  * - Becomes Coordo conum → ADD Coordo role (never delete)
- * - Has lieux_activite → Create Mediateur if needed (never delete)
  * - Not found in API (null) → No-op
  *
  * Source of Truth Rules:
  * - is_conseiller_numerique: true → Dataspace is source of truth for emplois/structures
  * - is_conseiller_numerique: false → Local is source of truth, only update the flag
+ *
+ * Note: Lieux d'activité are NOT synced here. They are only imported once during inscription.
  */
 export const updateUserFromDataspaceData = async ({
   userId,
@@ -41,10 +42,8 @@ export const updateUserFromDataspaceData = async ({
     conseillerNumeriqueRemoved: false,
     coordinateurCreated: false,
     coordinateurUpdated: false,
-    mediateurCreated: false,
     structuresSynced: 0,
     structuresRemoved: 0,
-    lieuxActiviteSynced: 0,
   }
 
   // 1. Fetch user with current state

@@ -16,7 +16,7 @@ import { v4 } from 'uuid'
  * - is_conseiller_numerique: true → Dataspace is source of truth for emplois/structures
  * - is_conseiller_numerique: false → Local is source of truth, only update flag
  * - is_coordinateur: true → Create Coordinateur (never delete)
- * - lieux_activite exists AND is_conseiller_numerique: true → Create Mediateur (never delete)
+ * - Lieux d'activité: NOT synced here (only imported once during inscription)
  */
 
 // ============================================================================
@@ -24,13 +24,10 @@ import { v4 } from 'uuid'
 // ============================================================================
 
 export type SyncFromDataspaceCoreResult = {
-  mediateurId: string | null
   coordinateurId: string | null
   structuresSynced: number
   structuresRemoved: number
-  mediateurCreated: boolean
   coordinateurCreated: boolean
-  lieuxActiviteSynced: number
 }
 
 export type SyncChanges = {
@@ -38,10 +35,8 @@ export type SyncChanges = {
   conseillerNumeriqueRemoved: boolean
   coordinateurCreated: boolean
   coordinateurUpdated: boolean
-  mediateurCreated: boolean
   structuresSynced: number
   structuresRemoved: number
-  lieuxActiviteSynced: number
 }
 
 type PreparedStructure = {
@@ -145,6 +140,7 @@ export const prepareStructuresFromDataspace = async (
 
     // Find or create structure (outside transaction - structures are stable)
     const structure = await findOrCreateStructure({
+      coopId: structureEmployeuse.ids?.coop,
       siret: structureEmployeuse.siret,
       nom: structureEmployeuse.nom,
       adresse,
@@ -340,7 +336,7 @@ export const upsertCoordinateur = async ({
 
 /**
  * Create Mediateur if not exists (never delete)
- * Only creates if lieux_activite has items from Dataspace
+ * Only creates if explicitly called (typically during first-time lieux import)
  */
 export const upsertMediateur = async ({
   userId,
@@ -368,10 +364,11 @@ export const upsertMediateur = async ({
 }
 
 /**
- * Import lieux d'activité from Dataspace data for a mediateur
+ * Import lieux d'activité from Dataspace data for a mediateur (one-time import)
  * Creates MediateurEnActivite links for each lieu
+ * This is NOT part of regular sync - only called during inscription
  */
-export const syncLieuxActiviteFromDataspace = async ({
+export const importLieuxActiviteFromDataspace = async ({
   mediateurId,
   lieuxActivite,
 }: {
@@ -464,9 +461,9 @@ export const syncLieuxActiviteFromDataspace = async ({
  *
  * This function handles:
  * 1. Coordinateur creation (only if is_coordinateur is true, never delete)
- * 2. Mediateur creation (only if lieux_activite exists AND is_conseiller_numerique is true, never delete)
- * 3. Structures employeuses sync (only if is_conseiller_numerique is true)
- * 4. Lieux d'activité sync (if mediateur, lieux_activite exist AND is_conseiller_numerique is true)
+ * 2. Structures employeuses sync (only if is_conseiller_numerique is true)
+ *
+ * Note: Lieux d'activité are NOT synced here. They are only imported once during inscription.
  *
  * @param userId - The user ID to sync
  * @param dataspaceData - The Dataspace API response (null = no-op)
@@ -484,7 +481,6 @@ export const syncFromDataspaceCore = async ({
   success: boolean
   noOp: boolean
   changes: SyncChanges
-  mediateurId: string | null
   coordinateurId: string | null
 }> => {
   const changes: SyncChanges = {
@@ -492,10 +488,8 @@ export const syncFromDataspaceCore = async ({
     conseillerNumeriqueRemoved: false,
     coordinateurCreated: false,
     coordinateurUpdated: false,
-    mediateurCreated: false,
     structuresSynced: 0,
     structuresRemoved: 0,
-    lieuxActiviteSynced: 0,
   }
 
   // Null response = NO-OP
@@ -504,17 +498,13 @@ export const syncFromDataspaceCore = async ({
       success: true,
       noOp: true,
       changes,
-      mediateurId: null,
       coordinateurId: null,
     }
   }
 
   const isConseillerNumeriqueInApi = dataspaceData.is_conseiller_numerique
   const isCoordinateurInApi = dataspaceData.is_coordinateur
-  const lieuxActivite = dataspaceData.lieux_activite ?? []
-  const hasLieuxActivite = lieuxActivite.length > 0
 
-  let mediateurId: string | null = null
   let coordinateurId: string | null = null
 
   // --- Update User base fields ---
@@ -539,24 +529,6 @@ export const syncFromDataspaceCore = async ({
     if (coordinateurCreated) {
       changes.coordinateurCreated = true
     }
-  }
-
-  // --- Mediateur: Only create if lieux_activite exists AND is_conseiller_numerique (never delete) ---
-  if (hasLieuxActivite && isConseillerNumeriqueInApi) {
-    const { mediateurId: upsertedMediateurId, created: mediateurCreated } =
-      await upsertMediateur({ userId })
-    mediateurId = upsertedMediateurId
-    if (mediateurCreated) {
-      changes.mediateurCreated = true
-    }
-
-    // Sync lieux d'activité if mediateur exists
-    const { structureIds: lieuxActiviteStructureIds } =
-      await syncLieuxActiviteFromDataspace({
-        mediateurId: upsertedMediateurId,
-        lieuxActivite,
-      })
-    changes.lieuxActiviteSynced = lieuxActiviteStructureIds.length
   }
 
   // --- Conseiller Numérique Transitions (structures employeuses) ---
@@ -592,7 +564,6 @@ export const syncFromDataspaceCore = async ({
     success: true,
     noOp: false,
     changes,
-    mediateurId,
     coordinateurId,
   }
 }
