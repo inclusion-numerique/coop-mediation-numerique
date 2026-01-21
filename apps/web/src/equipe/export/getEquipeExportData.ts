@@ -10,7 +10,6 @@ export type EquipeExportMembre = {
   prenom: string | null
   nom: string | null
   role: 'Conseiller numérique' | 'Médiateur numérique'
-  idConum: string | null
   typeContrat: string | null
   dateDebutContrat: Date | null
   dateFinContrat: Date | null
@@ -55,7 +54,7 @@ const computeStatut = ({
 
 const toExportMembre = (
   membre: MediateurFound,
-  getContractInfo: (id: string | null) =>
+  getContractInfo: (email: string | null) =>
     | {
         typeDeContrat: string | null
         dateDebutDeContrat: Date | null
@@ -64,7 +63,7 @@ const toExportMembre = (
     | null
     | undefined,
 ): EquipeExportMembre => {
-  const contractInfo = getContractInfo(membre.conseiller_numerique_id)
+  const contractInfo = getContractInfo(membre.email)
 
   const hasStructure =
     membre.structure_employeuse ||
@@ -76,10 +75,9 @@ const toExportMembre = (
   return {
     prenom: membre.first_name,
     nom: membre.last_name,
-    role: membre.conseiller_numerique_id
+    role: membre.is_conseiller_numerique
       ? 'Conseiller numérique'
       : 'Médiateur numérique',
-    idConum: membre.conseiller_numerique_id,
     typeContrat: contractInfo?.typeDeContrat ?? null,
     dateDebutContrat: contractInfo?.dateDebutDeContrat ?? null,
     dateFinContrat: contractInfo?.dateFinDeContrat ?? null,
@@ -119,10 +117,8 @@ export const getEquipeExportData = async ({
   const conseillersContractInfo =
     await findConseillersNumeriquesContractInfoByEmails(emails)
 
-  const getContractInfo = (conseillerNumeriqueId: string | null) =>
-    conseillersContractInfo.find(
-      (c) => c.conseillerNumeriqueId === conseillerNumeriqueId,
-    )?.contractInfo
+  const getContractInfo = (email: string | null) =>
+    conseillersContractInfo.find((c) => c.email === email)?.contractInfo
 
   return mediateurs.map((membre) => toExportMembre(membre, getContractInfo))
 }

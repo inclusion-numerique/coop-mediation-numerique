@@ -143,7 +143,7 @@ export const getEquipePageData = async ({
           status: status.label,
           memberStatus: status.memberStatus,
           lastActivityDate: date_derniere_activite,
-          finDeContrat: finDeContratFor(conseiller_numerique_id)(
+          finDeContrat: finDeContratFor(email)(
             conseillersNumeriquesWithContrats,
           ),
           type,
