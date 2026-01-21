@@ -54,7 +54,7 @@ type PreparedStructure = {
  */
 export const buildAdresseFromDataspace = (adresse: {
   numero_voie: number | null
-  nom_voie: string
+  nom_voie: string | null
   repetition: string | null
 }): string => {
   const parts: string[] = []
@@ -63,11 +63,13 @@ export const buildAdresseFromDataspace = (adresse: {
     parts.push(adresse.numero_voie.toString())
   }
 
-  if (adresse.repetition) {
+  if (adresse.repetition && adresse.repetition !== 'null') {
     parts.push(adresse.repetition)
   }
 
-  parts.push(adresse.nom_voie)
+  if (adresse.nom_voie && adresse.nom_voie !== 'null') {
+    parts.push(adresse.nom_voie)
+  }
 
   return parts.join(' ').trim()
 }
@@ -397,6 +399,7 @@ export const importLieuxActiviteFromDataspace = async ({
       !lieuActivite.adresse.code_insee ||
       !lieuActivite.adresse.code_postal ||
       !lieuActivite.adresse.nom_commune ||
+      !lieuActivite.adresse.nom_voie ||
       !lieuActivite.adresse.nom_voie.trim()
     ) {
       continue

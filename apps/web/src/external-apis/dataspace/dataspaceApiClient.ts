@@ -9,12 +9,12 @@ import { getMediateurFromDataspaceApiMock } from './dataspaceApiClientMock'
 const dataspaceApiBaseUrl = 'https://api.inclusion-numerique.anct.gouv.fr/rpc'
 
 export type DataspaceMediateurAdresse = {
-  nom_voie: string
+  nom_voie: string | null
   code_insee: string
   repetition: string | null
   code_postal: string
   nom_commune: string
-  numero_voie: number
+  numero_voie: number | null
 }
 
 export type DataspaceContact = {
