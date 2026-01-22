@@ -254,9 +254,9 @@ describe('getMesStatistiquesPageData', () => {
             label: mediateque.nom,
             value: mediateque.id,
             extra: {
-              activites: 4,
-              adresse: '2 rue des livres, 69002 Lyon 2eme',
-              mostUsed: true,
+              activites: 0,
+              adresse: '2 rue des livres, 69002 Lyon 2eme',
+              mostUsed: false,
               nom: 'Exemple de Mediateque',
             },
           },
@@ -533,8 +533,8 @@ describe('getMesStatistiquesPageData', () => {
             label: mediateque.nom,
             value: mediateque.id,
             extra: {
-              activites: 4,
-              adresse: '2 rue des livres, 69002 Lyon 2eme',
+              activites: 2,
+              adresse: '2 rue des livres, 69002 Lyon 2eme',
               mostUsed: true,
               nom: 'Exemple de Mediateque',
             },
