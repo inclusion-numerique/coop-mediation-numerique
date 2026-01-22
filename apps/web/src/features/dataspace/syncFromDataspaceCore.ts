@@ -118,6 +118,11 @@ export const getEmploiEndDate = (contrat: DataspaceContrat): Date | null => {
     return new Date(contrat.date_rupture)
   }
 
+  // If date_fin is null, contract has no end date (CDI without termination)
+  if (!contrat.date_fin) {
+    return null
+  }
+
   // If contract has ended, use end date
   const dateFin = new Date(contrat.date_fin)
   if (dateFin < new Date()) {
