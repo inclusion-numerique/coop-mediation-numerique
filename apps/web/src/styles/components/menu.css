@@ -21,6 +21,8 @@
   position: absolute;
   background-color: var(--background-overlap-grey);
   width: 100%;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .fr-menu-options__item {

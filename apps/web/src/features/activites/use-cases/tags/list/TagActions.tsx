@@ -5,6 +5,8 @@ import classNames from 'classnames'
 import { RefObject, useRef } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
 import { DeleteTagDynamicModal } from '../delete/DeleteTagModal'
+import { MergeDestinationTag } from '../merge/MergeTagComboBox'
+import { MergeTagDynamicModal } from '../merge/MergeTagModal'
 import { SaveTagDynamicModal } from '../save/SaveTagModal'
 import { TagScope } from '../tagScope'
 
@@ -14,7 +16,11 @@ const showActions = (
     nom: string
     description?: string
     scope: TagScope
+    accompagnementsCount: number
     equipeId?: string
+    equipeNumber?: number
+    equipeCoordinateurNom?: string
+    defaultMergeDestinations?: MergeDestinationTag[]
   },
   isCoordinateur: boolean,
 ) =>
@@ -32,9 +38,14 @@ export const TagActions = ({
     nom: string
     description?: string
     scope: TagScope
+    accompagnementsCount: number
     equipeId?: string
+    equipeNumber?: number
+    equipeCoordinateurNom?: string
+    defaultMergeDestinations?: MergeDestinationTag[]
   }
 }) => {
+  const openMergeModal = MergeTagDynamicModal.useOpen()
   const openSaveModal = SaveTagDynamicModal.useOpen()
   const openDeleteModal = DeleteTagDynamicModal.useOpen()
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -75,6 +86,23 @@ export const TagActions = ({
           ref={collapseRef}
         >
           <ul className="fr-menu__list" style={{ width: '10rem' }}>
+            <li>
+              <button
+                type="button"
+                role="menuitem"
+                className="fr-nav__link fr-display-block"
+                onClick={() => {
+                  closeMenu()
+                  openMergeModal(tag)
+                }}
+              >
+                <span
+                  className="fr-icon-git-merge-fill fr-icon--sm fr-mr-1w fr-text-label--blue-france"
+                  aria-hidden
+                />
+                Fusionner
+              </button>
+            </li>
             <li>
               <button
                 type="button"

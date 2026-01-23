@@ -13,6 +13,7 @@ import {
   getEquipeInfo,
   getEquipesFromSessionUser,
 } from '../equipe'
+import { getDefaultMergeDestinationTags } from '../merge/db/searchMergeDestinationTags'
 import { getTagScope, TagScope } from '../tagScope'
 
 export type TagSearchParams = {
@@ -105,23 +106,39 @@ export const getTagsPageDataFor =
       where: availableFor(user),
     })
 
-    return {
-      tags: tags.map((tag) => {
+    const tagsWithMergeDestinations = await Promise.all(
+      tags.map(async (tag) => {
         const { id, nom, description, coordinateurId, equipe, activites } = tag
         const accompagnementsCount = activites.reduce(
           (acc, { activite }) => acc + activite.accompagnementsCount,
           0,
         )
+        const scope = getTagScope(tag)
+
+        const canMerge =
+          scope === TagScope.Personnel ||
+          scope === TagScope.Equipe ||
+          (scope === TagScope.Departemental && user.coordinateur != null)
+
+        const defaultMergeDestinations = canMerge
+          ? (await getDefaultMergeDestinationTags(user, id)).items
+          : []
+
         return {
           id,
           nom,
-          scope: getTagScope(tag),
+          scope,
           description: description ?? undefined,
           accompagnementsCount,
           equipeId: coordinateurId ?? undefined,
+          defaultMergeDestinations,
           ...getEquipeInfo(equipes, coordinateurId, equipe ?? false),
         }
       }),
+    )
+
+    return {
+      tags: tagsWithMergeDestinations,
       matchesCount: totalFilteredTags,
       totalPages: take ? Math.ceil(totalFilteredTags / take) : 1,
     }

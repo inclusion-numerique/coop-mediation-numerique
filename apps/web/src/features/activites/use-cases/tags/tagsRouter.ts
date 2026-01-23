@@ -4,6 +4,10 @@ import { z } from 'zod'
 import { isTagOwner } from './db/isTagOwner'
 import { deleteTag } from './delete/db/deleteTag'
 import { DeleteTagValidation } from './delete/deleteTagValidation'
+import { canMergeTag } from './merge/db/canMergeTag'
+import { mergeTag } from './merge/db/mergeTag'
+import { searchMergeDestinationTags } from './merge/db/searchMergeDestinationTags'
+import { MergeTagValidation } from './merge/mergeTagValidation'
 import { createTagDepartemental } from './save/db/createTagDepartemental'
 import {
   canCreateTagForEquipe,
@@ -29,6 +33,41 @@ export const tagsRouter = router({
         excludeIds,
       }),
     ),
+  searchMergeDestinations: protectedProcedure
+    .input(
+      z.object({
+        sourceTagId: z.string().uuid(),
+        query: z.string(),
+      }),
+    )
+    .query(({ input: { sourceTagId, query }, ctx: { user: sessionUser } }) =>
+      searchMergeDestinationTags(sessionUser, { sourceTagId, query }),
+    ),
+  merge: protectedProcedure
+    .input(MergeTagValidation)
+    .mutation(async ({ input, ctx: { user: sessionUser } }) => {
+      const { sourceTagId, destinationTagId } = input
+
+      const isOwner = await isTagOwner(sessionUser)(sourceTagId)
+
+      if (!isOwner) {
+        throw new Error("Vous n'avez pas les droits pour fusionner ce tag")
+      }
+
+      const canMerge = await canMergeTag(
+        sessionUser,
+        sourceTagId,
+        destinationTagId,
+      )
+
+      if (!canMerge) {
+        throw new Error(
+          "Vous n'avez pas les droits pour fusionner vers ce tag de destination",
+        )
+      }
+
+      return await mergeTag(sourceTagId, destinationTagId)
+    }),
   save: protectedProcedure
     .input(SaveTagValidation)
     .mutation(async ({ input, ctx: { user: sessionUser } }) => {
