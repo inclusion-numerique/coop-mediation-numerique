@@ -67,7 +67,7 @@ export const StatistiquesActivitesPrint = ({
             {value === 'Collectif' &&
               `, ${
                 totalCounts.accompagnements.collectifs.total
-              } participation${sPluriel(
+              } sur participation${sPluriel(
                 totalCounts.accompagnements.collectifs.total,
               )} au total`}{' '}
             ({numberToPercentage(proportion)} des activités)
