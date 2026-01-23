@@ -88,7 +88,7 @@ export const NoRdvs: Story = {
 export const FutureRdvs: Story = {
   args: {
     rdvs: {
-            last: null,
+      last: null,
 
       syncDataOnLoad: false,
       next: createRdv(tomorrow),
