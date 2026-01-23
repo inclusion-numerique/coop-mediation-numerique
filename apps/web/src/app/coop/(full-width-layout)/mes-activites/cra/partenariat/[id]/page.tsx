@@ -2,7 +2,7 @@ import { authenticateCoordinateur } from '@app/web/auth/authenticateUser'
 import { getCraCoordinationPageData } from '@app/web/features/activites/use-cases/cra/getCraCoordinationPageData'
 import CraPartenariatPage from '@app/web/features/activites/use-cases/cra/partenariat/CraPartenariatPage'
 import { getCraPartenariatDataDefaultValuesFromExisting } from '@app/web/features/activites/use-cases/cra/partenariat/db/getCraPartenariatDataDefaultValuesFromExisting'
-import { getEquipesFromSessionUser } from '@app/web/features/activites/use-cases/tags/save/getEquipesFromSessionUser'
+import { getEquipesFromSessionUser } from '@app/web/features/activites/use-cases/tags/equipe'
 import { notFound } from 'next/navigation'
 
 const UpdateCraPartenariatPage = async ({

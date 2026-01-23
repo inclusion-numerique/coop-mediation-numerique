@@ -3,7 +3,7 @@ import type { CraCollectifData } from '@app/web/features/activites/use-cases/cra
 import { getCraPageData } from '@app/web/features/activites/use-cases/cra/getCraPageData'
 import CraIndividuelPage from '@app/web/features/activites/use-cases/cra/individuel/CraIndividuelPage'
 import { getCraIndividuelDataDefaultValuesFromExisting } from '@app/web/features/activites/use-cases/cra/individuel/db/getCraIndividuelDataDefaultValuesFromExisting'
-import { getEquipesFromSessionUser } from '@app/web/features/activites/use-cases/tags/save/getEquipesFromSessionUser'
+import { getEquipesFromSessionUser } from '@app/web/features/activites/use-cases/tags/equipe'
 import { notFound } from 'next/navigation'
 
 const UpdateCraIndividuelPage = async ({

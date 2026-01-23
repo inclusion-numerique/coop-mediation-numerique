@@ -1,9 +1,8 @@
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import DeleteTagModal from '@app/web/features/activites/use-cases/tags/delete/DeleteTagModal'
-import SaveTagModal, {
-  Equipe,
-} from '@app/web/features/activites/use-cases/tags/save/SaveTagModal'
+import { Equipe } from '@app/web/features/activites/use-cases/tags/equipe'
+import SaveTagModal from '@app/web/features/activites/use-cases/tags/save/SaveTagModal'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
 import SortSelect from '@app/web/libs/data-table/SortSelect'

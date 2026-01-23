@@ -2,7 +2,7 @@ import { authenticateCoordinateur } from '@app/web/auth/authenticateUser'
 import { getCraCoordinationPageData } from '@app/web/features/activites/use-cases/cra/getCraCoordinationPageData'
 import CraPartenariatPage from '@app/web/features/activites/use-cases/cra/partenariat/CraPartenariatPage'
 import { CraPartenariatData } from '@app/web/features/activites/use-cases/cra/partenariat/validation/CraPartenariatValidation'
-import { getEquipesFromSessionUser } from '@app/web/features/activites/use-cases/tags/save/getEquipesFromSessionUser'
+import { getEquipesFromSessionUser } from '@app/web/features/activites/use-cases/tags/equipe'
 import {
   decodeSerializableState,
   type EncodedState,

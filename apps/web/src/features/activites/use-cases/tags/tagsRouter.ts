@@ -1,35 +1,19 @@
-import { SessionUser } from '@app/web/auth/sessionUser'
-import { isCoordinateur, isMediateur } from '@app/web/auth/userTypeGuards'
+import { isCoordinateur } from '@app/web/auth/userTypeGuards'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { z } from 'zod'
 import { isTagOwner } from './db/isTagOwner'
 import { deleteTag } from './delete/db/deleteTag'
 import { DeleteTagValidation } from './delete/deleteTagValidation'
 import { createTagDepartemental } from './save/db/createTagDepartemental'
-import { createTagEquipe } from './save/db/createTagEquipe'
+import {
+  canCreateTagForEquipe,
+  createTagEquipe,
+} from './save/db/createTagEquipe'
 import { createTagPersonnel } from './save/db/createTagPersonnel'
 import { updateTag } from './save/db/updateTag'
 import { SaveTagValidation } from './save/saveTagValidation'
 import { searchTags } from './search/searchTags'
 import { TagScope } from './tagScope'
-
-const canCreateTagForEquipe = (
-  sessionUser: SessionUser,
-  equipeId: string,
-): boolean => {
-  if (isCoordinateur(sessionUser) && sessionUser.coordinateur.id === equipeId) {
-    return true
-  }
-
-  if (isMediateur(sessionUser)) {
-    const belongsToEquipe = sessionUser.mediateur.coordinations.some(
-      (coordination) => coordination.coordinateur.id === equipeId,
-    )
-    return belongsToEquipe
-  }
-
-  return false
-}
 
 export const tagsRouter = router({
   search: protectedProcedure

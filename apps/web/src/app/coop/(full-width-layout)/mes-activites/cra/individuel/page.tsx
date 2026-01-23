@@ -3,7 +3,7 @@ import { getCraPageData } from '@app/web/features/activites/use-cases/cra/getCra
 import CraIndividuelPage from '@app/web/features/activites/use-cases/cra/individuel/CraIndividuelPage'
 import { craIndividuelDefaultValues } from '@app/web/features/activites/use-cases/cra/individuel/craIndividuelDefaultValues'
 import { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
-import { getEquipesFromSessionUser } from '@app/web/features/activites/use-cases/tags/save/getEquipesFromSessionUser'
+import { getEquipesFromSessionUser } from '@app/web/features/activites/use-cases/tags/equipe'
 import {
   decodeSerializableState,
   type EncodedState,

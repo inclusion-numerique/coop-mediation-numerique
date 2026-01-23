@@ -23,6 +23,8 @@ export const TagList = ({
     usageCount?: number
     accompagnementsCount: number
     equipeId?: string
+    equipeNumber?: number
+    equipeCoordinateurNom?: string
   }[]
   actions?: (tag: {
     id: string
@@ -74,7 +76,7 @@ export const TagList = ({
               {numberToString(tag.usageCount)}
             </span>
           )}
-          <TagScopeBadge scope={tag.scope} />
+          <TagScopeBadge {...tag} />
           {actions?.(tag)}
         </div>
       </li>

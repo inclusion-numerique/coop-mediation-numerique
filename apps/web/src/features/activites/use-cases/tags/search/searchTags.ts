@@ -8,6 +8,11 @@ import {
 } from '@app/web/libs/data-table/toNumberOr'
 import { prismaClient } from '@app/web/prismaClient'
 import { Prisma } from '@prisma/client'
+import {
+  getEquipeCoordinateurIds,
+  getEquipeInfo,
+  getEquipesFromSessionUser,
+} from '../equipe'
 import { getTagScope } from '../tagScope'
 
 type SearchLieuActiviteOptions = {
@@ -32,6 +37,8 @@ export const searchTags = async ({
   const user = await getSessionUser()
 
   const departement = user ? getUserDepartement(user) : null
+  const equipes = user ? getEquipesFromSessionUser(user) : []
+  const equipeCoordinateurIds = getEquipeCoordinateurIds(equipes)
 
   const tags = await prismaClient.$queryRaw<
     {
@@ -73,6 +80,11 @@ export const searchTags = async ({
         AND (
         (t.mediateur_id = ${user?.mediateur?.id ?? null}::UUID OR t.coordinateur_id = ${user?.coordinateur?.id ?? null}::UUID)
         ${departement == null ? Prisma.empty : Prisma.sql`OR t.departement = ${departement.code}::text`}
+        ${
+          equipeCoordinateurIds.length === 0
+            ? Prisma.empty
+            : Prisma.sql`OR (t.equipe = true AND t.coordinateur_id IN (${Prisma.join(equipeCoordinateurIds.map((id) => Prisma.sql`${id}::UUID`))}))`
+        }
          OR (t.mediateur_id IS NULL AND t.coordinateur_id IS NULL AND t.departement IS NULL)
         )
       GROUP BY t.id
@@ -101,6 +113,7 @@ export const searchTags = async ({
           departement,
           equipe,
         }),
+        ...getEquipeInfo(equipes, coordinateurId, equipe),
       }),
     ),
   }

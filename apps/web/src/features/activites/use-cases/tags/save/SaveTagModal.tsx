@@ -11,6 +11,7 @@ import { trpc } from '@app/web/trpc'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useRouter } from 'next/navigation'
 import React, { ReactNode, useState } from 'react'
+import { Equipe } from '../equipe'
 import { TagScope } from '../tagScope'
 import { saveTagModalVariants } from './saveTagModalVariants'
 import {
@@ -23,11 +24,6 @@ type Tag = {
   id: string
   nom: string
   description?: string | null
-}
-
-export type Equipe = {
-  id: string
-  nom: string
 }
 
 type SaveTagDynamicModalInitialState = {
@@ -320,7 +316,7 @@ const SaveTagModal = ({
               )
             : scope &&
               scope !== TagScope.National && (
-                <div className="fr-px-4v fr-my-8v fr-border-radius--8 fr-background-alt--grey fr-border">
+                <div className="fr-px-4v fr-my-8v fr-border-radius--8 fr-border">
                   <span className="fr-flex fr-align-items-center fr-flex-gap-4v">
                     <span className="fr-flex-grow-1">
                       <span className="fr-text--bold">

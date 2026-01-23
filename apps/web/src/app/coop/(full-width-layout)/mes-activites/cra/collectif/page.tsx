@@ -3,7 +3,7 @@ import CraCollectifPage from '@app/web/features/activites/use-cases/cra/collecti
 import { craCollectifDefaultValues } from '@app/web/features/activites/use-cases/cra/collectif/craCollectifDefaultValues'
 import type { CraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
 import { getCraPageData } from '@app/web/features/activites/use-cases/cra/getCraPageData'
-import { getEquipesFromSessionUser } from '@app/web/features/activites/use-cases/tags/save/getEquipesFromSessionUser'
+import { getEquipesFromSessionUser } from '@app/web/features/activites/use-cases/tags/equipe'
 import {
   decodeSerializableState,
   type EncodedState,

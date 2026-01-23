@@ -8,6 +8,11 @@ import {
 } from '@app/web/libs/data-table/toNumberOr'
 import { prismaClient } from '@app/web/prismaClient'
 import { Prisma } from '@prisma/client'
+import {
+  getEquipeCoordinateurIds,
+  getEquipeInfo,
+  getEquipesFromSessionUser,
+} from '../equipe'
 import { getTagScope, TagScope } from '../tagScope'
 
 export type TagSearchParams = {
@@ -18,10 +23,9 @@ export type TagSearchParams = {
 
 const availableFor = (user: SessionUser) => {
   const departement = getUserDepartement(user)
-  const equipeCoordinateurIds =
-    user.mediateur?.coordinations.map(
-      (coordination) => coordination.coordinateur.id,
-    ) ?? []
+  const equipeCoordinateurIds = getEquipeCoordinateurIds(
+    getEquipesFromSessionUser(user),
+  )
 
   if (!departement) {
     return {
@@ -77,6 +81,8 @@ export const getTagsPageDataFor =
   (user: SessionUser) => async (searchParams: TagSearchParams) => {
     const { take, skip, orderBy } = paginationConfigFrom(searchParams)
 
+    const equipes = getEquipesFromSessionUser(user)
+
     const tags = await prismaClient.tag.findMany({
       where: availableFor(user),
       take,
@@ -101,7 +107,7 @@ export const getTagsPageDataFor =
 
     return {
       tags: tags.map((tag) => {
-        const { id, nom, description, coordinateurId, activites } = tag
+        const { id, nom, description, coordinateurId, equipe, activites } = tag
         const accompagnementsCount = activites.reduce(
           (acc, { activite }) => acc + activite.accompagnementsCount,
           0,
@@ -113,6 +119,7 @@ export const getTagsPageDataFor =
           description: description ?? undefined,
           accompagnementsCount,
           equipeId: coordinateurId ?? undefined,
+          ...getEquipeInfo(equipes, coordinateurId, equipe ?? false),
         }
       }),
       matchesCount: totalFilteredTags,
