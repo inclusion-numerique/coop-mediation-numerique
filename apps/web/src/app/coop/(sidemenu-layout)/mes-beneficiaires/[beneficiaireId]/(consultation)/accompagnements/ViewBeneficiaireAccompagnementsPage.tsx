@@ -3,6 +3,7 @@ import BeneficiairePageNavigationBar from '@app/web/app/coop/(sidemenu-layout)/m
 import ActiviteCard from '@app/web/features/activites/use-cases/list/components/ActiviteCard'
 import ActiviteDetailsModal from '@app/web/features/activites/use-cases/list/components/ActiviteDetailsModal/ActiviteDetailsModal'
 import RdvCard from '@app/web/features/activites/use-cases/list/components/RdvCard'
+import RdvStatusUpdateModal from '@app/web/features/activites/use-cases/list/components/RdvStatusUpdateModal/RdvStatusUpdateModal'
 
 const ViewBeneficiaireAccompagnementsPage = ({
   data: { searchResult, beneficiaire, user },
@@ -33,7 +34,12 @@ const ViewBeneficiaireAccompagnementsPage = ({
         />
       ),
     )}
-    {searchResult.items.length > 0 && <ActiviteDetailsModal />}
+    {searchResult.items.length > 0 && (
+      <>
+        <ActiviteDetailsModal />
+        <RdvStatusUpdateModal />
+      </>
+    )}
   </>
 )
 

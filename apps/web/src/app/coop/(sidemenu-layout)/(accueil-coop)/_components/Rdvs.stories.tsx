@@ -11,6 +11,8 @@ type Story = StoryObj<typeof Rdvs>
 const createRdv = (date: Date, status: 'unknown' | 'seen' = 'unknown') => ({
   id: Math.floor(Math.random() * 1000),
   durationInMin: 30,
+  collectif: false,
+  usersCount: 1,
   startsAt: date,
   endsAt: new Date(date.getTime() + 30 * 60 * 1000),
   createdBy: 'test-agent',
@@ -62,11 +64,13 @@ const createRdv = (date: Date, status: 'unknown' | 'seen' = 'unknown') => ({
 })
 
 const now = new Date()
+const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000)
 const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000)
 
 export const NoRdvs: Story = {
   args: {
     rdvs: {
+      last: null,
       syncDataOnLoad: false,
       next: null,
       futur: 0,
@@ -84,6 +88,8 @@ export const NoRdvs: Story = {
 export const FutureRdvs: Story = {
   args: {
     rdvs: {
+            last: null,
+
       syncDataOnLoad: false,
       next: createRdv(tomorrow),
       futur: 2,
@@ -101,6 +107,7 @@ export const FutureRdvs: Story = {
 export const PastAndFutureRdvs: Story = {
   args: {
     rdvs: {
+      last: createRdv(yesterday, 'unknown'),
       syncDataOnLoad: false,
       next: createRdv(tomorrow),
       futur: 1,
@@ -118,6 +125,7 @@ export const PastAndFutureRdvs: Story = {
 export const HonoredAndFutureRdvs: Story = {
   args: {
     rdvs: {
+      last: null,
       syncDataOnLoad: false,
       next: createRdv(tomorrow),
       futur: 1,

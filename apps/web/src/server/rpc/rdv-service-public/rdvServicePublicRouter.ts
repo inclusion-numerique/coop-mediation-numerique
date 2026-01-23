@@ -12,6 +12,7 @@ import {
   oAuthRdvApiCreateRdvPlan,
   oAuthRdvApiGetOrganisations,
   oAuthRdvApiMe,
+  oAuthRdvApiUpdateRdvStatus,
 } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
 import { getUserContextForOAuthApiCall } from '@app/web/rdv-service-public/getUserContextForRdvApiCall'
 import {
@@ -376,6 +377,61 @@ export const rdvServicePublicRouter = router({
         return result.data
       },
     ),
+  updateRdvStatus: protectedProcedure
+    .input(
+      z.object({
+        rdvId: z.number(),
+        status: z.enum(['seen', 'noshow', 'excused', 'revoked']),
+      }),
+    )
+    .mutation(async ({ input, ctx: { user } }) => {
+      // 1. Verify RDV exists and get rdvAccountId
+      const rdv = await prismaClient.rdv.findUnique({
+        where: { id: input.rdvId },
+        select: {
+          id: true,
+          rdvAccountId: true,
+        },
+      })
+
+      if (!rdv) {
+        throw invalidError('RDV introuvable')
+      }
+
+      // 2. Verify user authorization
+      if (rdv.rdvAccountId !== user.rdvAccount?.id) {
+        throw forbiddenError(
+          'RDV non associé à votre compte RDV Service Public',
+        )
+      }
+
+      // 3. Get user context with OAuth tokens
+      const userWithRdvAccount = await getUserContextForOAuthApiCall({ user })
+      const { rdvAccount } = userWithRdvAccount
+
+      if (!rdvAccount) {
+        throw forbiddenError('Compte RDV Service Public non lié')
+      }
+
+      // 4. Call RDV Service Public API
+      const apiResult = await oAuthRdvApiUpdateRdvStatus({
+        rdvAccount,
+        rdvId: input.rdvId,
+        status: input.status,
+      })
+
+      if (apiResult.status === 'error') {
+        throw externalApiError(apiResult.error)
+      }
+
+      // 5. Update local database with data from API response
+      await prismaClient.rdv.update({
+        where: { id: input.rdvId },
+        data: { status: apiResult.data.status },
+      })
+
+      return { success: true }
+    }),
   createActiviteFromRdv: protectedProcedure
     .input(
       z.object({

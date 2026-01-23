@@ -520,3 +520,26 @@ export const oAuthRdvApiListUsers = async ({
     onlyFirstPage,
   })
 }
+
+export type OAuthRdvApiUpdateRdvStatusResponse = {
+  status: 'unknown' | 'seen' | 'excused' | 'revoked' | 'noshow'
+}
+
+export const oAuthRdvApiUpdateRdvStatus = async ({
+  rdvAccount,
+  rdvId,
+  status,
+}: {
+  rdvAccount: OAuthRdvApiCredentials
+  rdvId: number
+  status: 'seen' | 'noshow' | 'excused' | 'revoked'
+}) => {
+  return executeOAuthRdvApiCall<OAuthRdvApiUpdateRdvStatusResponse>({
+    path: `/rdvs/${rdvId}/update_status`,
+    rdvAccount,
+    config: {
+      method: 'PATCH',
+      data: { status },
+    },
+  })
+}

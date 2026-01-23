@@ -1,0 +1,28 @@
+.sectionIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sectionIconHonored {
+  background-color: var(--background-contrast-success);
+  color: var(--text-default-success);
+}
+
+.sectionIconNotHonored {
+  background-color: var(--background-contrast-error);
+  color: var(--text-default-error);
+}
+
+.actionItemIcon::before {
+  --icon-size: 1rem;
+}
+
+.cancelCollectifButton {
+  color: unset;
+  font-weight: 400;
+}
