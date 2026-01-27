@@ -720,4 +720,292 @@ describe('createOrUpdateActivite', () => {
       })
     })
   })
+
+  describe('premierAccompagnement date-based logic', () => {
+    const beneficiaireTestId = v4()
+
+    beforeAll(async () => {
+      // Create a non-anonymous beneficiaire for testing
+      await prismaClient.beneficiaire.create({
+        data: {
+          id: beneficiaireTestId,
+          mediateurId: mediateurAvecActiviteMediateurId,
+          prenom: 'Premier',
+          nom: 'TestBeneficiaire',
+          anonyme: false,
+        },
+      })
+    })
+
+    afterAll(async () => {
+      // Clean up test beneficiaire and their accompagnements
+      await prismaClient.accompagnement.deleteMany({
+        where: { beneficiaireId: beneficiaireTestId },
+      })
+      await prismaClient.beneficiaire.delete({
+        where: { id: beneficiaireTestId },
+      })
+    })
+
+    const getAccompagnementPremier = async (beneficiaireId: string) => {
+      const accompagnement = await prismaClient.accompagnement.findFirst({
+        where: { beneficiaireId, premierAccompagnement: true },
+        include: { activite: { select: { date: true } } },
+      })
+      return accompagnement
+    }
+
+    it('should set premierAccompagnement on first activity for new beneficiaire', async () => {
+      const input: CreateOrUpdateActiviteInput = {
+        type: 'Individuel',
+        data: {
+          mediateurId: mediateurAvecActiviteMediateurId,
+          typeLieu: 'ADistance',
+          thematiques: ['SecuriteNumerique'],
+          tags: [],
+          date: '2024-06-15',
+          materiel: [],
+          duree: { duree: '60' },
+          autonomie: 'EntierementAccompagne',
+          beneficiaire: { id: beneficiaireTestId },
+        },
+      }
+
+      const result = await createOrUpdateActivite({
+        input,
+        sessionUserId: mediateurAvecActivite.id,
+        mediateurUserId: mediateurAvecActivite.id,
+        mediateurId: mediateurAvecActiviteMediateurId,
+      })
+
+      const premier = await getAccompagnementPremier(beneficiaireTestId)
+      expect(premier).not.toBeNull()
+      expect(premier?.activiteId).toBe(result.id)
+
+      // Clean up
+      await prismaClient.activite.update({
+        where: { id: result.id },
+        data: { suppression: new Date() },
+      })
+    })
+
+    it('should set premierAccompagnement on earliest activity by date', async () => {
+      // Create later activity first (July)
+      const laterInput: CreateOrUpdateActiviteInput = {
+        type: 'Individuel',
+        data: {
+          mediateurId: mediateurAvecActiviteMediateurId,
+          typeLieu: 'ADistance',
+          thematiques: ['SecuriteNumerique'],
+          tags: [],
+          date: '2024-07-15',
+          materiel: [],
+          duree: { duree: '60' },
+          autonomie: 'EntierementAccompagne',
+          beneficiaire: { id: beneficiaireTestId },
+        },
+      }
+
+      const laterResult = await createOrUpdateActivite({
+        input: laterInput,
+        sessionUserId: mediateurAvecActivite.id,
+        mediateurUserId: mediateurAvecActivite.id,
+        mediateurId: mediateurAvecActiviteMediateurId,
+      })
+
+      // Verify later activity is premier (only one so far)
+      let premier = await getAccompagnementPremier(beneficiaireTestId)
+      expect(premier?.activiteId).toBe(laterResult.id)
+
+      // Create earlier activity (May)
+      const earlierInput: CreateOrUpdateActiviteInput = {
+        type: 'Individuel',
+        data: {
+          mediateurId: mediateurAvecActiviteMediateurId,
+          typeLieu: 'ADistance',
+          thematiques: ['DiagnosticNumerique'],
+          tags: [],
+          date: '2024-05-01',
+          materiel: [],
+          duree: { duree: '90' },
+          autonomie: 'PartiellementAutonome',
+          beneficiaire: { id: beneficiaireTestId },
+        },
+      }
+
+      const earlierResult = await createOrUpdateActivite({
+        input: earlierInput,
+        sessionUserId: mediateurAvecActivite.id,
+        mediateurUserId: mediateurAvecActivite.id,
+        mediateurId: mediateurAvecActiviteMediateurId,
+      })
+
+      // Verify premier switched to the earlier activity
+      premier = await getAccompagnementPremier(beneficiaireTestId)
+      expect(premier?.activiteId).toBe(earlierResult.id)
+
+      // Clean up
+      await prismaClient.activite.updateMany({
+        where: { id: { in: [laterResult.id, earlierResult.id] } },
+        data: { suppression: new Date() },
+      })
+    })
+
+    it('should update premierAccompagnement when changing activity date', async () => {
+      // Create two activities
+      const firstInput: CreateOrUpdateActiviteInput = {
+        type: 'Individuel',
+        data: {
+          mediateurId: mediateurAvecActiviteMediateurId,
+          typeLieu: 'ADistance',
+          thematiques: ['SecuriteNumerique'],
+          tags: [],
+          date: '2024-03-01', // Earlier
+          materiel: [],
+          duree: { duree: '60' },
+          autonomie: 'EntierementAccompagne',
+          beneficiaire: { id: beneficiaireTestId },
+        },
+      }
+
+      const firstResult = await createOrUpdateActivite({
+        input: firstInput,
+        sessionUserId: mediateurAvecActivite.id,
+        mediateurUserId: mediateurAvecActivite.id,
+        mediateurId: mediateurAvecActiviteMediateurId,
+      })
+
+      const secondInput: CreateOrUpdateActiviteInput = {
+        type: 'Individuel',
+        data: {
+          mediateurId: mediateurAvecActiviteMediateurId,
+          typeLieu: 'ADistance',
+          thematiques: ['DiagnosticNumerique'],
+          tags: [],
+          date: '2024-04-01', // Later
+          materiel: [],
+          duree: { duree: '60' },
+          autonomie: 'Autonome',
+          beneficiaire: { id: beneficiaireTestId },
+        },
+      }
+
+      const secondResult = await createOrUpdateActivite({
+        input: secondInput,
+        sessionUserId: mediateurAvecActivite.id,
+        mediateurUserId: mediateurAvecActivite.id,
+        mediateurId: mediateurAvecActiviteMediateurId,
+      })
+
+      // First should be premier
+      let premier = await getAccompagnementPremier(beneficiaireTestId)
+      expect(premier?.activiteId).toBe(firstResult.id)
+
+      // Update first activity to have a later date
+      const updateInput: CreateOrUpdateActiviteInput = {
+        type: 'Individuel',
+        data: {
+          ...firstInput.data,
+          id: firstResult.id,
+          date: '2024-05-01', // Now later than second
+        },
+      }
+
+      await createOrUpdateActivite({
+        input: updateInput,
+        sessionUserId: mediateurAvecActivite.id,
+        mediateurUserId: mediateurAvecActivite.id,
+        mediateurId: mediateurAvecActiviteMediateurId,
+      })
+
+      // Second should now be premier
+      premier = await getAccompagnementPremier(beneficiaireTestId)
+      expect(premier?.activiteId).toBe(secondResult.id)
+
+      // Clean up
+      await prismaClient.activite.updateMany({
+        where: { id: { in: [firstResult.id, secondResult.id] } },
+        data: { suppression: new Date() },
+      })
+    })
+
+    it('should handle premierAccompagnement when beneficiaire switches between activities', async () => {
+      const otherBeneficiaireId = v4()
+
+      // Create another beneficiaire
+      await prismaClient.beneficiaire.create({
+        data: {
+          id: otherBeneficiaireId,
+          mediateurId: mediateurAvecActiviteMediateurId,
+          prenom: 'Other',
+          nom: 'Beneficiaire',
+          anonyme: false,
+        },
+      })
+
+      // Create activity with beneficiaireTestId
+      const input: CreateOrUpdateActiviteInput = {
+        type: 'Individuel',
+        data: {
+          mediateurId: mediateurAvecActiviteMediateurId,
+          typeLieu: 'ADistance',
+          thematiques: ['SecuriteNumerique'],
+          tags: [],
+          date: '2024-02-01',
+          materiel: [],
+          duree: { duree: '60' },
+          autonomie: 'EntierementAccompagne',
+          beneficiaire: { id: beneficiaireTestId },
+        },
+      }
+
+      const result = await createOrUpdateActivite({
+        input,
+        sessionUserId: mediateurAvecActivite.id,
+        mediateurUserId: mediateurAvecActivite.id,
+        mediateurId: mediateurAvecActiviteMediateurId,
+      })
+
+      // beneficiaireTestId should have premier
+      let premier = await getAccompagnementPremier(beneficiaireTestId)
+      expect(premier?.activiteId).toBe(result.id)
+
+      // Update to switch to otherBeneficiaireId
+      const updateInput: CreateOrUpdateActiviteInput = {
+        type: 'Individuel',
+        data: {
+          ...input.data,
+          id: result.id,
+          beneficiaire: { id: otherBeneficiaireId },
+        },
+      }
+
+      await createOrUpdateActivite({
+        input: updateInput,
+        sessionUserId: mediateurAvecActivite.id,
+        mediateurUserId: mediateurAvecActivite.id,
+        mediateurId: mediateurAvecActiviteMediateurId,
+      })
+
+      // beneficiaireTestId should no longer have premier for this activity
+      premier = await getAccompagnementPremier(beneficiaireTestId)
+      expect(premier?.activiteId).not.toBe(result.id)
+
+      // otherBeneficiaireId should have premier
+      const otherPremier = await getAccompagnementPremier(otherBeneficiaireId)
+      expect(otherPremier?.activiteId).toBe(result.id)
+
+      // Clean up
+      await prismaClient.activite.update({
+        where: { id: result.id },
+        data: { suppression: new Date() },
+      })
+      await prismaClient.accompagnement.deleteMany({
+        where: { beneficiaireId: otherBeneficiaireId },
+      })
+      await prismaClient.beneficiaire.delete({
+        where: { id: otherBeneficiaireId },
+      })
+    })
+  })
 })

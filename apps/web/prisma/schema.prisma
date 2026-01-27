@@ -1085,6 +1085,7 @@ model Beneficiaire {
   @@index([anonyme])
   @@index([mediateurId])
   @@index([rdvUserId])
+  @@index([fusionVersId])
   @@map("beneficiaires")
 }
 

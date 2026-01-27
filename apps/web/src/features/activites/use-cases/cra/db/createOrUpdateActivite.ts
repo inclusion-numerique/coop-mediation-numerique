@@ -12,20 +12,22 @@ import { createStopwatch } from '@app/web/utils/stopwatch'
 import { yesNoToOptionalBoolean } from '@app/web/utils/yesNoBooleanOptions'
 import { Prisma, Structure, TypeActivite } from '@prisma/client'
 import { v4 } from 'uuid'
+import { assignPremierAccompagnement } from './assignPremierAccompagnement'
 import { craDureeDataToMinutes } from './minutesToCraDuree'
 
 // Timeout for interactive transactions (15 seconds)
 // This is increased from default 5s to handle large ateliers with many beneficiaires
 const TRANSACTION_TIMEOUT_MS = 20_000
 
+/**
+ * Validate and fetch existing beneficiaires suivis (non-anonymous).
+ */
 const getExistingBeneficiairesSuivis = async ({
   beneficiaires,
   mediateurId,
-  activiteId,
 }: {
   beneficiaires: { id?: string | null }[]
   mediateurId: string
-  activiteId?: string | null
 }) => {
   if (beneficiaires.length === 0) return []
 
@@ -43,9 +45,6 @@ const getExistingBeneficiairesSuivis = async ({
       id: true,
       mediateurId: true,
       anonyme: true,
-      accompagnements: {
-        select: { id: true, activiteId: true },
-      },
     },
   })
 
@@ -59,21 +58,9 @@ const getExistingBeneficiairesSuivis = async ({
     }
   }
 
-  const beneficiairesWithPremierAccompagnement = existingBeneficiaires.map(
-    ({ accompagnements, ...rest }) => ({
-      ...rest,
-      premierAccompagnement:
-        accompagnements.length === 0 ||
-        (accompagnements.length === 1 &&
-          accompagnements[0].activiteId === activiteId),
-    }),
-  )
-
   // Beneficiaire anonyme returned from cra individuel / demarche should not be included
   // as we delete/recreate them from anonymous data given in the form
-  return beneficiairesWithPremierAccompagnement.filter(
-    ({ anonyme }) => !anonyme,
-  )
+  return existingBeneficiaires.filter(({ anonyme }) => !anonyme)
 }
 
 export const getBeneficiairesAnonymesWithOnlyAccompagnementsForThisActivite =
@@ -249,7 +236,6 @@ export const createOrUpdateActivite = async ({
         : input.data.beneficiaire
           ? [input.data.beneficiaire]
           : [],
-    activiteId: id,
   })
 
   const beneficiairesAnonymesCollectif =
@@ -357,18 +343,20 @@ export const createOrUpdateActivite = async ({
           : undefined, // no data if creation
   } satisfies Prisma.ActiviteUpdateInput
 
+  // premierAccompagnement is set to false here and will be correctly assigned
+  // by assignPremierAccompagnement at the end of the transaction based on activity dates
   const accompagnementsCreationData = [
     ...existingBeneficiairesSuivis.map((beneficiaire) => ({
       id: v4(),
       beneficiaireId: beneficiaire.id,
       activiteId: existingActivite ? existingActivite.id : creationId,
-      premierAccompagnement: beneficiaire.premierAccompagnement,
+      premierAccompagnement: false,
     })),
     ...beneficiairesAnonymesCollectif.map((beneficiaire) => ({
       id: v4(),
       beneficiaireId: beneficiaire.id,
       activiteId: existingActivite ? existingActivite.id : creationId,
-      premierAccompagnement: !beneficiaire.dejaAccompagne,
+      premierAccompagnement: false,
     })),
     ...(beneficiaireAnonymeToCreate
       ? [
@@ -376,7 +364,7 @@ export const createOrUpdateActivite = async ({
             id: v4(),
             beneficiaireId: beneficiaireAnonymeToCreate.id,
             activiteId: existingActivite ? existingActivite.id : creationId,
-            premierAccompagnement: !beneficiaireAnonymeToCreate.dejaAccompagne,
+            premierAccompagnement: false,
           },
         ]
       : []),
@@ -509,6 +497,22 @@ export const createOrUpdateActivite = async ({
         }
 
         await Promise.all(updateOperations)
+
+        // Step 5: Assign premierAccompagnement based on activity dates
+        // Collect all affected beneficiaire IDs (previous + new, deduplicated)
+        const affectedBeneficiaireIds = [
+          ...new Set([
+            ...existingActivite.accompagnements.map((a) => a.beneficiaireId),
+            ...accompagnementsCreationData.map((a) => a.beneficiaireId),
+          ]),
+        ]
+
+        if (affectedBeneficiaireIds.length > 0) {
+          await assignPremierAccompagnement({
+            beneficiaireIds: affectedBeneficiaireIds,
+            transactionClient: transaction,
+          })
+        }
       },
       { timeout: TRANSACTION_TIMEOUT_MS },
     )
@@ -606,6 +610,16 @@ export const createOrUpdateActivite = async ({
       }
 
       await Promise.all(updateOperations)
+
+      // Step 5: Assign premierAccompagnement based on activity dates
+      if (accompagnementsCreationData.length > 0) {
+        await assignPremierAccompagnement({
+          beneficiaireIds: accompagnementsCreationData.map(
+            (a) => a.beneficiaireId,
+          ),
+          transactionClient: transaction,
+        })
+      }
     },
     { timeout: TRANSACTION_TIMEOUT_MS },
   )
