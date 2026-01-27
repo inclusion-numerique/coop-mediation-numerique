@@ -5,8 +5,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "cli": "dotenv -e ../../.env -- tsx src/index.ts",
-    "cli:target-deployment": "dotenv -e ../../.env -- bash -c 'export DATABASE_URL=$CLI_TARGET_DEPLOYMENT_DATABASE_URL && tsx src/index.ts \"$@\"' --",
+    "cli": "dotenv -e ../../.env -- tsx --import ./instrument.mts src/index.ts",
+    "cli:target-deployment": "dotenv -e ../../.env -- bash -c 'export DATABASE_URL=$CLI_TARGET_DEPLOYMENT_DATABASE_URL && tsx --import ./instrument.mts src/index.ts \"$@\"' --",
     "lint": "biome check src",
     "tsc": "tsc --noEmit",
     "test": "jest --passWithNoTests",
@@ -20,6 +20,7 @@
     "@langchain/textsplitters": "^0.1.0",
     "@octokit/core": "^6.1.5",
     "@octokit/plugin-rest-endpoint-methods": "^14.0.0",
+    "@sentry/node": "^10.33.0",
     "axios": "^1.9.0",
     "axios-retry": "^4.5.0",
     "commander": "^13.1.0",
