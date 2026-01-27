@@ -39,6 +39,7 @@ const TagScopeBadge = ({
 
   return (
     <Badge
+      as="span"
       small={small}
       className={classNames('fr-text--nowrap', TAG_SEVERITY[scope], className)}
       noIcon

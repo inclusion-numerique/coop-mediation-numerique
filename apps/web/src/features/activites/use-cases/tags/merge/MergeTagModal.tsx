@@ -6,6 +6,7 @@ import { useModalVisibility } from '@app/ui/hooks/useModalVisibility'
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import TagScopeBadge from '@app/web/features/activites/use-cases/tags/components/TagScopeBadge'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { trpc } from '@app/web/trpc'
 import Badge from '@codegouvfr/react-dsfr/Badge'
@@ -140,9 +141,7 @@ const MergeTagModal = () => {
     <form.AppForm>
       <MergeTagDynamicModal.Component
         title={
-          step === 'selection'
-            ? `Fusionner le tag "${nom}"`
-            : `Confirmation de la fusion du "${nom}"`
+          step === 'selection' ? 'Fusion de tag' : 'Confirmation de la fusion'
         }
         buttons={
           step === 'selection'
@@ -155,7 +154,7 @@ const MergeTagModal = () => {
                   onClick: handleCancel,
                 },
                 {
-                  children: 'Fusionner',
+                  children: 'Continuer',
                   type: 'button',
                   disabled: !selectedDestinationTag,
                   onClick: handleFusionner,
@@ -181,80 +180,123 @@ const MergeTagModal = () => {
               ]
         }
       >
-        {step === 'selection' && (
-          <Fragment key={`${id}-${formKey}`}>
-            <p>
-              En fusionnant ce tag, les activités qui lui sont liées seront
-              ajoutées au tag de destination que vous allez sélectionner.
-            </p>
-            <form.AppField name="destinationTag">
-              {(field) => (
-                <field.ComboBox
-                  isPending={isPending}
-                  defaultItems={defaultMergeDestinations}
-                  {...MergeTagComboBox(id ?? '')}
-                >
-                  {({
-                    getLabelProps,
-                    getInputProps,
-                    getToggleButtonProps,
-                    ...options
-                  }) => (
-                    <>
-                      <div ref={inputContainerRef}>
-                        <field.Input
-                          addonEnd={
-                            <Button
-                              title="Voir la liste des tags"
-                              className="fr-border-left-0 fr-py-7v fr-pl-4v"
-                              iconId="fr-icon-search-line"
-                              {...getToggleButtonProps({ type: 'button' })}
-                            />
-                          }
-                          addinEnd={
-                            field.state.value != null && (
-                              <Button
-                                title="Désélectionner le tag"
-                                type="button"
-                                size="large"
-                                iconId="fr-icon-close-line"
-                                priority="tertiary no outline"
-                                onClick={() => {
-                                  field.setValue(null)
-                                  options.setInputValue('')
-                                }}
-                              />
-                            )
-                          }
-                          isConnected={false}
-                          isPending={isPending}
-                          nativeLabelProps={getLabelProps()}
-                          classes={{ nativeInputOrTextArea: 'fr-input--tall' }}
-                          nativeInputProps={{
-                            ...getInputProps(),
-                            placeholder: 'Rechercher un tag de destination',
-                          }}
-                          label="Sélectionner le tag de destination&nbsp;:"
-                        />
-                      </div>
-                      <Options
-                        {...options}
-                        {...MergeTagOptions}
-                        anchorRef={inputContainerRef}
-                        className="fr-index-2000"
-                      />
-                    </>
-                  )}
-                </field.ComboBox>
-              )}
-            </form.AppField>
-            {selectedDestinationTag && (
-              <div className="fr-px-4v fr-py-6v fr-border fr-border-radius--8 fr-mt-3v">
-                {renderItem({ item: selectedDestinationTag })}
+        {step === 'selection' &&
+          id &&
+          nom &&
+          scope &&
+          accompagnementsCount != null && (
+            <Fragment key={`${id}-${formKey}`}>
+              <p>
+                En fusionnant ce tag, les activités qui lui sont liées seront
+                ajoutées au tag de destination que vous allez sélectionner.
+              </p>
+              <div className="fr-px-4v fr-py-6v fr-border fr-border-radius--8">
+                <TagItem
+                  id={id}
+                  nom={nom}
+                  description={description ?? undefined}
+                  scope={scope}
+                  accompagnementsCount={accompagnementsCount}
+                  equipeNumber={equipeNumber ?? undefined}
+                  equipeCoordinateurNom={equipeCoordinateurNom ?? undefined}
+                  small
+                />
               </div>
-            )}
-          </Fragment>
-        )}
+              <hr className="fr-separator-8v" />
+              <form.AppField name="destinationTag">
+                {(field) => (
+                  <field.ComboBox
+                    isPending={isPending}
+                    defaultItems={defaultMergeDestinations}
+                    {...MergeTagComboBox(id ?? '')}
+                  >
+                    {({
+                      getLabelProps,
+                      getInputProps,
+                      getToggleButtonProps,
+                      ...options
+                    }) => (
+                      <>
+                        <div ref={inputContainerRef}>
+                          <field.Input
+                            addonEnd={
+                              <Button
+                                title="Voir la liste des tags"
+                                className="fr-border-left-0 fr-py-7v fr-pl-4v"
+                                iconId="fr-icon-search-line"
+                                {...getToggleButtonProps({ type: 'button' })}
+                              />
+                            }
+                            addinEnd={
+                              field.state.value != null && (
+                                <Button
+                                  title="Désélectionner le tag"
+                                  type="button"
+                                  size="large"
+                                  iconId="fr-icon-close-line"
+                                  priority="tertiary no outline"
+                                  onClick={() => {
+                                    field.setValue(null)
+                                    options.setInputValue('')
+                                  }}
+                                />
+                              )
+                            }
+                            isConnected={false}
+                            isPending={isPending}
+                            nativeLabelProps={getLabelProps()}
+                            classes={{
+                              nativeInputOrTextArea: 'fr-input--tall',
+                            }}
+                            nativeInputProps={{
+                              ...getInputProps(),
+                              placeholder: 'Rechercher un tag de destination',
+                            }}
+                            label="Sélectionner le tag de destination&nbsp;:"
+                          />
+                        </div>
+                        <Options
+                          {...options}
+                          {...MergeTagOptions}
+                          anchorRef={inputContainerRef}
+                          className="fr-index-2000"
+                        />
+                      </>
+                    )}
+                  </field.ComboBox>
+                )}
+              </form.AppField>
+              {selectedDestinationTag && (
+                <div className="fr-px-4v fr-py-6v fr-border fr-border-radius--8 fr-mt-3v">
+                  {renderItem({ item: selectedDestinationTag })}
+                </div>
+              )}
+              {selectedDestinationTag == null &&
+                scope === TagScope.Departemental && (
+                  <div className="fr-mt-4v fr-background-alt--blue-france fr-px-6v fr-py-4v fr-border-radius--8">
+                    <div className="fr-mb-3v fr-text--sm">
+                      Un tag départemental peut fusionner uniquement vers&nbsp;:
+                    </div>
+                    <div className="fr-flex fr-flex-gap-2v">
+                      <TagScopeBadge scope={TagScope.Departemental} small />
+                      <TagScopeBadge scope={TagScope.National} small />
+                    </div>
+                  </div>
+                )}
+              {selectedDestinationTag == null && scope === TagScope.Equipe && (
+                <div className="fr-mt-4v fr-background-alt--blue-france fr-px-6v fr-py-4v fr-border-radius--8">
+                  <div className="fr-mb-3v fr-text--sm">
+                    Un tag d’équipe peut fusionner uniquement vers&nbsp;:
+                  </div>
+                  <div className="fr-flex fr-flex-gap-2v">
+                    <TagScopeBadge scope={TagScope.Equipe} small />
+                    <TagScopeBadge scope={TagScope.Departemental} small />
+                    <TagScopeBadge scope={TagScope.National} small />
+                  </div>
+                </div>
+              )}
+            </Fragment>
+          )}
         {step === 'confirmation' &&
           selectedDestinationTag &&
           id &&
@@ -293,7 +335,9 @@ const MergeTagModal = () => {
                   className="fr-text-label--blue-france"
                 >
                   <span className="ri-service-line" aria-hidden />
-                  &nbsp;+{accompagnementsCount} accompagnement
+                  &nbsp;
+                  <span className="ri-add-line" aria-hidden />{' '}
+                  {accompagnementsCount} accompagnement
                   {accompagnementsCount > 1 ? 's' : ''}
                 </Badge>
               </span>
