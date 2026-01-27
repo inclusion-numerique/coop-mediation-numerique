@@ -411,6 +411,15 @@ export class ProjectStack extends TerraformStack {
       ttl: 3600,
     })
 
+    // Mattermost subdomain
+    new DomainRecord(this, 'mattermostCname', {
+      dnsZone: mainDomainZone.id,
+      type: 'CNAME',
+      name: 'discussion',
+      data: 'domain.par.clever-cloud.com.',
+      ttl: 3600,
+    })
+
     output('cockpitId', cockpit.id)
     output('mainDomainZoneId', mainDomainZone.id)
     output('transactionalEmailDomainStatus', transactionalEmailDomain.status)
