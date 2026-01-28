@@ -1,18 +1,18 @@
 import { CommunicationConum } from '@app/web/app/coop/(sidemenu-layout)/(accueil-coop)/_components/CommunicationConum'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
+import Card from '@app/web/components/Card'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { Departement } from '@app/web/data/collectivites-territoriales/departements'
 import MonReseauCountStatCard from '@app/web/features/mon-reseau/components/MonReseauCountStatCard'
 import DepartementComboBox from '@app/web/features/mon-reseau/DepartementComboBox'
 import { getInclusionNumeriqueDepartementDataUrl } from '@app/web/features/mon-reseau/getInclusionNumeriqueDepartementDataUrl'
 import { contentId } from '@app/web/utils/skipLinks'
+import Image from 'next/image'
 import Link from 'next/link'
 import { getMonReseauBreadcrumbLabel } from '../getMonReseauBreadcrumbParents'
 
-// TODO: enable mattermost mattermost card when we have a real link
-const _mattermostHref =
-  'https://media.istockphoto.com/id/486869012/th/%E0%B8%A3%E0%B8%B9%E0%B8%9B%E0%B8%96%E0%B9%88%E0%B8%B2%E0%B8%A2/%E0%B9%81%E0%B8%9E%E0%B8%B0%E0%B8%A1%E0%B8%AD%E0%B8%87%E0%B8%A1%E0%B8%B2%E0%B9%80%E0%B8%A3%E0%B8%B2.jpg?s=612x612&w=0&k=20&c=c3MaHxhELfsV5Fg_s_YLwu3dUqYxYttEY3NWxsmJ3UA='
+const mattermostHref = 'https://discussion.coop-numerique.anct.gouv.fr'
 
 const MonReseauPage = ({
   departement,
@@ -64,58 +64,57 @@ const MonReseauPage = ({
         </div>
       </div>
 
-      {
-        isConseillerNumerique ? (
-          <section className="fr-mb-8v">
-            <CommunicationConum />
-          </section>
-        ) : null
-        // <section className="fr-mb-8v">
-        //   <div className="fr-flex fr-align-items-center fr-mb-6v">
-        //     <span
-        //       className="fr-text-mention--grey fr-icon-chat-3-line ri-lg fr-mr-2v"
-        //       aria-hidden
-        //     />
-        //     <h2 className="fr-h6 fr-mb-0 fr-text-mention--grey fr-flex fr-align-items-center">
-        //       Les canaux de discussion
-        //     </h2>
-        //   </div>
-        //   <Card
-        //     noBorder
-        //     arrowTop
-        //     arrowSm
-        //     className="fr-border fr-border-radius--16"
-        //     classes={{
-        //       content: 'fr-p-0 fr-text--sm fr-text--medium fr-mb-0',
-        //     }}
-        //     title={
-        //       <span className="fr-inline-flex fr-align-items-center">
-        //         <Image
-        //           className="fr-mr-3v"
-        //           width={24}
-        //           height={24}
-        //           src="/images/services/mattermost.svg"
-        //           alt=""
-        //         />
-        //         <span className="fr-text--uppercase fr-text--xs fr-mb-0 fr-text-default--grey">
-        //           Mattermost
-        //         </span>
-        //       </span>
-        //     }
-        //     href={mattermostHref}
-        //     isExternal
-        //   >
-        //     <p className="fr-text--bold fr-mb-2v">
-        //       Échangez avec des acteurs de l'inclusion numérique&nbsp;!
-        //     </p>
-        //     <p className="fr-text--sm fr-mb-0 fr-text-mention--grey">
-        //       Mattermost est un service de messagerie instantanée, mis à
-        //       disposition des médiateurs numériques par l'ANCT et animé par la
-        //       Mednum.
-        //     </p>
-        //   </Card>
-        // </section>
-      }
+      {isConseillerNumerique ? (
+        <section className="fr-mb-8v">
+          <CommunicationConum />
+        </section>
+      ) : (
+        <section className="fr-mb-8v">
+          <div className="fr-flex fr-align-items-center fr-mb-6v">
+            <span
+              className="fr-text-mention--grey fr-icon-chat-3-line ri-lg fr-mr-2v"
+              aria-hidden
+            />
+            <h2 className="fr-h6 fr-mb-0 fr-text-mention--grey fr-flex fr-align-items-center">
+              Les canaux de discussion
+            </h2>
+          </div>
+          <Card
+            noBorder
+            arrowTop
+            arrowSm
+            className="fr-border fr-border-radius--16"
+            classes={{
+              content: 'fr-p-0 fr-text--sm fr-text--medium fr-mb-0',
+            }}
+            title={
+              <span className="fr-inline-flex fr-align-items-center">
+                <Image
+                  className="fr-mr-3v"
+                  width={24}
+                  height={24}
+                  src="/images/services/mattermost.svg"
+                  alt=""
+                />
+                <span className="fr-text--uppercase fr-text--xs fr-mb-0 fr-text-default--grey">
+                  Mattermost
+                </span>
+              </span>
+            }
+            href={mattermostHref}
+            isExternal
+          >
+            <p className="fr-text--bold fr-mb-2v">
+              Échangez avec des acteurs de l'inclusion numérique&nbsp;!
+            </p>
+            <p className="fr-text--sm fr-mb-0 fr-text-mention--grey">
+              Mattermost est un service de messagerie instantanée, mis à
+              disposition des médiateurs numériques par l'ANCT et animé par la
+              Mednum.
+            </p>
+          </Card>
+        </section>
+      )}
 
       <section className="fr-mb-8v fr-mt-12v">
         <div className="fr-flex fr-align-items-center fr-mb-6v">
