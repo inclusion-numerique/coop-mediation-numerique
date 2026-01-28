@@ -124,6 +124,7 @@ model User {
   dataspaceUserId Int? @unique @map("dataspace_user_id") @db.Integer
   // If user is in the Conseiller Numerique program. Dataspace API is the source of truth for this data
   isConseillerNumerique Boolean @default(false) @map("is_conseiller_numerique")
+  dataspaceUserIdPg Int? @map("dataspace_user_id_pg") @db.Integer // another id belonging to dataspace, needed on their side for synchronisation
 
   // Flux d'inscription
 
