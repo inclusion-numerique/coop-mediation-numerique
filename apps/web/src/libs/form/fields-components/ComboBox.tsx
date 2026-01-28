@@ -64,11 +64,16 @@ export const ComboBox = <TItem, TPayload extends object>(
       .map(comboBoxProps.itemToKey)
       .includes(comboBoxProps.itemToKey(defaultItem))
 
+  const currentValueKey = state.value
+    ? comboBoxProps.itemToKey(state.value)
+    : 'empty'
+
   return (
     <ComboBoxBase
+      key={currentValueKey}
       {...comboBoxProps}
       clearOnSelect={isMultipleSelection}
-      defaultValue={defaultValue}
+      defaultValue={state.value ?? defaultValue}
     >
       {({
         getLabelProps,

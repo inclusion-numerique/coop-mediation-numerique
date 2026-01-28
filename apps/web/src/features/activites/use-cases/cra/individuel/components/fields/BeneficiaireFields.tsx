@@ -1,5 +1,6 @@
 import { Options } from '@app/ui/components/Primitives/Options'
 import IconInSquare from '@app/web/components/IconInSquare'
+import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
 import {
   BeneficiaireComboBox,
@@ -13,6 +14,13 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import type { DefaultValues } from 'react-hook-form'
 import type { CraIndividuelData } from '../../validation/CraIndividuelValidation'
+
+type BeneficiaireItem = {
+  id: string
+  prenom: string
+  nom: string
+  communeResidence?: AdresseBanData | null
+}
 
 const options = formOptions({
   defaultValues: {} as DefaultValues<CraIndividuelData> & {
@@ -35,12 +43,14 @@ export const BeneficiaireFields = withForm({
     isPending: boolean
     creerBeneficiaireRetourUrl: string
     initialBeneficiairesOptions: BeneficiaireOption[]
+    onSelectBeneficiaire?: (beneficiaire: BeneficiaireItem) => void
   },
   render: ({
     form,
     isPending,
     creerBeneficiaireRetourUrl,
     initialBeneficiairesOptions,
+    onSelectBeneficiaire,
   }) => {
     const router = useRouter()
 
@@ -87,8 +97,10 @@ export const BeneficiaireFields = withForm({
                       id: option.value?.id ?? '',
                       prenom: option.value?.prenom ?? '',
                       nom: option.value?.nom ?? '',
+                      communeResidence: option.value?.communeResidence,
                     }))}
                     resetValue={{}}
+                    onSelect={onSelectBeneficiaire}
                     {...BeneficiaireComboBox()}
                   >
                     {({

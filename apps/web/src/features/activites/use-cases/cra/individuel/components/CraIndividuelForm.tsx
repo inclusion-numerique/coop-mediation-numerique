@@ -111,6 +111,28 @@ const CraIndividuelForm = ({
     form.setFieldValue('beneficiaire.communeResidence', item)
   }
 
+  const syncLieuCommuneDataWithBeneficiaire = () => {
+    const lieuCommuneData = form.getFieldValue('lieuCommuneData')
+    if (lieuCommuneData?.id != null) return
+    const communeResidence = form.getFieldValue('beneficiaire.communeResidence')
+    if (communeResidence?.id == null) return
+    form.setFieldValue('lieuCommuneData', communeResidence)
+  }
+
+  const onSelectBeneficiaire = (beneficiaire: {
+    communeResidence?: { id: string } | null
+  }) => {
+    const typeLieu = form.getFieldValue('typeLieu')
+    if (typeLieu !== 'Domicile') return
+    const lieuCommuneData = form.getFieldValue('lieuCommuneData')
+    if (lieuCommuneData?.id != null) return
+    if (beneficiaire.communeResidence?.id == null) return
+    form.setFieldValue(
+      'lieuCommuneData',
+      beneficiaire.communeResidence as Commune,
+    )
+  }
+
   return (
     <form.AppForm>
       <form onSubmit={handleSubmit(form)}>
@@ -119,6 +141,7 @@ const CraIndividuelForm = ({
           isPending={isPending}
           creerBeneficiaireRetourUrl="/coop/mes-activites/cra/individuel"
           initialBeneficiairesOptions={initialBeneficiairesOptions}
+          onSelectBeneficiaire={onSelectBeneficiaire}
         />
         <RendezVousFields
           form={form as any}
@@ -126,6 +149,7 @@ const CraIndividuelForm = ({
           dureeOptions={dureeOptions}
           lieuActiviteOptions={lieuActiviteOptions}
           onSelectLieuCommuneData={syncWithCommuneResidenceBeneficiaire}
+          onSelectTypeLieuDomicile={syncLieuCommuneDataWithBeneficiaire}
         />
         <hr className="fr-separator-12v" />
         <MaterielField
