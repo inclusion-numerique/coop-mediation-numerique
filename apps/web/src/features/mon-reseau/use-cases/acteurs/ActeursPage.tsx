@@ -4,7 +4,6 @@ import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import type { Departement } from '@app/web/data/collectivites-territoriales/departements'
-import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
 import { getMonReseauBreadcrumbParents } from '@app/web/features/mon-reseau/getMonReseauBreadcrumbParents'
 import DataSearchBar from '@app/web/libs/data-table/DataSearchBar'
 import type { DataTableSearchParams } from '@app/web/libs/data-table/DataTableConfiguration'
@@ -44,16 +43,12 @@ const ActeursPage = ({
   searchParams,
   isFiltered,
   communesOptions,
-  departementsOptions,
-  lieuxActiviteOptions,
 }: {
   departement: Departement
   searchResult: SearchActeursResult
   searchParams: ActeursSearchParams
   isFiltered: boolean
   communesOptions: SelectOption[]
-  departementsOptions: SelectOption[]
-  lieuxActiviteOptions: LieuActiviteOption[]
 }) => {
   const baseHref = `/coop/mon-reseau/${departement.code}/acteurs`
 
@@ -89,19 +84,16 @@ const ActeursPage = ({
               baseHref={baseHref}
               searchParams={searchParams as DataTableSearchParams}
               placeholder="Nom, prénom ou adresse mail..."
+              className="fr-flex-grow-1"
             />
             <Filters
               defaultFilters={searchParams}
               communesOptions={communesOptions}
-              lieuxActiviteOptions={lieuxActiviteOptions}
-              departementsOptions={null}
             />
           </div>
 
           <FilterTags
             filters={searchParams}
-            lieuxActiviteOptions={lieuxActiviteOptions}
-            departementsOptions={departementsOptions}
             communesOptions={communesOptions}
           />
 

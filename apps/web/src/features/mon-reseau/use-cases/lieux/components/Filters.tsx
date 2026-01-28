@@ -1,23 +1,17 @@
 'use client'
 
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import { MediateurFilter } from '@app/web/components/filters/MediateurFilter'
-import { LieuFilter } from '@app/web/features/lieux-activite/use-cases/filter/LieuFilter'
-import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
+import { CommuneFilter } from '@app/web/features/mon-reseau/use-cases/acteurs/components/CommuneFilter'
 import classNames from 'classnames'
 import type { LieuxFilters } from '../validation/LieuxFilters'
 
 const Filters = ({
   defaultFilters,
   communesOptions,
-  departementsOptions,
-  mediateursOptions,
   className,
 }: {
   defaultFilters: LieuxFilters
   communesOptions: SelectOption[]
-  departementsOptions: SelectOption[]
-  mediateursOptions: MediateurOption[]
   className?: string
 }) => (
   <div
@@ -26,27 +20,9 @@ const Filters = ({
       className,
     )}
   >
-    <LieuFilter
-      defaultValue={[
-        ...(defaultFilters.communes == null
-          ? []
-          : [{ type: 'commune' as const, value: defaultFilters.communes }]),
-        ...(defaultFilters.departements == null
-          ? []
-          : [
-              {
-                type: 'departement' as const,
-                value: defaultFilters.departements,
-              },
-            ]),
-      ]}
-      lieuxActiviteOptions={[]}
+    <CommuneFilter
+      defaultValue={defaultFilters.communes ?? []}
       communesOptions={communesOptions}
-      departementsOptions={departementsOptions}
-    />
-    <MediateurFilter
-      initialMediateursOptions={mediateursOptions}
-      defaultValue={defaultFilters.mediateurs ?? []}
     />
   </div>
 )

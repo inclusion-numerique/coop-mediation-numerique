@@ -9,7 +9,6 @@ import type { DataTableSearchParams } from '@app/web/libs/data-table/DataTableCo
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
 import SortSelect from '@app/web/libs/data-table/SortSelect'
-import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import { contentId } from '@app/web/utils/skipLinks'
 import Filters from './components/Filters'
 import { FilterTags } from './components/FilterTags'
@@ -43,16 +42,12 @@ const LieuxPage = ({
   searchParams,
   isFiltered,
   communesOptions,
-  departementsOptions,
-  mediateursOptions,
 }: {
   departement: Departement
   searchResult: SearchLieuxResult
   searchParams: LieuxSearchParams
   isFiltered: boolean
   communesOptions: SelectOption[]
-  departementsOptions: SelectOption[]
-  mediateursOptions: MediateurOption[]
 }) => {
   const baseHref = `/coop/mon-reseau/${departement.code}/lieux`
 
@@ -90,20 +85,17 @@ const LieuxPage = ({
               baseHref={baseHref}
               searchParams={searchParams as DataTableSearchParams}
               placeholder="Nom du lieu, adresse ou SIRET..."
+              className="fr-flex-grow-1"
             />
             <Filters
               defaultFilters={searchParams}
               communesOptions={communesOptions}
-              departementsOptions={departementsOptions}
-              mediateursOptions={mediateursOptions}
             />
           </div>
 
           <FilterTags
             filters={searchParams}
-            departementsOptions={departementsOptions}
             communesOptions={communesOptions}
-            mediateursOptions={mediateursOptions}
           />
 
           <hr className="fr-separator-1px" />

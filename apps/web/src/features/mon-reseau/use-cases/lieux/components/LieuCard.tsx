@@ -43,9 +43,10 @@ const LieuCard = ({
     : null
 
   return (
-    <div
+    <article
+      id={lieu.id}
       className={classNames(
-        'fr-border-bottom fr-pt-4v fr-px-2v fr-pb-6v',
+        'fr-enlarge-link fr-border-bottom fr-pt-4v fr-px-2v fr-pb-6v',
         styles.card,
         className,
       )}
@@ -55,29 +56,17 @@ const LieuCard = ({
           Mis à jour le {formattedModificationDate}{' '}
           {derniereModificationPar ? `par ${derniereModificationPar}` : ''}
         </p>
-        <div>
-          <Link
-            href={lieuHref}
-            className={classNames(
-              'fr-btn fr-btn--sm fr-btn--tertiary-no-outline',
-              styles.innerLink,
-            )}
-            prefetch={false}
-          >
-            Modifier <span className="ri-edit-line fr-ml-1v" aria-hidden />
-          </Link>
-          {removeMediateurFromLieu && (
-            <RemoveMediateurFromLieuButton
-              className="fr-ml-2v"
-              mediateurId={removeMediateurFromLieu.mediateurId}
-              structureId={lieu.id}
-              variant="lieu"
-              mediateurDisplayName=""
-              structureNom={lieu.nom}
-              derniereActiviteDate={null}
-            />
-          )}
-        </div>
+        {removeMediateurFromLieu && (
+          <RemoveMediateurFromLieuButton
+            className={styles.innerLink}
+            mediateurId={removeMediateurFromLieu.mediateurId}
+            structureId={lieu.id}
+            variant="lieu"
+            mediateurDisplayName=""
+            structureNom={lieu.nom}
+            derniereActiviteDate={null}
+          />
+        )}
       </div>
 
       <p className="fr-text--bold fr-text--lg fr-mb-2v fr-text-title--blue-france">
@@ -98,6 +87,7 @@ const LieuCard = ({
             lieu.structureCartographieNationaleId
           }
           structureId={lieu.id}
+          className={styles.innerLink}
         />
         <Tag small className={styles.innerLink}>
           <span className="ri-account-circle-fill fr-mr-1v" aria-hidden />
@@ -107,7 +97,8 @@ const LieuCard = ({
             : 'médiateurs numériques référencés'}
         </Tag>
       </div>
-    </div>
+      <Link href={lieuHref} prefetch={false} />
+    </article>
   )
 }
 

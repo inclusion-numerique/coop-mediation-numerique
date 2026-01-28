@@ -8,7 +8,6 @@ import {
   type LieuxSearchParams,
   validateLieuxFilters,
 } from '@app/web/features/mon-reseau/use-cases/lieux/validation/LieuxFilters'
-import { getDepartementsFromCodesInsee } from '@app/web/utils/getDepartementFromCodeInsee'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -38,14 +37,6 @@ const Page = async ({
     getLieuxFiltersOptions({ departementCode }),
   ])
 
-  // Build departementsOptions from communes
-  const departementsOptions = getDepartementsFromCodesInsee(
-    filtersOptions.communesOptions.map(({ value }) => value),
-  ).map(({ code, nom }) => ({
-    value: code,
-    label: `${code} · ${nom}`,
-  }))
-
   return (
     <LieuxPage
       departement={departement}
@@ -53,8 +44,6 @@ const Page = async ({
       searchParams={searchParams}
       isFiltered={pageData.isFiltered}
       communesOptions={filtersOptions.communesOptions}
-      departementsOptions={departementsOptions}
-      mediateursOptions={filtersOptions.mediateursOptions}
     />
   )
 }

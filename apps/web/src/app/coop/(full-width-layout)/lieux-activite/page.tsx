@@ -58,7 +58,7 @@ const LieuActiviteListPage = async () => {
           {user.isConseillerNumerique && (
             <VisibiliteMediateur isVisible={mediateur.isVisible} />
           )}
-          <div className="fr-flex fr-direction-column fr-flex-gap-4v">
+          <div className="fr-flex fr-direction-column fr-pt-4v">
             {lieuxActivites.length === 0 ? (
               <AucunLieu />
             ) : (
