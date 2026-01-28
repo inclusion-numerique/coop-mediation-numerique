@@ -23,7 +23,7 @@ describe('dataspaceApiClient', () => {
     expect(result).toBeNull()
   })
 
-  it.skip('coordinateur - should return conseiller_numerique coordinateur data as conum: false', async () => {
+  it('coordinateur - should return conseiller_numerique coordinateur data as conum: false', async () => {
     const result = await getMediateurFromDataspaceApi({
       email: 'a.chretien@sommenumerique.fr',
     })
@@ -84,7 +84,7 @@ describe('dataspaceApiClient', () => {
     )
   })
 
-  it.skip('conseiller numerique - should handle email case insensitivity', async () => {
+  it('conseiller numerique - should handle email case insensitivity', async () => {
     const resultLowercase = await getMediateurFromDataspaceApi({
       email: 'a.gibout@ai-stefi.fr',
     })
