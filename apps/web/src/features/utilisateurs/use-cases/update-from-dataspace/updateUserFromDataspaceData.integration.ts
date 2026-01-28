@@ -124,6 +124,7 @@ describe('updateUserFromDataspaceData', () => {
         select: {
           isConseillerNumerique: true,
           dataspaceId: true,
+          dataspaceUserIdPg: true,
           emplois: {
             select: { id: true, structureId: true },
             where: { suppression: null },
@@ -133,6 +134,7 @@ describe('updateUserFromDataspaceData', () => {
 
       expect(userAfter.isConseillerNumerique).toBe(true)
       expect(userAfter.dataspaceId).toBe(uniqueMockData.id)
+      expect(userAfter.dataspaceUserIdPg).toBe(uniqueMockData.pg_id)
       expect(userAfter.emplois.length).toBeGreaterThan(0)
     })
   })

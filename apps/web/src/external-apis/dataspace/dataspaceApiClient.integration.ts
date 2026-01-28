@@ -105,7 +105,7 @@ describe('dataspaceApiClient', () => {
     ) {
       throw new Error('Expected mediateur data but got error')
     }
-
+    expect(resultLowercase?.pg_id).toBeNumber()
     expect(resultLowercase?.is_conseiller_numerique).toBe(true)
     expect(resultLowercase?.is_coordinateur).toBe(false)
 

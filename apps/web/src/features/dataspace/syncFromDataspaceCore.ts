@@ -520,6 +520,7 @@ export const syncFromDataspaceCore = async ({
     where: { id: userId },
     data: {
       dataspaceId: dataspaceData.id,
+      dataspaceUserIdPg: dataspaceData.pg_id,
       lastSyncedFromDataspace: new Date(),
       isConseillerNumerique: isConseillerNumeriqueInApi,
     },
