@@ -385,7 +385,6 @@ export const rdvServicePublicRouter = router({
       }),
     )
     .mutation(async ({ input, ctx: { user } }) => {
-      // 1. Verify RDV exists and get rdvAccountId
       const rdv = await prismaClient.rdv.findUnique({
         where: { id: input.rdvId },
         select: {
@@ -398,14 +397,12 @@ export const rdvServicePublicRouter = router({
         throw invalidError('RDV introuvable')
       }
 
-      // 2. Verify user authorization
       if (rdv.rdvAccountId !== user.rdvAccount?.id) {
         throw forbiddenError(
           'RDV non associé à votre compte RDV Service Public',
         )
       }
 
-      // 3. Get user context with OAuth tokens
       const userWithRdvAccount = await getUserContextForOAuthApiCall({ user })
       const { rdvAccount } = userWithRdvAccount
 
@@ -413,7 +410,6 @@ export const rdvServicePublicRouter = router({
         throw forbiddenError('Compte RDV Service Public non lié')
       }
 
-      // 4. Call RDV Service Public API
       const apiResult = await oAuthRdvApiUpdateRdvStatus({
         rdvAccount,
         rdvId: input.rdvId,
@@ -424,7 +420,6 @@ export const rdvServicePublicRouter = router({
         throw externalApiError(apiResult.error)
       }
 
-      // 5. Update local database with data from API response
       await prismaClient.rdv.update({
         where: { id: input.rdvId },
         data: { status: apiResult.data.status },

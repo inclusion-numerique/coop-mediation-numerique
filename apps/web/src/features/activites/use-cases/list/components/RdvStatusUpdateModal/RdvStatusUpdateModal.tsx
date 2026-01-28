@@ -56,7 +56,7 @@ const RdvStatusUpdateModal = ({
   }
 
   const handleUpdateStatus = async (
-    status: 'noshow' | 'excused' | 'revoked',
+    status: 'noshow' | 'excused' | 'revoked' | 'seen',
   ) => {
     try {
       await updateStatusMutation.mutateAsync({
@@ -139,9 +139,7 @@ const RdvStatusUpdateModal = ({
             className="fr-py-1w fr-width-full"
             priority="tertiary no outline"
             type="button"
-            onClick={() => {
-              RdvStatusUpdateDynamicModal.close()
-            }}
+            onClick={() => handleUpdateStatus('seen')}
           >
             <div className="fr-flex fr-align-items-center fr-justify-content-space-between fr-width-full">
               J'ai déjà renseigné un CRA pour ce RDV
