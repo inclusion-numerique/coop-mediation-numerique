@@ -718,8 +718,13 @@ model Structure {
   creationParId String?  @map("creation_par_id") @db.Uuid
   creationPar   User?    @relation(name: "structure_crees", fields: [creationParId], references: [id])
 
+// Une modification peut avoir été faite par une "source" externe, ou un utilisateur
+// - dans le cas d'un utilisateur, derniereModificationParId sera non-null
+// - dans le cas d'une modification externe, derniereModificationSource sera non-null
+// - lors de l'update un seul des 2 doit être non-null
   modification              DateTime @default(now())
   derniereModificationParId String?  @map("derniere_modification_par_id") @db.Uuid
+  derniereModificationSource String?  @map("derniere_modification_source")
   derniereModificationPar   User?    @relation(name: "structure_modifiees", fields: [derniereModificationParId], references: [id])
 
   suppression      DateTime?
