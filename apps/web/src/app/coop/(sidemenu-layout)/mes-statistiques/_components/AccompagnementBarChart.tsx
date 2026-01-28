@@ -42,14 +42,14 @@ export const AccompagnementBarChart = ({
     <ResponsiveContainer width="100%" height={200}>
       <BarChart
         data={displayData}
-        margin={{ top: 15, right: 30, left: 20, bottom: 10 }}
+        margin={{ top: 15, right: 30, left: 20, bottom: 20 }}
         barSize={displayData.length > 12 ? 6 : 16}
       >
         <XAxis
           className="fr-text--sm fr-text--medium"
           dataKey="label"
           scale="point"
-          tick={{ dy: 10 }}
+          tick={{ dy: 15 }}
           padding={{ left: 10, right: 10 }}
           tickLine={false}
           angle={-45}
