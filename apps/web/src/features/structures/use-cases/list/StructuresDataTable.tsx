@@ -1,3 +1,4 @@
+import { getStructureCartographieLink } from '@app/web/features/mon-reseau/use-cases/lieux/getStructureLink'
 import type {
   DataTableConfiguration,
   DataTableFilterValues,
@@ -7,6 +8,7 @@ import { dateAsDayAndTime } from '@app/web/utils/dateAsDayAndTime'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { optionalNumberToString } from '@app/web/utils/formatNumber'
 import Badge from '@codegouvfr/react-dsfr/Badge'
+import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import type { Prisma } from '@prisma/client'
 import { StructureForList } from './queryStructuresForList'
@@ -84,19 +86,55 @@ export const StructuresDataTable = {
       name: 'visibleCarto',
       header: 'Visible carto',
       csvHeaders: ['Visible carto'],
-      csvValues: ({ visiblePourCartographieNationale }) => [
-        visiblePourCartographieNationale ? 'Oui' : 'Non',
-      ],
-      cell: ({ visiblePourCartographieNationale }) =>
-        visiblePourCartographieNationale ? (
-          <Badge small severity="success">
-            Oui
-          </Badge>
-        ) : (
-          <Badge small severity="warning">
-            Non
-          </Badge>
-        ),
+      cellStyle: { minWidth: 150 },
+      csvValues: ({
+        visiblePourCartographieNationale,
+        structureCartographieNationaleId,
+      }) => {
+        if (!visiblePourCartographieNationale) return ['Non partagé']
+        if (!structureCartographieNationaleId) return ["En cours d'ajout"]
+        return ['Visible sur la carto']
+      },
+      cell: ({
+        visiblePourCartographieNationale,
+        structureCartographieNationaleId,
+      }) => {
+        if (!visiblePourCartographieNationale) {
+          return (
+            <Badge small severity="warning">
+              Non partagé
+            </Badge>
+          )
+        }
+        if (!structureCartographieNationaleId) {
+          return (
+            <Badge small severity="info">
+              En cours d'ajout
+            </Badge>
+          )
+        }
+        return (
+          <div className="fr-flex fr-direction-column fr-flex-gap-2v fr-position-relative">
+            <Badge small severity="success">
+              Visible
+            </Badge>
+            <Button
+              size="small"
+              style={{ position: 'relative', zIndex: 10 }}
+              priority="tertiary"
+              linkProps={{
+                href: getStructureCartographieLink({
+                  structureCartographieNationaleId,
+                }),
+                target: '_blank',
+                rel: 'noreferrer',
+              }}
+            >
+              Voir sur la carto
+            </Button>
+          </div>
+        )
+      },
     },
     {
       name: 'creation',

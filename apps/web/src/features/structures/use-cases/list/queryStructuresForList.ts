@@ -11,6 +11,7 @@ export const searchStructureSelect = {
   siret: true,
   typologies: true,
   visiblePourCartographieNationale: true,
+  structureCartographieNationaleId: true,
   creation: true,
   modification: true,
   suppression: true,
