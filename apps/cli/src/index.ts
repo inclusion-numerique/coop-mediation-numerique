@@ -16,44 +16,54 @@ import { listSecrets } from '@app/cli/commands/secrets/listSecrets'
 import { setupDatabaseSecret } from '@app/cli/commands/secrets/setupDatabaseSecret'
 import { deleteSentryEnvironmentIssues } from '@app/cli/commands/sentry/deleteSentryEnvironmentIssues'
 import { fetchAccompagnements } from '@app/cli/fetchAccompagnement'
-import { output } from '@app/cli/output'
+import { output, outputError } from '@app/cli/output'
 import { Command } from '@commander-js/extra-typings'
+import * as Sentry from '@sentry/node'
 
-if (
-  process.env.DATABASE_URL &&
-  process.env.CLI_TARGET_DEPLOYMENT_DATABASE_URL === process.env.DATABASE_URL
-) {
-  output(
-    `⚠️⚠️⚠️ Executing command on target deployment ${
-      process.env.CLI_TARGET_DEPLOYMENT_BRANCH
-    }`,
-  )
-  const databaseUrl = new URL(process.env.DATABASE_URL)
-  output(`⚠️⚠️⚠️ Database: ${databaseUrl.hostname} ${databaseUrl.pathname}`)
-  output('⚠️⚠️⚠️ You have 8 seconds to cancel')
-  await new Promise((resolve) => {
-    setTimeout(resolve, 8000)
-  })
+const main = async () => {
+  if (
+    process.env.DATABASE_URL &&
+    process.env.CLI_TARGET_DEPLOYMENT_DATABASE_URL === process.env.DATABASE_URL
+  ) {
+    output(
+      `⚠️⚠️⚠️ Executing command on target deployment ${
+        process.env.CLI_TARGET_DEPLOYMENT_BRANCH
+      }`,
+    )
+    const databaseUrl = new URL(process.env.DATABASE_URL)
+    output(`⚠️⚠️⚠️ Database: ${databaseUrl.hostname} ${databaseUrl.pathname}`)
+    output('⚠️⚠️⚠️ You have 8 seconds to cancel')
+    await new Promise((resolve) => {
+      setTimeout(resolve, 8000)
+    })
+  }
+
+  const program = new Command()
+
+  program.addCommand(executeJobCommand)
+  program.addCommand(executeJobApiCommand)
+  program.addCommand(listSecrets)
+  program.addCommand(getSecretValue)
+  program.addCommand(setupDatabaseSecret)
+  program.addCommand(getDatabasePasswordSecret)
+  program.addCommand(createDotEnvFromCdk)
+  program.addCommand(createDotEnvFromSecrets)
+  program.addCommand(addNextPublicVariablesToDotEnv)
+  program.addCommand(createGithubDeployment)
+  program.addCommand(updateGithubDeployment)
+  program.addCommand(deactivateGithubDeployment)
+  program.addCommand(createTfVarsFileFromEnvironment)
+  program.addCommand(checkDeploymentStatus)
+  program.addCommand(locallyRestoreLatestMainBackup)
+  program.addCommand(ingestNotionHelpCenterExportedMarkdown)
+  program.addCommand(fetchAccompagnements)
+  program.addCommand(deleteSentryEnvironmentIssues)
+  await program.parseAsync()
 }
 
-const program = new Command()
-
-program.addCommand(executeJobCommand)
-program.addCommand(executeJobApiCommand)
-program.addCommand(listSecrets)
-program.addCommand(getSecretValue)
-program.addCommand(setupDatabaseSecret)
-program.addCommand(getDatabasePasswordSecret)
-program.addCommand(createDotEnvFromCdk)
-program.addCommand(createDotEnvFromSecrets)
-program.addCommand(addNextPublicVariablesToDotEnv)
-program.addCommand(createGithubDeployment)
-program.addCommand(updateGithubDeployment)
-program.addCommand(deactivateGithubDeployment)
-program.addCommand(createTfVarsFileFromEnvironment)
-program.addCommand(checkDeploymentStatus)
-program.addCommand(locallyRestoreLatestMainBackup)
-program.addCommand(ingestNotionHelpCenterExportedMarkdown)
-program.addCommand(fetchAccompagnements)
-program.addCommand(deleteSentryEnvironmentIssues)
-program.parse()
+main().catch(async (error) => {
+  Sentry.captureException(error)
+  outputError(error instanceof Error ? error.message : String(error))
+  await Sentry.flush(2000)
+  process.exit(1)
+})
