@@ -42,7 +42,7 @@
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "remixicon": "^4.6.0",
-    "storybook": "^8.6.12"
+    "storybook": "^8.6.15"
   },
   "devDependencies": {
     "@storybook/addon-a11y": "^8.6.12",
