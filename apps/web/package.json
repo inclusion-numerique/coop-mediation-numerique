@@ -60,7 +60,7 @@
     "@tiptap/react": "^2.11.9",
     "@trpc/client": "11.1.2",
     "@trpc/react-query": "11.1.2",
-    "@trpc/server": "11.1.2",
+    "@trpc/server": "11.8.0",
     "@xstate/store": "^3.5.1",
     "@xstyled/styled-components": "^4.0.0",
     "@zumer/snapdom": "^2.0.1",
