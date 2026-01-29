@@ -1,61 +1,63 @@
+import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
+import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
-import classNames from 'classnames'
 import React from 'react'
 import MonEquipeHeader from './MonEquipeHeader'
 
 const EquipeCount = ({
   label,
-  count,
-  icon,
+  countLabel,
+  invitations,
 }: {
   label: string
-  count: number
-  icon: string
+  countLabel: string
+  invitations: number
 }) => (
-  <div className="fr-background-alt--brown-caramel fr-border-radius--8 fr-px-6v fr-py-4v fr-flex fr-justify-content-space-between fr-flex-1 fr-flex-gap-3v">
-    <div>
-      <div className="fr-text--sm fr-mb-0">{label}</div>
-      <div className="fr-text--semi-bold fr-mb-0">{count}</div>
+  <div className="fr-background-alt--brown-caramel fr-border-radius--8 fr-px-6v fr-py-4v fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-1 fr-flex-gap-3v">
+    <div className="fr-flex fr-justify-content-space-between fr-direction-column">
+      <div className="fr-text--lg fr-text--semi-bold fr-mb-0">{label}</div>
+      <div className="fr-text--sm fr-mb-0">{countLabel}</div>
+
+      {!!invitations && (
+        <Badge severity="info" noIcon className="fr-mt-2w">
+          {invitations} invitation{sPluriel(invitations)} à rejoindre votre
+          équipe toujours en attente
+        </Badge>
+      )}
     </div>
-    {icon.startsWith('/') ? (
-      <img
-        className="fr-background-default--grey fr-p-3v fr-border-radius--8 fr-line-height-1"
-        alt=""
-        src={icon}
-      />
-    ) : (
-      <span
-        className={classNames(
-          icon,
-          'ri-lg fr-background-default--grey fr-text-label--blue-france fr-p-3v fr-border-radius--8 fr-line-height-1',
-        )}
-        aria-hidden
-      />
-    )}
+    <div>
+      <Button
+        priority="secondary"
+        size="small"
+        linkProps={{
+          href: '/coop/mon-equipe',
+        }}
+        iconId="fr-icon-arrow-right-line"
+        iconPosition="right"
+      >
+        Voir mon équipe
+      </Button>
+    </div>
   </div>
 )
 
 export const Equipe = ({
-  mediateurs: { conseillersNumeriques, mediateursNumeriques },
+  mediateurs: { actifs, inactifs, total, invitations },
 }: {
   mediateurs: {
     total: number
-    conseillersNumeriques: number
-    mediateursNumeriques: number
+    actifs: number
+    inactifs: number
+    invitations: number
   }
 }) => (
   <>
     <MonEquipeHeader />
     <div className="fr-flex fr-flex-gap-6v fr-direction-lg-row fr-direction-column">
       <EquipeCount
-        label="Conseillers numériques"
-        count={conseillersNumeriques}
-        icon="/images/services/conseillers-numerique-icon.svg"
-      />
-      <EquipeCount
-        label="Médiateurs numériques"
-        count={mediateursNumeriques}
-        icon="ri-account-circle-line"
+        label={`${total} Membres dans votre équipe`}
+        countLabel={`dont ${actifs} actifs · ${inactifs} inactifs`}
+        invitations={invitations}
       />
     </div>
   </>

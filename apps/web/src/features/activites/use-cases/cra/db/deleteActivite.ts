@@ -2,12 +2,81 @@ import { prismaClient } from '@app/web/prismaClient'
 import { forbiddenError, invalidError } from '@app/web/server/rpc/trpcErrors'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { createStopwatch } from '@app/web/utils/stopwatch'
-import { getBeneficiairesAnonymesWithOnlyAccompagnementsForThisActivite } from './createOrUpdateActivite'
+import { assignPremierAccompagnement } from './assignPremierAccompagnement'
 
-// Timeout for interactive transactions (15 seconds)
-// This is increased from default 5s to handle large ateliers with many beneficiaires
-const TRANSACTION_TIMEOUT_MS = 20_000
+/**
+ * Pre-compute operations needed for deleting an activité.
+ * This runs BEFORE the transaction to avoid complex subqueries inside the transaction.
+ *
+ * Returns:
+ * - beneficiaireIdsToDelete: anonymous beneficiaires that only have accompagnements for this activité
+ * - beneficiaireSuivisIds: non-anonymous beneficiaires (for premierAccompagnement reassignment)
+ * - accompagnementCount: total accompagnements for this activité
+ */
+const precomputeDeleteOperations = async (activiteId: string) => {
+  const result = await prismaClient.$queryRaw<
+    {
+      beneficiaire_ids_to_delete: string[] | null
+      beneficiaire_suivis_ids: string[] | null
+      accompagnement_count: number
+    }[]
+  >`
+    WITH 
+    -- Get all accompagnements for this activité with beneficiaire info
+    current_accompagnements AS (
+      SELECT 
+        a.beneficiaire_id,
+        b.anonyme
+      FROM accompagnements a
+      INNER JOIN beneficiaires b ON b.id = a.beneficiaire_id
+      WHERE a.activite_id = ${activiteId}::uuid
+    ),
+    -- Count other accompagnements per beneficiaire (excluding this activité)
+    beneficiaire_other_accompagnements AS (
+      SELECT 
+        ca.beneficiaire_id,
+        ca.anonyme,
+        COUNT(other.id) AS other_count
+      FROM current_accompagnements ca
+      LEFT JOIN accompagnements other 
+        ON other.beneficiaire_id = ca.beneficiaire_id 
+        AND other.activite_id <> ${activiteId}::uuid
+      GROUP BY ca.beneficiaire_id, ca.anonyme
+    ),
+    -- Beneficiaires to delete: anonymous with no other accompagnements
+    to_delete AS (
+      SELECT beneficiaire_id 
+      FROM beneficiaire_other_accompagnements 
+      WHERE anonyme = true AND other_count = 0
+    ),
+    -- Beneficiaires suivis: non-anonymous (need premierAccompagnement check)
+    suivis AS (
+      SELECT DISTINCT beneficiaire_id 
+      FROM current_accompagnements 
+      WHERE anonyme = false
+    )
+    SELECT 
+      ARRAY(SELECT beneficiaire_id FROM to_delete) AS beneficiaire_ids_to_delete,
+      ARRAY(SELECT beneficiaire_id FROM suivis) AS beneficiaire_suivis_ids,
+      (SELECT COUNT(*)::int FROM current_accompagnements) AS accompagnement_count
+  `
 
+  const row = result[0]
+  return {
+    beneficiaireIdsToDelete: row?.beneficiaire_ids_to_delete ?? [],
+    beneficiaireSuivisIds: row?.beneficiaire_suivis_ids ?? [],
+    accompagnementCount: row?.accompagnement_count ?? 0,
+  }
+}
+
+/**
+ * Optimized delete using raw SQL for bulk operations.
+ *
+ * Performance improvements:
+ * 1. Pre-compute decisions BEFORE the transaction (no complex subqueries in transaction)
+ * 2. Transaction contains only simple targeted operations
+ * 3. Uses ANY($1::uuid[]) for efficient array operations
+ */
 export const deleteActivite = async ({
   activiteId,
   sessionUserId,
@@ -19,9 +88,14 @@ export const deleteActivite = async ({
 }) => {
   const stopwatch = createStopwatch()
 
-  const activite = await prismaClient.activite.findUnique({
-    where: { id: activiteId, suppression: null },
-  })
+  // Step 1: Fetch activite and pre-compute operations in parallel
+  const [activite, operations] = await Promise.all([
+    prismaClient.activite.findUnique({
+      where: { id: activiteId, suppression: null },
+      select: { id: true, type: true, mediateurId: true, structureId: true },
+    }),
+    precomputeDeleteOperations(activiteId),
+  ])
 
   if (!activite) {
     throw invalidError('Activité not found')
@@ -31,118 +105,77 @@ export const deleteActivite = async ({
     throw forbiddenError('Cannot delete activité for another mediateur')
   }
 
-  const accompagnements = await prismaClient.accompagnement.findMany({
-    where: { activiteId },
-    select: {
-      id: true,
-      premierAccompagnement: true,
-      beneficiaireId: true,
-    },
-  })
-
-  const beneficiairesAnonymesIdsToDelete =
-    await getBeneficiairesAnonymesWithOnlyAccompagnementsForThisActivite({
-      activiteId,
-    })
-
-  // Beneficiaires that will NOT be deleted need their accompagnements_count decremented
-  const beneficiairesIdsForCountDecrement = accompagnements
-    .map((a) => a.beneficiaireId)
-    .filter(
-      (beneficiaireId) =>
-        !beneficiairesAnonymesIdsToDelete.includes(beneficiaireId),
-    )
+  const {
+    beneficiaireIdsToDelete,
+    beneficiaireSuivisIds,
+    accompagnementCount,
+  } = operations
 
   const now = new Date()
 
-  await prismaClient.$transaction(
-    async (transaction) => {
-      // Step 1: Handle premierAccompagnement reassignment (must be done before deleting accompagnements)
-      const premierAccompagnement = accompagnements.find(
-        (a) => a.premierAccompagnement,
-      )
+  // Step 2: Execute all operations in a single transaction
+  await prismaClient.$transaction(async (tx) => {
+    // Delete accompagnements
+    await tx.$executeRaw`
+      DELETE FROM accompagnements
+      WHERE activite_id = ${activiteId}::uuid
+    `
 
-      if (premierAccompagnement) {
-        const nextAccompagnement = await transaction.accompagnement.findFirst({
-          where: {
-            beneficiaireId: premierAccompagnement.beneficiaireId,
-            id: { not: premierAccompagnement.id },
-          },
-          orderBy: {
-            activite: { date: 'asc' },
-          },
-          select: { id: true },
-        })
+    // Delete activite tags
+    await tx.$executeRaw`
+      DELETE FROM activite_tags
+      WHERE activite_id = ${activiteId}::uuid
+    `
 
-        if (nextAccompagnement) {
-          await transaction.accompagnement.update({
-            where: { id: nextAccompagnement.id },
-            data: { premierAccompagnement: true },
-          })
-        }
-      }
+    // Delete anonymous beneficiaires
+    if (beneficiaireIdsToDelete.length > 0) {
+      await tx.$executeRaw`
+        DELETE FROM beneficiaires
+        WHERE id = ANY(${beneficiaireIdsToDelete}::uuid[])
+      `
+    }
 
-      // Step 2: Delete accompagnements and tags in parallel (must be before beneficiaires due to FK)
-      await Promise.all([
-        transaction.accompagnement.deleteMany({
-          where: { activiteId },
-        }),
-        transaction.activitesTags.deleteMany({
-          where: { activiteId },
-        }),
-      ])
+    // Decrement accompagnements_count for beneficiaires suivis
+    if (beneficiaireSuivisIds.length > 0) {
+      await tx.$executeRaw`
+        UPDATE beneficiaires
+        SET accompagnements_count = accompagnements_count - 1
+        WHERE id = ANY(${beneficiaireSuivisIds}::uuid[])
+      `
+    }
 
-      // Step 3: Delete anonymous beneficiaires (after accompagnements due to FK constraint)
-      if (beneficiairesAnonymesIdsToDelete.length > 0) {
-        await transaction.beneficiaire.deleteMany({
-          where: {
-            anonyme: true,
-            id: { in: beneficiairesAnonymesIdsToDelete },
-          },
-        })
-      }
+    // Soft-delete the activité
+    await tx.$executeRaw`
+      UPDATE activites
+      SET suppression = ${now}, modification = ${now}, rdv_id = NULL
+      WHERE id = ${activiteId}::uuid
+    `
 
-      // Step 4: All updates can run in parallel (no FK dependencies between them)
-      const updateOperations: Promise<unknown>[] = [
-        // Soft-delete the activité
-        transaction.activite.update({
-          where: { id: activiteId },
-          data: { suppression: now, modification: now, rdvId: null },
-        }),
-        // Decrement mediateur counts
-        transaction.mediateur.update({
-          where: { id: mediateurId },
-          data: {
-            activitesCount: { decrement: 1 },
-            accompagnementsCount: { decrement: accompagnements.length },
-          },
-        }),
-      ]
+    // Decrement mediateur counts
+    await tx.$executeRaw`
+      UPDATE mediateurs
+      SET activites_count = activites_count - 1,
+          accompagnements_count = accompagnements_count - ${accompagnementCount}
+      WHERE id = ${mediateurId}::uuid
+    `
 
-      // Decrement structure count if applicable
-      if (activite.structureId) {
-        updateOperations.push(
-          transaction.structure.update({
-            where: { id: activite.structureId },
-            data: { activitesCount: { decrement: 1 } },
-          }),
-        )
-      }
+    // Decrement structure count if applicable
+    if (activite.structureId) {
+      await tx.$executeRaw`
+        UPDATE structures
+        SET activites_count = activites_count - 1
+        WHERE id = ${activite.structureId}::uuid
+      `
+    }
 
-      // Decrement beneficiaires count for non-deleted beneficiaires
-      if (beneficiairesIdsForCountDecrement.length > 0) {
-        updateOperations.push(
-          transaction.beneficiaire.updateMany({
-            where: { id: { in: beneficiairesIdsForCountDecrement } },
-            data: { accompagnementsCount: { decrement: 1 } },
-          }),
-        )
-      }
-
-      await Promise.all(updateOperations)
-    },
-    { timeout: TRANSACTION_TIMEOUT_MS },
-  )
+    // Reassign premierAccompagnement for beneficiaires suivis
+    if (beneficiaireSuivisIds.length > 0) {
+      await assignPremierAccompagnement({
+        beneficiaireIds: beneficiaireSuivisIds,
+        transactionClient: tx,
+      })
+    }
+  })
 
   addMutationLog({
     userId: sessionUserId,

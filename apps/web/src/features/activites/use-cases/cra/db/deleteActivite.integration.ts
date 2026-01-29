@@ -145,6 +145,134 @@ describe('deleteActivite', () => {
       expect(deletedBeneficiaire).toBeNull()
     })
 
+    it('should reassign premierAccompagnement when deleting individuel with premierAccompagnement', async () => {
+      // Create a beneficiaire suivi
+      const beneficiaireId = v4()
+      await prismaClient.beneficiaire.create({
+        data: {
+          id: beneficiaireId,
+          mediateurId: mediateurAvecActiviteMediateurId,
+          prenom: 'Premier',
+          nom: 'Test',
+          anonyme: false,
+        },
+      })
+
+      try {
+        // Create first activité (earlier date) - this will be premierAccompagnement
+        const firstActiviteInput: CreateOrUpdateActiviteInput = {
+          type: 'Individuel',
+          data: {
+            mediateurId: mediateurAvecActiviteMediateurId,
+            typeLieu: 'Domicile',
+            thematiques: ['SecuriteNumerique'],
+            tags: [],
+            date: '2024-10-01', // Earlier date
+            materiel: [],
+            lieuCommuneData: banDefaultValueToAdresseBanData({
+              commune: 'Paris',
+              codePostal: '75001',
+              codeInsee: '75056',
+            }),
+            duree: { duree: '60' },
+            autonomie: 'EntierementAccompagne',
+            beneficiaire: { id: beneficiaireId },
+          },
+        }
+
+        const firstActivite = await createOrUpdateActivite({
+          input: firstActiviteInput,
+          sessionUserId: mediateurAvecActivite.id,
+          mediateurUserId: mediateurAvecActivite.id,
+          mediateurId: mediateurAvecActiviteMediateurId,
+        })
+
+        // Create second activité (later date)
+        const secondActiviteInput: CreateOrUpdateActiviteInput = {
+          type: 'Individuel',
+          data: {
+            mediateurId: mediateurAvecActiviteMediateurId,
+            typeLieu: 'Domicile',
+            thematiques: ['SecuriteNumerique'],
+            tags: [],
+            date: '2024-10-15', // Later date
+            materiel: [],
+            lieuCommuneData: banDefaultValueToAdresseBanData({
+              commune: 'Paris',
+              codePostal: '75001',
+              codeInsee: '75056',
+            }),
+            duree: { duree: '60' },
+            autonomie: 'EntierementAccompagne',
+            beneficiaire: { id: beneficiaireId },
+          },
+        }
+
+        const secondActivite = await createOrUpdateActivite({
+          input: secondActiviteInput,
+          sessionUserId: mediateurAvecActivite.id,
+          mediateurUserId: mediateurAvecActivite.id,
+          mediateurId: mediateurAvecActiviteMediateurId,
+        })
+
+        // Verify first activité has premierAccompagnement
+        const firstAccompagnement = await prismaClient.accompagnement.findFirst(
+          {
+            where: {
+              activiteId: firstActivite.id,
+              beneficiaireId,
+            },
+          },
+        )
+        expect(firstAccompagnement?.premierAccompagnement).toBe(true)
+
+        // Verify second activité does NOT have premierAccompagnement
+        const secondAccompagnement =
+          await prismaClient.accompagnement.findFirst({
+            where: {
+              activiteId: secondActivite.id,
+              beneficiaireId,
+            },
+          })
+        expect(secondAccompagnement?.premierAccompagnement).toBe(false)
+
+        // Delete the first activité (with premierAccompagnement)
+        await deleteActivite({
+          activiteId: firstActivite.id,
+          sessionUserId: mediateurAvecActivite.id,
+          mediateurId: mediateurAvecActiviteMediateurId,
+        })
+
+        // Verify second activité now has premierAccompagnement reassigned
+        const updatedSecondAccompagnement =
+          await prismaClient.accompagnement.findFirst({
+            where: {
+              activiteId: secondActivite.id,
+              beneficiaireId,
+            },
+          })
+        expect(updatedSecondAccompagnement?.premierAccompagnement).toBe(true)
+
+        // Verify first accompagnement is deleted
+        const deletedAccompagnement =
+          await prismaClient.accompagnement.findFirst({
+            where: {
+              activiteId: firstActivite.id,
+              beneficiaireId,
+            },
+          })
+        expect(deletedAccompagnement).toBeNull()
+      } finally {
+        // Cleanup
+        await prismaClient.accompagnement.deleteMany({
+          where: { beneficiaireId },
+        })
+        await prismaClient.beneficiaire.delete({
+          where: { id: beneficiaireId },
+        })
+      }
+    })
+
     it('should delete individuel with structure and update structure count', async () => {
       // Get initial counts
       const initialCounts = await getCounts({
@@ -303,6 +431,134 @@ describe('deleteActivite', () => {
         where: { id: { in: anonymeBeneficiaireIds } },
       })
       expect(deletedBeneficiaires.length).toBe(0)
+    })
+
+    it('should reassign premierAccompagnement when deleting collectif with premierAccompagnement', async () => {
+      // Create a beneficiaire suivi
+      const beneficiaireId = v4()
+      await prismaClient.beneficiaire.create({
+        data: {
+          id: beneficiaireId,
+          mediateurId: mediateurAvecActiviteMediateurId,
+          prenom: 'Premier',
+          nom: 'Collectif',
+          anonyme: false,
+        },
+      })
+
+      try {
+        // Create first collectif (earlier date) - this will be premierAccompagnement
+        const firstActiviteInput: CreateOrUpdateActiviteInput = {
+          type: 'Collectif',
+          data: {
+            mediateurId: mediateurAvecActiviteMediateurId,
+            typeLieu: 'Autre',
+            participants: [{ id: beneficiaireId }],
+            participantsAnonymes: {
+              ...participantsAnonymesDefault,
+              total: 0,
+            },
+            titreAtelier: 'First atelier',
+            thematiques: ['SecuriteNumerique'],
+            tags: [],
+            date: '2024-10-01', // Earlier date
+            materiel: [],
+            duree: { duree: '120' },
+            niveau: 'Debutant',
+          },
+        }
+
+        const firstActivite = await createOrUpdateActivite({
+          input: firstActiviteInput,
+          sessionUserId: mediateurAvecActivite.id,
+          mediateurUserId: mediateurAvecActivite.id,
+          mediateurId: mediateurAvecActiviteMediateurId,
+        })
+
+        // Create second collectif (later date)
+        const secondActiviteInput: CreateOrUpdateActiviteInput = {
+          type: 'Collectif',
+          data: {
+            mediateurId: mediateurAvecActiviteMediateurId,
+            typeLieu: 'Autre',
+            participants: [{ id: beneficiaireId }],
+            participantsAnonymes: {
+              ...participantsAnonymesDefault,
+              total: 0,
+            },
+            titreAtelier: 'Second atelier',
+            thematiques: ['SecuriteNumerique'],
+            tags: [],
+            date: '2024-10-15', // Later date
+            materiel: [],
+            duree: { duree: '120' },
+            niveau: 'Debutant',
+          },
+        }
+
+        const secondActivite = await createOrUpdateActivite({
+          input: secondActiviteInput,
+          sessionUserId: mediateurAvecActivite.id,
+          mediateurUserId: mediateurAvecActivite.id,
+          mediateurId: mediateurAvecActiviteMediateurId,
+        })
+
+        // Verify first activité has premierAccompagnement
+        const firstAccompagnement = await prismaClient.accompagnement.findFirst(
+          {
+            where: {
+              activiteId: firstActivite.id,
+              beneficiaireId,
+            },
+          },
+        )
+        expect(firstAccompagnement?.premierAccompagnement).toBe(true)
+
+        // Verify second activité does NOT have premierAccompagnement
+        const secondAccompagnement =
+          await prismaClient.accompagnement.findFirst({
+            where: {
+              activiteId: secondActivite.id,
+              beneficiaireId,
+            },
+          })
+        expect(secondAccompagnement?.premierAccompagnement).toBe(false)
+
+        // Delete the first activité (with premierAccompagnement)
+        await deleteActivite({
+          activiteId: firstActivite.id,
+          sessionUserId: mediateurAvecActivite.id,
+          mediateurId: mediateurAvecActiviteMediateurId,
+        })
+
+        // Verify second activité now has premierAccompagnement reassigned
+        const updatedSecondAccompagnement =
+          await prismaClient.accompagnement.findFirst({
+            where: {
+              activiteId: secondActivite.id,
+              beneficiaireId,
+            },
+          })
+        expect(updatedSecondAccompagnement?.premierAccompagnement).toBe(true)
+
+        // Verify first accompagnement is deleted
+        const deletedAccompagnement =
+          await prismaClient.accompagnement.findFirst({
+            where: {
+              activiteId: firstActivite.id,
+              beneficiaireId,
+            },
+          })
+        expect(deletedAccompagnement).toBeNull()
+      } finally {
+        // Cleanup
+        await prismaClient.accompagnement.deleteMany({
+          where: { beneficiaireId },
+        })
+        await prismaClient.beneficiaire.delete({
+          where: { id: beneficiaireId },
+        })
+      }
     })
   })
 

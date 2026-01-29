@@ -1,7 +1,6 @@
 'use client'
 
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -16,13 +15,9 @@ const queryParamsToKeep = ['departement']
 
 export const FilterTags = ({
   filters,
-  lieuxActiviteOptions,
-  departementsOptions,
   communesOptions,
 }: {
   filters: ActeursFilters
-  lieuxActiviteOptions: LieuActiviteOption[]
-  departementsOptions: SelectOption[]
   communesOptions: SelectOption[]
 }) => {
   const router = useRouter()
@@ -31,8 +26,6 @@ export const FilterTags = ({
 
   const filterLabelsToDisplay = generateActeursFiltersLabels(filters, {
     communesOptions,
-    departementsOptions,
-    lieuxActiviteOptions,
   }).map(toLieuPrefix)
 
   const handleRemoveFilter = (key: string, value: string | string[]) => {

@@ -36,17 +36,23 @@ const CartographyIndicator = ({
   status,
   structureCartographieNationaleId,
   structureId,
+  className,
 }: {
   status: CartographyStatus
   structureCartographieNationaleId?: string | null
   structureId: string
+  className?: string
 }) => {
   const tooltipId = `tooltip-carto-${structureId}`
 
   if (status === 'visible' && structureCartographieNationaleId) {
     return (
       <Link
-        className={classNames('fr-tag fr-tag--sm', styles.tagVisible)}
+        className={classNames(
+          'fr-tag fr-tag--sm',
+          styles.tagVisible,
+          className,
+        )}
         href={getStructureCartographieLink({
           structureCartographieNationaleId,
         })}

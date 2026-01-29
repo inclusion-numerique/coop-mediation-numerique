@@ -9,8 +9,6 @@ import type { ProfilInscription } from '@prisma/client'
 
 /**
  * Update user's checked profile inscription based on Dataspace data
- *
- * This is the Dataspace equivalent of updateUserInscriptionProfileFromV1Data
  */
 export const updateUserInscriptionProfileFromDataspace = async ({
   user,
@@ -28,6 +26,7 @@ export const updateUserInscriptionProfileFromDataspace = async ({
         }),
         isConseillerNumerique: dataspaceData?.is_conseiller_numerique ?? false,
         dataspaceUserId: dataspaceData?.id,
+        dataspaceUserIdPg: dataspaceData?.pg_id,
       },
       select: sessionUserSelect,
     })

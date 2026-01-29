@@ -121,7 +121,8 @@ model User {
   siret String?
 
   // Internal Dataspace ID for the user
-  dataspaceUserId Int? @unique @map("dataspace_user_id") @db.Integer
+  dataspaceUserId   Int? @unique @map("dataspace_user_id") @db.Integer
+  dataspaceUserIdPg Int? @map("dataspace_user_id_pg") @db.Integer // another id belonging to dataspace, needed on their side for synchronisation
   // If user is in the Conseiller Numerique program. Dataspace API is the source of truth for this data
   isConseillerNumerique Boolean @default(false) @map("is_conseiller_numerique")
 
@@ -1085,6 +1086,7 @@ model Beneficiaire {
   @@index([anonyme])
   @@index([mediateurId])
   @@index([rdvUserId])
+  @@index([fusionVersId])
   @@map("beneficiaires")
 }
 

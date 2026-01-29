@@ -34,10 +34,7 @@ const Page = async ({
       departementCode,
       searchParams,
     }),
-    getActeursFiltersOptions({
-      departementCode,
-      currentLieuxFilter: searchParams.lieux,
-    }),
+    getActeursFiltersOptions({ departementCode }),
   ])
 
   return (
@@ -47,8 +44,6 @@ const Page = async ({
       searchParams={searchParams}
       isFiltered={pageData.isFiltered}
       communesOptions={filtersOptions.communesOptions}
-      departementsOptions={filtersOptions.departementsOptions}
-      lieuxActiviteOptions={filtersOptions.lieuxActiviteOptions}
     />
   )
 }

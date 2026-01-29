@@ -348,6 +348,7 @@ export type UtilisateurAttributes = {
   } | null
   conseiller_numerique: {
     is_conseiller_numerique: true
+    id_pg: number | null
   } | null
 }
 
@@ -629,6 +630,7 @@ export const GET = createApiV1Route
           conseiller_numerique: u.isConseillerNumerique
             ? {
                 is_conseiller_numerique: true,
+                id_pg: u.dataspaceUserIdPg,
               }
             : null,
         },

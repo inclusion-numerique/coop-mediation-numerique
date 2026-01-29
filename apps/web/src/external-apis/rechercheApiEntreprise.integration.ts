@@ -12,7 +12,8 @@ describe('rechercheApiEntreprise', () => {
         activite_principale: '62.02A',
         date_creation: '2024-11-04',
         siege: expect.objectContaining({
-          siret: '93429789600011',
+          siret: '93429789600029',
+          date_creation: '2026-01-19',
         }),
       }),
     )

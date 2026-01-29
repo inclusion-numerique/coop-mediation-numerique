@@ -11,12 +11,24 @@ import {
 } from '@app/web/utils/monthShortLabels'
 import { UserProfile } from '@app/web/utils/user'
 import { Prisma } from '@prisma/client'
+import { differenceInMonths } from 'date-fns'
 import { LabelAndCount } from '../quantifiedShare'
 import { activitesSourceWhereCondition } from './activitesSourceWhereCondition'
 
 const EMPTY_ACCOMPAGNEMENTS_COUNT = monthShortLabels.map(
   (label: MonthShortLabel) => ({ label, count: 0 }),
 )
+
+const formatMonthLabel = (
+  month: number,
+  year: number,
+  includeYear: boolean,
+): string => {
+  const monthLabel = monthShortLabels[month - 1]
+  if (!includeYear) return monthLabel
+  const shortYear = year.toString().slice(-2)
+  return `${monthLabel} ${shortYear}`
+}
 
 export const getAccompagnementsCountByMonth = async ({
   user,
@@ -45,7 +57,16 @@ export const getAccompagnementsCountByMonth = async ({
     ? `TO_DATE('${periodStart}', 'YYYY-MM-DD')`
     : `DATE_TRUNC('month', ${endDate} - INTERVAL '${intervals - 1} months')`
 
-  return prismaClient.$queryRaw<{ month: number; count: number }[]>`
+  // Determine if we need to show year in labels (when period > 12 months)
+  const startDateObj = periodStart
+    ? new Date(periodStart)
+    : new Date(new Date().setMonth(new Date().getMonth() - (intervals - 1)))
+  const endDateObj = periodEnd ? new Date(periodEnd) : new Date()
+  const includeYear = differenceInMonths(endDateObj, startDateObj) > 11
+
+  return prismaClient.$queryRaw<
+    { month: number; year: number; count: number }[]
+  >`
       WITH filtered_accompagnements AS (
           SELECT act.date
           FROM activites act
@@ -72,14 +93,15 @@ export const getAccompagnementsCountByMonth = async ({
                 : Prisma.empty
             }),
            months AS (SELECT DATE_TRUNC(
-            'month', 
+            'month',
             generate_series(
-              ${Prisma.raw(fromDate)}, 
-              ${Prisma.raw(endDate)}, 
+              ${Prisma.raw(fromDate)},
+              ${Prisma.raw(endDate)},
               '1 month'::interval
               )
             ) AS month)
       SELECT EXTRACT(MONTH FROM months.month)::int     AS month,
+             EXTRACT(YEAR FROM months.month)::int      AS year,
              COUNT(filtered_accompagnements.date)::int AS count
       FROM months
         LEFT JOIN filtered_accompagnements
@@ -87,9 +109,9 @@ export const getAccompagnementsCountByMonth = async ({
       GROUP BY months.month
       ORDER BY months.month
   `.then((result) =>
-    result.map(({ count, month }) => ({
+    result.map(({ count, month, year }) => ({
       count,
-      label: monthShortLabels[month - 1],
+      label: formatMonthLabel(month, year, includeYear),
     })),
   )
 }
