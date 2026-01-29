@@ -34,7 +34,7 @@ importers:
         version: 3.7.3
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@swc/core@1.15.3)(@types/node@25.0.9)(typescript@6.0.0-dev.20260127)
+        version: 10.9.2(@swc/core@1.15.3)(@types/node@25.0.9)(typescript@6.0.0-dev.20260129)
       turbo:
         specifier: ^2.6.1
         version: 2.6.1
@@ -106,8 +106,8 @@ importers:
         specifier: ^4.19.4
         version: 4.21.0
       undici:
-        specifier: ^7.8.0
-        version: 7.16.0
+        specifier: ^7.18.2
+        version: 7.18.2
       uuid:
         specifier: ^11.1.0
         version: 11.1.0
@@ -470,8 +470,8 @@ importers:
         specifier: ^3.19.3
         version: 3.19.3
       undici:
-        specifier: ^7.8.0
-        version: 7.16.0
+        specifier: ^7.18.2
+        version: 7.18.2
       usehooks-ts:
         specifier: ^3.1.1
         version: 3.1.1(react@19.2.3)
@@ -748,13 +748,13 @@ importers:
     dependencies:
       '@faire/mjml-react':
         specifier: ^3.5.0
-        version: 3.5.3(mjml@4.17.1(encoding@0.1.13))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        version: 3.5.3(mjml@4.17.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       html-minifier:
         specifier: ^4.0.0
         version: 4.0.0
       mjml:
         specifier: ^4.15.3
-        version: 4.17.1(encoding@0.1.13)
+        version: 4.17.1
       react:
         specifier: ^19.2.3
         version: 19.2.3
@@ -8202,6 +8202,10 @@ packages:
     resolution: {integrity: sha512-d4lC8xfavMeBjzGr2vECC3fsGXziXZQyJxD868h2M/mBI3PwAuODxAkLkq5HYuvrPYcUtiLzsTo8U3PgX3Ocww==}
     engines: {node: '>=10.13.0'}
 
+  enhanced-resolve@5.18.4:
+    resolution: {integrity: sha512-LgQMM4WXU3QI+SYgEc2liRgznaD5ojbmY3sb8LxyguVkIg5FxdpTkvk72te2R38/TGKxH634oLxXRGY6d7AP+Q==}
+    engines: {node: '>=10.13.0'}
+
   enquirer@2.4.1:
     resolution: {integrity: sha512-rRqJg/6gd538VHvR3PSrdRBb/1Vy2YfzHqzvbhGIQpDRKIa4FgV/54b5Q1xYSxOOwKvjXweS26E0Q+nAMwp2pQ==}
     engines: {node: '>=8.6'}
@@ -9968,8 +9972,8 @@ packages:
     resolution: {integrity: sha512-Rczb6FMM6JT0lvrOlP5WUOCB7s9XKxzwgErzhKlKde1bEV90FXplV1o87fpt4PU/asJFiqjYJxAJyzJhcrxOsQ==}
     engines: {node: '>=18'}
 
-  langsmith@0.3.82:
-    resolution: {integrity: sha512-RTcxtRm0zp2lV+pMesMW7EZSsIlqN7OmR2F6sZ/sOFQwmcLVl+VErMPV4VkX4Sycs4/EIAFT5hpr36EqiHoikQ==}
+  langsmith@0.3.87:
+    resolution: {integrity: sha512-XXR1+9INH8YX96FKWc5tie0QixWz6tOqAsAKfcJyPkE0xPep+NDz0IQLR32q4bn10QK3LqD2HN6T3n6z1YLW7Q==}
     peerDependencies:
       '@opentelemetry/api': '*'
       '@opentelemetry/exporter-trace-otlp-proto': '*'
@@ -12732,6 +12736,22 @@ packages:
       uglify-js:
         optional: true
 
+  terser-webpack-plugin@5.3.16:
+    resolution: {integrity: sha512-h9oBFCWrq78NyWWVcSwZarJkZ01c2AyGrzs1crmHZO3QUg9D61Wu4NPjBy69n7JqylFF5y+CsUZYmYEIZ3mR+Q==}
+    engines: {node: '>= 10.13.0'}
+    peerDependencies:
+      '@swc/core': '*'
+      esbuild: '*'
+      uglify-js: '*'
+      webpack: ^5.1.0
+    peerDependenciesMeta:
+      '@swc/core':
+        optional: true
+      esbuild:
+        optional: true
+      uglify-js:
+        optional: true
+
   terser@5.44.1:
     resolution: {integrity: sha512-t/R3R/n0MSwnnazuPpPNVO60LX0SKL45pyl9YlvxIdkH0Of7D5qM2EVe+yASRIlY5pZ73nclYJfNANGWPwFDZw==}
     engines: {node: '>=10'}
@@ -13061,8 +13081,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@6.0.0-dev.20260127:
-    resolution: {integrity: sha512-VJ7q/PPcmCqwwer09+0ONkt/Mv9fJKuKbyoX1bB6nW7ZTcq++dy+3dlPFYh5L3damda33mabVy/581HL9q+i+g==}
+  typescript@6.0.0-dev.20260129:
+    resolution: {integrity: sha512-Z1CFUfUKbCGcVmMye4hpwlH+BeefINUtIunI+j5toYsnOgZnLpPQ8N9PKHuOA7ggMgGs26+omFUuxDf0fPoQSQ==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -13091,8 +13111,8 @@ packages:
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
-  undici@7.16.0:
-    resolution: {integrity: sha512-QEg3HPMll0o3t2ourKwOeUAZ159Kn9mx5pnzHRQO8+Wixmh88YdZRiIwat0iNzNNXn0yoEtXJqFpyW7eM8BV7g==}
+  undici@7.18.2:
+    resolution: {integrity: sha512-y+8YjDFzWdQlSE9N5nzKMT3g4a5UBX1HKowfdXh0uvAnTaqqwqB92Jt4UXBAeKekDs5IaDKyJFR4X1gYVCgXcw==}
     engines: {node: '>=20.18.1'}
 
   unicode-canonical-property-names-ecmascript@2.0.1:
@@ -13332,6 +13352,10 @@ packages:
     resolution: {integrity: sha512-c5EGNOiyxxV5qmTtAB7rbiXxi1ooX1pQKMLX/MIabJjRA0SJBQOjKF+KSVfHkr9U1cADPon0mRiVe/riyaiDUA==}
     engines: {node: '>=10.13.0'}
 
+  watchpack@2.5.0:
+    resolution: {integrity: sha512-e6vZvY6xboSwLz2GD36c16+O/2Z6fKvIf4pOXptw2rY9MVwE/TXc6RGqxD3I3x0a28lwBY7DE+76uTPSsBrrCA==}
+    engines: {node: '>=10.13.0'}
+
   wcwidth@1.0.1:
     resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}
 
@@ -13404,6 +13428,7 @@ packages:
   whatwg-encoding@2.0.0:
     resolution: {integrity: sha512-p41ogyeMUrw3jWclHWTQg1k05DSVXPLcVxRTYsXUk+ZooOCZLcoYgPZ/HL/D/N+uQPOtcp1me1WhBEaX02mhWg==}
     engines: {node: '>=12'}
+    deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
 
   whatwg-mimetype@3.0.0:
     resolution: {integrity: sha512-nt+N2dzIutVRxARx1nghPKGv1xHikU7HKdfafKkLNLindmPU/ch3U31NOCGGA/dmPcmb1VlofO0vnKAcsm0o/Q==}
@@ -13634,6 +13659,11 @@ packages:
 
   zod-to-json-schema@3.25.0:
     resolution: {integrity: sha512-HvWtU2UG41LALjajJrML6uQejQhNJx+JBO9IflpSja4R03iNWfKXrj6W2h7ljuLyc1nKS+9yDyL/9tD1U/yBnQ==}
+    peerDependencies:
+      zod: ^3.25 || ^4
+
+  zod-to-json-schema@3.25.1:
+    resolution: {integrity: sha512-pM/SU9d3YAggzi6MtR4h7ruuQlqKtad8e9S0fmxcMi+ueAK5Korys/aWcV9LIIHTVbj01NdzxcnXSN+O74ZIVA==}
     peerDependencies:
       zod: ^3.25 || ^4
 
@@ -15981,10 +16011,10 @@ snapshots:
       '@eslint/core': 0.17.0
       levn: 0.4.1
 
-  '@faire/mjml-react@3.5.3(mjml@4.17.1(encoding@0.1.13))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
+  '@faire/mjml-react@3.5.3(mjml@4.17.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
     dependencies:
       lodash.kebabcase: 4.1.1
-      mjml: 4.17.1(encoding@0.1.13)
+      mjml: 4.17.1
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
 
@@ -16660,13 +16690,13 @@ snapshots:
       camelcase: 6.3.0
       decamelize: 1.2.0
       js-tiktoken: 1.0.21
-      langsmith: 0.3.82(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.3.0(@opentelemetry/api@1.9.0))(openai@4.104.0(encoding@0.1.13)(ws@8.18.3)(zod@3.25.76))
+      langsmith: 0.3.87(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.3.0(@opentelemetry/api@1.9.0))(openai@4.104.0(encoding@0.1.13)(ws@8.18.3)(zod@3.25.76))
       mustache: 4.2.0
       p-queue: 6.6.2
       p-retry: 4.6.2
       uuid: 10.0.0
       zod: 3.25.76
-      zod-to-json-schema: 3.25.0(zod@3.25.76)
+      zod-to-json-schema: 3.25.1(zod@3.25.76)
     transitivePeerDependencies:
       - '@opentelemetry/api'
       - '@opentelemetry/exporter-trace-otlp-proto'
@@ -22379,7 +22409,7 @@ snapshots:
     dependencies:
       semver: 7.7.3
       shelljs: 0.8.5
-      typescript: 6.0.0-dev.20260127
+      typescript: 6.0.0-dev.20260129
 
   downshift@9.0.10(react@19.2.3):
     dependencies:
@@ -22482,6 +22512,11 @@ snapshots:
       objectorarray: 1.0.5
 
   enhanced-resolve@5.18.3:
+    dependencies:
+      graceful-fs: 4.2.11
+      tapable: 2.3.0
+
+  enhanced-resolve@5.18.4:
     dependencies:
       graceful-fs: 4.2.11
       tapable: 2.3.0
@@ -24932,6 +24967,16 @@ snapshots:
       readable-stream: 2.3.8
       setimmediate: 1.0.5
 
+  juice@10.0.1:
+    dependencies:
+      cheerio: 1.0.0-rc.12
+      commander: 6.2.1
+      mensch: 0.3.4
+      slick: 1.12.2
+      web-resource-inliner: 6.0.1
+    transitivePeerDependencies:
+      - encoding
+
   juice@10.0.1(encoding@0.1.13):
     dependencies:
       cheerio: 1.0.0-rc.12
@@ -24967,7 +25012,7 @@ snapshots:
 
   ky@1.14.0: {}
 
-  langsmith@0.3.82(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.3.0(@opentelemetry/api@1.9.0))(openai@4.104.0(encoding@0.1.13)(ws@8.18.3)(zod@3.25.76)):
+  langsmith@0.3.87(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.3.0(@opentelemetry/api@1.9.0))(openai@4.104.0(encoding@0.1.13)(ws@8.18.3)(zod@3.25.76)):
     dependencies:
       '@types/uuid': 10.0.0
       chalk: 4.1.2
@@ -25394,11 +25439,27 @@ snapshots:
 
   minipass@7.1.2: {}
 
+  mjml-accordion@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
+    transitivePeerDependencies:
+      - encoding
+
   mjml-accordion@4.17.1(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.28.4
       lodash: 4.17.21
       mjml-core: 4.17.1(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+
+  mjml-body@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
     transitivePeerDependencies:
       - encoding
 
@@ -25410,6 +25471,14 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  mjml-button@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
+    transitivePeerDependencies:
+      - encoding
+
   mjml-button@4.17.1(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.28.4
@@ -25418,11 +25487,36 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  mjml-carousel@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
+    transitivePeerDependencies:
+      - encoding
+
   mjml-carousel@4.17.1(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.28.4
       lodash: 4.17.21
       mjml-core: 4.17.1(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+
+  mjml-cli@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      chokidar: 3.6.0
+      glob: 10.5.0
+      html-minifier: 4.0.0
+      js-beautify: 1.15.4
+      lodash: 4.17.21
+      minimatch: 9.0.5
+      mjml-core: 4.17.1
+      mjml-migrate: 4.17.1
+      mjml-parser-xml: 4.17.1
+      mjml-validator: 4.17.1
+      yargs: 17.7.2
     transitivePeerDependencies:
       - encoding
 
@@ -25443,11 +25537,34 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  mjml-column@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
+    transitivePeerDependencies:
+      - encoding
+
   mjml-column@4.17.1(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.28.4
       lodash: 4.17.21
       mjml-core: 4.17.1(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+
+  mjml-core@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      cheerio: 1.0.0-rc.12
+      detect-node: 2.1.0
+      html-minifier: 4.0.0
+      js-beautify: 1.15.4
+      juice: 10.0.1
+      lodash: 4.17.21
+      mjml-migrate: 4.17.1
+      mjml-parser-xml: 4.17.1
+      mjml-validator: 4.17.1
     transitivePeerDependencies:
       - encoding
 
@@ -25466,11 +25583,27 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  mjml-divider@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
+    transitivePeerDependencies:
+      - encoding
+
   mjml-divider@4.17.1(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.28.4
       lodash: 4.17.21
       mjml-core: 4.17.1(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+
+  mjml-group@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
     transitivePeerDependencies:
       - encoding
 
@@ -25482,11 +25615,27 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  mjml-head-attributes@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
+    transitivePeerDependencies:
+      - encoding
+
   mjml-head-attributes@4.17.1(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.28.4
       lodash: 4.17.21
       mjml-core: 4.17.1(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+
+  mjml-head-breakpoint@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
     transitivePeerDependencies:
       - encoding
 
@@ -25498,11 +25647,27 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  mjml-head-font@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
+    transitivePeerDependencies:
+      - encoding
+
   mjml-head-font@4.17.1(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.28.4
       lodash: 4.17.21
       mjml-core: 4.17.1(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+
+  mjml-head-html-attributes@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
     transitivePeerDependencies:
       - encoding
 
@@ -25514,11 +25679,27 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  mjml-head-preview@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
+    transitivePeerDependencies:
+      - encoding
+
   mjml-head-preview@4.17.1(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.28.4
       lodash: 4.17.21
       mjml-core: 4.17.1(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+
+  mjml-head-style@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
     transitivePeerDependencies:
       - encoding
 
@@ -25530,11 +25711,27 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  mjml-head-title@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
+    transitivePeerDependencies:
+      - encoding
+
   mjml-head-title@4.17.1(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.28.4
       lodash: 4.17.21
       mjml-core: 4.17.1(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+
+  mjml-head@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
     transitivePeerDependencies:
       - encoding
 
@@ -25546,11 +25743,27 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  mjml-hero@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
+    transitivePeerDependencies:
+      - encoding
+
   mjml-hero@4.17.1(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.28.4
       lodash: 4.17.21
       mjml-core: 4.17.1(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+
+  mjml-image@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
     transitivePeerDependencies:
       - encoding
 
@@ -25562,6 +25775,17 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  mjml-migrate@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      js-beautify: 1.15.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
+      mjml-parser-xml: 4.17.1
+      yargs: 17.7.2
+    transitivePeerDependencies:
+      - encoding
+
   mjml-migrate@4.17.1(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.28.4
@@ -25570,6 +25794,14 @@ snapshots:
       mjml-core: 4.17.1(encoding@0.1.13)
       mjml-parser-xml: 4.17.1
       yargs: 17.7.2
+    transitivePeerDependencies:
+      - encoding
+
+  mjml-navbar@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
     transitivePeerDependencies:
       - encoding
 
@@ -25587,6 +25819,37 @@ snapshots:
       detect-node: 2.1.0
       htmlparser2: 9.1.0
       lodash: 4.17.21
+
+  mjml-preset-core@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      mjml-accordion: 4.17.1
+      mjml-body: 4.17.1
+      mjml-button: 4.17.1
+      mjml-carousel: 4.17.1
+      mjml-column: 4.17.1
+      mjml-divider: 4.17.1
+      mjml-group: 4.17.1
+      mjml-head: 4.17.1
+      mjml-head-attributes: 4.17.1
+      mjml-head-breakpoint: 4.17.1
+      mjml-head-font: 4.17.1
+      mjml-head-html-attributes: 4.17.1
+      mjml-head-preview: 4.17.1
+      mjml-head-style: 4.17.1
+      mjml-head-title: 4.17.1
+      mjml-hero: 4.17.1
+      mjml-image: 4.17.1
+      mjml-navbar: 4.17.1
+      mjml-raw: 4.17.1
+      mjml-section: 4.17.1
+      mjml-social: 4.17.1
+      mjml-spacer: 4.17.1
+      mjml-table: 4.17.1
+      mjml-text: 4.17.1
+      mjml-wrapper: 4.17.1
+    transitivePeerDependencies:
+      - encoding
 
   mjml-preset-core@4.17.1(encoding@0.1.13):
     dependencies:
@@ -25619,6 +25882,14 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  mjml-raw@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
+    transitivePeerDependencies:
+      - encoding
+
   mjml-raw@4.17.1(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.28.4
@@ -25637,11 +25908,27 @@ snapshots:
       react-dom: 19.2.3(react@19.2.3)
       react-reconciler: 0.26.2(react@19.2.3)
 
+  mjml-section@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
+    transitivePeerDependencies:
+      - encoding
+
   mjml-section@4.17.1(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.28.4
       lodash: 4.17.21
       mjml-core: 4.17.1(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+
+  mjml-social@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
     transitivePeerDependencies:
       - encoding
 
@@ -25653,6 +25940,14 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  mjml-spacer@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
+    transitivePeerDependencies:
+      - encoding
+
   mjml-spacer@4.17.1(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.28.4
@@ -25661,11 +25956,27 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  mjml-table@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
+    transitivePeerDependencies:
+      - encoding
+
   mjml-table@4.17.1(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.28.4
       lodash: 4.17.21
       mjml-core: 4.17.1(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+
+  mjml-text@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
     transitivePeerDependencies:
       - encoding
 
@@ -25681,12 +25992,32 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.28.4
 
+  mjml-wrapper@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      lodash: 4.17.21
+      mjml-core: 4.17.1
+      mjml-section: 4.17.1
+    transitivePeerDependencies:
+      - encoding
+
   mjml-wrapper@4.17.1(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.28.4
       lodash: 4.17.21
       mjml-core: 4.17.1(encoding@0.1.13)
       mjml-section: 4.17.1(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+
+  mjml@4.17.1:
+    dependencies:
+      '@babel/runtime': 7.28.4
+      mjml-cli: 4.17.1
+      mjml-core: 4.17.1
+      mjml-migrate: 4.17.1
+      mjml-preset-core: 4.17.1
+      mjml-validator: 4.17.1
     transitivePeerDependencies:
       - encoding
 
@@ -25942,6 +26273,10 @@ snapshots:
   node-domexception@1.0.0: {}
 
   node-fetch-native@1.6.7: {}
+
+  node-fetch@2.7.0:
+    dependencies:
+      whatwg-url: 5.0.0
 
   node-fetch@2.7.0(encoding@0.1.13):
     dependencies:
@@ -28425,7 +28760,7 @@ snapshots:
       '@swc/core': 1.15.3
       esbuild: 0.25.12
 
-  terser-webpack-plugin@5.3.14(@swc/core@1.15.3)(uglify-js@3.19.3)(webpack@5.103.0(@swc/core@1.15.3)(uglify-js@3.19.3)):
+  terser-webpack-plugin@5.3.16(@swc/core@1.15.3)(uglify-js@3.19.3)(webpack@5.103.0(@swc/core@1.15.3)(uglify-js@3.19.3)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
@@ -28437,7 +28772,7 @@ snapshots:
       '@swc/core': 1.15.3
       uglify-js: 3.19.3
 
-  terser-webpack-plugin@5.3.14(@swc/core@1.15.3)(webpack@5.103.0(@swc/core@1.15.3)):
+  terser-webpack-plugin@5.3.16(@swc/core@1.15.3)(webpack@5.103.0(@swc/core@1.15.3)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
@@ -28614,7 +28949,7 @@ snapshots:
     optionalDependencies:
       '@swc/core': 1.15.3
 
-  ts-node@10.9.2(@swc/core@1.15.3)(@types/node@25.0.9)(typescript@6.0.0-dev.20260127):
+  ts-node@10.9.2(@swc/core@1.15.3)(@types/node@25.0.9)(typescript@6.0.0-dev.20260129):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.12
@@ -28628,7 +28963,7 @@ snapshots:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 6.0.0-dev.20260127
+      typescript: 6.0.0-dev.20260129
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
     optionalDependencies:
@@ -28789,7 +29124,7 @@ snapshots:
 
   typescript@5.9.3: {}
 
-  typescript@6.0.0-dev.20260127: {}
+  typescript@6.0.0-dev.20260129: {}
 
   uc.micro@2.1.0: {}
 
@@ -28810,7 +29145,7 @@ snapshots:
 
   undici-types@7.16.0: {}
 
-  undici@7.16.0: {}
+  undici@7.18.2: {}
 
   unicode-canonical-property-names-ecmascript@2.0.1: {}
 
@@ -29046,9 +29381,25 @@ snapshots:
       glob-to-regexp: 0.4.1
       graceful-fs: 4.2.11
 
+  watchpack@2.5.0:
+    dependencies:
+      glob-to-regexp: 0.4.1
+      graceful-fs: 4.2.11
+
   wcwidth@1.0.1:
     dependencies:
       defaults: 1.0.4
+
+  web-resource-inliner@6.0.1:
+    dependencies:
+      ansi-colors: 4.1.3
+      escape-goat: 3.0.0
+      htmlparser2: 5.0.1
+      mime: 2.6.0
+      node-fetch: 2.7.0
+      valid-data-url: 3.0.1
+    transitivePeerDependencies:
+      - encoding
 
   web-resource-inliner@6.0.1(encoding@0.1.13):
     dependencies:
@@ -29154,7 +29505,7 @@ snapshots:
       acorn-import-phases: 1.0.4(acorn@8.15.0)
       browserslist: 4.28.0
       chrome-trace-event: 1.0.4
-      enhanced-resolve: 5.18.3
+      enhanced-resolve: 5.18.4
       es-module-lexer: 1.7.0
       eslint-scope: 5.1.1
       events: 3.3.0
@@ -29166,8 +29517,8 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.0
-      terser-webpack-plugin: 5.3.14(@swc/core@1.15.3)(webpack@5.103.0(@swc/core@1.15.3))
-      watchpack: 2.4.4
+      terser-webpack-plugin: 5.3.16(@swc/core@1.15.3)(webpack@5.103.0(@swc/core@1.15.3))
+      watchpack: 2.5.0
       webpack-sources: 3.3.3
     transitivePeerDependencies:
       - '@swc/core'
@@ -29186,7 +29537,7 @@ snapshots:
       acorn-import-phases: 1.0.4(acorn@8.15.0)
       browserslist: 4.28.0
       chrome-trace-event: 1.0.4
-      enhanced-resolve: 5.18.3
+      enhanced-resolve: 5.18.4
       es-module-lexer: 1.7.0
       eslint-scope: 5.1.1
       events: 3.3.0
@@ -29198,8 +29549,8 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.0
-      terser-webpack-plugin: 5.3.14(@swc/core@1.15.3)(uglify-js@3.19.3)(webpack@5.103.0(@swc/core@1.15.3)(uglify-js@3.19.3))
-      watchpack: 2.4.4
+      terser-webpack-plugin: 5.3.16(@swc/core@1.15.3)(uglify-js@3.19.3)(webpack@5.103.0(@swc/core@1.15.3)(uglify-js@3.19.3))
+      watchpack: 2.5.0
       webpack-sources: 3.3.3
     transitivePeerDependencies:
       - '@swc/core'
@@ -29446,6 +29797,10 @@ snapshots:
       readable-stream: 4.7.0
 
   zod-to-json-schema@3.25.0(zod@3.25.76):
+    dependencies:
+      zod: 3.25.76
+
+  zod-to-json-schema@3.25.1(zod@3.25.76):
     dependencies:
       zod: 3.25.76
 
