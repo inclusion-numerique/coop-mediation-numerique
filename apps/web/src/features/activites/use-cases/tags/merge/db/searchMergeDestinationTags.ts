@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client'
 import { Equipe, getEquipeInfo } from '../../equipe'
 import { getTagScope, TagScope } from '../../tagScope'
 import {
-  buildEditableTagsVisibilityClause,
+  buildAllVisibleTagsVisibilityClause,
   filterByMergeScope,
   TagRow,
 } from './tagVisibility'
@@ -82,7 +82,7 @@ const findMergeDestinationTags = async (
 
   const sourceScope = getTagScope(sourceTag)
   const { clause: visibilityClause, equipes } =
-    buildEditableTagsVisibilityClause(sessionUser)
+    buildAllVisibleTagsVisibilityClause(sessionUser)
 
   if (!visibilityClause) return { items: [] }
 
