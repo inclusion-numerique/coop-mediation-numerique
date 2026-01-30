@@ -45,7 +45,8 @@ export const getFiltersOptionsForMediateur = async ({
   ] = await Promise.all([
     getMediateurCommunesAndDepartementsOptions({ mediateurIds }),
     getMediateursTags({
-      mediateurIds,
+      mediateurId: user.mediateur?.id,
+      coordinateurId: user.coordinateur?.id,
       departement: getUserDepartement(user)?.code,
       equipeCoordinateurIds,
     }),
