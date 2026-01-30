@@ -16,6 +16,7 @@ import { executeInactiveUsersReminders } from './inactive-users-reminders/execut
 import { executeIngestLesBasesInRag } from './ingest-les-bases-in-rag/executeIngestLesBasesInRag'
 import type { Job, JobName, JobPayload } from './jobs'
 import { output } from './output'
+import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts/executeRemoveOrphanBrevoContacts'
 import { executeSetServciesToSharedLieux } from './set-servcies-to-shared-lieux/executeSetServciesToSharedLieux'
 import { executeSyncRdvspData } from './sync-rdvsp-data/executeSyncRdvspData'
 import { executeSyncUsersFromDataspace } from './sync-users-from-dataspace/executeSyncUsersFromDataspace'
@@ -61,6 +62,7 @@ export const jobExecutors: {
   'sync-rdvsp-data': executeSyncRdvspData,
   'inactive-users-reminders': executeInactiveUsersReminders,
   'fix-users-roles': executeFixUsersRoles,
+  'remove-orphan-brevo-contacts': executeRemoveOrphanBrevoContacts,
 }
 
 export const executeJob = async (job: Job) => {

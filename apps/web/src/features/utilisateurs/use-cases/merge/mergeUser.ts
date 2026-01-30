@@ -1,3 +1,7 @@
+import {
+  deleteBrevoContact,
+  deploymentCanDeleteBrevoContact,
+} from '@app/web/external-apis/brevo/deleteBrevoContact'
 import { conseillerNumeriqueMongoCollection } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
 import { prismaClient } from '@app/web/prismaClient'
 import { PrismaClient } from '@prisma/client'
@@ -430,6 +434,11 @@ export const mergeUser = async (
   sourceUserId: string,
   targetUserId: string,
 ): Promise<void> => {
+  const sourceUserForBrevo = await prismaClient.user.findUnique({
+    where: { id: sourceUserId },
+    select: { email: true },
+  })
+
   await prismaClient.$transaction(async (prisma) => {
     await initMediateurs(prisma)(sourceUserId, targetUserId)
     await initCoordinateurs(prisma)(sourceUserId, targetUserId)
@@ -449,4 +458,8 @@ export const mergeUser = async (
     await deleteUser(prisma)(sourceUser)
     await syncWithMongo(prisma)(targetUser)
   })
+
+  if (sourceUserForBrevo && deploymentCanDeleteBrevoContact()) {
+    await deleteBrevoContact(sourceUserForBrevo.email)
+  }
 }
