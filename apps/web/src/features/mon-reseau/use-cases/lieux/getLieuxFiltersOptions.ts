@@ -15,7 +15,7 @@ export const getLieuxFiltersOptions = async ({
       code_postal: string
     }[]
   >`
-    SELECT DISTINCT
+    SELECT DISTINCT ON (s.code_insee)
       s.code_insee AS code,
       s.commune,
       s.code_postal
