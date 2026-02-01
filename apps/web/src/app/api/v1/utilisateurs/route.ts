@@ -444,14 +444,25 @@ export const GET = createApiV1Route
             }
           : undefined
 
-    // Filter by conseiller numérique status (IDs no longer available, use boolean)
-    const hasConseillerNumeriqueFilter =
-      (params.filter.conseiller_numerique_id?.length ?? 0) > 0 ||
-      (params.filter.conseiller_numerique_id_pg?.length ?? 0) > 0
+    // Filter by conseiller numérique id_pg (parse as integers)
+    const conseillerNumeriqueIdPgValues =
+      params.filter.conseiller_numerique_id_pg
+        ?.map((v) => Number.parseInt(v, 10))
+        .filter((v) => !Number.isNaN(v)) ?? []
 
-    const isConseillerNumeriquesFilter = hasConseillerNumeriqueFilter
-      ? { isConseillerNumerique: true }
-      : null
+    // Filter by conseiller numérique status or specific id_pg values
+    const hasConseillerNumeriqueIdFilter =
+      (params.filter.conseiller_numerique_id?.length ?? 0) > 0
+
+    const hasConseillerNumeriqueIdPgFilter =
+      conseillerNumeriqueIdPgValues.length > 0
+
+    // Build the conseiller numérique filter
+    const conseillerNumeriqueFilter = hasConseillerNumeriqueIdPgFilter
+      ? { dataspaceUserIdPg: { in: conseillerNumeriqueIdPgValues } }
+      : hasConseillerNumeriqueIdFilter
+        ? { isConseillerNumerique: true }
+        : null
 
     const users = await prismaClient.user.findMany({
       where: {
@@ -471,7 +482,7 @@ export const GET = createApiV1Route
         ],
         role: 'User',
         ...deletedFilter,
-        ...isConseillerNumeriquesFilter,
+        ...conseillerNumeriqueFilter,
       },
       orderBy: [{ created: 'desc' }],
       take: cursorPagination.take,
@@ -541,7 +552,7 @@ export const GET = createApiV1Route
 
         role: 'User',
         ...deletedFilter,
-        ...isConseillerNumeriquesFilter,
+        ...conseillerNumeriqueFilter,
       },
     })
 
