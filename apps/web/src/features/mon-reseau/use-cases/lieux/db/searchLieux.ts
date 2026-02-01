@@ -31,6 +31,7 @@ export const lieuxForListSelect = {
       email: true,
     },
   },
+  derniereModificationSource: true,
   visiblePourCartographieNationale: true,
   structureCartographieNationaleId: true,
   _count: {

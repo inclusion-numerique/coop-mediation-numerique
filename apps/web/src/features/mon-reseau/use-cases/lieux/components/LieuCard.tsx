@@ -2,6 +2,7 @@ import { getDepartementCodeForLieu } from '@app/web/features/mon-reseau/getDepar
 import RemoveMediateurFromLieuButton from '@app/web/features/mon-reseau/use-cases/acteurs/components/RemoveMediateurFromLieuButton'
 import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
 import type { LieuForList } from '@app/web/features/mon-reseau/use-cases/lieux/db/searchLieux'
+import { getCartographieNationaleSourceLabel } from '@app/web/structure/cartographieNationaleSources'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
 import { formatDate } from 'date-fns'
@@ -40,7 +41,9 @@ const LieuCard = ({
 
   const derniereModificationPar = lieu.derniereModificationPar
     ? getActeurDisplayName(lieu.derniereModificationPar)
-    : null
+    : lieu.derniereModificationSource
+      ? getCartographieNationaleSourceLabel(lieu.derniereModificationSource)
+      : null
 
   return (
     <article

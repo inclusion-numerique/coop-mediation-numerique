@@ -1,8 +1,10 @@
 import { output } from '@app/cli/output'
 import { prismaClient } from '@app/web/prismaClient'
+import { coopCartographieNationaleSource } from '@app/web/structure/cartographieNationaleSources'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import { SchemaLieuMediationNumerique } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { Structure } from '@prisma/client'
 import { structureCartographieNationaleToPrismaModel } from './transform/structureCartographieNationaleToPrismaModel'
 import { structureToPrismaModel } from './transform/structureToPrismaModel'
 
@@ -36,7 +38,38 @@ const reset =
       }))
 
 const latestChangesFromCoop = (structure: SchemaLieuMediationNumerique) =>
-  structure.source === 'Coop numérique'
+  structure.source === coopCartographieNationaleSource
+
+/**
+ * Determines if we should track an external modification source.
+ * This happens when:
+ * - The source is NOT from coop (external source)
+ * - AND the cartographie nationale modification date is more recent than the coop structure modification date
+ */
+const getExternalModificationData = (
+  structure: SchemaLieuMediationNumerique,
+  existingStructure: Structure,
+): {
+  derniereModificationSource: string
+  derniereModificationParId: null
+} | null => {
+  if (
+    structure.source === coopCartographieNationaleSource ||
+    !structure.source
+  ) {
+    return null
+  }
+
+  const cartoModificationDate = new Date(structure.date_maj)
+  if (cartoModificationDate <= existingStructure.modification) {
+    return null
+  }
+
+  return {
+    derniereModificationSource: structure.source,
+    derniereModificationParId: null,
+  }
+}
 
 const COOP_ID_PREFIX = 'Coop-numérique_'
 const ID_SEPARATOR = '__'
@@ -138,6 +171,11 @@ const linkToCoopStructure = ({
           },
         })
 
+        const externalModificationData = getExternalModificationData(
+          structure,
+          existingStructure,
+        )
+
         await Promise.all([
           prisma.employeStructure.updateMany({
             where: { structureId: { in: idsToDelete } },
@@ -162,6 +200,7 @@ const linkToCoopStructure = ({
               ...(latestChangesFromCoop(structure)
                 ? structureToPrismaModel(structure)
                 : {}),
+              ...externalModificationData,
               activitesCount: {
                 increment: activitesCount._sum.activitesCount ?? 0,
               },
@@ -174,12 +213,18 @@ const linkToCoopStructure = ({
           where: { id: { in: idsToDelete } },
         })
       } else {
+        const externalModificationData = getExternalModificationData(
+          structure,
+          existingStructure,
+        )
+
         await prisma.structure.update({
           where: { id: structureId },
           data: {
             ...(latestChangesFromCoop(structure)
               ? structureToPrismaModel(structure)
               : {}),
+            ...externalModificationData,
             structureCartographieNationaleId: structure.id,
           },
         })
