@@ -121,7 +121,6 @@ model User {
   siret String?
 
   // Internal Dataspace ID for the user
-  dataspaceUserId   Int? @unique @map("dataspace_user_id") @db.Integer
   dataspaceUserIdPg Int? @map("dataspace_user_id_pg") @db.Integer // another id belonging to dataspace, needed on their side for synchronisation
   // If user is in the Conseiller Numerique program. Dataspace API is the source of truth for this data
   isConseillerNumerique Boolean @default(false) @map("is_conseiller_numerique")
@@ -176,6 +175,8 @@ model User {
   @@unique([created, id])
   // descending sort on this cursor for api query performances
   @@index([created(sort: Desc), id(sort: Desc)])
+  @@index([dataspaceId])
+  @@index([dataspaceUserIdPg])
   @@map("users")
 }
 
