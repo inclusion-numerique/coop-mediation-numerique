@@ -21,7 +21,7 @@ import { activiteSourceOptions } from '@app/web/features/activites/use-cases/sou
 import { getTagsCollectifs } from '@app/web/features/activites/use-cases/tags/db/getTagsCollectifs'
 
 export const metadata = {
-  title: metadataTitle('Usurpation'),
+  title: metadataTitle('Statistiques'),
 }
 
 export const dynamic = 'force-dynamic'
