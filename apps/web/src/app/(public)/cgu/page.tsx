@@ -51,31 +51,18 @@ const ContentPolicyPage = () => (
           <p>
             La Plateforme est un service public numérique développé au sein de
             l’Incubateur des territoires de l’ANCT et qui a pour objectif
-            d’intégrer un panel d’outils à destination des professionnels
-            médiateurs numériques, conseillers numériques et leurs coordinateurs
-            notamment pour faciliter l’interconnexion entre les outils
-            développés par le programme Société Numérique de l’ANCT et les
-            acteurs de la médiation numérique et faciliter la montée en
-            compétence des bénéficiaires accompagnés.
+            d’intégrer un panel d’outils <strong>interconnectés</strong> à
+            destination des professionnels médiateurs numériques, conseillers
+            numériques et leurs coordinateurs notamment{' '}
+            <strong>pour valoriser leurs activités</strong> et{' '}
+            <strong>faciliter l’autonomie</strong> des bénéficiaires
+            accompagnés.
           </p>
           <hr />
 
           <h2>Article 4 - Fonctionnalités</h2>
           <h3>4.1 Accès et connexion à l`&apos;espace Utilisateur</h3>
-          <h4>4.1.1 Conseillers numériques</h4>
-          <p>
-            L’Utilisateur “Conseiller numérique” s’authentifie et se connecte à
-            son espace via ProConnect. Il renseigne son adresse e-mail
-            professionnelle et doit créer un mot de passe.
-          </p>
-          <p>
-            Il reçoit un mail de validation qui le redirige vers la Plateforme
-            qui a automatiquement détecté son organisation de rattachement.
-            L’Utilisateur vérifie certaines informations pré-remplies (identité,
-            structure employeuse, lieux d’activité) qu’il peut modifier avant de
-            valider son inscription.
-          </p>
-          <h4>4.1.2 Médiateurs numériques</h4>
+          <h4>4.1.1 Médiateurs numériques</h4>
           <p>
             L’Utilisateur “Médiateur numérique” renseigne son adresse e-mail
             professionnelle et doit créer un mot de passe.
@@ -88,22 +75,21 @@ const ContentPolicyPage = () => (
             de 48 heures peut être nécessaire pour la confirmation du compte.
           </p>
           <p>
-            L’Utilisateur choisit le rôle “Médiateur numérique” et finalise son
-            inscription en ajoutant sa structure employeuse et ses lieux
-            d’activité.
+            L’Utilisateur finalise son inscription en ajoutant sa structure
+            employeuse et ses lieux d'activité.
           </p>
-          <h4>4.1.3 Coordinateur de Conseillers numérique</h4>
+          <h4>4.1.2 Coordinateur</h4>
           <p>
-            L’Utilisateur “Coordinateur de Conseillers numérique” s’authentifie
-            et se connecte à son espace via ProConnect. Il renseigne son adresse
-            e-mail professionnelle et doit créer un mot de passe.
+            L’Utilisateur “Coordinateur” s’authentifie et se connecte à son
+            espace via ProConnect. Il renseigne son adresse e-mail
+            professionnelle et doit créer un mot de passe.
           </p>
           <p>
             Il reçoit un mail de validation qui le redirige vers la Plateforme
             qui a automatiquement détecté son organisation de rattachement.
             L’Utilisateur vérifie certaines informations pré-remplies (identité,
-            structure employeuse, lieux d’activité, Conseillers numérique
-            coordonnés...) qu’il peut modifier avant de valider son inscription.
+            structure employeuse, lieux d'activité, médiateurs coordonnés...)
+            qu’il peut modifier avant de valider son inscription.
           </p>
 
           <h3>4.2 Fonctionnalités ouvertes à l’Utilisateur</h3>
@@ -125,6 +111,12 @@ const ContentPolicyPage = () => (
               Visualiser une liste d’outils utiles aux accompagnements des
               bénéficiaires.
             </li>
+            <li>Prendre rendez-vous pour un bénéficiaire suivi&nbsp;;</li>
+            <li>
+              Consulter un annuaire des lieux et un annuaire des
+              personnes&nbsp;;
+            </li>
+            <li>Rejoindre le Mattermost de la médiation numérique.</li>
           </ul>
           <p>
             L’Utilisateur peut également, à tout moment, modifier ses
