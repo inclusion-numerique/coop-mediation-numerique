@@ -7,6 +7,7 @@ import { sendVerificationRequest } from '@app/web/auth/sendVerificationRequest'
 import { SessionUser } from '@app/web/auth/sessionUser'
 import { updateAccountTokens } from '@app/web/auth/updateAccountTokens'
 import { updateUserData } from '@app/web/auth/updateUserData'
+import { importStructureEmployeuseFromProConnect } from '@app/web/features/utilisateurs/use-cases/import-structure-from-proconnect/importStructureEmployeuseFromProConnect'
 import { updateUserFromDataspaceData } from '@app/web/features/utilisateurs/use-cases/update-from-dataspace/updateUserFromDataspaceData'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { registerLastLogin } from '@app/web/security/registerLastLogin'
@@ -146,6 +147,13 @@ export const nextAuthOptions = {
       }
 
       updateUserFromDataspaceData({ userId: user.id }).catch((error) => {
+        Sentry.captureException(error)
+      })
+
+      importStructureEmployeuseFromProConnect({
+        userId: user.id,
+        siret: profile.siret,
+      }).catch((error) => {
         Sentry.captureException(error)
       })
 
