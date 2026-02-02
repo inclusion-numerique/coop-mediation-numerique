@@ -50,6 +50,7 @@ export const RendezVousFields = withForm({
     dureeOptions: SelectOption[]
     lieuActiviteOptions: LieuActiviteOption[]
     onSelectLieuCommuneData?: (item: Commune) => void
+    onSelectTypeLieuDomicile?: () => void
   },
   render: ({
     form,
@@ -57,6 +58,7 @@ export const RendezVousFields = withForm({
     dureeOptions,
     lieuActiviteOptions,
     onSelectLieuCommuneData,
+    onSelectTypeLieuDomicile,
   }) => {
     const resetDetailsFields = ({ value }: { value?: string }) => {
       if (shouldResetLieuCommuneData(value))
@@ -66,6 +68,7 @@ export const RendezVousFields = withForm({
           'structure',
           lieuActiviteOptions.map(toLieuActiviteOption).find(mostUsedOption),
         )
+      if (value === 'Domicile') onSelectTypeLieuDomicile?.()
     }
 
     return (

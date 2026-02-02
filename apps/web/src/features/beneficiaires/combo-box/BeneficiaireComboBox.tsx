@@ -1,5 +1,6 @@
 import { OptionsData } from '@app/ui/components/Primitives/Options'
 import { SelectedItemsData } from '@app/ui/components/Primitives/SelectedItems'
+import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
 import { vanillaTrpc } from '@app/web/trpc'
 
@@ -7,6 +8,7 @@ type Beneficiaire = {
   id: string
   prenom: string
   nom: string
+  communeResidence?: AdresseBanData | null
 }
 
 const itemToKey = (item: { id: string }): string => item.id
@@ -24,11 +26,14 @@ const loadSuggestions =
     })
 
     return Promise.resolve({
-      items: data.beneficiaires.map(({ id, prenom, nom }) => ({
-        id,
-        prenom,
-        nom,
-      })),
+      items: data.beneficiaires.map(
+        ({ id, prenom, nom, communeResidence }) => ({
+          id,
+          prenom,
+          nom,
+          communeResidence,
+        }),
+      ),
     })
   }
 
