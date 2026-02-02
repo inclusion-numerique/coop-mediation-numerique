@@ -38,6 +38,7 @@ const AccessibilityStatementPage = () => (
         <Link
           href="https://beta.gouv.fr/accessibilite/schema-pluriannuel"
           target="_blank"
+          rel="noreferrer"
         >
           le schéma pluriannuel 2024-2027 publié par Beta gouv.
         </Link>

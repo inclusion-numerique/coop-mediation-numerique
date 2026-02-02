@@ -61,7 +61,7 @@ const LayoutWithFooter = ({
                 padding="0 10px 0 32px"
                 align="left"
                 src={emailAssetUrl('/email/coop.svg')}
-                alt="Logo coop de la médiation numérique"
+                alt="Logo Coop de la médiation numérique"
               />
             </MjmlColumn>
             <MjmlColumn width="65%" verticalAlign="middle">

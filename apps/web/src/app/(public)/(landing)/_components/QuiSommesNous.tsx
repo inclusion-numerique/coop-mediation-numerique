@@ -11,8 +11,8 @@ export const QuiSommesNous = () => (
           Française
         </p>
         <Image
-          style={{ maxWidth: 244 }}
-          className="fr-responsive-img"
+          style={{ maxWidth: 244, minWidth: 0 }}
+          className="fr-responsive-img fr-flex-shrink-1"
           width={244}
           height={104}
           src="images/societe-numerique.svg"

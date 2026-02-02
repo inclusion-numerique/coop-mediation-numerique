@@ -62,6 +62,17 @@
   line-height: 2.25 !important;
 }
 
+/* md rules */
+@media (min-width: 48em) {
+  .fr-text-md--right {
+    text-align: right !important;
+  }
+
+  .fr-text-md--left {
+    text-align: left !important;
+  }
+}
+
 /* sm rules */
 @media (min-width: 36em) {
   .fr-text-sm--right {
