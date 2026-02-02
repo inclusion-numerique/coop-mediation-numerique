@@ -103,4 +103,9 @@
   .fr-border-md-none {
     border: none;
   }
+
+  .fr-border-radius-md-bottom--0 {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
 }

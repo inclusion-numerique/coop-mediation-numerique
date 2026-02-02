@@ -116,7 +116,7 @@ const ChatMessageAgenticSearchToolResult = ({
               >
                 <p className="fr-text--bold fr-mb-1v">{source.title}</p>
                 <div className="fr-mb-4v">
-                  <a href={source.url} target="_blank">
+                  <a href={source.url} target="_blank" rel="noreferrer">
                     {source.url}
                   </a>
                 </div>

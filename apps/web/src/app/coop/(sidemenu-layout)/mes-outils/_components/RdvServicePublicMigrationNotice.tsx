@@ -27,6 +27,7 @@ const RdvServicePublicMigrationNotice = async () => {
               className="fr-link fr-text--sm"
               href="https://www.rdv-aide-numerique.fr/agents/sign_in"
               target="_blank"
+              rel="noreferrer"
             >
               RDV Aide Numérique
             </Link>{' '}
@@ -37,6 +38,7 @@ const RdvServicePublicMigrationNotice = async () => {
               className="fr-link fr-text--sm"
               href="https://betagouv.github.io/rdv-service-public/scenario_3cee8bd2b.html"
               target="_blank"
+              rel="noreferrer"
             >
               guide de migration
             </Link>

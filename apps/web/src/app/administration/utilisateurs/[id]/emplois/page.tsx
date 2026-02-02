@@ -45,7 +45,11 @@ const getStructuresInfos = ({
   {
     label: 'Id',
     value: (
-      <Link href={`/administration/structures/${id}`} target="_blank">
+      <Link
+        href={`/administration/structures/${id}`}
+        target="_blank"
+        rel="noreferrer"
+      >
         {id}
       </Link>
     ),

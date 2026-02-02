@@ -49,7 +49,11 @@ const getStructuresInfos = ({
   {
     label: 'Id',
     value: (
-      <Link href={`/administration/structures/${id}/modifier`} target="_blank">
+      <Link
+        href={`/administration/structures/${id}/modifier`}
+        target="_blank"
+        rel="noreferrer"
+      >
         {id}
       </Link>
     ),
@@ -296,6 +300,7 @@ const AdministrationUserPage = async ({
                           key={coordination.id}
                           href={`/administration/utilisateurs/${coordination.coordinateur.user.id}`}
                           target="_blank"
+                          rel="noreferrer"
                         >
                           {coordination.coordinateur.user.name}
                         </Link>
@@ -391,6 +396,7 @@ const AdministrationUserPage = async ({
                                   <a
                                     href={`/administration/utilisateurs/${mediateur.userId}`}
                                     target="_blank"
+                                    rel="noreferrer"
                                     className="fr-link"
                                   >
                                     <span className="fr-text--sm fr-text--medium fr-mb-0">
@@ -473,6 +479,7 @@ const AdministrationUserPage = async ({
                                       <a
                                         href={`/administration/utilisateurs/${utilisateurInvite?.mediateur?.userId ?? ''}`}
                                         target="_blank"
+                                        rel="noreferrer"
                                         className="fr-link"
                                       >
                                         <span className="fr-text--sm fr-text--medium fr-mb-0">

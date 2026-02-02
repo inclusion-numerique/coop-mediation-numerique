@@ -48,6 +48,7 @@ const RdvServicePublicAccess = async () => {
               href={rdvIntegrationEnSavoirPlusLink}
               target="_blank"
               className="fr-link"
+              rel="noreferrer"
             >
               En savoir plus
             </Link>

@@ -17,6 +17,7 @@ export const StatistiquesTerritoriales = () => (
             className="fr-link fr-text--sm"
             href="https://www.notion.so/incubateurdesterritoires/En-savoir-plus-sur-l-utilisation-des-donn-es-sur-la-Coop-de-la-m-diation-num-rique-82af14ef964b41c1bfb5cb4a01d6e40b#6052168a99a84eca9b4c12c1b905d354"
             target="_blank"
+            rel="noreferrer"
           >
             En savoir plus sur l’utilisation de vos données
           </Link>

@@ -18,7 +18,7 @@ export const Outils = () => (
       <div className="fr-text-mention--grey fr-text--bold fr-text--xl fr-text--uppercase fr-mt-3w fr-mb-0">
         Une suite d’outils à votre disposition
       </div>
-      <h2 className="fr-h1 fr-text-title--blue-france">
+      <h2 id="outils" className="fr-h1 fr-text-title--blue-france">
         Découvrez les outils intégrés
       </h2>
       <p className="fr-mb-15v">
@@ -31,11 +31,11 @@ export const Outils = () => (
     </div>
     <div className="fr-grid-row fr-grid-row--gutters">
       <div className="fr-col-lg-4 fr-col-md-6 fr-col-12">
-        <div className="fr-background-default--grey fr-border-radius--16 fr-p-6w fr-height-full fr-flex fr-direction-column">
+        <div className="fr-background-default--grey fr-border-radius--16 fr-px-md-9v fr-py-md-10v fr-px-6v fr-py-8v fr-height-full fr-flex fr-direction-column">
           <CartographieLogo
             width={88}
             height={88}
-            className="fr-background-action-low--blue-france fr-border-radius--16 fr-p-2w"
+            className="fr-background-alt--blue-france fr-border-radius--16 fr-p-2w"
             aria-hidden
           />
           <div className="fr-my-3w">
@@ -61,11 +61,11 @@ export const Outils = () => (
         </div>
       </div>
       <div className="fr-col-lg-4 fr-col-md-6 fr-col-12">
-        <div className="fr-background-default--grey fr-border-radius--16 fr-p-6w fr-height-full fr-flex fr-direction-column">
+        <div className="fr-background-default--grey fr-border-radius--16 fr-px-md-9v fr-py-md-10v fr-px-6v fr-py-8v fr-height-full fr-flex fr-direction-column">
           <LesBasesLogo
             width={88}
             height={88}
-            className="fr-background-action-low--blue-france fr-border-radius--16 fr-p-2w"
+            className="fr-background-alt--blue-france fr-border-radius--16 fr-p-2w"
             aria-hidden
           />
           <div className="fr-my-3w">
@@ -91,40 +91,11 @@ export const Outils = () => (
         </div>
       </div>
       <div className="fr-col-lg-4 fr-col-md-6 fr-col-12">
-        <div className="fr-background-default--grey fr-border-radius--16 fr-p-6w fr-height-full fr-flex fr-direction-column">
-          <Image
-            className="fr-background-action-low--blue-france fr-border-radius--16 fr-p-2w"
-            width={88}
-            height={88}
-            src="/images/services/conseillers-numerique-logo-small.svg"
-            alt=""
-          />
-          <div className="fr-my-3w">
-            <h3 className="fr-h6 fr-mb-2w">Espace France Numérique Ensemble</h3>
-            <p className="fr-mb-0 fr-text-mention--grey">
-              Les données utiles pour comprendre l’inclusion numérique sur votre
-              territoire.
-            </p>
-          </div>
-          <span className="fr-mt-auto">
-            <Link
-              className="fr-link"
-              href="https://inclusion-numerique.anct.gouv.fr/"
-              target="_blank"
-              rel="noreferrer"
-              title="Accéder à l'espace France Numérique Ensemble - nouvel onglet"
-            >
-              Découvrir
-            </Link>
-          </span>
-        </div>
-      </div>
-      <div className="fr-col-lg-4 fr-col-md-6 fr-col-12">
-        <div className="fr-background-default--grey fr-border-radius--16 fr-p-6w fr-height-full fr-flex fr-direction-column">
+        <div className="fr-background-default--grey fr-border-radius--16 fr-px-md-9v fr-py-md-10v fr-px-6v fr-py-8v fr-height-full fr-flex fr-direction-column">
           <RDVServicePublicLogo
             width={88}
             height={88}
-            className="fr-background-action-low--blue-france fr-border-radius--16 fr-p-2w"
+            className="fr-background-alt--blue-france fr-border-radius--16 fr-p-2w"
             aria-hidden
           />
           <div className="fr-my-3w">
@@ -147,11 +118,11 @@ export const Outils = () => (
         </div>
       </div>
       <div className="fr-col-lg-4 fr-col-md-6 fr-col-12">
-        <div className="fr-background-default--grey fr-border-radius--16 fr-p-6w fr-height-full fr-flex fr-direction-column">
+        <div className="fr-background-default--grey fr-border-radius--16 fr-px-md-9v fr-py-md-10v fr-px-6v fr-py-8v fr-height-full fr-flex fr-direction-column">
           <AidantsConnectLogo
             width={88}
             height={88}
-            className="fr-background-action-low--blue-france fr-border-radius--16 fr-p-2w"
+            className="fr-background-alt--blue-france fr-border-radius--16 fr-p-2w"
             aria-hidden
           />
           <div className="fr-my-3w">
@@ -175,16 +146,16 @@ export const Outils = () => (
         </div>
       </div>
       <div className="fr-col-lg-4 fr-col-md-6 fr-col-12">
-        <div className="fr-background-default--grey fr-border-radius--16 fr-p-6w fr-height-full fr-flex fr-direction-column">
+        <div className="fr-background-default--grey fr-border-radius--16 fr-px-md-9v fr-py-md-10v fr-px-6v fr-py-8v fr-height-full fr-flex fr-direction-column">
           <Image
-            className="fr-background-action-low--blue-france fr-border-radius--16 fr-p-2w"
+            className="fr-background-alt--blue-france fr-border-radius--16 fr-p-2w"
             width={88}
             height={88}
-            src="/images/services/pix.svg"
+            src="/images/services/pix-orga.svg"
             alt=""
           />
           <div className="fr-my-3w">
-            <h3 className="fr-h6 fr-mb-2w">Pix</h3>
+            <h3 className="fr-h6 fr-mb-2w">Pix Orga</h3>
             <p className="fr-mb-0 fr-text-mention--grey">
               Proposez des parcours Pix adaptés aux besoins de vos apprenants et
               suivez leur progression.
@@ -193,10 +164,39 @@ export const Outils = () => (
           <span className="fr-mt-auto">
             <Link
               className="fr-link"
-              href="https://pix.fr"
+              href="https://orga.pix.fr/"
               target="_blank"
               rel="noreferrer"
-              title="Accéder à Pix - nouvel onglet"
+              title="Accéder à Pix orga - nouvel onglet"
+            >
+              Découvrir
+            </Link>
+          </span>
+        </div>
+      </div>
+      <div className="fr-col-lg-4 fr-col-md-6 fr-col-12">
+        <div className="fr-background-default--grey fr-border-radius--16 fr-px-md-9v fr-py-md-10v fr-px-6v fr-py-8v fr-height-full fr-flex fr-direction-column">
+          <Image
+            className="fr-background-alt--blue-france fr-border-radius--16 fr-p-2w"
+            width={88}
+            height={88}
+            src="/images/services/pix.svg"
+            alt=""
+          />
+          <div className="fr-my-3w">
+            <h3 className="fr-h6 fr-mb-2w">ABC Diag</h3>
+            <p className="fr-mb-0 fr-text-mention--grey">
+              Diagnostiquez en 10 questions la maîtrise de compétences
+              numériques de base.
+            </p>
+          </div>
+          <span className="fr-mt-auto">
+            <Link
+              className="fr-link"
+              href="https://pix.fr/abc-diag/"
+              target="_blank"
+              rel="noreferrer"
+              title="Accéder à ABC Diag - nouvel onglet"
             >
               Découvrir
             </Link>
