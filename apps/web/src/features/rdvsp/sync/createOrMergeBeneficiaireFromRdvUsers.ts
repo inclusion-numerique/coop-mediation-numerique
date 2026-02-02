@@ -1,3 +1,4 @@
+import { trancheAgeFromAnneeNaissance } from '@app/web/beneficiaire/trancheAgeFromAnneeNaissance'
 import {
   DuplicateBeneficiaire,
   findDuplicateForBeneficiaire,
@@ -110,6 +111,7 @@ export const createOrMergeBeneficiaireFromRdvUser = async ({
       const year = rdvUser.birthDate.getFullYear()
       if (year > 1900) {
         beneficiaireUpdateData.anneeNaissance = year
+        beneficiaireUpdateData.trancheAge = trancheAgeFromAnneeNaissance(year)
       }
     }
 
@@ -133,6 +135,7 @@ export const createOrMergeBeneficiaireFromRdvUser = async ({
   }
 
   // We create a new beneficiaire linked to the rdv user
+  const anneeNaissance = rdvUser.birthDate?.getFullYear()
   const newBeneficiaire = await prismaClient.beneficiaire.create({
     data: {
       id: v4(),
@@ -142,7 +145,8 @@ export const createOrMergeBeneficiaireFromRdvUser = async ({
       telephone: rdvUser.phoneNumber,
       email: rdvUser.email,
       adresse: rdvUser.address,
-      anneeNaissance: rdvUser.birthDate?.getFullYear(),
+      anneeNaissance,
+      trancheAge: trancheAgeFromAnneeNaissance(anneeNaissance),
       mediateurId,
       anonyme: false,
     },
