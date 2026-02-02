@@ -7,6 +7,7 @@ import { publicSpecifiquementAdresseKeys } from '@app/web/features/structures/pu
 import { validateValidRnaDigits } from '@app/web/features/structures/rna/rnaValidation'
 import { serviceKeys } from '@app/web/features/structures/service'
 import { validateValidSiretDigits } from '@app/web/features/structures/siret/siretValidation'
+import { coopCartographieNationaleSource } from '@app/web/structure/cartographieNationaleSources'
 import type {
   Frais,
   Itinerance,
@@ -46,6 +47,7 @@ export const toStructureFromCartoStructure = ({
   priseEnChargeSpecifique,
   publicsSpecifiquementAdresses,
   services,
+  source,
   siteWeb,
   telephone,
   typologie,
@@ -65,6 +67,7 @@ export const toStructureFromCartoStructure = ({
   | 'presentationResume'
   | 'complementAdresse'
   | 'horaires'
+  | 'source'
   | 'siteWeb'
   | 'typologie'
   | 'modalitesAccompagnement'
@@ -102,6 +105,8 @@ export const toStructureFromCartoStructure = ({
     courriels: courriels?.split('|'),
     telephone,
     siteWeb,
+    derniereModificationSource:
+      source === coopCartographieNationaleSource ? null : source,
     modalitesAccompagnement: modalitesAccompagnement
       ?.split('|')
       .map(

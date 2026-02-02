@@ -1,3 +1,7 @@
+import {
+  deleteBrevoContact,
+  deploymentCanDeleteBrevoContact,
+} from '@app/web/external-apis/brevo/deleteBrevoContact'
 import { conseillerNumeriqueMongoCollection } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
 import { prismaClient } from '@app/web/prismaClient'
 import { PrismaClient } from '@prisma/client'
@@ -8,7 +12,6 @@ type PrismaTransaction = Omit<
 >
 
 const includeCoordinateur = {
-  isConseillerNumerique: true,
   mediateur: {
     select: { id: true },
   },
@@ -18,7 +21,6 @@ const includeCoordinateur = {
 }
 
 const include = {
-  isConseillerNumerique: true,
   coordinateur: {
     include: {
       invitations: true,
@@ -188,6 +190,47 @@ const mergeEquipes =
     })
   }
 
+type PartageStatistiques = { id: string; deleted: Date | null } | null
+
+const applyPartageStatistiquesMergeRule =
+  (prisma: PrismaTransaction) =>
+  async (
+    sourcePartage: PartageStatistiques,
+    targetPartage: PartageStatistiques,
+  ) => {
+    const sourceActif = sourcePartage != null && sourcePartage.deleted == null
+    const targetActif = targetPartage != null && targetPartage.deleted == null
+
+    if (sourcePartage != null) {
+      await prisma.partageStatistiques.delete({
+        where: { id: sourcePartage.id },
+      })
+    }
+
+    if (!sourceActif && targetActif) {
+      await prisma.partageStatistiques.update({
+        where: { id: targetPartage.id },
+        data: { deleted: new Date() },
+      })
+    }
+  }
+
+const mergePartageStatistiquesMediateur =
+  (prisma: PrismaTransaction) =>
+  async (sourceMediateurId: string, targetMediateurId: string) => {
+    const sourcePartage = await prisma.partageStatistiques.findUnique({
+      where: { mediateurId: sourceMediateurId },
+    })
+    const targetPartage = await prisma.partageStatistiques.findUnique({
+      where: { mediateurId: targetMediateurId },
+    })
+
+    await applyPartageStatistiquesMergeRule(prisma)(
+      sourcePartage,
+      targetPartage,
+    )
+  }
+
 const mergeMediateurs =
   (prisma: PrismaTransaction) =>
   async (
@@ -208,10 +251,10 @@ const mergeMediateurs =
       where: { id: { in: sourceUser.mediateur.beneficiaires.map(toId) } },
       data: { mediateurId: targetUser.mediateur.id },
     })
-    await prisma.partageStatistiques.updateMany({
-      where: { mediateurId: sourceUser.mediateur.id },
-      data: { mediateurId: targetUser.mediateur.id },
-    })
+    await mergePartageStatistiquesMediateur(prisma)(
+      sourceUser.mediateur.id,
+      targetUser.mediateur.id,
+    )
     await mergeInvitationsRecues(prisma)(
       { email: sourceUser.email, mediateur: sourceUser.mediateur },
       { email: targetUser.email, mediateur: targetUser.mediateur },
@@ -272,6 +315,22 @@ const mergeMediateursCoordonnes =
     })
   }
 
+const mergePartageStatistiquesCoordinateur =
+  (prisma: PrismaTransaction) =>
+  async (sourceCoordinateurId: string, targetCoordinateurId: string) => {
+    const sourcePartage = await prisma.partageStatistiques.findUnique({
+      where: { coordinateurId: sourceCoordinateurId },
+    })
+    const targetPartage = await prisma.partageStatistiques.findUnique({
+      where: { coordinateurId: targetCoordinateurId },
+    })
+
+    await applyPartageStatistiquesMergeRule(prisma)(
+      sourcePartage,
+      targetPartage,
+    )
+  }
+
 const mergeCoordinateurs =
   (prisma: PrismaTransaction) =>
   async (
@@ -282,6 +341,10 @@ const mergeCoordinateurs =
 
     await mergeInvitationEnvoyees(prisma)(sourceCoord, targetCoord)
     await mergeMediateursCoordonnes(prisma)(sourceCoord, targetCoord)
+    await mergePartageStatistiquesCoordinateur(prisma)(
+      sourceCoord.id,
+      targetCoord.id,
+    )
 
     await prisma.activiteCoordination.updateMany({
       where: { id: { in: sourceCoord.ActiviteCoordination.map(toId) } },
@@ -338,6 +401,24 @@ const mergeMutations =
 const deleteUser =
   (prisma: PrismaTransaction) =>
   async ({ id: userId }: { id: string; mediateur: { id: string } | null }) => {
+    const rdvAccounts = await prisma.rdvAccount.findMany({
+      where: { userId },
+      select: { id: true },
+    })
+    const rdvAccountIds = rdvAccounts.map(({ id }) => id)
+
+    if (rdvAccountIds.length > 0) {
+      await prisma.rdv.deleteMany({
+        where: { rdvAccountId: { in: rdvAccountIds } },
+      })
+      await prisma.rdvSyncLog.deleteMany({
+        where: { rdvAccountId: { in: rdvAccountIds } },
+      })
+      await prisma.rdvAccountOrganisation.deleteMany({
+        where: { accountId: { in: rdvAccountIds } },
+      })
+    }
+
     await prisma.rdvAccount.deleteMany({ where: { userId } })
     await prisma.session.deleteMany({ where: { userId } })
     await prisma.account.deleteMany({ where: { userId } })
@@ -430,6 +511,11 @@ export const mergeUser = async (
   sourceUserId: string,
   targetUserId: string,
 ): Promise<void> => {
+  const sourceUserForBrevo = await prismaClient.user.findUnique({
+    where: { id: sourceUserId },
+    select: { email: true },
+  })
+
   await prismaClient.$transaction(async (prisma) => {
     await initMediateurs(prisma)(sourceUserId, targetUserId)
     await initCoordinateurs(prisma)(sourceUserId, targetUserId)
@@ -449,4 +535,8 @@ export const mergeUser = async (
     await deleteUser(prisma)(sourceUser)
     await syncWithMongo(prisma)(targetUser)
   })
+
+  if (sourceUserForBrevo && deploymentCanDeleteBrevoContact()) {
+    await deleteBrevoContact(sourceUserForBrevo.email)
+  }
 }

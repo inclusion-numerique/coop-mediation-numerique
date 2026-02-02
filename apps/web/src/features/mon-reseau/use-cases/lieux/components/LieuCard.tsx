@@ -2,9 +2,10 @@ import { getDepartementCodeForLieu } from '@app/web/features/mon-reseau/getDepar
 import RemoveMediateurFromLieuButton from '@app/web/features/mon-reseau/use-cases/acteurs/components/RemoveMediateurFromLieuButton'
 import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
 import type { LieuForList } from '@app/web/features/mon-reseau/use-cases/lieux/db/searchLieux'
+import { getCartographieNationaleSourceLabel } from '@app/web/structure/cartographieNationaleSources'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
-import { formatDate } from 'date-fns'
+import { formatDate, isBefore, subYears } from 'date-fns'
 import Link from 'next/link'
 import CartographyIndicator, {
   getCartographyStatus,
@@ -40,7 +41,18 @@ const LieuCard = ({
 
   const derniereModificationPar = lieu.derniereModificationPar
     ? getActeurDisplayName(lieu.derniereModificationPar)
-    : null
+    : lieu.derniereModificationSource
+      ? getCartographieNationaleSourceLabel(lieu.derniereModificationSource)
+      : null
+
+  const updatedMoreThanOneYearAgo = isBefore(
+    new Date(lieu.modification),
+    subYears(new Date(), 1),
+  )
+
+  const derniereModificationParText = derniereModificationPar
+    ? `par ${derniereModificationPar}`
+    : ''
 
   return (
     <article
@@ -52,10 +64,29 @@ const LieuCard = ({
       )}
     >
       <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-mb-2v">
-        <p className="fr-text--xs fr-mb-0 fr-text-mention--grey">
-          Mis à jour le {formattedModificationDate}{' '}
-          {derniereModificationPar ? `par ${derniereModificationPar}` : ''}
-        </p>
+        {updatedMoreThanOneYearAgo ? (
+          <div className="fr-flex fr-align-items-center fr-flex-gap-2v">
+            <div
+              className="fr-background-contrast--warning fr-border-radius--4 fr-flex fr-align-items-center fr-justify-content-center"
+              style={{ height: 20, width: 20 }}
+            >
+              <span
+                className="fr-text-default--warning fr-icon-error-warning-fill fr-icon--xs"
+                aria-hidden
+              />
+            </div>
+
+            <p className="fr-text--xs fr-mb-0 fr-text-default--warning">
+              Dernière mise à jour il y a plus d’un an{' '}
+              {derniereModificationParText}
+            </p>
+          </div>
+        ) : (
+          <p className="fr-text--xs fr-mb-0 fr-text-mention--grey">
+            Mis à jour le {formattedModificationDate}{' '}
+            {derniereModificationParText}
+          </p>
+        )}
         {removeMediateurFromLieu && (
           <RemoveMediateurFromLieuButton
             className={styles.innerLink}

@@ -121,7 +121,6 @@ model User {
   siret String?
 
   // Internal Dataspace ID for the user
-  dataspaceUserId   Int? @unique @map("dataspace_user_id") @db.Integer
   dataspaceUserIdPg Int? @map("dataspace_user_id_pg") @db.Integer // another id belonging to dataspace, needed on their side for synchronisation
   // If user is in the Conseiller Numerique program. Dataspace API is the source of truth for this data
   isConseillerNumerique Boolean @default(false) @map("is_conseiller_numerique")
@@ -176,6 +175,8 @@ model User {
   @@unique([created, id])
   // descending sort on this cursor for api query performances
   @@index([created(sort: Desc), id(sort: Desc)])
+  @@index([dataspaceId])
+  @@index([dataspaceUserIdPg])
   @@map("users")
 }
 
@@ -718,8 +719,13 @@ model Structure {
   creationParId String?  @map("creation_par_id") @db.Uuid
   creationPar   User?    @relation(name: "structure_crees", fields: [creationParId], references: [id])
 
+// Une modification peut avoir été faite par une "source" externe, ou un utilisateur
+// - dans le cas d'un utilisateur, derniereModificationParId sera non-null
+// - dans le cas d'une modification externe, derniereModificationSource sera non-null
+// - lors de l'update un seul des 2 doit être non-null
   modification              DateTime @default(now())
   derniereModificationParId String?  @map("derniere_modification_par_id") @db.Uuid
+  derniereModificationSource String?  @map("derniere_modification_source")
   derniereModificationPar   User?    @relation(name: "structure_modifiees", fields: [derniereModificationParId], references: [id])
 
   suppression      DateTime?

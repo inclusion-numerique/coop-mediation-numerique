@@ -1,6 +1,10 @@
 import { createHash } from 'node:crypto'
 import { UtilisateurSetFeatureFlagsValidation } from '@app/web/app/administration/utilisateurs/[id]/UtilisateurSetFeatureFlagsValidation'
 import { UpdateProfileValidation } from '@app/web/app/user/UpdateProfileValidation'
+import {
+  deleteBrevoContact,
+  deploymentCanDeleteBrevoContact,
+} from '@app/web/external-apis/brevo/deleteBrevoContact'
 import { mergeUser } from '@app/web/features/utilisateurs/use-cases/merge/mergeUser'
 import { nouveauReminders } from '@app/web/features/utilisateurs/use-cases/nouveau-reminders/nouveauReminders'
 import { searchUser } from '@app/web/features/utilisateurs/use-cases/search/searchUser'
@@ -83,7 +87,11 @@ export const userRouter = router({
         return updated
       },
     ),
-  deleteProfile: protectedProcedure.mutation(({ ctx: { user } }) => {
+  deleteProfile: protectedProcedure.mutation(async ({ ctx: { user } }) => {
+    if (deploymentCanDeleteBrevoContact()) {
+      await deleteBrevoContact(user.email)
+    }
+
     const hash = createHash('sha256')
       .update(`${user.id}-${user.email}`)
       .digest('base64url')

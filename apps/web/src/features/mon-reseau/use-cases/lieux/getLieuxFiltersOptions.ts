@@ -15,10 +15,10 @@ export const getLieuxFiltersOptions = async ({
       code_postal: string
     }[]
   >`
-    SELECT DISTINCT
+    SELECT
       s.code_insee AS code,
-      s.commune,
-      s.code_postal
+      MAX(s.commune) AS commune,
+      MAX(s.code_postal) AS code_postal
     FROM structures s
     WHERE s.suppression IS NULL
       AND SUBSTRING(s.code_insee FROM ${departementCodeFromInseeRegex}) = ${departementCode}
@@ -27,7 +27,8 @@ export const getLieuxFiltersOptions = async ({
       AND TRIM(s.commune) <> ''
       AND s.code_postal IS NOT NULL
       AND TRIM(s.code_postal) <> ''
-    ORDER BY s.commune ASC
+    GROUP BY s.code_insee
+    ORDER BY commune ASC
   `
 
   const communesOptions: SelectOption[] = communes.map(
