@@ -36,6 +36,7 @@ const ToolResultCard = ({
             <a
               href={url}
               target="_blank"
+              rel="noreferrer"
               className="fr-link--underline-on-hover fr-flex-1"
             >
               <h3 className={styles.toolResultSourceTitle}>{title}</h3>

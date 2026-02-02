@@ -138,7 +138,12 @@ const SiretFormField = <
         <span className="fr-icon-checkbox-fill fr-icon--sm fr-mr-1v" />
         {nom}
       </span>
-      <Link className="fr-mt-1v" href={getSiretInfoUrl(siret)} target="_blank">
+      <Link
+        className="fr-mt-1v"
+        href={getSiretInfoUrl(siret)}
+        target="_blank"
+        rel="noreferrer"
+      >
         Fiche établissement sur l’Annuaire des entreprises
       </Link>
     </span>

@@ -40,6 +40,7 @@ export const InformationsPratiquesFields = <
             <Link
               href="https://acceslibre.beta.gouv.fr"
               target="_blank"
+              rel="noreferrer"
               className="fr-link fr-link--xs"
               title="Site d’accès libre (nouvel onglet)"
             >
@@ -62,6 +63,7 @@ export const InformationsPratiquesFields = <
             <Link
               href={rdvWebsiteLink}
               target="_blank"
+              rel="noreferrer"
               className="fr-link fr-link--xs"
               title="Site de RDV Service Public (nouvel onglet)"
             >

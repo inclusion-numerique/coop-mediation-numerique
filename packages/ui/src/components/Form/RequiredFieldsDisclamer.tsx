@@ -15,7 +15,7 @@ const RequiredFieldsDisclamer = ({
       <Link
         href={helpLink.href}
         target="_blank"
-        rel="noopener noreferrer"
+        rel="noreferrer"
         className="fr-link fr-text--sm"
       >
         {helpLink.text}

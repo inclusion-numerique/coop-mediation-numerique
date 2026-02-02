@@ -37,7 +37,7 @@
   }
 
   &.public {
-    max-width: 280px;
+    max-width: 290px;
     font-size: 18px;
   }
 }

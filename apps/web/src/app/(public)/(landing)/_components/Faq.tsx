@@ -10,6 +10,7 @@ export const Faq = () => (
         <Link
           className="fr-link"
           target="_blank"
+          rel="noreferrer"
           href="https://docs.numerique.gouv.fr/docs/1cf724be-c40c-4299-906d-df22c181c77b/"
         >
           centre d’aide
@@ -37,6 +38,7 @@ export const Faq = () => (
             <Link
               className="fr-link"
               target="_blank"
+              rel="noreferrer"
               href="https://www.proconnect.gouv.fr/"
             >
               En savoir plus sur ProConnect ici
@@ -52,6 +54,7 @@ export const Faq = () => (
             <Link
               className="fr-link"
               target="_blank"
+              rel="noreferrer"
               href="https://docs.numerique.gouv.fr/docs/126f1452-8fac-4073-a86b-82e8559a1be0/"
             >
               En savoir plus sur les étapes à suivre en fonction de votre poste
@@ -82,9 +85,16 @@ export const Faq = () => (
 
         <p>
           Certaines données collectées sont également{' '}
-          <strong>des données publiques</strong>, accessibles sur l’Espace
-          France numérique Ensemble, dans un souci de transparence avec les
-          citoyens.
+          <strong>des données publiques</strong>, accessibles sur le site{' '}
+          <Link
+            className="fr-link"
+            href="https://inclusion-numerique.anct.gouv.fr/vitrine/donnees-territoriales"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Inclusion Numérique
+          </Link>
+          , dans un soucis de transparence avec les citoyens.
         </p>
 
         <p>
@@ -92,6 +102,7 @@ export const Faq = () => (
             className="fr-link"
             href="https://docs.numerique.gouv.fr/docs/c97336c0-2ab3-4137-8d4d-b36f87d941de/"
             target="_blank"
+            rel="noreferrer"
           >
             En savoir plus sur l’utilisation des données sur la Coop de la
             médiation numérique
@@ -127,38 +138,26 @@ export const Faq = () => (
         <p>
           <Link
             className="fr-link"
-            href="https://www.notion.so/incubateurdesterritoires/Mes-statistiques-retrouvez-des-statistiques-sur-votre-activit-ca94359e3696428fab2e4b06969635d8#278b386430ce4e579d1b566b16f0d2fb"
+            href="https://docs.numerique.gouv.fr/docs/8e48986c-c75d-430d-86ab-49af01fec0c3/"
             target="_blank"
+            rel="noreferrer"
           >
             En savoir plus sur l’export des statistiques
           </Link>
-        </p>{' '}
+        </p>
       </Accordion>
       <Accordion label="Comment j’accède aux différents outils disponibles sur la plateforme ?">
         <p>
-          Nos prochains grands chantiers et évolutions à venir sur la plateforme
-          portent notamment sur :
+          Votre identifiant unique (ProConnect) vous permet d’accéder à
+          différents outils&nbsp;: RDV Service Public, Les Bases du numérique
+          d’intérêt général.
         </p>
-        <ul>
-          <li>
-            Un identifiant unique (ProConnect) pour se connecter aux différents
-            outils proposés.
-          </li>
-          <li>
-            L’interopérabilité des différents outils proposés afin d’améliorer
-            le partage d’informations entre ces outils pour fluidifier
-            l’organisation du travail.
-          </li>
-        </ul>
-        Nous vous tiendrons au courant de nos prochaines avancées sur ces sujets
-        via{' '}
-        <Link
-          className="fr-link"
-          href="https://projets.suite.anct.gouv.fr/boards/1572441353164424613"
-          target="_blank"
-        >
-          notre feuille de route publique.
-        </Link>
+        <p>
+          Les outils Aidants Connect et Pix Orga nécessitent de créer des
+          identifiants spécifiques pour y accéder. Via La Coop de la médiation
+          numérique, vous serez guidé dans les demandes d’accès/d’habilitation
+          pour profiter de ces outils.
+        </p>
       </Accordion>
     </div>
   </div>
