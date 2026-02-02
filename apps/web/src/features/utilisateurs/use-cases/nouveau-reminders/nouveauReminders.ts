@@ -1,3 +1,7 @@
+import {
+  deleteBrevoContact,
+  deploymentCanDeleteBrevoContact,
+} from '@app/web/external-apis/brevo/deleteBrevoContact'
 import { prismaClient } from '@app/web/prismaClient'
 import { countTotalActifUsers } from '../filter/db/count-total-actif-users'
 import { nouveauFilter } from '../filter/db/nouveau-filter'
@@ -46,6 +50,10 @@ const deleteAndNotify = async (now: Date) => {
 
   for (const user of usersToDelete) {
     const isMediateur = user.mediateur !== null
+
+    if (deploymentCanDeleteBrevoContact()) {
+      await deleteBrevoContact(user.email)
+    }
 
     await softDeleteUser(user.id)
 

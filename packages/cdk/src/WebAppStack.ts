@@ -367,6 +367,16 @@ export class WebAppStack extends TerraformStack {
         containerId: container.id,
       })
 
+      // Daily cleanup of orphan Brevo contacts at 3 AM
+      createJobExecutionCron(this, {
+        name: 'remove-orphan-brevo-contacts',
+        job: {
+          name: 'remove-orphan-brevo-contacts',
+        },
+        schedule: '0 3 * * *',
+        containerId: container.id,
+      })
+
       // Hourly backup job
       createJobExecutionCron(this, {
         name: `backup-${namespace}-database-hourly`,

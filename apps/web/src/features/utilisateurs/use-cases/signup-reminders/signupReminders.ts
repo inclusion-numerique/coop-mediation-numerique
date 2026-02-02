@@ -1,3 +1,7 @@
+import {
+  deleteBrevoContact,
+  deploymentCanDeleteBrevoContact,
+} from '@app/web/external-apis/brevo/deleteBrevoContact'
 import { prismaClient } from '@app/web/prismaClient'
 import { countTotalActifUsers } from '../filter/db/count-total-actif-users'
 import { inscriptionFilter } from '../filter/db/inscription-filter'
@@ -37,6 +41,10 @@ const deleteAndNotify = async (now: Date) => {
 
   for (const user of usersToDelete) {
     const { id: userId, mediateur, coordinateur } = user
+
+    if (deploymentCanDeleteBrevoContact()) {
+      await deleteBrevoContact(user.email)
+    }
 
     await prismaClient.$transaction(async (tx) => {
       await tx.employeStructure.deleteMany({
