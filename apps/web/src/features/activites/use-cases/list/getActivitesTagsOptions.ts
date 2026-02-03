@@ -19,6 +19,7 @@ export const getActivitesTagsOptions = async (mediateurId: string) => {
       departement: true,
       mediateurId: true,
       coordinateurId: true,
+      equipe: true,
     },
     orderBy: { nom: 'asc' },
   })

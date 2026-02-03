@@ -8,6 +8,12 @@ import {
 } from '@app/web/libs/data-table/toNumberOr'
 import { prismaClient } from '@app/web/prismaClient'
 import { Prisma } from '@prisma/client'
+import {
+  getEquipeCoordinateurIds,
+  getEquipeInfo,
+  getEquipesFromSessionUser,
+} from '../equipe'
+import { getDefaultMergeDestinationTags } from '../merge/db/searchMergeDestinationTags'
 import { getTagScope, TagScope } from '../tagScope'
 
 export type TagSearchParams = {
@@ -18,12 +24,29 @@ export type TagSearchParams = {
 
 const availableFor = (user: SessionUser) => {
   const departement = getUserDepartement(user)
-  if (!departement) return { mediateurId: user.mediateur?.id }
+  const equipeCoordinateurIds = getEquipeCoordinateurIds(
+    getEquipesFromSessionUser(user),
+  )
+
+  if (!departement) {
+    return {
+      OR: [
+        ...(user.mediateur?.id ? [{ mediateurId: user.mediateur.id }] : []),
+        ...(equipeCoordinateurIds.length > 0
+          ? [{ equipe: true, coordinateurId: { in: equipeCoordinateurIds } }]
+          : []),
+      ],
+    }
+  }
+
   return {
     OR: [
       ...(user.mediateur?.id ? [{ mediateurId: user.mediateur.id }] : []),
       ...(user.coordinateur?.id
         ? [{ coordinateurId: user.coordinateur.id }]
+        : []),
+      ...(equipeCoordinateurIds.length > 0
+        ? [{ equipe: true, coordinateurId: { in: equipeCoordinateurIds } }]
         : []),
       { departement: departement.code },
       {
@@ -59,27 +82,63 @@ export const getTagsPageDataFor =
   (user: SessionUser) => async (searchParams: TagSearchParams) => {
     const { take, skip, orderBy } = paginationConfigFrom(searchParams)
 
+    const equipes = getEquipesFromSessionUser(user)
+
     const tags = await prismaClient.tag.findMany({
       where: availableFor(user),
       take,
       skip,
       orderBy,
+      include: {
+        activites: {
+          include: {
+            activite: {
+              select: {
+                accompagnementsCount: true,
+              },
+            },
+          },
+        },
+      },
     })
 
     const totalFilteredTags = await prismaClient.tag.count({
       where: availableFor(user),
     })
 
-    return {
-      tags: tags.map((tag) => {
-        const { id, nom, description } = tag
+    const tagsWithMergeDestinations = await Promise.all(
+      tags.map(async (tag) => {
+        const { id, nom, description, coordinateurId, equipe, activites } = tag
+        const accompagnementsCount = activites.reduce(
+          (acc, { activite }) => acc + activite.accompagnementsCount,
+          0,
+        )
+        const scope = getTagScope(tag)
+
+        const canMerge =
+          scope === TagScope.Personnel ||
+          scope === TagScope.Equipe ||
+          (scope === TagScope.Departemental && user.coordinateur != null)
+
+        const defaultMergeDestinations = canMerge
+          ? (await getDefaultMergeDestinationTags(user, id)).items
+          : []
+
         return {
           id,
           nom,
-          scope: getTagScope(tag),
+          scope,
           description: description ?? undefined,
+          accompagnementsCount,
+          equipeId: coordinateurId ?? undefined,
+          defaultMergeDestinations,
+          ...getEquipeInfo(equipes, coordinateurId, equipe ?? false),
         }
       }),
+    )
+
+    return {
+      tags: tagsWithMergeDestinations,
       matchesCount: totalFilteredTags,
       totalPages: take ? Math.ceil(totalFilteredTags / take) : 1,
     }

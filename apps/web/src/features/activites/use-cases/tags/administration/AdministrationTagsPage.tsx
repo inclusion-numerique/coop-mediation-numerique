@@ -27,6 +27,7 @@ export const AdministrationTagsPage = async ({
     scope: TagScope
     usageCount: number
     description?: string
+    accompagnementsCount: number
   }[]
 }) => (
   <CoopPageContainer>

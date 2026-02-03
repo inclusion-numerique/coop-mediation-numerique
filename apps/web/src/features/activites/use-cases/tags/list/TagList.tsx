@@ -1,8 +1,6 @@
-import { numberToString } from '@app/web/utils/formatNumber'
-import Badge from '@codegouvfr/react-dsfr/Badge'
-import classNames from 'classnames'
 import { ReactNode } from 'react'
-import TagScopeBadge from '../components/TagScopeBadge'
+import { TagItem } from '../components/TagItem'
+import { MergeDestinationTag } from '../merge/MergeTagComboBox'
 import { TagScope } from '../tagScope'
 
 export const TagList = ({
@@ -15,37 +13,28 @@ export const TagList = ({
     scope: TagScope
     description?: string
     usageCount?: number
+    accompagnementsCount: number
+    equipeId?: string
+    equipeNumber?: number
+    equipeCoordinateurNom?: string
+    defaultMergeDestinations?: MergeDestinationTag[]
   }[]
   actions?: (tag: {
     id: string
     nom: string
     scope: TagScope
     description?: string
+    accompagnementsCount: number
+    equipeId?: string
+    equipeNumber?: number
+    equipeCoordinateurNom?: string
+    defaultMergeDestinations?: MergeDestinationTag[]
   }) => ReactNode
 }) => (
   <ul className="fr-raw-list">
     {tags.map((tag) => (
-      <li
-        key={tag.id}
-        className="fr-border--bottom fr-py-5v fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-4v"
-      >
-        <div>
-          <span className="fr-text--bold">{tag.nom}</span>
-          {tag.description && (
-            <p className="fr-mb-0 fr-text--sm fr-text-mention--grey">
-              {tag.description}
-            </p>
-          )}
-        </div>
-        <div className="fr-flex fr-align-items-center fr-flex-gap-4v">
-          {tag.usageCount !== undefined && (
-            <span className="fr-text--sm fr-text-mention--grey fr-mb-0">
-              {numberToString(tag.usageCount)}
-            </span>
-          )}
-          {actions?.(tag)}
-          <TagScopeBadge scope={tag.scope} />
-        </div>
+      <li key={tag.id} className="fr-border--bottom fr-py-5v">
+        <TagItem {...tag} actions={actions?.(tag)} />
       </li>
     ))}
   </ul>

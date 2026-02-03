@@ -3,6 +3,7 @@ import CraCollectifPage from '@app/web/features/activites/use-cases/cra/collecti
 import { craCollectifDefaultValues } from '@app/web/features/activites/use-cases/cra/collectif/craCollectifDefaultValues'
 import type { CraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
 import { getCraPageData } from '@app/web/features/activites/use-cases/cra/getCraPageData'
+import { getEquipesFromSessionUser } from '@app/web/features/activites/use-cases/tags/equipe'
 import {
   decodeSerializableState,
   type EncodedState,
@@ -19,9 +20,9 @@ const CreateCraCollectifPage = async ({
 }) => {
   const { retour, v } = await searchParams
 
-  const {
-    mediateur: { id: mediateurId },
-  } = await authenticateMediateur()
+  const user = await authenticateMediateur()
+  const mediateurId = user.mediateur.id
+  const equipes = getEquipesFromSessionUser(user)
 
   const stateFromUrl = v ? decodeSerializableState(v, {}) : {}
 
@@ -33,6 +34,7 @@ const CreateCraCollectifPage = async ({
     <CraCollectifPage
       {...craPageData}
       mediateurId={mediateurId}
+      equipes={equipes}
       retour={retour}
     />
   )

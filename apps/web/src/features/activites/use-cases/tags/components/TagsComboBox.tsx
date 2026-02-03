@@ -10,6 +10,8 @@ export type Tag = {
   nom: string
   description?: string
   scope: TagScope
+  equipeNumber?: number
+  equipeCoordinateurNom?: string
 }
 
 const itemToKey = (item: { id: string }): string => item.id
@@ -37,7 +39,7 @@ const renderItem = ({ item }: { item: Tag }) => (
         </span>
       )}
     </div>
-    <TagScopeBadge small scope={item.scope} />
+    <TagScopeBadge small {...item} />
   </div>
 )
 

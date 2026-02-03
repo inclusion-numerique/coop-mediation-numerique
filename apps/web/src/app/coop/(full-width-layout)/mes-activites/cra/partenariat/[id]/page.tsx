@@ -2,6 +2,7 @@ import { authenticateCoordinateur } from '@app/web/auth/authenticateUser'
 import { getCraCoordinationPageData } from '@app/web/features/activites/use-cases/cra/getCraCoordinationPageData'
 import CraPartenariatPage from '@app/web/features/activites/use-cases/cra/partenariat/CraPartenariatPage'
 import { getCraPartenariatDataDefaultValuesFromExisting } from '@app/web/features/activites/use-cases/cra/partenariat/db/getCraPartenariatDataDefaultValuesFromExisting'
+import { getEquipesFromSessionUser } from '@app/web/features/activites/use-cases/tags/equipe'
 import { notFound } from 'next/navigation'
 
 const UpdateCraPartenariatPage = async ({
@@ -14,9 +15,9 @@ const UpdateCraPartenariatPage = async ({
   const { id } = await params
   const { retour } = await searchParams
 
-  const {
-    coordinateur: { id: coordinateurId },
-  } = await authenticateCoordinateur()
+  const user = await authenticateCoordinateur()
+  const coordinateurId = user.coordinateur.id
+  const equipes = getEquipesFromSessionUser(user)
 
   const defaultValues = await getCraPartenariatDataDefaultValuesFromExisting({
     id,
@@ -34,6 +35,7 @@ const UpdateCraPartenariatPage = async ({
     <CraPartenariatPage
       {...craPageData}
       coordinateurId={coordinateurId}
+      equipes={equipes}
       retour={retour}
     />
   )
