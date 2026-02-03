@@ -7,6 +7,8 @@ import { CraEvenementValidation } from '@app/web/features/activites/use-cases/cr
 import { CraIndividuelServerValidation } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelServerValidation'
 import { CraPartenariatValidation } from '@app/web/features/activites/use-cases/cra/partenariat/validation/CraPartenariatValidation'
 import { prismaClient } from '@app/web/prismaClient'
+import { oAuthRdvApiUpdateRdvStatus } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
+import { getUserContextForOAuthApiCall } from '@app/web/rdv-service-public/getUserContextForRdvApiCall'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { enforceIsCoordinateur } from '@app/web/server/rpc/enforceIsCoordinateur'
 import { enforceIsMediateur } from '@app/web/server/rpc/enforceIsMediateur'
@@ -14,6 +16,8 @@ import { forbiddenError, invalidError } from '@app/web/server/rpc/trpcErrors'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import { createStopwatch } from '@app/web/utils/stopwatch'
+import * as Sentry from '@sentry/nextjs'
+import { AxiosError } from 'axios'
 import z from 'zod'
 
 export const craRouter = router({
@@ -22,7 +26,7 @@ export const craRouter = router({
     .mutation(async ({ input, ctx: { user } }) => {
       enforceIsMediateur(user)
 
-      return createOrUpdateActivite({
+      const createResult = await createOrUpdateActivite({
         input: {
           type: 'Individuel',
           data: input,
@@ -31,13 +35,36 @@ export const craRouter = router({
         mediateurId: user.mediateur.id,
         mediateurUserId: user.id,
       })
+
+      // Side effect: update RDV status if it comes from an RDV
+      if (input.rdvServicePublicId) {
+        try {
+          const userWithRdvAccount = await getUserContextForOAuthApiCall({
+            user,
+          })
+          const { rdvAccount } = userWithRdvAccount
+          if (rdvAccount) {
+            await oAuthRdvApiUpdateRdvStatus({
+              rdvAccount,
+              rdvId: input.rdvServicePublicId,
+              status: 'seen',
+            })
+          }
+        } catch (error) {
+          // We don't want to fail the CRA creation if the RDV status update fails
+          // But we want to be notified
+          Sentry.captureException(error)
+        }
+      }
+
+      return createResult
     }),
   collectif: protectedProcedure
     .input(CraCollectifServerValidation)
     .mutation(async ({ input, ctx: { user } }) => {
       enforceIsMediateur(user)
 
-      return createOrUpdateActivite({
+      const createResult = await createOrUpdateActivite({
         input: {
           type: 'Collectif',
           data: input,
@@ -46,6 +73,29 @@ export const craRouter = router({
         mediateurId: user.mediateur.id,
         mediateurUserId: user.id,
       })
+
+      // Side effect: update RDV status if it comes from an RDV
+      if (input.rdvServicePublicId) {
+        try {
+          const userWithRdvAccount = await getUserContextForOAuthApiCall({
+            user,
+          })
+          const { rdvAccount } = userWithRdvAccount
+          if (rdvAccount) {
+            await oAuthRdvApiUpdateRdvStatus({
+              rdvAccount,
+              rdvId: input.rdvServicePublicId,
+              status: 'seen',
+            })
+          }
+        } catch (error) {
+          // We don't want to fail the CRA creation if the RDV status update fails
+          // But we want to be notified
+          Sentry.captureException(error)
+        }
+      }
+
+      return createResult
     }),
   animation: protectedProcedure
     .input(CraAnimationValidation)
