@@ -1,7 +1,7 @@
 /**
  * Documentation: https://adresse.data.gouv.fr/api-doc/adresse
  */
-export const apiAdresseEndpoint = 'https://api-adresse.data.gouv.fr/search'
+export const apiAdresseEndpoint = 'https://data.geopf.fr/geocodage/search'
 
 export type FeatureCollection = {
   type: 'FeatureCollection' // Type de la collection de fonctionnalités
