@@ -4,6 +4,7 @@ import type {
   DataspaceMediateur,
   DataspaceStructureEmployeuse,
 } from '@app/web/external-apis/dataspace/dataspaceApiClient'
+import { getContractStatus } from '@app/web/features/dataspace/getContractStatus'
 import { findOrCreateStructure } from '@app/web/features/structures/findOrCreateStructure'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
@@ -87,15 +88,9 @@ export const getActiveOrMostRecentContract = (
   const now = new Date()
 
   // Find active contract (started, not ended, not ruptured)
-  const activeContract = contrats.find((contrat) => {
-    const dateDebut = new Date(contrat.date_debut)
-    const dateFin = new Date(contrat.date_fin)
-    const hasNotStarted = dateDebut > now
-    const hasEnded = dateFin < now
-    const isRuptured = contrat.date_rupture !== null
-
-    return !hasNotStarted && !hasEnded && !isRuptured
-  })
+  const activeContract = contrats.find(
+    (contrat) => getContractStatus({ contrat, date: now }).isActive,
+  )
 
   if (activeContract) {
     return activeContract

@@ -83,7 +83,7 @@ const getStructuresInfos = ({
     value: dateAsDay(creation),
   },
   {
-    label: 'Supprimée le',
+    label: 'Structure supprimée le',
     value: suppression ? dateAsDay(suppression) : '-',
   },
 ]
@@ -558,7 +558,7 @@ const AdministrationUserPage = async ({
         )}
         {emplois.length > 0 ? (
           <AdministrationInfoCard
-            title="Structures employeuses"
+            title="Contrats - Structures employeuses"
             actions={
               <Button
                 iconId="fr-icon-settings-5-line"
@@ -568,7 +568,7 @@ const AdministrationUserPage = async ({
                   href: `/administration/utilisateurs/${user.id}/emplois`,
                 }}
               >
-                Paramétrer les structures employeuses
+                Modifier
               </Button>
             }
           >
@@ -576,7 +576,7 @@ const AdministrationUserPage = async ({
               <div key={emploi.id}>
                 <p className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
                   {emploi.structure.nom}{' '}
-                  {!!emploi.suppression && (
+                  {!!emploi.fin && emploi.fin < new Date() && (
                     <Badge className="fr-ml-2w" severity="warning" small>
                       Emploi terminé
                     </Badge>
@@ -585,11 +585,19 @@ const AdministrationUserPage = async ({
                 <AdministrationInlineLabelsValues
                   items={[
                     {
-                      label: 'Lien d’emploi créé le',
+                      label: 'Début',
+                      value: dateAsDay(emploi.debut),
+                    },
+                    {
+                      label: 'Fin',
+                      value: emploi.fin ? dateAsDay(emploi.fin) : '-',
+                    },
+                    {
+                      label: 'Créé le',
                       value: dateAsDay(emploi.creation),
                     },
                     {
-                      label: 'Lien d’emploi supprimé le',
+                      label: 'Supprimé le',
                       value: emploi.suppression
                         ? dateAsDay(emploi.suppression)
                         : '-',

@@ -1,4 +1,5 @@
 import type { DataspaceMediateur } from '@app/web/external-apis/dataspace/dataspaceApiClient'
+import { getContractStatus } from '@app/web/features/dataspace/getContractStatus'
 import type { ProfilInscription } from '@prisma/client'
 
 /**
@@ -49,14 +50,8 @@ export const hasActiveContractFromDataspace = (
 
   // Check if any structure has an active contract (date_debut <= now <= date_fin, no date_rupture)
   return (dataspaceData.structures_employeuses ?? []).some((structure) =>
-    structure.contrats?.some((contrat) => {
-      const dateDebut = new Date(contrat.date_debut)
-      const dateFin = new Date(contrat.date_fin)
-      const hasNotStarted = dateDebut > now
-      const hasEnded = dateFin < now
-      const isRuptured = contrat.date_rupture !== null
-
-      return !hasNotStarted && !hasEnded && !isRuptured
-    }),
+    structure.contrats?.some(
+      (contrat) => getContractStatus({ contrat, date: now }).isActive,
+    ),
   )
 }
