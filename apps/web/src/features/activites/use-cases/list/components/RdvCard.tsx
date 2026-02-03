@@ -1,4 +1,7 @@
+'use client'
+
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
+import { RdvStatusUpdateDynamicModal } from '@app/web/features/activites/use-cases/list/components/RdvStatusUpdateModal/RdvStatusUpdateModal'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import type { RdvListItem } from '@app/web/features/rdvsp/administration/db/rdvQueries'
 import {
@@ -25,6 +28,7 @@ const RdvCard = ({
   displayDate?: boolean
 }) => {
   const { timezone } = user
+  const openStatusUpdateModal = RdvStatusUpdateDynamicModal.useOpen()
 
   const {
     startsAt,
@@ -51,6 +55,10 @@ const RdvCard = ({
   const startTime = dateAsTimeInTimeZone(startsAt, timezone)
   const endTime = dateAsTimeInTimeZone(endsAt, timezone)
   const canCompleteCra = status === 'seen'
+
+  const handleOpenStatusModal = () => {
+    openStatusUpdateModal({ rdv })
+  }
 
   return (
     <ListCard
@@ -93,18 +101,28 @@ const RdvCard = ({
           <RdvStatusBadge rdv={rdv} className="fr-mr-2v" />
           {canCompleteCra ? (
             <CraFromRdvButton className="fr-flex-shrink-0" rdvId={rdv.id} />
+          ) : badgeStatus === 'past' ? (
+            <Button
+              priority="tertiary no outline"
+              size="small"
+              className="fr-flex-shrink-0"
+              title="Renseigner le statut du RDV"
+              onClick={handleOpenStatusModal}
+            >
+              À renseigner
+            </Button>
           ) : (
             <Button
               priority="tertiary no outline"
               size="small"
               className="fr-flex-shrink-0"
-              title="Voir et modifier le RDV sur Rendez-vous Service Public"
+              title="Voir et modifier le RDV"
               linkProps={{
                 href: urlForAgents,
                 target: '_blank',
               }}
             >
-              {badgeStatus === 'past' ? 'À valider sur RDVSP' : 'Voir'}
+              Voir
             </Button>
           )}
         </>
