@@ -15,6 +15,7 @@ import { getSecretValue } from '@app/cli/commands/secrets/getSecretValue'
 import { listSecrets } from '@app/cli/commands/secrets/listSecrets'
 import { setupDatabaseSecret } from '@app/cli/commands/secrets/setupDatabaseSecret'
 import { deleteSentryEnvironmentIssues } from '@app/cli/commands/sentry/deleteSentryEnvironmentIssues'
+import { repairCraV1LieuxActiviteCommand } from '@app/cli/commands/v1/repairCraV1LieuxActivite'
 import { fetchAccompagnements } from '@app/cli/fetchAccompagnement'
 import { output, outputError } from '@app/cli/output'
 import { Command } from '@commander-js/extra-typings'
@@ -57,6 +58,7 @@ const main = async () => {
   program.addCommand(locallyRestoreLatestMainBackup)
   program.addCommand(ingestNotionHelpCenterExportedMarkdown)
   program.addCommand(fetchAccompagnements)
+  program.addCommand(repairCraV1LieuxActiviteCommand)
   program.addCommand(deleteSentryEnvironmentIssues)
   await program.parseAsync()
 }

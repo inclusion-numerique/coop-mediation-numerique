@@ -17,6 +17,8 @@ export type StructureInput = {
   courrielReferent?: string | null
   telephoneReferent?: string | null
   creationParId?: string | null
+  v1PermanenceId?: string | null
+  v1StructureId?: string | null
 }
 
 const undeleteStructureIfDeleted = async ({
@@ -57,6 +59,8 @@ export const findOrCreateStructure = async ({
   courrielReferent,
   telephoneReferent,
   creationParId,
+  v1PermanenceId,
+  v1StructureId,
 }: StructureInput): Promise<{ id: string }> => {
   // If coopId is provided, it is the surest way to find the structure
   if (coopId) {
@@ -75,7 +79,43 @@ export const findOrCreateStructure = async ({
     }
   }
 
-  // Step 1: Find existing Structure by SIRET + nom (only if siret is provided)
+  // Step 0a: Find existing Structure by v1PermanenceId if provided
+  if (v1PermanenceId) {
+    const existingByPermanenceId = await prismaClient.structure.findFirst({
+      where: {
+        v1PermanenceId,
+      },
+      select: {
+        id: true,
+        suppression: true,
+      },
+    })
+
+    if (existingByPermanenceId) {
+      await undeleteStructureIfDeleted(existingByPermanenceId)
+      return existingByPermanenceId
+    }
+  }
+
+  // Step 0b: Find existing Structure by v1StructureId if provided
+  if (v1StructureId) {
+    const existingByStructureId = await prismaClient.structure.findFirst({
+      where: {
+        v1StructureId,
+      },
+      select: {
+        id: true,
+        suppression: true,
+      },
+    })
+
+    if (existingByStructureId) {
+      await undeleteStructureIfDeleted(existingByStructureId)
+      return existingByStructureId
+    }
+  }
+
+  // Step 1: Find existing Structure by SIRET + codeInsee (only if siret is provided)
   if (siret) {
     const existingStructure = await prismaClient.structure.findFirst({
       where: {
@@ -127,6 +167,8 @@ export const findOrCreateStructure = async ({
           courrielReferent: courrielReferent ?? structureData.courriels?.at(0),
           telephoneReferent: telephoneReferent ?? structureData.telephone,
           creationParId,
+          v1PermanenceId,
+          v1StructureId,
         },
         select: {
           id: true,
@@ -189,6 +231,8 @@ export const findOrCreateStructure = async ({
         courrielReferent,
         telephoneReferent,
         creationParId,
+        v1PermanenceId,
+        v1StructureId,
       },
       select: {
         id: true,
@@ -210,6 +254,8 @@ export const findOrCreateStructure = async ({
       courrielReferent,
       telephoneReferent,
       creationParId,
+      v1PermanenceId,
+      v1StructureId,
     },
     select: {
       id: true,
