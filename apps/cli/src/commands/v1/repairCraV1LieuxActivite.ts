@@ -5,48 +5,26 @@ import {
   repairCraV1LieuxActivite,
 } from '@app/web/features/v1/repairCraV1LieuxActivite'
 import { Command } from '@commander-js/extra-typings'
+import { stringify } from 'csv-stringify/sync'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 
 const CSV_OUTPUT_PATH = 'var/v1-structures-missing.csv'
 
-const escapeCsvField = (value: string | null | undefined): string => {
-  if (value === null || value === undefined) return ''
-  const str = String(value)
-  if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-    return `"${str.replace(/"/g, '""')}"`
-  }
-  return str
-}
-
 const writeMissingStructuresCsv = (structures: MissingStructure[]): string => {
-  const headers = [
-    'v1PermanenceId',
-    'v1StructureId',
-    'siret',
-    'nom',
-    'adresse',
-    'codePostal',
-    'commune',
-    'codeInsee',
-    'craCount',
-  ]
+  const records = structures.map((s) => ({
+    v1PermanenceId: s.v1PermanenceId ?? '',
+    v1StructureId: s.v1StructureId ?? '',
+    siret: s.siret ?? '',
+    nom: s.nom ?? '',
+    adresse: s.adresse ?? '',
+    codePostal: s.codePostal ?? '',
+    commune: s.commune ?? '',
+    codeInsee: s.codeInsee ?? '',
+    craCount: s.craCount,
+  }))
 
-  const rows = structures.map((s) =>
-    [
-      escapeCsvField(s.v1PermanenceId),
-      escapeCsvField(s.v1StructureId),
-      escapeCsvField(s.siret),
-      escapeCsvField(s.nom),
-      escapeCsvField(s.adresse),
-      escapeCsvField(s.codePostal),
-      escapeCsvField(s.commune),
-      escapeCsvField(s.codeInsee),
-      s.craCount.toString(),
-    ].join(','),
-  )
-
-  const csv = [headers.join(','), ...rows].join('\n')
+  const csv = stringify(records, { header: true })
 
   const fullPath = resolve(process.cwd(), CSV_OUTPUT_PATH)
   const dir = dirname(fullPath)
