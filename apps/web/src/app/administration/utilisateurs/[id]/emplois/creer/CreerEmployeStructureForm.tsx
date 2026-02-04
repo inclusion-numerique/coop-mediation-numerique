@@ -16,6 +16,7 @@ import type { StructureCreationDataWithSiret } from '@app/web/features/structure
 import SiretInputInfo from '@app/web/features/structures/siret/SiretInputInfo'
 import { trpc } from '@app/web/trpc'
 import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
+import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
@@ -31,6 +32,7 @@ const CreerEmployeStructureForm = ({
     resolver: zodResolver(CreerEmployeStructureValidation),
     defaultValues: {
       userId: user.id,
+      debut: dateAsIsoDay(new Date()),
     },
   })
 
