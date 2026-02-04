@@ -1,9 +1,64 @@
 import { output } from '@app/cli/output'
 import {
   createStructuresRequiredForRepair,
+  type MissingStructure,
   repairCraV1LieuxActivite,
 } from '@app/web/features/v1/repairCraV1LieuxActivite'
 import { Command } from '@commander-js/extra-typings'
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
+
+const CSV_OUTPUT_PATH = 'var/v1-structures-missing.csv'
+
+const escapeCsvField = (value: string | null | undefined): string => {
+  if (value === null || value === undefined) return ''
+  const str = String(value)
+  if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+    return `"${str.replace(/"/g, '""')}"`
+  }
+  return str
+}
+
+const writeMissingStructuresCsv = (structures: MissingStructure[]): string => {
+  const headers = [
+    'v1PermanenceId',
+    'v1StructureId',
+    'siret',
+    'nom',
+    'adresse',
+    'codePostal',
+    'commune',
+    'codeInsee',
+    'craCount',
+  ]
+
+  const rows = structures.map((s) =>
+    [
+      escapeCsvField(s.v1PermanenceId),
+      escapeCsvField(s.v1StructureId),
+      escapeCsvField(s.siret),
+      escapeCsvField(s.nom),
+      escapeCsvField(s.adresse),
+      escapeCsvField(s.codePostal),
+      escapeCsvField(s.commune),
+      escapeCsvField(s.codeInsee),
+      s.craCount.toString(),
+    ].join(','),
+  )
+
+  const csv = [headers.join(','), ...rows].join('\n')
+
+  const fullPath = resolve(process.cwd(), CSV_OUTPUT_PATH)
+  const dir = dirname(fullPath)
+
+  if (!existsSync(dir)) {
+    mkdirSync(dir, { recursive: true })
+  }
+
+  writeFileSync(fullPath, csv, 'utf-8')
+
+  return fullPath
+}
 
 export const repairCraV1LieuxActiviteCommand = new Command()
   .command('v1:repair-cra-v1-lieux-activite')
@@ -93,6 +148,11 @@ export const repairCraV1LieuxActiviteCommand = new Command()
         output(`   - From permanences: ${permanenceCount}`)
         output(`   - From structures (no permanence): ${structureCount}`)
         output(`   - Total CRAs affected: ${totalMissingCras}`)
+        output('')
+
+        // Write CSV file
+        const csvPath = writeMissingStructuresCsv(result.missingStructures)
+        output(`📄 CSV exported to: ${csvPath}`)
         output('')
 
         if (createStructures) {

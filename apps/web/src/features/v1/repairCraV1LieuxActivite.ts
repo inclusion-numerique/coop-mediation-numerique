@@ -55,6 +55,7 @@ resolution AS (
         s_perm.id AS v2_by_permanence_id,
         s_perm_siret.id AS v2_by_permanence_siret,
         s_perm_name.id AS v2_by_permanence_name,
+        s_perm_addr.id AS v2_by_permanence_adresse,
         s_struct.id AS v2_by_structure_id,
         s_struct_siret.id AS v2_by_structure_siret,
         s_struct_name.id AS v2_by_structure_name,
@@ -65,6 +66,8 @@ resolution AS (
                 THEN 'permanence_with_v2_by_siret'
             WHEN c.permanence_id IS NOT NULL AND s_perm_name.id IS NOT NULL 
                 THEN 'permanence_with_v2_by_name'
+            WHEN c.permanence_id IS NOT NULL AND s_perm_addr.id IS NOT NULL 
+                THEN 'permanence_with_v2_by_adresse'
             WHEN c.permanence_id IS NOT NULL 
                 THEN 'permanence_no_v2'
             WHEN c.permanence_id IS NULL AND s_struct.id IS NOT NULL 
@@ -79,6 +82,7 @@ resolution AS (
             CASE WHEN c.permanence_id IS NOT NULL THEN s_perm.id END,
             CASE WHEN c.permanence_id IS NOT NULL THEN s_perm_siret.id END,
             CASE WHEN c.permanence_id IS NOT NULL THEN s_perm_name.id END,
+            CASE WHEN c.permanence_id IS NOT NULL THEN s_perm_addr.id END,
             s_struct.id,
             s_struct_siret.id,
             s_struct_name.id
@@ -106,6 +110,17 @@ resolution AS (
         AND LOWER(s_perm_name.nom) = LOWER(c.permanence_nom_enseigne)
         AND s_perm_name.code_insee = c.permanence_code_commune
         AND s_perm_name.suppression IS NULL
+    -- Match by permanence code_insee + adresse (case insensitive, only if adresse not empty)
+    LEFT JOIN structures s_perm_addr 
+        ON c.permanence_id IS NOT NULL 
+        AND s_perm.id IS NULL
+        AND s_perm_siret.id IS NULL
+        AND s_perm_name.id IS NULL
+        AND c.permanence_adresse IS NOT NULL
+        AND c.permanence_adresse != ''
+        AND LOWER(s_perm_addr.adresse) = LOWER(c.permanence_adresse)
+        AND s_perm_addr.code_insee = c.permanence_code_commune
+        AND s_perm_addr.suppression IS NULL
     -- Match by v1_structure_id
     LEFT JOIN structures s_struct 
         ON c.permanence_id IS NULL 
@@ -158,11 +173,12 @@ export const repairCraV1LieuxActivite = async ({
             WHEN 'permanence_with_v2_structure' THEN 1
             WHEN 'permanence_with_v2_by_siret' THEN 2
             WHEN 'permanence_with_v2_by_name' THEN 3
-            WHEN 'permanence_no_v2' THEN 4
-            WHEN 'no_permanence_with_v2_structure' THEN 5
-            WHEN 'no_permanence_with_v2_by_siret' THEN 6
-            WHEN 'no_permanence_with_v2_by_name' THEN 7
-            WHEN 'no_permanence_no_v2' THEN 8
+            WHEN 'permanence_with_v2_by_adresse' THEN 4
+            WHEN 'permanence_no_v2' THEN 5
+            WHEN 'no_permanence_with_v2_structure' THEN 6
+            WHEN 'no_permanence_with_v2_by_siret' THEN 7
+            WHEN 'no_permanence_with_v2_by_name' THEN 8
+            WHEN 'no_permanence_no_v2' THEN 9
         END
   `)
 
