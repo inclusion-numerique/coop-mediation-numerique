@@ -112,11 +112,12 @@ export const importStructureEmployeuseFromSiret = async ({
 
   log('Structure found or created', { structureId: structure.id })
 
-  // Check if emploi already exists
+  // Check if active emploi already exists (ignore soft-deleted ones)
   const existingEmploi = await prismaClient.employeStructure.findFirst({
     where: {
       userId,
       structureId: structure.id,
+      suppression: null,
     },
     select: {
       id: true,

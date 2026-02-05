@@ -6,6 +6,7 @@ import type {
 } from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import { findOrCreateStructure } from '@app/web/features/structures/findOrCreateStructure'
 import { prismaClient } from '@app/web/prismaClient'
+import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { v4 } from 'uuid'
 
 /**
@@ -39,10 +40,13 @@ export type SyncChanges = {
   structuresRemoved: number
 }
 
-type PreparedStructure = {
+/**
+ * Represents a single contract with its structure, ready for sync
+ * One EmployeStructure record will be created for each PreparedContract
+ */
+type PreparedContract = {
   structureId: string
-  contracts: DataspaceContrat[]
-  contract: DataspaceContrat | null
+  contract: DataspaceContrat
 }
 
 // ============================================================================
@@ -134,15 +138,23 @@ export const getEmploiEndDate = (contrat: DataspaceContrat): Date | null => {
 }
 
 /**
- * Prepare structure data from Dataspace for EmployeStructure sync
- * Returns structure IDs and contract info for each structure
+ * Prepare contract data from Dataspace for EmployeStructure sync
+ * Returns one PreparedContract for each contract in each structure
+ * Creates one EmployeStructure record per contract
  */
-export const prepareStructuresFromDataspace = async (
+export const prepareContractsFromDataspace = async (
   structuresEmployeuses: DataspaceStructureEmployeuse[],
-): Promise<PreparedStructure[]> => {
-  const prepared: PreparedStructure[] = []
+): Promise<PreparedContract[]> => {
+  const prepared: PreparedContract[] = []
 
   for (const structureEmployeuse of structuresEmployeuses) {
+    const contracts = structureEmployeuse.contrats ?? []
+
+    // Skip structures without contracts
+    if (contracts.length === 0) {
+      continue
+    }
+
     const adresse = buildAdresseFromDataspace(structureEmployeuse.adresse)
 
     // Find or create structure (outside transaction - structures are stable)
@@ -162,12 +174,13 @@ export const prepareStructuresFromDataspace = async (
       telephoneReferent: structureEmployeuse.contact?.telephone ?? null,
     })
 
-    const contracts = structureEmployeuse.contrats ?? []
-    prepared.push({
-      structureId: structure.id,
-      contracts,
-      contract: getActiveOrMostRecentContract(contracts),
-    })
+    // Create one PreparedContract for each contract
+    for (const contract of contracts) {
+      prepared.push({
+        structureId: structure.id,
+        contract,
+      })
+    }
   }
 
   return prepared
@@ -178,11 +191,21 @@ export const prepareStructuresFromDataspace = async (
 // ============================================================================
 
 /**
- * Sync ALL structures employeuses from Dataspace data
- * After sync, user has exactly the same EmployeStructure records as in Dataspace.
- * - Creates/updates EmployeStructure for each structure in Dataspace
- * - Removes EmployeStructure records for structures NOT in Dataspace
- * - Edge case: if structure has no contracts, create/keep EmployeStructure with no fin date
+ * Generate a unique key for an emploi based on structureId and debut date
+ * Used to match existing emplois with contracts from Dataspace
+ */
+const getEmploiKey = (structureId: string, debut: Date): string =>
+  `${structureId}:${dateAsIsoDay(debut)}`
+
+/**
+ * Sync ALL contracts from Dataspace data as EmployeStructure records
+ * After sync, user has exactly one EmployeStructure for each contract in Dataspace.
+ * - Creates EmployeStructure for each contract in Dataspace
+ * - Updates existing EmployeStructure if fin date changed
+ * - Removes EmployeStructure records for contracts NOT in Dataspace
+ * - Structures without contracts are IGNORED (no employment link created)
+ *
+ * Matching logic: An emploi is matched to a contract by structureId + debut date
  *
  * All EmployeStructure operations are performed in a single transaction.
  * Only called when is_conseiller_numerique: true in Dataspace API
@@ -194,19 +217,20 @@ export const syncStructuresEmployeusesFromDataspace = async ({
   userId: string
   structuresEmployeuses: DataspaceStructureEmployeuse[]
 }): Promise<{ structureIds: string[]; removed: number }> => {
-  // Step 1: Prepare all structures (find/create) outside transaction
-  const preparedStructures = await prepareStructuresFromDataspace(
+  // Step 1: Prepare all contracts (find/create structures) outside transaction
+  // This already filters out structures without contracts
+  const preparedContracts = await prepareContractsFromDataspace(
     structuresEmployeuses,
   )
-  const structureIds = preparedStructures.map(
-    (preparedStructure) => preparedStructure.structureId,
-  )
+
+  // Collect unique structure IDs for the return value
+  const structureIds = [
+    ...new Set(preparedContracts.map((pc) => pc.structureId)),
+  ]
 
   // Step 2: Perform all EmployeStructure operations in a single transaction
   const result = await prismaClient.$transaction(async (transaction) => {
-    let removedCount = 0
-
-    // Get all existing emplois for this user
+    // Get all existing emplois for this user (including soft-deleted for reactivation)
     const existingEmplois = await transaction.employeStructure.findMany({
       where: { userId },
       select: {
@@ -218,95 +242,77 @@ export const syncStructuresEmployeusesFromDataspace = async ({
       },
     })
 
-    // Create a map for quick lookup
-    const emploisByStructureId = new Map(
-      existingEmplois.map((emploi) => [emploi.structureId, emploi]),
+    // Create a map for quick lookup by structureId + debut
+    const emploisByKey = new Map(
+      existingEmplois.map((emploi) => [
+        getEmploiKey(emploi.structureId, emploi.debut),
+        emploi,
+      ]),
     )
 
-    // Process each structure from Dataspace
-    for (const { structureId, contracts, contract } of preparedStructures) {
-      const existingEmploi = emploisByStructureId.get(structureId)
+    // Track which emploi IDs should remain active after sync
+    const emploiIdsToKeep: string[] = []
 
-      // Handle case where there are no contracts from API
-      // Edge case: create/keep EmployeStructure with no fin date
-      if (contracts.length === 0) {
-        if (existingEmploi) {
-          // Keep existing emploi but remove fin/suppression to ensure user stays active
-          if (
-            existingEmploi.fin !== null ||
-            existingEmploi.suppression !== null
-          ) {
-            await transaction.employeStructure.update({
-              where: { id: existingEmploi.id },
-              data: {
-                fin: null,
-                suppression: null,
-              },
-            })
-          }
-          // Otherwise keep as-is
-        } else {
-          // Create new "fictive" emploi without fin date (active employment)
-          await transaction.employeStructure.create({
-            data: {
-              userId,
-              structureId,
-              debut: new Date(),
-              fin: null,
-              suppression: null,
-            },
-          })
-        }
-      } else {
-        // Calculate dates from contract
-        const creationDate = contract
-          ? new Date(contract.date_debut)
-          : new Date()
-        const suppressionDate = contract ? getEmploiEndDate(contract) : null
+    // Process each contract from Dataspace
+    for (const { structureId, contract } of preparedContracts) {
+      const creationDate = new Date(contract.date_debut)
+      const suppressionDate = getEmploiEndDate(contract)
+      const key = getEmploiKey(structureId, creationDate)
 
-        if (existingEmploi) {
-          // Update existing emploi with contract dates if different
-          if (
-            existingEmploi.debut.getTime() !== creationDate.getTime() ||
-            existingEmploi.fin?.getTime() !== suppressionDate?.getTime()
-          ) {
-            await transaction.employeStructure.update({
-              where: { id: existingEmploi.id },
-              data: {
-                debut: creationDate,
-                fin: suppressionDate,
-                suppression: suppressionDate,
-              },
-            })
-          }
-        } else {
-          // Create new emploi with contract dates
-          await transaction.employeStructure.create({
+      const existingEmploi = emploisByKey.get(key)
+
+      if (existingEmploi) {
+        emploiIdsToKeep.push(existingEmploi.id)
+
+        // Check if we need to update the emploi
+        const needsUpdate =
+          existingEmploi.fin?.getTime() !== suppressionDate?.getTime() ||
+          existingEmploi.suppression !== null // Reactivate if it was soft-deleted
+
+        if (needsUpdate) {
+          await transaction.employeStructure.update({
+            where: { id: existingEmploi.id },
             data: {
-              userId,
-              structureId,
-              debut: creationDate,
               fin: suppressionDate,
+              // Only set suppression if contract has ended, otherwise clear it (reactivate)
               suppression: suppressionDate,
             },
           })
         }
+      } else {
+        // Create new emploi for this contract
+        const newEmploi = await transaction.employeStructure.create({
+          data: {
+            userId,
+            structureId,
+            debut: creationDate,
+            fin: suppressionDate,
+            suppression: suppressionDate,
+          },
+          select: { id: true },
+        })
+        emploiIdsToKeep.push(newEmploi.id)
       }
     }
 
-    // Remove EmployeStructure records for structures NOT in Dataspace
-    // This ensures user has exactly the same structures as in Dataspace after sync
-    const deleteResult = await transaction.employeStructure.deleteMany({
+    // Soft-delete EmployeStructure records for contracts NOT in Dataspace
+    // Set suppression date to mark them as ended
+    const now = new Date()
+    const softDeleteResult = await transaction.employeStructure.updateMany({
       where: {
         userId,
-        structureId: {
-          notIn: structureIds,
+        id: {
+          notIn: emploiIdsToKeep,
         },
+        suppression: null, // Only soft-delete those not already deleted
+      },
+      data: {
+        suppression: now,
+        fin: now,
       },
     })
-    removedCount = deleteResult.count
 
-    return { removedCount }
+    return { removedCount: softDeleteResult.count }
   })
 
   return { structureIds, removed: result.removedCount }

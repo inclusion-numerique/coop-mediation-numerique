@@ -65,6 +65,7 @@ const include = {
     },
   },
   emplois: {
+    where: { suppression: null },
     include: {
       structure: {
         select: { id: true },

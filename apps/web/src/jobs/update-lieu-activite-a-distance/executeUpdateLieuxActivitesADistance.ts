@@ -16,6 +16,7 @@ export const executeUpdateLieuxActivitesADistance = async (
           user: {
             include: {
               emplois: {
+                where: { suppression: null },
                 include: {
                   structure: true,
                 },
