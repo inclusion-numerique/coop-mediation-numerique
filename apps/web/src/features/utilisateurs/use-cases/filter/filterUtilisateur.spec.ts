@@ -275,6 +275,7 @@ describe('filter utilisateur', () => {
       expect(filters).toEqual({
         emplois: {
           some: {
+            suppression: null,
             structure: {
               id: {
                 in: ['52f16963-fc6f-4684-a690-68b28f10da6a'],
@@ -293,6 +294,7 @@ describe('filter utilisateur', () => {
       expect(filters).toEqual({
         emplois: {
           some: {
+            suppression: null,
             structure: {
               OR: [
                 {
@@ -315,6 +317,7 @@ describe('filter utilisateur', () => {
       expect(filters).toEqual({
         emplois: {
           some: {
+            suppression: null,
             structure: {
               codeInsee: {
                 in: ['86137'],
@@ -337,6 +340,7 @@ describe('filter utilisateur', () => {
       expect(filters).toEqual({
         emplois: {
           some: {
+            suppression: null,
             structure: {
               OR: [
                 {

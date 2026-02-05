@@ -39,16 +39,20 @@ describe('dataspaceApiClient', () => {
     }
 
     // Verify mediateur structure
+    // Note: lieux_activite can be null for coordinateurs who are not conseiller numérique
     expect(result).toEqual(
       expect.objectContaining({
         id: expect.any(Number),
         is_coordinateur: true,
         is_conseiller_numerique: false,
         structures_employeuses: expect.any(Array),
-        lieux_activite: expect.any(Array),
         conseillers_numeriques_coordonnes: expect.any(Array),
       }),
     )
+    // lieux_activite is null or array for coordinateurs
+    expect(
+      result.lieux_activite === null || Array.isArray(result.lieux_activite),
+    ).toBe(true)
 
     expect(result.structures_employeuses?.length).toBeGreaterThan(0)
     expect(result.structures_employeuses?.[0]).toEqual(
@@ -69,19 +73,23 @@ describe('dataspaceApiClient', () => {
       }),
     )
 
-    expect(result.lieux_activite?.[0]).toEqual(
-      expect.objectContaining({
-        nom: expect.any(String),
-        siret: expect.any(String),
-        adresse: expect.objectContaining({
-          nom_voie: expect.any(String),
-          code_insee: expect.any(String),
-          code_postal: expect.any(String),
-          nom_commune: expect.any(String),
-          numero_voie: expect.any(Number),
+    // lieux_activite can be null for coordinateurs who are not conseiller numérique
+    // Only verify structure if lieux_activite has elements
+    if (result.lieux_activite && result.lieux_activite.length > 0) {
+      expect(result.lieux_activite[0]).toEqual(
+        expect.objectContaining({
+          nom: expect.any(String),
+          siret: expect.any(String),
+          adresse: expect.objectContaining({
+            nom_voie: expect.any(String),
+            code_insee: expect.any(String),
+            code_postal: expect.any(String),
+            nom_commune: expect.any(String),
+            numero_voie: expect.any(Number),
+          }),
         }),
-      }),
-    )
+      )
+    }
   })
 
   it('conseiller numerique - should handle email case insensitivity', async () => {
