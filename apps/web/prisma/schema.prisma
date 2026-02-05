@@ -115,7 +115,7 @@ model User {
   v1Imported DateTime? @map("v1_imported")
 
   // Dataspace API integration
-  dataspaceId Int? @unique @map("dataspace_id")
+  dataspaceId Int? @map("dataspace_id")
 
   // SIRET from ProConnect authentication
   siret String?
