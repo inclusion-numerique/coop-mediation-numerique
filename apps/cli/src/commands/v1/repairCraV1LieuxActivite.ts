@@ -1,3 +1,5 @@
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
 import { output } from '@app/cli/output'
 import {
   createStructuresRequiredForRepair,
@@ -8,8 +10,6 @@ import {
 import { Command } from '@commander-js/extra-typings'
 import { parse } from 'csv-parse/sync'
 import { stringify } from 'csv-stringify/sync'
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
 
 const CSV_OUTPUT_PATH = 'var/v1-structures-missing.csv'
 const CSV_COMPLETED_PATH = 'var/v1-structures-missing-completed.csv'
