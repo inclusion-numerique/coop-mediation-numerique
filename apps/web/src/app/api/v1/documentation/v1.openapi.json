@@ -1402,6 +1402,12 @@
                 "nullable": true,
                 "example": "2024-01-03T12:00:00Z"
               },
+              "dataspace_id": {
+                "type": "number",
+                "nullable": true,
+                "description": "identifiant dataspace de l'utilisateur",
+                "example": 67890
+              },
               "emplois": {
                 "type": "array",
                 "description": "liste des emplois (relation \"EmployeStructure\") avec uniquement l'id et l'id de la structure",
@@ -1584,29 +1590,19 @@
               },
               "conseiller_numerique": {
                 "type": "object",
-                "description": "informations relatives au dispositif \"conseiller numérique\"",
-                "required": [
-                  "is_conseiller_numerique",
-                  "id_pg",
-                  "id_dataspace"
-                ],
+                "description": "informations relatives au dispositif \"conseiller numerique\"",
+                "required": ["is_conseiller_numerique", "id_pg"],
                 "properties": {
                   "is_conseiller_numerique": {
                     "type": "boolean",
-                    "description": "indique si l’utilisateur est detecte dans le dispositif \"conseiller numerique\"",
+                    "description": "indique si l utilisateur est dans le dispositif \"conseiller numerique\"",
                     "example": true
                   },
                   "id_pg": {
                     "type": "number",
                     "nullable": true,
-                    "description": "identifiant pg de l’utilisateur dans le dataspace",
+                    "description": "identifiant pg de l utilisateur dans le dispositif \"conseiller numerique\"",
                     "example": 12345
-                  },
-                  "id_dataspace": {
-                    "type": "number",
-                    "nullable": true,
-                    "description": "identifiant dataspace de l’utilisateur\"",
-                    "example": 67890
                   }
                 }
               }
@@ -2167,22 +2163,13 @@
           },
           {
             "in": "query",
-            "name": "filter[conseiller_numerique_id]",
+            "name": "filter[conseiller_numerique]",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": ["0", "1"]
             },
             "required": false,
-            "description": "filtre sur l'identifiant du conseiller numérique, plusieurs valeurs sont possibles séparées par des virgules",
-            "examples": {
-              "single": {
-                "summary": "une seule valeur",
-                "value": "abcd"
-              },
-              "multiple": {
-                "summary": "plusieurs valeurs",
-                "value": "abcd,efgh,ijkl"
-              }
-            }
+            "description": "filtre sur le statut conseiller numérique. '0' pour les non-conseillers numériques, '1' pour les conseillers numériques"
           },
           {
             "in": "query",
@@ -2192,6 +2179,25 @@
             },
             "required": false,
             "description": "filtre sur l'identifiant pg du conseiller numérique, plusieurs valeurs sont possibles séparées par des virgules",
+            "examples": {
+              "single": {
+                "summary": "une seule valeur",
+                "value": "123"
+              },
+              "multiple": {
+                "summary": "plusieurs valeurs",
+                "value": "123,456,789"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "filter[dataspace_id]",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "filtre sur l'identifiant dataspace, plusieurs valeurs sont possibles séparées par des virgules",
             "examples": {
               "single": {
                 "summary": "une seule valeur",
