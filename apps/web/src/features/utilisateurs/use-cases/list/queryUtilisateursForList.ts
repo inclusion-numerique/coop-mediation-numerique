@@ -46,6 +46,7 @@ export const searchUtilisateurSelect = {
     },
   },
   emplois: {
+    where: { suppression: null },
     orderBy: { creation: 'desc' },
     take: 1,
     select: {

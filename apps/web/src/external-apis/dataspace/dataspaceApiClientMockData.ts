@@ -56,7 +56,7 @@ export const mockDataspaceContactMinimal: DataspaceContact = {
 // Contract mocks
 export const mockDataspaceContratCDD: DataspaceContrat = {
   type: 'CDD',
-  date_fin: '2025-12-31',
+  date_fin: '2099-12-31', // far future to avoid expiring
   date_debut: '2024-01-01',
   date_rupture: null,
 }

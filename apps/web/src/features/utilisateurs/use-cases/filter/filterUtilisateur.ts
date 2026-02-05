@@ -172,6 +172,7 @@ export const filterOnLieux = (queryParams?: {
     : {
         emplois: {
           some: {
+            suppression: null,
             structure: {
               ...(hasLieuxFilter(queryParams)
                 ? { id: { in: queryParams.lieux } }
