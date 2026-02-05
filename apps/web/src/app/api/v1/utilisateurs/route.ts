@@ -203,16 +203,26 @@ import { type ZodError, z } from 'zod'
  *                         format: uuid
  *             conseiller_numerique:
  *               type: object
- *               nullable: true
- *               description: si l’utilisateur est detecté dans le dispositif "conseiller numérique", ses identifiants externes sont stockés dans cet objet
+ *               description: informations relatives au dispositif "conseiller numérique"
+ *               required:
+ *                 - is_conseiller_numerique
+ *                 - id_pg
+ *                 - id_dataspace
  *               properties:
- *                 id:
- *                   type: string
- *                   description: identifiant de l’utilisateur dans le dispositif "conseiller numérique"
+ *                 is_conseiller_numerique:
+ *                   type: boolean
+ *                   description: indique si l’utilisateur est detecte dans le dispositif "conseiller numerique"
+ *                   example: true
  *                 id_pg:
  *                   type: number
  *                   nullable: true
- *                   description: identifiant alternatif de l’utilisateur dans le dispositif "conseiller numérique"
+ *                   description: identifiant pg de l’utilisateur dans le dataspace
+ *                   example: 12345
+ *                 id_dataspace:
+ *                   type: number
+ *                   nullable: true
+ *                   description: identifiant dataspace de l’utilisateur"
+ *                   example: 67890
  * /utilisateurs:
  *   get:
  *     summary: liste des utilisateurs
@@ -347,9 +357,10 @@ export type UtilisateurAttributes = {
     }>
   } | null
   conseiller_numerique: {
-    is_conseiller_numerique: true
+    is_conseiller_numerique: boolean
     id_pg: number | null
-  } | null
+    id_dataspace: number | null
+  }
 }
 
 type UtilisateurRelationships = never
@@ -638,12 +649,11 @@ export const GET = createApiV1Route
                 ),
               }
             : null,
-          conseiller_numerique: u.isConseillerNumerique
-            ? {
-                is_conseiller_numerique: true,
-                id_pg: u.dataspaceUserIdPg,
-              }
-            : null,
+          conseiller_numerique: {
+            is_conseiller_numerique: u.isConseillerNumerique,
+            id_pg: u.dataspaceUserIdPg ?? null,
+            id_dataspace: u.dataspaceId ?? null,
+          },
         },
       })),
       links: {

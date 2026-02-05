@@ -1584,17 +1584,29 @@
               },
               "conseiller_numerique": {
                 "type": "object",
-                "nullable": true,
-                "description": "si l’utilisateur est detecté dans le dispositif \"conseiller numérique\", ses identifiants externes sont stockés dans cet objet",
+                "description": "informations relatives au dispositif \"conseiller numérique\"",
+                "required": [
+                  "is_conseiller_numerique",
+                  "id_pg",
+                  "id_dataspace"
+                ],
                 "properties": {
-                  "id": {
-                    "type": "string",
-                    "description": "identifiant de l’utilisateur dans le dispositif \"conseiller numérique\""
+                  "is_conseiller_numerique": {
+                    "type": "boolean",
+                    "description": "indique si l’utilisateur est detecte dans le dispositif \"conseiller numerique\"",
+                    "example": true
                   },
                   "id_pg": {
                     "type": "number",
                     "nullable": true,
-                    "description": "identifiant alternatif de l’utilisateur dans le dispositif \"conseiller numérique\""
+                    "description": "identifiant pg de l’utilisateur dans le dataspace",
+                    "example": 12345
+                  },
+                  "id_dataspace": {
+                    "type": "number",
+                    "nullable": true,
+                    "description": "identifiant dataspace de l’utilisateur\"",
+                    "example": 67890
                   }
                 }
               }
