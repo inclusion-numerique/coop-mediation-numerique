@@ -13,6 +13,12 @@ export type MissingStructure = {
   craCount: number
 }
 
+export type ManualMatch = {
+  v1PermanenceId: string | null
+  v1StructureId: string | null
+  v2StructureId: string
+}
+
 export type ResolutionSummary = {
   resolutionType: string
   crasCount: number
@@ -27,7 +33,21 @@ export type RepairResult = {
   dryRun: boolean
 }
 
-const RESOLUTION_CTE = `
+const buildResolutionCte = (manualMatches: ManualMatch[] = []): string => {
+  // Build manual matches CTE if we have any
+  const manualMatchesCte =
+    manualMatches.length > 0
+      ? `manual_matches(v1_permanence_id, v1_structure_id, v2_structure_id) AS (
+    VALUES ${manualMatches
+      .map(
+        (m) =>
+          `(${m.v1PermanenceId ? `'${m.v1PermanenceId}'` : 'NULL'}::text, ${m.v1StructureId ? `'${m.v1StructureId}'` : 'NULL'}::text, '${m.v2StructureId}'::uuid)`,
+      )
+      .join(',\n           ')}
+),`
+      : ''
+
+  return `
 WITH cras_rattachement AS (
     SELECT 
         id,
@@ -49,9 +69,12 @@ WITH cras_rattachement AS (
     FROM cras_conseiller_numerique_v1
     WHERE canal = 'rattachement'
 ),
+${manualMatchesCte}
 resolution AS (
     SELECT 
         c.*,
+        ${manualMatches.length > 0 ? 'mm_perm.v2_structure_id AS v2_by_manual_permanence,' : ''}
+        ${manualMatches.length > 0 ? 'mm_struct.v2_structure_id AS v2_by_manual_structure,' : ''}
         s_perm.id AS v2_by_permanence_id,
         s_perm_siret.id AS v2_by_permanence_siret,
         s_perm_name.id AS v2_by_permanence_name,
@@ -60,6 +83,12 @@ resolution AS (
         s_struct_siret.id AS v2_by_structure_siret,
         s_struct_name.id AS v2_by_structure_name,
         CASE 
+            ${
+              manualMatches.length > 0
+                ? `WHEN c.permanence_id IS NOT NULL AND mm_perm.v2_structure_id IS NOT NULL 
+                THEN 'permanence_with_v2_manual'`
+                : ''
+            }
             WHEN c.permanence_id IS NOT NULL AND s_perm.id IS NOT NULL 
                 THEN 'permanence_with_v2_structure'
             WHEN c.permanence_id IS NOT NULL AND s_perm_siret.id IS NOT NULL 
@@ -70,6 +99,12 @@ resolution AS (
                 THEN 'permanence_with_v2_by_adresse'
             WHEN c.permanence_id IS NOT NULL 
                 THEN 'permanence_no_v2'
+            ${
+              manualMatches.length > 0
+                ? `WHEN c.permanence_id IS NULL AND mm_struct.v2_structure_id IS NOT NULL 
+                THEN 'no_permanence_with_v2_manual'`
+                : ''
+            }
             WHEN c.permanence_id IS NULL AND s_struct.id IS NOT NULL 
                 THEN 'no_permanence_with_v2_structure'
             WHEN c.permanence_id IS NULL AND s_struct_siret.id IS NOT NULL 
@@ -79,15 +114,29 @@ resolution AS (
             ELSE 'no_permanence_no_v2'
         END AS resolution_type,
         COALESCE(
+            ${manualMatches.length > 0 ? 'CASE WHEN c.permanence_id IS NOT NULL THEN mm_perm.v2_structure_id END,' : ''}
             CASE WHEN c.permanence_id IS NOT NULL THEN s_perm.id END,
             CASE WHEN c.permanence_id IS NOT NULL THEN s_perm_siret.id END,
             CASE WHEN c.permanence_id IS NOT NULL THEN s_perm_name.id END,
             CASE WHEN c.permanence_id IS NOT NULL THEN s_perm_addr.id END,
+            ${manualMatches.length > 0 ? 'mm_struct.v2_structure_id,' : ''}
             s_struct.id,
             s_struct_siret.id,
             s_struct_name.id
         ) AS resolved_structure_id
     FROM cras_rattachement c
+    ${
+      manualMatches.length > 0
+        ? `-- Manual match for permanence
+    LEFT JOIN manual_matches mm_perm 
+        ON c.permanence_id IS NOT NULL 
+        AND mm_perm.v1_permanence_id = c.permanence_id
+    -- Manual match for structure
+    LEFT JOIN manual_matches mm_struct 
+        ON c.permanence_id IS NULL 
+        AND mm_struct.v1_structure_id = c.structure_id`
+        : ''
+    }
     -- Match by v1_permanence_id
     LEFT JOIN structures s_perm 
         ON c.permanence_id IS NOT NULL 
@@ -145,12 +194,26 @@ resolution AS (
         AND s_struct_name.suppression IS NULL
 )
 `
+}
 
 export const repairCraV1LieuxActivite = async ({
   dryRun = true,
+  manualMatches = [],
+  onProgress,
 }: {
   dryRun?: boolean
+  manualMatches?: ManualMatch[]
+  onProgress?: (message: string) => void
 } = {}): Promise<RepairResult> => {
+  const log =
+    onProgress ??
+    (() => {
+      // void logger
+    })
+  const resolutionCte = buildResolutionCte(manualMatches)
+
+  log('Step 1/4: Building resolution CTE...')
+
   // Step 1: Get summary of resolution types
   const summary = await prismaClient.$queryRawUnsafe<
     {
@@ -160,7 +223,7 @@ export const repairCraV1LieuxActivite = async ({
       distinct_structures: bigint
     }[]
   >(`
-    ${RESOLUTION_CTE}
+    ${resolutionCte}
     SELECT 
         resolution_type,
         COUNT(*) AS cras_count,
@@ -170,15 +233,17 @@ export const repairCraV1LieuxActivite = async ({
     GROUP BY resolution_type
     ORDER BY 
         CASE resolution_type
-            WHEN 'permanence_with_v2_structure' THEN 1
-            WHEN 'permanence_with_v2_by_siret' THEN 2
-            WHEN 'permanence_with_v2_by_name' THEN 3
-            WHEN 'permanence_with_v2_by_adresse' THEN 4
-            WHEN 'permanence_no_v2' THEN 5
-            WHEN 'no_permanence_with_v2_structure' THEN 6
-            WHEN 'no_permanence_with_v2_by_siret' THEN 7
-            WHEN 'no_permanence_with_v2_by_name' THEN 8
-            WHEN 'no_permanence_no_v2' THEN 9
+            WHEN 'permanence_with_v2_manual' THEN 1
+            WHEN 'permanence_with_v2_structure' THEN 2
+            WHEN 'permanence_with_v2_by_siret' THEN 3
+            WHEN 'permanence_with_v2_by_name' THEN 4
+            WHEN 'permanence_with_v2_by_adresse' THEN 5
+            WHEN 'permanence_no_v2' THEN 6
+            WHEN 'no_permanence_with_v2_manual' THEN 7
+            WHEN 'no_permanence_with_v2_structure' THEN 8
+            WHEN 'no_permanence_with_v2_by_siret' THEN 9
+            WHEN 'no_permanence_with_v2_by_name' THEN 10
+            WHEN 'no_permanence_no_v2' THEN 11
         END
   `)
 
@@ -188,6 +253,14 @@ export const repairCraV1LieuxActivite = async ({
     distinctPermanences: Number(row.distinct_permanences),
     distinctStructures: Number(row.distinct_structures),
   }))
+
+  const totalCras = formattedSummary.reduce(
+    (acc, row) => acc + row.crasCount,
+    0,
+  )
+  log(`Step 1/4: Done. Found ${totalCras} CRAs to process.`)
+
+  log('Step 2/4: Checking for missing structures...')
 
   // Step 2: Check for missing structures (permanence_no_v2 and no_permanence_no_v2)
   const missingStructures = await prismaClient.$queryRawUnsafe<
@@ -203,7 +276,7 @@ export const repairCraV1LieuxActivite = async ({
       cra_count: bigint
     }[]
   >(`
-    ${RESOLUTION_CTE}
+    ${resolutionCte}
     SELECT 
         permanence_id AS v1_permanence_id,
         NULL::text AS v1_structure_id,
@@ -261,8 +334,13 @@ export const repairCraV1LieuxActivite = async ({
     }),
   )
 
+  log(
+    `Step 2/4: Done. Found ${formattedMissingStructures.length} missing structures.`,
+  )
+
   // If there are missing structures, don't run the update
   if (formattedMissingStructures.length > 0) {
+    log('Step 2/4: Aborting - missing structures must be resolved first.')
     return {
       summary: formattedSummary,
       missingStructures: formattedMissingStructures,
@@ -271,23 +349,96 @@ export const repairCraV1LieuxActivite = async ({
     }
   }
 
-  // Step 3: Run the update if no missing structures and not dryRun
+  // Step 3: Create staging table and run update if no missing structures and not dryRun
   let updatedCount = 0
 
   if (!dryRun) {
-    const result = await prismaClient.$executeRawUnsafe(`
-      ${RESOLUTION_CTE}
-      UPDATE activites a
-      SET 
-          type_lieu = 'lieu_activite',
-          structure_id = resolution.resolved_structure_id,
-          v1_permanence_id = resolution.permanence_id,
-          modification = NOW()
-      FROM resolution
-      WHERE a.v1_cra_id = resolution.id
-        AND resolution.resolved_structure_id IS NOT NULL
+    log('Step 3/4: Creating staging table v1_repair_cra_lieux...')
+
+    // Drop existing staging table if exists
+    await prismaClient.$executeRawUnsafe(`
+      DROP TABLE IF EXISTS v1_repair_cra_lieux
     `)
-    updatedCount = result
+
+    // Create staging table with resolution results
+    await prismaClient.$executeRawUnsafe(`
+      ${resolutionCte}
+      SELECT 
+          id,
+          permanence_id,
+          structure_id,
+          resolved_structure_id,
+          resolution_type
+      INTO v1_repair_cra_lieux
+      FROM resolution
+      WHERE resolved_structure_id IS NOT NULL
+    `)
+
+    log('Step 3/4: Staging table created. Creating indexes...')
+
+    // Create indexes for fast lookups
+    await prismaClient.$executeRawUnsafe(`
+      CREATE INDEX idx_v1_repair_cra_lieux_id ON v1_repair_cra_lieux(id)
+    `)
+    await prismaClient.$executeRawUnsafe(`
+      CREATE INDEX idx_v1_repair_cra_lieux_structure ON v1_repair_cra_lieux(resolved_structure_id)
+    `)
+
+    log('Step 3/4: Done. Indexes created.')
+
+    log('Step 4/4: Running UPDATE on activites in batches...')
+
+    // Get total count for progress tracking
+    const countResult = await prismaClient.$queryRawUnsafe<
+      [{ count: bigint }]
+    >(`
+      SELECT COUNT(*) as count FROM v1_repair_cra_lieux
+    `)
+    const totalToUpdate = Number(countResult[0].count)
+    log(`Step 4/4: ${totalToUpdate} rows to update.`)
+
+    // Batch update with progress tracking
+    const BATCH_SIZE = 10000
+    let processedCount = 0
+
+    while (true) {
+      // Update a batch and delete processed rows from staging
+      const batchResult = await prismaClient.$executeRawUnsafe(`
+        WITH batch AS (
+          SELECT id, permanence_id, structure_id, resolved_structure_id
+          FROM v1_repair_cra_lieux
+          LIMIT ${BATCH_SIZE}
+        ),
+        updated AS (
+          UPDATE activites a
+          SET 
+              type_lieu = 'lieu_activite',
+              structure_id = batch.resolved_structure_id,
+              v1_permanence_id = batch.permanence_id,
+              v1_structure_id = batch.structure_id,
+              modification = NOW()
+          FROM batch
+          WHERE a.v1_cra_id = batch.id
+          RETURNING a.id
+        )
+        DELETE FROM v1_repair_cra_lieux
+        WHERE id IN (SELECT id FROM batch)
+      `)
+
+      if (batchResult === 0) {
+        break
+      }
+
+      processedCount += batchResult
+      updatedCount += batchResult
+      const percent = Math.round((processedCount / totalToUpdate) * 100)
+      log(`Step 4/4: Progress ${processedCount}/${totalToUpdate} (${percent}%)`)
+    }
+
+    log(`Step 4/4: Done. Updated ${updatedCount} activites.`)
+  } else {
+    log('Step 3/4: Skipped (dry-run mode).')
+    log('Step 4/4: Skipped (dry-run mode).')
   }
 
   return {

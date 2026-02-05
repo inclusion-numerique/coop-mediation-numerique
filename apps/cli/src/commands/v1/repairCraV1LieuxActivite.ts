@@ -1,15 +1,48 @@
 import { output } from '@app/cli/output'
 import {
   createStructuresRequiredForRepair,
+  type ManualMatch,
   type MissingStructure,
   repairCraV1LieuxActivite,
 } from '@app/web/features/v1/repairCraV1LieuxActivite'
 import { Command } from '@commander-js/extra-typings'
+import { parse } from 'csv-parse/sync'
 import { stringify } from 'csv-stringify/sync'
-import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 
 const CSV_OUTPUT_PATH = 'var/v1-structures-missing.csv'
+const CSV_COMPLETED_PATH = 'var/v1-structures-missing-completed.csv'
+
+type CsvManualMatch = {
+  v1PermanenceId: string
+  v1StructureId: string
+  v2StructureId: string
+}
+
+const readManualMatches = (): ManualMatch[] => {
+  const fullPath = resolve(process.cwd(), CSV_COMPLETED_PATH)
+
+  if (!existsSync(fullPath)) {
+    return []
+  }
+
+  const content = readFileSync(fullPath, 'utf-8')
+  const records = parse(content, {
+    columns: true,
+    skip_empty_lines: true,
+    delimiter: ';',
+  }) as CsvManualMatch[]
+
+  // Filter only rows that have a v2StructureId
+  return records
+    .filter((r) => r.v2StructureId && r.v2StructureId.trim() !== '')
+    .map((r) => ({
+      v1PermanenceId: r.v1PermanenceId?.trim() || null,
+      v1StructureId: r.v1StructureId?.trim() || null,
+      v2StructureId: r.v2StructureId.trim(),
+    }))
+}
 
 const writeMissingStructuresCsv = (structures: MissingStructure[]): string => {
   const records = structures.map((s) => ({
@@ -64,6 +97,15 @@ export const repairCraV1LieuxActiviteCommand = new Command()
     output('━'.repeat(60))
     output('')
 
+    // Load manual matches from completed CSV if it exists
+    const manualMatches = readManualMatches()
+    if (manualMatches.length > 0) {
+      output(
+        `📋 Loaded ${manualMatches.length} manual matches from ${CSV_COMPLETED_PATH}`,
+      )
+      output('')
+    }
+
     if (dryRun) {
       output('⚠️  DRY RUN MODE - No data will be modified')
     } else {
@@ -79,7 +121,11 @@ export const repairCraV1LieuxActiviteCommand = new Command()
       output('📊 Analyzing CRA v1 with canal "rattachement"...')
       output('')
 
-      const result = await repairCraV1LieuxActivite({ dryRun: true })
+      const result = await repairCraV1LieuxActivite({
+        dryRun: true,
+        manualMatches,
+        onProgress: (msg) => output(`   ${msg}`),
+      })
 
       // Display summary
       output('📊 Resolution Summary:')
@@ -175,6 +221,8 @@ export const repairCraV1LieuxActiviteCommand = new Command()
 
             const finalResult = await repairCraV1LieuxActivite({
               dryRun: false,
+              manualMatches,
+              onProgress: (msg) => output(`   ${msg}`),
             })
 
             if (finalResult.missingStructures.length > 0) {
@@ -238,7 +286,11 @@ export const repairCraV1LieuxActiviteCommand = new Command()
         output('')
         output('🔄 Updating activites...')
 
-        const finalResult = await repairCraV1LieuxActivite({ dryRun: false })
+        const finalResult = await repairCraV1LieuxActivite({
+          dryRun: false,
+          manualMatches,
+          onProgress: (msg) => output(`   ${msg}`),
+        })
         output('')
         output(`✅ Updated ${finalResult.updatedCount} activites`)
       }
