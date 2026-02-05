@@ -67,6 +67,11 @@ import { type ZodError, z } from 'zod'
  *               format: date-time
  *               nullable: true
  *               example: "2024-01-03T12:00:00Z"
+ *             dataspace_id:
+ *               type: number
+ *               nullable: true
+ *               description: identifiant dataspace de l'utilisateur
+ *               example: 67890
  *             emplois:
  *               type: array
  *               description: liste des emplois (relation "EmployeStructure") avec uniquement l'id et l'id de la structure
@@ -203,26 +208,20 @@ import { type ZodError, z } from 'zod'
  *                         format: uuid
  *             conseiller_numerique:
  *               type: object
- *               description: informations relatives au dispositif "conseiller numérique"
+ *               description: informations relatives au dispositif "conseiller numerique"
  *               required:
  *                 - is_conseiller_numerique
  *                 - id_pg
- *                 - id_dataspace
  *               properties:
  *                 is_conseiller_numerique:
  *                   type: boolean
- *                   description: indique si l’utilisateur est detecte dans le dispositif "conseiller numerique"
+ *                   description: indique si l utilisateur est dans le dispositif "conseiller numerique"
  *                   example: true
  *                 id_pg:
  *                   type: number
  *                   nullable: true
- *                   description: identifiant pg de l’utilisateur dans le dataspace
+ *                   description: identifiant pg de l utilisateur dans le dispositif "conseiller numerique"
  *                   example: 12345
- *                 id_dataspace:
- *                   type: number
- *                   nullable: true
- *                   description: identifiant dataspace de l’utilisateur"
- *                   example: 67890
  * /utilisateurs:
  *   get:
  *     summary: liste des utilisateurs
@@ -261,24 +260,31 @@ import { type ZodError, z } from 'zod'
  *         required: false
  *         description: exclure les elements soft-deleted, ce qui permet de ne pas inclure les utilisateurs et leur données rattachées qui ne sont plus d’actualité. '0' pour exclure les utilisateurs supprimés, '1' pour inclure les utilisateurs supprimés uniquement
  *       - in: query
- *         name: filter[conseiller_numerique_id]
+ *         name: filter[conseiller_numerique]
  *         schema:
- *            type: string
+ *           type: string
+ *           enum: ['0', '1']
  *         required: false
- *         description: filtre sur l'identifiant du conseiller numérique, plusieurs valeurs sont possibles séparées par des virgules
- *         examples:
- *           single:
- *             summary: une seule valeur
- *             value: "abcd"
- *           multiple:
- *             summary: plusieurs valeurs
- *             value: "abcd,efgh,ijkl"
+ *         description: filtre sur le statut conseiller numérique. '0' pour les non-conseillers numériques, '1' pour les conseillers numériques
  *       - in: query
  *         name: filter[conseiller_numerique_id_pg]
  *         schema:
  *            type: string
  *         required: false
  *         description: filtre sur l'identifiant pg du conseiller numérique, plusieurs valeurs sont possibles séparées par des virgules
+ *         examples:
+ *           single:
+ *             summary: une seule valeur
+ *             value: "123"
+ *           multiple:
+ *             summary: plusieurs valeurs
+ *             value: "123,456,789"
+ *       - in: query
+ *         name: filter[dataspace_id]
+ *         schema:
+ *            type: string
+ *         required: false
+ *         description: filtre sur l'identifiant dataspace, plusieurs valeurs sont possibles séparées par des virgules
  *         examples:
  *           single:
  *             summary: une seule valeur
@@ -314,6 +320,7 @@ export type UtilisateurAttributes = {
   creation: string
   modification: string
   suppression: string | null
+  dataspace_id: number | null
   emplois: Array<{
     id: string
     structure_id: string
@@ -359,7 +366,6 @@ export type UtilisateurAttributes = {
   conseiller_numerique: {
     is_conseiller_numerique: boolean
     id_pg: number | null
-    id_dataspace: number | null
   }
 }
 
@@ -394,7 +400,10 @@ export const GET = createApiV1Route
     JsonApiCursorPaginationQueryParamsValidation.extend({
       filter: z
         .object({
-          conseiller_numerique_id: z
+          conseiller_numerique: z
+            .union([z.literal('0'), z.literal('1')])
+            .optional(),
+          conseiller_numerique_id_pg: z
             .union([z.string(), z.array(z.string())])
             .optional()
             .transform((value) => {
@@ -403,7 +412,7 @@ export const GET = createApiV1Route
               }
               return value
             }),
-          conseiller_numerique_id_pg: z
+          dataspace_id: z
             .union([z.string(), z.array(z.string())])
             .optional()
             .transform((value) => {
@@ -455,25 +464,35 @@ export const GET = createApiV1Route
             }
           : undefined
 
+    // Filter by conseiller numérique boolean status
+    const conseillerNumeriqueFilter =
+      params.filter.conseiller_numerique === '1'
+        ? { isConseillerNumerique: true }
+        : params.filter.conseiller_numerique === '0'
+          ? { isConseillerNumerique: false }
+          : undefined
+
     // Filter by conseiller numérique id_pg (parse as integers)
     const conseillerNumeriqueIdPgValues =
       params.filter.conseiller_numerique_id_pg
         ?.map((v) => Number.parseInt(v, 10))
         .filter((v) => !Number.isNaN(v)) ?? []
 
-    // Filter by conseiller numérique status or specific id_pg values
-    const hasConseillerNumeriqueIdFilter =
-      (params.filter.conseiller_numerique_id?.length ?? 0) > 0
-
-    const hasConseillerNumeriqueIdPgFilter =
+    const conseillerNumeriqueIdPgFilter =
       conseillerNumeriqueIdPgValues.length > 0
+        ? { dataspaceUserIdPg: { in: conseillerNumeriqueIdPgValues } }
+        : undefined
 
-    // Build the conseiller numérique filter
-    const conseillerNumeriqueFilter = hasConseillerNumeriqueIdPgFilter
-      ? { dataspaceUserIdPg: { in: conseillerNumeriqueIdPgValues } }
-      : hasConseillerNumeriqueIdFilter
-        ? { isConseillerNumerique: true }
-        : null
+    // Filter by dataspace_id (parse as integers)
+    const dataspaceIdValues =
+      params.filter.dataspace_id
+        ?.map((v) => Number.parseInt(v, 10))
+        .filter((v) => !Number.isNaN(v)) ?? []
+
+    const dataspaceIdFilter =
+      dataspaceIdValues.length > 0
+        ? { dataspaceId: { in: dataspaceIdValues } }
+        : undefined
 
     const users = await prismaClient.user.findMany({
       where: {
@@ -494,6 +513,8 @@ export const GET = createApiV1Route
         role: 'User',
         ...deletedFilter,
         ...conseillerNumeriqueFilter,
+        ...conseillerNumeriqueIdPgFilter,
+        ...dataspaceIdFilter,
       },
       orderBy: [{ created: 'desc' }],
       take: cursorPagination.take,
@@ -564,6 +585,8 @@ export const GET = createApiV1Route
         role: 'User',
         ...deletedFilter,
         ...conseillerNumeriqueFilter,
+        ...conseillerNumeriqueIdPgFilter,
+        ...dataspaceIdFilter,
       },
     })
 
@@ -593,6 +616,7 @@ export const GET = createApiV1Route
           creation: u.created.toISOString(),
           modification: u.updated.toISOString(),
           suppression: u.deleted?.toISOString() ?? null,
+          dataspace_id: u.dataspaceId ?? null,
           emplois: u.emplois.map((emploi) => ({
             id: emploi.id,
             structure_id: emploi.structureId,
@@ -652,7 +676,6 @@ export const GET = createApiV1Route
           conseiller_numerique: {
             is_conseiller_numerique: u.isConseillerNumerique,
             id_pg: u.dataspaceUserIdPg ?? null,
-            id_dataspace: u.dataspaceId ?? null,
           },
         },
       })),
