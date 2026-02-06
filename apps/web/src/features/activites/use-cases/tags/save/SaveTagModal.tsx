@@ -186,6 +186,7 @@ const SaveTagModal = ({
       try {
         await mutation.mutateAsync(data.value).then((tagSaved) => {
           SaveTagDynamicModal.close()
+          setVisibilite(defaultVisibilite)
           form.reset()
 
           if (tagSaved != null) {

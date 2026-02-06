@@ -23,7 +23,7 @@ describe('dataspaceApiClient', () => {
     expect(result).toBeNull()
   })
 
-  it('coordinateur - should return conseiller_numerique coordinateur data as conum: false', async () => {
+  it('coordinateur - should return conseiller_numerique coordinateur data', async () => {
     const result = await getMediateurFromDataspaceApi({
       email: 'a.chretien@sommenumerique.fr',
     })
@@ -39,17 +39,16 @@ describe('dataspaceApiClient', () => {
     }
 
     // Verify mediateur structure
-    // Note: lieux_activite can be null for coordinateurs who are not conseiller numérique
     expect(result).toEqual(
       expect.objectContaining({
         id: expect.any(Number),
         is_coordinateur: true,
-        is_conseiller_numerique: false,
+        is_conseiller_numerique: true,
         structures_employeuses: expect.any(Array),
         conseillers_numeriques_coordonnes: expect.any(Array),
       }),
     )
-    // lieux_activite is null or array for coordinateurs
+    // lieux_activite can be null or array
     expect(
       result.lieux_activite === null || Array.isArray(result.lieux_activite),
     ).toBe(true)
@@ -73,7 +72,6 @@ describe('dataspaceApiClient', () => {
       }),
     )
 
-    // lieux_activite can be null for coordinateurs who are not conseiller numérique
     // Only verify structure if lieux_activite has elements
     if (result.lieux_activite && result.lieux_activite.length > 0) {
       expect(result.lieux_activite[0]).toEqual(
