@@ -19,12 +19,12 @@ type RadioButtonsProps = Omit<DsfrRadioButtonsProps, 'name' | 'options'> & {
   isPending: boolean
   isTiled?: boolean
   options: {
-    label: string
+    label: ReactNode
     value: string
     extra?: {
       illustration?: string | Pictogram | ReactNode
       disabled?: boolean
-      hintText?: string
+      hintText?: ReactNode
       stars?: number
       maxStars?: number
     }

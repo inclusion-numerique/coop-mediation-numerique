@@ -28,6 +28,11 @@ export const getFiltersOptionsForMediateur = async ({
     ...(mediateurCoordonnesIds ?? []),
   ]
 
+  const equipeCoordinateurIds = [
+    ...(user.coordinateur?.id ? [user.coordinateur.id] : []),
+    ...(user.mediateur?.coordinations?.map((c) => c.coordinateur.id) ?? []),
+  ]
+
   const [
     { communesOptions, departementsOptions },
     tagsOptions,
@@ -40,8 +45,10 @@ export const getFiltersOptionsForMediateur = async ({
   ] = await Promise.all([
     getMediateurCommunesAndDepartementsOptions({ mediateurIds }),
     getMediateursTags({
-      mediateurIds,
+      mediateurId: user.mediateur?.id,
+      coordinateurId: user.coordinateur?.id,
       departement: getUserDepartement(user)?.code,
+      equipeCoordinateurIds,
     }),
     getInitialBeneficiairesOptionsForSearch({
       mediateurId: user.mediateur?.id,

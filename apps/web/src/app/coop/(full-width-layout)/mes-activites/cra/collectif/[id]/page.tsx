@@ -3,6 +3,7 @@ import CraCollectifPage from '@app/web/features/activites/use-cases/cra/collecti
 import { getCraCollectifDataDefaultValuesFromExisting } from '@app/web/features/activites/use-cases/cra/collectif/db/getCraCollectifDataDefaultValuesFromExisting'
 import type { CraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
 import { getCraPageData } from '@app/web/features/activites/use-cases/cra/getCraPageData'
+import { getEquipesFromSessionUser } from '@app/web/features/activites/use-cases/tags/equipe'
 import { notFound } from 'next/navigation'
 
 const UpdateCraCollectifPage = async ({
@@ -15,9 +16,9 @@ const UpdateCraCollectifPage = async ({
   const { id } = await params
   const { retour } = await searchParams
 
-  const {
-    mediateur: { id: mediateurId },
-  } = await authenticateMediateur()
+  const user = await authenticateMediateur()
+  const mediateurId = user.mediateur.id
+  const equipes = getEquipesFromSessionUser(user)
 
   const defaultValues = await getCraCollectifDataDefaultValuesFromExisting({
     id,
@@ -35,6 +36,7 @@ const UpdateCraCollectifPage = async ({
     <CraCollectifPage
       {...craPageData}
       mediateurId={mediateurId}
+      equipes={equipes}
       retour={retour}
     />
   )

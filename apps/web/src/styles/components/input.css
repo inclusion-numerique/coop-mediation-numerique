@@ -44,3 +44,17 @@
   padding-bottom: 0.145rem;
   border-bottom-right-radius: 4px;
 }
+
+input.fr-input--tall,
+select.fr-input--tall {
+  min-height: 56px !important;
+  max-height: 56px !important;
+  height: 56px !important;
+}
+
+input.fr-input--tall ~ button,
+select.fr-input--tall ~ button {
+  width: 56px !important;
+  max-width: 56px !important;
+  min-width: 56px !important;
+}

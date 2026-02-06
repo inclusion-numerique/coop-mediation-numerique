@@ -1370,6 +1370,7 @@ model Tag {
   mediateur      Mediateur?    @relation(fields: [mediateurId], references: [id])
   coordinateurId String?       @map("coordinateur_id") @db.Uuid
   coordinateur   Coordinateur? @relation(fields: [coordinateurId], references: [id])
+  equipe         Boolean?
 
   creation                  DateTime                    @default(now())
   modification              DateTime                    @default(now())

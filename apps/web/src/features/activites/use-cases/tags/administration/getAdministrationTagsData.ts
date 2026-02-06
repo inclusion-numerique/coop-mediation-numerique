@@ -79,6 +79,16 @@ const getMostUsedTags = async () => {
       mediateurId: true,
       coordinateurId: true,
       departement: true,
+      equipe: true,
+      activites: {
+        include: {
+          activite: {
+            select: {
+              accompagnementsCount: true,
+            },
+          },
+        },
+      },
     },
   })
 
@@ -87,13 +97,20 @@ const getMostUsedTags = async () => {
     orderedTagIds,
   )
 
-  return mostUsedTags.map((tag) => ({
-    id: tag.id,
-    nom: tag.nom,
-    scope: getTagScope(tag),
-    description: tag.description ?? undefined,
-    usageCount: countsById.get(tag.id) ?? 0,
-  }))
+  return mostUsedTags.map((tag) => {
+    const accompagnementsCount = tag.activites.reduce(
+      (acc, { activite }) => acc + activite.accompagnementsCount,
+      0,
+    )
+    return {
+      id: tag.id,
+      nom: tag.nom,
+      scope: getTagScope(tag),
+      description: tag.description ?? undefined,
+      usageCount: countsById.get(tag.id) ?? 0,
+      accompagnementsCount,
+    }
+  })
 }
 
 export const getAdministrationTagsData = async () => ({

@@ -27,11 +27,38 @@ export type DataspaceContact = {
   telephone?: string
 }
 
+/**
+ * Raw contract type from API - all fields can be null due to flaky API data
+ */
+export type DataspaceContratRaw = {
+  type: string | null // e.g. 'CDI'
+  date_fin: string | null
+  date_debut: string | null // should never be null but API sometimes returns null
+  date_rupture: string | null
+}
+
+/**
+ * Validated contract type - date_debut is guaranteed to exist
+ * Invalid contracts (with null date_debut) are filtered out at API response level
+ */
 export type DataspaceContrat = {
-  type: string
-  date_fin: string
+  type: string | null
+  date_fin: string | null
   date_debut: string
   date_rupture: string | null
+}
+
+/**
+ * Filter out invalid contracts (those with null date_debut)
+ * These are invalid data from the API that would cause 1970-01-01 dates
+ */
+const filterValidContracts = (
+  contrats: DataspaceContratRaw[] | null,
+): DataspaceContrat[] | null => {
+  if (!contrats) return null
+  return contrats.filter(
+    (contrat): contrat is DataspaceContrat => contrat.date_debut !== null,
+  )
 }
 
 export type DataspaceStructureIds = {
@@ -41,6 +68,21 @@ export type DataspaceStructureIds = {
   aidant_connect: string | null
 }
 
+/**
+ * Raw structure employeuse from API - contrats may contain invalid entries
+ */
+type DataspaceStructureEmployeuseRaw = {
+  nom: string
+  siret: string
+  ids: DataspaceStructureIds | null
+  contact: DataspaceContact | null
+  adresse: DataspaceMediateurAdresse
+  contrats: DataspaceContratRaw[] | null
+}
+
+/**
+ * Validated structure employeuse - invalid contracts have been filtered out
+ */
 export type DataspaceStructureEmployeuse = {
   nom: string
   siret: string
@@ -79,6 +121,22 @@ export type DataspaceConseillerNumeriqueCoordonne = {
   contact: DataspaceConseillerNumeriqueCoordonneContact
 }
 
+/**
+ * Raw mediateur type from API - may contain invalid contract data
+ */
+type DataspaceMediateurRaw = {
+  id: number
+  is_coordinateur: boolean
+  is_conseiller_numerique: boolean
+  pg_id: number | null
+  structures_employeuses?: DataspaceStructureEmployeuseRaw[] | null
+  lieux_activite?: DataspaceLieuActivite[] | null
+  conseillers_numeriques_coordonnes: DataspaceConseillerNumeriqueCoordonne[]
+}
+
+/**
+ * Validated mediateur type - invalid contracts have been filtered out
+ */
 export type DataspaceMediateur = {
   id: number
   is_coordinateur: boolean
@@ -88,6 +146,20 @@ export type DataspaceMediateur = {
   lieux_activite?: DataspaceLieuActivite[] | null
   conseillers_numeriques_coordonnes: DataspaceConseillerNumeriqueCoordonne[]
 }
+
+/**
+ * Sanitize raw mediateur data from API
+ * Filters out invalid contracts (those with null date_debut)
+ */
+const sanitizeMediateurData = (
+  raw: DataspaceMediateurRaw,
+): DataspaceMediateur => ({
+  ...raw,
+  structures_employeuses: raw.structures_employeuses?.map((structure) => ({
+    ...structure,
+    contrats: filterValidContracts(structure.contrats),
+  })),
+})
 
 export type DataspaceApiError = {
   error: {
@@ -152,7 +224,7 @@ export const getMediateurFromDataspaceApi = async ({
   url.searchParams.append('email', email.toLowerCase().trim())
 
   try {
-    const response = await axios.get<DataspaceMediateur[]>(url.toString(), {
+    const response = await axios.get<DataspaceMediateurRaw[]>(url.toString(), {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${apiKey}`,
@@ -165,7 +237,13 @@ export const getMediateurFromDataspaceApi = async ({
       return null
     }
 
-    return response.data.at(0) ?? null
+    const rawData = response.data.at(0)
+    if (!rawData) {
+      return null
+    }
+
+    // Sanitize data: filter out invalid contracts with null date_debut
+    return sanitizeMediateurData(rawData)
   } catch (error) {
     if (error instanceof AxiosError) {
       // 404 means mediateur not found - return null instead of error

@@ -27,7 +27,14 @@ export const importStructureEmployeuseFromProConnect = async ({
     where: {
       userId,
       suppression: null,
-      fin: null,
+      OR: [
+        {
+          fin: null,
+        },
+        {
+          fin: { gte: new Date() },
+        },
+      ],
     },
   })
 

@@ -225,7 +225,7 @@ export const Input = memo(
             hasAction ? (
             <div
               className={cx(
-                'fr-input-wrap',
+                'fr-input-wrap fr-align-items-center',
                 hasIcon && iconId,
                 (hasAddonStart || hasAddonEnd) && 'fr-input-wrap--addon',
                 (hasAddinStart || hasAddinEnd) && 'fr-input-wrap--addin',
@@ -239,7 +239,7 @@ export const Input = memo(
               )}
               {nativeInputOrTextArea}
               {hasAddinEnd && (
-                <span className="fr-input--addin-end">{addinEnd}</span>
+                <span className="fr-input--addin-end fr-mr-2v">{addinEnd}</span>
               )}
               {hasAddonEnd && addonEnd}
               {hasAction && action}

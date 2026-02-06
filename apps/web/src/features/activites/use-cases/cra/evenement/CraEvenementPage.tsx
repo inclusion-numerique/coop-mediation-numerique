@@ -2,6 +2,7 @@ import RequiredFieldsDisclamer from '@app/ui/components/Form/RequiredFieldsDiscl
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButtonWithModal from '@app/web/components/BackButtonWithModal'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import { Equipe } from '@app/web/features/activites/use-cases/tags/equipe'
 import { contentId } from '@app/web/utils/skipLinks'
 import React from 'react'
 import type { DefaultValues } from 'react-hook-form'
@@ -14,6 +15,7 @@ type CraEvenementPageProps = {
   defaultValues: DefaultValues<CraAnimationData>
   coordinateurId: string
   initialTagsOptions: Tag[]
+  equipes: Equipe[]
   retour?: string
 }
 
@@ -21,6 +23,7 @@ const CraEvenementPage = ({
   defaultValues,
   coordinateurId,
   initialTagsOptions,
+  equipes,
   retour,
 }: CraEvenementPageProps) => (
   <div className="fr-container fr-container--800">
@@ -48,7 +51,7 @@ const CraEvenementPage = ({
           text: 'En savoir plus sur comment compléter un CRA',
         }}
       />
-      <SaveTagModal isMediateur={false} isCoordinateur />
+      <SaveTagModal isMediateur={false} isCoordinateur equipes={equipes} />
       <CraEvenementForm
         defaultValues={{ ...defaultValues, coordinateurId }}
         initialTagsOptions={initialTagsOptions}

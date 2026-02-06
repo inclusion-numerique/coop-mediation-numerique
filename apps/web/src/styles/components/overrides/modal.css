@@ -22,3 +22,8 @@
     pointer-events: none !important;
   }
 }
+
+/* Tooltip should appear above modal */
+.fr-tooltip {
+  z-index: 2000 !important;
+}

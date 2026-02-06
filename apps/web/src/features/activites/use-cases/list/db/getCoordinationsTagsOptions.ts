@@ -24,6 +24,7 @@ export const getCoordinationsTagsOptions = async ({
       mediateurId: true,
       coordinateurId: true,
       departement: true,
+      equipe: true,
     },
     distinct: ['id'],
     orderBy: { nom: 'asc' },

@@ -9,15 +9,21 @@ type DeleteTagModalVariant = {
 const variants: DeleteTagModalVariant[] = [
   {
     checkScope: (scope: TagScope) => scope === TagScope.Personnel,
-    title: (nom: string) => `Supprimer le tag personnel ‘${nom}’`,
+    title: (nom: string) => `Supprimer le tag personnel '${nom}'`,
     description: (nom: string) =>
-      `Êtes-vous sûr de vouloir supprimer le tag ‘${nom}’ ? Vous ne pourrez plus l’utiliser dans vos compte-rendu d’activités et il ne sera plus disponible pour filtrer vos statistiques.`,
+      `Êtes-vous sûr de vouloir supprimer le tag '${nom}' ? Vous ne pourrez plus l’utiliser dans vos compte-rendu d’activités et il ne sera plus disponible pour filtrer vos statistiques.`,
+  },
+  {
+    checkScope: (scope: TagScope) => scope === TagScope.Equipe,
+    title: (nom: string) => `Supprimer le tag d'équipe '${nom}'`,
+    description: (nom: string) =>
+      `Êtes-vous sûr de vouloir supprimer le tag '${nom}' ? Il ne sera plus disponible pour filtrer les statistiques et ne sera plus visible par les membres de votre équipe.`,
   },
   {
     checkScope: (scope: TagScope) => scope === TagScope.Departemental,
-    title: (nom: string) => `Supprimer le tag départemental ‘${nom}’`,
+    title: (nom: string) => `Supprimer le tag départemental '${nom}'`,
     description: (nom: string) =>
-      `Êtes-vous sûr de vouloir supprimer le tag ‘${nom}’ ? Il ne sera plus disponible pour filtrer les statistiques et ne sera plus visible par l’ensemble des médiateurs numériques du département.`,
+      `Êtes-vous sûr de vouloir supprimer le tag '${nom}' ? Il ne sera plus disponible pour filtrer les statistiques et ne sera plus visible par l'ensemble des médiateurs numériques du département.`,
   },
 ]
 
