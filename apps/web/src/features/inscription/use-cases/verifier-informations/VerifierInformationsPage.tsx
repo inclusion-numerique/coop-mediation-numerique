@@ -1,4 +1,5 @@
 import type { SessionUser } from '@app/web/auth/sessionUser'
+import { sessionUserHasStructureEmployeuse } from '@app/web/auth/sessionUser'
 import IconInSquare from '@app/web/components/IconInSquare'
 import InfoLabelValue from '@app/web/components/InfoLabelValue'
 import StructureCard from '@app/web/components/structure/StructureCard'
@@ -11,6 +12,8 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import InscriptionCard from '../../components/InscriptionCard'
 
 const VerifierInformationsPage = ({ user }: { user: SessionUser }) => {
+  const hasStructureEmployeuse = sessionUserHasStructureEmployeuse(user)
+
   const nextStep = getNextInscriptionStep({
     currentStep: 'verifier-informations',
     flowType: 'withoutDataspace',
@@ -20,14 +23,17 @@ const VerifierInformationsPage = ({ user }: { user: SessionUser }) => {
   })
 
   if (!nextStep) {
-    // Should never happen, here for type safety
     throw new Error('No next step found for inscription')
   }
 
-  const nextStepPath =
-    nextStep === 'lieux-activite'
-      ? `${getStepPath('lieux-activite')}/structure-employeuse`
-      : getStepPath(nextStep)
+  let nextStepPath: string
+  if (nextStep === 'lieux-activite') {
+    if (hasStructureEmployeuse)
+      nextStepPath = `${getStepPath('lieux-activite')}/structure-employeuse`
+    else nextStepPath = getStepPath('renseigner-structure-employeuse')
+  } else {
+    nextStepPath = getStepPath(nextStep)
+  }
 
   const profilLabel = user.profilInscription
     ? allProfileInscriptionLabels[user.profilInscription]

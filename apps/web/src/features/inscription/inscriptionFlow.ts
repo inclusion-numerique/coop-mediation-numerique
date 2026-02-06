@@ -6,6 +6,7 @@ export type InscriptionStep =
   | 'initialize'
   | 'choisir-role'
   | 'verifier-informations'
+  | 'renseigner-structure-employeuse'
   | 'lieux-activite'
   | 'recapitulatif'
 
@@ -111,6 +112,8 @@ export const getStepPath = (step: InscriptionStep): string => {
       return '/inscription/choisir-role'
     case 'verifier-informations':
       return '/inscription/verifier-informations'
+    case 'renseigner-structure-employeuse':
+      return '/inscription/renseigner-structure-employeuse'
     case 'lieux-activite':
       return '/inscription/lieux-activite'
     case 'recapitulatif':
