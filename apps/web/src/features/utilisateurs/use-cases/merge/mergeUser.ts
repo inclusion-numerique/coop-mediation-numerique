@@ -232,6 +232,32 @@ const mergePartageStatistiquesMediateur =
     )
   }
 
+const mergeMediateurCounts =
+  (prisma: PrismaTransaction) =>
+  async (sourceMediateurId: string, targetMediateurId: string) => {
+    const sourceMediateur = await prisma.mediateur.findUnique({
+      where: { id: sourceMediateurId },
+      select: {
+        activitesCount: true,
+        accompagnementsCount: true,
+        beneficiairesCount: true,
+      },
+    })
+
+    if (sourceMediateur == null) return
+
+    await prisma.mediateur.update({
+      where: { id: targetMediateurId },
+      data: {
+        activitesCount: { increment: sourceMediateur.activitesCount },
+        accompagnementsCount: {
+          increment: sourceMediateur.accompagnementsCount,
+        },
+        beneficiairesCount: { increment: sourceMediateur.beneficiairesCount },
+      },
+    })
+  }
+
 const mergeMediateurs =
   (prisma: PrismaTransaction) =>
   async (
@@ -252,6 +278,10 @@ const mergeMediateurs =
       where: { id: { in: sourceUser.mediateur.beneficiaires.map(toId) } },
       data: { mediateurId: targetUser.mediateur.id },
     })
+    await mergeMediateurCounts(prisma)(
+      sourceUser.mediateur.id,
+      targetUser.mediateur.id,
+    )
     await mergePartageStatistiquesMediateur(prisma)(
       sourceUser.mediateur.id,
       targetUser.mediateur.id,
