@@ -1,14 +1,4 @@
 import { prismaClient } from '@app/web/prismaClient'
-
-// Set to true to enable debug logging for RDV sync
-const ENABLE_RDV_SYNC_DEBUG_LOGS = false
-
-const debugLog = (logPrefix: string, ...args: unknown[]) => {
-  if (ENABLE_RDV_SYNC_DEBUG_LOGS) {
-    // biome-ignore lint/suspicious/noConsole: Optional debug log for RDV sync issue investigation
-    console.log(logPrefix, ...args)
-  }
-}
 import {
   OAuthRdvApiCredentialsWithId,
   oAuthRdvApiListRdvs,
@@ -30,10 +20,19 @@ import {
   deleteRdvs,
   lieuPrismaDataFromOAuthApiLieu,
   motifPrismaDataFromOAuthApiMotif,
-  syncRdvUser,
   updateRdv,
   userPrismaDataFromOAuthApiUser,
 } from './syncRdv'
+
+// Set to true to enable debug logging for RDV sync
+const ENABLE_RDV_SYNC_DEBUG_LOGS = false
+
+const debugLog = (logPrefix: string, ...args: unknown[]) => {
+  if (ENABLE_RDV_SYNC_DEBUG_LOGS) {
+    // biome-ignore lint/suspicious/noConsole: Optional debug log for RDV sync issue investigation
+    console.log(logPrefix, ...args)
+  }
+}
 
 const getImportedRdvIds = async ({
   rdvAccountId,
@@ -541,7 +540,11 @@ export const importRdvs = async ({
   const lastRdv = sortedRdvsByDate[sortedRdvsByDate.length - 1]
 
   debugLog(logPrefix, 'Total RDVs returned by API:', rdvs.length)
-  debugLog(logPrefix, 'First RDV date (earliest):', firstRdv?.starts_at ?? 'N/A')
+  debugLog(
+    logPrefix,
+    'First RDV date (earliest):',
+    firstRdv?.starts_at ?? 'N/A',
+  )
   debugLog(logPrefix, 'Last RDV date (latest):', lastRdv?.starts_at ?? 'N/A')
 
   // Check for RDVs before syncFrom date
