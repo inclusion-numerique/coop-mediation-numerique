@@ -7,7 +7,7 @@ export const activiteSourceLabels: {
 } = {
   '': 'Toutes les sources de données',
   v1: 'Espace Coop (V1)',
-  v2: 'La coop de la médiation numérique',
+  v2: 'La Coop de la médiation numérique',
 }
 
 export const activiteSourceValues = Object.keys(activiteSourceLabels) as [

@@ -75,6 +75,7 @@ const PageCreerBeneficiaire = async ({
                     className="fr-link fr-text--sm"
                     href="https://docs.numerique.gouv.fr/docs/640b3331-bd9f-43a7-a6e5-95757f63d532/"
                     target="_blank"
+                    rel="noreferrer"
                   >
                     Consulter via ce lien
                   </Link>

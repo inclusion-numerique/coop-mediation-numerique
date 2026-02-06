@@ -23,7 +23,7 @@ const ConfidentialityPage = () => (
       <h2>Qui sommes-nous ?</h2>
 
       <p>
-        La coop de la médiation numérique est un service public numérique
+        La Coop de la médiation numérique est un service public numérique
         développé au sein de l’Incubateur des territoires de l’Agence Nationale
         de la Cohésion des Territoires (ANCT). Son objectif est d’intégrer un
         panel d’outils à destination des médiateurs et médiatrices numériques,
@@ -39,7 +39,7 @@ const ConfidentialityPage = () => (
       <h2>Pourquoi traitons-nous des données à caractère personnel ?</h2>
 
       <p>
-        La coop de la médiation numérique traite des données à caractère
+        La Coop de la médiation numérique traite des données à caractère
         personnel pour mettre à disposition de tous les médiateurs numériques
         une gamme d’outils qui les aide dans leurs activités professionnelles
         d’accompagnement à la montée en compétence de la population sur les
@@ -289,7 +289,7 @@ const ConfidentialityPage = () => (
         sens du RGPD, à savoir l’article 6-1 a).
       </p>
       <p>
-        La coop de la médiation numérique ne dépose que des témoins de connexion
+        La Coop de la médiation numérique ne dépose que des témoins de connexion
         et traceurs strictement nécessaires au fonctionnement du service et la
         solution de mesure d’audience « Matomo », configurée en mode « exempté »
         et ne nécessitant pas de recueil du consentement, conformément aux

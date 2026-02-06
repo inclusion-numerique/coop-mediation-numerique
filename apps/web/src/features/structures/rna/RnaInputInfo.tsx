@@ -6,6 +6,7 @@ const RnaInputInfo = ({ className }: { className?: string }) => (
   <Link
     href="https://www.journal-officiel.gouv.fr/pages/associations-recherche"
     target="_blank"
+    rel="noreferrer"
     className={classNames(
       'fr-mt-2v fr-display-inline-block fr-text-action-high--blue-france fr-text--sm fr-mb-0',
       className,

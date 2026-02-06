@@ -49,6 +49,7 @@ const RdvServicePublicCreationReussiePage = async () => {
             href={rdvIntegrationEnSavoirPlusLink}
             className="fr-link fr-text--center"
             target="_blank"
+            rel="noreferrer"
           >
             En savoir plus
           </Link>
@@ -96,6 +97,7 @@ const RdvServicePublicCreationReussiePage = async () => {
                   href={rdvServicePublicGettingStartedLink}
                   className="fr-link fr-link--sm fr-mb-0"
                   target="_blank"
+                  rel="noreferrer"
                 >
                   Démarrer sur RDV Service Public
                 </Link>

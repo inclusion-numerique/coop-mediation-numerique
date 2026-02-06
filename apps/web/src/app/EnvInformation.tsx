@@ -53,7 +53,7 @@ export const EnvInformation = () => {
               {branch}&#34; sur Storybook
             </a>
             <br className="fr-hidden-lg fr-mt-2v" />
-            <a href={mainLiveUrl} target="_blank">
+            <a href={mainLiveUrl} target="_blank" rel="noreferrer">
               <span className="fr-icon--sm fr-icon-france-line" aria-hidden />{' '}
               Version officielle
             </a>

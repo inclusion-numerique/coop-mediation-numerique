@@ -34,7 +34,7 @@ const RdvServicePublicCreationErreurPage = () => (
           RDV&nbsp;Service&nbsp;Public à La&nbsp;Coop.
         </p>
         <Link
-          href={`mailto:${rdvSupportEmail}?subject=Erreur lors de la connexion à La coop de la médiation numérique`}
+          href={`mailto:${rdvSupportEmail}?subject=Erreur lors de la connexion à La Coop de la médiation numérique`}
           className="fr-link fr-text--center"
         >
           <span className="fr-icon-mail-line fr-icon--sm" aria-hidden />{' '}

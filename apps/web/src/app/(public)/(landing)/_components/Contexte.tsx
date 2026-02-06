@@ -105,7 +105,7 @@ export const Contexte = () => (
           Leur travail s’intègre à la feuille de route{' '}
           <Link
             className="fr-link"
-            href="https://inclusion-numerique.anct.gouv.fr/"
+            href="https://www.societenumerique.gouv.fr/nos-missions/france-numerique-ensemble/"
             target="_blank"
             rel="noreferrer"
             title="Feuille de route France Numérique Ensemble - nouvel onglet"

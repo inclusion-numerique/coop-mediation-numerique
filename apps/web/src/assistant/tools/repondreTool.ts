@@ -8,7 +8,7 @@ export const repondreTool = tool({
     objectif: z
       .string()
       .describe(
-        'L’objectif de la réponse. Réfléchis à comment aider au maximum l’utilisateur dans le cadre de la coop de la médiation numérique.',
+        'L’objectif de la réponse. Réfléchis à comment aider au maximum l’utilisateur dans le cadre de la Coop de la médiation numérique.',
       ),
   }),
   execute: async ({ objectif }) =>

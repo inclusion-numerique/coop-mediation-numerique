@@ -85,6 +85,7 @@ export const ListTagsPage = ({
                   className="fr-link fr-link--sm"
                   href="https://docs.numerique.gouv.fr/docs/dcade515-17b9-4298-a2e5-bdf3ed22bf96/"
                   target="_blank"
+                  rel="noreferrer"
                 >
                   En savoir plus
                 </a>

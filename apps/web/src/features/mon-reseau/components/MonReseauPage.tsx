@@ -143,6 +143,7 @@ const MonReseauPage = ({
                 className="fr-btn fr-btn--secondary"
                 href={getInclusionNumeriqueDepartementDataUrl(departement.code)}
                 target="_blank"
+                rel="noreferrer"
               >
                 Voir les données de mon département
               </Link>

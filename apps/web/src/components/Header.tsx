@@ -114,19 +114,12 @@ const Header = ({
                       href="https://docs.numerique.gouv.fr/docs/1cf724be-c40c-4299-906d-df22c181c77b/"
                       className="fr-btn icon-only fr-btn--no-after"
                       target="_blank"
+                      rel="noreferrer"
                       title="Aide"
                     >
+                      <span className="fr-mr-1w">Aide</span>
                       <span className="fr-icon-question-line fr-icon--sm" />
-                      <span className="fr-ml-1w">Aide</span>
                     </Link>
-                  </li>
-                  <li className="fr-hidden fr-unhidden-lg fr-px-1w fr-py-1w">
-                    <span
-                      style={{
-                        height: '100%',
-                        borderLeft: '1px solid var(--border-default-grey)',
-                      }}
-                    />
                   </li>
                   <li style={{ position: 'relative' }}>
                     {user ? (
@@ -134,9 +127,10 @@ const Header = ({
                     ) : (
                       <Link
                         href="/connexion"
-                        className="fr-btn fr-icon-user-line"
+                        className="fr-btn icon-only fr-btn--no-after"
                       >
-                        Se connecter
+                        <span className="fr-mr-1w">Se connecter</span>
+                        <span className="fr-icon-account-circle-line fr-icon--sm" />
                       </Link>
                     )}
                   </li>
