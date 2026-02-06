@@ -18,10 +18,18 @@ export const executeSyncUsersFromDataspace = async (
   // Get all users that are not deleted
   const usersToSync = await prismaClient.user.findMany({
     where: {
-      deleted: null,
-      inscriptionValidee: {
-        not: null,
-      },
+      OR: [
+        {
+          // Users inscrits en v2
+          inscriptionValidee: {
+            not: null,
+          },
+        },
+        {
+          // Users importés de la v1
+          v1Imported: { not: null },
+        },
+      ],
     },
     select: {
       id: true,
