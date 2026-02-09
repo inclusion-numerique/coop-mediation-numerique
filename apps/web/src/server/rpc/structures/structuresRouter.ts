@@ -1,3 +1,4 @@
+import { searchStructureEmployeuseCombined } from '@app/web/features/inscription/use-cases/renseigner-structure-employeuse/searchStructureEmployeuseCombined'
 import { CreerStructureValidation } from '@app/web/features/structures/CreerStructureValidation'
 import { prismaClient } from '@app/web/prismaClient'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
@@ -14,6 +15,10 @@ export const structuresRouter = router({
   search: protectedProcedure
     .input(z.object({ query: z.string() }))
     .query(({ input: { query } }) => searchStructure(query)),
+
+  searchCombined: protectedProcedure
+    .input(z.object({ query: z.string() }))
+    .query(({ input: { query } }) => searchStructureEmployeuseCombined(query)),
 
   searchCartographieNationale: protectedProcedure
     .input(
