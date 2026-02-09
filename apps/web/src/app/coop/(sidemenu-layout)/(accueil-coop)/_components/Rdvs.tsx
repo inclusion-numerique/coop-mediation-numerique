@@ -56,14 +56,30 @@ const Rdvs = ({
 
   const isLoading = mutation.isPending
 
-  const { futur, honores, next, passes, organisation } = dashboardRdvData
-  const nextBeneficiaire = next?.participations.at(0)?.user
-  const nextBeneficiaireDisplayName = nextBeneficiaire
-    ? getBeneficiaireDisplayName({
-        prenom: nextBeneficiaire.firstName,
-        nom: nextBeneficiaire.lastName,
-      })
-    : null
+  const { futur, next, passes, last } = dashboardRdvData
+
+  const getParticipantsDisplay = (
+    rdv: {
+      collectif: boolean
+      usersCount: number
+      participations: { user: { firstName: string; lastName: string } }[]
+    } | null,
+  ) => {
+    if (!rdv) return null
+    if (rdv.collectif) {
+      return `${rdv.usersCount} participant${rdv.usersCount > 1 ? 's' : ''}`
+    }
+    const beneficiaire = rdv.participations.at(0)?.user
+    return beneficiaire
+      ? getBeneficiaireDisplayName({
+          prenom: beneficiaire.firstName,
+          nom: beneficiaire.lastName,
+        })
+      : 'anonyme'
+  }
+
+  const nextParticipantsDisplay = getParticipantsDisplay(next)
+  const lastParticipantsDisplay = getParticipantsDisplay(last)
 
   return (
     <>
@@ -117,8 +133,8 @@ const Rdvs = ({
                  new Date(next.endsAt),
                  timezone,
                )}
-                avec ${nextBeneficiaireDisplayName ?? 'anonyme'}`
-                : 'Vous n’avez pas de rendez-vous à venir'}
+                avec ${nextParticipantsDisplay}`
+                : "Vous n'avez pas de rendez-vous à venir"}
             </p>
           </div>
         </div>
@@ -145,56 +161,34 @@ const Rdvs = ({
                 <>
                   <span className="fr-flex-grow-1" />
                   <Button
-                    priority="tertiary no outline"
-                    size="small"
-                    linkProps={{
-                      href: rdvServicePublicRdvsLink({
-                        organisationId: organisation.id,
-                        status: 'unknown_past',
-                      }),
-                      target: '_blank',
-                    }}
-                  >
-                    À valider sur RDV&nbsp;SP
-                  </Button>
-                </>
-              )}
-            </div>
-            <hr className="fr-separator-6v" />
-            <div className="fr-flex fr-align-items-center fr-flex-gap-2v">
-              <p
-                className={classNames(
-                  'fr-h4 fr-text fr-mb-0 fr-text-title--blue-france fr-pr-2v',
-                  honores === 0 && styles.disabled,
-                )}
-              >
-                {numberToString(honores)}
-              </p>
-              <RdvStatusBadge
-                className={classNames(
-                  honores === 0 && styles.disabled,
-                  honores === 0 && styles.disabledBackground,
-                )}
-                rdv={{ badgeStatus: 'seen' }}
-                pluralize={honores}
-              />
-              {honores > 0 && (
-                <>
-                  <span className="fr-flex-grow-1" />
-                  <Button
                     iconId="fr-icon-arrow-right-line"
                     iconPosition="right"
                     priority="tertiary no outline"
                     size="small"
                     linkProps={{
-                      href: '/coop/mes-activites?rdvs=seen&voir-rdvs=1',
+                      href: '/coop/mes-activites?rdvs=past&voir-rdvs=0',
                     }}
                   >
-                    CRA à compléter
+                    Voir
                   </Button>
                 </>
               )}
             </div>
+            <p
+              className={classNames(
+                'fr-text--sm fr-mt-4v fr-mb-0 fr-text--medium',
+                !next && styles.disabled,
+              )}
+            >
+              {last
+                ? `Dernier le ${dateAsDayFullWordsInTimezone(new Date(last.startsAt), timezone)}
+               de ${dateAsTimeInTimeZone(new Date(last.startsAt), timezone)} à ${dateAsTimeInTimeZone(
+                 new Date(last.endsAt),
+                 timezone,
+               )}
+                avec ${lastParticipantsDisplay}`
+                : "Vous n'avez pas de rendez-vous passés"}
+            </p>
           </div>
         </div>
       </div>

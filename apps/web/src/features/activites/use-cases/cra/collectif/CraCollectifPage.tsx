@@ -3,6 +3,7 @@ import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButtonWithModal from '@app/web/components/BackButtonWithModal'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import { Equipe } from '@app/web/features/activites/use-cases/tags/equipe'
 import type { MostUsedBeneficiairesForSearch } from '@app/web/features/beneficiaires/db/getInitialBeneficiairesOptionsForSearch'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
 import { contentId } from '@app/web/utils/skipLinks'
@@ -19,6 +20,7 @@ export type CraCollectifPageData = {
   initialTagsOptions: Tag[]
   initialBeneficiairesOptions: MostUsedBeneficiairesForSearch
   dureeOptions: SelectOption[]
+  equipes: Equipe[]
   retour?: string
 }
 
@@ -29,6 +31,7 @@ const CraCollectifPage = ({
   dureeOptions,
   lieuxActiviteOptions,
   mediateurId,
+  equipes,
   retour,
 }: CraCollectifPageData) => (
   <div className="fr-container fr-container--800">
@@ -49,7 +52,7 @@ const CraCollectifPage = ({
           text: 'En savoir plus sur comment compléter un CRA',
         }}
       />
-      <SaveTagModal isMediateur isCoordinateur={false} />
+      <SaveTagModal isMediateur isCoordinateur={false} equipes={equipes} />
       <CraCollectifForm
         defaultValues={{ ...defaultValues, mediateurId }}
         lieuActiviteOptions={lieuxActiviteOptions}

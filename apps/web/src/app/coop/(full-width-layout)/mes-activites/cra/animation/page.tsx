@@ -2,6 +2,7 @@ import { authenticateCoordinateur } from '@app/web/auth/authenticateUser'
 import CraAnimationPage from '@app/web/features/activites/use-cases/cra/animation/CraAnimationPage'
 import { CraAnimationData } from '@app/web/features/activites/use-cases/cra/animation/validation/CraAnimationValidation'
 import { getCraCoordinationPageData } from '@app/web/features/activites/use-cases/cra/getCraCoordinationPageData'
+import { getEquipesFromSessionUser } from '@app/web/features/activites/use-cases/tags/equipe'
 import {
   decodeSerializableState,
   type EncodedState,
@@ -18,9 +19,9 @@ const CreateCraAnimationPage = async ({
 }) => {
   const { retour, v } = await searchParams
 
-  const {
-    coordinateur: { id: coordinateurId },
-  } = await authenticateCoordinateur()
+  const user = await authenticateCoordinateur()
+  const coordinateurId = user.coordinateur.id
+  const equipes = getEquipesFromSessionUser(user)
 
   const stateFromUrl = v ? decodeSerializableState(v, {}) : {}
 
@@ -33,6 +34,7 @@ const CreateCraAnimationPage = async ({
     <CraAnimationPage
       {...craPageData}
       coordinateurId={coordinateurId}
+      equipes={equipes}
       retour={retour}
     />
   )

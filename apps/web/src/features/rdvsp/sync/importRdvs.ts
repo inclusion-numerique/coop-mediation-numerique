@@ -20,10 +20,19 @@ import {
   deleteRdvs,
   lieuPrismaDataFromOAuthApiLieu,
   motifPrismaDataFromOAuthApiMotif,
-  syncRdvUser,
   updateRdv,
   userPrismaDataFromOAuthApiUser,
 } from './syncRdv'
+
+// Set to true to enable debug logging for RDV sync
+const ENABLE_RDV_SYNC_DEBUG_LOGS = false
+
+const debugLog = (logPrefix: string, ...args: unknown[]) => {
+  if (ENABLE_RDV_SYNC_DEBUG_LOGS) {
+    // biome-ignore lint/suspicious/noConsole: Optional debug log for RDV sync issue investigation
+    console.log(logPrefix, ...args)
+  }
+}
 
 const getImportedRdvIds = async ({
   rdvAccountId,
@@ -484,15 +493,12 @@ export const importRdvs = async ({
     ...(organisationIds ? { organisation_ids: organisationIds } : {}),
   }
   const logPrefix = `[RDV-SYNC-DEBUG][account:${rdvAccount.id}]`
-  // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
-  console.log(`${logPrefix} ===============================`)
-  // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
-  console.log(`${logPrefix} syncFrom raw value:`, user.rdvAccount.syncFrom)
-  // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
-  console.log(`${logPrefix} startsAfter (formatted):`, startsAfter)
-  // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
-  console.log(
-    `${logPrefix} Query params sent to API:`,
+  debugLog(logPrefix, '===============================')
+  debugLog(logPrefix, 'syncFrom raw value:', user.rdvAccount.syncFrom)
+  debugLog(logPrefix, 'startsAfter (formatted):', startsAfter)
+  debugLog(
+    logPrefix,
+    'Query params sent to API:',
     JSON.stringify(queryParams, null, 2),
   )
 
@@ -533,18 +539,13 @@ export const importRdvs = async ({
   const firstRdv = sortedRdvsByDate[0]
   const lastRdv = sortedRdvsByDate[sortedRdvsByDate.length - 1]
 
-  // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
-  console.log(`${logPrefix} Total RDVs returned by API:`, rdvs.length)
-  // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
-  console.log(
-    `${logPrefix} First RDV date (earliest):`,
+  debugLog(logPrefix, 'Total RDVs returned by API:', rdvs.length)
+  debugLog(
+    logPrefix,
+    'First RDV date (earliest):',
     firstRdv?.starts_at ?? 'N/A',
   )
-  // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
-  console.log(
-    `${logPrefix} Last RDV date (latest):`,
-    lastRdv?.starts_at ?? 'N/A',
-  )
+  debugLog(logPrefix, 'Last RDV date (latest):', lastRdv?.starts_at ?? 'N/A')
 
   // Check for RDVs before syncFrom date
   if (startsAfter && rdvs.length > 0) {
@@ -553,15 +554,15 @@ export const importRdvs = async ({
       (rdv) => new Date(rdv.starts_at) < startsAfterDate,
     )
     if (rdvsBeforeSyncFrom.length > 0) {
-      // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
-      console.log(
-        `${logPrefix} ⚠️ WARNING: Found`,
+      debugLog(
+        logPrefix,
+        '⚠️ WARNING: Found',
         rdvsBeforeSyncFrom.length,
         'RDVs BEFORE starts_after date!',
       )
-      // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
-      console.log(
-        `${logPrefix} Example RDVs before syncFrom:`,
+      debugLog(
+        logPrefix,
+        'Example RDVs before syncFrom:',
         rdvsBeforeSyncFrom.slice(0, 3).map((rdv) => ({
           id: rdv.id,
           starts_at: rdv.starts_at,
@@ -569,12 +570,10 @@ export const importRdvs = async ({
         })),
       )
     } else {
-      // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
-      console.log(`${logPrefix} ✓ All RDVs are on or after starts_after date`)
+      debugLog(logPrefix, '✓ All RDVs are on or after starts_after date')
     }
   }
-  // biome-ignore lint/suspicious/noConsole: Debug log for RDV sync issue investigation
-  console.log(`${logPrefix} ===============================`)
+  debugLog(logPrefix, '===============================')
 
   appendLog(`already imported ${importedRdvIds.length} rdvs in database`)
   appendLog(`fetched ${rdvs.length} rdvs from RDV API`)

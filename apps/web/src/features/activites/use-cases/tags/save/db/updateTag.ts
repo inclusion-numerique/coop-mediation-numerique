@@ -28,6 +28,16 @@ const updateTagDepartemental =
     })
   }
 
+const updateTagEquipe =
+  (id: string) => async (data: { nom: string; description?: string | null }) =>
+    prismaClient.tag.update({
+      where: { id },
+      data: {
+        ...data,
+        modification: new Date(),
+      },
+    })
+
 const updateTagPersonnel =
   (id: string) =>
   async (data: {
@@ -96,4 +106,6 @@ export const updateTag =
         ...data,
         departement: getUserDepartement(sessionUser)?.code,
       })
+
+    if (scope === TagScope.Equipe) return updateTagEquipe(id)(data)
   }
