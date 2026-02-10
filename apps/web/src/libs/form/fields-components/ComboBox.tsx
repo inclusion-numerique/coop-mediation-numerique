@@ -34,25 +34,12 @@ const alreadyExist =
   (value: TItem): boolean =>
     isEqual(itemToKey(value), itemToKey(newValue))
 
-const get = <TItem extends Record<string, TItem>>(
-  item: TItem,
-  path: string,
-): TItem =>
-  path
-    .split('.')
-    .reduce(
-      (nestedItem: Record<string, TItem>, part: string) => nestedItem?.[part],
-      item,
-    )
-
 export const ComboBox = <TItem, TPayload extends object>(
   comboBoxProps: ComboBoxProps<TItem, TPayload>,
 ) => {
-  const { form, name, state, setValue, setMeta } = useFieldContext<TItem>()
+  const { state, setValue, setMeta } = useFieldContext<TItem>()
 
   const isMultipleSelection = getMultipleSelection(state)
-  const defaultValue: TItem =
-    comboBoxProps.defaultValue ?? get(form.options.defaultValues, name)
 
   const appendValue = (value: TItem, values: TItem[]): void => {
     if (values.some(alreadyExist(comboBoxProps)(value))) return
@@ -73,7 +60,7 @@ export const ComboBox = <TItem, TPayload extends object>(
       key={currentValueKey}
       {...comboBoxProps}
       clearOnSelect={isMultipleSelection}
-      defaultValue={state.value ?? defaultValue}
+      defaultValue={state.value}
     >
       {({
         getLabelProps,
@@ -94,20 +81,27 @@ export const ComboBox = <TItem, TPayload extends object>(
           getLabelProps,
           getToggleButtonProps,
           getMenuProps,
-          getInputProps: <TOptions,>(options: TOptions) =>
-            getInputProps({
+          getInputProps: <TOptions,>(options: TOptions) => {
+            const resetItemsToDefault = () => {
+              if (isMultipleSelection) {
+                setItems(
+                  comboBoxProps.defaultItems?.filter(
+                    notSelectedIn(state.value),
+                  ) ?? [],
+                )
+                return
+              }
+              if (comboBoxProps.itemToString(state.value) !== '') {
+                setItems(comboBoxProps.defaultItems ?? [])
+                return
+              }
+              setValue((comboBoxProps.resetValue ?? null) as TItem)
+            }
+
+            return getInputProps({
               disabled: comboBoxProps.isPending,
-              onFocusCapture: () => {
-                if (comboBoxProps.itemToString(state.value) !== '') return
-                if (isMultipleSelection) {
-                  return setItems(
-                    comboBoxProps.defaultItems?.filter(
-                      notSelectedIn(state.value),
-                    ) ?? [],
-                  )
-                }
-                setValue((comboBoxProps.resetValue ?? null) as TItem)
-              },
+              onFocusCapture: resetItemsToDefault,
+              onClick: resetItemsToDefault,
               onInput: () => {
                 if (isMultipleSelection) return
                 setValue((comboBoxProps.resetValue ?? null) as TItem)
@@ -124,7 +118,8 @@ export const ComboBox = <TItem, TPayload extends object>(
                 comboBoxProps.onSelect?.(highlightedItem)
               },
               ...options,
-            }),
+            })
+          },
           getItemProps: (options) =>
             getItemProps({
               onClick: () => {

@@ -31,7 +31,13 @@ const itemToString = (item: LieuActivite | null): string =>
 
 const itemToKey = (item: LieuActivite): string => item.id
 
-const renderItem = ({ item }: { item: LieuActivite }) => (
+const renderItem = ({
+  item,
+  isSelected,
+}: {
+  item: LieuActivite
+  isSelected: boolean
+}) => (
   <span className="fr-flex fr-flex-gap-2v fr-align-items-center">
     {item.mostUsed && (
       <span
@@ -39,10 +45,16 @@ const renderItem = ({ item }: { item: LieuActivite }) => (
         aria-hidden="true"
       />
     )}
-    <span className="fr-flex fr-direction-column">
-      <span>{item.nom}</span>
+    <span className="fr-flex fr-direction-column fr-flex-grow-1">
+      {item.nom}
       <span className="fr-text-mention--grey fr-text--sm">{item.adresse}</span>
     </span>
+    {isSelected && (
+      <span
+        className="fr-icon-check-line fr-text-label--blue-france"
+        aria-hidden
+      />
+    )}
   </span>
 )
 
