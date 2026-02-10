@@ -1768,6 +1768,8 @@ model Rdv {
 
   rawData Json @map("raw_data") // Raw data from the RDV API
 
+  craDeclined Boolean @default(false) @map("cra_declined")
+
   @@index([rdvAccountId])
   @@index([organisationId])
   @@index([startsAt])
