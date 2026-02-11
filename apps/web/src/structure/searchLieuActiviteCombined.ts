@@ -23,7 +23,7 @@ export type LieuActiviteSearchResult = {
 
 type SearchLieuActiviteCombinedOptions = {
   limit?: number
-  except?: string[] // IDs to exclude (StructureCartographieNationale IDs or Structure IDs with prefix)
+  except?: string[]
 }
 
 const searchLocalStructures = async (
@@ -35,7 +35,6 @@ const searchLocalStructures = async (
 
   const matchesWhere = {
     suppression: null,
-    // Only structures without a link to CartographieNationale
     structureCartographieNationaleId: null,
     AND: queryParts.map((part) => ({
       OR: [
@@ -128,8 +127,8 @@ export const searchLieuActiviteCombined = async (
       .catch(() => ({ data: null, unavailable: true }) as const),
   ])
 
-  const cartoStructures: LieuActiviteSearchResult[] = cartoResult.structures.map(
-    (s) => ({
+  const cartoStructures: LieuActiviteSearchResult[] =
+    cartoResult.structures.map((s) => ({
       id: s.id,
       nom: s.nom,
       adresse: s.adresse,
@@ -143,8 +142,7 @@ export const searchLieuActiviteCombined = async (
       longitude: s.longitude,
       structures: s.structures,
       source: 'cartographie_nationale' as const,
-    }),
-  )
+    }))
 
   const siretsSeen = new Set<string>(
     cartoStructures.map((s) => s.pivot).filter(Boolean) as string[],
@@ -173,9 +171,8 @@ export const searchLieuActiviteCombined = async (
           codeInsee: s.codeInsee ?? null,
           complementAdresse: null,
           pivot: s.siret,
-          // Note: structureCreationDataWithSiretFromUniteLegale returns 'typologie' (singular)
-          // but the type annotation says 'typologies' (plural) - this is a type inconsistency
-          typologie: (s as unknown as { typologie: string | null }).typologie ?? null,
+          typologie:
+            (s as unknown as { typologie: string | null }).typologie ?? null,
           latitude: null,
           longitude: null,
           structures: [],
