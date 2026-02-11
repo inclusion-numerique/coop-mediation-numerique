@@ -3,8 +3,11 @@ import { createGithubDeployment } from '@app/cli/commands/github/createGithubDep
 import { deactivateGithubDeployment } from '@app/cli/commands/github/deactivateGithubDeployment'
 import { updateGithubDeployment } from '@app/cli/commands/github/updateGithubDeployment'
 import { addNextPublicVariablesToDotEnv } from '@app/cli/commands/infrastructure/addNextPublicVariablesToDotEnv'
+import { cleanupPreviewEnvironments } from '@app/cli/commands/infrastructure/cleanupPreviewEnvironments'
 import { createDotEnvFromCdk } from '@app/cli/commands/infrastructure/createDotEnvFromCdk'
 import { createTfVarsFileFromEnvironment } from '@app/cli/commands/infrastructure/createTfVarsFileFromEnvironment'
+import { deletePreviewEnvironments } from '@app/cli/commands/infrastructure/deletePreviewEnvironments'
+import { listPreviewBranches } from '@app/cli/commands/infrastructure/listPreviewBranches'
 import { locallyRestoreLatestMainBackup } from '@app/cli/commands/infrastructure/locallyRestoreLatestMainBackup'
 import { executeJobApiCommand } from '@app/cli/commands/jobs/executeJobApiCommand'
 import { executeJobCommand } from '@app/cli/commands/jobs/executeJobCommand'
@@ -58,6 +61,9 @@ const main = async () => {
   program.addCommand(ingestNotionHelpCenterExportedMarkdown)
   program.addCommand(fetchAccompagnements)
   program.addCommand(deleteSentryEnvironmentIssues)
+  program.addCommand(deletePreviewEnvironments)
+  program.addCommand(listPreviewBranches)
+  program.addCommand(cleanupPreviewEnvironments)
   await program.parseAsync()
 }
 
