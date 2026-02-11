@@ -26,6 +26,7 @@ export type RichCardLabelProps<T extends string> = {
   htmlFor: string
   className?: string
   paddingX?: 16 | 24
+  paddingY?: 16 | 24
   paddingRight?: 16 | 24
   classes?: RichCardLabelClasses
 }
@@ -40,6 +41,7 @@ const RichCardLabel = memo(
     htmlFor,
     className,
     paddingX = 24,
+    paddingY = 16,
     paddingRight,
     classes,
   }: RichCardLabelProps<T>) => {
@@ -90,6 +92,7 @@ const RichCardLabel = memo(
             'fr-border-radius--4 fr-border',
             styles.label,
             paddingX === 16 ? styles.paddingX16 : styles.paddingX24,
+            paddingY === 16 ? styles.paddingY16 : styles.paddingY24,
             paddingRight
               ? paddingRight === 16
                 ? styles.paddingRight16
@@ -100,7 +103,7 @@ const RichCardLabel = memo(
           tabIndex={0}
           onKeyDown={handleKeyPress}
         >
-          <div className="fr-flex fr-justify-content-space-between fr-flex-gap-4v fr-width-full fr-height-full">
+          <div className="fr-flex fr-justify-content-space-between fr-flex-gap-10v fr-width-full fr-height-full">
             <div
               className={classNames(
                 'fr-text--sm fr-mb-0 fr-text--medium fr-flex-grow-1 fr-flex fr-justify-content-center fr-direction-column',

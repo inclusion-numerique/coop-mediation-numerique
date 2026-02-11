@@ -159,7 +159,7 @@ const RadioFormField = <
                       />
                       {LabelComponent === 'label' ? (
                         <label
-                          className="fr-label"
+                          className="fr-label fr-p-32v"
                           htmlFor={`${id}__${index + startIndex}`}
                         >
                           {option.label}
