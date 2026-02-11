@@ -3,6 +3,7 @@ import { CreerStructureValidation } from '@app/web/features/structures/CreerStru
 import { prismaClient } from '@app/web/prismaClient'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { searchStructure } from '@app/web/structure/searchStructure'
+import { searchLieuActiviteCombined } from '@app/web/structure/searchLieuActiviteCombined'
 import { searchStructureCartographieNationale } from '@app/web/structure/searchStructureCartographieNationale'
 import { fixTelephone } from '@app/web/utils/clean-operations'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
@@ -26,6 +27,16 @@ export const structuresRouter = router({
     )
     .query(({ input: { query, except } }) =>
       searchStructureCartographieNationale(query, {
+        except: except ?? undefined,
+      }),
+    ),
+
+  searchLieuActiviteCombined: protectedProcedure
+    .input(
+      z.object({ query: z.string(), except: z.array(z.string()).nullish() }),
+    )
+    .query(({ input: { query, except } }) =>
+      searchLieuActiviteCombined(query, {
         except: except ?? undefined,
       }),
     ),
