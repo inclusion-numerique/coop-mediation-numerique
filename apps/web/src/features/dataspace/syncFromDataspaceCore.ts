@@ -109,27 +109,11 @@ export const getActiveOrMostRecentContract = (
 
 /**
  * Get the end date for an emploi based on contract
- * Returns date_rupture if contract was terminated early, otherwise date_fin if contract has ended
+ * Only date_rupture from Dataspace is mapped to emploi fin.
+ * date_fin does not impact emploi fin in our model.
  */
 export const getEmploiEndDate = (contrat: DataspaceContrat): Date | null => {
-  // If contract was ruptured, use rupture date
-  if (contrat.date_rupture) {
-    return new Date(contrat.date_rupture)
-  }
-
-  // If date_fin is null, contract has no end date (CDI without termination)
-  if (!contrat.date_fin) {
-    return null
-  }
-
-  // If contract has ended, use end date
-  const dateFin = new Date(contrat.date_fin)
-  if (dateFin < new Date()) {
-    return dateFin
-  }
-
-  // Contract is still active
-  return null
+  return contrat.date_rupture ? new Date(contrat.date_rupture) : null
 }
 
 /**
@@ -197,7 +181,7 @@ const getEmploiKey = (structureId: string, debut: Date): string =>
  * After sync, user has exactly one EmployeStructure for each contract in Dataspace.
  * - Creates EmployeStructure for each contract in Dataspace
  * - Updates existing EmployeStructure if fin date changed
- * - Removes EmployeStructure records for contracts NOT in Dataspace
+ * - Soft-deletes EmployeStructure records for contracts NOT in Dataspace
  * - Structures without contracts are IGNORED (no employment link created)
  *
  * Matching logic: An emploi is matched to a contract by structureId + debut date
@@ -251,7 +235,7 @@ export const syncStructuresEmployeusesFromDataspace = async ({
     // Process each contract from Dataspace
     for (const { structureId, contract } of preparedContracts) {
       const creationDate = new Date(contract.date_debut)
-      const suppressionDate = getEmploiEndDate(contract)
+      const endDate = getEmploiEndDate(contract)
       const key = getEmploiKey(structureId, creationDate)
 
       const existingEmploi = emploisByKey.get(key)
@@ -261,16 +245,16 @@ export const syncStructuresEmployeusesFromDataspace = async ({
 
         // Check if we need to update the emploi
         const needsUpdate =
-          existingEmploi.fin?.getTime() !== suppressionDate?.getTime() ||
+          existingEmploi.fin?.getTime() !== endDate?.getTime() ||
           existingEmploi.suppression !== null // Reactivate if it was soft-deleted
 
         if (needsUpdate) {
           await transaction.employeStructure.update({
             where: { id: existingEmploi.id },
             data: {
-              fin: suppressionDate,
-              // Only set suppression if contract has ended, otherwise clear it (reactivate)
-              suppression: suppressionDate,
+              fin: endDate,
+              // Contracts present in Dataspace are never soft-deleted.
+              suppression: null,
             },
           })
         }
@@ -281,8 +265,8 @@ export const syncStructuresEmployeusesFromDataspace = async ({
             userId,
             structureId,
             debut: creationDate,
-            fin: suppressionDate,
-            suppression: suppressionDate,
+            fin: endDate,
+            suppression: null,
           },
           select: { id: true },
         })
