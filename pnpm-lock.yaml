@@ -48,6 +48,9 @@ importers:
 
   apps/cli:
     dependencies:
+      '@aws-sdk/client-s3':
+        specifier: ^3.940.0
+        version: 3.940.0(aws-crt@1.27.5)
       '@commander-js/extra-typings':
         specifier: ^13.1.0
         version: 13.1.0(commander@13.1.0)

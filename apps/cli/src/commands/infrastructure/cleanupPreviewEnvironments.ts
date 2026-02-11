@@ -1,6 +1,11 @@
 import { octokit, owner, repo } from '@app/cli/github'
 import { output, outputError } from '@app/cli/output'
 import { containerNamespaceName, projectSlug, region } from '@app/config/config'
+import {
+  ListBucketsCommand,
+  ListObjectsV2Command,
+  S3Client,
+} from '@aws-sdk/client-s3'
 import { Command } from '@commander-js/extra-typings'
 import { select } from '@inquirer/prompts'
 import axios from 'axios'
@@ -31,6 +36,32 @@ type ScalewayContainer = {
 type ScalewayNamespace = {
   id: string
   name: string
+}
+
+type PreviewBucket = {
+  name: string
+  namespace: string
+  sizeBytes: number | null
+}
+
+type BranchDetail = {
+  name: string
+  namespace: string
+  isProtected: boolean
+  pr: { number: number; title: string; createdAt: string } | null
+  lastCommitDate: string
+  lastCommitAuthor: string
+  deployedContainer: boolean
+  bucket: PreviewBucket | null
+  stale: boolean
+  mergedInDev: boolean
+  deletable: boolean
+}
+
+type OrphanedResource = {
+  namespace: string
+  container: ScalewayContainer | null
+  bucket: PreviewBucket | null
 }
 
 const fetchScalewayContainers = async () => {
@@ -72,6 +103,116 @@ const fetchScalewayContainers = async () => {
   })
 
   return containersData.containers
+}
+
+const formatBytes = (value: number | null) => {
+  if (value == null) return 'unknown'
+  if (value === 0) return '0 B'
+  const units = ['B', 'KB', 'MB', 'GB', 'TB']
+  const exponent = Math.min(
+    Math.floor(Math.log(value) / Math.log(1024)),
+    units.length - 1,
+  )
+  const normalized = value / 1024 ** exponent
+  const digits = normalized >= 10 || exponent === 0 ? 0 : 1
+  return `${normalized.toFixed(digits)} ${units[exponent]}`
+}
+
+const bucketPrefix = `${projectSlug}-uploads-`
+
+const parsePreviewBucketNamespace = (bucketName: string) => {
+  if (!bucketName.startsWith(bucketPrefix)) return null
+  const namespace = bucketName.slice(bucketPrefix.length)
+  return namespace || null
+}
+
+const fetchBucketSizeBytes = async (client: S3Client, bucketName: string) => {
+  let continuationToken: string | undefined
+  let totalSize = 0
+
+  do {
+    const response = await client.send(
+      new ListObjectsV2Command({
+        Bucket: bucketName,
+        ContinuationToken: continuationToken,
+        MaxKeys: 1000,
+      }),
+    )
+
+    for (const item of response.Contents ?? []) {
+      totalSize += item.Size ?? 0
+    }
+
+    continuationToken = response.IsTruncated
+      ? response.NextContinuationToken
+      : undefined
+  } while (continuationToken)
+
+  return totalSize
+}
+
+const fetchPreviewBuckets = async (): Promise<PreviewBucket[]> => {
+  const accessKey =
+    process.env.SCW_ACCESS_KEY ?? process.env.AWS_ACCESS_KEY_ID ?? ''
+  const secretKey =
+    process.env.SCW_SECRET_KEY ?? process.env.AWS_SECRET_ACCESS_KEY ?? ''
+
+  if (!accessKey || !secretKey) {
+    outputError(
+      'Missing SCW_ACCESS_KEY/SCW_SECRET_KEY env variables, skipping preview buckets check',
+    )
+    return []
+  }
+
+  const scwRegion = region || process.env.AWS_DEFAULT_REGION || 'fr-par'
+  const s3Host = process.env.S3_HOST || `s3.${scwRegion}.scw.cloud`
+
+  const client = new S3Client({
+    region: scwRegion,
+    endpoint: `https://${s3Host}`,
+    forcePathStyle: false,
+    credentials: {
+      accessKeyId: accessKey,
+      secretAccessKey: secretKey,
+    },
+  })
+
+  try {
+    const listBucketsResponse = await client.send(new ListBucketsCommand({}))
+    const bucketNames = (listBucketsResponse.Buckets ?? [])
+      .map((bucket) => bucket.Name)
+      .filter((bucketName): bucketName is string => Boolean(bucketName))
+
+    const previewBucketNames = bucketNames.filter((bucketName) =>
+      bucketName.startsWith(bucketPrefix),
+    )
+
+    const previewBuckets = await Promise.all(
+      previewBucketNames.map(async (bucketName): Promise<PreviewBucket> => {
+        const namespace = parsePreviewBucketNamespace(bucketName)
+        if (!namespace) {
+          return { name: bucketName, namespace: '', sizeBytes: null }
+        }
+
+        try {
+          const sizeBytes = await fetchBucketSizeBytes(client, bucketName)
+          return { name: bucketName, namespace, sizeBytes }
+        } catch (error) {
+          outputError(
+            `Could not compute size for bucket "${bucketName}": ${error instanceof Error ? error.message : String(error)}`,
+          )
+          return { name: bucketName, namespace, sizeBytes: null }
+        }
+      }),
+    )
+
+    return previewBuckets.filter((bucket) => bucket.namespace)
+  } catch (error) {
+    outputError(
+      `Failed to list S3 buckets: ${error instanceof Error ? error.message : String(error)}`,
+    )
+    return []
+  }
 }
 
 const triggerEnvDeletion = async (
@@ -131,18 +272,6 @@ const deleteGitBranch = async (branch: string): Promise<boolean> => {
   }
 }
 
-type BranchDetail = {
-  name: string
-  isProtected: boolean
-  pr: { number: number; title: string; createdAt: string } | null
-  lastCommitDate: string
-  lastCommitAuthor: string
-  deployed: boolean
-  stale: boolean
-  mergedInDev: boolean
-  deletable: boolean
-}
-
 type CleanupAction = 'env_and_branch' | 'env_only' | 'branch_only' | 'skip'
 
 export const cleanupPreviewEnvironments = new Command()
@@ -160,9 +289,11 @@ export const cleanupPreviewEnvironments = new Command()
       return
     }
 
-    output('Fetching branches, pull requests, and Scaleway containers...\n')
+    output(
+      'Fetching branches, pull requests, Scaleway containers, and preview buckets...\n',
+    )
 
-    const [branches, openPRs, containers] = await Promise.all([
+    const [branches, openPRs, containers, previewBuckets] = await Promise.all([
       octokit.rest.repos
         .listBranches({ owner, repo, per_page: 100 })
         .then((r) => r.data),
@@ -170,10 +301,14 @@ export const cleanupPreviewEnvironments = new Command()
         .list({ owner, repo, state: 'open', per_page: 100 })
         .then((r) => r.data),
       fetchScalewayContainers(),
+      fetchPreviewBuckets(),
     ])
 
     const prByBranch = new Map(openPRs.map((pr) => [pr.head.ref, pr]))
     const containerByName = new Map(containers.map((c) => [c.name, c]))
+    const bucketByNamespace = new Map(
+      previewBuckets.map((bucket) => [bucket.namespace, bucket]),
+    )
     const branchNamespaceToGitBranch = new Map<string, string>()
 
     const branchDetails: BranchDetail[] = await Promise.all(
@@ -194,9 +329,10 @@ export const cleanupPreviewEnvironments = new Command()
         const containerName =
           namespace.length > 34 ? namespace.slice(0, 34) : namespace
 
-        branchNamespaceToGitBranch.set(containerName, branch.name)
+        branchNamespaceToGitBranch.set(namespace, branch.name)
 
-        const deployed = containerByName.has(containerName)
+        const deployedContainer = containerByName.has(containerName)
+        const bucket = bucketByNamespace.get(namespace) ?? null
         const isProtected = protectedBranches.includes(branch.name)
         const days = lastCommitDate !== 'unknown' ? daysAgo(lastCommitDate) : 0
         const stale = days > 30
@@ -226,10 +362,12 @@ export const cleanupPreviewEnvironments = new Command()
           pr: pr
             ? { number: pr.number, title: pr.title, createdAt: pr.created_at }
             : null,
+          namespace,
           lastCommitDate,
           lastCommitAuthor:
             commit.commit.author?.name ?? commit.author?.login ?? 'unknown',
-          deployed,
+          deployedContainer,
+          bucket,
           stale,
           mergedInDev,
           deletable,
@@ -237,8 +375,31 @@ export const cleanupPreviewEnvironments = new Command()
       }),
     )
 
-    const orphanedContainers = containers.filter(
-      (c) => !branchNamespaceToGitBranch.has(c.name),
+    const orphanedContainers = containers.filter((container) => {
+      return !branchNamespaceToGitBranch.has(container.name)
+    })
+    const orphanedBuckets = previewBuckets.filter((bucket) => {
+      return !branchNamespaceToGitBranch.has(bucket.namespace)
+    })
+
+    const orphanedByNamespace = new Map<string, OrphanedResource>()
+    for (const container of orphanedContainers) {
+      orphanedByNamespace.set(container.name, {
+        namespace: container.name,
+        container,
+        bucket: null,
+      })
+    }
+    for (const bucket of orphanedBuckets) {
+      const existing = orphanedByNamespace.get(bucket.namespace)
+      orphanedByNamespace.set(bucket.namespace, {
+        namespace: bucket.namespace,
+        container: existing?.container ?? null,
+        bucket,
+      })
+    }
+    const orphanedResources = [...orphanedByNamespace.values()].sort((a, b) =>
+      a.namespace.localeCompare(b.namespace),
     )
 
     // Sort: oldest first for review
@@ -252,6 +413,10 @@ export const cleanupPreviewEnvironments = new Command()
     const deletable = nonProtected.filter((b) => b.deletable)
 
     // Overview
+    const knownBucketSizeTotal = previewBuckets.reduce((sum, bucket) => {
+      return bucket.sizeBytes == null ? sum : sum + bucket.sizeBytes
+    }, 0)
+
     const overviewTable = new Table()
     overviewTable.push(
       { 'Total branches': String(branches.length) },
@@ -260,18 +425,62 @@ export const cleanupPreviewEnvironments = new Command()
       },
       { 'With open PR': String(nonProtected.filter((b) => b.pr).length) },
       { Deletable: String(deletable.length) },
+      { 'Deployed containers': String(containers.length) },
+      { 'Deployed preview buckets': String(previewBuckets.length) },
       { 'Orphaned containers': String(orphanedContainers.length) },
+      { 'Orphaned buckets': String(orphanedBuckets.length) },
+      { 'Preview buckets size (total)': formatBytes(knownBucketSizeTotal) },
     )
     output('OVERVIEW:')
     output(overviewTable.toString())
 
-    if (deletable.length === 0 && orphanedContainers.length === 0) {
+    const reviewTable = new Table({
+      head: ['Target', 'Container', 'Bucket', 'Bucket Size', 'PR', 'Flags'],
+      colWidths: [32, 11, 11, 14, 8, 40],
+      wordWrap: true,
+    })
+
+    for (const branch of deletable) {
+      const flags = [
+        branch.mergedInDev ? 'merged-in-dev' : null,
+        branch.stale ? 'stale' : null,
+      ]
+        .filter(Boolean)
+        .join(', ')
+
+      reviewTable.push([
+        branch.name,
+        branch.deployedContainer ? 'Yes' : 'No',
+        branch.bucket ? 'Yes' : 'No',
+        formatBytes(branch.bucket?.sizeBytes ?? null),
+        branch.pr ? `#${branch.pr.number}` : '-',
+        flags || '-',
+      ])
+    }
+
+    for (const orphan of orphanedResources) {
+      reviewTable.push([
+        `${orphan.namespace} (orphan)`,
+        orphan.container ? 'Yes' : 'No',
+        orphan.bucket ? 'Yes' : 'No',
+        formatBytes(orphan.bucket?.sizeBytes ?? null),
+        '-',
+        'no-git-branch',
+      ])
+    }
+
+    if (reviewTable.length > 0) {
+      output('\nCLEANUP CANDIDATES:')
+      output(reviewTable.toString())
+    }
+
+    if (deletable.length === 0 && orphanedResources.length === 0) {
       output('\nNothing to clean up.')
       return
     }
 
     output(
-      `\nReviewing ${deletable.length} deletable branch(es) and ${orphanedContainers.length} orphaned container(s)...\n`,
+      `\nReviewing ${deletable.length} deletable branch(es) and ${orphanedResources.length} orphaned target(s)...\n`,
     )
 
     let envDeletedCount = 0
@@ -285,7 +494,10 @@ export const cleanupPreviewEnvironments = new Command()
       const statusTable = new Table()
       statusTable.push(
         { Branch: branch.name },
-        { Deployed: branch.deployed ? 'Yes' : 'No' },
+        { Namespace: branch.namespace },
+        { 'Container deployed': branch.deployedContainer ? 'Yes' : 'No' },
+        { 'Bucket deployed': branch.bucket ? 'Yes' : 'No' },
+        { 'Bucket size': formatBytes(branch.bucket?.sizeBytes ?? null) },
         { 'Merged in dev': branch.mergedInDev ? 'Yes' : 'No' },
         { Stale: branch.stale ? `Yes (${days}d ago)` : 'No' },
         {
@@ -296,22 +508,23 @@ export const cleanupPreviewEnvironments = new Command()
       output(`\n--- Branch ${index + 1}/${deletable.length} ---`)
       output(statusTable.toString())
 
-      const choices: { name: string; value: CleanupAction }[] = branch.deployed
-        ? [
-            {
-              name: 'Delete environment + git branch',
-              value: 'env_and_branch',
-            },
-            { name: 'Delete environment only', value: 'env_only' },
-            { name: 'Delete git branch only', value: 'branch_only' },
-            { name: 'Do nothing', value: 'skip' },
-          ]
-        : [
-            { name: 'Delete git branch', value: 'branch_only' },
-            { name: 'Do nothing', value: 'skip' },
-          ]
+      const choices: { name: string; value: CleanupAction }[] =
+        branch.deployedContainer
+          ? [
+              {
+                name: 'Delete environment + git branch',
+                value: 'env_and_branch',
+              },
+              { name: 'Delete environment only', value: 'env_only' },
+              { name: 'Delete git branch only', value: 'branch_only' },
+              { name: 'Do nothing', value: 'skip' },
+            ]
+          : [
+              { name: 'Delete git branch', value: 'branch_only' },
+              { name: 'Do nothing', value: 'skip' },
+            ]
 
-      const defaultAction: CleanupAction = branch.deployed
+      const defaultAction: CleanupAction = branch.deployedContainer
         ? branch.mergedInDev
           ? 'env_and_branch'
           : 'skip'
@@ -344,23 +557,31 @@ export const cleanupPreviewEnvironments = new Command()
       }
     }
 
-    // Iterate through orphaned containers (no git branch to delete)
-    for (const [index, container] of orphanedContainers.entries()) {
+    // Iterate through orphaned resources (no git branch to delete)
+    for (const [index, orphan] of orphanedResources.entries()) {
       const statusTable = new Table()
       statusTable.push(
-        { 'Container name': container.name },
-        { Status: container.status },
-        { Created: formatDate(container.created_at) },
+        { Namespace: orphan.namespace },
+        { 'Container deployed': orphan.container ? 'Yes' : 'No' },
+        { 'Container status': orphan.container?.status ?? '-' },
+        {
+          'Container created': orphan.container
+            ? formatDate(orphan.container.created_at)
+            : '-',
+        },
+        { 'Bucket deployed': orphan.bucket ? 'Yes' : 'No' },
+        { 'Bucket name': orphan.bucket?.name ?? '-' },
+        { 'Bucket size': formatBytes(orphan.bucket?.sizeBytes ?? null) },
         { 'Git branch': 'None (orphaned)' },
       )
 
       output(
-        `\n--- Orphaned container ${index + 1}/${orphanedContainers.length} ---`,
+        `\n--- Orphaned target ${index + 1}/${orphanedResources.length} ---`,
       )
       output(statusTable.toString())
 
       const action = await select<'env_only' | 'skip'>({
-        message: `What to do with orphaned container "${container.name}"?`,
+        message: `What to do with orphaned namespace "${orphan.namespace}"?`,
         default: 'env_only',
         choices: [
           {
@@ -375,8 +596,11 @@ export const cleanupPreviewEnvironments = new Command()
       })
 
       if (action === 'env_only') {
-        output(`  Triggering environment deletion for "${container.name}"...`)
-        const success = await triggerEnvDeletion(container.name, circleCiToken)
+        output(`  Triggering environment deletion for "${orphan.namespace}"...`)
+        const success = await triggerEnvDeletion(
+          orphan.namespace,
+          circleCiToken,
+        )
         if (success) envDeletedCount++
       } else {
         output('  Skipped.')
