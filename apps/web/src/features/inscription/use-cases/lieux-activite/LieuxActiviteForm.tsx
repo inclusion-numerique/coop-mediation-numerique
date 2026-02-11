@@ -274,8 +274,23 @@ const LieuxActiviteForm = ({
           }
         />
       ))}
+      {reversedFields.length === 0 && (
+        <span
+          className="fr-display-block fr-mt-12v fr-mb-12v fr-px-6v fr-py-4v fr-width-full fr-border-radius--8"
+          style={{ backgroundColor: 'var(--background-contrast-info)' }}
+        >
+          <span className="fr-display-block fr-text--bold fr-mb-1v">
+            Renseignez au moins un lieu d’activité pour finaliser votre
+            inscription.
+          </span>
+          <span className="fr-text--sm fr-mb-2v">
+            Vous pourrez ajouter d’autres lieux d’activités plus tard via votre
+            espace.
+          </span>
+        </span>
+      )}
       <hr className="fr-separator-12v" />
-      <div className="fr-btns-group">
+      <div className="fr-btns-group fr-btns-group--lg">
         <Button
           type="submit"
           priority="primary"

@@ -22,14 +22,14 @@ const InscriptionCard = ({
 }>) => (
   <>
     {backHref && (
-      <div className="fr-mb-6v fr-mt-10v">
+      <div className="fr-mt-10v">
         <BackButton href={backHref}>Précédent</BackButton>
       </div>
     )}
 
     <div
       className={classNames(
-        'fr-mb-32v fr-p-12v fr-width-full fr-border-radius--8 fr-background-default--grey',
+        'fr-mb-32v fr-p-12v fr-width-full fr-border fr-border-radius--8 fr-background-default--grey',
         !backHref && 'fr-mt-32v',
       )}
     >

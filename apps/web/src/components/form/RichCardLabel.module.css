@@ -6,9 +6,6 @@
   position: relative;
   height: 100%;
 
-  /* 15px to be able to have 56px height total, 16 wierdly makes it 58px */
-  padding-top: 15px !important;
-  padding-bottom: 15px !important;
   background: var(--background-default-grey) !important;
   align-items: center;
 
@@ -20,6 +17,16 @@
   &.paddingX24 {
     padding-left: 24px !important;
     padding-right: 24px !important;
+  }
+
+  &.paddingY16 {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+  }
+
+  &.paddingY24 {
+    padding-top: 24px !important;
+    padding-bottom: 24px !important;
   }
 
   &.paddingRight16 {
@@ -77,11 +84,6 @@
   input:checked + .label {
     border: 2px solid var(--border-action-high-blue-france);
 
-    /* Adjust padding for border width change */
-
-    padding-top: 14px !important;
-    padding-bottom: 14px !important;
-
     &.paddingX16 {
       padding-left: 15px !important;
       padding-right: 15px !important;
@@ -90,6 +92,16 @@
     &.paddingX24 {
       padding-left: 23px !important;
       padding-right: 23px !important;
+    }
+
+    &.paddingY16 {
+      padding-top: 15px !important;
+      padding-bottom: 15px !important;
+    }
+
+    &.paddingY24 {
+      padding-top: 23px !important;
+      padding-bottom: 23px !important;
     }
 
     &.paddingRight16 {

@@ -6,14 +6,13 @@ import InfoLabelValue from '@app/web/components/InfoLabelValue'
 import StructureCard from '@app/web/components/structure/StructureCard'
 import InscriptionCard from '@app/web/features/inscription/components/InscriptionCard'
 import InscriptionInvalidInformationContactSupportLink from '@app/web/features/inscription/components/InscriptionInvalidInformationContactSupportLink'
-import { getStepPath } from '@app/web/features/inscription/inscriptionFlow'
 import ValiderInscriptionForm from '@app/web/features/inscription/use-cases/recapitulatif/ValiderInscriptionForm'
 import {
   allProfileInscriptionLabels,
   computeUserProfile,
 } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
-import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
+import React from 'react'
 import ConseillerNumeriqueRoleNotice from './ConseillerNumeriqueRoleNotice'
 import type { InscriptionRecapitulatifPageData } from './getInscriptionRecapitulatifPageData'
 
@@ -149,6 +148,15 @@ const RecapitulatifPage = ({
               : `Mes lieux d’activité · ${lieuxActivite.length}`}
           </h2>
         </div>
+        <Notice
+          className="fr-notice--flex fr-align-items-center fr-mb-6v "
+          title={
+            <span className="fr-text-default--grey fr-text--regular">
+              Vous pourrez gérer vos lieux d’activités plus tard via votre
+              espace.
+            </span>
+          }
+        />
         {/* Les lieux sont affichés dans l'ordre inverse (le plus récent en haut) dans la formulaire lieux activité, on reproduit cela pour */}
         {/* que l'affichage soit cohérent */}
         {lieuxActivite.toReversed().map((lieu) => (
