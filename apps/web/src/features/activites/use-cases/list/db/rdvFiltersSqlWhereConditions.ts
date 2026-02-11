@@ -18,6 +18,7 @@ export const rdvFiltersWhereClause = ({
         ? Prisma.sql`rdv.rdv_account_id = ${rdvAccountIds[0]}`
         : Prisma.sql`rdv.rdv_account_id = ANY(${Prisma.join(rdvAccountIds)}::int[])`,
     shouldFetchRdvs ? Prisma.sql`TRUE` : Prisma.sql`FALSE`,
+    Prisma.sql`rdv.cra_declined = FALSE`,
     includeRdvsWithAssociatedActivites
       ? Prisma.sql`TRUE`
       : Prisma.sql`act.id IS NULL`,
