@@ -658,7 +658,7 @@ describe('updateUserFromDataspaceData', () => {
       // Verify 2 emplois were created (one per contract)
       // Note: mockDataspaceStructureEmployeuseWithMultipleContrats has:
       // - mockDataspaceContratCDD (active - ends 2025-12-31) -> 1 active emploi
-      // - mockDataspaceContratTermine (ruptured 2024-03-15) -> 1 soft-deleted emploi
+      // - mockDataspaceContratTermine (ruptured 2024-03-15) -> 1 ended (fin set) emploi
       const userAfter = await prismaClient.user.findUniqueOrThrow({
         where: { id: user.id },
         select: {
@@ -675,7 +675,7 @@ describe('updateUserFromDataspaceData', () => {
         },
       })
 
-      // Total 2 emplois (1 active + 1 soft-deleted)
+      // Total 2 emplois (one per contract)
       expect(userAfter.emplois.length).toBe(2)
 
       // Both emplois should be for the same structure
@@ -687,11 +687,15 @@ describe('updateUserFromDataspaceData', () => {
         userAfter.emplois[1].debut.getTime(),
       )
 
-      // 1 active emploi (the CDD that ends in 2025)
-      const activeEmplois = userAfter.emplois.filter(
+      // Present contracts are never soft-deleted during sync
+      const nonDeletedEmplois = userAfter.emplois.filter(
         (e) => e.suppression === null,
       )
-      expect(activeEmplois.length).toBe(1)
+      expect(nonDeletedEmplois.length).toBe(2)
+
+      // Ruptured contract should end via fin date, not suppression
+      const emploisWithFin = userAfter.emplois.filter((e) => e.fin !== null)
+      expect(emploisWithFin.length).toBe(1)
     })
 
     test('should remove one emploi when one contract is removed from structure', async () => {
@@ -716,7 +720,7 @@ describe('updateUserFromDataspaceData', () => {
       setMockDataspaceData(user.email, mockDataWith2Contracts)
       await updateUserFromDataspaceData({ userId: user.id })
 
-      // Verify 2 emplois were created (1 active CDD + 1 soft-deleted terminated)
+      // Verify 2 emplois were created (1 ongoing CDD + 1 ruptured with fin set)
       const userAfterFirstSync = await prismaClient.user.findUniqueOrThrow({
         where: { id: user.id },
         select: {
@@ -725,6 +729,7 @@ describe('updateUserFromDataspaceData', () => {
               id: true,
               structureId: true,
               debut: true,
+              fin: true,
               suppression: true,
             },
           },
@@ -758,9 +763,8 @@ describe('updateUserFromDataspaceData', () => {
 
       expect(result.success).toBe(true)
       expect(result.changes.structuresSynced).toBe(1)
-      // The terminated contract's emploi was already soft-deleted (has suppression date from rupture)
-      // so it's not counted in structuresRemoved (updateMany only affects suppression: null)
-      expect(result.changes.structuresRemoved).toBe(0)
+      // One contract is absent from Dataspace payload, so it gets soft-deleted
+      expect(result.changes.structuresRemoved).toBe(1)
 
       // Verify emplois state
       const userAfterSecondSync = await prismaClient.user.findUniqueOrThrow({
@@ -771,19 +775,19 @@ describe('updateUserFromDataspaceData', () => {
               id: true,
               structureId: true,
               debut: true,
+              fin: true,
               suppression: true,
             },
           },
         },
       })
-      // Total emplois is 2 (1 active CDD + 1 already soft-deleted terminated)
+      // Total emplois is still 2 (one kept + one soft-deleted because absent from payload)
       expect(userAfterSecondSync.emplois.length).toBe(2)
 
-      // Active emplois should be 1 (the CDD)
-      const activeEmplois = userAfterSecondSync.emplois.filter(
+      const nonDeletedEmplois = userAfterSecondSync.emplois.filter(
         (e) => e.suppression === null,
       )
-      expect(activeEmplois.length).toBe(1)
+      expect(nonDeletedEmplois.length).toBe(1)
     })
 
     test('should remove existing emploi when structure is completely removed from Dataspace', async () => {
@@ -1076,10 +1080,9 @@ describe('updateUserFromDataspaceData', () => {
       expect(emploiKeys.length).toBe(uniqueEmploiKeys.size)
 
       // mockDataspaceStructureEmployeuseWithMultipleContrats has 2 contracts:
-      // - mockDataspaceContratCDD (active) -> 1 active emploi
-      // - mockDataspaceContratTermine (ruptured) -> 1 soft-deleted emploi
-      // Since we query with suppression: null, we only get the active one
-      expect(userAfter.emplois.length).toBe(1)
+      // - mockDataspaceContratCDD (ongoing) -> 1 emploi
+      // - mockDataspaceContratTermine (ruptured) -> 1 emploi with fin set and suppression=null
+      expect(userAfter.emplois.length).toBe(2)
     })
   })
 })

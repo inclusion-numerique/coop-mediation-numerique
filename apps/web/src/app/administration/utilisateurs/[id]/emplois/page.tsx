@@ -13,6 +13,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { contentId } from '@app/web/utils/skipLinks'
 import { getUserDisplayName } from '@app/web/utils/user'
+import Accordion from '@codegouvfr/react-dsfr/Accordion'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
@@ -162,6 +163,10 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
   const name = getUserDisplayName(user)
 
   const { emplois } = user
+  const nonDeletedEmplois = emplois.filter(
+    (emploi) => emploi.suppression === null,
+  )
+  const deletedEmplois = emplois.filter((emploi) => emploi.suppression !== null)
 
   const dataspaceInfo = await getMediateurFromDataspaceApi({
     email: user.email,
@@ -218,12 +223,12 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
             />
           )}
           <div className="fr-flex" />
-          {emplois.map((emploi) => (
+          {nonDeletedEmplois.map((emploi) => (
             <div key={emploi.id}>
               <hr className="fr-separator-1px fr-mt-4v" />
               <p className="fr-text--bold fr-mb-0 fr-mt-6v">
                 <span className="fr-mr-2w">{emploi.structure.nom}</span>
-                {emploi.suppression ? (
+                {emploi.fin ? (
                   <Badge as="span" small severity="warning">
                     Emploi terminé
                   </Badge>
@@ -239,13 +244,15 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
                 items={[
                   {
                     label: 'Début de l’emploi',
-                    value: dateAsDay(emploi.creation),
+                    value: dateAsDay(emploi.debut),
                   },
                   {
                     label: 'Fin de l’emploi',
-                    value: emploi.suppression
-                      ? dateAsDay(emploi.suppression)
-                      : '-',
+                    value: emploi.fin ? dateAsDay(emploi.fin) : '-',
+                  },
+                  {
+                    label: 'Créé le',
+                    value: dateAsDay(emploi.creation),
                   },
                 ]}
               />
@@ -274,6 +281,53 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
               />
             </div>
           ))}
+          {deletedEmplois.length > 0 && (
+            <div className="fr-accordions-group fr-mt-8v">
+              <Accordion label={`Supprimés - ${deletedEmplois.length}`}>
+                {deletedEmplois.map((emploi) => (
+                  <div key={emploi.id}>
+                    <hr className="fr-separator-1px fr-mt-4v" />
+                    <p className="fr-text--bold fr-mb-0 fr-mt-6v">
+                      <span className="fr-mr-2w">{emploi.structure.nom}</span>
+                      <Badge as="span" small severity="warning">
+                        Supprimé
+                      </Badge>
+                    </p>
+                    <AdministrationInlineLabelsValues
+                      className="fr-mt-4v"
+                      items={[
+                        {
+                          label: 'Début de l’emploi',
+                          value: dateAsDay(emploi.debut),
+                        },
+                        {
+                          label: 'Fin de l’emploi',
+                          value: emploi.fin ? dateAsDay(emploi.fin) : '-',
+                        },
+                        {
+                          label: 'Créé le',
+                          value: dateAsDay(emploi.creation),
+                        },
+                        {
+                          label: 'Supprimé le',
+                          value: emploi.suppression
+                            ? dateAsDay(emploi.suppression)
+                            : '-',
+                        },
+                      ]}
+                    />
+                    <p className="fr-mb-0 fr-mt-6v">
+                      Informations sur la structure&nbsp;:
+                    </p>
+                    <AdministrationInlineLabelsValues
+                      className="fr-mt-4v"
+                      items={[...getStructuresInfos(emploi.structure)]}
+                    />
+                  </div>
+                ))}
+              </Accordion>
+            </div>
+          )}
         </AdministrationInfoCard>
 
         <AdministrationInfoCard title="API Dataspace">

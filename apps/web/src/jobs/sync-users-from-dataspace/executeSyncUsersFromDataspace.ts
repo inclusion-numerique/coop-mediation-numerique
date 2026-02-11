@@ -24,6 +24,7 @@ export const executeSyncUsersFromDataspace = async (
           inscriptionValidee: {
             not: null,
           },
+          deleted: null,
         },
         {
           // Users importés de la v1

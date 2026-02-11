@@ -19,6 +19,7 @@ import { dateAsDayAndTime } from '@app/web/utils/dateAsDayAndTime'
 import { numberToString } from '@app/web/utils/formatNumber'
 import { contentId } from '@app/web/utils/skipLinks'
 import { getUserDisplayName } from '@app/web/utils/user'
+import Accordion from '@codegouvfr/react-dsfr/Accordion'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
@@ -140,6 +141,10 @@ const AdministrationUserPage = async ({
   const sortedUploads = uploads.sort(
     (a, b) => b.created.getTime() - a.created.getTime(),
   )
+  const nonDeletedEmplois = emplois.filter(
+    (emploi) => emploi.suppression === null,
+  )
+  const deletedEmplois = emplois.filter((emploi) => emploi.suppression !== null)
 
   const dataspaceInfo = await getMediateurFromDataspaceApi({
     email: user.email,
@@ -572,41 +577,85 @@ const AdministrationUserPage = async ({
               </Button>
             }
           >
-            {emplois.map((emploi) => (
-              <div key={emploi.id}>
-                <p className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
-                  {emploi.structure.nom}{' '}
-                  {!!emploi.fin && emploi.fin < new Date() && (
-                    <Badge className="fr-ml-2w" severity="warning" small>
-                      Emploi terminé
-                    </Badge>
-                  )}
-                </p>
-                <AdministrationInlineLabelsValues
-                  items={[
-                    {
-                      label: 'Début',
-                      value: dateAsDay(emploi.debut),
-                    },
-                    {
-                      label: 'Fin',
-                      value: emploi.fin ? dateAsDay(emploi.fin) : '-',
-                    },
-                    {
-                      label: 'Créé le',
-                      value: dateAsDay(emploi.creation),
-                    },
-                    {
-                      label: 'Supprimé le',
-                      value: emploi.suppression
-                        ? dateAsDay(emploi.suppression)
-                        : '-',
-                    },
-                    ...getStructuresInfos(emploi.structure),
-                  ]}
-                />
+            {nonDeletedEmplois.length > 0 ? (
+              nonDeletedEmplois.map((emploi) => (
+                <div key={emploi.id}>
+                  <p className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
+                    {emploi.structure.nom}{' '}
+                    {emploi.fin ? (
+                      <Badge className="fr-ml-2w" severity="warning" small>
+                        Emploi terminé
+                      </Badge>
+                    ) : (
+                      <Badge className="fr-ml-2w" severity="success" small>
+                        Emploi en cours
+                      </Badge>
+                    )}
+                  </p>
+                  <AdministrationInlineLabelsValues
+                    items={[
+                      {
+                        label: "Début de l'emploi",
+                        value: dateAsDay(emploi.debut),
+                      },
+                      {
+                        label: "Fin de l'emploi",
+                        value: emploi.fin ? dateAsDay(emploi.fin) : '-',
+                      },
+                      {
+                        label: 'Créé le',
+                        value: dateAsDay(emploi.creation),
+                      },
+                      ...getStructuresInfos(emploi.structure),
+                    ]}
+                  />
+                </div>
+              ))
+            ) : (
+              <Notice
+                className="fr-notice--info fr-mt-4v fr-mb-0"
+                title={<>Aucun contrat non supprimé</>}
+              />
+            )}
+            {deletedEmplois.length > 0 && (
+              <div className="fr-accordions-group fr-mt-8v">
+                <Accordion label={`Supprimés - ${deletedEmplois.length}`}>
+                  {deletedEmplois.map((emploi) => (
+                    <div key={emploi.id}>
+                      <p className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
+                        {emploi.structure.nom}{' '}
+                        <Badge className="fr-ml-2w" severity="warning" small>
+                          Supprimé
+                        </Badge>
+                      </p>
+                      <AdministrationInlineLabelsValues
+                        items={[
+                          {
+                            label: "Début de l'emploi",
+                            value: dateAsDay(emploi.debut),
+                          },
+                          {
+                            label: "Fin de l'emploi",
+                            value: emploi.fin ? dateAsDay(emploi.fin) : '-',
+                          },
+                          {
+                            label: 'Créé le',
+                            value: dateAsDay(emploi.creation),
+                          },
+                          {
+                            label: 'Supprimé le',
+                            value: emploi.suppression
+                              ? dateAsDay(emploi.suppression)
+                              : '-',
+                          },
+                          ...getStructuresInfos(emploi.structure),
+                        ]}
+                      />
+                    </div>
+                  ))}
+                </Accordion>
               </div>
-            ))}
+            )}
           </AdministrationInfoCard>
         ) : (
           (!!coordinateur || !!mediateur) && (
