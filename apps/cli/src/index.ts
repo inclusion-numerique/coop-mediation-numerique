@@ -5,6 +5,7 @@ import { updateGithubDeployment } from '@app/cli/commands/github/updateGithubDep
 import { addNextPublicVariablesToDotEnv } from '@app/cli/commands/infrastructure/addNextPublicVariablesToDotEnv'
 import { cleanupPreviewEnvironments } from '@app/cli/commands/infrastructure/cleanupPreviewEnvironments'
 import { createDotEnvFromCdk } from '@app/cli/commands/infrastructure/createDotEnvFromCdk'
+import { createInfrastructureResources } from '@app/cli/commands/infrastructure/createInfrastructureResources'
 import { createTfVarsFileFromEnvironment } from '@app/cli/commands/infrastructure/createTfVarsFileFromEnvironment'
 import { deletePreviewEnvironments } from '@app/cli/commands/infrastructure/deletePreviewEnvironments'
 import { locallyRestoreLatestMainBackup } from '@app/cli/commands/infrastructure/locallyRestoreLatestMainBackup'

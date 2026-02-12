@@ -1,6 +1,11 @@
 import { octokit, owner, repo } from '@app/cli/github'
 import { output, outputError } from '@app/cli/output'
-import { containerNamespaceName, projectSlug, region } from '@app/config/config'
+import {
+  containerNamespaceName,
+  databaseInstanceName,
+  projectSlug,
+  region,
+} from '@app/config/config'
 import {
   ListBucketsCommand,
   ListObjectsV2Command,
@@ -12,6 +17,7 @@ import axios from 'axios'
 import Table from 'cli-table3'
 import { differenceInDays, format } from 'date-fns'
 import { fr } from 'date-fns/locale'
+import pc from 'picocolors'
 
 const { computeBranchNamespace } = await import('@app/cdk/utils')
 
@@ -39,6 +45,12 @@ type ScalewayNamespace = {
 }
 
 type PreviewBucket = {
+  name: string
+  namespace: string
+  sizeBytes: number | null
+}
+
+type PreviewDatabase = {
   name: string
   namespace: string
   sizeBytes: number | null
@@ -119,6 +131,42 @@ const formatBytes = (value: number | null) => {
 }
 
 const bucketPrefix = `${projectSlug}-uploads-`
+const toDatabaseName = (namespace: string) => `${projectSlug}-${namespace}`
+const databasePrefix = `${projectSlug}-`
+
+const yesNo = (value: boolean) => (value ? pc.green('Yes') : pc.yellow('No'))
+
+const bucketCell = (bucket: PreviewBucket | null) => {
+  if (!bucket) return pc.yellow('No')
+  const sizeBytes = bucket.sizeBytes
+  const size = formatBytes(sizeBytes)
+  const sizeColored =
+    sizeBytes == null || sizeBytes === 0 ? pc.yellow(size) : pc.green(size)
+  return `${pc.green('Yes')} - ${sizeColored}`
+}
+
+const databaseCell = (database: PreviewDatabase | null) => {
+  if (!database) return pc.yellow('No')
+  const sizeBytes = database.sizeBytes
+  const size = formatBytes(sizeBytes)
+  const sizeColored =
+    sizeBytes == null || sizeBytes === 0 ? pc.yellow(size) : pc.green(size)
+  return `${pc.green('Yes')} - ${sizeColored}`
+}
+
+const containerStatusCell = (container: ScalewayContainer | null) => {
+  if (!container) return pc.yellow('No')
+  const status =
+    container.status.toLowerCase() === 'ready'
+      ? pc.green(container.status)
+      : pc.yellow(container.status)
+  return `${pc.green('Yes')} - ${status} - ${formatDate(container.created_at)}`
+}
+
+const isPromptExitError = (error: unknown) =>
+  error instanceof Error &&
+  (error.name === 'ExitPromptError' ||
+    error.message.includes('User force closed the prompt with SIGINT'))
 
 const parsePreviewBucketNamespace = (bucketName: string) => {
   if (!bucketName.startsWith(bucketPrefix)) return null
@@ -215,6 +263,80 @@ const fetchPreviewBuckets = async (): Promise<PreviewBucket[]> => {
   }
 }
 
+const parsePreviewDatabaseNamespace = (databaseName: string) => {
+  if (!databaseName.startsWith(databasePrefix)) return null
+  const namespace = databaseName.slice(databasePrefix.length)
+  return namespace || null
+}
+
+const fetchPreviewDatabases = async (): Promise<PreviewDatabase[]> => {
+  const secretKey = process.env.SCW_SECRET_KEY
+  if (!secretKey) {
+    outputError(
+      'Missing SCW_SECRET_KEY env variable, skipping preview databases check',
+    )
+    return []
+  }
+
+  if (!databaseInstanceName) {
+    outputError(
+      'Missing DATABASE_INSTANCE_NAME env variable, skipping preview databases check',
+    )
+    return []
+  }
+
+  const scwRegion = region || 'fr-par'
+  const client = axios.create({
+    baseURL: `https://api.scaleway.com/rdb/v1/regions/${scwRegion}`,
+    headers: { 'X-Auth-Token': secretKey },
+  })
+
+  try {
+    const { data: instancesData } = await client.get<{
+      instances: { id: string; name: string }[]
+    }>('/instances', {
+      params: { name: databaseInstanceName, page_size: 100 },
+    })
+
+    const instance = instancesData.instances.find(
+      (candidate) => candidate.name === databaseInstanceName,
+    )
+    if (!instance) {
+      outputError(
+        `Database instance "${databaseInstanceName}" not found, skipping preview databases check`,
+      )
+      return []
+    }
+
+    const { data: databasesData } = await client.get<{
+      databases: { name: string; size?: number | null }[]
+    }>(`/instances/${instance.id}/databases`)
+
+    return databasesData.databases
+      .map((database): PreviewDatabase | null => {
+        const namespace = parsePreviewDatabaseNamespace(database.name)
+        if (!namespace) return null
+        return {
+          name: database.name,
+          namespace,
+          sizeBytes: database.size ?? null,
+        }
+      })
+      .filter((database): database is PreviewDatabase => Boolean(database))
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      outputError(
+        `Failed to list preview databases: ${error.response?.status} ${error.response?.statusText ?? ''} - ${JSON.stringify(error.response?.data)}`,
+      )
+    } else {
+      outputError(
+        `Failed to list preview databases: ${error instanceof Error ? error.message : String(error)}`,
+      )
+    }
+    return []
+  }
+}
+
 const triggerEnvDeletion = async (
   branch: string,
   circleCiToken: string,
@@ -280,342 +402,357 @@ export const cleanupPreviewEnvironments = new Command()
     'Interactive cleanup: review each deletable branch, delete its preview environment and/or git branch',
   )
   .action(async () => {
-    const circleCiToken = process.env.CIRCLE_CI_TOKEN
-    if (!circleCiToken) {
-      outputError(
-        'Missing CIRCLE_CI_TOKEN env variable for CircleCI authentication',
-      )
-      process.exit(1)
-      return
-    }
-
-    output(
-      'Fetching branches, pull requests, Scaleway containers, and preview buckets...\n',
-    )
-
-    const [branches, openPRs, containers, previewBuckets] = await Promise.all([
-      octokit.rest.repos
-        .listBranches({ owner, repo, per_page: 100 })
-        .then((r) => r.data),
-      octokit.rest.pulls
-        .list({ owner, repo, state: 'open', per_page: 100 })
-        .then((r) => r.data),
-      fetchScalewayContainers(),
-      fetchPreviewBuckets(),
-    ])
-
-    const prByBranch = new Map(openPRs.map((pr) => [pr.head.ref, pr]))
-    const containerByName = new Map(containers.map((c) => [c.name, c]))
-    const bucketByNamespace = new Map(
-      previewBuckets.map((bucket) => [bucket.namespace, bucket]),
-    )
-    const branchNamespaceToGitBranch = new Map<string, string>()
-
-    const branchDetails: BranchDetail[] = await Promise.all(
-      branches.map(async (branch) => {
-        const { data: commit } = await octokit.rest.repos.getCommit({
-          owner,
-          repo,
-          ref: branch.commit.sha,
-        })
-
-        const lastCommitDate =
-          commit.commit.committer?.date ??
-          commit.commit.author?.date ??
-          'unknown'
-
-        const pr = prByBranch.get(branch.name)
-        const namespace = computeBranchNamespace(branch.name)
-        const containerName =
-          namespace.length > 34 ? namespace.slice(0, 34) : namespace
-
-        branchNamespaceToGitBranch.set(namespace, branch.name)
-
-        const deployedContainer = containerByName.has(containerName)
-        const bucket = bucketByNamespace.get(namespace) ?? null
-        const isProtected = protectedBranches.includes(branch.name)
-        const days = lastCommitDate !== 'unknown' ? daysAgo(lastCommitDate) : 0
-        const stale = days > 30
-
-        let mergedInDev = false
-        if (!isProtected) {
-          try {
-            const { data: comparison } =
-              await octokit.rest.repos.compareCommits({
-                owner,
-                repo,
-                base: 'dev',
-                head: branch.name,
-              })
-            mergedInDev = comparison.ahead_by === 0
-          } catch {
-            // If comparison fails, assume not merged
-          }
-        }
-
-        const deletable =
-          !isProtected && ((!pr && stale) || (!pr && mergedInDev))
-
-        return {
-          name: branch.name,
-          isProtected,
-          pr: pr
-            ? { number: pr.number, title: pr.title, createdAt: pr.created_at }
-            : null,
-          namespace,
-          lastCommitDate,
-          lastCommitAuthor:
-            commit.commit.author?.name ?? commit.author?.login ?? 'unknown',
-          deployedContainer,
-          bucket,
-          stale,
-          mergedInDev,
-          deletable,
-        }
-      }),
-    )
-
-    const orphanedContainers = containers.filter((container) => {
-      return !branchNamespaceToGitBranch.has(container.name)
-    })
-    const orphanedBuckets = previewBuckets.filter((bucket) => {
-      return !branchNamespaceToGitBranch.has(bucket.namespace)
-    })
-
-    const orphanedByNamespace = new Map<string, OrphanedResource>()
-    for (const container of orphanedContainers) {
-      orphanedByNamespace.set(container.name, {
-        namespace: container.name,
-        container,
-        bucket: null,
-      })
-    }
-    for (const bucket of orphanedBuckets) {
-      const existing = orphanedByNamespace.get(bucket.namespace)
-      orphanedByNamespace.set(bucket.namespace, {
-        namespace: bucket.namespace,
-        container: existing?.container ?? null,
-        bucket,
-      })
-    }
-    const orphanedResources = [...orphanedByNamespace.values()].sort((a, b) =>
-      a.namespace.localeCompare(b.namespace),
-    )
-
-    // Sort: oldest first for review
-    branchDetails.sort(
-      (a, b) =>
-        new Date(a.lastCommitDate).getTime() -
-        new Date(b.lastCommitDate).getTime(),
-    )
-
-    const nonProtected = branchDetails.filter((b) => !b.isProtected)
-    const deletable = nonProtected.filter((b) => b.deletable)
-
-    // Overview
-    const knownBucketSizeTotal = previewBuckets.reduce((sum, bucket) => {
-      return bucket.sizeBytes == null ? sum : sum + bucket.sizeBytes
-    }, 0)
-
-    const overviewTable = new Table()
-    overviewTable.push(
-      { 'Total branches': String(branches.length) },
-      {
-        Protected: `${branchDetails.filter((b) => b.isProtected).length} (${protectedBranches.join(', ')})`,
-      },
-      { 'With open PR': String(nonProtected.filter((b) => b.pr).length) },
-      { Deletable: String(deletable.length) },
-      { 'Deployed containers': String(containers.length) },
-      { 'Deployed preview buckets': String(previewBuckets.length) },
-      { 'Orphaned containers': String(orphanedContainers.length) },
-      { 'Orphaned buckets': String(orphanedBuckets.length) },
-      { 'Preview buckets size (total)': formatBytes(knownBucketSizeTotal) },
-    )
-    output('OVERVIEW:')
-    output(overviewTable.toString())
-
-    const reviewTable = new Table({
-      head: ['Target', 'Container', 'Bucket', 'Bucket Size', 'PR', 'Flags'],
-      colWidths: [32, 11, 11, 14, 8, 40],
-      wordWrap: true,
-    })
-
-    for (const branch of deletable) {
-      const flags = [
-        branch.mergedInDev ? 'merged-in-dev' : null,
-        branch.stale ? 'stale' : null,
-      ]
-        .filter(Boolean)
-        .join(', ')
-
-      reviewTable.push([
-        branch.name,
-        branch.deployedContainer ? 'Yes' : 'No',
-        branch.bucket ? 'Yes' : 'No',
-        formatBytes(branch.bucket?.sizeBytes ?? null),
-        branch.pr ? `#${branch.pr.number}` : '-',
-        flags || '-',
-      ])
-    }
-
-    for (const orphan of orphanedResources) {
-      reviewTable.push([
-        `${orphan.namespace} (orphan)`,
-        orphan.container ? 'Yes' : 'No',
-        orphan.bucket ? 'Yes' : 'No',
-        formatBytes(orphan.bucket?.sizeBytes ?? null),
-        '-',
-        'no-git-branch',
-      ])
-    }
-
-    if (reviewTable.length > 0) {
-      output('\nCLEANUP CANDIDATES:')
-      output(reviewTable.toString())
-    }
-
-    if (deletable.length === 0 && orphanedResources.length === 0) {
-      output('\nNothing to clean up.')
-      return
-    }
-
-    output(
-      `\nReviewing ${deletable.length} deletable branch(es) and ${orphanedResources.length} orphaned target(s)...\n`,
-    )
-
-    let envDeletedCount = 0
-    let branchDeletedCount = 0
-    let skippedCount = 0
-
-    // Iterate through deletable branches
-    for (const [index, branch] of deletable.entries()) {
-      const days = daysAgo(branch.lastCommitDate)
-
-      const statusTable = new Table()
-      statusTable.push(
-        { Branch: branch.name },
-        { Namespace: branch.namespace },
-        { 'Container deployed': branch.deployedContainer ? 'Yes' : 'No' },
-        { 'Bucket deployed': branch.bucket ? 'Yes' : 'No' },
-        { 'Bucket size': formatBytes(branch.bucket?.sizeBytes ?? null) },
-        { 'Merged in dev': branch.mergedInDev ? 'Yes' : 'No' },
-        { Stale: branch.stale ? `Yes (${days}d ago)` : 'No' },
-        {
-          'Last commit': `${branch.lastCommitDate !== 'unknown' ? formatDate(branch.lastCommitDate) : '-'} by ${branch.lastCommitAuthor}`,
-        },
-      )
-
-      output(`\n--- Branch ${index + 1}/${deletable.length} ---`)
-      output(statusTable.toString())
-
-      const choices: { name: string; value: CleanupAction }[] =
-        branch.deployedContainer
-          ? [
-              {
-                name: 'Delete environment + git branch',
-                value: 'env_and_branch',
-              },
-              { name: 'Delete environment only', value: 'env_only' },
-              { name: 'Delete git branch only', value: 'branch_only' },
-              { name: 'Do nothing', value: 'skip' },
-            ]
-          : [
-              { name: 'Delete git branch', value: 'branch_only' },
-              { name: 'Do nothing', value: 'skip' },
-            ]
-
-      const defaultAction: CleanupAction = branch.deployedContainer
-        ? branch.mergedInDev
-          ? 'env_and_branch'
-          : 'skip'
-        : branch.mergedInDev
-          ? 'branch_only'
-          : 'skip'
-
-      const action = await select<CleanupAction>({
-        message: `What to do with "${branch.name}"?`,
-        default: defaultAction,
-        choices,
-      })
-
-      if (action === 'skip') {
-        output('  Skipped.')
-        skippedCount++
-        continue
+    try {
+      const circleCiToken = process.env.CIRCLE_CI_TOKEN
+      if (!circleCiToken) {
+        outputError(
+          'Missing CIRCLE_CI_TOKEN env variable for CircleCI authentication',
+        )
+        process.exit(1)
+        return
       }
-
-      if (action === 'env_and_branch' || action === 'env_only') {
-        output(`  Triggering environment deletion for "${branch.name}"...`)
-        const success = await triggerEnvDeletion(branch.name, circleCiToken)
-        if (success) envDeletedCount++
-      }
-
-      if (action === 'env_and_branch' || action === 'branch_only') {
-        output(`  Deleting git branch "${branch.name}"...`)
-        const success = await deleteGitBranch(branch.name)
-        if (success) branchDeletedCount++
-      }
-    }
-
-    // Iterate through orphaned resources (no git branch to delete)
-    for (const [index, orphan] of orphanedResources.entries()) {
-      const statusTable = new Table()
-      statusTable.push(
-        { Namespace: orphan.namespace },
-        { 'Container deployed': orphan.container ? 'Yes' : 'No' },
-        { 'Container status': orphan.container?.status ?? '-' },
-        {
-          'Container created': orphan.container
-            ? formatDate(orphan.container.created_at)
-            : '-',
-        },
-        { 'Bucket deployed': orphan.bucket ? 'Yes' : 'No' },
-        { 'Bucket name': orphan.bucket?.name ?? '-' },
-        { 'Bucket size': formatBytes(orphan.bucket?.sizeBytes ?? null) },
-        { 'Git branch': 'None (orphaned)' },
-      )
 
       output(
-        `\n--- Orphaned target ${index + 1}/${orphanedResources.length} ---`,
+        'Fetching branches, pull requests, Scaleway containers, and preview buckets...\n',
       )
-      output(statusTable.toString())
 
-      const action = await select<'env_only' | 'skip'>({
-        message: `What to do with orphaned namespace "${orphan.namespace}"?`,
-        default: 'env_only',
-        choices: [
-          {
-            name: 'Delete environment',
-            value: 'env_only',
-          },
-          {
-            name: 'Do nothing',
-            value: 'skip',
-          },
-        ],
+      const [branches, openPRs, containers, previewBuckets, previewDatabases] =
+        await Promise.all([
+          octokit.rest.repos
+            .listBranches({ owner, repo, per_page: 100 })
+            .then((r) => r.data),
+          octokit.rest.pulls
+            .list({ owner, repo, state: 'open', per_page: 100 })
+            .then((r) => r.data),
+          fetchScalewayContainers(),
+          fetchPreviewBuckets(),
+          fetchPreviewDatabases(),
+        ])
+
+      const prByBranch = new Map(openPRs.map((pr) => [pr.head.ref, pr]))
+      const containerByName = new Map(containers.map((c) => [c.name, c]))
+      const bucketByNamespace = new Map(
+        previewBuckets.map((bucket) => [bucket.namespace, bucket]),
+      )
+      const databaseByNamespace = new Map(
+        previewDatabases.map((database) => [database.namespace, database]),
+      )
+      const branchNamespaceToGitBranch = new Map<string, string>()
+
+      const branchDetails: BranchDetail[] = await Promise.all(
+        branches.map(async (branch) => {
+          const { data: commit } = await octokit.rest.repos.getCommit({
+            owner,
+            repo,
+            ref: branch.commit.sha,
+          })
+
+          const lastCommitDate =
+            commit.commit.committer?.date ??
+            commit.commit.author?.date ??
+            'unknown'
+
+          const pr = prByBranch.get(branch.name)
+          const namespace = computeBranchNamespace(branch.name)
+          const containerName =
+            namespace.length > 34 ? namespace.slice(0, 34) : namespace
+
+          branchNamespaceToGitBranch.set(namespace, branch.name)
+
+          const deployedContainer = containerByName.has(containerName)
+          const bucket = bucketByNamespace.get(namespace) ?? null
+          const isProtected = protectedBranches.includes(branch.name)
+          const days =
+            lastCommitDate !== 'unknown' ? daysAgo(lastCommitDate) : 0
+          const stale = days > 30
+
+          let mergedInDev = false
+          if (!isProtected) {
+            try {
+              const { data: comparison } =
+                await octokit.rest.repos.compareCommits({
+                  owner,
+                  repo,
+                  base: 'dev',
+                  head: branch.name,
+                })
+              mergedInDev = comparison.ahead_by === 0
+            } catch {
+              // If comparison fails, assume not merged
+            }
+          }
+
+          const deletable =
+            !isProtected && ((!pr && stale) || (!pr && mergedInDev))
+
+          return {
+            name: branch.name,
+            isProtected,
+            pr: pr
+              ? { number: pr.number, title: pr.title, createdAt: pr.created_at }
+              : null,
+            namespace,
+            lastCommitDate,
+            lastCommitAuthor:
+              commit.commit.author?.name ?? commit.author?.login ?? 'unknown',
+            deployedContainer,
+            bucket,
+            stale,
+            mergedInDev,
+            deletable,
+          }
+        }),
+      )
+
+      const orphanedContainers = containers.filter((container) => {
+        return !branchNamespaceToGitBranch.has(container.name)
+      })
+      const orphanedBuckets = previewBuckets.filter((bucket) => {
+        return !branchNamespaceToGitBranch.has(bucket.namespace)
       })
 
-      if (action === 'env_only') {
-        output(`  Triggering environment deletion for "${orphan.namespace}"...`)
-        const success = await triggerEnvDeletion(
-          orphan.namespace,
-          circleCiToken,
-        )
-        if (success) envDeletedCount++
-      } else {
-        output('  Skipped.')
-        skippedCount++
+      const orphanedByNamespace = new Map<string, OrphanedResource>()
+      for (const container of orphanedContainers) {
+        orphanedByNamespace.set(container.name, {
+          namespace: container.name,
+          container,
+          bucket: null,
+        })
       }
-    }
+      for (const bucket of orphanedBuckets) {
+        const existing = orphanedByNamespace.get(bucket.namespace)
+        orphanedByNamespace.set(bucket.namespace, {
+          namespace: bucket.namespace,
+          container: existing?.container ?? null,
+          bucket,
+        })
+      }
+      const orphanedResources = [...orphanedByNamespace.values()].sort((a, b) =>
+        a.namespace.localeCompare(b.namespace),
+      )
 
-    // Final summary
-    output('')
-    const summaryTable = new Table()
-    summaryTable.push(
-      { 'Env deletions triggered': String(envDeletedCount) },
-      { 'Git branches deleted': String(branchDeletedCount) },
-      { Skipped: String(skippedCount) },
-    )
-    output('CLEANUP COMPLETE:')
-    output(summaryTable.toString())
+      // Sort: oldest first for review
+      branchDetails.sort(
+        (a, b) =>
+          new Date(a.lastCommitDate).getTime() -
+          new Date(b.lastCommitDate).getTime(),
+      )
+
+      const nonProtected = branchDetails.filter((b) => !b.isProtected)
+      const deletable = nonProtected.filter((b) => b.deletable)
+
+      // Overview
+      const knownBucketSizeTotal = previewBuckets.reduce((sum, bucket) => {
+        return bucket.sizeBytes == null ? sum : sum + bucket.sizeBytes
+      }, 0)
+
+      const overviewTable = new Table()
+      overviewTable.push(
+        { 'Total branches': String(branches.length) },
+        {
+          Protected: `${branchDetails.filter((b) => b.isProtected).length} (${protectedBranches.join(', ')})`,
+        },
+        { 'With open PR': String(nonProtected.filter((b) => b.pr).length) },
+        { Deletable: String(deletable.length) },
+        { 'Deployed containers': String(containers.length) },
+        { 'Deployed preview buckets': String(previewBuckets.length) },
+        { 'Orphaned containers': String(orphanedContainers.length) },
+        { 'Orphaned buckets': String(orphanedBuckets.length) },
+        { 'Preview buckets size (total)': formatBytes(knownBucketSizeTotal) },
+      )
+      output('OVERVIEW:')
+      output(overviewTable.toString())
+
+      const reviewTable = new Table({
+        head: ['Target', 'Container', 'Database', 'Bucket', 'PR', 'Flags'],
+        wordWrap: true,
+      })
+
+      for (const branch of deletable) {
+        const flags = [
+          branch.mergedInDev ? 'merged-in-dev' : null,
+          branch.stale ? 'stale' : null,
+        ]
+          .filter(Boolean)
+          .join(', ')
+
+        reviewTable.push([
+          `${branch.name}\n${toDatabaseName(branch.namespace)}`,
+          yesNo(branch.deployedContainer),
+          databaseCell(databaseByNamespace.get(branch.namespace) ?? null),
+          bucketCell(branch.bucket),
+          branch.pr ? `#${branch.pr.number}` : '-',
+          flags || '-',
+        ])
+      }
+
+      for (const orphan of orphanedResources) {
+        reviewTable.push([
+          `${pc.yellow('orphan')}\n${orphan.namespace}\n${toDatabaseName(orphan.namespace)}`,
+          yesNo(Boolean(orphan.container)),
+          databaseCell(databaseByNamespace.get(orphan.namespace) ?? null),
+          bucketCell(orphan.bucket),
+          '-',
+          'no-git-branch',
+        ])
+      }
+
+      if (reviewTable.length > 0) {
+        output('\nCLEANUP CANDIDATES:')
+        output(reviewTable.toString())
+      }
+
+      if (deletable.length === 0 && orphanedResources.length === 0) {
+        output('\nNothing to clean up.')
+        return
+      }
+
+      output(
+        `\nReviewing ${deletable.length} deletable branch(es) and ${orphanedResources.length} orphaned target(s)...\n`,
+      )
+
+      let envDeletedCount = 0
+      let branchDeletedCount = 0
+      let skippedCount = 0
+
+      // Iterate through deletable branches
+      for (const [index, branch] of deletable.entries()) {
+        const days = daysAgo(branch.lastCommitDate)
+        const database = databaseByNamespace.get(branch.namespace) ?? null
+
+        const statusTable = new Table()
+        statusTable.push(
+          { Branch: branch.name },
+          { Namespace: branch.namespace },
+          {
+            Database: `${toDatabaseName(branch.namespace)}\n${databaseCell(database)}`,
+          },
+          { 'Container deployed': branch.deployedContainer ? 'Yes' : 'No' },
+          { 'Bucket deployed': branch.bucket ? 'Yes' : 'No' },
+          { 'Bucket size': formatBytes(branch.bucket?.sizeBytes ?? null) },
+          { 'Merged in dev': branch.mergedInDev ? 'Yes' : 'No' },
+          { Stale: branch.stale ? `Yes (${days}d ago)` : 'No' },
+          {
+            'Last commit': `${branch.lastCommitDate !== 'unknown' ? formatDate(branch.lastCommitDate) : '-'} by ${branch.lastCommitAuthor}`,
+          },
+        )
+
+        output(`\n--- Branch ${index + 1}/${deletable.length} ---`)
+        output(statusTable.toString())
+
+        const choices: { name: string; value: CleanupAction }[] =
+          branch.deployedContainer
+            ? [
+                {
+                  name: 'Delete environment + git branch',
+                  value: 'env_and_branch',
+                },
+                { name: 'Delete environment only', value: 'env_only' },
+                { name: 'Delete git branch only', value: 'branch_only' },
+                { name: 'Do nothing', value: 'skip' },
+              ]
+            : [
+                { name: 'Delete git branch', value: 'branch_only' },
+                { name: 'Do nothing', value: 'skip' },
+              ]
+
+        const defaultAction: CleanupAction = branch.deployedContainer
+          ? branch.mergedInDev
+            ? 'env_and_branch'
+            : 'skip'
+          : branch.mergedInDev
+            ? 'branch_only'
+            : 'skip'
+
+        const action = await select<CleanupAction>({
+          message: `What to do with "${branch.name}"?`,
+          default: defaultAction,
+          choices,
+        })
+
+        if (action === 'skip') {
+          output('  Skipped.')
+          skippedCount++
+          continue
+        }
+
+        if (action === 'env_and_branch' || action === 'env_only') {
+          output(`  Triggering environment deletion for "${branch.name}"...`)
+          const success = await triggerEnvDeletion(branch.name, circleCiToken)
+          if (success) envDeletedCount++
+        }
+
+        if (action === 'env_and_branch' || action === 'branch_only') {
+          output(`  Deleting git branch "${branch.name}"...`)
+          const success = await deleteGitBranch(branch.name)
+          if (success) branchDeletedCount++
+        }
+      }
+
+      // Iterate through orphaned resources (no git branch to delete)
+      for (const [index, orphan] of orphanedResources.entries()) {
+        const databaseName = toDatabaseName(orphan.namespace)
+        const database = databaseByNamespace.get(orphan.namespace) ?? null
+        const statusTable = new Table()
+        statusTable.push(
+          { Namespace: orphan.namespace },
+          { Database: `${databaseName}\n${databaseCell(database)}` },
+          { Container: containerStatusCell(orphan.container) },
+          { Bucket: bucketCell(orphan.bucket) },
+          { 'Git branch': 'None (orphaned)' },
+        )
+
+        output(
+          `\n--- Orphaned target ${index + 1}/${orphanedResources.length} ---`,
+        )
+        output(statusTable.toString())
+
+        const action = await select<'env_only' | 'skip'>({
+          message: `What to do with orphaned namespace "${orphan.namespace}"?`,
+          default: 'env_only',
+          choices: [
+            {
+              name: 'Delete environment',
+              value: 'env_only',
+            },
+            {
+              name: 'Do nothing',
+              value: 'skip',
+            },
+          ],
+        })
+
+        if (action === 'env_only') {
+          output(
+            `  Triggering environment deletion for "${orphan.namespace}"...`,
+          )
+          const success = await triggerEnvDeletion(
+            orphan.namespace,
+            circleCiToken,
+          )
+          if (success) envDeletedCount++
+        } else {
+          output('  Skipped.')
+          skippedCount++
+        }
+      }
+
+      // Final summary
+      output('')
+      const summaryTable = new Table()
+      summaryTable.push(
+        { 'Env deletions triggered': String(envDeletedCount) },
+        { 'Git branches deleted': String(branchDeletedCount) },
+        { Skipped: String(skippedCount) },
+      )
+      output('CLEANUP COMPLETE:')
+      output(summaryTable.toString())
+    } catch (error) {
+      if (isPromptExitError(error)) {
+        output('\nInterrupted by user.')
+        process.exit(130)
+        return
+      }
+      throw error
+    }
   })
