@@ -179,11 +179,14 @@ const isPromptExitError = (error: unknown) =>
 const hasValue = (value: string | undefined | null) =>
   Boolean(value && value.trim().length > 0)
 
+const normalizeDatabaseInstanceId = (value: string) =>
+  value.trim().split('/').filter(Boolean).pop() ?? value.trim()
+
 const resolveDatabaseInstanceIdentifier = () => {
   const databaseInstanceId = process.env.DATABASE_INSTANCE_ID
   if (hasValue(databaseInstanceId)) {
     return {
-      instanceId: databaseInstanceId!.trim(),
+      instanceId: normalizeDatabaseInstanceId(databaseInstanceId!),
       source: 'DATABASE_INSTANCE_ID' as const,
     }
   }
@@ -433,10 +436,10 @@ const fetchPreviewDatabases = async (): Promise<PreviewDatabase[]> => {
     const { data: databasesData } = await client.get<{
       databases: { name: string; size?: number | null }[]
     }>(`/instances/${instanceId}/databases`)
-
     return databasesData.databases
       .map((database): PreviewDatabase | null => {
         const namespace = parsePreviewDatabaseNamespace(database.name)
+
         if (!namespace) return null
         return {
           name: database.name,
