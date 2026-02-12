@@ -3,6 +3,7 @@ import AdministrationInlineLabelsValues, {
   type LabelAndValue,
 } from '@app/web/app/administration/AdministrationInlineLabelsValues'
 import AdministrationMailtoLink from '@app/web/app/administration/AdministrationMailtoLink'
+import LogoutUserButton from '@app/web/app/administration/utilisateurs/[id]/LogoutUserButton'
 import ResetUserInscriptionButton from '@app/web/app/administration/utilisateurs/[id]/ResetUserInscriptionButton'
 import UpdateUserDataFromDataspaceButton from '@app/web/app/administration/utilisateurs/[id]/UpdateUserDataFromDataspaceButton'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
@@ -246,7 +247,16 @@ const AdministrationUserPage = async ({
               },
               {
                 label: 'Dernière connexion',
-                value: lastLogin ? dateAsDayAndTime(lastLogin) : 'Jamais',
+                value: (
+                  <div className="fr-grid-row fr-grid-row--middle fr-grid-row--gutters">
+                    <div className="fr-col-auto">
+                      {lastLogin ? dateAsDayAndTime(lastLogin) : 'Jamais'}
+                    </div>
+                    <div className="fr-col-auto">
+                      <LogoutUserButton userId={user.id} />
+                    </div>
+                  </div>
+                ),
               },
               {
                 label: 'Profil d’inscription',
@@ -736,7 +746,10 @@ const AdministrationUserPage = async ({
           )}
         </AdministrationInfoCard>
 
-        <AdministrationInfoCard title="Sessions de connexion et comptes liés">
+        <AdministrationInfoCard
+          title="Sessions de connexion et comptes liés"
+          actions={<LogoutUserButton userId={user.id} />}
+        >
           <AdministrationInlineLabelsValues
             items={[
               ...(accounts.length > 0

@@ -4,7 +4,10 @@ import { deactivateGithubDeployment } from '@app/cli/commands/github/deactivateG
 import { updateGithubDeployment } from '@app/cli/commands/github/updateGithubDeployment'
 import { addNextPublicVariablesToDotEnv } from '@app/cli/commands/infrastructure/addNextPublicVariablesToDotEnv'
 import { createDotEnvFromCdk } from '@app/cli/commands/infrastructure/createDotEnvFromCdk'
+import { createInfrastructureResources } from '@app/cli/commands/infrastructure/createInfrastructureResources'
 import { createTfVarsFileFromEnvironment } from '@app/cli/commands/infrastructure/createTfVarsFileFromEnvironment'
+import { deletePreviewEnvironments } from '@app/cli/commands/infrastructure/deletePreviewEnvironments'
+import { infrastructureInventory } from '@app/cli/commands/infrastructure/inventory'
 import { locallyRestoreLatestMainBackup } from '@app/cli/commands/infrastructure/locallyRestoreLatestMainBackup'
 import { executeJobApiCommand } from '@app/cli/commands/jobs/executeJobApiCommand'
 import { executeJobCommand } from '@app/cli/commands/jobs/executeJobCommand'
@@ -58,6 +61,8 @@ const main = async () => {
   program.addCommand(ingestNotionHelpCenterExportedMarkdown)
   program.addCommand(fetchAccompagnements)
   program.addCommand(deleteSentryEnvironmentIssues)
+  program.addCommand(deletePreviewEnvironments)
+  program.addCommand(infrastructureInventory)
   await program.parseAsync()
 }
 

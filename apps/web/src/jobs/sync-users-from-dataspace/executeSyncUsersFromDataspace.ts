@@ -13,7 +13,7 @@ import type { SyncUsersFromDataspaceJob } from './syncUsersFromDataspaceJob'
 export const executeSyncUsersFromDataspace = async (
   _job: SyncUsersFromDataspaceJob,
 ) => {
-  output('Syncing users from Dataspace API...')
+  output('[dataspace sync] Syncing users from Dataspace API...')
 
   // Get all users that are not deleted
   const usersToSync = await prismaClient.user.findMany({
@@ -41,7 +41,7 @@ export const executeSyncUsersFromDataspace = async (
     },
   })
 
-  output(`Found ${usersToSync.length} users to sync`)
+  output(`[dataspace sync] Found ${usersToSync.length} users to sync`)
 
   let synced = 0
   let failed = 0
@@ -65,17 +65,17 @@ export const executeSyncUsersFromDataspace = async (
       // Log progress every 100 users or at the end
       if ((index + 1) % 100 === 0 || index + 1 === usersToSync.length) {
         output(
-          `Progress: ${index + 1}/${usersToSync.length} (synced: ${synced}, noOp: ${noOp}, failed: ${failed})`,
+          `[dataspace sync] Progress: ${index + 1}/${usersToSync.length} (synced: ${synced}, noOp: ${noOp}, failed: ${failed})`,
         )
       }
     } catch (error) {
       failed++
-      output(`Error syncing user ${user.email}: ${error}`)
+      output(`[dataspace sync] Error syncing user ${user.email}: ${error}`)
     }
   }
 
   output(
-    `Sync completed: ${synced} synced, ${noOp} no changes needed, ${failed} failed`,
+    `[dataspace sync] Sync completed: ${synced} synced, ${noOp} no changes needed, ${failed} failed`,
   )
 
   return {
