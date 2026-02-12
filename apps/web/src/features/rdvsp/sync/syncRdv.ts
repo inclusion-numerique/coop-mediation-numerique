@@ -93,6 +93,7 @@ const rdvPrismaDataFromOAuthApiRdv = (
     organisationId: rdv.organisation.id,
     urlForAgents: rdv.url_for_agents,
     rawData: rdv,
+    craDeclined: false,
   } satisfies Prisma.RdvUncheckedCreateInput
 }
 
