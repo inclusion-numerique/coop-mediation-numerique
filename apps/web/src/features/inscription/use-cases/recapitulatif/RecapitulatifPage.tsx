@@ -6,13 +6,11 @@ import InfoLabelValue from '@app/web/components/InfoLabelValue'
 import StructureCard from '@app/web/components/structure/StructureCard'
 import InscriptionCard from '@app/web/features/inscription/components/InscriptionCard'
 import InscriptionInvalidInformationContactSupportLink from '@app/web/features/inscription/components/InscriptionInvalidInformationContactSupportLink'
-import { getStepPath } from '@app/web/features/inscription/inscriptionFlow'
 import ValiderInscriptionForm from '@app/web/features/inscription/use-cases/recapitulatif/ValiderInscriptionForm'
 import {
   allProfileInscriptionLabels,
   computeUserProfile,
 } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
-import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import ConseillerNumeriqueRoleNotice from './ConseillerNumeriqueRoleNotice'
 import type { InscriptionRecapitulatifPageData } from './getInscriptionRecapitulatifPageData'

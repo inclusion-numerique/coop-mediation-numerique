@@ -52,6 +52,11 @@ export const getLieuActivitePageData = async ({ id }: { id: string }) => {
         where: {
           suppression: null,
           fin: null,
+          mediateur: {
+            user: {
+              deleted: null,
+            },
+          },
         },
         select: {
           id: true,
