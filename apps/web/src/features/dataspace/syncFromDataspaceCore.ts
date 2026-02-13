@@ -147,23 +147,9 @@ export const prepareContractsFromDataspace = async (
       continue
     }
 
-    const adresse = buildAdresseFromDataspace(structureEmployeuse.adresse)
-
     // Find or create structure (outside transaction - structures are stable)
-    const structure = await findOrCreateStructure({
-      coopId: structureEmployeuse.ids?.coop,
-      siret: structureEmployeuse.siret,
-      nom: structureEmployeuse.nom,
-      adresse,
-      codePostal: structureEmployeuse.adresse.code_postal,
-      codeInsee: structureEmployeuse.adresse.code_insee,
-      commune: structureEmployeuse.adresse.nom_commune,
-      nomReferent: structureEmployeuse.contact
-        ? `${structureEmployeuse.contact.prenom} ${structureEmployeuse.contact.nom}`.trim()
-        : null,
-      courrielReferent:
-        structureEmployeuse.contact?.courriels?.mail_gestionnaire ?? null,
-      telephoneReferent: structureEmployeuse.contact?.telephone ?? null,
+    const structure = await getOrCreateStructureFromDataspace({
+      structureEmployeuse,
     })
 
     // Create one PreparedContract for each contract
@@ -183,8 +169,20 @@ const getOrCreateStructureIdForTemporaryContract = async ({
 }: {
   structureEmployeuse: DataspaceStructureEmployeuse
 }): Promise<string> => {
+  const structure = await getOrCreateStructureFromDataspace({
+    structureEmployeuse,
+  })
+
+  return structure.id
+}
+
+const getOrCreateStructureFromDataspace = async ({
+  structureEmployeuse,
+}: {
+  structureEmployeuse: DataspaceStructureEmployeuse
+}) => {
   const adresse = buildAdresseFromDataspace(structureEmployeuse.adresse)
-  const structure = await findOrCreateStructure({
+  return findOrCreateStructure({
     coopId: structureEmployeuse.ids?.coop,
     siret: structureEmployeuse.siret,
     nom: structureEmployeuse.nom,
@@ -199,8 +197,6 @@ const getOrCreateStructureIdForTemporaryContract = async ({
       structureEmployeuse.contact?.courriels?.mail_gestionnaire ?? null,
     telephoneReferent: structureEmployeuse.contact?.telephone ?? null,
   })
-
-  return structure.id
 }
 
 // ============================================================================
@@ -276,18 +272,25 @@ export const syncStructuresEmployeusesFromDataspace = async ({
 
     // Create a map for quick lookup by structureId + debut for real contracts.
     // Temporary contracts use debut=null and are handled separately.
-    const emploisByKey = new Map(
-      existingEmplois
-        .filter(hasDebutDate)
-        .map((emploi) => [
-          getEmploiKey(emploi.structureId, emploi.debut),
-          emploi,
-        ]),
+    const emploisByKey = new Map<
+      string,
+      ExistingEmploiForSync & { debut: Date }
+    >()
+    const realEmplois = existingEmplois.filter(hasDebutDate)
+    // If multiple emplois collide on the same key, keep the most recently created one.
+    const realEmploisByCreationDesc = realEmplois.toSorted(
+      (a, b) => b.creation.getTime() - a.creation.getTime(),
     )
+    for (const emploi of realEmploisByCreationDesc) {
+      const key = getEmploiKey(emploi.structureId, emploi.debut)
+      if (!emploisByKey.has(key)) {
+        emploisByKey.set(key, emploi)
+      }
+    }
 
     const temporaryEmplois = existingEmplois
       .filter((emploi) => emploi.debut === null)
-      .toSorted((a, b) => a.creation.getTime() - b.creation.getTime())
+      .toSorted((a, b) => b.creation.getTime() - a.creation.getTime())
 
     // Track which emploi IDs should remain active after sync
     const emploiIdsToKeep: string[] = []
