@@ -16,14 +16,14 @@ export const OnboardingMesOutils = () => (
     title="Bénéficiez d'outils adaptés à vos besoins"
     label={
       <>
-        <span className="ri-apps-2-line ri-lg fr-mr-1w" aria-hidden />
+        <span className="ri-apps-2-line ri-xl fr-mr-3v" aria-hidden />
         Mes outils
       </>
     }
     stepIndex={4}
-    totalSteps={4}
+    totalSteps={5}
     previous={{ href: '/en-savoir-plus/mes-beneficiaires' }}
-    next={{ href: '/coop', isComplete: true }}
+    next={{ href: '/en-savoir-plus/contribution' }}
     closeHref="/coop"
   >
     <p className="fr-text--lg">
