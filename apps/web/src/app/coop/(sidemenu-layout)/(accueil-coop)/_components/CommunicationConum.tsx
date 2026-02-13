@@ -4,7 +4,7 @@ import React from 'react'
 
 export const CommunicationConum = () => (
   <>
-    <h2 className="fr-h5 fr-text-mention--grey">
+    <h2 className="fr-h6 fr-text-mention--grey">
       <Image
         className="fr-mr-1w"
         width={24}

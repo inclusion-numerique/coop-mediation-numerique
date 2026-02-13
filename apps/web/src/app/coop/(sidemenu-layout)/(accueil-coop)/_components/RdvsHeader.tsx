@@ -15,7 +15,7 @@ const RdvsHeader = ({ isLoading }: { isLoading: boolean }) => (
         height={28}
       />
     </div>
-    <h2 className="fr-h5 fr-text-mention--grey fr-mb-0">RDV Service Public</h2>
+    <h2 className="fr-h6 fr-text-mention--grey fr-mb-0">RDV Service Public</h2>
     <span className="fr-flex-grow-1" />
     {isLoading && (
       <div className="fr-flex fr-align-items-center fr-flex-gap-2v">

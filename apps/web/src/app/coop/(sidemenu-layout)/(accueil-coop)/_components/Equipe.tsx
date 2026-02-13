@@ -13,13 +13,13 @@ const EquipeCount = ({
   countLabel: string
   invitations: number
 }) => (
-  <div className="fr-background-alt--brown-caramel fr-border-radius--8 fr-px-6v fr-py-4v fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-1 fr-flex-gap-3v">
+  <div className="fr-background-alt--brown-caramel fr-border-radius--16 fr-p-6v fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-1 fr-flex-gap-3v">
     <div className="fr-flex fr-justify-content-space-between fr-direction-column">
-      <div className="fr-text--lg fr-text--semi-bold fr-mb-0">{label}</div>
+      <div className="fr-text--lg fr-text--semi-bold fr-mb-2v">{label}</div>
       <div className="fr-text--sm fr-mb-0">{countLabel}</div>
 
       {!!invitations && (
-        <Badge severity="info" noIcon className="fr-mt-2w">
+        <Badge severity="info" noIcon className="fr-mt-2w" small>
           {invitations} invitation{sPluriel(invitations)} à rejoindre votre
           équipe toujours en attente
         </Badge>
@@ -28,7 +28,6 @@ const EquipeCount = ({
     <div>
       <Button
         priority="secondary"
-        size="small"
         linkProps={{
           href: '/coop/mon-equipe',
         }}
