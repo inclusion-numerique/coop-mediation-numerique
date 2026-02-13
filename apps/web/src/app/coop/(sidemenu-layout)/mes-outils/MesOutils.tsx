@@ -10,10 +10,9 @@ import { PixOrgaLogo } from '@app/web/features/pictograms/services/PixOrgaLogo'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import RdvServicePublicStatusTag from '@app/web/rdv-service-public/RdvServicePublicStatusTag'
 import { getRdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
+import { rdvWebsiteLink } from '@app/web/rdv-service-public/rdvServicePublicUrls'
 import { contentId } from '@app/web/utils/skipLinks'
-import Notice from '@codegouvfr/react-dsfr/Notice'
 import Image from 'next/image'
-import Link from 'next/link'
 import React from 'react'
 import { CardOutil } from './_components/CardOutil'
 
@@ -23,40 +22,22 @@ export const MesOutils = async () => {
   const rdvServicePublicStatus = getRdvOauthIntegrationStatus({ user })
 
   return (
-    <CoopPageContainer size={49}>
+    <CoopPageContainer size={56}>
       <CoopBreadcrumbs currentPage="Mes outils" />
       <SkipLinksPortal />
       <main id={contentId}>
-        <h1 className="fr-text-title--blue-france">Mes outils</h1>
-        <p>
+        <h1 className="fr-text-title--blue-france fr-mb-1v">Mes outils</h1>
+        <p className="fr-text-mention--grey">
           Retrouvez des outils utiles dans votre pratique de la médiation
-          numérique. Découvrez leurs fonctionnalités clés et comment y accéder.
+          numérique. Découvrez leurs fonctionnalités clés et comment accéder à
+          ces outils.
         </p>
-        <Notice
-          className="fr-notice--new fr-notice--flex"
-          isClosable
-          title={
-            <span className="fr-text--regular">
-              <span className="fr-text-default--grey fr-text--bold fr-display-block">
-                Prochaines évolutions à venir !
-              </span>
-              <span className="fr-display-block fr-text--sm fr-my-1v">
-                Amélioration du partage d’informations entre ces outils pour
-                fluidifier l’organisation du travail.  
-                <Link
-                  className="fr-link fr-text--sm"
-                  href="https://projets.suite.anct.gouv.fr/boards/1572441353164424613"
-                  target="_blank"
-                >
-                  En savoir plus sur les prochaines évolutions de la plateforme
-                </Link>
-              </span>
-            </span>
-          }
-        />
         <section className="fr-mt-6w">
-          <h2 className="fr-h5 fr-text-mention--grey">
-            <span className="ri-service-line fr-mr-1w" aria-hidden />
+          <h2 className="fr-h6 fr-text-mention--grey">
+            <span
+              className="ri-service-line ri-lg fr-text--regular fr-mr-1w"
+              aria-hidden
+            />
             Des outils pour vos accompagnements
           </h2>
           <div className="fr-grid-row fr-grid-row--gutters">
@@ -64,7 +45,8 @@ export const MesOutils = async () => {
               <CardOutil
                 pictogram={RDVServicePublicLogo}
                 title="RDV Service Public"
-                slug="rdv-service-public"
+                slug="rdv-service-public/se-connecter"
+                accessUrl={rdvWebsiteLink}
                 isNew={rdvServicePublicStatus === 'none'}
                 topRight={
                   rdvServicePublicStatus !== 'none' && (
@@ -73,6 +55,11 @@ export const MesOutils = async () => {
                     />
                   )
                 }
+                actionButton={{
+                  title: 'Intégration à RDV Service Public',
+                  children: 'Paramétrer l’intégration',
+                  iconId: 'fr-icon-settings-5-line',
+                }}
               >
                 Faciliter la gestion des rendez-vous avec vos bénéficiaires.
               </CardOutil>
@@ -82,6 +69,7 @@ export const MesOutils = async () => {
                 pictogram={AidantsConnectLogo}
                 title="Aidants Connect"
                 slug="aidants-connect"
+                accessUrl="https://aidantsconnect.beta.gouv.fr/accounts/login/"
               >
                 Sécuriser l’aidant et la personne accompagnée dans la
                 réalisation de démarches administratives en ligne.
@@ -92,6 +80,7 @@ export const MesOutils = async () => {
                 pictogram={CartographieLogo}
                 title="La Cartographie Nationale des lieux d’inclusion numérique"
                 slug="cartographie-nationale-des-lieux-d-inclusion-numerique"
+                accessUrl="https://cartographie.societenumerique.gouv.fr"
               >
                 Rendre visible vos lieux et services d’inclusion numérique pour
                 faciliter l’orientation des bénéficiaires.
@@ -102,6 +91,7 @@ export const MesOutils = async () => {
                 pictogram={LesBasesLogo}
                 title="Les Bases du numérique d’intérêt général"
                 slug="les-bases-du-numerique-d-interet-general"
+                accessUrl="https://lesbases.anct.gouv.fr/connexion"
               >
                 La plateforme collaborative de partage de ressources & communs
                 numériques à l’échelle nationale.
@@ -110,7 +100,7 @@ export const MesOutils = async () => {
           </div>
         </section>
         <section className="fr-mt-6w">
-          <h2 className="fr-h5 fr-text-mention--grey fr-flex fr-align-items-center">
+          <h2 className="fr-h6 fr-text-mention--grey fr-flex fr-align-items-center">
             <Image
               className="fr-mr-1w fr-img--grayscale"
               width={26}
@@ -118,11 +108,16 @@ export const MesOutils = async () => {
               src="/images/services/pix.svg"
               alt=""
             />
-            Les outils PIX dédiés à la médiation numérique
+            Les outils Pix dédiés à la médiation numérique
           </h2>
           <div className="fr-grid-row fr-grid-row--gutters">
             <div className="fr-col-xl-6 fr-col-12">
-              <CardOutil pictogram={PixOrgaLogo} title="Pix Orga" slug="pix">
+              <CardOutil
+                pictogram={PixOrgaLogo}
+                title="Pix Orga"
+                slug="pix"
+                accessUrl="https://orga.pix.fr/connexion"
+              >
                 Proposez des parcours PIX adaptés aux besoins de vos apprenants
                 et suivez leur progression.
               </CardOutil>
@@ -132,6 +127,7 @@ export const MesOutils = async () => {
                 pictogram={AbcDiagLogo}
                 title="ABC Diag"
                 slug="abc-diag"
+                accessUrl="https://pix.fr/abc-diag"
               >
                 Diagnostiquez en 10 questions la maîtrise de compétences
                 numériques de base.
