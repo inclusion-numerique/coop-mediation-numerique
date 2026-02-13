@@ -171,6 +171,10 @@
   .fr-direction-sm-row {
     flex-direction: row;
   }
+
+  .fr-direction-sm-row-reverse {
+    flex-direction: row-reverse;
+  }
 }
 
 /* md flex rules */

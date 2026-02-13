@@ -1,10 +1,10 @@
-# La coop de la médiation numérique
+# La Coop de la médiation numérique
 
 [![Coverage Status](https://coveralls.io/repos/github/inclusion-numerique/coop-mediation-numerique/badge.svg?branch=main)](https://coveralls.io/github/inclusion-numerique/coop-mediation-numerique?branch=main)
 
 <h2 id="à-propos">🪧 À propos</h2>
 
-Bienvenue sur la coop de la médiation numérique, développé par le [Pôle Inclusion numérique de l'ANCT](https://societenumerique.gouv.fr/fr/les-services-de-linclusion-numerique/). \
+Bienvenue sur la Coop de la médiation numérique, développé par le [Pôle Inclusion numérique de l'ANCT](https://societenumerique.gouv.fr/fr/les-services-de-linclusion-numerique/). \
 Ce [monorepo](https://en.wikipedia.org/wiki/Monorepo) fournit l'ensemble des projets nécessaires au fonctionnement d'une plateforme web utilisant le [Système de Design de l'Etat](https://www.systeme-de-design.gouv.fr/) et le [template commun de l'ANCT](https://www.figma.com/file/C9Ump1yh3z4DPMxm2qk3IY/Templates_communs?type=design&node-id=4-2946&t=d7Fn19OfHLoEcXqg-0) qui ajoute des composants métiers au Système de Design de l'État. \
 L'objectif de ce projet est d’outiller les professionels de la médiation numérique.
 

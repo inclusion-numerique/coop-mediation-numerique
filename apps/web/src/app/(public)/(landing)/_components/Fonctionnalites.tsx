@@ -1,5 +1,3 @@
-import Badge from '@codegouvfr/react-dsfr/Badge'
-import Button from '@codegouvfr/react-dsfr/Button'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -18,13 +16,14 @@ export const Fonctionnalites = () => (
         numériques
       </h2>
     </div>
-    <div className="fr-grid-row fr-align-items-center fr-grid-row-sm--gutters fr-mt-md-15w fr-mt-6w">
+    <div className="fr-grid-row fr-direction-column-reverse fr-direction-sm-row fr-align-items-center fr-grid-row-sm--gutters fr-mt-md-15w fr-mt-6w">
       <div className="fr-col-lg-5 fr-col-sm-6 fr-col-12 fr-flex fr-direction-column fr-flex-gap-4v fr-my-2w">
-        <h3 className="fr-mb-0">Valoriser son activité</h3>
+        <h3 className="fr-mb-0">Valorisez votre activité</h3>
         <p className="fr-mb-0">
-          Des comptes rendus d’activité simples et une visualisation claire des
-          statistiques pour faciliter le suivi d’activité et la communication
-          auprès de différents partenaires.
+          Des comptes rendus d'activités rapides à compléter et une
+          visualisation claire de vos statistiques pour faciliter le suivi de
+          votre activité et la communication auprès de vos différents
+          partenaires.
         </p>
       </div>
       <div className="fr-col-sm-6 fr-col-offset-lg-1 fr-col-12">
@@ -37,19 +36,20 @@ export const Fonctionnalites = () => (
         />
       </div>
     </div>
-    <div className="fr-grid-row fr-direction-row-reverse fr-align-items-center fr-grid-row-sm--gutters fr-mt-md-15w fr-mt-6w">
+    <div className="fr-grid-row fr-direction-column-reverse fr-direction-sm-row-reverse fr-align-items-center fr-grid-row-sm--gutters fr-mt-md-15w fr-mt-6w">
       <div className="fr-col-lg-5 fr-col-sm-6 fr-col-offset-lg-1 fr-col-12 fr-flex fr-direction-column fr-flex-gap-4v fr-my-2w">
-        <h3 className="fr-mb-0">Suivez l’évolution de vos bénéficiaires</h3>
+        <h3 className="fr-mb-0">Suivez l'évolution de vos bénéficiaires</h3>
         <p className="fr-mb-0">
-          Accéder aux informations essentielles ainsi que l’historique des
-          accompagnements d’un bénéficiaire pour suivre son parcours complet
-          vers l’autonomie.
+          Accédez aux informations essentielles sur vos bénéficiaires ainsi qu’à
+          leurs historiques d’accompagnements pour suivre leurs parcours
+          complets vers l’autonomie.
         </p>
         <span>
           <Link
             href="https://docs.numerique.gouv.fr/docs/b8b9de2c-6ac4-4119-b6c4-0cb0b3b738d0/"
             target="_blank"
             className="fr-link"
+            rel="noreferrer"
           >
             En savoir plus
           </Link>
@@ -65,9 +65,9 @@ export const Fonctionnalites = () => (
         />
       </div>
     </div>
-    <div className="fr-grid-row fr-align-items-center fr-grid-row-sm--gutters fr-mt-md-15w fr-mt-6w">
+    <div className="fr-grid-row fr-direction-column-reverse fr-direction-sm-row fr-align-items-center fr-grid-row-sm--gutters fr-mt-md-15w fr-mt-6w">
       <div className="fr-col-lg-5 fr-col-sm-6 fr-col-12 fr-flex fr-direction-column fr-flex-gap-4v fr-my-2w">
-        <h3 className="fr-mb-0">Bénéficiez d’outils adaptés à vos pratiques</h3>
+        <h3 className="fr-mb-0">Bénéficiez d'outils adaptés à vos pratiques</h3>
         <p className="fr-mb-0">
           De nombreux outils adaptés aux différents types d’accompagnements sont
           à disposition des médiateurs et médiatrices numériques. Leur
@@ -75,11 +75,7 @@ export const Fonctionnalites = () => (
           travail.
         </p>
         <span>
-          <Link
-            target="_blank"
-            href="https://docs.numerique.gouv.fr/docs/6593f536-3767-421a-a441-77169a2c7735/"
-            className="fr-link"
-          >
+          <Link href="#outils" className="fr-link">
             Voir la liste des outils
           </Link>
         </span>
@@ -94,56 +90,28 @@ export const Fonctionnalites = () => (
         />
       </div>
     </div>
-    <div className="fr-border fr-border-md-none fr-p-md-5w fr-border-radius--16 fr-flex fr-direction-lg-row fr-direction-column fr-flex-gap-10v fr-mt-md-15w fr-mt-6w">
-      <div className="fr-background-alt--blue-france fr-p-4w fr-col fr-border-radius--16">
-        <Badge className="fr-text--uppercase" severity="new">
-          prochainement !
-        </Badge>
-        <h3 className="fr-text-title--blue-france fr-mt-3w">
-          Les évolutions à venir
+    <div className="fr-background-alt--yellow-tournesol fr-p-6v fr-p-md-12v fr-border-radius--16 fr-flex fr-direction-column fr-direction-md-row fr-align-items-center fr-flex-gap-6v fr-flex-gap-md-10v fr-mt-md-32v fr-mt-12v">
+      <span
+        className="fr-icon-flashlight-fill fr-icon--lg fr-text-label--yellow-tournesol fr-background-action-low--yellow-tournesol fr-border-radius--8 fr-p-5v fr-flex-shrink-0"
+        aria-hidden
+      />
+      <div className="fr-text--center fr-text-md--left">
+        <h3 className="fr-mb-4v fr-text-label--blue-france">
+          Découvrez les évolutions à venir&nbsp;!
         </h3>
-        <p>
+        <p className="fr-mb-0 fr-text--lg">
           Cette plateforme évolue en fonction des besoins de ses utilisateurs,
           et vous êtes tenu au courant des prochaines fonctionnalités à venir.
         </p>
-        <Button
-          className="fr-btn--responsive-sm"
-          title="Voir la roadmap"
-          priority="secondary"
-          iconPosition="right"
-          iconId="fr-icon-arrow-right-line"
-          linkProps={{
-            href: 'https://projets.suite.anct.gouv.fr/boards/1572441353164424613',
-            target: '_blank',
-          }}
-        >
-          Voir la roadmap
-        </Button>
       </div>
-      <div className="fr-col fr-py-3w">
-        <Badge className="fr-text--uppercase fr-py-1w" severity="new" noIcon>
-          <span className="ri-presentation-line fr-mr-1w ri-lg" aria-hidden />À
-          Venir
-        </Badge>
-        <h3 className="fr-h6 fr-mt-3w">Planifiez des ateliers</h3>
-        <p className="fr-mb-0">
-          Créer des modèles d’ateliers, planifier des évènements et gérer la
-          liste des participants. Retrouver automatiquement les informations
-          dans les comptes rendus d’activité ainsi que dans l’historique des
-          bénéficiaires.
-        </p>
-      </div>
-      <div className="fr-col fr-py-3w">
-        <Badge className="fr-text--uppercase fr-py-1w" severity="new" noIcon>
-          <span className="ri-team-line fr-mr-1w ri-lg" aria-hidden />À Venir
-        </Badge>
-        <h3 className="fr-h6 fr-mt-3w">Faites partie d’une communauté</h3>
-        <p className="fr-mb-0">
-          Échanger avec les acteurs et actrices de la médiation numérique de son
-          territoire, découvrir des évènements nationaux ou territoriaux, créer
-          des partenariats, demander de l’aide en cas besoin.
-        </p>
-      </div>
+      <Link
+        className="fr-btn fr-btn--secondary fr-text--nowrap fr-flex-shrink-0"
+        href="https://projets.suite.anct.gouv.fr/boards/1572441353164424613"
+        target="_blank"
+        rel="noreferrer"
+      >
+        Voir la roadmap
+      </Link>
     </div>
   </div>
 )

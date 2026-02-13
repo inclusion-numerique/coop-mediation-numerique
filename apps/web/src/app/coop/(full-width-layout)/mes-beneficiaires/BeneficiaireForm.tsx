@@ -75,6 +75,7 @@ const BeneficiaireForm = ({
     <Link
       href="https://docs.numerique.gouv.fr/docs/3d5bad76-8e02-4abc-b83a-c2f2965ae5d9/"
       target="_blank"
+      rel="noreferrer"
       className="fr-link fr-link--xs"
     >
       En savoir plus

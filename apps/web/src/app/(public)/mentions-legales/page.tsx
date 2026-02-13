@@ -61,6 +61,7 @@ const LegalPage = () => (
         <Link
           href="http://references.modernisation.gouv.fr/accessibilite-numerique"
           target="_blank"
+          rel="noreferrer"
         >
           Cliquez ici
         </Link>

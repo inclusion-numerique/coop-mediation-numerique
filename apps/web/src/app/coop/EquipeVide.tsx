@@ -16,6 +16,7 @@ const EquipeVide = ({ withHeader = false }: { withHeader?: boolean }) => (
           href="https://docs.numerique.gouv.fr/docs/0a862dcc-9cd1-4d5d-a713-571cc5aa5197/"
           className="fr-link fr-link--sm"
           target="_blank"
+          rel="noreferrer"
         >
           En savoir plus
         </a>

@@ -43,6 +43,7 @@ const BeneficiairesDoublonsPage = ({
             href="https://docs.numerique.gouv.fr/docs/be9e9d70-17a4-42b4-a07e-7b3e95e2574e/"
             className="fr-link fr-link--sm"
             target="_blank"
+            rel="noreferrer"
           >
             En savoir plus
           </a>

@@ -6,7 +6,7 @@ describe('Page d’accueil', () => {
     cy.dsfrStylesShouldBeLoaded()
     cy.get('.fr-header__service a').should(
       'contain',
-      'La coop de la médiation numérique',
+      'La Coop de la médiation numérique',
     )
     cy.get('.fr-header__tools .fr-btn')
       .should('contain', 'Se connecter')

@@ -29,38 +29,27 @@ export const Hero = () => (
         />
       </div>
       <div className="fr-col-xl-6 fr-col-12">
-        <div className="fr-flex fr-direction-row fr-justify-content-center ">
-          <div className="fr-flex fr-direction-column fr-mx-md-0 fr-mx-auto fr-pb-1w  fr-justify-content-space-between">
+        <div
+          className="fr-mx-auto fr-display-grid fr-grid-cols-2 fr-flex-gap-4v"
+          style={{ maxWidth: 580 }}
+        >
+          <div className="fr-display-grid fr-grid-rows-2 fr-flex-gap-4v">
             <img
-              className="fr-border-radius--16 fr-responsive-img"
+              className="fr-border-radius--16 fr-width-full fr-height-full"
               src="/images/illustrations/landing-page/hero/besoin.webp"
               alt=""
-              style={{
-                width: 282,
-                height: 166,
-              }}
             />
             <img
-              className="fr-border-radius--16 fr-responsive-img"
+              className="fr-border-radius--16 fr-width-full fr-height-full"
               src="/images/illustrations/landing-page/hero/complexité.webp"
               alt=""
-              style={{
-                width: 282,
-                height: 166,
-              }}
             />
           </div>
-          <div className="fr-ml-md-4w fr-ml-3w">
-            <img
-              className="fr-border-radius--16 fr-responsive-img"
-              src="/images/illustrations/landing-page/hero/solution.webp"
-              alt=""
-              style={{
-                width: 282,
-                height: 356,
-              }}
-            />
-          </div>
+          <img
+            className="fr-border-radius--16 fr-width-full fr-height-full"
+            src="/images/illustrations/landing-page/hero/solution.webp"
+            alt=""
+          />
         </div>
       </div>
     </div>

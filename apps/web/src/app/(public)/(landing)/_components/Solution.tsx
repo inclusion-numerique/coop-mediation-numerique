@@ -10,7 +10,7 @@ export const Solution = () => (
       </h2>
     </div>
     <div className="fr-flex fr-direction-lg-row fr-direction-column fr-flex-gap-6v">
-      <div className="fr-background-default--grey fr-border-radius--16 fr-p-6w">
+      <div className="fr-background-default--grey fr-border-radius--16 fr-p-md-12v fr-px-6v fr-py-8v">
         <Image
           width={73}
           height={88}
@@ -27,7 +27,7 @@ export const Solution = () => (
           Cohésion des Territoires.
         </p>
       </div>
-      <div className="fr-background-default--grey fr-border-radius--16 fr-p-6w">
+      <div className="fr-background-default--grey fr-border-radius--16 fr-p-md-12v fr-px-6v fr-py-8v">
         <Image
           width={86}
           height={88}
@@ -41,7 +41,7 @@ export const Solution = () => (
           Territoires de l’Agence Nationale de la Cohésion des Territoires.
         </p>
       </div>
-      <div className="fr-background-default--grey fr-border-radius--16 fr-p-6w">
+      <div className="fr-background-default--grey fr-border-radius--16 fr-p-md-12v fr-px-6v fr-py-8v">
         <Image
           width={62}
           height={88}
