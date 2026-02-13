@@ -52,7 +52,7 @@ const VerifierInformationsPage = ({ user }: { user: SessionUser }) => {
       <div className="fr-flex fr-align-items-center fr-flex-gap-3v fr-mt-12v">
         <IconInSquare iconId="fr-icon-account-circle-line" size="small" />
         <h2 className="fr-h6 fr-mb-0 fr-text-title--blue-france">
-          Mes informations
+          Mes informations professionnelles
         </h2>
       </div>
       <div className="fr-width-full fr-border-radius--8 fr-p-6v fr-p-md-8v fr-border fr-mt-6v">
@@ -60,7 +60,7 @@ const VerifierInformationsPage = ({ user }: { user: SessionUser }) => {
         {!!user.name && (
           <InfoLabelValue
             labelClassName="fr-mt-4v"
-            label="Nom"
+            label="Nom Prénom"
             value={user.name}
           />
         )}
@@ -84,7 +84,7 @@ const VerifierInformationsPage = ({ user }: { user: SessionUser }) => {
         </>
       )}
       <hr className="fr-separator-12v" />
-      <div className="fr-btns-group">
+      <div className="fr-btns-group fr-btns-group--lg">
         <Button
           priority="primary"
           linkProps={{
