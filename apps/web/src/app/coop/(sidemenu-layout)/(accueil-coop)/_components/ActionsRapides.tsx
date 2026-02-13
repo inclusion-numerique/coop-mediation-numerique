@@ -5,8 +5,11 @@ import React from 'react'
 
 export const ActionsRapides = () => (
   <>
-    <h2 className="fr-h5 fr-text-mention--grey">
-      <span className="ri-apps-line fr-mr-1w" aria-hidden />
+    <h2 className="fr-h6 fr-text-mention--grey">
+      <span
+        className="ri-apps-line ri-lg fr-text--regular fr-mr-2v"
+        aria-hidden
+      />
       Mes actions rapides
     </h2>
     <div className="fr-grid-row fr-grid-row--gutters">

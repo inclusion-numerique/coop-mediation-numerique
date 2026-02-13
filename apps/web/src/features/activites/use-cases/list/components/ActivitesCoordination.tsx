@@ -24,8 +24,11 @@ export const ActivitesCoordination = ({
   return (
     <>
       <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-mb-3w">
-        <h2 className="fr-h5 fr-text-mention--grey fr-mb-0">
-          <span className="ri-user-community-line fr-mr-1w" aria-hidden />
+        <h2 className="fr-h6 fr-text-mention--grey fr-mb-0">
+          <span
+            className="ri-user-community-line ri-lg fr-text--regular fr-mr-2v"
+            aria-hidden
+          />
           Mes activités de coordination
         </h2>
         {activites[selectedActivitesKey].length > 0 && (
@@ -53,7 +56,7 @@ export const ActivitesCoordination = ({
           {activites[selectedActivitesKey].map(({ type, count }) => (
             <div
               key={type}
-              className="fr-flex fr-flex-1 fr-direction-column fr-background-alt--blue-france fr-p-6v fr-border-radius--8"
+              className="fr-flex fr-flex-1 fr-direction-column fr-background-alt--blue-france fr-px-6v fr-py-4v fr-border-radius--16"
             >
               <span className="fr-text--uppercase fr-text--xs fr-text--bold fr-mb-0 fr-text-default--grey">
                 {type === 'Evenement' ? 'Évènement' : type}

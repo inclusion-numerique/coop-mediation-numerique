@@ -3,8 +3,11 @@ import React from 'react'
 
 export const InformationsCoop = () => (
   <>
-    <h2 className="fr-h5 fr-text-mention--grey">
-      <span className="ri-information-line fr-mr-1w" aria-hidden />
+    <h2 className="fr-h6 fr-text-mention--grey">
+      <span
+        className="ri-information-line ri-lg fr-text--regular fr-mr-2v"
+        aria-hidden
+      />
       Plus d’informations sur la Coop
     </h2>
     <div className="fr-grid-row fr-grid-row--gutters">
@@ -16,6 +19,7 @@ export const InformationsCoop = () => (
           className="fr-border fr-border-radius--16"
           classes={{
             content: 'fr-p-0 fr-text--sm fr-text--medium fr-mb-0',
+            frame: { content: 'fr-py-6v' },
           }}
           title={
             <span className="fr-inline-flex fr-align-items-center">
@@ -43,6 +47,7 @@ export const InformationsCoop = () => (
           className="fr-border fr-border-radius--16"
           classes={{
             content: 'fr-p-0 fr-text--sm fr-text--medium fr-mb-0',
+            frame: { content: 'fr-py-6v' },
           }}
           title={
             <span className="fr-inline-flex fr-align-items-center">

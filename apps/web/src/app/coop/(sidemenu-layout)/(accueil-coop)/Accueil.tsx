@@ -1,4 +1,3 @@
-import { CommunicationConum } from '@app/web/app/coop/(sidemenu-layout)/(accueil-coop)/_components/CommunicationConum'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import EquipeVide from '@app/web/app/coop/EquipeVide'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
@@ -30,8 +29,6 @@ export const Accueil = ({
   hasSeenOnboarding,
   isMediateur,
   isCoordinateur,
-  isCoordinateurCoNum,
-  isCoNum,
   timezone,
   userId,
   rdvs,
@@ -43,11 +40,9 @@ export const Accueil = ({
   email: string
   isMediateur: boolean
   isCoordinateur: boolean
-  isCoordinateurCoNum: boolean
-  isCoNum: boolean
   timezone: string
 } & AccueilPageData) => (
-  <CoopPageContainer size={49}>
+  <CoopPageContainer size={56}>
     <SkipLinksPortal />
     <main id={contentId}>
       <h1 className="fr-text-title--blue-france fr-mt-12v fr-mb-0">
