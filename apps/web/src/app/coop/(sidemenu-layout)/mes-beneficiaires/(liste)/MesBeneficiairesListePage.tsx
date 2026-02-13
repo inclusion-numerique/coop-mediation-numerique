@@ -1,11 +1,8 @@
-import Dropdown from '@app/ui/components/Dropdown/Dropdown'
-import BeneficiairesTable from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/(liste)/BeneficiairesTable'
 import { BeneficiairesListPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/(liste)/getBeneficiairesListPageData'
-import { getBeneficiairesResultCountLabel } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/(liste)/getBeneficiairesResultCountLabel'
 import DataSearchBar from '@app/web/libs/data-table/DataSearchBar'
 import Button from '@codegouvfr/react-dsfr/Button'
-import Link from 'next/link'
 import BeneficiairesMoreOptionsButton from './BeneficiairesMoreOptionsButton'
+import SelectableBeneficiairesTable from './SelectableBeneficiairesTable'
 
 const MesBeneficiairesListePage = ({
   data: { searchParams, searchResult, isFiltered },
@@ -13,7 +10,7 @@ const MesBeneficiairesListePage = ({
   data: BeneficiairesListPageData
 }) => (
   <>
-    <div className="fr-flex fr-mt-5v fr-mb-6v fr-flex-gap-4v">
+    <div className="fr-flex fr-mt-5v fr-mb-4v fr-flex-gap-4v">
       <DataSearchBar
         className="fr-flex-grow-1"
         baseHref="/coop/mes-beneficiaires"
@@ -32,13 +29,11 @@ const MesBeneficiairesListePage = ({
       <BeneficiairesMoreOptionsButton />
     </div>
     <hr className="fr-separator-4v" />
-    <p className="fr-text--bold fr-text--lg fr-my-6v">
-      {getBeneficiairesResultCountLabel({ isFiltered, searchResult })}
-    </p>
-    <BeneficiairesTable
+    <SelectableBeneficiairesTable
       data={searchResult}
       baseHref="/coop/mes-beneficiaires"
       searchParams={searchParams}
+      isFiltered={isFiltered}
     />
   </>
 )
