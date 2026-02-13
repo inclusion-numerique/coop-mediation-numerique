@@ -12,10 +12,10 @@ export const OnboardingMonEquipeCoordinateur = () => (
         alt=""
       />
     }
-    title="Suivez les conseillers numériques que vous coordonnez"
+    title="Suivez les médiateurs numériques que vous coordonnez"
     label={
       <>
-        <span className="ri-group-2-line ri-lg fr-mr-1w" aria-hidden />
+        <span className="ri-group-2-line ri-xl fr-mr-3v" aria-hidden />
         Mon équipe
       </>
     }
@@ -25,11 +25,12 @@ export const OnboardingMonEquipeCoordinateur = () => (
     next={{ href: '/en-savoir-plus/coordinateur/mes-outils' }}
     closeHref="/coop"
   >
-    <p className="fr-text--lg">
-      Retrouvez et gérez la liste des conseillers numériques que vous coordonnez
-      sur votre espace dans la section Mon équipe. Vous pourrez également
-      inviter d’autres conseillers et médiateurs numériques à rejoindre votre
-      équipe.
+    <p className="fr-text--xl">
+      Retrouvez les conseillers et médiateurs numériques que vous coordonnez sur
+      votre espace dans la section <strong>Mon équipe</strong>.
+      <br className="fr-mb-6v" />
+      Invitez de nouveaux médiateurs numériques à rejoindre votre équipe à tout
+      moment.
     </p>
   </Onboarding>
 )

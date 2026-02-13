@@ -29,20 +29,20 @@ const Onboarding = ({
         <div className="fr-flex fr-align-items-center fr-mx-auto fr-height-full ">
           <div
             className="fr-mx-auto fr-p-4w fr-flex fr-direction-column fr-flex-gap-4v fr-justify-content-space-between"
-            style={{ maxWidth: '486px', height: '700px' }}
+            style={{ maxWidth: '550px', height: '700px' }}
           >
             <div>
               {label != null && (
-                <span className="fr-text--lg fr-text--bold fr-text-label--blue-france fr-background-alt--blue-france fr-border-radius--8 fr-p-2w fr-mb-1w fr-inline-flex fr-align-items-center">
+                <span className="fr-text--xl fr-text--bold fr-text-label--blue-france fr-background-alt--blue-france fr-border-radius--8 fr-p-4v fr-mb-0 fr-inline-flex fr-align-items-center">
                   {label}
                 </span>
               )}
               {stepIndex && totalSteps && (
-                <p className="fr-text-mention--grey fr-text--bold fr-text--sm fr-mt-8v fr-mt-md-10v fr-mb-0">
+                <p className="fr-text-mention--grey fr-text--bold fr-mt-8v fr-mt-md-10v fr-mb-0">
                   {stepIndex} SUR {totalSteps}
                 </p>
               )}
-              {title && <h1 className="fr-h2 fr-my-2w">{title}</h1>}
+              {title && <h1 className="fr-h2 fr-my-6v">{title}</h1>}
               {children}
             </div>
             <div className="fr-flex fr-flex-gap-4v fr-direction-row-reverse">
@@ -55,6 +55,7 @@ const Onboarding = ({
                 ) : (
                   <Button
                     className="fr-mr-auto"
+                    size="large"
                     iconId="fr-icon-arrow-right-line"
                     title={next.label ?? 'Suivant'}
                     iconPosition="right"
@@ -66,8 +67,9 @@ const Onboarding = ({
               {previous && (
                 <Button
                   iconId="fr-icon-arrow-left-line"
+                  size="large"
                   title="Précédent"
-                  priority="secondary"
+                  priority="tertiary"
                   linkProps={{
                     href: previous.href,
                   }}

@@ -15,12 +15,12 @@ export const OnboardingMesStatistiques = () => (
     title="Profitez de statistiques pour comprendre et suivre l'évolution de votre activité"
     label={
       <>
-        <span className="ri-chat-poll-line ri-lg fr-mr-1w" aria-hidden />
+        <span className="ri-chat-poll-line ri-xl fr-mr-3v" aria-hidden />
         Mes statistiques
       </>
     }
     stepIndex={2}
-    totalSteps={4}
+    totalSteps={5}
     previous={{ href: '/en-savoir-plus/mes-activites' }}
     next={{ href: '/en-savoir-plus/mes-beneficiaires' }}
     closeHref="/coop"
