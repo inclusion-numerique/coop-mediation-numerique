@@ -23,7 +23,7 @@ const Webinaire = () => (
             title="Accéder à l'inscription au prochain webinaire - nouvel onglet"
             className="fr-btn fr-btn--responsive-sm"
           >
-            S’incrire au prochain webinaire
+            S’inscrire au prochain webinaire
           </Link>
         </div>
         <div className="fr-border-right fr-border--blue-france fr-mx-md-10w" />
