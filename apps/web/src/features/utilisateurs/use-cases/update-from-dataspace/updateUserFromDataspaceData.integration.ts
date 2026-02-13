@@ -452,7 +452,7 @@ describe('updateUserFromDataspaceData', () => {
     })
   })
 
-  describe('Structures without contracts should be ignored', () => {
+  describe('Structures without contracts', () => {
     beforeEach(async () => {
       await resetFixtureUser(mediateurSansActivites, false)
       // Clean up all emplois from previous tests to ensure clean state
@@ -461,7 +461,7 @@ describe('updateUserFromDataspaceData', () => {
       })
     })
 
-    test('should NOT create emploi for structure without contracts', async () => {
+    test('should create one temporary emploi when structure has no contracts', async () => {
       // Spec: "lorsque mes données pro contiennent une structure employeuse sans contrat
       // à l'intérieur, je ne dois pas avoir de lien d'emploi avec cette structure"
       const user = await prismaClient.user.findUniqueOrThrow({
@@ -487,23 +487,62 @@ describe('updateUserFromDataspaceData', () => {
       expect(result.success).toBe(true)
       expect(result.noOp).toBe(false)
       expect(result.changes.conseillerNumeriqueCreated).toBe(true)
-      // No structures should be synced because the only structure has no contracts
-      expect(result.changes.structuresSynced).toBe(0)
+      // A temporary emploi should be synced for the first structure
+      expect(result.changes.structuresSynced).toBe(1)
 
-      // Verify no active emploi was created
+      // Verify one active temporary emploi was created
       const userAfter = await prismaClient.user.findUniqueOrThrow({
         where: { id: user.id },
         select: {
           isConseillerNumerique: true,
           emplois: {
-            select: { id: true, structureId: true },
+            select: { id: true, structureId: true, debut: true, fin: true },
             where: { suppression: null }, // Only active emplois
           },
         },
       })
 
       expect(userAfter.isConseillerNumerique).toBe(true)
-      expect(userAfter.emplois.length).toBe(0)
+      expect(userAfter.emplois.length).toBe(1)
+      expect(userAfter.emplois[0].debut).toBeNull()
+      expect(userAfter.emplois[0].fin).toBeNull()
+    })
+
+    test('should keep at most one temporary emploi across repeated syncs', async () => {
+      const user = await prismaClient.user.findUniqueOrThrow({
+        where: { id: mediateurSansActivites.id },
+        select: { id: true, email: true },
+      })
+
+      const mockDataWithNoContractStructure: DataspaceMediateur = {
+        id: 80020,
+        is_coordinateur: false,
+        is_conseiller_numerique: true,
+        pg_id: 80020,
+        structures_employeuses: [mockDataspaceStructureEmployeuseWithNoContrat],
+        lieux_activite: [],
+        conseillers_numeriques_coordonnes: [],
+      }
+
+      setMockDataspaceData(user.email, mockDataWithNoContractStructure)
+      await updateUserFromDataspaceData({ userId: user.id })
+      await updateUserFromDataspaceData({ userId: user.id })
+      await updateUserFromDataspaceData({ userId: user.id })
+
+      const emplois = await prismaClient.employeStructure.findMany({
+        where: { userId: user.id },
+        select: { id: true, debut: true, suppression: true },
+      })
+
+      const emploisWithNullDebut = emplois.filter(
+        (emploi) => emploi.debut === null,
+      )
+      const activeTemporaryEmplois = emploisWithNullDebut.filter(
+        (emploi) => emploi.suppression === null,
+      )
+
+      expect(emploisWithNullDebut.length).toBe(1)
+      expect(activeTemporaryEmplois.length).toBe(1)
     })
 
     test('should only create emploi for structures WITH contracts, ignoring those without', async () => {
@@ -540,13 +579,14 @@ describe('updateUserFromDataspaceData', () => {
         where: { id: user.id },
         select: {
           emplois: {
-            select: { id: true, structureId: true },
+            select: { id: true, structureId: true, debut: true },
             where: { suppression: null }, // Only active emplois
           },
         },
       })
 
       expect(userAfter.emplois.length).toBe(1)
+      expect(userAfter.emplois[0].debut).not.toBeNull()
     })
 
     test('should remove existing emploi when structure loses all contracts', async () => {
@@ -602,29 +642,85 @@ describe('updateUserFromDataspaceData', () => {
       const result = await updateUserFromDataspaceData({ userId: user.id })
 
       expect(result.success).toBe(true)
-      // Structure without contracts is ignored, so 0 synced
-      expect(result.changes.structuresSynced).toBe(0)
-      // The existing emploi should be removed (not in the list of valid structures)
+      // Temporary structure should be synced and existing real emploi removed
+      expect(result.changes.structuresSynced).toBe(1)
       expect(result.changes.structuresRemoved).toBe(1)
 
-      // Verify emploi was soft-deleted (suppression date set)
+      // Verify previous real emploi was soft-deleted and one temporary is active
       const userAfterSecondSync = await prismaClient.user.findUniqueOrThrow({
         where: { id: user.id },
         select: {
           emplois: {
-            select: { id: true, structureId: true, suppression: true },
+            select: {
+              id: true,
+              structureId: true,
+              suppression: true,
+              debut: true,
+              fin: true,
+            },
           },
         },
       })
-      // Emploi still exists but is soft-deleted
-      expect(userAfterSecondSync.emplois.length).toBe(1)
-      expect(userAfterSecondSync.emplois[0].suppression).not.toBeNull()
 
-      // Active emplois (not soft-deleted) should be 0
+      const softDeletedEmplois = userAfterSecondSync.emplois.filter(
+        (e) => e.suppression !== null,
+      )
       const activeEmplois = userAfterSecondSync.emplois.filter(
         (e) => e.suppression === null,
       )
-      expect(activeEmplois.length).toBe(0)
+      expect(softDeletedEmplois.length).toBe(1)
+      expect(activeEmplois.length).toBe(1)
+      expect(activeEmplois[0].debut).toBeNull()
+      expect(activeEmplois[0].fin).toBeNull()
+    })
+
+    test('should soft-delete temporary emploi when real contracts appear', async () => {
+      const user = await prismaClient.user.findUniqueOrThrow({
+        where: { id: mediateurSansActivites.id },
+        select: { id: true, email: true },
+      })
+
+      const mockDataWithNoContractStructure: DataspaceMediateur = {
+        id: 80021,
+        is_coordinateur: false,
+        is_conseiller_numerique: true,
+        pg_id: 80021,
+        structures_employeuses: [mockDataspaceStructureEmployeuseWithNoContrat],
+        lieux_activite: [],
+        conseillers_numeriques_coordonnes: [],
+      }
+      setMockDataspaceData(user.email, mockDataWithNoContractStructure)
+      await updateUserFromDataspaceData({ userId: user.id })
+
+      // Same structure now has one valid contract in Dataspace
+      const mockDataWithContractStructure: DataspaceMediateur = {
+        id: 80021,
+        is_coordinateur: false,
+        is_conseiller_numerique: true,
+        pg_id: 80021,
+        structures_employeuses: [mockDataspaceStructureEmployeuse],
+        lieux_activite: [],
+        conseillers_numeriques_coordonnes: [],
+      }
+      setMockDataspaceData(user.email, mockDataWithContractStructure)
+      await updateUserFromDataspaceData({ userId: user.id })
+
+      const emplois = await prismaClient.employeStructure.findMany({
+        where: { userId: user.id },
+        select: { id: true, debut: true, fin: true, suppression: true },
+      })
+
+      const emploisWithNullDebut = emplois.filter(
+        (emploi) => emploi.debut === null,
+      )
+      expect(emploisWithNullDebut.length).toBe(1)
+      expect(emploisWithNullDebut[0].suppression).not.toBeNull()
+      expect(emploisWithNullDebut[0].fin).not.toBeNull()
+
+      const activeRealEmplois = emplois.filter(
+        (emploi) => emploi.suppression === null && emploi.debut !== null,
+      )
+      expect(activeRealEmplois.length).toBe(1)
     })
 
     test('should create one emploi per contract when structure has multiple contracts', async () => {
@@ -683,8 +779,10 @@ describe('updateUserFromDataspaceData', () => {
         userAfter.emplois[1].structureId,
       )
       // But with different debut dates (from different contracts)
-      expect(userAfter.emplois[0].debut.getTime()).not.toBe(
-        userAfter.emplois[1].debut.getTime(),
+      expect(userAfter.emplois[0].debut).not.toBeNull()
+      expect(userAfter.emplois[1].debut).not.toBeNull()
+      expect(userAfter.emplois[0].debut?.getTime()).not.toBe(
+        userAfter.emplois[1].debut?.getTime(),
       )
 
       // Present contracts are never soft-deleted during sync
@@ -1024,7 +1122,8 @@ describe('updateUserFromDataspaceData', () => {
       // With one-emploi-per-contract, we can have multiple emplois per structure
       // but never duplicate emplois for the same contract (same structureId + debut)
       const emploiKeys = userAfter.emplois.map(
-        (emploi) => `${emploi.structureId}:${emploi.debut.getTime()}`,
+        (emploi) =>
+          `${emploi.structureId}:${emploi.debut?.getTime() ?? 'null'}`,
       )
       const uniqueEmploiKeys = new Set(emploiKeys)
 
@@ -1072,7 +1171,8 @@ describe('updateUserFromDataspaceData', () => {
 
       // Create unique keys for each emploi (structureId + debut date)
       const emploiKeys = userAfter.emplois.map(
-        (emploi) => `${emploi.structureId}:${emploi.debut.getTime()}`,
+        (emploi) =>
+          `${emploi.structureId}:${emploi.debut?.getTime() ?? 'null'}`,
       )
       const uniqueEmploiKeys = new Set(emploiKeys)
 

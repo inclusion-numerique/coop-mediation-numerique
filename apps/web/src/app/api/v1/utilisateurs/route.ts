@@ -324,7 +324,7 @@ export type UtilisateurAttributes = {
   emplois: Array<{
     id: string
     structure_id: string
-    debut: string
+    debut: string | null
     fin: string | null
     creation: string
     modification: string
@@ -620,7 +620,7 @@ export const GET = createApiV1Route
           emplois: u.emplois.map((emploi) => ({
             id: emploi.id,
             structure_id: emploi.structureId,
-            debut: emploi.debut.toISOString(),
+            debut: emploi.debut?.toISOString() ?? null,
             fin: emploi.fin?.toISOString() ?? null,
             creation: emploi.creation.toISOString(),
             modification: emploi.modification.toISOString(),

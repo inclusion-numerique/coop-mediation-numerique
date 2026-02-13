@@ -949,7 +949,9 @@ model EmployeStructure {
   structureId String    @map("structure_id") @db.Uuid
   structure   Structure @relation(fields: [structureId], references: [id])
 
-  debut DateTime  @map("debut_emploi") // date de début de l'emploi dans la structure
+  // debut est nullable car il peut être null lors de l'import des données dataspace (contrat sans informations de dates)
+  debut DateTime? @map("debut_emploi") // date de début de l'emploi dans la structure 
+  // fin est nullable pour un contrat en cours / sans date définie de fin de contrat
   fin   DateTime? @map("fin_emploi") // date de fin de l'emploi dans la structure
 
   creation      DateTime @default(now()) // Représente la date de début de l'emploi

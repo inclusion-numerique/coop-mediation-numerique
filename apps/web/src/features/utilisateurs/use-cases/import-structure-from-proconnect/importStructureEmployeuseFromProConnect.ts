@@ -23,26 +23,18 @@ export const importStructureEmployeuseFromProConnect = async ({
     }
   }
 
-  const activeEmploisCount = await prismaClient.employeStructure.count({
+  const existingEmploisCount = await prismaClient.employeStructure.count({
     where: {
       userId,
       suppression: null,
-      OR: [
-        {
-          fin: null,
-        },
-        {
-          fin: { gte: new Date() },
-        },
-      ],
     },
   })
 
-  if (activeEmploisCount > 0) {
+  if (existingEmploisCount > 0) {
     return {
       success: true,
       noOp: true,
-      reason: `User already has ${activeEmploisCount} active emploi(s)`,
+      reason: `User already has ${existingEmploisCount} existing emploi(s)`,
     }
   }
 
