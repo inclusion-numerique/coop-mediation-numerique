@@ -16,7 +16,7 @@ export const OnboardingMesOutilsCoordinateur = () => (
     title="Bénéficiez d’outils adaptés à vos besoins"
     label={
       <>
-        <span className="ri-apps-2-line ri-lg fr-mr-1w" aria-hidden />
+        <span className="ri-apps-2-line ri-xl fr-mr-3v" aria-hidden />
         Mes outils
       </>
     }
@@ -26,7 +26,7 @@ export const OnboardingMesOutilsCoordinateur = () => (
     next={{ href: '/coop', isComplete: true }}
     closeHref="/coop"
   >
-    <p className="fr-text--lg">
+    <p className="fr-text--xl">
       Retrouvez une sélection d’outils et de services numériques dédiées à la
       médiation numérique dans une seule et même plateforme&nbsp;!
     </p>

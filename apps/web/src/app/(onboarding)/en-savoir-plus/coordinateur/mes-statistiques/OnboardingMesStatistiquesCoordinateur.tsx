@@ -12,10 +12,10 @@ export const OnboardingMesStatistiquesCoordinateur = () => (
         alt=""
       />
     }
-    title="Profitez de statistiques pour comprendre et suivre l’évolution de l'activité de votre équipe"
+    title="Profitez de statistiques pour comprendre et suivre l’évolution de l’activité de votre équipe"
     label={
       <>
-        <span className="ri-chat-poll-line ri-lg fr-mr-1w" aria-hidden />
+        <span className="ri-chat-poll-line ri-xl fr-mr-3v" aria-hidden />
         Mes statistiques
       </>
     }
@@ -31,7 +31,7 @@ export const OnboardingMesStatistiquesCoordinateur = () => (
         <li>
           Exportez et partagez-les facilement auprès de différents partenaires
           (structure employeuse, lieux d’activités, collectivités…) pour
-          valoriser votre travail.
+          valoriser le travail de votre équipe.
         </li>
       </ul>
     </div>
