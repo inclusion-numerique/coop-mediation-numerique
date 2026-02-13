@@ -17,7 +17,7 @@ const CoopBreadcrumbs = ({
     currentPage={currentPage}
     parents={parents}
     homeLinkHref="/coop"
-    className={className ?? 'fr-mb-4v'}
+    className={className ?? 'fr-mb-5v'}
   />
 )
 
