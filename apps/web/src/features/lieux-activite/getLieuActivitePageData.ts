@@ -58,6 +58,10 @@ export const getLieuActivitePageData = async ({ id }: { id: string }) => {
             },
           },
         },
+        orderBy: [
+          { mediateur: { user: { lastName: 'asc' } } },
+          { mediateur: { user: { firstName: 'asc' } } },
+        ],
         select: {
           id: true,
           mediateur: {
