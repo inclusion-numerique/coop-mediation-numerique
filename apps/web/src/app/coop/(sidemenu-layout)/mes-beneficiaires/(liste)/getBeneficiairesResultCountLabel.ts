@@ -11,6 +11,4 @@ export const getBeneficiairesResultCountLabel = ({
     ? isFiltered
       ? 'Aucun bénéficiaire ne correspond à votre recherche'
       : 'Aucun bénéficiaire enregistré'
-    : isFiltered
-      ? `${matchesCount} bénéficiaire${sPluriel(matchesCount)} correspond${matchesCount === 1 ? '' : 'ent'} à votre recherche`
-      : `${matchesCount} bénéficiaire${sPluriel(matchesCount)} enregistré${sPluriel(matchesCount)}`
+    : `${matchesCount} bénéficiaire${sPluriel(matchesCount)}`

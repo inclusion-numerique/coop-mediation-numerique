@@ -289,4 +289,61 @@ export const beneficiairesRouter = router({
 
       return result
     }),
+  deleteBulk: protectedProcedure
+    .input(z.object({ ids: z.array(z.string()).min(1) }))
+    .mutation(async ({ input, ctx: { user } }) => {
+      enforceIsMediateur(user)
+
+      const { ids } = input
+      const stopwatch = createStopwatch()
+
+      const beneficiaires = await prismaClient.beneficiaire.findMany({
+        where: {
+          id: { in: ids },
+          mediateurId: user.mediateur.id,
+          suppression: null,
+        },
+        select: { id: true },
+      })
+
+      const validIds = beneficiaires.map((b) => b.id)
+
+      if (validIds.length === 0) {
+        throw invalidError('No valid beneficiaires to delete')
+      }
+
+      await prismaClient.$transaction(async (tx) => {
+        await tx.beneficiaire.updateMany({
+          where: { id: { in: validIds } },
+          data: {
+            anonyme: true,
+            suppression: new Date(),
+            modification: new Date(),
+            rdvUserId: null,
+            prenom: null,
+            nom: null,
+            telephone: null,
+            email: null,
+            notes: null,
+            adresse: null,
+            pasDeTelephone: null,
+          },
+        })
+        await tx.mediateur.update({
+          where: { id: user.mediateur.id },
+          data: {
+            beneficiairesCount: { decrement: validIds.length },
+          },
+        })
+      })
+
+      addMutationLog({
+        userId: user.id,
+        nom: 'SupprimerBeneficiaire',
+        duration: stopwatch.stop().duration,
+        data: { ids: validIds, count: validIds.length },
+      })
+
+      return { deleted: validIds.length }
+    }),
 })

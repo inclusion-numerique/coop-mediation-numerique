@@ -73,3 +73,8 @@ a.cellLink {
     width: 0;
   }
 }
+
+.prefixCell {
+  position: relative;
+  z-index: 2;
+}
