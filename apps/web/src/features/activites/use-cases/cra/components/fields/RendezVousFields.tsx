@@ -207,8 +207,14 @@ export const RendezVousFields = withForm({
                             addonEnd={
                               <Button
                                 title="Voir la liste des lieux d’activité"
-                                className="fr-border-left-0"
-                                iconId="fr-icon-search-line"
+                                className="fr-border-left-0 fr-py-7v fr-pl-4v"
+                                style={{
+                                  width: 56,
+                                  maxWidth: 56,
+                                  minWidth: 56,
+                                }}
+                                priority="tertiary"
+                                iconId="fr-icon-arrow-down-s-line"
                                 {...getToggleButtonProps({ type: 'button' })}
                               />
                             }
@@ -217,7 +223,13 @@ export const RendezVousFields = withForm({
                                 <Button
                                   title="Déselectionner le lieu d’activité"
                                   type="button"
-                                  iconId="fr-icon-close-line"
+                                  iconId="fr-icon-close-circle-fill"
+                                  className="fr-border-left-0 fr-py-7v fr-pl-4v"
+                                  style={{
+                                    width: 56,
+                                    maxWidth: 56,
+                                    minWidth: 56,
+                                  }}
                                   priority="tertiary no outline"
                                   onClick={() => {
                                     field.setValue(null)
@@ -226,6 +238,9 @@ export const RendezVousFields = withForm({
                                 />
                               )
                             }
+                            classes={{
+                              nativeInputOrTextArea: styles.tallInput,
+                            }}
                             isConnected={false}
                             isPending={isPending}
                             nativeLabelProps={getLabelProps()}

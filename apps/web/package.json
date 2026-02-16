@@ -37,7 +37,7 @@
     "@app/emails": "workspace:^",
     "@auth/core": "^0.39.0",
     "@auth/prisma-adapter": "^2.9.0",
-    "@aws-sdk/client-s3": "^3.802.0",
+    "@aws-sdk/client-s3": "^3.940.0",
     "@aws-sdk/s3-request-presigner": "^3.802.0",
     "@aws-sdk/signature-v4-crt": "^3.800.0",
     "@codegouvfr/react-dsfr": "^1.27.0",

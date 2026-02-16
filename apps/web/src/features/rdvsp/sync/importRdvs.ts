@@ -378,6 +378,8 @@ const rdvHasDiff = (existing: ExistingRdv, rdv: OAuthApiRdv) => {
   const sameInstant = (date: Date, apiDateString: string) =>
     date.getTime() === new Date(apiDateString).getTime()
 
+  // If craDeclined was set by user action (which is the only possible case), any sync should reset it
+  if (existing.craDeclined) return true
   if (existing.status !== rdv.status) return true
   if (existing.durationInMin !== rdv.duration_in_min) return true
   if ((existing.name ?? null) !== (rdv.name ?? null)) return true

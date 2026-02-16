@@ -38,6 +38,10 @@ export type ActeurEmploi = EmploiContract & {
   structure: EmploiStructureEmployeuse
 }
 
+const hasDebutDate = (
+  emploi: ActeurEmploi,
+): emploi is ActeurEmploi & { debut: Date } => emploi.debut !== null
+
 /**
  * Rules for finding the current emploi for a user and a date.
  *
@@ -67,13 +71,15 @@ export const getActeurEmploiForDate = async <T extends boolean>({
           where: {
             userId,
             suppression: null,
+            debut: {
+              not: null,
+              lte: date,
+            },
             OR: [
               {
-                debut: { lte: date },
                 fin: null,
               },
               {
-                debut: { lte: date },
                 fin: { gte: date },
               },
             ],
@@ -95,6 +101,9 @@ export const getActeurEmploiForDate = async <T extends boolean>({
         where: {
           userId,
           suppression: null,
+          debut: {
+            not: null,
+          },
         },
         select: {
           ...emploiContractSelect,
@@ -107,7 +116,7 @@ export const getActeurEmploiForDate = async <T extends boolean>({
 
   if (strictDateBounds) {
     const emploi = emplois[0]
-    if (!emploi) {
+    if (!emploi || emploi.debut === null) {
       return null as T extends true ? null : ActeurEmploi
     }
     return emploi
@@ -115,7 +124,8 @@ export const getActeurEmploiForDate = async <T extends boolean>({
 
   // Non-strict mode: find the emploi valid for the given date
   // Emplois are ordered by debut ASC
-  const firstEmploi = emplois.at(0)
+  const emploisWithDebut = emplois.filter(hasDebutDate)
+  const firstEmploi = emploisWithDebut.at(0)
   if (!firstEmploi) {
     throw new Error('No emploi found for user')
   }
@@ -126,9 +136,9 @@ export const getActeurEmploiForDate = async <T extends boolean>({
   }
 
   // Iterate through emplois: each emploi is valid until the next one starts
-  for (let i = 0; i < emplois.length; i++) {
-    const currentEmploi = emplois[i]
-    const nextEmploi = emplois[i + 1]
+  for (let i = 0; i < emploisWithDebut.length; i++) {
+    const currentEmploi = emploisWithDebut[i]
+    const nextEmploi = emploisWithDebut[i + 1]
 
     // If no next emploi (last one), return current
     if (!nextEmploi) {

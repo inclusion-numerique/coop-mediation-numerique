@@ -422,7 +422,10 @@ export const rdvServicePublicRouter = router({
 
       await prismaClient.rdv.update({
         where: { id: input.rdvId },
-        data: { status: apiResult.data.status },
+        data: {
+          status: apiResult.data.status,
+          craDeclined: apiResult.data.status === 'seen',
+        },
       })
 
       return { success: true }

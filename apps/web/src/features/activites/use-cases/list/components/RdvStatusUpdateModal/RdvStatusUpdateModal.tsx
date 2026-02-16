@@ -142,7 +142,7 @@ const RdvStatusUpdateModal = ({
             onClick={() => handleUpdateStatus('seen')}
           >
             <div className="fr-flex fr-align-items-center fr-justify-content-space-between fr-width-full">
-              J'ai déjà renseigné un CRA pour ce RDV
+              Je ne souhaite pas compléter de CRA pour ce RDV
               <span
                 className={classNames(
                   'ri-file-check-line',

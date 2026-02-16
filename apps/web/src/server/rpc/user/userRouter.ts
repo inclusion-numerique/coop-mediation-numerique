@@ -225,6 +225,35 @@ export const userRouter = router({
         return updated
       },
     ),
+  logoutUser: protectedProcedure
+    .input(z.object({ userId: z.string().uuid() }))
+    .mutation(async ({ input: { userId }, ctx: { user: sessionUser } }) => {
+      enforceIsAdmin(sessionUser)
+
+      const user = await prismaClient.user.findUnique({
+        where: {
+          id: userId,
+        },
+        select: {
+          id: true,
+        },
+      })
+      if (!user) {
+        throw invalidError('User not found')
+      }
+
+      const { count: deletedSessionsCount } =
+        await prismaClient.session.deleteMany({
+          where: {
+            userId,
+          },
+        })
+
+      return {
+        userId,
+        deletedSessionsCount,
+      }
+    }),
   updateFromDataspace: protectedProcedure
     .input(z.object({ userId: z.string().uuid() }))
     .mutation(async ({ input: { userId }, ctx: { user: sessionUser } }) => {

@@ -1,5 +1,5 @@
 import { exec as callbackExec } from 'node:child_process'
-import { createWriteStream, existsSync } from 'node:fs'
+import { createWriteStream, existsSync, statSync } from 'node:fs'
 import path from 'node:path'
 import { promisify } from 'node:util'
 import { output } from '@app/cli/output'
@@ -11,6 +11,27 @@ import axios from 'axios'
 import axiosRetry from 'axios-retry'
 
 const exec = promisify(callbackExec)
+
+const formatBytes = (bytes: number): string => {
+  if (bytes === 0) return '0 B'
+  const units = ['B', 'KB', 'MB', 'GB', 'TB']
+  const k = 1024
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  const value = bytes / k ** i
+  return `${value.toFixed(2)} ${units[i]}`
+}
+
+const formatDuration = (seconds: number): string => {
+  if (seconds < 60) return `${Math.round(seconds)}s`
+  if (seconds < 3600) {
+    const minutes = Math.floor(seconds / 60)
+    const secs = Math.round(seconds % 60)
+    return `${minutes}m ${secs}s`
+  }
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+  return `${hours}h ${minutes}m`
+}
 
 const mainBackupFile = path.resolve(
   varDirectory,
@@ -99,7 +120,10 @@ export const locallyRestoreLatestMainBackup = new Command(
           `Local backup file not found at ${mainBackupFile}. Please download the backup first by running without the --local flag.`,
         )
       }
-      output('Local backup file found')
+      const stats = statSync(mainBackupFile)
+      output(
+        `Local backup file found: ${formatBytes(stats.size)}, created ${stats.birthtime.toLocaleString()}`,
+      )
     } else {
       // Only download if local flag is not provided
       const client = axios.create({
@@ -200,7 +224,10 @@ export const locallyRestoreLatestMainBackup = new Command(
         throw new Error('No download url available')
       }
 
-      output(`Backup is ready for download at ${selectedBackup.download_url}`)
+      const totalSize = selectedBackup.size
+      output(
+        `Backup is ready for download: ${formatBytes(totalSize)} at ${selectedBackup.download_url}`,
+      )
       output(`Downloading backup to ${mainBackupFile}`)
 
       createVarDirectory()
@@ -215,10 +242,41 @@ export const locallyRestoreLatestMainBackup = new Command(
 
       const writeStream = createWriteStream(mainBackupFile)
 
+      let downloadedBytes = 0
+      const startTime = Date.now()
+      let lastProgressOutput = 0
+
+      downloadResponse.data.on('data', (chunk: Buffer) => {
+        downloadedBytes += chunk.length
+        const now = Date.now()
+
+        // Update progress every 500ms (overwrites same line with \r)
+        if (now - lastProgressOutput >= 500) {
+          lastProgressOutput = now
+          const elapsedSeconds = (now - startTime) / 1000
+          const speed = downloadedBytes / elapsedSeconds
+          const remainingBytes = totalSize - downloadedBytes
+          const estimatedRemaining = remainingBytes / speed
+          const percentage = ((downloadedBytes / totalSize) * 100).toFixed(1)
+
+          process.stdout.write(
+            `\r  ${formatBytes(downloadedBytes)} / ${formatBytes(totalSize)} (${percentage}%) - ${formatBytes(speed)}/s - ${formatDuration(estimatedRemaining)} remaining`,
+          )
+        }
+      })
+
       downloadResponse.data.pipe(writeStream)
 
       await new Promise((resolve, reject) => {
-        writeStream.on('finish', () => resolve(true))
+        writeStream.on('finish', () => {
+          const totalTime = (Date.now() - startTime) / 1000
+          const avgSpeed = downloadedBytes / totalTime
+          process.stdout.write('\n')
+          output(
+            `Download complete: ${formatBytes(downloadedBytes)} in ${formatDuration(totalTime)} (avg ${formatBytes(avgSpeed)}/s)`,
+          )
+          resolve(true)
+        })
         writeStream.on('error', reject)
       })
     }
