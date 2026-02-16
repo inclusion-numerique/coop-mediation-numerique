@@ -9,6 +9,7 @@ import { updateAccountTokens } from '@app/web/auth/updateAccountTokens'
 import { updateUserData } from '@app/web/auth/updateUserData'
 import { importStructureEmployeuseFromProConnect } from '@app/web/features/utilisateurs/use-cases/import-structure-from-proconnect/importStructureEmployeuseFromProConnect'
 import { updateUserFromDataspaceData } from '@app/web/features/utilisateurs/use-cases/update-from-dataspace/updateUserFromDataspaceData'
+import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { registerLastLogin } from '@app/web/security/registerLastLogin'
 import * as Sentry from '@sentry/nextjs'
@@ -51,7 +52,7 @@ export const nextAuthOptions = {
         }),
       ],
   callbacks: {
-    signIn(params) {
+    async signIn(params) {
       // For email signin verification request, we should do nothing
       // and continue with the signin flow
       if (params.email?.verificationRequest) {
@@ -100,8 +101,9 @@ export const nextAuthOptions = {
       // The rest of this function will execute for ProConnect flow
 
       const { user, profile, account } = params as unknown as {
-        user: SessionUser
+        user: SessionUser & { deleted?: Date | null }
         profile: {
+          email: string
           given_name: string
           usual_name: string
           phone_number: string | null
@@ -115,6 +117,22 @@ export const nextAuthOptions = {
           id_token?: string
           scope?: string
         }
+      }
+
+      // Reactivate soft-deleted user on ProConnect reconnection
+      if (user.deleted) {
+        await prismaClient.user.update({
+          where: { id: user.id },
+          data: {
+            deleted: null,
+            email: profile.email,
+            firstName: profile.given_name,
+            lastName: profile.usual_name,
+            name: `${profile.given_name} ${profile.usual_name}`,
+            phone: profile.phone_number,
+            siret: profile.siret ?? undefined,
+          },
+        })
       }
 
       // Update account tokens if this is a ProConnect signin
