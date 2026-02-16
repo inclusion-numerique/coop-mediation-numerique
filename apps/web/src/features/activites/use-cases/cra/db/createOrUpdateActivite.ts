@@ -343,8 +343,8 @@ export const createOrUpdateActivite = async ({
           : undefined, // no data if creation
   } satisfies Prisma.ActiviteUpdateInput
 
-  // premierAccompagnement is set to false here and will be correctly assigned
-  // by assignPremierAccompagnement at the end of the transaction based on activity dates
+  // premierAccompagnement for beneficiaires suivis is assigned by assignPremierAccompagnement based on activity dates
+  // For anonymous beneficiaires, we use the dejaAccompagne field from the form
   const accompagnementsCreationData = [
     ...existingBeneficiairesSuivis.map((beneficiaire) => ({
       id: v4(),
@@ -356,7 +356,7 @@ export const createOrUpdateActivite = async ({
       id: v4(),
       beneficiaireId: beneficiaire.id,
       activiteId: existingActivite ? existingActivite.id : creationId,
-      premierAccompagnement: false,
+      premierAccompagnement: !beneficiaire.dejaAccompagne,
     })),
     ...(beneficiaireAnonymeToCreate
       ? [
@@ -364,7 +364,7 @@ export const createOrUpdateActivite = async ({
             id: v4(),
             beneficiaireId: beneficiaireAnonymeToCreate.id,
             activiteId: existingActivite ? existingActivite.id : creationId,
-            premierAccompagnement: false,
+            premierAccompagnement: !beneficiaireAnonymeToCreate.dejaAccompagne,
           },
         ]
       : []),
@@ -499,17 +499,23 @@ export const createOrUpdateActivite = async ({
         await Promise.all(updateOperations)
 
         // Step 5: Assign premierAccompagnement based on activity dates
-        // Collect all affected beneficiaire IDs (previous + new, deduplicated)
-        const affectedBeneficiaireIds = [
+        // Only for beneficiaires suivis - anonymous beneficiaires use dejaAccompagne from form
+        const affectedBeneficiaireSuiviIds = [
           ...new Set([
-            ...existingActivite.accompagnements.map((a) => a.beneficiaireId),
-            ...accompagnementsCreationData.map((a) => a.beneficiaireId),
+            ...existingActivite.accompagnements
+              .filter((a) =>
+                existingBeneficiairesSuivis.some(
+                  (b) => b.id === a.beneficiaireId,
+                ),
+              )
+              .map((a) => a.beneficiaireId),
+            ...existingBeneficiairesSuivis.map((b) => b.id),
           ]),
         ]
 
-        if (affectedBeneficiaireIds.length > 0) {
+        if (affectedBeneficiaireSuiviIds.length > 0) {
           await assignPremierAccompagnement({
-            beneficiaireIds: affectedBeneficiaireIds,
+            beneficiaireIds: affectedBeneficiaireSuiviIds,
             transactionClient: transaction,
           })
         }
@@ -612,11 +618,10 @@ export const createOrUpdateActivite = async ({
       await Promise.all(updateOperations)
 
       // Step 5: Assign premierAccompagnement based on activity dates
-      if (accompagnementsCreationData.length > 0) {
+      // Only for beneficiaires suivis - anonymous beneficiaires use dejaAccompagne from form
+      if (existingBeneficiairesSuivis.length > 0) {
         await assignPremierAccompagnement({
-          beneficiaireIds: accompagnementsCreationData.map(
-            (a) => a.beneficiaireId,
-          ),
+          beneficiaireIds: existingBeneficiairesSuivis.map((b) => b.id),
           transactionClient: transaction,
         })
       }
