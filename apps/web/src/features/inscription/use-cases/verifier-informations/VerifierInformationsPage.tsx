@@ -75,7 +75,7 @@ const VerifierInformationsPage = ({ user }: { user: SessionUser }) => {
           <hr className="fr-separator-12v" />
 
           <div className="fr-flex fr-align-items-center fr-flex-gap-3v fr-mt-12v">
-            <IconInSquare iconId="fr-icon-account-circle-line" size="small" />
+            <IconInSquare iconId="ri-home-smile-2-line" size="small" />
             <h2 className="fr-h6 fr-mb-0 fr-text-title--blue-france">
               Ma structure employeuse
             </h2>
