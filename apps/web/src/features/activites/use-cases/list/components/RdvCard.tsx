@@ -12,7 +12,6 @@ import { numberToString } from '@app/web/utils/formatNumber'
 import { UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 import Button from '@codegouvfr/react-dsfr/Button'
 import ActiviteCardSpacer from './ActiviteCardSpacer'
-import CraFromRdvButton from './CraFromRdvButton'
 import ListCard from './ListCard'
 import RdvStatusBadge from './RdvStatusBadge'
 
@@ -54,8 +53,6 @@ const RdvCard = ({
 
   const startTime = dateAsTimeInTimeZone(startsAt, timezone)
   const endTime = dateAsTimeInTimeZone(endsAt, timezone)
-  const canCompleteCra = status === 'seen'
-
   const handleOpenStatusModal = () => {
     openStatusUpdateModal({ rdv })
   }
@@ -99,9 +96,7 @@ const RdvCard = ({
       actions={
         <>
           <RdvStatusBadge rdv={rdv} className="fr-mr-2v" />
-          {canCompleteCra ? (
-            <CraFromRdvButton className="fr-flex-shrink-0" rdvId={rdv.id} />
-          ) : badgeStatus === 'past' ? (
+          {badgeStatus === 'past' || status === 'seen' ? (
             <Button
               priority="tertiary no outline"
               size="small"
