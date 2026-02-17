@@ -45,3 +45,11 @@
     margin-top: 0.5rem;
   }
 }
+
+.fr-checkbox-group input[type="checkbox"]:indeterminate + label::before {
+  background-color: var(--background-action-high-blue-france);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M5 11h14v2H5z'/%3E%3C/svg%3E");
+  background-size: 1rem;
+  background-position: center;
+  background-repeat: no-repeat;
+}

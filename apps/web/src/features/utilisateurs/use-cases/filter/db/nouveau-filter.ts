@@ -1,5 +1,7 @@
 import type { OnboardingStatus, Prisma } from '@prisma/client'
 
+const noPendingInvitations = { none: { acceptee: null, refusee: null } }
+
 const noActivityFilter: Prisma.UserWhereInput[] = [
   {
     mediateur: { is: null },
@@ -7,6 +9,7 @@ const noActivityFilter: Prisma.UserWhereInput[] = [
       is: {
         derniereCreationActivite: null,
         mediateursCoordonnes: { none: {} },
+        invitations: noPendingInvitations,
       },
     },
   },
@@ -20,6 +23,7 @@ const noActivityFilter: Prisma.UserWhereInput[] = [
       is: {
         derniereCreationActivite: null,
         mediateursCoordonnes: { none: {} },
+        invitations: noPendingInvitations,
       },
     },
   },

@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import Link from 'next/link'
-import React, { ComponentType } from 'react'
+import type { ComponentType, ReactNode } from 'react'
 import { createSortLinkProps } from './createSortLinkProps'
 import styles from './DataTable.module.css'
 import {
@@ -32,6 +32,8 @@ const DataTable = <
   searchParams,
   baseHref,
   rowButtonComponent: RowButtonComponent,
+  headerPrefix,
+  rowPrefix,
 }: {
   rows: Data[]
   configuration: Configuration
@@ -40,6 +42,8 @@ const DataTable = <
   searchParams: DataTableSearchParams<Configuration>
   baseHref: string
   rowButtonComponent?: ComponentType<{ row: Data }>
+  headerPrefix?: ReactNode
+  rowPrefix?: (row: Data) => ReactNode
 }) => {
   const sortLinkProps = (
     sortParams: DataTableSearchParams<Configuration>,
@@ -65,6 +69,7 @@ const DataTable = <
             >
               <thead className={classNames(classes?.thead)}>
                 <tr className={classNames(classes?.tr)}>
+                  {headerPrefix}
                   {configuration.columns
                     .filter(({ header }) => header != null)
                     .map(
@@ -117,6 +122,7 @@ const DataTable = <
                         !!RowButtonComponent && styles.rowWithButton,
                       )}
                     >
+                      {rowPrefix?.(row)}
                       {configuration.columns.map(
                         ({
                           name,
@@ -156,7 +162,11 @@ const DataTable = <
                 })}
                 {rows.length === 0 && (
                   <tr>
-                    <td colSpan={configuration.columns.length}>
+                    <td
+                      colSpan={
+                        configuration.columns.length + (headerPrefix ? 1 : 0)
+                      }
+                    >
                       Aucun résultat
                     </td>
                   </tr>
