@@ -63,6 +63,39 @@ type ScalewayDatabaseBackup = {
   region: string
 }
 
+const fetchAllBackups = async (
+  client: ReturnType<typeof axios.create>,
+  databaseInstanceId: string,
+  backupDatabaseName: string,
+): Promise<ScalewayDatabaseBackup[]> => {
+  const allBackups: ScalewayDatabaseBackup[] = []
+  let page = 1
+  const pageSize = 100
+
+  while (true) {
+    const response = await client.get<{
+      database_backups: ScalewayDatabaseBackup[]
+    }>('/backups', {
+      params: {
+        order_by: 'created_at_desc',
+        page_size: pageSize,
+        page,
+        instance_id: databaseInstanceId,
+        database_name: backupDatabaseName,
+      },
+    })
+
+    allBackups.push(...response.data.database_backups)
+
+    if (response.data.database_backups.length < pageSize) {
+      break
+    }
+    page++
+  }
+
+  return allBackups
+}
+
 export const locallyRestoreLatestMainBackup = new Command(
   'backup:locally-restore-latest-main',
 )
@@ -76,6 +109,11 @@ export const locallyRestoreLatestMainBackup = new Command(
   .option(
     '-l, --local',
     'Restore from previously already downloaded backup file',
+  )
+  .option('--list', 'List all available backup dates and exit')
+  .option(
+    '-t, --type <type>',
+    'Filter backups by type (weekly, daily, hourly). If not provided, all types are considered.',
   )
   .action(async (options) => {
     const targetDate = options.date ? new Date(options.date) : null
@@ -137,24 +175,66 @@ export const locallyRestoreLatestMainBackup = new Command(
         retryDelay: (retryCount) => retryCount * 3000,
       })
 
-      output('Listing backups')
-      const backups = await client.get<{
-        database_backups: ScalewayDatabaseBackup[]
-      }>('/backups', {
-        params: {
-          order_by: 'created_at_desc',
-          page_size: 100,
-          instance_id: databaseInstanceId,
-          database_name: backupDatabaseName,
-        },
-      })
+      output('Listing backups (fetching all pages)...')
+      const allBackups = await fetchAllBackups(
+        client,
+        databaseInstanceId,
+        backupDatabaseName,
+      )
 
-      if (backups.data.database_backups.length === 0) {
+      output(`Found ${allBackups.length} backups total`)
+
+      if (allBackups.length === 0) {
         throw new Error('No backups found')
       }
-      const elligibleBackups = backups.data.database_backups.filter(
+
+      // Filter by type if specified
+      const typeFilteredBackups = options.type
+        ? allBackups.filter((backup) =>
+            backup.name.includes(`_${options.type}_`),
+          )
+        : allBackups
+
+      if (options.type) {
+        output(
+          `Filtered to ${typeFilteredBackups.length} ${options.type} backups`,
+        )
+      }
+
+      const elligibleBackups = typeFilteredBackups.filter(
         ({ status }) => status === 'ready' || status === 'exporting',
       )
+
+      // List mode: show available dates and exit
+      if (options.list) {
+        output('\nAvailable backups:')
+        const groupedByDate = new Map<string, string[]>()
+
+        for (const backup of elligibleBackups) {
+          const date = backup.created_at.split('T')[0]
+          const type = backup.name.includes('_weekly_')
+            ? 'weekly'
+            : backup.name.includes('_daily_')
+              ? 'daily'
+              : 'hourly'
+
+          if (!groupedByDate.has(date)) {
+            groupedByDate.set(date, [])
+          }
+          groupedByDate.get(date)?.push(type)
+        }
+
+        const sortedDates = [...groupedByDate.keys()].sort().reverse()
+        for (const date of sortedDates) {
+          const types = [...new Set(groupedByDate.get(date))].join(', ')
+          output(`  ${date} (${types})`)
+        }
+
+        output(
+          `\nTotal: ${elligibleBackups.length} backups across ${sortedDates.length} dates`,
+        )
+        return
+      }
 
       if (elligibleBackups.length === 0) {
         throw new Error('Invalid status for all backups')
