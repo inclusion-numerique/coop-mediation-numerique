@@ -613,7 +613,7 @@ export const syncFromDataspaceCore = async ({
   })
 
   // --- Coordinateur: Only create if is_coordinateur is true (never delete) ---
-  if (isCoordinateurInApi && isConseillerNumeriqueInApi) {
+  if (isCoordinateurInApi) {
     const {
       coordinateurId: upsertedCoordinateurId,
       created: coordinateurCreated,

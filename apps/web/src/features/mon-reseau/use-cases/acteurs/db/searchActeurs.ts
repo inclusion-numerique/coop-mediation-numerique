@@ -77,6 +77,27 @@ export type ActeurForList = Prisma.UserGetPayload<{
   select: typeof acteurSelectForList
 }>
 
+export type ActeurCoordinateurType =
+  | 'coordinateur_dans_dispositif'
+  | 'coordinateur_hors_dispositif'
+  | null
+
+export const getActeurCoordinateurType = ({
+  coordinateur,
+  isConseillerNumerique,
+}: Pick<
+  ActeurForList,
+  'coordinateur' | 'isConseillerNumerique'
+>): ActeurCoordinateurType => {
+  if (coordinateur == null) {
+    return null
+  }
+
+  return isConseillerNumerique
+    ? 'coordinateur_dans_dispositif'
+    : 'coordinateur_hors_dispositif'
+}
+
 const getActeursByIds = async ({ ids }: { ids: string[] }) =>
   prismaClient.user.findMany({
     where: { id: { in: ids } },

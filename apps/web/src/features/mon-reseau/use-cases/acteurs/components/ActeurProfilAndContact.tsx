@@ -33,6 +33,8 @@ const getCoordinateurInfo = (
   }
 }
 
+const showActeurPhoneNumberFeatureFlag = false
+
 const ActeurProfilAndContact = ({
   acteur,
   className,
@@ -49,9 +51,15 @@ const ActeurProfilAndContact = ({
   }
 }) => {
   const coordinateurInfo = getCoordinateurInfo(acteur)
+  const showPhoneNumber =
+    showActeurPhoneNumberFeatureFlag && Boolean(acteur.phone)
 
   const profil = getUserProfil(acteur)
   const acteurIconUrl = getActeurIconUrl(profil)
+  const profilLabel =
+    profil === 'Coordinateur'
+      ? 'Coordinateur·rice hors dispositif'
+      : allProfileInscriptionLabels[profil]
 
   return (
     <div className={className}>
@@ -64,13 +72,13 @@ const ActeurProfilAndContact = ({
         {!!acteurIconUrl && (
           <img
             src={acteurIconUrl}
-            alt={allProfileInscriptionLabels[profil]}
+            alt={profilLabel}
             className="fr-mr-1w"
             width={18}
             height={18}
           />
         )}
-        {allProfileInscriptionLabels[profil]}
+        {profilLabel}
         {coordinateurInfo && (
           <>
             {' '}
@@ -98,13 +106,13 @@ const ActeurProfilAndContact = ({
           classes?.contactInfo,
         )}
       >
-        {acteur.phone && (
+        {showPhoneNumber && (
           <span className="fr-flex fr-align-items-center">
             <span className="ri-phone-line fr-mr-1v" aria-hidden />
             {acteur.phone}
           </span>
         )}
-        {acteur.phone && acteur.email && <span aria-hidden>·</span>}
+        {showPhoneNumber && acteur.email && <span aria-hidden>·</span>}
         {acteur.email && (
           <span className="fr-flex fr-align-items-center">
             <span className="ri-mail-line fr-mr-1v" aria-hidden />

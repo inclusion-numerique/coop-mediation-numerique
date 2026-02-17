@@ -15,6 +15,7 @@ import ActeurCard from './components/ActeurCard'
 import Filters from './components/Filters'
 import { FilterTags } from './components/FilterTags'
 import type { SearchActeursResult } from './db/searchActeurs'
+import { getActeurCoordinateurType } from './db/searchActeurs'
 import type { ActeursSearchParams } from './validation/ActeursFilters'
 
 const pageSizeOptions = generatePageSizeSelectOptions([20, 50, 100])
@@ -55,6 +56,20 @@ const ActeursPage = ({
   const departementLabel = `${departement.nom} (${departement.code})`
 
   const breadcrumbLabel = 'Annuaire des acteurs'
+  const coordinateursDansDispositif = searchResult.acteurs.filter(
+    (acteur) =>
+      getActeurCoordinateurType(acteur) === 'coordinateur_dans_dispositif',
+  )
+  const coordinateursHorsDispositif = searchResult.acteurs.filter(
+    (acteur) =>
+      getActeurCoordinateurType(acteur) === 'coordinateur_hors_dispositif',
+  )
+  const autresActeurs = searchResult.acteurs.filter(
+    (acteur) => getActeurCoordinateurType(acteur) == null,
+  )
+  const hasCoordinateursSections =
+    coordinateursDansDispositif.length > 0 ||
+    coordinateursHorsDispositif.length > 0
 
   return (
     <>
@@ -117,13 +132,61 @@ const ActeursPage = ({
 
           <hr className="fr-separator-1px" />
 
-          {searchResult.acteurs.map((acteur) => (
-            <ActeurCard
-              key={acteur.id}
-              acteur={acteur}
-              departementCode={departement.code}
-            />
-          ))}
+          {!hasCoordinateursSections &&
+            searchResult.acteurs.map((acteur) => (
+              <ActeurCard
+                key={acteur.id}
+                acteur={acteur}
+                departementCode={departement.code}
+              />
+            ))}
+
+          {hasCoordinateursSections && (
+            <>
+              {coordinateursDansDispositif.length > 0 && (
+                <section className="fr-mt-4v">
+                  <h3 className="fr-h6 fr-mb-2v">
+                    Coordinateur·rices du dispositif
+                  </h3>
+                  {coordinateursDansDispositif.map((acteur) => (
+                    <ActeurCard
+                      key={acteur.id}
+                      acteur={acteur}
+                      departementCode={departement.code}
+                    />
+                  ))}
+                </section>
+              )}
+
+              {coordinateursHorsDispositif.length > 0 && (
+                <section className="fr-mt-4v">
+                  <h3 className="fr-h6 fr-mb-2v">
+                    Coordinateur·rices hors dispositif
+                  </h3>
+                  {coordinateursHorsDispositif.map((acteur) => (
+                    <ActeurCard
+                      key={acteur.id}
+                      acteur={acteur}
+                      departementCode={departement.code}
+                    />
+                  ))}
+                </section>
+              )}
+
+              {autresActeurs.length > 0 && (
+                <section className="fr-mt-4v">
+                  <h3 className="fr-h6 fr-mb-2v">Autres acteurs</h3>
+                  {autresActeurs.map((acteur) => (
+                    <ActeurCard
+                      key={acteur.id}
+                      acteur={acteur}
+                      departementCode={departement.code}
+                    />
+                  ))}
+                </section>
+              )}
+            </>
+          )}
 
           <PaginationNavWithPageSizeSelect
             className="fr-mt-12v"
