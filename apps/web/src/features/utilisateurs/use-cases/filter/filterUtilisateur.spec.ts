@@ -33,6 +33,7 @@ describe('filter utilisateur', () => {
               is: {
                 derniereCreationActivite: null,
                 mediateursCoordonnes: { none: {} },
+                invitations: { none: { acceptee: null, refusee: null } },
               },
             },
           },
@@ -46,6 +47,7 @@ describe('filter utilisateur', () => {
               is: {
                 derniereCreationActivite: null,
                 mediateursCoordonnes: { none: {} },
+                invitations: { none: { acceptee: null, refusee: null } },
               },
             },
           },
