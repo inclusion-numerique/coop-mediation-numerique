@@ -51,7 +51,7 @@ export const Accueil = ({
       <RdvNouvelleFonctionnaliteCard />
       <FormationContinueNouvelleFonctionnaliteCard />
       <TagsNouvelleFonctionnaliteCard />
-      {isMediateur && (
+      {!isCoordinateur && (
         <>
           <OnboardingInfo hasSeenOnboarding={hasSeenOnboarding} />
           <section className="fr-my-12v">
@@ -86,7 +86,7 @@ export const Accueil = ({
           <hr className="fr-separator-1px" />
         </>
       )}
-      {isMediateur && (
+      {!isCoordinateur && (
         <>
           <section className="fr-my-6w">
             <DernieresActivites activites={activites} />
