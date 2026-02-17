@@ -17,7 +17,8 @@ import { v4 } from 'uuid'
  * - Dataspace null response → NO-OP
  * - is_conseiller_numerique: true → Dataspace is source of truth for emplois/structures
  * - is_conseiller_numerique: false → Local is source of truth, only update flag
- * - is_coordinateur: true → Create Coordinateur (never delete)
+ * - is_coordinateur: true AND is_conseiller_numerique: true
+ *   → Create Coordinateur (never delete)
  * - Lieux d'activité: NOT synced here (only imported once during inscription)
  */
 
@@ -554,7 +555,8 @@ export const importLieuxActiviteFromDataspace = async ({
  * Core idempotent sync from Dataspace data
  *
  * This function handles:
- * 1. Coordinateur creation (only if is_coordinateur is true, never delete)
+ * 1. Coordinateur creation (only if both is_coordinateur and
+ *    is_conseiller_numerique are true, never delete)
  * 2. Structures employeuses sync (only if is_conseiller_numerique is true)
  *
  * Note: Lieux d'activité are NOT synced here. They are only imported once during inscription.
@@ -612,8 +614,8 @@ export const syncFromDataspaceCore = async ({
     },
   })
 
-  // --- Coordinateur: Only create if is_coordinateur is true (never delete) ---
-  if (isCoordinateurInApi) {
+  // --- Coordinateur: Only create if coordo is in dispositif (never delete) ---
+  if (isCoordinateurInApi && isConseillerNumeriqueInApi) {
     const {
       coordinateurId: upsertedCoordinateurId,
       created: coordinateurCreated,
