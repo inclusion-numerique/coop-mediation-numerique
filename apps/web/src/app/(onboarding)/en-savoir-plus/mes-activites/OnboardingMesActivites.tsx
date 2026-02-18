@@ -15,12 +15,12 @@ export const OnboardingMesActivites = () => (
     title="Enregistrez vos activités de médiation numérique"
     label={
       <>
-        <span className="ri-service-line ri-lg fr-mr-1w" aria-hidden />
+        <span className="ri-service-line ri-xl fr-mr-3v" aria-hidden />
         Mes activités
       </>
     }
     stepIndex={1}
-    totalSteps={4}
+    totalSteps={5}
     next={{ href: '/en-savoir-plus/mes-statistiques' }}
     closeHref="/coop"
   >
