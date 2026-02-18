@@ -8,6 +8,7 @@ import { Contexte } from './_components/Contexte'
 import { Faq } from './_components/Faq'
 import { Fonctionnalites } from './_components/Fonctionnalites'
 import { Hero } from './_components/Hero'
+import { Impact } from './_components/Impact'
 import { Outils } from './_components/Outils'
 import { QuiSommesNous } from './_components/QuiSommesNous'
 import { Solution } from './_components/Solution'
@@ -39,6 +40,9 @@ const LandingPage = async () => {
         </section>
         <section className="fr-background-alt--brown-caramel-950 fr-pt-md-11w fr-pb-md-15w fr-py-8w">
           <Outils />
+        </section>
+        <section className="fr-pt-md-15w fr-pt-8w">
+          <Impact />
         </section>
         <section className="fr-py-md-15w fr-py-8w">
           <Faq />

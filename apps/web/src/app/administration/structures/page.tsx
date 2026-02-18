@@ -37,6 +37,7 @@ const Page = async () => {
           <Link
             href={getServerUrl('/api/lieux-mediation-numerique')}
             target="_blank"
+            rel="noreferrer"
             className="fr-link fr-link--sm"
           >
             {getServerUrl('/api/lieux-mediation-numerique')}

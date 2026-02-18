@@ -43,7 +43,7 @@ const MigrationPage = () => (
               adaptées à la pratique de la médiation numérique.
             </p>
             <Button
-              title="Accueil de la coop de la médiation numérique"
+              title="Accueil de la Coop de la médiation numérique"
               size="large"
               linkProps={{ href: '/' }}
             >

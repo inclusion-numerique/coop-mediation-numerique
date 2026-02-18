@@ -53,6 +53,7 @@ export const DisplayOnCartography = ({
     <Link
       href="https://cartographie.societenumerique.gouv.fr/presentation"
       target="_blank"
+      rel="noreferrer"
       className="fr-link fr-link--sm fr-mb-0"
     >
       En savoir plus sur la cartographie

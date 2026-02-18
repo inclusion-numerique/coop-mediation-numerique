@@ -5,7 +5,7 @@
 > Il est réalisé à partir du patron de
 > [Dossier d'architecture technique](https://gitlab.com/groups/incubateur-territoires/startups/infrastructures-numeriques/-/wikis/Dossier-d'architecture-technique).
 
-**Nom du projet :** La coop de la médiation numérique
+**Nom du projet :** La Coop de la médiation numérique
 
 **Dépôt de code :** https://github.com/inclusion-numerique/coop-mediation-numerique
 
@@ -35,7 +35,7 @@
 
 ## Description du projet
 
-La coop de la médiation numérique est une plateforme dédiée aux professionnels
+La Coop de la médiation numérique est une plateforme dédiée aux professionnels
 de la médiation numérique pour faciliter l’accompagnement des éloignés du numérique.
 
 Il est open source, bien que les développements, l'hébergement et la maintenance soient gérés par l'équipe.

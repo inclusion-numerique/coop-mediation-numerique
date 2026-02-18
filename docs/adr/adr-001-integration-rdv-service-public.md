@@ -12,7 +12,7 @@ Accepté
 
 ## Contexte
 
-La coop de la médiation numérique permet aux médiateurs de suivre leurs activités et leurs bénéficiaires. Parallèlement, [RDV Service Public](https://www.rdv-service-public.fr/) est une plateforme dédiée à la prise de rendez-vous pour les services publics, utilisée notamment par les médiateurs numériques pour gérer leurs rendez-vous avec les usagers.
+La Coop de la médiation numérique permet aux médiateurs de suivre leurs activités et leurs bénéficiaires. Parallèlement, [RDV Service Public](https://www.rdv-service-public.fr/) est une plateforme dédiée à la prise de rendez-vous pour les services publics, utilisée notamment par les médiateurs numériques pour gérer leurs rendez-vous avec les usagers.
 
 Il existe un besoin fort d'intégrer ces deux systèmes afin de :
 

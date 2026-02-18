@@ -47,6 +47,7 @@ export const MesOutils = async () => {
                   className="fr-link fr-text--sm"
                   href="https://projets.suite.anct.gouv.fr/boards/1572441353164424613"
                   target="_blank"
+                  rel="noreferrer"
                 >
                   En savoir plus sur les prochaines évolutions de la plateforme
                 </Link>

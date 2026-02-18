@@ -70,6 +70,7 @@ const StatistiquesPubliquesPage = async () => {
               className="fr-link"
               href="https://www.info.gouv.fr/politiques-prioritaires/batir-de-nouveaux-progres-et-refonder-nos-services-publics/conseillers-numeriques-un-accompagnement-gratuit-a-la-maitrise-du-numerique-du-quotidien?geolevel=NAT&geocode=FRANCE#widget-viz-IND-736"
               target="_blank"
+              rel="noreferrer"
             >
               Voir les statistiques nationales du dispositif Conseillers
               numériques

@@ -33,6 +33,7 @@ export const AutonomieBeneficiaireField = withForm({
                 className="fr-link"
                 href="https://docs.numerique.gouv.fr/docs/71878018-757b-4d89-a918-f29c8cf21bfb/"
                 target="_blank"
+                rel="noreferrer"
               >
                 En savoir plus
               </Link>
