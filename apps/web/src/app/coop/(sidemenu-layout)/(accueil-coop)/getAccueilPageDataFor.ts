@@ -21,7 +21,7 @@ type ActiviteCount = { type: ActiviteType; count: number }
 
 type ActiviteGrouped = Record<string, ActiviteCount[]>
 
-const ACTIVITE_TYPES: ActiviteType[] = ['Evenement', 'Partenariat', 'Animation']
+const ACTIVITE_TYPES: ActiviteType[] = ['Animation', 'Evenement', 'Partenariat']
 
 const initCounts = (): ActiviteCount[] =>
   ACTIVITE_TYPES.map((type) => ({ type, count: 0 }))

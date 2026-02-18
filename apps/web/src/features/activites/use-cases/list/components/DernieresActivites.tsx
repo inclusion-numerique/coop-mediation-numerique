@@ -31,7 +31,10 @@ export const DernieresActivites = ({
   <>
     <div className="fr-flex fr-flex-wrap fr-flex-gap-4v fr-align-items-center fr-justify-content-space-between fr-mb-3w">
       <h2 className="fr-h5 fr-text-mention--grey fr-mb-0">
-        <span className="ri-service-line fr-mr-1w" aria-hidden />
+        <span
+          className="ri-service-line ri-lg fr-text--regular fr-mr-2v"
+          aria-hidden
+        />
         Mes 3 dernières activités enregistrées
       </h2>
       <Button

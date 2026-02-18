@@ -40,6 +40,9 @@ const Card = ({
   arrowSm?: boolean
   classes?: {
     content?: string
+    frame?: {
+      content?: string
+    }
   }
 }) => (
   <div
@@ -53,7 +56,7 @@ const Card = ({
     ])}
   >
     <div className="fr-card__body">
-      <div className="fr-card__content">
+      <div className={classNames('fr-card__content', classes.frame?.content)}>
         {title && (
           <div className="fr-flex fr-justify-content-space-between fr-flex-gap-6v">
             <div>
