@@ -164,16 +164,20 @@ export const nextAuthOptions = {
         })
       }
 
-      updateUserFromDataspaceData({ userId: user.id }).catch((error) => {
-        Sentry.captureException(error)
-      })
-
-      importStructureEmployeuseFromProConnect({
-        userId: user.id,
-        siret: profile.siret,
-      }).catch((error) => {
-        Sentry.captureException(error)
-      })
+      updateUserFromDataspaceData({ userId: user.id })
+        .catch((error) => {
+          Sentry.captureException(error)
+        })
+        // Chain it so user is updated before importing structure employeuse from proconnect
+        .then(() =>
+          importStructureEmployeuseFromProConnect({
+            userId: user.id,
+            siret: profile.siret,
+          }),
+        )
+        .catch((error) => {
+          Sentry.captureException(error)
+        })
 
       registerLastLogin({ userId: user.id }).catch((error) => {
         Sentry.captureException(error)

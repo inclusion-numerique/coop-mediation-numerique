@@ -4,7 +4,6 @@ import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiair
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import RdvStatusBadge from '@app/web/features/activites/use-cases/list/components/RdvStatusBadge'
 import { DashboardRdvData } from '@app/web/features/rdvsp/queries/getDashboardRdvData'
-import { rdvServicePublicRdvsLink } from '@app/web/rdv-service-public/rdvServicePublicUrls'
 import { trpc } from '@app/web/trpc'
 import { dateAsDayFullWordsInTimezone } from '@app/web/utils/dateAsDay'
 import { dateAsTimeInTimeZone } from '@app/web/utils/dateAsDayAndTime'
@@ -56,7 +55,9 @@ const Rdvs = ({
 
   const isLoading = mutation.isPending
 
-  const { futur, next, passes, last } = dashboardRdvData
+  const { futur, next, passes, honores, last } = dashboardRdvData
+
+  const passesTotal = passes + honores
 
   const getParticipantsDisplay = (
     rdv: {
@@ -144,20 +145,20 @@ const Rdvs = ({
               <p
                 className={classNames(
                   'fr-h4 fr-text fr-mb-0 fr-text-title--blue-france fr-pr-2v',
-                  passes === 0 && styles.disabled,
+                  passesTotal === 0 && styles.disabled,
                 )}
               >
-                {numberToString(passes)}
+                {numberToString(passesTotal)}
               </p>
               <RdvStatusBadge
                 className={classNames(
-                  passes === 0 && styles.disabled,
-                  passes === 0 && styles.disabledBackground,
+                  passesTotal === 0 && styles.disabled,
+                  passesTotal === 0 && styles.disabledBackground,
                 )}
                 rdv={{ badgeStatus: 'past' }}
-                pluralize={passes}
+                pluralize={passesTotal}
               />
-              {passes > 0 && (
+              {passesTotal > 0 && (
                 <>
                   <span className="fr-flex-grow-1" />
                   <Button
@@ -166,7 +167,7 @@ const Rdvs = ({
                     priority="tertiary no outline"
                     size="small"
                     linkProps={{
-                      href: '/coop/mes-activites?rdvs=past&voir-rdvs=0',
+                      href: '/coop/mes-activites?rdvs=past%2Cseen&voir-rdvs=0',
                     }}
                   >
                     Voir

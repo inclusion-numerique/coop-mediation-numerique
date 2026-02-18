@@ -17,7 +17,8 @@ import { v4 } from 'uuid'
  * - Dataspace null response → NO-OP
  * - is_conseiller_numerique: true → Dataspace is source of truth for emplois/structures
  * - is_conseiller_numerique: false → Local is source of truth, only update flag
- * - is_coordinateur: true → Create Coordinateur (never delete)
+ * - is_coordinateur: true AND is_conseiller_numerique: true
+ *   → Create Coordinateur (never delete)
  * - Lieux d'activité: NOT synced here (only imported once during inscription)
  */
 
@@ -47,7 +48,7 @@ export type SyncChanges = {
  */
 type PreparedContract = {
   structureId: string
-  contract: DataspaceContrat
+  contract: DataspaceContrat & { date_debut: string }
 }
 
 type ExistingEmploiForSync = {
@@ -62,6 +63,11 @@ type ExistingEmploiForSync = {
 const hasDebutDate = (
   emploi: ExistingEmploiForSync,
 ): emploi is ExistingEmploiForSync & { debut: Date } => emploi.debut !== null
+
+const isDefinedStructureEmployeuse = (
+  structureEmployeuse: DataspaceStructureEmployeuse | null,
+): structureEmployeuse is DataspaceStructureEmployeuse =>
+  structureEmployeuse !== null
 
 // ============================================================================
 // Helper Functions
@@ -114,7 +120,14 @@ export const getActiveOrMostRecentContract = (
   }
 
   // No active contract - return the most recent one by date_debut
-  return contrats.toSorted(
+  const contractsWithDebut = contrats.filter(
+    (
+      contrat,
+    ): contrat is DataspaceContrat & {
+      date_debut: string
+    } => contrat.date_debut !== null,
+  )
+  return contractsWithDebut.toSorted(
     (a, b) =>
       new Date(b.date_debut).getTime() - new Date(a.date_debut).getTime(),
   )[0]
@@ -140,10 +153,16 @@ export const prepareContractsFromDataspace = async (
   const prepared: PreparedContract[] = []
 
   for (const structureEmployeuse of structuresEmployeuses) {
-    const contracts = structureEmployeuse.contrats ?? []
+    const contractsWithDebut = (structureEmployeuse.contrats ?? []).filter(
+      (
+        contract,
+      ): contract is DataspaceContrat & {
+        date_debut: string
+      } => contract.date_debut !== null,
+    )
 
     // Skip structures without contracts
-    if (contracts.length === 0) {
+    if (contractsWithDebut.length === 0) {
       continue
     }
 
@@ -153,7 +172,7 @@ export const prepareContractsFromDataspace = async (
     })
 
     // Create one PreparedContract for each contract
-    for (const contract of contracts) {
+    for (const contract of contractsWithDebut) {
       prepared.push({
         structureId: structure.id,
         contract,
@@ -229,18 +248,49 @@ export const syncStructuresEmployeusesFromDataspace = async ({
   structuresEmployeuses,
 }: {
   userId: string
-  structuresEmployeuses: DataspaceStructureEmployeuse[]
+  structuresEmployeuses: (DataspaceStructureEmployeuse | null)[]
 }): Promise<{ structureIds: string[]; removed: number }> => {
-  // Step 1: Prepare all contracts (find/create structures) outside transaction
-  // This already filters out structures without contracts
-  const preparedContracts = await prepareContractsFromDataspace(
-    structuresEmployeuses,
+  const nonNullStructures = structuresEmployeuses.filter(
+    isDefinedStructureEmployeuse,
   )
 
+  // Step 1: Prepare all contracts (find/create structures) outside transaction
+  // This already filters out structures without contracts
+  const preparedContracts =
+    await prepareContractsFromDataspace(nonNullStructures)
+
+  const syncDate = new Date()
+  const hasRunningRealContract = nonNullStructures.some((structureEmployeuse) =>
+    (structureEmployeuse.contrats ?? []).some(
+      (contract) =>
+        contract.date_debut !== null &&
+        getContractStatus({
+          contrat: contract,
+          date: syncDate,
+        }).isActive,
+    ),
+  )
+
+  const firstStructureWithNullDebutContract = nonNullStructures.find(
+    (structureEmployeuse) =>
+      (structureEmployeuse.contrats ?? []).some(
+        (contract) => contract.date_debut === null,
+      ),
+  )
+
+  const firstStructureWithEmptyContracts = nonNullStructures.find(
+    (structureEmployeuse) => (structureEmployeuse.contrats ?? []).length === 0,
+  )
+
+  const temporaryContractTargetStructure =
+    firstStructureWithNullDebutContract ?? firstStructureWithEmptyContracts
+
   const temporaryContractStructureId =
-    preparedContracts.length === 0 && structuresEmployeuses.length > 0
+    preparedContracts.length === 0 &&
+    !hasRunningRealContract &&
+    temporaryContractTargetStructure
       ? await getOrCreateStructureIdForTemporaryContract({
-          structureEmployeuse: structuresEmployeuses[0],
+          structureEmployeuse: temporaryContractTargetStructure,
         })
       : null
 
@@ -554,7 +604,8 @@ export const importLieuxActiviteFromDataspace = async ({
  * Core idempotent sync from Dataspace data
  *
  * This function handles:
- * 1. Coordinateur creation (only if is_coordinateur is true, never delete)
+ * 1. Coordinateur creation (only if both is_coordinateur and
+ *    is_conseiller_numerique are true, never delete)
  * 2. Structures employeuses sync (only if is_conseiller_numerique is true)
  *
  * Note: Lieux d'activité are NOT synced here. They are only imported once during inscription.
@@ -612,7 +663,7 @@ export const syncFromDataspaceCore = async ({
     },
   })
 
-  // --- Coordinateur: Only create if is_coordinateur is true (never delete) ---
+  // --- Coordinateur: Only create if coordo is in dispositif (never delete) ---
   if (isCoordinateurInApi && isConseillerNumeriqueInApi) {
     const {
       coordinateurId: upsertedCoordinateurId,

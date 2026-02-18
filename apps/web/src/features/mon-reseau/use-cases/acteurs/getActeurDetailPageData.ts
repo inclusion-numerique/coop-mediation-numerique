@@ -6,6 +6,7 @@ import { getActeurEmploiForDate } from '@app/web/features/mon-reseau/use-cases/a
 import {
   acteurCoordinationSelect,
   acteurSelectForList,
+  getActeurCoordinateurType,
 } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
 import { lieuxForListSelect } from '@app/web/features/mon-reseau/use-cases/lieux/db/searchLieux'
 import { prismaClient } from '@app/web/prismaClient'
@@ -21,6 +22,13 @@ const activitesFiltersLastDays = (daysCount: number) => {
   }
   return activitesFilters
 }
+
+export type ActeurDetailRole =
+  | 'coordinateur_dans_dispositif'
+  | 'coordinateur_hors_dispositif'
+  | 'conseiller_numerique'
+  | 'mediateur'
+  | null
 
 export const getActeurDetailPageData = async ({
   userId,
@@ -70,13 +78,14 @@ export const getActeurDetailPageData = async ({
   const mediateurId = acteur.mediateur?.id ?? null
 
   // Determine acteur role
-  const acteurRole = acteur.coordinateur
-    ? 'coordinateur'
-    : acteur.isConseillerNumerique
+  const coordinateurType = getActeurCoordinateurType(acteur)
+  const acteurRole: ActeurDetailRole =
+    coordinateurType ??
+    (acteur.isConseillerNumerique
       ? 'conseiller_numerique'
       : acteur.mediateur
         ? 'mediateur'
-        : null
+        : null)
 
   const coordinationDetails =
     sessionUser.coordinateur && mediateurId
@@ -161,6 +170,7 @@ export const getActeurDetailPageData = async ({
     activityDates,
     mediateurId,
     acteurRole,
+    coordinateurType,
     emploi,
     lieuxActivites,
     coordinationFeatures,

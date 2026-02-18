@@ -22,7 +22,6 @@ import { profileInscriptionLabels } from '@app/web/features/utilisateurs/use-cas
 import { trpc } from '@app/web/trpc'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { zodResolver } from '@hookform/resolvers/zod'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 
@@ -37,7 +36,7 @@ const roleOptions: RichCardOption<'Mediateur' | 'Coordinateur'>[] = [
   },
   {
     label: profileInscriptionLabels.Coordinateur,
-    hint: 'Coordonnez une équipe de médiateur·rice numérique et suivez leurs activités.',
+    hint: 'Suivez les activités de médiation numérique de votre équipe.',
     extra: {
       illustration: '/images/iconographie/profil-coordinateur.svg',
     },
@@ -87,7 +86,7 @@ const ChoisirRolePage = ({ userId }: { userId: string }) => {
   const isLoading = mutation.isPending || mutation.isSuccess
 
   return (
-    <div className="fr-mb-32v fr-p-12v fr-width-full fr-border-radius--8 fr-background-default--grey fr-mt-32v">
+    <div className="fr-border fr-mb-32v fr-p-12v fr-width-full fr-border-radius--8 fr-background-default--grey fr-mt-32v">
       <div className="fr-flex fr-direction-column fr-align-items-center">
         <LogoCoop />
         <h1 className="fr-h3 fr-text-title--blue-france fr-mt-10v fr-mb-2v fr-text--center">
@@ -98,41 +97,35 @@ const ChoisirRolePage = ({ userId }: { userId: string }) => {
           besoins.
         </p>
       </div>
-
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <RadioFormField
+          className="fr-px-3v"
           control={control}
           path="profil"
           options={roleOptions}
           disabled={isLoading}
           components={{
             label: RichCardLabel,
-            labelProps: { paddingX: 16 },
+            labelProps: { paddingX: 24, paddingY: 24 },
           }}
           classes={{
             radioGroup: 'fr-width-full fr-min-width-full fr-mb-4v',
             fieldsetElement: richCardFieldsetElementClassName,
           }}
         />
-
         <hr className="fr-separator-6v fr-mb-10v" />
-
         <CguCheckboxField
           path="cguAcceptee"
           control={control}
           disabled={isLoading}
         />
-
-        <div className="fr-btns-group fr-mt-10v">
-          <Button type="submit" {...buttonLoadingClassname(isLoading)}>
+        <div className="fr-btns-group fr-btns-group--lg fr-mt-6v">
+          <Button
+            type="submit"
+            {...buttonLoadingClassname(isLoading, 'fr-mb-0')}
+          >
             Continuer
           </Button>
-        </div>
-
-        <div className="fr-flex fr-direction-column fr-align-items-center fr-mt-10">
-          <Link href="/inscription" className="fr-link fr-text--center">
-            Revenir plus tard
-          </Link>
         </div>
       </form>
     </div>

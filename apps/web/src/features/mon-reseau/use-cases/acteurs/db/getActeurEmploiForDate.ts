@@ -1,5 +1,4 @@
 import { prismaClient } from '@app/web/prismaClient'
-import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import type { Prisma } from '@prisma/client'
 
 const emploiStructureEmployeuseSelect = {
@@ -43,6 +42,55 @@ const hasDebutDate = (
 ): emploi is ActeurEmploi & { debut: Date } => emploi.debut !== null
 
 /**
+ * Get the temporary emploi for a date.
+ *
+ * A temporary emploi is an emploi without a debut date.
+ * It is valid from the next day after the latest ended real emploi.
+ */
+const getTemporaryEmploiForDate = ({
+  emploisWithNullDebut,
+  emploisWithDebut,
+  date,
+}: {
+  emploisWithNullDebut: ActeurEmploi[]
+  emploisWithDebut: (ActeurEmploi & { debut: Date })[]
+  date: Date
+}): ActeurEmploi | null => {
+  const temporaryEmploi = emploisWithNullDebut.toSorted(
+    (a, b) => b.creation.getTime() - a.creation.getTime(),
+  )[0]
+  if (!temporaryEmploi) {
+    return null
+  }
+
+  if (emploisWithDebut.length === 0) {
+    return temporaryEmploi
+  }
+
+  const hasRunningRealEmploi = emploisWithDebut.some(
+    (emploi) => emploi.fin === null,
+  )
+  if (hasRunningRealEmploi) {
+    return null
+  }
+
+  const latestEndedRealEmploiDate = emploisWithDebut
+    .map((emploi) => emploi.fin)
+    .filter((fin): fin is Date => fin !== null)
+    .toSorted((a, b) => b.getTime() - a.getTime())[0]
+
+  if (!latestEndedRealEmploiDate) {
+    return null
+  }
+
+  const temporaryEmploiValidFrom = new Date(latestEndedRealEmploiDate)
+  temporaryEmploiValidFrom.setHours(0, 0, 0, 0)
+  temporaryEmploiValidFrom.setDate(temporaryEmploiValidFrom.getDate() + 1)
+
+  return date >= temporaryEmploiValidFrom ? temporaryEmploi : null
+}
+
+/**
  * Rules for finding the current emploi for a user and a date.
  *
  * Non-strict mode (handles gaps gracefully, each emploi is valid until the next one starts):
@@ -65,66 +113,55 @@ export const getActeurEmploiForDate = async <T extends boolean>({
   date: Date
   strictDateBounds: T
 }): Promise<T extends true ? ActeurEmploi | null : ActeurEmploi> => {
-  const emplois = strictDateBounds
-    ? [
-        await prismaClient.employeStructure.findFirst({
-          where: {
-            userId,
-            suppression: null,
-            debut: {
-              not: null,
-              lte: date,
-            },
-            OR: [
-              {
-                fin: null,
-              },
-              {
-                fin: { gte: date },
-              },
-            ],
-          },
-          select: {
-            ...emploiContractSelect,
-            structure: {
-              select: emploiStructureEmployeuseSelect,
-            },
-          },
-          orderBy: { debut: 'desc' },
-        }),
-      ].filter(isDefinedAndNotNull)
-    : // In non-strict mode, fetch ALL emplois for the user (without date filtering)
-      // The date logic is applied in code below to handle edge cases like:
-      // - dates before the first emploi's debut
-      // - dates after the last emploi's fin
-      await prismaClient.employeStructure.findMany({
-        where: {
-          userId,
-          suppression: null,
-          debut: {
-            not: null,
-          },
-        },
-        select: {
-          ...emploiContractSelect,
-          structure: {
-            select: emploiStructureEmployeuseSelect,
-          },
-        },
-        orderBy: { debut: 'asc' },
-      })
+  const emplois = await prismaClient.employeStructure.findMany({
+    where: {
+      userId,
+      suppression: null,
+    },
+    select: {
+      ...emploiContractSelect,
+      structure: {
+        select: emploiStructureEmployeuseSelect,
+      },
+    },
+    orderBy: {
+      creation: 'desc',
+    },
+  })
+
+  const emploisWithDebut = emplois
+    .filter(hasDebutDate)
+    .toSorted((a, b) => a.debut.getTime() - b.debut.getTime())
+  const emploisWithNullDebut = emplois.filter((emploi) => emploi.debut === null)
+  const temporaryEmploi = getTemporaryEmploiForDate({
+    emploisWithNullDebut,
+    emploisWithDebut,
+    date,
+  })
 
   if (strictDateBounds) {
-    const emploi = emplois[0]
-    if (!emploi || emploi.debut === null) {
-      return null as T extends true ? null : ActeurEmploi
+    const strictRealEmploi = emploisWithDebut
+      .filter(
+        (emploi) =>
+          emploi.debut <= date && (emploi.fin === null || emploi.fin >= date),
+      )
+      .toSorted((a, b) => b.debut.getTime() - a.debut.getTime())[0]
+
+    if (strictRealEmploi) {
+      return strictRealEmploi
     }
-    return emploi
+
+    return (temporaryEmploi ?? null) as T extends true
+      ? ActeurEmploi | null
+      : ActeurEmploi
   }
 
-  // Non-strict mode: find the emploi valid for the given date
-  // Emplois are ordered by debut ASC
-  const emploisWithDebut = emplois.filter(hasDebutDate)
+  if (temporaryEmploi) {
+    return temporaryEmploi
+  }
+
+  // Non-strict mode: find the real emploi valid for the given date.
+  // Emplois are ordered by debut ASC.
   const firstEmploi = emploisWithDebut.at(0)
   if (!firstEmploi) {
     throw new Error('No emploi found for user')

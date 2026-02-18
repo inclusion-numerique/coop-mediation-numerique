@@ -1,10 +1,7 @@
 import { ProfilInscription } from '@prisma/client'
 
 export const getActeurIconUrl = (profil: ProfilInscription): string | null => {
-  if (
-    profil === 'CoordinateurConseillerNumerique' ||
-    profil === 'Coordinateur'
-  ) {
+  if (profil === 'CoordinateurConseillerNumerique') {
     return '/images/iconographie/profil-coordinateur-conseiller-numerique-minimal.svg'
   }
 

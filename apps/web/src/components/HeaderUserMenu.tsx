@@ -166,24 +166,6 @@ export const HeaderUserMenu = ({ user }: { user: SessionUser }) => {
         </li>
       )}
       {!restricted &&
-        (isConseillerNumerique(user) ||
-          isCoordinateurConseillerNumerique(user)) && (
-          <li>
-            <Link
-              className="fr-nav__link fr-display-block"
-              href="/coop/archives-v1"
-              style={{ boxShadow: 'none' }}
-            >
-              <span
-                className="fr-icon--sm fr-icon-archive-line fr-mr-1-5v"
-                style={{ color: 'var(--blue-france-sun-113-625)' }}
-                aria-hidden
-              />
-              Mes archives&nbsp;-&nbsp;Coop V.1
-            </Link>
-          </li>
-        )}
-      {!restricted &&
         !user.coordinateur &&
         (mediateurCoordinations?.length ?? 0) > 1 && (
           <li className="fr-border--top">

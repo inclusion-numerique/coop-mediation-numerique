@@ -1,5 +1,6 @@
 import { prismaClient } from '@app/web/prismaClient'
 import type { OAuthApiRdv } from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
+import type { Rdv } from '@prisma/client'
 import { createOrMergeBeneficiairesFromRdvUserIds } from '../sync/createOrMergeBeneficiaireFromRdvUsers'
 import {
   createRdv,
@@ -8,6 +9,23 @@ import {
   updateRdv,
 } from '../sync/syncRdv'
 import type { RdvspWebhookEvent, RdvspWebhookRdvData } from './rdvWebhook'
+
+// Check if a webhook RDV has meaningful changes compared to the existing DB record
+const webhookRdvHasDiff = (existing: Rdv, rdv: OAuthApiRdv) => {
+  const sameInstant = (date: Date, apiDateString: string) =>
+    date.getTime() === new Date(apiDateString).getTime()
+
+  if (existing.status !== rdv.status) return true
+  if (existing.durationInMin !== rdv.duration_in_min) return true
+  if ((existing.name ?? null) !== (rdv.name ?? null)) return true
+  if (!sameInstant(existing.endsAt, rdv.ends_at)) return true
+  if (!sameInstant(existing.startsAt, rdv.starts_at)) return true
+  if ((existing.lieuId ?? null) !== (rdv.lieu?.id ?? null)) return true
+  if (existing.motifId !== rdv.motif.id) return true
+  if (existing.organisationId !== rdv.organisation.id) return true
+
+  return false
+}
 
 // Convert webhook RDV data to OAuthApiRdv format
 const webhookRdvToOAuthApiRdv = (data: RdvspWebhookRdvData): OAuthApiRdv => {
@@ -122,6 +140,15 @@ export const handleRdvModelWebhook = async ({
           // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
           console.log(
             `[rdvsp webhook] Created RDV ${data.id} (was updated but didn't exist)`,
+          )
+        } else if (
+          existingRdv.craDeclined &&
+          !webhookRdvHasDiff(existingRdv, rdv)
+        ) {
+          // CRA was declined and no real change from RDVSP → skip update to preserve craDeclined
+          // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
+          console.log(
+            `[rdvsp webhook] Skipping update for RDV ${data.id} (craDeclined, no diff)`,
           )
         } else {
           await updateRdv(rdv, rdvAccountId)

@@ -15,12 +15,12 @@ export const OnboardingMesBeneficiaires = () => (
     title="Suivez l'évolution de vos bénéficiaires"
     label={
       <>
-        <span className="ri-user-heart-line ri-lg fr-mr-1w" aria-hidden />
+        <span className="ri-user-heart-line ri-xl fr-mr-3v" aria-hidden />
         Mes bénéficiaires
       </>
     }
     stepIndex={3}
-    totalSteps={4}
+    totalSteps={5}
     previous={{ href: '/en-savoir-plus/mes-statistiques' }}
     next={{ href: '/en-savoir-plus/mes-outils' }}
     closeHref="/coop"

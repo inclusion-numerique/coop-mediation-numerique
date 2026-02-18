@@ -5,6 +5,7 @@ export type ContractStatus = {
   hasEnded: boolean
   isRuptured: boolean
   isActive: boolean
+  isTemporary: boolean
 }
 
 /**
@@ -14,6 +15,7 @@ export type ContractStatus = {
  * - hasEnded: true if date_fin exists and date_fin < date
  * - isRuptured: true if date_rupture exists and date_rupture < date
  * - isActive: true if started, not ended, and not ruptured
+ * - isTemporary: true if date_debut is null
  */
 export const getContractStatus = ({
   contrat,
@@ -22,8 +24,9 @@ export const getContractStatus = ({
   contrat: DataspaceContrat
   date?: Date
 }): ContractStatus => {
-  const dateDebut = new Date(contrat.date_debut)
-  const hasStarted = dateDebut <= date
+  const hasStarted = contrat.date_debut
+    ? new Date(contrat.date_debut) <= date
+    : false // a temp contract without date debut is considered as not started
 
   // null date_fin means CDI with no end date - contract is not ended
   const hasEnded = contrat.date_fin ? new Date(contrat.date_fin) < date : false
@@ -40,5 +43,6 @@ export const getContractStatus = ({
     hasEnded,
     isRuptured,
     isActive,
+    isTemporary: contrat.date_debut === null,
   }
 }
