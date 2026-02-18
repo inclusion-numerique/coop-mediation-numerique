@@ -175,14 +175,12 @@ export const updateRdv = async (rdv: OAuthApiRdv, rdvAccountId: number) => {
         rdvId: rdv.id,
       },
     })
-    // Update RDV — exclude craDeclined to preserve user-set value
-    const { craDeclined: _craDeclined, ...rdvData } =
-      rdvPrismaDataFromOAuthApiRdv(rdv, rdvAccountId)
+    // Update RDV
     await tx.rdv.update({
       where: {
         id: rdv.id,
       },
-      data: rdvData,
+      data: rdvPrismaDataFromOAuthApiRdv(rdv, rdvAccountId),
     })
     // Recreate participations
     await tx.rdvParticipation.createMany({
