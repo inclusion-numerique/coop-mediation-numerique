@@ -50,7 +50,7 @@ export const hasActiveContractFromDataspace = (
 
   // Check if any structure has an active contract (date_debut <= now <= date_fin, no date_rupture)
   return (dataspaceData.structures_employeuses ?? []).some((structure) =>
-    structure.contrats?.some(
+    structure?.contrats?.some(
       (contrat) => getContractStatus({ contrat, date: now }).isActive,
     ),
   )

@@ -20,6 +20,7 @@ import {
   mockDataspaceStructureEmployeuse,
   mockDataspaceStructureEmployeuseWithMultipleContrats,
   mockDataspaceStructureEmployeuseWithNoContrat,
+  mockDataspaceStructureEmployeuseWithoutContact,
 } from '@app/web/external-apis/dataspace/dataspaceApiClientMockData'
 import { prismaClient } from '@app/web/prismaClient'
 import { updateUserFromDataspaceData } from './updateUserFromDataspaceData'
@@ -543,6 +544,116 @@ describe('updateUserFromDataspaceData', () => {
 
       expect(emploisWithNullDebut.length).toBe(1)
       expect(activeTemporaryEmplois.length).toBe(1)
+    })
+
+    test('should ignore null structure entries from Dataspace payload', async () => {
+      const user = await prismaClient.user.findUniqueOrThrow({
+        where: { id: mediateurSansActivites.id },
+        select: { id: true, email: true },
+      })
+
+      const mockDataWithNullStructureEntry: DataspaceMediateur = {
+        id: 80022,
+        is_coordinateur: false,
+        is_conseiller_numerique: true,
+        pg_id: 80022,
+        structures_employeuses: [
+          null,
+          {
+            ...mockDataspaceStructureEmployeuseWithoutContact,
+            contrats: [
+              {
+                type: 'CDD',
+                date_fin: null,
+                date_debut: null,
+                date_rupture: null,
+              },
+            ],
+          },
+        ],
+        lieux_activite: [],
+        conseillers_numeriques_coordonnes: [],
+      }
+
+      setMockDataspaceData(user.email, mockDataWithNullStructureEntry)
+      const result = await updateUserFromDataspaceData({ userId: user.id })
+
+      expect(result.success).toBe(true)
+      expect(result.noOp).toBe(false)
+      expect(result.changes.structuresSynced).toBe(1)
+
+      const activeEmplois = await prismaClient.employeStructure.findMany({
+        where: { userId: user.id, suppression: null },
+        select: { id: true, debut: true, fin: true },
+      })
+
+      expect(activeEmplois).toHaveLength(1)
+      expect(activeEmplois[0].debut).toBeNull()
+      expect(activeEmplois[0].fin).toBeNull()
+    })
+
+    test('should create temporary emploi from null-debut contracts even with ended emploi today', async () => {
+      const user = await prismaClient.user.findUniqueOrThrow({
+        where: { id: mediateurSansActivites.id },
+        select: { id: true, email: true },
+      })
+
+      const mockWithRunningContract: DataspaceMediateur = {
+        ...mockDataspaceConseillerNumerique,
+        id: 80024,
+        pg_id: 80024,
+      }
+      setMockDataspaceData(user.email, mockWithRunningContract)
+      const initialResult = await updateUserFromDataspaceData({
+        userId: user.id,
+      })
+      expect(initialResult.success).toBe(true)
+
+      await prismaClient.employeStructure.updateMany({
+        where: { userId: user.id, suppression: null },
+        data: {
+          fin: new Date(),
+        },
+      })
+
+      const mockDataWithOnlyNullDebutContracts: DataspaceMediateur = {
+        id: 80023,
+        is_coordinateur: false,
+        is_conseiller_numerique: true,
+        pg_id: 80023,
+        structures_employeuses: [
+          {
+            ...mockDataspaceStructureEmployeuse,
+            contrats: [
+              {
+                type: 'CDD',
+                date_fin: null,
+                date_debut: null,
+                date_rupture: null,
+              },
+            ],
+          },
+          mockDataspaceStructureEmployeuseWithNoContrat,
+        ],
+        lieux_activite: [],
+        conseillers_numeriques_coordonnes: [],
+      }
+      setMockDataspaceData(user.email, mockDataWithOnlyNullDebutContracts)
+
+      const result = await updateUserFromDataspaceData({ userId: user.id })
+      expect(result.success).toBe(true)
+      expect(result.noOp).toBe(false)
+      expect(result.changes.structuresSynced).toBe(1)
+
+      const emplois = await prismaClient.employeStructure.findMany({
+        where: { userId: user.id },
+        select: { id: true, debut: true, fin: true, suppression: true },
+      })
+
+      const activeTemporaryEmplois = emplois.filter(
+        (emploi) => emploi.suppression === null && emploi.debut === null,
+      )
+      expect(activeTemporaryEmplois).toHaveLength(1)
     })
 
     test('should only create emploi for structures WITH contracts, ignoring those without', async () => {
