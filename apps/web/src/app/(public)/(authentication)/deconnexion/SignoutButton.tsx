@@ -30,6 +30,7 @@ const SignoutButton = ({
   return (
     <Button
       type="button"
+      size="large"
       onClick={onLogout}
       {...buttonProps}
       {...buttonLoadingClassname(isLoading, className)}

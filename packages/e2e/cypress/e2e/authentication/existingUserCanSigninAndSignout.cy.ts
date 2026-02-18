@@ -80,7 +80,7 @@ describe('ETQ Utilisateur, je peux me connecter à mon compte / me déconnecter 
     cy.get('#header-user-menu').contains('Se déconnecter').click()
 
     cy.url().should('equal', appUrl('/deconnexion'))
-    cy.contains('Êtes-vous sûr·e de vouloir vous déconnecter ?')
+    cy.contains('Êtes-vous sûr de vouloir vous déconnecter ?')
     cy.get('main').contains('Se déconnecter').click()
 
     // Identity provider logout flow

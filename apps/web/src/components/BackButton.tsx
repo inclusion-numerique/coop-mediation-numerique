@@ -22,7 +22,6 @@ const BackButton = ({
     return (
       <Button
         priority="tertiary no outline"
-        size="small"
         linkProps={{ href }}
         className={buttonClassName}
         iconId="fr-icon-arrow-left-line"
@@ -35,7 +34,6 @@ const BackButton = ({
   return (
     <Button
       priority="tertiary no outline"
-      size="small"
       onClick={() => router.back()}
       className={buttonClassName}
       iconId="fr-icon-arrow-left-line"
