@@ -16,7 +16,7 @@ const BackButton = ({
 }) => {
   const router = useRouter()
 
-  const buttonClassName = classNames('fr-my-4v', className)
+  const buttonClassName = classNames('fr-mb-4v', className)
 
   if (href) {
     return (
