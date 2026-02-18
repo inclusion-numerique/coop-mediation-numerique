@@ -40,6 +40,11 @@ export const lieuxForListSelect = {
         where: {
           suppression: null,
           fin: null,
+          mediateur: {
+            user: {
+              deleted: null,
+            },
+          },
         },
       },
     },

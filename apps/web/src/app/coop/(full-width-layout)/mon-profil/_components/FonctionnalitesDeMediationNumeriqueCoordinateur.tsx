@@ -41,18 +41,18 @@ const FonctionnalitesDeMediationNumeriqueCoordinateur = ({
     <Card
       noBorder
       className="fr-border fr-border-radius--8"
-      titleAs="h2"
+      titleAs="div"
       title={
-        <span className="fr-flex fr-align-items-center fr-justify-content-space-between">
-          <span className="fr-text-title--blue-france">
+        <div className="fr-flex fr-flex-gap-2v fr-align-items-center fr-justify-content-space-between fr-mb-2v fr-width-full">
+          <h2 className="fr-text-title--blue-france fr-mb-0 fr-h4">
             Fonctionnalités de médiation numérique
-          </span>
+          </h2>
           {isActive && (
             <Badge className="fr-text--uppercase" severity="success">
               Activé
             </Badge>
           )}
-        </span>
+        </div>
       }
       description={
         <>
