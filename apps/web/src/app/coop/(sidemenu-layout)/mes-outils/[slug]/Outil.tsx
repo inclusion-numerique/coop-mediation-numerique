@@ -50,14 +50,15 @@ export const Outil = ({
       />
       <section className="fr-grid-row fr-grid-row--gutters">
         <div className="fr-col-xl-7 fr-col-12">
-          <div className="fr-border fr-border-radius--8 fr-p-4w fr-height-full">
+          <div className="fr-border fr-border-radius--8 fr-p-10v fr-height-full">
             {features != null && <Features features={features} />}
           </div>
         </div>
         <div className="fr-col-xl-5 fr-col-12">
           <div
             className={classNames(
-              'fr-border fr-border-radius--8 fr-px-3w fr-py-4w fr-height-full',
+              'fr-border fr-border-radius--8 fr-height-full',
+              { 'fr-px-3w fr-py-4w': !classes?.access?.includes('fr-p-0') },
               classes?.access,
             )}
           >
