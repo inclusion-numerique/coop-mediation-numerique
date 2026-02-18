@@ -58,8 +58,10 @@ const findLastRdv = async ({
   return prismaClient.rdv.findFirst({
     where: {
       rdvAccountId,
-      status: 'unknown',
-      endsAt: { lte: now },
+      OR: [
+        { status: 'unknown', endsAt: { lte: now } },
+        { status: 'seen', activite: null, craDeclined: false },
+      ],
     },
     select: {
       id: true,
@@ -150,6 +152,7 @@ export const getDashboardRdvData = async ({
           rdvAccountId: rdvAccount.id,
           status: 'seen',
           activite: null,
+          craDeclined: false,
         },
       }),
     ])
