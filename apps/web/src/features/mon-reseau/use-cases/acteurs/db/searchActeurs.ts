@@ -124,6 +124,8 @@ export const searchActeurs = async ({
         NULLIF(regexp_replace(lower(unaccent(u.last_name)), '[\\s-]', '', 'g'), '') ILIKE '%' || ${normalizedSearchTerm} || '%'
         OR NULLIF(regexp_replace(lower(unaccent(u.first_name)), '[\\s-]', '', 'g'), '') ILIKE '%' || ${normalizedSearchTerm} || '%'
         OR lower(u.email) ILIKE '%' || ${searchTerm} || '%'
+        OR regexp_replace(lower(unaccent(u.first_name)), '[\\s-]', '', 'g') || regexp_replace(lower(unaccent(u.last_name)), '[\\s-]', '', 'g') ILIKE '%' || ${normalizedSearchTerm} || '%'
+        OR regexp_replace(lower(unaccent(u.last_name)), '[\\s-]', '', 'g') || regexp_replace(lower(unaccent(u.first_name)), '[\\s-]', '', 'g') ILIKE '%' || ${normalizedSearchTerm} || '%'
       )`
     : Prisma.sql`TRUE`
 
