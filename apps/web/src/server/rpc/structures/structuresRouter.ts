@@ -2,8 +2,10 @@ import { searchStructureEmployeuseCombined } from '@app/web/features/inscription
 import { CreerStructureValidation } from '@app/web/features/structures/CreerStructureValidation'
 import { searchStructuresEmployeuses } from '@app/web/features/structures/getStructuresEmployeusesOptions'
 import { mediateurCoordonnesIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
+import { mergeStructure } from '@app/web/features/structures/use-cases/merge/mutations/mergeStructure'
 import { prismaClient } from '@app/web/prismaClient'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
+import { enforceIsAdmin } from '@app/web/server/rpc/enforceIsAdmin'
 import { searchLieuActiviteCombined } from '@app/web/structure/searchLieuActiviteCombined'
 import { searchStructure } from '@app/web/structure/searchStructure'
 import { searchStructureCartographieNationale } from '@app/web/structure/searchStructureCartographieNationale'
@@ -180,4 +182,16 @@ export const structuresRouter = router({
       return created
     },
   ),
+
+  merge: protectedProcedure
+    .input(
+      z.object({
+        sourceStructureId: z.string().uuid(),
+        targetStructureId: z.string().uuid(),
+      }),
+    )
+    .mutation(async ({ input, ctx: { user } }) => {
+      enforceIsAdmin(user)
+      return mergeStructure(input.sourceStructureId, input.targetStructureId)
+    }),
 })
