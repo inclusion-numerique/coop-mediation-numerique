@@ -15,7 +15,7 @@ const withInvitationFrom =
 export const inviteToJoinTeamOf =
   (user: CoordinateurUser) =>
   async (members: { email: string; mediateurId?: string }[]) => {
-    const mediateurs = await prismaClient.invitationEquipe.findMany({
+    const existingInvitations = await prismaClient.invitationEquipe.findMany({
       where: {
         mediateurId: {
           in: user.coordinateur.mediateursCoordonnes.map(
@@ -26,15 +26,40 @@ export const inviteToJoinTeamOf =
       select: { email: true },
     })
 
+    const existingTeamMembers = await prismaClient.mediateurCoordonne.findMany({
+      where: {
+        coordinateurId: user.coordinateur.id,
+        suppression: null,
+      },
+      select: {
+        mediateur: {
+          select: {
+            user: {
+              select: { email: true },
+            },
+          },
+        },
+      },
+    })
+
+    const isAlreadyInvited = (email: string) =>
+      existingInvitations.some(
+        (invitation) => invitation.email.toLowerCase() === email.toLowerCase(),
+      )
+
+    const isAlreadyTeamMember = (email: string) =>
+      existingTeamMembers.some(
+        ({ mediateur }) =>
+          mediateur.user.email.toLowerCase() === email.toLowerCase(),
+      )
+
     const invitations = members
-      .filter((member) =>
-        mediateurs.every(
-          (mediateur) =>
-            mediateur.email.toLowerCase() !== member.email.toLowerCase(),
-        ),
+      .filter(
+        (member) =>
+          !isAlreadyInvited(member.email) && !isAlreadyTeamMember(member.email),
       )
       .map((member) => ({
-        email: member.email,
+        email: member.email.toLowerCase(),
         coordinateurId: user.coordinateur.id,
         acceptee: null,
         refusee: null,
