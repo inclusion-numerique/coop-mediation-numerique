@@ -60,6 +60,20 @@ export const UtilisateursDataTable = {
       ],
     },
     {
+      name: 'lastSeen',
+      header: 'Dernière activité',
+      csvHeaders: ['Dernière activité'],
+      defaultSortable: true,
+      defaultSortableDirection: 'desc',
+      csvValues: ({ lastSeen }) => [lastSeen?.toISOString()],
+      cell: ({ lastSeen }) => dateAsDayAndTime(lastSeen),
+      orderBy: (direction) => [
+        {
+          lastSeen: direction,
+        },
+      ],
+    },
+    {
       name: 'lastCra',
       csvHeaders: ['Dernière complétion d’un CRA'],
       csvValues: ({ mediateur }) => [
