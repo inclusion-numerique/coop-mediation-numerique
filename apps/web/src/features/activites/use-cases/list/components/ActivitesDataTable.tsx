@@ -1,6 +1,9 @@
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import type { DataTableSearchParams } from '@app/web/libs/data-table/DataTableConfiguration'
-import { dateAsDay } from '@app/web/utils/dateAsDay'
+import {
+  dateAsDay,
+  dateAsDayWithHourInTimezone,
+} from '@app/web/utils/dateAsDay'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { dureeAsString } from '@app/web/utils/dureeAsString'
 import { typeActiviteLabels } from '../../cra/fields/type-activite'
@@ -71,7 +74,8 @@ export const ActivitesDataTable = {
       header: 'Enregistrée le',
       csvHeaders: ['enregistree_le'],
       csvValues: ({ creation }) => [dateAsIsoDay(creation)],
-      cell: ({ creation }) => dateAsDay(creation),
+      cell: ({ creation, timezone }) =>
+        dateAsDayWithHourInTimezone(creation, timezone),
     },
   ],
 } satisfies ActivitesDataTableConfiguration
