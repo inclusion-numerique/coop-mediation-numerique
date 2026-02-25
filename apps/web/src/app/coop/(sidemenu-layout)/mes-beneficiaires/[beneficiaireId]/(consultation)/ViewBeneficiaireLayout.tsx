@@ -5,7 +5,7 @@ import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { SessionUser } from '@app/web/auth/sessionUser'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
-import BackButton from '@app/web/components/BackButton'
+import BackButtonBeneficiaire from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/BackButtonBeneficiaire'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import type { DuplicateBeneficiaire } from '@app/web/features/beneficiaires/db/findDuplicateForBeneficiaire'
 import type { BeneficiaireCraData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
@@ -53,7 +53,7 @@ const ViewBeneficiaireLayout = ({
         currentPage={displayName}
       />
       <main id={contentId}>
-        <BackButton />
+        <BackButtonBeneficiaire />
         <div
           className={classNames(
             'fr-width-full fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-8v',

@@ -28,7 +28,7 @@ const BeneficiairePageNavigationBar = ({
             href={`/coop/mes-beneficiaires/${beneficiaireId}/accompagnements`}
             aria-current={current === 'accompagnements' ? 'page' : undefined}
           >
-            Historique des accompagnements&nbsp;·&nbsp;
+            Historique des activités&nbsp;·&nbsp;
             <span className="fr-text--bold">{accompagnementsCount}</span>
           </Link>
         </li>

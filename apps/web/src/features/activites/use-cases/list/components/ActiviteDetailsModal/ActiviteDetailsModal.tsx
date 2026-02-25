@@ -422,7 +422,7 @@ const ActiviteDetailsModal = ({
       </p>
 
       <p className="fr-mt-2v fr-text--sm fr-text--medium fr-mb-0 fr-text-mention--grey">
-        <span className="fr-icon-calendar-line fr-icon--sm fr-mr-1-5v" />
+        <span className="fr-icon-calendar-event-line fr-icon--sm fr-mr-1-5v" />
         {formatActiviteDayDate(date)}
         &nbsp;·&nbsp;
         <span className="fr-icon-time-line fr-icon--sm fr-mr-1-5v" />
@@ -484,11 +484,11 @@ const ActiviteDetailsModal = ({
               <div className="fr-flex fr-align-items-center">
                 <span className="fr-icon-user-heart-line fr-icon--sm fr-mr-3v fr-text-mention--grey" />
                 <Link
-                  href={`/coop/mes-beneficiaires/${beneficiaireUnique.id}`}
+                  href={`/coop/mes-beneficiaires/${beneficiaireUnique.id}?retour=${encodeURIComponent(actionsRetourPath)}`}
                   className="fr-link fr-text--sm fr-mb-0 fr-text--medium fr-link--underline-on-hover"
                 >
                   {getBeneficiaireDisplayName(beneficiaireUnique)}&nbsp;·&nbsp;
-                  {beneficiaireUnique.accompagnementsCount} accompagnement
+                  {beneficiaireUnique.accompagnementsCount} activité
                   {sPluriel(beneficiaireUnique.accompagnementsCount)}
                 </Link>
               </div>
@@ -565,7 +565,7 @@ const ActiviteDetailsModal = ({
                         <ListItem key={beneficiaire.id} className="fr-mb-0">
                           <Link
                             className="fr-link fr-link--underline-on-hover fr-text--sm fr-mb-0"
-                            href={`/coop/mes-beneficiaires/${beneficiaire.id}`}
+                            href={`/coop/mes-beneficiaires/${beneficiaire.id}?retour=${encodeURIComponent(actionsRetourPath)}`}
                           >
                             {getBeneficiaireDisplayName(beneficiaire)}
                           </Link>
@@ -581,7 +581,9 @@ const ActiviteDetailsModal = ({
                       {participants.beneficiairesSuivis.length > 0 && (
                         <p className="fr-text--sm fr-mt-4v fr-text--bold fr-mb-1v">
                           {participants.participantsAnonymes.total} Participant
-                          {sPluriel(participants.participantsAnonymes.total)}{' '}
+                          {sPluriel(
+                            participants.participantsAnonymes.total,
+                          )}{' '}
                           anonyme
                           {sPluriel(participants.participantsAnonymes.total)}
                           &nbsp;:

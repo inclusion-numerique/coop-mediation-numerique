@@ -153,6 +153,16 @@ export const fusionnerBeneficiaires = async ({
         },
       })
 
+      // 4.c. Recalculer le compteur d'accompagnements du bénéficiaire destination
+      const accompagnementsCount = await transaction.accompagnement.count({
+        where: { beneficiaireId: destination.id },
+      })
+
+      await transaction.beneficiaire.update({
+        where: { id: destination.id },
+        data: { accompagnementsCount },
+      })
+
       // 5. Mettre à jour tous les bénéficiaires qui avaient fusionVersId = source.id
       // pour qu'ils pointent vers destination.id (en cas de fusions successives)
       await transaction.$executeRaw`UPDATE beneficiaires 

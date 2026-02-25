@@ -16,6 +16,7 @@ import type { EncodedState } from '@app/web/utils/encodeSerializableState'
 import { contentId } from '@app/web/utils/skipLinks'
 import { notFound } from 'next/navigation'
 import type { DefaultValues } from 'react-hook-form'
+import Link from 'next/link'
 
 const PageModifierBeneficiaire = async (props: {
   searchParams: Promise<{
@@ -142,7 +143,15 @@ const PageModifierBeneficiaire = async (props: {
             <h1 className="fr-text-title--blue-france fr-mb-2v">
               {displayName}
             </h1>
-            <RequiredFieldsDisclamer className="fr-my-0" />
+            <Link
+              className="fr-link"
+              target="_blank"
+              rel="noreferrer"
+              href="https://docs.numerique.gouv.fr/docs/3d5bad76-8e02-4abc-b83a-c2f2965ae5d9/"
+            >
+              En savoir plus sur l’usage et la protection des données de mes
+              bénéficiaires.
+            </Link>
           </div>
         </div>
         <BeneficiaireForm
