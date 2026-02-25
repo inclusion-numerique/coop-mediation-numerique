@@ -2,27 +2,33 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { ReactNode } from 'react'
 
 const BackButton = ({
   href,
+  fallbackHref,
   children = 'Retour',
   className,
 }: {
   href?: string
+  fallbackHref?: string
   children?: ReactNode
   className?: string
 }) => {
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  const retour = searchParams.get('retour')
+  const resolvedHref = href ?? (fallbackHref ? retour ?? fallbackHref : null)
 
   const buttonClassName = classNames('fr-mb-4v', className)
 
-  if (href) {
+  if (resolvedHref) {
     return (
       <Button
         priority="tertiary no outline"
-        linkProps={{ href }}
+        linkProps={{ href: resolvedHref }}
         className={buttonClassName}
         iconId="fr-icon-arrow-left-line"
       >
