@@ -581,9 +581,7 @@ const ActiviteDetailsModal = ({
                       {participants.beneficiairesSuivis.length > 0 && (
                         <p className="fr-text--sm fr-mt-4v fr-text--bold fr-mb-1v">
                           {participants.participantsAnonymes.total} Participant
-                          {sPluriel(
-                            participants.participantsAnonymes.total,
-                          )}{' '}
+                          {sPluriel(participants.participantsAnonymes.total)}{' '}
                           anonyme
                           {sPluriel(participants.participantsAnonymes.total)}
                           &nbsp;:

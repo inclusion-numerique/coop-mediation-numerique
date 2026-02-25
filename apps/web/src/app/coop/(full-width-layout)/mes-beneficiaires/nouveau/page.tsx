@@ -1,4 +1,3 @@
-import RequiredFieldsDisclamer from '@app/ui/components/Form/RequiredFieldsDisclamer'
 import BeneficiaireForm from '@app/web/app/coop/(full-width-layout)/mes-beneficiaires/BeneficiaireForm'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'

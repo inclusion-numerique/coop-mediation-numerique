@@ -20,7 +20,7 @@ const BackButton = ({
   const searchParams = useSearchParams()
 
   const retour = searchParams.get('retour')
-  const resolvedHref = href ?? (fallbackHref ? retour ?? fallbackHref : null)
+  const resolvedHref = href ?? (fallbackHref ? (retour ?? fallbackHref) : null)
 
   const buttonClassName = classNames('fr-mb-4v', className)
 

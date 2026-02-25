@@ -1,4 +1,3 @@
-import RequiredFieldsDisclamer from '@app/ui/components/Form/RequiredFieldsDisclamer'
 import BeneficiaireForm from '@app/web/app/coop/(full-width-layout)/mes-beneficiaires/BeneficiaireForm'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
@@ -14,9 +13,9 @@ import type { BeneficiaireData } from '@app/web/features/beneficiaires/validatio
 import { prismaClient } from '@app/web/prismaClient'
 import type { EncodedState } from '@app/web/utils/encodeSerializableState'
 import { contentId } from '@app/web/utils/skipLinks'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { DefaultValues } from 'react-hook-form'
-import Link from 'next/link'
 
 const PageModifierBeneficiaire = async (props: {
   searchParams: Promise<{
