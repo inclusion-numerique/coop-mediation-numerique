@@ -1,8 +1,8 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import { LieuActivitePageContent } from '@app/web/features/lieux-activite/components/LieuActivitePageContent'
+import { getLieuActivitePageData } from '@app/web/features/lieux-activite/getLieuActivitePageData'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
-import { getStructureDataForForm } from '@app/web/structure/getStructureDataForForm'
-import StructureEdition from '@app/web/structure/StructureEdition'
 import { contentId } from '@app/web/utils/skipLinks'
 import { toTitleCase } from '@app/web/utils/toTitleCase'
 import { Metadata } from 'next'
@@ -14,11 +14,11 @@ export const metadata: Metadata = {
 
 const Page = async (props: { params: Promise<{ structureId: string }> }) => {
   const params = await props.params
-  const structure = await getStructureDataForForm({
-    structureId: params.structureId,
+  const data = await getLieuActivitePageData({
+    id: params.structureId,
   })
 
-  if (!structure) {
+  if (!data) {
     return notFound()
   }
 
@@ -33,11 +33,18 @@ const Page = async (props: { params: Promise<{ structureId: string }> }) => {
             linkProps: { href: `/administration/structures` },
           },
         ]}
-        currentPage={toTitleCase(structure.nom, { noUpper: true })}
+        currentPage={toTitleCase(data.structure.nom, { noUpper: true })}
       />
 
-      <main id={contentId} className="fr-mt-12v fr-pb-20v">
-        <StructureEdition structure={structure} />
+      <main
+        id={contentId}
+        className="fr-mt-12v fr-pb-20v fr-flex fr-justify-content-center"
+      >
+        <LieuActivitePageContent
+          data={data}
+          canRemoveMediateurFromLieu
+          hideBreadcrumbs
+        />
       </main>
     </>
   )
