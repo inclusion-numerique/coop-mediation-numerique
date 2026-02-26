@@ -1,6 +1,11 @@
 import type { CoordinateurUser } from '@app/web/auth/userTypeGuards'
 import { createInvitationUrl } from '@app/web/features/invitation/createInvitationUrl'
 import { prismaClient } from '@app/web/prismaClient'
+import {
+  isAlreadyInvited,
+  isAlreadyTeamMember,
+  normalizeEmail,
+} from './emailComparison'
 import { sendInviteMediateurEmail } from './sendInviteMediateurEmail'
 import { sendInviteNewMediateurEmail } from './sendInviteNewMediateurEmail'
 
@@ -42,24 +47,14 @@ export const inviteToJoinTeamOf =
       },
     })
 
-    const isAlreadyInvited = (email: string) =>
-      existingInvitations.some(
-        (invitation) => invitation.email.toLowerCase() === email.toLowerCase(),
-      )
-
-    const isAlreadyTeamMember = (email: string) =>
-      existingTeamMembers.some(
-        ({ mediateur }) =>
-          mediateur.user.email.toLowerCase() === email.toLowerCase(),
-      )
-
     const invitations = members
       .filter(
         (member) =>
-          !isAlreadyInvited(member.email) && !isAlreadyTeamMember(member.email),
+          !isAlreadyInvited(member.email, existingInvitations) &&
+          !isAlreadyTeamMember(member.email, existingTeamMembers),
       )
       .map((member) => ({
-        email: member.email.toLowerCase(),
+        email: normalizeEmail(member.email),
         coordinateurId: user.coordinateur.id,
         acceptee: null,
         refusee: null,
