@@ -1,6 +1,11 @@
 import type { CoordinateurUser } from '@app/web/auth/userTypeGuards'
 import { createInvitationUrl } from '@app/web/features/invitation/createInvitationUrl'
 import { prismaClient } from '@app/web/prismaClient'
+import {
+  isAlreadyInvited,
+  isAlreadyTeamMember,
+  normalizeEmail,
+} from './emailComparison'
 import { sendInviteMediateurEmail } from './sendInviteMediateurEmail'
 import { sendInviteNewMediateurEmail } from './sendInviteNewMediateurEmail'
 
@@ -15,7 +20,7 @@ const withInvitationFrom =
 export const inviteToJoinTeamOf =
   (user: CoordinateurUser) =>
   async (members: { email: string; mediateurId?: string }[]) => {
-    const mediateurs = await prismaClient.invitationEquipe.findMany({
+    const existingInvitations = await prismaClient.invitationEquipe.findMany({
       where: {
         mediateurId: {
           in: user.coordinateur.mediateursCoordonnes.map(
@@ -26,15 +31,30 @@ export const inviteToJoinTeamOf =
       select: { email: true },
     })
 
+    const existingTeamMembers = await prismaClient.mediateurCoordonne.findMany({
+      where: {
+        coordinateurId: user.coordinateur.id,
+        suppression: null,
+      },
+      select: {
+        mediateur: {
+          select: {
+            user: {
+              select: { email: true },
+            },
+          },
+        },
+      },
+    })
+
     const invitations = members
-      .filter((member) =>
-        mediateurs.every(
-          (mediateur) =>
-            mediateur.email.toLowerCase() !== member.email.toLowerCase(),
-        ),
+      .filter(
+        (member) =>
+          !isAlreadyInvited(member.email, existingInvitations) &&
+          !isAlreadyTeamMember(member.email, existingTeamMembers),
       )
       .map((member) => ({
-        email: member.email,
+        email: normalizeEmail(member.email),
         coordinateurId: user.coordinateur.id,
         acceptee: null,
         refusee: null,

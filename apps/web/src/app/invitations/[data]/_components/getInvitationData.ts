@@ -4,7 +4,8 @@ import { prismaClient } from '@app/web/prismaClient'
 export const getInvitationData = (invitation: Invitation) =>
   prismaClient.invitationEquipe.findFirst({
     where: {
-      ...invitation,
+      email: { equals: invitation.email, mode: 'insensitive' },
+      coordinateurId: invitation.coordinateurId,
       acceptee: null,
       refusee: null,
     },
