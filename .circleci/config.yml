@@ -537,6 +537,7 @@ jobs:
             npx nyc report --temp-dir ./coverage/.nyc_output --reporter=lcov --reporter=text-summary --report-dir=./coverage
       - coveralls/upload:
           coverage_file: ./coverage/lcov.info
+          fail_on_error: false
 
   deploy_web:
     executor: node22
