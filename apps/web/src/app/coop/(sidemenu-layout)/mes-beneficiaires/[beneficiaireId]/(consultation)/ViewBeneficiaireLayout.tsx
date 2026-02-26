@@ -41,7 +41,7 @@ const ViewBeneficiaireLayout = ({
   const hasRdvIntegration = user.rdvAccount?.hasOauthTokens
 
   return (
-    <CoopPageContainer size={49}>
+    <CoopPageContainer size={56}>
       <SkipLinksPortal />
       <CoopBreadcrumbs
         parents={[

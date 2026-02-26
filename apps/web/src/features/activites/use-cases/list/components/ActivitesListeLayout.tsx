@@ -19,7 +19,7 @@ const ActivitesListeLayout = ({
   subtitle?: string
   empty?: boolean
 }>) => (
-  <CoopPageContainer size={49}>
+  <CoopPageContainer size={56}>
     <SkipLinksPortal />
     <CoopBreadcrumbs currentPage="Mes activités" />
     <main id={contentId}>
