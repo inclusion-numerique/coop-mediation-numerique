@@ -159,9 +159,9 @@ export const buildAccompagnementsWorksheet = (
             ? [
                 mediateur.user.firstName,
                 mediateur.user.lastName,
-                mediateur.user.isConseillerNumerique == null
-                  ? 'Médiateur'
-                  : 'Conseiller Numérique',
+                mediateur.user.isConseillerNumerique
+                  ? 'Conseiller Numérique'
+                  : 'Médiateur',
                 mediateur.user.isConseillerNumerique ?? '',
               ]
             : []),

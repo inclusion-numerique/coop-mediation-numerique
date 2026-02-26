@@ -244,6 +244,18 @@ const AdministrationUserPage = async ({
                 label: 'Rôle sécurité',
                 value: role,
               },
+              {
+                label: 'Dispositif',
+                value: user.isConseillerNumerique ? (
+                  <Badge noIcon severity="info">
+                    Conseiller numérique
+                  </Badge>
+                ) : (
+                  <Badge noIcon className="fr-text-mention--grey">
+                    -
+                  </Badge>
+                ),
+              },
               { label: 'Siret ProConnect', value: siret || '-' },
               {
                 label: 'Créé le',
@@ -328,18 +340,6 @@ const AdministrationUserPage = async ({
             />
           </AdministrationInfoCard>
         )}
-        {isMediateur && user.isConseillerNumerique && (
-          <AdministrationInfoCard title="Rôle conseiller numérique">
-            <AdministrationInlineLabelsValues
-              items={[
-                {
-                  label: 'Est Conseiller Numérique',
-                  value: 'Oui',
-                },
-              ]}
-            />
-          </AdministrationInfoCard>
-        )}
         {coordinateur && (
           <AdministrationInfoCard title="Rôle coordinateur" id="coordinateur">
             <AdministrationInlineLabelsValues
@@ -347,10 +347,6 @@ const AdministrationUserPage = async ({
                 {
                   label: 'ID Coordinateur',
                   value: coordinateur.id,
-                },
-                {
-                  label: 'Est Conseiller Numérique',
-                  value: user.isConseillerNumerique ? 'Oui' : 'Non',
                 },
                 {
                   label: 'Créé le',
@@ -597,34 +593,42 @@ const AdministrationUserPage = async ({
             {nonDeletedEmplois.length > 0 ? (
               nonDeletedEmplois.map((emploi) => (
                 <div key={emploi.id}>
-                  <p className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
+                  <hr className="fr-separator-1px fr-mt-4v" />
+                  <div className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
                     {emploi.structure.nom}{' '}
                     {emploi.fin ? (
                       <Badge className="fr-ml-2w" severity="warning" small>
-                        Emploi terminé
+                        Contrat terminé
                       </Badge>
                     ) : (
                       <Badge className="fr-ml-2w" severity="success" small>
-                        Emploi en cours
+                        Contrat en cours
                       </Badge>
                     )}
-                  </p>
+                  </div>
                   <AdministrationInlineLabelsValues
+                    className="fr-mt-4v"
                     items={[
                       {
-                        label: "Début de l'emploi",
+                        label: 'Début du contrat',
                         value: dateAsDay(emploi.debut),
                       },
                       {
-                        label: "Fin de l'emploi",
+                        label: 'Fin du contrat',
                         value: emploi.fin ? dateAsDay(emploi.fin) : '-',
                       },
                       {
                         label: 'Créé le',
                         value: dateAsDay(emploi.creation),
                       },
-                      ...getStructuresInfos(emploi.structure),
                     ]}
+                  />
+                  <p className="fr-mb-0 fr-mt-6v">
+                    Informations sur la structure&nbsp;:
+                  </p>
+                  <AdministrationInlineLabelsValues
+                    className="fr-mt-4v"
+                    items={[...getStructuresInfos(emploi.structure)]}
                   />
                 </div>
               ))
@@ -639,20 +643,22 @@ const AdministrationUserPage = async ({
                 <Accordion label={`Supprimés - ${deletedEmplois.length}`}>
                   {deletedEmplois.map((emploi) => (
                     <div key={emploi.id}>
-                      <p className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
+                      <hr className="fr-separator-1px fr-mt-4v" />
+                      <div className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
                         {emploi.structure.nom}{' '}
                         <Badge className="fr-ml-2w" severity="warning" small>
                           Supprimé
                         </Badge>
-                      </p>
+                      </div>
                       <AdministrationInlineLabelsValues
+                        className="fr-mt-4v"
                         items={[
                           {
-                            label: "Début de l'emploi",
+                            label: 'Début du contrat',
                             value: dateAsDay(emploi.debut),
                           },
                           {
-                            label: "Fin de l'emploi",
+                            label: 'Fin du contrat',
                             value: emploi.fin ? dateAsDay(emploi.fin) : '-',
                           },
                           {
@@ -665,8 +671,14 @@ const AdministrationUserPage = async ({
                               ? dateAsDay(emploi.suppression)
                               : '-',
                           },
-                          ...getStructuresInfos(emploi.structure),
                         ]}
+                      />
+                      <p className="fr-mb-0 fr-mt-6v">
+                        Informations sur la structure&nbsp;:
+                      </p>
+                      <AdministrationInlineLabelsValues
+                        className="fr-mt-4v"
+                        items={[...getStructuresInfos(emploi.structure)]}
                       />
                     </div>
                   ))}

@@ -64,7 +64,7 @@ export const useMediateursSearch = ({
           value: {
             mediateurId: mediateur.id,
             email: mediateur.user.email,
-            isConseillerNumerique: mediateur.user.isConseillerNumerique != null,
+            isConseillerNumerique: mediateur.user.isConseillerNumerique,
           },
         })),
         ...(allowTextValue

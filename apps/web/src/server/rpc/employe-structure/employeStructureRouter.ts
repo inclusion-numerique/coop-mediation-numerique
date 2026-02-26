@@ -42,7 +42,6 @@ export const employeStructureRouter = router({
             structureId: structure.id,
             debut,
             fin,
-            suppression: fin,
             creationParId: sessionUser.id,
           },
         })
@@ -86,7 +85,6 @@ export const employeStructureRouter = router({
           data: {
             debut,
             fin,
-            suppression: fin,
             modificationParId: user.id,
           },
         })

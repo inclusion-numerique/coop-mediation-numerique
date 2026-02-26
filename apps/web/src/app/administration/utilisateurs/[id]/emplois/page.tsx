@@ -176,14 +176,13 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
     email: user.email,
   })
 
-  // TODO use helper after annuaire mon-reseau feature merge
-  const isConseillerNumerique = user.isConseillerNumerique !== null
+  const isConseillerNumerique = user.isConseillerNumerique
 
   return (
     <CoopPageContainer>
       <SkipLinksPortal />
       <AdministrationBreadcrumbs
-        currentPage="Structure employeuse"
+        currentPage="Contrats - Structures employeuses"
         parents={[
           {
             label: 'Utilisateurs',
@@ -197,12 +196,25 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
       />
       <main id={contentId}>
         <AdministrationTitle icon="fr-icon-user-line">
-          {name} - Structures employeuses <span className="fr-mx-1v" />{' '}
+          {name} - Contrats - Structures employeuses{' '}
+          <span className="fr-mx-1v" />{' '}
           {getUserLifecycleBadge(user, { small: false })}
         </AdministrationTitle>
+        {isConseillerNumerique && (
+          <Notice
+            className="fr-notice--info fr-mb-6v"
+            title={
+              <>
+                Cet utilisateur est dans le dispositif Conseiller numérique, il
+                n’est pas possible de modifier ses contrats, ils sont
+                synchronisés avec le Dataspace.
+              </>
+            }
+          />
+        )}
 
         <AdministrationInfoCard
-          title="Structures employeuses"
+          title="Contrats - Structures employeuses"
           actions={
             <Button
               className="fr-mt-0 fr-mb-0"
@@ -213,7 +225,7 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
               }}
               iconId="fr-icon-add-line"
             >
-              Ajouter une structure employeuse
+              Ajouter un contrat
             </Button>
           }
         >
@@ -221,49 +233,28 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
             Siret ProConnect : <b>{user.siret || '-'}</b>
           </span>
           {emplois.length === 0 && (
-            <Notice
-              title={<>Aucune structure employeuse.</>}
-              className="fr-notice--alert"
-            />
+            <Notice title={<>Aucun contrat.</>} className="fr-notice--alert" />
           )}
           <div className="fr-flex" />
           {nonDeletedEmplois.map((emploi) => (
             <div key={emploi.id}>
               <hr className="fr-separator-1px fr-mt-4v" />
-              <p className="fr-text--bold fr-mb-0 fr-mt-6v">
-                <span className="fr-mr-2w">{emploi.structure.nom}</span>
-                {emploi.fin ? (
-                  <Badge as="span" small severity="warning">
-                    Emploi terminé
-                  </Badge>
-                ) : (
-                  <Badge as="span" small severity="success">
-                    Emploi en cours
-                  </Badge>
-                )}
-              </p>
-
-              <AdministrationInlineLabelsValues
-                className="fr-mt-4v"
-                items={[
-                  {
-                    label: 'Début de l’emploi',
-                    value: dateAsDay(emploi.debut),
-                  },
-                  {
-                    label: 'Fin de l’emploi',
-                    value: emploi.fin ? dateAsDay(emploi.fin) : '-',
-                  },
-                  {
-                    label: 'Créé le',
-                    value: dateAsDay(emploi.creation),
-                  },
-                ]}
-              />
-              {!isConseillerNumerique && (
-                <div className="fr-flex">
+              <div className="fr-mt-6v fr-mb-0 fr-flex fr-align-items-center fr-justify-content-space-between">
+                <p className="fr-text--bold fr-mb-0">
+                  <span className="fr-mr-2w">{emploi.structure.nom}</span>
+                  {emploi.fin ? (
+                    <Badge as="span" small severity="warning">
+                      Contrat terminé
+                    </Badge>
+                  ) : (
+                    <Badge as="span" small severity="success">
+                      Contrat en cours
+                    </Badge>
+                  )}
+                </p>
+                {!isConseillerNumerique && (
                   <Button
-                    className="fr-mt-4v fr-mb-0"
+                    className="fr-mb-0"
                     size="small"
                     priority="tertiary"
                     linkProps={{
@@ -273,8 +264,26 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
                   >
                     Modifier
                   </Button>
-                </div>
-              )}
+                )}
+              </div>
+
+              <AdministrationInlineLabelsValues
+                className="fr-mt-4v"
+                items={[
+                  {
+                    label: 'Début du contrat',
+                    value: dateAsDay(emploi.debut),
+                  },
+                  {
+                    label: 'Fin du contrat',
+                    value: emploi.fin ? dateAsDay(emploi.fin) : '-',
+                  },
+                  {
+                    label: 'Créé le',
+                    value: dateAsDay(emploi.creation),
+                  },
+                ]}
+              />
 
               <p className="fr-mb-0 fr-mt-6v">
                 Informations sur la structure&nbsp;:
@@ -301,11 +310,11 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
                       className="fr-mt-4v"
                       items={[
                         {
-                          label: 'Début de l’emploi',
+                          label: 'Début du contrat',
                           value: dateAsDay(emploi.debut),
                         },
                         {
-                          label: 'Fin de l’emploi',
+                          label: 'Fin du contrat',
                           value: emploi.fin ? dateAsDay(emploi.fin) : '-',
                         },
                         {
