@@ -1,6 +1,7 @@
 import { searchStructureEmployeuseCombined } from '@app/web/features/inscription/use-cases/renseigner-structure-employeuse/searchStructureEmployeuseCombined'
 import { CreerStructureValidation } from '@app/web/features/structures/CreerStructureValidation'
 import { searchStructuresEmployeuses } from '@app/web/features/structures/getStructuresEmployeusesOptions'
+import { mediateurCoordonnesIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
 import { prismaClient } from '@app/web/prismaClient'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { searchLieuActiviteCombined } from '@app/web/structure/searchLieuActiviteCombined'
@@ -46,13 +47,16 @@ export const structuresRouter = router({
     .input(
       z.object({
         query: z.string(),
-        mediateurIds: z.array(z.string().uuid()),
         excludeIds: z.array(z.string().uuid()).optional(),
       }),
     )
-    .query(({ input: { query, mediateurIds, excludeIds } }) =>
-      searchStructuresEmployeuses({ query, mediateurIds, excludeIds }),
-    ),
+    .query(({ input: { query, excludeIds }, ctx: { user } }) => {
+      const mediateurIds = [
+        ...(user.mediateur?.id ? [user.mediateur.id] : []),
+        ...mediateurCoordonnesIdsFor(user),
+      ]
+      return searchStructuresEmployeuses({ query, mediateurIds, excludeIds })
+    }),
 
   create: protectedProcedure.input(CreerStructureValidation).mutation(
     async ({

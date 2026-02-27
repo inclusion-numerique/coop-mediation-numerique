@@ -28,7 +28,6 @@ export const StatistiquesPage = (
     initialBeneficiairesOptions,
     lieuxActiviteOptions,
     structuresEmployeusesOptions,
-    mediateurIds,
     activiteSourceOptions,
     activiteDates,
     hasCrasV1,
@@ -73,7 +72,6 @@ export const StatistiquesPage = (
             lieuxActiviteOptions={lieuxActiviteOptions}
             structuresEmployeusesOptions={structuresEmployeusesOptions}
             tagsOptions={tagsOptions}
-            mediateurIds={mediateurIds}
             initialMediateursOptions={initialMediateursOptions}
             initialBeneficiairesOptions={initialBeneficiairesOptions}
             beneficiairesFilter={false}

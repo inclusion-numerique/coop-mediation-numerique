@@ -12,14 +12,10 @@ const onlyDefinedIds = (item?: { id?: string }): item is { id: string } =>
   item?.id != null
 
 const loadSuggestions =
-  (
-    mediateurIds: string[],
-    selectedStructures: ({ id?: string } | undefined)[],
-  ) =>
+  (selectedStructures: ({ id?: string } | undefined)[]) =>
   (input: string): Promise<{ items: StructureEmployeuse[] }> =>
     vanillaTrpc.structures.searchStructuresEmployeuses.query({
       query: input,
-      mediateurIds,
       excludeIds: selectedStructures.filter(onlyDefinedIds).map(itemToKey),
     })
 
@@ -38,11 +34,10 @@ const renderItem = ({ item }: { item: StructureEmployeuse }) => (
 )
 
 export const StructureEmployeuseComboBox = (
-  mediateurIds: string[],
   structures: ({ id?: string } | undefined)[] = [],
 ): ComboBoxData<StructureEmployeuse> => ({
   itemToString,
-  loadSuggestions: loadSuggestions(mediateurIds, structures),
+  loadSuggestions: loadSuggestions(structures),
   itemToKey,
 })
 

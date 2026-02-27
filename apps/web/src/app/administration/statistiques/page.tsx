@@ -68,7 +68,6 @@ const Page = async (props: {
           lieuxActiviteOptions={lieuxActiviteOptions}
           structuresEmployeusesOptions={[]}
           tagsOptions={tagsOptions}
-          mediateurIds={[]}
           initialMediateursOptions={[]}
           initialBeneficiairesOptions={[]}
           minDate={new Date('2024-09-01')}

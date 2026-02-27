@@ -36,14 +36,8 @@ export const StructuresEmployeusesField = withForm({
   props: {} as {
     isPending: boolean
     initialStructuresEmployeusesOptions: StructureEmployeuse[]
-    mediateurIds: string[]
   },
-  render: ({
-    form,
-    isPending,
-    initialStructuresEmployeusesOptions,
-    mediateurIds,
-  }) => {
+  render: ({ form, isPending, initialStructuresEmployeusesOptions }) => {
     const inputContainerRef = useRef<HTMLDivElement>(null)
 
     return (
@@ -52,7 +46,7 @@ export const StructuresEmployeusesField = withForm({
           <field.ComboBox
             isPending={isPending}
             defaultItems={initialStructuresEmployeusesOptions}
-            {...StructureEmployeuseComboBox(mediateurIds, field.state.value)}
+            {...StructureEmployeuseComboBox(field.state.value)}
           >
             {({
               getLabelProps,

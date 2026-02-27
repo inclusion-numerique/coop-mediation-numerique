@@ -25,7 +25,6 @@ const Filters = ({
   lieuxActiviteOptions,
   structuresEmployeusesOptions,
   tagsOptions,
-  mediateurIds,
   isCoordinateur,
   isMediateur,
   beneficiairesFilter = true,
@@ -43,7 +42,6 @@ const Filters = ({
   structuresEmployeusesOptions: StructureEmployeuseOption[]
   tagsOptions: { id: string; nom: string; scope: TagScope }[]
   departementsOptions: SelectOption[]
-  mediateurIds: string[]
   isCoordinateur: boolean
   isMediateur: boolean
   beneficiairesFilter?: boolean
@@ -131,7 +129,6 @@ const Filters = ({
       <MoreCoordinateurFilters
         tagsOptions={tagsOptions}
         structuresEmployeusesOptions={structuresEmployeusesOptions}
-        mediateurIds={mediateurIds}
         defaultValues={{
           conseiller_numerique: defaultFilters.conseiller_numerique,
           structuresEmployeuses: defaultFilters.structuresEmployeuses ?? [],

@@ -76,7 +76,6 @@ export const ActeurRoleFilter = ({
           </label>
           {roleOptions.map(({ label, value: optionValue }) => {
             const id = `role-filter-radio-${optionValue || 'all'}`
-
             return (
               <div className="fr-fieldset__element fr-mb-1v" key={optionValue}>
                 <div className="fr-radio-group">

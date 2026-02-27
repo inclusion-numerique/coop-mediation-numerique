@@ -54,7 +54,6 @@ const MesActivitesListeHeader = ({
         departementsOptions={departementsOptions}
         lieuxActiviteOptions={lieuxActiviteOptions}
         structuresEmployeusesOptions={[]}
-        mediateurIds={[]}
         tagsOptions={tagsOptions}
         minDate={activiteDates.first}
         maxDate={activiteDates.last}

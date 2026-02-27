@@ -49,12 +49,10 @@ const MoreFiltersModal = createModal({
 export const MoreCoordinateurFilters = ({
   tagsOptions,
   structuresEmployeusesOptions,
-  mediateurIds,
   defaultValues,
 }: {
   tagsOptions: { id: string; nom: string; scope: TagScope }[]
   structuresEmployeusesOptions: StructureEmployeuse[]
-  mediateurIds: string[]
   defaultValues: {
     conseiller_numerique: '0' | '1' | undefined
     structuresEmployeuses: string[]
@@ -154,7 +152,6 @@ export const MoreCoordinateurFilters = ({
             form={form as any}
             isPending={false}
             initialStructuresEmployeusesOptions={structuresEmployeusesOptions}
-            mediateurIds={mediateurIds}
           />
           <hr className="fr-separator-8v" />
           <TypesField form={form as any} isPending={false} />

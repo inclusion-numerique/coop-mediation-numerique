@@ -130,7 +130,6 @@ export const getMesStatistiquesPageData = async ({
     initialBeneficiairesOptions,
     lieuxActiviteOptions,
     structuresEmployeusesOptions,
-    mediateurIds,
     activiteSourceOptions,
     activiteDates,
     hasCrasV1,

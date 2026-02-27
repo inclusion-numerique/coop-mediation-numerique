@@ -117,6 +117,7 @@ export const ExportStatistiques = ({
         priority="secondary"
         iconId="fr-icon-download-line"
         iconPosition="right"
+        disabled={accompagnementsCount === 0}
       >
         Exporter
       </Button>

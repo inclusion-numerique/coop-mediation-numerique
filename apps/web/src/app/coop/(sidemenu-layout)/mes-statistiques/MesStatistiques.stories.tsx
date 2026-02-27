@@ -218,7 +218,6 @@ const statistiquesPageData = {
   initialMediateursOptions: [],
   lieuxActiviteOptions: [],
   structuresEmployeusesOptions: [],
-  mediateurIds: [],
   tagsOptions: [],
   hasCrasV1: {
     hasCrasV1: false,

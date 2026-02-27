@@ -88,7 +88,7 @@ export const MoreMediateurFilters = ({
     <form.AppForm>
       <form onSubmit={handleSubmit(form)}>
         <MoreFiltersModal.Component
-          title="Filtrer par"
+          title={null}
           size="large"
           buttons={[
             {
@@ -100,8 +100,8 @@ export const MoreMediateurFilters = ({
               onClick: clearFilters,
             },
             {
-              title: 'Appliquer le filtre',
-              children: 'Appliquer le filtre',
+              title: 'Valider',
+              children: 'Valider',
               type: 'submit',
               priority: 'primary',
               doClosesModal: false,

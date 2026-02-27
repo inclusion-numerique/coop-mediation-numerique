@@ -33,7 +33,6 @@ export const MesStatistiques = (
     initialBeneficiairesOptions,
     lieuxActiviteOptions,
     structuresEmployeusesOptions,
-    mediateurIds,
     activiteDates,
     user,
     hasCrasV1,
@@ -59,7 +58,6 @@ export const MesStatistiques = (
             lieuxActiviteOptions={lieuxActiviteOptions}
             structuresEmployeusesOptions={structuresEmployeusesOptions}
             tagsOptions={tagsOptions}
-            mediateurIds={mediateurIds}
             initialMediateursOptions={initialMediateursOptions}
             initialBeneficiairesOptions={initialBeneficiairesOptions}
             beneficiairesFilter={false}
