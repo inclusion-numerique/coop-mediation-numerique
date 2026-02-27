@@ -11,7 +11,7 @@ export const roleCount = ({
 
 export const updateRolesParams =
   (params: URLSearchParams) =>
-  (data: { value: { conseiller_numerique?: '0' | '1' } }) => {
+  (data: { value: { conseiller_numerique?: '' | '0' | '1' } }) => {
     data.value.conseiller_numerique !== '0' &&
     data.value.conseiller_numerique !== '1'
       ? params.delete('conseiller_numerique')
@@ -25,8 +25,10 @@ const conseillerNumeriqueOptions = [
 ]
 
 const options = formOptions({
-  defaultValues: {} as DefaultValues<{
-    conseiller_numerique: '0' | '1' | undefined
+  defaultValues: {
+    conseiller_numerique: '',
+  } as DefaultValues<{
+    conseiller_numerique: '' | '0' | '1'
   }>,
 })
 
