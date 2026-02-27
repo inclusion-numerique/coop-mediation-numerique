@@ -104,6 +104,7 @@ export const ExportStatistiques = ({
     lieuxActiviteOptions,
     beneficiairesOptions,
     mediateursOptions,
+    structuresEmployeusesOptions: [],
     tagsOptions,
     activiteSourceOptions,
   }).map(toLieuPrefix)

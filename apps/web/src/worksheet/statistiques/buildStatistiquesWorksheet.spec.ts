@@ -191,7 +191,7 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
         },
       ],
       thematiquesDemarches: [
-        { label: 'Papiers - Élections Citoyenneté', count: 0, proportion: 0 },
+        { label: 'Papiers - Élections - Citoyenneté', count: 0, proportion: 0 },
         { label: 'Famille - Scolarité', count: 2, proportion: 12.5 },
         { label: 'Social - Santé', count: 6, proportion: 37.5 },
         { label: 'Travail - Formation - Entreprise', count: 0, proportion: 0 },
@@ -200,7 +200,7 @@ const STATISTIQUES_WORKSHEET_INPUT_BASE: Omit<
         { label: 'Argent - Impôts', count: 0, proportion: 0 },
         { label: 'Justice', count: 2, proportion: 12.5 },
         { label: 'Étrangers - Europe', count: 2, proportion: 12.5 },
-        { label: 'Loisirs - Sports Culture', count: 0, proportion: 0 },
+        { label: 'Loisirs - Sports - Culture', count: 0, proportion: 0 },
         { label: 'Associations', count: 0, proportion: 0 },
       ],
       tags: [
@@ -370,7 +370,7 @@ const STATISTIQUES_WORKSHEET_INPUT_FOR_MEDIATEUR: BuildStatistiquesWorksheetInpu
         type: 'thematiqueNonAdministratives',
       },
       {
-        label: 'Papiers - Élections Citoyenneté',
+        label: 'Papiers - Élections - Citoyenneté',
         key: 'PapiersElectionsCitoyennete',
         type: 'thematiqueAdministratives',
       },
@@ -647,7 +647,7 @@ describe('build statistiques worksheet for médiateur', () => {
       [
         undefined,
         'Thématiques administratives',
-        'Papiers - Élections Citoyenneté, Social - Santé',
+        'Papiers - Élections - Citoyenneté, Social - Santé',
       ],
       [undefined, 'Tags', 'Linux, Windows'],
       [
@@ -775,7 +775,7 @@ describe('build statistiques worksheet for médiateur', () => {
 
     expect(rows).toEqual([
       ...expectQuantifiedShareRows([
-        ['Papiers - Élections Citoyenneté', 0],
+        ['Papiers - Élections - Citoyenneté', 0],
         ['Famille - Scolarité', 2],
         ['Social - Santé', 6],
         ['Travail - Formation - Entreprise', 0],
@@ -784,7 +784,7 @@ describe('build statistiques worksheet for médiateur', () => {
         ['Argent - Impôts', 0],
         ['Justice', 2],
         ['Étrangers - Europe', 2],
-        ['Loisirs - Sports Culture', 0],
+        ['Loisirs - Sports - Culture', 0],
         ['Associations', 0],
       ]),
       [],

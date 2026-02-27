@@ -10,6 +10,7 @@ import { PeriodeFilter } from '@app/web/components/filters/PeriodeFilter'
 import type { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
 import { LieuFilter } from '@app/web/features/lieux-activite/use-cases/filter/LieuFilter'
+import type { StructureEmployeuseOption } from '@app/web/features/structures/getStructuresEmployeusesOptions'
 import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import classNames from 'classnames'
 import { TagScope } from '../../tags/tagScope'
@@ -22,7 +23,9 @@ const Filters = ({
   communesOptions,
   departementsOptions,
   lieuxActiviteOptions,
+  structuresEmployeusesOptions,
   tagsOptions,
+  mediateurIds,
   isCoordinateur,
   isMediateur,
   beneficiairesFilter = true,
@@ -37,8 +40,10 @@ const Filters = ({
   initialBeneficiairesOptions: BeneficiaireOption[]
   communesOptions: SelectOption[]
   lieuxActiviteOptions: LieuActiviteOption[]
+  structuresEmployeusesOptions: StructureEmployeuseOption[]
   tagsOptions: { id: string; nom: string; scope: TagScope }[]
   departementsOptions: SelectOption[]
+  mediateurIds: string[]
   isCoordinateur: boolean
   isMediateur: boolean
   beneficiairesFilter?: boolean
@@ -125,8 +130,11 @@ const Filters = ({
     {isCoordinateur && (
       <MoreCoordinateurFilters
         tagsOptions={tagsOptions}
+        structuresEmployeusesOptions={structuresEmployeusesOptions}
+        mediateurIds={mediateurIds}
         defaultValues={{
           conseiller_numerique: defaultFilters.conseiller_numerique,
+          structuresEmployeuses: defaultFilters.structuresEmployeuses ?? [],
           types: defaultFilters.types ?? [],
           thematiqueNonAdministratives:
             defaultFilters.thematiqueNonAdministratives ?? [],

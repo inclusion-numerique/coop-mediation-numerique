@@ -165,6 +165,8 @@ const emptyData: MesStatistiquesPageData = {
   initialBeneficiairesOptions: [],
   initialMediateursOptions: [],
   lieuxActiviteOptions: [],
+  structuresEmployeusesOptions: [],
+  mediateurIds: [],
   activiteSourceOptions,
   activiteDates: {
     first: undefined,

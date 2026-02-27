@@ -27,6 +27,8 @@ export const StatistiquesPage = (
     initialMediateursOptions,
     initialBeneficiairesOptions,
     lieuxActiviteOptions,
+    structuresEmployeusesOptions,
+    mediateurIds,
     activiteSourceOptions,
     activiteDates,
     hasCrasV1,
@@ -69,7 +71,9 @@ export const StatistiquesPage = (
             communesOptions={communesOptions}
             departementsOptions={departementsOptions}
             lieuxActiviteOptions={lieuxActiviteOptions}
+            structuresEmployeusesOptions={structuresEmployeusesOptions}
             tagsOptions={tagsOptions}
+            mediateurIds={mediateurIds}
             initialMediateursOptions={initialMediateursOptions}
             initialBeneficiairesOptions={initialBeneficiairesOptions}
             beneficiairesFilter={false}
@@ -101,6 +105,7 @@ export const StatistiquesPage = (
           communesOptions={communesOptions}
           departementsOptions={departementsOptions}
           lieuxActiviteOptions={lieuxActiviteOptions}
+          structuresEmployeusesOptions={structuresEmployeusesOptions}
           mediateursOptions={initialMediateursOptions}
           beneficiairesOptions={[]}
           tagsOptions={tagsOptions}

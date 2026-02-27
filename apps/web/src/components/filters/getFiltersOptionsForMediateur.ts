@@ -6,6 +6,7 @@ import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/benef
 import { getMediateurCommunesAndDepartementsOptions } from '@app/web/features/lieux-activite/getMediateurCommunesOptions'
 import { getMediateursLieuxActiviteOptions } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
 import { getFirstAndLastRdvDate } from '@app/web/features/rdvsp/queries/getFirstAndLastRdvDate'
+import { getStructuresEmployeusesOptions } from '@app/web/features/structures/getStructuresEmployeusesOptions'
 import { getUserDepartement } from '@app/web/features/utilisateurs/utils/getUserDepartement'
 import { getInitialMediateursOptionsForSearch } from '@app/web/mediateurs/getInitialMediateursOptionsForSearch'
 import type {
@@ -39,6 +40,7 @@ export const getFiltersOptionsForMediateur = async ({
     initialBeneficiairesOptions,
     initialMediateursOptions,
     lieuxActiviteOptions,
+    structuresEmployeusesOptions,
     activiteDates,
     rdvDates,
     hasCrasV1,
@@ -60,6 +62,7 @@ export const getFiltersOptionsForMediateur = async ({
       mediateurCoordonnesIds,
     }),
     getMediateursLieuxActiviteOptions({ mediateurIds }),
+    getStructuresEmployeusesOptions({ mediateurIds }),
     getFirstAndLastActiviteDate({ mediateurIds }),
     getFirstAndLastRdvDate({
       rdvAccountIds: user.rdvAccount ? [user.rdvAccount.id] : [],
@@ -74,6 +77,7 @@ export const getFiltersOptionsForMediateur = async ({
     initialBeneficiairesOptions,
     initialMediateursOptions,
     lieuxActiviteOptions,
+    structuresEmployeusesOptions,
     activiteDates,
     rdvDates,
     hasCrasV1,

@@ -106,6 +106,7 @@ export const getMesStatistiquesPageData = async ({
     initialMediateursOptions,
     initialBeneficiairesOptions,
     lieuxActiviteOptions,
+    structuresEmployeusesOptions,
     activiteSourceOptions,
     activiteDates,
   } = await getFiltersOptionsForMediateur({
@@ -128,6 +129,8 @@ export const getMesStatistiquesPageData = async ({
     initialMediateursOptions,
     initialBeneficiairesOptions,
     lieuxActiviteOptions,
+    structuresEmployeusesOptions,
+    mediateurIds,
     activiteSourceOptions,
     activiteDates,
     hasCrasV1,
