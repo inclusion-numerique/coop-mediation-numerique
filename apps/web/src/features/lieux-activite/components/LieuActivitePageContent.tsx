@@ -81,6 +81,7 @@ export const LieuActivitePageContent = ({
           <InformationsGeneralesEditCard
             {...structure}
             lieuItinerant={structure.itinerance.includes(Itinerance.Itinerant)}
+            hasActiveEmployees={structure.hasActiveEmployees}
           />
         </div>
         <LieuMediateursEnActivite
