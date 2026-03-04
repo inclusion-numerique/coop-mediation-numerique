@@ -1,5 +1,6 @@
 'use client'
 
+import { numberToPercentage } from '@app/web/utils/formatNumber'
 import classNames from 'classnames'
 import { motion } from 'framer-motion'
 import { type CSSProperties, Fragment } from 'react'
@@ -12,7 +13,7 @@ const ProgressBar = ({
   size = 'medium',
   colors = [],
   className,
-  tooltopKey,
+  tooltipKey,
   style,
 }: {
   progress?: { percentage: number; count?: number; label: string }[]
@@ -22,7 +23,7 @@ const ProgressBar = ({
   size?: 'medium' | 'small' | 'large'
   colors?: string[]
   className?: string
-  tooltopKey?: string
+  tooltipKey?: string
   style?: CSSProperties
 }) => (
   <span
@@ -36,21 +37,29 @@ const ProgressBar = ({
   >
     {progress.map(({ percentage, label, count }, index) => (
       <Fragment key={label}>
-        {tooltopKey && (
+        {tooltipKey && (
           <span
-            className="fr-tooltip fr-placement fr-text--md"
-            id={`tooltip-progress-bar-${tooltopKey}-${index}`}
+            className="fr-tooltip fr-placement fr-text--sm fr-mb-2v fr-p-2v fr-border-radius--8"
+            id={`tooltip-progress-bar-${tooltipKey}-${index}`}
+            style={{ background: 'rgba(30, 27, 57, 0.95)', color: 'white' }}
             role="tooltip"
             aria-hidden
           >
-            {label} :{' '}
-            <span className="fr-text--bold">{count ?? percentage}</span>
+            <span className="fr-text--bold">{label}</span>
+            <br />
+            <span>
+              <span className="fr-text--xs fr-mb-0">
+                Accompagnements&nbsp;:
+              </span>{' '}
+              <span className="fr-text--bold">{count}</span>&emsp;
+              {numberToPercentage(percentage)}
+            </span>
           </span>
         )}
         <motion.span
           aria-describedby={
-            tooltopKey
-              ? `tooltip-progress-bar-${tooltopKey}-${index}`
+            tooltipKey
+              ? `tooltip-progress-bar-${tooltipKey}-${index}`
               : undefined
           }
           key={label}

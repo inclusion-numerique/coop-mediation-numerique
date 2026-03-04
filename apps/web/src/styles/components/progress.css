@@ -27,7 +27,8 @@
 }
 
 .fr-progress--lg {
-  --progress-height: 24px;
+  --progress-height: 40px;
+  --progress-radius: 10px;
 }
 
 .fr-progress:last-child .fr-progress__bar {
@@ -36,7 +37,18 @@
 }
 
 .fr-progress-stacked > .fr-progress {
+  position: relative;
   overflow: visible;
+}
+
+.fr-progress-stacked > .fr-progress:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: var(--background-default-grey);
 }
 
 .fr-progress-stacked > .fr-progress > .fr-progress__bar {
