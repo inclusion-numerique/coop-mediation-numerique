@@ -1,3 +1,7 @@
+.fr-text--xxs {
+  font-size: 0.625rem; /* 10px */
+}
+
 .fr-text--medium {
   font-weight: 500 !important;
 }
