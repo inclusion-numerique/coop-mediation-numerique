@@ -3,6 +3,7 @@
 import {
   Bar,
   BarChart,
+  CartesianGrid,
   LabelList,
   ResponsiveContainer,
   Tooltip,
@@ -19,15 +20,18 @@ const CustomTooltip = ({
   active &&
   payload &&
   payload.length > 0 && (
-    <ul className="fr-background-default--grey fr-p-1w fr-list-group fr-raw-list fr-tile--shadow">
-      <li className="fr-text--bold">{label}</li>
-      <li>
-        Accompagnements :{' '}
+    <div
+      className="fr-p-2v fr-border-radius--8 fr-tile--shadow fr-whitespace-nowrap fr-text--sm"
+      style={{ backgroundColor: 'rgba(30, 27, 57, 0.95)', color: 'white' }}
+    >
+      <div className="fr-text--bold">{label}</div>
+      <div>
+        <span className="fr-text--xs">Accompagnements&nbsp;:</span>{' '}
         <span className="fr-text--bold">
           {payload[0].value?.toLocaleString('fr-FR')}
         </span>
-      </li>
-    </ul>
+      </div>
+    </div>
   )
 
 export const AccompagnementBarChart = ({
@@ -39,36 +43,40 @@ export const AccompagnementBarChart = ({
   const displayData = data.length > 12 ? data.slice(-30) : data
 
   return (
-    <ResponsiveContainer width="100%" height={200}>
+    <ResponsiveContainer width="100%" height="100%">
       <BarChart
         data={displayData}
-        margin={{ top: 15, right: 30, left: 20, bottom: 20 }}
-        barSize={displayData.length > 12 ? 6 : 16}
+        margin={{ top: 15, right: 10, left: 0, bottom: 0 }}
+        barSize={displayData.length > 18 ? 16 : 20}
       >
+        <CartesianGrid
+          horizontal
+          vertical={false}
+          strokeDasharray="3 3"
+          stroke="#ddd"
+        />
         <XAxis
-          className="fr-text--sm fr-text--medium"
+          className="fr-text--xxs"
           dataKey="label"
           scale="point"
-          tick={{ dy: 15 }}
-          padding={{ left: 10, right: 10 }}
+          padding={{ left: 14, right: 14 }}
           tickLine={false}
-          angle={-45}
+          axisLine={false}
           interval={displayData.length > 12 ? 2 : 0}
         />
         <YAxis
-          className="fr-text--sm fr-text--medium"
-          tickMargin={15}
+          width={22}
+          tickCount={5}
+          tickLine={false}
+          axisLine={false}
           allowDecimals={false}
-          interval="preserveStartEnd"
-          tickFormatter={(value) => {
-            if (value >= 1000) {
-              return `${(value / 1000).toFixed(1)}k`
-            }
-            return value.toString()
-          }}
+          className="fr-text--xxs"
+          tickFormatter={(value) =>
+            value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value.toString()
+          }
         />
         <Tooltip content={<CustomTooltip />} />
-        <Bar dataKey="count" fill="#009099" radius={[10, 10, 0, 0]}>
+        <Bar dataKey="count" fill="#6a6af4" radius={[4, 4, 0, 0]}>
           <LabelList
             dataKey="count"
             position="top"
