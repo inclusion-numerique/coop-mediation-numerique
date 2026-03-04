@@ -90,18 +90,18 @@ const emptyData: MesStatistiquesPageData = {
     { label: '15/08', count: 0 },
   ],
   accompagnementsParMois: [
-    { label: 'Sep.', count: 0 },
-    { label: 'Oct.', count: 0 },
-    { label: 'Nov.', count: 0 },
-    { label: 'Déc.', count: 0 },
-    { label: 'Jan.', count: 0 },
-    { label: 'Fév.', count: 0 },
-    { label: 'Mars', count: 0 },
-    { label: 'Avr.', count: 0 },
-    { label: 'Mai', count: 0 },
-    { label: 'Juin', count: 0 },
-    { label: 'Juil.', count: 0 },
-    { label: 'Août', count: 0 },
+    { label: '09/23', count: 0 },
+    { label: '10/23', count: 0 },
+    { label: '11/23', count: 0 },
+    { label: '12/23', count: 0 },
+    { label: '01/24', count: 0 },
+    { label: '02/24', count: 0 },
+    { label: '03/24', count: 0 },
+    { label: '04/24', count: 0 },
+    { label: '05/24', count: 0 },
+    { label: '06/24', count: 0 },
+    { label: '07/24', count: 0 },
+    { label: '08/24', count: 0 },
   ],
   totalCounts: {
     accompagnements: {
@@ -335,9 +335,9 @@ describe('getMesStatistiquesPageData', () => {
           expectDayCount(data, '04/08', 2)
           expectDayCount(data, '05/08', 1)
 
-          expectMonthCount(data, 'Juin', 1)
-          expectMonthCount(data, 'Juil.', 14)
-          expectMonthCount(data, 'Août', 7)
+          expectMonthCount(data, '06/24', 1)
+          expectMonthCount(data, '07/24', 14)
+          expectMonthCount(data, '08/24', 7)
 
           expectEnum(data.activites.typeLieu, 'Domicile', 2, 22)
           expectEnum(data.activites.typeLieu, 'ADistance', 20, 22)
