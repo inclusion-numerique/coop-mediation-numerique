@@ -52,7 +52,7 @@ export const ProgressItemList = ({
               oneLineLabel && styles.oneLineLabel,
               classes?.label,
             )}
-            title={truncateLabel ? label : undefined}
+            title={truncateLabel || oneLineLabel ? label : undefined}
             style={style?.label}
           >
             {label}
