@@ -109,9 +109,6 @@ export const LieuActivitePageContent = ({
           <hr className="fr-separator fr-separator-1px" />
           <VisiblePourCartographieNationaleFields
             className="fr-px-4w fr-py-3w"
-            canChangeVisibility={
-              structure.structureCartographieNationaleId == null
-            }
             onChange={setShowSideMenu}
             {...structure}
           >
