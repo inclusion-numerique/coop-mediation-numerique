@@ -51,15 +51,10 @@ const BeneficiairesDoublonsPage = ({
 
         <div className="fr-p-12v fr-mt-12v fr-border fr-border-radius--8">
           {count === 0 ? (
-            <>
-              <Notice
-                className="fr-notice--success"
-                title={<>Aucun doublon de bénéficiaires n’a été détecté</>}
-              ></Notice>
-              <div className="fr-btns-group fr-mt-10v fr-mb-0">
-                <BackButton />
-              </div>
-            </>
+            <Notice
+              className="fr-notice--success"
+              title={<>Aucun doublon de bénéficiaires n’a été détecté</>}
+            ></Notice>
           ) : (
             <>
               <Notice

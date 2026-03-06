@@ -53,7 +53,7 @@ const ViewBeneficiaireLayout = ({
         currentPage={displayName}
       />
       <main id={contentId}>
-        <BackButton />
+        <BackButton fallbackHref="/coop/mes-beneficiaires" />
         <div
           className={classNames(
             'fr-width-full fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-8v',
