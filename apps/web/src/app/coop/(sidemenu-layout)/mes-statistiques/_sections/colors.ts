@@ -21,6 +21,7 @@ export const thematiquesAccompagnementColors = [
 ]
 export const tagsColor = ['#8ba7f8']
 export const nombreAccompagnementParLieuColor = '#009099'
+export const nombreAccompagnementParCommuneColor = '#e4794a'
 export const canauxAccompagnementColors = [
   '#c7f6fc',
   '#60e0eb',

@@ -161,6 +161,7 @@ const emptyData: MesStatistiquesPageData = {
     communes: [],
   },
   structures: [],
+  communes: [],
 
   activitesFilters: {},
   communesOptions: [],
@@ -494,6 +495,33 @@ describe('getMesStatistiquesPageData', () => {
               proportion: 100,
               nom: mediateque.nom,
               label: mediateque.nom,
+            },
+          ]
+
+          data.communes = [
+            {
+              codeInsee: null,
+              codePostal: null,
+              commune: null,
+              count: 17,
+              label: 'Non communiqué',
+              proportion: 77.273,
+            },
+            {
+              codeInsee: '69382',
+              codePostal: '69002',
+              commune: 'Lyon 2eme',
+              count: 3,
+              label: 'Lyon 2eme · 69002',
+              proportion: 13.636,
+            },
+            {
+              codeInsee: '75101',
+              codePostal: '75001',
+              commune: 'Paris 1er',
+              count: 2,
+              label: 'Paris 1er · 75001',
+              proportion: 9.091,
             },
           ]
 

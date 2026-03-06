@@ -4,6 +4,7 @@ import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import { AccompagnementPieChart } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_components/AccompagnementPieChart'
 import { QuantifiedShareLegend } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_components/QuantifiedShareLegend'
 import type {
+  ActivitesCommunesStats,
   ActivitesStats,
   ActivitesStructuresStats,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getActivitesStats'
@@ -20,12 +21,14 @@ import { StatistiqueMateriel } from '../_components/StatistiqueMateriel'
 import {
   canauxAccompagnementColors,
   dureesAccompagnementColors,
+  nombreAccompagnementParCommuneColor,
   nombreAccompagnementParLieuColor,
   tagsColor,
   thematiquesAccompagnementColors,
 } from './colors'
 
 type AccompagnementCategory = 'thematiques' | 'demarches' | 'tags'
+type StructuresCategory = 'lieux' | 'communes'
 
 const desc = (
   { count: countA }: { count: number },
@@ -40,6 +43,7 @@ const toMaxProportion = (
 export const StatistiquesActivites = ({
   activites,
   structures,
+  communes,
   totalCounts,
   wording = 'personnel',
   canManageTags = false,
@@ -47,6 +51,7 @@ export const StatistiquesActivites = ({
   wording?: 'personnel' | 'generique'
   activites: ActivitesStats
   structures?: ActivitesStructuresStats
+  communes?: ActivitesCommunesStats
   totalCounts: TotalCountsStats
   canManageTags?: boolean
 }) => {
@@ -59,6 +64,9 @@ export const StatistiquesActivites = ({
 
   const [accompagnementCategory, setAccompagnementCategory] =
     useState<AccompagnementCategory>('thematiques')
+
+  const [structuresCategory, setStructuresCategory] =
+    useState<StructuresCategory>('lieux')
 
   const accompagnementCategories = [
     {
@@ -341,38 +349,112 @@ export const StatistiquesActivites = ({
             </div>
           </div>
         </div>
-        {!!structures && (
+        {(!!structures || !!communes) && (
           <>
             <hr className="fr-separator-1px fr-my-5w" />
-            <h3 className="fr-text--md fr-mb-4v">
-              Nombre d’accompagnements par lieux d’activités
-            </h3>
-            {structures.length === 0 ||
-            structures.every((s) => s.count === 0) ? (
-              <div className="fr-text--center fr-background-alt--blue-france fr-p-12v fr-border-radius--8">
-                Aucun accompagnement renseigné dans un de vos lieux d'activités
-              </div>
-            ) : (
-              <>
-                <div className="fr-text--bold fr-text--uppercase fr-text--xs fr-text-mention--grey fr-mb-2v">
-                  Lieux d'activités
-                </div>
-                <QuantifiedShareList
-                  limit={{
-                    showLabel: 'Voir tous les lieux',
-                    hideLabel: 'Réduire',
-                    count: 5,
-                  }}
-                  truncateLabel
-                  order="desc"
-                  quantifiedShares={structures}
-                  color={nombreAccompagnementParLieuColor}
-                  style={{
-                    label: {
-                      width: '244px',
+            <div className="fr-flex fr-align-items-center fr-justify-content-space-between fr-mb-4v">
+              <h3 className="fr-text--md fr-mb-0">
+                Nombre d'accompagnements par{' '}
+                {structuresCategory === 'lieux'
+                  ? "lieux d'activités"
+                  : 'communes'}
+              </h3>
+              <SegmentedControl
+                hideLegend
+                legend="Bascule entre lieux et communes"
+                segments={[
+                  {
+                    label: (
+                      <>
+                        <span className="ri-home-office-line" aria-hidden />
+                        &ensp;Par lieux d'activités
+                      </>
+                    ),
+                    nativeInputProps: {
+                      checked: structuresCategory === 'lieux',
+                      onChange: () => setStructuresCategory('lieux'),
                     },
-                  }}
-                />
+                  },
+                  {
+                    label: (
+                      <>
+                        <span className="ri-road-map-line" aria-hidden />
+                        &ensp;Par communes
+                      </>
+                    ),
+                    nativeInputProps: {
+                      checked: structuresCategory === 'communes',
+                      onChange: () => setStructuresCategory('communes'),
+                    },
+                  },
+                ]}
+              />
+            </div>
+            {structuresCategory === 'lieux' && (
+              <>
+                {!structures ||
+                structures.length === 0 ||
+                structures.every((s) => s.count === 0) ? (
+                  <div className="fr-text--center fr-background-alt--blue-france fr-p-12v fr-border-radius--8">
+                    Aucun accompagnement renseigné dans un de vos lieux
+                    d'activités
+                  </div>
+                ) : (
+                  <>
+                    <div className="fr-text--bold fr-text--uppercase fr-text--xs fr-text-mention--grey fr-mb-2v">
+                      Lieux d'activités
+                    </div>
+                    <QuantifiedShareList
+                      limit={{
+                        showLabel: 'Voir tous les lieux',
+                        hideLabel: 'Réduire',
+                        count: 5,
+                      }}
+                      truncateLabel
+                      order="desc"
+                      quantifiedShares={structures}
+                      color={nombreAccompagnementParLieuColor}
+                      style={{
+                        label: {
+                          width: '244px',
+                        },
+                      }}
+                    />
+                  </>
+                )}
+              </>
+            )}
+            {structuresCategory === 'communes' && (
+              <>
+                {!communes ||
+                communes.length === 0 ||
+                communes.every((c) => c.count === 0) ? (
+                  <div className="fr-text--center fr-background-alt--blue-france fr-p-12v fr-border-radius--8">
+                    Aucun accompagnement renseigné dans une commune
+                  </div>
+                ) : (
+                  <>
+                    <div className="fr-text--bold fr-text--uppercase fr-text--xs fr-text-mention--grey fr-mb-2v">
+                      Communes
+                    </div>
+                    <QuantifiedShareList
+                      limit={{
+                        showLabel: 'Voir toutes les communes',
+                        hideLabel: 'Réduire',
+                        count: 5,
+                      }}
+                      truncateLabel
+                      order="desc"
+                      quantifiedShares={communes}
+                      color={nombreAccompagnementParCommuneColor}
+                      style={{
+                        label: {
+                          width: '244px',
+                        },
+                      }}
+                    />
+                  </>
+                )}
               </>
             )}
           </>
