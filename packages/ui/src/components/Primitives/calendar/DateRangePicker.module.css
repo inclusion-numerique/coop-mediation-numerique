@@ -1,0 +1,102 @@
+.root {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.dropdown {
+  appearance: none;
+  border: none;
+  background: transparent;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--text-title-grey);
+  cursor: pointer;
+  padding: 0;
+  width: auto;
+  text-align: center;
+  text-transform: capitalize;
+
+  &:focus {
+    outline: 2px solid var(--border-action-high-blue-france);
+    outline-offset: 2px;
+  }
+}
+
+.weekday {
+  width: 2rem;
+  height: 2rem;
+  font-size: 0.875rem;
+  color: var(--text-active-blue-france);
+}
+
+.day {
+  width: 2rem;
+  height: 2rem;
+}
+
+.dayButton {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--text-default-grey);
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+
+  &:hover:not(:disabled) {
+    background-color: var(--background-action-low-blue-france-hover);
+  }
+}
+
+.today .dayButton {
+  background-color: var(--background-action-low-blue-france);
+  font-weight: 700;
+}
+
+.selected .dayButton {
+  background-color: var(--background-action-high-blue-france);
+  color: var(--grey-1000-75);
+
+  &:hover {
+    background-color: var(--background-action-high-blue-france-hover);
+  }
+}
+
+.rangeStart .dayButton,
+.rangeEnd .dayButton {
+  background-color: var(--background-action-high-blue-france);
+  color: var(--grey-1000-75);
+
+  &:hover {
+    background-color: var(--background-action-high-blue-france-hover);
+  }
+}
+
+.rangeMiddle {
+  background-color: var(--background-action-low-blue-france);
+}
+
+.rangeMiddle .dayButton {
+  background: transparent;
+  color: var(--text-default-grey);
+
+  &:hover {
+    background-color: var(--background-action-low-blue-france-hover);
+  }
+}
+
+.outside {
+  visibility: hidden;
+}
+
+.disabled .dayButton {
+  opacity: 0.4;
+  cursor: not-allowed;
+
+  &:hover {
+    background: transparent;
+  }
+}

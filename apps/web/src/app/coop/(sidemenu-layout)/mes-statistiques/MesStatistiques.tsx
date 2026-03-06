@@ -32,6 +32,7 @@ export const MesStatistiques = (
     initialMediateursOptions,
     initialBeneficiairesOptions,
     lieuxActiviteOptions,
+    structuresEmployeusesOptions,
     activiteDates,
     user,
     hasCrasV1,
@@ -55,6 +56,7 @@ export const MesStatistiques = (
             communesOptions={communesOptions}
             departementsOptions={departementsOptions}
             lieuxActiviteOptions={lieuxActiviteOptions}
+            structuresEmployeusesOptions={structuresEmployeusesOptions}
             tagsOptions={tagsOptions}
             initialMediateursOptions={initialMediateursOptions}
             initialBeneficiairesOptions={initialBeneficiairesOptions}
@@ -86,6 +88,7 @@ export const MesStatistiques = (
           communesOptions={communesOptions}
           departementsOptions={departementsOptions}
           lieuxActiviteOptions={lieuxActiviteOptions}
+          structuresEmployeusesOptions={structuresEmployeusesOptions}
           mediateursOptions={initialMediateursOptions}
           beneficiairesOptions={[]}
           tagsOptions={tagsOptions}

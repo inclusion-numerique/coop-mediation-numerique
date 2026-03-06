@@ -30,6 +30,7 @@ export const PrintStatistiques = (
       lieuxActiviteOptions,
       beneficiairesOptions: [],
       mediateursOptions: initialMediateursOptions,
+      structuresEmployeusesOptions: [],
       tagsOptions,
       activiteSourceOptions,
     },

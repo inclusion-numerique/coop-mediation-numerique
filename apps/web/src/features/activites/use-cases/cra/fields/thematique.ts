@@ -63,7 +63,7 @@ export const thematiquesNonAdministrativesLabels = {
 } as const
 
 export const thematiquesAdministrativesLabels = {
-  PapiersElectionsCitoyennete: 'Papiers - Élections Citoyenneté',
+  PapiersElectionsCitoyennete: 'Papiers - Élections - Citoyenneté',
   FamilleScolarite: 'Famille - Scolarité',
   SocialSante: 'Social - Santé',
   TravailFormation: 'Travail - Formation - Entreprise',
@@ -72,7 +72,7 @@ export const thematiquesAdministrativesLabels = {
   ArgentImpots: 'Argent - Impôts',
   Justice: 'Justice',
   EtrangersEurope: 'Étrangers - Europe',
-  LoisirsSportsCulture: 'Loisirs - Sports Culture',
+  LoisirsSportsCulture: 'Loisirs - Sports - Culture',
   Associations: 'Associations',
 } as const
 

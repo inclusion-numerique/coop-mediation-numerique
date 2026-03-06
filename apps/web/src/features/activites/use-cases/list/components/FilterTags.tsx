@@ -21,6 +21,7 @@ export const FilterTags = ({
   lieuxActiviteOptions,
   mediateursOptions,
   beneficiairesOptions,
+  structuresEmployeusesOptions,
   departementsOptions,
   communesOptions,
   tagsOptions,
@@ -29,6 +30,7 @@ export const FilterTags = ({
   filters: ActivitesFilters
   mediateursOptions: MediateurOption[]
   beneficiairesOptions: BeneficiaireOption[]
+  structuresEmployeusesOptions: { id: string; nom: string }[]
   lieuxActiviteOptions: LieuActiviteOption[]
   departementsOptions: SelectOption[]
   communesOptions: SelectOption[]
@@ -45,6 +47,7 @@ export const FilterTags = ({
     lieuxActiviteOptions,
     beneficiairesOptions,
     mediateursOptions,
+    structuresEmployeusesOptions,
     tagsOptions,
     activiteSourceOptions,
   }).map(toLieuPrefix)

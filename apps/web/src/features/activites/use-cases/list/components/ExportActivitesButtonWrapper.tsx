@@ -34,6 +34,7 @@ const ExportActivitesButtonWrapper = async ({
     lieuxActiviteOptions,
     beneficiairesOptions,
     mediateursOptions,
+    structuresEmployeusesOptions: [],
     tagsOptions,
     activiteSourceOptions,
   })

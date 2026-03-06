@@ -1,6 +1,10 @@
 import { refreshFixturesComputedFields } from '@app/fixtures/refreshFixturesComputedFields'
 import { resetFixtureUser } from '@app/fixtures/resetFixtureUser'
-import { mediateque, seedStructures } from '@app/fixtures/structures'
+import {
+  mediateque,
+  seedStructures,
+  structureEmployeuse,
+} from '@app/fixtures/structures'
 import { conseillerNumerique } from '@app/fixtures/users/conseillerNumerique'
 import {
   mediateurAvecActivite,
@@ -165,6 +169,7 @@ const emptyData: MesStatistiquesPageData = {
   initialBeneficiairesOptions: [],
   initialMediateursOptions: [],
   lieuxActiviteOptions: [],
+  structuresEmployeusesOptions: [],
   activiteSourceOptions,
   activiteDates: {
     first: undefined,
@@ -249,6 +254,13 @@ describe('getMesStatistiquesPageData', () => {
       })
       expect(data).toEqual({
         ...emptyData,
+        structuresEmployeusesOptions: [
+          {
+            id: structureEmployeuse.id,
+            nom: structureEmployeuse.nom,
+            commune: structureEmployeuse.commune,
+          },
+        ],
         lieuxActiviteOptions: [
           {
             label: mediateque.nom,
@@ -502,6 +514,7 @@ describe('getMesStatistiquesPageData', () => {
       | 'initialBeneficiairesOptions'
       | 'lieuxActiviteOptions'
       | 'activiteSourceOptions'
+      | 'structuresEmployeusesOptions'
     >
 
     beforeAll(async () => {
@@ -538,6 +551,13 @@ describe('getMesStatistiquesPageData', () => {
               mostUsed: true,
               nom: 'Exemple de Mediateque',
             },
+          },
+        ],
+        structuresEmployeusesOptions: [
+          {
+            id: structureEmployeuse.id,
+            nom: structureEmployeuse.nom,
+            commune: structureEmployeuse.commune,
           },
         ],
         activiteSourceOptions,

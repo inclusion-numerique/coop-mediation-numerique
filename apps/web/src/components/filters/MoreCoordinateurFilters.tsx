@@ -5,6 +5,12 @@ import {
   roleCount,
   updateRolesParams,
 } from '@app/web/components/filters/more-filters/RolesField'
+import type { StructureEmployeuse } from '@app/web/components/filters/more-filters/StructureEmployeuseComboBox'
+import {
+  StructuresEmployeusesField,
+  structuresEmployeusesCount,
+  updateStructuresEmployeusesParams,
+} from '@app/web/components/filters/more-filters/StructuresEmployeusesField'
 import {
   TagsField,
   tagToArray,
@@ -42,11 +48,14 @@ const MoreFiltersModal = createModal({
 
 export const MoreCoordinateurFilters = ({
   tagsOptions,
+  structuresEmployeusesOptions,
   defaultValues,
 }: {
   tagsOptions: { id: string; nom: string; scope: TagScope }[]
+  structuresEmployeusesOptions: StructureEmployeuse[]
   defaultValues: {
     conseiller_numerique: '0' | '1' | undefined
+    structuresEmployeuses: string[]
     types: TypeActiviteSlug[]
     thematiqueNonAdministratives: string[]
     thematiqueAdministratives: string[]
@@ -60,6 +69,7 @@ export const MoreCoordinateurFilters = ({
 
   const activeFiltersCount =
     roleCount(defaultValues) +
+    defaultValues.structuresEmployeuses.length +
     defaultValues.tags.length +
     defaultValues.thematiqueNonAdministratives.length +
     defaultValues.thematiqueAdministratives.length +
@@ -71,13 +81,25 @@ export const MoreCoordinateurFilters = ({
     form.reset()
   }
 
+  const structuresToArray = (ids: string[]): StructureEmployeuse[] =>
+    ids
+      .map((id) => structuresEmployeusesOptions.find((s) => s.id === id))
+      .filter((s): s is StructureEmployeuse => s !== undefined)
+
   const form = useAppForm({
     defaultValues: {
       ...defaultValues,
+      conseiller_numerique: defaultValues.conseiller_numerique ?? '',
+      structuresEmployeuses: structuresToArray(
+        defaultValues.structuresEmployeuses,
+      ),
       tags: tagToArray(tagsOptions)(defaultValues.tags),
     },
     onSubmit: (data) => {
-      updateRolesParams(params)(data)
+      updateRolesParams(params)(
+        data as { value: { conseiller_numerique?: '' | '0' | '1' } },
+      )
+      updateStructuresEmployeusesParams(params)(data)
       updateTypesParams(params)(data)
       updateThematiqueAdministrativesParams(params)(data)
       updateThematiqueNonAdministrativesParams(params)(data)
@@ -89,6 +111,7 @@ export const MoreCoordinateurFilters = ({
 
   const clearFilters = () => {
     params.delete('conseiller_numerique')
+    params.delete('structuresEmployeuses')
     params.delete('types')
     params.delete('thematiqueNonAdministratives')
     params.delete('thematiqueAdministratives')
@@ -101,7 +124,7 @@ export const MoreCoordinateurFilters = ({
     <form.AppForm>
       <form onSubmit={handleSubmit(form)}>
         <MoreFiltersModal.Component
-          title="Filtrer par"
+          title={null}
           size="large"
           buttons={[
             {
@@ -113,19 +136,25 @@ export const MoreCoordinateurFilters = ({
               onClick: clearFilters,
             },
             {
-              title: 'Appliquer le filtre',
-              children: 'Appliquer le filtre',
+              title: 'Valider',
+              children: 'Valider',
               type: 'submit',
               priority: 'primary',
               doClosesModal: false,
             },
           ]}
         >
+          <SourcesField form={form as any} isPending={false} />
+          <hr className="fr-separator-8v" />
           <RolesField form={form as any} isPending={false} />
           <hr className="fr-separator-8v" />
-          <TypesField form={form as any} isPending={false} />
+          <StructuresEmployeusesField
+            form={form as any}
+            isPending={false}
+            initialStructuresEmployeusesOptions={structuresEmployeusesOptions}
+          />
           <hr className="fr-separator-8v" />
-          <SourcesField form={form as any} isPending={false} />
+          <TypesField form={form as any} isPending={false} />
           <hr className="fr-separator-8v" />
           <h2 className="fr-h6">Filtrer par thématique et/ou tags&nbsp;:</h2>
           <div className="fr-accordions-group">

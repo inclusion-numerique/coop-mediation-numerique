@@ -18,6 +18,7 @@ export type FilterType =
   | 'departements'
   | 'beneficiaires'
   | 'mediateurs'
+  | 'structuresEmployeuses'
   | 'periode'
   | 'types'
   | 'conseiller_numerique'
@@ -85,6 +86,22 @@ const generateSourceFilterLabel = (
       type: 'source' as const,
     }))
 
+const generateStructuresEmployeusesFilterLabel = (
+  {
+    structuresEmployeuses = [],
+  }: Pick<ActivitesFilters, 'structuresEmployeuses'>,
+  {
+    structuresEmployeusesOptions = [],
+  }: { structuresEmployeusesOptions: { id: string; nom: string }[] },
+) =>
+  structuresEmployeusesOptions
+    .filter(({ id }) => structuresEmployeuses.includes(id))
+    .map(({ id, nom }) => ({
+      label: nom,
+      key: id,
+      type: 'structuresEmployeuses' as const,
+    }))
+
 const generateLieuxLabels = (
   {
     communes = [],
@@ -128,6 +145,7 @@ export const generateActivitesFiltersLabels = (
   {
     beneficiaires,
     mediateurs,
+    structuresEmployeuses,
     types,
     thematiqueAdministratives,
     thematiqueNonAdministratives,
@@ -144,6 +162,7 @@ export const generateActivitesFiltersLabels = (
   {
     beneficiairesOptions,
     mediateursOptions,
+    structuresEmployeusesOptions,
     communesOptions,
     departementsOptions,
     lieuxActiviteOptions,
@@ -152,6 +171,7 @@ export const generateActivitesFiltersLabels = (
   }: {
     beneficiairesOptions: BeneficiaireOption[]
     mediateursOptions: MediateurOption[]
+    structuresEmployeusesOptions: { id: string; nom: string }[]
     communesOptions: SelectOption[]
     lieuxActiviteOptions: SelectOption[]
     departementsOptions: SelectOption[]
@@ -232,6 +252,11 @@ export const generateActivitesFiltersLabels = (
     { mediateursOptions },
   )
 
+  const structuresEmployeusesLabels = generateStructuresEmployeusesFilterLabel(
+    { structuresEmployeuses },
+    { structuresEmployeusesOptions },
+  )
+
   const lieuxLabels = generateLieuxLabels(
     { communes, departements, lieux },
     { communesOptions, departementsOptions, lieuxActiviteOptions },
@@ -245,6 +270,7 @@ export const generateActivitesFiltersLabels = (
   return [
     ...mediateursLabels,
     ...(roleLabel == null ? [] : [roleLabel]),
+    ...structuresEmployeusesLabels,
     ...(periode == null ? [] : [periode]),
     ...lieuxLabels,
     ...typesLabel,
@@ -261,6 +287,7 @@ const labelPrefixes: Record<string, string> = {
   communes: 'Commune : ',
   departements: 'Département : ',
   lieux: 'Lieu d’activité : ',
+  structuresEmployeuses: 'Structure employeuse : ',
 }
 
 export const toLieuPrefix = ({

@@ -100,6 +100,12 @@ export const ActivitesFilterValidations = {
       z.array(z.string().uuid()),
     ])
     .optional(),
+  structuresEmployeuses: z
+    .union([
+      z.string().transform((val) => val.split(',').map((id) => id.trim())),
+      z.array(z.string().uuid()),
+    ])
+    .optional(),
   rdv: z.enum(booleanStringValues).optional(),
   source: z.enum(activiteSourceValues).optional(),
 }
@@ -113,12 +119,13 @@ export type ActivitesFilters = {
   beneficiaires?: string[] // UUID of beneficiaires
   communes?: string[] // Code INSEE des communes
   departements?: string[] // Code INSEE des départements
-  lieux?: string[] // UUID des lieux d’activités
+  lieux?: string[] // UUID des lieux d'activités
   conseiller_numerique?: BooleanString // (0 = non, 1 = oui)
   demarches_administratives?: BooleanString // 0 = not in thematiques, 1 = in thematiques
   thematiqueNonAdministratives?: Thematique[]
   thematiqueAdministratives?: Thematique[]
   tags?: string[]
+  structuresEmployeuses?: string[] // UUID des structures employeuses
   rdv?: BooleanString // 0 = non, 1 = oui, donera les activites avec un id externe RDVSP
   source?: ActiviteSource
 }
