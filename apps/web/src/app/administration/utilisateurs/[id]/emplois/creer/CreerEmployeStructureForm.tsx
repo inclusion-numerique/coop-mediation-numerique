@@ -53,7 +53,7 @@ const CreerEmployeStructureForm = ({
       await mutation.mutateAsync(data)
       createToast({
         priority: 'success',
-        message: `La structure employeuse de ${user.name} a bien été ajoutée.`,
+        message: `Le contrat a bien été ajoutée.`,
       })
       router.push(`/administration/utilisateurs/${user.id}/emplois`)
       router.refresh()
@@ -132,7 +132,7 @@ const CreerEmployeStructureForm = ({
       <InputFormField
         control={control}
         path="debut"
-        label="Date de début de l'emploi"
+        label="Date de début du contrat"
         asterisk
         disabled={isLoading}
         type="date"
@@ -141,7 +141,7 @@ const CreerEmployeStructureForm = ({
         control={control}
         hint="Renseigner uniquement si c'est une structure employeuse historique qui n'est plus d'actualité"
         path="fin"
-        label="Date de fin de l'emploi"
+        label="Date de fin du contrat"
         disabled={isLoading}
         type="date"
       />

@@ -87,7 +87,7 @@ const Page = async (props: {
       />
       <main id={contentId}>
         <AdministrationTitle icon="fr-icon-user-line">
-          {name} - Modifier une structure employeuse{' '}
+          {name} - Modifier un contrat - Structure employeuse{' '}
           <span className="fr-mx-1v" />{' '}
         </AdministrationTitle>
         <ModifierEmployeStructureForm
