@@ -4,7 +4,10 @@ import type {
   DataTableFilterValues,
   DataTableSearchParams,
 } from '@app/web/libs/data-table/DataTableConfiguration'
-import { dateAsDayAndTime } from '@app/web/utils/dateAsDayAndTime'
+import {
+  dateAsDayAndTime,
+  dateAsDayAndTimeInTimeZone,
+} from '@app/web/utils/dateAsDayAndTime'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { optionalNumberToString } from '@app/web/utils/formatNumber'
 import { booleanToYesNo } from '@app/web/utils/yesNoBooleanOptions'
@@ -52,10 +55,26 @@ export const UtilisateursDataTable = {
       defaultSortable: true,
       defaultSortableDirection: 'desc',
       csvValues: ({ lastLogin }) => [lastLogin?.toISOString()],
-      cell: ({ lastLogin }) => dateAsDayAndTime(lastLogin),
+      cell: ({ lastLogin }) =>
+        lastLogin ? dateAsDayAndTimeInTimeZone(lastLogin, 'Europe/Paris') : '-',
       orderBy: (direction) => [
         {
           lastLogin: direction,
+        },
+      ],
+    },
+    {
+      name: 'lastSeen',
+      header: 'Dernière activité',
+      csvHeaders: ['Dernière activité'],
+      defaultSortable: true,
+      defaultSortableDirection: 'desc',
+      csvValues: ({ lastSeen }) => [lastSeen?.toISOString()],
+      cell: ({ lastSeen }) =>
+        lastSeen ? dateAsDayAndTimeInTimeZone(lastSeen, 'Europe/Paris') : '-',
+      orderBy: (direction) => [
+        {
+          lastSeen: direction,
         },
       ],
     },

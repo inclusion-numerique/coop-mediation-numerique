@@ -3,8 +3,8 @@ import AdministrationInlineLabelsValues, {
   type LabelAndValue,
 } from '@app/web/app/administration/AdministrationInlineLabelsValues'
 import AdministrationMailtoLink from '@app/web/app/administration/AdministrationMailtoLink'
+import ChangeUserRolesButton from '@app/web/app/administration/utilisateurs/[id]/ChangeUserRolesButton'
 import LogoutUserButton from '@app/web/app/administration/utilisateurs/[id]/LogoutUserButton'
-import ResetUserInscriptionButton from '@app/web/app/administration/utilisateurs/[id]/ResetUserInscriptionButton'
 import UpdateUserDataFromDataspaceButton from '@app/web/app/administration/utilisateurs/[id]/UpdateUserDataFromDataspaceButton'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { isUserInscriptionEnCours } from '@app/web/auth/isUserInscriptionEnCours'
@@ -16,7 +16,10 @@ import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/Administr
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
-import { dateAsDayAndTime } from '@app/web/utils/dateAsDayAndTime'
+import {
+  dateAsDayAndTime,
+  dateAsDayAndTimeInTimeZone,
+} from '@app/web/utils/dateAsDayAndTime'
 import { numberToString } from '@app/web/utils/formatNumber'
 import { contentId } from '@app/web/utils/skipLinks'
 import { getUserDisplayName } from '@app/web/utils/user'
@@ -113,6 +116,7 @@ const AdministrationUserPage = async ({
     phone,
     created,
     lastLogin,
+    lastSeen,
     profilInscription,
     accounts,
     sessions,
@@ -129,6 +133,12 @@ const AdministrationUserPage = async ({
   const isMediateur = !!mediateur
   const isCoordinateur = !!coordinateur
   const inscriptionEnCours = isUserInscriptionEnCours(user)
+
+  const canRemoveMediateur =
+    !mediateur ||
+    (mediateur.beneficiairesCount === 0 && mediateur.activitesCount === 0)
+  const canRemoveCoordinateur =
+    !coordinateur || coordinateur._count.mediateursCoordonnes === 0
 
   const coordinations = mediateur?.coordinations?.filter(
     ({ suppression }) => !suppression,
@@ -170,7 +180,15 @@ const AdministrationUserPage = async ({
       <main id={contentId}>
         <AdministrationTitle
           icon="fr-icon-user-line"
-          actions={<ResetUserInscriptionButton userId={user.id} />}
+          actions={
+            <ChangeUserRolesButton
+              userId={user.id}
+              currentIsMediateur={isMediateur}
+              currentIsCoordinateur={isCoordinateur}
+              canRemoveMediateur={canRemoveMediateur}
+              canRemoveCoordinateur={canRemoveCoordinateur}
+            />
+          }
         >
           {name} <span className="fr-mx-1v" />{' '}
           {getUserAccountStatusBadge(statutCompte)}
@@ -266,13 +284,21 @@ const AdministrationUserPage = async ({
                 value: (
                   <div className="fr-grid-row fr-grid-row--middle fr-grid-row--gutters">
                     <div className="fr-col-auto">
-                      {lastLogin ? dateAsDayAndTime(lastLogin) : 'Jamais'}
+                      {lastLogin
+                        ? dateAsDayAndTimeInTimeZone(lastLogin, 'Europe/Paris')
+                        : 'Jamais'}
                     </div>
                     <div className="fr-col-auto">
                       <LogoutUserButton userId={user.id} />
                     </div>
                   </div>
                 ),
+              },
+              {
+                label: 'Dernière activité',
+                value: lastSeen
+                  ? dateAsDayAndTimeInTimeZone(lastSeen, 'Europe/Paris')
+                  : 'Jamais',
               },
               {
                 label: 'Profil d’inscription',
