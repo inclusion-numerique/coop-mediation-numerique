@@ -39,8 +39,13 @@ export const AccompagnementBarChart = ({
 }: {
   data: { label: string; count: number }[]
 }) => {
-  // Si plus de 12 éléments, on ne garde que les 30 dernières valeurs
-  const displayData = data.length > 12 ? data.slice(-30) : data
+  const isEmpty = data.length === 0 || data.every((item) => item.count === 0)
+  const emptyData = data.map((item) => ({ ...item, count: 1 }))
+  const displayData = isEmpty
+    ? emptyData
+    : data.length > 12
+      ? data.slice(-30)
+      : data
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -70,28 +75,39 @@ export const AccompagnementBarChart = ({
           tickLine={false}
           axisLine={false}
           allowDecimals={false}
+          domain={isEmpty ? [0, 1] : undefined}
           className="fr-text--xxs"
           tickFormatter={(value) =>
-            value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value.toString()
+            isEmpty
+              ? ''
+              : value >= 1000
+                ? `${(value / 1000).toFixed(1)}k`
+                : value.toString()
           }
         />
-        <Tooltip content={<CustomTooltip />} />
-        <Bar dataKey="count" fill="#6a6af4" radius={[4, 4, 0, 0]}>
-          <LabelList
-            dataKey="count"
-            position="top"
-            style={{
-              fontSize: displayData.length > 12 ? 10 : 12,
-              fontWeight: 'bold',
-            }}
-            formatter={(count: number) => {
-              if (count === 0) return ''
-              if (count >= 1000) {
-                return `${(count / 1000).toFixed(1)}k`
-              }
-              return count.toString()
-            }}
-          />
+        {!isEmpty && <Tooltip content={<CustomTooltip />} />}
+        <Bar
+          dataKey="count"
+          fill={isEmpty ? 'var(--blue-france-975-75)' : '#6a6af4'}
+          radius={[4, 4, 0, 0]}
+        >
+          {!isEmpty && (
+            <LabelList
+              dataKey="count"
+              position="top"
+              style={{
+                fontSize: displayData.length > 12 ? 10 : 12,
+                fontWeight: 'bold',
+              }}
+              formatter={(count: number) => {
+                if (count === 0) return ''
+                if (count >= 1000) {
+                  return `${(count / 1000).toFixed(1)}k`
+                }
+                return count.toString()
+              }}
+            />
+          )}
         </Bar>
       </BarChart>
     </ResponsiveContainer>

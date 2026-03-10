@@ -112,6 +112,7 @@ export const DateRangePicker = ({
     onSelect={onChange}
     numberOfMonths={2}
     locale={fr}
+    defaultMonth={value?.to}
     captionLayout="dropdown"
     startMonth={minDate}
     endMonth={maxDate}

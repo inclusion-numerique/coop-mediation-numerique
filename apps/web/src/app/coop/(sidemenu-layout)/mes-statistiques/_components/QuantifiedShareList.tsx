@@ -29,6 +29,7 @@ export const QuantifiedShareList = ({
   color,
   truncateLabel = false,
   oneLineLabel = false,
+  tooltipKey,
   classes,
   style,
 }: {
@@ -36,6 +37,7 @@ export const QuantifiedShareList = ({
   order?: 'asc' | 'desc'
   truncateLabel?: boolean // If true, the label will be truncated to the first line and an ellipsis will be added
   oneLineLabel?: boolean // If true, the label will be displayed on one line only, may break the layout
+  tooltipKey?: string // Used to generate unique tooltip IDs
   colors?: string[]
   color?: string
   // If limit is defined, the list will be truncated to the first limit.count items
@@ -89,6 +91,7 @@ export const QuantifiedShareList = ({
         maxProportion={maxProportion}
         truncateLabel={truncateLabel}
         oneLineLabel={oneLineLabel}
+        tooltipKey={tooltipKey}
         classes={classes}
         style={style}
       />

@@ -252,6 +252,7 @@ export const StatistiquesActivites = ({
                   colors={colors}
                   maxProportion={maxProportion}
                   oneLineLabel
+                  tooltipKey={category}
                 />
               </Fragment>
             ),
@@ -411,6 +412,7 @@ export const StatistiquesActivites = ({
                         count: 5,
                       }}
                       truncateLabel
+                      tooltipKey="lieux"
                       order="desc"
                       quantifiedShares={structures}
                       color={nombreAccompagnementParLieuColor}
@@ -444,6 +446,7 @@ export const StatistiquesActivites = ({
                         count: 5,
                       }}
                       truncateLabel
+                      tooltipKey="communes"
                       order="desc"
                       quantifiedShares={communes}
                       color={nombreAccompagnementParCommuneColor}

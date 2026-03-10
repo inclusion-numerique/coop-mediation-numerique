@@ -1,3 +1,5 @@
+'use client'
+
 import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
 import classNames from 'classnames'
 import type { CSSProperties } from 'react'
@@ -12,6 +14,7 @@ export const ProgressItemList = ({
   color,
   truncateLabel = false,
   oneLineLabel = false,
+  tooltipKey,
   classes,
   style,
 }: {
@@ -21,6 +24,7 @@ export const ProgressItemList = ({
   color?: string // Can be used with a single color
   colors?: string[] // Or an array of colors for each item
   oneLineLabel?: boolean // If true, the label will be displayed on one line only, may break the layout
+  tooltipKey?: string // Used to generate unique tooltip IDs
   classes?: {
     label?: string
     count?: string
@@ -42,8 +46,21 @@ export const ProgressItemList = ({
           ? [colors[index % colors.length]]
           : []
 
+      const showTooltip = (truncateLabel || oneLineLabel) && tooltipKey
+
       return (
         <div key={index} className={styles.row}>
+          {showTooltip && (
+            <span
+              className="fr-tooltip fr-placement fr-text--sm fr-p-2v fr-border-radius--8"
+              id={`tooltip-${tooltipKey}-${index}`}
+              style={{ background: 'rgba(30, 27, 57, 0.95)', color: 'white' }}
+              role="tooltip"
+              aria-hidden
+            >
+              {label}
+            </span>
+          )}
           <span
             className={classNames(
               'fr-text--sm',
@@ -52,8 +69,10 @@ export const ProgressItemList = ({
               oneLineLabel && styles.oneLineLabel,
               classes?.label,
             )}
-            title={truncateLabel || oneLineLabel ? label : undefined}
             style={style?.label}
+            aria-describedby={
+              showTooltip ? `tooltip-${tooltipKey}-${index}` : undefined
+            }
           >
             {label}
           </span>

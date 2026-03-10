@@ -1,0 +1,5 @@
+/* Supprimer les délais de transition des tooltips */
+.fr-tooltip {
+  transition-delay: 0s !important;
+  transition-duration: 0.1s !important;
+}
