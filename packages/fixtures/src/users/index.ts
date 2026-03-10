@@ -264,7 +264,7 @@ export const teamAdministrateurs = [
     role: 'Admin',
   }),
   givenUser({
-    id: '50439602-1437-443e-b6d0-25d96e21d60c',
+    id: '82658fa2-b0ed-4fe8-8120-b462048957a0',
     firstName: 'Ferdinand',
     lastName: 'Rautureau',
     email: 'ferdinand.rautureau@anct.gouv.fr',
