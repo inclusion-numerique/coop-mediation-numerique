@@ -65,22 +65,22 @@ const LieuxPage = ({
         />
         <main id={contentId} className="fr-mb-16w fr-mt-8v">
           <BackButton />
-          <div className="fr-flex fr-align-items-center fr-flex-gap-4v fr-mb-6v">
+          <div className="fr-flex fr-align-items-center fr-flex-gap-6v fr-mb-6v">
             <span
-              className="ri-home-office-line ri-lg fr-line-height-1 fr-text-label--blue-france fr-background-alt--blue-france fr-p-2w fr-m-0 fr-border-radius--8"
+              className="ri-home-office-line ri-xl fr-line-height-1 fr-text-label--blue-france fr-background-alt--blue-france fr-p-2w fr-m-0 fr-border-radius--8"
               aria-hidden
             />
             <div>
-              <h1 className="fr-page-title fr-m-0">
+              <h1 className="fr-page-title fr-m-0 fr-h2">
                 Annuaire des lieux d’activités
               </h1>
-              <p className="fr-text--sm fr-text--bold fr-text-mention--grey fr-mb-0 fr-mt-1v">
+              <p className="fr-text--xs fr-text--bold fr-text--uppercase fr-text-mention--grey fr-mb-0">
                 {departementLabel}
               </p>
             </div>
           </div>
 
-          <div className="fr-flex fr-align-items-center fr-flex-gap-4v fr-mb-4v">
+          <div className="fr-flex fr-align-items-center fr-flex-gap-4v fr-mb-6v fr-mt-12v">
             <DataSearchBar
               baseHref={baseHref}
               searchParams={searchParams as DataTableSearchParams}
@@ -100,8 +100,8 @@ const LieuxPage = ({
 
           <hr className="fr-separator-1px" />
 
-          <div className="fr-flex fr-align-items-center fr-justify-content-space-between fr-my-4v">
-            <h2 className="fr-text--bold fr-text--lg fr-mb-0">
+          <div className="fr-flex fr-align-items-center fr-justify-content-space-between fr-my-6v">
+            <h2 className="fr-text--bold fr-text--xs fr-text--uppercase fr-mb-0">
               {getResultsLabel({
                 totalCount: searchResult.totalCount,
                 isFiltered,
