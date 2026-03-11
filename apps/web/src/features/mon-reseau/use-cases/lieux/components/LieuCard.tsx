@@ -3,6 +3,7 @@ import RemoveMediateurFromLieuButton from '@app/web/features/mon-reseau/use-case
 import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
 import type { LieuForList } from '@app/web/features/mon-reseau/use-cases/lieux/db/searchLieux'
 import { getCartographieNationaleSourceLabel } from '@app/web/structure/cartographieNationaleSources'
+import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
 import { formatDate, isBefore, subYears } from 'date-fns'
@@ -16,6 +17,7 @@ const LieuCard = ({
   lieu,
   className,
   removeMediateurFromLieu,
+  showActionButtons = false,
 }: {
   lieu: LieuForList
   className?: string
@@ -23,6 +25,8 @@ const LieuCard = ({
   removeMediateurFromLieu?: {
     mediateurId: string
   }
+  // When true, shows explicit Modifier/Retirer buttons instead of clickable card
+  showActionButtons?: boolean
 }) => {
   const departementCode = getDepartementCodeForLieu(lieu)
   const mediateursCount = lieu._count.mediateursEnActivite ?? 0
@@ -58,8 +62,10 @@ const LieuCard = ({
     <article
       id={lieu.id}
       className={classNames(
-        'fr-enlarge-link fr-border-bottom fr-pt-4v fr-px-2v fr-pb-6v',
+        'fr-border-bottom fr-pt-4v fr-px-2v fr-pb-6v',
+        { 'fr-enlarge-link': !showActionButtons },
         styles.card,
+        { [styles.cardNoHover]: showActionButtons },
         className,
       )}
     >
@@ -87,16 +93,40 @@ const LieuCard = ({
             {derniereModificationParText}
           </p>
         )}
-        {removeMediateurFromLieu && (
-          <RemoveMediateurFromLieuButton
-            className={styles.innerLink}
-            mediateurId={removeMediateurFromLieu.mediateurId}
-            structureId={lieu.id}
-            variant="lieu"
-            mediateurDisplayName=""
-            structureNom={lieu.nom}
-            derniereActiviteDate={null}
-          />
+        {showActionButtons ? (
+          <span className="fr-flex fr-flex-gap-2v">
+            <Button
+              size="small"
+              priority="tertiary no outline"
+              linkProps={{ href: lieuHref }}
+              iconPosition="right"
+              iconId="fr-icon-pencil-line"
+            >
+              Modifier
+            </Button>
+            {removeMediateurFromLieu && (
+              <RemoveMediateurFromLieuButton
+                mediateurId={removeMediateurFromLieu.mediateurId}
+                structureId={lieu.id}
+                variant="lieu"
+                mediateurDisplayName=""
+                structureNom={lieu.nom}
+                derniereActiviteDate={null}
+              />
+            )}
+          </span>
+        ) : (
+          removeMediateurFromLieu && (
+            <RemoveMediateurFromLieuButton
+              className={styles.innerLink}
+              mediateurId={removeMediateurFromLieu.mediateurId}
+              structureId={lieu.id}
+              variant="lieu"
+              mediateurDisplayName=""
+              structureNom={lieu.nom}
+              derniereActiviteDate={null}
+            />
+          )
         )}
       </div>
 
@@ -128,7 +158,7 @@ const LieuCard = ({
             : 'médiateurs numériques référencés'}
         </Tag>
       </div>
-      <Link href={lieuHref} prefetch={false} />
+      {!showActionButtons && <Link href={lieuHref} prefetch={false} />}
     </article>
   )
 }

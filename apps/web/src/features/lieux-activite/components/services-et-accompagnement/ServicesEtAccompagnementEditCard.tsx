@@ -79,15 +79,17 @@ const ServicesEtAccompagnementEditCard = ({
       edition={<ServicesEtAccompagnementFields form={form} />}
       view={
         <>
-          <Notice
-            className="fr-notice--warning fr-notice--flex fr-align-items-center fr-mb-6v "
-            title={
-              <span className="fr-text-default--grey fr-text--regular fr-text--sm">
-                Il est obligatoire de renseigner les services d’inclusion
-                numérique proposés afin d’être visible sur la cartographie.
-              </span>
-            }
-          />
+          {(!services || services.length === 0) && (
+            <Notice
+              className="fr-notice--warning fr-notice--flex fr-align-items-center fr-mb-6v "
+              title={
+                <span className="fr-text-default--grey fr-text--regular fr-text--sm">
+                  Il est obligatoire de renseigner les services d'inclusion
+                  numérique proposés afin d'être visible sur la cartographie.
+                </span>
+              }
+            />
+          )}
           <ServicesEtAccompagnementView
             services={services}
             modalitesAccompagnement={modalitesAccompagnement}
