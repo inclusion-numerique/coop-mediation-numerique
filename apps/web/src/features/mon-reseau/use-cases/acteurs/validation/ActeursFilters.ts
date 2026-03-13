@@ -3,6 +3,7 @@ import z from 'zod'
 export const acteurRoleValues = [
   'conseiller_numerique',
   'mediateur_numerique',
+  'coordinateur',
 ] as const
 
 export type ActeurRole = (typeof acteurRoleValues)[number]
@@ -10,6 +11,7 @@ export type ActeurRole = (typeof acteurRoleValues)[number]
 export const acteurRoleLabels: { [key in ActeurRole]: string } = {
   conseiller_numerique: 'Conseiller Numérique',
   mediateur_numerique: 'Médiateur numérique',
+  coordinateur: 'Coordinateur',
 }
 
 export const ActeursFilterValidations = {
