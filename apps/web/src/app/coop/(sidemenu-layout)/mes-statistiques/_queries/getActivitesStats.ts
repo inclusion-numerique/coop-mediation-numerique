@@ -377,3 +377,89 @@ export const getActivitesStructuresStats = async ({
 export type ActivitesStructuresStats = Awaited<
   ReturnType<typeof getActivitesStructuresStats>
 >
+
+export type ActivitesCommunesStatsRaw = {
+  commune: string | null
+  code_postal: string | null
+  code_insee: string | null
+  count: number
+}
+
+export const getActivitesCommunesStatsRaw = async ({
+  user,
+  mediateurIds,
+  activitesFilters,
+}: {
+  user: UserProfile
+  mediateurIds?: string[]
+  activitesFilters: ActivitesFilters
+}) => {
+  if (mediateurIds?.length === 0) return []
+
+  return prismaClient.$queryRaw<ActivitesCommunesStatsRaw[]>`
+    SELECT
+      MIN(COALESCE(str.commune, act.lieu_commune)) AS commune,
+      MIN(COALESCE(str.code_postal, act.lieu_code_postal)) AS code_postal,
+      COALESCE(str.code_insee, act.lieu_code_insee) AS code_insee,
+      COALESCE(COUNT(*), 0)::int AS count
+    FROM activites act
+      LEFT JOIN structures str ON str.id = act.structure_id
+      INNER JOIN accompagnements acc ON acc.activite_id = act.id
+      LEFT JOIN mediateurs med ON act.mediateur_id = med.id
+      LEFT JOIN users u ON med.user_id = u.id
+      FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${
+        user?.coordinateur?.id
+      }::UUID
+      WHERE (act.date <= mc.suppression OR mc.suppression IS NULL)
+        AND act.suppression IS NULL
+        AND ${activitesMediateurIdsWhereCondition(mediateurIds)}
+        AND ${getActiviteFiltersSqlFragment(
+          getActivitesFiltersWhereConditions(activitesFilters),
+        )}
+    GROUP BY COALESCE(str.code_insee, act.lieu_code_insee)`
+}
+
+const formatCommuneLabel = (
+  commune: string | null,
+  codePostal: string | null,
+): string => {
+  if (!commune) return 'Non communiqué'
+  if (!codePostal) return commune
+  return `${commune} · ${codePostal}`
+}
+
+export const getActivitesCommunesStats = async ({
+  user,
+  mediateurIds,
+  activitesFilters,
+}: {
+  user: UserProfile
+  mediateurIds?: string[]
+  activitesFilters: ActivitesFilters
+}) => {
+  const statsRaw = await getActivitesCommunesStatsRaw({
+    user,
+    mediateurIds,
+    activitesFilters,
+  })
+  const sortedCommunes = statsRaw.sort((a, b) => b.count - a.count)
+  const normalizedCommunes = sortedCommunes.map(
+    ({ commune, code_postal, code_insee, count }) => ({
+      commune,
+      codePostal: code_postal,
+      codeInsee: code_insee,
+      count,
+      label: formatCommuneLabel(commune, code_postal),
+    }),
+  )
+
+  return allocatePercentagesFromRecords(
+    normalizedCommunes,
+    'count',
+    'proportion',
+  )
+}
+
+export type ActivitesCommunesStats = Awaited<
+  ReturnType<typeof getActivitesCommunesStats>
+>

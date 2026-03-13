@@ -30,8 +30,9 @@ export const StatistiqueAccompagnement = ({
       )}
     >
       <div
-        className="fr-py-1v fr-px-2v fr-border-radius--8 fr-background-default--grey"
+        className="fr-border-radius--8 fr-background-default--grey"
         aria-hidden
+        style={{ height: '56px', width: '56px' }}
       >
         <Pictogram width={56} height={56} />
       </div>

@@ -1,3 +1,4 @@
+import { StatistiquesImpact } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_sections/StatistiquesImpact'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { SessionUser } from '@app/web/auth/sessionUser'
@@ -5,6 +6,7 @@ import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import Filters from '@app/web/features/activites/use-cases/list/components/Filters'
 import { FilterTags } from '@app/web/features/activites/use-cases/list/components/FilterTags'
 import PartageStatistiques from '@app/web/features/mediateurs/use-cases/partage-statistiques/components/PartageStatistiques'
+import { getUserDepartement } from '@app/web/features/utilisateurs/utils/getUserDepartement'
 import { contentId } from '@app/web/utils/skipLinks'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
@@ -125,6 +127,11 @@ export const MesStatistiques = (
         </section>
         <section className="fr-mb-6w">
           <StatistiquesBeneficiaires {...mesStatistiquesProps} />
+        </section>
+        <section className="fr-mb-6w">
+          <StatistiquesImpact
+            codeDepartement={getUserDepartement(user)?.code}
+          />
         </section>
       </main>
     </CoopPageContainer>

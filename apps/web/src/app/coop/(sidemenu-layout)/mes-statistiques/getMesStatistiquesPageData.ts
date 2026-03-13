@@ -12,6 +12,7 @@ import {
   getAccompagnementsCountByMonth,
 } from './_queries/getAccompagnementsCountByPeriod'
 import {
+  getActivitesCommunesStats,
   getActivitesStats,
   getActivitesStructuresStats,
 } from './_queries/getActivitesStats'
@@ -69,6 +70,7 @@ export const getMesStatistiquesPageData = async ({
     beneficiaires,
     activites,
     structures,
+    communes,
     totalCounts,
     hasCrasV1,
     partageStatistiquesId,
@@ -94,6 +96,7 @@ export const getMesStatistiquesPageData = async ({
     getBeneficiaireStatsWithCommunes({ user, mediateurIds, activitesFilters }),
     getActivitesStats({ user, mediateurIds, activitesFilters }),
     getActivitesStructuresStats({ user, mediateurIds, activitesFilters }),
+    getActivitesCommunesStats({ user, mediateurIds, activitesFilters }),
     getTotalCountsStats({ user, mediateurIds, activitesFilters }),
     getHasCrasV1({ user, mediateurIds, activitesFilters }),
     getPartageStatistiquesId({ user }),
@@ -122,6 +125,7 @@ export const getMesStatistiquesPageData = async ({
     beneficiaires,
     activites,
     structures,
+    communes,
     activitesFilters,
     communesOptions,
     departementsOptions,

@@ -90,18 +90,18 @@ const emptyData: MesStatistiquesPageData = {
     { label: '15/08', count: 0 },
   ],
   accompagnementsParMois: [
-    { label: 'Sep.', count: 0 },
-    { label: 'Oct.', count: 0 },
-    { label: 'Nov.', count: 0 },
-    { label: 'Déc.', count: 0 },
-    { label: 'Jan.', count: 0 },
-    { label: 'Fév.', count: 0 },
-    { label: 'Mars', count: 0 },
-    { label: 'Avr.', count: 0 },
-    { label: 'Mai', count: 0 },
-    { label: 'Juin', count: 0 },
-    { label: 'Juil.', count: 0 },
-    { label: 'Août', count: 0 },
+    { label: '09/23', count: 0 },
+    { label: '10/23', count: 0 },
+    { label: '11/23', count: 0 },
+    { label: '12/23', count: 0 },
+    { label: '01/24', count: 0 },
+    { label: '02/24', count: 0 },
+    { label: '03/24', count: 0 },
+    { label: '04/24', count: 0 },
+    { label: '05/24', count: 0 },
+    { label: '06/24', count: 0 },
+    { label: '07/24', count: 0 },
+    { label: '08/24', count: 0 },
   ],
   totalCounts: {
     accompagnements: {
@@ -161,6 +161,7 @@ const emptyData: MesStatistiquesPageData = {
     communes: [],
   },
   structures: [],
+  communes: [],
 
   activitesFilters: {},
   communesOptions: [],
@@ -335,9 +336,9 @@ describe('getMesStatistiquesPageData', () => {
           expectDayCount(data, '04/08', 2)
           expectDayCount(data, '05/08', 1)
 
-          expectMonthCount(data, 'Juin', 1)
-          expectMonthCount(data, 'Juil.', 14)
-          expectMonthCount(data, 'Août', 7)
+          expectMonthCount(data, '06/24', 1)
+          expectMonthCount(data, '07/24', 14)
+          expectMonthCount(data, '08/24', 7)
 
           expectEnum(data.activites.typeLieu, 'Domicile', 2, 22)
           expectEnum(data.activites.typeLieu, 'ADistance', 20, 22)
@@ -494,6 +495,33 @@ describe('getMesStatistiquesPageData', () => {
               proportion: 100,
               nom: mediateque.nom,
               label: mediateque.nom,
+            },
+          ]
+
+          data.communes = [
+            {
+              codeInsee: null,
+              codePostal: null,
+              commune: null,
+              count: 17,
+              label: 'Non communiqué',
+              proportion: 77.273,
+            },
+            {
+              codeInsee: '69382',
+              codePostal: '69002',
+              commune: 'Lyon 2eme',
+              count: 3,
+              label: 'Lyon 2eme · 69002',
+              proportion: 13.636,
+            },
+            {
+              codeInsee: '75101',
+              codePostal: '75001',
+              commune: 'Paris 1er',
+              count: 2,
+              label: 'Paris 1er · 75001',
+              proportion: 9.091,
             },
           ]
 

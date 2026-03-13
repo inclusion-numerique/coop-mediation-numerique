@@ -14,6 +14,21 @@
   margin-bottom: -1px;
 }
 
+/* lg spaces */
+@media (min-width: 62em) {
+  .fr-pt-lg-8v {
+    padding-top: 32px;
+  }
+
+  .fr-pl-lg-0 {
+    padding-left: 0 !important;
+  }
+
+  .fr-pr-lg-0 {
+    padding-right: 0;
+  }
+}
+
 /* sm spaces */
 @media (min-width: 36em) {
   .fr-mt-sm-0 {

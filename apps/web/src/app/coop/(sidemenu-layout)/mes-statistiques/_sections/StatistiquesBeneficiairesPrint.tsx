@@ -94,7 +94,7 @@ export const StatistiquesBeneficiairesPrint = ({
             size="large"
             progress={trancheAgesProgress}
             colors={tranchesAgeColors}
-            tooltopKey="tranches-age"
+            tooltipKey="tranches-age"
           />
         </div>
         <QuantifiedShareLegend
@@ -116,7 +116,7 @@ export const StatistiquesBeneficiairesPrint = ({
           size="large"
           progress={statutsSocialProgress}
           colors={statusColors}
-          tooltopKey="status-beneficiaires"
+          tooltipKey="status-beneficiaires"
         />
       </div>
       <QuantifiedShareLegend

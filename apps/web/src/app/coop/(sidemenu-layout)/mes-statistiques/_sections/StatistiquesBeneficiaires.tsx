@@ -5,8 +5,6 @@ import type {
   BeneficiairesStatsWithCommunes,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getBeneficiaireStats'
 import { CaptureButton } from '@app/web/libs/statistiques/CaptureButton'
-import { numberToString } from '@app/web/utils/formatNumber'
-import Button from '@codegouvfr/react-dsfr/Button'
 import { useRef } from 'react'
 import { AccompagnementPieChart } from '../_components/AccompagnementPieChart'
 import ProgressBar from '../_components/ProgressBar'
@@ -42,32 +40,6 @@ export const StatistiquesBeneficiaires = ({
 }) => {
   const capture = useRef<HTMLDivElement | null>(null)
 
-  const totalWithGenre = beneficiaires.genres.reduce(
-    (total: number, { count, value }) =>
-      value === 'NonCommunique' ? total : total + count,
-    0,
-  )
-
-  const totalWithTrancheAge = beneficiaires.trancheAges.reduce(
-    (total: number, { count, value }) =>
-      value === 'NonCommunique' ? total : total + count,
-    0,
-  )
-
-  const totalWithStatut = beneficiaires.statutsSocial.reduce(
-    (total: number, { count, value }) =>
-      value === 'NonCommunique' ? total : total + count,
-    0,
-  )
-
-  const totalWithCommune =
-    'communes' in beneficiaires
-      ? beneficiaires.communes.reduce(
-          (total: number, { count }) => total + count,
-          0,
-        )
-      : null
-
   return (
     <>
       <h2 className="fr-h5 fr-text-mention--grey">
@@ -81,34 +53,7 @@ export const StatistiquesBeneficiaires = ({
       >
         <div className="fr-grid-row fr-grid-row--gutters">
           <div className="fr-col-lg-6 fr-col-12">
-            <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mb-3w">
-              <h3 className="fr-text--lg fr-text--nowrap fr-mb-0">Genres</h3>
-              <Button
-                className="fr-px-1v fr-ml-1v fr-no-print"
-                title="Plus d’information à propos des genres"
-                priority="tertiary no outline"
-                size="small"
-                type="button"
-                aria-describedby="tooltip-genres"
-              >
-                <span className="ri-information-line fr-text--lg" aria-hidden />
-              </Button>
-              <span
-                className="fr-tooltip fr-placement"
-                id="tooltip-genres"
-                role="tooltip"
-                aria-hidden
-              >
-                Les statistiques prennent en compte les bénéficiaires suivis et
-                anonymes dont le genre a été complété.
-                <br />
-                <br />
-                Total des bénéficiaires dont le genre a été complété&nbsp;:{' '}
-                {numberToString(totalWithGenre)}/
-                {numberToString(beneficiaires.total)} bénéficiaires suivis ou
-                anonymes
-              </span>
-            </div>
+            <h3 className="fr-text--md fr-text--nowrap fr-mb-4v">Genres</h3>
             <QuantifiedShareLegend
               quantifiedShares={beneficiaires.genres}
               colors={genresColors}
@@ -116,52 +61,27 @@ export const StatistiquesBeneficiaires = ({
           </div>
           <div className="fr-col-lg-6 fr-col-12">
             <AccompagnementPieChart
-              size={140}
+              size={225}
+              width={52}
               className="fr-mx-auto"
               data={beneficiaires.genres}
               colors={genresColors}
+              half
             />
           </div>
         </div>
         <hr className="fr-separator-1px fr-my-5w" />
-        <div className="fr-grid-row fr-grid-row--gutters">
-          <div className="fr-col-lg-6 fr-col-12">
-            <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mb-3w">
-              <h3 className="fr-text--lg fr-text--nowrap fr-mb-0">
-                Tranches d’âge
-              </h3>
-              <Button
-                className="fr-px-1v fr-ml-1v fr-no-print"
-                title="Plus d’information à propos des tranches d’âge"
-                priority="tertiary no outline"
-                size="small"
-                type="button"
-                aria-describedby="tooltip-tranches-age"
-              >
-                <span className="ri-information-line fr-text--lg" aria-hidden />
-              </Button>
-              <span
-                className="fr-tooltip fr-placement"
-                id="tooltip-tranches-age"
-                role="tooltip"
-                aria-hidden
-              >
-                Les statistiques prennent en compte les bénéficiaires suivis et
-                anonymes dont l’année de naissance ou la tranche d’âge a été
-                complétée.
-                <br />
-                <br />
-                Total des bénéficiaires dont la tranche d’âge a été
-                complétée&nbsp;: {totalWithTrancheAge}/{beneficiaires.total}{' '}
-                bénéficiaires suivis ou anonymes
-              </span>
-            </div>
-            <div className="fr-mr-3w fr-mb-2w">
+        <div className="fr-flex fr-flex-wrap fr-flex-gap-12v">
+          <div className="fr-flex-grow-1 fr-flex-basis-full fr-flex-basis-lg-0">
+            <h3 className="fr-text--md fr-text--nowrap fr-mb-4v">
+              Tranches d'âge
+            </h3>
+            <div className="fr-mb-4v">
               <ProgressBar
                 size="large"
                 progress={beneficiaires.trancheAges.map(toProgress)}
                 colors={tranchesAgeColors}
-                tooltopKey="tranches-age"
+                tooltipKey="tranches-age"
               />
             </div>
             <QuantifiedShareLegend
@@ -169,40 +89,14 @@ export const StatistiquesBeneficiaires = ({
               colors={tranchesAgeColors}
             />
           </div>
-          <div className="fr-col-lg-6 fr-col-12">
-            <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mb-3w">
-              <h3 className="fr-text--lg fr-text--nowrap fr-mb-0">Statuts</h3>
-              <Button
-                className="fr-px-1v fr-ml-1v fr-no-print"
-                title="Plus d’information à propos des statuts"
-                priority="tertiary no outline"
-                size="small"
-                type="button"
-                aria-describedby="tooltip-statuts"
-              >
-                <span className="ri-information-line fr-text--lg" aria-hidden />
-              </Button>
-              <span
-                className="fr-tooltip fr-placement"
-                id="tooltip-statuts"
-                role="tooltip"
-                aria-hidden
-              >
-                Les statistiques prennent en compte les bénéficiaires suivis et
-                anonymes dont le statut a été complété.
-                <br />
-                <br />
-                Total des bénéficiaires dont le statut a été complété&nbsp;:{' '}
-                {totalWithStatut}/{beneficiaires.total} bénéficiaires suivis ou
-                anonymes
-              </span>
-            </div>
-            <div className="fr-mr-3w fr-mb-2w">
+          <div className="fr-flex-grow-1 fr-flex-basis-full fr-flex-basis-lg-0">
+            <h3 className="fr-text--md fr-text--nowrap fr-mb-4v">Statuts</h3>
+            <div className="fr-mb-4v">
               <ProgressBar
                 size="large"
                 progress={beneficiaires.statutsSocial.map(toProgress)}
                 colors={statusColors}
-                tooltopKey="status-beneficiaires"
+                tooltipKey="status-beneficiaires"
               />
             </div>
             <QuantifiedShareLegend
@@ -214,55 +108,37 @@ export const StatistiquesBeneficiaires = ({
         <hr className="fr-separator-1px fr-my-5w" />
         {'communes' in beneficiaires && (
           <>
-            <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mb-3w">
-              <h3 className="fr-text--lg fr-mb-0">
-                Commune de résidence des bénéficiaires
-              </h3>
-              <Button
-                className="fr-px-1v fr-ml-1v fr-no-print"
-                title="Plus d’information à propos des communes de résidence des bénéficiaires"
-                priority="tertiary no outline"
-                size="small"
-                type="button"
-                aria-describedby="tooltip-communes-beneficiaires"
-              >
-                <span className="ri-information-line fr-text--lg" aria-hidden />
-              </Button>
-              <span
-                className="fr-tooltip fr-placement"
-                id="tooltip-communes-beneficiaires"
-                role="tooltip"
-                aria-hidden
-              >
-                Les statistiques prennent en compte les bénéficiaires suivis et
-                anonymes dont la commune de résidence a été complétée.
-                <br />
-                <br />
-                Total des bénéficiaires dont la commune de résidence a été
-                complétée&nbsp;: {totalWithCommune}/{beneficiaires.total}{' '}
-                bénéficiaires suivis ou anonymes
-              </span>
-            </div>
-
-            <div className="fr-text--bold fr-text--uppercase fr-text--sm fr-text-mention--grey fr-mb-1w">
-              Commune
-            </div>
-            <QuantifiedShareList
-              order="desc"
-              limit={{
-                showLabel: 'Voir toutes les communes',
-                hideLabel: 'Réduire',
-                count: 5,
-              }}
-              quantifiedShares={beneficiaires.communes}
-              oneLineLabel
-              color={communeColor}
-              style={{
-                label: {
-                  minWidth: '244px',
-                },
-              }}
-            />
+            <h3 className="fr-text--md fr-mb-4v">
+              Commune de résidence des bénéficiaires
+            </h3>
+            {beneficiaires.communes.length === 0 ||
+            beneficiaires.communes.every((c) => c.count === 0) ? (
+              <div className="fr-text--center fr-background-alt--blue-france fr-p-12v fr-border-radius--8">
+                Aucune commune de résidence renseignée
+              </div>
+            ) : (
+              <>
+                <div className="fr-text--bold fr-text--uppercase fr-text--xs fr-text-mention--grey fr-mb-1w">
+                  Commune
+                </div>
+                <QuantifiedShareList
+                  order="desc"
+                  limit={{
+                    showLabel: 'Voir toutes les communes',
+                    hideLabel: 'Réduire',
+                    count: 5,
+                  }}
+                  quantifiedShares={beneficiaires.communes}
+                  oneLineLabel
+                  color={communeColor}
+                  style={{
+                    label: {
+                      minWidth: '244px',
+                    },
+                  }}
+                />
+              </>
+            )}
           </>
         )}
         <span className="fr-no-print fr-position-absolute fr-top-0 fr-right-0 fr-p-4v">
