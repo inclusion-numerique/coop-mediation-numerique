@@ -82,7 +82,9 @@ export const EquipeDataTable = (coordinateurView: boolean) =>
                 </div>
               </>
             ) : (
-              <b>Invitation en attente</b>
+              <div className="fr-mt-2v fr-mb-3v">
+                <b>Invitation en attente</b>
+              </div>
             )
           }
           return (
@@ -103,7 +105,13 @@ export const EquipeDataTable = (coordinateurView: boolean) =>
         cellClassName: 'fr-whitespace-normal',
         cellStyle: { maxWidth: 300 },
         cell: ({ email, memberStatus }) =>
-          memberStatus === 'supprime' ? '/' : email,
+          memberStatus === 'supprime' ? (
+            '/'
+          ) : (
+            <span className="fr-position-relative fr-index-10" title={email}>
+              {email.length > 30 ? `${email.slice(0, 30)}…` : email}
+            </span>
+          ),
       },
       {
         name: 'structureEmployeuse',
