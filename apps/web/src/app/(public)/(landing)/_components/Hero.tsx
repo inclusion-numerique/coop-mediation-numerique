@@ -35,12 +35,12 @@ export const Hero = () => (
         >
           <div className="fr-display-grid fr-grid-rows-2 fr-flex-gap-4v">
             <img
-              className="fr-border-radius--16 fr-width-full fr-height-full"
+              className="fr-border-radius--16 fr-width-full"
               src="/images/illustrations/landing-page/hero/besoin.webp"
               alt=""
             />
             <img
-              className="fr-border-radius--16 fr-width-full fr-height-full"
+              className="fr-border-radius--16 fr-width-full"
               src="/images/illustrations/landing-page/hero/complexité.webp"
               alt=""
             />
