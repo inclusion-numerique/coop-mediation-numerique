@@ -4,6 +4,7 @@ import AdministrationInlineLabelsValues, {
 } from '@app/web/app/administration/AdministrationInlineLabelsValues'
 import AdministrationMailtoLink from '@app/web/app/administration/AdministrationMailtoLink'
 import ChangeUserRolesButton from '@app/web/app/administration/utilisateurs/[id]/ChangeUserRolesButton'
+import DeleteUserButton from '@app/web/app/administration/utilisateurs/[id]/DeleteUserButton'
 import LogoutUserButton from '@app/web/app/administration/utilisateurs/[id]/LogoutUserButton'
 import UpdateUserDataFromDataspaceButton from '@app/web/app/administration/utilisateurs/[id]/UpdateUserDataFromDataspaceButton'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
@@ -181,13 +182,18 @@ const AdministrationUserPage = async ({
         <AdministrationTitle
           icon="fr-icon-user-line"
           actions={
-            <ChangeUserRolesButton
-              userId={user.id}
-              currentIsMediateur={isMediateur}
-              currentIsCoordinateur={isCoordinateur}
-              canRemoveMediateur={canRemoveMediateur}
-              canRemoveCoordinateur={canRemoveCoordinateur}
-            />
+            <div className="fr-flex fr-flex-gap-2v">
+              <ChangeUserRolesButton
+                userId={user.id}
+                currentIsMediateur={isMediateur}
+                currentIsCoordinateur={isCoordinateur}
+                canRemoveMediateur={canRemoveMediateur}
+                canRemoveCoordinateur={canRemoveCoordinateur}
+              />
+              {user.role === 'User' && !user.deleted && (
+                <DeleteUserButton userId={user.id} userName={name} />
+              )}
+            </div>
           }
         >
           {name} <span className="fr-mx-1v" />{' '}
