@@ -33,6 +33,7 @@ import Link from 'next/link'
 import UsurpUserButton from '../../usurpation/UsurpUserButton'
 import { type AdministrationUserPageData } from './getAdministrationUserPageData'
 import RenvoyerInvitationButton from './RenvoyerInvitationButton'
+import { RetirerDeEquipeAdmin } from './RetirerDeEquipeAdmin'
 import UtilisateurSetFeatureFlagsForm from './UtilisateurSetFeatureFlagsForm'
 
 const getStructuresInfos = ({
@@ -423,6 +424,7 @@ const AdministrationUserPage = async ({
                             <th scope="col">Satut utilisateur</th>
                             <th scope="col">Membre depuis</th>
                             <th scope="col">Membre jusqu'à</th>
+                            <th scope="col">Action</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -460,6 +462,18 @@ const AdministrationUserPage = async ({
                                   {suppression
                                     ? dateAsDayAndTime(suppression)
                                     : '-'}
+                                </td>
+                                <td>
+                                  {!suppression && (
+                                    <RetirerDeEquipeAdmin
+                                      mediateurId={mediateur.id}
+                                      coordinateurId={coordinateur.id}
+                                      displayName={
+                                        mediateur.user.name ??
+                                        mediateur.user.email
+                                      }
+                                    />
+                                  )}
                                 </td>
                               </tr>
                             ),

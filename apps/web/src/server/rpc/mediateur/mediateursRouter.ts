@@ -48,25 +48,39 @@ export const mediateursRouter = router({
       })
     }),
   removeFromTeam: protectedProcedure
-    .input(z.object({ mediateurId: z.string() }))
-    .mutation(async ({ input: { mediateurId }, ctx: { user } }) => {
-      if (!isCoordinateur(user))
-        throw forbiddenError('User is not a coordinateur')
+    .input(
+      z.object({
+        mediateurId: z.string(),
+        coordinateurId: z.string().optional(),
+      }),
+    )
+    .mutation(
+      async ({ input: { mediateurId, coordinateurId }, ctx: { user } }) => {
+        const targetCoordinateurId = coordinateurId ?? user.coordinateur?.id
 
-      const stopwatch = createStopwatch()
+        if (!targetCoordinateurId) {
+          throw forbiddenError('No coordinateur specified')
+        }
 
-      await removeMediateurFromTeamOf(user.coordinateur)(mediateurId)
+        assertAdminOrOwnerCoordinateur(user)(targetCoordinateurId)
 
-      addMutationLog({
-        userId: user.id,
-        nom: 'SupprimerMediateurCoordonne',
-        duration: stopwatch.stop().duration,
-        data: {
-          coordinateurId: user.coordinateur.id,
+        const stopwatch = createStopwatch()
+
+        await removeMediateurFromTeamOf({ id: targetCoordinateurId })(
           mediateurId,
-        },
-      })
-    }),
+        )
+
+        addMutationLog({
+          userId: user.id,
+          nom: 'SupprimerMediateurCoordonne',
+          duration: stopwatch.stop().duration,
+          data: {
+            coordinateurId: targetCoordinateurId,
+            mediateurId,
+          },
+        })
+      },
+    ),
   leaveTeam: protectedProcedure
     .input(z.object({ coordinateurId: z.string() }))
     .mutation(async ({ input: { coordinateurId }, ctx: { user } }) => {
