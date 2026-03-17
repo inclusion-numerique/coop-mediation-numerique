@@ -17,5 +17,5 @@ describe('rechercheApiEntreprise', () => {
         }),
       }),
     )
-  })
+  }, 15_000)
 })

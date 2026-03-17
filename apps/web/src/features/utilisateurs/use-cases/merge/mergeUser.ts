@@ -529,7 +529,6 @@ const syncWithMongo =
 
     if (!mongoConseiller) return
 
-    // Set isConseillerNumerique on User
     await prisma.user.update({
       where: { id: userId },
       data: {

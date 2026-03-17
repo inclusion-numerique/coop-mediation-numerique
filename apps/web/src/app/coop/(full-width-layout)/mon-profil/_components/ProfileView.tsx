@@ -39,7 +39,9 @@ export const ProfileView = ({
       title={
         <span className="fr-text--regular fr-text--sm fr-text-default--grey">
           Pour des raisons de sécurité, ProConnect ne propose pas le changement
-          d'adresse email. Vous souhaitez changer d’adresse email ?{' '}
+          d'adresse email.
+          <br />
+          Vous souhaitez changer d’adresse email&nbsp;?
           <Link
             className="fr-link fr-text--sm"
             href="https://docs.numerique.gouv.fr/docs/61b72695-b954-4273-9cb4-37cab5d0d407"
