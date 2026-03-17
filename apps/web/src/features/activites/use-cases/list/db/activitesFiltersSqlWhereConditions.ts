@@ -97,6 +97,7 @@ export const getActivitesFiltersWhereConditions = ({
   thematiqueNonAdministratives,
   thematiqueAdministratives,
   tags,
+  structuresEmployeuses,
   rdv,
   source,
 }: ActivitesFilters): {
@@ -112,6 +113,7 @@ export const getActivitesFiltersWhereConditions = ({
   demarches_administratives: any
   thematiques: any
   tags: any
+  structuresEmployeuses: any
   rdv: any
   source: any
 } => {
@@ -210,6 +212,14 @@ export const getActivitesFiltersWhereConditions = ({
           WHERE at.activite_id = act.id
             AND at.tag_id IN (${tags.map((id) => `'${id}'::UUID`).join(', ')})
         )`,
+          )
+        : null,
+    structuresEmployeuses:
+      structuresEmployeuses && structuresEmployeuses.length > 0
+        ? Prisma.raw(
+            `act.structure_employeuse_id IN (${structuresEmployeuses
+              .map((id) => `'${id}'::UUID`)
+              .join(', ')})`,
           )
         : null,
     source:

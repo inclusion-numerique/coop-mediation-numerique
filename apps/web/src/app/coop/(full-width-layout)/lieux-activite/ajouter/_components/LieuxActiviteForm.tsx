@@ -10,7 +10,7 @@ import {
   LieuxActiviteData,
   LieuxActiviteValidation,
 } from '@app/web/features/utilisateurs/use-cases/registration/LieuxActivite'
-import { SearchStructureCartographieNationaleResultStructure } from '@app/web/structure/searchStructureCartographieNationale'
+import { LieuActiviteSearchResult } from '@app/web/structure/searchLieuActiviteCombined'
 import { trpc } from '@app/web/trpc'
 import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
@@ -63,9 +63,7 @@ const LieuxActiviteForm = ({
 
   const router = useRouter()
 
-  const structuresMapRef = useRef(
-    new Map<string, SearchStructureCartographieNationaleResultStructure>(),
-  )
+  const structuresMapRef = useRef(new Map<string, LieuActiviteSearchResult>())
 
   const selectedCartographieNationaleId = form.watch(
     'addLieuActiviteCartographieNationaleId',
@@ -81,8 +79,13 @@ const LieuxActiviteForm = ({
     if (!structure) {
       return
     }
+
+    const isApiResult = structure.source === 'api'
+    const isLocalStructure = structure.source === 'structure_locale'
+
     appendStructure({
-      structureCartographieNationaleId: selectedCartographieNationaleId,
+      structureCartographieNationaleId:
+        isApiResult || isLocalStructure ? undefined : structure.id,
       id: structure.structures.at(0)?.id,
       adresse: structure.adresse,
       codeInsee: structure.codeInsee,
@@ -113,11 +116,12 @@ const LieuxActiviteForm = ({
         },
       ]
     }
-    const result =
-      await trpcClient.structures.searchCartographieNationale.query({
+    const result = await trpcClient.structures.searchLieuActiviteCombined.query(
+      {
         query: search,
         except: [...alreadySelectedStructureCartoIds.values()],
-      })
+      },
+    )
 
     const hasMore = result.matchesCount - result.structures.length
     const hasMoreMessage = hasMore
@@ -206,7 +210,7 @@ const LieuxActiviteForm = ({
         priority: 'success',
         message:
           data.lieuxActivite.length === 1
-            ? "Le lieu d'activité a bien été ajouté"
+            ? 'Le lieu d’activité a bien été ajouté'
             : `Les ${data.lieuxActivite.length} lieux d’activité ont bien été ajoutés.`,
       })
     } catch (mutationError) {

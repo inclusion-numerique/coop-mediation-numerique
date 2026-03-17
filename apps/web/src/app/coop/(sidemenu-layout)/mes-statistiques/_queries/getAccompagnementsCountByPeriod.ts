@@ -11,7 +11,6 @@ import {
 } from '@app/web/utils/monthShortLabels'
 import { UserProfile } from '@app/web/utils/user'
 import { Prisma } from '@prisma/client'
-import { differenceInMonths } from 'date-fns'
 import { LabelAndCount } from '../quantifiedShare'
 import { activitesSourceWhereCondition } from './activitesSourceWhereCondition'
 
@@ -19,15 +18,10 @@ const EMPTY_ACCOMPAGNEMENTS_COUNT = monthShortLabels.map(
   (label: MonthShortLabel) => ({ label, count: 0 }),
 )
 
-const formatMonthLabel = (
-  month: number,
-  year: number,
-  includeYear: boolean,
-): string => {
-  const monthLabel = monthShortLabels[month - 1]
-  if (!includeYear) return monthLabel
+const formatMonthLabel = (month: number, year: number): string => {
+  const monthStr = month.toString().padStart(2, '0')
   const shortYear = year.toString().slice(-2)
-  return `${monthLabel} ${shortYear}`
+  return `${monthStr}/${shortYear}`
 }
 
 export const getAccompagnementsCountByMonth = async ({
@@ -56,13 +50,6 @@ export const getAccompagnementsCountByMonth = async ({
   const fromDate = periodStart
     ? `TO_DATE('${periodStart}', 'YYYY-MM-DD')`
     : `DATE_TRUNC('month', ${endDate} - INTERVAL '${intervals - 1} months')`
-
-  // Determine if we need to show year in labels (when period > 12 months)
-  const startDateObj = periodStart
-    ? new Date(periodStart)
-    : new Date(new Date().setMonth(new Date().getMonth() - (intervals - 1)))
-  const endDateObj = periodEnd ? new Date(periodEnd) : new Date()
-  const includeYear = differenceInMonths(endDateObj, startDateObj) > 11
 
   return prismaClient.$queryRaw<
     { month: number; year: number; count: number }[]
@@ -111,7 +98,7 @@ export const getAccompagnementsCountByMonth = async ({
   `.then((result) =>
     result.map(({ count, month, year }) => ({
       count,
-      label: formatMonthLabel(month, year, includeYear),
+      label: formatMonthLabel(month, year),
     })),
   )
 }

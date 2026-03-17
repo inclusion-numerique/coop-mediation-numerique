@@ -31,4 +31,7 @@ export default {
     },
   ],
   accessComponent: <CartographieNationaleOutilAccess />,
+  classes: {
+    access: 'fr-border-none fr-p-0',
+  },
 } satisfies OutilPageData

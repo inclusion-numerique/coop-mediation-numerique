@@ -25,7 +25,7 @@ const MonReseauPage = ({
   lieuxCount: number
   isConseillerNumerique: boolean
 }) => (
-  <CoopPageContainer size={49}>
+  <CoopPageContainer size={56}>
     <SkipLinksPortal />
     <CoopBreadcrumbs
       currentPage={getMonReseauBreadcrumbLabel({ code: departement.code })}

@@ -1,6 +1,7 @@
 import { serializePrismaSessionUser } from '@app/web/auth/serializePrismaSessionUser'
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import { prismaClient } from '@app/web/prismaClient'
+import { registerLastSeen } from '@app/web/security/registerLastSeen'
 import type { Prisma } from '@prisma/client'
 
 export const sessionUserSelect = {
@@ -29,6 +30,7 @@ export const sessionUserSelect = {
   featureFlags: true,
   timezone: true,
   isConseillerNumerique: true,
+  lastSeen: true,
   emplois: {
     select: {
       id: true,
@@ -165,6 +167,8 @@ export const getSessionUserFromSessionToken = async (
   if (!res?.user) {
     return null
   }
+
+  registerLastSeen({ userId: res.user.id, currentLastSeen: res.user.lastSeen })
 
   return serializePrismaSessionUser(res.user, res.usurper)
 }

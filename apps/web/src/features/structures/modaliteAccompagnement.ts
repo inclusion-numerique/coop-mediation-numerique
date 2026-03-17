@@ -1,6 +1,11 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
+import { InternetIcon } from '@app/web/features/pictograms/digital/InternetIcon'
+import { SittingAtATableIcon } from '@app/web/features/pictograms/user/SittingAtATableIcon'
+import { TeacherIcon } from '@app/web/features/pictograms/user/TeacherIcon'
+import { PairIcon } from '@app/web/features/pictograms/work/PairIcon'
 import { ModaliteAccompagnement } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { ModaliteAccompagnement as PrismaModaliteAccompagnement } from '@prisma/client'
+import type { ComponentType } from 'react'
 
 export const modaliteAccompagnementLabels: Record<
   PrismaModaliteAccompagnement,
@@ -39,3 +44,13 @@ export const modaliteAccompagnementOptions = labelsToOptions(
   modaliteAccompagnementLabels,
   { hints: modalitesAccompagnementHints },
 )
+
+export const modaliteAccompagnementIcons: Record<
+  PrismaModaliteAccompagnement,
+  ComponentType<{ width?: number; height?: number }>
+> = {
+  EnAutonomie: PairIcon,
+  AccompagnementIndividuel: SittingAtATableIcon,
+  DansUnAtelierCollectif: TeacherIcon,
+  ADistance: InternetIcon,
+}

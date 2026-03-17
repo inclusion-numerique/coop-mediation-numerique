@@ -3,19 +3,30 @@ import { telephoneRegex, telephoneValidation } from './BeneficiaireValidation'
 describe('BeneficiaireValidation', () => {
   describe('telephoneRegex', () => {
     it.each([
+      // Format national (10 chiffres)
       { number: '0122334455', isValid: true },
       { number: '01 22 33 44 55', isValid: true },
+      { number: '01.22.33.44.55', isValid: true },
+      { number: '01-22-33-44-55', isValid: true },
+      { number: '06 52 18 33 21', isValid: true },
+      // Format international métropole (+33)
+      { number: '+33 1 22 33 44 55', isValid: true },
+      { number: '+33122334455', isValid: true },
       { number: '(+33) 1 22 33 44 55', isValid: true },
-      { number: '+1 (555) 555-5555', isValid: true },
-      { number: '0044 123 4567 890', isValid: true },
-      { number: '123-456-7890', isValid: false },
+      { number: '0033 1 22 33 44 55', isValid: true },
+      // Format international outre-mer
+      { number: '+262 692 12 34 56', isValid: true }, // Réunion
+      { number: '+590 690 12 34 56', isValid: true }, // Guadeloupe
+      { number: '+594 694 12 34 56', isValid: true }, // Guyane
+      { number: '+596 696 12 34 56', isValid: true }, // Martinique
+      // Invalides
+      { number: '123-456-7890', isValid: false }, // pas de 0 initial
       { number: 'abcdefg', isValid: false },
-      { number: '+49 (0) 123 456 7890', isValid: true },
-      { number: '+86 10 1234 5678', isValid: true },
-      { number: '+91-9876543210', isValid: true },
-      { number: '(+61) 3 1234 5678', isValid: true },
-      { number: '+39 02 12345678', isValid: true },
-    ])('should validate international phone number $number as $isValid', ({
+      { number: '+33 6 52 18 33 21 88 99 99', isValid: false }, // trop long
+      { number: '+49 123 456 7890', isValid: false }, // indicatif étranger
+      { number: '+1 555 555 5555', isValid: false }, // indicatif étranger
+      { number: '06 52 18', isValid: false }, // trop court
+    ])('should validate French phone number $number as $isValid', ({
       number,
       isValid,
     }) => {
@@ -33,13 +44,14 @@ describe('BeneficiaireValidation', () => {
     it('allows empty string', () => {
       expect(() => telephoneValidation.parse(' ')).not.toThrow()
     })
-    it('allows phone number', () => {
-      expect(() =>
-        telephoneValidation.parse('+49 (0) 123 456 7890'),
-      ).not.toThrow()
+    it('allows French phone number', () => {
+      expect(() => telephoneValidation.parse('+33 6 12 34 56 78')).not.toThrow()
     })
-    it('disallows phone number', () => {
+    it('disallows invalid input', () => {
       expect(() => telephoneValidation.parse('abcd')).toThrow()
+    })
+    it('disallows foreign phone numbers', () => {
+      expect(() => telephoneValidation.parse('+49 123 456 7890')).toThrow()
     })
   })
 })

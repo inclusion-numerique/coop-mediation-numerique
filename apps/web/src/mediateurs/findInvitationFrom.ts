@@ -4,7 +4,7 @@ export const findInvitationFrom =
   (coordinateurId: string) => async (email: string) =>
     prismaClient.invitationEquipe.findFirst({
       where: {
-        email,
+        email: { equals: email, mode: 'insensitive' },
         coordinateurId,
       },
       select: {

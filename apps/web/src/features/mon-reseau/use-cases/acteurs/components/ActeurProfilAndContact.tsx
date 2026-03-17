@@ -8,29 +8,32 @@ import { getUserProfil } from '@app/web/features/utilisateurs/utils/getUserProfi
 import classNames from 'classnames'
 import Link from 'next/link'
 
-const getCoordinateurInfo = (
+const getCoordinateursInfo = (
   acteur: ActeurIdentityData,
-): { name: string; userId: string; departementCode: string } | null => {
+): { name: string; userId: string; departementCode: string }[] => {
   const mediateur = acteur.mediateur as ActeurForList['mediateur'] | null
-  const coordination = mediateur?.coordinations?.[0]
-  if (!coordination?.coordinateur?.user) {
-    return null
-  }
+  const coordinations = mediateur?.coordinations ?? []
 
-  const coordinateurUser = coordination.coordinateur.user
-  const { id, firstName, lastName, name } = coordinateurUser
-  const displayName =
-    firstName && lastName ? `${firstName} ${lastName}` : (name ?? null)
+  return coordinations
+    .filter(
+      (coordination): coordination is NonNullable<typeof coordination> =>
+        !!coordination?.coordinateur?.user,
+    )
+    .map((coordination) => {
+      const coordinateurUser = coordination.coordinateur.user
+      const { id, firstName, lastName, name } = coordinateurUser
+      const displayName =
+        firstName && lastName ? `${firstName} ${lastName}` : (name ?? null)
 
-  if (!displayName) {
-    return null
-  }
-
-  return {
-    name: displayName,
-    userId: id,
-    departementCode: getDepartementCodeForActeur(coordinateurUser),
-  }
+      return displayName
+        ? {
+            name: displayName,
+            userId: id,
+            departementCode: getDepartementCodeForActeur(coordinateurUser),
+          }
+        : null
+    })
+    .filter((info): info is NonNullable<typeof info> => info !== null)
 }
 
 const showActeurPhoneNumberFeatureFlag = false
@@ -50,7 +53,7 @@ const ActeurProfilAndContact = ({
     contactInfo?: string
   }
 }) => {
-  const coordinateurInfo = getCoordinateurInfo(acteur)
+  const coordinateursInfo = getCoordinateursInfo(acteur)
   const showPhoneNumber =
     showActeurPhoneNumberFeatureFlag && Boolean(acteur.phone)
 
@@ -79,23 +82,29 @@ const ActeurProfilAndContact = ({
           />
         )}
         {profilLabel}
-        {coordinateurInfo && (
+        {coordinateursInfo.length > 0 && (
           <>
             {' '}
             coordonné par{' '}
-            <Link
-              className={classNames(
-                'fr-link fr-link--sm fr-ml-1v fr-position-relative',
-                classes?.link,
-              )}
-              href={getActeurPageUrl({
-                departementCode: coordinateurInfo.departementCode,
-                userId: coordinateurInfo.userId,
-              })}
-              prefetch={false}
-            >
-              {coordinateurInfo.name}
-            </Link>
+            {coordinateursInfo.map((coord, index) => (
+              <span key={coord.userId}>
+                <Link
+                  className={classNames(
+                    'fr-link fr-link--sm fr-position-relative',
+                    index === 0 && 'fr-ml-1v',
+                    classes?.link,
+                  )}
+                  href={getActeurPageUrl({
+                    departementCode: coord.departementCode,
+                    userId: coord.userId,
+                  })}
+                  prefetch={false}
+                >
+                  {coord.name}
+                </Link>
+                {index < coordinateursInfo.length - 1 && ',\u00A0'}
+              </span>
+            ))}
           </>
         )}
       </p>

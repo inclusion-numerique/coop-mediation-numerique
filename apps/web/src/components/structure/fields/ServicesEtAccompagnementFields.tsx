@@ -17,20 +17,25 @@ export const ServicesEtAccompagnementFields = <
   form: UseFormReturn<T>
   isServicesRequired?: boolean
 }) => {
-  const { control, formState } =
+  const { control, formState, watch } =
     form as unknown as UseFormReturn<ServicesEtAccompagnementData>
+
+  const services = watch('services')
+  const hasNoServices = !services || services.length === 0
 
   return (
     <>
-      <Notice
-        className="fr-notice--warning fr-notice--flex fr-align-items-center fr-mb-6v "
-        title={
-          <span className="fr-text-default--grey fr-text--regular fr-text--sm">
-            Il est obligatoire de renseigner les services d’inclusion numérique
-            proposés afin d’être visible sur la cartographie.
-          </span>
-        }
-      />
+      {hasNoServices && (
+        <Notice
+          className="fr-notice--warning fr-notice--flex fr-align-items-center fr-mb-6v "
+          title={
+            <span className="fr-text-default--grey fr-text--regular fr-text--sm">
+              Il est obligatoire de renseigner les services d'inclusion
+              numérique proposés afin d'être visible sur la cartographie.
+            </span>
+          }
+        />
+      )}
       <MultipleSelectFormField
         asterisk={isServicesRequired}
         path="services"

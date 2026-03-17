@@ -11,7 +11,10 @@ export const getLieuxActiviteForCartographie = async (mediateurId: string) =>
       creation: true,
       modification: true,
       structure: {
-        select: { visiblePourCartographieNationale: true },
+        select: {
+          visiblePourCartographieNationale: true,
+          codeInsee: true,
+        },
       },
     },
   })

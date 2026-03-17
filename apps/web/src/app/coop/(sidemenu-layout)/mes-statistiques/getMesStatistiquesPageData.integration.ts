@@ -1,6 +1,10 @@
 import { refreshFixturesComputedFields } from '@app/fixtures/refreshFixturesComputedFields'
 import { resetFixtureUser } from '@app/fixtures/resetFixtureUser'
-import { mediateque, seedStructures } from '@app/fixtures/structures'
+import {
+  mediateque,
+  seedStructures,
+  structureEmployeuse,
+} from '@app/fixtures/structures'
 import { conseillerNumerique } from '@app/fixtures/users/conseillerNumerique'
 import {
   mediateurAvecActivite,
@@ -86,18 +90,18 @@ const emptyData: MesStatistiquesPageData = {
     { label: '15/08', count: 0 },
   ],
   accompagnementsParMois: [
-    { label: 'Sep.', count: 0 },
-    { label: 'Oct.', count: 0 },
-    { label: 'Nov.', count: 0 },
-    { label: 'Déc.', count: 0 },
-    { label: 'Jan.', count: 0 },
-    { label: 'Fév.', count: 0 },
-    { label: 'Mars', count: 0 },
-    { label: 'Avr.', count: 0 },
-    { label: 'Mai', count: 0 },
-    { label: 'Juin', count: 0 },
-    { label: 'Juil.', count: 0 },
-    { label: 'Août', count: 0 },
+    { label: '09/23', count: 0 },
+    { label: '10/23', count: 0 },
+    { label: '11/23', count: 0 },
+    { label: '12/23', count: 0 },
+    { label: '01/24', count: 0 },
+    { label: '02/24', count: 0 },
+    { label: '03/24', count: 0 },
+    { label: '04/24', count: 0 },
+    { label: '05/24', count: 0 },
+    { label: '06/24', count: 0 },
+    { label: '07/24', count: 0 },
+    { label: '08/24', count: 0 },
   ],
   totalCounts: {
     accompagnements: {
@@ -157,6 +161,7 @@ const emptyData: MesStatistiquesPageData = {
     communes: [],
   },
   structures: [],
+  communes: [],
 
   activitesFilters: {},
   communesOptions: [],
@@ -165,6 +170,7 @@ const emptyData: MesStatistiquesPageData = {
   initialBeneficiairesOptions: [],
   initialMediateursOptions: [],
   lieuxActiviteOptions: [],
+  structuresEmployeusesOptions: [],
   activiteSourceOptions,
   activiteDates: {
     first: undefined,
@@ -249,6 +255,13 @@ describe('getMesStatistiquesPageData', () => {
       })
       expect(data).toEqual({
         ...emptyData,
+        structuresEmployeusesOptions: [
+          {
+            id: structureEmployeuse.id,
+            nom: structureEmployeuse.nom,
+            commune: structureEmployeuse.commune,
+          },
+        ],
         lieuxActiviteOptions: [
           {
             label: mediateque.nom,
@@ -323,9 +336,9 @@ describe('getMesStatistiquesPageData', () => {
           expectDayCount(data, '04/08', 2)
           expectDayCount(data, '05/08', 1)
 
-          expectMonthCount(data, 'Juin', 1)
-          expectMonthCount(data, 'Juil.', 14)
-          expectMonthCount(data, 'Août', 7)
+          expectMonthCount(data, '06/24', 1)
+          expectMonthCount(data, '07/24', 14)
+          expectMonthCount(data, '08/24', 7)
 
           expectEnum(data.activites.typeLieu, 'Domicile', 2, 22)
           expectEnum(data.activites.typeLieu, 'ADistance', 20, 22)
@@ -485,6 +498,33 @@ describe('getMesStatistiquesPageData', () => {
             },
           ]
 
+          data.communes = [
+            {
+              codeInsee: null,
+              codePostal: null,
+              commune: null,
+              count: 17,
+              label: 'Non communiqué',
+              proportion: 77.273,
+            },
+            {
+              codeInsee: '69382',
+              codePostal: '69002',
+              commune: 'Lyon 2eme',
+              count: 3,
+              label: 'Lyon 2eme · 69002',
+              proportion: 13.636,
+            },
+            {
+              codeInsee: '75101',
+              codePostal: '75001',
+              commune: 'Paris 1er',
+              count: 2,
+              label: 'Paris 1er · 75001',
+              proportion: 9.091,
+            },
+          ]
+
           data.activiteDates.first = new Date('2024-06-15')
           data.activiteDates.last = new Date('2024-08-05')
 
@@ -502,6 +542,7 @@ describe('getMesStatistiquesPageData', () => {
       | 'initialBeneficiairesOptions'
       | 'lieuxActiviteOptions'
       | 'activiteSourceOptions'
+      | 'structuresEmployeusesOptions'
     >
 
     beforeAll(async () => {
@@ -538,6 +579,13 @@ describe('getMesStatistiquesPageData', () => {
               mostUsed: true,
               nom: 'Exemple de Mediateque',
             },
+          },
+        ],
+        structuresEmployeusesOptions: [
+          {
+            id: structureEmployeuse.id,
+            nom: structureEmployeuse.nom,
+            commune: structureEmployeuse.commune,
           },
         ],
         activiteSourceOptions,

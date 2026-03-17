@@ -59,7 +59,13 @@ const DataTable = <
     })
 
   return (
-    <div className={classNames('fr-table', className)} data-fr-js-table="true">
+    <div
+      className={classNames(
+        'fr-table fr-border-left fr-border-right fr-border-top',
+        className,
+      )}
+      data-fr-js-table="true"
+    >
       <div className={classNames('fr-table__wrapper', classes?.wrapper)}>
         <div className={classNames('fr-table__container', classes?.container)}>
           <div className={classNames('fr-table__content', classes?.content)}>

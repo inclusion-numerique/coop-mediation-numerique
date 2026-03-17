@@ -48,11 +48,30 @@ export const getLieuActivitePageData = async ({ id }: { id: string }) => {
       dispositifProgrammesNationaux: true,
       formationsLabels: true,
       autresFormationsLabels: true,
+      _count: {
+        select: {
+          emplois: {
+            where: {
+              suppression: null,
+              fin: null,
+            },
+          },
+        },
+      },
       mediateursEnActivite: {
         where: {
           suppression: null,
           fin: null,
+          mediateur: {
+            user: {
+              deleted: null,
+            },
+          },
         },
+        orderBy: [
+          { mediateur: { user: { lastName: 'asc' } } },
+          { mediateur: { user: { firstName: 'asc' } } },
+        ],
         select: {
           id: true,
           mediateur: {
@@ -84,6 +103,7 @@ export const getLieuActivitePageData = async ({ id }: { id: string }) => {
   return {
     structure: {
       ...structure,
+      hasActiveEmployees: structure._count.emplois > 0,
       mediateursEnActivite: structure.mediateursEnActivite.map(
         (mediateurEnActivite) => ({
           ...mediateurEnActivite,

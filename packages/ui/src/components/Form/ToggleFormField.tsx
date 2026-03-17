@@ -17,6 +17,7 @@ export type ToggleFormFieldProps<T extends FieldValues> = {
   uncheckedLabel?: string | null
   labelPosition?: 'right' | 'left'
   classes?: {
+    formGroup?: string
     fieldsetElement?: string
   }
 }
@@ -54,7 +55,10 @@ const ToggleFormField = <T extends FieldValues>({
         }
 
         return (
-          <div className="fr-form-group" data-testid={dataTestId}>
+          <div
+            className={classNames('fr-form-group', classes?.formGroup)}
+            data-testid={dataTestId}
+          >
             <fieldset
               className={classNames(
                 'fr-fieldset',

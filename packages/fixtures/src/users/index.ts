@@ -263,4 +263,11 @@ export const teamAdministrateurs = [
     lastName: 'Aubry',
     role: 'Admin',
   }),
+  givenUser({
+    id: '82658fa2-b0ed-4fe8-8120-b462048957a0',
+    firstName: 'Ferdinand',
+    lastName: 'Rautureau',
+    email: 'ferdinand.rautureau@anct.gouv.fr',
+    role: 'Admin',
+  }),
 ] satisfies Prisma.UserCreateInput[]

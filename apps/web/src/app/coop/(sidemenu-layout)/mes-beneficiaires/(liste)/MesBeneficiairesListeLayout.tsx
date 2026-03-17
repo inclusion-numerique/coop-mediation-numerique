@@ -5,7 +5,7 @@ import { contentId } from '@app/web/utils/skipLinks'
 import type { PropsWithChildren } from 'react'
 
 const MesBeneficiairesListeLayout = ({ children }: PropsWithChildren) => (
-  <CoopPageContainer size={49}>
+  <CoopPageContainer size={56}>
     <SkipLinksPortal />
     <CoopBreadcrumbs currentPage="Mes bénéficiaires" />
     <main

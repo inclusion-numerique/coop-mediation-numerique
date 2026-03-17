@@ -10,6 +10,7 @@ import { InformationsGeneralesData } from '@app/web/features/structures/Informat
 import RnaInputInfo from '@app/web/features/structures/rna/RnaInputInfo'
 import SiretInputInfo from '@app/web/features/structures/siret/SiretInputInfo'
 import { typologieStructureOptions } from '@app/web/features/structures/typologieStructure'
+import Notice from '@codegouvfr/react-dsfr/Notice'
 import { UseFormReturn } from 'react-hook-form'
 
 export const InformationsGeneralesFields = <
@@ -20,33 +21,48 @@ export const InformationsGeneralesFields = <
   className,
   initialAdresseBanOptions,
   adresseBanDefaultValue,
+  hasActiveEmployees,
 }: {
   nom?: string
   form: UseFormReturn<T>
   className?: string
   initialAdresseBanOptions?: AdressBanFormFieldOption[]
   adresseBanDefaultValue?: AdressBanFormFieldOption
+  hasActiveEmployees?: boolean
 }) => {
   const { control, formState } =
     form as unknown as UseFormReturn<InformationsGeneralesData>
 
+  const protectedFieldsDisabled = hasActiveEmployees || formState.isSubmitting
+
   return (
     <div className={className}>
       <RequiredFieldsDisclaimer className="fr-mb-4v" />
+      {hasActiveEmployees && (
+        <Notice
+          className="fr-notice--flex fr-align-items-center fr-mb-4v"
+          title={
+            <span className="fr-text--sm fr-text--regular fr-text-default--grey">
+              Cette structure emploie des médiateurs. Le nom, l'adresse et le
+              SIRET ne peuvent pas être modifiés.
+            </span>
+          }
+        />
+      )}
       <InputFormField
         asterisk
         path="nom"
         label="Nom de la structure"
         control={control}
-        disabled={formState.isSubmitting}
+        disabled={protectedFieldsDisabled}
       />
       <AdresseBanFormField
         asterisk
         path="adresseBan"
         label="Adresse"
-        placeholder="Rechercher l’adresse"
+        placeholder="Rechercher l'adresse"
         control={control}
-        disabled={formState.isSubmitting}
+        disabled={protectedFieldsDisabled}
         defaultOptions={initialAdresseBanOptions}
         defaultValue={adresseBanDefaultValue}
       />
@@ -75,7 +91,7 @@ export const InformationsGeneralesFields = <
         path="siret"
         label="SIRET structure (ou RNA)"
         control={control}
-        disabled={formState.isSubmitting}
+        disabled={protectedFieldsDisabled}
         className="fr-mb-0"
         info={
           <>

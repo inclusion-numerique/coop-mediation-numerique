@@ -204,10 +204,10 @@ export const StatistiquesGenerales = ({
             </div>
           </div>
         </div>
-        <div className="fr-col fr-border fr-py-6v fr-px-8v fr-border-radius--16">
-          <div className="fr-mb-3w">
-            <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mb-1w">
-              <h3 className="fr-text--lg fr-mb-0">Nombre d’accompagnements</h3>
+        <div className="fr-col fr-border fr-pt-6v fr-pb-4v fr-px-8v fr-border-radius--16 fr-flex fr-direction-column">
+          <div className="fr-mb-3w fr-flex fr-flex-wrap fr-justify-content-space-between fr-align-items-center fr-flex-gap-2v">
+            <div className="fr-mb-0 fr-flex fr-align-items-center fr-text--nowrap">
+              <h3 className="fr-text--lg fr-mb-0">Nombre d'accompagnements</h3>
               <Button
                 className="fr-px-1v fr-ml-1v fr-no-print"
                 title="Plus d’information à propos du nombre d’accompagnements"
@@ -234,7 +234,7 @@ export const StatistiquesGenerales = ({
               </span>
             </div>
             <SegmentedControl
-              className="fr-md-col fr-col-12"
+              className="fr-ml-auto"
               hideLegend
               small
               legend="Bascule entre entre les périodes"
@@ -256,13 +256,15 @@ export const StatistiquesGenerales = ({
               ]}
             />
           </div>
-          <AccompagnementBarChart
-            data={
-              isAccompagnementCountByMonth
-                ? accompagnementsParMois
-                : accompagnementsParJour
-            }
-          />
+          <div className="fr-flex-grow-1">
+            <AccompagnementBarChart
+              data={
+                isAccompagnementCountByMonth
+                  ? accompagnementsParMois
+                  : accompagnementsParJour
+              }
+            />
+          </div>
         </div>
       </div>
     </div>

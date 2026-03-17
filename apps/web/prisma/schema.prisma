@@ -110,6 +110,7 @@ model User {
   updated   DateTime  @default(now())
   deleted   DateTime?
   lastLogin DateTime? @map("last_login")
+  lastSeen  DateTime? @map("last_seen")
 
   // User can be created from v1 data
   v1Imported DateTime? @map("v1_imported")
@@ -1855,6 +1856,7 @@ enum MutationName {
   SupprimerEmployeStructure                 @map("supprimer_employe_structure")
   CreerMediateurEnActivite                  @map("creer_mediateur_en_activite")
   SupprimerMediateurEnActivite              @map("supprimer_mediateur_en_activite")
+  ChangerRoles                               @map("changer_roles") 
 
   @@map("mutation_name")
 }

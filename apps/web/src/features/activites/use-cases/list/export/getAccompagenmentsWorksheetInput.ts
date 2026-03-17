@@ -88,6 +88,7 @@ export const getAccompagenmentsWorksheetInput = async ({
     initialBeneficiairesOptions,
     initialMediateursOptions,
     lieuxActiviteOptions,
+    structuresEmployeusesOptions,
     tagsOptions,
     activiteSourceOptions,
   } = await getFiltersOptionsForMediateur({
@@ -104,6 +105,7 @@ export const getAccompagenmentsWorksheetInput = async ({
     lieuxActiviteOptions,
     beneficiairesOptions: initialBeneficiairesOptions,
     mediateursOptions: initialMediateursOptions,
+    structuresEmployeusesOptions,
     tagsOptions,
     activiteSourceOptions,
   })

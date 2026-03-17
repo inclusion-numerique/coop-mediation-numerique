@@ -3,8 +3,9 @@ import AdministrationInlineLabelsValues, {
   type LabelAndValue,
 } from '@app/web/app/administration/AdministrationInlineLabelsValues'
 import AdministrationMailtoLink from '@app/web/app/administration/AdministrationMailtoLink'
+import ChangeUserRolesButton from '@app/web/app/administration/utilisateurs/[id]/ChangeUserRolesButton'
+import DeleteUserButton from '@app/web/app/administration/utilisateurs/[id]/DeleteUserButton'
 import LogoutUserButton from '@app/web/app/administration/utilisateurs/[id]/LogoutUserButton'
-import ResetUserInscriptionButton from '@app/web/app/administration/utilisateurs/[id]/ResetUserInscriptionButton'
 import UpdateUserDataFromDataspaceButton from '@app/web/app/administration/utilisateurs/[id]/UpdateUserDataFromDataspaceButton'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { isUserInscriptionEnCours } from '@app/web/auth/isUserInscriptionEnCours'
@@ -16,7 +17,10 @@ import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/Administr
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
-import { dateAsDayAndTime } from '@app/web/utils/dateAsDayAndTime'
+import {
+  dateAsDayAndTime,
+  dateAsDayAndTimeInTimeZone,
+} from '@app/web/utils/dateAsDayAndTime'
 import { numberToString } from '@app/web/utils/formatNumber'
 import { contentId } from '@app/web/utils/skipLinks'
 import { getUserDisplayName } from '@app/web/utils/user'
@@ -30,6 +34,7 @@ import Link from 'next/link'
 import UsurpUserButton from '../../usurpation/UsurpUserButton'
 import { type AdministrationUserPageData } from './getAdministrationUserPageData'
 import RenvoyerInvitationButton from './RenvoyerInvitationButton'
+import { RetirerDeEquipeAdmin } from './RetirerDeEquipeAdmin'
 import UtilisateurSetFeatureFlagsForm from './UtilisateurSetFeatureFlagsForm'
 
 const getStructuresInfos = ({
@@ -113,6 +118,7 @@ const AdministrationUserPage = async ({
     phone,
     created,
     lastLogin,
+    lastSeen,
     profilInscription,
     accounts,
     sessions,
@@ -129,6 +135,12 @@ const AdministrationUserPage = async ({
   const isMediateur = !!mediateur
   const isCoordinateur = !!coordinateur
   const inscriptionEnCours = isUserInscriptionEnCours(user)
+
+  const canRemoveMediateur =
+    !mediateur ||
+    (mediateur.beneficiairesCount === 0 && mediateur.activitesCount === 0)
+  const canRemoveCoordinateur =
+    !coordinateur || coordinateur._count.mediateursCoordonnes === 0
 
   const coordinations = mediateur?.coordinations?.filter(
     ({ suppression }) => !suppression,
@@ -170,7 +182,20 @@ const AdministrationUserPage = async ({
       <main id={contentId}>
         <AdministrationTitle
           icon="fr-icon-user-line"
-          actions={<ResetUserInscriptionButton userId={user.id} />}
+          actions={
+            <div className="fr-flex fr-flex-gap-2v">
+              <ChangeUserRolesButton
+                userId={user.id}
+                currentIsMediateur={isMediateur}
+                currentIsCoordinateur={isCoordinateur}
+                canRemoveMediateur={canRemoveMediateur}
+                canRemoveCoordinateur={canRemoveCoordinateur}
+              />
+              {user.role === 'User' && !user.deleted && (
+                <DeleteUserButton userId={user.id} userName={name} />
+              )}
+            </div>
+          }
         >
           {name} <span className="fr-mx-1v" />{' '}
           {getUserAccountStatusBadge(statutCompte)}
@@ -244,6 +269,18 @@ const AdministrationUserPage = async ({
                 label: 'Rôle sécurité',
                 value: role,
               },
+              {
+                label: 'Dispositif',
+                value: user.isConseillerNumerique ? (
+                  <Badge noIcon severity="info">
+                    Conseiller numérique
+                  </Badge>
+                ) : (
+                  <Badge noIcon className="fr-text-mention--grey">
+                    -
+                  </Badge>
+                ),
+              },
               { label: 'Siret ProConnect', value: siret || '-' },
               {
                 label: 'Créé le',
@@ -254,13 +291,21 @@ const AdministrationUserPage = async ({
                 value: (
                   <div className="fr-grid-row fr-grid-row--middle fr-grid-row--gutters">
                     <div className="fr-col-auto">
-                      {lastLogin ? dateAsDayAndTime(lastLogin) : 'Jamais'}
+                      {lastLogin
+                        ? dateAsDayAndTimeInTimeZone(lastLogin, 'Europe/Paris')
+                        : 'Jamais'}
                     </div>
                     <div className="fr-col-auto">
                       <LogoutUserButton userId={user.id} />
                     </div>
                   </div>
                 ),
+              },
+              {
+                label: 'Dernière activité',
+                value: lastSeen
+                  ? dateAsDayAndTimeInTimeZone(lastSeen, 'Europe/Paris')
+                  : 'Jamais',
               },
               {
                 label: 'Profil d’inscription',
@@ -328,18 +373,6 @@ const AdministrationUserPage = async ({
             />
           </AdministrationInfoCard>
         )}
-        {isMediateur && user.isConseillerNumerique && (
-          <AdministrationInfoCard title="Rôle conseiller numérique">
-            <AdministrationInlineLabelsValues
-              items={[
-                {
-                  label: 'Est Conseiller Numérique',
-                  value: 'Oui',
-                },
-              ]}
-            />
-          </AdministrationInfoCard>
-        )}
         {coordinateur && (
           <AdministrationInfoCard title="Rôle coordinateur" id="coordinateur">
             <AdministrationInlineLabelsValues
@@ -347,10 +380,6 @@ const AdministrationUserPage = async ({
                 {
                   label: 'ID Coordinateur',
                   value: coordinateur.id,
-                },
-                {
-                  label: 'Est Conseiller Numérique',
-                  value: user.isConseillerNumerique ? 'Oui' : 'Non',
                 },
                 {
                   label: 'Créé le',
@@ -401,6 +430,7 @@ const AdministrationUserPage = async ({
                             <th scope="col">Satut utilisateur</th>
                             <th scope="col">Membre depuis</th>
                             <th scope="col">Membre jusqu'à</th>
+                            <th scope="col">Action</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -438,6 +468,18 @@ const AdministrationUserPage = async ({
                                   {suppression
                                     ? dateAsDayAndTime(suppression)
                                     : '-'}
+                                </td>
+                                <td>
+                                  {!suppression && (
+                                    <RetirerDeEquipeAdmin
+                                      mediateurId={mediateur.id}
+                                      coordinateurId={coordinateur.id}
+                                      displayName={
+                                        mediateur.user.name ??
+                                        mediateur.user.email
+                                      }
+                                    />
+                                  )}
                                 </td>
                               </tr>
                             ),
@@ -597,34 +639,42 @@ const AdministrationUserPage = async ({
             {nonDeletedEmplois.length > 0 ? (
               nonDeletedEmplois.map((emploi) => (
                 <div key={emploi.id}>
-                  <p className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
+                  <hr className="fr-separator-1px fr-mt-4v" />
+                  <div className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
                     {emploi.structure.nom}{' '}
                     {emploi.fin ? (
                       <Badge className="fr-ml-2w" severity="warning" small>
-                        Emploi terminé
+                        Contrat terminé
                       </Badge>
                     ) : (
                       <Badge className="fr-ml-2w" severity="success" small>
-                        Emploi en cours
+                        Contrat en cours
                       </Badge>
                     )}
-                  </p>
+                  </div>
                   <AdministrationInlineLabelsValues
+                    className="fr-mt-4v"
                     items={[
                       {
-                        label: "Début de l'emploi",
+                        label: 'Début du contrat',
                         value: dateAsDay(emploi.debut),
                       },
                       {
-                        label: "Fin de l'emploi",
+                        label: 'Fin du contrat',
                         value: emploi.fin ? dateAsDay(emploi.fin) : '-',
                       },
                       {
                         label: 'Créé le',
                         value: dateAsDay(emploi.creation),
                       },
-                      ...getStructuresInfos(emploi.structure),
                     ]}
+                  />
+                  <p className="fr-mb-0 fr-mt-6v">
+                    Informations sur la structure&nbsp;:
+                  </p>
+                  <AdministrationInlineLabelsValues
+                    className="fr-mt-4v"
+                    items={[...getStructuresInfos(emploi.structure)]}
                   />
                 </div>
               ))
@@ -639,20 +689,22 @@ const AdministrationUserPage = async ({
                 <Accordion label={`Supprimés - ${deletedEmplois.length}`}>
                   {deletedEmplois.map((emploi) => (
                     <div key={emploi.id}>
-                      <p className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
+                      <hr className="fr-separator-1px fr-mt-4v" />
+                      <div className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
                         {emploi.structure.nom}{' '}
                         <Badge className="fr-ml-2w" severity="warning" small>
                           Supprimé
                         </Badge>
-                      </p>
+                      </div>
                       <AdministrationInlineLabelsValues
+                        className="fr-mt-4v"
                         items={[
                           {
-                            label: "Début de l'emploi",
+                            label: 'Début du contrat',
                             value: dateAsDay(emploi.debut),
                           },
                           {
-                            label: "Fin de l'emploi",
+                            label: 'Fin du contrat',
                             value: emploi.fin ? dateAsDay(emploi.fin) : '-',
                           },
                           {
@@ -665,8 +717,14 @@ const AdministrationUserPage = async ({
                               ? dateAsDay(emploi.suppression)
                               : '-',
                           },
-                          ...getStructuresInfos(emploi.structure),
                         ]}
+                      />
+                      <p className="fr-mb-0 fr-mt-6v">
+                        Informations sur la structure&nbsp;:
+                      </p>
+                      <AdministrationInlineLabelsValues
+                        className="fr-mt-4v"
+                        items={[...getStructuresInfos(emploi.structure)]}
                       />
                     </div>
                   ))}

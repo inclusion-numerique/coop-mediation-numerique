@@ -1,7 +1,12 @@
 import { searchStructureEmployeuseCombined } from '@app/web/features/inscription/use-cases/renseigner-structure-employeuse/searchStructureEmployeuseCombined'
 import { CreerStructureValidation } from '@app/web/features/structures/CreerStructureValidation'
+import { searchStructuresEmployeuses } from '@app/web/features/structures/getStructuresEmployeusesOptions'
+import { mergeStructure } from '@app/web/features/structures/use-cases/merge/mutations/mergeStructure'
+import { mediateurCoordonnesIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
 import { prismaClient } from '@app/web/prismaClient'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
+import { enforceIsAdmin } from '@app/web/server/rpc/enforceIsAdmin'
+import { searchLieuActiviteCombined } from '@app/web/structure/searchLieuActiviteCombined'
 import { searchStructure } from '@app/web/structure/searchStructure'
 import { searchStructureCartographieNationale } from '@app/web/structure/searchStructureCartographieNationale'
 import { fixTelephone } from '@app/web/utils/clean-operations'
@@ -29,6 +34,31 @@ export const structuresRouter = router({
         except: except ?? undefined,
       }),
     ),
+
+  searchLieuActiviteCombined: protectedProcedure
+    .input(
+      z.object({ query: z.string(), except: z.array(z.string()).nullish() }),
+    )
+    .query(({ input: { query, except } }) =>
+      searchLieuActiviteCombined(query, {
+        except: except ?? undefined,
+      }),
+    ),
+
+  searchStructuresEmployeuses: protectedProcedure
+    .input(
+      z.object({
+        query: z.string(),
+        excludeIds: z.array(z.string().uuid()).optional(),
+      }),
+    )
+    .query(({ input: { query, excludeIds }, ctx: { user } }) => {
+      const mediateurIds = [
+        ...(user.mediateur?.id ? [user.mediateur.id] : []),
+        ...mediateurCoordonnesIdsFor(user),
+      ]
+      return searchStructuresEmployeuses({ query, mediateurIds, excludeIds })
+    }),
 
   create: protectedProcedure.input(CreerStructureValidation).mutation(
     async ({
@@ -152,4 +182,16 @@ export const structuresRouter = router({
       return created
     },
   ),
+
+  merge: protectedProcedure
+    .input(
+      z.object({
+        sourceStructureId: z.string().uuid(),
+        targetStructureId: z.string().uuid(),
+      }),
+    )
+    .mutation(async ({ input, ctx: { user } }) => {
+      enforceIsAdmin(user)
+      return mergeStructure(input.sourceStructureId, input.targetStructureId)
+    }),
 })

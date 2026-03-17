@@ -3,6 +3,7 @@
 import {
   Bar,
   BarChart,
+  CartesianGrid,
   LabelList,
   ResponsiveContainer,
   Tooltip,
@@ -19,15 +20,18 @@ const CustomTooltip = ({
   active &&
   payload &&
   payload.length > 0 && (
-    <ul className="fr-background-default--grey fr-p-1w fr-list-group fr-raw-list fr-tile--shadow">
-      <li className="fr-text--bold">{label}</li>
-      <li>
-        Accompagnements :{' '}
+    <div
+      className="fr-p-2v fr-border-radius--8 fr-tile--shadow fr-whitespace-nowrap fr-text--sm"
+      style={{ backgroundColor: 'rgba(30, 27, 57, 0.95)', color: 'white' }}
+    >
+      <div className="fr-text--bold">{label}</div>
+      <div>
+        <span className="fr-text--xs">Accompagnements&nbsp;:</span>{' '}
         <span className="fr-text--bold">
           {payload[0].value?.toLocaleString('fr-FR')}
         </span>
-      </li>
-    </ul>
+      </div>
+    </div>
   )
 
 export const AccompagnementBarChart = ({
@@ -35,55 +39,75 @@ export const AccompagnementBarChart = ({
 }: {
   data: { label: string; count: number }[]
 }) => {
-  // Si plus de 12 éléments, on ne garde que les 30 dernières valeurs
-  const displayData = data.length > 12 ? data.slice(-30) : data
+  const isEmpty = data.length === 0 || data.every((item) => item.count === 0)
+  const emptyData = data.map((item) => ({ ...item, count: 1 }))
+  const displayData = isEmpty
+    ? emptyData
+    : data.length > 12
+      ? data.slice(-30)
+      : data
 
   return (
-    <ResponsiveContainer width="100%" height={200}>
+    <ResponsiveContainer width="100%" height="100%">
       <BarChart
         data={displayData}
-        margin={{ top: 15, right: 30, left: 20, bottom: 20 }}
-        barSize={displayData.length > 12 ? 6 : 16}
+        margin={{ top: 15, right: 10, left: 0, bottom: 0 }}
+        barSize={displayData.length > 18 ? 16 : 20}
       >
+        <CartesianGrid
+          horizontal
+          vertical={false}
+          strokeDasharray="3 3"
+          stroke="#ddd"
+        />
         <XAxis
-          className="fr-text--sm fr-text--medium"
+          className="fr-text--xxs"
           dataKey="label"
           scale="point"
-          tick={{ dy: 15 }}
-          padding={{ left: 10, right: 10 }}
+          padding={{ left: 14, right: 14 }}
           tickLine={false}
-          angle={-45}
+          axisLine={false}
           interval={displayData.length > 12 ? 2 : 0}
         />
         <YAxis
-          className="fr-text--sm fr-text--medium"
-          tickMargin={15}
+          width={22}
+          tickCount={5}
+          tickLine={false}
+          axisLine={false}
           allowDecimals={false}
-          interval="preserveStartEnd"
-          tickFormatter={(value) => {
-            if (value >= 1000) {
-              return `${(value / 1000).toFixed(1)}k`
-            }
-            return value.toString()
-          }}
+          domain={isEmpty ? [0, 1] : undefined}
+          className="fr-text--xxs"
+          tickFormatter={(value) =>
+            isEmpty
+              ? ''
+              : value >= 1000
+                ? `${(value / 1000).toFixed(1)}k`
+                : value.toString()
+          }
         />
-        <Tooltip content={<CustomTooltip />} />
-        <Bar dataKey="count" fill="#009099" radius={[10, 10, 0, 0]}>
-          <LabelList
-            dataKey="count"
-            position="top"
-            style={{
-              fontSize: displayData.length > 12 ? 10 : 12,
-              fontWeight: 'bold',
-            }}
-            formatter={(count: number) => {
-              if (count === 0) return ''
-              if (count >= 1000) {
-                return `${(count / 1000).toFixed(1)}k`
-              }
-              return count.toString()
-            }}
-          />
+        {!isEmpty && <Tooltip content={<CustomTooltip />} />}
+        <Bar
+          dataKey="count"
+          fill={isEmpty ? 'var(--blue-france-975-75)' : '#6a6af4'}
+          radius={[4, 4, 0, 0]}
+        >
+          {!isEmpty && (
+            <LabelList
+              dataKey="count"
+              position="top"
+              style={{
+                fontSize: displayData.length > 12 ? 10 : 12,
+                fontWeight: 'bold',
+              }}
+              formatter={(count: number) => {
+                if (count === 0) return ''
+                if (count >= 1000) {
+                  return `${(count / 1000).toFixed(1)}k`
+                }
+                return count.toString()
+              }}
+            />
+          )}
         </Bar>
       </BarChart>
     </ResponsiveContainer>

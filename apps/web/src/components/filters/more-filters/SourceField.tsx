@@ -5,10 +5,6 @@ import {
 import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import { formOptions } from '@tanstack/react-form'
 
-export const sourceCount = ({ source }: { source?: ActiviteSource }) => {
-  return source ? 1 : 0
-}
-
 export const updateSourcesParams =
   (params: URLSearchParams) =>
   (data: { value: { source?: ActiviteSource } }) => {

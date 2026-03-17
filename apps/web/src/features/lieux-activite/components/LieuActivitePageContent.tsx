@@ -28,9 +28,11 @@ import VisiblePourCartographieNationaleFields from './VisiblePourCartographieNat
 export const LieuActivitePageContent = ({
   data: { structure },
   canRemoveMediateurFromLieu,
+  hideBreadcrumbs,
 }: {
   data: LieuActivitePageData
   canRemoveMediateurFromLieu: boolean
+  hideBreadcrumbs?: boolean
 }) => {
   const departementCode = getDepartementCodeForLieu(structure)
 
@@ -49,9 +51,11 @@ export const LieuActivitePageContent = ({
 
   return (
     <>
-      <div className="fr-hidden fr-unhidden-lg" style={{ minWidth: '302px' }}>
-        {showSideMenu && <LieuActiviteSideMenu className="fr-mt-16w" />}
-      </div>
+      {!hideBreadcrumbs && (
+        <div className="fr-hidden fr-unhidden-lg" style={{ minWidth: '302px' }}>
+          {showSideMenu && <LieuActiviteSideMenu className="fr-mt-16w" />}
+        </div>
+      )}
       <div
         className={classNames(
           'fr-pr-0 fr-ml-0 fr-mb-30v',
@@ -59,19 +63,23 @@ export const LieuActivitePageContent = ({
         )}
         style={{ maxWidth: 792 }}
       >
-        <CoopBreadcrumbs
-          parents={[
-            ...getMonReseauBreadcrumbParents({ code: departementCode }),
-            {
-              label: "Annuaire des lieux d'activités",
-              linkProps: {
-                href: `/coop/mon-reseau/${departementCode}/lieux`,
-              },
-            },
-          ]}
-          currentPage={structure.nom}
-        />
-        <BackButton className="fr-mt-8v" />
+        {!hideBreadcrumbs && (
+          <>
+            <CoopBreadcrumbs
+              parents={[
+                ...getMonReseauBreadcrumbParents({ code: departementCode }),
+                {
+                  label: "Annuaire des lieux d'activités",
+                  linkProps: {
+                    href: `/coop/mon-reseau/${departementCode}/lieux`,
+                  },
+                },
+              ]}
+              currentPage={structure.nom}
+            />
+            <BackButton className="fr-mt-8v" />
+          </>
+        )}
         <p className="fr-text--xs fr-mb-3v">
           Mis à jour le {formattedModificationDate}{' '}
           {derniereModificationPar ? `par ${derniereModificationPar}` : ''}
@@ -81,6 +89,7 @@ export const LieuActivitePageContent = ({
           <InformationsGeneralesEditCard
             {...structure}
             lieuItinerant={structure.itinerance.includes(Itinerance.Itinerant)}
+            hasActiveEmployees={structure.hasActiveEmployees}
           />
         </div>
         <LieuMediateursEnActivite
@@ -101,9 +110,6 @@ export const LieuActivitePageContent = ({
           <hr className="fr-separator fr-separator-1px" />
           <VisiblePourCartographieNationaleFields
             className="fr-px-4w fr-py-3w"
-            canChangeVisibility={
-              structure.structureCartographieNationaleId == null
-            }
             onChange={setShowSideMenu}
             {...structure}
           >
@@ -139,10 +145,12 @@ export const LieuActivitePageContent = ({
           </VisiblePourCartographieNationaleFields>
         </div>
       </div>
-      <div
-        className="fr-hidden fr-unhidden-lg"
-        style={{ minWidth: '302px' }}
-      ></div>
+      {!hideBreadcrumbs && (
+        <div
+          className="fr-hidden fr-unhidden-lg"
+          style={{ minWidth: '302px' }}
+        ></div>
+      )}
     </>
   )
 }

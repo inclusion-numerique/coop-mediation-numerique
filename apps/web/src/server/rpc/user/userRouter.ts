@@ -1,10 +1,6 @@
-import { createHash } from 'node:crypto'
 import { UtilisateurSetFeatureFlagsValidation } from '@app/web/app/administration/utilisateurs/[id]/UtilisateurSetFeatureFlagsValidation'
 import { UpdateProfileValidation } from '@app/web/app/user/UpdateProfileValidation'
-import {
-  deleteBrevoContact,
-  deploymentCanDeleteBrevoContact,
-} from '@app/web/external-apis/brevo/deleteBrevoContact'
+import { deleteUser } from '@app/web/features/utilisateurs/use-cases/delete/deleteUser'
 import { mergeUser } from '@app/web/features/utilisateurs/use-cases/merge/mergeUser'
 import { nouveauReminders } from '@app/web/features/utilisateurs/use-cases/nouveau-reminders/nouveauReminders'
 import { searchUser } from '@app/web/features/utilisateurs/use-cases/search/searchUser'
@@ -18,12 +14,13 @@ import {
 } from '@app/web/server/rpc/createRouter'
 import { enforceIsAdmin } from '@app/web/server/rpc/enforceIsAdmin'
 import { invalidError } from '@app/web/server/rpc/trpcErrors'
-import { ResetInscriptionUtilisateurValidation } from '@app/web/server/rpc/user/ResetInscriptionUtilisateur'
+import { ChangeUserRolesValidation } from '@app/web/server/rpc/user/ChangeUserRolesValidation'
 import { UserMergeValidation } from '@app/web/server/rpc/user/userMerge'
 import { ServerUserSignupValidation } from '@app/web/server/rpc/user/userSignup.server'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { fixTelephone } from '@app/web/utils/clean-operations'
 import { createStopwatch } from '@app/web/utils/stopwatch'
+import { ProfilInscription } from '@prisma/client'
 import { v4 } from 'uuid'
 import { z } from 'zod'
 
@@ -87,71 +84,202 @@ export const userRouter = router({
         return updated
       },
     ),
-  deleteProfile: protectedProcedure.mutation(async ({ ctx: { user } }) => {
-    if (deploymentCanDeleteBrevoContact()) {
-      await deleteBrevoContact(user.email)
-    }
+  deleteProfile: protectedProcedure.mutation(({ ctx: { user } }) =>
+    deleteUser(user.id, user.email),
+  ),
+  adminDeleteUser: protectedProcedure
+    .input(z.object({ userId: z.string().uuid() }))
+    .mutation(async ({ input: { userId }, ctx: { user: sessionUser } }) => {
+      enforceIsAdmin(sessionUser)
 
-    const hash = createHash('sha256')
-      .update(`${user.id}-${user.email}`)
-      .digest('base64url')
-      .slice(0, 12)
+      const user = await prismaClient.user.findUnique({
+        where: { id: userId },
+        select: { id: true, email: true, role: true, deleted: true },
+      })
 
-    return prismaClient.user.update({
-      where: { id: user.id },
-      data: {
-        deleted: new Date(),
-        email: `deleted+${hash}@coop-numerique.anct.gouv.fr`,
-        firstName: 'Utilisateur',
-        lastName: 'Supprimé',
-        name: 'Utilisateur Supprimé',
-        phone: null,
-      },
-    })
-  }),
+      if (!user) throw invalidError('Utilisateur non trouvé')
+
+      if (user.deleted) throw invalidError('Cet utilisateur est déjà supprimé')
+
+      if (user.role === 'Admin' || user.role === 'Support') {
+        throw invalidError(
+          'Impossible de supprimer un administrateur ou support',
+        )
+      }
+
+      return deleteUser(userId, user.email)
+    }),
   markOnboardingAsSeen: protectedProcedure.mutation(({ ctx: { user } }) =>
     prismaClient.user.update({
       where: { id: user.id },
       data: { hasSeenOnboarding: new Date() },
     }),
   ),
-  resetInscription: protectedProcedure
-    .input(ResetInscriptionUtilisateurValidation)
-    .mutation(async ({ input: { userId }, ctx: { user: sessionUser } }) => {
-      enforceIsAdmin(sessionUser)
+  changeRoles: protectedProcedure
+    .input(ChangeUserRolesValidation)
+    .mutation(
+      async ({
+        input: { userId, isMediateur, isCoordinateur },
+        ctx: { user: sessionUser },
+      }) => {
+        enforceIsAdmin(sessionUser)
 
-      const stopwatch = createStopwatch()
+        if (!isMediateur && !isCoordinateur) {
+          throw invalidError('Au moins un rôle est requis')
+        }
 
-      const updated = await prismaClient.user.update({
-        where: {
-          id: userId,
-          role: 'User',
-        },
-        data: {
-          hasSeenOnboarding: null,
-          acceptationCgu: null,
-          inscriptionValidee: null,
-          donneesConseillerNumeriqueV1Importees: null,
-          profilInscription: null,
-          structureEmployeuseRenseignee: null,
-        },
-      })
+        const stopwatch = createStopwatch()
 
-      if (!updated) {
-        throw invalidError('User not found or user is admin')
-      }
+        const user = await prismaClient.user.findUnique({
+          where: { id: userId, role: 'User' },
+          select: {
+            id: true,
+            isConseillerNumerique: true,
+            mediateur: {
+              select: {
+                id: true,
+                beneficiairesCount: true,
+                activitesCount: true,
+              },
+            },
+            coordinateur: {
+              select: {
+                id: true,
+                _count: {
+                  select: {
+                    mediateursCoordonnes: { where: { suppression: null } },
+                  },
+                },
+              },
+            },
+          },
+        })
 
-      addMutationLog({
-        userId,
-        nom: 'ResetInscription',
-        duration: stopwatch.stop().duration,
-        data: {
-          id: userId,
-        },
-      })
+        if (!user) {
+          throw invalidError('User not found or user is admin')
+        }
 
-      return updated
-    }),
+        const currentIsMediateur = !!user.mediateur
+        const currentIsCoordinateur = !!user.coordinateur
+
+        // Add mediateur role if needed
+        if (isMediateur && !currentIsMediateur) {
+          await prismaClient.mediateur.create({
+            data: { userId },
+          })
+        }
+
+        // Add coordinateur role if needed
+        if (isCoordinateur && !currentIsCoordinateur) {
+          await prismaClient.coordinateur.create({
+            data: { userId },
+          })
+        }
+
+        // Remove mediateur role if needed
+        if (!isMediateur && currentIsMediateur && user.mediateur) {
+          if (
+            user.mediateur.beneficiairesCount > 0 ||
+            user.mediateur.activitesCount > 0
+          ) {
+            throw invalidError(
+              'Impossible de retirer le rôle médiateur : des bénéficiaires ou activités existent',
+            )
+          }
+
+          const mediateurId = user.mediateur.id
+          await prismaClient.$transaction([
+            prismaClient.mediateurCoordonne.deleteMany({
+              where: { mediateurId },
+            }),
+            prismaClient.mediateurEnActivite.deleteMany({
+              where: { mediateurId },
+            }),
+            prismaClient.invitationEquipe.deleteMany({
+              where: { mediateurId },
+            }),
+            prismaClient.tag.deleteMany({
+              where: { mediateurId },
+            }),
+            prismaClient.partageStatistiques.deleteMany({
+              where: { mediateurId },
+            }),
+            prismaClient.mediateur.delete({
+              where: { id: mediateurId },
+            }),
+          ])
+        }
+
+        // Remove coordinateur role if needed
+        if (!isCoordinateur && currentIsCoordinateur && user.coordinateur) {
+          if (user.coordinateur._count.mediateursCoordonnes > 0) {
+            throw invalidError(
+              'Impossible de retirer le rôle coordinateur : des médiateurs sont encore coordonnés',
+            )
+          }
+
+          const coordinateurId = user.coordinateur.id
+          await prismaClient.$transaction([
+            prismaClient.mediateurCoordonne.deleteMany({
+              where: { coordinateurId },
+            }),
+            prismaClient.invitationEquipe.deleteMany({
+              where: { coordinateurId },
+            }),
+            prismaClient.tag.deleteMany({
+              where: { coordinateurId },
+            }),
+            prismaClient.activiteCoordination.deleteMany({
+              where: { coordinateurId },
+            }),
+            prismaClient.partageStatistiques.deleteMany({
+              where: { coordinateurId },
+            }),
+            prismaClient.coordinateur.delete({
+              where: { id: coordinateurId },
+            }),
+          ])
+        }
+
+        // Update profilInscription based on resulting roles
+        let profilInscription: ProfilInscription | null = null
+        if (isMediateur && isCoordinateur) {
+          profilInscription = user.isConseillerNumerique
+            ? 'ConseillerNumerique'
+            : 'Mediateur'
+        } else if (isMediateur) {
+          profilInscription = user.isConseillerNumerique
+            ? 'ConseillerNumerique'
+            : 'Mediateur'
+        } else if (isCoordinateur) {
+          profilInscription = user.isConseillerNumerique
+            ? 'CoordinateurConseillerNumerique'
+            : 'Coordinateur'
+        }
+
+        const updated = await prismaClient.user.update({
+          where: { id: userId },
+          data: {
+            profilInscription,
+          },
+        })
+
+        addMutationLog({
+          userId,
+          nom: 'ChangerRoles',
+          duration: stopwatch.stop().duration,
+          data: {
+            id: userId,
+            isMediateur,
+            isCoordinateur,
+            previousIsMediateur: currentIsMediateur,
+            previousIsCoordinateur: currentIsCoordinateur,
+          },
+        })
+
+        return updated
+      },
+    ),
   search: protectedProcedure
     .input(
       z.object({

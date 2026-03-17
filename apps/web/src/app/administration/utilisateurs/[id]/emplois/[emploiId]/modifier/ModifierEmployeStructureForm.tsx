@@ -99,7 +99,7 @@ const ModifierEmployeStructureForm = ({
       <InputFormField
         control={control}
         path="debut"
-        label="Date de début de l'emploi"
+        label="Date de début du contrat"
         asterisk
         disabled={isLoading}
         type="date"
@@ -108,7 +108,7 @@ const ModifierEmployeStructureForm = ({
         control={control}
         hint="Renseigner uniquement si c'est une structure employeuse historique qui n'est plus d'actualité"
         path="fin"
-        label="Date de fin de l'emploi"
+        label="Date de fin du contrat"
         disabled={isLoading}
         type="date"
       />
@@ -134,9 +134,9 @@ const ModifierEmployeStructureForm = ({
           className="fr-mt-4v fr-mx-2v"
           title={
             <>
-              Si cette structure employeuse a été ajoutée par erreur et vous
-              souhaitez la supprimer de l’historique des emplois de cet
-              utilisateur, vous pouvez la supprimer.
+              Si ce contrat a été ajouté par erreur et vous souhaitez le
+              supprimer de l’historique des contrats de cet utilisateur, vous
+              pouvez le supprimer.
             </>
           }
         />
@@ -149,7 +149,7 @@ const ModifierEmployeStructureForm = ({
         </Button>
       </div>
       <DeleteEmployeStructureModal.Component
-        title="Supprimer l’emploi ?"
+        title="Supprimer le contrat ?"
         buttons={[
           {
             title: 'Annuler',
@@ -173,7 +173,7 @@ const ModifierEmployeStructureForm = ({
         ]}
       >
         <p className="fr-mb-2v">
-          Vous allez supprimer cet emploi de l’historique des structures
+          Vous allez supprimer ce contrat de l’historique des structures
           employeuses de cet utilisateur. Cette action est irréversible.
         </p>
       </DeleteEmployeStructureModal.Component>

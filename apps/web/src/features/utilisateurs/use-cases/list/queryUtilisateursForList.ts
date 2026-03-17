@@ -10,6 +10,7 @@ export const searchUtilisateurSelect = {
   role: true,
   inscriptionValidee: true,
   lastLogin: true,
+  lastSeen: true,
   profilInscription: true,
   created: true,
   deleted: true,

@@ -9,7 +9,9 @@ export const CreerEmployeStructureValidation = z.object({
     .uuid(),
   structureEmployeuse: StructureCreationValidationWithSiret,
   debut: z
-    .string({ required_error: "Veuillez renseigner une de début de l'emploi" })
+    .string({
+      required_error: 'Veuillez renseigner une date de début du contrat',
+    })
     .date('Veuillez renseigner une date valide'),
   fin: z.string().nullish(),
 })

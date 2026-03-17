@@ -1,5 +1,5 @@
+import { MergeDiff } from '@app/web/libs/ui/administration/MergeDiff'
 import { MergeData, MergeInfo } from '../getMergeData'
-import { MergeDiff } from './MergeDiff'
 
 export const MergePreview = ({
   merge,

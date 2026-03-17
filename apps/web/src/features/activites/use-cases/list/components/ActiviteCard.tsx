@@ -132,6 +132,7 @@ const ActiviteCard = ({
               <>
                 <span className="fr-icon-user-line fr-mr-1w fr-icon--sm" />
                 <TruncateText
+                  className="fr-text--nowrap"
                   text={getBeneficiaireDisplayName(
                     accompagnements[0]?.beneficiaire ?? {},
                   )}

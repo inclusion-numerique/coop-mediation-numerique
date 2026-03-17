@@ -138,6 +138,10 @@
   flex-basis: 0;
 }
 
+.fr-flex-basis-full {
+  flex-basis: 100%;
+}
+
 .fr-flex-grow-0 {
   flex-grow: 0;
 }
@@ -316,6 +320,14 @@
 
   .fr-align-items-lg-center {
     align-items: center;
+  }
+
+  .fr-flex-gap-lg-4v {
+    gap: 16px;
+  }
+
+  .fr-flex-basis-lg-0 {
+    flex-basis: 0;
   }
 }
 

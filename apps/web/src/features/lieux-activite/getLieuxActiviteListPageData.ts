@@ -1,12 +1,20 @@
 import { lieuxForListSelect } from '@app/web/features/mon-reseau/use-cases/lieux/db/searchLieux'
 import { prismaClient } from '@app/web/prismaClient'
+import type { Prisma } from '@prisma/client'
 
 export const getLieuxActiviteListPageData = async ({
   mediateurId,
+  tri = 'nomaz',
 }: {
   mediateurId: string
-}) =>
-  prismaClient.mediateurEnActivite.findMany({
+  tri?: string
+}) => {
+  const orderBy: Prisma.MediateurEnActiviteOrderByWithRelationInput =
+    tri === 'majrecent' || tri === 'majancien'
+      ? { structure: { modification: tri === 'majrecent' ? 'desc' : 'asc' } }
+      : { structure: { nom: tri === 'nomza' ? 'desc' : 'asc' } }
+
+  return prismaClient.mediateurEnActivite.findMany({
     where: {
       mediateurId,
       suppression: null,
@@ -22,7 +30,9 @@ export const getLieuxActiviteListPageData = async ({
         select: lieuxForListSelect,
       },
     },
+    orderBy,
   })
+}
 
 export type LieuxActiviteListPageData = Awaited<
   ReturnType<typeof getLieuxActiviteListPageData>

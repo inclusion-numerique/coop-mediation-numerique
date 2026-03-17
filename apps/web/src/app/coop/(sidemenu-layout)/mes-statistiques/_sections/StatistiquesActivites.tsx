@@ -4,6 +4,7 @@ import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import { AccompagnementPieChart } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_components/AccompagnementPieChart'
 import { QuantifiedShareLegend } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_components/QuantifiedShareLegend'
 import type {
+  ActivitesCommunesStats,
   ActivitesStats,
   ActivitesStructuresStats,
 } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/getActivitesStats'
@@ -20,12 +21,14 @@ import { StatistiqueMateriel } from '../_components/StatistiqueMateriel'
 import {
   canauxAccompagnementColors,
   dureesAccompagnementColors,
+  nombreAccompagnementParCommuneColor,
   nombreAccompagnementParLieuColor,
   tagsColor,
   thematiquesAccompagnementColors,
 } from './colors'
 
 type AccompagnementCategory = 'thematiques' | 'demarches' | 'tags'
+type StructuresCategory = 'lieux' | 'communes'
 
 const desc = (
   { count: countA }: { count: number },
@@ -40,6 +43,7 @@ const toMaxProportion = (
 export const StatistiquesActivites = ({
   activites,
   structures,
+  communes,
   totalCounts,
   wording = 'personnel',
   canManageTags = false,
@@ -47,6 +51,7 @@ export const StatistiquesActivites = ({
   wording?: 'personnel' | 'generique'
   activites: ActivitesStats
   structures?: ActivitesStructuresStats
+  communes?: ActivitesCommunesStats
   totalCounts: TotalCountsStats
   canManageTags?: boolean
 }) => {
@@ -59,6 +64,9 @@ export const StatistiquesActivites = ({
 
   const [accompagnementCategory, setAccompagnementCategory] =
     useState<AccompagnementCategory>('thematiques')
+
+  const [structuresCategory, setStructuresCategory] =
+    useState<StructuresCategory>('lieux')
 
   const accompagnementCategories = [
     {
@@ -115,7 +123,7 @@ export const StatistiquesActivites = ({
       </h2>
       <div
         ref={captureTypesAccompagnementsRef}
-        className="fr-background-alt--blue-france fr-px-8v fr-py-6v fr-mb-3w fr-border-radius--16 fr-grid-row fr-flex-gap-4v fr-position-relative"
+        className="fr-background-alt--blue-france fr-px-8v fr-py-6v fr-mb-3w fr-border-radius--16 fr-grid-row fr-flex-gap-12v fr-position-relative"
       >
         <span className="fr-no-print fr-position-absolute fr-top-0 fr-right-0 fr-p-4v">
           <CaptureButton
@@ -156,7 +164,6 @@ export const StatistiquesActivites = ({
           <SegmentedControl
             className="fr-md-col fr-col-12 fr-ml-auto"
             hideLegend
-            small
             legend="Bascule entre les thématiques"
             segments={[
               {
@@ -213,7 +220,7 @@ export const StatistiquesActivites = ({
               <Fragment key={category}>
                 <div className="fr-flex fr-align-items-center fr-justify-content-space-between fr-mb-6v">
                   <div className="fr-mb-0 fr-flex fr-align-items-center">
-                    <h3 className="fr-text--lg fr-mb-0 fr-text--nowrap">
+                    <h3 className="fr-text--md fr-mb-0 fr-text--nowrap">
                       {title}
                     </h3>
                     <Button
@@ -245,17 +252,18 @@ export const StatistiquesActivites = ({
                   colors={colors}
                   maxProportion={maxProportion}
                   oneLineLabel
+                  tooltipKey={category}
                 />
               </Fragment>
             ),
         )}
       </div>
       <div
-        className="fr-border fr-p-4w fr-mb-3w fr-border-radius--16 fr-background-default--grey fr-border-radius--16 fr-position-relative"
+        className="fr-border fr-p-8v fr-pb-10v fr-mb-3w fr-border-radius--16 fr-background-default--grey fr-border-radius--16 fr-position-relative"
         ref={captureMaterielAccompagnementsRef}
       >
-        <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mb-3w">
-          <h3 className="fr-text--lg fr-mb-0">
+        <div className="fr-col fr-flex fr-align-items-center fr-mb-8v">
+          <h3 className="fr-text--md fr-mb-0">
             Matériel utilisé lors des accompagnements
           </h3>
           <Button
@@ -289,11 +297,10 @@ export const StatistiquesActivites = ({
             />
           </span>
         </div>
-        <div className="fr-grid-row fr-grid-row--gutters fr-grid-row--center">
+        <div className="fr-flex fr-flex-wrap fr-justify-content-space-between fr-flex-gap-6v fr-px-4v">
           {activites.materiels.map(({ value, label, count, proportion }) => (
             <StatistiqueMateriel
               key={value}
-              className="fr-col-xl fr-col-4"
               value={value}
               label={label}
               count={count}
@@ -306,32 +313,9 @@ export const StatistiquesActivites = ({
         ref={captureCreneauxAccompagnementsRef}
         className="fr-border fr-p-4w fr-background-default--grey fr-border-radius--16 fr-position-relative"
       >
-        <div className="fr-grid-row fr-grid-row--gutters">
-          <div className="fr-col-xl-6 fr-col-12">
-            <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mb-3w">
-              <h3 className="fr-text--lg fr-mb-0">
-                Canaux des accompagnements
-              </h3>
-              <Button
-                className="fr-px-1v fr-ml-1v fr-no-print"
-                title="Plus d’information à propos des canaux d’accompagnements"
-                priority="tertiary no outline"
-                size="small"
-                type="button"
-                aria-describedby="tooltip-canaux-accompagnements"
-              >
-                <span className="ri-information-line fr-text--lg" aria-hidden />
-              </Button>
-              <span
-                className="fr-tooltip fr-placement"
-                id="tooltip-canaux-accompagnements"
-                role="tooltip"
-                aria-hidden
-              >
-                Il s’agit de la répartition des accompagnements enregistrées par
-                canal.
-              </span>
-            </div>
+        <div className="fr-flex fr-flex-wrap fr-flex-gap-16v">
+          <div className="fr-flex-grow-1 fr-flex-basis-full fr-flex-basis-lg-0">
+            <h3 className="fr-text--md fr-mb-4v">Canaux des accompagnements</h3>
             <div className="fr-flex fr-align-items-center">
               <AccompagnementPieChart
                 className="fr-flex-shrink-0"
@@ -347,30 +331,8 @@ export const StatistiquesActivites = ({
               />
             </div>
           </div>
-          <div className="fr-col-xl-6 fr-col-12">
-            <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mb-3w">
-              <h3 className="fr-text--lg fr-mb-0">Durée des accompagnements</h3>
-              <Button
-                className="fr-px-1v fr-ml-1v fr-no-print"
-                title="Plus d’information à propos des durées d’accompagnements"
-                priority="tertiary no outline"
-                size="small"
-                type="button"
-                aria-describedby="tooltip-durees-accompagnements"
-              >
-                <span className="ri-information-line fr-text--lg" aria-hidden />
-              </Button>
-              <span
-                className="fr-tooltip fr-placement"
-                id="tooltip-durees-accompagnements"
-                role="tooltip"
-                aria-hidden
-              >
-                Il s’agit de la répartition des accompagnements enregistrées par
-                durée.
-              </span>
-            </div>
-
+          <div className="fr-flex-grow-1 fr-flex-basis-full fr-flex-basis-lg-0">
+            <h3 className="fr-text--md fr-mb-4v">Durée des accompagnements</h3>
             <div className="fr-flex fr-align-items-center">
               <AccompagnementPieChart
                 className="fr-flex-shrink-0"
@@ -388,52 +350,116 @@ export const StatistiquesActivites = ({
             </div>
           </div>
         </div>
-        {!!structures && (
+        {(!!structures || !!communes) && (
           <>
             <hr className="fr-separator-1px fr-my-5w" />
-            <div className="fr-mb-0 fr-col fr-flex fr-align-items-center fr-mb-3w">
-              <h3 className="fr-text--lg fr-mb-0">
-                Nombre d’accompagnements par lieux
+            <div className="fr-flex fr-align-items-center fr-justify-content-space-between fr-mb-4v">
+              <h3 className="fr-text--md fr-mb-0">
+                Nombre d'accompagnements par{' '}
+                {structuresCategory === 'lieux'
+                  ? "lieux d'activités"
+                  : 'communes'}
               </h3>
-              <Button
-                className="fr-px-1v fr-ml-1v fr-no-print"
-                title="Plus d’information à propos du nombre d’accompagnements par lieux"
-                priority="tertiary no outline"
-                size="small"
-                type="button"
-                aria-describedby="tooltip-nombre-accompagnements-par-lieux"
-              >
-                <span className="ri-information-line fr-text--lg" aria-hidden />
-              </Button>
-              <span
-                className="fr-tooltip fr-placement"
-                id="tooltip-nombre-accompagnements-par-lieux"
-                role="tooltip"
-                aria-hidden
-              >
-                Il s’agit de la répartition des accompagnements enregistrées par
-                lieu d’activité.
-              </span>
+              <SegmentedControl
+                hideLegend
+                legend="Bascule entre lieux et communes"
+                segments={[
+                  {
+                    label: (
+                      <>
+                        <span className="ri-home-office-line" aria-hidden />
+                        &ensp;Par lieux d'activités
+                      </>
+                    ),
+                    nativeInputProps: {
+                      checked: structuresCategory === 'lieux',
+                      onChange: () => setStructuresCategory('lieux'),
+                    },
+                  },
+                  {
+                    label: (
+                      <>
+                        <span className="ri-road-map-line" aria-hidden />
+                        &ensp;Par communes
+                      </>
+                    ),
+                    nativeInputProps: {
+                      checked: structuresCategory === 'communes',
+                      onChange: () => setStructuresCategory('communes'),
+                    },
+                  },
+                ]}
+              />
             </div>
-            <div className="fr-text--bold fr-text--uppercase fr-text--sm fr-text-mention--grey fr-mb-1w">
-              Lieux d’activités
-            </div>
-            <QuantifiedShareList
-              limit={{
-                showLabel: 'Voir tous les lieux',
-                hideLabel: 'Réduire',
-                count: 5,
-              }}
-              truncateLabel
-              order="desc"
-              quantifiedShares={structures}
-              color={nombreAccompagnementParLieuColor}
-              style={{
-                label: {
-                  width: '244px',
-                },
-              }}
-            />
+            {structuresCategory === 'lieux' && (
+              <>
+                {!structures ||
+                structures.length === 0 ||
+                structures.every((s) => s.count === 0) ? (
+                  <div className="fr-text--center fr-background-alt--blue-france fr-p-12v fr-border-radius--8">
+                    Aucun accompagnement renseigné dans un de vos lieux
+                    d'activités
+                  </div>
+                ) : (
+                  <>
+                    <div className="fr-text--bold fr-text--uppercase fr-text--xs fr-text-mention--grey fr-mb-2v">
+                      Lieux d'activités
+                    </div>
+                    <QuantifiedShareList
+                      limit={{
+                        showLabel: 'Voir tous les lieux',
+                        hideLabel: 'Réduire',
+                        count: 5,
+                      }}
+                      truncateLabel
+                      tooltipKey="lieux"
+                      order="desc"
+                      quantifiedShares={structures}
+                      color={nombreAccompagnementParLieuColor}
+                      style={{
+                        label: {
+                          width: '244px',
+                        },
+                      }}
+                    />
+                  </>
+                )}
+              </>
+            )}
+            {structuresCategory === 'communes' && (
+              <>
+                {!communes ||
+                communes.length === 0 ||
+                communes.every((c) => c.count === 0) ? (
+                  <div className="fr-text--center fr-background-alt--blue-france fr-p-12v fr-border-radius--8">
+                    Aucun accompagnement renseigné dans une commune
+                  </div>
+                ) : (
+                  <>
+                    <div className="fr-text--bold fr-text--uppercase fr-text--xs fr-text-mention--grey fr-mb-2v">
+                      Communes
+                    </div>
+                    <QuantifiedShareList
+                      limit={{
+                        showLabel: 'Voir toutes les communes',
+                        hideLabel: 'Réduire',
+                        count: 5,
+                      }}
+                      truncateLabel
+                      tooltipKey="communes"
+                      order="desc"
+                      quantifiedShares={communes}
+                      color={nombreAccompagnementParCommuneColor}
+                      style={{
+                        label: {
+                          width: '244px',
+                        },
+                      }}
+                    />
+                  </>
+                )}
+              </>
+            )}
           </>
         )}
         <span className="fr-no-print fr-position-absolute fr-top-0 fr-right-0 fr-p-4v">

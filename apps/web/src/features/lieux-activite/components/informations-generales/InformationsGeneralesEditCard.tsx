@@ -34,6 +34,7 @@ const InformationsGeneralesEditCard = (props: {
   siret?: string | null
   rna?: string | null
   typologies?: Typologie[] | null
+  hasActiveEmployees?: boolean
 }) => {
   const mutation = trpc.lieuActivite.updateInformationsGenerales.useMutation()
   const router = useRouter()
