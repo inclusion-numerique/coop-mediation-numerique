@@ -117,6 +117,9 @@ import { type ZodError, z } from 'zod'
  *                 modification:
  *                   type: string
  *                   format: date-time
+ *                 is_visible:
+ *                   type: boolean
+ *                   description: indique si le médiateur consent à la diffusion publique de ses informations
  *                 en_activite:
  *                   type: array
  *                   description: liste des liens mediateur-structure (uniquement l'id, structure_id...)
@@ -334,6 +337,7 @@ export type UtilisateurAttributes = {
     id: string
     creation: string
     modification: string
+    is_visible: boolean
     en_activite: Array<{
       id: string
       structure_id: string
@@ -632,6 +636,7 @@ export const GET = createApiV1Route
                 user_id: u.id,
                 creation: u.mediateur.creation.toISOString(),
                 modification: u.mediateur.modification.toISOString(),
+                is_visible: u.mediateur.isVisible,
                 en_activite: u.mediateur.enActivite.map((ma) => ({
                   id: ma.id,
                   structure_id: ma.structureId,
