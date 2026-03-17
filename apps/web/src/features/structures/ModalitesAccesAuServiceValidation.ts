@@ -1,3 +1,4 @@
+import { telephoneValidation } from '@app/web/utils/telephoneValidation'
 import z from 'zod'
 import { fraisAChargeValues } from './fraisACharge'
 
@@ -6,7 +7,7 @@ export const ModalitesAccesAuServiceShape = {
     .object({
       surPlace: z.boolean().nullish(),
       parTelephone: z.boolean().nullish(),
-      numeroTelephone: z.string().nullish(),
+      numeroTelephone: telephoneValidation,
       parMail: z.boolean().nullish(),
       adresseMail: z
         .string()
