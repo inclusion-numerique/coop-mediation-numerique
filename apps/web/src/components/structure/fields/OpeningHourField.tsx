@@ -63,7 +63,7 @@ export const OpeningHourField = <T extends OpeningHourFieldFormValues>({
         </div>
         <div className="fr-px-12v fr-py-2v">
           <ToggleFormField
-            classes={{ fieldsetElement: 'fr-m-0' }}
+            classes={{ formGroup: 'fr-m-0', fieldsetElement: 'fr-m-0' }}
             className="fr-m-0"
             label={disabled ? 'Fermé' : 'Ouvert'}
             labelPosition="left"

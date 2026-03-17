@@ -32,11 +32,11 @@ export const InformationsPratiquesFields = <
       />
       <InputFormField
         path="ficheAccesLibre"
-        label="Accessibilité"
+        label="Accessibilité du lieu"
         hint={
           <>
-            Afin de renseigner les informations d’accessibilité sur la
-            structure, retrouvez-la via la plateforme{' '}
+            Retrouvez les informations d’accessibilité sur ce lieu via la
+            plateforme{' '}
             <Link
               href="https://acceslibre.beta.gouv.fr"
               target="_blank"
@@ -46,7 +46,7 @@ export const InformationsPratiquesFields = <
             >
               accès libre
             </Link>{' '}
-            et copiez l’url dans le champs ci-dessous.
+            et copiez le lien ici.
           </>
         }
         placeholder="https://acceslibre.beta.gouv.fr/..."
@@ -58,8 +58,7 @@ export const InformationsPratiquesFields = <
         label="Prise de rendez-vous en ligne"
         hint={
           <>
-            Si la structure dispose d'un outil en ligne de prise de rendez-vous
-            (par exemple RDV Service Public{' '}
+            Si ce lieu dispose d’un outil de prise de rendez-vous en ligne (ex :{' '}
             <Link
               href={rdvWebsiteLink}
               target="_blank"
@@ -67,9 +66,9 @@ export const InformationsPratiquesFields = <
               className="fr-link fr-link--xs"
               title="Site de RDV Service Public (nouvel onglet)"
             >
-              {rdvWebsiteLink}
+              RDV Service Public
             </Link>
-            ) , vous pouvez ajouter le lien ici.
+            ), ajoutez le lien ici.
           </>
         }
         placeholder="https://..."

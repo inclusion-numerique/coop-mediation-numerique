@@ -38,6 +38,10 @@
   .fr-mb-sm-0 {
     margin-bottom: 0 !important;
   }
+
+  .fr-ml-sm-auto {
+    margin-left: auto;
+  }
 }
 
 @media (min-width: 78em) {

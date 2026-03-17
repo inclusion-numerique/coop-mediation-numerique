@@ -6,6 +6,14 @@
   background-color: var(--background-alt-grey);
 }
 
+.cardNoHover {
+  cursor: default;
+}
+
+.cardNoHover:hover {
+  background-color: transparent;
+}
+
 .innerLink {
   position: relative;
   z-index: 2;
