@@ -40,7 +40,6 @@ import { createStopwatch } from '@app/web/utils/stopwatch'
 import { Itinerance, ModaliteAcces } from '@prisma/client'
 import { v4 } from 'uuid'
 import z from 'zod'
-import { lieuActiviteValidation } from './lieuActiviteValidation'
 
 const lieuActiviteToUpdate = async (input: { id: string }) => {
   const structure = await prismaClient.structure.findFirst({
@@ -183,6 +182,25 @@ export const lieuActiviteRouter = router({
       const structure = await lieuActiviteToUpdate(input)
 
       if (structure == null) return
+
+      const activeEmployeesCount = await prismaClient.employeStructure.count({
+        where: {
+          structureId: input.id,
+          suppression: null,
+          fin: null,
+        },
+      })
+
+      if (
+        activeEmployeesCount > 0 &&
+        (input.nom !== structure.nom ||
+          (input.siret ?? null) !== structure.siret ||
+          input.adresseBan.nom !== structure.adresse)
+      ) {
+        throw invalidError(
+          'Le nom, l’adresse et le SIRET ne peuvent pas être modifiés car cette structure emploie des médiateurs',
+        )
+      }
 
       const updated = await prismaClient.structure.update({
         where: { id: structure.id },
