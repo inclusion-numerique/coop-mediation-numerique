@@ -751,8 +751,9 @@ model Structure {
   longitude         Float?
   banId             String? @map("ban_id")
 
-  siret String?
-  rna   String?
+  siret                String?
+  rna                  String?
+  synchronisationSiret DateTime? @map("synchronisation_siret")
 
   visiblePourCartographieNationale Boolean @default(false) @map("visible_pour_cartographie_nationale")
 
