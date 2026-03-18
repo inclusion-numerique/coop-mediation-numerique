@@ -1,5 +1,6 @@
 import { prismaClient } from '@app/web/prismaClient'
 import type { UserMediateur } from '@app/web/utils/user'
+import { Prisma } from '@prisma/client'
 
 export type BeneficiaireDoublon = {
   id: string // unique id for the duplicate object
@@ -28,8 +29,10 @@ export type BeneficiairesDoublonsPageData = {
 
 export const getBeneficiairesDoublonsPageData = async ({
   user,
+  fuzzyMatching = true,
 }: {
   user: UserMediateur
+  fuzzyMatching?: boolean
 }): Promise<BeneficiairesDoublonsPageData> => {
   if (!user.mediateur) {
     return {
@@ -37,6 +40,15 @@ export const getBeneficiairesDoublonsPageData = async ({
       duplicates: [] as BeneficiaireDoublon[],
     }
   }
+
+  // Build matching clauses: fuzzy for nom/prenom if enabled, exact for telephone/email
+  const nomMatchClause = fuzzyMatching
+    ? Prisma.sql`(CASE WHEN a.nom_search IS NOT NULL AND b.nom_search IS NOT NULL AND similarity(a.nom_search, b.nom_search) > 0.4 THEN 1 ELSE 0 END)`
+    : Prisma.sql`(CASE WHEN a.nom_search IS NOT NULL AND b.nom_search IS NOT NULL AND a.nom_search = b.nom_search THEN 1 ELSE 0 END)`
+
+  const prenomMatchClause = fuzzyMatching
+    ? Prisma.sql`(CASE WHEN a.prenom_search IS NOT NULL AND b.prenom_search IS NOT NULL AND similarity(a.prenom_search, b.prenom_search) > 0.4 THEN 1 ELSE 0 END)`
+    : Prisma.sql`(CASE WHEN a.prenom_search IS NOT NULL AND b.prenom_search IS NOT NULL AND a.prenom_search = b.prenom_search THEN 1 ELSE 0 END)`
 
   const rawDuplicates = await prismaClient.$queryRaw<
     {
@@ -67,7 +79,7 @@ export const getBeneficiairesDoublonsPageData = async ({
       NULLIF(lower(regexp_replace(unaccent(telephone), '\\s', '', 'g')), '') as telephone_search,
       NULLIF(TRIM(lower(unaccent(email))), '') as email_search
     FROM "beneficiaires"
-    WHERE mediateur_id = ${user.mediateur.id}::uuid 
+    WHERE mediateur_id = ${user.mediateur.id}::uuid
       AND anonyme = false
       AND suppression IS NULL
     ORDER BY nom ASC, creation DESC
@@ -87,11 +99,11 @@ export const getBeneficiairesDoublonsPageData = async ({
     b.creation as b_creation
   FROM "all" a
   JOIN "all" b ON a.id < b.id
-  WHERE 
+  WHERE
     /* At least 2 matching fields (null fields don't count as matches) */
     (
-      (CASE WHEN a.nom_search IS NOT NULL AND b.nom_search IS NOT NULL AND a.nom_search = b.nom_search THEN 1 ELSE 0 END) +
-      (CASE WHEN a.prenom_search IS NOT NULL AND b.prenom_search IS NOT NULL AND a.prenom_search = b.prenom_search THEN 1 ELSE 0 END) +
+      ${nomMatchClause} +
+      ${prenomMatchClause} +
       (CASE WHEN a.telephone_search IS NOT NULL AND b.telephone_search IS NOT NULL AND a.telephone_search = b.telephone_search THEN 1 ELSE 0 END) +
       (CASE WHEN a.email_search IS NOT NULL AND b.email_search IS NOT NULL AND a.email_search = b.email_search THEN 1 ELSE 0 END)
     ) >= 2

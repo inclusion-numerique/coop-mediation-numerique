@@ -13,23 +13,17 @@ export type DuplicateBeneficiaire = {
   adresse: string | null
 }
 
-/**
- * Finds duplicate beneficiaires for a given beneficiaire based on matching fields.
- * Requires at least 2 out of 4 fields to match (nom, prenom, telephone, email).
- * Uses normalized search to handle accents and spacing differences.
- *
- * @param withConflictingFields - 'include': allows conflicts on non-matching fields (only requires 2 matches).
- *                                 'exclude': ensures no conflicting fields (both non-null but different).
- */
 export const findDuplicateForBeneficiaire = async ({
   beneficiaire,
   withConflictingFields,
+  fuzzyMatching = false,
 }: {
   beneficiaire: Pick<
     Beneficiaire,
     'nom' | 'prenom' | 'telephone' | 'email' | 'mediateurId'
   > & { id: string | null }
   withConflictingFields: 'include' | 'exclude'
+  fuzzyMatching?: boolean
 }): Promise<DuplicateBeneficiaire[]> => {
   // Build the conflict check clause conditionally based on withConflictingFields
   const conflictCheckClause =
@@ -41,6 +35,15 @@ export const findDuplicateForBeneficiaire = async ({
           (CASE WHEN t.telephone_search IS NOT NULL AND c.telephone_search IS NOT NULL AND t.telephone_search != c.telephone_search THEN 1 ELSE 0 END) +
           (CASE WHEN t.email_search IS NOT NULL AND c.email_search IS NOT NULL AND t.email_search != c.email_search THEN 1 ELSE 0 END)
         ) = 0`
+
+  // Build matching clauses: fuzzy for nom/prenom if enabled, exact for telephone/email
+  const nomMatchClause = fuzzyMatching
+    ? Prisma.sql`(CASE WHEN t.nom_search IS NOT NULL AND c.nom_search IS NOT NULL AND similarity(t.nom_search, c.nom_search) > 0.4 THEN 1 ELSE 0 END)`
+    : Prisma.sql`(CASE WHEN t.nom_search IS NOT NULL AND c.nom_search IS NOT NULL AND t.nom_search = c.nom_search THEN 1 ELSE 0 END)`
+
+  const prenomMatchClause = fuzzyMatching
+    ? Prisma.sql`(CASE WHEN t.prenom_search IS NOT NULL AND c.prenom_search IS NOT NULL AND similarity(t.prenom_search, c.prenom_search) > 0.4 THEN 1 ELSE 0 END)`
+    : Prisma.sql`(CASE WHEN t.prenom_search IS NOT NULL AND c.prenom_search IS NOT NULL AND t.prenom_search = c.prenom_search THEN 1 ELSE 0 END)`
 
   const duplicates = await prismaClient.$queryRaw<DuplicateBeneficiaire[]>`
     WITH "target" AS (
@@ -85,11 +88,11 @@ export const findDuplicateForBeneficiaire = async ({
       c.adresse
     FROM "candidates" c
     CROSS JOIN "target" t
-    WHERE 
+    WHERE
       /* At least 2 matching fields (null fields don't count as matches) */
       (
-        (CASE WHEN t.nom_search IS NOT NULL AND c.nom_search IS NOT NULL AND t.nom_search = c.nom_search THEN 1 ELSE 0 END) +
-        (CASE WHEN t.prenom_search IS NOT NULL AND c.prenom_search IS NOT NULL AND t.prenom_search = c.prenom_search THEN 1 ELSE 0 END) +
+        ${nomMatchClause} +
+        ${prenomMatchClause} +
         (CASE WHEN t.telephone_search IS NOT NULL AND c.telephone_search IS NOT NULL AND t.telephone_search = c.telephone_search THEN 1 ELSE 0 END) +
         (CASE WHEN t.email_search IS NOT NULL AND c.email_search IS NOT NULL AND t.email_search = c.email_search THEN 1 ELSE 0 END)
       ) >= 2

@@ -44,6 +44,7 @@ const BeneficiaireLayout = async (
   const duplicates = await findDuplicateForBeneficiaire({
     beneficiaire,
     withConflictingFields: 'include',
+    fuzzyMatching: true,
   })
 
   return (
