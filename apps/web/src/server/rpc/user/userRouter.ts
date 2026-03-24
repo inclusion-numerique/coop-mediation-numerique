@@ -1,5 +1,6 @@
 import { UtilisateurSetFeatureFlagsValidation } from '@app/web/app/administration/utilisateurs/[id]/UtilisateurSetFeatureFlagsValidation'
 import { UpdateProfileValidation } from '@app/web/app/user/UpdateProfileValidation'
+import { updateBrevoContact } from '@app/web/external-apis/brevo/updateBrevoContact'
 import { deleteUser } from '@app/web/features/utilisateurs/use-cases/delete/deleteUser'
 import { mergeUser } from '@app/web/features/utilisateurs/use-cases/merge/mergeUser'
 import { nouveauReminders } from '@app/web/features/utilisateurs/use-cases/nouveau-reminders/nouveauReminders'
@@ -276,6 +277,14 @@ export const userRouter = router({
             previousIsCoordinateur: currentIsCoordinateur,
           },
         })
+
+        // Update Brevo contact if roles changed
+        const rolesChanged =
+          isMediateur !== currentIsMediateur ||
+          isCoordinateur !== currentIsCoordinateur
+        if (rolesChanged) {
+          await updateBrevoContact(userId)
+        }
 
         return updated
       },

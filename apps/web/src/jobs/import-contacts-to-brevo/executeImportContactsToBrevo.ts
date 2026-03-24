@@ -4,44 +4,85 @@ import {
   onlyWithBrevoRole,
   toBrevoContact,
 } from '@app/web/external-apis/brevo/createBrevoContact'
+import { removeBrevoContactFromList } from '@app/web/external-apis/brevo/removeBrevoContactFromList'
 import { PrismaClient } from '@prisma/client'
 
 const userListId = Number.parseInt(process.env.BREVO_USERS_LIST_ID!, 10)
 const prisma = new PrismaClient()
 
 export const executeImportContactsToBrevo = async () => {
-  output('Starting import of contacts to Brevo...')
+  output('Starting sync of contacts to Brevo...')
 
   const users = await prisma.user.findMany({
-    where: { role: 'User', inscriptionValidee: { not: null } },
+    where: { role: 'User', inscriptionValidee: { not: null }, deleted: null },
     include: {
       mediateur: true,
       coordinateur: true,
     },
   })
 
-  const contacts = users.map(toBrevoContact).filter(onlyWithBrevoRole)
+  const allContacts = users.map((user) => ({
+    user,
+    contact: toBrevoContact(user),
+  }))
 
-  output(`${contacts.length} contacts to import`)
+  const contactsWithRole = allContacts.filter(({ contact }) =>
+    onlyWithBrevoRole(contact),
+  )
+  const contactsWithoutRole = allContacts.filter(
+    ({ contact }) => !onlyWithBrevoRole(contact),
+  )
 
-  output('Importing contacts to Brevo...')
+  output(`${contactsWithRole.length} contacts with roles to sync`)
+  output(`${contactsWithoutRole.length} contacts without roles to remove`)
 
-  const results = await Promise.allSettled(
-    contacts.map((contact) =>
+  // 1. Update contacts with roles
+  output('Syncing contacts with roles to Brevo...')
+
+  const updateResults = await Promise.allSettled(
+    contactsWithRole.map(({ contact }) =>
       createBrevoContact({ contact, listIds: [userListId] }),
     ),
   )
 
-  const failures = results.filter((result) => result.status === 'rejected')
+  const updateFailures = updateResults.filter(
+    (result) => result.status === 'rejected',
+  )
 
-  if (failures.length > 0) {
-    output(`Imported with ${failures.length} errors:`)
-    for (const [index, failure] of failures.entries()) {
-      if (failure.status === 'rejected') {
-        output(`Error ${index + 1}: ${String(failure.reason)}`)
+  if (updateFailures.length > 0) {
+    output(`Sync completed with ${updateFailures.length} errors`)
+  } else {
+    output(`Successfully synced ${contactsWithRole.length} contacts`)
+  }
+
+  // 2. Remove contacts without roles from the list
+  if (contactsWithoutRole.length > 0) {
+    output('Removing contacts without roles from list...')
+
+    let removedCount = 0
+    let removeErrors = 0
+
+    for (const { user } of contactsWithoutRole) {
+      try {
+        await removeBrevoContactFromList(user.email, userListId)
+        removedCount++
+        if (removedCount % 50 === 0) {
+          output(`Removed ${removedCount}/${contactsWithoutRole.length}...`)
+        }
+      } catch {
+        removeErrors++
       }
     }
-  } else {
-    output('Successfully imported all contacts to Brevo')
+
+    output(
+      `Removed ${removedCount} contacts from list (${removeErrors} errors)`,
+    )
+  }
+
+  return {
+    totalUsers: users.length,
+    synced: contactsWithRole.length - updateFailures.length,
+    syncErrors: updateFailures.length,
+    removedFromList: contactsWithoutRole.length,
   }
 }

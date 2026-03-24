@@ -3,7 +3,8 @@ import {
   brevoApiThrottle,
   deploymentCanCreateBrevoContact,
 } from '@app/web/external-apis/brevo/createBrevoContact'
-import { deleteBrevoContact } from '@app/web/external-apis/brevo/deleteBrevoContact'
+import { deleteBrevoContactIfOrphan } from '@app/web/external-apis/brevo/deleteBrevoContactIfOrphan'
+import { removeBrevoContactFromList } from '@app/web/external-apis/brevo/removeBrevoContactFromList'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import axios from 'axios'
@@ -96,41 +97,47 @@ export const executeRemoveOrphanBrevoContacts = async () => {
     .filter((id) => !existingUserIds.has(id))
     .map((extId) => ({ extId, email: contactsByExtId.get(extId)! }))
 
-  output(`Found ${orphanContacts.length} orphan contacts to delete`)
+  output(`Found ${orphanContacts.length} orphan contacts to remove from list`)
 
   if (orphanContacts.length === 0) {
-    output('No orphan contacts to delete')
+    output('No orphan contacts to process')
     return {
       totalContacts: brevoContacts.length,
-      orphansDeleted: 0,
+      removedFromList: 0,
+      deletedFromBrevo: 0,
       errors: 0,
     }
   }
 
+  let removedCount = 0
   let deletedCount = 0
   let errorCount = 0
 
   for (const { email } of orphanContacts) {
     try {
-      await deleteBrevoContact(email)
-      deletedCount++
-      if (deletedCount % 10 === 0) {
-        output(
-          `Deleted ${deletedCount}/${orphanContacts.length} orphan contacts`,
-        )
-      }
+      await removeBrevoContactFromList(email, listId)
+      removedCount++
+
+      const wasDeleted = await deleteBrevoContactIfOrphan(email)
+      if (wasDeleted) deletedCount++
+      if (removedCount % 10 !== 0) continue
+
+      output(
+        `Processed ${removedCount}/${orphanContacts.length} orphan contacts`,
+      )
     } catch {
       errorCount++
     }
   }
 
   output(
-    `Reconciliation complete: ${deletedCount} deleted, ${errorCount} errors`,
+    `Reconciliation complete: ${removedCount} removed from list, ${deletedCount} deleted from Brevo, ${errorCount} errors`,
   )
 
   return {
     totalContacts: brevoContacts.length,
-    orphansDeleted: deletedCount,
+    removedFromList: removedCount,
+    deletedFromBrevo: deletedCount,
     errors: errorCount,
   }
 }
