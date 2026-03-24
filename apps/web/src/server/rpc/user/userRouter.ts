@@ -278,7 +278,6 @@ export const userRouter = router({
           },
         })
 
-        // Update Brevo contact if roles changed
         const rolesChanged =
           isMediateur !== currentIsMediateur ||
           isCoordinateur !== currentIsCoordinateur

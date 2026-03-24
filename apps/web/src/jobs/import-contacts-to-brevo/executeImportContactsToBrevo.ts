@@ -36,7 +36,6 @@ export const executeImportContactsToBrevo = async () => {
   output(`${contactsWithRole.length} contacts with roles to sync`)
   output(`${contactsWithoutRole.length} contacts without roles to remove`)
 
-  // 1. Update contacts with roles
   output('Syncing contacts with roles to Brevo...')
 
   const updateResults = await Promise.allSettled(
@@ -55,7 +54,6 @@ export const executeImportContactsToBrevo = async () => {
     output(`Successfully synced ${contactsWithRole.length} contacts`)
   }
 
-  // 2. Remove contacts without roles from the list
   if (contactsWithoutRole.length > 0) {
     output('Removing contacts without roles from list...')
 
