@@ -27,8 +27,8 @@ const getContactListsImmediate = async (
     if (axios.isAxiosError(error) && error.response?.status === 404) {
       return null
     }
-    Sentry.captureException(error)
-    return null
+    Sentry.captureException?.(error)
+    throw error
   }
 }
 

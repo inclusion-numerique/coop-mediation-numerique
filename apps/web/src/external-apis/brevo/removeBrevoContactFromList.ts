@@ -23,7 +23,8 @@ const removeContactFromListImmediate = async (
     )
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 404) return
-    Sentry.captureException(error)
+    Sentry.captureException?.(error)
+    throw error
   }
 }
 
