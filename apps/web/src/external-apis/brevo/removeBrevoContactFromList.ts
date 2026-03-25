@@ -4,13 +4,20 @@ import * as Sentry from '@sentry/nextjs'
 import axios from 'axios'
 import { brevoApiThrottle } from './createBrevoContact'
 
-const deleteContactImmediate = async (email: string): Promise<void> => {
+const removeContactFromListImmediate = async (
+  email: string,
+  listId: number,
+): Promise<void> => {
   try {
-    await axios.delete(
-      `https://api.brevo.com/v3/contacts/${encodeURIComponent(email)}`,
+    await axios.post(
+      `https://api.brevo.com/v3/contacts/lists/${listId}/contacts/remove`,
+      {
+        emails: [email],
+      },
       {
         headers: {
           'api-key': ServerWebAppConfig.Brevo.apiKey,
+          'Content-Type': 'application/json',
         },
       },
     )
@@ -21,7 +28,9 @@ const deleteContactImmediate = async (email: string): Promise<void> => {
   }
 }
 
-export const deleteBrevoContact = brevoApiThrottle(deleteContactImmediate)
+export const removeBrevoContactFromList = brevoApiThrottle(
+  removeContactFromListImmediate,
+)
 
-export const deploymentCanDeleteBrevoContact = () =>
+export const deploymentCanRemoveBrevoContactFromList = () =>
   PublicWebAppConfig.isMain && !PublicWebAppConfig.isE2e

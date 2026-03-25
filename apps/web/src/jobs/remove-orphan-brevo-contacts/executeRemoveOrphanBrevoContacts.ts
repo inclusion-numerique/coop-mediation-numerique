@@ -4,9 +4,14 @@ import {
   deploymentCanCreateBrevoContact,
 } from '@app/web/external-apis/brevo/createBrevoContact'
 import { deleteBrevoContact } from '@app/web/external-apis/brevo/deleteBrevoContact'
+import { deleteBrevoContactIfOrphan } from '@app/web/external-apis/brevo/deleteBrevoContactIfOrphan'
+import { removeBrevoContactFromList } from '@app/web/external-apis/brevo/removeBrevoContactFromList'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import axios from 'axios'
+
+const isAnonymizedEmail = (email: string): boolean =>
+  email.startsWith('deleted+') && email.includes('@')
 
 type BrevoContactsResponse = {
   contacts: {
@@ -70,8 +75,40 @@ export const executeRemoveOrphanBrevoContacts = async () => {
 
   output(`Found ${brevoContacts.length} contacts in Brevo`)
 
+  const anonymizedContacts = brevoContacts.filter((c) =>
+    isAnonymizedEmail(c.email),
+  )
+  output(
+    `Found ${anonymizedContacts.length} anonymized contacts to delete permanently`,
+  )
+
+  let anonymizedDeletedCount = 0
+  let anonymizedErrorCount = 0
+
+  for (const { email } of anonymizedContacts) {
+    try {
+      await deleteBrevoContact(email)
+      anonymizedDeletedCount++
+      if (anonymizedDeletedCount % 10 === 0) {
+        output(
+          `Deleted ${anonymizedDeletedCount}/${anonymizedContacts.length} anonymized contacts...`,
+        )
+      }
+    } catch {
+      anonymizedErrorCount++
+    }
+  }
+
+  output(
+    `Anonymized contacts cleanup: ${anonymizedDeletedCount} deleted, ${anonymizedErrorCount} errors`,
+  )
+
+  const nonAnonymizedContacts = brevoContacts.filter(
+    (c) => !isAnonymizedEmail(c.email),
+  )
+
   const contactsByExtId = new Map<string, string>()
-  for (const contact of brevoContacts) {
+  for (const contact of nonAnonymizedContacts) {
     const extId = contact.attributes.EXT_ID
     if (typeof extId === 'string') {
       contactsByExtId.set(extId, contact.email)
@@ -79,7 +116,7 @@ export const executeRemoveOrphanBrevoContacts = async () => {
   }
 
   const brevoExtIds = [...contactsByExtId.keys()]
-  output(`Found ${brevoExtIds.length} contacts with ext_id`)
+  output(`Found ${brevoExtIds.length} non-anonymized contacts with ext_id`)
 
   const existingUsers = await prismaClient.user.findMany({
     where: {
@@ -96,41 +133,43 @@ export const executeRemoveOrphanBrevoContacts = async () => {
     .filter((id) => !existingUserIds.has(id))
     .map((extId) => ({ extId, email: contactsByExtId.get(extId)! }))
 
-  output(`Found ${orphanContacts.length} orphan contacts to delete`)
-
-  if (orphanContacts.length === 0) {
-    output('No orphan contacts to delete')
-    return {
-      totalContacts: brevoContacts.length,
-      orphansDeleted: 0,
-      errors: 0,
-    }
+  output(`Found ${orphanContacts.length} orphan contacts to remove from list`)
+  for (const { email } of orphanContacts) {
+    output(`  - ${email}`)
   }
 
+  let removedCount = 0
   let deletedCount = 0
   let errorCount = 0
 
   for (const { email } of orphanContacts) {
     try {
-      await deleteBrevoContact(email)
-      deletedCount++
-      if (deletedCount % 10 === 0) {
+      await removeBrevoContactFromList(email, listId)
+      removedCount++
+
+      const wasDeleted = await deleteBrevoContactIfOrphan(email)
+      if (wasDeleted) deletedCount++
+      if (removedCount % 10 === 0) {
         output(
-          `Deleted ${deletedCount}/${orphanContacts.length} orphan contacts`,
+          `Processed ${removedCount}/${orphanContacts.length} orphan contacts`,
         )
       }
-    } catch {
+    } catch (error) {
+      output(`Error processing ${email}: ${error}`)
       errorCount++
     }
   }
 
   output(
-    `Reconciliation complete: ${deletedCount} deleted, ${errorCount} errors`,
+    `Reconciliation complete: ${removedCount} removed from list, ${deletedCount} deleted from Brevo, ${errorCount} errors`,
   )
 
   return {
     totalContacts: brevoContacts.length,
-    orphansDeleted: deletedCount,
+    anonymizedDeleted: anonymizedDeletedCount,
+    anonymizedErrors: anonymizedErrorCount,
+    removedFromList: removedCount,
+    deletedFromBrevo: deletedCount,
     errors: errorCount,
   }
 }

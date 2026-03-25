@@ -1,13 +1,19 @@
 import { createHash } from 'node:crypto'
+import { deleteBrevoContactIfOrphan } from '@app/web/external-apis/brevo/deleteBrevoContactIfOrphan'
 import {
-  deleteBrevoContact,
-  deploymentCanDeleteBrevoContact,
-} from '@app/web/external-apis/brevo/deleteBrevoContact'
+  deploymentCanRemoveBrevoContactFromList,
+  removeBrevoContactFromList,
+} from '@app/web/external-apis/brevo/removeBrevoContactFromList'
 import { prismaClient } from '@app/web/prismaClient'
+import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 
 export const deleteUser = async (userId: string, userEmail: string) => {
-  if (deploymentCanDeleteBrevoContact()) {
-    await deleteBrevoContact(userEmail)
+  if (deploymentCanRemoveBrevoContactFromList()) {
+    await removeBrevoContactFromList(
+      userEmail,
+      ServerWebAppConfig.Brevo.usersListId,
+    )
+    await deleteBrevoContactIfOrphan(userEmail)
   }
 
   const hash = createHash('sha256')

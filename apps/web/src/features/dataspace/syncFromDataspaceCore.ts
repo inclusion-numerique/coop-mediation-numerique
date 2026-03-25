@@ -1,3 +1,4 @@
+import { updateBrevoContact } from '@app/web/external-apis/brevo/updateBrevoContact'
 import type {
   DataspaceContrat,
   DataspaceLieuActivite,
@@ -692,8 +693,6 @@ export const syncFromDataspaceCore = async ({
     changes.structuresSynced = structureIds.length
     changes.structuresRemoved = removed
   } else if (wasConseillerNumerique && !isConseillerNumeriqueInApi) {
-    // Transition: Was CN, no longer is
-    // Do ONE LAST sync to update contracts, then local becomes source of truth
     changes.conseillerNumeriqueRemoved = true
 
     const { structureIds, removed } =
@@ -704,7 +703,14 @@ export const syncFromDataspaceCore = async ({
     changes.structuresSynced = structureIds.length
     changes.structuresRemoved = removed
   }
-  // else: Not CN and not becoming CN → local is source of truth, don't touch emplois
+
+  if (
+    changes.conseillerNumeriqueCreated ||
+    changes.conseillerNumeriqueRemoved ||
+    changes.coordinateurCreated
+  ) {
+    await updateBrevoContact(userId)
+  }
 
   return {
     success: true,
