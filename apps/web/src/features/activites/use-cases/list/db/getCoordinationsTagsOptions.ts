@@ -9,7 +9,7 @@ export const getCoordinationsTagsOptions = async ({
 }) => {
   const tags = await prismaClient.tag.findMany({
     where: {
-      ActivitesCoordinationTags: {
+      activitesCoordinationTags: {
         some: {
           activiteCoordination: {
             coordinateurId: user.coordinateur.id,
