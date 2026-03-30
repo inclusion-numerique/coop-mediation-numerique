@@ -5,11 +5,30 @@ import {
   deploymentCanCreateBrevoContact,
   toBrevoContact,
 } from '@app/web/external-apis/brevo/createBrevoContact'
+import {
+  ajouterLieuxActivite,
+  CREATE_MEDIATEUR_EN_ACTIVITE_KEY,
+  CREATE_STRUCTURE_FROM_CARTO_KEY,
+  CREATE_STRUCTURE_FROM_DATA_KEY,
+  FIND_CARTO_STRUCTURE_KEY,
+  FIND_EXISTING_LIEUX_ACTIVITES_KEY,
+  FIND_STRUCTURES_BY_CARTO_IDS_KEY,
+} from '@app/web/features/lieux-activite/use-cases/ajouter/domain'
+import {
+  createMediateurEnActivite,
+  createStructureFromCarto,
+  createStructureFromData,
+  findCartoStructure,
+  findExistingLieuxActivite,
+  findStructuresByCartoIds,
+  PRISMA_CLIENT_KEY,
+} from '@app/web/features/lieux-activite/use-cases/ajouter/implementations/prisma'
 import { ChoisirProfilEtAccepterCguValidation } from '@app/web/features/utilisateurs/use-cases/registration/ChoisirProfilEtAccepterCguValidation'
 import { LieuxActiviteValidation } from '@app/web/features/utilisateurs/use-cases/registration/LieuxActivite'
 import { RenseignerStructureEmployeuseValidation } from '@app/web/features/utilisateurs/use-cases/registration/RenseignerStructureEmployeuse'
 import { StructureEmployeuseLieuActiviteValidation } from '@app/web/features/utilisateurs/use-cases/registration/StructureEmployeuseLieuActivite'
 import { ValiderInscriptionValidation } from '@app/web/features/utilisateurs/use-cases/registration/ValiderInscriptionValidation'
+import { provide, runWithContainer } from '@app/web/libs/injection'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
@@ -36,12 +55,15 @@ const onlyLieuxActiviteToCreate =
   ({
     id,
     structureCartographieNationaleId,
+    nom,
   }: {
     id?: string | null
     structureCartographieNationaleId?: string | null
+    nom?: string | null
   }) =>
     (id != null && !existingActiviteIds.has(id)) ||
-    (id == null && structureCartographieNationaleId != null)
+    (id == null && structureCartographieNationaleId != null) ||
+    (id == null && structureCartographieNationaleId == null && nom != null)
 
 const toStructureId = ({ structure }: { structure: { id: string } }) =>
   structure.id
@@ -440,144 +462,35 @@ export const inscriptionRouter = router({
       }) => {
         inscriptionGuard(userId, sessionUser)
 
-        const existingActivite =
-          await prismaClient.mediateurEnActivite.findMany(
-            existingActiviteFor(userId),
-          )
-
-        const lieuxActiviteCartoIds = new Set<string>(
-          lieuxActivite
-            .map(
-              ({ structureCartographieNationaleId }) =>
-                structureCartographieNationaleId,
-            )
-            .filter(onlyDefinedAndNotNull),
-        )
-
-        const existingStructuresForCartoIds =
-          await prismaClient.structure.findMany({
-            where: {
-              structureCartographieNationaleId: {
-                in: [...lieuxActiviteCartoIds.values()],
-              },
-            },
-          })
-
-        const existingStructuresByCartoId = new Map(
-          existingStructuresForCartoIds.map((s) => [
-            s.structureCartographieNationaleId as string,
-            s,
-          ]),
-        )
-
-        return prismaClient.$transaction(async (transaction) => {
-          const existingActiviteStructuresIds = new Set(
-            existingActivite.map(toStructureId),
-          )
-
-          const newActivites = await Promise.all(
-            lieuxActivite
-              .filter(onlyLieuxActiviteToCreate(existingActiviteStructuresIds))
-              .map(async (lieu) => {
-                if (!lieu.structureCartographieNationaleId) {
-                  // This is not an exisint carto structure, we just create the lieu
-
-                  if (!lieu.id) {
-                    throw new Error('Invalid structure for lieu activité')
-                  }
-
-                  return transaction.mediateurEnActivite.create({
-                    data: {
-                      id: v4(),
-                      mediateur: {
-                        connect: {
-                          userId,
-                        },
-                      },
-                      structure: {
-                        connect: {
-                          id: lieu.id,
-                        },
-                      },
-                      debut: new Date(),
-                    },
-                  })
-                }
-
-                const structure = existingStructuresByCartoId.get(
-                  lieu.structureCartographieNationaleId,
-                )
-
-                if (structure) {
-                  const existingStructure =
-                    await transaction.structure.findFirst({
-                      where: {
-                        structureCartographieNationaleId:
-                          lieu.structureCartographieNationaleId,
-                      },
-                    })
-
-                  if (!existingStructure) {
-                    throw new Error('Structure not found')
-                  }
-
-                  // Structure already exists, we just create the lieu, linking with carto id
-
-                  return transaction.mediateurEnActivite.create({
-                    data: {
-                      id: v4(),
-                      mediateur: {
-                        connect: {
-                          userId,
-                        },
-                      },
-                      structure: {
-                        connect: {
-                          id: existingStructure.id,
-                        },
-                      },
-                      debut: new Date(),
-                    },
-                  })
-                }
-
-                // Structure does not exist, we create it with the lieu
-                const cartoStructure =
-                  await transaction.structureCartographieNationale.findFirst({
-                    where: {
-                      id: lieu.structureCartographieNationaleId,
-                    },
-                  })
-
-                if (!cartoStructure) {
-                  throw new Error('Structure carto not found')
-                }
-
-                const createdStructure = await transaction.structure.create({
-                  data: toStructureFromCartoStructure(cartoStructure),
-                })
-
-                return transaction.mediateurEnActivite.create({
-                  data: {
-                    id: v4(),
-                    mediateur: {
-                      connect: {
-                        userId,
-                      },
-                    },
-                    structure: {
-                      connect: {
-                        id: createdStructure.id,
-                      },
-                    },
-                    debut: new Date(),
-                  },
-                })
-              }),
-          )
-
-          return { newActivites }
+        const mediateur = await prismaClient.mediateur.findUnique({
+          where: { userId },
+          select: { id: true },
         })
+
+        if (!mediateur) {
+          throw forbiddenError("L'utilisateur n'est pas un médiateur")
+        }
+
+        return prismaClient.$transaction((tx) =>
+          runWithContainer(async () => {
+            provide(PRISMA_CLIENT_KEY, tx)
+            provide(
+              FIND_EXISTING_LIEUX_ACTIVITES_KEY,
+              findExistingLieuxActivite,
+            )
+            provide(FIND_STRUCTURES_BY_CARTO_IDS_KEY, findStructuresByCartoIds)
+            provide(FIND_CARTO_STRUCTURE_KEY, findCartoStructure)
+            provide(CREATE_STRUCTURE_FROM_DATA_KEY, createStructureFromData)
+            provide(CREATE_STRUCTURE_FROM_CARTO_KEY, createStructureFromCarto)
+            provide(CREATE_MEDIATEUR_EN_ACTIVITE_KEY, createMediateurEnActivite)
+
+            return ajouterLieuxActivite({
+              userId,
+              mediateurId: mediateur.id,
+              lieuxActivite,
+            })
+          }),
+        )
       },
     ),
   validerInscription: protectedProcedure
