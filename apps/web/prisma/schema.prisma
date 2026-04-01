@@ -1380,7 +1380,7 @@ model Tag {
   modification              DateTime                    @default(now())
   suppression               DateTime?
   activites                 ActivitesTags[]
-  ActivitesCoordinationTags ActivitesCoordinationTags[]
+  activitesCoordinationTags ActivitesCoordinationTags[]
 
   @@index([mediateurId])
   @@index([coordinateurId])
