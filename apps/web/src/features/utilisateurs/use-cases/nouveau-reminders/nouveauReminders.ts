@@ -1,8 +1,10 @@
+import { deleteBrevoContactIfOrphan } from '@app/web/external-apis/brevo/deleteBrevoContactIfOrphan'
 import {
-  deleteBrevoContact,
-  deploymentCanDeleteBrevoContact,
-} from '@app/web/external-apis/brevo/deleteBrevoContact'
+  deploymentCanRemoveBrevoContactFromList,
+  removeBrevoContactFromList,
+} from '@app/web/external-apis/brevo/removeBrevoContactFromList'
 import { prismaClient } from '@app/web/prismaClient'
+import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { countTotalActifUsers } from '../filter/db/count-total-actif-users'
 import { nouveauFilter } from '../filter/db/nouveau-filter'
 import { sendNouveauAccountDeletedEmail } from './emails/account-deleted/sendNouveauAccountDeletedEmail'
@@ -51,8 +53,12 @@ const deleteAndNotify = async (now: Date) => {
   for (const user of usersToDelete) {
     const isMediateur = user.mediateur !== null
 
-    if (deploymentCanDeleteBrevoContact()) {
-      await deleteBrevoContact(user.email)
+    if (deploymentCanRemoveBrevoContactFromList()) {
+      await removeBrevoContactFromList(
+        user.email,
+        ServerWebAppConfig.Brevo.usersListId,
+      )
+      await deleteBrevoContactIfOrphan(user.email)
     }
 
     await softDeleteUser(user.id)

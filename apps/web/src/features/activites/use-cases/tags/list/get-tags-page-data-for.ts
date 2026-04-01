@@ -99,6 +99,9 @@ export const getTagsPageDataFor =
             },
           },
         },
+        _count: {
+          select: { activitesCoordinationTags: true },
+        },
       },
     })
 
@@ -109,10 +112,11 @@ export const getTagsPageDataFor =
     const tagsWithMergeDestinations = await Promise.all(
       tags.map(async (tag) => {
         const { id, nom, description, coordinateurId, equipe, activites } = tag
-        const accompagnementsCount = activites.reduce(
-          (acc, { activite }) => acc + activite.accompagnementsCount,
-          0,
-        )
+        const accompagnementsCount =
+          activites.reduce(
+            (acc, { activite }) => acc + activite.accompagnementsCount,
+            0,
+          ) + tag._count.activitesCoordinationTags
         const scope = getTagScope(tag)
 
         const canMerge =

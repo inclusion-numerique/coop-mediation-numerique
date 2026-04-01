@@ -1,5 +1,6 @@
 import { AnalysisSchema } from '@app/web/beneficiaire/import/analyseImportBeneficiairesExcel'
 import { searchBeneficiaires } from '@app/web/beneficiaire/searchBeneficiaires'
+import { softDeleteBeneficiaires } from '@app/web/beneficiaire/softDeleteBeneficiaires'
 import { trancheAgeFromAnneeNaissance } from '@app/web/beneficiaire/trancheAgeFromAnneeNaissance'
 import { fusionnerBeneficiaires } from '@app/web/features/beneficiaires/use-cases/fusion/fusionnerBeneficiaires'
 import {
@@ -178,23 +179,7 @@ export const beneficiairesRouter = router({
       }
 
       await prismaClient.$transaction(async (tx) => {
-        await tx.beneficiaire.update({
-          where: { id },
-          data: {
-            anonyme: true,
-            suppression: new Date(),
-            modification: new Date(),
-            rdvUserId: null,
-            // Anonymize the beneficiaire but keep anonymous data for stats
-            prenom: null,
-            nom: null,
-            telephone: null,
-            email: null,
-            notes: null,
-            adresse: null,
-            pasDeTelephone: null,
-          },
-        })
+        await softDeleteBeneficiaires(tx, [id])
         await tx.mediateur.update({
           where: { id: beneficiaire.mediateurId },
           data: {
@@ -313,22 +298,7 @@ export const beneficiairesRouter = router({
       }
 
       await prismaClient.$transaction(async (tx) => {
-        await tx.beneficiaire.updateMany({
-          where: { id: { in: validIds } },
-          data: {
-            anonyme: true,
-            suppression: new Date(),
-            modification: new Date(),
-            rdvUserId: null,
-            prenom: null,
-            nom: null,
-            telephone: null,
-            email: null,
-            notes: null,
-            adresse: null,
-            pasDeTelephone: null,
-          },
-        })
+        await softDeleteBeneficiaires(tx, validIds)
         await tx.mediateur.update({
           where: { id: user.mediateur.id },
           data: {

@@ -15,6 +15,7 @@ import { executeImportContactsToBrevo } from './import-contacts-to-brevo/execute
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
 import { executeIngestLesBasesInRag } from './ingest-les-bases-in-rag/executeIngestLesBasesInRag'
 import type { Job, JobName, JobPayload } from './jobs'
+import { executeNormalizeStructuresEmployeuses } from './normalize-structures-employeuses/executeNormalizeStructuresEmployeuses'
 import { output } from './output'
 import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts/executeRemoveOrphanBrevoContacts'
 import { executeSetServciesToSharedLieux } from './set-servcies-to-shared-lieux/executeSetServciesToSharedLieux'
@@ -53,6 +54,7 @@ export const jobExecutors: {
     executeUpdateStructuresCartographieNationale,
   'import-contacts-to-brevo': executeImportContactsToBrevo,
   'ingest-les-bases-in-rag': executeIngestLesBasesInRag,
+  'normalize-structures-employeuses': executeNormalizeStructuresEmployeuses,
   'set-servcies-to-shared-lieux': executeSetServciesToSharedLieux,
   'update-lieux-activites-a-distance': executeUpdateLieuxActivitesADistance,
   'fix-structures': executeFixStructures,

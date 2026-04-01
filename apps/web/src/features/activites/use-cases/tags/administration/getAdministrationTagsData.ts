@@ -89,6 +89,9 @@ const getMostUsedTags = async () => {
           },
         },
       },
+      _count: {
+        select: { activitesCoordinationTags: true },
+      },
     },
   })
 
@@ -98,10 +101,11 @@ const getMostUsedTags = async () => {
   )
 
   return mostUsedTags.map((tag) => {
-    const accompagnementsCount = tag.activites.reduce(
-      (acc, { activite }) => acc + activite.accompagnementsCount,
-      0,
-    )
+    const accompagnementsCount =
+      tag.activites.reduce(
+        (acc, { activite }) => acc + activite.accompagnementsCount,
+        0,
+      ) + tag._count.activitesCoordinationTags
     return {
       id: tag.id,
       nom: tag.nom,

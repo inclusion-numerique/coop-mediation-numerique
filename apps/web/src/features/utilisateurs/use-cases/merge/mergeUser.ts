@@ -1,9 +1,11 @@
+import { deleteBrevoContactIfOrphan } from '@app/web/external-apis/brevo/deleteBrevoContactIfOrphan'
 import {
-  deleteBrevoContact,
-  deploymentCanDeleteBrevoContact,
-} from '@app/web/external-apis/brevo/deleteBrevoContact'
+  deploymentCanRemoveBrevoContactFromList,
+  removeBrevoContactFromList,
+} from '@app/web/external-apis/brevo/removeBrevoContactFromList'
 import { conseillerNumeriqueMongoCollection } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
 import { prismaClient } from '@app/web/prismaClient'
+import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { PrismaClient } from '@prisma/client'
 
 type PrismaTransaction = Omit<
@@ -566,7 +568,11 @@ export const mergeUser = async (
     await syncWithMongo(prisma)(targetUser)
   })
 
-  if (sourceUserForBrevo && deploymentCanDeleteBrevoContact()) {
-    await deleteBrevoContact(sourceUserForBrevo.email)
+  if (sourceUserForBrevo && deploymentCanRemoveBrevoContactFromList()) {
+    await removeBrevoContactFromList(
+      sourceUserForBrevo.email,
+      ServerWebAppConfig.Brevo.usersListId,
+    )
+    await deleteBrevoContactIfOrphan(sourceUserForBrevo.email)
   }
 }

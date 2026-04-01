@@ -1,3 +1,4 @@
+import { softDeleteBeneficiaires } from '@app/web/beneficiaire/softDeleteBeneficiaires'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { userPrismaDataFromOAuthApiUser } from '../sync/syncRdv'
@@ -98,7 +99,38 @@ export const handleUserModelWebhook = async ({
       }
 
       case 'destroyed': {
-        // Unlink all beneficiaires from this RdvUser
+        // Soft-delete/anonymise all beneficiaires linked to this RdvUser
+        const beneficiairesToDelete = await prismaClient.beneficiaire.findMany({
+          where: { rdvUserId: data.id, suppression: null },
+          select: { id: true, mediateurId: true },
+        })
+
+        if (beneficiairesToDelete.length > 0) {
+          // Group by mediateurId to decrement each mediateur's count
+          const countByMediateur = new Map<string, number>()
+          for (const b of beneficiairesToDelete) {
+            countByMediateur.set(
+              b.mediateurId,
+              (countByMediateur.get(b.mediateurId) ?? 0) + 1,
+            )
+          }
+
+          await prismaClient.$transaction(async (tx) => {
+            await softDeleteBeneficiaires(
+              tx,
+              beneficiairesToDelete.map((b) => b.id),
+            )
+
+            for (const [mediateurId, count] of countByMediateur) {
+              await tx.mediateur.update({
+                where: { id: mediateurId },
+                data: { beneficiairesCount: { decrement: count } },
+              })
+            }
+          })
+        }
+
+        // Unlink any remaining beneficiaires (already soft-deleted ones)
         await prismaClient.beneficiaire.updateMany({
           where: { rdvUserId: data.id },
           data: { rdvUserId: null },
@@ -111,7 +143,7 @@ export const handleUserModelWebhook = async ({
         if (logDebug) {
           // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
           console.log(
-            `[rdvsp webhook] Deleted RdvUser ${data.id} and unlinked beneficiaires`,
+            `[rdvsp webhook] Deleted RdvUser ${data.id} and soft-deleted ${beneficiairesToDelete.length} beneficiaire(s)`,
           )
         }
         break

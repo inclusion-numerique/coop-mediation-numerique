@@ -22,10 +22,8 @@ const VisibiliteMediateur = ({ isVisible }: { isVisible: boolean }) => {
         message: (
           <>
             Vos informations{' '}
-            <strong>
-              {isVisible ? 'ne sont pas visibles' : 'sont visibles'}
-            </strong>{' '}
-            sur la cartographie
+            <strong>{isVisible ? 'ne seront plus' : 'seront'}</strong> visibles
+            sur la cartographie sous 24h
           </>
         ),
       })
@@ -48,7 +46,8 @@ const VisibiliteMediateur = ({ isVisible }: { isVisible: boolean }) => {
           alt=""
         />
         <h2 className="fr-text--xs fr-text--bold fr-text--uppercase fr-mb-0">
-          Visibilité sur La cartographie des conseillers numériques
+          Visibilité sur la cartographie nationale des lieux d'inclusion
+          numérique
         </h2>
       </div>
       <div className="fr-mb-4v">
@@ -58,8 +57,7 @@ const VisibiliteMediateur = ({ isVisible }: { isVisible: boolean }) => {
           checked={isVisible}
           label={
             <span className="fr-my-auto">
-              Rendre mon profil visible sur la cartographie des conseillers
-              numériques dans mes lieux d'activités.
+              Rendre mon profil visible sur la cartographie
             </span>
           }
           labelPosition="left"
@@ -67,10 +65,11 @@ const VisibiliteMediateur = ({ isVisible }: { isVisible: boolean }) => {
           onChange={handleChange}
         />
       </div>
-      <span className="fr-text--sm fr-text-mention--grey">
-        Informations de votre profil qui seront visibles par les usagers&nbsp;:
+      <span className="fr-text--xs fr-text-mention--grey">
+        Informations de votre profil visibles par les usagers (mises à jour sous
+        24 heures)&nbsp;:
         <br />
-        Nom, Prénom, Adresse email, Numéro de téléphone
+        Nom, prénom, adresse e-mail, numéro de téléphone.
       </span>
     </div>
   )
