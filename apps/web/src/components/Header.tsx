@@ -1,5 +1,6 @@
 import { SessionUser } from '@app/web/auth/sessionUser'
 import HeaderBackLink from '@app/web/components/HeaderBackLink'
+import { HeaderQuickAccess } from '@app/web/components/HeaderQuickAccess'
 import { HeaderUserMenu } from '@app/web/components/HeaderUserMenu'
 import LogoCoop from '@app/web/components/LogoCoop'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
@@ -121,6 +122,11 @@ const Header = ({
                       <span className="fr-icon-question-line fr-icon--sm" />
                     </Link>
                   </li>
+                  {user && (
+                    <li>
+                      <HeaderQuickAccess />
+                    </li>
+                  )}
                   <li style={{ position: 'relative' }}>
                     {user ? (
                       <HeaderUserMenu user={user} />
