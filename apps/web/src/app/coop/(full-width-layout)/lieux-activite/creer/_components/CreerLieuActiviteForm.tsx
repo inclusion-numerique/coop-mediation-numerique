@@ -60,16 +60,14 @@ const CreerLieuActiviteForm = ({
       })
 
       createToast({
-        priority: ‘success’,
-        message: ‘Le lieu d’activité a bien été créé.’,
+        priority: 'success',
+        message: 'Le lieu d’activité a bien été créé.',
       })
 
       const departementCode = getDepartementCodeFromCodeInsee(
         data.adresseBan.codeInsee,
       )
-      router.push(
-        `/coop/mon-reseau/${departementCode}/lieux/${structure.id}`,
-      )
+      router.push(`/coop/mon-reseau/${departementCode}/lieux/${structure.id}`)
     } catch (mutationError) {
       if (
         applyZodValidationMutationErrorsToForm(mutationError, form.setError)
