@@ -7,7 +7,7 @@ import { CartographieLogo } from '@app/web/features/pictograms/services/Cartogra
 import { LesBasesLogo } from '@app/web/features/pictograms/services/LesBasesLogo'
 import { PixOrgaLogo } from '@app/web/features/pictograms/services/PixOrgaLogo'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
-import { Popover as RadixPopover } from 'radix-ui'
+import * as Popover from '@radix-ui/react-popover'
 import { useState } from 'react'
 import styles from './HeaderQuickAccess.module.css'
 
@@ -48,8 +48,8 @@ export const HeaderQuickAccess = () => {
   const [open, setOpen] = useState(false)
 
   return (
-    <RadixPopover.Root open={open} onOpenChange={setOpen}>
-      <RadixPopover.Trigger asChild>
+    <Popover.Root open={open} onOpenChange={setOpen}>
+      <Popover.Trigger asChild>
         <button
           className="fr-btn icon-only fr-btn--no-after"
           type="button"
@@ -57,9 +57,9 @@ export const HeaderQuickAccess = () => {
         >
           <span className="ri-apps-2-line ri-lg" aria-hidden />
         </button>
-      </RadixPopover.Trigger>
-      <RadixPopover.Portal>
-        <RadixPopover.Content
+      </Popover.Trigger>
+      <Popover.Portal>
+        <Popover.Content
           align="end"
           sideOffset={8}
           className={styles.popoverContent}
@@ -83,8 +83,8 @@ export const HeaderQuickAccess = () => {
               </a>
             ))}
           </div>
-        </RadixPopover.Content>
-      </RadixPopover.Portal>
-    </RadixPopover.Root>
+        </Popover.Content>
+      </Popover.Portal>
+    </Popover.Root>
   )
 }
