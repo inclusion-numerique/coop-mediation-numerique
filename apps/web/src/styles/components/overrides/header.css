@@ -86,6 +86,10 @@
       margin-bottom: 0;
     }
 
+    .fr-header__tools-links .fr-btns-group > li {
+      align-items: center;
+    }
+
     .fr-header__brand {
       border-bottom: none;
       padding-top: 0;
