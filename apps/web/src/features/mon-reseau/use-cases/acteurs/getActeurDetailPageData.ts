@@ -54,6 +54,7 @@ export const getActeurDetailPageData = async ({
         select: {
           id: true,
           coordinations: {
+            where: { suppression: null },
             select: acteurCoordinationSelect,
           },
         },

@@ -39,8 +39,6 @@ const UserPublicActivityStatusBadge = ({
               >
                 Un utilisateur est comptabilisé comme inactif à partir de 30
                 jours d'inactivité (30 jours sans avoir rempli au moins un CRA).
-                <br />À noter&nbsp;: À partir de 6 mois d'inactivité, son compte
-                sera supprimé.
               </span>,
               document.body,
             )}

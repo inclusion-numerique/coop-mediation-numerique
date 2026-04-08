@@ -239,7 +239,7 @@ const ActeurIdentity = ({
       >
         <strong>{displayName}</strong> va recevoir une invitation par mail.
       </InviteToTeamModal>
-      <BackButton />
+      <BackButton href={`/coop/mon-reseau/${departementCode}/acteurs`} />
       <div className="fr-flex fr-flex-wrap fr-direction-row fr-align-items-center fr-flex-gap-4v">
         <div className="fr-flex fr-direction-column">
           <div className="fr-flex fr-align-items-center fr-mb-3v">
