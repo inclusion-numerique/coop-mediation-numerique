@@ -20,14 +20,53 @@ import { autonomieApiValues } from '@app/web/features/activites/use-cases/cra/in
 import { structureDeRedirectionApiValues } from '@app/web/features/activites/use-cases/cra/individuel/fields/structures-redirection'
 import { prismaClient } from '@app/web/prismaClient'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
-import { Prisma } from '@prisma/client'
+import { Genre, Prisma, StatutSocial, TrancheAge } from '@prisma/client'
 import { NextResponse } from 'next/server'
 import { type ZodError, z } from 'zod'
+
+/**
+ * API value mappings for beneficiaire attributes
+ */
+const genreApiValues = {
+  Masculin: 'masculin',
+  Feminin: 'feminin',
+  NonCommunique: 'non_communique',
+} as const satisfies { [key in Genre]: string }
+
+const trancheAgeApiValues = {
+  MoinsDeDouze: 'moins_de_douze',
+  DouzeDixHuit: 'douze_dix_huit',
+  DixHuitVingtQuatre: 'dix_huit_vingt_quatre',
+  VingtCinqTrenteNeuf: 'vingt_cinq_trente_neuf',
+  QuaranteCinquanteNeuf: 'quarante_cinquante_neuf',
+  SoixanteSoixanteNeuf: 'soixante_soixante_neuf',
+  SoixanteDixPlus: 'soixante_dix_plus',
+  NonCommunique: 'non_communique',
+} as const satisfies { [key in TrancheAge]: string }
+
+const statutSocialApiValues = {
+  Scolarise: 'scolarise',
+  SansEmploi: 'sans_emploi',
+  EnEmploi: 'en_emploi',
+  Retraite: 'retraite',
+  NonCommunique: 'non_communique',
+} as const satisfies { [key in StatutSocial]: string }
+
+type GenreApiValue = (typeof genreApiValues)[Genre]
+type TrancheAgeApiValue = (typeof trancheAgeApiValues)[TrancheAge]
+type StatutSocialApiValue = (typeof statutSocialApiValues)[StatutSocial]
 
 /**
  * API response types MUST be manually defined to NOT be infered
  * so API response are stable even if the database schema or transformations changes
  */
+
+type BeneficiairesAttributes = {
+  total: number
+  genres: { [key in GenreApiValue]: number }
+  tranches_age: { [key in TrancheAgeApiValue]: number }
+  statuts: { [key in StatutSocialApiValue]: number }
+}
 
 type ActiviteAttributes = {
   type: 'individuel' | 'demarche_administrative' | 'collectif'
@@ -106,6 +145,8 @@ type ActiviteAttributes = {
   titre_atelier: string | null
 
   niveau_atelier: 'debutant' | 'intermediaire' | 'avance' | null // pour un atelier collectif uniquement
+
+  beneficiaires: BeneficiairesAttributes
 }
 
 type ActiviteRelationships = 'mediateur'
@@ -117,6 +158,55 @@ export type ActiviteResource = JsonApiResource<
 >
 
 export type ActiviteListResponse = JsonApiListResponse<ActiviteResource>
+
+const emptyBeneficiairesAttributes: BeneficiairesAttributes = {
+  total: 0,
+  genres: { masculin: 0, feminin: 0, non_communique: 0 },
+  tranches_age: {
+    moins_de_douze: 0,
+    douze_dix_huit: 0,
+    dix_huit_vingt_quatre: 0,
+    vingt_cinq_trente_neuf: 0,
+    quarante_cinquante_neuf: 0,
+    soixante_soixante_neuf: 0,
+    soixante_dix_plus: 0,
+    non_communique: 0,
+  },
+  statuts: {
+    scolarise: 0,
+    sans_emploi: 0,
+    en_emploi: 0,
+    retraite: 0,
+    non_communique: 0,
+  },
+}
+
+const countBeneficiaires = (
+  accompagnements: {
+    beneficiaire: {
+      genre: Genre | null
+      trancheAge: TrancheAge | null
+      statutSocial: StatutSocial | null
+    }
+  }[],
+): BeneficiairesAttributes =>
+  accompagnements.reduce<BeneficiairesAttributes>((acc, { beneficiaire }) => {
+    acc.genres[
+      beneficiaire.genre ? genreApiValues[beneficiaire.genre] : 'non_communique'
+    ]++
+    acc.tranches_age[
+      beneficiaire.trancheAge
+        ? trancheAgeApiValues[beneficiaire.trancheAge]
+        : 'non_communique'
+    ]++
+    acc.statuts[
+      beneficiaire.statutSocial
+        ? statutSocialApiValues[beneficiaire.statutSocial]
+        : 'non_communique'
+    ]++
+    acc.total++
+    return acc
+  }, structuredClone(emptyBeneficiairesAttributes))
 
 const ActiviteCursorValidation = z.object({
   modification_id: z.object({
@@ -166,6 +256,7 @@ const ActiviteCursorValidation = z.object({
  *             - precisions_demarche
  *             - titre_atelier
  *             - niveau_atelier
+ *             - beneficiaires
  *           properties:
  *             type:
  *               type: string
@@ -286,6 +377,79 @@ const ActiviteCursorValidation = z.object({
  *               description: niveau de l'atelier collectif
  *               enum: [debutant, intermediaire, avance]
  *               example: "debutant"
+ *             beneficiaires:
+ *               type: object
+ *               description: données agrégées sur les bénéficiaires de l'activité
+ *               required:
+ *                 - total
+ *                 - genres
+ *                 - tranches_age
+ *                 - statuts
+ *               properties:
+ *                 total:
+ *                   type: integer
+ *                   description: nombre total de bénéficiaires
+ *                   example: 3
+ *                 genres:
+ *                   type: object
+ *                   description: répartition par genre
+ *                   properties:
+ *                     masculin:
+ *                       type: integer
+ *                       example: 1
+ *                     feminin:
+ *                       type: integer
+ *                       example: 2
+ *                     non_communique:
+ *                       type: integer
+ *                       example: 0
+ *                 tranches_age:
+ *                   type: object
+ *                   description: répartition par tranche d'âge
+ *                   properties:
+ *                     moins_de_douze:
+ *                       type: integer
+ *                       example: 0
+ *                     douze_dix_huit:
+ *                       type: integer
+ *                       example: 1
+ *                     dix_huit_vingt_quatre:
+ *                       type: integer
+ *                       example: 1
+ *                     vingt_cinq_trente_neuf:
+ *                       type: integer
+ *                       example: 0
+ *                     quarante_cinquante_neuf:
+ *                       type: integer
+ *                       example: 1
+ *                     soixante_soixante_neuf:
+ *                       type: integer
+ *                       example: 0
+ *                     soixante_dix_plus:
+ *                       type: integer
+ *                       example: 0
+ *                     non_communique:
+ *                       type: integer
+ *                       example: 0
+ *                 statuts:
+ *                   type: object
+ *                   description: répartition par statut social
+ *                   properties:
+ *                     scolarise:
+ *                       type: integer
+ *                       example: 1
+ *                     sans_emploi:
+ *                       type: integer
+ *                       example: 0
+ *                     en_emploi:
+ *                       type: integer
+ *                       example: 2
+ *                     retraite:
+ *                       type: integer
+ *                       example: 0
+ *                     non_communique:
+ *                       type: integer
+ *                       example: 0
  * /activites:
  *   get:
  *     summary: liste des activités
@@ -473,6 +637,17 @@ export const GET = createApiV1Route
             },
           },
         },
+        accompagnements: {
+          select: {
+            beneficiaire: {
+              select: {
+                genre: true,
+                trancheAge: true,
+                statutSocial: true,
+              },
+            },
+          },
+        },
       },
       take: cursorPagination.take,
     })
@@ -565,6 +740,7 @@ export const GET = createApiV1Route
           titreAtelier,
           niveau,
           accompagnementsCount,
+          accompagnements,
         }) =>
           ({
             type: 'activite',
@@ -599,6 +775,7 @@ export const GET = createApiV1Route
               titre_atelier: titreAtelier,
               niveau_atelier: niveau ? niveauAtelierApiValues[niveau] : null,
               accompagnements: accompagnementsCount,
+              beneficiaires: countBeneficiaires(accompagnements),
             },
           }) satisfies ActiviteResource,
       ),
