@@ -1,0 +1,52 @@
+.popoverContent {
+  background-color: var(--background-default-grey);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow:
+    0 6px 18px rgb(0 0 18 / 16%),
+    0 2px 4px rgb(0 0 18 / 8%);
+  z-index: 10000;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.toolItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-default-grey);
+  gap: 0.5rem;
+  background-image: none;
+}
+
+.toolItem::after {
+  content: none !important;
+  display: none !important;
+}
+
+.toolItem:hover .iconContainer {
+  background-color: var(--background-alt-grey);
+}
+
+.iconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+  background-color: var(--background-alt-blue-france);
+  transition: background-color 0.2s;
+}
+
+.toolLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+}

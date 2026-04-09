@@ -24,6 +24,7 @@ import {
 } from '@app/web/features/lieux-activite/CreerLieuActiviteValidation'
 import { trpc } from '@app/web/trpc'
 import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
+import { getDepartementCodeFromCodeInsee } from '@app/web/utils/getDepartementFromCodeInsee'
 import Button from '@codegouvfr/react-dsfr/Button'
 import {
   fromTimetableOpeningHours,
@@ -50,7 +51,7 @@ const CreerLieuActiviteForm = ({
 
   const handleMutation = async (data: CreerLieuActiviteData) => {
     try {
-      await mutation.mutateAsync({
+      const structure = await mutation.mutateAsync({
         ...data,
         horaires: appendComment(
           fromTimetableOpeningHours(data.openingHours as Schedule),
@@ -63,7 +64,10 @@ const CreerLieuActiviteForm = ({
         message: 'Le lieu d’activité a bien été créé.',
       })
 
-      router.push('/coop/lieux-activite/')
+      const departementCode = getDepartementCodeFromCodeInsee(
+        data.adresseBan.codeInsee,
+      )
+      router.push(`/coop/mon-reseau/${departementCode}/lieux/${structure.id}`)
     } catch (mutationError) {
       if (
         applyZodValidationMutationErrorsToForm(mutationError, form.setError)
