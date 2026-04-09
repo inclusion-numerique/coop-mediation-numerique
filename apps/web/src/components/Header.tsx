@@ -123,7 +123,7 @@ const Header = ({
                     </Link>
                   </li>
                   {user && (
-                    <li>
+                    <li className="fr-hidden fr-unhidden-sm">
                       <HeaderQuickAccess />
                     </li>
                   )}
