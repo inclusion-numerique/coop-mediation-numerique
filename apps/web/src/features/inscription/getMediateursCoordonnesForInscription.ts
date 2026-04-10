@@ -10,6 +10,7 @@ export const getMediateursCoordonnesForInscription = async ({
     select: {
       id: true,
       mediateursCoordonnes: {
+        where: { suppression: null },
         select: {
           id: true,
         },

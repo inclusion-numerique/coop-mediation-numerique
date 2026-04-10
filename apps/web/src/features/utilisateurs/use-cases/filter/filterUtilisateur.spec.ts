@@ -32,7 +32,7 @@ describe('filter utilisateur', () => {
             coordinateur: {
               is: {
                 derniereCreationActivite: null,
-                mediateursCoordonnes: { none: {} },
+                mediateursCoordonnes: { none: { suppression: null } },
                 invitations: { none: { acceptee: null, refusee: null } },
               },
             },
@@ -46,7 +46,7 @@ describe('filter utilisateur', () => {
             coordinateur: {
               is: {
                 derniereCreationActivite: null,
-                mediateursCoordonnes: { none: {} },
+                mediateursCoordonnes: { none: { suppression: null } },
                 invitations: { none: { acceptee: null, refusee: null } },
               },
             },
