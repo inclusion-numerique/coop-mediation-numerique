@@ -36,7 +36,7 @@ const deleteAndNotify = async (now: Date) => {
       ...inscriptionFilter({ lt: daysAgo(now, 105) }, ['warning_j90_sent']),
       AND: [
         { NOT: { mediateur: { activites: { some: {} } } } },
-        { NOT: { coordinateur: { mediateursCoordonnes: { some: {} } } } },
+        { NOT: { coordinateur: { mediateursCoordonnes: { some: { suppression: null } } } } },
       ],
     },
   })
