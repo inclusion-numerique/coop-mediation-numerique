@@ -4,6 +4,8 @@ import * as Sentry from '@sentry/nextjs'
 import { v4 } from 'uuid'
 import { fetchCartographieNationaleStructures } from '../data/cartographie-nationale/cartographieNationaleStructures'
 import { executeBackupDatabaseJob } from './backup-database/executeBackupDatabaseJob'
+import { executeDeduplicateStructures } from './deduplicate-structures/executeDeduplicateStructures'
+import { executeExportDuplicateSirets } from './export-duplicate-sirets/executeExportDuplicateSirets'
 import { executeFixStructures } from './fix-structures/executeFixStructures'
 import { executeFixTags } from './fix-tags/executeFixTags'
 import { executeFixUsers } from './fix-users/executeFixUsers'
@@ -58,6 +60,8 @@ export const jobExecutors: {
   'inactive-users-reminders': executeInactiveUsersReminders,
   'fix-users-roles': executeFixUsersRoles,
   'remove-orphan-brevo-contacts': executeRemoveOrphanBrevoContacts,
+  'deduplicate-structures': executeDeduplicateStructures,
+  'export-duplicate-sirets': executeExportDuplicateSirets,
 }
 
 export const executeJob = async (job: Job) => {

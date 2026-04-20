@@ -166,6 +166,7 @@ const deleteStructure =
 export const mergeStructure = async (
   sourceStructureId: string,
   targetStructureId: string,
+  options?: { timeout?: number },
 ): Promise<void> => {
   await prismaClient.$transaction(async (prisma) => {
     const [sourceStructure, targetStructure] = await Promise.all([
@@ -196,5 +197,5 @@ export const mergeStructure = async (
     )
     await mergeArrayFields(prisma)(sourceStructureId, targetStructureId)
     await deleteStructure(prisma)(sourceStructureId)
-  })
+  }, { timeout: options?.timeout })
 }

@@ -1,5 +1,7 @@
 import z from 'zod'
 import { BackupDatabaseJobValidation } from './backup-database/backupDatabaseJob'
+import { DeduplicateStructuresJobValidation } from './deduplicate-structures/deduplicateStructuresJob'
+import { ExportDuplicateSiretsJobValidation } from './export-duplicate-sirets/exportDuplicateSiretsJob'
 import { FixStructuresJobValidation } from './fix-structures/fixStructuresJob'
 import { FixTagsJobValidation } from './fix-tags/fixTagsJob'
 import { FixUsersJobValidation } from './fix-users/fixUsersJob'
@@ -45,6 +47,8 @@ export const JobValidation = z.discriminatedUnion('name', [
   InactiveUsersRemindersJobValidation,
   FixUsersRolesJobValidation,
   RemoveOrphanBrevoContactsJobValidation,
+  DeduplicateStructuresJobValidation,
+  ExportDuplicateSiretsJobValidation,
 ])
 
 export type Job = z.infer<typeof JobValidation>
