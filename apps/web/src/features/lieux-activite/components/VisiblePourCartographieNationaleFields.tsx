@@ -45,7 +45,10 @@ const VisiblePourCartographieNationaleFields = ({
 
   const handleChange = async () => {
     try {
-      if (!visiblePourCartographieNationale && (!services || services.length === 0)) {
+      if (
+        !visiblePourCartographieNationale &&
+        (!services || services.length === 0)
+      ) {
         await mutateServicesEtAccompagnement.mutateAsync({
           id,
           services: DEFAULT_SERVICES,

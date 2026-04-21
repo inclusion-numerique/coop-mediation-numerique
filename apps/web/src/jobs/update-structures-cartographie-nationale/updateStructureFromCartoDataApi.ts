@@ -235,12 +235,8 @@ const linkToCoopStructure = async (
   }
 }
 
-const removeMediateursEnActiviteLinks = async (
-  prisma: PrismaTransaction,
-) => {
-  const duplicatedLieuxActiviteLinks = await prisma.$queryRaw<
-    { id: string }[]
-  >`
+const removeMediateursEnActiviteLinks = async (prisma: PrismaTransaction) => {
+  const duplicatedLieuxActiviteLinks = await prisma.$queryRaw<{ id: string }[]>`
     WITH ranked AS (
       SELECT
         id,
