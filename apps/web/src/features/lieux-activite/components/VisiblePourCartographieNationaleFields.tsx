@@ -22,6 +22,7 @@ const DEFAULT_SERVICES = [
 const VisiblePourCartographieNationaleFields = ({
   id,
   visiblePourCartographieNationale,
+  services,
   onChange,
   className,
   canChangeVisibility = true,
@@ -29,6 +30,7 @@ const VisiblePourCartographieNationaleFields = ({
 }: {
   id: string
   visiblePourCartographieNationale: boolean
+  services?: Service[]
   onChange?: (visible: boolean) => void
   className: string
   canChangeVisibility?: boolean
@@ -43,7 +45,7 @@ const VisiblePourCartographieNationaleFields = ({
 
   const handleChange = async () => {
     try {
-      if (!visiblePourCartographieNationale) {
+      if (!visiblePourCartographieNationale && (!services || services.length === 0)) {
         await mutateServicesEtAccompagnement.mutateAsync({
           id,
           services: DEFAULT_SERVICES,
