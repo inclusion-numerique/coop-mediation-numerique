@@ -243,14 +243,14 @@ export const teamAdministrateurs = [
     role: 'Admin',
   }),
   givenUser({
-    id: 'a1b2c3d4-1111-4000-8000-000000000001',
-    firstName: 'Kevin',
+    id: '1e8fa942-0491-41c7-a28c-b68da6b05a1c',
+    firstName: 'Kévin',
     lastName: 'Troadec',
-    email: 'kevin.troadec@ext.anct.gouv.fr',
+    email: 'kevin.troadec@beta.gouv.fr',
     role: 'Admin',
   }),
   givenUser({
-    id: 'a1b2c3d4-1111-4000-8000-000000000002',
+    id: 'c059170d-cf32-452c-b3db-e05e2658ff49',
     firstName: 'Adrien',
     lastName: 'Turpin',
     email: 'adrien.turpin@ext.anct.gouv.fr',
