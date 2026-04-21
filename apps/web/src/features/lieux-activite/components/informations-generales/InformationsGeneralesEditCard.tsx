@@ -13,6 +13,7 @@ import { InformationsGeneralesEditionFields } from './InformationsGeneralesEditi
 import { InformationsGeneralesView } from './InformationsGeneralesView'
 import {
   type InformationsGeneralesFormData,
+  InformationsGeneralesFormValidation,
   informationsGeneralesFormOptions,
 } from './informationsGeneralesFormData'
 
@@ -53,23 +54,37 @@ const InformationsGeneralesEditCard = (props: {
       adresseBan: adresseBanData,
       lieuItinerant: props.lieuItinerant ?? null,
       complementAdresse: props.complementAdresse ?? null,
-      siretSearch: null,
+      siretSearch: props.siret
+        ? {
+            siret: props.siret,
+            nom: props.nom,
+            adresse: props.adresse,
+            commune: props.commune,
+            codePostal: props.codePostal,
+            codeInsee: props.codeInsee ?? '',
+            source: 'database' as const,
+          }
+        : null,
       rna: props.rna ?? null,
       nomUsage: props.nomUsage ?? null,
       noSiret: !props.siret,
       typologies: props.typologies ?? [],
     } as InformationsGeneralesFormData,
+    validators: {
+      onSubmit: InformationsGeneralesFormValidation,
+    },
     onSubmit: async ({ value }) => {
       if (!value.adresseBan) return
 
-      const { noSiret: _, siretSearch, ...data } = value
-      const siret = siretSearch?.siret ?? props.siret ?? null
+      const { noSiret, siretSearch, ...data } = value
+      const siret = noSiret ? null : (siretSearch?.siret ?? null)
 
       try {
         await mutation.mutateAsync({
           ...data,
           siret,
           adresseBan: value.adresseBan,
+          lieuItinerant: noSiret ? data.lieuItinerant : null,
           ...siretOrRna({ ...data, siret }),
         })
         createToast({

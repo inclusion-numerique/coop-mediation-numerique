@@ -35,7 +35,7 @@ export const InformationsGeneralesView = ({
         {nom}
       </div>
     </div>
-    {nomUsage && (
+    {nomUsage && nomUsage !== nom && (
       <div>
         <span className="fr-text-mention--grey">Nom d'usage</span>
         <div

@@ -70,7 +70,7 @@ const setInformationsGeneralesFields = ({
   longitude: adresseBan.longitude,
   itinerance:
     lieuItinerant == null
-      ? undefined
+      ? []
       : lieuItinerant
         ? [Itinerance.Itinerant]
         : [Itinerance.Fixe],

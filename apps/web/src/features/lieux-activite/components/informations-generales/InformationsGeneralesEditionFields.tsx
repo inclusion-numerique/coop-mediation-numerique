@@ -29,7 +29,6 @@ export const InformationsGeneralesEditionFields = withForm({
       form.store,
       (state) => state.values.noSiret === true,
     )
-    const nomOfficiel = useStore(form.store, (state) => state.values.nom)
     const siretSearch = useStore(
       form.store,
       (state) => state.values.siretSearch,
@@ -62,6 +61,7 @@ export const InformationsGeneralesEditionFields = withForm({
                 getLabelProps,
                 getInputProps,
                 getToggleButtonProps,
+                setInputValue,
                 ...optionsProps
               }) => (
                 <>
@@ -69,23 +69,42 @@ export const InformationsGeneralesEditionFields = withForm({
                     addonEnd={
                       <Button
                         title="Rechercher"
-                        className="fr-border-left-0 fr-py-7v fr-pl-4v"
-                        style={{ width: 56, maxWidth: 56, minWidth: 56 }}
+                        className="fr-border-left-0 fr-pl-3v"
+                        style={{ width: 48, maxWidth: 48, minWidth: 48 }}
                         iconId="fr-icon-search-line"
+                        disabled={protectedFieldsDisabled || noSiret}
                         {...getToggleButtonProps({ type: 'button' })}
                       />
+                    }
+                    addinEnd={
+                      field.state.value != null &&
+                      !protectedFieldsDisabled &&
+                      !noSiret && (
+                        <Button
+                          title="Vider la recherche"
+                          type="button"
+                          iconId="fr-icon-close-line"
+                          priority="tertiary no outline"
+                          className="fr-border-top fr-border-bottom"
+                          onClick={() => {
+                            field.setValue(null)
+                            setInputValue('')
+                          }}
+                        />
+                      )
                     }
                     isConnected={false}
                     isPending={protectedFieldsDisabled || noSiret}
                     nativeLabelProps={getLabelProps()}
                     nativeInputProps={{
                       ...getInputProps(),
-                      placeholder:
-                        "Saisissez un nom d'entreprise ou un SIRET...",
+                      style: noSiret
+                        ? { backgroundColor: 'var(--background-disabled-grey)' }
+                        : undefined,
                     }}
                     label={
                       <>
-                        Rechercher par nom ou SIRET
+                        Nom ou SIRET du lieu d’activité
                         {!noSiret && (
                           <>
                             {' '}
@@ -95,30 +114,59 @@ export const InformationsGeneralesEditionFields = withForm({
                       </>
                     }
                   />
-                  <Options {...optionsProps} {...SiretSearchOptions} />
+                  <Options
+                    className="fr-mt-n4v"
+                    {...optionsProps}
+                    {...SiretSearchOptions}
+                  />
                 </>
               )}
             </field.ComboBox>
           )}
         </form.AppField>
 
-        <form.AppField name="noSiret">
-          {(field) => (
-            <field.Checkbox
-              className="fr-mb-2v"
-              isPending={protectedFieldsDisabled}
-              isTiled={false}
-              options={[
-                {
-                  label: "Il n'y a pas de SIRET de structure pour ce lieu",
-                  value: true,
+        {!hasActiveEmployees && (
+          <>
+            {' '}
+            <form.AppField
+              name="noSiret"
+              listeners={{
+                onChange: () => {
+                  for (const field of [
+                    'siretSearch',
+                    'nom',
+                    'adresseBan',
+                  ] as const) {
+                    form.setFieldMeta(field, (prev) => ({
+                      ...prev,
+                      errors: [],
+                      errorMap: {},
+                    }))
+                  }
                 },
-              ]}
-            />
-          )}
-        </form.AppField>
+              }}
+            >
+              {(field) => (
+                <field.Checkbox
+                  className="fr-mb-6v"
+                  isPending={isPending}
+                  isTiled={false}
+                  options={[
+                    {
+                      label: 'Il n’y a pas de SIRET pour ce lieu',
+                      value: true,
+                    },
+                  ]}
+                />
+              )}
+            </form.AppField>
+            <hr />
+          </>
+        )}
 
-        <hr />
+        <p className="fr-text--sm fr-text-mention--grey">
+          Les champs avec <RedAsterisk /> sont obligatoires.
+        </p>
 
         {noSiret ? (
           <form.AppField name="nom">
@@ -142,73 +190,106 @@ export const InformationsGeneralesEditionFields = withForm({
                 hintText={
                   siretSearch
                     ? `${siretSearch.nom} (${siretSearch.siret})`
-                    : nomOfficiel
-                      ? nomOfficiel
-                      : undefined
+                    : undefined
                 }
               />
             )}
           </form.AppField>
         )}
 
-        <form.AppField name="adresseBan">
-          {(field) => (
-            <field.ComboBox
-              isPending={protectedFieldsDisabled}
-              {...AdresseBanComboBox}
-            >
-              {({
-                getLabelProps,
-                getInputProps,
-                getToggleButtonProps,
-                ...optionsProps
-              }) => (
-                <>
-                  <field.Input
-                    addonEnd={
-                      <Button
-                        title="Rechercher une adresse"
-                        className="fr-border-left-0 fr-py-7v fr-pl-4v"
-                        style={{ width: 56, maxWidth: 56, minWidth: 56 }}
-                        iconId="fr-icon-search-line"
-                        {...getToggleButtonProps({ type: 'button' })}
+        {noSiret ? (
+          <>
+            <form.AppField name="adresseBan">
+              {(field) => (
+                <field.ComboBox
+                  isPending={protectedFieldsDisabled}
+                  {...AdresseBanComboBox}
+                >
+                  {({
+                    getLabelProps,
+                    getInputProps,
+                    getToggleButtonProps,
+                    setInputValue,
+                    ...optionsProps
+                  }) => (
+                    <>
+                      <field.Input
+                        addonEnd={
+                          <Button
+                            title="Rechercher"
+                            className="fr-border-left-0 fr-pl-3v"
+                            style={{ width: 48, maxWidth: 48, minWidth: 48 }}
+                            iconId="fr-icon-search-line"
+                            disabled={protectedFieldsDisabled}
+                            {...getToggleButtonProps({ type: 'button' })}
+                          />
+                        }
+                        addinEnd={
+                          field.state.value != null &&
+                          !protectedFieldsDisabled && (
+                            <Button
+                              title="Vider l'adresse"
+                              type="button"
+                              iconId="fr-icon-close-line"
+                              priority="tertiary no outline"
+                              className="fr-border-top fr-border-bottom"
+                              onClick={() => {
+                                field.setValue(null)
+                                setInputValue('')
+                              }}
+                            />
+                          )
+                        }
+                        isConnected={false}
+                        isPending={protectedFieldsDisabled}
+                        nativeLabelProps={getLabelProps()}
+                        nativeInputProps={{
+                          ...getInputProps(),
+                        }}
+                        label={
+                          <>
+                            Adresse <RedAsterisk />
+                          </>
+                        }
                       />
-                    }
-                    isConnected={false}
-                    isPending={protectedFieldsDisabled}
-                    nativeLabelProps={getLabelProps()}
-                    nativeInputProps={{
-                      ...getInputProps(),
-                      placeholder: "Rechercher l'adresse",
-                    }}
-                    label={
-                      <>
-                        Adresse <RedAsterisk />
-                      </>
-                    }
-                  />
-                  <Options {...optionsProps} {...AdresseBanOptions} />
-                </>
+                      <Options
+                        className="fr-mt-n4v"
+                        {...optionsProps}
+                        {...AdresseBanOptions}
+                      />
+                    </>
+                  )}
+                </field.ComboBox>
               )}
-            </field.ComboBox>
-          )}
-        </form.AppField>
+            </form.AppField>
 
-        <form.AppField name="lieuItinerant">
-          {(field) => (
-            <field.Checkbox
-              className="fr-mt-6v fr-mb-2v"
-              isPending={isPending}
-              isTiled={false}
-              options={[
-                {
-                  label: "Lieu d'activité itinérant (exemple : bus)",
-                  value: true,
-                },
-              ]}
-            />
-          )}
-        </form.AppField>
+            <form.AppField name="lieuItinerant">
+              {(field) => (
+                <field.Checkbox
+                  className="fr-mt-6v fr-mb-6v"
+                  isPending={isPending}
+                  isTiled={false}
+                  options={[
+                    {
+                      label: "Lieu d'activité itinérant (exemple : bus)",
+                      value: true,
+                    },
+                  ]}
+                />
+              )}
+            </form.AppField>
+          </>
+        ) : (
+          siretSearch && (
+            <div className="fr-mb-4v">
+              <span className="fr-text-mention--grey">Adresse</span>
+              <div className="fr-text--medium">
+                {siretSearch.adresse}, {siretSearch.codePostal}{' '}
+                {siretSearch.commune}
+              </div>
+            </div>
+          )
+        )}
 
         <form.AppField name="complementAdresse">
           {(field) => (
