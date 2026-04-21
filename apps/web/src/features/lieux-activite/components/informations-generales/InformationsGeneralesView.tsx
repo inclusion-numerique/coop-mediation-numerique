@@ -65,7 +65,7 @@ export const InformationsGeneralesView = ({
       </div>
     )}
     <div>
-      <span className="fr-text-mention--grey">Complément d'adresse</span>
+      <span className="fr-text-mention--grey">Complément d’adresse</span>
       <div
         className="fr-text--medium"
         data-testid="informations-generales-complement-adresse"

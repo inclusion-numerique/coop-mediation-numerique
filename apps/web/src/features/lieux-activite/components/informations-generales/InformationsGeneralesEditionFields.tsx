@@ -16,7 +16,10 @@ import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useStore } from '@tanstack/react-form'
-import { informationsGeneralesFormOptions } from './informationsGeneralesFormData'
+import {
+  type InformationsGeneralesFormData,
+  informationsGeneralesFormOptions,
+} from './informationsGeneralesFormData'
 
 export const InformationsGeneralesEditionFields = withForm({
   ...informationsGeneralesFormOptions,
@@ -127,23 +130,10 @@ export const InformationsGeneralesEditionFields = withForm({
 
         {!hasActiveEmployees && (
           <>
-            {' '}
             <form.AppField
               name="noSiret"
               listeners={{
-                onChange: () => {
-                  for (const field of [
-                    'siretSearch',
-                    'nom',
-                    'adresseBan',
-                  ] as const) {
-                    form.setFieldMeta(field, (prev) => ({
-                      ...prev,
-                      errors: [],
-                      errorMap: {},
-                    }))
-                  }
-                },
+                onChange: () => form.reset(form.state.values),
               }}
             >
               {(field) => (
@@ -293,7 +283,7 @@ export const InformationsGeneralesEditionFields = withForm({
 
         <form.AppField name="complementAdresse">
           {(field) => (
-            <field.Input isPending={isPending} label="Complément d'adresse" />
+            <field.Input isPending={isPending} label="Complément d’adresse" />
           )}
         </form.AppField>
 
