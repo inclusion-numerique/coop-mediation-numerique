@@ -22,6 +22,7 @@ export const InformationsGeneralesFields = <
   initialAdresseBanOptions,
   adresseBanDefaultValue,
   hasActiveEmployees,
+  showSiretField = true,
 }: {
   nom?: string
   form: UseFormReturn<T>
@@ -29,6 +30,7 @@ export const InformationsGeneralesFields = <
   initialAdresseBanOptions?: AdressBanFormFieldOption[]
   adresseBanDefaultValue?: AdressBanFormFieldOption
   hasActiveEmployees?: boolean
+  showSiretField?: boolean
 }) => {
   const { control, formState } =
     form as unknown as UseFormReturn<InformationsGeneralesData>
@@ -87,19 +89,21 @@ export const InformationsGeneralesFields = <
         label="Typologies de la structure"
         options={optionsWithEmptyValue(typologieStructureOptions)}
       />
-      <InputFormField
-        path="siret"
-        label="SIRET structure (ou RNA)"
-        control={control}
-        disabled={protectedFieldsDisabled}
-        className="fr-mb-0"
-        info={
-          <>
-            <SiretInputInfo className="fr-mb-0" searchTerm={nom} />
-            <RnaInputInfo />
-          </>
-        }
-      />
+      {showSiretField && (
+        <InputFormField
+          path="siret"
+          label="SIRET structure (ou RNA)"
+          control={control}
+          disabled={protectedFieldsDisabled}
+          className="fr-mb-0"
+          info={
+            <>
+              <SiretInputInfo className="fr-mb-0" searchTerm={nom} />
+              <RnaInputInfo />
+            </>
+          }
+        />
+      )}
     </div>
   )
 }
