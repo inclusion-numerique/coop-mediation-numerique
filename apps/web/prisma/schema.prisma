@@ -753,6 +753,7 @@ model Structure {
 
   siret                String?
   rna                  String?
+  nomUsage             String?   @map("nom_usage")
   synchronisationSiret DateTime? @map("synchronisation_siret")
 
   visiblePourCartographieNationale Boolean @default(false) @map("visible_pour_cartographie_nationale")
