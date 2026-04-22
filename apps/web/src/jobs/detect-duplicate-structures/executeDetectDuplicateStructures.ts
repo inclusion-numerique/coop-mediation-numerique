@@ -1,7 +1,7 @@
+import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 import { writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
 import type { DetectDuplicateStructuresJob } from './detectDuplicateStructuresJob'
 
 type StructureLight = {
@@ -511,7 +511,7 @@ export const executeDetectDuplicateStructures = async (
   // ── Export CSV ──
 
   const csvLines = [csvHeader, ...paires.map(paireToCsv)]
-  const filePath = join(process.cwd(), 'detect-duplicate-structures.csv')
+  const filePath = getAuditOutputPath('detect-duplicate-structures.csv')
   await writeFile(filePath, csvLines.join('\n'), 'utf-8')
 
   // ── Rapport console ──
@@ -815,10 +815,7 @@ export const executeDetectDuplicateStructures = async (
     }),
   ]
 
-  const clustersFilePath = join(
-    process.cwd(),
-    'detect-duplicate-clusters.csv',
-  )
+  const clustersFilePath = getAuditOutputPath('detect-duplicate-clusters.csv')
   await writeFile(clustersFilePath, clustersCsvLines.join('\n'), 'utf-8')
 
   output.log(`Export clusters: ${clustersFilePath} (${clusters.length} clusters)`)

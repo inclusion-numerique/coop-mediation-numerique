@@ -1,9 +1,9 @@
 import { fetchSiretApiData } from '@app/web/features/structures/siret/fetchSiretData'
 import type { SiretApiResponse } from '@app/web/features/structures/siret/SiretApiResponse'
+import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 import { writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
 import type { AuditSiretCoherenceJob } from './auditSiretCoherenceJob'
 
 // 250 req/min max sur l'API Entreprise = ~4 req/s
@@ -342,7 +342,7 @@ export const executeAuditSiretCoherence = async (
   // ── Export CSV complet ──
 
   const csvLines = [csvHeader, ...rows.map(rowToCsv)]
-  const filePath = join(process.cwd(), 'audit-siret-coherence.csv')
+  const filePath = getAuditOutputPath('audit-siret-coherence.csv')
   await writeFile(filePath, csvLines.join('\n'), 'utf-8')
 
   // ── Export CSV des divergences uniquement ──
@@ -351,10 +351,7 @@ export const executeAuditSiretCoherence = async (
     (r) => r.categorie !== 'ok' && r.categorie !== 'erreur_api',
   )
   const divergencesCsvLines = [csvHeader, ...divergences.map(rowToCsv)]
-  const divergencesFilePath = join(
-    process.cwd(),
-    'audit-siret-divergences.csv',
-  )
+  const divergencesFilePath = getAuditOutputPath('audit-siret-divergences.csv')
   await writeFile(divergencesFilePath, divergencesCsvLines.join('\n'), 'utf-8')
 
   // ── Rapport console ──

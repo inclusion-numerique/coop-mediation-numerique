@@ -1,7 +1,7 @@
+import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 import { writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
 import type { ExportDuplicateSiretsJob } from './exportDuplicateSiretsJob'
 
 const csvHeader = [
@@ -87,7 +87,7 @@ export const executeExportDuplicateSirets = async (
     ),
   ]
 
-  const filePath = join(process.cwd(), 'duplicate-sirets.csv')
+  const filePath = getAuditOutputPath('duplicate-sirets.csv')
   await writeFile(filePath, csvLines.join('\n'), 'utf-8')
 
   output.log(

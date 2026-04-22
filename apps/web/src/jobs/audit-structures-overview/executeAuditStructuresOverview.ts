@@ -1,7 +1,7 @@
+import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 import { writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
 import type { AuditStructuresOverviewJob } from './auditStructuresOverviewJob'
 
 const escapeCsvField = (value: string) =>
@@ -245,10 +245,7 @@ export const executeAuditStructuresOverview = async (
     ),
   ]
 
-  const orphelinesFilePath = join(
-    process.cwd(),
-    'audit-structures-orphelines.csv',
-  )
+  const orphelinesFilePath = getAuditOutputPath('audit-structures-orphelines.csv')
   await writeFile(orphelinesFilePath, orphelinesCsvLines.join('\n'), 'utf-8')
 
   output.log(

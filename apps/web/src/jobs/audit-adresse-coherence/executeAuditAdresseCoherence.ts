@@ -1,9 +1,9 @@
 import { searchAdresse } from '@app/web/external-apis/apiAdresse'
 import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
+import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 import { writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
 import type { AuditAdresseCoherenceJob } from './auditAdresseCoherenceJob'
 
 // Batch de 50 avec 1s de pause, comme dans fix-structures
@@ -340,17 +340,14 @@ export const executeAuditAdresseCoherence = async (
   // ── Export CSV complet ──
 
   const csvLines = [csvHeader, ...rows.map(rowToCsv)]
-  const filePath = join(process.cwd(), 'audit-adresse-coherence.csv')
+  const filePath = getAuditOutputPath('audit-adresse-coherence.csv')
   await writeFile(filePath, csvLines.join('\n'), 'utf-8')
 
   // ── Export CSV des anomalies uniquement ──
 
   const anomalies = rows.filter((r) => r.categorie !== 'ok')
   const anomaliesCsvLines = [csvHeader, ...anomalies.map(rowToCsv)]
-  const anomaliesFilePath = join(
-    process.cwd(),
-    'audit-adresse-anomalies.csv',
-  )
+  const anomaliesFilePath = getAuditOutputPath('audit-adresse-anomalies.csv')
   await writeFile(anomaliesFilePath, anomaliesCsvLines.join('\n'), 'utf-8')
 
   // ── Rapport console ──

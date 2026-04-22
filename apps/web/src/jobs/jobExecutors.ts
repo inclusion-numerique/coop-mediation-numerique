@@ -10,6 +10,7 @@ import { executeBackupDatabaseJob } from './backup-database/executeBackupDatabas
 import { executeDeduplicateStructures } from './deduplicate-structures/executeDeduplicateStructures'
 import { executeDetectDuplicateStructures } from './detect-duplicate-structures/executeDetectDuplicateStructures'
 import { executeExportDuplicateSirets } from './export-duplicate-sirets/executeExportDuplicateSirets'
+import { executeGenerateStructuresActionPlan } from './generate-structures-action-plan/executeGenerateStructuresActionPlan'
 import { executeFixStructures } from './fix-structures/executeFixStructures'
 import { executeFixTags } from './fix-tags/executeFixTags'
 import { executeFixUsers } from './fix-users/executeFixUsers'
@@ -70,6 +71,7 @@ export const jobExecutors: {
   'deduplicate-structures': executeDeduplicateStructures,
   'detect-duplicate-structures': executeDetectDuplicateStructures,
   'export-duplicate-sirets': executeExportDuplicateSirets,
+  'generate-structures-action-plan': executeGenerateStructuresActionPlan,
 }
 
 export const executeJob = async (job: Job) => {

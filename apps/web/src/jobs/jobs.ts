@@ -4,6 +4,7 @@ import { AuditSiretCoherenceJobValidation } from './audit-siret-coherence/auditS
 import { AuditStructuresOverviewJobValidation } from './audit-structures-overview/auditStructuresOverviewJob'
 import { BackupDatabaseJobValidation } from './backup-database/backupDatabaseJob'
 import { DeduplicateStructuresJobValidation } from './deduplicate-structures/deduplicateStructuresJob'
+import { GenerateStructuresActionPlanJobValidation } from './generate-structures-action-plan/generateStructuresActionPlanJob'
 import { DetectDuplicateStructuresJobValidation } from './detect-duplicate-structures/detectDuplicateStructuresJob'
 import { ExportDuplicateSiretsJobValidation } from './export-duplicate-sirets/exportDuplicateSiretsJob'
 import { FixStructuresJobValidation } from './fix-structures/fixStructuresJob'
@@ -57,6 +58,7 @@ export const JobValidation = z.discriminatedUnion('name', [
   DeduplicateStructuresJobValidation,
   DetectDuplicateStructuresJobValidation,
   ExportDuplicateSiretsJobValidation,
+  GenerateStructuresActionPlanJobValidation,
 ])
 
 export type Job = z.infer<typeof JobValidation>
