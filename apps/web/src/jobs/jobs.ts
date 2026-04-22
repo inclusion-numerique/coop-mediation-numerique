@@ -1,6 +1,10 @@
 import z from 'zod'
+import { AuditAdresseCoherenceJobValidation } from './audit-adresse-coherence/auditAdresseCoherenceJob'
+import { AuditSiretCoherenceJobValidation } from './audit-siret-coherence/auditSiretCoherenceJob'
+import { AuditStructuresOverviewJobValidation } from './audit-structures-overview/auditStructuresOverviewJob'
 import { BackupDatabaseJobValidation } from './backup-database/backupDatabaseJob'
 import { DeduplicateStructuresJobValidation } from './deduplicate-structures/deduplicateStructuresJob'
+import { DetectDuplicateStructuresJobValidation } from './detect-duplicate-structures/detectDuplicateStructuresJob'
 import { ExportDuplicateSiretsJobValidation } from './export-duplicate-sirets/exportDuplicateSiretsJob'
 import { FixStructuresJobValidation } from './fix-structures/fixStructuresJob'
 import { FixTagsJobValidation } from './fix-tags/fixTagsJob'
@@ -33,6 +37,9 @@ import { UpdateStructuresCartographieNationaleJobValidation } from './update-str
  */
 
 export const JobValidation = z.discriminatedUnion('name', [
+  AuditAdresseCoherenceJobValidation,
+  AuditSiretCoherenceJobValidation,
+  AuditStructuresOverviewJobValidation,
   BackupDatabaseJobValidation,
   UpdateStructuresCartographieNationaleJobValidation,
   ImportContactsToBrevoValidation,
@@ -48,6 +55,7 @@ export const JobValidation = z.discriminatedUnion('name', [
   FixUsersRolesJobValidation,
   RemoveOrphanBrevoContactsJobValidation,
   DeduplicateStructuresJobValidation,
+  DetectDuplicateStructuresJobValidation,
   ExportDuplicateSiretsJobValidation,
 ])
 

@@ -3,8 +3,12 @@ import { createStopwatch } from '@app/web/utils/stopwatch'
 import * as Sentry from '@sentry/nextjs'
 import { v4 } from 'uuid'
 import { fetchCartographieNationaleStructures } from '../data/cartographie-nationale/cartographieNationaleStructures'
+import { executeAuditAdresseCoherence } from './audit-adresse-coherence/executeAuditAdresseCoherence'
+import { executeAuditSiretCoherence } from './audit-siret-coherence/executeAuditSiretCoherence'
+import { executeAuditStructuresOverview } from './audit-structures-overview/executeAuditStructuresOverview'
 import { executeBackupDatabaseJob } from './backup-database/executeBackupDatabaseJob'
 import { executeDeduplicateStructures } from './deduplicate-structures/executeDeduplicateStructures'
+import { executeDetectDuplicateStructures } from './detect-duplicate-structures/executeDetectDuplicateStructures'
 import { executeExportDuplicateSirets } from './export-duplicate-sirets/executeExportDuplicateSirets'
 import { executeFixStructures } from './fix-structures/executeFixStructures'
 import { executeFixTags } from './fix-tags/executeFixTags'
@@ -45,6 +49,9 @@ const executeUpdateStructuresCartographieNationale = async () => {
 export const jobExecutors: {
   [Name in JobName]: JobExecutor<Name>
 } = {
+  'audit-adresse-coherence': executeAuditAdresseCoherence,
+  'audit-siret-coherence': executeAuditSiretCoherence,
+  'audit-structures-overview': executeAuditStructuresOverview,
   'backup-database': executeBackupDatabaseJob,
   'update-structures-cartographie-nationale':
     executeUpdateStructuresCartographieNationale,
@@ -61,6 +68,7 @@ export const jobExecutors: {
   'fix-users-roles': executeFixUsersRoles,
   'remove-orphan-brevo-contacts': executeRemoveOrphanBrevoContacts,
   'deduplicate-structures': executeDeduplicateStructures,
+  'detect-duplicate-structures': executeDetectDuplicateStructures,
   'export-duplicate-sirets': executeExportDuplicateSirets,
 }
 
