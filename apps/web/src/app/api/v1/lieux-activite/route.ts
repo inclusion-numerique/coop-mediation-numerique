@@ -313,7 +313,7 @@ export const GET = createApiV1Route
                 'telephone', NULLIF(users.phone, ''),
                 'id', users.id
               ))
-            ) FILTER (WHERE users.id IS NOT NULL AND users.is_conseiller_numerique = TRUE),
+            ) FILTER (WHERE users.id IS NOT NULL),
             '[]'::jsonb
           ) AS aidants
         FROM structures structures
