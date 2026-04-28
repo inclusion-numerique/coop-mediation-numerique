@@ -222,9 +222,7 @@ export const executeChatInteraction = ({
                 serializeAssistantChatStreamChunk({
                   role: 'tool',
                   content: Array.isArray(message.content)
-                    ? message.content
-                        .map((part) => part.text)
-                        .join('') // should never happen foor tool responses
+                    ? message.content.map((part) => part.text).join('') // should never happen foor tool responses
                     : message.content,
                 }),
               )

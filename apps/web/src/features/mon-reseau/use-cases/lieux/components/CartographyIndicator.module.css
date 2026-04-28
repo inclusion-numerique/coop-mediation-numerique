@@ -13,8 +13,12 @@
 }
 
 .tagUpdating {
-  background-color: var(--background-contrast-orange-terre-battue);
-  color: var(--text-label-orange-terre-battue);
+  background-color: var(--background-action-high-blue-france);
+  color: var(--text-inverted-grey);
+}
+
+.tagUpdating:hover {
+  background-color: var(--background-action-high-blue-france-hover);
 }
 
 .tagNotVisible {

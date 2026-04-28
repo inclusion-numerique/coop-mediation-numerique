@@ -8,7 +8,7 @@ const noActivityFilter: Prisma.UserWhereInput[] = [
     coordinateur: {
       is: {
         derniereCreationActivite: null,
-        mediateursCoordonnes: { none: {} },
+        mediateursCoordonnes: { none: { suppression: null } },
         invitations: noPendingInvitations,
       },
     },
@@ -22,7 +22,7 @@ const noActivityFilter: Prisma.UserWhereInput[] = [
     coordinateur: {
       is: {
         derniereCreationActivite: null,
-        mediateursCoordonnes: { none: {} },
+        mediateursCoordonnes: { none: { suppression: null } },
         invitations: noPendingInvitations,
       },
     },

@@ -15,7 +15,7 @@ export const actifFilter = (lastActivity: {
         is: {
           OR: [
             { derniereCreationActivite: { not: null } },
-            { mediateursCoordonnes: { some: {} } },
+            { mediateursCoordonnes: { some: { suppression: null } } },
           ],
         },
       },
@@ -31,7 +31,7 @@ export const actifFilter = (lastActivity: {
         is: {
           OR: [
             { derniereCreationActivite: { not: null } },
-            { mediateursCoordonnes: { some: {} } },
+            { mediateursCoordonnes: { some: { suppression: null } } },
           ],
         },
       },

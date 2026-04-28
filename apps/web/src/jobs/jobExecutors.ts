@@ -2,10 +2,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import * as Sentry from '@sentry/nextjs'
 import { v4 } from 'uuid'
-import {
-  downloadCartographieNationaleStructures,
-  getStructuresCartographieNationaleFromLocalFile,
-} from '../data/cartographie-nationale/cartographieNationaleStructures'
+import { fetchCartographieNationaleStructures } from '../data/cartographie-nationale/cartographieNationaleStructures'
 import { executeBackupDatabaseJob } from './backup-database/executeBackupDatabaseJob'
 import { executeFixStructures } from './fix-structures/executeFixStructures'
 import { executeFixTags } from './fix-tags/executeFixTags'
@@ -30,13 +27,11 @@ export type JobExecutor<Name extends JobName, Result = unknown> = (
 
 const executeUpdateStructuresCartographieNationale = async () => {
   output.log(
-    `update-structures-carto: fetching existing and cartographie nationale dataset`,
+    `update-structures-carto: fetching cartographie nationale dataset from dataspace`,
   )
 
-  await downloadCartographieNationaleStructures()
-
   const structuresCartographieNationale =
-    await getStructuresCartographieNationaleFromLocalFile()
+    await fetchCartographieNationaleStructures()
 
   const execute = updateStructureFromCartoDataApi({
     structuresCartographieNationale,

@@ -21,6 +21,8 @@ import {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { Prisma, Typologie } from '@prisma/client'
 
+const validTypologies = new Set<string>(Object.values(Typologie))
+
 export const structureToPrismaModel = (
   structure: LieuStandardMediationNumerique,
 ): Prisma.StructureCreateManyInput => ({
@@ -31,7 +33,9 @@ export const structureToPrismaModel = (
   presentationResume: structure.presentation_resume,
   siteWeb: structure.site_web,
   telephone: structure.telephone,
-  typologies: structure.typologie?.split('|') as Typologie[] | undefined,
+  typologies: structure.typologie
+    ?.split('|')
+    .filter((t): t is Typologie => validTypologies.has(t)),
   adresse: structure.adresse,
   autresFormationsLabels: structure.autres_formations_labels?.split('|'),
   codeInsee: structure.code_insee,

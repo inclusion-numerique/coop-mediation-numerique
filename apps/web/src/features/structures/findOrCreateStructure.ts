@@ -112,6 +112,7 @@ export const findOrCreateStructure = async ({
       await prismaClient.structureCartographieNationale.findFirst({
         where: {
           pivot: siret,
+          codeInsee,
         },
       })
 

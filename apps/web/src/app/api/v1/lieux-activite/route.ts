@@ -313,7 +313,7 @@ export const GET = createApiV1Route
                 'telephone', NULLIF(users.phone, ''),
                 'id', users.id
               ))
-            ) FILTER (WHERE users.id IS NOT NULL AND users.is_conseiller_numerique = TRUE),
+            ) FILTER (WHERE users.id IS NOT NULL),
             '[]'::jsonb
           ) AS aidants
         FROM structures structures
@@ -323,6 +323,7 @@ export const GET = createApiV1Route
       WHERE structures.suppression IS NULL
         AND mediateurs_en_activite.suppression IS NULL AND mediateurs_en_activite.fin_activite IS NULL
         AND structures.visible_pour_cartographie_nationale IS true
+        AND users.deleted IS NULL
       GROUP BY structures.id
     )
     SELECT *

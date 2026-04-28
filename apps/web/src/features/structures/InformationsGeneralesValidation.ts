@@ -25,6 +25,7 @@ export const InformationsGeneralesShape = {
       },
     ),
   rna: z.string().nullish(),
+  nomUsage: z.string().trim().nullish(),
 }
 
 export const InformationsGeneralesValidation = z.object({

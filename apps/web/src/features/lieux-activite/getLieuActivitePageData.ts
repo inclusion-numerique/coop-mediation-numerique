@@ -26,6 +26,7 @@ export const getLieuActivitePageData = async ({ id }: { id: string }) => {
       longitude: true,
       siret: true,
       rna: true,
+      nomUsage: true,
       typologies: true,
       visiblePourCartographieNationale: true,
       structureCartographieNationaleId: true,

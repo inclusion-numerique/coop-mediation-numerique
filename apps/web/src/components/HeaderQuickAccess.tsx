@@ -14,7 +14,7 @@ import styles from './HeaderQuickAccess.module.css'
 const tools: { label: string; href: string; icon: Pictogram }[] = [
   {
     label: 'RDV Service Public',
-    href: 'https://rdv.anct.gouv.fr',
+    href: 'https://rdv.anct.gouv.fr/agents/sign_in',
     icon: RDVServicePublicLogo,
   },
   {

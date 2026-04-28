@@ -16,6 +16,7 @@ export type SearchLieuxOptions = {
 export const lieuxForListSelect = {
   id: true,
   nom: true,
+  nomUsage: true,
   adresse: true,
   complementAdresse: true,
   commune: true,

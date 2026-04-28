@@ -74,9 +74,14 @@ export const searchStructureEmployeuseCombined = async (
         }))
     : []
 
-  const siretsSeen = new Set<string>(dbStructures.map((s) => s.siret))
+  const siretsSeen = new Set<string>()
+  const uniqueDbStructures = dbStructures.filter((s) => {
+    if (siretsSeen.has(s.siret)) return false
+    siretsSeen.add(s.siret)
+    return true
+  })
   const deduplicatedStructures: StructureSearchResult[] = [
-    ...dbStructures,
+    ...uniqueDbStructures,
     ...apiStructures.filter((s) => !siretsSeen.has(s.siret)),
   ]
 

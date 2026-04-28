@@ -92,7 +92,11 @@ const CreerLieuActiviteForm = ({
           Informations générales
         </h2>
         <hr className="fr-separator fr-separator-1px" />
-        <InformationsGeneralesFields className="fr-p-4w" form={form} />
+        <InformationsGeneralesFields
+          className="fr-p-4w"
+          form={form}
+          showSiretField={false}
+        />
       </div>
       <div className="fr-border fr-border-radius--8 fr-mt-6v fr-mb-6v">
         <DisplayOnCartography />

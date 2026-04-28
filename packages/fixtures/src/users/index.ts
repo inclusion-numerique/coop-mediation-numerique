@@ -222,31 +222,10 @@ export const rdvServicePublicStagingUsers = [
 
 export const teamAdministrateurs = [
   givenUser({
-    id: '99afd613-9d54-4110-9062-065c627eda8a',
-    firstName: 'Hugues',
-    lastName: 'Maignol',
-    email: 'hugues.maignol@beta.gouv.fr',
-    role: 'Admin',
-  }),
-  givenUser({
-    id: '99afd613-9d54-4110-9062-065c627eda8b',
-    firstName: 'Kévin',
-    lastName: 'Gallet',
-    email: 'kevin.gallet@beta.gouv.fr',
-    role: 'Admin',
-  }),
-  givenUser({
     id: 'eecac657-f415-47e1-8087-c4508ea16191',
     firstName: 'Marc',
     lastName: 'Gavanier',
     email: 'marc.gavanier@beta.gouv.fr',
-    role: 'Admin',
-  }),
-  givenUser({
-    id: '8e3c9cdc-3125-4c2e-a49e-796903e9989e',
-    firstName: 'Thibault',
-    lastName: 'Rouveyrol',
-    email: 'thibault.rouveyrol@beta.gouv.fr',
     role: 'Admin',
   }),
   givenUser({
@@ -257,17 +236,31 @@ export const teamAdministrateurs = [
     role: 'Admin',
   }),
   givenUser({
-    id: '7faedd26-8603-4309-a614-062bba9161d8',
-    email: 'sylvain.aubry@beta.gouv.fr',
-    firstName: 'Sylvain',
-    lastName: 'Aubry',
-    role: 'Admin',
-  }),
-  givenUser({
     id: '82658fa2-b0ed-4fe8-8120-b462048957a0',
     firstName: 'Ferdinand',
     lastName: 'Rautureau',
     email: 'ferdinand.rautureau@anct.gouv.fr',
+    role: 'Admin',
+  }),
+  givenUser({
+    id: '1e8fa942-0491-41c7-a28c-b68da6b05a1c',
+    firstName: 'Kévin',
+    lastName: 'Troadec',
+    email: 'kevin.troadec@beta.gouv.fr',
+    role: 'Admin',
+  }),
+  givenUser({
+    id: 'c059170d-cf32-452c-b3db-e05e2658ff49',
+    firstName: 'Adrien',
+    lastName: 'Turpin',
+    email: 'adrien.turpin@ext.anct.gouv.fr',
+    role: 'Admin',
+  }),
+  givenUser({
+    id: 'a1b2c3d4-1111-4000-8000-000000000003',
+    firstName: 'David',
+    lastName: 'Bourchanin',
+    email: 'david.bourchanin@ext.anct.gouv.fr',
     role: 'Admin',
   }),
 ] satisfies Prisma.UserCreateInput[]
