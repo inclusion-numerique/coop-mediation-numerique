@@ -3,8 +3,14 @@ import { MediateurUser } from '../auth/userTypeGuards'
 
 export const setVisibility =
   ({ mediateur: { id } }: MediateurUser) =>
-  async (isVisible: boolean) =>
-    await prismaClient.mediateur.update({
+  async (isVisible: boolean) => {
+    const now = new Date()
+    return prismaClient.mediateur.update({
       where: { id },
-      data: { isVisible },
+      data: {
+        isVisible,
+        modification: now,
+        user: { update: { updated: now } },
+      },
     })
+  }
