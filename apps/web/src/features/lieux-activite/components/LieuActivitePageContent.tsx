@@ -13,6 +13,7 @@ import { getMonReseauBreadcrumbParents } from '@app/web/features/mon-reseau/getM
 import RemoveMediateurFromLieuModal from '@app/web/features/mon-reseau/use-cases/acteurs/components/RemoveMediateurFromLieuModal/RemoveMediateurFromLieuModal'
 import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
 import LieuMediateursEnActivite from '@app/web/features/mon-reseau/use-cases/lieux/components/LieuMediateursEnActivite'
+import { getStructureDisplayName } from '@app/web/features/structures/getStructureDisplayName'
 import { formatDate } from '@app/web/utils/formatDate'
 import { Itinerance, ModaliteAcces } from '@prisma/client'
 import classNames from 'classnames'
@@ -35,6 +36,7 @@ export const LieuActivitePageContent = ({
   hideBreadcrumbs?: boolean
 }) => {
   const departementCode = getDepartementCodeForLieu(structure)
+  const displayName = getStructureDisplayName(structure)
 
   const [showSideMenu, setShowSideMenu] = useState(
     structure.visiblePourCartographieNationale,
@@ -75,7 +77,7 @@ export const LieuActivitePageContent = ({
                   },
                 },
               ]}
-              currentPage={structure.nom}
+              currentPage={displayName}
             />
             <BackButton className="fr-mt-8v" />
           </>
@@ -84,7 +86,7 @@ export const LieuActivitePageContent = ({
           Mis à jour le {formattedModificationDate}{' '}
           {derniereModificationPar ? `par ${derniereModificationPar}` : ''}
         </p>
-        <h1 className="fr-page-title fr-h2">{structure.nom}</h1>
+        <h1 className="fr-page-title fr-h2">{displayName}</h1>
         <div className="fr-border fr-border-radius--8 fr-mb-6v">
           <InformationsGeneralesEditCard
             {...structure}

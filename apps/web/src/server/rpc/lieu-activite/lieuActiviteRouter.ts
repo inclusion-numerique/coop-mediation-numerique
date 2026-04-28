@@ -58,6 +58,7 @@ const setInformationsGeneralesFields = ({
   complementAdresse,
   siret,
   rna,
+  nomUsage,
   typologies,
 }: Omit<InformationsGeneralesData, 'id'>) => ({
   nom,
@@ -69,13 +70,14 @@ const setInformationsGeneralesFields = ({
   longitude: adresseBan.longitude,
   itinerance:
     lieuItinerant == null
-      ? undefined
+      ? []
       : lieuItinerant
         ? [Itinerance.Itinerant]
         : [Itinerance.Fixe],
   complementAdresse,
   siret,
   rna,
+  nomUsage: siret ? nomUsage : null,
   typologies,
 })
 

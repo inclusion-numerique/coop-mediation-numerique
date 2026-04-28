@@ -1,24 +1,21 @@
 'use client'
 
 import { createToast } from '@app/ui/toast/createToast'
-import EditCard from '@app/web/components/EditCard'
-import { AdressBanFormFieldOption } from '@app/web/components/form/AdresseBanFormField'
-import { InformationsGeneralesFields } from '@app/web/components/structure/fields/InformationsGeneralesFields'
+import EditCardTanStack from '@app/web/components/EditCardTanStack'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import { getAdresseBanLabel } from '@app/web/external-apis/ban/adresseBanLabel'
 import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
-import {
-  InformationsGeneralesData,
-  InformationsGeneralesValidation,
-} from '@app/web/features/structures/InformationsGeneralesValidation'
 import { siretOrRna } from '@app/web/features/structures/rna/rnaValidation'
+import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { trpc } from '@app/web/trpc'
-import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
-import { zodResolver } from '@hookform/resolvers/zod'
 import type { Typologie } from '@prisma/client'
-import { useRouter } from 'next/navigation'
-import { DefaultValues, useForm } from 'react-hook-form'
+import { InformationsGeneralesEditionFields } from './InformationsGeneralesEditionFields'
 import { InformationsGeneralesView } from './InformationsGeneralesView'
+import {
+  type InformationsGeneralesFormData,
+  InformationsGeneralesFormValidation,
+  informationsGeneralesFormOptions,
+} from './informationsGeneralesFormData'
 
 const InformationsGeneralesEditCard = (props: {
   id: string
@@ -33,81 +30,79 @@ const InformationsGeneralesEditCard = (props: {
   complementAdresse?: string | null
   siret?: string | null
   rna?: string | null
+  nomUsage?: string | null
   typologies?: Typologie[] | null
   hasActiveEmployees?: boolean
 }) => {
   const mutation = trpc.lieuActivite.updateInformationsGenerales.useMutation()
-  const router = useRouter()
-
-  /**
-   * We need to create the form default value AdressBanData from the existing structure.
-   * Also we have to create initial AdressBanData Option for the search select
-   * to have it pre-populated with the existing structure data.
-   */
-  const {
-    codeInsee,
-    codePostal,
-    commune,
-    adresse,
-    latitude,
-    longitude,
-    lieuItinerant,
-  } = props
 
   const adresseBanData = banDefaultValueToAdresseBanData({
-    codeInsee: codeInsee ?? undefined,
-    codePostal,
-    commune,
-    nom: adresse,
-    latitude: latitude ?? undefined,
-    longitude: longitude ?? undefined,
+    codeInsee: props.codeInsee ?? undefined,
+    codePostal: props.codePostal,
+    commune: props.commune,
+    nom: props.adresse,
+    latitude: props.latitude ?? undefined,
+    longitude: props.longitude ?? undefined,
   })
-  const adresseBanLabel = getAdresseBanLabel(adresseBanData)
-  adresseBanData.label = adresseBanLabel
+  adresseBanData.label = getAdresseBanLabel(adresseBanData)
 
-  const defaultValues = {
-    ...props,
-    adresseBan: adresseBanData,
-    lieuItinerant,
-    typologies: props.typologies ?? [],
-  } satisfies DefaultValues<InformationsGeneralesData>
+  const form = useAppForm({
+    ...informationsGeneralesFormOptions,
+    defaultValues: {
+      id: props.id,
+      nom: props.nom,
+      adresseBan: adresseBanData,
+      lieuItinerant: props.lieuItinerant ?? null,
+      complementAdresse: props.complementAdresse ?? null,
+      siretSearch: props.siret
+        ? {
+            siret: props.siret,
+            nom: props.nom,
+            adresse: props.adresse,
+            commune: props.commune,
+            codePostal: props.codePostal,
+            codeInsee: props.codeInsee ?? '',
+            source: 'database' as const,
+          }
+        : null,
+      rna: props.rna ?? null,
+      nomUsage: props.nomUsage ?? null,
+      noSiret: !props.siret,
+      typologies: props.typologies ?? [],
+    } as InformationsGeneralesFormData,
+    validators: {
+      onSubmit: InformationsGeneralesFormValidation,
+    },
+    onSubmit: async ({ value }) => {
+      if (!value.adresseBan) return
 
-  const initialAdresseBanOption = {
-    label: adresseBanLabel,
-    value: adresseBanData,
-  } satisfies AdressBanFormFieldOption
+      const { noSiret, siretSearch, ...data } = value
+      const siret = noSiret ? null : (siretSearch?.siret ?? null)
 
-  const form = useForm<InformationsGeneralesData>({
-    resolver: zodResolver(InformationsGeneralesValidation),
-    defaultValues,
-  })
-
-  const handleMutation = async (data: InformationsGeneralesData) => {
-    try {
-      await mutation.mutateAsync({ ...data, ...siretOrRna(data) })
-
-      createToast({
-        priority: 'success',
-        message: 'Le lieu d’activité a bien été modifié.',
-      })
-
-      router.refresh()
-    } catch (mutationError) {
-      if (
-        applyZodValidationMutationErrorsToForm(mutationError, form.setError)
-      ) {
-        return
+      try {
+        await mutation.mutateAsync({
+          ...data,
+          siret,
+          adresseBan: value.adresseBan,
+          lieuItinerant: noSiret ? data.lieuItinerant : null,
+          ...siretOrRna({ ...data, siret }),
+        })
+        createToast({
+          priority: 'success',
+          message: "Le lieu d'activité a bien été modifié.",
+        })
+      } catch {
+        createToast({
+          priority: 'error',
+          message:
+            "Une erreur est survenue lors de l'enregistrement, veuillez réessayer ultérieurement.",
+        })
       }
-      createToast({
-        priority: 'error',
-        message:
-          'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
-      })
-    }
-  }
+    },
+  })
 
   return (
-    <EditCard
+    <EditCardTanStack
       noBorder
       id="informations-generales"
       title={
@@ -117,15 +112,15 @@ const InformationsGeneralesEditCard = (props: {
       }
       titleAs="h2"
       form={form}
-      mutation={handleMutation}
+      isPending={mutation.isPending}
       edition={
-        <InformationsGeneralesFields
-          className="fr-mb-4w"
-          {...props}
-          form={form}
-          initialAdresseBanOptions={[initialAdresseBanOption]}
-          adresseBanDefaultValue={initialAdresseBanOption}
-        />
+        <form.AppForm>
+          <InformationsGeneralesEditionFields
+            form={form}
+            isPending={mutation.isPending}
+            hasActiveEmployees={props.hasActiveEmployees}
+          />
+        </form.AppForm>
       }
       view={<InformationsGeneralesView {...props} />}
     />

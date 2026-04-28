@@ -12,6 +12,7 @@ export const InformationsGeneralesView = ({
   complementAdresse,
   siret,
   rna,
+  nomUsage,
   typologies,
 }: {
   nom: string
@@ -22,15 +23,29 @@ export const InformationsGeneralesView = ({
   complementAdresse?: string | null
   siret?: string | null
   rna?: string | null
+  nomUsage?: string | null
   typologies?: Typologie[] | null
 }) => (
   <div className="fr-flex fr-direction-column fr-flex-gap-6v">
     <div>
-      <span className="fr-text-mention--grey">Nom de la structure</span>
+      <span className="fr-text-mention--grey">
+        {siret ? 'Raison sociale' : 'Nom de la structure'}
+      </span>
       <div className="fr-text--medium" data-testid="informations-generales-nom">
         {nom}
       </div>
     </div>
+    {nomUsage && nomUsage !== nom && (
+      <div>
+        <span className="fr-text-mention--grey">Nom d'usage</span>
+        <div
+          className="fr-text--medium"
+          data-testid="informations-generales-nom-usage"
+        >
+          {nomUsage}
+        </div>
+      </div>
+    )}
     <div>
       <span className="fr-text-mention--grey">Adresse</span>
       <div
