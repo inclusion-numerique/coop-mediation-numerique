@@ -8,7 +8,7 @@
   "engines": {
     "node": "^25.4"
   },
-  "packageManager": "pnpm@10.24.0",
+  "packageManager": "pnpm@10.33.2",
   "scripts": {
     "build": "turbo build",
     "cli": "dotenv -- ./apps/cli/node_modules/.bin/tsx apps/cli/src/index.ts",
