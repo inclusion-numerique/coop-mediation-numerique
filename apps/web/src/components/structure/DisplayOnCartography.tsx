@@ -3,9 +3,9 @@ import Link from 'next/link'
 import React from 'react'
 
 export const DisplayOnCartography = ({
-  canChangeVisibility = true,
+  isSharedWithCartography = false,
 }: {
-  canChangeVisibility?: boolean
+  isSharedWithCartography?: boolean
 }) => (
   <div className="fr-px-8v fr-py-10v fr-background-alt--blue-france fr-border-radius-top--8">
     <div className="fr-flex fr-flex-gap-6v fr-align-items-center">
@@ -15,17 +15,17 @@ export const DisplayOnCartography = ({
         alt=""
         width={56}
         height={56}
-      />{' '}
+      />
       <p className="fr-text--lg fr-mb-0 fr-text-title--blue-france fr-text--bold">
-        {canChangeVisibility ? (
-          <>
-            Vous souhaitez rendre visible ce lieu sur la cartographie nationale
-            des lieux d’inclusion numérique&nbsp;?
-          </>
-        ) : (
+        {isSharedWithCartography ? (
           <>
             Ce lieu apparait sur la cartographie nationale des lieux d’inclusion
             numérique
+          </>
+        ) : (
+          <>
+            Vous souhaitez rendre visible ce lieu sur la cartographie nationale
+            des lieux d’inclusion numérique&nbsp;?
           </>
         )}
       </p>

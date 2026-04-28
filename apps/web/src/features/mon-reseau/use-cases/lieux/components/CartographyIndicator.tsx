@@ -89,14 +89,25 @@ const CartographyIndicator = ({
     )
   }
 
-  if (status === 'updating') {
+  if (status === 'updating' && structureCartographieNationaleId) {
     return (
       <span className="fr-flex fr-align-items-center">
-        <span className={classNames('fr-tag fr-tag--sm', styles.tagUpdating)}>
+        <Link
+          className={classNames(
+            'fr-tag fr-tag--sm',
+            styles.tagUpdating,
+            className,
+          )}
+          href={getStructureCartographieLink({
+            structureCartographieNationaleId,
+          })}
+          target="_blank"
+          rel="noreferrer"
+        >
           <span className="ri-loader-2-line fr-mr-1v" aria-hidden />
           Infos en cours de mise à jour sur la cartographie
           <TooltipIcon tooltipId={tooltipId} />
-        </span>
+        </Link>
         <span
           className="fr-tooltip fr-placement"
           id={tooltipId}

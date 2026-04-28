@@ -103,8 +103,8 @@ export const LieuActivitePageContent = ({
         {canRemoveMediateurFromLieu && <RemoveMediateurFromLieuModal />}
         <div className="fr-border fr-border-radius--8 fr-mt-6v">
           <DisplayOnCartography
-            canChangeVisibility={
-              structure.structureCartographieNationaleId == null
+            isSharedWithCartography={
+              structure.structureCartographieNationaleId != null
             }
           />
           <hr className="fr-separator fr-separator-1px" />

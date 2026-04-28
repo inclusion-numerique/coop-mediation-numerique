@@ -6,7 +6,7 @@ import { getCartographieNationaleSourceLabel } from '@app/web/structure/cartogra
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
-import { formatDate, isBefore, subYears } from 'date-fns'
+import { formatDate, isAfter, isBefore, subDays, subYears } from 'date-fns'
 import Link from 'next/link'
 import CartographyIndicator, {
   getCartographyStatus,
@@ -41,6 +41,10 @@ const LieuCard = ({
   const cartographyStatus = getCartographyStatus({
     visiblePourCartographieNationale: lieu.visiblePourCartographieNationale,
     structureCartographieNationaleId: lieu.structureCartographieNationaleId,
+    hasRecentModification: isAfter(
+      new Date(lieu.modification),
+      subDays(new Date(), 1),
+    ),
   })
 
   const derniereModificationPar = lieu.derniereModificationPar

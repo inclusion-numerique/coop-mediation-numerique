@@ -421,7 +421,7 @@ export class WebAppStack extends TerraformStack {
         name: 'update-structures-cartographie-nationale',
         payload: undefined,
       },
-      schedule: '0 3 * * *',
+      schedule: '30 5 * * *',
       containerId: container.id,
     })
 
