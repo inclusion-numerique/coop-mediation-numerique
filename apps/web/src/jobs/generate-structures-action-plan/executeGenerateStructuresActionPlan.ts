@@ -1,9 +1,8 @@
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
-import { readFile, writeFile, readdir } from 'node:fs/promises'
+import { readFile, writeFile } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
-import { join, dirname } from 'node:path'
 import type { GenerateStructuresActionPlanJob } from './generateStructuresActionPlanJob'
 
 // ── Types ──
@@ -50,6 +49,7 @@ type StructureData = {
   longitude: number | null
   visiblePourCartographieNationale: boolean
   activitesCount: number
+  activitesRelCount: number
   emploisCount: number
   mediateursCount: number
 }
@@ -289,17 +289,6 @@ const readAuditCsvFile = async (
   return { header, rows }
 }
 
-const readCwdCsvFile = async (
-  filename: string,
-  separator = ',',
-): Promise<{ header: string[]; rows: string[][] } | null> => {
-  const filePath = join(process.cwd(), filename)
-  if (!existsSync(filePath)) return null
-  const content = await readFile(filePath, 'utf-8')
-  const [header, ...rows] = parseCsv(content, separator)
-  return { header, rows }
-}
-
 // ── Score de qualité d'une structure (pour choisir la cible de fusion) ──
 
 const structureQualityScore = (s: StructureData): number =>
@@ -382,6 +371,8 @@ export const executeGenerateStructuresActionPlan = async (
         select: {
           emplois: true,
           mediateursEnActivite: true,
+          activites: true,
+          activitesEmployes: true,
         },
       },
     },
@@ -402,6 +393,7 @@ export const executeGenerateStructuresActionPlan = async (
       longitude: s.longitude,
       visiblePourCartographieNationale: s.visiblePourCartographieNationale,
       activitesCount: s.activitesCount,
+      activitesRelCount: s._count.activites + s._count.activitesEmployes,
       emploisCount: s._count.emplois,
       mediateursCount: s._count.mediateursEnActivite,
     })
@@ -417,6 +409,7 @@ export const executeGenerateStructuresActionPlan = async (
   for (const s of structuresById.values()) {
     if (
       s.activitesCount === 0 &&
+      s.activitesRelCount === 0 &&
       s.emploisCount === 0 &&
       s.mediateursCount === 0
     ) {
@@ -602,15 +595,7 @@ export const executeGenerateStructuresActionPlan = async (
 
   const siretsAVider = new Set<string>()
 
-  // Le nom du fichier contient des caractères spéciaux (accents), on le cherche par pattern
-  const cwdFiles = await readdir(process.cwd())
-  const siretAViderFilename = cwdFiles.find(
-    (f) => f.includes('siret') && f.includes('vider') && f.endsWith('.csv'),
-  )
-
-  const siretAViderCsv = siretAViderFilename
-    ? await readCwdCsvFile(siretAViderFilename)
-    : null
+  const siretAViderCsv = await readAuditCsvFile('sirets-to-remove.csv', ',')
   if (siretAViderCsv) {
     const actionCol = siretAViderCsv.header.indexOf('Action')
     const idCol = siretAViderCsv.header.indexOf('id')

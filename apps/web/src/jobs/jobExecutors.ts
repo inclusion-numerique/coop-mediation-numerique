@@ -3,6 +3,11 @@ import { createStopwatch } from '@app/web/utils/stopwatch'
 import * as Sentry from '@sentry/nextjs'
 import { v4 } from 'uuid'
 import { fetchCartographieNationaleStructures } from '../data/cartographie-nationale/cartographieNationaleStructures'
+import { executeApplyCorrigerAdresse } from './apply-corriger-adresse/executeApplyCorrigerAdresse'
+import { executeApplyCorrigerCoordonnees } from './apply-corriger-coordonnees/executeApplyCorrigerCoordonnees'
+import { executeApplyFusionnerStructures } from './apply-fusionner-structures/executeApplyFusionnerStructures'
+import { executeApplySupprimerStructures } from './apply-supprimer-structures/executeApplySupprimerStructures'
+import { executeApplyViderSiret } from './apply-vider-siret/executeApplyViderSiret'
 import { executeAuditAdresseCoherence } from './audit-adresse-coherence/executeAuditAdresseCoherence'
 import { executeAuditSiretCoherence } from './audit-siret-coherence/executeAuditSiretCoherence'
 import { executeAuditStructuresOverview } from './audit-structures-overview/executeAuditStructuresOverview'
@@ -10,11 +15,11 @@ import { executeBackupDatabaseJob } from './backup-database/executeBackupDatabas
 import { executeDeduplicateStructures } from './deduplicate-structures/executeDeduplicateStructures'
 import { executeDetectDuplicateStructures } from './detect-duplicate-structures/executeDetectDuplicateStructures'
 import { executeExportDuplicateSirets } from './export-duplicate-sirets/executeExportDuplicateSirets'
-import { executeGenerateStructuresActionPlan } from './generate-structures-action-plan/executeGenerateStructuresActionPlan'
 import { executeFixStructures } from './fix-structures/executeFixStructures'
 import { executeFixTags } from './fix-tags/executeFixTags'
 import { executeFixUsers } from './fix-users/executeFixUsers'
 import { executeFixUsersRoles } from './fix-users-roles/executeFixUsersRoles'
+import { executeGenerateStructuresActionPlan } from './generate-structures-action-plan/executeGenerateStructuresActionPlan'
 import { executeImportContactsToBrevo } from './import-contacts-to-brevo/executeImportContactsToBrevo'
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
 import type { Job, JobName, JobPayload } from './jobs'
@@ -50,6 +55,11 @@ const executeUpdateStructuresCartographieNationale = async () => {
 export const jobExecutors: {
   [Name in JobName]: JobExecutor<Name>
 } = {
+  'apply-corriger-adresse': executeApplyCorrigerAdresse,
+  'apply-corriger-coordonnees': executeApplyCorrigerCoordonnees,
+  'apply-fusionner-structures': executeApplyFusionnerStructures,
+  'apply-supprimer-structures': executeApplySupprimerStructures,
+  'apply-vider-siret': executeApplyViderSiret,
   'audit-adresse-coherence': executeAuditAdresseCoherence,
   'audit-siret-coherence': executeAuditSiretCoherence,
   'audit-structures-overview': executeAuditStructuresOverview,

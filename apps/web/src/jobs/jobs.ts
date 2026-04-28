@@ -1,4 +1,9 @@
 import z from 'zod'
+import { ApplyCorrigerAdresseJobValidation } from './apply-corriger-adresse/applyCorrigerAdresseJob'
+import { ApplyCorrigerCoordonneesJobValidation } from './apply-corriger-coordonnees/applyCorrigerCoordonneesJob'
+import { ApplyFusionnerStructuresJobValidation } from './apply-fusionner-structures/applyFusionnerStructuresJob'
+import { ApplySupprimerStructuresJobValidation } from './apply-supprimer-structures/applySupprimerStructuresJob'
+import { ApplyViderSiretJobValidation } from './apply-vider-siret/applyViderSiretJob'
 import { AuditAdresseCoherenceJobValidation } from './audit-adresse-coherence/auditAdresseCoherenceJob'
 import { AuditSiretCoherenceJobValidation } from './audit-siret-coherence/auditSiretCoherenceJob'
 import { AuditStructuresOverviewJobValidation } from './audit-structures-overview/auditStructuresOverviewJob'
@@ -38,6 +43,11 @@ import { UpdateStructuresCartographieNationaleJobValidation } from './update-str
  */
 
 export const JobValidation = z.discriminatedUnion('name', [
+  ApplyCorrigerAdresseJobValidation,
+  ApplyCorrigerCoordonneesJobValidation,
+  ApplyFusionnerStructuresJobValidation,
+  ApplySupprimerStructuresJobValidation,
+  ApplyViderSiretJobValidation,
   AuditAdresseCoherenceJobValidation,
   AuditSiretCoherenceJobValidation,
   AuditStructuresOverviewJobValidation,
