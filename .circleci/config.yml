@@ -280,7 +280,7 @@ jobs:
           command: pnpm --silent -F @app/web prisma generate
       - run:
           name: 'Test all packages except @app/web with coverage'
-          command: pnpm -F '!@app/web' -F '!@app/e2e' -F '!@app/storybook' exec jest --coverage --passWithNoTests
+          command: pnpm -F '!coop-mediation-numerique' -F '!@app/web' -F '!@app/e2e' -F '!@app/storybook' exec jest --coverage --passWithNoTests
       - run:
           name: 'Collect coverage reports'
           command: |
