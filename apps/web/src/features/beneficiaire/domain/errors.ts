@@ -1,4 +1,4 @@
-import type { BeneficiaireId } from './beneficiaire'
+import type { BeneficiaireId } from './beneficiaire-id'
 
 export type BeneficiaireNotFound = {
   readonly _tag: 'BeneficiaireNotFound'

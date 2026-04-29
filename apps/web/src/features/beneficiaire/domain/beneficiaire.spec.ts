@@ -1,152 +1,125 @@
+import { AnneeNaissance } from './annee-naissance'
+import type { BeneficiaireAnonyme, BeneficiaireIdentifie } from './beneficiaire'
 import {
   getBeneficiaireAdresseString,
   getBeneficiaireDisplayName,
   isBeneficiaireAnonymous,
 } from './beneficiaire'
-import { trancheAgeFromAnneeNaissance } from './tranche-age'
+import { BeneficiaireId } from './beneficiaire-id'
+import { CommuneResidence } from './commune-residence'
+import { Genre } from './genre'
+import { MediateurId } from './mediateur-id'
+import { Nom } from './nom'
+import { Prenom } from './prenom'
+import { StatutSocial } from './statut-social'
+import { TrancheAge, trancheAgeFromAnneeNaissance } from './tranche-age'
+
+const base = {
+  id: BeneficiaireId('550e8400-e29b-41d4-a716-446655440000'),
+  mediateurId: MediateurId('550e8400-e29b-41d4-a716-446655440001'),
+  genre: Genre('NonCommunique'),
+  trancheAge: TrancheAge('NonCommunique'),
+  statutSocial: StatutSocial('NonCommunique'),
+  creation: new Date(),
+  modification: new Date(),
+  suppression: null,
+}
+
+const anonyme: BeneficiaireAnonyme = { ...base, anonyme: true }
+
+const identifie: BeneficiaireIdentifie = {
+  ...base,
+  anonyme: false,
+  prenom: Prenom('Jean'),
+  nom: Nom('Dupont'),
+  contactTelephone: { _tag: 'nonRenseigne' },
+  email: null,
+  anneeNaissance: null,
+  communeResidence: null,
+  notes: null,
+}
 
 describe('isBeneficiaireAnonymous', () => {
-  it('returns true when prenom and nom are null', () => {
-    expect(isBeneficiaireAnonymous({ prenom: null, nom: null })).toBe(true)
+  it('returns true for anonymous beneficiaire', () => {
+    expect(isBeneficiaireAnonymous(anonyme)).toBe(true)
   })
 
-  it('returns false when prenom is set', () => {
-    expect(isBeneficiaireAnonymous({ prenom: 'Jean', nom: null })).toBe(false)
-  })
-
-  it('returns false when nom is set', () => {
-    expect(isBeneficiaireAnonymous({ prenom: null, nom: 'Dupont' })).toBe(false)
+  it('returns false for identified beneficiaire', () => {
+    expect(isBeneficiaireAnonymous(identifie)).toBe(false)
   })
 })
 
 describe('getBeneficiaireDisplayName', () => {
-  it('returns "Bénéficiaire anonyme" when no name', () => {
-    expect(getBeneficiaireDisplayName({ prenom: null, nom: null })).toBe(
-      'Bénéficiaire anonyme',
-    )
+  it('returns "Bénéficiaire anonyme" for anonymous', () => {
+    expect(getBeneficiaireDisplayName(anonyme)).toBe('Bénéficiaire anonyme')
   })
 
-  it('returns full name', () => {
-    expect(
-      getBeneficiaireDisplayName({ prenom: 'Jean', nom: 'Dupont' }),
-    ).toBe('Jean Dupont')
-  })
-
-  it('returns prenom only', () => {
-    expect(getBeneficiaireDisplayName({ prenom: 'Jean', nom: null })).toBe(
-      'Jean',
-    )
-  })
-
-  it('returns nom only', () => {
-    expect(getBeneficiaireDisplayName({ prenom: null, nom: 'Dupont' })).toBe(
-      'Dupont',
-    )
+  it('returns full name for identified', () => {
+    expect(getBeneficiaireDisplayName(identifie)).toBe('Jean Dupont')
   })
 })
 
 describe('getBeneficiaireAdresseString', () => {
-  it('returns undefined when no data', () => {
-    expect(
-      getBeneficiaireAdresseString({
-        adresse: null,
-        commune: null,
-        communeCodePostal: null,
-      }),
-    ).toBeUndefined()
+  it('returns undefined when no commune residence', () => {
+    expect(getBeneficiaireAdresseString(identifie)).toBeUndefined()
   })
 
-  it('returns adresse only when no commune', () => {
+  it('returns full address with adresse and commune', () => {
     expect(
       getBeneficiaireAdresseString({
-        adresse: '12 rue de la Paix',
-        commune: null,
-        communeCodePostal: null,
-      }),
-    ).toBe('12 rue de la Paix')
-  })
-
-  it('returns full address', () => {
-    expect(
-      getBeneficiaireAdresseString({
-        adresse: '12 rue de la Paix',
-        commune: 'Paris',
-        communeCodePostal: '75001',
+        ...identifie,
+        communeResidence: CommuneResidence({
+          commune: 'Paris',
+          codePostal: '75001',
+          codeInsee: '75101',
+          adresse: '12 rue de la Paix',
+        }),
       }),
     ).toBe('12 rue de la Paix, 75001 Paris')
   })
 
-  it('returns commune without adresse', () => {
+  it('returns commune only when no adresse', () => {
     expect(
       getBeneficiaireAdresseString({
-        adresse: null,
-        commune: 'Lyon',
-        communeCodePostal: '69001',
+        ...identifie,
+        communeResidence: CommuneResidence({
+          commune: 'Lyon',
+          codePostal: '69001',
+          codeInsee: '69381',
+        }),
       }),
     ).toBe('69001 Lyon')
+  })
+})
+
+describe('AnneeNaissance', () => {
+  it('rejects year before 1900', () => {
+    expect(() => AnneeNaissance(1899)).toThrow()
+  })
+
+  it('rejects year in the future', () => {
+    expect(() => AnneeNaissance(new Date().getFullYear() + 1)).toThrow()
+  })
+
+  it('accepts valid year', () => {
+    expect(AnneeNaissance(1990)).toBe(1990)
   })
 })
 
 describe('trancheAgeFromAnneeNaissance', () => {
   const currentYear = new Date().getFullYear()
 
-  it('returns null for null input', () => {
-    expect(trancheAgeFromAnneeNaissance(null)).toBeNull()
-  })
-
-  it('returns null for undefined input', () => {
-    expect(trancheAgeFromAnneeNaissance(undefined)).toBeNull()
-  })
-
-  it('returns null for year before 1900', () => {
-    expect(trancheAgeFromAnneeNaissance(1899)).toBeNull()
-  })
-
-  it('returns null for year in the future', () => {
-    expect(trancheAgeFromAnneeNaissance(currentYear + 1)).toBeNull()
-  })
-
-  it('returns MoinsDeDouze for child under 12', () => {
-    expect(trancheAgeFromAnneeNaissance(currentYear - 5)).toBe('MoinsDeDouze')
-  })
-
-  it('returns DouzeDixHuit for teenager', () => {
-    expect(trancheAgeFromAnneeNaissance(currentYear - 15)).toBe('DouzeDixHuit')
-  })
-
-  it('returns DixHuitVingtQuatre for young adult', () => {
-    expect(trancheAgeFromAnneeNaissance(currentYear - 20)).toBe(
-      'DixHuitVingtQuatre',
-    )
-  })
-
-  it('returns VingtCinqTrenteNeuf for adult', () => {
-    expect(trancheAgeFromAnneeNaissance(currentYear - 30)).toBe(
-      'VingtCinqTrenteNeuf',
-    )
-  })
-
-  it('returns QuaranteCinquanteNeuf for middle-aged', () => {
-    expect(trancheAgeFromAnneeNaissance(currentYear - 50)).toBe(
-      'QuaranteCinquanteNeuf',
-    )
-  })
-
-  it('returns SoixanteSoixanteNeuf for senior', () => {
-    expect(trancheAgeFromAnneeNaissance(currentYear - 65)).toBe(
-      'SoixanteSoixanteNeuf',
-    )
-  })
-
-  it('returns SoixanteDixPlus for elderly', () => {
-    expect(trancheAgeFromAnneeNaissance(currentYear - 75)).toBe(
-      'SoixanteDixPlus',
-    )
-  })
-
-  it('handles string input', () => {
-    expect(trancheAgeFromAnneeNaissance(String(currentYear - 30))).toBe(
-      'VingtCinqTrenteNeuf',
-    )
+  it.each([
+    { age: 5, expected: 'MoinsDeDouze' },
+    { age: 15, expected: 'DouzeDixHuit' },
+    { age: 20, expected: 'DixHuitVingtQuatre' },
+    { age: 30, expected: 'VingtCinqTrenteNeuf' },
+    { age: 50, expected: 'QuaranteCinquanteNeuf' },
+    { age: 65, expected: 'SoixanteSoixanteNeuf' },
+    { age: 75, expected: 'SoixanteDixPlus' },
+  ])('returns $expected for age $age', ({ age, expected }) => {
+    expect(
+      trancheAgeFromAnneeNaissance(AnneeNaissance(currentYear - age)),
+    ).toBe(expected)
   })
 })
