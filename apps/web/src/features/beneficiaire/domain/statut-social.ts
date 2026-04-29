@@ -1,3 +1,6 @@
+import { defineModel, type Model } from '@app/web/libraries/model'
+import { z } from 'zod'
+
 export const statutsSociaux = [
   'Scolarise',
   'SansEmploi',
@@ -6,7 +9,11 @@ export const statutsSociaux = [
   'NonCommunique',
 ] as const
 
-export type StatutSocial = (typeof statutsSociaux)[number]
+export const StatutSocial = defineModel(
+  z.enum(statutsSociaux).brand('StatutSocial'),
+)
+
+export type StatutSocial = Model.TypeOf<typeof StatutSocial>
 
 export const statutSocialLabels: Record<StatutSocial, string> = {
   Retraite: 'Retraité',

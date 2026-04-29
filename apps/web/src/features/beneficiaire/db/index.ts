@@ -1,1 +1,4 @@
-export { beneficiaireToDomain, beneficiaireFromDomain } from './beneficiaire.transfer'
+export {
+  beneficiaireFromDomain,
+  beneficiaireToDomain,
+} from './beneficiaire.transfer'
