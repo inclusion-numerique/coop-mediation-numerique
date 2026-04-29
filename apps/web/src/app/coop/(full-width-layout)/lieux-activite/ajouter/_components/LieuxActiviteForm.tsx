@@ -202,8 +202,19 @@ const LieuxActiviteForm = ({
 
   const onSubmit = async (data: LieuxActiviteData) => {
     try {
-      await mutation.mutateAsync(data)
-      router.push(nextHref)
+      const result = await mutation.mutateAsync(data)
+
+      if (data.lieuxActivite.length === 1 && result.newActivites.length === 1) {
+        const codeInsee = data.lieuxActivite[0].codeInsee ?? ''
+        const departement = codeInsee.startsWith('97')
+          ? codeInsee.slice(0, 3)
+          : codeInsee.slice(0, 2)
+        router.push(
+          `/coop/mon-reseau/${departement}/lieux/${result.newActivites[0].structureId}`,
+        )
+      } else {
+        router.push(nextHref)
+      }
       router.refresh()
 
       createToast({
