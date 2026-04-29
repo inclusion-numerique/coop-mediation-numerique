@@ -4,7 +4,7 @@ import { Argument, Command } from '@commander-js/extra-typings'
 
 const { getCdkOutput } = await import('@app/cdk/getCdkOutput')
 
-const stacks = ['web', 'project']
+const stacks = ['web']
 
 export const createDotEnvFromCdk = new Command()
   .command('dotenv:from-cdk')

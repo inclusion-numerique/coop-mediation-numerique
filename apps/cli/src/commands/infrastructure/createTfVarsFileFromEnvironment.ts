@@ -4,10 +4,6 @@ import { output } from '@app/cli/output'
 import { getDirname } from '@app/config/dirname'
 import { Argument, Command } from '@commander-js/extra-typings'
 
-const { projectStackVariables, projectStackSensitiveVariables } = await import(
-  '@app/cdk/ProjectStack'
-)
-
 const { webAppStackVariables, webAppStackSensitiveVariables } = await import(
   '@app/cdk/WebAppStack'
 )
@@ -15,14 +11,12 @@ const { webAppStackVariables, webAppStackSensitiveVariables } = await import(
 // See https://developer.hashicorp.com/terraform/language/values/variables#variable-definitions-tfvars-files
 export const createTfVarsFileFromEnvironment = new Command()
   .command('terraform:vars-from-env')
-  .addArgument(new Argument('<stack>', 'CDK Stack').choices(['web', 'project']))
+  .addArgument(new Argument('<stack>', 'CDK Stack').choices(['web']))
   .action(async (stack) => {
     const variableNames =
       stack === 'web'
         ? [...webAppStackVariables, ...webAppStackSensitiveVariables]
-        : stack === 'project'
-          ? [...projectStackVariables, ...projectStackSensitiveVariables]
-          : null
+        : null
 
     if (!variableNames) {
       throw new Error('Invalid stack argument')

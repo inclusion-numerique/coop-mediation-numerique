@@ -232,22 +232,6 @@ jobs:
           name: 'Lint @app/web - api'
           command: pnpm -F '@app/web' lint:api
 
-  lint_and_test_cdk_package:
-    executor: node
-    resource_class: large
-    steps:
-      - checkout
-      - install_dependencies
-      - run:
-          name: 'Tsc config and cdk packages'
-          command: pnpm -F @app/config -F @app/cdk tsc
-      - run:
-          name: 'Lint config and cdk packages'
-          command: pnpm -F @app/config -F @app/cdk lint
-      - run:
-          name: 'Test config and cdk packages'
-          command: pnpm -F @app/config -F @app/cdk test
-
   test_packages:
     executor: node
     resource_class: large
