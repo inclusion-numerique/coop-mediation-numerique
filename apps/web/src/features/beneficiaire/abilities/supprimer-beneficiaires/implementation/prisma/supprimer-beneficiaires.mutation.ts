@@ -16,7 +16,7 @@ export const supprimerBeneficiaires: SupprimerBeneficiaires = async ({
     select: { id: true },
   })
 
-  const validIds = beneficiaires.map((b) => b.id)
+  const validIds = beneficiaires.map(({ id }) => id)
 
   if (validIds.length === 0) {
     return failure(AucunBeneficiaireValide)

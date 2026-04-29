@@ -1,7 +1,29 @@
 import { givenBeneficiaire } from '@app/fixtures/givenBeneficiaire'
 import { mediateurSansActivitesMediateurId } from '@app/fixtures/users/mediateurSansActivites'
+import { findDuplicatesForBeneficiaire as findDuplicateForBeneficiaire } from '@app/web/features/beneficiaire/abilities/detecter-doublons/implementation'
+import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
+import { Email } from '@app/web/features/beneficiaire/domain/email'
+import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
+import { Nom } from '@app/web/features/beneficiaire/domain/nom'
+import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
+import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import { prismaClient } from '@app/web/prismaClient'
-import { findDuplicateForBeneficiaire } from './findDuplicateForBeneficiaire'
+
+const withBrandedFields = (fixture: {
+  id: string
+  mediateurId: string
+  nom: string | null
+  prenom: string | null
+  telephone: string | null
+  email: string | null
+}) => ({
+  id: BeneficiaireId(fixture.id),
+  mediateurId: MediateurId(fixture.mediateurId),
+  nom: fixture.nom ? Nom(fixture.nom) : null,
+  prenom: fixture.prenom ? Prenom(fixture.prenom) : null,
+  telephone: fixture.telephone ? Telephone(fixture.telephone) : null,
+  email: fixture.email ? Email(fixture.email) : null,
+})
 
 const testMediateurId = mediateurSansActivitesMediateurId
 
@@ -110,7 +132,7 @@ describe('findDuplicateForBeneficiaire', () => {
   describe('exact matching (fuzzyMatching: false)', () => {
     it('should find duplicates with same normalized names (Jean-Pierre vs Jean Pierre)', async () => {
       const duplicates = await findDuplicateForBeneficiaire({
-        beneficiaire: beneficiaireJeanPierre,
+        beneficiaire: withBrandedFields(beneficiaireJeanPierre),
         withConflictingFields: 'include',
         fuzzyMatching: false,
       })
@@ -123,7 +145,7 @@ describe('findDuplicateForBeneficiaire', () => {
 
     it('should NOT find Mueller/Müller as duplicates (different after unaccent)', async () => {
       const duplicates = await findDuplicateForBeneficiaire({
-        beneficiaire: beneficiaireMueller,
+        beneficiaire: withBrandedFields(beneficiaireMueller),
         withConflictingFields: 'include',
         fuzzyMatching: false,
       })
@@ -135,7 +157,7 @@ describe('findDuplicateForBeneficiaire', () => {
 
     it('should find duplicates with same email and phone', async () => {
       const duplicates = await findDuplicateForBeneficiaire({
-        beneficiaire: beneficiaireSameEmail1,
+        beneficiaire: withBrandedFields(beneficiaireSameEmail1),
         withConflictingFields: 'include',
         fuzzyMatching: false,
       })
@@ -148,7 +170,7 @@ describe('findDuplicateForBeneficiaire', () => {
   describe('fuzzy matching (fuzzyMatching: true)', () => {
     it('should find Mueller/Müller as duplicates with fuzzy matching', async () => {
       const duplicates = await findDuplicateForBeneficiaire({
-        beneficiaire: beneficiaireMueller,
+        beneficiaire: withBrandedFields(beneficiaireMueller),
         withConflictingFields: 'include',
         fuzzyMatching: true,
       })
@@ -161,7 +183,7 @@ describe('findDuplicateForBeneficiaire', () => {
 
     it('should still find exact matches', async () => {
       const duplicates = await findDuplicateForBeneficiaire({
-        beneficiaire: beneficiaireJeanPierre,
+        beneficiaire: withBrandedFields(beneficiaireJeanPierre),
         withConflictingFields: 'include',
         fuzzyMatching: true,
       })
@@ -172,7 +194,7 @@ describe('findDuplicateForBeneficiaire', () => {
 
     it('should still find duplicates with same email and phone', async () => {
       const duplicates = await findDuplicateForBeneficiaire({
-        beneficiaire: beneficiaireSameEmail1,
+        beneficiaire: withBrandedFields(beneficiaireSameEmail1),
         withConflictingFields: 'include',
         fuzzyMatching: true,
       })
@@ -187,7 +209,7 @@ describe('findDuplicateForBeneficiaire', () => {
       // beneficiaireSameEmail1 and beneficiaireSameEmail2 have same email+phone
       // but different nom and prenom, so they conflict
       const duplicates = await findDuplicateForBeneficiaire({
-        beneficiaire: beneficiaireSameEmail1,
+        beneficiaire: withBrandedFields(beneficiaireSameEmail1),
         withConflictingFields: 'exclude',
         fuzzyMatching: false,
       })
@@ -198,7 +220,7 @@ describe('findDuplicateForBeneficiaire', () => {
 
     it('should include conflicts when withConflictingFields is include', async () => {
       const duplicates = await findDuplicateForBeneficiaire({
-        beneficiaire: beneficiaireSameEmail1,
+        beneficiaire: withBrandedFields(beneficiaireSameEmail1),
         withConflictingFields: 'include',
         fuzzyMatching: false,
       })

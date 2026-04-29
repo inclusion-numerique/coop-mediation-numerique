@@ -1,7 +1,8 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { getSessionUser } from '@app/web/auth/getSessionUser'
+import { detecterDoublons } from '@app/web/features/beneficiaire/abilities/detecter-doublons/implementation'
+import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
 import BeneficiairesDoublonsPage from '@app/web/features/beneficiaires/use-cases/doublons/components/BeneficiairesDoublonsPage'
-import { getBeneficiairesDoublonsPageData } from '@app/web/features/beneficiaires/use-cases/doublons/getBeneficiairesDoublonsPageData'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
@@ -15,7 +16,9 @@ const Page = async () => {
     notFound()
   }
 
-  const data = await getBeneficiairesDoublonsPageData({ user })
+  const data = user.mediateur
+    ? await detecterDoublons({ mediateurId: MediateurId(user.mediateur.id) })
+    : { count: 0, duplicates: [] }
 
   return <BeneficiairesDoublonsPage data={data} />
 }

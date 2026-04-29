@@ -1,6 +1,12 @@
 import ViewBeneficiaireLayout from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/ViewBeneficiaireLayout'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
-import { findDuplicateForBeneficiaire } from '@app/web/features/beneficiaires/db/findDuplicateForBeneficiaire'
+import { findDuplicatesForBeneficiaire } from '@app/web/features/beneficiaire/abilities/detecter-doublons/implementation'
+import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
+import { Email } from '@app/web/features/beneficiaire/domain/email'
+import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
+import { Nom } from '@app/web/features/beneficiaire/domain/nom'
+import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
+import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import { prismaClient } from '@app/web/prismaClient'
 import { notFound } from 'next/navigation'
 import { PropsWithChildren } from 'react'
@@ -41,8 +47,17 @@ const BeneficiaireLayout = async (
     return null
   }
 
-  const duplicates = await findDuplicateForBeneficiaire({
-    beneficiaire,
+  const duplicates = await findDuplicatesForBeneficiaire({
+    beneficiaire: {
+      id: BeneficiaireId(beneficiaire.id),
+      mediateurId: MediateurId(beneficiaire.mediateurId),
+      nom: beneficiaire.nom ? Nom(beneficiaire.nom) : null,
+      prenom: beneficiaire.prenom ? Prenom(beneficiaire.prenom) : null,
+      telephone: beneficiaire.telephone
+        ? Telephone(beneficiaire.telephone)
+        : null,
+      email: beneficiaire.email ? Email(beneficiaire.email) : null,
+    },
     withConflictingFields: 'include',
     fuzzyMatching: true,
   })

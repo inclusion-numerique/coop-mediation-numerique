@@ -1,8 +1,11 @@
 import { trancheAgeFromAnneeNaissance } from '@app/web/beneficiaire/trancheAgeFromAnneeNaissance'
-import {
-  DuplicateBeneficiaire,
-  findDuplicateForBeneficiaire,
-} from '@app/web/features/beneficiaires/db/findDuplicateForBeneficiaire'
+import { findDuplicatesForBeneficiaire } from '@app/web/features/beneficiaire/abilities/detecter-doublons/implementation'
+import { Email } from '@app/web/features/beneficiaire/domain/email'
+import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
+import { Nom } from '@app/web/features/beneficiaire/domain/nom'
+import type { DuplicateBeneficiaire } from '@app/web/features/beneficiaire/domain/ports'
+import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
+import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import { prismaClient } from '@app/web/prismaClient'
 import { fixTelephone } from '@app/web/utils/clean-operations'
 import type { Beneficiaire, Prisma, RdvUser } from '@prisma/client'
@@ -64,14 +67,14 @@ export const createOrMergeBeneficiaireFromRdvUser = async ({
   if (!beneficiaireToMerge) {
     // We find a suiting Beneficiaire to avoid duplicates
     // Using 'exclude' to ensure no conflicting fields when merging
-    const duplicates = await findDuplicateForBeneficiaire({
+    const duplicates = await findDuplicatesForBeneficiaire({
       beneficiaire: {
         id: null,
-        nom: rdvUser.lastName,
-        prenom: rdvUser.firstName,
-        telephone: rdvUser.phoneNumber,
-        email: rdvUser.email,
-        mediateurId,
+        nom: rdvUser.lastName ? Nom(rdvUser.lastName) : null,
+        prenom: rdvUser.firstName ? Prenom(rdvUser.firstName) : null,
+        telephone: rdvUser.phoneNumber ? Telephone(rdvUser.phoneNumber) : null,
+        email: rdvUser.email ? Email(rdvUser.email) : null,
+        mediateurId: MediateurId(mediateurId),
       },
       withConflictingFields: 'exclude',
     })
@@ -103,7 +106,13 @@ export const createOrMergeBeneficiaireFromRdvUser = async ({
     if (!!rdvUser.lastName && !beneficiaireToMerge.nom)
       beneficiaireUpdateData.nom = rdvUser.lastName
 
-    if (!!rdvUser.address && !beneficiaireToMerge.adresse)
+    if (
+      !!rdvUser.address &&
+      !(
+        'communeResidence' in beneficiaireToMerge &&
+        beneficiaireToMerge.communeResidence
+      )
+    )
       beneficiaireUpdateData.adresse = rdvUser.address
 
     if (!!rdvUser.birthDate && !beneficiaireToMerge.anneeNaissance) {
