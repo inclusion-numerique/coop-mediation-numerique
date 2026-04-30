@@ -7,7 +7,7 @@ import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import type {
   BeneficiaireDoublon,
   DetecterDoublons,
-} from '@app/web/features/beneficiaire/domain/ports'
+} from '@app/web/features/beneficiaire/abilities/detecter-doublons'
 import { trpc } from '@app/web/trpc'
 import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'

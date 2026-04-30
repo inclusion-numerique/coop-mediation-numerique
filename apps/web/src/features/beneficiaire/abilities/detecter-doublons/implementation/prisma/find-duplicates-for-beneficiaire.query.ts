@@ -3,14 +3,12 @@ import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiai
 import { CommuneResidence } from '@app/web/features/beneficiaire/domain/commune-residence'
 import { Email } from '@app/web/features/beneficiaire/domain/email'
 import { Nom } from '@app/web/features/beneficiaire/domain/nom'
-import type {
-  DuplicateBeneficiaire,
-  FindDuplicatesForBeneficiaire,
-} from '@app/web/features/beneficiaire/domain/ports'
 import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
 import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import { prismaClient } from '@app/web/prismaClient'
 import { Prisma } from '@prisma/client'
+import type { FindDuplicatesForBeneficiaire } from '../../domain/ports'
+import type { DuplicateBeneficiaire } from '../../domain/types'
 
 type RawDuplicate = {
   id: string

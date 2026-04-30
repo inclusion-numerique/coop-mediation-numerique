@@ -1,11 +1,11 @@
 import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
 import { Email } from '@app/web/features/beneficiaire/domain/email'
 import { Nom } from '@app/web/features/beneficiaire/domain/nom'
-import type { DetecterDoublons } from '@app/web/features/beneficiaire/domain/ports'
 import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
 import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import { prismaClient } from '@app/web/prismaClient'
 import { Prisma } from '@prisma/client'
+import type { DetecterDoublons } from '../../domain/ports'
 
 export const detecterDoublons: DetecterDoublons = async ({
   mediateurId,
