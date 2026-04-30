@@ -66,7 +66,7 @@ parameters:
   trigger_workflow:
     type: enum
     default: 'web_app_deployment'
-    enum: [ 'web_app_deployment', 'web_app_preview_deletion', 'project_stack_deployment', 'chromatic_deployment' ]
+    enum: [ 'web_app_deployment', 'web_app_preview_deletion', 'chromatic_deployment' ]
   # Name of the environment to scrap
   web_app_docker_registry:
     # This is redundant with .env.dist but needed as jobs are way simpler to configure with this parameter
@@ -136,26 +136,6 @@ workflows:
           requires:
             - prepare_workspace_dependencies
             - lint
-
-  project_infrastructure_deployment:
-    when:
-      equal: [ project_stack_deployment, << pipeline.parameters.trigger_workflow >> ]
-    jobs:
-      - prepare_workspace_dependencies
-      - lint_and_test_cdk_package:
-          requires:
-            - prepare_workspace_dependencies
-      - compute_project_infrastructure_diff:
-          requires:
-            - prepare_workspace_dependencies
-      - approve_infra_deployment:
-          type: approval
-          requires:
-            - lint_and_test_cdk_package
-            - compute_project_infrastructure_diff
-      - project_infrastructure_deployment:
-          requires:
-            - approve_infra_deployment
 
   web_app_preview_deletion:
     # This workflow exclusively runs on the main branch, with target env to destroy as parameter
@@ -251,22 +231,6 @@ jobs:
       - run:
           name: 'Lint @app/web - api'
           command: pnpm -F '@app/web' lint:api
-
-  lint_and_test_cdk_package:
-    executor: node
-    resource_class: large
-    steps:
-      - checkout
-      - install_dependencies
-      - run:
-          name: 'Tsc config and cdk packages'
-          command: pnpm -F @app/config -F @app/cdk tsc
-      - run:
-          name: 'Lint config and cdk packages'
-          command: pnpm -F @app/config -F @app/cdk lint
-      - run:
-          name: 'Test config and cdk packages'
-          command: pnpm -F @app/config -F @app/cdk test
 
   test_packages:
     executor: node
@@ -616,48 +580,6 @@ jobs:
           name: Set deployment status to failed
           command: pnpm --silent cli github:deployment:update $DEPLOYMENT_ID failure -d 'Deploy failed' -l https://app.circleci.com/pipelines/workflows/$CIRCLE_WORKFLOW_ID
           when: on_fail
-
-  compute_project_infrastructure_diff:
-    executor: node
-    resource_class: large
-    steps:
-      - checkout
-      - install_dependencies
-      - install_terraform
-      - create_dotenv_file
-      - run:
-          name: 'Prisma generate'
-          command: pnpm --silent -F @app/web prisma generate
-      - add_secrets_to_dotenv_file
-      - run:
-          name: "Create terraform variables file from environment variables"
-          command: |
-            pnpm --silent cli terraform:vars-from-env project
-      - run:
-          name: 'Compute diff'
-          command: |
-            pnpm --silent -F @app/cdk cdktf diff project --var-file .tfvars.json
-
-  project_infrastructure_deployment:
-    executor: node22
-    resource_class: large
-    steps:
-      - checkout
-      - install_dependencies
-      - install_terraform
-      - create_dotenv_file
-      - run:
-          name: 'Prisma generate'
-          command: pnpm --silent -F @app/web prisma generate
-      - add_secrets_to_dotenv_file
-      - run:
-          name: "Create terraform variables file from environment variables"
-          command: |
-            pnpm --silent cli terraform:vars-from-env project
-      - run:
-          name: 'Deploy project infrastructure stack'
-          command: |
-            pnpm --silent -F @app/cdk cdktf deploy project --var-file .tfvars.json --auto-approve --outputs-file=cdk.out.json --outputs-file-include-sensitive-outputs
 
   web_app_preview_deletion:
     executor: node22

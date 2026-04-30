@@ -19,32 +19,15 @@ export type WebCdkOutput = {
   webContainerStatus: 'ready' | 'error'
 }
 
-export type ProjectCdkOutput = {
-  databaseInstanceId: string
-  databaseEndpointIp: string
-  databaseEndpointPort: number
-  cockpitId: string
-  mainDomainZoneId: string
-  transactionalEmailDomainStatus: string
-  webContainersId: string
-  maildevWebUrl: string
-  maildevSmtp: string
-}
-
 export type CdkOutput = {
   web: WebCdkOutput
-  project: ProjectCdkOutput
 }
 
 // output_uploadsBucketName -> uploadsBucketName
 export const normalizeCdkOutputKey = (key: string): string =>
   key.startsWith(outputPrefix) ? key.slice(outputPrefix.length) : key
 
-export async function getCdkOutput(stack: 'web'): Promise<WebCdkOutput>
-export async function getCdkOutput(stack: 'project'): Promise<ProjectCdkOutput>
-export async function getCdkOutput(
-  stack: 'web' | 'project',
-): Promise<WebCdkOutput | ProjectCdkOutput> {
+export async function getCdkOutput(stack: 'web'): Promise<WebCdkOutput> {
   const outputFile = path.resolve(
     getDirname(import.meta.url),
     '../cdk.out.json',
