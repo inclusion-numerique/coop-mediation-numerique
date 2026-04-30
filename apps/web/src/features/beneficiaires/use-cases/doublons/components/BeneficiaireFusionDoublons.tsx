@@ -4,6 +4,10 @@ import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import type {
+  BeneficiaireDoublon,
+  DetecterDoublons,
+} from '@app/web/features/beneficiaire/abilities/detecter-doublons'
 import { trpc } from '@app/web/trpc'
 import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -11,10 +15,9 @@ import * as Sentry from '@sentry/nextjs'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
-import type {
-  BeneficiaireDoublon,
-  BeneficiairesDoublonsPageData,
-} from '../getBeneficiairesDoublonsPageData'
+
+type BeneficiairesDoublonsPageData = Awaited<ReturnType<DetecterDoublons>>
+
 import styles from './BeneficiaireFusionDoublons.module.css'
 
 export type FusionItemToKeep = 'a' | 'b'

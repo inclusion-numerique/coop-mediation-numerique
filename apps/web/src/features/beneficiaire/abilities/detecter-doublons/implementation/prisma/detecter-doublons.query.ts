@@ -1,47 +1,16 @@
+import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
+import { Email } from '@app/web/features/beneficiaire/domain/email'
+import { Nom } from '@app/web/features/beneficiaire/domain/nom'
+import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
+import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import { prismaClient } from '@app/web/prismaClient'
-import type { UserMediateur } from '@app/web/utils/user'
 import { Prisma } from '@prisma/client'
+import type { DetecterDoublons } from '../../domain/ports'
 
-export type BeneficiaireDoublon = {
-  id: string // unique id for the duplicate object
-  a: {
-    id: string
-    nom: string
-    prenom: string
-    telephone: string
-    email: string
-    creation: string
-  }
-  b: {
-    id: string
-    nom: string
-    prenom: string
-    telephone: string
-    email: string
-    creation: string
-  }
-}
-
-export type BeneficiairesDoublonsPageData = {
-  count: number
-  duplicates: BeneficiaireDoublon[]
-}
-
-export const getBeneficiairesDoublonsPageData = async ({
-  user,
+export const detecterDoublons: DetecterDoublons = async ({
+  mediateurId,
   fuzzyMatching = true,
-}: {
-  user: UserMediateur
-  fuzzyMatching?: boolean
-}): Promise<BeneficiairesDoublonsPageData> => {
-  if (!user.mediateur) {
-    return {
-      count: 0,
-      duplicates: [] as BeneficiaireDoublon[],
-    }
-  }
-
-  // Build matching clauses: fuzzy for nom/prenom if enabled, exact for telephone/email
+}) => {
   const nomMatchClause = fuzzyMatching
     ? Prisma.sql`(CASE WHEN a.nom_search IS NOT NULL AND b.nom_search IS NOT NULL AND similarity(a.nom_search, b.nom_search) > 0.4 THEN 1 ELSE 0 END)`
     : Prisma.sql`(CASE WHEN a.nom_search IS NOT NULL AND b.nom_search IS NOT NULL AND a.nom_search = b.nom_search THEN 1 ELSE 0 END)`
@@ -79,7 +48,7 @@ export const getBeneficiairesDoublonsPageData = async ({
       NULLIF(lower(regexp_replace(unaccent(telephone), '\\s', '', 'g')), '') as telephone_search,
       NULLIF(TRIM(lower(unaccent(email))), '') as email_search
     FROM "beneficiaires"
-    WHERE mediateur_id = ${user.mediateur.id}::uuid
+    WHERE mediateur_id = ${mediateurId}::uuid
       AND anonyme = false
       AND suppression IS NULL
     ORDER BY nom ASC, creation DESC
@@ -100,7 +69,6 @@ export const getBeneficiairesDoublonsPageData = async ({
   FROM "all" a
   JOIN "all" b ON a.id < b.id
   WHERE
-    /* At least 2 matching fields (null fields don't count as matches) */
     (
       ${nomMatchClause} +
       ${prenomMatchClause} +
@@ -110,43 +78,56 @@ export const getBeneficiairesDoublonsPageData = async ({
   ORDER BY a_nom ASC, b_nom ASC
   `
 
-  const normalizedDuplicates = rawDuplicates.map(
+  const toDoublonEntry = (entry: {
+    id: string
+    nom: string
+    prenom: string
+    telephone: string
+    email: string
+    creation: string
+  }) => ({
+    id: BeneficiaireId(entry.id),
+    nom: Nom(entry.nom),
+    prenom: Prenom(entry.prenom),
+    telephone: Telephone(entry.telephone),
+    email: Email(entry.email),
+    creation: new Date(entry.creation),
+  })
+
+  const duplicates = rawDuplicates.map(
     ({
       a_id,
       a_nom,
       a_prenom,
       a_telephone,
       a_email,
+      a_creation,
       b_id,
       b_nom,
       b_prenom,
       b_telephone,
       b_email,
-      a_creation,
       b_creation,
     }) => ({
       id: `${a_id}-${b_id}`,
-      a: {
+      a: toDoublonEntry({
         id: a_id,
         nom: a_nom,
         prenom: a_prenom,
         telephone: a_telephone,
         email: a_email,
         creation: a_creation,
-      },
-      b: {
+      }),
+      b: toDoublonEntry({
         id: b_id,
         nom: b_nom,
         prenom: b_prenom,
         telephone: b_telephone,
         email: b_email,
         creation: b_creation,
-      },
+      }),
     }),
   )
 
-  return {
-    count: normalizedDuplicates.length,
-    duplicates: normalizedDuplicates,
-  }
+  return { count: duplicates.length, duplicates }
 }

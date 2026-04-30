@@ -1,0 +1,18 @@
+export {
+  type Beneficiaire,
+  BeneficiaireId,
+  type Genre,
+  genreLabels,
+  genres,
+  getBeneficiaireAdresseString,
+  getBeneficiaireDisplayName,
+  isBeneficiaireAnonymous,
+  type StatutSocial,
+  sexLabels,
+  statutSocialLabels,
+  statutsSociaux,
+  type TrancheAge,
+  trancheAgeFromAnneeNaissance,
+  trancheAgeLabels,
+  tranchesAge,
+} from './domain'

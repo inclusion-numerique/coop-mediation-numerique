@@ -32,7 +32,8 @@
     "docker:stop": "docker compose -f ./docker-compose.dev.yml -p coop down",
     "docker:reset": "pnpm docker:stop && docker volume rm coop_pgdata && pnpm docker:start && pnpm db:init",
     "coverage:merge": "rm -rf coverage/.nyc_output && mkdir -p coverage/.nyc_output && find coverage-reports -name '*.json' -exec cp {} coverage/.nyc_output/ \\; && nyc report --temp-dir ./coverage/.nyc_output --reporter=lcov --reporter=html --reporter=text-summary --report-dir=./coverage",
-    "coverage:upload": "cat ./coverage/lcov.info | coveralls"
+    "coverage:upload": "cat ./coverage/lcov.info | coveralls",
+    "prepare": "husky"
   },
   "pnpm": {
     "overrides": {
@@ -64,6 +65,8 @@
     "coveralls": "^3.1.1",
     "dotenv": "^16.6.1",
     "dotenv-cli": "^8.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "nyc": "^17.1.0",
     "prettier": "^3.6.2",
     "ts-node": "^10.9.2",

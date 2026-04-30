@@ -26,6 +26,12 @@ importers:
       dotenv-cli:
         specifier: ^8.0.0
         version: 8.0.0
+      husky:
+        specifier: ^9.1.7
+        version: 9.1.7
+      lint-staged:
+        specifier: ^16.4.0
+        version: 16.4.0
       nyc:
         specifier: ^17.1.0
         version: 17.1.0
@@ -766,13 +772,13 @@ importers:
     dependencies:
       '@faire/mjml-react':
         specifier: ^3.5.0
-        version: 3.5.3(mjml@4.18.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        version: 3.5.3(mjml@4.18.0(encoding@0.1.13))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       html-minifier:
         specifier: ^4.0.0
         version: 4.0.0
       mjml:
         specifier: ^4.15.3
-        version: 4.18.0
+        version: 4.18.0(encoding@0.1.13)
       react:
         specifier: ^19.2.3
         version: 19.2.5
@@ -6996,6 +7002,10 @@ packages:
     resolution: {integrity: sha512-4nJ3yixlEthEJ9Rk4vPcdBRkZvQZlYyu8j4/Mqz5sgIkddmEnH2Yj2ZrnP9S3tQOvSNRUIgVNF/1yPpRAGNRig==}
     engines: {node: '>=14.16'}
 
+  ansi-escapes@7.3.0:
+    resolution: {integrity: sha512-BvU8nYgGQBxcmMuEeUEmNTvrMVjJNSH7RgW24vXexN4Ven6qCvy4TntnvlnwnMLTVlcRQQdbRY8NKnaIoeWDNg==}
+    engines: {node: '>=18'}
+
   ansi-green@0.1.1:
     resolution: {integrity: sha512-WJ70OI4jCaMy52vGa/ypFSKFb/TrYNPaQ2xco5nUwE0C5H8piume/uAZNNdXXiMQ6DbRmiE7l8oNBHu05ZKkrw==}
     engines: {node: '>=0.10.0'}
@@ -7716,6 +7726,10 @@ packages:
     resolution: {integrity: sha512-I/zHAwsKf9FqGoXM4WWRACob9+SNukZTd94DWF57E4toouRulbCxcUh6RKUEOQlYTHJnzkPMySvPNaaSLNfLZw==}
     engines: {node: '>=8'}
 
+  cli-cursor@5.0.0:
+    resolution: {integrity: sha512-aCj4O5wKyszjMmDT4tZj93kxyydN/K5zPWSCe6/0AV/AA1pqe5ZBIw0a2ZfPQV7lL5/yb5HsUreJ6UFAF1tEQw==}
+    engines: {node: '>=18'}
+
   cli-progress@3.12.0:
     resolution: {integrity: sha512-tRkV3HJ1ASwm19THiiLIXLO7Im7wlTuKnvkYaTkyoAPefqjNg7W7DHKUlGRxy9vxDvbyCYQkQozvptuMkGCg8A==}
     engines: {node: '>=4'}
@@ -7739,6 +7753,10 @@ packages:
   cli-truncate@2.1.0:
     resolution: {integrity: sha512-n8fOixwDD6b/ObinzTrp1ZKFzbgvKZvuz/TvejnLn1aQfC6r52XEx85FmuC+3HI+JM7coBRXUvNqEU2PHVrHpg==}
     engines: {node: '>=8'}
+
+  cli-truncate@5.2.0:
+    resolution: {integrity: sha512-xRwvIOMGrfOAnM1JYtqQImuaNtDEv9v6oIYAs4LIHwTiKee8uwvIi363igssOC0O5U04i4AlENs79LQLu9tEMw==}
+    engines: {node: '>=20'}
 
   cli-width@4.1.0:
     resolution: {integrity: sha512-ouuZd4/dm2Sw5Gmqy6bGyNNNe1qt9RpmxveLSO7KcgsTnU7RXfsw+/bukWGo1abgBiMAic068rclZsO4IWmmxQ==}
@@ -7840,6 +7858,10 @@ packages:
   commander@13.1.0:
     resolution: {integrity: sha512-/rFeCpNJQbhSZjGVwO9RFV3xPqbnERS8MmIQzCtD/zl6gpJuV/bMLuN92oG3F7d8oDEHHRrujSXNUr8fpjntKw==}
     engines: {node: '>=18'}
+
+  commander@14.0.3:
+    resolution: {integrity: sha512-H+y0Jo/T1RZ9qPP4Eh1pkcQcLRglraJaSLoyOtHxu6AapkjWVCy2Sit1QQ4x3Dng8qDlSsZEet7g5Pq06MvTgw==}
+    engines: {node: '>=20'}
 
   commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
@@ -8541,6 +8563,9 @@ packages:
     resolution: {integrity: sha512-DeWwawk6r5yR9jFgnDKYt4sLS0LmHJJi3ZOnb5/JdbYwj3nW+FxQnHIjhBKz8YLC7oRNPVM9NQ47I3CVx34eqQ==}
     engines: {node: '>=12'}
 
+  emoji-regex@10.6.0:
+    resolution: {integrity: sha512-toUI84YS5YmxW219erniWD0CIVOo46xGKColeNQRgOzDorgBi1v4D71/OFzgD9GO2UGKIv1C3Sp8DAn0+j5w7A==}
+
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
 
@@ -8601,6 +8626,10 @@ packages:
   env-var@7.5.0:
     resolution: {integrity: sha512-mKZOzLRN0ETzau2W2QXefbFjo5EF4yWq28OyKb9ICdeNhHJlOE/pHHnz4hdYJ9cNZXcJHo5xN4OT4pzuSHSNvA==}
     engines: {node: '>=10'}
+
+  environment@1.1.0:
+    resolution: {integrity: sha512-xUtoPkMggbz0MPyPiIWr1Kp4aeWJjDZ6SMvURhimjdZgsRuDplF5/s9hcgGhyXMhs+6vpnuoiZ2kFiu3FMnS8Q==}
+    engines: {node: '>=18'}
 
   errno@0.1.8:
     resolution: {integrity: sha512-dJ6oBr5SQ1VSd9qkk7ByRgb/1SH4JZjCHSW/mr63/QcXO9zLVxvJ6Oy13nio03rxpSnVDDjFor75SjVeZWPW/A==}
@@ -8769,6 +8798,9 @@ packages:
 
   eventemitter3@4.0.7:
     resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
+
+  eventemitter3@5.0.4:
+    resolution: {integrity: sha512-mlsTRyGaPBjPedk6Bvw+aqbsXDtoAyAzm5MO7JgU+yVRyMQ5O8bD4Kcci7BS85f93veegeCPkL8R4GLClnjLFw==}
 
   events-universal@1.0.1:
     resolution: {integrity: sha512-LUd5euvbMLpwOF8m6ivPCbhQeSiYVNb8Vs0fQ8QjXo0JTkEHpz8pxdQf0gStltaPpw0Cca8b39KxvK9cfKRiAw==}
@@ -9165,6 +9197,10 @@ packages:
     resolution: {integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==}
     engines: {node: 6.* || 8.* || >= 10.*}
 
+  get-east-asian-width@1.5.0:
+    resolution: {integrity: sha512-CQ+bEO+Tva/qlmw24dCejulK5pMzVnUOFOijVogd3KQs07HnRIgp8TGipvCCRT06xeYEbpbgwaCxglFyiuIcmA==}
+    engines: {node: '>=18'}
+
   get-intrinsic@1.3.0:
     resolution: {integrity: sha512-9fSjSaos/fRIVIp+xSJlE6lfwhES7LNtKaCBIamHsjr2na1BiABJPo0mOjjz8GJDURarmCPGqaiVg5mfjb98CQ==}
     engines: {node: '>= 0.4'}
@@ -9485,6 +9521,11 @@ packages:
   humanize-ms@1.2.1:
     resolution: {integrity: sha512-Fl70vYtsAFb/C06PTS9dZBo7ihau+Tu/DNCk/OyHhea07S+aeMWpFFkUaXRa8fI+ScZbEI8dfSxwY7gxZ9SAVQ==}
 
+  husky@9.1.7:
+    resolution: {integrity: sha512-5gs5ytaNjBrh5Ow3zrvdUUY+0VxIuWVL4i9irt6friV+BqdCfmV11CQTWMiBYWHbXhco+J1kHfTOUkePhCDvMA==}
+    engines: {node: '>=18'}
+    hasBin: true
+
   hyperlinker@1.0.0:
     resolution: {integrity: sha512-Ty8UblRWFEcfSuIaajM34LdPXIhbs1ajEX/BBPv24J+enSVaEVY63xQ6lTO9VRYS5LAoghIG0IDJ+p+IPzKUQQ==}
     engines: {node: '>=4'}
@@ -9744,6 +9785,10 @@ packages:
   is-fullwidth-code-point@3.0.0:
     resolution: {integrity: sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg==}
     engines: {node: '>=8'}
+
+  is-fullwidth-code-point@5.1.0:
+    resolution: {integrity: sha512-5XHYaSyiqADb4RnZ1Bdad6cPp8Toise4TzEjcOYDHZkTCbKgiUl7WTUCpNWHuxmDt91wnsZBc9xinNzopv3JMQ==}
+    engines: {node: '>=18'}
 
   is-generator-fn@2.1.0:
     resolution: {integrity: sha512-cTIB4yPYL/Grw0EaSzASzg6bBy9gqCofvWN8okThAYIxKJZC+udlRAmGbM0XLeniEJSs8uEgHPGuHSe1XsOLSQ==}
@@ -10431,6 +10476,11 @@ packages:
   linkifyjs@4.3.2:
     resolution: {integrity: sha512-NT1CJtq3hHIreOianA8aSXn6Cw0JzYOuDQbOrSPe7gqFnCpKP++MQe3ODgO3oh2GJFORkAAdqredOa60z63GbA==}
 
+  lint-staged@16.4.0:
+    resolution: {integrity: sha512-lBWt8hujh/Cjysw5GYVmZpFHXDCgZzhrOm8vbcUdobADZNOK/bRshr2kM3DfgrrtR1DQhfupW9gnIXOfiFi+bw==}
+    engines: {node: '>=20.17'}
+    hasBin: true
+
   listenercount@1.0.1:
     resolution: {integrity: sha512-3mk/Zag0+IJxeDrxSgaDPy4zZ3w05PRZeJNnlWhzFz5OkX49J4krc+A8X2d2M69vGMBEX0uyl8M+W+8gH+kBqQ==}
 
@@ -10442,6 +10492,10 @@ packages:
     peerDependenciesMeta:
       enquirer:
         optional: true
+
+  listr2@9.0.5:
+    resolution: {integrity: sha512-ME4Fb83LgEgwNw96RKNvKV4VTLuXfoKudAmm2lP8Kk87KaMK0/Xrx/aAkMWmT8mDb+3MlFDspfbCs7adjRxA2g==}
+    engines: {node: '>=20.0.0'}
 
   load-json-file@5.3.0:
     resolution: {integrity: sha512-cJGP40Jc/VXUsp8/OrnyKyTZ1y6v/dphm3bioS+RrKXjK2BB6wHUd6JptZEFDGgGahMT+InnZO5i1Ei9mpC8Bw==}
@@ -10589,6 +10643,10 @@ packages:
   log-update@4.0.0:
     resolution: {integrity: sha512-9fkkDevMefjg0mmzWFBW8YkFP91OrizzkW3diF7CpG+S2EYdy4+TVfGwz1zeF8x7hCx1ovSPTOE9Ngib74qqUg==}
     engines: {node: '>=10'}
+
+  log-update@6.1.0:
+    resolution: {integrity: sha512-9ie8ItPR6tjY5uYJh8K/Zrv/RMZ5VOlOWvtZdEHYSTFKZfIBPQa9tOAEeAWhd+AnIneLJ22w5fjOYtoutpWq5w==}
+    engines: {node: '>=18'}
 
   log4js@6.9.1:
     resolution: {integrity: sha512-1somDdy9sChrr9/f4UlzhdaGfDR2c/SaD2a4T7qEkG4jTS57/B3qmnjLYePwQ8cqWnUHZI0iAKxMBpCZICiZ2g==}
@@ -10757,6 +10815,10 @@ packages:
   mimic-fn@3.1.0:
     resolution: {integrity: sha512-Ysbi9uYW9hFyfrThdDEQuykN4Ey6BuwPD2kpI5ES/nFTDn/98yxYNLZJcgUAKPT/mcrLLKaGzJR9YVxJrIdASQ==}
     engines: {node: '>=8'}
+
+  mimic-function@5.0.1:
+    resolution: {integrity: sha512-VP79XUPxV2CigYP3jWwAUFSku2aKqBH7uTAapFWCBqutsbmDo96KY5o8uh6U+/YSIn5OxJnXp73beVkpqMIGhA==}
+    engines: {node: '>=18'}
 
   mimic-response@3.1.0:
     resolution: {integrity: sha512-z0yWI+4FDrrweS8Zmt4Ej5HdJmky15+L2e6Wgn3+iK5fWzb6T3fhNFq2+MeTRb064c6Wr4N/wv0DzQTjNzHNGQ==}
@@ -11241,6 +11303,10 @@ packages:
   onetime@5.1.2:
     resolution: {integrity: sha512-kbpaSSGJTWdAY5KPVeMOKXSrPtr8C8C7wodJbcsd51jRnmD+GZu8Y0VoU6Dm5Z4vWr0Ig/1NKuWRKf7j5aaYSg==}
     engines: {node: '>=6'}
+
+  onetime@7.0.0:
+    resolution: {integrity: sha512-VXJjc87FScF88uafS3JllDgvAm+c/Slfz06lorj2uAY34rlUu0Nt+v8wreiImcrgAjjIHp1rXpTDlLOGw29WwQ==}
+    engines: {node: '>=18'}
 
   oo-ascii-tree@1.128.0:
     resolution: {integrity: sha512-jTBk97HP8v3MDRtzYnj/iq9sg1WPRZQfpw3jGzfX9NalIiJmnP2yVJA0e/E8xpcPckf2GLK74cHdj4LvyYYdXw==}
@@ -12486,6 +12552,10 @@ packages:
     resolution: {integrity: sha512-l+sSefzHpj5qimhFSE5a8nufZYAM3sBSVMAPtYkmC+4EH2anSGaEMXSD0izRQbu9nfyQ9y5JrVmp7E8oZrUjvA==}
     engines: {node: '>=8'}
 
+  restore-cursor@5.1.0:
+    resolution: {integrity: sha512-oMA2dcrw6u0YfxJQXm342bFKX/E4sG9rbTzO9ptUcR/e8A33cHuvStiYOwH7fszkZlZ1z/ta9AAoPk2F4qIOHA==}
+    engines: {node: '>=18'}
+
   retry@0.13.1:
     resolution: {integrity: sha512-XQBQ3I8W1Cge0Seh+6gjj03LbmRFWuoszgK9ooCpwYIrhhoO80pfq4cUkU5DkknwfOfFteRwlZ56PYOGYyFWdg==}
     engines: {node: '>= 4'}
@@ -12769,6 +12839,14 @@ packages:
     resolution: {integrity: sha512-qMCMfhY040cVHT43K9BFygqYbUPFZKHOg7K73mtTWJRb8pyP3fzf4Ixd5SzdEJQ6MRUg/WBnOLxghZtKKurENQ==}
     engines: {node: '>=10'}
 
+  slice-ansi@7.1.2:
+    resolution: {integrity: sha512-iOBWFgUX7caIZiuutICxVgX1SdxwAVFFKwt1EvMYYec/NWO5meOJ6K5uQxhrYBdQJne4KxiqZc+KptFOWFSI9w==}
+    engines: {node: '>=18'}
+
+  slice-ansi@8.0.0:
+    resolution: {integrity: sha512-stxByr12oeeOyY2BlviTNQlYV5xOj47GirPr4yA1hE9JCtxfQN0+tVbkxwCtYDQWhEKWFHsEK48ORg5jrouCAg==}
+    engines: {node: '>=20'}
+
   slick@1.12.2:
     resolution: {integrity: sha512-4qdtOGcBjral6YIBCWJ0ljFSKNLz9KkhbWtuGvUyRowl1kxfuE1x/Z/aJcaiilpb3do9bl5K7/1h9XC5wWpY/A==}
 
@@ -12916,6 +12994,10 @@ packages:
   streamx@2.25.0:
     resolution: {integrity: sha512-0nQuG6jf1w+wddNEEXCF4nTg3LtufWINB5eFEN+5TNZW7KWJp6x87+JFL43vaAUPyCfH1wID+mNVyW6OHtFamg==}
 
+  string-argv@0.3.2:
+    resolution: {integrity: sha512-aqD2Q0144Z+/RqG52NeHEkZauTAUWJO8c6yTftGJKO3Tja5tUgIfmIl6kExvhtxSDP7fXB6DvzkfMpCd/F3G+Q==}
+    engines: {node: '>=0.6.19'}
+
   string-length@4.0.2:
     resolution: {integrity: sha512-+l6rNN5fYHNhZZy41RXsYptCjA2Igmq4EG7kZAYFQI1E1VTXarr6ZPXBg6eq7Y6eK4FEhY6AJlyuFIb/v/S0VQ==}
     engines: {node: '>=10'}
@@ -12931,6 +13013,14 @@ packages:
   string-width@5.1.2:
     resolution: {integrity: sha512-HnLOCR3vjcY8beoNLtcjZ5/nxn2afmME6lhrDrebokqMap+XbeW8n9TXpPDOqdGK5qcI3oT0GKTW6wC7EMiVqA==}
     engines: {node: '>=12'}
+
+  string-width@7.2.0:
+    resolution: {integrity: sha512-tsaTIkKW9b4N+AEj+SVA+WhJzV7/zMhcSu78mLKWSk7cXMOSHsBKFWUs0fWwq8QyK3MgJBQRX6Gbi4kYbdvGkQ==}
+    engines: {node: '>=18'}
+
+  string-width@8.2.0:
+    resolution: {integrity: sha512-6hJPQ8N0V0P3SNmP6h2J99RLuzrWz2gvT7VnK5tKvrNqJoyS9W4/Fb8mo31UiPvy00z7DQXkP2hnKBVav76thw==}
+    engines: {node: '>=20'}
 
   string.prototype.trim@1.2.10:
     resolution: {integrity: sha512-Rs66F0P/1kedk5lyYyH9uBzuiI/kNRmwJAR9quK6VOtIpZ2G+hMZd+HQbbv25MgCA6gEffoMZYxlTod4WcdrKA==}
@@ -13867,6 +13957,10 @@ packages:
   wrap-ansi@8.1.0:
     resolution: {integrity: sha512-si7QWI6zUMq56bESFvagtmzMdGOtoxfR+Sez11Mobfc7tm+VkUckk9bW2UeffTGVUbOksxmSw0AA2gs8g71NCQ==}
     engines: {node: '>=12'}
+
+  wrap-ansi@9.0.2:
+    resolution: {integrity: sha512-42AtmgqjV+X1VpdOfyTGOYRi0/zsoLqtXQckTmqTeybT+BDIbM/Guxo7x3pE2vtpr1ok6xRqM9OpBe+Jyoqyww==}
+    engines: {node: '>=18'}
 
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
@@ -16297,10 +16391,10 @@ snapshots:
       '@eslint/core': 0.17.0
       levn: 0.4.1
 
-  '@faire/mjml-react@3.5.3(mjml@4.18.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
+  '@faire/mjml-react@3.5.3(mjml@4.18.0(encoding@0.1.13))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
     dependencies:
       lodash.kebabcase: 4.1.1
-      mjml: 4.18.0
+      mjml: 4.18.0(encoding@0.1.13)
       react: 19.2.5
       react-dom: 19.2.5(react@19.2.5)
 
@@ -21333,6 +21427,10 @@ snapshots:
 
   ansi-escapes@6.2.1: {}
 
+  ansi-escapes@7.3.0:
+    dependencies:
+      environment: 1.1.0
+
   ansi-green@0.1.1:
     dependencies:
       ansi-wrap: 0.1.0
@@ -22155,6 +22253,10 @@ snapshots:
     dependencies:
       restore-cursor: 3.1.0
 
+  cli-cursor@5.0.0:
+    dependencies:
+      restore-cursor: 5.1.0
+
   cli-progress@3.12.0:
     dependencies:
       string-width: 4.2.3
@@ -22179,6 +22281,11 @@ snapshots:
     dependencies:
       slice-ansi: 3.0.0
       string-width: 4.2.3
+
+  cli-truncate@5.2.0:
+    dependencies:
+      slice-ansi: 8.0.0
+      string-width: 8.2.0
 
   cli-width@4.1.0: {}
 
@@ -22274,6 +22381,8 @@ snapshots:
   commander@12.1.0: {}
 
   commander@13.1.0: {}
+
+  commander@14.0.3: {}
 
   commander@2.20.3: {}
 
@@ -23073,6 +23182,8 @@ snapshots:
 
   emittery@0.13.1: {}
 
+  emoji-regex@10.6.0: {}
+
   emoji-regex@8.0.0: {}
 
   emoji-regex@9.2.2: {}
@@ -23120,6 +23231,8 @@ snapshots:
   env-paths@2.2.1: {}
 
   env-var@7.5.0: {}
+
+  environment@1.1.0: {}
 
   errno@0.1.8:
     dependencies:
@@ -23416,6 +23529,8 @@ snapshots:
   eventemitter2@6.4.7: {}
 
   eventemitter3@4.0.7: {}
+
+  eventemitter3@5.0.4: {}
 
   events-universal@1.0.1:
     dependencies:
@@ -23868,6 +23983,8 @@ snapshots:
 
   get-caller-file@2.0.5: {}
 
+  get-east-asian-width@1.5.0: {}
+
   get-intrinsic@1.3.0:
     dependencies:
       call-bind-apply-helpers: 1.0.2
@@ -24281,6 +24398,8 @@ snapshots:
     dependencies:
       ms: 2.1.3
 
+  husky@9.1.7: {}
+
   hyperlinker@1.0.0: {}
 
   i18next@25.10.10(typescript@5.9.3):
@@ -24537,6 +24656,10 @@ snapshots:
       call-bound: 1.0.4
 
   is-fullwidth-code-point@3.0.0: {}
+
+  is-fullwidth-code-point@5.1.0:
+    dependencies:
+      get-east-asian-width: 1.5.0
 
   is-generator-fn@2.1.0: {}
 
@@ -25512,16 +25635,6 @@ snapshots:
       readable-stream: 2.3.8
       setimmediate: 1.0.5
 
-  juice@10.0.1:
-    dependencies:
-      cheerio: 1.0.0-rc.12
-      commander: 6.2.1
-      mensch: 0.3.4
-      slick: 1.12.2
-      web-resource-inliner: 6.0.1
-    transitivePeerDependencies:
-      - encoding
-
   juice@10.0.1(encoding@0.1.13):
     dependencies:
       cheerio: 1.0.0-rc.12
@@ -25626,6 +25739,15 @@ snapshots:
 
   linkifyjs@4.3.2: {}
 
+  lint-staged@16.4.0:
+    dependencies:
+      commander: 14.0.3
+      listr2: 9.0.5
+      picomatch: 4.0.4
+      string-argv: 0.3.2
+      tinyexec: 1.1.1
+      yaml: 2.8.3
+
   listenercount@1.0.1: {}
 
   listr2@3.14.0(enquirer@2.4.1):
@@ -25640,6 +25762,15 @@ snapshots:
       wrap-ansi: 7.0.0
     optionalDependencies:
       enquirer: 2.4.1
+
+  listr2@9.0.5:
+    dependencies:
+      cli-truncate: 5.2.0
+      colorette: 2.0.20
+      eventemitter3: 5.0.4
+      log-update: 6.1.0
+      rfdc: 1.4.1
+      wrap-ansi: 9.0.2
 
   load-json-file@5.3.0:
     dependencies:
@@ -25762,6 +25893,14 @@ snapshots:
       cli-cursor: 3.1.0
       slice-ansi: 4.0.0
       wrap-ansi: 6.2.0
+
+  log-update@6.1.0:
+    dependencies:
+      ansi-escapes: 7.3.0
+      cli-cursor: 5.0.0
+      slice-ansi: 7.1.2
+      strip-ansi: 7.2.0
+      wrap-ansi: 9.0.2
 
   log4js@6.9.1:
     dependencies:
@@ -25947,6 +26086,8 @@ snapshots:
 
   mimic-fn@3.1.0: {}
 
+  mimic-function@5.0.1: {}
+
   mimic-response@3.1.0: {}
 
   min-indent@1.0.1: {}
@@ -25989,27 +26130,11 @@ snapshots:
 
   minipass@7.1.3: {}
 
-  mjml-accordion@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
-    transitivePeerDependencies:
-      - encoding
-
   mjml-accordion@4.18.0(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
       mjml-core: 4.18.0(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
-
-  mjml-body@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
     transitivePeerDependencies:
       - encoding
 
@@ -26021,14 +26146,6 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  mjml-button@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
-    transitivePeerDependencies:
-      - encoding
-
   mjml-button@4.18.0(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.29.2
@@ -26037,36 +26154,11 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  mjml-carousel@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
-    transitivePeerDependencies:
-      - encoding
-
   mjml-carousel@4.18.0(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
       mjml-core: 4.18.0(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
-
-  mjml-cli@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      chokidar: 3.6.0
-      glob: 10.5.0
-      html-minifier: 4.0.0
-      js-beautify: 1.15.4
-      lodash: 4.18.1
-      minimatch: 9.0.9
-      mjml-core: 4.18.0
-      mjml-migrate: 4.18.0
-      mjml-parser-xml: 4.18.0
-      mjml-validator: 4.18.0
-      yargs: 17.7.2
     transitivePeerDependencies:
       - encoding
 
@@ -26087,34 +26179,11 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  mjml-column@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
-    transitivePeerDependencies:
-      - encoding
-
   mjml-column@4.18.0(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
       mjml-core: 4.18.0(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
-
-  mjml-core@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      cheerio: 1.0.0-rc.12
-      detect-node: 2.1.0
-      html-minifier: 4.0.0
-      js-beautify: 1.15.4
-      juice: 10.0.1
-      lodash: 4.18.1
-      mjml-migrate: 4.18.0
-      mjml-parser-xml: 4.18.0
-      mjml-validator: 4.18.0
     transitivePeerDependencies:
       - encoding
 
@@ -26133,27 +26202,11 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  mjml-divider@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
-    transitivePeerDependencies:
-      - encoding
-
   mjml-divider@4.18.0(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
       mjml-core: 4.18.0(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
-
-  mjml-group@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
     transitivePeerDependencies:
       - encoding
 
@@ -26165,27 +26218,11 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  mjml-head-attributes@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
-    transitivePeerDependencies:
-      - encoding
-
   mjml-head-attributes@4.18.0(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
       mjml-core: 4.18.0(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
-
-  mjml-head-breakpoint@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
     transitivePeerDependencies:
       - encoding
 
@@ -26197,27 +26234,11 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  mjml-head-font@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
-    transitivePeerDependencies:
-      - encoding
-
   mjml-head-font@4.18.0(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
       mjml-core: 4.18.0(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
-
-  mjml-head-html-attributes@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
     transitivePeerDependencies:
       - encoding
 
@@ -26229,27 +26250,11 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  mjml-head-preview@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
-    transitivePeerDependencies:
-      - encoding
-
   mjml-head-preview@4.18.0(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
       mjml-core: 4.18.0(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
-
-  mjml-head-style@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
     transitivePeerDependencies:
       - encoding
 
@@ -26261,27 +26266,11 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  mjml-head-title@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
-    transitivePeerDependencies:
-      - encoding
-
   mjml-head-title@4.18.0(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
       mjml-core: 4.18.0(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
-
-  mjml-head@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
     transitivePeerDependencies:
       - encoding
 
@@ -26293,27 +26282,11 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  mjml-hero@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
-    transitivePeerDependencies:
-      - encoding
-
   mjml-hero@4.18.0(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
       mjml-core: 4.18.0(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
-
-  mjml-image@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
     transitivePeerDependencies:
       - encoding
 
@@ -26325,17 +26298,6 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  mjml-migrate@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      js-beautify: 1.15.4
-      lodash: 4.18.1
-      mjml-core: 4.18.0
-      mjml-parser-xml: 4.18.0
-      yargs: 17.7.2
-    transitivePeerDependencies:
-      - encoding
-
   mjml-migrate@4.18.0(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.29.2
@@ -26344,14 +26306,6 @@ snapshots:
       mjml-core: 4.18.0(encoding@0.1.13)
       mjml-parser-xml: 4.18.0
       yargs: 17.7.2
-    transitivePeerDependencies:
-      - encoding
-
-  mjml-navbar@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
     transitivePeerDependencies:
       - encoding
 
@@ -26369,37 +26323,6 @@ snapshots:
       detect-node: 2.1.0
       htmlparser2: 9.1.0
       lodash: 4.18.1
-
-  mjml-preset-core@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      mjml-accordion: 4.18.0
-      mjml-body: 4.18.0
-      mjml-button: 4.18.0
-      mjml-carousel: 4.18.0
-      mjml-column: 4.18.0
-      mjml-divider: 4.18.0
-      mjml-group: 4.18.0
-      mjml-head: 4.18.0
-      mjml-head-attributes: 4.18.0
-      mjml-head-breakpoint: 4.18.0
-      mjml-head-font: 4.18.0
-      mjml-head-html-attributes: 4.18.0
-      mjml-head-preview: 4.18.0
-      mjml-head-style: 4.18.0
-      mjml-head-title: 4.18.0
-      mjml-hero: 4.18.0
-      mjml-image: 4.18.0
-      mjml-navbar: 4.18.0
-      mjml-raw: 4.18.0
-      mjml-section: 4.18.0
-      mjml-social: 4.18.0
-      mjml-spacer: 4.18.0
-      mjml-table: 4.18.0
-      mjml-text: 4.18.0
-      mjml-wrapper: 4.18.0
-    transitivePeerDependencies:
-      - encoding
 
   mjml-preset-core@4.18.0(encoding@0.1.13):
     dependencies:
@@ -26432,14 +26355,6 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  mjml-raw@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
-    transitivePeerDependencies:
-      - encoding
-
   mjml-raw@4.18.0(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.29.2
@@ -26458,27 +26373,11 @@ snapshots:
       react-dom: 19.2.5(react@19.2.5)
       react-reconciler: 0.26.2(react@19.2.5)
 
-  mjml-section@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
-    transitivePeerDependencies:
-      - encoding
-
   mjml-section@4.18.0(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
       mjml-core: 4.18.0(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
-
-  mjml-social@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
     transitivePeerDependencies:
       - encoding
 
@@ -26490,14 +26389,6 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  mjml-spacer@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
-    transitivePeerDependencies:
-      - encoding
-
   mjml-spacer@4.18.0(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.29.2
@@ -26506,27 +26397,11 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  mjml-table@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
-    transitivePeerDependencies:
-      - encoding
-
   mjml-table@4.18.0(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
       mjml-core: 4.18.0(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
-
-  mjml-text@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
     transitivePeerDependencies:
       - encoding
 
@@ -26542,32 +26417,12 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
 
-  mjml-wrapper@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      lodash: 4.18.1
-      mjml-core: 4.18.0
-      mjml-section: 4.18.0
-    transitivePeerDependencies:
-      - encoding
-
   mjml-wrapper@4.18.0(encoding@0.1.13):
     dependencies:
       '@babel/runtime': 7.29.2
       lodash: 4.18.1
       mjml-core: 4.18.0(encoding@0.1.13)
       mjml-section: 4.18.0(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
-
-  mjml@4.18.0:
-    dependencies:
-      '@babel/runtime': 7.29.2
-      mjml-cli: 4.18.0
-      mjml-core: 4.18.0
-      mjml-migrate: 4.18.0
-      mjml-preset-core: 4.18.0
-      mjml-validator: 4.18.0
     transitivePeerDependencies:
       - encoding
 
@@ -26826,10 +26681,6 @@ snapshots:
 
   node-fetch-native@1.6.7: {}
 
-  node-fetch@2.7.0:
-    dependencies:
-      whatwg-url: 5.0.0
-
   node-fetch@2.7.0(encoding@0.1.13):
     dependencies:
       whatwg-url: 5.0.0
@@ -27064,6 +26915,10 @@ snapshots:
   onetime@5.1.2:
     dependencies:
       mimic-fn: 2.1.0
+
+  onetime@7.0.0:
+    dependencies:
+      mimic-function: 5.0.1
 
   oo-ascii-tree@1.128.0: {}
 
@@ -28546,6 +28401,11 @@ snapshots:
       onetime: 5.1.2
       signal-exit: 3.0.7
 
+  restore-cursor@5.1.0:
+    dependencies:
+      onetime: 7.0.0
+      signal-exit: 4.1.0
+
   retry@0.13.1: {}
 
   reusify@1.1.0: {}
@@ -28908,6 +28768,16 @@ snapshots:
       astral-regex: 2.0.0
       is-fullwidth-code-point: 3.0.0
 
+  slice-ansi@7.1.2:
+    dependencies:
+      ansi-styles: 6.2.3
+      is-fullwidth-code-point: 5.1.0
+
+  slice-ansi@8.0.0:
+    dependencies:
+      ansi-styles: 6.2.3
+      is-fullwidth-code-point: 5.1.0
+
   slick@1.12.2: {}
 
   slug@10.0.0: {}
@@ -29078,6 +28948,8 @@ snapshots:
       - bare-abort-controller
       - react-native-b4a
 
+  string-argv@0.3.2: {}
+
   string-length@4.0.2:
     dependencies:
       char-regex: 1.0.2
@@ -29098,6 +28970,17 @@ snapshots:
     dependencies:
       eastasianwidth: 0.2.0
       emoji-regex: 9.2.2
+      strip-ansi: 7.2.0
+
+  string-width@7.2.0:
+    dependencies:
+      emoji-regex: 10.6.0
+      get-east-asian-width: 1.5.0
+      strip-ansi: 7.2.0
+
+  string-width@8.2.0:
+    dependencies:
+      get-east-asian-width: 1.5.0
       strip-ansi: 7.2.0
 
   string.prototype.trim@1.2.10:
@@ -29934,17 +29817,6 @@ snapshots:
     dependencies:
       defaults: 1.0.4
 
-  web-resource-inliner@6.0.1:
-    dependencies:
-      ansi-colors: 4.1.3
-      escape-goat: 3.0.0
-      htmlparser2: 5.0.1
-      mime: 2.6.0
-      node-fetch: 2.7.0
-      valid-data-url: 3.0.1
-    transitivePeerDependencies:
-      - encoding
-
   web-resource-inliner@6.0.1(encoding@0.1.13):
     dependencies:
       ansi-colors: 4.1.3
@@ -30200,6 +30072,12 @@ snapshots:
     dependencies:
       ansi-styles: 6.2.3
       string-width: 5.1.2
+      strip-ansi: 7.2.0
+
+  wrap-ansi@9.0.2:
+    dependencies:
+      ansi-styles: 6.2.3
+      string-width: 7.2.0
       strip-ansi: 7.2.0
 
   wrappy@1.0.2: {}
