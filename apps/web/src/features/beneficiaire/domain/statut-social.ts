@@ -9,9 +9,7 @@ export const statutsSociaux = [
   'NonCommunique',
 ] as const
 
-export const StatutSocial = defineModel(
-  z.enum(statutsSociaux).brand('StatutSocial'),
-)
+export const StatutSocial = defineModel(z.enum(statutsSociaux))
 
 export type StatutSocial = Model.TypeOf<typeof StatutSocial>
 

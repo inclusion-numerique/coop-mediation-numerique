@@ -3,7 +3,7 @@ import { z } from 'zod'
 
 export const genres = ['Masculin', 'Feminin', 'NonCommunique'] as const
 
-export const Genre = defineModel(z.enum(genres).brand('Genre'))
+export const Genre = defineModel(z.enum(genres))
 
 export type Genre = Model.TypeOf<typeof Genre>
 
