@@ -13,7 +13,7 @@ export const tranchesAge = [
   'NonCommunique',
 ] as const
 
-export const TrancheAge = defineModel(z.enum(tranchesAge).brand('TrancheAge'))
+export const TrancheAge = defineModel(z.enum(tranchesAge))
 
 export type TrancheAge = Model.TypeOf<typeof TrancheAge>
 
