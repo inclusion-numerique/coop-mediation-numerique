@@ -1,5 +1,8 @@
 import { givenBeneficiaire } from '@app/fixtures/givenBeneficiaire'
-import { mediateurSansActivitesMediateurId } from '@app/fixtures/users/mediateurSansActivites'
+import {
+  mediateurSansActivitesMediateurId,
+  mediateurSansActivitesUserId,
+} from '@app/fixtures/users/mediateurSansActivites'
 import { findDuplicatesForBeneficiaire as findDuplicateForBeneficiaire } from '@app/web/features/beneficiaire/abilities/detecter-doublons/implementation'
 import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
 import { Email } from '@app/web/features/beneficiaire/domain/email'
@@ -82,6 +85,24 @@ const beneficiaireSameEmail2 = givenBeneficiaire({
 
 describe('findDuplicateForBeneficiaire', () => {
   beforeAll(async () => {
+    // Ensure mediateur exists (make test self-contained)
+    await prismaClient.user.upsert({
+      where: { id: mediateurSansActivitesUserId },
+      update: {},
+      create: {
+        id: mediateurSansActivitesUserId,
+        role: 'User',
+        isFixture: true,
+        email: `test-doublons-${Date.now()}@test.com`,
+        mediateur: {
+          connectOrCreate: {
+            where: { id: testMediateurId },
+            create: { id: testMediateurId },
+          },
+        },
+      },
+    })
+
     // Clean up test beneficiaires
     await prismaClient.beneficiaire.deleteMany({
       where: {
