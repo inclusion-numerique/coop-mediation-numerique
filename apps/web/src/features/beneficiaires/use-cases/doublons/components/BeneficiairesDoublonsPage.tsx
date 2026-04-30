@@ -2,7 +2,7 @@ import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import type { DetecterDoublons } from '@app/web/features/beneficiaire/domain/ports'
+import type { DetecterDoublons } from '@app/web/features/beneficiaire/abilities/detecter-doublons'
 
 type BeneficiairesDoublonsPageData = Awaited<ReturnType<DetecterDoublons>>
 
