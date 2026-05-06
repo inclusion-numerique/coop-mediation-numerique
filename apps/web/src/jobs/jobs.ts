@@ -1,4 +1,5 @@
 import z from 'zod'
+import { ApplyReviewToActionPlanJobValidation } from './apply-review-to-action-plan/applyReviewToActionPlanJob'
 import { ApplyCorrigerAdresseJobValidation } from './apply-corriger-adresse/applyCorrigerAdresseJob'
 import { ApplyCorrigerCoordonneesJobValidation } from './apply-corriger-coordonnees/applyCorrigerCoordonneesJob'
 import { ApplyFusionnerStructuresJobValidation } from './apply-fusionner-structures/applyFusionnerStructuresJob'
@@ -43,6 +44,7 @@ import { UpdateStructuresCartographieNationaleJobValidation } from './update-str
  */
 
 export const JobValidation = z.discriminatedUnion('name', [
+  ApplyReviewToActionPlanJobValidation,
   ApplyCorrigerAdresseJobValidation,
   ApplyCorrigerCoordonneesJobValidation,
   ApplyFusionnerStructuresJobValidation,

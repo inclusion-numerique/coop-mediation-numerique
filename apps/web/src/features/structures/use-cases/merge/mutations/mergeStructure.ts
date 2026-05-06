@@ -166,17 +166,25 @@ const deleteStructure =
 export const mergeStructure = async (
   sourceStructureId: string,
   targetStructureId: string,
-  options?: { timeout?: number },
+  options?: { timeout?: number; propagateVisibility?: boolean },
 ): Promise<void> => {
   await prismaClient.$transaction(async (prisma) => {
     const [sourceStructure, targetStructure] = await Promise.all([
       prisma.structure.findUnique({
         where: { id: sourceStructureId },
-        select: { id: true, structureCartographieNationaleId: true },
+        select: {
+          id: true,
+          structureCartographieNationaleId: true,
+          visiblePourCartographieNationale: true,
+        },
       }),
       prisma.structure.findUnique({
         where: { id: targetStructureId },
-        select: { id: true, structureCartographieNationaleId: true },
+        select: {
+          id: true,
+          structureCartographieNationaleId: true,
+          visiblePourCartographieNationale: true,
+        },
       }),
     ])
 
@@ -196,6 +204,18 @@ export const mergeStructure = async (
       targetStructure,
     )
     await mergeArrayFields(prisma)(sourceStructureId, targetStructureId)
+
+    if (
+      options?.propagateVisibility &&
+      sourceStructure.visiblePourCartographieNationale &&
+      !targetStructure.visiblePourCartographieNationale
+    ) {
+      await prisma.structure.update({
+        where: { id: targetStructureId },
+        data: { visiblePourCartographieNationale: true },
+      })
+    }
+
     await deleteStructure(prisma)(sourceStructureId)
   }, { timeout: options?.timeout })
 }

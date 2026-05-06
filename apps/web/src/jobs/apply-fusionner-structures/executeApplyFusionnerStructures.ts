@@ -170,7 +170,10 @@ export const executeApplyFusionnerStructures = async (
       merged++
     } else {
       try {
-        await mergeStructure(row.id, row.cibleFusion, { timeout: 30_000 })
+        await mergeStructure(row.id, row.cibleFusion, {
+          timeout: 30_000,
+          propagateVisibility: action === 'fusionner_review',
+        })
         results.push({ row, ...cibleInfo, statut: 'fusionnee' })
         merged++
       } catch (error) {

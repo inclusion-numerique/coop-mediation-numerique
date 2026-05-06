@@ -3,6 +3,7 @@ import { createStopwatch } from '@app/web/utils/stopwatch'
 import * as Sentry from '@sentry/nextjs'
 import { v4 } from 'uuid'
 import { fetchCartographieNationaleStructures } from '../data/cartographie-nationale/cartographieNationaleStructures'
+import { executeApplyReviewToActionPlan } from './apply-review-to-action-plan/executeApplyReviewToActionPlan'
 import { executeApplyCorrigerAdresse } from './apply-corriger-adresse/executeApplyCorrigerAdresse'
 import { executeApplyCorrigerCoordonnees } from './apply-corriger-coordonnees/executeApplyCorrigerCoordonnees'
 import { executeApplyFusionnerStructures } from './apply-fusionner-structures/executeApplyFusionnerStructures'
@@ -55,6 +56,7 @@ const executeUpdateStructuresCartographieNationale = async () => {
 export const jobExecutors: {
   [Name in JobName]: JobExecutor<Name>
 } = {
+  'apply-review-to-action-plan': executeApplyReviewToActionPlan,
   'apply-corriger-adresse': executeApplyCorrigerAdresse,
   'apply-corriger-coordonnees': executeApplyCorrigerCoordonnees,
   'apply-fusionner-structures': executeApplyFusionnerStructures,

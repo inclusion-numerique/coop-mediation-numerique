@@ -8,6 +8,7 @@ export const ApplyFusionnerStructuresJobValidation = z.object({
         'fusionner_auto',
         'fusionner_probable',
         'fusionner_a_verifier',
+        'fusionner_review',
       ]),
       dryRun: z.boolean().optional().default(true),
     }),
