@@ -21,6 +21,7 @@ export const updateUserData = async ({
       phone: fixTelephone(phone),
       name: `${firstName} ${lastName}`,
       siret: siret ?? undefined,
+      updated: new Date(),
     },
     where: {
       id: userId,
