@@ -121,8 +121,8 @@ importers:
         specifier: ^7.8.0
         version: 7.24.8
       uuid:
-        specifier: ^11.1.0
-        version: 11.1.0
+        specifier: ^14.0.0
+        version: 14.0.0
       zod:
         specifier: ^3.24.4
         version: 3.25.76
@@ -494,8 +494,8 @@ importers:
         specifier: ^3.1.1
         version: 3.1.1(react@19.2.5)
       uuid:
-        specifier: ^11.1.0
-        version: 11.1.0
+        specifier: ^14.0.0
+        version: 14.0.0
       xlsx:
         specifier: ^0.18.5
         version: 0.18.5
@@ -725,8 +725,8 @@ importers:
         specifier: ^7.56.2
         version: 7.72.1(react@19.2.5)
       uuid:
-        specifier: ^11.1.0
-        version: 11.1.0
+        specifier: ^14.0.0
+        version: 14.0.0
     devDependencies:
       '@cypress/webpack-preprocessor':
         specifier: ^6.0.4
@@ -829,8 +829,8 @@ importers:
         specifier: ^5.8.3
         version: 5.9.3
       uuid:
-        specifier: ^11.1.0
-        version: 11.1.0
+        specifier: ^14.0.0
+        version: 14.0.0
     devDependencies:
       '@types/jest':
         specifier: ^29.5.14
@@ -13642,8 +13642,8 @@ packages:
     deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
-  uuid@11.1.0:
-    resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
+  uuid@14.0.0:
+    resolution: {integrity: sha512-Qo+uWgilfSmAhXCMav1uYFynlQO7fMFiMVZsQqZRMIXp0O7rR7qjkj+cPvBHLgBqi960QCoo/PH2/6ZtVqKvrg==}
     hasBin: true
 
   uuid@3.4.0:
@@ -29832,7 +29832,7 @@ snapshots:
 
   uuid@10.0.0: {}
 
-  uuid@11.1.0: {}
+  uuid@14.0.0: {}
 
   uuid@3.4.0: {}
 
