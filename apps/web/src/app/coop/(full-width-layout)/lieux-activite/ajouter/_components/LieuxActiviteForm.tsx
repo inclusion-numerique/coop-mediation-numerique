@@ -13,6 +13,7 @@ import {
 import { LieuActiviteSearchResult } from '@app/web/structure/searchLieuActiviteCombined'
 import { trpc } from '@app/web/trpc'
 import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
+import { getDepartementCodeFromCodeInsee } from '@app/web/utils/getDepartementFromCodeInsee'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -202,8 +203,16 @@ const LieuxActiviteForm = ({
 
   const onSubmit = async (data: LieuxActiviteData) => {
     try {
-      await mutation.mutateAsync(data)
-      router.push(nextHref)
+      const result = await mutation.mutateAsync(data)
+
+      router.push(
+        data.lieuxActivite.length === 1 && result.newActivites.length === 1
+          ? `/coop/mon-reseau/${getDepartementCodeFromCodeInsee(
+              data.lieuxActivite[0].codeInsee ?? '',
+            )}/lieux/${result.newActivites[0].structureId}`
+          : nextHref,
+      )
+
       router.refresh()
 
       createToast({
