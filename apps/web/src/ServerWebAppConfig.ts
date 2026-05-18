@@ -1,7 +1,6 @@
 // TODO Enable server-only when next-auth (v5) is in app router
 // import 'server-only'
 
-import { ScalewayChatModel } from '@app/web/assistant/ScalewayChatModel'
 import { PublicWebAppConfig } from './PublicWebAppConfig'
 
 /**
@@ -87,34 +86,6 @@ export const ServerWebAppConfig = {
   },
   Security: {
     hmacSecretKey: process.env.HMAC_SECRET_KEY ?? '',
-  },
-  Assistant: {
-    // Which service to use for the assistant LLM
-    service: 'scaleway' satisfies 'scaleway' | 'albert' | 'openai',
-    Mistral: {
-      apiKey: process.env.MISTRAL_API_KEY ?? '',
-    },
-    OpenAi: {
-      apiKey: process.env.OPENAI_API_KEY ?? '',
-    },
-    Scaleway: {
-      serviceUrl: process.env.SCALEWAY_GENERATIVE_API_SERVICE_URL ?? '',
-      apiKey: process.env.SCW_SECRET_KEY ?? '',
-      // chatModel: ScalewayChatModel.MistralNemoInstruct2407,
-      // chatModel:ScalewayChatModel.Llama3_1_70bInstruct,
-      chatModel: ScalewayChatModel.Llama3_3_70bInstruct,
-      embeddingsModel: 'bge-multilingual-gemma2',
-    },
-    Albert: {
-      serviceUrl: process.env.ALBERT_SERVICE_URL ?? '',
-      apiKey: process.env.ALBERT_API_KEY ?? '',
-      // chatModel: 'mistralai/Mistral-Small-3.1-24B-Instruct-2503',
-      chatModel: 'meta-llama/Meta-Llama-3.1-70B-Instruct',
-      embeddingsModel: 'BAAI/bge-m3',
-    },
-    Brave: {
-      apiKey: process.env.BRAVE_API_KEY ?? '',
-    },
   },
   Sentry: {
     authToken: process.env.SENTRY_AUTH_TOKEN ?? '',

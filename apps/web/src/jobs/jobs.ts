@@ -1,12 +1,24 @@
 import z from 'zod'
+import { ApplyCorrigerAdresseJobValidation } from './apply-corriger-adresse/applyCorrigerAdresseJob'
+import { ApplyCorrigerCoordonneesJobValidation } from './apply-corriger-coordonnees/applyCorrigerCoordonneesJob'
+import { ApplyFusionnerStructuresJobValidation } from './apply-fusionner-structures/applyFusionnerStructuresJob'
+import { ApplyReviewToActionPlanJobValidation } from './apply-review-to-action-plan/applyReviewToActionPlanJob'
+import { ApplySupprimerStructuresJobValidation } from './apply-supprimer-structures/applySupprimerStructuresJob'
+import { ApplyViderSiretJobValidation } from './apply-vider-siret/applyViderSiretJob'
+import { AuditAdresseCoherenceJobValidation } from './audit-adresse-coherence/auditAdresseCoherenceJob'
+import { AuditSiretCoherenceJobValidation } from './audit-siret-coherence/auditSiretCoherenceJob'
+import { AuditStructuresOverviewJobValidation } from './audit-structures-overview/auditStructuresOverviewJob'
 import { BackupDatabaseJobValidation } from './backup-database/backupDatabaseJob'
+import { DeduplicateStructuresJobValidation } from './deduplicate-structures/deduplicateStructuresJob'
+import { DetectDuplicateStructuresJobValidation } from './detect-duplicate-structures/detectDuplicateStructuresJob'
+import { ExportDuplicateSiretsJobValidation } from './export-duplicate-sirets/exportDuplicateSiretsJob'
 import { FixStructuresJobValidation } from './fix-structures/fixStructuresJob'
 import { FixTagsJobValidation } from './fix-tags/fixTagsJob'
 import { FixUsersJobValidation } from './fix-users/fixUsersJob'
 import { FixUsersRolesJobValidation } from './fix-users-roles/fixUsersRolesJob'
+import { GenerateStructuresActionPlanJobValidation } from './generate-structures-action-plan/generateStructuresActionPlanJob'
 import { ImportContactsToBrevoValidation } from './import-contacts-to-brevo/ImportContactsToBrevoJob'
 import { InactiveUsersRemindersJobValidation } from './inactive-users-reminders/inactiveUsersJob'
-import { IngestLesBasesInRagValidation } from './ingest-les-bases-in-rag/ingestLesBasesInRagJob'
 import { NormalizeStructuresEmployeusesJobValidation } from './normalize-structures-employeuses/normalizeStructuresEmployeusesJob'
 import { RemoveOrphanBrevoContactsJobValidation } from './remove-orphan-brevo-contacts/removeOrphanBrevoContactsJob'
 import { SetServciesToSharedLieuxValidation } from './set-servcies-to-shared-lieux/setServciesToSharedLieuxJob'
@@ -32,10 +44,18 @@ import { UpdateStructuresCartographieNationaleJobValidation } from './update-str
  */
 
 export const JobValidation = z.discriminatedUnion('name', [
+  ApplyReviewToActionPlanJobValidation,
+  ApplyCorrigerAdresseJobValidation,
+  ApplyCorrigerCoordonneesJobValidation,
+  ApplyFusionnerStructuresJobValidation,
+  ApplySupprimerStructuresJobValidation,
+  ApplyViderSiretJobValidation,
+  AuditAdresseCoherenceJobValidation,
+  AuditSiretCoherenceJobValidation,
+  AuditStructuresOverviewJobValidation,
   BackupDatabaseJobValidation,
   UpdateStructuresCartographieNationaleJobValidation,
   ImportContactsToBrevoValidation,
-  IngestLesBasesInRagValidation,
   NormalizeStructuresEmployeusesJobValidation,
   SetServciesToSharedLieuxValidation,
   UpdateLieuxActivitesAdistanceValidation,
@@ -47,6 +67,10 @@ export const JobValidation = z.discriminatedUnion('name', [
   InactiveUsersRemindersJobValidation,
   FixUsersRolesJobValidation,
   RemoveOrphanBrevoContactsJobValidation,
+  DeduplicateStructuresJobValidation,
+  DetectDuplicateStructuresJobValidation,
+  ExportDuplicateSiretsJobValidation,
+  GenerateStructuresActionPlanJobValidation,
 ])
 
 export type Job = z.infer<typeof JobValidation>

@@ -152,6 +152,7 @@ const mergeArrayFields =
         ),
         courriels: unionArrays(target.courriels, source.courriels),
         activitesCount: { increment: source.activitesCount },
+        modification: new Date(),
       },
     })
   }
@@ -166,35 +167,62 @@ const deleteStructure =
 export const mergeStructure = async (
   sourceStructureId: string,
   targetStructureId: string,
+  options?: { timeout?: number; propagateVisibility?: boolean },
 ): Promise<void> => {
-  await prismaClient.$transaction(async (prisma) => {
-    const [sourceStructure, targetStructure] = await Promise.all([
-      prisma.structure.findUnique({
-        where: { id: sourceStructureId },
-        select: { id: true, structureCartographieNationaleId: true },
-      }),
-      prisma.structure.findUnique({
-        where: { id: targetStructureId },
-        select: { id: true, structureCartographieNationaleId: true },
-      }),
-    ])
+  await prismaClient.$transaction(
+    async (prisma) => {
+      const [sourceStructure, targetStructure] = await Promise.all([
+        prisma.structure.findUnique({
+          where: { id: sourceStructureId },
+          select: {
+            id: true,
+            structureCartographieNationaleId: true,
+            visiblePourCartographieNationale: true,
+          },
+        }),
+        prisma.structure.findUnique({
+          where: { id: targetStructureId },
+          select: {
+            id: true,
+            structureCartographieNationaleId: true,
+            visiblePourCartographieNationale: true,
+          },
+        }),
+      ])
 
-    if (!sourceStructure || !targetStructure) {
-      throw new Error('Une ou les deux structures sont introuvables')
-    }
+      if (!sourceStructure || !targetStructure) {
+        throw new Error('Une ou les deux structures sont introuvables')
+      }
 
-    await mergeEmployes(prisma)(sourceStructureId, targetStructureId)
-    await mergeMediateursEnActivite(prisma)(
-      sourceStructureId,
-      targetStructureId,
-    )
-    await mergeActivitesEmployeur(prisma)(sourceStructureId, targetStructureId)
-    await mergeActivitesLieu(prisma)(sourceStructureId, targetStructureId)
-    await mergeCartographieNationaleIds(prisma)(
-      sourceStructure,
-      targetStructure,
-    )
-    await mergeArrayFields(prisma)(sourceStructureId, targetStructureId)
-    await deleteStructure(prisma)(sourceStructureId)
-  })
+      await mergeEmployes(prisma)(sourceStructureId, targetStructureId)
+      await mergeMediateursEnActivite(prisma)(
+        sourceStructureId,
+        targetStructureId,
+      )
+      await mergeActivitesEmployeur(prisma)(
+        sourceStructureId,
+        targetStructureId,
+      )
+      await mergeActivitesLieu(prisma)(sourceStructureId, targetStructureId)
+      await mergeCartographieNationaleIds(prisma)(
+        sourceStructure,
+        targetStructure,
+      )
+      await mergeArrayFields(prisma)(sourceStructureId, targetStructureId)
+
+      if (
+        options?.propagateVisibility &&
+        sourceStructure.visiblePourCartographieNationale &&
+        !targetStructure.visiblePourCartographieNationale
+      ) {
+        await prisma.structure.update({
+          where: { id: targetStructureId },
+          data: { visiblePourCartographieNationale: true },
+        })
+      }
+
+      await deleteStructure(prisma)(sourceStructureId)
+    },
+    { timeout: options?.timeout },
+  )
 }

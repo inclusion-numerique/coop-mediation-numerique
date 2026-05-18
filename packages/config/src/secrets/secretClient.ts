@@ -4,8 +4,7 @@ import pRetry, { type Options as PRetryOptions } from 'p-retry'
 
 export const projectId = process.env.SCW_PROJECT_ID ?? ''
 
-const authToken =
-  process.env.SCW_API_KEY_SECRET ?? process.env.SCW_SECRET_KEY ?? ''
+const authToken = process.env.SCW_SECRET_KEY ?? ''
 
 // https://developers.scaleway.com/en/products/secret_manager/api/v1alpha1/#introduction
 export const secretClient = axios.create({

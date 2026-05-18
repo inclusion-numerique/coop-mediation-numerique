@@ -47,6 +47,9 @@ build-storybook.log
 # IDE
 .bruno
 .idea
+
+# audit output
+output/
 .vscode
 
 storybook-static
