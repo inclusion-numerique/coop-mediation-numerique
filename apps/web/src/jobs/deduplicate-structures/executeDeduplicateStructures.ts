@@ -73,19 +73,22 @@ const enrichTargetFromSources = async (
     ...sources.filter((s) => !s.visiblePourCartographieNationale),
   ]
 
-  const updates: Partial<Pick<Structure, (typeof scalarFieldsToEnrich)[number]>> = {}
+  const updates: Partial<
+    Pick<Structure, (typeof scalarFieldsToEnrich)[number]>
+  > = {}
 
   for (const field of scalarFieldsToEnrich) {
     if (target[field] == null || target[field] === '') {
       const donor = donors.find((d) => d[field] != null && d[field] !== '')
       if (donor) {
-        // biome-ignore lint/suspicious/noExplicitAny: generic field assignment
         ;(updates as any)[field] = donor[field]
       }
     }
   }
 
-  const shouldBeVisible = sources.some((s) => s.visiblePourCartographieNationale)
+  const shouldBeVisible = sources.some(
+    (s) => s.visiblePourCartographieNationale,
+  )
   const visibilityUpdate =
     shouldBeVisible && !target.visiblePourCartographieNationale
 
@@ -116,9 +119,7 @@ export const executeDeduplicateStructures = async (
 ) => {
   const dryRun = job.payload?.dryRun ?? false
 
-  output.log(
-    `deduplicate-structures: starting${dryRun ? ' (DRY RUN)' : ''}...`,
-  )
+  output.log(`deduplicate-structures: starting${dryRun ? ' (DRY RUN)' : ''}...`)
 
   const duplicateGroups = await findDuplicateGroups()
 
@@ -150,7 +151,9 @@ export const executeDeduplicateStructures = async (
 
     for (const structure of structures) {
       const isTarget = structure.id === target.id
-      const cartoFlag = structure.visiblePourCartographieNationale ? ' [CARTO]' : ''
+      const cartoFlag = structure.visiblePourCartographieNationale
+        ? ' [CARTO]'
+        : ''
       output.log(
         `  ${isTarget ? '→ CIBLE' : '  SOURCE'} id=${structure.id} | modifié=${structure.modification.toISOString()} | activités=${structure.activitesCount} | emplois=${structure._count.emplois} | médiateurs=${structure._count.mediateursEnActivite}${cartoFlag}`,
       )

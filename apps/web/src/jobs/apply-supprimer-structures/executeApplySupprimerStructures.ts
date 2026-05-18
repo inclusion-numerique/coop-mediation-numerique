@@ -1,13 +1,13 @@
-import { getAuditOutputPath } from '@app/web/jobs/audit-output'
+import { writeFile } from 'node:fs/promises'
 import {
   type ActionPlanRow,
   escapeCsvField,
   filterActionPlan,
   readActionPlan,
 } from '@app/web/jobs/audit-csv'
+import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
-import { writeFile } from 'node:fs/promises'
 import type { ApplySupprimerStructuresJob } from './applySupprimerStructuresJob'
 
 const dryRunCsvHeader = [
@@ -122,8 +122,7 @@ export const executeApplySupprimerStructures = async (
         results.push({ row, statut: 'supprimee' })
         deleted++
       } catch (error) {
-        const message =
-          error instanceof Error ? error.message : 'Unknown error'
+        const message = error instanceof Error ? error.message : 'Unknown error'
         output.log(
           `apply-supprimer-structures: ERREUR suppression ${row.id} "${row.nom}": ${message}`,
         )

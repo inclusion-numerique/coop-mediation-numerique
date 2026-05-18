@@ -1,7 +1,7 @@
+import { existsSync } from 'node:fs'
+import { readFile, writeFile } from 'node:fs/promises'
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
-import { readFile, writeFile } from 'node:fs/promises'
-import { existsSync } from 'node:fs'
 import type { ApplyReviewToActionPlanJob } from './applyReviewToActionPlanJob'
 
 type ReviewRow = {
@@ -134,9 +134,7 @@ export const executeApplyReviewToActionPlan = async (
 
   await writeFile(actionPlanPath, patchedLines.join('\n'), 'utf-8')
 
-  output.log(
-    `\n=== APPLY REVIEW TO ACTION PLAN - RÉSULTATS ===`,
-  )
+  output.log(`\n=== APPLY REVIEW TO ACTION PLAN - RÉSULTATS ===`)
   output.log(`Fichier review: ${reviewFilename}`)
   output.log(`Clusters traités: ${clusterToCible.size}`)
   output.log(`Sources marquées fusionner_review: ${updated}`)

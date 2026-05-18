@@ -1,13 +1,13 @@
-import { getAuditOutputPath } from '@app/web/jobs/audit-output'
+import { writeFile } from 'node:fs/promises'
 import {
   type ActionPlanRow,
   escapeCsvField,
   filterActionPlan,
   readActionPlan,
 } from '@app/web/jobs/audit-csv'
+import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
-import { writeFile } from 'node:fs/promises'
 import type { ApplyViderSiretJob } from './applyViderSiretJob'
 
 const dryRunCsvHeader = [
@@ -40,16 +40,12 @@ const rowToCsv = (row: ActionPlanRow, statut: string): string =>
 export const executeApplyViderSiret = async (job: ApplyViderSiretJob) => {
   const dryRun = job.payload?.dryRun ?? true
 
-  output.log(
-    `apply-vider-siret: starting${dryRun ? ' (DRY RUN)' : ''}...`,
-  )
+  output.log(`apply-vider-siret: starting${dryRun ? ' (DRY RUN)' : ''}...`)
 
   const actionPlan = await readActionPlan()
   const toClear = filterActionPlan(actionPlan, 'vider_siret')
 
-  output.log(
-    `apply-vider-siret: ${toClear.length} SIRET à vider`,
-  )
+  output.log(`apply-vider-siret: ${toClear.length} SIRET à vider`)
 
   if (toClear.length === 0) {
     return { dryRun, total: 0, cleared: 0, skipped: 0 }
@@ -102,9 +98,7 @@ export const executeApplyViderSiret = async (job: ApplyViderSiretJob) => {
 
   // ── Rapport ──
 
-  output.log(
-    `\n=== VIDER SIRET ${dryRun ? '(DRY RUN)' : ''} - RÉSULTATS ===`,
-  )
+  output.log(`\n=== VIDER SIRET ${dryRun ? '(DRY RUN)' : ''} - RÉSULTATS ===`)
   output.log(`Total: ${toClear.length}`)
   output.log(`${dryRun ? 'À vider' : 'Vidés'}: ${cleared}`)
   output.log(`Ignorés: ${skipped}`)

@@ -1,7 +1,7 @@
+import { writeFile } from 'node:fs/promises'
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
-import { writeFile } from 'node:fs/promises'
 import type { AuditStructuresOverviewJob } from './auditStructuresOverviewJob'
 
 const escapeCsvField = (value: string) =>
@@ -146,8 +146,12 @@ export const executeAuditStructuresOverview = async (
 
   output.log(`\n--- RELATIONS ---`)
   output.log(`Sans emploi: ${sansEmploi} (${pct(sansEmploi, total)})`)
-  output.log(`Sans médiateur en activité: ${sansMediateur} (${pct(sansMediateur, total)})`)
-  output.log(`Sans activité (count=0): ${sansActivite} (${pct(sansActivite, total)})`)
+  output.log(
+    `Sans médiateur en activité: ${sansMediateur} (${pct(sansMediateur, total)})`,
+  )
+  output.log(
+    `Sans activité (count=0): ${sansActivite} (${pct(sansActivite, total)})`,
+  )
   output.log(
     `Orphelines (aucun emploi, médiateur, ni activité): ${orphelines} (${pct(orphelines, total)})`,
   )
@@ -245,7 +249,9 @@ export const executeAuditStructuresOverview = async (
     ),
   ]
 
-  const orphelinesFilePath = getAuditOutputPath('audit-structures-orphelines.csv')
+  const orphelinesFilePath = getAuditOutputPath(
+    'audit-structures-orphelines.csv',
+  )
   await writeFile(orphelinesFilePath, orphelinesCsvLines.join('\n'), 'utf-8')
 
   output.log(

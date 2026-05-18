@@ -1,9 +1,9 @@
+import { writeFile } from 'node:fs/promises'
 import { searchAdresse } from '@app/web/external-apis/apiAdresse'
 import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
-import { writeFile } from 'node:fs/promises'
 import type { AuditAdresseCoherenceJob } from './auditAdresseCoherenceJob'
 
 // Batch de 50 avec 1s de pause, comme dans fix-structures
@@ -372,9 +372,7 @@ export const executeAuditAdresseCoherence = async (
     ]
     output.log(`\n--- Distribution des scores BAN ---`)
     for (const range of ranges) {
-      const count = scores.filter(
-        (s) => s >= range.min && s < range.max,
-      ).length
+      const count = scores.filter((s) => s >= range.min && s < range.max).length
       if (count > 0) {
         output.log(`  ${range.label}: ${count}`)
       }

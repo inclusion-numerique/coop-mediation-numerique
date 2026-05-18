@@ -1,17 +1,17 @@
+import { writeFile } from 'node:fs/promises'
 import { searchAdresse } from '@app/web/external-apis/apiAdresse'
 import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
 import { fetchSiretApiData } from '@app/web/features/structures/siret/fetchSiretData'
 import type { SiretApiResponse } from '@app/web/features/structures/siret/SiretApiResponse'
-import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import {
   type ActionPlanRow,
   escapeCsvField,
   filterActionPlan,
   readActionPlan,
 } from '@app/web/jobs/audit-csv'
+import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
-import { writeFile } from 'node:fs/promises'
 import type { ApplyCorrigerAdresseJob } from './applyCorrigerAdresseJob'
 
 const BATCH_SIZE = 50
@@ -80,9 +80,7 @@ export const executeApplyCorrigerAdresse = async (
 ) => {
   const dryRun = job.payload?.dryRun ?? true
 
-  output.log(
-    `apply-corriger-adresse: starting${dryRun ? ' (DRY RUN)' : ''}...`,
-  )
+  output.log(`apply-corriger-adresse: starting${dryRun ? ' (DRY RUN)' : ''}...`)
 
   const actionPlan = await readActionPlan()
   const toFix = filterActionPlan(actionPlan, 'corriger_adresse')
@@ -138,7 +136,9 @@ export const executeApplyCorrigerAdresse = async (
         const siretResult = await fetchSiretApiData(structure.siret)
 
         if (!('error' in siretResult)) {
-          const { data: { adresse } } = siretResult
+          const {
+            data: { adresse },
+          } = siretResult
           const adresseApi = buildAddressFromApiData(adresse)
           const communeApi = adresse.libelle_commune ?? ''
           const codePostalApi = adresse.code_postal
@@ -148,9 +148,7 @@ export const executeApplyCorrigerAdresse = async (
             // Géocoder l'adresse API Entreprise via BAN
             const fullAdresse = `${adresseApi}, ${codePostalApi} ${communeApi}`
             const feature = await searchAdresse(fullAdresse)
-            const banData = feature
-              ? banFeatureToAdresseBanData(feature)
-              : null
+            const banData = feature ? banFeatureToAdresseBanData(feature) : null
 
             const result: Result = {
               row,

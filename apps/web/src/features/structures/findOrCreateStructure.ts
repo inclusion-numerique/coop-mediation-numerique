@@ -205,7 +205,11 @@ export const findOrCreateStructure = async ({
 
   // Step 4: Fallback - geocode via BAN API and create
   // Guard: re-check before creating to prevent duplicates
-  const existingGuard = await findExistingBySiretOrNom({ siret, nom, codeInsee })
+  const existingGuard = await findExistingBySiretOrNom({
+    siret,
+    nom,
+    codeInsee,
+  })
   if (existingGuard) return existingGuard
 
   const fullAdresse = `${adresse}, ${codePostal} ${commune}`

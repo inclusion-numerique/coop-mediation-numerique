@@ -1,14 +1,14 @@
-import { getAuditOutputPath } from '@app/web/jobs/audit-output'
+import { writeFile } from 'node:fs/promises'
+import { mergeStructure } from '@app/web/features/structures/use-cases/merge/mutations/mergeStructure'
 import {
   type ActionPlanRow,
   escapeCsvField,
   filterActionPlan,
   readActionPlan,
 } from '@app/web/jobs/audit-csv'
-import { mergeStructure } from '@app/web/features/structures/use-cases/merge/mutations/mergeStructure'
+import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
-import { writeFile } from 'node:fs/promises'
 import type { ApplyFusionnerStructuresJob } from './applyFusionnerStructuresJob'
 
 const reviewCsvHeader = [
@@ -177,8 +177,7 @@ export const executeApplyFusionnerStructures = async (
         results.push({ row, ...cibleInfo, statut: 'fusionnee' })
         merged++
       } catch (error) {
-        const message =
-          error instanceof Error ? error.message : 'Unknown error'
+        const message = error instanceof Error ? error.message : 'Unknown error'
         output.log(
           `apply-fusionner-structures: ERREUR fusion ${row.id} → ${row.cibleFusion}: ${message}`,
         )

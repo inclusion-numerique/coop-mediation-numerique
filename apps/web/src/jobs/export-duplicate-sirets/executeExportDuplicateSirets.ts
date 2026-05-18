@@ -1,7 +1,7 @@
+import { writeFile } from 'node:fs/promises'
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
-import { writeFile } from 'node:fs/promises'
 import type { ExportDuplicateSiretsJob } from './exportDuplicateSiretsJob'
 
 const csvHeader = [

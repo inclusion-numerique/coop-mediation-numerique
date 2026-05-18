@@ -1,8 +1,8 @@
+import { existsSync } from 'node:fs'
+import { readFile, writeFile } from 'node:fs/promises'
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
-import { readFile, writeFile } from 'node:fs/promises'
-import { existsSync } from 'node:fs'
 import type { GenerateStructuresActionPlanJob } from './generateStructuresActionPlanJob'
 
 // ── Types ──
@@ -57,9 +57,7 @@ type StructureData = {
 // ── Normalisation et similarité (réutilisés de detect-duplicate-structures) ──
 
 const stripDiacritics = (s: string) =>
-  s
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
+  s.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 
 const baseNormalize = (s: string) =>
   stripDiacritics(s)
@@ -206,8 +204,7 @@ const computePairScore = (
     else if (dist <= 500) sGeo = 1 - (dist - 50) / 450
   }
 
-  const sSiret =
-    a.siret && b.siret && a.siret === b.siret ? 1 : 0
+  const sSiret = a.siret && b.siret && a.siret === b.siret ? 1 : 0
 
   const tA = normalizeTelephone(a.telephone)
   const tB = normalizeTelephone(b.telephone)
@@ -233,7 +230,8 @@ class UnionFind {
   find(id: string): string {
     if (!this.parent.has(id)) this.parent.set(id, id)
     let root = id
-    while (this.parent.get(root) !== root) root = this.parent.get(root) as string
+    while (this.parent.get(root) !== root)
+      root = this.parent.get(root) as string
     let current = id
     while (current !== root) {
       const next = this.parent.get(current) as string
@@ -252,10 +250,7 @@ class UnionFind {
 
 // ── Lecture des CSV d'audit ──
 
-const parseCsv = (
-  content: string,
-  separator = ';',
-): string[][] => {
+const parseCsv = (content: string, separator = ';'): string[][] => {
   const lines = content.split('\n').filter((l) => l.trim())
   return lines.map((line) => {
     // Strip trailing \r
@@ -452,7 +447,12 @@ export const executeGenerateStructuresActionPlan = async (
   // Union-Find pour les lieux physiques au sein des clusters
   const ufLieu = new UnionFind()
 
-  type PairInfo = { idA: string; idB: string; score: number; isSameLieu: boolean }
+  type PairInfo = {
+    idA: string
+    idB: string
+    score: number
+    isSameLieu: boolean
+  }
   const paires: PairInfo[] = []
 
   for (const [, group] of parCodeInsee) {
@@ -539,10 +539,7 @@ export const executeGenerateStructuresActionPlan = async (
 
   // ── 4. Charger les résultats d'audit SIRET (si disponible) ──
 
-  const siretIssues = new Map<
-    string,
-    { categorie: string; erreur: string }
-  >()
+  const siretIssues = new Map<string, { categorie: string; erreur: string }>()
 
   const siretCsv = await readAuditCsvFile('audit-siret-divergences.csv')
   if (siretCsv) {
@@ -816,9 +813,7 @@ export const executeGenerateStructuresActionPlan = async (
         s.id,
         'corriger_adresse',
         3,
-        adresseVide
-          ? 'Adresse vide'
-          : 'Adresse introuvable dans la BAN',
+        adresseVide ? 'Adresse vide' : 'Adresse introuvable dans la BAN',
       )
     }
   }
@@ -833,10 +828,7 @@ export const executeGenerateStructuresActionPlan = async (
     }
 
     const adresseIssue = adresseIssues.get(s.id)
-    if (
-      adresseIssue &&
-      adresseIssue.anomalies.includes('ecart_geographique')
-    ) {
+    if (adresseIssue && adresseIssue.anomalies.includes('ecart_geographique')) {
       addAction(
         s.id,
         'corriger_coordonnees',
@@ -851,18 +843,18 @@ export const executeGenerateStructuresActionPlan = async (
     if (structuresTraitees.has(id)) continue
 
     if (issue.categorie === 'etablissement_ferme') {
-      addAction(id, 'verifier_siret', 5, 'Établissement fermé selon l\'API Entreprise')
+      addAction(
+        id,
+        'verifier_siret',
+        5,
+        "Établissement fermé selon l'API Entreprise",
+      )
     } else if (
       issue.categorie === 'nom_et_adresse_divergents' ||
       issue.categorie === 'siret_invalide' ||
       issue.categorie === 'personne_physique'
     ) {
-      addAction(
-        id,
-        'verifier_siret',
-        5,
-        `SIRET incohérent: ${issue.categorie}`,
-      )
+      addAction(id, 'verifier_siret', 5, `SIRET incohérent: ${issue.categorie}`)
     }
   }
 
@@ -967,16 +959,10 @@ export const executeGenerateStructuresActionPlan = async (
 
   output.log(`\n--- Fusions ---`)
   output.log(`  fusionner_auto (score ≥ 0.9): ${fusionsAuto.length}`)
-  output.log(
-    `  fusionner_probable (0.8-0.9): ${fusionsProbable.length}`,
-  )
-  output.log(
-    `  fusionner_a_verifier (< 0.8): ${fusionsAVerifier.length}`,
-  )
+  output.log(`  fusionner_probable (0.8-0.9): ${fusionsProbable.length}`)
+  output.log(`  fusionner_a_verifier (< 0.8): ${fusionsAVerifier.length}`)
   output.log(`  Total: ${totalFusions} sources`)
-  output.log(
-    `  Revue: ${fusionReviewRows.length} lignes → ${reviewFilePath}`,
-  )
+  output.log(`  Revue: ${fusionReviewRows.length} lignes → ${reviewFilePath}`)
 
   // Impact des suppressions
   const suppressions = actionPlan.filter((r) => r.action === 'supprimer')

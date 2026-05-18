@@ -1,7 +1,7 @@
+import { writeFile } from 'node:fs/promises'
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
-import { writeFile } from 'node:fs/promises'
 import type { DetectDuplicateStructuresJob } from './detectDuplicateStructuresJob'
 
 type StructureLight = {
@@ -62,9 +62,7 @@ const POIDS_TELEPHONE = 0.05
 // ── Utilitaires ──
 
 const stripDiacritics = (s: string) =>
-  s
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
+  s.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 
 const baseNormalize = (s: string) =>
   stripDiacritics(s)
@@ -153,24 +151,6 @@ const ADRESSE_ABBREVIATIONS: [RegExp, string][] = [
   [/\b(\d+)bis\b/g, '$1'],
   [/\b(\d+)ter\b/g, '$1'],
   [/\b(\d+)b\b/g, '$1'],
-]
-
-const ADRESSE_TYPE_VOIE = [
-  'rue',
-  'avenue',
-  'boulevard',
-  'place',
-  'impasse',
-  'chemin',
-  'allee',
-  'passage',
-  'square',
-  'route',
-  'cours',
-  'quai',
-  'quartier',
-  'zone industrielle',
-  'parc industriel',
 ]
 
 const normalizeAdresse = (s: string): string => {
@@ -540,7 +520,6 @@ export const executeDetectDuplicateStructures = async (
         output.log(`  ${range.label}: ${count}`)
       }
     }
-
   }
 
   // ── Regroupement en clusters (composantes connexes) ──
@@ -623,7 +602,8 @@ export const executeDetectDuplicateStructures = async (
     const findLieu = (id: string): string => {
       if (!lieuParent.has(id)) lieuParent.set(id, id)
       let root = id
-      while (lieuParent.get(root) !== root) root = lieuParent.get(root) as string
+      while (lieuParent.get(root) !== root)
+        root = lieuParent.get(root) as string
       let current = id
       while (current !== root) {
         const next = lieuParent.get(current) as string
@@ -729,7 +709,10 @@ export const executeDetectDuplicateStructures = async (
       `  [${cluster.type}] [${cluster.ids.size} structures, ${cluster.nbLieuxDistincts} lieux, score_max=${cluster.scoreMax.toFixed(3)}]`,
     )
     output.log(
-      `    Noms: ${[...noms].slice(0, 3).map((n) => `"${n}"`).join(', ')}${noms.size > 3 ? ` (+${noms.size - 3})` : ''}`,
+      `    Noms: ${[...noms]
+        .slice(0, 3)
+        .map((n) => `"${n}"`)
+        .join(', ')}${noms.size > 3 ? ` (+${noms.size - 3})` : ''}`,
     )
     output.log(
       `    Commune: ${exemple.communeA} | SIRETs: ${sirets.size > 0 ? [...sirets].join(', ') : '—'}`,
@@ -759,17 +742,13 @@ export const executeDetectDuplicateStructures = async (
     output.log(
       `  score=${p.scoreTotal.toFixed(3)} [nom=${p.scoreNom.toFixed(2)} adr=${p.scoreAdresse.toFixed(2)} geo=${p.scoreGeo.toFixed(2)} siret=${p.scoreSiret.toFixed(0)}]`,
     )
-    output.log(
-      `    "${p.nomA}" ↔ "${p.nomB}" | ${p.communeA}`,
-    )
+    output.log(`    "${p.nomA}" ↔ "${p.nomB}" | ${p.communeA}`)
     output.log(
       `    "${p.adresseA}" ↔ "${p.adresseB}" | SIRET: ${p.siretA || '—'} / ${p.siretB || '—'}`,
     )
   }
 
-  output.log(
-    `\nStructures uniques impliquées: ${structuresImpliquees.size}`,
-  )
+  output.log(`\nStructures uniques impliquées: ${structuresImpliquees.size}`)
   output.log(`Export: ${filePath} (${paires.length} paires)`)
 
   // ── Export CSV clusters ──
@@ -818,7 +797,9 @@ export const executeDetectDuplicateStructures = async (
   const clustersFilePath = getAuditOutputPath('detect-duplicate-clusters.csv')
   await writeFile(clustersFilePath, clustersCsvLines.join('\n'), 'utf-8')
 
-  output.log(`Export clusters: ${clustersFilePath} (${clusters.length} clusters)`)
+  output.log(
+    `Export clusters: ${clustersFilePath} (${clusters.length} clusters)`,
+  )
 
   output.log(`\ndetect-duplicate-structures: terminé`)
 
