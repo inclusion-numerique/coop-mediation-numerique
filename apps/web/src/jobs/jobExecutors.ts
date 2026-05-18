@@ -10,7 +10,6 @@ import { executeFixUsers } from './fix-users/executeFixUsers'
 import { executeFixUsersRoles } from './fix-users-roles/executeFixUsersRoles'
 import { executeImportContactsToBrevo } from './import-contacts-to-brevo/executeImportContactsToBrevo'
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
-import { executeIngestLesBasesInRag } from './ingest-les-bases-in-rag/executeIngestLesBasesInRag'
 import type { Job, JobName, JobPayload } from './jobs'
 import { executeNormalizeStructuresEmployeuses } from './normalize-structures-employeuses/executeNormalizeStructuresEmployeuses'
 import { output } from './output'
@@ -48,7 +47,6 @@ export const jobExecutors: {
   'update-structures-cartographie-nationale':
     executeUpdateStructuresCartographieNationale,
   'import-contacts-to-brevo': executeImportContactsToBrevo,
-  'ingest-les-bases-in-rag': executeIngestLesBasesInRag,
   'normalize-structures-employeuses': executeNormalizeStructuresEmployeuses,
   'set-servcies-to-shared-lieux': executeSetServciesToSharedLieux,
   'update-lieux-activites-a-distance': executeUpdateLieuxActivitesADistance,
