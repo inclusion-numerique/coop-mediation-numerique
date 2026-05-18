@@ -764,6 +764,8 @@ export const executeGenerateStructuresActionPlan = async (
   // b) SIRET à vider (revue manuelle par un collègue)
   for (const id of siretsAVider) {
     if (structuresTraitees.has(id)) continue
+    const s = structuresById.get(id)
+    if (!s || !s.siret) continue
     addAction(
       id,
       'vider_siret',

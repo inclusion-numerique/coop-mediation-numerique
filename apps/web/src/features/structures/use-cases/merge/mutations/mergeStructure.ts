@@ -152,6 +152,7 @@ const mergeArrayFields =
         ),
         courriels: unionArrays(target.courriels, source.courriels),
         activitesCount: { increment: source.activitesCount },
+        modification: new Date(),
       },
     })
   }
