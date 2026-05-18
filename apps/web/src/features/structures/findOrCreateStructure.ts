@@ -19,6 +19,35 @@ export type StructureInput = {
   creationParId?: string | null
 }
 
+const findExistingBySiretOrNom = async ({
+  siret,
+  nom,
+  codeInsee,
+}: {
+  siret: string | null
+  nom: string
+  codeInsee: string
+}): Promise<{ id: string } | null> => {
+  const where = siret
+    ? { siret, codeInsee, suppression: null }
+    : { nom, codeInsee, suppression: null }
+
+  const existing = await prismaClient.structure.findFirst({
+    where,
+    select: { id: true, suppression: true },
+    orderBy: { creation: 'desc' },
+  })
+
+  if (existing) {
+    await undeleteStructureIfDeleted(
+      existing as { id: string; suppression: Date | null },
+    )
+    return existing
+  }
+
+  return null
+}
+
 const undeleteStructureIfDeleted = async ({
   id,
   suppression,
@@ -39,9 +68,11 @@ const undeleteStructureIfDeleted = async ({
 
 /**
  * Generic helper to find or create a structure following this hierarchy:
- * 1. Find existing Structure by SIRET + nom
- * 2. Find StructureCartographieNationale by pivot (SIRET) → create Structure from it
- * 3. Fallback: Geocode via searchAdresse (BAN API) and create
+ * 1. Find existing Structure by coopId (surest match)
+ * 2. Find existing Structure by SIRET + codeInsee
+ * 3. Find StructureCartographieNationale by pivot (SIRET) → create Structure from it
+ * 4. Find existing Structure by nom + codeInsee (if no SIRET)
+ * 5. Fallback: Geocode via searchAdresse (BAN API) and create
  *
  * This is reusable for both V1 imports and Dataspace imports.
  */
@@ -75,7 +106,7 @@ export const findOrCreateStructure = async ({
     }
   }
 
-  // Step 1: Find existing Structure by SIRET + nom (only if siret is provided)
+  // Step 1: Find existing Structure by SIRET + codeInsee
   if (siret) {
     const existingStructure = await prismaClient.structure.findFirst({
       where: {
@@ -117,6 +148,10 @@ export const findOrCreateStructure = async ({
       })
 
     if (cartoStructure) {
+      // Guard: re-check before creating to prevent duplicates
+      const existing = await findExistingBySiretOrNom({ siret, nom, codeInsee })
+      if (existing) return existing
+
       // Create structure from cartographie nationale data (has coordinates)
       const structureData = toStructureFromCartoStructure(cartoStructure)
 
@@ -138,7 +173,7 @@ export const findOrCreateStructure = async ({
     }
   }
 
-  // Step 2b: Try to find existing structure by nom if no siret
+  // Step 3: Try to find existing structure by nom if no siret
   if (!siret) {
     const existingByNom = await prismaClient.structure.findFirst({
       where: {
@@ -168,7 +203,15 @@ export const findOrCreateStructure = async ({
     }
   }
 
-  // Step 3: Fallback - geocode via BAN API and create
+  // Step 4: Fallback - geocode via BAN API and create
+  // Guard: re-check before creating to prevent duplicates
+  const existingGuard = await findExistingBySiretOrNom({
+    siret,
+    nom,
+    codeInsee,
+  })
+  if (existingGuard) return existingGuard
+
   const fullAdresse = `${adresse}, ${codePostal} ${commune}`
   const adresseResult = await searchAdresse(fullAdresse)
 
