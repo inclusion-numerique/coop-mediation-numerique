@@ -15,7 +15,11 @@ export const setupDatabaseSecret = new Command()
   )
   .addArgument(new Argument('<namespace>', 'Name of the preview deployment'))
   .action(async (namespace) => {
+    console.log('Starting secrets:database:setup...')
+    console.log(`Setting up database secret for namespace "${namespace}"...`)
     const secretName = databasePasswordSecretName(namespace)
+
+    console.log(`Checking if secret "${secretName}" already exists...`)
     const { secrets } = await listSecrets()
 
     const existing = secrets.find((secret) => secret.name === secretName)
@@ -25,6 +29,7 @@ export const setupDatabaseSecret = new Command()
       return
     }
 
+    console.log(`Secret "${secretName}" does not exist. Creating it...`)
     await createSecret({
       name: secretName,
       value: generateDatabasePassword(),

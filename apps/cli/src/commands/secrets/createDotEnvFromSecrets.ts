@@ -10,6 +10,8 @@ import { Command } from '@commander-js/extra-typings'
 export const createDotEnvFromSecrets = new Command()
   .command('dotenv:from-secrets')
   .action(async () => {
+    console.log('Starting dotenv:from-secrets...')
+    console.log(`Fetching secrets from Secret Vault...`)
     const list = await listSecrets()
 
     const environmentVariables = await Promise.all(
