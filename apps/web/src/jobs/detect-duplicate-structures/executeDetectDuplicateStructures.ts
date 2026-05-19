@@ -79,27 +79,73 @@ const baseNormalize = (s: string) =>
  * "conseil départemental de X", "département de X" → "X"
  * "communauté de communes de X", "communauté d'agglomération de X", etc.
  */
-const NOM_PREFIXES_TO_STRIP = [
-  // Communes
-  /^commune de\s+/,
-  /^com de\s+/,
-  /^mairie de\s+/,
-  /^ville de\s+/,
+// Préfixes normalisés vers un token canonique au lieu d'être supprimés.
+// "commune de X" et "mairie de X" deviennent "ville X" → matchent ensemble.
+// Mais "EPN X" reste tel quel → ne matche pas avec "ville X".
+const NOM_PREFIXES_NORMALIZATIONS: [RegExp, string][] = [
+  // Communes (de/du/des/de la/de l')
+  [/^commune (?:de(?:s)?|du|de la|de l)\s+/, 'ville '],
+  [/^com (?:de(?:s)?|du|de la|de l)\s+/, 'ville '],
+  [/^mairie (?:de(?:s)?|du|de la|de l)\s+/, 'ville '],
+  [/^ville (?:de(?:s)?|du|de la|de l)\s+/, 'ville '],
   // Départements
-  /^conseil departemental de(?:s)?\s+/,
-  /^conseil departemental du\s+/,
-  /^conseil departemental de l\s*/,
-  /^departement de(?:s)?\s+/,
-  /^departement du\s+/,
-  /^departement de l\s*/,
+  [/^conseil departemental (?:de(?:s)?|du|de la|de l)\s+/, 'departement '],
+  [/^departement (?:de(?:s)?|du|de la|de l)\s+/, 'departement '],
   // Intercommunalités
-  /^communaute de communes?\s+/,
-  /^communaute d agglomeration\s+/,
-  /^communaute com\s+/,
+  [/^communaute de communes?\s+/, 'cc '],
+  [/^communaute d agglomeration\s+/, 'cagglo '],
+  [/^communaute com\s+/, 'cc '],
   // Régions
-  /^conseil regional de\s+/,
-  /^region\s+/,
+  [/^conseil regional (?:de(?:s)?|du|de la|de l)\s+/, 'region '],
+  [/^region\s+/, 'region '],
 ]
+
+// Mots-clés qui désignent un service spécifique d'une entité plus large
+// (mairie, commune, etc.). Si une structure les contient et l'autre non,
+// elles ne sont PAS la même entité, même avec un SIRET partagé.
+const SERVICE_KEYWORDS = [
+  'epn',
+  'mediatheque',
+  'bibliotheque',
+  'ccas',
+  'cias',
+  'centre social',
+  'maison quartier',
+  'maison de quartier',
+  'france services',
+  'mjc',
+  'espace numerique',
+  'cyber espace',
+  'cyberbase',
+  'pole emploi',
+  'mission locale',
+  'point information',
+  'point info',
+  'fablab',
+]
+
+const detectServiceKeywords = (s: string): Set<string> => {
+  const found = new Set<string>()
+  for (const kw of SERVICE_KEYWORDS) {
+    if (s.includes(kw)) found.add(kw)
+  }
+  return found
+}
+
+/**
+ * Returns true if `a` and `b` reference different service kinds.
+ * Used to prevent fusioning e.g. an EPN with its parent town hall
+ * even when they share a SIRET and an address.
+ */
+const hasAsymmetricServiceKeyword = (a: string, b: string): boolean => {
+  const ka = detectServiceKeywords(a)
+  const kb = detectServiceKeywords(b)
+  if (ka.size === 0 && kb.size === 0) return false
+  // If one set is a subset of the other, no asymmetry; same service.
+  for (const k of ka) if (!kb.has(k)) return true
+  for (const k of kb) if (!ka.has(k)) return true
+  return false
+}
 
 /**
  * Abréviations courantes dans les noms de structures.
@@ -119,8 +165,8 @@ const NOM_ABBREVIATIONS: [RegExp, string][] = [
 const normalizeNom = (s: string): string => {
   let n = baseNormalize(s)
 
-  for (const prefix of NOM_PREFIXES_TO_STRIP) {
-    n = n.replace(prefix, '')
+  for (const [pattern, replacement] of NOM_PREFIXES_NORMALIZATIONS) {
+    n = n.replace(pattern, replacement)
   }
 
   for (const [pattern, replacement] of NOM_ABBREVIATIONS) {
@@ -145,9 +191,14 @@ const ADRESSE_ABBREVIATIONS: [RegExp, string][] = [
   [/\bpl\b/g, 'place'],
   [/\bimp\b/g, 'impasse'],
   [/\bche\b/g, 'chemin'],
+  [/\bch\b/g, 'chemin'],
   [/\bsq\b/g, 'square'],
   [/\brte\b/g, 'route'],
+  [/\brt\b/g, 'route'],
   [/\bres\b/g, 'residence'],
+  [/\bvc\b/g, 'voie communale'],
+  [/\bzi\b/g, 'zone industrielle'],
+  [/\bza\b/g, 'zone artisanale'],
   [/\b(\d+)bis\b/g, '$1'],
   [/\b(\d+)ter\b/g, '$1'],
   [/\b(\d+)b\b/g, '$1'],
@@ -254,6 +305,20 @@ const scoreTelephone = (a: StructureLight, b: StructureLight): number => {
   return telA === telB ? 1 : 0
 }
 
+// Min length for the "contained" address heuristic: avoids matching on
+// generic tokens like "rue" or "place" alone.
+const MIN_CONTAINED_ADRESSE_LENGTH = 5
+
+const scoreAdresse = (a: string, b: string): number => {
+  if (
+    a.length >= MIN_CONTAINED_ADRESSE_LENGTH &&
+    b.length >= MIN_CONTAINED_ADRESSE_LENGTH
+  ) {
+    if (a.includes(b) || b.includes(a)) return 1
+  }
+  return diceSimilarity(a, b)
+}
+
 const computeScore = (
   a: StructureLight,
   b: StructureLight,
@@ -266,17 +331,42 @@ const computeScore = (
   scoreTotal: number
 } => {
   const sNom = diceSimilarity(a.nomNormalise, b.nomNormalise)
-  const sAdresse = diceSimilarity(a.adresseNormalisee, b.adresseNormalisee)
+
+  // If one structure references a service kind (EPN, médiathèque, CCAS...)
+  // and the other does not, they are distinct entities even with same
+  // SIRET + address. Disable the "address contained" heuristic for them.
+  const differentService = hasAsymmetricServiceKeyword(
+    a.nomNormalise,
+    b.nomNormalise,
+  )
+  const sAdresse = differentService
+    ? diceSimilarity(a.adresseNormalisee, b.adresseNormalisee)
+    : scoreAdresse(a.adresseNormalisee, b.adresseNormalisee)
   const sGeo = scoreGeo(a, b)
   const sSiret = scoreSiret(a, b)
   const sTelephone = scoreTelephone(a, b)
 
+  // Ignore geo when it's unavailable OR when the address strongly indicates
+  // the same place (>=0.85): missing coords or wrong coords should not
+  // penalize a clear address match. But never ignore it when names indicate
+  // distinct services (the geo distance is a valuable signal here).
+  const geoAvailable =
+    a.latitude != null &&
+    a.longitude != null &&
+    b.latitude != null &&
+    b.longitude != null
+  const ignoreGeo = !differentService && (!geoAvailable || sAdresse >= 0.85)
+  const weightsSum = ignoreGeo
+    ? POIDS_NOM + POIDS_ADRESSE + POIDS_SIRET + POIDS_TELEPHONE
+    : 1
+
   const scoreTotal =
-    sNom * POIDS_NOM +
-    sAdresse * POIDS_ADRESSE +
-    sGeo * POIDS_GEO +
-    sSiret * POIDS_SIRET +
-    sTelephone * POIDS_TELEPHONE
+    (sNom * POIDS_NOM +
+      sAdresse * POIDS_ADRESSE +
+      (ignoreGeo ? 0 : sGeo * POIDS_GEO) +
+      sSiret * POIDS_SIRET +
+      sTelephone * POIDS_TELEPHONE) /
+    weightsSum
 
   return {
     scoreNom: sNom,

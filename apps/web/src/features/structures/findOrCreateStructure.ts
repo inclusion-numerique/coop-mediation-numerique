@@ -4,6 +4,62 @@ import { prismaClient } from '@app/web/prismaClient'
 import { toStructureFromCartoStructure } from '@app/web/structure/toStructureFromCartoStructure'
 import { v4 } from 'uuid'
 
+const normalizeNom = (s: string): string =>
+  s
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+// Mots-clés désignant un service spécifique d'une entité plus large.
+// Si l'un des deux noms en contient un et pas l'autre, ce sont des entités
+// distinctes (ex: EPN Fleury vs Commune de Fleury).
+const SERVICE_KEYWORDS = [
+  'epn',
+  'mediatheque',
+  'bibliotheque',
+  'ccas',
+  'cias',
+  'centre social',
+  'maison quartier',
+  'maison de quartier',
+  'france services',
+  'mjc',
+  'espace numerique',
+  'cyber espace',
+  'cyberbase',
+  'pole emploi',
+  'mission locale',
+  'point information',
+  'point info',
+  'fablab',
+]
+
+const detectServiceKeywords = (s: string): Set<string> => {
+  const found = new Set<string>()
+  for (const kw of SERVICE_KEYWORDS) {
+    if (s.includes(kw)) found.add(kw)
+  }
+  return found
+}
+
+const hasAsymmetricServiceKeyword = (a: string, b: string): boolean => {
+  const ka = detectServiceKeywords(a)
+  const kb = detectServiceKeywords(b)
+  if (ka.size === 0 && kb.size === 0) return false
+  for (const k of ka) if (!kb.has(k)) return true
+  for (const k of kb) if (!ka.has(k)) return true
+  return false
+}
+
+const isContainedName = (a: string, b: string): boolean => {
+  const na = normalizeNom(a)
+  const nb = normalizeNom(b)
+  if (hasAsymmetricServiceKeyword(na, nb)) return false
+  return na === nb || na.includes(nb) || nb.includes(na)
+}
+
 export type StructureInput = {
   coopId?: string | null
   siret: string | null
@@ -43,6 +99,25 @@ const findExistingBySiretOrNom = async ({
       existing as { id: string; suppression: Date | null },
     )
     return existing
+  }
+
+  // Fallback: same SIRET, any codeInsee, with contained name match.
+  // Handles codeInsee divergence between Dataspace and coop.
+  // The asymmetric-service-keyword check inside isContainedName prevents
+  // matching an EPN against its parent town hall (same SIRET, different role).
+  if (siret) {
+    const candidatesBySiret = await prismaClient.structure.findMany({
+      where: { siret, suppression: null },
+      select: { id: true, nom: true, suppression: true },
+      orderBy: { creation: 'desc' },
+    })
+
+    const match = candidatesBySiret.find((s) => isContainedName(s.nom, nom))
+
+    if (match) {
+      await undeleteStructureIfDeleted(match)
+      return match
+    }
   }
 
   return null
