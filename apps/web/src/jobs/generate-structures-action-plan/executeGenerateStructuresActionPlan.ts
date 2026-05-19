@@ -66,23 +66,63 @@ const baseNormalize = (s: string) =>
     .replace(/\s+/g, ' ')
     .trim()
 
-const NOM_PREFIXES_TO_STRIP = [
-  /^commune de\s+/,
-  /^com de\s+/,
-  /^mairie de\s+/,
-  /^ville de\s+/,
-  /^conseil departemental de(?:s)?\s+/,
-  /^conseil departemental du\s+/,
-  /^conseil departemental de l\s*/,
-  /^departement de(?:s)?\s+/,
-  /^departement du\s+/,
-  /^departement de l\s*/,
-  /^communaute de communes?\s+/,
-  /^communaute d agglomeration\s+/,
-  /^communaute com\s+/,
-  /^conseil regional de\s+/,
-  /^region\s+/,
+// Préfixes normalisés vers un token canonique au lieu d'être supprimés.
+// "commune de X" et "mairie de X" deviennent "ville X" → matchent ensemble.
+// "EPN X" reste tel quel → ne matche pas avec "ville X".
+const NOM_PREFIXES_NORMALIZATIONS: [RegExp, string][] = [
+  [/^commune (?:de(?:s)?|du|de la|de l)\s+/, 'ville '],
+  [/^com (?:de(?:s)?|du|de la|de l)\s+/, 'ville '],
+  [/^mairie (?:de(?:s)?|du|de la|de l)\s+/, 'ville '],
+  [/^ville (?:de(?:s)?|du|de la|de l)\s+/, 'ville '],
+  [/^conseil departemental (?:de(?:s)?|du|de la|de l)\s+/, 'departement '],
+  [/^departement (?:de(?:s)?|du|de la|de l)\s+/, 'departement '],
+  [/^communaute de communes?\s+/, 'cc '],
+  [/^communaute d agglomeration\s+/, 'cagglo '],
+  [/^communaute com\s+/, 'cc '],
+  [/^conseil regional (?:de(?:s)?|du|de la|de l)\s+/, 'region '],
+  [/^region\s+/, 'region '],
 ]
+
+// Mots-clés qui désignent un service spécifique (EPN, médiathèque, etc.).
+// Si une structure les contient et l'autre non, ce sont des entités distinctes
+// même avec un SIRET partagé.
+const SERVICE_KEYWORDS = [
+  'epn',
+  'mediatheque',
+  'bibliotheque',
+  'ccas',
+  'cias',
+  'centre social',
+  'maison quartier',
+  'maison de quartier',
+  'france services',
+  'mjc',
+  'espace numerique',
+  'cyber espace',
+  'cyberbase',
+  'pole emploi',
+  'mission locale',
+  'point information',
+  'point info',
+  'fablab',
+]
+
+const detectServiceKeywords = (s: string): Set<string> => {
+  const found = new Set<string>()
+  for (const kw of SERVICE_KEYWORDS) {
+    if (s.includes(kw)) found.add(kw)
+  }
+  return found
+}
+
+const hasAsymmetricServiceKeyword = (a: string, b: string): boolean => {
+  const ka = detectServiceKeywords(a)
+  const kb = detectServiceKeywords(b)
+  if (ka.size === 0 && kb.size === 0) return false
+  for (const k of ka) if (!kb.has(k)) return true
+  for (const k of kb) if (!ka.has(k)) return true
+  return false
+}
 
 const NOM_ABBREVIATIONS: [RegExp, string][] = [
   [/\bst\b/g, 'saint'],
@@ -98,7 +138,8 @@ const NOM_ABBREVIATIONS: [RegExp, string][] = [
 
 const normalizeNom = (s: string): string => {
   let n = baseNormalize(s)
-  for (const prefix of NOM_PREFIXES_TO_STRIP) n = n.replace(prefix, '')
+  for (const [pattern, replacement] of NOM_PREFIXES_NORMALIZATIONS)
+    n = n.replace(pattern, replacement)
   for (const [pattern, replacement] of NOM_ABBREVIATIONS)
     n = n.replace(pattern, replacement)
   return n
@@ -114,9 +155,14 @@ const ADRESSE_ABBREVIATIONS: [RegExp, string][] = [
   [/\bpl\b/g, 'place'],
   [/\bimp\b/g, 'impasse'],
   [/\bche\b/g, 'chemin'],
+  [/\bch\b/g, 'chemin'],
   [/\bsq\b/g, 'square'],
   [/\brte\b/g, 'route'],
+  [/\brt\b/g, 'route'],
   [/\bres\b/g, 'residence'],
+  [/\bvc\b/g, 'voie communale'],
+  [/\bzi\b/g, 'zone industrielle'],
+  [/\bza\b/g, 'zone artisanale'],
   [/\b(\d+)bis\b/g, '$1'],
   [/\b(\d+)ter\b/g, '$1'],
   [/\b(\d+)b\b/g, '$1'],
@@ -180,25 +226,46 @@ const POIDS_GEO = 0.2
 const POIDS_SIRET = 0.15
 const POIDS_TELEPHONE = 0.05
 
+// Min length for the "contained" address heuristic: avoids matching on
+// generic tokens like "rue" or "place" alone.
+const MIN_CONTAINED_ADRESSE_LENGTH = 5
+
+const scoreAdresse = (a: string, b: string): number => {
+  if (
+    a.length >= MIN_CONTAINED_ADRESSE_LENGTH &&
+    b.length >= MIN_CONTAINED_ADRESSE_LENGTH
+  ) {
+    if (a.includes(b) || b.includes(a)) return 1
+  }
+  return diceSimilarity(a, b)
+}
+
 const computePairScore = (
   a: StructureData & { nomNorm: string; adrNorm: string },
   b: StructureData & { nomNorm: string; adrNorm: string },
 ) => {
   const sNom = diceSimilarity(a.nomNorm, b.nomNorm)
-  const sAdresse = diceSimilarity(a.adrNorm, b.adrNorm)
+
+  // If one structure references a service kind (EPN, médiathèque, CCAS...)
+  // and the other does not, they are distinct entities even with same
+  // SIRET + address. Disable the "address contained" heuristic for them.
+  const differentService = hasAsymmetricServiceKeyword(a.nomNorm, b.nomNorm)
+  const sAdresse = differentService
+    ? diceSimilarity(a.adrNorm, b.adrNorm)
+    : scoreAdresse(a.adrNorm, b.adrNorm)
 
   let sGeo = 0
-  if (
+  const geoAvailable =
     a.latitude != null &&
     a.longitude != null &&
     b.latitude != null &&
     b.longitude != null
-  ) {
+  if (geoAvailable) {
     const dist = haversineDistance(
-      a.latitude,
-      a.longitude,
-      b.latitude,
-      b.longitude,
+      a.latitude as number,
+      a.longitude as number,
+      b.latitude as number,
+      b.longitude as number,
     )
     if (dist < 50) sGeo = 1
     else if (dist <= 500) sGeo = 1 - (dist - 50) / 450
@@ -210,12 +277,21 @@ const computePairScore = (
   const tB = normalizeTelephone(b.telephone)
   const sTel = tA && tB && tA === tB ? 1 : 0
 
+  // Ignore geo when it's unavailable OR when the address strongly indicates
+  // the same place (>=0.85): missing coords or wrong coords should not
+  // penalize a clear address match. But never ignore it when names indicate
+  // distinct services (the geo distance is a valuable signal here).
+  const ignoreGeo = !differentService && (!geoAvailable || sAdresse >= 0.85)
+  const weightsSum = ignoreGeo
+    ? POIDS_NOM + POIDS_ADRESSE + POIDS_SIRET + POIDS_TELEPHONE
+    : 1
   const total =
-    sNom * POIDS_NOM +
-    sAdresse * POIDS_ADRESSE +
-    sGeo * POIDS_GEO +
-    sSiret * POIDS_SIRET +
-    sTel * POIDS_TELEPHONE
+    (sNom * POIDS_NOM +
+      sAdresse * POIDS_ADRESSE +
+      (ignoreGeo ? 0 : sGeo * POIDS_GEO) +
+      sSiret * POIDS_SIRET +
+      sTel * POIDS_TELEPHONE) /
+    weightsSum
 
   const isSameLieu = sGeo >= 0.7 || sAdresse >= 0.85
 
@@ -680,7 +756,7 @@ export const executeGenerateStructuresActionPlan = async (
   const fusionReviewRows: FusionReviewRow[] = []
 
   for (const cluster of clusters) {
-    if (cluster.type !== 'doublon_certain') continue
+    if (cluster.type === 'multi_site') continue
 
     const targetNorm = normById.get(cluster.targetId)
     const targetData = structuresById.get(cluster.targetId)
@@ -782,23 +858,9 @@ export const executeGenerateStructuresActionPlan = async (
     addAction(id, 'supprimer', 1, 'Structure orpheline sans données associées')
   }
 
-  // d) Clusters mixtes : vérification manuelle
-  for (const cluster of clusters) {
-    if (cluster.type !== 'mixte') continue
-
-    for (const id of cluster.ids) {
-      if (structuresTraitees.has(id)) continue
-
-      addAction(
-        id,
-        'verification_manuelle',
-        6,
-        `Cluster mixte ${cluster.id} (${cluster.ids.size} structures | doublons + multi-site mélangés)`,
-        '',
-        cluster.id,
-      )
-    }
-  }
+  // d) Clusters mixtes : les paires sont déjà traitées dans la boucle a) ci-dessus
+  // (mêmes règles de scoring que doublon_certain). Les structures restantes du
+  // cluster (sans paire scorée vs la cible) ne reçoivent pas d'action automatique.
 
   // e) Adresses vides ou introuvables
   for (const s of structuresById.values()) {
@@ -867,65 +929,88 @@ export const executeGenerateStructuresActionPlan = async (
   const filePath = getAuditOutputPath('structures-action-plan.csv')
   await writeFile(filePath, csvLines.join('\n'), 'utf-8')
 
-  // ── 9. Export CSV de revue des fusions ──
+  // ── 9. Export CSV de revue des fusions (format groupé par cluster) ──
 
   const reviewCsvHeader = [
     'cluster_id',
-    'action',
-    'score_total',
-    'score_nom',
-    'score_adresse',
-    'score_geo',
-    'source_id',
-    'source_nom',
-    'source_adresse',
-    'source_commune',
-    'source_siret',
-    'source_activites',
-    'source_emplois',
-    'source_mediateurs',
-    'cible_id',
-    'cible_nom',
-    'cible_adresse',
-    'cible_commune',
-    'cible_siret',
-    'cible_activites',
-    'cible_emplois',
-    'cible_mediateurs',
+    'id',
+    'role',
+    'statut',
+    'nom',
+    'adresse',
+    'commune',
+    'siret',
+    'activites',
+    'emplois',
+    'mediateurs',
+    'raison',
   ].join(';')
 
-  // Trier par score croissant (les plus douteux en premier)
-  fusionReviewRows.sort((a, b) => a.scoreTotal - b.scoreTotal)
+  // Regrouper par cluster, trier clusters par score min asc (les plus douteux en premier),
+  // sources triées par score asc
+  const rowsByCluster = new Map<string, FusionReviewRow[]>()
+  for (const row of fusionReviewRows) {
+    const group = rowsByCluster.get(row.clusterId)
+    if (group) group.push(row)
+    else rowsByCluster.set(row.clusterId, [row])
+  }
 
-  const reviewCsvLines = [
-    reviewCsvHeader,
-    ...fusionReviewRows.map((r) =>
+  const sortedClusters = [...rowsByCluster.entries()].sort((a, b) => {
+    const minA = Math.min(...a[1].map((r) => r.scoreTotal))
+    const minB = Math.min(...b[1].map((r) => r.scoreTotal))
+    return minA - minB
+  })
+
+  const emptyLine = new Array(12).fill('').join(';')
+
+  const reviewCsvLines: string[] = [reviewCsvHeader]
+
+  for (const [clusterId, rows] of sortedClusters) {
+    rows.sort((a, b) => a.scoreTotal - b.scoreTotal)
+    const first = rows[0]
+
+    // Ligne vide pour séparer du cluster précédent
+    reviewCsvLines.push(emptyLine)
+
+    // Ligne CIBLE
+    reviewCsvLines.push(
       [
-        r.clusterId,
-        r.action,
-        r.scoreTotal.toFixed(3),
-        r.scoreNom.toFixed(3),
-        r.scoreAdresse.toFixed(3),
-        r.scoreGeo.toFixed(3),
-        r.sourceId,
-        escapeCsvField(r.sourceNom),
-        escapeCsvField(r.sourceAdresse),
-        escapeCsvField(r.sourceCommune),
-        r.sourceSiret,
-        r.sourceActivites,
-        r.sourceEmplois,
-        r.sourceMediateurs,
-        r.cibleId,
-        escapeCsvField(r.cibleNom),
-        escapeCsvField(r.cibleAdresse),
-        escapeCsvField(r.cibleCommune),
-        r.cibleSiret,
-        r.cibleActivites,
-        r.cibleEmplois,
-        r.cibleMediateurs,
+        clusterId,
+        first.cibleId,
+        'CIBLE',
+        '',
+        escapeCsvField(first.cibleNom),
+        escapeCsvField(first.cibleAdresse),
+        escapeCsvField(first.cibleCommune),
+        first.cibleSiret,
+        first.cibleActivites,
+        first.cibleEmplois,
+        first.cibleMediateurs,
+        '',
       ].join(';'),
-    ),
-  ]
+    )
+
+    // Lignes sources
+    for (const r of rows) {
+      const raison = `${clusterId} | score=${r.scoreTotal.toFixed(3)} (nom=${r.scoreNom.toFixed(2)} adr=${r.scoreAdresse.toFixed(2)} geo=${r.scoreGeo.toFixed(2)})`
+      reviewCsvLines.push(
+        [
+          clusterId,
+          r.sourceId,
+          'source',
+          'a_fusionner',
+          escapeCsvField(r.sourceNom),
+          escapeCsvField(r.sourceAdresse),
+          escapeCsvField(r.sourceCommune),
+          r.sourceSiret,
+          r.sourceActivites,
+          r.sourceEmplois,
+          r.sourceMediateurs,
+          escapeCsvField(raison),
+        ].join(';'),
+      )
+    }
+  }
 
   const reviewFilePath = getAuditOutputPath('structures-fusion-review.csv')
   await writeFile(reviewFilePath, reviewCsvLines.join('\n'), 'utf-8')
