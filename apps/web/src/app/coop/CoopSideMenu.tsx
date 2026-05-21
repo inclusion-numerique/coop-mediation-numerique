@@ -1,7 +1,6 @@
 'use client'
 
 import { statistiquesPageTitle } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/statistiquesPageTitle'
-import { canUseAssistant } from '@app/web/assistant/canUseAssistant'
 import { SessionUser } from '@app/web/auth/sessionUser'
 import { CreateCraModalDefinition } from '@app/web/features/activites/use-cases/cra/components/CreateCraModal/CreateCraModalDefinition'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
@@ -143,22 +142,6 @@ const CoopSideMenu = ({ user }: { user: SessionUser }) => {
       isActive: pathname?.startsWith('/coop/mon-reseau'),
     },
   ]
-
-  if (canUseAssistant(user)) {
-    items.push({
-      text: (
-        <>
-          <span
-            className="fr-icon-chat-check-line ri-xl fr-mr-1w fr-text--regular"
-            aria-hidden
-          />
-          Assistant
-        </>
-      ),
-      linkProps: { href: '/assistant/chat' },
-      isActive: pathname?.startsWith('/assistant'),
-    })
-  }
 
   items.push(
     {

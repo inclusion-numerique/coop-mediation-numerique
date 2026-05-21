@@ -27,7 +27,7 @@ export const toLieuStandardMediationNumerique = (
   source: lieu.source,
   presentation_resume: lieu.presentation_resume,
   presentation_detail: lieu.presentation_detail,
-  services: lieu.services.join('|'),
+  services: lieu.services?.join('|'),
   publics_specifiquement_adresses:
     lieu.publics_specifiquement_adresses?.join('|'),
   prise_en_charge_specifique: lieu.prise_en_charge_specifique?.join('|'),

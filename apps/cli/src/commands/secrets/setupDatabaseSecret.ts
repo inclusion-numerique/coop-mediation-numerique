@@ -16,6 +16,7 @@ export const setupDatabaseSecret = new Command()
   .addArgument(new Argument('<namespace>', 'Name of the preview deployment'))
   .action(async (namespace) => {
     const secretName = databasePasswordSecretName(namespace)
+
     const { secrets } = await listSecrets()
 
     const existing = secrets.find((secret) => secret.name === secretName)

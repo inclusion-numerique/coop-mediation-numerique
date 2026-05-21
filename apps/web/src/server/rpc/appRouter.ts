@@ -1,7 +1,6 @@
 import { tagsRouter } from '@app/web/features/activites/use-cases/tags/tagsRouter'
 import { dataspaceAdminRouter } from '@app/web/features/dataspace/use-cases/administration/dataspaceAdminRouter'
 import { apiClientRouter } from '@app/web/server/rpc/apiClient/apiClientRouter'
-import { assistantRouter } from '@app/web/server/rpc/assistant/assistantRouter'
 import { beneficiairesRouter } from '@app/web/server/rpc/beneficiaires/beneficiairesRouter'
 import { craRouter } from '@app/web/server/rpc/cra/craRouter'
 import { router } from '@app/web/server/rpc/createRouter'
@@ -30,7 +29,6 @@ export const appRouter = router({
   usurpation: usurpationRouter,
   lieuActivite: lieuActiviteRouter,
   apiClient: apiClientRouter,
-  assistant: assistantRouter,
   rdvServicePublic: rdvServicePublicRouter,
   employeStructure: employeStructureRouter,
   tags: tagsRouter,
