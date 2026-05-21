@@ -14,19 +14,10 @@ export const getDatabasePasswordSecret = new Command()
     new Argument('<namespace>', 'Namespace of the target deployment'),
   )
   .action(async (namespace) => {
-    console.log('Starting secrets:database-password...')
-    console.log(
-      `Getting database password secret for namespace "${namespace}"...`,
-    )
     const secretName = databasePasswordSecretName(namespace)
 
-    console.log(`Looking for secret "${secretName}"...`)
     const { secrets } = await listSecrets()
     const { id } = findSecretByName(secrets, secretName)
-
-    console.log(
-      `Secret "${secretName}" found with id "${id}". Getting its value...`,
-    )
     const value = await configGetSecretValue({ id })
 
     output(value)
