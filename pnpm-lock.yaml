@@ -6362,8 +6362,8 @@ packages:
   '@tiptap/starter-kit@2.27.2':
     resolution: {integrity: sha512-bb0gJvPoDuyRUQ/iuN52j1//EtWWttw+RXAv1uJxfR0uKf8X7uAqzaOOgwjknoCIDC97+1YHwpGdnRjpDkOBxw==}
 
-  '@tootallnate/once@2.0.0':
-    resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
+  '@tootallnate/once@2.0.1':
+    resolution: {integrity: sha512-HqmEUIGRJ5fSXchkVgR5F7qn48bDBzv0kWj/Kfu5e6uci4UlEeng4331LnBkWffb++Ei3FOVLxo8JJWMFBDMeQ==}
     engines: {node: '>= 10'}
 
   '@trpc/client@11.1.2':
@@ -20686,7 +20686,7 @@ snapshots:
       '@tiptap/extension-text-style': 2.27.2(@tiptap/core@2.27.2(@tiptap/pm@2.27.2))
       '@tiptap/pm': 2.27.2
 
-  '@tootallnate/once@2.0.0': {}
+  '@tootallnate/once@2.0.1': {}
 
   '@trpc/client@11.1.2(@trpc/server@11.1.2(typescript@5.9.3))(typescript@5.9.3)':
     dependencies:
@@ -24249,7 +24249,7 @@ snapshots:
 
   http-proxy-agent@5.0.0:
     dependencies:
-      '@tootallnate/once': 2.0.0
+      '@tootallnate/once': 2.0.1
       agent-base: 6.0.2
       debug: 4.4.3
     transitivePeerDependencies:
