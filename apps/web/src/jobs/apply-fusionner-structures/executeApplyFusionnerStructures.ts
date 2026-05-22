@@ -44,13 +44,39 @@ export const executeApplyFusionnerStructures = async (
 ) => {
   const { action } = job.payload
   const dryRun = job.payload.dryRun ?? true
+  const excludeStructureIds = new Set(job.payload.excludeStructureIds ?? [])
 
   output.log(
     `apply-fusionner-structures: starting (${action})${dryRun ? ' (DRY RUN)' : ''}...`,
   )
 
   const actionPlan = await readActionPlan()
-  const toMerge = filterActionPlan(actionPlan, action)
+  const allToMerge = filterActionPlan(actionPlan, action)
+
+  // Find every cluster that contains at least one excluded structure
+  // (either as a source or as the merge target).
+  const excludedClusterIds = new Set<string>()
+  if (excludeStructureIds.size > 0) {
+    for (const row of allToMerge) {
+      if (
+        excludeStructureIds.has(row.id) ||
+        (row.cibleFusion && excludeStructureIds.has(row.cibleFusion))
+      ) {
+        excludedClusterIds.add(row.clusterId)
+      }
+    }
+  }
+
+  const toMerge = allToMerge.filter(
+    (row) => !excludedClusterIds.has(row.clusterId),
+  )
+  const excludedCount = allToMerge.length - toMerge.length
+
+  if (excludedClusterIds.size > 0) {
+    output.log(
+      `apply-fusionner-structures: ${excludedCount} structures exclues (${excludedClusterIds.size} clusters: ${[...excludedClusterIds].join(', ')})`,
+    )
+  }
 
   output.log(
     `apply-fusionner-structures: ${toMerge.length} structures à fusionner`,
