@@ -64,13 +64,23 @@ export const executeApplyCorrigerCoordonnees = async (
   job: ApplyCorrigerCoordonneesJob,
 ) => {
   const dryRun = job.payload?.dryRun ?? true
+  const minBanScore = job.payload?.minBanScore ?? 0.65
+  const excludeStructureIds = new Set(job.payload?.excludeStructureIds ?? [])
 
   output.log(
-    `apply-corriger-coordonnees: starting${dryRun ? ' (DRY RUN)' : ''}...`,
+    `apply-corriger-coordonnees: starting${dryRun ? ' (DRY RUN)' : ''} (minBanScore: ${minBanScore})...`,
   )
 
   const actionPlan = await readActionPlan()
-  const toFix = filterActionPlan(actionPlan, 'corriger_coordonnees')
+  const allToFix = filterActionPlan(actionPlan, 'corriger_coordonnees')
+  const toFix = allToFix.filter((row) => !excludeStructureIds.has(row.id))
+  const excludedCount = allToFix.length - toFix.length
+
+  if (excludedCount > 0) {
+    output.log(
+      `apply-corriger-coordonnees: ${excludedCount} structures exclues`,
+    )
+  }
 
   output.log(
     `apply-corriger-coordonnees: ${toFix.length} coordonnées à corriger`,
@@ -122,7 +132,7 @@ export const executeApplyCorrigerCoordonnees = async (
       const query = `${structure.adresse}, ${structure.codePostal} ${structure.commune}`
       const feature = await searchAdresse(query)
 
-      if (!feature || feature.properties.score < 0.5) {
+      if (!feature || feature.properties.score < minBanScore) {
         results.push({
           row,
           latActuelle: structure.latitude?.toFixed(6) ?? '',
