@@ -3,7 +3,10 @@
 import { createToast } from '@app/ui/toast/createToast'
 import EditCard from '@app/web/components/EditCard'
 import { InformationsPratiquesFields } from '@app/web/components/structure/fields/InformationsPratiquesFields'
-import { appendComment } from '@app/web/components/structure/fields/openingHoursHelpers'
+import {
+  appendComment,
+  safeToTimetableOpeningHours,
+} from '@app/web/components/structure/fields/openingHoursHelpers'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import {
   InformationsPratiquesData,
@@ -15,7 +18,6 @@ import { isEmpty } from '@app/web/utils/isEmpty'
 import {
   fromTimetableOpeningHours,
   Schedule,
-  toTimetableOpeningHours,
 } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
@@ -49,7 +51,7 @@ const InformationsPratiquesEditCard = ({
       openingHours:
         horaires == null || horaires === ''
           ? undefined
-          : toTimetableOpeningHours(new Date())(horaires),
+          : safeToTimetableOpeningHours(new Date())(horaires),
       horairesComment: horaires?.match(/".+"/g)?.toString().replaceAll('"', ''),
     },
   })

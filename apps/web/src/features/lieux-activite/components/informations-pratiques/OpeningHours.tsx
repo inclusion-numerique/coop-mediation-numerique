@@ -1,7 +1,5 @@
-import {
-  NullableTime,
-  toTimetableOpeningHours,
-} from '@gouvfr-anct/timetable-to-osm-opening-hours'
+import { safeToTimetableOpeningHours } from '@app/web/components/structure/fields/openingHoursHelpers'
+import { NullableTime } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import classNames from 'classnames'
 
 const JOURS_DE_LA_SEMAINE = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
@@ -34,7 +32,7 @@ export const OpeningHours = ({
       'fr-flex fr-direction-column fr-flex-gap-2v',
     )}
   >
-    {Object.entries(toTimetableOpeningHours(new Date())(horaires)).map(
+    {Object.entries(safeToTimetableOpeningHours(new Date())(horaires)).map(
       ([day, daySchedule], index) => (
         <div key={day} className="fr-flex fr-flex-gap-4v">
           <span className="fr-text--medium" style={{ width: '38px' }}>
