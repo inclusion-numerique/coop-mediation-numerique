@@ -3,6 +3,7 @@ import type {
   DataspaceContrat,
   DataspaceLieuActivite,
   DataspaceMediateur,
+  DataspaceMediateurAdresse,
   DataspaceStructureEmployeuse,
 } from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import { getContractStatus } from '@app/web/features/dataspace/getContractStatus'
@@ -144,6 +145,22 @@ export const getEmploiEndDate = (contrat: DataspaceContrat): Date | null => {
 }
 
 /**
+ * A structure is only synced into the coop when its address is complete enough
+ * to identify a real place (voie + commune + code postal + code insee). When the
+ * Dataspace sends a partial address, geocoding/matching cannot reconcile it with
+ * existing structures and a duplicate gets created on every sync. Skipping these
+ * is the same rule already applied to lieux d'activité. Fixing the source data in
+ * the Dataspace is the only way to get such a structure synced.
+ */
+export const isDataspaceAdresseComplete = (
+  adresse: DataspaceMediateurAdresse,
+): boolean =>
+  Boolean(adresse.nom_voie?.trim()) &&
+  Boolean(adresse.code_insee) &&
+  Boolean(adresse.code_postal) &&
+  Boolean(adresse.nom_commune)
+
+/**
  * Prepare contract data from Dataspace for EmployeStructure sync
  * Returns one PreparedContract for each contract in each structure
  * Creates one EmployeStructure record per contract
@@ -164,6 +181,12 @@ export const prepareContractsFromDataspace = async (
 
     // Skip structures without contracts
     if (contractsWithDebut.length === 0) {
+      continue
+    }
+
+    // Skip structures whose Dataspace address is incomplete (cannot identify a
+    // real place → would create a duplicate on every sync).
+    if (!isDataspaceAdresseComplete(structureEmployeuse.adresse)) {
       continue
     }
 
@@ -274,13 +297,16 @@ export const syncStructuresEmployeusesFromDataspace = async ({
 
   const firstStructureWithNullDebutContract = nonNullStructures.find(
     (structureEmployeuse) =>
+      isDataspaceAdresseComplete(structureEmployeuse.adresse) &&
       (structureEmployeuse.contrats ?? []).some(
         (contract) => contract.date_debut === null,
       ),
   )
 
   const firstStructureWithEmptyContracts = nonNullStructures.find(
-    (structureEmployeuse) => (structureEmployeuse.contrats ?? []).length === 0,
+    (structureEmployeuse) =>
+      isDataspaceAdresseComplete(structureEmployeuse.adresse) &&
+      (structureEmployeuse.contrats ?? []).length === 0,
   )
 
   const temporaryContractTargetStructure =
