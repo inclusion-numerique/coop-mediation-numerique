@@ -161,12 +161,39 @@ export const isDataspaceAdresseComplete = (
   Boolean(adresse.nom_commune)
 
 /**
+ * When the Dataspace returns an incomplete payload (address can't identify a
+ * real place), we still want to preserve the user's existing employment if one
+ * exists on a structure with the same SIRET — rather than silently dropping the
+ * emploi via reconciliation. Returns null when no existing link can be reused,
+ * in which case the structure is skipped (real new garbage payload).
+ */
+const findExistingEmployeStructureIdBySiret = async ({
+  userId,
+  siret,
+}: {
+  userId: string
+  siret: string
+}): Promise<string | null> => {
+  const existing = await prismaClient.employeStructure.findFirst({
+    where: {
+      userId,
+      suppression: null,
+      structure: { siret },
+    },
+    orderBy: { creation: 'desc' },
+    select: { structureId: true },
+  })
+  return existing?.structureId ?? null
+}
+
+/**
  * Prepare contract data from Dataspace for EmployeStructure sync
  * Returns one PreparedContract for each contract in each structure
  * Creates one EmployeStructure record per contract
  */
 export const prepareContractsFromDataspace = async (
   structuresEmployeuses: DataspaceStructureEmployeuse[],
+  userId: string,
 ): Promise<PreparedContract[]> => {
   const prepared: PreparedContract[] = []
 
@@ -184,21 +211,24 @@ export const prepareContractsFromDataspace = async (
       continue
     }
 
-    // Skip structures whose Dataspace address is incomplete (cannot identify a
-    // real place → would create a duplicate on every sync).
-    if (!isDataspaceAdresseComplete(structureEmployeuse.adresse)) {
+    // When the payload is complete, find or create the structure as usual.
+    // When the payload is incomplete, preserve any existing emploi on a
+    // structure with the same SIRET; otherwise skip (no reliable link).
+    const structureId = isDataspaceAdresseComplete(structureEmployeuse.adresse)
+      ? (await getOrCreateStructureFromDataspace({ structureEmployeuse })).id
+      : await findExistingEmployeStructureIdBySiret({
+          userId,
+          siret: structureEmployeuse.siret,
+        })
+
+    if (!structureId) {
       continue
     }
-
-    // Find or create structure (outside transaction - structures are stable)
-    const structure = await getOrCreateStructureFromDataspace({
-      structureEmployeuse,
-    })
 
     // Create one PreparedContract for each contract
     for (const contract of contractsWithDebut) {
       prepared.push({
-        structureId: structure.id,
+        structureId,
         contract,
       })
     }
@@ -280,8 +310,10 @@ export const syncStructuresEmployeusesFromDataspace = async ({
 
   // Step 1: Prepare all contracts (find/create structures) outside transaction
   // This already filters out structures without contracts
-  const preparedContracts =
-    await prepareContractsFromDataspace(nonNullStructures)
+  const preparedContracts = await prepareContractsFromDataspace(
+    nonNullStructures,
+    userId,
+  )
 
   const syncDate = new Date()
   const hasRunningRealContract = nonNullStructures.some((structureEmployeuse) =>
