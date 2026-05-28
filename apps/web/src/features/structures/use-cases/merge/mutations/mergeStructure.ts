@@ -7,11 +7,20 @@ type PrismaTransaction = Omit<
   '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
 >
 
+// "Already on the target" must mean the same thing the UI considers a live
+// link — otherwise a finished record on the target silently swallows the
+// source link (hard-deleted by deleteMany below) and the user ends up with
+// nothing visible. Align the visibility filter with the listing query.
+
 const mergeEmployes =
   (prisma: PrismaTransaction) =>
   async (sourceStructureId: string, targetStructureId: string) => {
     const targetEmplois = await prisma.employeStructure.findMany({
-      where: { structureId: targetStructureId, suppression: null },
+      where: {
+        structureId: targetStructureId,
+        suppression: null,
+        OR: [{ fin: null }, { fin: { gte: new Date() } }],
+      },
       select: { userId: true },
     })
     const targetUserIds = targetEmplois.map((e) => e.userId)
@@ -34,7 +43,11 @@ const mergeMediateursEnActivite =
   (prisma: PrismaTransaction) =>
   async (sourceStructureId: string, targetStructureId: string) => {
     const targetActivites = await prisma.mediateurEnActivite.findMany({
-      where: { structureId: targetStructureId, suppression: null },
+      where: {
+        structureId: targetStructureId,
+        suppression: null,
+        fin: null,
+      },
       select: { mediateurId: true },
     })
     const targetMediateurIds = targetActivites.map((a) => a.mediateurId)
