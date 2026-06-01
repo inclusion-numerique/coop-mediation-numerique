@@ -4,11 +4,6 @@ import { derivedTrancheAgeSql } from './derivedTrancheAgeSql'
 
 const currentYear = new Date().getFullYear()
 
-/**
- * The SQL expression must mirror effectiveTrancheAge / trancheAgeFromAnneeNaissance:
- * derive the tranche from the birth year when usable, otherwise fall back to the
- * stored (snake_case) value, otherwise NULL.
- */
 const cases: {
   title: string
   annee: number | null

@@ -7,14 +7,6 @@ export type RdvBeneficiaireCommuneFields = {
   communeCodeInsee: string
 }
 
-/**
- * RDV Service Public only exposes a free-text address, never a structured
- * commune. Geocode it via the BAN to fill the commune / code postal / code INSEE
- * trio that the beneficiaire fiche needs to display "Commune de résidence".
- *
- * Returns null when there is no address, no geocoding match, or an incomplete
- * result (the trio must be complete to be usable).
- */
 export const communeFieldsFromRdvAddress = async (
   address: string | null | undefined,
 ): Promise<RdvBeneficiaireCommuneFields | null> => {

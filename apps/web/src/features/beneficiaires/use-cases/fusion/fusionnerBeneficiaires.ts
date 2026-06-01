@@ -117,10 +117,6 @@ export const fusionnerBeneficiaires = async ({
         })
       }
 
-      // anneeNaissance and trancheAge are merged field by field and can come from
-      // different beneficiaires : re-derive the tranche from the merged birth year
-      // so the couple stays coherent (the stored tranche is otherwise the source
-      // of "Non communiqué" / stale stats).
       mergedData.trancheAge =
         trancheAgeFromAnneeNaissance(mergedData.anneeNaissance) ??
         mergedData.trancheAge ??

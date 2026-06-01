@@ -173,11 +173,6 @@ const BeneficiaireForm = ({
     anneeNaissanceInt >= anneeNaissanceMin &&
     anneeNaissanceInt <= anneeNaissanceMax
 
-  // On mount, derive the tranche d'âge from an existing birth year so fiches
-  // whose stored tranche diverged (NULL or stale, e.g. RDVSP / fusion) are
-  // repaired even though the disabled radio cannot be edited by hand and the
-  // change-based watcher below never fires without a birth-year edit.
-  // getValues / setValue are stable, so this runs only once.
   useEffect(() => {
     const trancheAgeFromAnnee = trancheAgeFromAnneeNaissance(
       getValues('anneeNaissance'),

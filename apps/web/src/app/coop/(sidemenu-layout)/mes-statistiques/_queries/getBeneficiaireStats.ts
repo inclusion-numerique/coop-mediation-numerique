@@ -79,9 +79,6 @@ export const getBeneficiaireStatsRaw = async ({
         })},
         ${createEnumDistinctCountSelect({
           idColumn: 'ben.id',
-          // Derive the tranche from the birth year when available (stays accurate
-          // over time and repairs fiches whose stored tranche_age diverged, e.g.
-          // RDVSP / fusion), falling back to the stored value otherwise.
           enumColumn: derivedTrancheAgeSql(
             'ben.annee_naissance',
             'ben.tranche_age',

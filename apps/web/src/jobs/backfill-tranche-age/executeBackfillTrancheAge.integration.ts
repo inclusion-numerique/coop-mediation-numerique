@@ -10,9 +10,9 @@ import { executeBackfillTrancheAge } from './executeBackfillTrancheAge'
 
 const currentYear = new Date().getFullYear()
 
-const divergentId = v4() // birth year present, stored tranche NULL (the RDVSP bug)
-const staleId = v4() // birth year present, stored tranche stale/inconsistent
-const trancheOnlyId = v4() // no birth year, tranche set by hand (must be untouched)
+const divergentId = v4()
+const staleId = v4()
+const trancheOnlyId = v4()
 
 describe('executeBackfillTrancheAge', () => {
   beforeAll(async () => {

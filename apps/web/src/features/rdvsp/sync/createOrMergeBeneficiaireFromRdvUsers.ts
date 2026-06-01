@@ -118,8 +118,6 @@ export const createOrMergeBeneficiaireFromRdvUser = async ({
       }
     }
 
-    // RDV only gives a free-text address : geocode it to fill the commune trio
-    // the fiche needs. Never overwrite a commune already set (e.g. entered by hand).
     if (!!rdvUser.address && !beneficiaireToMerge.commune) {
       const communeFields = await communeFieldsFromRdvAddress(rdvUser.address)
       if (communeFields) {

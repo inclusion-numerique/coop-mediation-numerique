@@ -28,16 +28,6 @@ export const trancheAgeFromAnneeNaissance = (
   return 'SoixanteDixPlus'
 }
 
-/**
- * Effective tranche d'âge for display and statistics.
- *
- * The tranche is derived from the birth year whenever one is available (and the
- * derivation stays accurate as years pass), falling back to the stored value
- * only when there is no usable birth year — e.g. anonymous beneficiaires whose
- * tranche was picked directly.
- *
- * This is the single source of truth mirrored by the SQL in getBeneficiaireStats.
- */
 export const effectiveTrancheAge = (
   anneeNaissance?: string | number | null,
   trancheAge?: TrancheAge | null,

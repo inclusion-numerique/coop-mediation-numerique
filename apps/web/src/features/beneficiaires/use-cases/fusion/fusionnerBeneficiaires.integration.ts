@@ -26,9 +26,6 @@ describe('fusionnerBeneficiaires', () => {
   })
 
   test('re-derives the tranche d’âge from the merged birth year so it stays coherent', async () => {
-    // Destination carries a manually-set tranche but no birth year ;
-    // source carries a birth year. Field-by-field merge would otherwise keep the
-    // destination's now-stale tranche while taking the source's birth year.
     await prismaClient.beneficiaire.createMany({
       data: [
         {
