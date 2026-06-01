@@ -758,28 +758,30 @@ const AdministrationUserPage = async ({
         )}
         {enActivite.length > 0 ? (
           <AdministrationInfoCard title="Lieux d’activité">
-            {enActivite.map((activite) => (
-              <div key={activite.id}>
-                <p className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
-                  {activite.structure.nom}
-                </p>
-                <AdministrationInlineLabelsValues
-                  items={[
-                    ...getStructuresInfos(activite.structure),
-                    {
-                      label: 'Lien d’activité créé le',
-                      value: dateAsDay(activite.creation),
-                    },
-                    {
-                      label: 'Lien d’activité supprimé le',
-                      value: activite.suppression
-                        ? dateAsDay(activite.suppression)
-                        : '-',
-                    },
-                  ]}
-                />
-              </div>
-            ))}
+            {enActivite.map((activite) => {
+              const finLien = activite.suppression ?? activite.fin
+
+              return (
+                <div key={activite.id}>
+                  <p className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
+                    {activite.structure.nom}
+                  </p>
+                  <AdministrationInlineLabelsValues
+                    items={[
+                      ...getStructuresInfos(activite.structure),
+                      {
+                        label: 'Lien d’activité créé le',
+                        value: dateAsDay(activite.creation),
+                      },
+                      {
+                        label: 'Lien d’activité supprimé le',
+                        value: finLien ? dateAsDay(finLien) : '-',
+                      },
+                    ]}
+                  />
+                </div>
+              )
+            })}
           </AdministrationInfoCard>
         ) : (
           !!mediateur && (
