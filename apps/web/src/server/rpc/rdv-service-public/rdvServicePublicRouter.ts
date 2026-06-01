@@ -490,6 +490,7 @@ export const rdvServicePublicRouter = router({
                       mediateurId: true,
                       adresse: true,
                       anneeNaissance: true,
+                      commune: true,
                     },
                     where: {
                       mediateurId: user.mediateur.id, // Important so we don't handle shared beneficiaires

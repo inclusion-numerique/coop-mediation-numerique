@@ -7,6 +7,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import { fixTelephone } from '@app/web/utils/clean-operations'
 import type { Beneficiaire, Prisma, RdvUser } from '@prisma/client'
 import { v4 } from 'uuid'
+import { communeFieldsFromRdvAddress } from './communeFieldsFromRdvAddress'
 
 export type RdvUserMergedBeneficiaire = Pick<
   Beneficiaire,
@@ -18,6 +19,7 @@ export type RdvUserMergedBeneficiaire = Pick<
   | 'mediateurId'
   | 'adresse'
   | 'anneeNaissance'
+  | 'commune'
 >
 
 export type RdvUserForMerge = Pick<
@@ -42,7 +44,8 @@ const mergedBeneficiaireSelect = {
   mediateurId: true,
   adresse: true,
   anneeNaissance: true,
-}
+  commune: true,
+} satisfies Prisma.BeneficiaireSelect
 
 /**
  * This will create or merge a beneficiaire from a rdv user
@@ -115,6 +118,18 @@ export const createOrMergeBeneficiaireFromRdvUser = async ({
       }
     }
 
+    // RDV only gives a free-text address : geocode it to fill the commune trio
+    // the fiche needs. Never overwrite a commune already set (e.g. entered by hand).
+    if (!!rdvUser.address && !beneficiaireToMerge.commune) {
+      const communeFields = await communeFieldsFromRdvAddress(rdvUser.address)
+      if (communeFields) {
+        beneficiaireUpdateData.commune = communeFields.commune
+        beneficiaireUpdateData.communeCodePostal =
+          communeFields.communeCodePostal
+        beneficiaireUpdateData.communeCodeInsee = communeFields.communeCodeInsee
+      }
+    }
+
     // Update beneficiaire if needed
     if (Object.keys(beneficiaireUpdateData).length > 0) {
       const updated = await prismaClient.beneficiaire.update({
@@ -136,6 +151,7 @@ export const createOrMergeBeneficiaireFromRdvUser = async ({
 
   // We create a new beneficiaire linked to the rdv user
   const anneeNaissance = rdvUser.birthDate?.getFullYear()
+  const communeFields = await communeFieldsFromRdvAddress(rdvUser.address)
   const newBeneficiaire = await prismaClient.beneficiaire.create({
     data: {
       id: v4(),
@@ -147,6 +163,9 @@ export const createOrMergeBeneficiaireFromRdvUser = async ({
       adresse: rdvUser.address,
       anneeNaissance,
       trancheAge: trancheAgeFromAnneeNaissance(anneeNaissance),
+      commune: communeFields?.commune ?? null,
+      communeCodePostal: communeFields?.communeCodePostal ?? null,
+      communeCodeInsee: communeFields?.communeCodeInsee ?? null,
       mediateurId,
       anonyme: false,
     },
