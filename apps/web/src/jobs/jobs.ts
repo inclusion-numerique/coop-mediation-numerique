@@ -8,6 +8,7 @@ import { ApplyViderSiretJobValidation } from './apply-vider-siret/applyViderSire
 import { AuditAdresseCoherenceJobValidation } from './audit-adresse-coherence/auditAdresseCoherenceJob'
 import { AuditSiretCoherenceJobValidation } from './audit-siret-coherence/auditSiretCoherenceJob'
 import { AuditStructuresOverviewJobValidation } from './audit-structures-overview/auditStructuresOverviewJob'
+import { BackfillTrancheAgeJobValidation } from './backfill-tranche-age/backfillTrancheAgeJob'
 import { BackupDatabaseJobValidation } from './backup-database/backupDatabaseJob'
 import { DeduplicateStructuresJobValidation } from './deduplicate-structures/deduplicateStructuresJob'
 import { DetectDuplicateStructuresJobValidation } from './detect-duplicate-structures/detectDuplicateStructuresJob'
@@ -53,6 +54,7 @@ export const JobValidation = z.discriminatedUnion('name', [
   AuditAdresseCoherenceJobValidation,
   AuditSiretCoherenceJobValidation,
   AuditStructuresOverviewJobValidation,
+  BackfillTrancheAgeJobValidation,
   BackupDatabaseJobValidation,
   UpdateStructuresCartographieNationaleJobValidation,
   ImportContactsToBrevoValidation,

@@ -6,6 +6,7 @@ import {
   statutSocialLabels,
   trancheAgeLabels,
 } from '@app/web/beneficiaire/beneficiaire'
+import { effectiveTrancheAge } from '@app/web/beneficiaire/trancheAgeFromAnneeNaissance'
 import InfoLabelValue from '@app/web/components/InfoLabelValue'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -28,7 +29,9 @@ const ViewBeneficiaireInformationsPage = ({
     genre,
     statutSocial,
     trancheAge,
+    anneeNaissance,
   } = beneficiaire
+  const displayedTrancheAge = effectiveTrancheAge(anneeNaissance, trancheAge)
   return (
     <>
       <BeneficiairePageNavigationBar
@@ -135,7 +138,11 @@ const ViewBeneficiaireInformationsPage = ({
             <div>
               <InfoLabelValue
                 label="Tranche d’âge"
-                value={trancheAge ? trancheAgeLabels[trancheAge] : '-'}
+                value={
+                  displayedTrancheAge
+                    ? trancheAgeLabels[displayedTrancheAge]
+                    : '-'
+                }
               />
             </div>
             <div>
