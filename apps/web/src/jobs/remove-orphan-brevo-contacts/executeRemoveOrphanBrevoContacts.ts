@@ -25,7 +25,9 @@ type BrevoContactsResponse = {
 
 const fetchBrevoContactsPage = brevoApiThrottle(
   async (listId: number, offset: number, limit: number) => {
-    console.info(`Fetching Brevo contacts page: listId=${listId}, offset=${offset}, limit=${limit}`)
+    console.info(
+      `Fetching Brevo contacts page: listId=${listId}, offset=${offset}, limit=${limit}`,
+    )
     const response = await axios.get<BrevoContactsResponse>(
       'https://api.brevo.com/v3/contacts',
       {
