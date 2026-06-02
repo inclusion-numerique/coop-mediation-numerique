@@ -44,6 +44,10 @@ export const executeBackupDatabaseJob = async ({
 
   const expiresAtISOString = expiresAt.toISOString()
 
+  console.info(
+    `Creating Scaleway backup: name=${fileName}, database=${databaseName}, type=${type}, accessKey=${ServerWebAppConfig.Scaleway.accessKey}, expiresAt=${expiresAtISOString}`,
+  )
+
   const response = await axios.post<ScalewayCreateBackupResponse>(
     'https://api.scaleway.com/rdb/v1/regions/fr-par/backups',
     {
@@ -60,6 +64,10 @@ export const executeBackupDatabaseJob = async ({
         'Content-Type': 'application/json',
       },
     },
+  )
+
+  console.info(
+    `Scaleway backup created: id=${response.data.id}, status=${response.data.status}`,
   )
 
   return {
