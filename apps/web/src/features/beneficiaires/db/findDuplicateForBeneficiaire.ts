@@ -11,6 +11,7 @@ export type DuplicateBeneficiaire = {
   creation: Date
   anneeNaissance: number | null
   adresse: string | null
+  commune: string | null
 }
 
 export const findDuplicateForBeneficiaire = async ({
@@ -67,6 +68,7 @@ export const findDuplicateForBeneficiaire = async ({
         creation,
         annee_naissance as "anneeNaissance",
         adresse,
+        commune,
         NULLIF(regexp_replace(lower(unaccent(nom)), '[\\s-]', '', 'g'), '') as nom_search,
         NULLIF(regexp_replace(lower(unaccent(prenom)), '[\\s-]', '', 'g'), '') as prenom_search,
         NULLIF(lower(regexp_replace(unaccent(telephone), '\\s', '', 'g')), '') as telephone_search,
@@ -85,7 +87,8 @@ export const findDuplicateForBeneficiaire = async ({
       c.email,
       c.creation,
       c."anneeNaissance",
-      c.adresse
+      c.adresse,
+      c.commune
     FROM "candidates" c
     CROSS JOIN "target" t
     WHERE

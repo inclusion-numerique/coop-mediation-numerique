@@ -42,7 +42,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { DefaultValues, useForm } from 'react-hook-form'
 import styles from './BeneficiaireForm.module.css'
 
@@ -88,6 +88,7 @@ const BeneficiaireForm = ({
     handleSubmit,
     setValue,
     watch,
+    getValues,
     formState: { isSubmitting, isSubmitSuccessful, errors },
   } = form
 
@@ -171,6 +172,18 @@ const BeneficiaireForm = ({
     !!anneeNaissanceInt &&
     anneeNaissanceInt >= anneeNaissanceMin &&
     anneeNaissanceInt <= anneeNaissanceMax
+
+  useEffect(() => {
+    const trancheAgeFromAnnee = trancheAgeFromAnneeNaissance(
+      getValues('anneeNaissance'),
+    )
+    if (
+      trancheAgeFromAnnee &&
+      getValues('trancheAge') !== trancheAgeFromAnnee
+    ) {
+      setValue('trancheAge', trancheAgeFromAnnee)
+    }
+  }, [getValues, setValue])
 
   useWatchSubscription(
     watch,

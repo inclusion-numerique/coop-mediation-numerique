@@ -1,3 +1,4 @@
+import { trancheAgeFromAnneeNaissance } from '@app/web/beneficiaire/trancheAgeFromAnneeNaissance'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Beneficiaire } from '@prisma/client'
 
@@ -115,6 +116,11 @@ export const fusionnerBeneficiaires = async ({
           mergedData,
         })
       }
+
+      mergedData.trancheAge =
+        trancheAgeFromAnneeNaissance(mergedData.anneeNaissance) ??
+        mergedData.trancheAge ??
+        null
 
       // Utiliser la date de création la plus ancienne
       const oldestCreation =
