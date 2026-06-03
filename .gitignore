@@ -83,3 +83,7 @@ packages/cdk/cdk.out.json
 # AI and code generation
 /.claude
 CLAUDE.md
+
+# prisma ERD (generated, regenerate with `pnpm -F web erd`)
+/apps/web/prisma/ERD.md
+/apps/web/prisma/ERD.svg
