@@ -27,3 +27,9 @@ export const trancheAgeFromAnneeNaissance = (
 
   return 'SoixanteDixPlus'
 }
+
+export const effectiveTrancheAge = (
+  anneeNaissance?: string | number | null,
+  trancheAge?: TrancheAge | null,
+): TrancheAge | null =>
+  trancheAgeFromAnneeNaissance(anneeNaissance) ?? trancheAge ?? null

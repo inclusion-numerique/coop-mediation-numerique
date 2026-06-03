@@ -12,6 +12,8 @@ import { executeApplyViderSiret } from './apply-vider-siret/executeApplyViderSir
 import { executeAuditAdresseCoherence } from './audit-adresse-coherence/executeAuditAdresseCoherence'
 import { executeAuditSiretCoherence } from './audit-siret-coherence/executeAuditSiretCoherence'
 import { executeAuditStructuresOverview } from './audit-structures-overview/executeAuditStructuresOverview'
+import { executeBackfillCommuneRdvsp } from './backfill-commune-rdvsp/executeBackfillCommuneRdvsp'
+import { executeBackfillTrancheAge } from './backfill-tranche-age/executeBackfillTrancheAge'
 import { executeBackupDatabaseJob } from './backup-database/executeBackupDatabaseJob'
 import { executeDeduplicateStructures } from './deduplicate-structures/executeDeduplicateStructures'
 import { executeDetectDuplicateStructures } from './detect-duplicate-structures/executeDetectDuplicateStructures'
@@ -65,6 +67,8 @@ export const jobExecutors: {
   'audit-adresse-coherence': executeAuditAdresseCoherence,
   'audit-siret-coherence': executeAuditSiretCoherence,
   'audit-structures-overview': executeAuditStructuresOverview,
+  'backfill-commune-rdvsp': executeBackfillCommuneRdvsp,
+  'backfill-tranche-age': executeBackfillTrancheAge,
   'backup-database': executeBackupDatabaseJob,
   'update-structures-cartographie-nationale':
     executeUpdateStructuresCartographieNationale,

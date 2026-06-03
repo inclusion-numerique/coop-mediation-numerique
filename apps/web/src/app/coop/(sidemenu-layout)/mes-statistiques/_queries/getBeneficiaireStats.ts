@@ -1,6 +1,7 @@
 import { activitesMediateurIdsWhereCondition } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/activitesMediateurIdsWhereCondition'
 import { allocatePercentagesFromRecords } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/allocatePercentages'
 import { createEnumDistinctCountSelect } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/createEnumCountSelect'
+import { derivedTrancheAgeSql } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/derivedTrancheAgeSql'
 import {
   genreLabels,
   genreValues,
@@ -78,7 +79,10 @@ export const getBeneficiaireStatsRaw = async ({
         })},
         ${createEnumDistinctCountSelect({
           idColumn: 'ben.id',
-          enumColumn: 'ben.tranche_age',
+          enumColumn: derivedTrancheAgeSql(
+            'ben.annee_naissance',
+            'ben.tranche_age',
+          ),
           as: 'tranche_age',
           enumObj: TrancheAge,
           defaultEnumValue: TrancheAge.NonCommunique,
