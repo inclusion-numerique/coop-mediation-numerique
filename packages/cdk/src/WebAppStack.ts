@@ -183,13 +183,16 @@ export class WebAppStack extends TerraformStack {
       ? projectTitle
       : `[${namespace}] ${projectTitle}`
 
-    const databaseUrl = Fn.format('postgres://%s:%s@%s:%s/%s?sslmode=require', [
-      databaseUser,
-      databasePasswordVariable.value,
-      databaseInstance.endpointIp,
-      databaseInstance.endpointPort,
-      databaseName,
-    ]) as string
+    const databaseUrl = Fn.format(
+      'postgres://%s:%s@%s:%s/%s?sslmode=require&options=-c%%20search_path%%3Dcoop,public',
+      [
+        databaseUser,
+        databasePasswordVariable.value,
+        databaseInstance.endpointIp,
+        databaseInstance.endpointPort,
+        databaseName,
+      ],
+    ) as string
 
     // Changing the name will recreate a new container
     // The names fails with max length so we shorten it

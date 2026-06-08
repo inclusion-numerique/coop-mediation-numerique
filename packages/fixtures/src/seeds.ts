@@ -31,7 +31,7 @@ export const deleteAll = async (transaction: Prisma.TransactionClient) => {
     { table_name: string }[]
   >`SELECT table_name
     FROM information_schema.tables
-    WHERE table_schema = 'public'
+    WHERE table_schema = 'coop'
       AND table_type = 'BASE TABLE'
       AND table_name != '_prisma_migrations'
       AND table_name != '_prisma_migrations_lock'
@@ -40,9 +40,9 @@ export const deleteAll = async (transaction: Prisma.TransactionClient) => {
   `
 
   await transaction.$queryRawUnsafe(
-    `TRUNCATE TABLE "${tables
+    `TRUNCATE TABLE "coop"."${tables
       .map(({ table_name }) => table_name)
-      .join('", "')}" CASCADE`,
+      .join('", "coop"."')}" CASCADE`,
   )
 
   return tables.map(({ table_name }) => table_name)
