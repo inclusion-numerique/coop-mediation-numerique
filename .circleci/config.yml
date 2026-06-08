@@ -21,7 +21,7 @@ executors:
         environment:
           TZ: 'UTC'
           CI_PG_ADMIN_URL: postgresql://postgres@localhost
-          CI_DATABASE_URL: postgresql://postgres@localhost/test
+          CI_DATABASE_URL: postgresql://postgres@localhost/test?options=-c%20search_path%3Dcoop,public
       - image: huguesm/circleci-postgres:14.13-vector
         environment:
           POSTGRES_USER: postgres
@@ -35,7 +35,7 @@ executors:
       - image: cimg/node:25.4.0-browsers
         environment:
           TZ: 'UTC'
-          CI_DATABASE_URL: postgresql://postgres@localhost/test
+          CI_DATABASE_URL: postgresql://postgres@localhost/test?options=-c%20search_path%3Dcoop,public
       - image: maildev/maildev:latest
         environment:
           MAILDEV_INCOMING_USER: mailuser

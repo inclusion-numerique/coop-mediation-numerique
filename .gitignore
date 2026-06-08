@@ -87,3 +87,4 @@ CLAUDE.md
 # prisma ERD (generated, regenerate with `pnpm -F web erd`)
 /apps/web/prisma/ERD.md
 /apps/web/prisma/ERD.svg
+/apps/web/prisma/ERD.pdf
