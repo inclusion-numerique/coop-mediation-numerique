@@ -361,46 +361,14 @@ export const locallyRestoreLatestMainBackup = new Command(
       })
     }
 
-    output('Clearing database tables and enum types before loading data')
+    output(
+      'Clearing coop schema and prisma migration history before loading data',
+    )
 
-    const tables = await prismaClient.$queryRaw<
-      { tablename: string }[]
-    >` SELECT tablename
-       FROM pg_tables
-       WHERE schemaname = current_schema()`
-
-    if (tables.length > 0) {
-      await prismaClient.$queryRawUnsafe(
-        `DROP TABLE IF EXISTS "${tables
-          .map(({ tablename }) => tablename)
-          .join('", "')}" CASCADE`,
-      )
-    }
-
-    const enums = await prismaClient.$queryRaw<
-      {
-        schema: string
-        name: string
-      }[]
-    >`
-        SELECT n.nspname as schema, t.typname as name
-        FROM pg_type t
-                 LEFT JOIN pg_enum e ON t.oid = e.enumtypid
-                 LEFT JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
-        WHERE pg_catalog.pg_type_is_visible(t.oid)
-          AND n.nspname = current_schema()
-          AND t.typcategory = 'E'
-        GROUP BY schema, name
-    `
-
-    // Delete all enum types
-    if (enums.length > 0) {
-      for (const { name } of enums) {
-        await prismaClient.$queryRawUnsafe(
-          `DROP TYPE IF EXISTS "${name}" CASCADE`,
-        )
-      }
-    }
+    await prismaClient.$executeRawUnsafe('DROP SCHEMA IF EXISTS coop CASCADE')
+    await prismaClient.$executeRawUnsafe(
+      'DROP TABLE IF EXISTS public._prisma_migrations CASCADE',
+    )
 
     output('Restoring database from backup file')
     await exec(
