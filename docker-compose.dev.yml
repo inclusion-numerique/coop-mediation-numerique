@@ -10,7 +10,9 @@ services:
       - "1080:1080"
       - "1025:1025"
   db:
-    image: pgvector/pgvector:pg17
+    build:
+      context: ./docker/postgres
+    image: coop-postgis-pgvector:pg17
     container_name: coop_pg
     environment:
       - POSTGRES_DB=${NEXT_PUBLIC_APP_SLUG}
@@ -21,6 +23,7 @@ services:
       - '5433:5432'
     volumes:
       - coop-pgdata:/var/lib/postgresql/data
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
     networks:
       - coop-network
 

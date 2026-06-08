@@ -14,6 +14,7 @@ generator erd {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["coop", "public"]
 }
 
 // Account, Session, User and VerificationToken
@@ -37,6 +38,7 @@ model Account {
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
+  @@schema("coop")
 }
 
 model Session {
@@ -53,6 +55,7 @@ model Session {
 
   @@index([userId])
   @@map("sessions")
+  @@schema("coop")
 }
 
 enum UserRole {
@@ -61,6 +64,7 @@ enum UserRole {
   Admin   @map("admin")
 
   @@map("user_role")
+  @@schema("coop")
 }
 
 enum ProfilInscription {
@@ -70,12 +74,14 @@ enum ProfilInscription {
   Coordinateur                    @map("coordinateur")
 
   @@map("profil_inscription")
+  @@schema("coop")
 }
 
 enum UserFeatureFlag {
   Assistant @map("assistant")
 
   @@map("user_feature_flag")
+  @@schema("coop")
 }
 
 enum OnboardingStatus {
@@ -86,6 +92,8 @@ enum OnboardingStatus {
   nouveau_j30_sent
   nouveau_j60_sent
   warning_j90_sent
+
+  @@schema("coop")
 }
 
 model User {
@@ -185,6 +193,7 @@ model User {
   @@index([dataspaceId])
   @@index([dataspaceUserIdPg])
   @@map("users")
+  @@schema("coop")
 }
 
 model VerificationToken {
@@ -194,6 +203,7 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_tokens")
+  @@schema("coop")
 }
 
 model Image {
@@ -226,6 +236,7 @@ model Image {
   user      User?
 
   @@map("images")
+  @@schema("coop")
 }
 
 model Upload {
@@ -246,6 +257,7 @@ model Upload {
   image Image?
 
   @@map("uploads")
+  @@schema("coop")
 }
 
 model JobExecution {
@@ -262,6 +274,7 @@ model JobExecution {
   error     String?
 
   @@map("job_executions")
+  @@schema("coop")
 }
 
 enum ApiClientScope {
@@ -276,6 +289,7 @@ enum ApiClientScope {
   Utilisateurs @map("utilisateurs")
 
   @@map("api_client_scope")
+  @@schema("coop")
 }
 
 model ApiClient {
@@ -294,6 +308,7 @@ model ApiClient {
   updated DateTime @default(now())
 
   @@map("api_clients")
+  @@schema("coop")
 }
 
 // Domain model
@@ -336,6 +351,7 @@ model Mediateur {
   @@index([beneficiairesCount(sort: Desc)], map: "mediateurs_beneficiaires_count_desc_idx")
   @@index([userId])
   @@map("mediateurs")
+  @@schema("coop")
 }
 
 model PartageStatistiques {
@@ -350,6 +366,7 @@ model PartageStatistiques {
   deleted DateTime? @map("deleted")
 
   @@map("partage_statistiques")
+  @@schema("coop")
 }
 
 model InvitationEquipe {
@@ -368,6 +385,7 @@ model InvitationEquipe {
   @@index([mediateurId])
   @@index([coordinateurId])
   @@map("invitations_equipes")
+  @@schema("coop")
 }
 
 model CraConseillerNumeriqueV1 {
@@ -465,6 +483,7 @@ model CraConseillerNumeriqueV1 {
   @@index([createdAt(sort: Desc)])
   @@index([codeCommune])
   @@map("cras_conseiller_numerique_v1")
+  @@schema("coop")
 }
 
 // Les coordinateurs peuvent être dans le dispositif conseiller-numerique
@@ -494,6 +513,7 @@ model Coordinateur {
 
   @@index([userId])
   @@map("coordinateurs")
+  @@schema("coop")
 }
 
 model MediateurCoordonne {
@@ -512,6 +532,7 @@ model MediateurCoordonne {
   @@index([mediateurId])
   @@index([coordinateurId])
   @@map("mediateurs_coordonnes")
+  @@schema("coop")
 }
 
 enum Typologie {
@@ -609,6 +630,7 @@ enum Typologie {
   UDAF           @map("UDAF")
 
   @@map("typologie")
+  @@schema("coop")
 }
 
 enum Service {
@@ -623,6 +645,7 @@ enum Service {
   AcquisitionDeMaterielInformatiqueAPrixSolidaire @map("Acquisition de matériel informatique à prix solidaire")
 
   @@map("service")
+  @@schema("coop")
 }
 
 enum PublicSpecifiquementAdresse {
@@ -633,6 +656,7 @@ enum PublicSpecifiquementAdresse {
   Femmes          @map("Femmes")
 
   @@map("public_specifiquement_adresse")
+  @@schema("coop")
 }
 
 enum PriseEnChargeSpecifique {
@@ -645,6 +669,7 @@ enum PriseEnChargeSpecifique {
   DeficienceVisuelle       @map("Déficience visuelle")
 
   @@map("prise_en_charge_specifique")
+  @@schema("coop")
 }
 
 enum FraisACharge {
@@ -653,6 +678,7 @@ enum FraisACharge {
   Payant               @map("Payant")
 
   @@map("frais_a_charge")
+  @@schema("coop")
 }
 
 enum DispositifProgrammeNational {
@@ -669,6 +695,7 @@ enum DispositifProgrammeNational {
   RelaisNumeriqueEmmausConnect      @map("Relais numérique (Emmaüs Connect)")
 
   @@map("dispositif_programme_national")
+  @@schema("coop")
 }
 
 enum FormationLabel {
@@ -683,6 +710,7 @@ enum FormationLabel {
   SudLabs                              @map("SUD LABS (PACA)")
 
   @@map("formation_label")
+  @@schema("coop")
 }
 
 enum Itinerance {
@@ -690,6 +718,7 @@ enum Itinerance {
   Fixe      @map("Fixe")
 
   @@map("itinerance")
+  @@schema("coop")
 }
 
 enum ModaliteAcces {
@@ -701,6 +730,7 @@ enum ModaliteAcces {
   FicheDePrescription @map("Envoyer un mail avec une fiche de prescription")
 
   @@map("modalite_acces")
+  @@schema("coop")
 }
 
 enum ModaliteAccompagnement {
@@ -710,6 +740,7 @@ enum ModaliteAccompagnement {
   ADistance                @map("À distance")
 
   @@map("modalite_accompagnement")
+  @@schema("coop")
 }
 
 // Lieu physique. Source de vérité interne. Peut être mise à jour depuis StructureCartographieNationale.
@@ -816,6 +847,7 @@ model Structure {
   @@index([v1PermanenceId])
   @@index([codeInsee])
   @@map("structures")
+  @@schema("coop")
 }
 
 // Lieu physique. CF LieuStandardMediationNumerique.ts.
@@ -947,6 +979,7 @@ model StructureCartographieNationale {
   // Index conseillerNumeriqueId, aidantsConnectId, and coopIds array values for fast lookups
   @@index([coopId])
   @@map("structures_cartographie_nationale")
+  @@schema("coop")
 }
 
 model EmployeStructure {
@@ -978,6 +1011,7 @@ model EmployeStructure {
   @@index([userId])
   @@index([structureId])
   @@map("employes_structures")
+  @@schema("coop")
 }
 
 model MediateurEnActivite {
@@ -1007,6 +1041,7 @@ model MediateurEnActivite {
   @@index([mediateurId])
   @@index([structureId])
   @@map("mediateurs_en_activite")
+  @@schema("coop")
 }
 
 enum Genre {
@@ -1015,6 +1050,7 @@ enum Genre {
   NonCommunique @map("non_communique")
 
   @@map("genre")
+  @@schema("coop")
 }
 
 enum TrancheAge {
@@ -1028,6 +1064,7 @@ enum TrancheAge {
   NonCommunique         @map("non_communique")
 
   @@map("tranche_age")
+  @@schema("coop")
 }
 
 enum StatutSocial {
@@ -1038,6 +1075,7 @@ enum StatutSocial {
   NonCommunique @map("non_communique")
 
   @@map("statut_social")
+  @@schema("coop")
 }
 
 model Beneficiaire {
@@ -1105,6 +1143,7 @@ model Beneficiaire {
   @@index([rdvUserId])
   @@index([fusionVersId])
   @@map("beneficiaires")
+  @@schema("coop")
 }
 
 enum TypeActivite {
@@ -1112,6 +1151,7 @@ enum TypeActivite {
   Collectif  @map("collectif")
 
   @@map("type_activite")
+  @@schema("coop")
 }
 
 enum TypeActiviteCoordination {
@@ -1120,6 +1160,7 @@ enum TypeActiviteCoordination {
   Partenariat @map("partenariat")
 
   @@map("type_activite_coordination")
+  @@schema("coop")
 }
 
 enum TypeAnimation {
@@ -1132,6 +1173,7 @@ enum TypeAnimation {
   Autre               @map("autre")
 
   @@map("type_animation")
+  @@schema("coop")
 }
 
 enum Initiative {
@@ -1139,6 +1181,7 @@ enum Initiative {
   Demande    @map("demande")
 
   @@map("initiative")
+  @@schema("coop")
 }
 
 enum ThematiqueAnimation {
@@ -1150,6 +1193,7 @@ enum ThematiqueAnimation {
   Autre         @map("autre")
 
   @@map("thematique_animation")
+  @@schema("coop")
 }
 
 enum TypeEvenement {
@@ -1160,6 +1204,7 @@ enum TypeEvenement {
   Autre              @map("autre")
 
   @@map("type_evenement")
+  @@schema("coop")
 }
 
 enum Organisateur {
@@ -1176,6 +1221,7 @@ enum Organisateur {
   Autre       @map("autre")
 
   @@map("organisateur")
+  @@schema("coop")
 }
 
 enum EchelonTerritorial {
@@ -1186,6 +1232,7 @@ enum EchelonTerritorial {
   National      @map("national")
 
   @@map("echelon_territorial")
+  @@schema("coop")
 }
 
 enum NaturePartenariat {
@@ -1196,6 +1243,7 @@ enum NaturePartenariat {
   Autre                      @map("autre")
 
   @@map("nature_partenariat")
+  @@schema("coop")
 }
 
 model ActiviteCoordination {
@@ -1251,6 +1299,7 @@ model ActiviteCoordination {
   // performance indexes
   @@index([date])
   @@map("activite_coordination")
+  @@schema("coop")
 }
 
 model Activite {
@@ -1346,6 +1395,7 @@ model Activite {
   // performance index for thematiques array filtering
   @@index([thematiques], type: Gin)
   @@map("activites")
+  @@schema("coop")
 }
 
 model ActivitesTags {
@@ -1357,6 +1407,7 @@ model ActivitesTags {
 
   @@id([activiteId, tagId])
   @@map("activite_tags")
+  @@schema("coop")
 }
 
 model ActivitesCoordinationTags {
@@ -1368,6 +1419,7 @@ model ActivitesCoordinationTags {
 
   @@id([activiteCoordinationId, tagId])
   @@map("activite_coordination_tags")
+  @@schema("coop")
 }
 
 model Tag {
@@ -1392,6 +1444,7 @@ model Tag {
   @@index([mediateurId])
   @@index([coordinateurId])
   @@map("tags")
+  @@schema("coop")
 }
 
 // Ce modèle représente un accompagnement d'un bénéficiare
@@ -1415,6 +1468,7 @@ model Accompagnement {
   @@index([activiteId, beneficiaireId], map: "accompagnements_activite_beneficiaire_idx")
   @@index([premierAccompagnement], map: "accompagnements_premier_accompagnement_idx")
   @@map("accompagnements")
+  @@schema("coop")
 }
 
 enum TypeLieu {
@@ -1424,6 +1478,7 @@ enum TypeLieu {
   Autre        @map("autre")
 
   @@map("type_lieu")
+  @@schema("coop")
 }
 
 enum Materiel {
@@ -1434,6 +1489,7 @@ enum Materiel {
   Aucun      @map("aucun")
 
   @@map("materiel")
+  @@schema("coop")
 }
 
 // Thematiques d’inclusion numérique
@@ -1470,6 +1526,7 @@ enum Thematique {
   Associations                    @map("associations")
 
   @@map("thematique")
+  @@schema("coop")
 }
 
 enum Autonomie {
@@ -1478,6 +1535,7 @@ enum Autonomie {
   Autonome              @map("autonome")
 
   @@map("autonomie")
+  @@schema("coop")
 }
 
 enum StructureDeRedirection {
@@ -1490,6 +1548,7 @@ enum StructureDeRedirection {
   Autre                           @map("autre")
 
   @@map("structure_de_redirection")
+  @@schema("coop")
 }
 
 enum NiveauAtelier {
@@ -1498,6 +1557,7 @@ enum NiveauAtelier {
   Avance        @map("avance")
 
   @@map("niveau_atelier")
+  @@schema("coop")
 }
 
 // An account linked in the Rdv service
@@ -1534,6 +1594,7 @@ model RdvAccount {
   @@index([userId])
   @@index([lastSynced])
   @@map("rdv_accounts")
+  @@schema("coop")
 }
 
 model RdvSyncLog {
@@ -1597,6 +1658,7 @@ model RdvSyncLog {
 
   @@index([rdvAccountId])
   @@map("rdv_sync_logs")
+  @@schema("coop")
 }
 
 // Organisations owned by RDV Service Public
@@ -1619,6 +1681,7 @@ model RdvOrganisation {
   syncedAt DateTime @updatedAt @map("synced_at")
 
   @@map("rdv_organisations")
+  @@schema("coop")
 }
 
 model RdvAccountOrganisation {
@@ -1632,6 +1695,7 @@ model RdvAccountOrganisation {
   @@id([accountId, organisationId])
   @@index([organisationId])
   @@map("rdv_accounts_organisations")
+  @@schema("coop")
 }
 
 enum RdvAttendanceStatus {
@@ -1642,6 +1706,7 @@ enum RdvAttendanceStatus {
   noshow  @map("noshow")
 
   @@map("rdv_attendance_status")
+  @@schema("coop")
 }
 
 enum RdvCreatorKind {
@@ -1651,6 +1716,7 @@ enum RdvCreatorKind {
   prescripteur @map("prescripteur")
 
   @@map("rdv_creator_kind")
+  @@schema("coop")
 }
 
 enum RdvCreatorType {
@@ -1660,6 +1726,7 @@ enum RdvCreatorType {
   prescripteur @map("Prescripteur")
 
   @@map("rdv_creator_type")
+  @@schema("coop")
 }
 
 model RdvUser {
@@ -1693,6 +1760,7 @@ model RdvUser {
 
   @@index([responsibleId])
   @@map("rdv_users")
+  @@schema("coop")
 }
 
 model RdvUserProfile {
@@ -1706,6 +1774,7 @@ model RdvUserProfile {
 
   @@id([organisationId, userId])
   @@map("rdv_user_profiles")
+  @@schema("coop")
 }
 
 model RdvLieu {
@@ -1723,6 +1792,7 @@ model RdvLieu {
 
   @@index([organisationId])
   @@map("rdv_lieux")
+  @@schema("coop")
 }
 
 model RdvMotif {
@@ -1739,6 +1809,7 @@ model RdvMotif {
   rdvs         Rdv[]
 
   @@map("rdv_motifs")
+  @@schema("coop")
 }
 
 model Rdv {
@@ -1786,6 +1857,7 @@ model Rdv {
   @@index([startsAt])
   @@index([status])
   @@map("rdvs")
+  @@schema("coop")
 }
 
 model RdvParticipation {
@@ -1808,6 +1880,7 @@ model RdvParticipation {
   @@index([rdvId])
   @@index([userId])
   @@map("rdv_participations")
+  @@schema("coop")
 }
 
 model RdvWebhookEndpoint {
@@ -1824,6 +1897,7 @@ model RdvWebhookEndpoint {
 
   @@index([organisationId])
   @@map("rdv_webhook_endpoints")
+  @@schema("coop")
 }
 
 enum MutationName {
@@ -1867,6 +1941,7 @@ enum MutationName {
   ChangerRoles                              @map("changer_roles")
 
   @@map("mutation_name")
+  @@schema("coop")
 }
 
 // Log d’utilisation des features de l’application
@@ -1891,6 +1966,7 @@ model Mutation {
   @@index([userId])
   @@index([timestamp(sort: Desc)])
   @@map("mutations")
+  @@schema("coop")
 }
 
 model AssistantChatThread {
@@ -1912,6 +1988,7 @@ model AssistantChatThread {
 
   @@index([createdById])
   @@map("assistant_chat_threads")
+  @@schema("coop")
 }
 
 model AssistantConfiguration {
@@ -1945,6 +2022,7 @@ model AssistantConfiguration {
   currentConfigurationFor User? @relation(name: "user_current_configuration")
 
   @@map("assistant_configurations")
+  @@schema("coop")
 }
 
 // Based on the ai sdk model
@@ -1961,6 +2039,7 @@ model AssistantChatMessage {
   @@index([threadId])
   @@index([created(sort: Asc)])
   @@map("assistant_chat_messages")
+  @@schema("coop")
 }
 
 model RagDocumentChunk {
@@ -1985,4 +2064,5 @@ model RagDocumentChunk {
   @@index([documentMd5])
   @@index([sourceId])
   @@map("rag_document_chunks")
+  @@schema("coop")
 }
