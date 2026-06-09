@@ -13,7 +13,9 @@ set -e
 
 if [ -n "${ENTREPOT_BASTION_HOST}" ]; then
   key_file="$(mktemp)"
-  printf '%s\n' "${ENTREPOT_BASTION_SSH_KEY}" >"${key_file}"
+  # ENTREPOT_BASTION_SSH_KEY holds the base64-encoded private key (single line — survives passing
+  # through .env, tfvars JSON and the container env); decode it back to a real key file.
+  printf '%s' "${ENTREPOT_BASTION_SSH_KEY}" | base64 -d >"${key_file}"
   chmod 600 "${key_file}"
 
   echo "[entrypoint] opening entrepôt SSH tunnel via ${ENTREPOT_BASTION_USER}@${ENTREPOT_BASTION_HOST}"
