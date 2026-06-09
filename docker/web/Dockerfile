@@ -2,7 +2,11 @@ FROM node:25.4-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y openssl dumb-init
+# openssl + dumb-init for the runtime; autossh + openssh-client to tunnel to the entrepôt
+# database through MIN's bastion (see entrypoint.sh). Cleaned up to keep the image small.
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends openssl dumb-init autossh openssh-client \
+ && rm -rf /var/lib/apt/lists/*
 
 ENV PORT 8080
 ENV NODE_ENV production
@@ -24,6 +28,10 @@ COPY apps/web/.next/static ./apps/web/.next/static
 
 EXPOSE $PORT
 
-ENTRYPOINT ["dumb-init", "--"]
+# Entrypoint opens the entrepôt SSH tunnel (when configured) before exec-ing the CMD below.
+COPY docker/web/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+ENTRYPOINT ["dumb-init", "--", "/app/entrypoint.sh"]
 
 CMD ["node", "./apps/web/server.js"]
