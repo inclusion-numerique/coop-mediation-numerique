@@ -1,5 +1,5 @@
 import type { UniteLegale } from '@app/web/external-apis/apiEntrepriseApiModels'
-import pRetry from 'p-retry'
+import pRetry, { AbortError } from 'p-retry'
 
 const rechercheApiEntrepriseEndpoint =
   'https://recherche-entreprises.api.gouv.fr/search'
@@ -93,8 +93,18 @@ const convertQueryParams = (queryParams: RechercheApiEntrepriseQueryParams) => {
   return searchParams
 }
 
+export type RechercheApiEntrepriseRetryOptions = {
+  retries?: number
+  factor?: number
+  minTimeout?: number
+  maxTimeout?: number
+}
+
+const rateLimitedStatus = 429
+
 export const rechercheApiEntreprise = async (
   queryParams: RechercheApiEntrepriseQueryParams,
+  retryOptions?: RechercheApiEntrepriseRetryOptions,
 ): Promise<RechercheApiResponse> => {
   const queryUrl = `${rechercheApiEntrepriseEndpoint}?${convertQueryParams(queryParams).toString()}`
 
@@ -102,6 +112,10 @@ export const rechercheApiEntreprise = async (
     const response = await fetch(queryUrl)
 
     if (!response.ok) {
+      // Retrying a client error (other than a rate limit) cannot succeed
+      if (response.status < 500 && response.status !== rateLimitedStatus) {
+        throw new AbortError(`Failed to fetch API: ${response.statusText}`)
+      }
       throw new Error(`Failed to fetch API: ${response.statusText}`)
     }
 
@@ -113,6 +127,7 @@ export const rechercheApiEntreprise = async (
     factor: 1.2,
     minTimeout: 2500,
     maxTimeout: 20_000,
+    ...retryOptions,
   })
 }
 

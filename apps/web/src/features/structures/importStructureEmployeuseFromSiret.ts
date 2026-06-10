@@ -9,7 +9,7 @@ const noopLogger: InitializeDebugLogger = () => {
 }
 
 /**
- * Import structure employeuse from SIRET only (using API Entreprise)
+ * Import structure employeuse from SIRET only (using the public Recherche d'entreprises API)
  * Creates emploi with today's date as creation date
  * Gracefully handles API errors - logs but doesn't throw
  */
@@ -22,9 +22,9 @@ export const importStructureEmployeuseFromSiret = async ({
   siret: string
   log?: InitializeDebugLogger
 }): Promise<{ structureId: string } | null> => {
-  log('fetchSiretApiData: calling API Entreprise', { siret })
+  log('fetchSiretApiData: calling Recherche d’entreprises API', { siret })
 
-  // Fetch full SIRET data from API Entreprise
+  // Fetch full SIRET data from the public Recherche d'entreprises API
   const siretResult = await fetchSiretApiData(siret)
 
   // Handle API errors gracefully
@@ -100,7 +100,7 @@ export const importStructureEmployeuseFromSiret = async ({
     commune: adresse.libelle_commune || '',
   })
 
-  // Use API Entreprise data to find or create structure
+  // Use SIRET API data to find or create structure
   const structure = await findOrCreateStructure({
     siret,
     nom: personne_morale_attributs.raison_sociale,
