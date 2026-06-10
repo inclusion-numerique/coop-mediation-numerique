@@ -164,8 +164,11 @@ export const isDataspaceAdresseComplete = (
  * When the Dataspace returns an incomplete payload (address can't identify a
  * real place), we still want to preserve the user's existing employment if one
  * exists on a structure with the same SIRET — rather than silently dropping the
- * emploi via reconciliation. Returns null when no existing link can be reused,
- * in which case the structure is skipped (real new garbage payload).
+ * emploi via reconciliation. Soft-deleted emplois are considered too (active
+ * ones first), so that a link wrongly swept by a previous sync gets reactivated
+ * by the reconciliation instead of staying lost forever. Returns null when no
+ * existing link can be reused, in which case the structure is skipped (real
+ * new garbage payload).
  */
 const findExistingEmployeStructureIdBySiret = async ({
   userId,
@@ -174,17 +177,41 @@ const findExistingEmployeStructureIdBySiret = async ({
   userId: string
   siret: string
 }): Promise<string | null> => {
+  if (!siret) {
+    return null
+  }
   const existing = await prismaClient.employeStructure.findFirst({
     where: {
       userId,
-      suppression: null,
       structure: { siret },
     },
-    orderBy: { creation: 'desc' },
+    orderBy: [
+      { suppression: { sort: 'desc', nulls: 'first' } },
+      { creation: 'desc' },
+    ],
     select: { structureId: true },
   })
   return existing?.structureId ?? null
 }
+
+/**
+ * Resolve the coop structure for a structure employeuse from the Dataspace.
+ * Complete payloads go through the regular find-or-create. Incomplete payloads
+ * can only be linked through an existing emploi sharing the same SIRET.
+ */
+const resolveStructureIdFromDataspace = async ({
+  structureEmployeuse,
+  userId,
+}: {
+  structureEmployeuse: DataspaceStructureEmployeuse
+  userId: string
+}): Promise<string | null> =>
+  isDataspaceAdresseComplete(structureEmployeuse.adresse)
+    ? (await getOrCreateStructureFromDataspace({ structureEmployeuse })).id
+    : await findExistingEmployeStructureIdBySiret({
+        userId,
+        siret: structureEmployeuse.siret,
+      })
 
 /**
  * Prepare contract data from Dataspace for EmployeStructure sync
@@ -214,12 +241,10 @@ export const prepareContractsFromDataspace = async (
     // When the payload is complete, find or create the structure as usual.
     // When the payload is incomplete, preserve any existing emploi on a
     // structure with the same SIRET; otherwise skip (no reliable link).
-    const structureId = isDataspaceAdresseComplete(structureEmployeuse.adresse)
-      ? (await getOrCreateStructureFromDataspace({ structureEmployeuse })).id
-      : await findExistingEmployeStructureIdBySiret({
-          userId,
-          siret: structureEmployeuse.siret,
-        })
+    const structureId = await resolveStructureIdFromDataspace({
+      structureEmployeuse,
+      userId,
+    })
 
     if (!structureId) {
       continue
@@ -237,16 +262,28 @@ export const prepareContractsFromDataspace = async (
   return prepared
 }
 
-const getOrCreateStructureIdForTemporaryContract = async ({
-  structureEmployeuse,
+/**
+ * Resolve the first candidate structure that can be linked to a coop
+ * structure, in candidates order (find-or-create for complete payloads,
+ * existing emploi by SIRET for incomplete ones).
+ */
+const findFirstResolvableStructureId = async ({
+  candidates,
+  userId,
 }: {
-  structureEmployeuse: DataspaceStructureEmployeuse
-}): Promise<string> => {
-  const structure = await getOrCreateStructureFromDataspace({
-    structureEmployeuse,
-  })
-
-  return structure.id
+  candidates: DataspaceStructureEmployeuse[]
+  userId: string
+}): Promise<string | null> => {
+  for (const structureEmployeuse of candidates) {
+    const structureId = await resolveStructureIdFromDataspace({
+      structureEmployeuse,
+      userId,
+    })
+    if (structureId) {
+      return structureId
+    }
+  }
+  return null
 }
 
 const getOrCreateStructureFromDataspace = async ({
@@ -327,29 +364,25 @@ export const syncStructuresEmployeusesFromDataspace = async ({
     ),
   )
 
-  const firstStructureWithNullDebutContract = nonNullStructures.find(
+  const structuresWithNullDebutContract = nonNullStructures.filter(
     (structureEmployeuse) =>
-      isDataspaceAdresseComplete(structureEmployeuse.adresse) &&
       (structureEmployeuse.contrats ?? []).some(
         (contract) => contract.date_debut === null,
       ),
   )
 
-  const firstStructureWithEmptyContracts = nonNullStructures.find(
-    (structureEmployeuse) =>
-      isDataspaceAdresseComplete(structureEmployeuse.adresse) &&
-      (structureEmployeuse.contrats ?? []).length === 0,
+  const structuresWithEmptyContracts = nonNullStructures.filter(
+    (structureEmployeuse) => (structureEmployeuse.contrats ?? []).length === 0,
   )
 
-  const temporaryContractTargetStructure =
-    firstStructureWithNullDebutContract ?? firstStructureWithEmptyContracts
-
   const temporaryContractStructureId =
-    preparedContracts.length === 0 &&
-    !hasRunningRealContract &&
-    temporaryContractTargetStructure
-      ? await getOrCreateStructureIdForTemporaryContract({
-          structureEmployeuse: temporaryContractTargetStructure,
+    preparedContracts.length === 0 && !hasRunningRealContract
+      ? await findFirstResolvableStructureId({
+          candidates: [
+            ...structuresWithNullDebutContract,
+            ...structuresWithEmptyContracts,
+          ],
+          userId,
         })
       : null
 
@@ -482,6 +515,15 @@ export const syncStructuresEmployeusesFromDataspace = async ({
         })
         emploiIdsToKeep.push(newTemporaryEmploi.id)
       }
+    }
+
+    // Safety net: the Dataspace lists structures employeuses but none of them
+    // could be linked to a coop structure (incomplete addresses without any
+    // reusable emploi). The emptiness comes from payload quality, not from a
+    // real end of employment — sweeping would leave the user without any
+    // emploi and block all CRA saves, so existing emplois are kept untouched.
+    if (emploiIdsToKeep.length === 0 && nonNullStructures.length > 0) {
+      return { removedCount: 0 }
     }
 
     // Soft-delete EmployeStructure records for contracts NOT in Dataspace
