@@ -76,6 +76,7 @@ export type MatchingEtablissement = {
   activite_principale: string // Activité principale de l'établissement
   adresse: string // Adresse complète de l'établissement
   caractere_employeur: string // Caractère employeur de l'établissement
+  code_postal?: string // Code postal de l'adresse de l'établissement (Nullable)
   commune: string // Code géographique de la commune de localisation de l'établissement
   est_siege: boolean // Indique si l'établissement est le siège de l'unité légale
   etat_administratif: string // État administratif de l'établissement (A : Actif, F : Fermé)
