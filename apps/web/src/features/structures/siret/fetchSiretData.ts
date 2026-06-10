@@ -89,11 +89,16 @@ export const fetchSiretApiData = async (
   SiretApiResponse | { error: { statusCode: number; message: string } }
 > => {
   try {
-    const { results } = await rechercheApiEntreprise({
-      q: siret,
-      page: 1,
-      per_page: 1,
-    })
+    // Fast retry profile : this lookup happens while server-rendering the
+    // inscription pages, a rate-limited API must not hang the render
+    const { results } = await rechercheApiEntreprise(
+      {
+        q: siret,
+        page: 1,
+        per_page: 1,
+      },
+      { retries: 2, factor: 2, minTimeout: 500, maxTimeout: 2_000 },
+    )
 
     const uniteLegale = results.at(0)
     const etablissement = uniteLegale?.matching_etablissements.find(
