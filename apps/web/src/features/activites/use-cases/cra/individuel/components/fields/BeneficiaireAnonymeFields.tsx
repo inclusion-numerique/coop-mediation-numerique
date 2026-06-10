@@ -2,15 +2,13 @@ import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { Options } from '@app/ui/components/Primitives/Options'
 import styles from '@app/web/features/activites/use-cases/cra/components/CraForm.module.css'
 import {
-  Commune,
   CommuneComboBox,
   CommuneOptions,
 } from '@app/web/features/adresse/combo-box/CommuneComboBox'
-import { SyncWith } from '@app/web/libs/form/fields-components/SyncWith'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { Genre, StatutSocial, type TrancheAge } from '@prisma/client'
-import { formOptions, useStore } from '@tanstack/react-form'
+import { formOptions } from '@tanstack/react-form'
 import type { DefaultValues } from 'react-hook-form'
 import type { CraIndividuelData } from '../../validation/CraIndividuelValidation'
 
@@ -35,11 +33,6 @@ export const BeneficiaireAnonymeFields = withForm({
     trancheAgeOptions,
     statutSocialOptions,
   }) => {
-    const lieuCommuneData = useStore(
-      form.store,
-      (state) => state.values.lieuCommuneData,
-    )
-
     return (
       <>
         <h2 className="fr-h3 fr-mb-1v fr-text-title--blue-france">
@@ -101,53 +94,45 @@ export const BeneficiaireAnonymeFields = withForm({
                 getToggleButtonProps,
                 ...options
               }) => (
-                <SyncWith
-                  target={lieuCommuneData as Commune}
-                  itemToKey={CommuneComboBox.itemToKey}
-                  onUpdate={(commune: Commune) =>
-                    setInputValue(CommuneComboBox.itemToString(commune))
-                  }
-                >
-                  <div className="fr-mb-12v">
-                    <field.Input
-                      addonEnd={
+                <div className="fr-mb-12v">
+                  <field.Input
+                    addonEnd={
+                      <Button
+                        title="Voir la liste des bénéficiaires"
+                        className="fr-border-left-0 fr-py-7v fr-pl-4v"
+                        style={{ width: 56, maxWidth: 56, minWidth: 56 }}
+                        iconId="fr-icon-search-line"
+                        {...getToggleButtonProps({ type: 'button' })}
+                      />
+                    }
+                    addinEnd={
+                      field.state.value != null && (
                         <Button
-                          title="Voir la liste des bénéficiaires"
-                          className="fr-border-left-0 fr-py-7v fr-pl-4v"
-                          style={{ width: 56, maxWidth: 56, minWidth: 56 }}
-                          iconId="fr-icon-search-line"
-                          {...getToggleButtonProps({ type: 'button' })}
+                          title="Déselectionner la commune"
+                          type="button"
+                          iconId="fr-icon-close-line"
+                          priority="tertiary no outline"
+                          className="fr-mt-2v fr-mr-2v"
+                          onClick={() => {
+                            field.setValue(null)
+                            setInputValue('')
+                          }}
                         />
-                      }
-                      addinEnd={
-                        field.state.value != null && (
-                          <Button
-                            title="Déselectionner la commune"
-                            type="button"
-                            iconId="fr-icon-close-line"
-                            priority="tertiary no outline"
-                            className="fr-mt-2v fr-mr-2v"
-                            onClick={() => {
-                              field.setValue(null)
-                              setInputValue('')
-                            }}
-                          />
-                        )
-                      }
-                      isPending={isPending}
-                      isConnected={false}
-                      nativeLabelProps={getLabelProps()}
-                      classes={{ nativeInputOrTextArea: styles.tallInput }}
-                      nativeInputProps={{
-                        ...getInputProps(),
-                        placeholder:
-                          'Rechercher une commune par son nom ou son code postal',
-                      }}
-                      label="Commune de résidence du bénéficiaire"
-                    />
-                    <Options {...options} {...CommuneOptions} />
-                  </div>
-                </SyncWith>
+                      )
+                    }
+                    isPending={isPending}
+                    isConnected={false}
+                    nativeLabelProps={getLabelProps()}
+                    classes={{ nativeInputOrTextArea: styles.tallInput }}
+                    nativeInputProps={{
+                      ...getInputProps(),
+                      placeholder:
+                        'Rechercher une commune par son nom ou son code postal',
+                    }}
+                    label="Commune de résidence du bénéficiaire"
+                  />
+                  <Options {...options} {...CommuneOptions} />
+                </div>
               )}
             </field.ComboBox>
           )}
