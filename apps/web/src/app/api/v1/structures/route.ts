@@ -480,7 +480,7 @@ export const GET = createApiV1Route
     }
 
     const structures = await prismaClient.structure.findMany({
-      orderBy: [{ creation: 'desc' }],
+      orderBy: [{ creation: 'desc' }, { id: 'desc' }],
       take: cursorPagination.take,
       skip: cursorPagination.skip,
       where,

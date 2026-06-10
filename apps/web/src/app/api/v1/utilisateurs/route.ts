@@ -520,7 +520,7 @@ export const GET = createApiV1Route
         ...conseillerNumeriqueIdPgFilter,
         ...dataspaceIdFilter,
       },
-      orderBy: [{ created: 'desc' }],
+      orderBy: [{ created: 'desc' }, { id: 'desc' }],
       take: cursorPagination.take,
       skip: cursorPagination.skip,
       cursor: validatedCursor
