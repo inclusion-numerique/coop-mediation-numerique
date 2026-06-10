@@ -3,8 +3,7 @@ import { createTestContext } from '@app/web/test/createTestContext'
 import { testSessionUser } from '@app/web/test/testSessionUser'
 import { v4 } from 'uuid'
 
-// XXX temporary skip as API times out momentarily
-describe.skip('siretRouter', () => {
+describe('siretRouter', () => {
   // Helper function to easily test procedures
 
   const givenUserId = v4()
@@ -30,13 +29,10 @@ describe.skip('siretRouter', () => {
         siretInfo: {
           activitePrincipale: {
             code: '84.12Z',
-            libelle:
-              'Administration publique (tutelle) de la santé, de la formation, de la culture et des services sociaux, autre que sécurité sociale',
             nomenclature: 'NAFRev2',
           },
           formeJuridique: {
             code: '7389',
-            libelle: 'Établissement public national à caractère administratif',
           },
           nom: 'AGENCE NATIONALE DE LA COHESION DES TERRITOIRES',
           siren: '130026032',
