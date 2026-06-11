@@ -53,6 +53,7 @@ export type SearchAdresseOptions = {
   limit?: number
   autocomplete?: boolean
   type?: AdresseType
+  citycode?: string
 }
 
 export const searchAdresses = async (
@@ -70,6 +71,7 @@ export const searchAdresses = async (
   url.searchParams.append('limit', limit.toString(10))
   url.searchParams.append('autocomplete', autocomplete ? '1' : '0')
   if (options?.type) url.searchParams.append('type', options.type)
+  if (options?.citycode) url.searchParams.append('citycode', options.citycode)
 
   const response = await fetch(url.toString())
   const body = (await response.json()) as FeatureCollection
