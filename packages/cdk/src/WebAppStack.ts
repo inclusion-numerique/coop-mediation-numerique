@@ -1,5 +1,8 @@
 import { createJobExecutionCron } from '@app/cdk/createJobExecutionCron'
-import { environmentVariablesFromList } from '@app/cdk/environmentVariable'
+import {
+  environmentVariablesFromList,
+  optionalEnvironmentVariablesFromList,
+} from '@app/cdk/environmentVariable'
 import { WebCdkOutput } from '@app/cdk/getCdkOutput'
 import { createOutput } from '@app/cdk/output'
 import { terraformBackend } from '@app/cdk/terraformBackend'
@@ -71,6 +74,18 @@ export const webAppStackSensitiveVariables = [
   'DATASPACE_API_KEY',
 ] as const
 
+// Entrepôt (Dataspace) SSH tunnel parameters. OPTIONAL — empty until MIN provides the bastion +
+// read-only credentials; the container entrypoint then opens the tunnel, otherwise it no-ops.
+export const webAppStackEntrepotVariables = [
+  'ENTREPOT_BASTION_HOST',
+  'ENTREPOT_BASTION_USER',
+  'ENTREPOT_BASTION_PORT',
+] as const
+export const webAppStackEntrepotSensitiveVariables = [
+  'ENTREPOT_BASTION_SSH_KEY',
+  'ENTREPOT_DATABASE_URL',
+] as const
+
 /**
  * This stack represents the web app for a given branch (namespace).
  * It can be deployed for each branch.
@@ -100,6 +115,16 @@ export class WebAppStack extends TerraformStack {
     const sensitiveEnvironmentVariables = environmentVariablesFromList(
       this,
       webAppStackSensitiveVariables,
+      { sensitive: true },
+    )
+    const entrepotVariables = optionalEnvironmentVariablesFromList(
+      this,
+      webAppStackEntrepotVariables,
+      { sensitive: false },
+    )
+    const entrepotSensitiveVariables = optionalEnvironmentVariablesFromList(
+      this,
+      webAppStackEntrepotSensitiveVariables,
       { sensitive: true },
     )
 
@@ -221,6 +246,15 @@ export class WebAppStack extends TerraformStack {
         ALBERT_SERVICE_URL: environmentVariables.ALBERT_SERVICE_URL.value,
         SMTP_PORT: isMain ? smtpPort : '1025',
         DATASPACE_API_MOCK: isMain ? '0' : '1',
+        // Entrepôt SSH tunnel: bastion coordinates (optional, from MIN) + the fixed target of the
+        // entrepôt database reachable through it. The entrypoint opens the tunnel only when
+        // ENTREPOT_BASTION_HOST is set, and ENTREPOT_DATABASE_URL points at the local tunnel port.
+        ENTREPOT_BASTION_HOST: entrepotVariables.ENTREPOT_BASTION_HOST.value,
+        ENTREPOT_BASTION_USER: entrepotVariables.ENTREPOT_BASTION_USER.value,
+        ENTREPOT_BASTION_PORT: entrepotVariables.ENTREPOT_BASTION_PORT.value,
+        ENTREPOT_DB_HOST: '172.16.20.14',
+        ENTREPOT_DB_PORT: '5432',
+        ENTREPOT_TUNNEL_PORT: '5433',
       },
       secretEnvironmentVariables: {
         BREVO_API_KEY: isMain
@@ -265,6 +299,12 @@ export class WebAppStack extends TerraformStack {
           : 'maildev.coop-numerique.anct.gouv.fr',
         DATASPACE_API_KEY:
           sensitiveEnvironmentVariables.DATASPACE_API_KEY.value,
+        // Bastion private key + entrepôt connection string (postgres://…@localhost:tunnel/…).
+        // Empty until MIN provides them; the entrepôt-backed pages stay unavailable meanwhile.
+        ENTREPOT_BASTION_SSH_KEY:
+          entrepotSensitiveVariables.ENTREPOT_BASTION_SSH_KEY.value,
+        ENTREPOT_DATABASE_URL:
+          entrepotSensitiveVariables.ENTREPOT_DATABASE_URL.value,
       },
       name: containerName,
       minScale: isMain ? 2 : namespace === 'dev' ? 1 : 0,

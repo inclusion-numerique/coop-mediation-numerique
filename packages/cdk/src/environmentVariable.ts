@@ -41,3 +41,35 @@ export const environmentVariablesFromList = <T extends string>(
 
   return result as { [key in T]: EnvironmentVariable }
 }
+
+export const optionalEnvironmentVariable = (
+  scope: Construct,
+  name: string,
+  { sensitive }: { sensitive: boolean },
+): EnvironmentVariable => {
+  const variable = new TerraformVariable(scope, name, {
+    type: 'string',
+    sensitive,
+    default: '',
+  }) as EnvironmentVariable
+
+  variable.overrideLogicalId(name)
+
+  return variable
+}
+
+export const optionalEnvironmentVariablesFromList = <T extends string>(
+  scope: Construct,
+  variableNames: readonly T[],
+  { sensitive }: { sensitive: boolean },
+): { [key in T]: EnvironmentVariable } => {
+  const result = {} as { [key in T]: EnvironmentVariable }
+
+  for (const variableName of variableNames) {
+    result[variableName] = optionalEnvironmentVariable(scope, variableName, {
+      sensitive,
+    })
+  }
+
+  return result as { [key in T]: EnvironmentVariable }
+}
