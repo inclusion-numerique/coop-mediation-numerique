@@ -27,6 +27,14 @@ export const InformationsGeneralesFormValidation = z
         message: 'Veuillez rechercher et sélectionner une structure',
       })
     }
+    if (!data.noSiret && data.siretSearch && !data.adresseBan) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['siretSearch'],
+        message:
+          'L’adresse de la structure n’a pas pu être déterminée, veuillez sélectionner à nouveau la structure',
+      })
+    }
     if (data.noSiret && !data.nom?.trim()) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,

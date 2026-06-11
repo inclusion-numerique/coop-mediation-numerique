@@ -8,6 +8,10 @@ import {
   AdresseBanOptions,
 } from '@app/web/features/adresse/combo-box/AdresseBanComboBox'
 import {
+  adresseNonVerifiableMessage,
+  geocodeStructureAdresse,
+} from '@app/web/features/structures/siret/geocodeStructureAdresse'
+import {
   SiretSearchComboBox,
   SiretSearchOptions,
 } from '@app/web/features/structures/siret/SiretSearchComboBox'
@@ -16,6 +20,7 @@ import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useStore } from '@tanstack/react-form'
+import { useState } from 'react'
 import {
   type InformationsGeneralesFormData,
   informationsGeneralesFormOptions,
@@ -35,6 +40,9 @@ export const InformationsGeneralesEditionFields = withForm({
     const siretSearch = useStore(
       form.store,
       (state) => state.values.siretSearch,
+    )
+    const [siretSearchError, setSiretSearchError] = useState<string | null>(
+      null,
     )
 
     const protectedFieldsDisabled = hasActiveEmployees || isPending
@@ -57,7 +65,18 @@ export const InformationsGeneralesEditionFields = withForm({
           {(field) => (
             <field.ComboBox
               isPending={isPending}
-              onSelect={(item) => form.setFieldValue('nom', item.nom)}
+              onSelect={async (item) => {
+                setSiretSearchError(null)
+                form.setFieldValue('adresseBan', null)
+                const adresseBan = await geocodeStructureAdresse(item)
+                if (!adresseBan) {
+                  form.setFieldValue('siretSearch', null)
+                  setSiretSearchError(adresseNonVerifiableMessage(item))
+                  return
+                }
+                form.setFieldValue('nom', item.nom)
+                form.setFieldValue('adresseBan', adresseBan)
+              }}
               {...SiretSearchComboBox}
             >
               {({
@@ -127,6 +146,12 @@ export const InformationsGeneralesEditionFields = withForm({
             </field.ComboBox>
           )}
         </form.AppField>
+
+        {!noSiret && siretSearchError && (
+          <p className="fr-text-default--error fr-text--sm">
+            {siretSearchError}
+          </p>
+        )}
 
         {!hasActiveEmployees && (
           <>
