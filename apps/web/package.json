@@ -22,6 +22,7 @@
     "with-env": "dotenv -e ../../.env --",
     "with-remote-env": "dotenv -e ../../.env.remote -e ../../.env --",
     "prisma": "pnpm --silent with-env prisma",
+    "db:migrate-deploy": "pnpm --silent prisma migrate deploy && pnpm --silent prisma db execute --schema ./prisma/schema.prisma --file ./prisma/sql/move-prisma-migrations-to-coop.sql",
     "erd": "pnpm erd:md && pnpm erd:svg && pnpm erd:pdf",
     "erd:md": "DISABLE_ERD= pnpm prisma generate",
     "erd:svg": "mmdc -i prisma/ERD.md -o prisma/ERD.svg && mv prisma/ERD-1.svg prisma/ERD.svg",
