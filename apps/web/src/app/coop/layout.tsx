@@ -2,6 +2,7 @@ import PublicFooter from '@app/web/app/(public)/PublicFooter'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import Header from '@app/web/components/Header'
 import InscriptionStepsLayout from '@app/web/features/inscription/components/InscriptionStepsLayout'
+import { MaintenanceModeBanner } from '@app/web/features/maintenance-mode/components/MaintenanceModeBanner'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import React, { PropsWithChildren } from 'react'
@@ -49,6 +50,7 @@ const Layout = async ({ children }: PropsWithChildren) => {
   return (
     <div className="fr-layout">
       <div id="skip-links" />
+      <MaintenanceModeBanner />
       {children}
     </div>
   )
