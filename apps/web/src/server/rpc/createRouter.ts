@@ -1,3 +1,5 @@
+import { getMaintenanceMode } from '@app/web/features/maintenance-mode/db/getMaintenanceMode'
+import { canMutateDuringMaintenance } from '@app/web/features/maintenance-mode/domain/canMutateDuringMaintenance'
 import { AppContext } from '@app/web/server/rpc/createContext'
 import { transformer } from '@app/web/utils/serialization'
 import { initTRPC, TRPCError } from '@trpc/server'
@@ -58,6 +60,28 @@ const isActive = middleware(({ ctx, next }) => {
 })
 
 /**
+ * Reusable middleware to block writes during maintenance mode.
+ * Only mutations are intercepted (reads stay available). Admins and support
+ * keep their access ; standard users (médiateurs/coordinateurs) are blocked.
+ */
+const enforceMaintenanceMode = middleware(async ({ ctx, next, type }) => {
+  if (type !== 'mutation' || !ctx.user) {
+    return next()
+  }
+
+  const { active, message } = await getMaintenanceMode()
+
+  if (!canMutateDuringMaintenance({ role: ctx.user.role, active })) {
+    throw new TRPCError({ code: 'FORBIDDEN', message })
+  }
+
+  return next()
+})
+
+/**
  * Protected procedure
  * */
-export const protectedProcedure = procedure.use(isAuthenticated).use(isActive)
+export const protectedProcedure = procedure
+  .use(isAuthenticated)
+  .use(isActive)
+  .use(enforceMaintenanceMode)

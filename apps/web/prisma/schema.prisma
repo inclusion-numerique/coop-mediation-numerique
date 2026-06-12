@@ -96,6 +96,21 @@ enum OnboardingStatus {
   @@schema("coop")
 }
 
+// Maintenance : une ligne par maintenance. `endedAt` nul = maintenance en cours
+// (écritures des médiateurs/coordinateurs bloquées, message affiché). Renseigner
+// `endedAt` clôt la maintenance, ce qui conserve l’historique de toutes les maintenances.
+model Maintenance {
+  id        String    @id @default(uuid()) @db.Uuid
+  startedAt DateTime  @default(now()) @map("started_at")
+  endedAt   DateTime? @map("ended_at")
+  message   String?
+  createdBy String?   @map("created_by") @db.Uuid
+
+  @@index([endedAt])
+  @@map("maintenances")
+  @@schema("coop")
+}
+
 model User {
   id                String            @id @default(uuid()) @db.Uuid
   firstName         String?           @map("first_name")
