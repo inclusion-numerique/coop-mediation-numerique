@@ -1,4 +1,5 @@
 import { Genre } from '@app/web/features/beneficiaire/domain/genre'
+import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
 import { StatutSocial } from '@app/web/features/beneficiaire/domain/statut-social'
 import { TrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
 import { v4 } from 'uuid'
@@ -7,9 +8,12 @@ import {
   createCounterUuid,
 } from './create-beneficiaires-for-participants-anonymes'
 import { participantsAnonymesDefault } from './domain/participants-anonymes'
+import { RootUuid } from './domain/root-uuid'
+
+const mediateurId = MediateurId('550e8400-e29b-41d4-a716-446655440001')
 
 describe('createCounterUuid', () => {
-  const uuid = '75bb7e05-9dd8-417e-b4c0-5b30d24a6e58'
+  const uuid = RootUuid('75bb7e05-9dd8-417e-b4c0-5b30d24a6e58')
 
   it.each([
     { index: 0, expected: '75bb7e05-9dd8-417e-b4c0-5b30d2400000' },
@@ -28,13 +32,13 @@ describe('createBeneficiairesForParticipantsAnonymes', () => {
     expect(
       createBeneficiairesForParticipantsAnonymes({
         participantsAnonymes: participantsAnonymesDefault,
-        mediateurId: 'mediateur-id',
+        mediateurId,
       }),
     ).toEqual([])
   })
 
   it('creates 1 beneficiaire with correct demographics', () => {
-    const rootUuid = v4()
+    const rootUuid = RootUuid(v4())
     const result = createBeneficiairesForParticipantsAnonymes({
       participantsAnonymes: {
         ...participantsAnonymesDefault,
@@ -42,14 +46,14 @@ describe('createBeneficiairesForParticipantsAnonymes', () => {
         trancheAgeQuaranteCinquanteNeuf: 1,
         genreNonCommunique: 1,
       },
-      mediateurId: 'mediateur-id',
+      mediateurId,
       rootUuid,
     })
 
     expect(result).toEqual([
       {
         id: createCounterUuid(rootUuid, 0),
-        mediateurId: 'mediateur-id',
+        mediateurId,
         dejaAccompagne: false,
         anonyme: true,
         attributionsAleatoires: true,
@@ -61,7 +65,7 @@ describe('createBeneficiairesForParticipantsAnonymes', () => {
   })
 
   it('creates multiple beneficiaires distributing demographics', () => {
-    const rootUuid = v4()
+    const rootUuid = RootUuid(v4())
     const result = createBeneficiairesForParticipantsAnonymes({
       participantsAnonymes: {
         ...participantsAnonymesDefault,
@@ -69,7 +73,7 @@ describe('createBeneficiairesForParticipantsAnonymes', () => {
         trancheAgeQuaranteCinquanteNeuf: 1,
         genreFeminin: 1,
       },
-      mediateurId: 'mediateur-id',
+      mediateurId,
       rootUuid,
     })
 
@@ -99,7 +103,7 @@ describe('createBeneficiairesForParticipantsAnonymes', () => {
         total: 3,
         dejaAccompagne: 2,
       },
-      mediateurId: 'mediateur-id',
+      mediateurId,
     })
 
     expect(result.map((b) => b.dejaAccompagne)).toEqual([true, true, false])

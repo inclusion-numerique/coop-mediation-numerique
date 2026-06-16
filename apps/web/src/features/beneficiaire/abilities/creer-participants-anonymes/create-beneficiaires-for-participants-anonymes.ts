@@ -1,3 +1,4 @@
+import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
 import { Genre, genres } from '@app/web/features/beneficiaire/domain/genre'
 import {
   StatutSocial,
@@ -11,9 +12,13 @@ import { shuffle } from 'lodash-es'
 import { v4 } from 'uuid'
 import type { CreateBeneficiairesForParticipantsAnonymes } from './domain/creer-participants-anonymes'
 import type { ParticipantsAnonymes } from './domain/participants-anonymes'
+import { RootUuid } from './domain/root-uuid'
 
-export const createCounterUuid = (root: string, index: number): string =>
-  root.slice(0, -5) + index.toString(10).padStart(5, '0')
+export const createCounterUuid = (
+  root: RootUuid,
+  index: number,
+): BeneficiaireId =>
+  BeneficiaireId(root.slice(0, -5) + index.toString(10).padStart(5, '0'))
 
 const expandValues = <T extends string>(
   counters: ParticipantsAnonymes,
@@ -40,7 +45,7 @@ const padToLength = <T extends string>(
 ]
 
 export const createBeneficiairesForParticipantsAnonymes: CreateBeneficiairesForParticipantsAnonymes =
-  ({ participantsAnonymes, rootUuid = v4(), mediateurId }) => {
+  ({ participantsAnonymes, rootUuid = RootUuid(v4()), mediateurId }) => {
     const { total } = participantsAnonymes
 
     const shuffledGenres = shuffle(
