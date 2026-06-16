@@ -6,6 +6,7 @@ import {
   FusionnerBeneficiairesValidation,
 } from '@app/web/features/beneficiaire/abilities/fusionner-beneficiaires'
 import { fusionnerBeneficiaires } from '@app/web/features/beneficiaire/abilities/fusionner-beneficiaires/implementation'
+import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
 import {
   actionBuilder,
   ServerActionError,
@@ -16,7 +17,8 @@ export const fusionnerBeneficiairesAction = actionBuilder()
   .use(withAuth())
   .use(withMediateur())
   .use(withInput(FusionnerBeneficiairesValidation))
-  .execute(async ({ input: { fusions, mediateurId } }) => {
+  .execute(async ({ input: { fusions }, mediateur }) => {
+    const mediateurId = MediateurId(mediateur.id)
     const results = await Promise.all(
       fusions.map((fusion) =>
         fusionnerBeneficiaires({ ...fusion, mediateurId }),

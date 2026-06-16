@@ -6,6 +6,7 @@ import {
   SupprimerBeneficiairesValidation,
 } from '@app/web/features/beneficiaire/abilities/supprimer-beneficiaires'
 import { supprimerBeneficiaires } from '@app/web/features/beneficiaire/abilities/supprimer-beneficiaires/implementation'
+import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 
 export const supprimerBeneficiairesAction = actionBuilder()
@@ -13,7 +14,12 @@ export const supprimerBeneficiairesAction = actionBuilder()
   .use(withMediateur())
   .use(withInput(SupprimerBeneficiairesValidation))
   .execute(
-    fromResult(async ({ input }) => supprimerBeneficiaires(input), {
-      onError: SUPPRIMER_BENEFICIAIRES_ERRORS,
-    }),
+    fromResult(
+      async ({ input, mediateur }) =>
+        supprimerBeneficiaires({
+          ids: input.ids,
+          mediateurId: MediateurId(mediateur.id),
+        }),
+      { onError: SUPPRIMER_BENEFICIAIRES_ERRORS },
+    ),
   )
