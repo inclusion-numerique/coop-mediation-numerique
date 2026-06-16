@@ -144,7 +144,15 @@ export const executeApplyCorrigerAdresse = async (
           const codePostalApi = adresse.code_postal
           const codeInseeApi = adresse.code_commune ?? ''
 
-          if (adresseApi) {
+          // Les établissements non-diffusibles renvoient '[NON-DIFFUSIBLE]'
+          // dans tous les champs. code_postal/code_insee sont en VarChar(5) :
+          // on ne retient la donnée SIRET que si ces codes ont un format
+          // valide, sinon on bascule sur le fallback BAN (stratégie 2).
+          const codePostalValide = /^\d{5}$/.test(codePostalApi)
+          const codeInseeValide =
+            codeInseeApi === '' || /^(\d{2}|2[AB])\d{3}$/i.test(codeInseeApi)
+
+          if (adresseApi && codePostalValide && codeInseeValide) {
             // Géocoder l'adresse API Entreprise via BAN
             const fullAdresse = `${adresseApi}, ${codePostalApi} ${communeApi}`
             const feature = await searchAdresse(fullAdresse)

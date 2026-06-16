@@ -82,6 +82,19 @@ const hasAsymmetricServiceKeyword = (a: string, b: string): boolean => {
   return false
 }
 
+// Département prefix: 3 chars for overseas (97x/98x), 2 otherwise.
+const departementOf = (codeInsee: string): string =>
+  codeInsee.startsWith('97') || codeInsee.startsWith('98')
+    ? codeInsee.slice(0, 3)
+    : codeInsee.slice(0, 2)
+
+// The geocoded codeInsee is only trusted when it stays in the same département
+// as the payload. Guards against BAN mis-geocoding overseas (DOM) addresses to
+// mainland France (e.g. a Martinique 972xx address resolved to a Gironde 33xxx
+// codeInsee), which would otherwise corrupt the stored codeInsee.
+const sameDepartement = (a: string, b: string): boolean =>
+  departementOf(a) === departementOf(b)
+
 const isContainedName = (a: string, b: string): boolean => {
   const na = normalizeNom(a)
   const nb = normalizeNom(b)
@@ -173,10 +186,12 @@ const undeleteStructureIfDeleted = async ({
 /**
  * Generic helper to find or create a structure following this hierarchy:
  * 1. Find existing Structure by coopId (surest match)
- * 2. Find existing Structure by SIRET + codeInsee
- * 3. Find StructureCartographieNationale by pivot (SIRET) → create Structure from it
- * 4. Find existing Structure by nom + codeInsee (if no SIRET)
- * 5. Fallback: Geocode via searchAdresse (BAN API) and create
+ * 2. Geocode the address once (BAN) to resolve a canonical codeInsee used by
+ *    every lookup below AND by the final create (kept symmetric on purpose)
+ * 3. Find existing Structure by SIRET + resolved codeInsee
+ * 4. Find StructureCartographieNationale by pivot (SIRET) → create Structure from it
+ * 5. Find existing Structure by nom + resolved codeInsee (if no SIRET)
+ * 6. Fallback: create from the geocoded address (or raw fields if geocoding failed)
  *
  * This is reusable for both V1 imports and Dataspace imports.
  */
@@ -210,12 +225,29 @@ export const findOrCreateStructure = async ({
     }
   }
 
+  // Normalize codeInsee via BAN so lookups use the same value stored on
+  // creation. The Dataspace payload sometimes carries a codeInsee variant
+  // (siège vs antenne) that diverges from the geocoded one, which made the
+  // exact (siret, codeInsee) lookup miss an existing active structure and
+  // recreate a duplicate. Geocode once here and reuse it for the final create.
+  const fullAdresse = `${adresse}, ${codePostal} ${commune}`
+  const adresseResult = await searchAdresse(fullAdresse)
+  const banData = adresseResult
+    ? banFeatureToAdresseBanData(adresseResult)
+    : null
+  // Only trust the geocoding when it stays in the payload's département,
+  // otherwise treat it as if nothing was geocoded (lookup and create fall back
+  // to the raw payload codeInsee).
+  const trustedBanData =
+    banData && sameDepartement(banData.codeInsee, codeInsee) ? banData : null
+  const resolvedCodeInsee = trustedBanData?.codeInsee ?? codeInsee
+
   // Step 1: Find existing Structure by SIRET + codeInsee
   if (siret) {
     const existingStructure = await prismaClient.structure.findFirst({
       where: {
         siret,
-        codeInsee,
+        codeInsee: resolvedCodeInsee,
         suppression: null,
       },
       select: {
@@ -247,13 +279,17 @@ export const findOrCreateStructure = async ({
       await prismaClient.structureCartographieNationale.findFirst({
         where: {
           pivot: siret,
-          codeInsee,
+          codeInsee: resolvedCodeInsee,
         },
       })
 
     if (cartoStructure) {
       // Guard: re-check before creating to prevent duplicates
-      const existing = await findExistingBySiretOrNom({ siret, nom, codeInsee })
+      const existing = await findExistingBySiretOrNom({
+        siret,
+        nom,
+        codeInsee: resolvedCodeInsee,
+      })
       if (existing) return existing
 
       // Create structure from cartographie nationale data (has coordinates)
@@ -282,7 +318,7 @@ export const findOrCreateStructure = async ({
     const existingByNom = await prismaClient.structure.findFirst({
       where: {
         nom,
-        codeInsee,
+        codeInsee: resolvedCodeInsee,
       },
       select: {
         id: true,
@@ -307,32 +343,27 @@ export const findOrCreateStructure = async ({
     }
   }
 
-  // Step 4: Fallback - geocode via BAN API and create
+  // Step 4: Fallback - reuse the geocoded address (already fetched) and create
   // Guard: re-check before creating to prevent duplicates
   const existingGuard = await findExistingBySiretOrNom({
     siret,
     nom,
-    codeInsee,
+    codeInsee: resolvedCodeInsee,
   })
   if (existingGuard) return existingGuard
 
-  const fullAdresse = `${adresse}, ${codePostal} ${commune}`
-  const adresseResult = await searchAdresse(fullAdresse)
-
-  if (adresseResult) {
-    const banData = banFeatureToAdresseBanData(adresseResult)
-
+  if (trustedBanData) {
     return prismaClient.structure.create({
       data: {
         id: v4(),
         siret,
         nom,
-        adresse: banData.nom,
-        commune: banData.commune,
-        codePostal: banData.codePostal,
-        codeInsee: banData.codeInsee,
-        latitude: banData.latitude,
-        longitude: banData.longitude,
+        adresse: trustedBanData.nom,
+        commune: trustedBanData.commune,
+        codePostal: trustedBanData.codePostal,
+        codeInsee: trustedBanData.codeInsee,
+        latitude: trustedBanData.latitude,
+        longitude: trustedBanData.longitude,
         nomReferent,
         courrielReferent,
         telephoneReferent,
