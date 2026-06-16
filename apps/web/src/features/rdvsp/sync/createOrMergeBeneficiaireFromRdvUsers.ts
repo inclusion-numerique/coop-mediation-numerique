@@ -127,7 +127,12 @@ export const createOrMergeBeneficiaireFromRdvUser = async ({
       }
     }
 
-    if (!!rdvUser.address && !beneficiaireToMerge.commune) {
+    if (
+      !!rdvUser.address &&
+      !('commune' in beneficiaireToMerge
+        ? beneficiaireToMerge.commune
+        : beneficiaireToMerge.communeResidence)
+    ) {
       const communeFields = await communeFieldsFromRdvAddress(rdvUser.address)
       if (communeFields) {
         beneficiaireUpdateData.commune = communeFields.commune
