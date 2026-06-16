@@ -11,36 +11,69 @@ type ReviewRow = {
   statut: string // 'a_fusionner' | ''
 }
 
-const parseReviewCsv = (content: string): ReviewRow[] => {
-  const lines = content.split('\n')
-  const rows: ReviewRow[] = []
-
-  for (const line of lines.slice(1)) {
-    const clean = line.replace(/\r$/, '')
-    if (!clean.trim()) continue
-
-    const fields: string[] = []
-    let current = ''
-    let inQuotes = false
-    for (const char of clean) {
-      if (char === '"') {
-        inQuotes = !inQuotes
-      } else if (char === ';' && !inQuotes) {
-        fields.push(current)
-        current = ''
-      } else {
-        current += char
-      }
+const splitCsvLine = (line: string): string[] => {
+  const fields: string[] = []
+  let current = ''
+  let inQuotes = false
+  for (const char of line) {
+    if (char === '"') {
+      inQuotes = !inQuotes
+    } else if (char === ';' && !inQuotes) {
+      fields.push(current)
+      current = ''
+    } else {
+      current += char
     }
-    fields.push(current)
-
-    const [clusterId, id, role, statut] = fields
-    if (!clusterId || !id) continue
-
-    rows.push({ clusterId, id, role, statut })
   }
+  fields.push(current)
+  return fields
+}
 
-  return rows
+// Column order changed across Tim's review batches:
+//   batch1.x : cluster_id;id;role;statut;…   (with header)
+//   batch2   : cluster_id;id;role;statut;…   (no header)
+//   3juin    : cluster_id;role;statut;id;…   (with header)
+// Resolve indices from the header when present, otherwise fall back to the
+// legacy positional order. This keeps every batch parseable.
+const LEGACY_INDICES = { clusterId: 0, id: 1, role: 2, statut: 3 }
+const HEADER_TOKENS = ['cluster_id', 'id', 'role', 'statut']
+
+const parseReviewCsv = (content: string): ReviewRow[] => {
+  const lines = content
+    .split('\n')
+    .map((line) => line.replace(/\r$/, ''))
+    .filter((line) => line.trim())
+
+  if (lines.length === 0) return []
+
+  const firstFields = splitCsvLine(lines[0]).map((field) => field.trim())
+  const hasHeader = firstFields.some((field) => HEADER_TOKENS.includes(field))
+
+  const indices = hasHeader
+    ? {
+        clusterId: firstFields.indexOf('cluster_id'),
+        id: firstFields.indexOf('id'),
+        role: firstFields.indexOf('role'),
+        statut: firstFields.indexOf('statut'),
+      }
+    : LEGACY_INDICES
+
+  const dataLines = hasHeader ? lines.slice(1) : lines
+
+  return dataLines.reduce<ReviewRow[]>((rows, line) => {
+    const fields = splitCsvLine(line)
+    const clusterId = fields[indices.clusterId]
+    const id = fields[indices.id]
+    if (!clusterId || !id) return rows
+
+    rows.push({
+      clusterId,
+      id,
+      role: fields[indices.role] ?? '',
+      statut: fields[indices.statut] ?? '',
+    })
+    return rows
+  }, [])
 }
 
 export const executeApplyReviewToActionPlan = async (
