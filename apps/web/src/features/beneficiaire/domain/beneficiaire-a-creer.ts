@@ -1,19 +1,16 @@
-import type { AnneeNaissance } from '@app/web/features/beneficiaire/domain/annee-naissance'
-import type { BeneficiaireIdentifie } from '@app/web/features/beneficiaire/domain/beneficiaire'
-import type { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
-import type { CommuneResidence } from '@app/web/features/beneficiaire/domain/commune-residence'
-import type { ContactTelephone } from '@app/web/features/beneficiaire/domain/contact-telephone'
-import type { Email } from '@app/web/features/beneficiaire/domain/email'
-import type { Genre } from '@app/web/features/beneficiaire/domain/genre'
-import type { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
-import type { Nom } from '@app/web/features/beneficiaire/domain/nom'
-import type { Notes } from '@app/web/features/beneficiaire/domain/notes'
-import type { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
-import type { StatutSocial } from '@app/web/features/beneficiaire/domain/statut-social'
-import {
-  TrancheAge,
-  trancheAgeFromAnneeNaissance,
-} from '@app/web/features/beneficiaire/domain/tranche-age'
+import type { AnneeNaissance } from './annee-naissance'
+import type { BeneficiaireIdentifie } from './beneficiaire'
+import type { BeneficiaireId } from './beneficiaire-id'
+import type { CommuneResidence } from './commune-residence'
+import type { ContactTelephone } from './contact-telephone'
+import type { Email } from './email'
+import type { Genre } from './genre'
+import type { MediateurId } from './mediateur-id'
+import type { Nom } from './nom'
+import type { Notes } from './notes'
+import type { Prenom } from './prenom'
+import type { StatutSocial } from './statut-social'
+import { TrancheAge, trancheAgeFromAnneeNaissance } from './tranche-age'
 
 /**
  * Input validé pour créer un bénéficiaire identifié.
@@ -79,8 +76,3 @@ export const toBeneficiaireIdentifie = (
   modification,
   suppression: null,
 })
-
-export type CreerBeneficiaire = (input: {
-  beneficiaire: BeneficiaireACreer
-  mediateurId: MediateurId
-}) => Promise<BeneficiaireIdentifie>

@@ -7,7 +7,17 @@ export {
   getBeneficiaireDisplayName,
   isBeneficiaireAnonymous,
 } from './beneficiaire'
+export {
+  type BeneficiaireACreer,
+  toBeneficiaireIdentifie,
+  trancheAgeForBeneficiaire,
+} from './beneficiaire-a-creer'
 export { BeneficiaireId } from './beneficiaire-id'
+export {
+  type BeneficiaireWireOutput,
+  beneficiaireWireShape,
+  toBeneficiaireACreer,
+} from './beneficiaire-wire'
 export { CommuneResidence } from './commune-residence'
 export type { ContactTelephone } from './contact-telephone'
 export { Email } from './email'

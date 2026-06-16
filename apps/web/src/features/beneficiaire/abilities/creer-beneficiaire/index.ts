@@ -1,6 +1,2 @@
-export {
-  beneficiaireWireShape,
-  CreerBeneficiaireValidation,
-  toBeneficiaireACreer,
-} from './action/creer-beneficiaire.validation'
+export { CreerBeneficiaireValidation } from './action/creer-beneficiaire.validation'
 export * from './domain'
