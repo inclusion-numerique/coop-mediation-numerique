@@ -19,6 +19,7 @@
     "setup:dsfr": "bash ../../setup-dsfr.sh",
     "test": "jest -c jest.unit.config.ts",
     "test:integration": "jest -c jest.integration.config.ts --passWithNoTests --runInBand",
+    "test:cucumber": "NODE_OPTIONS='--import tsx/esm' dotenv -e ../../.env -- cucumber-js",
     "with-env": "dotenv -e ../../.env --",
     "with-remote-env": "dotenv -e ../../.env.remote -e ../../.env --",
     "prisma": "pnpm --silent with-env prisma",
@@ -158,6 +159,7 @@
     "zustand": "^5.0.4"
   },
   "devDependencies": {
+    "@cucumber/cucumber": "^12.9.0",
     "@mermaid-js/mermaid-cli": "^11.15.0",
     "@storybook/addon-interactions": "^8.6.12",
     "@storybook/react": "^8.6.12",
@@ -197,6 +199,7 @@
     "require-from-string": "^2.0.2",
     "style-loader": "^4.0.0",
     "ts-jest": "^29.3.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.8.3"
   }
 }
