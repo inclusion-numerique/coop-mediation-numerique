@@ -9,8 +9,8 @@ import {
 } from '@app/web/features/beneficiaire/domain/tranche-age'
 import { shuffle } from 'lodash-es'
 import { v4 } from 'uuid'
+import type { CreateBeneficiairesForParticipantsAnonymes } from './domain/creer-participants-anonymes'
 import type { ParticipantsAnonymes } from './domain/participants-anonymes'
-import type { CreateBeneficiairesForParticipantsAnonymes } from './domain/port'
 
 export const createCounterUuid = (root: string, index: number): string =>
   root.slice(0, -5) + index.toString(10).padStart(5, '0')

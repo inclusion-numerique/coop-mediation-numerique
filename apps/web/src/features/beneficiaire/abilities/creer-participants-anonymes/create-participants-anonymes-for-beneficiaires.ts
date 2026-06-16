@@ -1,11 +1,11 @@
 import type { Genre } from '@app/web/features/beneficiaire/domain/genre'
 import type { StatutSocial } from '@app/web/features/beneficiaire/domain/statut-social'
 import type { TrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
+import type { CreateParticipantsAnonymesForBeneficiaires } from './domain/creer-participants-anonymes'
 import {
   type ParticipantsAnonymes,
   participantsAnonymesDefault,
 } from './domain/participants-anonymes'
-import type { CreateParticipantsAnonymesForBeneficiaires } from './domain/port'
 
 type BeneficiaireInput = {
   anonyme: boolean

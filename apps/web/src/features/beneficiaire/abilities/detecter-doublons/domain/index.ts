@@ -1,2 +1,2 @@
-export * from './ports'
+export * from './detecter-doublons'
 export * from './types'

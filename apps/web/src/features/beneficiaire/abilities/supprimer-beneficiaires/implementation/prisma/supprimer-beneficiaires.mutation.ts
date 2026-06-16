@@ -1,7 +1,7 @@
 import { failure, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { AucunBeneficiaireValide } from '../../domain/errors'
-import type { SupprimerBeneficiaires } from '../../domain/ports'
+import type { SupprimerBeneficiaires } from '../../domain/supprimer-beneficiaires'
 
 export const supprimerBeneficiaires: SupprimerBeneficiaires = async ({
   ids,

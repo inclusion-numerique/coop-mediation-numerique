@@ -7,7 +7,7 @@ import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
 import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import { prismaClient } from '@app/web/prismaClient'
 import { Prisma } from '@prisma/client'
-import type { FindDuplicatesForBeneficiaire } from '../../domain/ports'
+import type { FindDuplicatesForBeneficiaire } from '../../domain/detecter-doublons'
 import type { DuplicateBeneficiaire } from '../../domain/types'
 
 type RawDuplicate = {

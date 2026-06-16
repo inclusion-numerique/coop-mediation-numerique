@@ -8,7 +8,7 @@ import type {
   BeneficiaireSearchItem,
   GetInitialBeneficiairesOptions,
   RechercherBeneficiaires,
-} from '../../domain/port'
+} from '../../domain/rechercher-beneficiaires'
 
 const searchSelect = {
   id: true,

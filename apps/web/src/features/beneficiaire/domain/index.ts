@@ -12,11 +12,12 @@ export { CommuneResidence } from './commune-residence'
 export type { ContactTelephone } from './contact-telephone'
 export { Email } from './email'
 export type { BeneficiaireAlreadyExists, BeneficiaireNotFound } from './errors'
+export type { FindBeneficiairesByMediateur } from './find-beneficiaires-by-mediateur'
 export { type Genre, genreLabels, genres, sexLabels } from './genre'
+export type { GetBeneficiaireById } from './get-beneficiaire-by-id'
 export { MediateurId } from './mediateur-id'
 export { NOM_MAX_LENGTH, Nom } from './nom'
 export { Notes } from './notes'
-export type { FindBeneficiairesByMediateur, GetBeneficiaireById } from './ports'
 export { PRENOM_MAX_LENGTH, Prenom } from './prenom'
 export {
   type StatutSocial,

@@ -1,2 +1,2 @@
 export * from './errors'
-export * from './ports'
+export * from './supprimer-beneficiaires'

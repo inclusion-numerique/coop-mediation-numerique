@@ -6,7 +6,7 @@ import {
   BeneficiaireDestinationIntrouvable,
   BeneficiaireSourceIntrouvable,
 } from '../../domain/errors'
-import type { FusionnerBeneficiaires } from '../../domain/ports'
+import type { FusionnerBeneficiaires } from '../../domain/fusionner-beneficiaires'
 
 const isValuePresent = (value: unknown) => {
   if (value === null || value === undefined) return false

@@ -12,7 +12,7 @@ import * as Excel from 'exceljs'
 import type {
   BeneficiaireExportRow,
   BuildBeneficiairesWorksheet,
-} from '../domain/port'
+} from '../domain/exporter-beneficiaires'
 
 const beneficiairesTableHeaders = [
   'Nom',

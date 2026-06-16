@@ -20,7 +20,7 @@ import type {
 import type {
   BeneficiaireListItem,
   ListerBeneficiaires,
-} from '../../domain/port'
+} from '../../domain/lister-beneficiaires'
 
 const DEFAULT_PAGE = 1
 const DEFAULT_PAGE_SIZE = 20
