@@ -12,7 +12,7 @@ import {
 } from '@app/web/features/beneficiaire/domain/statut-social'
 import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import { z } from 'zod'
-import type { BeneficiaireACreer } from './domain/beneficiaire-a-creer'
+import type { BeneficiaireACreer } from '../domain/beneficiaire-a-creer'
 
 const blankToUndefined = (value: unknown): unknown =>
   value == null || (typeof value === 'string' && value.trim() === '')

@@ -2,5 +2,5 @@ export {
   beneficiaireWireShape,
   CreerBeneficiaireValidation,
   toBeneficiaireACreer,
-} from './creer-beneficiaire.validation'
+} from './action/creer-beneficiaire.validation'
 export * from './domain'

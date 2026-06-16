@@ -1,7 +1,10 @@
 'use server'
 
 import { withAuth, withMediateur } from '@app/web/features/authentification'
-import { FusionnerBeneficiairesValidation } from '@app/web/features/beneficiaire/abilities/fusionner-beneficiaires'
+import {
+  FUSIONNER_BENEFICIAIRES_ERRORS,
+  FusionnerBeneficiairesValidation,
+} from '@app/web/features/beneficiaire/abilities/fusionner-beneficiaires'
 import { fusionnerBeneficiaires } from '@app/web/features/beneficiaire/abilities/fusionner-beneficiaires/implementation'
 import {
   actionBuilder,
@@ -23,7 +26,7 @@ export const fusionnerBeneficiairesAction = actionBuilder()
     const firstError = results.find((result) => !result.success)
 
     return firstError && !firstError.success
-      ? ServerActionError(firstError.error._tag)
+      ? ServerActionError(FUSIONNER_BENEFICIAIRES_ERRORS[firstError.error._tag])
       : results
           .filter((r) => r.success)
           .map((r) => r.data.beneficiaireFusionneId)

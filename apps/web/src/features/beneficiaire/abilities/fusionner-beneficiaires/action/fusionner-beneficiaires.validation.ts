@@ -1,6 +1,6 @@
+import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
+import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
 import { z } from 'zod'
-import { BeneficiaireId } from '../../domain/beneficiaire-id'
-import { MediateurId } from '../../domain/mediateur-id'
 
 export const FusionnerBeneficiairesValidation = z.object({
   fusions: z
