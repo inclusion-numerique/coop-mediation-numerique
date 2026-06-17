@@ -515,6 +515,9 @@ importers:
         specifier: ^5.0.4
         version: 5.0.12(@types/react@19.2.14)(immer@10.2.0)(react@19.2.5)(use-sync-external-store@1.6.0(react@19.2.5))
     devDependencies:
+      '@arckit/cucumber':
+        specifier: ^1.0.1
+        version: 1.0.1(@cucumber/cucumber@12.9.0)
       '@cucumber/cucumber':
         specifier: ^12.9.0
         version: 12.9.0
@@ -1197,6 +1200,12 @@ packages:
     resolution: {integrity: sha512-sNiLY51vZOmSPFZA5TF35KZ2HbgYklQnTSDnkghamzLb3EkNtcQnrBQEj5AOCxHpTtXpqMCRM1CrmV2rG6nw4g==}
     peerDependencies:
       openapi-types: '>=7'
+
+  '@arckit/cucumber@1.0.1':
+    resolution: {integrity: sha512-kFyaUg2Zo6FKJ/u1M9lKWFFiYCFOzsLks1XqBLH0XkxWLDMjLim1hIwOBk3lhN3cEoIg+nRGlVw+hQOYXyu7aQ==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      '@cucumber/cucumber': '>=12'
 
   '@asyncapi/specs@6.11.1':
     resolution: {integrity: sha512-A3WBLqAKGoJ2+6FWFtpjBlCQ1oFCcs4GxF7zsIGvNqp/klGUHjlA3aAcZ9XMMpLGE8zPeYDz2x9FmO6DSuKraQ==}
@@ -15175,6 +15184,10 @@ snapshots:
       call-me-maybe: 1.0.2
       openapi-types: 7.2.3
       z-schema: 5.0.5
+
+  '@arckit/cucumber@1.0.1(@cucumber/cucumber@12.9.0)':
+    dependencies:
+      '@cucumber/cucumber': 12.9.0
 
   '@asyncapi/specs@6.11.1':
     dependencies:

@@ -8,7 +8,7 @@ import {
   trackBeneficiaire,
 } from '@app/web/features/beneficiaire/beneficiaire.cucumber'
 import type { BeneficiaireIdentifie } from '@app/web/features/beneficiaire/domain/beneficiaire'
-import { assertMatchesDataTable } from '@app/web/libraries/cucumber'
+import { assertMatchesDataTable } from '@arckit/cucumber'
 import { type DataTable, Then, When } from '@cucumber/cucumber'
 
 let lastCreated: BeneficiaireIdentifie | undefined

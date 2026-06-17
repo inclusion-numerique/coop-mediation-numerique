@@ -5,8 +5,8 @@ import {
   seedBeneficiaire,
   testMediateurId,
 } from '@app/web/features/beneficiaire/beneficiaire.cucumber'
-import { assertMatchesDataTable } from '@app/web/libraries/cucumber'
 import { prismaClient } from '@app/web/prismaClient'
+import { assertMatchesDataTable } from '@arckit/cucumber'
 import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 
