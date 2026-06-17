@@ -5,14 +5,14 @@ describe('ContactTelephone', () => {
   it('builds a disponible contact when a telephone is provided', () => {
     expect(ContactTelephone(Telephone('0102030405'), undefined)).toEqual({
       _tag: 'disponible',
-      numero: '0102030405',
+      numero: '+33102030405',
     })
   })
 
   it('builds a disponible contact even if pasDeTelephone is set', () => {
     expect(ContactTelephone(Telephone('0102030405'), true)).toEqual({
       _tag: 'disponible',
-      numero: '0102030405',
+      numero: '+33102030405',
     })
   })
 

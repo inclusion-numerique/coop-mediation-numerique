@@ -27,6 +27,16 @@ describe('CommuneResidence', () => {
     ).toEqual({ commune: 'Lyon', codePostal: '69001', codeInsee: '69381' })
   })
 
+  it('strips spaces from code postal and code insee', () => {
+    expect(
+      CommuneResidence({
+        commune: 'Paris',
+        codePostal: '75 001',
+        codeInsee: '7 5101',
+      }),
+    ).toEqual({ commune: 'Paris', codePostal: '75001', codeInsee: '75101' })
+  })
+
   it('rejects an incomplete commune', () => {
     expect(() =>
       CommuneResidence({

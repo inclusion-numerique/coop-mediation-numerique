@@ -51,7 +51,7 @@ describe('CreerBeneficiaireValidation', () => {
         ...minimal,
         telephone: '0102030405',
       }).contactTelephone,
-    ).toEqual({ _tag: 'disponible', numero: '0102030405' })
+    ).toEqual({ _tag: 'disponible', numero: '+33102030405' })
   })
 
   it('builds a pasDeTelephone contact', () => {

@@ -190,7 +190,7 @@ describe('toBeneficiaireIdentifie', () => {
 
     expect(beneficiaire.contactTelephone).toEqual({
       _tag: 'disponible',
-      numero: '0102030405',
+      numero: '+33102030405',
     })
     expect(beneficiaire.email).toBe('jean.dupont@example.com')
   })

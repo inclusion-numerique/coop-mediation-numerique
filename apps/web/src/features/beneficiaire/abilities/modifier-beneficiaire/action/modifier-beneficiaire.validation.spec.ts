@@ -36,7 +36,7 @@ describe('ModifierBeneficiaireValidation', () => {
     })
     expect(result.contactTelephone).toEqual({
       _tag: 'disponible',
-      numero: '0102030405',
+      numero: '+33102030405',
     })
     expect(result.genre).toBe('Feminin')
   })

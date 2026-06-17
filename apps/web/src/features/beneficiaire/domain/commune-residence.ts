@@ -8,12 +8,15 @@ import { z } from 'zod'
  * donc strict. La normalisation « champs incomplets → null » est une affaire de
  * frontière (formulaire, base).
  */
+// Forme canonique des codes : sans espaces (« 75 001 » → « 75001 »).
+const withoutSpaces = (value: string) => value.replace(/\s/g, '')
+
 export const CommuneResidence = defineModel(
   z
     .object({
       commune: z.string().trim().min(1),
-      codePostal: z.string().trim().min(1),
-      codeInsee: z.string().trim().min(1),
+      codePostal: z.string().trim().min(1).transform(withoutSpaces),
+      codeInsee: z.string().trim().min(1).transform(withoutSpaces),
       adresse: z.string().trim().min(1).optional(),
     })
     .brand('CommuneResidence'),
