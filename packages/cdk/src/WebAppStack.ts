@@ -207,16 +207,26 @@ export class WebAppStack extends TerraformStack {
       ? projectTitle
       : `[${namespace}] ${projectTitle}`
 
-    const databaseUrl = Fn.format(
-      'postgres://%s:%s@%s:%s/%s?sslmode=require&options=-c%%20search_path%%3Dcoop,public',
-      [
-        databaseUser,
-        databasePasswordVariable.value,
-        databaseInstance.endpointIp,
-        databaseInstance.endpointPort,
-        databaseName,
-      ],
-    ) as string
+    // Bascule Coop → Entrepôt : en prod (main), le client Coop ne tape plus la base provisionnée
+    // mais directement le schéma `coop` de la base de l'Entrepôt, via le tunnel SSH déjà ouvert
+    // par l'entrypoint (localhost sur ENTREPOT_TUNNEL_PORT). On réutilise tel quel
+    // ENTREPOT_DATABASE_URL — sa chaîne doit donc porter `search_path=coop,public` (sans incidence
+    // pour entrepotPrismaClient qui qualifie ses tables admin/main/…). Features et dev gardent
+    // leur base provisionnée. Gaté sur isMain : seule la prod est déroutée.
+    const useEntrepotCoopDatabase = isMain
+
+    const databaseUrl = useEntrepotCoopDatabase
+      ? entrepotSensitiveVariables.ENTREPOT_DATABASE_URL.value
+      : (Fn.format(
+          'postgres://%s:%s@%s:%s/%s?sslmode=require&options=-c%%20search_path%%3Dcoop,public',
+          [
+            databaseUser,
+            databasePasswordVariable.value,
+            databaseInstance.endpointIp,
+            databaseInstance.endpointPort,
+            databaseName,
+          ],
+        ) as string)
 
     // Changing the name will recreate a new container
     // The names fails with max length so we shorten it

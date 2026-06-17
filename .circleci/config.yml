@@ -552,10 +552,19 @@ jobs:
       - run:
           name: Set deployment status to migration
           command: pnpm --silent cli github:deployment:update $DEPLOYMENT_ID in_progress -d 'Executing database migrations' -l https://app.circleci.com/pipelines/workflows/$CIRCLE_WORKFLOW_ID
-      - run:
-          name: 'Migrate database'
-          command: |
-            pnpm --silent -F @app/web db:migrate-deploy
+      # Prod (main) pointe sur la base de l'Entrepôt, joignable seulement au runtime via le tunnel
+      # SSH du conteneur — pas pendant le job CI. Le schéma coop y est migré hors-CI. On saute donc
+      # migrate-deploy sur main (il échouerait en P1001 sur localhost:5433) ; features et dev
+      # migrent normalement sur leur base provisionnée.
+      - when:
+          condition:
+            not:
+              equal: [ main, << pipeline.git.branch >> ]
+          steps:
+            - run:
+                name: 'Migrate database'
+                command: |
+                  pnpm --silent -F @app/web db:migrate-deploy
       - run:
           name: Set deployment status to data loading
           command: pnpm --silent cli github:deployment:update $DEPLOYMENT_ID in_progress -d 'Loading data' -l https://app.circleci.com/pipelines/workflows/$CIRCLE_WORKFLOW_ID
