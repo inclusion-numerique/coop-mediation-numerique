@@ -1,11 +1,11 @@
 export {
   type Beneficiaire,
   BeneficiaireId,
+  beneficiaireAdresseString,
+  beneficiaireDisplayName,
   type Genre,
   genreLabels,
   genres,
-  getBeneficiaireAdresseString,
-  getBeneficiaireDisplayName,
   isBeneficiaireAnonymous,
   type StatutSocial,
   sexLabels,

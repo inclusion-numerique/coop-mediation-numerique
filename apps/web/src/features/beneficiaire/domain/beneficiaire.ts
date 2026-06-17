@@ -43,7 +43,7 @@ export const isBeneficiaireAnonymous = (
   beneficiaire: Beneficiaire,
 ): beneficiaire is BeneficiaireAnonyme => beneficiaire.anonyme
 
-export const getBeneficiaireDisplayName = (beneficiaire: Beneficiaire) =>
+export const beneficiaireDisplayName = (beneficiaire: Beneficiaire) =>
   beneficiaire.anonyme
     ? 'Bénéficiaire anonyme'
     : [beneficiaire.prenom, beneficiaire.nom].filter(Boolean).join(' ')
@@ -53,7 +53,7 @@ const toAdressString = ({ adresse, codePostal, commune }: CommuneResidence) =>
     .filter(Boolean)
     .join(', ')
 
-export const getBeneficiaireAdresseString = (
+export const beneficiaireAdresseString = (
   beneficiaire: BeneficiaireIdentifie,
 ): string | undefined =>
   beneficiaire.communeResidence

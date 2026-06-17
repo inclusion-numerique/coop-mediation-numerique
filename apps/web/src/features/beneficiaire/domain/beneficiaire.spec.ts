@@ -1,8 +1,8 @@
 import { AnneeNaissance } from './annee-naissance'
 import type { BeneficiaireAnonyme, BeneficiaireIdentifie } from './beneficiaire'
 import {
-  getBeneficiaireAdresseString,
-  getBeneficiaireDisplayName,
+  beneficiaireAdresseString,
+  beneficiaireDisplayName,
   isBeneficiaireAnonymous,
   toBeneficiaireIdentifie,
 } from './beneficiaire'
@@ -56,24 +56,24 @@ describe('isBeneficiaireAnonymous', () => {
   })
 })
 
-describe('getBeneficiaireDisplayName', () => {
+describe('beneficiaireDisplayName', () => {
   it('returns "Bénéficiaire anonyme" for anonymous', () => {
-    expect(getBeneficiaireDisplayName(anonyme)).toBe('Bénéficiaire anonyme')
+    expect(beneficiaireDisplayName(anonyme)).toBe('Bénéficiaire anonyme')
   })
 
   it('returns full name for identified', () => {
-    expect(getBeneficiaireDisplayName(identifie)).toBe('Jean Dupont')
+    expect(beneficiaireDisplayName(identifie)).toBe('Jean Dupont')
   })
 })
 
-describe('getBeneficiaireAdresseString', () => {
+describe('beneficiaireAdresseString', () => {
   it('returns undefined when no commune residence', () => {
-    expect(getBeneficiaireAdresseString(identifie)).toBeUndefined()
+    expect(beneficiaireAdresseString(identifie)).toBeUndefined()
   })
 
   it('returns full address with adresse and commune', () => {
     expect(
-      getBeneficiaireAdresseString({
+      beneficiaireAdresseString({
         ...identifie,
         communeResidence: CommuneResidence({
           commune: 'Paris',
@@ -87,7 +87,7 @@ describe('getBeneficiaireAdresseString', () => {
 
   it('returns commune only when no adresse', () => {
     expect(
-      getBeneficiaireAdresseString({
+      beneficiaireAdresseString({
         ...identifie,
         communeResidence: CommuneResidence({
           commune: 'Lyon',

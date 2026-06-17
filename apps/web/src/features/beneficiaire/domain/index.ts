@@ -3,8 +3,8 @@ export {
   type Beneficiaire,
   type BeneficiaireAnonyme,
   type BeneficiaireIdentifie,
-  getBeneficiaireAdresseString,
-  getBeneficiaireDisplayName,
+  beneficiaireAdresseString,
+  beneficiaireDisplayName,
   isBeneficiaireAnonymous,
   toBeneficiaireIdentifie,
 } from './beneficiaire'
