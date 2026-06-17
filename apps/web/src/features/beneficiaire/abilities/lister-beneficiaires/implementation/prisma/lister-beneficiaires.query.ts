@@ -11,6 +11,7 @@ import { StatutSocial } from '@app/web/features/beneficiaire/domain/statut-socia
 import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import { TrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
 import { prismaClient } from '@app/web/prismaClient'
+import { DEFAULT_PAGE, PageSize, type Search } from '@arckit/resultset'
 import type {
   Prisma,
   Genre as PrismaGenre,
@@ -22,8 +23,7 @@ import type {
   ListerBeneficiaires,
 } from '../../domain/lister-beneficiaires'
 
-const DEFAULT_PAGE = 1
-const DEFAULT_PAGE_SIZE = 20
+const DEFAULT_PAGE_SIZE = PageSize(20)
 
 const beneficiaireSelect = {
   id: true,
@@ -45,8 +45,8 @@ const beneficiaireSelect = {
   notes: true,
 } satisfies Prisma.BeneficiaireSelect
 
-const toSearchParts = (recherche?: string): string[] =>
-  (recherche ?? '')
+const toSearchParts = (search?: Search): string[] =>
+  (search ?? '')
     .split(/\s+/)
     .map((part) => part.trim())
     .filter(Boolean)
@@ -98,12 +98,12 @@ const toListItem = (row: {
 
 export const listerBeneficiaires: ListerBeneficiaires = async ({
   mediateurId,
-  recherche,
+  search,
   page = DEFAULT_PAGE,
   pageSize = DEFAULT_PAGE_SIZE,
   excludeIds = [],
 }) => {
-  const searchParts = toSearchParts(recherche)
+  const searchParts = toSearchParts(search)
 
   const where: Prisma.BeneficiaireWhereInput = {
     suppression: null,
@@ -144,8 +144,9 @@ export const listerBeneficiaires: ListerBeneficiaires = async ({
   ])
 
   return {
-    beneficiaires: rows.map(toListItem),
-    matchesCount,
-    totalPages: Math.ceil(matchesCount / pageSize),
+    items: rows.map(toListItem),
+    totalItems: matchesCount,
+    currentPage: page,
+    pageSize,
   }
 }

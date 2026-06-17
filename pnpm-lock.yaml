@@ -169,6 +169,9 @@ importers:
       '@app/emails':
         specifier: workspace:^
         version: link:../../packages/emails
+      '@arckit/resultset':
+        specifier: ^2.0.0
+        version: 2.0.0
       '@auth/core':
         specifier: ^0.39.0
         version: 0.39.1(nodemailer@7.0.13)
@@ -1206,6 +1209,10 @@ packages:
     engines: {node: '>=22'}
     peerDependencies:
       '@cucumber/cucumber': '>=12'
+
+  '@arckit/resultset@2.0.0':
+    resolution: {integrity: sha512-3uaVgVK7CGmOhNBntxcUHLvbXx6KTmpjE7emBNDDnq4zbxFa5LGpNmyLXMJGL9+UQyl0EKIDcAaUeHdyJpw7tQ==}
+    engines: {node: '>=22'}
 
   '@asyncapi/specs@6.11.1':
     resolution: {integrity: sha512-A3WBLqAKGoJ2+6FWFtpjBlCQ1oFCcs4GxF7zsIGvNqp/klGUHjlA3aAcZ9XMMpLGE8zPeYDz2x9FmO6DSuKraQ==}
@@ -15188,6 +15195,8 @@ snapshots:
   '@arckit/cucumber@1.0.1(@cucumber/cucumber@12.9.0)':
     dependencies:
       '@cucumber/cucumber': 12.9.0
+
+  '@arckit/resultset@2.0.0': {}
 
   '@asyncapi/specs@6.11.1':
     dependencies:

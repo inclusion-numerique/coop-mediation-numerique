@@ -4,6 +4,7 @@ import {
   seedBeneficiaire,
   testMediateurId,
 } from '@app/web/features/beneficiaire/beneficiaire.cucumber'
+import { PageSize, Search } from '@arckit/resultset'
 import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
 
 type ListResult = Awaited<ReturnType<typeof listerBeneficiaires>>
@@ -26,7 +27,7 @@ When(
   async (recherche: string) => {
     listResult = await listerBeneficiaires({
       mediateurId: testMediateurId,
-      recherche,
+      search: Search(recherche),
     })
   },
 )
@@ -36,20 +37,22 @@ When(
   async (recherche: string, pageSize: number) => {
     listResult = await listerBeneficiaires({
       mediateurId: testMediateurId,
-      recherche,
-      pageSize,
+      search: Search(recherche),
+      pageSize: PageSize(pageSize),
     })
   },
 )
 
 Then('la liste contient {int} bénéficiaire(s)', (count: number) => {
-  assert.strictEqual(listResult?.beneficiaires.length, count)
+  assert.strictEqual(listResult?.items.length, count)
 })
 
 Then('le nombre total de correspondances est {int}', (count: number) => {
-  assert.strictEqual(listResult?.matchesCount, count)
+  assert.strictEqual(listResult?.totalItems, count)
 })
 
 Then('le nombre de pages est {int}', (count: number) => {
-  assert.strictEqual(listResult?.totalPages, count)
+  assert.ok(listResult)
+  const totalPages = Math.ceil(listResult.totalItems / listResult.pageSize)
+  assert.strictEqual(totalPages, count)
 })

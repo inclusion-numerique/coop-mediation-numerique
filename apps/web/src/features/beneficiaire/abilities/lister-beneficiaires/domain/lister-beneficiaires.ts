@@ -10,6 +10,7 @@ import type { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
 import type { StatutSocial } from '@app/web/features/beneficiaire/domain/statut-social'
 import type { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import type { TrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
+import type { Page, PageSize, Paginated, Search } from '@arckit/resultset'
 
 export type BeneficiaireListItem = {
   readonly id: BeneficiaireId
@@ -28,16 +29,10 @@ export type BeneficiaireListItem = {
   readonly notes: Notes | null
 }
 
-export type ListerBeneficiairesResult = {
-  readonly beneficiaires: readonly BeneficiaireListItem[]
-  readonly matchesCount: number
-  readonly totalPages: number
-}
-
 export type ListerBeneficiaires = (input: {
   mediateurId: MediateurId
-  recherche?: string
-  page?: number
-  pageSize?: number
+  search?: Search
+  page?: Page
+  pageSize?: PageSize
   excludeIds?: readonly BeneficiaireId[]
-}) => Promise<ListerBeneficiairesResult>
+}) => Promise<Paginated<BeneficiaireListItem>>
