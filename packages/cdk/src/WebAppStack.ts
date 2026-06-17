@@ -207,13 +207,13 @@ export class WebAppStack extends TerraformStack {
       ? projectTitle
       : `[${namespace}] ${projectTitle}`
 
-    // Essai de bascule Coop → Entrepôt : sur la branche dédiée, le client Coop ne tape plus la
-    // base éphémère provisionnée (qui reste créée mais inutilisée) mais directement le schéma
-    // `coop` de la base de l'Entrepôt, via le tunnel SSH déjà ouvert par l'entrypoint (localhost
-    // sur ENTREPOT_TUNNEL_PORT). On réutilise tel quel ENTREPOT_DATABASE_URL — sa chaîne doit
-    // donc porter `search_path=coop,public` (sans incidence pour entrepotPrismaClient qui qualifie
-    // ses tables admin/main/…). Gaté sur le namespace : seul cet env est dérouté.
-    const useEntrepotCoopDatabase = namespace === 'test-entrepot-coop-db'
+    // Bascule Coop → Entrepôt : en prod (main), le client Coop ne tape plus la base provisionnée
+    // mais directement le schéma `coop` de la base de l'Entrepôt, via le tunnel SSH déjà ouvert
+    // par l'entrypoint (localhost sur ENTREPOT_TUNNEL_PORT). On réutilise tel quel
+    // ENTREPOT_DATABASE_URL — sa chaîne doit donc porter `search_path=coop,public` (sans incidence
+    // pour entrepotPrismaClient qui qualifie ses tables admin/main/…). Features et dev gardent
+    // leur base provisionnée. Gaté sur isMain : seule la prod est déroutée.
+    const useEntrepotCoopDatabase = isMain
 
     const databaseUrl = useEntrepotCoopDatabase
       ? entrepotSensitiveVariables.ENTREPOT_DATABASE_URL.value

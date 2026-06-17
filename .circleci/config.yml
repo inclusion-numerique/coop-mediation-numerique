@@ -552,13 +552,14 @@ jobs:
       - run:
           name: Set deployment status to migration
           command: pnpm --silent cli github:deployment:update $DEPLOYMENT_ID in_progress -d 'Executing database migrations' -l https://app.circleci.com/pipelines/workflows/$CIRCLE_WORKFLOW_ID
-      # Branche d'essai Entrepôt : le schéma coop est migré hors CI (sur dataspace_dev) et la base
-      # n'est joignable qu'au runtime via le tunnel SSH du conteneur — pas pendant le job CI.
-      # On saute donc migrate-deploy pour ce namespace (il échouerait en P1001 sur localhost:5433).
+      # Prod (main) pointe sur la base de l'Entrepôt, joignable seulement au runtime via le tunnel
+      # SSH du conteneur — pas pendant le job CI. Le schéma coop y est migré hors-CI. On saute donc
+      # migrate-deploy sur main (il échouerait en P1001 sur localhost:5433) ; features et dev
+      # migrent normalement sur leur base provisionnée.
       - when:
           condition:
             not:
-              equal: [ test/entrepot-coop-db, << pipeline.git.branch >> ]
+              equal: [ main, << pipeline.git.branch >> ]
           steps:
             - run:
                 name: 'Migrate database'
@@ -572,10 +573,6 @@ jobs:
             and:
               - not:
                   equal: [ main, << pipeline.git.branch >> ]
-              # Pas de fixtures sur la branche d'essai Entrepôt : la base dataspace_dev est déjà
-              # peuplée par la copie du schéma coop, et le job CI n'a pas de tunnel vers elle.
-              - not:
-                  equal: [ test/entrepot-coop-db, << pipeline.git.branch >> ]
           steps:
             - run:
                 name: 'Load fixtures on preview envs'
