@@ -24,6 +24,27 @@ describe('CreerBeneficiaireValidation', () => {
     ).toThrow()
   })
 
+  it('trims prenom and nom', () => {
+    const result = CreerBeneficiaireValidation.parse({
+      prenom: '  Jean  ',
+      nom: '  Dupont  ',
+    })
+    expect(result.prenom).toBe('Jean')
+    expect(result.nom).toBe('Dupont')
+  })
+
+  it('rejects a prenom or nom over the max length', () => {
+    expect(() =>
+      CreerBeneficiaireValidation.parse({ ...minimal, nom: 'x'.repeat(101) }),
+    ).toThrow()
+    expect(() =>
+      CreerBeneficiaireValidation.parse({
+        ...minimal,
+        prenom: 'x'.repeat(101),
+      }),
+    ).toThrow()
+  })
+
   it('builds a disponible contact when a telephone is provided', () => {
     expect(
       CreerBeneficiaireValidation.parse({
