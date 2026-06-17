@@ -45,9 +45,9 @@ const toCommuneResidence = (
 const toBase = (row: PrismaBeneficiaire) => ({
   id: BeneficiaireId(row.id),
   mediateurId: MediateurId(row.mediateurId),
-  genre: Genre(row.genre ?? 'NonCommunique'),
-  trancheAge: TrancheAge(row.trancheAge ?? 'NonCommunique'),
-  statutSocial: StatutSocial(row.statutSocial ?? 'NonCommunique'),
+  genre: Genre(row.genre),
+  trancheAge: TrancheAge(row.trancheAge),
+  statutSocial: StatutSocial(row.statutSocial),
   creation: row.creation,
   modification: row.modification,
   suppression: row.suppression,

@@ -13,7 +13,16 @@ export const tranchesAge = [
   'NonCommunique',
 ] as const
 
-export const TrancheAge = defineModel(z.enum(tranchesAge))
+/**
+ * Une tranche absente vaut `NonCommunique` : l'absence est une valeur du
+ * domaine, donc le constructeur est total (accepte aussi une valeur absente).
+ */
+export const TrancheAge = defineModel(
+  z
+    .enum(tranchesAge)
+    .nullish()
+    .transform((value) => value ?? 'NonCommunique'),
+)
 
 export type TrancheAge = Model.TypeOf<typeof TrancheAge>
 
@@ -47,3 +56,14 @@ export const trancheAgeFromAnneeNaissance = (
     tranchesAgeParSeuil.find(({ seuil }) => toAge(anneeNaissance) < seuil)
       ?.tranche ?? 'SoixanteDixPlus',
   )
+
+/**
+ * La tranche d'âge est dérivée de l'année de naissance (règle métier),
+ * jamais saisie directement. Sans année de naissance : `NonCommunique`.
+ */
+export const trancheAgeForBeneficiaire = (
+  anneeNaissance: AnneeNaissance | null,
+): TrancheAge =>
+  anneeNaissance
+    ? trancheAgeFromAnneeNaissance(anneeNaissance)
+    : TrancheAge('NonCommunique')

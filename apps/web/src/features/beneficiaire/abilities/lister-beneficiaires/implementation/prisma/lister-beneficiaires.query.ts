@@ -79,9 +79,9 @@ const toListItem = (row: {
   anneeNaissance: row.anneeNaissance
     ? AnneeNaissance(row.anneeNaissance)
     : null,
-  trancheAge: TrancheAge(row.trancheAge ?? 'NonCommunique'),
-  genre: Genre(row.genre ?? 'NonCommunique'),
-  statutSocial: StatutSocial(row.statutSocial ?? 'NonCommunique'),
+  trancheAge: TrancheAge(row.trancheAge),
+  genre: Genre(row.genre),
+  statutSocial: StatutSocial(row.statutSocial),
   communeResidence:
     row.commune && row.communeCodePostal && row.communeCodeInsee
       ? CommuneResidence({

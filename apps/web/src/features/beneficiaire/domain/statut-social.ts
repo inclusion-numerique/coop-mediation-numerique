@@ -9,7 +9,16 @@ export const statutsSociaux = [
   'NonCommunique',
 ] as const
 
-export const StatutSocial = defineModel(z.enum(statutsSociaux))
+/**
+ * Un statut absent vaut `NonCommunique` : l'absence est une valeur du domaine,
+ * donc le constructeur est total (accepte aussi une valeur absente).
+ */
+export const StatutSocial = defineModel(
+  z
+    .enum(statutsSociaux)
+    .nullish()
+    .transform((value) => value ?? 'NonCommunique'),
+)
 
 export type StatutSocial = Model.TypeOf<typeof StatutSocial>
 

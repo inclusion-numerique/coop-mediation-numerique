@@ -9,7 +9,7 @@ import type { Nom } from './nom'
 import type { Notes } from './notes'
 import type { Prenom } from './prenom'
 import type { StatutSocial } from './statut-social'
-import type { TrancheAge } from './tranche-age'
+import { type TrancheAge, trancheAgeForBeneficiaire } from './tranche-age'
 
 type BeneficiaireBase = {
   readonly id: BeneficiaireId
@@ -59,3 +59,53 @@ export const getBeneficiaireAdresseString = (
   beneficiaire.communeResidence
     ? toAdressString(beneficiaire.communeResidence)
     : undefined
+
+/**
+ * Construit un bénéficiaire identifié à partir de ses attributs éditables et
+ * des données d'identité/horodatage fournies par l'appelant. Fonction pure :
+ * fixe les invariants de l'entité (non anonyme, non supprimé) et dérive la
+ * tranche d'âge. Le paramètre est dérivé de l'entité, donc accepte aussi bien
+ * un input de création que de modification, sans dépendre d'aucune ability.
+ */
+export const toBeneficiaireIdentifie = (
+  attributs: Pick<
+    BeneficiaireIdentifie,
+    | 'prenom'
+    | 'nom'
+    | 'contactTelephone'
+    | 'email'
+    | 'anneeNaissance'
+    | 'communeResidence'
+    | 'genre'
+    | 'statutSocial'
+    | 'notes'
+  >,
+  {
+    id,
+    mediateurId,
+    creation,
+    modification,
+  }: {
+    id: BeneficiaireId
+    mediateurId: MediateurId
+    creation: Date
+    modification: Date
+  },
+): BeneficiaireIdentifie => ({
+  id,
+  mediateurId,
+  anonyme: false,
+  prenom: attributs.prenom,
+  nom: attributs.nom,
+  contactTelephone: attributs.contactTelephone,
+  email: attributs.email,
+  anneeNaissance: attributs.anneeNaissance,
+  communeResidence: attributs.communeResidence,
+  notes: attributs.notes,
+  genre: attributs.genre,
+  statutSocial: attributs.statutSocial,
+  trancheAge: trancheAgeForBeneficiaire(attributs.anneeNaissance),
+  creation,
+  modification,
+  suppression: null,
+})

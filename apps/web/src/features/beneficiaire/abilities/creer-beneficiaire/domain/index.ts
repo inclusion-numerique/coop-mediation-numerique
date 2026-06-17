@@ -1,1 +1,4 @@
-export type { CreerBeneficiaire } from './creer-beneficiaire'
+export type {
+  BeneficiaireACreer,
+  CreerBeneficiaire,
+} from './creer-beneficiaire'

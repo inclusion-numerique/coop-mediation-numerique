@@ -1,5 +1,5 @@
 import { beneficiaireFromDomain } from '@app/web/features/beneficiaire/db'
-import { toBeneficiaireIdentifie } from '@app/web/features/beneficiaire/domain/beneficiaire-a-creer'
+import { toBeneficiaireIdentifie } from '@app/web/features/beneficiaire/domain/beneficiaire'
 import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'

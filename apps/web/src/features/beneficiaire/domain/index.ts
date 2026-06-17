@@ -6,20 +6,11 @@ export {
   getBeneficiaireAdresseString,
   getBeneficiaireDisplayName,
   isBeneficiaireAnonymous,
-} from './beneficiaire'
-export {
-  type BeneficiaireACreer,
   toBeneficiaireIdentifie,
-  trancheAgeForBeneficiaire,
-} from './beneficiaire-a-creer'
+} from './beneficiaire'
 export { BeneficiaireId } from './beneficiaire-id'
-export {
-  type BeneficiaireWireOutput,
-  beneficiaireWireShape,
-  toBeneficiaireACreer,
-} from './beneficiaire-wire'
 export { CommuneResidence } from './commune-residence'
-export type { ContactTelephone } from './contact-telephone'
+export { ContactTelephone } from './contact-telephone'
 export { Email } from './email'
 export type { BeneficiaireAlreadyExists, BeneficiaireNotFound } from './errors'
 export type { FindBeneficiairesByMediateur } from './find-beneficiaires-by-mediateur'
@@ -37,6 +28,7 @@ export {
 export { TELEPHONE_PATTERN, Telephone } from './telephone'
 export {
   type TrancheAge,
+  trancheAgeForBeneficiaire,
   trancheAgeFromAnneeNaissance,
   trancheAgeLabels,
   tranchesAge,
