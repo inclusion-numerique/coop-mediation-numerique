@@ -651,6 +651,19 @@ commands:
       - restore_cache:
           keys:
             - << pipeline.parameters.cache_version >>-pnpm-{{ checksum "<< pipeline.parameters.lockfile >>" }}
+      # Le client Prisma de l'Entrepôt est généré dans apps/web/src/generated (gitignoré) et
+      # n'est donc PAS dans le node_modules mis en cache, contrairement au client coop. Comme
+      # tout import du graphe @app/web/cli charge entrepotPrismaClient, on le (re)génère ici,
+      # au plus tôt dans chaque job. Skip si le cache n'est pas encore restauré (job prepare,
+      # cache miss) : postinstall le génèrera alors via `pnpm install`.
+      - run:
+          name: 'Generate Prisma entrepôt client'
+          command: |
+            if [ -x apps/web/node_modules/.bin/prisma ] || [ -x node_modules/.bin/prisma ]; then
+              pnpm --silent -F @app/web prisma:entrepot:generate
+            else
+              echo "prisma CLI absent (cache miss), le client entrepôt sera généré par postinstall"
+            fi
 
   create_dotenv_file:
     steps:
