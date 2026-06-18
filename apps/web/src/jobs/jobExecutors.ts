@@ -2,7 +2,6 @@ import { prismaClient } from '@app/web/prismaClient'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import * as Sentry from '@sentry/nextjs'
 import { v4 } from 'uuid'
-import { fetchCartographieNationaleStructures } from '../data/cartographie-nationale/cartographieNationaleStructures'
 import { executeApplyCorrigerAdresse } from './apply-corriger-adresse/executeApplyCorrigerAdresse'
 import { executeApplyCorrigerCoordonnees } from './apply-corriger-coordonnees/executeApplyCorrigerCoordonnees'
 import { executeApplyFusionnerStructures } from './apply-fusionner-structures/executeApplyFusionnerStructures'
@@ -33,7 +32,7 @@ import { executeSetServciesToSharedLieux } from './set-servcies-to-shared-lieux/
 import { executeSyncRdvspData } from './sync-rdvsp-data/executeSyncRdvspData'
 import { executeSyncUsersFromDataspace } from './sync-users-from-dataspace/executeSyncUsersFromDataspace'
 import { executeUpdateLieuxActivitesADistance } from './update-lieu-activite-a-distance/executeUpdateLieuxActivitesADistance'
-import { updateStructureFromCartoDataApi } from './update-structures-cartographie-nationale/updateStructureFromCartoDataApi'
+import { updateStructuresFromEntrepot } from './update-structures-cartographie-nationale/updateStructuresFromEntrepot'
 
 export type JobExecutor<Name extends JobName, Result = unknown> = (
   job: Job & { name: Name; payload: JobPayload<Name> },
@@ -41,15 +40,10 @@ export type JobExecutor<Name extends JobName, Result = unknown> = (
 
 const executeUpdateStructuresCartographieNationale = async () => {
   output.log(
-    `update-structures-carto: fetching cartographie nationale dataset from dataspace`,
+    `update-structures-carto: lecture des lieux de la cartographie nationale depuis l’Entrepôt`,
   )
 
-  const structuresCartographieNationale =
-    await fetchCartographieNationaleStructures()
-
-  const execute = updateStructureFromCartoDataApi({
-    structuresCartographieNationale,
-  })
+  const execute = updateStructuresFromEntrepot()
 
   return await execute()
 }

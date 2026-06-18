@@ -15,9 +15,6 @@ jest.mock('@app/web/prismaClient', () => ({
       create: jest.fn(),
       update: jest.fn(),
     },
-    structureCartographieNationale: {
-      findFirst: jest.fn(),
-    },
   },
 }))
 
@@ -30,10 +27,6 @@ const structure = prismaClient.structure as unknown as {
   create: jest.Mock
   update: jest.Mock
 }
-const cartographie = prismaClient.structureCartographieNationale as unknown as {
-  findFirst: jest.Mock
-}
-
 // BAN feature whose citycode (codeInsee) is the geocoded, canonical value.
 const featureWithCitycode = (citycode: string): Feature => ({
   type: 'Feature',
@@ -71,7 +64,6 @@ describe('findOrCreateStructure', () => {
     structure.findMany.mockReset().mockResolvedValue([])
     structure.create.mockReset().mockResolvedValue({ id: 'created-id' })
     structure.update.mockReset().mockResolvedValue(undefined)
-    cartographie.findFirst.mockReset().mockResolvedValue(null)
   })
 
   test('matches an existing structure when the payload codeInsee diverges from the geocoded one', async () => {

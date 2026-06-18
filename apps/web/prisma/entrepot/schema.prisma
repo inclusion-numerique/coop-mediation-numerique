@@ -1,0 +1,90 @@
+// Second Prisma schema: READ-ONLY typed access to the Entrepôt (Dataspace) database.
+//
+// Owned by the Dataspace team, NOT by this app. These models are introspected from
+// the existing `main` schema and must NEVER be managed by `prisma migrate`:
+// this file is deliberately kept separate from prisma/schema.prisma and is only
+// passed to `prisma generate` (and, on demand, `prisma db pull`) — never to migrate.
+//
+// Read-only is enforced at the database level (a Postgres role with GRANT SELECT on
+// `main` behind ENTREPOT_DATABASE_URL), Prisma has no read-only client flag.
+//
+// The generated client lives at its own `output` and is consumed via
+// `@app/web/generated/entrepot` from src/entrepotPrismaClient.ts.
+
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../../src/generated/entrepot"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("ENTREPOT_DATABASE_URL")
+  schemas  = ["main"]
+}
+
+/// Lieu d'inclusion numérique côté Entrepôt (table de la cartographie nationale).
+/// Remplace l'ancienne table miroir coop.structures_cartographie_nationale.
+/// `structureCartographieNationaleId` porte l'id composite (tokens `Coop-numérique_…`
+/// séparés par `__`) analysé par le job pour relier les structures coop.
+model LieuInclusion {
+  id                               Int       @id @default(autoincrement())
+  oldMainStructureId               Int?      @unique @map("old_main_structure_id")
+  nom                              String    @db.VarChar(255)
+  adresseId                        Int?      @map("adresse_id")
+  structureCartographieNationaleId String?   @unique @map("structure_cartographie_nationale_id")
+  visiblePourCartographieNationale Boolean?  @map("visible_pour_cartographie_nationale")
+  ficheAccesLibre                  String?   @map("fiche_acces_libre")
+  presentationResume               String?   @map("presentation_resume")
+  presentationDetail               String?   @map("presentation_detail")
+  horaires                         String?
+  priseRdv                         String?   @map("prise_rdv")
+  itinerance                       String[]
+  services                         String[]
+  modalitesAcces                   String[]  @map("modalites_acces")
+  modalitesAccompagnement          String[]  @map("modalites_accompagnement")
+  publicsSpecifiquementAdresses    String[]  @map("publics_specifiquement_adresses")
+  priseEnChargeSpecifique          String[]  @map("prise_en_charge_specifique")
+  fraisACharge                     String[]  @map("frais_a_charge")
+  formationsLabels                 String[]  @map("formations_labels")
+  autresFormationsLabels           String[]  @map("autres_formations_labels")
+  dispositifProgrammesNationaux    String[]  @map("dispositif_programmes_nationaux")
+  typologies                       String[]
+  contact                          Json?
+  mediateursEnActivite             Int?      @map("mediateurs_en_activite")
+  emplois                          Int?
+  source                           String?
+  editedBy                         String?   @map("edited_by") @db.VarChar(50)
+  createdAt                        DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt                        DateTime? @map("updated_at") @db.Timestamp(6)
+  structureCoopId                  String?   @unique @map("structure_coop_id") @db.Uuid
+  importWarnings                   Json?     @map("import_warnings")
+
+  adresse Adresse? @relation(fields: [adresseId], references: [id])
+
+  @@map("lieu_inclusion")
+  @@schema("main")
+}
+
+/// Adresse normalisée côté Entrepôt. `geom` (postgis) est de type Unsupported :
+/// non sélectionnable par le client typé (lat/long non utilisées côté coop).
+model Adresse {
+  id          Int                      @id @default(autoincrement())
+  geom        Unsupported("geometry")?
+  clefInterop String?                  @map("clef_interop") @db.VarChar(50)
+  codeBan     String?                  @unique @map("code_ban") @db.Uuid
+  codePostal  String                   @map("code_postal") @db.VarChar(5)
+  codeInsee   String                   @map("code_insee") @db.VarChar(5)
+  nomCommune  String                   @map("nom_commune") @db.VarChar(255)
+  nomVoie     String?                  @map("nom_voie") @db.VarChar(255)
+  repetition  String?                  @db.VarChar(10)
+  numeroVoie  Int?                     @map("numero_voie") @db.SmallInt
+  createdAt   DateTime?                @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt   DateTime?                @map("updated_at") @db.Timestamp(6)
+  departement String?                  @db.VarChar(3)
+
+  lieux LieuInclusion[]
+
+  @@map("adresse")
+  @@schema("main")
+}

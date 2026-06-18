@@ -15,7 +15,6 @@ const MODIFICATION_FIELD: Record<string, TimestampField> = {
   ActiviteCoordination: 'modification',
   Tag: 'modification',
   Structure: 'modification',
-  StructureCartographieNationale: 'modification',
   Mediateur: 'modification',
   Coordinateur: 'modification',
   MediateurCoordonne: 'modification',

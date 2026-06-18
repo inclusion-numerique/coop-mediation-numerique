@@ -1,7 +1,6 @@
 import { searchAdresse } from '@app/web/external-apis/apiAdresse'
 import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
 import { prismaClient } from '@app/web/prismaClient'
-import { toStructureFromCartoStructure } from '@app/web/structure/toStructureFromCartoStructure'
 import { v4 } from 'uuid'
 
 // Préfixes administratifs interchangeables, normalisés vers un token canonique.
@@ -189,10 +188,11 @@ const undeleteStructureIfDeleted = async ({
  * 2. Geocode the address once (BAN) to resolve a canonical codeInsee used by
  *    every lookup below AND by the final create (kept symmetric on purpose)
  * 3. Find existing Structure by SIRET + resolved codeInsee
- * 4. Find StructureCartographieNationale by pivot (SIRET) → create Structure from it
- * 5. Find existing Structure by nom + resolved codeInsee (if no SIRET)
- * 6. Fallback: create from the geocoded address (or raw fields if geocoding failed)
+ * 4. Find existing Structure by nom + resolved codeInsee (if no SIRET)
+ * 5. Fallback: create from the geocoded address (or raw fields if geocoding failed)
  *
+ * Note : on n'importe plus de structure depuis la cartographie nationale par SIRET
+ * (le SIRET de la carto n'est pas fiable, seule l'API entreprise fait foi).
  * This is reusable for both V1 imports and Dataspace imports.
  */
 export const findOrCreateStructure = async ({
@@ -273,47 +273,7 @@ export const findOrCreateStructure = async ({
     }
   }
 
-  // Step 2: Find StructureCartographieNationale by pivot (SIRET) - only if siret is provided
-  if (siret) {
-    const cartoStructure =
-      await prismaClient.structureCartographieNationale.findFirst({
-        where: {
-          pivot: siret,
-          codeInsee: resolvedCodeInsee,
-        },
-      })
-
-    if (cartoStructure) {
-      // Guard: re-check before creating to prevent duplicates
-      const existing = await findExistingBySiretOrNom({
-        siret,
-        nom,
-        codeInsee: resolvedCodeInsee,
-      })
-      if (existing) return existing
-
-      // Create structure from cartographie nationale data (has coordinates)
-      const structureData = toStructureFromCartoStructure(cartoStructure)
-
-      // Override with referent info if provided
-      const createdStructure = await prismaClient.structure.create({
-        data: {
-          ...structureData,
-          nomReferent: nomReferent ?? null,
-          courrielReferent: courrielReferent ?? structureData.courriels?.at(0),
-          telephoneReferent: telephoneReferent ?? structureData.telephone,
-          creationParId,
-        },
-        select: {
-          id: true,
-        },
-      })
-
-      return createdStructure
-    }
-  }
-
-  // Step 3: Try to find existing structure by nom if no siret
+  // Step 2: Try to find existing structure by nom if no siret
   if (!siret) {
     const existingByNom = await prismaClient.structure.findFirst({
       where: {
@@ -343,7 +303,7 @@ export const findOrCreateStructure = async ({
     }
   }
 
-  // Step 4: Fallback - reuse the geocoded address (already fetched) and create
+  // Step 3: Fallback - reuse the geocoded address (already fetched) and create
   // Guard: re-check before creating to prevent duplicates
   const existingGuard = await findExistingBySiretOrNom({
     siret,

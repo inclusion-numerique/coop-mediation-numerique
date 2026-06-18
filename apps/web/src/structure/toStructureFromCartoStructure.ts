@@ -1,3 +1,4 @@
+import type { CartoStructure } from '@app/web/features/lieux-activite/use-cases/ajouter/domain'
 import { fraisAChargeKeys } from '@app/web/features/structures/fraisACharge'
 import { itineranceKeys } from '@app/web/features/structures/itinerance'
 import { modaliteAccompagnementKeys } from '@app/web/features/structures/modaliteAccompagnement'
@@ -17,11 +18,7 @@ import type {
   PublicSpecifiquementAdresse,
   Service,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type {
-  Prisma,
-  StructureCartographieNationale,
-  Typologie,
-} from '@prisma/client'
+import type { Prisma, Typologie } from '@prisma/client'
 import { v4 } from 'uuid'
 
 export const toStructureFromCartoStructure = ({
@@ -51,35 +48,7 @@ export const toStructureFromCartoStructure = ({
   siteWeb,
   telephone,
   typologie,
-}: Pick<
-  StructureCartographieNationale,
-  | 'id'
-  | 'nom'
-  | 'adresse'
-  | 'commune'
-  | 'codePostal'
-  | 'pivot'
-  | 'codeInsee'
-  | 'longitude'
-  | 'latitude'
-  | 'ficheAccesLibre'
-  | 'presentationDetail'
-  | 'presentationResume'
-  | 'complementAdresse'
-  | 'horaires'
-  | 'source'
-  | 'siteWeb'
-  | 'typologie'
-  | 'modalitesAccompagnement'
-  | 'services'
-  | 'modalitesAcces'
-  | 'fraisACharge'
-  | 'itinerance'
-  | 'priseEnChargeSpecifique'
-  | 'publicsSpecifiquementAdresses'
-  | 'courriels'
-  | 'telephone'
->) =>
+}: CartoStructure) =>
   ({
     id: v4(),
     structureCartographieNationaleId: id,

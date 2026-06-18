@@ -84,40 +84,6 @@ const mergeActivitesLieu =
     })
   }
 
-const mergeCartographieNationaleIds =
-  (prisma: PrismaTransaction) =>
-  async (
-    sourceStructure: {
-      id: string
-      structureCartographieNationaleId: string | null
-    },
-    targetStructure: {
-      id: string
-      structureCartographieNationaleId: string | null
-    },
-  ) => {
-    if (sourceStructure.structureCartographieNationaleId) {
-      const cartoSource =
-        await prisma.structureCartographieNationale.findUnique({
-          where: { id: sourceStructure.structureCartographieNationaleId },
-        })
-
-      if (cartoSource && cartoSource.coopIds.includes(sourceStructure.id)) {
-        const newCoopIds = cartoSource.coopIds.filter(
-          (id) => id !== sourceStructure.id,
-        )
-        if (!newCoopIds.includes(targetStructure.id)) {
-          newCoopIds.push(targetStructure.id)
-        }
-
-        await prisma.structureCartographieNationale.update({
-          where: { id: sourceStructure.structureCartographieNationaleId },
-          data: { coopIds: newCoopIds },
-        })
-      }
-    }
-  }
-
 const mergeArrayFields =
   (prisma: PrismaTransaction) =>
   async (sourceStructureId: string, targetStructureId: string) => {
@@ -189,7 +155,6 @@ export const mergeStructure = async (
           where: { id: sourceStructureId },
           select: {
             id: true,
-            structureCartographieNationaleId: true,
             visiblePourCartographieNationale: true,
           },
         }),
@@ -197,7 +162,6 @@ export const mergeStructure = async (
           where: { id: targetStructureId },
           select: {
             id: true,
-            structureCartographieNationaleId: true,
             visiblePourCartographieNationale: true,
           },
         }),
@@ -217,10 +181,6 @@ export const mergeStructure = async (
         targetStructureId,
       )
       await mergeActivitesLieu(prisma)(sourceStructureId, targetStructureId)
-      await mergeCartographieNationaleIds(prisma)(
-        sourceStructure,
-        targetStructure,
-      )
       await mergeArrayFields(prisma)(sourceStructureId, targetStructureId)
 
       if (

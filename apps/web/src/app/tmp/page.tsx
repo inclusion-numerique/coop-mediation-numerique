@@ -17,7 +17,9 @@ export const dynamic = 'force-dynamic'
 const errorMessage = (error: unknown) =>
   error instanceof Error ? error.message : String(error)
 
-const currentDatabase = (client: typeof prismaClient): Promise<string | null> =>
+const currentDatabase = (
+  client: typeof prismaClient | typeof entrepotPrismaClient,
+): Promise<string | null> =>
   client.$queryRaw<
     { database: string }[]
   >`SELECT current_database() AS database`
