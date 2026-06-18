@@ -34,6 +34,7 @@ import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { getOrCreateStructureEmployeuse } from '@app/web/server/rpc/inscription/getOrCreateStructureEmployeuse'
 import { forbiddenError } from '@app/web/server/rpc/trpcErrors'
+import { findCartoStructuresByIds } from '@app/web/structure/cartoStructureFromEntrepot'
 import { toStructureFromCartoStructure } from '@app/web/structure/toStructureFromCartoStructure'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
@@ -338,6 +339,15 @@ export const inscriptionRouter = router({
           ]),
         )
 
+        // Les structures carto à importer sont lues dans l'Entrepôt AVANT la
+        // transaction : les deux clients Prisma (coop / entrepôt) ne partagent
+        // pas de transaction (bases logiquement distinctes).
+        const cartoStructuresByCartoId = await findCartoStructuresByIds(
+          [...lieuxActiviteCartoIds.values()].filter(
+            (cartoId) => !existingStructuresByCartoId.has(cartoId),
+          ),
+        )
+
         return prismaClient.$transaction(async (transaction) => {
           const now = new Date()
           const deleted = await transaction.mediateurEnActivite.updateMany({
@@ -421,12 +431,9 @@ export const inscriptionRouter = router({
                 }
 
                 // Structure does not exist, we create it with the lieu
-                const cartoStructure =
-                  await transaction.structureCartographieNationale.findFirst({
-                    where: {
-                      id: lieu.structureCartographieNationaleId,
-                    },
-                  })
+                const cartoStructure = cartoStructuresByCartoId.get(
+                  lieu.structureCartographieNationaleId,
+                )
 
                 if (!cartoStructure) {
                   throw new Error('Structure carto not found')

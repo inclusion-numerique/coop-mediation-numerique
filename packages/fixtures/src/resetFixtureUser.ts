@@ -129,15 +129,15 @@ export const resetFixtureUser = async (
         },
       })
 
-      await prismaClient.mediateur.delete({
-        where: {
-          id: mediateurId,
-        },
-      })
-
       await prismaClient.invitationEquipe.deleteMany({
         where: {
           mediateurId,
+        },
+      })
+
+      await prismaClient.mediateur.delete({
+        where: {
+          id: mediateurId,
         },
       })
     }
@@ -151,15 +151,15 @@ export const resetFixtureUser = async (
         },
       })
 
-      await prismaClient.coordinateur.delete({
-        where: {
-          id: coordinateurId,
-        },
-      })
-
       await prismaClient.invitationEquipe.deleteMany({
         where: {
           coordinateurId,
+        },
+      })
+
+      await prismaClient.coordinateur.delete({
+        where: {
+          id: coordinateurId,
         },
       })
     }

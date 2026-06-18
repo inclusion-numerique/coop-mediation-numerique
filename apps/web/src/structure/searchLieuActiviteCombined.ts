@@ -28,14 +28,18 @@ type SearchLieuActiviteCombinedOptions = {
 
 const searchLocalStructures = async (
   query: string,
-  options?: { limit?: number; exceptSirets?: Set<string> },
+  options?: { limit?: number; includeCartoLinked?: boolean },
 ) => {
   const limit = options?.limit || 25
   const queryParts = query.split(' ')
 
   const matchesWhere = {
     suppression: null,
-    structureCartographieNationaleId: null,
+    // Par défaut on exclut les structures déjà reliées à la carto : elles sont
+    // remontées par la source carto. Pour une recherche SIRET on les inclut.
+    ...(options?.includeCartoLinked
+      ? {}
+      : { structureCartographieNationaleId: null }),
     AND: queryParts.map((part) => ({
       OR: [
         { siret: { contains: part, mode: 'insensitive' } },
@@ -69,11 +73,8 @@ const searchLocalStructures = async (
     where: matchesWhere,
   })
 
-  const exceptSirets = options?.exceptSirets || new Set<string>()
-
-  const structures: LieuActiviteSearchResult[] = structuresRaw
-    .filter((s) => !s.siret || !exceptSirets.has(s.siret))
-    .map((structure) => ({
+  const structures: LieuActiviteSearchResult[] = structuresRaw.map(
+    (structure) => ({
       id: `structure_${structure.id}`,
       nom: toTitleCase(structure.nom, { noUpper: true }),
       adresse: toTitleCase(structure.adresse ?? '', { noUpper: true }),
@@ -87,10 +88,51 @@ const searchLocalStructures = async (
       longitude: structure.longitude,
       structures: [{ id: structure.id }],
       source: 'structure_locale' as const,
-    }))
+    }),
+  )
 
   return { structures, matchesCount }
 }
+
+const searchApiEntreprise = (query: string) =>
+  rechercheApiEntreprise({
+    q: query,
+    minimal: true,
+    include: 'complements,matching_etablissements',
+  })
+    .then((data) => ({ data, unavailable: false }) as const)
+    .catch(() => ({ data: null, unavailable: true }) as const)
+
+const toApiStructures = (
+  apiResult: Awaited<ReturnType<typeof rechercheApiEntreprise>> | null,
+): LieuActiviteSearchResult[] =>
+  apiResult
+    ? apiResult.results
+        .flatMap(structureCreationDataWithSiretFromUniteLegale)
+        .filter((s) => s.siret)
+        .map((s) => ({
+          id: `api_${s.siret}`,
+          nom: s.nom,
+          adresse: s.adresse ?? '',
+          commune: s.commune ?? '',
+          codePostal: '',
+          codeInsee: s.codeInsee ?? null,
+          complementAdresse: null,
+          pivot: s.siret,
+          typologie:
+            (s as unknown as { typologie: string | null }).typologie ?? null,
+          latitude: null,
+          longitude: null,
+          structures: [],
+          source: 'api' as const,
+        }))
+    : []
+
+// Une requête qui ressemble à un SIRET/SIREN (chiffres uniquement) : on cherche dans
+// les structures coop, et à défaut dans l'API entreprise (la carto n'est pas une source
+// SIRET fiable). La recherche par nom interroge en plus la cartographie nationale.
+const isSiretQuery = (query: string): boolean =>
+  /^\d{9,14}$/.test(query.replace(/\s/g, ''))
 
 export const searchLieuActiviteCombined = async (
   query: string,
@@ -111,20 +153,52 @@ export const searchLieuActiviteCombined = async (
   }
 
   const limit = options?.limit || 50
+
+  // Repli : l'API entreprise n'est interrogée QUE si les sources prioritaires
+  // (coop, et la carto pour la recherche par nom) ne renvoient rien.
+  const apiFallback = async () => {
+    const { data: apiResult, unavailable: apiUnavailable } =
+      await searchApiEntreprise(query)
+    const structures = toApiStructures(apiResult).slice(0, limit)
+    const totalFromApi = apiResult?.total_results ?? 0
+
+    return {
+      structures,
+      matchesCount: totalFromApi,
+      moreResults: Math.max(0, totalFromApi - structures.length),
+      apiUnavailable,
+    }
+  }
+
+  // Recherche par SIRET → structures coop en priorité, à défaut API entreprise.
+  if (isSiretQuery(query)) {
+    const localResult = await searchLocalStructures(query, {
+      limit,
+      includeCartoLinked: true,
+    })
+
+    if (localResult.structures.length === 0) {
+      return apiFallback()
+    }
+
+    const structures = localResult.structures.slice(0, limit)
+    return {
+      structures,
+      matchesCount: localResult.matchesCount,
+      moreResults: Math.max(0, localResult.matchesCount - structures.length),
+      apiUnavailable: false,
+    }
+  }
+
+  // Recherche par nom → structures coop puis carto en priorité, à défaut API entreprise.
   const perSourceLimit = Math.ceil(limit / 2)
 
-  const [cartoResult, apiResponse] = await Promise.all([
+  const [localResult, cartoResult] = await Promise.all([
+    searchLocalStructures(query, { limit: perSourceLimit }),
     searchStructureCartographieNationale(query, {
       limit: perSourceLimit,
       except: options?.except,
     }),
-    rechercheApiEntreprise({
-      q: query,
-      minimal: true,
-      include: 'complements,matching_etablissements',
-    })
-      .then((data) => ({ data, unavailable: false }) as const)
-      .catch(() => ({ data: null, unavailable: true }) as const),
   ])
 
   const cartoStructures: LieuActiviteSearchResult[] =
@@ -144,59 +218,23 @@ export const searchLieuActiviteCombined = async (
       source: 'cartographie_nationale' as const,
     }))
 
-  const siretsSeen = new Set<string>(
-    cartoStructures.map((s) => s.pivot).filter(Boolean) as string[],
-  )
+  const prioritized: LieuActiviteSearchResult[] = [
+    ...localResult.structures,
+    ...cartoStructures,
+  ]
 
-  const localResult = await searchLocalStructures(query, {
-    limit: perSourceLimit,
-    exceptSirets: siretsSeen,
-  })
-
-  for (const s of localResult.structures) {
-    if (s.pivot) siretsSeen.add(s.pivot)
+  if (prioritized.length === 0) {
+    return apiFallback()
   }
 
-  const { data: apiResult, unavailable: apiUnavailable } = apiResponse
-  const apiStructures: LieuActiviteSearchResult[] = apiResult
-    ? apiResult.results
-        .flatMap(structureCreationDataWithSiretFromUniteLegale)
-        .filter((s) => s.siret && !siretsSeen.has(s.siret))
-        .map((s) => ({
-          id: `api_${s.siret}`,
-          nom: s.nom,
-          adresse: s.adresse ?? '',
-          commune: s.commune ?? '',
-          codePostal: '',
-          codeInsee: s.codeInsee ?? null,
-          complementAdresse: null,
-          pivot: s.siret,
-          typologie:
-            (s as unknown as { typologie: string | null }).typologie ?? null,
-          latitude: null,
-          longitude: null,
-          structures: [],
-          source: 'api' as const,
-        }))
-    : []
-
-  const combinedStructures: LieuActiviteSearchResult[] = [
-    ...cartoStructures,
-    ...localResult.structures,
-    ...apiStructures,
-  ].slice(0, limit)
-
-  const totalFromApi = apiResult?.total_results ?? 0
-  const totalCount =
-    cartoResult.matchesCount + localResult.matchesCount + totalFromApi
-
-  const moreResults = Math.max(0, totalCount - combinedStructures.length)
+  const structures = prioritized.slice(0, limit)
+  const matchesCount = localResult.matchesCount + cartoResult.matchesCount
 
   return {
-    structures: combinedStructures,
-    matchesCount: totalCount,
-    moreResults,
-    apiUnavailable,
+    structures,
+    matchesCount,
+    moreResults: Math.max(0, matchesCount - structures.length),
+    apiUnavailable: false,
   }
 }
 

@@ -1,46 +1,50 @@
 import { output } from '@app/cli/output'
+import { entrepotPrismaClient } from '@app/web/entrepotPrismaClient'
 import { prismaClient } from '@app/web/prismaClient'
 import { coopCartographieNationaleSource } from '@app/web/structure/cartographieNationaleSources'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { createStopwatch } from '@app/web/utils/stopwatch'
-import { SchemaLieuMediationNumerique } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { PrismaClient, Structure } from '@prisma/client'
-import { structureCartographieNationaleToPrismaModel } from './transform/structureCartographieNationaleToPrismaModel'
-import { structureToPrismaModel } from './transform/structureToPrismaModel'
 
 type PrismaTransaction = Omit<
   PrismaClient,
   '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
 >
 
+// Un lieu de la cartographie nationale (table main.lieu_inclusion de l'Entrepôt)
+// relié à au moins une structure coop via l'id composite.
+type CartoLieu = {
+  // Id composite cartographie nationale : tokens `Coop-numérique_<coopId>` séparés par `__`.
+  structureCartographieNationaleId: string
+  source: string | null
+  dateMaj: Date | null
+}
+
 type CoopIdsToMergeInSingleStructure = {
   coopIds: string[]
-  structure: SchemaLieuMediationNumerique
+  lieu: CartoLieu
 }
 
-const reset = async (
-  prisma: PrismaTransaction,
-  structuresCartographieNationale: SchemaLieuMediationNumerique[],
-  now: Date,
-) => {
-  await prisma.structure.updateMany({
-    data: { structureCartographieNationaleId: null },
-  })
-  const deleted = await prisma.structureCartographieNationale.deleteMany()
-  const created = await prisma.structureCartographieNationale.createMany({
-    data: structuresCartographieNationale.map((structure) => ({
-      ...structureCartographieNationaleToPrismaModel(structure),
-      creationImport: now,
-      modificationImport: now,
-      creation: now,
-      modification: now,
-    })),
-  })
-  return { deleted: deleted.count, created: created.count }
-}
+const COOP_ID_PREFIX = 'Coop-numérique_'
+const ID_SEPARATOR = '__'
 
-const latestChangesFromCoop = (structure: SchemaLieuMediationNumerique) =>
-  structure.source === coopCartographieNationaleSource
+const extractCoopIds = (structureCartographieNationaleId: string): string[] =>
+  structureCartographieNationaleId
+    .split(ID_SEPARATOR)
+    .filter((id: string) => id.startsWith(COOP_ID_PREFIX))
+    .map((id: string) => id.replace(COOP_ID_PREFIX, ''))
+
+const atLeastOneCoopId = ({ structureCartographieNationaleId }: CartoLieu) =>
+  extractCoopIds(structureCartographieNationaleId).length > 0
+
+const groupCoopIdsByCartographieId = (
+  lieu: CartoLieu,
+): CoopIdsToMergeInSingleStructure => ({
+  coopIds: Array.from(
+    new Set(extractCoopIds(lieu.structureCartographieNationaleId)),
+  ),
+  lieu,
+})
 
 /**
  * Determines if we should track an external modification source.
@@ -49,48 +53,25 @@ const latestChangesFromCoop = (structure: SchemaLieuMediationNumerique) =>
  * - AND the cartographie nationale modification date is more recent than the coop structure modification date
  */
 const getExternalModificationData = (
-  structure: SchemaLieuMediationNumerique,
+  lieu: CartoLieu,
   existingStructure: Structure,
 ): {
   derniereModificationSource: string
   derniereModificationParId: null
 } | null => {
-  if (
-    structure.source === coopCartographieNationaleSource ||
-    !structure.source
-  ) {
+  if (lieu.source === coopCartographieNationaleSource || !lieu.source) {
     return null
   }
 
-  const cartoModificationDate = new Date(structure.date_maj)
-  if (cartoModificationDate <= existingStructure.modification) {
+  if (!lieu.dateMaj || lieu.dateMaj <= existingStructure.modification) {
     return null
   }
 
   return {
-    derniereModificationSource: structure.source,
+    derniereModificationSource: lieu.source,
     derniereModificationParId: null,
   }
 }
-
-const COOP_ID_PREFIX = 'Coop-numérique_'
-const ID_SEPARATOR = '__'
-
-const extractCoopIds = (structureId: string): string[] =>
-  structureId
-    .split(ID_SEPARATOR)
-    .filter((id: string) => id.startsWith(COOP_ID_PREFIX))
-    .map((id: string) => id.replace(COOP_ID_PREFIX, ''))
-
-const atLeastOneCoopId = ({ id }: { id: string }) =>
-  extractCoopIds(id).length > 0
-
-const groupCoopIdsByCartoghraphieId = (
-  structure: SchemaLieuMediationNumerique,
-): CoopIdsToMergeInSingleStructure => ({
-  coopIds: Array.from(new Set(extractCoopIds(structure.id))),
-  structure,
-})
 
 type StructureForMerge = {
   visiblePourCartographieNationale: boolean
@@ -148,7 +129,7 @@ const linkToCoopStructure = async (
   prisma: PrismaTransaction,
   {
     coopIds: [structureId, ...idsToDelete],
-    structure,
+    lieu,
   }: CoopIdsToMergeInSingleStructure,
 ) => {
   const existingStructure = await prisma.structure.findUnique({
@@ -176,7 +157,7 @@ const linkToCoopStructure = async (
     })
 
     const externalModificationData = getExternalModificationData(
-      structure,
+      lieu,
       existingStructure,
     )
 
@@ -201,14 +182,12 @@ const linkToCoopStructure = async (
         where: { id: structureId },
         data: {
           ...mergedStructures,
-          ...(latestChangesFromCoop(structure)
-            ? structureToPrismaModel(structure)
-            : {}),
           ...externalModificationData,
           activitesCount: {
             increment: activitesCount._sum.activitesCount ?? 0,
           },
-          structureCartographieNationaleId: structure.id,
+          structureCartographieNationaleId:
+            lieu.structureCartographieNationaleId,
         },
       }),
     ])
@@ -218,18 +197,15 @@ const linkToCoopStructure = async (
     })
   } else {
     const externalModificationData = getExternalModificationData(
-      structure,
+      lieu,
       existingStructure,
     )
 
     await prisma.structure.update({
       where: { id: structureId },
       data: {
-        ...(latestChangesFromCoop(structure)
-          ? structureToPrismaModel(structure)
-          : {}),
         ...externalModificationData,
-        structureCartographieNationaleId: structure.id,
+        structureCartographieNationaleId: lieu.structureCartographieNationaleId,
       },
     })
   }
@@ -297,74 +273,105 @@ const removeDuplicatedStructureEmployeuseLinks = async (
   return duplicatedStructureEmployeuseLinks
 }
 
-export const updateStructureFromCartoDataApi =
-  ({
-    structuresCartographieNationale,
-    now = new Date(),
-  }: {
-    structuresCartographieNationale: SchemaLieuMediationNumerique[]
-    now?: Date
-  }) =>
+/**
+ * Relie les structures coop aux lieux de la cartographie nationale en analysant
+ * l'id composite `structure_cartographie_nationale_id` de `main.lieu_inclusion`
+ * (Entrepôt). Remplace l'ancien job qui téléchargeait l'API carto et stockait un
+ * miroir dans `coop.structures_cartographie_nationale` : la donnée vit désormais
+ * dans l'Entrepôt, on n'en garde côté coop que le lien (id + visibilité).
+ *
+ * Les `cartoLieux` sont injectables pour les tests ; par défaut ils sont lus
+ * depuis l'Entrepôt.
+ */
+export const updateStructuresFromEntrepot =
+  ({ cartoLieux }: { cartoLieux?: CartoLieu[] } = {}) =>
   async () => {
     const stopwatch = createStopwatch()
 
+    output(
+      '1. Lecture des lieux de la cartographie nationale depuis l’Entrepôt',
+    )
+    const lieux =
+      cartoLieux ??
+      (
+        await entrepotPrismaClient.lieuInclusion.findMany({
+          where: {
+            structureCartographieNationaleId: { contains: COOP_ID_PREFIX },
+          },
+          select: {
+            structureCartographieNationaleId: true,
+            source: true,
+            updatedAt: true,
+          },
+        })
+      ).flatMap((lieu) =>
+        lieu.structureCartographieNationaleId == null
+          ? []
+          : [
+              {
+                structureCartographieNationaleId:
+                  lieu.structureCartographieNationaleId,
+                source: lieu.source,
+                dateMaj: lieu.updatedAt,
+              },
+            ],
+      )
+
     const result = await prismaClient.$transaction(
       async (prisma) => {
-        output('1. Reset structures from cartographie nationale')
-        const { created, deleted } = await reset(
-          prisma,
-          structuresCartographieNationale,
-          now,
-        )
+        output('2. Réinitialisation des liens cartographie nationale')
+        const reset = await prisma.structure.updateMany({
+          data: { structureCartographieNationaleId: null },
+        })
 
-        output('2. Find structures linked to cartographie nationale')
-        const structuresLinkedToCarto = structuresCartographieNationale
+        output('3. Recherche des lieux carto reliés à des structures coop')
+        const structuresLinkedToCarto = lieux
           .filter(atLeastOneCoopId)
-          .map(groupCoopIdsByCartoghraphieId)
+          .map(groupCoopIdsByCartographieId)
 
         output(
-          `3. link ${structuresLinkedToCarto.length} structures from cartographie nationale to coop structures`,
+          `4. liaison de ${structuresLinkedToCarto.length} lieux carto à des structures coop`,
         )
         for (const structureLinkedToCarto of structuresLinkedToCarto) {
           await linkToCoopStructure(prisma, structureLinkedToCarto)
         }
 
         output(
-          '4. remove duplicates mediateurs en activite and employe structures links',
+          '5. suppression des doublons de liens médiateurs en activité et employés structures',
         )
 
         const duplicatedLieuxActiviteLinks =
           await removeMediateursEnActiviteLinks(prisma)
 
         output(
-          `${duplicatedLieuxActiviteLinks.length} duplicated mediateurs_en_activite links removed`,
+          `${duplicatedLieuxActiviteLinks.length} liens mediateurs_en_activite dupliqués supprimés`,
         )
 
         const duplicatedStructureEmployeuseLinks =
           await removeDuplicatedStructureEmployeuseLinks(prisma)
 
         output(
-          `${duplicatedStructureEmployeuseLinks.length} duplicated employes_structures links removed`,
+          `${duplicatedStructureEmployeuseLinks.length} liens employes_structures dupliqués supprimés`,
         )
 
         return {
-          deleted,
-          created,
+          resetCount: reset.count,
           structuresLinkedToCartoCount: structuresLinkedToCarto.length,
         }
       },
       { maxWait: 10_000, timeout: 30 * 60 * 1000 },
     )
 
-    output('5. updated finished successfully')
+    output('6. mise à jour terminée avec succès')
     addMutationLog({
       userId: null,
       nom: 'MiseAJourStructuresCartographieNationale',
       duration: stopwatch.stop().duration,
       data: {
-        deleted: result.deleted,
-        created: result.created,
+        resetCount: result.resetCount,
         structuresLinkedToCarto: result.structuresLinkedToCartoCount,
       },
     })
+
+    return result
   }

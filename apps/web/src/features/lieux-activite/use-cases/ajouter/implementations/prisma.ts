@@ -1,4 +1,5 @@
 import { inject, key } from '@app/web/libs/injection'
+import { findCartoStructure as findCartoStructureInEntrepot } from '@app/web/structure/cartoStructureFromEntrepot'
 import { toStructureFromCartoStructure } from '@app/web/structure/toStructureFromCartoStructure'
 import type { PrismaClient } from '@prisma/client'
 import { v4 } from 'uuid'
@@ -69,12 +70,8 @@ export const findStructuresByCartoIds: FindStructuresByCartoIds = async (
   )
 }
 
-export const findCartoStructure: FindCartoStructure = async (cartoId) => {
-  const prisma = inject(PRISMA_CLIENT_KEY)
-  return prisma.structureCartographieNationale.findFirst({
-    where: { id: cartoId },
-  })
-}
+export const findCartoStructure: FindCartoStructure = (cartoId) =>
+  findCartoStructureInEntrepot(cartoId)
 
 export const createStructureFromData: CreateStructureFromData = async (
   data: StructureToCreate,
