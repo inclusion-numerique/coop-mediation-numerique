@@ -2,7 +2,11 @@
   "$schema": "https://biomejs.dev/schemas/2.2.2/schema.json",
   "extends": "//",
   "files": {
-    "includes": ["!src/assistant/tasks/_test/**/*.html"]
+    "includes": [
+      "!src/assistant/tasks/_test/**/*.html",
+      "!src/generated",
+      "!src/generated/**"
+    ]
   },
   "overrides": []
 }

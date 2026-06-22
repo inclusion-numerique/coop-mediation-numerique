@@ -12,7 +12,10 @@ import axiosRetry from 'axios-retry'
 
 const exec = promisify(callbackExec)
 
-const dataspaceSchemas = ['admin', 'main', 'reference', 'audit']
+// Depuis la bascule de la prod sur la base de l'Entrepôt, le schéma `coop` cohabite avec les
+// schémas Dataspace dans la base `dataspace_prod`. Sa sauvegarde est donc l'unique source : tous
+// ces schémas sont restaurés depuis le même backup.
+const entrepotSchemas = ['coop', 'admin', 'main', 'reference', 'audit']
 
 const formatBytes = (bytes: number): string => {
   if (bytes === 0) return '0 B'
@@ -37,8 +40,6 @@ const formatDuration = (seconds: number): string => {
 
 const backupFileFor = (databaseName: string) =>
   path.resolve(varDirectory, `${databaseName}_backup.dump.sql`)
-
-const mainBackupFile = backupFileFor(process.env.BACKUP_DATABASE_NAME ?? '')
 
 type ScalewayDatabaseBackup = {
   id: string
@@ -290,41 +291,28 @@ const provisionBackupFile = async ({
   await exportAndDownloadBackup(client, selectedBackup, targetFile)
 }
 
-const restoreCoopBackup = async (databaseUrl: string): Promise<void> => {
+const restoreEntrepotBackup = async (
+  databaseUrl: string,
+  entrepotBackupFile: string,
+): Promise<void> => {
   output(
-    'Clearing coop schema and prisma migration history before loading data',
+    `Recreating schemas (${entrepotSchemas.join(', ')}) and clearing prisma migration history before loading data`,
   )
-  await prismaClient.$executeRawUnsafe('DROP SCHEMA IF EXISTS coop CASCADE')
+  await prismaClient.$executeRawUnsafe(
+    `DROP SCHEMA IF EXISTS ${entrepotSchemas.join(', ')} CASCADE`,
+  )
   await prismaClient.$executeRawUnsafe(
     'DROP TABLE IF EXISTS public._prisma_migrations CASCADE',
   )
 
-  output('Restoring coop schema from backup file')
-  await exec(
-    `pg_restore --no-owner --no-acl -d ${databaseUrl} < ${mainBackupFile}`,
-    {
-      maxBuffer: 5 * 1024 * 1024,
-    },
-  )
-}
-
-const restoreDataspaceBackup = async (
-  databaseUrl: string,
-  dataspaceBackupFile: string,
-): Promise<void> => {
-  output(`Recreating Dataspace schemas (${dataspaceSchemas.join(', ')})`)
-  await prismaClient.$executeRawUnsafe(
-    `DROP SCHEMA IF EXISTS ${dataspaceSchemas.join(', ')} CASCADE`,
-  )
-
-  for (const schema of dataspaceSchemas) {
+  for (const schema of entrepotSchemas) {
     await prismaClient.$executeRawUnsafe(`CREATE SCHEMA "${schema}"`)
   }
 
-  output('Restoring Dataspace schemas from backup file')
-  const schemaFlags = dataspaceSchemas.map((schema) => `-n ${schema}`).join(' ')
+  output('Restoring coop + Dataspace schemas from the Entrepôt backup file')
+  const schemaFlags = entrepotSchemas.map((schema) => `-n ${schema}`).join(' ')
   await exec(
-    `pg_restore --no-owner --no-acl ${schemaFlags} -d "${databaseUrl}" "${dataspaceBackupFile}"`,
+    `pg_restore --no-owner --no-acl ${schemaFlags} -d "${databaseUrl}" "${entrepotBackupFile}"`,
     {
       maxBuffer: 10 * 1024 * 1024,
     },
@@ -335,7 +323,7 @@ export const locallyRestoreLatestMainBackup = new Command(
   'backup:locally-restore-latest-main',
 )
   .description(
-    'Restore the latest main backup from Scaleway to the local (DATABASE_URL env var) database ',
+    'Restore the latest prod backup of the Entrepôt database (coop + Dataspace schemas) from Scaleway to the local (DATABASE_URL env var) database',
   )
   .option(
     '-d, --date <date>',
@@ -350,10 +338,6 @@ export const locallyRestoreLatestMainBackup = new Command(
     '-t, --type <type>',
     'Filter backups by type (weekly, daily, hourly). If not provided, all types are considered.',
   )
-  .option(
-    '--skip-dataspace',
-    'Restore only the coop schema, skip the Dataspace schemas (admin/main/min/reference/audit)',
-  )
   .action(async (options) => {
     const targetDate = options.date ? new Date(options.date) : null
     if (targetDate && Number.isNaN(targetDate.getTime())) {
@@ -362,10 +346,14 @@ export const locallyRestoreLatestMainBackup = new Command(
       )
     }
 
-    const databaseInstanceId = (process.env.DATABASE_INSTANCE_ID ?? '').split(
-      '/',
-    )[1]
-    const backupDatabaseName = process.env.BACKUP_DATABASE_NAME ?? ''
+    // L'unique source est désormais le backup de la base de l'Entrepôt (dataspace_prod), où vit le
+    // schéma coop depuis la bascule prod. L'ancienne base coop (DATABASE_INSTANCE_ID /
+    // BACKUP_DATABASE_NAME), plus alimentée en prod, n'est plus utilisée ici.
+    const entrepotInstanceId = (
+      process.env.DATASPACE_DATABASE_INSTANCE_ID ?? ''
+    ).split('/')[1]
+    const entrepotBackupDatabaseName =
+      process.env.DATASPACE_BACKUP_DATABASE_NAME ?? ''
     const secretKey = process.env.SCW_SECRET_KEY ?? ''
     const databaseUrl = process.env.DATABASE_URL ?? ''
     const databaseUrlObject = new URL(databaseUrl ?? '')
@@ -374,8 +362,8 @@ export const locallyRestoreLatestMainBackup = new Command(
     const host = databaseUrlObject.hostname
 
     const variables = {
-      databaseInstanceId,
-      backupDatabaseName,
+      entrepotInstanceId,
+      entrepotBackupDatabaseName,
       secretKey,
       databaseUrl,
       user,
@@ -393,8 +381,8 @@ export const locallyRestoreLatestMainBackup = new Command(
       const client = scalewayRdbClient(secretKey)
       const allBackups = await fetchAllBackups(
         client,
-        databaseInstanceId,
-        backupDatabaseName,
+        entrepotInstanceId,
+        entrepotBackupDatabaseName,
       )
       const elligibleBackups = (
         options.type
@@ -429,39 +417,18 @@ export const locallyRestoreLatestMainBackup = new Command(
       return
     }
 
-    const dataspaceInstanceId = (
-      process.env.DATASPACE_DATABASE_INSTANCE_ID ?? ''
-    ).split('/')[1]
-    const dataspaceBackupDatabaseName =
-      process.env.DATASPACE_BACKUP_DATABASE_NAME ?? ''
-    const restoreDataspace =
-      !options.skipDataspace &&
-      Boolean(dataspaceInstanceId) &&
-      Boolean(dataspaceBackupDatabaseName)
-    const dataspaceBackupFile = backupFileFor(dataspaceBackupDatabaseName)
+    const entrepotBackupFile = backupFileFor(entrepotBackupDatabaseName)
 
     await provisionBackupFile({
-      instanceId: databaseInstanceId,
-      databaseName: backupDatabaseName,
+      instanceId: entrepotInstanceId,
+      databaseName: entrepotBackupDatabaseName,
       secretKey,
-      targetFile: mainBackupFile,
+      targetFile: entrepotBackupFile,
       date: options.date,
       type: options.type,
       useLocal: options.local,
     })
-    await restoreCoopBackup(databaseUrl)
-
-    if (restoreDataspace) {
-      await provisionBackupFile({
-        instanceId: dataspaceInstanceId,
-        databaseName: dataspaceBackupDatabaseName,
-        secretKey,
-        targetFile: dataspaceBackupFile,
-        date: options.date,
-        useLocal: options.local,
-      })
-      await restoreDataspaceBackup(databaseUrl, dataspaceBackupFile)
-    }
+    await restoreEntrepotBackup(databaseUrl, entrepotBackupFile)
 
     output(`Granting all privileges to "${user}" role`)
     await exec(
@@ -469,8 +436,6 @@ export const locallyRestoreLatestMainBackup = new Command(
     )
 
     output(
-      `Restored database to ${host}/${database} for "${user}" role${
-        restoreDataspace ? ' (coop + Dataspace schemas)' : ' (coop schema)'
-      }`,
+      `Restored ${host}/${database} for "${user}" role (coop + Dataspace schemas from the Entrepôt backup)`,
     )
   })
