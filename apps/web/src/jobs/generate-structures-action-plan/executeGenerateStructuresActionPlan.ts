@@ -6,11 +6,16 @@ import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 import type { GenerateStructuresActionPlanJob } from './generateStructuresActionPlanJob'
 
-// Emplois + activités employeuse corrélés par nom + code INSEE, faute de lien FK.
+// Emplois + activités employeuse corrélés par nom + adresse + code INSEE, faute de lien FK.
 // Détection d'orphelines (→ plan de suppression) : on compte à l'identique de l'ancien
 // _count via le lien, sans filtre de suppression sur emplois/activités.
 const getEmployeuseRelCountsByCorrelation = async (
-  structures: { id: string; nom: string; codeInsee: string | null }[],
+  structures: {
+    id: string
+    nom: string
+    adresse: string
+    codeInsee: string | null
+  }[],
 ): Promise<Map<string, { emplois: number; activites: number }>> => {
   const uniqueKeys = [
     ...new Map(
@@ -27,11 +32,16 @@ const getEmployeuseRelCountsByCorrelation = async (
 
   const employeuses = await prismaClient.structureAdministrative.findMany({
     where: {
-      OR: uniqueKeys.map(({ nom, codeInsee }) => ({ nom, codeInsee })),
+      OR: uniqueKeys.map(({ nom, adresse, codeInsee }) => ({
+        nom,
+        adresse,
+        codeInsee,
+      })),
       suppression: null,
     },
     select: {
       nom: true,
+      adresse: true,
       codeInsee: true,
       _count: { select: { emplois: true, activites: true } },
     },

@@ -78,6 +78,7 @@ export const executeApplySupprimerStructures = async (
       select: {
         id: true,
         nom: true,
+        adresse: true,
         codeInsee: true,
         activitesCount: true,
         _count: {
@@ -95,13 +96,14 @@ export const executeApplySupprimerStructures = async (
       continue
     }
 
-    // Emplois + activités employeuse corrélés par nom + code INSEE (plus de lien FK).
+    // Emplois + activités employeuse corrélés par nom + adresse + code INSEE (plus de lien FK).
     // Décision de SUPPRESSION : on corrèle directement, en comptant à l'identique de
     // l'ancien _count via le lien (sans filtre de suppression sur emplois/activités).
     const correlatedEmployeuses =
       await prismaClient.structureAdministrative.findMany({
         where: {
           nom: structure.nom,
+          adresse: structure.adresse,
           codeInsee: structure.codeInsee,
           suppression: null,
         },
