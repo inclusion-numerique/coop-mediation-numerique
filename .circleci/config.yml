@@ -540,6 +540,39 @@ jobs:
       - run:
           name: Set deployment status to in progress
           command: pnpm --silent cli github:deployment:update $DEPLOYMENT_ID in_progress -d 'Terraform stack deployment'
+      # Prod (main) : la base coop vit dans l'Entrepôt, joignable seulement via le tunnel SSH du
+      # bastion. On ouvre le tunnel ici (mêmes secrets que ceux passés au conteneur) et on migre
+      # AVANT de déployer le conteneur : si la migration échoue, le déploiement est avorté et
+      # l'ancien conteneur continue de servir (rollback sûr, pas de schéma/code désaligné).
+      - when:
+          condition:
+            equal: [ main, << pipeline.git.branch >> ]
+          steps:
+            - run:
+                name: Set deployment status to migration
+                command: pnpm --silent cli github:deployment:update $DEPLOYMENT_ID in_progress -d 'Migrating coop schema on the Entrepôt'
+            - add_dotenv_vars_to_bash_env
+            - run:
+                name: 'Migrate coop schema on the Entrepôt (SSH tunnel)'
+                command: |
+                  set -e
+                  # Décode la clé SSH (base64 en secret) et ouvre le tunnel local:5433 -> Entrepôt.
+                  # Hôte/ports constants (cf. packages/cdk/src/WebAppStack.ts ENTREPOT_DB_*).
+                  KEY_FILE="$(mktemp)"
+                  printf '%s' "$ENTREPOT_BASTION_SSH_KEY" | base64 -d > "$KEY_FILE"
+                  chmod 600 "$KEY_FILE"
+                  ssh -f -N \
+                    -o StrictHostKeyChecking=accept-new \
+                    -o ExitOnForwardFailure=yes \
+                    -o ServerAliveInterval=30 \
+                    -i "$KEY_FILE" \
+                    -p "${ENTREPOT_BASTION_PORT:-22}" \
+                    -L 5433:172.16.20.14:5432 \
+                    "$ENTREPOT_BASTION_USER@$ENTREPOT_BASTION_HOST"
+                  # Attend que le forward accepte les connexions (bash /dev/tcp, sans nc)
+                  for i in $(seq 1 30); do (echo > /dev/tcp/127.0.0.1/5433) 2>/dev/null && break; sleep 1; done
+                  # ENTREPOT_DATABASE_URL porte déjà search_path=coop -> migre coop._prisma_migrations
+                  DATABASE_URL="$ENTREPOT_DATABASE_URL" pnpm --silent -F @app/web prisma migrate deploy
       - run:
           name: 'Deploy web app stack'
           command: |
@@ -552,10 +585,9 @@ jobs:
       - run:
           name: Set deployment status to migration
           command: pnpm --silent cli github:deployment:update $DEPLOYMENT_ID in_progress -d 'Executing database migrations' -l https://app.circleci.com/pipelines/workflows/$CIRCLE_WORKFLOW_ID
-      # Prod (main) pointe sur la base de l'Entrepôt, joignable seulement au runtime via le tunnel
-      # SSH du conteneur — pas pendant le job CI. Le schéma coop y est migré hors-CI. On saute donc
-      # migrate-deploy sur main (il échouerait en P1001 sur localhost:5433) ; features et dev
-      # migrent normalement sur leur base provisionnée.
+      # Features et dev migrent leur base provisionnée (créée par le déploiement, d'où l'ordre
+      # après cdktf). Main est déjà migré plus haut via le tunnel SSH vers l'Entrepôt, avant le
+      # déploiement du conteneur — donc on saute ce step sur main.
       - when:
           condition:
             not:
