@@ -91,10 +91,10 @@ const departementOf = (codeInsee: string): string =>
 // as the payload. Guards against BAN mis-geocoding overseas (DOM) addresses to
 // mainland France (e.g. a Martinique 972xx address resolved to a Gironde 33xxx
 // codeInsee), which would otherwise corrupt the stored codeInsee.
-const sameDepartement = (a: string, b: string): boolean =>
+export const sameDepartement = (a: string, b: string): boolean =>
   departementOf(a) === departementOf(b)
 
-const isContainedName = (a: string, b: string): boolean => {
+export const isContainedName = (a: string, b: string): boolean => {
   const na = normalizeNom(a)
   const nb = normalizeNom(b)
   if (hasAsymmetricServiceKeyword(na, nb)) return false

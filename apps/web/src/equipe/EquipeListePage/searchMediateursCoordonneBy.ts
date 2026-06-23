@@ -109,9 +109,9 @@ const structureEmployeuseSubquery = (
   alias: string,
   userIdSource: string,
 ) => `
-  (SELECT structures.${field}
+  (SELECT sa.${field}
    FROM "employes_structures" AS employes
-   INNER JOIN "structures" AS structures ON structures.id = employes.structure_id
+   INNER JOIN "structure_administrative" AS sa ON sa.id = employes.structure_id
    WHERE employes.user_id = ${userIdSource} AND employes.suppression IS NULL
    ORDER BY employes.creation DESC
    LIMIT 1) AS ${alias}`

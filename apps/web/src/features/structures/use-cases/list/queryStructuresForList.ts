@@ -17,7 +17,6 @@ export const searchStructureSelect = {
   suppression: true,
   _count: {
     select: {
-      emplois: { where: { suppression: null } },
       mediateursEnActivite: {
         where: {
           suppression: null,
@@ -25,6 +24,11 @@ export const searchStructureSelect = {
           mediateur: { user: { deleted: null } },
         },
       },
+    },
+  },
+  structureAdministrative: {
+    select: {
+      _count: { select: { emplois: { where: { suppression: null } } } },
     },
   },
 } satisfies Prisma.StructureSelect

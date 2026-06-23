@@ -38,14 +38,16 @@ export const StructuresDataTable = {
       name: 'type',
       header: 'Type',
       csvHeaders: ["Lieu d'activité", 'Structure employeuse'],
-      csvValues: ({ _count }) => [
+      csvValues: ({ _count, structureAdministrative }) => [
         _count.mediateursEnActivite > 0 ? 'Oui' : 'Non',
-        _count.emplois > 0 ? 'Oui' : 'Non',
+        (structureAdministrative?._count.emplois ?? 0) > 0 ? 'Oui' : 'Non',
       ],
-      cell: ({ _count }) => (
+      cell: ({ _count, structureAdministrative }) => (
         <div className="fr-flex fr-flex-gap-2v">
           {_count.mediateursEnActivite > 0 && <Tag small>Lieu d'activité</Tag>}
-          {_count.emplois > 0 && <Tag small>Employeuse</Tag>}
+          {(structureAdministrative?._count.emplois ?? 0) > 0 && (
+            <Tag small>Employeuse</Tag>
+          )}
         </div>
       ),
     },
@@ -160,9 +162,17 @@ export const StructuresDataTable = {
       name: 'employes',
       header: 'Employ\u00e9s',
       csvHeaders: ['Employ\u00e9s'],
-      csvValues: ({ _count }) => [_count.emplois],
-      cell: ({ _count }) => optionalNumberToString(_count.emplois, null),
-      orderBy: (direction) => [{ emplois: { _count: direction } }],
+      csvValues: ({ structureAdministrative }) => [
+        structureAdministrative?._count.emplois ?? 0,
+      ],
+      cell: ({ structureAdministrative }) =>
+        optionalNumberToString(
+          structureAdministrative?._count.emplois ?? 0,
+          null,
+        ),
+      orderBy: (direction) => [
+        { structureAdministrative: { emplois: { _count: direction } } },
+      ],
     },
     {
       name: 'mediateursEnActivite',

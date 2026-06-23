@@ -440,10 +440,13 @@ export const executeGenerateStructuresActionPlan = async (
       activitesCount: true,
       _count: {
         select: {
-          emplois: true,
           mediateursEnActivite: true,
           activites: true,
-          activitesEmployes: true,
+        },
+      },
+      structureAdministrative: {
+        select: {
+          _count: { select: { emplois: true, activites: true } },
         },
       },
     },
@@ -464,8 +467,9 @@ export const executeGenerateStructuresActionPlan = async (
       longitude: s.longitude,
       visiblePourCartographieNationale: s.visiblePourCartographieNationale,
       activitesCount: s.activitesCount,
-      activitesRelCount: s._count.activites + s._count.activitesEmployes,
-      emploisCount: s._count.emplois,
+      activitesRelCount:
+        s._count.activites + (s.structureAdministrative?._count.activites ?? 0),
+      emploisCount: s.structureAdministrative?._count.emplois ?? 0,
       mediateursCount: s._count.mediateursEnActivite,
     })
   }

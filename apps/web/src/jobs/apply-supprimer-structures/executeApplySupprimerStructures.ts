@@ -80,10 +80,13 @@ export const executeApplySupprimerStructures = async (
         activitesCount: true,
         _count: {
           select: {
-            emplois: true,
             mediateursEnActivite: true,
             activites: true,
-            activitesEmployes: true,
+          },
+        },
+        structureAdministrative: {
+          select: {
+            _count: { select: { emplois: true, activites: true } },
           },
         },
       },
@@ -95,16 +98,20 @@ export const executeApplySupprimerStructures = async (
       continue
     }
 
+    const emploisCount = structure.structureAdministrative?._count.emplois ?? 0
+    const activitesEmployeurCount =
+      structure.structureAdministrative?._count.activites ?? 0
+
     const hasData =
       structure.activitesCount > 0 ||
-      structure._count.emplois > 0 ||
+      emploisCount > 0 ||
       structure._count.mediateursEnActivite > 0 ||
       structure._count.activites > 0 ||
-      structure._count.activitesEmployes > 0
+      activitesEmployeurCount > 0
 
     if (hasData) {
       output.log(
-        `apply-supprimer-structures: SKIP ${row.id} "${row.nom}" — données associées détectées (activites=${structure.activitesCount} emplois=${structure._count.emplois} mediateurs=${structure._count.mediateursEnActivite} relations_activites=${structure._count.activites} activites_employeur=${structure._count.activitesEmployes})`,
+        `apply-supprimer-structures: SKIP ${row.id} "${row.nom}" — données associées détectées (activites=${structure.activitesCount} emplois=${emploisCount} mediateurs=${structure._count.mediateursEnActivite} relations_activites=${structure._count.activites} activites_employeur=${activitesEmployeurCount})`,
       )
       results.push({ row, statut: 'skip_donnees_associees' })
       skipped++

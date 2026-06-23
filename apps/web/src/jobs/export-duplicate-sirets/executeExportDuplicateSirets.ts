@@ -119,9 +119,11 @@ export const executeExportDuplicateSirets = async (
     include: {
       _count: {
         select: {
-          emplois: true,
           mediateursEnActivite: true,
         },
+      },
+      structureAdministrative: {
+        select: { _count: { select: { emplois: true } } },
       },
     },
     orderBy: [{ siret: 'asc' }, { modification: 'desc' }],
@@ -182,7 +184,7 @@ export const executeExportDuplicateSirets = async (
         s.telephone ?? '',
         s.visiblePourCartographieNationale ? 'oui' : 'non',
         s.activitesCount,
-        s._count.emplois,
+        s.structureAdministrative?._count.emplois ?? 0,
         s._count.mediateursEnActivite,
         s.modification.toISOString(),
         escapeCsvField(apiData.nom),

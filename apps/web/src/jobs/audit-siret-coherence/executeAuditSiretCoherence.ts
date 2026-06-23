@@ -195,9 +195,11 @@ export const executeAuditSiretCoherence = async (
       activitesCount: true,
       _count: {
         select: {
-          emplois: true,
           mediateursEnActivite: true,
         },
+      },
+      structureAdministrative: {
+        select: { _count: { select: { emplois: true } } },
       },
     },
     orderBy: { siret: 'asc' },
@@ -239,7 +241,7 @@ export const executeAuditSiretCoherence = async (
       codePostalBase: structure.codePostal,
       visibleCarto: structure.visiblePourCartographieNationale,
       activitesCount: structure.activitesCount,
-      emploisCount: structure._count.emplois,
+      emploisCount: structure.structureAdministrative?._count.emplois ?? 0,
       mediateursCount: structure._count.mediateursEnActivite,
     }
 

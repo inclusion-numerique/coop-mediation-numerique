@@ -474,9 +474,11 @@ export const executeDetectDuplicateStructures = async (
       activitesCount: true,
       _count: {
         select: {
-          emplois: true,
           mediateursEnActivite: true,
         },
+      },
+      structureAdministrative: {
+        select: { _count: { select: { emplois: true } } },
       },
     },
   })
@@ -500,7 +502,7 @@ export const executeDetectDuplicateStructures = async (
       longitude: s.longitude,
       visiblePourCartographieNationale: s.visiblePourCartographieNationale,
       activitesCount: s.activitesCount,
-      emploisCount: s._count.emplois,
+      emploisCount: s.structureAdministrative?._count.emplois ?? 0,
       mediateursCount: s._count.mediateursEnActivite,
     }
     const group = parCodeInsee.get(codeInsee)

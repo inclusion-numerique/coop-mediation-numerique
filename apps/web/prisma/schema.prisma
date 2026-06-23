@@ -789,10 +789,13 @@ model Structure {
   suppressionPar   User?     @relation(name: "structure_supprimees", fields: [suppressionParId], references: [id])
 
   // # Relations
-  emplois              EmployeStructure[]
   mediateursEnActivite MediateurEnActivite[]
-  // activités liés aux employés de la structure (différent du lieu d'activité)
-  activitesEmployes    Activite[]            @relation(name: "activite_structure_employeuse")
+
+  // Lien vers l'identité légale employeuse, extraite lors du split
+  // `lieu_inclusion` (profil de médiation) / `structure_administrative` (identité légale).
+  // Renseigné pour une structure jouant le rôle employeuse ; null pour un lieu d'inclusion pur.
+  structureAdministrativeId String?                  @map("structure_administrative_id") @db.Uuid
+  structureAdministrative   StructureAdministrative? @relation(fields: [structureAdministrativeId], references: [id])
   // Champs métier
 
   nom String
@@ -858,6 +861,7 @@ model Structure {
   // descending sort on this cursor for api query performances
   @@index([creation(sort: Desc), id(sort: Desc)])
   @@index([structureCartographieNationaleId])
+  @@index([structureAdministrativeId])
   @@index([activitesCount(sort: Asc)], map: "structures_activites_count_asc_idx")
   @@index([activitesCount(sort: Desc)], map: "structures_activites_count_desc_idx")
   // performance indexes
@@ -868,14 +872,57 @@ model Structure {
   @@schema("coop")
 }
 
+/// Identité légale employeuse, extraite de `structures` lors du split
+/// `lieu_inclusion` (profil de médiation) / `structure_administrative` (identité légale).
+/// Cible côté Entrepôt : `main.structure_administrative` (lecture/écriture partagée à terme).
+model StructureAdministrative {
+  id String @id @default(uuid()) @db.Uuid
+
+  // Identité légale (extraite des colonnes correspondantes de `structures`)
+  siret                String?
+  rna                  String?
+  denomination         String? // ← issu de structures.nom_usage
+  synchronisationSiret DateTime? @map("synchronisation_siret")
+
+  // Nom + adresse "employeuse" (alignée API Entreprise) + contacts référent, lus par le
+  // code employeuse (emplois, activités à distance, exports équipe). Inline pendant la phase
+  // in-coop ; mappés vers main.structure_administrative (denomination/adresse_id/contact) au reroute.
+  nom               String
+  adresse           String
+  commune           String
+  codePostal        String  @map("code_postal") @db.VarChar(5)
+  codeInsee         String? @map("code_insee") @db.VarChar(5)
+  complementAdresse String? @map("complement_adresse")
+  nomReferent       String? @map("nom_referent")
+  courrielReferent  String? @map("courriel_referent")
+  telephoneReferent String? @map("telephone_referent")
+
+  // Provenance, aligné sur `main.structure_administrative.source` (valeur `coop` côté Entrepôt)
+  source String?
+
+  creation     DateTime  @default(now())
+  modification DateTime  @default(now())
+  suppression  DateTime?
+
+  // Relations rôle EMPLOYEUSE (repointées depuis Structure)
+  emplois   EmployeStructure[]
+  activites Activite[]         @relation(name: "activite_structure_employeuse")
+  // Lieux d'inclusion opérés par cette structure employeuse (lien du double-rôle)
+  lieux     Structure[]
+
+  @@index([siret])
+  @@map("structure_administrative")
+  @@schema("coop")
+}
+
 model EmployeStructure {
   id String @id @default(uuid()) @db.Uuid
 
   userId String @map("user_id") @db.Uuid // Employé de la structure
   user   User   @relation(name: "employe_structure", fields: [userId], references: [id])
 
-  structureId String    @map("structure_id") @db.Uuid
-  structure   Structure @relation(fields: [structureId], references: [id])
+  structureId String                  @map("structure_id") @db.Uuid
+  structure   StructureAdministrative @relation(fields: [structureId], references: [id])
 
   // debut est nullable car il peut être null lors de l'import des données dataspace (contrat sans informations de dates)
   debut DateTime? @map("debut_emploi") // date de début de l'emploi dans la structure 
@@ -1214,8 +1261,8 @@ model Activite {
   // - cette information aurait pu etre déduite des liens entre mediateur, emploi, et activité
   // - elle est stockée directement ici pour des raisons de performance, et est mise à jour en cas de modification d'emploi
   // - elle est également utile dans le cas des imports d'anciens cras v1 qui ont cette information en dur dans le cra v1
-  structureEmployeuseId String    @map("structure_employeuse_id") @db.Uuid
-  structureEmployeuse   Structure @relation(fields: [structureEmployeuseId], references: [id], name: "activite_structure_employeuse")
+  structureEmployeuseId String                  @map("structure_employeuse_id") @db.Uuid
+  structureEmployeuse   StructureAdministrative @relation(fields: [structureEmployeuseId], references: [id], name: "activite_structure_employeuse")
 
   // Structure est renseigné
   // - si typeLieu = LieuActivite

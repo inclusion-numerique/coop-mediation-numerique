@@ -42,9 +42,14 @@ const getStructuresEmployeusesToNormalize = async (): Promise<
     where: {
       siret: { not: null },
       suppression: null,
-      emplois: {
-        some: {
-          suppression: null,
+      // TODO(split-1a.2): ce job normalise l'adresse employeuse via l'API Entreprise.
+      // L'identité employeuse vit désormais dans structure_administrative ; à terme il
+      // devrait cibler structure_administrative directement. Filtre repointé via le lien.
+      structureAdministrative: {
+        emplois: {
+          some: {
+            suppression: null,
+          },
         },
       },
       mediateursEnActivite: {
