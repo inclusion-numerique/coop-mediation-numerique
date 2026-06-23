@@ -214,7 +214,7 @@ export const executeAuditStructuresOverview = async (
 
   const supprimees = await prismaClient.structure.findMany({
     where: { suppression: { not: null } },
-    select: { id: true, nom: true, codeInsee: true },
+    select: { id: true, nom: true, adresse: true, codeInsee: true },
   })
   const emploisParSupprimee = await getEmploisCountByCorrelation(supprimees, {
     activeOnly: false,

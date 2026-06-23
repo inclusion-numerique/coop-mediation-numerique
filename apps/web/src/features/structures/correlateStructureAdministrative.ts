@@ -2,28 +2,36 @@ import { prismaClient } from '@app/web/prismaClient'
 
 /**
  * Corrélation employeuse (structure_administrative) <-> lieu (structures) par
- * SIMILITUDE nom + code INSEE — il n'existe aucun lien FK entre les deux (une
- * employeuse et un lieu sont des lignes indépendantes).
+ * SIMILITUDE nom + adresse + code INSEE — il n'existe aucun lien FK entre les deux
+ * (une employeuse et un lieu sont des lignes indépendantes).
  *
- * Le match est une égalité stricte sur (nom, codeInsee) : la SA a été créée (migration
- * 1a.2, write paths d'inscription, materialisation du lieu) en copiant ces champs depuis
- * la structure, donc l'égalité retrouve l'employeuse correspondante. Suffisant et
- * déterministe ; peut être assoupli (normalisation) si le besoin de fuzzy apparaît.
+ * La clé inclut l'ADRESSE (pas seulement la commune) : deux entités de même nom dans
+ * une même commune (ex : deux bureaux « La Poste ») se distinguent par leur adresse.
+ * Le match est une égalité stricte (nom, adresse, codeInsee) : la SA a été créée
+ * (migration 1a.2, write paths d'inscription, materialisation du lieu) en copiant ces
+ * champs depuis la structure, donc l'égalité retrouve l'employeuse correspondante.
+ *
+ * Limite assumée du modèle sans FK : deux entités STRICTEMENT identiques (même nom,
+ * même adresse, même commune) restent indistinguables — le compteur les agrège alors.
+ * Assouplissable (normalisation / fuzzy) si le besoin apparaît.
  */
 
 type CorrelationInput = {
   id: string
   nom: string
+  adresse: string
   codeInsee: string | null
 }
 
 export const structureCorrelationKey = ({
   nom,
+  adresse,
   codeInsee,
 }: {
   nom: string
+  adresse: string
   codeInsee: string | null
-}) => `${nom}__${codeInsee ?? ''}`
+}) => `${nom}__${adresse}__${codeInsee ?? ''}`
 
 /**
  * Pour un ensemble de structures (lieu), renvoie une Map id -> nombre d'emplois de
@@ -48,11 +56,16 @@ export const getEmploisCountByCorrelation = async (
 
   const employeuses = await prismaClient.structureAdministrative.findMany({
     where: {
-      OR: uniqueKeys.map(({ nom, codeInsee }) => ({ nom, codeInsee })),
+      OR: uniqueKeys.map(({ nom, adresse, codeInsee }) => ({
+        nom,
+        adresse,
+        codeInsee,
+      })),
       suppression: null,
     },
     select: {
       nom: true,
+      adresse: true,
       codeInsee: true,
       _count: {
         select: {
@@ -94,18 +107,20 @@ export const getEmploisCountForStructure = async (
 
 /**
  * Détail des relations employeuses (ids des emplois + des activités employeur) de
- * l'employeuse corrélée à un lieu par nom + code INSEE. Utilisé par la prévisualisation
- * de fusion de structures pour conserver l'affichage sans lien FK.
+ * l'employeuse corrélée à un lieu par nom + adresse + code INSEE. Utilisé par la
+ * prévisualisation de fusion de structures pour conserver l'affichage sans lien FK.
  */
 export const getCorrelatedEmployeuseRelations = async ({
   nom,
+  adresse,
   codeInsee,
 }: {
   nom: string
+  adresse: string
   codeInsee: string | null
 }): Promise<{ employesIds: string[]; activitesEmployeurIds: string[] }> => {
   const employeuse = await prismaClient.structureAdministrative.findFirst({
-    where: { nom, codeInsee, suppression: null },
+    where: { nom, adresse, codeInsee, suppression: null },
     select: {
       emplois: { where: { suppression: null }, select: { userId: true } },
       activites: { where: { suppression: null }, select: { id: true } },
