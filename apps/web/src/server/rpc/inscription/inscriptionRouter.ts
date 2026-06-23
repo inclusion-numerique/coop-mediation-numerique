@@ -219,10 +219,12 @@ export const inscriptionRouter = router({
             return existing
           }
 
-          // La structure employeuse est une structure_administrative (split 1a.2).
-          // Pour servir de lieu d'activité, on matérialise une ligne `structures`
-          // (lieu) au même id, reliée à sa structure_administrative, à partir de
-          // laquelle `mediateurEnActivite` peut se rattacher (FK structure_id → structures).
+          // La structure employeuse est une structure_administrative (split 1a.2),
+          // pas un lieu. Pour servir de lieu d'activité, on matérialise une ligne
+          // `structures` (lieu) à partir des données de l'employeuse, à laquelle
+          // `mediateurEnActivite` se rattache (FK structure_id → structures). On réutilise
+          // l'id pour que l'idempotence (existing check + branche "Non") reste valable ;
+          // aucune corrélation FK employeuse↔lieu n'est conservée.
           const structureEmployeuse =
             await prismaClient.structureAdministrative.findUniqueOrThrow({
               where: { id: structureEmployeuseId },
@@ -245,12 +247,7 @@ export const inscriptionRouter = router({
           await prismaClient.structure.upsert({
             where: { id: structureEmployeuseId },
             update: {},
-            create: {
-              ...structureEmployeuse,
-              structureAdministrative: {
-                connect: { id: structureEmployeuseId },
-              },
-            },
+            create: structureEmployeuse,
           })
 
           addMutationLog({

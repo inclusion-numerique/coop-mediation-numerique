@@ -10,6 +10,7 @@ import type {
   JsonApiListResponse,
   JsonApiResource,
 } from '@app/web/app/api/v1/JsonApiTypes'
+import { getEmploisCountByCorrelation } from '@app/web/features/structures/correlateStructureAdministrative'
 import { dispositifProgrammeNationalLabels } from '@app/web/features/structures/dispositifProgrammesNationaux'
 import { formationLabelLabels } from '@app/web/features/structures/formationLabel'
 import { fraisAChargeLabels } from '@app/web/features/structures/fraisACharge'
@@ -495,22 +496,6 @@ export const GET = createApiV1Route
             },
           },
         },
-        // Emplois rattachés à l'identité légale employeuse (structure_administrative) ;
-        // lien 1:1, le compte est préservé à l'identique pour le contrat API v1.
-        structureAdministrative: {
-          select: {
-            _count: {
-              select: {
-                emplois: {
-                  where: {
-                    suppression: null,
-                    fin: null,
-                  },
-                },
-              },
-            },
-          },
-        },
       },
       cursor: validatedCursor
         ? {
@@ -523,6 +508,12 @@ export const GET = createApiV1Route
     })
 
     const totalCount = await prismaClient.structure.count({ where })
+
+    // Compteur d'emplois par corrélation nom + code INSEE avec l'employeuse
+    // (structure_administrative) ; pas de lien FK. Contrat API v1 préservé.
+    const emploisCounts = await getEmploisCountByCorrelation(structures, {
+      activeOnly: true,
+    })
 
     const lastItem = structures.at(-1)
     const firstItem = structures.at(0)
@@ -622,7 +613,7 @@ export const GET = createApiV1Route
               modaliteAccompagnementLabels[modaliteAccompagnement],
           ),
           mediateurs_en_activite: s._count.mediateursEnActivite,
-          emplois: s.structureAdministrative?._count.emplois ?? 0,
+          emplois: emploisCounts.get(s.id) ?? 0,
         },
       })),
       links: {

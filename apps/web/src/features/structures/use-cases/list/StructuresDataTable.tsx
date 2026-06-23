@@ -38,16 +38,14 @@ export const StructuresDataTable = {
       name: 'type',
       header: 'Type',
       csvHeaders: ["Lieu d'activité", 'Structure employeuse'],
-      csvValues: ({ _count, structureAdministrative }) => [
+      csvValues: ({ _count, emploisCount }) => [
         _count.mediateursEnActivite > 0 ? 'Oui' : 'Non',
-        (structureAdministrative?._count.emplois ?? 0) > 0 ? 'Oui' : 'Non',
+        emploisCount > 0 ? 'Oui' : 'Non',
       ],
-      cell: ({ _count, structureAdministrative }) => (
+      cell: ({ _count, emploisCount }) => (
         <div className="fr-flex fr-flex-gap-2v">
           {_count.mediateursEnActivite > 0 && <Tag small>Lieu d'activité</Tag>}
-          {(structureAdministrative?._count.emplois ?? 0) > 0 && (
-            <Tag small>Employeuse</Tag>
-          )}
+          {emploisCount > 0 && <Tag small>Employeuse</Tag>}
         </div>
       ),
     },
@@ -162,17 +160,10 @@ export const StructuresDataTable = {
       name: 'employes',
       header: 'Employ\u00e9s',
       csvHeaders: ['Employ\u00e9s'],
-      csvValues: ({ structureAdministrative }) => [
-        structureAdministrative?._count.emplois ?? 0,
-      ],
-      cell: ({ structureAdministrative }) =>
-        optionalNumberToString(
-          structureAdministrative?._count.emplois ?? 0,
-          null,
-        ),
-      orderBy: (direction) => [
-        { structureAdministrative: { emplois: { _count: direction } } },
-      ],
+      csvValues: ({ emploisCount }) => [emploisCount],
+      cell: ({ emploisCount }) => optionalNumberToString(emploisCount, null),
+      // Tri DB indisponible : le compteur d'emplois est corrélé (nom + code INSEE)
+      // côté application, sans relation FK exploitable par un orderBy Prisma.
     },
     {
       name: 'mediateursEnActivite',

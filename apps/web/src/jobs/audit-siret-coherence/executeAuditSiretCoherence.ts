@@ -1,4 +1,5 @@
 import { writeFile } from 'node:fs/promises'
+import { getEmploisCountByCorrelation } from '@app/web/features/structures/correlateStructureAdministrative'
 import { fetchSiretApiData } from '@app/web/features/structures/siret/fetchSiretData'
 import type { SiretApiResponse } from '@app/web/features/structures/siret/SiretApiResponse'
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
@@ -191,15 +192,13 @@ export const executeAuditSiretCoherence = async (
       adresse: true,
       commune: true,
       codePostal: true,
+      codeInsee: true,
       visiblePourCartographieNationale: true,
       activitesCount: true,
       _count: {
         select: {
           mediateursEnActivite: true,
         },
-      },
-      structureAdministrative: {
-        select: { _count: { select: { emplois: true } } },
       },
     },
     orderBy: { siret: 'asc' },
@@ -211,6 +210,12 @@ export const executeAuditSiretCoherence = async (
   )
 
   const rows: AuditRow[] = []
+
+  // Emplois employeuse corrélés par nom + code INSEE (plus de lien FK).
+  const emploisCountByStructureId = await getEmploisCountByCorrelation(
+    structures,
+    { activeOnly: false },
+  )
 
   const counts: Record<Categorie, number> = {
     ok: 0,
@@ -241,7 +246,7 @@ export const executeAuditSiretCoherence = async (
       codePostalBase: structure.codePostal,
       visibleCarto: structure.visiblePourCartographieNationale,
       activitesCount: structure.activitesCount,
-      emploisCount: structure.structureAdministrative?._count.emplois ?? 0,
+      emploisCount: emploisCountByStructureId.get(structure.id) ?? 0,
       mediateursCount: structure._count.mediateursEnActivite,
     }
 

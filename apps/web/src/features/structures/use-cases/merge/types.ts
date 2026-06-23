@@ -1,21 +1,10 @@
 import type { Prisma } from '@prisma/client'
 
-// TODO(split-1a.2): emplois et activités employeur vivent désormais sur
-// structure_administrative (lien 1:1). La fusion de deux structures dont les SA
-// diffèrent est ambiguë et reste à clarifier ; on collecte ici les ids via le lien.
+// Les relations employeuse (emplois, activités employeur) vivent sur
+// structure_administrative, sans lien FK avec le lieu : la prévisualisation les récupère
+// par corrélation nom + code INSEE (getCorrelatedEmployeuseRelations), pas via l'include.
+// La fusion de deux structures dont les employeuses corrélées diffèrent reste ambiguë.
 export const mergeStructureInclude = {
-  structureAdministrative: {
-    select: {
-      emplois: {
-        where: { suppression: null },
-        select: { userId: true },
-      },
-      activites: {
-        where: { suppression: null },
-        select: { id: true },
-      },
-    },
-  },
   mediateursEnActivite: {
     where: { suppression: null },
     select: { mediateurId: true },

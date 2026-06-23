@@ -791,11 +791,6 @@ model Structure {
   // # Relations
   mediateursEnActivite MediateurEnActivite[]
 
-  // Lien vers l'identité légale employeuse, extraite lors du split
-  // `lieu_inclusion` (profil de médiation) / `structure_administrative` (identité légale).
-  // Renseigné pour une structure jouant le rôle employeuse ; null pour un lieu d'inclusion pur.
-  structureAdministrativeId String?                  @map("structure_administrative_id") @db.Uuid
-  structureAdministrative   StructureAdministrative? @relation(fields: [structureAdministrativeId], references: [id])
   // Champs métier
 
   nom String
@@ -861,7 +856,6 @@ model Structure {
   // descending sort on this cursor for api query performances
   @@index([creation(sort: Desc), id(sort: Desc)])
   @@index([structureCartographieNationaleId])
-  @@index([structureAdministrativeId])
   @@index([activitesCount(sort: Asc)], map: "structures_activites_count_asc_idx")
   @@index([activitesCount(sort: Desc)], map: "structures_activites_count_desc_idx")
   // performance indexes
@@ -904,11 +898,13 @@ model StructureAdministrative {
   modification DateTime  @default(now())
   suppression  DateTime?
 
-  // Relations rôle EMPLOYEUSE (repointées depuis Structure)
-  emplois   EmployeStructure[]
-  activites Activite[]         @relation(name: "activite_structure_employeuse")
-  // Lieux d'inclusion opérés par cette structure employeuse (lien du double-rôle)
-  lieux     Structure[]
+  // Emplois rattachés à cette identité légale employeuse (repointés depuis Structure)
+  emplois EmployeStructure[]
+  // Inverse (requis par Prisma) du champ collecté `activite.structureEmployeuseId` :
+  // chaque CRA estampille l'employeuse du médiateur au moment de l'acte, pour les
+  // statistiques « activités par structure employeuse ». L'employeuse ne « possède »
+  // pas d'activités — seuls les lieux en ont (Activite.structureId).
+  activites Activite[] @relation(name: "activite_structure_employeuse")
 
   @@index([siret])
   @@map("structure_administrative")
