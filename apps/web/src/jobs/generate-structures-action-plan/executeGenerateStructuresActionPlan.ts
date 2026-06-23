@@ -1,9 +1,62 @@
 import { existsSync } from 'node:fs'
 import { readFile, writeFile } from 'node:fs/promises'
+import { structureCorrelationKey } from '@app/web/features/structures/correlateStructureAdministrative'
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 import type { GenerateStructuresActionPlanJob } from './generateStructuresActionPlanJob'
+
+// Emplois + activités employeuse corrélés par nom + code INSEE, faute de lien FK.
+// Détection d'orphelines (→ plan de suppression) : on compte à l'identique de l'ancien
+// _count via le lien, sans filtre de suppression sur emplois/activités.
+const getEmployeuseRelCountsByCorrelation = async (
+  structures: { id: string; nom: string; codeInsee: string | null }[],
+): Promise<Map<string, { emplois: number; activites: number }>> => {
+  const uniqueKeys = [
+    ...new Map(
+      structures.map((structure) => [
+        structureCorrelationKey(structure),
+        structure,
+      ]),
+    ).values(),
+  ]
+
+  if (uniqueKeys.length === 0) {
+    return new Map<string, { emplois: number; activites: number }>()
+  }
+
+  const employeuses = await prismaClient.structureAdministrative.findMany({
+    where: {
+      OR: uniqueKeys.map(({ nom, codeInsee }) => ({ nom, codeInsee })),
+      suppression: null,
+    },
+    select: {
+      nom: true,
+      codeInsee: true,
+      _count: { select: { emplois: true, activites: true } },
+    },
+  })
+
+  const countsByKey = employeuses.reduce((accumulator, employeuse) => {
+    const key = structureCorrelationKey(employeuse)
+    const current = accumulator.get(key) ?? { emplois: 0, activites: 0 }
+    accumulator.set(key, {
+      emplois: current.emplois + employeuse._count.emplois,
+      activites: current.activites + employeuse._count.activites,
+    })
+    return accumulator
+  }, new Map<string, { emplois: number; activites: number }>())
+
+  return new Map(
+    structures.map((structure) => [
+      structure.id,
+      countsByKey.get(structureCorrelationKey(structure)) ?? {
+        emplois: 0,
+        activites: 0,
+      },
+    ]),
+  )
+}
 
 // ── Types ──
 
@@ -444,16 +497,19 @@ export const executeGenerateStructuresActionPlan = async (
           activites: true,
         },
       },
-      structureAdministrative: {
-        select: {
-          _count: { select: { emplois: true, activites: true } },
-        },
-      },
     },
   })
 
+  // Emplois et activités employeuse corrélés par nom + code INSEE (plus de lien FK).
+  const employeuseRelCountsByStructureId =
+    await getEmployeuseRelCountsByCorrelation(allStructures)
+
   const structuresById = new Map<string, StructureData>()
   for (const s of allStructures) {
+    const employeuseRelCounts = employeuseRelCountsByStructureId.get(s.id) ?? {
+      emplois: 0,
+      activites: 0,
+    }
     structuresById.set(s.id, {
       id: s.id,
       nom: s.nom,
@@ -467,9 +523,8 @@ export const executeGenerateStructuresActionPlan = async (
       longitude: s.longitude,
       visiblePourCartographieNationale: s.visiblePourCartographieNationale,
       activitesCount: s.activitesCount,
-      activitesRelCount:
-        s._count.activites + (s.structureAdministrative?._count.activites ?? 0),
-      emploisCount: s.structureAdministrative?._count.emplois ?? 0,
+      activitesRelCount: s._count.activites + employeuseRelCounts.activites,
+      emploisCount: employeuseRelCounts.emplois,
       mediateursCount: s._count.mediateursEnActivite,
     })
   }

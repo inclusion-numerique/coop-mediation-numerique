@@ -1,4 +1,5 @@
 import { writeFile } from 'node:fs/promises'
+import { getEmploisCountByCorrelation } from '@app/web/features/structures/correlateStructureAdministrative'
 import { fetchSiretApiData } from '@app/web/features/structures/siret/fetchSiretData'
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
@@ -122,12 +123,15 @@ export const executeExportDuplicateSirets = async (
           mediateursEnActivite: true,
         },
       },
-      structureAdministrative: {
-        select: { _count: { select: { emplois: true } } },
-      },
     },
     orderBy: [{ siret: 'asc' }, { modification: 'desc' }],
   })
+
+  // Emplois employeuse corrélés par nom + code INSEE (plus de lien FK).
+  const emploisCountByStructureId = await getEmploisCountByCorrelation(
+    structures,
+    { activeOnly: false },
+  )
 
   // Fetch API Entreprise data once per SIRET (cached for all duplicates)
   output.log(
@@ -184,7 +188,7 @@ export const executeExportDuplicateSirets = async (
         s.telephone ?? '',
         s.visiblePourCartographieNationale ? 'oui' : 'non',
         s.activitesCount,
-        s.structureAdministrative?._count.emplois ?? 0,
+        emploisCountByStructureId.get(s.id) ?? 0,
         s._count.mediateursEnActivite,
         s.modification.toISOString(),
         escapeCsvField(apiData.nom),

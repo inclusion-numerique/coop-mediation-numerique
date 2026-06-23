@@ -1,4 +1,5 @@
 import { writeFile } from 'node:fs/promises'
+import { getEmploisCountByCorrelation } from '@app/web/features/structures/correlateStructureAdministrative'
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
@@ -114,35 +115,58 @@ export const executeAuditStructuresOverview = async (
 
   // ── Relations : emplois, médiateurs, activités ──
 
-  const sansEmploi = await prismaClient.structure.count({
-    where: {
-      suppression: null,
-      NOT: { structureAdministrative: { emplois: { some: {} } } },
+  // Pas de lien FK lieu↔employeuse : les emplois sont corrélés par nom + code INSEE.
+  // On charge les structures non supprimées une fois et on dérive les compteurs en mémoire.
+  const nonSupprimees = await prismaClient.structure.findMany({
+    where: { suppression: null },
+    select: {
+      id: true,
+      nom: true,
+      codeInsee: true,
+      siret: true,
+      adresse: true,
+      commune: true,
+      codePostal: true,
+      visiblePourCartographieNationale: true,
+      v1Imported: true,
+      creation: true,
+      modification: true,
+      activitesCount: true,
+      _count: { select: { mediateursEnActivite: true } },
     },
   })
 
-  const sansMediateur = await prismaClient.structure.count({
-    where: {
-      suppression: null,
-      mediateursEnActivite: { none: {} },
+  const emploisParStructure = await getEmploisCountByCorrelation(
+    nonSupprimees,
+    {
+      activeOnly: false,
     },
-  })
+  )
+  const aDesEmplois = ({ id }: { id: string }) =>
+    (emploisParStructure.get(id) ?? 0) > 0
 
-  const sansActivite = await prismaClient.structure.count({
-    where: {
-      suppression: null,
-      activitesCount: 0,
-    },
-  })
+  const sansEmploi = nonSupprimees.filter(
+    (structure) => !aDesEmplois(structure),
+  ).length
 
-  const orphelines = await prismaClient.structure.count({
-    where: {
-      suppression: null,
-      NOT: { structureAdministrative: { emplois: { some: {} } } },
-      mediateursEnActivite: { none: {} },
-      activitesCount: 0,
-    },
-  })
+  const sansMediateur = nonSupprimees.filter(
+    (structure) => structure._count.mediateursEnActivite === 0,
+  ).length
+
+  const sansActivite = nonSupprimees.filter(
+    (structure) => structure.activitesCount === 0,
+  ).length
+
+  const structuresOrphelines = nonSupprimees
+    .filter(
+      (structure) =>
+        !aDesEmplois(structure) &&
+        structure._count.mediateursEnActivite === 0 &&
+        structure.activitesCount === 0,
+    )
+    .sort((a, b) => b.modification.getTime() - a.modification.getTime())
+
+  const orphelines = structuresOrphelines.length
 
   output.log(`\n--- RELATIONS ---`)
   output.log(`Sans emploi: ${sansEmploi} (${pct(sansEmploi, total)})`)
@@ -188,12 +212,16 @@ export const executeAuditStructuresOverview = async (
 
   // ── Structures supprimées encore référencées ──
 
-  const supprimeeesAvecEmplois = await prismaClient.structure.count({
-    where: {
-      suppression: { not: null },
-      structureAdministrative: { emplois: { some: {} } },
-    },
+  const supprimees = await prismaClient.structure.findMany({
+    where: { suppression: { not: null } },
+    select: { id: true, nom: true, codeInsee: true },
   })
+  const emploisParSupprimee = await getEmploisCountByCorrelation(supprimees, {
+    activeOnly: false,
+  })
+  const supprimeeesAvecEmplois = supprimees.filter(
+    ({ id }) => (emploisParSupprimee.get(id) ?? 0) > 0,
+  ).length
 
   const supprimeeesAvecActivites = await prismaClient.structure.count({
     where: {
@@ -206,17 +234,7 @@ export const executeAuditStructuresOverview = async (
   output.log(`Supprimées avec emplois: ${supprimeeesAvecEmplois}`)
   output.log(`Supprimées avec activités (count>0): ${supprimeeesAvecActivites}`)
 
-  // ── Export CSV des structures orphelines ──
-
-  const structuresOrphelines = await prismaClient.structure.findMany({
-    where: {
-      suppression: null,
-      NOT: { structureAdministrative: { emplois: { some: {} } } },
-      mediateursEnActivite: { none: {} },
-      activitesCount: 0,
-    },
-    orderBy: { modification: 'desc' },
-  })
+  // ── Export CSV des structures orphelines (calculées plus haut) ──
 
   const orphelinesCsvHeader = [
     'id',

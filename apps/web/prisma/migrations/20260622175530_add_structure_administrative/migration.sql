@@ -1,6 +1,8 @@
 -- Incrément 1a.1 du split `structures` -> `lieu_inclusion` + `structure_administrative`.
--- Additif et non destructif : crée la table d'identité légale employeuse et le lien
--- depuis `structures`. Aucun repointage ni suppression (incréments 1a.2 / 1a.3).
+-- Additif et non destructif : crée la table d'identité légale employeuse.
+-- Aucun lien FK depuis `structures` : une employeuse et un lieu sont deux lignes
+-- indépendantes, corrélées seulement par similitude nom + adresse (pas de colonne
+-- de corrélation). Le peuplement et le repointage des emplois/activités se font en 1a.2.
 
 -- CreateTable
 CREATE TABLE "coop"."structure_administrative" (
@@ -9,6 +11,15 @@ CREATE TABLE "coop"."structure_administrative" (
     "rna" TEXT,
     "denomination" TEXT,
     "synchronisation_siret" TIMESTAMP(3),
+    "nom" TEXT NOT NULL,
+    "adresse" TEXT NOT NULL,
+    "commune" TEXT NOT NULL,
+    "code_postal" VARCHAR(5) NOT NULL,
+    "code_insee" VARCHAR(5),
+    "complement_adresse" TEXT,
+    "nom_referent" TEXT,
+    "courriel_referent" TEXT,
+    "telephone_referent" TEXT,
     "source" TEXT,
     "creation" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "modification" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -19,12 +30,3 @@ CREATE TABLE "coop"."structure_administrative" (
 
 -- CreateIndex
 CREATE INDEX "structure_administrative_siret_idx" ON "coop"."structure_administrative"("siret");
-
--- AlterTable
-ALTER TABLE "coop"."structures" ADD COLUMN "structure_administrative_id" UUID;
-
--- CreateIndex
-CREATE INDEX "structures_structure_administrative_id_idx" ON "coop"."structures"("structure_administrative_id");
-
--- AddForeignKey
-ALTER TABLE "coop"."structures" ADD CONSTRAINT "structures_structure_administrative_id_fkey" FOREIGN KEY ("structure_administrative_id") REFERENCES "coop"."structure_administrative"("id") ON DELETE SET NULL ON UPDATE CASCADE;

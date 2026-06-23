@@ -1,5 +1,6 @@
 import { searchAdresse } from '@app/web/external-apis/apiAdresse'
 import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
+import { getEmploisCountByCorrelation } from '@app/web/features/structures/correlateStructureAdministrative'
 import { fetchSiretApiData } from '@app/web/features/structures/siret/fetchSiretData'
 import type { SiretApiResponse } from '@app/web/features/structures/siret/SiretApiResponse'
 import { prismaClient } from '@app/web/prismaClient'
@@ -37,21 +38,14 @@ type Coordinates = {
 
 const getStructuresEmployeusesToNormalize = async (): Promise<
   StructureToNormalize[]
-> =>
-  prismaClient.structure.findMany({
+> => {
+  // TODO(split): ce job normalise l'adresse employeuse via l'API Entreprise.
+  // L'identité employeuse vit désormais dans structure_administrative ; à terme il
+  // devrait cibler structure_administrative directement.
+  const candidates = await prismaClient.structure.findMany({
     where: {
       siret: { not: null },
       suppression: null,
-      // TODO(split-1a.2): ce job normalise l'adresse employeuse via l'API Entreprise.
-      // L'identité employeuse vit désormais dans structure_administrative ; à terme il
-      // devrait cibler structure_administrative directement. Filtre repointé via le lien.
-      structureAdministrative: {
-        emplois: {
-          some: {
-            suppression: null,
-          },
-        },
-      },
       mediateursEnActivite: {
         none: {},
       },
@@ -69,6 +63,17 @@ const getStructuresEmployeusesToNormalize = async (): Promise<
       synchronisationSiret: true,
     },
   })
+
+  // On ne garde que les structures dont l'employeuse corrélée (nom + code INSEE)
+  // a au moins un emploi — sans lien FK, la corrélation remplace le filtre relationnel.
+  const emploisCounts = await getEmploisCountByCorrelation(candidates, {
+    activeOnly: false,
+  })
+
+  return candidates.filter(
+    (structure) => (emploisCounts.get(structure.id) ?? 0) > 0,
+  )
+}
 
 const shouldSkipStructure = (
   structure: StructureToNormalize,

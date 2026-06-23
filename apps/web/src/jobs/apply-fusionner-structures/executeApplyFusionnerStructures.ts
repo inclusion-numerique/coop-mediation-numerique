@@ -1,4 +1,5 @@
 import { writeFile } from 'node:fs/promises'
+import { getEmploisCountForStructure } from '@app/web/features/structures/correlateStructureAdministrative'
 import { mergeStructure } from '@app/web/features/structures/use-cases/merge/mutations/mergeStructure'
 import {
   type ActionPlanRow,
@@ -130,6 +131,7 @@ export const executeApplyFusionnerStructures = async (
           nom: true,
           adresse: true,
           commune: true,
+          codeInsee: true,
           siret: true,
           suppression: true,
           activitesCount: true,
@@ -138,12 +140,14 @@ export const executeApplyFusionnerStructures = async (
               mediateursEnActivite: true,
             },
           },
-          structureAdministrative: {
-            select: { _count: { select: { emplois: true } } },
-          },
         },
       }),
     ])
+
+    // Emplois employeuse corrélés par nom + code INSEE (plus de lien FK).
+    const cibleEmploisCount = cible
+      ? await getEmploisCountForStructure(cible, { activeOnly: false })
+      : 0
 
     if (!source || source.suppression) {
       results.push({
@@ -154,7 +158,7 @@ export const executeApplyFusionnerStructures = async (
         cibleCommune: cible?.commune ?? '',
         cibleSiret: cible?.siret ?? '',
         cibleActivites: cible?.activitesCount ?? 0,
-        cibleEmplois: cible?.structureAdministrative?._count.emplois ?? 0,
+        cibleEmplois: cibleEmploisCount,
         cibleMediateurs: cible?._count.mediateursEnActivite ?? 0,
         statut: 'skip_source_introuvable',
       })
@@ -189,7 +193,7 @@ export const executeApplyFusionnerStructures = async (
       cibleCommune: cible.commune,
       cibleSiret: cible.siret ?? '',
       cibleActivites: cible.activitesCount,
-      cibleEmplois: cible.structureAdministrative?._count.emplois ?? 0,
+      cibleEmplois: cibleEmploisCount,
       cibleMediateurs: cible._count.mediateursEnActivite,
     }
 

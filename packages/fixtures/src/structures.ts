@@ -75,11 +75,6 @@ export const fixtureStructuresAdministratives = [
   mediatequeAdministrative,
 ]
 
-/** Lien du double-rôle : structure (lieu) → sa structure_administrative (employeuse) */
-const administrativeIdByStructureId = new Map(
-  fixtureStructuresAdministratives.map(({ id }) => [id, id]),
-)
-
 export const seedStructureAdministrative = (
   transaction: Prisma.TransactionClient,
   administrative: Prisma.StructureAdministrativeCreateInput & { id: string },
@@ -92,6 +87,9 @@ export const seedStructureAdministrative = (
   })
 
 export const seedStructures = async (transaction: Prisma.TransactionClient) => {
+  // Les employeuses (structure_administrative) et les lieux (structures) sont
+  // indépendants — pas de lien FK. Le double-rôle (structureEmployeuse, mediateque)
+  // partage seulement l'id, comme la migration des données legacy.
   await Promise.all(
     fixtureStructuresAdministratives.map((administrative) =>
       seedStructureAdministrative(transaction, administrative),
@@ -99,23 +97,16 @@ export const seedStructures = async (transaction: Prisma.TransactionClient) => {
   )
 
   return Promise.all(
-    fixtureStructures.map((structure) => {
-      const administrativeId = administrativeIdByStructureId.get(structure.id)
-      const data = administrativeId
-        ? {
-            ...structure,
-            structureAdministrative: { connect: { id: administrativeId } },
-          }
-        : structure
-      return transaction.structure.upsert({
+    fixtureStructures.map((structure) =>
+      transaction.structure.upsert({
         where: { id: structure.id },
-        create: data,
-        update: data,
+        create: structure,
+        update: structure,
         select: {
           id: true,
           nom: true,
         },
-      })
-    }),
+      }),
+    ),
   )
 }

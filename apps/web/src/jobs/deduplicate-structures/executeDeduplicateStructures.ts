@@ -1,3 +1,4 @@
+import { getEmploisCountByCorrelation } from '@app/web/features/structures/correlateStructureAdministrative'
 import { mergeStructure } from '@app/web/features/structures/use-cases/merge/mutations/mergeStructure'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
@@ -51,9 +52,6 @@ const getFullStructuresForGroup = async (
         select: {
           mediateursEnActivite: true,
         },
-      },
-      structureAdministrative: {
-        select: { _count: { select: { emplois: true } } },
       },
     },
     orderBy: { modification: 'desc' },
@@ -151,13 +149,19 @@ export const executeDeduplicateStructures = async (
     )
     output.log(`  ${structures.length} structures trouvées:`)
 
+    // Emplois employeuse corrélés par nom + code INSEE (plus de lien FK).
+    const emploisCountByStructureId = await getEmploisCountByCorrelation(
+      structures,
+      { activeOnly: false },
+    )
+
     for (const structure of structures) {
       const isTarget = structure.id === target.id
       const cartoFlag = structure.visiblePourCartographieNationale
         ? ' [CARTO]'
         : ''
       output.log(
-        `  ${isTarget ? '→ CIBLE' : '  SOURCE'} id=${structure.id} | modifié=${structure.modification.toISOString()} | activités=${structure.activitesCount} | emplois=${structure.structureAdministrative?._count.emplois ?? 0} | médiateurs=${structure._count.mediateursEnActivite}${cartoFlag}`,
+        `  ${isTarget ? '→ CIBLE' : '  SOURCE'} id=${structure.id} | modifié=${structure.modification.toISOString()} | activités=${structure.activitesCount} | emplois=${emploisCountByStructureId.get(structure.id) ?? 0} | médiateurs=${structure._count.mediateursEnActivite}${cartoFlag}`,
       )
     }
 
