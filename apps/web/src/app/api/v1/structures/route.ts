@@ -493,10 +493,20 @@ export const GET = createApiV1Route
                 fin: null,
               },
             },
-            emplois: {
-              where: {
-                suppression: null,
-                fin: null,
+          },
+        },
+        // Emplois rattachés à l'identité légale employeuse (structure_administrative) ;
+        // lien 1:1, le compte est préservé à l'identique pour le contrat API v1.
+        structureAdministrative: {
+          select: {
+            _count: {
+              select: {
+                emplois: {
+                  where: {
+                    suppression: null,
+                    fin: null,
+                  },
+                },
               },
             },
           },
@@ -612,7 +622,7 @@ export const GET = createApiV1Route
               modaliteAccompagnementLabels[modaliteAccompagnement],
           ),
           mediateurs_en_activite: s._count.mediateursEnActivite,
-          emplois: s._count.emplois,
+          emplois: s.structureAdministrative?._count.emplois ?? 0,
         },
       })),
       links: {

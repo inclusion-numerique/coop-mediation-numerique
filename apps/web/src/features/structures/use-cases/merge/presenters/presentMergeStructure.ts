@@ -24,10 +24,12 @@ export const presentMergeStructure = (
   modalitesAcces: structure.modalitesAcces,
   modalitesAccompagnement: structure.modalitesAccompagnement,
   courriels: structure.courriels,
-  employesIds: structure.emplois.map((e) => e.userId),
+  employesIds:
+    structure.structureAdministrative?.emplois.map((e) => e.userId) ?? [],
   mediateursEnActiviteIds: structure.mediateursEnActivite.map(
     (m) => m.mediateurId,
   ),
-  activitesEmployeurIds: structure.activitesEmployes.map((a) => a.id),
+  activitesEmployeurIds:
+    structure.structureAdministrative?.activites.map((a) => a.id) ?? [],
   activitesLieuIds: structure.activites.map((a) => a.id),
 })

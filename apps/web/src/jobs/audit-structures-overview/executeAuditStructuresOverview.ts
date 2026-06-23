@@ -117,7 +117,7 @@ export const executeAuditStructuresOverview = async (
   const sansEmploi = await prismaClient.structure.count({
     where: {
       suppression: null,
-      emplois: { none: {} },
+      NOT: { structureAdministrative: { emplois: { some: {} } } },
     },
   })
 
@@ -138,7 +138,7 @@ export const executeAuditStructuresOverview = async (
   const orphelines = await prismaClient.structure.count({
     where: {
       suppression: null,
-      emplois: { none: {} },
+      NOT: { structureAdministrative: { emplois: { some: {} } } },
       mediateursEnActivite: { none: {} },
       activitesCount: 0,
     },
@@ -191,7 +191,7 @@ export const executeAuditStructuresOverview = async (
   const supprimeeesAvecEmplois = await prismaClient.structure.count({
     where: {
       suppression: { not: null },
-      emplois: { some: {} },
+      structureAdministrative: { emplois: { some: {} } },
     },
   })
 
@@ -211,7 +211,7 @@ export const executeAuditStructuresOverview = async (
   const structuresOrphelines = await prismaClient.structure.findMany({
     where: {
       suppression: null,
-      emplois: { none: {} },
+      NOT: { structureAdministrative: { emplois: { some: {} } } },
       mediateursEnActivite: { none: {} },
       activitesCount: 0,
     },

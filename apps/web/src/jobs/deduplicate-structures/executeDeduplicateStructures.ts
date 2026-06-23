@@ -49,9 +49,11 @@ const getFullStructuresForGroup = async (
     include: {
       _count: {
         select: {
-          emplois: true,
           mediateursEnActivite: true,
         },
+      },
+      structureAdministrative: {
+        select: { _count: { select: { emplois: true } } },
       },
     },
     orderBy: { modification: 'desc' },
@@ -155,7 +157,7 @@ export const executeDeduplicateStructures = async (
         ? ' [CARTO]'
         : ''
       output.log(
-        `  ${isTarget ? '→ CIBLE' : '  SOURCE'} id=${structure.id} | modifié=${structure.modification.toISOString()} | activités=${structure.activitesCount} | emplois=${structure._count.emplois} | médiateurs=${structure._count.mediateursEnActivite}${cartoFlag}`,
+        `  ${isTarget ? '→ CIBLE' : '  SOURCE'} id=${structure.id} | modifié=${structure.modification.toISOString()} | activités=${structure.activitesCount} | emplois=${structure.structureAdministrative?._count.emplois ?? 0} | médiateurs=${structure._count.mediateursEnActivite}${cartoFlag}`,
       )
     }
 

@@ -48,7 +48,19 @@ const getStructuresInfos = ({
   nom,
   creation,
   suppression,
-}: Structure): LabelAndValue[] => [
+}: Pick<
+  Structure,
+  | 'id'
+  | 'commune'
+  | 'adresse'
+  | 'codeInsee'
+  | 'codePostal'
+  | 'siret'
+  | 'rna'
+  | 'nom'
+  | 'creation'
+  | 'suppression'
+>): LabelAndValue[] => [
   {
     label: 'Nom',
     value: nom,

@@ -49,12 +49,16 @@ export const getLieuActivitePageData = async ({ id }: { id: string }) => {
       dispositifProgrammesNationaux: true,
       formationsLabels: true,
       autresFormationsLabels: true,
-      _count: {
+      structureAdministrative: {
         select: {
-          emplois: {
-            where: {
-              suppression: null,
-              fin: null,
+          _count: {
+            select: {
+              emplois: {
+                where: {
+                  suppression: null,
+                  fin: null,
+                },
+              },
             },
           },
         },
@@ -104,7 +108,8 @@ export const getLieuActivitePageData = async ({ id }: { id: string }) => {
   return {
     structure: {
       ...structure,
-      hasActiveEmployees: structure._count.emplois > 0,
+      hasActiveEmployees:
+        (structure.structureAdministrative?._count.emplois ?? 0) > 0,
       mediateursEnActivite: structure.mediateursEnActivite.map(
         (mediateurEnActivite) => ({
           ...mediateurEnActivite,

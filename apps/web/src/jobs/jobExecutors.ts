@@ -12,6 +12,7 @@ import { executeAuditAdresseCoherence } from './audit-adresse-coherence/executeA
 import { executeAuditSiretCoherence } from './audit-siret-coherence/executeAuditSiretCoherence'
 import { executeAuditStructuresOverview } from './audit-structures-overview/executeAuditStructuresOverview'
 import { executeBackfillCommuneRdvsp } from './backfill-commune-rdvsp/executeBackfillCommuneRdvsp'
+import { executeBackfillStructuresAdministratives } from './backfill-structures-administratives/executeBackfillStructuresAdministratives'
 import { executeBackfillTrancheAge } from './backfill-tranche-age/executeBackfillTrancheAge'
 import { executeBackupDatabaseJob } from './backup-database/executeBackupDatabaseJob'
 import { executeDeduplicateStructures } from './deduplicate-structures/executeDeduplicateStructures'
@@ -63,6 +64,8 @@ export const jobExecutors: {
   'audit-siret-coherence': executeAuditSiretCoherence,
   'audit-structures-overview': executeAuditStructuresOverview,
   'backfill-commune-rdvsp': executeBackfillCommuneRdvsp,
+  'backfill-structures-administratives':
+    executeBackfillStructuresAdministratives,
   'normaliser-beneficiaires': executeNormaliserBeneficiaires,
   'backfill-tranche-age': executeBackfillTrancheAge,
   'backup-database': executeBackupDatabaseJob,

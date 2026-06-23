@@ -61,7 +61,8 @@ const Page = async (props: {
     siret: emploi.structure.siret,
     codePostal: emploi.structure.codePostal,
     commune: emploi.structure.commune,
-    typologies: emploi.structure.typologies,
+    // L'identité employeuse (structure_administrative) ne porte pas de typologies (concept lieu)
+    typologies: [],
     rna: emploi.structure.rna,
   }
 

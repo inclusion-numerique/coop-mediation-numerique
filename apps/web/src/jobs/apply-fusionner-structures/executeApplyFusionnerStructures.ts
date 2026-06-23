@@ -135,9 +135,11 @@ export const executeApplyFusionnerStructures = async (
           activitesCount: true,
           _count: {
             select: {
-              emplois: true,
               mediateursEnActivite: true,
             },
+          },
+          structureAdministrative: {
+            select: { _count: { select: { emplois: true } } },
           },
         },
       }),
@@ -152,7 +154,7 @@ export const executeApplyFusionnerStructures = async (
         cibleCommune: cible?.commune ?? '',
         cibleSiret: cible?.siret ?? '',
         cibleActivites: cible?.activitesCount ?? 0,
-        cibleEmplois: cible?._count.emplois ?? 0,
+        cibleEmplois: cible?.structureAdministrative?._count.emplois ?? 0,
         cibleMediateurs: cible?._count.mediateursEnActivite ?? 0,
         statut: 'skip_source_introuvable',
       })
@@ -187,7 +189,7 @@ export const executeApplyFusionnerStructures = async (
       cibleCommune: cible.commune,
       cibleSiret: cible.siret ?? '',
       cibleActivites: cible.activitesCount,
-      cibleEmplois: cible._count.emplois,
+      cibleEmplois: cible.structureAdministrative?._count.emplois ?? 0,
       cibleMediateurs: cible._count.mediateursEnActivite,
     }
 
