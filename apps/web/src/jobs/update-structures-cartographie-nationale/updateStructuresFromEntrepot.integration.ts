@@ -18,6 +18,12 @@ const createStructureWithStaff =
       data: { ...COMMON_STRUCTURE_FIELDS, ...structure },
     })
 
+    // Rôle employeuse (split 1a.2) : employeStructure / activite.structureEmployeuseId
+    // pointent structure_administrative. SA même id que la structure (double-rôle).
+    await prismaClient.structureAdministrative.create({
+      data: { ...COMMON_STRUCTURE_FIELDS, ...structure, source: 'coop' },
+    })
+
     const user = await prismaClient.user.create({ data: { email } })
 
     await prismaClient.employeStructure.create({
