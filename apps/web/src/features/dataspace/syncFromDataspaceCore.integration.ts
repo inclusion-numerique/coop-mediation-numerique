@@ -57,7 +57,8 @@ const createTestUser = async () => {
 
 const createTestStructure = async ({ siret }: { siret: string | null }) => {
   const structureId = v4()
-  await prismaClient.structure.create({
+  // Rôle employeuse (split 1a.2) : les emplois pointent structure_administrative.
+  await prismaClient.structureAdministrative.create({
     data: {
       id: structureId,
       nom: 'Structure employeuse de test',
@@ -66,6 +67,7 @@ const createTestStructure = async ({ siret }: { siret: string | null }) => {
       commune: 'Laval',
       codePostal: '53000',
       codeInsee: '53130',
+      source: 'coop',
     },
   })
   return structureId
@@ -77,7 +79,7 @@ const cleanupTestUser = async (userId: string) => {
     select: { structureId: true },
   })
   await prismaClient.employeStructure.deleteMany({ where: { userId } })
-  await prismaClient.structure.deleteMany({
+  await prismaClient.structureAdministrative.deleteMany({
     where: { id: { in: emplois.map(({ structureId }) => structureId) } },
   })
   await prismaClient.user.deleteMany({ where: { id: userId } })

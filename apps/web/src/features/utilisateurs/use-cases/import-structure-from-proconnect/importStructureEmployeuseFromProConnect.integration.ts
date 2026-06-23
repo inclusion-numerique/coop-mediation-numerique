@@ -38,7 +38,8 @@ describe('importStructureEmployeuseFromProConnect', () => {
     await prismaClient.employeStructure.deleteMany({
       where: { userId: mediateurSansActivites.id },
     })
-    await prismaClient.structure.upsert({
+    // Rôle employeuse (split 1a.2) : les emplois pointent structure_administrative.
+    await prismaClient.structureAdministrative.upsert({
       where: { id: PROCONNECT_STRUCTURE_ID },
       update: { siret: PROCONNECT_SIRET },
       create: {
@@ -49,9 +50,10 @@ describe('importStructureEmployeuseFromProConnect', () => {
         commune: 'Paris',
         codeInsee: '75056',
         siret: PROCONNECT_SIRET,
+        source: 'coop',
       },
     })
-    await prismaClient.structure.upsert({
+    await prismaClient.structureAdministrative.upsert({
       where: { id: OTHER_STRUCTURE_ID },
       update: { siret: OTHER_SIRET },
       create: {
@@ -62,6 +64,7 @@ describe('importStructureEmployeuseFromProConnect', () => {
         commune: 'Lyon',
         codeInsee: '69381',
         siret: OTHER_SIRET,
+        source: 'coop',
       },
     })
   })
