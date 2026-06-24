@@ -2,6 +2,7 @@ import type { AnneeNaissance } from '@app/web/features/beneficiaire/domain/annee
 import type { CommuneResidence } from '@app/web/features/beneficiaire/domain/commune-residence'
 import type { Email } from '@app/web/features/beneficiaire/domain/email'
 import type { Genre } from '@app/web/features/beneficiaire/domain/genre'
+import type { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
 import type { Nom } from '@app/web/features/beneficiaire/domain/nom'
 import type { Notes } from '@app/web/features/beneficiaire/domain/notes'
 import type { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
@@ -37,3 +38,13 @@ export type BuildBeneficiairesWorksheet = (input: {
   user: WorksheetUser
   worksheetGenerationDate?: Date
 }) => Workbook
+
+/**
+ * Cas d'usage complet : récupère les bénéficiaires du médiateur correspondant
+ * aux filtres et produit le classeur d'export.
+ */
+export type ExporterBeneficiaires = (input: {
+  mediateurId: MediateurId
+  filters: ExportBeneficiairesFilters
+  user: WorksheetUser
+}) => Promise<Workbook>

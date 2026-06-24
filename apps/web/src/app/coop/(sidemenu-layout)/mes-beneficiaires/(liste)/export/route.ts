@@ -1,9 +1,11 @@
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
 import { isMediateur } from '@app/web/auth/userTypeGuards'
-import { searchBeneficiaires } from '@app/web/beneficiaire/searchBeneficiaires'
-import { buildBeneficiairesWorksheet } from '@app/web/features/beneficiaires/use-cases/list/export/buildBeneficiairesWorksheet'
-import { ExportBeneficiairesFilterValidations } from '@app/web/features/beneficiaires/use-cases/list/export/exportBeneficiairesFilter'
+import {
+  ExportBeneficiairesFilterValidations,
+  exporterBeneficiaires,
+} from '@app/web/features/beneficiaire/abilities/exporter-beneficiaires'
+import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { NextRequest } from 'next/server'
 
@@ -27,16 +29,9 @@ export const GET = async (request: NextRequest) => {
     return new Response('Invalid query params', { status: 400 })
   }
 
-  const filters = parsedQueryParams.data
-
-  const beneficiairesWorksheetInput = await searchBeneficiaires({
-    mediateurId: user.mediateur.id,
-    searchParams: { ...filters, page: '1', lignes: '10000' },
-  })
-
-  const workbook = buildBeneficiairesWorksheet({
-    ...beneficiairesWorksheetInput,
-    filters,
+  const workbook = await exporterBeneficiaires({
+    mediateurId: MediateurId(user.mediateur.id),
+    filters: parsedQueryParams.data,
     user,
   })
 
