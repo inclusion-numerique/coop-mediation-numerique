@@ -12,7 +12,6 @@ import { executeAuditAdresseCoherence } from './audit-adresse-coherence/executeA
 import { executeAuditSiretCoherence } from './audit-siret-coherence/executeAuditSiretCoherence'
 import { executeAuditStructuresOverview } from './audit-structures-overview/executeAuditStructuresOverview'
 import { executeBackfillCommuneRdvsp } from './backfill-commune-rdvsp/executeBackfillCommuneRdvsp'
-import { executeBackfillTelephonesBeneficiaires } from './backfill-telephones-beneficiaires/executeBackfillTelephonesBeneficiaires'
 import { executeBackfillTrancheAge } from './backfill-tranche-age/executeBackfillTrancheAge'
 import { executeBackupDatabaseJob } from './backup-database/executeBackupDatabaseJob'
 import { executeDeduplicateStructures } from './deduplicate-structures/executeDeduplicateStructures'
@@ -26,6 +25,7 @@ import { executeGenerateStructuresActionPlan } from './generate-structures-actio
 import { executeImportContactsToBrevo } from './import-contacts-to-brevo/executeImportContactsToBrevo'
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
 import type { Job, JobName, JobPayload } from './jobs'
+import { executeNormaliserBeneficiaires } from './normaliser-beneficiaires/executeNormaliserBeneficiaires'
 import { executeNormalizeStructuresEmployeuses } from './normalize-structures-employeuses/executeNormalizeStructuresEmployeuses'
 import { output } from './output'
 import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts/executeRemoveOrphanBrevoContacts'
@@ -63,7 +63,7 @@ export const jobExecutors: {
   'audit-siret-coherence': executeAuditSiretCoherence,
   'audit-structures-overview': executeAuditStructuresOverview,
   'backfill-commune-rdvsp': executeBackfillCommuneRdvsp,
-  'backfill-telephones-beneficiaires': executeBackfillTelephonesBeneficiaires,
+  'normaliser-beneficiaires': executeNormaliserBeneficiaires,
   'backfill-tranche-age': executeBackfillTrancheAge,
   'backup-database': executeBackupDatabaseJob,
   'update-structures-cartographie-nationale':

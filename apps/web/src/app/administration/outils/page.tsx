@@ -2,7 +2,7 @@ import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import Card from '@app/web/components/Card'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import NormaliserTelephonesBeneficiaires from '@app/web/features/beneficiaire/abilities/normaliser-telephones/ui/NormaliserTelephonesBeneficiaires'
+import NormaliserBeneficiaires from '@app/web/features/beneficiaire/abilities/normaliser-beneficiaires/ui/NormaliserBeneficiaires'
 import MaintenanceMode from '@app/web/features/maintenance-mode/use-cases/administration/MaintenanceMode'
 import NouveauReminders from '@app/web/features/utilisateurs/use-cases/nouveau-reminders/components/NouveauReminders'
 import SignupReminders from '@app/web/features/utilisateurs/use-cases/signup-reminders/components/SignupReminders'
@@ -49,7 +49,7 @@ const Page = () => {
             </div>
             <div className="fr-col-12">
               <Card title="Maintenance des données bénéficiaires">
-                <NormaliserTelephonesBeneficiaires />
+                <NormaliserBeneficiaires />
               </Card>
             </div>
           </div>

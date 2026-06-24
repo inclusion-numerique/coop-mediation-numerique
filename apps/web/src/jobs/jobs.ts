@@ -9,7 +9,6 @@ import { AuditAdresseCoherenceJobValidation } from './audit-adresse-coherence/au
 import { AuditSiretCoherenceJobValidation } from './audit-siret-coherence/auditSiretCoherenceJob'
 import { AuditStructuresOverviewJobValidation } from './audit-structures-overview/auditStructuresOverviewJob'
 import { BackfillCommuneRdvspJobValidation } from './backfill-commune-rdvsp/backfillCommuneRdvspJob'
-import { BackfillTelephonesBeneficiairesJobValidation } from './backfill-telephones-beneficiaires/backfillTelephonesBeneficiairesJob'
 import { BackfillTrancheAgeJobValidation } from './backfill-tranche-age/backfillTrancheAgeJob'
 import { BackupDatabaseJobValidation } from './backup-database/backupDatabaseJob'
 import { DeduplicateStructuresJobValidation } from './deduplicate-structures/deduplicateStructuresJob'
@@ -22,6 +21,7 @@ import { FixUsersRolesJobValidation } from './fix-users-roles/fixUsersRolesJob'
 import { GenerateStructuresActionPlanJobValidation } from './generate-structures-action-plan/generateStructuresActionPlanJob'
 import { ImportContactsToBrevoValidation } from './import-contacts-to-brevo/ImportContactsToBrevoJob'
 import { InactiveUsersRemindersJobValidation } from './inactive-users-reminders/inactiveUsersJob'
+import { NormaliserBeneficiairesJobValidation } from './normaliser-beneficiaires/normaliserBeneficiairesJob'
 import { NormalizeStructuresEmployeusesJobValidation } from './normalize-structures-employeuses/normalizeStructuresEmployeusesJob'
 import { RemoveOrphanBrevoContactsJobValidation } from './remove-orphan-brevo-contacts/removeOrphanBrevoContactsJob'
 import { SetServciesToSharedLieuxValidation } from './set-servcies-to-shared-lieux/setServciesToSharedLieuxJob'
@@ -57,7 +57,7 @@ export const JobValidation = z.discriminatedUnion('name', [
   AuditSiretCoherenceJobValidation,
   AuditStructuresOverviewJobValidation,
   BackfillCommuneRdvspJobValidation,
-  BackfillTelephonesBeneficiairesJobValidation,
+  NormaliserBeneficiairesJobValidation,
   BackfillTrancheAgeJobValidation,
   BackupDatabaseJobValidation,
   UpdateStructuresCartographieNationaleJobValidation,
