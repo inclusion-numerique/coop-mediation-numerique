@@ -1,11 +1,11 @@
 import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
 
-// Indicatifs français : métropole (33) + outre-mer (262, 590, 594, 596)
-// Format national : 10 chiffres commençant par 0
-// Format international : indicatif + 9 chiffres
+// Indicatifs acceptés : France métropole (33) + outre-mer (262, 590, 594, 596)
+// + Luxembourg (352, zone frontalière). Format national : 10 chiffres commençant
+// par 0. Format international : indicatif + 9 chiffres.
 export const TELEPHONE_PATTERN =
-  /^(?:(?:\(\+(?:33|262|590|594|596)\)|\+(?:33|262|590|594|596)|00(?:33|262|590|594|596))[\s()./-]*(?:\d[\s()./-]*){8}\d|0\d(?:[\s./-]?\d){8})$/
+  /^(?:(?:\(\+(?:33|262|352|590|594|596)\)|\+(?:33|262|352|590|594|596)|00(?:33|262|352|590|594|596))[\s()./-]*(?:\d[\s()./-]*){8}\d|0\d(?:[\s./-]?\d){8})$/
 
 // Indicatif pays déduit du préfixe d'un numéro national outre-mer ;
 // à défaut, métropole (33).

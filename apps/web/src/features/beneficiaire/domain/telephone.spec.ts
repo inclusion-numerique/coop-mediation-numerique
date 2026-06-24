@@ -14,6 +14,8 @@ describe('Telephone', () => {
     ['0269600102', '+262269600102'], // Mayotte (national → +262)
     ['+590690000001', '+590690000001'],
     ['+262262202020', '+262262202020'],
+    ['00352621365161', '+352621365161'], // Luxembourg
+    ['+352621365161', '+352621365161'], // Luxembourg
   ])('normalizes %s to %s', (input, expected) => {
     expect(Telephone(input)).toBe(expected)
   })

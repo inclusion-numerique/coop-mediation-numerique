@@ -18,6 +18,13 @@ type BeneficiaireRow = Awaited<
   ReturnType<typeof prismaClient.beneficiaire.findMany>
 >[number]
 
+// Téléphone à stocker : réparé si possible ; sinon vidé (`null`) si la valeur
+// n'a aucun caractère alphanumérique (« - », « / »… = purement séparateurs) ;
+// sinon laissée telle quelle (la fiche sera sautée et remontée dans les erreurs,
+// y compris un texte égaré que l'on ne veut pas détruire).
+const telephoneToStore = (raw: string): string | null =>
+  repairTelephone(raw) ?? (/[a-z0-9]/i.test(raw) ? raw : null)
+
 // Re-canonicalise une fiche via le transfer layer (téléphone pré-réparé).
 // `modification` est réémis pour que l'extension timestamp ne bumpe pas (un
 // nettoyage de données n'est pas une édition). Une donnée invalide fait throw
@@ -27,10 +34,7 @@ const recanonicalise = (row: BeneficiaireRow) => {
     const prepared =
       row.telephone === null
         ? row
-        : {
-            ...row,
-            telephone: repairTelephone(row.telephone) ?? row.telephone,
-          }
+        : { ...row, telephone: telephoneToStore(row.telephone) }
     const { id: _id, ...rest } = beneficiaireFromDomain(
       beneficiaireToDomain(prepared),
     )
