@@ -3,13 +3,13 @@ import {
   beneficiaireToDomain,
 } from '@app/web/features/beneficiaire/db'
 import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
-import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import { prismaClient } from '@app/web/prismaClient'
 import { chunk } from 'lodash-es'
 import type {
   NormaliserBeneficiaireError,
   NormaliserBeneficiaires,
 } from '../../domain/normaliser-beneficiaires'
+import { repairTelephone } from '../repair-telephone'
 
 const BATCH_SIZE = 100
 const MAX_REPORTED_ERRORS = 100
@@ -17,31 +17,6 @@ const MAX_REPORTED_ERRORS = 100
 type BeneficiaireRow = Awaited<
   ReturnType<typeof prismaClient.beneficiaire.findMany>
 >[number]
-
-const tryTelephone = (value: string): string | null => {
-  try {
-    return Telephone(value)
-  } catch {
-    return null
-  }
-}
-
-// Téléphone canonique avec réparation légère (backfill only — le VO live reste
-// strict). Candidats essayés dans l'ordre : tel quel ; le 1er numéro (champs
-// multi-numéros séparés par retour à la ligne ou « / ») compacté (espaces et
-// séparateurs parasites) ; puis avec un 0 de tête (numéro à 9 chiffres saisi
-// sans son 0 — ~93 % des invalides). null si irrécupérable.
-const toCanonicalTelephone = (raw: string): string | null => {
-  const first = raw.split(/[\r\n/]+/)[0] ?? raw
-  const compact = first.replace(/[^\d+]/g, '')
-  const digits = first.replace(/\D/g, '')
-  const candidates =
-    digits.length === 9 ? [raw, compact, `0${digits}`] : [raw, compact]
-  return candidates.reduce<string | null>(
-    (found, candidate) => found ?? tryTelephone(candidate),
-    null,
-  )
-}
 
 // Re-canonicalise une fiche via le transfer layer (téléphone pré-réparé).
 // `modification` est réémis pour que l'extension timestamp ne bumpe pas (un
@@ -54,7 +29,7 @@ const recanonicalise = (row: BeneficiaireRow) => {
         ? row
         : {
             ...row,
-            telephone: toCanonicalTelephone(row.telephone) ?? row.telephone,
+            telephone: repairTelephone(row.telephone) ?? row.telephone,
           }
     const { id: _id, ...rest } = beneficiaireFromDomain(
       beneficiaireToDomain(prepared),

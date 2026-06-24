@@ -14,17 +14,8 @@ const communeId = v4()
 const invalidId = v4()
 const canoniqueId = v4()
 const multiId = v4()
-const prepend0Id = v4()
 
-const ids = [
-  nationalId,
-  emailId,
-  communeId,
-  invalidId,
-  canoniqueId,
-  multiId,
-  prepend0Id,
-]
+const ids = [nationalId, emailId, communeId, invalidId, canoniqueId, multiId]
 
 const oldModification = new Date('2020-01-01T00:00:00.000Z')
 
@@ -96,14 +87,6 @@ describe('normaliserBeneficiaires', () => {
           nom: 'Numero',
           telephone: '0651764142 / 0782950623',
         },
-        {
-          id: prepend0Id,
-          mediateurId: mediateurAvecActiviteMediateurId,
-          anonyme: false,
-          prenom: 'Sans',
-          nom: 'Zero',
-          telephone: '745298688',
-        },
       ],
     })
 
@@ -120,9 +103,8 @@ describe('normaliserBeneficiaires', () => {
     expect(commune.communeCodePostal).toBe('75001')
     expect(commune.communeCodeInsee).toBe('75101')
 
-    // réparation : multi-numéros → 1er normalisé ; 9 chiffres → 0 de tête ajouté
+    // réparation câblée dans le backfill (couverture exhaustive : repair-telephone.spec)
     expect((await fiche(multiId)).telephone).toBe('+33651764142')
-    expect((await fiche(prepend0Id)).telephone).toBe('+33745298688')
 
     // invalide : laissé tel quel (sauté, jamais corrompu)
     expect((await fiche(invalidId)).telephone).toBe('pas-un-numero')
