@@ -1,6 +1,6 @@
 import type { BeneficiaireListItem } from '@app/web/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
 import { Page, PageSize, type Paginated } from '@arckit/resultset'
-import { aBeneficiaireListItem } from './beneficiaire-list-item.fixture'
+import { beneficiaireListItem } from './beneficiaire-list-item.fixture'
 import { presentMesBeneficiaires } from './lister-beneficiaires.presenter'
 
 const paginated = (
@@ -29,7 +29,7 @@ describe('presentMesBeneficiaires', () => {
 
   it('projects items to flat rows', () => {
     const view = presentMesBeneficiaires(
-      paginated([aBeneficiaireListItem({ prenom: 'Ada', nom: 'Lovelace' })], 1),
+      paginated([beneficiaireListItem({ prenom: 'Ada', nom: 'Lovelace' })], 1),
     )
     expect(view.tag).toBe('results')
     if (view.tag !== 'results') return
@@ -42,7 +42,7 @@ describe('presentMesBeneficiaires', () => {
 
   it('computes pagination metadata', () => {
     const view = presentMesBeneficiaires(
-      paginated([aBeneficiaireListItem()], 45, 2, 20),
+      paginated([beneficiaireListItem()], 45, 2, 20),
     )
     if (view.tag !== 'results') throw new Error('expected results')
     expect(view.pagination).toEqual({

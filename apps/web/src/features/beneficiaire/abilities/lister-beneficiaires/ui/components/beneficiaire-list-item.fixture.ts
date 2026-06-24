@@ -14,7 +14,7 @@ const baseId = '00000000-0000-0000-0000-0000000000'
  * Construit un `BeneficiaireListItem` minimal et valide via les smart
  * constructors, pour les tests de la couche UI (presenter / row VM).
  */
-export const aBeneficiaireListItem = (
+export const beneficiaireListItem = (
   overrides: Partial<{
     index: number
     prenom: string
