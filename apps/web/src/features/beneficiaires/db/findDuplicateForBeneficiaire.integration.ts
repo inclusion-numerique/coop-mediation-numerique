@@ -70,7 +70,7 @@ const beneficiaireSameEmail1 = givenBeneficiaire({
   prenom: 'Alice',
   nom: 'Martin',
   email: 'same.email@test.com',
-  telephone: '0601020304',
+  telephone: Telephone('0601020304'),
   mediateurId: testMediateurId,
 })
 
@@ -79,7 +79,7 @@ const beneficiaireSameEmail2 = givenBeneficiaire({
   prenom: 'Alicia',
   nom: 'Martinez',
   email: 'same.email@test.com',
-  telephone: '0601020304',
+  telephone: Telephone('0601020304'),
   mediateurId: testMediateurId,
 })
 
