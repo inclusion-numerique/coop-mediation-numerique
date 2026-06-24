@@ -9,7 +9,7 @@ import type {
   NormaliserBeneficiaireError,
   NormaliserBeneficiaires,
 } from '../../domain/normaliser-beneficiaires'
-import { repairTelephone } from '../repair-telephone'
+import { repairTelephone } from '../../domain/repair-telephone'
 
 const BATCH_SIZE = 100
 const MAX_REPORTED_ERRORS = 100
