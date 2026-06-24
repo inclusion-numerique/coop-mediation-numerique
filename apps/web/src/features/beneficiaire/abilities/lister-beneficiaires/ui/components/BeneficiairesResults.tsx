@@ -38,7 +38,8 @@ export const BeneficiairesResults = ({
       <BeneficiairesPagination
         state={state}
         baseHref={baseHref}
-        totalPages={view.pagination.totalPages}
+        totalItems={view.pagination.totalItems}
+        pageSize={view.pagination.pageSize}
       />
       <DeleteBulkBeneficiairesModalContent
         selectedIds={[...selection.selectedIds]}

@@ -2,27 +2,34 @@ import classNames from 'classnames'
 import Link from 'next/link'
 import type { DataTableUrlState } from '../data-table-url-state'
 import { createDataTableHref } from '../href/create-data-table-href'
-import { createPagesNumbersToDisplay } from './create-pages-numbers-to-display'
+import { paginate } from './paginate'
 
 export type PaginationNavProps = {
   className?: string
   baseHref: string
   state: DataTableUrlState
-  totalPages: number
+  itemsCount: number
+  pageSize: number
 }
 
 export const PaginationNav = ({
   className,
   baseHref,
   state,
-  totalPages,
+  itemsCount,
+  pageSize,
 }: PaginationNavProps) => {
-  const pageNumber = state.page ? Number.parseInt(state.page, 10) : 1
+  const currentPage = state.page ? Number.parseInt(state.page, 10) : 1
 
-  const isFirstPage = pageNumber <= 1
-  const isLastPage = pageNumber >= totalPages
+  const { pages, lastPage, previousPage, nextPage } = paginate({
+    itemsCount,
+    pageSize,
+    currentPage,
+    boundaryCount: 1,
+  })
 
-  const linkablePages = createPagesNumbersToDisplay(totalPages, pageNumber)
+  const isFirstPage = currentPage <= 1
+  const isLastPage = currentPage >= lastPage
 
   const pageHref = (page: number) =>
     createDataTableHref(baseHref, { ...state, page: page.toString(10) })
@@ -65,28 +72,28 @@ export const PaginationNav = ({
             <Link
               className="fr-pagination__link fr-pagination__link--prev fr-pagination__link--lg-label"
               role="link"
-              href={pageHref(pageNumber - 1)}
+              href={pageHref(previousPage)}
               prefetch={false}
             >
               Précédent
             </Link>
           )}
         </li>
-        {linkablePages.map((linkNumber) =>
-          typeof linkNumber === 'string' ? (
-            <li key={linkNumber}>
+        {pages.map((page) =>
+          'spacer' in page ? (
+            <li key={page.spacer}>
               <a className="fr-pagination__link">...</a>
             </li>
           ) : (
-            <li key={linkNumber}>
+            <li key={page.number}>
               <Link
                 className="fr-pagination__link"
-                aria-current={pageNumber === linkNumber ? 'page' : undefined}
-                title={`Page ${linkNumber}`}
-                href={pageHref(linkNumber)}
+                aria-current={page.isCurrent ? 'page' : undefined}
+                title={`Page ${page.number}`}
+                href={pageHref(page.number)}
                 prefetch={false}
               >
-                {linkNumber}
+                {page.number}
               </Link>
             </li>
           ),
@@ -103,7 +110,7 @@ export const PaginationNav = ({
             <Link
               className="fr-pagination__link fr-pagination__link--next fr-pagination__link--lg-label"
               role="link"
-              href={pageHref(pageNumber + 1)}
+              href={pageHref(nextPage)}
               prefetch={false}
             >
               Suivant
@@ -122,7 +129,7 @@ export const PaginationNav = ({
             <Link
               className="fr-pagination__link fr-pagination__link--last"
               role="link"
-              href={pageHref(totalPages)}
+              href={pageHref(lastPage)}
               prefetch={false}
             >
               Dernière page

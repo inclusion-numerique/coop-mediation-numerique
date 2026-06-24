@@ -1,11 +1,10 @@
 'use client'
 
 import {
+  DataTable,
   type DataTableSelection,
-  DataTableShell,
   type DataTableUrlState,
 } from '@app/web/libraries/data-table'
-import styles from './BeneficiairesTable.module.css'
 import { BeneficiairesTableHead } from './BeneficiairesTableHead'
 import { BeneficiaireTableRow } from './BeneficiaireTableRow'
 import type { BeneficiaireRow } from './beneficiaire-row'
@@ -21,9 +20,9 @@ export const BeneficiairesTable = ({
   baseHref: string
   selection: DataTableSelection
 }) => (
-  <DataTableShell
+  <DataTable
     className="fr-table--nowrap fr-width-full fr-mb-8v"
-    tableClassName={styles.table}
+    tableClassName="fr-table--transparent"
   >
     <BeneficiairesTableHead
       state={state}
@@ -42,5 +41,5 @@ export const BeneficiairesTable = ({
         />
       ))}
     </tbody>
-  </DataTableShell>
+  </DataTable>
 )

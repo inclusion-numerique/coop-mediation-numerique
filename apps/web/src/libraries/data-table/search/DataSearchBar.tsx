@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useRef } from 'react'
 import type { DataTableUrlState } from '../data-table-url-state'
 import { createSearchCallback } from './create-search-callback'
-import styles from './DataSearchBar.module.css'
 
 export type DataSearchBarProps = {
   state: DataTableUrlState
@@ -37,7 +36,7 @@ export const DataSearchBar = ({
 
   return (
     <SearchBar
-      className={classNames(className, styles.searchBar)}
+      className={classNames(className, 'fr-search-bar--inline')}
       onButtonClick={onSearch}
       allowEmptySearch
       ref={searchBarRef}

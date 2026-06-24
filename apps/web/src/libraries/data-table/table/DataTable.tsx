@@ -5,7 +5,7 @@ import type { ReactNode } from 'react'
  * Habillage DSFR d'une table (`fr-table` + wrappers). Headless : la feature
  * fournit le contenu `<thead>`/`<tbody>` via `children`.
  */
-export const DataTableShell = ({
+export const DataTable = ({
   className,
   tableClassName,
   children,

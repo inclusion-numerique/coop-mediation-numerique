@@ -1,7 +1,6 @@
 import { SelectRowCell } from '@app/web/libraries/data-table'
 import classNames from 'classnames'
 import Link from 'next/link'
-import styles from './BeneficiairesTable.module.css'
 import type { BeneficiaireRow } from './beneficiaire-row'
 import { beneficiairesColumns } from './beneficiaires-columns'
 
@@ -14,7 +13,7 @@ export const BeneficiaireTableRow = ({
   selected: boolean
   onToggle: (id: string) => void
 }) => (
-  <tr className={classNames('fr-enlarge-link', styles.rowWithLink)}>
+  <tr className={classNames('fr-enlarge-link', 'fr-table-row--link')}>
     <SelectRowCell
       id={row.id}
       checked={selected}
@@ -25,15 +24,15 @@ export const BeneficiaireTableRow = ({
       <td
         key={column.tri}
         className={classNames(
-          styles.cell,
+          'fr-cell--data',
           column.alignRight && 'fr-text--right',
         )}
       >
         {row[column.field]}
       </td>
     ))}
-    <td className={styles.rowLinkCell}>
-      <Link href={row.href} className={styles.cellLink}>
+    <td className="fr-table-cell--link">
+      <Link href={row.href}>
         <span className="fr-sr-only">Voir la fiche de {row.label}</span>
       </Link>
     </td>

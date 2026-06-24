@@ -13,7 +13,6 @@ import {
   useRef,
 } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
-import styles from './BeneficiairesMoreOptionsButton.module.css'
 
 export const BeneficiairesMoreOptionsButton = () => {
   // Le click-outside par défaut du JS DSFR ne fonctionne pas ici, on le gère
@@ -48,7 +47,7 @@ export const BeneficiairesMoreOptionsButton = () => {
   }
 
   return (
-    <div className={styles.container}>
+    <div className="fr-menu-anchor">
       <Button
         type="button"
         aria-expanded="false"
@@ -60,7 +59,7 @@ export const BeneficiairesMoreOptionsButton = () => {
       />
       <div
         role="navigation"
-        className={classNames('fr-collapse', 'fr-menu', styles.collapse)}
+        className={classNames('fr-collapse', 'fr-menu', 'fr-menu--dropdown')}
         id="beneficiaires-more-options-menu"
         ref={collapseRef}
         onClick={onClickOrEnterInsideDropdown}

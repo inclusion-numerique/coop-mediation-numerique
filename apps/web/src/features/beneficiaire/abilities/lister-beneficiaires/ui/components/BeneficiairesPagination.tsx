@@ -10,16 +10,19 @@ const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
 export const BeneficiairesPagination = ({
   state,
   baseHref,
-  totalPages,
+  totalItems,
+  pageSize,
 }: {
   state: DataTableUrlState
   baseHref: string
-  totalPages: number
+  totalItems: number
+  pageSize: number
 }) => (
   <PaginationNavWithPageSizeSelect
     defaultPageSize={DEFAULT_PAGE_SIZE}
     pageSizeOptions={pageSizeOptions}
-    totalPages={totalPages}
+    itemsCount={totalItems}
+    pageSize={pageSize}
     baseHref={baseHref}
     state={state}
   />

@@ -1,0 +1,26 @@
+/* Barre de recherche DSFR compacte, alignée sur une rangée d'actions */
+.fr-search-bar--inline {
+  height: 40px !important;
+
+  input {
+    height: 40px;
+    border-right: none;
+    border-bottom-left-radius: 4px !important;
+  }
+
+  button {
+    height: 40px !important;
+    min-height: unset !important;
+    padding: 8px !important;
+    font-size: 0 !important;
+    color: transparent !important;
+    border-bottom-right-radius: 4px !important;
+  }
+
+  button::before {
+    margin-right: -0.5px !important;
+    margin-left: 0.5px !important;
+    font-size: initial !important;
+    color: var(--text-inverted-blue-france) !important;
+  }
+}

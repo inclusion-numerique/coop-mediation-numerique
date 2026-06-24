@@ -1,6 +1,5 @@
 import type { SortDirection } from '@arckit/resultset'
 import Link from 'next/link'
-import styles from './SortLink.module.css'
 
 /**
  * Bouton-lien de tri d'une colonne. `ordre` est la direction que produira le
@@ -29,7 +28,7 @@ export const SortLink = ({
 
   return (
     <Link
-      className={`fr-btn fr-ml-2v fr-btn--tertiary-no-outline fr-btn--sm ${icon} ${styles.sortLink}`}
+      className={`fr-btn fr-ml-2v fr-btn--tertiary-no-outline fr-btn--sm fr-btn--sort ${icon}`}
       title={title}
       href={href}
       scroll={false}
