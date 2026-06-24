@@ -1,8 +1,8 @@
 'use client'
 
 import { createToast } from '@app/ui/toast/createToast'
-import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { pluriel } from '@app/web/libraries/pluriel'
 import { trpc } from '@app/web/trpc'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
@@ -25,7 +25,7 @@ const DeleteBulkBeneficiairesModalContent = ({
       router.refresh()
       createToast({
         priority: 'success',
-        message: `${count} bénéficiaire${sPluriel(count)} supprimé${sPluriel(count)}`,
+        message: `${count} ${pluriel(count, 'bénéficiaire supprimé', 'bénéficiaires supprimés')}`,
       })
       DeleteBulkBeneficiairesModal.close()
       onSuccess()
@@ -41,7 +41,7 @@ const DeleteBulkBeneficiairesModalContent = ({
 
   return (
     <DeleteBulkBeneficiairesModal.Component
-      title={`Supprimer ${count} bénéficiaire${sPluriel(count)}`}
+      title={`Supprimer ${count} ${pluriel(count, 'bénéficiaire', 'bénéficiaires')}`}
       buttons={[
         {
           title: 'Annuler',
