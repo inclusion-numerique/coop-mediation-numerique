@@ -99,9 +99,7 @@ export const createOrMergeBeneficiaireFromRdvUser = async ({
       beneficiaireUpdateData.email = rdvUser.email
 
     if (!!rdvUser.phoneNumber && !beneficiaireToMerge.telephone)
-      beneficiaireUpdateData.telephone = fixTelephone(rdvUser.phoneNumber, {
-        toInternationalFormat: false,
-      })
+      beneficiaireUpdateData.telephone = fixTelephone(rdvUser.phoneNumber)
 
     if (!!rdvUser.firstName && !beneficiaireToMerge.prenom)
       beneficiaireUpdateData.prenom = rdvUser.firstName
