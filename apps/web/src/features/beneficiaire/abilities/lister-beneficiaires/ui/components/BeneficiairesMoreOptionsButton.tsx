@@ -7,17 +7,17 @@ import classNames from 'classnames'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import {
-  KeyboardEvent,
-  MouseEvent as ReactMouseEvent,
-  RefObject,
+  type KeyboardEvent,
+  type MouseEvent as ReactMouseEvent,
+  type RefObject,
   useRef,
 } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
 import styles from './BeneficiairesMoreOptionsButton.module.css'
 
-const BeneficiairesMoreOptionsButton = () => {
-  // The click outside default behavior from dsfr js do not work in this case 🤷‍
-  // So we have to use client component and hooks to handle the click outside
+export const BeneficiairesMoreOptionsButton = () => {
+  // Le click-outside par défaut du JS DSFR ne fonctionne pas ici, on le gère
+  // donc côté client via des refs et un hook.
   const buttonRef = useRef<HTMLButtonElement>(null)
   const collapseRef = useRef<HTMLDivElement>(null)
   const searchParams = useSearchParams()
@@ -26,21 +26,18 @@ const BeneficiairesMoreOptionsButton = () => {
   const onClickOrEnterInsideDropdown = (
     event: KeyboardEvent<HTMLDivElement> | ReactMouseEvent<HTMLDivElement>,
   ) => {
-    // Close the dropdown if a link has been clicked
+    // Ferme le menu si un lien a été cliqué.
     if (event.target instanceof HTMLAnchorElement) {
       buttonRef.current?.click()
     }
   }
-  useOnClickOutside(collapseRef as RefObject<HTMLDivElement>, (event) => {
-    // Let the event propagate if clicked on the control button
-    if (event.target === buttonRef?.current) {
-      return
-    }
 
-    // Close the dropdown if open on outside click
-    if (buttonRef.current?.getAttribute('aria-expanded') !== 'true') {
-      return
-    }
+  useOnClickOutside(collapseRef as RefObject<HTMLDivElement>, (event) => {
+    // Laisse l'évènement se propager si on a cliqué sur le bouton de contrôle.
+    if (event.target === buttonRef?.current) return
+
+    // Ferme le menu s'il est ouvert lors d'un clic à l'extérieur.
+    if (buttonRef.current?.getAttribute('aria-expanded') !== 'true') return
 
     buttonRef.current.click()
   })
@@ -118,5 +115,3 @@ const BeneficiairesMoreOptionsButton = () => {
     </div>
   )
 }
-
-export default BeneficiairesMoreOptionsButton

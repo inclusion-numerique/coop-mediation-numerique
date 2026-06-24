@@ -2,11 +2,11 @@
 
 import { createToast } from '@app/ui/toast/createToast'
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
-import { DeleteBulkBeneficiairesModal } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/(liste)/DeleteBulkBeneficiairesModal'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import { trpc } from '@app/web/trpc'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
+import { DeleteBulkBeneficiairesModal } from './DeleteBulkBeneficiairesModal'
 
 const DeleteBulkBeneficiairesModalContent = ({
   selectedIds,

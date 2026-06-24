@@ -1,10 +1,6 @@
-import { getBeneficiairesListPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/(liste)/getBeneficiairesListPageData'
-import MesBeneficiairesListeEmptyPage from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/(liste)/MesBeneficiairesListeEmptyPage'
-import MesBeneficiairesListePage from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/(liste)/MesBeneficiairesListePage'
 import { metadataTitle } from '@app/web/app/metadataTitle'
-import { authenticateMediateur } from '@app/web/auth/authenticateUser'
-import { BeneficiairesDataTableSearchParams } from '@app/web/beneficiaire/BeneficiairesDataTable'
-import { prismaClient } from '@app/web/prismaClient'
+import type { MesBeneficiairesSearchParams } from '@app/web/features/beneficiaire/abilities/lister-beneficiaires/ui/components/lister-beneficiaires-search-params'
+import { MesBeneficiairesListePage } from '@app/web/features/beneficiaire/abilities/lister-beneficiaires/ui/pages/MesBeneficiairesListePage'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -12,29 +8,7 @@ export const metadata: Metadata = {
 }
 
 const MesBeneficiairesPage = async (props: {
-  searchParams: Promise<BeneficiairesDataTableSearchParams>
-}) => {
-  const searchParams = await props.searchParams
-  const user = await authenticateMediateur()
-
-  const hasBeneficiaires = await prismaClient.beneficiaire.count({
-    where: {
-      mediateurId: user.mediateur.id,
-      suppression: null,
-    },
-    take: 1,
-  })
-
-  if (hasBeneficiaires) {
-    const data = await getBeneficiairesListPageData({
-      mediateurId: user.mediateur.id,
-      searchParams,
-    })
-
-    return <MesBeneficiairesListePage data={data} />
-  }
-
-  return <MesBeneficiairesListeEmptyPage />
-}
+  searchParams: Promise<MesBeneficiairesSearchParams>
+}) => <MesBeneficiairesListePage searchParams={await props.searchParams} />
 
 export default MesBeneficiairesPage

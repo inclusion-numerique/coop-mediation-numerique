@@ -1,0 +1,9 @@
+.sortLink {
+  padding: 0 !important;
+  height: 16px !important;
+
+  &::before {
+    margin: 0 !important;
+    height: 16px !important;
+  }
+}

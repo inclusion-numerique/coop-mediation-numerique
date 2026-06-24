@@ -1,6 +1,6 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 
-const MesBeneficiairesListeEmptyPage = () => (
+export const BeneficiairesEmpty = () => (
   <>
     <hr className="fr-separator-6v" />
     <div className="fr-border-radius--8 fr-p-12v fr-background-alt--blue-france fr-align-items-center">
@@ -21,9 +21,7 @@ const MesBeneficiairesListeEmptyPage = () => (
           <Button
             iconId="fr-icon-download-line"
             priority="secondary"
-            linkProps={{
-              href: '/coop/mes-beneficiaires/importer',
-            }}
+            linkProps={{ href: '/coop/mes-beneficiaires/importer' }}
           >
             Importer des bénéficiaires
           </Button>
@@ -32,9 +30,7 @@ const MesBeneficiairesListeEmptyPage = () => (
         <div>
           <Button
             iconId="fr-icon-user-add-line"
-            linkProps={{
-              href: '/coop/mes-beneficiaires/nouveau',
-            }}
+            linkProps={{ href: '/coop/mes-beneficiaires/nouveau' }}
           >
             Créer un bénéficiaire
           </Button>
@@ -43,5 +39,3 @@ const MesBeneficiairesListeEmptyPage = () => (
     </div>
   </>
 )
-
-export default MesBeneficiairesListeEmptyPage
