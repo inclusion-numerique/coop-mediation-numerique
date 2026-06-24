@@ -30,3 +30,12 @@
 * When je liste les bénéficiaires avec la recherche "Testliste" par pages de 1
 * Then la liste contient 1 bénéficiaire
 * And le nombre de pages est 2
+
+### Scenario: Trier les bénéficiaires par nom décroissant
+
+* Given les bénéficiaires suivants pour ce médiateur
+  | prenom | nom    |
+  | Alice  | Albert |
+  | Bob    | Zorro  |
+* When je liste les bénéficiaires triés par "nom" en "desc"
+* Then le premier bénéficiaire est "Zorro"

@@ -10,7 +10,7 @@ import type { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
 import type { StatutSocial } from '@app/web/features/beneficiaire/domain/statut-social'
 import type { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import type { TrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
-import type { Page, PageSize, Paginated, Search } from '@arckit/resultset'
+import type { Page, PageSize, Paginated, Search, Sort } from '@arckit/resultset'
 
 export type BeneficiaireListItem = {
   readonly id: BeneficiaireId
@@ -29,10 +29,20 @@ export type BeneficiaireListItem = {
   readonly notes: Notes | null
 }
 
+export const beneficiaireSortFields = [
+  'nom',
+  'prenom',
+  'anneeNaissance',
+  'accompagnementsCount',
+] as const
+
+export type BeneficiaireSortField = (typeof beneficiaireSortFields)[number]
+
 export type ListerBeneficiaires = (input: {
   mediateurId: MediateurId
   search?: Search
   page?: Page
   pageSize?: PageSize
+  sort?: Sort<BeneficiaireSortField>
   excludeIds?: readonly BeneficiaireId[]
 }) => Promise<Paginated<BeneficiaireListItem>>

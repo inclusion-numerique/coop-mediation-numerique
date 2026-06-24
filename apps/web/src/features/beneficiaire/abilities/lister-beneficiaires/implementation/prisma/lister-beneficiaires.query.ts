@@ -11,7 +11,13 @@ import { StatutSocial } from '@app/web/features/beneficiaire/domain/statut-socia
 import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import { TrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
 import { prismaClient } from '@app/web/prismaClient'
-import { DEFAULT_PAGE, PageSize, type Search } from '@arckit/resultset'
+import {
+  DEFAULT_PAGE,
+  PageSize,
+  type Search,
+  type Sort,
+  type SortDirection,
+} from '@arckit/resultset'
 import type {
   Prisma,
   Genre as PrismaGenre,
@@ -20,10 +26,28 @@ import type {
 } from '@prisma/client'
 import type {
   BeneficiaireListItem,
+  BeneficiaireSortField,
   ListerBeneficiaires,
 } from '../../domain/lister-beneficiaires'
 
 const DEFAULT_PAGE_SIZE = PageSize(20)
+
+const orderByFor: Record<
+  BeneficiaireSortField,
+  (direction: SortDirection) => Prisma.BeneficiaireOrderByWithRelationInput
+> = {
+  nom: (direction) => ({ nom: direction }),
+  prenom: (direction) => ({ prenom: direction }),
+  anneeNaissance: (direction) => ({ anneeNaissance: direction }),
+  accompagnementsCount: (direction) => ({ accompagnementsCount: direction }),
+}
+
+const toOrderBy = (
+  sort?: Sort<BeneficiaireSortField>,
+): Prisma.BeneficiaireOrderByWithRelationInput[] =>
+  sort
+    ? [orderByFor[sort.field](sort.direction)]
+    : [{ nom: 'asc' }, { prenom: 'asc' }]
 
 const beneficiaireSelect = {
   id: true,
@@ -101,6 +125,7 @@ export const listerBeneficiaires: ListerBeneficiaires = async ({
   search,
   page = DEFAULT_PAGE,
   pageSize = DEFAULT_PAGE_SIZE,
+  sort,
   excludeIds = [],
 }) => {
   const searchParts = toSearchParts(search)
@@ -138,7 +163,7 @@ export const listerBeneficiaires: ListerBeneficiaires = async ({
       take: pageSize,
       skip,
       select: beneficiaireSelect,
-      orderBy: [{ nom: 'asc' }, { prenom: 'asc' }],
+      orderBy: toOrderBy(sort),
     }),
     prismaClient.beneficiaire.count({ where }),
   ])
