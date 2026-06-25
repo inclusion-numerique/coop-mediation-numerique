@@ -9,7 +9,7 @@ import {
 } from '@app/web/beneficiaire/beneficiaire'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import { Commune } from '@app/web/features/adresse/combo-box/CommuneComboBox'
-import { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
+import { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'

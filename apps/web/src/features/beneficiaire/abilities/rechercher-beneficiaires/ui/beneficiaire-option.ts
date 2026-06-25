@@ -1,3 +1,4 @@
+import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import type { CommuneResidence } from '@app/web/features/beneficiaire/domain/commune-residence'
 import type { BeneficiaireData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
@@ -8,6 +9,10 @@ import type { BeneficiaireSearchItem } from '../domain/rechercher-beneficiaires'
  * attendues à la frontière UI (combobox de sélection, options de filtre), qui
  * raisonnent encore en `BeneficiaireData` / `AdresseBanData`.
  */
+
+// Option de select pour un bénéficiaire (valeur `null` = ligne non
+// sélectionnable, p.ex. message « préciser la recherche »).
+export type BeneficiaireOption = SelectOption<BeneficiaireData | null>
 
 // `CommuneResidence` (value object) → aperçu `AdresseBanData` : on ne dispose
 // que des champs d'affichage, le reste est rempli avec des valeurs neutres.

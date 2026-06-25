@@ -38,7 +38,7 @@ import { typeActiviteLabels } from '@app/web/features/activites/use-cases/cra/fi
 import { typeLieuLabels } from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { activiteSourceOptions } from '@app/web/features/activites/use-cases/source/activiteSource'
-import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaires/db/getInitialBeneficiairesOptionsForSearch'
+import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   UserDisplayName,

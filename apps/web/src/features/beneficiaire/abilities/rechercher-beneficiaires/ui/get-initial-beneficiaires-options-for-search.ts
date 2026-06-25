@@ -1,9 +1,11 @@
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import { getInitialBeneficiairesOptions } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/implementation'
-import { toBeneficiaireData } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
 import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
-import { BeneficiaireOption } from '../BeneficiaireOption'
+import {
+  type BeneficiaireOption,
+  toBeneficiaireData,
+} from './beneficiaire-option'
 
 const nonAffichesOption = (count: number): BeneficiaireOption => ({
   label: `Veuillez préciser votre recherche - ${count} bénéficiaire${

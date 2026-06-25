@@ -1,7 +1,7 @@
 'use client'
 
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
+import { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
 import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import Button from '@codegouvfr/react-dsfr/Button'

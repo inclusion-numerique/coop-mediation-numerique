@@ -9,12 +9,12 @@ import {
   trancheAgeValues,
 } from '@app/web/beneficiaire/beneficiaire'
 import IconInSquare from '@app/web/components/IconInSquare'
-import { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
+import { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import {
   BeneficiaireComboBox,
   BeneficiaireOptions,
   BeneficiaireSelectedItems,
-} from '@app/web/features/beneficiaires/combo-box/BeneficiaireComboBox'
+} from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/components/BeneficiaireComboBox'
 import { DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import Button from '@codegouvfr/react-dsfr/Button'
