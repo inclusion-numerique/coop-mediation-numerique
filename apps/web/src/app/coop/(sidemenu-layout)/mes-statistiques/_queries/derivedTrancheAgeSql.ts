@@ -1,4 +1,4 @@
-import { anneeNaissanceMin } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
+import { ANNEE_NAISSANCE_MIN as anneeNaissanceMin } from '@app/web/features/beneficiaire/domain/annee-naissance'
 
 export const derivedTrancheAgeSql = (
   yearColumn: string,

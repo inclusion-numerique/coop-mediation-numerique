@@ -26,13 +26,15 @@ import CraFormLabel from '@app/web/features/activites/use-cases/cra/components/C
 import { craFormFieldsetClassname } from '@app/web/features/activites/use-cases/cra/components/craFormFieldsetClassname'
 import { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
 import {
+  ANNEE_NAISSANCE_MAX as anneeNaissanceMax,
+  ANNEE_NAISSANCE_MIN as anneeNaissanceMin,
+} from '@app/web/features/beneficiaire/domain/annee-naissance'
+import {
   genreOptions,
   statutSocialOptions,
   trancheAgeOptions,
 } from '@app/web/features/beneficiaire/forms/beneficiaire-options'
 import {
-  anneeNaissanceMax,
-  anneeNaissanceMin,
   BeneficiaireData,
   BeneficiaireValidation,
 } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'

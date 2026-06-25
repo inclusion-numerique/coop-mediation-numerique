@@ -3,8 +3,8 @@ import {
   type CommunesClient,
   createCommunesClient,
 } from '@app/web/communes/communesClient'
+import { anneeNaissanceValidation } from '@app/web/features/beneficiaire/domain/annee-naissance'
 import { genres as genreValues } from '@app/web/features/beneficiaire/domain/genre'
-import { anneeNaissanceValidation } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation' // Todo: move file to beneficiaires feature
 import type { Genre } from '@prisma/client'
 import type { CellObject, WorkSheet } from 'xlsx'
 import * as XLSX from 'xlsx'

@@ -1,26 +1,10 @@
 import { AdresseBanValidation } from '@app/web/external-apis/ban/AdresseBanValidation'
+import { anneeNaissanceValidation } from '@app/web/features/beneficiaire/domain/annee-naissance'
 import { genres as genreValues } from '@app/web/features/beneficiaire/domain/genre'
 import { statutsSociaux as statutSocialValues } from '@app/web/features/beneficiaire/domain/statut-social'
 import { tranchesAge as trancheAgeValues } from '@app/web/features/beneficiaire/domain/tranche-age'
-import {
-  telephoneRegex,
-  telephoneValidation,
-} from '@app/web/utils/telephoneValidation'
+import { telephoneValidation } from '@app/web/utils/telephoneValidation'
 import z from 'zod'
-
-export { telephoneRegex, telephoneValidation }
-
-export const anneeNaissanceMax = new Date().getFullYear()
-export const anneeNaissanceMin = 1900
-
-export const anneeNaissanceValidation = z
-  .number({
-    invalid_type_error: 'Veuillez renseigner une année de naissance valide',
-  })
-  .int('Veuillez renseigner une année de naissance valide')
-  .min(anneeNaissanceMin, 'Veuillez renseigner une année de naissance valide')
-  .max(anneeNaissanceMax, 'Veuillez renseigner une année de naissance valide')
-  .nullish()
 
 export const BeneficiaireValidation = z.object({
   id: z.string().uuid().nullish(), // defined if update, nullish if create

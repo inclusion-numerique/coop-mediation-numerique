@@ -1,5 +1,5 @@
 import { derivedTrancheAgeSql } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/derivedTrancheAgeSql'
-import { anneeNaissanceMin } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
+import { ANNEE_NAISSANCE_MIN as anneeNaissanceMin } from '@app/web/features/beneficiaire/domain/annee-naissance'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 import { Prisma } from '@prisma/client'
