@@ -4,8 +4,7 @@ import {
 } from '@app/fixtures/beneficiaires'
 import type { BeneficiaireInformationsPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/(informations)/ViewBeneficiaireInformationsPage'
 import ViewBeneficiaireInformationsPage from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/(informations)/ViewBeneficiaireInformationsPage'
-import ViewBeneficiaireLayout from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/ViewBeneficiaireLayout'
-import { testSessionUser } from '@app/web/test/testSessionUser'
+import BeneficiaireConsultationLayout from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireConsultationLayout'
 import type { Meta, StoryObj } from '@storybook/react'
 import { expect, within } from '@storybook/test'
 import React from 'react'
@@ -17,31 +16,13 @@ const Template = ({
   data: BeneficiaireInformationsPageData
   rdvIntegration?: boolean
 }) => (
-  <ViewBeneficiaireLayout
+  <BeneficiaireConsultationLayout
     beneficiaire={data.beneficiaire}
-    duplicates={[]}
-    user={
-      rdvIntegration
-        ? {
-            ...testSessionUser,
-            rdvAccount: {
-              hasOauthTokens: true,
-              created: new Date().toISOString(),
-              id: 42,
-              organisations: [],
-              updated: new Date().toISOString(),
-              lastSynced: new Date().toISOString(),
-              error: null,
-              syncFrom: null,
-              includeRdvsInActivitesList: false,
-              invalidWebhookOrganisationIds: [],
-            },
-          }
-        : testSessionUser
-    }
+    hasDuplicates={false}
+    hasRdvIntegration={!!rdvIntegration}
   >
     <ViewBeneficiaireInformationsPage data={data} />
-  </ViewBeneficiaireLayout>
+  </BeneficiaireConsultationLayout>
 )
 
 const meta: Meta<typeof ViewBeneficiaireInformationsPage> = {

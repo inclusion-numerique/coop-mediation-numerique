@@ -1,25 +1,31 @@
-import ViewBeneficiaireLayout from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/ViewBeneficiaireLayout'
+import PrendreRendezVousAvecBeneficiaireButton from '@app/web/app/coop/(full-width-layout)/mon-profil/PrendreRendezVousAvecBeneficiaireButton'
+import BeneficiaireEnregistrerUneActivite from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/BeneficiaireEnregistrerUneActivite'
+import BeneficiairePageRefreshRdvs from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/BeneficiairePageRefreshRdvs'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
+import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
+import BeneficiaireConsultationLayout from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireConsultationLayout'
 import { findDuplicatesForBeneficiaire } from '@app/web/features/beneficiaire/abilities/detecter-doublons/implementation'
+import DeleteBeneficiaireModalContent from '@app/web/features/beneficiaire/abilities/supprimer-beneficiaires/ui/components/DeleteBeneficiaireModalContent'
 import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
 import { Email } from '@app/web/features/beneficiaire/domain/email'
 import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
 import { Nom } from '@app/web/features/beneficiaire/domain/nom'
 import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
 import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
+import type { BeneficiaireCraData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
 import { prismaClient } from '@app/web/prismaClient'
 import { notFound } from 'next/navigation'
-import { PropsWithChildren } from 'react'
+import type { PropsWithChildren } from 'react'
 
+// Route hub : lit le bénéficiaire et ses doublons (ability detecter-doublons),
+// puis compose les concerns croisés (activité, RDV, suppression, refresh) qu'elle
+// injecte au shell de consultation via des slots.
 const BeneficiaireLayout = async (
   props: PropsWithChildren<{
     params: Promise<{ beneficiaireId: string }>
   }>,
 ) => {
-  const params = await props.params
-
-  const { beneficiaireId } = params
-
+  const { beneficiaireId } = await props.params
   const { children } = props
 
   const user = await authenticateMediateur()
@@ -44,7 +50,6 @@ const BeneficiaireLayout = async (
 
   if (!beneficiaire) {
     notFound()
-    return null
   }
 
   const duplicates = await findDuplicatesForBeneficiaire({
@@ -62,14 +67,57 @@ const BeneficiaireLayout = async (
     fuzzyMatching: true,
   })
 
+  const displayName = getBeneficiaireDisplayName(beneficiaire)
+  const beneficiaireCraData = {
+    id: beneficiaire.id,
+    prenom: beneficiaire.prenom ?? '',
+    nom: beneficiaire.nom ?? '',
+  } satisfies BeneficiaireCraData
+
+  const hasRdvIntegration = !!user.rdvAccount?.hasOauthTokens
+
   return (
-    <ViewBeneficiaireLayout
+    <BeneficiaireConsultationLayout
       beneficiaire={beneficiaire}
-      user={user}
-      duplicates={duplicates}
+      hasDuplicates={duplicates.length > 0}
+      hasRdvIntegration={hasRdvIntegration}
+      primaryActions={
+        <BeneficiaireEnregistrerUneActivite
+          beneficiaire={beneficiaireCraData}
+          displayName={displayName}
+        />
+      }
+      rdvActions={
+        <>
+          <BeneficiaireEnregistrerUneActivite
+            beneficiaire={beneficiaireCraData}
+            displayName={displayName}
+            size="small"
+            label="Enregistrer un accompagnement individuel"
+          />
+          <PrendreRendezVousAvecBeneficiaireButton
+            beneficiaire={beneficiaireCraData}
+            user={user}
+            returnPath={`/coop/mes-beneficiaires/${beneficiaire.id}`}
+          />
+        </>
+      }
+      deleteModal={
+        <DeleteBeneficiaireModalContent
+          beneficiaireId={beneficiaire.id}
+          displayName={displayName}
+        />
+      }
+      refreshRdvs={
+        hasRdvIntegration &&
+        user.rdvAccount &&
+        user.rdvAccount.invalidWebhookOrganisationIds.length > 0 ? (
+          <BeneficiairePageRefreshRdvs userId={user.id} syncDataOnLoad={true} />
+        ) : undefined
+      }
     >
       {children}
-    </ViewBeneficiaireLayout>
+    </BeneficiaireConsultationLayout>
   )
 }
 

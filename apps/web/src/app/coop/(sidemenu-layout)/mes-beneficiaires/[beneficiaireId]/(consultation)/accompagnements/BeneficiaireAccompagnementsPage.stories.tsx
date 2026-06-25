@@ -4,22 +4,22 @@ import {
 } from '@app/fixtures/beneficiaires'
 import { BeneficiaireAccompagnementsPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getBeneficiaireAccompagnementsPageData'
 import ViewBeneficiaireAccompagnementsPage from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/ViewBeneficiaireAccompagnementsPage'
-import ViewBeneficiaireLayout from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/ViewBeneficiaireLayout'
 import { ActiviteListItemWithTimezone } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { rdvsForStories } from '@app/web/features/activites/use-cases/list/storybook/ActiviteDetailsStoriesData'
+import BeneficiaireConsultationLayout from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireConsultationLayout'
 import { RdvListItem } from '@app/web/features/rdvsp/administration/db/rdvQueries'
 import { testSessionUser } from '@app/web/test/testSessionUser'
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
 
 const Template = ({ data }: { data: BeneficiaireAccompagnementsPageData }) => (
-  <ViewBeneficiaireLayout
-    beneficiaire={{ ...data.beneficiaire, telephone: null }}
-    duplicates={[]}
-    user={testSessionUser}
+  <BeneficiaireConsultationLayout
+    beneficiaire={data.beneficiaire}
+    hasDuplicates={false}
+    hasRdvIntegration={false}
   >
     <ViewBeneficiaireAccompagnementsPage data={data} />
-  </ViewBeneficiaireLayout>
+  </BeneficiaireConsultationLayout>
 )
 
 const meta: Meta<typeof ViewBeneficiaireAccompagnementsPage> = {

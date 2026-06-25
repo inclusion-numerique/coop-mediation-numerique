@@ -1,44 +1,43 @@
-import PrendreRendezVousAvecBeneficiaireButton from '@app/web/app/coop/(full-width-layout)/mon-profil/PrendreRendezVousAvecBeneficiaireButton'
-import BeneficiaireEnregistrerUneActivite from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/BeneficiaireEnregistrerUneActivite'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
-import { SessionUser } from '@app/web/auth/sessionUser'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import type { DuplicateBeneficiaire } from '@app/web/features/beneficiaire/abilities/detecter-doublons'
-import DeleteBeneficiaireModalContent from '@app/web/features/beneficiaire/abilities/supprimer-beneficiaires/ui/components/DeleteBeneficiaireModalContent'
-import type { BeneficiaireCraData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
 import { contentId } from '@app/web/utils/skipLinks'
-import type { Beneficiaire } from '@prisma/client'
 import classNames from 'classnames'
 import Link from 'next/link'
-import type { PropsWithChildren } from 'react'
-import BeneficiairePageRefreshRdvs from './BeneficiairePageRefreshRdvs'
+import type { PropsWithChildren, ReactNode } from 'react'
 
-const ViewBeneficiaireLayout = ({
+/**
+ * Shell de consultation d'un bénéficiaire. Pur affichage : il agence l'en-tête
+ * (nom, année, alerte doublon) et la zone d'actions, mais ne connaît aucun
+ * concern croisé — la route-hub lui injecte les boutons (activité, RDV), la
+ * modale de suppression et l'effet de rafraîchissement RDV via des slots.
+ */
+const BeneficiaireConsultationLayout = ({
   beneficiaire,
-  user,
+  hasDuplicates,
+  hasRdvIntegration,
+  primaryActions,
+  rdvActions,
+  deleteModal,
+  refreshRdvs,
   children,
-  duplicates,
 }: PropsWithChildren<{
-  user: Pick<SessionUser, 'id' | 'rdvAccount'>
-  beneficiaire: Pick<
-    Beneficiaire,
-    'id' | 'prenom' | 'nom' | 'anneeNaissance' | 'mediateurId' | 'telephone'
-  >
-  duplicates: DuplicateBeneficiaire[]
+  beneficiaire: {
+    prenom: string | null
+    nom: string | null
+    anneeNaissance: number | null
+  }
+  hasDuplicates: boolean
+  hasRdvIntegration: boolean
+  primaryActions?: ReactNode
+  rdvActions?: ReactNode
+  deleteModal?: ReactNode
+  refreshRdvs?: ReactNode
 }>) => {
   const displayName = getBeneficiaireDisplayName(beneficiaire)
-  const { anneeNaissance, id: beneficiaireId, nom, prenom } = beneficiaire
-
-  const beneficiaireCraData = {
-    id: beneficiaireId,
-    prenom: prenom ?? '',
-    nom: nom ?? '',
-  } satisfies BeneficiaireCraData
-
-  const hasRdvIntegration = user.rdvAccount?.hasOauthTokens
+  const { anneeNaissance } = beneficiaire
 
   return (
     <CoopPageContainer size={56}>
@@ -69,7 +68,7 @@ const ViewBeneficiaireLayout = ({
                 Année de naissance&nbsp;: {anneeNaissance}
               </p>
             )}
-            {duplicates.length > 0 && (
+            {hasDuplicates && (
               <Link
                 href="/coop/mes-beneficiaires/doublons"
                 className="fr-link--no-underline fr-text--xs fr-text-default--info fr-mb-0 fr-mt-2v fr-text--info fr-background-contrast--info fr-border-radius--4 fr-px-1-5v fr-inline-flex fr-align-items-center fr-text-blue-france-925"
@@ -87,44 +86,25 @@ const ViewBeneficiaireLayout = ({
               </Link>
             )}
           </div>
-          {!hasRdvIntegration && (
+          {!hasRdvIntegration && primaryActions && (
             <div className="fr-flex fr-flex-gap-4v fr-flex-nowrap fr-flex-shrink-0">
-              <BeneficiaireEnregistrerUneActivite
-                beneficiaire={beneficiaireCraData}
-                displayName={displayName}
-              />
+              {primaryActions}
             </div>
           )}
         </div>
-        {hasRdvIntegration && (
+        {hasRdvIntegration && rdvActions && (
           <div className="fr-border--top fr-border--bottom fr-py-4v fr-width-full fr-my-6v ">
             <div className="fr-flex fr-flex-gap-4v fr-flex-nowrap fr-flex-shrink-0">
-              <BeneficiaireEnregistrerUneActivite
-                beneficiaire={beneficiaireCraData}
-                displayName={displayName}
-                size="small"
-                label="Enregistrer un accompagnement individuel"
-              />
-              <PrendreRendezVousAvecBeneficiaireButton
-                beneficiaire={beneficiaireCraData}
-                user={user}
-                returnPath={`/coop/mes-beneficiaires/${beneficiaire.id}`}
-              />
+              {rdvActions}
             </div>
           </div>
         )}
         {children}
-        <DeleteBeneficiaireModalContent
-          beneficiaireId={beneficiaire.id}
-          displayName={displayName}
-        />
+        {deleteModal}
       </main>
-      {user.rdvAccount?.hasOauthTokens &&
-        user.rdvAccount?.invalidWebhookOrganisationIds.length > 0 && (
-          <BeneficiairePageRefreshRdvs userId={user.id} syncDataOnLoad={true} />
-        )}
+      {refreshRdvs}
     </CoopPageContainer>
   )
 }
 
-export default ViewBeneficiaireLayout
+export default BeneficiaireConsultationLayout
