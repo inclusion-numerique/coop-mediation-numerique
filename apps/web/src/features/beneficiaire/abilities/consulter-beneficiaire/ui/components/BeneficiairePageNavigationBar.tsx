@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import styles from './BeneficiairePageNavigationBar.module.css'
 
 const BeneficiairePageNavigationBar = ({
   accompagnementsCount,
@@ -10,7 +9,7 @@ const BeneficiairePageNavigationBar = ({
   accompagnementsCount: number
   current: 'informations' | 'accompagnements'
 }) => (
-  <div className={styles.navigationBar}>
+  <div className="fr-flex fr-border--bottom fr-mb-8v fr-mb-md-12v fr-nav-tabs">
     <nav className="fr-nav">
       <ul className="fr-nav__list">
         <li className="fr-nav__item">

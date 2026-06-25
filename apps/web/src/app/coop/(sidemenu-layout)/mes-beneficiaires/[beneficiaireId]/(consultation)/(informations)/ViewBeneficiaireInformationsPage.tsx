@@ -1,5 +1,4 @@
 import { BeneficiaireInformationsPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/(informations)/getBeneficiaireInformationsPageData'
-import BeneficiairePageNavigationBar from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/BeneficiairePageNavigationBar'
 import { DeleteBeneficiaireModal } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/DeleteBeneficiaireModal'
 import {
   genreLabels,
@@ -8,6 +7,7 @@ import {
 } from '@app/web/beneficiaire/beneficiaire'
 import { effectiveTrancheAge } from '@app/web/beneficiaire/trancheAgeFromAnneeNaissance'
 import InfoLabelValue from '@app/web/components/InfoLabelValue'
+import BeneficiairePageNavigationBar from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiairePageNavigationBar'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
