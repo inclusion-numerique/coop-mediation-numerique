@@ -1,9 +1,14 @@
 import { countThematiques } from '@app/web/beneficiaire/beneficiaireQueries'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import { searchActiviteAndRdvs } from '@app/web/features/activites/use-cases/list/db/searchActiviteAndRdvs'
-import { prismaClient } from '@app/web/prismaClient'
+import { consulterBeneficiaire } from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/implementation'
+import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
+import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
 import type { UserId, UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 
+// Composition de hub : la fiche bénéficiaire lit ses données propres via
+// l'ability consulter-beneficiaire, puis agrège les comptes transverses de la
+// feature activites (thématiques, total d'activités).
 export const getBeneficiaireInformationsPageData = async ({
   beneficiaireId,
   mediateurId,
@@ -14,35 +19,9 @@ export const getBeneficiaireInformationsPageData = async ({
   mediateurId: string
   user: UserId & UserTimezone & UserRdvAccount
 }) => {
-  const beneficiaire = await prismaClient.beneficiaire.findUnique({
-    where: {
-      id: beneficiaireId,
-      // Only query the beneficiaire if it belongs to the mediateur
-      mediateurId,
-      suppression: null,
-    },
-    select: {
-      id: true,
-      rdvUserId: true,
-      rdvServicePublicId: true,
-      mediateurId: true,
-      prenom: true,
-      nom: true,
-      email: true,
-      anneeNaissance: true,
-      notes: true,
-      genre: true,
-      trancheAge: true,
-      creation: true,
-      adresse: true,
-      telephone: true,
-      pasDeTelephone: true,
-      statutSocial: true,
-      commune: true,
-      communeCodePostal: true,
-      communeCodeInsee: true,
-      accompagnementsCount: true,
-    },
+  const beneficiaire = await consulterBeneficiaire({
+    beneficiaireId: BeneficiaireId(beneficiaireId),
+    mediateurId: MediateurId(mediateurId),
   })
   if (!beneficiaire) {
     return null
