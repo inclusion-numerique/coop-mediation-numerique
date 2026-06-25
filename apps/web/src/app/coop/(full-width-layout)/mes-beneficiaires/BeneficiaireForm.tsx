@@ -9,13 +9,14 @@ import { useScrollToError } from '@app/ui/hooks/useScrollToError'
 import { useWatchSubscription } from '@app/ui/hooks/useWatchSubscription'
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
+import { creerBeneficiaireAction } from '@app/web/app/_actions/beneficiaire/creer-beneficiaire.action'
+import { modifierBeneficiaireAction } from '@app/web/app/_actions/beneficiaire/modifier-beneficiaire.action'
 import FormSection from '@app/web/app/coop/(full-width-layout)/mes-beneficiaires/FormSection'
 import {
   genreOptions,
   statutSocialOptions,
   trancheAgeOptions,
 } from '@app/web/beneficiaire/beneficiaire'
-import { beneficiaireCommuneResidenceToPreviewBanData } from '@app/web/beneficiaire/prismaBeneficiaireToBeneficiaireData'
 import { trancheAgeFromAnneeNaissance } from '@app/web/beneficiaire/trancheAgeFromAnneeNaissance'
 import AdresseBanFormField, {
   type AdressBanFormFieldOption,
@@ -24,7 +25,7 @@ import RichCardLabel, {
   richCardFieldsetElementClassName,
   richCardRadioGroupClassName,
 } from '@app/web/components/form/RichCardLabel'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import { CraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
 import CraFormLabel from '@app/web/features/activites/use-cases/cra/components/CraFormLabel'
 import { craFormFieldsetClassname } from '@app/web/features/activites/use-cases/cra/components/craFormFieldsetClassname'
@@ -35,8 +36,6 @@ import {
   BeneficiaireData,
   BeneficiaireValidation,
 } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
-import { trpc } from '@app/web/trpc'
-import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -45,6 +44,24 @@ import { useRouter } from 'next/navigation'
 import React, { useCallback, useEffect } from 'react'
 import { DefaultValues, useForm } from 'react-hook-form'
 import styles from './BeneficiaireForm.module.css'
+
+type BeneficiaireCraData = {
+  id: string
+  prenom: string
+  nom: string
+  communeResidence: AdresseBanData | null
+}
+
+// Fusionne le bénéficiaire créé / modifié dans l'état du CRA en cours, qu'il
+// soit individuel (remplace le bénéficiaire) ou collectif (ajoute un
+// participant).
+const craAvecBeneficiaire = (
+  cra: DefaultValues<CraIndividuelData> | DefaultValues<CraCollectifData>,
+  beneficiaire: BeneficiaireCraData,
+) =>
+  'participants' in cra
+    ? { ...cra, participants: [...(cra.participants ?? []), beneficiaire] }
+    : { ...cra, beneficiaire }
 
 const BeneficiaireForm = ({
   defaultValues,
@@ -67,8 +84,6 @@ const BeneficiaireForm = ({
     },
   })
 
-  const mutation = trpc.beneficiaires.createOrUpdate.useMutation()
-
   const router = useRouter()
 
   const enSavoirPlusLink = (
@@ -84,7 +99,6 @@ const BeneficiaireForm = ({
 
   const {
     control,
-    setError,
     handleSubmit,
     setValue,
     watch,
@@ -98,9 +112,26 @@ const BeneficiaireForm = ({
       ? `/coop/mes-beneficiaires/${defaultValues.id}`
       : '/coop/mes-beneficiaires')
 
+  const erreurEnregistrement = () =>
+    createToast({
+      priority: 'error',
+      message:
+        'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
+    })
+
   const onSubmit = async (data: BeneficiaireData) => {
     try {
-      const beneficiaire = await mutation.mutateAsync(data)
+      const result = data.id
+        ? await modifierBeneficiaireAction({ ...data, id: data.id })
+        : await creerBeneficiaireAction(data)
+
+      if (!result.success) {
+        erreurEnregistrement()
+        return
+      }
+
+      const beneficiaire = result.data
+
       createToast({
         priority: 'success',
         message: data.id
@@ -108,36 +139,19 @@ const BeneficiaireForm = ({
           : 'Le bénéficiaire a bien été créé.',
       })
 
-      let queryParams = ''
-
-      if (cra) {
-        // We merge existing cra state with created / updated beneficiaire id
-
-        const beneficiaireFormData = {
-          id: beneficiaire.id,
-          prenom: beneficiaire.prenom,
-          nom: beneficiaire.nom,
-          communeResidence:
-            beneficiaireCommuneResidenceToPreviewBanData(beneficiaire),
-        }
-
-        const newCra =
-          'participants' in cra
-            ? {
-                // Append beneficiaire to cra collectif
-                ...cra,
-                participants: [
-                  ...(cra.participants ?? []),
-                  beneficiaireFormData,
-                ],
-              }
-            : {
-                // Replace beneficiaire in cra individuel
-                ...cra,
-                beneficiaire: beneficiaireFormData,
-              }
-        queryParams = `?v=${encodeSerializableState(newCra)}`
-      }
+      // Les données de redirection CRA sont reconstruites à partir de la saisie
+      // du formulaire + l'identifiant retourné : `data.communeResidence` est
+      // déjà l'aperçu BAN attendu, inutile d'adapter le retour domaine.
+      const queryParams = cra
+        ? `?v=${encodeSerializableState(
+            craAvecBeneficiaire(cra, {
+              id: beneficiaire.id,
+              prenom: data.prenom,
+              nom: data.nom,
+              communeResidence: data.communeResidence ?? null,
+            }),
+          )}`
+        : ''
 
       router.push(
         `${
@@ -145,15 +159,8 @@ const BeneficiaireForm = ({
         }${queryParams}`,
       )
       router.refresh()
-    } catch (mutationError) {
-      if (applyZodValidationMutationErrorsToForm(mutationError, setError)) {
-        return
-      }
-      createToast({
-        priority: 'error',
-        message:
-          'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
-      })
+    } catch {
+      erreurEnregistrement()
     }
   }
   const isLoading = isSubmitting || isSubmitSuccessful
@@ -441,4 +448,4 @@ const BeneficiaireForm = ({
   )
 }
 
-export default withTrpc(BeneficiaireForm)
+export default BeneficiaireForm
