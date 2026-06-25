@@ -1,17 +1,14 @@
-import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import type { DetecterDoublons } from '@app/web/features/beneficiaire/abilities/detecter-doublons'
-
-type BeneficiairesDoublonsPageData = Awaited<ReturnType<DetecterDoublons>>
-
+import { pluriel } from '@app/web/libraries/pluriel'
 import { numberToString } from '@app/web/utils/formatNumber'
 import { contentId } from '@app/web/utils/skipLinks'
-import Alert from '@codegouvfr/react-dsfr/Alert'
-import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import BeneficiaireFusionDoublons from './BeneficiaireFusionDoublons'
+import BeneficiaireFusionDoublons from '../components/BeneficiaireFusionDoublons'
+
+type BeneficiairesDoublonsPageData = Awaited<ReturnType<DetecterDoublons>>
 
 const BeneficiairesDoublonsPage = ({
   data,
@@ -64,9 +61,12 @@ const BeneficiairesDoublonsPage = ({
                 className="fr-notice--info"
                 title={
                   <>
-                    <strong>{numberToString(count)}</strong> doublon
-                    {sPluriel(count)} de bénéficiaire{sPluriel(count)} détecté
-                    {sPluriel(count)}
+                    <strong>{numberToString(count)}</strong>{' '}
+                    {pluriel(
+                      count,
+                      'doublon de bénéficiaire détecté',
+                      'doublons de bénéficiaires détectés',
+                    )}
                   </>
                 }
               ></Notice>
