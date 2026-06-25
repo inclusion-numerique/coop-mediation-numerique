@@ -1,11 +1,11 @@
 'use client'
 
 import { createToast } from '@app/ui/toast/createToast'
+import { supprimerBeneficiairesAction } from '@app/web/app/_actions/beneficiaire/supprimer-beneficiaires.action'
 import { DeleteBeneficiaireModal } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/DeleteBeneficiaireModal'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { trpc } from '@app/web/trpc'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 const DeleteBeneficiaireModalContent = ({
   beneficiaireId,
@@ -17,32 +17,33 @@ const DeleteBeneficiaireModalContent = ({
   nextPath?: string
 }) => {
   const router = useRouter()
-  const mutation = trpc.beneficiaires.delete.useMutation()
+  const [pending, setPending] = useState(false)
 
   const onDelete = async () => {
-    try {
-      await mutation.mutateAsync({
-        id: beneficiaireId,
-      })
-      router.push(nextPath)
-      router.refresh()
-      createToast({
-        priority: 'success',
-        message: (
-          <>
-            <strong>{displayName}</strong> a bien été supprimé(e)
-          </>
-        ),
-      })
-      DeleteBeneficiaireModal.close()
-    } catch {
+    setPending(true)
+    const result = await supprimerBeneficiairesAction({ ids: [beneficiaireId] })
+    setPending(false)
+
+    if (!result.success) {
       createToast({
         priority: 'error',
         message:
           'Une erreur est survenue lors de la suppression du bénéficiaire',
       })
-      mutation.reset()
+      return
     }
+
+    router.push(nextPath)
+    router.refresh()
+    createToast({
+      priority: 'success',
+      message: (
+        <>
+          <strong>{displayName}</strong> a bien été supprimé(e)
+        </>
+      ),
+    })
+    DeleteBeneficiaireModal.close()
   }
   return (
     <DeleteBeneficiaireModal.Component
@@ -64,7 +65,7 @@ const DeleteBeneficiaireModalContent = ({
           nativeButtonProps: {
             className: classNames(
               'fr-btn--danger',
-              mutation.isPending && 'fr-btn--loading',
+              pending && 'fr-btn--loading',
             ),
             'data-testid': 'delete-resource-modal-submit',
           },
@@ -84,4 +85,4 @@ const DeleteBeneficiaireModalContent = ({
   )
 }
 
-export default withTrpc(DeleteBeneficiaireModalContent)
+export default DeleteBeneficiaireModalContent

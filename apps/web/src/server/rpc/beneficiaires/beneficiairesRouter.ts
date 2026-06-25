@@ -1,5 +1,4 @@
 import { AnalysisSchema } from '@app/web/beneficiaire/import/analyseImportBeneficiairesExcel'
-import { softDeleteBeneficiaires } from '@app/web/beneficiaire/softDeleteBeneficiaires'
 import { trancheAgeFromAnneeNaissance } from '@app/web/beneficiaire/trancheAgeFromAnneeNaissance'
 import { fusionnerBeneficiaires } from '@app/web/features/beneficiaires/use-cases/fusion/fusionnerBeneficiaires'
 import {
@@ -140,45 +139,6 @@ export const beneficiairesRouter = router({
 
       return created
     }),
-  delete: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .mutation(async ({ input, ctx: { user } }) => {
-      enforceIsMediateur(user)
-
-      const { id } = input
-
-      const stopwatch = createStopwatch()
-
-      const beneficiaire = await checkExistingBeneficiaire({
-        beneficiaireId: id,
-        mediateurId: user.mediateur.id,
-      })
-
-      if (!beneficiaire) {
-        throw invalidError('Beneficiaire not found')
-      }
-
-      await prismaClient.$transaction(async (tx) => {
-        await softDeleteBeneficiaires(tx, [id])
-        await tx.mediateur.update({
-          where: { id: beneficiaire.mediateurId },
-          data: {
-            beneficiairesCount: { decrement: 1 },
-          },
-        })
-      })
-
-      addMutationLog({
-        userId: user.id,
-        nom: 'SupprimerBeneficiaire',
-        duration: stopwatch.stop().duration,
-        data: {
-          id,
-        },
-      })
-
-      return true
-    }),
   import: protectedProcedure
     .input(AnalysisSchema)
     .mutation(async ({ input: analysis, ctx: { user } }) => {
@@ -253,47 +213,5 @@ export const beneficiairesRouter = router({
       )
 
       return result
-    }),
-  deleteBulk: protectedProcedure
-    .input(z.object({ ids: z.array(z.string()).min(1) }))
-    .mutation(async ({ input, ctx: { user } }) => {
-      enforceIsMediateur(user)
-
-      const { ids } = input
-      const stopwatch = createStopwatch()
-
-      const beneficiaires = await prismaClient.beneficiaire.findMany({
-        where: {
-          id: { in: ids },
-          mediateurId: user.mediateur.id,
-          suppression: null,
-        },
-        select: { id: true },
-      })
-
-      const validIds = beneficiaires.map((b) => b.id)
-
-      if (validIds.length === 0) {
-        throw invalidError('No valid beneficiaires to delete')
-      }
-
-      await prismaClient.$transaction(async (tx) => {
-        await softDeleteBeneficiaires(tx, validIds)
-        await tx.mediateur.update({
-          where: { id: user.mediateur.id },
-          data: {
-            beneficiairesCount: { decrement: validIds.length },
-          },
-        })
-      })
-
-      addMutationLog({
-        userId: user.id,
-        nom: 'SupprimerBeneficiaire',
-        duration: stopwatch.stop().duration,
-        data: { ids: validIds, count: validIds.length },
-      })
-
-      return { deleted: validIds.length }
     }),
 })

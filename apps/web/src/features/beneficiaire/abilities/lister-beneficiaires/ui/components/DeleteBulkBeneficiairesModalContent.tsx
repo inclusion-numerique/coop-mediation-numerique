@@ -1,11 +1,11 @@
 'use client'
 
 import { createToast } from '@app/ui/toast/createToast'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { supprimerBeneficiairesAction } from '@app/web/app/_actions/beneficiaire/supprimer-beneficiaires.action'
 import { pluriel } from '@app/web/libraries/pluriel'
-import { trpc } from '@app/web/trpc'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { DeleteBulkBeneficiairesModal } from './DeleteBulkBeneficiairesModal'
 
 const DeleteBulkBeneficiairesModalContent = ({
@@ -16,27 +16,30 @@ const DeleteBulkBeneficiairesModalContent = ({
   onSuccess: () => void
 }) => {
   const router = useRouter()
-  const mutation = trpc.beneficiaires.deleteBulk.useMutation()
+  const [pending, setPending] = useState(false)
   const count = selectedIds.length
 
   const onDelete = async () => {
-    try {
-      await mutation.mutateAsync({ ids: selectedIds })
-      router.refresh()
-      createToast({
-        priority: 'success',
-        message: `${count} ${pluriel(count, 'bénéficiaire supprimé', 'bénéficiaires supprimés')}`,
-      })
-      DeleteBulkBeneficiairesModal.close()
-      onSuccess()
-    } catch {
+    setPending(true)
+    const result = await supprimerBeneficiairesAction({ ids: selectedIds })
+    setPending(false)
+
+    if (!result.success) {
       createToast({
         priority: 'error',
         message:
           'Une erreur est survenue lors de la suppression des bénéficiaires',
       })
-      mutation.reset()
+      return
     }
+
+    router.refresh()
+    createToast({
+      priority: 'success',
+      message: `${count} ${pluriel(count, 'bénéficiaire supprimé', 'bénéficiaires supprimés')}`,
+    })
+    DeleteBulkBeneficiairesModal.close()
+    onSuccess()
   }
 
   return (
@@ -59,7 +62,7 @@ const DeleteBulkBeneficiairesModalContent = ({
           nativeButtonProps: {
             className: classNames(
               'fr-btn--danger',
-              mutation.isPending && 'fr-btn--loading',
+              pending && 'fr-btn--loading',
             ),
           },
         },
@@ -86,4 +89,4 @@ const DeleteBulkBeneficiairesModalContent = ({
   )
 }
 
-export default withTrpc(DeleteBulkBeneficiairesModalContent)
+export default DeleteBulkBeneficiairesModalContent
