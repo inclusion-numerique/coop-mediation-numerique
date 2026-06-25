@@ -1,9 +1,10 @@
-import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
+import { rechercherBeneficiairesAction } from '@app/web/app/_actions/beneficiaire/rechercher-beneficiaires.action'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
+import { toBeneficiaireData } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import type { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
 import type { BeneficiaireData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
-import { trpc } from '@app/web/trpc'
-import { useCallback, useRef } from 'react'
+import { pluriel } from '@app/web/libraries/pluriel'
+import { useCallback } from 'react'
 
 const beneficiaireOptionRichLabel = (value: BeneficiaireData) => {
   const { communeResidence } = value
@@ -28,8 +29,6 @@ export const useBeneficiaireSearch = ({
 }: {
   initialBeneficiairesOptions: BeneficiaireOption[]
 }) => {
-  const { client: trpcClient } = trpc.useContext()
-
   const initialOptions = initialBeneficiairesOptions.map((option) =>
     option.value
       ? {
@@ -50,11 +49,15 @@ export const useBeneficiaireSearch = ({
         ]
       }
 
-      const result = await trpcClient.beneficiaires.search.query({
-        query: search,
-      })
+      const result = await rechercherBeneficiairesAction({ query: search })
 
-      const hasMore = result.matchesCount - result.beneficiaires.length
+      if (!result.success) {
+        return [{ label: 'Une erreur est survenue', value: null }]
+      }
+
+      const { beneficiaires, totalCount } = result.data
+
+      const hasMore = totalCount - beneficiaires.length
       const hasMoreMessage = hasMore
         ? hasMore === 1
           ? `Veuillez préciser votre recherche - 1 bénéficiaire n’est pas affiché`
@@ -63,15 +66,16 @@ export const useBeneficiaireSearch = ({
 
       return [
         {
-          label: `${result.matchesCount} résultat${sPluriel(
-            result.matchesCount,
-          )}`,
+          label: `${totalCount} ${pluriel(totalCount, 'résultat', 'résultats')}`,
           value: null,
         },
-        ...result.beneficiaires.map((beneficiaire) => ({
-          label: beneficiaireOptionRichLabel(beneficiaire),
-          value: beneficiaire,
-        })),
+        ...beneficiaires.map((beneficiaire) => {
+          const value = toBeneficiaireData(beneficiaire)
+          return {
+            label: beneficiaireOptionRichLabel(value),
+            value,
+          }
+        }),
         ...(hasMoreMessage
           ? [
               {
@@ -82,7 +86,7 @@ export const useBeneficiaireSearch = ({
           : []),
       ]
     },
-    [trpcClient],
+    [],
   )
 
   return {

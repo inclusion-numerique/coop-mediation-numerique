@@ -1,8 +1,9 @@
 import { OptionsData } from '@app/ui/components/Primitives/Options'
 import { SelectedItemsData } from '@app/ui/components/Primitives/SelectedItems'
+import { rechercherBeneficiairesAction } from '@app/web/app/_actions/beneficiaire/rechercher-beneficiaires.action'
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
+import { toPreviewBanData } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
-import { vanillaTrpc } from '@app/web/trpc'
 
 type Beneficiaire = {
   id: string
@@ -20,21 +21,25 @@ const onlyDefinedIds = (beneficiaire?: {
 const loadSuggestions =
   (selectedBeneficiaires: ({ id?: string } | undefined)[]) =>
   async (input: string): Promise<{ items: Beneficiaire[] }> => {
-    const data = await vanillaTrpc.beneficiaires.search.query({
+    const result = await rechercherBeneficiairesAction({
       query: input,
       excludeIds: selectedBeneficiaires.filter(onlyDefinedIds).map(itemToKey),
     })
 
-    return Promise.resolve({
-      items: data.beneficiaires.map(
+    if (!result.success) return { items: [] }
+
+    return {
+      items: result.data.beneficiaires.map(
         ({ id, prenom, nom, communeResidence }) => ({
           id,
           prenom,
           nom,
-          communeResidence,
+          communeResidence: communeResidence
+            ? toPreviewBanData(communeResidence)
+            : null,
         }),
       ),
-    })
+    }
   }
 
 const itemToString = (item: Beneficiaire | null): string =>

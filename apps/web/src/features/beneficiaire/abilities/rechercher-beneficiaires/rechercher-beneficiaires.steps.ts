@@ -39,5 +39,5 @@ When('je recherche {string} en excluant le premier', async (query: string) => {
 })
 
 Then('la recherche retourne {int} bénéficiaire(s)', (count: number) => {
-  assert.strictEqual(searchResult?.length, count)
+  assert.strictEqual(searchResult?.beneficiaires.length, count)
 })

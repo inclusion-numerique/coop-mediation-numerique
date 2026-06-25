@@ -26,6 +26,40 @@ const baseWhere = (mediateurId: string): Prisma.BeneficiaireWhereInput => ({
   anonyme: false,
 })
 
+const searchWhere = (
+  mediateurId: string,
+  query: string,
+  excludeIds: readonly string[],
+): Prisma.BeneficiaireWhereInput => {
+  const parts = query
+    .split(/\s+/)
+    .map((p) => p.trim())
+    .filter(Boolean)
+
+  return {
+    ...baseWhere(mediateurId),
+    ...(parts.length > 0
+      ? {
+          AND: parts.map((part) => ({
+            OR: [
+              { prenom: { contains: part, mode: 'insensitive' as const } },
+              { nom: { contains: part, mode: 'insensitive' as const } },
+              { commune: { contains: part, mode: 'insensitive' as const } },
+              { email: { contains: part, mode: 'insensitive' as const } },
+              {
+                communeCodePostal: {
+                  contains: part,
+                  mode: 'insensitive' as const,
+                },
+              },
+            ],
+          })),
+        }
+      : {}),
+    ...(excludeIds.length > 0 ? { id: { notIn: [...excludeIds] } } : {}),
+  }
+}
+
 const toSearchItem = (row: {
   id: string
   prenom: string | null
@@ -54,40 +88,19 @@ export const rechercherBeneficiaires: RechercherBeneficiaires = async ({
   query,
   excludeIds = [],
 }) => {
-  const parts = query
-    .split(/\s+/)
-    .map((p) => p.trim())
-    .filter(Boolean)
+  const where = searchWhere(mediateurId, query, excludeIds)
 
-  const rows = await prismaClient.beneficiaire.findMany({
-    where: {
-      ...baseWhere(mediateurId),
-      ...(parts.length > 0
-        ? {
-            AND: parts.map((part) => ({
-              OR: [
-                { prenom: { contains: part, mode: 'insensitive' as const } },
-                { nom: { contains: part, mode: 'insensitive' as const } },
-                { commune: { contains: part, mode: 'insensitive' as const } },
-                { email: { contains: part, mode: 'insensitive' as const } },
-                {
-                  communeCodePostal: {
-                    contains: part,
-                    mode: 'insensitive' as const,
-                  },
-                },
-              ],
-            })),
-          }
-        : {}),
-      ...(excludeIds.length > 0 ? { id: { notIn: [...excludeIds] } } : {}),
-    },
-    select: searchSelect,
-    orderBy: [{ nom: 'asc' }, { prenom: 'asc' }],
-    take: 20,
-  })
+  const [rows, totalCount] = await Promise.all([
+    prismaClient.beneficiaire.findMany({
+      where,
+      select: searchSelect,
+      orderBy: [{ nom: 'asc' }, { prenom: 'asc' }],
+      take: 20,
+    }),
+    prismaClient.beneficiaire.count({ where }),
+  ])
 
-  return rows.map(toSearchItem)
+  return { beneficiaires: rows.map(toSearchItem), totalCount }
 }
 
 export const getInitialBeneficiairesOptions: GetInitialBeneficiairesOptions =
@@ -120,7 +133,7 @@ export const getInitialBeneficiairesOptions: GetInitialBeneficiairesOptions =
     ])
 
     return {
-      options: [...included, ...topBeneficiaires].map(toSearchItem),
+      beneficiaires: [...included, ...topBeneficiaires].map(toSearchItem),
       totalCount,
     }
   }
