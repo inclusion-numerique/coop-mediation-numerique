@@ -2,10 +2,9 @@ import {
   beneficiaireMaximaleMediateurAvecActivite,
   beneficiaireMinimaleMediateurAvecActivite,
 } from '@app/fixtures/beneficiaires'
-import type { BeneficiaireInformationsPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/(informations)/getBeneficiaireInformationsPageData'
+import type { BeneficiaireInformationsPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/(informations)/ViewBeneficiaireInformationsPage'
 import ViewBeneficiaireInformationsPage from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/(informations)/ViewBeneficiaireInformationsPage'
 import ViewBeneficiaireLayout from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/ViewBeneficiaireLayout'
-import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import { testSessionUser } from '@app/web/test/testSessionUser'
 import type { Meta, StoryObj } from '@storybook/react'
 import { expect, within } from '@storybook/test'
@@ -62,7 +61,6 @@ const beneficiaireSansInformations = {
 const sansInformations = {
   beneficiaire: beneficiaireSansInformations,
   thematiquesCounts: [],
-  displayName: getBeneficiaireDisplayName(beneficiaireSansInformations),
   totalActivitesCount: 0,
 } satisfies BeneficiaireInformationsPageData
 
@@ -109,7 +107,6 @@ const avecInformations = {
       label: 'Argent et impôts',
     },
   ],
-  displayName: getBeneficiaireDisplayName(beneficiaireAvecInformations),
   totalActivitesCount: 6,
 } satisfies BeneficiaireInformationsPageData
 

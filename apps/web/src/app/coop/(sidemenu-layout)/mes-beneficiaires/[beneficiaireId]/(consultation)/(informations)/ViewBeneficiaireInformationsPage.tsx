@@ -1,4 +1,5 @@
-import { BeneficiaireInformationsPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/(informations)/getBeneficiaireInformationsPageData'
+import type { CraThematiqueCount } from '@app/web/features/activites/use-cases/list/db/countThematiques'
+import type { BeneficiaireInformations } from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/domain/consulter-beneficiaire'
 import BeneficiaireCoordonnees from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireCoordonnees'
 import BeneficiaireInformationsComplementaires from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireInformationsComplementaires'
 import BeneficiaireNotes from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireNotes'
@@ -7,6 +8,12 @@ import BeneficiaireThematiques from '@app/web/features/beneficiaire/abilities/co
 import { DeleteBeneficiaireModal } from '@app/web/features/beneficiaire/abilities/supprimer-beneficiaires/ui/components/DeleteBeneficiaireModal'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import Button from '@codegouvfr/react-dsfr/Button'
+
+export type BeneficiaireInformationsPageData = {
+  beneficiaire: BeneficiaireInformations
+  thematiquesCounts: CraThematiqueCount[]
+  totalActivitesCount: number
+}
 
 const ViewBeneficiaireInformationsPage = ({
   data: { beneficiaire, thematiquesCounts, totalActivitesCount },

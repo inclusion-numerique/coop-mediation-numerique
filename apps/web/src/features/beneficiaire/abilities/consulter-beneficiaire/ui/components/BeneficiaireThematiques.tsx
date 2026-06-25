@@ -1,4 +1,4 @@
-import type { CraThematiqueCount } from '@app/web/beneficiaire/beneficiaireQueries'
+import type { CraThematiqueCount } from '@app/web/features/activites/use-cases/list/db/countThematiques'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 
 const BeneficiaireThematiques = ({
