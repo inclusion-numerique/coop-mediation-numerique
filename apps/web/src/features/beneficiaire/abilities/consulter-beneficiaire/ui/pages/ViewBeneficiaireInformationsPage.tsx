@@ -5,9 +5,8 @@ import BeneficiaireInformationsComplementaires from '@app/web/features/beneficia
 import BeneficiaireNotes from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireNotes'
 import BeneficiairePageNavigationBar from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiairePageNavigationBar'
 import BeneficiaireThematiques from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireThematiques'
-import { DeleteBeneficiaireModal } from '@app/web/features/beneficiaire/abilities/supprimer-beneficiaires/ui/components/DeleteBeneficiaireModal'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
-import Button from '@codegouvfr/react-dsfr/Button'
+import type { ReactNode } from 'react'
 
 export type BeneficiaireInformationsPageData = {
   beneficiaire: BeneficiaireInformations
@@ -15,10 +14,14 @@ export type BeneficiaireInformationsPageData = {
   totalActivitesCount: number
 }
 
+// `actions` : boutons d'en-tête (modifier, supprimer) — concerns croisés
+// injectés par la route-hub, l'ability reste découplée.
 const ViewBeneficiaireInformationsPage = ({
   data: { beneficiaire, thematiquesCounts, totalActivitesCount },
+  actions,
 }: {
   data: BeneficiaireInformationsPageData
+  actions?: ReactNode
 }) => (
   <>
     <BeneficiairePageNavigationBar
@@ -34,30 +37,7 @@ const ViewBeneficiaireInformationsPage = ({
             Créé le {dateAsDay(beneficiaire.creation)}
           </p>
         </div>
-        <div>
-          <Button
-            iconId="fr-icon-edit-line"
-            iconPosition="right"
-            size="small"
-            priority="tertiary no outline"
-            linkProps={{
-              href: `/coop/mes-beneficiaires/${beneficiaire.id}/modifier`,
-            }}
-          >
-            Modifier
-          </Button>
-          <Button
-            iconId="fr-icon-delete-bin-line"
-            className="fr-ml-1v"
-            iconPosition="right"
-            size="small"
-            priority="tertiary no outline"
-            type="button"
-            {...DeleteBeneficiaireModal.buttonProps}
-          >
-            Supprimer
-          </Button>
-        </div>
+        {actions}
       </div>
       <BeneficiaireThematiques thematiquesCounts={thematiquesCounts} />
       <BeneficiaireCoordonnees beneficiaire={beneficiaire} />
