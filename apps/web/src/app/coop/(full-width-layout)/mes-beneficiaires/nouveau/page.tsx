@@ -1,10 +1,11 @@
-import BeneficiaireForm from '@app/web/app/coop/(full-width-layout)/mes-beneficiaires/BeneficiaireForm'
+import { creerBeneficiaireAction } from '@app/web/app/_actions/beneficiaire/creer-beneficiaire.action'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import BackButton from '@app/web/components/BackButton'
 import IconInSquare from '@app/web/components/IconInSquare'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import type { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
+import BeneficiaireForm from '@app/web/features/beneficiaire/forms/BeneficiaireForm'
 import {
   decodeSerializableState,
   type EncodedState,
@@ -95,6 +96,7 @@ const PageCreerBeneficiaire = async ({
           defaultValues={{
             mediateurId: user.mediateur.id,
           }}
+          save={creerBeneficiaireAction}
           retour={retour}
           cra={parsedCra}
         />

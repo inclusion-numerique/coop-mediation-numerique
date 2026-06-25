@@ -9,9 +9,6 @@ import { useScrollToError } from '@app/ui/hooks/useScrollToError'
 import { useWatchSubscription } from '@app/ui/hooks/useWatchSubscription'
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
-import { creerBeneficiaireAction } from '@app/web/app/_actions/beneficiaire/creer-beneficiaire.action'
-import { modifierBeneficiaireAction } from '@app/web/app/_actions/beneficiaire/modifier-beneficiaire.action'
-import FormSection from '@app/web/app/coop/(full-width-layout)/mes-beneficiaires/FormSection'
 import { trancheAgeFromAnneeNaissance } from '@app/web/beneficiaire/trancheAgeFromAnneeNaissance'
 import AdresseBanFormField, {
   type AdressBanFormFieldOption,
@@ -34,10 +31,12 @@ import {
   statutSocialOptions,
   trancheAgeOptions,
 } from '@app/web/features/beneficiaire/forms/beneficiaire-options'
+import FormSection from '@app/web/features/beneficiaire/forms/FormSection'
 import {
   BeneficiaireData,
   BeneficiaireValidation,
 } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
+import type { ServerActionResult } from '@app/web/libraries/nextjs'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -45,7 +44,13 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useCallback, useEffect } from 'react'
 import { DefaultValues, useForm } from 'react-hook-form'
-import styles from './BeneficiaireForm.module.css'
+
+// Concern croisé injecté par la route-hub : créer ou modifier. La route lie
+// l'action (server action) de l'ability concernée ; le form reste découplé des
+// abilities et ne connaît que ce contrat de sauvegarde.
+export type EnregistrerBeneficiaire = (
+  beneficiaire: BeneficiaireData,
+) => Promise<ServerActionResult<{ id: string }>>
 
 type BeneficiaireCraData = {
   id: string
@@ -67,12 +72,14 @@ const craAvecBeneficiaire = (
 
 const BeneficiaireForm = ({
   defaultValues,
+  save,
   cra,
   retour,
   communeResidenceDefaultOptions,
   edit = false,
 }: {
   defaultValues: DefaultValues<BeneficiaireData> & { mediateurId: string }
+  save: EnregistrerBeneficiaire
   // If present, used to merge with state on retour redirection
   cra?: DefaultValues<CraIndividuelData> | DefaultValues<CraCollectifData>
   retour?: string
@@ -123,9 +130,7 @@ const BeneficiaireForm = ({
 
   const onSubmit = async (data: BeneficiaireData) => {
     try {
-      const result = data.id
-        ? await modifierBeneficiaireAction({ ...data, id: data.id })
-        : await creerBeneficiaireAction(data)
+      const result = await save(data)
 
       if (!result.success) {
         erreurEnregistrement()
@@ -136,7 +141,7 @@ const BeneficiaireForm = ({
 
       createToast({
         priority: 'success',
-        message: data.id
+        message: edit
           ? 'Le bénéficiaire a bien été mis à jour.'
           : 'Le bénéficiaire a bien été créé.',
       })
@@ -368,7 +373,7 @@ const BeneficiaireForm = ({
           }}
           classes={{
             fieldsetElement: richCardFieldsetElementClassName,
-            fieldset: craFormFieldsetClassname(styles.genreFieldset),
+            fieldset: craFormFieldsetClassname('fr-grid-columns-3'),
             radioGroup: richCardRadioGroupClassName,
           }}
         />
@@ -386,7 +391,7 @@ const BeneficiaireForm = ({
                 label: RichCardLabel,
               }}
               classes={{
-                fieldset: craFormFieldsetClassname(styles.columnFieldset),
+                fieldset: craFormFieldsetClassname(),
                 fieldsetElement: richCardFieldsetElementClassName,
                 radioGroup: richCardRadioGroupClassName,
               }}
@@ -405,7 +410,7 @@ const BeneficiaireForm = ({
                 label: RichCardLabel,
               }}
               classes={{
-                fieldset: craFormFieldsetClassname(styles.columnFieldset),
+                fieldset: craFormFieldsetClassname(),
                 fieldsetElement: richCardFieldsetElementClassName,
                 radioGroup: richCardRadioGroupClassName,
               }}

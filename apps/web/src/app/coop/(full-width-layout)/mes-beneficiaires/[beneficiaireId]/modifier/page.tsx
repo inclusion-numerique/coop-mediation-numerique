@@ -1,4 +1,4 @@
-import BeneficiaireForm from '@app/web/app/coop/(full-width-layout)/mes-beneficiaires/BeneficiaireForm'
+import { modifierBeneficiaireAction } from '@app/web/app/_actions/beneficiaire/modifier-beneficiaire.action'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
@@ -9,6 +9,7 @@ import IconInSquare from '@app/web/components/IconInSquare'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { banMunicipalityLabel } from '@app/web/external-apis/ban/banMunicipalityLabel'
 import type { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
+import BeneficiaireForm from '@app/web/features/beneficiaire/forms/BeneficiaireForm'
 import type { BeneficiaireData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
 import { prismaClient } from '@app/web/prismaClient'
 import type { EncodedState } from '@app/web/utils/encodeSerializableState'
@@ -116,6 +117,13 @@ const PageModifierBeneficiaire = async (props: {
     mediateurId: string
   }
 
+  // Concern croisé injecté : la route lie l'action modifier en réinjectant
+  // l'identifiant issu de l'URL (source de vérité, pas l'état du formulaire).
+  const enregistrerBeneficiaire = async (data: BeneficiaireData) => {
+    'use server'
+    return modifierBeneficiaireAction({ ...data, id: beneficiaireId })
+  }
+
   return (
     <div className="fr-container fr-container--medium">
       <SkipLinksPortal />
@@ -155,6 +163,7 @@ const PageModifierBeneficiaire = async (props: {
         </div>
         <BeneficiaireForm
           defaultValues={beneficiaireDefaultValues}
+          save={enregistrerBeneficiaire}
           retour={retour}
           communeResidenceDefaultOptions={communeResidenceDefaultOptions}
           edit
