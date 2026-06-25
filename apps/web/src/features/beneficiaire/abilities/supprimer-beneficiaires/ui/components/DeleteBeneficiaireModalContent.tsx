@@ -2,10 +2,10 @@
 
 import { createToast } from '@app/ui/toast/createToast'
 import { supprimerBeneficiairesAction } from '@app/web/app/_actions/beneficiaire/supprimer-beneficiaires.action'
-import { DeleteBeneficiaireModal } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/DeleteBeneficiaireModal'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { DeleteBeneficiaireModal } from './DeleteBeneficiaireModal'
 
 const DeleteBeneficiaireModalContent = ({
   beneficiaireId,
