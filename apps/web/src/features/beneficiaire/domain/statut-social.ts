@@ -1,11 +1,13 @@
 import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
 
+// Ordre aligné sur `statutSocialLabels` (ordre d'affichage historique), pour que
+// les listes dérivées des valeurs et des libellés restent cohérentes.
 export const statutsSociaux = [
-  'Scolarise',
+  'Retraite',
   'SansEmploi',
   'EnEmploi',
-  'Retraite',
+  'Scolarise',
   'NonCommunique',
 ] as const
 

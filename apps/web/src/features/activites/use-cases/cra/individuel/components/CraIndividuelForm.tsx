@@ -2,14 +2,14 @@
 
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { createToast } from '@app/ui/toast/createToast'
+import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { Commune } from '@app/web/features/adresse/combo-box/CommuneComboBox'
+import { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import {
   genreOptions,
   statutSocialOptions,
   trancheAgeOptions,
-} from '@app/web/beneficiaire/beneficiaire'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { Commune } from '@app/web/features/adresse/combo-box/CommuneComboBox'
-import { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
+} from '@app/web/features/beneficiaire/forms/beneficiaire-options'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'

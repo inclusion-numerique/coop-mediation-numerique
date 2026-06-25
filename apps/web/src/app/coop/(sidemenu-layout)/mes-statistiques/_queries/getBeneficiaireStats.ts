@@ -3,18 +3,22 @@ import { allocatePercentagesFromRecords } from '@app/web/app/coop/(sidemenu-layo
 import { createEnumDistinctCountSelect } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/createEnumCountSelect'
 import { derivedTrancheAgeSql } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/derivedTrancheAgeSql'
 import {
-  genreLabels,
-  genreValues,
-  statutSocialLabels,
-  statutSocialValues,
-  trancheAgeLabels,
-  trancheAgeValues,
-} from '@app/web/beneficiaire/beneficiaire'
-import {
   getActiviteFiltersSqlFragment,
   getActivitesFiltersWhereConditions,
 } from '@app/web/features/activites/use-cases/list/db/activitesFiltersSqlWhereConditions'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import {
+  genreLabels,
+  genres as genreValues,
+} from '@app/web/features/beneficiaire/domain/genre'
+import {
+  statutSocialLabels,
+  statutsSociaux as statutSocialValues,
+} from '@app/web/features/beneficiaire/domain/statut-social'
+import {
+  trancheAgeLabels,
+  tranchesAge as trancheAgeValues,
+} from '@app/web/features/beneficiaire/domain/tranche-age'
 import { prismaClient } from '@app/web/prismaClient'
 import { UserProfile } from '@app/web/utils/user'
 import { Genre, Prisma, StatutSocial, TrancheAge } from '@prisma/client'

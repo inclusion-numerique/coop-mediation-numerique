@@ -1,9 +1,9 @@
-import { genreValues } from '@app/web/beneficiaire/beneficiaire'
 import {
   type Commune,
   type CommunesClient,
   createCommunesClient,
 } from '@app/web/communes/communesClient'
+import { genres as genreValues } from '@app/web/features/beneficiaire/domain/genre'
 import { anneeNaissanceValidation } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation' // Todo: move file to beneficiaires feature
 import type { Genre } from '@prisma/client'
 import type { CellObject, WorkSheet } from 'xlsx'

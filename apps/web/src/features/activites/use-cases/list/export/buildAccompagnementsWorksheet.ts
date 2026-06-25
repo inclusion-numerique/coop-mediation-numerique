@@ -1,9 +1,7 @@
-import {
-  genreLabels,
-  statutSocialLabels,
-  trancheAgeLabels,
-} from '@app/web/beneficiaire/beneficiaire'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
+import { genreLabels } from '@app/web/features/beneficiaire/domain/genre'
+import { statutSocialLabels } from '@app/web/features/beneficiaire/domain/statut-social'
+import { trancheAgeLabels } from '@app/web/features/beneficiaire/domain/tranche-age'
 import {
   addExportMetadata,
   WorksheetUser,

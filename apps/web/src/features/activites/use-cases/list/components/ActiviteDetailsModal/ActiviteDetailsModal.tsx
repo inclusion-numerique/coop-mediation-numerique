@@ -2,18 +2,22 @@
 
 import { createToast } from '@app/ui/toast/createToast'
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
-import {
-  genreValues,
-  sexLabels,
-  statutSocialLabels,
-  statutSocialValues,
-  trancheAgeLabels,
-  trancheAgeValues,
-} from '@app/web/beneficiaire/beneficiaire'
 import { createParticipantsAnonymesForBeneficiaires } from '@app/web/beneficiaire/createParticipantsAnonymesForBeneficiaires'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import Stars from '@app/web/components/Stars'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import {
+  genres as genreValues,
+  sexLabels,
+} from '@app/web/features/beneficiaire/domain/genre'
+import {
+  statutSocialLabels,
+  statutsSociaux as statutSocialValues,
+} from '@app/web/features/beneficiaire/domain/statut-social'
+import {
+  trancheAgeLabels,
+  tranchesAge as trancheAgeValues,
+} from '@app/web/features/beneficiaire/domain/tranche-age'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import { trpc } from '@app/web/trpc'
 import { formatActiviteDayDate } from '@app/web/utils/activiteDayDateFormat'

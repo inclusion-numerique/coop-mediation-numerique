@@ -12,11 +12,6 @@ import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { creerBeneficiaireAction } from '@app/web/app/_actions/beneficiaire/creer-beneficiaire.action'
 import { modifierBeneficiaireAction } from '@app/web/app/_actions/beneficiaire/modifier-beneficiaire.action'
 import FormSection from '@app/web/app/coop/(full-width-layout)/mes-beneficiaires/FormSection'
-import {
-  genreOptions,
-  statutSocialOptions,
-  trancheAgeOptions,
-} from '@app/web/beneficiaire/beneficiaire'
 import { trancheAgeFromAnneeNaissance } from '@app/web/beneficiaire/trancheAgeFromAnneeNaissance'
 import AdresseBanFormField, {
   type AdressBanFormFieldOption,
@@ -30,6 +25,11 @@ import { CraCollectifData } from '@app/web/features/activites/use-cases/cra/coll
 import CraFormLabel from '@app/web/features/activites/use-cases/cra/components/CraFormLabel'
 import { craFormFieldsetClassname } from '@app/web/features/activites/use-cases/cra/components/craFormFieldsetClassname'
 import { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
+import {
+  genreOptions,
+  statutSocialOptions,
+  trancheAgeOptions,
+} from '@app/web/features/beneficiaire/forms/beneficiaire-options'
 import {
   anneeNaissanceMax,
   anneeNaissanceMin,

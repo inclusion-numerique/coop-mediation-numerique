@@ -1,9 +1,7 @@
-import {
-  genreValues,
-  statutSocialValues,
-  trancheAgeValues,
-} from '@app/web/beneficiaire/beneficiaire'
 import { AdresseBanValidation } from '@app/web/external-apis/ban/AdresseBanValidation'
+import { genres as genreValues } from '@app/web/features/beneficiaire/domain/genre'
+import { statutsSociaux as statutSocialValues } from '@app/web/features/beneficiaire/domain/statut-social'
+import { tranchesAge as trancheAgeValues } from '@app/web/features/beneficiaire/domain/tranche-age'
 import {
   telephoneRegex,
   telephoneValidation,
