@@ -17,8 +17,6 @@ import { useMemo, useState } from 'react'
 
 type BeneficiairesDoublonsPageData = Awaited<ReturnType<DetecterDoublons>>
 
-import styles from './BeneficiaireFusionDoublons.module.css'
-
 export type FusionItemToKeep = 'a' | 'b'
 
 type FusionItemState = {
@@ -205,12 +203,7 @@ const BeneficiaireFusionDoublons = ({
               selected && 'fr-border--blue-france',
             )}
           >
-            <div
-              className={classNames(
-                'fr-pr-6v fr-pl-8v fr-flex fr-align-items-center fr-justify-content-center',
-                styles.checkboxContainer,
-              )}
-            >
+            <div className="fr-pr-6v fr-pl-8v fr-flex fr-align-items-center fr-justify-content-center fr-flex-shrink-0">
               <div className="fr-checkbox-group fr-checkbox-group--sm fr-mb-0">
                 <input
                   type="checkbox"
@@ -219,10 +212,7 @@ const BeneficiaireFusionDoublons = ({
                   onChange={() => onSelectItem(duplicate.id)}
                   aria-label="Sélectionner"
                 />
-                <label
-                  className={classNames(styles.labelNoText)}
-                  htmlFor={checkboxId}
-                >
+                <label className="fr-sr-only" htmlFor={checkboxId}>
                   Sélectionner
                 </label>
               </div>
