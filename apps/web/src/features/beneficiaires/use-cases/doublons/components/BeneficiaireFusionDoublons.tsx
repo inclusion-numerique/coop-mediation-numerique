@@ -2,13 +2,12 @@
 
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
-import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { fusionnerBeneficiairesAction } from '@app/web/app/_actions/beneficiaire/fusionner-beneficiaires.action'
 import type {
   BeneficiaireDoublon,
   DetecterDoublons,
 } from '@app/web/features/beneficiaire/abilities/detecter-doublons'
-import { trpc } from '@app/web/trpc'
+import { pluriel } from '@app/web/libraries/pluriel'
 import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
 import * as Sentry from '@sentry/nextjs'
@@ -72,7 +71,7 @@ const BeneficiaireFusionDoublons = ({
 }: {
   data: BeneficiairesDoublonsPageData
 }) => {
-  const mutation = trpc.beneficiaires.fusionner.useMutation()
+  const [pending, setPending] = useState(false)
   const router = useRouter()
 
   const [fusionItems, setFusionItems] = useState<FusionItemsState>(
@@ -134,27 +133,26 @@ const BeneficiaireFusionDoublons = ({
       fusionItems,
     })
 
-    try {
-      await mutation.mutateAsync({
-        fusions: fusionData,
-      })
+    setPending(true)
+    const result = await fusionnerBeneficiairesAction({ fusions: fusionData })
 
-      createToast({
-        priority: 'success',
-        message: `${fusionData.length} doublon${sPluriel(fusionData.length)} fusionné${sPluriel(fusionData.length)}`,
-      })
-
-      router.push(`/coop/mes-beneficiaires`)
-    } catch (error) {
+    if (!result.success) {
+      setPending(false)
       createToast({
         priority: 'error',
         message: 'Une erreur est survenue lors de la fusion des doublons',
       })
-      Sentry.captureException(error)
+      Sentry.captureException(new Error(result.error))
+      return
     }
-  }
 
-  const isLoading = mutation.isPending || mutation.isSuccess
+    createToast({
+      priority: 'success',
+      message: `${fusionData.length} ${pluriel(fusionData.length, 'doublon fusionné', 'doublons fusionnés')}`,
+    })
+
+    router.push(`/coop/mes-beneficiaires`)
+  }
 
   return (
     <>
@@ -178,10 +176,10 @@ const BeneficiaireFusionDoublons = ({
           <Button
             type="button"
             onClick={executeFusion}
-            {...buttonLoadingClassname(isLoading)}
+            {...buttonLoadingClassname(pending)}
           >
-            Fusionner {numberToString(selectedCount)} doublon
-            {sPluriel(selectedCount)}
+            Fusionner {numberToString(selectedCount)}{' '}
+            {pluriel(selectedCount, 'doublon', 'doublons')}
           </Button>
         ) : (
           <Button type="button" disabled>
@@ -254,7 +252,7 @@ const BeneficiaireFusionDoublons = ({
   )
 }
 
-export default withTrpc(BeneficiaireFusionDoublons)
+export default BeneficiaireFusionDoublons
 
 type BeneficiaireColumnProps = {
   disabled?: boolean
