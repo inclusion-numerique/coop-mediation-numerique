@@ -10,7 +10,6 @@ const BeneficiaireEnregistrerUneActivite = ({
   size,
 }: {
   beneficiaire: BeneficiaireCraData
-  displayName: string
   label?: string
   size?: 'small' | 'medium' | 'large'
 }) => {

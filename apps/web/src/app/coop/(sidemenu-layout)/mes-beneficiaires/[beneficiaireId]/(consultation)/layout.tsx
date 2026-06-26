@@ -1,8 +1,8 @@
 import PrendreRendezVousAvecBeneficiaireButton from '@app/web/app/coop/(full-width-layout)/mon-profil/PrendreRendezVousAvecBeneficiaireButton'
-import BeneficiaireEnregistrerUneActivite from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/BeneficiaireEnregistrerUneActivite'
 import BeneficiairePageRefreshRdvs from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/BeneficiairePageRefreshRdvs'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
+import BeneficiaireEnregistrerUneActivite from '@app/web/features/activites/use-cases/cra/components/BeneficiaireEnregistrerUneActivite'
 import BeneficiaireConsultationLayout from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireConsultationLayout'
 import { findDuplicatesForBeneficiaire } from '@app/web/features/beneficiaire/abilities/detecter-doublons/implementation'
 import DeleteBeneficiaireModalContent from '@app/web/features/beneficiaire/abilities/supprimer-beneficiaires/ui/components/DeleteBeneficiaireModalContent'
@@ -84,14 +84,12 @@ const BeneficiaireLayout = async (
       primaryActions={
         <BeneficiaireEnregistrerUneActivite
           beneficiaire={beneficiaireCraData}
-          displayName={displayName}
         />
       }
       rdvActions={
         <>
           <BeneficiaireEnregistrerUneActivite
             beneficiaire={beneficiaireCraData}
-            displayName={displayName}
             size="small"
             label="Enregistrer un accompagnement individuel"
           />
