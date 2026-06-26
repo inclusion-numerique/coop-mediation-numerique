@@ -27,6 +27,7 @@ export {
 } from './statut-social'
 export { TELEPHONE_PATTERN, Telephone } from './telephone'
 export {
+  effectiveTrancheAge,
   type TrancheAge,
   trancheAgeForBeneficiaire,
   trancheAgeFromAnneeNaissance,

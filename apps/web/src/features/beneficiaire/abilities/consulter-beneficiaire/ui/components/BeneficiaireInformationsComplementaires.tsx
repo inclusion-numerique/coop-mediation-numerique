@@ -1,8 +1,10 @@
-import { effectiveTrancheAge } from '@app/web/beneficiaire/trancheAgeFromAnneeNaissance'
 import InfoLabelValue from '@app/web/components/InfoLabelValue'
 import { genreLabels } from '@app/web/features/beneficiaire/domain/genre'
 import { statutSocialLabels } from '@app/web/features/beneficiaire/domain/statut-social'
-import { trancheAgeLabels } from '@app/web/features/beneficiaire/domain/tranche-age'
+import {
+  effectiveTrancheAge,
+  trancheAgeLabels,
+} from '@app/web/features/beneficiaire/domain/tranche-age'
 import type { BeneficiaireInformations } from '../../domain/consulter-beneficiaire'
 
 const BeneficiaireInformationsComplementaires = ({

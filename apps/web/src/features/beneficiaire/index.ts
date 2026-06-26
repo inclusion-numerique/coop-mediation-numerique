@@ -3,6 +3,7 @@ export {
   BeneficiaireId,
   beneficiaireAdresseString,
   beneficiaireDisplayName,
+  effectiveTrancheAge,
   type Genre,
   genreLabels,
   genres,

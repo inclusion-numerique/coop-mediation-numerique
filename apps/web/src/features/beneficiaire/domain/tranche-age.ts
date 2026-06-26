@@ -1,6 +1,6 @@
 import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
-import type { AnneeNaissance } from './annee-naissance'
+import { AnneeNaissance } from './annee-naissance'
 
 export const tranchesAge = [
   'SoixanteDixPlus',
@@ -67,3 +67,30 @@ export const trancheAgeForBeneficiaire = (
   anneeNaissance
     ? trancheAgeFromAnneeNaissance(anneeNaissance)
     : TrancheAge('NonCommunique')
+
+/**
+ * Dérive la tranche d'âge d'une année « brute » (valeur de formulaire ou source
+ * externe) : valide via `AnneeNaissance`, renvoie `null` si absente ou invalide.
+ */
+const trancheAgeFromAnneeNaissanceValue = (
+  anneeNaissance?: string | number | null,
+): TrancheAge | null => {
+  const annee =
+    typeof anneeNaissance === 'string'
+      ? Number.parseInt(anneeNaissance, 10)
+      : anneeNaissance
+  const parsed = AnneeNaissance.schema.safeParse(annee)
+  return parsed.success ? trancheAgeFromAnneeNaissance(parsed.data) : null
+}
+
+/**
+ * Tranche effective pour l'affichage ou la saisie : dérivée de l'année si elle
+ * est exploitable, sinon la valeur stockée, sinon `null`. Couvre les entrées
+ * non validées (formulaire, synchro RDVSP) — corrige le « bug RDVSP » où une
+ * tranche stockée nulle masquait une année renseignée.
+ */
+export const effectiveTrancheAge = (
+  anneeNaissance?: string | number | null,
+  trancheAge?: TrancheAge | null,
+): TrancheAge | null =>
+  trancheAgeFromAnneeNaissanceValue(anneeNaissance) ?? trancheAge ?? null

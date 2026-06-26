@@ -1,4 +1,3 @@
-import { trancheAgeFromAnneeNaissance } from '@app/web/beneficiaire/trancheAgeFromAnneeNaissance'
 import type { DuplicateBeneficiaire } from '@app/web/features/beneficiaire/abilities/detecter-doublons/domain/types'
 import { findDuplicatesForBeneficiaire } from '@app/web/features/beneficiaire/abilities/detecter-doublons/implementation'
 import { Email } from '@app/web/features/beneficiaire/domain/email'
@@ -6,6 +5,7 @@ import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
 import { Nom } from '@app/web/features/beneficiaire/domain/nom'
 import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
 import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
+import { effectiveTrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
 import { prismaClient } from '@app/web/prismaClient'
 import { fixTelephone } from '@app/web/utils/clean-operations'
 import type { Beneficiaire, Prisma, RdvUser } from '@prisma/client'
@@ -121,7 +121,7 @@ export const createOrMergeBeneficiaireFromRdvUser = async ({
       const year = rdvUser.birthDate.getFullYear()
       if (year > 1900) {
         beneficiaireUpdateData.anneeNaissance = year
-        beneficiaireUpdateData.trancheAge = trancheAgeFromAnneeNaissance(year)
+        beneficiaireUpdateData.trancheAge = effectiveTrancheAge(year)
       }
     }
 
@@ -172,7 +172,7 @@ export const createOrMergeBeneficiaireFromRdvUser = async ({
       email: rdvUser.email,
       adresse: rdvUser.address,
       anneeNaissance,
-      trancheAge: trancheAgeFromAnneeNaissance(anneeNaissance),
+      trancheAge: effectiveTrancheAge(anneeNaissance),
       commune: communeFields?.commune ?? null,
       communeCodePostal: communeFields?.communeCodePostal ?? null,
       communeCodeInsee: communeFields?.communeCodeInsee ?? null,

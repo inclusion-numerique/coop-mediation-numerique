@@ -9,7 +9,6 @@ import { useScrollToError } from '@app/ui/hooks/useScrollToError'
 import { useWatchSubscription } from '@app/ui/hooks/useWatchSubscription'
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
-import { trancheAgeFromAnneeNaissance } from '@app/web/beneficiaire/trancheAgeFromAnneeNaissance'
 import AdresseBanFormField, {
   type AdressBanFormFieldOption,
 } from '@app/web/components/form/AdresseBanFormField'
@@ -26,6 +25,7 @@ import {
   ANNEE_NAISSANCE_MAX as anneeNaissanceMax,
   ANNEE_NAISSANCE_MIN as anneeNaissanceMin,
 } from '@app/web/features/beneficiaire/domain/annee-naissance'
+import { effectiveTrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
 import {
   genreOptions,
   statutSocialOptions,
@@ -188,9 +188,7 @@ const BeneficiaireForm = ({
     anneeNaissanceInt <= anneeNaissanceMax
 
   useEffect(() => {
-    const trancheAgeFromAnnee = trancheAgeFromAnneeNaissance(
-      getValues('anneeNaissance'),
-    )
+    const trancheAgeFromAnnee = effectiveTrancheAge(getValues('anneeNaissance'))
     if (
       trancheAgeFromAnnee &&
       getValues('trancheAge') !== trancheAgeFromAnnee
@@ -214,9 +212,7 @@ const BeneficiaireForm = ({
 
         // Set tranche d’age depending on birth year
         if (name === 'anneeNaissance') {
-          const trancheAgeFromAnnee = trancheAgeFromAnneeNaissance(
-            data.anneeNaissance,
-          )
+          const trancheAgeFromAnnee = effectiveTrancheAge(data.anneeNaissance)
           if (trancheAgeFromAnnee && data.trancheAge !== trancheAgeFromAnnee) {
             setValue('trancheAge', trancheAgeFromAnnee)
           }
