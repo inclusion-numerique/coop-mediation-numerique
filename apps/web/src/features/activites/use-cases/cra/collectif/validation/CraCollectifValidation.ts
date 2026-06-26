@@ -1,4 +1,4 @@
-import { BeneficiaireCraValidation } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
+import { BeneficiaireCraValidation } from '@app/web/features/activites/use-cases/cra/validation/BeneficiaireCraValidation'
 import z from 'zod'
 import { CraValidation } from '../../validation/CraValidation'
 import { niveauAtelierValues } from '../fields/niveau-atelier'

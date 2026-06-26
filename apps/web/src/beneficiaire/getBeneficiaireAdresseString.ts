@@ -1,4 +1,4 @@
-import { BeneficiaireCraData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
+import { BeneficiaireCraData } from '@app/web/features/activites/use-cases/cra/validation/BeneficiaireCraValidation'
 
 export const getBeneficiaireAdresseString = ({
   communeResidence,
