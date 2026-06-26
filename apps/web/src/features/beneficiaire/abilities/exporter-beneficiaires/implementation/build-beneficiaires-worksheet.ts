@@ -8,7 +8,7 @@ import { addTitleRow } from '@app/web/libs/worksheet/addTitleRow'
 import { autosizeColumns } from '@app/web/libs/worksheet/autosizeColumns'
 import { setWorkbookMetadata } from '@app/web/libs/worksheet/setWorkbookMetadata'
 import { htmlToText } from '@app/web/utils/htmlToText'
-import * as Excel from 'exceljs'
+import Excel from 'exceljs'
 import type {
   BeneficiaireExportRow,
   BuildBeneficiairesWorksheet,
