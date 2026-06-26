@@ -1,39 +1,33 @@
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButton from '@app/web/components/BackButton'
-import type { AdressBanFormFieldOption } from '@app/web/components/form/AdresseBanFormField'
 import IconInSquare from '@app/web/components/IconInSquare'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import type { ModifierBeneficiaireView } from '@app/web/features/beneficiaire/abilities/modifier-beneficiaire/ui/components/modifier-beneficiaire.presenter'
 import BeneficiaireForm, {
   type EnregistrerBeneficiaire,
 } from '@app/web/features/beneficiaire/forms/BeneficiaireForm'
-import type { BeneficiaireData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
 import { contentId } from '@app/web/utils/skipLinks'
 import Link from 'next/link'
-import type { DefaultValues } from 'react-hook-form'
 
 /**
- * Composant de page pur : rend le formulaire de modification et son chrome.
- * L'orchestration (auth, lecture du bénéficiaire, construction des valeurs par
- * défaut, liaison de l'action) vit dans la route Next. L'action `save` est
- * injectée ; l'identifiant à modifier transite par les valeurs du formulaire.
+ * Composant de page pur : rend le formulaire de modification et son chrome à
+ * partir de la vue déjà calculée. L'orchestration (auth, lecture via l'ability,
+ * presenter) vit dans la route Next. L'action `save` est injectée ;
+ * l'identifiant à modifier transite par les valeurs du formulaire.
  */
 export const ModifierBeneficiairePage = ({
-  beneficiaireId,
-  displayName,
-  defaultValues,
+  view: {
+    beneficiaireId,
+    displayName,
+    defaultValues,
+    communeResidenceDefaultOptions,
+  },
   save,
   retour,
-  communeResidenceDefaultOptions,
 }: {
-  beneficiaireId: string
-  displayName: string
-  defaultValues: DefaultValues<BeneficiaireData> & {
-    id: string
-    mediateurId: string
-  }
+  view: ModifierBeneficiaireView
   save: EnregistrerBeneficiaire
   retour?: string
-  communeResidenceDefaultOptions?: AdressBanFormFieldOption[]
 }) => (
   <div className="fr-container fr-container--medium">
     <SkipLinksPortal />
