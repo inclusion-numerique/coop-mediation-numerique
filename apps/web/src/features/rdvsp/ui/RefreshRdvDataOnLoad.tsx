@@ -5,7 +5,7 @@ import { trpc } from '@app/web/trpc'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
-const BeneficiairePageRefreshRdvs = ({
+const RefreshRdvDataOnLoad = ({
   userId,
   syncDataOnLoad,
 }: {
@@ -30,4 +30,4 @@ const BeneficiairePageRefreshRdvs = ({
   return null
 }
 
-export default withTrpc(BeneficiairePageRefreshRdvs)
+export default withTrpc(RefreshRdvDataOnLoad)

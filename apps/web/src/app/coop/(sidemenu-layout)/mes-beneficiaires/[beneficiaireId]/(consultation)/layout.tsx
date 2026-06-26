@@ -1,5 +1,4 @@
 import PrendreRendezVousAvecBeneficiaireButton from '@app/web/app/coop/(full-width-layout)/mon-profil/PrendreRendezVousAvecBeneficiaireButton'
-import BeneficiairePageRefreshRdvs from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/BeneficiairePageRefreshRdvs'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import BeneficiaireEnregistrerUneActivite from '@app/web/features/activites/use-cases/cra/components/BeneficiaireEnregistrerUneActivite'
@@ -13,6 +12,7 @@ import { Nom } from '@app/web/features/beneficiaire/domain/nom'
 import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
 import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import type { BeneficiaireCraData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
+import RefreshRdvDataOnLoad from '@app/web/features/rdvsp/ui/RefreshRdvDataOnLoad'
 import { prismaClient } from '@app/web/prismaClient'
 import { notFound } from 'next/navigation'
 import type { PropsWithChildren } from 'react'
@@ -110,7 +110,7 @@ const BeneficiaireLayout = async (
         hasRdvIntegration &&
         user.rdvAccount &&
         user.rdvAccount.invalidWebhookOrganisationIds.length > 0 ? (
-          <BeneficiairePageRefreshRdvs userId={user.id} syncDataOnLoad={true} />
+          <RefreshRdvDataOnLoad userId={user.id} syncDataOnLoad={true} />
         ) : undefined
       }
     >
