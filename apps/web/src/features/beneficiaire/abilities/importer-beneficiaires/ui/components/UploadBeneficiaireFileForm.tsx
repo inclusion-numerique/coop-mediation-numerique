@@ -1,18 +1,16 @@
 'use client'
 
-import FileFormField from '@app/ui/components/Form/FileFormField'
-import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import {
   type AnalyseResponse,
   storeBeneficiaireImportAnalysis,
 } from '@app/web/features/beneficiaire/abilities/importer-beneficiaires/ui/import-analysis-storage'
+import { handleSubmit } from '@app/web/libs/form/handle-submit'
+import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { isBrowser } from '@app/web/utils/isBrowser'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { useStore } from '@tanstack/react-form'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 // Create zod validation so the file is required and of type File
@@ -39,84 +37,89 @@ type UploadBeneficiaireFileFormData = z.infer<
 >
 
 const UploadBeneficiaireFileForm = () => {
-  const { control, handleSubmit } = useForm<UploadBeneficiaireFileFormData>({
-    resolver: zodResolver(UploadBeneficiaireFileFormValidation),
-  })
   const router = useRouter()
-  const [loading, setLoading] = useState(false)
 
-  const onSubmit = async (data: UploadBeneficiaireFileFormData) => {
-    setLoading(true)
+  const form = useAppForm({
+    validators: { onSubmit: UploadBeneficiaireFileFormValidation },
+    defaultValues: {} as UploadBeneficiaireFileFormData,
+    onSubmit: async ({ value }) => {
+      const formData = new FormData()
+      formData.append('file', value.file)
 
-    const formData = new FormData()
-    formData.append('file', data.file)
-
-    try {
-      const response = await fetch('/coop/mes-beneficiaires/importer/analyse', {
-        method: 'POST',
-        body: formData,
-      })
-
-      if (!response.ok) {
-        router.push(
-          `/coop/mes-beneficiaires/importer/erreur?message=${response.statusText}`,
+      try {
+        const response = await fetch(
+          '/coop/mes-beneficiaires/importer/analyse',
+          { method: 'POST', body: formData },
         )
-        return
+
+        if (!response.ok) {
+          router.push(
+            `/coop/mes-beneficiaires/importer/erreur?message=${response.statusText}`,
+          )
+          return
+        }
+
+        const analysisData = (await response.json()) as AnalyseResponse
+
+        storeBeneficiaireImportAnalysis(analysisData)
+
+        router.push(
+          `/coop/mes-beneficiaires/importer/analyse/${analysisData.id}`,
+        )
+      } catch {
+        router.push(`/coop/mes-beneficiaires/importer/erreur`)
       }
+    },
+  })
 
-      const analysisData = (await response.json()) as AnalyseResponse
-
-      storeBeneficiaireImportAnalysis(analysisData)
-
-      router.push(`/coop/mes-beneficiaires/importer/analyse/${analysisData.id}`)
-    } catch {
-      router.push(`/coop/mes-beneficiaires/importer/erreur`)
-    }
-  }
+  const isPending = useStore(form.store, (state) => state.isSubmitting)
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="fr-grid-row fr-grid-row--gutters">
-        <div className="fr-col-12 fr-col-md-5">
-          <h2 className="fr-h5 fr-text-title--blue-france fr-mb-2v">
-            3. Importer le fichier
-          </h2>
-          <p className="fr-text--sm">
-            Une fois le fichier complété, vous pouvez l’importer en cliquant sur
-            Parcourir, en le sélectionnant parmi vos dossiers puis en cliquant
-            sur Importer.
-          </p>
-        </div>
-        <div className="fr-col-12 fr-col-md-7">
-          <div className="fr-border fr-border-radius--16 fr-p-4v">
-            <FileFormField
-              control={control}
-              path="file"
-              label="Importer le fichier"
-              hint="Format Excel (.xlsx)"
-              accept=".xlsx"
-            />
+    <form.AppForm>
+      <form onSubmit={handleSubmit(form)}>
+        <div className="fr-grid-row fr-grid-row--gutters">
+          <div className="fr-col-12 fr-col-md-5">
+            <h2 className="fr-h5 fr-text-title--blue-france fr-mb-2v">
+              3. Importer le fichier
+            </h2>
+            <p className="fr-text--sm">
+              Une fois le fichier complété, vous pouvez l’importer en cliquant
+              sur Parcourir, en le sélectionnant parmi vos dossiers puis en
+              cliquant sur Importer.
+            </p>
+          </div>
+          <div className="fr-col-12 fr-col-md-7">
+            <div className="fr-border fr-border-radius--16 fr-p-4v">
+              <form.AppField name="file">
+                {(field) => (
+                  <field.File
+                    isPending={isPending}
+                    label="Importer le fichier"
+                    hint="Format Excel (.xlsx)"
+                    accept=".xlsx"
+                  />
+                )}
+              </form.AppField>
+            </div>
           </div>
         </div>
-      </div>
-      <hr className="fr-separator-12v" />
-      <div className="fr-btns-group">
-        <Button
-          type="submit"
-          priority="primary"
-          {...buttonLoadingClassname(loading)}
-        >
-          {loading ? 'Analyse en cours...' : 'Vérifier le fichier avant import'}
-        </Button>
-        <Button
-          className={classNames('fr-ml-1v', loading && 'fr-btn--disabled')}
-          priority="secondary"
-          linkProps={{ href: '/coop/mes-beneficiaires' }}
-        >
-          Annuler
-        </Button>
-      </div>
-    </form>
+        <hr className="fr-separator-12v" />
+        <div className="fr-btns-group">
+          <form.Submit isPending={isPending} priority="primary">
+            {isPending
+              ? 'Analyse en cours...'
+              : 'Vérifier le fichier avant import'}
+          </form.Submit>
+          <Button
+            className={classNames('fr-ml-1v', isPending && 'fr-btn--disabled')}
+            priority="secondary"
+            linkProps={{ href: '/coop/mes-beneficiaires' }}
+          >
+            Annuler
+          </Button>
+        </div>
+      </form>
+    </form.AppForm>
   )
 }
 

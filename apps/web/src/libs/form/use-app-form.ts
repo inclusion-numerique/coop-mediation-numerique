@@ -26,6 +26,12 @@ const ComboBox = lazy(() =>
   props: ComboBoxProps<TItem, TPayload>,
 ) => ReactNode
 
+const File = lazy(() =>
+  import('./fields-components/File').then((module) => ({
+    default: module.File,
+  })),
+)
+
 const Input = lazy(() =>
   import('./fields-components/Input').then((module) => ({
     default: module.Input,
@@ -87,6 +93,7 @@ export const { useAppForm, withForm } = createFormHook({
     Calendar,
     Checkbox,
     ComboBox,
+    File,
     Input,
     RadioButtons,
     RichTextarea,
