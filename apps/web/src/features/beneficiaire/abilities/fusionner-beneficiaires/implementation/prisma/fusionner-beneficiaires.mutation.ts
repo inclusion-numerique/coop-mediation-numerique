@@ -1,53 +1,12 @@
 import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
 import { failure, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
-import type { Beneficiaire } from '@prisma/client'
 import {
   BeneficiaireDestinationIntrouvable,
   BeneficiaireSourceIntrouvable,
 } from '../../domain/errors'
 import type { FusionnerBeneficiaires } from '../../domain/fusionner-beneficiaires'
-
-const isValuePresent = (value: unknown) => {
-  if (value === null || value === undefined) return false
-  if (typeof value === 'string') return value.trim() !== ''
-  return true
-}
-
-const fieldsToMerge = [
-  'prenom',
-  'nom',
-  'telephone',
-  'email',
-  'adresse',
-  'commune',
-  'communeCodePostal',
-  'communeCodeInsee',
-  'notes',
-  'pasDeTelephone',
-  'anneeNaissance',
-  'rdvServicePublicId',
-  'rdvUserId',
-  'genre',
-  'trancheAge',
-  'statutSocial',
-] as const satisfies readonly (keyof Beneficiaire)[]
-
-const mergeFields = (
-  source: Beneficiaire,
-  destination: Beneficiaire,
-): Partial<Beneficiaire> =>
-  fieldsToMerge.reduce<Partial<Beneficiaire>>(
-    (merged, field) => ({
-      ...merged,
-      ...(isValuePresent(destination[field])
-        ? { [field]: destination[field] }
-        : isValuePresent(source[field])
-          ? { [field]: source[field] }
-          : {}),
-    }),
-    {},
-  )
+import { mergeBeneficiaireFields } from '../../domain/merge-beneficiaire-fields'
 
 const earliestDate = (a: Date, b: Date) => (a < b ? a : b)
 
@@ -83,7 +42,10 @@ export const fusionnerBeneficiaires: FusionnerBeneficiaires = async ({
     return failure(BeneficiaireDestinationIntrouvable(destinationId))
 
   await prismaClient.$transaction(async (tx) => {
-    const mergedData = mergeFields(sourceBeneficiaire, destinationBeneficiaire)
+    const mergedData = mergeBeneficiaireFields(
+      sourceBeneficiaire,
+      destinationBeneficiaire,
+    )
 
     await tx.beneficiaire.update({
       where: { id: destinationId },
