@@ -12,14 +12,12 @@ describe('ETQ Utilisateur, je peux importer des bénéficiaires', () => {
     cy.visit(appUrl('/coop/mes-beneficiaires/importer'))
     cy.findByRole('heading', { name: 'Importer des bénéficiaires' })
 
-    cy.intercept('/coop/mes-beneficiaires/importer/analyse').as('mutation')
-
     cy.get('input[type="file"][name="file"]').attachFile(
       'import-beneficiaires_invalide.xlsx',
     )
-    cy.get('form').submit()
-
-    cy.wait('@mutation')
+    cy.findByRole('button', {
+      name: 'Vérifier le fichier avant import',
+    }).click()
 
     cy.url().should(
       'contain',

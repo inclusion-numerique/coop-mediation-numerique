@@ -1,15 +1,15 @@
 /* Barre de recherche DSFR compacte, alignée sur une rangée d'actions */
 .fr-search-bar--inline {
-  height: 40px !important;
+  height: 2.5rem !important;
 
-  input {
-    height: 40px;
+  .fr-input {
+    height: 2.5rem;
     border-right: none;
     border-bottom-left-radius: 4px !important;
   }
 
-  button {
-    height: 40px !important;
+  .fr-btn {
+    height: 2.5rem !important;
     min-height: unset !important;
     padding: 8px !important;
     font-size: 0 !important;
@@ -17,7 +17,7 @@
     border-bottom-right-radius: 4px !important;
   }
 
-  button::before {
+  .fr-btn::before {
     margin-right: -0.5px !important;
     margin-left: 0.5px !important;
     font-size: initial !important;

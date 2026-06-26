@@ -1,5 +1,6 @@
 'use client'
 
+import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
 import RequiredFieldsDisclaimer from '@app/ui/components/Form/RequiredFieldsDisclaimer'
 import { Options } from '@app/ui/components/Primitives/Options'
 import { createToast } from '@app/ui/toast/createToast'
@@ -224,7 +225,11 @@ const BeneficiaireForm = ({
                   <field.Input
                     className="fr-flex-grow-1 fr-flex-basis-0"
                     isPending={isPending}
-                    label="Prénom(s) *"
+                    label={
+                      <>
+                        Prénom(s) <RedAsterisk />
+                      </>
+                    }
                   />
                 )}
               </form.AppField>
@@ -235,7 +240,11 @@ const BeneficiaireForm = ({
                   <field.Input
                     className="fr-flex-grow-1 fr-flex-basis-0"
                     isPending={isPending}
-                    label="Nom d’usage *"
+                    label={
+                      <>
+                        Nom d’usage <RedAsterisk />
+                      </>
+                    }
                   />
                 )}
               </form.AppField>
@@ -360,8 +369,8 @@ const BeneficiaireForm = ({
                       addonEnd={
                         <Button
                           title="Rechercher une commune"
-                          className="fr-border-left-0 fr-py-7v fr-pl-4v"
-                          style={{ width: 56, maxWidth: 56, minWidth: 56 }}
+                          className="fr-border-left-0 fr-pl-3v"
+                          style={{ width: 48, maxWidth: 48, minWidth: 48 }}
                           iconId="fr-icon-search-line"
                           {...getToggleButtonProps({ type: 'button' })}
                         />
@@ -373,7 +382,7 @@ const BeneficiaireForm = ({
                             type="button"
                             iconId="fr-icon-close-line"
                             priority="tertiary no outline"
-                            className="fr-mt-2v fr-mr-2v"
+                            className="fr-border-top fr-border-bottom"
                             onClick={() => {
                               field.setValue(null)
                               setInputValue('')

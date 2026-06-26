@@ -31,7 +31,7 @@ export const BeneficiaireTableRow = ({
         {row[column.field]}
       </td>
     ))}
-    <td className="fr-table-cell--link">
+    <td className="fr-p-0">
       <Link href={row.href}>
         <span className="fr-sr-only">Voir la fiche de {row.label}</span>
       </Link>

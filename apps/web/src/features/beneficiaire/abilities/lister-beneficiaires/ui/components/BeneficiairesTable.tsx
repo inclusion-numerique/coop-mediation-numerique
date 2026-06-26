@@ -20,10 +20,7 @@ export const BeneficiairesTable = ({
   baseHref: string
   selection: DataTableSelection
 }) => (
-  <DataTable
-    className="fr-table--nowrap fr-width-full fr-mb-8v"
-    tableClassName="fr-table--transparent"
-  >
+  <DataTable className="fr-mb-8v">
     <BeneficiairesTableHead
       state={state}
       baseHref={baseHref}

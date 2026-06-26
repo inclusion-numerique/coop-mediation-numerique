@@ -64,6 +64,17 @@
     box-shadow: 0 0 0 1px var(--blue-france-sun-113-625);
   }
 
+  /*
+   * En disabled, DSFR redessine le cercle radio via le background-image du label
+   * (`.fr-fieldset .fr-radio-group input:disabled + label`, plus spécifique que
+   * nos règles « carte »). On le re-supprime pour garder la carte propre, comme
+   * en état normal.
+   */
+  .fr-radio-group input[type="radio"]:disabled + label,
+  .fr-radio-group input[type="radio"]:disabled:checked + label {
+    background-image: none;
+  }
+
   input[type="radio"]:focus-visible + label::before {
     outline: none;
   }

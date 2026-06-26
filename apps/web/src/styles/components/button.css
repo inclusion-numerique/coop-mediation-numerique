@@ -11,12 +11,15 @@
 }
 
 /* Bouton de tri compact d'un en-tête de table (icône seule, sans padding) */
-.fr-btn--sort {
-  height: 16px !important;
-  padding: 0 !important;
-
-  &::before {
+th {
+  .fr-btn--sort {
+    box-shadow: none !important;
     height: 16px !important;
-    margin: 0 !important;
+    padding: 0 !important;
+
+    &::before {
+      height: 16px !important;
+      margin: 0 !important;
+    }
   }
 }

@@ -36,6 +36,7 @@ export const BeneficiairesTableHead = ({
           className={column.alignRight ? 'fr-text--right' : undefined}
         />
       ))}
+      <th className="fr-sr-only">Fiche bénéficiaire</th>
     </tr>
   </thead>
 )
