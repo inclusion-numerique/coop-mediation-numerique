@@ -12,6 +12,15 @@ describe('ETQ Utilisateur, je peux importer des bénéficiaires', () => {
     cy.visit(appUrl('/coop/mes-beneficiaires/importer'))
     cy.findByRole('heading', { name: 'Importer des bénéficiaires' })
 
+    // Attendre l'hydratation AVANT d'attacher le fichier : le bouton de submit
+    // n'est actif qu'une fois le formulaire interactif. Si on attache avant,
+    // l'onChange React n'est pas encore monté → la valeur du fichier est perdue
+    // et le submit part sans fichier (on reste sur /importer). Une fois le bouton
+    // actif, l'onChange capte le fichier et le clic déclenche l'upload client.
+    cy.findByRole('button', {
+      name: 'Vérifier le fichier avant import',
+    }).should('be.enabled')
+
     cy.get('input[type="file"][name="file"]').attachFile(
       'import-beneficiaires_invalide.xlsx',
     )
@@ -19,7 +28,9 @@ describe('ETQ Utilisateur, je peux importer des bénéficiaires', () => {
       name: 'Vérifier le fichier avant import',
     }).click()
 
-    cy.url().should(
+    // Generous timeout: the redirect only happens once the analyse route handler
+    // has answered, which can be slow on a cold (uncompiled) dev server.
+    cy.url({ timeout: 30_000 }).should(
       'contain',
       appUrl('/coop/mes-beneficiaires/importer/erreur'),
     )

@@ -11,6 +11,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { useStore } from '@tanstack/react-form'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { z } from 'zod'
 
 // Create zod validation so the file is required and of type File
@@ -38,6 +39,10 @@ type UploadBeneficiaireFileFormData = z.infer<
 
 const UploadBeneficiaireFileForm = () => {
   const router = useRouter()
+  // Bouton actif seulement après hydratation : empêche une soumission GET native
+  // si l'utilisateur clique avant que le handler React soit monté.
+  const [isInteractive, setIsInteractive] = useState(false)
+  useEffect(() => setIsInteractive(true), [])
 
   const form = useAppForm({
     validators: { onSubmit: UploadBeneficiaireFileFormValidation },
@@ -105,7 +110,11 @@ const UploadBeneficiaireFileForm = () => {
         </div>
         <hr className="fr-separator-12v" />
         <div className="fr-btns-group">
-          <form.Submit isPending={isPending} priority="primary">
+          <form.Submit
+            isPending={isPending}
+            disabled={!isInteractive}
+            priority="primary"
+          >
             {isPending
               ? 'Analyse en cours...'
               : 'Vérifier le fichier avant import'}
