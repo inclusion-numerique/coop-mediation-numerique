@@ -1,6 +1,6 @@
-import { createParticipantsAnonymesForBeneficiaires } from '@app/web/beneficiaire/createParticipantsAnonymesForBeneficiaires'
 import { participantsAnonymesDefault } from '@app/web/features/activites/use-cases/cra/collectif/validation/participantsAnonymes'
 import { Beneficiaire } from '@prisma/client'
+import { createParticipantsAnonymesForBeneficiaires } from './createParticipantsAnonymesForBeneficiaires'
 
 describe('createParticipantsAnonymesForBeneficiaires', () => {
   it('should work for 0 beneficiaires', () => {
