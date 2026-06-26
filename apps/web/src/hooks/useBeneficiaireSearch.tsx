@@ -2,7 +2,7 @@ import { rechercherBeneficiairesAction } from '@app/web/app/_actions/beneficiair
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import type { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import { toBeneficiaireData } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
-import type { BeneficiaireData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
+import type { BeneficiaireData } from '@app/web/features/beneficiaire/forms/beneficiaire-validation'
 import { pluriel } from '@app/web/libraries/pluriel'
 import { useCallback } from 'react'
 

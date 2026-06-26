@@ -31,11 +31,11 @@ import {
   statutSocialOptions,
   trancheAgeOptions,
 } from '@app/web/features/beneficiaire/forms/beneficiaire-options'
-import FormSection from '@app/web/features/beneficiaire/forms/FormSection'
 import {
   BeneficiaireData,
   BeneficiaireValidation,
-} from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
+} from '@app/web/features/beneficiaire/forms/beneficiaire-validation'
+import FormSection from '@app/web/features/beneficiaire/forms/FormSection'
 import type { ServerActionResult } from '@app/web/libraries/nextjs'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import Button from '@codegouvfr/react-dsfr/Button'

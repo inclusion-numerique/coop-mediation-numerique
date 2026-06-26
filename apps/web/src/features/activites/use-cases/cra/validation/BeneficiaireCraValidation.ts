@@ -1,4 +1,4 @@
-import { BeneficiaireValidation } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
+import { BeneficiaireValidation } from '@app/web/features/beneficiaire/forms/beneficiaire-validation'
 import { z } from 'zod'
 
 /**

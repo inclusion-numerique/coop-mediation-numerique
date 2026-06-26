@@ -3,7 +3,7 @@ import { beneficiaireCommuneResidenceToPreviewBanData } from '@app/web/beneficia
 import type { AdressBanFormFieldOption } from '@app/web/components/form/AdresseBanFormField'
 import { banMunicipalityLabel } from '@app/web/external-apis/ban/banMunicipalityLabel'
 import type { BeneficiaireAEditer } from '@app/web/features/beneficiaire/abilities/modifier-beneficiaire/domain/beneficiaire-a-editer'
-import type { BeneficiaireData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
+import type { BeneficiaireData } from '@app/web/features/beneficiaire/forms/beneficiaire-validation'
 import type { DefaultValues } from 'react-hook-form'
 
 export type ModifierBeneficiaireView = {
