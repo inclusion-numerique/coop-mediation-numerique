@@ -1,16 +1,9 @@
-import {
-  type Analysis,
-  analyseImportBeneficiairesExcel,
-} from '@app/web/beneficiaire/import/analyseImportBeneficiairesExcel'
+import { analyseImportBeneficiairesExcel } from '@app/web/beneficiaire/import/analyseImportBeneficiairesExcel'
 import { getBeneficiaireImportSheet } from '@app/web/beneficiaire/import/getBeneficiaireImportSheet'
+import type { AnalyseResponse } from '@app/web/features/beneficiaire/abilities/importer-beneficiaires/ui/import-analysis-storage'
 import * as Sentry from '@sentry/nextjs'
 import type { NextRequest } from 'next/server'
 import { v4 } from 'uuid'
-
-export type AnalyseResponse = {
-  analysis: Analysis
-  id: string
-}
 
 export const POST = async (request: NextRequest) => {
   try {

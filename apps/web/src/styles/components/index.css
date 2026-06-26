@@ -1,4 +1,5 @@
 @import url("./overrides");
+@import url("./beneficiaire-import-analyse.css");
 @import url("./button.css");
 @import url("./card.css");
 @import url("./copied.css");

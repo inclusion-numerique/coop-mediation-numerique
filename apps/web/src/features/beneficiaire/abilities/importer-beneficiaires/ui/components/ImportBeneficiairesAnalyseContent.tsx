@@ -2,8 +2,11 @@
 
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
-import { importerBeneficiairesAction } from '@app/web/app/_actions/beneficiaire/importer-beneficiaires.action'
-import { getBeneficiaireImportAnalysis } from '@app/web/app/coop/(full-width-layout)/mes-beneficiaires/importer/analyse/beneficiaireImportAnalysisStorage'
+import {
+  type AnalyseResponse,
+  getBeneficiaireImportAnalysis,
+} from '@app/web/features/beneficiaire/abilities/importer-beneficiaires/ui/import-analysis-storage'
+import type { ServerActionResult } from '@app/web/libraries/nextjs'
 import { pluriel } from '@app/web/libraries/pluriel'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
@@ -17,7 +20,12 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import styles from './ImportBeneficiairesAnalyseContent.module.css'
+
+// L'action d'import est injectée par la route (concern croisé), l'UI reste
+// découplée de l'ability.
+export type ImporterBeneficiaires = (
+  analysis: AnalyseResponse['analysis'],
+) => Promise<ServerActionResult<{ importes: number }>>
 
 const analysisTableHeaders = [
   'Statut',
@@ -38,7 +46,7 @@ const AnalysisTableCell = ({
   id,
 }: PropsWithChildren<{ error?: string | null; id: string }>) => (
   <td
-    className={classNames(!!error && styles.cellError)}
+    className={classNames(!!error && 'fr-beneficiaire-import-cell-error')}
     aria-describedby={error ? `tooltip-cell-error-${id}` : undefined}
   >
     {children}
@@ -57,8 +65,10 @@ const AnalysisTableCell = ({
 
 const ImportBeneficiairesAnalyseContent = ({
   analysisId,
+  importer,
 }: {
   analysisId: string
+  importer: ImporterBeneficiaires
 }) => {
   const analysisResponse = useMemo(
     () => getBeneficiaireImportAnalysis(analysisId),
@@ -109,7 +119,7 @@ const ImportBeneficiairesAnalyseContent = ({
 
   const onConfirm = async () => {
     setPending(true)
-    const result = await importerBeneficiairesAction(analysisResponse.analysis)
+    const result = await importer(analysisResponse.analysis)
 
     if (!result.success) {
       setPending(false)
@@ -168,14 +178,14 @@ const ImportBeneficiairesAnalyseContent = ({
       )}
       <div
         ref={tableContainerRef}
-        className={classNames(styles.tableContainer, 'fr-mt-6v')}
+        className={classNames('fr-beneficiaire-import-table', 'fr-mt-6v')}
       >
         <div className={classNames('fr-table')} data-fr-js-table="true">
           <div className={classNames('fr-table__wrapper')}>
             <div className={classNames('fr-table__container')}>
               <div className={classNames('fr-table__content')}>
                 <table data-fr-js-table-element="true">
-                  <thead className={styles.thead}>
+                  <thead>
                     <tr>
                       {analysisTableHeaders.map((header, index) => (
                         <th
@@ -188,7 +198,7 @@ const ImportBeneficiairesAnalyseContent = ({
                       ))}
                     </tr>
                   </thead>
-                  <tbody className={styles.tbody}>
+                  <tbody>
                     {rows.map((row, index) => (
                       <tr key={index}>
                         <td>

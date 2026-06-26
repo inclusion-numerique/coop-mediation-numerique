@@ -1,7 +1,5 @@
-import ImportBeneficiairesAnalyseContent from '@app/web/app/coop/(full-width-layout)/mes-beneficiaires/importer/analyse/[id]/ImportBeneficiairesAnalyseContent'
-import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
-import BackButton from '@app/web/components/BackButton'
-import React from 'react'
+import { importerBeneficiairesAction } from '@app/web/app/_actions/beneficiaire/importer-beneficiaires.action'
+import { ImporterBeneficiairesAnalysePage } from '@app/web/features/beneficiaire/abilities/importer-beneficiaires/ui/pages/ImporterBeneficiairesAnalysePage'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -10,30 +8,10 @@ const AnalysePage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params
 
   return (
-    <div className="fr-container fr-container--medium fr-mb-32v">
-      <CoopBreadcrumbs
-        parents={[
-          {
-            label: `Mes bénéficiaires`,
-            linkProps: { href: '/coop/mes-beneficiaires' },
-          },
-          {
-            label: `Importer des bénéficiaires`,
-            linkProps: { href: '/coop/mes-beneficiaires/importer' },
-          },
-        ]}
-        currentPage="Analyse"
-      />
-      <BackButton />
-      <h1 className="fr-h3 fr-text-title--blue-france fr-mb-2v">
-        Analyse du fichier à importer
-      </h1>
-      <p className="fr-text-mention--grey fr-mb-12v">
-        Veuillez vérifier que la liste des bénéficiaires analysée correspond
-        bien à votre fichier.
-      </p>
-      <ImportBeneficiairesAnalyseContent analysisId={id} />
-    </div>
+    <ImporterBeneficiairesAnalysePage
+      analysisId={id}
+      importer={importerBeneficiairesAction}
+    />
   )
 }
 

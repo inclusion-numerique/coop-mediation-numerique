@@ -2,8 +2,10 @@
 
 import FileFormField from '@app/ui/components/Form/FileFormField'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
-import { storeBeneficiaireImportAnalysis } from '@app/web/app/coop/(full-width-layout)/mes-beneficiaires/importer/analyse/beneficiaireImportAnalysisStorage'
-import { AnalyseResponse } from '@app/web/app/coop/(full-width-layout)/mes-beneficiaires/importer/analyse/route' // Create zod validation so the file is required and of type Fil
+import {
+  type AnalyseResponse,
+  storeBeneficiaireImportAnalysis,
+} from '@app/web/features/beneficiaire/abilities/importer-beneficiaires/ui/import-analysis-storage'
 import { isBrowser } from '@app/web/utils/isBrowser'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -13,9 +15,8 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-// Create zod validation so the file is required and of type Fil
+// Create zod validation so the file is required and of type File
 // And the file must be an xlsx file
-
 const UploadBeneficiaireFileFormValidation = z.object({
   file: z
     .instanceof(File, { message: 'Veuillez sélectionner un fichier' })
