@@ -1,6 +1,5 @@
 import { TruncateText } from '@app/ui/components/Primitives/TruncatedText'
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
-import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import Stars from '@app/web/components/Stars'
 import { niveauAtelierStars } from '@app/web/features/activites/use-cases/cra/collectif/fields/niveau-atelier'
 import { thematiqueLabels } from '@app/web/features/activites/use-cases/cra/fields/thematique'
@@ -10,6 +9,7 @@ import {
 } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
 import { autonomieStars } from '@app/web/features/activites/use-cases/cra/individuel/fields/autonomie'
 import type { ActiviteListItemWithTimezone } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
+import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { dureeAsString } from '@app/web/utils/dureeAsString'
@@ -133,7 +133,7 @@ const ActiviteCard = ({
                 <span className="fr-icon-user-line fr-mr-1w fr-icon--sm" />
                 <TruncateText
                   className="fr-text--nowrap"
-                  text={getBeneficiaireDisplayName(
+                  text={displayNameFromIdentity(
                     accompagnements[0]?.beneficiaire ?? {},
                   )}
                   maxLength={20}

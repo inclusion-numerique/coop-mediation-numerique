@@ -1,4 +1,4 @@
-import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
+import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
 import { genreLabels } from '@app/web/features/beneficiaire/domain/genre'
 import { statutSocialLabels } from '@app/web/features/beneficiaire/domain/statut-social'
 import { trancheAgeLabels } from '@app/web/features/beneficiaire/domain/tranche-age'
@@ -168,7 +168,7 @@ export const buildAccompagnementsWorksheet = (
             ? 1
             : `${index + 1}/${activite.accompagnements.length}`,
           ...(isSelfExport
-            ? [getBeneficiaireDisplayName(accompagnement.beneficiaire)]
+            ? [displayNameFromIdentity(accompagnement.beneficiaire)]
             : []),
           typeLieuLabels[typeLieu],
           structure?.nom ?? '',

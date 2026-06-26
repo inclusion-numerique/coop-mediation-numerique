@@ -3,9 +3,9 @@
 import { createToast } from '@app/ui/toast/createToast'
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import { createParticipantsAnonymesForBeneficiaires } from '@app/web/beneficiaire/createParticipantsAnonymesForBeneficiaires'
-import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import Stars from '@app/web/components/Stars'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
 import {
   genres as genreValues,
   sexLabels,
@@ -491,7 +491,7 @@ const ActiviteDetailsModal = ({
                   href={`/coop/mes-beneficiaires/${beneficiaireUnique.id}?retour=${encodeURIComponent(actionsRetourPath)}`}
                   className="fr-link fr-text--sm fr-mb-0 fr-text--medium fr-link--underline-on-hover"
                 >
-                  {getBeneficiaireDisplayName(beneficiaireUnique)}&nbsp;·&nbsp;
+                  {displayNameFromIdentity(beneficiaireUnique)}&nbsp;·&nbsp;
                   {beneficiaireUnique.accompagnementsCount} activité
                   {sPluriel(beneficiaireUnique.accompagnementsCount)}
                 </Link>
@@ -571,7 +571,7 @@ const ActiviteDetailsModal = ({
                             className="fr-link fr-link--underline-on-hover fr-text--sm fr-mb-0"
                             href={`/coop/mes-beneficiaires/${beneficiaire.id}?retour=${encodeURIComponent(actionsRetourPath)}`}
                           >
-                            {getBeneficiaireDisplayName(beneficiaire)}
+                            {displayNameFromIdentity(beneficiaire)}
                           </Link>
                         </ListItem>
                       ))}
