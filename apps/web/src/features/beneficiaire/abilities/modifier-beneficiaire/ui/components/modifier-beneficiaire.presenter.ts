@@ -1,5 +1,3 @@
-import type { AdressBanFormFieldOption } from '@app/web/components/form/AdresseBanFormField'
-import { banMunicipalityLabel } from '@app/web/external-apis/ban/banMunicipalityLabel'
 import type { BeneficiaireAEditer } from '@app/web/features/beneficiaire/abilities/modifier-beneficiaire/domain/beneficiaire-a-editer'
 import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
 import type { BeneficiaireData } from '@app/web/features/beneficiaire/forms/beneficiaire-validation'
@@ -37,7 +35,6 @@ export type ModifierBeneficiaireView = {
     id: string
     mediateurId: string
   }
-  communeResidenceDefaultOptions?: AdressBanFormFieldOption[]
 }
 
 /**
@@ -69,19 +66,9 @@ export const presentBeneficiaireAModifier = ({
     communeCodePostal,
   })
 
-  const communeResidenceDefaultOptions = communeResidence
-    ? [
-        {
-          label: banMunicipalityLabel(communeResidence),
-          value: communeResidence,
-        } satisfies AdressBanFormFieldOption,
-      ]
-    : undefined
-
   return {
     beneficiaireId: id,
     displayName: displayNameFromIdentity({ prenom, nom }),
-    communeResidenceDefaultOptions,
     defaultValues: {
       id,
       mediateurId,

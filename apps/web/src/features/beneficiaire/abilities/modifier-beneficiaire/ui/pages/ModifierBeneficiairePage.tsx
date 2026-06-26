@@ -16,12 +16,7 @@ import Link from 'next/link'
  * l'identifiant à modifier transite par les valeurs du formulaire.
  */
 export const ModifierBeneficiairePage = ({
-  view: {
-    beneficiaireId,
-    displayName,
-    defaultValues,
-    communeResidenceDefaultOptions,
-  },
+  view: { beneficiaireId, displayName, defaultValues },
   save,
   retour,
 }: {
@@ -67,7 +62,6 @@ export const ModifierBeneficiairePage = ({
         defaultValues={defaultValues}
         save={save}
         retour={retour}
-        communeResidenceDefaultOptions={communeResidenceDefaultOptions}
         edit
       />
     </main>
