@@ -1,10 +1,34 @@
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
-import { beneficiaireCommuneResidenceToPreviewBanData } from '@app/web/beneficiaire/prismaBeneficiaireToBeneficiaireData'
 import type { AdressBanFormFieldOption } from '@app/web/components/form/AdresseBanFormField'
 import { banMunicipalityLabel } from '@app/web/external-apis/ban/banMunicipalityLabel'
 import type { BeneficiaireAEditer } from '@app/web/features/beneficiaire/abilities/modifier-beneficiaire/domain/beneficiaire-a-editer'
 import type { BeneficiaireData } from '@app/web/features/beneficiaire/forms/beneficiaire-validation'
+import type { Beneficiaire } from '@prisma/client'
 import type { DefaultValues } from 'react-hook-form'
+
+/**
+ * Construit l'aperçu BAN (option du select commune) à partir des champs commune
+ * persistés. `undefined` tant que la commune n'est pas complètement renseignée.
+ */
+const beneficiaireCommuneResidenceToPreviewBanData = ({
+  commune,
+  communeCodeInsee,
+  communeCodePostal,
+}: Pick<Beneficiaire, 'communeCodePostal' | 'communeCodeInsee' | 'commune'>) =>
+  commune && communeCodePostal && communeCodeInsee
+    ? // We only need data for preview in UI
+      {
+        id: communeCodeInsee, // Used as key in select component
+        nom: commune,
+        codePostal: communeCodePostal,
+        codeInsee: communeCodeInsee,
+        commune,
+        latitude: 0,
+        longitude: 0,
+        contexte: '',
+        label: commune,
+      }
+    : undefined
 
 export type ModifierBeneficiaireView = {
   beneficiaireId: string
