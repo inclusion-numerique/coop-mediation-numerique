@@ -1,4 +1,4 @@
-import MesBeneficiairesListeLayout from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/(liste)/MesBeneficiairesListeLayout'
+import MesBeneficiairesListeLayout from '@app/web/features/beneficiaire/abilities/lister-beneficiaires/ui/components/MesBeneficiairesListeLayout'
 import type { PropsWithChildren } from 'react'
 
 const MesBeneficiairesLayout = ({ children }: PropsWithChildren) => (
