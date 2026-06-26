@@ -1,8 +1,8 @@
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
-import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
 import { contentId } from '@app/web/utils/skipLinks'
 import classNames from 'classnames'
 import Link from 'next/link'
@@ -36,7 +36,7 @@ const BeneficiaireConsultationLayout = ({
   deleteModal?: ReactNode
   refreshRdvs?: ReactNode
 }>) => {
-  const displayName = getBeneficiaireDisplayName(beneficiaire)
+  const displayName = displayNameFromIdentity(beneficiaire)
   const { anneeNaissance } = beneficiaire
 
   return (

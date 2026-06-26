@@ -1,7 +1,7 @@
-import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import type { AdressBanFormFieldOption } from '@app/web/components/form/AdresseBanFormField'
 import { banMunicipalityLabel } from '@app/web/external-apis/ban/banMunicipalityLabel'
 import type { BeneficiaireAEditer } from '@app/web/features/beneficiaire/abilities/modifier-beneficiaire/domain/beneficiaire-a-editer'
+import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
 import type { BeneficiaireData } from '@app/web/features/beneficiaire/forms/beneficiaire-validation'
 import type { Beneficiaire } from '@prisma/client'
 import type { DefaultValues } from 'react-hook-form'
@@ -80,7 +80,7 @@ export const presentBeneficiaireAModifier = ({
 
   return {
     beneficiaireId: id,
-    displayName: getBeneficiaireDisplayName({ prenom, nom }),
+    displayName: displayNameFromIdentity({ prenom, nom }),
     communeResidenceDefaultOptions,
     defaultValues: {
       id,

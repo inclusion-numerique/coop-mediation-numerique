@@ -5,6 +5,7 @@ export {
   type BeneficiaireIdentifie,
   beneficiaireAdresseString,
   beneficiaireDisplayName,
+  displayNameFromIdentity,
   isBeneficiaireAnonymous,
   toBeneficiaireIdentifie,
 } from './beneficiaire'

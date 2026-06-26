@@ -3,6 +3,7 @@ import type { BeneficiaireAnonyme, BeneficiaireIdentifie } from './beneficiaire'
 import {
   beneficiaireAdresseString,
   beneficiaireDisplayName,
+  displayNameFromIdentity,
   isBeneficiaireAnonymous,
   toBeneficiaireIdentifie,
 } from './beneficiaire'
@@ -63,6 +64,28 @@ describe('beneficiaireDisplayName', () => {
 
   it('returns full name for identified', () => {
     expect(beneficiaireDisplayName(identifie)).toBe('Jean Dupont')
+  })
+})
+
+describe('displayNameFromIdentity', () => {
+  it('joins prénom and nom', () => {
+    expect(displayNameFromIdentity({ prenom: 'Jean', nom: 'Dupont' })).toBe(
+      'Jean Dupont',
+    )
+  })
+
+  it('falls back to "Bénéficiaire anonyme" when both are absent', () => {
+    expect(displayNameFromIdentity({ prenom: null, nom: null })).toBe(
+      'Bénéficiaire anonyme',
+    )
+    expect(displayNameFromIdentity({})).toBe('Bénéficiaire anonyme')
+  })
+
+  it('keeps the only provided part without leaking the missing one', () => {
+    expect(displayNameFromIdentity({ prenom: null, nom: 'Dupont' })).toBe(
+      'Dupont',
+    )
+    expect(displayNameFromIdentity({ prenom: 'Jean', nom: null })).toBe('Jean')
   })
 })
 

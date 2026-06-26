@@ -43,10 +43,24 @@ export const isBeneficiaireAnonymous = (
   beneficiaire: Beneficiaire,
 ): beneficiaire is BeneficiaireAnonyme => beneficiaire.anonyme
 
+/**
+ * Libellé d'affichage à partir de la seule identité (prénom/nom). Primitive
+ * basse altitude partagée : tolère les projections laxistes (`string | null`)
+ * pour servir les frontières UI qui ne portent pas encore le `Beneficiaire`
+ * brandé, et reste l'unique source de vérité dont dérive `beneficiaireDisplayName`.
+ */
+export const displayNameFromIdentity = ({
+  prenom,
+  nom,
+}: {
+  prenom?: string | null
+  nom?: string | null
+}): string => [prenom, nom].filter(Boolean).join(' ') || 'Bénéficiaire anonyme'
+
 export const beneficiaireDisplayName = (beneficiaire: Beneficiaire) =>
   beneficiaire.anonyme
     ? 'Bénéficiaire anonyme'
-    : [beneficiaire.prenom, beneficiaire.nom].filter(Boolean).join(' ')
+    : displayNameFromIdentity(beneficiaire)
 
 const toAdressString = ({ adresse, codePostal, commune }: CommuneResidence) =>
   [adresse, [codePostal, commune].filter(Boolean).join(' ')]
