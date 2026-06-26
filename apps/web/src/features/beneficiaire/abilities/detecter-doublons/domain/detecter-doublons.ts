@@ -19,6 +19,17 @@ export type FindDuplicatesForBeneficiaire = (input: {
   fuzzyMatching?: boolean
 }) => Promise<DuplicateBeneficiaire[]>
 
+/**
+ * Détection des doublons d'un bénéficiaire déjà persisté, depuis son seul id :
+ * l'ability lit elle-même son identité (owner-scopée) et la brande, pour qu'un
+ * hub appelant n'ait qu'à fournir des identifiants. Sert l'alerte « doublon
+ * potentiel » de la fiche de consultation.
+ */
+export type FindDuplicatesForBeneficiaireById = (input: {
+  beneficiaireId: BeneficiaireId
+  mediateurId: MediateurId
+}) => Promise<DuplicateBeneficiaire[]>
+
 export type DetecterDoublons = (input: {
   mediateurId: MediateurId
   fuzzyMatching?: boolean

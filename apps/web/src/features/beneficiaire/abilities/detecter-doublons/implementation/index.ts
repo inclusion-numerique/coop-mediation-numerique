@@ -1,1 +1,5 @@
-export { detecterDoublons, findDuplicatesForBeneficiaire } from './prisma'
+export {
+  detecterDoublons,
+  findDuplicatesForBeneficiaire,
+  findDuplicatesForBeneficiaireById,
+} from './prisma'

@@ -1,25 +1,21 @@
 import PrendreRendezVousAvecBeneficiaireButton from '@app/web/app/coop/(full-width-layout)/mon-profil/PrendreRendezVousAvecBeneficiaireButton'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
-import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import BeneficiaireEnregistrerUneActivite from '@app/web/features/activites/use-cases/cra/components/BeneficiaireEnregistrerUneActivite'
 import type { BeneficiaireCraData } from '@app/web/features/activites/use-cases/cra/validation/BeneficiaireCraValidation'
+import { consulterBeneficiaire } from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/implementation'
 import BeneficiaireConsultationLayout from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireConsultationLayout'
-import { findDuplicatesForBeneficiaire } from '@app/web/features/beneficiaire/abilities/detecter-doublons/implementation'
+import { findDuplicatesForBeneficiaireById } from '@app/web/features/beneficiaire/abilities/detecter-doublons/implementation'
 import DeleteBeneficiaireModalContent from '@app/web/features/beneficiaire/abilities/supprimer-beneficiaires/ui/components/DeleteBeneficiaireModalContent'
+import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
 import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
-import { Email } from '@app/web/features/beneficiaire/domain/email'
 import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
-import { Nom } from '@app/web/features/beneficiaire/domain/nom'
-import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
-import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import RefreshRdvDataOnLoad from '@app/web/features/rdvsp/ui/RefreshRdvDataOnLoad'
-import { prismaClient } from '@app/web/prismaClient'
 import { notFound } from 'next/navigation'
 import type { PropsWithChildren } from 'react'
 
-// Route hub : lit le bénéficiaire et ses doublons (ability detecter-doublons),
-// puis compose les concerns croisés (activité, RDV, suppression, refresh) qu'elle
-// injecte au shell de consultation via des slots.
+// Route hub : lit le bénéficiaire (ability consulter-beneficiaire) et ses doublons
+// (ability detecter-doublons), puis compose les concerns croisés (activité, RDV,
+// suppression, refresh) qu'elle injecte au shell de consultation via des slots.
 const BeneficiaireLayout = async (
   props: PropsWithChildren<{
     params: Promise<{ beneficiaireId: string }>
@@ -30,44 +26,22 @@ const BeneficiaireLayout = async (
 
   const user = await authenticateMediateur()
 
-  const beneficiaire = await prismaClient.beneficiaire.findUnique({
-    where: {
-      id: beneficiaireId,
-      mediateurId: user.mediateur.id,
-      suppression: null,
-    },
-    select: {
-      id: true,
-      prenom: true,
-      nom: true,
-      email: true,
-      anneeNaissance: true,
-      mediateurId: true,
-      rdvUserId: true,
-      telephone: true,
-    },
+  const mediateurId = MediateurId(user.mediateur.id)
+  const beneficiaire = await consulterBeneficiaire({
+    beneficiaireId: BeneficiaireId(beneficiaireId),
+    mediateurId,
   })
 
   if (!beneficiaire) {
     notFound()
   }
 
-  const duplicates = await findDuplicatesForBeneficiaire({
-    beneficiaire: {
-      id: BeneficiaireId(beneficiaire.id),
-      mediateurId: MediateurId(beneficiaire.mediateurId),
-      nom: beneficiaire.nom ? Nom(beneficiaire.nom) : null,
-      prenom: beneficiaire.prenom ? Prenom(beneficiaire.prenom) : null,
-      telephone: beneficiaire.telephone
-        ? Telephone(beneficiaire.telephone)
-        : null,
-      email: beneficiaire.email ? Email(beneficiaire.email) : null,
-    },
-    withConflictingFields: 'include',
-    fuzzyMatching: true,
+  const duplicates = await findDuplicatesForBeneficiaireById({
+    beneficiaireId: BeneficiaireId(beneficiaire.id),
+    mediateurId,
   })
 
-  const displayName = getBeneficiaireDisplayName(beneficiaire)
+  const displayName = displayNameFromIdentity(beneficiaire)
   const beneficiaireCraData = {
     id: beneficiaire.id,
     prenom: beneficiaire.prenom ?? '',
