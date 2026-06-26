@@ -81,7 +81,12 @@ packages/cdk/cdk.out.json
 /*.http
 
 # AI and code generation
-/.claude
+# Système d'automatisation de refacto versionné ; settings.local.json reste ignoré
+/.claude/*
+!/.claude/conventions
+!/.claude/agents
+!/.claude/skills
+!/.claude/workflows
 CLAUDE.md
 
 # prisma ERD (generated, regenerate with `pnpm -F web erd`)
