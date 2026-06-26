@@ -1,5 +1,5 @@
-import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import { RdvStatusFilterValue } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
 import { prismaClient } from '@app/web/prismaClient'
 import { oAuthRdvApiListRdvs } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
 import { getUserContextForOAuthApiCall } from '@app/web/rdv-service-public/getUserContextForRdvApiCall'
@@ -97,7 +97,7 @@ export const getRdvs = async ({
               id: agentId,
               firstName: first_name,
               lastName: last_name,
-              displayName: getBeneficiaireDisplayName({
+              displayName: displayNameFromIdentity({
                 prenom: first_name,
                 nom: last_name,
               }),
@@ -120,7 +120,7 @@ export const getRdvs = async ({
                 id: user.id,
                 firstName: user.first_name,
                 lastName: user.last_name,
-                displayName: getBeneficiaireDisplayName({
+                displayName: displayNameFromIdentity({
                   prenom: user.first_name,
                   nom: user.last_name,
                 }),
