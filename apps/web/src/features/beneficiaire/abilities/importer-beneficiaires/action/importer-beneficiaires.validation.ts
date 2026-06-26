@@ -1,7 +1,7 @@
 import {
   AnalysisSchema,
   type ParsedBeneficiaireRow,
-} from '@app/web/beneficiaire/import/analyseImportBeneficiairesExcel'
+} from '@app/web/features/beneficiaire/abilities/importer-beneficiaires/analyse/analyseImportBeneficiairesExcel'
 import { AnneeNaissance } from '@app/web/features/beneficiaire/domain/annee-naissance'
 import { CommuneResidence } from '@app/web/features/beneficiaire/domain/commune-residence'
 import { ContactTelephone } from '@app/web/features/beneficiaire/domain/contact-telephone'

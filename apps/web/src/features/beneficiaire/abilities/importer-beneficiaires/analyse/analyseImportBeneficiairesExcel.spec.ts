@@ -3,8 +3,8 @@ import path from 'node:path'
 import {
   AnalysisSchema,
   analyseImportBeneficiairesExcel,
-} from '@app/web/beneficiaire/import/analyseImportBeneficiairesExcel'
-import { getBeneficiaireImportSheet } from '@app/web/beneficiaire/import/getBeneficiaireImportSheet'
+} from './analyseImportBeneficiairesExcel'
+import { getBeneficiaireImportSheet } from './getBeneficiaireImportSheet'
 
 const getSheetFromLocalFile = (file: string) => {
   const filePath = path.resolve(__dirname, `./_test/${file}`)
@@ -19,7 +19,7 @@ jest.setTimeout(10_000)
 describe('analyseImportBeneficiairesExcel', () => {
   it('should parse the downloadable model xlsx file', async () => {
     const workbook = getSheetFromLocalFile(
-      '../../../../public/modeles/coop-numerique_import-beneficiaires.xlsx',
+      '../../../../../../../public/modeles/coop-numerique_import-beneficiaires.xlsx',
     )
 
     const result = await analyseImportBeneficiairesExcel(workbook)

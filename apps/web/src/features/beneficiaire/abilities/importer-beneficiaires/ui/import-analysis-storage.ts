@@ -1,4 +1,4 @@
-import type { Analysis } from '@app/web/beneficiaire/import/analyseImportBeneficiairesExcel'
+import type { Analysis } from '@app/web/features/beneficiaire/abilities/importer-beneficiaires/analyse/analyseImportBeneficiairesExcel'
 
 // Contrat de la réponse d'analyse, partagé entre la route handler (qui la
 // produit) et l'UI (qui la stocke puis la relit). Possédé par la feature pour

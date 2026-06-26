@@ -1,5 +1,5 @@
-import { importBeneficiaireWorksheetName } from '@app/web/beneficiaire/import/analyseImportBeneficiairesExcel'
 import XLSX, { type WorkSheet } from 'xlsx'
+import { importBeneficiaireWorksheetName } from './analyseImportBeneficiairesExcel'
 
 export const getBeneficiaireImportSheet = (
   data: Buffer | ArrayBuffer,

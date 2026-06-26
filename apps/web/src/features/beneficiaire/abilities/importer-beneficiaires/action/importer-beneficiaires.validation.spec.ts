@@ -1,4 +1,4 @@
-import type { ParsedBeneficiaireRow } from '@app/web/beneficiaire/import/analyseImportBeneficiairesExcel'
+import type { ParsedBeneficiaireRow } from '@app/web/features/beneficiaire/abilities/importer-beneficiaires/analyse/analyseImportBeneficiairesExcel'
 import { ImporterBeneficiairesValidation } from './importer-beneficiaires.validation'
 
 const row = (
