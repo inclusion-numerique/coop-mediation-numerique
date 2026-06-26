@@ -2,19 +2,32 @@ import {
   beneficiaireMaximaleMediateurAvecActivite,
   beneficiaireMinimaleMediateurAvecActivite,
 } from '@app/fixtures/beneficiaires'
-import { BeneficiaireAccompagnementsPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/getBeneficiaireAccompagnementsPageData'
-import ViewBeneficiaireAccompagnementsPage from '@app/web/app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/accompagnements/ViewBeneficiaireAccompagnementsPage'
 import { ActiviteListItemWithTimezone } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { rdvsForStories } from '@app/web/features/activites/use-cases/list/storybook/ActiviteDetailsStoriesData'
 import BeneficiaireConsultationLayout from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireConsultationLayout'
+import ViewBeneficiaireAccompagnementsPage, {
+  type BeneficiaireAccompagnementsPageData,
+} from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireAccompagnementsPage'
 import { RdvListItem } from '@app/web/features/rdvsp/administration/db/rdvQueries'
 import { testSessionUser } from '@app/web/test/testSessionUser'
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
 
-const Template = ({ data }: { data: BeneficiaireAccompagnementsPageData }) => (
+// `data.beneficiaire` ne porte que l'`id` (seul champ utilisé par la page) ; le
+// shell de consultation, simple décor en story, reçoit son bénéficiaire à part.
+const Template = ({
+  beneficiaire,
+  data,
+}: {
+  beneficiaire: {
+    prenom: string | null
+    nom: string | null
+    anneeNaissance: number | null
+  }
+  data: BeneficiaireAccompagnementsPageData
+}) => (
   <BeneficiaireConsultationLayout
-    beneficiaire={data.beneficiaire}
+    beneficiaire={beneficiaire}
     hasDuplicates={false}
     hasRdvIntegration={false}
   >
@@ -31,13 +44,11 @@ export default meta
 
 type Story = StoryObj<typeof ViewBeneficiaireAccompagnementsPage>
 
-const beneficiaireSansAccompagnements = {
-  ...beneficiaireMinimaleMediateurAvecActivite,
-  accompagnementsCount: 0,
-} satisfies BeneficiaireAccompagnementsPageData['beneficiaire']
+const beneficiaireSansAccompagnements =
+  beneficiaireMinimaleMediateurAvecActivite
 
 const sansAccompagnements = {
-  beneficiaire: beneficiaireSansAccompagnements,
+  beneficiaire: { id: beneficiaireSansAccompagnements.id },
   searchResult: {
     items: [],
     matchesCount: 0,
@@ -54,16 +65,20 @@ const sansAccompagnements = {
 
 export const SansAccompagnements: Story = {
   name: 'Sans accompagnements',
-  render: (args) => <Template {...args} />,
+  render: (args) => (
+    <Template beneficiaire={beneficiaireSansAccompagnements} {...args} />
+  ),
   args: {
     data: sansAccompagnements,
   },
 }
 
+// `accompagnementsCount` est requis car ce bénéficiaire est aussi imbriqué dans
+// les `accompagnements` des activités ci-dessous.
 const beneficiaireAvecAccompagnements = {
   ...beneficiaireMaximaleMediateurAvecActivite,
   accompagnementsCount: 6,
-} satisfies BeneficiaireAccompagnementsPageData['beneficiaire']
+}
 
 const activites = [
   {
@@ -341,9 +356,7 @@ const activites = [
 const rdvs = rdvsForStories satisfies RdvListItem[]
 
 const avecAccompagnements = {
-  beneficiaire: {
-    ...beneficiaireAvecAccompagnements,
-  },
+  beneficiaire: { id: beneficiaireAvecAccompagnements.id },
   searchResult: {
     items: [
       ...rdvs.map((rdv) => ({ kind: 'rdv' as const, ...rdv })),
@@ -366,7 +379,9 @@ const avecAccompagnements = {
 
 export const AvecAccompagnements: Story = {
   name: 'Avec accompagnements',
-  render: (args) => <Template {...args} />,
+  render: (args) => (
+    <Template beneficiaire={beneficiaireAvecAccompagnements} {...args} />
+  ),
   args: {
     data: avecAccompagnements,
   },
