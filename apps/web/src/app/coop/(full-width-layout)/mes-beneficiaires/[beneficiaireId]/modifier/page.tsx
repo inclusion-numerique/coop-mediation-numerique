@@ -1,23 +1,20 @@
 import { modifierBeneficiaireAction } from '@app/web/app/_actions/beneficiaire/modifier-beneficiaire.action'
-import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import { beneficiaireCommuneResidenceToPreviewBanData } from '@app/web/beneficiaire/prismaBeneficiaireToBeneficiaireData'
-import BackButton from '@app/web/components/BackButton'
 import type { AdressBanFormFieldOption } from '@app/web/components/form/AdresseBanFormField'
-import IconInSquare from '@app/web/components/IconInSquare'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { banMunicipalityLabel } from '@app/web/external-apis/ban/banMunicipalityLabel'
 import type { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
-import BeneficiaireForm from '@app/web/features/beneficiaire/forms/BeneficiaireForm'
+import { ModifierBeneficiairePage } from '@app/web/features/beneficiaire/abilities/modifier-beneficiaire/ui/pages/ModifierBeneficiairePage'
 import type { BeneficiaireData } from '@app/web/features/beneficiaires/validation/BeneficiaireValidation'
 import { prismaClient } from '@app/web/prismaClient'
 import type { EncodedState } from '@app/web/utils/encodeSerializableState'
-import { contentId } from '@app/web/utils/skipLinks'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { DefaultValues } from 'react-hook-form'
 
+// Route = orchestration : authentifie, lit le bénéficiaire, construit les
+// valeurs par défaut du formulaire, lie l'action de modification, puis délègue
+// le rendu au composant de page de la feature.
 const PageModifierBeneficiaire = async (props: {
   searchParams: Promise<{
     cra?: EncodedState<DefaultValues<CraIndividuelData>>
@@ -117,59 +114,15 @@ const PageModifierBeneficiaire = async (props: {
     mediateurId: string
   }
 
-  // Concern croisé injecté : la route lie l'action modifier en réinjectant
-  // l'identifiant issu de l'URL (source de vérité, pas l'état du formulaire).
-  const enregistrerBeneficiaire = async (data: BeneficiaireData) => {
-    'use server'
-    return modifierBeneficiaireAction({ ...data, id: beneficiaireId })
-  }
-
   return (
-    <div className="fr-container fr-container--medium">
-      <SkipLinksPortal />
-      <CoopBreadcrumbs
-        currentPage="Modifier"
-        parents={[
-          {
-            label: 'Mes bénéficiaires',
-            linkProps: {
-              href: '/coop/mes-beneficiaires',
-            },
-          },
-          {
-            label: displayName,
-            linkProps: { href: `/coop/mes-beneficiaires/${beneficiaire.id}` },
-          },
-        ]}
-      />
-      <main id={contentId}>
-        <BackButton />
-        <div className="fr-flex fr-flex-gap-6v fr-align-items-start fr-mb-12v">
-          <IconInSquare iconId="fr-icon-user-setting-line" size="large" />
-          <div className="fr-flex-grow-1">
-            <h1 className="fr-text-title--blue-france fr-mb-2v">
-              {displayName}
-            </h1>
-            <Link
-              className="fr-link"
-              target="_blank"
-              rel="noreferrer"
-              href="https://docs.numerique.gouv.fr/docs/3d5bad76-8e02-4abc-b83a-c2f2965ae5d9/"
-            >
-              En savoir plus sur l’usage et la protection des données de mes
-              bénéficiaires.
-            </Link>
-          </div>
-        </div>
-        <BeneficiaireForm
-          defaultValues={beneficiaireDefaultValues}
-          save={enregistrerBeneficiaire}
-          retour={retour}
-          communeResidenceDefaultOptions={communeResidenceDefaultOptions}
-          edit
-        />
-      </main>
-    </div>
+    <ModifierBeneficiairePage
+      beneficiaireId={beneficiaire.id}
+      displayName={displayName}
+      defaultValues={beneficiaireDefaultValues}
+      save={modifierBeneficiaireAction}
+      retour={retour}
+      communeResidenceDefaultOptions={communeResidenceDefaultOptions}
+    />
   )
 }
 
