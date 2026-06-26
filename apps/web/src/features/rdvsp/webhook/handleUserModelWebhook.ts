@@ -1,8 +1,8 @@
-import { softDeleteBeneficiaires } from '@app/web/beneficiaire/softDeleteBeneficiaires'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { userPrismaDataFromOAuthApiUser } from '../sync/syncRdv'
 import type { RdvspWebhookEvent, RdvspWebhookUserData } from './rdvWebhook'
+import { softDeleteBeneficiaires } from './softDeleteBeneficiaires'
 
 const logDebug = ServerWebAppConfig.RdvServicePublic.log.webhook.debug
 
