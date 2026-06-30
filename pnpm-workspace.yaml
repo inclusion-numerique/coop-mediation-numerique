@@ -21,3 +21,4 @@ minimumReleaseAgeExclude:
   - "@types/react-dom"
   - next
   - "@next/env"
+  - "@arckit/resultset"

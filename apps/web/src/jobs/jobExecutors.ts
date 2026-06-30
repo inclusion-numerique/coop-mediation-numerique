@@ -25,6 +25,7 @@ import { executeGenerateStructuresActionPlan } from './generate-structures-actio
 import { executeImportContactsToBrevo } from './import-contacts-to-brevo/executeImportContactsToBrevo'
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
 import type { Job, JobName, JobPayload } from './jobs'
+import { executeNormaliserBeneficiaires } from './normaliser-beneficiaires/executeNormaliserBeneficiaires'
 import { executeNormalizeStructuresEmployeuses } from './normalize-structures-employeuses/executeNormalizeStructuresEmployeuses'
 import { output } from './output'
 import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts/executeRemoveOrphanBrevoContacts'
@@ -62,6 +63,7 @@ export const jobExecutors: {
   'audit-siret-coherence': executeAuditSiretCoherence,
   'audit-structures-overview': executeAuditStructuresOverview,
   'backfill-commune-rdvsp': executeBackfillCommuneRdvsp,
+  'normaliser-beneficiaires': executeNormaliserBeneficiaires,
   'backfill-tranche-age': executeBackfillTrancheAge,
   'backup-database': executeBackupDatabaseJob,
   'update-structures-cartographie-nationale':

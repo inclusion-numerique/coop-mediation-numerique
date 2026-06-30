@@ -3,6 +3,11 @@
   grid-column: 1 / -1;
 }
 
+/* Equal-width columns for a grid layout container */
+.fr-grid-columns-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
 @media (min-width: 62em) {
   .fr-lg-col {
     flex: 1;

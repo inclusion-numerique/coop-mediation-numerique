@@ -7,7 +7,7 @@ import {
   toLieuPrefix,
 } from '@app/web/features/activites/use-cases/list/components/generateActivitesFiltersLabels'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import type { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
+import type { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
 import { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import { download } from '@app/web/utils/download'

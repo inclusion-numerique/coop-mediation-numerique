@@ -1,8 +1,8 @@
 'use client'
 
-import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import RdvStatusBadge from '@app/web/features/activites/use-cases/list/components/RdvStatusBadge'
+import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
 import { DashboardRdvData } from '@app/web/features/rdvsp/queries/getDashboardRdvData'
 import { trpc } from '@app/web/trpc'
 import { dateAsDayFullWordsInTimezone } from '@app/web/utils/dateAsDay'
@@ -72,7 +72,7 @@ const Rdvs = ({
     }
     const beneficiaire = rdv.participations.at(0)?.user
     return beneficiaire
-      ? getBeneficiaireDisplayName({
+      ? displayNameFromIdentity({
           prenom: beneficiaire.firstName,
           nom: beneficiaire.lastName,
         })

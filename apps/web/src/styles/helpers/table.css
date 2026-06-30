@@ -11,3 +11,42 @@
 .fr-cell--wrap {
   white-space: normal !important;
 }
+
+.fr-table--transparent {
+  border-color: transparent;
+}
+
+.fr-cell--data {
+  line-height: 32px !important;
+}
+
+.fr-table-row--link {
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--hover) !important;
+  }
+
+  &:active {
+    background-color: var(--active) !important;
+  }
+
+  td,
+  th {
+    background-color: transparent !important;
+  }
+}
+
+.fr-table-cell--link {
+  width: 0 !important;
+  padding: 0 !important;
+
+  a {
+    display: block;
+    width: 100%;
+    min-width: 100%;
+    height: 100%;
+    padding: 16px;
+    background: none;
+  }
+}

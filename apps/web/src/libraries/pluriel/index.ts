@@ -1,0 +1,1 @@
+export { pluriel } from './pluriel'

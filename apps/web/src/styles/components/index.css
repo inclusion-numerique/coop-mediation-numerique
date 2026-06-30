@@ -1,4 +1,5 @@
 @import url("./overrides");
+@import url("./beneficiaire-import-analyse.css");
 @import url("./button.css");
 @import url("./card.css");
 @import url("./copied.css");
@@ -6,5 +7,7 @@
 @import url("./list-group.css");
 @import url("./menu.css");
 @import url("./modal.css");
+@import url("./nav.css");
 @import url("./progress.css");
 @import url("./quick-action.css");
+@import url("./search-bar.css");

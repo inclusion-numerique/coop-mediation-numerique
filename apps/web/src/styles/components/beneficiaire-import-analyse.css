@@ -1,0 +1,31 @@
+/* Table d'analyse d'import bénéficiaires : conteneur scrollable à en-tête
+ * collant (positionnement non tokenisable par le DSFR). */
+.fr-beneficiaire-import-table {
+  max-height: 480px; /* 10 lignes + en-tête (~43px) en montrant un bout de la suivante */
+  overflow-y: auto;
+  position: relative;
+}
+
+.fr-beneficiaire-import-table .fr-table {
+  margin-top: 0;
+}
+
+.fr-beneficiaire-import-table .fr-table__container {
+  overflow: visible !important;
+  position: static !important;
+}
+
+.fr-beneficiaire-import-table thead,
+.fr-beneficiaire-import-table thead tr,
+.fr-beneficiaire-import-table thead th {
+  position: sticky;
+  top: 0;
+  background-color: var(--background-default-grey);
+  z-index: 2;
+}
+
+.fr-beneficiaire-import-cell-error {
+  background-color: var(--background-contrast-error) !important;
+  color: var(--text-default-error);
+  font-weight: 500;
+}

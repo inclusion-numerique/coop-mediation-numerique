@@ -1,4 +1,4 @@
-import { getBeneficiaireDisplayName } from '@app/web/beneficiaire/getBeneficiaireDisplayName'
+import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
 import type { DataTableSearchParams } from '@app/web/libs/data-table/DataTableConfiguration'
 import {
   dateAsDay,
@@ -24,7 +24,7 @@ export const ActivitesDataTable = {
         typeActiviteLabels[type],
         type === 'Collectif'
           ? `${accompagnements.length} participants`
-          : getBeneficiaireDisplayName(accompagnements[0]?.beneficiaire ?? {}),
+          : displayNameFromIdentity(accompagnements[0]?.beneficiaire ?? {}),
       ],
       cell: ({ type, accompagnements }) => (
         <>
@@ -34,9 +34,7 @@ export const ActivitesDataTable = {
           <p className="fr-text--sm fr-mb-0">
             {type === 'Collectif'
               ? `${accompagnements.length} participants`
-              : getBeneficiaireDisplayName(
-                  accompagnements[0]?.beneficiaire ?? {},
-                )}
+              : displayNameFromIdentity(accompagnements[0]?.beneficiaire ?? {})}
           </p>
         </>
       ),
