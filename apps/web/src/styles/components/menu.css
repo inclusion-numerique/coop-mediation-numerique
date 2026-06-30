@@ -42,3 +42,31 @@
     }
   }
 }
+
+/* Conteneur ancre d'un menu déroulant */
+.fr-menu-anchor {
+  position: relative;
+  height: 100%;
+}
+
+/* Menu DSFR déroulant sous son déclencheur, aligné à droite */
+.fr-menu--dropdown {
+  position: absolute;
+  right: 0;
+  left: auto;
+  margin-top: 4px;
+
+  ul {
+    margin-bottom: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+
+  li {
+    padding-bottom: 0;
+
+    a {
+      background-image: none;
+    }
+  }
+}

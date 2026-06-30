@@ -1,6 +1,6 @@
 import { RdvListItem } from '@app/web/features/rdvsp/administration/db/rdvQueries'
 import type { Rdv } from '@app/web/rdv-service-public/Rdv'
-import { createBeneficiairesForParticipantsAnonymes } from '../../../../../beneficiaire/createBeneficiairesForParticipantsAnonymes'
+import { createBeneficiairesForParticipantsAnonymes } from '../../cra/collectif/createBeneficiairesForParticipantsAnonymes'
 import { participantsAnonymesDefault } from '../../cra/collectif/validation/participantsAnonymes'
 import { ActiviteListItemWithTimezone } from '../db/activitesQueries'
 

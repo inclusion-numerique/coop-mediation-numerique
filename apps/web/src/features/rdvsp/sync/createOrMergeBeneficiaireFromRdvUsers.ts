@@ -1,8 +1,11 @@
-import { trancheAgeFromAnneeNaissance } from '@app/web/beneficiaire/trancheAgeFromAnneeNaissance'
-import {
-  DuplicateBeneficiaire,
-  findDuplicateForBeneficiaire,
-} from '@app/web/features/beneficiaires/db/findDuplicateForBeneficiaire'
+import type { DuplicateBeneficiaire } from '@app/web/features/beneficiaire/abilities/detecter-doublons/domain/types'
+import { findDuplicatesForBeneficiaire } from '@app/web/features/beneficiaire/abilities/detecter-doublons/implementation'
+import { Email } from '@app/web/features/beneficiaire/domain/email'
+import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
+import { Nom } from '@app/web/features/beneficiaire/domain/nom'
+import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
+import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
+import { effectiveTrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
 import { prismaClient } from '@app/web/prismaClient'
 import { fixTelephone } from '@app/web/utils/clean-operations'
 import type { Beneficiaire, Prisma, RdvUser } from '@prisma/client'
@@ -67,14 +70,14 @@ export const createOrMergeBeneficiaireFromRdvUser = async ({
   if (!beneficiaireToMerge) {
     // We find a suiting Beneficiaire to avoid duplicates
     // Using 'exclude' to ensure no conflicting fields when merging
-    const duplicates = await findDuplicateForBeneficiaire({
+    const duplicates = await findDuplicatesForBeneficiaire({
       beneficiaire: {
         id: null,
-        nom: rdvUser.lastName,
-        prenom: rdvUser.firstName,
-        telephone: rdvUser.phoneNumber,
-        email: rdvUser.email,
-        mediateurId,
+        nom: rdvUser.lastName ? Nom(rdvUser.lastName) : null,
+        prenom: rdvUser.firstName ? Prenom(rdvUser.firstName) : null,
+        telephone: rdvUser.phoneNumber ? Telephone(rdvUser.phoneNumber) : null,
+        email: rdvUser.email ? Email(rdvUser.email) : null,
+        mediateurId: MediateurId(mediateurId),
       },
       withConflictingFields: 'exclude',
     })
@@ -96,9 +99,7 @@ export const createOrMergeBeneficiaireFromRdvUser = async ({
       beneficiaireUpdateData.email = rdvUser.email
 
     if (!!rdvUser.phoneNumber && !beneficiaireToMerge.telephone)
-      beneficiaireUpdateData.telephone = fixTelephone(rdvUser.phoneNumber, {
-        toInternationalFormat: false,
-      })
+      beneficiaireUpdateData.telephone = fixTelephone(rdvUser.phoneNumber)
 
     if (!!rdvUser.firstName && !beneficiaireToMerge.prenom)
       beneficiaireUpdateData.prenom = rdvUser.firstName
@@ -106,7 +107,13 @@ export const createOrMergeBeneficiaireFromRdvUser = async ({
     if (!!rdvUser.lastName && !beneficiaireToMerge.nom)
       beneficiaireUpdateData.nom = rdvUser.lastName
 
-    if (!!rdvUser.address && !beneficiaireToMerge.adresse)
+    if (
+      !!rdvUser.address &&
+      !(
+        'communeResidence' in beneficiaireToMerge &&
+        beneficiaireToMerge.communeResidence
+      )
+    )
       beneficiaireUpdateData.adresse = rdvUser.address
 
     if (!!rdvUser.birthDate && !beneficiaireToMerge.anneeNaissance) {
@@ -114,11 +121,16 @@ export const createOrMergeBeneficiaireFromRdvUser = async ({
       const year = rdvUser.birthDate.getFullYear()
       if (year > 1900) {
         beneficiaireUpdateData.anneeNaissance = year
-        beneficiaireUpdateData.trancheAge = trancheAgeFromAnneeNaissance(year)
+        beneficiaireUpdateData.trancheAge = effectiveTrancheAge(year)
       }
     }
 
-    if (!!rdvUser.address && !beneficiaireToMerge.commune) {
+    if (
+      !!rdvUser.address &&
+      !('commune' in beneficiaireToMerge
+        ? beneficiaireToMerge.commune
+        : beneficiaireToMerge.communeResidence)
+    ) {
       const communeFields = await communeFieldsFromRdvAddress(rdvUser.address)
       if (communeFields) {
         beneficiaireUpdateData.commune = communeFields.commune
@@ -160,7 +172,7 @@ export const createOrMergeBeneficiaireFromRdvUser = async ({
       email: rdvUser.email,
       adresse: rdvUser.address,
       anneeNaissance,
-      trancheAge: trancheAgeFromAnneeNaissance(anneeNaissance),
+      trancheAge: effectiveTrancheAge(anneeNaissance),
       commune: communeFields?.commune ?? null,
       communeCodePostal: communeFields?.communeCodePostal ?? null,
       communeCodeInsee: communeFields?.communeCodeInsee ?? null,

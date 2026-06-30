@@ -1,19 +1,15 @@
-import BeneficiaireForm from '@app/web/app/coop/(full-width-layout)/mes-beneficiaires/BeneficiaireForm'
-import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
+import { creerBeneficiaireAction } from '@app/web/app/_actions/beneficiaire/creer-beneficiaire.action'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
-import BackButton from '@app/web/components/BackButton'
-import IconInSquare from '@app/web/components/IconInSquare'
-import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import type { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
+import { CreerBeneficiairePage } from '@app/web/features/beneficiaire/abilities/creer-beneficiaire/ui/pages/CreerBeneficiairePage'
 import {
   decodeSerializableState,
   type EncodedState,
 } from '@app/web/utils/encodeSerializableState'
-import { contentId } from '@app/web/utils/skipLinks'
-import Notice from '@codegouvfr/react-dsfr/Notice'
-import Link from 'next/link'
 import type { DefaultValues } from 'react-hook-form'
 
+// Route = orchestration : authentifie, décode le CRA en cours, lie l'action de
+// création, puis délègue le rendu au composant de page de la feature.
 const PageCreerBeneficiaire = async ({
   searchParams,
 }: {
@@ -28,78 +24,12 @@ const PageCreerBeneficiaire = async ({
   const parsedCra = cra ? decodeSerializableState(cra, {}) : undefined
 
   return (
-    <div className="fr-container fr-container--medium">
-      <SkipLinksPortal />
-      <CoopBreadcrumbs
-        currentPage="Nouveau bénéficiaire"
-        parents={[
-          {
-            label: 'Mes bénéficiaires',
-            linkProps: {
-              href: '/coop/mes-beneficiaires',
-            },
-          },
-        ]}
-      />
-      <main id={contentId}>
-        <BackButton />
-        <div className="fr-flex fr-flex-gap-6v fr-align-items-start fr-mb-12v">
-          <IconInSquare iconId="fr-icon-user-add-line" size="large" />
-          <div className="fr-flex-grow-1">
-            <h1 className="fr-text-title--blue-france fr-mb-2v">
-              Nouveau bénéficiaire
-            </h1>
-            <Link
-              className="fr-link"
-              target="_blank"
-              rel="noreferrer"
-              href="https://docs.numerique.gouv.fr/docs/3d5bad76-8e02-4abc-b83a-c2f2965ae5d9/"
-            >
-              En savoir plus sur l’usage et la protection des données de mes
-              bénéficiaires.
-            </Link>
-          </div>
-        </div>
-        <Notice
-          className="fr-notice--hint fr-notice--no-icon fr-notice--flex fr-border-radius--16 fr-mb-8v"
-          title={
-            <span className="fr-flex fr-align-items-center fr-flex-gap-8v fr-py-1w">
-              <span
-                className="ri-admin-line ri-xl fr-mx-1w fr-text--regular"
-                aria-hidden
-              />
-
-              <span>
-                <span className="fr-notice__title fr-text--md fr-text-title--blue-france fr-mb-1w fr-display-block">
-                  N’oubliez pas d’informer vos bénéficiaires sur leurs droits
-                  lorsque vous collectez leurs données personnelles.
-                </span>
-                <span className="fr-mb-1w fr-text--regular fr-text--sm fr-text-default--grey fr-display-block">
-                  Un modèle de mention d’information à destination des
-                  bénéficiaires que vous accompagnez est à votre disposition
-                  dans notre centre d’aide.{' '}
-                  <Link
-                    className="fr-link fr-text--sm"
-                    href="https://docs.numerique.gouv.fr/docs/640b3331-bd9f-43a7-a6e5-95757f63d532/"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Consulter via ce lien
-                  </Link>
-                </span>
-              </span>
-            </span>
-          }
-        />
-        <BeneficiaireForm
-          defaultValues={{
-            mediateurId: user.mediateur.id,
-          }}
-          retour={retour}
-          cra={parsedCra}
-        />
-      </main>
-    </div>
+    <CreerBeneficiairePage
+      mediateurId={user.mediateur.id}
+      save={creerBeneficiaireAction}
+      retour={retour}
+      cra={parsedCra}
+    />
   )
 }
 

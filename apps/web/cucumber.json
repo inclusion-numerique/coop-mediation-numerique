@@ -1,0 +1,7 @@
+{
+  "default": {
+    "paths": ["src/**/*.ability.md"],
+    "import": ["src/**/*.cucumber.ts", "src/**/*.steps.ts"],
+    "formatOptions": { "snippetInterface": "synchronous" }
+  }
+}

@@ -1,0 +1,89 @@
+import type { BeneficiaireAEditer } from '@app/web/features/beneficiaire/abilities/modifier-beneficiaire/domain/beneficiaire-a-editer'
+import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
+import type { BeneficiaireData } from '@app/web/features/beneficiaire/forms/beneficiaire-validation'
+import type { Beneficiaire } from '@prisma/client'
+import type { DefaultValues } from 'react-hook-form'
+
+/**
+ * Construit l'aperçu BAN (option du select commune) à partir des champs commune
+ * persistés. `undefined` tant que la commune n'est pas complètement renseignée.
+ */
+const beneficiaireCommuneResidenceToPreviewBanData = ({
+  commune,
+  communeCodeInsee,
+  communeCodePostal,
+}: Pick<Beneficiaire, 'communeCodePostal' | 'communeCodeInsee' | 'commune'>) =>
+  commune && communeCodePostal && communeCodeInsee
+    ? // We only need data for preview in UI
+      {
+        id: communeCodeInsee, // Used as key in select component
+        nom: commune,
+        codePostal: communeCodePostal,
+        codeInsee: communeCodeInsee,
+        commune,
+        latitude: 0,
+        longitude: 0,
+        contexte: '',
+        label: commune,
+      }
+    : undefined
+
+export type ModifierBeneficiaireView = {
+  beneficiaireId: string
+  displayName: string
+  defaultValues: DefaultValues<BeneficiaireData> & {
+    id: string
+    mediateurId: string
+  }
+}
+
+/**
+ * Met en forme l'état persisté pour le formulaire de modification : valeurs par
+ * défaut, aperçu de la commune (BAN) et nom d'affichage. Pure, sans accès
+ * données — l'orchestration vit dans la route.
+ */
+export const presentBeneficiaireAModifier = ({
+  id,
+  mediateurId,
+  prenom,
+  nom,
+  email,
+  anneeNaissance,
+  notes,
+  genre,
+  trancheAge,
+  adresse,
+  telephone,
+  pasDeTelephone,
+  statutSocial,
+  commune,
+  communeCodePostal,
+  communeCodeInsee,
+}: BeneficiaireAEditer): ModifierBeneficiaireView => {
+  const communeResidence = beneficiaireCommuneResidenceToPreviewBanData({
+    commune,
+    communeCodeInsee,
+    communeCodePostal,
+  })
+
+  return {
+    beneficiaireId: id,
+    displayName: displayNameFromIdentity({ prenom, nom }),
+    defaultValues: {
+      id,
+      mediateurId,
+      trancheAge,
+      statutSocial,
+      genre,
+      adresse,
+      notes,
+      communeResidence,
+      anneeNaissance,
+      pasDeTelephone,
+      telephone,
+      email,
+      prenom: prenom ?? '',
+      nom: nom ?? '',
+    },
+  }
+}

@@ -1,6 +1,6 @@
+import fs from 'node:fs'
 import path from 'node:path'
 import tsconfigPaths from 'tsconfig-paths'
-import fs from 'node:fs'
 import { logToFile } from './cypress/support/logToFile'
 
 // Resolve the path to the Cypress tsconfig.json
@@ -27,7 +27,10 @@ if (fs.existsSync(tsConfigPath)) {
       paths: tsConfig.compilerOptions.paths,
     })
 
-    logToFile('importing alias', import('@app/web/beneficiaire/beneficiaire'))
+    logToFile(
+      'importing alias',
+      import('@app/web/features/beneficiaire/domain/genre'),
+    )
   } else {
     logToFile(
       'tsconfig.json does not contain "compilerOptions.baseUrl" or "compilerOptions.paths". Path aliases may not work as expected.',

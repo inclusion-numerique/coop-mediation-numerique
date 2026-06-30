@@ -1,0 +1,11 @@
+/*
+ * Barre de navigation par onglets : aligne le soulignement de l'onglet actif
+ * sur la bordure inférieure du conteneur (chevauchement d'1px à partir de md).
+ * Le reste (flex, bordure, marges) se fait par utilitaires DSFR sur le
+ * conteneur ; seul ce décalage d'1px n'est pas tokenisable.
+ */
+@media (min-width: 62em) {
+  .fr-nav-tabs .fr-nav__item {
+    margin-bottom: -1px;
+  }
+}

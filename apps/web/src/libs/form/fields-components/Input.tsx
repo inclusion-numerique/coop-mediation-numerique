@@ -49,7 +49,7 @@ export const Input = ({
         textArea: false as const,
         nativeInputProps: {
           name,
-          value: state.value ?? (nativeInputProps?.type === 'number' ? 0 : ''),
+          value: state.value ?? '',
           onBlur: handleBlur,
           onChange: (e: ChangeEvent<HTMLInputElement>) => {
             if (e.target.value == null || e.target.value === '')

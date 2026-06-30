@@ -1,10 +1,5 @@
 import { MesStatistiquesPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/getMesStatistiquesPageData'
 import { quantifiedSharesFromFixedValues } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/statistiquesFixturesHelpers'
-import {
-  genreLabels,
-  statutSocialLabels,
-  trancheAgeLabels,
-} from '@app/web/beneficiaire/beneficiaire'
 import { dureeAccompagnementParDefautLabels } from '@app/web/features/activites/use-cases/cra/fields/duree-accompagnement'
 import { materielLabels } from '@app/web/features/activites/use-cases/cra/fields/materiel'
 import {
@@ -13,6 +8,9 @@ import {
 } from '@app/web/features/activites/use-cases/cra/fields/thematique'
 import { typeActiviteLabels } from '@app/web/features/activites/use-cases/cra/fields/type-activite'
 import { typeLieuLabels } from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
+import { genreLabels } from '@app/web/features/beneficiaire/domain/genre'
+import { statutSocialLabels } from '@app/web/features/beneficiaire/domain/statut-social'
+import { trancheAgeLabels } from '@app/web/features/beneficiaire/domain/tranche-age'
 import { Meta, StoryObj } from '@storybook/react'
 import { MesStatistiques } from './MesStatistiques'
 

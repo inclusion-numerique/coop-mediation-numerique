@@ -3,7 +3,7 @@
 import CustomSelect from '@app/ui/components/CustomSelect/CustomSelect'
 import { SelectOption } from '@app/ui/components/Form/utils/options'
 import { Popover } from '@app/ui/components/Primitives/Popover'
-import { BeneficiaireOption } from '@app/web/features/beneficiaires/BeneficiaireOption'
+import { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import { FilterSelection } from '@app/web/libs/filters/FilterSelection'
 import {

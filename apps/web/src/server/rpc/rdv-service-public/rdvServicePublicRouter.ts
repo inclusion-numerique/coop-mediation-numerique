@@ -1,6 +1,5 @@
 import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
 import { SessionUser } from '@app/web/auth/sessionUser'
-import { getBeneficiaireAdresseString } from '@app/web/beneficiaire/getBeneficiaireAdresseString'
 import { getDashboardRdvData } from '@app/web/features/rdvsp/queries/getDashboardRdvData'
 import { createOrMergeBeneficiairesFromRdvUsers } from '@app/web/features/rdvsp/sync/createOrMergeBeneficiaireFromRdvUsers'
 import { mergeRdvUserFromRdvPlan } from '@app/web/features/rdvsp/sync/mergeRdvUserFromRdvPlan'
@@ -340,7 +339,7 @@ export const rdvServicePublicRouter = router({
             first_name: beneficiaire.prenom ?? undefined,
             last_name: beneficiaire.nom ?? undefined,
             email: beneficiaire.email ?? undefined,
-            address: getBeneficiaireAdresseString(beneficiaire),
+            address: beneficiaire.adresse ?? undefined,
             phone_number: beneficiaire.telephone ?? undefined,
             // birth_date: beneficiaire.anneeNaissance // We don't have this field in the beneficiaire
           },

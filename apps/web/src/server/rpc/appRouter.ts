@@ -2,7 +2,6 @@ import { tagsRouter } from '@app/web/features/activites/use-cases/tags/tagsRoute
 import { dataspaceAdminRouter } from '@app/web/features/dataspace/use-cases/administration/dataspaceAdminRouter'
 import { maintenanceRouter } from '@app/web/features/maintenance-mode/use-cases/administration/maintenanceRouter'
 import { apiClientRouter } from '@app/web/server/rpc/apiClient/apiClientRouter'
-import { beneficiairesRouter } from '@app/web/server/rpc/beneficiaires/beneficiairesRouter'
 import { craRouter } from '@app/web/server/rpc/cra/craRouter'
 import { router } from '@app/web/server/rpc/createRouter'
 import { employeStructureRouter } from '@app/web/server/rpc/employe-structure/employeStructureRouter'
@@ -24,7 +23,6 @@ export const appRouter = router({
   image: imageRouter,
   siret: siretRouter,
   structures: structuresRouter,
-  beneficiaires: beneficiairesRouter,
   mediateur: mediateursRouter,
   cra: craRouter,
   usurpation: usurpationRouter,
