@@ -1,6 +1,8 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
-import { initializeInscription } from '@app/web/features/inscription/use-cases/initialize/initializeInscription'
+import { initialiserInscriptionAvecInfra } from '@app/web/features/inscription/abilities/initialiser-inscription/implementation'
+import { Email, UserId } from '@app/web/features/inscription/domain'
+import { stepPath } from '@app/web/features/inscription/ui/step-path'
 import * as Sentry from '@sentry/nextjs'
 import { redirect } from 'next/navigation'
 
@@ -19,26 +21,21 @@ const InitialiserInscriptionPage = async () => {
     redirect('/coop')
   }
 
-  // Initialize inscription and get next step
-  const result = await initializeInscription({
-    userId: user.id,
-    email: user.email,
+  const { nextStep } = await initialiserInscriptionAvecInfra({
+    userId: UserId(user.id),
+    email: Email(user.email),
   })
 
   // Redirect to next step or fallback
-  if (result.nextStepPath) {
-    redirect(result.nextStepPath)
+  if (nextStep) {
+    redirect(stepPath(nextStep))
   }
 
   // Capture sentry error if no next step determined
   Sentry.captureException(
     new Error('No next step determined for inscription'),
     {
-      extra: {
-        userId: user.id,
-        email: user.email,
-        initializeInscriptionResult: result,
-      },
+      extra: { userId: user.id, email: user.email },
     },
   )
   // Fallback if no next step determined
