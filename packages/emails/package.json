@@ -20,7 +20,7 @@
   "dependencies": {
     "@faire/mjml-react": "^3.5.0",
     "html-minifier": "^4.0.0",
-    "mjml": "^4.15.3",
+    "mjml": "^5.0.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
   },
