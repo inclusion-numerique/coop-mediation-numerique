@@ -65,7 +65,7 @@ export const getAccompagnementsCountByMonth = async ({
             INNER JOIN accompagnements acc ON acc.activite_id = act.id
             LEFT JOIN mediateurs med ON act.mediateur_id = med.id
             LEFT JOIN users u ON med.user_id = u.id
-            LEFT JOIN structures str ON str.id = act.structure_id
+            LEFT JOIN lieu_inclusion str ON str.id = act.structure_id
           WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
             AND ${activitesSourceWhereCondition(activitesFilters.source)}
             AND act.suppression IS NULL
@@ -142,7 +142,7 @@ export const getAccompagnementsCountByDay = async ({
                 INNER JOIN accompagnements ON accompagnements.activite_id = act.id
                 LEFT JOIN mediateurs med ON act.mediateur_id = med.id
                 LEFT JOIN users u ON med.user_id = u.id
-                LEFT JOIN structures str ON str.id = act.structure_id
+                LEFT JOIN lieu_inclusion str ON str.id = act.structure_id
         WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
           AND ${activitesSourceWhereCondition(activitesFilters.source)}
           AND act.suppression IS NULL

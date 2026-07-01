@@ -109,4 +109,4 @@ export const toStructureFromCartoStructure = ({
             publicSpecifiquementAdresse as PublicSpecifiquementAdresse
           ],
       ),
-  }) satisfies Prisma.StructureCreateManyInput
+  }) satisfies Prisma.LieuInclusionCreateManyInput

@@ -455,7 +455,7 @@ export const executeDetectDuplicateStructures = async (
     `detect-duplicate-structures: starting (seuil: ${seuilScore})${limit ? ` (limit: ${limit} codes INSEE)` : ''}...`,
   )
 
-  const structures = await prismaClient.structure.findMany({
+  const structures = await prismaClient.lieuInclusion.findMany({
     where: {
       suppression: null,
       codeInsee: { not: null },

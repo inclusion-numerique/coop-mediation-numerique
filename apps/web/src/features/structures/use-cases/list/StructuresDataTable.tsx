@@ -15,8 +15,8 @@ import { StructureForList } from './queryStructuresForList'
 
 export type StructuresDataTableConfiguration = DataTableConfiguration<
   StructureForList,
-  Prisma.StructureWhereInput,
-  Prisma.StructureOrderByWithRelationInput
+  Prisma.LieuInclusionWhereInput,
+  Prisma.LieuInclusionOrderByWithRelationInput
 >
 
 export const StructuresDataTable = {

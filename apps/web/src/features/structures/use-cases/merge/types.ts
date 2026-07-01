@@ -13,9 +13,9 @@ export const mergeStructureInclude = {
     where: { suppression: null },
     select: { id: true },
   },
-} satisfies Prisma.StructureInclude
+} satisfies Prisma.LieuInclusionInclude
 
-export type MergeStructure = Prisma.StructureGetPayload<{
+export type MergeStructure = Prisma.LieuInclusionGetPayload<{
   include: typeof mergeStructureInclude
 }>
 

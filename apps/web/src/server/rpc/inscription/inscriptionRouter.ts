@@ -66,8 +66,8 @@ const onlyLieuxActiviteToCreate =
     (id == null && structureCartographieNationaleId != null) ||
     (id == null && structureCartographieNationaleId == null && nom != null)
 
-const toStructureId = ({ structure }: { structure: { id: string } }) =>
-  structure.id
+const toStructureId = ({ lieuInclusion }: { lieuInclusion: { id: string } }) =>
+  lieuInclusion.id
 
 const existingActiviteFor = (userId: string) => ({
   where: {
@@ -77,7 +77,7 @@ const existingActiviteFor = (userId: string) => ({
   },
   select: {
     id: true,
-    structure: {
+    lieuInclusion: {
       select: {
         id: true,
         structureCartographieNationaleId: true,
@@ -244,7 +244,7 @@ export const inscriptionRouter = router({
               },
             })
 
-          await prismaClient.structure.upsert({
+          await prismaClient.lieuInclusion.upsert({
             where: { id: structureEmployeuseId },
             update: {},
             create: structureEmployeuse,
@@ -268,7 +268,7 @@ export const inscriptionRouter = router({
                   userId,
                 },
               },
-              structure: {
+              lieuInclusion: {
                 connect: {
                   id: structureEmployeuseId,
                 },
@@ -343,7 +343,7 @@ export const inscriptionRouter = router({
         // AND that is not in the new list of internal ids
         // For now if removed and readed, it will be deleted here and recreated after
         const toDelete = existingActivite.filter(
-          ({ structure: existing }) =>
+          ({ lieuInclusion: existing }) =>
             // e.g. if the structure was removed, re-added and has the same carto id
             (existing.structureCartographieNationaleId &&
               !lieuxActiviteCartoIds.has(
@@ -355,7 +355,7 @@ export const inscriptionRouter = router({
         )
 
         const existingStructuresForCartoIds =
-          await prismaClient.structure.findMany({
+          await prismaClient.lieuInclusion.findMany({
             where: {
               structureCartographieNationaleId: {
                 in: [...lieuxActiviteCartoIds.values()],
@@ -415,7 +415,7 @@ export const inscriptionRouter = router({
                           userId,
                         },
                       },
-                      structure: {
+                      lieuInclusion: {
                         connect: {
                           id: lieu.id,
                         },
@@ -431,7 +431,7 @@ export const inscriptionRouter = router({
 
                 if (structure) {
                   const existingStructure =
-                    await transaction.structure.findFirst({
+                    await transaction.lieuInclusion.findFirst({
                       where: {
                         structureCartographieNationaleId:
                           lieu.structureCartographieNationaleId,
@@ -451,7 +451,7 @@ export const inscriptionRouter = router({
                           userId,
                         },
                       },
-                      structure: {
+                      lieuInclusion: {
                         connect: {
                           id: existingStructure.id,
                         },
@@ -478,7 +478,7 @@ export const inscriptionRouter = router({
                         userId,
                       },
                     },
-                    structure: {
+                    lieuInclusion: {
                       create: toStructureFromCartoStructure(cartoStructure),
                     },
                     debut: new Date(),

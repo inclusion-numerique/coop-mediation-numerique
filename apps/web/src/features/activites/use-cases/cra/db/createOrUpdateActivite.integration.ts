@@ -34,7 +34,7 @@ const getCounts = async (ids: {
       select: { activitesCount: true, accompagnementsCount: true },
     }),
     ids.structureId
-      ? prismaClient.structure.findUnique({
+      ? prismaClient.lieuInclusion.findUnique({
           where: { id: ids.structureId },
           select: { activitesCount: true },
         })
@@ -85,7 +85,7 @@ const nullActivite: Omit<
   tags: [],
   typeLieu: 'ADistance',
   niveau: null,
-  structure: null,
+  lieuInclusion: null,
   titreAtelier: null,
   rdvServicePublicId: null,
   mediateur: {

@@ -1,6 +1,9 @@
 -- Incrément 1a.2 : bascule du rôle EMPLOYEUSE de `structures` vers `structure_administrative`.
 -- 1) crée une structure_administrative (id = structures.id) pour chaque structure
---    employeuse (référencée par un emploi/une activité, ou portant un siret),
+--    jouant EFFECTIVEMENT le rôle employeuse (référencée par un emploi ou une activité).
+--    Le seul SIRET ne suffit PAS : un lieu d'activité peut porter un siret sans jamais
+--    employer personne. Un lieu-siret qui deviendrait employeuse plus tard voit sa SA
+--    créée à la demande par les write paths (inscription / findOrCreateStructureAdministrative).
 -- 2) swap des FK employeuse `employes_structures` / `activites` vers structure_administrative.
 --
 -- Aucun repoint de valeurs : en réutilisant `id = structures.id`, les colonnes
@@ -10,7 +13,9 @@
 -- L'ordre DROP-avant-ADD des FK est obligatoire (l'ancienne contrainte vise `structures`).
 -- Prérequis : 1a.1 appliqué (table structure_administrative créée).
 
--- 1. Créer une SA (id = structures.id) pour chaque structure jouant le rôle employeuse.
+-- 1. Créer une SA (id = structures.id) pour chaque structure jouant EFFECTIVEMENT le rôle
+--    employeuse : référencée par un emploi (employes_structures) ou par une activité-employeur
+--    (activites.structure_employeuse_id). La présence d'un siret ne déclenche PAS la création.
 INSERT INTO "coop"."structure_administrative"
   ("id", "siret", "rna", "denomination", "synchronisation_siret", "nom", "adresse",
    "commune", "code_postal", "code_insee", "complement_adresse", "nom_referent",
@@ -21,8 +26,7 @@ SELECT s."id", s."siret", s."rna", s."nom_usage", s."synchronisation_siret",
    s."nom_referent", s."courriel_referent", s."telephone_referent", 'coop', now(), now()
 FROM "coop"."structures" s
 WHERE
-  s."siret" IS NOT NULL
-  OR EXISTS (SELECT 1 FROM "coop"."employes_structures" es WHERE es."structure_id" = s."id")
+  EXISTS (SELECT 1 FROM "coop"."employes_structures" es WHERE es."structure_id" = s."id")
   OR EXISTS (SELECT 1 FROM "coop"."activites" a WHERE a."structure_employeuse_id" = s."id");
 
 -- 2. Swap des contraintes FK employeuse : structures -> structure_administrative.

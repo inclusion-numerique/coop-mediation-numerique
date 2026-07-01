@@ -20,11 +20,11 @@ export const executeAuditStructuresOverview = async (
 
   // ── Comptages globaux ──
 
-  const total = await prismaClient.structure.count({
+  const total = await prismaClient.lieuInclusion.count({
     where: { suppression: null },
   })
 
-  const totalSupprimees = await prismaClient.structure.count({
+  const totalSupprimees = await prismaClient.lieuInclusion.count({
     where: { suppression: { not: null } },
   })
 
@@ -34,13 +34,13 @@ export const executeAuditStructuresOverview = async (
 
   // ── SIRET ──
 
-  const avecSiret = await prismaClient.structure.count({
+  const avecSiret = await prismaClient.lieuInclusion.count({
     where: { suppression: null, siret: { not: null } },
   })
 
   const sansSiret = total - avecSiret
 
-  const siretsDupliques = await prismaClient.structure.groupBy({
+  const siretsDupliques = await prismaClient.lieuInclusion.groupBy({
     by: ['siret'],
     where: { suppression: null, siret: { not: null } },
     _count: { id: true },
@@ -61,7 +61,7 @@ export const executeAuditStructuresOverview = async (
 
   // ── Coordonnées ──
 
-  const avecCoordonnees = await prismaClient.structure.count({
+  const avecCoordonnees = await prismaClient.lieuInclusion.count({
     where: {
       suppression: null,
       latitude: { not: null },
@@ -81,11 +81,11 @@ export const executeAuditStructuresOverview = async (
 
   // ── Code INSEE / BAN ID ──
 
-  const avecCodeInsee = await prismaClient.structure.count({
+  const avecCodeInsee = await prismaClient.lieuInclusion.count({
     where: { suppression: null, codeInsee: { not: null } },
   })
 
-  const avecBanId = await prismaClient.structure.count({
+  const avecBanId = await prismaClient.lieuInclusion.count({
     where: { suppression: null, banId: { not: null } },
   })
 
@@ -94,11 +94,11 @@ export const executeAuditStructuresOverview = async (
 
   // ── Cartographie nationale ──
 
-  const visibleCarto = await prismaClient.structure.count({
+  const visibleCarto = await prismaClient.lieuInclusion.count({
     where: { suppression: null, visiblePourCartographieNationale: true },
   })
 
-  const avecCartoId = await prismaClient.structure.count({
+  const avecCartoId = await prismaClient.lieuInclusion.count({
     where: {
       suppression: null,
       structureCartographieNationaleId: { not: null },
@@ -117,7 +117,7 @@ export const executeAuditStructuresOverview = async (
 
   // Pas de lien FK lieu↔employeuse : les emplois sont corrélés par nom + code INSEE.
   // On charge les structures non supprimées une fois et on dérive les compteurs en mémoire.
-  const nonSupprimees = await prismaClient.structure.findMany({
+  const nonSupprimees = await prismaClient.lieuInclusion.findMany({
     where: { suppression: null },
     select: {
       id: true,
@@ -182,7 +182,7 @@ export const executeAuditStructuresOverview = async (
 
   // ── Origine : v1 importées vs natives ──
 
-  const importeesV1 = await prismaClient.structure.count({
+  const importeesV1 = await prismaClient.lieuInclusion.count({
     where: { suppression: null, v1Imported: { not: null } },
   })
 
@@ -198,7 +198,7 @@ export const executeAuditStructuresOverview = async (
     { departement: string; count: bigint }[]
   >`
     SELECT LEFT(code_postal, 2) as departement, COUNT(*)::bigint as count
-    FROM structures
+    FROM lieu_inclusion
     WHERE suppression IS NULL
     GROUP BY LEFT(code_postal, 2)
     ORDER BY count DESC
@@ -212,7 +212,7 @@ export const executeAuditStructuresOverview = async (
 
   // ── Structures supprimées encore référencées ──
 
-  const supprimees = await prismaClient.structure.findMany({
+  const supprimees = await prismaClient.lieuInclusion.findMany({
     where: { suppression: { not: null } },
     select: { id: true, nom: true, adresse: true, codeInsee: true },
   })
@@ -223,7 +223,7 @@ export const executeAuditStructuresOverview = async (
     ({ id }) => (emploisParSupprimee.get(id) ?? 0) > 0,
   ).length
 
-  const supprimeeesAvecActivites = await prismaClient.structure.count({
+  const supprimeeesAvecActivites = await prismaClient.lieuInclusion.count({
     where: {
       suppression: { not: null },
       activitesCount: { gt: 0 },

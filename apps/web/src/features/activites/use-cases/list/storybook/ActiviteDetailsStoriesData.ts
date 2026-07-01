@@ -48,7 +48,7 @@ export const activiteIndividuelleInfosMinimum = {
   lieuCommune: null,
   lieuCodeInsee: null,
   lieuCodePostal: null,
-  structure: {
+  lieuInclusion: {
     id: '1',
     nom: 'Bibliotheque Musee de l’Opera, au fond du couloir à droite',
     adresse: '33 Rue de l’Opera',
@@ -111,7 +111,7 @@ export const activiteIndividuelleBeneficiaireSuivi = {
   lieuCommune: null,
   lieuCodeInsee: null,
   lieuCodePostal: null,
-  structure: null,
+  lieuInclusion: null,
   orienteVersStructure: true,
   structureDeRedirection: 'OperateurOuOrganismeEnCharge',
   precisionsDemarche: null,
@@ -176,7 +176,7 @@ export const activiteIndividuelleBeneficiaireAnonyme = {
   lieuCommune: 'Lyon',
   lieuCodeInsee: '69382',
   lieuCodePostal: '69002',
-  structure: null,
+  lieuInclusion: null,
   orienteVersStructure: true,
   structureDeRedirection: 'OperateurOuOrganismeEnCharge',
   titreAtelier: null,
@@ -250,7 +250,7 @@ export const activiteCollectifInfosRepliees = {
   lieuCommune: 'Lyon',
   lieuCodeInsee: '69382',
   lieuCodePostal: '69002',
-  structure: null,
+  lieuInclusion: null,
   orienteVersStructure: null,
   structureDeRedirection: null,
   precisionsDemarche: null,
@@ -354,7 +354,7 @@ export const activiteCollectifInfosDepliees = {
   lieuCommune: null,
   lieuCodeInsee: null,
   lieuCodePostal: null,
-  structure: {
+  lieuInclusion: {
     id: '1',
     nom: 'Bibliotheque Musee de l’Opera, au fond du couloir à droite',
     adresse: '33 Rue de l’Opera',

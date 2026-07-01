@@ -162,7 +162,7 @@ export const deleteActivite = async ({
     // Decrement structure count if applicable
     if (activite.structureId) {
       await tx.$executeRaw`
-        UPDATE structures
+        UPDATE lieu_inclusion
         SET activites_count = activites_count - 1
         WHERE id = ${activite.structureId}::uuid
       `

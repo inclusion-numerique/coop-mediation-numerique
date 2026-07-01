@@ -102,7 +102,7 @@ export const executeApplyCorrigerCoordonnees = async (
     )
 
     for (const row of batch) {
-      const structure = await prismaClient.structure.findUnique({
+      const structure = await prismaClient.lieuInclusion.findUnique({
         where: { id: row.id },
         select: {
           id: true,
@@ -161,7 +161,7 @@ export const executeApplyCorrigerCoordonnees = async (
       }
 
       if (!dryRun) {
-        await prismaClient.structure.update({
+        await prismaClient.lieuInclusion.update({
           where: { id: row.id },
           data: {
             latitude: banData.latitude,

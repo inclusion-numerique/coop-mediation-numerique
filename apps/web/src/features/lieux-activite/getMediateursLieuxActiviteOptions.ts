@@ -9,7 +9,7 @@ export const mediateurStructureSelect = () =>
     adresse: true,
     codePostal: true,
     commune: true,
-  }) satisfies Prisma.StructureSelect
+  }) satisfies Prisma.LieuInclusionSelect
 
 export type LieuActiviteOption = SelectOption<
   string,
@@ -47,7 +47,7 @@ export const getMediateursLieuxActiviteOptions = async ({
         s.commune,
         COALESCE(activites_count.count, 0) AS activites_count
       FROM mediateurs_en_activite mea
-      JOIN structures s ON s.id = mea.structure_id
+      JOIN lieu_inclusion s ON s.id = mea.structure_id
       LEFT JOIN (
         SELECT structure_id, COUNT(*) as count
         FROM activites

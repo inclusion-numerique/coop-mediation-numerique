@@ -8,7 +8,7 @@ export const structureEmployeuse = givenStructure({
   codePostal: '75001',
   codeInsee: '75101',
   commune: 'Paris 1er',
-}) satisfies Prisma.StructureCreateInput
+}) satisfies Prisma.LieuInclusionCreateInput
 
 export const mediateque = givenStructure({
   id: '36929ed7-3b6f-4ed3-9924-b5e1a6c27096',
@@ -98,7 +98,7 @@ export const seedStructures = async (transaction: Prisma.TransactionClient) => {
 
   return Promise.all(
     fixtureStructures.map((structure) =>
-      transaction.structure.upsert({
+      transaction.lieuInclusion.upsert({
         where: { id: structure.id },
         create: structure,
         update: structure,

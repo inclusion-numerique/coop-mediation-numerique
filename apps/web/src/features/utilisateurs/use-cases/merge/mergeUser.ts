@@ -59,7 +59,7 @@ const include = {
       },
       enActivite: {
         include: {
-          structure: {
+          lieuInclusion: {
             select: { id: true },
           },
         },
@@ -90,7 +90,7 @@ type Mediateur = {
   beneficiaires: { id: string }[]
   activites: { id: string }[]
   coordinations: { coordinateur: { id: string } }[]
-  enActivite: { structure: { id: string } }[]
+  enActivite: { lieuInclusion: { id: string } }[]
   invitations: { coordinateurId: string }[]
 }
 
@@ -98,6 +98,12 @@ const toId = ({ id }: { id: string }) => id
 
 const toStructureId = ({ structure: { id } }: { structure: { id: string } }) =>
   id
+
+const toLieuInclusionId = ({
+  lieuInclusion: { id },
+}: {
+  lieuInclusion: { id: string }
+}) => id
 
 const toCoordinationId = ({
   coordinateur: { id },
@@ -153,8 +159,10 @@ const mergeLieuxActivite =
     { mediateur: sourceMediateur }: { mediateur: Mediateur },
     { mediateur: targetMediateur }: { mediateur: Mediateur },
   ) => {
-    const sourceLieuActiviteIds = sourceMediateur.enActivite.map(toStructureId)
-    const targetLieuxActiviteIds = targetMediateur.enActivite.map(toStructureId)
+    const sourceLieuActiviteIds =
+      sourceMediateur.enActivite.map(toLieuInclusionId)
+    const targetLieuxActiviteIds =
+      targetMediateur.enActivite.map(toLieuInclusionId)
 
     await prisma.mediateurEnActivite.updateMany({
       where: {

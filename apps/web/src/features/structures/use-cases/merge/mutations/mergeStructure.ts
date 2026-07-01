@@ -88,13 +88,13 @@ const mergeArrayFields =
   (prisma: PrismaTransaction) =>
   async (sourceStructureId: string, targetStructureId: string) => {
     const [source, target] = await Promise.all([
-      prisma.structure.findUnique({ where: { id: sourceStructureId } }),
-      prisma.structure.findUnique({ where: { id: targetStructureId } }),
+      prisma.lieuInclusion.findUnique({ where: { id: sourceStructureId } }),
+      prisma.lieuInclusion.findUnique({ where: { id: targetStructureId } }),
     ])
 
     if (!source || !target) return
 
-    await prisma.structure.update({
+    await prisma.lieuInclusion.update({
       where: { id: targetStructureId },
       data: {
         typologies: unionArrays(target.typologies, source.typologies),
@@ -138,7 +138,7 @@ const mergeArrayFields =
 
 const deleteStructure =
   (prisma: PrismaTransaction) => async (structureId: string) => {
-    await prisma.structure.delete({
+    await prisma.lieuInclusion.delete({
       where: { id: structureId },
     })
   }
@@ -151,14 +151,14 @@ export const mergeStructure = async (
   await prismaClient.$transaction(
     async (prisma) => {
       const [sourceStructure, targetStructure] = await Promise.all([
-        prisma.structure.findUnique({
+        prisma.lieuInclusion.findUnique({
           where: { id: sourceStructureId },
           select: {
             id: true,
             visiblePourCartographieNationale: true,
           },
         }),
-        prisma.structure.findUnique({
+        prisma.lieuInclusion.findUnique({
           where: { id: targetStructureId },
           select: {
             id: true,
@@ -188,7 +188,7 @@ export const mergeStructure = async (
         sourceStructure.visiblePourCartographieNationale &&
         !targetStructure.visiblePourCartographieNationale
       ) {
-        await prisma.structure.update({
+        await prisma.lieuInclusion.update({
           where: { id: targetStructureId },
           data: { visiblePourCartographieNationale: true },
         })

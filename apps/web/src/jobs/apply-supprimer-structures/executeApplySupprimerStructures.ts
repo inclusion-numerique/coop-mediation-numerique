@@ -73,7 +73,7 @@ export const executeApplySupprimerStructures = async (
     }
 
     // Vérification de sécurité : re-vérifier que la structure est toujours orpheline
-    const structure = await prismaClient.structure.findUnique({
+    const structure = await prismaClient.lieuInclusion.findUnique({
       where: { id: row.id },
       select: {
         id: true,
@@ -139,7 +139,7 @@ export const executeApplySupprimerStructures = async (
       deleted++
     } else {
       try {
-        await prismaClient.structure.delete({
+        await prismaClient.lieuInclusion.delete({
           where: { id: row.id },
         })
         results.push({ row, statut: 'supprimee' })

@@ -144,7 +144,7 @@ export const executeAuditAdresseCoherence = async (
     `audit-adresse-coherence: starting...${limit ? ` (limit: ${limit})` : ''}`,
   )
 
-  const structures = await prismaClient.structure.findMany({
+  const structures = await prismaClient.lieuInclusion.findMany({
     where: { suppression: null },
     select: {
       id: true,

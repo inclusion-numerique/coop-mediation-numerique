@@ -60,11 +60,11 @@ export const ActivitesDataTable = {
       name: 'lieu_d_activite',
       header: 'Lieu d’activité',
       csvHeaders: ['lieu_d_activite'],
-      csvValues: ({ structure, typeLieu }) => [
-        typeLieu === 'LieuActivite' && structure ? structure.nom : '-',
+      csvValues: ({ lieuInclusion, typeLieu }) => [
+        typeLieu === 'LieuActivite' && lieuInclusion ? lieuInclusion.nom : '-',
       ],
-      cell: ({ structure, typeLieu }) =>
-        typeLieu === 'LieuActivite' && structure ? structure.nom : '-',
+      cell: ({ lieuInclusion, typeLieu }) =>
+        typeLieu === 'LieuActivite' && lieuInclusion ? lieuInclusion.nom : '-',
       cellClassName: styles.lieuCell,
     },
     {

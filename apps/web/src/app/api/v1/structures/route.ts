@@ -480,7 +480,7 @@ export const GET = createApiV1Route
         : {}),
     }
 
-    const structures = await prismaClient.structure.findMany({
+    const structures = await prismaClient.lieuInclusion.findMany({
       orderBy: [{ creation: 'desc' }, { id: 'desc' }],
       take: cursorPagination.take,
       skip: cursorPagination.skip,
@@ -507,7 +507,7 @@ export const GET = createApiV1Route
         : undefined,
     })
 
-    const totalCount = await prismaClient.structure.count({ where })
+    const totalCount = await prismaClient.lieuInclusion.count({ where })
 
     // Compteur d'emplois par corrélation nom + code INSEE avec l'employeuse
     // (structure_administrative) ; pas de lien FK. Contrat API v1 préservé.

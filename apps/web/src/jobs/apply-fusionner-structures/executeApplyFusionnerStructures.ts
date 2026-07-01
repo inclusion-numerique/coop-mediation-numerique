@@ -120,11 +120,11 @@ export const executeApplyFusionnerStructures = async (
 
     // Vérifier que source et cible existent encore
     const [source, cible] = await Promise.all([
-      prismaClient.structure.findUnique({
+      prismaClient.lieuInclusion.findUnique({
         where: { id: row.id },
         select: { id: true, suppression: true },
       }),
-      prismaClient.structure.findUnique({
+      prismaClient.lieuInclusion.findUnique({
         where: { id: row.cibleFusion },
         select: {
           id: true,

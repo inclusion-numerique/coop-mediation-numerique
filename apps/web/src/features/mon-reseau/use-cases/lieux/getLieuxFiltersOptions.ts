@@ -19,7 +19,7 @@ export const getLieuxFiltersOptions = async ({
       s.code_insee AS code,
       MAX(s.commune) AS commune,
       MAX(s.code_postal) AS code_postal
-    FROM structures s
+    FROM lieu_inclusion s
     WHERE s.suppression IS NULL
       AND SUBSTRING(s.code_insee FROM ${departementCodeFromInseeRegex}) = ${departementCode}
       AND s.code_insee IS NOT NULL

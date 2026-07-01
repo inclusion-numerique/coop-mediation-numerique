@@ -27,7 +27,7 @@ export const searchStructureSelect = {
       },
     },
   },
-} satisfies Prisma.StructureSelect
+} satisfies Prisma.LieuInclusionSelect
 
 export const queryStructuresForList = async ({
   skip,
@@ -35,12 +35,12 @@ export const queryStructuresForList = async ({
   where,
   orderBy,
 }: {
-  where: Prisma.StructureWhereInput
+  where: Prisma.LieuInclusionWhereInput
   take?: number
   skip?: number
-  orderBy?: Prisma.StructureOrderByWithRelationInput[]
+  orderBy?: Prisma.LieuInclusionOrderByWithRelationInput[]
 }) => {
-  const structures = await prismaClient.structure.findMany({
+  const structures = await prismaClient.lieuInclusion.findMany({
     where,
     take,
     skip,

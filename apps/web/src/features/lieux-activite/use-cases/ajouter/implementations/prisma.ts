@@ -32,7 +32,7 @@ export const findExistingLieuxActivite: FindExistingLieuxActivite = async (
       fin: null,
     },
     select: {
-      structure: {
+      lieuInclusion: {
         select: {
           id: true,
           structureCartographieNationaleId: true,
@@ -42,8 +42,8 @@ export const findExistingLieuxActivite: FindExistingLieuxActivite = async (
   })
 
   return mediateursEnActivite.map((a) => ({
-    structureId: a.structure.id,
-    cartoId: a.structure.structureCartographieNationaleId,
+    structureId: a.lieuInclusion.id,
+    cartoId: a.lieuInclusion.structureCartographieNationaleId,
   }))
 }
 
@@ -53,7 +53,7 @@ export const findStructuresByCartoIds: FindStructuresByCartoIds = async (
   if (cartoIds.length === 0) return new Map()
 
   const prisma = inject(PRISMA_CLIENT_KEY)
-  const structures = await prisma.structure.findMany({
+  const structures = await prisma.lieuInclusion.findMany({
     where: {
       structureCartographieNationaleId: { in: cartoIds },
     },
@@ -77,7 +77,7 @@ export const createStructureFromData: CreateStructureFromData = async (
   data: StructureToCreate,
 ) => {
   const prisma = inject(PRISMA_CLIENT_KEY)
-  return prisma.structure.create({
+  return prisma.lieuInclusion.create({
     data: {
       id: v4(),
       nom: data.nom,
@@ -96,7 +96,7 @@ export const createStructureFromCarto: CreateStructureFromCarto = async (
   cartoStructure,
 ) => {
   const prisma = inject(PRISMA_CLIENT_KEY)
-  return prisma.structure.create({
+  return prisma.lieuInclusion.create({
     data: toStructureFromCartoStructure(cartoStructure),
     select: { id: true },
   })
@@ -111,7 +111,7 @@ export const createMediateurEnActivite: CreateMediateurEnActivite = async (
     data: {
       id: v4(),
       mediateur: { connect: { id: mediateurId } },
-      structure: { connect: { id: structureId } },
+      lieuInclusion: { connect: { id: structureId } },
       debut: new Date(),
     },
     select: { id: true, structureId: true },

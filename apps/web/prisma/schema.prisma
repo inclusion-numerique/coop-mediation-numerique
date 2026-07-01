@@ -193,9 +193,9 @@ model User {
 
   assistantConfigurations AssistantConfiguration[]
 
-  structuresCrees     Structure[] @relation(name: "structure_crees")
-  structuresModifies  Structure[] @relation(name: "structure_modifiees")
-  structuresSupprimes Structure[] @relation(name: "structure_supprimees")
+  lieuxInclusionCrees     LieuInclusion[] @relation(name: "structure_crees")
+  lieuxInclusionModifies  LieuInclusion[] @relation(name: "structure_modifiees")
+  lieuxInclusionSupprimes LieuInclusion[] @relation(name: "structure_supprimees")
 
   mediateursEnActiviteCrees     MediateurEnActivite[] @relation(name: "mediateur_en_activite_crees")
   mediateursEnActiviteModifies  MediateurEnActivite[] @relation(name: "mediateur_en_activite_modifies")
@@ -760,7 +760,7 @@ enum ModaliteAccompagnement {
 
 // Lieu physique. Source de vérité interne. Peut être mise à jour depuis StructureCartographieNationale.
 // Ce model recense les structures utilisées dans la coop, ce n'est pas une source de vérité exaustive des structures
-model Structure {
+model LieuInclusion {
   // Id
   id String @id @default(uuid()) @db.Uuid
 
@@ -856,13 +856,17 @@ model Structure {
   // descending sort on this cursor for api query performances
   @@index([creation(sort: Desc), id(sort: Desc)])
   @@index([structureCartographieNationaleId])
-  @@index([activitesCount(sort: Asc)], map: "structures_activites_count_asc_idx")
-  @@index([activitesCount(sort: Desc)], map: "structures_activites_count_desc_idx")
+  @@index([activitesCount(sort: Asc)], map: "lieu_inclusion_activites_count_asc_idx")
+  @@index([activitesCount(sort: Desc)], map: "lieu_inclusion_activites_count_desc_idx")
   // performance indexes
   @@index([v1StructureId])
   @@index([v1PermanenceId])
   @@index([codeInsee])
-  @@map("structures")
+  // Table renommée en `lieu_inclusion` (alignement Entrepôt main.lieu_inclusion, inc. 2a).
+  // Le nom du modèle Prisma reste `Structure` pour éviter le churn (~70 fichiers) : son
+  // renommage éventuel en `LieuInclusion` est du rework Phase 2. Les colonnes employeuse
+  // (siret, rna, nomUsage, synchronisationSiret, *Referent) sont conservées jusqu'à l'inc. 2b.
+  @@map("lieu_inclusion")
   @@schema("coop")
 }
 
@@ -949,8 +953,8 @@ model MediateurEnActivite {
   mediateurId String    @map("mediateur_id") @db.Uuid
   mediateur   Mediateur @relation(fields: [mediateurId], references: [id])
 
-  structureId String    @map("structure_id") @db.Uuid
-  structure   Structure @relation(fields: [structureId], references: [id])
+  structureId String        @map("structure_id") @db.Uuid
+  lieuInclusion LieuInclusion @relation(fields: [structureId], references: [id])
 
   debut DateTime  @map("debut_activite") // date de début de l'activité dans la structure
   fin   DateTime? @map("fin_activite") // date de fin de l'activité dans la structure
@@ -1263,7 +1267,7 @@ model Activite {
   // Structure est renseigné
   // - si typeLieu = LieuActivite
   structureId    String?    @map("structure_id") @db.Uuid
-  structure      Structure? @relation(fields: [structureId], references: [id], name: "activite_structure")
+  lieuInclusion  LieuInclusion? @relation(fields: [structureId], references: [id], name: "activite_structure")
   // lieu* est renseigné
   // - si typeLieu = A Domicile
   // - ou si typeLieu = Autre

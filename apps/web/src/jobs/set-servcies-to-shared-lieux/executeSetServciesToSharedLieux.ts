@@ -19,7 +19,7 @@ export const executeSetServciesToSharedLieux = async (
 ) => {
   output('Starting set default services to lieux shared with cartographie...')
 
-  const sharedLieuxWithoutService = await prisma.structure.findMany({
+  const sharedLieuxWithoutService = await prisma.lieuInclusion.findMany({
     where: {
       visiblePourCartographieNationale: true,
       services: { isEmpty: true },
@@ -31,7 +31,7 @@ export const executeSetServciesToSharedLieux = async (
   )
 
   for (const lieu of sharedLieuxWithoutService) {
-    await prisma.structure.update({
+    await prisma.lieuInclusion.update({
       where: { id: lieu.id },
       data: {
         services: DEFAULT_SERVICES,
@@ -39,7 +39,7 @@ export const executeSetServciesToSharedLieux = async (
     })
   }
 
-  const privateLieux = await prisma.structure.findMany({
+  const privateLieux = await prisma.lieuInclusion.findMany({
     where: {
       AND: [
         { visiblePourCartographieNationale: true },
@@ -57,7 +57,7 @@ export const executeSetServciesToSharedLieux = async (
   )
 
   for (const lieu of privateLieux) {
-    await prisma.structure.update({
+    await prisma.lieuInclusion.update({
       where: { id: lieu.id },
       data: {
         services: [],

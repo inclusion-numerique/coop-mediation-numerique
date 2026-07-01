@@ -10,7 +10,7 @@ export const mediateurStructureSelect = () =>
     codePostal: true,
     commune: true,
     activitesCount: true,
-  }) satisfies Prisma.StructureSelect
+  }) satisfies Prisma.LieuInclusionSelect
 
 export type LieuActiviteOption = SelectOption<
   string,
@@ -34,18 +34,27 @@ export const getLieuxActiviteOptions = async (): Promise<
     },
     select: {
       id: true,
-      structure: { select: structureSelect },
+      lieuInclusion: { select: structureSelect },
     },
     distinct: ['structureId'],
     orderBy: [
-      { structure: { activitesCount: 'desc' } },
-      { structure: { nom: 'asc' } },
+      { lieuInclusion: { activitesCount: 'desc' } },
+      { lieuInclusion: { nom: 'asc' } },
     ],
   })
 
   return lieuxActivite.map(
     (
-      { structure: { id, nom, commune, codePostal, adresse, activitesCount } },
+      {
+        lieuInclusion: {
+          id,
+          nom,
+          commune,
+          codePostal,
+          adresse,
+          activitesCount,
+        },
+      },
       index,
     ) =>
       ({

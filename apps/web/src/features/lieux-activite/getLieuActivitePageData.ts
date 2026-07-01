@@ -3,7 +3,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import { acteurSelectForList } from '../mon-reseau/use-cases/acteurs/db/searchActeurs'
 
 export const getLieuActivitePageData = async ({ id }: { id: string }) => {
-  const structure = await prismaClient.structure.findUnique({
+  const structure = await prismaClient.lieuInclusion.findUnique({
     where: { id },
     select: {
       id: true,

@@ -43,9 +43,9 @@ export const searchStructure = async (
         },
       ],
     })),
-  } satisfies Prisma.StructureWhereInput
+  } satisfies Prisma.LieuInclusionWhereInput
 
-  const structuresRaw = await prismaClient.structure.findMany({
+  const structuresRaw = await prismaClient.lieuInclusion.findMany({
     where: matchesWhere,
     take: structuresSearchLimit,
     orderBy: {
@@ -53,7 +53,7 @@ export const searchStructure = async (
     },
   })
 
-  const matchesCount = await prismaClient.structure.count({
+  const matchesCount = await prismaClient.lieuInclusion.count({
     where: matchesWhere,
   })
 
