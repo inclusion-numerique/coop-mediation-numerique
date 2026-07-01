@@ -42,7 +42,7 @@ import { v4 } from 'uuid'
 import z from 'zod'
 
 const lieuActiviteToUpdate = async (input: { id: string }) => {
-  const structure = await prismaClient.structure.findFirst({
+  const structure = await prismaClient.lieuInclusion.findFirst({
     where: {
       id: input.id,
     },
@@ -155,7 +155,7 @@ export const lieuActiviteRouter = router({
         throw forbiddenError("Cet utilisateur n'est pas un médiateur")
       }
 
-      return prismaClient.structure.create({
+      return prismaClient.lieuInclusion.create({
         data: {
           id: v4(),
           ...setInformationsGeneralesFields(input),
@@ -204,7 +204,7 @@ export const lieuActiviteRouter = router({
         )
       }
 
-      const updated = await prismaClient.structure.update({
+      const updated = await prismaClient.lieuInclusion.update({
         where: { id: structure.id },
         data: {
           ...structure,
@@ -232,7 +232,7 @@ export const lieuActiviteRouter = router({
 
       if (structure == null) return
 
-      const updated = await prismaClient.structure.update({
+      const updated = await prismaClient.lieuInclusion.update({
         where: { id: structure.id },
         data: {
           ...structure,
@@ -260,7 +260,7 @@ export const lieuActiviteRouter = router({
 
       if (structure == null) return
 
-      const updated = await prismaClient.structure.update({
+      const updated = await prismaClient.lieuInclusion.update({
         where: { id: structure.id },
         data: {
           ...structure,
@@ -288,7 +288,7 @@ export const lieuActiviteRouter = router({
 
       if (structure == null) return
 
-      const updated = await prismaClient.structure.update({
+      const updated = await prismaClient.lieuInclusion.update({
         where: { id: structure.id },
         data: {
           ...structure,
@@ -316,7 +316,7 @@ export const lieuActiviteRouter = router({
 
       if (structure == null) return
 
-      const updated = await prismaClient.structure.update({
+      const updated = await prismaClient.lieuInclusion.update({
         where: { id: structure.id },
         data: {
           ...structure,
@@ -344,7 +344,7 @@ export const lieuActiviteRouter = router({
 
       if (structure == null) return
 
-      const updated = await prismaClient.structure.update({
+      const updated = await prismaClient.lieuInclusion.update({
         where: { id: structure.id },
         data: {
           ...structure,
@@ -372,7 +372,7 @@ export const lieuActiviteRouter = router({
 
       if (structure == null) return
 
-      const updated = await prismaClient.structure.update({
+      const updated = await prismaClient.lieuInclusion.update({
         where: { id: structure.id },
         data: {
           ...structure,
@@ -450,7 +450,7 @@ export const lieuActiviteRouter = router({
                   },
                 },
               },
-              structure: {
+              lieuInclusion: {
                 select: {
                   nom: true,
                 },
@@ -477,7 +477,7 @@ export const lieuActiviteRouter = router({
           await sendRemovedFromLieuEmail({
             mediateurEmail: mediateurEnActivite.mediateur.user.email,
             mediateurFirstname: mediateurEnActivite.mediateur.user.firstName,
-            structureNom: mediateurEnActivite.structure.nom,
+            structureNom: mediateurEnActivite.lieuInclusion.nom,
             removedByName,
           })
         }

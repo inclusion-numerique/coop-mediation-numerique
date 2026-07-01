@@ -91,10 +91,10 @@ const departementOf = (codeInsee: string): string =>
 // as the payload. Guards against BAN mis-geocoding overseas (DOM) addresses to
 // mainland France (e.g. a Martinique 972xx address resolved to a Gironde 33xxx
 // codeInsee), which would otherwise corrupt the stored codeInsee.
-const sameDepartement = (a: string, b: string): boolean =>
+export const sameDepartement = (a: string, b: string): boolean =>
   departementOf(a) === departementOf(b)
 
-const isContainedName = (a: string, b: string): boolean => {
+export const isContainedName = (a: string, b: string): boolean => {
   const na = normalizeNom(a)
   const nb = normalizeNom(b)
   if (hasAsymmetricServiceKeyword(na, nb)) return false
@@ -129,7 +129,7 @@ const findExistingBySiretOrNom = async ({
     ? { siret, codeInsee, suppression: null }
     : { nom, codeInsee, suppression: null }
 
-  const existing = await prismaClient.structure.findFirst({
+  const existing = await prismaClient.lieuInclusion.findFirst({
     where,
     select: { id: true, suppression: true },
     orderBy: { creation: 'desc' },
@@ -147,7 +147,7 @@ const findExistingBySiretOrNom = async ({
   // The asymmetric-service-keyword check inside isContainedName prevents
   // matching an EPN against its parent town hall (same SIRET, different role).
   if (siret) {
-    const candidatesBySiret = await prismaClient.structure.findMany({
+    const candidatesBySiret = await prismaClient.lieuInclusion.findMany({
       where: { siret, suppression: null },
       select: { id: true, nom: true, suppression: true },
       orderBy: { creation: 'desc' },
@@ -172,7 +172,7 @@ const undeleteStructureIfDeleted = async ({
   suppression: Date | null
 }) => {
   if (suppression) {
-    await prismaClient.structure.update({
+    await prismaClient.lieuInclusion.update({
       where: { id },
       data: {
         suppression: null,
@@ -210,7 +210,7 @@ export const findOrCreateStructure = async ({
 }: StructureInput): Promise<{ id: string }> => {
   // If coopId is provided, it is the surest way to find the structure
   if (coopId) {
-    const existingStructure = await prismaClient.structure.findFirst({
+    const existingStructure = await prismaClient.lieuInclusion.findFirst({
       where: {
         id: coopId,
       },
@@ -244,7 +244,7 @@ export const findOrCreateStructure = async ({
 
   // Step 1: Find existing Structure by SIRET + codeInsee
   if (siret) {
-    const existingStructure = await prismaClient.structure.findFirst({
+    const existingStructure = await prismaClient.lieuInclusion.findFirst({
       where: {
         siret,
         codeInsee: resolvedCodeInsee,
@@ -275,7 +275,7 @@ export const findOrCreateStructure = async ({
 
   // Step 2: Try to find existing structure by nom if no siret
   if (!siret) {
-    const existingByNom = await prismaClient.structure.findFirst({
+    const existingByNom = await prismaClient.lieuInclusion.findFirst({
       where: {
         nom,
         codeInsee: resolvedCodeInsee,
@@ -313,7 +313,7 @@ export const findOrCreateStructure = async ({
   if (existingGuard) return existingGuard
 
   if (trustedBanData) {
-    return prismaClient.structure.create({
+    return prismaClient.lieuInclusion.create({
       data: {
         id: v4(),
         siret,
@@ -336,7 +336,7 @@ export const findOrCreateStructure = async ({
   }
 
   // No geocoding result - create without coordinates
-  return prismaClient.structure.create({
+  return prismaClient.lieuInclusion.create({
     data: {
       id: v4(),
       siret,

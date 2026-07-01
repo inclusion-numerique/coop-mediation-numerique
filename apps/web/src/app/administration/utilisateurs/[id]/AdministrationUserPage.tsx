@@ -29,7 +29,7 @@ import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Tag from '@codegouvfr/react-dsfr/Tag'
-import type { Structure } from '@prisma/client'
+import type { LieuInclusion } from '@prisma/client'
 import Link from 'next/link'
 import UsurpUserButton from '../../usurpation/UsurpUserButton'
 import { type AdministrationUserPageData } from './getAdministrationUserPageData'
@@ -37,18 +37,34 @@ import RenvoyerInvitationButton from './RenvoyerInvitationButton'
 import { RetirerDeEquipeAdmin } from './RetirerDeEquipeAdmin'
 import UtilisateurSetFeatureFlagsForm from './UtilisateurSetFeatureFlagsForm'
 
-const getStructuresInfos = ({
-  id,
-  commune,
-  adresse,
-  codeInsee,
-  codePostal,
-  siret,
-  rna,
-  nom,
-  creation,
-  suppression,
-}: Structure): LabelAndValue[] => [
+const getStructuresInfos = (
+  {
+    id,
+    commune,
+    adresse,
+    codeInsee,
+    codePostal,
+    siret,
+    rna,
+    nom,
+    creation,
+    suppression,
+  }: Pick<
+    LieuInclusion,
+    | 'id'
+    | 'commune'
+    | 'adresse'
+    | 'codeInsee'
+    | 'codePostal'
+    | 'siret'
+    | 'rna'
+    | 'nom'
+    | 'creation'
+    | 'suppression'
+  >,
+  // Une employeuse (emploi) et un lieu (activité) pointent des pages admin différentes.
+  kind: 'lieu' | 'employeuse' = 'lieu',
+): LabelAndValue[] => [
   {
     label: 'Nom',
     value: nom,
@@ -57,7 +73,11 @@ const getStructuresInfos = ({
     label: 'Id',
     value: (
       <Link
-        href={`/administration/structures/${id}/modifier`}
+        href={
+          kind === 'employeuse'
+            ? `/administration/structures-employeuses/${id}`
+            : `/administration/structures/${id}/modifier`
+        }
         target="_blank"
         rel="noreferrer"
       >
@@ -674,7 +694,9 @@ const AdministrationUserPage = async ({
                   </p>
                   <AdministrationInlineLabelsValues
                     className="fr-mt-4v"
-                    items={[...getStructuresInfos(emploi.structure)]}
+                    items={[
+                      ...getStructuresInfos(emploi.structure, 'employeuse'),
+                    ]}
                   />
                 </div>
               ))
@@ -724,7 +746,9 @@ const AdministrationUserPage = async ({
                       </p>
                       <AdministrationInlineLabelsValues
                         className="fr-mt-4v"
-                        items={[...getStructuresInfos(emploi.structure)]}
+                        items={[
+                          ...getStructuresInfos(emploi.structure, 'employeuse'),
+                        ]}
                       />
                     </div>
                   ))}
@@ -764,11 +788,11 @@ const AdministrationUserPage = async ({
               return (
                 <div key={activite.id}>
                   <p className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
-                    {activite.structure.nom}
+                    {activite.lieuInclusion.nom}
                   </p>
                   <AdministrationInlineLabelsValues
                     items={[
-                      ...getStructuresInfos(activite.structure),
+                      ...getStructuresInfos(activite.lieuInclusion),
                       {
                         label: 'Lien d’activité créé le',
                         value: dateAsDay(activite.creation),

@@ -2,7 +2,7 @@ import type { Prisma } from '@prisma/client'
 import { v4 } from 'uuid'
 
 export const givenStructure = <
-  T extends Partial<Prisma.StructureCreateInput> & {
+  T extends Partial<Prisma.LieuInclusionCreateInput> & {
     nom: string
     adresse: string
     commune: string
@@ -21,5 +21,5 @@ export const givenStructure = <
   return {
     id: givenId,
     ...rest,
-  } satisfies Prisma.StructureCreateInput
+  } satisfies Prisma.LieuInclusionCreateInput
 }

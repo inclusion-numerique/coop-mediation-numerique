@@ -27,7 +27,6 @@ export const getStructureEmployeuseForInscription = ({
           rna: true,
           adresse: true,
           complementAdresse: true,
-          typologies: true,
         },
       },
     },

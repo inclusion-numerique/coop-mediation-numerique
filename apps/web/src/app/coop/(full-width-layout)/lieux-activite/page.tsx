@@ -86,7 +86,7 @@ const LieuActiviteListPage = async ({
                   </span>
                 </div>
                 <hr className="fr-separator-1px" />
-                {lieuxActivites.map(({ id, structure: lieu }) => (
+                {lieuxActivites.map(({ id, lieuInclusion: lieu }) => (
                   <LieuCard
                     key={id}
                     lieu={lieu}

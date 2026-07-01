@@ -1,9 +1,72 @@
 import { existsSync } from 'node:fs'
 import { readFile, writeFile } from 'node:fs/promises'
+import { structureCorrelationKey } from '@app/web/features/structures/correlateStructureAdministrative'
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 import type { GenerateStructuresActionPlanJob } from './generateStructuresActionPlanJob'
+
+// Emplois + activités employeuse corrélés par nom + adresse + code INSEE, faute de lien FK.
+// Détection d'orphelines (→ plan de suppression) : on compte à l'identique de l'ancien
+// _count via le lien, sans filtre de suppression sur emplois/activités.
+const getEmployeuseRelCountsByCorrelation = async (
+  structures: {
+    id: string
+    nom: string
+    adresse: string
+    codeInsee: string | null
+  }[],
+): Promise<Map<string, { emplois: number; activites: number }>> => {
+  const uniqueKeys = [
+    ...new Map(
+      structures.map((structure) => [
+        structureCorrelationKey(structure),
+        structure,
+      ]),
+    ).values(),
+  ]
+
+  if (uniqueKeys.length === 0) {
+    return new Map<string, { emplois: number; activites: number }>()
+  }
+
+  const employeuses = await prismaClient.structureAdministrative.findMany({
+    where: {
+      OR: uniqueKeys.map(({ nom, adresse, codeInsee }) => ({
+        nom,
+        adresse,
+        codeInsee,
+      })),
+      suppression: null,
+    },
+    select: {
+      nom: true,
+      adresse: true,
+      codeInsee: true,
+      _count: { select: { emplois: true, activites: true } },
+    },
+  })
+
+  const countsByKey = employeuses.reduce((accumulator, employeuse) => {
+    const key = structureCorrelationKey(employeuse)
+    const current = accumulator.get(key) ?? { emplois: 0, activites: 0 }
+    accumulator.set(key, {
+      emplois: current.emplois + employeuse._count.emplois,
+      activites: current.activites + employeuse._count.activites,
+    })
+    return accumulator
+  }, new Map<string, { emplois: number; activites: number }>())
+
+  return new Map(
+    structures.map((structure) => [
+      structure.id,
+      countsByKey.get(structureCorrelationKey(structure)) ?? {
+        emplois: 0,
+        activites: 0,
+      },
+    ]),
+  )
+}
 
 // ── Types ──
 
@@ -34,6 +97,10 @@ type ActionPlanRow = {
   activitesCount: number
   emploisCount: number
   mediateursCount: number
+  // Table cible des actions SIRET. Ce job ne charge que les LIEUX pour l'instant
+  // (dédup carto) → 'lieu'. La génération d'actions employeuse (structure_administrative)
+  // reste à faire (item MIXTE du split).
+  source: 'lieu' | 'employeuse'
 }
 
 type StructureData = {
@@ -391,6 +458,7 @@ const actionPlanCsvHeader = [
   'activites_count',
   'emplois_count',
   'mediateurs_count',
+  'source',
 ].join(';')
 
 const rowToCsv = (r: ActionPlanRow): string =>
@@ -410,6 +478,7 @@ const rowToCsv = (r: ActionPlanRow): string =>
     r.activitesCount,
     r.emploisCount,
     r.mediateursCount,
+    r.source,
   ].join(';')
 
 // ── Job ──
@@ -423,7 +492,7 @@ export const executeGenerateStructuresActionPlan = async (
 
   // ── 1. Charger toutes les structures ──
 
-  const allStructures = await prismaClient.structure.findMany({
+  const allStructures = await prismaClient.lieuInclusion.findMany({
     where: { suppression: null },
     select: {
       id: true,
@@ -440,17 +509,23 @@ export const executeGenerateStructuresActionPlan = async (
       activitesCount: true,
       _count: {
         select: {
-          emplois: true,
           mediateursEnActivite: true,
           activites: true,
-          activitesEmployes: true,
         },
       },
     },
   })
 
+  // Emplois et activités employeuse corrélés par nom + code INSEE (plus de lien FK).
+  const employeuseRelCountsByStructureId =
+    await getEmployeuseRelCountsByCorrelation(allStructures)
+
   const structuresById = new Map<string, StructureData>()
   for (const s of allStructures) {
+    const employeuseRelCounts = employeuseRelCountsByStructureId.get(s.id) ?? {
+      emplois: 0,
+      activites: 0,
+    }
     structuresById.set(s.id, {
       id: s.id,
       nom: s.nom,
@@ -464,8 +539,8 @@ export const executeGenerateStructuresActionPlan = async (
       longitude: s.longitude,
       visiblePourCartographieNationale: s.visiblePourCartographieNationale,
       activitesCount: s.activitesCount,
-      activitesRelCount: s._count.activites + s._count.activitesEmployes,
-      emploisCount: s._count.emplois,
+      activitesRelCount: s._count.activites + employeuseRelCounts.activites,
+      emploisCount: employeuseRelCounts.emplois,
       mediateursCount: s._count.mediateursEnActivite,
     })
   }
@@ -614,22 +689,55 @@ export const executeGenerateStructuresActionPlan = async (
   )
 
   // ── 4. Charger les résultats d'audit SIRET (si disponible) ──
+  // Le CSV audit-siret-divergences contient désormais LIEUX et EMPLOYEUSES (colonne `source`).
+  // - siretIssues (indexé par id) : actions LIEU (section g, via structuresById).
+  // - employeuseSiretRows : données employeuse pour émettre leurs actions (section h),
+  //   car les employeuses ne sont pas chargées dans structuresById (dédup carto = lieux).
+
+  type EmployeuseSiretRow = {
+    id: string
+    siret: string
+    categorie: string
+    nom: string
+    adresse: string
+    commune: string
+    codePostal: string
+    activitesCount: number
+    emploisCount: number
+    mediateursCount: number
+  }
+
+  const toInt = (value: string | undefined): number =>
+    Number.parseInt(value ?? '', 10) || 0
 
   const siretIssues = new Map<string, { categorie: string; erreur: string }>()
+  const employeuseSiretRows: EmployeuseSiretRow[] = []
 
   const siretCsv = await readAuditCsvFile('audit-siret-divergences.csv')
   if (siretCsv) {
     for (const row of siretCsv.rows) {
-      // id=0, siret=1, categorie=2, ..., erreur=18
-      if (row.length >= 3) {
-        siretIssues.set(row[0], {
-          categorie: row[2],
-          erreur: row[18] ?? '',
+      // Colonnes : id=0, source=1, siret=2, categorie=3, nom_base=4, adresse_base=6,
+      // commune_base=8, code_postal_base=10, activites=16, emplois=17, mediateurs=18, erreur=19
+      if (row.length < 4) continue
+      if (row[1] === 'employeuse') {
+        employeuseSiretRows.push({
+          id: row[0],
+          siret: row[2],
+          categorie: row[3],
+          nom: row[4] ?? '',
+          adresse: row[6] ?? '',
+          commune: row[8] ?? '',
+          codePostal: row[10] ?? '',
+          activitesCount: toInt(row[16]),
+          emploisCount: toInt(row[17]),
+          mediateursCount: toInt(row[18]),
         })
+      } else {
+        siretIssues.set(row[0], { categorie: row[3], erreur: row[19] ?? '' })
       }
     }
     output.log(
-      `generate-structures-action-plan: ${siretIssues.size} divergences SIRET chargées`,
+      `generate-structures-action-plan: divergences SIRET — lieux ${siretIssues.size}, employeuses ${employeuseSiretRows.length}`,
     )
   } else {
     output.log(
@@ -724,6 +832,7 @@ export const executeGenerateStructuresActionPlan = async (
       activitesCount: s.activitesCount,
       emploisCount: s.emploisCount,
       mediateursCount: s.mediateursCount,
+      source: 'lieu',
     })
   }
 
@@ -917,6 +1026,76 @@ export const executeGenerateStructuresActionPlan = async (
       issue.categorie === 'personne_physique'
     ) {
       addAction(id, 'verifier_siret', 5, `SIRET incohérent: ${issue.categorie}`)
+    }
+  }
+
+  // h) Problèmes SIRET côté EMPLOYEUSE (structure_administrative)
+  // Émis directement depuis le CSV d'audit : les employeuses ne sont pas dans structuresById.
+  const employeusesTraitees = new Set<string>()
+
+  const addEmployeuseAction = (
+    row: EmployeuseSiretRow,
+    action: Action,
+    priorite: number,
+    raison: string,
+  ) => {
+    if (employeusesTraitees.has(row.id)) return
+    employeusesTraitees.add(row.id)
+    actionPlan.push({
+      id: row.id,
+      action,
+      cibleFusion: '',
+      clusterId: '',
+      priorite,
+      raison,
+      nom: row.nom,
+      adresse: row.adresse,
+      commune: row.commune,
+      codePostal: row.codePostal,
+      siret: row.siret,
+      visibleCarto: false,
+      activitesCount: row.activitesCount,
+      emploisCount: row.emploisCount,
+      mediateursCount: row.mediateursCount,
+      source: 'employeuse',
+    })
+  }
+
+  // h.1) Employeuses de la liste manuelle « SIRET à vider » (présentes dans l'audit)
+  const employeuseRowById = new Map(
+    employeuseSiretRows.map((row) => [row.id, row]),
+  )
+  for (const id of siretsAVider) {
+    const row = employeuseRowById.get(id)
+    if (!row) continue
+    addEmployeuseAction(
+      row,
+      'vider_siret',
+      2,
+      'SIRET à vider (revue manuelle : SIRET ne correspond pas à cette employeuse)',
+    )
+  }
+
+  // h.2) Employeuses à SIRET incohérent → vérification
+  for (const row of employeuseSiretRows) {
+    if (row.categorie === 'etablissement_ferme') {
+      addEmployeuseAction(
+        row,
+        'verifier_siret',
+        5,
+        "Établissement fermé selon l'API Entreprise",
+      )
+    } else if (
+      row.categorie === 'nom_et_adresse_divergents' ||
+      row.categorie === 'siret_invalide' ||
+      row.categorie === 'personne_physique'
+    ) {
+      addEmployeuseAction(
+        row,
+        'verifier_siret',
+        5,
+        `SIRET incohérent: ${row.categorie}`,
+      )
     }
   }
 

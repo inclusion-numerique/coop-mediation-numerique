@@ -37,7 +37,7 @@ export const searchStructures = async (options: SearchStructuresOptions) => {
         { codePostal: { contains: part, mode: 'insensitive' } },
       ],
     })),
-  } satisfies Prisma.StructureWhereInput
+  } satisfies Prisma.LieuInclusionWhereInput
 
   const structures = await queryStructuresForList({
     where: matchesWhere,
@@ -46,7 +46,7 @@ export const searchStructures = async (options: SearchStructuresOptions) => {
     orderBy,
   })
 
-  const matchesCount = await prismaClient.structure.count({
+  const matchesCount = await prismaClient.lieuInclusion.count({
     where: matchesWhere,
   })
 

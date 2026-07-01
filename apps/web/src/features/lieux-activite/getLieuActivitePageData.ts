@@ -1,8 +1,9 @@
+import { getEmploisCountForStructure } from '@app/web/features/structures/correlateStructureAdministrative'
 import { prismaClient } from '@app/web/prismaClient'
 import { acteurSelectForList } from '../mon-reseau/use-cases/acteurs/db/searchActeurs'
 
 export const getLieuActivitePageData = async ({ id }: { id: string }) => {
-  const structure = await prismaClient.structure.findUnique({
+  const structure = await prismaClient.lieuInclusion.findUnique({
     where: { id },
     select: {
       id: true,
@@ -49,16 +50,6 @@ export const getLieuActivitePageData = async ({ id }: { id: string }) => {
       dispositifProgrammesNationaux: true,
       formationsLabels: true,
       autresFormationsLabels: true,
-      _count: {
-        select: {
-          emplois: {
-            where: {
-              suppression: null,
-              fin: null,
-            },
-          },
-        },
-      },
       mediateursEnActivite: {
         where: {
           suppression: null,
@@ -101,10 +92,15 @@ export const getLieuActivitePageData = async ({ id }: { id: string }) => {
     return null
   }
 
+  // Compteur d'emplois de l'employeuse corrélée (nom + code INSEE) — pas de lien FK.
+  const emploisCount = await getEmploisCountForStructure(structure, {
+    activeOnly: true,
+  })
+
   return {
     structure: {
       ...structure,
-      hasActiveEmployees: structure._count.emplois > 0,
+      hasActiveEmployees: emploisCount > 0,
       mediateursEnActivite: structure.mediateursEnActivite.map(
         (mediateurEnActivite) => ({
           ...mediateurEnActivite,

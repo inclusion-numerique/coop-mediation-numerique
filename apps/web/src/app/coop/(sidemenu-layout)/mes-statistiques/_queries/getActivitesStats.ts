@@ -98,7 +98,7 @@ export const getActivitesStatsRaw = async ({
           weightColumn: 'act.accompagnements_count',
         })}
       FROM activites act
-             LEFT JOIN structures str ON str.id = act.structure_id
+             LEFT JOIN lieu_inclusion str ON str.id = act.structure_id
              LEFT JOIN mediateurs med ON act.mediateur_id = med.id
              LEFT JOIN users u ON med.user_id = u.id
              ${
@@ -214,7 +214,7 @@ const getActiviteTags = ({
       SELECT t.nom AS label, COUNT(act.id)::int AS count
       FROM accompagnements a
         INNER JOIN activites act ON a.activite_id = act.id
-         LEFT JOIN structures str ON str.id = act.structure_id
+         LEFT JOIN lieu_inclusion str ON str.id = act.structure_id
          INNER JOIN activite_tags at ON at.activite_id = act.id
          INNER JOIN tags t ON t.id = at.tag_id
       WHERE act.suppression IS NULL
@@ -240,7 +240,7 @@ const getActiviteTags = ({
            COUNT(act.id)::int AS count
     FROM accompagnements a
            INNER JOIN activites act ON a.activite_id = act.id
-           LEFT JOIN structures str ON str.id = act.structure_id
+           LEFT JOIN lieu_inclusion str ON str.id = act.structure_id
            LEFT JOIN mediateurs med ON act.mediateur_id = med.id
            LEFT JOIN users u ON med.user_id = u.id
            INNER JOIN activite_tags at ON at.activite_id = act.id
@@ -323,7 +323,7 @@ export const getActivitesStructuresStatsRaw = async ({
       str.code_postal,
       str.code_insee,
       COALESCE(COUNT(*), 0) ::int AS count
-    FROM structures str
+    FROM lieu_inclusion str
       LEFT JOIN activites act ON act.structure_id = str.id
       INNER JOIN accompagnements acc ON acc.activite_id = act.id
       LEFT JOIN mediateurs med ON act.mediateur_id = med.id
@@ -403,7 +403,7 @@ export const getActivitesCommunesStatsRaw = async ({
       COALESCE(str.code_insee, act.lieu_code_insee) AS code_insee,
       COALESCE(COUNT(*), 0)::int AS count
     FROM activites act
-      LEFT JOIN structures str ON str.id = act.structure_id
+      LEFT JOIN lieu_inclusion str ON str.id = act.structure_id
       INNER JOIN accompagnements acc ON acc.activite_id = act.id
       LEFT JOIN mediateurs med ON act.mediateur_id = med.id
       LEFT JOIN users u ON med.user_id = u.id

@@ -13,7 +13,7 @@ export const getStructuresEmployeusesOptions = async ({
 }): Promise<StructureEmployeuseOption[]> => {
   if (mediateurIds.length === 0) return []
 
-  const structures = await prismaClient.structure.findMany({
+  const structures = await prismaClient.structureAdministrative.findMany({
     where: {
       emplois: {
         some: {
@@ -50,7 +50,7 @@ export const searchStructuresEmployeuses = async ({
 
   const searchTerms = query.toLowerCase().trim()
 
-  const structures = await prismaClient.structure.findMany({
+  const structures = await prismaClient.structureAdministrative.findMany({
     where: {
       AND: [
         {

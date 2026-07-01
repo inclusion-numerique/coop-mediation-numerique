@@ -17,7 +17,7 @@ import Accordion from '@codegouvfr/react-dsfr/Accordion'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import type { Structure } from '@prisma/client'
+import type { LieuInclusion } from '@prisma/client'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
@@ -38,7 +38,19 @@ const getStructuresInfos = ({
   nom,
   creation,
   suppression,
-}: Structure): LabelAndValue[] => [
+}: Pick<
+  LieuInclusion,
+  | 'id'
+  | 'commune'
+  | 'adresse'
+  | 'codeInsee'
+  | 'codePostal'
+  | 'siret'
+  | 'rna'
+  | 'nom'
+  | 'creation'
+  | 'suppression'
+>): LabelAndValue[] => [
   {
     label: 'Nom',
     value: nom,
@@ -47,7 +59,7 @@ const getStructuresInfos = ({
     label: 'Id',
     value: (
       <Link
-        href={`/administration/structures/${id}`}
+        href={`/administration/structures-employeuses/${id}`}
         target="_blank"
         rel="noreferrer"
       >
@@ -119,7 +131,7 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
           },
           enActivite: {
             include: {
-              structure: true,
+              lieuInclusion: true,
             },
           },
         },

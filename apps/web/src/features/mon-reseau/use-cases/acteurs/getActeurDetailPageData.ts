@@ -148,7 +148,7 @@ export const getActeurDetailPageData = async ({
   })
 
   const lieuxActivites = mediateurId
-    ? await prismaClient.structure.findMany({
+    ? await prismaClient.lieuInclusion.findMany({
         where: {
           mediateursEnActivite: {
             some: {

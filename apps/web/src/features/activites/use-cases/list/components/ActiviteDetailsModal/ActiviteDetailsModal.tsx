@@ -75,10 +75,10 @@ const filterItemsNodes = <T extends { items: ReactNode[] | ReactNode }>({
 }: T) => (Array.isArray(items) ? items.length > 0 : !!items)
 
 const getActiviteLocationString = (activite: ActiviteListItemWithTimezone) => {
-  const { structure, lieuCodePostal, lieuCommune, typeLieu } = activite
+  const { lieuInclusion, lieuCodePostal, lieuCommune, typeLieu } = activite
 
-  if (structure)
-    return `${structure.nom} · ${structure.codePostal} ${structure.commune}`
+  if (lieuInclusion)
+    return `${lieuInclusion.nom} · ${lieuInclusion.codePostal} ${lieuInclusion.commune}`
 
   if (typeLieu === 'ADistance') return 'À distance'
 

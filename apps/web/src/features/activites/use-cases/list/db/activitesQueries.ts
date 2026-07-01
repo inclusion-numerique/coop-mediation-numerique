@@ -64,7 +64,7 @@ export const activiteListSelect = {
   duree: true,
   notes: true,
 
-  structure: {
+  lieuInclusion: {
     select: {
       id: true,
       adresse: true,

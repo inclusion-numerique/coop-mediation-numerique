@@ -316,7 +316,7 @@ export const GET = createApiV1Route
             ) FILTER (WHERE users.id IS NOT NULL),
             '[]'::jsonb
           ) AS aidants
-        FROM structures structures
+        FROM lieu_inclusion structures
           LEFT JOIN mediateurs_en_activite mediateurs_en_activite  ON structures.id = mediateurs_en_activite.structure_id
           LEFT JOIN mediateurs ON mediateurs_en_activite.mediateur_id = mediateurs.id AND mediateurs.is_visible = TRUE
           LEFT JOIN users ON mediateurs.user_id = users.id

@@ -103,7 +103,7 @@ export const executeApplyCorrigerAdresse = async (
     )
 
     for (const row of batch) {
-      const structure = await prismaClient.structure.findUnique({
+      const structure = await prismaClient.lieuInclusion.findUnique({
         where: { id: row.id },
         select: {
           id: true,
@@ -171,7 +171,7 @@ export const executeApplyCorrigerAdresse = async (
             }
 
             if (!dryRun) {
-              await prismaClient.structure.update({
+              await prismaClient.lieuInclusion.update({
                 where: { id: row.id },
                 data: {
                   adresse: adresseApi,
@@ -219,7 +219,7 @@ export const executeApplyCorrigerAdresse = async (
           }
 
           if (!dryRun) {
-            await prismaClient.structure.update({
+            await prismaClient.lieuInclusion.update({
               where: { id: row.id },
               data: {
                 adresse: banData.nom,

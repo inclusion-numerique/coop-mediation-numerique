@@ -1,7 +1,8 @@
+import { getEmploisCountByCorrelation } from '@app/web/features/structures/correlateStructureAdministrative'
 import { mergeStructure } from '@app/web/features/structures/use-cases/merge/mutations/mergeStructure'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
-import type { Structure } from '@prisma/client'
+import type { LieuInclusion } from '@prisma/client'
 import type { DeduplicateStructuresJob } from './deduplicateStructuresJob'
 
 const scalarFieldsToEnrich = [
@@ -22,10 +23,10 @@ const scalarFieldsToEnrich = [
   'nomReferent',
   'courrielReferent',
   'telephoneReferent',
-] as const satisfies readonly (keyof Structure)[]
+] as const satisfies readonly (keyof LieuInclusion)[]
 
 const findDuplicateGroups = async () =>
-  prismaClient.structure.groupBy({
+  prismaClient.lieuInclusion.groupBy({
     by: ['siret', 'nom', 'adresse'],
     where: {
       suppression: null,
@@ -44,12 +45,11 @@ const getFullStructuresForGroup = async (
   nom: string,
   adresse: string,
 ) =>
-  prismaClient.structure.findMany({
+  prismaClient.lieuInclusion.findMany({
     where: { siret, nom, adresse, suppression: null },
     include: {
       _count: {
         select: {
-          emplois: true,
           mediateursEnActivite: true,
         },
       },
@@ -63,8 +63,8 @@ const getFullStructuresForGroup = async (
  * comme donneuses de données, car elles ont en principe les champs les plus complets.
  */
 const enrichTargetFromSources = async (
-  target: Structure,
-  sources: Structure[],
+  target: LieuInclusion,
+  sources: LieuInclusion[],
   dryRun: boolean,
 ) => {
   // Donneuses ordonnées : visibles pour carto d'abord, puis par date de modification desc
@@ -74,7 +74,7 @@ const enrichTargetFromSources = async (
   ]
 
   const updates: Partial<
-    Pick<Structure, (typeof scalarFieldsToEnrich)[number]>
+    Pick<LieuInclusion, (typeof scalarFieldsToEnrich)[number]>
   > = {}
 
   for (const field of scalarFieldsToEnrich) {
@@ -106,7 +106,7 @@ const enrichTargetFromSources = async (
     output.log(`  Enrichissement cible: ${enrichedFields.join(', ')}`)
 
     if (!dryRun) {
-      await prismaClient.structure.update({
+      await prismaClient.lieuInclusion.update({
         where: { id: target.id },
         data,
       })
@@ -149,13 +149,19 @@ export const executeDeduplicateStructures = async (
     )
     output.log(`  ${structures.length} structures trouvées:`)
 
+    // Emplois employeuse corrélés par nom + code INSEE (plus de lien FK).
+    const emploisCountByStructureId = await getEmploisCountByCorrelation(
+      structures,
+      { activeOnly: false },
+    )
+
     for (const structure of structures) {
       const isTarget = structure.id === target.id
       const cartoFlag = structure.visiblePourCartographieNationale
         ? ' [CARTO]'
         : ''
       output.log(
-        `  ${isTarget ? '→ CIBLE' : '  SOURCE'} id=${structure.id} | modifié=${structure.modification.toISOString()} | activités=${structure.activitesCount} | emplois=${structure._count.emplois} | médiateurs=${structure._count.mediateursEnActivite}${cartoFlag}`,
+        `  ${isTarget ? '→ CIBLE' : '  SOURCE'} id=${structure.id} | modifié=${structure.modification.toISOString()} | activités=${structure.activitesCount} | emplois=${emploisCountByStructureId.get(structure.id) ?? 0} | médiateurs=${structure._count.mediateursEnActivite}${cartoFlag}`,
       )
     }
 

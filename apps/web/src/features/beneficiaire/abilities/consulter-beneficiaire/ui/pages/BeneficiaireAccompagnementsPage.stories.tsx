@@ -101,7 +101,7 @@ const activites = [
     titreAtelier: 'Vos données personnelles sur instagram et facebook',
     lieuCodePostal: '69002',
     lieuCommune: 'Lyon 2',
-    structure: null,
+    lieuInclusion: null,
     notes: null,
     accompagnements: [
       {
@@ -152,7 +152,7 @@ const activites = [
     orienteVersStructure: null,
     materiel: [],
     notes: null,
-    structure: null,
+    lieuInclusion: null,
     rdvServicePublicId: null,
     mediateur: {
       id: '',
@@ -203,7 +203,7 @@ const activites = [
     orienteVersStructure: null,
     materiel: [],
     notes: null,
-    structure: null,
+    lieuInclusion: null,
     rdvServicePublicId: 13,
     mediateur: {
       id: '',
@@ -243,7 +243,7 @@ const activites = [
     niveau: null,
     titreAtelier: null,
     orienteVersStructure: false,
-    structure: null,
+    lieuInclusion: null,
     thematiques: ['SocialSante', 'Logement'],
     tags: [],
     rdvServicePublicId: null,
@@ -285,7 +285,7 @@ const activites = [
     niveau: null,
     titreAtelier: null,
     orienteVersStructure: false,
-    structure: null,
+    lieuInclusion: null,
     thematiques: ['SocialSante', 'Justice'],
     tags: [],
     rdvServicePublicId: 13,
@@ -337,7 +337,7 @@ const activites = [
     lieuCodeInsee: null,
     materiel: [],
     duree: 60,
-    structure: null,
+    lieuInclusion: null,
     notes: null,
     rdvServicePublicId: 12,
     mediateur: {

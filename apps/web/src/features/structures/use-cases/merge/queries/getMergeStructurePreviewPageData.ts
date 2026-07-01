@@ -1,3 +1,4 @@
+import { getCorrelatedEmployeuseRelations } from '@app/web/features/structures/correlateStructureAdministrative'
 import { prismaClient } from '@app/web/prismaClient'
 import { findMergeCommonFields } from '../mappers/findMergeCommonFields'
 import { presentMergeStructure } from '../presenters/presentMergeStructure'
@@ -10,11 +11,11 @@ export const getMergeStructurePreviewPageData = async (
   targetStructureId: string,
 ) => {
   const [sourceStructure, targetStructure] = await Promise.all([
-    prismaClient.structure.findUnique({
+    prismaClient.lieuInclusion.findUnique({
       where: { id: sourceStructureId },
       include: mergeStructureInclude,
     }),
-    prismaClient.structure.findUnique({
+    prismaClient.lieuInclusion.findUnique({
       where: { id: targetStructureId },
       include: mergeStructureInclude,
     }),
@@ -22,8 +23,14 @@ export const getMergeStructurePreviewPageData = async (
 
   if (!sourceStructure || !targetStructure) return null
 
-  const mergeSource = presentMergeStructure(sourceStructure)
-  const mergeTarget = presentMergeStructure(targetStructure)
+  // Relations employeuses corrélées par nom + code INSEE (pas de lien FK lieu↔employeuse).
+  const [sourceEmployeuse, targetEmployeuse] = await Promise.all([
+    getCorrelatedEmployeuseRelations(sourceStructure),
+    getCorrelatedEmployeuseRelations(targetStructure),
+  ])
+
+  const mergeSource = presentMergeStructure(sourceStructure, sourceEmployeuse)
+  const mergeTarget = presentMergeStructure(targetStructure, targetEmployeuse)
 
   return {
     mergeSource,

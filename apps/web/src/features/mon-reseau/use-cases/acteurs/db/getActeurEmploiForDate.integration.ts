@@ -26,7 +26,8 @@ const cleanupTestUser = async (userId: string) => {
 }
 
 const ensureTestStructures = async () => {
-  await prismaClient.structure.upsert({
+  // Rôle employeuse (split 1a.2) : les emplois pointent structure_administrative.
+  await prismaClient.structureAdministrative.upsert({
     where: { id: TEST_STRUCTURE_A_ID },
     update: {},
     create: {
@@ -36,10 +37,11 @@ const ensureTestStructures = async () => {
       commune: 'Paris',
       codePostal: '75001',
       codeInsee: '75056',
+      source: 'coop',
     },
   })
 
-  await prismaClient.structure.upsert({
+  await prismaClient.structureAdministrative.upsert({
     where: { id: TEST_STRUCTURE_B_ID },
     update: {},
     create: {
@@ -49,6 +51,7 @@ const ensureTestStructures = async () => {
       commune: 'Lyon',
       codePostal: '69001',
       codeInsee: '69381',
+      source: 'coop',
     },
   })
 }

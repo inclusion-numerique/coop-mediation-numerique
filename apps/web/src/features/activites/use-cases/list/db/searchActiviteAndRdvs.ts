@@ -94,7 +94,7 @@ export const searchActiviteAndRdvs = async (
         act.creation AS creation
       FROM activites act
            ${activitesBeneficiaireInnerJoin(options.beneficiaireIds)}
-           LEFT JOIN structures str ON act.structure_id = str.id
+           LEFT JOIN lieu_inclusion str ON act.structure_id = str.id
            LEFT JOIN mediateurs med ON act.mediateur_id = med.id
            LEFT JOIN users u ON med.user_id = u.id
       WHERE ${mediateurIdsCondition}
@@ -167,7 +167,7 @@ export const searchActiviteAndRdvs = async (
             act.accompagnements_count
           FROM activites act
             ${activitesBeneficiaireInnerJoin(options.beneficiaireIds)}
-            LEFT JOIN structures str ON act.structure_id = str.id
+            LEFT JOIN lieu_inclusion str ON act.structure_id = str.id
             LEFT JOIN mediateurs med ON act.mediateur_id = med.id
             LEFT JOIN users u ON med.user_id = u.id
           WHERE ${mediateurIdsCondition}

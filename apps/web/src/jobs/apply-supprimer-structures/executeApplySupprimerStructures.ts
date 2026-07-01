@@ -73,17 +73,18 @@ export const executeApplySupprimerStructures = async (
     }
 
     // Vérification de sécurité : re-vérifier que la structure est toujours orpheline
-    const structure = await prismaClient.structure.findUnique({
+    const structure = await prismaClient.lieuInclusion.findUnique({
       where: { id: row.id },
       select: {
         id: true,
+        nom: true,
+        adresse: true,
+        codeInsee: true,
         activitesCount: true,
         _count: {
           select: {
-            emplois: true,
             mediateursEnActivite: true,
             activites: true,
-            activitesEmployes: true,
           },
         },
       },
@@ -95,16 +96,38 @@ export const executeApplySupprimerStructures = async (
       continue
     }
 
+    // Emplois + activités employeuse corrélés par nom + adresse + code INSEE (plus de lien FK).
+    // Décision de SUPPRESSION : on corrèle directement, en comptant à l'identique de
+    // l'ancien _count via le lien (sans filtre de suppression sur emplois/activités).
+    const correlatedEmployeuses =
+      await prismaClient.structureAdministrative.findMany({
+        where: {
+          nom: structure.nom,
+          adresse: structure.adresse,
+          codeInsee: structure.codeInsee,
+          suppression: null,
+        },
+        select: { _count: { select: { emplois: true, activites: true } } },
+      })
+    const emploisCount = correlatedEmployeuses.reduce(
+      (sum, employeuse) => sum + employeuse._count.emplois,
+      0,
+    )
+    const activitesEmployeurCount = correlatedEmployeuses.reduce(
+      (sum, employeuse) => sum + employeuse._count.activites,
+      0,
+    )
+
     const hasData =
       structure.activitesCount > 0 ||
-      structure._count.emplois > 0 ||
+      emploisCount > 0 ||
       structure._count.mediateursEnActivite > 0 ||
       structure._count.activites > 0 ||
-      structure._count.activitesEmployes > 0
+      activitesEmployeurCount > 0
 
     if (hasData) {
       output.log(
-        `apply-supprimer-structures: SKIP ${row.id} "${row.nom}" — données associées détectées (activites=${structure.activitesCount} emplois=${structure._count.emplois} mediateurs=${structure._count.mediateursEnActivite} relations_activites=${structure._count.activites} activites_employeur=${structure._count.activitesEmployes})`,
+        `apply-supprimer-structures: SKIP ${row.id} "${row.nom}" — données associées détectées (activites=${structure.activitesCount} emplois=${emploisCount} mediateurs=${structure._count.mediateursEnActivite} relations_activites=${structure._count.activites} activites_employeur=${activitesEmployeurCount})`,
       )
       results.push({ row, statut: 'skip_donnees_associees' })
       skipped++
@@ -116,7 +139,7 @@ export const executeApplySupprimerStructures = async (
       deleted++
     } else {
       try {
-        await prismaClient.structure.delete({
+        await prismaClient.lieuInclusion.delete({
           where: { id: row.id },
         })
         results.push({ row, statut: 'supprimee' })

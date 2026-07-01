@@ -7,7 +7,7 @@ type MergeUser = UserDisplayName & {
   mediateur: {
     activites: { id: string }[]
     beneficiaires: { id: string }[]
-    enActivite: { structure: { id: string } }[]
+    enActivite: { lieuInclusion: { id: string } }[]
     coordinations: { coordinateur: { id: string } }[]
     tags: { id: string }[]
     invitations: {
@@ -73,7 +73,7 @@ const include = {
       enActivite: {
         where: { suppression: null, fin: null },
         include: {
-          structure: {
+          lieuInclusion: {
             select: { id: true },
           },
         },
@@ -135,7 +135,9 @@ const toMergeInfo = (user: MergeUser) => ({
   activitesIds: user.mediateur?.activites.map(toId) ?? [],
   beneficiaireIds: user.mediateur?.beneficiaires.map(toId) ?? [],
   structureEmployeusesIds: user.emplois.map(toStructureId) ?? [],
-  lieuxActiviteIds: user.mediateur?.enActivite.map(toStructureId) ?? [],
+  lieuxActiviteIds:
+    user.mediateur?.enActivite.map(({ lieuInclusion }) => lieuInclusion.id) ??
+    [],
   coordinationsIds: user.mediateur?.coordinations.map(toCoordinateurId) ?? [],
   mediateursCoordonnesIds:
     user.coordinateur?.mediateursCoordonnes.map(toMediateurId) ?? [],

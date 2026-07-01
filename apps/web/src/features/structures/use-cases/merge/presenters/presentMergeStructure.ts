@@ -3,6 +3,10 @@ import type { MergeStructure, MergeStructureInfo } from '../types'
 
 export const presentMergeStructure = (
   structure: MergeStructure,
+  employeuseRelations: {
+    employesIds: string[]
+    activitesEmployeurIds: string[]
+  },
 ): MergeStructureInfo => ({
   id: structure.id,
   nom: toTitleCase(structure.nom, { noUpper: true }),
@@ -24,10 +28,10 @@ export const presentMergeStructure = (
   modalitesAcces: structure.modalitesAcces,
   modalitesAccompagnement: structure.modalitesAccompagnement,
   courriels: structure.courriels,
-  employesIds: structure.emplois.map((e) => e.userId),
+  employesIds: employeuseRelations.employesIds,
   mediateursEnActiviteIds: structure.mediateursEnActivite.map(
     (m) => m.mediateurId,
   ),
-  activitesEmployeurIds: structure.activitesEmployes.map((a) => a.id),
+  activitesEmployeurIds: employeuseRelations.activitesEmployeurIds,
   activitesLieuIds: structure.activites.map((a) => a.id),
 })

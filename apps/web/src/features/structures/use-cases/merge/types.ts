@@ -1,25 +1,21 @@
 import type { Prisma } from '@prisma/client'
 
+// Les relations employeuse (emplois, activités employeur) vivent sur
+// structure_administrative, sans lien FK avec le lieu : la prévisualisation les récupère
+// par corrélation nom + code INSEE (getCorrelatedEmployeuseRelations), pas via l'include.
+// La fusion de deux structures dont les employeuses corrélées diffèrent reste ambiguë.
 export const mergeStructureInclude = {
-  emplois: {
-    where: { suppression: null },
-    select: { userId: true },
-  },
   mediateursEnActivite: {
     where: { suppression: null },
     select: { mediateurId: true },
-  },
-  activitesEmployes: {
-    where: { suppression: null },
-    select: { id: true },
   },
   activites: {
     where: { suppression: null },
     select: { id: true },
   },
-} satisfies Prisma.StructureInclude
+} satisfies Prisma.LieuInclusionInclude
 
-export type MergeStructure = Prisma.StructureGetPayload<{
+export type MergeStructure = Prisma.LieuInclusionGetPayload<{
   include: typeof mergeStructureInclude
 }>
 

@@ -15,8 +15,8 @@ import { StructureForList } from './queryStructuresForList'
 
 export type StructuresDataTableConfiguration = DataTableConfiguration<
   StructureForList,
-  Prisma.StructureWhereInput,
-  Prisma.StructureOrderByWithRelationInput
+  Prisma.LieuInclusionWhereInput,
+  Prisma.LieuInclusionOrderByWithRelationInput
 >
 
 export const StructuresDataTable = {
@@ -38,14 +38,14 @@ export const StructuresDataTable = {
       name: 'type',
       header: 'Type',
       csvHeaders: ["Lieu d'activité", 'Structure employeuse'],
-      csvValues: ({ _count }) => [
+      csvValues: ({ _count, emploisCount }) => [
         _count.mediateursEnActivite > 0 ? 'Oui' : 'Non',
-        _count.emplois > 0 ? 'Oui' : 'Non',
+        emploisCount > 0 ? 'Oui' : 'Non',
       ],
-      cell: ({ _count }) => (
+      cell: ({ _count, emploisCount }) => (
         <div className="fr-flex fr-flex-gap-2v">
           {_count.mediateursEnActivite > 0 && <Tag small>Lieu d'activité</Tag>}
-          {_count.emplois > 0 && <Tag small>Employeuse</Tag>}
+          {emploisCount > 0 && <Tag small>Employeuse</Tag>}
         </div>
       ),
     },
@@ -160,9 +160,10 @@ export const StructuresDataTable = {
       name: 'employes',
       header: 'Employ\u00e9s',
       csvHeaders: ['Employ\u00e9s'],
-      csvValues: ({ _count }) => [_count.emplois],
-      cell: ({ _count }) => optionalNumberToString(_count.emplois, null),
-      orderBy: (direction) => [{ emplois: { _count: direction } }],
+      csvValues: ({ emploisCount }) => [emploisCount],
+      cell: ({ emploisCount }) => optionalNumberToString(emploisCount, null),
+      // Tri DB indisponible : le compteur d'emplois est corrélé (nom + code INSEE)
+      // côté application, sans relation FK exploitable par un orderBy Prisma.
     },
     {
       name: 'mediateursEnActivite',

@@ -8,6 +8,7 @@ import type {
 } from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import { getContractStatus } from '@app/web/features/dataspace/getContractStatus'
 import { findOrCreateStructure } from '@app/web/features/structures/findOrCreateStructure'
+import { findOrCreateStructureAdministrative } from '@app/web/features/structures/findOrCreateStructureAdministrative'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { v4 } from 'uuid'
@@ -292,7 +293,7 @@ const getOrCreateStructureFromDataspace = async ({
   structureEmployeuse: DataspaceStructureEmployeuse
 }) => {
   const adresse = buildAdresseFromDataspace(structureEmployeuse.adresse)
-  return findOrCreateStructure({
+  return findOrCreateStructureAdministrative({
     coopId: structureEmployeuse.ids?.coop,
     siret: structureEmployeuse.siret,
     nom: structureEmployeuse.nom,

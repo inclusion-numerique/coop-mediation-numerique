@@ -40,6 +40,9 @@ export type ActionPlanRow = {
   activitesCount: string
   emploisCount: string
   mediateursCount: string
+  // 'lieu' | 'employeuse' — table cible pour les actions SIRET. Défaut 'lieu'
+  // (rétro-compat avec les plans générés avant le split).
+  source: string
 }
 
 export const readActionPlan = async (): Promise<ActionPlanRow[]> => {
@@ -68,6 +71,7 @@ export const readActionPlan = async (): Promise<ActionPlanRow[]> => {
     activitesCount: r[12],
     emploisCount: r[13],
     mediateursCount: r[14],
+    source: r[15] || 'lieu',
   }))
 }
 

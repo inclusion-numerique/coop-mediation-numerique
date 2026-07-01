@@ -1,4 +1,5 @@
 import { writeFile } from 'node:fs/promises'
+import { getEmploisCountForStructure } from '@app/web/features/structures/correlateStructureAdministrative'
 import { mergeStructure } from '@app/web/features/structures/use-cases/merge/mutations/mergeStructure'
 import {
   type ActionPlanRow,
@@ -119,29 +120,34 @@ export const executeApplyFusionnerStructures = async (
 
     // Vérifier que source et cible existent encore
     const [source, cible] = await Promise.all([
-      prismaClient.structure.findUnique({
+      prismaClient.lieuInclusion.findUnique({
         where: { id: row.id },
         select: { id: true, suppression: true },
       }),
-      prismaClient.structure.findUnique({
+      prismaClient.lieuInclusion.findUnique({
         where: { id: row.cibleFusion },
         select: {
           id: true,
           nom: true,
           adresse: true,
           commune: true,
+          codeInsee: true,
           siret: true,
           suppression: true,
           activitesCount: true,
           _count: {
             select: {
-              emplois: true,
               mediateursEnActivite: true,
             },
           },
         },
       }),
     ])
+
+    // Emplois employeuse corrélés par nom + code INSEE (plus de lien FK).
+    const cibleEmploisCount = cible
+      ? await getEmploisCountForStructure(cible, { activeOnly: false })
+      : 0
 
     if (!source || source.suppression) {
       results.push({
@@ -152,7 +158,7 @@ export const executeApplyFusionnerStructures = async (
         cibleCommune: cible?.commune ?? '',
         cibleSiret: cible?.siret ?? '',
         cibleActivites: cible?.activitesCount ?? 0,
-        cibleEmplois: cible?._count.emplois ?? 0,
+        cibleEmplois: cibleEmploisCount,
         cibleMediateurs: cible?._count.mediateursEnActivite ?? 0,
         statut: 'skip_source_introuvable',
       })
@@ -187,7 +193,7 @@ export const executeApplyFusionnerStructures = async (
       cibleCommune: cible.commune,
       cibleSiret: cible.siret ?? '',
       cibleActivites: cible.activitesCount,
-      cibleEmplois: cible._count.emplois,
+      cibleEmplois: cibleEmploisCount,
       cibleMediateurs: cible._count.mediateursEnActivite,
     }
 

@@ -1,5 +1,5 @@
 import type { InitializeDebugLogger } from '@app/web/features/inscription/use-cases/initialize/initializeInscription'
-import { findOrCreateStructure } from '@app/web/features/structures/findOrCreateStructure'
+import { findOrCreateStructureAdministrative } from '@app/web/features/structures/findOrCreateStructureAdministrative'
 import { fetchSiretApiData } from '@app/web/features/structures/siret/fetchSiretData'
 import { prismaClient } from '@app/web/prismaClient'
 
@@ -100,8 +100,8 @@ export const importStructureEmployeuseFromSiret = async ({
     commune: adresse.libelle_commune || '',
   })
 
-  // Use SIRET API data to find or create structure
-  const structure = await findOrCreateStructure({
+  // Use SIRET API data to find or create structure administrative (employeuse)
+  const structure = await findOrCreateStructureAdministrative({
     siret,
     nom: personne_morale_attributs.raison_sociale,
     adresse: adresseComplete,

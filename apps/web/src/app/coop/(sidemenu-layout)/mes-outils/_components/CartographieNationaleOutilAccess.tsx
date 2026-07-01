@@ -8,9 +8,9 @@ import Link from 'next/link'
 import React from 'react'
 
 const onlyVisibleForCartographieNationale = ({
-  structure: { visiblePourCartographieNationale },
+  lieuInclusion: { visiblePourCartographieNationale },
 }: {
-  structure: { visiblePourCartographieNationale: boolean }
+  lieuInclusion: { visiblePourCartographieNationale: boolean }
 }) => visiblePourCartographieNationale
 
 const pluralizeLieuxActiviteUser = (count: number): string => {
@@ -52,7 +52,11 @@ const CartographieNationaleOutilAccess = async () => {
   const departementCode = getDepartementCodeForActeur({
     emplois: user?.emplois,
     mediateur: lieuxActivite
-      ? { enActivite: lieuxActivite.map((l) => ({ structure: l.structure })) }
+      ? {
+          enActivite: lieuxActivite.map((l) => ({
+            lieuInclusion: l.lieuInclusion,
+          })),
+        }
       : null,
   })
 

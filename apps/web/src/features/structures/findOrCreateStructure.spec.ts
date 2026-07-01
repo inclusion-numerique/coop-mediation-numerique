@@ -9,7 +9,7 @@ jest.mock('@app/web/external-apis/apiAdresse', () => ({
 
 jest.mock('@app/web/prismaClient', () => ({
   prismaClient: {
-    structure: {
+    lieuInclusion: {
       findFirst: jest.fn(),
       findMany: jest.fn(),
       create: jest.fn(),
@@ -21,7 +21,7 @@ jest.mock('@app/web/prismaClient', () => ({
 const mockedSearchAdresse = searchAdresse as jest.MockedFunction<
   typeof searchAdresse
 >
-const structure = prismaClient.structure as unknown as {
+const structure = prismaClient.lieuInclusion as unknown as {
   findFirst: jest.Mock
   findMany: jest.Mock
   create: jest.Mock

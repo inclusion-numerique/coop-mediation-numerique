@@ -10,6 +10,7 @@ import type {
   JsonApiListResponse,
   JsonApiResource,
 } from '@app/web/app/api/v1/JsonApiTypes'
+import { getEmploisCountByCorrelation } from '@app/web/features/structures/correlateStructureAdministrative'
 import { dispositifProgrammeNationalLabels } from '@app/web/features/structures/dispositifProgrammesNationaux'
 import { formationLabelLabels } from '@app/web/features/structures/formationLabel'
 import { fraisAChargeLabels } from '@app/web/features/structures/fraisACharge'
@@ -479,7 +480,7 @@ export const GET = createApiV1Route
         : {}),
     }
 
-    const structures = await prismaClient.structure.findMany({
+    const structures = await prismaClient.lieuInclusion.findMany({
       orderBy: [{ creation: 'desc' }, { id: 'desc' }],
       take: cursorPagination.take,
       skip: cursorPagination.skip,
@@ -488,12 +489,6 @@ export const GET = createApiV1Route
         _count: {
           select: {
             mediateursEnActivite: {
-              where: {
-                suppression: null,
-                fin: null,
-              },
-            },
-            emplois: {
               where: {
                 suppression: null,
                 fin: null,
@@ -512,7 +507,13 @@ export const GET = createApiV1Route
         : undefined,
     })
 
-    const totalCount = await prismaClient.structure.count({ where })
+    const totalCount = await prismaClient.lieuInclusion.count({ where })
+
+    // Compteur d'emplois par corrélation nom + code INSEE avec l'employeuse
+    // (structure_administrative) ; pas de lien FK. Contrat API v1 préservé.
+    const emploisCounts = await getEmploisCountByCorrelation(structures, {
+      activeOnly: true,
+    })
 
     const lastItem = structures.at(-1)
     const firstItem = structures.at(0)
@@ -612,7 +613,7 @@ export const GET = createApiV1Route
               modaliteAccompagnementLabels[modaliteAccompagnement],
           ),
           mediateurs_en_activite: s._count.mediateursEnActivite,
-          emplois: s._count.emplois,
+          emplois: emploisCounts.get(s.id) ?? 0,
         },
       })),
       links: {

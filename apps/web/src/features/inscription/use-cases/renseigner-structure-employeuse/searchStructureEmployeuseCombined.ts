@@ -1,5 +1,5 @@
 import { rechercheApiEntreprise } from '@app/web/external-apis/rechercheApiEntreprise'
-import { searchStructure } from '@app/web/structure/searchStructure'
+import { searchStructureAdministrative } from '@app/web/structure/searchStructureAdministrative'
 import { structureCreationDataWithSiretFromUniteLegale } from '@app/web/structure/structuresInfoFromUniteLegale'
 
 export type StructureSearchResult = {
@@ -32,7 +32,7 @@ export const searchStructureEmployeuseCombined = async (
   }
 
   const [dbResult, apiResponse] = await Promise.all([
-    searchStructure(query, { limit: 25 }),
+    searchStructureAdministrative(query, { limit: 25 }),
     rechercheApiEntreprise({
       q: query,
       minimal: true,
@@ -54,7 +54,6 @@ export const searchStructureEmployeuseCombined = async (
       codePostal: structure.codePostal ?? '',
       codeInsee: structure.codeInsee ?? '',
       siret: structure.siret as string,
-      typologies: structure.typologies,
       source: 'database' as const,
     }))
 

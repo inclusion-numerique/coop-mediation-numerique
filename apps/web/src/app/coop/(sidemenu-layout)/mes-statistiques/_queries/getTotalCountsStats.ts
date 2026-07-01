@@ -114,7 +114,7 @@ const getActivityStatsQuery = ({
           ? Prisma.sql`FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user?.coordinateur?.id}::UUID`
           : Prisma.empty
       }
-      ${needsStructureJoin ? Prisma.sql`LEFT JOIN structures str ON str.id = act.structure_id` : Prisma.empty}
+      ${needsStructureJoin ? Prisma.sql`LEFT JOIN lieu_inclusion str ON str.id = act.structure_id` : Prisma.empty}
       ${needsConseillerNumeriqueJoin ? Prisma.sql`LEFT JOIN mediateurs med ON act.mediateur_id = med.id` : Prisma.empty}
       ${needsConseillerNumeriqueJoin ? Prisma.sql`LEFT JOIN users u ON med.user_id = u.id` : Prisma.empty}
     WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
@@ -159,7 +159,7 @@ const getBeneficiaireStatsQuery = ({
       }
       INNER JOIN accompagnements acc ON acc.activite_id = act.id
       INNER JOIN beneficiaires ben ON ben.id = acc.beneficiaire_id
-      ${needsStructureJoin ? Prisma.sql`LEFT JOIN structures str ON str.id = act.structure_id` : Prisma.empty}
+      ${needsStructureJoin ? Prisma.sql`LEFT JOIN lieu_inclusion str ON str.id = act.structure_id` : Prisma.empty}
       ${needsConseillerNumeriqueJoin ? Prisma.sql`LEFT JOIN mediateurs med ON act.mediateur_id = med.id` : Prisma.empty}
       ${needsConseillerNumeriqueJoin ? Prisma.sql`LEFT JOIN users u ON med.user_id = u.id` : Prisma.empty}
     WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
@@ -207,7 +207,7 @@ const getNouveauxAccompagnementsQuery = ({
           ? Prisma.sql`FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user?.coordinateur?.id}::UUID`
           : Prisma.empty
       }
-      ${needsStructureJoin ? Prisma.sql`LEFT JOIN structures str ON str.id = act.structure_id` : Prisma.empty}
+      ${needsStructureJoin ? Prisma.sql`LEFT JOIN lieu_inclusion str ON str.id = act.structure_id` : Prisma.empty}
       ${needsConseillerNumeriqueJoin ? Prisma.sql`LEFT JOIN mediateurs med ON act.mediateur_id = med.id` : Prisma.empty}
       ${needsConseillerNumeriqueJoin ? Prisma.sql`LEFT JOIN users u ON med.user_id = u.id` : Prisma.empty}
     WHERE acc.premier_accompagnement = true

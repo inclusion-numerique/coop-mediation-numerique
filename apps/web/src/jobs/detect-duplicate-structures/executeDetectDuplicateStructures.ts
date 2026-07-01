@@ -1,4 +1,5 @@
 import { writeFile } from 'node:fs/promises'
+import { getEmploisCountByCorrelation } from '@app/web/features/structures/correlateStructureAdministrative'
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
@@ -454,7 +455,7 @@ export const executeDetectDuplicateStructures = async (
     `detect-duplicate-structures: starting (seuil: ${seuilScore})${limit ? ` (limit: ${limit} codes INSEE)` : ''}...`,
   )
 
-  const structures = await prismaClient.structure.findMany({
+  const structures = await prismaClient.lieuInclusion.findMany({
     where: {
       suppression: null,
       codeInsee: { not: null },
@@ -474,12 +475,17 @@ export const executeDetectDuplicateStructures = async (
       activitesCount: true,
       _count: {
         select: {
-          emplois: true,
           mediateursEnActivite: true,
         },
       },
     },
   })
+
+  // Emplois employeuse corrélés par nom + code INSEE (plus de lien FK).
+  const emploisCountByStructureId = await getEmploisCountByCorrelation(
+    structures,
+    { activeOnly: false },
+  )
 
   // Regrouper par code INSEE
   const parCodeInsee = new Map<string, StructureLight[]>()
@@ -500,7 +506,7 @@ export const executeDetectDuplicateStructures = async (
       longitude: s.longitude,
       visiblePourCartographieNationale: s.visiblePourCartographieNationale,
       activitesCount: s.activitesCount,
-      emploisCount: s._count.emplois,
+      emploisCount: emploisCountByStructureId.get(s.id) ?? 0,
       mediateursCount: s._count.mediateursEnActivite,
     }
     const group = parCodeInsee.get(codeInsee)

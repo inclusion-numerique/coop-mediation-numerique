@@ -17,7 +17,7 @@ export const getLieuxActiviteForInscription = async ({
     },
     select: {
       id: true,
-      structure: {
+      lieuInclusion: {
         select: {
           id: true,
           structureCartographieNationaleId: true,
@@ -36,7 +36,7 @@ export const getLieuxActiviteForInscription = async ({
   })
 
   const lieuxActivite: StructureData[] = enActivite.map(
-    (lieuActivite) => lieuActivite.structure,
+    (lieuActivite) => lieuActivite.lieuInclusion,
   )
 
   return lieuxActivite

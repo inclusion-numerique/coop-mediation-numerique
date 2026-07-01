@@ -11,15 +11,15 @@ const emploiStructureEmployeuseSelect = {
   complementAdresse: true,
   siret: true,
   rna: true,
-  typologies: true,
   nomReferent: true,
   courrielReferent: true,
   telephoneReferent: true,
-} satisfies Prisma.StructureSelect
+} satisfies Prisma.StructureAdministrativeSelect
 
-export type EmploiStructureEmployeuse = Prisma.StructureGetPayload<{
-  select: typeof emploiStructureEmployeuseSelect
-}>
+export type EmploiStructureEmployeuse =
+  Prisma.StructureAdministrativeGetPayload<{
+    select: typeof emploiStructureEmployeuseSelect
+  }>
 
 const emploiContractSelect = {
   id: true,
