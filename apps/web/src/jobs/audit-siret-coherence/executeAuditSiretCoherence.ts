@@ -1,17 +1,20 @@
 import { writeFile } from 'node:fs/promises'
-import { getEmploisCountByCorrelation } from '@app/web/features/structures/correlateStructureAdministrative'
 import { fetchSiretApiData } from '@app/web/features/structures/siret/fetchSiretData'
-import type { SiretApiResponse } from '@app/web/features/structures/siret/SiretApiResponse'
+import {
+  getSiretBearingStructures,
+  type SiretBearingStructure,
+  type SiretSource,
+} from '@app/web/features/structures/siret/siretBearingStructures'
+import {
+  ADRESSE_SIMILARITY_THRESHOLD,
+  diceSimilarity,
+  NOM_SIMILARITY_THRESHOLD,
+  parseSireneIdentity,
+  throttleApiEntreprise,
+} from '@app/web/features/structures/siret/siretIdentity'
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
-import { prismaClient } from '@app/web/prismaClient'
 import type { AuditSiretCoherenceJob } from './auditSiretCoherenceJob'
-
-// 250 req/min max sur l'API Entreprise = ~4 req/s
-const API_ENTREPRISE_THROTTLE_MS = 250
-
-const throttle = () =>
-  new Promise((resolve) => setTimeout(resolve, API_ENTREPRISE_THROTTLE_MS))
 
 type Categorie =
   | 'ok'
@@ -25,6 +28,7 @@ type Categorie =
 
 type AuditRow = {
   id: string
+  source: SiretSource
   siret: string
   categorie: Categorie
   nomBase: string
@@ -38,10 +42,10 @@ type AuditRow = {
   similariteNom: number
   similariteAdresse: number
   etatAdministratif: string
-  visibleCarto: boolean
-  activitesCount: number
+  visibleCarto: boolean | null
+  activitesCount: number | null
   emploisCount: number
-  mediateursCount: number
+  mediateursCount: number | null
   erreur: string
 }
 
@@ -50,73 +54,13 @@ const escapeCsvField = (value: string) =>
     ? `"${value.replace(/"/g, '""')}"`
     : value
 
-const normalize = (s: string) =>
-  s
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9\s]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-
-/**
- * Similarité de Dice (bigrams) entre deux chaînes normalisées.
- * Retourne un score entre 0 et 1.
- */
-const diceSimilarity = (a: string, b: string): number => {
-  const na = normalize(a)
-  const nb = normalize(b)
-
-  if (na === nb) return 1
-  if (na.length < 2 || nb.length < 2) return 0
-
-  const bigrams = (s: string) => {
-    const set = new Map<string, number>()
-    for (let i = 0; i < s.length - 1; i++) {
-      const bigram = s.slice(i, i + 2)
-      set.set(bigram, (set.get(bigram) ?? 0) + 1)
-    }
-    return set
-  }
-
-  const bigramsA = bigrams(na)
-  const bigramsB = bigrams(nb)
-
-  let intersection = 0
-  for (const [bigram, countA] of bigramsA) {
-    const countB = bigramsB.get(bigram) ?? 0
-    intersection += Math.min(countA, countB)
-  }
-
-  const totalA = na.length - 1
-  const totalB = nb.length - 1
-
-  return (2 * intersection) / (totalA + totalB)
-}
-
-const buildAddressFromApiData = (
-  adresse: SiretApiResponse['data']['adresse'],
-): string =>
-  [
-    adresse.numero_voie,
-    adresse.indice_repetition_voie,
-    adresse.type_voie,
-    adresse.libelle_voie,
-    adresse.complement_adresse,
-  ]
-    .filter((part) => Boolean(part) && part !== 'null')
-    .join(' ')
-
-const NOM_SIMILARITY_THRESHOLD = 0.8
-const ADRESSE_SIMILARITY_THRESHOLD = 0.7
+const optional = (value: number | null): string =>
+  value === null ? '' : String(value)
 
 const categorize = (
   similariteNom: number,
   similariteAdresse: number,
-  etatAdministratif: string,
 ): Categorie => {
-  if (etatAdministratif === 'F') return 'etablissement_ferme'
-
   const nomOk = similariteNom >= NOM_SIMILARITY_THRESHOLD
   const adresseOk = similariteAdresse >= ADRESSE_SIMILARITY_THRESHOLD
 
@@ -128,6 +72,7 @@ const categorize = (
 
 const csvHeader = [
   'id',
+  'source',
   'siret',
   'categorie',
   'nom_base',
@@ -151,6 +96,7 @@ const csvHeader = [
 const rowToCsv = (row: AuditRow): string =>
   [
     row.id,
+    row.source,
     row.siret,
     row.categorie,
     escapeCsvField(row.nomBase),
@@ -164,12 +110,26 @@ const rowToCsv = (row: AuditRow): string =>
     row.similariteNom.toFixed(3),
     row.similariteAdresse.toFixed(3),
     row.etatAdministratif,
-    row.visibleCarto ? 'oui' : 'non',
-    row.activitesCount,
+    row.visibleCarto === null ? '' : row.visibleCarto ? 'oui' : 'non',
+    optional(row.activitesCount),
     row.emploisCount,
-    row.mediateursCount,
+    optional(row.mediateursCount),
     escapeCsvField(row.erreur),
   ].join(';')
+
+const baseRowOf = (structure: SiretBearingStructure) => ({
+  id: structure.id,
+  source: structure.source,
+  siret: structure.siret,
+  nomBase: structure.nom,
+  adresseBase: structure.adresse,
+  communeBase: structure.commune,
+  codePostalBase: structure.codePostal,
+  visibleCarto: structure.visibleCarto,
+  activitesCount: structure.activitesCount,
+  emploisCount: structure.emploisCount,
+  mediateursCount: structure.mediateursCount,
+})
 
 export const executeAuditSiretCoherence = async (
   job: AuditSiretCoherenceJob,
@@ -180,43 +140,13 @@ export const executeAuditSiretCoherence = async (
     `audit-siret-coherence: starting...${limit ? ` (limit: ${limit})` : ''}`,
   )
 
-  const structures = await prismaClient.structure.findMany({
-    where: {
-      suppression: null,
-      siret: { not: null },
-    },
-    select: {
-      id: true,
-      siret: true,
-      nom: true,
-      adresse: true,
-      commune: true,
-      codePostal: true,
-      codeInsee: true,
-      visiblePourCartographieNationale: true,
-      activitesCount: true,
-      _count: {
-        select: {
-          mediateursEnActivite: true,
-        },
-      },
-    },
-    orderBy: { siret: 'asc' },
-    ...(limit ? { take: limit } : {}),
-  })
+  const structures = await getSiretBearingStructures(limit ? { limit } : {})
 
   output.log(
-    `audit-siret-coherence: ${structures.length} structures avec SIRET à vérifier`,
+    `audit-siret-coherence: ${structures.length} structures avec SIRET à vérifier (lieux + employeuses)`,
   )
 
   const rows: AuditRow[] = []
-
-  // Emplois employeuse corrélés par nom + code INSEE (plus de lien FK).
-  const emploisCountByStructureId = await getEmploisCountByCorrelation(
-    structures,
-    { activeOnly: false },
-  )
-
   const counts: Record<Categorie, number> = {
     ok: 0,
     nom_divergent: 0,
@@ -235,24 +165,20 @@ export const executeAuditSiretCoherence = async (
       )
     }
 
-    const siret = structure.siret as string
-
-    const baseRow = {
-      id: structure.id,
-      siret,
-      nomBase: structure.nom,
-      adresseBase: structure.adresse,
-      communeBase: structure.commune,
-      codePostalBase: structure.codePostal,
-      visibleCarto: structure.visiblePourCartographieNationale,
-      activitesCount: structure.activitesCount,
-      emploisCount: emploisCountByStructureId.get(structure.id) ?? 0,
-      mediateursCount: structure._count.mediateursEnActivite,
+    const baseRow = baseRowOf(structure)
+    const emptyApi = {
+      nomApi: '',
+      adresseApi: '',
+      communeApi: '',
+      codePostalApi: '',
+      similariteNom: 0,
+      similariteAdresse: 0,
+      etatAdministratif: '',
     }
 
     try {
-      const siretResult = await fetchSiretApiData(siret)
-      await throttle()
+      const siretResult = await fetchSiretApiData(structure.siret)
+      await throttleApiEntreprise()
 
       if ('error' in siretResult) {
         const categorie: Categorie =
@@ -260,99 +186,68 @@ export const executeAuditSiretCoherence = async (
           siretResult.error.statusCode.toString().startsWith('4')
             ? 'siret_invalide'
             : 'erreur_api'
-
         counts[categorie]++
         rows.push({
           ...baseRow,
+          ...emptyApi,
           categorie,
-          nomApi: '',
-          adresseApi: '',
-          communeApi: '',
-          codePostalApi: '',
-          similariteNom: 0,
-          similariteAdresse: 0,
-          etatAdministratif: '',
           erreur: siretResult.error.message,
         })
         continue
       }
 
-      const {
-        data: {
-          unite_legale: { personne_morale_attributs },
-          etat_administratif,
-          adresse,
-        },
-      } = siretResult
+      const parsed = parseSireneIdentity(siretResult)
 
-      if (!personne_morale_attributs?.raison_sociale) {
-        counts.personne_physique++
+      if ('failure' in parsed) {
+        const categorie: Categorie = parsed.failure
+        counts[categorie]++
         rows.push({
           ...baseRow,
-          categorie: 'personne_physique',
-          nomApi: '',
-          adresseApi: '',
-          communeApi: '',
-          codePostalApi: '',
-          similariteNom: 0,
-          similariteAdresse: 0,
-          etatAdministratif: etat_administratif,
-          erreur: 'Personne physique (pas de raison sociale)',
+          ...emptyApi,
+          categorie,
+          erreur:
+            parsed.failure === 'personne_physique'
+              ? 'Personne physique (pas de raison sociale)'
+              : 'Établissement fermé',
         })
         continue
       }
 
-      const nomApi = personne_morale_attributs.raison_sociale
-      const adresseApi = buildAddressFromApiData(adresse)
-      const communeApi = adresse.libelle_commune ?? ''
-      const codePostalApi = adresse.code_postal
-
-      const similariteNom = diceSimilarity(structure.nom, nomApi)
-      const similariteAdresse = diceSimilarity(structure.adresse, adresseApi)
-
-      const categorie = categorize(
-        similariteNom,
-        similariteAdresse,
-        etat_administratif,
+      const { identity } = parsed
+      const similariteNom = diceSimilarity(structure.nom, identity.nom)
+      const similariteAdresse = diceSimilarity(
+        structure.adresse,
+        identity.adresse,
       )
+      const categorie = categorize(similariteNom, similariteAdresse)
 
       counts[categorie]++
       rows.push({
         ...baseRow,
         categorie,
-        nomApi,
-        adresseApi,
-        communeApi,
-        codePostalApi,
+        nomApi: identity.nom,
+        adresseApi: identity.adresse,
+        communeApi: identity.commune,
+        codePostalApi: identity.codePostal,
         similariteNom,
         similariteAdresse,
-        etatAdministratif: etat_administratif,
+        etatAdministratif: identity.etatAdministratif,
         erreur: '',
       })
     } catch (error) {
       counts.erreur_api++
       rows.push({
         ...baseRow,
+        ...emptyApi,
         categorie: 'erreur_api',
-        nomApi: '',
-        adresseApi: '',
-        communeApi: '',
-        codePostalApi: '',
-        similariteNom: 0,
-        similariteAdresse: 0,
-        etatAdministratif: '',
         erreur: error instanceof Error ? error.message : 'Unknown error',
       })
     }
   }
 
-  // ── Export CSV complet ──
-
   const csvLines = [csvHeader, ...rows.map(rowToCsv)]
   const filePath = getAuditOutputPath('audit-siret-coherence.csv')
   await writeFile(filePath, csvLines.join('\n'), 'utf-8')
-
-  // ── Export CSV des divergences uniquement ──
 
   const divergences = rows.filter(
     (r) => r.categorie !== 'ok' && r.categorie !== 'erreur_api',
@@ -361,9 +256,7 @@ export const executeAuditSiretCoherence = async (
   const divergencesFilePath = getAuditOutputPath('audit-siret-divergences.csv')
   await writeFile(divergencesFilePath, divergencesCsvLines.join('\n'), 'utf-8')
 
-  // ── Rapport console ──
-
-  output.log(`\n=== AUDIT SIRET - RÉSULTATS ===`)
+  output.log('\n=== AUDIT SIRET - RÉSULTATS ===')
   output.log(`Total vérifié: ${structures.length}`)
   for (const [categorie, count] of Object.entries(counts)) {
     if (count > 0) {
@@ -378,9 +271,6 @@ export const executeAuditSiretCoherence = async (
   return {
     total: structures.length,
     counts,
-    exports: {
-      complet: filePath,
-      divergences: divergencesFilePath,
-    },
+    exports: { complet: filePath, divergences: divergencesFilePath },
   }
 }

@@ -1,18 +1,19 @@
 import { writeFile } from 'node:fs/promises'
-import { getEmploisCountByCorrelation } from '@app/web/features/structures/correlateStructureAdministrative'
 import { fetchSiretApiData } from '@app/web/features/structures/siret/fetchSiretData'
+import { getSiretBearingStructures } from '@app/web/features/structures/siret/siretBearingStructures'
+import {
+  buildAddressFromApiData,
+  diceSimilarity,
+  parseSireneIdentity,
+  throttleApiEntreprise,
+} from '@app/web/features/structures/siret/siretIdentity'
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
-import { prismaClient } from '@app/web/prismaClient'
 import type { ExportDuplicateSiretsJob } from './exportDuplicateSiretsJob'
-
-// API Entreprise: 250 req/min ≈ 4 req/s → throttle 250ms between calls
-const API_ENTREPRISE_THROTTLE_MS = 250
-const throttle = () =>
-  new Promise((resolve) => setTimeout(resolve, API_ENTREPRISE_THROTTLE_MS))
 
 const csvHeader = [
   'siret',
+  'source',
   'id',
   'nom',
   'adresse',
@@ -35,72 +36,34 @@ const escapeCsvField = (value: string) =>
     ? `"${value.replace(/"/g, '""')}"`
     : value
 
-const normalize = (s: string): string =>
-  s
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .replace(/[^a-z0-9\s]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-
-const bigrams = (s: string): Map<string, number> => {
-  const set = new Map<string, number>()
-  for (let i = 0; i < s.length - 1; i++) {
-    const bg = s.slice(i, i + 2)
-    set.set(bg, (set.get(bg) ?? 0) + 1)
-  }
-  return set
-}
-
-const diceSimilarity = (a: string, b: string): number => {
-  const na = normalize(a)
-  const nb = normalize(b)
-  if (na === nb) return 1
-  if (na.length < 2 || nb.length < 2) return 0
-  const ba = bigrams(na)
-  const bb = bigrams(nb)
-  let inter = 0
-  for (const [bg, c] of ba) inter += Math.min(c, bb.get(bg) ?? 0)
-  return (2 * inter) / (na.length - 1 + nb.length - 1)
-}
-
-const buildAdresseFromApi = (
-  adresse: {
-    numero_voie?: string | null
-    indice_repetition_voie?: string | null
-    type_voie?: string | null
-    libelle_voie?: string | null
-  } | null,
-): string => {
-  if (!adresse) return ''
-  return [
-    adresse.numero_voie,
-    adresse.indice_repetition_voie,
-    adresse.type_voie,
-    adresse.libelle_voie,
-  ]
-    .filter((p) => Boolean(p) && p !== 'null')
-    .join(' ')
-}
+const optional = (value: number | null): string =>
+  value === null ? '' : String(value)
 
 export const executeExportDuplicateSirets = async (
   _job: ExportDuplicateSiretsJob,
 ) => {
-  output.log('export-duplicate-sirets: searching for duplicate SIRETs...')
+  output.log(
+    'export-duplicate-sirets: searching for duplicate SIRETs (lieux + employeuses)...',
+  )
 
-  const duplicateSirets = await prismaClient.structure.groupBy({
-    by: ['siret'],
-    where: {
-      suppression: null,
-      siret: { not: null },
-      NOT: { siret: '' },
+  // Vue unifiée des deux tables : un SIRET partagé par >1 structure (quelle que soit
+  // la table) est un doublon — y compris lieu↔employeuse ou employeuse↔employeuse.
+  const structures = await getSiretBearingStructures()
+
+  const countBySiret = structures.reduce<Map<string, number>>(
+    (accumulator, structure) => {
+      accumulator.set(
+        structure.siret,
+        (accumulator.get(structure.siret) ?? 0) + 1,
+      )
+      return accumulator
     },
-    _count: { id: true },
-    having: {
-      id: { _count: { gt: 1 } },
-    },
-  })
+    new Map(),
+  )
+
+  const duplicateSirets = [...countBySiret.entries()]
+    .filter(([, count]) => count > 1)
+    .map(([siret]) => siret)
 
   output.log(
     `export-duplicate-sirets: found ${duplicateSirets.length} SIRETs with duplicates`,
@@ -110,106 +73,98 @@ export const executeExportDuplicateSirets = async (
     return { siretCount: 0, structureCount: 0, filePath: null }
   }
 
-  const sirets = duplicateSirets.map((g) => g.siret as string)
+  const duplicateSiretSet = new Set(duplicateSirets)
+  const rows = structures
+    .filter((structure) => duplicateSiretSet.has(structure.siret))
+    .sort(
+      (a, b) =>
+        a.siret.localeCompare(b.siret) ||
+        b.modification.getTime() - a.modification.getTime(),
+    )
 
-  const structures = await prismaClient.structure.findMany({
-    where: {
-      suppression: null,
-      siret: { in: sirets },
-    },
-    include: {
-      _count: {
-        select: {
-          mediateursEnActivite: true,
-        },
-      },
-    },
-    orderBy: [{ siret: 'asc' }, { modification: 'desc' }],
-  })
-
-  // Emplois employeuse corrélés par nom + code INSEE (plus de lien FK).
-  const emploisCountByStructureId = await getEmploisCountByCorrelation(
-    structures,
-    { activeOnly: false },
-  )
-
-  // Fetch API Entreprise data once per SIRET (cached for all duplicates)
+  // Une passe API Entreprise par SIRET unique (mise en cache pour tous ses doublons).
   output.log(
-    `export-duplicate-sirets: fetching API Entreprise for ${sirets.length} SIRETs (throttled)...`,
+    `export-duplicate-sirets: fetching API Entreprise for ${duplicateSirets.length} SIRETs (throttled)...`,
   )
   const apiDataBySiret = new Map<string, { nom: string; adresse: string }>()
-  for (const [index, siret] of sirets.entries()) {
+  for (const [index, siret] of duplicateSirets.entries()) {
     if ((index + 1) % 50 === 0) {
       output.log(
-        `export-duplicate-sirets: API progress ${index + 1}/${sirets.length}`,
+        `export-duplicate-sirets: API progress ${index + 1}/${duplicateSirets.length}`,
       )
     }
     try {
       const result = await fetchSiretApiData(siret)
-      await throttle()
-      if (!('error' in result)) {
-        const nomApi =
-          result.data.unite_legale.personne_morale_attributs?.raison_sociale ??
-          ''
-        const adresseApi = buildAdresseFromApi(result.data.adresse)
-        apiDataBySiret.set(siret, { nom: nomApi, adresse: adresseApi })
-      } else {
-        apiDataBySiret.set(siret, { nom: '', adresse: '' })
-      }
+      await throttleApiEntreprise()
+      const parsed = 'error' in result ? null : parseSireneIdentity(result)
+      apiDataBySiret.set(
+        siret,
+        parsed && 'identity' in parsed
+          ? { nom: parsed.identity.nom, adresse: parsed.identity.adresse }
+          : { nom: '', adresse: '' },
+      )
     } catch {
       apiDataBySiret.set(siret, { nom: '', adresse: '' })
     }
   }
 
-  const emptyLine = new Array(16).fill('').join(';')
+  const emptyLine = new Array(17).fill('').join(';')
   const csvLines: string[] = [csvHeader]
 
-  let previousSiret: string | null = null
-  for (const s of structures) {
-    if (previousSiret !== null && s.siret !== previousSiret) {
+  const previousSiretRef: { value: string | null } = { value: null }
+  for (const structure of rows) {
+    if (
+      previousSiretRef.value !== null &&
+      structure.siret !== previousSiretRef.value
+    ) {
       csvLines.push(emptyLine)
     }
-    const apiData = (s.siret && apiDataBySiret.get(s.siret)) || {
+    const apiData = apiDataBySiret.get(structure.siret) ?? {
       nom: '',
       adresse: '',
     }
-    const corrNom = apiData.nom ? diceSimilarity(s.nom, apiData.nom) : 0
+    const corrNom = apiData.nom ? diceSimilarity(structure.nom, apiData.nom) : 0
     const corrAdresse = apiData.adresse
-      ? diceSimilarity(s.adresse, apiData.adresse)
+      ? diceSimilarity(structure.adresse, apiData.adresse)
       : 0
     csvLines.push(
       [
-        s.siret ?? '',
-        s.id,
-        escapeCsvField(s.nom),
-        escapeCsvField(s.adresse),
-        escapeCsvField(s.commune),
-        s.codePostal,
-        s.telephone ?? '',
-        s.visiblePourCartographieNationale ? 'oui' : 'non',
-        s.activitesCount,
-        emploisCountByStructureId.get(s.id) ?? 0,
-        s._count.mediateursEnActivite,
-        s.modification.toISOString(),
+        structure.siret,
+        structure.source,
+        structure.id,
+        escapeCsvField(structure.nom),
+        escapeCsvField(structure.adresse),
+        escapeCsvField(structure.commune),
+        structure.codePostal,
+        structure.telephone ?? '',
+        structure.visibleCarto === null
+          ? ''
+          : structure.visibleCarto
+            ? 'oui'
+            : 'non',
+        optional(structure.activitesCount),
+        structure.emploisCount,
+        optional(structure.mediateursCount),
+        structure.modification.toISOString(),
         escapeCsvField(apiData.nom),
         escapeCsvField(apiData.adresse),
         `${Math.round(corrNom * 100)}%`,
         `${Math.round(corrAdresse * 100)}%`,
       ].join(';'),
     )
-    previousSiret = s.siret
+    previousSiretRef.value = structure.siret
   }
 
   const filePath = getAuditOutputPath('duplicate-sirets.csv')
   await writeFile(filePath, csvLines.join('\n'), 'utf-8')
 
   output.log(
-    `export-duplicate-sirets: exported ${structures.length} structures to ${filePath}`,
+    `export-duplicate-sirets: exported ${rows.length} structures to ${filePath}`,
   )
 
   return {
     siretCount: duplicateSirets.length,
-    structureCount: structures.length,
+    structureCount: rows.length,
     filePath,
   }
 }
