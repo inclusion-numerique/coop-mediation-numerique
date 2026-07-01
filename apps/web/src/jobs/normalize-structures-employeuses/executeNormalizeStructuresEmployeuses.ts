@@ -1,224 +1,58 @@
-import { searchAdresse } from '@app/web/external-apis/apiAdresse'
-import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
-import { getEmploisCountByCorrelation } from '@app/web/features/structures/correlateStructureAdministrative'
 import { fetchSiretApiData } from '@app/web/features/structures/siret/fetchSiretData'
-import type { SiretApiResponse } from '@app/web/features/structures/siret/SiretApiResponse'
-import { prismaClient } from '@app/web/prismaClient'
+import {
+  alignEmployeuseIdentity,
+  clearSiret,
+  getSiretBearingStructures,
+  markSiretSynchronised,
+  type SiretBearingStructure,
+} from '@app/web/features/structures/siret/siretBearingStructures'
+import {
+  ADRESSE_SIMILARITY_THRESHOLD,
+  diceSimilarity,
+  NOM_SIMILARITY_THRESHOLD,
+  parseSireneIdentity,
+  throttleApiEntreprise,
+} from '@app/web/features/structures/siret/siretIdentity'
 import type { JobExecutor } from '../jobExecutors'
 import { output } from '../output'
 
-// 250 req/min max sur l'API Entreprise = ~4 req/s = 250ms minimum entre chaque appel
-const API_ENTREPRISE_THROTTLE_MS = 250
+// Ce job traite le SIRET des DEUX tables (nom historique conservé) :
+// - EMPLOYEUSE (structure_administrative) : on ALIGNE nom/adresse sur l'identité légale SIRENE.
+// - LIEU (lieu_inclusion) : le SIRET est optionnel ; on ne touche JAMAIS au nom du lieu. On
+//   VÉRIFIE par fuzzy match (nom OU adresse) que le SIRET correspond ; sinon on EFFACE le SIRET.
 
-type StructureToNormalize = {
-  id: string
-  siret: string | null
-  nom: string
-  adresse: string
-  commune: string
-  codePostal: string
-  codeInsee: string | null
-  latitude: number | null
-  longitude: number | null
-  synchronisationSiret: Date | null
-}
-
-type NormalizedStructureData = {
-  nom: string
-  adresse: string
-  commune: string
-  codePostal: string
-  codeInsee: string
-}
-
-type Coordinates = {
-  latitude: number | null
-  longitude: number | null
-}
-
-const getStructuresEmployeusesToNormalize = async (): Promise<
-  StructureToNormalize[]
-> => {
-  // TODO(split): ce job normalise l'adresse employeuse via l'API Entreprise.
-  // L'identité employeuse vit désormais dans structure_administrative ; à terme il
-  // devrait cibler structure_administrative directement.
-  const candidates = await prismaClient.structure.findMany({
-    where: {
-      siret: { not: null },
-      suppression: null,
-      mediateursEnActivite: {
-        none: {},
-      },
-    },
-    select: {
-      id: true,
-      siret: true,
-      nom: true,
-      adresse: true,
-      commune: true,
-      codePostal: true,
-      codeInsee: true,
-      latitude: true,
-      longitude: true,
-      synchronisationSiret: true,
-    },
-  })
-
-  // On ne garde que les structures dont l'employeuse corrélée (nom + code INSEE)
-  // a au moins un emploi — sans lien FK, la corrélation remplace le filtre relationnel.
-  const emploisCounts = await getEmploisCountByCorrelation(candidates, {
-    activeOnly: false,
-  })
-
-  return candidates.filter(
-    (structure) => (emploisCounts.get(structure.id) ?? 0) > 0,
-  )
-}
-
-const shouldSkipStructure = (
-  structure: StructureToNormalize,
+const shouldSkip = (
+  structure: SiretBearingStructure,
   cutoffDate: Date,
 ): boolean =>
-  structure.siret
-    ? structure.synchronisationSiret != null &&
-      structure.synchronisationSiret > cutoffDate
-    : true
+  structure.synchronisationSiret != null &&
+  structure.synchronisationSiret > cutoffDate
 
-const buildAddressFromApiData = (
-  adresse: SiretApiResponse['data']['adresse'],
-): string =>
-  [
-    adresse.numero_voie,
-    adresse.indice_repetition_voie,
-    adresse.type_voie,
-    adresse.libelle_voie,
-    adresse.complement_adresse,
-  ]
-    .filter((part) => Boolean(part) && part !== 'null')
-    .join(' ')
-
-const parseApiEntrepriseResponse = (
-  siretResult: SiretApiResponse,
-): { error: string } | { data: NormalizedStructureData } => {
-  const {
-    data: {
-      unite_legale: { personne_morale_attributs },
-      etat_administratif,
-      adresse,
-    },
-  } = siretResult
-
-  if (!personne_morale_attributs?.raison_sociale) {
-    return { error: 'no raison sociale' }
-  }
-
-  if (etat_administratif === 'F') {
-    return { error: 'establishment closed' }
-  }
-
-  return {
-    data: {
-      nom: personne_morale_attributs.raison_sociale,
-      adresse: buildAddressFromApiData(adresse),
-      commune: adresse.libelle_commune || '',
-      codePostal: adresse.code_postal,
-      codeInsee: adresse.code_commune || '',
-    },
-  }
-}
-
-const hasStructureDataChanged = (
-  structure: StructureToNormalize,
-  data: NormalizedStructureData,
+const identityChanged = (
+  structure: SiretBearingStructure,
+  identity: {
+    nom: string
+    adresse: string
+    commune: string
+    codePostal: string
+    codeInsee: string
+  },
 ): boolean =>
-  structure.nom !== data.nom ||
-  structure.adresse !== data.adresse ||
-  structure.commune !== data.commune ||
-  structure.codePostal !== data.codePostal ||
-  structure.codeInsee !== data.codeInsee
+  structure.nom !== identity.nom ||
+  structure.adresse !== identity.adresse ||
+  structure.commune !== identity.commune ||
+  structure.codePostal !== identity.codePostal ||
+  structure.codeInsee !== identity.codeInsee
 
-const hasAddressChanged = (
-  structure: StructureToNormalize,
-  data: NormalizedStructureData,
+// Le SIRET « correspond » au lieu si le nom ET l'adresse SIRENE atteignent leur seuil de
+// similarité. Dès qu'un des deux diverge, on considère que le SIRET ne correspond pas.
+const siretMatchesLieu = (
+  structure: SiretBearingStructure,
+  identity: { nom: string; adresse: string },
 ): boolean =>
-  structure.adresse !== data.adresse ||
-  structure.commune !== data.commune ||
-  structure.codePostal !== data.codePostal ||
-  structure.codeInsee !== data.codeInsee
-
-const geocodeIfAddressChanged = async (
-  structure: StructureToNormalize,
-  data: NormalizedStructureData,
-): Promise<Coordinates> => {
-  if (!hasAddressChanged(structure, data)) {
-    return { latitude: structure.latitude, longitude: structure.longitude }
-  }
-
-  const fullAdresse = `${data.adresse}, ${data.codePostal} ${data.commune}`
-  const adresseResult = await searchAdresse(fullAdresse)
-
-  if (adresseResult) {
-    const banData = banFeatureToAdresseBanData(adresseResult)
-    return { latitude: banData.latitude, longitude: banData.longitude }
-  }
-
-  return { latitude: null, longitude: null }
-}
-
-const updateStructureData = async (
-  structureId: string,
-  data: NormalizedStructureData,
-  coordinates: Coordinates,
-): Promise<void> => {
-  const now = new Date()
-  await prismaClient.structure.update({
-    where: { id: structureId },
-    data: {
-      nom: data.nom,
-      adresse: data.adresse,
-      commune: data.commune,
-      codePostal: data.codePostal,
-      codeInsee: data.codeInsee,
-      latitude: coordinates.latitude,
-      longitude: coordinates.longitude,
-      modification: now,
-      synchronisationSiret: now,
-    },
-  })
-}
-
-const updateStructureSyncTimestamp = async (
-  structureId: string,
-): Promise<void> => {
-  await prismaClient.structure.update({
-    where: { id: structureId },
-    data: { synchronisationSiret: new Date() },
-  })
-}
-
-const logDryRunChanges = (
-  structure: StructureToNormalize,
-  data: NormalizedStructureData,
-  coordinates: Coordinates,
-  addressChanged: boolean,
-): void => {
-  output.log(
-    `normalize-structures-employeuses: [DRY RUN] would update structure ${structure.id}:`,
-  )
-  output.log(`  nom: "${structure.nom}" -> "${data.nom}"`)
-  output.log(`  adresse: "${structure.adresse}" -> "${data.adresse}"`)
-  output.log(`  commune: "${structure.commune}" -> "${data.commune}"`)
-  output.log(`  codePostal: "${structure.codePostal}" -> "${data.codePostal}"`)
-  output.log(`  codeInsee: "${structure.codeInsee}" -> "${data.codeInsee}"`)
-  if (addressChanged) {
-    output.log(
-      `  latitude: ${structure.latitude} -> ${coordinates.latitude}, longitude: ${structure.longitude} -> ${coordinates.longitude}`,
-    )
-  }
-}
-
-const throttle = () =>
-  new Promise((resolve) => setTimeout(resolve, API_ENTREPRISE_THROTTLE_MS))
+  diceSimilarity(structure.nom, identity.nom) >= NOM_SIMILARITY_THRESHOLD &&
+  diceSimilarity(structure.adresse, identity.adresse) >=
+    ADRESSE_SIMILARITY_THRESHOLD
 
 export const executeNormalizeStructuresEmployeuses: JobExecutor<
   'normalize-structures-employeuses'
@@ -230,96 +64,103 @@ export const executeNormalizeStructuresEmployeuses: JobExecutor<
   )
 
   output.log(
-    `normalize-structures-employeuses: starting${dryRun ? ' (DRY RUN)' : ''} (minDaysSinceLastSync: ${minDaysSinceLastSync})`,
+    `normalize-siret: starting${dryRun ? ' (DRY RUN)' : ''} (minDaysSinceLastSync: ${minDaysSinceLastSync})`,
   )
 
-  const structures = await getStructuresEmployeusesToNormalize()
+  const structures = await getSiretBearingStructures()
 
-  output.log(
-    `normalize-structures-employeuses: found ${structures.length} structures to process`,
-  )
+  output.log(`normalize-siret: ${structures.length} structures à SIRET`)
 
   const results = {
     total: structures.length,
-    updated: 0,
-    unchanged: 0,
-    skipped: 0,
-    failed: 0,
     dryRun,
+    employeusesAlignees: 0,
+    employeusesInchangees: 0,
+    lieuxVerifies: 0,
+    lieuxSiretEfface: 0,
+    ignores: 0,
+    echecs: 0,
   }
 
   for (const [index, structure] of structures.entries()) {
     if ((index + 1) % 50 === 0) {
-      output.log(
-        `normalize-structures-employeuses: progress ${index + 1}/${structures.length}`,
-      )
+      output.log(`normalize-siret: progress ${index + 1}/${structures.length}`)
     }
 
-    if (shouldSkipStructure(structure, cutoffDate)) {
-      results.skipped++
+    if (shouldSkip(structure, cutoffDate)) {
+      results.ignores++
       continue
     }
 
     try {
-      const siretResult = await fetchSiretApiData(structure.siret as string)
-      await throttle()
+      const siretResult = await fetchSiretApiData(structure.siret)
+      await throttleApiEntreprise()
 
+      // Erreur API / SIRET invalide : pour un LIEU c'est un SIRET qui ne correspond pas -> on l'efface.
       if ('error' in siretResult) {
-        output.log(
-          `normalize-structures-employeuses: API error for structure ${structure.id} (SIRET: ${structure.siret}): ${siretResult.error.message}`,
-        )
-        results.failed++
-        continue
-      }
-
-      const parsed = parseApiEntrepriseResponse(siretResult)
-
-      if ('error' in parsed) {
-        output.log(
-          `normalize-structures-employeuses: ${parsed.error} for structure ${structure.id} (SIRET: ${structure.siret})`,
-        )
-        results.failed++
-        continue
-      }
-
-      const { data } = parsed
-
-      const dataChanged = hasStructureDataChanged(structure, data)
-      const addressChanged = hasAddressChanged(structure, data)
-      const coordinates = await geocodeIfAddressChanged(structure, data)
-
-      if (dryRun) {
-        if (dataChanged) {
-          logDryRunChanges(structure, data, coordinates, addressChanged)
-          results.updated++
+        if (structure.source === 'lieu') {
+          if (!dryRun) await clearSiret(structure)
+          results.lieuxSiretEfface++
         } else {
           output.log(
-            `normalize-structures-employeuses: [DRY RUN] would update synchronisationSiret only for structure ${structure.id}`,
+            `normalize-siret: erreur API employeuse ${structure.id} (SIRET ${structure.siret}): ${siretResult.error.message}`,
           )
-          results.unchanged++
+          results.echecs++
         }
         continue
       }
 
-      if (dataChanged) {
-        await updateStructureData(structure.id, data, coordinates)
-        results.updated++
+      const parsed = parseSireneIdentity(siretResult)
+
+      if (structure.source === 'employeuse') {
+        // Employeuse : alignement sur l'identité légale. Établissement fermé / personne
+        // physique -> on ne peut pas aligner, on laisse en échec pour revue humaine.
+        if ('failure' in parsed) {
+          output.log(
+            `normalize-siret: employeuse ${structure.id} non alignable (${parsed.failure})`,
+          )
+          results.echecs++
+          continue
+        }
+
+        if (identityChanged(structure, parsed.identity)) {
+          if (!dryRun)
+            await alignEmployeuseIdentity(structure.id, {
+              nom: parsed.identity.nom,
+              adresse: parsed.identity.adresse,
+              commune: parsed.identity.commune,
+              codePostal: parsed.identity.codePostal,
+              codeInsee: parsed.identity.codeInsee,
+            })
+          results.employeusesAlignees++
+        } else {
+          if (!dryRun) await markSiretSynchronised(structure)
+          results.employeusesInchangees++
+        }
+        continue
+      }
+
+      // Lieu : validation. On ne modifie jamais le nom/adresse du lieu.
+      const correspond =
+        'identity' in parsed && siretMatchesLieu(structure, parsed.identity)
+
+      if (correspond) {
+        if (!dryRun) await markSiretSynchronised(structure)
+        results.lieuxVerifies++
       } else {
-        await updateStructureSyncTimestamp(structure.id)
-        results.unchanged++
+        if (!dryRun) await clearSiret(structure)
+        results.lieuxSiretEfface++
       }
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error'
       output.log(
-        `normalize-structures-employeuses: error processing structure ${structure.id}: ${errorMessage}`,
+        `normalize-siret: erreur ${structure.source} ${structure.id}: ${error instanceof Error ? error.message : 'Unknown error'}`,
       )
-      results.failed++
+      results.echecs++
     }
   }
 
   output.log(
-    `normalize-structures-employeuses: completed - updated: ${results.updated}, unchanged: ${results.unchanged}, skipped: ${results.skipped}, failed: ${results.failed}${dryRun ? ' (DRY RUN)' : ''}`,
+    `normalize-siret: terminé — employeuses alignées ${results.employeusesAlignees}, inchangées ${results.employeusesInchangees}, lieux vérifiés ${results.lieuxVerifies}, SIRET lieu effacés ${results.lieuxSiretEfface}, ignorés ${results.ignores}, échecs ${results.echecs}${dryRun ? ' (DRY RUN)' : ''}`,
   )
 
   return results

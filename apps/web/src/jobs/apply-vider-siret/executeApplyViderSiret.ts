@@ -1,5 +1,9 @@
 import { writeFile } from 'node:fs/promises'
 import {
+  clearSiret,
+  type SiretSource,
+} from '@app/web/features/structures/siret/siretBearingStructures'
+import {
   type ActionPlanRow,
   escapeCsvField,
   filterActionPlan,
@@ -12,6 +16,7 @@ import type { ApplyViderSiretJob } from './applyViderSiretJob'
 
 const dryRunCsvHeader = [
   'id',
+  'source',
   'nom',
   'adresse',
   'commune',
@@ -26,6 +31,7 @@ const dryRunCsvHeader = [
 const rowToCsv = (row: ActionPlanRow, statut: string): string =>
   [
     row.id,
+    row.source,
     escapeCsvField(row.nom),
     escapeCsvField(row.adresse),
     escapeCsvField(row.commune),
@@ -36,6 +42,23 @@ const rowToCsv = (row: ActionPlanRow, statut: string): string =>
     escapeCsvField(row.raison),
     statut,
   ].join(';')
+
+const toSiretSource = (source: string): SiretSource =>
+  source === 'employeuse' ? 'employeuse' : 'lieu'
+
+const findSiret = async (
+  id: string,
+  source: SiretSource,
+): Promise<{ id: string; siret: string | null } | null> =>
+  source === 'lieu'
+    ? prismaClient.lieuInclusion.findUnique({
+        where: { id },
+        select: { id: true, siret: true },
+      })
+    : prismaClient.structureAdministrative.findUnique({
+        where: { id },
+        select: { id: true, siret: true },
+      })
 
 export const executeApplyViderSiret = async (job: ApplyViderSiretJob) => {
   const dryRun = job.payload?.dryRun ?? true
@@ -52,41 +75,34 @@ export const executeApplyViderSiret = async (job: ApplyViderSiretJob) => {
   }
 
   const results: { row: ActionPlanRow; statut: string }[] = []
-  let cleared = 0
-  let skipped = 0
+  const counters = { cleared: 0, skipped: 0 }
 
   for (const row of toClear) {
-    const structure = await prismaClient.structure.findUnique({
-      where: { id: row.id },
-      select: { id: true, siret: true },
-    })
+    const source = toSiretSource(row.source)
+    const structure = await findSiret(row.id, source)
 
     if (!structure) {
       results.push({ row, statut: 'introuvable' })
-      skipped++
+      counters.skipped++
       continue
     }
 
     if (!structure.siret) {
       results.push({ row, statut: 'skip_deja_vide' })
-      skipped++
+      counters.skipped++
       continue
     }
 
     if (dryRun) {
       results.push({ row, statut: 'a_vider' })
-      cleared++
-    } else {
-      await prismaClient.structure.update({
-        where: { id: row.id },
-        data: { siret: null, synchronisationSiret: null },
-      })
-      results.push({ row, statut: 'vide' })
-      cleared++
+      counters.cleared++
+      continue
     }
-  }
 
-  // ── Export CSV ──
+    await clearSiret({ id: row.id, source })
+    results.push({ row, statut: 'vide' })
+    counters.cleared++
+  }
 
   const csvLines = [
     dryRunCsvHeader,
@@ -96,15 +112,19 @@ export const executeApplyViderSiret = async (job: ApplyViderSiretJob) => {
   const filePath = getAuditOutputPath(`apply-vider-siret-${suffix}.csv`)
   await writeFile(filePath, csvLines.join('\n'), 'utf-8')
 
-  // ── Rapport ──
-
   output.log(`\n=== VIDER SIRET ${dryRun ? '(DRY RUN)' : ''} - RÉSULTATS ===`)
   output.log(`Total: ${toClear.length}`)
-  output.log(`${dryRun ? 'À vider' : 'Vidés'}: ${cleared}`)
-  output.log(`Ignorés: ${skipped}`)
+  output.log(`${dryRun ? 'À vider' : 'Vidés'}: ${counters.cleared}`)
+  output.log(`Ignorés: ${counters.skipped}`)
   output.log(`Export: ${filePath}`)
 
-  output.log(`\napply-vider-siret: terminé`)
+  output.log('\napply-vider-siret: terminé')
 
-  return { dryRun, total: toClear.length, cleared, skipped, export: filePath }
+  return {
+    dryRun,
+    total: toClear.length,
+    cleared: counters.cleared,
+    skipped: counters.skipped,
+    export: filePath,
+  }
 }
