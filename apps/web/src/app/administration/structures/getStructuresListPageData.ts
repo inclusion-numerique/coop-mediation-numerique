@@ -9,7 +9,7 @@ export const getStructuresListPageData = async ({
 }) => {
   const [searchResult, totalCount] = await Promise.all([
     searchStructures({ searchParams }),
-    prismaClient.structure.count({ where: { suppression: null } }),
+    prismaClient.lieuInclusion.count({ where: { suppression: null } }),
   ])
 
   return {

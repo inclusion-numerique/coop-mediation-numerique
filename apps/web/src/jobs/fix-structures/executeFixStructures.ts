@@ -136,13 +136,13 @@ const isInvalidOsmOpeningHours = ({
 }
 
 export const executeFixStructures = async (_job: FixStructuresJob) => {
-  const structures = await prismaClient.structure.findMany()
+  const structures = await prismaClient.lieuInclusion.findMany()
 
   const invalidPivot = structures.filter(isInvalidPivot)
 
   output.log(`Found ${invalidPivot.length} structures with invalid pivot`)
 
-  await prismaClient.structure.updateMany({
+  await prismaClient.lieuInclusion.updateMany({
     where: {
       id: { in: invalidPivot.map(toId) },
     },
@@ -162,7 +162,7 @@ export const executeFixStructures = async (_job: FixStructuresJob) => {
 
   await Promise.all(
     invalidOSMOpeningHours.map(({ id, horaires }) =>
-      prismaClient.structure.update({
+      prismaClient.lieuInclusion.update({
         where: { id },
         data: { horaires: fixHoraires(horaires) },
       }),
@@ -175,7 +175,7 @@ export const executeFixStructures = async (_job: FixStructuresJob) => {
 
   await Promise.all(
     invalidPhones.map(({ id, telephone }) =>
-      prismaClient.structure.update({
+      prismaClient.lieuInclusion.update({
         where: { id },
         data: { telephone: fixTelephone(telephone) },
       }),
@@ -190,7 +190,7 @@ export const executeFixStructures = async (_job: FixStructuresJob) => {
 
   await Promise.all(
     wrongFormatLocations.map(({ id, latitude, longitude }) =>
-      prismaClient.structure.update({
+      prismaClient.lieuInclusion.update({
         where: { id },
         data: fixLocationFormat({ latitude, longitude }),
       }),
@@ -209,7 +209,7 @@ export const executeFixStructures = async (_job: FixStructuresJob) => {
 
     await Promise.all(
       batch.map(async (structure) =>
-        prismaClient.structure.update({
+        prismaClient.lieuInclusion.update({
           where: { id: structure.id },
           data: await banDataFor(structure),
         }),
@@ -225,7 +225,7 @@ export const executeFixStructures = async (_job: FixStructuresJob) => {
     `Found ${invalidFicheAccesLibre.length} structures with invalid fiche acces libre`,
   )
 
-  await prismaClient.structure.updateMany({
+  await prismaClient.lieuInclusion.updateMany({
     where: {
       id: { in: invalidFicheAccesLibre.map(toId) },
     },
@@ -240,7 +240,7 @@ export const executeFixStructures = async (_job: FixStructuresJob) => {
 
   await Promise.all(
     invalidPriseRDV.map(({ id, priseRdv }) =>
-      prismaClient.structure.update({
+      prismaClient.lieuInclusion.update({
         where: { id },
         data: { priseRdv: fixUrl(priseRdv) },
       }),

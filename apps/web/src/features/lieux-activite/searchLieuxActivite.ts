@@ -32,7 +32,7 @@ export const searchLieuxActivite = async ({
     suppression: null,
     fin: null,
     AND: toQueryParts(searchParams ?? {}).map((part) => ({
-      OR: [{ structure: { nom: { contains: part, mode: 'insensitive' } } }],
+      OR: [{ lieuInclusion: { nom: { contains: part, mode: 'insensitive' } } }],
     })),
   } satisfies Prisma.MediateurEnActiviteWhereInput
 
@@ -44,7 +44,7 @@ export const searchLieuxActivite = async ({
       id: true,
       creation: true,
       modification: true,
-      structure: {
+      lieuInclusion: {
         select: {
           id: true,
           nom: true,
@@ -56,14 +56,23 @@ export const searchLieuxActivite = async ({
       },
     },
     orderBy: [
-      { structure: { activitesCount: 'desc' } },
-      { structure: { nom: 'asc' } },
+      { lieuInclusion: { activitesCount: 'desc' } },
+      { lieuInclusion: { nom: 'asc' } },
     ],
   })
 
   return lieuxActivite.map(
     (
-      { structure: { id, nom, commune, codePostal, adresse, activitesCount } },
+      {
+        lieuInclusion: {
+          id,
+          nom,
+          commune,
+          codePostal,
+          adresse,
+          activitesCount,
+        },
+      },
       index,
     ) =>
       ({

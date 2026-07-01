@@ -11,11 +11,11 @@ export const getMergeStructurePreviewPageData = async (
   targetStructureId: string,
 ) => {
   const [sourceStructure, targetStructure] = await Promise.all([
-    prismaClient.structure.findUnique({
+    prismaClient.lieuInclusion.findUnique({
       where: { id: sourceStructureId },
       include: mergeStructureInclude,
     }),
-    prismaClient.structure.findUnique({
+    prismaClient.lieuInclusion.findUnique({
       where: { id: targetStructureId },
       include: mergeStructureInclude,
     }),

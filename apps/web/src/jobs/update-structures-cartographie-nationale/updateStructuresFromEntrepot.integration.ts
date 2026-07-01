@@ -14,7 +14,7 @@ const createStructureWithStaff =
   async (
     structure: { id: string } & Partial<typeof COMMON_STRUCTURE_FIELDS>,
   ) => {
-    await prismaClient.structure.create({
+    await prismaClient.lieuInclusion.create({
       data: { ...COMMON_STRUCTURE_FIELDS, ...structure },
     })
 
@@ -67,7 +67,7 @@ describe('updateStructuresFromEntrepot', () => {
     const linkedId = '00efad2c-0d71-43e3-a174-9e0c2defa083'
     const staleId = 'f98724ab-93d2-46cd-bff6-1821dd6a6da7'
 
-    await prismaClient.structure.createMany({
+    await prismaClient.lieuInclusion.createMany({
       data: [
         { id: linkedId, ...COMMON_STRUCTURE_FIELDS },
         {
@@ -88,10 +88,10 @@ describe('updateStructuresFromEntrepot', () => {
       ],
     })()
 
-    const linked = await prismaClient.structure.findUnique({
+    const linked = await prismaClient.lieuInclusion.findUnique({
       where: { id: linkedId },
     })
-    const stale = await prismaClient.structure.findUnique({
+    const stale = await prismaClient.lieuInclusion.findUnique({
       where: { id: staleId },
     })
 
@@ -119,7 +119,7 @@ describe('updateStructuresFromEntrepot', () => {
       ],
     })()
 
-    const structures = await prismaClient.structure.findMany()
+    const structures = await prismaClient.lieuInclusion.findMany()
     const employes = await prismaClient.employeStructure.findMany()
     const activites = await prismaClient.mediateurEnActivite.findMany()
 
@@ -137,7 +137,7 @@ describe('updateStructuresFromEntrepot', () => {
   it('trace la source de modification externe quand la source n’est pas coop et la date est plus récente', async () => {
     const structureId = 'a6648fed-4d21-4ca4-a25b-d5a44d8ca38a'
 
-    await prismaClient.structure.create({
+    await prismaClient.lieuInclusion.create({
       data: { id: structureId, ...COMMON_STRUCTURE_FIELDS },
     })
 
@@ -151,7 +151,7 @@ describe('updateStructuresFromEntrepot', () => {
       ],
     })()
 
-    const structure = await prismaClient.structure.findUnique({
+    const structure = await prismaClient.lieuInclusion.findUnique({
       where: { id: structureId },
     })
 

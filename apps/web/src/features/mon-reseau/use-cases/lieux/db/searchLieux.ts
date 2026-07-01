@@ -50,9 +50,9 @@ export const lieuxForListSelect = {
       },
     },
   },
-} satisfies Prisma.StructureSelect
+} satisfies Prisma.LieuInclusionSelect
 
-export type LieuForList = Prisma.StructureGetPayload<{
+export type LieuForList = Prisma.LieuInclusionGetPayload<{
   select: typeof lieuxForListSelect
 }>
 
@@ -61,7 +61,7 @@ const getLieuxByIds = async ({
 }: {
   ids: string[]
 }): Promise<LieuForList[]> => {
-  const lieux = await prismaClient.structure.findMany({
+  const lieux = await prismaClient.lieuInclusion.findMany({
     where: { id: { in: ids } },
     select: lieuxForListSelect,
   })
@@ -136,7 +136,7 @@ export const searchLieux = async ({
       SELECT DISTINCT ON (s.id)
         s.id,
         s.${sortColumn}
-      FROM structures s
+      FROM lieu_inclusion s
       LEFT JOIN mediateurs_en_activite mea ON mea.structure_id = s.id AND mea.suppression IS NULL AND mea.fin_activite IS NULL
       WHERE s.suppression IS NULL
         AND SUBSTRING(s.code_insee FROM ${departementCodeFromInseeRegex}) = ${departementCode}
@@ -165,7 +165,7 @@ export const searchLieux = async ({
   // Get total count
   const countResult = await prismaClient.$queryRaw<[{ count: number }]>`
     SELECT COUNT(DISTINCT s.id)::integer AS count
-    FROM structures s
+    FROM lieu_inclusion s
     LEFT JOIN mediateurs_en_activite mea ON mea.structure_id = s.id AND mea.suppression IS NULL AND mea.fin_activite IS NULL
     WHERE s.suppression IS NULL
       AND SUBSTRING(s.code_insee FROM ${departementCodeFromInseeRegex}) = ${departementCode}

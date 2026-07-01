@@ -62,9 +62,9 @@ export const refreshFixturesComputedFields = async () => {
   )
 
   await prismaClient.$executeRaw`
-      UPDATE structures
-      SET activites_count = (SELECT COUNT(*) FROM activites WHERE activites.structure_id = structures.id AND activites.suppression IS NULL)
-      WHERE structures.id IN (${Prisma.join(structureIdParams)})
+      UPDATE lieu_inclusion
+      SET activites_count = (SELECT COUNT(*) FROM activites WHERE activites.structure_id = lieu_inclusion.id AND activites.suppression IS NULL)
+      WHERE lieu_inclusion.id IN (${Prisma.join(structureIdParams)})
     `
 
   const fixtureMediateurIds = new Set(

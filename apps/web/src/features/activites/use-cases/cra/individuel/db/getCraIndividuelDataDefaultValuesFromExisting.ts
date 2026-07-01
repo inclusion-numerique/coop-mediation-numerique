@@ -40,7 +40,7 @@ export const getCraIndividuelDataDefaultValuesFromExisting = async ({
       lieuCodeInsee: true,
       lieuCodePostal: true,
       lieuCommune: true,
-      structure: {
+      lieuInclusion: {
         select: {
           id: true,
           nom: true,
@@ -87,7 +87,7 @@ export const getCraIndividuelDataDefaultValuesFromExisting = async ({
     lieuCodeInsee,
     lieuCodePostal,
     lieuCommune,
-    structure,
+    lieuInclusion,
     materiel,
     orienteVersStructure,
     rdvServicePublicId,
@@ -114,13 +114,15 @@ export const getCraIndividuelDataDefaultValuesFromExisting = async ({
     thematiques: thematiques ?? undefined,
     structureDeRedirection: structureDeRedirection ?? undefined,
     precisionsDemarche: precisionsDemarche ?? undefined,
-    structure: structure
+    structure: lieuInclusion
       ? {
-          id: structure.id,
-          nom: structure.nom ?? undefined,
+          id: lieuInclusion.id,
+          nom: lieuInclusion.nom ?? undefined,
           adresse:
-            structure.adresse && structure.codePostal && structure.commune
-              ? `${structure.adresse}, ${structure.codePostal} ${structure.commune}`
+            lieuInclusion.adresse &&
+            lieuInclusion.codePostal &&
+            lieuInclusion.commune
+              ? `${lieuInclusion.adresse}, ${lieuInclusion.codePostal} ${lieuInclusion.commune}`
               : undefined,
         }
       : undefined,

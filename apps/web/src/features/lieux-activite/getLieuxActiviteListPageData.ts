@@ -11,8 +11,10 @@ export const getLieuxActiviteListPageData = async ({
 }) => {
   const orderBy: Prisma.MediateurEnActiviteOrderByWithRelationInput =
     tri === 'majrecent' || tri === 'majancien'
-      ? { structure: { modification: tri === 'majrecent' ? 'desc' : 'asc' } }
-      : { structure: { nom: tri === 'nomza' ? 'desc' : 'asc' } }
+      ? {
+          lieuInclusion: { modification: tri === 'majrecent' ? 'desc' : 'asc' },
+        }
+      : { lieuInclusion: { nom: tri === 'nomza' ? 'desc' : 'asc' } }
 
   return prismaClient.mediateurEnActivite.findMany({
     where: {
@@ -26,7 +28,7 @@ export const getLieuxActiviteListPageData = async ({
       modification: true,
       debut: true,
       fin: true,
-      structure: {
+      lieuInclusion: {
         select: lieuxForListSelect,
       },
     },
