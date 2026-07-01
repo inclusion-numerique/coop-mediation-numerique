@@ -3,6 +3,9 @@
 
 var
 .turbo
+# artefacts locaux (scratch de refacto, captures MCP Playwright)
+refactor/
+.playwright-mcp/
 # dependencies
 node_modules
 .pnp
