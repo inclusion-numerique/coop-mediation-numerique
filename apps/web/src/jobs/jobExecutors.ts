@@ -69,6 +69,7 @@ export const jobExecutors: {
     executeUpdateStructuresCartographieNationale,
   'import-contacts-to-brevo': executeImportContactsToBrevo,
   'normalize-structures-employeuses': executeNormalizeStructuresEmployeuses,
+  'normaliser-beneficiaires': executeNormaliserBeneficiaires,
   'set-servcies-to-shared-lieux': executeSetServciesToSharedLieux,
   'update-lieux-activites-a-distance': executeUpdateLieuxActivitesADistance,
   'fix-structures': executeFixStructures,
