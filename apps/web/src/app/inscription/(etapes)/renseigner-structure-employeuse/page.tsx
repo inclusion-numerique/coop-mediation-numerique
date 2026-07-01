@@ -1,7 +1,8 @@
+import { renseignerStructureEmployeuseAction } from '@app/web/app/_actions/inscription/renseigner-structure-employeuse.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import { sessionUserHasStructureEmployeuse } from '@app/web/auth/sessionUser'
-import RenseignerStructureEmployeusePage from '@app/web/features/inscription/use-cases/renseigner-structure-employeuse/RenseignerStructureEmployeusePage'
+import RenseignerStructureEmployeusePage from '@app/web/features/inscription/abilities/renseigner-structure-employeuse/ui/pages/RenseignerStructureEmployeusePage'
 import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'
@@ -26,7 +27,7 @@ const RenseignerStructureEmployeusePageRoute = async () => {
 
   return (
     <RenseignerStructureEmployeusePage
-      user={user}
+      save={renseignerStructureEmployeuseAction}
       nextStepPath={nextStepPath}
     />
   )

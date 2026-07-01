@@ -100,6 +100,7 @@ export const packageJestConfig = ({
       '!src/**/*.spec.{ts,tsx}',
       '!src/**/*.integration.{ts,tsx}',
       '!src/**/*.stories.{ts,tsx}',
+      '!src/generated/**', // clients Prisma générés (entrepot) — pas d'instrumentation coverage
     ],
   }
 }
