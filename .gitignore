@@ -96,3 +96,8 @@ CLAUDE.md
 
 # prisma entrepôt client (generated, regenerate with `pnpm -F web prisma:entrepot:generate`)
 /apps/web/src/generated/entrepot
+
+# workspace scratch (notes de refacto, scripts one-off, artefacts d'outils)
+/refactor/
+/scripts/
+/.playwright-mcp/
