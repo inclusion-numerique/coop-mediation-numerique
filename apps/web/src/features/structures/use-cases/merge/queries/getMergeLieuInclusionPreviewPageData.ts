@@ -1,23 +1,23 @@
 import { getCorrelatedEmployeuseRelations } from '@app/web/features/structures/correlateStructureAdministrative'
 import { prismaClient } from '@app/web/prismaClient'
 import { findMergeCommonFields } from '../mappers/findMergeCommonFields'
-import { presentMergeStructure } from '../presenters/presentMergeStructure'
-import { mergeStructureInclude } from '../types'
+import { presentMergeLieuInclusion } from '../presenters/presentMergeLieuInclusion'
+import { mergeLieuInclusionInclude } from '../types'
 
-export type { MergeStructureData, MergeStructureInfo } from '../types'
+export type { MergeLieuInclusionData, MergeLieuInclusionInfo } from '../types'
 
-export const getMergeStructurePreviewPageData = async (
+export const getMergeLieuInclusionPreviewPageData = async (
   sourceStructureId: string,
   targetStructureId: string,
 ) => {
   const [sourceStructure, targetStructure] = await Promise.all([
     prismaClient.lieuInclusion.findUnique({
       where: { id: sourceStructureId },
-      include: mergeStructureInclude,
+      include: mergeLieuInclusionInclude,
     }),
     prismaClient.lieuInclusion.findUnique({
       where: { id: targetStructureId },
-      include: mergeStructureInclude,
+      include: mergeLieuInclusionInclude,
     }),
   ])
 
@@ -29,8 +29,14 @@ export const getMergeStructurePreviewPageData = async (
     getCorrelatedEmployeuseRelations(targetStructure),
   ])
 
-  const mergeSource = presentMergeStructure(sourceStructure, sourceEmployeuse)
-  const mergeTarget = presentMergeStructure(targetStructure, targetEmployeuse)
+  const mergeSource = presentMergeLieuInclusion(
+    sourceStructure,
+    sourceEmployeuse,
+  )
+  const mergeTarget = presentMergeLieuInclusion(
+    targetStructure,
+    targetEmployeuse,
+  )
 
   return {
     mergeSource,
@@ -39,6 +45,6 @@ export const getMergeStructurePreviewPageData = async (
   }
 }
 
-export type MergeStructureSourceAndTargetData = Awaited<
-  ReturnType<typeof getMergeStructurePreviewPageData>
+export type MergeLieuInclusionSourceAndTargetData = Awaited<
+  ReturnType<typeof getMergeLieuInclusionPreviewPageData>
 >

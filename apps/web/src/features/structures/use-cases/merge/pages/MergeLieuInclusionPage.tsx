@@ -1,11 +1,11 @@
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { MergeWithStructure } from '@app/web/features/structures/use-cases/merge/components/MergeWithStructure'
+import { MergeWithLieuInclusion } from '@app/web/features/structures/use-cases/merge/components/MergeWithLieuInclusion'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { contentId } from '@app/web/utils/skipLinks'
 
-export const MergeStructurePage = ({
+export const MergeLieuInclusionPage = ({
   structureId,
   nom,
 }: {
@@ -18,7 +18,7 @@ export const MergeStructurePage = ({
       currentPage="Fusionner"
       parents={[
         {
-          label: 'Structures',
+          label: 'Lieux d’activité',
           linkProps: { href: '/administration/lieux-activite' },
         },
         {
@@ -31,9 +31,9 @@ export const MergeStructurePage = ({
     />
     <main id={contentId}>
       <AdministrationTitle icon="fr-icon-git-merge-line">
-        Fusionner {nom} avec une autre structure
+        Fusionner {nom} avec un autre lieu d’activité
       </AdministrationTitle>
-      <MergeWithStructure structureId={structureId} />
+      <MergeWithLieuInclusion structureId={structureId} />
     </main>
   </CoopPageContainer>
 )

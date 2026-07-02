@@ -46,7 +46,7 @@ const Page = async (props: { params: Promise<{ structureId: string }> }) => {
               href: `/administration/lieux-activite/${params.structureId}/merge`,
             }}
           >
-            Fusionner avec une autre structure
+            Fusionner avec un autre lieu d’activité
           </Button>
         </div>
       </div>

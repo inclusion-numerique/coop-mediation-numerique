@@ -1,13 +1,13 @@
 import { toTitleCase } from '@app/web/utils/toTitleCase'
-import type { MergeStructure, MergeStructureInfo } from '../types'
+import type { MergeLieuInclusion, MergeLieuInclusionInfo } from '../types'
 
-export const presentMergeStructure = (
-  structure: MergeStructure,
+export const presentMergeLieuInclusion = (
+  structure: MergeLieuInclusion,
   employeuseRelations: {
     employesIds: string[]
     activitesEmployeurIds: string[]
   },
-): MergeStructureInfo => ({
+): MergeLieuInclusionInfo => ({
   id: structure.id,
   nom: toTitleCase(structure.nom, { noUpper: true }),
   adresse: toTitleCase(structure.adresse, { noUpper: true }),

@@ -27,7 +27,7 @@ const toLabel = ({
   </>
 )
 
-const SearchSingleStructure = ({
+const SearchSingleLieuInclusion = ({
   excludeStructureIds = [],
   defaultStructure,
   onSelect,
@@ -112,4 +112,4 @@ const SearchSingleStructure = ({
   )
 }
 
-export default withTrpc(SearchSingleStructure)
+export default withTrpc(SearchSingleLieuInclusion)

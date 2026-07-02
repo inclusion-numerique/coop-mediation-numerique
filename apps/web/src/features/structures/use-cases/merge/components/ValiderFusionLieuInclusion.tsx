@@ -7,7 +7,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import { useRouter } from 'next/navigation'
 
-const ValiderFusionStructure = ({
+const ValiderFusionLieuInclusion = ({
   sourceStructure,
   targetStructure,
 }: {
@@ -36,7 +36,7 @@ const ValiderFusionStructure = ({
 
       createToast({
         priority: 'success',
-        message: `La structure "${sourceStructure.nom}" a été fusionnée avec "${targetStructure.nom}"`,
+        message: `Le lieu d’activité "${sourceStructure.nom}" a été fusionné avec "${targetStructure.nom}"`,
       })
 
       router.replace(
@@ -75,21 +75,21 @@ const ValiderFusionStructure = ({
           },
         ]}
       >
-        Êtes-vous sûr de vouloir fusionner les structures suivantes&nbsp;?
+        Êtes-vous sûr de vouloir fusionner les lieux d’activité suivants&nbsp;?
         <ul className="fr-mb-8v">
           <li>
-            <strong>{sourceStructure.nom}</strong> (sera supprimée)
+            <strong>{sourceStructure.nom}</strong> (sera supprimé)
           </li>
           <li>
-            <strong>{targetStructure.nom}</strong> (conservée)
+            <strong>{targetStructure.nom}</strong> (conservé)
           </li>
         </ul>
         <p>
-          La structure <strong>{sourceStructure.nom}</strong> sera
-          définitivement supprimée.
+          Le lieu d’activité <strong>{sourceStructure.nom}</strong> sera
+          définitivement supprimé.
         </p>
         <p>
-          Toutes ses données seront transférées à la structure{' '}
+          Toutes ses données seront transférées au lieu d’activité{' '}
           <strong>{targetStructure.nom}</strong>.
         </p>
         <p className="fr-text--bold fr-text-label--red-marianne">
@@ -103,4 +103,4 @@ const ValiderFusionStructure = ({
   )
 }
 
-export default withTrpc(ValiderFusionStructure)
+export default withTrpc(ValiderFusionLieuInclusion)

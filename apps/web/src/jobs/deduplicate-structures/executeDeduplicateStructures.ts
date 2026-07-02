@@ -1,5 +1,5 @@
 import { getEmploisCountByCorrelation } from '@app/web/features/structures/correlateStructureAdministrative'
-import { mergeStructure } from '@app/web/features/structures/use-cases/merge/mutations/mergeStructure'
+import { mergeLieuInclusion } from '@app/web/features/structures/use-cases/merge/mutations/mergeLieuInclusion'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 import type { LieuInclusion } from '@prisma/client'
@@ -170,7 +170,7 @@ export const executeDeduplicateStructures = async (
     if (!dryRun) {
       for (const source of sources) {
         output.log(`  Fusion: ${source.id} → ${target.id}`)
-        await mergeStructure(source.id, target.id, { timeout: 30_000 })
+        await mergeLieuInclusion(source.id, target.id, { timeout: 30_000 })
         mergesPerformed++
       }
     } else {
