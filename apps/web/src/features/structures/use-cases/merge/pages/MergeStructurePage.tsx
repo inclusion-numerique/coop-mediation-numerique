@@ -19,12 +19,12 @@ export const MergeStructurePage = ({
       parents={[
         {
           label: 'Structures',
-          linkProps: { href: '/administration/structures' },
+          linkProps: { href: '/administration/lieux-activite' },
         },
         {
           label: nom,
           linkProps: {
-            href: `/administration/structures/${structureId}/modifier`,
+            href: `/administration/lieux-activite/${structureId}/modifier`,
           },
         },
       ]}

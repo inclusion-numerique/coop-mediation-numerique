@@ -25,6 +25,11 @@ export const searchStructureSelect = {
           mediateur: { user: { deleted: null } },
         },
       },
+      activites: {
+        where: {
+          suppression: null,
+        },
+      },
     },
   },
 } satisfies Prisma.LieuInclusionSelect
