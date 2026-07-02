@@ -40,7 +40,7 @@ const ValiderFusionStructure = ({
       })
 
       router.replace(
-        `/administration/structures/${targetStructure.id}/modifier`,
+        `/administration/lieux-activite/${targetStructure.id}/modifier`,
       )
       router.refresh()
     } catch {

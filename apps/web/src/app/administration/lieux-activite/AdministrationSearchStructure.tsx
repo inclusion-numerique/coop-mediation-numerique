@@ -94,7 +94,7 @@ const AdministrationSearchStructure = () => {
           <Button
             className="fr-mb-6v fr-mt-2v"
             linkProps={{
-              href: `/administration/structures/${selectedStructureId}/modifier`,
+              href: `/administration/lieux-activite/${selectedStructureId}/modifier`,
             }}
             priority="tertiary"
             iconId="fr-icon-eye-line"

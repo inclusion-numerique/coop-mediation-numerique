@@ -32,7 +32,7 @@ const Page = async (props: { params: Promise<{ structureId: string }> }) => {
           parents={[
             {
               label: 'Structures',
-              linkProps: { href: `/administration/structures` },
+              linkProps: { href: `/administration/lieux-activite` },
             },
           ]}
           currentPage={toTitleCase(data.structure.nom, { noUpper: true })}
@@ -43,7 +43,7 @@ const Page = async (props: { params: Promise<{ structureId: string }> }) => {
             priority="tertiary"
             size="small"
             linkProps={{
-              href: `/administration/structures/${params.structureId}/merge`,
+              href: `/administration/lieux-activite/${params.structureId}/merge`,
             }}
           >
             Fusionner avec une autre structure

@@ -76,7 +76,7 @@ const getStructuresInfos = (
         href={
           kind === 'employeuse'
             ? `/administration/structures-employeuses/${id}`
-            : `/administration/structures/${id}/modifier`
+            : `/administration/lieux-activite/${id}/modifier`
         }
         target="_blank"
         rel="noreferrer"

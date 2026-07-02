@@ -19,7 +19,7 @@ export const MergeWithStructure = ({
   const router = useRouter()
 
   const handleSearchStructureSelect = ({ value: id }: { value: string }) => {
-    router.push(`/administration/structures/${structureId}/merge/${id}`)
+    router.push(`/administration/lieux-activite/${structureId}/merge/${id}`)
   }
 
   return (

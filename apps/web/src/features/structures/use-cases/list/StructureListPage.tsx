@@ -39,7 +39,7 @@ export const StructureListPage = ({
       <StructuresTable
         data={searchResult}
         searchParams={searchParams}
-        baseHref="/administration/structures"
+        baseHref="/administration/lieux-activite"
       />
     </main>
   </>

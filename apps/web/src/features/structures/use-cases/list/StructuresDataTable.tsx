@@ -22,7 +22,9 @@ export type StructuresDataTableConfiguration = DataTableConfiguration<
 export const StructuresDataTable = {
   csvFilename: () => `coop-${dateAsIsoDay(new Date())}-structures`,
   rowKey: ({ id }) => id,
-  rowLink: ({ id }) => ({ href: `/administration/structures/${id}/modifier` }),
+  rowLink: ({ id }) => ({
+    href: `/administration/lieux-activite/${id}/modifier`,
+  }),
   columns: [
     {
       name: 'nom',
@@ -39,12 +41,14 @@ export const StructuresDataTable = {
       header: 'Type',
       csvHeaders: ["Lieu d'activité", 'Structure employeuse'],
       csvValues: ({ _count, emploisCount }) => [
-        _count.mediateursEnActivite > 0 ? 'Oui' : 'Non',
+        _count.mediateursEnActivite > 0 || _count.activites > 0 ? 'Oui' : 'Non',
         emploisCount > 0 ? 'Oui' : 'Non',
       ],
       cell: ({ _count, emploisCount }) => (
         <div className="fr-flex fr-flex-gap-2v">
-          {_count.mediateursEnActivite > 0 && <Tag small>Lieu d'activité</Tag>}
+          {(_count.mediateursEnActivite > 0 || _count.activites > 0) && (
+            <Tag small>Lieu d'activité</Tag>
+          )}
           {emploisCount > 0 && <Tag small>Employeuse</Tag>}
         </div>
       ),

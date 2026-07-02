@@ -31,13 +31,28 @@ const AdministrationSideMenu = () => {
             className="fr-icon-home-4-line ri-xl fr-mr-1w fr-text--regular"
             aria-hidden
           />
-          Structures
+          Lieux d’activité
         </>
       ),
       linkProps: {
-        href: '/administration/structures',
+        href: '/administration/lieux-activite',
       },
-      isActive: pathname?.startsWith('/administration/structures'),
+      isActive: pathname?.startsWith('/administration/lieux-activite'),
+    },
+    {
+      text: (
+        <>
+          <span
+            className="fr-icon-building-line ri-xl fr-mr-1w fr-text--regular"
+            aria-hidden
+          />
+          Structures employeuses
+        </>
+      ),
+      linkProps: {
+        href: '/administration/structures-employeuses',
+      },
+      isActive: pathname?.startsWith('/administration/structures-employeuses'),
     },
     {
       text: (

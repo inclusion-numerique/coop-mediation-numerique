@@ -47,7 +47,7 @@ const AdministrationSearchStructure = ({
           id="recherche"
           type="recherche"
           name="recherche"
-          placeholder="Rechercher une structure par nom, SIRET ou adresse"
+          placeholder="Rechercher un lieu d’activité par nom, SIRET ou adresse"
         />
 
         <Button type="submit">Rechercher</Button>
