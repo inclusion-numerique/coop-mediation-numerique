@@ -1,9 +1,9 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import SearchSingleStructure from './SearchSingleStructure'
+import SearchSingleLieuInclusion from './SearchSingleLieuInclusion'
 
-export const MergeWithStructure = ({
+export const MergeWithLieuInclusion = ({
   structureId,
   defaultMergeStructure,
 }: {
@@ -25,7 +25,7 @@ export const MergeWithStructure = ({
   return (
     <div className="fr-border-radius--8 fr-border fr-p-8v fr-mb-6v">
       <h2 className="fr-h6">Rechercher la structure avec laquelle fusionner</h2>
-      <SearchSingleStructure
+      <SearchSingleLieuInclusion
         onSelect={handleSearchStructureSelect}
         defaultStructure={defaultMergeStructure}
         excludeStructureIds={[structureId]}

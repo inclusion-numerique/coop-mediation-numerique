@@ -143,7 +143,7 @@ const deleteStructure =
     })
   }
 
-export const mergeStructure = async (
+export const mergeLieuInclusion = async (
   sourceStructureId: string,
   targetStructureId: string,
   options?: { timeout?: number; propagateVisibility?: boolean },

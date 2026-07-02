@@ -1,7 +1,7 @@
 import { MergeDiff } from '@app/web/libs/ui/administration/MergeDiff'
-import type { MergeStructureData, MergeStructureInfo } from '../types'
+import type { MergeLieuInclusionData, MergeLieuInclusionInfo } from '../types'
 
-const mergeFields: { label: string; key: keyof MergeStructureData }[] = [
+const mergeFields: { label: string; key: keyof MergeLieuInclusionData }[] = [
   { label: 'Employés', key: 'employesIds' },
   { label: 'Médiateurs en activité', key: 'mediateursEnActiviteIds' },
   { label: 'Activités (employeur)', key: 'activitesEmployeurIds' },
@@ -15,14 +15,14 @@ const mergeFields: { label: string; key: keyof MergeStructureData }[] = [
   { label: 'Courriels', key: 'courriels' },
 ]
 
-export const MergeStructurePreview = ({
+export const MergeLieuInclusionPreview = ({
   merge,
   common,
   source,
 }: {
-  merge: MergeStructureInfo
-  common: MergeStructureData
-  source?: MergeStructureData
+  merge: MergeLieuInclusionInfo
+  common: MergeLieuInclusionData
+  source?: MergeLieuInclusionData
 }) => (
   <>
     <h2 className="fr-h6 fr-flex fr-flex-gap-2v">

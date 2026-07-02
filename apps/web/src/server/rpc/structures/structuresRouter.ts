@@ -1,7 +1,7 @@
 import { searchStructureEmployeuseCombined } from '@app/web/features/inscription/use-cases/renseigner-structure-employeuse/searchStructureEmployeuseCombined'
 import { CreerStructureValidation } from '@app/web/features/structures/CreerStructureValidation'
 import { searchStructuresEmployeuses } from '@app/web/features/structures/getStructuresEmployeusesOptions'
-import { mergeStructure } from '@app/web/features/structures/use-cases/merge/mutations/mergeStructure'
+import { mergeLieuInclusion } from '@app/web/features/structures/use-cases/merge/mutations/mergeLieuInclusion'
 import { mergeStructureAdministrative } from '@app/web/features/structures/use-cases/merge/mutations/mergeStructureAdministrative'
 import { mediateurCoordonnesIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
 import { prismaClient } from '@app/web/prismaClient'
@@ -202,7 +202,10 @@ export const structuresRouter = router({
     )
     .mutation(async ({ input, ctx: { user } }) => {
       enforceIsAdmin(user)
-      return mergeStructure(input.sourceStructureId, input.targetStructureId)
+      return mergeLieuInclusion(
+        input.sourceStructureId,
+        input.targetStructureId,
+      )
     }),
 
   // Fusion de deux identités légales employeuses (structure_administrative).

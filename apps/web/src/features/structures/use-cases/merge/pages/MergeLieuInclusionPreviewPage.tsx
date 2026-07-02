@@ -1,19 +1,19 @@
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { MergeStructurePreview } from '@app/web/features/structures/use-cases/merge/components/MergeStructurePreview'
-import { MergeWithStructure } from '@app/web/features/structures/use-cases/merge/components/MergeWithStructure'
-import ValiderFusionStructure from '@app/web/features/structures/use-cases/merge/components/ValiderFusionStructure'
-import type { MergeStructureSourceAndTargetData } from '@app/web/features/structures/use-cases/merge/queries/getMergeStructurePreviewPageData'
+import { MergeLieuInclusionPreview } from '@app/web/features/structures/use-cases/merge/components/MergeLieuInclusionPreview'
+import { MergeWithLieuInclusion } from '@app/web/features/structures/use-cases/merge/components/MergeWithLieuInclusion'
+import ValiderFusionLieuInclusion from '@app/web/features/structures/use-cases/merge/components/ValiderFusionLieuInclusion'
+import type { MergeLieuInclusionSourceAndTargetData } from '@app/web/features/structures/use-cases/merge/queries/getMergeLieuInclusionPreviewPageData'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { contentId } from '@app/web/utils/skipLinks'
 
-export const MergeStructurePreviewPage = ({
+export const MergeLieuInclusionPreviewPage = ({
   structureId,
   mergeData,
 }: {
   structureId: string
-  mergeData: NonNullable<MergeStructureSourceAndTargetData>
+  mergeData: NonNullable<MergeLieuInclusionSourceAndTargetData>
 }) => (
   <CoopPageContainer>
     <SkipLinksPortal />
@@ -21,7 +21,7 @@ export const MergeStructurePreviewPage = ({
       currentPage="Fusionner"
       parents={[
         {
-          label: 'Structures',
+          label: 'Lieux d’activité',
           linkProps: { href: '/administration/lieux-activite' },
         },
         {
@@ -34,9 +34,9 @@ export const MergeStructurePreviewPage = ({
     />
     <main id={contentId}>
       <AdministrationTitle icon="fr-icon-git-merge-line">
-        Fusionner {mergeData.mergeTarget.nom} avec une autre structure
+        Fusionner {mergeData.mergeTarget.nom} avec un autre lieu d’activité
       </AdministrationTitle>
-      <MergeWithStructure
+      <MergeWithLieuInclusion
         structureId={structureId}
         defaultMergeStructure={{
           id: mergeData.mergeSource.id,
@@ -48,7 +48,7 @@ export const MergeStructurePreviewPage = ({
       />
       <div className="fr-flex fr-flex-gap-6v fr-mb-6v fr-direction-lg-row fr-direction-column">
         <div className="fr-border-radius--8 fr-border fr-p-8v fr-width-full">
-          <MergeStructurePreview
+          <MergeLieuInclusionPreview
             common={mergeData.mergeCommon}
             merge={mergeData.mergeSource}
           />
@@ -62,14 +62,14 @@ export const MergeStructurePreviewPage = ({
           aria-hidden
         />
         <div className="fr-border-radius--8 fr-border fr-p-8v fr-width-full">
-          <MergeStructurePreview
+          <MergeLieuInclusionPreview
             common={mergeData.mergeCommon}
             merge={mergeData.mergeTarget}
             source={mergeData.mergeSource}
           />
         </div>
       </div>
-      <ValiderFusionStructure
+      <ValiderFusionLieuInclusion
         sourceStructure={mergeData.mergeSource}
         targetStructure={mergeData.mergeTarget}
       />
