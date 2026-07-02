@@ -1,13 +1,14 @@
 'use client'
 
 import { createToast } from '@app/ui/toast/createToast'
+import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import { trpc } from '@app/web/trpc'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import { useRouter } from 'next/navigation'
 
-// Confirmation de fusion de deux employeuses. Rendu à l'intérieur d'un parent déjà
-// enveloppé par withTrpc (MergeStructureAdministrative) → pas de withTrpc ici.
+// Confirmation de fusion de deux employeuses. Enveloppé par withTrpc car rendu comme
+// frère (et non enfant) du composant de recherche, dans la page d'aperçu.
 const ValiderFusionStructureAdministrative = ({
   sourceStructure,
   targetStructure,
@@ -102,4 +103,4 @@ const ValiderFusionStructureAdministrative = ({
   )
 }
 
-export default ValiderFusionStructureAdministrative
+export default withTrpc(ValiderFusionStructureAdministrative)

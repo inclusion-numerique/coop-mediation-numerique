@@ -44,7 +44,7 @@ const Page = async (props: {
         <AdministrationTitle icon="fr-icon-git-merge-line">
           Fusionner {source.nom} avec une autre employeuse
         </AdministrationTitle>
-        <MergeStructureAdministrative source={source} />
+        <MergeStructureAdministrative structure={source} />
       </main>
     </CoopPageContainer>
   )

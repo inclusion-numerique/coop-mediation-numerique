@@ -1,85 +1,96 @@
 'use client'
 
+import CustomSelectFormField from '@app/ui/components/Form/CustomSelectFormField'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { pluriel } from '@app/web/libraries/pluriel'
 import { trpc } from '@app/web/trpc'
-import Button from '@codegouvfr/react-dsfr/Button'
-import Input from '@codegouvfr/react-dsfr/Input'
-import { useState } from 'react'
-import ValiderFusionStructureAdministrative from './ValiderFusionStructureAdministrative'
+import { useRouter } from 'next/navigation'
+import { type ReactElement } from 'react'
+import { useForm } from 'react-hook-form'
 
-const MergeStructureAdministrative = ({
-  source,
+const toLabel = ({
+  nom,
+  adresse,
+  commune,
+  codePostal,
+  siret,
 }: {
-  source: { id: string; nom: string }
+  nom: string
+  adresse: string
+  commune: string
+  codePostal: string
+  siret: string | null
+}) => (
+  <>
+    <div className="fr-width-full fr-text--sm fr-mb-0">{nom}</div>
+    <div className="fr-width-full fr-text--xs fr-text-mention--grey fr-mb-0">
+      {siret ? `${siret} · ` : 'Sans SIRET · '}
+      {adresse}, {codePostal} {commune}
+    </div>
+  </>
+)
+
+// Étape 1 de la fusion employeuse : rechercher l'employeuse à fusionner (la SOURCE, qui
+// sera supprimée) puis naviguer vers l'aperçu. `structure` est la page d'origine = la CIBLE
+// conservée — même convention et même combobox que la fusion de lieux.
+const MergeStructureAdministrative = ({
+  structure,
+}: {
+  structure: { id: string; nom: string }
 }) => {
-  const [query, setQuery] = useState('')
-  const [target, setTarget] = useState<{ id: string; nom: string } | null>(null)
+  const router = useRouter()
+  const form = useForm<{ employeuse: string }>()
+  const { client: trpcClient } = trpc.useContext()
 
-  const search = trpc.structures.searchAdministrative.useQuery(
-    { query },
-    { enabled: query.trim().length >= 2 },
-  )
+  const loadOptions = async (search: string) => {
+    const result = await trpcClient.structures.searchAdministrative.query({
+      query: search,
+    })
 
-  const results = (search.data?.structures ?? []).filter(
-    (structure) => structure.id !== source.id,
-  )
+    const filtered = result.structures.filter((s) => s.id !== structure.id)
+
+    const hasMoreMessage =
+      result.moreResults > 0
+        ? `Veuillez préciser votre recherche — ${result.moreResults} ${pluriel(
+            result.moreResults,
+            'employeuse non affichée',
+            'employeuses non affichées',
+          )}`
+        : null
+
+    return [
+      {
+        label: `${filtered.length} ${pluriel(filtered.length, 'résultat', 'résultats')}`,
+        value: '',
+      },
+      ...filtered.map((s) => ({ label: toLabel(s), value: s.id })),
+      ...(hasMoreMessage ? [{ label: hasMoreMessage, value: '' }] : []),
+    ] as { label: ReactElement; value: string }[]
+  }
 
   return (
-    <div className="fr-flex fr-direction-column fr-flex-gap-4v">
-      <p className="fr-mb-0">
-        Employeuse à fusionner (source, sera supprimée)&nbsp;:{' '}
-        <strong>{source.nom}</strong>
+    <div className="fr-border-radius--8 fr-border fr-p-8v fr-mb-6v">
+      <h2 className="fr-h6">
+        Rechercher la structure employeuse avec laquelle fusionner
+      </h2>
+      <p className="fr-text--sm fr-text-mention--grey fr-mb-2v">
+        L’employeuse sélectionnée sera supprimée et ses données rattachées à{' '}
+        <strong>{structure.nom}</strong>.
       </p>
-
-      {target ? (
-        <div className="fr-p-4v fr-background-alt--blue-france fr-border-radius--8 fr-flex fr-direction-column fr-flex-gap-2v">
-          <p className="fr-mb-0">
-            Cible (conservée)&nbsp;: <strong>{target.nom}</strong>
-          </p>
-          <div className="fr-flex fr-flex-gap-2v">
-            <ValiderFusionStructureAdministrative
-              sourceStructure={source}
-              targetStructure={target}
-            />
-            <Button priority="secondary" onClick={() => setTarget(null)}>
-              Changer de cible
-            </Button>
-          </div>
-        </div>
-      ) : (
-        <>
-          <Input
-            label="Rechercher l'employeuse cible (nom, SIRET, adresse, commune)"
-            nativeInputProps={{
-              value: query,
-              onChange: (event) => setQuery(event.target.value),
-              placeholder: 'Au moins 2 caractères',
-            }}
-          />
-          {query.trim().length >= 2 && results.length === 0 ? (
-            <p className="fr-text--sm fr-text-mention--grey">
-              {search.isFetching ? 'Recherche…' : 'Aucune employeuse trouvée.'}
-            </p>
-          ) : null}
-          <ul className="fr-raw-list fr-flex fr-direction-column fr-flex-gap-1v">
-            {results.map((structure) => (
-              <li key={structure.id}>
-                <Button
-                  priority="tertiary"
-                  size="small"
-                  onClick={() =>
-                    setTarget({ id: structure.id, nom: structure.nom })
-                  }
-                >
-                  {structure.nom}
-                  {structure.siret ? ` — ${structure.siret}` : ' — sans SIRET'}
-                  {structure.commune ? ` — ${structure.commune}` : ''}
-                </Button>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
+      <CustomSelectFormField
+        label={null}
+        control={form.control}
+        path="employeuse"
+        placeholder="Rechercher une employeuse (nom, SIRET, adresse, commune)…"
+        loadOptions={loadOptions}
+        isOptionDisabled={(option) => option.value === ''}
+        onChange={(option) => {
+          if (option == null || option.value === '') return
+          router.push(
+            `/administration/structures-employeuses/${structure.id}/merge/${option.value}`,
+          )
+        }}
+      />
     </div>
   )
 }
