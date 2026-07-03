@@ -3,7 +3,7 @@
 import CustomSelectFormField from '@app/ui/components/Form/CustomSelectFormField'
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import type { SearchStructureResultStructure } from '@app/web/structure/searchStructure'
+import type { SearchLieuInclusionResultLieu } from '@app/web/structure/searchLieuInclusion'
 import { trpc } from '@app/web/trpc'
 import { ReactElement, useRef } from 'react'
 import { useForm } from 'react-hook-form'
@@ -47,7 +47,7 @@ const SearchSingleLieuInclusion = ({
   const { client: trpcClient } = trpc.useContext()
 
   const structuresMapRef = useRef(
-    new Map<string, SearchStructureResultStructure>(),
+    new Map<string, SearchLieuInclusionResultLieu>(),
   )
 
   const loadOptions = async (search: string) => {

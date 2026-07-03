@@ -1,7 +1,7 @@
 import DataTable from '@app/web/libs/data-table/DataTable'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
-import { type SearchStructuresResult } from '../search/searchStructures'
+import { type SearchLieuxResult } from '../search/searchLieux'
 import {
   StructuresDataTable,
   type StructuresDataTableSearchParams,
@@ -19,7 +19,7 @@ const StructuresTable = ({
   searchParams,
   baseHref,
 }: {
-  data: SearchStructuresResult
+  data: SearchLieuxResult
   searchParams: StructuresDataTableSearchParams
   baseHref: string
 }) => (

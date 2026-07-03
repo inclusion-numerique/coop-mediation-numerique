@@ -17,7 +17,7 @@ type SearchStructuresAdministrativesOptions = {
 const DEFAULT_PAGE_SIZE = 100
 
 // Recherche paginée des EMPLOYEUSES pour la data-table d'administration.
-// Frère de `searchStructures` (liste des LIEUX). La fonction socle
+// Frère de `searchLieux` (liste des LIEUX). La fonction socle
 // `searchStructureAdministrative` reste l'autocomplete mono-page (fusion, search-single).
 export const searchStructuresAdministratives = async (
   options: SearchStructuresAdministrativesOptions,

@@ -2,10 +2,10 @@ import { searchAdresse } from '@app/web/external-apis/apiAdresse'
 import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
-import type { StructureInput } from './findOrCreateStructure'
-import { isContainedName, sameDepartement } from './findOrCreateStructure'
+import type { FindOrCreateInput } from './findOrCreateLieuInclusion'
+import { isContainedName, sameDepartement } from './findOrCreateLieuInclusion'
 
-// Frère de findOrCreateStructure dédié au rôle EMPLOYEUSE : crée une
+// Frère de findOrCreateLieuInclusion dédié au rôle EMPLOYEUSE : crée une
 // `structure_administrative` (identité légale) et non une `structures` (lieu).
 // Même stratégie de déduplication (SIRET + codeInsee normalisé BAN, fallback nom),
 // car les payloads Dataspace présentent les mêmes divergences de codeInsee.
@@ -73,7 +73,7 @@ const findExistingBySiretOrNom = async ({
 
 /**
  * Find-or-create d'une structure_administrative (rôle employeuse) suivant la
- * même hiérarchie que findOrCreateStructure : coopId → SIRET+codeInsee → nom+codeInsee.
+ * même hiérarchie que findOrCreateLieuInclusion : coopId → SIRET+codeInsee → nom+codeInsee.
  */
 export const findOrCreateStructureAdministrative = async ({
   coopId,
@@ -86,7 +86,7 @@ export const findOrCreateStructureAdministrative = async ({
   nomReferent,
   courrielReferent,
   telephoneReferent,
-}: StructureInput): Promise<{ id: string }> => {
+}: FindOrCreateInput): Promise<{ id: string }> => {
   if (coopId) {
     const existing = await prismaClient.structureAdministrative.findFirst({
       where: { id: coopId },

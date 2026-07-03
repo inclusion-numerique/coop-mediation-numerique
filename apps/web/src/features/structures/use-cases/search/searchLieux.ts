@@ -10,13 +10,13 @@ import {
   type StructuresDataTableSearchParams,
 } from '../list/StructuresDataTable'
 
-type SearchStructuresOptions = {
+type SearchLieuxOptions = {
   searchParams?: StructuresDataTableSearchParams
 }
 
 const DEFAULT_PAGE_SIZE = 100
 
-export const searchStructures = async (options: SearchStructuresOptions) => {
+export const searchLieux = async (options: SearchLieuxOptions) => {
   const searchParams = options.searchParams ?? {}
 
   const orderBy = getDataTableOrderBy(searchParams, StructuresDataTable)
@@ -60,6 +60,4 @@ export const searchStructures = async (options: SearchStructuresOptions) => {
   }
 }
 
-export type SearchStructuresResult = Awaited<
-  ReturnType<typeof searchStructures>
->
+export type SearchLieuxResult = Awaited<ReturnType<typeof searchLieux>>

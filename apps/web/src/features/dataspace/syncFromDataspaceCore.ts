@@ -7,7 +7,7 @@ import type {
   DataspaceStructureEmployeuse,
 } from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import { getContractStatus } from '@app/web/features/dataspace/getContractStatus'
-import { findOrCreateStructure } from '@app/web/features/structures/findOrCreateStructure'
+import { findOrCreateLieuInclusion } from '@app/web/features/structures/findOrCreateLieuInclusion'
 import { findOrCreateStructureAdministrative } from '@app/web/features/structures/findOrCreateStructureAdministrative'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
@@ -651,7 +651,7 @@ export const importLieuxActiviteFromDataspace = async ({
     const adresse = buildAdresseFromDataspace(lieuActivite.adresse)
 
     // Find or create structure
-    const structure = await findOrCreateStructure({
+    const structure = await findOrCreateLieuInclusion({
       siret: lieuActivite.siret,
       nom: lieuActivite.nom,
       adresse,

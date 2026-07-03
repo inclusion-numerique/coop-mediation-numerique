@@ -1,7 +1,7 @@
 import type { Prisma } from '@prisma/client'
 import { v4 } from 'uuid'
 
-export const givenStructure = <
+export const givenLieuInclusion = <
   T extends Partial<Prisma.LieuInclusionCreateInput> & {
     nom: string
     adresse: string

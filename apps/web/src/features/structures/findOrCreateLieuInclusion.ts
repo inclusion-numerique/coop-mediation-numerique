@@ -5,7 +5,7 @@ import { v4 } from 'uuid'
 
 // Préfixes administratifs interchangeables, normalisés vers un token canonique.
 // "commune de X", "mairie de X", "ville de X", "hôtel de ville de X" → "ville X"
-// Permet à findOrCreateStructure de matcher "MAIRIE DU PRÊCHEUR" avec
+// Permet à findOrCreateLieuInclusion de matcher "MAIRIE DU PRÊCHEUR" avec
 // "COMMUNE DU PRECHEUR" pour le même SIRET, et ainsi d'éviter les doublons
 // quand le Dataspace renvoie une variante de nom différente de la base.
 const NOM_PREFIXES_NORMALIZATIONS: [RegExp, string][] = [
@@ -101,7 +101,7 @@ export const isContainedName = (a: string, b: string): boolean => {
   return na === nb || na.includes(nb) || nb.includes(na)
 }
 
-export type StructureInput = {
+export type FindOrCreateInput = {
   coopId?: string | null
   siret: string | null
   nom: string
@@ -195,7 +195,7 @@ const undeleteStructureIfDeleted = async ({
  * (le SIRET de la carto n'est pas fiable, seule l'API entreprise fait foi).
  * This is reusable for both V1 imports and Dataspace imports.
  */
-export const findOrCreateStructure = async ({
+export const findOrCreateLieuInclusion = async ({
   coopId,
   siret,
   nom,
@@ -207,7 +207,7 @@ export const findOrCreateStructure = async ({
   courrielReferent,
   telephoneReferent,
   creationParId,
-}: StructureInput): Promise<{ id: string }> => {
+}: FindOrCreateInput): Promise<{ id: string }> => {
   // If coopId is provided, it is the surest way to find the structure
   if (coopId) {
     const existingStructure = await prismaClient.lieuInclusion.findFirst({

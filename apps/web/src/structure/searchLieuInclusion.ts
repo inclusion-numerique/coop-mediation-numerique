@@ -6,7 +6,7 @@ type SearchStructureOptions = {
   limit: number
 }
 
-export const searchStructure = async (
+export const searchLieuInclusion = async (
   query: string,
   options?: SearchStructureOptions,
 ) => {
@@ -73,7 +73,9 @@ export const searchStructure = async (
   }
 }
 
-export type SearchStructureResult = Awaited<ReturnType<typeof searchStructure>>
+export type SearchLieuInclusionResult = Awaited<
+  ReturnType<typeof searchLieuInclusion>
+>
 
-export type SearchStructureResultStructure =
-  SearchStructureResult['structures'][number]
+export type SearchLieuInclusionResultLieu =
+  SearchLieuInclusionResult['structures'][number]

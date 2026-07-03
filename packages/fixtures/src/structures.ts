@@ -1,7 +1,7 @@
-import { givenStructure } from '@app/fixtures/givenStructure'
+import { givenLieuInclusion } from '@app/fixtures/givenLieuInclusion'
 import { type Prisma, Typologie } from '@prisma/client'
 
-export const structureEmployeuse = givenStructure({
+export const structureEmployeuse = givenLieuInclusion({
   id: 'f4dbca97-6fe8-4be1-97be-bdf5e66b9ea8',
   nom: 'Exemple de structure employeuse',
   adresse: '1 rue du vide',
@@ -10,7 +10,7 @@ export const structureEmployeuse = givenStructure({
   commune: 'Paris 1er',
 }) satisfies Prisma.LieuInclusionCreateInput
 
-export const mediateque = givenStructure({
+export const mediateque = givenLieuInclusion({
   id: '36929ed7-3b6f-4ed3-9924-b5e1a6c27096',
   nom: 'Exemple de Mediateque',
   adresse: '2 rue des livres',
@@ -20,7 +20,7 @@ export const mediateque = givenStructure({
   typologies: [Typologie.BIB, Typologie.MUNI, Typologie.CIDFF],
 })
 
-export const centreSocial = givenStructure({
+export const centreSocial = givenLieuInclusion({
   id: '36f20d7e-90ed-4932-911a-55320617ad56',
   nom: 'Exemple de Centre Social',
   adresse: '3 rue des amis',

@@ -7,7 +7,7 @@ type SearchStructureAdministrativeOptions = {
 }
 
 // Recherche d'identités légales employeuses (structure_administrative).
-// Frère de `searchStructure`, qui cible le rôle lieu (cf. split 1a.2).
+// Frère de `searchLieuInclusion`, qui cible le rôle lieu (cf. split 1a.2).
 export const searchStructureAdministrative = async (
   query: string,
   options?: SearchStructureAdministrativeOptions,

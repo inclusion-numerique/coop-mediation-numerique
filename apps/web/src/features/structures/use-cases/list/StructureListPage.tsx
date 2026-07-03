@@ -3,7 +3,7 @@ import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { contentId } from '@app/web/utils/skipLinks'
-import { SearchStructuresResult } from '../search/searchStructures'
+import { SearchLieuxResult } from '../search/searchLieux'
 import AdministrationSearchStructure from './AdministrationSearchStructure'
 import { type StructuresDataTableSearchParams } from './StructuresDataTable'
 import StructuresTable from './StructuresTable'
@@ -14,7 +14,7 @@ export const StructureListPage = ({
   totalCount,
 }: {
   searchParams: StructuresDataTableSearchParams
-  searchResult: SearchStructuresResult
+  searchResult: SearchLieuxResult
   totalCount: number
 }) => (
   <>
