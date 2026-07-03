@@ -13,13 +13,13 @@ import Tag from '@codegouvfr/react-dsfr/Tag'
 import type { Prisma } from '@prisma/client'
 import { StructureForList } from './queryStructuresForList'
 
-export type StructuresDataTableConfiguration = DataTableConfiguration<
+export type LieuxDataTableConfiguration = DataTableConfiguration<
   StructureForList,
   Prisma.LieuInclusionWhereInput,
   Prisma.LieuInclusionOrderByWithRelationInput
 >
 
-export const StructuresDataTable = {
+export const LieuxDataTable = {
   csvFilename: () => `coop-${dateAsIsoDay(new Date())}-structures`,
   rowKey: ({ id }) => id,
   rowLink: ({ id }) => ({
@@ -179,10 +179,10 @@ export const StructuresDataTable = {
       orderBy: (direction) => [{ mediateursEnActivite: { _count: direction } }],
     },
   ],
-} satisfies StructuresDataTableConfiguration
+} satisfies LieuxDataTableConfiguration
 
-export type StructuresDataTableSearchParams =
-  DataTableSearchParams<StructuresDataTableConfiguration>
+export type LieuxDataTableSearchParams =
+  DataTableSearchParams<LieuxDataTableConfiguration>
 
-export type StructuresDataTableFilterValues =
-  DataTableFilterValues<StructuresDataTableConfiguration>
+export type LieuxDataTableFilterValues =
+  DataTableFilterValues<LieuxDataTableConfiguration>

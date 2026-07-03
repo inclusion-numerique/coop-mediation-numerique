@@ -4,9 +4,9 @@ import { getStructuresListPageData } from '@app/web/app/administration/lieux-act
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import AdministrationSearchStructureList from '@app/web/features/structures/use-cases/list/AdministrationSearchStructure'
-import { StructuresDataTableSearchParams } from '@app/web/features/structures/use-cases/list/StructuresDataTable'
-import StructuresTable from '@app/web/features/structures/use-cases/list/StructuresTable'
+import AdministrationSearchLieu from '@app/web/features/structures/use-cases/list/AdministrationSearchLieu'
+import { LieuxDataTableSearchParams } from '@app/web/features/structures/use-cases/list/LieuxDataTable'
+import LieuxTable from '@app/web/features/structures/use-cases/list/LieuxTable'
 import { pluriel } from '@app/web/libraries/pluriel'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
@@ -23,7 +23,7 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 const Page = async (props: {
-  searchParams: Promise<StructuresDataTableSearchParams>
+  searchParams: Promise<LieuxDataTableSearchParams>
 }) => {
   const searchParams = await props.searchParams
   const [structuresListPageData] = await Promise.all([
@@ -43,7 +43,7 @@ const Page = async (props: {
             Rechercher dans la liste des lieux d’activité (
             {structuresListPageData.totalCount} au total)
           </p>
-          <AdministrationSearchStructureList searchParams={searchParams} />
+          <AdministrationSearchLieu searchParams={searchParams} />
         </div>
         <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-mb-6v">
           <span className="fr-text--semi-bold">
@@ -55,7 +55,7 @@ const Page = async (props: {
             )}
           </span>
         </div>
-        <StructuresTable
+        <LieuxTable
           data={structuresListPageData.searchResult}
           searchParams={searchParams}
           baseHref="/administration/lieux-activite"
