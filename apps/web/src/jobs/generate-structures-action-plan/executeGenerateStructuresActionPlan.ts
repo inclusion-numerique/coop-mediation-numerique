@@ -121,7 +121,7 @@ type StructureData = {
   mediateursCount: number
 }
 
-// ── Normalisation et similarité (réutilisés de detect-duplicate-structures) ──
+// ── Normalisation et similarité (réutilisés de detect-duplicate-lieux) ──
 
 const stripDiacritics = (s: string) =>
   s.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -567,7 +567,7 @@ export const executeGenerateStructuresActionPlan = async (
     `generate-structures-action-plan: ${orphelines.size} structures orphelines`,
   )
 
-  // ── 3. Détection des doublons (même logique que detect-duplicate-structures) ──
+  // ── 3. Détection des doublons (même logique que detect-duplicate-lieux) ──
 
   type StructureNorm = StructureData & { nomNorm: string; adrNorm: string }
 

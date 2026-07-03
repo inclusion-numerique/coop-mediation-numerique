@@ -1,7 +1,7 @@
 import z from 'zod'
 
-export const NormalizeStructuresEmployeusesJobValidation = z.object({
-  name: z.literal('normalize-structures-employeuses'),
+export const NormalizeSiretsJobValidation = z.object({
+  name: z.literal('normalize-sirets'),
   payload: z
     .object({
       dryRun: z.boolean().optional().default(false),
@@ -11,5 +11,5 @@ export const NormalizeStructuresEmployeusesJobValidation = z.object({
 })
 
 export type NormalizeStructuresEmployeusesJob = z.infer<
-  typeof NormalizeStructuresEmployeusesJobValidation
+  typeof NormalizeSiretsJobValidation
 >

@@ -1,7 +1,7 @@
 import z from 'zod'
 
-export const ApplyFusionnerStructuresJobValidation = z.object({
-  name: z.literal('apply-fusionner-structures'),
+export const ApplyFusionnerLieuxJobValidation = z.object({
+  name: z.literal('apply-fusionner-lieux'),
   payload: z.object({
     action: z.enum([
       'fusionner_auto',
@@ -20,5 +20,5 @@ export const ApplyFusionnerStructuresJobValidation = z.object({
 })
 
 export type ApplyFusionnerStructuresJob = z.infer<
-  typeof ApplyFusionnerStructuresJobValidation
+  typeof ApplyFusionnerLieuxJobValidation
 >

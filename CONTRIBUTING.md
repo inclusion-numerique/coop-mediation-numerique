@@ -388,7 +388,7 @@ L'execution des jobs est tracee en base de donnees dans la table `jobExecution`.
 | `fix-users-roles` | — | Corrige et repare les attributions de roles utilisateurs |
 | `inactive-users-reminders` | — | Envoie des emails de relance aux utilisateurs avec des inscriptions incompletes |
 | `remove-orphan-brevo-contacts` | — | Supprime les contacts Brevo qui n'existent plus en base de donnees |
-| `normalize-structures-employeuses` | `{ dryRun?, minDaysSinceLastSync? }` | Normalise les donnees des structures employeuses (par defaut : sync si 7+ jours depuis la derniere) |
+| `normalize-sirets` | `{ dryRun?, minDaysSinceLastSync? }` | Normalise les donnees des structures employeuses (par defaut : sync si 7+ jours depuis la derniere) |
 | `import-contacts-to-brevo` | — | Synchronise les contacts de la base de donnees vers la plateforme Brevo |
 | `ingest-les-bases-in-rag` | — | Ingere la documentation "Les Bases" dans le systeme RAG pour l'assistant IA |
 | `fix-structures` | — | Corrige et valide les donnees des structures (adresses, telephones, URLs, horaires) |
@@ -418,7 +418,7 @@ L'execution des jobs est tracee en base de donnees dans la table `jobExecution`.
 | `inactive-users-reminders` | `0 0 * * *` | Tous les jours a 00:00 |
 | `sync-users-from-dataspace` | `0 2 * * *` | Tous les jours a 02:00 |
 | `remove-orphan-brevo-contacts` | `0 3 * * *` | Tous les jours a 03:00 |
-| `normalize-structures-employeuses` | `0 4 * * *` | Tous les jours a 04:00 |
+| `normalize-sirets` | `0 4 * * *` | Tous les jours a 04:00 |
 
 #### Dev et production (`dev` + `main`)
 
@@ -601,7 +601,7 @@ Les crons sont configures via `ContainerCron` Scaleway et envoient des requetes 
 | `fix-users-roles` | Tous les jours a minuit | Correction des roles utilisateurs |
 | `inactive-users-reminders` | Tous les jours a minuit | Relances inscriptions incompletes |
 | `remove-orphan-brevo-contacts` | Tous les jours a 3h | Nettoyage contacts Brevo orphelins |
-| `normalize-structures-employeuses` | Tous les jours a 4h | Normalisation des structures |
+| `normalize-sirets` | Tous les jours a 4h | Normalisation des structures |
 
 **Dev et production :**
 

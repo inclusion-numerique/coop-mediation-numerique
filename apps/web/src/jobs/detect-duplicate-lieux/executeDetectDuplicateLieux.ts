@@ -3,9 +3,9 @@ import { getEmploisCountByCorrelation } from '@app/web/features/structures/corre
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
-import type { DetectDuplicateStructuresJob } from './detectDuplicateStructuresJob'
+import type { DetectDuplicateStructuresJob } from './detectDuplicateLieuxJob'
 
-type StructureLight = {
+type LieuLight = {
   id: string
   nom: string
   nomNormalise: string
@@ -267,7 +267,7 @@ const haversineDistance = (
 /**
  * Score géographique : 1.0 si < 50m, décroissance linéaire jusqu'à 0 à 500m
  */
-const scoreGeo = (a: StructureLight, b: StructureLight): number => {
+const scoreGeo = (a: LieuLight, b: LieuLight): number => {
   if (
     a.latitude == null ||
     a.longitude == null ||
@@ -289,7 +289,7 @@ const scoreGeo = (a: StructureLight, b: StructureLight): number => {
   return 1 - (distance - 50) / 450
 }
 
-const scoreSiret = (a: StructureLight, b: StructureLight): number => {
+const scoreSiret = (a: LieuLight, b: LieuLight): number => {
   if (!a.siret || !b.siret) return 0
   return a.siret === b.siret ? 1 : 0
 }
@@ -299,7 +299,7 @@ const normalizeTelephone = (tel: string | null): string => {
   return tel.replace(/[\s.+\-()]/g, '').replace(/^0033/, '0')
 }
 
-const scoreTelephone = (a: StructureLight, b: StructureLight): number => {
+const scoreTelephone = (a: LieuLight, b: LieuLight): number => {
   const telA = normalizeTelephone(a.telephone)
   const telB = normalizeTelephone(b.telephone)
   if (!telA || !telB) return 0
@@ -321,8 +321,8 @@ const scoreAdresse = (a: string, b: string): number => {
 }
 
 const computeScore = (
-  a: StructureLight,
-  b: StructureLight,
+  a: LieuLight,
+  b: LieuLight,
 ): {
   scoreNom: number
   scoreAdresse: number
@@ -445,14 +445,14 @@ const paireToCsv = (p: PaireDoublon): string =>
 
 // ── Job ──
 
-export const executeDetectDuplicateStructures = async (
+export const executeDetectDuplicateLieux = async (
   job: DetectDuplicateStructuresJob,
 ) => {
   const seuilScore = job.payload?.seuilScore ?? 0.6
   const limit = job.payload?.limit
 
   output.log(
-    `detect-duplicate-structures: starting (seuil: ${seuilScore})${limit ? ` (limit: ${limit} codes INSEE)` : ''}...`,
+    `detect-duplicate-lieux: starting (seuil: ${seuilScore})${limit ? ` (limit: ${limit} codes INSEE)` : ''}...`,
   )
 
   const structures = await prismaClient.lieuInclusion.findMany({
@@ -488,10 +488,10 @@ export const executeDetectDuplicateStructures = async (
   )
 
   // Regrouper par code INSEE
-  const parCodeInsee = new Map<string, StructureLight[]>()
+  const parCodeInsee = new Map<string, LieuLight[]>()
   for (const s of structures) {
     const codeInsee = s.codeInsee as string
-    const light: StructureLight = {
+    const light: LieuLight = {
       id: s.id,
       nom: s.nom,
       nomNormalise: normalizeNom(s.nom),
@@ -532,7 +532,7 @@ export const executeDetectDuplicateStructures = async (
   )
 
   output.log(
-    `detect-duplicate-structures: ${structures.length} structures, ${groupesComparables.length} codes INSEE avec ≥2 structures, ${totalComparaisons} comparaisons à effectuer`,
+    `detect-duplicate-lieux: ${structures.length} structures, ${groupesComparables.length} codes INSEE avec ≥2 structures, ${totalComparaisons} comparaisons à effectuer`,
   )
 
   const paires: PaireDoublon[] = []
@@ -576,7 +576,7 @@ export const executeDetectDuplicateStructures = async (
 
     if (comparaisonsEffectuees % 50_000 === 0) {
       output.log(
-        `detect-duplicate-structures: progress ${comparaisonsEffectuees}/${totalComparaisons} comparaisons, ${paires.length} paires trouvées`,
+        `detect-duplicate-lieux: progress ${comparaisonsEffectuees}/${totalComparaisons} comparaisons, ${paires.length} paires trouvées`,
       )
     }
   }
@@ -587,7 +587,7 @@ export const executeDetectDuplicateStructures = async (
   // ── Export CSV ──
 
   const csvLines = [csvHeader, ...paires.map(paireToCsv)]
-  const filePath = getAuditOutputPath('detect-duplicate-structures.csv')
+  const filePath = getAuditOutputPath('detect-duplicate-lieux.csv')
   await writeFile(filePath, csvLines.join('\n'), 'utf-8')
 
   // ── Rapport console ──
@@ -897,7 +897,7 @@ export const executeDetectDuplicateStructures = async (
     `Export clusters: ${clustersFilePath} (${clusters.length} clusters)`,
   )
 
-  output.log(`\ndetect-duplicate-structures: terminé`)
+  output.log(`\ndetect-duplicate-lieux: terminé`)
 
   return {
     structuresAnalysees: structures.length,
