@@ -8,7 +8,7 @@ import {
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
-import type { ApplySupprimerStructuresJob } from './applySupprimerStructuresJob'
+import type { ApplySupprimerLieuxJob } from './applySupprimerLieuxJob'
 
 const dryRunCsvHeader = [
   'id',
@@ -41,21 +41,17 @@ const rowToDryRunCsv = (row: ActionPlanRow, statut: string): string =>
     statut,
   ].join(';')
 
-export const executeApplySupprimerStructures = async (
-  job: ApplySupprimerStructuresJob,
+export const executeApplySupprimerLieux = async (
+  job: ApplySupprimerLieuxJob,
 ) => {
   const dryRun = job.payload?.dryRun ?? true
 
-  output.log(
-    `apply-supprimer-structures: starting${dryRun ? ' (DRY RUN)' : ''}...`,
-  )
+  output.log(`apply-supprimer-lieux: starting${dryRun ? ' (DRY RUN)' : ''}...`)
 
   const actionPlan = await readActionPlan()
   const toDelete = filterActionPlan(actionPlan, 'supprimer')
 
-  output.log(
-    `apply-supprimer-structures: ${toDelete.length} structures à supprimer`,
-  )
+  output.log(`apply-supprimer-lieux: ${toDelete.length} structures à supprimer`)
 
   if (toDelete.length === 0) {
     return { dryRun, total: 0, deleted: 0, skipped: 0 }
@@ -68,7 +64,7 @@ export const executeApplySupprimerStructures = async (
   for (const [index, row] of toDelete.entries()) {
     if ((index + 1) % 100 === 0) {
       output.log(
-        `apply-supprimer-structures: progress ${index + 1}/${toDelete.length}`,
+        `apply-supprimer-lieux: progress ${index + 1}/${toDelete.length}`,
       )
     }
 
@@ -127,7 +123,7 @@ export const executeApplySupprimerStructures = async (
 
     if (hasData) {
       output.log(
-        `apply-supprimer-structures: SKIP ${row.id} "${row.nom}" — données associées détectées (activites=${structure.activitesCount} emplois=${emploisCount} mediateurs=${structure._count.mediateursEnActivite} relations_activites=${structure._count.activites} activites_employeur=${activitesEmployeurCount})`,
+        `apply-supprimer-lieux: SKIP ${row.id} "${row.nom}" — données associées détectées (activites=${structure.activitesCount} emplois=${emploisCount} mediateurs=${structure._count.mediateursEnActivite} relations_activites=${structure._count.activites} activites_employeur=${activitesEmployeurCount})`,
       )
       results.push({ row, statut: 'skip_donnees_associees' })
       skipped++
@@ -147,7 +143,7 @@ export const executeApplySupprimerStructures = async (
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Unknown error'
         output.log(
-          `apply-supprimer-structures: ERREUR suppression ${row.id} "${row.nom}": ${message}`,
+          `apply-supprimer-lieux: ERREUR suppression ${row.id} "${row.nom}": ${message}`,
         )
         results.push({ row, statut: `erreur: ${message}` })
         skipped++
@@ -173,7 +169,7 @@ export const executeApplySupprimerStructures = async (
   output.log(`Ignorées: ${skipped}`)
   output.log(`Export: ${filePath}`)
 
-  output.log(`\napply-supprimer-structures: terminé`)
+  output.log(`\napply-supprimer-lieux: terminé`)
 
   return { dryRun, total: toDelete.length, deleted, skipped, export: filePath }
 }
