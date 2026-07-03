@@ -755,14 +755,34 @@ export const syncFromDataspaceCore = async ({
   let coordinateurId: string | null = null
 
   // --- Update User base fields ---
+  // On ne réécrit les champs de contenu (et donc ne bumpe `updated`) que s'ils
+  // changent vraiment ; sinon on n'avance que le marqueur technique
+  // `lastSyncedFromDataspace` (classé « non-contenu »), pour éviter un churn
+  // quotidien de toute la table `user` lors de la synchro Dataspace.
+  const currentUser = await prismaClient.user.findUnique({
+    where: { id: userId },
+    select: {
+      dataspaceId: true,
+      dataspaceUserIdPg: true,
+      isConseillerNumerique: true,
+    },
+  })
+
+  const userContentChanged =
+    currentUser?.dataspaceId !== dataspaceData.id ||
+    currentUser?.dataspaceUserIdPg !== dataspaceData.pg_id ||
+    currentUser?.isConseillerNumerique !== isConseillerNumeriqueInApi
+
   await prismaClient.user.update({
     where: { id: userId },
-    data: {
-      dataspaceId: dataspaceData.id,
-      dataspaceUserIdPg: dataspaceData.pg_id,
-      lastSyncedFromDataspace: new Date(),
-      isConseillerNumerique: isConseillerNumeriqueInApi,
-    },
+    data: userContentChanged
+      ? {
+          dataspaceId: dataspaceData.id,
+          dataspaceUserIdPg: dataspaceData.pg_id,
+          lastSyncedFromDataspace: new Date(),
+          isConseillerNumerique: isConseillerNumeriqueInApi,
+        }
+      : { lastSyncedFromDataspace: new Date() },
   })
 
   // --- Coordinateur: Only create if coordo is in dispositif (never delete) ---
