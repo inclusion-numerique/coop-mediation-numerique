@@ -10,6 +10,4 @@ export const NormalizeSiretsJobValidation = z.object({
     .optional(),
 })
 
-export type NormalizeStructuresEmployeusesJob = z.infer<
-  typeof NormalizeSiretsJobValidation
->
+export type NormalizeSiretsJob = z.infer<typeof NormalizeSiretsJobValidation>

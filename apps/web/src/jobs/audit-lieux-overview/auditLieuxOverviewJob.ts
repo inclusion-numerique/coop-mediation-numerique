@@ -5,6 +5,6 @@ export const AuditLieuxOverviewJobValidation = z.object({
   payload: z.object({}).optional(),
 })
 
-export type AuditStructuresOverviewJob = z.infer<
+export type AuditLieuxOverviewJob = z.infer<
   typeof AuditLieuxOverviewJobValidation
 >

@@ -10,6 +10,6 @@ export const DetectDuplicateLieuxJobValidation = z.object({
     .optional(),
 })
 
-export type DetectDuplicateStructuresJob = z.infer<
+export type DetectDuplicateLieuxJob = z.infer<
   typeof DetectDuplicateLieuxJobValidation
 >

@@ -3,7 +3,7 @@ import { getEmploisCountByCorrelation } from '@app/web/features/structures/corre
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
-import type { DetectDuplicateStructuresJob } from './detectDuplicateLieuxJob'
+import type { DetectDuplicateLieuxJob } from './detectDuplicateLieuxJob'
 
 type LieuLight = {
   id: string
@@ -446,7 +446,7 @@ const paireToCsv = (p: PaireDoublon): string =>
 // ── Job ──
 
 export const executeDetectDuplicateLieux = async (
-  job: DetectDuplicateStructuresJob,
+  job: DetectDuplicateLieuxJob,
 ) => {
   const seuilScore = job.payload?.seuilScore ?? 0.6
   const limit = job.payload?.limit
