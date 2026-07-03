@@ -54,9 +54,9 @@ const siretMatchesLieu = (
   diceSimilarity(structure.adresse, identity.adresse) >=
     ADRESSE_SIMILARITY_THRESHOLD
 
-export const executeNormalizeStructuresEmployeuses: JobExecutor<
-  'normalize-structures-employeuses'
-> = async (job) => {
+export const executeNormalizeSirets: JobExecutor<'normalize-sirets'> = async (
+  job,
+) => {
   const dryRun = job.payload?.dryRun ?? false
   const minDaysSinceLastSync = job.payload?.minDaysSinceLastSync ?? 7
   const cutoffDate = new Date(

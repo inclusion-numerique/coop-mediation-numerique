@@ -3,7 +3,7 @@ import { getEmploisCountByCorrelation } from '@app/web/features/structures/corre
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
-import type { AuditStructuresOverviewJob } from './auditStructuresOverviewJob'
+import type { AuditStructuresOverviewJob } from './auditLieuxOverviewJob'
 
 const escapeCsvField = (value: string) =>
   value.includes(';') || value.includes('"') || value.includes('\n')
@@ -13,10 +13,10 @@ const escapeCsvField = (value: string) =>
 const pct = (count: number, total: number) =>
   total === 0 ? '0%' : `${((count / total) * 100).toFixed(1)}%`
 
-export const executeAuditStructuresOverview = async (
+export const executeAuditLieuxOverview = async (
   _job: AuditStructuresOverviewJob,
 ) => {
-  output.log('audit-structures-overview: starting...')
+  output.log('audit-lieux-overview: starting...')
 
   // ── Comptages globaux ──
 
@@ -316,7 +316,7 @@ export const executeAuditStructuresOverview = async (
     },
   }
 
-  output.log(`\naudit-structures-overview: terminé`)
+  output.log(`\naudit-lieux-overview: terminé`)
 
   return summary
 }

@@ -3,7 +3,7 @@ import { mergeLieuInclusion } from '@app/web/features/structures/use-cases/merge
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 import type { LieuInclusion } from '@prisma/client'
-import type { DeduplicateStructuresJob } from './deduplicateStructuresJob'
+import type { DeduplicateStructuresJob } from './deduplicateLieuxJob'
 
 const scalarFieldsToEnrich = [
   'codeInsee',
@@ -114,17 +114,17 @@ const enrichTargetFromSources = async (
   }
 }
 
-export const executeDeduplicateStructures = async (
+export const executeDeduplicateLieux = async (
   job: DeduplicateStructuresJob,
 ) => {
   const dryRun = job.payload?.dryRun ?? false
 
-  output.log(`deduplicate-structures: starting${dryRun ? ' (DRY RUN)' : ''}...`)
+  output.log(`deduplicate-lieux: starting${dryRun ? ' (DRY RUN)' : ''}...`)
 
   const duplicateGroups = await findDuplicateGroups()
 
   output.log(
-    `deduplicate-structures: found ${duplicateGroups.length} groups of duplicates`,
+    `deduplicate-lieux: found ${duplicateGroups.length} groups of duplicates`,
   )
 
   if (duplicateGroups.length === 0) {
@@ -179,7 +179,7 @@ export const executeDeduplicateStructures = async (
   }
 
   output.log(
-    `\ndeduplicate-structures: ${dryRun ? 'would perform' : 'performed'} ${mergesPerformed} merges across ${duplicateGroups.length} groups`,
+    `\ndeduplicate-lieux: ${dryRun ? 'would perform' : 'performed'} ${mergesPerformed} merges across ${duplicateGroups.length} groups`,
   )
 
   return {

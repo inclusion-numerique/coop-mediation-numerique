@@ -443,9 +443,9 @@ export class WebAppStack extends TerraformStack {
 
       // Daily normalize structures employeuses at 4 AM
       createJobExecutionCron(this, {
-        name: 'normalize-structures-employeuses',
+        name: 'normalize-sirets',
         job: {
-          name: 'normalize-structures-employeuses',
+          name: 'normalize-sirets',
         },
         schedule: '0 4 * * *',
         containerId: container.id,

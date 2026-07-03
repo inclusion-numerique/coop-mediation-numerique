@@ -10,7 +10,7 @@ import {
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
-import type { ApplyFusionnerStructuresJob } from './applyFusionnerStructuresJob'
+import type { ApplyFusionnerStructuresJob } from './applyFusionnerLieuxJob'
 
 const reviewCsvHeader = [
   'cluster_id',
@@ -40,7 +40,7 @@ type ResultRow = {
   statut: string
 }
 
-export const executeApplyFusionnerStructures = async (
+export const executeApplyFusionnerLieux = async (
   job: ApplyFusionnerStructuresJob,
 ) => {
   const { action } = job.payload
@@ -48,7 +48,7 @@ export const executeApplyFusionnerStructures = async (
   const excludeStructureIds = new Set(job.payload.excludeStructureIds ?? [])
 
   output.log(
-    `apply-fusionner-structures: starting (${action})${dryRun ? ' (DRY RUN)' : ''}...`,
+    `apply-fusionner-lieux: starting (${action})${dryRun ? ' (DRY RUN)' : ''}...`,
   )
 
   const actionPlan = await readActionPlan()
@@ -75,13 +75,11 @@ export const executeApplyFusionnerStructures = async (
 
   if (excludedClusterIds.size > 0) {
     output.log(
-      `apply-fusionner-structures: ${excludedCount} structures exclues (${excludedClusterIds.size} clusters: ${[...excludedClusterIds].join(', ')})`,
+      `apply-fusionner-lieux: ${excludedCount} structures exclues (${excludedClusterIds.size} clusters: ${[...excludedClusterIds].join(', ')})`,
     )
   }
 
-  output.log(
-    `apply-fusionner-structures: ${toMerge.length} structures à fusionner`,
-  )
+  output.log(`apply-fusionner-lieux: ${toMerge.length} structures à fusionner`)
 
   if (toMerge.length === 0) {
     return { dryRun, action, total: 0, merged: 0, skipped: 0 }
@@ -94,13 +92,13 @@ export const executeApplyFusionnerStructures = async (
   for (const [index, row] of toMerge.entries()) {
     if ((index + 1) % 50 === 0) {
       output.log(
-        `apply-fusionner-structures: progress ${index + 1}/${toMerge.length}`,
+        `apply-fusionner-lieux: progress ${index + 1}/${toMerge.length}`,
       )
     }
 
     if (!row.cibleFusion) {
       output.log(
-        `apply-fusionner-structures: SKIP ${row.id} — pas de cible de fusion`,
+        `apply-fusionner-lieux: SKIP ${row.id} — pas de cible de fusion`,
       )
       results.push({
         row,
@@ -168,7 +166,7 @@ export const executeApplyFusionnerStructures = async (
 
     if (!cible || cible.suppression) {
       output.log(
-        `apply-fusionner-structures: SKIP ${row.id} — cible ${row.cibleFusion} introuvable ou supprimée`,
+        `apply-fusionner-lieux: SKIP ${row.id} — cible ${row.cibleFusion} introuvable ou supprimée`,
       )
       results.push({
         row,
@@ -211,7 +209,7 @@ export const executeApplyFusionnerStructures = async (
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Unknown error'
         output.log(
-          `apply-fusionner-structures: ERREUR fusion ${row.id} → ${row.cibleFusion}: ${message}`,
+          `apply-fusionner-lieux: ERREUR fusion ${row.id} → ${row.cibleFusion}: ${message}`,
         )
         results.push({ row, ...cibleInfo, statut: `erreur: ${message}` })
         skipped++
@@ -337,7 +335,7 @@ export const executeApplyFusionnerStructures = async (
   output.log(`Ignorées: ${skipped}`)
   output.log(`Export: ${filePath}`)
 
-  output.log(`\napply-fusionner-structures: terminé`)
+  output.log(`\napply-fusionner-lieux: terminé`)
 
   return {
     dryRun,

@@ -4,18 +4,18 @@ import * as Sentry from '@sentry/nextjs'
 import { v4 } from 'uuid'
 import { executeApplyCorrigerAdresse } from './apply-corriger-adresse/executeApplyCorrigerAdresse'
 import { executeApplyCorrigerCoordonnees } from './apply-corriger-coordonnees/executeApplyCorrigerCoordonnees'
-import { executeApplyFusionnerStructures } from './apply-fusionner-structures/executeApplyFusionnerStructures'
+import { executeApplyFusionnerLieux } from './apply-fusionner-lieux/executeApplyFusionnerLieux'
 import { executeApplyReviewToActionPlan } from './apply-review-to-action-plan/executeApplyReviewToActionPlan'
 import { executeApplySupprimerStructures } from './apply-supprimer-structures/executeApplySupprimerStructures'
 import { executeApplyViderSiret } from './apply-vider-siret/executeApplyViderSiret'
 import { executeAuditAdresseCoherence } from './audit-adresse-coherence/executeAuditAdresseCoherence'
+import { executeAuditLieuxOverview } from './audit-lieux-overview/executeAuditLieuxOverview'
 import { executeAuditSiretCoherence } from './audit-siret-coherence/executeAuditSiretCoherence'
-import { executeAuditStructuresOverview } from './audit-structures-overview/executeAuditStructuresOverview'
 import { executeBackfillCommuneRdvsp } from './backfill-commune-rdvsp/executeBackfillCommuneRdvsp'
 import { executeBackfillTrancheAge } from './backfill-tranche-age/executeBackfillTrancheAge'
 import { executeBackupDatabaseJob } from './backup-database/executeBackupDatabaseJob'
-import { executeDeduplicateStructures } from './deduplicate-structures/executeDeduplicateStructures'
-import { executeDetectDuplicateStructures } from './detect-duplicate-structures/executeDetectDuplicateStructures'
+import { executeDeduplicateLieux } from './deduplicate-lieux/executeDeduplicateLieux'
+import { executeDetectDuplicateLieux } from './detect-duplicate-lieux/executeDetectDuplicateLieux'
 import { executeExportDuplicateSirets } from './export-duplicate-sirets/executeExportDuplicateSirets'
 import { executeFixStructures } from './fix-structures/executeFixStructures'
 import { executeFixTags } from './fix-tags/executeFixTags'
@@ -26,7 +26,7 @@ import { executeImportContactsToBrevo } from './import-contacts-to-brevo/execute
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
 import type { Job, JobName, JobPayload } from './jobs'
 import { executeNormaliserBeneficiaires } from './normaliser-beneficiaires/executeNormaliserBeneficiaires'
-import { executeNormalizeStructuresEmployeuses } from './normalize-structures-employeuses/executeNormalizeStructuresEmployeuses'
+import { executeNormalizeSirets } from './normalize-sirets/executeNormalizeSirets'
 import { output } from './output'
 import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts/executeRemoveOrphanBrevoContacts'
 import { executeSetServciesToSharedLieux } from './set-servcies-to-shared-lieux/executeSetServciesToSharedLieux'
@@ -56,19 +56,19 @@ export const jobExecutors: {
   'apply-review-to-action-plan': executeApplyReviewToActionPlan,
   'apply-corriger-adresse': executeApplyCorrigerAdresse,
   'apply-corriger-coordonnees': executeApplyCorrigerCoordonnees,
-  'apply-fusionner-structures': executeApplyFusionnerStructures,
+  'apply-fusionner-lieux': executeApplyFusionnerLieux,
   'apply-supprimer-structures': executeApplySupprimerStructures,
   'apply-vider-siret': executeApplyViderSiret,
   'audit-adresse-coherence': executeAuditAdresseCoherence,
   'audit-siret-coherence': executeAuditSiretCoherence,
-  'audit-structures-overview': executeAuditStructuresOverview,
+  'audit-lieux-overview': executeAuditLieuxOverview,
   'backfill-commune-rdvsp': executeBackfillCommuneRdvsp,
   'backfill-tranche-age': executeBackfillTrancheAge,
   'backup-database': executeBackupDatabaseJob,
   'update-structures-cartographie-nationale':
     executeUpdateStructuresCartographieNationale,
   'import-contacts-to-brevo': executeImportContactsToBrevo,
-  'normalize-structures-employeuses': executeNormalizeStructuresEmployeuses,
+  'normalize-sirets': executeNormalizeSirets,
   'normaliser-beneficiaires': executeNormaliserBeneficiaires,
   'set-servcies-to-shared-lieux': executeSetServciesToSharedLieux,
   'update-lieux-activites-a-distance': executeUpdateLieuxActivitesADistance,
@@ -80,8 +80,8 @@ export const jobExecutors: {
   'inactive-users-reminders': executeInactiveUsersReminders,
   'fix-users-roles': executeFixUsersRoles,
   'remove-orphan-brevo-contacts': executeRemoveOrphanBrevoContacts,
-  'deduplicate-structures': executeDeduplicateStructures,
-  'detect-duplicate-structures': executeDetectDuplicateStructures,
+  'deduplicate-lieux': executeDeduplicateLieux,
+  'detect-duplicate-lieux': executeDetectDuplicateLieux,
   'export-duplicate-sirets': executeExportDuplicateSirets,
   'generate-structures-action-plan': executeGenerateStructuresActionPlan,
 }

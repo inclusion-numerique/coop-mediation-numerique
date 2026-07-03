@@ -1,7 +1,7 @@
 import z from 'zod'
 
-export const DeduplicateStructuresJobValidation = z.object({
-  name: z.literal('deduplicate-structures'),
+export const DeduplicateLieuxJobValidation = z.object({
+  name: z.literal('deduplicate-lieux'),
   payload: z
     .object({
       dryRun: z.boolean().optional().default(false),
@@ -10,5 +10,5 @@ export const DeduplicateStructuresJobValidation = z.object({
 })
 
 export type DeduplicateStructuresJob = z.infer<
-  typeof DeduplicateStructuresJobValidation
+  typeof DeduplicateLieuxJobValidation
 >
