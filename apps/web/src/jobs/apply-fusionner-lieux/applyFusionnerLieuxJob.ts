@@ -19,6 +19,6 @@ export const ApplyFusionnerLieuxJobValidation = z.object({
   }),
 })
 
-export type ApplyFusionnerStructuresJob = z.infer<
+export type ApplyFusionnerLieuxJob = z.infer<
   typeof ApplyFusionnerLieuxJobValidation
 >

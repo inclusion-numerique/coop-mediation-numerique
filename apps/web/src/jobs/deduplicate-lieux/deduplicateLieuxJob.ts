@@ -9,6 +9,4 @@ export const DeduplicateLieuxJobValidation = z.object({
     .optional(),
 })
 
-export type DeduplicateStructuresJob = z.infer<
-  typeof DeduplicateLieuxJobValidation
->
+export type DeduplicateLieuxJob = z.infer<typeof DeduplicateLieuxJobValidation>

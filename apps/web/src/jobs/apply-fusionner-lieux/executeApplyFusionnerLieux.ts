@@ -10,7 +10,7 @@ import {
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
-import type { ApplyFusionnerStructuresJob } from './applyFusionnerLieuxJob'
+import type { ApplyFusionnerLieuxJob } from './applyFusionnerLieuxJob'
 
 const reviewCsvHeader = [
   'cluster_id',
@@ -41,7 +41,7 @@ type ResultRow = {
 }
 
 export const executeApplyFusionnerLieux = async (
-  job: ApplyFusionnerStructuresJob,
+  job: ApplyFusionnerLieuxJob,
 ) => {
   const { action } = job.payload
   const dryRun = job.payload.dryRun ?? true

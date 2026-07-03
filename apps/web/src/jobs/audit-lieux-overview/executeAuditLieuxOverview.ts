@@ -3,7 +3,7 @@ import { getEmploisCountByCorrelation } from '@app/web/features/structures/corre
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
-import type { AuditStructuresOverviewJob } from './auditLieuxOverviewJob'
+import type { AuditLieuxOverviewJob } from './auditLieuxOverviewJob'
 
 const escapeCsvField = (value: string) =>
   value.includes(';') || value.includes('"') || value.includes('\n')
@@ -14,7 +14,7 @@ const pct = (count: number, total: number) =>
   total === 0 ? '0%' : `${((count / total) * 100).toFixed(1)}%`
 
 export const executeAuditLieuxOverview = async (
-  _job: AuditStructuresOverviewJob,
+  _job: AuditLieuxOverviewJob,
 ) => {
   output.log('audit-lieux-overview: starting...')
 

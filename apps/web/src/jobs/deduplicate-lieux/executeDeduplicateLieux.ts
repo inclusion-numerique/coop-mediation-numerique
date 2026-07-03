@@ -3,7 +3,7 @@ import { mergeLieuInclusion } from '@app/web/features/structures/use-cases/merge
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 import type { LieuInclusion } from '@prisma/client'
-import type { DeduplicateStructuresJob } from './deduplicateLieuxJob'
+import type { DeduplicateLieuxJob } from './deduplicateLieuxJob'
 
 const scalarFieldsToEnrich = [
   'codeInsee',
@@ -114,9 +114,7 @@ const enrichTargetFromSources = async (
   }
 }
 
-export const executeDeduplicateLieux = async (
-  job: DeduplicateStructuresJob,
-) => {
+export const executeDeduplicateLieux = async (job: DeduplicateLieuxJob) => {
   const dryRun = job.payload?.dryRun ?? false
 
   output.log(`deduplicate-lieux: starting${dryRun ? ' (DRY RUN)' : ''}...`)
