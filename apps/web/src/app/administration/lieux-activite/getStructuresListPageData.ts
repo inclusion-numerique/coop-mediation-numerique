@@ -1,5 +1,5 @@
 import { StructuresDataTableSearchParams } from '@app/web/features/structures/use-cases/list/StructuresDataTable'
-import { searchStructures } from '@app/web/features/structures/use-cases/search/searchStructures'
+import { searchLieux } from '@app/web/features/structures/use-cases/search/searchLieux'
 import { prismaClient } from '@app/web/prismaClient'
 
 export const getStructuresListPageData = async ({
@@ -8,7 +8,7 @@ export const getStructuresListPageData = async ({
   searchParams: StructuresDataTableSearchParams
 }) => {
   const [searchResult, totalCount] = await Promise.all([
-    searchStructures({ searchParams }),
+    searchLieux({ searchParams }),
     prismaClient.lieuInclusion.count({ where: { suppression: null } }),
   ])
 

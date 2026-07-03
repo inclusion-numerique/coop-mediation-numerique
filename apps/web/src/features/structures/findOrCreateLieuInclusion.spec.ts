@@ -1,7 +1,7 @@
 import type { Feature } from '@app/web/external-apis/apiAdresse'
 import { searchAdresse } from '@app/web/external-apis/apiAdresse'
 import { prismaClient } from '@app/web/prismaClient'
-import { findOrCreateStructure } from './findOrCreateStructure'
+import { findOrCreateLieuInclusion } from './findOrCreateLieuInclusion'
 
 jest.mock('@app/web/external-apis/apiAdresse', () => ({
   searchAdresse: jest.fn(),
@@ -57,7 +57,7 @@ const mayenne = {
   commune: 'LAVAL',
 }
 
-describe('findOrCreateStructure', () => {
+describe('findOrCreateLieuInclusion', () => {
   beforeEach(() => {
     mockedSearchAdresse.mockReset()
     structure.findFirst.mockReset().mockResolvedValue(null)
@@ -74,7 +74,7 @@ describe('findOrCreateStructure', () => {
       suppression: null,
     })
 
-    const result = await findOrCreateStructure({
+    const result = await findOrCreateLieuInclusion({
       ...mayenne,
       codeInsee: '53130',
     })
@@ -96,7 +96,7 @@ describe('findOrCreateStructure', () => {
   test('creates from the geocoded address (single BAN call) when nothing matches', async () => {
     mockedSearchAdresse.mockResolvedValue(featureWithCitycode('53000'))
 
-    await findOrCreateStructure({ ...mayenne, codeInsee: '53130' })
+    await findOrCreateLieuInclusion({ ...mayenne, codeInsee: '53130' })
 
     expect(mockedSearchAdresse).toHaveBeenCalledTimes(1)
     expect(structure.create).toHaveBeenCalledWith(
@@ -113,7 +113,7 @@ describe('findOrCreateStructure', () => {
   test('falls back to the raw codeInsee when geocoding returns nothing', async () => {
     mockedSearchAdresse.mockResolvedValue(null)
 
-    await findOrCreateStructure({ ...mayenne, codeInsee: '53130' })
+    await findOrCreateLieuInclusion({ ...mayenne, codeInsee: '53130' })
 
     expect(structure.create).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -126,7 +126,7 @@ describe('findOrCreateStructure', () => {
     // A Martinique (972xx) address mis-geocoded by BAN to Gironde (33xxx).
     mockedSearchAdresse.mockResolvedValue(featureWithCitycode('33324'))
 
-    await findOrCreateStructure({
+    await findOrCreateLieuInclusion({
       siret: '24972005300084',
       nom: 'Communaute Agglomeration Espace Sud',
       adresse: 'Rue case',
@@ -157,7 +157,7 @@ describe('findOrCreateStructure', () => {
       suppression: null,
     })
 
-    const result = await findOrCreateStructure({
+    const result = await findOrCreateLieuInclusion({
       ...mayenne,
       coopId: 'coop-id',
       codeInsee: '53130',
@@ -175,7 +175,7 @@ describe('findOrCreateStructure', () => {
       suppression: null,
     })
 
-    const result = await findOrCreateStructure({
+    const result = await findOrCreateLieuInclusion({
       ...mayenne,
       siret: null,
       codeInsee: '53130',
