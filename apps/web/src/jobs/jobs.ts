@@ -3,7 +3,7 @@ import { ApplyCorrigerAdresseJobValidation } from './apply-corriger-adresse/appl
 import { ApplyCorrigerCoordonneesJobValidation } from './apply-corriger-coordonnees/applyCorrigerCoordonneesJob'
 import { ApplyFusionnerLieuxJobValidation } from './apply-fusionner-lieux/applyFusionnerLieuxJob'
 import { ApplyReviewToActionPlanJobValidation } from './apply-review-to-action-plan/applyReviewToActionPlanJob'
-import { ApplySupprimerStructuresJobValidation } from './apply-supprimer-structures/applySupprimerStructuresJob'
+import { ApplySupprimerLieuxJobValidation } from './apply-supprimer-lieux/applySupprimerLieuxJob'
 import { ApplyViderSiretJobValidation } from './apply-vider-siret/applyViderSiretJob'
 import { AuditAdresseCoherenceJobValidation } from './audit-adresse-coherence/auditAdresseCoherenceJob'
 import { AuditLieuxOverviewJobValidation } from './audit-lieux-overview/auditLieuxOverviewJob'
@@ -51,7 +51,7 @@ export const JobValidation = z.discriminatedUnion('name', [
   ApplyCorrigerAdresseJobValidation,
   ApplyCorrigerCoordonneesJobValidation,
   ApplyFusionnerLieuxJobValidation,
-  ApplySupprimerStructuresJobValidation,
+  ApplySupprimerLieuxJobValidation,
   ApplyViderSiretJobValidation,
   AuditAdresseCoherenceJobValidation,
   AuditSiretCoherenceJobValidation,

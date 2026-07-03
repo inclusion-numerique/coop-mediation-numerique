@@ -6,7 +6,7 @@ import { executeApplyCorrigerAdresse } from './apply-corriger-adresse/executeApp
 import { executeApplyCorrigerCoordonnees } from './apply-corriger-coordonnees/executeApplyCorrigerCoordonnees'
 import { executeApplyFusionnerLieux } from './apply-fusionner-lieux/executeApplyFusionnerLieux'
 import { executeApplyReviewToActionPlan } from './apply-review-to-action-plan/executeApplyReviewToActionPlan'
-import { executeApplySupprimerStructures } from './apply-supprimer-structures/executeApplySupprimerStructures'
+import { executeApplySupprimerLieux } from './apply-supprimer-lieux/executeApplySupprimerLieux'
 import { executeApplyViderSiret } from './apply-vider-siret/executeApplyViderSiret'
 import { executeAuditAdresseCoherence } from './audit-adresse-coherence/executeAuditAdresseCoherence'
 import { executeAuditLieuxOverview } from './audit-lieux-overview/executeAuditLieuxOverview'
@@ -57,7 +57,7 @@ export const jobExecutors: {
   'apply-corriger-adresse': executeApplyCorrigerAdresse,
   'apply-corriger-coordonnees': executeApplyCorrigerCoordonnees,
   'apply-fusionner-lieux': executeApplyFusionnerLieux,
-  'apply-supprimer-structures': executeApplySupprimerStructures,
+  'apply-supprimer-lieux': executeApplySupprimerLieux,
   'apply-vider-siret': executeApplyViderSiret,
   'audit-adresse-coherence': executeAuditAdresseCoherence,
   'audit-siret-coherence': executeAuditSiretCoherence,
