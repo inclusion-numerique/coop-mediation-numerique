@@ -70,7 +70,7 @@ export const structuresRouter = router({
       return searchStructuresEmployeuses({ query, mediateurIds, excludeIds })
     }),
 
-  create: protectedProcedure.input(CreerStructureValidation).mutation(
+  createLieu: protectedProcedure.input(CreerStructureValidation).mutation(
     async ({
       input: {
         lieuActiviteMediateurId,
