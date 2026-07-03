@@ -101,8 +101,13 @@ export const departements = [
   { code: '972', nom: 'Martinique' },
   { code: '973', nom: 'Guyane' },
   { code: '974', nom: 'La Réunion' },
+  { code: '975', nom: 'Saint-Pierre-et-Miquelon' },
   { code: '976', nom: 'Mayotte' },
+  { code: '977', nom: 'Saint-Barthélemy' },
   { code: '978', nom: 'Saint Martin' },
+  { code: '986', nom: 'Wallis-et-Futuna' },
+  { code: '987', nom: 'Polynésie française' },
+  { code: '988', nom: 'Nouvelle-Calédonie' },
 ] satisfies Departement[]
 
 export const departementsByCode = new Map<string, Departement>(

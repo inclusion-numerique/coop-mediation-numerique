@@ -25,5 +25,7 @@ export const getDepartementsFromCodesInsee = (
 ): Departement[] => {
   const codes = new Set(codesInsee.map(getDepartementCodeFromCodeInsee))
 
-  return [...codes.values()].map(getDepartementFromCode)
+  return [...codes.values()]
+    .map((code) => departementsByCode.get(code))
+    .filter((departement) => departement !== undefined)
 }
