@@ -4,12 +4,12 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { usePathname, useRouter } from 'next/navigation'
 import { type FormEventHandler, useRef } from 'react'
-import { type StructuresDataTableSearchParams } from './StructuresDataTable'
+import { type LieuxDataTableSearchParams } from './LieuxDataTable'
 
-const AdministrationSearchStructure = ({
+const AdministrationSearchLieu = ({
   searchParams = {},
 }: {
-  searchParams?: StructuresDataTableSearchParams
+  searchParams?: LieuxDataTableSearchParams
 }) => {
   const pathname = usePathname()
   const router = useRouter()
@@ -56,4 +56,4 @@ const AdministrationSearchStructure = ({
   )
 }
 
-export default AdministrationSearchStructure
+export default AdministrationSearchLieu

@@ -3,7 +3,7 @@ import type { MergeLieuInclusionData } from '../types'
 const intersectArrays = <T>(source: T[], target: T[]): T[] =>
   source.filter((item) => target.includes(item))
 
-const mergeStructureDataKeys: (keyof MergeLieuInclusionData)[] = [
+const mergeLieuInclusionDataKeys: (keyof MergeLieuInclusionData)[] = [
   'employesIds',
   'mediateursEnActiviteIds',
   'activitesEmployeurIds',
@@ -27,7 +27,7 @@ export const findMergeCommonFields = (
   mergeTarget: MergeLieuInclusionData,
 ): MergeLieuInclusionData =>
   Object.fromEntries(
-    mergeStructureDataKeys.map((key) => [
+    mergeLieuInclusionDataKeys.map((key) => [
       key,
       intersectArrays(mergeSource[key], mergeTarget[key]),
     ]),

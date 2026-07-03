@@ -4,14 +4,14 @@ import { DEFAULT_PAGE, toNumberOr } from '@app/web/libs/data-table/toNumberOr'
 import { toQueryParts } from '@app/web/libs/data-table/toQueryParts'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
-import { queryStructuresForList } from '../list/queryStructuresForList'
 import {
-  StructuresDataTable,
-  type StructuresDataTableSearchParams,
-} from '../list/StructuresDataTable'
+  LieuxDataTable,
+  type LieuxDataTableSearchParams,
+} from '../list/LieuxDataTable'
+import { queryStructuresForList } from '../list/queryStructuresForList'
 
 type SearchLieuxOptions = {
-  searchParams?: StructuresDataTableSearchParams
+  searchParams?: LieuxDataTableSearchParams
 }
 
 const DEFAULT_PAGE_SIZE = 100
@@ -19,7 +19,7 @@ const DEFAULT_PAGE_SIZE = 100
 export const searchLieux = async (options: SearchLieuxOptions) => {
   const searchParams = options.searchParams ?? {}
 
-  const orderBy = getDataTableOrderBy(searchParams, StructuresDataTable)
+  const orderBy = getDataTableOrderBy(searchParams, LieuxDataTable)
 
   const { take, skip } = takeAndSkipFromPage({
     page: toNumberOr(searchParams?.page)(DEFAULT_PAGE),

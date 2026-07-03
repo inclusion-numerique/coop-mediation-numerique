@@ -3,10 +3,9 @@ import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/Pagination
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
 import { type SearchLieuxResult } from '../search/searchLieux'
 import {
-  StructuresDataTable,
-  type StructuresDataTableSearchParams,
-} from './StructuresDataTable'
-import styles from './StructuresTable.module.css'
+  LieuxDataTable,
+  type LieuxDataTableSearchParams,
+} from './LieuxDataTable'
 
 const defaultPageSize = 100
 
@@ -14,23 +13,23 @@ const pageSizeOptions = generatePageSizeSelectOptions([
   10, 20, 50, 100, 250, 500, 1000,
 ])
 
-const StructuresTable = ({
+const LieuxTable = ({
   data: { structures, totalPages },
   searchParams,
   baseHref,
 }: {
   data: SearchLieuxResult
-  searchParams: StructuresDataTableSearchParams
+  searchParams: LieuxDataTableSearchParams
   baseHref: string
 }) => (
   <>
     <DataTable
       className="fr-table--nowrap fr-width-full fr-mb-8v"
       rows={structures}
-      configuration={StructuresDataTable}
+      configuration={LieuxDataTable}
       searchParams={searchParams}
       baseHref={baseHref}
-      classes={{ table: styles.table }}
+      classes={{ table: 'fr-table--transparent' }}
     />
     <PaginationNavWithPageSizeSelect
       defaultPageSize={defaultPageSize}
@@ -42,4 +41,4 @@ const StructuresTable = ({
   </>
 )
 
-export default StructuresTable
+export default LieuxTable

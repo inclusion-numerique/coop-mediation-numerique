@@ -1,7 +1,6 @@
 import DataTable from '@app/web/libs/data-table/DataTable'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
-import styles from '../list/StructuresTable.module.css'
 import {
   StructuresAdministrativesDataTable,
   type StructuresAdministrativesDataTableSearchParams,
@@ -30,7 +29,7 @@ const StructuresAdministrativesTable = ({
       configuration={StructuresAdministrativesDataTable}
       searchParams={searchParams}
       baseHref={baseHref}
-      classes={{ table: styles.table }}
+      classes={{ table: 'fr-table--transparent' }}
     />
     <PaginationNavWithPageSizeSelect
       defaultPageSize={defaultPageSize}
