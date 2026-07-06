@@ -12,6 +12,7 @@ import { Notes } from '@app/web/features/beneficiaire/domain/notes'
 import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
 import { StatutSocial } from '@app/web/features/beneficiaire/domain/statut-social'
 import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
+import { TrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
 import type { z } from 'zod'
 import type { BeneficiaireAImporter } from '../domain/importer-beneficiaires'
 
@@ -61,6 +62,7 @@ const toBeneficiaireAImporter = (
         })
       : null,
     genre: Genre(row.parsed.genre),
+    trancheAge: TrancheAge(null),
     statutSocial: StatutSocial(null),
     notes: parseOptional(Notes.schema, row.values.notesSupplementaires),
   }

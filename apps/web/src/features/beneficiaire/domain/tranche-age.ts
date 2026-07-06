@@ -58,15 +58,16 @@ export const trancheAgeFromAnneeNaissance = (
   )
 
 /**
- * La tranche d'âge est dérivée de l'année de naissance (règle métier),
- * jamais saisie directement. Sans année de naissance : `NonCommunique`.
+ * L'année de naissance fait foi : quand elle est renseignée, la tranche d'âge
+ * en est dérivée (règle métier). Sans année, la tranche saisie est conservée.
  */
 export const trancheAgeForBeneficiaire = (
   anneeNaissance: AnneeNaissance | null,
+  trancheAgeSaisie: TrancheAge,
 ): TrancheAge =>
   anneeNaissance
     ? trancheAgeFromAnneeNaissance(anneeNaissance)
-    : TrancheAge('NonCommunique')
+    : trancheAgeSaisie
 
 /**
  * Dérive la tranche d'âge d'une année « brute » (valeur de formulaire ou source

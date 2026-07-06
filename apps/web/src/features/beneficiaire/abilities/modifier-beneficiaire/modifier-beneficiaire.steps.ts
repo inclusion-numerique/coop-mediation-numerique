@@ -36,6 +36,7 @@ When(
       id: targetId,
       prenom: data.prenom,
       nom: data.nom,
+      trancheAge: data.trancheAge,
     })
     result = await modifierBeneficiaire({
       beneficiaire,

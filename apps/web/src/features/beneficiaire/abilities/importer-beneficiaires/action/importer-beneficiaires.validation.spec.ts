@@ -24,6 +24,7 @@ describe('ImporterBeneficiairesValidation', () => {
         anneeNaissance: null,
         communeResidence: null,
         genre: 'NonCommunique',
+        trancheAge: 'NonCommunique',
         statutSocial: 'NonCommunique',
         notes: null,
       },

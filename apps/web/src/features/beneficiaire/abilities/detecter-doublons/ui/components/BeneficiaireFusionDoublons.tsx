@@ -7,6 +7,7 @@ import type {
   BeneficiaireDoublon,
   DetecterDoublons,
 } from '@app/web/features/beneficiaire/abilities/detecter-doublons'
+import { telephoneDisplayString } from '@app/web/features/beneficiaire/domain/telephone'
 import { pluriel } from '@app/web/libraries/pluriel'
 import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -346,4 +347,6 @@ const formatDisplayName = (
 }
 
 const formatDisplayPhone = (telephone?: string | null): string =>
-  telephone && telephone.trim().length > 0 ? telephone : '/'
+  telephone && telephone.trim().length > 0
+    ? telephoneDisplayString(telephone)
+    : '/'

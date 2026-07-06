@@ -1,5 +1,6 @@
 import type { BeneficiaireAEditer } from '@app/web/features/beneficiaire/abilities/modifier-beneficiaire/domain/beneficiaire-a-editer'
 import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
+import { telephoneDisplayString } from '@app/web/features/beneficiaire/domain/telephone'
 import type { BeneficiaireData } from '@app/web/features/beneficiaire/forms/beneficiaire-validation'
 import type { Beneficiaire } from '@prisma/client'
 import type { DefaultValues } from 'react-hook-form'
@@ -80,7 +81,7 @@ export const presentBeneficiaireAModifier = ({
       communeResidence,
       anneeNaissance,
       pasDeTelephone,
-      telephone,
+      telephone: telephone ? telephoneDisplayString(telephone) : telephone,
       email,
       prenom: prenom ?? '',
       nom: nom ?? '',

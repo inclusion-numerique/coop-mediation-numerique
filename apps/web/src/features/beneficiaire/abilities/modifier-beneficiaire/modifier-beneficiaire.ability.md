@@ -20,6 +20,21 @@
 * When je modifie un bénéficiaire inexistant
 * Then la modification échoue avec l'erreur "BeneficiaireNotFound"
 
+## Rule: La tranche d'âge saisie sans année de naissance est conservée
+
+### Scenario: Renseigner la tranche d'âge sans année de naissance
+
+* Given un bénéficiaire "Jean Dupont" de ce médiateur
+* When je modifie ce bénéficiaire avec les données suivantes
+  | Champ      | Valeur          |
+  | prenom     | Jean            |
+  | nom        | Dupont          |
+  | trancheAge | SoixanteDixPlus |
+* Then la modification réussit
+* And le bénéficiaire porte désormais les données suivantes
+  | Champ      | Valeur          |
+  | trancheAge | SoixanteDixPlus |
+
 ## Rule: La date de création est préservée à la modification
 
 ### Scenario: La date de création reste inchangée

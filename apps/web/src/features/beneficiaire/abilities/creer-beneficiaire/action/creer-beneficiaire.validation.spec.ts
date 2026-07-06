@@ -12,6 +12,7 @@ describe('CreerBeneficiaireValidation', () => {
       anneeNaissance: null,
       communeResidence: null,
       genre: 'NonCommunique',
+      trancheAge: 'NonCommunique',
       statutSocial: 'NonCommunique',
       notes: null,
     })
@@ -98,11 +99,11 @@ describe('CreerBeneficiaireValidation', () => {
     })
   })
 
-  it('ignores any trancheAge sent by the form (derived from année)', () => {
+  it('keeps the trancheAge selected in the form', () => {
     const result = CreerBeneficiaireValidation.parse({
       ...minimal,
       trancheAge: 'SoixanteDixPlus',
     })
-    expect(result).not.toHaveProperty('trancheAge')
+    expect(result.trancheAge).toBe('SoixanteDixPlus')
   })
 })

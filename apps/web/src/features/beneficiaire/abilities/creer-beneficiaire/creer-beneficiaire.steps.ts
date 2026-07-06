@@ -26,7 +26,11 @@ When(
   'je crée un bénéficiaire avec les données suivantes',
   async (dataTable: DataTable) => {
     const data = Object.fromEntries(dataTable.rows())
-    await creer({ prenom: data.prenom, nom: data.nom })
+    await creer({
+      prenom: data.prenom,
+      nom: data.nom,
+      trancheAge: data.trancheAge,
+    })
   },
 )
 
