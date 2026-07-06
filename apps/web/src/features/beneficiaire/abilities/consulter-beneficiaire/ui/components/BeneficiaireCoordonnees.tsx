@@ -1,4 +1,5 @@
 import InfoLabelValue from '@app/web/components/InfoLabelValue'
+import { telephoneDisplayString } from '@app/web/features/beneficiaire/domain/telephone'
 import type { BeneficiaireInformations } from '../../domain/consulter-beneficiaire'
 
 const BeneficiaireCoordonnees = ({
@@ -17,7 +18,13 @@ const BeneficiaireCoordonnees = ({
       <div className="fr-col-6">
         <InfoLabelValue
           label="Numéro de téléphone"
-          value={pasDeTelephone ? 'Pas de téléphone' : telephone || '-'}
+          value={
+            pasDeTelephone
+              ? 'Pas de téléphone'
+              : telephone
+                ? telephoneDisplayString(telephone)
+                : '-'
+          }
         />
       </div>
       <div className="fr-col-6">

@@ -14,9 +14,19 @@ describe('ModifierBeneficiaireValidation', () => {
       anneeNaissance: null,
       communeResidence: null,
       genre: 'NonCommunique',
+      trancheAge: 'NonCommunique',
       statutSocial: 'NonCommunique',
       notes: null,
     })
+  })
+
+  it('keeps the trancheAge selected in the form', () => {
+    expect(
+      ModifierBeneficiaireValidation.parse({
+        ...minimal,
+        trancheAge: 'SoixanteDixPlus',
+      }).trancheAge,
+    ).toBe('SoixanteDixPlus')
   })
 
   it('requires a valid uuid id', () => {

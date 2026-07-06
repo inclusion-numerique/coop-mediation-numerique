@@ -8,6 +8,7 @@ import type { Nom } from '@app/web/features/beneficiaire/domain/nom'
 import type { Notes } from '@app/web/features/beneficiaire/domain/notes'
 import type { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
 import type { StatutSocial } from '@app/web/features/beneficiaire/domain/statut-social'
+import type { TrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
 
 /**
  * Input validé pour importer un bénéficiaire : les attributs éditables issus
@@ -22,6 +23,7 @@ export type BeneficiaireAImporter = {
   readonly anneeNaissance: AnneeNaissance | null
   readonly communeResidence: CommuneResidence | null
   readonly genre: Genre
+  readonly trancheAge: TrancheAge
   readonly statutSocial: StatutSocial
   readonly notes: Notes | null
 }

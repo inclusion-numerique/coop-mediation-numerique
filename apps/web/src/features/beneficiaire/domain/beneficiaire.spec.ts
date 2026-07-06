@@ -137,15 +137,26 @@ describe('AnneeNaissance', () => {
 })
 
 describe('trancheAgeForBeneficiaire', () => {
-  it('returns NonCommunique without année de naissance', () => {
-    expect(trancheAgeForBeneficiaire(null)).toBe('NonCommunique')
+  it('returns NonCommunique without année de naissance ni tranche saisie', () => {
+    expect(trancheAgeForBeneficiaire(null, TrancheAge(null))).toBe(
+      'NonCommunique',
+    )
   })
 
-  it('derives the tranche from the année de naissance', () => {
-    const currentYear = new Date().getFullYear()
-    expect(trancheAgeForBeneficiaire(AnneeNaissance(currentYear - 30))).toBe(
-      'VingtCinqTrenteNeuf',
+  it('keeps the tranche saisie without année de naissance', () => {
+    expect(trancheAgeForBeneficiaire(null, TrancheAge('SoixanteDixPlus'))).toBe(
+      'SoixanteDixPlus',
     )
+  })
+
+  it('derives the tranche from the année de naissance, over the saisie', () => {
+    const currentYear = new Date().getFullYear()
+    expect(
+      trancheAgeForBeneficiaire(
+        AnneeNaissance(currentYear - 30),
+        TrancheAge('SoixanteDixPlus'),
+      ),
+    ).toBe('VingtCinqTrenteNeuf')
   })
 })
 
@@ -163,6 +174,7 @@ describe('toBeneficiaireIdentifie', () => {
     anneeNaissance: null,
     communeResidence: null,
     genre: Genre('NonCommunique'),
+    trancheAge: TrancheAge('NonCommunique'),
     statutSocial: StatutSocial('NonCommunique'),
     notes: null,
   } satisfies Parameters<typeof toBeneficiaireIdentifie>[0]
@@ -196,6 +208,15 @@ describe('toBeneficiaireIdentifie', () => {
         { id, mediateurId, creation, modification },
       ).trancheAge,
     ).toBe('MoinsDeDouze')
+  })
+
+  it('keeps the trancheAge saisie when anneeNaissance is absent', () => {
+    expect(
+      toBeneficiaireIdentifie(
+        { ...minimal, trancheAge: TrancheAge('SoixanteDixPlus') },
+        { id, mediateurId, creation, modification },
+      ).trancheAge,
+    ).toBe('SoixanteDixPlus')
   })
 
   it('preserves the structured value objects', () => {
