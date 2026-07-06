@@ -41,3 +41,26 @@ export const Telephone = defineModel(
 )
 
 export type Telephone = Model.TypeOf<typeof Telephone>
+
+// Indicatifs dont les numéros se recomposent en format national français
+// (0 + 9 chiffres) : métropole et outre-mer.
+const INDICATIF_NATIONAL = /^\+(?:33|262|590|594|596)(\d{9})$/
+
+const parPaires = (chiffres: string): string =>
+  chiffres.replace(/(\d{2})(?=\d)/g, '$1 ')
+
+/**
+ * Format d'affichage « humain » : national par paires (`01 02 03 04 05`) pour
+ * la métropole et l'outre-mer, indicatif détaché pour les autres pays.
+ * Accepte `string` (pas seulement `Telephone`) : les frontières UI affichent
+ * aussi des valeurs persistées avant la normalisation canonique, rendues
+ * telles quelles si non reconnues.
+ */
+export const telephoneDisplayString = (telephone: string): string => {
+  const compact = telephone.replace(/[\s()./-]/g, '')
+  const national = compact.match(INDICATIF_NATIONAL)
+  if (national) return parPaires(`0${national[1]}`)
+  if (/^0\d{9}$/.test(compact)) return parPaires(compact)
+  const international = compact.match(/^(\+\d{3})(\d+)$/)
+  return international ? `${international[1]} ${international[2]}` : telephone
+}

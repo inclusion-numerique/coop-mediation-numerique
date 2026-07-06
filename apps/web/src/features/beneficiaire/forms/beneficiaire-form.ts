@@ -7,6 +7,7 @@ import { Notes } from '@app/web/features/beneficiaire/domain/notes'
 import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
 import { statutsSociaux } from '@app/web/features/beneficiaire/domain/statut-social'
 import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
+import { TrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
 import { optional } from '@app/web/libraries/zod'
 import { z } from 'zod'
 
@@ -48,6 +49,7 @@ export const beneficiaireFormShape = z.object({
   anneeNaissance: optional(AnneeNaissance.schema),
   communeResidence: CommuneResidenceForm.nullish(),
   genre: z.enum(genres).nullish(),
+  trancheAge: TrancheAge.schema,
   statutSocial: z.enum(statutsSociaux).nullish(),
   notes: optional(Notes.schema),
 })

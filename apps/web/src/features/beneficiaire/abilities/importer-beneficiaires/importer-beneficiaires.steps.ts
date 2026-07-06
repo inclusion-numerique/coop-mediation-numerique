@@ -9,6 +9,7 @@ import { Genre } from '@app/web/features/beneficiaire/domain/genre'
 import { Nom } from '@app/web/features/beneficiaire/domain/nom'
 import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
 import { StatutSocial } from '@app/web/features/beneficiaire/domain/statut-social'
+import { TrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
 import { prismaClient } from '@app/web/prismaClient'
 import { Then, When } from '@cucumber/cucumber'
 
@@ -25,6 +26,7 @@ const beneficiaireAImporter = (
   anneeNaissance: null,
   communeResidence: null,
   genre: Genre(null),
+  trancheAge: TrancheAge(null),
   statutSocial: StatutSocial(null),
   notes: null,
 })

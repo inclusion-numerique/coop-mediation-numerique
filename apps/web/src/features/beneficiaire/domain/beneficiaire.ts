@@ -91,6 +91,7 @@ export const toBeneficiaireIdentifie = (
     | 'anneeNaissance'
     | 'communeResidence'
     | 'genre'
+    | 'trancheAge'
     | 'statutSocial'
     | 'notes'
   >,
@@ -118,7 +119,10 @@ export const toBeneficiaireIdentifie = (
   notes: attributs.notes,
   genre: attributs.genre,
   statutSocial: attributs.statutSocial,
-  trancheAge: trancheAgeForBeneficiaire(attributs.anneeNaissance),
+  trancheAge: trancheAgeForBeneficiaire(
+    attributs.anneeNaissance,
+    attributs.trancheAge,
+  ),
   creation,
   modification,
   suppression: null,

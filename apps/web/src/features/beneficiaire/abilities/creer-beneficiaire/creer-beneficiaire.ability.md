@@ -15,14 +15,23 @@
   | anonyme | false  |
 * And le compteur de bénéficiaires du médiateur est incrémenté de 1
 
-## Rule: La tranche d'âge est dérivée de l'année de naissance
+## Rule: La tranche d'âge est dérivée de l'année de naissance, sinon la saisie est conservée
 
 ### Scenario: Avec une année de naissance, la tranche est calculée
 
 * When je crée un bénéficiaire né en 1990
 * Then la tranche d'âge du bénéficiaire est "VingtCinqTrenteNeuf"
 
-### Scenario: Sans année de naissance, la tranche est "NonCommunique"
+### Scenario: Sans année de naissance, la tranche saisie est conservée
+
+* When je crée un bénéficiaire avec les données suivantes
+  | Champ      | Valeur          |
+  | prenom     | Marie           |
+  | nom        | Curie           |
+  | trancheAge | SoixanteDixPlus |
+* Then la tranche d'âge du bénéficiaire est "SoixanteDixPlus"
+
+### Scenario: Sans année de naissance ni tranche saisie, la tranche est "NonCommunique"
 
 * When je crée un bénéficiaire avec les données suivantes
   | Champ  | Valeur |

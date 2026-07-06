@@ -17,6 +17,7 @@ export const ModifierBeneficiaireValidation = beneficiaireFormShape
       anneeNaissance: form.anneeNaissance ?? null,
       communeResidence: form.communeResidence ?? null,
       genre: Genre(form.genre),
+      trancheAge: form.trancheAge,
       statutSocial: StatutSocial(form.statutSocial),
       notes: form.notes ?? null,
     }),
