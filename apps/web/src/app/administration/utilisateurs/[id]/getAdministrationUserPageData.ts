@@ -41,7 +41,7 @@ export const getAdministrationUserPageData = async ({ id }: { id: string }) => {
           },
           enActivite: {
             include: {
-              structure: true,
+              lieuInclusion: true,
             },
           },
         },

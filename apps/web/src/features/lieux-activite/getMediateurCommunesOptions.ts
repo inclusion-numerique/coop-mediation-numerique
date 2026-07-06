@@ -25,7 +25,7 @@ export const getMediateurCommunesAndDepartementsOptions = async ({
               COALESCE(str.commune, act.lieu_commune) AS commune,
               COALESCE(str.code_postal, act.lieu_code_postal) AS code_postal
           FROM activites act
-                   LEFT JOIN structures str ON str.id = act.structure_id
+                   LEFT JOIN lieu_inclusion str ON str.id = act.structure_id
           WHERE act.mediateur_id = ANY(ARRAY[${Prisma.join(mediateurIds.map((id) => `${id}`))}]::UUID[])
       )
       SELECT

@@ -2,7 +2,6 @@ import type { SessionUser } from '@app/web/auth/sessionUser'
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
-import type { Typologie } from '@prisma/client'
 import { v4 } from 'uuid'
 
 type StructureEmployeuseWithAdresseBan = {
@@ -50,27 +49,22 @@ export const getOrCreateStructureEmployeuse = async (
   const codePostal = hasAdresseBan(structureEmployeuse)
     ? structureEmployeuse.adresseBan.codePostal
     : (structureEmployeuse.codePostal ?? '')
-  const longitude = hasAdresseBan(structureEmployeuse)
-    ? structureEmployeuse.adresseBan.longitude
-    : undefined
-  const latitude = hasAdresseBan(structureEmployeuse)
-    ? structureEmployeuse.adresseBan.latitude
-    : undefined
 
-  const existingStructure = await prismaClient.structure.findFirst({
-    where: {
-      id: id ?? undefined,
-      siret,
-      nom,
-      adresse,
-      commune,
-      codeInsee,
-      suppression: null,
-    },
-    select: {
-      id: true,
-    },
-  })
+  const existingStructure =
+    await prismaClient.structureAdministrative.findFirst({
+      where: {
+        id: id ?? undefined,
+        siret,
+        nom,
+        adresse,
+        commune,
+        codeInsee,
+        suppression: null,
+      },
+      select: {
+        id: true,
+      },
+    })
 
   if (existingStructure) {
     return existingStructure
@@ -91,7 +85,7 @@ export const getOrCreateStructureEmployeuse = async (
     },
   })
 
-  return prismaClient.structure.create({
+  return prismaClient.structureAdministrative.create({
     data: {
       id: v4(),
       siret,
@@ -100,10 +94,7 @@ export const getOrCreateStructureEmployeuse = async (
       adresse,
       commune,
       codePostal,
-      longitude,
-      latitude,
-      typologies: (typologies as Typologie[]) ?? undefined,
-      creationParId: user?.id,
+      source: 'coop',
     },
   })
 }

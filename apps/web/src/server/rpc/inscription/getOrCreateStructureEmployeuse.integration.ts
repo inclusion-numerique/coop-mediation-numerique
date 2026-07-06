@@ -5,14 +5,14 @@ describe('getOrCreateStructureEmployeuse', () => {
   const testSiret = '93429789600011'
 
   beforeAll(async () => {
-    await prismaClient.structure.deleteMany({
+    await prismaClient.structureAdministrative.deleteMany({
       where: {
         siret: testSiret,
       },
     })
 
     // Verify the cleanup was successful
-    const result = await prismaClient.structure.findFirst({
+    const result = await prismaClient.structureAdministrative.findFirst({
       where: {
         siret: testSiret,
       },
@@ -42,7 +42,7 @@ describe('getOrCreateStructureEmployeuse', () => {
 
     expect(result2).toEqual(expect.objectContaining({ id }))
 
-    const count = await prismaClient.structure.count({
+    const count = await prismaClient.structureAdministrative.count({
       where: {
         siret: testSiret,
       },

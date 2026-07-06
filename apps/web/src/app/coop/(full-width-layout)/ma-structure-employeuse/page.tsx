@@ -54,7 +54,6 @@ const MaStructureEmployeusePage = async () => {
           complementAdresse: true,
           siret: true,
           rna: true,
-          typologies: true,
           nomReferent: true,
           courrielReferent: true,
           telephoneReferent: true,

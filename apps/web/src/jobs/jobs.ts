@@ -1,18 +1,18 @@
 import z from 'zod'
 import { ApplyCorrigerAdresseJobValidation } from './apply-corriger-adresse/applyCorrigerAdresseJob'
 import { ApplyCorrigerCoordonneesJobValidation } from './apply-corriger-coordonnees/applyCorrigerCoordonneesJob'
-import { ApplyFusionnerStructuresJobValidation } from './apply-fusionner-structures/applyFusionnerStructuresJob'
+import { ApplyFusionnerLieuxJobValidation } from './apply-fusionner-lieux/applyFusionnerLieuxJob'
 import { ApplyReviewToActionPlanJobValidation } from './apply-review-to-action-plan/applyReviewToActionPlanJob'
-import { ApplySupprimerStructuresJobValidation } from './apply-supprimer-structures/applySupprimerStructuresJob'
+import { ApplySupprimerLieuxJobValidation } from './apply-supprimer-lieux/applySupprimerLieuxJob'
 import { ApplyViderSiretJobValidation } from './apply-vider-siret/applyViderSiretJob'
 import { AuditAdresseCoherenceJobValidation } from './audit-adresse-coherence/auditAdresseCoherenceJob'
+import { AuditLieuxOverviewJobValidation } from './audit-lieux-overview/auditLieuxOverviewJob'
 import { AuditSiretCoherenceJobValidation } from './audit-siret-coherence/auditSiretCoherenceJob'
-import { AuditStructuresOverviewJobValidation } from './audit-structures-overview/auditStructuresOverviewJob'
 import { BackfillCommuneRdvspJobValidation } from './backfill-commune-rdvsp/backfillCommuneRdvspJob'
 import { BackfillTrancheAgeJobValidation } from './backfill-tranche-age/backfillTrancheAgeJob'
 import { BackupDatabaseJobValidation } from './backup-database/backupDatabaseJob'
-import { DeduplicateStructuresJobValidation } from './deduplicate-structures/deduplicateStructuresJob'
-import { DetectDuplicateStructuresJobValidation } from './detect-duplicate-structures/detectDuplicateStructuresJob'
+import { DeduplicateLieuxJobValidation } from './deduplicate-lieux/deduplicateLieuxJob'
+import { DetectDuplicateLieuxJobValidation } from './detect-duplicate-lieux/detectDuplicateLieuxJob'
 import { ExportDuplicateSiretsJobValidation } from './export-duplicate-sirets/exportDuplicateSiretsJob'
 import { FixStructuresJobValidation } from './fix-structures/fixStructuresJob'
 import { FixTagsJobValidation } from './fix-tags/fixTagsJob'
@@ -22,7 +22,7 @@ import { GenerateStructuresActionPlanJobValidation } from './generate-structures
 import { ImportContactsToBrevoValidation } from './import-contacts-to-brevo/ImportContactsToBrevoJob'
 import { InactiveUsersRemindersJobValidation } from './inactive-users-reminders/inactiveUsersJob'
 import { NormaliserBeneficiairesJobValidation } from './normaliser-beneficiaires/normaliserBeneficiairesJob'
-import { NormalizeStructuresEmployeusesJobValidation } from './normalize-structures-employeuses/normalizeStructuresEmployeusesJob'
+import { NormalizeSiretsJobValidation } from './normalize-sirets/normalizeSiretsJob'
 import { RemoveOrphanBrevoContactsJobValidation } from './remove-orphan-brevo-contacts/removeOrphanBrevoContactsJob'
 import { SetServciesToSharedLieuxValidation } from './set-servcies-to-shared-lieux/setServciesToSharedLieuxJob'
 import { SyncRdvspDataJobValidation } from './sync-rdvsp-data/syncRdvspDataJob'
@@ -50,19 +50,19 @@ export const JobValidation = z.discriminatedUnion('name', [
   ApplyReviewToActionPlanJobValidation,
   ApplyCorrigerAdresseJobValidation,
   ApplyCorrigerCoordonneesJobValidation,
-  ApplyFusionnerStructuresJobValidation,
-  ApplySupprimerStructuresJobValidation,
+  ApplyFusionnerLieuxJobValidation,
+  ApplySupprimerLieuxJobValidation,
   ApplyViderSiretJobValidation,
   AuditAdresseCoherenceJobValidation,
   AuditSiretCoherenceJobValidation,
-  AuditStructuresOverviewJobValidation,
+  AuditLieuxOverviewJobValidation,
   BackfillCommuneRdvspJobValidation,
   NormaliserBeneficiairesJobValidation,
   BackfillTrancheAgeJobValidation,
   BackupDatabaseJobValidation,
   UpdateStructuresCartographieNationaleJobValidation,
   ImportContactsToBrevoValidation,
-  NormalizeStructuresEmployeusesJobValidation,
+  NormalizeSiretsJobValidation,
   SetServciesToSharedLieuxValidation,
   UpdateLieuxActivitesAdistanceValidation,
   FixStructuresJobValidation,
@@ -73,8 +73,8 @@ export const JobValidation = z.discriminatedUnion('name', [
   InactiveUsersRemindersJobValidation,
   FixUsersRolesJobValidation,
   RemoveOrphanBrevoContactsJobValidation,
-  DeduplicateStructuresJobValidation,
-  DetectDuplicateStructuresJobValidation,
+  DeduplicateLieuxJobValidation,
+  DetectDuplicateLieuxJobValidation,
   ExportDuplicateSiretsJobValidation,
   GenerateStructuresActionPlanJobValidation,
 ])

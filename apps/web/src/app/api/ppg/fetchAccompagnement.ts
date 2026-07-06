@@ -17,7 +17,7 @@ export const fetchAccompagnement = async (
           COUNT(DISTINCT acc.id)::integer as count
       FROM activites act
                LEFT JOIN accompagnements acc ON acc.activite_id = act.id
-               LEFT JOIN structures str ON str.id = act.structure_id
+               LEFT JOIN lieu_inclusion str ON str.id = act.structure_id
                LEFT JOIN mediateurs med ON act.mediateur_id = med.id
                LEFT JOIN users u ON med.user_id = u.id
       WHERE act.suppression IS NULL

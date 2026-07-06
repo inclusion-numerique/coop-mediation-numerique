@@ -68,7 +68,7 @@ export const searchActivite = async (options: SearchActiviteOptions) => {
 
       FROM activites act
                ${activitesBeneficiaireInnerJoin(options.beneficiaireIds)}
-               LEFT JOIN structures str ON act.structure_id = str.id
+               LEFT JOIN lieu_inclusion str ON act.structure_id = str.id
                LEFT JOIN mediateurs med ON act.mediateur_id = med.id
                LEFT JOIN users u ON med.user_id = u.id
 
@@ -102,7 +102,7 @@ export const searchActivite = async (options: SearchActiviteOptions) => {
       SELECT COUNT(act.id)::INT as count
       FROM activites act
           ${activitesBeneficiaireInnerJoin(options.beneficiaireIds)}
-          LEFT JOIN structures str ON act.structure_id = str.id
+          LEFT JOIN lieu_inclusion str ON act.structure_id = str.id
           LEFT JOIN mediateurs med ON act.mediateur_id = med.id
           LEFT JOIN users u ON med.user_id = u.id
       WHERE (${mediateurIds.length > 0}::BOOLEAN = FALSE OR act.mediateur_id = ANY(${mediateurIds}::UUID[]))
@@ -116,7 +116,7 @@ export const searchActivite = async (options: SearchActiviteOptions) => {
       SELECT COUNT(act.id)::INT as count
       FROM accompagnements acc
           JOIN activites act ON acc.activite_id = act.id
-          LEFT JOIN structures str ON act.structure_id = str.id
+          LEFT JOIN lieu_inclusion str ON act.structure_id = str.id
           LEFT JOIN mediateurs med ON act.mediateur_id = med.id
           LEFT JOIN users u ON med.user_id = u.id
       WHERE (${mediateurIds.length > 0}::BOOLEAN = FALSE OR act.mediateur_id = ANY(${mediateurIds}::UUID[]))

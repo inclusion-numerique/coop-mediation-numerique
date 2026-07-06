@@ -4,7 +4,7 @@ import type {
   Mediateur,
   RdvAccount,
   RdvOrganisation,
-  Structure,
+  StructureAdministrative,
   User,
 } from '@prisma/client'
 
@@ -35,7 +35,7 @@ export type SessionUser = Pick<
   lieuxActiviteRenseignes: string | null
   usurper: { id: string } | null
   emplois: (Pick<EmployeStructure, 'id'> & {
-    structure: Pick<Structure, 'nom' | 'codeInsee'>
+    structure: Pick<StructureAdministrative, 'nom' | 'codeInsee'>
   })[]
   mediateur:
     | (Pick<Mediateur, 'id' | 'isVisible'> & {
@@ -88,10 +88,10 @@ export const sessionUserHasStructureEmployeuse = <
 ): user is T & {
   emplois: [
     Pick<EmployeStructure, 'id'> & {
-      structure: Pick<Structure, 'nom' | 'codeInsee'>
+      structure: Pick<StructureAdministrative, 'nom' | 'codeInsee'>
     },
     ...(Pick<EmployeStructure, 'id'> & {
-      structure: Pick<Structure, 'nom' | 'codeInsee'>
+      structure: Pick<StructureAdministrative, 'nom' | 'codeInsee'>
     })[],
   ]
 } => {

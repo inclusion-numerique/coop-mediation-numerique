@@ -11,9 +11,17 @@ const wait = (ms: number) =>
 const apiClientId = '00000000-0000-0000-0000-00000000a001'
 const userId = '00000000-0000-0000-0000-00000000a002'
 const mediateurId = '00000000-0000-0000-0000-00000000a003'
+const lieuInclusionId = '00000000-0000-0000-0000-00000000a004'
+const structureAdministrativeId = '00000000-0000-0000-0000-00000000a005'
 
 const cleanup = async () => {
   await prismaClient.mediateur.deleteMany({ where: { id: mediateurId } })
+  await prismaClient.lieuInclusion.deleteMany({
+    where: { id: lieuInclusionId },
+  })
+  await prismaClient.structureAdministrative.deleteMany({
+    where: { id: structureAdministrativeId },
+  })
   await prismaClient.user.deleteMany({ where: { id: userId } })
   await prismaClient.apiClient.deleteMany({ where: { id: apiClientId } })
 }
@@ -33,6 +41,24 @@ describe('timestampExtension', () => {
       data: { id: userId, email: 'timestamp-extension-test@example.com' },
     })
     await prismaClient.mediateur.create({ data: { id: mediateurId, userId } })
+    await prismaClient.lieuInclusion.create({
+      data: {
+        id: lieuInclusionId,
+        nom: 'Lieu test timestamp',
+        adresse: '1 rue du Test',
+        commune: 'Testville',
+        codePostal: '75001',
+      },
+    })
+    await prismaClient.structureAdministrative.create({
+      data: {
+        id: structureAdministrativeId,
+        nom: 'Employeuse test timestamp',
+        adresse: '1 rue du Test',
+        commune: 'Testville',
+        codePostal: '75001',
+      },
+    })
   })
 
   afterAll(async () => {
@@ -172,6 +198,106 @@ describe('timestampExtension', () => {
       })
 
       expect(updated.updated.getTime()).toBe(before.updated.getTime())
+    })
+
+    it('ne bumpe PAS `updated` si seul `lastSyncedFromDataspace` change', async () => {
+      const before = await prismaClient.user.findUniqueOrThrow({
+        where: { id: userId },
+      })
+
+      await wait(50)
+      const updated = await prismaClient.user.update({
+        where: { id: userId },
+        data: { lastSyncedFromDataspace: new Date() },
+      })
+
+      expect(updated.updated.getTime()).toBe(before.updated.getTime())
+    })
+  })
+
+  describe('modèle employeuse suivi via `modification` (StructureAdministrative)', () => {
+    it('bumpe `modification` sur un update de contenu', async () => {
+      const before =
+        await prismaClient.structureAdministrative.findUniqueOrThrow({
+          where: { id: structureAdministrativeId },
+        })
+
+      await wait(50)
+      const updated = await prismaClient.structureAdministrative.update({
+        where: { id: structureAdministrativeId },
+        data: { nom: 'Employeuse renommée' },
+      })
+
+      expect(updated.modification.getTime()).toBeGreaterThan(
+        before.modification.getTime(),
+      )
+    })
+
+    it('ne bumpe PAS `modification` si seul `synchronisationSiret` change', async () => {
+      const before =
+        await prismaClient.structureAdministrative.findUniqueOrThrow({
+          where: { id: structureAdministrativeId },
+        })
+
+      await wait(50)
+      const updated = await prismaClient.structureAdministrative.update({
+        where: { id: structureAdministrativeId },
+        data: { synchronisationSiret: new Date() },
+      })
+
+      expect(updated.modification.getTime()).toBe(before.modification.getTime())
+    })
+  })
+
+  describe('cas synchro cartographie nationale (LieuInclusion)', () => {
+    it('ne bumpe PAS `modification` si seul le lien carto change', async () => {
+      const before = await prismaClient.lieuInclusion.findUniqueOrThrow({
+        where: { id: lieuInclusionId },
+      })
+
+      await wait(50)
+      const updated = await prismaClient.lieuInclusion.update({
+        where: { id: lieuInclusionId },
+        data: { structureCartographieNationaleId: 'Coop-numérique_test' },
+      })
+
+      expect(updated.modification.getTime()).toBe(before.modification.getTime())
+    })
+
+    it('ne bumpe PAS `modification` sur le reset carto (updateMany du lien seul)', async () => {
+      const before = await prismaClient.lieuInclusion.findUniqueOrThrow({
+        where: { id: lieuInclusionId },
+      })
+
+      await wait(50)
+      await prismaClient.lieuInclusion.updateMany({
+        where: { id: lieuInclusionId },
+        data: { structureCartographieNationaleId: null },
+      })
+
+      const after = await prismaClient.lieuInclusion.findUniqueOrThrow({
+        where: { id: lieuInclusionId },
+      })
+      expect(after.modification.getTime()).toBe(before.modification.getTime())
+    })
+
+    it('bumpe `modification` si un champ de contenu change en même temps que le lien', async () => {
+      const before = await prismaClient.lieuInclusion.findUniqueOrThrow({
+        where: { id: lieuInclusionId },
+      })
+
+      await wait(50)
+      const updated = await prismaClient.lieuInclusion.update({
+        where: { id: lieuInclusionId },
+        data: {
+          nom: 'Lieu renommé',
+          structureCartographieNationaleId: 'Coop-numérique_test2',
+        },
+      })
+
+      expect(updated.modification.getTime()).toBeGreaterThan(
+        before.modification.getTime(),
+      )
     })
   })
 })

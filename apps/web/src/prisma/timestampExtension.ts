@@ -14,7 +14,8 @@ const MODIFICATION_FIELD: Record<string, TimestampField> = {
   Activite: 'modification',
   ActiviteCoordination: 'modification',
   Tag: 'modification',
-  Structure: 'modification',
+  LieuInclusion: 'modification',
+  StructureAdministrative: 'modification',
   Mediateur: 'modification',
   Coordinateur: 'modification',
   MediateurCoordonne: 'modification',
@@ -39,6 +40,14 @@ const NON_CONTENT_FIELDS = new Set<string>([
   'derniereCreationBeneficiaire',
   'lastLogin',
   'lastSeen',
+  // Marqueurs techniques de synchronisation externe : ils tracent « quand on a
+  // synchronisé », pas une modification du contenu métier → ne doivent pas bumper.
+  'synchronisationSiret',
+  'lastSyncedFromDataspace',
+  // Rattachement à la cartographie nationale, réécrit chaque jour par la synchro
+  // carto (reset+relien full-table) : lien technique géré par l'infra, pas du
+  // contenu saisi → sans ça toute la table `lieu_inclusion` est bumpée chaque jour.
+  'structureCartographieNationaleId',
 ])
 
 const withTimestamp = (

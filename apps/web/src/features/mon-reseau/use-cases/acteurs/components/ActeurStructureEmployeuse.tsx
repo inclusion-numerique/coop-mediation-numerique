@@ -1,6 +1,5 @@
 import Card from '@app/web/components/Card'
 import { ReferentStructure } from '@app/web/components/structure/ReferentStructure'
-import { Typologies } from '@app/web/components/structure/Typologies'
 import type { ActeurEmploi } from '@app/web/features/mon-reseau/use-cases/acteurs/db/getActeurEmploiForDate'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Link from 'next/link'
@@ -17,7 +16,6 @@ export type ActeurStructureEmployeuseProps = {
 
 const ActeurStructureEmployeuse = ({
   emploi: {
-    id: emploiId,
     structure: {
       id: _structureId,
       nom,
@@ -25,7 +23,6 @@ const ActeurStructureEmployeuse = ({
       complementAdresse,
       commune,
       codePostal,
-      typologies,
       siret,
       rna,
       nomReferent,
@@ -52,10 +49,6 @@ const ActeurStructureEmployeuse = ({
           <span className="ri-map-pin-2-line fr-mr-1v" /> {addresseString},{' '}
           {codePostal} {commune}
         </div>
-        <Typologies
-          id={`typologies-structure-employeuse-${emploiId}`}
-          typologies={typologies}
-        />
         {(siret || rna) && (
           <>
             {siret && (

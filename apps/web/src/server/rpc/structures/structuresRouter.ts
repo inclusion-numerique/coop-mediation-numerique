@@ -1,13 +1,15 @@
 import { searchStructureEmployeuseCombined } from '@app/web/features/inscription/use-cases/renseigner-structure-employeuse/searchStructureEmployeuseCombined'
 import { CreerStructureValidation } from '@app/web/features/structures/CreerStructureValidation'
 import { searchStructuresEmployeuses } from '@app/web/features/structures/getStructuresEmployeusesOptions'
-import { mergeStructure } from '@app/web/features/structures/use-cases/merge/mutations/mergeStructure'
+import { mergeLieuInclusion } from '@app/web/features/structures/use-cases/merge/mutations/mergeLieuInclusion'
+import { mergeStructureAdministrative } from '@app/web/features/structures/use-cases/merge/mutations/mergeStructureAdministrative'
 import { mediateurCoordonnesIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
 import { prismaClient } from '@app/web/prismaClient'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { enforceIsAdmin } from '@app/web/server/rpc/enforceIsAdmin'
 import { searchLieuActiviteCombined } from '@app/web/structure/searchLieuActiviteCombined'
-import { searchStructure } from '@app/web/structure/searchStructure'
+import { searchLieuInclusion } from '@app/web/structure/searchLieuInclusion'
+import { searchStructureAdministrative } from '@app/web/structure/searchStructureAdministrative'
 import { searchStructureCartographieNationale } from '@app/web/structure/searchStructureCartographieNationale'
 import { fixTelephone } from '@app/web/utils/clean-operations'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
@@ -19,7 +21,15 @@ import { z } from 'zod'
 export const structuresRouter = router({
   search: protectedProcedure
     .input(z.object({ query: z.string() }))
-    .query(({ input: { query } }) => searchStructure(query)),
+    .query(({ input: { query } }) => searchLieuInclusion(query)),
+
+  // Recherche admin-wide d'employeuses (identités légales), pour la fusion.
+  searchAdministrative: protectedProcedure
+    .input(z.object({ query: z.string() }))
+    .query(({ input: { query }, ctx: { user } }) => {
+      enforceIsAdmin(user)
+      return searchStructureAdministrative(query)
+    }),
 
   searchCombined: protectedProcedure
     .input(z.object({ query: z.string() }))
@@ -60,7 +70,7 @@ export const structuresRouter = router({
       return searchStructuresEmployeuses({ query, mediateurIds, excludeIds })
     }),
 
-  create: protectedProcedure.input(CreerStructureValidation).mutation(
+  createLieu: protectedProcedure.input(CreerStructureValidation).mutation(
     async ({
       input: {
         lieuActiviteMediateurId,
@@ -98,7 +108,7 @@ export const structuresRouter = router({
 
       const id = v4()
 
-      const created = await prismaClient.structure.create({
+      const created = await prismaClient.lieuInclusion.create({
         data: {
           id,
           nom,
@@ -192,6 +202,25 @@ export const structuresRouter = router({
     )
     .mutation(async ({ input, ctx: { user } }) => {
       enforceIsAdmin(user)
-      return mergeStructure(input.sourceStructureId, input.targetStructureId)
+      return mergeLieuInclusion(
+        input.sourceStructureId,
+        input.targetStructureId,
+      )
+    }),
+
+  // Fusion de deux identités légales employeuses (structure_administrative).
+  mergeAdministrative: protectedProcedure
+    .input(
+      z.object({
+        sourceStructureId: z.string().uuid(),
+        targetStructureId: z.string().uuid(),
+      }),
+    )
+    .mutation(async ({ input, ctx: { user } }) => {
+      enforceIsAdmin(user)
+      return mergeStructureAdministrative(
+        input.sourceStructureId,
+        input.targetStructureId,
+      )
     }),
 })

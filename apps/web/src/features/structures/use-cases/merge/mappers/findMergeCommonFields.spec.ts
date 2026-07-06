@@ -1,8 +1,8 @@
-import type { MergeStructureData } from '../types'
+import type { MergeLieuInclusionData } from '../types'
 import { findMergeCommonFields } from './findMergeCommonFields'
 
 describe('findMergeCommonFields', () => {
-  const emptyMergeData: MergeStructureData = {
+  const emptyMergeData: MergeLieuInclusionData = {
     employesIds: [],
     mediateursEnActiviteIds: [],
     activitesEmployeurIds: [],
@@ -28,11 +28,11 @@ describe('findMergeCommonFields', () => {
   })
 
   it('returns intersection of employesIds', () => {
-    const source: MergeStructureData = {
+    const source: MergeLieuInclusionData = {
       ...emptyMergeData,
       employesIds: ['user-1', 'user-2', 'user-3'],
     }
-    const target: MergeStructureData = {
+    const target: MergeLieuInclusionData = {
       ...emptyMergeData,
       employesIds: ['user-2', 'user-3', 'user-4'],
     }
@@ -43,11 +43,11 @@ describe('findMergeCommonFields', () => {
   })
 
   it('returns intersection of typologies', () => {
-    const source: MergeStructureData = {
+    const source: MergeLieuInclusionData = {
       ...emptyMergeData,
       typologies: ['ASSO', 'CCAS'],
     }
-    const target: MergeStructureData = {
+    const target: MergeLieuInclusionData = {
       ...emptyMergeData,
       typologies: ['CCAS', 'MAIRIE'],
     }
@@ -58,12 +58,12 @@ describe('findMergeCommonFields', () => {
   })
 
   it('returns empty arrays when no common elements exist', () => {
-    const source: MergeStructureData = {
+    const source: MergeLieuInclusionData = {
       ...emptyMergeData,
       employesIds: ['user-1'],
       services: ['service-a'],
     }
-    const target: MergeStructureData = {
+    const target: MergeLieuInclusionData = {
       ...emptyMergeData,
       employesIds: ['user-2'],
       services: ['service-b'],
@@ -76,7 +76,7 @@ describe('findMergeCommonFields', () => {
   })
 
   it('computes intersection for all fields', () => {
-    const source: MergeStructureData = {
+    const source: MergeLieuInclusionData = {
       employesIds: ['e1', 'e2'],
       mediateursEnActiviteIds: ['m1', 'm2'],
       activitesEmployeurIds: ['ae1'],
@@ -94,7 +94,7 @@ describe('findMergeCommonFields', () => {
       modalitesAccompagnement: ['mac1'],
       courriels: ['c1@test.fr'],
     }
-    const target: MergeStructureData = {
+    const target: MergeLieuInclusionData = {
       employesIds: ['e2', 'e3'],
       mediateursEnActiviteIds: ['m2', 'm3'],
       activitesEmployeurIds: ['ae2'],

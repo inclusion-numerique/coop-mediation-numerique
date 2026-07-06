@@ -4,7 +4,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import { coopCartographieNationaleSource } from '@app/web/structure/cartographieNationaleSources'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { createStopwatch } from '@app/web/utils/stopwatch'
-import { PrismaClient, Structure } from '@prisma/client'
+import { LieuInclusion, PrismaClient } from '@prisma/client'
 
 type PrismaTransaction = Omit<
   PrismaClient,
@@ -54,7 +54,7 @@ const groupCoopIdsByCartographieId = (
  */
 const getExternalModificationData = (
   lieu: CartoLieu,
-  existingStructure: Structure,
+  existingStructure: LieuInclusion,
 ): {
   derniereModificationSource: string
   derniereModificationParId: null
@@ -96,7 +96,7 @@ const mergeStructures = async (
   prisma: PrismaTransaction,
   structureIds: string[],
 ): Promise<StructureForMerge> => {
-  const structures = await prisma.structure.findMany({
+  const structures = await prisma.lieuInclusion.findMany({
     where: { id: { in: structureIds } },
     select: {
       visiblePourCartographieNationale: true,
@@ -132,7 +132,7 @@ const linkToCoopStructure = async (
     lieu,
   }: CoopIdsToMergeInSingleStructure,
 ) => {
-  const existingStructure = await prisma.structure.findUnique({
+  const existingStructure = await prisma.lieuInclusion.findUnique({
     where: { id: structureId },
   })
 
@@ -147,7 +147,7 @@ const linkToCoopStructure = async (
     ])
 
     // update the activitesCount field of the new structure
-    const activitesCount = await prisma.structure.aggregate({
+    const activitesCount = await prisma.lieuInclusion.aggregate({
       _sum: {
         activitesCount: true,
       },
@@ -178,7 +178,7 @@ const linkToCoopStructure = async (
         where: { structureEmployeuseId: { in: idsToDelete } },
         data: { structureEmployeuseId: structureId },
       }),
-      prisma.structure.update({
+      prisma.lieuInclusion.update({
         where: { id: structureId },
         data: {
           ...mergedStructures,
@@ -192,7 +192,7 @@ const linkToCoopStructure = async (
       }),
     ])
 
-    await prisma.structure.deleteMany({
+    await prisma.lieuInclusion.deleteMany({
       where: { id: { in: idsToDelete } },
     })
   } else {
@@ -201,7 +201,7 @@ const linkToCoopStructure = async (
       existingStructure,
     )
 
-    await prisma.structure.update({
+    await prisma.lieuInclusion.update({
       where: { id: structureId },
       data: {
         ...externalModificationData,
@@ -320,7 +320,7 @@ export const updateStructuresFromEntrepot =
     const result = await prismaClient.$transaction(
       async (prisma) => {
         output('2. Réinitialisation des liens cartographie nationale')
-        const reset = await prisma.structure.updateMany({
+        const reset = await prisma.lieuInclusion.updateMany({
           data: { structureCartographieNationaleId: null },
         })
 

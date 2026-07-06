@@ -7,7 +7,8 @@ import type {
   DataspaceStructureEmployeuse,
 } from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import { getContractStatus } from '@app/web/features/dataspace/getContractStatus'
-import { findOrCreateStructure } from '@app/web/features/structures/findOrCreateStructure'
+import { findOrCreateLieuInclusion } from '@app/web/features/structures/findOrCreateLieuInclusion'
+import { findOrCreateStructureAdministrative } from '@app/web/features/structures/findOrCreateStructureAdministrative'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { v4 } from 'uuid'
@@ -292,7 +293,7 @@ const getOrCreateStructureFromDataspace = async ({
   structureEmployeuse: DataspaceStructureEmployeuse
 }) => {
   const adresse = buildAdresseFromDataspace(structureEmployeuse.adresse)
-  return findOrCreateStructure({
+  return findOrCreateStructureAdministrative({
     coopId: structureEmployeuse.ids?.coop,
     siret: structureEmployeuse.siret,
     nom: structureEmployeuse.nom,
@@ -650,7 +651,7 @@ export const importLieuxActiviteFromDataspace = async ({
     const adresse = buildAdresseFromDataspace(lieuActivite.adresse)
 
     // Find or create structure
-    const structure = await findOrCreateStructure({
+    const structure = await findOrCreateLieuInclusion({
       siret: lieuActivite.siret,
       nom: lieuActivite.nom,
       adresse,
@@ -754,14 +755,34 @@ export const syncFromDataspaceCore = async ({
   let coordinateurId: string | null = null
 
   // --- Update User base fields ---
+  // On ne réécrit les champs de contenu (et donc ne bumpe `updated`) que s'ils
+  // changent vraiment ; sinon on n'avance que le marqueur technique
+  // `lastSyncedFromDataspace` (classé « non-contenu »), pour éviter un churn
+  // quotidien de toute la table `user` lors de la synchro Dataspace.
+  const currentUser = await prismaClient.user.findUnique({
+    where: { id: userId },
+    select: {
+      dataspaceId: true,
+      dataspaceUserIdPg: true,
+      isConseillerNumerique: true,
+    },
+  })
+
+  const userContentChanged =
+    currentUser?.dataspaceId !== dataspaceData.id ||
+    currentUser?.dataspaceUserIdPg !== dataspaceData.pg_id ||
+    currentUser?.isConseillerNumerique !== isConseillerNumeriqueInApi
+
   await prismaClient.user.update({
     where: { id: userId },
-    data: {
-      dataspaceId: dataspaceData.id,
-      dataspaceUserIdPg: dataspaceData.pg_id,
-      lastSyncedFromDataspace: new Date(),
-      isConseillerNumerique: isConseillerNumeriqueInApi,
-    },
+    data: userContentChanged
+      ? {
+          dataspaceId: dataspaceData.id,
+          dataspaceUserIdPg: dataspaceData.pg_id,
+          lastSyncedFromDataspace: new Date(),
+          isConseillerNumerique: isConseillerNumeriqueInApi,
+        }
+      : { lastSyncedFromDataspace: new Date() },
   })
 
   // --- Coordinateur: Only create if coordo is in dispositif (never delete) ---

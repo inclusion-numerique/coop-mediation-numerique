@@ -8,13 +8,15 @@ const createTestMediateur = async () => {
   const mediateurId = v4()
   const structureId = v4()
 
-  await prismaClient.structure.create({
+  // Rôle employeuse (split 1a.2) : activite.structureEmployeuseId pointe structure_administrative.
+  await prismaClient.structureAdministrative.create({
     data: {
       id: structureId,
       nom: 'Test Structure',
       adresse: '1 rue Test',
       commune: 'Paris',
       codePostal: '75001',
+      source: 'coop',
     },
   })
 
@@ -126,7 +128,7 @@ const cleanupTestData = async ({
   await prismaClient.user.deleteMany({
     where: { id: { in: userIds } },
   })
-  await prismaClient.structure.deleteMany({
+  await prismaClient.structureAdministrative.deleteMany({
     where: { id: { in: structureIds } },
   })
 }

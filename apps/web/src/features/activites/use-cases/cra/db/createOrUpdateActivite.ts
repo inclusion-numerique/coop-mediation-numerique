@@ -10,7 +10,7 @@ import { fixTelephone } from '@app/web/utils/clean-operations'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import { yesNoToOptionalBoolean } from '@app/web/utils/yesNoBooleanOptions'
-import { Prisma, Structure, TypeActivite } from '@prisma/client'
+import { LieuInclusion, Prisma, TypeActivite } from '@prisma/client'
 import { v4 } from 'uuid'
 import { assignPremierAccompagnement } from './assignPremierAccompagnement'
 import { craDureeDataToMinutes } from './minutesToCraDuree'
@@ -108,7 +108,7 @@ const getExistingStructure = async ({
   if (!structureId) {
     return null
   }
-  const existingStructure = await prismaClient.structure.findUnique({
+  const existingStructure = await prismaClient.lieuInclusion.findUnique({
     where: {
       id: structureId,
       mediateursEnActivite: {
@@ -167,7 +167,7 @@ const beneficiaireAnonymeCreateDataFromForm = ({
 
 // Utilisée comme localisation fallback pour les activités à distance
 export type StructureEmployeuseCraInfo = Pick<
-  Structure,
+  LieuInclusion,
   'commune' | 'codePostal' | 'codeInsee'
 >
 
@@ -334,7 +334,7 @@ export const createOrUpdateActivite = async ({
           ? data.structureDeRedirection
           : undefined,
     thematiques: input.data.thematiques,
-    structure:
+    lieuInclusion:
       // Only set structure if it is the correct type of lieuAccompagnement
       lieuActivite
         ? { connect: { id: lieuActivite.id } }
@@ -453,7 +453,7 @@ export const createOrUpdateActivite = async ({
         // Structure count updates
         if (existingActivite.structureId) {
           updateOperations.push(
-            transaction.structure.update({
+            transaction.lieuInclusion.update({
               where: { id: existingActivite.structureId },
               data: { activitesCount: { decrement: 1 } },
             }),
@@ -461,7 +461,7 @@ export const createOrUpdateActivite = async ({
         }
         if (lieuActivite) {
           updateOperations.push(
-            transaction.structure.update({
+            transaction.lieuInclusion.update({
               where: { id: lieuActivite.id },
               data: { activitesCount: { increment: 1 } },
             }),
@@ -608,7 +608,7 @@ export const createOrUpdateActivite = async ({
 
       if (lieuActivite) {
         updateOperations.push(
-          transaction.structure.update({
+          transaction.lieuInclusion.update({
             where: { id: lieuActivite.id },
             data: { activitesCount: { increment: 1 } },
           }),

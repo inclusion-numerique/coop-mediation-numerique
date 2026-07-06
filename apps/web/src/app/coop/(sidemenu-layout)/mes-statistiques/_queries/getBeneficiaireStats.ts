@@ -101,7 +101,7 @@ export const getBeneficiaireStatsRaw = async ({
         INNER JOIN beneficiaires ben ON ben.id = acc.beneficiaire_id
         ${needsConseillerNumeriqueJoin ? Prisma.sql`LEFT JOIN mediateurs med ON act.mediateur_id = med.id` : Prisma.empty}
         ${needsConseillerNumeriqueJoin ? Prisma.sql`LEFT JOIN users u ON med.user_id = u.id` : Prisma.empty}
-        ${needsStructureJoin ? Prisma.sql`LEFT JOIN structures str ON str.id = act.structure_id` : Prisma.empty}
+        ${needsStructureJoin ? Prisma.sql`LEFT JOIN lieu_inclusion str ON str.id = act.structure_id` : Prisma.empty}
       WHERE act.suppression IS NULL
         ${
           hasCoordinateurContext
@@ -183,7 +183,7 @@ export const getBeneficiairesCommunesRaw = async ({
           AND ${activitesMediateurIdsWhereCondition(mediateurIds)}
           AND ${activitesSourceWhereCondition(activitesFilters.source)}
           AND act.suppression IS NULL
-            LEFT JOIN structures str ON str.id = act.structure_id
+            LEFT JOIN lieu_inclusion str ON str.id = act.structure_id
             LEFT JOIN mediateurs med ON act.mediateur_id = med.id
             LEFT JOIN users u ON med.user_id = u.id
             FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${

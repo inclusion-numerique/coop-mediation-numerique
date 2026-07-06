@@ -48,9 +48,9 @@ const searchLocalStructures = async (
         { commune: { contains: part, mode: 'insensitive' } },
       ],
     })),
-  } satisfies Prisma.StructureWhereInput
+  } satisfies Prisma.LieuInclusionWhereInput
 
-  const structuresRaw = await prismaClient.structure.findMany({
+  const structuresRaw = await prismaClient.lieuInclusion.findMany({
     where: matchesWhere,
     take: limit,
     orderBy: { nom: 'asc' },
@@ -69,7 +69,7 @@ const searchLocalStructures = async (
     },
   })
 
-  const matchesCount = await prismaClient.structure.count({
+  const matchesCount = await prismaClient.lieuInclusion.count({
     where: matchesWhere,
   })
 
