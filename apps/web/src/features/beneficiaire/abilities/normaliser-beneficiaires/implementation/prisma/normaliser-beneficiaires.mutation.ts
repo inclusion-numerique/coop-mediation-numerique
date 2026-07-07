@@ -9,7 +9,11 @@ import type {
   NormaliserBeneficiaireError,
   NormaliserBeneficiaires,
 } from '../../domain/normaliser-beneficiaires'
-import { repairTelephone } from '../../domain/repair-telephone'
+import { emailAbsent, repairEmail } from '../../domain/repair-email'
+import {
+  repairTelephone,
+  telephonePlaceholder,
+} from '../../domain/repair-telephone'
 
 const BATCH_SIZE = 100
 const MAX_REPORTED_ERRORS = 100
@@ -18,23 +22,34 @@ type BeneficiaireRow = Awaited<
   ReturnType<typeof prismaClient.beneficiaire.findMany>
 >[number]
 
-// Téléphone à stocker : réparé si possible ; sinon vidé (`null`) si la valeur
+// Téléphone / email à stocker : réparé si possible ; sinon vidé (`null`) si la
+// valeur est un placeholder (« 0000000000 », « A créer », « pas d'email »…) ou
 // n'a aucun caractère alphanumérique (« - », « / »… = purement séparateurs) ;
-// sinon laissée telle quelle (la fiche sera sautée et remontée dans les erreurs,
-// y compris un texte égaré que l'on ne veut pas détruire).
-const telephoneToStore = (raw: string): string | null =>
-  repairTelephone(raw) ?? (/[a-z0-9]/i.test(raw) ? raw : null)
+// sinon laissée telle quelle (la fiche sera sautée et remontée dans les
+// erreurs, y compris un texte égaré que l'on ne veut pas détruire).
+const irrecuperableToStore = (raw: string): string | null =>
+  /[a-z0-9]/i.test(raw) ? raw : null
 
-// Re-canonicalise une fiche via le transfer layer (téléphone pré-réparé).
-// `modification` est réémis pour que l'extension timestamp ne bumpe pas (un
-// nettoyage de données n'est pas une édition). Une donnée invalide fait throw
-// toDomain → la fiche est remontée dans les erreurs.
+const telephoneToStore = (raw: string): string | null =>
+  repairTelephone(raw) ??
+  (telephonePlaceholder(raw) ? null : irrecuperableToStore(raw))
+
+const emailToStore = (raw: string): string | null =>
+  repairEmail(raw) ?? (emailAbsent(raw) ? null : irrecuperableToStore(raw))
+
+// Re-canonicalise une fiche via le transfer layer (téléphone et email
+// pré-réparés). `modification` est réémis pour que l'extension timestamp ne
+// bumpe pas (un nettoyage de données n'est pas une édition). Une donnée
+// invalide fait throw toDomain → la fiche est remontée dans les erreurs.
 const recanonicalise = (row: BeneficiaireRow) => {
   try {
-    const prepared =
-      row.telephone === null
-        ? row
-        : { ...row, telephone: telephoneToStore(row.telephone) }
+    const prepared = {
+      ...row,
+      ...(row.telephone === null
+        ? {}
+        : { telephone: telephoneToStore(row.telephone) }),
+      ...(row.email === null ? {} : { email: emailToStore(row.email) }),
+    }
     const { id: _id, ...rest } = beneficiaireFromDomain(
       beneficiaireToDomain(prepared),
     )
