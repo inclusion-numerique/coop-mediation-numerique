@@ -10,20 +10,24 @@ import { normaliserBeneficiaires } from './implementation'
 
 const nationalId = v4()
 const emailId = v4()
+const emailAbimeId = v4()
 const communeId = v4()
 const invalidId = v4()
 const canoniqueId = v4()
 const multiId = v4()
 const tiretId = v4()
+const placeholderId = v4()
 
 const ids = [
   nationalId,
   emailId,
+  emailAbimeId,
   communeId,
   invalidId,
   canoniqueId,
   multiId,
   tiretId,
+  placeholderId,
 ]
 
 const oldModification = new Date('2020-01-01T00:00:00.000Z')
@@ -60,6 +64,14 @@ describe('normaliserBeneficiaires', () => {
           prenom: 'Up',
           nom: 'Per',
           email: 'JEAN.DUPONT@EXEMPLE.COM',
+        },
+        {
+          id: emailAbimeId,
+          mediateurId: mediateurAvecActiviteMediateurId,
+          anonyme: false,
+          prenom: 'Ab',
+          nom: 'Ime',
+          email: 'jean.dupont@gmailcom;',
         },
         {
           id: communeId,
@@ -104,6 +116,15 @@ describe('normaliserBeneficiaires', () => {
           nom: 'Vide',
           telephone: '-',
         },
+        {
+          id: placeholderId,
+          mediateurId: mediateurAvecActiviteMediateurId,
+          anonyme: false,
+          prenom: 'Place',
+          nom: 'Holder',
+          telephone: '0000000000',
+          email: 'A créer',
+        },
       ],
     })
 
@@ -116,6 +137,9 @@ describe('normaliserBeneficiaires', () => {
 
     expect((await fiche(emailId)).email).toBe('jean.dupont@exemple.com')
 
+    // réparation câblée dans le backfill (couverture exhaustive : repair-email.spec)
+    expect((await fiche(emailAbimeId)).email).toBe('jean.dupont@gmail.com')
+
     const commune = await fiche(communeId)
     expect(commune.communeCodePostal).toBe('75001')
     expect(commune.communeCodeInsee).toBe('75101')
@@ -125,6 +149,11 @@ describe('normaliserBeneficiaires', () => {
 
     // valeur sans aucun chiffre (« - ») → champ vidé
     expect((await fiche(tiretId)).telephone).toBeNull()
+
+    // placeholders (« 0000000000 », « A créer ») → champs vidés
+    const placeholder = await fiche(placeholderId)
+    expect(placeholder.telephone).toBeNull()
+    expect(placeholder.email).toBeNull()
 
     // invalide : laissé tel quel (sauté, jamais corrompu)
     expect((await fiche(invalidId)).telephone).toBe('pas-un-numero')
