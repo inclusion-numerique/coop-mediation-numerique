@@ -24,6 +24,7 @@ import { InactiveUsersRemindersJobValidation } from './inactive-users-reminders/
 import { NormaliserBeneficiairesJobValidation } from './normaliser-beneficiaires/normaliserBeneficiairesJob'
 import { NormalizeSiretsJobValidation } from './normalize-sirets/normalizeSiretsJob'
 import { RemoveOrphanBrevoContactsJobValidation } from './remove-orphan-brevo-contacts/removeOrphanBrevoContactsJob'
+import { ResetInscriptionsSansRoleJobValidation } from './reset-inscriptions-sans-role/resetInscriptionsSansRoleJob'
 import { SetServciesToSharedLieuxValidation } from './set-servcies-to-shared-lieux/setServciesToSharedLieuxJob'
 import { SyncRdvspDataJobValidation } from './sync-rdvsp-data/syncRdvspDataJob'
 import { SyncUsersFromDataspaceJobValidation } from './sync-users-from-dataspace/syncUsersFromDataspaceJob'
@@ -73,6 +74,7 @@ export const JobValidation = z.discriminatedUnion('name', [
   InactiveUsersRemindersJobValidation,
   FixUsersRolesJobValidation,
   RemoveOrphanBrevoContactsJobValidation,
+  ResetInscriptionsSansRoleJobValidation,
   DeduplicateLieuxJobValidation,
   DetectDuplicateLieuxJobValidation,
   ExportDuplicateSiretsJobValidation,

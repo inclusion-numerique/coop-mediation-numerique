@@ -2,6 +2,7 @@ import MinimalFooter from '@app/web/app/coop/MinimalFooter'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import Header from '@app/web/components/Header'
 import InscriptionStepsLayout from '@app/web/features/inscription/components/InscriptionStepsLayout'
+import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import React, { PropsWithChildren } from 'react'
@@ -9,7 +10,7 @@ import React, { PropsWithChildren } from 'react'
 const InscriptionLayout = async ({ children }: PropsWithChildren) => {
   const user = await authenticateUser()
 
-  if (user.inscriptionValidee) {
+  if (hasInscriptionComplete(user)) {
     redirect('/coop')
   }
 
