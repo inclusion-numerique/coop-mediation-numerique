@@ -2,6 +2,7 @@ import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import { sessionUserHasStructureEmployeuse } from '@app/web/auth/sessionUser'
 import RenseignerStructureEmployeusePage from '@app/web/features/inscription/use-cases/renseigner-structure-employeuse/RenseignerStructureEmployeusePage'
+import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'
@@ -14,7 +15,7 @@ export const metadata = {
 const RenseignerStructureEmployeusePageRoute = async () => {
   const user = await authenticateUser()
 
-  if (user.inscriptionValidee) {
+  if (hasInscriptionComplete(user)) {
     redirect('/coop')
   }
 

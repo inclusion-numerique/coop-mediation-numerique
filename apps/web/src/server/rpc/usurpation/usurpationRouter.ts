@@ -25,6 +25,10 @@ export const usurpationRouter = router({
             id: userId,
             isFixture: ServerWebAppConfig.Sudo.usurpation ? undefined : true,
           },
+          include: {
+            mediateur: { select: { id: true } },
+            coordinateur: { select: { id: true } },
+          },
         })
 
         if (!user) {

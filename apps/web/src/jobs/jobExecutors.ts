@@ -29,6 +29,7 @@ import { executeNormaliserBeneficiaires } from './normaliser-beneficiaires/execu
 import { executeNormalizeSirets } from './normalize-sirets/executeNormalizeSirets'
 import { output } from './output'
 import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts/executeRemoveOrphanBrevoContacts'
+import { executeResetInscriptionsSansRole } from './reset-inscriptions-sans-role/executeResetInscriptionsSansRole'
 import { executeSetServciesToSharedLieux } from './set-servcies-to-shared-lieux/executeSetServciesToSharedLieux'
 import { executeSyncRdvspData } from './sync-rdvsp-data/executeSyncRdvspData'
 import { executeSyncUsersFromDataspace } from './sync-users-from-dataspace/executeSyncUsersFromDataspace'
@@ -80,6 +81,7 @@ export const jobExecutors: {
   'inactive-users-reminders': executeInactiveUsersReminders,
   'fix-users-roles': executeFixUsersRoles,
   'remove-orphan-brevo-contacts': executeRemoveOrphanBrevoContacts,
+  'reset-inscriptions-sans-role': executeResetInscriptionsSansRole,
   'deduplicate-lieux': executeDeduplicateLieux,
   'detect-duplicate-lieux': executeDetectDuplicateLieux,
   'export-duplicate-sirets': executeExportDuplicateSirets,

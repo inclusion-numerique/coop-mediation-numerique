@@ -2,6 +2,7 @@ import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import { getLieuxActiviteForInscription } from '@app/web/features/inscription/getLieuxActiviteForInscription'
 import LieuxActivitePage from '@app/web/features/inscription/use-cases/lieux-activite/LieuxActivitePage'
+import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'
@@ -14,8 +15,8 @@ export const metadata = {
 const LieuxActivitePageRoute = async () => {
   const user = await authenticateUser()
 
-  // If inscription is already validated, redirect to coop
-  if (user.inscriptionValidee) {
+  // If inscription is already complete (validated with a role profile), redirect to coop
+  if (hasInscriptionComplete(user)) {
     redirect('/coop')
   }
 

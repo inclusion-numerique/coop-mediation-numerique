@@ -1,6 +1,7 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import { initializeInscription } from '@app/web/features/inscription/use-cases/initialize/initializeInscription'
+import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import * as Sentry from '@sentry/nextjs'
 import { redirect } from 'next/navigation'
 
@@ -14,8 +15,8 @@ export const metadata = {
 const InitialiserInscriptionPage = async () => {
   const user = await authenticateUser()
 
-  // If inscription is already validated, redirect to coop
-  if (user.inscriptionValidee) {
+  // If inscription is already complete (validated with a role profile), redirect to coop
+  if (hasInscriptionComplete(user)) {
     redirect('/coop')
   }
 
