@@ -538,6 +538,23 @@ export const inscriptionRouter = router({
 
       const stopwatch = createStopwatch()
 
+      // Un compte « validé » sans profil de rôle ne peut rien faire dans la
+      // coop : on refuse de poser inscriptionValidee tant qu’aucun profil
+      // n’existe en base
+      const profils = await prismaClient.user.findUnique({
+        where: { id: userId },
+        select: {
+          mediateur: { select: { id: true } },
+          coordinateur: { select: { id: true } },
+        },
+      })
+
+      if (!profils?.mediateur && !profils?.coordinateur) {
+        throw forbiddenError(
+          'Impossible de valider une inscription sans profil médiateur ou coordinateur',
+        )
+      }
+
       await prismaClient.user.update({
         where: {
           id: userId,

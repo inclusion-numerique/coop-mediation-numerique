@@ -36,7 +36,9 @@ executors:
         environment:
           TZ: 'UTC'
           CI_DATABASE_URL: postgresql://postgres@localhost/test?options=-c%20search_path%3Dcoop,public
-      - image: maildev/maildev:latest
+      # Version épinglée : le re-tag de latest vers 3.0.0-rc.1 (06/07/2026) a
+      # réécrit l’UI web et cassé les sélecteurs .email-list des tests e2e
+      - image: maildev/maildev:2.2.1
         environment:
           MAILDEV_INCOMING_USER: mailuser
           MAILDEV_INCOMING_PASS: mailpassword
