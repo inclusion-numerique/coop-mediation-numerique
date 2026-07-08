@@ -19,6 +19,7 @@ type CombinedQueryResult = {
   percentage_conseillers: number
   // Monthly data (JSON arrays)
   monthly_data: {
+    month_date: string
     month: number
     bymediateurs: number
     byconseillers: number
@@ -68,7 +69,8 @@ export const getAccompagnements = async () => {
       GROUP BY DATE_TRUNC('month', date), role
     ),
     monthly_aggregated AS (
-      SELECT 
+      SELECT
+        months.month AS month_date,
         EXTRACT(MONTH FROM months.month)::int AS month,
         COALESCE(SUM(CASE WHEN cpm.role = 'mediateur' THEN cpm.count END), 0)::int AS byMediateurs,
         COALESCE(SUM(CASE WHEN cpm.role = 'conseiller' THEN cpm.count END), 0)::int AS byConseillers
@@ -99,7 +101,7 @@ export const getAccompagnements = async () => {
         THEN ROUND((t.total_conseillers * 100.0 / t.total_count)::numeric, 1)::float 
         ELSE 0 
       END AS percentage_conseillers,
-      (SELECT json_agg(row_to_json(m.*) ORDER BY m.month) FROM monthly_aggregated m) AS monthly_data,
+      (SELECT json_agg(row_to_json(m.*) ORDER BY m.month_date) FROM monthly_aggregated m) AS monthly_data,
       ic.initial_mediateurs,
       ic.initial_conseillers
     FROM totals t, initial_counts ic
