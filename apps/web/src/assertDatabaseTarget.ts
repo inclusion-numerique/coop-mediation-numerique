@@ -1,6 +1,11 @@
-// Garde-fou partagé contre l'exécution d'un outil destructif/local contre la PRODUCTION.
+// Garde-fou partagé contre l'exécution d'un outil destructif contre la PRODUCTION.
 // L'hôte n'est PAS un signal fiable (les tunnels prod répondent sur localhost, cf. incident
-// 2026-07-08) : le signal fiable est le NOM de la base cible.
+// 2026-07-08), et un simple motif « prod » non plus : une base de preview nommée d'après la
+// branche peut contenir « prod » (ex. `coop-…-fix-fixtures-load-prod-guard`). Le seul signal
+// fiable est le NOM EXACT de la base, comparé à une liste de bases de production connues.
+
+// Bases de PRODUCTION connues (match exact, insensible à la casse).
+const KNOWN_PRODUCTION_DATABASE_NAMES = ['dataspace_prod']
 
 const databaseNameFromUrl = (databaseUrl: string): string => {
   try {
@@ -22,13 +27,17 @@ export const databaseUrlLooksLikeProduction = (
   databaseUrl: string,
   productionDatabaseName?: string,
 ): boolean => {
-  const target = databaseNameFromUrl(databaseUrl).toLowerCase()
-  const production = (productionDatabaseName ?? '').trim().toLowerCase()
-  return (
-    (production !== '' && target === production) ||
-    /prod/i.test(target) ||
-    /[?&]sslmode=require\b/i.test(databaseUrl)
-  )
+  const target = databaseNameFromUrl(databaseUrl).trim().toLowerCase()
+  if (target === '') {
+    return false
+  }
+  const known = [
+    ...KNOWN_PRODUCTION_DATABASE_NAMES,
+    productionDatabaseName ?? '',
+  ]
+    .map((name) => name.trim().toLowerCase())
+    .filter((name) => name !== '')
+  return known.includes(target)
 }
 
 // Refuse si la cible ressemble à la production, sauf si `confirmProduction` vaut EXACTEMENT
