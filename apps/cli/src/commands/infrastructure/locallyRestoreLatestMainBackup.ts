@@ -291,10 +291,69 @@ const provisionBackupFile = async ({
   await exportAndDownloadBackup(client, selectedBackup, targetFile)
 }
 
+const databaseNameFromUrl = (databaseUrl: string): string =>
+  new URL(databaseUrl).pathname.split('/')[1] ?? ''
+
+// Ce job exécute un `DROP SCHEMA … CASCADE` : il ne doit JAMAIS s'exécuter contre la
+// production par erreur (cf. incident 2026-07-08, où DATABASE_URL pointait sur un tunnel
+// `localhost` vers `dataspace_prod`). L'hôte n'est donc PAS un signal fiable — le tunnel est
+// en loopback — ; le signal fiable est le NOM de la base cible.
+export const targetLooksLikeProduction = (
+  databaseUrl: string,
+  productionDatabaseName: string,
+): boolean => {
+  const target = databaseNameFromUrl(databaseUrl).toLowerCase()
+  const production = productionDatabaseName.trim().toLowerCase()
+  return (
+    (production !== '' && target === production) ||
+    /prod/i.test(target) ||
+    /[?&]sslmode=require\b/i.test(databaseUrl)
+  )
+}
+
+export const assertRestoreTargetIsNotProduction = ({
+  databaseUrl,
+  productionDatabaseName,
+  confirmProduction,
+}: {
+  databaseUrl: string
+  productionDatabaseName: string
+  confirmProduction?: string
+}): void => {
+  if (!targetLooksLikeProduction(databaseUrl, productionDatabaseName)) return
+
+  const target = databaseNameFromUrl(databaseUrl)
+  const host = new URL(databaseUrl).hostname
+
+  if (confirmProduction === target) {
+    output(
+      `⚠️  Restauration DESTRUCTIVE confirmée sur une cible de PRODUCTION : ${host}/${target}`,
+    )
+    return
+  }
+
+  throw new Error(
+    [
+      `Refus : la cible ressemble à la PRODUCTION (${host}/${target}).`,
+      'Ce job exécute un « DROP SCHEMA … CASCADE » et EFFACERAIT toutes les données.',
+      "Si c'est réellement voulu (reprise après incident), relancez avec :",
+      `  --confirm-production ${target}`,
+    ].join('\n'),
+  )
+}
+
 const restoreEntrepotBackup = async (
   databaseUrl: string,
   entrepotBackupFile: string,
+  productionDatabaseName: string,
+  confirmProduction?: string,
 ): Promise<void> => {
+  assertRestoreTargetIsNotProduction({
+    databaseUrl,
+    productionDatabaseName,
+    confirmProduction,
+  })
+
   output(
     `Recreating schemas (${entrepotSchemas.join(', ')}) and clearing prisma migration history before loading data`,
   )
@@ -337,6 +396,10 @@ export const locallyRestoreLatestMainBackup = new Command(
   .option(
     '-t, --type <type>',
     'Filter backups by type (weekly, daily, hourly). If not provided, all types are considered.',
+  )
+  .option(
+    '--confirm-production <database>',
+    'Confirme explicitement une restauration DESTRUCTIVE ciblant la production. La valeur doit être le nom exact de la base cible (ex. dataspace_prod).',
   )
   .action(async (options) => {
     const targetDate = options.date ? new Date(options.date) : null
@@ -417,6 +480,14 @@ export const locallyRestoreLatestMainBackup = new Command(
       return
     }
 
+    // Garde-fou : si la cible ressemble à la production, on refuse ICI, AVANT tout
+    // téléchargement ou DROP. (Ne bloque pas `--list`, qui est en lecture seule.)
+    assertRestoreTargetIsNotProduction({
+      databaseUrl,
+      productionDatabaseName: entrepotBackupDatabaseName,
+      confirmProduction: options.confirmProduction,
+    })
+
     const entrepotBackupFile = backupFileFor(entrepotBackupDatabaseName)
 
     await provisionBackupFile({
@@ -428,7 +499,12 @@ export const locallyRestoreLatestMainBackup = new Command(
       type: options.type,
       useLocal: options.local,
     })
-    await restoreEntrepotBackup(databaseUrl, entrepotBackupFile)
+    await restoreEntrepotBackup(
+      databaseUrl,
+      entrepotBackupFile,
+      entrepotBackupDatabaseName,
+      options.confirmProduction,
+    )
 
     output(`Granting all privileges to "${user}" role`)
     await exec(
