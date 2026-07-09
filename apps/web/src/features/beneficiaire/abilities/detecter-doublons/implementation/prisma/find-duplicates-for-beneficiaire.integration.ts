@@ -83,6 +83,29 @@ const beneficiaireSameEmail2 = givenBeneficiaire({
   mediateurId: testMediateurId,
 })
 
+// Frontière de transfert : un candidat legacy dont le téléphone ne satisfait
+// plus la validation stricte (numéro non valide selon libphonenumber). La cible
+// le matche sur nom + email (≥ 2 champs).
+const beneficiaireLegacyTarget = givenBeneficiaire({
+  id: 'e7777777-7777-7777-7777-777777777777',
+  prenom: 'Bob',
+  nom: 'Legacy',
+  email: 'legacy.match@test.com',
+  mediateurId: testMediateurId,
+})
+
+const beneficiaireLegacyBadPhone = givenBeneficiaire({
+  id: 'e8888888-8888-8888-8888-888888888888',
+  prenom: 'Bob',
+  nom: 'Legacy',
+  email: 'legacy.match@test.com',
+  mediateurId: testMediateurId,
+})
+
+// Téléphone legacy invalide injecté en base (hors value object, comme la donnée
+// pourrie réelle) : la colonne Prisma est un `String` non brandé.
+const legacyInvalidTelephone = 'NUMERO-LEGACY-INVALIDE'
+
 describe('findDuplicateForBeneficiaire', () => {
   beforeAll(async () => {
     // Ensure mediateur exists (make test self-contained)
@@ -114,6 +137,8 @@ describe('findDuplicateForBeneficiaire', () => {
             beneficiaireJeanPierreNoHyphen.id,
             beneficiaireSameEmail1.id,
             beneficiaireSameEmail2.id,
+            beneficiaireLegacyTarget.id,
+            beneficiaireLegacyBadPhone.id,
           ],
         },
       },
@@ -128,7 +153,15 @@ describe('findDuplicateForBeneficiaire', () => {
         beneficiaireJeanPierreNoHyphen,
         beneficiaireSameEmail1,
         beneficiaireSameEmail2,
+        beneficiaireLegacyTarget,
+        beneficiaireLegacyBadPhone,
       ],
+    })
+
+    // Injecte un téléphone legacy invalide (hors value object) sur le candidat
+    await prismaClient.beneficiaire.update({
+      where: { id: beneficiaireLegacyBadPhone.id },
+      data: { telephone: legacyInvalidTelephone },
     })
   })
 
@@ -144,6 +177,8 @@ describe('findDuplicateForBeneficiaire', () => {
             beneficiaireJeanPierreNoHyphen.id,
             beneficiaireSameEmail1.id,
             beneficiaireSameEmail2.id,
+            beneficiaireLegacyTarget.id,
+            beneficiaireLegacyBadPhone.id,
           ],
         },
       },
@@ -249,6 +284,25 @@ describe('findDuplicateForBeneficiaire', () => {
       // Should find duplicate despite conflicting nom and prenom
       expect(duplicates).toHaveLength(1)
       expect(duplicates[0].id).toBe(beneficiaireSameEmail2.id)
+    })
+  })
+
+  describe('résilience aux données legacy invalides', () => {
+    it('ne throw pas sur un candidat au téléphone legacy invalide et le rend avec téléphone null', async () => {
+      // Avant le passage en `.safe`, la construction du value object Telephone
+      // sur la donnée pourrie faisait échouer toute la détection (et, en prod,
+      // toute la synchro RDVSP du compte).
+      const duplicates = await findDuplicateForBeneficiaire({
+        beneficiaire: withBrandedFields(beneficiaireLegacyTarget),
+        withConflictingFields: 'include',
+        fuzzyMatching: false,
+      })
+
+      const candidate = duplicates.find(
+        (duplicate) => duplicate.id === beneficiaireLegacyBadPhone.id,
+      )
+      expect(candidate).toBeDefined()
+      expect(candidate?.telephone).toBeNull()
     })
   })
 })

@@ -128,9 +128,18 @@ export const handleRdvModelWebhook = async ({
 
         const { rdvUsers } = await syncRdvDependencies(rdv)
         if (rdvAccount.user?.mediateur?.id) {
+          // Découplé de la mise à jour du RDV : un échec du merge bénéficiaire ne
+          // doit pas empêcher la réconciliation du statut (le symptôme prod).
           await createOrMergeBeneficiairesFromRdvUserIds({
             rdvUsers,
             mediateurId: rdvAccount.user.mediateur.id,
+          }).catch((error) => {
+            // biome-ignore lint/suspicious/noConsole: log non bloquant d'un échec de merge
+            console.error(
+              `[rdvsp webhook] merge bénéficiaires échoué (non bloquant) pour le RDV ${data.id}`,
+              error,
+            )
+            return { merges: [], skipped: [] }
           })
         }
 

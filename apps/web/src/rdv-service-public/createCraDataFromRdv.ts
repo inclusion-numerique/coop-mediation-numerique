@@ -7,7 +7,7 @@ import {
   minutesToCraDureeData,
   minutesToCustomCraDureeData,
 } from '../features/activites/use-cases/cra/db/minutesToCraDuree'
-import type { RdvUserMergedBeneficiaire } from '../features/rdvsp/sync/createOrMergeBeneficiaireFromRdvUsers'
+import type { MergedBeneficiaire } from '../features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
 import { dateAsIsoDay } from '../utils/dateAsIsoDay'
 
 export const createCraDataFromRdv = async ({
@@ -34,7 +34,7 @@ export const createCraDataFromRdv = async ({
   }
   mediateurId: string
   // beneficiaires from this Rdv's participations should have been created/merged before calling this function
-  beneficiaires: RdvUserMergedBeneficiaire[]
+  beneficiaires: MergedBeneficiaire[]
 }): Promise<{
   defaultValues: DefaultValues<CraIndividuelData>
   type: 'individuel' | 'collectif'

@@ -57,7 +57,7 @@ export const mergeRdvUserFromRdvPlan = async ({
       }
     })
   } catch (error) {
-    Sentry.captureException(error)
+    Sentry.captureException?.(error)
 
     // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
     console.error(error)
