@@ -211,10 +211,13 @@ const BeneficiaireFusionDoublons = ({
                   id={checkboxId}
                   checked={selected}
                   onChange={() => onSelectItem(duplicate.id)}
-                  aria-label="Sélectionner"
                 />
-                <label className="fr-sr-only" htmlFor={checkboxId}>
-                  Sélectionner
+                <label
+                  className="fr-label"
+                  htmlFor={checkboxId}
+                  style={{ minHeight: '1.25rem' }}
+                >
+                  <span className="fr-sr-only">Sélectionner ce doublon</span>
                 </label>
               </div>
             </div>
@@ -255,8 +258,8 @@ type BeneficiaireColumnProps = {
   id: string
   nom: string
   prenom: string
-  telephone: string
-  email: string
+  telephone: string | null
+  email: string | null
   className?: string
 }
 

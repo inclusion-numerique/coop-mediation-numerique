@@ -21,8 +21,8 @@ type DoublonEntry = {
   readonly id: BeneficiaireId
   readonly nom: Nom
   readonly prenom: Prenom
-  readonly telephone: Telephone
-  readonly email: Email
+  readonly telephone: Telephone | null
+  readonly email: Email | null
   readonly creation: Date
 }
 
