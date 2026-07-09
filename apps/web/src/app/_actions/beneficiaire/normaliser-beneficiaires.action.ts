@@ -7,4 +7,10 @@ import { actionBuilder } from '@app/web/libraries/nextjs'
 export const normaliserBeneficiairesAction = actionBuilder()
   .use(withAuth())
   .use(withAdmin())
-  .execute(async () => executeJob({ name: 'normaliser-beneficiaires' }))
+  // Le job est dry-run par défaut : l'action admin applique réellement.
+  .execute(async () =>
+    executeJob({
+      name: 'normaliser-beneficiaires',
+      payload: { dryRun: false },
+    }),
+  )
