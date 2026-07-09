@@ -10,7 +10,7 @@ const ignoredTraceRoutes = [
   '/images/',
 ]
 
-export const initializeSentry = ({ replay }: { replay?: boolean } = {}) => {
+export const initializeSentry = () => {
   if (!PublicWebAppConfig.Sentry.dsn || process.env.NODE_ENV !== 'production') {
     return
   }
@@ -32,8 +32,5 @@ export const initializeSentry = ({ replay }: { replay?: boolean } = {}) => {
       // Sample rate bas par défaut (1%)
       return 0.01
     },
-    integrations: replay ? [Sentry.replayIntegration()] : [],
-    replaysSessionSampleRate: 0.01,
-    replaysOnErrorSampleRate: 1,
   })
 }
