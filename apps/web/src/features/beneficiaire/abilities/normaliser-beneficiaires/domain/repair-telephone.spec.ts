@@ -15,6 +15,8 @@ describe('repairTelephone', () => {
     ['++352 621 797 965', '+352621797965'], // + dédoublé
     ['33769592540', '+33769592540'], // international sans son +
     ['352 621 315 354', '+352621315354'], // idem, Luxembourg
+    ['+237690513393', '+237690513393'], // étranger déjà canonique (Cameroun)
+    ['0041779494741', '+41779494741'], // étranger via 00 (Suisse)
   ])('repairs %s to %s', (raw, expected) => {
     expect(repairTelephone(raw)).toBe(expected)
   })
@@ -22,8 +24,6 @@ describe('repairTelephone', () => {
   it.each([
     '',
     'pas-un-numero',
-    '+237690513393', // étranger
-    '0041779494741', // étranger
     '664', // trop court
     'RelaisNumérique', // texte
     '065295998', // 9 chiffres commençant par 0 : chiffre manquant, pas le 0 de tête

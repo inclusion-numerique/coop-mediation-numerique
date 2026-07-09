@@ -1,43 +1,47 @@
 import { defineModel, type Model } from '@app/web/libraries/model'
+import { type CountryCode, parsePhoneNumberFromString } from 'libphonenumber-js'
 import { z } from 'zod'
 
-// Indicatifs acceptés : France métropole (33) + outre-mer (262, 590, 594, 596)
-// + Luxembourg (352, zone frontalière). Format national : 10 chiffres commençant
-// par 0 puis 1-9 (jamais 00, réservé au préfixe international). Format
-// international : indicatif + 9 chiffres.
-export const TELEPHONE_PATTERN =
-  /^(?:(?:\(\+(?:33|262|352|590|594|596)\)|\+(?:33|262|352|590|594|596)|00(?:33|262|352|590|594|596))[\s()./-]*(?:\d[\s()./-]*){8}\d|0[1-9](?:[\s./-]?\d){8})$/
+// Les DOM partagent le format national de la métropole (0 + zone) mais relèvent
+// d'un indicatif pays distinct. En défaut région « FR », libphonenumber lirait
+// `0262…`/`0269…` comme métropole (+33) : on route donc les préfixes DOM connus
+// (fixe et mobile) vers leur région propre pour obtenir le bon indicatif
+// (+262 Réunion/Mayotte, +590 Guadeloupe, +594 Guyane, +596 Martinique).
+const DOM_REGION: ReadonlyArray<readonly [RegExp, CountryCode]> = [
+  [/^0(?:262|263|692|693)/, 'RE'], // La Réunion (fixe + mobile)
+  [/^0(?:269|639)/, 'YT'], // Mayotte (fixe + mobile)
+  [/^0(?:590|690)/, 'GP'], // Guadeloupe, Saint-Martin, Saint-Barthélemy
+  [/^0(?:594|694)/, 'GF'], // Guyane
+  [/^0(?:596|696)/, 'MQ'], // Martinique
+]
 
-// Indicatif pays déduit du préfixe d'un numéro national outre-mer ;
-// à défaut, métropole (33).
-const COUNTRY_CODE_BY_NATIONAL_PREFIX: Record<string, string> = {
-  '262': '262', // La Réunion
-  '269': '262', // Mayotte
-  '590': '590', // Guadeloupe, Saint-Martin, Saint-Barthélemy
-  '594': '594', // Guyane
-  '596': '596', // Martinique
-}
+const compactOf = (raw: string): string => raw.replace(/[\s()./-]/g, '')
+
+// Région à passer à libphonenumber pour interpréter un numéro *national* : le
+// DOM déduit du préfixe, à défaut la métropole. Sans effet sur les numéros déjà
+// internationaux (`+…`, `00…`), qui portent leur propre indicatif.
+const regionFor = (compact: string): CountryCode =>
+  DOM_REGION.find(([prefix]) => prefix.test(compact))?.[1] ?? 'FR'
 
 /**
- * Forme canonique : international compact (`+33XXXXXXXXX`, `+262…`). Accepte le
- * national, l'international (`+`, `00`, `(+…)`) et les séparateurs ; sort
- * toujours normalisé.
+ * Forme canonique : international compact E.164 (`+33XXXXXXXXX`, `+262…`, mais
+ * aussi `+32…`, `+44…`, `+237…` — tout indicatif pays valide). Accepte le
+ * national français/DOM, l'international (`+`, `00`, `(+…)`) et les séparateurs,
+ * délègue le parsing et la validation par pays à libphonenumber, et sort
+ * toujours normalisé. Reste strict : un numéro non valide pour son pays (ex.
+ * indicatif de zone nord-américain inexistant) est rejeté.
  */
-const toInternational = (raw: string): string => {
-  const compact = raw.replace(/[\s()./-]/g, '')
-  if (compact.startsWith('+')) return compact
-  if (compact.startsWith('00')) return `+${compact.slice(2)}`
-  const national = compact.slice(1)
-  const countryCode =
-    COUNTRY_CODE_BY_NATIONAL_PREFIX[national.slice(0, 3)] ?? '33'
-  return `+${countryCode}${national}`
-}
-
 export const Telephone = defineModel(
   z
     .string()
-    .regex(TELEPHONE_PATTERN)
-    .transform(toInternational)
+    .transform((raw, ctx) => {
+      const parsed = parsePhoneNumberFromString(raw, regionFor(compactOf(raw)))
+      if (!parsed?.isValid()) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Invalid' })
+        return z.NEVER
+      }
+      return parsed.number
+    })
     .brand('Telephone'),
 )
 
@@ -52,16 +56,17 @@ const parPaires = (chiffres: string): string =>
 
 /**
  * Format d'affichage « humain » : national par paires (`01 02 03 04 05`) pour
- * la métropole et l'outre-mer, indicatif détaché pour les autres pays.
- * Accepte `string` (pas seulement `Telephone`) : les frontières UI affichent
- * aussi des valeurs persistées avant la normalisation canonique, rendues
- * telles quelles si non reconnues.
+ * la métropole et l'outre-mer, format international standard de libphonenumber
+ * (`+32 470 44 25 43`, `+352 621 365 161`) pour les autres pays. Accepte
+ * `string` (pas seulement `Telephone`) : les frontières UI affichent aussi des
+ * valeurs persistées avant la normalisation canonique, rendues telles quelles
+ * si non reconnues.
  */
 export const telephoneDisplayString = (telephone: string): string => {
   const compact = telephone.replace(/[\s()./-]/g, '')
   const national = compact.match(INDICATIF_NATIONAL)
   if (national) return parPaires(`0${national[1]}`)
   if (/^0\d{9}$/.test(compact)) return parPaires(compact)
-  const international = compact.match(/^(\+\d{3})(\d+)$/)
-  return international ? `${international[1]} ${international[2]}` : telephone
+  const parsed = parsePhoneNumberFromString(compact)
+  return parsed?.isValid() ? parsed.formatInternational() : telephone
 }
