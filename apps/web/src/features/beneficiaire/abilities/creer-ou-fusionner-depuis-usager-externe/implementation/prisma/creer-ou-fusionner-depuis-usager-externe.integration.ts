@@ -216,4 +216,59 @@ describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage comm
     expect(beneficiaire.telephone).toBeNull()
     expect(beneficiaire.email).toBe('maj@example.com')
   })
+
+  test('normalise une date de naissance absente (sentinelle 1900) en année nulle', async () => {
+    await seedRdvUser()
+
+    const { merges } = await creerOuFusionnerBeneficiairesDepuisUsagersExternes(
+      {
+        usagers: [
+          {
+            rdvUserId,
+            nom: 'Naissance',
+            prenom: 'Sentinelle',
+            telephone: null,
+            email: null,
+            adresse: null,
+            birthDate: new Date('1900-01-01'),
+          },
+        ],
+        mediateurId,
+      },
+    )
+    trackBeneficiaire(merges[0].id)
+
+    const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
+      where: { id: merges[0].id },
+    })
+    expect(beneficiaire.anneeNaissance).toBeNull()
+    expect(beneficiaire.trancheAge).toBeNull()
+  })
+
+  test('conserve une année de naissance valide', async () => {
+    await seedRdvUser()
+
+    const { merges } = await creerOuFusionnerBeneficiairesDepuisUsagersExternes(
+      {
+        usagers: [
+          {
+            rdvUserId,
+            nom: 'Naissance',
+            prenom: 'Valide',
+            telephone: null,
+            email: null,
+            adresse: null,
+            birthDate: new Date('1990-05-15'),
+          },
+        ],
+        mediateurId,
+      },
+    )
+    trackBeneficiaire(merges[0].id)
+
+    const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
+      where: { id: merges[0].id },
+    })
+    expect(beneficiaire.anneeNaissance).toBe(1990)
+  })
 })

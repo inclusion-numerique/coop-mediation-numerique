@@ -41,7 +41,14 @@ type NormalizedExternalUser = {
   telephone: Telephone | null
   email: Email | null
   adresse: string | null
-  birthDate: Date | null
+  anneeNaissance: number | null
+}
+
+// RDVSP envoie `1900-01-01` quand la date de naissance est absente : c'est une
+// sentinelle, pas une année exploitable → `null`.
+const anneeNaissanceFromBirthDate = (birthDate: Date | null): number | null => {
+  const year = birthDate?.getFullYear()
+  return year && year > 1900 ? year : null
 }
 
 const normalizeExternalUser = (
@@ -53,7 +60,7 @@ const normalizeExternalUser = (
   telephone: usager.telephone ? Telephone.safe(usager.telephone) : null,
   email: usager.email ? Email.safe(usager.email) : null,
   adresse: usager.adresse,
-  birthDate: usager.birthDate,
+  anneeNaissance: anneeNaissanceFromBirthDate(usager.birthDate),
 })
 
 type BeneficiaireToMerge = MergedBeneficiaire | DuplicateBeneficiaire
@@ -86,7 +93,6 @@ const mergeUpdateData = async (
   existing: BeneficiaireToMerge,
   alreadyLinked: boolean,
 ): Promise<Prisma.BeneficiaireUncheckedUpdateInput> => {
-  const year = usager.birthDate ? usager.birthDate.getFullYear() : null
   const communeFields =
     usager.adresse && !existingCommune(existing)
       ? await communeFieldsFromAddress(usager.adresse)
@@ -104,8 +110,11 @@ const mergeUpdateData = async (
     !('communeResidence' in existing && existing.communeResidence)
       ? { adresse: usager.adresse }
       : {}),
-    ...(year && year > 1900 && !existing.anneeNaissance
-      ? { anneeNaissance: year, trancheAge: effectiveTrancheAge(year) }
+    ...(usager.anneeNaissance && !existing.anneeNaissance
+      ? {
+          anneeNaissance: usager.anneeNaissance,
+          trancheAge: effectiveTrancheAge(usager.anneeNaissance),
+        }
       : {}),
     ...(communeFields
       ? {
@@ -121,7 +130,6 @@ const createBeneficiaire = async (
   usager: NormalizedExternalUser,
   mediateurId: string,
 ): Promise<MergedBeneficiaire> => {
-  const anneeNaissance = usager.birthDate?.getFullYear()
   const communeFields = await communeFieldsFromAddress(usager.adresse)
 
   return prismaClient.beneficiaire.create({
@@ -133,8 +141,8 @@ const createBeneficiaire = async (
       telephone: usager.telephone,
       email: usager.email,
       adresse: usager.adresse,
-      anneeNaissance,
-      trancheAge: effectiveTrancheAge(anneeNaissance),
+      anneeNaissance: usager.anneeNaissance,
+      trancheAge: effectiveTrancheAge(usager.anneeNaissance),
       commune: communeFields?.commune ?? null,
       communeCodePostal: communeFields?.communeCodePostal ?? null,
       communeCodeInsee: communeFields?.communeCodeInsee ?? null,
