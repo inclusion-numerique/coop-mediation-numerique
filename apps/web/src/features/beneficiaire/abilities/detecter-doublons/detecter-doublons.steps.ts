@@ -24,6 +24,14 @@ Given('un doublon évident pour ce médiateur', async () => {
   ])
 })
 
+Given('un doublon sans téléphone ni email pour ce médiateur', async () => {
+  const data = { prenom: 'Camille', nom: 'Testsanscontact' }
+  seededIds = await Promise.all([
+    seedBeneficiaire(data),
+    seedBeneficiaire(data),
+  ])
+})
+
 Given('deux bénéficiaires distincts pour ce médiateur', async () => {
   seededIds = await Promise.all([
     seedBeneficiaire({

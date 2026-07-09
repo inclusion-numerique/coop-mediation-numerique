@@ -24,14 +24,14 @@ export const detecterDoublons: DetecterDoublons = async ({
       a_id: string
       a_nom: string
       a_prenom: string
-      a_telephone: string
-      a_email: string
+      a_telephone: string | null
+      a_email: string | null
       a_creation: string
       b_id: string
       b_nom: string
       b_prenom: string
-      b_telephone: string
-      b_email: string
+      b_telephone: string | null
+      b_email: string | null
       b_creation: string
     }[]
   >`
@@ -82,15 +82,15 @@ export const detecterDoublons: DetecterDoublons = async ({
     id: string
     nom: string
     prenom: string
-    telephone: string
-    email: string
+    telephone: string | null
+    email: string | null
     creation: string
   }) => ({
     id: BeneficiaireId(entry.id),
     nom: Nom(entry.nom),
     prenom: Prenom(entry.prenom),
-    telephone: Telephone(entry.telephone),
-    email: Email(entry.email),
+    telephone: entry.telephone ? Telephone(entry.telephone) : null,
+    email: entry.email ? Email(entry.email) : null,
     creation: new Date(entry.creation),
   })
 
