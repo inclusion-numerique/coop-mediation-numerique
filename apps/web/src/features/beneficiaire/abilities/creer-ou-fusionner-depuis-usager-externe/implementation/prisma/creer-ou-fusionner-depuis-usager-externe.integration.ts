@@ -161,4 +161,59 @@ describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage comm
     expect(beneficiaire.communeCodePostal).toBe('75001')
     expect(mockedCommuneFields).not.toHaveBeenCalled()
   })
+
+  test('normalise le téléphone entrant au format E.164', async () => {
+    await seedRdvUser()
+
+    const { merges } = await creerOuFusionnerBeneficiairesDepuisUsagersExternes(
+      {
+        usagers: [
+          {
+            rdvUserId,
+            nom: 'Tel',
+            prenom: 'National',
+            telephone: '06 11 22 33 44',
+            email: null,
+            adresse: null,
+            birthDate: null,
+          },
+        ],
+        mediateurId,
+      },
+    )
+    trackBeneficiaire(merges[0].id)
+
+    const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
+      where: { id: merges[0].id },
+    })
+    expect(beneficiaire.telephone).toBe('+33611223344')
+  })
+
+  test('remplace par null un téléphone non normalisable et met l’email en minuscules', async () => {
+    await seedRdvUser()
+
+    const { merges } = await creerOuFusionnerBeneficiairesDepuisUsagersExternes(
+      {
+        usagers: [
+          {
+            rdvUserId,
+            nom: 'Tel',
+            prenom: 'Invalide',
+            telephone: 'pas-un-numero',
+            email: '  MAJ@Example.COM ',
+            adresse: null,
+            birthDate: null,
+          },
+        ],
+        mediateurId,
+      },
+    )
+    trackBeneficiaire(merges[0].id)
+
+    const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
+      where: { id: merges[0].id },
+    })
+    expect(beneficiaire.telephone).toBeNull()
+    expect(beneficiaire.email).toBe('maj@example.com')
+  })
 })

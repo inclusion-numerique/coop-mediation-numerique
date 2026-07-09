@@ -8,7 +8,6 @@ import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
 import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import { effectiveTrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
 import { prismaClient } from '@app/web/prismaClient'
-import { fixTelephone } from '@app/web/utils/clean-operations'
 import type { Prisma } from '@prisma/client'
 import { v4 } from 'uuid'
 import type {
@@ -29,25 +28,50 @@ const mergedBeneficiaireSelect = {
   commune: true,
 } satisfies Prisma.BeneficiaireSelect
 
+// Usager externe canonicalisé LE PLUS TÔT POSSIBLE (à l'entrée du port) : chaque
+// champ passe par son smart constructor `.safe` → forme canonique (téléphone
+// E.164, email trim/minuscules, nom/prénom trimmés) ou `null` si non
+// normalisable. La MÊME valeur sert à la déduplication, à la création ET à la
+// fusion → la donnée stockée est identique à la clé de rapprochement, ce qui
+// maximise la détection des doublons.
+type NormalizedExternalUser = {
+  rdvUserId: number
+  nom: Nom | null
+  prenom: Prenom | null
+  telephone: Telephone | null
+  email: Email | null
+  adresse: string | null
+  birthDate: Date | null
+}
+
+const normalizeExternalUser = (
+  usager: ExternalUserToMerge,
+): NormalizedExternalUser => ({
+  rdvUserId: usager.rdvUserId,
+  nom: usager.nom ? Nom.safe(usager.nom) : null,
+  prenom: usager.prenom ? Prenom.safe(usager.prenom) : null,
+  telephone: usager.telephone ? Telephone.safe(usager.telephone) : null,
+  email: usager.email ? Email.safe(usager.email) : null,
+  adresse: usager.adresse,
+  birthDate: usager.birthDate,
+})
+
 type BeneficiaireToMerge = MergedBeneficiaire | DuplicateBeneficiaire
 
 const existingCommune = (existing: BeneficiaireToMerge): unknown =>
   'commune' in existing ? existing.commune : existing.communeResidence
 
-// Frontière d'ingestion : les value objects sont construits en `.safe` sur la
-// donnée externe non fiable — un champ invalide devient null (il ne peut de
-// toute façon pas servir de clé de rapprochement fiable), jamais un throw.
 const findDuplicate = async (
-  usager: ExternalUserToMerge,
+  usager: NormalizedExternalUser,
   mediateurId: string,
 ): Promise<DuplicateBeneficiaire | null> => {
   const duplicates = await findDuplicatesForBeneficiaire({
     beneficiaire: {
       id: null,
-      nom: usager.nom ? Nom.safe(usager.nom) : null,
-      prenom: usager.prenom ? Prenom.safe(usager.prenom) : null,
-      telephone: usager.telephone ? Telephone.safe(usager.telephone) : null,
-      email: usager.email ? Email.safe(usager.email) : null,
+      nom: usager.nom,
+      prenom: usager.prenom,
+      telephone: usager.telephone,
+      email: usager.email,
       mediateurId: MediateurId(mediateurId),
     },
     withConflictingFields: 'exclude',
@@ -58,7 +82,7 @@ const findDuplicate = async (
 // Ne complète que les champs manquants de la fiche existante (jamais d'écrasement
 // d'une valeur déjà présente). Le géocodage n'est tenté que si la commune manque.
 const mergeUpdateData = async (
-  usager: ExternalUserToMerge,
+  usager: NormalizedExternalUser,
   existing: BeneficiaireToMerge,
   alreadyLinked: boolean,
 ): Promise<Prisma.BeneficiaireUncheckedUpdateInput> => {
@@ -72,7 +96,7 @@ const mergeUpdateData = async (
     ...(alreadyLinked ? {} : { rdvUserId: usager.rdvUserId }),
     ...(usager.email && !existing.email ? { email: usager.email } : {}),
     ...(usager.telephone && !existing.telephone
-      ? { telephone: fixTelephone(usager.telephone) }
+      ? { telephone: usager.telephone }
       : {}),
     ...(usager.prenom && !existing.prenom ? { prenom: usager.prenom } : {}),
     ...(usager.nom && !existing.nom ? { nom: usager.nom } : {}),
@@ -94,7 +118,7 @@ const mergeUpdateData = async (
 }
 
 const createBeneficiaire = async (
-  usager: ExternalUserToMerge,
+  usager: NormalizedExternalUser,
   mediateurId: string,
 ): Promise<MergedBeneficiaire> => {
   const anneeNaissance = usager.birthDate?.getFullYear()
@@ -128,9 +152,11 @@ const mergeOneUsager = async (
   usager: ExternalUserToMerge,
   mediateurId: string,
 ): Promise<MergedBeneficiaire> => {
+  const normalized = normalizeExternalUser(usager)
+
   const linked = await prismaClient.beneficiaire.findFirst({
     where: {
-      rdvUserId: usager.rdvUserId,
+      rdvUserId: normalized.rdvUserId,
       mediateurId,
       suppression: null,
       anonyme: false,
@@ -139,7 +165,7 @@ const mergeOneUsager = async (
   })
 
   if (linked) {
-    const data = await mergeUpdateData(usager, linked, true)
+    const data = await mergeUpdateData(normalized, linked, true)
     return Object.keys(data).length > 0
       ? prismaClient.beneficiaire.update({
           where: { id: linked.id },
@@ -149,10 +175,10 @@ const mergeOneUsager = async (
       : linked
   }
 
-  const duplicate = await findDuplicate(usager, mediateurId)
+  const duplicate = await findDuplicate(normalized, mediateurId)
   if (duplicate) {
     // La liaison rdvUserId est toujours ajoutée → mise à jour garantie.
-    const data = await mergeUpdateData(usager, duplicate, false)
+    const data = await mergeUpdateData(normalized, duplicate, false)
     return prismaClient.beneficiaire.update({
       where: { id: duplicate.id },
       data,
@@ -160,7 +186,7 @@ const mergeOneUsager = async (
     })
   }
 
-  return createBeneficiaire(usager, mediateurId)
+  return createBeneficiaire(normalized, mediateurId)
 }
 
 export const creerOuFusionnerBeneficiairesDepuisUsagersExternes: CreerOuFusionnerBeneficiairesDepuisUsagersExternes =
