@@ -6,6 +6,7 @@ import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiai
 import { prismaClient } from '@app/web/prismaClient'
 import { chunk } from 'lodash-es'
 import type {
+  NormaliserBeneficiaireChange,
   NormaliserBeneficiaireError,
   NormaliserBeneficiaires,
 } from '../../domain/normaliser-beneficiaires'
@@ -61,20 +62,45 @@ const recanonicalise = (row: BeneficiaireRow) => {
           status: 'changed' as const,
           id: row.id,
           data: { ...rest, modification: row.modification },
+          change: {
+            id: BeneficiaireId(row.id),
+            telephoneAvant: row.telephone,
+            telephoneApres: rest.telephone ?? null,
+            emailAvant: row.email,
+            emailApres: rest.email ?? null,
+          } satisfies NormaliserBeneficiaireChange,
         }
       : { status: 'unchanged' as const }
   } catch (error) {
+    const reason = error instanceof Error ? error.message : 'erreur inconnue'
+    // La validation email marque `"validation": "email"` ; le téléphone est le
+    // seul champ à lever une issue `"code": "custom"` (cf. value object).
+    const champ = reason.includes('"validation": "email"')
+      ? 'email'
+      : reason.includes('"code": "custom"')
+        ? 'telephone'
+        : 'autre'
+    const valeur =
+      champ === 'email'
+        ? row.email
+        : champ === 'telephone'
+          ? row.telephone
+          : null
     return {
       status: 'invalid' as const,
       error: {
         id: BeneficiaireId(row.id),
-        reason: error instanceof Error ? error.message : 'erreur inconnue',
+        champ,
+        valeur,
+        reason,
       } satisfies NormaliserBeneficiaireError,
     }
   }
 }
 
-export const normaliserBeneficiaires: NormaliserBeneficiaires = async () => {
+export const normaliserBeneficiaires: NormaliserBeneficiaires = async ({
+  dryRun = true,
+} = {}) => {
   const rows = await prismaClient.beneficiaire.findMany({
     where: { anonyme: false },
   })
@@ -86,26 +112,29 @@ export const normaliserBeneficiaires: NormaliserBeneficiaires = async () => {
   )
 
   const aMettreAJour = outcomes.flatMap((outcome) =>
-    outcome.status === 'changed'
-      ? [{ id: outcome.id, data: outcome.data }]
-      : [],
+    outcome.status === 'changed' ? [outcome] : [],
   )
 
-  await chunk(aMettreAJour, BATCH_SIZE).reduce(
-    (previous, batch) =>
-      previous.then(async () => {
-        await Promise.all(
-          batch.map(({ id, data }) =>
-            prismaClient.beneficiaire.update({ where: { id }, data }),
-          ),
-        )
-      }),
-    Promise.resolve(),
-  )
+  // Écritures uniquement hors dry-run ; le dry-run se contente de rapporter.
+  await (dryRun
+    ? Promise.resolve()
+    : chunk(aMettreAJour, BATCH_SIZE).reduce(
+        (previous, batch) =>
+          previous.then(async () => {
+            await Promise.all(
+              batch.map(({ id, data }) =>
+                prismaClient.beneficiaire.update({ where: { id }, data }),
+              ),
+            )
+          }),
+        Promise.resolve(),
+      ))
 
   return {
+    dryRun,
     updated: aMettreAJour.length,
     skipped: errors.length,
     errors: errors.slice(0, MAX_REPORTED_ERRORS),
+    changes: aMettreAJour.map((outcome) => outcome.change),
   }
 }

@@ -104,6 +104,7 @@
     "js-cookie": "^3.0.5",
     "js-file-downloader": "^1.1.25",
     "jsonwebtoken": "^9.0.2",
+    "libphonenumber-js": "1.13.7",
     "lodash-es": "^4.17.21",
     "maplibre-gl": "^5.4.0",
     "marked": "^15.0.11",

@@ -17,6 +17,7 @@ const canoniqueId = v4()
 const multiId = v4()
 const tiretId = v4()
 const placeholderId = v4()
+const dryRunId = v4()
 
 const ids = [
   nationalId,
@@ -28,6 +29,7 @@ const ids = [
   multiId,
   tiretId,
   placeholderId,
+  dryRunId,
 ]
 
 const oldModification = new Date('2020-01-01T00:00:00.000Z')
@@ -128,7 +130,7 @@ describe('normaliserBeneficiaires', () => {
       ],
     })
 
-    const result = await normaliserBeneficiaires()
+    const result = await normaliserBeneficiaires({ dryRun: false })
 
     const national = await fiche(nationalId)
     expect(national.telephone).toBe('+33601020304')
@@ -167,5 +169,32 @@ describe('normaliserBeneficiaires', () => {
     ).toBe(true)
 
     expect(result.updated).toBeGreaterThanOrEqual(3)
+  }, 60_000)
+
+  test('dry run reports changes without writing', async () => {
+    await prismaClient.beneficiaire.create({
+      data: {
+        id: dryRunId,
+        mediateurId: mediateurAvecActiviteMediateurId,
+        anonyme: false,
+        prenom: 'Dry',
+        nom: 'Run',
+        telephone: '0601020304', // serait canonicalisé en +33601020304
+        modification: oldModification,
+      },
+    })
+
+    const result = await normaliserBeneficiaires({ dryRun: true })
+
+    // aucune écriture : la fiche reste strictement telle quelle
+    const inchangee = await fiche(dryRunId)
+    expect(inchangee.telephone).toBe('0601020304')
+    expect(inchangee.modification).toEqual(oldModification)
+
+    // mais le changement qui aurait été appliqué est bien rapporté
+    expect(result.dryRun).toBe(true)
+    const change = result.changes.find((c) => c.id === dryRunId)
+    expect(change?.telephoneAvant).toBe('0601020304')
+    expect(change?.telephoneApres).toBe('+33601020304')
   }, 60_000)
 })
