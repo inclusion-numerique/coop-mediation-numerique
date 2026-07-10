@@ -21,15 +21,22 @@ export type NormaliserBeneficiaireError = {
   readonly reason: string
 }
 
-// Diff téléphone/email d'une fiche qui serait (ou a été) mise à jour, pour
-// inspection — notamment l'impact de l'élargissement de la validation
-// téléphone aux numéros internationaux.
+// Diff téléphone/email/commune d'une fiche qui serait (ou a été) mise à jour,
+// pour inspection — l'impact de l'élargissement de la validation téléphone aux
+// numéros internationaux, et le remplissage de la commune par géocodage BAN.
 export type NormaliserBeneficiaireChange = {
   readonly id: BeneficiaireId
   readonly telephoneAvant: string | null
   readonly telephoneApres: string | null
   readonly emailAvant: string | null
   readonly emailApres: string | null
+  readonly communeAvant: string | null
+  readonly communeApres: string | null
+  readonly adresseAvant: string | null
+  readonly adresseApres: string | null
+  // Noms des colonnes réellement modifiées : plus aucun changement « invisible »,
+  // tout est traçable dans le rapport CSV.
+  readonly champsModifies: ReadonlyArray<string>
 }
 
 export type NormaliserBeneficiairesResult = {
