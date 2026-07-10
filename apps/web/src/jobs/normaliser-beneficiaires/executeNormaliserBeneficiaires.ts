@@ -15,6 +15,11 @@ const csvHeader = [
   'telephone_apres',
   'email_avant',
   'email_apres',
+  'commune_avant',
+  'commune_apres',
+  'adresse_avant',
+  'adresse_apres',
+  'champs_modifies',
 ].join(';')
 
 const changeToCsv = (change: NormaliserBeneficiaireChange): string =>
@@ -24,6 +29,11 @@ const changeToCsv = (change: NormaliserBeneficiaireChange): string =>
     escapeCsvField(change.telephoneApres ?? ''),
     escapeCsvField(change.emailAvant ?? ''),
     escapeCsvField(change.emailApres ?? ''),
+    escapeCsvField(change.communeAvant ?? ''),
+    escapeCsvField(change.communeApres ?? ''),
+    escapeCsvField(change.adresseAvant ?? ''),
+    escapeCsvField(change.adresseApres ?? ''),
+    escapeCsvField(change.champsModifies.join(',')),
   ].join(';')
 
 // CSV des fiches sautées : le champ fautif et sa valeur, pour triage manuel.

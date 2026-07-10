@@ -1,3 +1,4 @@
+import { scoredCommuneFieldsFromAddress } from '@app/web/external-apis/ban/communeFieldsFromAddress'
 import {
   beneficiaireFromDomain,
   beneficiaireToDomain,
@@ -18,10 +19,25 @@ import {
 
 const BATCH_SIZE = 100
 const MAX_REPORTED_ERRORS = 100
+// Confiance minimale du géocodage BAN pour remplir une commune incomplète.
+const COMMUNE_SCORE_MIN = 0.9
 
 type BeneficiaireRow = Awaited<
   ReturnType<typeof prismaClient.beneficiaire.findMany>
 >[number]
+
+type Normalized = Omit<ReturnType<typeof beneficiaireFromDomain>, 'id'>
+
+type OkOutcome = {
+  status: 'ok'
+  row: BeneficiaireRow
+  normalized: Normalized
+}
+
+type InvalidOutcome = {
+  status: 'invalid'
+  error: NormaliserBeneficiaireError
+}
 
 // Téléphone / email à stocker : réparé si possible ; sinon vidé (`null`) si la
 // valeur est un placeholder (« 0000000000 », « A créer », « pas d'email »…) ou
@@ -38,11 +54,16 @@ const telephoneToStore = (raw: string): string | null =>
 const emailToStore = (raw: string): string | null =>
   repairEmail(raw) ?? (emailAbsent(raw) ? null : irrecuperableToStore(raw))
 
+const communeComplete = (fields: Normalized): boolean =>
+  fields.commune !== null &&
+  fields.communeCodePostal !== null &&
+  fields.communeCodeInsee !== null
+
 // Re-canonicalise une fiche via le transfer layer (téléphone et email
 // pré-réparés). `modification` est réémis pour que l'extension timestamp ne
 // bumpe pas (un nettoyage de données n'est pas une édition). Une donnée
 // invalide fait throw toDomain → la fiche est remontée dans les erreurs.
-const recanonicalise = (row: BeneficiaireRow) => {
+const recanonicalise = (row: BeneficiaireRow): OkOutcome | InvalidOutcome => {
   try {
     const prepared = {
       ...row,
@@ -54,23 +75,21 @@ const recanonicalise = (row: BeneficiaireRow) => {
     const { id: _id, ...rest } = beneficiaireFromDomain(
       beneficiaireToDomain(prepared),
     )
-    const changed = Object.entries(rest).some(
-      ([key, value]) => value !== (row as Record<string, unknown>)[key],
-    )
-    return changed
-      ? {
-          status: 'changed' as const,
-          id: row.id,
-          data: { ...rest, modification: row.modification },
-          change: {
-            id: BeneficiaireId(row.id),
-            telephoneAvant: row.telephone,
-            telephoneApres: rest.telephone ?? null,
-            emailAvant: row.email,
-            emailApres: rest.email ?? null,
-          } satisfies NormaliserBeneficiaireChange,
-        }
-      : { status: 'unchanged' as const }
+    // Le round-trip du domaine ne sait pas représenter une commune INCOMPLÈTE
+    // (trio commune/CP/INSEE partiel) : il la réduit à `null` et efface au
+    // passage l'adresse texte. Normaliser ne doit RIEN supprimer → si le
+    // round-trip nullifie une colonne de résidence, on restitue la valeur
+    // d'origine (`?? row`) ; une commune COMPLÈTE reste canonicalisée (ex. CP
+    // « 75 001 » → « 75001 »). Le remplissage d'un partiel se fait ensuite par
+    // géocodage (cf. `withGeocodedCommune`).
+    const normalized: Normalized = {
+      ...rest,
+      adresse: rest.adresse ?? row.adresse,
+      commune: rest.commune ?? row.commune,
+      communeCodePostal: rest.communeCodePostal ?? row.communeCodePostal,
+      communeCodeInsee: rest.communeCodeInsee ?? row.communeCodeInsee,
+    }
+    return { status: 'ok', row, normalized }
   } catch (error) {
     const reason = error instanceof Error ? error.message : 'erreur inconnue'
     // La validation email marque `"validation": "email"` ; le téléphone est le
@@ -87,7 +106,7 @@ const recanonicalise = (row: BeneficiaireRow) => {
           ? row.telephone
           : null
     return {
-      status: 'invalid' as const,
+      status: 'invalid',
       error: {
         id: BeneficiaireId(row.id),
         champ,
@@ -96,6 +115,62 @@ const recanonicalise = (row: BeneficiaireRow) => {
       } satisfies NormaliserBeneficiaireError,
     }
   }
+}
+
+// Commune INCOMPLÈTE + adresse renseignée → on géocode l'adresse et on remplit
+// le trio commune/CP/INSEE si la BAN matche avec assez de confiance ; sinon on
+// préserve le partiel (jamais d'effacement). Une commune déjà complète ou sans
+// adresse n'appelle pas la BAN.
+const withGeocodedCommune = async (
+  normalized: Normalized,
+): Promise<Normalized> => {
+  if (communeComplete(normalized) || normalized.adresse === null)
+    return normalized
+
+  // Un échec BAN (réseau, quota) ne doit pas avorter la normalisation : on
+  // préserve alors le partiel tel quel.
+  const scored = await scoredCommuneFieldsFromAddress(normalized.adresse).catch(
+    () => null,
+  )
+  return scored && scored.score > COMMUNE_SCORE_MIN
+    ? {
+        ...normalized,
+        commune: scored.commune,
+        communeCodePostal: scored.communeCodePostal,
+        communeCodeInsee: scored.communeCodeInsee,
+      }
+    : normalized
+}
+
+const needsGeocoding = ({ normalized }: OkOutcome): boolean =>
+  !communeComplete(normalized) && normalized.adresse !== null
+
+// Ne retient que les fiches réellement modifiées, avec leur diff (téléphone,
+// email, commune) pour le rapport CSV.
+const toUpdate = ({ row, normalized }: OkOutcome) => {
+  const champsModifies = Object.entries(normalized)
+    .filter(([key, value]) => value !== (row as Record<string, unknown>)[key])
+    .map(([key]) => key)
+  return champsModifies.length > 0
+    ? [
+        {
+          id: row.id,
+          data: { ...normalized, modification: row.modification },
+          change: {
+            id: BeneficiaireId(row.id),
+            telephoneAvant: row.telephone,
+            telephoneApres: normalized.telephone ?? null,
+            emailAvant: row.email,
+            emailApres: normalized.email ?? null,
+            communeAvant: row.commune,
+            communeApres: normalized.commune ?? null,
+            adresseAvant: row.adresse,
+            adresseApres: normalized.adresse ?? null,
+            champsModifies,
+          } satisfies NormaliserBeneficiaireChange,
+        },
+      ]
+    : []
 }
 
 export const normaliserBeneficiaires: NormaliserBeneficiaires = async ({
@@ -110,10 +185,30 @@ export const normaliserBeneficiaires: NormaliserBeneficiaires = async ({
   const errors = outcomes.flatMap((outcome) =>
     outcome.status === 'invalid' ? [outcome.error] : [],
   )
-
-  const aMettreAJour = outcomes.flatMap((outcome) =>
-    outcome.status === 'changed' ? [outcome] : [],
+  const oks = outcomes.flatMap((outcome) =>
+    outcome.status === 'ok' ? [outcome] : [],
   )
+
+  // Seules les communes incomplètes appellent la BAN ; le reste ne fait aucun
+  // I/O réseau. Géocodage séquentiel (doux pour l'API).
+  const geocoded = await oks
+    .filter(needsGeocoding)
+    .reduce<Promise<OkOutcome[]>>(
+      (previous, outcome) =>
+        previous.then(async (list) => [
+          ...list,
+          {
+            ...outcome,
+            normalized: await withGeocodedCommune(outcome.normalized),
+          },
+        ]),
+      Promise.resolve([]),
+    )
+
+  const aMettreAJour = [
+    ...oks.filter((outcome) => !needsGeocoding(outcome)),
+    ...geocoded,
+  ].flatMap(toUpdate)
 
   // Écritures uniquement hors dry-run ; le dry-run se contente de rapporter.
   await (dryRun

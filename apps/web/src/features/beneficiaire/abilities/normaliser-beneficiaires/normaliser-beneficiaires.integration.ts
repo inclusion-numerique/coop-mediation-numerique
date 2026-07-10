@@ -4,9 +4,19 @@ import {
   mediateurAvecActivite,
   mediateurAvecActiviteMediateurId,
 } from '@app/fixtures/users/mediateurAvecActivite'
+import { scoredCommuneFieldsFromAddress } from '@app/web/external-apis/ban/communeFieldsFromAddress'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
 import { normaliserBeneficiaires } from './implementation'
+
+jest.mock('@app/web/external-apis/ban/communeFieldsFromAddress', () => ({
+  scoredCommuneFieldsFromAddress: jest.fn(),
+  communeFieldsFromAddress: jest.fn(),
+}))
+
+const mockedScored = scoredCommuneFieldsFromAddress as jest.MockedFunction<
+  typeof scoredCommuneFieldsFromAddress
+>
 
 const nationalId = v4()
 const emailId = v4()
@@ -18,6 +28,7 @@ const multiId = v4()
 const tiretId = v4()
 const placeholderId = v4()
 const dryRunId = v4()
+const communePartielleId = v4()
 
 const ids = [
   nationalId,
@@ -30,6 +41,7 @@ const ids = [
   tiretId,
   placeholderId,
   dryRunId,
+  communePartielleId,
 ]
 
 const oldModification = new Date('2020-01-01T00:00:00.000Z')
@@ -42,6 +54,13 @@ describe('normaliserBeneficiaires', () => {
     await seedStructures(prismaClient)
     await resetFixtureUser(mediateurAvecActivite, false)
   }, 100_000)
+
+  beforeEach(() => {
+    // Par défaut la BAN ne résout rien : les fiches à commune partielle sont
+    // préservées telles quelles (aucun appel réseau réel dans les tests).
+    mockedScored.mockReset()
+    mockedScored.mockResolvedValue(null)
+  })
 
   afterEach(async () => {
     await prismaClient.beneficiaire.deleteMany({ where: { id: { in: ids } } })
@@ -196,5 +215,70 @@ describe('normaliserBeneficiaires', () => {
     const change = result.changes.find((c) => c.id === dryRunId)
     expect(change?.telephoneAvant).toBe('0601020304')
     expect(change?.telephoneApres).toBe('+33601020304')
+    // le rapport nomme les colonnes modifiées : aucun changement « invisible »
+    expect(change?.champsModifies).toContain('telephone')
+  }, 60_000)
+
+  test('fills a partial commune by geocoding when BAN matches confidently', async () => {
+    mockedScored.mockImplementation(async (address) =>
+      address === '12 rue de la Paix'
+        ? {
+            commune: 'Évreux',
+            communeCodePostal: '27000',
+            communeCodeInsee: '27229',
+            score: 0.97,
+          }
+        : null,
+    )
+
+    await prismaClient.beneficiaire.create({
+      data: {
+        id: communePartielleId,
+        mediateurId: mediateurAvecActiviteMediateurId,
+        anonyme: false,
+        prenom: 'Par',
+        nom: 'Tielle',
+        adresse: '12 rue de la Paix',
+        commune: null,
+        communeCodePostal: null,
+        communeCodeInsee: null,
+      },
+    })
+
+    await normaliserBeneficiaires({ dryRun: false })
+
+    const remplie = await fiche(communePartielleId)
+    expect(remplie.adresse).toBe('12 rue de la Paix')
+    expect(remplie.commune).toBe('Évreux')
+    expect(remplie.communeCodePostal).toBe('27000')
+    expect(remplie.communeCodeInsee).toBe('27229')
+  }, 60_000)
+
+  test('preserves a partial commune (never erases) when BAN is uncertain', async () => {
+    // Commune INCOMPLÈTE (INSEE manquant, adresse texte seule) que la BAN ne
+    // résout pas : on ne nullifie ni la commune ni l'adresse.
+    mockedScored.mockResolvedValue(null)
+
+    await prismaClient.beneficiaire.create({
+      data: {
+        id: communePartielleId,
+        mediateurId: mediateurAvecActiviteMediateurId,
+        anonyme: false,
+        prenom: 'Par',
+        nom: 'Tielle',
+        adresse: '12 rue introuvable',
+        commune: 'Évreux',
+        communeCodePostal: '27000',
+        communeCodeInsee: null,
+      },
+    })
+
+    await normaliserBeneficiaires({ dryRun: false })
+
+    const preservee = await fiche(communePartielleId)
+    expect(preservee.adresse).toBe('12 rue introuvable')
+    expect(preservee.commune).toBe('Évreux')
+    expect(preservee.communeCodePostal).toBe('27000')
+    expect(preservee.communeCodeInsee).toBeNull()
   }, 60_000)
 })
