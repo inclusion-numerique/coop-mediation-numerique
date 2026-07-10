@@ -1,6 +1,6 @@
 import type { Feature } from '@app/web/external-apis/apiAdresse'
 import { searchAdresse } from '@app/web/external-apis/apiAdresse'
-import { communeFieldsFromRdvAddress } from './communeFieldsFromRdvAddress'
+import { communeFieldsFromAddress } from './communeFieldsFromAddress'
 
 jest.mock('@app/web/external-apis/apiAdresse', () => ({
   searchAdresse: jest.fn(),
@@ -31,7 +31,7 @@ const evreuxFeature: Feature = {
   },
 }
 
-describe('communeFieldsFromRdvAddress', () => {
+describe('communeFieldsFromAddress', () => {
   beforeEach(() => {
     mockedSearchAdresse.mockReset()
   })
@@ -41,7 +41,7 @@ describe('communeFieldsFromRdvAddress', () => {
     undefined,
     '',
   ])('returns null and does not call the API for absent address %p', async (address) => {
-    expect(await communeFieldsFromRdvAddress(address)).toBeNull()
+    expect(await communeFieldsFromAddress(address)).toBeNull()
     expect(mockedSearchAdresse).not.toHaveBeenCalled()
   })
 
@@ -49,7 +49,7 @@ describe('communeFieldsFromRdvAddress', () => {
     mockedSearchAdresse.mockResolvedValue(evreuxFeature)
 
     expect(
-      await communeFieldsFromRdvAddress('12 rue de la Paix, 27000 Évreux'),
+      await communeFieldsFromAddress('12 rue de la Paix, 27000 Évreux'),
     ).toEqual({
       commune: 'Évreux',
       communeCodePostal: '27000',
@@ -60,6 +60,6 @@ describe('communeFieldsFromRdvAddress', () => {
   test('returns null when the address is not geocoded', async () => {
     mockedSearchAdresse.mockResolvedValue(null)
 
-    expect(await communeFieldsFromRdvAddress('adresse introuvable')).toBeNull()
+    expect(await communeFieldsFromAddress('adresse introuvable')).toBeNull()
   })
 })

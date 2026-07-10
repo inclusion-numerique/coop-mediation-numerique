@@ -1,4 +1,4 @@
-import { communeFieldsFromRdvAddress } from '@app/web/features/rdvsp/sync/communeFieldsFromRdvAddress'
+import { communeFieldsFromAddress } from '@app/web/external-apis/ban/communeFieldsFromAddress'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 import { BackfillCommuneRdvspJob } from './backfillCommuneRdvspJob'
@@ -24,7 +24,7 @@ export const executeBackfillCommuneRdvsp = async (
     async (accumulator, { id, adresse }) => {
       const count = await accumulator
 
-      const communeFields = await communeFieldsFromRdvAddress(adresse)
+      const communeFields = await communeFieldsFromAddress(adresse)
       if (!communeFields) return count
 
       await prismaClient.beneficiaire.update({

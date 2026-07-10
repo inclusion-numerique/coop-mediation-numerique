@@ -84,7 +84,7 @@ export const executeOAuthRdvApiCall = async <ResponseType = unknown>({
       currentAccessToken = accountToUse.accessToken
     }
   } catch (error) {
-    Sentry.captureException(error)
+    Sentry.captureException?.(error)
     // We could not refresh token (service down or oauth revoked)
     return {
       status: 'error',
@@ -144,7 +144,7 @@ export const executeOAuthRdvApiCall = async <ResponseType = unknown>({
           }
         }
       } catch (error) {
-        Sentry.captureException(error)
+        Sentry.captureException?.(error)
         return {
           status: 'error',
           statusCode: (error as AxiosError).response?.status ?? 500,
@@ -158,7 +158,7 @@ export const executeOAuthRdvApiCall = async <ResponseType = unknown>({
     }
 
     // otherwise sentry log the error and return an error response
-    Sentry.captureException(error)
+    Sentry.captureException?.(error)
     return {
       status: 'error',
       statusCode: (error as AxiosError).response?.status ?? 500,

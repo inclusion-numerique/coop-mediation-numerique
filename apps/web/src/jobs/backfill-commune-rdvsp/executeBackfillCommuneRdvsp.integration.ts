@@ -4,17 +4,17 @@ import {
   mediateurAvecActivite,
   mediateurAvecActiviteMediateurId,
 } from '@app/fixtures/users/mediateurAvecActivite'
-import { communeFieldsFromRdvAddress } from '@app/web/features/rdvsp/sync/communeFieldsFromRdvAddress'
+import { communeFieldsFromAddress } from '@app/web/external-apis/ban/communeFieldsFromAddress'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
 import { executeBackfillCommuneRdvsp } from './executeBackfillCommuneRdvsp'
 
-jest.mock('@app/web/features/rdvsp/sync/communeFieldsFromRdvAddress', () => ({
-  communeFieldsFromRdvAddress: jest.fn(),
+jest.mock('@app/web/external-apis/ban/communeFieldsFromAddress', () => ({
+  communeFieldsFromAddress: jest.fn(),
 }))
 
-const mockedCommuneFields = communeFieldsFromRdvAddress as jest.MockedFunction<
-  typeof communeFieldsFromRdvAddress
+const mockedCommuneFields = communeFieldsFromAddress as jest.MockedFunction<
+  typeof communeFieldsFromAddress
 >
 
 const evreux = {
