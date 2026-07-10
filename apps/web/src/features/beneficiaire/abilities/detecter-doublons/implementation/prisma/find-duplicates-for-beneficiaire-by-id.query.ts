@@ -1,10 +1,10 @@
+import { findDuplicatesForBeneficiaire } from '@app/web/features/beneficiaire/db/find-duplicates-for-beneficiaire.query'
 import { Email } from '@app/web/features/beneficiaire/domain/email'
 import { Nom } from '@app/web/features/beneficiaire/domain/nom'
 import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
 import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import { prismaClient } from '@app/web/prismaClient'
 import type { FindDuplicatesForBeneficiaireById } from '../../domain/detecter-doublons'
-import { findDuplicatesForBeneficiaire } from './find-duplicates-for-beneficiaire.query'
 
 export const findDuplicatesForBeneficiaireById: FindDuplicatesForBeneficiaireById =
   async ({ beneficiaireId, mediateurId }) => {
@@ -20,12 +20,12 @@ export const findDuplicatesForBeneficiaireById: FindDuplicatesForBeneficiaireByI
       beneficiaire: {
         id: beneficiaireId,
         mediateurId,
-        nom: beneficiaire.nom ? Nom(beneficiaire.nom) : null,
-        prenom: beneficiaire.prenom ? Prenom(beneficiaire.prenom) : null,
+        nom: beneficiaire.nom ? Nom.safe(beneficiaire.nom) : null,
+        prenom: beneficiaire.prenom ? Prenom.safe(beneficiaire.prenom) : null,
         telephone: beneficiaire.telephone
-          ? Telephone(beneficiaire.telephone)
+          ? Telephone.safe(beneficiaire.telephone)
           : null,
-        email: beneficiaire.email ? Email(beneficiaire.email) : null,
+        email: beneficiaire.email ? Email.safe(beneficiaire.email) : null,
       },
       withConflictingFields: 'include',
       fuzzyMatching: true,

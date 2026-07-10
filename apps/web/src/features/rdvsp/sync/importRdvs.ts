@@ -644,10 +644,20 @@ export const importRdvs = async ({
     usersResult.created += usersImport.result.created
     usersResult.updated += usersImport.result.updated
 
-    await createOrMergeBeneficiairesFromRdvUserIds({
+    // Découplé de la réconciliation des statuts : un échec du merge bénéficiaire
+    // (donnée pourrie ou infra) ne doit JAMAIS empêcher la mise à jour des RDV.
+    const { skipped } = await createOrMergeBeneficiairesFromRdvUserIds({
       rdvUsers: usersImport.importedIds.map((id) => ({ id })),
       mediateurId,
+    }).catch((error) => {
+      appendLog(
+        `merge bénéficiaires échoué (non bloquant): ${error instanceof Error ? error.message : String(error)}`,
+      )
+      return { merges: [], skipped: [] }
     })
+    if (skipped.length > 0) {
+      appendLog(`merge bénéficiaires: ${skipped.length} usager(s) écarté(s)`)
+    }
 
     const lieuxImport = await importLieux({
       existingLieuxMap,
