@@ -13,6 +13,7 @@ import {
   ActionsRapides,
   InformationsCoop,
   OnboardingInfo,
+  RdvIntegrationErreurAlerte,
   Support,
 } from './_components'
 import { Equipe } from './_components/Equipe'
@@ -32,6 +33,7 @@ export const Accueil = ({
   timezone,
   userId,
   rdvs,
+  rdvIntegrationStatus,
 }: {
   userId: string
   firstName: string | null
@@ -76,6 +78,11 @@ export const Accueil = ({
             user={{ id: userId, timezone }}
             syncDataOnLoad={rdvs.syncDataOnLoad}
           />
+        </section>
+      )}
+      {!rdvs && rdvIntegrationStatus === 'error' && (
+        <section className="fr-my-6w">
+          <RdvIntegrationErreurAlerte />
         </section>
       )}
       {isCoordinateur && (

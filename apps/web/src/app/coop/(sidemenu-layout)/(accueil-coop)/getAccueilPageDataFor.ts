@@ -131,6 +131,7 @@ export const getAccueilPageDataFor = async (
     mediateurs,
     activites,
     rdvs: dashboardRdvData,
+    rdvIntegrationStatus: getRdvOauthIntegrationStatus({ user }),
     activitesCoordinationByQuarter,
     syncDataOnLoad: dashboardRdvData ? dashboardRdvData.syncDataOnLoad : false,
   }
