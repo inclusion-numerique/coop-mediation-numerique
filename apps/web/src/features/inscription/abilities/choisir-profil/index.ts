@@ -1,3 +1,4 @@
+export * from './action/choisir-profil.errors'
 export {
   type ChoisirProfilFormData,
   ChoisirProfilValidation,

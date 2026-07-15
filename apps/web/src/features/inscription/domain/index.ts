@@ -1,7 +1,9 @@
 export { Email } from './email'
 export {
   EtapeNonAtteinte,
+  InscriptionDejaValidee,
   InscriptionForbidden,
+  InscriptionIntrouvable,
   MediateurIntrouvable,
   ProfilNonChoisi,
 } from './errors'
@@ -38,4 +40,10 @@ export {
   profilInscriptionSlugs,
   profilsInscription,
 } from './profil-inscription'
+export {
+  franchirLieuxActivite,
+  franchirStructureEmployeuse,
+  poserProfil,
+  valider,
+} from './transitions'
 export { UserId } from './user-id'

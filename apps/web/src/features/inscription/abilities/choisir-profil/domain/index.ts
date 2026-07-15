@@ -1,8 +1,9 @@
 export {
-  type ChoisirProfil,
+  type ChoisirProfilError,
+  choisirProfil,
   type ProfilChoisi,
   type ProfilsDisponibles,
   profilsDisponibles,
-  type RolesACreer,
-  rolesACreerPourProfil,
 } from './choisir-profil'
+export type { EnregistrerProfilChoisi } from './ports'
+export { type RolesACreer, rolesACreerPourProfil } from './roles-a-creer'

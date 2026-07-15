@@ -1,12 +1,36 @@
 import assert from 'node:assert'
-import { choisirProfil } from '@app/web/features/inscription/abilities/choisir-profil/implementation'
+import {
+  type ChoisirProfilError,
+  choisirProfil,
+} from '@app/web/features/inscription/abilities/choisir-profil'
+import {
+  enregistrerProfilChoisi,
+  getInscriptionEtat,
+} from '@app/web/features/inscription/abilities/choisir-profil/implementation'
 import { ProfilInscription } from '@app/web/features/inscription/domain'
-import { currentInscriptionUserId } from '@app/web/features/inscription/inscription.cucumber'
+import {
+  currentInscriptionUserId,
+  seedInscriptionValidee,
+} from '@app/web/features/inscription/inscription.cucumber'
+import type { Result } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
-import { Then, When } from '@cucumber/cucumber'
+import { Given, Then, When } from '@cucumber/cucumber'
+
+let resultat: Result<{ readonly profil: ProfilInscription }, ChoisirProfilError>
+
+Given(
+  'mon inscription est déjà validée avec le profil {string}',
+  async (profil: string) => {
+    await seedInscriptionValidee(ProfilInscription.schema.parse(profil))
+  },
+)
 
 When('je choisis le profil {string}', async (profil: string) => {
-  await choisirProfil({
+  resultat = await choisirProfil({
+    getInscriptionEtat,
+    enregistrerProfilChoisi,
+    maintenant: new Date(),
+  })({
     userId: currentInscriptionUserId(),
     profil: ProfilInscription.schema.parse(profil),
   })
@@ -23,6 +47,11 @@ Then(
     assert.ok(user.acceptationCgu, 'Les CGU n’ont pas été acceptées')
   },
 )
+
+Then('le choix du profil est refusé car l’inscription est déjà validée', () => {
+  assert.ok(!resultat.success, 'Le choix du profil aurait dû être refusé')
+  assert.strictEqual(resultat.error._tag, 'InscriptionDejaValidee')
+})
 
 Then('un compte médiateur existe pour l’utilisateur', async () => {
   const mediateur = await prismaClient.mediateur.findUnique({

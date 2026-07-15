@@ -1,3 +1,4 @@
+export * from './action/renseigner-structure-employeuse.errors'
 export {
   type RenseignerStructureEmployeuseFormData,
   RenseignerStructureEmployeuseValidation,

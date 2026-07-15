@@ -1,4 +1,7 @@
-import type { UserId } from '@app/web/features/inscription/domain'
+import type {
+  InscriptionEnCours,
+  UserId,
+} from '@app/web/features/inscription/domain'
 import type { StructureEmployeuseInput } from './structure-employeuse-input'
 import type { StructureId } from './structure-id'
 
@@ -12,10 +15,12 @@ export type EnsureStructureEmployeuse = (input: {
 }) => Promise<StructureId>
 
 /**
- * Lie l'utilisateur à la structure comme employeuse : rompt l'éventuel emploi
- * précédent, crée le nouvel emploi et marque l'étape franchie.
+ * Lie l'utilisateur à la structure comme employeuse — rompt l'éventuel emploi
+ * précédent, crée le nouvel emploi — et projette l'état d'inscription reçu, qui
+ * porte déjà l'étape franchie. L'état voyage avec l'emploi car les deux sont
+ * posés dans la même transaction.
  */
 export type LierEmploi = (input: {
-  readonly userId: UserId
+  readonly etat: InscriptionEnCours
   readonly structureId: StructureId
 }) => Promise<void>

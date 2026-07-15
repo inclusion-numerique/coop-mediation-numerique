@@ -1,5 +1,15 @@
-import type { ProfilInscription } from '@app/web/features/inscription/domain/profil-inscription'
-import type { UserId } from '@app/web/features/inscription/domain/user-id'
+import {
+  type GetInscriptionEtat,
+  InscriptionDejaValidee,
+  InscriptionIntrouvable,
+  isValidee,
+  type ProfilInscription,
+  poserProfil,
+  type UserId,
+} from '@app/web/features/inscription/domain'
+import { failure, type Result, success } from '@app/web/libraries/result'
+import type { EnregistrerProfilChoisi } from './ports'
+import { rolesACreerPourProfil } from './roles-a-creer'
 
 /**
  * Profils choisissables à la première étape : les variantes « conseiller
@@ -14,25 +24,35 @@ export type ProfilChoisi = {
   readonly profil: ProfilInscription
 }
 
-/** Comptes de rôle à garantir selon le profil choisi. */
-export type RolesACreer = {
-  readonly mediateur: boolean
-  readonly coordinateur: boolean
-}
+export type ChoisirProfilError = InscriptionIntrouvable | InscriptionDejaValidee
 
 /**
- * Règle métier pure : un profil médiation garantit un compte médiateur, un
- * profil coordination un compte coordinateur. Couvre les 4 valeurs (les profils
- * conseiller numérique inclus) même si seules deux sont choisissables ici.
+ * Choisit — ou re-choisit — le profil d'inscription : lit l'état courant,
+ * applique la transition, puis persiste l'état résultant et les comptes de rôle
+ * en une écriture. Orchestration pure sur les ports injectés : les colonnes
+ * d'inscription ne sont jamais écrites autrement que via un état du domaine.
  */
-export const rolesACreerPourProfil = (
-  profil: ProfilInscription,
-): RolesACreer => ({
-  mediateur: profil === 'Mediateur' || profil === 'ConseillerNumerique',
-  coordinateur:
-    profil === 'Coordinateur' || profil === 'CoordinateurConseillerNumerique',
-})
+export const choisirProfil =
+  (deps: {
+    readonly getInscriptionEtat: GetInscriptionEtat
+    readonly enregistrerProfilChoisi: EnregistrerProfilChoisi
+    readonly maintenant: Date
+  }) =>
+  async ({
+    userId,
+    profil,
+  }: ProfilChoisi): Promise<
+    Result<{ readonly profil: ProfilInscription }, ChoisirProfilError>
+  > => {
+    const etat = await deps.getInscriptionEtat(userId)
 
-export type ChoisirProfil = (
-  input: ProfilChoisi,
-) => Promise<{ readonly profil: ProfilInscription }>
+    if (etat === null) return failure(InscriptionIntrouvable(userId))
+    if (isValidee(etat)) return failure(InscriptionDejaValidee(userId))
+
+    await deps.enregistrerProfilChoisi({
+      etat: poserProfil(etat, profil, deps.maintenant),
+      roles: rolesACreerPourProfil(profil),
+    })
+
+    return success({ profil })
+  }

@@ -1,20 +1,31 @@
 import assert from 'node:assert'
 import {
+  type RenseignerStructureEmployeuseError,
   renseignerStructureEmployeuse,
   type StructureEmployeuseInput,
   StructureId,
 } from '@app/web/features/inscription/abilities/renseigner-structure-employeuse'
-import { lierEmploi } from '@app/web/features/inscription/abilities/renseigner-structure-employeuse/implementation'
+import {
+  getInscriptionEtat,
+  lierEmploi,
+} from '@app/web/features/inscription/abilities/renseigner-structure-employeuse/implementation'
+import { ProfilInscription } from '@app/web/features/inscription/domain'
 import {
   currentInscriptionUserId,
+  seedProfilChoisi,
   seedStructureEmployeuse,
 } from '@app/web/features/inscription/inscription.cucumber'
+import type { Result } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 
 let nouvelleStructureId = ''
 let ancienneStructureId = ''
+let resultat: Result<
+  { readonly structureId: StructureId },
+  RenseignerStructureEmployeuseError
+>
 
 const structureEmployeuseInput: StructureEmployeuseInput = {
   id: null,
@@ -32,6 +43,10 @@ const structureEmployeuseInput: StructureEmployeuseInput = {
   },
   typologies: [],
 }
+
+Given('j’ai choisi le profil {string}', async (profil: string) => {
+  await seedProfilChoisi(ProfilInscription.schema.parse(profil))
+})
 
 Given('un emploi existe déjà dans une autre structure', async () => {
   ancienneStructureId = await seedStructureEmployeuse({
@@ -51,9 +66,11 @@ When('je renseigne ma structure employeuse', async () => {
   nouvelleStructureId = await seedStructureEmployeuse({
     nom: 'Nouvelle structure',
   })
-  await renseignerStructureEmployeuse({
+  resultat = await renseignerStructureEmployeuse({
+    getInscriptionEtat,
     ensureStructureEmployeuse: async () => StructureId(nouvelleStructureId),
     lierEmploi,
+    maintenant: new Date(),
   })({
     userId: currentInscriptionUserId(),
     structureEmployeuse: structureEmployeuseInput,
@@ -90,4 +107,24 @@ Then('le précédent emploi est rompu', async () => {
     },
   })
   assert.ok(ancien?.fin, 'Le précédent emploi n’a pas été rompu')
+})
+
+Then('le renseignement est refusé faute de profil choisi', () => {
+  assert.ok(!resultat.success, 'Le renseignement aurait dû être refusé')
+  assert.strictEqual(resultat.error._tag, 'ProfilNonChoisi')
+})
+
+Then('ma structure employeuse n’est pas renseignée', async () => {
+  const user = await prismaClient.user.findUniqueOrThrow({
+    where: { id: currentInscriptionUserId() },
+    select: { structureEmployeuseRenseignee: true },
+  })
+  assert.strictEqual(user.structureEmployeuseRenseignee, null)
+})
+
+Then('aucun emploi n’est créé', async () => {
+  const emplois = await prismaClient.employeStructure.count({
+    where: { userId: currentInscriptionUserId() },
+  })
+  assert.strictEqual(emplois, 0)
 })

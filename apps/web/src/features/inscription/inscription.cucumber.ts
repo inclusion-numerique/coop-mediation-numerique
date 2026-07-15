@@ -1,3 +1,4 @@
+import type { ProfilInscription } from '@app/web/features/inscription/domain'
 import { UserId } from '@app/web/features/inscription/domain'
 import { prismaClient } from '@app/web/prismaClient'
 import { After, Before, setDefaultTimeout } from '@cucumber/cucumber'
@@ -22,6 +23,34 @@ const adresseDeTest = {
 }
 
 export const currentInscriptionUserId = (): UserId => UserId(inscriptionUserId)
+
+/**
+ * Amène l'utilisateur courant à l'état `EnCours` sans passer par l'ability
+ * `choisir-profil` : les scénarios des étapes suivantes ont besoin d'un profil
+ * posé, pas d'une dépendance vers une autre ability.
+ */
+export const seedProfilChoisi = async (
+  profil: ProfilInscription,
+): Promise<void> => {
+  await prismaClient.user.update({
+    where: { id: inscriptionUserId },
+    data: { profilInscription: profil, acceptationCgu: new Date() },
+  })
+}
+
+/** Amène l'utilisateur courant à l'état terminal `Validee` sur un profil donné. */
+export const seedInscriptionValidee = async (
+  profil: ProfilInscription,
+): Promise<void> => {
+  await prismaClient.user.update({
+    where: { id: inscriptionUserId },
+    data: {
+      profilInscription: profil,
+      acceptationCgu: new Date(),
+      inscriptionValidee: new Date(),
+    },
+  })
+}
 
 /**
  * Structure employeuse de test (suivie pour nettoyage). Depuis le split, un
