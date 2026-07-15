@@ -3,7 +3,11 @@ export type {
   InputPipeMiddleware,
   PipeMiddleware,
 } from './action-builder'
-export { actionBuilder } from './action-builder'
+export {
+  ACTION_INVALID_INPUT_ERROR,
+  ACTION_TECHNICAL_ERROR,
+  actionBuilder,
+} from './action-builder'
 export { isRedirectError } from './action-error'
 export { fromResult } from './from-result'
 export { createWithProvide, withInput } from './middlewares'

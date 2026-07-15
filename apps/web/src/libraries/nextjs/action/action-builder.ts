@@ -1,3 +1,4 @@
+import { ZodError } from 'zod'
 import type { ServerActionResult } from './result'
 
 type Merge<A extends object, B extends object> = Omit<A, keyof B> & B
@@ -96,12 +97,21 @@ type ActionBuilderOptions = {
   errorPrefix?: string
 }
 
+export const ACTION_INVALID_INPUT_ERROR = 'INVALID_INPUT'
+export const ACTION_TECHNICAL_ERROR = 'TECHNICAL_ERROR'
+
 const formatError =
   <TError>(options?: ActionBuilderOptions) =>
-  (error: unknown): TError =>
-    (options?.errorPrefix
-      ? [options.errorPrefix, error].join('.')
-      : error) as TError
+  (error: unknown): TError => {
+    const code =
+      error instanceof ZodError
+        ? ACTION_INVALID_INPUT_ERROR
+        : ACTION_TECHNICAL_ERROR
+
+    return (
+      options?.errorPrefix ? [options.errorPrefix, code].join('.') : code
+    ) as TError
+  }
 
 export const actionBuilder = (
   options?: ActionBuilderOptions,
@@ -132,6 +142,11 @@ export const actionBuilder = (
         } catch (error: unknown) {
           const { isRedirectError } = await import('./action-error')
           if (isRedirectError(error)) throw error
+
+          console.error('Server action failed', error)
+          const Sentry = await import('@sentry/nextjs')
+          Sentry.captureException?.(error)
+
           return { success: false, error: formatError<TError>(options)(error) }
         }
       }
