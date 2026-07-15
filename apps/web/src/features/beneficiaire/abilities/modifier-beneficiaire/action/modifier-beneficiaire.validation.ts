@@ -3,10 +3,11 @@ import { ContactTelephone } from '@app/web/features/beneficiaire/domain/contact-
 import { Genre } from '@app/web/features/beneficiaire/domain/genre'
 import { StatutSocial } from '@app/web/features/beneficiaire/domain/statut-social'
 import { beneficiaireFormShape } from '@app/web/features/beneficiaire/forms/beneficiaire-form'
+import { z } from 'zod'
 import type { BeneficiaireAModifier } from '../domain/beneficiaire-a-modifier'
 
 export const ModifierBeneficiaireValidation = beneficiaireFormShape
-  .extend({ id: BeneficiaireId.schema })
+  .extend({ id: z.string().nullish().pipe(BeneficiaireId.schema) })
   .transform(
     ({ id, ...form }): BeneficiaireAModifier => ({
       id,
