@@ -11,7 +11,7 @@ import {
 } from '@app/web/features/inscription/domain'
 import {
   currentInscriptionUserId,
-  seedStructure,
+  seedLieuActivite,
 } from '@app/web/features/inscription/inscription.cucumber'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
@@ -54,7 +54,7 @@ Given(
 Given(
   'l’utilisateur a le profil {string} avec des lieux d’activité',
   async (profil: string) => {
-    const structureId = await seedStructure()
+    const structureId = await seedLieuActivite()
     await prismaClient.user.update({
       where: { id: currentInscriptionUserId() },
       data: {

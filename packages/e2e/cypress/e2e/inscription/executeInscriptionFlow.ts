@@ -55,10 +55,6 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
       timeout: mutationAndNavigationTimeout,
     })
 
-    cy.intercept('/api/trpc/inscription.choisirProfilEtAccepterCgu*').as(
-      'choisirProfilMutation',
-    )
-
     cy.contains(profileInscriptionLabels[step.role]).click()
 
     if (step.acceptCgu) {
@@ -69,7 +65,15 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
 
     cy.get('button').contains('Continuer').click()
 
-    cy.wait('@choisirProfilMutation', { timeout: mutationAndNavigationTimeout })
+    // Cette étape passe par une server action, pas par tRPC : il n'y a aucune
+    // requête nommée à intercepter. On synchronise sur la sortie de l'étape,
+    // poussée par la page une fois l'action revenue — sinon les assertions de
+    // l'étape suivante démarreraient encore sur celle-ci (le récapitulatif
+    // vérifie l'absence de la checkbox CGU, qui est présente ici).
+    cy.url({ timeout: mutationAndNavigationTimeout }).should(
+      'not.contain',
+      getStepPath('choisir-role'),
+    )
 
     return
   }

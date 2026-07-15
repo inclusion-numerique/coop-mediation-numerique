@@ -7,7 +7,7 @@ import {
 import { lierEmploi } from '@app/web/features/inscription/abilities/renseigner-structure-employeuse/implementation'
 import {
   currentInscriptionUserId,
-  seedStructure,
+  seedStructureEmployeuse,
 } from '@app/web/features/inscription/inscription.cucumber'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
@@ -34,7 +34,9 @@ const structureEmployeuseInput: StructureEmployeuseInput = {
 }
 
 Given('un emploi existe déjà dans une autre structure', async () => {
-  ancienneStructureId = await seedStructure({ nom: 'Ancienne structure' })
+  ancienneStructureId = await seedStructureEmployeuse({
+    nom: 'Ancienne structure',
+  })
   await prismaClient.employeStructure.create({
     data: {
       id: v4(),
@@ -46,7 +48,9 @@ Given('un emploi existe déjà dans une autre structure', async () => {
 })
 
 When('je renseigne ma structure employeuse', async () => {
-  nouvelleStructureId = await seedStructure({ nom: 'Nouvelle structure' })
+  nouvelleStructureId = await seedStructureEmployeuse({
+    nom: 'Nouvelle structure',
+  })
   await renseignerStructureEmployeuse({
     ensureStructureEmployeuse: async () => StructureId(nouvelleStructureId),
     lierEmploi,

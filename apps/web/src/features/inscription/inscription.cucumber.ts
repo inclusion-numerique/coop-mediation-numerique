@@ -12,31 +12,49 @@ setDefaultTimeout(60_000)
  */
 let inscriptionUserId = ''
 
-const trackedStructureIds = new Set<string>()
+const trackedStructureEmployeuseIds = new Set<string>()
+const trackedLieuActiviteIds = new Set<string>()
+
+const adresseDeTest = {
+  adresse: '1 rue de la Paix',
+  commune: 'Paris',
+  codePostal: '75001',
+}
 
 export const currentInscriptionUserId = (): UserId => UserId(inscriptionUserId)
 
-/** Crée une structure de test (suivie pour nettoyage) et renvoie son id. */
-export const seedStructure = async (
+/**
+ * Structure employeuse de test (suivie pour nettoyage). Depuis le split, un
+ * emploi pointe sur `StructureAdministrative` — à ne pas confondre avec le lieu
+ * d'activité, qui est un `LieuInclusion`.
+ */
+export const seedStructureEmployeuse = async (
   data: { nom?: string } = {},
 ): Promise<string> => {
   const id = v4()
-  await prismaClient.structure.create({
-    data: {
-      id,
-      nom: data.nom ?? 'Structure de test',
-      adresse: '1 rue de la Paix',
-      commune: 'Paris',
-      codePostal: '75001',
-    },
+  await prismaClient.structureAdministrative.create({
+    data: { id, nom: data.nom ?? 'Structure de test', ...adresseDeTest },
   })
-  trackedStructureIds.add(id)
+  trackedStructureEmployeuseIds.add(id)
+  return id
+}
+
+/** Lieu d'activité de test (suivi pour nettoyage) : cible de `MediateurEnActivite`. */
+export const seedLieuActivite = async (
+  data: { nom?: string } = {},
+): Promise<string> => {
+  const id = v4()
+  await prismaClient.lieuInclusion.create({
+    data: { id, nom: data.nom ?? 'Lieu d’activité de test', ...adresseDeTest },
+  })
+  trackedLieuActiviteIds.add(id)
   return id
 }
 
 Before(async () => {
   inscriptionUserId = v4()
-  trackedStructureIds.clear()
+  trackedStructureEmployeuseIds.clear()
+  trackedLieuActiviteIds.clear()
   await prismaClient.user.create({
     data: {
       id: inscriptionUserId,
@@ -59,7 +77,10 @@ After(async () => {
     where: { userId: inscriptionUserId },
   })
   await prismaClient.user.deleteMany({ where: { id: inscriptionUserId } })
-  await prismaClient.structure.deleteMany({
-    where: { id: { in: [...trackedStructureIds] } },
+  await prismaClient.structureAdministrative.deleteMany({
+    where: { id: { in: [...trackedStructureEmployeuseIds] } },
+  })
+  await prismaClient.lieuInclusion.deleteMany({
+    where: { id: { in: [...trackedLieuActiviteIds] } },
   })
 })
