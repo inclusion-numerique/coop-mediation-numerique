@@ -55,6 +55,13 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
       timeout: mutationAndNavigationTimeout,
     })
 
+    // Le formulaire se desactive tant que la page n'est pas hydratee : cliquer
+    // avant serait perdu sans aucun signe visible. On attend donc qu'il soit
+    // actif, ce qui est aussi ce que voit un utilisateur.
+    cy.get('input[type=radio][name=profil]')
+      .first()
+      .should('be.enabled', { timeout: mutationAndNavigationTimeout })
+
     cy.contains(profileInscriptionLabels[step.role]).click()
 
     if (step.acceptCgu) {

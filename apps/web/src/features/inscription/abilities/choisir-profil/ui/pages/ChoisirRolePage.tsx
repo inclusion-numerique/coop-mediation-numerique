@@ -17,6 +17,7 @@ import { stepPath } from '@app/web/features/inscription/ui/step-path'
 import type { ServerActionResult } from '@app/web/libraries/nextjs'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { type DefaultValues, useAppForm } from '@app/web/libs/form/use-app-form'
+import { useHydrated } from '@app/web/libs/form/use-hydrated'
 import { useStore } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 
@@ -89,7 +90,12 @@ const ChoisirRolePage = ({ save }: { save: EnregistrerProfil }) => {
     },
   })
 
-  const isPending = useStore(form.store, (state) => state.isSubmitting)
+  const isSubmitting = useStore(form.store, (state) => state.isSubmitting)
+  const isHydrated = useHydrated()
+
+  // Champs désactivés tant que la page n'est pas interactive : sans cela, un
+  // clic trop précoce est silencieusement effacé par l'hydratation.
+  const isPending = isSubmitting || !isHydrated
 
   return (
     <form.AppForm>
