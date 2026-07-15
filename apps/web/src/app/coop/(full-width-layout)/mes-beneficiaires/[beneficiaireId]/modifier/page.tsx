@@ -11,16 +11,11 @@ const PageModifierBeneficiaire = async (props: {
   searchParams: Promise<{ retour?: string }>
   params: Promise<{ beneficiaireId: string }>
 }) => {
-  // 1. Contrôle d'accès
   const user = await authenticateMediateur()
 
-  // 2. Préparation des entrées : le param de route est parsé par son value
-  // object (schéma) et sert d'input à la récupération.
   const { beneficiaireId } = await props.params
   const { retour } = await props.searchParams
 
-  // 3. Récupération via l'ability ; l'absence (inexistant ou non possédé)
-  // déclenche un not-found.
   const beneficiaire = await beneficiaireAEditer({
     beneficiaireId: BeneficiaireId(beneficiaireId),
     mediateurId: MediateurId(user.mediateur.id),
@@ -30,7 +25,6 @@ const PageModifierBeneficiaire = async (props: {
     notFound()
   }
 
-  // 4. Rendu de la vue avec toutes ses données.
   return (
     <ModifierBeneficiairePage
       view={presentBeneficiaireAModifier(beneficiaire)}

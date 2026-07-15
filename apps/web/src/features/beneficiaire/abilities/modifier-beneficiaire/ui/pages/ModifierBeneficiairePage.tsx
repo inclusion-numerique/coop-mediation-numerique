@@ -9,12 +9,6 @@ import BeneficiaireForm, {
 import { contentId } from '@app/web/utils/skipLinks'
 import Link from 'next/link'
 
-/**
- * Composant de page pur : rend le formulaire de modification et son chrome à
- * partir de la vue déjà calculée. L'orchestration (auth, lecture via l'ability,
- * presenter) vit dans la route Next. L'action `save` est injectée ;
- * l'identifiant à modifier transite par les valeurs du formulaire.
- */
 export const ModifierBeneficiairePage = ({
   view: { beneficiaireId, displayName, defaultValues },
   save,
