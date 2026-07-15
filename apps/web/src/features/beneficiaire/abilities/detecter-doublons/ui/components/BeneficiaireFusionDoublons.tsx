@@ -33,7 +33,7 @@ const fusionDataFromFusionItems = ({
 }: {
   duplicates: BeneficiaireDoublon[]
   fusionItems: FusionItemsState
-}): { sourceId: string; targetId: string }[] =>
+}): { sourceId: string; destinationId: string }[] =>
   [...fusionItems.entries()]
     .filter(([_, { selected }]) => selected)
     .map(([id, { keep }]) => ({
@@ -54,13 +54,13 @@ const fusionDataFromFusionItems = ({
     .map(({ duplicate, keep }) => {
       if (keep === 'a') {
         return {
-          targetId: duplicate.a.id,
+          destinationId: duplicate.a.id,
           sourceId: duplicate.b.id,
         }
       }
 
       return {
-        targetId: duplicate.b.id,
+        destinationId: duplicate.b.id,
         sourceId: duplicate.a.id,
       }
     })

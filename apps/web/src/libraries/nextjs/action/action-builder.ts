@@ -1,3 +1,4 @@
+import { ZodError } from 'zod'
 import type { ServerActionResult } from './result'
 
 type Merge<A extends object, B extends object> = Omit<A, keyof B> & B
@@ -17,6 +18,16 @@ export type PipeMiddleware<
   next: Next<TCtxOut, TResult, TError>,
 ) => Promise<ServerActionResult<TResult, TError>>
 
+declare const actionInput: unique symbol
+
+export type InputPipeMiddleware<
+  TCtxIn extends object,
+  TCtxOut extends object,
+  TInput,
+> = PipeMiddleware<TCtxIn, TCtxOut, unknown, string> & {
+  readonly [actionInput]?: TInput
+}
+
 type AnyPipeMiddleware = PipeMiddleware<
   Record<string, unknown>,
   Record<string, unknown>,
@@ -24,16 +35,24 @@ type AnyPipeMiddleware = PipeMiddleware<
   string
 >
 
-interface ActionBuilder<TCtx extends object> {
-  use<TCtxOut extends object>(
-    middleware: PipeMiddleware<TCtx, TCtxOut, unknown, string>,
-  ): ActionBuilder<Merge<TCtx, TCtxOut>>
+export type ActionFunction<TInput, TResult, TError extends string> = [
+  TInput,
+] extends [void]
+  ? () => Promise<ServerActionResult<TResult, TError>>
+  : (input: TInput) => Promise<ServerActionResult<TResult, TError>>
+
+interface ActionBuilder<TCtx extends object, TInput = void> {
+  use<TCtxOut extends object, TIn = TInput>(
+    middleware: PipeMiddleware<TCtx, TCtxOut, unknown, string> & {
+      readonly [actionInput]?: TIn
+    },
+  ): ActionBuilder<Merge<TCtx, TCtxOut>, TIn>
 
   execute<TResult = undefined, TError extends string = string>(
     handler: (
       ctx: TCtx,
     ) => Promise<ServerActionResult<TResult, TError> | TResult | undefined>,
-  ): (input?: unknown) => Promise<ServerActionResult<TResult, TError>>
+  ): ActionFunction<TInput, TResult, TError>
 }
 
 const toSuccessResult = <TResult, TError extends string>(
@@ -78,19 +97,28 @@ type ActionBuilderOptions = {
   errorPrefix?: string
 }
 
+export const ACTION_INVALID_INPUT_ERROR = 'INVALID_INPUT'
+export const ACTION_TECHNICAL_ERROR = 'TECHNICAL_ERROR'
+
 const formatError =
   <TError>(options?: ActionBuilderOptions) =>
-  (error: unknown): TError =>
-    (options?.errorPrefix
-      ? [options.errorPrefix, error].join('.')
-      : error) as TError
+  (error: unknown): TError => {
+    const code =
+      error instanceof ZodError
+        ? ACTION_INVALID_INPUT_ERROR
+        : ACTION_TECHNICAL_ERROR
+
+    return (
+      options?.errorPrefix ? [options.errorPrefix, code].join('.') : code
+    ) as TError
+  }
 
 export const actionBuilder = (
   options?: ActionBuilderOptions,
 ): ActionBuilder<object> => {
-  const createBuilder = <TCtx extends object>(
+  const createBuilder = <TCtx extends object, TInput = void>(
     middlewares: AnyPipeMiddleware[],
-  ): ActionBuilder<TCtx> => ({
+  ): ActionBuilder<TCtx, TInput> => ({
     use: (middleware) =>
       createBuilder([...middlewares, middleware as AnyPipeMiddleware]),
 
@@ -106,7 +134,7 @@ export const actionBuilder = (
         ) => Promise<ServerActionResult<TResult, TError> | TResult | undefined>,
       )
 
-      return async (
+      const action = async (
         rawInput?: unknown,
       ): Promise<ServerActionResult<TResult, TError>> => {
         try {
@@ -114,9 +142,16 @@ export const actionBuilder = (
         } catch (error: unknown) {
           const { isRedirectError } = await import('./action-error')
           if (isRedirectError(error)) throw error
+
+          console.error('Server action failed', error)
+          const Sentry = await import('@sentry/nextjs')
+          Sentry.captureException?.(error)
+
           return { success: false, error: formatError<TError>(options)(error) }
         }
       }
+
+      return action as ActionFunction<TInput, TResult, TError>
     },
   })
 

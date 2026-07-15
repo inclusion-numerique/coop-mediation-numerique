@@ -34,6 +34,9 @@ describe('ModifierBeneficiaireValidation', () => {
       ModifierBeneficiaireValidation.parse({ prenom: 'Jean', nom: 'Dupont' }),
     ).toThrow()
     expect(() =>
+      ModifierBeneficiaireValidation.parse({ ...minimal, id: null }),
+    ).toThrow()
+    expect(() =>
       ModifierBeneficiaireValidation.parse({ ...minimal, id: 'not-a-uuid' }),
     ).toThrow()
   })
