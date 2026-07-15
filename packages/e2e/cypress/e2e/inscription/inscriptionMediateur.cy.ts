@@ -26,7 +26,7 @@ describe("ETQ médiateur, je peux m'inscrire en suivant le bon parcours", () => 
               'Inscription à La Coop de la médiation numérique',
             ).should('be.visible')
             cy.contains(
-              "Choisissez votre rôle afin de profiter d'un espace adapté à vos besoins.",
+              'Choisissez votre rôle afin de profiter d’un espace adapté à vos besoins.',
             ).should('be.visible')
             cy.contains(profileInscriptionLabels.Mediateur).should('be.visible')
             cy.contains(profileInscriptionLabels.Coordinateur).should(
