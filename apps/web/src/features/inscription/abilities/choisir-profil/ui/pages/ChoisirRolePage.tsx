@@ -7,11 +7,9 @@ import {
   choisirProfilFormShape,
 } from '@app/web/features/inscription/abilities/choisir-profil'
 import {
-  getNextInscriptionStep,
-  InscriptionFlowType,
-  InscriptionStep,
-  type ProfilInscription,
+  type InscriptionStep,
   profilInscriptionLabels,
+  type Role,
 } from '@app/web/features/inscription/domain'
 import { stepPath } from '@app/web/features/inscription/ui/step-path'
 import type { ServerActionResult } from '@app/web/libraries/nextjs'
@@ -21,9 +19,12 @@ import { useHydrated } from '@app/web/libs/form/use-hydrated'
 import { useStore } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 
-export type EnregistrerProfil = (
-  data: ChoisirProfilFormData,
-) => Promise<ServerActionResult<{ profil: ProfilInscription }>>
+export type EnregistrerProfil = (data: ChoisirProfilFormData) => Promise<
+  ServerActionResult<{
+    role: Role
+    etapeSuivante: InscriptionStep
+  }>
+>
 
 const roleOptions = [
   {
@@ -54,8 +55,8 @@ const erreurEnregistrement = () =>
 
 /**
  * Écran de choix du rôle. Composant client pur : la route lie la server action
- * `save` ; le formulaire reste découplé de l'ability. À la sauvegarde, on dérive
- * l'étape suivante du parcours via la machine à états du domaine.
+ * `save` ; le formulaire reste découplé de l'ability. À la sauvegarde, l'action
+ * renvoie l'étape suivante (dérivée de l'état persisté) et on y navigue.
  */
 const defaultValues: DefaultValues<ChoisirProfilFormData> = {
   cguAcceptee: false,
@@ -76,14 +77,7 @@ const ChoisirRolePage = ({ save }: { save: EnregistrerProfil }) => {
           return
         }
 
-        const next = getNextInscriptionStep(InscriptionStep('choisir-role'), {
-          flowType: InscriptionFlowType('withoutDataspace'),
-          profil: result.data.profil,
-          hasLieuxActivite: false,
-          isConseillerNumerique: false,
-        })
-
-        if (next) router.push(stepPath(next))
+        router.push(stepPath(result.data.etapeSuivante))
       } catch {
         erreurEnregistrement()
       }
@@ -111,7 +105,7 @@ const ChoisirRolePage = ({ save }: { save: EnregistrerProfil }) => {
           </p>
         </div>
         <form onSubmit={handleSubmit(form)}>
-          <form.AppField name="profil">
+          <form.AppField name="role">
             {(field) => (
               <field.RadioButtons
                 className="fr-px-3v"

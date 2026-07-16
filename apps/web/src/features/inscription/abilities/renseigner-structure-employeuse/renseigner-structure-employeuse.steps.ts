@@ -5,10 +5,6 @@ import {
   type StructureEmployeuseInput,
   StructureId,
 } from '@app/web/features/inscription/abilities/renseigner-structure-employeuse'
-import {
-  getInscriptionEtat,
-  lierEmploi,
-} from '@app/web/features/inscription/abilities/renseigner-structure-employeuse/implementation'
 import { ProfilInscription } from '@app/web/features/inscription/domain'
 import {
   currentInscriptionUserId,
@@ -67,13 +63,12 @@ When('je renseigne ma structure employeuse', async () => {
     nom: 'Nouvelle structure',
   })
   resultat = await renseignerStructureEmployeuse({
-    getInscriptionEtat,
+    command: {
+      userId: currentInscriptionUserId(),
+      structureEmployeuse: structureEmployeuseInput,
+    },
     ensureStructureEmployeuse: async () => StructureId(nouvelleStructureId),
-    lierEmploi,
     maintenant: new Date(),
-  })({
-    userId: currentInscriptionUserId(),
-    structureEmployeuse: structureEmployeuseInput,
   })
 })
 

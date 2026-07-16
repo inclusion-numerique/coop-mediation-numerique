@@ -1,58 +1,53 @@
 import {
-  type GetInscriptionEtat,
   InscriptionDejaValidee,
+  type InscriptionEtat,
   InscriptionIntrouvable,
   isValidee,
-  type ProfilInscription,
-  poserProfil,
+  poserRole,
+  type Role,
   type UserId,
 } from '@app/web/features/inscription/domain'
 import { failure, type Result, success } from '@app/web/libraries/result'
-import type { EnregistrerProfilChoisi } from './ports'
-import { rolesACreerPourProfil } from './roles-a-creer'
+import type { EnregistrerProfilChoisiInput } from './ports'
+import { rolesACreerPourRole } from './roles-a-creer'
 
 /**
- * Profils choisissables à la première étape : les variantes « conseiller
- * numérique » ne se choisissent pas, elles proviennent du Dataspace.
+ * Rôles choisissables à la première étape : le statut conseiller numérique ne se
+ * choisit pas, il provient du Dataspace.
  */
-export const profilsDisponibles = ['Mediateur', 'Coordinateur'] as const
+export const rolesDisponibles = ['Mediateur', 'Coordinateur'] as const
 
-export type ProfilsDisponibles = (typeof profilsDisponibles)[number]
+export type RoleDisponible = (typeof rolesDisponibles)[number]
 
-export type ProfilChoisi = {
+export type RoleChoisi = {
   readonly userId: UserId
-  readonly profil: ProfilInscription
+  readonly role: Role
 }
 
 export type ChoisirProfilError = InscriptionIntrouvable | InscriptionDejaValidee
 
 /**
- * Choisit — ou re-choisit — le profil d'inscription : lit l'état courant,
- * applique la transition, puis persiste l'état résultant et les comptes de rôle
- * en une écriture. Orchestration pure sur les ports injectés : les colonnes
- * d'inscription ne sont jamais écrites autrement que via un état du domaine.
+ * Décide — ou re-décide — le rôle d'inscription : garde l'état courant puis
+ * applique la transition, et rend la charge à écrire (état résultant + comptes
+ * de rôle) sans l'exécuter. Fonction pure : c'est la couche appelante qui lit
+ * l'état et projette `aEnregistrer` en une seule écriture.
  */
-export const choisirProfil =
-  (deps: {
-    readonly getInscriptionEtat: GetInscriptionEtat
-    readonly enregistrerProfilChoisi: EnregistrerProfilChoisi
-    readonly maintenant: Date
-  }) =>
-  async ({
-    userId,
-    profil,
-  }: ProfilChoisi): Promise<
-    Result<{ readonly profil: ProfilInscription }, ChoisirProfilError>
-  > => {
-    const etat = await deps.getInscriptionEtat(userId)
+export const choisirProfil = (
+  etat: InscriptionEtat | null,
+  { userId, role }: RoleChoisi,
+  maintenant: Date,
+): Result<
+  { readonly role: Role; readonly aEnregistrer: EnregistrerProfilChoisiInput },
+  ChoisirProfilError
+> => {
+  if (etat === null) return failure(InscriptionIntrouvable(userId))
+  if (isValidee(etat)) return failure(InscriptionDejaValidee(userId))
 
-    if (etat === null) return failure(InscriptionIntrouvable(userId))
-    if (isValidee(etat)) return failure(InscriptionDejaValidee(userId))
-
-    await deps.enregistrerProfilChoisi({
-      etat: poserProfil(etat, profil, deps.maintenant),
-      roles: rolesACreerPourProfil(profil),
-    })
-
-    return success({ profil })
-  }
+  return success({
+    role,
+    aEnregistrer: {
+      etat: poserRole(etat, role, maintenant),
+      roles: rolesACreerPourRole(role),
+    },
+  })
+}

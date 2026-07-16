@@ -4,10 +4,10 @@ import {
   choisirProfil,
 } from '@app/web/features/inscription/abilities/choisir-profil'
 import {
-  enregistrerProfilChoisi,
-  getInscriptionEtat,
-} from '@app/web/features/inscription/abilities/choisir-profil/implementation'
-import { ProfilInscription } from '@app/web/features/inscription/domain'
+  type InscriptionStep,
+  ProfilInscription,
+  Role,
+} from '@app/web/features/inscription/domain'
 import {
   currentInscriptionUserId,
   seedInscriptionValidee,
@@ -16,7 +16,10 @@ import type { Result } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 
-let resultat: Result<{ readonly profil: ProfilInscription }, ChoisirProfilError>
+let resultat: Result<
+  { readonly role: Role; readonly etapeSuivante: InscriptionStep },
+  ChoisirProfilError
+>
 
 Given(
   'mon inscription est déjà validée avec le profil {string}',
@@ -25,15 +28,14 @@ Given(
   },
 )
 
-When('je choisis le profil {string}', async (profil: string) => {
-  resultat = await choisirProfil({
-    getInscriptionEtat,
-    enregistrerProfilChoisi,
-    maintenant: new Date(),
-  })({
-    userId: currentInscriptionUserId(),
-    profil: ProfilInscription.schema.parse(profil),
-  })
+When('je choisis le profil {string}', async (role: string) => {
+  resultat = await choisirProfil(
+    {
+      userId: currentInscriptionUserId(),
+      role: Role.schema.parse(role),
+    },
+    new Date(),
+  )
 })
 
 Then(

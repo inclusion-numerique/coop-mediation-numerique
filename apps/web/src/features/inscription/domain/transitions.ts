@@ -5,7 +5,7 @@ import type {
   InscriptionValidee,
   ProgressionEtapes,
 } from './inscription-etat'
-import type { ProfilInscription } from './profil-inscription'
+import type { Role } from './role'
 
 /**
  * Les transitions sont les seules fabriques d'un état d'inscription : chacune
@@ -21,18 +21,22 @@ const progressionVierge: ProgressionEtapes = {
 }
 
 /**
- * Choix — ou re-choix — du profil, les CGU étant acceptées au même instant. Un
- * retour arrière sur `choisir-role` conserve les étapes déjà franchies : changer
- * de rôle ne rembobine pas le parcours.
+ * Choix — ou re-choix — du rôle, les CGU étant acceptées au même instant. Un
+ * retour arrière sur `choisir-role` conserve les étapes déjà franchies (changer
+ * de rôle ne rembobine pas le parcours) et le statut conseiller numérique. Un
+ * premier choix part non conseiller numérique : un CN ne franchit jamais cette
+ * étape (il est routé avant, à l'initialisation).
  */
-export const poserProfil = (
+export const poserRole = (
   etat: InscriptionNonDemarree | InscriptionEnCours,
-  profil: ProfilInscription,
+  role: Role,
   le: Date,
 ): InscriptionEnCours => ({
   _tag: 'EnCours',
   userId: etat.userId,
-  profil,
+  role,
+  conseillerNumerique:
+    etat._tag === 'EnCours' ? etat.conseillerNumerique : false,
   acceptationCgu: le,
   progression: etat._tag === 'EnCours' ? etat.progression : progressionVierge,
 })

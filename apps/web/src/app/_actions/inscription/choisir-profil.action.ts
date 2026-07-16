@@ -6,10 +6,6 @@ import {
   ChoisirProfilValidation,
   choisirProfil,
 } from '@app/web/features/inscription/abilities/choisir-profil'
-import {
-  enregistrerProfilChoisi,
-  getInscriptionEtat,
-} from '@app/web/features/inscription/abilities/choisir-profil/implementation'
 import { UserId } from '@app/web/features/inscription/domain'
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 
@@ -18,15 +14,11 @@ export const choisirProfilAction = actionBuilder()
   .use(withInput(ChoisirProfilValidation))
   .execute(
     fromResult(
-      async ({ input, user }) =>
-        choisirProfil({
-          getInscriptionEtat,
-          enregistrerProfilChoisi,
-          maintenant: new Date(),
-        })({
-          userId: UserId(user.id),
-          profil: input.profil,
-        }),
+      ({ input, user }) =>
+        choisirProfil(
+          { userId: UserId(user.id), role: input.role },
+          new Date(),
+        ),
       { onError: CHOISIR_PROFIL_ERRORS },
     ),
   )

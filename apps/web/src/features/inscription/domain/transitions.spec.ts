@@ -3,11 +3,11 @@ import type {
   InscriptionEnCours,
   InscriptionNonDemarree,
 } from './inscription-etat'
-import { ProfilInscription } from './profil-inscription'
+import { Role } from './role'
 import {
   franchirLieuxActivite,
   franchirStructureEmployeuse,
-  poserProfil,
+  poserRole,
   valider,
 } from './transitions'
 import { UserId } from './user-id'
@@ -24,7 +24,8 @@ const inscriptionNonDemarree: InscriptionNonDemarree = {
 const inscriptionEnCours: InscriptionEnCours = {
   _tag: 'EnCours',
   userId,
-  profil: ProfilInscription('Mediateur'),
+  role: Role('Mediateur'),
+  conseillerNumerique: false,
   acceptationCgu,
   progression: {
     structureEmployeuse: Franchissement(null),
@@ -40,45 +41,34 @@ const structureDejaFranchie: InscriptionEnCours = {
   },
 }
 
-describe('poserProfil', () => {
-  it('démarre l’inscription sur le profil choisi, CGU acceptées au même instant', () => {
-    const etat = poserProfil(
-      inscriptionNonDemarree,
-      ProfilInscription('Coordinateur'),
-      le,
-    )
+describe('poserRole', () => {
+  it('démarre l’inscription sur le rôle choisi, CGU acceptées au même instant', () => {
+    const etat = poserRole(inscriptionNonDemarree, Role('Coordinateur'), le)
 
     expect(etat._tag).toBe('EnCours')
-    expect(etat.profil).toBe('Coordinateur')
+    expect(etat.role).toBe('Coordinateur')
     expect(etat.acceptationCgu).toEqual(le)
   })
 
-  it('démarre avec une progression vierge', () => {
-    const { progression } = poserProfil(
-      inscriptionNonDemarree,
-      ProfilInscription('Mediateur'),
-      le,
-    )
+  it('démarre avec une progression vierge et non conseiller numérique', () => {
+    const etat = poserRole(inscriptionNonDemarree, Role('Mediateur'), le)
 
-    expect(estFranchi(progression.structureEmployeuse)).toBe(false)
-    expect(estFranchi(progression.lieuxActivite)).toBe(false)
+    expect(estFranchi(etat.progression.structureEmployeuse)).toBe(false)
+    expect(estFranchi(etat.progression.lieuxActivite)).toBe(false)
+    expect(etat.conseillerNumerique).toBe(false)
   })
 
-  it('remplace le profil et la date de CGU lors d’un re-choix', () => {
-    const etat = poserProfil(
-      structureDejaFranchie,
-      ProfilInscription('Coordinateur'),
-      le,
-    )
+  it('remplace le rôle et la date de CGU lors d’un re-choix', () => {
+    const etat = poserRole(structureDejaFranchie, Role('Coordinateur'), le)
 
-    expect(etat.profil).toBe('Coordinateur')
+    expect(etat.role).toBe('Coordinateur')
     expect(etat.acceptationCgu).toEqual(le)
   })
 
   it('conserve les étapes déjà franchies lors d’un re-choix', () => {
-    const { progression } = poserProfil(
+    const { progression } = poserRole(
       structureDejaFranchie,
-      ProfilInscription('Coordinateur'),
+      Role('Coordinateur'),
       le,
     )
 
@@ -86,6 +76,18 @@ describe('poserProfil', () => {
       _tag: 'franchi',
       le: acceptationCgu,
     })
+  })
+
+  it('conserve le statut conseiller numérique lors d’un re-choix', () => {
+    const conseillerNumerique: InscriptionEnCours = {
+      ...inscriptionEnCours,
+      conseillerNumerique: true,
+    }
+
+    expect(
+      poserRole(conseillerNumerique, Role('Coordinateur'), le)
+        .conseillerNumerique,
+    ).toBe(true)
   })
 })
 
@@ -128,10 +130,11 @@ describe('valider', () => {
     expect(etat.inscriptionValidee).toEqual(le)
   })
 
-  it('conserve profil, acceptation des CGU et progression', () => {
+  it('conserve rôle, statut CN, acceptation des CGU et progression', () => {
     const etat = valider(structureDejaFranchie, le)
 
-    expect(etat.profil).toBe('Mediateur')
+    expect(etat.role).toBe('Mediateur')
+    expect(etat.conseillerNumerique).toBe(false)
     expect(etat.acceptationCgu).toEqual(acceptationCgu)
     expect(etat.progression).toEqual(structureDejaFranchie.progression)
   })

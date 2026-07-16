@@ -5,10 +5,7 @@ import type {
   InscriptionNonDemarree,
   InscriptionValidee,
 } from '../domain/inscription-etat'
-import {
-  ProfilInscription,
-  profilsInscription,
-} from '../domain/profil-inscription'
+import { Role } from '../domain/role'
 import { UserId } from '../domain/user-id'
 import {
   inscriptionEtatFromDomain,
@@ -35,7 +32,8 @@ describe('inscription état transfer layer', () => {
     const etat: InscriptionEnCours = {
       _tag: 'EnCours',
       userId,
-      profil: ProfilInscription('Coordinateur'),
+      role: Role('Coordinateur'),
+      conseillerNumerique: false,
       acceptationCgu: cgu,
       progression: {
         structureEmployeuse: Franchissement(null),
@@ -49,7 +47,8 @@ describe('inscription état transfer layer', () => {
     const etat: InscriptionEnCours = {
       _tag: 'EnCours',
       userId,
-      profil: ProfilInscription('Mediateur'),
+      role: Role('Mediateur'),
+      conseillerNumerique: false,
       acceptationCgu: cgu,
       progression: {
         structureEmployeuse: Franchissement(structure),
@@ -59,11 +58,12 @@ describe('inscription état transfer layer', () => {
     expect(roundTrip(etat)).toEqual(etat)
   })
 
-  it('round-trips une inscription en cours, structure et lieux franchis', () => {
+  it('round-trips un conseiller numérique (préserve la variante d’enum via reflatten)', () => {
     const etat: InscriptionEnCours = {
       _tag: 'EnCours',
       userId,
-      profil: ProfilInscription('ConseillerNumerique'),
+      role: Role('Mediateur'),
+      conseillerNumerique: true,
       acceptationCgu: cgu,
       progression: {
         structureEmployeuse: Franchissement(structure),
@@ -73,13 +73,20 @@ describe('inscription état transfer layer', () => {
     expect(roundTrip(etat)).toEqual(etat)
   })
 
-  it.each(
-    profilsInscription,
-  )('round-trips une inscription validée (max) pour le profil %s', (profil) => {
+  it.each([
+    { role: Role('Mediateur'), conseillerNumerique: false },
+    { role: Role('Mediateur'), conseillerNumerique: true },
+    { role: Role('Coordinateur'), conseillerNumerique: false },
+    { role: Role('Coordinateur'), conseillerNumerique: true },
+  ])('round-trips une inscription validée (max) pour %o', ({
+    role,
+    conseillerNumerique,
+  }) => {
     const etat: InscriptionValidee = {
       _tag: 'Validee',
       userId,
-      profil: ProfilInscription(profil),
+      role,
+      conseillerNumerique,
       acceptationCgu: cgu,
       progression: {
         structureEmployeuse: Franchissement(structure),
@@ -95,6 +102,7 @@ describe('inscription état transfer layer', () => {
       inscriptionEtatToDomain({
         id,
         profilInscription: 'Mediateur',
+        isConseillerNumerique: false,
         acceptationCgu: null,
         structureEmployeuseRenseignee: null,
         lieuxActiviteRenseignes: null,
