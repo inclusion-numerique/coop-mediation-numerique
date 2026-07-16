@@ -34,7 +34,11 @@ export {
   InscriptionFlowType,
   inscriptionFlowTypes,
 } from './inscription-flow-type'
-export { InscriptionStep, inscriptionSteps } from './inscription-step'
+export {
+  InscriptionStep,
+  type InscriptionStepValue,
+  inscriptionSteps,
+} from './inscription-step'
 export {
   type ContexteParcours,
   peutValider,

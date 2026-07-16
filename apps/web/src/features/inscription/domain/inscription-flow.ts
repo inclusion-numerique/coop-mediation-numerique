@@ -1,5 +1,5 @@
 import { InscriptionFlowType } from './inscription-flow-type'
-import { InscriptionStep } from './inscription-step'
+import { InscriptionStep, type InscriptionStepValue } from './inscription-step'
 import type { ProfilInscription } from './profil-inscription'
 
 /**
@@ -13,12 +13,63 @@ export type InscriptionContexte = {
   readonly isConseillerNumerique: boolean
 }
 
-const steps = {
-  choisirRole: InscriptionStep('choisir-role'),
-  verifierInformations: InscriptionStep('verifier-informations'),
-  lieuxActivite: InscriptionStep('lieux-activite'),
-  recapitulatif: InscriptionStep('recapitulatif'),
-} as const
+/** Une transition : depuis un step, si la garde passe, vers un step (ou fin). */
+type Transition = {
+  readonly de: InscriptionStepValue
+  readonly si?: (contexte: InscriptionContexte) => boolean
+  readonly vers: InscriptionStepValue | null
+}
+
+const premiereTransition = (
+  table: readonly Transition[],
+  courant: InscriptionStep,
+  contexte: InscriptionContexte,
+): InscriptionStep | null => {
+  const vers = table.find(
+    (transition) =>
+      transition.de === courant && (transition.si?.(contexte) ?? true),
+  )?.vers
+  return vers == null ? null : InscriptionStep(vers)
+}
+
+/** Parcours complet : flow sans Dataspace, ou pour un non-conseiller numérique. */
+const fluxStandard: readonly Transition[] = [
+  { de: 'initialize', vers: 'choisir-role' },
+  {
+    de: 'choisir-role',
+    si: (c) => c.profil === 'Coordinateur',
+    vers: 'recapitulatif',
+  },
+  { de: 'choisir-role', vers: 'verifier-informations' },
+  {
+    de: 'verifier-informations',
+    si: (c) => c.profil === 'Mediateur' || c.profil === 'ConseillerNumerique',
+    vers: 'lieux-activite',
+  },
+  { de: 'verifier-informations', vers: 'recapitulatif' },
+  { de: 'lieux-activite', vers: 'recapitulatif' },
+]
+
+/** Parcours raccourci du flow Dataspace pour un conseiller numérique. */
+const fluxDataspace: readonly Transition[] = [
+  {
+    de: 'initialize',
+    si: (c) => c.profil === 'ConseillerNumerique' && c.hasLieuxActivite,
+    vers: 'recapitulatif',
+  },
+  {
+    de: 'initialize',
+    si: (c) => c.profil === 'ConseillerNumerique',
+    vers: 'verifier-informations',
+  },
+  {
+    de: 'initialize',
+    si: (c) => c.profil === 'CoordinateurConseillerNumerique',
+    vers: 'recapitulatif',
+  },
+  { de: 'initialize', vers: 'choisir-role' },
+  { de: 'lieux-activite', vers: 'recapitulatif' },
+]
 
 /** Détermine le type de flow selon la présence de données Dataspace. */
 export const getInscriptionFlow = ({
@@ -28,52 +79,19 @@ export const getInscriptionFlow = ({
 }): InscriptionFlowType =>
   InscriptionFlowType(hasDataspaceData ? 'withDataspace' : 'withoutDataspace')
 
-const nextWithoutDataspace = (
-  currentStep: InscriptionStep,
-  profil: ProfilInscription | null,
-): InscriptionStep | null => {
-  if (currentStep === 'initialize') return steps.choisirRole
-  if (currentStep === 'choisir-role')
-    return profil === 'Coordinateur'
-      ? steps.recapitulatif
-      : steps.verifierInformations
-  if (currentStep === 'verifier-informations')
-    return profil === 'Mediateur' || profil === 'ConseillerNumerique'
-      ? steps.lieuxActivite
-      : steps.recapitulatif
-  if (currentStep === 'lieux-activite') return steps.recapitulatif
-  return null
-}
-
-const nextWithDataspace = (
-  currentStep: InscriptionStep,
-  profil: ProfilInscription | null,
-  hasLieuxActivite: boolean,
-): InscriptionStep | null => {
-  if (currentStep === 'initialize') {
-    if (profil === 'ConseillerNumerique')
-      return hasLieuxActivite ? steps.recapitulatif : steps.verifierInformations
-    if (profil === 'CoordinateurConseillerNumerique') return steps.recapitulatif
-    return steps.choisirRole
-  }
-  if (currentStep === 'lieux-activite') return steps.recapitulatif
-  return null
-}
-
 /**
  * Étape suivante du parcours, ou `null` si terminale. Le flow sans Dataspace (ou
  * pour un non-conseiller numérique) suit le parcours complet ; le flow Dataspace
  * raccourcit selon le profil et la présence de lieux déjà connus.
  */
 export const getNextInscriptionStep = (
-  currentStep: InscriptionStep,
-  {
-    flowType,
-    profil,
-    hasLieuxActivite,
-    isConseillerNumerique,
-  }: InscriptionContexte,
+  courant: InscriptionStep,
+  contexte: InscriptionContexte,
 ): InscriptionStep | null =>
-  flowType === 'withoutDataspace' || !isConseillerNumerique
-    ? nextWithoutDataspace(currentStep, profil)
-    : nextWithDataspace(currentStep, profil, hasLieuxActivite)
+  premiereTransition(
+    contexte.flowType === 'withoutDataspace' || !contexte.isConseillerNumerique
+      ? fluxStandard
+      : fluxDataspace,
+    courant,
+    contexte,
+  )

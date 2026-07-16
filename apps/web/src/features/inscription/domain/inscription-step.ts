@@ -15,3 +15,6 @@ export const InscriptionStep = defineModel(
 )
 
 export type InscriptionStep = Model.TypeOf<typeof InscriptionStep>
+
+/** Union des valeurs brutes (non brandées) — clés de mapping (URLs, etc.). */
+export type InscriptionStepValue = (typeof inscriptionSteps)[number]
