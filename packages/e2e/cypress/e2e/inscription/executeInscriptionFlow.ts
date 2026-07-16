@@ -1,6 +1,6 @@
 import { appUrl } from '@app/e2e/support/helpers'
 import { CreateUserInput } from '@app/e2e/tasks/handlers/user.tasks'
-import { getStepPath } from '@app/web/features/inscription/inscriptionFlow'
+import { stepPath } from '@app/web/features/inscription/ui/step-path'
 import {
   lowerCaseProfileInscriptionLabels,
   profileInscriptionConseillerNumeriqueLabels,
@@ -51,7 +51,7 @@ const cguLabelMatch = /J’ai lu et j’accepte/
 
 const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
   if (step.step === 'choisir-role') {
-    cy.appUrlShouldBe(getStepPath('choisir-role'), {
+    cy.appUrlShouldBe(stepPath('choisir-role'), {
       timeout: mutationAndNavigationTimeout,
     })
 
@@ -79,14 +79,14 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
     // vérifie l'absence de la checkbox CGU, qui est présente ici).
     cy.url({ timeout: mutationAndNavigationTimeout }).should(
       'not.contain',
-      getStepPath('choisir-role'),
+      stepPath('choisir-role'),
     )
 
     return
   }
 
   if (step.step === 'verifier-informations') {
-    cy.appUrlShouldBe(getStepPath('verifier-informations'), {
+    cy.appUrlShouldBe(stepPath('verifier-informations'), {
       timeout: mutationAndNavigationTimeout,
     })
     step.check?.()
@@ -121,7 +121,7 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
     step.step === 'lieux-activite' &&
     'structureEmployeuseIsLieuActivite' in step
   ) {
-    cy.appUrlShouldBe(`${getStepPath('lieux-activite')}/structure-employeuse`, {
+    cy.appUrlShouldBe(`${stepPath('lieux-activite')}/structure-employeuse`, {
       timeout: mutationAndNavigationTimeout,
     })
 
@@ -146,7 +146,7 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
     step.step === 'lieux-activite' &&
     !('structureEmployeuseIsLieuActivite' in step)
   ) {
-    cy.appUrlShouldBe(getStepPath('lieux-activite'), {
+    cy.appUrlShouldBe(stepPath('lieux-activite'), {
       timeout: mutationAndNavigationTimeout,
     })
 
@@ -174,7 +174,7 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
       cy.findByRole('checkbox', { name: cguLabelMatch }).should('be.visible')
     }
 
-    cy.appUrlShouldBe(getStepPath('recapitulatif'), {
+    cy.appUrlShouldBe(stepPath('recapitulatif'), {
       timeout: mutationAndNavigationTimeout,
     })
 
@@ -226,7 +226,7 @@ export const executeInscriptionFlow = ({
     cy.signin(user)
   }
 
-  cy.visit(appUrl(getStepPath('initialize')))
+  cy.visit(appUrl(stepPath('initialize')))
 
   for (const step of expectedSteps) {
     handleStep(step)

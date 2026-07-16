@@ -10,10 +10,8 @@ import RichCardLabel, {
 import LogoCoop from '@app/web/components/LogoCoop'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import CguCheckboxField from '@app/web/features/inscription/components/CguCheckboxField'
-import {
-  getNextInscriptionStep,
-  getStepPath,
-} from '@app/web/features/inscription/inscriptionFlow'
+import { getNextInscriptionStep } from '@app/web/features/inscription/inscriptionFlow'
+import { stepPath } from '@app/web/features/inscription/ui/step-path'
 import {
   type ChoisirProfilEtAccepterCguData,
   ChoisirProfilEtAccepterCguValidation,
@@ -71,7 +69,7 @@ const ChoisirRolePage = ({ userId }: { userId: string }) => {
       })
 
       if (nextStep) {
-        router.push(getStepPath(nextStep))
+        router.push(stepPath(nextStep))
       }
     } catch {
       createToast({

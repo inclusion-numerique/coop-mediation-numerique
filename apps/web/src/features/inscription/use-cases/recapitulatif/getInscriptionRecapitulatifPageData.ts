@@ -2,7 +2,7 @@ import type { SessionUser } from '@app/web/auth/sessionUser'
 import { getLieuxActiviteForInscription } from '@app/web/features/inscription/getLieuxActiviteForInscription'
 import { getMediateursCoordonnesForInscription } from '@app/web/features/inscription/getMediateursCoordonnesForInscription'
 import { getStructureEmployeuseForInscription } from '@app/web/features/inscription/getStructureEmployeuseForInscription'
-import { getStepPath } from '@app/web/features/inscription/inscriptionFlow'
+import { stepPath } from '@app/web/features/inscription/ui/step-path'
 import { prismaClient } from '@app/web/prismaClient'
 
 const getInscriptionDataContext = async ({
@@ -78,10 +78,10 @@ export const getInscriptionRecapitulatifPageData = async ({
     importedLieuxFromDataspace // Hide backhref if lieux were imported from dataspace for conseiller numerique
       ? null
       : user.profilInscription === 'Coordinateur'
-        ? getStepPath('choisir-role')
+        ? stepPath('choisir-role')
         : user.profilInscription === 'CoordinateurConseillerNumerique'
           ? null
-          : getStepPath('lieux-activite')
+          : stepPath('lieux-activite')
 
   return {
     user,

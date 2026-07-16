@@ -100,25 +100,3 @@ export const getNextInscriptionStep = ({
       return null
   }
 }
-
-/**
- * Get the URL path for a step
- */
-export const getStepPath = (step: InscriptionStep): string => {
-  switch (step) {
-    case 'initialize':
-      return '/inscription/initialiser'
-    case 'choisir-role':
-      return '/inscription/choisir-role'
-    case 'verifier-informations':
-      return '/inscription/verifier-informations'
-    case 'renseigner-structure-employeuse':
-      return '/inscription/renseigner-structure-employeuse'
-    case 'lieux-activite':
-      return '/inscription/lieux-activite'
-    case 'recapitulatif':
-      return '/inscription/recapitulatif'
-    default:
-      return '/inscription'
-  }
-}

@@ -3,9 +3,10 @@ import {
   personneToEmployeuseActuelle,
   rattacherAUneEmployeuseDepuisSiret,
 } from '@app/web/features/employeuse/server'
+import { stepPath } from '@app/web/features/inscription/ui/step-path'
 import { garantirCoordinateurDuDispositif } from '@app/web/features/utilisateurs/use-cases/dispositif/garantirCoordinateurDuDispositif'
 import { prismaClient } from '@app/web/prismaClient'
-import { getNextInscriptionStep, getStepPath } from '../../inscriptionFlow'
+import { getNextInscriptionStep } from '../../inscriptionFlow'
 import {
   dispositifDepuisMain,
   profilDepuisDispositif,
@@ -176,5 +177,5 @@ export const initializeInscription = async ({
 
   log('Initialisation terminée', { nextStep })
 
-  return { nextStepPath: nextStep ? getStepPath(nextStep) : null }
+  return { nextStepPath: nextStep ? stepPath(nextStep) : null }
 }

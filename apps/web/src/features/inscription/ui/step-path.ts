@@ -1,7 +1,4 @@
-import type {
-  InscriptionStep,
-  InscriptionStepValue,
-} from '@app/web/features/inscription/domain'
+import type { InscriptionStepValue } from '@app/web/features/inscription/domain'
 
 const stepPaths: Record<InscriptionStepValue, string> = {
   initialize: '/inscription/initialiser',
@@ -13,7 +10,10 @@ const stepPaths: Record<InscriptionStepValue, string> = {
   recapitulatif: '/inscription/recapitulatif',
 }
 
-export const stepPath = (step: InscriptionStep): string => {
-  const value: InscriptionStepValue = step
-  return stepPaths[value]
-}
+/**
+ * Chemin d'URL d'une étape. Accepte la valeur brute (`InscriptionStepValue`) —
+ * donc aussi une `InscriptionStep` brandée, structurellement assignable — pour
+ * rester un drop-in du `getStepPath` legacy tant que le parcours n'est pas
+ * entièrement migré.
+ */
+export const stepPath = (step: InscriptionStepValue): string => stepPaths[step]

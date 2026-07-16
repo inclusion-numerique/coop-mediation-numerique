@@ -3,10 +3,8 @@ import { sessionUserHasStructureEmployeuse } from '@app/web/auth/sessionUser'
 import IconInSquare from '@app/web/components/IconInSquare'
 import InfoLabelValue from '@app/web/components/InfoLabelValue'
 import StructureCard from '@app/web/components/structure/StructureCard'
-import {
-  getNextInscriptionStep,
-  getStepPath,
-} from '@app/web/features/inscription/inscriptionFlow'
+import { getNextInscriptionStep } from '@app/web/features/inscription/inscriptionFlow'
+import { stepPath } from '@app/web/features/inscription/ui/step-path'
 import { allProfileInscriptionLabels } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import Button from '@codegouvfr/react-dsfr/Button'
 import InscriptionCard from '../../components/InscriptionCard'
@@ -29,10 +27,10 @@ const VerifierInformationsPage = ({ user }: { user: SessionUser }) => {
   let nextStepPath: string
   if (nextStep === 'lieux-activite') {
     if (hasStructureEmployeuse)
-      nextStepPath = `${getStepPath('lieux-activite')}/structure-employeuse`
-    else nextStepPath = getStepPath('renseigner-structure-employeuse')
+      nextStepPath = `${stepPath('lieux-activite')}/structure-employeuse`
+    else nextStepPath = stepPath('renseigner-structure-employeuse')
   } else {
-    nextStepPath = getStepPath(nextStep)
+    nextStepPath = stepPath(nextStep)
   }
 
   const profilLabel = user.profilInscription
