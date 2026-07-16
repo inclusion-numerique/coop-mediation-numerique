@@ -4,6 +4,7 @@ import CustomSelectFormField from '@app/ui/components/Form/CustomSelectFormField
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
+import { renseignerLieuxActiviteAction } from '@app/web/app/_actions/inscription/renseigner-lieux-activite.action'
 import StructureCard from '@app/web/components/structure/StructureCard'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import {
@@ -12,7 +13,6 @@ import {
 } from '@app/web/features/utilisateurs/use-cases/registration/LieuxActivite'
 import { LieuActiviteSearchResult } from '@app/web/structure/searchLieuActiviteCombined'
 import { trpc } from '@app/web/trpc'
-import { applyZodValidationMutationErrorsToForm } from '@app/web/utils/applyZodValidationMutationErrorsToForm'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -39,7 +39,6 @@ const LieuxActiviteForm = ({
 
   const {
     control,
-    setError,
     handleSubmit,
     setValue,
     formState: { isSubmitting, errors, isSubmitSuccessful },
@@ -58,8 +57,6 @@ const LieuxActiviteForm = ({
   const reversedFields = structureFields
     .map((field, index) => ({ field, index }))
     .toReversed()
-
-  const mutation = trpc.inscription.renseignerLieuxActivite.useMutation()
 
   const router = useRouter()
 
@@ -208,13 +205,22 @@ const LieuxActiviteForm = ({
 
   const onSubmit = async (data: LieuxActiviteData) => {
     try {
-      await mutation.mutateAsync(data)
-      router.push(nextHref)
-      router.refresh()
-    } catch (mutationError) {
-      if (applyZodValidationMutationErrorsToForm(mutationError, setError)) {
+      const result = await renseignerLieuxActiviteAction({
+        lieuxActivite: data.lieuxActivite,
+      })
+
+      if (!result.success) {
+        createToast({
+          priority: 'error',
+          message:
+            'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
+        })
         return
       }
+
+      router.push(nextHref)
+      router.refresh()
+    } catch {
       createToast({
         priority: 'error',
         message:

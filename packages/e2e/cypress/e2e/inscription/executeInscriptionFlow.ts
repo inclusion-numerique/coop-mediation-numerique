@@ -149,15 +149,14 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
       timeout: mutationAndNavigationTimeout,
     })
 
-    cy.intercept('/api/trpc/inscription.renseignerLieuxActivite*').as(
-      'renseignerLieuxActiviteMutation',
-    )
-
+    // Cette étape passe désormais par une server action, pas par tRPC : aucune
+    // requête nommée à intercepter. On synchronise sur la sortie de l'étape
+    // (navigation vers le récapitulatif après « Suivant »).
     step.check?.()
 
     cy.contains('Suivant').click()
 
-    cy.wait('@renseignerLieuxActiviteMutation', {
+    cy.appUrlShouldBe(stepPath('recapitulatif'), {
       timeout: mutationAndNavigationTimeout,
     })
 
