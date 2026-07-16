@@ -14,7 +14,7 @@ export const choisirProfilAction = actionBuilder()
   .use(withInput(ChoisirProfilValidation))
   .execute(
     fromResult(
-      ({ input, user }) =>
+      async ({ input, user }) =>
         choisirProfil(
           { userId: UserId(user.id), role: input.role },
           new Date(),
