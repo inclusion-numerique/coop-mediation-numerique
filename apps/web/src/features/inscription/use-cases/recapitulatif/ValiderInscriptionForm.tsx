@@ -1,18 +1,18 @@
 'use client'
 
 import { createToast } from '@app/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { validerAction } from '@app/web/app/_actions/inscription/valider.action'
 import {
   type ValiderFormData,
-  ValiderValidation,
+  validerFormShape,
 } from '@app/web/features/inscription/abilities/valider'
-import CguCheckboxField from '@app/web/features/inscription/components/CguCheckboxField'
+import { handleSubmit } from '@app/web/libs/form/handle-submit'
+import { type DefaultValues, useAppForm } from '@app/web/libs/form/use-app-form'
+import { useHydrated } from '@app/web/libs/form/use-hydrated'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { useStore } from '@tanstack/react-form'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
 
 const erreurValidation = () =>
   createToast({
@@ -28,73 +28,94 @@ const ValiderInscriptionForm = ({
   mustAcceptCgu?: boolean
   canCancel?: boolean
 }) => {
-  const form = useForm<ValiderFormData>({
-    resolver: zodResolver(ValiderValidation),
-    defaultValues: {
-      // Si l'acceptation des CGU n'est pas requise (déjà acceptée), on la
-      // pré-remplit ; sinon l'utilisateur doit cocher la case au récapitulatif.
-      cguAcceptee: mustAcceptCgu ? undefined : true,
+  const router = useRouter()
+
+  // Si l'acceptation des CGU n'est pas requise (déjà acceptée), on la
+  // pré-remplit ; sinon l'utilisateur doit cocher la case au récapitulatif.
+  const defaultValues: DefaultValues<ValiderFormData> = {
+    cguAcceptee: !mustAcceptCgu,
+  }
+
+  const form = useAppForm({
+    validators: { onSubmit: validerFormShape },
+    defaultValues,
+    onSubmit: async ({ value }) => {
+      try {
+        const result = await validerAction(validerFormShape.parse(value))
+
+        if (!result.success) {
+          erreurValidation()
+          return
+        }
+
+        router.push('/en-savoir-plus')
+        router.refresh()
+        createToast({
+          priority: 'success',
+          message: 'Votre inscription a bien été validée !',
+        })
+      } catch {
+        erreurValidation()
+      }
     },
   })
 
-  const {
-    control,
-    handleSubmit,
-    formState: { isSubmitting, isSubmitSuccessful },
-  } = form
+  const isSubmitting = useStore(form.store, (state) => state.isSubmitting)
+  const isHydrated = useHydrated()
 
-  const isLoading = isSubmitting || isSubmitSuccessful
-
-  const router = useRouter()
-
-  const onSubmit = async (data: ValiderFormData) => {
-    try {
-      const result = await validerAction(data)
-
-      if (!result.success) {
-        erreurValidation()
-        return
-      }
-
-      router.push('/en-savoir-plus')
-      router.refresh()
-      createToast({
-        priority: 'success',
-        message: 'Votre inscription a bien été validée !',
-      })
-    } catch {
-      erreurValidation()
-    }
-  }
+  // Bouton désactivé tant que la page n'est pas interactive : sans cela, un
+  // clic trop précoce est silencieusement perdu à l'hydratation.
+  const isPending = isSubmitting || !isHydrated
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      {mustAcceptCgu && (
-        <CguCheckboxField
-          path="cguAcceptee"
-          control={control}
-          disabled={isLoading}
-        />
-      )}
-      <div className={classNames(mustAcceptCgu && 'fr-mt-8v', 'fr-btns-group')}>
-        <Button
-          type="submit"
-          priority="primary"
-          {...buttonLoadingClassname(isLoading, 'fr-mb-0')}
-        >
-          Valider mon inscription
-        </Button>
-        {canCancel && (
-          <Button
-            linkProps={{ href: '/' }}
-            priority="secondary"
-            className="fr-mb-0 fr-mt-4v"
-          >
-            Annuler
-          </Button>
+    <form.AppForm>
+      <form onSubmit={handleSubmit(form)}>
+        {mustAcceptCgu && (
+          <form.AppField name="cguAcceptee">
+            {(field) => (
+              <field.Checkbox
+                isPending={isPending}
+                isTiled={false}
+                options={[
+                  {
+                    label: (
+                      <>
+                        J’ai lu et j’accepte les{' '}
+                        <a
+                          href="/cgu"
+                          className="fr-link"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          conditions générales d’utilisation du service
+                        </a>
+                      </>
+                    ),
+                    value: true,
+                  },
+                ]}
+              />
+            )}
+          </form.AppField>
         )}
-      </div>
-    </form>
+        <div
+          className={classNames(mustAcceptCgu && 'fr-mt-8v', 'fr-btns-group')}
+        >
+          <form.Submit isPending={isPending}>
+            Valider mon inscription
+          </form.Submit>
+          {canCancel && (
+            <Button
+              linkProps={{ href: '/' }}
+              priority="secondary"
+              className="fr-mb-0 fr-mt-4v"
+            >
+              Annuler
+            </Button>
+          )}
+        </div>
+      </form>
+    </form.AppForm>
   )
 }
 
