@@ -42,7 +42,6 @@ const StructureEmployeuseLieuxActivitePageRoute = async () => {
 
   return (
     <StructureEmployeuseLieuActivitePage
-      userId={user.id}
       structureEmployeuse={structureEmployeuse}
     />
   )

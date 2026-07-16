@@ -2,25 +2,26 @@
 
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
+import { ajouterStructureEmployeuseEnLieuAction } from '@app/web/app/_actions/inscription/ajouter-structure-employeuse-en-lieu.action'
 import StructureCard from '@app/web/components/structure/StructureCard'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import type { InscriptionStructureEmployeuse } from '@app/web/features/inscription/getStructureEmployeuseForInscription'
-import { trpc } from '@app/web/trpc'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import InscriptionCard from '../../components/InscriptionCard'
 
+const erreurEnregistrement = () =>
+  createToast({
+    priority: 'error',
+    message:
+      "Une erreur est survenue lors de l'enregistrement, veuillez réessayer ultérieurement.",
+  })
+
 const StructureEmployeuseLieuActivitePage = ({
-  userId,
   structureEmployeuse,
 }: {
-  userId: string
   structureEmployeuse: InscriptionStructureEmployeuse
 }) => {
-  const mutation =
-    trpc.inscription.ajouterStructureEmployeuseEnLieuActivite.useMutation()
-
   const router = useRouter()
 
   const [submittedEstLieuActivite, setSubmittedEstLieuActivite] = useState<
@@ -30,26 +31,29 @@ const StructureEmployeuseLieuActivitePage = ({
   const onSubmit = async (estLieuActivite: boolean) => {
     try {
       setSubmittedEstLieuActivite(estLieuActivite)
-      await mutation.mutateAsync({
-        userId,
+      const result = await ajouterStructureEmployeuseEnLieuAction({
         structureEmployeuseId: structureEmployeuse.id,
         estLieuActivite,
       })
+
+      if (!result.success) {
+        setSubmittedEstLieuActivite(null)
+        erreurEnregistrement()
+        return
+      }
+
       router.push('/inscription/lieux-activite')
       router.refresh()
     } catch {
-      createToast({
-        priority: 'error',
-        message:
-          "Une erreur est survenue lors de l'enregistrement, veuillez réessayer ultérieurement.",
-      })
+      setSubmittedEstLieuActivite(null)
+      erreurEnregistrement()
     }
   }
 
-  const isLoading = mutation.isPending || mutation.isSuccess
-
-  const isNonLoading = submittedEstLieuActivite === false && isLoading
-  const isOuiLoading = submittedEstLieuActivite === true && isLoading
+  // La navigation suit un succès : l'état de soumission reste posé (spinner
+  // maintenu) jusqu'au changement de page, et n'est remis à zéro qu'en cas d'erreur.
+  const isNonLoading = submittedEstLieuActivite === false
+  const isOuiLoading = submittedEstLieuActivite === true
 
   return (
     <InscriptionCard
@@ -97,4 +101,4 @@ const StructureEmployeuseLieuActivitePage = ({
   )
 }
 
-export default withTrpc(StructureEmployeuseLieuActivitePage)
+export default StructureEmployeuseLieuActivitePage

@@ -110,6 +110,10 @@ After(async () => {
     where: { id: { in: [...trackedStructureEmployeuseIds] } },
   })
   await prismaClient.lieuInclusion.deleteMany({
-    where: { id: { in: [...trackedLieuActiviteIds] } },
+    // Inclut les employeuses matérialisées en lieu (même id que la structure
+    // administrative) par l'ability « structure employeuse en lieu d'activité ».
+    where: {
+      id: { in: [...trackedLieuActiviteIds, ...trackedStructureEmployeuseIds] },
+    },
   })
 })

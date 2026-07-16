@@ -125,10 +125,9 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
       timeout: mutationAndNavigationTimeout,
     })
 
-    cy.intercept(
-      '/api/trpc/inscription.ajouterStructureEmployeuseEnLieuActivite*',
-    ).as('ajouterStructureEmployeuseMutation')
-
+    // Cette étape passe désormais par une server action, pas par tRPC : aucune
+    // requête nommée à intercepter. On synchronise sur la sortie de l'étape
+    // (navigation vers /inscription/lieux-activite après le choix Oui/Non).
     step.check?.()
     if (step.structureEmployeuseIsLieuActivite) {
       cy.contains('Oui').click()
@@ -136,7 +135,7 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
       cy.contains('Non').click()
     }
 
-    cy.wait('@ajouterStructureEmployeuseMutation', {
+    cy.appUrlShouldBe(stepPath('lieux-activite'), {
       timeout: mutationAndNavigationTimeout,
     })
 
