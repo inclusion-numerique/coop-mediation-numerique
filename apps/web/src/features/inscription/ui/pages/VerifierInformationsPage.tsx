@@ -1,37 +1,26 @@
-import type { SessionUser } from '@app/web/auth/sessionUser'
 import IconInSquare from '@app/web/components/IconInSquare'
 import InfoLabelValue from '@app/web/components/InfoLabelValue'
 import StructureCard from '@app/web/components/structure/StructureCard'
 import Button from '@codegouvfr/react-dsfr/Button'
 import InscriptionCard from '../../components/InscriptionCard'
-
-// Une employeuse peut n'avoir aucune dénomination en base, mais la carte attend
-// un libellé : le composant expose le contrat d'affichage, et c'est à la route
-// de décider du repli plutôt qu'à la lecture.
-type StructureEmployeuse = Omit<
-  SessionUser['emplois'][number]['structure'],
-  'nom'
-> & { nom: string }
+import type { VerifierInformationsPageData } from './getVerifierInformationsPageData'
 
 /**
  * Écran de vérification des informations : purement présentationnel. La route
- * dérive l'étape suivante (via le domaine) et la passe en `nextStepPath` — le
- * composant ne connaît ni le flow ni le `SessionUser`, seulement ce qu'il affiche.
+ * ne fait qu'appeler `getVerifierInformationsPageData` et passer le résultat —
+ * le composant ne connaît ni le flow ni le `SessionUser`, seulement ce qu'il affiche.
  */
 const VerifierInformationsPage = ({
-  profilLabel,
-  name,
-  email,
-  structureEmployeuse,
-  backHref,
-  nextStepPath,
+  data: {
+    profilLabel,
+    name,
+    email,
+    structureEmployeuse,
+    backHref,
+    nextStepPath,
+  },
 }: {
-  profilLabel: string
-  name: string | null
-  email: string
-  structureEmployeuse?: StructureEmployeuse
-  backHref: string
-  nextStepPath: string
+  data: VerifierInformationsPageData
 }) => (
   <InscriptionCard
     title="Vérifiez vos informations"
