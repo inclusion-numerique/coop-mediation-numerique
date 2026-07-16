@@ -2,60 +2,68 @@
 
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import CguCheckboxField from '@app/web/features/inscription/components/CguCheckboxField'
+import { validerAction } from '@app/web/app/_actions/inscription/valider.action'
 import {
-  ValiderInscriptionData,
-  ValiderInscriptionValidation,
-} from '@app/web/features/utilisateurs/use-cases/registration/ValiderInscriptionValidation'
-import { trpc } from '@app/web/trpc'
+  type ValiderFormData,
+  ValiderValidation,
+} from '@app/web/features/inscription/abilities/valider'
+import CguCheckboxField from '@app/web/features/inscription/components/CguCheckboxField'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { zodResolver } from '@hookform/resolvers/zod'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 
+const erreurValidation = () =>
+  createToast({
+    priority: 'error',
+    message:
+      'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
+  })
+
 const ValiderInscriptionForm = ({
-  userId,
   mustAcceptCgu = false,
   canCancel = false,
 }: {
-  userId: string
   mustAcceptCgu?: boolean
   canCancel?: boolean
 }) => {
-  const form = useForm<ValiderInscriptionData>({
-    resolver: zodResolver(ValiderInscriptionValidation),
+  const form = useForm<ValiderFormData>({
+    resolver: zodResolver(ValiderValidation),
     defaultValues: {
-      userId,
-      // If CGU acceptance is not required (already accepted), default to true
+      // Si l'acceptation des CGU n'est pas requise (déjà acceptée), on la
+      // pré-remplit ; sinon l'utilisateur doit cocher la case au récapitulatif.
       cguAcceptee: mustAcceptCgu ? undefined : true,
     },
   })
 
-  const { control, handleSubmit } = form
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting, isSubmitSuccessful },
+  } = form
 
-  const mutation = trpc.inscription.validerInscription.useMutation()
-
-  const isLoading = mutation.isPending || mutation.isSuccess
+  const isLoading = isSubmitting || isSubmitSuccessful
 
   const router = useRouter()
 
-  const onSubmit = async (data: ValiderInscriptionData) => {
+  const onSubmit = async (data: ValiderFormData) => {
     try {
-      await mutation.mutateAsync(data)
+      const result = await validerAction(data)
+
+      if (!result.success) {
+        erreurValidation()
+        return
+      }
+
       router.push('/en-savoir-plus')
       router.refresh()
       createToast({
         priority: 'success',
-        message: 'Votre inscription a bien été validée !',
+        message: 'Votre inscription a bien été validée !',
       })
     } catch {
-      createToast({
-        priority: 'error',
-        message:
-          'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
-      })
+      erreurValidation()
     }
   }
 
@@ -90,4 +98,4 @@ const ValiderInscriptionForm = ({
   )
 }
 
-export default withTrpc(ValiderInscriptionForm)
+export default ValiderInscriptionForm

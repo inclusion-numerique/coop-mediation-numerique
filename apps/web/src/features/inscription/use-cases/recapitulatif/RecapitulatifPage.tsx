@@ -166,7 +166,6 @@ const RecapitulatifPage = ({
     )}
     <hr className="fr-separator-12v" />
     <ValiderInscriptionForm
-      userId={user.id}
       mustAcceptCgu={mustAcceptCgu}
       canCancel={canCancelInscription}
     />

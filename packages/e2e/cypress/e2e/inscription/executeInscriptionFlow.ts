@@ -192,16 +192,11 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
       cy.contains('Vous avez été identifié en tant que').should('not.exist')
     }
 
-    cy.intercept('/api/trpc/inscription.validerInscription*').as(
-      'validerInscriptionMutation',
-    )
-
+    // Cette étape passe désormais par une server action, pas par tRPC : aucune
+    // requête nommée à intercepter. On synchronise sur la sortie du parcours
+    // (toast de succès + navigation vers l'onboarding), vérifiée après la boucle.
     step.check?.()
     cy.contains('Valider mon inscription').click()
-
-    cy.wait('@validerInscriptionMutation', {
-      timeout: mutationAndNavigationTimeout,
-    })
 
     return
   }
