@@ -1,10 +1,10 @@
 import assert from 'node:assert'
 import {
   type RenseignerStructureEmployeuseError,
-  renseignerStructureEmployeuse,
   type StructureEmployeuseInput,
   StructureId,
 } from '@app/web/features/inscription/abilities/renseigner-structure-employeuse'
+import { renseignerStructureEmployeuse } from '@app/web/features/inscription/abilities/renseigner-structure-employeuse/commands/renseigner-structure-employeuse'
 import { ProfilInscription } from '@app/web/features/inscription/domain'
 import {
   currentInscriptionUserId,

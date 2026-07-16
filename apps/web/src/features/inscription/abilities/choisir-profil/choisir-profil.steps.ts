@@ -1,8 +1,6 @@
 import assert from 'node:assert'
-import {
-  type ChoisirProfilError,
-  choisirProfil,
-} from '@app/web/features/inscription/abilities/choisir-profil'
+import { type ChoisirProfilError } from '@app/web/features/inscription/abilities/choisir-profil'
+import { choisirProfil } from '@app/web/features/inscription/abilities/choisir-profil/commands/choisir-profil'
 import {
   type InscriptionStep,
   ProfilInscription,

@@ -4,8 +4,8 @@ import { withAuth } from '@app/web/features/authentification'
 import {
   CHOISIR_PROFIL_ERRORS,
   ChoisirProfilValidation,
-  choisirProfil,
 } from '@app/web/features/inscription/abilities/choisir-profil'
+import { choisirProfil } from '@app/web/features/inscription/abilities/choisir-profil/commands/choisir-profil'
 import { UserId } from '@app/web/features/inscription/domain'
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 

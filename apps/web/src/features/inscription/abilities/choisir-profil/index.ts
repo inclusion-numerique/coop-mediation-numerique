@@ -4,5 +4,4 @@ export {
   ChoisirProfilValidation,
   choisirProfilFormShape,
 } from './action/choisir-profil.validation'
-export { choisirProfil } from './commands/choisir-profil'
 export * from './domain'

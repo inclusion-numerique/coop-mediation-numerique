@@ -4,5 +4,4 @@ export {
   RenseignerStructureEmployeuseValidation,
   renseignerStructureEmployeuseFormShape,
 } from './action/renseigner-structure-employeuse.validation'
-export { renseignerStructureEmployeuse } from './commands/renseigner-structure-employeuse'
 export * from './domain'
