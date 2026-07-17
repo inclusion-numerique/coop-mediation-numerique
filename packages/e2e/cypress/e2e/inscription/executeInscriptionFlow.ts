@@ -190,11 +190,18 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
       cy.contains('Vous avez été identifié en tant que').should('not.exist')
     }
 
-    // Cette étape passe désormais par une server action, pas par tRPC : aucune
-    // requête nommée à intercepter. On synchronise sur la sortie du parcours
-    // (toast de succès + navigation vers l'onboarding), vérifiée après la boucle.
     step.check?.()
     cy.contains('Valider mon inscription').click()
+
+    // Valider passe par une server action, pas par tRPC : il n'y a aucune requête
+    // nommée à intercepter. On synchronise sur la navigation hors du récapitulatif
+    // (poussée par le succès de l'action), sinon le toast de succès vérifié après
+    // la boucle serait cherché avant même que l'action, plus lente sur certaines
+    // fixtures, ait abouti — sa fenêtre de retry par défaut (4s) perdrait la course.
+    cy.url({ timeout: mutationAndNavigationTimeout }).should(
+      'not.contain',
+      stepPath('recapitulatif'),
+    )
 
     return
   }
