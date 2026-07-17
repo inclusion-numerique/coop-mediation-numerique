@@ -1,7 +1,7 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
+import LieuxActivitePage from '@app/web/features/inscription/abilities/renseigner-lieux-activite/ui/pages/LieuxActivitePage'
 import { getLieuxActiviteForInscription } from '@app/web/features/inscription/getLieuxActiviteForInscription'
-import LieuxActivitePage from '@app/web/features/inscription/use-cases/lieux-activite/LieuxActivitePage'
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import { redirect } from 'next/navigation'
 

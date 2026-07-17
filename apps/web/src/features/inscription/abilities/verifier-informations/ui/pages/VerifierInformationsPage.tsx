@@ -1,9 +1,9 @@
 import IconInSquare from '@app/web/components/IconInSquare'
 import InfoLabelValue from '@app/web/components/InfoLabelValue'
 import StructureCard from '@app/web/components/structure/StructureCard'
+import InscriptionCard from '@app/web/features/inscription/components/InscriptionCard'
 import Button from '@codegouvfr/react-dsfr/Button'
-import InscriptionCard from '../../components/InscriptionCard'
-import type { VerifierInformationsPageData } from './getVerifierInformationsPageData'
+import type { VerifierInformationsPageData } from '../../queries/getVerifierInformationsPageData'
 
 /**
  * Écran de vérification des informations : purement présentationnel. La route

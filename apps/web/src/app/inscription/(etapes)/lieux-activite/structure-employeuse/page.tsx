@@ -1,7 +1,7 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
+import StructureEmployeuseLieuActivitePage from '@app/web/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/ui/pages/StructureEmployeuseLieuActivitePage'
 import { getStructureEmployeuseForInscription } from '@app/web/features/inscription/getStructureEmployeuseForInscription'
-import StructureEmployeuseLieuActivitePage from '@app/web/features/inscription/use-cases/lieux-activite/StructureEmployeuseLieuActivitePage'
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import { redirect } from 'next/navigation'
 

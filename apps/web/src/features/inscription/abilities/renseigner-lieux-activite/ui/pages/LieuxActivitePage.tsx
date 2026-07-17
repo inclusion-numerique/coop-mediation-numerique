@@ -1,7 +1,7 @@
 'use client'
 
+import LieuxActiviteForm from '@app/web/features/inscription/abilities/renseigner-lieux-activite/ui/components/LieuxActiviteForm'
 import InscriptionCard from '@app/web/features/inscription/components/InscriptionCard'
-import LieuxActiviteForm from '@app/web/features/inscription/use-cases/lieux-activite/LieuxActiviteForm'
 import { StructureData } from '@app/web/features/structures/StructureValidation'
 
 const LieuxActivitePage = ({

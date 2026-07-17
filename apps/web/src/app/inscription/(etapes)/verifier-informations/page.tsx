@@ -1,7 +1,7 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
-import { getVerifierInformationsPageData } from '@app/web/features/inscription/ui/pages/getVerifierInformationsPageData'
-import VerifierInformationsPage from '@app/web/features/inscription/ui/pages/VerifierInformationsPage'
+import { getVerifierInformationsPageData } from '@app/web/features/inscription/abilities/verifier-informations/queries/getVerifierInformationsPageData'
+import VerifierInformationsPage from '@app/web/features/inscription/abilities/verifier-informations/ui/pages/VerifierInformationsPage'
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import { redirect } from 'next/navigation'
 
