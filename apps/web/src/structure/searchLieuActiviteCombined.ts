@@ -98,6 +98,25 @@ const searchApiEntreprise = (query: string) =>
     .then((data) => ({ data, unavailable: false }) as const)
     .catch(() => ({ data: null, unavailable: true }) as const)
 
+// La carto vit dans l'Entrepôt, une base distante : son indisponibilité ne doit
+// pas emporter la recherche entière — les lieux de la coop, eux, ont répondu. On
+// remonte l'indisponibilité plutôt que de la taire, comme pour l'API entreprise.
+const searchCarto = (
+  query: string,
+  options: { limit: number; except?: string[] },
+) =>
+  searchStructureCartographieNationale(query, options)
+    .then((result) => ({ ...result, unavailable: false }) as const)
+    .catch(
+      () =>
+        ({
+          structures: [],
+          matchesCount: 0,
+          moreResults: 0,
+          unavailable: true,
+        }) as const,
+    )
+
 const toApiStructures = (
   apiResult: Awaited<ReturnType<typeof rechercheApiEntreprise>> | null,
 ): LieuActiviteSearchResult[] =>
@@ -137,6 +156,7 @@ export const searchLieuActiviteCombined = async (
   matchesCount: number
   moreResults: number
   apiUnavailable: boolean
+  cartoUnavailable: boolean
 }> => {
   if (query.length < 3) {
     return {
@@ -144,6 +164,7 @@ export const searchLieuActiviteCombined = async (
       matchesCount: 0,
       moreResults: 0,
       apiUnavailable: false,
+      cartoUnavailable: false,
     }
   }
 
@@ -151,7 +172,11 @@ export const searchLieuActiviteCombined = async (
 
   // Repli : l'API entreprise n'est interrogée QUE si les sources prioritaires
   // (coop, et la carto pour la recherche par nom) ne renvoient rien.
-  const apiFallback = async () => {
+  const apiFallback = async ({
+    cartoUnavailable,
+  }: {
+    cartoUnavailable: boolean
+  }) => {
     const { data: apiResult, unavailable: apiUnavailable } =
       await searchApiEntreprise(query)
     const structures = toApiStructures(apiResult).slice(0, limit)
@@ -162,15 +187,17 @@ export const searchLieuActiviteCombined = async (
       matchesCount: totalFromApi,
       moreResults: Math.max(0, totalFromApi - structures.length),
       apiUnavailable,
+      cartoUnavailable,
     }
   }
 
   // Recherche par SIRET → structures coop en priorité, à défaut API entreprise.
+  // La carto n'est pas interrogée : elle n'est donc jamais « indisponible » ici.
   if (isSiretQuery(query)) {
     const localResult = await searchLocalStructures(query, { limit })
 
     if (localResult.structures.length === 0) {
-      return apiFallback()
+      return apiFallback({ cartoUnavailable: false })
     }
 
     const structures = localResult.structures.slice(0, limit)
@@ -179,6 +206,7 @@ export const searchLieuActiviteCombined = async (
       matchesCount: localResult.matchesCount,
       moreResults: Math.max(0, localResult.matchesCount - structures.length),
       apiUnavailable: false,
+      cartoUnavailable: false,
     }
   }
 
@@ -187,7 +215,7 @@ export const searchLieuActiviteCombined = async (
 
   const [localResult, cartoResult] = await Promise.all([
     searchLocalStructures(query, { limit: perSourceLimit }),
-    searchStructureCartographieNationale(query, {
+    searchCarto(query, {
       limit: perSourceLimit,
       except: options?.except,
     }),
@@ -221,7 +249,7 @@ export const searchLieuActiviteCombined = async (
   ]
 
   if (prioritized.length === 0) {
-    return apiFallback()
+    return apiFallback({ cartoUnavailable: cartoResult.unavailable })
   }
 
   const structures = prioritized.slice(0, limit)
@@ -232,6 +260,7 @@ export const searchLieuActiviteCombined = async (
     matchesCount,
     moreResults: Math.max(0, matchesCount - structures.length),
     apiUnavailable: false,
+    cartoUnavailable: cartoResult.unavailable,
   }
 }
 
