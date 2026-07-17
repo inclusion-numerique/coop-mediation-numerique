@@ -53,7 +53,7 @@ describe("ETQ Conseiller numérique, je peux m'inscrire en suivant le bon parcou
           check: () => {
             cy.contains("Renseignez vos lieux d'activité").should('be.visible')
             cy.contains(
-              'Rechercher par SIRET, nom ou adresse du lieu (optionnel)',
+              'Rechercher un lieu d’activité par nom, adresse ou SIRET',
             ).should('be.visible')
           },
         },
