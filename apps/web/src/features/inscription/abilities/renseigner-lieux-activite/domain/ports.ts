@@ -29,7 +29,7 @@ export type TrouverStructuresCarto = (
 export type EnregistrerReconciliation = (input: {
   readonly etatFranchi: InscriptionEnCours
   readonly userId: UserId
-  readonly aClaturer: readonly string[]
+  readonly aCloturer: readonly string[]
   readonly aCreer: readonly LieuActiviteDesire[]
   readonly structuresCarto: readonly CartoStructure[]
 }) => Promise<void>

@@ -19,7 +19,7 @@ export type LieuActiviteDesire = {
 
 export type Reconciliation<T> = {
   /** Ids des activités existantes à clôturer (plus dans la liste désirée). */
-  readonly aClaturer: readonly string[]
+  readonly aCloturer: readonly string[]
   /** Lieux désirés à créer (pas encore rattachés). */
   readonly aCreer: readonly T[]
 }
@@ -51,7 +51,7 @@ export const reconcilierLieuxActivite = <T extends LieuActiviteDesire>(
   )
   const idsDesires = new Set(desires.map(({ id }) => id).filter(estDefini))
 
-  const aClaturer = existants
+  const aCloturer = existants
     .filter(
       ({ lieuInclusion }) =>
         (lieuInclusion.structureCartographieNationaleId != null &&
@@ -74,5 +74,5 @@ export const reconcilierLieuxActivite = <T extends LieuActiviteDesire>(
       (id == null && structureCartographieNationaleId == null && nom != null),
   )
 
-  return { aClaturer, aCreer }
+  return { aCloturer, aCreer }
 }

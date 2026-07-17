@@ -18,7 +18,7 @@ describe('reconcilierLieuxActivite', () => {
     const desires = [{ id: 'lieu-1', nom: 'Lieu 1' }]
 
     expect(reconcilierLieuxActivite(existants, desires)).toEqual({
-      aClaturer: [],
+      aCloturer: [],
       aCreer: [],
     })
   })
@@ -27,7 +27,7 @@ describe('reconcilierLieuxActivite', () => {
     const desires = [{ id: 'lieu-1', nom: 'Lieu 1' }]
 
     expect(reconcilierLieuxActivite([], desires)).toEqual({
-      aClaturer: [],
+      aCloturer: [],
       aCreer: [{ id: 'lieu-1', nom: 'Lieu 1' }],
     })
   })
@@ -38,7 +38,7 @@ describe('reconcilierLieuxActivite', () => {
     ]
 
     expect(reconcilierLieuxActivite([], desires)).toEqual({
-      aClaturer: [],
+      aCloturer: [],
       aCreer: [
         { structureCartographieNationaleId: 'carto-1', nom: 'Lieu carto' },
       ],
@@ -49,7 +49,7 @@ describe('reconcilierLieuxActivite', () => {
     const desires = [{ nom: 'Nouveau lieu' }]
 
     expect(reconcilierLieuxActivite([], desires)).toEqual({
-      aClaturer: [],
+      aCloturer: [],
       aCreer: [{ nom: 'Nouveau lieu' }],
     })
   })
@@ -59,7 +59,7 @@ describe('reconcilierLieuxActivite', () => {
     const desires = [{ id: 'lieu-2', nom: 'Lieu 2' }]
 
     expect(reconcilierLieuxActivite(existants, desires)).toEqual({
-      aClaturer: ['act-1'],
+      aCloturer: ['act-1'],
       aCreer: [{ id: 'lieu-2', nom: 'Lieu 2' }],
     })
   })
@@ -71,7 +71,7 @@ describe('reconcilierLieuxActivite', () => {
     ]
 
     expect(reconcilierLieuxActivite(existants, desires)).toEqual({
-      aClaturer: ['act-1'],
+      aCloturer: ['act-1'],
       aCreer: [{ structureCartographieNationaleId: 'carto-2', nom: 'Lieu 2' }],
     })
   })
@@ -87,7 +87,7 @@ describe('reconcilierLieuxActivite', () => {
     ]
 
     expect(reconcilierLieuxActivite(existants, desires)).toEqual({
-      aClaturer: [],
+      aCloturer: [],
       aCreer: [],
     })
   })

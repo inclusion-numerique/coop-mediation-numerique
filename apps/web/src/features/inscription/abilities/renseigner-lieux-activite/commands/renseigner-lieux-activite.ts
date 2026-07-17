@@ -42,7 +42,7 @@ export const renseignerLieuxActivite = async <T extends LieuActiviteDesire>({
   if (!decision.success) return decision
 
   const existants = await lireLieuxActiviteExistants(userId)
-  const { aClaturer, aCreer } = reconcilierLieuxActivite(
+  const { aCloturer, aCreer } = reconcilierLieuxActivite(
     existants,
     lieuxActivite,
   )
@@ -59,7 +59,7 @@ export const renseignerLieuxActivite = async <T extends LieuActiviteDesire>({
   await enregistrerReconciliation({
     etatFranchi: decision.data.etatFranchi,
     userId,
-    aClaturer,
+    aCloturer,
     aCreer,
     structuresCarto,
   })

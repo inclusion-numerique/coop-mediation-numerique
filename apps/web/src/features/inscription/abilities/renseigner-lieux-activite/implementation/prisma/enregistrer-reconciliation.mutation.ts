@@ -79,7 +79,7 @@ const creerActivite = async (
 export const enregistrerReconciliation: EnregistrerReconciliation = async ({
   etatFranchi,
   userId,
-  aClaturer,
+  aCloturer,
   aCreer,
   structuresCarto,
 }) => {
@@ -90,7 +90,7 @@ export const enregistrerReconciliation: EnregistrerReconciliation = async ({
 
   await prismaClient.$transaction(async (transaction) => {
     await transaction.mediateurEnActivite.updateMany({
-      where: { id: { in: [...aClaturer] } },
+      where: { id: { in: [...aCloturer] } },
       data: { fin: now, suppression: now, suppressionParId: userId },
     })
 
