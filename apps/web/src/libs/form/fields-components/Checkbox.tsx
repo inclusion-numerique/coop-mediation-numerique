@@ -140,7 +140,11 @@ export const Checkbox = <T,>({
           name,
           value: option.value as string,
           checked: isChecked(option, isSingleCheckbox)(state),
-          disabled: option.extra?.disabled,
+          // `isPending` est aussi posé sur le fieldset, mais `nativeInputProps`
+          // est spread en dernier sur l'input : sans le répéter ici, il l'écrase
+          // et la case reste cliquable alors que le champ est censé être inerte
+          // (typiquement avant hydratation — la coche serait alors perdue).
+          disabled: isPending || option.extra?.disabled,
           onBlur: handleBlur,
           onChange: (e: ChangeEvent<HTMLInputElement>) =>
             handleChange(
