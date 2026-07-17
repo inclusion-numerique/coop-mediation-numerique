@@ -167,7 +167,14 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
     if (step.acceptCgu === undefined) {
       cy.findByRole('checkbox', { name: cguLabelMatch }).should('not.exist')
     } else if (step.acceptCgu) {
-      cy.findByRole('checkbox', { name: cguLabelMatch }).check({ force: true })
+      // Le formulaire se désactive tant que la page n'est pas hydratée : cocher
+      // avant serait effacé par le premier rendu client, sans aucun signe visible
+      // — et la validation des CGU bloquerait ensuite la soumission. On attend
+      // donc qu'il soit actif, comme à l'étape choisir-role. Cas atteint quand on
+      // arrive au récapitulatif par un chargement complet (raccourci Dataspace).
+      cy.findByRole('checkbox', { name: cguLabelMatch })
+        .should('be.enabled', { timeout: mutationAndNavigationTimeout })
+        .check({ force: true })
     } else {
       cy.findByRole('checkbox', { name: cguLabelMatch }).should('be.visible')
     }
