@@ -72,16 +72,17 @@ export const getInscriptionRecapitulatifPageData = async ({
 
   const mediateursCoordonnesCount = mediateursCoordonnes?.length
 
-  // Determine back link based on role
-  const backHref =
-    user.profilInscription === 'ConseillerNumerique' &&
-    importedLieuxFromDataspace // Hide backhref if lieux were imported from dataspace for conseiller numerique
-      ? null
-      : user.profilInscription === 'Coordinateur'
-        ? stepPath('choisir-role')
-        : user.profilInscription === 'CoordinateurConseillerNumerique'
-          ? null
-          : stepPath('lieux-activite')
+  // « Précédent » mène à l'étape des lieux dès qu'elle concerne l'utilisateur,
+  // c'est-à-dire dès qu'il est médiateur — y compris quand le parcours l'a sautée
+  // parce que le Dataspace avait déjà importé ses lieux : il peut ainsi les revoir
+  // avant de valider. Un coordinateur sans médiation revient à son choix de rôle.
+  // Reste sans précédent le coordinateur conseiller numérique sans lieu : l'étape
+  // ne le concerne pas, et il a rejoint le récapitulatif directement.
+  const backHref = user.mediateur
+    ? stepPath('lieux-activite')
+    : user.profilInscription === 'Coordinateur'
+      ? stepPath('choisir-role')
+      : null
 
   return {
     user,
