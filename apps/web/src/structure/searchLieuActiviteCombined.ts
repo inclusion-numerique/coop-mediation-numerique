@@ -28,18 +28,13 @@ type SearchLieuActiviteCombinedOptions = {
 
 const searchLocalStructures = async (
   query: string,
-  options?: { limit?: number; includeCartoLinked?: boolean },
+  options?: { limit?: number },
 ) => {
   const limit = options?.limit || 25
   const queryParts = query.split(' ')
 
   const matchesWhere = {
     suppression: null,
-    // Par défaut on exclut les structures déjà reliées à la carto : elles sont
-    // remontées par la source carto. Pour une recherche SIRET on les inclut.
-    ...(options?.includeCartoLinked
-      ? {}
-      : { structureCartographieNationaleId: null }),
     AND: queryParts.map((part) => ({
       OR: [
         { siret: { contains: part, mode: 'insensitive' } },
@@ -172,10 +167,7 @@ export const searchLieuActiviteCombined = async (
 
   // Recherche par SIRET → structures coop en priorité, à défaut API entreprise.
   if (isSiretQuery(query)) {
-    const localResult = await searchLocalStructures(query, {
-      limit,
-      includeCartoLinked: true,
-    })
+    const localResult = await searchLocalStructures(query, { limit })
 
     if (localResult.structures.length === 0) {
       return apiFallback()
@@ -201,8 +193,13 @@ export const searchLieuActiviteCombined = async (
     }),
   ])
 
-  const cartoStructures: LieuActiviteSearchResult[] =
-    cartoResult.structures.map((s) => ({
+  // La source coop prime toujours : un lieu carto déjà matérialisé en coop est
+  // remonté par la source locale (avec les données éventuellement corrigées par
+  // l'utilisateur), donc on l'écarte ici pour ne pas l'afficher deux fois. La
+  // carto ne sert qu'à proposer les lieux que la coop ne connaît pas encore.
+  const cartoStructures: LieuActiviteSearchResult[] = cartoResult.structures
+    .filter((s) => s.structures.length === 0)
+    .map((s) => ({
       id: s.id,
       nom: s.nom,
       adresse: s.adresse,
