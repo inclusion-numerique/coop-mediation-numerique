@@ -86,9 +86,9 @@ describe("ETQ médiateur, je peux m'inscrire en suivant le bon parcours", () => 
             cy.contains(
               "Vos lieux d'activité sont les lieux où vous accueillez et accompagnez vos bénéficiaires",
             ).should('be.visible')
-            cy.contains('Rechercher par nom du lieu, adresse ou SIRET.').should(
-              'be.visible',
-            )
+            cy.contains(
+              'Rechercher par SIRET, nom ou adresse du lieu (optionnel)',
+            ).should('be.visible')
           },
         },
         {

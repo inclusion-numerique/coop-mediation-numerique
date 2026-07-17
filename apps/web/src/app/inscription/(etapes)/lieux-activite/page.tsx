@@ -1,5 +1,6 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
+import type { LieuActiviteInput } from '@app/web/features/inscription/abilities/renseigner-lieux-activite'
 import LieuxActivitePage from '@app/web/features/inscription/abilities/renseigner-lieux-activite/ui/pages/LieuxActivitePage'
 import { getLieuxActiviteForInscription } from '@app/web/features/inscription/getLieuxActiviteForInscription'
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
@@ -24,12 +25,24 @@ const LieuxActivitePageRoute = async () => {
     redirect('/inscription/initialiser')
   }
 
-  // Get existing lieux if any
+  // Get existing lieux if any, projetés vers l'input du formulaire (l'id porte la
+  // réconciliation ; adresse/commune/codePostal sont non-null en base).
   const lieuxActivite = await getLieuxActiviteForInscription({
     mediateurId: user.mediateur.id,
   })
 
-  return <LieuxActivitePage userId={user.id} lieuxActivite={lieuxActivite} />
+  const lieuxExistants: LieuActiviteInput[] = lieuxActivite.map((lieu) => ({
+    id: lieu.id ?? null,
+    structureCartographieNationaleId:
+      lieu.structureCartographieNationaleId ?? null,
+    nom: lieu.nom,
+    adresse: lieu.adresse ?? '',
+    commune: lieu.commune ?? '',
+    codePostal: lieu.codePostal ?? '',
+    codeInsee: lieu.codeInsee ?? null,
+  }))
+
+  return <LieuxActivitePage lieuxActivite={lieuxExistants} />
 }
 
 export default LieuxActivitePageRoute

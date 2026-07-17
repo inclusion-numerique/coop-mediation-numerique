@@ -80,6 +80,11 @@ export const seedLieuActivite = async (
   return id
 }
 
+/** Suit un lieu créé hors seed (ex. matérialisé par une ability) pour le nettoyage. */
+export const trackLieuActivite = (id: string): void => {
+  trackedLieuActiviteIds.add(id)
+}
+
 Before(async () => {
   inscriptionUserId = v4()
   trackedStructureEmployeuseIds.clear()

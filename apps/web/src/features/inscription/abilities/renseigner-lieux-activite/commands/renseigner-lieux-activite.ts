@@ -3,7 +3,7 @@ import { type Result, success } from '@app/web/libraries/result'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import {
   renseignerLieuxActivite as deciderRenseignerLieuxActivite,
-  type LieuActiviteDesire,
+  type LieuActiviteInput,
   type RenseignerLieuxActiviteError,
   reconcilierLieuxActivite,
   type TrouverStructuresCarto,
@@ -21,14 +21,14 @@ import {
  * applique la réconciliation et projette l'état en une transaction. Le domaine
  * reste pur et testé par valeur ; ce use case est couvert en intégration (BDD).
  */
-export const renseignerLieuxActivite = async <T extends LieuActiviteDesire>({
+export const renseignerLieuxActivite = async ({
   command: { userId, lieuxActivite },
   trouverStructuresCarto,
   maintenant,
 }: {
   readonly command: {
     readonly userId: UserId
-    readonly lieuxActivite: readonly T[]
+    readonly lieuxActivite: readonly LieuActiviteInput[]
   }
   readonly trouverStructuresCarto: TrouverStructuresCarto
   readonly maintenant: Date

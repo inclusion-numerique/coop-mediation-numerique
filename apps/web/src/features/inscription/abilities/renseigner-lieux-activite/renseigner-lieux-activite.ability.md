@@ -21,3 +21,12 @@
 * Then l’étape lieux d’activité est franchie
 * And ce lieu est un de mes lieux d’activité actifs
 * And mon ancien lieu d’activité est retiré
+
+## Rule: Un nouveau lieu (nom + adresse géocodée) est matérialisé
+
+### Scenario: Renseigner un nouveau lieu le crée et le rattache
+
+* Given je suis un médiateur en cours d’inscription
+* When je renseigne un nouveau lieu nommé "Maison France Services"
+* Then l’étape lieux d’activité est franchie
+* And un lieu d’activité nommé "Maison France Services" est créé et rattaché

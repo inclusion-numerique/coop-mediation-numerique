@@ -1,316 +1,294 @@
 'use client'
 
-import CustomSelectFormField from '@app/ui/components/Form/CustomSelectFormField'
+import { Options } from '@app/ui/components/Primitives/Options'
 import { createToast } from '@app/ui/toast/createToast'
-import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
-import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import { renseignerLieuxActiviteAction } from '@app/web/app/_actions/inscription/renseigner-lieux-activite.action'
 import StructureCard from '@app/web/components/structure/StructureCard'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import {
-  LieuxActiviteData,
-  LieuxActiviteValidation,
-} from '@app/web/features/utilisateurs/use-cases/registration/LieuxActivite'
-import { LieuActiviteSearchResult } from '@app/web/structure/searchLieuActiviteCombined'
-import { trpc } from '@app/web/trpc'
-import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
+  AdresseBanComboBox,
+  AdresseBanOptions,
+} from '@app/web/features/adresse/combo-box/AdresseBanComboBox'
+import type { LieuActiviteInput } from '@app/web/features/inscription/abilities/renseigner-lieux-activite'
+// NB : StructureSearchResult vit encore dans le legacy use-cases/ (à re-router inc. 5).
+import type { StructureSearchResult } from '@app/web/features/inscription/use-cases/renseigner-structure-employeuse/searchStructureEmployeuseCombined'
+import {
+  adresseNonVerifiableMessage,
+  geocodeStructureAdresse,
+} from '@app/web/features/structures/siret/geocodeStructureAdresse'
+import {
+  SiretSearchComboBox,
+  SiretSearchOptions,
+} from '@app/web/features/structures/siret/SiretSearchComboBox'
+import { handleSubmit } from '@app/web/libs/form/handle-submit'
+import { useAppForm } from '@app/web/libs/form/use-app-form'
+import { useHydrated } from '@app/web/libs/form/use-hydrated'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { zodResolver } from '@hookform/resolvers/zod'
-import Link from 'next/link'
+import { useStore } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
-import React, { ReactNode, useEffect, useRef } from 'react'
-import { DefaultValues, useFieldArray, useForm } from 'react-hook-form'
+import { useState } from 'react'
+import { z } from 'zod'
 
+type FormValues = {
+  lieux: LieuActiviteInput[]
+  siretSearch: StructureSearchResult | null
+  nom: string
+  adresseBan: AdresseBanData | null
+}
+
+/**
+ * Forme minimale attendue à la soumission : au moins un lieu d'activité ajouté.
+ * Les champs d'ajout (SIRET, nom, adresse) sont transitoires et non validés ici.
+ */
+const lieuxActiviteFormShape = z
+  .custom<FormValues>()
+  .refine((value) => value.lieux.length > 0, {
+    message: 'Veuillez renseigner au moins un lieu d’activité',
+    path: ['lieux'],
+  })
+
+/** Construit un lieu à créer depuis l'adresse géocodée (nom + adresse BAN). */
+const lieuDepuisAdresse = (
+  nom: string,
+  adresseBan: AdresseBanData,
+): LieuActiviteInput => ({
+  nom,
+  adresse: adresseBan.nom,
+  commune: adresseBan.commune,
+  codePostal: adresseBan.codePostal,
+  codeInsee: adresseBan.codeInsee,
+  latitude: adresseBan.latitude,
+  longitude: adresseBan.longitude,
+})
+
+const erreurEnregistrement = () =>
+  createToast({
+    priority: 'error',
+    message:
+      'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
+  })
+
+/**
+ * Renseignement des lieux d'activité : on ajoute des lieux (recherche SIRET
+ * optionnelle qui préremplit nom + adresse géocodée, ou saisie manuelle), chacun
+ * s'empilant en carte. Seuls nom + adresse (géocodée) sont saisis ici ; le reste
+ * des informations du lieu se renseigne plus tard dans la gestion des lieux.
+ */
 const LieuxActiviteForm = ({
-  defaultValues,
+  lieuxExistants,
   nextHref,
-  createStructureBackHref,
 }: {
-  defaultValues: DefaultValues<LieuxActiviteData>
+  lieuxExistants: LieuActiviteInput[]
   nextHref: string
-  createStructureBackHref: string
 }) => {
-  const form = useForm<LieuxActiviteData>({
-    defaultValues,
-    resolver: zodResolver(LieuxActiviteValidation),
-  })
-
-  const { client: trpcClient } = trpc.useContext()
-
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    formState: { isSubmitting, errors, isSubmitSuccessful },
-  } = form
-
-  const {
-    fields: structureFields,
-    append: appendStructure,
-    remove: removeStructure,
-  } = useFieldArray({
-    control,
-    name: 'lieuxActivite',
-    keyName: '_formKey',
-  })
-
-  const reversedFields = structureFields
-    .map((field, index) => ({ field, index }))
-    .toReversed()
-
   const router = useRouter()
+  const [siretSearchError, setSiretSearchError] = useState<string | null>(null)
 
-  const structuresMapRef = useRef(new Map<string, LieuActiviteSearchResult>())
-
-  const selectedCartographieNationaleId = form.watch(
-    'addLieuActiviteCartographieNationaleId',
-  )
-
-  useEffect(() => {
-    if (!selectedCartographieNationaleId) {
-      return
-    }
-    const structure = structuresMapRef.current.get(
-      selectedCartographieNationaleId,
-    )
-    if (!structure) {
-      return
-    }
-
-    const isApiResult = structure.source === 'api'
-    const isLocalStructure = structure.source === 'structure_locale'
-
-    appendStructure({
-      structureCartographieNationaleId:
-        isApiResult || isLocalStructure ? undefined : structure.id,
-      id: structure.structures.at(0)?.id,
-      adresse: structure.adresse,
-      codeInsee: structure.codeInsee,
-      codePostal: structure.codePostal,
-      commune: structure.commune,
-      complementAdresse: structure.complementAdresse,
-      nom: structure.nom,
-      siret: structure.pivot,
-      typologies: structure.typologie?.split(';'),
-    })
-
-    createToast({
-      priority: 'success',
-      message: `Le lieu d’activité ${structure.nom} a bien été ajouté.`,
-    })
-
-    setValue('addLieuActiviteCartographieNationaleId', '')
-  }, [selectedCartographieNationaleId, setValue, appendStructure])
-
-  // Used to prevent adding the same structure multiple times
-  const alreadySelectedStructureCartoIds = new Set<string>(
-    form
-      .watch('lieuxActivite')
-      .map((structure) => structure.structureCartographieNationaleId)
-      .filter(onlyDefinedAndNotNull),
-  )
-
-  const loadOptions = async (search: string) => {
-    if (search.length < 3) {
-      return [
-        {
-          label: `La recherche doit contenir au moins 3 caractères`,
-          value: '',
-        },
-      ]
-    }
-    const result = await trpcClient.structures.searchLieuActiviteCombined.query(
-      {
-        query: search,
-        except: [...alreadySelectedStructureCartoIds.values()],
-      },
-    )
-
-    const hasMore = result.matchesCount - result.structures.length
-    const hasMoreMessage = hasMore
-      ? hasMore === 1
-        ? `Veuillez préciser votre recherche - 1 structure n’est pas affichée`
-        : `Veuillez préciser votre recherche - ${hasMore} structures ne sont pas affichées`
-      : null
-
-    for (const structure of result.structures) {
-      structuresMapRef.current.set(structure.id, structure)
-    }
-
-    const options: {
-      // Type does not accept ReactNode as label but react-select works with it
-      label: ReactNode
-      value: string
-    }[] = [
-      {
-        label: `${result.matchesCount} résultat${sPluriel(result.matchesCount)}`,
-        value: '',
-      },
-      ...result.structures.map(
-        ({ nom, id, adresse, commune, codePostal, typologie }) => ({
-          label: (
-            <>
-              <div className="fr-width-full fr-text--sm fr-mb-0">{nom}</div>
-              <div className="fr-width-full fr-text--xs fr-text-mention--grey fr-mb-0">
-                {typologie ? `${typologie} · ` : null}
-                {adresse}
-                {adresse && (codePostal || commune) ? ', ' : null}
-                {codePostal}
-                {codePostal && commune ? ' ' : null}
-                {commune}
-              </div>
-            </>
-          ),
-          value: id,
-        }),
-      ),
-    ]
-
-    if (hasMoreMessage) {
-      options.push({
-        label: hasMoreMessage,
-        value: '',
-      })
-    } else {
-      options.push(
-        {
-          label: (
-            <div style={{ marginBottom: -16 }}>
-              Vous ne trouvez pas votre lieu d’activité ?
-            </div>
-          ),
-          value: '',
-        },
-        {
-          label: (
-            <div className="fr-btns-group">
-              <Button
-                priority="secondary"
-                className="fr-width-full fr-mb-0"
-                linkProps={{
-                  href: `/inscription/creer-un-lieu-d-activite?nom=${search}&retour=${createStructureBackHref}`,
-                }}
-              >
-                Créer un lieu d’activité
-              </Button>
-            </div>
-          ),
-          value: '',
-        },
-      )
-    }
-
-    return options as { label: string; value: string }[]
+  const defaultValues: FormValues = {
+    lieux: lieuxExistants,
+    siretSearch: null,
+    nom: '',
+    adresseBan: null,
   }
 
-  const onSubmit = async (data: LieuxActiviteData) => {
-    try {
-      const result = await renseignerLieuxActiviteAction({
-        lieuxActivite: data.lieuxActivite,
-      })
-
-      if (!result.success) {
-        createToast({
-          priority: 'error',
-          message:
-            'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
+  const form = useAppForm({
+    validators: { onSubmit: lieuxActiviteFormShape },
+    defaultValues,
+    onSubmit: async ({ value }) => {
+      try {
+        const result = await renseignerLieuxActiviteAction({
+          lieuxActivite: value.lieux,
         })
-        return
+
+        if (!result.success) {
+          erreurEnregistrement()
+          return
+        }
+
+        router.push(nextHref)
+        router.refresh()
+      } catch {
+        erreurEnregistrement()
       }
+    },
+  })
 
-      router.push(nextHref)
-      router.refresh()
-    } catch {
-      createToast({
-        priority: 'error',
-        message:
-          'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
-      })
-    }
+  const isSubmitting = useStore(form.store, (state) => state.isSubmitting)
+  const isHydrated = useHydrated()
+  const isPending = isSubmitting || !isHydrated
+
+  const nom = useStore(form.store, (state) => state.values.nom)
+  const adresseBan = useStore(form.store, (state) => state.values.adresseBan)
+  const peutAjouter = !!nom && !!adresseBan
+
+  const ajouterLieu = () => {
+    if (!nom || !adresseBan) return
+    form.pushFieldValue('lieux', lieuDepuisAdresse(nom, adresseBan))
+    form.setFieldValue('nom', '')
+    form.setFieldValue('adresseBan', null)
+    form.setFieldValue('siretSearch', null)
+    setSiretSearchError(null)
   }
-
-  // Re-render the custom select when structure added to empty the field
-  const customSelectKey = structureFields
-    .map(
-      (structure) => structure.id ?? structure.structureCartographieNationaleId,
-    )
-    .join('')
-
-  const isLoading = isSubmitting || isSubmitSuccessful
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <CustomSelectFormField
-        key={customSelectKey}
-        label="Rechercher par nom du lieu, adresse ou SIRET."
-        control={control}
-        path="addLieuActiviteCartographieNationaleId"
-        placeholder="Rechercher un lieu d’activité"
-        loadOptions={loadOptions}
-        isOptionDisabled={(option) => option.value === ''}
-        cacheOptions
-        info={
-          <Link
-            className="fr-link fr-link--sm"
-            href="https://annuaire-entreprises.data.gouv.fr/"
-            target="_blank"
-            rel="noreferrer"
-            title="Annuaire des Entreprises - nouvelle fenêtre"
-          >
-            Retrouvez votre SIRET sur l’Annuaire des Entreprises
-          </Link>
-        }
-      />
-      {errors.lieuxActivite?.root || errors.lieuxActivite?.message ? (
-        <p className="fr-text-default--error fr-mb-0">
-          {errors.lieuxActivite.root?.message ?? errors.lieuxActivite.message}
-        </p>
-      ) : null}
-      {reversedFields.map(({ field: structure, index }) => (
-        <StructureCard
-          key={structure.id ?? structure.structureCartographieNationaleId}
-          structure={structure}
-          topRight={
-            <Button
-              type="button"
-              priority="tertiary no outline"
-              size="small"
-              iconPosition="right"
-              iconId="fr-icon-close-line"
-              onClick={() => removeStructure(index)}
+    <form.AppForm>
+      <form onSubmit={handleSubmit(form)}>
+        <form.Field name="lieux" mode="array">
+          {(field) => (
+            <>
+              {(field.state.value ?? []).toReversed().map((lieu, reversed) => {
+                const index = (field.state.value ?? []).length - 1 - reversed
+                return (
+                  <StructureCard
+                    key={`${lieu.nom}-${index}`}
+                    className="fr-mb-4v"
+                    structure={{
+                      nom: lieu.nom,
+                      adresse: lieu.adresse,
+                      commune: lieu.commune,
+                      codePostal: lieu.codePostal,
+                      siret: null,
+                      typologies: null,
+                      rna: null,
+                    }}
+                    topRight={
+                      <Button
+                        type="button"
+                        priority="tertiary no outline"
+                        size="small"
+                        iconPosition="right"
+                        iconId="fr-icon-close-line"
+                        onClick={() => field.removeValue(index)}
+                      >
+                        Retirer
+                      </Button>
+                    }
+                  />
+                )
+              })}
+            </>
+          )}
+        </form.Field>
+
+        <hr className="fr-separator-6v" />
+
+        <form.AppField name="siretSearch">
+          {(field) => (
+            <field.ComboBox
+              isPending={isPending}
+              onSelect={async (item) => {
+                setSiretSearchError(null)
+                form.setFieldValue('adresseBan', null)
+                const adresseGeocodee = await geocodeStructureAdresse(item)
+                if (!adresseGeocodee) {
+                  form.setFieldValue('siretSearch', null)
+                  setSiretSearchError(adresseNonVerifiableMessage(item))
+                  return
+                }
+                form.setFieldValue('nom', item.nom)
+                form.setFieldValue('adresseBan', adresseGeocodee)
+              }}
+              {...SiretSearchComboBox}
             >
-              Retirer
-            </Button>
-          }
-        />
-      ))}
-      {reversedFields.length === 0 && (
-        <span
-          className="fr-display-block fr-mt-12v fr-mb-12v fr-px-6v fr-py-4v fr-width-full fr-border-radius--8"
-          style={{ backgroundColor: 'var(--background-contrast-info)' }}
-        >
-          <span className="fr-display-block fr-text--bold fr-mb-1v">
-            Renseignez au moins un lieu d’activité pour finaliser votre
-            inscription.
-          </span>
-          <span className="fr-text--sm fr-mb-2v">
-            Vous pourrez ajouter d’autres lieux d’activités plus tard via votre
-            espace.
-          </span>
-        </span>
-      )}
-      <hr className="fr-separator-12v" />
-      <div className="fr-btns-group fr-btns-group--lg">
+              {({
+                getLabelProps,
+                getInputProps,
+                getToggleButtonProps,
+                ...optionsProps
+              }) => (
+                <>
+                  <field.Input
+                    addonEnd={
+                      <Button
+                        title="Rechercher"
+                        className="fr-border-left-0 fr-pl-3v"
+                        iconId="fr-icon-search-line"
+                        {...getToggleButtonProps({ type: 'button' })}
+                      />
+                    }
+                    isConnected={false}
+                    isPending={isPending}
+                    nativeLabelProps={getLabelProps()}
+                    nativeInputProps={getInputProps()}
+                    label="Rechercher par SIRET, nom ou adresse du lieu (optionnel)"
+                  />
+                  <Options
+                    className="fr-mt-n4v"
+                    {...optionsProps}
+                    {...SiretSearchOptions}
+                  />
+                </>
+              )}
+            </field.ComboBox>
+          )}
+        </form.AppField>
+
+        {siretSearchError && (
+          <p className="fr-text-default--error fr-text--sm">
+            {siretSearchError}
+          </p>
+        )}
+
+        <form.AppField name="nom">
+          {(field) => (
+            <field.Input isPending={isPending} label="Nom du lieu d’activité" />
+          )}
+        </form.AppField>
+
+        <form.AppField name="adresseBan">
+          {(field) => (
+            <field.ComboBox isPending={isPending} {...AdresseBanComboBox}>
+              {({
+                getLabelProps,
+                getInputProps,
+                getToggleButtonProps,
+                ...optionsProps
+              }) => (
+                <>
+                  <field.Input
+                    addonEnd={
+                      <Button
+                        title="Rechercher"
+                        className="fr-border-left-0 fr-pl-3v"
+                        iconId="fr-icon-search-line"
+                        {...getToggleButtonProps({ type: 'button' })}
+                      />
+                    }
+                    isConnected={false}
+                    isPending={isPending}
+                    nativeLabelProps={getLabelProps()}
+                    nativeInputProps={getInputProps()}
+                    label="Adresse"
+                  />
+                  <Options
+                    className="fr-mt-n4v"
+                    {...optionsProps}
+                    {...AdresseBanOptions}
+                  />
+                </>
+              )}
+            </field.ComboBox>
+          )}
+        </form.AppField>
+
         <Button
-          type="submit"
-          priority="primary"
-          {...buttonLoadingClassname(isLoading, 'fr-mb-0')}
+          type="button"
+          priority="secondary"
+          iconId="fr-icon-add-line"
+          disabled={isPending || !peutAjouter}
+          onClick={ajouterLieu}
         >
-          Suivant
+          Ajouter ce lieu d’activité
         </Button>
-      </div>
-    </form>
+
+        <hr className="fr-separator-12v" />
+
+        <div className="fr-btns-group fr-btns-group--lg">
+          <form.Submit isPending={isPending}>Suivant</form.Submit>
+        </div>
+      </form>
+    </form.AppForm>
   )
 }
 
-export default withTrpc(LieuxActiviteForm)
+export default LieuxActiviteForm

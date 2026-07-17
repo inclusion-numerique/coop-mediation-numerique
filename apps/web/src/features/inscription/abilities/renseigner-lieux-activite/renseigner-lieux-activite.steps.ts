@@ -5,6 +5,7 @@ import {
   currentInscriptionUserId,
   seedLieuActivite,
   seedProfilChoisi,
+  trackLieuActivite,
 } from '@app/web/features/inscription/inscription.cucumber'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
@@ -50,7 +51,37 @@ When('je renseigne ce lieu comme lieu d’activité', async () => {
   const resultat = await renseignerLieuxActivite({
     command: {
       userId: currentInscriptionUserId(),
-      lieuxActivite: [{ id: lieuDisponibleId, nom: 'Lieu disponible' }],
+      lieuxActivite: [
+        {
+          id: lieuDisponibleId,
+          nom: 'Lieu disponible',
+          adresse: '1 rue de la Paix',
+          commune: 'Paris',
+          codePostal: '75001',
+        },
+      ],
+    },
+    trouverStructuresCarto: async () => [],
+    maintenant: new Date(),
+  })
+  assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
+})
+
+When('je renseigne un nouveau lieu nommé {string}', async (nom: string) => {
+  const resultat = await renseignerLieuxActivite({
+    command: {
+      userId: currentInscriptionUserId(),
+      lieuxActivite: [
+        {
+          nom,
+          adresse: '12 rue des Lilas',
+          commune: 'Lyon',
+          codePostal: '69000',
+          codeInsee: '69123',
+          latitude: 45.75,
+          longitude: 4.85,
+        },
+      ],
     },
     trouverStructuresCarto: async () => [],
     maintenant: new Date(),
@@ -86,3 +117,25 @@ Then('mon ancien lieu d’activité est retiré', async () => {
     'L’ancien lieu d’activité n’a pas été retiré',
   )
 })
+
+Then(
+  'un lieu d’activité nommé {string} est créé et rattaché',
+  async (nom: string) => {
+    // Scopé à l'utilisateur courant (frais à chaque scénario) pour être robuste
+    // aux éventuels lieux homonymes laissés par d'anciens runs.
+    const actives = await prismaClient.mediateurEnActivite.findMany({
+      where: {
+        mediateur: { userId: currentInscriptionUserId() },
+        suppression: null,
+        fin: null,
+      },
+      select: { lieuInclusion: { select: { id: true, nom: true } } },
+    })
+
+    const rattache = actives.find(
+      (activite) => activite.lieuInclusion.nom === nom,
+    )
+    assert.ok(rattache, 'Le nouveau lieu n’a pas été créé et rattaché')
+    trackLieuActivite(rattache.lieuInclusion.id)
+  },
+)

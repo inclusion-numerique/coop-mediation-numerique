@@ -5,7 +5,7 @@ import type {
 // Type partagé de la structure carto de l'Entrepôt (erasé au build) — même
 // forme que celle consommée par le module partagé `structure/`.
 import type { CartoStructure } from '@app/web/features/lieux-activite/use-cases/ajouter/domain'
-import type { LieuActiviteDesire, LieuActiviteExistant } from './reconcilier'
+import type { LieuActiviteExistant, LieuActiviteInput } from './reconcilier'
 
 /** Lit les activités en cours de l'utilisateur (pour la réconciliation). */
 export type LireLieuxActiviteExistants = (
@@ -30,6 +30,6 @@ export type EnregistrerReconciliation = (input: {
   readonly etatFranchi: InscriptionEnCours
   readonly userId: UserId
   readonly aCloturer: readonly string[]
-  readonly aCreer: readonly LieuActiviteDesire[]
+  readonly aCreer: readonly LieuActiviteInput[]
   readonly structuresCarto: readonly CartoStructure[]
 }) => Promise<void>

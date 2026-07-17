@@ -6,6 +6,7 @@ export type {
 export {
   type LieuActiviteDesire,
   type LieuActiviteExistant,
+  type LieuActiviteInput,
   type Reconciliation,
   reconcilierLieuxActivite,
 } from './reconcilier'

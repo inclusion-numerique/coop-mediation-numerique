@@ -1,15 +1,13 @@
 'use client'
 
+import type { LieuActiviteInput } from '@app/web/features/inscription/abilities/renseigner-lieux-activite'
 import LieuxActiviteForm from '@app/web/features/inscription/abilities/renseigner-lieux-activite/ui/components/LieuxActiviteForm'
 import InscriptionCard from '@app/web/features/inscription/components/InscriptionCard'
-import { StructureData } from '@app/web/features/structures/StructureValidation'
 
 const LieuxActivitePage = ({
-  userId,
   lieuxActivite,
 }: {
-  userId: string
-  lieuxActivite: StructureData[]
+  lieuxActivite: LieuActiviteInput[]
 }) => (
   <InscriptionCard
     title="Renseignez vos lieux d'activité"
@@ -25,13 +23,8 @@ const LieuxActivitePage = ({
     }
   >
     <LieuxActiviteForm
-      defaultValues={{
-        userId,
-        lieuxActivite,
-        addLieuActiviteCartographieNationaleId: '',
-      }}
+      lieuxExistants={lieuxActivite}
       nextHref="/inscription/recapitulatif"
-      createStructureBackHref="/inscription/lieux-activite"
     />
   </InscriptionCard>
 )

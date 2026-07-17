@@ -17,6 +17,25 @@ export type LieuActiviteDesire = {
   readonly nom?: string | null
 }
 
+/**
+ * Lieu d'activité tel que soumis par le formulaire d'inscription : identité (pour
+ * la réconciliation) + nom et adresse géocodée (pour matérialiser un lieu
+ * inexistant). Un lieu existant porte son `id` (ou son `structureCartographieNationaleId`)
+ * et se rattache tel quel ; un nouveau lieu (SIRET ou saisie manuelle) porte
+ * nom + adresse géocodée, sans id, et sera créé.
+ */
+export type LieuActiviteInput = {
+  readonly id?: string | null
+  readonly structureCartographieNationaleId?: string | null
+  readonly nom: string
+  readonly adresse: string
+  readonly commune: string
+  readonly codePostal: string
+  readonly codeInsee?: string | null
+  readonly latitude?: number | null
+  readonly longitude?: number | null
+}
+
 export type Reconciliation<T> = {
   /** Ids des activités existantes à clôturer (plus dans la liste désirée). */
   readonly aCloturer: readonly string[]
