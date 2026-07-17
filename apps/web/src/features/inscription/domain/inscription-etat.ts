@@ -23,26 +23,30 @@ export type InscriptionNonDemarree = {
 }
 
 /**
- * Profil choisi + CGU acceptées, inscription pas encore validée. Le rôle (choix)
- * et le statut conseiller numérique (fait Dataspace) sont deux champs
- * orthogonaux — jamais un enum qui les aplatit.
+ * Profil posé, inscription pas encore validée. Le rôle (choix), le statut
+ * conseiller numérique (fait Dataspace) et l'acceptation des CGU sont trois
+ * champs orthogonaux — jamais un enum qui les aplatit.
+ *
+ * `acceptationCgu` est nullable : le parcours standard les pose à `choisir-role`,
+ * mais le flow Dataspace pré-remplit le profil et ne les recueille qu'au
+ * récapitulatif — « profil posé, CGU en attente » est donc un état légitime.
  */
 export type InscriptionEnCours = {
   readonly _tag: 'EnCours'
   readonly userId: UserId
   readonly role: Role
   readonly conseillerNumerique: boolean
-  readonly acceptationCgu: Date
+  readonly acceptationCgu: Date | null
   readonly progression: ProgressionEtapes
 }
 
-/** État terminal : inscription validée. */
+/** État terminal : inscription validée (les CGU y sont nécessairement posées). */
 export type InscriptionValidee = {
   readonly _tag: 'Validee'
   readonly userId: UserId
   readonly role: Role
   readonly conseillerNumerique: boolean
-  readonly acceptationCgu: Date
+  readonly acceptationCgu: Date | null
   readonly progression: ProgressionEtapes
   readonly inscriptionValidee: Date
 }

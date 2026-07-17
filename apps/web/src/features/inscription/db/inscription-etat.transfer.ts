@@ -38,13 +38,14 @@ const roleDepuisProfil = (profil: ProfilInscription): Role =>
 /**
  * Reconstruit l'état depuis la ligne `user`. Le rôle vient du profil legacy
  * (collapsé), le statut CN de son booléen dédié (source de vérité Dataspace).
- * Garde conservatrice : sans profil ET CGU posés ensemble, l'inscription est
- * `NonDemarree`.
+ * C'est le *profil* qui démarre l'inscription : les CGU sont un axe orthogonal
+ * (le flow Dataspace pré-remplit le profil et ne les recueille qu'au
+ * récapitulatif), et ne peuvent donc pas conditionner le démarrage.
  */
 export const inscriptionEtatToDomain = (
   row: InscriptionRow,
 ): InscriptionEtat => {
-  if (row.profilInscription === null || row.acceptationCgu === null)
+  if (row.profilInscription === null)
     return { _tag: 'NonDemarree', userId: UserId(row.id) }
 
   const ouvert = {

@@ -97,13 +97,37 @@ describe('inscription état transfer layer', () => {
     expect(roundTrip(etat)).toEqual(etat)
   })
 
-  it('retombe sur NonDemarree si profil posé mais CGU manquantes (garde conservatrice)', () => {
+  it('rend EnCours avec des CGU en attente si le profil est posé sans CGU (flow Dataspace)', () => {
     expect(
       inscriptionEtatToDomain({
         id,
         profilInscription: 'Mediateur',
         isConseillerNumerique: false,
         acceptationCgu: null,
+        structureEmployeuseRenseignee: null,
+        lieuxActiviteRenseignes: null,
+        inscriptionValidee: null,
+      }),
+    ).toEqual({
+      _tag: 'EnCours',
+      userId,
+      role: 'Mediateur',
+      conseillerNumerique: false,
+      acceptationCgu: null,
+      progression: {
+        structureEmployeuse: Franchissement(null),
+        lieuxActivite: Franchissement(null),
+      },
+    })
+  })
+
+  it('retombe sur NonDemarree sans profil : c’est le profil qui démarre l’inscription', () => {
+    expect(
+      inscriptionEtatToDomain({
+        id,
+        profilInscription: null,
+        isConseillerNumerique: false,
+        acceptationCgu: new Date('2026-07-01T00:00:00.000Z'),
         structureEmployeuseRenseignee: null,
         lieuxActiviteRenseignes: null,
         inscriptionValidee: null,
