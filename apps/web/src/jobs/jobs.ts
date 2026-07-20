@@ -14,6 +14,8 @@ import { BackfillStructureEmployeuseMainJobValidation } from './backfill-structu
 import { BackfillTrancheAgeJobValidation } from './backfill-tranche-age/backfillTrancheAgeJob'
 import { BackupDatabaseJobValidation } from './backup-database/backupDatabaseJob'
 import { CompleterStructuresMainJobValidation } from './completer-structures-main/completerStructuresMainJob'
+import { CorrigerEmployeusesSansSiretJobValidation } from './corriger-employeuses-sans-siret/corrigerEmployeusesSansSiretJob'
+import { DeduplicateEmployeusesJobValidation } from './deduplicate-employeuses/deduplicateEmployeusesJob'
 import { DeduplicateLieuxJobValidation } from './deduplicate-lieux/deduplicateLieuxJob'
 import { DetectDuplicateLieuxJobValidation } from './detect-duplicate-lieux/detectDuplicateLieuxJob'
 import { ExportDuplicateSiretsJobValidation } from './export-duplicate-sirets/exportDuplicateSiretsJob'
@@ -23,6 +25,7 @@ import { FixUsersJobValidation } from './fix-users/fixUsersJob'
 import { FixUsersRolesJobValidation } from './fix-users-roles/fixUsersRolesJob'
 import { ImportContactsToBrevoValidation } from './import-contacts-to-brevo/ImportContactsToBrevoJob'
 import { InactiveUsersRemindersJobValidation } from './inactive-users-reminders/inactiveUsersJob'
+import { LinkEmployeusesMainJobValidation } from './link-employeuses-main/linkEmployeusesMainJob'
 import { NormaliserBeneficiairesJobValidation } from './normaliser-beneficiaires/normaliserBeneficiairesJob'
 import { NormalizeSiretsJobValidation } from './normalize-sirets/normalizeSiretsJob'
 import { RelierPersonnesCoopMainJobValidation } from './relier-personnes-coop-main/relierPersonnesCoopMainJob'
@@ -83,6 +86,9 @@ export const JobValidation = z.discriminatedUnion('name', [
   RemoveOrphanBrevoContactsJobValidation,
   ResetInscriptionsSansRoleJobValidation,
   DeduplicateLieuxJobValidation,
+  DeduplicateEmployeusesJobValidation,
+  LinkEmployeusesMainJobValidation,
+  CorrigerEmployeusesSansSiretJobValidation,
   DetectDuplicateLieuxJobValidation,
   ExportDuplicateSiretsJobValidation,
 ])

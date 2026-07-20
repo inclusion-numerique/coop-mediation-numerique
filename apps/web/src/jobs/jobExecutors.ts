@@ -17,6 +17,8 @@ import { executeBackfillStructureEmployeuseMain } from './backfill-structure-emp
 import { executeBackfillTrancheAge } from './backfill-tranche-age/executeBackfillTrancheAge'
 import { executeBackupDatabaseJob } from './backup-database/executeBackupDatabaseJob'
 import { executeCompleterStructuresMain } from './completer-structures-main/executeCompleterStructuresMain'
+import { executeCorrigerEmployeusesSansSiret } from './corriger-employeuses-sans-siret/executeCorrigerEmployeusesSansSiret'
+import { executeDeduplicateEmployeuses } from './deduplicate-employeuses/executeDeduplicateEmployeuses'
 import { executeDeduplicateLieux } from './deduplicate-lieux/executeDeduplicateLieux'
 import { executeDetectDuplicateLieux } from './detect-duplicate-lieux/executeDetectDuplicateLieux'
 import { executeExportDuplicateSirets } from './export-duplicate-sirets/executeExportDuplicateSirets'
@@ -27,6 +29,7 @@ import { executeFixUsersRoles } from './fix-users-roles/executeFixUsersRoles'
 import { executeImportContactsToBrevo } from './import-contacts-to-brevo/executeImportContactsToBrevo'
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
 import type { Job, JobName, JobPayload } from './jobs'
+import { executeLinkEmployeusesMain } from './link-employeuses-main/executeLinkEmployeusesMain'
 import { executeNormaliserBeneficiaires } from './normaliser-beneficiaires/executeNormaliserBeneficiaires'
 import { executeNormalizeSirets } from './normalize-sirets/executeNormalizeSirets'
 import { output } from './output'
@@ -91,6 +94,9 @@ export const jobExecutors: {
   'remove-orphan-brevo-contacts': executeRemoveOrphanBrevoContacts,
   'reset-inscriptions-sans-role': executeResetInscriptionsSansRole,
   'deduplicate-lieux': executeDeduplicateLieux,
+  'deduplicate-employeuses': executeDeduplicateEmployeuses,
+  'corriger-employeuses-sans-siret': executeCorrigerEmployeusesSansSiret,
+  'link-employeuses-main': executeLinkEmployeusesMain,
   'detect-duplicate-lieux': executeDetectDuplicateLieux,
   'export-duplicate-sirets': executeExportDuplicateSirets,
 }
