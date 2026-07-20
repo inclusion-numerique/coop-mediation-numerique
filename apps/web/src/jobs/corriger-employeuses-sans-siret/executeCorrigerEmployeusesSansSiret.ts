@@ -282,6 +282,9 @@ export const executeCorrigerEmployeusesSansSiret = async (
 ) => {
   const dryRun = job.payload?.dryRun ?? true
   const csvPath = job.payload?.csvPath ?? ''
+  // Périmètre réduit à la phase 1 : on vide les plans des phases 2 à 5 en amont, ce qui
+  // neutralise aussi leur exécution et évite les appels à l'API Entreprise de la phase 5.
+  const peuplementSeul = job.payload?.peuplementSeul ?? false
   output.log(
     `corriger-employeuses-sans-siret: démarrage${dryRun ? ' (DRY RUN)' : ''}...`,
   )
@@ -320,7 +323,7 @@ export const executeCorrigerEmployeusesSansSiret = async (
     return s === null ? acc : acc.set(s, [...(acc.get(s) ?? []), e])
   }, new Map<string, Employeuse[]>())
 
-  const fusions = [...groupes.entries()]
+  const fusions = (peuplementSeul ? [] : [...groupes.entries()])
     .filter(([, membres]) => {
       const orphelines = membres.filter((m) => !main.liees.has(m.id)).length
       const liees = membres.filter((m) => main.liees.has(m.id)).length
@@ -336,9 +339,9 @@ export const executeCorrigerEmployeusesSansSiret = async (
   const absorbees = new Set(fusions.flatMap((f) => f.sourceIds))
 
   // ── PHASE 3 : plan de liaison des survivantes orphelines (cas évidents) ──
-  const survivantes = employeuses.filter(
-    (e) => !absorbees.has(e.id) && !main.liees.has(e.id),
-  )
+  const survivantes = peuplementSeul
+    ? []
+    : employeuses.filter((e) => !absorbees.has(e.id) && !main.liees.has(e.id))
   const liaisonsBrutes = survivantes
     .map((e): Liaison | null => {
       const siret = siretEffectif(e)
@@ -378,7 +381,7 @@ export const executeCorrigerEmployeusesSansSiret = async (
   // qu'un SIRET valide (les données douteuses côté coop — ex. SIRET à 13 chiffres —
   // sont écartées plutôt que recopiées dans main).
   type PropagationMain = { mainId: number; coopId: string; siret: string }
-  const propagationsCandidates = main.lieesSansSiret
+  const propagationsCandidates = (peuplementSeul ? [] : main.lieesSansSiret)
     .map(({ mainId, coopId, denomination }) => {
       const employeuse = employeuseParId.get(coopId)
       const siret = employeuse ? siretEffectif(employeuse) : null
@@ -401,19 +404,21 @@ export const executeCorrigerEmployeusesSansSiret = async (
   // Cibles : employeuses NON liées, au SIRET effectif valide et ABSENT de main. On les
   // dédoublonne par SIRET (filet — la phase 2 les a normalement déjà fusionnées), puis on
   // enrichit chacune via l'API Entreprise pour reproduire l'ingestion Entrepôt.
-  const ciblesCreation = [
-    ...employeuses
-      .filter((e) => !absorbees.has(e.id) && !main.liees.has(e.id))
-      .reduce((acc, e) => {
-        const s = siretEffectif(e)
-        return s !== null && siretValide(s) && !main.siretsPresents.has(s)
-          ? acc.has(s)
-            ? acc
-            : acc.set(s, e)
-          : acc
-      }, new Map<string, Employeuse>())
-      .values(),
-  ]
+  const ciblesCreation = peuplementSeul
+    ? []
+    : [
+        ...employeuses
+          .filter((e) => !absorbees.has(e.id) && !main.liees.has(e.id))
+          .reduce((acc, e) => {
+            const s = siretEffectif(e)
+            return s !== null && siretValide(s) && !main.siretsPresents.has(s)
+              ? acc.has(s)
+                ? acc
+                : acc.set(s, e)
+              : acc
+          }, new Map<string, Employeuse>())
+          .values(),
+      ]
 
   type Creation = {
     coopId: string

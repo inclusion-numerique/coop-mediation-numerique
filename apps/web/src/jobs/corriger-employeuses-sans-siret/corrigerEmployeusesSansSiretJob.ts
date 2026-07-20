@@ -14,6 +14,13 @@ export const CorrigerEmployeusesSansSiretJobValidation = z.object({
         .default(
           'refactor/audit-coop-main/out/employeuses-sans-siret-a-completer.csv',
         ),
+      // S'arrêter après la PHASE 1 (peuplement des SIRET), sans dédupliquer, lier,
+      // propager ni créer. À utiliser quand l'objectif est la COUVERTURE et non la
+      // cohérence : les phases 2 à 5 fusionnent en dur des lignes coop qui n'ont
+      // besoin que de leur propre ligne `main`, et apparient à SIRET strictement
+      // égal — moins bien que `refactor/audit-coop-main/plan-complet.sql`, qui
+      // élargit au SIREN et passe par une validation humaine.
+      peuplementSeul: z.boolean().optional().default(false),
     })
     .optional()
     .default({}),

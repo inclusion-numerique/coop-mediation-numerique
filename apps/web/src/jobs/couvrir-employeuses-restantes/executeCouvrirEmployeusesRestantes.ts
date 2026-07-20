@@ -6,13 +6,23 @@ import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 import type { CouvrirEmployeusesRestantesJob } from './couvrirEmployeusesRestantesJob'
 
-// Solde les 6 dernières employeuses coop sans équivalent dans `main`, une fois les lots
-// automatisables épuisés. Chaque cas a été instruit individuellement (SIRENE via l'API
-// Recherche d'entreprises, SIRET ProConnect des employés, contenu réel de `main`) : le plan
-// est donc une TABLE DÉCLARATIVE et non une heuristique. Chaque entrée porte sa raison.
+// Solde les employeuses coop que le plan de couverture ne sait pas traiter, parce que la
+// CRÉATION y est impossible : la place `(siret, denomination_antenne NULL)` est déjà prise
+// dans `main` par une autre ligne coop. Table DÉCLARATIVE, instruite cas par cas.
 //
-// Le point qui a débloqué 3 cas sur 6 : une employeuse coop peut avoir sa ligne dans `main`
-// sous un AUTRE ÉTABLISSEMENT du même SIREN. Chercher à SIRET strictement égal les masque.
+// Repérage : `refactor/audit-coop-main/collisions-creation.sql`.
+//
+// RÈGLE — quand cette place est occupée, l'occupante de cette ligne précise est le partenaire
+// de fusion, QUEL QUE SOIT son SIRET : la ligne `main` porte déjà le SIRET de l'orpheline,
+// donc l'occupante revendique une identité qui n'est pas la sienne. C'est une règle étroite
+// et sûre. NE PAS la généraliser en « chercher une jumelle dans tout le SIREN » : mesuré sur
+// la base de prod, 25 452 paires coop de même SIREN sont dans des communes différentes contre
+// 224 dans la même — ce serait ~99 % de fusions abusives (La Poste Argelès avec La Poste Tarbes).
+//
+// SENS DE LA FUSION — contre-intuitif : c'est l'ORPHELINE qui survit, alors qu'elle est
+// souvent la plus pauvre en activités. `completeTargetIdentity` fait `siret: target.siret ??
+// source.siret` et ne remplace jamais une valeur existante : fusionner dans l'autre sens
+// laisserait la survivante sans SIRET (POSSE 33) ou avec un SIRET fermé (Forum du Pays Provinois).
 //
 // Objectif : la COUVERTURE (chaque ligne coop a sa ligne `main` portant son
 // `structure_coop_id`). La cohérence des données n'est pas visée.
@@ -40,34 +50,16 @@ type Cas =
 
 const PLAN: Cas[] = [
   {
-    action: 'lier',
-    coopId: '8339213d-4b87-40eb-aa69-9e2b5fd95751',
-    mainId: 10189,
-    libelle: 'Emmaüs Connect Grenoble',
+    action: 'transferer',
+    coopId: '554f3338-f40f-4bd4-9fef-865dcde05482',
+    mainId: 8212,
+    absorbeeId: '1e10ac29-af83-48fa-95e1-e85ae0491489',
+    libelle: 'POSSE 33 (Chambéry)',
     raison:
-      'main 10189 = « Emmaüs Connect Grenoble », 7 allée du Jardin Hoche, Grenoble : ' +
-      'adresse identique. Porte le siret ...600067 (autre établissement du SIREN 792272916). ' +
-      "SIRENE : aucun établissement Emmaüs en Isère, le lieu n'est pas immatriculé.",
-  },
-  {
-    action: 'lier',
-    coopId: 'dee97d20-5a2f-4966-8fed-3021ec6f4974',
-    mainId: 10183,
-    libelle: 'Emmaüs Connect Roubaix',
-    raison:
-      'main 10183 = « EMMAUS CONNECT FONDATEUR... », 10 Mail de Lannoy, Roubaix : ' +
-      'adresse identique. Porte le siret ...600042 (autre établissement du même SIREN). ' +
-      'SIRENE : aucun établissement à Roubaix, le seul du Nord est à Lille.',
-  },
-  {
-    action: 'lier',
-    coopId: 'e777fdb2-677a-459b-93ac-dcc7531dc586',
-    mainId: 4201,
-    libelle: 'France services Pôle numérique de Pierrefitte',
-    raison:
-      'main 4201 = « Pôle numérique de la mairie de Pierrefitte », Pierrefitte-sur-Seine 93380 : ' +
-      'nom identique, même avenue (16 vs 18). Le siret 21930059700016 est mort des DEUX côtés ' +
-      '(commune fusionnée avec Saint-Denis au 01/01/2025) : les deux bases restent cohérentes.',
+      "Même structure saisie deux fois au 24 avenue Daniel-Rops à Chambéry : l'orpheline " +
+      "porte le siret 41067254700032, l'occupante « Posse 33 Chambéry » n'en a AUCUN mais " +
+      'détient le lien et les 304 activités. La ligne main 8212 porte ce siret : elle revient ' +
+      "donc à l'orpheline, qui absorbe l'occupante et récupère son historique.",
   },
   {
     action: 'transferer',
@@ -77,27 +69,9 @@ const PLAN: Cas[] = [
     libelle: 'Association Forum du Pays Provinois',
     raison:
       'SIRENE : ...00022 (Longueville) est le siège ACTIF depuis le 11/10/2024, ...00014 ' +
-      "(Provins) est l'ancien siège FERMÉ le même jour (ancien_siege: true). La ligne coop " +
-      "qui occupe main 10726 porte l'ancien siret : on repointe 10726 vers le siège actif, " +
-      "puis on absorbe l'obsolète. Fusionner dans l'autre sens conserverait l'établissement mort.",
-  },
-  {
-    action: 'creer',
-    coopId: '7b3e274d-d52f-461b-86ab-9eaffc5a4ba0',
-    libelle: 'FRANCE TRAVAIL (siège, Le Cinétic Paris 20e)',
-    raison:
-      'SIRENE : 13000548100010 est le BON siret, Le Cinétic est bien le siège / direction ' +
-      'générale à cette adresse. Les 5 employés portent tous ce même siret ProConnect. ' +
-      "`main` a des dizaines d'agences France Travail mais AUCUNE à Paris : rien à quoi se lier.",
-  },
-  {
-    action: 'creer',
-    coopId: 'f3b1e975-3f80-4e1a-acae-cf6e4d8110d8',
-    libelle: 'COMMUNE ASSOCIEE DE LOMME (mairie)',
-    raison:
-      'SIRENE : 21590355000014 est le BON siret (mairie de Lomme, entité distincte de Lille, ' +
-      'adresse et code INSEE exacts). `main` ne contient que les deux EPN (Cyber Espaces Marais ' +
-      'et Mont à Camp), aucune ligne ne porte la mairie. Aucun employé rattaché, aucune piste.',
+      "(Provins) est l'ancien siège FERMÉ le même jour (ancien_siege: true). L'occupante de " +
+      "main 10726 porte l'ancien siret alors que la ligne main porte le nouveau : on repointe " +
+      "vers le siège actif puis on absorbe l'obsolète.",
   },
 ]
 
