@@ -4,6 +4,7 @@ import { entrepotPrismaClient } from '@app/web/entrepotPrismaClient'
 import { mergeStructureAdministrative } from '@app/web/features/structures/use-cases/merge/mutations/mergeStructureAdministrative'
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
+import { creerLigneMain } from '@app/web/jobs/structures-main/creerLigneMain'
 import { prismaClient } from '@app/web/prismaClient'
 import { parse } from 'csv-parse/sync'
 import type { AppliquerPlanCouvertureJob } from './appliquerPlanCouvertureJob'
@@ -140,52 +141,37 @@ const poserLien = async ({ coopId, mainId }: Liaison): Promise<boolean> => {
   return misesAJour === 1
 }
 
-// L'adresse coop est une chaîne libre : on en extrait le numéro de voie s'il ouvre la
-// chaîne, le reste devient le libellé de voie. Pas de géocodage — `main` n'exige rien.
-const decouperAdresse = (adresse: string) => {
-  const correspondance = /^(\d+)\s+(.*)$/.exec(adresse.trim())
-  return {
-    numeroVoie: correspondance ? Number(correspondance[1]) : null,
-    nomVoie: correspondance ? correspondance[2] : adresse.trim() || null,
-  }
-}
-
+// Création dans `main` : déléguée à `creerLigneMain`, partagée avec
+// `couvrir-employeuses-restantes` — réutilisation d'adresse, choix d'antenne et transaction.
+// Le CSV ne porte pas le code INSEE : on relit la ligne coop d'origine.
 const creerDansMain = async (creation: Creation): Promise<boolean> => {
-  const { numeroVoie, nomVoie } = decouperAdresse(creation.adresse)
-
-  // `main.adresse.code_insee` est NOT NULL et n'est pas dans le CSV : on le relit sur la
-  // ligne coop d'origine. Sans code INSEE, on n'insère rien plutôt que d'inventer.
   const structure = await prismaClient.structureAdministrative.findUnique({
     where: { id: creation.coopId },
-    select: { codeInsee: true },
+    select: {
+      id: true,
+      siret: true,
+      nom: true,
+      adresse: true,
+      commune: true,
+      codePostal: true,
+      codeInsee: true,
+    },
   })
 
-  const codeInsee = structure?.codeInsee ?? null
-
-  if (codeInsee === null) {
-    output.log(
-      `  création ${creation.nom} ignorée : code INSEE absent côté coop`,
-    )
+  if (structure === null) {
+    output.log(`  création ${creation.nom} ignorée : introuvable côté coop`)
     return false
   }
 
-  const adresses = await entrepotPrismaClient.$queryRaw<{ id: number }[]>`
-    INSERT INTO main.adresse
-      (code_postal, code_insee, nom_commune, nom_voie, numero_voie, created_at, updated_at)
-    VALUES (${creation.codePostal}, ${codeInsee}, ${creation.commune},
-            ${nomVoie}, ${numeroVoie}, now(), now())
-    RETURNING id`
+  const resultat = await creerLigneMain(structure)
 
-  const adresseId = adresses.at(0)?.id ?? null
+  if (resultat.statut !== 'creee') {
+    output.log(
+      `  création ${creation.nom} ${resultat.statut} : ${resultat.detail}`,
+    )
+  }
 
-  const creees = await entrepotPrismaClient.$executeRaw`
-    INSERT INTO main.structure_administrative
-      (siret, denomination_sirene, adresse_id, structure_coop_id, edited_by,
-       created_at, updated_at, updated_at_coop)
-    VALUES (${creation.siret}, ${creation.nom}, ${adresseId}, ${creation.coopId}::uuid,
-            'coop', now(), now(), now())`
-
-  return creees === 1
+  return resultat.statut === 'creee'
 }
 
 export const executeAppliquerPlanCouverture = async (
