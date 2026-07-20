@@ -1,4 +1,5 @@
 import z from 'zod'
+import { AppliquerPlanCouvertureJobValidation } from './appliquer-plan-couverture/appliquerPlanCouvertureJob'
 import { ApplyCorrigerAdresseJobValidation } from './apply-corriger-adresse/applyCorrigerAdresseJob'
 import { ApplyCorrigerCoordonneesJobValidation } from './apply-corriger-coordonnees/applyCorrigerCoordonneesJob'
 import { ApplyFusionnerLieuxJobValidation } from './apply-fusionner-lieux/applyFusionnerLieuxJob'
@@ -15,6 +16,7 @@ import { BackfillTrancheAgeJobValidation } from './backfill-tranche-age/backfill
 import { BackupDatabaseJobValidation } from './backup-database/backupDatabaseJob'
 import { CompleterStructuresMainJobValidation } from './completer-structures-main/completerStructuresMainJob'
 import { CorrigerEmployeusesSansSiretJobValidation } from './corriger-employeuses-sans-siret/corrigerEmployeusesSansSiretJob'
+import { CouvrirEmployeusesRestantesJobValidation } from './couvrir-employeuses-restantes/couvrirEmployeusesRestantesJob'
 import { DeduplicateEmployeusesJobValidation } from './deduplicate-employeuses/deduplicateEmployeusesJob'
 import { DeduplicateLieuxJobValidation } from './deduplicate-lieux/deduplicateLieuxJob'
 import { DetectDuplicateLieuxJobValidation } from './detect-duplicate-lieux/detectDuplicateLieuxJob'
@@ -86,6 +88,8 @@ export const JobValidation = z.discriminatedUnion('name', [
   RemoveOrphanBrevoContactsJobValidation,
   ResetInscriptionsSansRoleJobValidation,
   DeduplicateLieuxJobValidation,
+  AppliquerPlanCouvertureJobValidation,
+  CouvrirEmployeusesRestantesJobValidation,
   DeduplicateEmployeusesJobValidation,
   LinkEmployeusesMainJobValidation,
   CorrigerEmployeusesSansSiretJobValidation,

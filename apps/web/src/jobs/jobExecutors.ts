@@ -2,6 +2,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import * as Sentry from '@sentry/nextjs'
 import { v4 } from 'uuid'
+import { executeAppliquerPlanCouverture } from './appliquer-plan-couverture/executeAppliquerPlanCouverture'
 import { executeApplyCorrigerAdresse } from './apply-corriger-adresse/executeApplyCorrigerAdresse'
 import { executeApplyCorrigerCoordonnees } from './apply-corriger-coordonnees/executeApplyCorrigerCoordonnees'
 import { executeApplyFusionnerLieux } from './apply-fusionner-lieux/executeApplyFusionnerLieux'
@@ -18,6 +19,7 @@ import { executeBackfillTrancheAge } from './backfill-tranche-age/executeBackfil
 import { executeBackupDatabaseJob } from './backup-database/executeBackupDatabaseJob'
 import { executeCompleterStructuresMain } from './completer-structures-main/executeCompleterStructuresMain'
 import { executeCorrigerEmployeusesSansSiret } from './corriger-employeuses-sans-siret/executeCorrigerEmployeusesSansSiret'
+import { executeCouvrirEmployeusesRestantes } from './couvrir-employeuses-restantes/executeCouvrirEmployeusesRestantes'
 import { executeDeduplicateEmployeuses } from './deduplicate-employeuses/executeDeduplicateEmployeuses'
 import { executeDeduplicateLieux } from './deduplicate-lieux/executeDeduplicateLieux'
 import { executeDetectDuplicateLieux } from './detect-duplicate-lieux/executeDetectDuplicateLieux'
@@ -97,6 +99,8 @@ export const jobExecutors: {
   'deduplicate-employeuses': executeDeduplicateEmployeuses,
   'corriger-employeuses-sans-siret': executeCorrigerEmployeusesSansSiret,
   'link-employeuses-main': executeLinkEmployeusesMain,
+  'appliquer-plan-couverture': executeAppliquerPlanCouverture,
+  'couvrir-employeuses-restantes': executeCouvrirEmployeusesRestantes,
   'detect-duplicate-lieux': executeDetectDuplicateLieux,
   'export-duplicate-sirets': executeExportDuplicateSirets,
 }
