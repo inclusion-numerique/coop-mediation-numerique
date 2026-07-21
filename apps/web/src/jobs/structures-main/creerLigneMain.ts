@@ -1,4 +1,8 @@
 import { entrepotPrismaClient } from '@app/web/entrepotPrismaClient'
+import {
+  lierLigneLibre,
+  trouverLigneLibre,
+} from '@app/web/jobs/structures-main/reclamerLigneMain'
 
 // Création d'une ligne `main.structure_administrative` (et de son adresse) à partir d'une
 // employeuse coop. Partagé par `appliquer-plan-couverture` et `couvrir-employeuses-restantes`
@@ -27,6 +31,7 @@ export type EmployeuseACreer = {
 
 export type ResultatCreation =
   | { statut: 'creee'; detail: string; antenne: string | null }
+  | { statut: 'liee'; detail: string }
   | { statut: 'ignoree'; detail: string }
   | { statut: 'echec'; detail: string }
 
@@ -78,6 +83,13 @@ export const creerLigneMain = async (
 ): Promise<ResultatCreation> => {
   if (employeuse.siret === null || employeuse.codeInsee === null) {
     return { statut: 'ignoree', detail: 'siret ou code INSEE absent côté coop' }
+  }
+
+  // Ne jamais créer quand une ligne `main` libre décrit déjà cette antenne : s'y raccrocher.
+  const libre = await trouverLigneLibre(employeuse)
+
+  if (libre !== null) {
+    return lierLigneLibre(employeuse.id, libre)
   }
 
   const { antenne, disponible } = await choisirAntenne(employeuse)

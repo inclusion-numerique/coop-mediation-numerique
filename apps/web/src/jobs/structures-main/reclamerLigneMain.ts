@@ -26,6 +26,96 @@ import { prismaClient } from '@app/web/prismaClient'
 // une valeur existante. Fusionner dans l'autre sens laisserait la survivante sans SIRET
 // (POSSE 33) ou avec un SIRET fermé (Forum du Pays Provinois).
 
+// LIGNE LIBRE — à tenter avant toute création, et avant même la réclamation.
+//
+// `main` contient souvent plusieurs lignes pour un même SIRET, une par antenne, écrites par
+// d'autres producteurs (carto, aidants-connect, sonum), dont certaines n'ont aucun
+// `structure_coop_id`. Créer une ligne de plus alors qu'une décrit déjà la même antenne
+// fabrique un doublon dans un schéma co-possédé.
+//
+// Mesuré sur la production : 284 employeuses non couvertes ont une ligne `main` libre au même
+// SIRET, dont 262 dans la MÊME COMMUNE.
+//
+// GARDE-FOU — la commune doit correspondre. Sans elle, on rattacherait l'antenne de Champigny
+// à la ligne du siège de Joinville simplement parce qu'elles partagent le SIRET de l'EPT ;
+// créer une antenne correcte vaut mieux que se raccrocher à la mauvaise ligne. Ce filtre ne
+// coûte que 22 des 284 occasions.
+//
+// À SIRET et commune égaux, on préfère la ligne d'identité légale (antenne nulle) : c'est
+// celle que `choisirAntenne` viserait de toute façon en créant.
+
+export type LigneLibre = {
+  mainId: number
+  antenne: string | null
+}
+
+const normaliser = (valeur: string): string =>
+  valeur
+    .normalize('NFD')
+    .replaceAll(/\p{Diacritic}/gu, '')
+    .replaceAll(/[^a-zA-Z0-9]/g, '')
+    .toUpperCase()
+
+export const trouverLigneLibre = async (employeuse: {
+  siret: string | null
+  commune: string
+}): Promise<LigneLibre | null> => {
+  if (employeuse.siret === null) {
+    return null
+  }
+
+  const lignes = await entrepotPrismaClient.$queryRaw<
+    {
+      id: number
+      denomination_antenne: string | null
+      nom_commune: string | null
+    }[]
+  >`
+    SELECT m.id, m.denomination_antenne, a.nom_commune
+    FROM main.structure_administrative m
+    LEFT JOIN main.adresse a ON a.id = m.adresse_id
+    WHERE m.siret = ${employeuse.siret}
+      AND m.structure_coop_id IS NULL
+      AND m.deleted_at IS NULL
+    ORDER BY (m.denomination_antenne IS NOT NULL), m.id
+  `
+
+  const commune = normaliser(employeuse.commune)
+
+  const ligne = lignes.find(
+    ({ nom_commune }) =>
+      nom_commune !== null && normaliser(nom_commune) === commune,
+  )
+
+  return ligne === undefined
+    ? null
+    : { mainId: ligne.id, antenne: ligne.denomination_antenne }
+}
+
+export const lierLigneLibre = async (
+  employeuseId: string,
+  ligne: LigneLibre,
+): Promise<{ statut: 'liee' | 'echec'; detail: string }> => {
+  const misesAJour = await entrepotPrismaClient.$executeRaw`
+    UPDATE main.structure_administrative
+    SET structure_coop_id = ${employeuseId}::uuid,
+        updated_at = now(), updated_at_coop = now()
+    WHERE id = ${ligne.mainId} AND structure_coop_id IS NULL
+  `
+
+  return misesAJour === 1
+    ? {
+        statut: 'liee',
+        detail:
+          `main ${ligne.mainId} liée sans création ` +
+          `(antenne ${ligne.antenne === null ? 'NULL' : `« ${ligne.antenne} »`})`,
+      }
+    : {
+        statut: 'echec',
+        detail: `main ${ligne.mainId} n'est plus libre`,
+      }
+}
+
 export type Reclamation = {
   mainId: number
   occupanteId: string

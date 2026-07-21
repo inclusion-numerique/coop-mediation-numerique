@@ -9,6 +9,7 @@ import {
 import {
   reclamerLigneMain,
   trouverLigneAReclamer,
+  trouverLigneLibre,
 } from '@app/web/jobs/structures-main/reclamerLigneMain'
 import { prismaClient } from '@app/web/prismaClient'
 import type { CouvrirEmployeusesRestantesJob } from './couvrirEmployeusesRestantesJob'
@@ -44,7 +45,7 @@ type Employeuse = {
 
 type Resultat = {
   employeuse: Employeuse
-  statut: 'reclamee' | 'creee' | 'ignoree' | 'echec'
+  statut: 'reclamee' | 'liee' | 'creee' | 'ignoree' | 'echec'
   detail: string
 }
 
@@ -130,6 +131,16 @@ export const executeCouvrirEmployeusesRestantes = async (
                 `« ${reclamation.occupanteNom} » (siret ${reclamation.occupanteSiret ?? 'absent'})`,
             }
           }
+          const libre = await trouverLigneLibre(employeuse)
+          if (libre !== null) {
+            return {
+              employeuse,
+              statut: 'liee',
+              detail:
+                `à lier : main ${libre.mainId} libre au même siret et même commune ` +
+                `(antenne ${libre.antenne === null ? 'NULL' : `« ${libre.antenne} »`})`,
+            }
+          }
           const { antenne, disponible } = employeuse.siret
             ? await choisirAntenne(employeuse)
             : { antenne: null, disponible: false }
@@ -146,7 +157,11 @@ export const executeCouvrirEmployeusesRestantes = async (
         async (precedent: Promise<Resultat[]>, employeuse) => {
           const faits = await precedent
           const resultat = await couvrir(employeuse)
-          if (resultat.statut !== 'creee' && resultat.statut !== 'reclamee') {
+          if (
+            resultat.statut !== 'creee' &&
+            resultat.statut !== 'reclamee' &&
+            resultat.statut !== 'liee'
+          ) {
             output.log(
               `  ${resultat.statut} ${employeuse.nom} — ${resultat.detail}`,
             )
@@ -173,6 +188,7 @@ export const executeCouvrirEmployeusesRestantes = async (
   output.log(`\n=== CLÔTURE DE LA COUVERTURE ${dryRun ? '(DRY RUN)' : ''} ===`)
   output.log(`Sans équivalent : ${restantes.length}`)
   output.log(`${dryRun ? 'À réclamer' : 'Réclamées'} : ${compter('reclamee')}`)
+  output.log(`${dryRun ? 'À lier' : 'Liées'} : ${compter('liee')}`)
   output.log(`${dryRun ? 'À créer' : 'Créées'} : ${compter('creee')}`)
   output.log(`Ignorées        : ${compter('ignoree')}`)
   output.log(`Échecs          : ${compter('echec')}`)
@@ -183,6 +199,7 @@ export const executeCouvrirEmployeusesRestantes = async (
     dryRun,
     restantes: restantes.length,
     reclamees: compter('reclamee'),
+    liees: compter('liee'),
     creees: compter('creee'),
     ignorees: compter('ignoree'),
     echecs: compter('echec'),

@@ -6,67 +6,112 @@ import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 import type { DeduplicateEmployeusesJob } from './deduplicateEmployeusesJob'
 
-// Déduplique les IDENTITÉS LÉGALES EMPLOYEUSES (`structure_administrative`) partageant un
-// même SIRET : le SIRET identifie la personne morale, deux employeuses qui le partagent
-// sont donc la même identité en double. Frère de `deduplicate-lieux` (qui déduplique les
-// LIEUX, sur nom + adresse, puisqu'un lieu n'est pas porté par son SIRET).
+// Déduplique les employeuses (`coop.structure_administrative`) selon DEUX critères, avant
+// toute liaison vers `main` : fusionner d'abord évite de poser des liens qu'on casserait
+// ensuite, et évite de graver le doublon dans `main`.
 //
-// PÉRIMÈTRE — un groupe SIRET n'est traité que s'il contient AU MOINS UNE employeuse
-// orpheline (sans `structure_coop_id` dans `main`) et AU PLUS UNE employeuse déjà liée.
-//   • Aucune orpheline           -> le groupe est déjà consolidé côté Entrepôt, on n'y touche pas.
-//   • Plusieurs déjà liées       -> `main` porte lui-même la duplication (plusieurs lignes pour
-//                                   ce SIRET, chacune liée) : la cible ne se déduit pas, arbitrage humain.
-// Cette borne garantit que toute employeuse ABSORBÉE est orpheline, donc que la suppression
-// dure faite par `mergeStructureAdministrative` ne laisse jamais un `structure_coop_id` de
-// `main` pointant dans le vide.
+//   SIRET      — le SIRET identifie la personne morale : deux employeuses qui le partagent
+//                sont la même identité en double.
+//   IDENTITÉ   — nom + adresse + code INSEE strictement identiques (accents et ponctuation
+//                normalisés). Nécessaire parce que 136 employeuses n'ont pas de SIRET, dont
+//                seulement 11 ont une jumelle avec SIRET : le critère SIRET seul les laisse
+//                toutes en place.
 //
-// ORDRE — la déduplication précède la liaison (pose des `structure_coop_id` manquants) :
-// fusionner d'abord évite de poser des liens qu'on casserait ensuite, et évite de graver le
-// doublon dans `main` en liant une orpheline dont la jumelle est déjà liée.
+// Les deux critères sont CHAÎNÉS : si A partage son SIRET avec B, et B son identité avec C,
+// les trois forment un seul groupe. C'est le cas réel de #PARISESTMARNE&BOIS, où la ligne la
+// plus riche (13 822 activités) n'avait pas de SIRET et ne rejoignait ses jumelles que par
+// l'identité.
 //
-// `main` n'est lu qu'en SELECT (via `entrepotPrismaClient`, rôle en lecture seule) ; seules
-// les tables `coop` sont écrites.
+// CRITÈRES ÉCARTÉS — « nom + INSEE » et « nom + commune » ont été mesurés puis rejetés :
+// ils n'ajoutent que 145 et 167 lignes, mais 70 de leurs groupes portent des adresses
+// différentes, c'est-à-dire des antennes réellement distinctes dans la même commune. Même
+// piège que le rapprochement au SIREN, écarté pour les mêmes raisons.
+//
+// LIGNES `main` DÉTACHÉES — quand plusieurs employeuses d'un groupe sont déjà reliées à
+// `main`, une seule survit à la fusion ; les lignes `main` des absorbées verraient leur
+// `structure_coop_id` pointer dans le vide. On les DÉTACHE (`structure_coop_id = NULL`)
+// avant la fusion, et on les exporte : ce sont des doublons de `main`, que seule l'équipe
+// Entrepôt peut fusionner chez elle.
+//
+// Seules les tables `coop` sont écrites, plus ce détachement ciblé sur `main`.
 
 type Employeuse = {
   id: string
   siret: string | null
   nom: string
+  adresse: string
   commune: string
+  codeInsee: string | null
   modification: Date
   _count: { emplois: number; activites: number }
 }
 
 type Groupe = {
-  siret: string
+  critere: string
   cible: Employeuse
   absorbees: Employeuse[]
 }
 
 const csvHeader = [
-  'siret',
+  'critere',
   'role',
   'statut',
   'id',
   'nom',
+  'siret',
+  'adresse',
   'commune',
   'emplois',
   'activites',
-  'lie_a_main',
+  'main_id',
+  'main_detachee',
 ].join(';')
 
-const escapeCsvField = (field: string | number | boolean): string => {
-  const value = String(field)
+const detacheesCsvHeader = [
+  'main_id',
+  'main_siret',
+  'main_denomination_sirene',
+  'main_denomination_antenne',
+  'coop_nom_absorbee',
+  'coop_commune_absorbee',
+  'coop_id_survivante',
+  'coop_nom_survivante',
+].join(';')
+
+const escapeCsvField = (field: string | number | boolean | null): string => {
+  const value = field === null ? '' : String(field)
   return /[";\n]/.test(value) ? `"${value.replaceAll('"', '""')}"` : value
 }
 
-const findEmployeusesAvecSiret = async (): Promise<Employeuse[]> =>
+// Même normalisation que les requêtes d'audit : on désaccentue AVANT de retirer la
+// ponctuation, sinon « Aubière » devient « AUBIRE » et ne rejoint plus « AUBIERE ».
+const normaliser = (valeur: string): string =>
+  valeur
+    .normalize('NFD')
+    .replaceAll(/\p{Diacritic}/gu, '')
+    .replaceAll(/[^a-zA-Z0-9]/g, '')
+    .toUpperCase()
+
+// Les clefs par lesquelles une employeuse peut rejoindre une autre. Une employeuse sans
+// SIRET ne porte que sa clef d'identité ; sans code INSEE, elle ne porte que son SIRET.
+const clefsDe = ({ siret, nom, adresse, codeInsee }: Employeuse): string[] =>
+  [
+    siret === null ? null : `siret:${siret}`,
+    codeInsee === null
+      ? null
+      : `identite:${normaliser(nom)}|${normaliser(adresse)}|${codeInsee}`,
+  ].filter((clef): clef is string => clef !== null)
+
+const findEmployeuses = async (): Promise<Employeuse[]> =>
   prismaClient.structureAdministrative.findMany({
-    where: { suppression: null, siret: { not: null } },
+    where: { suppression: null },
     select: {
       id: true,
       siret: true,
       nom: true,
+      adresse: true,
       commune: true,
+      codeInsee: true,
       modification: true,
       _count: {
         select: {
@@ -77,75 +122,92 @@ const findEmployeusesAvecSiret = async (): Promise<Employeuse[]> =>
     },
   })
 
-// Les employeuses coop connues de `main`. On ne filtre PAS sur `deleted_at` : une ligne
-// `main` supprimée référence toujours son `structure_coop_id`, supprimer la coop
-// correspondante laisserait donc quand même une référence orpheline.
-const findEmployeusesLieesAMain = async (): Promise<Set<string>> => {
+// Les employeuses coop connues de `main`, et la ligne `main` qui les porte. On ne filtre PAS
+// sur `deleted_at` : une ligne `main` supprimée référence toujours son `structure_coop_id`.
+const findLignesMainParEmployeuse = async (): Promise<Map<string, number>> => {
   const lignes = await entrepotPrismaClient.$queryRaw<
-    { structure_coop_id: string }[]
+    { id: number; structure_coop_id: string }[]
   >`
-    SELECT structure_coop_id
+    SELECT id, structure_coop_id
     FROM main.structure_administrative
     WHERE structure_coop_id IS NOT NULL
   `
 
-  return new Set(lignes.map(({ structure_coop_id }) => structure_coop_id))
+  return new Map(
+    lignes.map(({ id, structure_coop_id }) => [structure_coop_id, id]),
+  )
 }
 
-const groupBySiret = (employeuses: Employeuse[]): Map<string, Employeuse[]> =>
-  employeuses.reduce((groupes, employeuse) => {
-    const siret = employeuse.siret ?? ''
-    return groupes.set(siret, [...(groupes.get(siret) ?? []), employeuse])
-  }, new Map<string, Employeuse[]>())
+// Composantes connexes du graphe « partage au moins une clef ». Un parcours en profondeur
+// suffit : les groupes sont minuscules (9 membres au maximum sur la production).
+const regrouper = (employeuses: Employeuse[]): Employeuse[][] => {
+  const parClef = employeuses.reduce(
+    (index, employeuse) =>
+      clefsDe(employeuse).reduce(
+        (acc, clef) => acc.set(clef, [...(acc.get(clef) ?? []), employeuse]),
+        index,
+      ),
+    new Map<string, Employeuse[]>(),
+  )
 
-// Cible = celle qui est déjà liée à `main` (son lien fait foi), sinon la plus riche :
-// le plus d'emplois, puis le plus d'activités, puis la plus récemment modifiée.
+  const visitees = new Set<string>()
+
+  const explorer = (employeuse: Employeuse): Employeuse[] => {
+    if (visitees.has(employeuse.id)) return []
+    visitees.add(employeuse.id)
+    return [
+      employeuse,
+      ...clefsDe(employeuse).flatMap((clef) =>
+        (parClef.get(clef) ?? []).flatMap(explorer),
+      ),
+    ]
+  }
+
+  return employeuses.map(explorer).filter((groupe) => groupe.length > 1)
+}
+
+// Cible = la plus riche, en privilégiant celle qui est déjà reliée à `main` : conserver un
+// lien existant évite un détachement, et `mergeStructureAdministrative` complète la cible
+// avec l'identité de la source (`siret: target.siret ?? source.siret`), jamais l'inverse.
 const parPriorite =
-  (lieesAMain: Set<string>) => (a: Employeuse, b: Employeuse) =>
-    Number(lieesAMain.has(b.id)) - Number(lieesAMain.has(a.id)) ||
+  (lignesMain: Map<string, number>) => (a: Employeuse, b: Employeuse) =>
+    Number(lignesMain.has(b.id)) - Number(lignesMain.has(a.id)) ||
     b._count.emplois - a._count.emplois ||
     b._count.activites - a._count.activites ||
     b.modification.getTime() - a.modification.getTime()
 
+const critereDe = (groupe: Employeuse[]): string => {
+  const sirets = new Set(
+    groupe.map(({ siret }) => siret).filter((siret) => siret !== null),
+  )
+  return sirets.size === 1 && groupe.every(({ siret }) => siret !== null)
+    ? 'siret'
+    : 'identite'
+}
+
 const planifierGroupe =
-  (lieesAMain: Set<string>) =>
-  ([siret, employeuses]: [string, Employeuse[]]): Groupe | null => {
-    const orphelines = employeuses.filter(({ id }) => !lieesAMain.has(id))
-    const liees = employeuses.filter(({ id }) => lieesAMain.has(id))
+  (lignesMain: Map<string, number>) =>
+  (groupe: Employeuse[]): Groupe | null => {
+    // Deux SIRET distincts sous une même identité : soit un transfert d'établissement, soit
+    // deux entités homonymes à la même adresse. Ça ne se déduit pas, on laisse à l'humain.
+    const sirets = new Set(
+      groupe.map(({ siret }) => siret).filter((siret) => siret !== null),
+    )
+    if (sirets.size > 1) return null
 
-    if (employeuses.length < 2 || orphelines.length === 0) return null
-    // `main` porte lui-même le doublon pour ce SIRET : la cible ne se déduit pas.
-    if (liees.length > 1) return null
+    const [cible, ...absorbees] = [...groupe].sort(parPriorite(lignesMain))
 
-    const [cible, ...absorbees] = [...employeuses].sort(parPriorite(lieesAMain))
-
-    // Invariant du périmètre : seules des orphelines sont absorbées. Défensif — si la
-    // priorité venait à changer, on préfère ignorer le groupe que créer un lien pendant.
-    if (absorbees.some(({ id }) => lieesAMain.has(id))) return null
-
-    return { siret, cible, absorbees }
+    return { critere: critereDe(groupe), cible, absorbees }
   }
 
-const ligneCsv = (
-  groupe: Groupe,
-  employeuse: Employeuse,
-  role: 'cible' | 'absorbee',
-  statut: string,
-  lieesAMain: Set<string>,
-) =>
-  [
-    groupe.siret,
-    role,
-    statut,
-    employeuse.id,
-    employeuse.nom,
-    employeuse.commune,
-    employeuse._count.emplois,
-    employeuse._count.activites,
-    lieesAMain.has(employeuse.id),
-  ]
-    .map(escapeCsvField)
-    .join(';')
+// Détacher AVANT la fusion : `mergeStructureAdministrative` supprime la ligne coop absorbée,
+// dans l'ordre inverse `main` pointerait un instant vers une ligne disparue.
+const detacherLigneMain = async (mainId: number, coopId: string) =>
+  entrepotPrismaClient.$executeRaw`
+    UPDATE main.structure_administrative
+    SET structure_coop_id = NULL, updated_at = now(), updated_at_coop = now()
+    WHERE id = ${mainId} AND structure_coop_id = ${coopId}::uuid
+  `
 
 export const executeDeduplicateEmployeuses = async (
   job: DeduplicateEmployeusesJob,
@@ -157,38 +219,67 @@ export const executeDeduplicateEmployeuses = async (
     `deduplicate-employeuses: démarrage${dryRun ? ' (DRY RUN)' : ''}...`,
   )
 
-  const [employeuses, lieesAMain] = await Promise.all([
-    findEmployeusesAvecSiret(),
-    findEmployeusesLieesAMain(),
+  const [employeuses, lignesMain] = await Promise.all([
+    findEmployeuses(),
+    findLignesMainParEmployeuse(),
   ])
 
-  const groupes = [...groupBySiret(employeuses).entries()]
-    .filter(([siret]) => !excludeSirets.has(siret))
-    .map(planifierGroupe(lieesAMain))
+  const groupesBruts = regrouper(employeuses)
+
+  const groupes = groupesBruts
+    .filter((groupe) =>
+      groupe.every(({ siret }) => siret === null || !excludeSirets.has(siret)),
+    )
+    .map(planifierGroupe(lignesMain))
     .filter((groupe): groupe is Groupe => groupe !== null)
+
+  const ecartes = groupesBruts.length - groupes.length
 
   const absorbeesCount = groupes.reduce(
     (total, { absorbees }) => total + absorbees.length,
     0,
   )
 
-  output.log(
-    `${groupes.length} groupes SIRET à fusionner, ${absorbeesCount} employeuses à absorber`,
+  const aDetacher = groupes.flatMap(({ cible, absorbees }) =>
+    absorbees.flatMap((absorbee) => {
+      const mainId = lignesMain.get(absorbee.id)
+      return mainId === undefined ? [] : [{ mainId, absorbee, cible }]
+    }),
   )
 
-  const fusionnes = dryRun
+  const parCritere = (critere: string) =>
+    groupes.filter((groupe) => groupe.critere === critere).length
+
+  output.log(
+    `${groupes.length} groupes à fusionner (${parCritere('siret')} par SIRET, ` +
+      `${parCritere('identite')} par identité), ${absorbeesCount} employeuses à absorber`,
+  )
+  output.log(`${aDetacher.length} lignes main à détacher`)
+  if (ecartes > 0) {
+    output.log(
+      `${ecartes} groupes écartés (SIRET divergents, arbitrage humain)`,
+    )
+  }
+
+  const applique = dryRun
     ? []
     : await groupes.reduce(
         async (precedent: Promise<Groupe[]>, groupe) => {
           const faits = await precedent
+
           await groupe.absorbees.reduce(async (attente, absorbee) => {
             await attente
+            const mainId = lignesMain.get(absorbee.id)
+            if (mainId !== undefined) {
+              await detacherLigneMain(mainId, absorbee.id)
+            }
             await mergeStructureAdministrative(absorbee.id, groupe.cible.id, {
               timeout: 120_000,
             })
           }, Promise.resolve())
+
           output.log(
-            `  ${groupe.siret} : ${groupe.absorbees.length} absorbée(s) -> ${groupe.cible.id}`,
+            `  ${groupe.critere} : ${groupe.absorbees.length} absorbée(s) -> ${groupe.cible.id}`,
           )
           return [...faits, groupe]
         },
@@ -196,10 +287,33 @@ export const executeDeduplicateEmployeuses = async (
       )
 
   const statut = dryRun ? 'a_fusionner' : 'fusionnee'
+
+  const ligneCsv = (
+    groupe: Groupe,
+    employeuse: Employeuse,
+    role: 'cible' | 'absorbee',
+  ) =>
+    [
+      groupe.critere,
+      role,
+      role === 'cible' ? 'conservee' : statut,
+      employeuse.id,
+      employeuse.nom,
+      employeuse.siret ?? '',
+      employeuse.adresse,
+      employeuse.commune,
+      employeuse._count.emplois,
+      employeuse._count.activites,
+      lignesMain.get(employeuse.id) ?? '',
+      role === 'absorbee' && lignesMain.has(employeuse.id),
+    ]
+      .map(escapeCsvField)
+      .join(';')
+
   const csvLines = groupes.flatMap((groupe) => [
-    ligneCsv(groupe, groupe.cible, 'cible', 'conservee', lieesAMain),
+    ligneCsv(groupe, groupe.cible, 'cible'),
     ...groupe.absorbees.map((absorbee) =>
-      ligneCsv(groupe, absorbee, 'absorbee', statut, lieesAMain),
+      ligneCsv(groupe, absorbee, 'absorbee'),
     ),
     '',
   ])
@@ -209,18 +323,67 @@ export const executeDeduplicateEmployeuses = async (
   )
   await writeFile(filePath, [csvHeader, ...csvLines].join('\n'), 'utf-8')
 
-  output.log(`\n=== DÉDUPLICATION EMPLOYEUSES ${dryRun ? '(DRY RUN)' : ''} ===`)
-  output.log(`Groupes SIRET: ${groupes.length}`)
-  output.log(
-    `${dryRun ? 'À absorber' : 'Absorbées'}: ${dryRun ? absorbeesCount : fusionnes.reduce((total, { absorbees }) => total + absorbees.length, 0)}`,
+  // Livrable pour l'équipe Entrepôt : les lignes `main` qui perdent leur lien coop parce
+  // qu'elles doublonnent une autre ligne `main`. À elle de décider de les fusionner.
+  const detachees =
+    aDetacher.length === 0
+      ? []
+      : await entrepotPrismaClient.$queryRaw<
+          {
+            id: number
+            siret: string | null
+            denomination_sirene: string | null
+            denomination_antenne: string | null
+          }[]
+        >`
+          SELECT id, siret, denomination_sirene, denomination_antenne
+          FROM main.structure_administrative
+          WHERE id = ANY(${aDetacher.map(({ mainId }) => mainId)}::int[])
+        `
+
+  const detacheesParId = new Map(detachees.map((ligne) => [ligne.id, ligne]))
+
+  const detacheesCsv = aDetacher.map(({ mainId, absorbee, cible }) => {
+    const ligne = detacheesParId.get(mainId)
+    return [
+      mainId,
+      ligne?.siret ?? '',
+      ligne?.denomination_sirene ?? '',
+      ligne?.denomination_antenne ?? '',
+      absorbee.nom,
+      absorbee.commune,
+      cible.id,
+      cible.nom,
+    ]
+      .map(escapeCsvField)
+      .join(';')
+  })
+
+  const detacheesPath = getAuditOutputPath(
+    `lignes-main-detachees-${dryRun ? 'dry-run' : 'applied'}.csv`,
   )
+  await writeFile(
+    detacheesPath,
+    [detacheesCsvHeader, ...detacheesCsv].join('\n'),
+    'utf-8',
+  )
+
+  output.log(`\n=== DÉDUPLICATION EMPLOYEUSES ${dryRun ? '(DRY RUN)' : ''} ===`)
+  output.log(`Groupes: ${groupes.length} (écartés: ${ecartes})`)
+  output.log(`${dryRun ? 'À absorber' : 'Absorbées'}: ${absorbeesCount}`)
+  output.log(`${dryRun ? 'À détacher' : 'Détachées'}: ${aDetacher.length}`)
   output.log(`Export: ${filePath}`)
+  output.log(`Export lignes main détachées: ${detacheesPath}`)
   output.log(`\ndeduplicate-employeuses: terminé`)
 
   return {
     dryRun,
     groupes: groupes.length,
+    ecartes,
     absorbees: absorbeesCount,
+    detachees: aDetacher.length,
+    appliques: applique.length,
     export: filePath,
+    exportDetachees: detacheesPath,
   }
 }

@@ -186,7 +186,9 @@ const creerDansMain = async (creation: Creation): Promise<boolean> => {
     )
   }
 
-  return resultat.statut === 'creee'
+  // `liee` est un succès : `creerLigneMain` a trouvé une ligne `main` libre au même SIRET et
+  // dans la même commune, et s'y est raccrochée au lieu d'en fabriquer une seconde.
+  return resultat.statut === 'creee' || resultat.statut === 'liee'
 }
 
 export const executeAppliquerPlanCouverture = async (
