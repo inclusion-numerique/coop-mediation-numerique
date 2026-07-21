@@ -1,8 +1,13 @@
 import { entrepotPrismaClient } from '@app/web/entrepotPrismaClient'
+import { identiteSirene } from '@app/web/jobs/structures-main/identiteSirene'
 import {
   lierLigneLibre,
   trouverLigneLibre,
 } from '@app/web/jobs/structures-main/reclamerLigneMain'
+
+// Les DOM portent un code INSEE à trois chiffres de département (974), la métropole deux.
+const departementDe = (codeInsee: string): string =>
+  codeInsee.startsWith('97') ? codeInsee.slice(0, 3) : codeInsee.slice(0, 2)
 
 // Création d'une ligne `main.structure_administrative` (et de son adresse) à partir d'une
 // employeuse coop. Partagé par `appliquer-plan-couverture` et `couvrir-employeuses-restantes`
@@ -101,17 +106,34 @@ export const creerLigneMain = async (
     }
   }
 
-  const { numeroVoie, nomVoie } = decouperAdresse(employeuse.adresse)
+  // L'identité SIRENE fait foi. À défaut (API muette, établissement inconnu), on retombe sur
+  // la donnée coop — mais jamais dans `denomination_sirene`, qui doit rester honnête : le nom
+  // coop part alors dans l'antenne, déjà choisie ci-dessus.
+  const identite = await identiteSirene(employeuse.siret)
+
+  const adresse = identite?.adresse ?? {
+    ...decouperAdresse(employeuse.adresse),
+    repetition: null,
+    codePostal: employeuse.codePostal,
+    commune: employeuse.commune,
+    codeInsee: employeuse.codeInsee,
+    clefInterop: null,
+    longitude: null,
+    latitude: null,
+  }
+
+  const source = identite?.adresse ? 'sirene' : 'coop'
+  const geocodee = adresse.clefInterop !== null
 
   return entrepotPrismaClient
     .$transaction(async (transaction) => {
       const existantes = await transaction.$queryRaw<{ id: number }[]>`
         SELECT id FROM main.adresse
-        WHERE code_postal = ${employeuse.codePostal}
-          AND nom_commune = ${employeuse.commune}
-          AND nom_voie IS NOT DISTINCT FROM ${nomVoie}
-          AND coalesce(numero_voie, 0) = coalesce(${numeroVoie}::smallint, 0)
-          AND coalesce(repetition, '') = ''
+        WHERE code_postal = ${adresse.codePostal}
+          AND nom_commune = ${adresse.commune}
+          AND nom_voie IS NOT DISTINCT FROM ${adresse.nomVoie}
+          AND coalesce(numero_voie, 0) = coalesce(${adresse.numeroVoie}::smallint, 0)
+          AND coalesce(repetition, '') = coalesce(${adresse.repetition}, '')
         LIMIT 1
       `
 
@@ -121,9 +143,17 @@ export const creerLigneMain = async (
         ? []
         : await transaction.$queryRaw<{ id: number }[]>`
             INSERT INTO main.adresse
-              (code_postal, code_insee, nom_commune, nom_voie, numero_voie, created_at, updated_at)
-            VALUES (${employeuse.codePostal}, ${employeuse.codeInsee}, ${employeuse.commune},
-                    ${nomVoie}, ${numeroVoie}, now(), now())
+              (code_postal, code_insee, nom_commune, nom_voie, numero_voie, repetition,
+               clef_interop, departement, geom, created_at, updated_at)
+            VALUES (${adresse.codePostal}, ${adresse.codeInsee}, ${adresse.commune},
+                    ${adresse.nomVoie}, ${adresse.numeroVoie}, ${adresse.repetition},
+                    ${adresse.clefInterop}, ${departementDe(adresse.codeInsee)},
+                    ${
+                      adresse.longitude === null || adresse.latitude === null
+                        ? null
+                        : `SRID=4326;POINT(${adresse.longitude} ${adresse.latitude})`
+                    }::geometry,
+                    now(), now())
             RETURNING id`
 
       const adresseId = reutilisee ?? creees.at(0)?.id ?? null
@@ -131,15 +161,22 @@ export const creerLigneMain = async (
       await transaction.$executeRaw`
         INSERT INTO main.structure_administrative
           (siret, denomination_sirene, denomination_antenne, adresse_id, structure_coop_id,
-           edited_by, created_at, updated_at, updated_at_coop)
-        VALUES (${employeuse.siret}, ${employeuse.nom}, ${antenne}, ${adresseId},
-                ${employeuse.id}::uuid, 'coop', now(), now(), now())`
+           code_activite_principale, categorie_juridique, etat_administratif,
+           last_sirene_enrich_at, edited_by, created_at, updated_at, updated_at_coop)
+        VALUES (${employeuse.siret}, ${identite?.denomination ?? null}, ${antenne}, ${adresseId},
+                ${employeuse.id}::uuid,
+                ${identite?.codeActivitePrincipale ?? null},
+                ${identite?.categorieJuridique ?? null},
+                ${identite?.etatAdministratif ?? null},
+                ${identite === null ? null : new Date()},
+                'coop', now(), now(), now())`
 
       return {
         statut: 'creee' as const,
         antenne,
         detail:
           `adresse ${adresseId}${reutilisee ? ' (réutilisée)' : ' (créée)'}` +
+          `, source ${source}${geocodee ? ' + BAN' : ''}` +
           `, antenne ${antenne === null ? 'NULL' : `« ${antenne} »`}`,
       }
     })
