@@ -5,6 +5,10 @@ import { mergeStructureAdministrative } from '@app/web/features/structures/use-c
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
 import { creerLigneMain } from '@app/web/jobs/structures-main/creerLigneMain'
+import {
+  reclamerLigneMain,
+  trouverLigneAReclamer,
+} from '@app/web/jobs/structures-main/reclamerLigneMain'
 import { prismaClient } from '@app/web/prismaClient'
 import { parse } from 'csv-parse/sync'
 import type { AppliquerPlanCouvertureJob } from './appliquerPlanCouvertureJob'
@@ -161,6 +165,17 @@ const creerDansMain = async (creation: Creation): Promise<boolean> => {
   if (structure === null) {
     output.log(`  création ${creation.nom} ignorée : introuvable côté coop`)
     return false
+  }
+
+  // Ne JAMAIS créer quand une ligne `main` porte déjà le SIRET de l'employeuse et son
+  // identité légale : on la réclame à l'occupante qui n'y a pas droit. Créer fabriquerait
+  // un doublon dans un schéma co-possédé avec l'Entrepôt.
+  const reclamation = await trouverLigneAReclamer(structure)
+
+  if (reclamation !== null) {
+    const reprise = await reclamerLigneMain(structure.id, reclamation)
+    output.log(`  ${creation.nom} : ${reprise.detail}`)
+    return reprise.statut === 'reclamee'
   }
 
   const resultat = await creerLigneMain(structure)

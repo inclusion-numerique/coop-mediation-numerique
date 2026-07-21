@@ -6,6 +6,10 @@ import {
   choisirAntenne,
   creerLigneMain,
 } from '@app/web/jobs/structures-main/creerLigneMain'
+import {
+  reclamerLigneMain,
+  trouverLigneAReclamer,
+} from '@app/web/jobs/structures-main/reclamerLigneMain'
 import { prismaClient } from '@app/web/prismaClient'
 import type { CouvrirEmployeusesRestantesJob } from './couvrirEmployeusesRestantesJob'
 
@@ -40,7 +44,7 @@ type Employeuse = {
 
 type Resultat = {
   employeuse: Employeuse
-  statut: 'creee' | 'deja_couverte' | 'ignoree' | 'echec'
+  statut: 'reclamee' | 'creee' | 'ignoree' | 'echec'
   detail: string
 }
 
@@ -85,7 +89,17 @@ const findEmployeusesSansEquivalent = async (): Promise<Employeuse[]> => {
   return employeuses.filter(({ id }) => !couvertesIds.has(id))
 }
 
-const creer = async (employeuse: Employeuse): Promise<Resultat> => {
+// Réclamer d'abord, créer ensuite : si une ligne `main` porte déjà le SIRET de
+// l'employeuse et son identité légale, la reprendre vaut mieux que d'en créer une seconde
+// qui la doublonnerait.
+const couvrir = async (employeuse: Employeuse): Promise<Resultat> => {
+  const reclamation = await trouverLigneAReclamer(employeuse)
+
+  if (reclamation !== null) {
+    const resultat = await reclamerLigneMain(employeuse.id, reclamation)
+    return { employeuse, statut: resultat.statut, detail: resultat.detail }
+  }
+
   const resultat = await creerLigneMain(employeuse)
   return { employeuse, statut: resultat.statut, detail: resultat.detail }
 }
@@ -106,6 +120,16 @@ export const executeCouvrirEmployeusesRestantes = async (
   const resultats = dryRun
     ? await Promise.all(
         restantes.map(async (employeuse): Promise<Resultat> => {
+          const reclamation = await trouverLigneAReclamer(employeuse)
+          if (reclamation !== null) {
+            return {
+              employeuse,
+              statut: 'reclamee',
+              detail:
+                `à réclamer : main ${reclamation.mainId}, occupée par ` +
+                `« ${reclamation.occupanteNom} » (siret ${reclamation.occupanteSiret ?? 'absent'})`,
+            }
+          }
           const { antenne, disponible } = employeuse.siret
             ? await choisirAntenne(employeuse)
             : { antenne: null, disponible: false }
@@ -121,8 +145,8 @@ export const executeCouvrirEmployeusesRestantes = async (
     : await restantes.reduce(
         async (precedent: Promise<Resultat[]>, employeuse) => {
           const faits = await precedent
-          const resultat = await creer(employeuse)
-          if (resultat.statut !== 'creee') {
+          const resultat = await couvrir(employeuse)
+          if (resultat.statut !== 'creee' && resultat.statut !== 'reclamee') {
             output.log(
               `  ${resultat.statut} ${employeuse.nom} — ${resultat.detail}`,
             )
@@ -148,6 +172,7 @@ export const executeCouvrirEmployeusesRestantes = async (
 
   output.log(`\n=== CLÔTURE DE LA COUVERTURE ${dryRun ? '(DRY RUN)' : ''} ===`)
   output.log(`Sans équivalent : ${restantes.length}`)
+  output.log(`${dryRun ? 'À réclamer' : 'Réclamées'} : ${compter('reclamee')}`)
   output.log(`${dryRun ? 'À créer' : 'Créées'} : ${compter('creee')}`)
   output.log(`Ignorées        : ${compter('ignoree')}`)
   output.log(`Échecs          : ${compter('echec')}`)
@@ -157,6 +182,7 @@ export const executeCouvrirEmployeusesRestantes = async (
   return {
     dryRun,
     restantes: restantes.length,
+    reclamees: compter('reclamee'),
     creees: compter('creee'),
     ignorees: compter('ignoree'),
     echecs: compter('echec'),
