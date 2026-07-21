@@ -199,6 +199,39 @@ export const inscriptionRouter = router({
       }) => {
         inscriptionGuard(userId, sessionUser)
 
+        // La structure employeuse est une structure_administrative (split 1a.2), pas un
+        // lieu. Pour servir de lieu d'activité, ses données sont recopiées dans une ligne
+        // `lieu_inclusion`, à laquelle `mediateurEnActivite` se rattache (FK structure_id →
+        // lieu_inclusion). Aucun lien n'est conservé entre les deux : le lieu se retrouve
+        // par la clé de corrélation employée partout ailleurs — nom + adresse + code INSEE,
+        // cf. `correlateStructureAdministrative`. Le repère précédent, l'égalité des
+        // identifiants, ne survivrait pas au passage de l'employeuse vers
+        // `main.structure_administrative`, dont l'id est un entier (cf. ADR-002).
+        const structureEmployeuse =
+          await prismaClient.structureAdministrative.findUniqueOrThrow({
+            where: { id: structureEmployeuseId },
+            select: {
+              nom: true,
+              adresse: true,
+              commune: true,
+              codePostal: true,
+              codeInsee: true,
+              complementAdresse: true,
+              siret: true,
+              rna: true,
+              nomReferent: true,
+              courrielReferent: true,
+              telephoneReferent: true,
+            },
+          })
+
+        const lieuCorreleALEmployeuse = {
+          nom: structureEmployeuse.nom,
+          adresse: structureEmployeuse.adresse,
+          codeInsee: structureEmployeuse.codeInsee,
+          suppression: null,
+        }
+
         if (estLieuActivite) {
           // Add a lieu d'activité for the structure if not exists
           const existing = await prismaClient.mediateurEnActivite.findFirst({
@@ -206,7 +239,7 @@ export const inscriptionRouter = router({
               mediateur: {
                 userId,
               },
-              structureId: structureEmployeuseId,
+              lieuInclusion: lieuCorreleALEmployeuse,
               suppression: null,
               fin: null,
             },
@@ -219,36 +252,27 @@ export const inscriptionRouter = router({
             return existing
           }
 
-          // La structure employeuse est une structure_administrative (split 1a.2),
-          // pas un lieu. Pour servir de lieu d'activité, on matérialise une ligne
-          // `structures` (lieu) à partir des données de l'employeuse, à laquelle
-          // `mediateurEnActivite` se rattache (FK structure_id → structures). On réutilise
-          // l'id pour que l'idempotence (existing check + branche "Non") reste valable ;
-          // aucune corrélation FK employeuse↔lieu n'est conservée.
-          const structureEmployeuse =
-            await prismaClient.structureAdministrative.findUniqueOrThrow({
-              where: { id: structureEmployeuseId },
+          // Le lieu est partagé par tous les médiateurs de la même employeuse, comme le
+          // faisait la réutilisation de l'identifiant : on ne le recrée que s'il n'existe pas.
+          const lieuExistant = await prismaClient.lieuInclusion.findFirst({
+            where: lieuCorreleALEmployeuse,
+            orderBy: { creation: 'asc' },
+            select: {
+              id: true,
+            },
+          })
+
+          const lieuActivite =
+            lieuExistant ??
+            (await prismaClient.lieuInclusion.create({
+              data: {
+                id: v4(),
+                ...structureEmployeuse,
+              },
               select: {
                 id: true,
-                nom: true,
-                adresse: true,
-                commune: true,
-                codePostal: true,
-                codeInsee: true,
-                complementAdresse: true,
-                siret: true,
-                rna: true,
-                nomReferent: true,
-                courrielReferent: true,
-                telephoneReferent: true,
               },
-            })
-
-          await prismaClient.lieuInclusion.upsert({
-            where: { id: structureEmployeuseId },
-            update: {},
-            create: structureEmployeuse,
-          })
+            }))
 
           addMutationLog({
             userId,
@@ -270,7 +294,7 @@ export const inscriptionRouter = router({
               },
               lieuInclusion: {
                 connect: {
-                  id: structureEmployeuseId,
+                  id: lieuActivite.id,
                 },
               },
               debut: new Date(),
@@ -298,7 +322,7 @@ export const inscriptionRouter = router({
             mediateur: {
               userId,
             },
-            structureId: structureEmployeuseId,
+            lieuInclusion: lieuCorreleALEmployeuse,
             suppression: null,
             fin: null,
           },
