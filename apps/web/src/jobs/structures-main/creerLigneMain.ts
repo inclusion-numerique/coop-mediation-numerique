@@ -108,7 +108,9 @@ export const creerLigneMain = async (
   // L'identité SIRENE fait foi. À défaut (API muette, établissement inconnu), on retombe sur
   // la donnée coop — mais jamais dans `denomination_sirene`, qui doit rester honnête : le nom
   // coop part alors dans l'antenne, déjà choisie ci-dessus.
-  const identite = await identiteSirene(employeuse.siret)
+  // Une API indisponible ou un payload inattendu ne doit jamais faire perdre une création :
+  // on retombe sur la donnée coop, `denomination_sirene` restant nulle.
+  const identite = await identiteSirene(employeuse.siret).catch(() => null)
 
   const adresse = identite?.adresse ?? {
     ...decouperAdresse(employeuse.adresse),

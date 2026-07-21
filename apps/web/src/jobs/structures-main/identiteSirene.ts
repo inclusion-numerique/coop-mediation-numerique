@@ -29,8 +29,11 @@ export const SEUIL_BAN = 0.9
 // retomber la création sur l'adresse coop.
 const NON_DIFFUSIBLE = '[NON-DIFFUSIBLE]'
 
-const diffusible = (valeur: string | undefined): string | undefined =>
-  valeur === undefined || valeur.toUpperCase().includes(NON_DIFFUSIBLE)
+// `null` autant qu'`undefined` : les types de l'API annoncent `string | undefined`, mais elle
+// renvoie bel et bien `null` sur plusieurs champs d'adresse. Tester la seule valeur `undefined`
+// laissait passer le `null` et faisait jeter `.toUpperCase()` — 36 créations perdues en prod.
+const diffusible = (valeur: string | null | undefined): string | undefined =>
+  valeur == null || valeur.toUpperCase().includes(NON_DIFFUSIBLE)
     ? undefined
     : valeur
 
@@ -61,11 +64,11 @@ export type IdentiteSirene = {
 const sansCodePostalNiCommune = (
   adresse: string,
   codePostal: string | undefined,
-  commune: string,
+  commune: string | null | undefined,
 ): string =>
   adresse
     .replace(new RegExp(`\\s*${codePostal ?? ''}\\s*$`, 'i'), '')
-    .replace(new RegExp(`\\s*${commune}\\s*$`, 'i'), '')
+    .replace(new RegExp(`\\s*${commune ?? ''}\\s*$`, 'i'), '')
     .replace(new RegExp(`\\s*${codePostal ?? ''}\\s*$`, 'i'), '')
     .trim()
 
