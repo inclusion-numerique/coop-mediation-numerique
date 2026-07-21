@@ -23,6 +23,17 @@ import { rechercheApiEntreprise } from '@app/web/external-apis/rechercheApiEntre
 
 export const SEUIL_BAN = 0.9
 
+// Un établissement non diffusible ne renvoie pas des champs vides : l'API remplit CHAQUE champ
+// d'adresse avec la chaîne littérale « [NON-DIFFUSIBLE] ». Prise pour une valeur, elle dépasse
+// le `varchar(5)` de `code_postal` (erreur 22001). On la traite comme une absence, ce qui fait
+// retomber la création sur l'adresse coop.
+const NON_DIFFUSIBLE = '[NON-DIFFUSIBLE]'
+
+const diffusible = (valeur: string | undefined): string | undefined =>
+  valeur === undefined || valeur.toUpperCase().includes(NON_DIFFUSIBLE)
+    ? undefined
+    : valeur
+
 export type AdresseCanonique = {
   numeroVoie: number | null
   nomVoie: string | null
@@ -148,29 +159,29 @@ export const identiteSirene = async (
     return null
   }
 
-  const codeInsee = etablissement.commune
-  const codePostal = etablissement.code_postal
+  const codeInsee = diffusible(etablissement.commune)
+  const codePostal = diffusible(etablissement.code_postal)
 
   // Le siège porte la voie déjà décomposée ; les autres établissements n'ont que la chaîne
   // complète, dont on retire le code postal et la commune.
   const voie =
     siege === undefined
       ? sansCodePostalNiCommune(
-          etablissement.adresse,
+          diffusible(etablissement.adresse) ?? '',
           codePostal,
           etablissement.libelle_commune,
         )
       : [
-          siege.numero_voie,
-          siege.indice_repetition,
-          siege.type_voie,
-          siege.libelle_voie,
+          diffusible(siege.numero_voie),
+          diffusible(siege.indice_repetition),
+          diffusible(siege.type_voie),
+          diffusible(siege.libelle_voie),
         ]
           .filter((partie) => partie !== undefined && partie !== '')
           .join(' ')
 
   const banOuRepli =
-    codeInsee === undefined || codePostal === undefined
+    codeInsee === undefined || codePostal === undefined || voie === ''
       ? null
       : ((await geocoder(voie, codeInsee)) ?? {
           ...decouper(voie),

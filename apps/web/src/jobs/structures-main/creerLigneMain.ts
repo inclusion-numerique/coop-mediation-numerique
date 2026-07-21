@@ -5,9 +5,8 @@ import {
   trouverLigneLibre,
 } from '@app/web/jobs/structures-main/reclamerLigneMain'
 
-// Les DOM portent un code INSEE à trois chiffres de département (974), la métropole deux.
-const departementDe = (codeInsee: string): string =>
-  codeInsee.startsWith('97') ? codeInsee.slice(0, 3) : codeInsee.slice(0, 2)
+// `main.adresse.departement` est une colonne GENERATED ALWAYS (dérivée de `code_insee`, avec
+// les préfixes 97 et 98 sur trois chiffres) : l'écrire fait échouer l'INSERT en 428C9.
 
 // Création d'une ligne `main.structure_administrative` (et de son adresse) à partir d'une
 // employeuse coop. Partagé par `appliquer-plan-couverture` et `couvrir-employeuses-restantes`
@@ -144,10 +143,10 @@ export const creerLigneMain = async (
         : await transaction.$queryRaw<{ id: number }[]>`
             INSERT INTO main.adresse
               (code_postal, code_insee, nom_commune, nom_voie, numero_voie, repetition,
-               clef_interop, departement, geom, created_at, updated_at)
+               clef_interop, geom, created_at, updated_at)
             VALUES (${adresse.codePostal}, ${adresse.codeInsee}, ${adresse.commune},
                     ${adresse.nomVoie}, ${adresse.numeroVoie}, ${adresse.repetition},
-                    ${adresse.clefInterop}, ${departementDe(adresse.codeInsee)},
+                    ${adresse.clefInterop},
                     ${
                       adresse.longitude === null || adresse.latitude === null
                         ? null
@@ -182,6 +181,8 @@ export const creerLigneMain = async (
     })
     .catch((error: unknown) => ({
       statut: 'echec' as const,
-      detail: String(error).slice(0, 120),
+      // Large : une erreur Prisma tronquée à 120 caractères ne montre que l'en-tête générique,
+      // pas le code ni le message Postgres, seuls utiles au diagnostic.
+      detail: String(error).replaceAll(/\s+/g, ' ').slice(0, 400),
     }))
 }

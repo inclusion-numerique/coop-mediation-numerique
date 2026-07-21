@@ -115,9 +115,13 @@ décision, la ligne est ignorée.
 ### 4 — Appliquer le plan
 
 ```bash
-pnpm cli job:execute appliquer-plan-couverture '{"dryRun":true}'
-pnpm cli job:execute appliquer-plan-couverture '{"dryRun":false}'
+pnpm cli job:execute appliquer-plan-couverture \
+  '{"dryRun":true,"csvPath":"refactor/audit-coop-main/out/plan-complet.csv"}'
+pnpm cli job:execute appliquer-plan-couverture \
+  '{"dryRun":false,"csvPath":"refactor/audit-coop-main/out/plan-complet.csv"}'
 ```
+
+`csvPath` est **obligatoire** : le job ne devine pas l'emplacement du plan annoté.
 
 Exécute les décisions `OK` : liaisons, fusions, créations. Avant toute création, le job tente de
 **réclamer** une ligne `main` occupée à tort, puis de **se raccrocher** à une ligne libre du même
@@ -208,3 +212,6 @@ adapter la date pour rejouer l'export plus tard.
 | Unicité `(siret, denomination_antenne)` en NULLS NOT DISTINCT | une seule ligne par SIRET peut avoir l'antenne nulle | `choisirAntenne` nomme l'antenne si la place est prise |
 | Adresse et structure hors transaction | adresse orpheline en cas d'échec | les deux écritures sont dans une transaction |
 | Désaccentuation après retrait de la ponctuation | `Aubière` → `AUBIRE` ≠ `AUBIERE` | `unaccent` **avant** `regexp_replace` |
+| `main.adresse.departement` est `GENERATED ALWAYS` | l'`INSERT` échoue en 428C9 | ne pas l'écrire, la base la dérive de `code_insee` |
+| Établissement non diffusible | l'API entreprise remplit **chaque** champ d'adresse avec la chaîne `[NON-DIFFUSIBLE]`, qui dépasse le `varchar(5)` de `code_postal` (22001) | traitée comme une absence, repli sur l'adresse coop |
+| Erreur Prisma tronquée dans le CSV | le code et le message Postgres sont perdus, diagnostic impossible | `detail` élargi à 400 caractères |
