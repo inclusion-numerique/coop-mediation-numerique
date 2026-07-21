@@ -2,6 +2,7 @@
 
 ## Auteurs et historique
 
+|------|--------|--------|
 | Date       | Auteur        | Action                                                        |
 |------------|---------------|---------------------------------------------------------------|
 | 2026-07-21 | Marc Gavanier | Rédaction initiale : inventaire, décisions et plan de bascule |
@@ -82,6 +83,8 @@ toolkit d'audit SQL (`refactor/audit-coop-main/`, non versionné). Elle reste à
 production.
 
 **L'ordre d'exécution est prescrit** et chaque étape modifie la population que la suivante
+analyse : voir le [runbook de réconciliation](../runbook-reconciliation-employeuses-coop-main.md),
+qui décrit la séquence, les vérifications et les pièges constatés en exécution réelle.
 analyse.
 
 ## Décisions
@@ -328,7 +331,7 @@ qu'il reste de la marge :
 1. redessiner `inscriptionRouter` « employeuse = lieu d'activité » pour ne plus réutiliser l'id
    (et les fixtures), avec les tests d'intégration existants comme filet ;
 2. modéliser `main.structure_administrative` et `main.adresse` dans `schema.prisma` (`multiSchema`),
-   avec la garde locale à la demande contre la dérive de schéma ;
+   avec la garde CI contre la dérive de schéma ;
 3. disjoindre les types lieu / employeuse dans `siretBearingStructures` et
    `correlateStructureAdministrative` ;
 4. unifier les deux chemins de création derrière `findOrCreateStructureAdministrative`, écrivant
@@ -357,5 +360,6 @@ qu'il reste de la marge :
 - Nos lignes bloquent leurs suppressions.
 - Perte du seul `complement_adresse` (décision 6 révisée : les référents sont lus depuis
   `main.structure_administrative.contact`, pas abandonnés).
+- Perte des champs référent (assumée, décision 6).
 - Une migration de 4 M de lignes à exécuter en production, dont le coût reste à mesurer.
 - Environ 100 fichiers modifiés dans une seule PR, dont la relecture sera lourde.
