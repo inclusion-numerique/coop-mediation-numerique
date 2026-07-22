@@ -9,6 +9,7 @@ import { AuditAdresseCoherenceJobValidation } from './audit-adresse-coherence/au
 import { AuditLieuxOverviewJobValidation } from './audit-lieux-overview/auditLieuxOverviewJob'
 import { AuditSiretCoherenceJobValidation } from './audit-siret-coherence/auditSiretCoherenceJob'
 import { BackfillCommuneRdvspJobValidation } from './backfill-commune-rdvsp/backfillCommuneRdvspJob'
+import { BackfillStructureEmployeuseMainJobValidation } from './backfill-structure-employeuse-main/backfillStructureEmployeuseMainJob'
 import { BackfillTrancheAgeJobValidation } from './backfill-tranche-age/backfillTrancheAgeJob'
 import { BackupDatabaseJobValidation } from './backup-database/backupDatabaseJob'
 import { CompleterStructuresMainJobValidation } from './completer-structures-main/completerStructuresMainJob'
@@ -63,6 +64,7 @@ export const JobValidation = z.discriminatedUnion('name', [
   BackfillTrancheAgeJobValidation,
   BackupDatabaseJobValidation,
   CompleterStructuresMainJobValidation,
+  BackfillStructureEmployeuseMainJobValidation,
   UpdateStructuresCartographieNationaleJobValidation,
   ImportContactsToBrevoValidation,
   NormalizeSiretsJobValidation,

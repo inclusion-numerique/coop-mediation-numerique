@@ -12,6 +12,7 @@ import { executeAuditAdresseCoherence } from './audit-adresse-coherence/executeA
 import { executeAuditLieuxOverview } from './audit-lieux-overview/executeAuditLieuxOverview'
 import { executeAuditSiretCoherence } from './audit-siret-coherence/executeAuditSiretCoherence'
 import { executeBackfillCommuneRdvsp } from './backfill-commune-rdvsp/executeBackfillCommuneRdvsp'
+import { executeBackfillStructureEmployeuseMain } from './backfill-structure-employeuse-main/executeBackfillStructureEmployeuseMain'
 import { executeBackfillTrancheAge } from './backfill-tranche-age/executeBackfillTrancheAge'
 import { executeBackupDatabaseJob } from './backup-database/executeBackupDatabaseJob'
 import { executeCompleterStructuresMain } from './completer-structures-main/executeCompleterStructuresMain'
@@ -68,6 +69,7 @@ export const jobExecutors: {
   'backfill-tranche-age': executeBackfillTrancheAge,
   'backup-database': executeBackupDatabaseJob,
   'completer-structures-main': executeCompleterStructuresMain,
+  'backfill-structure-employeuse-main': executeBackfillStructureEmployeuseMain,
   'update-structures-cartographie-nationale':
     executeUpdateStructuresCartographieNationale,
   'import-contacts-to-brevo': executeImportContactsToBrevo,
