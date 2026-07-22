@@ -16,7 +16,13 @@ import { prismaClient } from '@app/web/prismaClient'
  * Assouplissable (normalisation / fuzzy) si le besoin apparaît.
  */
 
-type CorrelationInput = {
+/**
+ * Entrée de corrélation. `id` est TOUJOURS un id de LIEU (`lieu_inclusion`, uuid) : il ne sert que
+ * de clé de retour dans les Map produites ci-dessous, jamais d'id d'employeuse — la corrélation vers
+ * `structure_administrative` se fait exclusivement par nom + adresse + code INSEE, pas par id. Il
+ * reste donc un `string` après la bascule coop→main (ADR-002), contrairement à l'id d'employeuse.
+ */
+type LieuCorrelationInput = {
   id: string
   nom: string
   adresse: string
@@ -38,7 +44,7 @@ export const structureCorrelationKey = ({
  * l'employeuse corrélée. `activeOnly` ne compte que les emplois en cours (fin: null).
  */
 export const getEmploisCountByCorrelation = async (
-  structures: CorrelationInput[],
+  structures: LieuCorrelationInput[],
   { activeOnly = true }: { activeOnly?: boolean } = {},
 ): Promise<Map<string, number>> => {
   const uniqueKeys = [
@@ -98,7 +104,7 @@ export const getEmploisCountByCorrelation = async (
 
 /** Variante mono-structure : nombre d'emplois de l'employeuse corrélée. */
 export const getEmploisCountForStructure = async (
-  structure: CorrelationInput,
+  structure: LieuCorrelationInput,
   options?: { activeOnly?: boolean },
 ): Promise<number> => {
   const counts = await getEmploisCountByCorrelation([structure], options)

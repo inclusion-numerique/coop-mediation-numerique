@@ -9,9 +9,17 @@ import { prismaClient } from '@app/web/prismaClient'
  */
 export type SiretSource = 'lieu' | 'employeuse'
 
-export type SiretBearingStructure = {
-  id: string
-  source: SiretSource
+// Id d'une structure porteuse de SIRET, typé par source. Les deux sont des `uuid` aujourd'hui ;
+// à la bascule coop→main (ADR-002, étape 6) l'employeuse devient un `number`
+// (`main.structure_administrative.id`). Isoler les deux ici rend l'étape 6 locale : il suffira de
+// passer `EmployeuseSiretId` à `number` pour propager le changement à l'union et aux mutations.
+type LieuSiretId = string
+type EmployeuseSiretId = string
+
+// Champs communs aux deux sources. Les champs « lieu-only » restent présents (et `null` pour une
+// employeuse) parce que des consommateurs (audit / export SIRET) les sérialisent sans dispatcher
+// sur `source` ; les disjoindre par branche élargirait inutilement le périmètre de l'étape 3.
+type SiretBearingStructureBase = {
   siret: string
   nom: string
   adresse: string
@@ -28,6 +36,25 @@ export type SiretBearingStructure = {
   // Emplois rattachés : corrélés (lieu) ou comptés directement (employeuse).
   emploisCount: number
 }
+
+/**
+ * Une structure porteuse d'un SIRET est SOIT un lieu (`id` uuid), SOIT une employeuse
+ * (`id` bientôt `number`). Union discriminée sur `source` pour que chaque `id` porte son propre
+ * type — indispensable dès que l'id d'employeuse cessera d'être un uuid (ADR-002).
+ */
+type LieuSiretStructure = {
+  source: 'lieu'
+  id: LieuSiretId
+} & SiretBearingStructureBase
+
+type EmployeuseSiretStructure = {
+  source: 'employeuse'
+  id: EmployeuseSiretId
+} & SiretBearingStructureBase
+
+export type SiretBearingStructure =
+  | LieuSiretStructure
+  | EmployeuseSiretStructure
 
 const siretFilter = {
   suppression: null,
@@ -139,7 +166,7 @@ export const clearSiret = async ({
   id,
   source,
 }: {
-  id: string
+  id: LieuSiretId | EmployeuseSiretId
   source: SiretSource
 }): Promise<void> => {
   const data = { siret: null, synchronisationSiret: null }
@@ -153,7 +180,7 @@ export const markSiretSynchronised = async ({
   id,
   source,
 }: {
-  id: string
+  id: LieuSiretId | EmployeuseSiretId
   source: SiretSource
 }): Promise<void> => {
   const data = { synchronisationSiret: new Date() }
@@ -164,7 +191,7 @@ export const markSiretSynchronised = async ({
 
 /** Aligne l'identité légale d'une EMPLOYEUSE sur les données SIRENE (API Entreprise). */
 export const alignEmployeuseIdentity = async (
-  id: string,
+  id: EmployeuseSiretId,
   data: {
     nom: string
     adresse: string
