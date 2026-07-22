@@ -1,8 +1,5 @@
-import type { SessionUser } from '@app/web/auth/sessionUser'
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
-import { prismaClient } from '@app/web/prismaClient'
-import { addMutationLog } from '@app/web/utils/addMutationLog'
-import { v4 } from 'uuid'
+import { findOrCreateStructureAdministrative } from '@app/web/features/structures/findOrCreateStructureAdministrative'
 
 type StructureEmployeuseWithAdresseBan = {
   id?: string | null
@@ -31,11 +28,17 @@ const hasAdresseBan = (
   input: StructureEmployeuseInput,
 ): input is StructureEmployeuseWithAdresseBan => 'adresseBan' in input
 
-export const getOrCreateStructureEmployeuse = async (
+/**
+ * Point d'entrée du rôle EMPLOYEUSE à l'inscription. Adaptateur mince : normalise l'input
+ * (variante BAN ou champs séparés) puis délègue à `findOrCreateStructureAdministrative`, le chemin
+ * de création UNIQUE des structures administratives (dédup hiérarchique SIRET/nom + géocodage BAN).
+ * Aucune logique propre : l'inscription hérite ainsi de la même déduplication que la synchro
+ * Dataspace et l'import SIRET (ADR-002 étape 4).
+ */
+export const getOrCreateStructureEmployeuse = (
   structureEmployeuse: StructureEmployeuseInput,
-  user?: SessionUser,
-) => {
-  const { siret, nom, id, typologies } = structureEmployeuse
+): Promise<{ id: string }> => {
+  const { siret, nom, id } = structureEmployeuse
 
   const adresse = hasAdresseBan(structureEmployeuse)
     ? structureEmployeuse.adresseBan.nom
@@ -50,51 +53,13 @@ export const getOrCreateStructureEmployeuse = async (
     ? structureEmployeuse.adresseBan.codePostal
     : (structureEmployeuse.codePostal ?? '')
 
-  const existingStructure =
-    await prismaClient.structureAdministrative.findFirst({
-      where: {
-        id: id ?? undefined,
-        siret,
-        nom,
-        adresse,
-        commune,
-        codeInsee,
-        suppression: null,
-      },
-      select: {
-        id: true,
-      },
-    })
-
-  if (existingStructure) {
-    return existingStructure
-  }
-
-  addMutationLog({
-    userId: user?.id,
-    nom: 'CreerStructure',
-    duration: 0,
-    data: {
-      nom,
-      siret,
-      adresse,
-      commune,
-      codePostal,
-      codeInsee,
-      typologies,
-    },
-  })
-
-  return prismaClient.structureAdministrative.create({
-    data: {
-      id: v4(),
-      siret,
-      codeInsee,
-      nom,
-      adresse,
-      commune,
-      codePostal,
-      source: 'coop',
-    },
+  return findOrCreateStructureAdministrative({
+    coopId: id,
+    siret,
+    nom,
+    adresse,
+    commune,
+    codeInsee,
+    codePostal,
   })
 }

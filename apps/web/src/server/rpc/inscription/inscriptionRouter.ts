@@ -130,10 +130,8 @@ export const inscriptionRouter = router({
         inscriptionGuard(userId, sessionUser)
 
         const stopwatch = createStopwatch()
-        const structure = await getOrCreateStructureEmployeuse(
-          structureEmployeuse,
-          sessionUser,
-        )
+        const structure =
+          await getOrCreateStructureEmployeuse(structureEmployeuse)
 
         const transactionResult = await prismaClient.$transaction(
           async (transaction) => {

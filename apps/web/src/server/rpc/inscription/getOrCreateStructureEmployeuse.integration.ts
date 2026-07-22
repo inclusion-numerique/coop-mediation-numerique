@@ -1,10 +1,23 @@
+import { searchAdresse } from '@app/web/external-apis/apiAdresse'
 import { prismaClient } from '@app/web/prismaClient'
 import { getOrCreateStructureEmployeuse } from '@app/web/server/rpc/inscription/getOrCreateStructureEmployeuse'
+
+// L'adaptateur délègue à findOrCreateStructureAdministrative, qui géocode l'adresse via la BAN.
+// On neutralise l'appel réseau : searchAdresse -> null fait retomber le lookup sur le codeInsee
+// fourni (comportement déterministe et hors-ligne, équivalent à l'ancien chemin).
+jest.mock('@app/web/external-apis/apiAdresse', () => ({
+  searchAdresse: jest.fn(),
+}))
+const mockedSearchAdresse = searchAdresse as jest.MockedFunction<
+  typeof searchAdresse
+>
 
 describe('getOrCreateStructureEmployeuse', () => {
   const testSiret = '93429789600011'
 
   beforeAll(async () => {
+    mockedSearchAdresse.mockResolvedValue(null)
+
     await prismaClient.structureAdministrative.deleteMany({
       where: {
         siret: testSiret,

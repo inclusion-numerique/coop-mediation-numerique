@@ -27,10 +27,8 @@ export const employeStructureRouter = router({
 
         const id = v4()
 
-        const structure = await getOrCreateStructureEmployeuse(
-          structureEmployeuse,
-          sessionUser,
-        )
+        const structure =
+          await getOrCreateStructureEmployeuse(structureEmployeuse)
 
         const debut = debutString ? new Date(debutString) : new Date()
         const fin = finString ? new Date(finString) : null
