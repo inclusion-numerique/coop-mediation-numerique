@@ -13,7 +13,10 @@ generator erd {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  schemas  = ["coop", "public"]
+  // `main` (référence Entrepôt) est possédé par le Dataspace et géré par Flyway, JAMAIS par nos
+  // migrations : il est déclaré ici uniquement pour lire/joindre en cross-schéma depuis le client
+  // unique. Les tables `main.*` sont posées par une migration baseline `resolve --applied` (ADR-002).
+  schemas  = ["coop", "public", "main"]
 }
 
 // Account, Session, User and VerificationToken
@@ -898,6 +901,73 @@ model StructureAdministrative {
   @@index([siret])
   @@map("structure_administrative")
   @@schema("coop")
+}
+
+/// Structure administrative (identité légale employeuse) côté Entrepôt : table de référence
+/// partagée `main.structure_administrative`, possédée par le Dataspace et gérée par Flyway —
+/// JAMAIS par nos migrations. Modélisée ici pour lire/joindre en cross-schéma depuis le client
+/// unique (ADR-002). Les features non représentables par Prisma (uniques `NULLS NOT DISTINCT`,
+/// index à expression, colonne générée) vivent seulement en base : la garde CI `prisma db pull`
+/// couvre l'écart. Les tables `main.*` sont posées par une migration baseline `resolve --applied`.
+model StructureAdministrativeMain {
+  id                     Int       @id @default(autoincrement())
+  oldMainStructureId     Int?      @unique(map: "structure_administrative_old_main_structure_id_ukey") @map("old_main_structure_id")
+  siret                  String?   @db.VarChar(14)
+  ridet                  String?   @unique(map: "structure_administrative_ridet_ukey") @db.VarChar(10)
+  denominationSirene     String?   @map("denomination_sirene") @db.VarChar
+  rna                    String?   @db.VarChar(10)
+  denominationAntenne    String?   @map("denomination_antenne") @db.VarChar(255)
+  adresseId              Int?      @map("adresse_id")
+  structureCoopId        String?   @unique(map: "structure_administrative_structure_coop_id_ukey") @map("structure_coop_id") @db.Uuid
+  structureTpId          Int?      @unique(map: "structure_administrative_structure_tp_id_ukey") @map("structure_tp_id")
+  structureAcId          String?   @unique(map: "structure_administrative_structure_ac_id_ukey") @map("structure_ac_id") @db.Uuid
+  etatAdministratif      String?   @map("etat_administratif") @db.VarChar
+  codeActivitePrincipale String?   @map("code_activite_principale") @db.VarChar(6)
+  categorieJuridique     String?   @map("categorie_juridique") @db.VarChar(4)
+  publique               Boolean?
+  nbMandatsAc            Int?      @map("nb_mandats_ac")
+  contact                Json?
+  deletedAt              DateTime? @map("deleted_at") @db.Timestamp(6)
+  deletedBy              String[]  @map("deleted_by")
+  editedBy               String?   @map("edited_by") @db.VarChar(50)
+  lastSireneEnrichAt     DateTime? @map("last_sirene_enrich_at") @db.Date
+  createdAt              DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt              DateTime? @map("updated_at") @db.Timestamp(6)
+  updatedAtCoop          DateTime? @map("updated_at_coop") @db.Timestamp(6)
+  updatedAtIdposte       DateTime? @map("updated_at_idposte") @db.Timestamp(6)
+  updatedAtAc            DateTime? @map("updated_at_ac") @db.Timestamp(6)
+  estGrandReseau         Boolean   @default(false) @map("est_grand_reseau")
+  estHub                 Boolean   @default(false) @map("est_hub")
+
+  adresse AdresseMain? @relation(fields: [adresseId], references: [id])
+
+  @@unique([siret, denominationAntenne], map: "structure_administrative_siret_antenne_ukey")
+  @@map("structure_administrative")
+  @@schema("main")
+}
+
+/// Adresse normalisée côté Entrepôt (`main.adresse`, possédée par le Dataspace, gérée par Flyway).
+/// `geom` (postgis) est volontairement omis : jamais lu côté coop, et l'inclure coupterait le
+/// bootstrap local à l'extension postgis. `departement` (colonne générée en base) est modélisé en
+/// colonne simple. Voir StructureAdministrativeMain et ADR-002.
+model AdresseMain {
+  id          Int       @id @default(autoincrement())
+  clefInterop String?   @map("clef_interop") @db.VarChar(50)
+  codeBan     String?   @unique(map: "adresse_code_ban_ukey") @map("code_ban") @db.Uuid
+  codePostal  String    @map("code_postal") @db.VarChar(5)
+  codeInsee   String    @map("code_insee") @db.VarChar(5)
+  nomCommune  String    @map("nom_commune") @db.VarChar(255)
+  nomVoie     String?   @map("nom_voie") @db.VarChar(255)
+  repetition  String?   @db.VarChar(10)
+  numeroVoie  Int?      @map("numero_voie") @db.SmallInt
+  createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt   DateTime? @map("updated_at") @db.Timestamp(6)
+  departement String?   @db.VarChar(3)
+
+  structuresAdministratives StructureAdministrativeMain[]
+
+  @@map("adresse")
+  @@schema("main")
 }
 
 model EmployeStructure {
