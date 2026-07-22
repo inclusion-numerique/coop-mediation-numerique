@@ -69,8 +69,13 @@ voir « Jointures cross-schéma » plus bas. Ce choix converge par ailleurs avec
 de la base Coop vers l'Entrepôt.
 
 **Risque introduit** : nous décrivons dans notre schéma une table que nous ne possédons pas.
-Un changement côté Entrepôt casserait notre client silencieusement.
-**Mitigation** : un `prisma db pull` vérifié en CI, qui échoue si le schéma réel a divergé du modèle.
+Un changement côté Entrepôt (Flyway) casserait notre client silencieusement.
+**Mitigation** : une garde locale à la demande — `pnpm -F web db:check-main-drift` introspecte le
+schéma `main` réel (lecture seule du catalogue, via `DATABASE_URL`) et échoue s'il a divergé du
+snapshot de référence committé (`apps/web/prisma/main.reference.prisma`, régénéré par
+`db:refresh-main-reference`). Volontairement **hors CI** : la CI ne se connecte jamais à la base de
+l'Entrepôt (pas de credentials prod, pas de couplage réseau) ; le dev lance la garde en local quand
+une évolution Flyway est suspectée.
 
 ### 3. Écriture directe dans `main`
 
@@ -260,7 +265,7 @@ qu'il reste de la marge :
 1. redessiner `inscriptionRouter` « employeuse = lieu d'activité » pour ne plus réutiliser l'id
    (et les fixtures), avec les tests d'intégration existants comme filet ;
 2. modéliser `main.structure_administrative` et `main.adresse` dans `schema.prisma` (`multiSchema`),
-   avec la garde CI contre la dérive de schéma ;
+   avec la garde locale à la demande contre la dérive de schéma ;
 3. disjoindre les types lieu / employeuse dans `siretBearingStructures` et
    `correlateStructureAdministrative` ;
 4. unifier les deux chemins de création derrière `findOrCreateStructureAdministrative`, écrivant
