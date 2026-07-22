@@ -25,6 +25,8 @@
     "prisma": "pnpm --silent with-env prisma",
     "prisma:entrepot:generate": "pnpm --silent prisma generate --schema ./prisma/entrepot/schema.prisma",
     "db:migrate-deploy": "pnpm --silent prisma migrate deploy && pnpm --silent prisma db execute --schema ./prisma/schema.prisma --file ./prisma/sql/move-prisma-migrations-to-coop.sql",
+    "db:check-main-drift": "bash ./prisma/main-drift.sh check",
+    "db:refresh-main-reference": "bash ./prisma/main-drift.sh refresh",
     "erd": "pnpm erd:md && pnpm erd:svg && pnpm erd:pdf",
     "erd:md": "DISABLE_ERD= pnpm prisma generate",
     "erd:svg": "mmdc -i prisma/ERD.md -o prisma/ERD.svg && mv prisma/ERD-1.svg prisma/ERD.svg",
