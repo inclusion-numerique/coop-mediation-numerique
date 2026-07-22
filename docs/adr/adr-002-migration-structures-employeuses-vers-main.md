@@ -2,8 +2,8 @@
 
 ## Auteurs et historique
 
-| Date | Auteur | Action |
-|------|--------|--------|
+| Date       | Auteur        | Action                                                        |
+|------------|---------------|---------------------------------------------------------------|
 | 2026-07-21 | Marc Gavanier | Rédaction initiale : inventaire, décisions et plan de bascule |
 
 ## Statut
@@ -136,10 +136,10 @@ serait s'inviter dans une sémantique qui ne nous appartient pas.
 
 ### Surface des clés étrangères : deux colonnes
 
-| colonne | lignes | structures distinctes |
-|---|---:|---:|
-| `coop.activites.structure_employeuse_id` | 3 984 470 | 3 381 |
-| `coop.employes_structures.structure_id` | 8 833 | 3 499 |
+| colonne                                  |    lignes | structures distinctes |
+|------------------------------------------|----------:|----------------------:|
+| `coop.activites.structure_employeuse_id` | 3 984 470 |                 3 381 |
+| `coop.employes_structures.structure_id`  |     8 833 |                 3 499 |
 
 Faux amis écartés : `coop.activites.structure_id` et `coop.mediateurs_en_activite.structure_id`
 pointent vers `lieu_inclusion`. Les colonnes `structure_*` de `cras_conseiller_numerique_v1` sont du
@@ -151,16 +151,16 @@ prévoir sinon une colonne ajoutée, remplie par lots, puis échangée.
 
 ### Surface de code : environ 100 fichiers
 
-| zone | fichiers | nature |
-|---|---:|---|
-| Administration (liste, détail, fusion SA, fusion user, emplois) | 27 | dense, peu de logique |
-| Inscription / création de profil | 14 | deux chemins d'écriture concurrents |
-| Profil / affichage / mon-réseau | 11 | dont trois SQL bruts |
-| Statistiques, filtres, exports | 10 | mécanique : ne portent que `{id, nom, commune}` |
-| Socle « structures » | 8 | le cœur |
-| CRA / activités | 8 | une seule écriture réelle |
-| Équipe / coordination | 6 | dépend d'un SQL brut avec `JOIN` |
-| tRPC, API v1, Dataspace / ProConnect | 12 | |
+| zone                                                            | fichiers | nature                                          |
+|-----------------------------------------------------------------|---------:|-------------------------------------------------|
+| Administration (liste, détail, fusion SA, fusion user, emplois) |       27 | dense, peu de logique                           |
+| Inscription / création de profil                                |       14 | deux chemins d'écriture concurrents             |
+| Profil / affichage / mon-réseau                                 |       11 | dont trois SQL bruts                            |
+| Statistiques, filtres, exports                                  |       10 | mécanique : ne portent que `{id, nom, commune}` |
+| Socle « structures »                                            |        8 | le cœur                                         |
+| CRA / activités                                                 |        8 | une seule écriture réelle                       |
+| Équipe / coordination                                           |        6 | dépend d'un SQL brut avec `JOIN`                |
+| tRPC, API v1, Dataspace / ProConnect                            |       12 |                                                 |
 
 Une large part de ce volume n'est que la propagation d'un type `{ id: string }` → `{ id: number }`.
 
