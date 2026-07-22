@@ -891,12 +891,12 @@ model StructureAdministrative {
   suppression  DateTime?
 
   // Emplois rattachés à cette identité légale employeuse (repointés depuis Structure)
-  emplois EmployeStructure[]
+  emplois   EmployeStructure[]
   // Inverse (requis par Prisma) du champ collecté `activite.structureEmployeuseId` :
   // chaque CRA estampille l'employeuse du médiateur au moment de l'acte, pour les
   // statistiques « activités par structure employeuse ». L'employeuse ne « possède »
   // pas d'activités — seuls les lieux en ont (Activite.structureId).
-  activites Activite[] @relation(name: "activite_structure_employeuse")
+  activites Activite[]         @relation(name: "activite_structure_employeuse")
 
   @@index([siret])
   @@map("structure_administrative")
@@ -939,7 +939,10 @@ model StructureAdministrativeMain {
   estGrandReseau         Boolean   @default(false) @map("est_grand_reseau")
   estHub                 Boolean   @default(false) @map("est_hub")
 
-  adresse AdresseMain? @relation(fields: [adresseId], references: [id])
+  adresse   AdresseMain?       @relation(fields: [adresseId], references: [id])
+  // Inverses des FK coop repointées vers main pendant la bascule (ADR-002 étape 6).
+  emplois   EmployeStructure[] @relation("employe_structure_main")
+  activites Activite[]         @relation("activite_structure_employeuse_main")
 
   @@unique([siret, denominationAntenne], map: "structure_administrative_siret_antenne_ukey")
   @@map("structure_administrative")
@@ -978,8 +981,12 @@ model EmployeStructure {
   userId String @map("user_id") @db.Uuid // Employé de la structure
   user   User   @relation(name: "employe_structure", fields: [userId], references: [id])
 
-  structureId String                  @map("structure_id") @db.Uuid
-  structure   StructureAdministrative @relation(fields: [structureId], references: [id])
+  structureId     String                       @map("structure_id") @db.Uuid
+  structure       StructureAdministrative      @relation(fields: [structureId], references: [id])
+  // Colonne cible de la bascule coop->main (ADR-002 étape 6), remplie par le backfill ; coexiste avec
+  // structureId (uuid) jusqu'à l'échange final. Nullable pendant la transition.
+  structureMainId Int?                         @map("structure_main_id")
+  structureMain   StructureAdministrativeMain? @relation(fields: [structureMainId], references: [id], name: "employe_structure_main")
 
   // debut est nullable car il peut être null lors de l'import des données dataspace (contrat sans informations de dates)
   debut DateTime? @map("debut_emploi") // date de début de l'emploi dans la structure 
@@ -1000,6 +1007,7 @@ model EmployeStructure {
 
   @@index([userId])
   @@index([structureId])
+  @@index([structureMainId])
   @@map("employes_structures")
   @@schema("coop")
 }
@@ -1010,7 +1018,7 @@ model MediateurEnActivite {
   mediateurId String    @map("mediateur_id") @db.Uuid
   mediateur   Mediateur @relation(fields: [mediateurId], references: [id])
 
-  structureId String        @map("structure_id") @db.Uuid
+  structureId   String        @map("structure_id") @db.Uuid
   lieuInclusion LieuInclusion @relation(fields: [structureId], references: [id])
 
   debut DateTime  @map("debut_activite") // date de début de l'activité dans la structure
@@ -1318,20 +1326,24 @@ model Activite {
   // - cette information aurait pu etre déduite des liens entre mediateur, emploi, et activité
   // - elle est stockée directement ici pour des raisons de performance, et est mise à jour en cas de modification d'emploi
   // - elle est également utile dans le cas des imports d'anciens cras v1 qui ont cette information en dur dans le cra v1
-  structureEmployeuseId String                  @map("structure_employeuse_id") @db.Uuid
-  structureEmployeuse   StructureAdministrative @relation(fields: [structureEmployeuseId], references: [id], name: "activite_structure_employeuse")
+  structureEmployeuseId     String                       @map("structure_employeuse_id") @db.Uuid
+  structureEmployeuse       StructureAdministrative      @relation(fields: [structureEmployeuseId], references: [id], name: "activite_structure_employeuse")
+  // Colonne cible de la bascule coop->main (ADR-002 étape 6) : remplie par le backfill, coexiste avec
+  // structureEmployeuseId (uuid) jusqu'à l'échange final. Nullable pendant la transition.
+  structureEmployeuseMainId Int?                         @map("structure_employeuse_main_id")
+  structureEmployeuseMain   StructureAdministrativeMain? @relation(fields: [structureEmployeuseMainId], references: [id], name: "activite_structure_employeuse_main")
 
   // Structure est renseigné
   // - si typeLieu = LieuActivite
-  structureId    String?    @map("structure_id") @db.Uuid
+  structureId    String?        @map("structure_id") @db.Uuid
   lieuInclusion  LieuInclusion? @relation(fields: [structureId], references: [id], name: "activite_structure")
   // lieu* est renseigné
   // - si typeLieu = A Domicile
   // - ou si typeLieu = Autre
   // - ou si typeLieu = A Distance -> assigné à la commune de la structure employeuse
-  lieuCodePostal String?    @map("lieu_code_postal")
-  lieuCommune    String?    @map("lieu_commune")
-  lieuCodeInsee  String?    @map("lieu_code_insee")
+  lieuCodePostal String?        @map("lieu_code_postal")
+  lieuCommune    String?        @map("lieu_commune")
+  lieuCodeInsee  String?        @map("lieu_code_insee")
 
   creation     DateTime  @default(now())
   modification DateTime  @default(now())
@@ -1369,6 +1381,7 @@ model Activite {
   @@index([structureId])
   @@index([mediateurId])
   @@index([structureEmployeuseId])
+  @@index([structureEmployeuseMainId])
   @@index([rdvId])
   // descending sort on this cursor for api query performances
   @@index([creation(sort: Desc), id(sort: Desc)])
