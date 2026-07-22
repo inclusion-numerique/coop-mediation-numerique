@@ -947,22 +947,24 @@ model StructureAdministrativeMain {
 }
 
 /// Adresse normalisée côté Entrepôt (`main.adresse`, possédée par le Dataspace, gérée par Flyway).
-/// `geom` (postgis) est volontairement omis : jamais lu côté coop, et l'inclure coupterait le
-/// bootstrap local à l'extension postgis. `departement` (colonne générée en base) est modélisé en
+/// `geom` (postgis) est modélisé en `Unsupported` : Prisma ne sait ni le lire ni l'écrire (le job de
+/// complétion y écrit les coordonnées BAN en SQL brut via ST_MakePoint), mais le déclarer permet à la
+/// baseline de créer la colonne en local. `departement` (colonne générée en base) est modélisé en
 /// colonne simple. Voir StructureAdministrativeMain et ADR-002.
 model AdresseMain {
-  id          Int       @id @default(autoincrement())
-  clefInterop String?   @map("clef_interop") @db.VarChar(50)
-  codeBan     String?   @unique(map: "adresse_code_ban_ukey") @map("code_ban") @db.Uuid
-  codePostal  String    @map("code_postal") @db.VarChar(5)
-  codeInsee   String    @map("code_insee") @db.VarChar(5)
-  nomCommune  String    @map("nom_commune") @db.VarChar(255)
-  nomVoie     String?   @map("nom_voie") @db.VarChar(255)
-  repetition  String?   @db.VarChar(10)
-  numeroVoie  Int?      @map("numero_voie") @db.SmallInt
-  createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt   DateTime? @map("updated_at") @db.Timestamp(6)
-  departement String?   @db.VarChar(3)
+  id          Int                      @id @default(autoincrement())
+  geom        Unsupported("geometry")?
+  clefInterop String?                  @map("clef_interop") @db.VarChar(50)
+  codeBan     String?                  @unique(map: "adresse_code_ban_ukey") @map("code_ban") @db.Uuid
+  codePostal  String                   @map("code_postal") @db.VarChar(5)
+  codeInsee   String                   @map("code_insee") @db.VarChar(5)
+  nomCommune  String                   @map("nom_commune") @db.VarChar(255)
+  nomVoie     String?                  @map("nom_voie") @db.VarChar(255)
+  repetition  String?                  @db.VarChar(10)
+  numeroVoie  Int?                     @map("numero_voie") @db.SmallInt
+  createdAt   DateTime?                @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt   DateTime?                @map("updated_at") @db.Timestamp(6)
+  departement String?                  @db.VarChar(3)
 
   structuresAdministratives StructureAdministrativeMain[]
 

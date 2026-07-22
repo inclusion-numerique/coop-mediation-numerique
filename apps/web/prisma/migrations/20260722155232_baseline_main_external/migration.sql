@@ -18,6 +18,11 @@
 -- CreateSchema
 CREATE SCHEMA IF NOT EXISTS "main";
 
+-- postgis fournit le type `geometry` de `main.adresse.geom`. En prod (base fusionnée) l'extension
+-- est déjà là et cette migration est `resolve --applied`, donc cette ligne ne s'exécute que sur une
+-- base neuve (docker local / shadow DB de migrate) où postgis est disponible mais pas encore activé.
+CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
+
 -- CreateTable
 CREATE TABLE "main"."structure_administrative" (
     "id" SERIAL NOT NULL,
@@ -55,6 +60,7 @@ CREATE TABLE "main"."structure_administrative" (
 -- CreateTable
 CREATE TABLE "main"."adresse" (
     "id" SERIAL NOT NULL,
+    "geom" geometry,
     "clef_interop" VARCHAR(50),
     "code_ban" UUID,
     "code_postal" VARCHAR(5) NOT NULL,

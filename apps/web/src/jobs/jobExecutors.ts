@@ -14,6 +14,7 @@ import { executeAuditSiretCoherence } from './audit-siret-coherence/executeAudit
 import { executeBackfillCommuneRdvsp } from './backfill-commune-rdvsp/executeBackfillCommuneRdvsp'
 import { executeBackfillTrancheAge } from './backfill-tranche-age/executeBackfillTrancheAge'
 import { executeBackupDatabaseJob } from './backup-database/executeBackupDatabaseJob'
+import { executeCompleterStructuresMain } from './completer-structures-main/executeCompleterStructuresMain'
 import { executeDeduplicateLieux } from './deduplicate-lieux/executeDeduplicateLieux'
 import { executeDetectDuplicateLieux } from './detect-duplicate-lieux/executeDetectDuplicateLieux'
 import { executeExportDuplicateSirets } from './export-duplicate-sirets/executeExportDuplicateSirets'
@@ -66,6 +67,7 @@ export const jobExecutors: {
   'backfill-commune-rdvsp': executeBackfillCommuneRdvsp,
   'backfill-tranche-age': executeBackfillTrancheAge,
   'backup-database': executeBackupDatabaseJob,
+  'completer-structures-main': executeCompleterStructuresMain,
   'update-structures-cartographie-nationale':
     executeUpdateStructuresCartographieNationale,
   'import-contacts-to-brevo': executeImportContactsToBrevo,

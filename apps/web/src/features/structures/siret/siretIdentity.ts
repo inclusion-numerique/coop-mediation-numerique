@@ -106,3 +106,34 @@ export const parseSireneIdentity = (
     },
   }
 }
+
+/**
+ * Variante de `parseSireneIdentity` destinée à la COMPLÉTION des structures : elle accepte TOUT ce
+ * que l'API renvoie pour un SIRET (donnée de confiance), y compris les personnes physiques
+ * (entrepreneurs individuels, nom via `nom_complet` — masqué en `[Non-Diffusible]`) et les
+ * établissements fermés (leur nom/adresse historique vaut mieux qu'un affichage vide). Elle ne peut
+ * donc pas échouer ; `etatAdministratif` est conservé pour information.
+ *
+ * À ne pas confondre avec `parseSireneIdentity`, qui rejette volontairement EI et établissements
+ * fermés pour l'alignement SIRENE (`normalize-sirets`) — ce comportement partagé reste inchangé.
+ */
+export const parseSireneIdentityForCompletion = (
+  siretResult: SiretApiResponse,
+): SireneIdentity => {
+  const {
+    data: {
+      unite_legale: { nom_complet },
+      etat_administratif,
+      adresse,
+    },
+  } = siretResult
+
+  return {
+    nom: nom_complet,
+    adresse: buildAddressFromApiData(adresse),
+    commune: adresse.libelle_commune || '',
+    codePostal: adresse.code_postal,
+    codeInsee: adresse.code_commune || '',
+    etatAdministratif: etat_administratif,
+  }
+}

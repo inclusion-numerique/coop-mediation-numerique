@@ -11,6 +11,7 @@ import { AuditSiretCoherenceJobValidation } from './audit-siret-coherence/auditS
 import { BackfillCommuneRdvspJobValidation } from './backfill-commune-rdvsp/backfillCommuneRdvspJob'
 import { BackfillTrancheAgeJobValidation } from './backfill-tranche-age/backfillTrancheAgeJob'
 import { BackupDatabaseJobValidation } from './backup-database/backupDatabaseJob'
+import { CompleterStructuresMainJobValidation } from './completer-structures-main/completerStructuresMainJob'
 import { DeduplicateLieuxJobValidation } from './deduplicate-lieux/deduplicateLieuxJob'
 import { DetectDuplicateLieuxJobValidation } from './detect-duplicate-lieux/detectDuplicateLieuxJob'
 import { ExportDuplicateSiretsJobValidation } from './export-duplicate-sirets/exportDuplicateSiretsJob'
@@ -61,6 +62,7 @@ export const JobValidation = z.discriminatedUnion('name', [
   NormaliserBeneficiairesJobValidation,
   BackfillTrancheAgeJobValidation,
   BackupDatabaseJobValidation,
+  CompleterStructuresMainJobValidation,
   UpdateStructuresCartographieNationaleJobValidation,
   ImportContactsToBrevoValidation,
   NormalizeSiretsJobValidation,
