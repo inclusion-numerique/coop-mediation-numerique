@@ -38,6 +38,8 @@ export const employeStructureRouter = router({
             id,
             userId,
             structureId: structure.id,
+            // Dual-write pendant la bascule coop->main (ADR-002 étape 6).
+            structureMainId: structure.mainId,
             debut,
             fin,
             creationParId: sessionUser.id,

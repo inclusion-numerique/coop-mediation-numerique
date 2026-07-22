@@ -37,7 +37,7 @@ const hasAdresseBan = (
  */
 export const getOrCreateStructureEmployeuse = (
   structureEmployeuse: StructureEmployeuseInput,
-): Promise<{ id: string }> => {
+): Promise<{ id: string; mainId: number | null }> => {
   const { siret, nom, id } = structureEmployeuse
 
   const adresse = hasAdresseBan(structureEmployeuse)

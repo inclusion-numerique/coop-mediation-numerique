@@ -21,7 +21,10 @@ export const importStructureEmployeuseFromSiret = async ({
   userId: string
   siret: string
   log?: InitializeDebugLogger
-}): Promise<{ structureId: string } | null> => {
+}): Promise<{
+  structureId: string
+  structureMainId: number | null
+} | null> => {
   log('fetchSiretApiData: calling Recherche d’entreprises API', { siret })
 
   // Fetch full SIRET data from the public Recherche d'entreprises API
@@ -130,21 +133,22 @@ export const importStructureEmployeuseFromSiret = async ({
       structureId: structure.id,
     })
     // Emploi already exists, return structure id
-    return { structureId: structure.id }
+    return { structureId: structure.id, structureMainId: structure.mainId }
   }
 
   log('Creating new emploi', { userId, structureId: structure.id })
 
-  // Create new emploi with today's date
+  // Create new emploi with today's date (dual-write coop->main, ADR-002 étape 6)
   await prismaClient.employeStructure.create({
     data: {
       userId,
       structureId: structure.id,
+      structureMainId: structure.mainId,
       debut: new Date(),
     },
   })
 
   log('Emploi created successfully', { userId, structureId: structure.id })
 
-  return { structureId: structure.id }
+  return { structureId: structure.id, structureMainId: structure.mainId }
 }

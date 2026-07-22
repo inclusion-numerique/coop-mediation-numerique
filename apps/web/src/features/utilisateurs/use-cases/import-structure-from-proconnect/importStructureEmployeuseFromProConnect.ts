@@ -178,6 +178,8 @@ export const importStructureEmployeuseFromProConnect = async ({
       data: {
         userId,
         structureId: result.structureId,
+        // Dual-write pendant la bascule coop->main (ADR-002 étape 6).
+        structureMainId: result.structureMainId,
         debut: new Date(),
       },
     })

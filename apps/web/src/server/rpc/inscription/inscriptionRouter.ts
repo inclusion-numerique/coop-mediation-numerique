@@ -162,6 +162,8 @@ export const inscriptionRouter = router({
                   create: {
                     id: v4(),
                     structureId: structure.id,
+                    // Dual-write pendant la bascule coop->main (ADR-002 étape 6).
+                    structureMainId: structure.mainId,
                     debut: new Date(),
                   },
                 },

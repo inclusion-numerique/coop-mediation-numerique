@@ -169,16 +169,16 @@ const findOrCreateCoopStructureAdministrative = async ({
 /**
  * Find-or-create d'une structure employeuse : crée/réutilise la ligne coop, PUIS garantit
  * (best-effort, non bloquant) la ligne `main` correspondante à partir du SIRET — anti-dérive de
- * l'ADR-002, pour qu'aucune employeuse coop ne reste sans équivalent `main`. Le contrat est inchangé :
- * renvoie l'id coop (`uuid`) tant que les clés étrangères n'ont pas basculé en `integer`.
+ * l'ADR-002. Renvoie `id` (uuid coop) ET `mainId` (int main, `null` si la garantie a échoué), pour
+ * que les écritures d'emplois/activités peuplent les deux colonnes pendant la bascule (dual-write).
  */
 export const findOrCreateStructureAdministrative = async (
   input: FindOrCreateInput,
-): Promise<{ id: string }> => {
+): Promise<{ id: string; mainId: number | null }> => {
   const coop = await findOrCreateCoopStructureAdministrative(input)
-  await ensureStructureAdministrativeMain({
+  const main = await ensureStructureAdministrativeMain({
     coopId: coop.id,
     siret: input.siret,
   })
-  return coop
+  return { id: coop.id, mainId: main?.id ?? null }
 }

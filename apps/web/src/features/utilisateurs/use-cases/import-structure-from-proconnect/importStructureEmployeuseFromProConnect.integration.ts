@@ -32,6 +32,7 @@ describe('importStructureEmployeuseFromProConnect', () => {
     mockedImportStructureEmployeuseFromSiret.mockReset()
     mockedImportStructureEmployeuseFromSiret.mockResolvedValue({
       structureId: PROCONNECT_STRUCTURE_ID,
+      structureMainId: null,
     })
 
     await resetFixtureUser(mediateurSansActivites, false)
