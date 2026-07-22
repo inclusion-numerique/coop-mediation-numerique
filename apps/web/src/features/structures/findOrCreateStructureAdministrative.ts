@@ -4,6 +4,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
 import type { FindOrCreateInput } from './findOrCreateLieuInclusion'
 import { isContainedName, sameDepartement } from './findOrCreateLieuInclusion'
+import { ensureStructureAdministrativeMain } from './main/ensureStructureAdministrativeMain'
 
 // Frère de findOrCreateLieuInclusion dédié au rôle EMPLOYEUSE : crée une
 // `structure_administrative` (identité légale) et non une `structures` (lieu).
@@ -72,10 +73,10 @@ const findExistingBySiretOrNom = async ({
 }
 
 /**
- * Find-or-create d'une structure_administrative (rôle employeuse) suivant la
+ * Find-or-create de la ligne COOP structure_administrative (rôle employeuse) suivant la
  * même hiérarchie que findOrCreateLieuInclusion : coopId → SIRET+codeInsee → nom+codeInsee.
  */
-export const findOrCreateStructureAdministrative = async ({
+const findOrCreateCoopStructureAdministrative = async ({
   coopId,
   siret,
   nom,
@@ -163,4 +164,21 @@ export const findOrCreateStructureAdministrative = async ({
     },
     select: { id: true },
   })
+}
+
+/**
+ * Find-or-create d'une structure employeuse : crée/réutilise la ligne coop, PUIS garantit
+ * (best-effort, non bloquant) la ligne `main` correspondante à partir du SIRET — anti-dérive de
+ * l'ADR-002, pour qu'aucune employeuse coop ne reste sans équivalent `main`. Le contrat est inchangé :
+ * renvoie l'id coop (`uuid`) tant que les clés étrangères n'ont pas basculé en `integer`.
+ */
+export const findOrCreateStructureAdministrative = async (
+  input: FindOrCreateInput,
+): Promise<{ id: string }> => {
+  const coop = await findOrCreateCoopStructureAdministrative(input)
+  await ensureStructureAdministrativeMain({
+    coopId: coop.id,
+    siret: input.siret,
+  })
+  return coop
 }
