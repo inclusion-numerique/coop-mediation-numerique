@@ -14,6 +14,19 @@ export const serializePrismaSessionUser = (
   usurper?: PrismaSessionUsupper,
 ): SessionUser => ({
   ...prismaSessionUser,
+  // Emploi.structure repointé vers main (ADR-002 étape 6) : on reconstitue la forme exposée
+  // { nom, codeInsee } à partir de structureMain (denomination_antenne ?? sirene, adresse main) pour
+  // ne pas impacter les consommateurs de sessionUser.
+  emplois: prismaSessionUser.emplois.map((emploi) => ({
+    id: emploi.id,
+    structure: {
+      nom:
+        emploi.structureMain?.denominationAntenne ??
+        emploi.structureMain?.denominationSirene ??
+        '',
+      codeInsee: emploi.structureMain?.adresse?.codeInsee ?? null,
+    },
+  })),
   coordinateur: splitMediateursCoordonnes(prismaSessionUser.coordinateur),
   emailVerified: prismaSessionUser.emailVerified?.toISOString() ?? null,
   created: prismaSessionUser.created.toISOString(),

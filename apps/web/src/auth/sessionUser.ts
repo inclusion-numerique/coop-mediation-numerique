@@ -80,19 +80,16 @@ export type SessionUser = Pick<
  * Type guard to check if user has at least one structure employeuse (emploi)
  * Narrows the type to ensure emplois is a non-empty array
  */
+// Générique sur la forme des emplois (le guard ne vérifie que la présence d'au moins un emploi) :
+// accepte aussi bien le SessionUser sérialisé (`emplois[].structure`) que le résultat Prisma brut de
+// `sessionUserSelect` (`emplois[].structureMain`, ADR-002 étape 6), en préservant la forme de chaque
+// appelant après narrowing.
 export const sessionUserHasStructureEmployeuse = <
-  T extends Pick<SessionUser, 'emplois'>,
+  T extends { emplois: unknown[] },
 >(
   user: T,
 ): user is T & {
-  emplois: [
-    Pick<EmployeStructure, 'id'> & {
-      structure: Pick<StructureAdministrative, 'nom' | 'codeInsee'>
-    },
-    ...(Pick<EmployeStructure, 'id'> & {
-      structure: Pick<StructureAdministrative, 'nom' | 'codeInsee'>
-    })[],
-  ]
+  emplois: [T['emplois'][number], ...T['emplois'][number][]]
 } => {
   return user.emplois.length > 0
 }

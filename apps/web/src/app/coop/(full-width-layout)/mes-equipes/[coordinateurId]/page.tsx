@@ -45,7 +45,13 @@ const Page = async (props: {
   })
 
   const departementCode = getDepartementCodeForActeur({
-    emplois: coordinateur?.user.emplois,
+    // `sessionUserSelect.emplois` expose désormais `structureMain` (ADR-002 étape 6) : on remappe
+    // vers la forme { structure: { codeInsee } } attendue, code INSEE lu depuis l'adresse main.
+    emplois: coordinateur?.user.emplois.map((emploi) => ({
+      structure: {
+        codeInsee: emploi.structureMain?.adresse?.codeInsee ?? null,
+      },
+    })),
   })
 
   return (

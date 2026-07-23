@@ -33,14 +33,15 @@ export const sessionUserSelect = {
   emplois: {
     select: {
       id: true,
-      structure: {
+      // Repointé vers main (ADR-002 étape 6) : le nom vient de denomination_antenne ?? sirene et le
+      // code INSEE de l'adresse main. La forme exposée { nom, codeInsee } est reconstituée dans
+      // serializePrismaSessionUser, donc les consommateurs de sessionUser restent inchangés.
+      structureMain: {
         select: {
           id: true,
-          nom: true,
-          codePostal: true,
-          codeInsee: true,
-          commune: true,
-          modification: true,
+          denominationSirene: true,
+          denominationAntenne: true,
+          adresse: { select: { codeInsee: true } },
         },
       },
     },

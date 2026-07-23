@@ -256,8 +256,11 @@ export const initializeInscription = async ({
       emploisCount: updatedUser.emplois.length,
       emplois: updatedUser.emplois.map((e) => ({
         id: e.id,
-        structureNom: e.structure.nom,
-        structureId: e.structure.id,
+        structureNom:
+          e.structureMain?.denominationAntenne ??
+          e.structureMain?.denominationSirene ??
+          null,
+        structureId: e.structureMain?.id ?? null,
       })),
       hasLieuxActivite,
       profilInscription: updatedUser.profilInscription,
