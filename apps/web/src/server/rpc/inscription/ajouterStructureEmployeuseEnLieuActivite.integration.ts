@@ -9,8 +9,9 @@ describe('inscriptionRouter.ajouterStructureEmployeuseEnLieuActivite', () => {
   const collegueId = v4()
   const mediateurId = v4()
   const mediateurCollegueId = v4()
-  const employeuseId = v4()
 
+  // L'employeuse est une `main.structure_administrative` (ADR-002) : le lieu est matérialisé
+  // depuis ses données main (nom via la denomination, adresse via la relation `main.adresse`).
   const employeuse = {
     nom: 'Employeuse lieu d’activité',
     adresse: '12 rue de la Réconciliation',
@@ -26,6 +27,12 @@ describe('inscriptionRouter.ajouterStructureEmployeuseEnLieuActivite', () => {
     nom: employeuse.nom,
     adresse: employeuse.adresse,
     codeInsee: employeuse.codeInsee,
+  }
+
+  // Ids main auto-incrémentés, captés à la création (pas de `let`).
+  const main: { adresseId: number; structureId: number } = {
+    adresseId: 0,
+    structureId: 0,
   }
 
   const utilisateur = (id: string) => ({
@@ -46,9 +53,28 @@ describe('inscriptionRouter.ajouterStructureEmployeuseEnLieuActivite', () => {
         { id: mediateurCollegueId, userId: collegueId },
       ],
     })
-    await prismaClient.structureAdministrative.create({
-      data: { id: employeuseId, ...employeuse, source: 'coop' },
+
+    const adresse = await prismaClient.adresseMain.create({
+      data: {
+        numeroVoie: 12,
+        nomVoie: 'rue de la Réconciliation',
+        nomCommune: employeuse.commune,
+        codePostal: employeuse.codePostal,
+        codeInsee: employeuse.codeInsee,
+      },
+      select: { id: true },
     })
+    main.adresseId = adresse.id
+
+    const structure = await prismaClient.structureAdministrativeMain.create({
+      data: {
+        denominationSirene: employeuse.nom,
+        siret: employeuse.siret,
+        adresseId: adresse.id,
+      },
+      select: { id: true },
+    })
+    main.structureId = structure.id
   })
 
   afterAll(async () => {
@@ -56,9 +82,10 @@ describe('inscriptionRouter.ajouterStructureEmployeuseEnLieuActivite', () => {
       where: { mediateurId: { in: [mediateurId, mediateurCollegueId] } },
     })
     await prismaClient.lieuInclusion.deleteMany({ where: lieuCorrele })
-    await prismaClient.structureAdministrative.delete({
-      where: { id: employeuseId },
+    await prismaClient.structureAdministrativeMain.delete({
+      where: { id: main.structureId },
     })
+    await prismaClient.adresseMain.delete({ where: { id: main.adresseId } })
     await prismaClient.mediateur.deleteMany({
       where: { id: { in: [mediateurId, mediateurCollegueId] } },
     })
@@ -84,30 +111,32 @@ describe('inscriptionRouter.ajouterStructureEmployeuseEnLieuActivite', () => {
       .ajouterStructureEmployeuseEnLieuActivite({
         userId,
         estLieuActivite,
-        structureEmployeuseId: employeuseId,
+        structureEmployeuseId: main.structureId,
       })
 
   const declarer = declarerPour(utilisateurId)
 
-  it('matérialise un lieu portant les données de l’employeuse, sans en reprendre l’id', async () => {
+  it('matérialise un lieu portant les données main de l’employeuse, sans en reprendre l’id', async () => {
     await declarer(true)
 
     const lieu = await prismaClient.lieuInclusion.findFirstOrThrow({
       where: lieuCorrele,
       select: {
-        id: true,
         nom: true,
         adresse: true,
         commune: true,
+        codePostal: true,
+        codeInsee: true,
         siret: true,
       },
     })
 
-    expect(lieu.id).not.toEqual(employeuseId)
     expect(lieu).toMatchObject({
       nom: employeuse.nom,
       adresse: employeuse.adresse,
       commune: employeuse.commune,
+      codePostal: employeuse.codePostal,
+      codeInsee: employeuse.codeInsee,
       siret: employeuse.siret,
     })
   })

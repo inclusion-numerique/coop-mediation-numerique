@@ -1,3 +1,4 @@
+import { referentFromMainContact } from '@app/web/features/structures/main/mainContact'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
 
@@ -37,57 +38,27 @@ export type EmploiStructureEmployeuse = {
   telephoneReferent: string | null
 }
 
-type MainContact = {
-  nom?: string
-  prenom?: string
-  telephone?: string
-  courriels?: Record<string, string>
-}
-
-const parseMainContact = (contact: Prisma.JsonValue | null): MainContact =>
-  contact && typeof contact === 'object' && !Array.isArray(contact)
-    ? (contact as MainContact)
-    : {}
-
-// Courriel référent : referent_hierarchique, sinon mail_gestionnaire, sinon le premier disponible.
-const referentCourriel = (contact: MainContact): string | null => {
-  const { courriels } = contact
-  if (!courriels) return null
-  return (
-    courriels.referent_hierarchique ??
-    courriels.mail_gestionnaire ??
-    Object.values(courriels)[0] ??
-    null
-  )
-}
-
 type StructureMainPayload = Prisma.StructureAdministrativeMainGetPayload<{
   select: typeof emploiStructureMainSelect
 }>
 
 export const toEmploiStructureEmployeuse = (
   structureMain: StructureMainPayload | null,
-): EmploiStructureEmployeuse => {
-  const contact = parseMainContact(structureMain?.contact ?? null)
-  return {
-    id: structureMain?.id ?? null,
-    nom:
-      structureMain?.denominationAntenne ??
-      structureMain?.denominationSirene ??
-      '',
-    adresse: structureMain?.adresse?.nomVoie ?? '',
-    commune: structureMain?.adresse?.nomCommune ?? '',
-    codePostal: structureMain?.adresse?.codePostal ?? '',
-    codeInsee: structureMain?.adresse?.codeInsee ?? null,
-    complementAdresse: null,
-    siret: structureMain?.siret ?? null,
-    rna: structureMain?.rna ?? null,
-    nomReferent:
-      [contact.nom, contact.prenom].filter(Boolean).join(' ') || null,
-    courrielReferent: referentCourriel(contact),
-    telephoneReferent: contact.telephone ?? null,
-  }
-}
+): EmploiStructureEmployeuse => ({
+  id: structureMain?.id ?? null,
+  nom:
+    structureMain?.denominationAntenne ??
+    structureMain?.denominationSirene ??
+    '',
+  adresse: structureMain?.adresse?.nomVoie ?? '',
+  commune: structureMain?.adresse?.nomCommune ?? '',
+  codePostal: structureMain?.adresse?.codePostal ?? '',
+  codeInsee: structureMain?.adresse?.codeInsee ?? null,
+  complementAdresse: null,
+  siret: structureMain?.siret ?? null,
+  rna: structureMain?.rna ?? null,
+  ...referentFromMainContact(structureMain?.contact ?? null),
+})
 
 const emploiContractSelect = {
   id: true,

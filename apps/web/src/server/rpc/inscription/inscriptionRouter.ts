@@ -23,6 +23,10 @@ import {
   findStructuresByCartoIds,
   PRISMA_CLIENT_KEY,
 } from '@app/web/features/lieux-activite/use-cases/ajouter/implementations/prisma'
+import {
+  employeuseMainSelect,
+  employeuseMainToLieuData,
+} from '@app/web/features/structures/main/employeuseLieuData'
 import { ChoisirProfilEtAccepterCguValidation } from '@app/web/features/utilisateurs/use-cases/registration/ChoisirProfilEtAccepterCguValidation'
 import { LieuxActiviteValidation } from '@app/web/features/utilisateurs/use-cases/registration/LieuxActivite'
 import { RenseignerStructureEmployeuseValidation } from '@app/web/features/utilisateurs/use-cases/registration/RenseignerStructureEmployeuse'
@@ -199,37 +203,48 @@ export const inscriptionRouter = router({
       }) => {
         inscriptionGuard(userId, sessionUser)
 
-        // La structure employeuse est une structure_administrative (split 1a.2), pas un
-        // lieu. Pour servir de lieu d'activité, ses données sont recopiées dans une ligne
-        // `lieu_inclusion`, à laquelle `mediateurEnActivite` se rattache (FK structure_id →
-        // lieu_inclusion). Aucun lien n'est conservé entre les deux : le lieu se retrouve
-        // par la clé de corrélation employée partout ailleurs — nom + adresse + code INSEE,
-        // cf. `correlateStructureAdministrative`. Le repère précédent, l'égalité des
-        // identifiants, ne survivrait pas au passage de l'employeuse vers
-        // `main.structure_administrative`, dont l'id est un entier (cf. ADR-002).
-        const structureEmployeuse =
-          await prismaClient.structureAdministrative.findUniqueOrThrow({
+        // La structure employeuse est une `main.structure_administrative` (ADR-002, source de
+        // vérité), pas un lieu. Pour servir de lieu d'activité, ses données MAIN sont recopiées
+        // dans une ligne `lieu_inclusion`, à laquelle `mediateurEnActivite` se rattache (FK
+        // structure_id → lieu_inclusion). Aucun lien n'est conservé : le lieu se retrouve par la
+        // clé de corrélation employée partout ailleurs — nom + adresse + code INSEE.
+        const structureMain =
+          await prismaClient.structureAdministrativeMain.findUniqueOrThrow({
             where: { id: structureEmployeuseId },
-            select: {
-              nom: true,
-              adresse: true,
-              commune: true,
-              codePostal: true,
-              codeInsee: true,
-              complementAdresse: true,
-              siret: true,
-              rna: true,
-              nomReferent: true,
-              courrielReferent: true,
-              telephoneReferent: true,
-            },
+            select: employeuseMainSelect,
           })
 
+        const lieuData = employeuseMainToLieuData(structureMain)
+
+        // Anti-doublon (transition ADR-002) : les lieux déjà matérialisés l'ont été depuis les
+        // données COOP (non fiables). On les retrouve donc par corrélation MAIN **ou** COOP, tout
+        // en CRÉANT désormais depuis MAIN. Sans ce repli, un nom/adresse main divergent de la coop
+        // recréerait un lieu en doublon au lieu de retrouver le partagé.
+        const coop = structureMain.structureCoopId
+          ? await prismaClient.structureAdministrative.findUnique({
+              where: { id: structureMain.structureCoopId },
+              select: { nom: true, adresse: true, codeInsee: true },
+            })
+          : null
+
         const lieuCorreleALEmployeuse = {
-          nom: structureEmployeuse.nom,
-          adresse: structureEmployeuse.adresse,
-          codeInsee: structureEmployeuse.codeInsee,
           suppression: null,
+          OR: [
+            {
+              nom: lieuData.nom,
+              adresse: lieuData.adresse,
+              codeInsee: lieuData.codeInsee,
+            },
+            ...(coop
+              ? [
+                  {
+                    nom: coop.nom,
+                    adresse: coop.adresse,
+                    codeInsee: coop.codeInsee,
+                  },
+                ]
+              : []),
+          ],
         }
 
         if (estLieuActivite) {
@@ -267,7 +282,7 @@ export const inscriptionRouter = router({
             (await prismaClient.lieuInclusion.create({
               data: {
                 id: v4(),
-                ...structureEmployeuse,
+                ...lieuData,
               },
               select: {
                 id: true,

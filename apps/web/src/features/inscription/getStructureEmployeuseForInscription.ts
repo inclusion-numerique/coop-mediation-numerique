@@ -1,11 +1,18 @@
+import {
+  employeuseMainSelect,
+  employeuseMainToLieuData,
+} from '@app/web/features/structures/main/employeuseLieuData'
 import { prismaClient } from '@app/web/prismaClient'
 
-export const getStructureEmployeuseForInscription = ({
+// Structure employeuse de l'inscription lue depuis `main` (source de vérité, ADR-002 étape 6).
+// L'`id` exposé est l'entier `main.structure_administrative.id` : il sert de clé à la mutation
+// `ajouterStructureEmployeuseEnLieuActivite`, qui matérialise le lieu depuis les données main.
+export const getStructureEmployeuseForInscription = async ({
   userId,
 }: {
   userId: string
-}) =>
-  prismaClient.employeStructure.findFirst({
+}) => {
+  const emploi = await prismaClient.employeStructure.findFirst({
     where: {
       userId,
       suppression: null,
@@ -16,18 +23,26 @@ export const getStructureEmployeuseForInscription = ({
     },
     select: {
       id: true,
-      structure: {
-        select: {
-          id: true,
-          nom: true,
-          commune: true,
-          codePostal: true,
-          codeInsee: true,
-          siret: true,
-          rna: true,
-          adresse: true,
-          complementAdresse: true,
-        },
+      structureMain: {
+        select: employeuseMainSelect,
       },
     },
   })
+
+  if (!emploi?.structureMain) return null
+
+  return {
+    id: emploi.id,
+    structure: {
+      id: emploi.structureMain.id,
+      ...employeuseMainToLieuData(emploi.structureMain),
+    },
+  }
+}
+
+export type StructureEmployeuseForInscription = NonNullable<
+  Awaited<ReturnType<typeof getStructureEmployeuseForInscription>>
+>
+
+export type InscriptionStructureEmployeuse =
+  StructureEmployeuseForInscription['structure']

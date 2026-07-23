@@ -4,7 +4,7 @@ import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import StructureCard from '@app/web/components/structure/StructureCard'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { StructureData } from '@app/web/features/structures/StructureValidation'
+import type { InscriptionStructureEmployeuse } from '@app/web/features/inscription/getStructureEmployeuseForInscription'
 import { trpc } from '@app/web/trpc'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
@@ -16,7 +16,7 @@ const StructureEmployeuseLieuActivitePage = ({
   structureEmployeuse,
 }: {
   userId: string
-  structureEmployeuse: StructureData & { id: string }
+  structureEmployeuse: InscriptionStructureEmployeuse
 }) => {
   const mutation =
     trpc.inscription.ajouterStructureEmployeuseEnLieuActivite.useMutation()
