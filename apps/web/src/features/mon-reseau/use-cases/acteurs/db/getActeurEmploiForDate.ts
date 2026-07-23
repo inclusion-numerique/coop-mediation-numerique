@@ -1,25 +1,93 @@
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
 
-const emploiStructureEmployeuseSelect = {
+// Sélection main pour l'affichage employeuse (ADR-002 étape 6) : nom via denomination, adresse via la
+// relation adresse main, référents via le jsonb `contact` (nom/prénom, téléphone, courriels).
+export const emploiStructureMainSelect = {
   id: true,
-  nom: true,
-  adresse: true,
-  commune: true,
-  codePostal: true,
-  codeInsee: true,
-  complementAdresse: true,
+  denominationSirene: true,
+  denominationAntenne: true,
   siret: true,
   rna: true,
-  nomReferent: true,
-  courrielReferent: true,
-  telephoneReferent: true,
-} satisfies Prisma.StructureAdministrativeSelect
+  contact: true,
+  adresse: {
+    select: {
+      nomVoie: true,
+      codePostal: true,
+      codeInsee: true,
+      nomCommune: true,
+    },
+  },
+} satisfies Prisma.StructureAdministrativeMainSelect
 
-export type EmploiStructureEmployeuse =
-  Prisma.StructureAdministrativeGetPayload<{
-    select: typeof emploiStructureEmployeuseSelect
-  }>
+// Forme normalisée exposée aux consommateurs. Inchangée pour eux, sauf : `id` désormais numérique
+// (main), et `complementAdresse` toujours `null` (main ne le porte pas — abandon, décision 6).
+export type EmploiStructureEmployeuse = {
+  id: number | null
+  nom: string
+  adresse: string
+  commune: string
+  codePostal: string
+  codeInsee: string | null
+  complementAdresse: string | null
+  siret: string | null
+  rna: string | null
+  nomReferent: string | null
+  courrielReferent: string | null
+  telephoneReferent: string | null
+}
+
+type MainContact = {
+  nom?: string
+  prenom?: string
+  telephone?: string
+  courriels?: Record<string, string>
+}
+
+const parseMainContact = (contact: Prisma.JsonValue | null): MainContact =>
+  contact && typeof contact === 'object' && !Array.isArray(contact)
+    ? (contact as MainContact)
+    : {}
+
+// Courriel référent : referent_hierarchique, sinon mail_gestionnaire, sinon le premier disponible.
+const referentCourriel = (contact: MainContact): string | null => {
+  const { courriels } = contact
+  if (!courriels) return null
+  return (
+    courriels.referent_hierarchique ??
+    courriels.mail_gestionnaire ??
+    Object.values(courriels)[0] ??
+    null
+  )
+}
+
+type StructureMainPayload = Prisma.StructureAdministrativeMainGetPayload<{
+  select: typeof emploiStructureMainSelect
+}>
+
+export const toEmploiStructureEmployeuse = (
+  structureMain: StructureMainPayload | null,
+): EmploiStructureEmployeuse => {
+  const contact = parseMainContact(structureMain?.contact ?? null)
+  return {
+    id: structureMain?.id ?? null,
+    nom:
+      structureMain?.denominationAntenne ??
+      structureMain?.denominationSirene ??
+      '',
+    adresse: structureMain?.adresse?.nomVoie ?? '',
+    commune: structureMain?.adresse?.nomCommune ?? '',
+    codePostal: structureMain?.adresse?.codePostal ?? '',
+    codeInsee: structureMain?.adresse?.codeInsee ?? null,
+    complementAdresse: null,
+    siret: structureMain?.siret ?? null,
+    rna: structureMain?.rna ?? null,
+    nomReferent:
+      [contact.nom, contact.prenom].filter(Boolean).join(' ') || null,
+    courrielReferent: referentCourriel(contact),
+    telephoneReferent: contact.telephone ?? null,
+  }
+}
 
 const emploiContractSelect = {
   id: true,
@@ -27,6 +95,9 @@ const emploiContractSelect = {
   debut: true,
   fin: true,
   creation: true,
+  // Ids bruts pour les écritures (dual-write coop->main, ADR-002 étape 6) : l'uuid coop et l'int main.
+  structureId: true,
+  structureMainId: true,
 } satisfies Prisma.EmployeStructureSelect
 
 export type EmploiContract = Prisma.EmployeStructureGetPayload<{
@@ -113,21 +184,28 @@ export const getActeurEmploiForDate = async <T extends boolean>({
   date: Date
   strictDateBounds: T
 }): Promise<T extends true ? ActeurEmploi | null : ActeurEmploi> => {
-  const emplois = await prismaClient.employeStructure.findMany({
+  const rawEmplois = await prismaClient.employeStructure.findMany({
     where: {
       userId,
       suppression: null,
     },
     select: {
       ...emploiContractSelect,
-      structure: {
-        select: emploiStructureEmployeuseSelect,
+      structureMain: {
+        select: emploiStructureMainSelect,
       },
     },
     orderBy: {
       creation: 'desc',
     },
   })
+
+  const emplois: ActeurEmploi[] = rawEmplois.map(
+    ({ structureMain, ...contract }) => ({
+      ...contract,
+      structure: toEmploiStructureEmployeuse(structureMain),
+    }),
+  )
 
   const emploisWithDebut = emplois
     .filter(hasDebutDate)

@@ -310,9 +310,14 @@ export const createOrUpdateActivite = async ({
     accompagnementsCount,
     duree: craDureeDataToMinutes(duree),
     typeLieu: data.typeLieu ?? undefined,
+    // Dual-write coop->main (ADR-002 étape 6) : on connecte la relation coop (uuid) ET, si elle
+    // existe, la relation main (int).
     structureEmployeuse: {
-      connect: { id: emploi.structure.id },
+      connect: { id: emploi.structureId },
     },
+    structureEmployeuseMain: emploi.structureMainId
+      ? { connect: { id: emploi.structureMainId } }
+      : undefined,
     niveau: 'niveau' in data ? data.niveau : undefined,
     materiel: 'materiel' in data ? data.materiel : undefined,
     titreAtelier: 'titreAtelier' in data ? data.titreAtelier : undefined,

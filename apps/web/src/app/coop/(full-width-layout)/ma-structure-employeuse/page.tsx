@@ -3,6 +3,10 @@ import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import ActeurStructureEmployeuse from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurStructureEmployeuse'
+import {
+  emploiStructureMainSelect,
+  toEmploiStructureEmployeuse,
+} from '@app/web/features/mon-reseau/use-cases/acteurs/db/getActeurEmploiForDate'
 import { prismaClient } from '@app/web/prismaClient'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
@@ -42,40 +46,28 @@ const MaStructureEmployeusePage = async () => {
       debut: true,
       fin: true,
       creation: true,
-      modification: true,
-      structure: {
-        select: {
-          id: true,
-          nom: true,
-          adresse: true,
-          commune: true,
-          codePostal: true,
-          codeInsee: true,
-          complementAdresse: true,
-          siret: true,
-          rna: true,
-          nomReferent: true,
-          courrielReferent: true,
-          telephoneReferent: true,
-        },
+      structureId: true,
+      structureMainId: true,
+      structureMain: {
+        select: emploiStructureMainSelect,
       },
     },
   })
 
-  const emploi = structuresEmployeuses.at(0)
-  const structureEmployeuse = emploi?.structure
-
-  const matchingLieuActivite =
-    structureEmployeuse && user.mediateur
-      ? await prismaClient.mediateurEnActivite.findFirst({
-          where: {
-            mediateurId: user.mediateur.id,
-            structureId: structureEmployeuse.id,
-            suppression: null,
-            fin: null,
-          },
-        })
-      : null
+  // Repointé vers main (ADR-002 étape 6) : structure normalisée via le mapper partagé.
+  const rawEmploi = structuresEmployeuses.at(0)
+  const emploi = rawEmploi
+    ? {
+        id: rawEmploi.id,
+        userId: rawEmploi.userId,
+        debut: rawEmploi.debut,
+        fin: rawEmploi.fin,
+        creation: rawEmploi.creation,
+        structureId: rawEmploi.structureId,
+        structureMainId: rawEmploi.structureMainId,
+        structure: toEmploiStructureEmployeuse(rawEmploi.structureMain),
+      }
+    : undefined
 
   return (
     <>
@@ -91,10 +83,12 @@ const MaStructureEmployeusePage = async () => {
             <h1 className="fr-page-title fr-m-0">Ma structure employeuse</h1>
           </div>
 
-          {structureEmployeuse ? (
+          {emploi ? (
             <ActeurStructureEmployeuse
               emploi={emploi}
-              showIsLieuActiviteNotice={matchingLieuActivite != null}
+              // La notice « employeuse = lieu d'activité » reposait sur l'égalité d'id employeuse/lieu,
+              // morte depuis l'étape 1 (clé de corrélation). Désactivée ici (ADR-002).
+              showIsLieuActiviteNotice={false}
               showReferentStructure={true}
               showReferentStructureConseillerNumeriqueSupportNotice={false}
               canUpdateStructure={user.isConseillerNumerique}
