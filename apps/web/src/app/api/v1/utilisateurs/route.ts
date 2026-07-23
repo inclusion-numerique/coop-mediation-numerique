@@ -74,7 +74,7 @@ import { type ZodError, z } from 'zod'
  *               example: 67890
  *             emplois:
  *               type: array
- *               description: liste des emplois (relation "EmployeStructure") avec uniquement l'id et l'id de la structure
+ *               description: liste des emplois (relation "EmployeStructure") avec uniquement l'id et l'id de la structure employeuse (main.structure_administrative)
  *               items:
  *                 type: object
  *                 properties:
@@ -82,8 +82,9 @@ import { type ZodError, z } from 'zod'
  *                     type: string
  *                     format: uuid
  *                   structure_id:
- *                     type: string
- *                     format: uuid
+ *                     type: integer
+ *                     nullable: true
+ *                     description: identifiant de la structure employeuse dans main.structure_administrative (entier)
  *                   debut:
  *                     type: string
  *                     format: date-time
@@ -326,7 +327,7 @@ export type UtilisateurAttributes = {
   dataspace_id: number | null
   emplois: Array<{
     id: string
-    structure_id: string
+    structure_id: number | null
     debut: string | null
     fin: string | null
     creation: string
@@ -623,7 +624,7 @@ export const GET = createApiV1Route
           dataspace_id: u.dataspaceId ?? null,
           emplois: u.emplois.map((emploi) => ({
             id: emploi.id,
-            structure_id: emploi.structureId,
+            structure_id: emploi.structureMainId,
             debut: emploi.debut?.toISOString() ?? null,
             fin: emploi.fin?.toISOString() ?? null,
             creation: emploi.creation.toISOString(),
