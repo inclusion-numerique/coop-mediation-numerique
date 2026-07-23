@@ -46,7 +46,9 @@ export const resolveAdresseMain = async (
       codePostal: ban.codePostal,
       codeInsee: ban.codeInsee,
       nomCommune: ban.commune,
-      codeBan: ban.id,
+      // `main.adresse.code_ban` est un `uuid` : on prend le `banId` (uuid), PAS `ban.id` (clé
+      // "codeInsee_voie_numero"), sinon le cast `::uuid` de l'INSERT échoue.
+      codeBan: feature.properties.banId ?? null,
       longitude: ban.longitude,
       latitude: ban.latitude,
       banScore,
@@ -67,15 +69,20 @@ export const resolveAdresseMain = async (
   }
 }
 
+// Réutilise une adresse existante : par `code_ban` (uuid unique) quand la BAN en a fourni un — sinon
+// l'INSERT violerait la contrainte d'unicité si l'adresse est déjà en base (données Dataspace) —,
+// sinon par la clé (code_postal, commune, voie).
 export const findAdresseMainId = (resolved: ResolvedAdresseMain) =>
   prismaClient.adresseMain.findFirst({
-    where: {
-      codePostal: resolved.codePostal,
-      nomCommune: resolved.nomCommune,
-      nomVoie: resolved.nomVoie,
-      numeroVoie: null,
-      repetition: null,
-    },
+    where: resolved.codeBan
+      ? { codeBan: resolved.codeBan }
+      : {
+          codePostal: resolved.codePostal,
+          nomCommune: resolved.nomCommune,
+          nomVoie: resolved.nomVoie,
+          numeroVoie: null,
+          repetition: null,
+        },
     select: { id: true },
   })
 

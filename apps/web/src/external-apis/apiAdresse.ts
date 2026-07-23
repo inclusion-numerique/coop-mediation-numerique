@@ -36,7 +36,8 @@ export type Properties = {
   label: string // Adresse complète
   score: number // Score de correspondance
   housenumber: string // Numéro de la maison
-  id: string // Identifiant unique
+  id: string // Identifiant BAN de l'adresse (clé "codeInsee_voie_numero", PAS un uuid)
+  banId?: string // Identifiant BAN pérenne au format uuid (destiné à main.adresse.code_ban)
   type: AdresseType // Type de la fonctionnalité (e.g., "housenumber")
   name: string // Nom de la rue avec le numéro de la maison
   postcode: string // Code postal
