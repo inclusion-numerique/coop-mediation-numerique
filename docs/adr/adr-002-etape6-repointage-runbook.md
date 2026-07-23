@@ -84,8 +84,14 @@ Tests d'écriture à aligner (ajouter `structureMainId`/`…MainId` aux `create`
 - **FAIT** `features/utilisateurs/use-cases/list/queryUtilisateursForList.ts` (`11a89af9`) — lit
   `structureMain` (denomination + `adresse.codeInsee`), réexpose `{ nom, codeInsee }` via mapper →
   data-table / export / `getDepartementCodeForActeur` inchangés.
-- **À FAIRE (inscription)** `features/inscription/getStructureEmployeuseForInscription.ts:19`,
-  `initializeInscription.ts:210-219,260,289-292`, `getInscriptionRecapitulatifPageData.ts:88`.
+- **FAIT (inscription)** `getStructureEmployeuseForInscription` (`2e7d18fd`) lit `structureMain`
+  (id int) → le flux « employeuse = lieu d'activité » matérialise le lieu depuis les données MAIN
+  (mutation `ajouterStructureEmployeuseEnLieuActivite`, input `structureEmployeuseId` int), avec
+  **corrélation anti-doublon main‖coop** (les lieux historiques ont été matérialisés depuis la coop).
+  `getInscriptionRecapitulatifPageData` hérite via la lecture partagée. `initializeInscription`
+  (`253261a5`) : sous-selects coop `structure` **morts retirés** (seule la présence d'emploi est
+  testée). Helpers main partagés extraits (`features/structures/main/mainContact.ts` +
+  `employeuseLieuData.ts`), réutilisés par `getActeurEmploiForDate`.
 - **DIFFÉRÉ (couplé route coop-uuid)** admin utilisateurs *détail* :
   `getAdministrationUserPageData.ts:114-116`, `…/[id]/emplois/page.tsx:162-164`,
   `AdministrationUserPage.tsx` (`getStructuresInfos`, partagé lieu/employeuse, lie vers
