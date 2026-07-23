@@ -17,4 +17,9 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends postgresql-17-postgis-3 \
  && rm -rf /var/lib/apt/lists/*
 
+# La suite d'intégration parallèle (jest workers x pool Prisma) ouvre beaucoup de connexions : on
+# aligne max_connections sur l'ancienne image CI (200) au lieu du défaut Postgres (100), sinon
+# "FATAL: sorry, too many clients already".
+RUN echo "max_connections = 200" >> /usr/share/postgresql/postgresql.conf.sample
+
 ENV POSTGRES_HOST_AUTH_METHOD=trust
