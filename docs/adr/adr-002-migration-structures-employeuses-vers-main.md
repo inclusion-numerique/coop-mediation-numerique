@@ -5,10 +5,55 @@
 | Date       | Auteur        | Action                                                        |
 |------------|---------------|---------------------------------------------------------------|
 | 2026-07-21 | Marc Gavanier | Rédaction initiale : inventaire, décisions et plan de bascule |
+| 2026-07-23 | Marc Gavanier | Révision : périmètre élargi après cadrage Entrepôt (#1707) — cf. `adr-002-reconciliation-dataspace.md` |
 
 ## Statut
 
 Proposé — travail de réconciliation des données terminé, bascule du code à faire.
+**Périmètre élargi le 2026-07-23** (voir la section Révision ci-dessous).
+
+## Révision 2026-07-23 — périmètre élargi (cadrage avec l'Entrepôt)
+
+Le cadrage avec l'équipe Entrepôt (issue `anct-cnum/suite-gestionnaire-numerique#1707`) a **élargi le
+périmètre** au-delà de la seule `structure_administrative`. Le détail des arbitrages, les mesures en
+base et le journal des décisions vivent dans **`adr-002-reconciliation-dataspace.md`** ; résumé ici.
+
+**Objectif reformulé.** La coop **ne fait plus autorité** sur les structures employeuses (sauf en
+créer de nouvelles à l'inscription). On **supprime** côté coop **`coop.structure_administrative` ET
+`coop.employes_structures`**, au profit de `main.structure_administrative` + `main.personne_affectations_emploi`.
+
+**Modèle cible.**
+
+```
+coop.user ──(FK main.personne.coop_id)──▶ main.personne
+                                              └─1:N─▶ main.personne_affectations_emploi ─FK─▶ main.structure_administrative
+                                                     (source='coop', est_active)              (dates via main.contrat, best-effort)
+```
+
+**Décisions actées (2026-07-23) :**
+1. **Lien user↔personne** : on **ne migre pas** `coop.user` vers `main.personne`. On réutilise la
+   colonne existante **`main.personne.coop_id`** comme FK vers `coop.user.id` (contrainte posée côté
+   Flyway/Entrepôt ; relation Prisma modélisée côté coop).
+2. **Création personne** : à l'inscription, la coop **crée/relie** `main.personne` dans la même
+   transaction que la SA + l'affectation. **Pivot = email** : si une personne existe déjà (autre flux :
+   idposte, CN Dataspace…) on pose juste `coop_id`, sinon on la crée.
+3. **Emplois** : `coop.employes_structures` disparaît. L'employeuse **courante** = `est_active` sur
+   `main.personne_affectations_emploi` ; les **dates** viennent de `main.contrat` en **best-effort**
+   (couvre les CN). On **abandonne** `debut_emploi`/`fin_emploi` coop (artefacts d'inscription à 83 %
+   pour les non-CN). Sémantique `est_active` maintenue par la coop → #1729.
+4. **FK** : toutes les FK coop → `main.structure_administrative` sont **`ON DELETE RESTRICT`** (et non
+   `SET NULL`) — conforme à la décision 1 ci-dessous et à l'attente de l'Entrepôt (fusion =
+   repointer-puis-supprimer).
+5. **Corrélation lieu↔SA** : **uniquement** `nom + adresse + codeInsee` (applicative). La table
+   `main.lieu_inclusion_structure_administrative` est considérée **legacy, non consommée** (divergence
+   assumée avec #1707).
+6. **Lieux hors périmètre** : `coop.lieu_inclusion` **inchangée** dans cette PR ; les lieux restent
+   gérés par la coop, MIN consommateur.
+7. **Fusion SA** : la fusion admin d'employeuses est **supprimée côté coop** (déjà fait, commit
+   `c1961964`) — la fusion des SA devient exclusive à MIN.
+
+Ces décisions **complètent/rectifient** les décisions numérotées ci-dessous (voir notamment la
+décision 4 « sans suppression », qui reste vraie mais s'applique désormais aussi à `employes_structures`).
 
 ## Contexte
 
@@ -54,6 +99,12 @@ est déjà accordé au rôle `coop-mediation-numerique` (vérifié en base, au m
 `INSERT`, `UPDATE`, `DELETE`).
 
 Conséquence assumée : une suppression de ligne côté Entrepôt sera bloquée par nos lignes.
+
+> **Précision (2026-07-23)** : cette intention se traduit par **`ON DELETE RESTRICT`** sur les FK
+> (pas `SET NULL`). Le `SET NULL` généré par défaut par Prisma pour une relation nullable est un
+> artefact à corriger dans le jeu de migrations final. `RESTRICT` est aussi ce qu'attend le moteur de
+> fusion de l'Entrepôt (repointer-puis-supprimer). NB : le rôle qui applique nos migrations est
+> **`sonum`** ; c'est à lui que les grants `main` doivent être accordés (à codifier côté Flyway).
 
 ### 2. Client Prisma unique multi-schéma
 
