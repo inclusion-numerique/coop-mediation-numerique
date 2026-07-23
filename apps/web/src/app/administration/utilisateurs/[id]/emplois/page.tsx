@@ -6,6 +6,10 @@ import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { getMediateurFromDataspaceApi } from '@app/web/external-apis/dataspace/dataspaceApiClient'
+import {
+  employeuseMainAdminSelect,
+  employeuseMainToAdminStructure,
+} from '@app/web/features/structures/main/employeuseLieuData'
 import { getUserLifecycleBadge } from '@app/web/features/utilisateurs/use-cases/list/getUserLifecycleBadge'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
@@ -17,7 +21,6 @@ import Accordion from '@codegouvfr/react-dsfr/Accordion'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import type { LieuInclusion } from '@prisma/client'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
@@ -38,19 +41,19 @@ const getStructuresInfos = ({
   nom,
   creation,
   suppression,
-}: Pick<
-  LieuInclusion,
-  | 'id'
-  | 'commune'
-  | 'adresse'
-  | 'codeInsee'
-  | 'codePostal'
-  | 'siret'
-  | 'rna'
-  | 'nom'
-  | 'creation'
-  | 'suppression'
->): LabelAndValue[] => [
+}: {
+  id: string
+  commune: string
+  adresse: string
+  codeInsee: string | null
+  codePostal: string
+  siret: string | null
+  rna: string | null
+  nom: string
+  // `creation` peut être nul pour une employeuse main (createdAt optionnel).
+  creation: Date | null
+  suppression: Date | null
+}): LabelAndValue[] => [
   {
     label: 'Nom',
     value: nom,
@@ -93,7 +96,7 @@ const getStructuresInfos = ({
   },
   {
     label: 'Créé le',
-    value: dateAsDay(creation),
+    value: creation ? dateAsDay(creation) : '-',
   },
   {
     label: 'Supprimée le',
@@ -161,7 +164,9 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
       mutations: true,
       emplois: {
         include: {
-          structure: true,
+          structureMain: {
+            select: employeuseMainAdminSelect,
+          },
         },
         orderBy: {
           creation: 'desc',
@@ -178,7 +183,16 @@ const Page = async (props: { params: Promise<{ id: string }> }) => {
 
   const name = getUserDisplayName(user)
 
-  const { emplois } = user
+  // Structure employeuse affichée depuis `main` (source de vérité, ADR-002 étape 6), réexposée sous
+  // `emploi.structure` (forme `getStructuresInfos`) ; `structureId` (uuid coop) reste porté par
+  // l'emploi pour le lien de route.
+  const emplois = user.emplois.map(({ structureMain, ...emploi }) => ({
+    ...emploi,
+    structure: employeuseMainToAdminStructure(
+      emploi.structureId,
+      structureMain,
+    ),
+  }))
   const nonDeletedEmplois = emplois.filter(
     (emploi) => emploi.suppression === null,
   )

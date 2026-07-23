@@ -3,6 +3,10 @@ import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { StructureCardStructure } from '@app/web/components/structure/StructureCard'
+import {
+  employeuseMainSelect,
+  employeuseMainToLieuData,
+} from '@app/web/features/structures/main/employeuseLieuData'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { prismaClient } from '@app/web/prismaClient'
@@ -44,7 +48,9 @@ const Page = async (props: {
       userId: user.id,
     },
     include: {
-      structure: true,
+      structureMain: {
+        select: employeuseMainSelect,
+      },
     },
   })
 
@@ -55,15 +61,20 @@ const Page = async (props: {
 
   const name = getUserDisplayName(user)
 
+  // Employeuse affichée depuis `main` (source de vérité, ADR-002 étape 6).
+  const employeuse = emploi.structureMain
+    ? employeuseMainToLieuData(emploi.structureMain)
+    : null
+
   const structure: StructureCardStructure = {
-    nom: emploi.structure.nom,
-    adresse: emploi.structure.adresse,
-    siret: emploi.structure.siret,
-    codePostal: emploi.structure.codePostal,
-    commune: emploi.structure.commune,
+    nom: employeuse?.nom ?? '',
+    adresse: employeuse?.adresse ?? '',
+    siret: employeuse?.siret ?? null,
+    codePostal: employeuse?.codePostal ?? '',
+    commune: employeuse?.commune ?? '',
     // L'identité employeuse (structure_administrative) ne porte pas de typologies (concept lieu)
     typologies: [],
-    rna: emploi.structure.rna,
+    rna: employeuse?.rna ?? null,
   }
 
   return (

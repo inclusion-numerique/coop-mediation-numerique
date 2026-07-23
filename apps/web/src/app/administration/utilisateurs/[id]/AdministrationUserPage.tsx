@@ -29,7 +29,6 @@ import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Tag from '@codegouvfr/react-dsfr/Tag'
-import type { LieuInclusion } from '@prisma/client'
 import Link from 'next/link'
 import UsurpUserButton from '../../usurpation/UsurpUserButton'
 import { type AdministrationUserPageData } from './getAdministrationUserPageData'
@@ -48,19 +47,19 @@ const getStructuresInfos = (
     nom,
     creation,
     suppression,
-  }: Pick<
-    LieuInclusion,
-    | 'id'
-    | 'commune'
-    | 'adresse'
-    | 'codeInsee'
-    | 'codePostal'
-    | 'siret'
-    | 'rna'
-    | 'nom'
-    | 'creation'
-    | 'suppression'
-  >,
+  }: {
+    id: string
+    commune: string
+    adresse: string
+    codeInsee: string | null
+    codePostal: string
+    siret: string | null
+    rna: string | null
+    nom: string
+    // `creation` peut être nul pour une employeuse main (createdAt optionnel) ; non-null pour un lieu.
+    creation: Date | null
+    suppression: Date | null
+  },
   // Une employeuse (emploi) et un lieu (activité) pointent des pages admin différentes.
   kind: 'lieu' | 'employeuse' = 'lieu',
 ): LabelAndValue[] => [
@@ -110,7 +109,7 @@ const getStructuresInfos = (
   },
   {
     label: 'Créé le',
-    value: dateAsDay(creation),
+    value: creation ? dateAsDay(creation) : '-',
   },
   {
     label: 'Structure supprimée le',

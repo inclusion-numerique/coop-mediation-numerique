@@ -60,3 +60,39 @@ export const employeuseMainToLieuData = (structure: EmployeuseMainPayload) => ({
   rna: structure.rna ?? null,
   ...referentFromMainContact(structure.contact),
 })
+
+// Sélection étendue pour l'affichage admin (page utilisateur) : + les timestamps rendus par
+// `getStructuresInfos` (« Créé le » / « Structure supprimée le »).
+export const employeuseMainAdminSelect = {
+  ...employeuseMainSelect,
+  createdAt: true,
+  deletedAt: true,
+} satisfies Prisma.StructureAdministrativeMainSelect
+
+export type EmployeuseMainAdminPayload =
+  Prisma.StructureAdministrativeMainGetPayload<{
+    select: typeof employeuseMainAdminSelect
+  }>
+
+// Employeuse main sous la forme attendue par `getStructuresInfos` des pages admin utilisateur.
+// L'`id` reste l'uuid COOP : le lien `/administration/structures-employeuses/[id]` lit encore la coop
+// pendant la transition (déplacer cette route vers l'int main relève de l'échange final). Les autres
+// champs viennent de main (source de vérité).
+export const employeuseMainToAdminStructure = (
+  structureCoopId: string,
+  structure: EmployeuseMainAdminPayload | null,
+) => {
+  const lieuData = structure ? employeuseMainToLieuData(structure) : null
+  return {
+    id: structureCoopId,
+    nom: lieuData?.nom ?? '',
+    adresse: lieuData?.adresse ?? '',
+    commune: lieuData?.commune ?? '',
+    codePostal: lieuData?.codePostal ?? '',
+    codeInsee: lieuData?.codeInsee ?? null,
+    siret: lieuData?.siret ?? null,
+    rna: lieuData?.rna ?? null,
+    creation: structure?.createdAt ?? null,
+    suppression: structure?.deletedAt ?? null,
+  }
+}

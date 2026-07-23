@@ -1,3 +1,7 @@
+import {
+  employeuseMainAdminSelect,
+  employeuseMainToAdminStructure,
+} from '@app/web/features/structures/main/employeuseLieuData'
 import { prismaClient } from '@app/web/prismaClient'
 
 export const getAdministrationUserPageData = async ({ id }: { id: string }) => {
@@ -113,7 +117,9 @@ export const getAdministrationUserPageData = async ({ id }: { id: string }) => {
       mutations: true,
       emplois: {
         include: {
-          structure: true,
+          structureMain: {
+            select: employeuseMainAdminSelect,
+          },
         },
         orderBy: {
           creation: 'desc',
@@ -125,7 +131,21 @@ export const getAdministrationUserPageData = async ({ id }: { id: string }) => {
   if (!user) {
     return null
   }
-  return { user }
+  // La structure employeuse affichée provient de `main` (source de vérité, ADR-002 étape 6),
+  // réexposée sous `emploi.structure` (forme `getStructuresInfos`) pour laisser les pages admin
+  // inchangées. `structureId` (uuid coop) reste porté par l'emploi pour le lien de route.
+  return {
+    user: {
+      ...user,
+      emplois: user.emplois.map(({ structureMain, ...emploi }) => ({
+        ...emploi,
+        structure: employeuseMainToAdminStructure(
+          emploi.structureId,
+          structureMain,
+        ),
+      })),
+    },
+  }
 }
 
 export type AdministrationUserPageData = NonNullable<
