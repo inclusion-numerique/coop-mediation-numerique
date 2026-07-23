@@ -177,6 +177,8 @@ model User {
   emploisCrees     EmployeStructure[] @relation(name: "emplois_crees")
   emploisModifies  EmployeStructure[] @relation(name: "emplois_modifies")
   emploisSupprimes EmployeStructure[] @relation(name: "emplois_supprimes")
+  // Rattachement à main.personne via personne.coop_id (ADR-002 périmètre élargi 2026-07-23).
+  personneMain     PersonneMain?
 
   usurpateur Session?    @relation(name: "usurper")
   rdvAccount RdvAccount?
@@ -939,10 +941,13 @@ model StructureAdministrativeMain {
   estGrandReseau         Boolean   @default(false) @map("est_grand_reseau")
   estHub                 Boolean   @default(false) @map("est_hub")
 
-  adresse   AdresseMain?       @relation(fields: [adresseId], references: [id])
+  adresse            AdresseMain?                    @relation(fields: [adresseId], references: [id])
   // Inverses des FK coop repointées vers main pendant la bascule (ADR-002 étape 6).
-  emplois   EmployeStructure[] @relation("employe_structure_main")
-  activites Activite[]         @relation("activite_structure_employeuse_main")
+  emplois            EmployeStructure[]              @relation("employe_structure_main")
+  activites          Activite[]                      @relation("activite_structure_employeuse_main")
+  // Cible du périmètre élargi (ADR-002 révision 2026-07-23) : affectations emploi + contrats main.
+  affectationsEmploi PersonneAffectationEmploiMain[]
+  contrats           ContratMain[]
 
   @@unique([siret, denominationAntenne], map: "structure_administrative_siret_antenne_ukey")
   @@map("structure_administrative")
@@ -972,6 +977,70 @@ model AdresseMain {
   structuresAdministratives StructureAdministrativeMain[]
 
   @@map("adresse")
+  @@schema("main")
+}
+
+/// Personne côté Entrepôt (`main.personne`, possédée par le Dataspace/Flyway). La coop s'y rattache
+/// par `coopId` (= `coop.user.id`, colonne `coop_id` déjà maintenue par l'Entrepôt) pour retrouver les
+/// affectations emploi -> structures employeuses (ADR-002, périmètre élargi 2026-07-23). On NE modélise
+/// qu'un sous-ensemble des colonnes réelles (celui dont la coop a besoin) ; la table complète est gérée
+/// par Flyway. La contrainte FK `coop_id -> coop.user` est posée côté Flyway sur la base partagée.
+model PersonneMain {
+  id             Int       @id @default(autoincrement())
+  prenom         String?   @db.VarChar(50)
+  nom            String?   @db.VarChar(50)
+  contact        Json?
+  coopId         String?   @unique(map: "personne_coop_id_ukey") @map("coop_id") @db.Uuid
+  isCoordinateur Boolean?  @map("is_coordinateur")
+  isMediateur    Boolean?  @map("is_mediateur")
+  createdAt      DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt      DateTime? @map("updated_at") @db.Timestamp(6)
+  deletedAt      DateTime? @map("deleted_at") @db.Timestamp(6)
+
+  user               User?                           @relation(fields: [coopId], references: [id])
+  affectationsEmploi PersonneAffectationEmploiMain[]
+  contrats           ContratMain[]
+
+  @@map("personne")
+  @@schema("main")
+}
+
+/// Affectation emploi (`main.personne_affectations_emploi`, Flyway) : lie une personne à une structure
+/// employeuse, par source. `estActive` = employeuse courante — remplace `coop.employes_structures`
+/// (ADR-002 périmètre élargi). Les dates d'emploi ne vivent PAS ici mais dans `ContratMain` (best-effort).
+model PersonneAffectationEmploiMain {
+  id                        Int       @id @default(autoincrement())
+  personneId                Int       @map("personne_id")
+  structureAdministrativeId Int       @map("structure_administrative_id")
+  source                    String    @db.VarChar
+  estActive                 Boolean   @default(true) @map("est_active")
+  createdAt                 DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt                 DateTime? @map("updated_at") @db.Timestamp(6)
+
+  personne                PersonneMain                @relation(fields: [personneId], references: [id])
+  structureAdministrative StructureAdministrativeMain @relation(fields: [structureAdministrativeId], references: [id])
+
+  @@map("personne_affectations_emploi")
+  @@schema("main")
+}
+
+/// Contrat (`main.contrat`, Flyway) : porte les dates d'emploi (`dateDebut`/`dateFin`), source
+/// best-effort des dates pour la coop (ADR-002 Point 2). Lié à une personne et à une structure.
+model ContratMain {
+  id          Int       @id @default(autoincrement())
+  personneId  Int       @map("personne_id")
+  dateDebut   DateTime? @map("date_debut") @db.Date
+  dateFin     DateTime? @map("date_fin") @db.Date
+  dateRupture DateTime? @map("date_rupture") @db.Date
+  type        String?   @db.VarChar(3)
+  structureId Int?      @map("structure_id")
+  createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt   DateTime? @map("updated_at") @db.Timestamp(6)
+
+  personne                PersonneMain                 @relation(fields: [personneId], references: [id])
+  structureAdministrative StructureAdministrativeMain? @relation(fields: [structureId], references: [id])
+
+  @@map("contrat")
   @@schema("main")
 }
 
