@@ -92,10 +92,12 @@ Tests d'écriture à aligner (ajouter `structureMainId`/`…MainId` aux `create`
   (`253261a5`) : sous-selects coop `structure` **morts retirés** (seule la présence d'emploi est
   testée). Helpers main partagés extraits (`features/structures/main/mainContact.ts` +
   `employeuseLieuData.ts`), réutilisés par `getActeurEmploiForDate`.
-- **DIFFÉRÉ (couplé route coop-uuid)** admin utilisateurs *détail* :
-  `getAdministrationUserPageData.ts:114-116`, `…/[id]/emplois/page.tsx:162-164`,
-  `AdministrationUserPage.tsx` (`getStructuresInfos`, partagé lieu/employeuse, lie vers
-  `/administration/structures-employeuses/${uuid}`). À déplacer atomiquement avec la route au socle.
+- **FAIT** admin utilisateurs *détail* (`d81f5caf`) : `getAdministrationUserPageData`,
+  `…/[id]/emplois/page.tsx`, `…/[id]/emplois/[emploiId]/modifier/page.tsx` sélectionnent
+  `structureMain` et réexposent `emploi.structure` via l'adaptateur `employeuseMainToAdminStructure`
+  (forme `getStructuresInfos`). **L'id du lien reste l'uuid COOP** : la route
+  `/administration/structures-employeuses/[id]` lit encore coop — son déplacement vers l'int main
+  relève de l'échange final (socle). Les deux `getStructuresInfos` acceptent `creation: Date | null`.
 - **DIFFÉRÉ (neutre)** `filterUtilisateur.ts:173-186` (where filtre), `getMergeData.ts:99-113`
   (compare des `structureEmployeusesIds`), `mergeUser.ts:69-76` (feed A).
 - **FAIT** `app/api/v1/utilisateurs/route.ts` (`2b9dcdce`) : `emplois[].structure_id` expose désormais
