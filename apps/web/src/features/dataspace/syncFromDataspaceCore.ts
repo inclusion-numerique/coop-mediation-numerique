@@ -438,6 +438,27 @@ export const syncStructuresEmployeusesFromDataspace = async ({
     // Track which emploi IDs should remain active after sync
     const emploiIdsToKeep: string[] = []
 
+    // Id main de chaque structure (via structure_coop_id) pour dual-writer `structureMainId` sur les
+    // emplois créés/déplacés (ADR-002 étape 6). Couverture main à 100% -> tout structureId a un main.
+    const structureCoopIds = [
+      ...new Set(
+        [
+          ...preparedContracts.map(({ structureId }) => structureId),
+          temporaryContractStructureId,
+        ].filter((id): id is string => id !== null),
+      ),
+    ]
+    const mainIdByCoopId = new Map(
+      (
+        await transaction.structureAdministrativeMain.findMany({
+          where: { structureCoopId: { in: structureCoopIds } },
+          select: { id: true, structureCoopId: true },
+        })
+      ).flatMap(({ id, structureCoopId }) =>
+        structureCoopId ? [[structureCoopId, id] as const] : [],
+      ),
+    )
+
     // Process each contract from Dataspace
     for (const { structureId, contract } of preparedContracts) {
       const creationDate = new Date(contract.date_debut)
@@ -470,6 +491,7 @@ export const syncStructuresEmployeusesFromDataspace = async ({
           data: {
             userId,
             structureId,
+            structureMainId: mainIdByCoopId.get(structureId) ?? null,
             debut: creationDate,
             fin: endDate,
             suppression: null,
@@ -498,6 +520,8 @@ export const syncStructuresEmployeusesFromDataspace = async ({
             where: { id: temporaryEmploiToKeep.id },
             data: {
               structureId: temporaryContractStructureId,
+              structureMainId:
+                mainIdByCoopId.get(temporaryContractStructureId) ?? null,
               fin: null,
               suppression: null,
             },
@@ -508,6 +532,8 @@ export const syncStructuresEmployeusesFromDataspace = async ({
           data: {
             userId,
             structureId: temporaryContractStructureId,
+            structureMainId:
+              mainIdByCoopId.get(temporaryContractStructureId) ?? null,
             debut: null,
             fin: null,
             suppression: null,
