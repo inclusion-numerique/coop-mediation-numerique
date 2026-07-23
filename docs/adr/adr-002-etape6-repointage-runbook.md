@@ -34,28 +34,31 @@ restauration iso-prod avant la prod.
 Toutes ADDITIVES. La valeur `mainId` vient du contrat `findOrCreate`/`getOrCreate` (`{ id, mainId }`)
 ou d'une lecture qui doit exposer l'id main (voir B).
 
-- `features/dataspace/syncFromDataspaceCore.ts` — le plus complexe : propager `mainId` dans le type
-  `PreparedContract` (`:53,:59,:257`), depuis `findOrCreate` (`:296`) et
-  `resolveStructureIdFromDataspace`/`getOrCreateStructureFromDataspace` ; ajouter `structureMainId`
-  aux `create` (`:472,:510`) et `update` (`:458,:497,:500`). La clé de dédup `getEmploiKey`
-  (`:321,:428,:445`) reste sur l'uuid pendant la transition (fiable). Test :
-  `syncFromDataspaceCore.integration.ts` (create `:100,132,159,195`).
-- `features/structures/use-cases/merge/mutations/mergeStructureAdministrative.ts:20-50` — repointage
-  FK à la fusion : `employeStructure` (findMany/updateMany/deleteMany `structureId`) et
-  `activite.updateMany structureEmployeuseId` → ajouter/basculer `structureMainId` /
-  `structureEmployeuseMainId`. Les ids source/target de fusion doivent être des ids **main**.
-- `features/structures/use-cases/merge/mutations/mergeLieuInclusion.ts:18-40,72-75` — idem (exclure
-  `mergeMediateursEnActivite:55-66` et `mergeActivitesLieu:81-84` = lieu, faux amis).
-- `features/utilisateurs/use-cases/merge/mergeUser.ts:415-423` — `employeStructure.updateMany` sur
-  `structureId` → `structureMainId` (source des ids : `emplois.structure` lu `:69-76`, voir B).
-- `jobs/update-structures-cartographie-nationale/updateStructuresFromEntrepot.ts:165-180` —
-  `employeStructure.updateMany structureId` + `activite.updateMany structureEmployeuseId` →
-  colonnes main (exclure `:169-176` = lieu). SQL brut `:249-262` (`PARTITION BY … structure_id`) →
-  `structure_main_id`.
-- `features/activites/use-cases/cra/db/createOrUpdateActivite.ts:313-315` —
-  `structureEmployeuse: { connect: { id: emploi.structure.id } }` →
-  `structureEmployeuseMain: { connect: { id: emploi.structureMain.id } }` (dépend de
-  `getActeurEmploiForDate` exposant l'id main, voir B).
+**Audit dual-write (23/07) : couverture COMPLÈTE.** Tout chemin d'écriture *vivant* qui pose la FK
+employeuse coop pose aussi la FK main → l'échange `NOT NULL` est sûr. Les sites ci-dessous sont soit
+FAITS, soit *morts* (repoints d'employeuse opérant sur des ids de LIEU, disjoints depuis le split
+étape 1 → matchent 0 ligne) et à **supprimer** (pas repointer) à l'échange car ils écrivent dans les
+colonnes uuid qui tombent.
+
+- **FAIT** `features/dataspace/syncFromDataspaceCore.ts` (`65c7c88a`) : dual-write `structureMainId`
+  sur les emplois créés/déplacés (dérivation coopId→mainId via `structure_coop_id`, une Map). La clé
+  de dédup `getEmploiKey` reste sur l'uuid pendant la transition (fiable). NB : le create
+  `mediateurEnActivite` (`:713`) est une relation de LIEU, pas employeuse.
+- **FAIT** `mergeStructureAdministrative.ts` (`b8878df9`) : dual-write `structureMainId` /
+  `structureEmployeuseMainId` à la fusion (cible dérivée via `structure_coop_id`).
+- **FAIT** `createOrUpdateActivite.ts:315-320` (`18dd28bb`) : connecte la relation coop (uuid) ET
+  `structureEmployeuseMain` (int) si `emploi.structureMainId`.
+- **MORT → supprimer à l'échange** `mergeLieuInclusion.ts` `mergeEmployes:15-40` +
+  `mergeActivitesEmployeur:69-76` : repointent `employeStructure.structureId` /
+  `activite.structureEmployeuseId` avec des ids de LIEU → 0 ligne. (`mergeMediateursEnActivite` /
+  `mergeActivitesLieu` = lieu, corrects, hors périmètre.)
+- **MORT → supprimer à l'échange** `updateStructuresFromEntrepot.ts:165-168,177-180` :
+  `employeStructure.updateMany structureId` + `activite.updateMany structureEmployeuseId` avec des
+  `idsToDelete` = ids de LIEU → 0 ligne. (`:169-176` = lieu ; SQL brut `:249-262`
+  `PARTITION BY … structure_id` = à repointer, voir C.)
+- **NEUTRE → à l'échange** `mergeUser.ts:415-423` : `employeStructure.updateMany` réassigne
+  `userId` (le `structureId` n'est qu'un **filtre** where, pas une écriture) ; le filtre passe
+  uuid→int quand `emplois.structure` (lu `:69-76`, voir B) bascule sur main.
 
 Tests d'écriture à aligner (ajouter `structureMainId`/`…MainId` aux `create`) :
 `getActeurEmploiForDate.integration.ts`, `updateUserFromDataspaceData.integration.ts`,
@@ -67,24 +70,31 @@ Tests d'écriture à aligner (ajouter `structureMainId`/`…MainId` aux `create`
 
 **`employeStructure.structure` → `structureMain`** (select/include/where) :
 
-- `auth/getSessionUserFromSessionToken.ts:37` + type `auth/sessionUser.ts:37-38,89-98` — **transverse**
-  (`sessionUser.emplois[].structure`). Repointer d'abord ici cascade `tsc` sur tous les consommateurs :
-  `HeaderUserMenu.tsx:61,217`, `VerifierInformationsPage.tsx:42`, `RecapitulatifPage.tsx`,
-  `mes-outils/_components/CartographieNationaleOutilAccess.tsx:53`, `test/testSessionUser.ts:21`.
-- `features/inscription/getStructureEmployeuseForInscription.ts:19`,
+- **FAIT** `auth/getSessionUserFromSessionToken.ts` + `auth/serializePrismaSessionUser.ts` (`98abbf46`) —
+  **transverse** : lit `structureMain`, réexpose la forme `structure: { nom, codeInsee }` via le
+  sérialiseur → consommateurs (`HeaderUserMenu`, `VerifierInformationsPage`, `RecapitulatifPage`,
+  `CartographieNationaleOutilAccess`) inchangés.
+- **FAIT** `features/mon-reseau/use-cases/acteurs/db/getActeurEmploiForDate.ts` (`18dd28bb`) — lit
+  `structureMain` + adresse + référents via `contact` jsonb ; forme normalisée `EmploiStructureEmployeuse`
+  (`id: number|null`) préservée. Ses consommateurs (`getActeurDetailPageData`,
+  `getDepartementCodeForActeur`, `ActeurStructureEmployeuse`) consomment cette forme → OK sans changement.
+- **FAIT** `app/coop/(full-width-layout)/ma-structure-employeuse/page.tsx` (`18dd28bb`).
+- **FAIT** `features/utilisateurs/use-cases/list/queryUtilisateursForList.ts` (`11a89af9`) — lit
+  `structureMain` (denomination + `adresse.codeInsee`), réexpose `{ nom, codeInsee }` via mapper →
+  data-table / export / `getDepartementCodeForActeur` inchangés.
+- **À FAIRE (inscription)** `features/inscription/getStructureEmployeuseForInscription.ts:19`,
   `initializeInscription.ts:210-219,260,289-292`, `getInscriptionRecapitulatifPageData.ts:88`.
-- `features/mon-reseau/use-cases/acteurs/db/getActeurEmploiForDate.ts:123-125` + types
-  `ActeurEmploi`/`EmploiStructureEmployeuse` (`:19-37`) — alimente `createOrUpdateActivite` (A) et
-  `getActeurDetailPageData.ts:144-175`, `getDepartementCodeForActeur.ts:7,13`,
-  `ActeurStructureEmployeuse.tsx:9-20`.
-- `features/utilisateurs/use-cases/filter/filterUtilisateur.ts:173-186`,
-  `queryUtilisateursForList.ts:49-54`.
-- `app/administration/utilisateurs/[id]/getAdministrationUserPageData.ts:114-116`,
-  `…/[id]/emplois/page.tsx:162-164`, `…/[id]/merge/[mergeId]/getMergeData.ts:99-113`.
-- `app/api/v1/utilisateurs/route.ts:535-539,626` (exclure `:642` `ma.structureId` = lieu).
-- `app/coop/(full-width-layout)/ma-structure-employeuse/page.tsx:46,66,73`.
-- `jobs/update-lieu-activite-a-distance/executeUpdateLieuxActivitesADistance.ts:18-21,34-35`.
-- `features/utilisateurs/use-cases/merge/mergeUser.ts:69-76` (feed A).
+- **DIFFÉRÉ (couplé route coop-uuid)** admin utilisateurs *détail* :
+  `getAdministrationUserPageData.ts:114-116`, `…/[id]/emplois/page.tsx:162-164`,
+  `AdministrationUserPage.tsx` (`getStructuresInfos`, partagé lieu/employeuse, lie vers
+  `/administration/structures-employeuses/${uuid}`). À déplacer atomiquement avec la route au socle.
+- **DIFFÉRÉ (neutre)** `filterUtilisateur.ts:173-186` (where filtre), `getMergeData.ts:99-113`
+  (compare des `structureEmployeusesIds`), `mergeUser.ts:69-76` (feed A).
+- **DIFFÉRÉ (contrat API publique)** `app/api/v1/utilisateurs/route.ts:626` `structure_id: emploi.structureId`
+  — exposer l'uuid coop ou l'int main est un **changement de contrat** → décision Marc (exclure `:642`
+  `ma.structureId` = lieu).
+- **DIFFÉRÉ (job, lecture d'adresse employeuse)**
+  `jobs/update-lieu-activite-a-distance/executeUpdateLieuxActivitesADistance.ts:34-35`.
 
 **Inverses `structureAdministrative.emplois`/`.activites` (coop) → modèle `main`** :
 

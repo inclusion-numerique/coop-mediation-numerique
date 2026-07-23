@@ -112,6 +112,18 @@ ce périmètre (seul `features/beneficiaire/abilities/` existe, et il ne touche 
 
 ### 6. Abandon des champs référent
 
+> **Révision (23/07/2026) — décision partiellement renversée.** Le postulat « affichés nulle part »
+> était **faux** : `ActeurStructureEmployeuse.tsx` (mon-réseau) affiche nom / courriel / téléphone du
+> référent, et `showReferentStructure` est actif. Décision effective : les référents ne sont **pas**
+> abandonnés, ils sont **lus depuis `main.structure_administrative.contact`** (jsonb :
+> `{ nom, prenom, telephone, courriels: { referent_hierarchique, mail_gestionnaire, … } }`, renseigné
+> par les producteurs Dataspace). Le mapping est implémenté dans `getActeurEmploiForDate.ts`
+> (`toEmploiStructureEmployeuse` : `nomReferent = nom+prenom`, `telephoneReferent = contact.telephone`,
+> `courrielReferent = referent_hierarchique ?? mail_gestionnaire ?? premier`). **Seul
+> `complement_adresse` est réellement abandonné** (absent de `main`, `complementAdresse: null`).
+> Le reste de cette section (satellite écarté, non-écriture dans `main.contact`) reste valable :
+> on **lit** `contact` sans y **écrire**.
+
 `coop.structure_administrative` porte quatre champs sans équivalent dans `main` :
 `nom_referent` (2 880 lignes), `courriel_referent` (2 907), `telephone_referent` (2 897),
 `complement_adresse` (71).
@@ -292,6 +304,7 @@ qu'il reste de la marge :
 - Couplage au schéma de l'Entrepôt : une modification de leur côté peut casser notre client Prisma.
   Mitigé par la garde CI, pas éliminé.
 - Nos lignes bloquent leurs suppressions.
-- Perte des champs référent (assumée, décision 6).
+- Perte du seul `complement_adresse` (décision 6 révisée : les référents sont lus depuis
+  `main.structure_administrative.contact`, pas abandonnés).
 - Une migration de 4 M de lignes à exécuter en production, dont le coût reste à mesurer.
 - Environ 100 fichiers modifiés dans une seule PR, dont la relecture sera lourde.
