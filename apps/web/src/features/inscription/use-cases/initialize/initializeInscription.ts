@@ -207,15 +207,11 @@ export const initializeInscription = async ({
       where: { id: userId },
       select: {
         siret: true,
+        // Seule la présence d'un emploi est testée (sessionUserHasStructureEmployeuse) : pas de
+        // lecture de la structure, donc pas de dépendance à la relation coop (ADR-002 étape 6).
         emplois: {
           select: {
             id: true,
-            structure: {
-              select: {
-                nom: true,
-                codeInsee: true,
-              },
-            },
           },
           where: { suppression: null },
         },
@@ -289,15 +285,10 @@ export const initializeInscription = async ({
     where: { id: userId },
     select: {
       siret: true,
+      // Idem : test de présence seul, aucune lecture de la structure (ADR-002 étape 6).
       emplois: {
         select: {
           id: true,
-          structure: {
-            select: {
-              nom: true,
-              codeInsee: true,
-            },
-          },
         },
         where: {
           suppression: null,
