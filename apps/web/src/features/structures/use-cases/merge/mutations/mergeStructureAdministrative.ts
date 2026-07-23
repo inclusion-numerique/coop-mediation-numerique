@@ -15,7 +15,11 @@ type PrismaTransaction = Omit<
 
 const mergeEmplois =
   (prisma: PrismaTransaction) =>
-  async (sourceStructureId: string, targetStructureId: string) => {
+  async (
+    sourceStructureId: string,
+    targetStructureId: string,
+    targetStructureMainId: number | null,
+  ) => {
     // Emplois déjà présents (et vivants) sur la cible : on ne duplique pas un même user.
     const targetEmplois = await prisma.employeStructure.findMany({
       where: {
@@ -33,7 +37,11 @@ const mergeEmplois =
         suppression: null,
         userId: { notIn: targetUserIds },
       },
-      data: { structureId: targetStructureId },
+      // Dual-write coop->main (ADR-002 étape 6) : on repointe les deux FK vers la cible.
+      data: {
+        structureId: targetStructureId,
+        structureMainId: targetStructureMainId,
+      },
     })
 
     await prisma.employeStructure.deleteMany({
@@ -43,10 +51,18 @@ const mergeEmplois =
 
 const mergeActivitesEmployeur =
   (prisma: PrismaTransaction) =>
-  async (sourceStructureId: string, targetStructureId: string) => {
+  async (
+    sourceStructureId: string,
+    targetStructureId: string,
+    targetStructureMainId: number | null,
+  ) => {
     await prisma.activite.updateMany({
       where: { structureEmployeuseId: sourceStructureId },
-      data: { structureEmployeuseId: targetStructureId },
+      // Dual-write coop->main (ADR-002 étape 6).
+      data: {
+        structureEmployeuseId: targetStructureId,
+        structureEmployeuseMainId: targetStructureMainId,
+      },
     })
   }
 
@@ -107,10 +123,23 @@ export const mergeStructureAdministrative = async (
         )
       }
 
-      await mergeEmplois(prisma)(sourceStructureId, targetStructureId)
+      // Id main de la cible (via structure_coop_id) pour repointer aussi les FK main (dual-write).
+      const targetStructureMain =
+        await prisma.structureAdministrativeMain.findUnique({
+          where: { structureCoopId: targetStructureId },
+          select: { id: true },
+        })
+      const targetStructureMainId = targetStructureMain?.id ?? null
+
+      await mergeEmplois(prisma)(
+        sourceStructureId,
+        targetStructureId,
+        targetStructureMainId,
+      )
       await mergeActivitesEmployeur(prisma)(
         sourceStructureId,
         targetStructureId,
+        targetStructureMainId,
       )
       await completeTargetIdentity(prisma)(sourceStructureId, targetStructureId)
       await deleteStructureAdministrative(prisma)(sourceStructureId)
