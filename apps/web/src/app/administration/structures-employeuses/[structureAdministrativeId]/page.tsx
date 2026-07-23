@@ -103,18 +103,6 @@ const Page = async (props: {
           ]}
           currentPage={toTitleCase(structure.nom, { noUpper: true })}
         />
-        <div>
-          <Button
-            iconId="fr-icon-git-merge-line"
-            priority="tertiary"
-            size="small"
-            linkProps={{
-              href: `/administration/structures-employeuses/${structure.id}/merge`,
-            }}
-          >
-            Fusionner avec une autre structure employeuse
-          </Button>
-        </div>
       </div>
 
       <main id={contentId}>
