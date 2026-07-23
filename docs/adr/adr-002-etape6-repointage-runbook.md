@@ -44,8 +44,10 @@ colonnes uuid qui tombent.
   sur les emplois créés/déplacés (dérivation coopId→mainId via `structure_coop_id`, une Map). La clé
   de dédup `getEmploiKey` reste sur l'uuid pendant la transition (fiable). NB : le create
   `mediateurEnActivite` (`:713`) est une relation de LIEU, pas employeuse.
-- **FAIT** `mergeStructureAdministrative.ts` (`b8878df9`) : dual-write `structureMainId` /
-  `structureEmployeuseMainId` à la fusion (cible dérivée via `structure_coop_id`).
+- **SUPPRIMÉ** `mergeStructureAdministrative.ts` (`c1961964`) : la fonctionnalité admin de fusion
+  d'employeuses a été retirée (mutation + query + composants + routes + procédure tRPC
+  `structures.mergeAdministrative`). Un site de dual-write en moins à traiter à l'échange. La fusion
+  de LIEUX (`mergeLieuInclusion`) est conservée.
 - **FAIT** `createOrUpdateActivite.ts:315-320` (`18dd28bb`) : connecte la relation coop (uuid) ET
   `structureEmployeuseMain` (int) si `emploi.structureMainId`.
 - **MORT → supprimer à l'échange** `mergeLieuInclusion.ts` `mergeEmployes:15-40` +
@@ -90,9 +92,10 @@ Tests d'écriture à aligner (ajouter `structureMainId`/`…MainId` aux `create`
   `/administration/structures-employeuses/${uuid}`). À déplacer atomiquement avec la route au socle.
 - **DIFFÉRÉ (neutre)** `filterUtilisateur.ts:173-186` (where filtre), `getMergeData.ts:99-113`
   (compare des `structureEmployeusesIds`), `mergeUser.ts:69-76` (feed A).
-- **DIFFÉRÉ (contrat API publique)** `app/api/v1/utilisateurs/route.ts:626` `structure_id: emploi.structureId`
-  — exposer l'uuid coop ou l'int main est un **changement de contrat** → décision Marc (exclure `:642`
-  `ma.structureId` = lieu).
+- **FAIT** `app/api/v1/utilisateurs/route.ts` (`2b9dcdce`) : `emplois[].structure_id` expose désormais
+  l'**int main** (`emploi.structureMainId`), type `integer` nullable, doc OpenAPI à jour (décision Marc :
+  bascule du contrat). Le `structure_id` des liens médiateur-lieu (`en_activite`, `:642`) reste un uuid
+  de LIEU, inchangé.
 - **DIFFÉRÉ (job, lecture d'adresse employeuse)**
   `jobs/update-lieu-activite-a-distance/executeUpdateLieuxActivitesADistance.ts:34-35`.
 
