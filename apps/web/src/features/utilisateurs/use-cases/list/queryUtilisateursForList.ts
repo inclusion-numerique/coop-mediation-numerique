@@ -46,20 +46,43 @@ export const searchUtilisateurSelect = {
       },
     },
   },
+  // Structure employeuse lue depuis `main` (source de vérité, ADR-002 étape 6) : nom via la
+  // denomination, code INSEE via la relation adresse. Réexposée en `{ nom, codeInsee }` par le
+  // mapper ci-dessous pour laisser les consommateurs (data-table, export, dérivation département)
+  // inchangés.
   emplois: {
     where: { suppression: null },
     orderBy: { creation: 'desc' },
     take: 1,
     select: {
-      structure: {
+      structureMain: {
         select: {
-          nom: true,
-          codeInsee: true,
+          denominationSirene: true,
+          denominationAntenne: true,
+          adresse: { select: { codeInsee: true } },
         },
       },
     },
   },
 } satisfies Prisma.UserSelect
+
+type UtilisateurForListRow = Prisma.UserGetPayload<{
+  select: typeof searchUtilisateurSelect
+}>
+
+// Nom employeuse : denomination_antenne sinon denomination_sirene (même règle que le sérialiseur
+// sessionUser et getActeurEmploiForDate).
+const toEmploiStructure = (
+  emploi: UtilisateurForListRow['emplois'][number],
+): { structure: { nom: string | null; codeInsee: string | null } } => ({
+  structure: {
+    nom:
+      emploi.structureMain?.denominationAntenne ??
+      emploi.structureMain?.denominationSirene ??
+      null,
+    codeInsee: emploi.structureMain?.adresse?.codeInsee ?? null,
+  },
+})
 
 export const queryUtilisateursForList = async ({
   skip,
@@ -71,14 +94,20 @@ export const queryUtilisateursForList = async ({
   take?: number
   skip?: number
   orderBy?: Prisma.UserOrderByWithRelationInput[]
-}) =>
-  prismaClient.user.findMany({
+}) => {
+  const utilisateurs = await prismaClient.user.findMany({
     where,
     take,
     skip,
     select: searchUtilisateurSelect,
     orderBy: [...(orderBy ?? []), { lastName: 'asc' }],
   })
+
+  return utilisateurs.map(({ emplois, ...utilisateur }) => ({
+    ...utilisateur,
+    emplois: emplois.map(toEmploiStructure),
+  }))
+}
 
 export type UtilisateurForList = Awaited<
   ReturnType<typeof queryUtilisateursForList>
