@@ -22,7 +22,10 @@ executors:
           TZ: 'UTC'
           CI_PG_ADMIN_URL: postgresql://postgres@localhost
           CI_DATABASE_URL: postgresql://postgres@localhost/test?options=-c%20search_path%3Dcoop,public
-      - image: huguesm/circleci-postgres:14.13-vector
+      - image: rg.fr-par.scw.cloud/coop-mediation-numerique-ci/circleci-postgres:pg17-vector-postgis
+        auth:
+          username: nologin
+          password: $CI_SCW_SECRET_KEY
         environment:
           POSTGRES_USER: postgres
   node-browsers:
@@ -42,7 +45,10 @@ executors:
         environment:
           MAILDEV_INCOMING_USER: mailuser
           MAILDEV_INCOMING_PASS: mailpassword
-      - image: huguesm/circleci-postgres:14.13-vector
+      - image: rg.fr-par.scw.cloud/coop-mediation-numerique-ci/circleci-postgres:pg17-vector-postgis
+        auth:
+          username: nologin
+          password: $CI_SCW_SECRET_KEY
         environment:
           POSTGRES_USER: postgres
 
