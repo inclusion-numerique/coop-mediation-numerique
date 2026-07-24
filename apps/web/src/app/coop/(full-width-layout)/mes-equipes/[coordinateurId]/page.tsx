@@ -1,9 +1,12 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
-import { sessionUserSelect } from '@app/web/auth/getSessionUserFromSessionToken'
 import MonEquipeListePage from '@app/web/equipe/EquipeListePage/EquipeListePage'
 import { getEquipePageData } from '@app/web/equipe/EquipeListePage/getEquipePageData'
 import type { EquipeSearchParams } from '@app/web/equipe/EquipeListePage/searchMediateursCoordonneBy'
 import { getDepartementCodeForActeur } from '@app/web/features/mon-reseau/getDepartementCodeForActeur'
+import {
+  personneEmployeuseSelect,
+  personneToSessionEmplois,
+} from '@app/web/features/structures/main/affectationEmploiMain'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
@@ -31,7 +34,7 @@ const Page = async (props: {
           name: true,
           email: true,
           phone: true,
-          emplois: sessionUserSelect.emplois,
+          personneMain: { select: personneEmployeuseSelect },
         },
       },
     },
@@ -45,13 +48,9 @@ const Page = async (props: {
   })
 
   const departementCode = getDepartementCodeForActeur({
-    // `sessionUserSelect.emplois` expose désormais `structureMain` (ADR-002 étape 6) : on remappe
-    // vers la forme { structure: { codeInsee } } attendue, code INSEE lu depuis l'adresse main.
-    emplois: coordinateur?.user.emplois.map((emploi) => ({
-      structure: {
-        codeInsee: emploi.structureMain?.adresse?.codeInsee ?? null,
-      },
-    })),
+    // Employeuse courante en pur main : `personneToSessionEmplois` fournit la forme
+    // { structure: { codeInsee } } attendue (0 ou 1 élément).
+    emplois: personneToSessionEmplois(coordinateur?.user.personneMain ?? null),
   })
 
   return (

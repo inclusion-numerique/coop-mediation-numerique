@@ -11,6 +11,7 @@ import {
 } from '@app/web/features/dataspace/syncFromDataspaceCore'
 import { updateUserInscriptionProfileFromDataspace } from '@app/web/features/dataspace/updateUserInscriptionProfileFromDataspace'
 import { importStructureEmployeuseFromSiret } from '@app/web/features/structures/importStructureEmployeuseFromSiret'
+import { resolveEmployeuseActuelle } from '@app/web/features/structures/main/affectationEmploiMain'
 import { prismaClient } from '@app/web/prismaClient'
 import { getNextInscriptionStep, getStepPath } from '../../inscriptionFlow'
 
@@ -247,17 +248,19 @@ export const initializeInscription = async ({
     // Determine next step
     const hasLieuxActivite = (updatedUser.mediateur?._count.enActivite ?? 0) > 0
 
+    // Employeuse courante en pur main (sessionUserSelect expose désormais `personneMain`).
+    const employeuseActuelle = resolveEmployeuseActuelle(
+      updatedUser.personneMain,
+    )
     log('User state after initialization', {
-      hasStructureEmployeuse: sessionUserHasStructureEmployeuse(updatedUser),
-      emploisCount: updatedUser.emplois.length,
-      emplois: updatedUser.emplois.map((e) => ({
-        id: e.id,
-        structureNom:
-          e.structureMain?.denominationAntenne ??
-          e.structureMain?.denominationSirene ??
-          null,
-        structureId: e.structureMain?.id ?? null,
-      })),
+      hasStructureEmployeuse: employeuseActuelle !== null,
+      employeuse: employeuseActuelle
+        ? {
+            structureMainId: employeuseActuelle.structureMainId,
+            nom: employeuseActuelle.nom,
+            source: employeuseActuelle.source,
+          }
+        : null,
       hasLieuxActivite,
       profilInscription: updatedUser.profilInscription,
     })

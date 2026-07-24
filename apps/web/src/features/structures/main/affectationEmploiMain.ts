@@ -114,6 +114,23 @@ export type EmployeuseActuelle = {
   fin: Date | null
 }
 
+// Forme `emplois` exposée par `sessionUser` (0 ou 1 élément), dérivée de l'employeuse COURANTE main.
+// Conserve la forme historique `{ id, structure: { nom, codeInsee } }` pour ne pas toucher aux
+// consommateurs (qui lisent `emplois.at(0).structure` et `emplois.length`). L'`id` n'est pas consommé
+// -> on expose le `structure_coop_id` (uuid, quand présent) sinon l'id main stringifié.
+export const personneToSessionEmplois = (
+  personne: PersonneEmployeusePayload | null,
+): { id: string; structure: { nom: string; codeInsee: string | null } }[] => {
+  const employeuse = resolveEmployeuseActuelle(personne)
+  if (!employeuse) return []
+  return [
+    {
+      id: employeuse.structureCoopId ?? String(employeuse.structureMainId),
+      structure: { nom: employeuse.nom, codeInsee: employeuse.codeInsee },
+    },
+  ]
+}
+
 export const resolveEmployeuseActuelle = (
   personne: PersonneEmployeusePayload | null,
 ): EmployeuseActuelle | null => {

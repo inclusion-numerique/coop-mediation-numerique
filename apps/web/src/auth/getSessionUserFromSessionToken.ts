@@ -1,5 +1,6 @@
 import { serializePrismaSessionUser } from '@app/web/auth/serializePrismaSessionUser'
 import type { SessionUser } from '@app/web/auth/sessionUser'
+import { personneEmployeuseSelect } from '@app/web/features/structures/main/affectationEmploiMain'
 import { prismaClient } from '@app/web/prismaClient'
 import { registerLastSeen } from '@app/web/security/registerLastSeen'
 import type { Prisma } from '@prisma/client'
@@ -30,29 +31,11 @@ export const sessionUserSelect = {
   timezone: true,
   isConseillerNumerique: true,
   lastSeen: true,
-  emplois: {
-    select: {
-      id: true,
-      // Repointé vers main (ADR-002 étape 6) : le nom vient de denomination_antenne ?? sirene et le
-      // code INSEE de l'adresse main. La forme exposée { nom, codeInsee } est reconstituée dans
-      // serializePrismaSessionUser, donc les consommateurs de sessionUser restent inchangés.
-      structureMain: {
-        select: {
-          id: true,
-          denominationSirene: true,
-          denominationAntenne: true,
-          adresse: { select: { codeInsee: true } },
-        },
-      },
-    },
-    where: {
-      suppression: null,
-      fin: null,
-    },
-    orderBy: {
-      debut: 'desc',
-    },
-  },
+  // Employeuse COURANTE lue en PUR MAIN (ADR-002 périmètre élargi) : `main.personne` (coop_id) ->
+  // affectation active -> structure. Plus AUCUNE référence à `emploi.structureMain`.
+  // `serializePrismaSessionUser` reconstitue la forme historique `emplois: [{ id, structure }]`
+  // (0 ou 1 élément) via `personneToSessionEmplois`, donc les consommateurs restent inchangés.
+  personneMain: { select: personneEmployeuseSelect },
   mediateur: {
     select: {
       id: true,
