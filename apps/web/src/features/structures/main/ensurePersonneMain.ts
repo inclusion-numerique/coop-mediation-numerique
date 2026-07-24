@@ -15,22 +15,38 @@ type PrismaLike = Prisma.TransactionClient
 // (FK personne.coop_id posée par Flyway, grants INSERT/UPDATE sur main.personne au rôle `sonum`,
 // arrêt de la branche emploi du coop-dag). Voir docs/adr/adr-002-reconciliation-dataspace.md.
 
-// Sources non-coop où chercher l'email d'une personne préexistante (le flux coop, lui, aurait déjà
-// posé le coop_id — donc capté au cas 1).
-const EMAIL_SOURCES = ['idposte', 'coop'] as const
-
+// Retrouve une personne préexistante par email, sur TOUS les chemins où l'Entrepôt range un email :
+// `contact.coop.email`, `contact.idposte.mail_perso`, `contact.idposte.mail_pro` (formes réelles
+// vérifiées en base — la clé idposte est `mail_perso`/`mail_pro`, PAS `email`). Comparaison insensible
+// à la casse des deux côtés (normalisation). En cas d'ambiguïté — un même email sur 2 personnes,
+// ~0,3 % des cas — on préfère celle qui porte une affectation `idposte` active + structure, soit
+// justement la ligne qu'on veut lire pour l'employeuse (tie-break : résout 5 des 6 collisions CN
+// observées ; l'unique CN irréductible tombe alors sur la personne au plus petit id, déterministe).
+// Les tables `main.*` sont qualifiées explicitement car le search_path (`coop,public`) n'inclut pas `main`.
 const findPersonneByEmail = async (
   email: string,
   prisma: PrismaLike,
 ): Promise<{ id: number } | null> => {
-  for (const source of EMAIL_SOURCES) {
-    const found = await prisma.personneMain.findFirst({
-      where: { contact: { path: [source, 'email'], equals: email } },
-      select: { id: true },
-    })
-    if (found) return found
-  }
-  return null
+  const normalise = email.trim().toLowerCase()
+  if (normalise === '') return null
+
+  const [personne] = await prisma.$queryRaw<{ id: number }[]>`
+    SELECT p.id
+    FROM main.personne p
+    WHERE lower(p.contact->'coop'->>'email') = ${normalise}
+       OR lower(p.contact->'idposte'->>'mail_perso') = ${normalise}
+       OR lower(p.contact->'idposte'->>'mail_pro') = ${normalise}
+    ORDER BY
+      EXISTS (
+        SELECT 1 FROM main.personne_affectations_emploi a
+        WHERE a.personne_id = p.id
+          AND a.source = 'idposte' AND a.est_active
+          AND a.structure_administrative_id IS NOT NULL
+      ) DESC,
+      p.id ASC
+    LIMIT 1`
+
+  return personne ?? null
 }
 
 export const ensurePersonneMain = async (
