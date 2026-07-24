@@ -1,3 +1,7 @@
+import {
+  personneEmployeuseSelect,
+  resolveEmployeuseActuelle,
+} from '@app/web/features/structures/main/affectationEmploiMain'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 import { UpdateLieuxActivitesAdistanceJob } from './updateLieuxActivitesAdistanceJob'
@@ -5,6 +9,8 @@ import { UpdateLieuxActivitesAdistanceJob } from './updateLieuxActivitesAdistanc
 export const executeUpdateLieuxActivitesADistance = async (
   _job: UpdateLieuxActivitesAdistanceJob,
 ) => {
+  // Employeuse lue en PUR MAIN (ADR-002 échange final) : plus de `coop.employes_structures`.
+  // On lit `personneMain` du médiateur et on dérive l'employeuse courante (commune/CP/insee).
   const activitesToUpdate = await prismaClient.activite.findMany({
     where: {
       typeLieu: 'ADistance',
@@ -14,13 +20,8 @@ export const executeUpdateLieuxActivitesADistance = async (
       mediateur: {
         include: {
           user: {
-            include: {
-              emplois: {
-                where: { suppression: null },
-                include: {
-                  structure: true,
-                },
-              },
+            select: {
+              personneMain: { select: personneEmployeuseSelect },
             },
           },
         },
@@ -31,8 +32,9 @@ export const executeUpdateLieuxActivitesADistance = async (
   output.log(`Found ${activitesToUpdate.length} activites to update`)
 
   for (const activite of activitesToUpdate) {
-    const structureEmployeuse =
-      activite.mediateur?.user?.emplois?.[0]?.structure
+    const structureEmployeuse = resolveEmployeuseActuelle(
+      activite.mediateur?.user?.personneMain ?? null,
+    )
 
     if (!structureEmployeuse) {
       output.log(

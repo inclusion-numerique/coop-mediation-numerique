@@ -3,6 +3,7 @@ import type { ActeurIdentityData } from '@app/web/features/mon-reseau/use-cases/
 import type { ActeurForList } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
 import { getActeurIconUrl } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurIcon'
 import { getActeurPageUrl } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurPageUrl'
+import { personneToSessionEmplois } from '@app/web/features/structures/main/affectationEmploiMain'
 import { allProfileInscriptionLabels } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import { getUserProfil } from '@app/web/features/utilisateurs/utils/getUserProfil'
 import classNames from 'classnames'
@@ -29,7 +30,11 @@ const getCoordinateursInfo = (
         ? {
             name: displayName,
             userId: id,
-            departementCode: getDepartementCodeForActeur(coordinateurUser),
+            // Employeuse courante lue en PUR MAIN (ADR-002 échange final) : `personneMain` →
+            // forme `emplois` via `personneToSessionEmplois` (codeInsee pour le département).
+            departementCode: getDepartementCodeForActeur({
+              emplois: personneToSessionEmplois(coordinateurUser.personneMain),
+            }),
           }
         : null
     })

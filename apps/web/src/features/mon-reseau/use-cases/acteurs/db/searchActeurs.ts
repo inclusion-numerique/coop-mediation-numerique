@@ -1,4 +1,5 @@
 import { departementCodeFromInseeRegex } from '@app/web/features/mon-reseau/departementCodeFromInseeRegex'
+import { personneEmployeuseSelect } from '@app/web/features/structures/main/affectationEmploiMain'
 import { employeuseMainLateral } from '@app/web/features/structures/main/employeuseMainSql'
 import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
 import { DEFAULT_PAGE, toNumberOr } from '@app/web/libs/data-table/toNumberOr'
@@ -24,23 +25,10 @@ export const acteurCoordinationSelect = {
           firstName: true,
           lastName: true,
           name: true,
-          emplois: {
-            select: {
-              structure: {
-                select: {
-                  codeInsee: true,
-                },
-              },
-            },
-            where: {
-              suppression: null,
-              fin: null,
-            },
-            orderBy: {
-              debut: 'desc',
-            },
-            take: 1,
-          },
+          // Employeuse courante du coordinateur en PUR MAIN (ADR-002 échange final) : plus de
+          // lecture `coop.employes_structures`. On lit `personneMain` ; le consommateur dérive le
+          // codeInsee via `personneToSessionEmplois` (getDepartementCodeForActeur).
+          personneMain: { select: personneEmployeuseSelect },
         },
       },
     },

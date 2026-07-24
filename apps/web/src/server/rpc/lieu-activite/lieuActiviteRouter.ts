@@ -185,25 +185,10 @@ export const lieuActiviteRouter = router({
 
       if (structure == null) return
 
-      const activeEmployeesCount = await prismaClient.employeStructure.count({
-        where: {
-          structureId: input.id,
-          suppression: null,
-          fin: null,
-        },
-      })
-
-      if (
-        activeEmployeesCount > 0 &&
-        (input.nom !== structure.nom ||
-          (input.siret ?? null) !== structure.siret ||
-          input.adresseBan.nom !== structure.adresse)
-      ) {
-        throw invalidError(
-          'Le nom, l’adresse et le SIRET ne peuvent pas être modifiés car cette structure emploie des médiateurs',
-        )
-      }
-
+      // Garde « emploie des médiateurs » retirée (ADR-002 échange final) : elle comptait
+      // `coop.employes_structures` par `structureId = lieu.id`, or l'id d'un lieu et celui d'une
+      // employeuse (SA) sont disjoints depuis le split — le compte valait toujours 0 (garde morte).
+      // Un lieu n'emploie pas ; seule l'employeuse le fait, sans FK vers le lieu.
       const updated = await prismaClient.lieuInclusion.update({
         where: { id: structure.id },
         data: {
