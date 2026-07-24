@@ -30,6 +30,7 @@ import type { Job, JobName, JobPayload } from './jobs'
 import { executeNormaliserBeneficiaires } from './normaliser-beneficiaires/executeNormaliserBeneficiaires'
 import { executeNormalizeSirets } from './normalize-sirets/executeNormalizeSirets'
 import { output } from './output'
+import { executeRelierPersonnesCoopMain } from './relier-personnes-coop-main/executeRelierPersonnesCoopMain'
 import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts/executeRemoveOrphanBrevoContacts'
 import { executeResetInscriptionsSansRole } from './reset-inscriptions-sans-role/executeResetInscriptionsSansRole'
 import { executeSetServciesToSharedLieux } from './set-servcies-to-shared-lieux/executeSetServciesToSharedLieux'
@@ -69,6 +70,7 @@ export const jobExecutors: {
   'backfill-tranche-age': executeBackfillTrancheAge,
   'backup-database': executeBackupDatabaseJob,
   'completer-structures-main': executeCompleterStructuresMain,
+  'relier-personnes-coop-main': executeRelierPersonnesCoopMain,
   'backfill-structure-employeuse-main': executeBackfillStructureEmployeuseMain,
   'update-structures-cartographie-nationale':
     executeUpdateStructuresCartographieNationale,

@@ -25,6 +25,7 @@ import { ImportContactsToBrevoValidation } from './import-contacts-to-brevo/Impo
 import { InactiveUsersRemindersJobValidation } from './inactive-users-reminders/inactiveUsersJob'
 import { NormaliserBeneficiairesJobValidation } from './normaliser-beneficiaires/normaliserBeneficiairesJob'
 import { NormalizeSiretsJobValidation } from './normalize-sirets/normalizeSiretsJob'
+import { RelierPersonnesCoopMainJobValidation } from './relier-personnes-coop-main/relierPersonnesCoopMainJob'
 import { RemoveOrphanBrevoContactsJobValidation } from './remove-orphan-brevo-contacts/removeOrphanBrevoContactsJob'
 import { ResetInscriptionsSansRoleJobValidation } from './reset-inscriptions-sans-role/resetInscriptionsSansRoleJob'
 import { SetServciesToSharedLieuxValidation } from './set-servcies-to-shared-lieux/setServciesToSharedLieuxJob'
@@ -64,6 +65,7 @@ export const JobValidation = z.discriminatedUnion('name', [
   BackfillTrancheAgeJobValidation,
   BackupDatabaseJobValidation,
   CompleterStructuresMainJobValidation,
+  RelierPersonnesCoopMainJobValidation,
   BackfillStructureEmployeuseMainJobValidation,
   UpdateStructuresCartographieNationaleJobValidation,
   ImportContactsToBrevoValidation,
