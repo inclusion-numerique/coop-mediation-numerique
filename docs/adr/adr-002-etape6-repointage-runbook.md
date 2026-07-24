@@ -27,6 +27,49 @@ restauration iso-prod avant la prod.
 | 6d | `1f42f00e` | Job `backfill-structure-employeuse-main` (par lots) |
 | 6e-écritures-1 | `f96d670f` (WIP non signé) | Contrat `{ id, mainId }` + dual-write inscription/import |
 
+## Mise à jour 2026-07-24 — bascule PUR MAIN (pivot d'approche)
+
+Le read de l'employeuse a **pivoté**. Au lieu de lire `emploi.structureMain` (la SA main via la FK
+de l'emploi coop), on lit l'employeuse **depuis la personne** :
+`coop.users → main.personne (coop_id) → main.personne_affectations_emploi (est_active) →
+main.structure_administrative`, et l'employeuse À UNE DATE depuis `main.contrat`. Cela supprime toute
+dépendance à `coop.employes_structures` pour les reads d'employeuse d'un utilisateur.
+
+**Fait cette session** (branche `refactor/lieu-employeuse`) :
+
+- **Réconciliation données, APPLIQUÉE EN PROD** (précautions max) : `relier-personnes-coop-main`
+  (link + re-point `coop_id` : jumeau mort, récence, nom+SIRET), `backfill-personnes-affectations
+  -main` (personne + affectation `source=coop` non-CN). Voir
+  [runbook prep prod](adr-002-runbook-prep-prod-pur-main.md).
+- **Fix** : pivot email `ensurePersonneMain` (clés réelles `mail_perso`/`mail_pro` + casse +
+  tie-break idposte) ; dual-write SA depuis l'identité en main (fin de la dépendance API Entreprise
+  au write).
+- **Reads employeuse USER → pur main** : récap inscription, `sessionUser`
+  (`personneToSessionEmplois`), `mes-equipes`, admin détail (historique via
+  `resolveEmployeusesHistorique` : `est_active` en cours/terminé, dates `main.contrat`, plus de
+  « supprimé » ni modification), CRA `getActeurEmploiForDate` (contrat couvrant la date / affectation
+  active), `ma-structure-employeuse`, `queryUtilisateursForList`.
+- **Write CRA (Option A)** : `createOrUpdateActivite` n'écrit plus que `structureEmployeuseMain` ;
+  migration `activites.structure_employeuse_id` **NULLABLE** (drop colonne+FK = échange final).
+- **Fixtures** : `seedPersonnesMain` (personne + affectation des users de test). **e2e CRA 2/2 +
+  inscription 6/6.**
+
+**Conséquence sur la section « Reste à faire » ci-dessous** : les **reads d'employeuse d'un
+utilisateur** de la section B sont **superseded** (refaits en pur main via `personne→affectation`).
+Ce qui reste réellement :
+
+1. **Filtres / stats / mon-réseau** joignant encore sur `structure_id` / `structure_employeuse_id`
+   (inverses de B + SQL bruts de C) → basculer sur `structure_employeuse_main_id` ou
+   `personne→affectation`. **Le gros du volume restant.**
+2. **`api/v1/utilisateurs`** : confirmer la cohérence pur-main.
+3. **Routes admin orphelines** `utilisateurs/[id]/emplois` + `emplois/[id]/modifier` (plus de point
+   d'entrée depuis le retrait du bouton « Modifier ») → **à supprimer**.
+4. **Phase 2 réconciliation** : 46 `conflit-manuel` (dédoublonnage comptes) + 15 CN absents (CSV).
+5. **Prep prod** : [runbook dédié](adr-002-runbook-prep-prod-pur-main.md) (migrations + backfill
+   `structure_employeuse_main_id`).
+6. **Échange final** : drop colonnes/FK coop SA, arrêt writes/emplois coop, suppression des jobs de
+   synchro/réconciliation.
+
 ## Reste à faire
 
 ### A. Écritures restantes (dual-write : ajouter `structureMainId` / `structureEmployeuseMainId`)
