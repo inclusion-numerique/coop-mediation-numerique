@@ -127,7 +127,9 @@ const baseRowOf = (structure: SiretBearingStructure) => ({
   codePostalBase: structure.codePostal,
   visibleCarto: structure.visibleCarto,
   activitesCount: structure.activitesCount,
-  emploisCount: structure.emploisCount,
+  // ADR-002 échange final : les emplois de l'employeur corrélé sont un concept MAIN, hors périmètre
+  // de l'audit SIRET des LIEUX (la corrélation coop nom+adresse n'est plus fiable). Colonne à 0.
+  emploisCount: 0,
   mediateursCount: structure.mediateursCount,
 })
 
@@ -143,7 +145,7 @@ export const executeAuditSiretCoherence = async (
   const structures = await getSiretBearingStructures(limit ? { limit } : {})
 
   output.log(
-    `audit-siret-coherence: ${structures.length} structures avec SIRET à vérifier (lieux + employeuses)`,
+    `audit-siret-coherence: ${structures.length} lieux avec SIRET à vérifier`,
   )
 
   const rows: AuditRow[] = []

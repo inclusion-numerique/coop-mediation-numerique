@@ -1,8 +1,5 @@
 import { writeFile } from 'node:fs/promises'
-import {
-  clearSiret,
-  type SiretSource,
-} from '@app/web/features/structures/siret/siretBearingStructures'
+import { clearSiret } from '@app/web/features/structures/siret/siretBearingStructures'
 import {
   type ActionPlanRow,
   escapeCsvField,
@@ -43,22 +40,15 @@ const rowToCsv = (row: ActionPlanRow, statut: string): string =>
     statut,
   ].join(';')
 
-const toSiretSource = (source: string): SiretSource =>
-  source === 'employeuse' ? 'employeuse' : 'lieu'
-
-const findSiret = async (
+// ADR-002 échange final : l'outillage SIRET ne cible plus que les LIEUX. Les lignes d'action-plan de
+// source `employeuse` (issues d'anciens CSV) sont ignorées.
+const findLieuSiret = async (
   id: string,
-  source: SiretSource,
 ): Promise<{ id: string; siret: string | null } | null> =>
-  source === 'lieu'
-    ? prismaClient.lieuInclusion.findUnique({
-        where: { id },
-        select: { id: true, siret: true },
-      })
-    : prismaClient.structureAdministrative.findUnique({
-        where: { id },
-        select: { id: true, siret: true },
-      })
+  prismaClient.lieuInclusion.findUnique({
+    where: { id },
+    select: { id: true, siret: true },
+  })
 
 export const executeApplyViderSiret = async (job: ApplyViderSiretJob) => {
   const dryRun = job.payload?.dryRun ?? true
@@ -78,8 +68,13 @@ export const executeApplyViderSiret = async (job: ApplyViderSiretJob) => {
   const counters = { cleared: 0, skipped: 0 }
 
   for (const row of toClear) {
-    const source = toSiretSource(row.source)
-    const structure = await findSiret(row.id, source)
+    if (row.source !== 'lieu') {
+      results.push({ row, statut: 'skip_employeuse' })
+      counters.skipped++
+      continue
+    }
+
+    const structure = await findLieuSiret(row.id)
 
     if (!structure) {
       results.push({ row, statut: 'introuvable' })
@@ -99,7 +94,7 @@ export const executeApplyViderSiret = async (job: ApplyViderSiretJob) => {
       continue
     }
 
-    await clearSiret({ id: row.id, source })
+    await clearSiret({ id: row.id })
     results.push({ row, statut: 'vide' })
     counters.cleared++
   }
