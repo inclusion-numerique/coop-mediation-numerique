@@ -10,9 +10,9 @@ const noopLogger: InitializeDebugLogger = () => {
 }
 
 /**
- * Import structure employeuse from SIRET only (using the public Recherche d'entreprises API)
- * Creates emploi with today's date as creation date
- * Gracefully handles API errors - logs but doesn't throw
+ * Import structure employeuse from SIRET only (using the public Recherche d'entreprises API).
+ * ADR-002 échange final : garantit l'employeuse dans `main.structure_administrative` et pose
+ * l'affectation active main (plus d'emploi coop). Gracefully handles API errors - logs but doesn't throw.
  */
 export const importStructureEmployeuseFromSiret = async ({
   userId,
@@ -23,7 +23,6 @@ export const importStructureEmployeuseFromSiret = async ({
   siret: string
   log?: InitializeDebugLogger
 }): Promise<{
-  structureId: string
   structureMainId: number | null
 } | null> => {
   log('fetchSiretApiData: calling Recherche d’entreprises API', { siret })
@@ -104,7 +103,7 @@ export const importStructureEmployeuseFromSiret = async ({
     commune: adresse.libelle_commune || '',
   })
 
-  // Use SIRET API data to find or create structure administrative (employeuse)
+  // Use SIRET API data to find or create structure administrative (employeuse) — MAIN uniquement.
   const structure = await findOrCreateStructureAdministrative({
     siret,
     nom: personne_morale_attributs.raison_sociale,
@@ -114,42 +113,10 @@ export const importStructureEmployeuseFromSiret = async ({
     commune: adresse.libelle_commune || '',
   })
 
-  log('Structure found or created', { structureId: structure.id })
+  log('Structure found or created', { structureMainId: structure.mainId })
 
-  // Check if active emploi already exists (ignore soft-deleted ones)
-  const existingEmploi = await prismaClient.employeStructure.findFirst({
-    where: {
-      userId,
-      structureId: structure.id,
-      suppression: null,
-    },
-    select: {
-      id: true,
-    },
-  })
-
-  if (existingEmploi) {
-    log('Emploi already exists', {
-      emploiId: existingEmploi.id,
-      structureId: structure.id,
-    })
-  } else {
-    log('Creating new emploi', { userId, structureId: structure.id })
-
-    // Create new emploi with today's date (dual-write coop->main, ADR-002 étape 6)
-    await prismaClient.employeStructure.create({
-      data: {
-        userId,
-        structureId: structure.id,
-        structureMainId: structure.mainId,
-        debut: new Date(),
-      },
-    })
-
-    log('Emploi created successfully', { userId, structureId: structure.id })
-  }
-
-  // Dual-write main (ADR-002 périmètre élargi) : personne + affectation active, en miroir de l'emploi.
+  // Écriture MAIN : personne + affectation active (l'employeuse courante se lit depuis main).
+  // ADR-002 échange final : plus d'emploi `coop.employes_structures`.
   const user = await prismaClient.user.findUnique({
     where: { id: userId },
     select: { email: true },
@@ -162,5 +129,5 @@ export const importStructureEmployeuseFromSiret = async ({
     })
   }
 
-  return { structureId: structure.id, structureMainId: structure.mainId }
+  return { structureMainId: structure.mainId }
 }

@@ -45,14 +45,19 @@ export const ensureStructureAdministrativeMain = async ({
   siret,
   identite,
 }: {
-  coopId: string
+  coopId: string | null
   siret: string | null
   identite?: IdentiteStructureMain
 }): Promise<{ id: number } | null> => {
-  const existing = await prismaClient.structureAdministrativeMain.findFirst({
-    where: { structureCoopId: coopId },
-    select: { id: true },
-  })
+  // Fast-path par `structure_coop_id` uniquement si un lien coop existe. ADR-002 échange final : le
+  // chemin d'écriture au fil de l'eau n'écrit plus de `coop.structure_administrative` -> `coopId` est
+  // null et la dédup repose alors sur la seule clé métier `(siret, denomination_antenne)` ci-dessous.
+  const existing = coopId
+    ? await prismaClient.structureAdministrativeMain.findFirst({
+        where: { structureCoopId: coopId },
+        select: { id: true },
+      })
+    : null
   if (existing) return existing
 
   try {

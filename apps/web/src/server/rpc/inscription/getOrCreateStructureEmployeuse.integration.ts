@@ -2,9 +2,10 @@ import { searchAdresse } from '@app/web/external-apis/apiAdresse'
 import { prismaClient } from '@app/web/prismaClient'
 import { getOrCreateStructureEmployeuse } from '@app/web/server/rpc/inscription/getOrCreateStructureEmployeuse'
 
-// L'adaptateur délègue à findOrCreateStructureAdministrative, qui géocode l'adresse via la BAN.
-// On neutralise l'appel réseau : searchAdresse -> null fait retomber le lookup sur le codeInsee
-// fourni (comportement déterministe et hors-ligne, équivalent à l'ancien chemin).
+// L'adaptateur délègue à findOrCreateStructureAdministrative, qui garantit UNIQUEMENT la ligne
+// `main.structure_administrative` (ADR-002 échange final : plus d'écriture coop) en géocodant
+// l'adresse via la BAN. On neutralise l'appel réseau : searchAdresse -> null rend le géocodage
+// déterministe et hors-ligne.
 jest.mock('@app/web/external-apis/apiAdresse', () => ({
   searchAdresse: jest.fn(),
 }))
@@ -18,26 +19,26 @@ describe('getOrCreateStructureEmployeuse', () => {
   beforeAll(async () => {
     mockedSearchAdresse.mockResolvedValue(null)
 
-    await prismaClient.structureAdministrative.deleteMany({
+    await prismaClient.structureAdministrativeMain.deleteMany({
       where: {
         siret: testSiret,
       },
     })
 
     // Verify the cleanup was successful
-    const result = await prismaClient.structureAdministrative.findFirst({
+    const result = await prismaClient.structureAdministrativeMain.findFirst({
       where: {
         siret: testSiret,
       },
     })
     if (result) {
       throw new Error(
-        'Structure should have been deleted in beforeAll jest hook',
+        'Structure main should have been deleted in beforeAll jest hook',
       )
     }
   })
 
-  it('should create a structure employeuse for a [Non-Diffusible] siret and be idempotent', async () => {
+  it('should ensure a main structure employeuse for a [Non-Diffusible] siret and be idempotent', async () => {
     const input = {
       nom: '[Non-Diffusible]',
       adresse: '[Non-Diffusible]',
@@ -48,14 +49,14 @@ describe('getOrCreateStructureEmployeuse', () => {
     }
     const result = await getOrCreateStructureEmployeuse(input)
 
-    expect(result).toEqual(expect.objectContaining({ id: expect.any(String) }))
-    const { id } = result
+    expect(result.mainId).toEqual(expect.any(Number))
+    const { mainId } = result
 
     const result2 = await getOrCreateStructureEmployeuse(input)
 
-    expect(result2).toEqual(expect.objectContaining({ id }))
+    expect(result2.mainId).toEqual(mainId)
 
-    const count = await prismaClient.structureAdministrative.count({
+    const count = await prismaClient.structureAdministrativeMain.count({
       where: {
         siret: testSiret,
       },

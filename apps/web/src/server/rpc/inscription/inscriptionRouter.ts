@@ -144,27 +144,10 @@ export const inscriptionRouter = router({
 
         const transactionResult = await prismaClient.$transaction(
           async (transaction) => {
-            // Remove link between user and structureEmployeuse if it already exists
-            const now = new Date()
-            await transaction.employeStructure.updateMany({
-              where: {
-                userId,
-                structure: {
-                  id: { not: structure.id },
-                },
-                suppression: null,
-                fin: null,
-              },
-              data: {
-                fin: now,
-                suppression: now,
-              },
-            })
-
-            // Dual-write main (ADR-002 périmètre élargi 2026-07-23), atomique : la coop pose
-            // personne + affectation emploi (est_active) en même temps que `employes_structures`,
-            // pour que les lectures main reflètent l'employeuse immédiatement. `structure.mainId` est
-            // null seulement si la couverture main a échoué (best-effort) : on saute alors le main.
+            // Écriture MAIN (ADR-002 échange final) : personne + affectation active, et désactivation
+            // des autres affectations coop (changement d'employeuse). Plus d'emploi
+            // `coop.employes_structures` : l'employeuse courante se lit désormais depuis main.
+            // `structure.mainId` n'est null que si la couverture main a échoué (best-effort).
             const { email } = await transaction.user.findUniqueOrThrow({
               where: { id: userId },
               select: { email: true },
@@ -196,20 +179,10 @@ export const inscriptionRouter = router({
               },
               data: {
                 structureEmployeuseRenseignee: new Date(),
-                emplois: {
-                  create: {
-                    id: v4(),
-                    structureId: structure.id,
-                    // Dual-write pendant la bascule coop->main (ADR-002 étape 6).
-                    structureMainId: structure.mainId,
-                    debut: new Date(),
-                  },
-                },
               },
               select: {
                 id: true,
                 structureEmployeuseRenseignee: true,
-                emplois: true,
               },
             })
           },
@@ -221,7 +194,7 @@ export const inscriptionRouter = router({
           duration: stopwatch.stop().duration,
           data: {
             userId,
-            emplois: transactionResult.emplois.at(0),
+            structureMainId: structure.mainId,
           },
         })
 
@@ -250,35 +223,14 @@ export const inscriptionRouter = router({
 
         const lieuData = employeuseMainToLieuData(structureMain)
 
-        // Anti-doublon (transition ADR-002) : les lieux déjà matérialisés l'ont été depuis les
-        // données COOP (non fiables). On les retrouve donc par corrélation MAIN **ou** COOP, tout
-        // en CRÉANT désormais depuis MAIN. Sans ce repli, un nom/adresse main divergent de la coop
-        // recréerait un lieu en doublon au lieu de retrouver le partagé.
-        const coop = structureMain.structureCoopId
-          ? await prismaClient.structureAdministrative.findUnique({
-              where: { id: structureMain.structureCoopId },
-              select: { nom: true, adresse: true, codeInsee: true },
-            })
-          : null
-
+        // Corrélation du lieu partagé par nom + adresse + code INSEE, depuis MAIN (source de vérité).
+        // ADR-002 échange final : le repli anti-doublon qui lisait `coop.structure_administrative`
+        // est retiré — les lieux sont désormais matérialisés depuis MAIN de bout en bout.
         const lieuCorreleALEmployeuse = {
           suppression: null,
-          OR: [
-            {
-              nom: lieuData.nom,
-              adresse: lieuData.adresse,
-              codeInsee: lieuData.codeInsee,
-            },
-            ...(coop
-              ? [
-                  {
-                    nom: coop.nom,
-                    adresse: coop.adresse,
-                    codeInsee: coop.codeInsee,
-                  },
-                ]
-              : []),
-          ],
+          nom: lieuData.nom,
+          adresse: lieuData.adresse,
+          codeInsee: lieuData.codeInsee,
         }
 
         if (estLieuActivite) {

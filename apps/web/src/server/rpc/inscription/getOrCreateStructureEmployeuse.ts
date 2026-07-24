@@ -37,8 +37,8 @@ const hasAdresseBan = (
  */
 export const getOrCreateStructureEmployeuse = (
   structureEmployeuse: StructureEmployeuseInput,
-): Promise<{ id: string; mainId: number | null }> => {
-  const { siret, nom, id } = structureEmployeuse
+): Promise<{ mainId: number | null }> => {
+  const { siret, nom } = structureEmployeuse
 
   const adresse = hasAdresseBan(structureEmployeuse)
     ? structureEmployeuse.adresseBan.nom
@@ -54,7 +54,6 @@ export const getOrCreateStructureEmployeuse = (
     : (structureEmployeuse.codePostal ?? '')
 
   return findOrCreateStructureAdministrative({
-    coopId: id,
     siret,
     nom,
     adresse,

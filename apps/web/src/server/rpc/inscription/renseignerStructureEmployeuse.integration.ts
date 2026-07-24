@@ -5,8 +5,10 @@ import { createTestContext } from '@app/web/test/createTestContext'
 import { testSessionUser } from '@app/web/test/testSessionUser'
 import { v4 } from 'uuid'
 
-// Le chemin de création passe la structure par son id (coopId) : findOrCreate la retrouve sans
-// géocoder. On neutralise quand même l'appel réseau BAN par sécurité.
+// ADR-002 échange final : renseigner l'employeuse n'écrit QUE main (personne + affectation active),
+// plus aucun `coop.employes_structures`. `findOrCreateStructureAdministrative` déduplique la structure
+// main par la clé métier (siret, denomination_antenne) -> on pré-crée la ligne main pour un test
+// déterministe et hors-ligne (searchAdresse -> null neutralise le géocodage BAN).
 jest.mock('@app/web/external-apis/apiAdresse', () => ({
   searchAdresse: jest.fn(),
 }))
@@ -14,15 +16,14 @@ const mockedSearchAdresse = searchAdresse as jest.MockedFunction<
   typeof searchAdresse
 >
 
-describe('inscriptionRouter.renseignerStructureEmployeuse — dual-write main', () => {
+describe('inscriptionRouter.renseignerStructureEmployeuse — écriture main', () => {
   const userId = v4()
-  const coopStructureId = v4()
   const siret = '93429789600011'
+  const nom = 'Employeuse main'
   const state = { mainStructureId: 0 }
 
   const structureEmployeuse = {
-    id: coopStructureId,
-    nom: 'Employeuse dual-write',
+    nom,
     siret,
     adresseBan: {
       id: 'ban-test',
@@ -42,32 +43,19 @@ describe('inscriptionRouter.renseignerStructureEmployeuse — dual-write main', 
     await prismaClient.user.create({
       data: {
         id: userId,
-        email: `dualwrite+${userId}@test.gouv.fr`,
+        email: `mainwrite+${userId}@test.gouv.fr`,
         profilInscription: 'Mediateur',
         acceptationCgu: new Date(),
       },
     })
 
-    await prismaClient.structureAdministrative.create({
-      data: {
-        id: coopStructureId,
-        siret,
-        nom: structureEmployeuse.nom,
-        adresse: structureEmployeuse.adresseBan.nom,
-        commune: 'Nantes',
-        codePostal: '44000',
-        codeInsee: '44109',
-        source: 'coop',
-      },
-    })
-
-    // Main SA pré-liée par structure_coop_id : ensureStructureAdministrativeMain la retrouve sans API.
+    // Ligne main pré-existante, retrouvée par la clé métier (siret, denomination_antenne).
     const mainStructure = await prismaClient.structureAdministrativeMain.create(
       {
         data: {
           siret,
-          denominationSirene: structureEmployeuse.nom,
-          structureCoopId: coopStructureId,
+          denominationSirene: nom,
+          denominationAntenne: nom,
         },
         select: { id: true },
       },
@@ -76,7 +64,6 @@ describe('inscriptionRouter.renseignerStructureEmployeuse — dual-write main', 
   })
 
   afterAll(async () => {
-    await prismaClient.employeStructure.deleteMany({ where: { userId } })
     await prismaClient.personneAffectationEmploiMain.deleteMany({
       where: { structureAdministrativeId: state.mainStructureId },
     })
@@ -84,14 +71,11 @@ describe('inscriptionRouter.renseignerStructureEmployeuse — dual-write main', 
     await prismaClient.structureAdministrativeMain.delete({
       where: { id: state.mainStructureId },
     })
-    await prismaClient.structureAdministrative.delete({
-      where: { id: coopStructureId },
-    })
     await prismaClient.mutation.deleteMany({ where: { userId } })
     await prismaClient.user.delete({ where: { id: userId } })
   })
 
-  it('écrit personne + affectation main (est_active) en même temps que employes_structures', async () => {
+  it('écrit personne + affectation main (est_active) et aucun emploi coop', async () => {
     await inscriptionRouter
       .createCaller(
         createTestContext({
@@ -104,15 +88,13 @@ describe('inscriptionRouter.renseignerStructureEmployeuse — dual-write main', 
       )
       .renseignerStructureEmployeuse({ userId, structureEmployeuse })
 
-    // Côté coop : l'emploi porte l'uuid coop ET l'id main (dual-write existant).
-    const emploi = await prismaClient.employeStructure.findFirstOrThrow({
-      where: { userId, suppression: null },
-      select: { structureId: true, structureMainId: true },
+    // Aucun emploi coop n'est créé (échange final : plus de `coop.employes_structures`).
+    const emploisCount = await prismaClient.employeStructure.count({
+      where: { userId },
     })
-    expect(emploi.structureId).toBe(coopStructureId)
-    expect(emploi.structureMainId).toBe(state.mainStructureId)
+    expect(emploisCount).toBe(0)
 
-    // Côté main : personne reliée par coop_id + affectation active.
+    // Côté main : personne reliée par coop_id + affectation active sur la structure attendue.
     const personne = await prismaClient.personneMain.findUniqueOrThrow({
       where: { coopId: userId },
       select: { id: true },
