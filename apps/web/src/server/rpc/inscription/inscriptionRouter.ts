@@ -27,6 +27,11 @@ import {
   employeuseMainSelect,
   employeuseMainToLieuData,
 } from '@app/web/features/structures/main/employeuseLieuData'
+import {
+  deactivateCoopAffectationsExcept,
+  ensureAffectationEmploiMain,
+} from '@app/web/features/structures/main/ensureAffectationEmploiMain'
+import { ensurePersonneMain } from '@app/web/features/structures/main/ensurePersonneMain'
 import { ChoisirProfilEtAccepterCguValidation } from '@app/web/features/utilisateurs/use-cases/registration/ChoisirProfilEtAccepterCguValidation'
 import { LieuxActiviteValidation } from '@app/web/features/utilisateurs/use-cases/registration/LieuxActivite'
 import { RenseignerStructureEmployeuseValidation } from '@app/web/features/utilisateurs/use-cases/registration/RenseignerStructureEmployeuse'
@@ -155,6 +160,35 @@ export const inscriptionRouter = router({
                 suppression: now,
               },
             })
+
+            // Dual-write main (ADR-002 périmètre élargi 2026-07-23), atomique : la coop pose
+            // personne + affectation emploi (est_active) en même temps que `employes_structures`,
+            // pour que les lectures main reflètent l'employeuse immédiatement. `structure.mainId` est
+            // null seulement si la couverture main a échoué (best-effort) : on saute alors le main.
+            const { email } = await transaction.user.findUniqueOrThrow({
+              where: { id: userId },
+              select: { email: true },
+            })
+            const personne = await ensurePersonneMain(
+              { coopUserId: userId, email },
+              transaction,
+            )
+            if (structure.mainId !== null) {
+              await ensureAffectationEmploiMain(
+                {
+                  personneId: personne.id,
+                  structureAdministrativeId: structure.mainId,
+                },
+                transaction,
+              )
+              await deactivateCoopAffectationsExcept(
+                {
+                  personneId: personne.id,
+                  keepStructureAdministrativeIds: [structure.mainId],
+                },
+                transaction,
+              )
+            }
 
             return transaction.user.update({
               where: {
