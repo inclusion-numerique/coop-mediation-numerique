@@ -1,7 +1,7 @@
 import {
-  employeuseMainAdminSelect,
-  employeuseMainToAdminStructure,
-} from '@app/web/features/structures/main/employeuseLieuData'
+  personneEmployeusesHistoriqueSelect,
+  resolveEmployeusesHistorique,
+} from '@app/web/features/structures/main/employeusesHistoriqueMain'
 import { prismaClient } from '@app/web/prismaClient'
 
 export const getAdministrationUserPageData = async ({ id }: { id: string }) => {
@@ -115,35 +115,21 @@ export const getAdministrationUserPageData = async ({ id }: { id: string }) => {
       sessions: true,
       uploads: true,
       mutations: true,
-      emplois: {
-        include: {
-          structureMain: {
-            select: employeuseMainAdminSelect,
-          },
-        },
-        orderBy: {
-          creation: 'desc',
-        },
-      },
+      personneMain: { select: personneEmployeusesHistoriqueSelect },
       usurpateur: true,
     },
   })
   if (!user) {
     return null
   }
-  // La structure employeuse affichée provient de `main` (source de vérité, ADR-002 étape 6),
-  // réexposée sous `emploi.structure` (forme `getStructuresInfos`) pour laisser les pages admin
-  // inchangées. `structureId` (uuid coop) reste porté par l'emploi pour le lien de route.
+  // Historique des employeuses lu en PUR MAIN (ADR-002 périmètre élargi) : plus de
+  // `coop.employes_structures` ni de `emploi.structureMain`. Une entrée par structure d'affectation
+  // (active = en cours, inactive = terminée), dates best-effort depuis `main.contrat`.
+  const { personneMain, ...userSansPersonne } = user
   return {
     user: {
-      ...user,
-      emplois: user.emplois.map(({ structureMain, ...emploi }) => ({
-        ...emploi,
-        structure: employeuseMainToAdminStructure(
-          emploi.structureId,
-          structureMain,
-        ),
-      })),
+      ...userSansPersonne,
+      emplois: resolveEmployeusesHistorique(personneMain),
     },
   }
 }
