@@ -103,7 +103,8 @@ export const ActivitesFilterValidations = {
   structuresEmployeuses: z
     .union([
       z.string().transform((val) => val.split(',').map((id) => id.trim())),
-      z.array(z.string().uuid()),
+      // id main `structure_administrative.id` stringifié (ADR-002 périmètre élargi), plus un uuid coop.
+      z.array(z.string().regex(/^\d+$/)),
     ])
     .optional(),
   rdv: z.enum(booleanStringValues).optional(),
