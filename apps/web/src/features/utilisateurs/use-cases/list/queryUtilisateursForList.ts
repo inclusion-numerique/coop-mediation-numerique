@@ -1,3 +1,7 @@
+import {
+  personneEmployeuseSelect,
+  resolveEmployeuseActuelle,
+} from '@app/web/features/structures/main/affectationEmploiMain'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
 
@@ -46,43 +50,27 @@ export const searchUtilisateurSelect = {
       },
     },
   },
-  // Structure employeuse lue depuis `main` (source de vérité, ADR-002 étape 6) : nom via la
-  // denomination, code INSEE via la relation adresse. Réexposée en `{ nom, codeInsee }` par le
-  // mapper ci-dessous pour laisser les consommateurs (data-table, export, dérivation département)
-  // inchangés.
-  emplois: {
-    where: { suppression: null },
-    orderBy: { creation: 'desc' },
-    take: 1,
-    select: {
-      structureMain: {
-        select: {
-          denominationSirene: true,
-          denominationAntenne: true,
-          adresse: { select: { codeInsee: true } },
-        },
-      },
-    },
-  },
+  // Structure employeuse lue depuis `main` via `personne -> affectations` (ADR-002 périmètre élargi
+  // 2026-07-23) : employeuse COURANTE (priorité idposte>coop), réexposée en `emplois: [{ structure:
+  // { nom, codeInsee } }]` par le mapper ci-dessous pour laisser les consommateurs (data-table,
+  // export, dérivation département) inchangés.
+  personneMain: { select: personneEmployeuseSelect },
 } satisfies Prisma.UserSelect
 
 type UtilisateurForListRow = Prisma.UserGetPayload<{
   select: typeof searchUtilisateurSelect
 }>
 
-// Nom employeuse : denomination_antenne sinon denomination_sirene (même règle que le sérialiseur
-// sessionUser et getActeurEmploiForDate).
-const toEmploiStructure = (
-  emploi: UtilisateurForListRow['emplois'][number],
-): { structure: { nom: string | null; codeInsee: string | null } } => ({
-  structure: {
-    nom:
-      emploi.structureMain?.denominationAntenne ??
-      emploi.structureMain?.denominationSirene ??
-      null,
-    codeInsee: emploi.structureMain?.adresse?.codeInsee ?? null,
-  },
-})
+// Réexpose l'employeuse courante sous la forme historique `emplois[].structure` (tableau à 0 ou 1
+// élément) attendue par les consommateurs de la liste.
+const toEmplois = (
+  personneMain: UtilisateurForListRow['personneMain'],
+): { structure: { nom: string | null; codeInsee: string | null } }[] => {
+  const employeuse = resolveEmployeuseActuelle(personneMain)
+  return employeuse
+    ? [{ structure: { nom: employeuse.nom, codeInsee: employeuse.codeInsee } }]
+    : []
+}
 
 export const queryUtilisateursForList = async ({
   skip,
@@ -103,9 +91,9 @@ export const queryUtilisateursForList = async ({
     orderBy: [...(orderBy ?? []), { lastName: 'asc' }],
   })
 
-  return utilisateurs.map(({ emplois, ...utilisateur }) => ({
+  return utilisateurs.map(({ personneMain, ...utilisateur }) => ({
     ...utilisateur,
-    emplois: emplois.map(toEmploiStructure),
+    emplois: toEmplois(personneMain),
   }))
 }
 
