@@ -10,9 +10,11 @@ import { output } from '../output'
 // Entrepôt disparaissent) : on peut donc non seulement lier les manquants, mais aussi re-pointer un
 // lien mal posé — sans jamais casser un compte vivant.
 //
-// Match par email EXACT (lower+trim) sur les 3 chemins réels du `contact` jsonb : `coop.email`,
-// `idposte.mail_perso`, `idposte.mail_pro`. Tie-break : personne portant une affectation `idposte`
-// active + structure (cf. features/structures/main/ensurePersonneMain).
+// Deux sources de match, la plus forte prioritaire : (1) email EXACT (lower+trim) sur les 3 chemins
+// réels du `contact` jsonb (`coop.email`, `idposte.mail_perso`, `idposte.mail_pro`) ; (2) nom+prénom
+// identiques + SIRET de l'employeuse coop (via l'affectation idposte de la SA), pour rattraper les 2e
+// comptes à email divergent. Le match nom+SIRET (plus faible) n'autorise PAS le vol par récence.
+// Tie-break : email > nom+SIRET, puis personne portant une affectation `idposte` active + structure.
 //
 // Table de décision par user U non lié :
 //   - LINK        : la personne candidate est LIBRE (`coop_id` NULL)                 -> on lie.
@@ -54,6 +56,7 @@ type AnalyseRow = {
   email: string
   is_conseiller_numerique: boolean
   outcome: Outcome
+  match_type: 'email' | 'nom-siret' | null
   personne_id: number | null
   jumeau_id: string | null
   jumeau_email: string | null
@@ -72,6 +75,8 @@ const analyser = (): Promise<AnalyseRow[]> =>
         u.id AS user_id,
         lower(trim(u.email)) AS email,
         u.email AS email_raw,
+        lower(trim(u.first_name)) AS prenom,
+        lower(trim(u.last_name)) AS nom,
         u.last_login AS u_last_login,
         (u.last_login IS NOT NULL) AS u_vivant,
         u.is_conseiller_numerique
@@ -79,10 +84,35 @@ const analyser = (): Promise<AnalyseRow[]> =>
       WHERE u.deleted IS NULL
         AND NOT EXISTS (SELECT 1 FROM main.personne p WHERE p.coop_id = u.id)
     ),
+    correspondance AS (
+      -- Match FORT par email exact (3 chemins réels du contact jsonb).
+      SELECT c.user_id, p.id AS personne_id, 'email'::text AS match_type
+      FROM cible c
+      JOIN main.personne p
+        ON lower(p.contact->'coop'->>'email') = c.email
+        OR lower(p.contact->'idposte'->>'mail_perso') = c.email
+        OR lower(p.contact->'idposte'->>'mail_pro') = c.email
+      UNION
+      -- Match plus FAIBLE par nom+prénom identiques ET SIRET de l'employeuse coop (via l'affectation
+      -- idposte de la SA correspondante). Rattrape les 2e comptes à email divergent.
+      SELECT c.user_id, p.id, 'nom-siret'
+      FROM cible c
+      JOIN coop.employes_structures es
+        ON es.user_id = c.user_id AND es.suppression IS NULL
+      JOIN main.structure_administrative sc
+        ON sc.structure_coop_id = es.structure_id
+      JOIN main.personne_affectations_emploi af
+        ON af.structure_administrative_id = sc.id AND af.source = 'idposte' AND af.est_active
+      JOIN main.personne p
+        ON p.id = af.personne_id
+        AND lower(trim(p.nom)) = c.nom
+        AND lower(trim(p.prenom)) = c.prenom
+      WHERE c.nom <> '' AND c.prenom <> ''
+    ),
     candidat AS (
       SELECT
         c.user_id, c.email_raw, c.u_last_login, c.u_vivant, c.is_conseiller_numerique,
-        p.id AS personne_id,
+        co.personne_id, co.match_type,
         p.coop_id AS jumeau_id,
         tw.email AS jumeau_email,
         tw.last_login AS jumeau_last_login,
@@ -99,11 +129,9 @@ const analyser = (): Promise<AnalyseRow[]> =>
             AND tw.email NOT ILIKE ${LEGACY_V1_LIKE}
           )
         END AS jumeau_vivant
-      FROM cible c
-      JOIN main.personne p
-        ON lower(p.contact->'coop'->>'email') = c.email
-        OR lower(p.contact->'idposte'->>'mail_perso') = c.email
-        OR lower(p.contact->'idposte'->>'mail_pro') = c.email
+      FROM correspondance co
+      JOIN cible c ON c.user_id = co.user_id
+      JOIN main.personne p ON p.id = co.personne_id
       LEFT JOIN coop.users tw ON tw.id = p.coop_id
     ),
     score AS (
@@ -113,8 +141,11 @@ const analyser = (): Promise<AnalyseRow[]> =>
           WHEN jumeau_vivant IS FALSE AND u_vivant THEN 're-point'
           -- both-alive : l'orphelin est le compte réellement utilisé (last_login strictement plus
           -- récent que le jumeau) -> on re-pointe vers lui. Sinon le jumeau reste (conflit-manuel).
+          -- Récence réservée au match EMAIL (fort) : sur nom+SIRET (plus faible), on ne vole JAMAIS
+          -- un compte vivant -> conflit-manuel pour revue humaine.
           WHEN jumeau_vivant IS TRUE AND u_vivant
-               AND u_last_login > jumeau_last_login THEN 're-point-recence'
+               AND u_last_login > jumeau_last_login
+               AND match_type = 'email' THEN 're-point-recence'
           WHEN jumeau_vivant IS TRUE THEN 'conflit-manuel'
           ELSE 'inactif'
         END AS action
@@ -123,13 +154,14 @@ const analyser = (): Promise<AnalyseRow[]> =>
     meilleur AS (
       SELECT DISTINCT ON (user_id)
         user_id, email_raw, is_conseiller_numerique, personne_id, jumeau_id,
-        jumeau_email, u_last_login, jumeau_last_login, action
+        jumeau_email, u_last_login, jumeau_last_login, match_type, action
       FROM score
       ORDER BY user_id,
         CASE action
           WHEN 'lie' THEN 0 WHEN 're-point' THEN 1 WHEN 're-point-recence' THEN 2
           WHEN 'conflit-manuel' THEN 3 ELSE 4
         END,
+        (match_type = 'email') DESC,
         aff_idposte DESC, personne_id ASC
     ),
     attribution AS (
@@ -151,6 +183,7 @@ const analyser = (): Promise<AnalyseRow[]> =>
         END,
         'sans-match'
       ) AS outcome,
+      m.match_type,
       m.personne_id,
       m.jumeau_id,
       m.jumeau_email,
@@ -173,6 +206,7 @@ const csvHeader = [
   'email',
   'is_conseiller_numerique',
   'outcome',
+  'match_type',
   'personne_id',
   'jumeau_id',
   'jumeau_email',
@@ -187,6 +221,7 @@ const rowToCsv = (row: AnalyseRow, applied: string): string =>
     escapeCsvField(row.email),
     String(row.is_conseiller_numerique),
     row.outcome,
+    row.match_type ?? '',
     row.personne_id === null ? '' : String(row.personne_id),
     row.jumeau_id ?? '',
     escapeCsvField(row.jumeau_email ?? ''),
@@ -262,6 +297,8 @@ export const executeRelierPersonnesCoopMain: JobExecutor<
     conflitsDisputee: count((r) => r.outcome === 'conflit-personne-disputee'),
     inactifs: count((r) => r.outcome === 'inactif'),
     sansMatch: count((r) => r.outcome === 'sans-match'),
+    // Matches issus du signal plus faible nom+SIRET (à relire au CSV en priorité).
+    viaNomSiret: count((r) => r.match_type === 'nom-siret'),
     ecrituresAppliquees: [...appliedByUser.values()].filter((v) => v === 'oui')
       .length,
     ecrituresCourse: [...appliedByUser.values()].filter((v) => v === 'course')
@@ -279,7 +316,9 @@ export const executeRelierPersonnesCoopMain: JobExecutor<
       results.conflitsManuel
     } ; disputée ${results.conflitsDisputee} ; inactifs ${
       results.inactifs
-    } ; sans-match ${results.sansMatch}` +
+    } ; sans-match ${results.sansMatch} ; via nom+SIRET ${
+      results.viaNomSiret
+    }` +
       (dryRun
         ? ''
         : ` ; écrits ${results.ecrituresAppliquees} (course ${results.ecrituresCourse})`) +
