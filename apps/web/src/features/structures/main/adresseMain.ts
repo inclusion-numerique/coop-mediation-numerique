@@ -1,7 +1,16 @@
 import { searchAdresse } from '@app/web/external-apis/apiAdresse'
 import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
-import type { SireneIdentity } from '@app/web/features/structures/siret/siretIdentity'
 import { prismaClient } from '@app/web/prismaClient'
+
+// Sous-ensemble d'adresse suffisant pour géocoder et persister une `main.adresse`. `SireneIdentity`
+// (API Entreprise) en est un sur-ensemble, mais le chemin d'écriture au fil de l'eau fournit ces
+// champs directement (payload Dataspace / saisie) sans passer par l'API — d'où ce type dédié.
+export type AdresseSource = {
+  adresse: string
+  codePostal: string
+  codeInsee: string
+  commune: string
+}
 
 // Résolution et persistance d'une `main.adresse` à partir d'une identité SIRENE, partagées entre le
 // job de complétion/couverture et le chemin d'écriture (ADR-002). L'adresse de l'API Entreprise est
@@ -32,7 +41,7 @@ export const adresseMainKey = ({
 }: ResolvedAdresseMain): string => `${codePostal}__${nomCommune}__${nomVoie}`
 
 export const resolveAdresseMain = async (
-  identity: SireneIdentity,
+  identity: AdresseSource,
 ): Promise<ResolvedAdresseMain> => {
   const feature = await searchAdresse(
     `${identity.adresse}, ${identity.codePostal} ${identity.commune}`,

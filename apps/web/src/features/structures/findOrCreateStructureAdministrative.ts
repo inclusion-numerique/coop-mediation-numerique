@@ -176,9 +176,18 @@ export const findOrCreateStructureAdministrative = async (
   input: FindOrCreateInput,
 ): Promise<{ id: string; mainId: number | null }> => {
   const coop = await findOrCreateCoopStructureAdministrative(input)
+  // Dual-write : on a déjà l'identité de la structure (payload Dataspace / saisie) -> on la passe à
+  // `ensureStructureAdministrativeMain` pour créer le `main` sans re-résoudre via l'API Entreprise.
   const main = await ensureStructureAdministrativeMain({
     coopId: coop.id,
     siret: input.siret,
+    identite: {
+      nom: input.nom,
+      adresse: input.adresse,
+      commune: input.commune,
+      codePostal: input.codePostal,
+      codeInsee: input.codeInsee,
+    },
   })
   return { id: coop.id, mainId: main?.id ?? null }
 }

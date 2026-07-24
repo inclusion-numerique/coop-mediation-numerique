@@ -1,4 +1,5 @@
 import {
+  type AdresseSource,
   findAdresseMainId,
   insertAdresseMain,
   resolveAdresseMain,
@@ -8,14 +9,33 @@ import { throttleApiEntreprise } from '@app/web/features/structures/siret/siretI
 import { prismaClient } from '@app/web/prismaClient'
 import * as Sentry from '@sentry/nextjs'
 
+// Identité minimale pour peupler `main.structure_administrative` : la dénomination (`nom`) + l'adresse
+// à géocoder. Le chemin d'écriture au fil de l'eau la connaît déjà (payload / saisie).
+export type IdentiteStructureMain = AdresseSource & { nom: string }
+
+// Résout l'identité via l'API Recherche d'entreprises. Réservé au cas où l'appelant n'a PAS l'identité
+// en main (reprise depuis un simple SIRET) : le chemin d'écriture au fil de l'eau, lui, la fournit
+// déjà (`identite`) et évite cet aller-retour throttlé et faillible (indisponible en e2e).
+const resolveIdentiteViaApi = async (
+  siret: string | null,
+): Promise<IdentiteStructureMain | null> => {
+  if (!siret || siret.trim() === '') return null
+  await throttleApiEntreprise()
+  const resolved = await resolveIdentiteFromSiret(siret)
+  if ('erreur' in resolved) return null
+  return resolved.identite
+}
+
 /**
  * Garantit qu'une ligne `main.structure_administrative` existe pour la structure employeuse coop
- * `coopId`, à partir du SIRET (identité API Recherche d'entreprises + adresse géocodée BAN). Anti-
- * dérive de l'ADR-002 : appelée à chaque création/réutilisation d'une employeuse pour qu'aucune ligne
- * coop ne reste sans équivalent `main` (prérequis de la bascule des clés étrangères).
+ * `coopId` (adresse géocodée BAN). Anti-dérive de l'ADR-002 : appelée à chaque création/réutilisation
+ * d'une employeuse pour qu'aucune ligne coop ne reste sans équivalent `main` (prérequis de la bascule
+ * des clés étrangères, et du read de l'employeuse depuis `main`).
  *
  * - Ne fait rien de coûteux si la ligne `main` existe déjà (simple lookup par `structure_coop_id`).
- * - Sans SIRET (seule donnée coop de confiance), ne crée rien.
+ * - **Dual-write au fil de l'eau** : l'appelant fournit `identite` (déjà connue puisqu'on vient
+ *   d'écrire la structure coop) -> aucun appel API Entreprise. À défaut, on la résout depuis le SIRET.
+ * - Sans identité fournie NI SIRET résolvable, ne crée rien.
  * - **Best-effort et non bloquant** : toute erreur (API, géocodage, conflit d'unicité) est avalée —
  *   le chemin d'écriture ne doit JAMAIS échouer à cause de la couverture `main`. La dérive résiduelle
  *   est rattrapée par le job `completer-structures-main`.
@@ -23,9 +43,11 @@ import * as Sentry from '@sentry/nextjs'
 export const ensureStructureAdministrativeMain = async ({
   coopId,
   siret,
+  identite,
 }: {
   coopId: string
   siret: string | null
+  identite?: IdentiteStructureMain
 }): Promise<{ id: number } | null> => {
   const existing = await prismaClient.structureAdministrativeMain.findFirst({
     where: { structureCoopId: coopId },
@@ -33,15 +55,13 @@ export const ensureStructureAdministrativeMain = async ({
   })
   if (existing) return existing
 
-  if (!siret || siret.trim() === '') return null
-
   try {
-    await throttleApiEntreprise()
-    const resolved = await resolveIdentiteFromSiret(siret)
-    if ('erreur' in resolved) return null
+    // Identité en main (dual-write) -> pas d'aller-retour API. Sinon on la résout depuis le SIRET.
+    const resolvedIdentite = identite ?? (await resolveIdentiteViaApi(siret))
+    if (!resolvedIdentite) return null
 
-    const { identite } = resolved
-    const denominationAntenne = identite.nom.trim() === '' ? null : identite.nom
+    const denominationAntenne =
+      resolvedIdentite.nom.trim() === '' ? null : resolvedIdentite.nom
 
     // Dédoublonnage par la clé métier `(siret, denomination_antenne)` AVANT de créer : une même
     // employeuse peut déjà exister dans `main` sous un autre `structure_coop_id` (données Entrepôt,
@@ -55,7 +75,7 @@ export const ensureStructureAdministrativeMain = async ({
       })
     if (existingByIdentity) return existingByIdentity
 
-    const adresse = await resolveAdresseMain(identite)
+    const adresse = await resolveAdresseMain(resolvedIdentite)
     const adresseId =
       (await findAdresseMainId(adresse))?.id ??
       (await insertAdresseMain(adresse))
