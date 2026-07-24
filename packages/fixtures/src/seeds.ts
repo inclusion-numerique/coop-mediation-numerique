@@ -11,6 +11,7 @@ import {
   quitterEquipe,
 } from '@app/fixtures/equipeCoordonnee'
 import { output } from '@app/fixtures/output'
+import { seedPersonnesMainConseillerNumerique } from '@app/fixtures/personnesMainConseillerNumerique'
 import { seedStructures } from '@app/fixtures/structures'
 import { upsertCraFixtures } from '@app/fixtures/upsertCraFixtures'
 import {
@@ -146,6 +147,10 @@ export const seed = async (transaction: Prisma.TransactionClient) => {
     crasDemarchesAdministratives: fixtureCrasDemarchesAdministratives,
     crasCollectifs: fixtureCrasCollectifs,
   })
+
+  // Employeuse idposte des CN de test dans `main` (l'Entrepôt la fournit en prod ; le mock ne peuple
+  // que les emplois coop) -> nécessaire au read pur-main du récap d'inscription. Après les users.
+  await seedPersonnesMainConseillerNumerique(transaction)
 
   // Backfill `structure_main_id` / `structure_employeuse_main_id` sur les emplois et activités seedés
   // (les fixtures ne portent que l'uuid coop) : le périmètre élargi ADR-002 fait lire l'employeuse
