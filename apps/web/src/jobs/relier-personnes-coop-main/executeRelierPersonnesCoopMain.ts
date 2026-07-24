@@ -15,11 +15,12 @@ import { output } from '../output'
 // active + structure (cf. features/structures/main/ensurePersonneMain).
 //
 // Table de décision par user U non lié :
-//   - LINK       : la personne candidate est LIBRE (`coop_id` NULL)                 -> on lie.
-//   - RE-POINT   : la personne est liée à un jumeau U' MORT et U est VIVANT         -> on déplace le lien.
-//   - CONFLIT-MANUEL : la personne est liée à un jumeau U' VIVANT                    -> on ne touche à rien.
-//   - INACTIF    : U lui-même est mort (jamais connecté) et n'a que des liens tiers -> on ne touche à rien.
-//   - SANS-MATCH : aucune personne par email                                        -> hors périmètre (create séparé).
+//   - LINK        : la personne candidate est LIBRE (`coop_id` NULL)                 -> on lie.
+//   - RE-POINT    : la personne est liée à un jumeau U' MORT et U est VIVANT         -> on déplace le lien.
+//   - RE-POINT-RECENCE : jumeau U' VIVANT mais U s'est connecté PLUS RÉCEMMENT       -> on déplace vers U.
+//   - CONFLIT-MANUEL : jumeau U' VIVANT et au moins aussi récent que U               -> on ne touche à rien.
+//   - INACTIF     : U lui-même est mort (jamais connecté) et n'a que des liens tiers -> on ne touche à rien.
+//   - SANS-MATCH  : aucune personne par email                                        -> hors périmètre (create séparé).
 //
 // « VIVANT » = `last_login IS NOT NULL` ET non supprimé ET pas un compte legacy `conseiller-v1`.
 // « MORT »   = la négation. Garde de sûreté absolue : un jumeau VIVANT n'est JAMAIS dépossédé (auto).
@@ -34,10 +35,19 @@ const LEGACY_V1_LIKE = 'conseiller-v1-%@coop-numerique.anct.gouv.fr'
 type Outcome =
   | 'lie'
   | 're-point'
+  | 're-point-recence'
   | 'conflit-manuel'
   | 'conflit-personne-disputee'
   | 'inactif'
   | 'sans-match'
+
+// Outcomes qui écrivent un `coop_id`. `re-point`* déplacent depuis le jumeau (garde sur `jumeau_id`) ;
+// `lie` pose sur une personne encore libre (garde sur `coopId IS NULL`).
+const ecritDepuisJumeau = (outcome: Outcome): boolean =>
+  outcome === 're-point' || outcome === 're-point-recence'
+
+const estEcriture = (outcome: Outcome): boolean =>
+  outcome === 'lie' || ecritDepuisJumeau(outcome)
 
 type AnalyseRow = {
   user_id: string
@@ -101,6 +111,10 @@ const analyser = (): Promise<AnalyseRow[]> =>
         CASE
           WHEN jumeau_id IS NULL THEN 'lie'
           WHEN jumeau_vivant IS FALSE AND u_vivant THEN 're-point'
+          -- both-alive : l'orphelin est le compte réellement utilisé (last_login strictement plus
+          -- récent que le jumeau) -> on re-pointe vers lui. Sinon le jumeau reste (conflit-manuel).
+          WHEN jumeau_vivant IS TRUE AND u_vivant
+               AND u_last_login > jumeau_last_login THEN 're-point-recence'
           WHEN jumeau_vivant IS TRUE THEN 'conflit-manuel'
           ELSE 'inactif'
         END AS action
@@ -113,15 +127,15 @@ const analyser = (): Promise<AnalyseRow[]> =>
       FROM score
       ORDER BY user_id,
         CASE action
-          WHEN 'lie' THEN 0 WHEN 're-point' THEN 1
-          WHEN 'conflit-manuel' THEN 2 ELSE 3
+          WHEN 'lie' THEN 0 WHEN 're-point' THEN 1 WHEN 're-point-recence' THEN 2
+          WHEN 'conflit-manuel' THEN 3 ELSE 4
         END,
         aff_idposte DESC, personne_id ASC
     ),
     attribution AS (
       SELECT DISTINCT ON (personne_id) user_id, personne_id
       FROM meilleur
-      WHERE action IN ('lie', 're-point')
+      WHERE action IN ('lie', 're-point', 're-point-recence')
       ORDER BY personne_id, user_id
     )
     SELECT
@@ -130,7 +144,8 @@ const analyser = (): Promise<AnalyseRow[]> =>
       c.is_conseiller_numerique,
       COALESCE(
         CASE
-          WHEN m.action IN ('lie', 're-point') AND a.user_id IS NULL
+          WHEN m.action IN ('lie', 're-point', 're-point-recence')
+               AND a.user_id IS NULL
             THEN 'conflit-personne-disputee'
           ELSE m.action
         END,
@@ -189,7 +204,7 @@ const appliquer = async (
   const { count } = await prismaClient.personneMain.updateMany({
     where: {
       id: row.personne_id,
-      coopId: row.outcome === 're-point' ? row.jumeau_id : null,
+      coopId: ecritDepuisJumeau(row.outcome) ? row.jumeau_id : null,
     },
     data: { coopId: row.user_id },
   })
@@ -207,8 +222,7 @@ export const executeRelierPersonnesCoopMain: JobExecutor<
   if (!dryRun) {
     const aEcrire = rows.filter(
       (row): row is AnalyseRow & { personne_id: number } =>
-        (row.outcome === 'lie' || row.outcome === 're-point') &&
-        row.personne_id !== null,
+        estEcriture(row.outcome) && row.personne_id !== null,
     )
     await aEcrire.reduce<Promise<void>>(async (previous, row) => {
       await previous
@@ -240,6 +254,10 @@ export const executeRelierPersonnesCoopMain: JobExecutor<
     aRepointerCn: count(
       (r) => r.outcome === 're-point' && r.is_conseiller_numerique,
     ),
+    aRepointerRecence: count((r) => r.outcome === 're-point-recence'),
+    aRepointerRecenceCn: count(
+      (r) => r.outcome === 're-point-recence' && r.is_conseiller_numerique,
+    ),
     conflitsManuel: count((r) => r.outcome === 'conflit-manuel'),
     conflitsDisputee: count((r) => r.outcome === 'conflit-personne-disputee'),
     inactifs: count((r) => r.outcome === 'inactif'),
@@ -255,7 +273,9 @@ export const executeRelierPersonnesCoopMain: JobExecutor<
       results.ciblesNonLiees
     } users non liés ; à lier ${results.aLier} ; à re-pointer ${
       results.aRepointer
-    } (dont CN ${results.aRepointerCn}) ; conflit-manuel ${
+    } (dont CN ${results.aRepointerCn}) ; re-point récence ${
+      results.aRepointerRecence
+    } (dont CN ${results.aRepointerRecenceCn}) ; conflit-manuel ${
       results.conflitsManuel
     } ; disputée ${results.conflitsDisputee} ; inactifs ${
       results.inactifs
