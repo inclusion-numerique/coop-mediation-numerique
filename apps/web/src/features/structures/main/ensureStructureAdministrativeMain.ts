@@ -41,6 +41,20 @@ export const ensureStructureAdministrativeMain = async ({
     if ('erreur' in resolved) return null
 
     const { identite } = resolved
+    const denominationAntenne = identite.nom.trim() === '' ? null : identite.nom
+
+    // Dédoublonnage par la clé métier `(siret, denomination_antenne)` AVANT de créer : une même
+    // employeuse peut déjà exister dans `main` sous un autre `structure_coop_id` (données Entrepôt,
+    // ou un autre coop pointant la même identité légale). Sans ce lookup, la création violerait
+    // `structure_administrative_siret_antenne_ukey` et l'erreur (avalée) laisserait un emploi sans
+    // `main` -> employeuse invisible. On réutilise alors la ligne existante (id partagé).
+    const existingByIdentity =
+      await prismaClient.structureAdministrativeMain.findFirst({
+        where: { siret, denominationAntenne },
+        select: { id: true },
+      })
+    if (existingByIdentity) return existingByIdentity
+
     const adresse = await resolveAdresseMain(identite)
     const adresseId =
       (await findAdresseMainId(adresse))?.id ??
@@ -49,7 +63,7 @@ export const ensureStructureAdministrativeMain = async ({
     return await prismaClient.structureAdministrativeMain.create({
       data: {
         siret,
-        denominationAntenne: identite.nom.trim() === '' ? null : identite.nom,
+        denominationAntenne,
         adresseId,
         structureCoopId: coopId,
       },
