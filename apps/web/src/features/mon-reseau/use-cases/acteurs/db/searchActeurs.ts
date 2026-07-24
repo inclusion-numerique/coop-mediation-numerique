@@ -1,4 +1,5 @@
 import { departementCodeFromInseeRegex } from '@app/web/features/mon-reseau/departementCodeFromInseeRegex'
+import { employeuseMainLateral } from '@app/web/features/structures/main/employeuseMainSql'
 import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
 import { DEFAULT_PAGE, toNumberOr } from '@app/web/libs/data-table/toNumberOr'
 import { prismaClient } from '@app/web/prismaClient'
@@ -142,7 +143,9 @@ export const searchActeurs = async ({
   // Build lieu filter conditions
   const lieuxCondition =
     searchParams.lieux && searchParams.lieux.length > 0
-      ? Prisma.sql`(s1.id = ANY(${searchParams.lieux}::UUID[]) OR s2.id = ANY(${searchParams.lieux}::UUID[]))`
+      ? // Filtre par LIEU d'activité (s2) uniquement : le match employeuse (s1.id) était mort depuis
+        // le split (ids employeuse/lieu disjoints) et s1.id est désormais un int main -> retiré.
+        Prisma.sql`s2.id = ANY(${searchParams.lieux}::UUID[])`
       : Prisma.sql`TRUE`
 
   const communesCondition =
@@ -171,8 +174,7 @@ export const searchActeurs = async ({
         u.last_name,
         u.first_name
       FROM users u
-      LEFT JOIN employes_structures es ON es.user_id = u.id AND es.suppression IS NULL AND es.fin_emploi IS NULL
-      LEFT JOIN structure_administrative s1 ON s1.id = es.structure_id
+      ${employeuseMainLateral('u.id')}
       LEFT JOIN mediateurs m ON m.user_id = u.id
       LEFT JOIN mediateurs_en_activite mea ON mea.mediateur_id = m.id AND mea.suppression IS NULL AND mea.fin_activite IS NULL
       LEFT JOIN lieu_inclusion s2 ON s2.id = mea.structure_id
