@@ -146,4 +146,20 @@ export const seed = async (transaction: Prisma.TransactionClient) => {
     crasDemarchesAdministratives: fixtureCrasDemarchesAdministratives,
     crasCollectifs: fixtureCrasCollectifs,
   })
+
+  // Backfill `structure_main_id` / `structure_employeuse_main_id` sur les emplois et activités seedés
+  // (les fixtures ne portent que l'uuid coop) : le périmètre élargi ADR-002 fait lire l'employeuse
+  // depuis `main`. Jointure par `structure_coop_id` sur les SA main fixtures (cf. seedStructures).
+  await transaction.$executeRaw`
+    UPDATE coop.employes_structures es
+    SET structure_main_id = m.id
+    FROM main.structure_administrative m
+    WHERE m.structure_coop_id = es.structure_id
+      AND es.structure_main_id IS NULL`
+  await transaction.$executeRaw`
+    UPDATE coop.activites a
+    SET structure_employeuse_main_id = m.id
+    FROM main.structure_administrative m
+    WHERE m.structure_coop_id = a.structure_employeuse_id
+      AND a.structure_employeuse_main_id IS NULL`
 }
