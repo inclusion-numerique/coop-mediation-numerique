@@ -56,19 +56,33 @@ dépendance à `coop.employes_structures` pour les reads d'employeuse d'un utili
 
 **Conséquence sur la section « Reste à faire » ci-dessous** : les **reads d'employeuse d'un
 utilisateur** de la section B sont **superseded** (refaits en pur main via `personne→affectation`).
-Ce qui reste réellement :
 
-1. **Filtres / stats / mon-réseau** joignant encore sur `structure_id` / `structure_employeuse_id`
-   (inverses de B + SQL bruts de C) → basculer sur `structure_employeuse_main_id` ou
-   `personne→affectation`. **Le gros du volume restant.**
-2. **`api/v1/utilisateurs`** : confirmer la cohérence pur-main.
-3. **Routes admin orphelines** `utilisateurs/[id]/emplois` + `emplois/[id]/modifier` (plus de point
-   d'entrée depuis le retrait du bouton « Modifier ») → **à supprimer**.
-4. **Phase 2 réconciliation** : 46 `conflit-manuel` (dédoublonnage comptes) + 15 CN absents (CSV).
-5. **Prep prod** : [runbook dédié](adr-002-runbook-prep-prod-pur-main.md) (migrations + backfill
-   `structure_employeuse_main_id`).
-6. **Échange final** : drop colonnes/FK coop SA, arrêt writes/emplois coop, suppression des jobs de
-   synchro/réconciliation.
+### Mise à jour 2026-07-25 — CODE du flip pur-main complet
+
+Tous les reads de l'employeuse d'un utilisateur passent par `main`. Plus aucun read via
+`coop.structure_administrative`.
+
+- ✅ **#1 Filtres / stats / mon-réseau** (`getMonReseauPageData`, `searchActeurs`,
+  `searchMediateursCoordonneBy` en LATERAL pur main via `employeuseMainLateral` ;
+  `getStructuresEmployeusesOptions` sur `main.structure_administrative` via affectation active, id
+  int stringifié ; `activitesFiltersSqlWhereConditions` sur `structure_employeuse_main_id`). Smoke
+  test d'intégration ajouté (couvre la composition Prisma en CI).
+- ✅ **`api/v1/utilisateurs`** : confirmé cohérent (expose `structure_id = emploi.structureMainId`
+  int main, aucune relation SA coop) — pas de changement.
+- ✅ **Routes admin orphelines** `utilisateurs/[id]/emplois` (+ `creer`, `[emploiId]/modifier`)
+  supprimées (pages + forms + `employeStructureRouter` + validations, débranché du `appRouter`).
+- ➖ **Comptes admin `_count.emplois`** (`correlateStructureAdministrative`, action-plan, liste/merge/
+  détail SA) : NON-item pour le pur-main — c'est la gestion de la table `coop.structure_administrative`
+  elle-même, qui disparaît à l'échange final.
+
+**Reste (opérationnel / séparé)** :
+
+1. **Prep prod** + déploiement : [runbook dédié](adr-002-runbook-prep-prod-pur-main.md) (migrations +
+   backfill `structure_employeuse_main_id` ~4M, répété en local).
+2. **Phase 2 réconciliation** : 46 `conflit-manuel` (dédoublonnage comptes) + 15 CN absents (CSV).
+3. **Échange final** (PR ultérieure) : drop colonnes/FK coop SA, arrêt writes/emplois coop, suppression
+   des jobs de synchro/réconciliation.
+4. **Prérequis (autre PR)** : alignement SA employeuses coop↔main.
 
 ## Reste à faire
 
