@@ -69,20 +69,26 @@ export const resolveAdresseMain = async (
   }
 }
 
-// Réutilise une adresse existante : par `code_ban` (uuid unique) quand la BAN en a fourni un — sinon
-// l'INSERT violerait la contrainte d'unicité si l'adresse est déjà en base (données Dataspace) —,
-// sinon par la clé (code_postal, commune, voie).
+// Réutilise une adresse existante pour ne violer AUCUNE des deux contraintes d'unicité de
+// `main.adresse` : la clé COMPOSANT `(code_postal, nom_commune, nom_voie, numero_voie, repetition)`
+// ET `code_ban` (uuid). On cherche par les DEUX (OR) : un même lieu peut déjà exister en base
+// (données Entrepôt) avec un `code_ban` différent ou absent — chercher seulement par `code_ban`
+// manquait la ligne existante et l'INSERT violait la clé composant (bug révélé par l'e2e inscription
+// CN : adresse ANCT "20 Avenue de Ségur" déjà présente).
 export const findAdresseMainId = (resolved: ResolvedAdresseMain) =>
   prismaClient.adresseMain.findFirst({
-    where: resolved.codeBan
-      ? { codeBan: resolved.codeBan }
-      : {
+    where: {
+      OR: [
+        {
           codePostal: resolved.codePostal,
           nomCommune: resolved.nomCommune,
           nomVoie: resolved.nomVoie,
           numeroVoie: null,
           repetition: null,
         },
+        ...(resolved.codeBan ? [{ codeBan: resolved.codeBan }] : []),
+      ],
+    },
     select: { id: true },
   })
 
