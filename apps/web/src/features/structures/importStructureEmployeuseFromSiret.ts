@@ -1,5 +1,6 @@
 import type { InitializeDebugLogger } from '@app/web/features/inscription/use-cases/initialize/initializeInscription'
 import { findOrCreateStructureAdministrative } from '@app/web/features/structures/findOrCreateStructureAdministrative'
+import { dualWriteEmployeuseAffectation } from '@app/web/features/structures/main/ensureAffectationEmploiMain'
 import { fetchSiretApiData } from '@app/web/features/structures/siret/fetchSiretData'
 import { prismaClient } from '@app/web/prismaClient'
 
@@ -132,23 +133,34 @@ export const importStructureEmployeuseFromSiret = async ({
       emploiId: existingEmploi.id,
       structureId: structure.id,
     })
-    // Emploi already exists, return structure id
-    return { structureId: structure.id, structureMainId: structure.mainId }
+  } else {
+    log('Creating new emploi', { userId, structureId: structure.id })
+
+    // Create new emploi with today's date (dual-write coop->main, ADR-002 étape 6)
+    await prismaClient.employeStructure.create({
+      data: {
+        userId,
+        structureId: structure.id,
+        structureMainId: structure.mainId,
+        debut: new Date(),
+      },
+    })
+
+    log('Emploi created successfully', { userId, structureId: structure.id })
   }
 
-  log('Creating new emploi', { userId, structureId: structure.id })
-
-  // Create new emploi with today's date (dual-write coop->main, ADR-002 étape 6)
-  await prismaClient.employeStructure.create({
-    data: {
-      userId,
-      structureId: structure.id,
-      structureMainId: structure.mainId,
-      debut: new Date(),
-    },
+  // Dual-write main (ADR-002 périmètre élargi) : personne + affectation active, en miroir de l'emploi.
+  const user = await prismaClient.user.findUnique({
+    where: { id: userId },
+    select: { email: true },
   })
-
-  log('Emploi created successfully', { userId, structureId: structure.id })
+  if (user) {
+    await dualWriteEmployeuseAffectation({
+      coopUserId: userId,
+      email: user.email,
+      structureMainId: structure.mainId,
+    })
+  }
 
   return { structureId: structure.id, structureMainId: structure.mainId }
 }

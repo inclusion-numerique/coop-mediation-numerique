@@ -1,3 +1,4 @@
+import { ensurePersonneMain } from '@app/web/features/structures/main/ensurePersonneMain'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
 
@@ -64,4 +65,29 @@ export const deactivateCoopAffectationsExcept = async (
     },
     data: { estActive: false },
   })
+}
+
+// Dual-write d'un rattachement user↔employeuse : garantit la `main.personne` (par email) et pose son
+// affectation active. À appeler en miroir de chaque écriture `coop.employes_structures` (ADR-002
+// périmètre élargi). Ne clôture PAS les autres affectations (à la charge de l'appelant si besoin).
+// Ne fait rien côté affectation si `structureMainId` est null (couverture main best-effort échouée).
+export const dualWriteEmployeuseAffectation = async (
+  {
+    coopUserId,
+    email,
+    structureMainId,
+  }: {
+    coopUserId: string
+    email: string
+    structureMainId: number | null
+  },
+  prisma: PrismaLike = prismaClient,
+): Promise<void> => {
+  const personne = await ensurePersonneMain({ coopUserId, email }, prisma)
+  if (structureMainId !== null) {
+    await ensureAffectationEmploiMain(
+      { personneId: personne.id, structureAdministrativeId: structureMainId },
+      prisma,
+    )
+  }
 }
