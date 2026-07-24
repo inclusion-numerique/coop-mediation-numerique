@@ -56,6 +56,9 @@ CREATE TABLE "main"."contrat" (
 -- CreateIndex
 CREATE UNIQUE INDEX "personne_coop_id_ukey" ON "main"."personne"("coop_id");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "personne_affectations_emploi_ukey" ON "main"."personne_affectations_emploi"("personne_id", "structure_administrative_id", "source");
+
 -- AddForeignKey
 ALTER TABLE "main"."personne" ADD CONSTRAINT "personne_coop_id_fkey" FOREIGN KEY ("coop_id") REFERENCES "coop"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
