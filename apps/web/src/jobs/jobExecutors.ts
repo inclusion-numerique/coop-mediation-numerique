@@ -24,7 +24,6 @@ import { executeFixStructures } from './fix-structures/executeFixStructures'
 import { executeFixTags } from './fix-tags/executeFixTags'
 import { executeFixUsers } from './fix-users/executeFixUsers'
 import { executeFixUsersRoles } from './fix-users-roles/executeFixUsersRoles'
-import { executeGenerateStructuresActionPlan } from './generate-structures-action-plan/executeGenerateStructuresActionPlan'
 import { executeImportContactsToBrevo } from './import-contacts-to-brevo/executeImportContactsToBrevo'
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
 import type { Job, JobName, JobPayload } from './jobs'
@@ -94,7 +93,6 @@ export const jobExecutors: {
   'deduplicate-lieux': executeDeduplicateLieux,
   'detect-duplicate-lieux': executeDetectDuplicateLieux,
   'export-duplicate-sirets': executeExportDuplicateSirets,
-  'generate-structures-action-plan': executeGenerateStructuresActionPlan,
 }
 
 export const executeJob = async (job: Job) => {

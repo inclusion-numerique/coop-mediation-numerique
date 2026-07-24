@@ -21,7 +21,6 @@ import { FixStructuresJobValidation } from './fix-structures/fixStructuresJob'
 import { FixTagsJobValidation } from './fix-tags/fixTagsJob'
 import { FixUsersJobValidation } from './fix-users/fixUsersJob'
 import { FixUsersRolesJobValidation } from './fix-users-roles/fixUsersRolesJob'
-import { GenerateStructuresActionPlanJobValidation } from './generate-structures-action-plan/generateStructuresActionPlanJob'
 import { ImportContactsToBrevoValidation } from './import-contacts-to-brevo/ImportContactsToBrevoJob'
 import { InactiveUsersRemindersJobValidation } from './inactive-users-reminders/inactiveUsersJob'
 import { NormaliserBeneficiairesJobValidation } from './normaliser-beneficiaires/normaliserBeneficiairesJob'
@@ -86,7 +85,6 @@ export const JobValidation = z.discriminatedUnion('name', [
   DeduplicateLieuxJobValidation,
   DetectDuplicateLieuxJobValidation,
   ExportDuplicateSiretsJobValidation,
-  GenerateStructuresActionPlanJobValidation,
 ])
 
 export type Job = z.infer<typeof JobValidation>
