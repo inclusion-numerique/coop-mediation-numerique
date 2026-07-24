@@ -4,7 +4,6 @@ import { maintenanceRouter } from '@app/web/features/maintenance-mode/use-cases/
 import { apiClientRouter } from '@app/web/server/rpc/apiClient/apiClientRouter'
 import { craRouter } from '@app/web/server/rpc/cra/craRouter'
 import { router } from '@app/web/server/rpc/createRouter'
-import { employeStructureRouter } from '@app/web/server/rpc/employe-structure/employeStructureRouter'
 import { imageRouter } from '@app/web/server/rpc/image/imageRouter'
 import { inscriptionRouter } from '@app/web/server/rpc/inscription/inscriptionRouter'
 import { lieuActiviteRouter } from '@app/web/server/rpc/lieu-activite/lieuActiviteRouter'
@@ -29,7 +28,6 @@ export const appRouter = router({
   lieuActivite: lieuActiviteRouter,
   apiClient: apiClientRouter,
   rdvServicePublic: rdvServicePublicRouter,
-  employeStructure: employeStructureRouter,
   tags: tagsRouter,
   dataspaceAdmin: dataspaceAdminRouter,
   maintenance: maintenanceRouter,
