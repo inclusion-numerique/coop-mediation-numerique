@@ -2,8 +2,8 @@ import { referentFromMainContact } from '@app/web/features/structures/main/mainC
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
 
-// Sélection main pour l'affichage employeuse (ADR-002 étape 6) : nom via denomination, adresse via la
-// relation adresse main, référents via le jsonb `contact` (nom/prénom, téléphone, courriels).
+// Sélection main pour l'affichage employeuse (ADR-002 périmètre élargi) : nom via denomination, adresse
+// via la relation adresse main, référents via le jsonb `contact`.
 export const emploiStructureMainSelect = {
   id: true,
   denominationSirene: true,
@@ -21,8 +21,9 @@ export const emploiStructureMainSelect = {
   },
 } satisfies Prisma.StructureAdministrativeMainSelect
 
-// Forme normalisée exposée aux consommateurs. Inchangée pour eux, sauf : `id` désormais numérique
-// (main), et `complementAdresse` toujours `null` (main ne le porte pas — abandon, décision 6).
+// Forme normalisée exposée aux consommateurs. `id` = int `main.structure_administrative.id` (sert de
+// clé à l'écriture `structure_employeuse_main_id` de l'activité). `complementAdresse` toujours `null`
+// (main ne le porte pas — décision 6).
 export type EmploiStructureEmployeuse = {
   id: number | null
   nom: string
@@ -60,183 +61,88 @@ export const toEmploiStructureEmployeuse = (
   ...referentFromMainContact(structureMain?.contact ?? null),
 })
 
-const emploiContractSelect = {
-  id: true,
-  userId: true,
-  debut: true,
-  fin: true,
-  creation: true,
-  // Ids bruts pour les écritures (dual-write coop->main, ADR-002 étape 6) : l'uuid coop et l'int main.
-  structureId: true,
-  structureMainId: true,
-} satisfies Prisma.EmployeStructureSelect
+// L'employeuse d'un acteur à une date, lue en PUR MAIN (ADR-002 périmètre élargi). Plus aucune
+// référence à `coop.employes_structures` : l'employeuse courante vient de l'affectation active, et
+// l'employeuse À UNE DATE du contrat `main.contrat` qui couvre cette date (renseigné pour les CN).
+const personneEmployeuseForDateSelect = {
+  affectationsEmploi: {
+    where: { estActive: true },
+    select: {
+      source: true,
+      createdAt: true,
+      structureAdministrative: { select: emploiStructureMainSelect },
+    },
+  },
+  contrats: {
+    select: {
+      dateDebut: true,
+      dateFin: true,
+      dateRupture: true,
+      structureAdministrative: { select: emploiStructureMainSelect },
+    },
+  },
+} satisfies Prisma.PersonneMainSelect
 
-export type EmploiContract = Prisma.EmployeStructureGetPayload<{
-  select: typeof emploiContractSelect
+type PersonneEmploiPayload = Prisma.PersonneMainGetPayload<{
+  select: typeof personneEmployeuseForDateSelect
 }>
 
-export type ActeurEmploi = EmploiContract & {
-  structure: EmploiStructureEmployeuse
+export type ActeurEmploi = { structure: EmploiStructureEmployeuse }
+
+// Priorité d'affectation courante : idposte (dispositif CN) > coop, à priorité égale la plus récente.
+const SOURCE_RANK: Record<string, number> = { idposte: 0, coop: 1 }
+
+const affectationCourante = (personne: PersonneEmploiPayload) =>
+  personne.affectationsEmploi
+    .toSorted((a, b) => {
+      const bySource =
+        (SOURCE_RANK[a.source] ?? 2) - (SOURCE_RANK[b.source] ?? 2)
+      if (bySource !== 0) return bySource
+      return (b.createdAt?.getTime() ?? 0) - (a.createdAt?.getTime() ?? 0)
+    })
+    .at(0) ?? null
+
+// Contrat couvrant la date (`dateDebut <= date <= dateFin|dateRupture`, fin ouverte si nulle).
+const contratCouvrant = (personne: PersonneEmploiPayload, date: Date) =>
+  personne.contrats.find((contrat) => {
+    if (!contrat.dateDebut || !contrat.structureAdministrative) return false
+    const fin = contrat.dateFin ?? contrat.dateRupture
+    return contrat.dateDebut <= date && (fin === null || fin >= date)
+  }) ?? null
+
+// Employeuse à la date : le contrat qui couvre la date (CN) ; à défaut (non-CN sans dates, ou trou),
+// l'employeuse COURANTE (affectation active). `null` si la personne n'a aucune employeuse.
+export const resolveEmployeuseForDate = (
+  personne: PersonneEmploiPayload | null,
+  date: Date,
+): EmploiStructureEmployeuse | null => {
+  if (!personne) return null
+
+  const contrat = contratCouvrant(personne, date)
+  if (contrat?.structureAdministrative) {
+    return toEmploiStructureEmployeuse(contrat.structureAdministrative)
+  }
+
+  const affectation = affectationCourante(personne)
+  if (affectation) {
+    return toEmploiStructureEmployeuse(affectation.structureAdministrative)
+  }
+
+  return null
 }
 
-const hasDebutDate = (
-  emploi: ActeurEmploi,
-): emploi is ActeurEmploi & { debut: Date } => emploi.debut !== null
-
-/**
- * Get the temporary emploi for a date.
- *
- * A temporary emploi is an emploi without a debut date.
- * It is valid from the next day after the latest ended real emploi.
- */
-const getTemporaryEmploiForDate = ({
-  emploisWithNullDebut,
-  emploisWithDebut,
-  date,
-}: {
-  emploisWithNullDebut: ActeurEmploi[]
-  emploisWithDebut: (ActeurEmploi & { debut: Date })[]
-  date: Date
-}): ActeurEmploi | null => {
-  const temporaryEmploi = emploisWithNullDebut.toSorted(
-    (a, b) => b.creation.getTime() - a.creation.getTime(),
-  )[0]
-  if (!temporaryEmploi) {
-    return null
-  }
-
-  if (emploisWithDebut.length === 0) {
-    return temporaryEmploi
-  }
-
-  const hasRunningRealEmploi = emploisWithDebut.some(
-    (emploi) => emploi.fin === null,
-  )
-  if (hasRunningRealEmploi) {
-    return null
-  }
-
-  const latestEndedRealEmploiDate = emploisWithDebut
-    .map((emploi) => emploi.fin)
-    .filter((fin): fin is Date => fin !== null)
-    .toSorted((a, b) => b.getTime() - a.getTime())[0]
-
-  if (!latestEndedRealEmploiDate) {
-    return null
-  }
-
-  const temporaryEmploiValidFrom = new Date(latestEndedRealEmploiDate)
-  temporaryEmploiValidFrom.setHours(0, 0, 0, 0)
-  temporaryEmploiValidFrom.setDate(temporaryEmploiValidFrom.getDate() + 1)
-
-  return date >= temporaryEmploiValidFrom ? temporaryEmploi : null
-}
-
-/**
- * Rules for finding the current emploi for a user and a date.
- *
- * Non-strict mode (handles gaps gracefully, each emploi is valid until the next one starts):
- * - If date <= first emploi debut, return first emploi
- * - Iterate through emplois ordered by debut ASC:
- *   - If date < next emploi debut, return current emploi
- *   - If no next emploi (last one), return it
- *
- * Strict mode:
- * - Only returns an emploi if the date falls within its debut/fin bounds
- * - Returns null if no emploi matches the date
- */
-// add typescript overrides: if strict is true, the return type is EmploiData, otherwise it is EmploiData | null
-export const getActeurEmploiForDate = async <T extends boolean>({
+export const getActeurEmploiForDate = async ({
   userId,
   date,
-  strictDateBounds,
 }: {
   userId: string
   date: Date
-  strictDateBounds: T
-}): Promise<T extends true ? ActeurEmploi | null : ActeurEmploi> => {
-  const rawEmplois = await prismaClient.employeStructure.findMany({
-    where: {
-      userId,
-      suppression: null,
-    },
-    select: {
-      ...emploiContractSelect,
-      structureMain: {
-        select: emploiStructureMainSelect,
-      },
-    },
-    orderBy: {
-      creation: 'desc',
-    },
+}): Promise<ActeurEmploi | null> => {
+  const user = await prismaClient.user.findUnique({
+    where: { id: userId },
+    select: { personneMain: { select: personneEmployeuseForDateSelect } },
   })
 
-  const emplois: ActeurEmploi[] = rawEmplois.map(
-    ({ structureMain, ...contract }) => ({
-      ...contract,
-      structure: toEmploiStructureEmployeuse(structureMain),
-    }),
-  )
-
-  const emploisWithDebut = emplois
-    .filter(hasDebutDate)
-    .toSorted((a, b) => a.debut.getTime() - b.debut.getTime())
-  const emploisWithNullDebut = emplois.filter((emploi) => emploi.debut === null)
-  const temporaryEmploi = getTemporaryEmploiForDate({
-    emploisWithNullDebut,
-    emploisWithDebut,
-    date,
-  })
-
-  if (strictDateBounds) {
-    const strictRealEmploi = emploisWithDebut
-      .filter(
-        (emploi) =>
-          emploi.debut <= date && (emploi.fin === null || emploi.fin >= date),
-      )
-      .toSorted((a, b) => b.debut.getTime() - a.debut.getTime())[0]
-
-    if (strictRealEmploi) {
-      return strictRealEmploi
-    }
-
-    return (temporaryEmploi ?? null) as T extends true
-      ? ActeurEmploi | null
-      : ActeurEmploi
-  }
-
-  if (temporaryEmploi) {
-    return temporaryEmploi
-  }
-
-  // Non-strict mode: find the real emploi valid for the given date.
-  // Emplois are ordered by debut ASC.
-  const firstEmploi = emploisWithDebut.at(0)
-  if (!firstEmploi) {
-    throw new Error('No emploi found for user')
-  }
-
-  // If date <= first emploi debut, return first emploi
-  if (date <= firstEmploi.debut) {
-    return firstEmploi
-  }
-
-  // Iterate through emplois: each emploi is valid until the next one starts
-  for (let i = 0; i < emploisWithDebut.length; i++) {
-    const currentEmploi = emploisWithDebut[i]
-    const nextEmploi = emploisWithDebut[i + 1]
-
-    // If no next emploi (last one), return current
-    if (!nextEmploi) {
-      return currentEmploi
-    }
-
-    // If date < next emploi debut, current emploi is still valid
-    if (date < nextEmploi.debut) {
-      return currentEmploi
-    }
-  }
-
-  // Fallback (should not be reached due to loop logic)
-  return firstEmploi
+  const structure = resolveEmployeuseForDate(user?.personneMain ?? null, date)
+  return structure ? { structure } : null
 }

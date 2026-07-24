@@ -144,7 +144,6 @@ export const getActeurDetailPageData = async ({
   const emploi = await getActeurEmploiForDate({
     userId,
     date: new Date(),
-    strictDateBounds: true,
   })
 
   const lieuxActivites = mediateurId

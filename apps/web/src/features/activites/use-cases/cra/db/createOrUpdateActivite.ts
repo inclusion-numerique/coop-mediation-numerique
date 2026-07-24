@@ -209,7 +209,6 @@ export const createOrUpdateActivite = async ({
   const emploi = await getActeurEmploiForDate({
     userId: mediateurUserId,
     date: new Date(date),
-    strictDateBounds: false,
   })
 
   const existingActivite = id
@@ -270,7 +269,7 @@ export const createOrUpdateActivite = async ({
 
   // If accompagnement is "A distance", we assign the location to the structure employeuse
   const structureEmployeuse =
-    data.typeLieu === 'ADistance' ? emploi.structure : null
+    data.typeLieu === 'ADistance' ? (emploi?.structure ?? null) : null
 
   const orienteVersStructure = yesNoToOptionalBoolean(
     'orienteVersStructure' in data ? data.orienteVersStructure : undefined,
@@ -310,13 +309,11 @@ export const createOrUpdateActivite = async ({
     accompagnementsCount,
     duree: craDureeDataToMinutes(duree),
     typeLieu: data.typeLieu ?? undefined,
-    // Dual-write coop->main (ADR-002 étape 6) : on connecte la relation coop (uuid) ET, si elle
-    // existe, la relation main (int).
-    structureEmployeuse: {
-      connect: { id: emploi.structureId },
-    },
-    structureEmployeuseMain: emploi.structureMainId
-      ? { connect: { id: emploi.structureMainId } }
+    // Employeuse de l'activité en PUR MAIN (ADR-002 périmètre élargi) : on ne connecte plus la
+    // relation coop (`structure_employeuse_id` devenu nullable), seulement main. `structure.id` est
+    // l'int `main.structure_administrative.id`.
+    structureEmployeuseMain: emploi?.structure.id
+      ? { connect: { id: emploi.structure.id } }
       : undefined,
     niveau: 'niveau' in data ? data.niveau : undefined,
     materiel: 'materiel' in data ? data.materiel : undefined,

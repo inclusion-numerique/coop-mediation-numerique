@@ -13,13 +13,6 @@ type Story = StoryObj<typeof meta>
 export const Complet: Story = {
   args: {
     emploi: {
-      id: '1',
-      userId: '1',
-      debut: new Date(),
-      fin: null,
-      creation: new Date(),
-      structureId: 'story-structure-id',
-      structureMainId: 1,
       structure: {
         id: 1,
         nom: 'Anonymal',
@@ -45,13 +38,6 @@ export const Complet: Story = {
 export const Minimal: Story = {
   args: {
     emploi: {
-      id: '1',
-      userId: '1',
-      debut: new Date(),
-      fin: null,
-      creation: new Date(),
-      structureId: 'story-structure-id',
-      structureMainId: 1,
       structure: {
         id: 1,
         nom: 'Anonymal',
@@ -77,13 +63,6 @@ export const Minimal: Story = {
 export const MinimalAvecSiret: Story = {
   args: {
     emploi: {
-      id: '1',
-      userId: '1',
-      debut: new Date(),
-      fin: null,
-      creation: new Date(),
-      structureId: 'story-structure-id',
-      structureMainId: 1,
       structure: {
         id: 1,
         nom: 'Anonymal',
@@ -109,13 +88,6 @@ export const MinimalAvecSiret: Story = {
 export const MinimalAvecTypologies: Story = {
   args: {
     emploi: {
-      id: '1',
-      userId: '1',
-      debut: new Date(),
-      fin: null,
-      creation: new Date(),
-      structureId: 'story-structure-id',
-      structureMainId: 1,
       structure: {
         id: 1,
         nom: 'Anonymal',

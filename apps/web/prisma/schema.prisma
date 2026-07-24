@@ -1398,10 +1398,12 @@ model Activite {
   // - cette information aurait pu etre déduite des liens entre mediateur, emploi, et activité
   // - elle est stockée directement ici pour des raisons de performance, et est mise à jour en cas de modification d'emploi
   // - elle est également utile dans le cas des imports d'anciens cras v1 qui ont cette information en dur dans le cra v1
-  structureEmployeuseId     String                       @map("structure_employeuse_id") @db.Uuid
-  structureEmployeuse       StructureAdministrative      @relation(fields: [structureEmployeuseId], references: [id], name: "activite_structure_employeuse")
-  // Colonne cible de la bascule coop->main (ADR-002 étape 6) : remplie par le backfill, coexiste avec
-  // structureEmployeuseId (uuid) jusqu'à l'échange final. Nullable pendant la transition.
+  // Nullable (ADR-002 périmètre élargi) : l'employeuse d'une activité passe désormais par main
+  // (structureEmployeuseMain). Le nouveau code n'écrit plus le coop ; la colonne + FK coop restent
+  // (nullable) le temps de la transition, drop à l'échange final.
+  structureEmployeuseId     String?                      @map("structure_employeuse_id") @db.Uuid
+  structureEmployeuse       StructureAdministrative?     @relation(fields: [structureEmployeuseId], references: [id], name: "activite_structure_employeuse")
+  // Cible main de la bascule coop->main : remplie par le backfill + écrite par le nouveau code.
   structureEmployeuseMainId Int?                         @map("structure_employeuse_main_id")
   structureEmployeuseMain   StructureAdministrativeMain? @relation(fields: [structureEmployeuseMainId], references: [id], name: "activite_structure_employeuse_main")
 

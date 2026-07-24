@@ -5,13 +5,17 @@ import { conseillerSansLieuInscription } from '@app/fixtures/users/conseillerSan
 import { coordinateurInscription } from '@app/fixtures/users/coordinateurInscription'
 import type { Prisma } from '@prisma/client'
 
-// En prod, l'employeuse d'un CN vient d'une affectation `idposte` dans `main` (fournie par l'Entrepôt),
-// PAS d'une écriture coop. Le mock Dataspace, lui, ne peuple que les emplois coop -> le read pur-main
-// du récap serait vide en e2e. On sème donc ici, pour chaque CN d'inscription, la `main.personne`
-// (liée par `coop_id`) + une affectation `idposte` active vers la SA main de `structureEmployeuse`
-// (déjà seedée par seedStructures). Reflète l'état que l'Entrepôt garantit en prod.
+// Peuple `main` avec l'employeuse des users de test, comme en prod (où la coop lit l'employeuse depuis
+// `main.personne` + affectations). Deux passes :
+//  1. GÉNÉRAL : personne (coop_id) + affectation `source=coop` active pour tout user ayant un emploi
+//     coop actif dont la structure a une SA main — miroir du backfill `backfill-personnes-affectations
+//     -main`. Nécessaire aux reads pur-main (sessionUser, CRA, admin, mon-réseau…).
+//  2. CN INSCRIPTION : affectation `source=idposte` (l'Entrepôt la fournit en prod ; le mock Dataspace
+//     ne peuple que les emplois coop) vers la SA main de `structureEmployeuse`, pour les 4 CN dont
+//     l'employeuse n'est pas seedée en emploi.
 //
-// À seeder APRÈS `fixtureUsers` (la FK `personne.coop_id` référence `coop.users`).
+// À exécuter APRÈS `fixtureUsers` + `seedStructures` (FK `personne.coop_id` -> `coop.users`, SA main).
+
 const cnInscriptionUserIds = [
   conseillerInscription.id,
   conseillerInscriptionSansContrat.id,
@@ -19,9 +23,28 @@ const cnInscriptionUserIds = [
   coordinateurInscription.id,
 ]
 
-export const seedPersonnesMainConseillerNumerique = async (
+export const seedPersonnesMain = async (
   transaction: Prisma.TransactionClient,
 ) => {
+  // Passe 1 — personne + affectation coop pour tout emploi coop actif ayant une SA main.
+  await transaction.$executeRaw`
+    INSERT INTO main.personne (coop_id)
+    SELECT DISTINCT es.user_id
+    FROM coop.employes_structures es
+    JOIN main.structure_administrative m ON m.structure_coop_id = es.structure_id
+    WHERE es.suppression IS NULL
+      AND NOT EXISTS (SELECT 1 FROM main.personne p WHERE p.coop_id = es.user_id)
+    ON CONFLICT DO NOTHING`
+  await transaction.$executeRaw`
+    INSERT INTO main.personne_affectations_emploi (personne_id, structure_administrative_id, source, est_active)
+    SELECT DISTINCT p.id, m.id, 'coop', true
+    FROM coop.employes_structures es
+    JOIN main.structure_administrative m ON m.structure_coop_id = es.structure_id
+    JOIN main.personne p ON p.coop_id = es.user_id
+    WHERE es.suppression IS NULL
+    ON CONFLICT (personne_id, structure_administrative_id, source) DO NOTHING`
+
+  // Passe 2 — affectation idposte des CN d'inscription vers la SA main de structureEmployeuse.
   const structureAdministrativeMain =
     await transaction.structureAdministrativeMain.findFirst({
       where: { structureCoopId: structureEmployeuse.id },

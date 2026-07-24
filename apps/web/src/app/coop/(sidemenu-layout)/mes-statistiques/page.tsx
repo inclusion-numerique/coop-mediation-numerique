@@ -38,7 +38,6 @@ const MesStatistiquesPage = async (props: {
   const employeStructure = await getActeurEmploiForDate({
     userId: user.id,
     date: new Date(),
-    strictDateBounds: true,
   })
 
   return (

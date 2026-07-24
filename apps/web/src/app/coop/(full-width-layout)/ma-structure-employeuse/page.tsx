@@ -3,11 +3,7 @@ import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import ActeurStructureEmployeuse from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurStructureEmployeuse'
-import {
-  emploiStructureMainSelect,
-  toEmploiStructureEmployeuse,
-} from '@app/web/features/mon-reseau/use-cases/acteurs/db/getActeurEmploiForDate'
-import { prismaClient } from '@app/web/prismaClient'
+import { getActeurEmploiForDate } from '@app/web/features/mon-reseau/use-cases/acteurs/db/getActeurEmploiForDate'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
@@ -24,50 +20,12 @@ const MaStructureEmployeusePage = async () => {
     return redirect('/')
   }
 
-  const structuresEmployeuses = await prismaClient.employeStructure.findMany({
-    where: {
-      userId: user.id,
-      suppression: null,
-      OR: [
-        {
-          fin: null,
-        },
-        {
-          fin: { gte: new Date() },
-        },
-      ],
-    },
-    orderBy: {
-      debut: 'desc',
-    },
-    select: {
-      id: true,
-      userId: true,
-      debut: true,
-      fin: true,
-      creation: true,
-      structureId: true,
-      structureMainId: true,
-      structureMain: {
-        select: emploiStructureMainSelect,
-      },
-    },
+  // Employeuse COURANTE en pur main (ADR-002 périmètre élargi) : affectation active / contrat couvrant
+  // aujourd'hui. Plus aucune lecture de `coop.employes_structures`.
+  const emploi = await getActeurEmploiForDate({
+    userId: user.id,
+    date: new Date(),
   })
-
-  // Repointé vers main (ADR-002 étape 6) : structure normalisée via le mapper partagé.
-  const rawEmploi = structuresEmployeuses.at(0)
-  const emploi = rawEmploi
-    ? {
-        id: rawEmploi.id,
-        userId: rawEmploi.userId,
-        debut: rawEmploi.debut,
-        fin: rawEmploi.fin,
-        creation: rawEmploi.creation,
-        structureId: rawEmploi.structureId,
-        structureMainId: rawEmploi.structureMainId,
-        structure: toEmploiStructureEmployeuse(rawEmploi.structureMain),
-      }
-    : undefined
 
   return (
     <>
