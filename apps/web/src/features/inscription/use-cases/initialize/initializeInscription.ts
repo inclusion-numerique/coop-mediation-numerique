@@ -1,5 +1,4 @@
 import { sessionUserSelect } from '@app/web/auth/getSessionUserFromSessionToken'
-import { sessionUserHasStructureEmployeuse } from '@app/web/auth/sessionUser'
 import {
   getMediateurFromDataspaceApi,
   isDataspaceApiError,
@@ -208,20 +207,22 @@ export const initializeInscription = async ({
       where: { id: userId },
       select: {
         siret: true,
-        // Seule la présence d'un emploi est testée (sessionUserHasStructureEmployeuse) : pas de
-        // lecture de la structure, donc pas de dépendance à la relation coop (ADR-002 étape 6).
-        emplois: {
+        // ADR-002 échange final : présence d'employeuse testée sur les affectations MAIN actives
+        // (les emplois coop sont gelés / vides pour un nouvel utilisateur).
+        personneMain: {
           select: {
-            id: true,
+            affectationsEmploi: {
+              where: { estActive: true },
+              select: { id: true },
+            },
           },
-          where: { suppression: null },
         },
       },
     })
 
     if (
       userAfterSync &&
-      !sessionUserHasStructureEmployeuse(userAfterSync) &&
+      (userAfterSync.personneMain?.affectationsEmploi.length ?? 0) === 0 &&
       userAfterSync.siret
     ) {
       log('Fallback: importing structure employeuse from SIRET', {
@@ -288,27 +289,28 @@ export const initializeInscription = async ({
     where: { id: userId },
     select: {
       siret: true,
-      // Idem : test de présence seul, aucune lecture de la structure (ADR-002 étape 6).
-      emplois: {
+      // ADR-002 échange final : la présence d'une employeuse se teste sur les affectations MAIN
+      // actives (les emplois coop sont gelés / vides pour un nouvel utilisateur).
+      personneMain: {
         select: {
-          id: true,
-        },
-        where: {
-          suppression: null,
+          affectationsEmploi: {
+            where: { estActive: true },
+            select: { id: true },
+          },
         },
       },
     },
   })
 
+  const hasStructureEmployeuse =
+    (user?.personneMain?.affectationsEmploi.length ?? 0) > 0
+
   log('User state for SIRET fallback', {
     siret: user?.siret ?? null,
-    emploisCount: user?.emplois.length ?? 0,
-    hasStructureEmployeuse: user
-      ? sessionUserHasStructureEmployeuse(user)
-      : false,
+    hasStructureEmployeuse,
   })
 
-  if (user && !sessionUserHasStructureEmployeuse(user) && user.siret) {
+  if (user && !hasStructureEmployeuse && user.siret) {
     log('Importing structure employeuse from SIRET (no Dataspace)', {
       siret: user.siret,
     })
