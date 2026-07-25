@@ -12,8 +12,9 @@ import { StructureAdministrativeForList } from './queryStructuresAdministratives
 export type StructuresAdministrativesDataTableConfiguration =
   DataTableConfiguration<
     StructureAdministrativeForList,
-    Prisma.StructureAdministrativeWhereInput,
-    Prisma.StructureAdministrativeOrderByWithRelationInput
+    // ADR-002 échange final : la liste admin des employeuses lit `main.structure_administrative`.
+    Prisma.StructureAdministrativeMainWhereInput,
+    Prisma.StructureAdministrativeMainOrderByWithRelationInput
   >
 
 export const StructuresAdministrativesDataTable = {
@@ -31,7 +32,7 @@ export const StructuresAdministrativesDataTable = {
       cell: ({ nom }) => nom,
       defaultSortable: true,
       defaultSortableDirection: 'asc',
-      orderBy: (direction) => [{ nom: direction }],
+      orderBy: (direction) => [{ denominationAntenne: direction }],
     },
     {
       name: 'siret',
@@ -67,7 +68,7 @@ export const StructuresAdministrativesDataTable = {
       csvHeaders: ['Emplois'],
       csvValues: ({ _count }) => [_count.emplois],
       cell: ({ _count }) => optionalNumberToString(_count.emplois, null),
-      orderBy: (direction) => [{ emplois: { _count: direction } }],
+      orderBy: (direction) => [{ affectationsEmploi: { _count: direction } }],
     },
     {
       name: 'creation',
@@ -77,7 +78,7 @@ export const StructuresAdministrativesDataTable = {
       defaultSortableDirection: 'desc',
       csvValues: ({ creation }) => [creation.toISOString()],
       cell: ({ creation }) => dateAsDayAndTime(creation),
-      orderBy: (direction) => [{ creation: direction }],
+      orderBy: (direction) => [{ createdAt: direction }],
     },
     {
       name: 'modification',
@@ -87,7 +88,7 @@ export const StructuresAdministrativesDataTable = {
       defaultSortableDirection: 'desc',
       csvValues: ({ modification }) => [modification.toISOString()],
       cell: ({ modification }) => dateAsDayAndTime(modification),
-      orderBy: (direction) => [{ modification: direction }],
+      orderBy: (direction) => [{ updatedAt: direction }],
     },
   ],
 } satisfies StructuresAdministrativesDataTableConfiguration

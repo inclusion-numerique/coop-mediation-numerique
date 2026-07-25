@@ -34,18 +34,21 @@ export const searchStructuresAdministratives = async (
     pageSize: toNumberOr(searchParams?.lignes)(DEFAULT_PAGE_SIZE),
   })
 
+  // ADR-002 échange final : recherche sur `main.structure_administrative`. Le nom couvre les deux
+  // dénominations (antenne/sirene) ; adresse/commune/code postal viennent de la relation `adresse`.
   const matchesWhere = {
-    suppression: null,
+    deletedAt: null,
     AND: toQueryParts(searchParams).map((part) => ({
       OR: [
-        { nom: { contains: part, mode: 'insensitive' } },
+        { denominationSirene: { contains: part, mode: 'insensitive' } },
+        { denominationAntenne: { contains: part, mode: 'insensitive' } },
         { siret: { contains: part, mode: 'insensitive' } },
-        { adresse: { contains: part, mode: 'insensitive' } },
-        { commune: { contains: part, mode: 'insensitive' } },
-        { codePostal: { contains: part, mode: 'insensitive' } },
+        { adresse: { nomVoie: { contains: part, mode: 'insensitive' } } },
+        { adresse: { nomCommune: { contains: part, mode: 'insensitive' } } },
+        { adresse: { codePostal: { contains: part, mode: 'insensitive' } } },
       ],
     })),
-  } satisfies Prisma.StructureAdministrativeWhereInput
+  } satisfies Prisma.StructureAdministrativeMainWhereInput
 
   const structures = await queryStructuresAdministrativesForList({
     where: matchesWhere,
@@ -54,7 +57,7 @@ export const searchStructuresAdministratives = async (
     orderBy,
   })
 
-  const matchesCount = await prismaClient.structureAdministrative.count({
+  const matchesCount = await prismaClient.structureAdministrativeMain.count({
     where: matchesWhere,
   })
 

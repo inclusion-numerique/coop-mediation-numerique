@@ -9,8 +9,9 @@ export const getStructuresAdministrativesListPageData = async ({
 }) => {
   const [searchResult, totalCount] = await Promise.all([
     searchStructuresAdministratives({ searchParams }),
-    prismaClient.structureAdministrative.count({
-      where: { suppression: null },
+    // ADR-002 échange final : total sur `main.structure_administrative` (source de vérité).
+    prismaClient.structureAdministrativeMain.count({
+      where: { deletedAt: null },
     }),
   ])
 

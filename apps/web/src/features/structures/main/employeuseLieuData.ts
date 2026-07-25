@@ -75,16 +75,15 @@ export type EmployeuseMainAdminPayload =
   }>
 
 // Employeuse main sous la forme attendue par `getStructuresInfos` des pages admin utilisateur.
-// L'`id` reste l'uuid COOP : le lien `/administration/structures-employeuses/[id]` lit encore la coop
-// pendant la transition (déplacer cette route vers l'int main relève de l'échange final). Les autres
-// champs viennent de main (source de vérité).
+// ADR-002 échange final : la route `/administration/structures-employeuses/[id]` lit désormais main,
+// donc l'`id` passé est l'entier main stringifié (plus l'uuid coop). Tous les champs viennent de main.
 export const employeuseMainToAdminStructure = (
-  structureCoopId: string,
+  id: string,
   structure: EmployeuseMainAdminPayload | null,
 ) => {
   const lieuData = structure ? employeuseMainToLieuData(structure) : null
   return {
-    id: structureCoopId,
+    id,
     nom: lieuData?.nom ?? '',
     adresse: lieuData?.adresse ?? '',
     commune: lieuData?.commune ?? '',

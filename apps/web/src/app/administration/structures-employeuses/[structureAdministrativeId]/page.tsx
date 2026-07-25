@@ -1,6 +1,10 @@
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import {
+  employeuseMainSelect,
+  employeuseMainToLieuData,
+} from '@app/web/features/structures/main/employeuseLieuData'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { prismaClient } from '@app/web/prismaClient'
@@ -16,43 +20,64 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const getStructureAdministrative = async (id: string) =>
-  prismaClient.structureAdministrative.findFirst({
-    where: { id, suppression: null },
+// ADR-002 échange final : le détail employeuse lit `main.structure_administrative` (source de
+// vérité). L'`id` de route est l'entier main. Les « emplois » sont les affectations actives main,
+// résolues vers l'utilisateur coop via `personne.coop_id`.
+const getStructureAdministrative = async (id: string) => {
+  const mainId = Number(id)
+  if (!Number.isInteger(mainId)) return null
+
+  const structure = await prismaClient.structureAdministrativeMain.findFirst({
+    where: { id: mainId, deletedAt: null },
     select: {
-      id: true,
-      nom: true,
-      siret: true,
-      rna: true,
-      denomination: true,
-      adresse: true,
-      complementAdresse: true,
-      commune: true,
-      codePostal: true,
-      codeInsee: true,
-      nomReferent: true,
-      courrielReferent: true,
-      telephoneReferent: true,
-      emplois: {
-        where: { suppression: null },
-        orderBy: { creation: 'desc' },
+      ...employeuseMainSelect,
+      denominationSirene: true,
+      affectationsEmploi: {
+        where: { estActive: true },
         select: {
           id: true,
-          debut: true,
-          fin: true,
-          user: {
+          personne: {
             select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              name: true,
-              email: true,
+              user: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  name: true,
+                  email: true,
+                },
+              },
             },
           },
         },
       },
     },
   })
+
+  if (!structure) return null
+
+  const lieuData = employeuseMainToLieuData(structure)
+
+  return {
+    nom: lieuData.nom,
+    denomination: structure.denominationSirene,
+    siret: lieuData.siret,
+    rna: lieuData.rna,
+    adresse: lieuData.adresse,
+    complementAdresse: lieuData.complementAdresse,
+    commune: lieuData.commune,
+    codePostal: lieuData.codePostal,
+    codeInsee: lieuData.codeInsee,
+    nomReferent: lieuData.nomReferent,
+    courrielReferent: lieuData.courrielReferent,
+    telephoneReferent: lieuData.telephoneReferent,
+    emplois: structure.affectationsEmploi.flatMap((affectation) =>
+      affectation.personne.user
+        ? [{ id: affectation.id, user: affectation.personne.user }]
+        : [],
+    ),
+  }
+}
 
 const userLabel = ({
   firstName,

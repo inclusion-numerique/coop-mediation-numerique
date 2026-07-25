@@ -73,7 +73,9 @@ export const resolveEmployeusesHistorique = (
         affectation.structureAdministrative.id === structure.id,
     )
     const contrat = pickContratForStructure(personne.contrats, structure.id)
-    const id = structure.structureCoopId ?? String(structure.id)
+    // ADR-002 échange final : la route admin `/structures-employeuses/[id]` lit main -> l'id est
+    // l'entier main stringifié (plus l'uuid coop).
+    const id = String(structure.id)
 
     return {
       id,

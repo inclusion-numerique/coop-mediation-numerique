@@ -1,28 +1,16 @@
+import {
+  employeuseMainSelect,
+  employeuseMainToLieuData,
+} from '@app/web/features/structures/main/employeuseLieuData'
 import { prismaClient } from '@app/web/prismaClient'
 import { toTitleCase } from '@app/web/utils/toTitleCase'
 import type { Prisma } from '@prisma/client'
 
-// Sélection pour la liste d'administration des EMPLOYEUSES (structure_administrative).
-// Frère de `searchStructureSelect` (qui cible le rôle lieu, cf. split 1a.2).
-// Le compteur d'emplois vient de la relation FK directe `emplois` (employes_structures.structure_id).
-export const structureAdministrativeForListSelect = {
-  id: true,
-  nom: true,
-  siret: true,
-  adresse: true,
-  commune: true,
-  codePostal: true,
-  denomination: true,
-  creation: true,
-  modification: true,
-  _count: {
-    select: {
-      emplois: {
-        where: { suppression: null },
-      },
-    },
-  },
-} satisfies Prisma.StructureAdministrativeSelect
+// ADR-002 échange final : la liste d'administration des EMPLOYEUSES lit désormais
+// `main.structure_administrative` (source de vérité), pas la copie coop. L'`id` exposé est l'entier
+// main stringifié (clé de route/CSV). Le compteur d'emplois vient des affectations actives main.
+
+const EPOCH = new Date(0)
 
 export const queryStructuresAdministrativesForList = async ({
   skip,
@@ -30,25 +18,40 @@ export const queryStructuresAdministrativesForList = async ({
   where,
   orderBy,
 }: {
-  where: Prisma.StructureAdministrativeWhereInput
+  where: Prisma.StructureAdministrativeMainWhereInput
   take?: number
   skip?: number
-  orderBy?: Prisma.StructureAdministrativeOrderByWithRelationInput[]
+  orderBy?: Prisma.StructureAdministrativeMainOrderByWithRelationInput[]
 }) => {
-  const structures = await prismaClient.structureAdministrative.findMany({
+  const structures = await prismaClient.structureAdministrativeMain.findMany({
     where,
     take,
     skip,
-    select: structureAdministrativeForListSelect,
-    orderBy: [...(orderBy ?? []), { nom: 'asc' }],
+    select: {
+      ...employeuseMainSelect,
+      createdAt: true,
+      updatedAt: true,
+      _count: {
+        select: { affectationsEmploi: { where: { estActive: true } } },
+      },
+    },
+    orderBy: [...(orderBy ?? []), { denominationAntenne: 'asc' }],
   })
 
-  return structures.map(({ nom, adresse, commune, ...rest }) => ({
-    ...rest,
-    nom: toTitleCase(nom, { noUpper: true }),
-    adresse: toTitleCase(adresse, { noUpper: true }),
-    commune: toTitleCase(commune),
-  }))
+  return structures.map((structure) => {
+    const lieuData = employeuseMainToLieuData(structure)
+    return {
+      id: String(structure.id),
+      nom: toTitleCase(lieuData.nom, { noUpper: true }),
+      siret: lieuData.siret,
+      adresse: toTitleCase(lieuData.adresse, { noUpper: true }),
+      commune: toTitleCase(lieuData.commune),
+      codePostal: lieuData.codePostal,
+      creation: structure.createdAt ?? EPOCH,
+      modification: structure.updatedAt ?? structure.createdAt ?? EPOCH,
+      _count: { emplois: structure._count.affectationsEmploi },
+    }
+  })
 }
 
 export type StructureAdministrativeForList = Awaited<
