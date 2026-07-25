@@ -1,3 +1,4 @@
+import { seedPersonnesMain } from '@app/fixtures/personnesMainConseillerNumerique'
 import { refreshFixturesComputedFields } from '@app/fixtures/refreshFixturesComputedFields'
 import { resetFixtureUser } from '@app/fixtures/resetFixtureUser'
 import {
@@ -222,12 +223,30 @@ const expectEnum = <T extends string>(
   item.proportion = computeProportion(count, total)
 }
 
+// ADR-002 échange final : les options d'employeuse sont lues en PUR MAIN (affectations). L'id de
+// l'option est l'entier `main.structure_administrative.id` (auto-incrément) -> résolu dynamiquement.
+// Le fixture main SA n'a pas d'adresse -> `commune` de l'option = null.
+const employeuseMainState = { id: 0 }
+const expectedStructureEmployeuseOption = () => ({
+  id: String(employeuseMainState.id),
+  nom: structureEmployeuse.nom,
+  commune: null,
+})
+
 describe('getMesStatistiquesPageData', () => {
   beforeAll(async () => {
     await seedStructures(prismaClient)
     await resetFixtureUser(mediateurAvecActivite, false)
     await resetFixtureUser(mediateurSansActivites, false)
     await resetFixtureUser(conseillerNumerique, false)
+    // Affectations main (personne -> structure_administrative) pour que l'employeuse soit lue en main.
+    await seedPersonnesMain(prismaClient)
+    const employeuseMain =
+      await prismaClient.structureAdministrativeMain.findFirstOrThrow({
+        where: { structureCoopId: structureEmployeuse.id },
+        select: { id: true },
+      })
+    employeuseMainState.id = employeuseMain.id
     await refreshFixturesComputedFields()
   }, 100_000)
 
@@ -253,13 +272,7 @@ describe('getMesStatistiquesPageData', () => {
       })
       expect(data).toEqual({
         ...emptyData,
-        structuresEmployeusesOptions: [
-          {
-            id: structureEmployeuse.id,
-            nom: structureEmployeuse.nom,
-            commune: structureEmployeuse.commune,
-          },
-        ],
+        structuresEmployeusesOptions: [expectedStructureEmployeuseOption()],
         lieuxActiviteOptions: [
           {
             label: mediateque.nom,
@@ -579,13 +592,7 @@ describe('getMesStatistiquesPageData', () => {
             },
           },
         ],
-        structuresEmployeusesOptions: [
-          {
-            id: structureEmployeuse.id,
-            nom: structureEmployeuse.nom,
-            commune: structureEmployeuse.commune,
-          },
-        ],
+        structuresEmployeusesOptions: [expectedStructureEmployeuseOption()],
         activiteSourceOptions,
       }
     })
