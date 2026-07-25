@@ -10,6 +10,7 @@ import type {
   JsonApiListResponse,
   JsonApiResource,
 } from '@app/web/app/api/v1/JsonApiTypes'
+import { pickContratForStructure } from '@app/web/features/structures/main/affectationEmploiMain'
 import { prismaClient } from '@app/web/prismaClient'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { NextResponse } from 'next/server'
@@ -74,13 +75,13 @@ import { type ZodError, z } from 'zod'
  *               example: 67890
  *             emplois:
  *               type: array
- *               description: liste des emplois (relation "EmployeStructure") avec uniquement l'id et l'id de la structure employeuse (main.structure_administrative)
+ *               description: employeuses courantes (affectations actives dans main.personne_affectations_emploi) avec l'id de l'affectation et l'id de la structure employeuse (main.structure_administrative). Dates best-effort depuis main.contrat.
  *               items:
  *                 type: object
  *                 properties:
  *                   id:
  *                     type: string
- *                     format: uuid
+ *                     description: identifiant de l'affectation emploi (main)
  *                   structure_id:
  *                     type: integer
  *                     nullable: true
@@ -533,9 +534,26 @@ export const GET = createApiV1Route
           }
         : undefined,
       include: {
-        emplois: {
-          where: {
-            ...supressionFilter,
+        // ADR-002 échange final : les « emplois » exposés sont les affectations MAIN actives (source
+        // de vérité), plus la copie coop gelée. Dates best-effort depuis `main.contrat`.
+        personneMain: {
+          select: {
+            affectationsEmploi: {
+              where: { estActive: true },
+              select: {
+                id: true,
+                structureAdministrativeId: true,
+                createdAt: true,
+              },
+            },
+            contrats: {
+              select: {
+                structureId: true,
+                dateDebut: true,
+                dateFin: true,
+                dateRupture: true,
+              },
+            },
           },
         },
         mediateur: {
@@ -622,15 +640,26 @@ export const GET = createApiV1Route
           modification: u.updated.toISOString(),
           suppression: u.deleted?.toISOString() ?? null,
           dataspace_id: u.dataspaceId ?? null,
-          emplois: u.emplois.map((emploi) => ({
-            id: emploi.id,
-            structure_id: emploi.structureMainId,
-            debut: emploi.debut?.toISOString() ?? null,
-            fin: emploi.fin?.toISOString() ?? null,
-            creation: emploi.creation.toISOString(),
-            modification: emploi.modification.toISOString(),
-            suppression: emploi.suppression?.toISOString() ?? null,
-          })),
+          emplois: (u.personneMain?.affectationsEmploi ?? []).map(
+            (affectation) => {
+              const contrat = pickContratForStructure(
+                u.personneMain?.contrats ?? [],
+                affectation.structureAdministrativeId,
+              )
+              const creation = affectation.createdAt ?? new Date(0)
+              return {
+                id: String(affectation.id),
+                structure_id: affectation.structureAdministrativeId,
+                debut: contrat?.dateDebut?.toISOString() ?? null,
+                fin:
+                  (contrat?.dateFin ?? contrat?.dateRupture)?.toISOString() ??
+                  null,
+                creation: creation.toISOString(),
+                modification: creation.toISOString(),
+                suppression: null,
+              }
+            },
+          ),
           mediateur: u.mediateur
             ? {
                 id: u.mediateur.id,
