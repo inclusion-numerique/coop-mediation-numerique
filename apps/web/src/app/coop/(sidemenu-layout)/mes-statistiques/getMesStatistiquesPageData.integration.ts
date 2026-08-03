@@ -225,12 +225,13 @@ const expectEnum = <T extends string>(
 
 // ADR-002 échange final : les options d'employeuse sont lues en PUR MAIN (affectations). L'id de
 // l'option est l'entier `main.structure_administrative.id` (auto-incrément) -> résolu dynamiquement.
-// Le fixture main SA n'a pas d'adresse -> `commune` de l'option = null.
+// La SA main de fixture porte l'adresse de son lieu, comme en production : l'option en expose donc
+// la commune.
 const employeuseMainState = { id: 0 }
 const expectedStructureEmployeuseOption = () => ({
   id: String(employeuseMainState.id),
   nom: structureEmployeuse.nom,
-  commune: null,
+  commune: structureEmployeuse.commune,
 })
 
 describe('getMesStatistiquesPageData', () => {
