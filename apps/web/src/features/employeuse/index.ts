@@ -29,10 +29,17 @@ export {
   employeuseSessionEmplois,
 } from './abilities/consulter-employeuse-actuelle'
 export {
+  type ConsulterHistoriqueEmployeuses,
+  consulterHistoriqueEmployeuses,
+  type EmployeuseHistoriqueAffichage,
+  historiqueEmployeusesAffichage,
+} from './abilities/consulter-historique-employeuses'
+export {
   type PersonneEmployeusePayload,
   personneEmployeuseSelect,
   personneToEmployeuseActuelle,
   personneToEmployeuseALaDate,
+  personneToEmployeusesHistorique,
 } from './db/employeuse.transfer'
 export {
   type AdresseEmployeuse,
@@ -46,6 +53,7 @@ export {
   debutEmploi,
   type Employeuse,
   type EmployeuseActuelle,
+  type EmployeuseHistorique,
   type EmployeuseId,
   employeuseALaDate,
   employeuseCodeInsee,

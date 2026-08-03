@@ -22,6 +22,10 @@ export type Employeuse = {
   readonly rna: Rna | null
   readonly adresse: AdresseEmployeuse | null
   readonly contactReferent: ContactReferent
+  // Horodatages système, non brandés (DM-1bis). `suppression` est le
+  // soft-delete posé côté Entrepôt : la coop l'affiche, elle ne le pose pas.
+  readonly creation: Date | null
+  readonly suppression: Date | null
 }
 
 export const employeuseCodeInsee = (employeuse: Employeuse) =>

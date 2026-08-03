@@ -11,6 +11,10 @@ import {
   employeuseActuelle,
 } from '../domain/employeuse-actuelle'
 import { EmployeuseId } from '../domain/employeuse-id'
+import {
+  type EmployeuseHistorique,
+  employeusesHistorique,
+} from '../domain/employeuses-historique'
 import { PeriodeEmploi } from '../domain/periode-emploi'
 import { Rna } from '../domain/rna'
 import { Siret } from '../domain/siret'
@@ -19,6 +23,8 @@ import { SourceAffectation } from '../domain/source-affectation'
 /** Colonnes de `main.structure_administrative` dont le domaine a besoin. */
 const employeuseSelect = {
   id: true,
+  createdAt: true,
+  deletedAt: true,
   denominationSirene: true,
   denominationAntenne: true,
   siret: true,
@@ -45,10 +51,12 @@ const employeuseSelect = {
  * le pendant Prisma du port SQL de la feature.
  */
 export const personneEmployeuseSelect = {
+  // Toutes les affectations, actives ou non : les passées portent l'historique,
+  // et c'est le domaine qui décide lesquelles désignent l'employeuse courante.
   affectationsEmploi: {
-    where: { estActive: true },
     select: {
       source: true,
+      estActive: true,
       createdAt: true,
       structureAdministrative: { select: employeuseSelect },
     },
@@ -106,11 +114,14 @@ export const employeuseToDomain = (row: EmployeuseRow): Employeuse => ({
   rna: Rna.safe(row.rna ?? ''),
   adresse: toAdresse(row),
   contactReferent: ContactReferent(row.contact),
+  creation: row.createdAt,
+  suppression: row.deletedAt,
 })
 
 export const affectationToDomain = (row: AffectationRow): Affectation => ({
   employeuse: employeuseToDomain(row.structureAdministrative),
   source: SourceAffectation(row.source),
+  active: row.estActive,
   depuis: row.createdAt,
 })
 
@@ -156,6 +167,15 @@ export const personneToEmployeuseActuelle = (
   personne: PersonneEmployeusePayload | null,
 ): EmployeuseActuelle | null =>
   employeuseActuelle(
+    personneToAffectations(personne),
+    personneToContrats(personne),
+  )
+
+/** Même composition, pour l'historique complet des employeuses. */
+export const personneToEmployeusesHistorique = (
+  personne: PersonneEmployeusePayload | null,
+): EmployeuseHistorique[] =>
+  employeusesHistorique(
     personneToAffectations(personne),
     personneToContrats(personne),
   )

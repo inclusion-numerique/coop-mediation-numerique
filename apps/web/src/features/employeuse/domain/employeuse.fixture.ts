@@ -24,6 +24,8 @@ export const employeuse = (
     commune: 'Nantes',
   }),
   contactReferent: { _tag: 'nonRenseigne' },
+  creation: null,
+  suppression: null,
   ...overrides,
 })
 
@@ -34,6 +36,7 @@ export const affectation = (
 ): Affectation => ({
   employeuse: employeuse(employeuseId),
   source: SourceAffectation(source),
+  active: true,
   depuis,
 })
 

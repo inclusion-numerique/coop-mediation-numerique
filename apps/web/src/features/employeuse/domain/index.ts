@@ -17,6 +17,10 @@ export {
   employeuseActuelle,
 } from './employeuse-actuelle'
 export { EmployeuseId } from './employeuse-id'
+export {
+  type EmployeuseHistorique,
+  employeusesHistorique,
+} from './employeuses-historique'
 export { couvre, debutEmploi, finEmploi, PeriodeEmploi } from './periode-emploi'
 export { Rna } from './rna'
 export { Siret } from './siret'

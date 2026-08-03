@@ -1,7 +1,8 @@
 import {
-  personneEmployeusesHistoriqueSelect,
-  resolveEmployeusesHistorique,
-} from '@app/web/features/structures/main/employeusesHistoriqueMain'
+  historiqueEmployeusesAffichage,
+  personneEmployeuseSelect,
+  personneToEmployeusesHistorique,
+} from '@app/web/features/employeuse'
 import { prismaClient } from '@app/web/prismaClient'
 
 export const getAdministrationUserPageData = async ({ id }: { id: string }) => {
@@ -115,21 +116,23 @@ export const getAdministrationUserPageData = async ({ id }: { id: string }) => {
       sessions: true,
       uploads: true,
       mutations: true,
-      personneMain: { select: personneEmployeusesHistoriqueSelect },
+      personneMain: { select: personneEmployeuseSelect },
       usurpateur: true,
     },
   })
   if (!user) {
     return null
   }
-  // Historique des employeuses lu en PUR MAIN (ADR-002 périmètre élargi) : plus de
-  // `coop.employes_structures` ni de `emploi.structureMain`. Une entrée par structure d'affectation
-  // (active = en cours, inactive = terminée), dates best-effort depuis `main.contrat`.
+  // Historique des employeuses : une entrée par structure d'affectation (active = en cours,
+  // inactive = terminée), dates best-effort depuis le contrat. La personne est déjà chargée par la
+  // requête ci-dessus, d'où la composition plutôt que l'ability autonome.
   const { personneMain, ...userSansPersonne } = user
   return {
     user: {
       ...userSansPersonne,
-      emplois: resolveEmployeusesHistorique(personneMain),
+      emplois: historiqueEmployeusesAffichage(
+        personneToEmployeusesHistorique(personneMain),
+      ),
     },
   }
 }
