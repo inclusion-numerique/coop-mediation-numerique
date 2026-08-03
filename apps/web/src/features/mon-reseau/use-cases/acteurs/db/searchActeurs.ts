@@ -1,5 +1,5 @@
+import { personneEmployeuseSelect } from '@app/web/features/employeuse'
 import { departementCodeFromInseeRegex } from '@app/web/features/mon-reseau/departementCodeFromInseeRegex'
-import { personneEmployeuseSelect } from '@app/web/features/structures/main/affectationEmploiMain'
 import { employeuseMainLateral } from '@app/web/features/structures/main/employeuseMainSql'
 import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
 import { DEFAULT_PAGE, toNumberOr } from '@app/web/libs/data-table/toNumberOr'

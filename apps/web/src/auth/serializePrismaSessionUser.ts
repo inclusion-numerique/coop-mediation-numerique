@@ -3,8 +3,11 @@ import type {
   PrismaSessionUsupper,
 } from '@app/web/auth/getSessionUserFromSessionToken'
 import type { SessionUser } from '@app/web/auth/sessionUser'
+import {
+  employeuseSessionEmplois,
+  personneToEmployeuseActuelle,
+} from '@app/web/features/employeuse'
 import { splitMediateursCoordonnes } from '@app/web/features/mediateurs/splitMediateursCoordonnes'
-import { personneToSessionEmplois } from '@app/web/features/structures/main/affectationEmploiMain'
 
 /**
  * This is the session user that will be publicly sent to the client.
@@ -15,10 +18,12 @@ export const serializePrismaSessionUser = (
   usurper?: PrismaSessionUsupper,
 ): SessionUser => ({
   ...prismaSessionUser,
-  // Employeuse COURANTE lue en pur main (ADR-002 périmètre élargi) : dérivée de `personneMain` via
-  // `personneToSessionEmplois` (affectation active -> structure). Forme `emplois` historique conservée
-  // (0 ou 1 élément) pour ne pas impacter les consommateurs (`emplois.at(0).structure`, `.length`).
-  emplois: personneToSessionEmplois(prismaSessionUser.personneMain),
+  // Employeuse COURANTE lue en pur main (ADR-002 périmètre élargi). Forme `emplois` historique
+  // conservée (0 ou 1 élément) pour ne pas impacter les consommateurs (`emplois.at(0).structure`,
+  // `.length`).
+  emplois: employeuseSessionEmplois(
+    personneToEmployeuseActuelle(prismaSessionUser.personneMain),
+  ),
   coordinateur: splitMediateursCoordonnes(prismaSessionUser.coordinateur),
   emailVerified: prismaSessionUser.emailVerified?.toISOString() ?? null,
   created: prismaSessionUser.created.toISOString(),

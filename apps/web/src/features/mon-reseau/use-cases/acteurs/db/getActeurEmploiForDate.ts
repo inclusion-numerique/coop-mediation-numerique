@@ -1,4 +1,7 @@
-import { referentFromMainContact } from '@app/web/features/structures/main/mainContact'
+import {
+  ContactReferent,
+  referentAffichage,
+} from '@app/web/features/employeuse'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
 
@@ -58,7 +61,7 @@ export const toEmploiStructureEmployeuse = (
   complementAdresse: null,
   siret: structureMain?.siret ?? null,
   rna: structureMain?.rna ?? null,
-  ...referentFromMainContact(structureMain?.contact ?? null),
+  ...referentAffichage(ContactReferent(structureMain?.contact ?? null)),
 })
 
 // L'employeuse d'un acteur à une date, lue en PUR MAIN (ADR-002 périmètre élargi). Plus aucune

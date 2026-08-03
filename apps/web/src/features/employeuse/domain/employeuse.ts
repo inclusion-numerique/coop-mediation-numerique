@@ -1,0 +1,28 @@
+import type { AdresseEmployeuse } from './adresse-employeuse'
+import type { ContactReferent } from './contact-referent'
+import type { DenominationEmployeuse } from './denomination-employeuse'
+import type { EmployeuseId } from './employeuse-id'
+import type { Rna } from './rna'
+import type { Siret } from './siret'
+
+/**
+ * Une structure employeuse, telle que la coop la lit dans
+ * `main.structure_administrative` — dont elle n'est plus propriétaire depuis
+ * l'ADR-002 : elle la consulte, et n'en crée que par l'inscription.
+ *
+ * Ce qui est volontairement absent : `structure_coop_id`. C'était l'échafaudage
+ * de corrélation du dual-write ; son dernier lecteur sur ce chemin était l'`id`
+ * des emplois de session, que personne ne consomme. Il n'est donc plus ni
+ * sélectionné ni transporté — un lecteur de moins avant l'échange final.
+ */
+export type Employeuse = {
+  readonly id: EmployeuseId
+  readonly denomination: DenominationEmployeuse | null
+  readonly siret: Siret | null
+  readonly rna: Rna | null
+  readonly adresse: AdresseEmployeuse | null
+  readonly contactReferent: ContactReferent
+}
+
+export const employeuseCodeInsee = (employeuse: Employeuse) =>
+  employeuse.adresse?.codeInsee ?? null

@@ -10,7 +10,7 @@ import type {
   JsonApiListResponse,
   JsonApiResource,
 } from '@app/web/app/api/v1/JsonApiTypes'
-import { pickContratForStructure } from '@app/web/features/structures/main/affectationEmploiMain'
+import { contratPourEmployeuse } from '@app/web/features/employeuse'
 import { prismaClient } from '@app/web/prismaClient'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { NextResponse } from 'next/server'
@@ -642,7 +642,7 @@ export const GET = createApiV1Route
           dataspace_id: u.dataspaceId ?? null,
           emplois: (u.personneMain?.affectationsEmploi ?? []).map(
             (affectation) => {
-              const contrat = pickContratForStructure(
+              const contrat = contratPourEmployeuse(
                 u.personneMain?.contrats ?? [],
                 affectation.structureAdministrativeId,
               )

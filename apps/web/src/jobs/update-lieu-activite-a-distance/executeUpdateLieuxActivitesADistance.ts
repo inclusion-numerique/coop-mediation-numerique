@@ -1,7 +1,7 @@
 import {
   personneEmployeuseSelect,
-  resolveEmployeuseActuelle,
-} from '@app/web/features/structures/main/affectationEmploiMain'
+  personneToEmployeuseActuelle,
+} from '@app/web/features/employeuse'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 import { UpdateLieuxActivitesAdistanceJob } from './updateLieuxActivitesAdistanceJob'
@@ -32,7 +32,7 @@ export const executeUpdateLieuxActivitesADistance = async (
   output.log(`Found ${activitesToUpdate.length} activites to update`)
 
   for (const activite of activitesToUpdate) {
-    const structureEmployeuse = resolveEmployeuseActuelle(
+    const structureEmployeuse = personneToEmployeuseActuelle(
       activite.mediateur?.user?.personneMain ?? null,
     )
 
@@ -48,9 +48,9 @@ export const executeUpdateLieuxActivitesADistance = async (
         id: activite.id,
       },
       data: {
-        lieuCodePostal: structureEmployeuse.codePostal,
-        lieuCommune: structureEmployeuse.commune,
-        lieuCodeInsee: structureEmployeuse.codeInsee,
+        lieuCodePostal: structureEmployeuse.employeuse.adresse?.codePostal,
+        lieuCommune: structureEmployeuse.employeuse.adresse?.commune,
+        lieuCodeInsee: structureEmployeuse.employeuse.adresse?.codeInsee,
       },
     })
   }

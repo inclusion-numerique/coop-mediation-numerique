@@ -2,11 +2,12 @@ import { metadataTitle } from '@app/web/app/metadataTitle'
 import MonEquipeListePage from '@app/web/equipe/EquipeListePage/EquipeListePage'
 import { getEquipePageData } from '@app/web/equipe/EquipeListePage/getEquipePageData'
 import type { EquipeSearchParams } from '@app/web/equipe/EquipeListePage/searchMediateursCoordonneBy'
-import { getDepartementCodeForActeur } from '@app/web/features/mon-reseau/getDepartementCodeForActeur'
 import {
+  employeuseSessionEmplois,
   personneEmployeuseSelect,
-  personneToSessionEmplois,
-} from '@app/web/features/structures/main/affectationEmploiMain'
+  personneToEmployeuseActuelle,
+} from '@app/web/features/employeuse'
+import { getDepartementCodeForActeur } from '@app/web/features/mon-reseau/getDepartementCodeForActeur'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
@@ -50,7 +51,9 @@ const Page = async (props: {
   const departementCode = getDepartementCodeForActeur({
     // Employeuse courante en pur main : `personneToSessionEmplois` fournit la forme
     // { structure: { codeInsee } } attendue (0 ou 1 élément).
-    emplois: personneToSessionEmplois(coordinateur?.user.personneMain ?? null),
+    emplois: employeuseSessionEmplois(
+      personneToEmployeuseActuelle(coordinateur?.user.personneMain ?? null),
+    ),
   })
 
   return (

@@ -9,8 +9,8 @@ import {
   upsertMediateur,
 } from '@app/web/features/dataspace/syncFromDataspaceCore'
 import { updateUserInscriptionProfileFromDataspace } from '@app/web/features/dataspace/updateUserInscriptionProfileFromDataspace'
+import { personneToEmployeuseActuelle } from '@app/web/features/employeuse'
 import { importStructureEmployeuseFromSiret } from '@app/web/features/structures/importStructureEmployeuseFromSiret'
-import { resolveEmployeuseActuelle } from '@app/web/features/structures/main/affectationEmploiMain'
 import { prismaClient } from '@app/web/prismaClient'
 import { getNextInscriptionStep, getStepPath } from '../../inscriptionFlow'
 
@@ -250,15 +250,15 @@ export const initializeInscription = async ({
     const hasLieuxActivite = (updatedUser.mediateur?._count.enActivite ?? 0) > 0
 
     // Employeuse courante en pur main (sessionUserSelect expose désormais `personneMain`).
-    const employeuseActuelle = resolveEmployeuseActuelle(
+    const employeuseActuelle = personneToEmployeuseActuelle(
       updatedUser.personneMain,
     )
     log('User state after initialization', {
       hasStructureEmployeuse: employeuseActuelle !== null,
       employeuse: employeuseActuelle
         ? {
-            structureMainId: employeuseActuelle.structureMainId,
-            nom: employeuseActuelle.nom,
+            structureMainId: employeuseActuelle.employeuse.id,
+            nom: employeuseActuelle.employeuse.denomination,
             source: employeuseActuelle.source,
           }
         : null,

@@ -1,7 +1,7 @@
 import {
   personneEmployeuseSelect,
-  resolveEmployeuseActuelle,
-} from '@app/web/features/structures/main/affectationEmploiMain'
+  personneToEmployeuseActuelle,
+} from '@app/web/features/employeuse'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
 
@@ -66,9 +66,16 @@ type UtilisateurForListRow = Prisma.UserGetPayload<{
 const toEmplois = (
   personneMain: UtilisateurForListRow['personneMain'],
 ): { structure: { nom: string | null; codeInsee: string | null } }[] => {
-  const employeuse = resolveEmployeuseActuelle(personneMain)
+  const employeuse = personneToEmployeuseActuelle(personneMain)
   return employeuse
-    ? [{ structure: { nom: employeuse.nom, codeInsee: employeuse.codeInsee } }]
+    ? [
+        {
+          structure: {
+            nom: employeuse.employeuse.denomination,
+            codeInsee: employeuse.employeuse.adresse?.codeInsee ?? null,
+          },
+        },
+      ]
     : []
 }
 

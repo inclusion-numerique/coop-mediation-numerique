@@ -1,42 +1,52 @@
 import {
-  personneEmployeuseSelect,
-  resolveEmployeuseActuelle,
-} from '@app/web/features/structures/main/affectationEmploiMain'
-import { prismaClient } from '@app/web/prismaClient'
+  consulterEmployeuseActuelle,
+  employeuseActuelleAffichage,
+} from '@app/web/features/employeuse'
 
-// Structure employeuse COURANTE de l'inscription, lue en PUR MAIN (ADR-002 périmètre élargi) :
-// `coop.user → main.personne (coop_id) → affectation active → structure_administrative`, via
-// `resolveEmployeuseActuelle`. Plus aucune référence à `coop.employes_structures` / `structureMain`.
-// L'`id` exposé est l'entier `main.structure_administrative.id` : clé de la mutation
+// Structure employeuse COURANTE de l'inscription. La lecture appartient à la feature employeuse
+// (ability `consulter-employeuse-actuelle`) ; l'inscription n'en consomme que la mise à plat
+// d'affichage. L'`id` exposé est l'entier `main.structure_administrative.id` : clé de la mutation
 // `ajouterStructureEmployeuseEnLieuActivite`, qui matérialise le lieu depuis les données main.
 export const getStructureEmployeuseForInscription = async ({
   userId,
 }: {
   userId: string
 }) => {
-  const user = await prismaClient.user.findUnique({
-    where: { id: userId },
-    select: { personneMain: { select: personneEmployeuseSelect } },
-  })
+  const employeuseActuelle = await consulterEmployeuseActuelle({ userId })
+  if (!employeuseActuelle) return null
 
-  const employeuse = resolveEmployeuseActuelle(user?.personneMain ?? null)
-  if (!employeuse) return null
+  const {
+    id,
+    nom,
+    adresse,
+    commune,
+    codePostal,
+    codeInsee,
+    siret,
+    rna,
+    nomReferent,
+    courrielReferent,
+    telephoneReferent,
+  } = employeuseActuelleAffichage(employeuseActuelle)
 
   return {
     structure: {
-      id: employeuse.structureMainId,
-      nom: employeuse.nom,
-      adresse: employeuse.adresse,
-      commune: employeuse.commune,
-      codePostal: employeuse.codePostal,
-      codeInsee: employeuse.codeInsee,
+      id,
+      // Le domaine dit `null` quand l'employeuse n'a aucune dénomination (14 en production) ; la
+      // carte d'inscription attend un libellé. Le repli d'affichage est décidé ici, chez le
+      // consommateur, et n'a pas à remonter dans la lecture.
+      nom: nom ?? '',
+      adresse,
+      commune,
+      codePostal,
+      codeInsee,
       // `main` ne porte pas le complément d'adresse (décision 6 révisée) -> toujours null.
       complementAdresse: null,
-      siret: employeuse.siret,
-      rna: employeuse.rna,
-      nomReferent: employeuse.nomReferent,
-      courrielReferent: employeuse.courrielReferent,
-      telephoneReferent: employeuse.telephoneReferent,
+      siret,
+      rna,
+      nomReferent,
+      courrielReferent,
+      telephoneReferent,
     },
   }
 }

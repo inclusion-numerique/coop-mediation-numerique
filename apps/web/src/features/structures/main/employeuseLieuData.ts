@@ -1,4 +1,7 @@
-import { referentFromMainContact } from '@app/web/features/structures/main/mainContact'
+import {
+  ContactReferent,
+  referentAffichage,
+} from '@app/web/features/employeuse'
 import type { Prisma } from '@prisma/client'
 
 // Sélection main d'une employeuse pour la matérialiser en lieu d'activité et pour l'afficher
@@ -58,7 +61,7 @@ export const employeuseMainToLieuData = (structure: EmployeuseMainPayload) => ({
   complementAdresse: null,
   siret: structure.siret ?? null,
   rna: structure.rna ?? null,
-  ...referentFromMainContact(structure.contact),
+  ...referentAffichage(ContactReferent(structure.contact)),
 })
 
 // Sélection étendue pour l'affichage admin (page utilisateur) : + les timestamps rendus par

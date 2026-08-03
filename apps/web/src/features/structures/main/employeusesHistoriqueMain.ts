@@ -1,4 +1,4 @@
-import { pickContratForStructure } from '@app/web/features/structures/main/affectationEmploiMain'
+import { contratPourEmployeuse } from '@app/web/features/employeuse'
 import {
   employeuseMainAdminSelect,
   employeuseMainToAdminStructure,
@@ -72,7 +72,7 @@ export const resolveEmployeusesHistorique = (
       (affectation: Affectation) =>
         affectation.structureAdministrative.id === structure.id,
     )
-    const contrat = pickContratForStructure(personne.contrats, structure.id)
+    const contrat = contratPourEmployeuse(personne.contrats, structure.id)
     // ADR-002 échange final : la route admin `/structures-employeuses/[id]` lit main -> l'id est
     // l'entier main stringifié (plus l'uuid coop).
     const id = String(structure.id)
