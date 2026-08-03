@@ -23,18 +23,24 @@ export const renseignerStructureEmployeuseAction = actionBuilder()
   .use(withAuth())
   .use(withInput(RenseignerStructureEmployeuseValidation))
   .execute(async ({ input: { structure }, user }) => {
+    // Forme totale : une structure enregistrée sans adresse exploitable ne peut
+    // pas devenir une employeuse — on le rapporte plutôt que de jeter.
+    const identite = IdentiteEmployeuse.safe({
+      siret: structure.siret,
+      denomination: structure.nom,
+      adresse: {
+        voie: structure.adresse,
+        commune: structure.commune,
+        codePostal: structure.codePostal || null,
+        codeInsee: structure.codeInsee || null,
+      },
+    })
+
+    if (!identite) return { rattachee: false as const }
+
     const rattachement = await rattacherAUneEmployeuse({
       userId: user.id,
-      identite: IdentiteEmployeuse({
-        siret: structure.siret,
-        denomination: structure.nom,
-        adresse: {
-          voie: structure.adresse,
-          commune: structure.commune,
-          codePostal: structure.codePostal || null,
-          codeInsee: structure.codeInsee || null,
-        },
-      }),
+      identite,
     })
 
     // L'étape n'est franchie que si le rattachement a abouti : l'horodater alors

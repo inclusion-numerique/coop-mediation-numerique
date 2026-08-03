@@ -85,22 +85,56 @@ type StructureAdministrativeMainFixture = {
   create: Prisma.StructureAdministrativeMainCreateInput
 }
 
-const givenStructureAdministrativeMain = (structure: {
-  id: string
-  nom: string
-  siret?: string | null
-}): StructureAdministrativeMainFixture => ({
+const givenStructureAdministrativeMain = (
+  structure: {
+    id: string
+    nom: string
+    siret?: string | null
+    adresse?: string
+    commune?: string
+    codePostal?: string
+    codeInsee?: string
+  },
+  siret?: string,
+): StructureAdministrativeMainFixture => ({
   structureCoopId: structure.id,
   create: {
     structureCoopId: structure.id,
-    siret: structure.siret ?? null,
+    siret: siret ?? structure.siret ?? null,
     denominationSirene: structure.nom,
     denominationAntenne: structure.nom,
+    // Adresse `main` : une employeuse sans commune n'est ni géocodable ni
+    // choisissable à l'inscription. Les fixtures doivent donc en porter une,
+    // comme en production.
+    ...(structure.commune && structure.codePostal && structure.codeInsee
+      ? {
+          adresse: {
+            connectOrCreate: {
+              where: { codeBan: structure.id },
+              create: {
+                codeBan: structure.id,
+                nomVoie: structure.adresse ?? null,
+                codePostal: structure.codePostal,
+                codeInsee: structure.codeInsee,
+                nomCommune: structure.commune,
+              },
+            },
+          },
+        }
+      : {}),
   },
 })
 
+// SIRET porté par la seule ligne `main` (le lieu fixture n'en a pas) : la recherche d'employeuse
+// écarte les structures sans SIRET, puisqu'il identifie le choix. Sans lui, cette employeuse
+// resterait introuvable dans le parcours d'inscription qui la cherche.
+export const structureEmployeuseSiret = '13002526500013'
+
 export const fixtureStructuresAdministrativesMain = [
-  givenStructureAdministrativeMain(structureEmployeuse),
+  givenStructureAdministrativeMain(
+    structureEmployeuse,
+    structureEmployeuseSiret,
+  ),
   givenStructureAdministrativeMain(mediateque),
 ]
 

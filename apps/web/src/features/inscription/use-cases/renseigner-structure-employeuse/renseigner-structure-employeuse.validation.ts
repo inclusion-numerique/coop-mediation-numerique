@@ -16,7 +16,11 @@ export const EmployeuseChoisieValidation = z.object(
   {
     siret: Siret.schema,
     nom: z.string().trim().min(1),
-    commune: z.string().trim().min(1),
+    // Pas de minimum ici : une structure enregistrée peut n'avoir aucune adresse.
+    // C'est `IdentiteEmployeuse` qui juge si elle est exploitable, et l'action
+    // qui le rapporte — plutôt qu'une erreur de champ sur un choix de liste, que
+    // l'utilisateur ne saurait pas corriger.
+    commune: z.string().trim(),
     // Le résultat de recherche porte toujours ces champs, éventuellement vides
     // (une structure de l'annuaire peut n'avoir ni voie ni code INSEE) : c'est
     // l'action qui traduit le vide en absence au moment de construire

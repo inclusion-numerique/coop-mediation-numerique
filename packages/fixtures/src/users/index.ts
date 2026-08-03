@@ -52,6 +52,7 @@ import { mediateurSansActivitesJ60 } from './mediateurSansActivitesJ60'
 import { mediateurSansActivitesJ90 } from './mediateurSansActivitesJ90'
 import { mediateurSansActivitesJ100 } from './mediateurSansActivitesJ100'
 import { mediateurSansActivitesJ110 } from './mediateurSansActivitesJ110'
+import { mediateurSansEmployeuseInscription } from './mediateurSansEmployeuseInscription'
 
 export const fixtureUsers = [
   administrateur,
@@ -68,6 +69,7 @@ export const fixtureUsers = [
   mediateurInscriptionJ90,
   mediateurInscriptionJ100,
   mediateurInscriptionJ110,
+  mediateurSansEmployeuseInscription,
   mediateurSansActivites,
   mediateurSansActivitesJ7,
   mediateurSansActivitesJ30,

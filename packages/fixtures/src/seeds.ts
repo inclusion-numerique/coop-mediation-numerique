@@ -27,7 +27,28 @@ import { upsertCoordinationFixtures } from './upsertCoordinationFixture'
 import { upsertInvitationEquipeFixtures } from './upsertInvitationEquipeFixture'
 import { upsertMediateurCoordonneFixtures } from './upsertMediateurCoordonneFixture'
 
+/**
+ * Le `TRUNCATE` ne porte que sur le schéma `coop` : les lignes `main` des
+ * utilisateurs de fixtures (personne, affectations, contrats) lui survivraient,
+ * et un parcours qui rattache une employeuse la retrouverait au run suivant —
+ * l'utilisateur ne serait plus « sans employeuse ». On les efface donc
+ * explicitement, en ne visant que les personnes de fixtures.
+ */
+const deleteFixturePersonnesMain = async (
+  transaction: Prisma.TransactionClient,
+) => {
+  const coopId = { in: fixtureUsers.map(({ id }) => id) }
+
+  await transaction.contratMain.deleteMany({ where: { personne: { coopId } } })
+  await transaction.personneAffectationEmploiMain.deleteMany({
+    where: { personne: { coopId } },
+  })
+  await transaction.personneMain.deleteMany({ where: { coopId } })
+}
+
 export const deleteAll = async (transaction: Prisma.TransactionClient) => {
+  await deleteFixturePersonnesMain(transaction)
+
   const tables = await transaction.$queryRaw<
     { table_name: string }[]
   >`SELECT table_name
