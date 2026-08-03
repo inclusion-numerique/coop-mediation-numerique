@@ -17,7 +17,10 @@ import type { Siret } from './siret'
  */
 export type Employeuse = {
   readonly id: EmployeuseId
+  /** Nom d'affichage : l'antenne quand elle existe, sinon SIRENE. */
   readonly denomination: DenominationEmployeuse | null
+  /** Dénomination SIRENE brute — `denomination` lui préfère celle de l'antenne. */
+  readonly denominationSirene: DenominationEmployeuse | null
   readonly siret: Siret | null
   readonly rna: Rna | null
   readonly adresse: AdresseEmployeuse | null
@@ -25,6 +28,7 @@ export type Employeuse = {
   // Horodatages système, non brandés (DM-1bis). `suppression` est le
   // soft-delete posé côté Entrepôt : la coop l'affiche, elle ne le pose pas.
   readonly creation: Date | null
+  readonly modification: Date | null
   readonly suppression: Date | null
 }
 

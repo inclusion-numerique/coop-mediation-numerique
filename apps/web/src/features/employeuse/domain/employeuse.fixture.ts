@@ -15,6 +15,7 @@ export const employeuse = (
 ): Employeuse => ({
   id: EmployeuseId(id),
   denomination: DenominationEmployeuse(`Structure ${id}`),
+  denominationSirene: DenominationEmployeuse(`Structure ${id}`),
   siret: Siret(`${id}`.padStart(14, '9')),
   rna: null,
   adresse: AdresseEmployeuse({
@@ -25,6 +26,7 @@ export const employeuse = (
   }),
   contactReferent: { _tag: 'nonRenseigne' },
   creation: null,
+  modification: null,
   suppression: null,
   ...overrides,
 })

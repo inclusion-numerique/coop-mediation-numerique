@@ -51,6 +51,12 @@ export {
   resolveIdentiteFromSiret,
 } from './abilities/rattacher-a-une-employeuse'
 export {
+  type EmployeuseRecherchee,
+  employeuseRecherchee,
+  type RechercherEmployeuse,
+  rechercherEmployeuse,
+} from './abilities/rechercher-employeuse'
+export {
   type PersonneEmployeusePayload,
   personneEmployeuseSelect,
   personneToEmployeuseActuelle,

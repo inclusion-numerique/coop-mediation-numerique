@@ -18,6 +18,7 @@ type EmployeuseRow = AffectationRow['structureAdministrative']
 const ligneComplete: EmployeuseRow = {
   id: 42,
   createdAt: new Date('2020-01-01'),
+  updatedAt: new Date('2026-01-01'),
   deletedAt: null,
   denominationSirene: 'ASSOCIATION DES TESTS',
   denominationAntenne: 'Antenne de Nantes',
@@ -37,6 +38,7 @@ const ligneComplete: EmployeuseRow = {
 const ligneMinimale: EmployeuseRow = {
   id: 43,
   createdAt: null,
+  updatedAt: null,
   deletedAt: null,
   denominationSirene: null,
   denominationAntenne: null,
@@ -51,8 +53,10 @@ describe('employeuseToDomain', () => {
     expect(employeuseToDomain(ligneComplete)).toEqual({
       id: 42,
       creation: new Date('2020-01-01'),
+      modification: new Date('2026-01-01'),
       suppression: null,
       denomination: 'Antenne de Nantes',
+      denominationSirene: 'ASSOCIATION DES TESTS',
       siret: '12345678901234',
       rna: 'W123456789',
       adresse: {
@@ -74,8 +78,10 @@ describe('employeuseToDomain', () => {
     expect(employeuseToDomain(ligneMinimale)).toEqual({
       id: 43,
       creation: null,
+      modification: null,
       suppression: null,
       denomination: null,
+      denominationSirene: null,
       siret: null,
       rna: null,
       adresse: null,

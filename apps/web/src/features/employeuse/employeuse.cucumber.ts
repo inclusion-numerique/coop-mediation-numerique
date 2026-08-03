@@ -41,6 +41,16 @@ export const seedEmployeuseMain = async (
   return id
 }
 
+/** Suppression côté Entrepôt (soft-delete) : la coop l'observe, elle ne la pose pas. */
+export const supprimerEmployeuseMain = async (
+  employeuseId: number,
+): Promise<void> => {
+  await prismaClient.structureAdministrativeMain.update({
+    where: { id: employeuseId },
+    data: { deletedAt: new Date() },
+  })
+}
+
 /** Affectations de la personne d'un utilisateur, pour les assertions d'écriture. */
 export const affectationsDe = async (
   userId: string,

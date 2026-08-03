@@ -21,9 +21,10 @@ import { Siret } from '../domain/siret'
 import { SourceAffectation } from '../domain/source-affectation'
 
 /** Colonnes de `main.structure_administrative` dont le domaine a besoin. */
-const employeuseSelect = {
+export const employeuseSelect = {
   id: true,
   createdAt: true,
+  updatedAt: true,
   deletedAt: true,
   denominationSirene: true,
   denominationAntenne: true,
@@ -79,7 +80,10 @@ export type PersonneEmployeusePayload = Prisma.PersonneMainGetPayload<{
 }>
 
 type AffectationRow = PersonneEmployeusePayload['affectationsEmploi'][number]
-type EmployeuseRow = AffectationRow['structureAdministrative']
+
+export type EmployeuseRow = Prisma.StructureAdministrativeMainGetPayload<{
+  select: typeof employeuseSelect
+}>
 type ContratRow = PersonneEmployeusePayload['contrats'][number]
 
 const voie = (adresse: EmployeuseRow['adresse']): string | null =>
@@ -110,11 +114,13 @@ export const employeuseToDomain = (row: EmployeuseRow): Employeuse => ({
   denomination:
     DenominationEmployeuse.safe(row.denominationAntenne ?? '') ??
     DenominationEmployeuse.safe(row.denominationSirene ?? ''),
+  denominationSirene: DenominationEmployeuse.safe(row.denominationSirene ?? ''),
   siret: Siret.safe(row.siret ?? ''),
   rna: Rna.safe(row.rna ?? ''),
   adresse: toAdresse(row),
   contactReferent: ContactReferent(row.contact),
   creation: row.createdAt,
+  modification: row.updatedAt ?? row.createdAt,
   suppression: row.deletedAt,
 })
 

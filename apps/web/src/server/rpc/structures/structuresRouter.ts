@@ -8,7 +8,6 @@ import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { enforceIsAdmin } from '@app/web/server/rpc/enforceIsAdmin'
 import { searchLieuActiviteCombined } from '@app/web/structure/searchLieuActiviteCombined'
 import { searchLieuInclusion } from '@app/web/structure/searchLieuInclusion'
-import { searchStructureAdministrative } from '@app/web/structure/searchStructureAdministrative'
 import { searchStructureCartographieNationale } from '@app/web/structure/searchStructureCartographieNationale'
 import { fixTelephone } from '@app/web/utils/clean-operations'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
@@ -21,14 +20,6 @@ export const structuresRouter = router({
   search: protectedProcedure
     .input(z.object({ query: z.string() }))
     .query(({ input: { query } }) => searchLieuInclusion(query)),
-
-  // Recherche admin-wide d'employeuses (identités légales), pour la fusion.
-  searchAdministrative: protectedProcedure
-    .input(z.object({ query: z.string() }))
-    .query(({ input: { query }, ctx: { user } }) => {
-      enforceIsAdmin(user)
-      return searchStructureAdministrative(query)
-    }),
 
   searchCombined: protectedProcedure
     .input(z.object({ query: z.string() }))
