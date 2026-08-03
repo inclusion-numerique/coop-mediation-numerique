@@ -4,7 +4,10 @@ import {
   type ActivitesFilters,
   validateActivitesFilters,
 } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import { getActeurEmploiForDate } from '@app/web/features/mon-reseau/use-cases/acteurs/db/getActeurEmploiForDate'
+import {
+  consulterEmployeuseAUneDate,
+  employeuseCodeInsee,
+} from '@app/web/features/employeuse'
 import { mediateurCoordonnesIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
 import type { Metadata } from 'next'
 import { getMesStatistiquesPageData } from './getMesStatistiquesPageData'
@@ -35,7 +38,7 @@ const MesStatistiquesPage = async (props: {
     },
   })
 
-  const employeStructure = await getActeurEmploiForDate({
+  const employeuse = await consulterEmployeuseAUneDate({
     userId: user.id,
     date: new Date(),
   })
@@ -44,7 +47,7 @@ const MesStatistiquesPage = async (props: {
     <MesStatistiques
       user={user}
       mediateurCoordonnesCount={mediateurCoordonnesIds.length}
-      codeInsee={employeStructure?.structure.codeInsee}
+      codeInsee={employeuse ? employeuseCodeInsee(employeuse) : undefined}
       {...mesStatistiques}
     />
   )

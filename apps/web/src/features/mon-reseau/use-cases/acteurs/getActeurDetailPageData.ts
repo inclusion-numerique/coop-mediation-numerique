@@ -2,7 +2,10 @@ import { getTotalCountsStats } from '@app/web/app/coop/(sidemenu-layout)/mes-sta
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import { getContractInfo } from '@app/web/conseiller-numerique/getContractInfo'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import { getActeurEmploiForDate } from '@app/web/features/mon-reseau/use-cases/acteurs/db/getActeurEmploiForDate'
+import {
+  consulterEmployeuseAUneDate,
+  emploiEmployeuseAffichage,
+} from '@app/web/features/employeuse'
 import {
   acteurCoordinationSelect,
   acteurSelectForList,
@@ -141,10 +144,13 @@ export const getActeurDetailPageData = async ({
     }
   }
 
-  const emploi = await getActeurEmploiForDate({
+  const employeuse = await consulterEmployeuseAUneDate({
     userId,
     date: new Date(),
   })
+  const emploi = employeuse
+    ? { structure: emploiEmployeuseAffichage(employeuse) }
+    : null
 
   const lieuxActivites = mediateurId
     ? await prismaClient.lieuInclusion.findMany({

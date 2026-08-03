@@ -6,12 +6,21 @@
  * affectations actives. Tout ce qui touche à l'employeuse passe par ici — les
  * autres features n'atteignent ni son `domain/` ni son `db/`.
  *
+ * Deux questions, deux abilities : l'employeuse courante d'un utilisateur, et
+ * son employeuse à une date donnée (pour les écrits rétro-datés).
+ *
  * Deux voies de lecture, selon le contexte :
- * - `consulterEmployeuseActuelle({ userId })` — lecture autonome, un utilisateur ;
- * - `personneEmployeuseSelect` + `personneToEmployeuseActuelle` — composition,
- *   pour les requêtes de liste qui ne peuvent pas se permettre une requête par
- *   utilisateur.
+ * - les abilities `consulter…({ userId })` — lecture autonome, un utilisateur ;
+ * - `personneEmployeuseSelect` + `personneToEmployeuse…` — composition, pour les
+ *   requêtes de liste qui ne peuvent pas se permettre une requête par utilisateur.
  */
+
+export {
+  type ConsulterEmployeuseAUneDate,
+  consulterEmployeuseAUneDate,
+  type EmploiEmployeuseAffichage,
+  emploiEmployeuseAffichage,
+} from './abilities/consulter-employeuse-a-une-date'
 export {
   type ConsulterEmployeuseActuelle,
   consulterEmployeuseActuelle,
@@ -23,6 +32,7 @@ export {
   type PersonneEmployeusePayload,
   personneEmployeuseSelect,
   personneToEmployeuseActuelle,
+  personneToEmployeuseALaDate,
 } from './db/employeuse.transfer'
 export {
   type AdresseEmployeuse,
@@ -37,6 +47,7 @@ export {
   type Employeuse,
   type EmployeuseActuelle,
   type EmployeuseId,
+  employeuseALaDate,
   employeuseCodeInsee,
   finEmploi,
   type PeriodeEmploi,
@@ -45,3 +56,7 @@ export {
   type Siret,
   type SourceAffectation,
 } from './domain'
+export {
+  type EmployeuseAffichage,
+  employeuseAffichage,
+} from './ui/employeuse.presenter'

@@ -2,9 +2,10 @@ import type { Prisma } from '@prisma/client'
 import { AdresseEmployeuse } from '../domain/adresse-employeuse'
 import type { Affectation } from '../domain/affectation'
 import { ContactReferent } from '../domain/contact-referent'
-import { type Contrat, contratPourEmployeuse } from '../domain/contrat'
+import type { Contrat } from '../domain/contrat'
 import { DenominationEmployeuse } from '../domain/denomination-employeuse'
 import type { Employeuse } from '../domain/employeuse'
+import { employeuseALaDate } from '../domain/employeuse-a-la-date'
 import {
   type EmployeuseActuelle,
   employeuseActuelle,
@@ -14,6 +15,26 @@ import { PeriodeEmploi } from '../domain/periode-emploi'
 import { Rna } from '../domain/rna'
 import { Siret } from '../domain/siret'
 import { SourceAffectation } from '../domain/source-affectation'
+
+/** Colonnes de `main.structure_administrative` dont le domaine a besoin. */
+const employeuseSelect = {
+  id: true,
+  denominationSirene: true,
+  denominationAntenne: true,
+  siret: true,
+  rna: true,
+  contact: true,
+  adresse: {
+    select: {
+      numeroVoie: true,
+      repetition: true,
+      nomVoie: true,
+      codePostal: true,
+      codeInsee: true,
+      nomCommune: true,
+    },
+  },
+} satisfies Prisma.StructureAdministrativeMainSelect
 
 /**
  * Sélection Prisma des affectations actives d'une personne et de ses contrats.
@@ -29,34 +50,18 @@ export const personneEmployeuseSelect = {
     select: {
       source: true,
       createdAt: true,
-      structureAdministrative: {
-        select: {
-          id: true,
-          denominationSirene: true,
-          denominationAntenne: true,
-          siret: true,
-          rna: true,
-          contact: true,
-          adresse: {
-            select: {
-              numeroVoie: true,
-              repetition: true,
-              nomVoie: true,
-              codePostal: true,
-              codeInsee: true,
-              nomCommune: true,
-            },
-          },
-        },
-      },
+      structureAdministrative: { select: employeuseSelect },
     },
   },
+  // Les contrats portent leur employeuse : un contrat passé désigne souvent une
+  // structure absente des affectations actives, et c'est elle qu'il faut rendre
+  // pour une date révolue.
   contrats: {
     select: {
-      structureId: true,
       dateDebut: true,
       dateFin: true,
       dateRupture: true,
+      structureAdministrative: { select: employeuseSelect },
     },
   },
 } satisfies Prisma.PersonneMainSelect
@@ -109,35 +114,28 @@ export const affectationToDomain = (row: AffectationRow): Affectation => ({
   depuis: row.createdAt,
 })
 
-const toContrat = (row: ContratRow, employeuseId: number): Contrat => ({
-  employeuseId: EmployeuseId(employeuseId),
-  periode: PeriodeEmploi({
-    debut: row.dateDebut,
-    fin: row.dateFin,
-    rupture: row.dateRupture,
-  }),
-})
-
 /**
- * Un contrat par employeuse (invariant de `Contrat`) : la base peut en porter
- * plusieurs pour une même structure, `contratPourEmployeuse` tranche ici, une
- * fois. Les contrats sans structure ne sont rattachables à aucune employeuse et
+ * Tous les contrats, dans l'ordre de la base. On ne déduplique pas par
+ * employeuse : deux contrats successifs chez le même employeur restent deux
+ * périodes distinctes, et c'est ce qui permet de savoir laquelle couvre une
+ * date. Les contrats sans structure ne sont rattachables à aucune employeuse et
  * sont écartés.
  */
-export const contratsToDomain = (rows: readonly ContratRow[]): Contrat[] => {
-  const employeuseIds = [
-    ...new Set(
-      rows
-        .map((row) => row.structureId)
-        .filter((id): id is number => id !== null),
-    ),
-  ]
-
-  return employeuseIds.flatMap((employeuseId) => {
-    const contrat = contratPourEmployeuse(rows, employeuseId)
-    return contrat ? [toContrat(contrat, employeuseId)] : []
-  })
-}
+export const contratsToDomain = (rows: readonly ContratRow[]): Contrat[] =>
+  rows.flatMap((row) =>
+    row.structureAdministrative
+      ? [
+          {
+            employeuse: employeuseToDomain(row.structureAdministrative),
+            periode: PeriodeEmploi({
+              debut: row.dateDebut,
+              fin: row.dateFin,
+              rupture: row.dateRupture,
+            }),
+          },
+        ]
+      : [],
+  )
 
 export const personneToAffectations = (
   personne: PersonneEmployeusePayload | null,
@@ -160,4 +158,15 @@ export const personneToEmployeuseActuelle = (
   employeuseActuelle(
     personneToAffectations(personne),
     personneToContrats(personne),
+  )
+
+/** Même composition, pour l'employeuse d'une date donnée. */
+export const personneToEmployeuseALaDate = (
+  personne: PersonneEmployeusePayload | null,
+  date: Date,
+): Employeuse | null =>
+  employeuseALaDate(
+    personneToAffectations(personne),
+    personneToContrats(personne),
+    date,
   )

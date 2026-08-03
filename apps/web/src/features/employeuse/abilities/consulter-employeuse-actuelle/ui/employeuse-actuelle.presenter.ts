@@ -1,28 +1,16 @@
-import { referentAffichage } from '../../../domain/contact-referent'
 import type { EmployeuseActuelle } from '../../../domain/employeuse-actuelle'
 import { debutEmploi, finEmploi } from '../../../domain/periode-emploi'
+import {
+  type EmployeuseAffichage,
+  employeuseAffichage,
+} from '../../../ui/employeuse.presenter'
 
 /**
- * Mise à plat de l'employeuse courante pour les affichages.
- *
- * Les nullités exposées ici sont celles du domaine, pas des artefacts : un nom
- * absent (14 employeuses de production), une adresse absente (`adresse_id` nul)
- * et une période inconnue (aucun contrat) se lisent tels quels. La lecture
- * précédente les aplatissait en chaînes vides, ce qui obligeait chaque appelant
- * à deviner s'il regardait une donnée manquante ou une donnée vide.
+ * L'employeuse courante à plat : la structure elle-même, plus ce que cette
+ * ability sait en propre — la source qui fait autorité, et la période d'emploi
+ * quand un contrat la renseigne.
  */
-export type EmployeuseActuelleAffichage = {
-  id: number
-  nom: string | null
-  adresse: string | null
-  commune: string | null
-  codePostal: string | null
-  codeInsee: string | null
-  siret: string | null
-  rna: string | null
-  nomReferent: string | null
-  courrielReferent: string | null
-  telephoneReferent: string | null
+export type EmployeuseActuelleAffichage = EmployeuseAffichage & {
   debut: Date | null
   fin: Date | null
   source: string
@@ -33,17 +21,7 @@ export const employeuseActuelleAffichage = ({
   source,
   periode,
 }: EmployeuseActuelle): EmployeuseActuelleAffichage => ({
-  id: employeuse.id,
-  nom: employeuse.denomination,
-  // La voie seule : les cartes d'affichage composent elles-mêmes
-  // « adresse, code postal commune ».
-  adresse: employeuse.adresse?.voie ?? null,
-  commune: employeuse.adresse?.commune ?? null,
-  codePostal: employeuse.adresse?.codePostal ?? null,
-  codeInsee: employeuse.adresse?.codeInsee ?? null,
-  siret: employeuse.siret,
-  rna: employeuse.rna,
-  ...referentAffichage(employeuse.contactReferent),
+  ...employeuseAffichage(employeuse),
   debut: debutEmploi(periode),
   fin: finEmploi(periode),
   source,

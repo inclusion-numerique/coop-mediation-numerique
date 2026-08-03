@@ -95,35 +95,40 @@ describe('employeuseToDomain', () => {
 })
 
 describe('contratsToDomain', () => {
-  it('ne garde qu’un contrat par employeuse : le plus récent', () => {
+  // Deux contrats successifs chez le même employeur restent deux périodes : c'est
+  // ce qui permet de savoir laquelle couvre une date passée.
+  it('conserve chaque contrat, y compris chez la même employeuse', () => {
     const contrats = contratsToDomain([
       {
-        structureId: 42,
+        structureAdministrative: ligneComplete,
         dateDebut: new Date('2024-01-01'),
-        dateFin: null,
+        dateFin: new Date('2024-12-31'),
         dateRupture: null,
       },
       {
-        structureId: 42,
+        structureAdministrative: ligneComplete,
         dateDebut: new Date('2026-01-01'),
         dateFin: null,
         dateRupture: null,
       },
     ])
 
-    expect(contrats).toEqual([
+    expect(contrats.map(({ periode }) => periode)).toEqual([
       {
-        employeuseId: 42,
-        periode: { _tag: 'enCours', debut: new Date('2026-01-01') },
+        _tag: 'terminee',
+        debut: new Date('2024-01-01'),
+        fin: new Date('2024-12-31'),
       },
+      { _tag: 'enCours', debut: new Date('2026-01-01') },
     ])
+    expect(contrats.every(({ employeuse }) => employeuse.id === 42)).toBe(true)
   })
 
   it('écarte les contrats sans structure', () => {
     expect(
       contratsToDomain([
         {
-          structureId: null,
+          structureAdministrative: null,
           dateDebut: new Date('2026-01-01'),
           dateFin: null,
           dateRupture: null,
@@ -145,7 +150,7 @@ describe('personneToEmployeuseActuelle', () => {
       ],
       contrats: [
         {
-          structureId: 42,
+          structureAdministrative: ligneComplete,
           dateDebut: new Date('2026-03-01'),
           dateFin: null,
           dateRupture: null,

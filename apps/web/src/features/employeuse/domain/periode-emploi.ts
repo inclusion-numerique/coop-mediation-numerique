@@ -39,6 +39,19 @@ export const PeriodeEmploi = ({
   return { _tag: 'inconnue' }
 }
 
+/**
+ * La période couvre-t-elle cette date ?
+ *
+ * Une période sans début connu ne couvre rien : on ne peut pas affirmer qu'un
+ * emploi avait cours à une date si on ignore quand il a commencé. Une période
+ * en cours couvre tout ce qui suit son début.
+ */
+export const couvre = (periode: PeriodeEmploi, date: Date): boolean => {
+  if (periode._tag === 'inconnue') return false
+  if (periode._tag === 'enCours') return periode.debut <= date
+  return periode.debut !== null && periode.debut <= date && periode.fin >= date
+}
+
 export const debutEmploi = (periode: PeriodeEmploi): Date | null =>
   periode._tag === 'inconnue' ? null : periode.debut
 

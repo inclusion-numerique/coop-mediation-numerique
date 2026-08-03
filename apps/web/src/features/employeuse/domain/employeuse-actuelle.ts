@@ -1,5 +1,5 @@
 import { type Affectation, affectationActuelle } from './affectation'
-import type { Contrat } from './contrat'
+import { type Contrat, contratDeLEmployeuse } from './contrat'
 import type { Employeuse } from './employeuse'
 import type { PeriodeEmploi } from './periode-emploi'
 import type { SourceAffectation } from './source-affectation'
@@ -15,13 +15,12 @@ export type EmployeuseActuelle = {
   readonly periode: PeriodeEmploi
 }
 
-/** Au plus un contrat par employeuse (invariant du transfer, cf. `Contrat`). */
+/** Le contrat le plus récent chez cette employeuse ; à défaut, période inconnue. */
 const periodePour = (
   contrats: readonly Contrat[],
   employeuse: Employeuse,
 ): PeriodeEmploi =>
-  contrats.find((contrat) => contrat.employeuseId === employeuse.id)
-    ?.periode ?? { _tag: 'inconnue' }
+  contratDeLEmployeuse(contrats, employeuse)?.periode ?? { _tag: 'inconnue' }
 
 export const employeuseActuelle = (
   affectations: readonly Affectation[],

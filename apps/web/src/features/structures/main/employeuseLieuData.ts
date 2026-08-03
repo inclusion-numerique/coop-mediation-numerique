@@ -43,8 +43,8 @@ const adresseMainToString = (
     .join(' ')
 }
 
-// Nom employeuse : denomination_antenne sinon denomination_sirene (même règle que sessionUser /
-// getActeurEmploiForDate).
+// Nom employeuse : denomination_antenne sinon denomination_sirene (même règle que le domaine de
+// la feature employeuse, que ce module rejoindra avec l'ability de matérialisation du lieu).
 export const employeuseMainNom = (structure: EmployeuseMainPayload): string =>
   structure.denominationAntenne ?? structure.denominationSirene ?? ''
 

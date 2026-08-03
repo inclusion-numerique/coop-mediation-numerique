@@ -1,9 +1,12 @@
 import Card from '@app/web/components/Card'
 import { ReferentStructure } from '@app/web/components/structure/ReferentStructure'
-import type { ActeurEmploi } from '@app/web/features/mon-reseau/use-cases/acteurs/db/getActeurEmploiForDate'
+import type { EmploiEmployeuseAffichage } from '@app/web/features/employeuse'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Link from 'next/link'
 import { ReactNode } from 'react'
+
+/** Vue de l'emploi affiché : l'employeuse, telle que la feature employeuse la met à plat. */
+export type ActeurEmploi = { structure: EmploiEmployeuseAffichage }
 
 export type ActeurStructureEmployeuseProps = {
   emploi: ActeurEmploi

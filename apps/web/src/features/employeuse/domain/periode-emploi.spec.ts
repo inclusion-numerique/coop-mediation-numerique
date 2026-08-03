@@ -1,4 +1,4 @@
-import { debutEmploi, finEmploi, PeriodeEmploi } from './periode-emploi'
+import { couvre, debutEmploi, finEmploi, PeriodeEmploi } from './periode-emploi'
 
 const debut = new Date('2026-03-01')
 const fin = new Date('2026-09-01')
@@ -47,5 +47,32 @@ describe('PeriodeEmploi', () => {
     expect(debutEmploi(enCours)).toEqual(debut)
     expect(finEmploi(enCours)).toBeNull()
     expect(debutEmploi({ _tag: 'inconnue' })).toBeNull()
+  })
+})
+
+describe('couvre', () => {
+  const enCours = PeriodeEmploi({ debut, fin: null, rupture: null })
+  const terminee = PeriodeEmploi({ debut, fin, rupture: null })
+
+  it('une période en cours couvre tout ce qui suit son début', () => {
+    expect(couvre(enCours, new Date('2026-06-01'))).toBe(true)
+    expect(couvre(enCours, debut)).toBe(true)
+    expect(couvre(enCours, new Date('2026-02-01'))).toBe(false)
+  })
+
+  it('une période terminée couvre son intervalle, bornes comprises', () => {
+    expect(couvre(terminee, new Date('2026-06-01'))).toBe(true)
+    expect(couvre(terminee, debut)).toBe(true)
+    expect(couvre(terminee, fin)).toBe(true)
+    expect(couvre(terminee, new Date('2026-10-01'))).toBe(false)
+  })
+
+  // On ne peut pas affirmer qu'un emploi avait cours à une date si on ignore
+  // quand il a commencé.
+  it('une période sans début connu ne couvre rien', () => {
+    expect(couvre({ _tag: 'inconnue' }, new Date('2026-06-01'))).toBe(false)
+    expect(
+      couvre(PeriodeEmploi({ debut: null, fin, rupture: null }), fin),
+    ).toBe(false)
   })
 })

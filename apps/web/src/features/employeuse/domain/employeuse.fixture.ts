@@ -41,7 +41,7 @@ export const contrat = (
   employeuseId: number,
   dates: { debut?: Date | null; fin?: Date | null; rupture?: Date | null } = {},
 ): Contrat => ({
-  employeuseId: EmployeuseId(employeuseId),
+  employeuse: employeuse(employeuseId),
   periode: PeriodeEmploi({
     debut: dates.debut ?? null,
     fin: dates.fin ?? null,

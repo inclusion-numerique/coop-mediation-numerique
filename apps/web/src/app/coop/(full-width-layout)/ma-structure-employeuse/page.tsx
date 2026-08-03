@@ -2,8 +2,11 @@ import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import {
+  consulterEmployeuseAUneDate,
+  emploiEmployeuseAffichage,
+} from '@app/web/features/employeuse'
 import ActeurStructureEmployeuse from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurStructureEmployeuse'
-import { getActeurEmploiForDate } from '@app/web/features/mon-reseau/use-cases/acteurs/db/getActeurEmploiForDate'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
@@ -22,10 +25,13 @@ const MaStructureEmployeusePage = async () => {
 
   // Employeuse COURANTE en pur main (ADR-002 périmètre élargi) : affectation active / contrat couvrant
   // aujourd'hui. Plus aucune lecture de `coop.employes_structures`.
-  const emploi = await getActeurEmploiForDate({
+  const employeuse = await consulterEmployeuseAUneDate({
     userId: user.id,
     date: new Date(),
   })
+  const emploi = employeuse
+    ? { structure: emploiEmployeuseAffichage(employeuse) }
+    : null
 
   return (
     <>
