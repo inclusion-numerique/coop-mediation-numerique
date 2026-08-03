@@ -1,6 +1,6 @@
-import { ensurePersonneMain } from '@app/web/features/structures/main/ensurePersonneMain'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
+import { ensurePersonneMain } from './ensurePersonneMain'
 
 // Écriture des affectations emploi `source='coop'` dans `main.personne_affectations_emploi` (dual-write,
 // ADR-002 périmètre élargi 2026-07-23) : la coop pose `est_active` comme signal d'employeuse courante,

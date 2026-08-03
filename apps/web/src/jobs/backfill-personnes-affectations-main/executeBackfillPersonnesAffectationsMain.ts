@@ -2,8 +2,8 @@ import { writeFile } from 'node:fs/promises'
 import {
   deactivateCoopAffectationsExcept,
   ensureAffectationEmploiMain,
-} from '@app/web/features/structures/main/ensureAffectationEmploiMain'
-import { ensurePersonneMain } from '@app/web/features/structures/main/ensurePersonneMain'
+  ensurePersonneMain,
+} from '@app/web/features/employeuse'
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { prismaClient } from '@app/web/prismaClient'
 import type { JobExecutor } from '../jobExecutors'

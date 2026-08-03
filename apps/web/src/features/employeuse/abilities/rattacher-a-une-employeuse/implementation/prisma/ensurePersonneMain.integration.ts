@@ -1,6 +1,6 @@
-import { ensurePersonneMain } from '@app/web/features/structures/main/ensurePersonneMain'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
+import { ensurePersonneMain } from './ensurePersonneMain'
 
 describe('ensurePersonneMain', () => {
   const dejaRelieId = v4()

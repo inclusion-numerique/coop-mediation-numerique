@@ -1,8 +1,8 @@
+import { prismaClient } from '@app/web/prismaClient'
 import {
   deactivateCoopAffectationsExcept,
   ensureAffectationEmploiMain,
-} from '@app/web/features/structures/main/ensureAffectationEmploiMain'
-import { prismaClient } from '@app/web/prismaClient'
+} from './ensureAffectationEmploiMain'
 
 describe('ensureAffectationEmploiMain', () => {
   const ids = { personneId: 0, structureA: 0, structureB: 0 }

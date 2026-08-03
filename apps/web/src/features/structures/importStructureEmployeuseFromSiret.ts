@@ -1,8 +1,9 @@
+import {
+  IdentiteEmployeuse,
+  rattacherAUneEmployeuse,
+} from '@app/web/features/employeuse'
 import type { InitializeDebugLogger } from '@app/web/features/inscription/use-cases/initialize/initializeInscription'
-import { findOrCreateStructureAdministrative } from '@app/web/features/structures/findOrCreateStructureAdministrative'
-import { dualWriteEmployeuseAffectation } from '@app/web/features/structures/main/ensureAffectationEmploiMain'
 import { fetchSiretApiData } from '@app/web/features/structures/siret/fetchSiretData'
-import { prismaClient } from '@app/web/prismaClient'
 
 // No-op logger for when debug logging is not needed
 const noopLogger: InitializeDebugLogger = () => {
@@ -10,9 +11,11 @@ const noopLogger: InitializeDebugLogger = () => {
 }
 
 /**
- * Import structure employeuse from SIRET only (using the public Recherche d'entreprises API).
- * ADR-002 échange final : garantit l'employeuse dans `main.structure_administrative` et pose
- * l'affectation active main (plus d'emploi coop). Gracefully handles API errors - logs but doesn't throw.
+ * Rattache un utilisateur à son employeuse à partir du seul SIRET, l'identité étant résolue par
+ * l'API Recherche d'entreprises. Adaptateur : il traduit une réponse d'API en identité du domaine
+ * et délègue le rattachement à la feature employeuse. Tolérant aux pannes — il journalise et rend
+ * `null` plutôt que de jeter, car ses appelants (inscription, ProConnect) ne doivent pas échouer
+ * pour autant.
  */
 export const importStructureEmployeuseFromSiret = async ({
   userId,
@@ -27,10 +30,8 @@ export const importStructureEmployeuseFromSiret = async ({
 } | null> => {
   log('fetchSiretApiData: calling Recherche d’entreprises API', { siret })
 
-  // Fetch full SIRET data from the public Recherche d'entreprises API
   const siretResult = await fetchSiretApiData(siret)
 
-  // Handle API errors gracefully
   if ('error' in siretResult) {
     log('fetchSiretApiData: API error', {
       siret,
@@ -65,16 +66,6 @@ export const importStructureEmployeuseFromSiret = async ({
     libelleCommune: adresse.libelle_commune,
   })
 
-  // Validate that it's a personne morale with a name
-  if (!personne_morale_attributs?.raison_sociale) {
-    log('SIRET validation failed: no raison sociale', { siret })
-    // biome-ignore lint/suspicious/noConsole: Intentional error logging
-    console.error(
-      `SIRET ${siret} does not correspond to a personne morale with raison sociale`,
-    )
-    return null
-  }
-
   // Skip closed establishments
   if (etat_administratif === 'F') {
     log('SIRET validation failed: establishment closed', { siret })
@@ -83,7 +74,6 @@ export const importStructureEmployeuseFromSiret = async ({
     return null
   }
 
-  // Build full address string
   const adresseComplete = [
     adresse.numero_voie,
     adresse.indice_repetition_voie,
@@ -94,40 +84,34 @@ export const importStructureEmployeuseFromSiret = async ({
     .filter((part) => Boolean(part) && part !== 'null')
     .join(' ')
 
-  log('Finding or creating structure', {
+  // Forme totale : une réponse d'API sans raison sociale ni commune ne permet pas de créer une
+  // employeuse identifiable — on préfère ne rien écrire dans `main` (constructeur strict).
+  const identite = IdentiteEmployeuse.safe({
     siret,
-    nom: personne_morale_attributs.raison_sociale,
-    adresse: adresseComplete,
-    codePostal: adresse.code_postal,
-    codeInsee: adresse.code_commune || '',
-    commune: adresse.libelle_commune || '',
+    denomination: personne_morale_attributs?.raison_sociale ?? '',
+    adresse: {
+      voie: adresseComplete,
+      commune: adresse.libelle_commune ?? '',
+      codePostal: adresse.code_postal,
+      codeInsee: adresse.code_commune ?? null,
+    },
   })
 
-  // Use SIRET API data to find or create structure administrative (employeuse) — MAIN uniquement.
-  const structure = await findOrCreateStructureAdministrative({
-    siret,
-    nom: personne_morale_attributs.raison_sociale,
-    adresse: adresseComplete,
-    codePostal: adresse.code_postal,
-    codeInsee: adresse.code_commune || '',
-    commune: adresse.libelle_commune || '',
-  })
-
-  log('Structure found or created', { structureMainId: structure.mainId })
-
-  // Écriture MAIN : personne + affectation active (l'employeuse courante se lit depuis main).
-  // ADR-002 échange final : plus d'emploi `coop.employes_structures`.
-  const user = await prismaClient.user.findUnique({
-    where: { id: userId },
-    select: { email: true },
-  })
-  if (user) {
-    await dualWriteEmployeuseAffectation({
-      coopUserId: userId,
-      email: user.email,
-      structureMainId: structure.mainId,
-    })
+  if (!identite) {
+    log('SIRET validation failed: identité insuffisante', { siret })
+    // biome-ignore lint/suspicious/noConsole: Intentional error logging
+    console.error(
+      `SIRET ${siret} : identité insuffisante pour créer l’employeuse`,
+    )
+    return null
   }
 
-  return { structureMainId: structure.mainId }
+  const rattachement = await rattacherAUneEmployeuse({ userId, identite })
+
+  log('Rattachement employeuse', { rattachement: rattachement._tag })
+
+  return {
+    structureMainId:
+      rattachement._tag === 'rattachee' ? rattachement.employeuseId : null,
+  }
 }

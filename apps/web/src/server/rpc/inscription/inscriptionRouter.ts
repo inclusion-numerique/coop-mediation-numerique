@@ -5,6 +5,7 @@ import {
   deploymentCanCreateBrevoContact,
   toBrevoContact,
 } from '@app/web/external-apis/brevo/createBrevoContact'
+import { rattacherAUneEmployeuse } from '@app/web/features/employeuse'
 import {
   ajouterLieuxActivite,
   CREATE_MEDIATEUR_EN_ACTIVITE_KEY,
@@ -27,11 +28,6 @@ import {
   employeuseMainSelect,
   employeuseMainToLieuData,
 } from '@app/web/features/structures/main/employeuseLieuData'
-import {
-  deactivateCoopAffectationsExcept,
-  ensureAffectationEmploiMain,
-} from '@app/web/features/structures/main/ensureAffectationEmploiMain'
-import { ensurePersonneMain } from '@app/web/features/structures/main/ensurePersonneMain'
 import { ChoisirProfilEtAccepterCguValidation } from '@app/web/features/utilisateurs/use-cases/registration/ChoisirProfilEtAccepterCguValidation'
 import { LieuxActiviteValidation } from '@app/web/features/utilisateurs/use-cases/registration/LieuxActivite'
 import { RenseignerStructureEmployeuseValidation } from '@app/web/features/utilisateurs/use-cases/registration/RenseignerStructureEmployeuse'
@@ -41,7 +37,7 @@ import { provide, runWithContainer } from '@app/web/libs/injection'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
-import { getOrCreateStructureEmployeuse } from '@app/web/server/rpc/inscription/getOrCreateStructureEmployeuse'
+import { toIdentiteEmployeuse } from '@app/web/server/rpc/inscription/toIdentiteEmployeuse'
 import { forbiddenError } from '@app/web/server/rpc/trpcErrors'
 import { findCartoStructuresByIds } from '@app/web/structure/cartoStructureFromEntrepot'
 import { toStructureFromCartoStructure } from '@app/web/structure/toStructureFromCartoStructure'
@@ -139,54 +135,20 @@ export const inscriptionRouter = router({
         inscriptionGuard(userId, sessionUser)
 
         const stopwatch = createStopwatch()
-        const structure =
-          await getOrCreateStructureEmployeuse(structureEmployeuse)
 
-        const transactionResult = await prismaClient.$transaction(
-          async (transaction) => {
-            // Écriture MAIN (ADR-002 échange final) : personne + affectation active, et désactivation
-            // des autres affectations coop (changement d'employeuse). Plus d'emploi
-            // `coop.employes_structures` : l'employeuse courante se lit désormais depuis main.
-            // `structure.mainId` n'est null que si la couverture main a échoué (best-effort).
-            const { email } = await transaction.user.findUniqueOrThrow({
-              where: { id: userId },
-              select: { email: true },
-            })
-            const personne = await ensurePersonneMain(
-              { coopUserId: userId, email },
-              transaction,
-            )
-            if (structure.mainId !== null) {
-              await ensureAffectationEmploiMain(
-                {
-                  personneId: personne.id,
-                  structureAdministrativeId: structure.mainId,
-                },
-                transaction,
-              )
-              await deactivateCoopAffectationsExcept(
-                {
-                  personneId: personne.id,
-                  keepStructureAdministrativeIds: [structure.mainId],
-                },
-                transaction,
-              )
-            }
+        // Le rattachement (employeuse garantie dans main + personne + affectation active, les
+        // autres affectations coop closes) appartient à la feature employeuse. L'inscription n'en
+        // garde que ce qui la concerne : l'horodatage de l'étape franchie.
+        const rattachement = await rattacherAUneEmployeuse({
+          userId,
+          identite: toIdentiteEmployeuse(structureEmployeuse),
+        })
 
-            return transaction.user.update({
-              where: {
-                id: userId,
-              },
-              data: {
-                structureEmployeuseRenseignee: new Date(),
-              },
-              select: {
-                id: true,
-                structureEmployeuseRenseignee: true,
-              },
-            })
-          },
-        )
+        const transactionResult = await prismaClient.user.update({
+          where: { id: userId },
+          data: { structureEmployeuseRenseignee: new Date() },
+          select: { id: true, structureEmployeuseRenseignee: true },
+        })
 
         addMutationLog({
           userId,
@@ -194,7 +156,10 @@ export const inscriptionRouter = router({
           duration: stopwatch.stop().duration,
           data: {
             userId,
-            structureMainId: structure.mainId,
+            structureMainId:
+              rattachement._tag === 'rattachee'
+                ? rattachement.employeuseId
+                : null,
           },
         })
 

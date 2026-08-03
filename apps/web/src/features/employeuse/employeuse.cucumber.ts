@@ -29,14 +29,33 @@ export const seedUtilisateur = async (): Promise<string> => {
   return id
 }
 
-export const seedEmployeuseMain = async (nom: string): Promise<number> => {
+export const seedEmployeuseMain = async (
+  nom: string,
+  siret?: string,
+): Promise<number> => {
   const { id } = await prismaClient.structureAdministrativeMain.create({
-    data: { denominationAntenne: nom },
+    data: { denominationAntenne: nom, siret },
     select: { id: true },
   })
   tracked.employeuses.add(id)
   return id
 }
+
+/** Affectations de la personne d'un utilisateur, pour les assertions d'écriture. */
+export const affectationsDe = async (
+  userId: string,
+): Promise<
+  { structureAdministrativeId: number; source: string; estActive: boolean }[]
+> =>
+  prismaClient.personneAffectationEmploiMain.findMany({
+    where: { personne: { coopId: userId } },
+    select: {
+      structureAdministrativeId: true,
+      source: true,
+      estActive: true,
+    },
+    orderBy: { id: 'asc' },
+  })
 
 const personneDe = async (userId: string): Promise<number> => {
   const existante = await prismaClient.personneMain.findUnique({
@@ -107,23 +126,30 @@ const vider = <T>(ids: Set<T>): T[] => {
   return valeurs
 }
 
-// Ordre imposé par les clés étrangères : contrats et affectations d'abord, la
-// personne ensuite, puis l'employeuse, l'utilisateur en dernier (la personne
-// référence `coop.users`).
+/**
+ * Nettoyage par appartenance à l'utilisateur de test, et non par identifiant
+ * suivi : les abilities d'écriture créent leurs propres personnes, affectations
+ * et contrats, que le support ne voit jamais passer. On efface donc tout ce qui
+ * pend à l'utilisateur, puis les employeuses créées, puis l'utilisateur — dans
+ * l'ordre qu'imposent les clés étrangères.
+ */
 After(async () => {
-  await prismaClient.contratMain.deleteMany({
-    where: { id: { in: vider(tracked.contrats) } },
-  })
+  const utilisateurs = vider(tracked.utilisateurs)
+  const dePersonneDeTest = { personne: { coopId: { in: utilisateurs } } }
+
+  await prismaClient.contratMain.deleteMany({ where: dePersonneDeTest })
   await prismaClient.personneAffectationEmploiMain.deleteMany({
-    where: { id: { in: vider(tracked.affectations) } },
+    where: dePersonneDeTest,
   })
   await prismaClient.personneMain.deleteMany({
-    where: { id: { in: vider(tracked.personnes) } },
+    where: { coopId: { in: utilisateurs } },
   })
   await prismaClient.structureAdministrativeMain.deleteMany({
     where: { id: { in: vider(tracked.employeuses) } },
   })
-  await prismaClient.user.deleteMany({
-    where: { id: { in: vider(tracked.utilisateurs) } },
-  })
+  await prismaClient.user.deleteMany({ where: { id: { in: utilisateurs } } })
+
+  tracked.contrats.clear()
+  tracked.affectations.clear()
+  tracked.personnes.clear()
 })

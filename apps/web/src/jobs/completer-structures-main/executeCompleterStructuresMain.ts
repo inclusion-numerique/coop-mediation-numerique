@@ -4,8 +4,8 @@ import {
   findAdresseMainId,
   insertAdresseMain,
   resolveAdresseMain,
-} from '@app/web/features/structures/main/adresseMain'
-import { resolveIdentiteFromSiret } from '@app/web/features/structures/main/resolveIdentiteSirene'
+  resolveIdentiteFromSiret,
+} from '@app/web/features/employeuse'
 import { throttleApiEntreprise } from '@app/web/features/structures/siret/siretIdentity'
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { prismaClient } from '@app/web/prismaClient'

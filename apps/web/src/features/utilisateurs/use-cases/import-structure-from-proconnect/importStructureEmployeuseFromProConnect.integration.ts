@@ -2,9 +2,11 @@ import { resetFixtureUser } from '@app/fixtures/resetFixtureUser'
 import { seedStructures } from '@app/fixtures/structures'
 import { conseillerNumerique } from '@app/fixtures/users/conseillerNumerique'
 import { mediateurSansActivites } from '@app/fixtures/users/mediateurSansActivites'
+import {
+  ensureAffectationEmploiMain,
+  ensurePersonneMain,
+} from '@app/web/features/employeuse'
 import { importStructureEmployeuseFromSiret } from '@app/web/features/structures/importStructureEmployeuseFromSiret'
-import { ensureAffectationEmploiMain } from '@app/web/features/structures/main/ensureAffectationEmploiMain'
-import { ensurePersonneMain } from '@app/web/features/structures/main/ensurePersonneMain'
 import { prismaClient } from '@app/web/prismaClient'
 import { importStructureEmployeuseFromProConnect } from './importStructureEmployeuseFromProConnect'
 
@@ -32,6 +34,11 @@ describe('importStructureEmployeuseFromProConnect', () => {
   beforeAll(async () => {
     await seedStructures(prismaClient)
 
+    // Résidu d'un run précédent interrompu : la clé (siret, dénomination) est unique.
+    await prismaClient.structureAdministrativeMain.deleteMany({
+      where: { siret: { in: [PROCONNECT_SIRET, OTHER_SIRET] } },
+    })
+
     const proconnect = await prismaClient.structureAdministrativeMain.create({
       data: {
         siret: PROCONNECT_SIRET,
@@ -52,19 +59,29 @@ describe('importStructureEmployeuseFromProConnect', () => {
     state.otherMainId = other.id
   })
 
-  afterAll(async () => {
-    await prismaClient.personneAffectationEmploiMain.deleteMany({
-      where: {
-        structureAdministrativeId: {
-          in: [state.proconnectMainId, state.otherMainId],
-        },
+  // Nettoyage par appartenance à la personne de test, et non par structure : les fixtures lui
+  // posent aussi des affectations vers d'autres employeuses, qui empêchaient la suppression de la
+  // personne — et laissaient alors les employeuses de test derrière elles, faisant échouer le
+  // `beforeAll` du run suivant sur la clé (siret, dénomination).
+  const nettoyerPersonnesDeTest = async () => {
+    const deNosPersonnes = {
+      personne: {
+        coopId: { in: [mediateurSansActivites.id, conseillerNumerique.id] },
       },
+    }
+    await prismaClient.contratMain.deleteMany({ where: deNosPersonnes })
+    await prismaClient.personneAffectationEmploiMain.deleteMany({
+      where: deNosPersonnes,
     })
     await prismaClient.personneMain.deleteMany({
       where: {
         coopId: { in: [mediateurSansActivites.id, conseillerNumerique.id] },
       },
     })
+  }
+
+  afterAll(async () => {
+    await nettoyerPersonnesDeTest()
     await prismaClient.structureAdministrativeMain.deleteMany({
       where: { id: { in: [state.proconnectMainId, state.otherMainId] } },
     })
@@ -78,29 +95,13 @@ describe('importStructureEmployeuseFromProConnect', () => {
 
     await resetFixtureUser(mediateurSansActivites, false)
     // Personne + affectations réinitialisées entre chaque test (FK : affectations avant personne).
-    await prismaClient.personneAffectationEmploiMain.deleteMany({
-      where: {
-        structureAdministrativeId: {
-          in: [state.proconnectMainId, state.otherMainId],
-        },
-      },
-    })
-    await prismaClient.personneMain.deleteMany({
-      where: { coopId: mediateurSansActivites.id },
-    })
+    await nettoyerPersonnesDeTest()
   })
 
-  test('non-CN + SIRET : importe l’employeuse et désactive les autres affectations', async () => {
-    // Affectation active pré-existante sur une AUTRE structure.
-    const personne = await ensurePersonneMain({
-      coopUserId: mediateurSansActivites.id,
-      email: mediateurSansActivites.email,
-    })
-    await ensureAffectationEmploiMain({
-      personneId: personne.id,
-      structureAdministrativeId: state.otherMainId,
-    })
-
+  // La clôture des autres affectations appartient désormais au rattachement lui-même (feature
+  // employeuse, ability `rattacher-a-une-employeuse`, couverte par son BDD). Il ne reste ici que
+  // ce que ProConnect décide : à qui il délègue, et quand il s'abstient.
+  test('non-CN + SIRET : délègue le rattachement au SIRET fourni', async () => {
     const result = await importStructureEmployeuseFromProConnect({
       userId: mediateurSansActivites.id,
       siret: PROCONNECT_SIRET,
@@ -109,17 +110,10 @@ describe('importStructureEmployeuseFromProConnect', () => {
     expect(result.success).toBe(true)
     expect(result.noOp).toBe(false)
     expect(mockedImportStructureEmployeuseFromSiret).toHaveBeenCalledTimes(1)
-
-    // L'autre affectation est désactivée (ProConnect = employeur courant unique).
-    const other =
-      await prismaClient.personneAffectationEmploiMain.findFirstOrThrow({
-        where: {
-          personneId: personne.id,
-          structureAdministrativeId: state.otherMainId,
-        },
-        select: { estActive: true },
-      })
-    expect(other.estActive).toBe(false)
+    expect(mockedImportStructureEmployeuseFromSiret).toHaveBeenCalledWith({
+      userId: mediateurSansActivites.id,
+      siret: PROCONNECT_SIRET,
+    })
   })
 
   test('conseiller numerique : no-op, import non appelé', async () => {

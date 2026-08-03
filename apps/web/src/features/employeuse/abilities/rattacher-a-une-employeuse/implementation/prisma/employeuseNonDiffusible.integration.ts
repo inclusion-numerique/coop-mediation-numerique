@@ -1,11 +1,11 @@
 import { searchAdresse } from '@app/web/external-apis/apiAdresse'
 import { prismaClient } from '@app/web/prismaClient'
-import { getOrCreateStructureEmployeuse } from '@app/web/server/rpc/inscription/getOrCreateStructureEmployeuse'
+import { ensureStructureAdministrativeMain } from './ensureStructureAdministrativeMain'
 
-// L'adaptateur délègue à findOrCreateStructureAdministrative, qui garantit UNIQUEMENT la ligne
-// `main.structure_administrative` (ADR-002 échange final : plus d'écriture coop) en géocodant
-// l'adresse via la BAN. On neutralise l'appel réseau : searchAdresse -> null rend le géocodage
-// déterministe et hors-ligne.
+// Cas limite de production : les établissements non diffusibles, dont SIRENE ne donne ni
+// dénomination ni adresse exploitables — seule la commune est sûre. La garantie doit quand même
+// créer UNE ligne `main.structure_administrative`, et rester idempotente. On neutralise l'appel
+// réseau : searchAdresse -> null rend le géocodage déterministe et hors-ligne.
 jest.mock('@app/web/external-apis/apiAdresse', () => ({
   searchAdresse: jest.fn(),
 }))
@@ -13,7 +13,7 @@ const mockedSearchAdresse = searchAdresse as jest.MockedFunction<
   typeof searchAdresse
 >
 
-describe('getOrCreateStructureEmployeuse', () => {
+describe('employeuse non diffusible', () => {
   const testSiret = '93429789600011'
 
   beforeAll(async () => {
@@ -38,23 +38,25 @@ describe('getOrCreateStructureEmployeuse', () => {
     }
   })
 
-  it('should ensure a main structure employeuse for a [Non-Diffusible] siret and be idempotent', async () => {
+  it('crée une employeuse pour un SIRET [Non-Diffusible], et reste idempotente', async () => {
     const input = {
-      nom: '[Non-Diffusible]',
-      adresse: '[Non-Diffusible]',
-      commune: 'Villeurbanne',
-      codeInsee: '69266',
-      typologies: undefined,
+      coopId: null,
       siret: testSiret,
+      identite: {
+        nom: '[Non-Diffusible]',
+        adresse: '[Non-Diffusible]',
+        commune: 'Villeurbanne',
+        codeInsee: '69266',
+        codePostal: '',
+      },
     }
-    const result = await getOrCreateStructureEmployeuse(input)
+    const result = await ensureStructureAdministrativeMain(input)
 
-    expect(result.mainId).toEqual(expect.any(Number))
-    const { mainId } = result
+    expect(result?.id).toEqual(expect.any(Number))
 
-    const result2 = await getOrCreateStructureEmployeuse(input)
+    const result2 = await ensureStructureAdministrativeMain(input)
 
-    expect(result2.mainId).toEqual(mainId)
+    expect(result2?.id).toEqual(result?.id)
 
     const count = await prismaClient.structureAdministrativeMain.count({
       where: {

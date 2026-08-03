@@ -1,6 +1,4 @@
 import { importStructureEmployeuseFromSiret } from '@app/web/features/structures/importStructureEmployeuseFromSiret'
-import { deactivateCoopAffectationsExcept } from '@app/web/features/structures/main/ensureAffectationEmploiMain'
-import { ensurePersonneMain } from '@app/web/features/structures/main/ensurePersonneMain'
 import { prismaClient } from '@app/web/prismaClient'
 
 export type ImportStructureEmployeuseFromProConnectResult = {
@@ -12,10 +10,9 @@ export type ImportStructureEmployeuseFromProConnectResult = {
 /**
  * Import de l'employeuse déclarée par ProConnect pour un médiateur NON-CN.
  *
- * ProConnect fait autorité sur l'employeur courant : on garantit l'employeuse dans
- * `main.structure_administrative`, on pose son affectation active (via
- * `importStructureEmployeuseFromSiret`), puis on DÉSACTIVE toute autre affectation coop de la
- * personne — un seul employeur actif, celui que ProConnect vient d'affirmer.
+ * ProConnect fait autorité sur l'employeur courant : on résout l'identité depuis le SIRET et on
+ * rattache la personne. Le rattachement clôt lui-même les autres affectations coop — un seul
+ * employeur actif, celui que ProConnect vient d'affirmer.
  *
  * ADR-002 échange final : plus aucun emploi `coop.employes_structures`. Le modèle main exprime
  * l'employeur courant par `est_active` (pas de fenêtre de dates pour les non-CN), ce qui remplace
@@ -39,7 +36,7 @@ export const importStructureEmployeuseFromProConnect = async ({
 
   const user = await prismaClient.user.findUnique({
     where: { id: userId },
-    select: { isConseillerNumerique: true, email: true },
+    select: { isConseillerNumerique: true },
   })
 
   if (!user) {
@@ -62,18 +59,6 @@ export const importStructureEmployeuseFromProConnect = async ({
       reason:
         'Failed to import structure from SIRET (API error or invalid SIRET)',
     }
-  }
-
-  // ProConnect = autorité sur l'employeur courant : un seul actif, on désactive les autres.
-  if (result.structureMainId !== null) {
-    const personne = await ensurePersonneMain({
-      coopUserId: userId,
-      email: user.email,
-    })
-    await deactivateCoopAffectationsExcept({
-      personneId: personne.id,
-      keepStructureAdministrativeIds: [result.structureMainId],
-    })
   }
 
   return { success: true, noOp: false }

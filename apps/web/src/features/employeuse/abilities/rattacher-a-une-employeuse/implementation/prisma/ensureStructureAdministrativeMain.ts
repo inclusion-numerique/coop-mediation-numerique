@@ -1,13 +1,13 @@
+import { throttleApiEntreprise } from '@app/web/features/structures/siret/siretIdentity'
+import { prismaClient } from '@app/web/prismaClient'
+import * as Sentry from '@sentry/nextjs'
 import {
   type AdresseSource,
   findAdresseMainId,
   insertAdresseMain,
   resolveAdresseMain,
-} from '@app/web/features/structures/main/adresseMain'
-import { resolveIdentiteFromSiret } from '@app/web/features/structures/main/resolveIdentiteSirene'
-import { throttleApiEntreprise } from '@app/web/features/structures/siret/siretIdentity'
-import { prismaClient } from '@app/web/prismaClient'
-import * as Sentry from '@sentry/nextjs'
+} from './adresseMain'
+import { resolveIdentiteFromSiret } from './resolveIdentiteSirene'
 
 // Identité minimale pour peupler `main.structure_administrative` : la dénomination (`nom`) + l'adresse
 // à géocoder. Le chemin d'écriture au fil de l'eau la connaît déjà (payload / saisie).

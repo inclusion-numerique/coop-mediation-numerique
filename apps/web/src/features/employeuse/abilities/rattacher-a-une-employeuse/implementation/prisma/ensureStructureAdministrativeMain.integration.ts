@@ -1,11 +1,11 @@
-import { ensureStructureAdministrativeMain } from '@app/web/features/structures/main/ensureStructureAdministrativeMain'
-import { resolveIdentiteFromSiret } from '@app/web/features/structures/main/resolveIdentiteSirene'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
+import { ensureStructureAdministrativeMain } from './ensureStructureAdministrativeMain'
+import { resolveIdentiteFromSiret } from './resolveIdentiteSirene'
 
 // On neutralise l'API Recherche d'entreprises (identité) et le throttle : le test cible la dédup par
 // clé métier `(siret, denomination_antenne)`, pas l'appel réseau.
-jest.mock('@app/web/features/structures/main/resolveIdentiteSirene', () => ({
+jest.mock('./resolveIdentiteSirene', () => ({
   resolveIdentiteFromSiret: jest.fn(),
 }))
 jest.mock('@app/web/features/structures/siret/siretIdentity', () => ({

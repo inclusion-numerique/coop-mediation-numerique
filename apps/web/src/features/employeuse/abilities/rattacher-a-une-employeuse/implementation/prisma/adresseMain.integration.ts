@@ -1,9 +1,6 @@
-import {
-  findAdresseMainId,
-  type ResolvedAdresseMain,
-} from '@app/web/features/structures/main/adresseMain'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
+import { findAdresseMainId, type ResolvedAdresseMain } from './adresseMain'
 
 describe('findAdresseMainId — dédup par clé composant', () => {
   const codeBanExistant = v4()

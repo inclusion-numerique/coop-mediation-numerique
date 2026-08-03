@@ -35,6 +35,20 @@ export {
   historiqueEmployeusesAffichage,
 } from './abilities/consulter-historique-employeuses'
 export {
+  adresseMainKey,
+  deactivateCoopAffectationsExcept,
+  ensureAffectationEmploiMain,
+  ensurePersonneMain,
+  ensureStructureAdministrativeMain,
+  findAdresseMainId,
+  insertAdresseMain,
+  type RattachementEmployeuse,
+  type RattacherAUneEmployeuse,
+  rattacherAUneEmployeuse,
+  resolveAdresseMain,
+  resolveIdentiteFromSiret,
+} from './abilities/rattacher-a-une-employeuse'
+export {
   type PersonneEmployeusePayload,
   personneEmployeuseSelect,
   personneToEmployeuseActuelle,
@@ -42,6 +56,7 @@ export {
   personneToEmployeusesHistorique,
 } from './db/employeuse.transfer'
 export {
+  AdresseAGeocoder,
   type AdresseEmployeuse,
   type Affectation,
   type CodeInsee,
@@ -58,6 +73,7 @@ export {
   employeuseALaDate,
   employeuseCodeInsee,
   finEmploi,
+  IdentiteEmployeuse,
   type PeriodeEmploi,
   type Rna,
   referentAffichage,

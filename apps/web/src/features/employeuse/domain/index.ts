@@ -1,6 +1,8 @@
+export { AdresseAGeocoder } from './adresse-a-geocoder'
 export { AdresseEmployeuse } from './adresse-employeuse'
 export { type Affectation, affectationActuelle } from './affectation'
 export { CodeInsee } from './code-insee'
+export { CodePostal } from './code-postal'
 export { ContactReferent, referentAffichage } from './contact-referent'
 export {
   type Contrat,
@@ -21,6 +23,7 @@ export {
   type EmployeuseHistorique,
   employeusesHistorique,
 } from './employeuses-historique'
+export { IdentiteEmployeuse } from './identite-employeuse'
 export { couvre, debutEmploi, finEmploi, PeriodeEmploi } from './periode-emploi'
 export { Rna } from './rna'
 export { Siret } from './siret'
