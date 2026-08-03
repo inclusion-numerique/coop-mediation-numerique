@@ -1,4 +1,4 @@
-import { importStructureEmployeuseFromSiret } from '@app/web/features/structures/importStructureEmployeuseFromSiret'
+import { rattacherAUneEmployeuseDepuisSiret } from '@app/web/features/employeuse'
 import { prismaClient } from '@app/web/prismaClient'
 
 export type ImportStructureEmployeuseFromProConnectResult = {
@@ -48,16 +48,18 @@ export const importStructureEmployeuseFromProConnect = async ({
     return { success: true, noOp: true, reason: 'User is conseiller numerique' }
   }
 
-  // Résout l'employeuse depuis le SIRET et pose l'affectation active MAIN.
-  const result = await importStructureEmployeuseFromSiret({ userId, siret })
+  const rattachement = await rattacherAUneEmployeuseDepuisSiret({
+    userId,
+    siret,
+  })
 
-  // If SIRET import fails (invalid/closed/API error), we expose a functional failure.
-  if (!result) {
+  // Un SIRET fermé, illisible ou une API muette : on l'expose comme un échec
+  // fonctionnel, sans jeter — la connexion ne doit pas en dépendre.
+  if (rattachement._tag !== 'rattachee') {
     return {
       success: false,
       noOp: false,
-      reason:
-        'Failed to import structure from SIRET (API error or invalid SIRET)',
+      reason: `Rattachement impossible depuis le SIRET ProConnect (${rattachement._tag})`,
     }
   }
 

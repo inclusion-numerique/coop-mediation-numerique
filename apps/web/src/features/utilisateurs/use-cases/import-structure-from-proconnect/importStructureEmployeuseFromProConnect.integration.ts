@@ -5,24 +5,22 @@ import { mediateurSansActivites } from '@app/fixtures/users/mediateurSansActivit
 import {
   ensureAffectationEmploiMain,
   ensurePersonneMain,
+  rattacherAUneEmployeuseDepuisSiret,
 } from '@app/web/features/employeuse'
-import { importStructureEmployeuseFromSiret } from '@app/web/features/structures/importStructureEmployeuseFromSiret'
 import { prismaClient } from '@app/web/prismaClient'
 import { importStructureEmployeuseFromProConnect } from './importStructureEmployeuseFromProConnect'
 
-// ADR-002 échange final : ProConnect n'écrit plus d'emploi `coop.employes_structures`. Il garantit
-// l'employeuse dans `main` (via `importStructureEmployeuseFromSiret`, mocké ici) puis DÉSACTIVE toute
-// autre affectation coop de la personne — un seul employeur actif, celui affirmé par ProConnect.
-jest.mock(
-  '@app/web/features/structures/importStructureEmployeuseFromSiret',
-  () => ({
-    importStructureEmployeuseFromSiret: jest.fn(),
-  }),
-)
+// Ce que ProConnect décide lui reste : à qui il délègue le rattachement, et quand il s'abstient.
+// Le rattachement lui-même appartient à la feature employeuse (couvert par son BDD) — on le mocke
+// pour n'observer ici que la décision.
+jest.mock('@app/web/features/employeuse', () => ({
+  ...jest.requireActual('@app/web/features/employeuse'),
+  rattacherAUneEmployeuseDepuisSiret: jest.fn(),
+}))
 
-const mockedImportStructureEmployeuseFromSiret =
-  importStructureEmployeuseFromSiret as jest.MockedFunction<
-    typeof importStructureEmployeuseFromSiret
+const mockedRattacherDepuisSiret =
+  rattacherAUneEmployeuseDepuisSiret as jest.MockedFunction<
+    typeof rattacherAUneEmployeuseDepuisSiret
   >
 
 const PROCONNECT_SIRET = '11111111111111'
@@ -88,9 +86,10 @@ describe('importStructureEmployeuseFromProConnect', () => {
   })
 
   beforeEach(async () => {
-    mockedImportStructureEmployeuseFromSiret.mockReset()
-    mockedImportStructureEmployeuseFromSiret.mockResolvedValue({
-      structureMainId: state.proconnectMainId,
+    mockedRattacherDepuisSiret.mockReset()
+    mockedRattacherDepuisSiret.mockResolvedValue({
+      _tag: 'rattachee',
+      employeuseId: state.proconnectMainId as never,
     })
 
     await resetFixtureUser(mediateurSansActivites, false)
@@ -109,8 +108,8 @@ describe('importStructureEmployeuseFromProConnect', () => {
 
     expect(result.success).toBe(true)
     expect(result.noOp).toBe(false)
-    expect(mockedImportStructureEmployeuseFromSiret).toHaveBeenCalledTimes(1)
-    expect(mockedImportStructureEmployeuseFromSiret).toHaveBeenCalledWith({
+    expect(mockedRattacherDepuisSiret).toHaveBeenCalledTimes(1)
+    expect(mockedRattacherDepuisSiret).toHaveBeenCalledWith({
       userId: mediateurSansActivites.id,
       siret: PROCONNECT_SIRET,
     })
@@ -126,7 +125,7 @@ describe('importStructureEmployeuseFromProConnect', () => {
 
     expect(result.success).toBe(true)
     expect(result.noOp).toBe(true)
-    expect(mockedImportStructureEmployeuseFromSiret).not.toHaveBeenCalled()
+    expect(mockedRattacherDepuisSiret).not.toHaveBeenCalled()
   })
 
   test('aucun SIRET fourni : no-op', async () => {
@@ -137,6 +136,6 @@ describe('importStructureEmployeuseFromProConnect', () => {
 
     expect(result.success).toBe(true)
     expect(result.noOp).toBe(true)
-    expect(mockedImportStructureEmployeuseFromSiret).not.toHaveBeenCalled()
+    expect(mockedRattacherDepuisSiret).not.toHaveBeenCalled()
   })
 })

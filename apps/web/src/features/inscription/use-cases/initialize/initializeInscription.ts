@@ -9,8 +9,10 @@ import {
   upsertMediateur,
 } from '@app/web/features/dataspace/syncFromDataspaceCore'
 import { updateUserInscriptionProfileFromDataspace } from '@app/web/features/dataspace/updateUserInscriptionProfileFromDataspace'
-import { personneToEmployeuseActuelle } from '@app/web/features/employeuse'
-import { importStructureEmployeuseFromSiret } from '@app/web/features/structures/importStructureEmployeuseFromSiret'
+import {
+  personneToEmployeuseActuelle,
+  rattacherAUneEmployeuseDepuisSiret,
+} from '@app/web/features/employeuse'
 import { prismaClient } from '@app/web/prismaClient'
 import { getNextInscriptionStep, getStepPath } from '../../inscriptionFlow'
 
@@ -228,12 +230,13 @@ export const initializeInscription = async ({
       log('Fallback: importing structure employeuse from SIRET', {
         siret: userAfterSync.siret,
       })
-      const importResult = await importStructureEmployeuseFromSiret({
+      const rattachement = await rattacherAUneEmployeuseDepuisSiret({
         userId,
         siret: userAfterSync.siret,
-        log,
       })
-      log('Import structure employeuse from SIRET result', importResult)
+      log('Rattachement employeuse depuis SIRET', {
+        resultat: rattachement._tag,
+      })
     }
 
     // Fetch updated user for next step determination
@@ -314,12 +317,11 @@ export const initializeInscription = async ({
     log('Importing structure employeuse from SIRET (no Dataspace)', {
       siret: user.siret,
     })
-    const importResult = await importStructureEmployeuseFromSiret({
+    const rattachement = await rattacherAUneEmployeuseDepuisSiret({
       userId,
       siret: user.siret,
-      log,
     })
-    log('Import structure employeuse from SIRET result', importResult)
+    log('Rattachement employeuse depuis SIRET', { resultat: rattachement._tag })
   } else if (user && !user.siret) {
     log('User has no SIRET, cannot create structure employeuse')
   }

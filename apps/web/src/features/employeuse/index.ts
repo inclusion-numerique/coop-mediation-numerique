@@ -44,7 +44,9 @@ export {
   insertAdresseMain,
   type RattachementEmployeuse,
   type RattacherAUneEmployeuse,
+  type RattacherAUneEmployeuseDepuisSiret,
   rattacherAUneEmployeuse,
+  rattacherAUneEmployeuseDepuisSiret,
   resolveAdresseMain,
   resolveIdentiteFromSiret,
 } from './abilities/rattacher-a-une-employeuse'
@@ -74,6 +76,7 @@ export {
   employeuseCodeInsee,
   finEmploi,
   IdentiteEmployeuse,
+  identiteDepuisEtablissement,
   type PeriodeEmploi,
   type Rna,
   referentAffichage,

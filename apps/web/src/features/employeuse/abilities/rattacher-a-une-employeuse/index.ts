@@ -1,6 +1,7 @@
 export type {
   RattachementEmployeuse,
   RattacherAUneEmployeuse,
+  RattacherAUneEmployeuseDepuisSiret,
 } from './domain'
 export {
   adresseMainKey,
@@ -11,6 +12,7 @@ export {
   findAdresseMainId,
   insertAdresseMain,
   rattacherAUneEmployeuse,
+  rattacherAUneEmployeuseDepuisSiret,
   resolveAdresseMain,
   resolveIdentiteFromSiret,
 } from './implementation'

@@ -24,8 +24,23 @@ export type RattachementEmployeuse =
    * le job de complétion.
    */
   | { readonly _tag: 'employeuseIndisponible' }
+  /**
+   * L'établissement existe mais ne fait pas une employeuse : fermé, ou sans
+   * identité exploitable. Distinct de l'indisponibilité — ici, réessayer ne
+   * changera rien.
+   */
+  | { readonly _tag: 'identiteInexploitable' }
 
 export type RattacherAUneEmployeuse = (input: {
   userId: string
   identite: IdentiteEmployeuse
+}) => Promise<RattachementEmployeuse>
+
+/**
+ * Même rattachement, à partir du seul SIRET : l'identité est résolue chez
+ * SIRENE avant d'être confiée au cas d'usage.
+ */
+export type RattacherAUneEmployeuseDepuisSiret = (input: {
+  userId: string
+  siret: string
 }) => Promise<RattachementEmployeuse>

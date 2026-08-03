@@ -23,7 +23,11 @@ export {
   type EmployeuseHistorique,
   employeusesHistorique,
 } from './employeuses-historique'
-export { IdentiteEmployeuse } from './identite-employeuse'
+export {
+  type EtablissementSirene,
+  IdentiteEmployeuse,
+  identiteDepuisEtablissement,
+} from './identite-employeuse'
 export { couvre, debutEmploi, finEmploi, PeriodeEmploi } from './periode-emploi'
 export { Rna } from './rna'
 export { Siret } from './siret'
