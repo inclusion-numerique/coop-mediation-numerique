@@ -77,6 +77,10 @@ export {
   rechercherEmployeuse,
 } from './abilities/rechercher-employeuse'
 export {
+  employeuseCourante,
+  employeuseCouranteJoin,
+} from './db/employeuse.sql'
+export {
   type PersonneEmployeusePayload,
   personneEmployeuseSelect,
   personneToEmployeuseActuelle,

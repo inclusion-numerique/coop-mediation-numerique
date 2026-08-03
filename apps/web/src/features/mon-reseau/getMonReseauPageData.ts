@@ -2,7 +2,10 @@ import {
   Departement,
   departementsByCode,
 } from '@app/web/data/collectivites-territoriales/departements'
-import { employeuseMainLateral } from '@app/web/features/structures/main/employeuseMainSql'
+import {
+  employeuseCourante,
+  employeuseCouranteJoin,
+} from '@app/web/features/employeuse'
 import { prismaClient } from '@app/web/prismaClient'
 import { departementCodeFromInseeRegex } from './departementCodeFromInseeRegex'
 
@@ -19,14 +22,14 @@ const countActeursInDepartement = ({
   prismaClient.$queryRaw<[{ count: number }]>`
     SELECT COUNT(DISTINCT u.id)::integer AS count
     FROM users u
-    ${employeuseMainLateral('u.id')}
+    ${employeuseCouranteJoin('u.id')}
     LEFT JOIN mediateurs m ON m.user_id = u.id
     LEFT JOIN mediateurs_en_activite mea ON mea.mediateur_id = m.id AND mea.suppression IS NULL AND mea.fin_activite IS NULL
     LEFT JOIN lieu_inclusion s2 ON s2.id = mea.structure_id
     WHERE u.deleted IS NULL
       AND u.inscription_validee IS NOT NULL
       AND (
-        SUBSTRING(s1.code_insee FROM ${departementCodeFromInseeRegex}) = ${departementCode}
+        SUBSTRING(${employeuseCourante().codeInsee} FROM ${departementCodeFromInseeRegex}) = ${departementCode}
         OR SUBSTRING(s2.code_insee FROM ${departementCodeFromInseeRegex}) = ${departementCode}
       )
   `
