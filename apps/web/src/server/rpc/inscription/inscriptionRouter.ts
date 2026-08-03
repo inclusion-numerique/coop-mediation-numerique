@@ -6,6 +6,10 @@ import {
   toBrevoContact,
 } from '@app/web/external-apis/brevo/createBrevoContact'
 import {
+  employeuseMainSelect,
+  employeuseMainToLieuData,
+} from '@app/web/features/inscription/use-cases/lieux-activite/employeuseEnLieuData'
+import {
   ajouterLieuxActivite,
   CREATE_MEDIATEUR_EN_ACTIVITE_KEY,
   CREATE_STRUCTURE_FROM_CARTO_KEY,
@@ -23,10 +27,6 @@ import {
   findStructuresByCartoIds,
   PRISMA_CLIENT_KEY,
 } from '@app/web/features/lieux-activite/use-cases/ajouter/implementations/prisma'
-import {
-  employeuseMainSelect,
-  employeuseMainToLieuData,
-} from '@app/web/features/structures/main/employeuseLieuData'
 import { ChoisirProfilEtAccepterCguValidation } from '@app/web/features/utilisateurs/use-cases/registration/ChoisirProfilEtAccepterCguValidation'
 import { LieuxActiviteValidation } from '@app/web/features/utilisateurs/use-cases/registration/LieuxActivite'
 import { StructureEmployeuseLieuActiviteValidation } from '@app/web/features/utilisateurs/use-cases/registration/StructureEmployeuseLieuActivite'

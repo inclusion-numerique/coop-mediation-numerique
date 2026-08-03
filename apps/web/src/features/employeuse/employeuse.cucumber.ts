@@ -41,6 +41,16 @@ export const seedEmployeuseMain = async (
   return id
 }
 
+/** Clôture des rattachements d'une employeuse, comme un changement d'employeur. */
+export const desactiverAffectations = async (
+  employeuseId: number,
+): Promise<void> => {
+  await prismaClient.personneAffectationEmploiMain.updateMany({
+    where: { structureAdministrativeId: employeuseId },
+    data: { estActive: false },
+  })
+}
+
 /** Suppression côté Entrepôt (soft-delete) : la coop l'observe, elle ne la pose pas. */
 export const supprimerEmployeuseMain = async (
   employeuseId: number,

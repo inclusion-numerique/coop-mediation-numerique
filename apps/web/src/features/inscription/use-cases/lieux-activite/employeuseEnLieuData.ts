@@ -4,9 +4,10 @@ import {
 } from '@app/web/features/employeuse'
 import type { Prisma } from '@prisma/client'
 
-// Sélection main d'une employeuse pour la matérialiser en lieu d'activité et pour l'afficher
-// pendant l'inscription (ADR-002 étape 6). Le nom vient de la denomination, l'adresse de la
-// relation `main.adresse`, les référents du jsonb `contact`.
+// Matérialisation d'une employeuse en lieu d'activité : quand une personne déclare que son
+// employeur est aussi l'un de ses lieux, on recopie ses données `main` dans une ligne
+// `coop.lieu_inclusion`. C'est une écriture de LIEU, faite à partir d'une employeuse — d'où sa
+// place ici, du côté de l'inscription qui la déclenche, et non dans la feature employeuse.
 export const employeuseMainSelect = {
   id: true,
   denominationSirene: true,
