@@ -31,9 +31,3 @@ export const AdresseEmployeuse = defineModel(
 )
 
 export type AdresseEmployeuse = Model.TypeOf<typeof AdresseEmployeuse>
-
-/** Adresse sur une ligne, pour les affichages qui n'ont pas de mise en forme propre. */
-export const adresseEmployeuseLigne = (adresse: AdresseEmployeuse): string =>
-  [adresse.voie, [adresse.codePostal, adresse.commune].join(' ')]
-    .filter(Boolean)
-    .join(', ')

@@ -1,4 +1,4 @@
-export { AdresseEmployeuse, adresseEmployeuseLigne } from './adresse-employeuse'
+export { AdresseEmployeuse } from './adresse-employeuse'
 export { type Affectation, affectationActuelle } from './affectation'
 export { CodeInsee } from './code-insee'
 export { ContactReferent, referentAffichage } from './contact-referent'

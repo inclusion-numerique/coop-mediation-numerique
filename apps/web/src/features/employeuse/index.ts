@@ -27,7 +27,6 @@ export {
 export {
   type AdresseEmployeuse,
   type Affectation,
-  adresseEmployeuseLigne,
   type CodeInsee,
   ContactReferent,
   type Contrat,

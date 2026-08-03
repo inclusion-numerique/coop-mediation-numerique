@@ -1,4 +1,3 @@
-import { adresseEmployeuseLigne } from '../../../domain/adresse-employeuse'
 import { referentAffichage } from '../../../domain/contact-referent'
 import type { EmployeuseActuelle } from '../../../domain/employeuse-actuelle'
 import { debutEmploi, finEmploi } from '../../../domain/periode-emploi'
@@ -36,9 +35,9 @@ export const employeuseActuelleAffichage = ({
 }: EmployeuseActuelle): EmployeuseActuelleAffichage => ({
   id: employeuse.id,
   nom: employeuse.denomination,
-  adresse: employeuse.adresse
-    ? adresseEmployeuseLigne(employeuse.adresse)
-    : null,
+  // La voie seule : les cartes d'affichage composent elles-mêmes
+  // « adresse, code postal commune ».
+  adresse: employeuse.adresse?.voie ?? null,
   commune: employeuse.adresse?.commune ?? null,
   codePostal: employeuse.adresse?.codePostal ?? null,
   codeInsee: employeuse.adresse?.codeInsee ?? null,
