@@ -5,7 +5,6 @@ import {
   deploymentCanCreateBrevoContact,
   toBrevoContact,
 } from '@app/web/external-apis/brevo/createBrevoContact'
-import { rattacherAUneEmployeuse } from '@app/web/features/employeuse'
 import {
   ajouterLieuxActivite,
   CREATE_MEDIATEUR_EN_ACTIVITE_KEY,
@@ -30,14 +29,12 @@ import {
 } from '@app/web/features/structures/main/employeuseLieuData'
 import { ChoisirProfilEtAccepterCguValidation } from '@app/web/features/utilisateurs/use-cases/registration/ChoisirProfilEtAccepterCguValidation'
 import { LieuxActiviteValidation } from '@app/web/features/utilisateurs/use-cases/registration/LieuxActivite'
-import { RenseignerStructureEmployeuseValidation } from '@app/web/features/utilisateurs/use-cases/registration/RenseignerStructureEmployeuse'
 import { StructureEmployeuseLieuActiviteValidation } from '@app/web/features/utilisateurs/use-cases/registration/StructureEmployeuseLieuActivite'
 import { ValiderInscriptionValidation } from '@app/web/features/utilisateurs/use-cases/registration/ValiderInscriptionValidation'
 import { provide, runWithContainer } from '@app/web/libs/injection'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
-import { toIdentiteEmployeuse } from '@app/web/server/rpc/inscription/toIdentiteEmployeuse'
 import { forbiddenError } from '@app/web/server/rpc/trpcErrors'
 import { findCartoStructuresByIds } from '@app/web/structure/cartoStructureFromEntrepot'
 import { toStructureFromCartoStructure } from '@app/web/structure/toStructureFromCartoStructure'
@@ -123,47 +120,6 @@ export const inscriptionRouter = router({
           },
           select: sessionUserSelect,
         })
-      },
-    ),
-  renseignerStructureEmployeuse: protectedProcedure
-    .input(RenseignerStructureEmployeuseValidation)
-    .mutation(
-      async ({
-        input: { structureEmployeuse, userId },
-        ctx: { user: sessionUser },
-      }) => {
-        inscriptionGuard(userId, sessionUser)
-
-        const stopwatch = createStopwatch()
-
-        // Le rattachement (employeuse garantie dans main + personne + affectation active, les
-        // autres affectations coop closes) appartient à la feature employeuse. L'inscription n'en
-        // garde que ce qui la concerne : l'horodatage de l'étape franchie.
-        const rattachement = await rattacherAUneEmployeuse({
-          userId,
-          identite: toIdentiteEmployeuse(structureEmployeuse),
-        })
-
-        const transactionResult = await prismaClient.user.update({
-          where: { id: userId },
-          data: { structureEmployeuseRenseignee: new Date() },
-          select: { id: true, structureEmployeuseRenseignee: true },
-        })
-
-        addMutationLog({
-          userId,
-          nom: 'CreerEmployeStructure',
-          duration: stopwatch.stop().duration,
-          data: {
-            userId,
-            structureMainId:
-              rattachement._tag === 'rattachee'
-                ? rattachement.employeuseId
-                : null,
-          },
-        })
-
-        return transactionResult
       },
     ),
   ajouterStructureEmployeuseEnLieuActivite: protectedProcedure

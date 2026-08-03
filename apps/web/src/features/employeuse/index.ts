@@ -77,7 +77,7 @@ export {
   type PeriodeEmploi,
   type Rna,
   referentAffichage,
-  type Siret,
+  Siret,
   type SourceAffectation,
 } from './domain'
 export {

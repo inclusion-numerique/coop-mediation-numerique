@@ -1,13 +1,14 @@
+import { getSessionUser } from '@app/web/auth/getSessionUser'
 import { searchAdresse } from '@app/web/external-apis/apiAdresse'
 import { prismaClient } from '@app/web/prismaClient'
-import { inscriptionRouter } from '@app/web/server/rpc/inscription/inscriptionRouter'
-import { createTestContext } from '@app/web/test/createTestContext'
 import { testSessionUser } from '@app/web/test/testSessionUser'
 import { v4 } from 'uuid'
+import { renseignerStructureEmployeuseAction } from './renseigner-structure-employeuse.action'
 
-// ADR-002 échange final : renseigner l'employeuse n'écrit QUE main (personne + affectation active),
-// plus aucun `coop.employes_structures`. `findOrCreateStructureAdministrative` déduplique la structure
-// main par la clé métier (siret, denomination_antenne) -> on pré-crée la ligne main pour un test
+// L'étape d'inscription délègue le rattachement à la feature employeuse (couverte par son BDD) et
+// n'ajoute que l'horodatage de l'étape. Ce test verrouille la composition des deux : l'utilisateur
+// vient de la session, et l'étape n'est horodatée que si le rattachement a abouti.
+// La structure main est pré-créée pour que la garantie la retrouve par sa clé métier — test
 // déterministe et hors-ligne (searchAdresse -> null neutralise le géocodage BAN).
 jest.mock('@app/web/external-apis/apiAdresse', () => ({
   searchAdresse: jest.fn(),
@@ -16,29 +17,35 @@ const mockedSearchAdresse = searchAdresse as jest.MockedFunction<
   typeof searchAdresse
 >
 
-describe('inscriptionRouter.renseignerStructureEmployeuse — écriture main', () => {
+jest.mock('@app/web/auth/getSessionUser', () => ({
+  getSessionUser: jest.fn(),
+}))
+const mockedGetSessionUser = getSessionUser as jest.MockedFunction<
+  typeof getSessionUser
+>
+
+describe('renseignerStructureEmployeuseAction', () => {
   const userId = v4()
   const siret = '93429789600011'
   const nom = 'Employeuse main'
   const state = { mainStructureId: 0 }
 
-  const structureEmployeuse = {
+  const structure = {
     nom,
     siret,
-    adresseBan: {
-      id: 'ban-test',
-      nom: '10 rue de la Bascule',
-      commune: 'Nantes',
-      codePostal: '44000',
-      codeInsee: '44109',
-      contexte: '44, Loire-Atlantique',
-      latitude: 47.2,
-      longitude: -1.55,
-    },
+    adresse: '10 rue de la Bascule',
+    commune: 'Nantes',
+    codePostal: '44000',
+    codeInsee: '44109',
+    source: 'api' as const,
   }
 
   beforeAll(async () => {
     mockedSearchAdresse.mockResolvedValue(null)
+    mockedGetSessionUser.mockResolvedValue({
+      ...testSessionUser,
+      id: userId,
+    })
 
     await prismaClient.user.create({
       data: {
@@ -75,18 +82,17 @@ describe('inscriptionRouter.renseignerStructureEmployeuse — écriture main', (
     await prismaClient.user.delete({ where: { id: userId } })
   })
 
-  it('écrit personne + affectation main (est_active) et aucun emploi coop', async () => {
-    await inscriptionRouter
-      .createCaller(
-        createTestContext({
-          user: {
-            ...testSessionUser,
-            id: userId,
-            emailVerified: new Date().toISOString(),
-          },
-        }),
-      )
-      .renseignerStructureEmployeuse({ userId, structureEmployeuse })
+  it('rattache l’utilisateur de la session et horodate l’étape', async () => {
+    const result = await renseignerStructureEmployeuseAction({ structure })
+
+    expect(result).toMatchObject({ success: true, data: { rattachee: true } })
+
+    const { structureEmployeuseRenseignee } =
+      await prismaClient.user.findUniqueOrThrow({
+        where: { id: userId },
+        select: { structureEmployeuseRenseignee: true },
+      })
+    expect(structureEmployeuseRenseignee).not.toBeNull()
 
     // Aucun emploi coop n'est créé (échange final : plus de `coop.employes_structures`).
     const emploisCount = await prismaClient.employeStructure.count({
