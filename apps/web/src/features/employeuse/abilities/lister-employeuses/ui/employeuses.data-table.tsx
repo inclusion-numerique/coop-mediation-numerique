@@ -7,17 +7,15 @@ import { dateAsDayAndTime } from '@app/web/utils/dateAsDayAndTime'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { optionalNumberToString } from '@app/web/utils/formatNumber'
 import type { Prisma } from '@prisma/client'
-import { StructureAdministrativeForList } from './queryStructuresAdministrativesForList'
+import type { EmployeuseAffichee } from './employeuse-affichee.presenter'
 
-export type StructuresAdministrativesDataTableConfiguration =
-  DataTableConfiguration<
-    StructureAdministrativeForList,
-    // ADR-002 échange final : la liste admin des employeuses lit `main.structure_administrative`.
-    Prisma.StructureAdministrativeMainWhereInput,
-    Prisma.StructureAdministrativeMainOrderByWithRelationInput
-  >
+export type EmployeusesDataTableConfiguration = DataTableConfiguration<
+  EmployeuseAffichee,
+  Prisma.StructureAdministrativeMainWhereInput,
+  Prisma.StructureAdministrativeMainOrderByWithRelationInput
+>
 
-export const StructuresAdministrativesDataTable = {
+export const EmployeusesDataTable = {
   csvFilename: () => `coop-${dateAsIsoDay(new Date())}-structures-employeuses`,
   rowKey: ({ id }) => id,
   rowLink: ({ id }) => ({
@@ -91,10 +89,10 @@ export const StructuresAdministrativesDataTable = {
       orderBy: (direction) => [{ updatedAt: direction }],
     },
   ],
-} satisfies StructuresAdministrativesDataTableConfiguration
+} satisfies EmployeusesDataTableConfiguration
 
-export type StructuresAdministrativesDataTableSearchParams =
-  DataTableSearchParams<StructuresAdministrativesDataTableConfiguration>
+export type EmployeusesSearchParams =
+  DataTableSearchParams<EmployeusesDataTableConfiguration>
 
 export type StructuresAdministrativesDataTableFilterValues =
-  DataTableFilterValues<StructuresAdministrativesDataTableConfiguration>
+  DataTableFilterValues<EmployeusesDataTableConfiguration>

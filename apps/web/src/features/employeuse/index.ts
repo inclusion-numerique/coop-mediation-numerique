@@ -34,6 +34,18 @@ export {
   type EmployeuseHistoriqueAffichage,
   historiqueEmployeusesAffichage,
 } from './abilities/consulter-historique-employeuses'
+// Le composant de page n'est PAS réexporté ici : ce barrel est chargé côté
+// serveur (implémentations Prisma, steps Cucumber), et y mêler du React
+// entraîne ses feuilles de style dans des contextes qui ne savent pas les lire.
+// La route l'importe directement depuis l'ability.
+export {
+  type CriteresListeEmployeuses,
+  type EmployeuseAffichee,
+  type EmployeuseListee,
+  type EmployeusesSearchParams,
+  employeuseAffichee,
+  listerEmployeuses,
+} from './abilities/lister-employeuses'
 export {
   adresseMainKey,
   deactivateCoopAffectationsExcept,

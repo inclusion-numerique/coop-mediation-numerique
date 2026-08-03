@@ -1,11 +1,11 @@
 import DataTable from '@app/web/libs/data-table/DataTable'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
+import type { EmployeuseAffichee } from './employeuse-affichee.presenter'
 import {
-  StructuresAdministrativesDataTable,
-  type StructuresAdministrativesDataTableSearchParams,
-} from './StructuresAdministrativesDataTable'
-import { type SearchStructuresAdministrativesResult } from './searchStructuresAdministratives'
+  EmployeusesDataTable,
+  type EmployeusesSearchParams,
+} from './employeuses.data-table'
 
 const defaultPageSize = 100
 
@@ -13,20 +13,22 @@ const pageSizeOptions = generatePageSizeSelectOptions([
   10, 20, 50, 100, 250, 500, 1000,
 ])
 
-const StructuresAdministrativesTable = ({
-  data: { structures, totalPages },
+const EmployeusesTable = ({
+  employeuses,
+  pages,
   searchParams,
   baseHref,
 }: {
-  data: SearchStructuresAdministrativesResult
-  searchParams: StructuresAdministrativesDataTableSearchParams
+  employeuses: EmployeuseAffichee[]
+  pages: number
+  searchParams: EmployeusesSearchParams
   baseHref: string
 }) => (
   <>
     <DataTable
       className="fr-table--nowrap fr-width-full fr-mb-8v"
-      rows={structures}
-      configuration={StructuresAdministrativesDataTable}
+      rows={employeuses}
+      configuration={EmployeusesDataTable}
       searchParams={searchParams}
       baseHref={baseHref}
       classes={{ table: 'fr-table--transparent' }}
@@ -34,11 +36,11 @@ const StructuresAdministrativesTable = ({
     <PaginationNavWithPageSizeSelect
       defaultPageSize={defaultPageSize}
       pageSizeOptions={pageSizeOptions}
-      totalPages={totalPages}
+      totalPages={pages}
       baseHref={baseHref}
       searchParams={searchParams}
     />
   </>
 )
 
-export default StructuresAdministrativesTable
+export default EmployeusesTable

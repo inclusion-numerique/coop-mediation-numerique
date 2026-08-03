@@ -4,12 +4,12 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { usePathname, useRouter } from 'next/navigation'
 import { type FormEventHandler, useRef } from 'react'
-import { type StructuresAdministrativesDataTableSearchParams } from './StructuresAdministrativesDataTable'
+import type { EmployeusesSearchParams } from './employeuses.data-table'
 
-const AdministrationSearchStructureAdministrative = ({
+const RechercheEmployeuses = ({
   searchParams = {},
 }: {
-  searchParams?: StructuresAdministrativesDataTableSearchParams
+  searchParams?: EmployeusesSearchParams
 }) => {
   const pathname = usePathname()
   const router = useRouter()
@@ -56,4 +56,4 @@ const AdministrationSearchStructureAdministrative = ({
   )
 }
 
-export default AdministrationSearchStructureAdministrative
+export default RechercheEmployeuses
