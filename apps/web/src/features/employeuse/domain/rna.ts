@@ -10,9 +10,9 @@ export const Rna = defineModel(
   z
     .string()
     .trim()
+    .toUpperCase()
     .regex(/^W\d{9}$/)
     .brand('Rna'),
-  (input: string) => input.toUpperCase(),
 )
 
 export type Rna = Model.TypeOf<typeof Rna>

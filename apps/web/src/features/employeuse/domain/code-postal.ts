@@ -7,12 +7,11 @@ import { z } from 'zod'
  * l'adressage et au géocodage. Les 5 chiffres couvrent aussi les DOM (`97xxx`,
  * `98xxx`) : aucun territoire français n'est exclu par ce format.
  *
- * La normalisation (retrait de TOUS les espaces, `'44 000'` → `'44000'`) vit
- * dans le schéma et non dans le second argument de `defineModel`, contrairement
- * à `CodeInsee`. Ce second argument n'est appliqué que par le smart constructeur
- * lui-même (`CodePostal(...)` / `.safe(...)`), jamais lorsque `.schema` est
- * imbriqué dans le schéma d'un autre modèle — or c'est précisément l'usage ici,
- * dans `AdresseEmployeuse`. Mise dans le schéma, elle voyage avec lui.
+ * La normalisation (retrait de TOUS les espaces, `'44 000'` → `'44000'`) est
+ * posée dans le schéma, donc elle voyage avec `.schema` lorsqu'il est composé
+ * dans `AdresseEmployeuse` ou `AdresseAGeocoder`. Contrairement à la casse, le
+ * retrait des espaces internes n'a pas d'équivalent natif chez zod, d'où le
+ * `transform().pipe()` là où `CodeInsee` se contente de `.trim().toUpperCase()`.
  */
 export const CodePostal = defineModel(
   z
