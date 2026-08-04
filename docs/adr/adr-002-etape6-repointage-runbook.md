@@ -84,7 +84,57 @@ Tous les reads de l'employeuse d'un utilisateur passent par `main`. Plus aucun r
    des jobs de synchro/réconciliation.
 4. **Prérequis (autre PR)** : alignement SA employeuses coop↔main.
 
+### Mise à jour 2026-07-25 (nuit) — échange final : la partie CODE est faite
+
+Le point 3 ci-dessus (« échange final, PR ultérieure ») a été **réalisé dans cette branche**, sauf la
+migration SQL. La coop **n'accède plus du tout** à `coop.structure_administrative` ni à
+`coop.employes_structures` (ni read, ni write) : l'employeuse vit uniquement dans `main`
+(`personne` + `personne_affectations_emploi` active + `structure_administrative`).
+
+| Commit | Lot | Contenu |
+|---|---|---|
+| `7e8a3e40` | fix #1 | `searchActeurs` : la **count query** avait échappé au flip (indentation) et joignait encore `coop.structure_administrative` via `es.structure_id` → `employeuseMainLateral`. |
+| `2c78697e` | #1 | 4 derniers **lecteurs** d'emplois → main : `searchActeurs` (codeInsee coordinateur via `personneMain`), `update-lieu-activite-a-distance` (`resolveEmployeuseActuelle`), `filterUtilisateur.filterOnLieux` (dept/commune sur `adresse.codeInsee`), `lieuActiviteRouter` (garde morte retirée). |
+| `1c4071c3` | #2/#3/#5 | **Coupe de TOUS les writes coop SA/emplois** : `ensureStructureAdministrativeMain` (`coopId` nullable, dédup `(siret, denomination)`), `findOrCreateStructureAdministrative` main-only → `{ mainId }`, inscription `renseigner` (personne+affectation main, plus d'emploi coop), `importStructureEmployeuseFromSiret`, **ProConnect** (affectation active + désactivation des autres — l'ancienne logique de dates coop était un artefact du modèle daté), **Dataspace** `syncFromDataspaceCore` (sync CN structures/emplois retirée : `source=idposte` appartient à l'Entrepôt ; flag CN + coordinateur + Brevo + import lieux conservés). Tests : suites 100 % obsolètes supprimées, `updateUserFromDataspace` élagué (1299 → ~360 l.), assertions réécrites côté main. **tsc + 665 unit ✅** |
+| `5608fac4` | #4a | **Outillage SIRET lieu-only** : `siretBearingStructures` perd la source employeuse (read + `alignEmployeuseIdentity`/`clearSiret`/`markSync`) ; `normalize-sirets`, `apply-vider-siret`, `audit-siret-coherence`, `export-duplicate-sirets` alignés. Décision : la qualité SIRET des **employeurs** appartient à l'Entrepôt, la coop « consulte » seulement. |
+| `f61122a3` | #4a | **Suppression de `generate-structures-action-plan`** : sa détection d'orphelins reposait sur des signaux devenus faux (emplois gelés, activités passées à `structure_employeuse_main_id`) → plan de suppression dangereux. ⚠️ **Conséquence** : la famille `apply-*` (vider/supprimer/fusionner/corriger) n'a plus de producteur de plan CSV. |
+| `7d261182` | #4b | **Corrélation coop lieu↔employeuse dépréciée** : `getEmploisCount*` / `getCorrelatedEmployeuseRelations` renvoient `0`/vide sans lire coop (nom+adresse+INSEE non fiable sur main : adresse normalisée autrement, dénomination scindée). Gardes lieu-natives d'`apply-supprimer-lieux` conservées. |
+| `4c553e47` | #4b | **Admin employeuses → main SA** : liste, recherche (`searchStructuresAdministratives`), **autocomplete** (fusion/inscription), DataTable (tri sur `denominationAntenne` / `adresse.*` / `affectationsEmploi._count`), page détail par **int main** (emplois = affectations actives → personne → user via `coop_id`), `employeuseMainToAdminStructure` (le lien de route porte enfin l'id main). |
+| `33f05592` | fix | **Inscription** : le fallback SIRET d'`initializeInscription` testait la présence d'employeuse sur les emplois coop (gelés/vides) → ré-import SIRET quasi systématique. Bascule sur la présence d'**affectations main actives** (chemins `withDataspace` + fallback). |
+| `30c92eb9` | fin | **Derniers reads indirects** : `mergeUser` et `getMergeData` lisent la colonne FK `structureId` (plus la relation coop) ; **`mergeAffectationsMain`** ajouté (consolide les affectations main source→cible à la fusion de comptes — gap : personne source orpheline) ; `api/v1/utilisateurs` expose les **affectations main actives** (dates best-effort via `main.contrat`), doc OpenAPI à jour. |
+| `40f409bc` | tests | `getMesStatistiquesPageData` (seed `seedPersonnesMain`, option employeuse = id int main, commune `null` faute d'adresse sur la SA fixture) et `find-duplicates-for-beneficiaire` (setup self-contained, FK médiateur garantie à l'update de l'upsert). |
+
+**Reste après ces commits :**
+
+1. **Migration d'échange final (non écrite)** — le schéma porte encore `model StructureAdministrative`,
+   `model EmployeStructure` et `Activite.structureEmployeuseId` ; dernière migration = `20260724120000`.
+   À faire : `DROP` de `coop.activites.structure_employeuse_id` et de `coop.employes_structures`,
+   `SET NOT NULL` sur `structure_employeuse_main_id`, retrait des modèles/relations coop du
+   `schema.prisma`, **migration de rollback écrite dans la foulée**.
+   ⚠️ **Point 4 non tenu** : `20260723010642` pose les 2 FK en `ON DELETE SET NULL` alors que la
+   décision est **`RESTRICT`** → à corriger dans ce jeu final.
+2. **Code mort à supprimer avec la table** : `mergeLieuInclusion.ts:28,37`,
+   `updateStructuresFromEntrepot.ts:165,266` + SQL brut `:249-262`, `mergeUser.ts:412,422`,
+   `signupReminders.ts:62`, et les `create` d'emplois des tests d'intégration/fixtures.
+3. **Prep prod + déploiement** ([runbook dédié](adr-002-runbook-prep-prod-pur-main.md)) : le backfill
+   `structure_employeuse_main_id` (~4M) **en prod reste à confirmer** (rejoué en local sur restore).
+   Garde-fou inchangé : 0 NULL avant tout `NOT NULL`.
+4. **Suppression des jobs devenus sans objet** (étape 9 de l'ADR), une fois la prod passée :
+   `backfill-structure-employeuse-main`, `relier-personnes-coop-main`,
+   `backfill-personnes-affectations-main`, `completer-structures-main`. Statuer aussi sur la famille
+   `apply-*` orpheline (cf. `f61122a3`).
+5. **Ouverts côté Entrepôt** : #1729 (sémantique `est_active` `source='coop'`, P0) ; liste des grants
+   Flyway à transmettre (elle tombe du code maintenant que les chemins d'écriture sont figés) ;
+   enums `entrepot/schema.prisma` (Point 7a, PR séparée).
+6. **À acter explicitement** : l'étape 8 de l'ADR (« passage en abilities du socle structures ») n'est
+   pas faite — `features/structures/` n'a pas d'`abilities/`. À déclarer hors périmètre.
+
 ## Reste à faire
+
+> **Obsolète depuis le 2026-07-25** — cette section décrit la stratégie *dual-write* (A/B/C) d'avant le
+> pivot pur main. A et B sont **superseded** (plus aucun read/write coop : voir la mise à jour
+> ci-dessus) ; C est fait. Conservée pour l'historique et pour l'inventaire des sites (utile à la
+> rédaction de la migration d'échange final).
 
 ### A. Écritures restantes (dual-write : ajouter `structureMainId` / `structureEmployeuseMainId`)
 
@@ -201,11 +251,12 @@ segments de route `[structureId]`/`[structureAdministrativeId]`.
 
 Une fois A+B+C faits et validés :
 
-1. Migration : `ALTER … DROP COLUMN structure_employeuse_id` / `structure_id` (uuid) ; `ALTER …
-   ALTER COLUMN structure_employeuse_main_id SET NOT NULL` (si applicable) ; suppression des
-   relations/inverses coop dans `schema.prisma` ; renommage éventuel `*_main_id` → nom canonique.
-2. Retirer le dual-write (les `create` ne fixent plus que la colonne main) et les where/dedup
-   résiduels sur coop.
+1. Migration : `ALTER … DROP COLUMN structure_employeuse_id` / `DROP TABLE employes_structures` ;
+   `ALTER … ALTER COLUMN structure_employeuse_main_id SET NOT NULL` ; **FK en `ON DELETE RESTRICT`**
+   (Point 4) ; suppression des relations/inverses coop dans `schema.prisma` ; renommage éventuel
+   `*_main_id` → nom canonique. **← seul point restant**
+2. ✅ **FAIT** (`1c4071c3` + suivants) : dual-write retiré — plus aucune écriture coop SA/emplois, ni
+   where/dedup résiduel sur coop.
 3. Rollback écrit dans la foulée : migration inverse (re-création colonnes uuid + re-backfill depuis
    main via `structure_coop_id`).
 
