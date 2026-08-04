@@ -11,9 +11,12 @@ type PrismaLike = Prisma.TransactionClient
 // La coop n'assure PAS une synchro continue de main.personne : elle garantit juste son existence au
 // moment où elle en a besoin (création d'une employeuse à l'inscription).
 //
-// ⚠️ Non branché dans le flux live : ce câblage fait partie du cutover coordonné avec l'Entrepôt
-// (FK personne.coop_id posée par Flyway, grants INSERT/UPDATE sur main.personne au rôle `sonum`,
-// arrêt de la branche emploi du coop-dag). Voir docs/adr/adr-002-reconciliation-dataspace.md.
+// ⚠️ Écrire dans `main` suppose des droits que la coop ne possède pas de son propre chef : les
+// GRANT INSERT/UPDATE sur `main.personne` au rôle `sonum` ont été posés À LA MAIN en base, sans
+// migration Flyway côté Entrepôt pour les codifier — ils ne sont donc pas reproductibles sur un
+// environnement neuf (dev, CI, nouvelle preview). Voir docs/adr/adr-002-reconciliation-dataspace.md
+// (§7b) ; tant que l'Entrepôt ne les a pas intégrés, un « permission denied for table personne »
+// ici est une absence de grant, pas un bug de cette fonction.
 
 // Retrouve une personne préexistante par email, sur TOUS les chemins où l'Entrepôt range un email :
 // `contact.coop.email`, `contact.idposte.mail_perso`, `contact.idposte.mail_pro` (formes réelles
