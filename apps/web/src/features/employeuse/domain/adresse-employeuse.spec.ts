@@ -75,6 +75,16 @@ describe('AdresseEmployeuse', () => {
       })
     })
 
+    // Régression : le normalisateur de CodeInsee vivait dans le second argument
+    // de defineModel, qui n'est PAS appliqué quand `.schema` est imbriqué ici.
+    // Un code corse en minuscules faisait donc tomber l'adresse entière, alors
+    // que CodeInsee('2a004') l'acceptait.
+    it('normalise la casse de la Corse, y compris imbriqué dans l’adresse', () => {
+      expect(AdresseEmployeuse(adresse({ codeInsee: '2a004' }))).toMatchObject({
+        codeInsee: '2A004',
+      })
+    })
+
     it('écarte un code hors format', () => {
       expect(AdresseEmployeuse.safe(adresse({ codeInsee: '441' }))).toBeNull()
     })
