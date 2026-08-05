@@ -28,7 +28,6 @@
     "@types/html-minifier": "^4.0.6",
     "@types/jest": "^29.5.14",
     "@types/mjml": "^4.7.4",
-    "@types/mjml-react": "^2.0.10",
     "@types/node": "^25.9.5",
     "@types/react": "^19.2.18",
     "eslint": "^9.39.5",
