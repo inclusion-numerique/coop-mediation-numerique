@@ -14,7 +14,7 @@
     "node": "^25.4"
   },
   "dependencies": {
-    "@commander-js/extra-typings": "^13.1.0",
+    "@commander-js/extra-typings": "^15.0.0",
     "@prisma/client": "6.13.0",
     "dotenv": "^17.4.2",
     "tsx": "^4.23.1",
@@ -23,8 +23,8 @@
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
-    "@types/node": "^25.9.5",
-    "commander": "^13.1.0",
+    "@types/node": "^26.1.2",
+    "commander": "^15.0.0",
     "jest": "^30.4.2"
   }
 }

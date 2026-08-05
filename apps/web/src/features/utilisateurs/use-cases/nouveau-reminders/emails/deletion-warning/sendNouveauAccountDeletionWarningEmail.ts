@@ -35,7 +35,7 @@ export const sendNouveauAccountDeletionWarningEmail = async ({
       isMediateur,
       isCoordinateur,
     }),
-    html: compileMjml(
+    html: await compileMjml(
       nouveauAccountDeletionWarningEmail.mjml({
         firstname,
         deletionDate,

@@ -53,11 +53,6 @@ minimumReleaseAgeExclude:
 # étaient silencieusement inertes (cf. l'avertissement affiché à chaque commande).
 overrides:
   stylus: 0.0.1-security
-  # `@types/mjml` déclare `"@types/mjml-core": "*"`, une plage non bornée qui happe la 5.0.0.
-  # Or celle-ci type le `mjml2html` de mjml 5, devenu asynchrone, alors que notre runtime est
-  # mjml 4 où il reste synchrone — d'où des erreurs de type sur du code correct. À retirer le
-  # jour où l'on passera à mjml 5.
-  "@types/mjml-core": ^4.15.2
   # Versions EXACTES, pas des plages : c'est ce qui borne la levée de quarantaine ci-dessus à
   # deux artefacts connus. À retirer avec les exclusions correspondantes après le 15/08/2026,
   # quand les plages semver normales suffiront à les atteindre.

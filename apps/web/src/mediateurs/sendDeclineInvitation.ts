@@ -19,7 +19,9 @@ export const sendDeclineInvitation = async ({
 
     subject: `${mediateur} a refusé l‘invitation à rejoindre votre équipe`,
     text: declineInvitation.text({ mediateur: mediateur || '' }),
-    html: compileMjml(declineInvitation.mjml({ mediateur: mediateur || '' })),
+    html: await compileMjml(
+      declineInvitation.mjml({ mediateur: mediateur || '' }),
+    ),
   })
 
   throwOnSendMailFailure(result)

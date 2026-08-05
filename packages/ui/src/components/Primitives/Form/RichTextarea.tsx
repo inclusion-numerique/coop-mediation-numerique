@@ -3,19 +3,16 @@
 import styles from '@app/ui/components/Form/RichText/RichTextForm.module.css'
 import RichTextFormLinkTooltip from '@app/ui/components/Form/RichText/RichTextFormLinkTooltip'
 import RichTextFormMenuBar from '@app/ui/components/Form/RichText/RichTextFormMenuBar'
-import { Link } from '@tiptap/extension-link'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import React, { ReactNode, useState } from 'react'
 
-const CustomLink = Link.extend({
-  addOptions() {
-    return {
-      ...this.parent?.(),
-      openOnClick: false,
-    }
-  },
-})
+// TipTap 3 a intégré `extension-link` à `StarterKit`. Déclarer les deux enregistrerait la
+// marque `link` en double, ce que TipTap rejette au démarrage de l'éditeur — l'option se
+// règle donc désormais depuis `StarterKit`.
+const editorExtensions = [
+  StarterKit.configure({ link: { openOnClick: false } }),
+]
 
 export type RichTextareaProps = {
   id: string
@@ -47,7 +44,7 @@ export const RichTextarea = ({
   onBlur,
 }: RichTextareaProps) => {
   const editor = useEditor({
-    extensions: [StarterKit, CustomLink],
+    extensions: editorExtensions,
     content: value,
     immediatelyRender: false,
     onUpdate: (event) => {

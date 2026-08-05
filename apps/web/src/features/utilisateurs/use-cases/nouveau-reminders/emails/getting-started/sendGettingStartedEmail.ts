@@ -29,7 +29,7 @@ export const sendGettingStartedEmail = async ({
       isMediateur,
       isCoordinateur,
     }),
-    html: compileMjml(
+    html: await compileMjml(
       gettingStartedEmail.mjml({
         firstname,
         matomoCampaignId,

@@ -66,18 +66,25 @@ const enableRelease = process.env.SENTRY_ENABLE_RELEASE === 'true'
 export default withBundleAnalyzerConfig(
   withSentryConfig(nextConfig, {
     silent: false, // Suppresses all logs
-    autoInstrumentServerFunctions: true,
-    autoInstrumentMiddleware: true,
     tunnelRoute: '/monitoring',
     widenClientFileUpload: true,
-    hideSourceMaps: true,
-    disableServerWebpackPlugin: true,
-    disableClientWebpackPlugin: true,
-    reactComponentAnnotation: {
-      enabled: false, // this fails mjml compilation
-    },
     sourcemaps: {
       disable: !enableRelease,
+    },
+    // Sentry 10 a regroupé les réglages propres au bundler sous `webpack`. Les équivalents
+    // à la racine existent encore mais sont dépréciés et émettent un avertissement.
+    //
+    // Trois options ont par ailleurs été retirées d'ici : `hideSourceMaps`,
+    // `disableServerWebpackPlugin` et `disableClientWebpackPlugin`. Elles n'apparaissent nulle
+    // part dans le code livré, ni en 10 ni en 9 — elles étaient déjà inertes avant cette
+    // montée, et les supprimer ne change donc aucun comportement. Le téléversement des source
+    // maps reste piloté par `sourcemaps.disable` ci-dessus.
+    webpack: {
+      autoInstrumentServerFunctions: true,
+      autoInstrumentMiddleware: true,
+      reactComponentAnnotation: {
+        enabled: false, // this fails mjml compilation
+      },
     },
   }),
 )

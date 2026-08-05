@@ -17,15 +17,15 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1091.0",
-    "@commander-js/extra-typings": "^13.1.0",
+    "@commander-js/extra-typings": "^15.0.0",
     "@inquirer/prompts": "^8.5.2",
-    "@octokit/core": "^6.1.6",
-    "@octokit/plugin-rest-endpoint-methods": "^14.0.0",
+    "@octokit/core": "^7.0.6",
+    "@octokit/plugin-rest-endpoint-methods": "^17.0.0",
     "@sentry/node": "^10.67.0",
     "axios": "^1.18.1",
     "axios-retry": "^4.5.0",
     "cli-table3": "^0.6.5",
-    "commander": "^13.1.0",
+    "commander": "^15.0.0",
     "csv-stringify": "^6.8.1",
     "date-fns": "^4.4.0",
     "dotenv": "^17.4.2",
@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@types/lodash-es": "^4.17.12",
-    "@types/node": "^25.9.5",
+    "@types/node": "^26.1.2",
     "jest": "^30.4.2",
     "typescript": "^7.0.2"
   }

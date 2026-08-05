@@ -26,7 +26,7 @@ export const sendFinishYourSignupEmail = async ({
       totalUsers,
       matomoCampaignId,
     }),
-    html: compileMjml(
+    html: await compileMjml(
       finishYourSignupEmail.mjml({ firstname, totalUsers, matomoCampaignId }),
     ),
   })

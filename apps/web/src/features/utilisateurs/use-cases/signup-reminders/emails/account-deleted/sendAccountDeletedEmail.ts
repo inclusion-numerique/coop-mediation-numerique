@@ -19,7 +19,9 @@ export const sendAccountDeletedEmail = async ({
 
     subject: 'Votre compte a été supprimé',
     text: finishYourSignupAccountDeletedEmail.text({ firstname }),
-    html: compileMjml(finishYourSignupAccountDeletedEmail.mjml({ firstname })),
+    html: await compileMjml(
+      finishYourSignupAccountDeletedEmail.mjml({ firstname }),
+    ),
   })
 
   throwOnSendMailFailure(result)
