@@ -1,19 +1,36 @@
 -- Baseline des tables `main.*` de référence (Entrepôt), possédées par le Dataspace et gérées par
 -- Flyway — voir ADR-002. Cette migration N'EST PAS destinée à créer ces tables sur la base
 -- partagée : sur une base où Flyway les a déjà posées (prod fusionnée), elle est marquée
--- déjà-appliquée une fois pour toutes :
+-- déjà-appliquée une fois pour toutes, sans quoi son `CREATE TABLE` (pas d'`IF NOT EXISTS`) échoue
+-- en P3018 :
 --
 --     pnpm -F web prisma migrate resolve --applied 20260722155232_baseline_main_external
 --
--- Elle ne s'exécute réellement que sur une base neuve qui ne contient pas encore `main`
--- (docker local via `db:init` / `docker:reset`), où elle sert de bootstrap du schéma `main`
--- pour que le client unique multi-schéma puisse lire/joindre en dev et en test.
+-- Ce resolve manuel ne concerne que les déploiements qui appellent `prisma migrate deploy` en
+-- direct (la prod, cf. .circleci/config.yml) : `pnpm -F web db:migrate-deploy` le fait tout seul
+-- (`prisma/baseline-main.sh`), donc docker local et restauration locale d'un dump prod n'ont rien
+-- à faire à la main.
+--
+-- Elle ne s'exécute réellement que sur une base neuve qui ne contient pas encore `main` (CI,
+-- environnements de preview), où elle sert de bootstrap du schéma `main` pour que le client unique
+-- multi-schéma puisse lire/joindre en test. En docker local, `main` vient du vrai DDL Dataspace
+-- (`docker/initdb/01-dataspace-ddl.sql`, posé à la création du volume).
 --
 -- Le DDL est généré depuis les modèles Prisma (`prisma migrate diff`), donc cohérent avec le
 -- datamodel : les features de la vraie table non représentables par Prisma (uniques
 -- `NULLS NOT DISTINCT`, index unique à expression sur `adresse`, colonne générée `departement`,
 -- colonne postgis `geom`) ne sont volontairement PAS reproduites ici. La garde CI `prisma db pull`
 -- surveille l'écart avec la table Flyway réelle.
+
+-- Garde : si `main` est déjà posé (Entrepôt/Flyway, DDL Dataspace de docker/initdb, dump prod
+-- restauré), cette migration doit être BASELINÉE et non exécutée. Sans elle, l'échec serait un
+-- « relation "structure_administrative" already exists » (42P07) qui ne dit pas quoi faire.
+-- Inerte sur une base neuve (CI, environnements de preview), où la migration s'exécute vraiment.
+DO $$ BEGIN
+  IF to_regclass('main.structure_administrative') IS NOT NULL THEN
+    RAISE EXCEPTION 'main.* est déjà posé (Flyway / DDL Dataspace) : cette migration doit être marquée appliquée, pas exécutée. Utilise `pnpm -F web db:migrate-deploy` (baseline automatique) au lieu de `prisma migrate deploy`.';
+  END IF;
+END $$;
 
 -- CreateSchema
 CREATE SCHEMA IF NOT EXISTS "main";
@@ -51,8 +68,6 @@ CREATE TABLE "main"."structure_administrative" (
     "updated_at_coop" TIMESTAMP(6),
     "updated_at_idposte" TIMESTAMP(6),
     "updated_at_ac" TIMESTAMP(6),
-    "est_grand_reseau" BOOLEAN NOT NULL DEFAULT false,
-    "est_hub" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "structure_administrative_pkey" PRIMARY KEY ("id")
 );

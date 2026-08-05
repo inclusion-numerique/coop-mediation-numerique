@@ -2,12 +2,20 @@
 -- besoin pour la bascule employeuse (personne / affectations emploi / contrat), possédées par
 -- Flyway côté Entrepôt. Comme la baseline main, ces CREATE TABLE ne portent PAS d'IF NOT EXISTS :
 -- sur une base où main existe déjà (restauration locale, prod fusionnée), lancer une fois avant
--- tout deploy :
+-- un `prisma migrate deploy` en direct :
 --   pnpm -F web prisma migrate resolve --applied 20260723171939_ajouter_personne_affectations_contrat_main
--- Sur docker CI/local neuf, elle crée les 3 tables (après la baseline SA+adresse).
+-- `pnpm -F web db:migrate-deploy` s'en charge seul (prisma/baseline-main.sh), donc docker local et
+-- restauration locale d'un dump prod n'ont rien à faire à la main.
+-- Sur une base neuve sans main (CI, preview), elle crée les 3 tables (après la baseline SA+adresse).
 -- On ne modélise qu'un sous-ensemble des colonnes réelles (celui utile à la coop).
 
-
+-- Garde : même rôle que dans la baseline main — rendre lisible l'erreur quand on exécute cette
+-- migration sur une base qui porte déjà `main`, au lieu du 42P07 « relation already exists ».
+DO $$ BEGIN
+  IF to_regclass('main.personne') IS NOT NULL THEN
+    RAISE EXCEPTION 'main.* est déjà posé (Flyway / DDL Dataspace) : cette migration doit être marquée appliquée, pas exécutée. Utilise `pnpm -F web db:migrate-deploy` (baseline automatique) au lieu de `prisma migrate deploy`.';
+  END IF;
+END $$;
 
 -- CreateTable
 CREATE TABLE "main"."personne" (

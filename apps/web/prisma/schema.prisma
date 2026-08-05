@@ -938,8 +938,6 @@ model StructureAdministrativeMain {
   updatedAtCoop          DateTime? @map("updated_at_coop") @db.Timestamp(6)
   updatedAtIdposte       DateTime? @map("updated_at_idposte") @db.Timestamp(6)
   updatedAtAc            DateTime? @map("updated_at_ac") @db.Timestamp(6)
-  estGrandReseau         Boolean   @default(false) @map("est_grand_reseau")
-  estHub                 Boolean   @default(false) @map("est_hub")
 
   adresse            AdresseMain?                    @relation(fields: [adresseId], references: [id])
   // Inverses des FK coop repointées vers main pendant la bascule (ADR-002 étape 6).

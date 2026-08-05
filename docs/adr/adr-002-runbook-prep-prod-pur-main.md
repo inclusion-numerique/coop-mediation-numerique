@@ -50,6 +50,12 @@ Entrepôt : ces migrations existent déjà en prod → `resolve --applied` (ne P
 leurs `CREATE TABLE` n'ont pas d'`IF NOT EXISTS`). Seules les migrations **coop** se
 déploient.
 
+Ce baseline est désormais **automatique** : `prisma/baseline-main.sh` marque appliquée toute
+migration `main` non enregistrée dont les tables existent déjà. Il est branché sur
+`db:migrate-deploy` (docker local, restauration locale d'un dump prod, envs de preview) et sur le
+step tunnel du déploiement prod (`.circleci/config.yml`). Les deux commandes ci-dessous ne restent
+utiles que pour baseliner à la main, hors de ces chemins.
+
 ```bash
 # main (déjà présent via Flyway) -> marquer appliquées
 pnpm -F web prisma migrate resolve --applied 20260722155232_baseline_main_external

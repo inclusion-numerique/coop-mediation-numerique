@@ -579,6 +579,12 @@ jobs:
                     "$ENTREPOT_BASTION_USER@$ENTREPOT_BASTION_HOST"
                   # Attend que le forward accepte les connexions (bash /dev/tcp, sans nc)
                   for i in $(seq 1 30); do (echo > /dev/tcp/127.0.0.1/5433) 2>/dev/null && break; sleep 1; done
+                  # Les migrations qui modélisent `main` (possédé par Flyway côté Entrepôt) doivent
+                  # être marquées appliquées, pas exécutées : leurs tables existent déjà (ADR-002,
+                  # étape 1). Sans ça, `migrate deploy` échoue en P3018 « relation already exists ».
+                  # Inerte partout ailleurs. `db:migrate-deploy` n'est PAS utilisable ici : il
+                  # déplacerait `public._prisma_migrations`, qui appartient à MIN sur l'Entrepôt.
+                  DATABASE_URL="$ENTREPOT_DATABASE_URL" pnpm --silent -F @app/web db:baseline-main
                   # ENTREPOT_DATABASE_URL porte déjà search_path=coop -> migre coop._prisma_migrations
                   DATABASE_URL="$ENTREPOT_DATABASE_URL" pnpm --silent -F @app/web prisma migrate deploy
       - run:

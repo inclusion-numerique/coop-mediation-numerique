@@ -160,9 +160,13 @@ export const executeCompleterStructuresMain: JobExecutor<
       : 'non-requise'
 
     if (denomination === 'complétée' && !dryRun) {
+      // `select` explicite : sans lui, Prisma renvoie la ligne entière et interroge donc toutes les
+      // colonnes du modèle. `main.structure_administrative` appartient à Flyway — une colonne
+      // modélisée en trop ferait échouer l'écriture en P2022 (ADR-002, garde `db:check-main-drift`).
       await prismaClient.structureAdministrativeMain.update({
         where: { id: cible.id },
         data: { denominationAntenne: identite.nom },
+        select: { id: true },
       })
     }
 
@@ -188,6 +192,7 @@ export const executeCompleterStructuresMain: JobExecutor<
       await prismaClient.structureAdministrativeMain.update({
         where: { id: cible.id },
         data: { adresseId },
+        select: { id: true },
       })
     }
 
