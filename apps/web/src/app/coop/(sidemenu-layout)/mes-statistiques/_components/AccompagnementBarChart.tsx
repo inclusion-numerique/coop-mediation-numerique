@@ -7,7 +7,7 @@ import {
   LabelList,
   ResponsiveContainer,
   Tooltip,
-  TooltipProps,
+  TooltipContentProps,
   XAxis,
   YAxis,
 } from 'recharts'
@@ -16,7 +16,9 @@ const CustomTooltip = ({
   active,
   payload,
   label,
-}: TooltipProps<number, string>) =>
+  // Génériques laissés par défaut : <Tooltip> les instancie en ValueType/NameType, et les
+  // restreindre ici rendrait le composant incompatible avec la propriété `content`.
+}: TooltipContentProps) =>
   active &&
   payload &&
   payload.length > 0 && (
@@ -85,7 +87,7 @@ export const AccompagnementBarChart = ({
                 : value.toString()
           }
         />
-        {!isEmpty && <Tooltip content={<CustomTooltip />} />}
+        {!isEmpty && <Tooltip content={CustomTooltip} />}
         <Bar
           dataKey="count"
           fill={isEmpty ? 'var(--blue-france-975-75)' : '#6a6af4'}
@@ -99,8 +101,11 @@ export const AccompagnementBarChart = ({
                 fontSize: displayData.length > 12 ? 10 : 12,
                 fontWeight: 'bold',
               }}
-              formatter={(count: number) => {
-                if (count === 0) return ''
+              // recharts 3 type le formateur de LabelList en `RenderableText`
+              // (`string | number`) et non plus en `number` : on restreint ici.
+              formatter={(label) => {
+                const count = typeof label === 'number' ? label : Number(label)
+                if (!count) return ''
                 if (count >= 1000) {
                   return `${(count / 1000).toFixed(1)}k`
                 }

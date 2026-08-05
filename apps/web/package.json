@@ -106,7 +106,7 @@
     "react-hook-form": "^7.82.0",
     "react-hot-toast": "^2.6.0",
     "react-use-css-custom-property": "^0.1.1",
-    "recharts": "^2.15.4",
+    "recharts": "^3.10.0",
     "server-only": "^0.0.1",
     "sharp": "^0.35.3",
     "slugify": "^1.6.9",

@@ -32,7 +32,7 @@ const StatisticsTooltip = <T extends object>({
   <Tooltip
     wrapperClassName="fr-text--sm fr-text-default--grey "
     isAnimationActive={false}
-    content={<CustomTooltip />}
+    content={CustomTooltip}
     cursor={{ fill: 'var(--background-alt-blue-france)' }}
     labelFormatter={(label, payload) => {
       const labelAsString = `${label}`
