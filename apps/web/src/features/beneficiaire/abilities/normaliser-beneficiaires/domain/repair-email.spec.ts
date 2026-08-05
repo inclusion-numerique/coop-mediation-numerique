@@ -57,13 +57,10 @@ describe('emailAbsent', () => {
     expect(emailAbsent(raw)).toBe(true)
   })
 
-  it.each([
-    '',
-    'FB',
-    '2etg gauche',
-    'chantval85gmail.com',
-    'marie@curie.fr',
-  ])('leaves %s alone', (raw) => {
-    expect(emailAbsent(raw)).toBe(false)
-  })
+  it.each(['', 'FB', '2etg gauche', 'chantval85gmail.com', 'marie@curie.fr'])(
+    'leaves %s alone',
+    (raw) => {
+      expect(emailAbsent(raw)).toBe(false)
+    },
+  )
 })

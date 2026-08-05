@@ -25,12 +25,12 @@ describe('telephoneRegex', () => {
     { number: '+49 123 456 7890', isValid: false }, // indicatif étranger
     { number: '+1 555 555 5555', isValid: false }, // indicatif étranger
     { number: '06 52 18', isValid: false }, // trop court
-  ])('should validate French phone number $number as $isValid', ({
-    number,
-    isValid,
-  }) => {
-    expect(telephoneRegex.test(number)).toBe(isValid)
-  })
+  ])(
+    'should validate French phone number $number as $isValid',
+    ({ number, isValid }) => {
+      expect(telephoneRegex.test(number)).toBe(isValid)
+    },
+  )
 })
 
 describe('telephoneValidation', () => {

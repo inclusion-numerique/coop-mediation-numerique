@@ -105,7 +105,7 @@ export const getActivitesStatsRaw = async ({
                hasCoordinateurContext
                  ? Prisma.sql`FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user?.coordinateur?.id}::UUID`
                  : Prisma.empty
-             }
+}
 
       WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
         ${
@@ -249,7 +249,7 @@ const getActiviteTags = ({
              hasCoordinateurContext
                ? Prisma.sql`FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user?.coordinateur?.id}::UUID`
                : Prisma.empty
-           }
+}
     WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
       ${
         hasCoordinateurContext

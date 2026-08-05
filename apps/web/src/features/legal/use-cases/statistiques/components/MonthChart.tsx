@@ -47,10 +47,13 @@ const StatisticsTooltip = <T extends object>({
       const labelAsString = `${label}`
       if (!tooltipLabelDataKey) return labelAsString
 
-      return (
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        `${(payload[0]?.payload as T)[tooltipLabelDataKey]}` || null
-      )
+      // Sans point de données, l'optional chaining court-circuitait vers `undefined` et
+      // l'indexation qui suivait levait un TypeError : on retombe sur le libellé.
+      const row = payload[0]?.payload as T | undefined
+      if (!row) return labelAsString
+
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      return `${row[tooltipLabelDataKey]}` || null
     }}
     formatter={(_value, name) =>
       legends.find((legend) => legend.key === name)?.label

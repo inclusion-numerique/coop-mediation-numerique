@@ -370,7 +370,7 @@ const AdministrationUserPage = async ({
                 {
                   label: 'Coordoné(e) par',
                   value:
-                    !!coordinations && coordinations.length > 0 ? (
+                    coordinations && coordinations.length > 0 ? (
                       coordinations.map((coordination) => (
                         <Link
                           key={coordination.id}

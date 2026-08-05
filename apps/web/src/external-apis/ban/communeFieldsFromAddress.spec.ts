@@ -36,14 +36,13 @@ describe('communeFieldsFromAddress', () => {
     mockedSearchAdresse.mockReset()
   })
 
-  test.each([
-    null,
-    undefined,
-    '',
-  ])('returns null and does not call the API for absent address %p', async (address) => {
-    expect(await communeFieldsFromAddress(address)).toBeNull()
-    expect(mockedSearchAdresse).not.toHaveBeenCalled()
-  })
+  test.each([null, undefined, ''])(
+    'returns null and does not call the API for absent address %p',
+    async (address) => {
+      expect(await communeFieldsFromAddress(address)).toBeNull()
+      expect(mockedSearchAdresse).not.toHaveBeenCalled()
+    },
+  )
 
   test('maps a BAN feature to the commune trio', async () => {
     mockedSearchAdresse.mockResolvedValue(evreuxFeature)

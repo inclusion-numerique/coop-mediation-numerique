@@ -1,4 +1,10 @@
-import { type UseComboboxReturnValue, useCombobox } from 'downshift'
+import {
+  type Overwrite,
+  type UseComboboxGetItemPropsOptions,
+  type UseComboboxGetItemPropsReturnValue,
+  type UseComboboxReturnValue,
+  useCombobox,
+} from 'downshift'
 import {
   type Dispatch,
   type ReactNode,
@@ -23,7 +29,20 @@ export type ComboBoxProps<TItem, TPayload extends object> = {
     getMenuProps: UseComboboxReturnValue<TItem>['getMenuProps']
     getToggleButtonProps: UseComboboxReturnValue<TItem>['getToggleButtonProps']
     getInputProps: UseComboboxReturnValue<TItem>['getInputProps']
-    getItemProps: UseComboboxReturnValue<TItem>['getItemProps']
+    // downshift 9.4 type `getItemProps` comme une signature générique dont le type de retour
+    // dépend des options reçues. Un consommateur qui l'enveloppe — pour greffer son propre
+    // `onClick` — ré-instancie ce générique et ne peut alors plus satisfaire la signature
+    // d'origine. On expose donc ici le contrat réellement utilisé : des options de combobox
+    // en entrée, les props à étaler sur l'élément de liste en sortie.
+    getItemProps: (
+      options?: UseComboboxGetItemPropsOptions<TItem>,
+    ) => Omit<
+      Overwrite<
+        UseComboboxGetItemPropsReturnValue,
+        UseComboboxGetItemPropsOptions<TItem>
+      >,
+      'index' | 'item'
+    >
     inputValue: UseComboboxReturnValue<TItem>['inputValue']
     setInputValue: UseComboboxReturnValue<TItem>['setInputValue']
     isOpen: boolean

@@ -1,5 +1,5 @@
 import { AsyncLocalStorage } from 'node:async_hooks'
-import type { InjectionKey, Provide } from 'piqure/src/Providing'
+import type { InjectionKey, Provide } from './types'
 
 type ContainerStore = Map<unknown, unknown>
 
