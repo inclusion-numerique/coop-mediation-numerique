@@ -18,15 +18,14 @@ const modularizeImports = {
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-// Mjml cannot be bundled as it uses dynamic requires
-// Only put library required on the server in externals as they would not be available in client
-const externals = ['mjml', 'mjml-core', 'xlsx']
-
 const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
   transpilePackages: ['@app/emails'],
-  serverExternalPackages: ['html-minifier'],
+  // `mjml` et ses satellites ne peuvent pas être empaquetés (ils font des `require`
+  // dynamiques), et `xlsx` non plus. Ils étaient jusqu'ici poussés dans les `externals` du
+  // hook webpack ; `serverExternalPackages` exprime la même chose pour les deux bundlers.
+  serverExternalPackages: ['html-minifier', 'mjml', 'mjml-core', 'xlsx'],
   // This includes files from the monorepo base two directories up
   outputFileTracingRoot: path.join(dirname, '../../'),
   modularizeImports,
@@ -36,29 +35,9 @@ const nextConfig = {
     // Type checks are done in other parts of the build process
     ignoreBuildErrors: true,
   },
-  webpack: (config, { isServer }) => {
-    // Disable bundling or public static css assets
-    // See dsfr-imports.css
-    config.module.rules.push({
-      test: /\.min.css$/,
-      use: [], // An empty set of loaders, effectively bypassing these files
-    })
-    // (this is not an array, this is a rule object)
-    config.module.rules.push({
-      test: /\.remixicon.css$/,
-      use: [], // An empty set of loaders, effectively bypassing these files
-    })
-
-    if (!isServer) {
-      // Client bundling
-      return config
-    }
-
-    // Server bundling
-    config.externals.push(...externals)
-
-    return config
-  },
+  // Le hook `webpack` a disparu : Turbopack l'ignore, et ses deux règles n'ont plus d'objet.
+  // Elles empêchaient le bundler de traiter les `.min.css` — c'est-à-dire les feuilles du
+  // DSFR, désormais chargées par une balise `<link>` et absentes du graphe de modules.
 }
 
 const enableRelease = process.env.SENTRY_ENABLE_RELEASE === 'true'

@@ -51,6 +51,15 @@ const RootLayout = async ({ children }: PropsWithChildren) => {
   return (
     <html lang="fr" data-fr-theme={theme} data-fr-scheme={theme}>
       <head>
+        {/* Le DSFR doit précéder nos surcharges dans la cascade. React 19 ordonne les
+            feuilles portant `precedence` par ordre de première apparition, et `dsfr` est
+            déclarée ici, avant que Next n'émette celles de l'application. */}
+        <link rel="stylesheet" href="/dsfr/dsfr.min.css" precedence="dsfr" />
+        <link
+          rel="stylesheet"
+          href="/dsfr/utility/utility.min.css"
+          precedence="dsfr"
+        />
         <link
           rel="preload"
           href="/images/spinner.svg"

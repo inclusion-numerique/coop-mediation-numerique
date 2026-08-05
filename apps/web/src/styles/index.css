@@ -1,5 +1,9 @@
-@import url("/dsfr/dsfr.min.css");
-@import url("/dsfr/utility/utility.min.css");
+/* Les deux feuilles du DSFR ne sont plus importées ici : servies depuis `public/dsfr`, elles
+   sont chargées par une balise `<link>` du layout racine (et par `preview-head.html` côté
+   Storybook). Turbopack tente de résoudre les chemins absolus comme des modules là où
+   css-loader les laissait passer — et, si on lui demande d'ignorer l'erreur, il abandonne
+   l'import sans rien dire. Le `<link>` exprime ce qu'on veut : une ressource statique
+   chargée par le navigateur, jamais empaquetée. */
 @import url("https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.min.css");
 @import url("./components/index.css");
 @import url("./helpers/index.css");
