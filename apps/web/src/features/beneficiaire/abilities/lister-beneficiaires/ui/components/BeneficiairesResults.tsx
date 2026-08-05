@@ -7,7 +7,9 @@ import {
 import { BeneficiairesPagination } from './BeneficiairesPagination'
 import { BeneficiairesSelectionToolbar } from './BeneficiairesSelectionToolbar'
 import { BeneficiairesTable } from './BeneficiairesTable'
-import DeleteBulkBeneficiairesModalContent from './DeleteBulkBeneficiairesModalContent'
+import DeleteBulkBeneficiairesModalContent, {
+  type SupprimerBeneficiaires,
+} from './DeleteBulkBeneficiairesModalContent'
 import type { MesBeneficiairesView } from './lister-beneficiaires.presenter'
 
 type ResultsView = Extract<MesBeneficiairesView, { tag: 'results' }>
@@ -16,10 +18,12 @@ export const BeneficiairesResults = ({
   view,
   state,
   baseHref,
+  supprimerBeneficiaires,
 }: {
   view: ResultsView
   state: DataTableUrlState
   baseHref: string
+  supprimerBeneficiaires: SupprimerBeneficiaires
 }) => {
   const selection = useDataTableSelection(view.rows.map((row) => row.id))
 
@@ -44,6 +48,7 @@ export const BeneficiairesResults = ({
       <DeleteBulkBeneficiairesModalContent
         selectedIds={[...selection.selectedIds]}
         onSuccess={selection.clear}
+        supprimerBeneficiaires={supprimerBeneficiaires}
       />
     </>
   )

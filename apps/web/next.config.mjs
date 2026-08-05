@@ -1,7 +1,7 @@
-import { withSentryConfig } from '@sentry/nextjs'
-import withBundleAnalyzer from '@next/bundle-analyzer'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import withBundleAnalyzer from '@next/bundle-analyzer'
+import { withSentryConfig } from '@sentry/nextjs'
 
 const withBundleAnalyzerConfig = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
@@ -30,10 +30,8 @@ const nextConfig = {
   // This includes files from the monorepo base two directories up
   outputFileTracingRoot: path.join(dirname, '../../'),
   modularizeImports,
-  eslint: {
-    // Lints are checked in other parts of the build process
-    ignoreDuringBuilds: true,
-  },
+  // L'option `eslint` a été supprimée en Next 16, en même temps que la commande `next lint` :
+  // `next build` ne lance plus aucun linter. Le dépôt lint avec Biome, dans un job dédié.
   typescript: {
     // Type checks are done in other parts of the build process
     ignoreBuildErrors: true,
@@ -68,18 +66,25 @@ const enableRelease = process.env.SENTRY_ENABLE_RELEASE === 'true'
 export default withBundleAnalyzerConfig(
   withSentryConfig(nextConfig, {
     silent: false, // Suppresses all logs
-    autoInstrumentServerFunctions: true,
-    autoInstrumentMiddleware: true,
     tunnelRoute: '/monitoring',
     widenClientFileUpload: true,
-    hideSourceMaps: true,
-    disableServerWebpackPlugin: true,
-    disableClientWebpackPlugin: true,
-    reactComponentAnnotation: {
-      enabled: false, // this fails mjml compilation
-    },
     sourcemaps: {
       disable: !enableRelease,
+    },
+    // Sentry 10 a regroupé les réglages propres au bundler sous `webpack`. Les équivalents
+    // à la racine existent encore mais sont dépréciés et émettent un avertissement.
+    //
+    // Trois options ont par ailleurs été retirées d'ici : `hideSourceMaps`,
+    // `disableServerWebpackPlugin` et `disableClientWebpackPlugin`. Elles n'apparaissent nulle
+    // part dans le code livré, ni en 10 ni en 9 — elles étaient déjà inertes avant cette
+    // montée, et les supprimer ne change donc aucun comportement. Le téléversement des source
+    // maps reste piloté par `sourcemaps.disable` ci-dessus.
+    webpack: {
+      autoInstrumentServerFunctions: true,
+      autoInstrumentMiddleware: true,
+      reactComponentAnnotation: {
+        enabled: false, // this fails mjml compilation
+      },
     },
   }),
 )

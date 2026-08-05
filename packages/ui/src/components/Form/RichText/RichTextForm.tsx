@@ -1,7 +1,6 @@
 'use client'
 
 import RichTextFormLinkTooltip from '@app/ui/components/Form/RichText/RichTextFormLinkTooltip'
-import { Link } from '@tiptap/extension-link'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import React, { ReactNode, useState } from 'react'
@@ -15,14 +14,11 @@ import {
 import styles from './RichTextForm.module.css'
 import RichTextFormMenuBar from './RichTextFormMenuBar'
 
-const CustomLink = Link.extend({
-  addOptions() {
-    return {
-      ...this.parent?.(),
-      openOnClick: false,
-    }
-  },
-})
+// Voir RichTextarea.tsx : TipTap 3 a intégré `extension-link` à `StarterKit`, l'option se
+// règle donc depuis celui-ci pour ne pas enregistrer la marque `link` deux fois.
+const editorExtensions = [
+  StarterKit.configure({ link: { openOnClick: false } }),
+]
 
 const RichTextForm = <T extends FieldValues>({
   label,
@@ -48,7 +44,7 @@ const RichTextForm = <T extends FieldValues>({
   onChange?: (text: PathValue<T, Path<T>>) => void
 }) => {
   const editor = useEditor({
-    extensions: [StarterKit, CustomLink],
+    extensions: editorExtensions,
     content: form.getValues(path),
     immediatelyRender: false,
     onUpdate: (event) => {

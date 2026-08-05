@@ -18,7 +18,7 @@ export const sendNouveauAccountDeletedEmail = async ({
     replyTo: PublicWebAppConfig.contactEmail,
     subject: 'Votre compte a été supprimé',
     text: nouveauAccountDeletedEmail.text({ isMediateur }),
-    html: compileMjml(nouveauAccountDeletedEmail.mjml({ isMediateur })),
+    html: await compileMjml(nouveauAccountDeletedEmail.mjml({ isMediateur })),
   })
 
   throwOnSendMailFailure(result)

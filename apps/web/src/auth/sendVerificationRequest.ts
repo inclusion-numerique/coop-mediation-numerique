@@ -21,7 +21,7 @@ export const sendVerificationRequest: EmailConfig['sendVerificationRequest'] =
       replyTo: PublicWebAppConfig.contactEmail,
       subject: `Connexion à ${PublicWebAppConfig.projectTitle}`,
       text: emailSignin.text({ url }),
-      html: compileMjml(emailSignin.mjml({ url })),
+      html: await compileMjml(emailSignin.mjml({ url })),
     })
     const failed = [...result.rejected].filter(Boolean)
     if (failed.length > 0) {

@@ -2,7 +2,7 @@ import RichRadioFormField, {
   RichRadioFormFieldProps,
 } from '@app/ui/components/Form/RichRadioFormField'
 import { useOnDiff } from '@app/web/hooks/useOnDiff'
-import { zodResolver } from '@hookform/resolvers/zod/dist/zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
 import { useForm } from 'react-hook-form'

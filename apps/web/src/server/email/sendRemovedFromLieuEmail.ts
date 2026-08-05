@@ -26,7 +26,7 @@ export const sendRemovedFromLieuEmail = async ({
       structureNom,
       removedByName,
     }),
-    html: compileMjml(
+    html: await compileMjml(
       removedFromLieuEmail.mjml({
         mediateurFirstname,
         structureNom,

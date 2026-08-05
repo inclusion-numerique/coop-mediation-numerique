@@ -20,13 +20,10 @@ export default {
     '../../../apps/web/src/**/*.stories.@(js|jsx|ts|tsx)',
     '../../../packages/ui/src/**/*.stories.@(js|jsx|ts|tsx)',
   ],
-  addons: [
-    '@storybook/addon-links',
-    '@storybook/addon-essentials',
-    '@storybook/addon-interactions',
-    '@storybook/addon-a11y',
-    '@storybook/addon-viewport',
-  ],
+  // Storybook 9 a absorbé dans son cœur ce que fournissaient `addon-essentials`,
+  // `addon-interactions` et `addon-viewport` : ces paquets n'existent plus, et leurs
+  // fonctionnalités restent disponibles sans être déclarées ici.
+  addons: ['@storybook/addon-links', '@storybook/addon-a11y'],
   framework: {
     name: '@storybook/nextjs',
     options: {
@@ -37,6 +34,27 @@ export default {
     },
   },
   staticDirs: ['../../../apps/web/public', '../public'],
+  // Storybook dérivait ses alias des `paths` du tsconfig, ce qui supposait `baseUrl`. Or
+  // TypeScript 7 a supprimé cette option : les alias sont donc déclarés ici, explicitement.
+  // C'est plus lisible que la dérivation implicite, et ça ne dépend plus d'un réglage du
+  // compilateur pour faire fonctionner le bundler.
+  webpackFinal: (config) => ({
+    ...config,
+    resolve: {
+      ...config.resolve,
+      alias: {
+        ...config.resolve?.alias,
+        '@app/web': path.resolve(dirname, '../../../apps/web/src'),
+        '@app/ui': path.resolve(dirname, '../../../packages/ui/src'),
+        '@app/storybook': path.resolve(dirname, '../src'),
+        '@app/config': path.resolve(dirname, '../../../packages/config/src'),
+        '@app/fixtures': path.resolve(
+          dirname,
+          '../../../packages/fixtures/src',
+        ),
+      },
+    },
+  }),
   docs: {},
   env: (config) => ({
     ...config,

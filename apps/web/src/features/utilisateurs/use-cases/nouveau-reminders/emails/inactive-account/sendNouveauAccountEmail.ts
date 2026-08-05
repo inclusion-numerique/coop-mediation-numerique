@@ -35,7 +35,7 @@ export const sendNouveauAccountEmail = async ({
       isCoordinateur,
       monthsCount,
     }),
-    html: compileMjml(
+    html: await compileMjml(
       nouveauAccountEmail.mjml({
         firstname,
         totalUsers,

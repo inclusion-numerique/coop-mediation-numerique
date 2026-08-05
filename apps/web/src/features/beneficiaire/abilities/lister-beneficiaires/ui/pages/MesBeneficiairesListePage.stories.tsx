@@ -3,7 +3,7 @@ import { beneficiaireListItem } from '@app/web/features/beneficiaire/abilities/l
 import { presentMesBeneficiaires } from '@app/web/features/beneficiaire/abilities/lister-beneficiaires/ui/components/lister-beneficiaires.presenter'
 import { Page, PageSize, type Paginated } from '@arckit/resultset'
 import type { Meta, StoryObj } from '@storybook/react'
-import { expect, within } from '@storybook/test'
+import { expect, within } from 'storybook/test'
 import { MesBeneficiairesListePage } from './MesBeneficiairesListePage'
 
 const paginated = (
@@ -40,9 +40,18 @@ const items = [
   }),
 ]
 
+// La page reçoit la suppression en prop : les stories fournissent une doublure
+// plutôt que la vraie server action, qui tirerait tout le graphe serveur dans le
+// bundle du navigateur.
+const supprimerBeneficiaires = async () => ({
+  success: true as const,
+  data: undefined,
+})
+
 const meta: Meta<typeof MesBeneficiairesListePage> = {
   title: 'Mes bénéficiaires/Liste',
   component: MesBeneficiairesListePage,
+  args: { supprimerBeneficiaires },
   decorators: [
     (Story) => <div className="fr-container fr-py-4v">{Story()}</div>,
   ],

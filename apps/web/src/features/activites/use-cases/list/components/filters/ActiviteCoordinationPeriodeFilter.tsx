@@ -6,7 +6,7 @@ import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import { formatDate } from 'date-fns'
+import { format } from 'date-fns'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { useState } from 'react'
 import z from 'zod'
@@ -78,7 +78,7 @@ export const ActiviteCoordinationPeriodeFilter = ({
       trigger={
         <TriggerButton isOpen={isOpen} isFilled={du != null && au != null}>
           {du != null && au != null
-            ? `${formatDate(du, 'dd.MM.yy')} - ${formatDate(au, 'dd.MM.yy')}`
+            ? `${format(du, 'dd.MM.yy')} - ${format(au, 'dd.MM.yy')}`
             : 'Période'}
         </TriggerButton>
       }

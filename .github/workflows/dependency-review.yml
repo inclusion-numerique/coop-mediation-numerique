@@ -29,7 +29,6 @@ jobs:
           # l'exposition du dépôt reste assuré par les alertes Dependabot, qui portent sur
           # l'état complet et non sur le delta. À rediscuter quand l'écosystème se calmera.
           fail-on-severity: critical
-          # Exception maintenue : GHSA-45h5-66jx-r2wf, traversée de répertoire dans MJML,
-          # sans correctif publié à ce jour. (L'exception LangChain a été retirée : le paquet
-          # ne fait plus partie de l'arbre.)
-          allow-ghsas: 'GHSA-45h5-66jx-r2wf'
+          # Plus aucune exception nominative. La dernière, GHSA-45h5-66jx-r2wf (traversée de
+          # répertoire dans MJML), est levée par la montée en mjml 5 : l'avis est corrigé
+          # depuis la 5.0.0-alpha.9. L'exception LangChain avait déjà disparu avec le paquet.

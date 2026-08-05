@@ -10,7 +10,7 @@
     "tsc": "tsc --noEmit"
   },
   "engines": {
-    "node": "^25.4"
+    "node": "^24.19"
   },
   "dependencies": {
     "axios": "^1.18.1",
@@ -21,13 +21,12 @@
     "@swc/jest": "^0.2.39",
     "@testing-library/jest-dom": "^7.0.0",
     "@types/jest": "^30.0.0",
-    "@types/node": "^25.9.5",
-    "eslint": "^9.39.5",
+    "@types/node": "^24.13.3",
     "jest": "^30.4.2",
     "jest-extended": "^7.0.0",
     "ts-jest": "^29.4.11",
     "tsx": "^4.23.1",
-    "typescript": "^5.9.3",
+    "typescript": "^7.0.2",
     "zod": "^3.25.76"
   }
 }
