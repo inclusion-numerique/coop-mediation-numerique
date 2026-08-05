@@ -10,7 +10,7 @@
     "tsc": "tsc --noEmit"
   },
   "engines": {
-    "node": "^25.4"
+    "node": "^24.19"
   },
   "dependencies": {
     "axios": "^1.18.1",
@@ -21,7 +21,7 @@
     "@swc/jest": "^0.2.39",
     "@testing-library/jest-dom": "^7.0.0",
     "@types/jest": "^30.0.0",
-    "@types/node": "^26.1.2",
+    "@types/node": "^24.13.3",
     "jest": "^30.4.2",
     "jest-extended": "^7.0.0",
     "ts-jest": "^29.4.11",

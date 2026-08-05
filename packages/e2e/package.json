@@ -9,7 +9,7 @@
     "cy": "dotenv -e ../../.env -e ./cypress.env -- cypress"
   },
   "engines": {
-    "node": "^25.4"
+    "node": "^24.19"
   },
   "dependencies": {
     "cypress": "^15.19.0",
@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@testing-library/cypress": "^10.1.3",
-    "@types/node": "^26.1.2",
+    "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "cypress-file-upload": "^5.0.8",
