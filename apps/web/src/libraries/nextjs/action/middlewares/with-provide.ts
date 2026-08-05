@@ -1,4 +1,4 @@
-import type { InjectionKey } from 'piqure/src/Providing'
+import type { InjectionKey } from '@app/web/libs/injection/types'
 import type { PipeMiddleware } from '../action-builder'
 import type { ServerActionResult } from '../result'
 

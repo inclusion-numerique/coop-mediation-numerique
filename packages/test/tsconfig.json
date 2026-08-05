@@ -1,7 +1,12 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "types": ["node", "jest"]
+    "types": ["node", "jest"],
+    // Jest 30 charge les configurations TypeScript via le résolveur ESM de Node, qui exige
+    // des spécificateurs relatifs complets : `packageJestConfig.ts` importe donc
+    // `./transformIgnore.ts` avec son extension. L'option est posée ici seulement — elle
+    // suppose `noEmit`, ce qui est le cas de ce paquet mais pas d'apps/cli, qui compile.
+    "allowImportingTsExtensions": true
   },
   "include": ["./src"]
 }

@@ -26,9 +26,9 @@ const typeWithDuration = ({
   dateDebutDeContrat?: Date | null
   dateFinDeContrat?: Date | null
 }): string =>
-  !!dateDebutDeContrat &&
+  dateDebutDeContrat &&
   isValid(dateDebutDeContrat) &&
-  !!dateFinDeContrat &&
+  dateFinDeContrat &&
   isValid(dateFinDeContrat)
     ? `${typeDeContrat} - Durée ${differenceInMonths(dateFinDeContrat, dateDebutDeContrat)} mois`
     : (typeDeContrat ?? '')

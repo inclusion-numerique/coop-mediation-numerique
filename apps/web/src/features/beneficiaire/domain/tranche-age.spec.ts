@@ -32,20 +32,19 @@ describe('effectiveTrancheAge', () => {
     )
   })
 
-  test.each([
-    null,
-    undefined,
-    0,
-  ])('returns null for absent value %p', (value) => {
-    expect(effectiveTrancheAge(value)).toBeNull()
-  })
+  test.each([null, undefined, 0])(
+    'returns null for absent value %p',
+    (value) => {
+      expect(effectiveTrancheAge(value)).toBeNull()
+    },
+  )
 
-  test.each([
-    1899,
-    currentYear + 1,
-  ])('returns null for out-of-range year %p', (year) => {
-    expect(effectiveTrancheAge(year)).toBeNull()
-  })
+  test.each([1899, currentYear + 1])(
+    'returns null for out-of-range year %p',
+    (year) => {
+      expect(effectiveTrancheAge(year)).toBeNull()
+    },
+  )
 
   test('derives from a valid birth year, ignoring the stored value', () => {
     expect(

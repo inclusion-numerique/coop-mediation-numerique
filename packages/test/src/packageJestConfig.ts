@@ -1,9 +1,18 @@
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import * as dotenv from 'dotenv'
-import { createNodeModulesTransformIgnorePattern } from './transformIgnore'
+// Extension explicite : depuis Jest 30, les fichiers de configuration TypeScript sont chargés
+// par le résolveur ESM de Node (le dépôt est en "type": "module"), qui n'accepte plus les
+// spécificateurs relatifs sans extension. La contrainte se propage à toute la chaîne d'imports
+// traversée au chargement de la configuration.
+import { createNodeModulesTransformIgnorePattern } from './transformIgnore.ts'
 
-// import meta does not work in jest env
-const dotenvFile = path.resolve(__dirname, '../../../.env')
+// Jest 29 chargeait ce fichier en CommonJS, où `__dirname` existait et `import.meta` non.
+// Jest 30 le charge en module ES : c'est exactement l'inverse.
+const dotenvFile = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../../../.env',
+)
 
 export const testDotenvConfig = () => {
   dotenv.config({ path: dotenvFile })

@@ -228,7 +228,7 @@ const ActiviteDetailsModal = ({
     {
       title: 'Orientation du bénéficiaire',
       items:
-        !!orienteVersStructure && !!structureDeRedirection ? (
+        orienteVersStructure && structureDeRedirection ? (
           <p className="fr-text--sm fr-mb-0 fr-text--medium">
             {structuresRedirectionLabels[structureDeRedirection]}
           </p>
@@ -267,7 +267,7 @@ const ActiviteDetailsModal = ({
 
   // Informations si le beneficiaire est anonyme et à des informations supplémentaires
   const infosBeneficiaireAnonyme =
-    !!beneficiaireUnique && beneficiaireUnique.anonyme
+    beneficiaireUnique && beneficiaireUnique.anonyme
       ? [
           beneficiaireUnique.premierAccompagnement
             ? 'Nouveau bénéficiaire'

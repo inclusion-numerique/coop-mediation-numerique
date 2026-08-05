@@ -110,7 +110,7 @@ const CheckboxGroupFormField = <
               }`}
               role="group"
             >
-              {!!label || !!hint ? (
+              {label || hint ? (
                 <legend
                   className="fr-fieldset__legend fr-fieldset__legend--regular fr-grid-row--full"
                   id={`${id}__legend`}

@@ -1,4 +1,6 @@
-import pako from 'pako'
+// pako 3 ne fournit plus d'export par défaut : l'import doit être nommé, sans quoi la valeur
+// importée est `undefined` à l'exécution — ce que le build ne signale qu'en avertissement.
+import { deflate, inflate } from 'pako'
 import superjson from 'superjson'
 
 /**
@@ -49,7 +51,7 @@ const base64ToUint8Array = (base64String: string): Uint8Array => {
 
 export const encodeSerializableState = <T>(state: T): EncodedState<T> => {
   const jsonString = superjson.stringify(state)
-  const compressed = pako.deflate(jsonString)
+  const compressed = deflate(jsonString)
 
   return uint8ArrayToBase64(compressed) as EncodedState<T> // Base64-URL-safe encoding
 }
@@ -60,7 +62,9 @@ export const decodeSerializableState = <T>(
 ): T => {
   try {
     const compressed = base64ToUint8Array(encodedState) // Base64-URL-safe decoding
-    const jsonString = pako.inflate(compressed, { to: 'string' })
+    // pako 3 a remplacé `{ to: 'string' }` par `{ toText: true }`, dont le type de retour
+    // est `string` (et non plus `Uint8Array`) via un générique conditionnel.
+    const jsonString = inflate(compressed, { toText: true })
     return superjson.parse<T>(jsonString)
   } catch {
     return defaultValue

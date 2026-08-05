@@ -65,7 +65,7 @@ export const nextAuthAdapter = {
     } catch (error) {
       // See https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
       if (
-        !!error &&
+        error &&
         typeof error === 'object' &&
         'code' in error &&
         error.code === 'P2025'

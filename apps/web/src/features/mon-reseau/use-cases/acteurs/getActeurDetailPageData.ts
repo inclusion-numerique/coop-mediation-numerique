@@ -119,7 +119,7 @@ export const getActeurDetailPageData = async ({
     : null
 
   const contract =
-    !!coordinationFeatures && coordinationFeatures.showContract
+    coordinationFeatures && coordinationFeatures.showContract
       ? await getContractInfo(acteur.email)
       : null
 
@@ -129,7 +129,7 @@ export const getActeurDetailPageData = async ({
     accompagnements: 0,
   }
 
-  if (!!coordinationFeatures && coordinationFeatures.showStats && mediateurId) {
+  if (coordinationFeatures && coordinationFeatures.showStats && mediateurId) {
     const { beneficiaires, accompagnements } = await getTotalCountsStats({
       user: sessionUser,
       mediateurIds: [mediateurId],
