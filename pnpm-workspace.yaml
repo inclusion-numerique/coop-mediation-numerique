@@ -34,6 +34,15 @@ minimumReleaseAgeExclude:
   # laissait l'install échouer sur le binaire. Remplace l'entrée `@next/env` seule.
   - "@next/*"
   - "@arckit/resultset"
+  # EXCEPTIONS TEMPORAIRES — à retirer après le 15/08/2026.
+  # Ces deux paquets corrigent des failles connues, mais leurs correctifs sont eux-mêmes plus
+  # récents que la quarantaine : undici 7.29.0 date du 24/07, fast-uri 3.1.5 du 31/07. Sans
+  # exclusion, on reste bloqué sur des versions vulnérables et `dependency-review` rejette la
+  # PR. L'exclusion seule rouvrirait la porte à une publication malveillante future : elle est
+  # donc doublée d'un épinglage à la version exacte dans `overrides` ci-dessous, ce qui limite
+  # l'exposition à ces deux versions précisément, et à aucune autre.
+  - undici
+  - fast-uri
 
 # Migré depuis le champ `pnpm` de package.json, que pnpm 10 n'a jamais lu : ces réglages
 # étaient silencieusement inertes (cf. l'avertissement affiché à chaque commande).
@@ -44,6 +53,11 @@ overrides:
   # mjml 4 où il reste synchrone — d'où des erreurs de type sur du code correct. À retirer le
   # jour où l'on passera à mjml 5.
   "@types/mjml-core": ^4.15.2
+  # Versions EXACTES, pas des plages : c'est ce qui borne la levée de quarantaine ci-dessus à
+  # deux artefacts connus. À retirer avec les exclusions correspondantes après le 15/08/2026,
+  # quand les plages semver normales suffiront à les atteindre.
+  undici: 7.29.0
+  fast-uri: 3.1.5
 
 # Seuls ces paquets sont autorisés à exécuter leurs scripts d'installation. Tous les autres
 # sont bloqués par défaut par pnpm 10 — c'est ce qui neutralise le vecteur `preinstall` des
