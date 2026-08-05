@@ -1,6 +1,8 @@
 import { searchAdresse } from '@app/web/external-apis/apiAdresse'
 import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
 import { prismaClient } from '@app/web/prismaClient'
+import { CodeInsee } from '../../../../domain/code-insee'
+import { CodePostal } from '../../../../domain/code-postal'
 
 // Sous-ensemble d'adresse suffisant pour géocoder et persister une `main.adresse`. `SireneIdentity`
 // (API Entreprise) en est un sur-ensemble, mais le chemin d'écriture au fil de l'eau fournit ces
@@ -32,6 +34,18 @@ export type ResolvedAdresseMain = {
   source: 'ban' | 'api-entreprise'
 }
 
+// `main.adresse.code_postal` et `code_insee` sont des `varchar(5)` NOT NULL, et aucune source amont
+// ne garantit le format : pour un établissement non diffusible, l'API Recherche d'entreprises rend
+// littéralement `[NON-DIFFUSIBLE]` dans `code_postal` — 16 caractères, INSERT en échec `22001`. Les
+// value objects du domaine tranchent ici, au seul point où l'adresse entre en base : ce qui n'est
+// pas un code valide devient `''`, la colonne restant renseignée. Le reste de l'adresse (commune,
+// code INSEE) est juste dans ce cas et n'est pas perdu.
+const codePostalAdressable = (value: string): string =>
+  CodePostal.safe(value) ?? ''
+
+const codeInseeAdressable = (value: string): string =>
+  CodeInsee.safe(value) ?? ''
+
 // La clé d'unicité de `main.adresse` ne porte PAS le code INSEE : deux adresses de même
 // (code_postal, commune, voie) y sont la même ligne. On aligne la déduplication dessus.
 export const adresseMainKey = ({
@@ -52,8 +66,8 @@ export const resolveAdresseMain = async (
     const ban = banFeatureToAdresseBanData(feature)
     return {
       nomVoie: ban.nom,
-      codePostal: ban.codePostal,
-      codeInsee: ban.codeInsee,
+      codePostal: codePostalAdressable(ban.codePostal),
+      codeInsee: codeInseeAdressable(ban.codeInsee),
       nomCommune: ban.commune,
       // `main.adresse.code_ban` est un `uuid` : on prend le `banId` (uuid), PAS `ban.id` (clé
       // "codeInsee_voie_numero"), sinon le cast `::uuid` de l'INSERT échoue.
@@ -67,8 +81,8 @@ export const resolveAdresseMain = async (
 
   return {
     nomVoie: identity.adresse,
-    codePostal: identity.codePostal,
-    codeInsee: identity.codeInsee,
+    codePostal: codePostalAdressable(identity.codePostal),
+    codeInsee: codeInseeAdressable(identity.codeInsee),
     nomCommune: identity.commune,
     codeBan: null,
     longitude: null,
