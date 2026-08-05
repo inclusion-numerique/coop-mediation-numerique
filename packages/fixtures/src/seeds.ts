@@ -12,8 +12,12 @@ import {
 } from '@app/fixtures/equipeCoordonnee'
 import { output } from '@app/fixtures/output'
 import { seedPersonnesMain } from '@app/fixtures/personnesMainConseillerNumerique'
-import { seedStructures } from '@app/fixtures/structures'
+import {
+  fixtureStructuresAdministrativesMain,
+  seedStructures,
+} from '@app/fixtures/structures'
 import { upsertCraFixtures } from '@app/fixtures/upsertCraFixtures'
+import { upsertUserFixtures } from '@app/fixtures/upsertUserFixture'
 import {
   coordinations,
   fixtureUsers,
@@ -22,7 +26,7 @@ import {
   teamMediateurs,
 } from '@app/fixtures/users'
 import { coordinateurInscritAvecToutCoordinateurId } from '@app/fixtures/users/coordinateurInscritAvecTout'
-import type { Prisma } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import { upsertCoordinationFixtures } from './upsertCoordinationFixture'
 import { upsertInvitationEquipeFixtures } from './upsertInvitationEquipeFixture'
 import { upsertMediateurCoordonneFixtures } from './upsertMediateurCoordonneFixture'
@@ -74,50 +78,17 @@ export const deleteAll = async (transaction: Prisma.TransactionClient) => {
 export const seed = async (transaction: Prisma.TransactionClient) => {
   await seedStructures(transaction)
 
-  await Promise.all(
-    fixtureUsers.map((user) =>
-      transaction.user
-        .upsert({
-          where: { id: user.id },
-          create: user,
-          update: user,
-        })
-        .catch((error) => {
-          output.error('Error upserting user fixture', user)
-          throw error
-        }),
-    ),
+  await upsertUserFixtures(transaction)('user', fixtureUsers)
+
+  await upsertUserFixtures(transaction)(
+    'team administrator',
+    teamAdministrateurs,
   )
 
-  await Promise.all(
-    teamAdministrateurs.map((team) =>
-      transaction.user
-        .upsert({
-          where: { id: team.id },
-          create: team,
-          update: team,
-        })
-        .catch((error) => {
-          output.error('Error upserting team administrator fixture', team)
-          throw error
-        }),
-    ),
-  )
-
-  await Promise.all(
-    [...teamMediateurs, ...rdvServicePublicStagingUsers].map((team) =>
-      transaction.user
-        .upsert({
-          where: { id: team.id },
-          create: team,
-          update: team,
-        })
-        .catch((error) => {
-          output.error('Error upserting team mediateur fixture', team)
-          throw error
-        }),
-    ),
-  )
+  await upsertUserFixtures(transaction)('team mediateur', [
+    ...teamMediateurs,
+    ...rdvServicePublicStagingUsers,
+  ])
 
   await Promise.all(
     fixtureBeneficiaires.map((beneficiaire) =>
@@ -134,20 +105,7 @@ export const seed = async (transaction: Prisma.TransactionClient) => {
     ),
   )
 
-  await Promise.all(
-    equipeCoordonnee.map((user) =>
-      transaction.user
-        .upsert({
-          where: { id: user.id },
-          create: user,
-          update: user,
-        })
-        .catch((error) => {
-          output.error('Error upserting equipe user fixture', user)
-          throw error
-        }),
-    ),
-  )
+  await upsertUserFixtures(transaction)('equipe user', equipeCoordonnee)
 
   const allCoordinations = [
     ...coordinations,
@@ -176,16 +134,27 @@ export const seed = async (transaction: Prisma.TransactionClient) => {
   // Backfill `structure_main_id` / `structure_employeuse_main_id` sur les emplois et activités seedés
   // (les fixtures ne portent que l'uuid coop) : le périmètre élargi ADR-002 fait lire l'employeuse
   // depuis `main`. Jointure par `structure_coop_id` sur les SA main fixtures (cf. seedStructures).
+  //
+  // La restriction aux structures de fixtures n'est pas cosmétique : sans elle, ces UPDATE balaient
+  // les tables entières. Sur une base de fixtures c'est équivalent (tout est fixture), mais sur une
+  // base restaurée depuis la prod, la colonne vient d'être créée par la migration — donc NULLE
+  // partout — et le seed réécrivait plusieurs millions de lignes qui ne lui appartiennent pas.
+  const structuresCoopDesFixtures = fixtureStructuresAdministrativesMain.map(
+    ({ structureCoopId }) => structureCoopId,
+  )
+
   await transaction.$executeRaw`
     UPDATE coop.employes_structures es
     SET structure_main_id = m.id
     FROM main.structure_administrative m
     WHERE m.structure_coop_id = es.structure_id
-      AND es.structure_main_id IS NULL`
+      AND es.structure_main_id IS NULL
+      AND es.structure_id = ANY(ARRAY[${Prisma.join(structuresCoopDesFixtures)}]::uuid[])`
   await transaction.$executeRaw`
     UPDATE coop.activites a
     SET structure_employeuse_main_id = m.id
     FROM main.structure_administrative m
     WHERE m.structure_coop_id = a.structure_employeuse_id
-      AND a.structure_employeuse_main_id IS NULL`
+      AND a.structure_employeuse_main_id IS NULL
+      AND a.structure_employeuse_id = ANY(ARRAY[${Prisma.join(structuresCoopDesFixtures)}]::uuid[])`
 }
