@@ -52,6 +52,20 @@ export default {
           dirname,
           '../../../packages/fixtures/src',
         ),
+        // `server-only` est une garde : le paquet lève une erreur dès qu'il se retrouve dans
+        // un bundle client. Next ne l'y met jamais — il remplace les modules `'use server'`
+        // par une référence au moment de la compilation, si bien qu'un composant client peut
+        // importer une server action sans embarquer son code. Storybook n'applique pas cette
+        // transformation : il agrège le vrai module, la garde se déclenche, et l'extraction
+        // des stories échoue au chargement dans le navigateur.
+        //
+        // Concrètement, la chaîne était : MesBeneficiairesListePage -> BeneficiairesResults
+        // -> DeleteBulkBeneficiairesModalContent -> supprimer-beneficiaires.action ->
+        // features/authentification -> auth/getSessionUser -> 'server-only'.
+        //
+        // Neutraliser la garde ici, et ici seulement, est le contournement admis : le code
+        // applicatif reste correct, et rien n'est relâché du côté de Next.
+        'server-only': false,
       },
     },
   }),
