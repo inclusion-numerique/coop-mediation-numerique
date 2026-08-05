@@ -3,7 +3,7 @@ import { beneficiaireListItem } from '@app/web/features/beneficiaire/abilities/l
 import { presentMesBeneficiaires } from '@app/web/features/beneficiaire/abilities/lister-beneficiaires/ui/components/lister-beneficiaires.presenter'
 import { Page, PageSize, type Paginated } from '@arckit/resultset'
 import type { Meta, StoryObj } from '@storybook/react'
-import { expect, within } from '@storybook/test'
+import { expect, within } from 'storybook/test'
 import { MesBeneficiairesListePage } from './MesBeneficiairesListePage'
 
 const paginated = (

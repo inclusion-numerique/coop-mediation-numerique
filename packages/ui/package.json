@@ -26,7 +26,7 @@
     "date-fns": "^4.4.0",
     "dotenv": "^17.4.2",
     "downshift": "^9.4.0",
-    "next": "^15.5.22",
+    "next": "^16.3.0",
     "radix-ui": "^1.6.4",
     "react": "^19.2.8",
     "react-calendar": "^5.1.0",
@@ -41,9 +41,7 @@
     "zustand": "^5.0.14"
   },
   "devDependencies": {
-    "@storybook/addon-interactions": "^8.6.14",
-    "@storybook/react": "^8.6.18",
-    "@storybook/test": "^8.6.15",
+    "@storybook/react": "^10.5.3",
     "@testing-library/jest-dom": "^7.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.9.5",
@@ -52,6 +50,7 @@
     "@types/testing-library__jest-dom": "^6.0.0",
     "eslint": "^9.39.5",
     "jest": "^30.4.2",
-    "typescript": "^5.9.3"
+    "storybook": "^10.5.3",
+    "typescript": "^7.0.2"
   }
 }

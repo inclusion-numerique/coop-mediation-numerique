@@ -1,7 +1,7 @@
 import { useDsfrModalIsBound } from '@app/ui/hooks/useDsfrModalIsBound'
 import type { Meta, StoryObj } from '@storybook/react'
-import { expect, waitFor, within } from '@storybook/test'
 import React, { useEffect } from 'react'
+import { expect, waitFor, within } from 'storybook/test'
 import {
   activiteCollectifInfosDepliees,
   activiteCollectifInfosRepliees,

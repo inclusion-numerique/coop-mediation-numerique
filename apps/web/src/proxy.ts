@@ -82,7 +82,7 @@ const redirectToBaseDomain = ({
   return NextResponse.redirect(redirectTo, { status: 308 })
 }
 
-const middleware = (request: NextRequest) => {
+const proxy = (request: NextRequest) => {
   const forwardedProto = request.headers.get('X-Forwarded-Proto')
   const requestHost = request.headers.get('host')
   const baseUrl = process.env.BASE_URL ?? ''
@@ -145,4 +145,4 @@ const middleware = (request: NextRequest) => {
   return response
 }
 
-export default middleware
+export default proxy

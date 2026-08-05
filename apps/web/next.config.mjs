@@ -1,7 +1,7 @@
-import { withSentryConfig } from '@sentry/nextjs'
-import withBundleAnalyzer from '@next/bundle-analyzer'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import withBundleAnalyzer from '@next/bundle-analyzer'
+import { withSentryConfig } from '@sentry/nextjs'
 
 const withBundleAnalyzerConfig = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
@@ -30,10 +30,8 @@ const nextConfig = {
   // This includes files from the monorepo base two directories up
   outputFileTracingRoot: path.join(dirname, '../../'),
   modularizeImports,
-  eslint: {
-    // Lints are checked in other parts of the build process
-    ignoreDuringBuilds: true,
-  },
+  // L'option `eslint` a été supprimée en Next 16, en même temps que la commande `next lint` :
+  // `next build` ne lance plus aucun linter. Le dépôt lint avec Biome, dans un job dédié.
   typescript: {
     // Type checks are done in other parts of the build process
     ignoreBuildErrors: true,
