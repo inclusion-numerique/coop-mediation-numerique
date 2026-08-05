@@ -24,8 +24,6 @@ const MODIFICATION_FIELD: Record<string, TimestampField> = {
   Beneficiaire: 'modification',
   User: 'updated',
   ApiClient: 'updated',
-  AssistantChatThread: 'updated',
-  RagDocumentChunk: 'updated',
 }
 
 // Champs « non-contenu » : compteurs dénormalisés et marqueurs techniques. Si une mise à
