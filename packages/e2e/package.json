@@ -26,7 +26,6 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "cypress-file-upload": "^5.0.8",
-    "eslint": "^9.39.5",
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.23.1",
     "typescript": "^7.0.2"
