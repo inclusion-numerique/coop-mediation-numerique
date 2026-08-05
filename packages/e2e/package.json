@@ -18,7 +18,7 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-hook-form": "^7.82.0",
-    "uuid": "^11.1.1"
+    "uuid": "^14.0.1"
   },
   "devDependencies": {
     "@cypress/webpack-preprocessor": "^6.0.4",
@@ -26,7 +26,6 @@
     "@types/node": "^25.9.5",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
-    "@types/uuid": "^10.0.0",
     "cypress-file-upload": "^5.0.8",
     "eslint": "^9.39.5",
     "tsconfig-paths": "^4.2.0",

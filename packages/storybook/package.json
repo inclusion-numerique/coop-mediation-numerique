@@ -37,7 +37,7 @@
     "@storybook/react": "^8.6.18",
     "@storybook/test": "^8.6.15",
     "chromatic": "^11.29.0",
-    "dotenv": "^16.6.1",
+    "dotenv": "^17.4.2",
     "jest-mock": "^29.7.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",

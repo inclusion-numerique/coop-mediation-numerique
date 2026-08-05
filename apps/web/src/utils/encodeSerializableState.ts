@@ -60,7 +60,9 @@ export const decodeSerializableState = <T>(
 ): T => {
   try {
     const compressed = base64ToUint8Array(encodedState) // Base64-URL-safe decoding
-    const jsonString = pako.inflate(compressed, { to: 'string' })
+    // pako 3 a remplacé `{ to: 'string' }` par `{ toText: true }`, dont le type de retour
+    // est `string` (et non plus `Uint8Array`) via un générique conditionnel.
+    const jsonString = pako.inflate(compressed, { toText: true })
     return superjson.parse<T>(jsonString)
   } catch {
     return defaultValue
