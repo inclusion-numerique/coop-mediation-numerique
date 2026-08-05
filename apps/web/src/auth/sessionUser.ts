@@ -22,7 +22,6 @@ export type SessionUser = Pick<
   | 'isFixture'
   | 'profilInscription'
   | 'acceptationCgu'
-  | 'featureFlags'
   | 'timezone'
   | 'isConseillerNumerique'
 > & {

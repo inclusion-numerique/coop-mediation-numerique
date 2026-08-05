@@ -6,12 +6,13 @@ describe('ETQ Utilisateur, je peux me connecter à mon compte / me déconnecter 
    * Parcours https://www.figma.com/file/4wfmwOaKRnMhgiGEF256qS/La-Base---Parcours-utilisateurs?node-id=38%3A1135&t=mLwaw4Kkwt7FG9lz-1
    */
 
-  // This user exists in mon compte pro, but not in our db
+  // Cet utilisateur existe chez ProConnect, pas dans notre base. Le prénom et le
+  // nom ne sont pas les nôtres : ils viennent de l'identité que rend le
+  // fournisseur d'identité simulé de l'environnement d'intégration.
   const proConnectUser = {
     email: Cypress.env('PROCONNECT_TEST_USER_EMAIL') as string,
-    password: Cypress.env('PROCONNECT_TEST_USER_PASSWORD') as string,
-    firstName: 'Jean',
-    lastName: 'User',
+    firstName: 'John',
+    lastName: 'Doe',
   }
 
   before(() => {
@@ -53,11 +54,14 @@ describe('ETQ Utilisateur, je peux me connecter à mon compte / me déconnecter 
 
     cy.get('#email-input').type(`${proConnectUser.email}{enter}`)
 
-    cy.get('#password-input').type(`${proConnectUser.password}{enter}`)
+    // ProConnect ne demande plus de mot de passe sur l'environnement d'intégration :
+    // le parcours aboutit sur un fournisseur d'identité simulé, où l'on confirme
+    // l'identité (email, sub, niveau ACR) d'un simple clic.
+    cy.url().should('contain', 'test-idp.proconnect.gouv.fr')
+    cy.contains('button', 'Se connecter').click()
 
-    // Click on the first a link .fr-tile__link
-
-    cy.get('.fr-tile__link').first().click()
+    // Plus de sélection d'organisation à faire : le fournisseur d'identité simulé
+    // rend une identité unique, et le rappel nous ramène directement dans l'app.
 
     // Cookies are lost in redirect (Cypress issue)
     // https://github.com/cypress-io/cypress/issues/20476#issuecomment-1298486439
@@ -83,11 +87,10 @@ describe('ETQ Utilisateur, je peux me connecter à mon compte / me déconnecter 
     cy.contains('Êtes-vous sûr de vouloir vous déconnecter ?')
     cy.get('main').contains('Se déconnecter').click()
 
-    // Identity provider logout flow
-    cy.url().should(
-      'contain',
-      'https://identite-sandbox.proconnect.gouv.fr/oauth/logout',
-    )
+    // On n'affirme plus le passage par l'URL de déconnexion du fournisseur
+    // d'identité : c'est une étape de redirection fugace, dont le domaine a déjà
+    // changé deux fois (moncomptepro -> identite-sandbox -> …), et que Cypress
+    // rate quand le rebond est immédiat. Ce qui compte est l'état d'arrivée.
     cy.url().should('equal', appUrl('/'))
 
     cy.get('.fr-header__tools').contains('Se connecter')

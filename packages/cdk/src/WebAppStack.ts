@@ -43,8 +43,6 @@ export const webAppStackVariables = [
   'BREVO_USERS_LIST_ID',
   'SCW_DEFAULT_ORGANIZATION_ID',
   'SCW_PROJECT_ID',
-  'SCALEWAY_GENERATIVE_API_SERVICE_URL',
-  'ALBERT_SERVICE_URL',
   'WEB_CONTAINER_IMAGE',
 ] as const
 export const webAppStackSensitiveVariables = [
@@ -57,8 +55,6 @@ export const webAppStackSensitiveVariables = [
   'INTERNAL_API_PRIVATE_KEY',
   'CONSEILLER_NUMERIQUE_MONGODB_URL',
   'HMAC_SECRET_KEY',
-  'ALBERT_API_KEY',
-  'BRAVE_API_KEY',
   'RDV_SERVICE_PUBLIC_PREVIEW_API_KEY',
   'RDV_SERVICE_PUBLIC_PREVIEW_OAUTH_CLIENT_ID',
   'RDV_SERVICE_PUBLIC_PREVIEW_OAUTH_CLIENT_SECRET',
@@ -251,9 +247,6 @@ export class WebAppStack extends TerraformStack {
         NAMESPACE: namespace,
         // This env variable is reserved at the level of container namespace. We inject it here even if its shared.
         SCW_DEFAULT_REGION: region,
-        SCALEWAY_GENERATIVE_API_SERVICE_URL:
-          environmentVariables.SCALEWAY_GENERATIVE_API_SERVICE_URL.value,
-        ALBERT_SERVICE_URL: environmentVariables.ALBERT_SERVICE_URL.value,
         SMTP_PORT: isMain ? smtpPort : '1025',
         DATASPACE_API_MOCK: isMain ? '0' : '1',
         // Entrepôt SSH tunnel: bastion coordinates (optional, from MIN) + the fixed target of the
@@ -296,8 +289,6 @@ export class WebAppStack extends TerraformStack {
         CONSEILLER_NUMERIQUE_MONGODB_URL:
           sensitiveEnvironmentVariables.CONSEILLER_NUMERIQUE_MONGODB_URL.value,
         HMAC_SECRET_KEY: sensitiveEnvironmentVariables.HMAC_SECRET_KEY.value,
-        ALBERT_API_KEY: sensitiveEnvironmentVariables.ALBERT_API_KEY.value,
-        BRAVE_API_KEY: sensitiveEnvironmentVariables.BRAVE_API_KEY.value,
         SMTP_USERNAME: isMain
           ? sensitiveEnvironmentVariables.SMTP_USERNAME.value
           : sensitiveEnvironmentVariables.SMTP_MAILDEV_USERNAME.value,

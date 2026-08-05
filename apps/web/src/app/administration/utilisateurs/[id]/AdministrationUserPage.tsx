@@ -35,7 +35,6 @@ import UsurpUserButton from '../../usurpation/UsurpUserButton'
 import { type AdministrationUserPageData } from './getAdministrationUserPageData'
 import RenvoyerInvitationButton from './RenvoyerInvitationButton'
 import { RetirerDeEquipeAdmin } from './RetirerDeEquipeAdmin'
-import UtilisateurSetFeatureFlagsForm from './UtilisateurSetFeatureFlagsForm'
 
 const getStructuresInfos = (
   {
@@ -339,9 +338,6 @@ const AdministrationUserPage = async ({
               },
             ]}
           />
-        </AdministrationInfoCard>
-        <AdministrationInfoCard title="Feature flags">
-          <UtilisateurSetFeatureFlagsForm user={user} />
         </AdministrationInfoCard>
         {isMediateur && mediateur && (
           <AdministrationInfoCard title="Rôle médiateur">

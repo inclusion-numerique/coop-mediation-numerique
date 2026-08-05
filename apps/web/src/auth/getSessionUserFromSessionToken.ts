@@ -27,7 +27,6 @@ export const sessionUserSelect = {
   structureEmployeuseRenseignee: true,
   lieuxActiviteRenseignes: true,
   inscriptionValidee: true,
-  featureFlags: true,
   timezone: true,
   isConseillerNumerique: true,
   lastSeen: true,
