@@ -8,7 +8,7 @@ import { Popover } from '@app/ui/components/Primitives/Popover'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
-import { formatDate } from 'date-fns'
+import { format } from 'date-fns'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -79,7 +79,7 @@ export const PeriodeFilter = ({
       trigger={
         <TriggerButton isOpen={isOpen} isFilled={!!isComplete}>
           {isComplete
-            ? `${formatDate(from, 'dd.MM.yy')} - ${formatDate(to, 'dd.MM.yy')}`
+            ? `${format(from, 'dd.MM.yy')} - ${format(to, 'dd.MM.yy')}`
             : 'Période'}
         </TriggerButton>
       }

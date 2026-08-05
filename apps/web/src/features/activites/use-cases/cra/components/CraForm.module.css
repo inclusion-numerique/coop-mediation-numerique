@@ -6,7 +6,7 @@
   display: grid;
   gap: 16px;
 
-  :global .fr-messages-group {
+  :global(.fr-messages-group) {
     padding-left: 4px;
   }
 }
