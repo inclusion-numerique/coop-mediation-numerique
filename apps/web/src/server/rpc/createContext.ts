@@ -1,6 +1,6 @@
 import { getSessionTokenFromCookies } from '@app/web/auth/getSessionTokenFromCookies'
 import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
-import type { FetchCreateContextFnOptions } from '@trpc/server/src/adapters/fetch/types'
+import type { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch'
 import * as cookie from 'cookie'
 
 export const createContext = async ({

@@ -7,8 +7,8 @@ import React, {
   type CSSProperties,
   type ReactNode,
 } from 'react'
+import type { FieldPath } from 'react-hook-form'
 import { type Control, Controller, type FieldValues } from 'react-hook-form'
-import type { FieldPath } from 'react-hook-form/dist/types/path'
 
 type LabelComponentPropsType<O extends SelectOption> = {
   option: O
