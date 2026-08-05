@@ -40,9 +40,18 @@ const items = [
   }),
 ]
 
+// La page reçoit la suppression en prop : les stories fournissent une doublure
+// plutôt que la vraie server action, qui tirerait tout le graphe serveur dans le
+// bundle du navigateur.
+const supprimerBeneficiaires = async () => ({
+  success: true as const,
+  data: undefined,
+})
+
 const meta: Meta<typeof MesBeneficiairesListePage> = {
   title: 'Mes bénéficiaires/Liste',
   component: MesBeneficiairesListePage,
+  args: { supprimerBeneficiaires },
   decorators: [
     (Story) => <div className="fr-container fr-py-4v">{Story()}</div>,
   ],
