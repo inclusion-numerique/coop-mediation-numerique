@@ -1,3 +1,4 @@
+import { telephoneDisplayString } from '@app/web/libraries/telephone'
 import { referentAffichage } from '../domain/contact-referent'
 import type { Employeuse } from '../domain/employeuse'
 
@@ -28,6 +29,22 @@ export type EmployeuseAffichage = {
   telephoneReferent: string | null
 }
 
+/**
+ * Le contact est stocké en E.164 (`+33468532187`) : c'est la forme canonique,
+ * pas une forme lisible. La mise au format national se fait ici et non dans les
+ * cartes, pour que tous les affichages d'employeuse rendent le même numéro.
+ */
+const telephoneReferentFormate = <
+  T extends { telephoneReferent: string | null },
+>(
+  referent: T,
+): T => ({
+  ...referent,
+  telephoneReferent: referent.telephoneReferent
+    ? telephoneDisplayString(referent.telephoneReferent)
+    : null,
+})
+
 export const employeuseAffichage = (
   employeuse: Employeuse,
 ): EmployeuseAffichage => ({
@@ -41,5 +58,5 @@ export const employeuseAffichage = (
   codeInsee: employeuse.adresse?.codeInsee ?? null,
   siret: employeuse.siret,
   rna: employeuse.rna,
-  ...referentAffichage(employeuse.contactReferent),
+  ...telephoneReferentFormate(referentAffichage(employeuse.contactReferent)),
 })
