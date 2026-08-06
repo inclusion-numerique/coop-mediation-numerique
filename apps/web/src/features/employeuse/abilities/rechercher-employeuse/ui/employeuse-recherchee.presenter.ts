@@ -3,9 +3,10 @@ import type { Employeuse } from '../../../domain/employeuse'
 import { employeuseAffichage } from '../../../ui/employeuse.presenter'
 
 /**
- * Résultat de recherche affichable. Les dénominations et adresses de SIRENE
- * arrivent en capitales : on les remet en casse de titre pour l'affichage, sans
- * toucher à la donnée.
+ * Résultat de recherche affichable. Les adresses de SIRENE arrivent en
+ * capitales : on les remet en casse de titre pour l'affichage, sans toucher à
+ * la donnée. La dénomination, elle, reste telle quelle — c'est une raison
+ * sociale, et la recasser produit des noms faux (« Pimms De Bordeaux »).
  */
 export type EmployeuseRecherchee = {
   id: string
@@ -25,7 +26,7 @@ export const employeuseRecherchee = (
 
   return {
     id: String(affichage.id),
-    nom: toTitleCase(affichage.nom ?? '', { noUpper: true }),
+    nom: affichage.nom ?? '',
     adresse: toTitleCase(affichage.adresse ?? '', { noUpper: true }),
     commune: toTitleCase(affichage.commune ?? ''),
     codePostal: affichage.codePostal ?? '',

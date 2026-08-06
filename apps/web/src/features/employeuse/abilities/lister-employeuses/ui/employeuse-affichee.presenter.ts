@@ -32,7 +32,9 @@ export const employeuseAffichee = ({
 
   return {
     id: String(affichage.id),
-    nom: toTitleCase(affichage.nom ?? '', { noUpper: true }),
+    // La dénomination n'est pas remise en casse de titre : c'est une raison
+    // sociale, elle s'affiche telle que la source la porte.
+    nom: affichage.nom ?? '',
     siret: affichage.siret,
     adresse: toTitleCase(affichage.adresse ?? '', { noUpper: true }),
     commune: toTitleCase(affichage.commune ?? ''),
