@@ -1,5 +1,6 @@
 import { serializePrismaSessionUser } from '@app/web/auth/serializePrismaSessionUser'
 import type { SessionUser } from '@app/web/auth/sessionUser'
+import { personneEmployeuseSelect } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 import { registerLastSeen } from '@app/web/security/registerLastSeen'
 import type { Prisma } from '@prisma/client'
@@ -27,32 +28,14 @@ export const sessionUserSelect = {
   structureEmployeuseRenseignee: true,
   lieuxActiviteRenseignes: true,
   inscriptionValidee: true,
-  featureFlags: true,
   timezone: true,
   isConseillerNumerique: true,
   lastSeen: true,
-  emplois: {
-    select: {
-      id: true,
-      structure: {
-        select: {
-          id: true,
-          nom: true,
-          codePostal: true,
-          codeInsee: true,
-          commune: true,
-          modification: true,
-        },
-      },
-    },
-    where: {
-      suppression: null,
-      fin: null,
-    },
-    orderBy: {
-      debut: 'desc',
-    },
-  },
+  // Employeuse COURANTE lue en PUR MAIN (ADR-002 périmètre élargi) : `main.personne` (coop_id) ->
+  // affectation active -> structure. Plus AUCUNE référence à `emploi.structureMain`.
+  // `serializePrismaSessionUser` reconstitue la forme historique `emplois: [{ id, structure }]`
+  // (0 ou 1 élément) via `personneToSessionEmplois`, donc les consommateurs restent inchangés.
+  personneMain: { select: personneEmployeuseSelect },
   mediateur: {
     select: {
       id: true,

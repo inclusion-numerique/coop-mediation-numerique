@@ -1,33 +1,59 @@
-import { prismaClient } from '@app/web/prismaClient'
+import {
+  consulterEmployeuseActuelle,
+  employeuseActuelleAffichage,
+} from '@app/web/features/employeuse/server'
 
-export const getStructureEmployeuseForInscription = ({
+// Structure employeuse COURANTE de l'inscription. La lecture appartient à la feature employeuse
+// (ability `consulter-employeuse-actuelle`) ; l'inscription n'en consomme que la mise à plat
+// d'affichage. L'`id` exposé est l'entier `main.structure_administrative.id` : clé de la mutation
+// `ajouterStructureEmployeuseEnLieuActivite`, qui matérialise le lieu depuis les données main.
+export const getStructureEmployeuseForInscription = async ({
   userId,
 }: {
   userId: string
-}) =>
-  prismaClient.employeStructure.findFirst({
-    where: {
-      userId,
-      suppression: null,
-      fin: null,
+}) => {
+  const employeuseActuelle = await consulterEmployeuseActuelle({ userId })
+  if (!employeuseActuelle) return null
+
+  const {
+    id,
+    nom,
+    adresse,
+    commune,
+    codePostal,
+    codeInsee,
+    siret,
+    rna,
+    nomReferent,
+    courrielReferent,
+    telephoneReferent,
+  } = employeuseActuelleAffichage(employeuseActuelle)
+
+  return {
+    structure: {
+      id,
+      // Le domaine dit `null` quand l'employeuse n'a aucune dénomination (14 en production) ; la
+      // carte d'inscription attend un libellé. Le repli d'affichage est décidé ici, chez le
+      // consommateur, et n'a pas à remonter dans la lecture.
+      nom: nom ?? '',
+      adresse,
+      commune,
+      codePostal,
+      codeInsee,
+      // `main` ne porte pas le complément d'adresse (décision 6 révisée) -> toujours null.
+      complementAdresse: null,
+      siret,
+      rna,
+      nomReferent,
+      courrielReferent,
+      telephoneReferent,
     },
-    orderBy: {
-      debut: 'desc',
-    },
-    select: {
-      id: true,
-      structure: {
-        select: {
-          id: true,
-          nom: true,
-          commune: true,
-          codePostal: true,
-          codeInsee: true,
-          siret: true,
-          rna: true,
-          adresse: true,
-          complementAdresse: true,
-        },
-      },
-    },
-  })
+  }
+}
+
+export type StructureEmployeuseForInscription = NonNullable<
+  Awaited<ReturnType<typeof getStructureEmployeuseForInscription>>
+>
+
+export type InscriptionStructureEmployeuse =
+  StructureEmployeuseForInscription['structure']

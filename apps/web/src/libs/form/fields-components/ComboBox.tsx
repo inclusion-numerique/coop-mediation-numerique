@@ -120,13 +120,17 @@ export const ComboBox = <TItem, TPayload extends object>(
               ...options,
             })
           },
+          // `item` est devenu optionnel dans la signature de downshift 9.4 (on peut ne passer
+          // qu'un `index`) : on ne déclenche la sélection que lorsqu'il est bien fourni.
           getItemProps: (options) =>
             getItemProps({
               onClick: () => {
+                const item = options?.item
+                if (item == null) return
                 isMultipleSelection
-                  ? appendValue(options.item, state.value)
-                  : setValue(options.item)
-                comboBoxProps.onSelect?.(options.item)
+                  ? appendValue(item, state.value)
+                  : setValue(item)
+                comboBoxProps.onSelect?.(item)
               },
               ...options,
             }),

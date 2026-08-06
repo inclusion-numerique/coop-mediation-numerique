@@ -1,3 +1,4 @@
+import { supprimerBeneficiairesAction } from '@app/web/app/_actions/beneficiaire/supprimer-beneficiaires.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import { listerBeneficiaires } from '@app/web/features/beneficiaire/abilities/lister-beneficiaires/implementation'
@@ -31,7 +32,13 @@ const MesBeneficiairesPage = async (props: {
     query.search,
   )
 
-  return <MesBeneficiairesListePage view={view} searchParams={searchParams} />
+  return (
+    <MesBeneficiairesListePage
+      view={view}
+      searchParams={searchParams}
+      supprimerBeneficiaires={supprimerBeneficiairesAction}
+    />
+  )
 }
 
 export default MesBeneficiairesPage

@@ -7,8 +7,8 @@ import type {
   BeneficiaireDoublon,
   DetecterDoublons,
 } from '@app/web/features/beneficiaire/abilities/detecter-doublons'
-import { telephoneDisplayString } from '@app/web/features/beneficiaire/domain/telephone'
 import { pluriel } from '@app/web/libraries/pluriel'
+import { telephoneDisplayString } from '@app/web/libraries/telephone'
 import { numberToString } from '@app/web/utils/formatNumber'
 import Button from '@codegouvfr/react-dsfr/Button'
 import * as Sentry from '@sentry/nextjs'

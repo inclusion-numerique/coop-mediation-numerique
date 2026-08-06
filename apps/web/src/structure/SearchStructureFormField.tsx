@@ -63,7 +63,7 @@ const SearchStructureFormField = <
 
     const defaultValueSiret = defaultValue?.[siretPath]
 
-    if (!!nom && siret === defaultValueSiret) {
+    if (nom && siret === defaultValueSiret) {
       // Value is same as default value, do nothing
       return
     }

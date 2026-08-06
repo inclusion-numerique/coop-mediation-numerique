@@ -7,7 +7,7 @@ import { getCartographieNationaleSourceLabel } from '@app/web/structure/cartogra
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
-import { formatDate, isAfter, isBefore, subDays, subYears } from 'date-fns'
+import { format, isAfter, isBefore, subDays, subYears } from 'date-fns'
 import Link from 'next/link'
 import CartographyIndicator, {
   getCartographyStatus,
@@ -34,7 +34,7 @@ const LieuCard = ({
 
   const lieuHref = `/coop/mon-reseau/${departementCode}/lieux/${lieu.id}`
 
-  const formattedModificationDate = formatDate(
+  const formattedModificationDate = format(
     new Date(lieu.modification),
     'dd.MM.yyyy',
   )

@@ -23,7 +23,9 @@ export const sendInviteNewMediateurEmail = async ({
     subject:
       'Invitation à rejoindre une équipe sur La Coop de la médiation numérique',
     text: inviteNewMediateur.text({ url, from: from.name || '' }),
-    html: compileMjml(inviteNewMediateur.mjml({ url, from: from.name || '' })),
+    html: await compileMjml(
+      inviteNewMediateur.mjml({ url, from: from.name || '' }),
+    ),
   })
 
   throwOnSendMailFailure(result)

@@ -20,6 +20,13 @@ export type InscriptionFlowE2eExpectedStep =
       accept: boolean
     }
   | {
+      step: 'renseigner-structure-employeuse'
+      check?: () => void
+      // Terme recherché puis nom exact de la structure à choisir dans la liste.
+      recherche: string
+      choix: string
+    }
+  | {
       step: 'lieux-activite'
       check?: () => void
       structureEmployeuseIsLieuActivite: boolean
@@ -77,6 +84,25 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
     } else {
       cy.contains('Annuler').click()
     }
+    return
+  }
+
+  if (step.step === 'renseigner-structure-employeuse') {
+    cy.appUrlShouldBe(getStepPath('renseigner-structure-employeuse'), {
+      timeout: mutationAndNavigationTimeout,
+    })
+
+    step.check?.()
+
+    // La recherche interroge le serveur (structures enregistrées + annuaire des
+    // entreprises) : on attend qu'une option apparaisse avant de choisir.
+    cy.findByRole('combobox').type(step.recherche)
+    cy.contains(step.choix, { timeout: mutationAndNavigationTimeout }).click()
+
+    // Parcours réel : on clique le bouton. Soumettre le formulaire directement
+    // court-circuiterait la pose de la valeur dans le store TanStack.
+    cy.get('button').contains('Continuer').click()
+
     return
   }
 

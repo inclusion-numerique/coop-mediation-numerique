@@ -11,14 +11,66 @@ packages:
   - packages/test
   - packages/fixtures
 
+# Délai de quarantaine avant qu'une version publiée soit installable (en MINUTES : 21600 = 15
+# jours). C'est la principale défense du dépôt contre les compromissions de chaîne
+# d'approvisionnement type Shai-Hulud / ChainDrop, où les versions malveillantes ne restent en
+# ligne que quelques heures. Ne pas l'abaisser, même ponctuellement pour débloquer un install :
+# préférer une exclusion ciblée ci-dessous.
 minimumReleaseAge: 21600
 minimumReleaseAgeExclude:
   - typescript
+  # TypeScript 7 distribue son compilateur natif dans des paquets par plateforme, tirés par
+  # `typescript@next` (tag mobile republié chaque nuit) via downlevel-dts -> jsii -> cdktf-cli.
+  # Sans cette exclusion, tout install à froid échoue dès qu'une nightly a moins de 15 jours.
+  - "@typescript/*"
   - react
   - react-dom
   - "@types/node"
   - "@types/react"
   - "@types/react-dom"
   - next
-  - "@next/env"
+  # Même motif que TypeScript : Next distribue son compilateur natif dans des paquets par
+  # plateforme (`@next/swc-*`) publiés avec `next`. Exclure `next` sans les exclure aussi
+  # laissait l'install échouer sur le binaire. Remplace l'entrée `@next/env` seule.
+  - "@next/*"
   - "@arckit/resultset"
+  # EXCEPTIONS TEMPORAIRES — à retirer après le 15/08/2026.
+  # Ces deux paquets corrigent des failles connues, mais leurs correctifs sont eux-mêmes plus
+  # récents que la quarantaine : undici 7.29.0 date du 24/07, fast-uri 3.1.5 du 31/07. Sans
+  # exclusion, on reste bloqué sur des versions vulnérables et `dependency-review` rejette la
+  # PR. L'exclusion seule rouvrirait la porte à une publication malveillante future : elle est
+  # donc doublée d'un épinglage à la version exacte dans `overrides` ci-dessous, ce qui limite
+  # l'exposition à ces deux versions précisément, et à aucune autre.
+  - undici
+  - fast-uri
+  # Next 16 épingle `postcss` à exactement 8.5.23, publiée le 24/07 : sous quarantaine, la
+  # montée est purement et simplement impossible. Cette version est par ailleurs le correctif
+  # de l'avis modéré qui frappait la 8.5.21 (lecture de fichiers .map arbitraires via un
+  # sourceMappingURL contrôlé), et elle précède la campagne ChainDrop du 04/08.
+  - postcss
+
+# Migré depuis le champ `pnpm` de package.json, que pnpm 10 n'a jamais lu : ces réglages
+# étaient silencieusement inertes (cf. l'avertissement affiché à chaque commande).
+overrides:
+  stylus: 0.0.1-security
+  # Versions EXACTES, pas des plages : c'est ce qui borne la levée de quarantaine ci-dessus à
+  # deux artefacts connus. À retirer avec les exclusions correspondantes après le 15/08/2026,
+  # quand les plages semver normales suffiront à les atteindre.
+  undici: 7.29.0
+  fast-uri: 3.1.5
+  postcss: 8.5.23
+
+# Seuls ces paquets sont autorisés à exécuter leurs scripts d'installation. Tous les autres
+# sont bloqués par défaut par pnpm 10 — c'est ce qui neutralise le vecteur `preinstall` des
+# vers npm. N'ajouter une entrée qu'avec une raison de compilation native avérée.
+onlyBuiltDependencies:
+  - "@cdktf/node-pty-prebuilt-multiarch"
+  - "@prisma/client"
+  - "@prisma/engines"
+  - "@sentry/cli"
+  - "@swc/core"
+  - aws-crt
+  - cypress
+  - esbuild
+  - prisma
+  - sharp

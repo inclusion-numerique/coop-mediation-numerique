@@ -2,7 +2,7 @@ import { createBeneficiairesForParticipantsAnonymes } from '@app/web/features/ac
 import type { CraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
 import type { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
 import { BeneficiaireCraData } from '@app/web/features/activites/use-cases/cra/validation/BeneficiaireCraValidation'
-import { getActeurEmploiForDate } from '@app/web/features/mon-reseau/use-cases/acteurs/db/getActeurEmploiForDate'
+import { consulterEmployeuseAUneDate } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 import { invalidError } from '@app/web/server/rpc/trpcErrors'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
@@ -206,10 +206,11 @@ export const createOrUpdateActivite = async ({
 
   const creationId = v4()
 
-  const emploi = await getActeurEmploiForDate({
+  // Employeuse À LA DATE de l'activité : un CRA rétro-daté se rattache à l'employeuse de
+  // l'époque (contrat couvrant la date), pas à celle d'aujourd'hui.
+  const employeuse = await consulterEmployeuseAUneDate({
     userId: mediateurUserId,
     date: new Date(date),
-    strictDateBounds: false,
   })
 
   const existingActivite = id
@@ -269,8 +270,8 @@ export const createOrUpdateActivite = async ({
       : null
 
   // If accompagnement is "A distance", we assign the location to the structure employeuse
-  const structureEmployeuse =
-    data.typeLieu === 'ADistance' ? emploi.structure : null
+  const adresseEmployeuse =
+    data.typeLieu === 'ADistance' ? (employeuse?.adresse ?? null) : null
 
   const orienteVersStructure = yesNoToOptionalBoolean(
     'orienteVersStructure' in data ? data.orienteVersStructure : undefined,
@@ -285,9 +286,9 @@ export const createOrUpdateActivite = async ({
         }
       : data.typeLieu === 'ADistance'
         ? {
-            lieuCommune: structureEmployeuse?.commune ?? null,
-            lieuCodePostal: structureEmployeuse?.codePostal ?? null,
-            lieuCodeInsee: structureEmployeuse?.codeInsee ?? null,
+            lieuCommune: adresseEmployeuse?.commune ?? null,
+            lieuCodePostal: adresseEmployeuse?.codePostal ?? null,
+            lieuCodeInsee: adresseEmployeuse?.codeInsee ?? null,
           }
         : {
             lieuCommune: null,
@@ -310,9 +311,11 @@ export const createOrUpdateActivite = async ({
     accompagnementsCount,
     duree: craDureeDataToMinutes(duree),
     typeLieu: data.typeLieu ?? undefined,
-    structureEmployeuse: {
-      connect: { id: emploi.structure.id },
-    },
+    // Employeuse de l'activité en PUR MAIN (ADR-002 périmètre élargi) : on ne connecte plus la
+    // relation coop (`structure_employeuse_id` devenu nullable), seulement main.
+    structureEmployeuseMain: employeuse
+      ? { connect: { id: employeuse.id } }
+      : undefined,
     niveau: 'niveau' in data ? data.niveau : undefined,
     materiel: 'materiel' in data ? data.materiel : undefined,
     titreAtelier: 'titreAtelier' in data ? data.titreAtelier : undefined,

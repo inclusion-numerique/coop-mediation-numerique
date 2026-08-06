@@ -22,7 +22,6 @@ export type SessionUser = Pick<
   | 'isFixture'
   | 'profilInscription'
   | 'acceptationCgu'
-  | 'featureFlags'
   | 'timezone'
   | 'isConseillerNumerique'
 > & {
@@ -34,9 +33,13 @@ export type SessionUser = Pick<
   structureEmployeuseRenseignee: string | null
   lieuxActiviteRenseignes: string | null
   usurper: { id: string } | null
-  emplois: (Pick<EmployeStructure, 'id'> & {
-    structure: Pick<StructureAdministrative, 'nom' | 'codeInsee'>
-  })[]
+  // Employeuse courante (0 ou 1 élément), lue dans `main` : la forme n'est plus dérivée des
+  // modèles coop `EmployeStructure`/`StructureAdministrative`, qui disparaissent à l'échange final.
+  // Une employeuse peut n'avoir aucune dénomination — d'où `nom: string | null`.
+  emplois: {
+    id: string
+    structure: { nom: string | null; codeInsee: string | null }
+  }[]
   mediateur:
     | (Pick<Mediateur, 'id' | 'isVisible'> & {
         coordinations: {
@@ -81,19 +84,16 @@ export type SessionUser = Pick<
  * Type guard to check if user has at least one structure employeuse (emploi)
  * Narrows the type to ensure emplois is a non-empty array
  */
+// Générique sur la forme des emplois (le guard ne vérifie que la présence d'au moins un emploi) :
+// accepte aussi bien le SessionUser sérialisé (`emplois[].structure`) que le résultat Prisma brut de
+// `sessionUserSelect` (`emplois[].structureMain`, ADR-002 étape 6), en préservant la forme de chaque
+// appelant après narrowing.
 export const sessionUserHasStructureEmployeuse = <
-  T extends Pick<SessionUser, 'emplois'>,
+  T extends { emplois: unknown[] },
 >(
   user: T,
 ): user is T & {
-  emplois: [
-    Pick<EmployeStructure, 'id'> & {
-      structure: Pick<StructureAdministrative, 'nom' | 'codeInsee'>
-    },
-    ...(Pick<EmployeStructure, 'id'> & {
-      structure: Pick<StructureAdministrative, 'nom' | 'codeInsee'>
-    })[],
-  ]
+  emplois: [T['emplois'][number], ...T['emplois'][number][]]
 } => {
   return user.emplois.length > 0
 }

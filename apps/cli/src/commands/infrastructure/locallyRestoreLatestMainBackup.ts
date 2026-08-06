@@ -376,6 +376,12 @@ const restoreEntrepotBackup = async (
       maxBuffer: 10 * 1024 * 1024,
     },
   )
+
+  // `pg_restore` ne laisse aucune statistique : jusqu'au prochain passage d'autovacuum, le
+  // planificateur travaille à l'aveugle (il a estimé 31 871 lignes là où il y en avait 4 millions)
+  // et choisit des plans inadaptés. On les calcule tout de suite, une fois pour toutes.
+  output('Computing planner statistics (ANALYZE)')
+  await prismaClient.$executeRawUnsafe('ANALYZE')
 }
 
 export const locallyRestoreLatestMainBackup = new Command(
@@ -513,5 +519,13 @@ export const locallyRestoreLatestMainBackup = new Command(
 
     output(
       `Restored ${host}/${database} for "${user}" role (coop + Dataspace schemas from the Entrepôt backup)`,
+    )
+
+    // Le dump ramène `main` ET l'historique Prisma de la prod : les migrations qui modélisent
+    // `main` sont donc en attente alors que leurs tables existent déjà. `prisma migrate deploy`
+    // en direct échouerait (P3018, « relation already exists ») ; `db:migrate-deploy` les
+    // baseline d'abord (prisma/baseline-main.sh, ADR-002).
+    output(
+      'Pour migrer cette base restaurée : pnpm -F web db:migrate-deploy (surtout pas prisma migrate deploy en direct)',
     )
   })

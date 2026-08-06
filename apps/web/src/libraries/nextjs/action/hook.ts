@@ -1,6 +1,6 @@
 'use client'
 
-import type { InjectionKey } from 'piqure/src/Providing'
+import type { InjectionKey } from '@app/web/libs/injection/types'
 import { useActionState } from 'react'
 import type {
   ServerActionError,

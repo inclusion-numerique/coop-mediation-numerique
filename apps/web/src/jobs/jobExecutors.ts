@@ -12,8 +12,11 @@ import { executeAuditAdresseCoherence } from './audit-adresse-coherence/executeA
 import { executeAuditLieuxOverview } from './audit-lieux-overview/executeAuditLieuxOverview'
 import { executeAuditSiretCoherence } from './audit-siret-coherence/executeAuditSiretCoherence'
 import { executeBackfillCommuneRdvsp } from './backfill-commune-rdvsp/executeBackfillCommuneRdvsp'
+import { executeBackfillPersonnesAffectationsMain } from './backfill-personnes-affectations-main/executeBackfillPersonnesAffectationsMain'
+import { executeBackfillStructureEmployeuseMain } from './backfill-structure-employeuse-main/executeBackfillStructureEmployeuseMain'
 import { executeBackfillTrancheAge } from './backfill-tranche-age/executeBackfillTrancheAge'
 import { executeBackupDatabaseJob } from './backup-database/executeBackupDatabaseJob'
+import { executeCompleterStructuresMain } from './completer-structures-main/executeCompleterStructuresMain'
 import { executeDeduplicateLieux } from './deduplicate-lieux/executeDeduplicateLieux'
 import { executeDetectDuplicateLieux } from './detect-duplicate-lieux/executeDetectDuplicateLieux'
 import { executeExportDuplicateSirets } from './export-duplicate-sirets/executeExportDuplicateSirets'
@@ -21,13 +24,13 @@ import { executeFixStructures } from './fix-structures/executeFixStructures'
 import { executeFixTags } from './fix-tags/executeFixTags'
 import { executeFixUsers } from './fix-users/executeFixUsers'
 import { executeFixUsersRoles } from './fix-users-roles/executeFixUsersRoles'
-import { executeGenerateStructuresActionPlan } from './generate-structures-action-plan/executeGenerateStructuresActionPlan'
 import { executeImportContactsToBrevo } from './import-contacts-to-brevo/executeImportContactsToBrevo'
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
 import type { Job, JobName, JobPayload } from './jobs'
 import { executeNormaliserBeneficiaires } from './normaliser-beneficiaires/executeNormaliserBeneficiaires'
 import { executeNormalizeSirets } from './normalize-sirets/executeNormalizeSirets'
 import { output } from './output'
+import { executeRelierPersonnesCoopMain } from './relier-personnes-coop-main/executeRelierPersonnesCoopMain'
 import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts/executeRemoveOrphanBrevoContacts'
 import { executeResetInscriptionsSansRole } from './reset-inscriptions-sans-role/executeResetInscriptionsSansRole'
 import { executeSetServciesToSharedLieux } from './set-servcies-to-shared-lieux/executeSetServciesToSharedLieux'
@@ -66,6 +69,11 @@ export const jobExecutors: {
   'backfill-commune-rdvsp': executeBackfillCommuneRdvsp,
   'backfill-tranche-age': executeBackfillTrancheAge,
   'backup-database': executeBackupDatabaseJob,
+  'completer-structures-main': executeCompleterStructuresMain,
+  'relier-personnes-coop-main': executeRelierPersonnesCoopMain,
+  'backfill-personnes-affectations-main':
+    executeBackfillPersonnesAffectationsMain,
+  'backfill-structure-employeuse-main': executeBackfillStructureEmployeuseMain,
   'update-structures-cartographie-nationale':
     executeUpdateStructuresCartographieNationale,
   'import-contacts-to-brevo': executeImportContactsToBrevo,
@@ -85,7 +93,6 @@ export const jobExecutors: {
   'deduplicate-lieux': executeDeduplicateLieux,
   'detect-duplicate-lieux': executeDetectDuplicateLieux,
   'export-duplicate-sirets': executeExportDuplicateSirets,
-  'generate-structures-action-plan': executeGenerateStructuresActionPlan,
 }
 
 export const executeJob = async (job: Job) => {

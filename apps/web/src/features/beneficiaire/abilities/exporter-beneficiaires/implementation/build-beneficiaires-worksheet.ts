@@ -3,7 +3,7 @@ import {
   statutSocialLabels,
   trancheAgeLabels,
 } from '@app/web/features/beneficiaire/domain'
-import { telephoneDisplayString } from '@app/web/features/beneficiaire/domain/telephone'
+import { telephoneDisplayString } from '@app/web/libraries/telephone'
 import { addExportMetadata } from '@app/web/libs/worksheet/addExportMetadata'
 import { addTitleRow } from '@app/web/libs/worksheet/addTitleRow'
 import { autosizeColumns } from '@app/web/libs/worksheet/autosizeColumns'

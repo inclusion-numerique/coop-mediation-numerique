@@ -1,7 +1,10 @@
 import { numberToString } from '@app/web/utils/formatNumber'
 import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import { ReactNode } from 'react'
-import type { TooltipProps } from 'recharts'
+// recharts 3 sépare les deux contrats : `TooltipProps` décrit ce que l'on passe au composant
+// <Tooltip>, tandis que `TooltipContentProps` y ajoute ce que le contenu reçoit du contexte
+// (`payload`, `label`, `active`). Un rendu de tooltip personnalisé relève du second.
+import type { TooltipContentProps } from 'recharts'
 import {
   NameType,
   ValueType,
@@ -15,7 +18,7 @@ const CustomTooltip = <TValue extends ValueType, TName extends NameType>({
   // Formatter is a function that takes the value, name, and the payload and returns a string
   formatter,
   labelFormatter,
-}: TooltipProps<TValue, TName>) => {
+}: TooltipContentProps<TValue, TName>) => {
   if (active && payload && payload.length > 0) {
     const title = labelFormatter
       ? labelFormatter(label, payload)

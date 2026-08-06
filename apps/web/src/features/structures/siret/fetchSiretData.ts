@@ -54,6 +54,7 @@ const toSiretApiResponse = ({
       unite_legale: {
         siren: uniteLegale.siren,
         type: estPersonneMorale ? 'personne_morale' : 'personne_physique',
+        nom_complet: uniteLegale.nom_complet,
         personne_morale_attributs: estPersonneMorale
           ? { raison_sociale: uniteLegale.nom_raison_sociale ?? undefined }
           : undefined,

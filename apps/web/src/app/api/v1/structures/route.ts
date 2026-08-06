@@ -456,7 +456,7 @@ export const GET = createApiV1Route
         })
       : undefined
 
-    if (!!validatedCursor && !validatedCursor.success) {
+    if (validatedCursor && !validatedCursor.success) {
       throw validatedCursor.error as ZodError
     }
 
@@ -524,7 +524,7 @@ export const GET = createApiV1Route
         ? createCompositeCursor(lastItem.creation.toISOString(), lastItem.id)
         : undefined
     const previousCursor =
-      !!parsedCursor && firstItem
+      parsedCursor && firstItem
         ? createCompositeCursor(firstItem.creation.toISOString(), firstItem.id)
         : undefined
 

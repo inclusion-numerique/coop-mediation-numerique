@@ -7,7 +7,7 @@ orbs:
 executors:
   node:
     docker:
-      - image: cimg/node:25.4.0
+      - image: cimg/node:24.19.0
         environment:
           TZ: 'UTC'
   node22:
@@ -17,22 +17,25 @@ executors:
           TZ: 'UTC'
   node-postgres:
     docker:
-      - image: cimg/node:25.4.0
+      - image: cimg/node:24.19.0
         environment:
           TZ: 'UTC'
           CI_PG_ADMIN_URL: postgresql://postgres@localhost
           CI_DATABASE_URL: postgresql://postgres@localhost/test?options=-c%20search_path%3Dcoop,public
-      - image: huguesm/circleci-postgres:14.13-vector
+      - image: rg.fr-par.scw.cloud/coop-mediation-numerique-ci/circleci-postgres:pg17-vector-postgis
+        auth:
+          username: nologin
+          password: $CI_SCW_SECRET_KEY
         environment:
           POSTGRES_USER: postgres
   node-browsers:
     docker:
-      - image: cimg/node:25.4.0-browsers
+      - image: cimg/node:24.19.0-browsers
         environment:
           TZ: 'UTC'
   node-e2e:
     docker:
-      - image: cimg/node:25.4.0-browsers
+      - image: cimg/node:24.19.0-browsers
         environment:
           TZ: 'UTC'
           CI_DATABASE_URL: postgresql://postgres@localhost/test?options=-c%20search_path%3Dcoop,public
@@ -42,7 +45,10 @@ executors:
         environment:
           MAILDEV_INCOMING_USER: mailuser
           MAILDEV_INCOMING_PASS: mailpassword
-      - image: huguesm/circleci-postgres:14.13-vector
+      - image: rg.fr-par.scw.cloud/coop-mediation-numerique-ci/circleci-postgres:pg17-vector-postgis
+        auth:
+          username: nologin
+          password: $CI_SCW_SECRET_KEY
         environment:
           POSTGRES_USER: postgres
 
@@ -573,6 +579,12 @@ jobs:
                     "$ENTREPOT_BASTION_USER@$ENTREPOT_BASTION_HOST"
                   # Attend que le forward accepte les connexions (bash /dev/tcp, sans nc)
                   for i in $(seq 1 30); do (echo > /dev/tcp/127.0.0.1/5433) 2>/dev/null && break; sleep 1; done
+                  # Les migrations qui modélisent `main` (possédé par Flyway côté Entrepôt) doivent
+                  # être marquées appliquées, pas exécutées : leurs tables existent déjà (ADR-002,
+                  # étape 1). Sans ça, `migrate deploy` échoue en P3018 « relation already exists ».
+                  # Inerte partout ailleurs. `db:migrate-deploy` n'est PAS utilisable ici : il
+                  # déplacerait `public._prisma_migrations`, qui appartient à MIN sur l'Entrepôt.
+                  DATABASE_URL="$ENTREPOT_DATABASE_URL" pnpm --silent -F @app/web db:baseline-main
                   # ENTREPOT_DATABASE_URL porte déjà search_path=coop -> migre coop._prisma_migrations
                   DATABASE_URL="$ENTREPOT_DATABASE_URL" pnpm --silent -F @app/web prisma migrate deploy
       - run:

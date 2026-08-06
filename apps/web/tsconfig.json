@@ -8,7 +8,7 @@
     ],
     "paths": {
       "@app/cli/*": ["../../apps/cli/src/*"],
-      "@app/web/*": ["src/*"],
+      "@app/web/*": ["./src/*"],
       "@app/cdk/*": ["../../packages/cdk/src/*"],
       "@app/config/*": ["../../packages/config/src/*"],
       "@app/e2e/*": ["../../packages/e2e/cypress/*"],
@@ -20,12 +20,10 @@
       "@app/ui/*": ["../../packages/ui/src/*"],
       "@app/fixtures/*": ["../../packages/fixtures/src/*"]
     },
-    "baseUrl": ".",
     "jsx": "preserve"
   },
   "include": [
     "next-env.d.ts",
-    "node_modules/@types/testing-library__jest-dom/index.d.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
     ".next/types/**/*.ts",

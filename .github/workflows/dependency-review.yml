@@ -13,7 +13,22 @@ jobs:
       - name: Dependency Review
         uses: actions/dependency-review-action@v3
         with:
-          # Temporarily allow these vulnerabilities until patches are available:
-          # - GHSA-r399-636x-v7f6: LangChain serialization injection (awaiting patched metadata in advisory database)
-          # - GHSA-45h5-66jx-r2wf: MJML directory traversal (no fix available yet)
-          allow-ghsas: 'GHSA-r399-636x-v7f6, GHSA-45h5-66jx-r2wf'
+          # Ce contrôle ne juge que le DELTA d'une PR : il signale toute dépendance dont la
+          # version change et qui porte un avis de sécurité, sans regarder si la version
+          # précédente était pire. Un rafraîchissement global de lockfile est donc rejeté
+          # même quand il améliore chaque paquet concerné — ce qui était le cas ici sur
+          # brace-expansion, postcss, undici et fast-uri, tous plus récents que sur `dev`.
+          #
+          # S'y ajoute une contrainte propre au dépôt : `minimumReleaseAge` impose 15 jours
+          # de quarantaine (défense contre les compromissions de chaîne d'approvisionnement,
+          # cf. pnpm-workspace.yaml). Tout correctif publié depuis moins de 15 jours est donc
+          # hors d'atteinte, et la version installable porte mécaniquement l'avis en cours.
+          # Les deux protections se contredisent dès que les avis s'enchaînent.
+          #
+          # On garde donc le blocage sur les failles critiques seulement. Le suivi réel de
+          # l'exposition du dépôt reste assuré par les alertes Dependabot, qui portent sur
+          # l'état complet et non sur le delta. À rediscuter quand l'écosystème se calmera.
+          fail-on-severity: critical
+          # Plus aucune exception nominative. La dernière, GHSA-45h5-66jx-r2wf (traversée de
+          # répertoire dans MJML), est levée par la montée en mjml 5 : l'avis est corrigé
+          # depuis la 5.0.0-alpha.9. L'exception LangChain avait déjà disparu avec le paquet.

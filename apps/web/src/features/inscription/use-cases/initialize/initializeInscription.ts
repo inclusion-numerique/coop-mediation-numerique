@@ -1,5 +1,4 @@
 import { sessionUserSelect } from '@app/web/auth/getSessionUserFromSessionToken'
-import { sessionUserHasStructureEmployeuse } from '@app/web/auth/sessionUser'
 import {
   getMediateurFromDataspaceApi,
   isDataspaceApiError,
@@ -10,7 +9,10 @@ import {
   upsertMediateur,
 } from '@app/web/features/dataspace/syncFromDataspaceCore'
 import { updateUserInscriptionProfileFromDataspace } from '@app/web/features/dataspace/updateUserInscriptionProfileFromDataspace'
-import { importStructureEmployeuseFromSiret } from '@app/web/features/structures/importStructureEmployeuseFromSiret'
+import {
+  personneToEmployeuseActuelle,
+  rattacherAUneEmployeuseDepuisSiret,
+} from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 import { getNextInscriptionStep, getStepPath } from '../../inscriptionFlow'
 
@@ -207,35 +209,34 @@ export const initializeInscription = async ({
       where: { id: userId },
       select: {
         siret: true,
-        emplois: {
+        // ADR-002 échange final : présence d'employeuse testée sur les affectations MAIN actives
+        // (les emplois coop sont gelés / vides pour un nouvel utilisateur).
+        personneMain: {
           select: {
-            id: true,
-            structure: {
-              select: {
-                nom: true,
-                codeInsee: true,
-              },
+            affectationsEmploi: {
+              where: { estActive: true },
+              select: { id: true },
             },
           },
-          where: { suppression: null },
         },
       },
     })
 
     if (
       userAfterSync &&
-      !sessionUserHasStructureEmployeuse(userAfterSync) &&
+      (userAfterSync.personneMain?.affectationsEmploi.length ?? 0) === 0 &&
       userAfterSync.siret
     ) {
       log('Fallback: importing structure employeuse from SIRET', {
         siret: userAfterSync.siret,
       })
-      const importResult = await importStructureEmployeuseFromSiret({
+      const rattachement = await rattacherAUneEmployeuseDepuisSiret({
         userId,
         siret: userAfterSync.siret,
-        log,
       })
-      log('Import structure employeuse from SIRET result', importResult)
+      log('Rattachement employeuse depuis SIRET', {
+        resultat: rattachement._tag,
+      })
     }
 
     // Fetch updated user for next step determination
@@ -251,14 +252,19 @@ export const initializeInscription = async ({
     // Determine next step
     const hasLieuxActivite = (updatedUser.mediateur?._count.enActivite ?? 0) > 0
 
+    // Employeuse courante en pur main (sessionUserSelect expose désormais `personneMain`).
+    const employeuseActuelle = personneToEmployeuseActuelle(
+      updatedUser.personneMain,
+    )
     log('User state after initialization', {
-      hasStructureEmployeuse: sessionUserHasStructureEmployeuse(updatedUser),
-      emploisCount: updatedUser.emplois.length,
-      emplois: updatedUser.emplois.map((e) => ({
-        id: e.id,
-        structureNom: e.structure.nom,
-        structureId: e.structure.id,
-      })),
+      hasStructureEmployeuse: employeuseActuelle !== null,
+      employeuse: employeuseActuelle
+        ? {
+            structureMainId: employeuseActuelle.employeuse.id,
+            nom: employeuseActuelle.employeuse.denomination,
+            source: employeuseActuelle.source,
+          }
+        : null,
       hasLieuxActivite,
       profilInscription: updatedUser.profilInscription,
     })
@@ -286,41 +292,36 @@ export const initializeInscription = async ({
     where: { id: userId },
     select: {
       siret: true,
-      emplois: {
+      // ADR-002 échange final : la présence d'une employeuse se teste sur les affectations MAIN
+      // actives (les emplois coop sont gelés / vides pour un nouvel utilisateur).
+      personneMain: {
         select: {
-          id: true,
-          structure: {
-            select: {
-              nom: true,
-              codeInsee: true,
-            },
+          affectationsEmploi: {
+            where: { estActive: true },
+            select: { id: true },
           },
-        },
-        where: {
-          suppression: null,
         },
       },
     },
   })
 
+  const hasStructureEmployeuse =
+    (user?.personneMain?.affectationsEmploi.length ?? 0) > 0
+
   log('User state for SIRET fallback', {
     siret: user?.siret ?? null,
-    emploisCount: user?.emplois.length ?? 0,
-    hasStructureEmployeuse: user
-      ? sessionUserHasStructureEmployeuse(user)
-      : false,
+    hasStructureEmployeuse,
   })
 
-  if (user && !sessionUserHasStructureEmployeuse(user) && user.siret) {
+  if (user && !hasStructureEmployeuse && user.siret) {
     log('Importing structure employeuse from SIRET (no Dataspace)', {
       siret: user.siret,
     })
-    const importResult = await importStructureEmployeuseFromSiret({
+    const rattachement = await rattacherAUneEmployeuseDepuisSiret({
       userId,
       siret: user.siret,
-      log,
     })
-    log('Import structure employeuse from SIRET result', importResult)
+    log('Rattachement employeuse depuis SIRET', { resultat: rattachement._tag })
   } else if (user && !user.siret) {
     log('User has no SIRET, cannot create structure employeuse')
   }

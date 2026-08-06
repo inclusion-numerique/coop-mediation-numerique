@@ -216,11 +216,18 @@ export const getActivitesFiltersWhereConditions = ({
         : null,
     structuresEmployeuses:
       structuresEmployeuses && structuresEmployeuses.length > 0
-        ? Prisma.raw(
-            `act.structure_employeuse_id IN (${structuresEmployeuses
-              .map((id) => `'${id}'::UUID`)
-              .join(', ')})`,
-          )
+        ? // PUR MAIN (ADR-002 périmètre élargi) : filtre sur l'employeuse main de l'activité. Les ids
+          // d'options sont des int main stringifiés -> on ne garde que des entiers (aucune injection).
+          (() => {
+            const mainIds = structuresEmployeuses
+              .map(Number)
+              .filter((value) => Number.isInteger(value))
+            return mainIds.length > 0
+              ? Prisma.raw(
+                  `act.structure_employeuse_main_id IN (${mainIds.join(', ')})`,
+                )
+              : null
+          })()
         : null,
     source:
       source === 'v1'

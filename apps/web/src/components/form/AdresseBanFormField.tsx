@@ -17,7 +17,7 @@ export type AdressBanFormFieldOption = SelectOption<AdresseBanData | null>
 const getAdresseBanLabel = ({
   properties: { type, label, postcode },
 }: Feature) => {
-  if (type === 'municipality' && !!postcode) {
+  if (type === 'municipality' && postcode) {
     return `${label} · ${postcode}`
   }
 

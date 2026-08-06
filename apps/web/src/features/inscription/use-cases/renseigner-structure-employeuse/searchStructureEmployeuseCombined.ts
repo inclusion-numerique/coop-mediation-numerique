@@ -1,5 +1,8 @@
 import { rechercheApiEntreprise } from '@app/web/external-apis/rechercheApiEntreprise'
-import { searchStructureAdministrative } from '@app/web/structure/searchStructureAdministrative'
+import {
+  employeuseRecherchee,
+  rechercherEmployeuse,
+} from '@app/web/features/employeuse/server'
 import { structureCreationDataWithSiretFromUniteLegale } from '@app/web/structure/structuresInfoFromUniteLegale'
 
 export type StructureSearchResult = {
@@ -32,7 +35,7 @@ export const searchStructureEmployeuseCombined = async (
   }
 
   const [dbResult, apiResponse] = await Promise.all([
-    searchStructureAdministrative(query, { limit: 25 }),
+    rechercherEmployeuse({ recherche: query, limite: 25 }),
     rechercheApiEntreprise({
       q: query,
       minimal: true,
@@ -44,14 +47,17 @@ export const searchStructureEmployeuseCombined = async (
 
   const { data: apiResult, unavailable: apiUnavailable } = apiResponse
 
-  const dbStructures: StructureSearchResult[] = dbResult.structures
+  // Le SIRET identifie le choix : une employeuse enregistrée qui n'en a pas ne
+  // peut pas être proposée.
+  const dbStructures: StructureSearchResult[] = dbResult.employeuses
+    .map(employeuseRecherchee)
     .filter((structure) => structure.siret)
     .map((structure) => ({
       id: structure.id,
       nom: structure.nom,
-      adresse: structure.adresse ?? '',
-      commune: structure.commune ?? '',
-      codePostal: structure.codePostal ?? '',
+      adresse: structure.adresse,
+      commune: structure.commune,
+      codePostal: structure.codePostal,
       codeInsee: structure.codeInsee ?? '',
       siret: structure.siret as string,
       source: 'database' as const,
@@ -86,7 +92,8 @@ export const searchStructureEmployeuseCombined = async (
 
   const totalFromApi = apiResult?.total_results ?? 0
   const moreResults =
-    dbResult.moreResults + Math.max(0, totalFromApi - apiStructures.length)
+    Math.max(dbResult.total - dbStructures.length, 0) +
+    Math.max(0, totalFromApi - apiStructures.length)
 
   return {
     structures: deduplicatedStructures.slice(0, 50),

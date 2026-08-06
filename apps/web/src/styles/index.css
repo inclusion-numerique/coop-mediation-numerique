@@ -1,6 +1,16 @@
-@import url("/dsfr/dsfr.min.css");
-@import url("/dsfr/utility/utility.min.css");
+/* Chemins relatifs vers `public/dsfr`, et non plus absolus. Turbopack résout les `@import`
+   comme des modules — il échoue sur un chemin absolu et, si on lui demande d'ignorer
+   l'erreur, il abandonne l'import sans rien dire. Le chemin relatif le laisse résoudre le
+   fichier réel, et surtout l'`@import` garde sa place en tête de cette feuille : le DSFR
+   reste devant nos surcharges, ce que garde le test e2e « Les overrides DSFR de app.css sont
+   visibles ».
+
+   Contrepartie : ces feuilles sont désormais empaquetées. C'est un gain, pas une perte —
+   Next sert `public/` avec `Cache-Control: public, max-age=0`, donc le DSFR était revalidé à
+   chaque page, alors que `/_next/static/` est servi avec un hash de contenu et `immutable`. */
+@import url("../../public/dsfr/dsfr.min.css");
+@import url("../../public/dsfr/utility/utility.min.css");
 @import url("https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.min.css");
-@import url("./components");
-@import url("./helpers");
+@import url("./components/index.css");
+@import url("./helpers/index.css");
 @import url("./layout.css");

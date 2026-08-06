@@ -46,6 +46,7 @@ features/<feature>/
 | AR-4 | Le code partagé entre 2 features vit dans `libraries/` (ou `shared/`), pas dans une feature.                                                                                                   | WARN     | —                                                                                                                          |
 | AR-5 | Routes `app/**` = hubs minces : (1) auth, (2) input via value object/schema, (3) données via une **ability query** (jamais `prismaClient` brut), (4) rend **un** composant page de la feature. | BLOCKER  | `rg "prismaClient\." apps/web/src/app`                                                                                     |
 | AR-6 | Calibrer l'effort DDD au sous-domaine : Core (`activite`, `beneficiaire`) = riche ; Supporting = modéré ; Generic/externe = ACL minimal. Ne pas over-engineer une feature simple.              | INFO     | —                                                                                                                          |
+| AR-7 | Une feature peut exposer un **fragment SQL** dans son API publique quand un consommateur doit filtrer, trier ou compter dessus dans une requête paginée — recoller en mémoire y fausserait pagination et totaux. Conditions : le fragment ET ses colonnes vivent dans `db/<entity>.sql.ts` (les appelants n'écrivent jamais l'alias ni un nom de colonne en dur) ; les identifiants injectés sont documentés comme non-paramétrables et sous la responsabilité de l'appelant ; **chaque** requête qui l'embarque — requêtes de comptage comprises — est exercée par un test d'intégration. | WARN | `rg "Prisma.raw" features/*/db` ; alias SQL (`s1.`) écrit en dur chez un consommateur |
 
 ---
 
@@ -204,6 +205,8 @@ abilities/<ability>/
 - Aucune dépendance inter-ability/feature ; duplication découplée > couplage → IS-1, IS-2.
 - Vérifier le remplaçant **avant** suppression → PR-3.
 - Pas de composant dans `app` ; module.css→DSFR (pas de déplacement tel quel) → UI-1, UI-2.
+- Barrel de feature = **serveur** : n'y réexporter ni composant React (ses `.css` cassent Cucumber) ni implémentation Prisma consommée par un client (`tsc` ne voit ni l'un ni l'autre — seuls le build prod et la suite BDD les voient) → AR-7, CS note.
+- Fragment SQL partagé : un seul endroit, colonnes comprises, et chaque requête qui l'embarque testée → AR-7.
 - Pas de helper faiblement typé en doublon (primitive partagée) → CS-9.
 - Nommage : préfixes au **minimum** (instancier ≠ créer ; `beneficiaireListItem` pas `createABeneficiaire`) ; préfixe seulement s'il porte une info (`seed/to/from/with`) → (nommage).
 - BDD = intégration sur chaque ability ; unit seulement si logique pure → TS-1, TS-2.

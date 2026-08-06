@@ -28,8 +28,6 @@ export type UserCoordinateur = Pick<SessionUser, 'coordinateur'>
 
 export type UserTimezone = Pick<SessionUser, 'timezone'>
 
-export type UserFeatureFlags = Pick<SessionUser, 'featureFlags'>
-
 export type UserWithRole = Pick<SessionUser, 'role'>
 
 export const getUserDisplayName = (user: UserDisplayName): string => {

@@ -25,12 +25,7 @@ const RenseignerStructureEmployeusePageRoute = async () => {
 
   const nextStepPath = '/inscription/lieux-activite/structure-employeuse'
 
-  return (
-    <RenseignerStructureEmployeusePage
-      user={user}
-      nextStepPath={nextStepPath}
-    />
-  )
+  return <RenseignerStructureEmployeusePage nextStepPath={nextStepPath} />
 }
 
 export default RenseignerStructureEmployeusePageRoute

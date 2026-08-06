@@ -1,3 +1,10 @@
+// Barrel CLIENT-SAFE (`features/employeuse`) et non `/server` : ce module est tiré dans le bundle
+// navigateur par `ActeurIdentity` (`'use client'`). Le barrel serveur y embarquerait le client
+// Prisma — la fiche acteur répondait 500 pour cette raison.
+import {
+  employeuseSessionEmplois,
+  personneToEmployeuseActuelle,
+} from '@app/web/features/employeuse'
 import { getDepartementCodeForActeur } from '@app/web/features/mon-reseau/getDepartementCodeForActeur'
 import type { ActeurIdentityData } from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurIdentity'
 import type { ActeurForList } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
@@ -29,7 +36,13 @@ const getCoordinateursInfo = (
         ? {
             name: displayName,
             userId: id,
-            departementCode: getDepartementCodeForActeur(coordinateurUser),
+            // Employeuse courante lue en PUR MAIN (ADR-002 échange final) : `personneMain` →
+            // forme `emplois` (codeInsee pour le département).
+            departementCode: getDepartementCodeForActeur({
+              emplois: employeuseSessionEmplois(
+                personneToEmployeuseActuelle(coordinateurUser.personneMain),
+              ),
+            }),
           }
         : null
     })

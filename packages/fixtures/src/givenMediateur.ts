@@ -1,6 +1,6 @@
 import { givenUser } from '@app/fixtures/givenUser'
 import { mediateque, structureEmployeuse } from '@app/fixtures/structures'
-import type { Prisma, UserFeatureFlag } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 
 export type GivenMediateurInput = {
   firstName: string
@@ -10,7 +10,6 @@ export type GivenMediateurInput = {
   mediateurId: string
   enActiviteId: string
   emploiId: string
-  featureFlags?: UserFeatureFlag[]
 }
 
 export const givenMediateur = ({
@@ -21,7 +20,6 @@ export const givenMediateur = ({
   mediateurId,
   enActiviteId,
   emploiId,
-  featureFlags = [],
 }: GivenMediateurInput) =>
   givenUser({
     id,
@@ -32,7 +30,6 @@ export const givenMediateur = ({
     inscriptionValidee: new Date('2025-04-29'),
     lieuxActiviteRenseignes: new Date('2025-04-29'),
     structureEmployeuseRenseignee: new Date('2025-04-29'),
-    featureFlags,
     mediateur: {
       connectOrCreate: {
         where: {

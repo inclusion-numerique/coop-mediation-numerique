@@ -3,7 +3,7 @@ import { getUserDisplayName, UserDisplayName } from '@app/web/utils/user'
 
 type MergeUser = UserDisplayName & {
   id: string
-  emplois: { structure: { id: string } }[]
+  emplois: { structureId: string }[]
   mediateur: {
     activites: { id: string }[]
     beneficiaires: { id: string }[]
@@ -98,19 +98,15 @@ const include = {
   },
   emplois: {
     where: { suppression: null, fin: null },
-    include: {
-      structure: {
-        select: { id: true },
-      },
-    },
+    // ADR-002 échange final : colonne FK `structureId` (pas la relation coop SA).
+    select: { structureId: true },
   },
   mutations: true,
 }
 
 const toId = ({ id }: { id: string }) => id
 
-const toStructureId = ({ structure }: { structure: { id: string } }) =>
-  structure.id
+const toStructureId = ({ structureId }: { structureId: string }) => structureId
 
 const toCoordinateurId = ({ coordinateur }: { coordinateur: { id: string } }) =>
   coordinateur.id

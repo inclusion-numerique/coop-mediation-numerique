@@ -19,7 +19,9 @@ export const sendAcceptInvitation = async ({
 
     subject: `${mediateur} a accepté votre invitation à rejoindre votre équipe`,
     text: acceptInvitation.text({ mediateur: mediateur || '' }),
-    html: compileMjml(acceptInvitation.mjml({ mediateur: mediateur || '' })),
+    html: await compileMjml(
+      acceptInvitation.mjml({ mediateur: mediateur || '' }),
+    ),
   })
 
   throwOnSendMailFailure(result)

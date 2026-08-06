@@ -17,7 +17,6 @@ export const mediateurAvecActivite = givenUser({
   inscriptionValidee: new Date(),
   lieuxActiviteRenseignes: new Date(),
   structureEmployeuseRenseignee: new Date(),
-  featureFlags: ['Assistant'],
   mediateur: {
     connectOrCreate: {
       where: {

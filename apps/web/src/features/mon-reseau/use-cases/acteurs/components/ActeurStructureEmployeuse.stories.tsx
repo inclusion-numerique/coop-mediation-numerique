@@ -1,5 +1,19 @@
+// Import direct du presenter, PAS du barrel `features/employeuse` : celui-ci
+// réexporte l'implémentation Prisma de l'ability, qui n'a rien à faire dans un
+// bundle client.
+import { adresseCompleteAffichage } from '@app/web/features/employeuse/abilities/consulter-employeuse-a-une-date/ui/employeuse-emploi.presenter'
+import type { EmploiEmployeuseAffichage } from '@app/web/features/employeuse/server'
 import type { Meta, StoryObj } from '@storybook/react'
 import ActeurStructureEmployeuse from './ActeurStructureEmployeuse'
+
+// Les fixtures composent leur adresse par le presenter plutôt que de la
+// recopier : les stories exercent ainsi la vraie mise en forme.
+const structure = (
+  valeurs: Omit<EmploiEmployeuseAffichage, 'adresseComplete'>,
+): EmploiEmployeuseAffichage => ({
+  ...valeurs,
+  adresseComplete: adresseCompleteAffichage(valeurs),
+})
 
 const meta = {
   title: 'Structure/Structure employeuse',
@@ -13,13 +27,8 @@ type Story = StoryObj<typeof meta>
 export const Complet: Story = {
   args: {
     emploi: {
-      id: '1',
-      userId: '1',
-      debut: new Date(),
-      fin: null,
-      creation: new Date(),
-      structure: {
-        id: '1',
+      structure: structure({
+        id: 1,
         nom: 'Anonymal',
         adresse: '12 bis rue du Général Leclerc',
         complementAdresse: '4e étage',
@@ -28,10 +37,11 @@ export const Complet: Story = {
         codeInsee: '51454',
         siret: '43493312300029',
         rna: '1234567890',
+        aUnReferent: true,
         nomReferent: 'John Doe',
         courrielReferent: 'john.doe@example.com',
         telephoneReferent: '0123456789',
-      },
+      }),
     },
     showIsLieuActiviteNotice: true,
     showReferentStructure: true,
@@ -43,13 +53,8 @@ export const Complet: Story = {
 export const Minimal: Story = {
   args: {
     emploi: {
-      id: '1',
-      userId: '1',
-      debut: new Date(),
-      fin: null,
-      creation: new Date(),
-      structure: {
-        id: '1',
+      structure: structure({
+        id: 1,
         nom: 'Anonymal',
         adresse: '12 bis rue du Général Leclerc',
         commune: 'Reims',
@@ -58,10 +63,11 @@ export const Minimal: Story = {
         complementAdresse: null,
         siret: null,
         rna: null,
+        aUnReferent: false,
         nomReferent: null,
         courrielReferent: null,
         telephoneReferent: null,
-      },
+      }),
     },
     showIsLieuActiviteNotice: false,
     showReferentStructure: false,
@@ -73,13 +79,8 @@ export const Minimal: Story = {
 export const MinimalAvecSiret: Story = {
   args: {
     emploi: {
-      id: '1',
-      userId: '1',
-      debut: new Date(),
-      fin: null,
-      creation: new Date(),
-      structure: {
-        id: '1',
+      structure: structure({
+        id: 1,
         nom: 'Anonymal',
         adresse: '12 bis rue du Général Leclerc',
         commune: 'Reims',
@@ -88,10 +89,11 @@ export const MinimalAvecSiret: Story = {
         complementAdresse: null,
         siret: '43493312300029',
         rna: null,
+        aUnReferent: false,
         nomReferent: null,
         courrielReferent: null,
         telephoneReferent: null,
-      },
+      }),
     },
     showIsLieuActiviteNotice: false,
     showReferentStructure: false,
@@ -103,13 +105,8 @@ export const MinimalAvecSiret: Story = {
 export const MinimalAvecTypologies: Story = {
   args: {
     emploi: {
-      id: '1',
-      userId: '1',
-      debut: new Date(),
-      fin: null,
-      creation: new Date(),
-      structure: {
-        id: '1',
+      structure: structure({
+        id: 1,
         nom: 'Anonymal',
         adresse: '12 bis rue du Général Leclerc',
         commune: 'Reims',
@@ -118,13 +115,45 @@ export const MinimalAvecTypologies: Story = {
         complementAdresse: null,
         siret: null,
         rna: null,
+        aUnReferent: false,
         nomReferent: null,
         courrielReferent: null,
         telephoneReferent: null,
-      },
+      }),
     },
     showIsLieuActiviteNotice: false,
     showReferentStructure: false,
+    showReferentStructureConseillerNumeriqueSupportNotice: false,
+    canUpdateStructure: false,
+  },
+}
+
+/**
+ * Cas de production : 644 employeuses ont un courriel ou un téléphone dans leur
+ * jsonb mais aucun nom. Le bloc contact doit s'afficher quand même — il était
+ * conditionné au nom, et disparaissait donc entièrement.
+ */
+export const ContactSansNom: Story = {
+  args: {
+    emploi: {
+      structure: structure({
+        id: 1,
+        nom: 'LELIEN26',
+        adresse: 'Rue du Bourg',
+        commune: 'Dieulefit',
+        codePostal: '26220',
+        codeInsee: '26114',
+        complementAdresse: null,
+        siret: '83922613100036',
+        rna: null,
+        aUnReferent: true,
+        nomReferent: null,
+        courrielReferent: 'lelien26@orange.fr',
+        telephoneReferent: '04 69 14 48 06',
+      }),
+    },
+    showIsLieuActiviteNotice: false,
+    showReferentStructure: true,
     showReferentStructureConseillerNumeriqueSupportNotice: false,
     canUpdateStructure: false,
   },

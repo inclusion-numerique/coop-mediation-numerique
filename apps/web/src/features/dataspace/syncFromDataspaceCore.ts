@@ -1,16 +1,10 @@
 import { updateBrevoContact } from '@app/web/external-apis/brevo/updateBrevoContact'
 import type {
-  DataspaceContrat,
   DataspaceLieuActivite,
   DataspaceMediateur,
-  DataspaceMediateurAdresse,
-  DataspaceStructureEmployeuse,
 } from '@app/web/external-apis/dataspace/dataspaceApiClient'
-import { getContractStatus } from '@app/web/features/dataspace/getContractStatus'
 import { findOrCreateLieuInclusion } from '@app/web/features/structures/findOrCreateLieuInclusion'
-import { findOrCreateStructureAdministrative } from '@app/web/features/structures/findOrCreateStructureAdministrative'
 import { prismaClient } from '@app/web/prismaClient'
-import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { v4 } from 'uuid'
 
 /**
@@ -18,23 +12,21 @@ import { v4 } from 'uuid'
  *
  * Business Rules:
  * - Dataspace null response → NO-OP
- * - is_conseiller_numerique: true → Dataspace is source of truth for emplois/structures
- * - is_conseiller_numerique: false → Local is source of truth, only update flag
- * - is_coordinateur: true AND is_conseiller_numerique: true
- *   → Create Coordinateur (never delete)
- * - Lieux d'activité: NOT synced here (only imported once during inscription)
+ * - Coordinateur (is_coordinateur AND is_conseiller_numerique) → create (never delete)
+ * - is_conseiller_numerique flag → mis à jour sur `user` (source Brevo/dispositif)
+ *
+ * ADR-002 échange final : la synchro des STRUCTURES / EMPLOIS employeuses dans coop a été RETIRÉE.
+ * L'employeuse d'un conseiller numérique vit dans `main.personne_affectations_emploi`
+ * (`source=idposte`, possédée par l'Entrepôt) et se lit depuis main. Dupliquer ces emplois dans
+ * `coop.employes_structures` / `coop.structure_administrative` n'avait plus d'utilité (données mortes,
+ * non lues) — seule la bascule de statut (Brevo) et le coordinateur restent gérés ici.
+ *
+ * Note: Lieux d'activité are NOT synced here. They are only imported once during inscription.
  */
 
 // ============================================================================
 // Types
 // ============================================================================
-
-export type SyncFromDataspaceCoreResult = {
-  coordinateurId: string | null
-  structuresSynced: number
-  structuresRemoved: number
-  coordinateurCreated: boolean
-}
 
 export type SyncChanges = {
   conseillerNumeriqueCreated: boolean
@@ -44,33 +36,6 @@ export type SyncChanges = {
   structuresSynced: number
   structuresRemoved: number
 }
-
-/**
- * Represents a single contract with its structure, ready for sync
- * One EmployeStructure record will be created for each PreparedContract
- */
-type PreparedContract = {
-  structureId: string
-  contract: DataspaceContrat & { date_debut: string }
-}
-
-type ExistingEmploiForSync = {
-  id: string
-  structureId: string
-  debut: Date | null
-  fin: Date | null
-  suppression: Date | null
-  creation: Date
-}
-
-const hasDebutDate = (
-  emploi: ExistingEmploiForSync,
-): emploi is ExistingEmploiForSync & { debut: Date } => emploi.debut !== null
-
-const isDefinedStructureEmployeuse = (
-  structureEmployeuse: DataspaceStructureEmployeuse | null,
-): structureEmployeuse is DataspaceStructureEmployeuse =>
-  structureEmployeuse !== null
 
 // ============================================================================
 // Helper Functions
@@ -101,454 +66,9 @@ export const buildAdresseFromDataspace = (adresse: {
   return parts.join(' ').trim()
 }
 
-/**
- * Get the active or most recent contract from a list of contracts
- */
-export const getActiveOrMostRecentContract = (
-  contrats: DataspaceContrat[],
-): DataspaceContrat | null => {
-  if (contrats.length === 0) {
-    return null
-  }
-
-  const now = new Date()
-
-  // Find active contract (started, not ended, not ruptured)
-  const activeContract = contrats.find(
-    (contrat) => getContractStatus({ contrat, date: now }).isActive,
-  )
-
-  if (activeContract) {
-    return activeContract
-  }
-
-  // No active contract - return the most recent one by date_debut
-  const contractsWithDebut = contrats.filter(
-    (
-      contrat,
-    ): contrat is DataspaceContrat & {
-      date_debut: string
-    } => contrat.date_debut !== null,
-  )
-  return contractsWithDebut.toSorted(
-    (a, b) =>
-      new Date(b.date_debut).getTime() - new Date(a.date_debut).getTime(),
-  )[0]
-}
-
-/**
- * Get the end date for an emploi based on contract
- * Only date_rupture from Dataspace is mapped to emploi fin.
- * date_fin does not impact emploi fin in our model.
- */
-export const getEmploiEndDate = (contrat: DataspaceContrat): Date | null => {
-  return contrat.date_rupture ? new Date(contrat.date_rupture) : null
-}
-
-/**
- * A structure is only synced into the coop when its address is complete enough
- * to identify a real place (voie + commune + code postal + code insee). When the
- * Dataspace sends a partial address, geocoding/matching cannot reconcile it with
- * existing structures and a duplicate gets created on every sync. Skipping these
- * is the same rule already applied to lieux d'activité. Fixing the source data in
- * the Dataspace is the only way to get such a structure synced.
- */
-export const isDataspaceAdresseComplete = (
-  adresse: DataspaceMediateurAdresse,
-): boolean =>
-  Boolean(adresse.nom_voie?.trim()) &&
-  Boolean(adresse.code_insee) &&
-  Boolean(adresse.code_postal) &&
-  Boolean(adresse.nom_commune)
-
-/**
- * When the Dataspace returns an incomplete payload (address can't identify a
- * real place), we still want to preserve the user's existing employment if one
- * exists on a structure with the same SIRET — rather than silently dropping the
- * emploi via reconciliation. Soft-deleted emplois are considered too (active
- * ones first), so that a link wrongly swept by a previous sync gets reactivated
- * by the reconciliation instead of staying lost forever. Returns null when no
- * existing link can be reused, in which case the structure is skipped (real
- * new garbage payload).
- */
-const findExistingEmployeStructureIdBySiret = async ({
-  userId,
-  siret,
-}: {
-  userId: string
-  siret: string
-}): Promise<string | null> => {
-  if (!siret) {
-    return null
-  }
-  const existing = await prismaClient.employeStructure.findFirst({
-    where: {
-      userId,
-      structure: { siret },
-    },
-    orderBy: [
-      { suppression: { sort: 'desc', nulls: 'first' } },
-      { creation: 'desc' },
-    ],
-    select: { structureId: true },
-  })
-  return existing?.structureId ?? null
-}
-
-/**
- * Resolve the coop structure for a structure employeuse from the Dataspace.
- * Complete payloads go through the regular find-or-create. Incomplete payloads
- * can only be linked through an existing emploi sharing the same SIRET.
- */
-const resolveStructureIdFromDataspace = async ({
-  structureEmployeuse,
-  userId,
-}: {
-  structureEmployeuse: DataspaceStructureEmployeuse
-  userId: string
-}): Promise<string | null> =>
-  isDataspaceAdresseComplete(structureEmployeuse.adresse)
-    ? (await getOrCreateStructureFromDataspace({ structureEmployeuse })).id
-    : await findExistingEmployeStructureIdBySiret({
-        userId,
-        siret: structureEmployeuse.siret,
-      })
-
-/**
- * Prepare contract data from Dataspace for EmployeStructure sync
- * Returns one PreparedContract for each contract in each structure
- * Creates one EmployeStructure record per contract
- */
-export const prepareContractsFromDataspace = async (
-  structuresEmployeuses: DataspaceStructureEmployeuse[],
-  userId: string,
-): Promise<PreparedContract[]> => {
-  const prepared: PreparedContract[] = []
-
-  for (const structureEmployeuse of structuresEmployeuses) {
-    const contractsWithDebut = (structureEmployeuse.contrats ?? []).filter(
-      (
-        contract,
-      ): contract is DataspaceContrat & {
-        date_debut: string
-      } => contract.date_debut !== null,
-    )
-
-    // Skip structures without contracts
-    if (contractsWithDebut.length === 0) {
-      continue
-    }
-
-    // When the payload is complete, find or create the structure as usual.
-    // When the payload is incomplete, preserve any existing emploi on a
-    // structure with the same SIRET; otherwise skip (no reliable link).
-    const structureId = await resolveStructureIdFromDataspace({
-      structureEmployeuse,
-      userId,
-    })
-
-    if (!structureId) {
-      continue
-    }
-
-    // Create one PreparedContract for each contract
-    for (const contract of contractsWithDebut) {
-      prepared.push({
-        structureId,
-        contract,
-      })
-    }
-  }
-
-  return prepared
-}
-
-/**
- * Resolve the first candidate structure that can be linked to a coop
- * structure, in candidates order (find-or-create for complete payloads,
- * existing emploi by SIRET for incomplete ones).
- */
-const findFirstResolvableStructureId = async ({
-  candidates,
-  userId,
-}: {
-  candidates: DataspaceStructureEmployeuse[]
-  userId: string
-}): Promise<string | null> => {
-  for (const structureEmployeuse of candidates) {
-    const structureId = await resolveStructureIdFromDataspace({
-      structureEmployeuse,
-      userId,
-    })
-    if (structureId) {
-      return structureId
-    }
-  }
-  return null
-}
-
-const getOrCreateStructureFromDataspace = async ({
-  structureEmployeuse,
-}: {
-  structureEmployeuse: DataspaceStructureEmployeuse
-}) => {
-  const adresse = buildAdresseFromDataspace(structureEmployeuse.adresse)
-  return findOrCreateStructureAdministrative({
-    coopId: structureEmployeuse.ids?.coop,
-    siret: structureEmployeuse.siret,
-    nom: structureEmployeuse.nom,
-    adresse,
-    codePostal: structureEmployeuse.adresse.code_postal,
-    codeInsee: structureEmployeuse.adresse.code_insee,
-    commune: structureEmployeuse.adresse.nom_commune,
-    nomReferent: structureEmployeuse.contact
-      ? `${structureEmployeuse.contact.prenom} ${structureEmployeuse.contact.nom}`.trim()
-      : null,
-    courrielReferent:
-      structureEmployeuse.contact?.courriels?.mail_gestionnaire ?? null,
-    telephoneReferent: structureEmployeuse.contact?.telephone ?? null,
-  })
-}
-
 // ============================================================================
 // Core Sync Operations
 // ============================================================================
-
-/**
- * Generate a unique key for an emploi based on structureId and debut date
- * Used to match existing emplois with contracts from Dataspace
- */
-const getEmploiKey = (structureId: string, debut: Date): string =>
-  `${structureId}:${dateAsIsoDay(debut)}`
-
-/**
- * Sync ALL contracts from Dataspace data as EmployeStructure records
- * After sync, user has exactly one EmployeStructure for each contract in Dataspace.
- * - Creates EmployeStructure for each contract in Dataspace
- * - Updates existing EmployeStructure if fin date changed
- * - Soft-deletes EmployeStructure records for contracts NOT in Dataspace
- * - If structures exist but no valid contracts remain after filtering,
- *   one temporary emploi is kept/created with debut=null and fin=null
- *
- * Matching logic: An emploi is matched to a contract by structureId + debut date
- *
- * All EmployeStructure operations are performed in a single transaction.
- * Only called when is_conseiller_numerique: true in Dataspace API
- */
-export const syncStructuresEmployeusesFromDataspace = async ({
-  userId,
-  structuresEmployeuses,
-}: {
-  userId: string
-  structuresEmployeuses: (DataspaceStructureEmployeuse | null)[]
-}): Promise<{ structureIds: string[]; removed: number }> => {
-  const nonNullStructures = structuresEmployeuses.filter(
-    isDefinedStructureEmployeuse,
-  )
-
-  // Step 1: Prepare all contracts (find/create structures) outside transaction
-  // This already filters out structures without contracts
-  const preparedContracts = await prepareContractsFromDataspace(
-    nonNullStructures,
-    userId,
-  )
-
-  const syncDate = new Date()
-  const hasRunningRealContract = nonNullStructures.some((structureEmployeuse) =>
-    (structureEmployeuse.contrats ?? []).some(
-      (contract) =>
-        contract.date_debut !== null &&
-        getContractStatus({
-          contrat: contract,
-          date: syncDate,
-        }).isActive,
-    ),
-  )
-
-  const structuresWithNullDebutContract = nonNullStructures.filter(
-    (structureEmployeuse) =>
-      (structureEmployeuse.contrats ?? []).some(
-        (contract) => contract.date_debut === null,
-      ),
-  )
-
-  const structuresWithEmptyContracts = nonNullStructures.filter(
-    (structureEmployeuse) => (structureEmployeuse.contrats ?? []).length === 0,
-  )
-
-  const temporaryContractStructureId =
-    preparedContracts.length === 0 && !hasRunningRealContract
-      ? await findFirstResolvableStructureId({
-          candidates: [
-            ...structuresWithNullDebutContract,
-            ...structuresWithEmptyContracts,
-          ],
-          userId,
-        })
-      : null
-
-  // Collect unique structure IDs for the return value
-  const structureIds = [
-    ...new Set(
-      [
-        ...preparedContracts.map((pc) => pc.structureId),
-        temporaryContractStructureId,
-      ].filter((structureId) => typeof structureId === 'string'),
-    ),
-  ]
-
-  // Step 2: Perform all EmployeStructure operations in a single transaction
-  const result = await prismaClient.$transaction(async (transaction) => {
-    // Get all existing emplois for this user (including soft-deleted for reactivation)
-    const existingEmplois: ExistingEmploiForSync[] =
-      await transaction.employeStructure.findMany({
-        where: { userId },
-        select: {
-          id: true,
-          structureId: true,
-          debut: true,
-          fin: true,
-          suppression: true,
-          creation: true,
-        },
-      })
-
-    // Create a map for quick lookup by structureId + debut for real contracts.
-    // Temporary contracts use debut=null and are handled separately.
-    const emploisByKey = new Map<
-      string,
-      ExistingEmploiForSync & { debut: Date }
-    >()
-    const realEmplois = existingEmplois.filter(hasDebutDate)
-    // If multiple emplois collide on the same key, keep the most recently created one.
-    const realEmploisByCreationDesc = realEmplois.toSorted(
-      (a, b) => b.creation.getTime() - a.creation.getTime(),
-    )
-    for (const emploi of realEmploisByCreationDesc) {
-      const key = getEmploiKey(emploi.structureId, emploi.debut)
-      if (!emploisByKey.has(key)) {
-        emploisByKey.set(key, emploi)
-      }
-    }
-
-    const temporaryEmplois = existingEmplois
-      .filter((emploi) => emploi.debut === null)
-      .toSorted((a, b) => b.creation.getTime() - a.creation.getTime())
-
-    // Track which emploi IDs should remain active after sync
-    const emploiIdsToKeep: string[] = []
-
-    // Process each contract from Dataspace
-    for (const { structureId, contract } of preparedContracts) {
-      const creationDate = new Date(contract.date_debut)
-      const endDate = getEmploiEndDate(contract)
-      const key = getEmploiKey(structureId, creationDate)
-
-      const existingEmploi = emploisByKey.get(key)
-
-      if (existingEmploi) {
-        emploiIdsToKeep.push(existingEmploi.id)
-
-        // Check if we need to update the emploi
-        const needsUpdate =
-          existingEmploi.fin?.getTime() !== endDate?.getTime() ||
-          existingEmploi.suppression !== null // Reactivate if it was soft-deleted
-
-        if (needsUpdate) {
-          await transaction.employeStructure.update({
-            where: { id: existingEmploi.id },
-            data: {
-              fin: endDate,
-              // Contracts present in Dataspace are never soft-deleted.
-              suppression: null,
-            },
-          })
-        }
-      } else {
-        // Create new emploi for this contract
-        const newEmploi = await transaction.employeStructure.create({
-          data: {
-            userId,
-            structureId,
-            debut: creationDate,
-            fin: endDate,
-            suppression: null,
-          },
-          select: { id: true },
-        })
-        emploiIdsToKeep.push(newEmploi.id)
-      }
-    }
-
-    // If Dataspace has structures but no valid contracts, keep exactly one
-    // temporary contract (debut=null, fin=null) on the first structure.
-    if (preparedContracts.length === 0 && temporaryContractStructureId) {
-      const temporaryEmploiToKeep = temporaryEmplois[0]
-
-      if (temporaryEmploiToKeep) {
-        emploiIdsToKeep.push(temporaryEmploiToKeep.id)
-
-        const needsUpdate =
-          temporaryEmploiToKeep.structureId !== temporaryContractStructureId ||
-          temporaryEmploiToKeep.fin !== null ||
-          temporaryEmploiToKeep.suppression !== null
-
-        if (needsUpdate) {
-          await transaction.employeStructure.update({
-            where: { id: temporaryEmploiToKeep.id },
-            data: {
-              structureId: temporaryContractStructureId,
-              fin: null,
-              suppression: null,
-            },
-          })
-        }
-      } else {
-        const newTemporaryEmploi = await transaction.employeStructure.create({
-          data: {
-            userId,
-            structureId: temporaryContractStructureId,
-            debut: null,
-            fin: null,
-            suppression: null,
-          },
-          select: { id: true },
-        })
-        emploiIdsToKeep.push(newTemporaryEmploi.id)
-      }
-    }
-
-    // Safety net: the Dataspace lists structures employeuses but none of them
-    // could be linked to a coop structure (incomplete addresses without any
-    // reusable emploi). The emptiness comes from payload quality, not from a
-    // real end of employment — sweeping would leave the user without any
-    // emploi and block all CRA saves, so existing emplois are kept untouched.
-    if (emploiIdsToKeep.length === 0 && nonNullStructures.length > 0) {
-      return { removedCount: 0 }
-    }
-
-    // Soft-delete EmployeStructure records for contracts NOT in Dataspace
-    // Set suppression date to mark them as ended
-    const now = new Date()
-    const softDeleteResult = await transaction.employeStructure.updateMany({
-      where: {
-        userId,
-        id: {
-          notIn: emploiIdsToKeep,
-        },
-        suppression: null, // Only soft-delete those not already deleted
-      },
-      data: {
-        suppression: now,
-        fin: now,
-      },
-    })
-
-    return { removedCount: softDeleteResult.count }
-  })
-
-  return { structureIds, removed: result.removedCount }
-}
 
 /**
  * Create Coordinateur if not exists (never delete)
@@ -708,7 +228,10 @@ export const importLieuxActiviteFromDataspace = async ({
  * This function handles:
  * 1. Coordinateur creation (only if both is_coordinateur and
  *    is_conseiller_numerique are true, never delete)
- * 2. Structures employeuses sync (only if is_conseiller_numerique is true)
+ * 2. User `is_conseiller_numerique` flag + transition markers (Brevo)
+ *
+ * ADR-002 échange final : plus de sync des structures/emplois employeuses dans coop (main = source
+ * de vérité, lue depuis `main.personne_affectations_emploi`).
  *
  * Note: Lieux d'activité are NOT synced here. They are only imported once during inscription.
  *
@@ -752,8 +275,6 @@ export const syncFromDataspaceCore = async ({
   const isConseillerNumeriqueInApi = dataspaceData.is_conseiller_numerique
   const isCoordinateurInApi = dataspaceData.is_coordinateur
 
-  let coordinateurId: string | null = null
-
   // --- Update User base fields ---
   // On ne réécrit les champs de contenu (et donc ne bumpe `updated`) que s'ils
   // changent vraiment ; sinon on n'avance que le marqueur technique
@@ -786,43 +307,23 @@ export const syncFromDataspaceCore = async ({
   })
 
   // --- Coordinateur: Only create if coordo is in dispositif (never delete) ---
-  if (isCoordinateurInApi && isConseillerNumeriqueInApi) {
-    const {
-      coordinateurId: upsertedCoordinateurId,
-      created: coordinateurCreated,
-    } = await upsertCoordinateur({
-      userId,
-    })
-    coordinateurId = upsertedCoordinateurId
-    if (coordinateurCreated) {
-      changes.coordinateurCreated = true
-    }
+  const coordinateurId =
+    isCoordinateurInApi && isConseillerNumeriqueInApi
+      ? await upsertCoordinateur({ userId }).then((result) => {
+          if (result.created) {
+            changes.coordinateurCreated = true
+          }
+          return result.coordinateurId
+        })
+      : null
+
+  // --- Conseiller Numérique flag transitions (pour Brevo) ---
+  // ADR-002 échange final : plus de sync des structures/emplois employeuses (main = source de vérité).
+  if (isConseillerNumeriqueInApi && !wasConseillerNumerique) {
+    changes.conseillerNumeriqueCreated = true
   }
-
-  // --- Conseiller Numérique Transitions (structures employeuses) ---
-  if (isConseillerNumeriqueInApi) {
-    // Dataspace is source of truth - sync structures
-    if (!wasConseillerNumerique) {
-      changes.conseillerNumeriqueCreated = true
-    }
-
-    const { structureIds, removed } =
-      await syncStructuresEmployeusesFromDataspace({
-        userId,
-        structuresEmployeuses: dataspaceData.structures_employeuses ?? [],
-      })
-    changes.structuresSynced = structureIds.length
-    changes.structuresRemoved = removed
-  } else if (wasConseillerNumerique && !isConseillerNumeriqueInApi) {
+  if (!isConseillerNumeriqueInApi && wasConseillerNumerique) {
     changes.conseillerNumeriqueRemoved = true
-
-    const { structureIds, removed } =
-      await syncStructuresEmployeusesFromDataspace({
-        userId,
-        structuresEmployeuses: dataspaceData.structures_employeuses ?? [],
-      })
-    changes.structuresSynced = structureIds.length
-    changes.structuresRemoved = removed
   }
 
   if (

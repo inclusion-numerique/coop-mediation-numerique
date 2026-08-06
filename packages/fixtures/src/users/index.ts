@@ -52,6 +52,7 @@ import { mediateurSansActivitesJ60 } from './mediateurSansActivitesJ60'
 import { mediateurSansActivitesJ90 } from './mediateurSansActivitesJ90'
 import { mediateurSansActivitesJ100 } from './mediateurSansActivitesJ100'
 import { mediateurSansActivitesJ110 } from './mediateurSansActivitesJ110'
+import { mediateurSansEmployeuseInscription } from './mediateurSansEmployeuseInscription'
 
 export const fixtureUsers = [
   administrateur,
@@ -68,6 +69,7 @@ export const fixtureUsers = [
   mediateurInscriptionJ90,
   mediateurInscriptionJ100,
   mediateurInscriptionJ110,
+  mediateurSansEmployeuseInscription,
   mediateurSansActivites,
   mediateurSansActivitesJ7,
   mediateurSansActivitesJ30,
@@ -121,7 +123,6 @@ export const teamMediateurs = [
     mediateurId: '80366431-7f55-4e2f-b922-77f747a73152',
     enActiviteId: '10470094-854a-4ebf-bf94-e632309a87ae',
     emploiId: '5f1fb5a2-1e8e-4d6d-892b-25ae1cbeabcc',
-    featureFlags: ['Assistant'],
   }),
   givenMediateur({
     firstName: 'Hugues',
@@ -131,7 +132,6 @@ export const teamMediateurs = [
     mediateurId: '5b35afad-6904-4e76-980b-73f8b91c36ef',
     enActiviteId: 'eec12dc8-6e5b-4273-9238-79393e486716',
     emploiId: '2757f321-0f6a-4338-9a39-f4b25f3c0096',
-    featureFlags: ['Assistant'],
   }),
 ]
 

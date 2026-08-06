@@ -29,7 +29,7 @@ export const sendDeletionWarningEmail = async ({
       daysRemaining,
       matomoCampaignId,
     }),
-    html: compileMjml(
+    html: await compileMjml(
       finishYourSignupDeletionWarningEmail.mjml({
         firstname,
         deletionDate,

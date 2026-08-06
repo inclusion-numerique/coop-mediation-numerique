@@ -11,22 +11,20 @@
     "test": "jest --passWithNoTests"
   },
   "engines": {
-    "node": "^25.4"
+    "node": "^24.19"
   },
   "dependencies": {
-    "@commander-js/extra-typings": "^13.1.0",
-    "@faker-js/faker": "^9.7.0",
+    "@commander-js/extra-typings": "^15.0.0",
     "@prisma/client": "6.13.0",
-    "dotenv": "^16.6.1",
-    "tsx": "^4.19.4",
-    "typescript": "^5.8.3",
-    "uuid": "^11.1.0"
+    "dotenv": "^17.4.2",
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2",
+    "uuid": "^14.0.1"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.14",
-    "@types/node": "^25.0.9",
-    "@types/uuid": "^10.0.0",
-    "commander": "^13.1.0",
-    "jest": "^29.7.0"
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.13.3",
+    "commander": "^15.0.0",
+    "jest": "^30.4.2"
   }
 }

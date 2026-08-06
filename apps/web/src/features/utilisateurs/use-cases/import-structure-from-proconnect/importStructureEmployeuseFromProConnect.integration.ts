@@ -2,228 +2,133 @@ import { resetFixtureUser } from '@app/fixtures/resetFixtureUser'
 import { seedStructures } from '@app/fixtures/structures'
 import { conseillerNumerique } from '@app/fixtures/users/conseillerNumerique'
 import { mediateurSansActivites } from '@app/fixtures/users/mediateurSansActivites'
-import { importStructureEmployeuseFromSiret } from '@app/web/features/structures/importStructureEmployeuseFromSiret'
+import {
+  ensureAffectationEmploiMain,
+  ensurePersonneMain,
+  rattacherAUneEmployeuseDepuisSiret,
+} from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 import { importStructureEmployeuseFromProConnect } from './importStructureEmployeuseFromProConnect'
 
-jest.mock(
-  '@app/web/features/structures/importStructureEmployeuseFromSiret',
-  () => ({
-    importStructureEmployeuseFromSiret: jest.fn(),
-  }),
-)
+// Ce que ProConnect décide lui reste : à qui il délègue le rattachement, et quand il s'abstient.
+// Le rattachement lui-même appartient à la feature employeuse (couvert par son BDD) — on le mocke
+// pour n'observer ici que la décision.
+jest.mock('@app/web/features/employeuse/server', () => ({
+  ...jest.requireActual('@app/web/features/employeuse/server'),
+  rattacherAUneEmployeuseDepuisSiret: jest.fn(),
+}))
 
-const mockedImportStructureEmployeuseFromSiret =
-  importStructureEmployeuseFromSiret as jest.MockedFunction<
-    typeof importStructureEmployeuseFromSiret
+const mockedRattacherDepuisSiret =
+  rattacherAUneEmployeuseDepuisSiret as jest.MockedFunction<
+    typeof rattacherAUneEmployeuseDepuisSiret
   >
 
 const PROCONNECT_SIRET = '11111111111111'
-const PROCONNECT_STRUCTURE_ID = '0f4addf8-b74b-49f9-8f57-ff2e0ec30d93'
 const OTHER_SIRET = '22222222222222'
-const OTHER_STRUCTURE_ID = '57de4603-e306-46f8-b6ce-ecf50ca6f213'
 
 describe('importStructureEmployeuseFromProConnect', () => {
+  const state = { proconnectMainId: 0, otherMainId: 0 }
+
   beforeAll(async () => {
     await seedStructures(prismaClient)
-  })
 
-  beforeEach(async () => {
-    mockedImportStructureEmployeuseFromSiret.mockReset()
-    mockedImportStructureEmployeuseFromSiret.mockResolvedValue({
-      structureId: PROCONNECT_STRUCTURE_ID,
+    // Résidu d'un run précédent interrompu : la clé (siret, dénomination) est unique.
+    await prismaClient.structureAdministrativeMain.deleteMany({
+      where: { siret: { in: [PROCONNECT_SIRET, OTHER_SIRET] } },
     })
 
-    await resetFixtureUser(mediateurSansActivites, false)
-    await prismaClient.employeStructure.deleteMany({
-      where: { userId: mediateurSansActivites.id },
-    })
-    // Rôle employeuse (split 1a.2) : les emplois pointent structure_administrative.
-    await prismaClient.structureAdministrative.upsert({
-      where: { id: PROCONNECT_STRUCTURE_ID },
-      update: { siret: PROCONNECT_SIRET },
-      create: {
-        id: PROCONNECT_STRUCTURE_ID,
-        nom: 'Structure ProConnect',
-        adresse: '1 rue du ProConnect',
-        codePostal: '75001',
-        commune: 'Paris',
-        codeInsee: '75056',
+    const proconnect = await prismaClient.structureAdministrativeMain.create({
+      data: {
         siret: PROCONNECT_SIRET,
-        source: 'coop',
-      },
-    })
-    await prismaClient.structureAdministrative.upsert({
-      where: { id: OTHER_STRUCTURE_ID },
-      update: { siret: OTHER_SIRET },
-      create: {
-        id: OTHER_STRUCTURE_ID,
-        nom: 'Autre structure',
-        adresse: '2 rue de la structure',
-        codePostal: '69001',
-        commune: 'Lyon',
-        codeInsee: '69381',
-        siret: OTHER_SIRET,
-        source: 'coop',
-      },
-    })
-  })
-
-  test('should create a new ProConnect emploi when existing emploi is ended', async () => {
-    await prismaClient.employeStructure.create({
-      data: {
-        userId: mediateurSansActivites.id,
-        structureId: PROCONNECT_STRUCTURE_ID,
-        debut: new Date('2023-01-01T00:00:00.000Z'),
-        fin: new Date('2023-12-31T00:00:00.000Z'),
-      },
-    })
-
-    const result = await importStructureEmployeuseFromProConnect({
-      userId: mediateurSansActivites.id,
-      siret: PROCONNECT_SIRET,
-    })
-
-    const emplois = await prismaClient.employeStructure.findMany({
-      where: {
-        userId: mediateurSansActivites.id,
-        structureId: PROCONNECT_STRUCTURE_ID,
-        suppression: null,
-      },
-      select: { debut: true, fin: true },
-      orderBy: { debut: 'asc' },
-    })
-
-    const activeEmplois = emplois.filter((emploi) => emploi.fin === null)
-
-    expect(result.success).toBe(true)
-    expect(result.noOp).toBe(false)
-    expect(mockedImportStructureEmployeuseFromSiret).toHaveBeenCalledTimes(1)
-    expect(emplois.length).toBe(2)
-    expect(activeEmplois.length).toBe(1)
-  })
-
-  test('should soft-delete temporary emploi with another SIRET and create ProConnect emploi', async () => {
-    const oldEmploi = await prismaClient.employeStructure.create({
-      data: {
-        userId: mediateurSansActivites.id,
-        structureId: OTHER_STRUCTURE_ID,
-        debut: null,
-        fin: null,
-      },
-    })
-
-    const result = await importStructureEmployeuseFromProConnect({
-      userId: mediateurSansActivites.id,
-      siret: PROCONNECT_SIRET,
-    })
-
-    const oldEmploiAfter =
-      await prismaClient.employeStructure.findUniqueOrThrow({
-        where: { id: oldEmploi.id },
-        select: { suppression: true, fin: true },
-      })
-    const newEmploi = await prismaClient.employeStructure.findFirst({
-      where: {
-        userId: mediateurSansActivites.id,
-        structureId: PROCONNECT_STRUCTURE_ID,
-        suppression: null,
-      },
-      select: { id: true, debut: true, fin: true },
-    })
-
-    expect(result.success).toBe(true)
-    expect(result.noOp).toBe(false)
-    expect(oldEmploiAfter.suppression).not.toBeNull()
-    expect(oldEmploiAfter.fin).not.toBeNull()
-    expect(newEmploi).not.toBeNull()
-    expect(newEmploi?.debut).not.toBeNull()
-    expect(newEmploi?.fin).toBeNull()
-  })
-
-  test('should end running emploi with another SIRET yesterday and create ProConnect emploi', async () => {
-    const oldEmploi = await prismaClient.employeStructure.create({
-      data: {
-        userId: mediateurSansActivites.id,
-        structureId: OTHER_STRUCTURE_ID,
-        debut: new Date('2024-01-01T00:00:00.000Z'),
-        fin: null,
-      },
-    })
-
-    const result = await importStructureEmployeuseFromProConnect({
-      userId: mediateurSansActivites.id,
-      siret: PROCONNECT_SIRET,
-    })
-
-    const oldEmploiAfter =
-      await prismaClient.employeStructure.findUniqueOrThrow({
-        where: { id: oldEmploi.id },
-        select: { suppression: true, fin: true },
-      })
-    const newEmploi = await prismaClient.employeStructure.findFirst({
-      where: {
-        userId: mediateurSansActivites.id,
-        structureId: PROCONNECT_STRUCTURE_ID,
-        suppression: null,
-        fin: null,
+        denominationSirene: 'Structure ProConnect',
+        denominationAntenne: 'Structure ProConnect',
       },
       select: { id: true },
     })
-    const startOfToday = new Date()
-    startOfToday.setHours(0, 0, 0, 0)
-
-    expect(result.success).toBe(true)
-    expect(result.noOp).toBe(false)
-    expect(oldEmploiAfter.suppression).toBeNull()
-    expect(oldEmploiAfter.fin).not.toBeNull()
-    expect(oldEmploiAfter.fin?.getTime()).toBeLessThan(startOfToday.getTime())
-    expect(newEmploi).not.toBeNull()
+    const other = await prismaClient.structureAdministrativeMain.create({
+      data: {
+        siret: OTHER_SIRET,
+        denominationSirene: 'Autre structure',
+        denominationAntenne: 'Autre structure',
+      },
+      select: { id: true },
+    })
+    state.proconnectMainId = proconnect.id
+    state.otherMainId = other.id
   })
 
-  test('should be no-op when user has running emploi on the same SIRET', async () => {
-    await prismaClient.employeStructure.create({
-      data: {
-        userId: mediateurSansActivites.id,
-        structureId: PROCONNECT_STRUCTURE_ID,
-        debut: new Date('2024-01-01T00:00:00.000Z'),
-        fin: null,
+  // Nettoyage par appartenance à la personne de test, et non par structure : les fixtures lui
+  // posent aussi des affectations vers d'autres employeuses, qui empêchaient la suppression de la
+  // personne — et laissaient alors les employeuses de test derrière elles, faisant échouer le
+  // `beforeAll` du run suivant sur la clé (siret, dénomination).
+  const nettoyerPersonnesDeTest = async () => {
+    const deNosPersonnes = {
+      personne: {
+        coopId: { in: [mediateurSansActivites.id, conseillerNumerique.id] },
+      },
+    }
+    await prismaClient.contratMain.deleteMany({ where: deNosPersonnes })
+    await prismaClient.personneAffectationEmploiMain.deleteMany({
+      where: deNosPersonnes,
+    })
+    await prismaClient.personneMain.deleteMany({
+      where: {
+        coopId: { in: [mediateurSansActivites.id, conseillerNumerique.id] },
       },
     })
+  }
 
+  afterAll(async () => {
+    await nettoyerPersonnesDeTest()
+    await prismaClient.structureAdministrativeMain.deleteMany({
+      where: { id: { in: [state.proconnectMainId, state.otherMainId] } },
+    })
+  })
+
+  beforeEach(async () => {
+    mockedRattacherDepuisSiret.mockReset()
+    mockedRattacherDepuisSiret.mockResolvedValue({
+      _tag: 'rattachee',
+      employeuseId: state.proconnectMainId as never,
+    })
+
+    await resetFixtureUser(mediateurSansActivites, false)
+    // Personne + affectations réinitialisées entre chaque test (FK : affectations avant personne).
+    await nettoyerPersonnesDeTest()
+  })
+
+  // La clôture des autres affectations appartient désormais au rattachement lui-même (feature
+  // employeuse, ability `rattacher-a-une-employeuse`, couverte par son BDD). Il ne reste ici que
+  // ce que ProConnect décide : à qui il délègue, et quand il s'abstient.
+  test('non-CN + SIRET : délègue le rattachement au SIRET fourni', async () => {
     const result = await importStructureEmployeuseFromProConnect({
       userId: mediateurSansActivites.id,
       siret: PROCONNECT_SIRET,
     })
 
     expect(result.success).toBe(true)
-    expect(result.noOp).toBe(true)
-    expect(mockedImportStructureEmployeuseFromSiret).not.toHaveBeenCalled()
+    expect(result.noOp).toBe(false)
+    expect(mockedRattacherDepuisSiret).toHaveBeenCalledTimes(1)
+    expect(mockedRattacherDepuisSiret).toHaveBeenCalledWith({
+      userId: mediateurSansActivites.id,
+      siret: PROCONNECT_SIRET,
+    })
   })
 
-  test('should be no-op for conseiller numerique users', async () => {
+  test('conseiller numerique : no-op, import non appelé', async () => {
     await resetFixtureUser(conseillerNumerique, false)
-
-    const beforeCount = await prismaClient.employeStructure.count({
-      where: { userId: conseillerNumerique.id },
-    })
 
     const result = await importStructureEmployeuseFromProConnect({
       userId: conseillerNumerique.id,
       siret: PROCONNECT_SIRET,
     })
 
-    const afterCount = await prismaClient.employeStructure.count({
-      where: { userId: conseillerNumerique.id },
-    })
-
     expect(result.success).toBe(true)
     expect(result.noOp).toBe(true)
-    expect(afterCount).toBe(beforeCount)
-    expect(mockedImportStructureEmployeuseFromSiret).not.toHaveBeenCalled()
+    expect(mockedRattacherDepuisSiret).not.toHaveBeenCalled()
   })
 
-  test('should be no-op when no SIRET is provided', async () => {
+  test('aucun SIRET fourni : no-op', async () => {
     const result = await importStructureEmployeuseFromProConnect({
       userId: mediateurSansActivites.id,
       siret: null,
@@ -231,5 +136,6 @@ describe('importStructureEmployeuseFromProConnect', () => {
 
     expect(result.success).toBe(true)
     expect(result.noOp).toBe(true)
+    expect(mockedRattacherDepuisSiret).not.toHaveBeenCalled()
   })
 })

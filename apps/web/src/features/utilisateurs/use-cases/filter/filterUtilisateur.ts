@@ -166,28 +166,44 @@ export const filterOnLieux = (queryParams?: {
   lieux?: string[]
   departements?: string[]
   communes?: string[]
-}) =>
-  queryParams == null || canFilterOnLieux(queryParams)
-    ? {}
-    : {
-        emplois: {
-          some: {
-            suppression: null,
-            structure: {
-              ...(hasLieuxFilter(queryParams)
-                ? { id: { in: queryParams.lieux } }
-                : {}),
-              ...(hasDepartementsFilter(queryParams)
-                ? {
-                    OR: queryParams.departements.map((departement) => ({
-                      codeInsee: { startsWith: departement },
-                    })),
-                  }
-                : {}),
-              ...(hasComunesFilter(queryParams)
-                ? { codeInsee: { in: queryParams.communes } }
-                : {}),
-            },
+}) => {
+  if (queryParams == null || canFilterOnLieux(queryParams)) return {}
+
+  // Filtre sur l'employeuse courante en PUR MAIN (ADR-002 échange final) : plus de
+  // `coop.employes_structures`. On passe par `personneMain` → affectation active →
+  // `structure_administrative` (id main int) / `adresse.codeInsee` (département/commune).
+  const adresse = {
+    ...(hasDepartementsFilter(queryParams)
+      ? {
+          OR: queryParams.departements.map((departement) => ({
+            codeInsee: { startsWith: departement },
+          })),
+        }
+      : {}),
+    ...(hasComunesFilter(queryParams)
+      ? { codeInsee: { in: queryParams.communes } }
+      : {}),
+  }
+
+  return {
+    personneMain: {
+      affectationsEmploi: {
+        some: {
+          estActive: true,
+          structureAdministrative: {
+            ...(hasLieuxFilter(queryParams)
+              ? {
+                  id: {
+                    in: (queryParams.lieux ?? [])
+                      .map(Number)
+                      .filter(Number.isInteger),
+                  },
+                }
+              : {}),
+            ...(Object.keys(adresse).length > 0 ? { adresse } : {}),
           },
         },
-      }
+      },
+    },
+  }
+}

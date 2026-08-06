@@ -1,3 +1,8 @@
+import {
+  historiqueEmployeusesAffichage,
+  personneEmployeuseSelect,
+  personneToEmployeusesHistorique,
+} from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 
 export const getAdministrationUserPageData = async ({ id }: { id: string }) => {
@@ -111,21 +116,25 @@ export const getAdministrationUserPageData = async ({ id }: { id: string }) => {
       sessions: true,
       uploads: true,
       mutations: true,
-      emplois: {
-        include: {
-          structure: true,
-        },
-        orderBy: {
-          creation: 'desc',
-        },
-      },
+      personneMain: { select: personneEmployeuseSelect },
       usurpateur: true,
     },
   })
   if (!user) {
     return null
   }
-  return { user }
+  // Historique des employeuses : une entrée par structure d'affectation (active = en cours,
+  // inactive = terminée), dates best-effort depuis le contrat. La personne est déjà chargée par la
+  // requête ci-dessus, d'où la composition plutôt que l'ability autonome.
+  const { personneMain, ...userSansPersonne } = user
+  return {
+    user: {
+      ...userSansPersonne,
+      emplois: historiqueEmployeusesAffichage(
+        personneToEmployeusesHistorique(personneMain),
+      ),
+    },
+  }
 }
 
 export type AdministrationUserPageData = NonNullable<

@@ -12,7 +12,7 @@ export const getUserLifecycleBadge = (
     small?: boolean // small by default
   },
 ) => {
-  const small = !!options && 'small' in options ? options.small : true
+  const small = options && 'small' in options ? options.small : true
 
   const lifeCycle = getUserLifecycle(user)
 

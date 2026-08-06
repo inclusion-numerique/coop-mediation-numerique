@@ -1,4 +1,5 @@
-import XLSX, { type WorkSheet } from 'xlsx'
+import type { WorkSheet } from 'xlsx'
+import * as XLSX from 'xlsx'
 import { importBeneficiaireWorksheetName } from './analyseImportBeneficiairesExcel'
 
 export const getBeneficiaireImportSheet = (

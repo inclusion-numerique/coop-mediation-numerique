@@ -35,21 +35,17 @@ describe('repairTelephone', () => {
 })
 
 describe('telephonePlaceholder', () => {
-  it.each([
-    '0000000000',
-    '00 00 00 00 00',
-    '0.0.0.0',
-  ])('detects the placeholder %s', (raw) => {
-    expect(telephonePlaceholder(raw)).toBe(true)
-  })
+  it.each(['0000000000', '00 00 00 00 00', '0.0.0.0'])(
+    'detects the placeholder %s',
+    (raw) => {
+      expect(telephonePlaceholder(raw)).toBe(true)
+    },
+  )
 
-  it.each([
-    '0601020304',
-    '-',
-    '',
-    'aucun',
-    '00 00 00 00 01',
-  ])('leaves %s alone', (raw) => {
-    expect(telephonePlaceholder(raw)).toBe(false)
-  })
+  it.each(['0601020304', '-', '', 'aucun', '00 00 00 00 01'])(
+    'leaves %s alone',
+    (raw) => {
+      expect(telephonePlaceholder(raw)).toBe(false)
+    },
+  )
 })

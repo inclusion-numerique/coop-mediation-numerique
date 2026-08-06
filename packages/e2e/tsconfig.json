@@ -14,12 +14,8 @@
       "@app/storybook/*": ["../../packages/storybook/src/*"],
       "@app/test/*": ["../../packages/test/src/*"],
       "@app/ui/*": ["../../packages/ui/src/*"],
-      "@app/fixtures/*": ["../../packages/fixtures/src/*"],
-      "@prisma/client": [
-        "../../node_modules/.pnpm/@prisma+client@6.13.0_prisma@6.13.0/node_modules/@prisma/client"
-      ]
-    },
-    "baseUrl": "."
+      "@app/fixtures/*": ["../../packages/fixtures/src/*"]
+    }
   },
   "include": ["./cypress.config.ts", "./cypress/**/*.ts", "./cypress/**/*.tsx"]
 }

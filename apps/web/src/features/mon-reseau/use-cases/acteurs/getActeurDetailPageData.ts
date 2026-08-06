@@ -2,7 +2,10 @@ import { getTotalCountsStats } from '@app/web/app/coop/(sidemenu-layout)/mes-sta
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import { getContractInfo } from '@app/web/conseiller-numerique/getContractInfo'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
-import { getActeurEmploiForDate } from '@app/web/features/mon-reseau/use-cases/acteurs/db/getActeurEmploiForDate'
+import {
+  consulterEmployeuseAUneDate,
+  emploiEmployeuseAffichage,
+} from '@app/web/features/employeuse/server'
 import {
   acteurCoordinationSelect,
   acteurSelectForList,
@@ -119,7 +122,7 @@ export const getActeurDetailPageData = async ({
     : null
 
   const contract =
-    !!coordinationFeatures && coordinationFeatures.showContract
+    coordinationFeatures && coordinationFeatures.showContract
       ? await getContractInfo(acteur.email)
       : null
 
@@ -129,7 +132,7 @@ export const getActeurDetailPageData = async ({
     accompagnements: 0,
   }
 
-  if (!!coordinationFeatures && coordinationFeatures.showStats && mediateurId) {
+  if (coordinationFeatures && coordinationFeatures.showStats && mediateurId) {
     const { beneficiaires, accompagnements } = await getTotalCountsStats({
       user: sessionUser,
       mediateurIds: [mediateurId],
@@ -141,11 +144,13 @@ export const getActeurDetailPageData = async ({
     }
   }
 
-  const emploi = await getActeurEmploiForDate({
+  const employeuse = await consulterEmployeuseAUneDate({
     userId,
     date: new Date(),
-    strictDateBounds: true,
   })
+  const emploi = employeuse
+    ? { structure: emploiEmployeuseAffichage(employeuse) }
+    : null
 
   const lieuxActivites = mediateurId
     ? await prismaClient.lieuInclusion.findMany({

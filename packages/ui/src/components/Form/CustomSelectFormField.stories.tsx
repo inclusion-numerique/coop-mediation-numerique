@@ -2,7 +2,7 @@ import CustomSelectFormField, {
   CustomSelectFormFieldProps,
 } from '@app/ui/components/Form/CustomSelectFormField'
 import { useOnDiff } from '@app/web/hooks/useOnDiff'
-import { zodResolver } from '@hookform/resolvers/zod/dist/zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Meta, StoryObj } from '@storybook/react'
 import React, { ReactNode } from 'react'
 import { useForm } from 'react-hook-form'
