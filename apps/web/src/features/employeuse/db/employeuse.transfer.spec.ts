@@ -67,7 +67,7 @@ describe('employeuseToDomain', () => {
       },
       contactReferent: {
         _tag: 'renseigne',
-        nom: 'Piaf Edith',
+        nom: 'Edith Piaf',
         courriel: null,
         telephone: '0102030405',
       },

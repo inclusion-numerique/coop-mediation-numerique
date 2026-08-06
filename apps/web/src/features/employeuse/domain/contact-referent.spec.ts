@@ -1,7 +1,7 @@
 import { ContactReferent } from './contact-referent'
 
 describe('ContactReferent', () => {
-  it('assemble nom et prénom et retient le gestionnaire', () => {
+  it('assemble prénom puis nom et retient le gestionnaire', () => {
     expect(
       ContactReferent({
         nom: 'Moustaki',
@@ -14,7 +14,7 @@ describe('ContactReferent', () => {
       }),
     ).toEqual({
       _tag: 'renseigne',
-      nom: 'Moustaki Georges',
+      nom: 'Georges Moustaki',
       courriel: 'georges@structure.fr',
       telephone: '0102030405',
     })
@@ -34,7 +34,7 @@ describe('ContactReferent', () => {
           referent_hierarchique: 's.vignettes@cc-aspres.fr',
         },
       }),
-    ).toMatchObject({ nom: 'OLIVE René', courriel: 's.pena@cc-aspres.fr' })
+    ).toMatchObject({ nom: 'René OLIVE', courriel: 's.pena@cc-aspres.fr' })
   })
 
   it('retombe sur le référent hiérarchique puis sur le premier courriel disponible', () => {

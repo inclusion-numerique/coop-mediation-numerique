@@ -69,7 +69,9 @@ const courrielReferent = (
 
 export const ContactReferent = (contact: unknown): ContactReferent => {
   const parsed = contactSchema.parse(contact ?? {})
-  const nom = texte([parsed.nom, parsed.prenom].filter(Boolean).join(' '))
+  // Prénom puis nom : l'ordre de lecture courant. Le jsonb les livre en deux
+  // champs, l'ordre d'affichage nous appartient.
+  const nom = texte([parsed.prenom, parsed.nom].filter(Boolean).join(' '))
   const courriel = courrielReferent(parsed.courriels)
   const telephone = texte(parsed.telephone)
 
