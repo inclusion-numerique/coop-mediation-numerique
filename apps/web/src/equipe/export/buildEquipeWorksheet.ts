@@ -3,6 +3,7 @@ import type {
   FilterParam,
   RoleFiltre,
 } from '@app/web/equipe/EquipeListePage/searchMediateursCoordonneBy'
+import { telephoneDisplayString } from '@app/web/libraries/telephone'
 import {
   addExportMetadata,
   WorksheetUser,
@@ -105,20 +106,27 @@ export const buildEquipeWorksheet = ({
       name: label,
       filterButton: true,
     })),
+    // `||` et non `??` : les composantes d'adresse arrivent en chaîne VIDE quand `main` ne les
+    // porte pas — une employeuse sans voie, par exemple — et non en `null`. Le `??` les laissait
+    // passer telles quelles, si bien que la colonne restait blanche là où tout le reste de
+    // l'export écrit `-`.
     rows: membres.map((membre) => [
-      membre.prenom ?? '-',
-      membre.nom ?? '-',
+      membre.prenom || '-',
+      membre.nom || '-',
       membre.role,
-      membre.typeContrat ?? '-',
+      membre.typeContrat || '-',
       formatDate(membre.dateDebutContrat),
       formatDate(membre.dateFinContrat),
       membre.email || '-',
-      membre.telephone ?? '-',
-      membre.structureEmployeuse?.nom ?? '-',
-      membre.structureEmployeuse?.adresse ?? '-',
-      membre.structureEmployeuse?.commune ?? '-',
-      membre.structureEmployeuse?.codePostal ?? '-',
-      membre.structureEmployeuse?.codeInsee ?? '-',
+      // Le téléphone est stocké en E.164 et parfois au format national historique : on l'aligne
+      // sur ce qu'affiche l'interface plutôt que de laisser deux formes cohabiter dans la même
+      // colonne.
+      membre.telephone ? telephoneDisplayString(membre.telephone) : '-',
+      membre.structureEmployeuse?.nom || '-',
+      membre.structureEmployeuse?.adresse || '-',
+      membre.structureEmployeuse?.commune || '-',
+      membre.structureEmployeuse?.codePostal || '-',
+      membre.structureEmployeuse?.codeInsee || '-',
       membre.statut,
     ]),
   })
