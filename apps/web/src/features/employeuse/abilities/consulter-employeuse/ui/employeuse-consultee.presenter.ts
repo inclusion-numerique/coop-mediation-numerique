@@ -34,7 +34,9 @@ export const employeuseConsulteeAffichage = ({
   const affichage = employeuseAffichage(employeuse)
 
   return {
-    nom: toTitleCase(affichage.nom ?? '', { noUpper: true }),
+    // La dénomination n'est pas remise en casse de titre : c'est une raison
+    // sociale, elle s'affiche telle que la source la porte.
+    nom: affichage.nom ?? '',
     denominationSirene: employeuse.denominationSirene,
     siret: affichage.siret,
     rna: affichage.rna,
