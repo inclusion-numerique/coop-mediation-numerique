@@ -41,16 +41,31 @@ const contactSchema = z
 const texte = (value: string | undefined): string | null =>
   value?.trim() ? value.trim() : null
 
-/** Priorité : référent hiérarchique, puis gestionnaire, puis le premier venu. */
+/**
+ * Premier courriel VALIDE, dans l'ordre : gestionnaire, référent hiérarchique,
+ * puis le premier venu. On retient la validité et non la simple présence : un
+ * gestionnaire malformé ne doit pas priver l'affichage d'un référent qui, lui,
+ * est exploitable.
+ *
+ * Le jsonb porte DEUX courriels (`mail_gestionnaire`, `referent_hierarchique`)
+ * mais UN SEUL couple nom/prénom, et ce nom est celui du gestionnaire : sur les
+ * 678 structures de production où les deux adresses diffèrent, quand le nom
+ * correspond à l'une d'elles c'est celle du gestionnaire environ deux fois sur
+ * trois (nom : 167 vs 82 ; prénom : 91 vs 59). Servir le référent hiérarchique
+ * en premier affichait donc un nom et une adresse qui ne désignaient pas la
+ * même personne, pour 746 des 3 351 utilisateurs actifs. C'est aussi ce que
+ * lisait le code précédent (`syncFromDataspaceCore`, `mail_gestionnaire`).
+ */
 const courrielReferent = (
   courriels: Record<string, string> | undefined,
 ): CourrielReferent | null =>
-  CourrielReferent.safe(
-    courriels?.referent_hierarchique ??
-      courriels?.mail_gestionnaire ??
-      Object.values(courriels ?? {})[0] ??
-      '',
-  )
+  [
+    courriels?.mail_gestionnaire,
+    courriels?.referent_hierarchique,
+    ...Object.values(courriels ?? {}),
+  ]
+    .map((candidat) => CourrielReferent.safe(candidat ?? ''))
+    .find((courriel) => courriel !== null) ?? null
 
 export const ContactReferent = (contact: unknown): ContactReferent => {
   const parsed = contactSchema.parse(contact ?? {})

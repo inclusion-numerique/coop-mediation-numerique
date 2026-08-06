@@ -1,15 +1,15 @@
 import { ContactReferent } from './contact-referent'
 
 describe('ContactReferent', () => {
-  it('assemble nom et prénom et retient le référent hiérarchique', () => {
+  it('assemble nom et prénom et retient le gestionnaire', () => {
     expect(
       ContactReferent({
         nom: 'Moustaki',
         prenom: 'Georges',
         telephone: '0102030405',
         courriels: {
-          mail_gestionnaire: 'gestion@structure.fr',
-          referent_hierarchique: 'georges@structure.fr',
+          mail_gestionnaire: 'georges@structure.fr',
+          referent_hierarchique: 'hierarchie@structure.fr',
         },
       }),
     ).toEqual({
@@ -20,14 +20,47 @@ describe('ContactReferent', () => {
     })
   })
 
-  it('retombe sur le gestionnaire puis sur le premier courriel disponible', () => {
+  // Cas de production : le jsonb porte deux adresses distinctes et un seul nom,
+  // celui du gestionnaire. Servir le référent hiérarchique affichait « OLIVE
+  // René » avec l'adresse de quelqu'un d'autre (SA 5292, mesuré sur 746 des
+  // 3 351 utilisateurs actifs).
+  it('sert le gestionnaire quand les deux courriels désignent des personnes différentes', () => {
     expect(
-      ContactReferent({ courriels: { mail_gestionnaire: 'gestion@x.fr' } }),
-    ).toMatchObject({ courriel: 'gestion@x.fr' })
+      ContactReferent({
+        nom: 'OLIVE',
+        prenom: 'René',
+        courriels: {
+          mail_gestionnaire: 's.pena@cc-aspres.fr',
+          referent_hierarchique: 's.vignettes@cc-aspres.fr',
+        },
+      }),
+    ).toMatchObject({ nom: 'OLIVE René', courriel: 's.pena@cc-aspres.fr' })
+  })
+
+  it('retombe sur le référent hiérarchique puis sur le premier courriel disponible', () => {
+    expect(
+      ContactReferent({
+        courriels: { referent_hierarchique: 'hierarchie@x.fr' },
+      }),
+    ).toMatchObject({ courriel: 'hierarchie@x.fr' })
 
     expect(
       ContactReferent({ courriels: { autre: 'autre@x.fr' } }),
     ).toMatchObject({ courriel: 'autre@x.fr' })
+  })
+
+  // Un gestionnaire malformé ne doit pas priver l'affichage du référent
+  // hiérarchique, qui lui est valide.
+  it('passe au référent hiérarchique quand le gestionnaire n’est pas une adresse', () => {
+    expect(
+      ContactReferent({
+        nom: 'Piaf',
+        courriels: {
+          mail_gestionnaire: 'pas-une-adresse',
+          referent_hierarchique: 'edith@structure.fr',
+        },
+      }),
+    ).toMatchObject({ courriel: 'edith@structure.fr' })
   })
 
   it('n’est pas renseigné quand le contact est vide, absent ou sans information', () => {
