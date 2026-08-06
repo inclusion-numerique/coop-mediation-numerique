@@ -1,3 +1,6 @@
+// Barrel CLIENT-SAFE (`features/employeuse`) et non `/server` : ce module est tiré dans le bundle
+// navigateur par `ActeurIdentity` (`'use client'`). Le barrel serveur y embarquerait le client
+// Prisma — la fiche acteur répondait 500 pour cette raison.
 import {
   employeuseSessionEmplois,
   personneToEmployeuseActuelle,

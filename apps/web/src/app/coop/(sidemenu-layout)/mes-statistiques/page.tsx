@@ -7,7 +7,7 @@ import {
 import {
   consulterEmployeuseAUneDate,
   employeuseCodeInsee,
-} from '@app/web/features/employeuse'
+} from '@app/web/features/employeuse/server'
 import { mediateurCoordonnesIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
 import type { Metadata } from 'next'
 import { getMesStatistiquesPageData } from './getMesStatistiquesPageData'

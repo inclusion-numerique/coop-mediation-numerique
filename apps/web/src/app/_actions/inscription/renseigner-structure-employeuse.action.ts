@@ -4,7 +4,7 @@ import { withAuth } from '@app/web/features/authentification'
 import {
   IdentiteEmployeuse,
   rattacherAUneEmployeuse,
-} from '@app/web/features/employeuse'
+} from '@app/web/features/employeuse/server'
 import { RenseignerStructureEmployeuseValidation } from '@app/web/features/inscription/use-cases/renseigner-structure-employeuse/renseigner-structure-employeuse.validation'
 import { actionBuilder, withInput } from '@app/web/libraries/nextjs'
 import { prismaClient } from '@app/web/prismaClient'

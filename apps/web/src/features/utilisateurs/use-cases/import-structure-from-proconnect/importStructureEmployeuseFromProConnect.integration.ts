@@ -6,15 +6,15 @@ import {
   ensureAffectationEmploiMain,
   ensurePersonneMain,
   rattacherAUneEmployeuseDepuisSiret,
-} from '@app/web/features/employeuse'
+} from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 import { importStructureEmployeuseFromProConnect } from './importStructureEmployeuseFromProConnect'
 
 // Ce que ProConnect décide lui reste : à qui il délègue le rattachement, et quand il s'abstient.
 // Le rattachement lui-même appartient à la feature employeuse (couvert par son BDD) — on le mocke
 // pour n'observer ici que la décision.
-jest.mock('@app/web/features/employeuse', () => ({
-  ...jest.requireActual('@app/web/features/employeuse'),
+jest.mock('@app/web/features/employeuse/server', () => ({
+  ...jest.requireActual('@app/web/features/employeuse/server'),
   rattacherAUneEmployeuseDepuisSiret: jest.fn(),
 }))
 

@@ -5,7 +5,7 @@ import {
   insertAdresseMain,
   resolveAdresseMain,
   resolveIdentiteFromSiret,
-} from '@app/web/features/employeuse'
+} from '@app/web/features/employeuse/server'
 import { throttleApiEntreprise } from '@app/web/features/structures/siret/siretIdentity'
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { prismaClient } from '@app/web/prismaClient'

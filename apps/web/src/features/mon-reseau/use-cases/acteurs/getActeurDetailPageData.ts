@@ -5,7 +5,7 @@ import type { ActivitesFilters } from '@app/web/features/activites/use-cases/lis
 import {
   consulterEmployeuseAUneDate,
   emploiEmployeuseAffichage,
-} from '@app/web/features/employeuse'
+} from '@app/web/features/employeuse/server'
 import {
   acteurCoordinationSelect,
   acteurSelectForList,

@@ -1,7 +1,7 @@
 import {
   ContactReferent,
   referentAffichage,
-} from '@app/web/features/employeuse'
+} from '@app/web/features/employeuse/server'
 import type { Prisma } from '@prisma/client'
 
 // Matérialisation d'une employeuse en lieu d'activité : quand une personne déclare que son

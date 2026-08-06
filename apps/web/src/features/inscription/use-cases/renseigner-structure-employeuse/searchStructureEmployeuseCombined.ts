@@ -2,7 +2,7 @@ import { rechercheApiEntreprise } from '@app/web/external-apis/rechercheApiEntre
 import {
   employeuseRecherchee,
   rechercherEmployeuse,
-} from '@app/web/features/employeuse'
+} from '@app/web/features/employeuse/server'
 import { structureCreationDataWithSiretFromUniteLegale } from '@app/web/structure/structuresInfoFromUniteLegale'
 
 export type StructureSearchResult = {

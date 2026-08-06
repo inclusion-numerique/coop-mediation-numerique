@@ -6,7 +6,7 @@ import {
   employeuseSessionEmplois,
   personneEmployeuseSelect,
   personneToEmployeuseActuelle,
-} from '@app/web/features/employeuse'
+} from '@app/web/features/employeuse/server'
 import { getDepartementCodeForActeur } from '@app/web/features/mon-reseau/getDepartementCodeForActeur'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Metadata } from 'next'

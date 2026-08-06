@@ -1,4 +1,4 @@
-import { rattacherAUneEmployeuseDepuisSiret } from '@app/web/features/employeuse'
+import { rattacherAUneEmployeuseDepuisSiret } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 
 export type ImportStructureEmployeuseFromProConnectResult = {

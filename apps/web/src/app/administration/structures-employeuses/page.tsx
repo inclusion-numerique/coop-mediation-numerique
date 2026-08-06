@@ -1,10 +1,10 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
+import EmployeusesListePage from '@app/web/features/employeuse/abilities/lister-employeuses/ui/pages/EmployeusesListePage'
 import {
   type EmployeusesSearchParams,
   employeuseAffichee,
   listerEmployeuses,
-} from '@app/web/features/employeuse'
-import EmployeusesListePage from '@app/web/features/employeuse/abilities/lister-employeuses/ui/pages/EmployeusesListePage'
+} from '@app/web/features/employeuse/server'
 import { DEFAULT_PAGE, toNumberOr } from '@app/web/libs/data-table/toNumberOr'
 
 export const metadata = {

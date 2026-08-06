@@ -1,8 +1,8 @@
-import type { EmploiEmployeuseAffichage } from '@app/web/features/employeuse'
 // Import direct du presenter, PAS du barrel `features/employeuse` : celui-ci
 // réexporte l'implémentation Prisma de l'ability, qui n'a rien à faire dans un
 // bundle client.
 import { adresseCompleteAffichage } from '@app/web/features/employeuse/abilities/consulter-employeuse-a-une-date/ui/employeuse-emploi.presenter'
+import type { EmploiEmployeuseAffichage } from '@app/web/features/employeuse/server'
 import type { Meta, StoryObj } from '@storybook/react'
 import ActeurStructureEmployeuse from './ActeurStructureEmployeuse'
 

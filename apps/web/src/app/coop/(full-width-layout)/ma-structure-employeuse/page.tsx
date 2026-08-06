@@ -5,7 +5,7 @@ import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import {
   consulterEmployeuseAUneDate,
   emploiEmployeuseAffichage,
-} from '@app/web/features/employeuse'
+} from '@app/web/features/employeuse/server'
 import ActeurStructureEmployeuse from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurStructureEmployeuse'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'

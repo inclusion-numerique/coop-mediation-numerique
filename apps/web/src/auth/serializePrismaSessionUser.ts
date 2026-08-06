@@ -6,7 +6,7 @@ import type { SessionUser } from '@app/web/auth/sessionUser'
 import {
   employeuseSessionEmplois,
   personneToEmployeuseActuelle,
-} from '@app/web/features/employeuse'
+} from '@app/web/features/employeuse/server'
 import { splitMediateursCoordonnes } from '@app/web/features/mediateurs/splitMediateursCoordonnes'
 
 /**

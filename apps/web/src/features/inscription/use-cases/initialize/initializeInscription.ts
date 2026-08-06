@@ -12,7 +12,7 @@ import { updateUserInscriptionProfileFromDataspace } from '@app/web/features/dat
 import {
   personneToEmployeuseActuelle,
   rattacherAUneEmployeuseDepuisSiret,
-} from '@app/web/features/employeuse'
+} from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 import { getNextInscriptionStep, getStepPath } from '../../inscriptionFlow'
 

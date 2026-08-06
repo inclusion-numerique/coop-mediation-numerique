@@ -10,7 +10,7 @@ import type {
   JsonApiListResponse,
   JsonApiResource,
 } from '@app/web/app/api/v1/JsonApiTypes'
-import { contratPourEmployeuse } from '@app/web/features/employeuse'
+import { contratPourEmployeuse } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { NextResponse } from 'next/server'

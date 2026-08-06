@@ -3,7 +3,7 @@ import {
   deactivateCoopAffectationsExcept,
   ensureAffectationEmploiMain,
   ensurePersonneMain,
-} from '@app/web/features/employeuse'
+} from '@app/web/features/employeuse/server'
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { prismaClient } from '@app/web/prismaClient'
 import type { JobExecutor } from '../jobExecutors'

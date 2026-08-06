@@ -20,6 +20,7 @@
     "inlineSources": false,
     "types": ["node", "jest"],
     "paths": {
+      "server-only": ["./apps/web/src/libraries/server-only-cli/index.ts"],
       "@app/cli/*": ["./apps/cli/src/*"],
       "@app/web/*": ["./apps/web/src/*"],
       "@app/cdk/*": ["./packages/cdk/src/*"],

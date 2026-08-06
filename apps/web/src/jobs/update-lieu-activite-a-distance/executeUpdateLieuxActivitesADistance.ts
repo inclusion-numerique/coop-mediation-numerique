@@ -1,7 +1,7 @@
 import {
   personneEmployeuseSelect,
   personneToEmployeuseActuelle,
-} from '@app/web/features/employeuse'
+} from '@app/web/features/employeuse/server'
 import { output } from '@app/web/jobs/output'
 import { prismaClient } from '@app/web/prismaClient'
 import { UpdateLieuxActivitesAdistanceJob } from './updateLieuxActivitesAdistanceJob'

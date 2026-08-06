@@ -2,7 +2,7 @@ import {
   employeuseCourante,
   employeuseCouranteJoin,
   personneEmployeuseSelect,
-} from '@app/web/features/employeuse'
+} from '@app/web/features/employeuse/server'
 import { departementCodeFromInseeRegex } from '@app/web/features/mon-reseau/departementCodeFromInseeRegex'
 import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
 import { DEFAULT_PAGE, toNumberOr } from '@app/web/libs/data-table/toNumberOr'

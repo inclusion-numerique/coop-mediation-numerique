@@ -1,85 +1,73 @@
 /**
- * API publique de la feature employeuse.
+ * API publique CLIENT-SAFE de la feature employeuse.
  *
  * La coop n'est plus propriétaire des structures employeuses (ADR-002) : elle
  * les lit dans `main.structure_administrative`, via la personne et ses
- * affectations actives. Tout ce qui touche à l'employeuse passe par ici — les
- * autres features n'atteignent ni son `domain/` ni son `db/`.
+ * affectations actives. Tout ce qui touche à l'employeuse passe par ici ou par
+ * `./server` — les autres features n'atteignent ni son `domain/` ni son `db/`.
  *
- * Deux questions, deux abilities : l'employeuse courante d'un utilisateur, et
- * son employeuse à une date donnée (pour les écrits rétro-datés).
+ * Ce barrel ne contient QUE ce qui peut vivre dans un bundle navigateur :
+ * domaine, mises à plat d'affichage, types. Aucune implémentation Prisma, aucun
+ * fragment SQL. Les exports qui lisent la base vivent dans `./server`, sous
+ * garde `server-only`.
  *
- * Deux voies de lecture, selon le contexte :
- * - les abilities `consulter…({ userId })` — lecture autonome, un utilisateur ;
- * - `personneEmployeuseSelect` + `personneToEmployeuse…` — composition, pour les
- *   requêtes de liste qui ne peuvent pas se permettre une requête par utilisateur.
+ * Raison d'être : un composant client qui importait ce barrel embarquait le
+ * client Prisma et faisait répondre la page en 500
+ * (« Extensions.defineExtension is unable to run in this browser environment »).
+ * Ni `tsc` ni le build ne voient ce chemin. La séparation rend la faute
+ * impossible plutôt que détectable.
+ *
+ * Les réexports pointent les modules de presenter et de domaine DIRECTEMENT, et
+ * jamais l'`index.ts` d'une ability : celui-ci réexporte son implémentation, et
+ * suffirait à ramener Prisma ici.
  */
 
-// Le composant de page n'est PAS réexporté ici : ce barrel est chargé côté
-// serveur (implémentations Prisma, steps Cucumber), et y mêler du React
-// entraîne ses feuilles de style dans des contextes qui ne savent pas les lire.
-// La route l'importe directement depuis l'ability.
+export type {
+  ConsulterEmployeuse,
+  EmployeuseConsultee,
+  PersonneEmployee,
+} from './abilities/consulter-employeuse/domain'
 export {
-  type ConsulterEmployeuse,
-  consulterEmployeuse,
-  type EmployeuseConsultee,
   type EmployeuseConsulteeAffichage,
   employeuseConsulteeAffichage,
-  type PersonneEmployee,
-} from './abilities/consulter-employeuse'
+} from './abilities/consulter-employeuse/ui/employeuse-consultee.presenter'
+export type { ConsulterEmployeuseAUneDate } from './abilities/consulter-employeuse-a-une-date/domain'
 export {
-  type ConsulterEmployeuseAUneDate,
-  consulterEmployeuseAUneDate,
   type EmploiEmployeuseAffichage,
   emploiEmployeuseAffichage,
-} from './abilities/consulter-employeuse-a-une-date'
+} from './abilities/consulter-employeuse-a-une-date/ui/employeuse-emploi.presenter'
+export type { ConsulterEmployeuseActuelle } from './abilities/consulter-employeuse-actuelle/domain'
 export {
-  type ConsulterEmployeuseActuelle,
-  consulterEmployeuseActuelle,
   type EmployeuseActuelleAffichage,
   employeuseActuelleAffichage,
   employeuseSessionEmplois,
-} from './abilities/consulter-employeuse-actuelle'
+} from './abilities/consulter-employeuse-actuelle/ui/employeuse-actuelle.presenter'
+export type { ConsulterHistoriqueEmployeuses } from './abilities/consulter-historique-employeuses/domain'
 export {
-  type ConsulterHistoriqueEmployeuses,
-  consulterHistoriqueEmployeuses,
   type EmployeuseHistoriqueAffichage,
   historiqueEmployeusesAffichage,
-} from './abilities/consulter-historique-employeuses'
+} from './abilities/consulter-historique-employeuses/ui/historique-employeuses.presenter'
+export type {
+  CriteresListeEmployeuses,
+  EmployeuseListee,
+} from './abilities/lister-employeuses/domain'
 export {
-  type CriteresListeEmployeuses,
   type EmployeuseAffichee,
-  type EmployeuseListee,
-  type EmployeusesSearchParams,
   employeuseAffichee,
-  listerEmployeuses,
-} from './abilities/lister-employeuses'
-export {
-  adresseMainKey,
-  deactivateCoopAffectationsExcept,
-  ensureAffectationEmploiMain,
-  ensurePersonneMain,
-  ensureStructureAdministrativeMain,
-  findAdresseMainId,
-  insertAdresseMain,
-  type RattachementEmployeuse,
-  type RattacherAUneEmployeuse,
-  type RattacherAUneEmployeuseDepuisSiret,
-  rattacherAUneEmployeuse,
-  rattacherAUneEmployeuseDepuisSiret,
-  resolveAdresseMain,
-  resolveIdentiteFromSiret,
-} from './abilities/rattacher-a-une-employeuse'
+} from './abilities/lister-employeuses/ui/employeuse-affichee.presenter'
+export type { EmployeusesSearchParams } from './abilities/lister-employeuses/ui/employeuses.data-table'
+export type {
+  RattachementEmployeuse,
+  RattacherAUneEmployeuse,
+  RattacherAUneEmployeuseDepuisSiret,
+} from './abilities/rattacher-a-une-employeuse/domain'
+export type { RechercherEmployeuse } from './abilities/rechercher-employeuse/domain'
 export {
   type EmployeuseRecherchee,
   employeuseRecherchee,
-  type RechercherEmployeuse,
-  rechercherEmployeuse,
-} from './abilities/rechercher-employeuse'
-export {
-  employeuseCourante,
-  employeuseCouranteJoin,
-} from './db/employeuse.sql'
+} from './abilities/rechercher-employeuse/ui/employeuse-recherchee.presenter'
+// `employeuse.transfer` n'importe `Prisma` qu'en TYPE : il est effacé à la
+// compilation et ne ramène donc pas le client dans le bundle.
 export {
   type PersonneEmployeusePayload,
   personneEmployeuseSelect,

@@ -2,7 +2,7 @@ import { createBeneficiairesForParticipantsAnonymes } from '@app/web/features/ac
 import type { CraCollectifData } from '@app/web/features/activites/use-cases/cra/collectif/validation/CraCollectifValidation'
 import type { CraIndividuelData } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelValidation'
 import { BeneficiaireCraData } from '@app/web/features/activites/use-cases/cra/validation/BeneficiaireCraValidation'
-import { consulterEmployeuseAUneDate } from '@app/web/features/employeuse'
+import { consulterEmployeuseAUneDate } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 import { invalidError } from '@app/web/server/rpc/trpcErrors'
 import { addMutationLog } from '@app/web/utils/addMutationLog'

@@ -1,10 +1,10 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
+import EmployeusePage from '@app/web/features/employeuse/abilities/consulter-employeuse/ui/pages/EmployeusePage'
 import {
   consulterEmployeuse,
   EmployeuseId,
   employeuseConsulteeAffichage,
-} from '@app/web/features/employeuse'
-import EmployeusePage from '@app/web/features/employeuse/abilities/consulter-employeuse/ui/pages/EmployeusePage'
+} from '@app/web/features/employeuse/server'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 

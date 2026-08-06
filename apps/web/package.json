@@ -19,7 +19,7 @@
     "setup:dsfr": "bash ../../setup-dsfr.sh",
     "test": "jest -c jest.unit.config.ts",
     "test:integration": "jest -c jest.integration.config.ts --passWithNoTests --runInBand",
-    "test:cucumber": "NODE_OPTIONS='--import tsx/esm' dotenv -e ../../.env -- cucumber-js",
+    "test:cucumber": "TSX_TSCONFIG_PATH=./tsconfig.node.json NODE_OPTIONS='--import tsx/esm' dotenv -e ../../.env -- cucumber-js",
     "with-env": "dotenv -e ../../.env --",
     "with-remote-env": "dotenv -e ../../.env.remote -e ../../.env --",
     "prisma": "pnpm --silent with-env prisma",

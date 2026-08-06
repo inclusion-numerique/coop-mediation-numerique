@@ -2,7 +2,7 @@ import {
   historiqueEmployeusesAffichage,
   personneEmployeuseSelect,
   personneToEmployeusesHistorique,
-} from '@app/web/features/employeuse'
+} from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 
 export const getAdministrationUserPageData = async ({ id }: { id: string }) => {

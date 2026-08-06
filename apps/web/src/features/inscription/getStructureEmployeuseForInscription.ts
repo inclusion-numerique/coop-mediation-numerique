@@ -1,7 +1,7 @@
 import {
   consulterEmployeuseActuelle,
   employeuseActuelleAffichage,
-} from '@app/web/features/employeuse'
+} from '@app/web/features/employeuse/server'
 
 // Structure employeuse COURANTE de l'inscription. La lecture appartient à la feature employeuse
 // (ability `consulter-employeuse-actuelle`) ; l'inscription n'en consomme que la mise à plat
