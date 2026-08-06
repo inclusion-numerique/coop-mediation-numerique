@@ -26,6 +26,51 @@ const resolveIdentiteViaApi = async (
   return resolved.identite
 }
 
+const memeDenomination = (a: string | null, b: string | null): boolean =>
+  a !== null && b !== null && a.trim().toLowerCase() === b.trim().toLowerCase()
+
+/**
+ * Ligne `main` déjà existante pour cette identité, s'il y en a une.
+ *
+ * Chercher sur la seule clé `(siret, denomination_antenne)` ne suffit pas : les producteurs de
+ * l'Entrepôt écrivent la raison sociale dans `denomination_sirene` et laissent
+ * `denomination_antenne` à NULL. 7 163 SIRET de production sont dans ce cas, et ces lignes étaient
+ * donc invisibles au lookup — on créait un doublon à côté, avec le même SIRET et la même
+ * dénomination, sans violer la clé d'unicité puisqu'elle ne porte que sur l'antenne. Le compte
+ * `REPUBLIQUE FRANCAISE PRESIDENCE` en portait déjà deux exemplaires (33156 et 33275).
+ *
+ * On élargit donc à la dénomination SIRENE, en gardant l'antenne prioritaire : deux antennes
+ * distinctes d'un même SIRET restent deux lignes, ce qu'elles doivent être. Ordre par `id` pour que
+ * deux écritures concurrentes retiennent la même ligne.
+ */
+const findStructureMainByIdentity = async ({
+  siret,
+  denominationAntenne,
+}: {
+  siret: string | null
+  denominationAntenne: string | null
+}): Promise<{ id: number } | null> => {
+  // Sans SIRET, aucune identité légale à rapprocher : on ne rapproche rien plutôt que de
+  // rassembler toutes les lignes qui n'en portent pas.
+  if (!siret) return null
+
+  const candidats = await prismaClient.structureAdministrativeMain.findMany({
+    where: { siret },
+    select: { id: true, denominationAntenne: true, denominationSirene: true },
+    orderBy: { id: 'asc' },
+  })
+
+  const parAntenne = candidats.find((candidat) =>
+    memeDenomination(candidat.denominationAntenne, denominationAntenne),
+  )
+  const parSirene = candidats.find((candidat) =>
+    memeDenomination(candidat.denominationSirene, denominationAntenne),
+  )
+
+  const retenu = parAntenne ?? parSirene
+  return retenu ? { id: retenu.id } : null
+}
+
 /**
  * Garantit qu'une ligne `main.structure_administrative` existe pour la structure employeuse coop
  * `coopId` (adresse géocodée BAN). Anti-dérive de l'ADR-002 : appelée à chaque création/réutilisation
@@ -68,16 +113,14 @@ export const ensureStructureAdministrativeMain = async ({
     const denominationAntenne =
       resolvedIdentite.nom.trim() === '' ? null : resolvedIdentite.nom
 
-    // Dédoublonnage par la clé métier `(siret, denomination_antenne)` AVANT de créer : une même
-    // employeuse peut déjà exister dans `main` sous un autre `structure_coop_id` (données Entrepôt,
-    // ou un autre coop pointant la même identité légale). Sans ce lookup, la création violerait
-    // `structure_administrative_siret_antenne_ukey` et l'erreur (avalée) laisserait un emploi sans
-    // `main` -> employeuse invisible. On réutilise alors la ligne existante (id partagé).
-    const existingByIdentity =
-      await prismaClient.structureAdministrativeMain.findFirst({
-        where: { siret, denominationAntenne },
-        select: { id: true },
-      })
+    // Dédoublonnage AVANT de créer : une même employeuse peut déjà exister dans `main` sous un autre
+    // `structure_coop_id` (données Entrepôt, ou un autre coop pointant la même identité légale). Sans
+    // ce lookup, la création violerait `structure_administrative_siret_antenne_ukey` et l'erreur
+    // (avalée) laisserait un emploi sans `main` -> employeuse invisible.
+    const existingByIdentity = await findStructureMainByIdentity({
+      siret,
+      denominationAntenne,
+    })
     if (existingByIdentity) return existingByIdentity
 
     const adresse = await resolveAdresseMain(resolvedIdentite)
