@@ -18,6 +18,16 @@ qui elle emploie aujourd'hui.
 * When je consulte la fiche de "Zzz Vide"
 * Then la fiche compte 0 personne employée
 
+### Scenario: Une personne rattachée par plusieurs sources ne compte qu'une fois
+
+Une même personne porte une affectation active PAR source (`coop`, `idposte`,
+`aidants-connect`). La fiche répond « qui cette employeuse emploie-t-elle », pas
+« combien d'affectations existent ».
+
+* Given l'employeuse "Zzz Multisource" existe avec 1 personne rattachée par 3 sources
+* When je consulte la fiche de "Zzz Multisource"
+* Then la fiche compte 1 personne employée
+
 ## Rule: Seuls les rattachements actifs comptent
 
 ### Scenario: Un rattachement terminé ne figure plus

@@ -47,6 +47,30 @@ Given(
   },
 )
 
+Given(
+  "l'employeuse {string} existe avec 1 personne rattachée par {int} sources",
+  async (nom: string, sources: number) => {
+    employeuses.set(nom, await seedEmployeuseMain(nom))
+    const userId = await seedUtilisateur()
+    // Séquentiel et non parallèle : les trois `seedAffectation` créent la MÊME
+    // `main.personne`, et les lancer de front les fait se marcher dessus sur la
+    // clé d'unicité.
+    await (['coop', 'idposte', 'aidants-connect'] as const)
+      .slice(0, sources)
+      .reduce(
+        (precedentes, source) =>
+          precedentes.then(async () => {
+            await seedAffectation({
+              userId,
+              employeuseId: employeuseId(nom),
+              source,
+            })
+          }),
+        Promise.resolve(),
+      )
+  },
+)
+
 Given('le rattachement à {string} est terminé', async (nom: string) => {
   await desactiverAffectations(employeuseId(nom))
 })
