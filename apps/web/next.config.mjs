@@ -35,9 +35,28 @@ const nextConfig = {
     // Type checks are done in other parts of the build process
     ignoreBuildErrors: true,
   },
-  // Le hook `webpack` a disparu : Turbopack l'ignore, et ses deux règles n'ont plus d'objet.
-  // Elles empêchaient le bundler de traiter les `.min.css` — c'est-à-dire les feuilles du
-  // DSFR, désormais chargées par une balise `<link>` et absentes du graphe de modules.
+  // Le hook `webpack` a disparu avec le passage à Turbopack. Ses deux règles écartaient les
+  // `.min.css` du traitement, parce que le `css-loader` de webpack déborde sa pile d'appels
+  // sur `dsfr.min.css` — 701 Ko sur une seule ligne. Turbopack les compile sans difficulté ;
+  // seul Cypress en a encore besoin, et la règle vit désormais dans son propre
+  // `packages/e2e/next.config.js`.
+  turbopack: {
+    // Le DSFR embarque deux blocs `@media screen and (min-width: 0\0) …`, un hack qui ne
+    // vise qu'Internet Explorer 8 à 11 : le `0\0` y est parsé, partout ailleurs il rend la
+    // requête invalide et le bloc inopérant. Turbopack refuse de la parser et écarte ces
+    // blocs — 171 Ko dans `utility.min.css`, 2 Ko dans `dsfr.min.css`.
+    //
+    // C'est le comportement souhaitable : ces règles ne s'appliquaient déjà dans aucun
+    // navigateur vivant, et leurs équivalents non-IE, eux, sont conservés. Mais
+    // l'avertissement se répétait à chaque requête du serveur de dev. On le tait ici, en
+    // visant les deux fichiers concernés, pour ne pas masquer une vraie erreur ailleurs.
+    ignoreIssue: [
+      {
+        path: /public\/dsfr\/.*\.min\.css$/,
+        title: /Parsing CSS source code failed/,
+      },
+    ],
+  },
 }
 
 const enableRelease = process.env.SENTRY_ENABLE_RELEASE === 'true'
