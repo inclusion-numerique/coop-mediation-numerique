@@ -12,6 +12,7 @@ export type EmployeuseConsulteeAffichage = {
   rna: string | null
   adresse: string | null
   codeInsee: string | null
+  aUnReferent: boolean
   nomReferent: string | null
   courrielReferent: string | null
   telephoneReferent: string | null
@@ -50,6 +51,7 @@ export const employeuseConsulteeAffichage = ({
         .filter(Boolean)
         .join(', ') || null,
     codeInsee: affichage.codeInsee,
+    aUnReferent: affichage.aUnReferent,
     nomReferent: affichage.nomReferent,
     courrielReferent: affichage.courrielReferent,
     telephoneReferent: affichage.telephoneReferent,

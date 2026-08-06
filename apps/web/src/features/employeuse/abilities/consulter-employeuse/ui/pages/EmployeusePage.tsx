@@ -57,18 +57,22 @@ const EmployeusePage = ({
           <LigneDefinition label="Code INSEE" valeur={employeuse.codeInsee} />
         </section>
 
-        <section className="fr-col-12 fr-col-lg-6">
-          <h2 className="fr-h5">Référent</h2>
-          <LigneDefinition label="Nom" valeur={employeuse.nomReferent} />
-          <LigneDefinition
-            label="Courriel"
-            valeur={employeuse.courrielReferent}
-          />
-          <LigneDefinition
-            label="Téléphone"
-            valeur={employeuse.telephoneReferent}
-          />
-        </section>
+        {/* 7 325 employeuses sur 11 607 n'ont aucun contact : le titre seul, suivi
+            de rien, valait mieux être tu. */}
+        {employeuse.aUnReferent && (
+          <section className="fr-col-12 fr-col-lg-6">
+            <h2 className="fr-h5">Référent</h2>
+            <LigneDefinition label="Nom" valeur={employeuse.nomReferent} />
+            <LigneDefinition
+              label="Courriel"
+              valeur={employeuse.courrielReferent}
+            />
+            <LigneDefinition
+              label="Téléphone"
+              valeur={employeuse.telephoneReferent}
+            />
+          </section>
+        )}
       </div>
 
       <section className="fr-mt-6v">
