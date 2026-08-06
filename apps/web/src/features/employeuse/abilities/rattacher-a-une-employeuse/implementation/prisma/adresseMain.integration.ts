@@ -72,10 +72,19 @@ describe('findAdresseMainId — dédup par clé composant', () => {
 // chaîne de 16 caractères atteignait `main.adresse.code_postal varchar(5)` et faisait échouer
 // l'INSERT en `22001` — le job `completer-structures-main` s'arrêtait à la première rencontre.
 describe('resolveAdresseMain — codes non conformes des sources amont', () => {
+  const COMMUNE_DE_TEST = 'AURAGNE-TEST-NON-DIFFUSIBLE'
   const state = { adresseId: 0 }
 
-  beforeAll(() => {
+  beforeAll(async () => {
     mockedSearchAdresse.mockResolvedValue(null)
+
+    // Commune volontairement synthétique. `main.adresse` porte une clé d'unicité composant
+    // `(code_postal, nom_commune, nom_voie, numero_voie, repetition)` : avec une vraie commune,
+    // le test entrait en collision avec les lignes du restore de production — que l'on ne peut
+    // pas davantage supprimer, des `structure_administrative` les référençant.
+    await prismaClient.adresseMain.deleteMany({
+      where: { nomCommune: COMMUNE_DE_TEST },
+    })
   })
 
   afterAll(async () => {
@@ -89,12 +98,12 @@ describe('resolveAdresseMain — codes non conformes des sources amont', () => {
       adresse: '[NON-DIFFUSIBLE]',
       codePostal: '[NON-DIFFUSIBLE]',
       codeInsee: '31024',
-      commune: 'AURAGNE',
+      commune: COMMUNE_DE_TEST,
     })
 
     expect(resolved.codePostal).toBe('')
     expect(resolved.codeInsee).toBe('31024')
-    expect(resolved.nomCommune).toBe('AURAGNE')
+    expect(resolved.nomCommune).toBe(COMMUNE_DE_TEST)
 
     state.adresseId = await insertAdresseMain(resolved)
     expect(state.adresseId).toEqual(expect.any(Number))
