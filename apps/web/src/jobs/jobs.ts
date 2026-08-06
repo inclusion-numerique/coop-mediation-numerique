@@ -1,5 +1,4 @@
 import z from 'zod'
-import { AppliquerPlanCouvertureJobValidation } from './appliquer-plan-couverture/appliquerPlanCouvertureJob'
 import { ApplyCorrigerAdresseJobValidation } from './apply-corriger-adresse/applyCorrigerAdresseJob'
 import { ApplyCorrigerCoordonneesJobValidation } from './apply-corriger-coordonnees/applyCorrigerCoordonneesJob'
 import { ApplyFusionnerLieuxJobValidation } from './apply-fusionner-lieux/applyFusionnerLieuxJob'
@@ -88,7 +87,6 @@ export const JobValidation = z.discriminatedUnion('name', [
   RemoveOrphanBrevoContactsJobValidation,
   ResetInscriptionsSansRoleJobValidation,
   DeduplicateLieuxJobValidation,
-  AppliquerPlanCouvertureJobValidation,
   CouvrirEmployeusesRestantesJobValidation,
   DeduplicateEmployeusesJobValidation,
   LinkEmployeusesMainJobValidation,

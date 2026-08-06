@@ -1,8 +1,8 @@
 import { writeFile } from 'node:fs/promises'
 import { entrepotPrismaClient } from '@app/web/entrepotPrismaClient'
-import { mergeStructureAdministrative } from '@app/web/features/structures/use-cases/merge/mutations/mergeStructureAdministrative'
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { output } from '@app/web/jobs/output'
+import { mergeStructureAdministrative } from '@app/web/jobs/structures-main/mergeEmployeuseCoop'
 import { prismaClient } from '@app/web/prismaClient'
 import type { DeduplicateEmployeusesJob } from './deduplicateEmployeusesJob'
 

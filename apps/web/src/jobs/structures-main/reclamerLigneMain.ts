@@ -1,5 +1,5 @@
 import { entrepotPrismaClient } from '@app/web/entrepotPrismaClient'
-import { mergeStructureAdministrative } from '@app/web/features/structures/use-cases/merge/mutations/mergeStructureAdministrative'
+import { mergeStructureAdministrative } from '@app/web/jobs/structures-main/mergeEmployeuseCoop'
 import { prismaClient } from '@app/web/prismaClient'
 
 // RÉCLAMATION d'une ligne `main` occupée à tort — à tenter AVANT toute création.
