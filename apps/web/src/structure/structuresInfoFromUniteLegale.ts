@@ -20,6 +20,7 @@ export const structureCreationDataWithSiretFromUniteLegale = ({
     .map(
       ({
         adresse,
+        code_postal,
         commune,
         libelle_commune,
         liste_enseignes,
@@ -42,6 +43,12 @@ export const structureCreationDataWithSiretFromUniteLegale = ({
           siret,
           adresse: toTitleCase(adresse),
           typologie,
+          // Le code postal était le seul composant d'adresse jamais repris, alors
+          // que l'API le fournit. Son absence remontait jusqu'à `main.adresse`,
+          // dont la colonne restait vide — et `AdresseEmployeuse` étant totale,
+          // un code postal invalide fait tomber l'adresse ENTIÈRE à `null` :
+          // l'employeuse s'affichait alors sans aucune adresse.
+          codePostal: code_postal ?? '',
           commune: toTitleCase(libelle_commune),
           codeInsee: commune,
           nom: toTitleCase(nom),
