@@ -39,9 +39,19 @@ const ActeurStructureEmployeuse = ({
   canUpdateStructure,
   title,
 }: ActeurStructureEmployeuseProps) => {
-  const addresseString = complementAdresse
-    ? `${adresse} (${complementAdresse})`
-    : adresse
+  // La voie est légitimement absente (`AdresseEmployeuse.voie` est nullable, et
+  // 216 employeuses de production n'en ont pas côté Entrepôt). Composer à la
+  // virgule fixe affichait alors « , 66300 Thuir ». On assemble les morceaux
+  // présents plutôt que de trouer un gabarit.
+  const voie = [adresse, complementAdresse && `(${complementAdresse})`]
+    .filter(Boolean)
+    .join(' ')
+  const adresseComplete = [
+    voie,
+    [codePostal, commune].filter(Boolean).join(' '),
+  ]
+    .filter(Boolean)
+    .join(', ')
 
   return (
     <Card noBorder className="fr-border fr-border-radius--8" titleAs="div">
@@ -49,8 +59,7 @@ const ActeurStructureEmployeuse = ({
       <span className="fr-text--lg fr-text--bold fr-mb-1v">{nom}</span>
       <div className="fr-text--sm fr-mb-1v fr-text-mention--grey fr-flex fr-direction-column fr-flex-gap-1v">
         <div>
-          <span className="ri-map-pin-2-line fr-mr-1v" /> {addresseString},{' '}
-          {codePostal} {commune}
+          <span className="ri-map-pin-2-line fr-mr-1v" /> {adresseComplete}
         </div>
         {(siret || rna) && (
           <>
