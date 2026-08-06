@@ -40,6 +40,31 @@ describe('structureCreationDataWithSiretFromUniteLegale', () => {
     ).toMatchObject([{ codePostal: '' }])
   })
 
+  // L'API rend l'adresse en une seule chaîne, localité comprise. Conservée
+  // telle quelle, elle donnait « 27 Rue Saint-Guillaume 75007 Paris, 75007
+  // Paris » à l'affichage et faisait échouer le géocodage BAN.
+  it('retire du libellé de voie le code postal et la commune que l’API répète', () => {
+    expect(
+      structureCreationDataWithSiretFromUniteLegale(uniteLegale({})),
+    ).toMatchObject([{ adresse: '27 Rue Saint-Guillaume' }])
+  })
+
+  it('laisse intacte une adresse qui ne se termine pas par la localité', () => {
+    expect(
+      structureCreationDataWithSiretFromUniteLegale(
+        uniteLegale({ adresse: '27 RUE SAINT-GUILLAUME CEDEX 07' }),
+      ),
+    ).toMatchObject([{ adresse: '27 Rue Saint-Guillaume Cedex 07' }])
+  })
+
+  it('ne vide pas la voie quand l’adresse se réduit à la localité', () => {
+    expect(
+      structureCreationDataWithSiretFromUniteLegale(
+        uniteLegale({ adresse: '75007 PARIS' }),
+      ),
+    ).toMatchObject([{ adresse: '75007 Paris' }])
+  })
+
   it('écarte les établissements fermés', () => {
     expect(
       structureCreationDataWithSiretFromUniteLegale(

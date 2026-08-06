@@ -3,6 +3,31 @@ import type { StructureCreationDataWithSiret } from '@app/web/features/structure
 import { getTypologieFromApiEntreprise } from '@app/web/structure/typologieFromApiEntreprise'
 import { toTitleCase } from '@app/web/utils/toTitleCase'
 
+/**
+ * Voie seule, débarrassée du code postal et de la commune que l'API répète.
+ *
+ * `adresse` arrive en une seule chaîne, localité comprise
+ * (« 27 RUE SAINT-GUILLAUME 75007 PARIS »), alors que le code postal et la
+ * commune voyagent déjà à part. Conservée telle quelle, elle les répétait à
+ * l'affichage (« …75007 Paris, 75007 Paris ») et brouillait la requête envoyée
+ * à la BAN, dont le score retombait sous le seuil de géocodage.
+ *
+ * On ne retire que ce dont on est sûr : le suffixe exact « code postal
+ * commune ». Une adresse qui ne s'y termine pas (étranger, cedex) est rendue
+ * intacte, de même qu'une voie qui se réduirait à rien.
+ */
+const voieSansLocalite = (
+  adresse: string,
+  codePostal: string | undefined,
+  commune: string,
+): string => {
+  const localite = `${codePostal ?? ''} ${commune}`.trim()
+  const valeur = adresse.trim()
+  if (localite === '' || !valeur.toLowerCase().endsWith(localite.toLowerCase()))
+    return adresse
+  return valeur.slice(0, valeur.length - localite.length).trim() || adresse
+}
+
 export const structureCreationDataWithSiretFromUniteLegale = ({
   nature_juridique,
   complements,
@@ -41,7 +66,9 @@ export const structureCreationDataWithSiretFromUniteLegale = ({
 
         return {
           siret,
-          adresse: toTitleCase(adresse),
+          adresse: toTitleCase(
+            voieSansLocalite(adresse, code_postal, libelle_commune),
+          ),
           typologie,
           // Le code postal était le seul composant d'adresse jamais repris, alors
           // que l'API le fournit. Son absence remontait jusqu'à `main.adresse`,
