@@ -1,6 +1,7 @@
 import type { OptionsData } from '@app/ui/components/Primitives/Options'
 import { rechercherStructureEmployeuseAction } from '@app/web/app/_actions/inscription/rechercher-structure-employeuse.action'
 import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
+import { addresseFromParts } from '@app/web/utils/addresseFromParts'
 import type { StructureSearchResult } from './searchStructureEmployeuseCombined'
 
 /**
@@ -36,7 +37,7 @@ const renderItem = ({ item }: { item: StructureSearchResult }) => (
       {(item.typologies?.length ?? 0) > 0
         ? `${item.typologies?.join(', ')} · `
         : null}
-      {item.adresse}, {item.codePostal} {item.commune}
+      {addresseFromParts(item)}
     </span>
   </>
 )
