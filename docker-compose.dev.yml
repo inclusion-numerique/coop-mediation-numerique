@@ -14,6 +14,12 @@ services:
       context: ./docker/postgres
     image: coop-postgis-pgvector:pg17
     container_name: coop_pg
+    # Docker alloue 64 Mo de mémoire partagée par défaut, ce que PostgreSQL utilise pour ses
+    # agrégats et jointures parallèles. Sur une base restaurée de production, les statistiques
+    # d'un coordinateur (plus de 100 000 activités) dépassent ce plafond et échouent en `53100`
+    # — « could not resize shared memory segment ». La prod, elle, tourne sur un Postgres managé
+    # correctement dimensionné : le défaut ne se voyait qu'en local.
+    shm_size: 1gb
     environment:
       - POSTGRES_DB=${NEXT_PUBLIC_APP_SLUG}
       - POSTGRES_USER=${NEXT_PUBLIC_APP_SLUG}
