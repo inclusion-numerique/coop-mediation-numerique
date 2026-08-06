@@ -53,14 +53,27 @@ export const employeuseMainNom = (structure: EmployeuseMainPayload): string =>
 // `nom`/`adresse`/`commune`/`codePostal` sont non-null (colonnes requises du lieu ; défaut `''`
 // quand l'adresse main manque). `complementAdresse` est abandonné (absent de main -> null,
 // décision 6 révisée), les référents sont lus depuis `contact`.
-export const employeuseMainToLieuData = (structure: EmployeuseMainPayload) => ({
-  nom: employeuseMainNom(structure),
-  adresse: adresseMainToString(structure.adresse),
-  commune: structure.adresse?.nomCommune ?? '',
-  codePostal: structure.adresse?.codePostal ?? '',
-  codeInsee: structure.adresse?.codeInsee ?? null,
-  complementAdresse: null,
-  siret: structure.siret ?? null,
-  rna: structure.rna ?? null,
-  ...referentAffichage(ContactReferent(structure.contact)),
-})
+export const employeuseMainToLieuData = (structure: EmployeuseMainPayload) => {
+  // Les trois champs référent sont nommés un par un, et NON répandus depuis
+  // `referentAffichage` : ce résultat part tel quel dans un `lieu_inclusion.create`,
+  // où le moindre champ surnuméraire fait échouer Prisma à l'exécution. Un spread
+  // ne déclenche pas le contrôle des propriétés excédentaires de TypeScript —
+  // `tsc` reste muet et seule l'intégration le voit. C'est ce qui est arrivé
+  // quand `aUnReferent` a rejoint la mise à plat du référent.
+  const { nomReferent, courrielReferent, telephoneReferent } =
+    referentAffichage(ContactReferent(structure.contact))
+
+  return {
+    nom: employeuseMainNom(structure),
+    adresse: adresseMainToString(structure.adresse),
+    commune: structure.adresse?.nomCommune ?? '',
+    codePostal: structure.adresse?.codePostal ?? '',
+    codeInsee: structure.adresse?.codeInsee ?? null,
+    complementAdresse: null,
+    siret: structure.siret ?? null,
+    rna: structure.rna ?? null,
+    nomReferent,
+    courrielReferent,
+    telephoneReferent,
+  }
+}
