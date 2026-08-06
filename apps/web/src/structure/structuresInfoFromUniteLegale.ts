@@ -4,6 +4,27 @@ import { getTypologieFromApiEntreprise } from '@app/web/structure/typologieFromA
 import { toTitleCase } from '@app/web/utils/toTitleCase'
 
 /**
+ * SIRENE masque les données des établissements non diffusibles en rendant la
+ * chaîne littérale `[NON-DIFFUSIBLE]` à la place de la valeur.
+ *
+ * Transmise telle quelle, elle échoue à la validation du code postal et fait
+ * donc tomber l'identité ENTIÈRE — l'utilisateur restait bloqué sur l'étape
+ * « ma structure employeuse », avec un message l'invitant à réessayer plus tard
+ * alors qu'aucune tentative n'aboutirait jamais. `AdresseAGeocoder` prévoit
+ * pourtant ce cas nommément : « le code postal et le code INSEE peuvent manquer
+ * […] certaines identités Sirene n'en portent pas (établissements non
+ * diffusibles) ».
+ *
+ * On la traduit donc en absence. La commune, elle, reste toujours renseignée et
+ * suffit à créer une employeuse reconnaissable. Le nom est conservé tel quel
+ * (« [Non-Diffusible] »), comme le faisaient déjà les structures coop.
+ */
+const NON_DIFFUSIBLE = /^\[non[\s-]?diffusible]$/i
+
+const valeurDiffusable = (valeur: string | undefined): string =>
+  valeur && !NON_DIFFUSIBLE.test(valeur.trim()) ? valeur : ''
+
+/**
  * Voie seule, débarrassée du code postal et de la commune que l'API répète.
  *
  * `adresse` arrive en une seule chaîne, localité comprise
@@ -64,10 +85,13 @@ export const structureCreationDataWithSiretFromUniteLegale = ({
           nom = nom_complet
         }
 
+        const codePostal = valeurDiffusable(code_postal)
+        const voie = valeurDiffusable(adresse)
+
         return {
           siret,
           adresse: toTitleCase(
-            voieSansLocalite(adresse, code_postal, libelle_commune),
+            voieSansLocalite(voie, codePostal, libelle_commune),
           ),
           typologie,
           // Le code postal était le seul composant d'adresse jamais repris, alors
@@ -75,7 +99,7 @@ export const structureCreationDataWithSiretFromUniteLegale = ({
           // dont la colonne restait vide — et `AdresseEmployeuse` étant totale,
           // un code postal invalide fait tomber l'adresse ENTIÈRE à `null` :
           // l'employeuse s'affichait alors sans aucune adresse.
-          codePostal: code_postal ?? '',
+          codePostal,
           commune: toTitleCase(libelle_commune),
           codeInsee: commune,
           nom: toTitleCase(nom),

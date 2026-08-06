@@ -65,6 +65,32 @@ describe('structureCreationDataWithSiretFromUniteLegale', () => {
     ).toMatchObject([{ adresse: '75007 Paris' }])
   })
 
+  // Cas de production : SIRENE masque les établissements non diffusibles en
+  // rendant `[NON-DIFFUSIBLE]` à la place de la valeur. Transmise telle quelle,
+  // la chaîne faisait échouer la validation du code postal, donc l'identité
+  // entière, et bloquait l'inscription sans issue (14 employeuses concernées).
+  it('traduit `[NON-DIFFUSIBLE]` en absence, sans perdre la commune', () => {
+    expect(
+      structureCreationDataWithSiretFromUniteLegale(
+        uniteLegale({
+          adresse: '[NON-DIFFUSIBLE]',
+          code_postal: '[NON-DIFFUSIBLE]',
+          commune: '24557',
+          libelle_commune: 'TRELISSAC',
+          siret: '89126984700028',
+        }),
+      ),
+    ).toMatchObject([
+      {
+        siret: '89126984700028',
+        adresse: '',
+        codePostal: '',
+        commune: 'Trelissac',
+        codeInsee: '24557',
+      },
+    ])
+  })
+
   it('écarte les établissements fermés', () => {
     expect(
       structureCreationDataWithSiretFromUniteLegale(
