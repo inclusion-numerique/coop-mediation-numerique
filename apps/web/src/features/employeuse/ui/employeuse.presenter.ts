@@ -24,6 +24,7 @@ export type EmployeuseAffichage = {
   codeInsee: string | null
   siret: string | null
   rna: string | null
+  aUnReferent: boolean
   nomReferent: string | null
   courrielReferent: string | null
   telephoneReferent: string | null

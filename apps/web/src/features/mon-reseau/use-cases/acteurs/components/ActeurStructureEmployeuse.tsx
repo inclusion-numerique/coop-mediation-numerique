@@ -25,6 +25,7 @@ const ActeurStructureEmployeuse = ({
       adresseComplete,
       siret,
       rna,
+      aUnReferent,
       nomReferent,
       courrielReferent,
       telephoneReferent,
@@ -66,7 +67,7 @@ const ActeurStructureEmployeuse = ({
         Référencé dans vos Lieux d’activité
       </Badge>
     )}
-    {showReferentStructure && nomReferent != null && (
+    {showReferentStructure && aUnReferent && (
       <>
         <ReferentStructure
           nomReferent={nomReferent}

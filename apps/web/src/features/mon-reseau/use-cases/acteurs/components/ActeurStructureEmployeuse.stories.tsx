@@ -37,6 +37,7 @@ export const Complet: Story = {
         codeInsee: '51454',
         siret: '43493312300029',
         rna: '1234567890',
+        aUnReferent: true,
         nomReferent: 'John Doe',
         courrielReferent: 'john.doe@example.com',
         telephoneReferent: '0123456789',
@@ -62,6 +63,7 @@ export const Minimal: Story = {
         complementAdresse: null,
         siret: null,
         rna: null,
+        aUnReferent: false,
         nomReferent: null,
         courrielReferent: null,
         telephoneReferent: null,
@@ -87,6 +89,7 @@ export const MinimalAvecSiret: Story = {
         complementAdresse: null,
         siret: '43493312300029',
         rna: null,
+        aUnReferent: false,
         nomReferent: null,
         courrielReferent: null,
         telephoneReferent: null,
@@ -112,6 +115,7 @@ export const MinimalAvecTypologies: Story = {
         complementAdresse: null,
         siret: null,
         rna: null,
+        aUnReferent: false,
         nomReferent: null,
         courrielReferent: null,
         telephoneReferent: null,
@@ -119,6 +123,37 @@ export const MinimalAvecTypologies: Story = {
     },
     showIsLieuActiviteNotice: false,
     showReferentStructure: false,
+    showReferentStructureConseillerNumeriqueSupportNotice: false,
+    canUpdateStructure: false,
+  },
+}
+
+/**
+ * Cas de production : 644 employeuses ont un courriel ou un téléphone dans leur
+ * jsonb mais aucun nom. Le bloc contact doit s'afficher quand même — il était
+ * conditionné au nom, et disparaissait donc entièrement.
+ */
+export const ContactSansNom: Story = {
+  args: {
+    emploi: {
+      structure: structure({
+        id: 1,
+        nom: 'LELIEN26',
+        adresse: 'Rue du Bourg',
+        commune: 'Dieulefit',
+        codePostal: '26220',
+        codeInsee: '26114',
+        complementAdresse: null,
+        siret: '83922613100036',
+        rna: null,
+        aUnReferent: true,
+        nomReferent: null,
+        courrielReferent: 'lelien26@orange.fr',
+        telephoneReferent: '04 69 14 48 06',
+      }),
+    },
+    showIsLieuActiviteNotice: false,
+    showReferentStructure: true,
     showReferentStructureConseillerNumeriqueSupportNotice: false,
     canUpdateStructure: false,
   },

@@ -83,18 +83,30 @@ export const ContactReferent = (contact: unknown): ContactReferent => {
  * Mise à plat du référent, pour les affichages qui portent encore les trois
  * champs séparés. Unique source de cette dérivation : les appelants ne
  * réinterprètent pas l'union chacun de leur côté.
+ *
+ * `aUnReferent` porte le tag de l'union, qu'aucun des trois champs ne permet de
+ * reconstituer sans se tromper : 644 employeuses de production n'ont ni `nom`
+ * ni `prenom` dans leur jsonb mais bien un courriel ou un téléphone. Déduire la
+ * présence d'un contact de celle du nom masquait leur bloc entier.
  */
 export const referentAffichage = (
   contact: ContactReferent,
 ): {
+  aUnReferent: boolean
   nomReferent: string | null
   courrielReferent: string | null
   telephoneReferent: string | null
 } =>
   contact._tag === 'renseigne'
     ? {
+        aUnReferent: true,
         nomReferent: contact.nom,
         courrielReferent: contact.courriel,
         telephoneReferent: contact.telephone,
       }
-    : { nomReferent: null, courrielReferent: null, telephoneReferent: null }
+    : {
+        aUnReferent: false,
+        nomReferent: null,
+        courrielReferent: null,
+        telephoneReferent: null,
+      }

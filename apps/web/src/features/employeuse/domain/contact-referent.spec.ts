@@ -1,4 +1,4 @@
-import { ContactReferent } from './contact-referent'
+import { ContactReferent, referentAffichage } from './contact-referent'
 
 describe('ContactReferent', () => {
   it('assemble prénom puis nom et retient le gestionnaire', () => {
@@ -97,5 +97,32 @@ describe('ContactReferent', () => {
         courriels: { referent_hierarchique: 'pas-une-adresse' },
       }),
     ).toMatchObject({ courriel: null })
+  })
+})
+
+describe('referentAffichage', () => {
+  // Cas de production : 644 employeuses n'ont ni nom ni prénom dans leur jsonb
+  // mais bien un courriel ou un téléphone. Conditionner l'affichage au nom
+  // masquait leur bloc contact entier.
+  it('signale un référent joignable même sans nom', () => {
+    expect(
+      referentAffichage(
+        ContactReferent({ courriels: { email: 'lelien26@orange.fr' } }),
+      ),
+    ).toEqual({
+      aUnReferent: true,
+      nomReferent: null,
+      courrielReferent: 'lelien26@orange.fr',
+      telephoneReferent: null,
+    })
+  })
+
+  it('ne signale aucun référent quand le contact est vide', () => {
+    expect(referentAffichage(ContactReferent(null))).toEqual({
+      aUnReferent: false,
+      nomReferent: null,
+      courrielReferent: null,
+      telephoneReferent: null,
+    })
   })
 })

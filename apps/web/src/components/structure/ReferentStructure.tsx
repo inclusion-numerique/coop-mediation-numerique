@@ -37,7 +37,11 @@ export const ReferentStructure = ({
       </span>
     </div>
     <div className="fr-flex fr-direction-column fr-flex-gap-1v">
-      <span className="fr-text--lg fr-text--bold fr-mb-1v">{nomReferent}</span>
+      {nomReferent && (
+        <span className="fr-text--lg fr-text--bold fr-mb-1v">
+          {nomReferent}
+        </span>
+      )}
       {(courrielReferent || telephoneReferent) && (
         <span className="fr-text-mention--grey fr-text--sm fr-mb-0 fr-flex fr-flex-gap-2v">
           {courrielReferent && (
