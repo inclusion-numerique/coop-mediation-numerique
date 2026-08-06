@@ -30,16 +30,46 @@ correspondante** (via `structure_coop_id`), complète (dénomination + adresse).
 - `completer-structures-main` : complète les SA main incomplètes depuis le SIRET
   (API Recherche d'entreprises + géocodage BAN).
 
-Vérification (aucune employeuse coop active sans SA main) :
+### Vérification — les trois requêtes doivent renvoyer 0
+
+Une SA employeuse absente de main ne se contente pas de manquer : elle **exclut ses salariés
+du backfill 2b**, dont `chargerCibles` joint sur `main.structure_administrative`. Le job les
+compte alors comme traités (`statut=ok`) sans rien écrire — le compte rendu ne signale rien.
+D'où trois contrôles et non un seul : la cause, puis ses deux effets.
 
 ```sql
+-- (a) cause : employeuse coop active sans SA main
 SELECT count(*) AS employeuses_coop_sans_sa_main
 FROM (SELECT DISTINCT structure_id FROM coop.employes_structures WHERE suppression IS NULL) es
 WHERE NOT EXISTS (
   SELECT 1 FROM main.structure_administrative m WHERE m.structure_coop_id = es.structure_id
 );
--- attendu : 0 (ou résidu connu/assumé)
+
+-- (b) effet : salarié d'une employeuse active privé de main.personne
+SELECT count(*) AS users_actifs_sans_personne_main
+FROM coop.users u
+WHERE u.deleted IS NULL
+  AND EXISTS (
+    SELECT 1 FROM coop.employes_structures es
+    WHERE es.user_id = u.id AND es.suppression IS NULL
+      AND (es.fin_emploi IS NULL OR es.fin_emploi > now())
+  )
+  AND NOT EXISTS (SELECT 1 FROM main.personne p WHERE p.coop_id = u.id);
+
+-- (c) effet : emploi actif sans corrélation main
+SELECT count(*) AS emplois_actifs_sans_structure_main
+FROM coop.employes_structures es
+WHERE es.suppression IS NULL
+  AND (es.fin_emploi IS NULL OR es.fin_emploi > now())
+  AND es.structure_main_id IS NULL;
 ```
+
+**Ordre impératif** : ces trois requêtes se relancent **après** l'étape 2b et **après**
+l'étape 3, pas seulement avant. Un résidu en (a) au moment de 2b ne se rattrape pas tout
+seul — il faut créer les SA manquantes, **puis rejouer 2b et 3**.
+
+État mesuré sur le restore prod du 2026-08-06 (à ramener à 0 avant la prod) : **(a) 6**
+— 5 employeuses actives + 1 dont les emplois sont supprimés —, **(b) 4**, **(c) 5**.
 
 ---
 
@@ -140,6 +170,24 @@ que les colonnes main.
 **Échange final (PR ultérieure)** : drop des colonnes + FK coop SA
 (`activites.structure_employeuse_id`, `employes_structures.structure_id`), suppression des
 emplois coop, une fois tous les reads/writes basculés.
+
+### Écart assumé au drop de `coop.structure_administrative` / `coop.employes_structures`
+
+Audit du 2026-08-06 sur restore prod. La couverture **par lignes** est acquise
+(activités 4 017 546 / 4 017 546) ; l'écart restant est **par colonnes**. Décisions prises,
+à ne pas rouvrir :
+
+| Donnée coop sans équivalent main | Volume | Décision |
+|---|---|---|
+| SA employeuse absente de main | 6 | **À corriger** — cf. étape 0, seul point bloquant |
+| `debut_emploi` / `fin_emploi` | 2 384 débuts, 220 fins sans `main.contrat` correspondant | **Assumé** — l'Entrepôt fait autorité sur les contrats : ce qu'il n'a pas n'a pas lieu d'être |
+| `nom/courriel/telephone_referent` | 344 sans contact main | **Assumé** — les référents sont gérés par l'Entrepôt, les nôtres sont présumés obsolètes |
+| `creation_par_id`, `modification_par_id`, `suppression_par_id` | toute la table | **Assumé perdu** — piste d'audit non portée |
+
+Non vérifié à ce stade, et qui reste à la charge de qui déclenchera le drop : l'**égalité des
+valeurs** là où les deux côtés sont renseignés (2 091 SA ont « un » contact main, pas
+forcément le même référent), et le recouvrement des **périodes** entre `main.contrat` et
+`debut_emploi`/`fin_emploi`. L'audit n'a porté que sur la présence.
 
 ## Gotchas
 

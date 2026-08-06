@@ -274,3 +274,12 @@ Une fois A+B+C faits et validés :
 
 **Garde-fou** : ne jamais poser la contrainte `NOT NULL` / DROP uuid tant que l'étape 5 n'est pas
 verte (couverture main à 100 % sur les lignes référencées).
+
+**Second garde-fou (personnes/affectations)** : l'étape 5 ne couvre que `coop.activites`. Une SA
+employeuse absente de main n'y apparaît pas et laisse pourtant ses salariés sans `main.personne`
+ni affectation — le backfill 2b les compte `ok` sans rien écrire. Passer les **trois requêtes de
+l'étape 0** du runbook de prep (`adr-002-runbook-prep-prod-pur-main.md`) avant de déployer le
+code pur-main, et les repasser après 2b et 3. Mesuré 6 / 4 / 5 sur le restore du 2026-08-06.
+
+Les autres écarts coop → main relevés au même audit (dates d'emploi, référents, piste d'audit)
+sont **assumés** : voir le tableau de décisions en fin de runbook de prep.
