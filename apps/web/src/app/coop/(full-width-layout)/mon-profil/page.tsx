@@ -7,6 +7,7 @@ import Contract from '@app/web/components/conseiller-numerique/Contract'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { getContractInfo } from '@app/web/conseiller-numerique/getContractInfo'
 import { findConseillerNumeriqueV1 } from '@app/web/external-apis/conseiller-numerique/searchConseillerNumeriqueV1'
+import { telephoneDisplayString } from '@app/web/libraries/telephone'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
@@ -50,7 +51,11 @@ const MonProfilPage = async () => {
             <ProfileEditCard
               name={user.name}
               email={user.email}
-              phone={user.phone}
+              // Le téléphone est stocké en E.164 (`+33430444879`) : forme
+              // canonique, pas forme lisible. La mise au format national se
+              // fait ici, à la frontière qui prépare les props, et non dans la
+              // vue, qui reste purement présentationnelle.
+              phone={user.phone ? telephoneDisplayString(user.phone) : null}
             />
           </section>
           {user.coordinateur ? (

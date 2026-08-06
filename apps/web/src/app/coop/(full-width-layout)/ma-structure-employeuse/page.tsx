@@ -2,8 +2,11 @@ import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import {
+  consulterEmployeuseAUneDate,
+  emploiEmployeuseAffichage,
+} from '@app/web/features/employeuse/server'
 import ActeurStructureEmployeuse from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurStructureEmployeuse'
-import { prismaClient } from '@app/web/prismaClient'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
@@ -20,62 +23,15 @@ const MaStructureEmployeusePage = async () => {
     return redirect('/')
   }
 
-  const structuresEmployeuses = await prismaClient.employeStructure.findMany({
-    where: {
-      userId: user.id,
-      suppression: null,
-      OR: [
-        {
-          fin: null,
-        },
-        {
-          fin: { gte: new Date() },
-        },
-      ],
-    },
-    orderBy: {
-      debut: 'desc',
-    },
-    select: {
-      id: true,
-      userId: true,
-      debut: true,
-      fin: true,
-      creation: true,
-      modification: true,
-      structure: {
-        select: {
-          id: true,
-          nom: true,
-          adresse: true,
-          commune: true,
-          codePostal: true,
-          codeInsee: true,
-          complementAdresse: true,
-          siret: true,
-          rna: true,
-          nomReferent: true,
-          courrielReferent: true,
-          telephoneReferent: true,
-        },
-      },
-    },
+  // Employeuse COURANTE en pur main (ADR-002 périmètre élargi) : affectation active / contrat couvrant
+  // aujourd'hui. Plus aucune lecture de `coop.employes_structures`.
+  const employeuse = await consulterEmployeuseAUneDate({
+    userId: user.id,
+    date: new Date(),
   })
-
-  const emploi = structuresEmployeuses.at(0)
-  const structureEmployeuse = emploi?.structure
-
-  const matchingLieuActivite =
-    structureEmployeuse && user.mediateur
-      ? await prismaClient.mediateurEnActivite.findFirst({
-          where: {
-            mediateurId: user.mediateur.id,
-            structureId: structureEmployeuse.id,
-            suppression: null,
-            fin: null,
-          },
-        })
-      : null
+  const emploi = employeuse
+    ? { structure: emploiEmployeuseAffichage(employeuse) }
+    : null
 
   return (
     <>
@@ -91,10 +47,12 @@ const MaStructureEmployeusePage = async () => {
             <h1 className="fr-page-title fr-m-0">Ma structure employeuse</h1>
           </div>
 
-          {structureEmployeuse ? (
+          {emploi ? (
             <ActeurStructureEmployeuse
               emploi={emploi}
-              showIsLieuActiviteNotice={matchingLieuActivite != null}
+              // La notice « employeuse = lieu d'activité » reposait sur l'égalité d'id employeuse/lieu,
+              // morte depuis l'étape 1 (clé de corrélation). Désactivée ici (ADR-002).
+              showIsLieuActiviteNotice={false}
               showReferentStructure={true}
               showReferentStructureConseillerNumeriqueSupportNotice={false}
               canUpdateStructure={user.isConseillerNumerique}

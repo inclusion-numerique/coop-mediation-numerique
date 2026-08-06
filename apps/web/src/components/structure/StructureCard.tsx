@@ -25,6 +25,11 @@ const StructureCard = ({
 }) => {
   const tooltipId = `tooltip-${nom.replaceAll('"', '')}-${typologies?.join(',')}-${siret}-${rna}-${codePostal}-${commune}-${adresse}`
 
+  // Une structure peut n'avoir aucune adresse exploitable (établissement non
+  // diffusible) : on masque alors la ligne entière plutôt que d'afficher une
+  // épingle sans rien à côté.
+  const adresseAffichee = addresseFromParts({ adresse, codePostal, commune })
+
   return (
     <div
       className={classNames(
@@ -37,10 +42,12 @@ const StructureCard = ({
         <p className="fr-h6 fr-mb-0">{nom}</p>
         {!!topRight && <div>{topRight}</div>}
       </div>
-      <p className="fr-text--sm fr-mt-1v fr-text-mention--grey fr-mb-0">
-        <span className="fr-icon-map-pin-2-line fr-icon--sm fr-mr-1w" />
-        {addresseFromParts({ adresse, codePostal, commune })}
-      </p>
+      {!!adresseAffichee && (
+        <p className="fr-text--sm fr-mt-1v fr-text-mention--grey fr-mb-0">
+          <span className="fr-icon-map-pin-2-line fr-icon--sm fr-mr-1w" />
+          {adresseAffichee}
+        </p>
+      )}
 
       {!!typologies && typologies?.length > 0 && (
         <p className="fr-mt-1v fr-text--sm fr-text-mention--grey fr-mb-0 fr-flex fr-align-items-center">

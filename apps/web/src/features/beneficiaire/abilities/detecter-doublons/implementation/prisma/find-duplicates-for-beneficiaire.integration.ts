@@ -109,20 +109,24 @@ const legacyInvalidTelephone = 'NUMERO-LEGACY-INVALIDE'
 describe('findDuplicateForBeneficiaire', () => {
   beforeAll(async () => {
     // Ensure mediateur exists (make test self-contained)
+    // Self-contained + order-independent : on garantit le médiateur AUSSI à l'update (un autre test
+    // partageant ce user fixture peut l'avoir recréé sans ce médiateur), sinon la FK
+    // `beneficiaires_mediateur_id_fkey` casse.
+    const ensureMediateur = {
+      connectOrCreate: {
+        where: { id: testMediateurId },
+        create: { id: testMediateurId },
+      },
+    }
     await prismaClient.user.upsert({
       where: { id: mediateurSansActivitesUserId },
-      update: {},
+      update: { mediateur: ensureMediateur },
       create: {
         id: mediateurSansActivitesUserId,
         role: 'User',
         isFixture: true,
         email: `test-doublons-${Date.now()}@test.com`,
-        mediateur: {
-          connectOrCreate: {
-            where: { id: testMediateurId },
-            create: { id: testMediateurId },
-          },
-        },
+        mediateur: ensureMediateur,
       },
     })
 

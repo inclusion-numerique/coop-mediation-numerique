@@ -1,4 +1,5 @@
 import { writeFile } from 'node:fs/promises'
+import { getCorrelatedEmployeuseRelations } from '@app/web/features/structures/correlateStructureAdministrative'
 import {
   type ActionPlanRow,
   escapeCsvField,
@@ -92,27 +93,14 @@ export const executeApplySupprimerLieux = async (
       continue
     }
 
-    // Emplois + activités employeuse corrélés par nom + adresse + code INSEE (plus de lien FK).
-    // Décision de SUPPRESSION : on corrèle directement, en comptant à l'identique de
-    // l'ancien _count via le lien (sans filtre de suppression sur emplois/activités).
-    const correlatedEmployeuses =
-      await prismaClient.structureAdministrative.findMany({
-        where: {
-          nom: structure.nom,
-          adresse: structure.adresse,
-          codeInsee: structure.codeInsee,
-          suppression: null,
-        },
-        select: { _count: { select: { emplois: true, activites: true } } },
-      })
-    const emploisCount = correlatedEmployeuses.reduce(
-      (sum, employeuse) => sum + employeuse._count.emplois,
-      0,
-    )
-    const activitesEmployeurCount = correlatedEmployeuses.reduce(
-      (sum, employeuse) => sum + employeuse._count.activites,
-      0,
-    )
+    // ADR-002 échange final : le signal EMPLOYEUSE (corrélation coop nom+adresse+INSEE) est DÉPRÉCIÉ
+    // (voir correlateStructureAdministrative — non fiable sur main, emplois gelés). Il renvoie 0 et ne
+    // pèse plus sur la décision. Les gardes anti-suppression lieu-natives (activités du lieu, médiateurs
+    // en activité) restent, elles, pleinement actives.
+    const { employesIds, activitesEmployeurIds } =
+      await getCorrelatedEmployeuseRelations(structure)
+    const emploisCount = employesIds.length
+    const activitesEmployeurCount = activitesEmployeurIds.length
 
     const hasData =
       structure.activitesCount > 0 ||

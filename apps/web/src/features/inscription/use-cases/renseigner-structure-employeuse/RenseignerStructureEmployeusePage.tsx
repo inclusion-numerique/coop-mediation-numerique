@@ -1,13 +1,10 @@
-import type { SessionUser } from '@app/web/auth/sessionUser'
 import IconInSquare from '@app/web/components/IconInSquare'
 import InscriptionCard from '@app/web/features/inscription/components/InscriptionCard'
 import RenseignerStructureEmployeuseForm from './RenseignerStructureEmployeuseForm'
 
 const RenseignerStructureEmployeusePage = ({
-  user,
   nextStepPath,
 }: {
-  user: SessionUser
   nextStepPath: string
 }) => {
   return (
@@ -29,10 +26,7 @@ const RenseignerStructureEmployeusePage = ({
         que médiateur numérique. Recherchez-la par son nom, son SIRET ou son
         adresse.
       </p>
-      <RenseignerStructureEmployeuseForm
-        user={user}
-        nextStepPath={nextStepPath}
-      />
+      <RenseignerStructureEmployeuseForm nextStepPath={nextStepPath} />
     </InscriptionCard>
   )
 }

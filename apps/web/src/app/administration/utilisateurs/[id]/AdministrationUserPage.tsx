@@ -29,7 +29,6 @@ import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Tag from '@codegouvfr/react-dsfr/Tag'
-import type { LieuInclusion } from '@prisma/client'
 import Link from 'next/link'
 import UsurpUserButton from '../../usurpation/UsurpUserButton'
 import { type AdministrationUserPageData } from './getAdministrationUserPageData'
@@ -48,19 +47,19 @@ const getStructuresInfos = (
     nom,
     creation,
     suppression,
-  }: Pick<
-    LieuInclusion,
-    | 'id'
-    | 'commune'
-    | 'adresse'
-    | 'codeInsee'
-    | 'codePostal'
-    | 'siret'
-    | 'rna'
-    | 'nom'
-    | 'creation'
-    | 'suppression'
-  >,
+  }: {
+    id: string
+    commune: string
+    adresse: string
+    codeInsee: string | null
+    codePostal: string
+    siret: string | null
+    rna: string | null
+    nom: string
+    // `creation` peut être nul pour une employeuse main (createdAt optionnel) ; non-null pour un lieu.
+    creation: Date | null
+    suppression: Date | null
+  },
   // Une employeuse (emploi) et un lieu (activité) pointent des pages admin différentes.
   kind: 'lieu' | 'employeuse' = 'lieu',
 ): LabelAndValue[] => [
@@ -110,7 +109,7 @@ const getStructuresInfos = (
   },
   {
     label: 'Créé le',
-    value: dateAsDay(creation),
+    value: creation ? dateAsDay(creation) : '-',
   },
   {
     label: 'Structure supprimée le',
@@ -177,10 +176,10 @@ const AdministrationUserPage = async ({
   const sortedUploads = uploads.sort(
     (a, b) => b.created.getTime() - a.created.getTime(),
   )
-  const nonDeletedEmplois = emplois.filter(
-    (emploi) => emploi.suppression === null,
-  )
-  const deletedEmplois = emplois.filter((emploi) => emploi.suppression !== null)
+  // Pur main : l'employeuse est « en cours » (affectation active) ou « terminée » (inactive).
+  // L'ancien soft-delete coop (`suppression`) est abandonné.
+  const emploisEnCours = emplois.filter((emploi) => emploi.estActive)
+  const emploisTermines = emplois.filter((emploi) => !emploi.estActive)
 
   const dataspaceInfo = await getMediateurFromDataspaceApi({
     email: user.email,
@@ -637,23 +636,9 @@ const AdministrationUserPage = async ({
           </AdministrationInfoCard>
         )}
         {emplois.length > 0 ? (
-          <AdministrationInfoCard
-            title="Contrats - Structures employeuses"
-            actions={
-              <Button
-                iconId="fr-icon-settings-5-line"
-                priority="tertiary"
-                size="small"
-                linkProps={{
-                  href: `/administration/utilisateurs/${user.id}/emplois`,
-                }}
-              >
-                Modifier
-              </Button>
-            }
-          >
-            {nonDeletedEmplois.length > 0 ? (
-              nonDeletedEmplois.map((emploi) => (
+          <AdministrationInfoCard title="Contrats - Structures employeuses">
+            {emploisEnCours.length > 0 ? (
+              emploisEnCours.map((emploi) => (
                 <div key={emploi.id}>
                   <hr className="fr-separator-1px fr-mt-4v" />
                   <div className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
@@ -699,19 +684,19 @@ const AdministrationUserPage = async ({
             ) : (
               <Notice
                 className="fr-notice--info fr-mt-4v fr-mb-0"
-                title={<>Aucun contrat non supprimé</>}
+                title={<>Aucun contrat en cours</>}
               />
             )}
-            {deletedEmplois.length > 0 && (
+            {emploisTermines.length > 0 && (
               <div className="fr-accordions-group fr-mt-8v">
-                <Accordion label={`Supprimés - ${deletedEmplois.length}`}>
-                  {deletedEmplois.map((emploi) => (
+                <Accordion label={`Terminés - ${emploisTermines.length}`}>
+                  {emploisTermines.map((emploi) => (
                     <div key={emploi.id}>
                       <hr className="fr-separator-1px fr-mt-4v" />
                       <div className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
                         {emploi.structure.nom}{' '}
                         <Badge className="fr-ml-2w" severity="warning" small>
-                          Supprimé
+                          Contrat terminé
                         </Badge>
                       </div>
                       <AdministrationInlineLabelsValues
@@ -728,12 +713,6 @@ const AdministrationUserPage = async ({
                           {
                             label: 'Créé le',
                             value: dateAsDay(emploi.creation),
-                          },
-                          {
-                            label: 'Supprimé le',
-                            value: emploi.suppression
-                              ? dateAsDay(emploi.suppression)
-                              : '-',
                           },
                         ]}
                       />
@@ -754,21 +733,7 @@ const AdministrationUserPage = async ({
           </AdministrationInfoCard>
         ) : (
           (!!coordinateur || !!mediateur) && (
-            <AdministrationInfoCard
-              title="Structure employeuse"
-              actions={
-                <Button
-                  iconId="fr-icon-settings-5-line"
-                  priority="tertiary"
-                  size="small"
-                  linkProps={{
-                    href: `/administration/utilisateurs/${user.id}/emplois`,
-                  }}
-                >
-                  Paramétrer les structures employeuses
-                </Button>
-              }
-            >
+            <AdministrationInfoCard title="Structure employeuse">
               <Notice
                 className="fr-notice--alert fr-mt-4v fr-mb-0"
                 title={<>Aucune structure employeuse</>}

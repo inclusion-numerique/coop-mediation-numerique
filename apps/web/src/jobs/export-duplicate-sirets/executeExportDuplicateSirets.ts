@@ -143,7 +143,8 @@ export const executeExportDuplicateSirets = async (
             ? 'oui'
             : 'non',
         optional(structure.activitesCount),
-        structure.emploisCount,
+        // ADR-002 échange final : emplois employeur = concept MAIN, hors périmètre lieu -> 0.
+        0,
         optional(structure.mediateursCount),
         structure.modification.toISOString(),
         escapeCsvField(apiData.nom),

@@ -1,17 +1,20 @@
-import { getEmploisCountByCorrelation } from '@app/web/features/structures/correlateStructureAdministrative'
 import { prismaClient } from '@app/web/prismaClient'
 
 /**
- * Une structure porteuse d'un SIRET peut être un LIEU d'activité (`lieu_inclusion`,
- * SIRET optionnel) ou une STRUCTURE EMPLOYEUSE (`structure_administrative`, SIRET
- * obligatoire). Les deux tables sont indépendantes (corrélées par nom+adresse, sans FK).
- * Ce module offre une vue unifiée pour l'outillage SIRET (audit, dédup, normalisation).
+ * Outillage SIRET des LIEUX (`lieu_inclusion`) : audit, déduplication, normalisation.
+ *
+ * ADR-002 échange final : la source EMPLOYEUSE a été RETIRÉE de cet outillage. La qualité SIRET des
+ * employeurs est désormais le job de l'Entrepôt (`main.structure_administrative`, possédée par Flyway) ;
+ * la coop ne modifie plus les SIRET/identités d'employeurs (« juste consulter »). Cet outillage ne
+ * couvre donc plus que les LIEUX, qui restent gérés par la coop.
  */
-export type SiretSource = 'lieu' | 'employeuse'
+export type SiretSource = 'lieu'
+
+type LieuSiretId = string
 
 export type SiretBearingStructure = {
-  id: string
-  source: SiretSource
+  source: 'lieu'
+  id: LieuSiretId
   siret: string
   nom: string
   adresse: string
@@ -20,13 +23,10 @@ export type SiretBearingStructure = {
   codeInsee: string | null
   synchronisationSiret: Date | null
   modification: Date
-  // Contexte spécifique au LIEU (null pour une employeuse).
   telephone: string | null
   visibleCarto: boolean | null
   activitesCount: number | null
   mediateursCount: number | null
-  // Emplois rattachés : corrélés (lieu) ou comptés directement (employeuse).
-  emploisCount: number
 }
 
 const siretFilter = {
@@ -35,65 +35,36 @@ const siretFilter = {
   NOT: { siret: '' },
 } as const
 
-/** Vue unifiée des structures (lieu + employeuse) portant un SIRET renseigné. */
+/** Vue des LIEUX portant un SIRET renseigné. */
 export const getSiretBearingStructures = async ({
   limit,
-  sources = ['lieu', 'employeuse'],
 }: {
   limit?: number
-  sources?: SiretSource[]
 } = {}): Promise<SiretBearingStructure[]> => {
-  const lieux = sources.includes('lieu')
-    ? await prismaClient.lieuInclusion.findMany({
-        where: siretFilter,
-        select: {
-          id: true,
-          siret: true,
-          nom: true,
-          adresse: true,
-          commune: true,
-          codePostal: true,
-          codeInsee: true,
-          synchronisationSiret: true,
-          modification: true,
-          telephone: true,
-          visiblePourCartographieNationale: true,
-          activitesCount: true,
-          _count: { select: { mediateursEnActivite: true } },
-        },
-        orderBy: { siret: 'asc' },
-        ...(limit ? { take: limit } : {}),
-      })
-    : []
-
-  const employeuses = sources.includes('employeuse')
-    ? await prismaClient.structureAdministrative.findMany({
-        where: siretFilter,
-        select: {
-          id: true,
-          siret: true,
-          nom: true,
-          adresse: true,
-          commune: true,
-          codePostal: true,
-          codeInsee: true,
-          synchronisationSiret: true,
-          modification: true,
-          _count: { select: { emplois: true } },
-        },
-        orderBy: { siret: 'asc' },
-        ...(limit ? { take: limit } : {}),
-      })
-    : []
-
-  // Lieu : emplois de l'employeuse corrélée (nom+adresse+INSEE, pas de FK).
-  const emploisByLieuId = await getEmploisCountByCorrelation(lieux, {
-    activeOnly: false,
+  const lieux = await prismaClient.lieuInclusion.findMany({
+    where: siretFilter,
+    select: {
+      id: true,
+      siret: true,
+      nom: true,
+      adresse: true,
+      commune: true,
+      codePostal: true,
+      codeInsee: true,
+      synchronisationSiret: true,
+      modification: true,
+      telephone: true,
+      visiblePourCartographieNationale: true,
+      activitesCount: true,
+      _count: { select: { mediateursEnActivite: true } },
+    },
+    orderBy: { siret: 'asc' },
+    ...(limit ? { take: limit } : {}),
   })
 
-  const lieuRows: SiretBearingStructure[] = lieux.map((lieu) => ({
+  return lieux.map((lieu) => ({
     id: lieu.id,
-    source: 'lieu',
+    source: 'lieu' as const,
     siret: lieu.siret as string,
     nom: lieu.nom,
     adresse: lieu.adresse,
@@ -106,76 +77,29 @@ export const getSiretBearingStructures = async ({
     visibleCarto: lieu.visiblePourCartographieNationale,
     activitesCount: lieu.activitesCount,
     mediateursCount: lieu._count.mediateursEnActivite,
-    emploisCount: emploisByLieuId.get(lieu.id) ?? 0,
   }))
-
-  const employeuseRows: SiretBearingStructure[] = employeuses.map(
-    (employeuse) => ({
-      id: employeuse.id,
-      source: 'employeuse',
-      siret: employeuse.siret as string,
-      nom: employeuse.nom,
-      adresse: employeuse.adresse,
-      commune: employeuse.commune,
-      codePostal: employeuse.codePostal,
-      codeInsee: employeuse.codeInsee,
-      synchronisationSiret: employeuse.synchronisationSiret,
-      modification: employeuse.modification,
-      // Concepts lieu absents de structure_administrative.
-      telephone: null,
-      visibleCarto: null,
-      activitesCount: null,
-      mediateursCount: null,
-      // Emplois comptés directement (employes_structures.structure_id → SA).
-      emploisCount: employeuse._count.emplois,
-    }),
-  )
-
-  return [...lieuRows, ...employeuseRows]
 }
 
-/** Efface un SIRET erroné (et sa date de synchro) dans la bonne table selon la source. */
+/** Efface un SIRET erroné (et sa date de synchro) sur un LIEU. */
 export const clearSiret = async ({
   id,
-  source,
 }: {
-  id: string
-  source: SiretSource
+  id: LieuSiretId
 }): Promise<void> => {
-  const data = { siret: null, synchronisationSiret: null }
-  await (source === 'lieu'
-    ? prismaClient.lieuInclusion.update({ where: { id }, data })
-    : prismaClient.structureAdministrative.update({ where: { id }, data }))
+  await prismaClient.lieuInclusion.update({
+    where: { id },
+    data: { siret: null, synchronisationSiret: null },
+  })
 }
 
-/** Marque un SIRET comme vérifié/synchronisé sans modifier l'identité. */
+/** Marque un SIRET de LIEU comme vérifié/synchronisé sans modifier l'identité. */
 export const markSiretSynchronised = async ({
   id,
-  source,
 }: {
-  id: string
-  source: SiretSource
+  id: LieuSiretId
 }): Promise<void> => {
-  const data = { synchronisationSiret: new Date() }
-  await (source === 'lieu'
-    ? prismaClient.lieuInclusion.update({ where: { id }, data })
-    : prismaClient.structureAdministrative.update({ where: { id }, data }))
-}
-
-/** Aligne l'identité légale d'une EMPLOYEUSE sur les données SIRENE (API Entreprise). */
-export const alignEmployeuseIdentity = async (
-  id: string,
-  data: {
-    nom: string
-    adresse: string
-    commune: string
-    codePostal: string
-    codeInsee: string
-  },
-): Promise<void> => {
-  const now = new Date()
-  await prismaClient.structureAdministrative.update({
+  await prismaClient.lieuInclusion.update({
     where: { id },
-    data: { ...data, modification: now, synchronisationSiret: now },
+    data: { synchronisationSiret: new Date() },
   })
 }

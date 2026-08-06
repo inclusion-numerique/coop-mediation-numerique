@@ -25,6 +25,9 @@ type ActivitePrincipale = {
 type UniteLegale = {
   siren: string // SIREN number of the legal unit
   type: 'personne_physique' | 'personne_morale' // Type of legal person (individual or corporate)
+  // Nom construit par l'API depuis les champs de dénomination : raison sociale pour une personne
+  // morale, nom + prénom pour une personne physique (EI), masqué pour un [Non-Diffusible].
+  nom_complet: string
   personne_morale_attributs?: PersonneMoraleAttributs // Attributes for corporate legal person, nullable
   forme_juridique: FormeJuridique // Legal form attributes of the legal unit
 }

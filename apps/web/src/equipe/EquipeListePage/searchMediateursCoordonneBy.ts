@@ -104,16 +104,31 @@ const getRoleFilterClause = (role: RoleFiltre | undefined): string => {
   }
 }
 
+// Employeuse COURANTE en PUR MAIN (coop.user -> main.personne -> affectation active -> SA), une seule
+// (priorité idposte > coop, puis la plus récente). Mapping des champs coop -> colonnes main
+// (nom -> denomination, adresse recomposée depuis main.adresse). `field` est une clé contrôlée.
+const EMPLOYEUSE_MAIN_EXPRESSION: Record<string, string> = {
+  nom: 'COALESCE(sa.denomination_antenne, sa.denomination_sirene)',
+  adresse: "TRIM(CONCAT_WS(' ', ad.numero_voie, ad.repetition, ad.nom_voie))",
+  commune: 'ad.nom_commune',
+  code_postal: 'ad.code_postal',
+  code_insee: 'ad.code_insee',
+}
+
 const structureEmployeuseSubquery = (
-  field: string,
+  field: keyof typeof EMPLOYEUSE_MAIN_EXPRESSION,
   alias: string,
   userIdSource: string,
 ) => `
-  (SELECT sa.${field}
-   FROM "employes_structures" AS employes
-   INNER JOIN "structure_administrative" AS sa ON sa.id = employes.structure_id
-   WHERE employes.user_id = ${userIdSource} AND employes.suppression IS NULL
-   ORDER BY employes.creation DESC
+  (SELECT ${EMPLOYEUSE_MAIN_EXPRESSION[field]}
+   FROM main.personne p
+   JOIN main.personne_affectations_emploi a
+     ON a.personne_id = p.id AND a.est_active AND a.structure_administrative_id IS NOT NULL
+   JOIN main.structure_administrative sa ON sa.id = a.structure_administrative_id
+   LEFT JOIN main.adresse ad ON ad.id = sa.adresse_id
+   WHERE p.coop_id = ${userIdSource}
+   ORDER BY CASE a.source WHEN 'idposte' THEN 0 WHEN 'coop' THEN 1 ELSE 2 END,
+            a.created_at DESC
    LIMIT 1) AS ${alias}`
 
 const structureEmployeuseColumns = (userIdSource: string) =>

@@ -39,7 +39,12 @@ const VerifierInformationsPage = ({ user }: { user: SessionUser }) => {
     ? allProfileInscriptionLabels[user.profilInscription]
     : 'Non renseigné'
 
-  const structureEmployeuse = user.emplois.at(0)?.structure
+  const employeuse = user.emplois.at(0)?.structure
+  // Une employeuse peut n'avoir aucune dénomination en base : la carte attend un libellé, le repli
+  // d'affichage se décide ici plutôt que dans la lecture.
+  const structureEmployeuse = employeuse
+    ? { ...employeuse, nom: employeuse.nom ?? '' }
+    : undefined
 
   return (
     <InscriptionCard

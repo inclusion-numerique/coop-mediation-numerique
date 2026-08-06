@@ -75,6 +75,69 @@ export const fixtureStructuresAdministratives = [
   mediatequeAdministrative,
 ]
 
+// SA côté Entrepôt (`main.structure_administrative`) pour les employeuses fixtures : le périmètre
+// élargi ADR-002 fait lire l'employeuse depuis `main` (via `structure_main_id` / affectations). On
+// seede donc une main SA liée par `structure_coop_id` (id int auto) ; les emplois fixtures sont
+// ensuite backfillés dans le seed via cette jointure. Sans ça, l'employeuse est invisible dans les
+// parcours d'inscription seedés (coordinateur…).
+type StructureAdministrativeMainFixture = {
+  structureCoopId: string
+  create: Prisma.StructureAdministrativeMainCreateInput
+}
+
+const givenStructureAdministrativeMain = (
+  structure: {
+    id: string
+    nom: string
+    siret?: string | null
+    adresse?: string
+    commune?: string
+    codePostal?: string
+    codeInsee?: string
+  },
+  siret?: string,
+): StructureAdministrativeMainFixture => ({
+  structureCoopId: structure.id,
+  create: {
+    structureCoopId: structure.id,
+    siret: siret ?? structure.siret ?? null,
+    denominationSirene: structure.nom,
+    denominationAntenne: structure.nom,
+    // Adresse `main` : une employeuse sans commune n'est ni géocodable ni
+    // choisissable à l'inscription. Les fixtures doivent donc en porter une,
+    // comme en production.
+    ...(structure.commune && structure.codePostal && structure.codeInsee
+      ? {
+          adresse: {
+            connectOrCreate: {
+              where: { codeBan: structure.id },
+              create: {
+                codeBan: structure.id,
+                nomVoie: structure.adresse ?? null,
+                codePostal: structure.codePostal,
+                codeInsee: structure.codeInsee,
+                nomCommune: structure.commune,
+              },
+            },
+          },
+        }
+      : {}),
+  },
+})
+
+// SIRET porté par la seule ligne `main` (le lieu fixture n'en a pas) : la recherche d'employeuse
+// écarte les structures sans SIRET, puisqu'il identifie le choix. Sans lui, cette employeuse
+// resterait introuvable dans le parcours d'inscription qui la cherche.
+export const structureEmployeuseSiret = '13002526500013'
+
+export const fixtureStructuresAdministrativesMain = [
+  givenStructureAdministrativeMain(
+    structureEmployeuse,
+    structureEmployeuseSiret,
+  ),
+  givenStructureAdministrativeMain(mediateque),
+]
+
 export const seedStructureAdministrative = (
   transaction: Prisma.TransactionClient,
   administrative: Prisma.StructureAdministrativeCreateInput & { id: string },
@@ -93,6 +156,19 @@ export const seedStructures = async (transaction: Prisma.TransactionClient) => {
   await Promise.all(
     fixtureStructuresAdministratives.map((administrative) =>
       seedStructureAdministrative(transaction, administrative),
+    ),
+  )
+
+  // SA main liées (ADR-002 périmètre élargi) : idempotent par id fixe. Le schéma `main` n'est pas
+  // truncaté par deleteAll -> upsert.
+  await Promise.all(
+    fixtureStructuresAdministrativesMain.map((main) =>
+      transaction.structureAdministrativeMain.upsert({
+        where: { structureCoopId: main.structureCoopId },
+        create: main.create,
+        update: main.create,
+        select: { id: true },
+      }),
     ),
   )
 

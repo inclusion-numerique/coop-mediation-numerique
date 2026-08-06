@@ -2,6 +2,7 @@ import type { OptionsData } from '@app/ui/components/Primitives/Options'
 import type { StructureSearchResult } from '@app/web/features/inscription/use-cases/renseigner-structure-employeuse/searchStructureEmployeuseCombined'
 import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
 import { vanillaTrpc } from '@app/web/trpc'
+import { addresseFromParts } from '@app/web/utils/addresseFromParts'
 
 const itemToString = (item: StructureSearchResult | null): string =>
   item ? `${item.nom} · ${item.siret}` : ''
@@ -27,7 +28,7 @@ const renderItem = ({ item }: { item: StructureSearchResult }) => (
   <div className="fr-flex fr-direction-column">
     <span className="fr-text--bold">{item.nom}</span>
     <span className="fr-text--xs fr-text-mention--grey fr-mb-0">
-      {item.siret} · {item.adresse}, {item.codePostal} {item.commune}
+      {[item.siret, addresseFromParts(item)].filter(Boolean).join(' · ')}
     </span>
   </div>
 )

@@ -269,18 +269,23 @@ describe('filter utilisateur', () => {
       expect(filters).toEqual({})
     })
 
+    // ADR-002 échange final : le filtre passe par l'employeuse MAIN (personneMain → affectation
+    // active → structure_administrative). L'id d'employeuse est un int main (stringifié côté UI par
+    // `getStructuresEmployeusesOptions`) ; les département/commune ciblent `adresse.codeInsee`.
     it('should filter when lieux filter contains an id', () => {
-      const data = { lieux: ['52f16963-fc6f-4684-a690-68b28f10da6a'] }
+      const data = { lieux: ['42'] }
 
       const filters = filterOnLieux(data)
 
       expect(filters).toEqual({
-        emplois: {
-          some: {
-            suppression: null,
-            structure: {
-              id: {
-                in: ['52f16963-fc6f-4684-a690-68b28f10da6a'],
+        personneMain: {
+          affectationsEmploi: {
+            some: {
+              estActive: true,
+              structureAdministrative: {
+                id: {
+                  in: [42],
+                },
               },
             },
           },
@@ -294,17 +299,21 @@ describe('filter utilisateur', () => {
       const filters = filterOnLieux(data)
 
       expect(filters).toEqual({
-        emplois: {
-          some: {
-            suppression: null,
-            structure: {
-              OR: [
-                {
-                  codeInsee: {
-                    startsWith: '75',
-                  },
+        personneMain: {
+          affectationsEmploi: {
+            some: {
+              estActive: true,
+              structureAdministrative: {
+                adresse: {
+                  OR: [
+                    {
+                      codeInsee: {
+                        startsWith: '75',
+                      },
+                    },
+                  ],
                 },
-              ],
+              },
             },
           },
         },
@@ -317,12 +326,16 @@ describe('filter utilisateur', () => {
       const filters = filterOnLieux(data)
 
       expect(filters).toEqual({
-        emplois: {
-          some: {
-            suppression: null,
-            structure: {
-              codeInsee: {
-                in: ['86137'],
+        personneMain: {
+          affectationsEmploi: {
+            some: {
+              estActive: true,
+              structureAdministrative: {
+                adresse: {
+                  codeInsee: {
+                    in: ['86137'],
+                  },
+                },
               },
             },
           },
@@ -332,7 +345,7 @@ describe('filter utilisateur', () => {
 
     it('should filter communes, departements and lieux, when all are filterd', () => {
       const data = {
-        lieux: ['52f16963-fc6f-4684-a690-68b28f10da6a'],
+        lieux: ['42'],
         departements: ['75'],
         communes: ['86137'],
       }
@@ -340,22 +353,26 @@ describe('filter utilisateur', () => {
       const filters = filterOnLieux(data)
 
       expect(filters).toEqual({
-        emplois: {
-          some: {
-            suppression: null,
-            structure: {
-              OR: [
-                {
+        personneMain: {
+          affectationsEmploi: {
+            some: {
+              estActive: true,
+              structureAdministrative: {
+                id: {
+                  in: [42],
+                },
+                adresse: {
+                  OR: [
+                    {
+                      codeInsee: {
+                        startsWith: '75',
+                      },
+                    },
+                  ],
                   codeInsee: {
-                    startsWith: '75',
+                    in: ['86137'],
                   },
                 },
-              ],
-              codeInsee: {
-                in: ['86137'],
-              },
-              id: {
-                in: ['52f16963-fc6f-4684-a690-68b28f10da6a'],
               },
             },
           },

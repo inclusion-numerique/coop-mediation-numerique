@@ -65,6 +65,12 @@ export const packageJestConfig = ({
       '**/*.integration.tsx',
     ],
     moduleNameMapper: {
+      // `server-only` est une garde de BUNDLING : elle empêche un barrel serveur d'être
+      // embarqué dans un bundle navigateur. Sa résolution par défaut lève une erreur, ce qui
+      // n'a pas de sens sous Jest — un test EST un contexte serveur. On la neutralise ici, et
+      // ici seulement : la garde reste entière pour Next, qui seul décide des bundles.
+      '^server-only$':
+        '<rootDir>/../../apps/web/src/libraries/server-only-cli/index.ts',
       '@sentry/nextjs':
         '<rootDir>/../../packages/test/src/mocks/sentry.jest.ts',
       '\\.module\\.css$': 'identity-obj-proxy', // Mock CSS modules

@@ -68,11 +68,9 @@ const include = {
   },
   emplois: {
     where: { suppression: null },
-    include: {
-      structure: {
-        select: { id: true },
-      },
-    },
+    // ADR-002 échange final : on lit la colonne FK `structureId` (pas la relation coop SA). La vraie
+    // employeuse est consolidée via les affectations main (mergeAffectationsMain).
+    select: { structureId: true },
   },
 }
 
@@ -96,8 +94,7 @@ type Mediateur = {
 
 const toId = ({ id }: { id: string }) => id
 
-const toStructureId = ({ structure: { id } }: { structure: { id: string } }) =>
-  id
+const toStructureId = ({ structureId }: { structureId: string }) => structureId
 
 const toLieuInclusionId = ({
   lieuInclusion: { id },
@@ -402,11 +399,11 @@ const mergeStructuresEmployeuses =
   async (
     sourceUser: {
       id: string
-      emplois: { structure: { id: string } }[]
+      emplois: { structureId: string }[]
     },
     targetUser: {
       id: string
-      emplois: { structure: { id: string } }[]
+      emplois: { structureId: string }[]
     },
   ) => {
     const targetStructureIds = targetUser.emplois.map(toStructureId)
@@ -424,6 +421,70 @@ const mergeStructuresEmployeuses =
 
     await prisma.employeStructure.deleteMany({
       where: { userId: sourceUser.id },
+    })
+  }
+
+// ADR-002 échange final : consolide l'employeuse MAIN lors d'une fusion de comptes. Les affectations
+// de la personne source (coop_id) rejoignent la personne cible (dédup par la clé unique
+// personne+structure+source) ; sans personne cible, la personne source est re-pointée sur la cible.
+const mergeAffectationsMain =
+  (prisma: PrismaTransaction) =>
+  async (sourceUserId: string, targetUserId: string) => {
+    const [sourcePersonne, targetPersonne] = await Promise.all([
+      prisma.personneMain.findUnique({
+        where: { coopId: sourceUserId },
+        select: { id: true },
+      }),
+      prisma.personneMain.findUnique({
+        where: { coopId: targetUserId },
+        select: { id: true },
+      }),
+    ])
+
+    if (!sourcePersonne) return
+
+    if (!targetPersonne) {
+      await prisma.personneMain.update({
+        where: { id: sourcePersonne.id },
+        data: { coopId: targetUserId },
+      })
+      return
+    }
+
+    const targetAffectations =
+      await prisma.personneAffectationEmploiMain.findMany({
+        where: { personneId: targetPersonne.id },
+        select: { structureAdministrativeId: true, source: true },
+      })
+    const targetKeys = new Set(
+      targetAffectations.map(
+        (affectation) =>
+          `${affectation.structureAdministrativeId}:${affectation.source}`,
+      ),
+    )
+
+    const sourceAffectations =
+      await prisma.personneAffectationEmploiMain.findMany({
+        where: { personneId: sourcePersonne.id },
+        select: { id: true, structureAdministrativeId: true, source: true },
+      })
+    const movableIds = sourceAffectations
+      .filter(
+        (affectation) =>
+          !targetKeys.has(
+            `${affectation.structureAdministrativeId}:${affectation.source}`,
+          ),
+      )
+      .map((affectation) => affectation.id)
+
+    await prisma.personneAffectationEmploiMain.updateMany({
+      where: { id: { in: movableIds } },
+      data: { personneId: targetPersonne.id },
+    })
+    // Doublons restants (déjà présents chez la cible) supprimés : la personne source sera dissociée
+    // (coop_id NULL au delete user).
+    await prisma.personneAffectationEmploiMain.deleteMany({
+      where: { personneId: sourcePersonne.id },
     })
   }
 
@@ -571,6 +632,7 @@ export const mergeUser = async (
     await mergeMediateurs(prisma)(sourceUser, targetUser)
     await mergeCoordinateurs(prisma)(sourceUser, targetUser)
     await mergeStructuresEmployeuses(prisma)(sourceUser, targetUser)
+    await mergeAffectationsMain(prisma)(sourceUserId, targetUserId)
     await mergeMutations(prisma)(sourceUser, targetUser)
     await deleteUser(prisma)(sourceUser)
     await syncWithMongo(prisma)(targetUser)
