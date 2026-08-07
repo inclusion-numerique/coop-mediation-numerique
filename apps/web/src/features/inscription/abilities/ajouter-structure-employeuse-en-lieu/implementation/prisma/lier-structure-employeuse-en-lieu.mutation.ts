@@ -2,21 +2,28 @@ import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { v4 } from 'uuid'
 import type { LierStructureEmployeuseEnLieu } from '../../domain/ports'
+import { lieuDepuisEmployeuse } from './lieu-depuis-employeuse'
 
 /**
- * Rattache la structure employeuse comme lieu d'activité (parité legacy). La
- * structure employeuse est une `structure_administrative` (split), pas un lieu :
- * pour servir de lieu d'activité on matérialise une ligne `lieu_inclusion` à
- * partir de ses données, en réutilisant son id pour que l'idempotence (test
- * d'existence + branche « Non ») reste valable — aucune corrélation FK
- * employeuse↔lieu n'est conservée.
+ * Rattache l'employeuse comme lieu d'activité. L'employeuse est une
+ * `main.structure_administrative`, pas un lieu : pour servir de lieu on
+ * matérialise une ligne `coop.lieu_inclusion` portant ses données main.
+ *
+ * Le lieu est une photographie prise au moment du « Oui » : il ne se
+ * resynchronise pas si l'employeuse déménage ensuite. Et il est partagé — s'il
+ * existe déjà pour cette employeuse, on s'y rattache au lieu d'en créer un
+ * second, si bien que deux médiateurs du même établissement voient un seul lieu.
  */
 export const lierStructureEmployeuseEnLieu: LierStructureEmployeuseEnLieu =
   async ({ userId, structureEmployeuseId }) => {
+    const { lieuData, lieuCorrele } = await lieuDepuisEmployeuse(
+      structureEmployeuseId,
+    )
+
     const existing = await prismaClient.mediateurEnActivite.findFirst({
       where: {
         mediateur: { userId },
-        structureId: structureEmployeuseId,
+        lieuInclusion: lieuCorrele,
         suppression: null,
         fin: null,
       },
@@ -25,30 +32,18 @@ export const lierStructureEmployeuseEnLieu: LierStructureEmployeuseEnLieu =
 
     if (existing) return
 
-    const structureEmployeuse =
-      await prismaClient.structureAdministrative.findUniqueOrThrow({
-        where: { id: structureEmployeuseId },
-        select: {
-          id: true,
-          nom: true,
-          adresse: true,
-          commune: true,
-          codePostal: true,
-          codeInsee: true,
-          complementAdresse: true,
-          siret: true,
-          rna: true,
-          nomReferent: true,
-          courrielReferent: true,
-          telephoneReferent: true,
-        },
-      })
-
-    await prismaClient.lieuInclusion.upsert({
-      where: { id: structureEmployeuseId },
-      update: {},
-      create: structureEmployeuse,
+    const lieuExistant = await prismaClient.lieuInclusion.findFirst({
+      where: lieuCorrele,
+      orderBy: { creation: 'asc' },
+      select: { id: true },
     })
+
+    const lieuActivite =
+      lieuExistant ??
+      (await prismaClient.lieuInclusion.create({
+        data: { id: v4(), ...lieuData },
+        select: { id: true },
+      }))
 
     addMutationLog({
       userId,
@@ -61,7 +56,7 @@ export const lierStructureEmployeuseEnLieu: LierStructureEmployeuseEnLieu =
       data: {
         id: v4(),
         mediateur: { connect: { userId } },
-        lieuInclusion: { connect: { id: structureEmployeuseId } },
+        lieuInclusion: { connect: { id: lieuActivite.id } },
         debut: new Date(),
       },
     })

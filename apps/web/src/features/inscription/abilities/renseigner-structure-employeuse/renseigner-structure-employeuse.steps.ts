@@ -1,27 +1,36 @@
 import assert from 'node:assert'
-import {
-  type RenseignerStructureEmployeuseError,
-  type StructureEmployeuseInput,
-  StructureId,
+import type {
+  RattacherEmployeuse,
+  RenseignerStructureEmployeuseError,
+  StructureEmployeuseInput,
 } from '@app/web/features/inscription/abilities/renseigner-structure-employeuse'
 import { renseignerStructureEmployeuse } from '@app/web/features/inscription/abilities/renseigner-structure-employeuse/commands/renseigner-structure-employeuse'
 import { ProfilInscription } from '@app/web/features/inscription/domain'
 import {
   currentInscriptionUserId,
   seedProfilChoisi,
-  seedStructureEmployeuse,
 } from '@app/web/features/inscription/inscription.cucumber'
 import type { Result } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
+import { Before, Given, Then, When } from '@cucumber/cucumber'
 
-let nouvelleStructureId = ''
-let ancienneStructureId = ''
-let resultat: Result<
-  { readonly structureId: StructureId },
-  RenseignerStructureEmployeuseError
->
+let rattachable = true
+let rattachementsDemandes = 0
+let resultat: Result<void, RenseignerStructureEmployeuseError>
+
+Before(() => {
+  rattachable = true
+  rattachementsDemandes = 0
+})
+
+/**
+ * Port employeuse simulé : cette ability ne teste pas le rattachement — il a sa
+ * propre BDD dans `features/employeuse` — mais ce qu'elle en déduit.
+ */
+const rattacherEmployeuse: RattacherEmployeuse = async () => {
+  rattachementsDemandes += 1
+  return rattachable ? 'rattachee' : 'indisponible'
+}
 
 const structureEmployeuseInput: StructureEmployeuseInput = {
   id: null,
@@ -44,30 +53,17 @@ Given('j’ai choisi le profil {string}', async (profil: string) => {
   await seedProfilChoisi(ProfilInscription.schema.parse(profil))
 })
 
-Given('un emploi existe déjà dans une autre structure', async () => {
-  ancienneStructureId = await seedStructureEmployeuse({
-    nom: 'Ancienne structure',
-  })
-  await prismaClient.employeStructure.create({
-    data: {
-      id: v4(),
-      userId: currentInscriptionUserId(),
-      structureId: ancienneStructureId,
-      debut: new Date(),
-    },
-  })
+Given('l’employeuse choisie n’est pas rattachable', () => {
+  rattachable = false
 })
 
 When('je renseigne ma structure employeuse', async () => {
-  nouvelleStructureId = await seedStructureEmployeuse({
-    nom: 'Nouvelle structure',
-  })
   resultat = await renseignerStructureEmployeuse({
     command: {
       userId: currentInscriptionUserId(),
       structureEmployeuse: structureEmployeuseInput,
     },
-    ensureStructureEmployeuse: async () => StructureId(nouvelleStructureId),
+    rattacherEmployeuse,
     maintenant: new Date(),
   })
 })
@@ -83,30 +79,22 @@ Then('ma structure employeuse est renseignée', async () => {
   )
 })
 
-Then('je suis rattaché à cette structure comme employé', async () => {
-  const emploi = await prismaClient.employeStructure.findFirst({
-    where: {
-      userId: currentInscriptionUserId(),
-      structureId: nouvelleStructureId,
-      fin: null,
-    },
-  })
-  assert.ok(emploi, 'Aucun emploi actif pour la nouvelle structure')
+Then('le rattachement à l’employeuse a été demandé', () => {
+  assert.strictEqual(rattachementsDemandes, 1)
 })
 
-Then('le précédent emploi est rompu', async () => {
-  const ancien = await prismaClient.employeStructure.findFirst({
-    where: {
-      userId: currentInscriptionUserId(),
-      structureId: ancienneStructureId,
-    },
-  })
-  assert.ok(ancien?.fin, 'Le précédent emploi n’a pas été rompu')
+Then('aucun rattachement n’a été demandé', () => {
+  assert.strictEqual(rattachementsDemandes, 0)
 })
 
 Then('le renseignement est refusé faute de profil choisi', () => {
   assert.ok(!resultat.success, 'Le renseignement aurait dû être refusé')
   assert.strictEqual(resultat.error._tag, 'ProfilNonChoisi')
+})
+
+Then('le renseignement est refusé faute d’employeuse rattachable', () => {
+  assert.ok(!resultat.success, 'Le renseignement aurait dû être refusé')
+  assert.strictEqual(resultat.error._tag, 'EmployeuseIndisponible')
 })
 
 Then('ma structure employeuse n’est pas renseignée', async () => {
@@ -115,11 +103,4 @@ Then('ma structure employeuse n’est pas renseignée', async () => {
     select: { structureEmployeuseRenseignee: true },
   })
   assert.strictEqual(user.structureEmployeuseRenseignee, null)
-})
-
-Then('aucun emploi n’est créé', async () => {
-  const emplois = await prismaClient.employeStructure.count({
-    where: { userId: currentInscriptionUserId() },
-  })
-  assert.strictEqual(emplois, 0)
 })

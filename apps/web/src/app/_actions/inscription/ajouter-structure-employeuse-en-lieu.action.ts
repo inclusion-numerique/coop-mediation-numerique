@@ -2,8 +2,8 @@
 
 import { withAuth } from '@app/web/features/authentification'
 import {
+  EmployeuseId,
   StructureEmployeuseLieuValidation,
-  StructureId,
 } from '@app/web/features/inscription/abilities/ajouter-structure-employeuse-en-lieu'
 import { ajouterStructureEmployeuseEnLieu } from '@app/web/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/commands/ajouter-structure-employeuse-en-lieu'
 import { UserId } from '@app/web/features/inscription/domain'
@@ -15,7 +15,7 @@ export const ajouterStructureEmployeuseEnLieuAction = actionBuilder()
   .execute(async ({ user, input }) => {
     await ajouterStructureEmployeuseEnLieu({
       userId: UserId(user.id),
-      structureEmployeuseId: StructureId(input.structureEmployeuseId),
+      structureEmployeuseId: EmployeuseId(input.structureEmployeuseId),
       estLieuActivite: input.estLieuActivite,
     })
   })

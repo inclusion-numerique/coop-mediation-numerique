@@ -1,3 +1,3 @@
 export { getInscriptionEtat } from '@app/web/features/inscription/db'
-export { ensureStructureEmployeuse } from './prisma/ensure-structure-employeuse'
-export { lierEmploi } from './prisma/lier-emploi'
+export { projeterEtapeFranchie } from './prisma/projeter-etape-franchie'
+export { rattacherEmployeuse } from './prisma/rattacher-employeuse'

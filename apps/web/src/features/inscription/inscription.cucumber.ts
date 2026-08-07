@@ -15,6 +15,11 @@ let inscriptionUserId = ''
 
 const trackedStructureEmployeuseIds = new Set<string>()
 const trackedLieuActiviteIds = new Set<string>()
+const trackedEmployeuseMainIds = new Set<number>()
+const trackedAdresseMainIds = new Set<number>()
+// Le lieu matérialisé depuis une employeuse ne reprend plus son id : on le
+// retrouve, pour le nettoyage comme en production, par sa dénomination.
+const trackedEmployeuseMainNoms = new Set<string>()
 
 const adresseDeTest = {
   adresse: '1 rue de la Paix',
@@ -85,10 +90,47 @@ export const trackLieuActivite = (id: string): void => {
   trackedLieuActiviteIds.add(id)
 }
 
+/**
+ * Employeuse de test dans `main` (suivie pour nettoyage). Depuis l'échange final
+ * de l'ADR-002, l'employeuse est une `main.structure_administrative` et c'est son
+ * identifiant entier que reçoivent les écrans d'inscription — à ne pas confondre
+ * avec la `coop.structure_administrative` de `seedStructureEmployeuse`.
+ */
+export const seedEmployeuseMain = async (
+  data: { nom?: string } = {},
+): Promise<number> => {
+  const nom = data.nom ?? 'Employeuse main de test'
+
+  const adresse = await prismaClient.adresseMain.create({
+    data: {
+      numeroVoie: 1,
+      nomVoie: 'rue de la Paix',
+      nomCommune: adresseDeTest.commune,
+      codePostal: adresseDeTest.codePostal,
+      codeInsee: '75101',
+    },
+    select: { id: true },
+  })
+
+  const structure = await prismaClient.structureAdministrativeMain.create({
+    data: { denominationAntenne: nom, adresseId: adresse.id },
+    select: { id: true },
+  })
+
+  trackedAdresseMainIds.add(adresse.id)
+  trackedEmployeuseMainIds.add(structure.id)
+  trackedEmployeuseMainNoms.add(nom)
+
+  return structure.id
+}
+
 Before(async () => {
   inscriptionUserId = v4()
   trackedStructureEmployeuseIds.clear()
   trackedLieuActiviteIds.clear()
+  trackedEmployeuseMainIds.clear()
+  trackedAdresseMainIds.clear()
+  trackedEmployeuseMainNoms.clear()
   await prismaClient.user.create({
     data: {
       id: inscriptionUserId,
@@ -115,10 +157,30 @@ After(async () => {
     where: { id: { in: [...trackedStructureEmployeuseIds] } },
   })
   await prismaClient.lieuInclusion.deleteMany({
-    // Inclut les employeuses matérialisées en lieu (même id que la structure
-    // administrative) par l'ability « structure employeuse en lieu d'activité ».
+    // Inclut les employeuses matérialisées en lieu par l'ability « structure
+    // employeuse en lieu d'activité » : elles ne reprennent plus l'id de la
+    // structure, on les retrouve donc par leur dénomination.
     where: {
-      id: { in: [...trackedLieuActiviteIds, ...trackedStructureEmployeuseIds] },
+      OR: [
+        {
+          id: {
+            in: [...trackedLieuActiviteIds, ...trackedStructureEmployeuseIds],
+          },
+        },
+        { nom: { in: [...trackedEmployeuseMainNoms] } },
+      ],
     },
+  })
+  await prismaClient.personneAffectationEmploiMain.deleteMany({
+    where: { structureAdministrativeId: { in: [...trackedEmployeuseMainIds] } },
+  })
+  await prismaClient.personneMain.deleteMany({
+    where: { coopId: inscriptionUserId },
+  })
+  await prismaClient.structureAdministrativeMain.deleteMany({
+    where: { id: { in: [...trackedEmployeuseMainIds] } },
+  })
+  await prismaClient.adresseMain.deleteMany({
+    where: { id: { in: [...trackedAdresseMainIds] } },
   })
 })

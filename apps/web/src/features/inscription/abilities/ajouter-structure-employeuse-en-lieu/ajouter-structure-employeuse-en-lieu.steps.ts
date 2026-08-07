@@ -1,15 +1,24 @@
 import assert from 'node:assert'
-import { StructureId } from '@app/web/features/inscription/abilities/ajouter-structure-employeuse-en-lieu'
+import { EmployeuseId } from '@app/web/features/inscription/abilities/ajouter-structure-employeuse-en-lieu'
 import { ajouterStructureEmployeuseEnLieu } from '@app/web/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/commands/ajouter-structure-employeuse-en-lieu'
 import {
   currentInscriptionUserId,
-  seedStructureEmployeuse,
+  seedEmployeuseMain,
 } from '@app/web/features/inscription/inscription.cucumber'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 
-let structureEmployeuseId = ''
+const nomEmployeuse = 'Employeuse lieu d’activité'
+
+let structureEmployeuseId = 0
+
+const declarer = (estLieuActivite: boolean) =>
+  ajouterStructureEmployeuseEnLieu({
+    userId: currentInscriptionUserId(),
+    structureEmployeuseId: EmployeuseId(structureEmployeuseId),
+    estLieuActivite,
+  })
 
 Given('je suis médiateur', async () => {
   await prismaClient.mediateur.create({
@@ -18,49 +27,40 @@ Given('je suis médiateur', async () => {
 })
 
 Given('j’ai une structure employeuse', async () => {
-  structureEmployeuseId = await seedStructureEmployeuse({
-    nom: 'Structure employeuse de test',
-  })
+  structureEmployeuseId = await seedEmployeuseMain({ nom: nomEmployeuse })
 })
 
 Given(
   'ma structure employeuse est déjà rattachée comme lieu d’activité',
   async () => {
-    await ajouterStructureEmployeuseEnLieu({
-      userId: currentInscriptionUserId(),
-      structureEmployeuseId: StructureId(structureEmployeuseId),
-      estLieuActivite: true,
-    })
+    await declarer(true)
   },
 )
 
 When(
   'je déclare que ma structure employeuse est un lieu d’activité',
   async () => {
-    await ajouterStructureEmployeuseEnLieu({
-      userId: currentInscriptionUserId(),
-      structureEmployeuseId: StructureId(structureEmployeuseId),
-      estLieuActivite: true,
-    })
+    await declarer(true)
   },
 )
 
 When(
   'je déclare que ma structure employeuse n’est pas un lieu d’activité',
   async () => {
-    await ajouterStructureEmployeuseEnLieu({
-      userId: currentInscriptionUserId(),
-      structureEmployeuseId: StructureId(structureEmployeuseId),
-      estLieuActivite: false,
-    })
+    await declarer(false)
   },
 )
 
-const activeMediateurEnActivite = () =>
+/**
+ * Le lieu ne reprend pas l'id de l'employeuse : on le retrouve par la clé de
+ * corrélation employée en production — ici sa seule dénomination suffit, le
+ * scénario n'en manipulant qu'une.
+ */
+const rattachementsActifs = () =>
   prismaClient.mediateurEnActivite.findMany({
     where: {
       mediateur: { userId: currentInscriptionUserId() },
-      structureId: structureEmployeuseId,
+      lieuInclusion: { nom: nomEmployeuse },
       suppression: null,
       fin: null,
     },
@@ -69,15 +69,15 @@ const activeMediateurEnActivite = () =>
 Then(
   'ma structure employeuse est rattachée comme lieu d’activité',
   async () => {
-    const actives = await activeMediateurEnActivite()
+    const actifs = await rattachementsActifs()
     assert.strictEqual(
-      actives.length,
+      actifs.length,
       1,
       'La structure employeuse n’est pas rattachée comme lieu d’activité',
     )
 
-    const lieu = await prismaClient.lieuInclusion.findUnique({
-      where: { id: structureEmployeuseId },
+    const lieu = await prismaClient.lieuInclusion.findFirst({
+      where: { nom: nomEmployeuse, suppression: null },
     })
     assert.ok(lieu, 'Le lieu d’activité n’a pas été matérialisé')
   },
@@ -86,17 +86,22 @@ Then(
 Then(
   'ma structure employeuse n’a qu’un seul lieu d’activité actif',
   async () => {
-    const actives = await activeMediateurEnActivite()
-    assert.strictEqual(actives.length, 1, 'Le lieu d’activité a été dupliqué')
+    const actifs = await rattachementsActifs()
+    assert.strictEqual(actifs.length, 1, 'Le lieu d’activité a été dupliqué')
+
+    const lieux = await prismaClient.lieuInclusion.count({
+      where: { nom: nomEmployeuse, suppression: null },
+    })
+    assert.strictEqual(lieux, 1, 'Le lieu a été matérialisé deux fois')
   },
 )
 
 Then(
   'ma structure employeuse n’est plus rattachée comme lieu d’activité',
   async () => {
-    const actives = await activeMediateurEnActivite()
+    const actifs = await rattachementsActifs()
     assert.strictEqual(
-      actives.length,
+      actifs.length,
       0,
       'La structure employeuse est encore rattachée comme lieu d’activité',
     )

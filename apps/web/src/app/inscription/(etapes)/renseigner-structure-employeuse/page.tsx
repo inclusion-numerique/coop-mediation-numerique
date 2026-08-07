@@ -1,7 +1,8 @@
+import { renseignerStructureEmployeuseAction } from '@app/web/app/_actions/inscription/renseigner-structure-employeuse.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import { sessionUserHasStructureEmployeuse } from '@app/web/auth/sessionUser'
-import RenseignerStructureEmployeusePage from '@app/web/features/inscription/use-cases/renseigner-structure-employeuse/RenseignerStructureEmployeusePage'
+import RenseignerStructureEmployeusePage from '@app/web/features/inscription/abilities/renseigner-structure-employeuse/ui/pages/RenseignerStructureEmployeusePage'
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import { redirect } from 'next/navigation'
 
@@ -25,7 +26,12 @@ const RenseignerStructureEmployeusePageRoute = async () => {
 
   const nextStepPath = '/inscription/lieux-activite/structure-employeuse'
 
-  return <RenseignerStructureEmployeusePage nextStepPath={nextStepPath} />
+  return (
+    <RenseignerStructureEmployeusePage
+      save={renseignerStructureEmployeuseAction}
+      nextStepPath={nextStepPath}
+    />
+  )
 }
 
 export default RenseignerStructureEmployeusePageRoute

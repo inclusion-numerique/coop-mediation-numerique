@@ -22,9 +22,11 @@ import {
   structureEmployeuseOptions,
 } from './structure-employeuse-combo-box'
 
+// Rien à rendre au client : l'identifiant de l'employeuse appartient désormais à
+// la feature employeuse, et l'écran ne fait que naviguer vers l'étape suivante.
 export type EnregistrerStructureEmployeuse = (
   data: RenseignerStructureEmployeuseFormData,
-) => Promise<ServerActionResult<{ structureId: string }>>
+) => Promise<ServerActionResult<void>>
 
 type FormValues = { structureEmployeuse: StructureEmployeuseItem | null }
 

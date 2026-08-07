@@ -1,5 +1,5 @@
 import type { UserId } from '@app/web/features/inscription/domain'
-import type { StructureId } from '../domain'
+import type { EmployeuseId } from '../domain'
 import {
   delierStructureEmployeuseEnLieu,
   lierStructureEmployeuseEnLieu,
@@ -18,7 +18,7 @@ export const ajouterStructureEmployeuseEnLieu = async ({
   estLieuActivite,
 }: {
   readonly userId: UserId
-  readonly structureEmployeuseId: StructureId
+  readonly structureEmployeuseId: EmployeuseId
   readonly estLieuActivite: boolean
 }): Promise<void> => {
   if (estLieuActivite) {
