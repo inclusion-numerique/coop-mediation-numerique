@@ -22,7 +22,10 @@ export const rattacherAUneEmployeuse: RattacherAUneEmployeuse = async ({
     coopId: null,
     siret: identite.siret,
     identite: {
-      nom: identite.denomination,
+      // Une employeuse peut n'avoir aucune dénomination (non diffusible, entreprise
+      // individuelle) : `ensureStructureAdministrativeMain` retraduit la chaîne vide
+      // en `null`, valeur que porte déjà la colonne.
+      nom: identite.denomination ?? '',
       adresse: identite.adresse.voie ?? '',
       commune: identite.adresse.commune,
       codePostal: identite.adresse.codePostal ?? '',

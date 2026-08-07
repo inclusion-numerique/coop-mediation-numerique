@@ -10,15 +10,26 @@ import { Siret } from './siret'
  * Les trois chemins d'écriture la construisent à partir de sources
  * différentes — un choix dans Sirene à l'inscription, la réponse de l'API
  * Recherche d'entreprises, les claims ProConnect — mais aboutissent au même
- * contrat : un SIRET, une dénomination, une adresse géocodable. En deçà, on ne
- * crée rien plutôt que d'écrire une identité incomplète dans une table que nous
- * ne possédons pas.
+ * contrat : un SIRET et une commune. En deçà, on ne crée rien plutôt que
+ * d'écrire une identité non rattachable dans une table que nous ne possédons
+ * pas.
+ *
+ * La dénomination, elle, peut manquer : c'est la règle métier des
+ * établissements non diffusibles, et c'est déjà l'état de 14 employeuses de
+ * production (entreprises individuelles, à qui SIRENE attribue un nom et un
+ * prénom plutôt qu'une dénomination). L'exiger ici rendait ces employeuses
+ * lisibles mais non enregistrables — le modèle de lecture les modélise en
+ * `DenominationEmployeuse | null` depuis toujours. Quand l'API renvoie le
+ * marqueur `[Non diffusible]`, on le conserve tel quel : c'est un libellé
+ * affichable, pas une absence.
  */
 export const IdentiteEmployeuse = defineModel(
   z
     .object({
       siret: Siret.schema,
-      denomination: DenominationEmployeuse.schema,
+      denomination: DenominationEmployeuse.schema
+        .nullish()
+        .transform((value) => value ?? null),
       adresse: AdresseAGeocoder.schema,
     })
     .brand('IdentiteEmployeuse'),
@@ -45,9 +56,11 @@ export type EtablissementSirene = {
  * pas une exploitable.
  *
  * Deux refus, pour deux raisons distinctes : un établissement **fermé** ne peut
- * plus employer personne, et une identité **incomplète** (sans raison sociale
- * ou sans commune) ne permet pas de créer une structure reconnaissable dans une
- * table que nous ne possédons pas.
+ * plus employer personne, et une identité **sans commune** n'a rien à soumettre
+ * à la BAN, donc rien à rattacher dans une table que nous ne possédons pas.
+ *
+ * L'absence de raison sociale, elle, ne fait plus échouer : elle voyage en
+ * `null` jusqu'à `main`, dont la colonne l'accepte.
  */
 export const identiteDepuisEtablissement = ({
   siret,
@@ -62,7 +75,7 @@ export const identiteDepuisEtablissement = ({
 
   return IdentiteEmployeuse.safe({
     siret,
-    denomination: raisonSociale ?? '',
+    denomination: raisonSociale,
     adresse: {
       voie,
       commune: commune ?? '',
