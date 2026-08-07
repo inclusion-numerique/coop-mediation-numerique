@@ -99,7 +99,7 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
   }
 
   if (step.step === 'renseigner-structure-employeuse') {
-    cy.appUrlShouldBe(getStepPath('renseigner-structure-employeuse'), {
+    cy.appUrlShouldBe(stepPath('renseigner-structure-employeuse'), {
       timeout: mutationAndNavigationTimeout,
     })
 
