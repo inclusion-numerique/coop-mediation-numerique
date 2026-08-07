@@ -78,24 +78,24 @@ describe('inscription état transfer layer', () => {
     { role: Role('Mediateur'), conseillerNumerique: true },
     { role: Role('Coordinateur'), conseillerNumerique: false },
     { role: Role('Coordinateur'), conseillerNumerique: true },
-  ])('round-trips une inscription validée (max) pour %o', ({
-    role,
-    conseillerNumerique,
-  }) => {
-    const etat: InscriptionValidee = {
-      _tag: 'Validee',
-      userId,
-      role,
-      conseillerNumerique,
-      acceptationCgu: cgu,
-      progression: {
-        structureEmployeuse: Franchissement(structure),
-        lieuxActivite: Franchissement(lieux),
-      },
-      inscriptionValidee: validee,
-    }
-    expect(roundTrip(etat)).toEqual(etat)
-  })
+  ])(
+    'round-trips une inscription validée (max) pour %o',
+    ({ role, conseillerNumerique }) => {
+      const etat: InscriptionValidee = {
+        _tag: 'Validee',
+        userId,
+        role,
+        conseillerNumerique,
+        acceptationCgu: cgu,
+        progression: {
+          structureEmployeuse: Franchissement(structure),
+          lieuxActivite: Franchissement(lieux),
+        },
+        inscriptionValidee: validee,
+      }
+      expect(roundTrip(etat)).toEqual(etat)
+    },
+  )
 
   it('rend EnCours avec des CGU en attente si le profil est posé sans CGU (flow Dataspace)', () => {
     expect(
