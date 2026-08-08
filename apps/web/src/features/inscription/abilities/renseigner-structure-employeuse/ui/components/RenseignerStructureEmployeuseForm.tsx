@@ -122,12 +122,15 @@ const RenseignerStructureEmployeuseForm = ({
                     nativeLabelProps={getLabelProps()}
                     nativeInputProps={{
                       ...getInputProps(),
-                      placeholder:
-                        'Rechercher par SIRET, nom ou adresse de votre structure',
+                      placeholder: 'Rechercher',
                     }}
+                    // La consigne de recherche est portée par le libellé, pas par
+                    // le placeholder : elle doit rester lisible une fois la saisie
+                    // commencée, et un placeholder n'est pas un substitut de
+                    // libellé pour un lecteur d'écran.
                     label={
                       <span className="fr-text--medium fr-mb-1v fr-display-block">
-                        Rechercher votre structure employeuse
+                        Rechercher par SIRET, nom ou adresse de votre structure
                       </span>
                     }
                   />
