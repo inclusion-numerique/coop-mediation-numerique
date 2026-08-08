@@ -1,12 +1,30 @@
 import { AdresseBanValidation } from '@app/web/external-apis/ban/AdresseBanValidation'
-import { requiredSiretValidation } from '@app/web/features/structures/siret/siretValidation'
+// `Siret` est importé directement du value object, et non du barrel de la feature
+// employeuse : ce schéma est chargé par un composant client, or le barrel ré-exporte
+// les implémentations Prisma — elles atterriraient dans le bundle client, frontière
+// que `tsc` ne signale pas.
+import { Siret } from '@app/web/features/employeuse/domain/siret'
 import { z } from 'zod'
 import type { StructureEmployeuseInput } from '../domain'
 
+/**
+ * L'employeuse n'est pas saisie mais CHOISIE dans une liste, dont les entrées
+ * viennent de `main` ou de l'annuaire des entreprises. Il n'y a donc rien à
+ * valider comme une saisie libre : seulement à vérifier que le choix porte de
+ * quoi identifier une structure.
+ *
+ * D'où deux assouplissements par rapport à un formulaire de saisie :
+ * - `id` n'est pas un uuid. Depuis l'ADR-002 la recherche rend l'identifiant de
+ *   `main.structure_administrative`, un entier stringifié. Il n'est d'ailleurs
+ *   pas utilisé par le rattachement, qui repart du SIRET.
+ * - le SIRET n'est vérifié qu'en FORME (14 chiffres). Rejouer ici la clé de
+ *   Luhn ferait rejeter des SIRET que SIRENE nous donne pour authentiques, sur
+ *   un choix de liste que l'utilisateur ne saurait pas corriger.
+ */
 const StructureEmployeuseShape = z.object({
-  id: z.string().uuid().nullish(),
+  id: z.string().nullish(),
   nom: z.string().min(1, 'Le nom est requis'),
-  siret: requiredSiretValidation,
+  siret: Siret.schema,
   adresseBan: AdresseBanValidation,
   typologies: z.array(z.string()).nullish(),
 })

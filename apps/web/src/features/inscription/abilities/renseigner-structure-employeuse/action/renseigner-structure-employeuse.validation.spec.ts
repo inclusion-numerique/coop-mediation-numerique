@@ -30,6 +30,23 @@ describe('RenseignerStructureEmployeuseValidation', () => {
     })
   })
 
+  it('accepte l’identifiant main de la recherche, qui n’est pas un uuid', () => {
+    // Régression : la recherche d'employeuse rend `String(main.structure_administrative.id)`,
+    // un entier stringifié. Exiger un uuid ici — hypothèse héritée du monde coop —
+    // faisait échouer la validation à la soumission, sans navigation ni message
+    // exploitable pour l'utilisateur.
+    const result = RenseignerStructureEmployeuseValidation.safeParse({
+      structureEmployeuse: {
+        id: '42',
+        nom: 'Ma Structure',
+        siret: '35600000000048',
+        adresseBan,
+      },
+    })
+
+    expect(result.success).toBe(true)
+  })
+
   it('rejette un SIRET invalide', () => {
     expect(
       RenseignerStructureEmployeuseValidation.safeParse({
