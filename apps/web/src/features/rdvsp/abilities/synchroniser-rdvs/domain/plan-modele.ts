@@ -11,12 +11,6 @@ export type PlanModele<T> = {
   readonly inchanges: readonly T[]
 }
 
-export const planVide = <T>(): PlanModele<T> => ({
-  aCreer: [],
-  aMettreAJour: [],
-  inchanges: [],
-})
-
 /**
  * Déduplique par clé — un même motif ou un même lieu revient sur des dizaines de
  * rendez-vous — puis classe chaque élément.

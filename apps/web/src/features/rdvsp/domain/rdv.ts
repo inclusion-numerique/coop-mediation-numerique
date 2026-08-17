@@ -10,7 +10,6 @@ import type { RdvAgentId } from './rdv-agent-id'
 import type { RdvId } from './rdv-id'
 import type { RdvUuid } from './rdv-uuid'
 import type { StatutPresence } from './statut-presence'
-import { type StatutRdv, statutRdv } from './statut-rdv'
 import type { UrlAgent } from './url-agent'
 
 type RdvBase = {
@@ -73,18 +72,3 @@ export type RdvSynchronise = {
   readonly rdv: Rdv
   readonly brut: unknown
 }
-
-export const estCollectif = (rdv: Rdv): rdv is RdvCollectif => rdv.collectif
-
-/**
- * Statut à afficher pour ce rendez-vous. Dérivé à la lecture plutôt que stocké :
- * voir `statutRdv`.
- */
-export const statutAffiche = (rdv: Rdv, maintenant: Date): StatutRdv =>
-  statutRdv(rdv.statutPresence, rdv.fin, maintenant)
-
-/**
- * Un rendez-vous annulé l'est du point de vue de RDV Service Public, quel que
- * soit le statut de présence saisi par ailleurs.
- */
-export const estAnnule = (rdv: Rdv): boolean => rdv.annulation !== null
