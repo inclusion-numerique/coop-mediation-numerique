@@ -4,10 +4,6 @@ import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { declencherSynchronisationAction } from '@app/web/app/_actions/rdvsp/declencher-synchronisation.action'
 import { deconnecterCompteRdvAction } from '@app/web/app/_actions/rdvsp/deconnecter-compte-rdv.action'
-import {
-  getRdvOauthIntegrationStatus,
-  type RdvOauthIntegrationStatus,
-} from '@app/web/features/rdvsp/ui/rdv-integration-status'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { dateAsDayAndTimeInTimeZone } from '@app/web/utils/dateAsDayAndTime'
 import type { UserId, UserRdvAccount, UserTimezone } from '@app/web/utils/user'
@@ -18,6 +14,7 @@ import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import type { StatutIntegration } from '../domain/sante-compte'
 import RdvServicePublicStatusTag from './RdvServicePublicStatusTag'
 
 export const GererRdvServicePublicModalInstance = createModal({
@@ -36,8 +33,8 @@ const GererRdvServicePublicModal = ({
   const [synchronisationEnCours, setSynchronisationEnCours] = useState(false)
   const [state, setState] = useState<'gerer' | 'deconnecter'>('gerer')
 
-  const [status, setStatus] = useState<RdvOauthIntegrationStatus>(
-    getRdvOauthIntegrationStatus({ user: { rdvAccount } }),
+  const [status, setStatus] = useState<StatutIntegration>(
+    rdvAccount?.statut ?? 'none',
   )
 
   const [lastSynced, setLastSynced] = useState<Date | null>(

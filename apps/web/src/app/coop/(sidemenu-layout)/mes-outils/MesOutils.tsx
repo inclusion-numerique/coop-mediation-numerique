@@ -9,7 +9,6 @@ import { LesBasesLogo } from '@app/web/features/pictograms/services/LesBasesLogo
 import { PixOrgaLogo } from '@app/web/features/pictograms/services/PixOrgaLogo'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import RdvServicePublicStatusTag from '@app/web/features/rdvsp/ui/RdvServicePublicStatusTag'
-import { getRdvOauthIntegrationStatus } from '@app/web/features/rdvsp/ui/rdv-integration-status'
 import { rdvWebsiteLink } from '@app/web/features/rdvsp/urls'
 import { contentId } from '@app/web/utils/skipLinks'
 import Image from 'next/image'
@@ -19,7 +18,7 @@ import { CardOutil } from './_components/CardOutil'
 export const MesOutils = async () => {
   const user = await getAuthenticatedSessionUser()
 
-  const rdvServicePublicStatus = getRdvOauthIntegrationStatus({ user })
+  const rdvServicePublicStatus = user.rdvAccount?.statut ?? 'none'
 
   return (
     <CoopPageContainer size={56}>

@@ -49,18 +49,15 @@ const jetonsMinimaux = {
 }
 
 /**
- * Reconstitue la ligne complète à partir des scalaires : les organisations sont
- * une relation, `metadata` et les horodatages système ne traversent pas le
- * domaine.
+ * Reconstitue la ligne à partir des scalaires : les organisations sont une
+ * relation, et `CompteRdvRow` n'énumère que les colonnes que la lecture
+ * consulte — ni `metadata` ni les horodatages système n'en font partie.
  */
 const toRow = (compte: CompteRdv): CompteRdvRow => ({
   ...compteRdvFromDomain(compte),
   organisations: compte.organisationIds.map((organisationId) => ({
     organisationId,
   })),
-  metadata: null,
-  created: new Date('2025-01-01T00:00:00.000Z'),
-  updated: new Date('2026-08-17T06:00:00.000Z'),
 })
 
 describe('transfer compte RDV', () => {

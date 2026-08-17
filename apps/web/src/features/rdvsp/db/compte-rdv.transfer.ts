@@ -14,8 +14,26 @@ import { absentSiVide } from './vide'
 /**
  * Les organisations d'un compte vivent dans une table de jointure : la lecture
  * doit les inclure, l'écriture les traite à part (voir `compteRdvFromDomain`).
+ *
+ * Les colonnes sont énumérées plutôt que reprises en bloc : la lecture déclare
+ * ainsi ce dont elle a besoin, et une sélection partielle — celle de la session,
+ * qui ne charge pas tout `rdv_accounts` — la satisfait.
  */
-export type CompteRdvRow = RdvAccount & {
+export type CompteRdvRow = Pick<
+  RdvAccount,
+  | 'id'
+  | 'userId'
+  | 'accessToken'
+  | 'refreshToken'
+  | 'expiresAt'
+  | 'scope'
+  | 'error'
+  | 'deleted'
+  | 'syncFrom'
+  | 'lastSynced'
+  | 'includeRdvsInActivitesList'
+  | 'invalidWebhookOrganisationIds'
+> & {
   organisations: readonly { organisationId: number }[]
 }
 

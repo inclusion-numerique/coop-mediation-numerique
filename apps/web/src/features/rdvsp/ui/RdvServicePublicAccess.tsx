@@ -6,7 +6,6 @@ import {
   rdvOauthLinkAccountSuccessCallbackPath,
 } from '@app/web/features/rdvsp/oauth'
 import GererRdvServicePublicButton from '@app/web/features/rdvsp/ui/GererRdvServicePublicButton'
-import { getRdvOauthIntegrationStatus } from '@app/web/features/rdvsp/ui/rdv-integration-status'
 import {
   rdvIntegrationEnSavoirPlusLink,
   rdvMyHomepageLink,
@@ -24,7 +23,7 @@ const RdvServicePublicAccess = async () => {
     return null
   }
 
-  const status = getRdvOauthIntegrationStatus({ user })
+  const status = user.rdvAccount?.statut ?? 'none'
 
   return (
     <>

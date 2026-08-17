@@ -1,8 +1,12 @@
-import { type CompteRdv, MessageErreurCompte } from '../../../domain/compte-rdv'
-import { JetonAcces, type JetonsOAuth } from '../../../domain/jetons-oauth'
-import { RdvAgentId } from '../../../domain/rdv-agent-id'
-import { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
-import { reclameUneIntervention, santeDuCompte } from './sante-compte'
+import { type CompteRdv, MessageErreurCompte } from './compte-rdv'
+import { JetonAcces, type JetonsOAuth } from './jetons-oauth'
+import { RdvAgentId } from './rdv-agent-id'
+import {
+  reclameUneIntervention,
+  santeDuCompte,
+  statutIntegration,
+} from './sante-compte'
+import { UtilisateurCoopId } from './utilisateur-coop-id'
 
 const maintenant = new Date('2026-08-17T12:00:00.000Z')
 
@@ -104,5 +108,36 @@ describe('reclameUneIntervention', () => {
             : ({ _tag: tag } as const)
 
     expect(reclameUneIntervention(sante)).toBe(attendu)
+  })
+})
+
+describe('statutIntegration', () => {
+  it.each([
+    ['operationnel', 'success'],
+    ['jetonExpire', 'success'],
+    ['enErreur', 'error'],
+    ['jamaisLie', 'error'],
+    ['deconnecteParUtilisateur', 'none'],
+  ] as const)('pour un compte « %s » : %s', (tag, attendu) => {
+    const sante =
+      tag === 'enErreur'
+        ? ({ _tag: 'enErreur', message: 'x' } as const)
+        : tag === 'jetonExpire'
+          ? ({ _tag: 'jetonExpire', depuis: maintenant } as const)
+          : tag === 'deconnecteParUtilisateur'
+            ? ({ _tag: 'deconnecteParUtilisateur', quand: maintenant } as const)
+            : ({ _tag: tag } as const)
+
+    expect(statutIntegration(sante)).toBe(attendu)
+  })
+
+  it('ne signale pas en erreur un compte que l’utilisateur a débranché lui-même', () => {
+    const compte: CompteRdv = {
+      ...base,
+      _tag: 'deconnecte',
+      deconnexion: new Date('2026-08-01T10:00:00.000Z'),
+    }
+
+    expect(statutIntegration(santeDuCompte(compte, maintenant))).toBe('none')
   })
 })

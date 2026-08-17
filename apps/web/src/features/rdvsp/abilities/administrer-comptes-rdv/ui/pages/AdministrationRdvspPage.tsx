@@ -1,6 +1,7 @@
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import { statutIntegration } from '@app/web/features/rdvsp/domain/sante-compte'
 import RdvServicePublicStatusTag from '@app/web/features/rdvsp/ui/RdvServicePublicStatusTag'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
@@ -9,7 +10,6 @@ import { numberToString } from '@app/web/utils/formatNumber'
 import { contentId } from '@app/web/utils/skipLinks'
 import { Button } from '@codegouvfr/react-dsfr/Button'
 import type { AdministrationRdvspData } from '../../implementation/prisma/comptes-rdv.query'
-import { statutAffiche } from '../administration-rdvsp.presenter'
 
 const AdministrationRdvspPage = async ({
   data: { users, rdvs },
@@ -78,7 +78,7 @@ const AdministrationRdvspPage = async ({
                         </td>
                         <td>
                           <RdvServicePublicStatusTag
-                            status={statutAffiche(sante)}
+                            status={statutIntegration(sante)}
                             small
                           />
                           <br />

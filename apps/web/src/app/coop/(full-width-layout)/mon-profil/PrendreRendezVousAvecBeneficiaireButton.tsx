@@ -4,7 +4,6 @@ import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { prendreRendezVousAction } from '@app/web/app/_actions/rdvsp/prendre-rendez-vous.action'
 import type { SessionUser } from '@app/web/auth/sessionUser'
-import { getRdvOauthIntegrationStatus } from '@app/web/features/rdvsp/ui/rdv-integration-status'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -20,7 +19,7 @@ const PrendreRendezVousAvecBeneficiaireButton = ({
 }) => {
   const [enCours, setEnCours] = useState(false)
 
-  const oauthStatus = getRdvOauthIntegrationStatus({ user })
+  const oauthStatus = user.rdvAccount?.statut ?? 'none'
 
   const router = useRouter()
 

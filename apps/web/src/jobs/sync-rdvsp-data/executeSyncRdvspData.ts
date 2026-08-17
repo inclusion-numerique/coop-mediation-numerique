@@ -1,7 +1,7 @@
 import { output } from '@app/cli/output'
 import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
-import { peutEtreSynchronise } from '@app/web/features/rdvsp/abilities/administrer-comptes-rdv/domain/sante-compte'
 import { getAdministrationRdvspData } from '@app/web/features/rdvsp/abilities/administrer-comptes-rdv/implementation/prisma/comptes-rdv.query'
+import { peutEtreSynchronise } from '@app/web/features/rdvsp/domain/sante-compte'
 import { synchroniserCompte } from '@app/web/features/rdvsp/implementation/synchroniser-compte.binding'
 import type { SyncRdvspDataJob } from './syncRdvspDataJob'
 

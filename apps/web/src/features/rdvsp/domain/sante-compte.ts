@@ -1,7 +1,7 @@
-import type { CompteRdv } from '../../../domain/compte-rdv'
+import type { CompteRdv } from './compte-rdv'
 
 /**
- * État d'un compte tel que l'administration a besoin de le lire.
+ * État d'un compte RDV Service Public.
  *
  * L'écran d'administration se contentait d'un booléen — des jetons, ou pas — qui
  * confondait quatre situations très différentes à traiter : un compte que
@@ -60,3 +60,27 @@ export const peutEtreSynchronise = (sante: SanteCompteRdv): boolean =>
   sante._tag === 'operationnel' ||
   sante._tag === 'jetonExpire' ||
   sante._tag === 'enErreur'
+
+/**
+ * Ce que les écrans montrent de l'intégration : trois états, pas cinq.
+ *
+ * `none` couvre l'absence d'intégration comme la déconnexion volontaire — il n'y
+ * a rien à réparer dans les deux cas. Un jeton expiré passe pour opérationnel :
+ * il se renouvelle au prochain appel.
+ *
+ * Cette dérivation existait en double. Une seconde version, calculée depuis la
+ * session, ne connaissait que la présence de jetons et le message d'erreur : un
+ * compte que l'utilisateur avait débranché lui-même y apparaissait cassé, faute
+ * de distinguer une purge de jetons d'une révocation.
+ */
+export type StatutIntegration = 'none' | 'success' | 'error'
+
+export const statutIntegration = (sante: SanteCompteRdv): StatutIntegration => {
+  if (sante._tag === 'deconnecteParUtilisateur') {
+    return 'none'
+  }
+
+  return sante._tag === 'enErreur' || sante._tag === 'jamaisLie'
+    ? 'error'
+    : 'success'
+}

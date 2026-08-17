@@ -1,8 +1,8 @@
 import { PrismaSessionUser } from '@app/web/auth/getSessionUserFromSessionToken'
 import { serializePrismaSessionUser } from '@app/web/auth/serializePrismaSessionUser'
 import { compteRdvToDomain } from '@app/web/features/rdvsp/db'
+import { santeDuCompte } from '@app/web/features/rdvsp/domain/sante-compte'
 import { prismaClient } from '@app/web/prismaClient'
-import { santeDuCompte } from '../../domain/sante-compte'
 
 export const getAdministrationRdvspData = async () => {
   const maintenant = new Date()

@@ -1,11 +1,11 @@
-import type { RdvOauthIntegrationStatus } from '@app/web/features/rdvsp/ui/rdv-integration-status'
 import { Tag } from '@codegouvfr/react-dsfr/Tag'
+import type { StatutIntegration } from '../domain/sante-compte'
 
 const RdvServicePublicStatusTag = ({
   status,
   small = false,
 }: {
-  status: RdvOauthIntegrationStatus
+  status: StatutIntegration
   small?: boolean
 }) => {
   if (status === 'error' || status === 'none') {

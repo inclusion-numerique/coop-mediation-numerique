@@ -1,3 +1,4 @@
+import type { StatutIntegration } from '@app/web/features/rdvsp/domain/sante-compte'
 import type {
   Coordinateur,
   EmployeStructure,
@@ -71,6 +72,7 @@ export type SessionUser = Pick<
         | 'invalidWebhookOrganisationIds'
       > & {
         hasOauthTokens: boolean
+        statut: StatutIntegration
         created: string | null
         updated: string | null
         lastSynced: string | null
