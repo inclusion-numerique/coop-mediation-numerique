@@ -1,6 +1,9 @@
 import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
 import { SessionUser } from '@app/web/auth/sessionUser'
-import { getDashboardRdvData } from '@app/web/features/rdvsp/queries/getDashboardRdvData'
+import { consulterRdvsAccueil } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/consulter-rdvs-accueil'
+import { compteDuMediateur } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/prisma/compte-du-mediateur.query'
+import { lireDonneesAccueilRdv } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/prisma/donnees-accueil-rdv.query'
+import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
 import { refreshRdvAgentAccountData } from '@app/web/features/rdvsp/sync/refreshRdvAgentAccountData'
 import { syncAllRdvData } from '@app/web/features/rdvsp/sync/syncAllRdvData'
 import { prismaClient } from '@app/web/prismaClient'
@@ -65,6 +68,11 @@ const handleSynchronizationError = async ({
     },
   })
 }
+
+const consulterRdvs = consulterRdvsAccueil({
+  compteDuMediateur,
+  lireDonnees: lireDonneesAccueilRdv,
+})
 
 export const rdvServicePublicRouter = router({
   oAuthApiMe: protectedProcedure.mutation(async ({ ctx: { user } }) => {
@@ -185,10 +193,7 @@ export const rdvServicePublicRouter = router({
         !invalidWebhookOrganisationIds ||
         invalidWebhookOrganisationIds.length === 0
       ) {
-        return {
-          dashboardRdvData: null,
-          hasDiff: false,
-        }
+        return { donnees: null, hasDiff: false }
       }
 
       let hasDiff = false
@@ -205,10 +210,17 @@ export const rdvServicePublicRouter = router({
         })
       }
 
-      const dashboardRdvData = await getDashboardRdvData({
-        user,
+      // Le widget de l'accueil consomme la projection de l'ability : une seule
+      // forme entre le rendu initial et ce rafraîchissement.
+      const widget = await consulterRdvs({
+        utilisateurId: UtilisateurCoopId(user.id),
+        maintenant: new Date(),
       })
-      return { dashboardRdvData, hasDiff }
+
+      return {
+        donnees: widget._tag === 'donnees' ? widget.donnees : null,
+        hasDiff,
+      }
     }),
   // Refresh RDVS ONLY FOR FAILED WEBHOOK INSTALLATIONS
   refreshRdvData: protectedProcedure
@@ -230,10 +242,7 @@ export const rdvServicePublicRouter = router({
         !invalidWebhookOrganisationIds ||
         invalidWebhookOrganisationIds.length === 0
       ) {
-        return {
-          dashboardRdvData: null,
-          hasDiff: false,
-        }
+        return { syncResult: null, hasDiff: false }
       }
 
       let hasDiff = false

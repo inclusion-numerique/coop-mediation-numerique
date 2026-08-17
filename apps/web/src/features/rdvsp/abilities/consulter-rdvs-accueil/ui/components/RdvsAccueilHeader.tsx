@@ -3,7 +3,13 @@ import { rdvStatusValues } from '@app/web/rdv-service-public/rdvStatus'
 import { Spinner } from '@app/web/ui/Spinner'
 import Link from 'next/link'
 
-const RdvsHeader = ({ isLoading }: { isLoading: boolean }) => (
+/**
+ * Le lien reprend les valeurs de `rdvStatus`, et non `statutsRdv` du domaine :
+ * le filtre de la liste d'activités attend encore `past` là où le domaine dit
+ * `passe`. Le vocabulaire de l'URL appartient aux activités, il migrera avec elles.
+ */
+
+const RdvsAccueilHeader = ({ isLoading }: { isLoading: boolean }) => (
   <div className="fr-flex fr-flex-wrap fr-align-items-center fr-justify-content-space-between fr-mb-3w">
     <div
       className="fr-background-blue-france-alt-light--action-low-dark fr-p-1-5v fr-border-radius--8 fr-flex fr-mr-1w"
@@ -38,4 +44,4 @@ const RdvsHeader = ({ isLoading }: { isLoading: boolean }) => (
   </div>
 )
 
-export default RdvsHeader
+export default RdvsAccueilHeader

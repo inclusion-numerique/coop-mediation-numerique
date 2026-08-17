@@ -1,10 +1,16 @@
 import { activiteListSelect } from '@app/web/features/activites/use-cases/list/db/activitesQueries'
 import { addTimezoneToActivite } from '@app/web/features/activites/use-cases/list/db/addTimezoneToActivite'
+import {
+  synchroniserAuChargement,
+  type WidgetRdvAccueil,
+} from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/domain/widget-rdv'
+import { consulterRdvsAccueil } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/consulter-rdvs-accueil'
+import { compteDuMediateur } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/prisma/compte-du-mediateur.query'
+import { lireDonneesAccueilRdv } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/prisma/donnees-accueil-rdv.query'
 import { addRdvBadgeStatus } from '@app/web/features/rdvsp/administration/db/addRdvBadgeStatus'
-import { getDashboardRdvData } from '@app/web/features/rdvsp/queries/getDashboardRdvData'
+import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
 import { countMediateursCoordonnesBy } from '@app/web/mediateurs/countMediateursCoordonnesBy'
 import { prismaClient } from '@app/web/prismaClient'
-import { getRdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
 import type {
   UserDisplayName,
   UserId,
@@ -59,28 +65,36 @@ export const getActivitesCoordinationByQuarter = async (
 }
 
 /**
- * Only here for correct typings for the user parameter
+ * L'état du bloc RDV — masqué, en alerte, ou avec ses données — est décidé par
+ * l'ability, non recomposé ici : trois états exclusifs plutôt que des données et
+ * une alerte calculées séparément, combinaison qui pouvait n'en produire aucune.
  */
-const getDashboardRdvDataFor = (
-  user: UserId & UserRdvAccount & UserMediateur,
-) => {
-  if (!user.rdvAccount || !user.mediateur) {
-    return null
+const consulterRdvs = consulterRdvsAccueil({
+  compteDuMediateur,
+  lireDonnees: lireDonneesAccueilRdv,
+})
+
+const blocRdvPour = async (
+  user: UserId & UserMediateur,
+): Promise<{
+  widgetRdv: WidgetRdvAccueil
+  synchroniserRdvsAuChargement: boolean
+}> => {
+  if (!user.mediateur) {
+    return {
+      widgetRdv: { _tag: 'masque' },
+      synchroniserRdvsAuChargement: false,
+    }
   }
 
-  const rdvsIntegrationStatus = getRdvOauthIntegrationStatus({ user })
+  const utilisateurId = UtilisateurCoopId(user.id)
+  const compte = await compteDuMediateur(utilisateurId)
 
-  if (rdvsIntegrationStatus !== 'success') {
-    return null
+  return {
+    widgetRdv: await consulterRdvs({ utilisateurId, maintenant: new Date() }),
+    synchroniserRdvsAuChargement:
+      compte !== null && synchroniserAuChargement(compte),
   }
-
-  // do not await and return a promise for using suspense in the frontend
-  return getDashboardRdvData({
-    user: {
-      ...user,
-      rdvAccount: user.rdvAccount,
-    },
-  })
 }
 
 export const getAccueilPageDataFor = async (
@@ -93,12 +107,12 @@ export const getAccueilPageDataFor = async (
 ) => {
   const [
     mediateurs,
-    dashboardRdvData,
+    blocRdv,
     lastActivitesWithoutTimezone,
     activitesCoordinationByQuarter,
   ] = await Promise.all([
     countMediateursCoordonnesBy(user.coordinateur),
-    getDashboardRdvDataFor(user),
+    blocRdvPour(user),
     user.mediateur?.id != null
       ? prismaClient.activite.findMany({
           where: {
@@ -130,10 +144,8 @@ export const getAccueilPageDataFor = async (
   return {
     mediateurs,
     activites,
-    rdvs: dashboardRdvData,
-    rdvIntegrationStatus: getRdvOauthIntegrationStatus({ user }),
+    ...blocRdv,
     activitesCoordinationByQuarter,
-    syncDataOnLoad: dashboardRdvData ? dashboardRdvData.syncDataOnLoad : false,
   }
 }
 

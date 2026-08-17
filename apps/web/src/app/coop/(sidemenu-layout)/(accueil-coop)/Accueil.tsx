@@ -7,6 +7,7 @@ import { DernieresActivites } from '@app/web/features/activites/use-cases/list/c
 import FormationContinueNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/formation-continue/components/FormationContinueNouvelleFonctionnaliteCard'
 import RdvNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/rdv/components/RdvNouvelleFonctionnaliteCard'
 import TagsNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/tags/components/TagsNouvelleFonctionnaliteCard'
+import RdvsAccueil from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvsAccueil'
 import { contentId } from '@app/web/utils/skipLinks'
 import React from 'react'
 import {
@@ -17,7 +18,6 @@ import {
   Support,
 } from './_components'
 import { Equipe } from './_components/Equipe'
-import Rdvs from './_components/Rdvs'
 import { AccueilPageData } from './getAccueilPageDataFor'
 
 export const Accueil = ({
@@ -32,8 +32,8 @@ export const Accueil = ({
   isCoordinateur,
   timezone,
   userId,
-  rdvs,
-  rdvIntegrationStatus,
+  widgetRdv,
+  synchroniserRdvsAuChargement,
 }: {
   userId: string
   firstName: string | null
@@ -71,16 +71,16 @@ export const Accueil = ({
         </section>
       )}
 
-      {rdvs && (
+      {widgetRdv._tag === 'donnees' && (
         <section className="fr-my-6w">
-          <Rdvs
-            rdvs={rdvs}
+          <RdvsAccueil
+            donnees={widgetRdv.donnees}
             user={{ id: userId, timezone }}
-            syncDataOnLoad={rdvs.syncDataOnLoad}
+            synchroniserAuChargement={synchroniserRdvsAuChargement}
           />
         </section>
       )}
-      {!rdvs && rdvIntegrationStatus === 'error' && (
+      {widgetRdv._tag === 'alerte' && (
         <section className="fr-my-6w">
           <RdvIntegrationErreurAlerte />
         </section>

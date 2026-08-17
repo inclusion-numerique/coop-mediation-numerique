@@ -111,12 +111,16 @@ export const seedRdv = async ({
   organisationId = id,
   status = 'unknown',
   craDeclined = false,
+  debut = new Date('2026-08-16T09:00:00.000Z'),
+  dureeEnMinutes = 60,
 }: {
   id: number
   rdvAccountId: number
   organisationId?: number
   status?: 'unknown' | 'seen' | 'excused' | 'revoked' | 'noshow'
   craDeclined?: boolean
+  debut?: Date
+  dureeEnMinutes?: number
 }): Promise<number> => {
   await seedOrganisation({ id: organisationId })
 
@@ -127,9 +131,9 @@ export const seedRdv = async ({
       rdvAccountId,
       organisationId,
       address: '12 rue de la Paix, 75002 Paris',
-      startsAt: new Date('2026-08-16T09:00:00.000Z'),
-      endsAt: new Date('2026-08-16T10:00:00.000Z'),
-      durationInMin: 60,
+      startsAt: debut,
+      endsAt: new Date(debut.getTime() + dureeEnMinutes * 60_000),
+      durationInMin: dureeEnMinutes,
       status,
       craDeclined,
       collectif: false,
