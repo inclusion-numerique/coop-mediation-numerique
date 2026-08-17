@@ -125,36 +125,8 @@ export const rdvServicePublicRouter = router({
       return result
     },
   ),
-  deleteRdvAccount: protectedProcedure.mutation(async ({ ctx: { user } }) => {
-    // This is actually a soft delete
-    const rdvAccount = await prismaClient.rdvAccount.findUnique({
-      where: {
-        userId: user.id,
-      },
-      select: {
-        id: true,
-      },
-    })
-
-    if (!rdvAccount) {
-      throw invalidError('Compte RDV Service Public introuvable')
-    }
-
-    await prismaClient.rdvAccount.update({
-      where: {
-        id: rdvAccount.id,
-      },
-      data: {
-        deleted: new Date(),
-        accessToken: null,
-        refreshToken: null,
-        expiresAt: null,
-        updated: new Date(),
-      },
-    })
-
-    return {}
-  }),
+  // `deleteRdvAccount` a migré vers l'ability `deconnecter-compte-rdv`, appelée
+  // par la server action `app/_actions/rdvsp/deconnecter-compte-rdv.action.ts`.
   updateIncludeRdvsInActivitesList: protectedProcedure
     .input(
       z.object({

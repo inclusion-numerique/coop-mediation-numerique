@@ -2,6 +2,7 @@
 import { useModalVisibility } from '@app/ui/hooks/useModalVisibility'
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
+import { deconnecterCompteRdvAction } from '@app/web/app/_actions/rdvsp/deconnecter-compte-rdv.action'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import { trpc } from '@app/web/trpc'
 import type { UserId, UserRdvAccount, UserTimezone } from '@app/web/utils/user'
@@ -30,10 +31,10 @@ const GererRdvServicePublicModal = ({
 }: {
   user: UserRdvAccount & UserTimezone & UserId
 }) => {
-  const deleteMutation = trpc.rdvServicePublic.deleteRdvAccount.useMutation()
   const syncMutation = trpc.rdvServicePublic.syncRdvAccountData.useMutation()
   const router = useRouter()
 
+  const [deconnexionEnCours, setDeconnexionEnCours] = useState(false)
   const [state, setState] = useState<'gerer' | 'deconnecter'>('gerer')
 
   const [status, setStatus] = useState<RdvOauthIntegrationStatus>(
@@ -54,7 +55,19 @@ const GererRdvServicePublicModal = ({
   }
 
   const onConfirmDelete = async () => {
-    await deleteMutation.mutateAsync()
+    setDeconnexionEnCours(true)
+    const result = await deconnecterCompteRdvAction()
+
+    if (!result.success) {
+      setDeconnexionEnCours(false)
+      createToast({
+        priority: 'error',
+        message:
+          'Une erreur est survenue lors de la déconnexion de votre compte RDV Service Public.',
+      })
+      return
+    }
+
     createToast({
       priority: 'success',
       message: `Votre compte RDV Service Public a bien été déconnecté.`,
@@ -92,10 +105,7 @@ const GererRdvServicePublicModal = ({
     onClosed: reset,
   })
 
-  const isLoading =
-    deleteMutation.isPending ||
-    deleteMutation.isSuccess ||
-    syncMutation.isPending
+  const isLoading = deconnexionEnCours || syncMutation.isPending
 
   const title =
     state === 'gerer' ? (
