@@ -1,6 +1,6 @@
 import IconInSquare from '@app/web/components/IconInSquare'
 import RdvServicePubliqueConnexionCard from '@app/web/features/rdvsp/ui/RdvServicePubliqueConnexionCard'
-import { rdvSupportEmail } from '@app/web/rdv-service-public/rdvServicePublicUrls'
+import { rdvSupportEmail } from '@app/web/features/rdvsp/urls'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
 import React from 'react'

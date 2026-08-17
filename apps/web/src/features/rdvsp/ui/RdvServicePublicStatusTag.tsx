@@ -1,4 +1,4 @@
-import type { RdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
+import type { RdvOauthIntegrationStatus } from '@app/web/features/rdvsp/ui/rdv-integration-status'
 import { Tag } from '@codegouvfr/react-dsfr/Tag'
 
 const RdvServicePublicStatusTag = ({

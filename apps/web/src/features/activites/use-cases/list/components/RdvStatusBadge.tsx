@@ -1,5 +1,5 @@
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
-import type { RdvStatus } from '@app/web/rdv-service-public/rdvStatus'
+import type { RdvStatus } from '@app/web/features/rdvsp/ui/rdv-status'
 import type { AlertProps } from '@codegouvfr/react-dsfr/Alert'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import type { SearchRdvResultItem } from '../db/searchActiviteAndRdvs'

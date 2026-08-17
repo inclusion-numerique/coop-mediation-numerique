@@ -7,7 +7,7 @@ import { deconnecterCompteRdvAction } from '@app/web/app/_actions/rdvsp/deconnec
 import {
   getRdvOauthIntegrationStatus,
   type RdvOauthIntegrationStatus,
-} from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
+} from '@app/web/features/rdvsp/ui/rdv-integration-status'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { dateAsDayAndTimeInTimeZone } from '@app/web/utils/dateAsDayAndTime'
 import type { UserId, UserRdvAccount, UserTimezone } from '@app/web/utils/user'

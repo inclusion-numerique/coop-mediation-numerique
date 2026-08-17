@@ -13,7 +13,7 @@ import {
 import {
   type RdvStatus,
   rdvStatusValues,
-} from '@app/web/rdv-service-public/rdvStatus'
+} from '@app/web/features/rdvsp/ui/rdv-status'
 import { Thematique } from '@prisma/client'
 import z from 'zod'
 

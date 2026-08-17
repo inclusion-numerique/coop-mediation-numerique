@@ -1,5 +1,5 @@
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
-import { rdvStatusValues } from '@app/web/rdv-service-public/rdvStatus'
+import { rdvStatusValues } from '@app/web/features/rdvsp/ui/rdv-status'
 import { Spinner } from '@app/web/ui/Spinner'
 import Link from 'next/link'
 

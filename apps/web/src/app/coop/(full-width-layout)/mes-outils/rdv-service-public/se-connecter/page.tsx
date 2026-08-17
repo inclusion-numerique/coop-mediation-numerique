@@ -1,11 +1,11 @@
 import BackButton from '@app/web/components/BackButton'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
-import RdvServicePubliqueConnexionCard from '@app/web/features/rdvsp/ui/RdvServicePubliqueConnexionCard'
 import {
   rdvOauthLinkAccountErrorCallbackPath,
   rdvOauthLinkAccountFlowUrl,
   rdvOauthLinkAccountSuccessCallbackPath,
-} from '@app/web/rdv-service-public/rdvServicePublicOauth'
+} from '@app/web/features/rdvsp/oauth'
+import RdvServicePubliqueConnexionCard from '@app/web/features/rdvsp/ui/RdvServicePubliqueConnexionCard'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Image from 'next/image'
 import React from 'react'

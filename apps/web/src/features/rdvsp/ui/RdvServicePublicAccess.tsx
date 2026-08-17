@@ -1,16 +1,16 @@
 import { getSessionUser } from '@app/web/auth/getSessionUser'
 import { RDVServicePublicCoopConnexion } from '@app/web/features/pictograms/services/RDVServicePublicCoopConnexion'
-import GererRdvServicePublicButton from '@app/web/features/rdvsp/ui/GererRdvServicePublicButton'
-import { getRdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
 import {
   rdvOauthLinkAccountErrorCallbackPath,
   rdvOauthLinkAccountFlowUrl,
   rdvOauthLinkAccountSuccessCallbackPath,
-} from '@app/web/rdv-service-public/rdvServicePublicOauth'
+} from '@app/web/features/rdvsp/oauth'
+import GererRdvServicePublicButton from '@app/web/features/rdvsp/ui/GererRdvServicePublicButton'
+import { getRdvOauthIntegrationStatus } from '@app/web/features/rdvsp/ui/rdv-integration-status'
 import {
   rdvIntegrationEnSavoirPlusLink,
   rdvMyHomepageLink,
-} from '@app/web/rdv-service-public/rdvServicePublicUrls'
+} from '@app/web/features/rdvsp/urls'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import Link from 'next/link'

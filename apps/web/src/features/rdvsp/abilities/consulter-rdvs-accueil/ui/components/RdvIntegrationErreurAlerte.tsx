@@ -2,7 +2,7 @@ import {
   rdvOauthLinkAccountErrorCallbackPath,
   rdvOauthLinkAccountFlowUrl,
   rdvOauthLinkAccountSuccessCallbackPath,
-} from '@app/web/rdv-service-public/rdvServicePublicOauth'
+} from '@app/web/features/rdvsp/oauth'
 import Alert from '@codegouvfr/react-dsfr/Alert'
 import Button from '@codegouvfr/react-dsfr/Button'
 import React from 'react'

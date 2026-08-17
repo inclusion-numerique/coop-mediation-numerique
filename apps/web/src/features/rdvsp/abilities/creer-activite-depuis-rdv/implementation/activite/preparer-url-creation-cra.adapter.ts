@@ -1,5 +1,5 @@
+import { createCraDataFromRdv } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/implementation/activite/cra-data-depuis-rdv'
 import { prismaClient } from '@app/web/prismaClient'
-import { createCraDataFromRdv } from '@app/web/rdv-service-public/createCraDataFromRdv'
 import { getServerUrl } from '@app/web/utils/baseUrl'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import type { PreparerUrlCreationCra } from '../../domain/creer-activite-depuis-rdv'

@@ -1,6 +1,6 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
-import type { RdvStatusFilterValue } from '../features/activites/use-cases/list/validation/ActivitesFilters'
-import type { statutsPresence } from '../features/rdvsp/domain/statut-presence'
+import type { RdvStatusFilterValue } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import type { statutsPresence } from '../domain/statut-presence'
 
 /**
  * Statuts de RDV Service Public, plus `past` que La Coop dérive de l'heure de

@@ -1,5 +1,5 @@
-import type { statutsPresence } from '../features/rdvsp/domain/statut-presence'
-import type { RdvStatus } from './rdvStatus'
+import type { statutsPresence } from '../domain/statut-presence'
+import type { RdvStatus } from './rdv-status'
 
 // Représente un bénéficiaire suivi côté coop qu'on a lié à un user de RDVSP
 export type RdvUserBeneficiaire = {

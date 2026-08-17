@@ -1,4 +1,4 @@
-import type { UserRdvAccount } from '../utils/user'
+import type { UserRdvAccount } from '@app/web/utils/user'
 
 export type RdvOauthIntegrationStatus = 'none' | 'success' | 'error'
 

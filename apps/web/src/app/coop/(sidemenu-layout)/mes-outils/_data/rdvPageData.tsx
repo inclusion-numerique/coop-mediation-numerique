@@ -2,7 +2,7 @@ import { OutilPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-outils/ou
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import RdvServicePublicAccessCard from '@app/web/features/rdvsp/ui/RdvServicePublicAccess'
 import RdvServicePublicMigrationNotice from '@app/web/features/rdvsp/ui/RdvServicePublicMigrationNotice'
-import { rdvWebsiteLink } from '@app/web/rdv-service-public/rdvServicePublicUrls'
+import { rdvWebsiteLink } from '@app/web/features/rdvsp/urls'
 
 export default {
   title: 'RDV Service Public',

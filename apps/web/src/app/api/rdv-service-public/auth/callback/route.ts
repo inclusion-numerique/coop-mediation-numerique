@@ -12,12 +12,12 @@ import { enregistrerCompteConnecte } from '@app/web/features/rdvsp/abilities/con
 import { EmailExterne } from '@app/web/features/rdvsp/domain/identite'
 import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
 import { rdvServicePublicApiBinding } from '@app/web/features/rdvsp/implementation/rdv-service-public.bindings'
-import { syncAllRdvData } from '@app/web/features/rdvsp/sync/syncAllRdvData'
-import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import {
   rdvServicePublicOAuthConfig,
   rdvServicePublicOauthCallbackUrl,
-} from '@app/web/rdv-service-public/rdvServicePublicOauth'
+} from '@app/web/features/rdvsp/oauth'
+import { syncAllRdvData } from '@app/web/features/rdvsp/sync/syncAllRdvData'
+import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { getServerUrl } from '@app/web/utils/baseUrl'
 import {
