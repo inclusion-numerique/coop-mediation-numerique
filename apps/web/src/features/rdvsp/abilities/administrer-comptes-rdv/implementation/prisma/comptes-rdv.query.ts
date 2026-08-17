@@ -1,9 +1,13 @@
 import { PrismaSessionUser } from '@app/web/auth/getSessionUserFromSessionToken'
 import { serializePrismaSessionUser } from '@app/web/auth/serializePrismaSessionUser'
+import { compteRdvToDomain } from '@app/web/features/rdvsp/db'
 import { prismaClient } from '@app/web/prismaClient'
 import { getRdvs } from '@app/web/rdv-service-public/getRdvs'
+import { santeDuCompte } from '../../domain/sante-compte'
 
 export const getAdministrationRdvspData = async () => {
+  const maintenant = new Date()
+
   const usersWithRdvspData = await prismaClient.user.findMany({
     where: {
       rdvAccount: {
@@ -35,11 +39,19 @@ export const getAdministrationRdvspData = async () => {
             },
           },
           id: true,
+          userId: true,
           expiresAt: true,
           accessToken: true,
           refreshToken: true,
+          scope: true,
           error: true,
+          deleted: true,
+          created: true,
+          updated: true,
+          lastSynced: true,
+          metadata: true,
           syncFrom: true,
+          invalidWebhookOrganisationIds: true,
           includeRdvsInActivitesList: true,
           organisations: {
             select: {
@@ -87,7 +99,17 @@ export const getAdministrationRdvspData = async () => {
 
       return {
         ...user,
-        hasOauthTokens: !!user.rdvAccount?.accessToken,
+        // L'état du compte est décidé par le domaine : cinq situations distinctes
+        // là où l'écran se contentait d'un booléen « des jetons, ou pas ».
+        sante: santeDuCompte(
+          compteRdvToDomain({
+            ...user.rdvAccount,
+            organisations: user.rdvAccount.organisations.map(
+              ({ organisation }) => ({ organisationId: organisation.id }),
+            ),
+          }),
+          maintenant,
+        ),
         rdvAccount: {
           ...user.rdvAccount,
           lastSync,

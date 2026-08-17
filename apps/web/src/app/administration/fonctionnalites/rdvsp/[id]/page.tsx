@@ -1,6 +1,6 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
-import { AdministrationRdvspUserPage } from '@app/web/features/rdvsp/administration/AdministrationRdvspUserPage'
-import { getAdministrationRdvspUserData } from '@app/web/features/rdvsp/administration/getAdministrationRdvspUserData'
+import { getAdministrationRdvspUserData } from '@app/web/features/rdvsp/abilities/administrer-comptes-rdv/implementation/prisma/compte-rdv-detaille.query'
+import { AdministrationRdvspUserPage } from '@app/web/features/rdvsp/abilities/administrer-comptes-rdv/ui/pages/AdministrationRdvspUserPage'
 import { notFound } from 'next/navigation'
 
 export const metadata = {

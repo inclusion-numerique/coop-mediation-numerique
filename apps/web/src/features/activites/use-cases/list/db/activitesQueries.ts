@@ -1,4 +1,4 @@
-import { addRdvBadgeStatus } from '@app/web/features/rdvsp/administration/db/addRdvBadgeStatus'
+import { addRdvBadgeStatus } from '@app/web/features/rdvsp/db/badge-statut-rdv'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { Prisma } from '@prisma/client'

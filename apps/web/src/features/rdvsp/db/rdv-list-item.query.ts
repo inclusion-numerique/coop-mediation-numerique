@@ -1,6 +1,6 @@
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
-import { addRdvBadgeStatus } from './addRdvBadgeStatus'
+import { addRdvBadgeStatus } from './badge-statut-rdv'
 
 export const rdvListSelect = {
   id: true,

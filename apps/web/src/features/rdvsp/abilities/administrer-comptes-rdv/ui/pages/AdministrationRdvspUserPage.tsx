@@ -8,8 +8,8 @@ import { dateAsDayAndTimeInTimeZone } from '@app/web/utils/dateAsDayAndTime'
 import { numberToString } from '@app/web/utils/formatNumber'
 import { contentId } from '@app/web/utils/skipLinks'
 import Badge from '@codegouvfr/react-dsfr/Badge'
-import AdministrationSyncUserDataButton from './AdministrationSyncUserDataButton'
-import type { AdministrationRdvspUserData } from './getAdministrationRdvspUserData'
+import type { AdministrationRdvspUserData } from '../../implementation/prisma/compte-rdv-detaille.query'
+import AdministrationSyncUserDataButton from '../components/AdministrationSyncUserDataButton'
 
 const renderDriftCell = ({ value }: { value: number }) =>
   value > 0 ? (

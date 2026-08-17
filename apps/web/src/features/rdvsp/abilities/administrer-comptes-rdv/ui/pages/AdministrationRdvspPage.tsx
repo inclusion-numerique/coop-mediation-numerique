@@ -8,7 +8,8 @@ import { dateAsDayAndTimeInTimeZone } from '@app/web/utils/dateAsDayAndTime'
 import { numberToString } from '@app/web/utils/formatNumber'
 import { contentId } from '@app/web/utils/skipLinks'
 import { Button } from '@codegouvfr/react-dsfr/Button'
-import type { AdministrationRdvspData } from './getAdministrationRdvspData'
+import type { AdministrationRdvspData } from '../../implementation/prisma/comptes-rdv.query'
+import { statutAffiche } from '../administration-rdvsp.presenter'
 
 const AdministrationRdvspPage = async ({
   data: { users, rdvs },
@@ -60,7 +61,7 @@ const AdministrationRdvspPage = async ({
                       id,
                       name,
                       email,
-                      hasOauthTokens,
+                      sante,
                       rdvAccount: {
                         organisations,
                         lastSync,
@@ -77,7 +78,7 @@ const AdministrationRdvspPage = async ({
                         </td>
                         <td>
                           <RdvServicePublicStatusTag
-                            status={hasOauthTokens ? 'success' : 'error'}
+                            status={statutAffiche(sante)}
                             small
                           />
                           <br />

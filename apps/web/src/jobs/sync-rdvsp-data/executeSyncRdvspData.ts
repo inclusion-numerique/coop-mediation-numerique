@@ -1,6 +1,7 @@
 import { output } from '@app/cli/output'
 import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
-import { getAdministrationRdvspData } from '@app/web/features/rdvsp/administration/getAdministrationRdvspData'
+import { peutEtreSynchronise } from '@app/web/features/rdvsp/abilities/administrer-comptes-rdv/domain/sante-compte'
+import { getAdministrationRdvspData } from '@app/web/features/rdvsp/abilities/administrer-comptes-rdv/implementation/prisma/comptes-rdv.query'
 import { syncAllRdvData } from '@app/web/features/rdvsp/sync/syncAllRdvData'
 import type { SyncRdvspDataJob } from './syncRdvspDataJob'
 
@@ -9,7 +10,12 @@ export const executeSyncRdvspData = async (_job: SyncRdvspDataJob) => {
 
   const { users } = await getAdministrationRdvspData()
 
-  const eligibleUsers = users.filter((u) => u.hasOauthTokens && u.rdvAccount)
+  // Éligibilité décidée par le domaine : un compte en erreur reste synchronisable,
+  // c'est en réessayant qu'il en sort.
+  const eligibleUsers = users.filter(
+    (utilisateur) =>
+      peutEtreSynchronise(utilisateur.sante) && utilisateur.rdvAccount,
+  )
 
   output(
     `Found ${users.length} users with RDV account; ${eligibleUsers.length} eligible for sync`,

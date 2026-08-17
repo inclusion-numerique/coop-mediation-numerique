@@ -1,4 +1,4 @@
-import { RdvListItem } from '@app/web/features/rdvsp/administration/db/rdvQueries'
+import { RdvListItem } from '@app/web/features/rdvsp/db/rdv-list-item.query'
 import type { Rdv } from '@app/web/rdv-service-public/Rdv'
 import { createBeneficiairesForParticipantsAnonymes } from '../../cra/collectif/createBeneficiairesForParticipantsAnonymes'
 import { participantsAnonymesDefault } from '../../cra/collectif/validation/participantsAnonymes'
