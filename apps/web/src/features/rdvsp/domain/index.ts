@@ -29,6 +29,10 @@ export {
   ReponseInattendue,
 } from './errors'
 export {
+  EvenementWebhook,
+  evenementsWebhook,
+} from './evenement-webhook'
+export {
   EmailExterne,
   NomExterne,
   PrenomExterne,

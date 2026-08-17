@@ -1,5 +1,6 @@
 import { AdresseRdv } from '../../../domain/adresse-rdv'
 import { DureeEnMinutes } from '../../../domain/duree-en-minutes'
+import { EvenementWebhook } from '../../../domain/evenement-webhook'
 import { OrganisationId } from '../../../domain/organisation-id'
 import type { Rdv } from '../../../domain/rdv'
 import { RdvAgentId } from '../../../domain/rdv-agent-id'
@@ -8,7 +9,6 @@ import { RdvUuid } from '../../../domain/rdv-uuid'
 import { StatutPresence } from '../../../domain/statut-presence'
 import { UrlAgent } from '../../../domain/url-agent'
 import { decisionPourWebhookRdv, webhookRdvModifie } from './decision-webhook'
-import { EvenementWebhook } from './evenement-webhook'
 
 const rdv = (
   surcharge: Partial<Extract<Rdv, { collectif: false }>> = {},

@@ -1,13 +1,13 @@
 export {
+  EvenementWebhook,
+  evenementsWebhook,
+} from '../../domain/evenement-webhook'
+export {
   type DecisionWebhookRdv,
   decisionPourWebhookRdv,
   type RdvConnu,
   webhookRdvModifie,
 } from './domain/decision-webhook'
-export {
-  EvenementWebhook,
-  evenementsWebhook,
-} from './domain/evenement-webhook'
 export type {
   RecevoirWebhookRdv,
   ResultatWebhookRdv,

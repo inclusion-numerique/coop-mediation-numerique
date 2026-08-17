@@ -3,7 +3,6 @@ import { handleUserModelWebhook } from '@app/web/features/rdvsp/webhook/handleUs
 import {
   RdvspWebhookModel,
   RdvspWebhookPayload,
-  RdvspWebhookUserData,
 } from '@app/web/features/rdvsp/webhook/rdvWebhook'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import * as Sentry from '@sentry/nextjs'
@@ -29,8 +28,8 @@ export const POST = async (request: NextRequest) => {
       )
     }
 
-    // Route to appropriate handler based on model type
-    // Using type assertions because TypeScript cannot narrow discriminated unions with nested discriminants
+    // Chaque ability valide elle-même le payload qu'elle reçoit : la route n'a
+    // plus à affirmer une forme qu'elle ne peut pas vérifier.
     switch (body.meta.model) {
       case RdvspWebhookModel.Rdv:
         if (logDebug) outputLog('Processing RDV webhook', body.meta)
@@ -45,7 +44,7 @@ export const POST = async (request: NextRequest) => {
       case RdvspWebhookModel.User:
         if (logDebug) outputLog('Processing User webhook', body.meta)
         await handleUserModelWebhook({
-          data: body.data as RdvspWebhookUserData,
+          data: body.data,
           event: body.meta.event,
         })
         break

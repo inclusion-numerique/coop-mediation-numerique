@@ -1,5 +1,4 @@
 import assert from 'node:assert'
-import { EvenementWebhook } from '@app/web/features/rdvsp/abilities/recevoir-webhook-rdv/domain/evenement-webhook'
 import type { RecevoirWebhookRdv } from '@app/web/features/rdvsp/abilities/recevoir-webhook-rdv/domain/recevoir-webhook-rdv'
 import { lireNotificationRdv } from '@app/web/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/api/lire-notification-rdv'
 import {
@@ -9,6 +8,7 @@ import {
   supprimerRdvDeLaNotification,
 } from '@app/web/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/prisma/webhook-rdv.prisma'
 import { recevoirWebhookRdv } from '@app/web/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/recevoir-webhook-rdv'
+import { EvenementWebhook } from '@app/web/features/rdvsp/domain/evenement-webhook'
 import {
   ID_TEST,
   rdvEnBase,

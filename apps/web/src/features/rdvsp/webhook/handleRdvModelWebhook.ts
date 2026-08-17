@@ -1,4 +1,3 @@
-import { EvenementWebhook } from '../abilities/recevoir-webhook-rdv/domain/evenement-webhook'
 import { lireNotificationRdv } from '../abilities/recevoir-webhook-rdv/implementation/api/lire-notification-rdv'
 import { rapprocherBeneficiairesDuRdv } from '../abilities/recevoir-webhook-rdv/implementation/beneficiaire/rapprocher-beneficiaires-du-rdv.adapter'
 import {
@@ -8,6 +7,7 @@ import {
   supprimerRdvDeLaNotification,
 } from '../abilities/recevoir-webhook-rdv/implementation/prisma/webhook-rdv.prisma'
 import { recevoirWebhookRdv } from '../abilities/recevoir-webhook-rdv/implementation/recevoir-webhook-rdv'
+import { EvenementWebhook } from '../domain/evenement-webhook'
 import type { RdvspWebhookEvent } from './rdvWebhook'
 
 const journaliser = (message: string) => {

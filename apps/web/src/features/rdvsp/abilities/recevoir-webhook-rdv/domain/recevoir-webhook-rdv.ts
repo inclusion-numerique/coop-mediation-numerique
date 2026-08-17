@@ -1,9 +1,9 @@
 import type { Result } from '@app/web/libraries/result'
+import type { EvenementWebhook } from '../../../domain/evenement-webhook'
 import type { Rdv } from '../../../domain/rdv'
 import type { RdvAgentId } from '../../../domain/rdv-agent-id'
 import type { RdvId } from '../../../domain/rdv-id'
 import type { RdvConnu } from './decision-webhook'
-import type { EvenementWebhook } from './evenement-webhook'
 
 export type RaisonNonTraitee =
   | 'payloadInexploitable'

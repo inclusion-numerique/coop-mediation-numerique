@@ -1,5 +1,5 @@
+import type { EvenementWebhook } from '../../../domain/evenement-webhook'
 import type { Rdv } from '../../../domain/rdv'
-import type { EvenementWebhook } from './evenement-webhook'
 
 /**
  * Rendez-vous déjà détenu, avec la seule information que RDV Service Public
