@@ -4,13 +4,8 @@ import { consulterRdvsAccueil } from '@app/web/features/rdvsp/abilities/consulte
 import { compteDuMediateur } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/prisma/compte-du-mediateur.query'
 import { lireDonneesAccueilRdv } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/prisma/donnees-accueil-rdv.query'
 import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
-import { refreshRdvAgentAccountData } from '@app/web/features/rdvsp/sync/refreshRdvAgentAccountData'
 import { syncAllRdvData } from '@app/web/features/rdvsp/sync/syncAllRdvData'
 import { prismaClient } from '@app/web/prismaClient'
-import {
-  oAuthRdvApiGetOrganisations,
-  oAuthRdvApiMe,
-} from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
 import { getUserContextForOAuthApiCall } from '@app/web/rdv-service-public/getUserContextForRdvApiCall'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import {
@@ -19,7 +14,6 @@ import {
   invalidError,
 } from '@app/web/server/rpc/trpcErrors'
 import * as Sentry from '@sentry/nextjs'
-import { AxiosError } from 'axios'
 import z from 'zod'
 
 const getContextForSynchronization = async ({
@@ -75,53 +69,9 @@ const consulterRdvs = consulterRdvsAccueil({
 })
 
 export const rdvServicePublicRouter = router({
-  oAuthApiMe: protectedProcedure.mutation(async ({ ctx: { user } }) => {
-    const oAuthCallUser = await getUserContextForOAuthApiCall({ user })
-
-    const result = await oAuthRdvApiMe({
-      rdvAccount: oAuthCallUser.rdvAccount,
-    })
-
-    if (result.status === 'error') {
-      throw externalApiError(result.error)
-    }
-
-    return result.data
-  }),
-  oAuthApiGetOrganisations: protectedProcedure.mutation(
-    async ({ ctx: { user } }) => {
-      const oAuthCallUser = await getUserContextForOAuthApiCall({ user })
-
-      try {
-        const result = await oAuthRdvApiGetOrganisations({
-          rdvAccount: oAuthCallUser.rdvAccount,
-        })
-        return result.organisations
-      } catch (error) {
-        if (error instanceof AxiosError) {
-          throw externalApiError(error.message)
-        }
-        Sentry.captureException(error)
-        throw externalApiError(
-          "Une erreur est survenue lors de l'appel à l'API RDV Service Public",
-        )
-      }
-    },
-  ),
-  refreshRdvAccountData: protectedProcedure.mutation(
-    async ({ ctx: { user } }) => {
-      const oAuthCallUser = await getUserContextForOAuthApiCall({ user })
-
-      const result = await refreshRdvAgentAccountData({
-        rdvAccount: oAuthCallUser.rdvAccount,
-        appendLog: () => {
-          // no-op
-        },
-      })
-
-      return result
-    },
-  ),
+  // `oAuthApiMe`, `oAuthApiGetOrganisations` et `refreshRdvAccountData` ont été
+  // retirées : leur seul appelant était un hook de diagnostic que plus rien
+  // n'importait.
   // `deleteRdvAccount` a migré vers l'ability `deconnecter-compte-rdv`, appelée
   // par la server action `app/_actions/rdvsp/deconnecter-compte-rdv.action.ts`.
   updateIncludeRdvsInActivitesList: protectedProcedure
