@@ -48,13 +48,17 @@ export const ReponseInattendue = (
   detail: string,
 ): ReponseInattendue => ({ _tag: 'ReponseInattendue', chemin, detail })
 
-/** Appel tenté sur un compte sans jetons (jamais lié, ou délié). */
+/**
+ * Appel tenté sans jetons exploitables : compte jamais lié, délié, ou tout
+ * simplement inexistant — d'où un `agentId` absent dans ce dernier cas, l'agent
+ * n'ayant alors jamais été connu de La Coop.
+ */
 export type CompteNonLie = {
   readonly _tag: 'CompteNonLie'
-  readonly agentId: RdvAgentId
+  readonly agentId: RdvAgentId | null
 }
 
-export const CompteNonLie = (agentId: RdvAgentId): CompteNonLie => ({
+export const CompteNonLie = (agentId: RdvAgentId | null): CompteNonLie => ({
   _tag: 'CompteNonLie',
   agentId,
 })

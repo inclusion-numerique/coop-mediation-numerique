@@ -3,12 +3,14 @@
 import { createDynamicModal } from '@app/ui/components/Modal/createDynamicModal'
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
+import { mettreAJourStatutRdvAction } from '@app/web/app/_actions/rdvsp/mettre-a-jour-statut-rdv.action'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import type { RdvListItem } from '@app/web/features/rdvsp/administration/db/rdvQueries'
 import { trpc } from '@app/web/trpc'
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import styles from './RdvStatusUpdateModal.module.css'
 
 export type RdvStatusUpdateDynamicModalState = {
@@ -29,8 +31,7 @@ const RdvStatusUpdateModal = ({
   const state = RdvStatusUpdateDynamicModal.useState() ?? initialState
   const router = useRouter()
 
-  const updateStatusMutation =
-    trpc.rdvServicePublic.updateRdvStatus.useMutation()
+  const [miseAJourEnCours, setMiseAJourEnCours] = useState(false)
   const createActiviteMutation =
     trpc.rdvServicePublic.createActiviteFromRdv.useMutation()
 
@@ -56,31 +57,30 @@ const RdvStatusUpdateModal = ({
   }
 
   const handleUpdateStatus = async (
-    status: 'noshow' | 'excused' | 'revoked' | 'seen',
+    statut: 'noshow' | 'excused' | 'revoked' | 'seen',
   ) => {
-    try {
-      await updateStatusMutation.mutateAsync({
-        rdvId: rdv.id,
-        status,
-      })
-      RdvStatusUpdateDynamicModal.close()
-      router.refresh()
-      createToast({
-        priority: 'success',
-        message: 'Le statut du RDV a été mis à jour',
-      })
-    } catch {
+    setMiseAJourEnCours(true)
+    const result = await mettreAJourStatutRdvAction({ rdvId: rdv.id, statut })
+
+    if (!result.success) {
+      setMiseAJourEnCours(false)
       createToast({
         priority: 'error',
         message: 'Une erreur est survenue lors de la mise à jour du statut',
       })
-      updateStatusMutation.reset()
+      return
     }
+
+    RdvStatusUpdateDynamicModal.close()
+    router.refresh()
+    createToast({
+      priority: 'success',
+      message: 'Le statut du RDV a été mis à jour',
+    })
   }
 
   const isLoading =
-    updateStatusMutation.isPending ||
-    updateStatusMutation.isSuccess ||
+    miseAJourEnCours ||
     createActiviteMutation.isPending ||
     createActiviteMutation.isSuccess
 

@@ -11,7 +11,6 @@ import {
   oAuthRdvApiCreateRdvPlan,
   oAuthRdvApiGetOrganisations,
   oAuthRdvApiMe,
-  oAuthRdvApiUpdateRdvStatus,
 } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
 import { getUserContextForOAuthApiCall } from '@app/web/rdv-service-public/getUserContextForRdvApiCall'
 import {
@@ -348,59 +347,8 @@ export const rdvServicePublicRouter = router({
         return result.data
       },
     ),
-  updateRdvStatus: protectedProcedure
-    .input(
-      z.object({
-        rdvId: z.number(),
-        status: z.enum(['seen', 'noshow', 'excused', 'revoked']),
-      }),
-    )
-    .mutation(async ({ input, ctx: { user } }) => {
-      const rdv = await prismaClient.rdv.findUnique({
-        where: { id: input.rdvId },
-        select: {
-          id: true,
-          rdvAccountId: true,
-        },
-      })
-
-      if (!rdv) {
-        throw invalidError('RDV introuvable')
-      }
-
-      if (rdv.rdvAccountId !== user.rdvAccount?.id) {
-        throw forbiddenError(
-          'RDV non associé à votre compte RDV Service Public',
-        )
-      }
-
-      const userWithRdvAccount = await getUserContextForOAuthApiCall({ user })
-      const { rdvAccount } = userWithRdvAccount
-
-      if (!rdvAccount) {
-        throw forbiddenError('Compte RDV Service Public non lié')
-      }
-
-      const apiResult = await oAuthRdvApiUpdateRdvStatus({
-        rdvAccount,
-        rdvId: input.rdvId,
-        status: input.status,
-      })
-
-      if (apiResult.status === 'error') {
-        throw externalApiError(apiResult.error)
-      }
-
-      await prismaClient.rdv.update({
-        where: { id: input.rdvId },
-        data: {
-          status: apiResult.data.status,
-          craDeclined: apiResult.data.status === 'seen',
-        },
-      })
-
-      return { success: true }
-    }),
+  // `updateRdvStatus` a migré vers l'ability `mettre-a-jour-statut-rdv`, appelée
+  // par la server action `app/_actions/rdvsp/mettre-a-jour-statut-rdv.action.ts`.
   createActiviteFromRdv: protectedProcedure
     .input(
       z.object({
