@@ -3,6 +3,8 @@
  * détient. La forme est la même pour les rendez-vous, les motifs, les lieux et
  * les usagers : seule la comparaison change.
  */
+import type { BilanModele } from '../../../domain/bilan-synchronisation'
+
 export type PlanModele<T> = {
   readonly aCreer: readonly T[]
   readonly aMettreAJour: readonly T[]
@@ -59,12 +61,11 @@ export const planifierModele = <T, Id>({
   }
 }
 
-export type BilanModele = {
-  readonly noop: number
-  readonly created: number
-  readonly updated: number
-  readonly deleted: number
-}
+export type { BilanModele } from '../../../domain/bilan-synchronisation'
+export {
+  bilanVide,
+  cumulerBilans,
+} from '../../../domain/bilan-synchronisation'
 
 export const bilanDuPlan = <T>(
   plan: PlanModele<T>,
@@ -75,20 +76,3 @@ export const bilanDuPlan = <T>(
   updated: plan.aMettreAJour.length,
   deleted: supprimes,
 })
-
-export const cumulerBilans = (
-  premier: BilanModele,
-  second: BilanModele,
-): BilanModele => ({
-  noop: premier.noop + second.noop,
-  created: premier.created + second.created,
-  updated: premier.updated + second.updated,
-  deleted: premier.deleted + second.deleted,
-})
-
-export const bilanVide: BilanModele = {
-  noop: 0,
-  created: 0,
-  updated: 0,
-  deleted: 0,
-}

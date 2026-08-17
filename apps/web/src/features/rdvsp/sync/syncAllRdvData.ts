@@ -1,212 +1,156 @@
+import { success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
-import { getUserContextForOAuthApiCall } from '@app/web/rdv-service-public/getUserContextForRdvApiCall'
-import {
+import type {
   UserId,
   UserMediateur,
   UserWithExistingRdvAccount,
 } from '@app/web/utils/user'
-import type { Prisma } from '@prisma/client'
-import { importOrganisations } from './importOrganisations'
-import { importRdvs } from './importRdvs'
-import { installWebhooks } from './installWebhooks'
-import { refreshRdvAgentAccountData } from './refreshRdvAgentAccountData'
 import {
-  computeSyncDrift,
-  emptySyncModelResult,
-  type SyncResult,
-} from './syncLog'
+  cloturerJournal,
+  echouerJournal,
+  ouvrirJournal,
+} from '../abilities/synchroniser-compte-rdv/implementation/prisma/journal-synchronisation.prisma'
+import { synchroniserCompteRdv } from '../abilities/synchroniser-compte-rdv/implementation/synchroniser-compte-rdv'
+import { appliquerPlanOrganisations } from '../abilities/synchroniser-organisations/implementation/prisma/appliquer-plan-organisations.mutation'
+import { etatOrganisations } from '../abilities/synchroniser-organisations/implementation/prisma/etat-organisations.query'
+import { synchroniserOrganisations } from '../abilities/synchroniser-organisations/implementation/synchroniser-organisations'
+import { rapprocherBeneficiaires } from '../abilities/synchroniser-rdvs/implementation/beneficiaire/rapprocher-beneficiaires.adapter'
+import {
+  appliquerPlanLot,
+  supprimerRdvs,
+} from '../abilities/synchroniser-rdvs/implementation/prisma/appliquer-plan-lot.mutation'
+import {
+  etatConnuDuLot,
+  rdvsDejaImportes,
+} from '../abilities/synchroniser-rdvs/implementation/prisma/etat-connu.query'
+import { synchroniserRdvs } from '../abilities/synchroniser-rdvs/implementation/synchroniser-rdvs'
+import { compteRdvToDomain } from '../db'
+import { bilanVide } from '../domain/bilan-synchronisation'
+import { estUtilisable } from '../domain/compte-rdv'
+import { OrganisationId } from '../domain/organisation-id'
+import { rdvServicePublicApiBinding } from '../implementation/rdv-service-public.bindings'
+import { installWebhooks } from './installWebhooks'
 
 export type AppendLog = (log: string | string[]) => void
 
+const bilanRdvsVide = {
+  rdvs: bilanVide,
+  usagers: bilanVide,
+  motifs: bilanVide,
+  lieux: bilanVide,
+}
+
+/**
+ * Adaptateur de transition entre l'orchestrateur historique et les abilities.
+ *
+ * Il ne fait plus que résoudre le compte et câbler les trois réconciliations.
+ * L'installation des webhooks reste sur son chemin d'origine : elle relève de
+ * l'installation d'infrastructure, pas d'un cas d'usage métier, et n'a donc pas
+ * de port.
+ */
 export const syncAllRdvData = async ({
   user,
   organisationIds,
 }: {
   user: UserWithExistingRdvAccount & UserId & UserMediateur
-  organisationIds?: number[] // scopes the refresh to only these organisations, empty array means: no-op do nothing
+  organisationIds?: number[]
 }) => {
-  if (organisationIds && organisationIds.length === 0) {
-    // if we are only syncing a subset of organisations, we return an empty sync result if no organisations are passed in params
-    return computeSyncDrift({
-      rdvs: emptySyncModelResult,
-      organisations: emptySyncModelResult,
-      webhooks: emptySyncModelResult,
-      users: emptySyncModelResult,
-      motifs: emptySyncModelResult,
-      lieux: emptySyncModelResult,
-      invalidWebhookOrganisationIds: undefined,
-    })
-  }
-  const { rdvAccount: rdvAccountForFirstCall } =
-    await getUserContextForOAuthApiCall({ user })
-
-  const syncLogData: Prisma.RdvSyncLogUncheckedCreateInput = {
-    rdvAccountId: rdvAccountForFirstCall.id,
-    started: new Date(),
-    organisationIds,
-    ended: null,
-    error: null,
-    log: '',
-  }
-
-  const createdSyncLog = await prismaClient.rdvSyncLog.create({
-    data: syncLogData,
+  const row = await prismaClient.rdvAccount.findUniqueOrThrow({
+    where: { id: user.rdvAccount.id },
+    include: { organisations: { select: { organisationId: true } } },
   })
 
-  const start = Date.now()
-  const appendLog = (log: string | string[]) => {
-    if (Array.isArray(log)) {
-      return log.forEach(appendLog)
-    }
-    const time = Math.round((Date.now() - start) / 1000)
-    const line = `[rdv-sync:${rdvAccountForFirstCall.id}][${time}s] ${log}`
-    syncLogData.log += line
-    syncLogData.log += '\n'
+  const compte = compteRdvToDomain(row)
+
+  if (!estUtilisable(compte)) {
+    return { drift: 0 }
   }
 
-  try {
-    await refreshRdvAgentAccountData({
-      rdvAccount: rdvAccountForFirstCall,
-      appendLog,
-    })
-
-    // After the first call, the credentials may have been refreshed, we grab the updated account
-    const { rdvAccount } = await getUserContextForOAuthApiCall({ user })
-
-    // Only import organisations if we are syncing all organisations
-    let organisationsImport = { result: emptySyncModelResult, count: 0 }
-    if (!organisationIds) {
-      organisationsImport = await importOrganisations({
-        rdvAccount,
-        appendLog,
-      })
-    }
-    const updatedRdvAccountOrganisations =
-      await prismaClient.rdvAccount.findUniqueOrThrow({
-        where: { id: rdvAccount.id },
-        include: {
-          organisations: {
-            include: {
-              organisation: true,
-            },
-          },
-        },
-      })
-    rdvAccount.organisations = updatedRdvAccountOrganisations.organisations
-
-    const rdvsImport = user.mediateur
-      ? await importRdvs({
-          rdvAccount,
-          mediateurId: user.mediateur.id,
-          appendLog,
-          organisationIds,
-        })
-      : null
-
-    const webhooksImport = await installWebhooks({
-      rdvAccount,
-      appendLog,
-      organisationIds,
-    })
-
-    // Build sync result
-    const syncResult: SyncResult = {
-      rdvs: rdvsImport?.rdvs ?? emptySyncModelResult,
-      organisations: organisationsImport.result,
-      webhooks: webhooksImport,
-      users: rdvsImport?.users ?? emptySyncModelResult,
-      motifs: rdvsImport?.motifs ?? emptySyncModelResult,
-      lieux: rdvsImport?.lieux ?? emptySyncModelResult,
-      invalidWebhookOrganisationIds:
-        webhooksImport.invalidWebhookOrganisationIds === null
-          ? undefined
-          : webhooksImport.invalidWebhookOrganisationIds,
-    }
-
-    // Compute drift
-    const syncResultWithDrift = computeSyncDrift(syncResult)
-
-    await prismaClient.rdvAccount.update({
-      where: { id: rdvAccount.id },
-      data: {
-        lastSynced: new Date(),
-        error: null,
-      },
-    })
-
-    const updateData = {
-      ended: new Date(),
-      drift: syncResultWithDrift.drift,
-
-      rdvsDrift: syncResultWithDrift.rdvs.drift,
-      rdvsNoop: syncResultWithDrift.rdvs.noop,
-      rdvsCreated: syncResultWithDrift.rdvs.created,
-      rdvsUpdated: syncResultWithDrift.rdvs.updated,
-      rdvsDeleted: syncResultWithDrift.rdvs.deleted,
-
-      organisationsDrift: syncResultWithDrift.organisations.drift,
-      organisationsNoop: syncResultWithDrift.organisations.noop,
-      organisationsCreated: syncResultWithDrift.organisations.created,
-      organisationsUpdated: syncResultWithDrift.organisations.updated,
-      organisationsDeleted: syncResultWithDrift.organisations.deleted,
-
-      webhooksDrift: syncResultWithDrift.webhooks.drift,
-      webhooksNoop: syncResultWithDrift.webhooks.noop,
-      webhooksCreated: syncResultWithDrift.webhooks.created,
-      webhooksUpdated: syncResultWithDrift.webhooks.updated,
-      webhooksDeleted: syncResultWithDrift.webhooks.deleted,
-
-      usersDrift: syncResultWithDrift.users.drift,
-      usersNoop: syncResultWithDrift.users.noop,
-      usersCreated: syncResultWithDrift.users.created,
-      usersUpdated: syncResultWithDrift.users.updated,
-      usersDeleted: syncResultWithDrift.users.deleted,
-
-      motifsDrift: syncResultWithDrift.motifs.drift,
-      motifsNoop: syncResultWithDrift.motifs.noop,
-      motifsCreated: syncResultWithDrift.motifs.created,
-      motifsUpdated: syncResultWithDrift.motifs.updated,
-      motifsDeleted: syncResultWithDrift.motifs.deleted,
-
-      lieuxDrift: syncResultWithDrift.lieux.drift,
-      lieuxNoop: syncResultWithDrift.lieux.noop,
-      lieuxCreated: syncResultWithDrift.lieux.created,
-      lieuxUpdated: syncResultWithDrift.lieux.updated,
-      lieuxDeleted: syncResultWithDrift.lieux.deleted,
-      rdvsCount: rdvsImport?.rdvs.count ?? 0,
-      organisationsCount: organisationsImport.count,
-      webhooksCount: webhooksImport.count,
-      usersCount: rdvsImport?.users.count ?? 0,
-      motifsCount: rdvsImport?.motifs.count ?? 0,
-      lieuxCount: rdvsImport?.lieux.count ?? 0,
-
-      log: syncLogData.log,
-
-      organisationIds,
-    }
-
-    await prismaClient.rdvSyncLog.update({
-      where: { id: createdSyncLog.id },
-      data: updateData,
-    })
-
-    return syncResultWithDrift
-  } catch (error) {
-    appendLog('sync failed')
-    const message = error instanceof Error ? error.message : 'Unknown error'
-    try {
-      await prismaClient.rdvSyncLog.update({
-        where: { id: createdSyncLog.id },
-        data: {
-          ended: new Date(),
-          error: message,
-          log: `${syncLogData.log}\n\nError:|-\n${error}`,
-        },
-      })
-    } catch {
-      appendLog('failed to persist error to rdvSyncLog')
-    }
-    // error already persisted above
-    throw error
+  const journal: string[] = []
+  const tracer = (message: string) => {
+    journal.push(message)
   }
+
+  const mediateurId = user.mediateur?.id
+
+  const synchroniser = synchroniserCompteRdv({
+    reconcilierOrganisations: synchroniserOrganisations({
+      listerOrganisations: rdvServicePublicApiBinding.listerOrganisations,
+      etatOrganisations,
+      appliquerPlan: appliquerPlanOrganisations,
+    }),
+    // Sans médiateur, aucun rendez-vous n'est rattachable : le compte existe,
+    // mais il n'a personne à qui appartenir.
+    reconcilierRdvs: async ({
+      compte: aSynchroniser,
+      organisationIds: portee,
+    }) =>
+      mediateurId === undefined
+        ? success(bilanRdvsVide)
+        : synchroniserRdvs({
+            listerRdvs: rdvServicePublicApiBinding.listerRdvs,
+            rdvsDejaImportes,
+            etatConnuDuLot,
+            appliquerPlan: appliquerPlanLot,
+            supprimerRdvs,
+            rapprocherBeneficiaires: rapprocherBeneficiaires({
+              mediateurId,
+              journaliser: tracer,
+            }),
+          })({ compte: aSynchroniser, organisationIds: portee }),
+    reconcilierWebhooks: async ({ organisationIds: portee }) => {
+      const resultat = await installWebhooks({
+        rdvAccount: {
+          id: row.id,
+          accessToken: row.accessToken,
+          refreshToken: row.refreshToken,
+          expiresAt: row.expiresAt,
+          scope: row.scope,
+          organisations: row.organisations,
+        },
+        appendLog: (log) => journal.push(...[log].flat()),
+        organisationIds: portee === undefined ? undefined : [...portee],
+      })
+
+      return {
+        bilan: resultat,
+        organisationIdsSansWebhook:
+          resultat.invalidWebhookOrganisationIds === null
+            ? undefined
+            : resultat.invalidWebhookOrganisationIds.map((id) =>
+                OrganisationId(id),
+              ),
+      }
+    },
+    ouvrirJournal,
+    cloturerJournal,
+    echouerJournal,
+    journaliser: tracer,
+  })
+
+  const resultat = await synchroniser({
+    compte,
+    organisationIds: organisationIds?.map((id) => OrganisationId(id)),
+  })
+
+  if (!resultat.success) {
+    throw new Error(
+      `Impossible de synchroniser le compte RDV (${resultat.error._tag})`,
+    )
+  }
+
+  const { organisationIdsSansWebhook } = resultat.data
+
+  await prismaClient.rdvAccount.update({
+    where: { id: compte.agentId },
+    data: {
+      lastSynced: new Date(),
+      error: null,
+      ...(organisationIdsSansWebhook === undefined
+        ? {}
+        : { invalidWebhookOrganisationIds: [...organisationIdsSansWebhook] }),
+    },
+  })
+
+  return { drift: resultat.data.derive }
 }
