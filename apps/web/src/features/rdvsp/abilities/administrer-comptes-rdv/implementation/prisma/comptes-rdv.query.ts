@@ -2,7 +2,6 @@ import { PrismaSessionUser } from '@app/web/auth/getSessionUserFromSessionToken'
 import { serializePrismaSessionUser } from '@app/web/auth/serializePrismaSessionUser'
 import { compteRdvToDomain } from '@app/web/features/rdvsp/db'
 import { prismaClient } from '@app/web/prismaClient'
-import { getRdvs } from '@app/web/rdv-service-public/getRdvs'
 import { santeDuCompte } from '../../domain/sante-compte'
 
 export const getAdministrationRdvspData = async () => {
