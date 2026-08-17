@@ -1,5 +1,4 @@
 export * from './ActionsRapides'
 export * from './InformationsCoop'
 export * from './OnboardingInfo'
-export * from './RdvIntegrationErreurAlerte'
 export * from './Support'

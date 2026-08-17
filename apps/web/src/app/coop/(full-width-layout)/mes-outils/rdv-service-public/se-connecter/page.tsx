@@ -1,6 +1,6 @@
-import RdvServicePubliqueConnexionCard from '@app/web/app/coop/(full-width-layout)/mes-outils/rdv-service-public/RdvServicePubliqueConnexionCard'
 import BackButton from '@app/web/components/BackButton'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
+import RdvServicePubliqueConnexionCard from '@app/web/features/rdvsp/ui/RdvServicePubliqueConnexionCard'
 import {
   rdvOauthLinkAccountErrorCallbackPath,
   rdvOauthLinkAccountFlowUrl,

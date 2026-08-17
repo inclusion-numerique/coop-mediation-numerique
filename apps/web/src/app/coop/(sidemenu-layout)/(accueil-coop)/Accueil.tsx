@@ -7,6 +7,7 @@ import { DernieresActivites } from '@app/web/features/activites/use-cases/list/c
 import FormationContinueNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/formation-continue/components/FormationContinueNouvelleFonctionnaliteCard'
 import RdvNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/rdv/components/RdvNouvelleFonctionnaliteCard'
 import TagsNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/tags/components/TagsNouvelleFonctionnaliteCard'
+import { RdvIntegrationErreurAlerte } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvIntegrationErreurAlerte'
 import RdvsAccueil from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvsAccueil'
 import { contentId } from '@app/web/utils/skipLinks'
 import React from 'react'
@@ -14,7 +15,6 @@ import {
   ActionsRapides,
   InformationsCoop,
   OnboardingInfo,
-  RdvIntegrationErreurAlerte,
   Support,
 } from './_components'
 import { Equipe } from './_components/Equipe'

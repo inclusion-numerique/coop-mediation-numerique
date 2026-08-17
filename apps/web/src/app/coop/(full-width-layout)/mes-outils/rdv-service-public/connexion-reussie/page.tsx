@@ -1,7 +1,7 @@
-import RdvServicePubliqueConnexionCard from '@app/web/app/coop/(full-width-layout)/mes-outils/rdv-service-public/RdvServicePubliqueConnexionCard'
 import { getSessionUser } from '@app/web/auth/getSessionUser'
 import IconInSquare from '@app/web/components/IconInSquare'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
+import RdvServicePubliqueConnexionCard from '@app/web/features/rdvsp/ui/RdvServicePubliqueConnexionCard'
 import {
   rdvIntegrationEnSavoirPlusLink,
   rdvMyHomepageLink,

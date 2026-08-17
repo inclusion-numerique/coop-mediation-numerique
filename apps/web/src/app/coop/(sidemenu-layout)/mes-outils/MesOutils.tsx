@@ -8,7 +8,7 @@ import { CartographieLogo } from '@app/web/features/pictograms/services/Cartogra
 import { LesBasesLogo } from '@app/web/features/pictograms/services/LesBasesLogo'
 import { PixOrgaLogo } from '@app/web/features/pictograms/services/PixOrgaLogo'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
-import RdvServicePublicStatusTag from '@app/web/rdv-service-public/RdvServicePublicStatusTag'
+import RdvServicePublicStatusTag from '@app/web/features/rdvsp/ui/RdvServicePublicStatusTag'
 import { getRdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
 import { rdvWebsiteLink } from '@app/web/rdv-service-public/rdvServicePublicUrls'
 import { contentId } from '@app/web/utils/skipLinks'

@@ -1,6 +1,6 @@
 import { getSessionUser } from '@app/web/auth/getSessionUser'
 import { RDVServicePublicCoopConnexion } from '@app/web/features/pictograms/services/RDVServicePublicCoopConnexion'
-import GererRdvServicePublicButton from '@app/web/rdv-service-public/GererRdvServicePublicButton'
+import GererRdvServicePublicButton from '@app/web/features/rdvsp/ui/GererRdvServicePublicButton'
 import { getRdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
 import {
   rdvOauthLinkAccountErrorCallbackPath,

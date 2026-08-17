@@ -4,6 +4,12 @@ import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { declencherSynchronisationAction } from '@app/web/app/_actions/rdvsp/declencher-synchronisation.action'
 import { deconnecterCompteRdvAction } from '@app/web/app/_actions/rdvsp/deconnecter-compte-rdv.action'
+import {
+  getRdvOauthIntegrationStatus,
+  type RdvOauthIntegrationStatus,
+} from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
+import { dateAsDay } from '@app/web/utils/dateAsDay'
+import { dateAsDayAndTimeInTimeZone } from '@app/web/utils/dateAsDayAndTime'
 import type { UserId, UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
@@ -12,13 +18,7 @@ import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { dateAsDay } from '../utils/dateAsDay'
-import { dateAsDayAndTimeInTimeZone } from '../utils/dateAsDayAndTime'
 import RdvServicePublicStatusTag from './RdvServicePublicStatusTag'
-import {
-  getRdvOauthIntegrationStatus,
-  type RdvOauthIntegrationStatus,
-} from './rdvIntegrationOauthStatus'
 
 export const GererRdvServicePublicModalInstance = createModal({
   id: 'gerer-rdv-service-public',
