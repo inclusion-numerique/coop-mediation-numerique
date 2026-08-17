@@ -15,7 +15,65 @@ const exec = promisify(callbackExec)
 // Depuis la bascule de la prod sur la base de l'Entrepôt, le schéma `coop` cohabite avec les
 // schémas Dataspace dans la base `dataspace_prod`. Sa sauvegarde est donc l'unique source : tous
 // ces schémas sont restaurés depuis le même backup.
+//
+// `min` (schéma applicatif de la gouvernance) est volontairement HORS périmètre : Coop n'en lit
+// rien. Il n'entre ici que par une dépendance inversée en amont — `main.conum_labellisation`
+// porte une FK vers `min.utilisateur`, alors que `main` est la couche de référence partagée et
+// ne devrait pas dépendre d'un schéma applicatif. Cette FK est donc la seule à ne pas se créer,
+// sur une table que Coop ne lit jamais : le tri d'erreurs plus bas l'absorbe.
+// Si un jour on veut vraiment `min`, il ne suffit pas de l'ajouter ici : il faut aussi créer son
+// extension `citext` à la main (`min.utilisateur.nom` et `min.structure.nom` la typent, et
+// `pg_restore -n` ne restaure pas les extensions, qui ne portent pas de schéma).
 const entrepotSchemas = ['coop', 'admin', 'main', 'reference', 'audit']
+
+// `pg_restore` sort en code non nul dès la moindre erreur, même quand la restauration reste
+// parfaitement exploitable. Or le dump de l'Entrepôt contient 16 schémas et on n'en restaure qu'une
+// partie : toute contrainte pointant vers un schéma hors périmètre échoue, par construction. Sans
+// ce tri, une seule d'entre elles fait avorter le job APRÈS le chargement des données mais AVANT
+// l'ANALYZE et le GRANT — la base est pleine, et pourtant inutilisable en l'état. Les schémas
+// Dataspace évoluant en amont, le cas se reproduira : on tolère ces erreurs-là, et uniquement
+// celles-là.
+const restoreErrorBlocks = (stderr: string): readonly string[] =>
+  stderr
+    .split(/(?=pg_restore: error: )/)
+    .filter((block) => block.startsWith('pg_restore: error: '))
+    .map((block) => block.trim())
+
+// Postgres formule le manque différemment selon l'état de la base : `schema "min" does not exist`
+// quand le schéma est absent, `relation "min.utilisateur" does not exist` quand il existe (restauré
+// à un tour précédent, ou créé par ailleurs) mais pas la table. Les deux formes désignent le même
+// cas, il faut donc reconnaître les deux.
+const missingSchema = (block: string): string | null =>
+  block.match(/schema "([^"]+)" does not exist/)?.[1] ??
+  block.match(/relation "([^".]+)\.[^"]+" does not exist/)?.[1] ??
+  null
+
+export const classifyRestoreErrors = (
+  stderr: string,
+  restoredSchemas: readonly string[],
+): { ignorable: readonly string[]; blocking: readonly string[] } => {
+  const isOutOfScope = (block: string): boolean => {
+    const schema = missingSchema(block)
+    return schema !== null && !restoredSchemas.includes(schema)
+  }
+
+  const blocks = restoreErrorBlocks(stderr)
+
+  return {
+    ignorable: blocks.filter(isOutOfScope),
+    blocking: blocks.filter((block) => !isOutOfScope(block)),
+  }
+}
+
+// `exec` rejette sur code de sortie non nul en attachant la sortie du process à l'erreur. On la
+// récupère pour l'analyser ; si l'échec n'a pas produit de stderr, c'est que pg_restore n'a même
+// pas tourné (binaire absent, fichier illisible) et on laisse remonter.
+const stderrOfFailure = (error: unknown): string | null => {
+  if (typeof error !== 'object' || error === null || !('stderr' in error))
+    return null
+  const { stderr } = error
+  return typeof stderr === 'string' && stderr !== '' ? stderr : null
+}
 
 const formatBytes = (bytes: number): string => {
   if (bytes === 0) return '0 B'
@@ -370,12 +428,43 @@ const restoreEntrepotBackup = async (
 
   output('Restoring coop + Dataspace schemas from the Entrepôt backup file')
   const schemaFlags = entrepotSchemas.map((schema) => `-n ${schema}`).join(' ')
-  await exec(
+  const restoreStderr = await exec(
     `pg_restore --no-owner --no-acl ${schemaFlags} -d "${databaseUrl}" "${entrepotBackupFile}"`,
     {
       maxBuffer: 10 * 1024 * 1024,
     },
+  ).then(
+    ({ stderr }) => stderr,
+    (error: unknown) => {
+      const stderr = stderrOfFailure(error)
+      if (stderr === null) throw error
+      return stderr
+    },
   )
+
+  const { ignorable, blocking } = classifyRestoreErrors(
+    restoreStderr,
+    entrepotSchemas,
+  )
+
+  if (blocking.length > 0) {
+    throw new Error(
+      [
+        `pg_restore a échoué : ${blocking.length} erreur(s) bloquante(s).`,
+        ...blocking,
+      ].join('\n\n'),
+    )
+  }
+
+  if (ignorable.length > 0) {
+    output(
+      [
+        `⚠️  ${ignorable.length} objet(s) non restauré(s) : ils référencent un schéma hors périmètre (${entrepotSchemas.join(', ')}).`,
+        '   La base reste exploitable ; ajoutez le schéma manquant à `entrepotSchemas` si vous en avez besoin.',
+        ...ignorable.map((block) => `   ${block.split('\n')[0]}`),
+      ].join('\n'),
+    )
+  }
 
   // `pg_restore` ne laisse aucune statistique : jusqu'au prochain passage d'autovacuum, le
   // planificateur travaille à l'aveugle (il a estimé 31 871 lignes là où il y en avait 4 millions)
