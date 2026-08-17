@@ -18,6 +18,7 @@ import type { RdvServicePublicApi } from '@app/web/features/rdvsp/domain/rdv-ser
 import { UsagerId } from '@app/web/features/rdvsp/domain/usager-id'
 import {
   beneficiaireEnBase,
+  ID_TEST,
   seedAutreMediateur,
   seedBeneficiaire,
   seedCompteRdv,
@@ -31,8 +32,8 @@ import { failure, success } from '@app/web/libraries/result'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 
-const AGENT_ID = 987_658
-const USAGER_RENDU = 9002
+const AGENT_ID = ID_TEST.compte + 5
+const USAGER_RENDU = ID_TEST.usager + 2
 
 let beneficiaireId: string | undefined
 let usagerRecu: UsagerDeLaDemande | undefined

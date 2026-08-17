@@ -3,12 +3,13 @@ import type { DeconnecterCompteRdv } from '@app/web/features/rdvsp/abilities/dec
 import { deconnecterCompteRdv } from '@app/web/features/rdvsp/abilities/deconnecter-compte-rdv/implementation/prisma/deconnecter-compte-rdv.mutation'
 import {
   compteRdvEnBase,
+  ID_TEST,
   seedCompteRdv,
   testUtilisateurId,
 } from '@app/web/features/rdvsp/rdvsp.cucumber'
 import { Given, Then, When } from '@cucumber/cucumber'
 
-const AGENT_ID = 987_655
+const AGENT_ID = ID_TEST.compte + 2
 const MAINTENANT = new Date('2026-08-17T16:00:00.000Z')
 
 let resultat: Awaited<ReturnType<DeconnecterCompteRdv>> | undefined

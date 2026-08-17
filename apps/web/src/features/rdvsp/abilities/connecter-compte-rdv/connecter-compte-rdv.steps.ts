@@ -24,6 +24,7 @@ import type { RdvServicePublicApi } from '@app/web/features/rdvsp/domain/rdv-ser
 import {
   compteRdvEnBase,
   emailUtilisateurDeTest,
+  ID_TEST,
   seedCompteRdv,
   suivreCompteRdv,
   testUtilisateurId,
@@ -31,7 +32,7 @@ import {
 import { failure, success } from '@app/web/libraries/result'
 import { Given, Then, When } from '@cucumber/cucumber'
 
-const AGENT_ID = 987_654
+const AGENT_ID = ID_TEST.compte + 1
 const MAINTENANT = new Date('2026-08-17T14:30:00.000Z')
 
 const jetonsEchanges: JetonsOAuth = {

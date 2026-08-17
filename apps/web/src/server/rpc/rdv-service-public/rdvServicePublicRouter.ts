@@ -1,30 +1,20 @@
 import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
 import { SessionUser } from '@app/web/auth/sessionUser'
 import { getDashboardRdvData } from '@app/web/features/rdvsp/queries/getDashboardRdvData'
-import { createOrMergeBeneficiairesFromRdvUsers } from '@app/web/features/rdvsp/sync/createOrMergeBeneficiaireFromRdvUsers'
-import { mergeRdvUserFromRdvPlan } from '@app/web/features/rdvsp/sync/mergeRdvUserFromRdvPlan'
 import { refreshRdvAgentAccountData } from '@app/web/features/rdvsp/sync/refreshRdvAgentAccountData'
 import { syncAllRdvData } from '@app/web/features/rdvsp/sync/syncAllRdvData'
 import { prismaClient } from '@app/web/prismaClient'
-import { createCraDataFromRdv } from '@app/web/rdv-service-public/createCraDataFromRdv'
 import {
-  oAuthRdvApiCreateRdvPlan,
   oAuthRdvApiGetOrganisations,
   oAuthRdvApiMe,
 } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
 import { getUserContextForOAuthApiCall } from '@app/web/rdv-service-public/getUserContextForRdvApiCall'
-import {
-  type OauthRdvApiCreateRdvPlanInput,
-  OauthRdvApiCreateRdvPlanMutationInputValidation,
-} from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import {
   externalApiError,
   forbiddenError,
   invalidError,
 } from '@app/web/server/rpc/trpcErrors'
-import { getServerUrl } from '@app/web/utils/baseUrl'
-import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import * as Sentry from '@sentry/nextjs'
 import { AxiosError } from 'axios'
 import z from 'zod'
@@ -267,118 +257,6 @@ export const rdvServicePublicRouter = router({
   // par la server action `app/_actions/rdvsp/prendre-rendez-vous.action.ts`.
   // `updateRdvStatus` a migré vers l'ability `mettre-a-jour-statut-rdv`, appelée
   // par la server action `app/_actions/rdvsp/mettre-a-jour-statut-rdv.action.ts`.
-  createActiviteFromRdv: protectedProcedure
-    .input(
-      z.object({
-        rdvId: z.number(),
-      }),
-    )
-    .mutation(async ({ input, ctx: { user } }) => {
-      if (!user.mediateur) {
-        throw forbiddenError(
-          "Vous n'avez pas les permissions pour créer une activité à partir d'un RDV",
-        )
-      }
-
-      // Fetching the rdv with all relevent data to create Activite and Beneficiaires
-      const rdv = await prismaClient.rdv.findUnique({
-        where: { id: input.rdvId },
-        select: {
-          id: true,
-          rdvAccountId: true,
-          name: true,
-          durationInMin: true,
-          startsAt: true,
-          endsAt: true,
-          maxParticipantsCount: true,
-          collectif: true,
-          motif: {
-            select: {
-              name: true,
-              collectif: true,
-            },
-          },
-          organisation: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          participations: {
-            select: {
-              id: true,
-              status: true,
-              user: {
-                select: {
-                  id: true,
-                  firstName: true,
-                  lastName: true,
-                  email: true,
-                  phoneNumber: true,
-                  address: true,
-                  birthDate: true,
-                  beneficiaires: {
-                    select: {
-                      id: true,
-                      prenom: true,
-                      nom: true,
-                      email: true,
-                      telephone: true,
-                      mediateurId: true,
-                      adresse: true,
-                      anneeNaissance: true,
-                      commune: true,
-                    },
-                    where: {
-                      mediateurId: user.mediateur.id, // Important so we don't handle shared beneficiaires
-                      suppression: null, // Important so we don't link to deleted beneficiaires
-                      anonyme: false, // filter out anonyme beneficiaires
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      })
-
-      if (!rdv) {
-        throw invalidError('RDV introuvable')
-      }
-
-      if (rdv.rdvAccountId !== user.rdvAccount?.id) {
-        throw forbiddenError(
-          'RDV non associé à votre compte RDV Service Public',
-        )
-      }
-
-      const beneficiaires = await createOrMergeBeneficiairesFromRdvUsers({
-        rdvUsers: rdv.participations
-          .filter(
-            (participation) =>
-              participation.status === 'seen' ||
-              participation.status === 'unknown',
-          )
-          .map((participation) => ({
-            ...participation.user,
-            beneficiaire: participation.user.beneficiaires.at(0) ?? null,
-          })),
-        mediateurId: user.mediateur.id,
-      })
-
-      const { type, defaultValues } = await createCraDataFromRdv({
-        rdv,
-        mediateurId: user.mediateur.id,
-        beneficiaires,
-      })
-
-      const createCraUrl = getServerUrl(
-        `/coop/mes-activites/cra/${type}?v=${encodeSerializableState(defaultValues)}`,
-        {
-          absolutePath: true,
-        },
-      )
-
-      return { createCraUrl }
-    }),
+  // `createActiviteFromRdv` a migré vers l'ability `creer-activite-depuis-rdv`,
+  // appelée par la server action `app/_actions/rdvsp/creer-activite-depuis-rdv.action.ts`.
 })

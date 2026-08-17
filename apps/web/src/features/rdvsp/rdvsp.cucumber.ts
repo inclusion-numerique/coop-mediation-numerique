@@ -21,6 +21,24 @@ setDefaultTimeout(60_000)
 export const testUtilisateurId = UtilisateurCoopId(mediateurAvecActiviteUserId)
 export const testMediateurId = mediateurAvecActiviteMediateurId
 
+/**
+ * Plage réservée aux identifiants de test.
+ *
+ * Tous les identifiants de cette feature viennent de RDV Service Public, et la
+ * base locale porte une copie de la production : un identifiant choisi au hasard
+ * peut désigner une vraie ligne. Les créations lèveraient une erreur, mais les
+ * upserts — organisations, usagers — écraseraient silencieusement la donnée. On
+ * se place donc au-delà de tout ce que RDV Service Public a attribué à ce jour
+ * (le maximum observé est de l'ordre du million).
+ */
+export const ID_TEST = {
+  compte: 9_900_000,
+  rdv: 9_910_000,
+  organisation: 9_920_000,
+  usager: 9_930_000,
+  participation: 9_940_000,
+} as const
+
 const comptesSuivis = new Set<number>()
 
 export const suivreCompteRdv = (agentId: number): void => {
@@ -212,6 +230,46 @@ export const beneficiaireEnBase = async (id: string) =>
     select: { id: true, rdvUserId: true, prenom: true, nom: true },
   })
 
+/**
+ * Participation d'un usager à un rendez-vous. Pas de suivi propre : la relation
+ * est en `onDelete: Cascade`, la suppression du rendez-vous l'emporte.
+ */
+export const seedParticipation = async ({
+  id,
+  rdvId,
+  usagerId,
+  status = 'seen',
+}: {
+  id: number
+  rdvId: number
+  usagerId: number
+  status?: 'unknown' | 'seen' | 'excused' | 'revoked' | 'noshow'
+}): Promise<number> => {
+  await seedUsagerRdv(usagerId)
+
+  await prismaClient.rdvParticipation.create({
+    data: {
+      id,
+      rdvId,
+      userId: usagerId,
+      status,
+      sendReminderNotification: false,
+      sendLifecycleNotifications: false,
+    },
+  })
+
+  return id
+}
+
+export const beneficiairesDuMediateurAvecUsagers = async () =>
+  await prismaClient.beneficiaire.findMany({
+    where: {
+      mediateurId: testMediateurId,
+      rdvUserId: { in: [...usagersSuivis] },
+    },
+    select: { id: true, rdvUserId: true, prenom: true, nom: true },
+  })
+
 export const rdvEnBase = async (rdvId: number) =>
   await prismaClient.rdv.findUnique({
     where: { id: rdvId },
@@ -242,13 +300,23 @@ Before(async () => {
 // L'ordre suit les clés étrangères : bénéficiaires avant usagers, rendez-vous
 // avant comptes et organisations, comptes avant utilisateurs.
 After(async () => {
+  // Les bénéficiaires créés par la fusion depuis un usager RDV ne passent pas par
+  // `seedBeneficiaire` : on les retrouve par l'usager auquel ils sont rattachés.
   await prismaClient.beneficiaire.deleteMany({
-    where: { id: { in: [...beneficiairesSuivis] } },
+    where: {
+      OR: [
+        { id: { in: [...beneficiairesSuivis] } },
+        { rdvUserId: { in: [...usagersSuivis] } },
+      ],
+    },
   })
+  // Les rendez-vous d'abord : leurs participations référencent les usagers et
+  // disparaissent en cascade avec eux. L'inverse viole la clé étrangère et laisse
+  // des résidus qui bloquent le `resetFixtureUser` de la session suivante.
+  await prismaClient.rdv.deleteMany({ where: { id: { in: [...rdvsSuivis] } } })
   await prismaClient.rdvUser.deleteMany({
     where: { id: { in: [...usagersSuivis] } },
   })
-  await prismaClient.rdv.deleteMany({ where: { id: { in: [...rdvsSuivis] } } })
   await prismaClient.rdvAccount.deleteMany({
     where: {
       OR: [{ id: { in: [...comptesSuivis] } }, { userId: testUtilisateurId }],

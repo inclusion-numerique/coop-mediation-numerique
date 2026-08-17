@@ -1,11 +1,13 @@
 import { prismaClient } from '@app/web/prismaClient'
 
 /**
- * Identifiant d'agent réservé aux tests. Les identifiants RDV Service Public sont
- * attribués par eux : on en choisit un hors de leur plage plausible pour qu'aucune
- * base restaurée ne puisse le porter.
+ * Identifiant d'agent réservé aux tests, dans la même plage que les scénarios
+ * Cucumber (`ID_TEST` dans `features/rdvsp/rdvsp.cucumber.ts`). Les identifiants
+ * RDV Service Public sont attribués par eux, et une base restaurée en porte de
+ * bien réels : on se place au-delà de tout ce qu'ils ont émis à ce jour, sans
+ * quoi un test écraserait une vraie ligne.
  */
-export const E2E_RDV_AGENT_ID = 990_001
+export const E2E_RDV_AGENT_ID = 9_900_101
 
 /**
  * Lie un compte RDV Service Public à un utilisateur, sans passer par le parcours

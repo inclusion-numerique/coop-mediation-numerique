@@ -3,10 +3,9 @@
 import { createDynamicModal } from '@app/ui/components/Modal/createDynamicModal'
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
+import { creerActiviteDepuisRdvAction } from '@app/web/app/_actions/rdvsp/creer-activite-depuis-rdv.action'
 import { mettreAJourStatutRdvAction } from '@app/web/app/_actions/rdvsp/mettre-a-jour-statut-rdv.action'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import type { RdvListItem } from '@app/web/features/rdvsp/administration/db/rdvQueries'
-import { trpc } from '@app/web/trpc'
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
@@ -32,8 +31,7 @@ const RdvStatusUpdateModal = ({
   const router = useRouter()
 
   const [miseAJourEnCours, setMiseAJourEnCours] = useState(false)
-  const createActiviteMutation =
-    trpc.rdvServicePublic.createActiviteFromRdv.useMutation()
+  const [preparationCraEnCours, setPreparationCraEnCours] = useState(false)
 
   if (!state) return null
 
@@ -41,19 +39,20 @@ const RdvStatusUpdateModal = ({
   const isCollectif = rdv.motif?.collectif ?? false
 
   const handleCreateCra = async () => {
-    try {
-      const { createCraUrl } = await createActiviteMutation.mutateAsync({
-        rdvId: rdv.id,
-      })
-      RdvStatusUpdateDynamicModal.close()
-      router.push(createCraUrl)
-    } catch {
+    setPreparationCraEnCours(true)
+    const result = await creerActiviteDepuisRdvAction({ rdvId: rdv.id })
+
+    if (!result.success) {
+      setPreparationCraEnCours(false)
       createToast({
         priority: 'error',
         message: 'Une erreur est survenue lors de la création du CRA',
       })
-      createActiviteMutation.reset()
+      return
     }
+
+    RdvStatusUpdateDynamicModal.close()
+    router.push(result.data.urlCreationCra)
   }
 
   const handleUpdateStatus = async (
@@ -79,10 +78,7 @@ const RdvStatusUpdateModal = ({
     })
   }
 
-  const isLoading =
-    miseAJourEnCours ||
-    createActiviteMutation.isPending ||
-    createActiviteMutation.isSuccess
+  const isLoading = miseAJourEnCours || preparationCraEnCours
 
   return (
     <RdvStatusUpdateDynamicModal.Component
@@ -270,4 +266,4 @@ const RdvStatusUpdateModal = ({
   )
 }
 
-export default withTrpc(RdvStatusUpdateModal)
+export default RdvStatusUpdateModal

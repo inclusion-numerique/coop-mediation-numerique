@@ -11,6 +11,7 @@ import {
   StatutPresenceModifiable,
 } from '@app/web/features/rdvsp/domain/statut-presence'
 import {
+  ID_TEST,
   rdvEnBase,
   seedCompteRdv,
   seedCompteRdvAutreMediateur,
@@ -20,10 +21,10 @@ import {
 import { failure, success } from '@app/web/libraries/result'
 import { Given, Then, When } from '@cucumber/cucumber'
 
-const AGENT_ID = 987_656
-const AGENT_ID_AUTRE = 987_657
-const RDV_ID = 555_001
-const RDV_ID_INEXISTANT = 555_999
+const AGENT_ID = ID_TEST.compte + 3
+const AGENT_ID_AUTRE = ID_TEST.compte + 4
+const RDV_ID = ID_TEST.rdv + 1
+const RDV_ID_INEXISTANT = ID_TEST.rdv + 999
 
 let statutConfirme: StatutPresence | null = null
 let apiRefuse = false
