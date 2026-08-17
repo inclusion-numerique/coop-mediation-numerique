@@ -15,7 +15,22 @@ const exec = promisify(callbackExec)
 // Depuis la bascule de la prod sur la base de l'Entrepôt, le schéma `coop` cohabite avec les
 // schémas Dataspace dans la base `dataspace_prod`. Sa sauvegarde est donc l'unique source : tous
 // ces schémas sont restaurés depuis le même backup.
-const entrepotSchemas = ['coop', 'admin', 'main', 'reference', 'audit']
+// `min` en fait partie : `main.conum_labellisation` porte une FK vers `min.utilisateur`, et sans
+// lui `pg_restore` sort en erreur (la restauration avorte avant l'ANALYZE et le GRANT). Il ne
+// traîne rien derrière lui — ses FK ne visent que `min` et `main`, et ses deux vues
+// (`personne_enrichie`, `postes_conseiller_numerique_synthese`) ne lisent que `main`.
+const entrepotSchemas = ['coop', 'admin', 'main', 'reference', 'audit', 'min']
+
+// `pg_restore -n <schéma>` ne restaure que les objets QUI PORTENT un schéma. Une extension n'en
+// porte pas : elle est donc laissée de côté, même si le dump la déclare `WITH SCHEMA min`. Il faut
+// la recréer nous-mêmes, après le CREATE SCHEMA (le DROP … CASCADE l'emporterait) et avant le
+// pg_restore, sinon les tables qui typent une colonne avec elle échouent — et leurs contraintes
+// tombent en cascade.
+const schemaHostedExtensions: readonly { schema: string; extension: string }[] =
+  [
+    // min.utilisateur.nom et min.structure.nom sont des `min.citext`
+    { schema: 'min', extension: 'citext' },
+  ]
 
 const formatBytes = (bytes: number): string => {
   if (bytes === 0) return '0 B'
@@ -367,6 +382,16 @@ const restoreEntrepotBackup = async (
   for (const schema of entrepotSchemas) {
     await prismaClient.$executeRawUnsafe(`CREATE SCHEMA "${schema}"`)
   }
+
+  await Promise.all(
+    schemaHostedExtensions
+      .filter(({ schema }) => entrepotSchemas.includes(schema))
+      .map(({ schema, extension }) =>
+        prismaClient.$executeRawUnsafe(
+          `CREATE EXTENSION IF NOT EXISTS ${extension} WITH SCHEMA "${schema}"`,
+        ),
+      ),
+  )
 
   output('Restoring coop + Dataspace schemas from the Entrepôt backup file')
   const schemaFlags = entrepotSchemas.map((schema) => `-n ${schema}`).join(' ')
