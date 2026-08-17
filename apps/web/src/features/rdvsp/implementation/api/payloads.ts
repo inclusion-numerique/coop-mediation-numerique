@@ -122,6 +122,17 @@ export const rdvPayload = z.object({
    * jour où il disparaîtra immédiatement visible.
    */
   url_for_agents: z.string(),
+  users_count: z
+    .number()
+    .int()
+    .nullish()
+    .transform((valeur) => valeur ?? 0),
+  context: texteOptionnel,
+  created_by_id: z
+    .number()
+    .int()
+    .nullish()
+    .transform((valeur) => valeur ?? null),
   cancelled_at: dateExterneOptionnelle,
   collectif: z.boolean(),
   name: texteOptionnel,

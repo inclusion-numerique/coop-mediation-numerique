@@ -6,7 +6,8 @@ import type { ErreurRdvApi } from './errors'
 import type { JetonsOAuth } from './jetons-oauth'
 import type { Organisation } from './organisation'
 import type { OrganisationId } from './organisation-id'
-import type { Rdv } from './rdv'
+import type { RdvSynchronise } from './rdv'
+import type { RdvAgentId } from './rdv-agent-id'
 import type { RdvId } from './rdv-id'
 import type {
   StatutPresence,
@@ -16,6 +17,8 @@ import type { Usager } from './usager'
 import type { UsagerId } from './usager-id'
 
 export type FiltresRdvs = {
+  /** Restreint aux rendez-vous de cet agent, comme le fait la synchronisation. */
+  readonly agentId?: RdvAgentId
   readonly organisationIds?: readonly OrganisationId[]
   readonly usagerId?: UsagerId
   readonly debutApres?: Date
@@ -61,7 +64,7 @@ export type RdvServicePublicApi = {
   readonly listerRdvs: (
     compte: CompteRdvUtilisable,
     filtres?: FiltresRdvs,
-  ) => Promise<Result<readonly Rdv[], ErreurRdvApi>>
+  ) => Promise<Result<readonly RdvSynchronise[], ErreurRdvApi>>
 
   readonly listerUsagers: (
     compte: CompteRdvUtilisable,

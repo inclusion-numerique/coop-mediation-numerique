@@ -29,6 +29,12 @@ type RdvBase = {
   readonly duree: DureeEnMinutes
   readonly statutPresence: StatutPresence
   readonly urlAgent: UrlAgent
+  /** Nombre d'usagers attendus, tel que RDV Service Public le décompte. */
+  readonly nombreParticipants: number
+  /** Note libre saisie par l'agent, recopiée sans être interprétée. */
+  readonly contexte: string | null
+  /** Auteur de la prise de rendez-vous, côté RDV Service Public. */
+  readonly creeParId: number | null
   /** Renseigné quand le rendez-vous a été annulé, quelle qu'en soit la partie. */
   readonly annulation: Date | null
   /** Absent pour un rendez-vous créé hors de tout motif paramétré. */
@@ -56,6 +62,17 @@ export type RdvCollectif = RdvBase & {
 }
 
 export type Rdv = RdvIndividuel | RdvCollectif
+
+/**
+ * Rendez-vous tel que la synchronisation le reçoit : l'entité, et le payload
+ * d'origine que La Coop conserve en base à titre de trace. Le brut n'est jamais
+ * interprété — il n'existe que pour pouvoir relire ce que le service a envoyé le
+ * jour où une donnée surprend.
+ */
+export type RdvSynchronise = {
+  readonly rdv: Rdv
+  readonly brut: unknown
+}
 
 export const estCollectif = (rdv: Rdv): rdv is RdvCollectif => rdv.collectif
 

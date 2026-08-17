@@ -306,6 +306,7 @@ export const rdvServicePublicApi = ({
 
     listerRdvs: async (compte, filtres: FiltresRdvs = {}) => {
       const params = {
+        agent_id: filtres.agentId,
         user_id: filtres.usagerId,
         starts_after: filtres.debutApres?.toISOString(),
         starts_before: filtres.debutAvant?.toISOString(),
@@ -349,7 +350,10 @@ export const rdvServicePublicApi = ({
       return success(
         resultats
           .flatMap((resultat) => (resultat.success ? resultat.data : []))
-          .map((payload) => rdvToDomain(payload, compte.agentId)),
+          .map((payload) => ({
+            rdv: rdvToDomain(payload, compte.agentId),
+            brut: payload,
+          })),
       )
     },
 
