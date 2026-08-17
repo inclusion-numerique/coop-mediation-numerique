@@ -11,10 +11,10 @@ import {
   rdvMyHomepageLink,
 } from '@app/web/features/rdvsp/urls'
 import Button from '@codegouvfr/react-dsfr/Button'
-import Tag from '@codegouvfr/react-dsfr/Tag'
 import Link from 'next/link'
 import React from 'react'
 import GererRdvServicePublicModal from './GererRdvServicePublicModal'
+import RdvServicePublicStatusTag from './RdvServicePublicStatusTag'
 
 const RdvServicePublicAccess = async () => {
   const user = await getSessionUser()
@@ -23,7 +23,7 @@ const RdvServicePublicAccess = async () => {
     return null
   }
 
-  const status = user.rdvAccount?.statut ?? 'none'
+  const status = user.rdvAccount?.statut ?? 'jamaisConnecte'
 
   return (
     <>
@@ -36,7 +36,7 @@ const RdvServicePublicAccess = async () => {
           Connectez RDV Service Public à La Coop de la médiation numérique
         </p>
       </div>
-      {status === 'none' && (
+      {status === 'jamaisConnecte' && (
         <>
           <div className="fr-text--center">
             <p className="fr-text--sm fr-mb-2v">
@@ -66,18 +66,13 @@ const RdvServicePublicAccess = async () => {
           </div>
         </>
       )}
-      {status === 'success' && (
+      {status === 'connecte' && (
         <>
           <div className="fr-text--center fr-mt-4v">
             <p className="fr-text-mention--grey fr-mb-2v">
               Statut de la connexion
             </p>
-            <Tag
-              iconId="fr-icon-check-line"
-              className="fr-background-contrast--success fr-text-default--success"
-            >
-              Compte connecté
-            </Tag>
+            <RdvServicePublicStatusTag status={status} />
           </div>
           <div className="fr-btns-group fr-btns-group--icon-left fr-mt-8v">
             <Button
@@ -94,18 +89,13 @@ const RdvServicePublicAccess = async () => {
           <GererRdvServicePublicModal user={user} />
         </>
       )}
-      {status === 'error' && (
+      {(status === 'deconnecte' || status === 'enPanne') && (
         <>
           <div className="fr-text--center fr-mt-4v">
             <p className="fr-text-mention--grey fr-mb-2v">
               Statut de la connexion
             </p>
-            <Tag
-              iconId="fr-icon-error-fill"
-              className="fr-background-contrast--error fr-text-default--error"
-            >
-              Compte déconnecté
-            </Tag>
+            <RdvServicePublicStatusTag status={status} />
           </div>
           <div className="fr-btns-group fr-btns-group--icon-right fr-mt-8v">
             <Button

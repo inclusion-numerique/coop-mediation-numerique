@@ -19,11 +19,11 @@ const PrendreRendezVousAvecBeneficiaireButton = ({
 }) => {
   const [enCours, setEnCours] = useState(false)
 
-  const oauthStatus = user.rdvAccount?.statut ?? 'none'
+  const oauthStatus = user.rdvAccount?.statut ?? 'jamaisConnecte'
 
   const router = useRouter()
 
-  if (oauthStatus !== 'success') {
+  if (oauthStatus !== 'connecte') {
     return null
   }
 

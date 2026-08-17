@@ -62,25 +62,36 @@ export const peutEtreSynchronise = (sante: SanteCompteRdv): boolean =>
   sante._tag === 'enErreur'
 
 /**
- * Ce que les écrans montrent de l'intégration : trois états, pas cinq.
+ * Ce que les écrans montrent de l'intégration.
  *
- * `none` couvre l'absence d'intégration comme la déconnexion volontaire — il n'y
- * a rien à réparer dans les deux cas. Un jeton expiré passe pour opérationnel :
- * il se renouvelle au prochain appel.
+ * Quatre états, là où cinq suffisent au diagnostic : un jeton expiré passe pour
+ * connecté, puisqu'il se renouvelle au prochain appel. Mais `deconnecte` reste
+ * distinct de `jamaisConnecte`, et c'est le point de la distinction — les
+ * confondre présentait comme neuf un outil que le médiateur venait de débrancher,
+ * et les confondre dans l'autre sens présentait sa décision comme une panne.
+ *
+ * `jamaisConnecte` ne sort jamais d'ici : c'est la valeur que prennent les écrans
+ * quand aucun compte n'existe, donc quand il n'y a pas de santé à lire.
  *
  * Cette dérivation existait en double. Une seconde version, calculée depuis la
  * session, ne connaissait que la présence de jetons et le message d'erreur : un
  * compte que l'utilisateur avait débranché lui-même y apparaissait cassé, faute
  * de distinguer une purge de jetons d'une révocation.
  */
-export type StatutIntegration = 'none' | 'success' | 'error'
+export type StatutIntegration =
+  | 'jamaisConnecte'
+  | 'connecte'
+  | 'deconnecte'
+  | 'enPanne'
 
 export const statutIntegration = (sante: SanteCompteRdv): StatutIntegration => {
   if (sante._tag === 'deconnecteParUtilisateur') {
-    return 'none'
+    return 'deconnecte'
   }
 
+  // Un compte dont le parcours OAuth n'a jamais abouti est une panne, pas une
+  // absence : la ligne existe, elle n'aurait pas dû rester dans cet état.
   return sante._tag === 'enErreur' || sante._tag === 'jamaisLie'
-    ? 'error'
-    : 'success'
+    ? 'enPanne'
+    : 'connecte'
 }

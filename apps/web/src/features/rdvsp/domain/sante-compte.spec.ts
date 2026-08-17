@@ -113,11 +113,11 @@ describe('reclameUneIntervention', () => {
 
 describe('statutIntegration', () => {
   it.each([
-    ['operationnel', 'success'],
-    ['jetonExpire', 'success'],
-    ['enErreur', 'error'],
-    ['jamaisLie', 'error'],
-    ['deconnecteParUtilisateur', 'none'],
+    ['operationnel', 'connecte'],
+    ['jetonExpire', 'connecte'],
+    ['enErreur', 'enPanne'],
+    ['jamaisLie', 'enPanne'],
+    ['deconnecteParUtilisateur', 'deconnecte'],
   ] as const)('pour un compte « %s » : %s', (tag, attendu) => {
     const sante =
       tag === 'enErreur'
@@ -131,13 +131,30 @@ describe('statutIntegration', () => {
     expect(statutIntegration(sante)).toBe(attendu)
   })
 
-  it('ne signale pas en erreur un compte que l’utilisateur a débranché lui-même', () => {
+  it('ne signale pas en panne un compte que l’utilisateur a débranché lui-même', () => {
     const compte: CompteRdv = {
       ...base,
       _tag: 'deconnecte',
       deconnexion: new Date('2026-08-01T10:00:00.000Z'),
     }
 
-    expect(statutIntegration(santeDuCompte(compte, maintenant))).toBe('none')
+    expect(statutIntegration(santeDuCompte(compte, maintenant))).toBe(
+      'deconnecte',
+    )
+  })
+
+  it('ne confond pas une déconnexion voulue avec une absence d’intégration', () => {
+    const compte: CompteRdv = {
+      ...base,
+      _tag: 'deconnecte',
+      deconnexion: new Date('2026-08-01T10:00:00.000Z'),
+    }
+
+    // « jamaisConnecte » ne sort jamais de la dérivation : c'est la valeur que
+    // prennent les écrans quand aucun compte n'existe. La confusion des deux
+    // faisait passer pour neuf un outil que le médiateur venait de débrancher.
+    expect(statutIntegration(santeDuCompte(compte, maintenant))).not.toBe(
+      'jamaisConnecte',
+    )
   })
 })

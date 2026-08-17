@@ -18,7 +18,7 @@ import { CardOutil } from './_components/CardOutil'
 export const MesOutils = async () => {
   const user = await getAuthenticatedSessionUser()
 
-  const rdvServicePublicStatus = user.rdvAccount?.statut ?? 'none'
+  const rdvServicePublicStatus = user.rdvAccount?.statut ?? 'jamaisConnecte'
 
   return (
     <CoopPageContainer size={56}>
@@ -46,9 +46,9 @@ export const MesOutils = async () => {
                 title="RDV Service Public"
                 slug="rdv-service-public"
                 accessUrl={rdvWebsiteLink}
-                isNew={rdvServicePublicStatus === 'none'}
+                isNew={rdvServicePublicStatus === 'jamaisConnecte'}
                 topRight={
-                  rdvServicePublicStatus !== 'none' && (
+                  rdvServicePublicStatus !== 'jamaisConnecte' && (
                     <RdvServicePublicStatusTag
                       status={rdvServicePublicStatus}
                     />

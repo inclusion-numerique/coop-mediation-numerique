@@ -34,7 +34,7 @@ const GererRdvServicePublicModal = ({
   const [state, setState] = useState<'gerer' | 'deconnecter'>('gerer')
 
   const [status, setStatus] = useState<StatutIntegration>(
-    rdvAccount?.statut ?? 'none',
+    rdvAccount?.statut ?? 'jamaisConnecte',
   )
 
   const [lastSynced, setLastSynced] = useState<Date | null>(
@@ -85,7 +85,7 @@ const GererRdvServicePublicModal = ({
     // montée.
     if (!resultat.success) {
       setError(resultat.error)
-      setStatus('error')
+      setStatus('enPanne')
       createToast({ priority: 'error', message: resultat.error })
       return
     }
@@ -97,7 +97,7 @@ const GererRdvServicePublicModal = ({
     }
 
     setError(null)
-    setStatus('success')
+    setStatus('connecte')
     createToast({
       priority: 'success',
       message: 'Les informations ont été synchronisées avec succès.',
