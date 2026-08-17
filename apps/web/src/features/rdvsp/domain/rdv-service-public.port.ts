@@ -1,0 +1,90 @@
+import type { Result } from '@app/web/libraries/result'
+import type { Agent } from './agent'
+import type { CompteRdvUtilisable } from './compte-rdv'
+import type { DemandeRdv, DemandeRdvCreee } from './demande-rdv'
+import type { ErreurRdvApi } from './errors'
+import type { JetonsOAuth } from './jetons-oauth'
+import type { Organisation } from './organisation'
+import type { OrganisationId } from './organisation-id'
+import type { Rdv } from './rdv'
+import type { RdvId } from './rdv-id'
+import type {
+  StatutPresence,
+  StatutPresenceModifiable,
+} from './statut-presence'
+import type { Usager } from './usager'
+import type { UsagerId } from './usager-id'
+
+export type FiltresRdvs = {
+  readonly organisationIds?: readonly OrganisationId[]
+  readonly usagerId?: UsagerId
+  readonly debutApres?: Date
+  readonly debutAvant?: Date
+  /** Se limiter à la première page, quand seul un aperçu est attendu. */
+  readonly premierePageSeulement?: boolean
+}
+
+export type FiltresUsagers = {
+  readonly ids?: readonly UsagerId[]
+  readonly premierePageSeulement?: boolean
+}
+
+/**
+ * Frontière unique entre La Coop et RDV Service Public.
+ *
+ * Tout ce que le port expose est exprimé dans le vocabulaire du domaine : ni
+ * `snake_case`, ni pagination, ni jetons, ni codes HTTP ne le traversent. C'est
+ * la raison d'être de cette couche — l'évolution d'API annoncée par RDV SP doit
+ * pouvoir se jouer entièrement dans l'adaptateur, et un éventuel mode
+ * serveur-à-serveur devenir une seconde implémentation du même contrat, sans que
+ * les abilities appelantes en sachent quoi que ce soit.
+ *
+ * Les webhooks n'y figurent pas : leur pose relève de l'installation
+ * d'infrastructure, pas d'un cas d'usage métier, et ils continuent de passer par
+ * le client historique.
+ */
+export type RdvServicePublicApi = {
+  /** Identifie l'agent propriétaire des jetons — base de la liaison de compte. */
+  readonly identifierAgent: (
+    compte: CompteRdvUtilisable,
+  ) => Promise<Result<Agent, ErreurRdvApi>>
+
+  readonly listerOrganisations: (
+    compte: CompteRdvUtilisable,
+  ) => Promise<Result<readonly Organisation[], ErreurRdvApi>>
+
+  readonly listerRdvs: (
+    compte: CompteRdvUtilisable,
+    filtres?: FiltresRdvs,
+  ) => Promise<Result<readonly Rdv[], ErreurRdvApi>>
+
+  readonly listerUsagers: (
+    compte: CompteRdvUtilisable,
+    filtres?: FiltresUsagers,
+  ) => Promise<Result<readonly Usager[], ErreurRdvApi>>
+
+  readonly recupererUsager: (
+    compte: CompteRdvUtilisable,
+    id: UsagerId,
+  ) => Promise<Result<Usager | null, ErreurRdvApi>>
+
+  readonly creerDemandeRdv: (
+    compte: CompteRdvUtilisable,
+    demande: DemandeRdv,
+  ) => Promise<Result<DemandeRdvCreee, ErreurRdvApi>>
+
+  readonly changerStatutRdv: (
+    compte: CompteRdvUtilisable,
+    id: RdvId,
+    statut: StatutPresenceModifiable,
+  ) => Promise<Result<StatutPresence, ErreurRdvApi>>
+
+  /**
+   * Obtient un nouveau jeu de jetons. La persistance n'en fait pas partie :
+   * l'adaptateur ne connaît pas la base, et c'est l'appelant qui décide de
+   * l'enregistrer — ou de basculer le compte en erreur si l'échange échoue.
+   */
+  readonly renouvelerJetons: (
+    compte: CompteRdvUtilisable,
+  ) => Promise<Result<JetonsOAuth, ErreurRdvApi>>
+}
