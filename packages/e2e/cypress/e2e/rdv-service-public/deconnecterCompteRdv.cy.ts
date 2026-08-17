@@ -10,6 +10,13 @@ import { mediateurSansActivites } from '@app/fixtures/users/mediateurSansActivit
  * La liaison est posée en base plutôt que jouée : le parcours OAuth dépend de
  * RDV Service Public, la gestion du compte une fois lié n'en dépend pas.
  */
+/**
+ * Identifiant passé à `createModal` dans `GererRdvServicePublicModal`, et rendu
+ * tel quel sur le `<dialog>`. Recopié plutôt qu'importé : importer le composant
+ * embarquerait React et la moitié de l'application dans le spec.
+ */
+const MODALE_GESTION = 'gerer-rdv-service-public'
+
 describe('ETQ médiateur, je peux déconnecter mon compte RDV Service Public', () => {
   beforeEach(() => {
     cy.execute('resetFixtures', {})
@@ -22,8 +29,15 @@ describe('ETQ médiateur, je peux déconnecter mon compte RDV Service Public', (
 
     cy.contains('Compte connecté').should('be.visible')
 
-    cy.findByRole('button', { name: 'Gérer la connexion' }).click()
+    // Le JS du DSFR lie les modales après l'hydratation : un clic parti avant
+    // n'ouvre rien, le bouton ne portant qu'un `aria-controls`.
     cy.dsfrModalsShouldBeBound()
+    cy.findByRole('button', { name: 'Gérer la connexion' }).click()
+
+    // L'ouverture est vérifiée explicitement : une modale fermée est marquée
+    // `aria-hidden`, et son contenu devient introuvable par rôle — l'échec se
+    // présenterait alors comme un bouton manquant.
+    cy.get(`#${MODALE_GESTION}`).should('be.visible')
 
     cy.findByRole('button', { name: 'Déconnecter l’intégration' }).click()
     cy.contains(
