@@ -80,7 +80,10 @@ const messageDe = (erreur: unknown): string =>
  * Un 401 ne devient `JetonRevoque` qu'après l'unique nouvelle tentative : tant
  * qu'un renouvellement reste possible, l'échec est réputé transitoire.
  */
-const erreurDe = (agentId: RdvAgentId, erreur: unknown): ErreurRdvApi => {
+const erreurDe = (
+  agentId: RdvAgentId | null,
+  erreur: unknown,
+): ErreurRdvApi => {
   const statusCode = axios.isAxiosError(erreur)
     ? (erreur.response?.status ?? 0)
     : 0
@@ -157,7 +160,7 @@ export const rdvServicePublicApi = ({
   const requeteHttp = async (
     jetons: JetonsOAuth,
     { chemin, methode, params, corps }: Requete,
-    agentId: RdvAgentId,
+    agentId: RdvAgentId | null,
   ): Promise<Result<unknown, ErreurRdvApi>> => {
     const config: AxiosRequestConfig = {
       url: `https://${hostname}/api/v1${chemin}`,
@@ -265,16 +268,24 @@ export const rdvServicePublicApi = ({
   }
 
   return {
-    identifierAgent: async (compte) => {
-      const reponse = await executer(
-        compte,
+    identifierAgent: async (jetons) => {
+      // Appel direct : sans agent connu, ni renouvellement ni nouvelle tentative
+      // n'auraient de sens — les jetons viennent d'être échangés.
+      const reponse = await requeteHttp(
+        jetons,
         { chemin: '/agents/me', methode: 'GET' },
-        mePayload,
+        null,
       )
 
-      return reponse.success
-        ? success(agentToDomain(reponse.data.agent))
-        : reponse
+      if (!reponse.success) {
+        return reponse
+      }
+
+      const analyse = analyser(mePayload, '/agents/me', reponse.data)
+
+      return analyse.success
+        ? success(agentToDomain(analyse.data.agent))
+        : analyse
     },
 
     listerOrganisations: async (compte) => {

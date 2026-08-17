@@ -10,10 +10,14 @@ import type { RdvId } from './rdv-id'
 
 export type JetonRevoque = {
   readonly _tag: 'JetonRevoque'
-  readonly agentId: RdvAgentId
+  /**
+   * Absent pendant la liaison de compte : les jetons sont refusés avant même que
+   * l'agent auquel ils appartiennent ait pu être identifié.
+   */
+  readonly agentId: RdvAgentId | null
 }
 
-export const JetonRevoque = (agentId: RdvAgentId): JetonRevoque => ({
+export const JetonRevoque = (agentId: RdvAgentId | null): JetonRevoque => ({
   _tag: 'JetonRevoque',
   agentId,
 })

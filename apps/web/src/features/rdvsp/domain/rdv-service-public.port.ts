@@ -44,9 +44,14 @@ export type FiltresUsagers = {
  * le client historique.
  */
 export type RdvServicePublicApi = {
-  /** Identifie l'agent propriétaire des jetons — base de la liaison de compte. */
+  /**
+   * Identifie l'agent propriétaire des jetons. Seule méthode à ne pas prendre de
+   * compte : c'est l'appel qui le découvre, au retour du parcours OAuth, quand La
+   * Coop ne connaît encore que des jetons fraîchement échangés. Les jetons étant
+   * neufs, aucun renouvellement n'est tenté.
+   */
   readonly identifierAgent: (
-    compte: CompteRdvUtilisable,
+    jetons: JetonsOAuth,
   ) => Promise<Result<Agent, ErreurRdvApi>>
 
   readonly listerOrganisations: (
