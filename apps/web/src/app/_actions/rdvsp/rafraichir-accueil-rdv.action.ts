@@ -5,21 +5,10 @@ import { consulterRdvsAccueil } from '@app/web/features/rdvsp/abilities/consulte
 import { compteDuMediateur } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/prisma/compte-du-mediateur.query'
 import { lireDonneesAccueilRdv } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/prisma/donnees-accueil-rdv.query'
 import { DECLENCHER_SYNCHRONISATION_ERRORS } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/action/declencher-synchronisation.errors'
-import { declencherSynchronisation } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation'
-import { lancerSynchronisation } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/implementation/lancer-synchronisation.adapter'
-import { compteACible } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/implementation/prisma/compte-a-cible.query'
-import { marquerEchecDeSynchronisation } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/implementation/prisma/marquer-echec.mutation'
+import { declencherSynchronisationBinding as declencher } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
 import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
 import { actionBuilder, fromResult } from '@app/web/libraries/nextjs'
 import { success } from '@app/web/libraries/result'
-import * as Sentry from '@sentry/nextjs'
-
-const declencher = declencherSynchronisation({
-  compteACible,
-  lancer: lancerSynchronisation,
-  marquerEchec: marquerEchecDeSynchronisation(),
-  signaler: (erreur) => Sentry.captureException?.(erreur),
-})
 
 const consulter = consulterRdvsAccueil({
   compteDuMediateur,
