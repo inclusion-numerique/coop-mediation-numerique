@@ -1,11 +1,21 @@
 import type {
   Rdv as PrismaRdv,
+  RdvLieu as PrismaRdvLieu,
+  RdvMotif as PrismaRdvMotif,
   RdvParticipation as PrismaRdvParticipation,
+  RdvUser as PrismaRdvUser,
 } from '@prisma/client'
 import { AdresseRdv } from '../domain/adresse-rdv'
 import { DureeEnMinutes } from '../domain/duree-en-minutes'
+import {
+  EmailExterne,
+  NomExterne,
+  PrenomExterne,
+  TelephoneExterne,
+} from '../domain/identite'
 import { NomAtelier, NomMotif } from '../domain/libelle'
-import type { Motif } from '../domain/motif'
+import { type Lieu, LieuId, NomLieu } from '../domain/lieu'
+import { CategorieMotifId, type Motif } from '../domain/motif'
 import { MotifId } from '../domain/motif-id'
 import { NombreParticipantsMax } from '../domain/nombre-participants-max'
 import { OrganisationId } from '../domain/organisation-id'
@@ -17,30 +27,98 @@ import { RdvId } from '../domain/rdv-id'
 import { RdvUuid } from '../domain/rdv-uuid'
 import { StatutPresence } from '../domain/statut-presence'
 import { UrlAgent } from '../domain/url-agent'
+import type { Usager } from '../domain/usager'
 import { UsagerId } from '../domain/usager-id'
 import { absentSiVide } from './vide'
 
 /**
- * Le motif est une relation : seul son libellé nous intéresse, le reste de son
- * paramétrage appartient à RDV Service Public.
+ * Le rendez-vous et son entourage : motif, lieu et participants sont des
+ * relations que la lecture doit inclure, la synchronisation les persistant
+ * ensemble.
  */
 export type RdvRow = PrismaRdv & {
-  motif: { id: number; name: string } | null
-  participations: readonly PrismaRdvParticipation[]
+  motif: PrismaRdvMotif | null
+  lieu: PrismaRdvLieu | null
+  participations: readonly (PrismaRdvParticipation & {
+    user: PrismaRdvUser
+  })[]
 }
 
 export const participationToDomain = (
-  row: PrismaRdvParticipation,
+  row: PrismaRdvParticipation & { user: PrismaRdvUser },
 ): Participation => ({
   id: ParticipationId(row.id),
   usagerId: UsagerId(row.userId),
+  usager: usagerToDomain(row.user),
   statutPresence: StatutPresence(row.status),
   notificationRappel: row.sendReminderNotification,
   notificationsCycleDeVie: row.sendLifecycleNotifications,
 })
 
 const toMotif = (motif: RdvRow['motif']): Motif | null =>
-  motif === null ? null : { id: MotifId(motif.id), nom: NomMotif(motif.name) }
+  motif === null
+    ? null
+    : {
+        id: MotifId(motif.id),
+        nom: NomMotif(motif.name),
+        collectif: motif.collectif,
+        organisationId: OrganisationId(motif.organisationId),
+        suivi: motif.followUp,
+        instruction: motif.instructionForRdv,
+        typeDeLieu: motif.locationType,
+        categorieId:
+          motif.motifCategoryId === null
+            ? null
+            : CategorieMotifId(motif.motifCategoryId),
+      }
+
+const toLieu = (lieu: RdvRow['lieu']): Lieu | null => {
+  if (lieu === null) {
+    return null
+  }
+
+  const adresse = absentSiVide(lieu.address)
+  const telephone = absentSiVide(lieu.phoneNumber)
+
+  return {
+    id: LieuId(lieu.id),
+    nom: NomLieu(lieu.name),
+    adresse: adresse === null ? null : AdresseRdv(adresse),
+    organisationId: OrganisationId(lieu.organisationId),
+    telephone: telephone === null ? null : TelephoneExterne(telephone),
+    usageUnique: lieu.singleUse,
+  }
+}
+
+/**
+ * Les usagers viennent de `rdv_users`, alimentée par RDV Service Public : les
+ * identités passent par `Model.safe`, une donnée héritée mal formée ne devant pas
+ * empêcher de lire un rendez-vous.
+ */
+const usagerToDomain = (row: PrismaRdvUser): Usager => ({
+  id: UsagerId(row.id),
+  prenom: PrenomExterne(row.firstName),
+  nom: NomExterne(row.lastName),
+  email: row.email === null ? null : EmailExterne.safe(row.email),
+  telephone:
+    row.phoneNumberFormatted === null && row.phoneNumber === null
+      ? null
+      : TelephoneExterne.safe(
+          row.phoneNumberFormatted ?? row.phoneNumber ?? '',
+        ),
+  dateNaissance: row.birthDate,
+  coordonnees: {
+    adresse: row.address,
+    complementAdresse: row.addressDetails,
+    numeroAllocataire: row.affiliationNumber,
+    caisseAffiliation: row.caisseAffiliation,
+    nomNaissance: row.birthName,
+  },
+  responsableId:
+    row.responsibleId === null ? null : UsagerId(row.responsibleId),
+  notifierParEmail: row.notifyByEmail,
+  notifierParSms: row.notifyBySms,
+})
 
 const toBase = (row: RdvRow) => {
   const adresse = absentSiVide(row.address)
@@ -58,6 +136,7 @@ const toBase = (row: RdvRow) => {
     urlAgent: UrlAgent(row.urlForAgents),
     annulation: row.cancelledAt,
     motif: toMotif(row.motif),
+    lieu: toLieu(row.lieu),
     participations: row.participations.map(participationToDomain),
   }
 }
@@ -113,6 +192,7 @@ export const rdvFromDomain = (rdv: Rdv) => ({
   urlForAgents: rdv.urlAgent,
   cancelledAt: rdv.annulation,
   motifId: rdv.motif === null ? null : rdv.motif.id,
+  lieuId: rdv.lieu === null ? null : rdv.lieu.id,
   collectif: rdv.collectif,
   name: rdv.collectif ? rdv.nom : null,
   maxParticipantsCount: rdv.collectif ? rdv.participantsMax : null,

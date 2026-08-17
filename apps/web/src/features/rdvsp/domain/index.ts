@@ -43,7 +43,8 @@ export {
   PorteeOAuth,
 } from './jetons-oauth'
 export { NomAtelier, NomMotif, NomOrganisation } from './libelle'
-export type { Motif } from './motif'
+export { type Lieu, LieuId, NomLieu } from './lieu'
+export { CategorieMotifId, type Motif } from './motif'
 export { MotifId } from './motif-id'
 export { NombreParticipantsMax } from './nombre-participants-max'
 export type { Organisation } from './organisation'

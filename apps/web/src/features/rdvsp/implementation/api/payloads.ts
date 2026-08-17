@@ -88,6 +88,24 @@ export const participationPayload = z.object({
 const motifPayload = z.object({
   id: z.number().int(),
   name: z.string(),
+  collectif: booleenOptionnel,
+  organisation_id: z.number().int(),
+  follow_up: booleenOptionnel,
+  instruction_for_rdv: texteOptionnel,
+  location_type: texteOptionnel,
+  motif_category: z
+    .object({ id: z.number().int() })
+    .nullish()
+    .transform((valeur) => valeur ?? null),
+})
+
+const lieuPayload = z.object({
+  id: z.number().int(),
+  name: z.string(),
+  address: texteOptionnel,
+  organisation_id: z.number().int(),
+  phone_number: texteOptionnel,
+  single_use: booleenOptionnel,
 })
 
 export const rdvPayload = z.object({
@@ -114,6 +132,7 @@ export const rdvPayload = z.object({
     .transform((valeur) => valeur ?? null),
   organisation: organisationPayload,
   motif: motifPayload.nullish().transform((valeur) => valeur ?? null),
+  lieu: lieuPayload.nullish().transform((valeur) => valeur ?? null),
   participations: z.array(participationPayload).default([]),
 })
 
@@ -181,5 +200,7 @@ export type OrganisationPayload = z.infer<typeof organisationPayload>
 export type UsagerPayload = z.infer<typeof usagerPayload>
 export type ParticipationPayload = z.infer<typeof participationPayload>
 export type RdvPayload = z.infer<typeof rdvPayload>
+export type MotifPayload = z.infer<typeof motifPayload>
+export type LieuPayload = z.infer<typeof lieuPayload>
 export type DemandeRdvPayload = z.infer<typeof demandeRdvPayload>
 export type JetonsPayload = z.infer<typeof jetonsPayload>

@@ -19,7 +19,8 @@ import {
   PorteeOAuth,
 } from '../../domain/jetons-oauth'
 import { NomAtelier, NomMotif, NomOrganisation } from '../../domain/libelle'
-import type { Motif } from '../../domain/motif'
+import { type Lieu, LieuId, NomLieu } from '../../domain/lieu'
+import { CategorieMotifId, type Motif } from '../../domain/motif'
 import { MotifId } from '../../domain/motif-id'
 import { NombreParticipantsMax } from '../../domain/nombre-participants-max'
 import type { Organisation } from '../../domain/organisation'
@@ -99,6 +100,7 @@ export const participationToDomain = (
 ): Participation => ({
   id: ParticipationId(payload.id),
   usagerId: UsagerId(payload.user.id),
+  usager: usagerToDomain(payload.user),
   statutPresence: StatutPresence(payload.status),
   notificationRappel: payload.send_reminder_notification,
   notificationsCycleDeVie: payload.send_lifecycle_notifications,
@@ -107,7 +109,35 @@ export const participationToDomain = (
 const motifToDomain = (payload: RdvPayload['motif']): Motif | null =>
   payload === null
     ? null
-    : { id: MotifId(payload.id), nom: NomMotif(payload.name) }
+    : {
+        id: MotifId(payload.id),
+        nom: NomMotif(payload.name),
+        collectif: payload.collectif,
+        organisationId: OrganisationId(payload.organisation_id),
+        suivi: payload.follow_up,
+        instruction: payload.instruction_for_rdv,
+        typeDeLieu: payload.location_type,
+        categorieId:
+          payload.motif_category === null
+            ? null
+            : CategorieMotifId(payload.motif_category.id),
+      }
+
+const lieuToDomain = (payload: RdvPayload['lieu']): Lieu | null =>
+  payload === null
+    ? null
+    : {
+        id: LieuId(payload.id),
+        nom: NomLieu(payload.name),
+        adresse:
+          payload.address === null ? null : AdresseRdv.safe(payload.address),
+        organisationId: OrganisationId(payload.organisation_id),
+        telephone:
+          payload.phone_number === null
+            ? null
+            : TelephoneExterne.safe(payload.phone_number),
+        usageUnique: payload.single_use,
+      }
 
 export const rdvToDomain = (payload: RdvPayload, agentId: RdvAgentId): Rdv => {
   const base = {
@@ -123,6 +153,7 @@ export const rdvToDomain = (payload: RdvPayload, agentId: RdvAgentId): Rdv => {
     urlAgent: UrlAgent(payload.url_for_agents),
     annulation: payload.cancelled_at,
     motif: motifToDomain(payload.motif),
+    lieu: lieuToDomain(payload.lieu),
     participations: payload.participations.map(participationToDomain),
   }
 

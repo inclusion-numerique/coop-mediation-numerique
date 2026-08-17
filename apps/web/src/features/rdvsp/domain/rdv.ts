@@ -1,6 +1,7 @@
 import type { AdresseRdv } from './adresse-rdv'
 import type { DureeEnMinutes } from './duree-en-minutes'
 import type { NomAtelier } from './libelle'
+import type { Lieu } from './lieu'
 import type { Motif } from './motif'
 import type { NombreParticipantsMax } from './nombre-participants-max'
 import type { OrganisationId } from './organisation-id'
@@ -32,6 +33,8 @@ type RdvBase = {
   readonly annulation: Date | null
   /** Absent pour un rendez-vous créé hors de tout motif paramétré. */
   readonly motif: Motif | null
+  /** Absent pour un rendez-vous sans lieu physique — à distance, par téléphone. */
+  readonly lieu: Lieu | null
   readonly participations: readonly Participation[]
 }
 

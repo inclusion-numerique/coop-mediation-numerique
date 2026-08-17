@@ -1,6 +1,9 @@
 import { AdresseRdv } from '../domain/adresse-rdv'
 import { DureeEnMinutes } from '../domain/duree-en-minutes'
+import { NomExterne, PrenomExterne } from '../domain/identite'
 import { NomAtelier, NomMotif } from '../domain/libelle'
+import { type Lieu, LieuId, NomLieu } from '../domain/lieu'
+import type { Motif } from '../domain/motif'
 import { MotifId } from '../domain/motif-id'
 import { NombreParticipantsMax } from '../domain/nombre-participants-max'
 import { OrganisationId } from '../domain/organisation-id'
@@ -11,6 +14,7 @@ import { RdvId } from '../domain/rdv-id'
 import { RdvUuid } from '../domain/rdv-uuid'
 import { StatutPresence } from '../domain/statut-presence'
 import { UrlAgent } from '../domain/url-agent'
+import type { Usager } from '../domain/usager'
 import { UsagerId } from '../domain/usager-id'
 import {
   participationFromDomain,
@@ -31,29 +35,112 @@ const base = {
   urlAgent: UrlAgent('https://rdv.anct.gouv.fr/admin/rdvs/1'),
   annulation: null,
   motif: null,
+  lieu: null,
   participations: [],
 } as const
+
+const usager: Usager = {
+  id: UsagerId(200),
+  prenom: PrenomExterne('Jean'),
+  nom: NomExterne('Dupont'),
+  email: null,
+  telephone: null,
+  dateNaissance: null,
+  coordonnees: {
+    adresse: null,
+    complementAdresse: null,
+    numeroAllocataire: null,
+    caisseAffiliation: null,
+    nomNaissance: null,
+  },
+  responsableId: null,
+  notifierParEmail: false,
+  notifierParSms: false,
+}
 
 const participation = {
   id: ParticipationId(100),
   usagerId: UsagerId(200),
+  usager,
   statutPresence: StatutPresence('seen'),
   notificationRappel: true,
   notificationsCycleDeVie: false,
 } as const
 
+const motif: Motif = {
+  id: MotifId(3),
+  nom: NomMotif('Accompagnement numérique'),
+  collectif: false,
+  organisationId: OrganisationId(7),
+  suivi: false,
+  instruction: null,
+  typeDeLieu: null,
+  categorieId: null,
+}
+
+const lieu: Lieu = {
+  id: LieuId(11),
+  nom: NomLieu('Médiathèque'),
+  adresse: AdresseRdv('1 place du Marché, 44000 Nantes'),
+  organisationId: OrganisationId(7),
+  telephone: null,
+  usageUnique: false,
+}
+
 /**
  * Reconstitue la ligne complète : `raw_data`, les colonnes de traçabilité et le
  * libellé du motif ne traversent pas `rdvFromDomain`.
  */
-const toRow = (rdv: Rdv, nomMotif: string | null = null): RdvRow => ({
+const ligneMotif = (motifDomaine: Motif) => ({
+  id: motifDomaine.id,
+  name: motifDomaine.nom,
+  collectif: motifDomaine.collectif,
+  organisationId: motifDomaine.organisationId,
+  followUp: motifDomaine.suivi,
+  instructionForRdv: motifDomaine.instruction,
+  locationType: motifDomaine.typeDeLieu,
+  motifCategoryId: motifDomaine.categorieId,
+})
+
+const ligneLieu = (lieuDomaine: Lieu) => ({
+  id: lieuDomaine.id,
+  name: lieuDomaine.nom,
+  address: lieuDomaine.adresse ?? '',
+  organisationId: lieuDomaine.organisationId,
+  phoneNumber: lieuDomaine.telephone,
+  singleUse: lieuDomaine.usageUnique,
+  syncedAt: new Date('2026-08-17T06:00:00.000Z'),
+})
+
+const ligneUsager = (usagerDomaine: Usager) => ({
+  id: usagerDomaine.id,
+  firstName: usagerDomaine.prenom,
+  lastName: usagerDomaine.nom,
+  email: usagerDomaine.email,
+  phoneNumber: usagerDomaine.telephone,
+  phoneNumberFormatted: null,
+  birthDate: usagerDomaine.dateNaissance,
+  address: usagerDomaine.coordonnees.adresse,
+  addressDetails: usagerDomaine.coordonnees.complementAdresse,
+  affiliationNumber: usagerDomaine.coordonnees.numeroAllocataire,
+  caisseAffiliation: usagerDomaine.coordonnees.caisseAffiliation,
+  birthName: usagerDomaine.coordonnees.nomNaissance,
+  responsibleId: usagerDomaine.responsableId,
+  notifyByEmail: usagerDomaine.notifierParEmail,
+  notifyBySms: usagerDomaine.notifierParSms,
+  createdAt: null,
+  invitationAcceptedAt: null,
+  invitationCreatedAt: null,
+  syncedAt: new Date('2026-08-17T06:00:00.000Z'),
+})
+
+const toRow = (rdv: Rdv): RdvRow => ({
   ...rdvFromDomain(rdv),
-  motif:
-    rdv.motif === null || nomMotif === null
-      ? null
-      : { id: rdv.motif.id, name: nomMotif },
+  motif: rdv.motif === null ? null : ligneMotif(rdv.motif),
+  lieu: rdv.lieu === null ? null : ligneLieu(rdv.lieu),
   participations: rdv.participations.map((participation) => ({
     ...participationFromDomain(participation),
+    user: ligneUsager(participation.usager),
     rdvId: rdv.id,
     createdBy: null,
     createdByType: null,
@@ -87,12 +174,13 @@ describe('transfer rendez-vous', () => {
         adresse: AdresseRdv('12 rue de la Paix, 75002 Paris'),
         annulation: new Date('2026-08-16T08:00:00.000Z'),
         statutPresence: StatutPresence('revoked'),
-        motif: { id: MotifId(3), nom: NomMotif('Accompagnement numérique') },
+        motif,
+        lieu,
         participations: [participation],
         collectif: false,
       }
 
-      expect(rdvToDomain(toRow(rdv, 'Accompagnement numérique'))).toEqual(rdv)
+      expect(rdvToDomain(toRow(rdv))).toEqual(rdv)
     })
 
     it('conserve un atelier collectif sans nom ni jauge', () => {
