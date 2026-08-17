@@ -39,14 +39,12 @@ const SuspensedContent = async ({
         </h2>
         {hasRdvIntegration && user.rdvAccount && (
           <UpdateIncludeRdvsInActivitesList
-            rdvAccountId={user.rdvAccount.id}
             includeRdvsInActivitesList={
               user.rdvAccount.includeRdvsInActivitesList
             }
             syncDataOnLoad={
               user.rdvAccount.invalidWebhookOrganisationIds.length > 0
             }
-            userId={user.id}
           />
         )}
       </div>

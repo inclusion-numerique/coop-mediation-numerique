@@ -83,7 +83,7 @@ const BeneficiaireLayout = async (
         hasRdvIntegration &&
         user.rdvAccount &&
         user.rdvAccount.invalidWebhookOrganisationIds.length > 0 ? (
-          <RefreshRdvDataOnLoad userId={user.id} syncDataOnLoad={true} />
+          <RefreshRdvDataOnLoad synchroniserAuChargement />
         ) : undefined
       }
     >

@@ -2,9 +2,8 @@
 import { useModalVisibility } from '@app/ui/hooks/useModalVisibility'
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
+import { declencherSynchronisationAction } from '@app/web/app/_actions/rdvsp/declencher-synchronisation.action'
 import { deconnecterCompteRdvAction } from '@app/web/app/_actions/rdvsp/deconnecter-compte-rdv.action'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { trpc } from '@app/web/trpc'
 import type { UserId, UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
@@ -31,10 +30,10 @@ const GererRdvServicePublicModal = ({
 }: {
   user: UserRdvAccount & UserTimezone & UserId
 }) => {
-  const syncMutation = trpc.rdvServicePublic.syncRdvAccountData.useMutation()
   const router = useRouter()
 
   const [deconnexionEnCours, setDeconnexionEnCours] = useState(false)
+  const [synchronisationEnCours, setSynchronisationEnCours] = useState(false)
   const [state, setState] = useState<'gerer' | 'deconnecter'>('gerer')
 
   const [status, setStatus] = useState<RdvOauthIntegrationStatus>(
@@ -76,36 +75,43 @@ const GererRdvServicePublicModal = ({
   }
 
   const onSync = async () => {
-    const syncResult = await syncMutation.mutateAsync({
-      userId,
+    setSynchronisationEnCours(true)
+
+    const resultat = await declencherSynchronisationAction({
+      utilisateurId: userId,
     })
 
-    setLastSynced(
-      syncResult.rdvAccount?.lastSynced
-        ? new Date(syncResult.rdvAccount.lastSynced)
-        : null,
-    )
-    setError(syncResult.rdvAccount?.error ?? null)
-    setStatus(getRdvOauthIntegrationStatus({ user: syncResult }))
+    setSynchronisationEnCours(false)
 
-    if (syncResult.rdvAccount?.error) {
-      createToast({
-        priority: 'error',
-        message: `Une erreur est survenue lors de la synchronisation.`,
-      })
-    } else {
-      createToast({
-        priority: 'success',
-        message: `Les informations ont été synchronisées avec succès.`,
-      })
+    // La modale garde son propre état : ses données viennent de props figées au
+    // rendu, qu'un `router.refresh()` ne remplacerait pas tant qu'elle est
+    // montée.
+    if (!resultat.success) {
+      setError(resultat.error)
+      setStatus('error')
+      createToast({ priority: 'error', message: resultat.error })
+      return
     }
+
+    // Nulle quand la passe était sans objet : mieux vaut garder la date affichée
+    // que prétendre qu'aucune synchronisation n'a jamais eu lieu.
+    if (resultat.data.synchroniseeLe !== null) {
+      setLastSynced(resultat.data.synchroniseeLe)
+    }
+
+    setError(null)
+    setStatus('success')
+    createToast({
+      priority: 'success',
+      message: 'Les informations ont été synchronisées avec succès.',
+    })
   }
 
   useModalVisibility(GererRdvServicePublicModalInstance.id, {
     onClosed: reset,
   })
 
-  const isLoading = deconnexionEnCours || syncMutation.isPending
+  const isLoading = deconnexionEnCours || synchronisationEnCours
 
   const title =
     state === 'gerer' ? (
@@ -229,4 +235,4 @@ const GererRdvServicePublicModal = ({
   )
 }
 
-export default withTrpc(GererRdvServicePublicModal)
+export default GererRdvServicePublicModal

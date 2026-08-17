@@ -75,7 +75,7 @@ export const Accueil = ({
         <section className="fr-my-6w">
           <RdvsAccueil
             donnees={widgetRdv.donnees}
-            user={{ id: userId, timezone }}
+            user={{ timezone }}
             synchroniserAuChargement={synchroniserRdvsAuChargement}
           />
         </section>

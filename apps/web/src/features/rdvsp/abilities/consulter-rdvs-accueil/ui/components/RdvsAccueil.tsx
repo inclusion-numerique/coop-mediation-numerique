@@ -1,10 +1,9 @@
 'use client'
 
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { rafraichirAccueilRdvAction } from '@app/web/app/_actions/rdvsp/rafraichir-accueil-rdv.action'
 import RdvStatusBadge from '@app/web/features/activites/use-cases/list/components/RdvStatusBadge'
-import { trpc } from '@app/web/trpc'
 import { numberToString } from '@app/web/utils/formatNumber'
-import type { UserId, UserTimezone } from '@app/web/utils/user'
+import type { UserTimezone } from '@app/web/utils/user'
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { useEffect, useState } from 'react'
@@ -78,31 +77,36 @@ const Compteur = ({
 }
 
 /**
- * Widget de l'accueil. La synchronisation au chargement passe encore par tRPC :
- * elle appelle l'orchestrateur de synchronisation, qui n'est pas migré.
+ * Widget de l'accueil. Le rattrapage au chargement ne concerne que les
+ * organisations sans webhook ; il ne remplace les compteurs que s'il a corrigé
+ * quelque chose.
  */
 const RdvsAccueil = ({
   donnees: donneesInitiales,
-  user: { timezone, id: userId },
+  user: { timezone },
   synchroniserAuChargement,
 }: {
   donnees: DonneesAccueilRdv
-  user: UserId & UserTimezone
+  user: UserTimezone
   synchroniserAuChargement: boolean
 }) => {
   const [donnees, setDonnees] = useState<DonneesAccueilRdv>(donneesInitiales)
+  const [synchronisationEnCours, setSynchronisationEnCours] = useState(false)
 
-  const mutation = trpc.rdvServicePublic.refreshDashboardRdvData.useMutation()
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: la mutation ne doit pas relancer l'effet
   useEffect(() => {
-    if (synchroniserAuChargement) {
-      mutation
-        .mutateAsync({ userId })
-        .then(({ donnees: rafraichies, hasDiff }) =>
-          hasDiff && rafraichies ? setDonnees(rafraichies) : null,
-        )
+    if (!synchroniserAuChargement) {
+      return
     }
+
+    setSynchronisationEnCours(true)
+
+    rafraichirAccueilRdvAction().then((resultat) => {
+      setSynchronisationEnCours(false)
+
+      if (resultat.success && resultat.data.donnees !== null) {
+        setDonnees(resultat.data.donnees)
+      }
+    })
   }, [synchroniserAuChargement])
 
   const phrase = (
@@ -113,7 +117,7 @@ const RdvsAccueil = ({
 
   return (
     <>
-      <RdvsAccueilHeader isLoading={mutation.isPending} />
+      <RdvsAccueilHeader isLoading={synchronisationEnCours} />
       <div className="fr-grid-row fr-grid-row--gutters">
         <Compteur
           nombre={donnees.aVenir}
@@ -140,4 +144,4 @@ const RdvsAccueil = ({
   )
 }
 
-export default withTrpc(RdvsAccueil)
+export default RdvsAccueil

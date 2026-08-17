@@ -41,7 +41,7 @@ const donnees = (surcharge: Partial<DonneesAccueilRdv>): DonneesAccueilRdv => ({
   ...surcharge,
 })
 
-const user = { id: 'storybook', timezone: 'Europe/Paris' }
+const user = { timezone: 'Europe/Paris' }
 
 export const AvecRendezVous: Story = {
   args: {

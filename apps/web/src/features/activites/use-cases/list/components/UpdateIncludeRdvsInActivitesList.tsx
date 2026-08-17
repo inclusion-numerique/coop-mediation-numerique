@@ -1,24 +1,21 @@
 'use client'
 
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { afficherRdvsDansActivitesAction } from '@app/web/app/_actions/rdvsp/afficher-rdvs-dans-activites.action'
+import { rattraperRdvsSansWebhookAction } from '@app/web/app/_actions/rdvsp/rattraper-rdvs-sans-webhook.action'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
-import { trpc } from '@app/web/trpc'
 import { Spinner } from '@app/web/ui/Spinner'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { type ChangeEvent, useEffect, useState } from 'react'
 
 const UpdateIncludeRdvsInActivitesList = ({
-  rdvAccountId,
   includeRdvsInActivitesList,
   syncDataOnLoad,
-  userId,
 }: {
-  userId: string
-  rdvAccountId: number
   includeRdvsInActivitesList: boolean
   syncDataOnLoad: boolean
 }) => {
   const queryParams = useSearchParams()
+  const router = useRouter()
 
   const [value, setValue] = useState(
     includeRdvsInActivitesList ||
@@ -26,32 +23,28 @@ const UpdateIncludeRdvsInActivitesList = ({
       !!queryParams.get('voir-rdvs'),
   )
 
-  const mutation =
-    trpc.rdvServicePublic.updateIncludeRdvsInActivitesList.useMutation()
+  const [synchronisationEnCours, setSynchronisationEnCours] = useState(false)
 
-  const refreshRdvDataMutation =
-    trpc.rdvServicePublic.refreshRdvData.useMutation()
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: refreshRdvDataMutation is not in dependencies as it should not retrigger the call
   useEffect(() => {
-    if (syncDataOnLoad) {
-      refreshRdvDataMutation.mutateAsync({ userId }).then((result) => {
-        if (result?.hasDiff) {
-          router.refresh()
-        }
-      })
+    if (!syncDataOnLoad) {
+      return
     }
-  }, [syncDataOnLoad])
 
-  const router = useRouter()
+    setSynchronisationEnCours(true)
+
+    rattraperRdvsSansWebhookAction().then((resultat) => {
+      setSynchronisationEnCours(false)
+
+      if (resultat.success && resultat.data.derive > 0) {
+        router.refresh()
+      }
+    })
+  }, [syncDataOnLoad, router])
 
   const onChange = async (option: ChangeEvent<HTMLInputElement>) => {
     setValue(option.target.checked)
 
-    await mutation.mutateAsync({
-      includeRdvsInActivitesList: option.target.checked,
-      rdvAccountId,
-    })
+    await afficherRdvsDansActivitesAction({ afficher: option.target.checked })
 
     // get current query params
     const params = new URLSearchParams(queryParams.toString())
@@ -65,11 +58,9 @@ const UpdateIncludeRdvsInActivitesList = ({
 
   const id = 'include-rdvs-in-activites-list'
 
-  const isLoading = refreshRdvDataMutation.isPending
-
   return (
     <div className="fr-flex fr-align-items-center fr-flex-gap-2v">
-      {isLoading && (
+      {synchronisationEnCours && (
         <div className="fr-flex fr-align-items-center fr-flex-gap-2v">
           <Spinner
             size="small"
@@ -109,4 +100,4 @@ const UpdateIncludeRdvsInActivitesList = ({
   )
 }
 
-export default withTrpc(UpdateIncludeRdvsInActivitesList)
+export default UpdateIncludeRdvsInActivitesList

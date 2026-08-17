@@ -1,10 +1,5 @@
 import { success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
-import type {
-  UserId,
-  UserMediateur,
-  UserWithExistingRdvAccount,
-} from '@app/web/utils/user'
 import {
   cloturerJournal,
   echouerJournal,
@@ -49,14 +44,16 @@ const bilanRdvsVide = {
  * de port.
  */
 export const syncAllRdvData = async ({
-  user,
+  compteId,
+  mediateurId,
   organisationIds,
 }: {
-  user: UserWithExistingRdvAccount & UserId & UserMediateur
+  compteId: number
+  mediateurId?: string
   organisationIds?: number[]
 }) => {
   const row = await prismaClient.rdvAccount.findUniqueOrThrow({
-    where: { id: user.rdvAccount.id },
+    where: { id: compteId },
     include: { organisations: { select: { organisationId: true } } },
   })
 
@@ -70,8 +67,6 @@ export const syncAllRdvData = async ({
   const tracer = (message: string) => {
     journal.push(message)
   }
-
-  const mediateurId = user.mediateur?.id
 
   const synchroniser = synchroniserCompteRdv({
     reconcilierOrganisations: synchroniserOrganisations({

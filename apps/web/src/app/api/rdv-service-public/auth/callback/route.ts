@@ -178,10 +178,8 @@ export const GET = async (request: NextRequest) => {
   // Synchronisation en tâche de fond : elle peut durer, l'utilisateur n'a pas à
   // l'attendre pour être redirigé.
   syncAllRdvData({
-    user: {
-      ...updatedUserWithRdvAccount,
-      rdvAccount: updatedUserWithRdvAccount.rdvAccount,
-    },
+    compteId: updatedUserWithRdvAccount.rdvAccount.id,
+    mediateurId: updatedUserWithRdvAccount.mediateur?.id,
   }).catch((syncError) => {
     Sentry.captureException?.(syncError)
     // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production

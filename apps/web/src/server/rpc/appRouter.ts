@@ -8,7 +8,6 @@ import { imageRouter } from '@app/web/server/rpc/image/imageRouter'
 import { inscriptionRouter } from '@app/web/server/rpc/inscription/inscriptionRouter'
 import { lieuActiviteRouter } from '@app/web/server/rpc/lieu-activite/lieuActiviteRouter'
 import { mediateursRouter } from '@app/web/server/rpc/mediateur/mediateursRouter'
-import { rdvServicePublicRouter } from '@app/web/server/rpc/rdv-service-public/rdvServicePublicRouter'
 import { siretRouter } from '@app/web/server/rpc/siret/siretRouter'
 import { structuresRouter } from '@app/web/server/rpc/structures/structuresRouter'
 import { uploadRouter } from '@app/web/server/rpc/upload/uploadRouter'
@@ -27,7 +26,6 @@ export const appRouter = router({
   usurpation: usurpationRouter,
   lieuActivite: lieuActiviteRouter,
   apiClient: apiClientRouter,
-  rdvServicePublic: rdvServicePublicRouter,
   tags: tagsRouter,
   dataspaceAdmin: dataspaceAdminRouter,
   maintenance: maintenanceRouter,

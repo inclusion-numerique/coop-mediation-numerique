@@ -35,11 +35,8 @@ export const executeSyncRdvspData = async (_job: SyncRdvspDataJob) => {
 
     try {
       await syncAllRdvData({
-        user: {
-          id: sessionUser.id,
-          mediateur: sessionUser.mediateur,
-          rdvAccount: sessionUser.rdvAccount,
-        },
+        compteId: sessionUser.rdvAccount.id,
+        mediateurId: sessionUser.mediateur?.id,
       })
 
       synced += 1
