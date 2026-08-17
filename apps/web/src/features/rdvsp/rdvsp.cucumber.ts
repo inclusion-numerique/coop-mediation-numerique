@@ -109,6 +109,7 @@ export const seedRdv = async ({
   id,
   rdvAccountId,
   organisationId = id,
+  motifId = null,
   status = 'unknown',
   craDeclined = false,
   debut = new Date('2026-08-16T09:00:00.000Z'),
@@ -117,6 +118,7 @@ export const seedRdv = async ({
   id: number
   rdvAccountId: number
   organisationId?: number
+  motifId?: number | null
   status?: 'unknown' | 'seen' | 'excused' | 'revoked' | 'noshow'
   craDeclined?: boolean
   debut?: Date
@@ -130,6 +132,7 @@ export const seedRdv = async ({
       uuid: `00000000-0000-4000-8000-${String(id).padStart(12, '0')}`,
       rdvAccountId,
       organisationId,
+      motifId,
       address: '12 rue de la Paix, 75002 Paris',
       startsAt: debut,
       endsAt: new Date(debut.getTime() + dureeEnMinutes * 60_000),
@@ -242,6 +245,31 @@ export const seedOrganisation = async ({
     update: { name: nom },
   })
   organisationsSuivies.add(id)
+
+  return id
+}
+
+export const seedMotif = async ({
+  id,
+  organisationId,
+  nom = `Motif ${id}`,
+}: {
+  id: number
+  organisationId: number
+  nom?: string
+}): Promise<number> => {
+  await seedOrganisation({ id: organisationId })
+  await prismaClient.rdvMotif.upsert({
+    where: { id },
+    create: {
+      id,
+      name: nom,
+      organisationId,
+      collectif: false,
+      followUp: false,
+    },
+    update: { name: nom },
+  })
 
   return id
 }
@@ -385,6 +413,14 @@ After(async () => {
     where: {
       OR: [{ id: { in: [...comptesSuivis] } }, { userId: testUtilisateurId }],
     },
+  })
+  // Motifs et lieux référencent l'organisation. Ils sont créés par le code testé,
+  // jamais par un helper de seed : on les retrouve par leur organisation.
+  await prismaClient.rdvMotif.deleteMany({
+    where: { organisationId: { in: [...organisationsSuivies] } },
+  })
+  await prismaClient.rdvLieu.deleteMany({
+    where: { organisationId: { in: [...organisationsSuivies] } },
   })
   await prismaClient.rdvOrganisation.deleteMany({
     where: { id: { in: [...organisationsSuivies] } },

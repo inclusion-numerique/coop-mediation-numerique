@@ -3,7 +3,6 @@ import { handleUserModelWebhook } from '@app/web/features/rdvsp/webhook/handleUs
 import {
   RdvspWebhookModel,
   RdvspWebhookPayload,
-  RdvspWebhookRdvData,
   RdvspWebhookUserData,
 } from '@app/web/features/rdvsp/webhook/rdvWebhook'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
@@ -35,8 +34,10 @@ export const POST = async (request: NextRequest) => {
     switch (body.meta.model) {
       case RdvspWebhookModel.Rdv:
         if (logDebug) outputLog('Processing RDV webhook', body.meta)
+        // Le payload n'est plus transtypé : l'ability le valide elle-même et
+        // renonce proprement s'il a changé de forme.
         await handleRdvModelWebhook({
-          data: body.data as RdvspWebhookRdvData,
+          data: body.data,
           event: body.meta.event,
         })
         break
