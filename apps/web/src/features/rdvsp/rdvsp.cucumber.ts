@@ -357,7 +357,17 @@ After(async () => {
   // Les rendez-vous d'abord : leurs participations référencent les usagers et
   // disparaissent en cascade avec eux. L'inverse viole la clé étrangère et laisse
   // des résidus qui bloquent le `resetFixtureUser` de la session suivante.
-  await prismaClient.rdv.deleteMany({ where: { id: { in: [...rdvsSuivis] } } })
+  // Le nettoyage vise aussi tout rendez-vous rattaché à un compte de test, et pas
+  // seulement ceux passés par `seedRdv` : la synchronisation en crée elle-même, et
+  // ceux-là n'ont jamais été déclarés ici.
+  await prismaClient.rdv.deleteMany({
+    where: {
+      OR: [
+        { id: { in: [...rdvsSuivis] } },
+        { rdvAccountId: { in: [...comptesSuivis] } },
+      ],
+    },
+  })
   await prismaClient.rdvUser.deleteMany({
     where: { id: { in: [...usagersSuivis] } },
   })

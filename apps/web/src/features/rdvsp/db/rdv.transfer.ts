@@ -101,12 +101,15 @@ const usagerToDomain = (row: PrismaRdvUser): Usager => ({
   nom: NomExterne(row.lastName),
   email: row.email === null ? null : EmailExterne.safe(row.email),
   telephone:
-    row.phoneNumberFormatted === null && row.phoneNumber === null
+    row.phoneNumber === null ? null : TelephoneExterne.safe(row.phoneNumber),
+  telephoneFormate:
+    row.phoneNumberFormatted === null
       ? null
-      : TelephoneExterne.safe(
-          row.phoneNumberFormatted ?? row.phoneNumber ?? '',
-        ),
+      : TelephoneExterne.safe(row.phoneNumberFormatted),
   dateNaissance: row.birthDate,
+  creation: row.createdAt,
+  invitationCreee: row.invitationCreatedAt,
+  invitationAcceptee: row.invitationAcceptedAt,
   coordonnees: {
     adresse: row.address,
     complementAdresse: row.addressDetails,

@@ -35,6 +35,10 @@ export const usagerFixture = (
   nom: NomExterne('Dupont'),
   email: EmailExterne('jean.dupont@example.com'),
   telephone: null,
+  telephoneFormate: null,
+  creation: null,
+  invitationCreee: null,
+  invitationAcceptee: null,
   dateNaissance: null,
   coordonnees: {
     adresse: null,

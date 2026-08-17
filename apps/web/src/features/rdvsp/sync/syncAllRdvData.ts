@@ -98,7 +98,6 @@ export const syncAllRdvData = async ({
       ? await importRdvs({
           rdvAccount,
           mediateurId: user.mediateur.id,
-          user,
           appendLog,
           organisationIds,
         })

@@ -78,10 +78,18 @@ export const usagerToDomain = (payload: UsagerPayload): Usager => ({
   prenom: PrenomExterne(payload.first_name),
   nom: NomExterne(payload.last_name),
   email: payload.email === null ? null : EmailExterne.safe(payload.email),
-  telephone: TelephoneExterne.safe(
-    payload.phone_number_formatted ?? payload.phone_number ?? '',
-  ),
+  telephone:
+    payload.phone_number === null
+      ? null
+      : TelephoneExterne.safe(payload.phone_number),
+  telephoneFormate:
+    payload.phone_number_formatted === null
+      ? null
+      : TelephoneExterne.safe(payload.phone_number_formatted),
   dateNaissance: payload.birth_date,
+  creation: payload.created_at,
+  invitationCreee: payload.invitation_created_at,
+  invitationAcceptee: payload.invitation_accepted_at,
   coordonnees: {
     adresse: payload.address,
     complementAdresse: payload.address_details,

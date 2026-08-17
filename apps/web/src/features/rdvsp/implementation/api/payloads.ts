@@ -68,6 +68,9 @@ export const usagerPayload = z.object({
   affiliation_number: texteOptionnel,
   caisse_affiliation: texteOptionnel,
   birth_name: texteOptionnel,
+  created_at: dateExterneOptionnelle,
+  invitation_created_at: dateExterneOptionnelle,
+  invitation_accepted_at: dateExterneOptionnelle,
   responsible_id: z
     .number()
     .int()

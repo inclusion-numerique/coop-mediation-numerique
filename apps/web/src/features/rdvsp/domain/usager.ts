@@ -33,8 +33,13 @@ export type Usager = {
   readonly prenom: PrenomExterne
   readonly nom: NomExterne
   readonly email: EmailExterne | null
+  /** Numéro tel que saisi, et sa forme normalisée par RDV Service Public. */
   readonly telephone: TelephoneExterne | null
+  readonly telephoneFormate: TelephoneExterne | null
   readonly dateNaissance: Date | null
+  readonly creation: Date | null
+  readonly invitationCreee: Date | null
+  readonly invitationAcceptee: Date | null
   readonly coordonnees: CoordonneesUsager
   readonly responsableId: UsagerId | null
   readonly notifierParEmail: boolean

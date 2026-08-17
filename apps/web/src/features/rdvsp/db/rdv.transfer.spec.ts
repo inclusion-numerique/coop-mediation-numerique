@@ -48,6 +48,10 @@ const usager: Usager = {
   nom: NomExterne('Dupont'),
   email: null,
   telephone: null,
+  telephoneFormate: null,
+  creation: null,
+  invitationCreee: null,
+  invitationAcceptee: null,
   dateNaissance: null,
   coordonnees: {
     adresse: null,
