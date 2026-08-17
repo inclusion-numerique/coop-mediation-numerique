@@ -70,7 +70,6 @@ const BeneficiaireLayout = async (
           <PrendreRendezVousAvecBeneficiaireButton
             beneficiaire={beneficiaireCraData}
             user={user}
-            returnPath={`/coop/mes-beneficiaires/${beneficiaire.id}`}
           />
         </>
       }

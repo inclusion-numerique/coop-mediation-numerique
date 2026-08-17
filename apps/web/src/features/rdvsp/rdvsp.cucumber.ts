@@ -2,6 +2,7 @@ import { resetFixtureUser } from '@app/fixtures/resetFixtureUser'
 import { seedStructures } from '@app/fixtures/structures'
 import {
   mediateurAvecActivite,
+  mediateurAvecActiviteMediateurId,
   mediateurAvecActiviteUserId,
 } from '@app/fixtures/users/mediateurAvecActivite'
 import { prismaClient } from '@app/web/prismaClient'
@@ -18,6 +19,7 @@ setDefaultTimeout(60_000)
  * ne définissent que Given/When/Then et s'appuient sur ces helpers.
  */
 export const testUtilisateurId = UtilisateurCoopId(mediateurAvecActiviteUserId)
+export const testMediateurId = mediateurAvecActiviteMediateurId
 
 const comptesSuivis = new Set<number>()
 
@@ -128,6 +130,88 @@ export const seedRdv = async ({
   return id
 }
 
+const beneficiairesSuivis = new Set<string>()
+const usagersSuivis = new Set<number>()
+
+export const suivreUsagerRdv = (usagerId: number): void => {
+  usagersSuivis.add(usagerId)
+}
+
+/**
+ * Bénéficiaire de test rattaché au médiateur de fixture, ou à un autre lorsque
+ * le scénario éprouve la propriété.
+ */
+export const seedBeneficiaire = async ({
+  mediateurId = testMediateurId,
+  ...data
+}: Partial<Prisma.BeneficiaireUncheckedCreateInput> & {
+  mediateurId?: string
+} = {}): Promise<string> => {
+  const beneficiaire = await prismaClient.beneficiaire.create({
+    data: { anonyme: false, ...data, mediateurId },
+    select: { id: true },
+  })
+  beneficiairesSuivis.add(beneficiaire.id)
+
+  return beneficiaire.id
+}
+
+const mediateursSuivis = new Set<string>()
+
+/**
+ * Médiateur distinct de celui de fixture, pour les scénarios de propriété.
+ * `beneficiaires.mediateur_id` étant une clé étrangère, il faut un vrai
+ * médiateur, donc un vrai utilisateur.
+ */
+export const seedAutreMediateur = async (): Promise<string> => {
+  const utilisateur = await prismaClient.user.create({
+    data: {
+      email: `autre-mediateur-${mediateursSuivis.size}-${Date.now()}@rdvsp.test`,
+      isFixture: true,
+    },
+    select: { id: true },
+  })
+  utilisateursSuivis.add(utilisateur.id)
+
+  const mediateur = await prismaClient.mediateur.create({
+    data: { userId: utilisateur.id },
+    select: { id: true },
+  })
+  mediateursSuivis.add(mediateur.id)
+
+  return mediateur.id
+}
+
+/** Usager RDV Service Public préexistant, rattaché ensuite à un bénéficiaire. */
+export const seedUsagerRdv = async (id: number): Promise<number> => {
+  await prismaClient.rdvUser.upsert({
+    where: { id },
+    create: {
+      id,
+      firstName: 'Usager',
+      lastName: 'RDV',
+      notifyByEmail: false,
+      notifyBySms: false,
+    },
+    update: {},
+  })
+  usagersSuivis.add(id)
+
+  return id
+}
+
+export const supprimerCompteRdvDuMediateur = async (): Promise<void> => {
+  await prismaClient.rdvAccount.deleteMany({
+    where: { userId: testUtilisateurId },
+  })
+}
+
+export const beneficiaireEnBase = async (id: string) =>
+  await prismaClient.beneficiaire.findUnique({
+    where: { id },
+    select: { id: true, rdvUserId: true, prenom: true, nom: true },
+  })
+
 export const rdvEnBase = async (rdvId: number) =>
   await prismaClient.rdv.findUnique({
     where: { id: rdvId },
@@ -144,6 +228,9 @@ Before(async () => {
   organisationsSuivies.clear()
   rdvsSuivis.clear()
   utilisateursSuivis.clear()
+  beneficiairesSuivis.clear()
+  usagersSuivis.clear()
+  mediateursSuivis.clear()
   // Les scénarios écrivent tous sur le même utilisateur de fixture : on repart
   // d'un utilisateur sans compte RDV, sinon la recherche « par agent ou par
   // utilisateur » retrouverait le compte d'un scénario précédent.
@@ -152,9 +239,15 @@ Before(async () => {
   })
 })
 
-// Les rendez-vous référencent le compte et l'organisation : ils partent d'abord,
-// sans quoi les suppressions suivantes butent sur les clés étrangères.
+// L'ordre suit les clés étrangères : bénéficiaires avant usagers, rendez-vous
+// avant comptes et organisations, comptes avant utilisateurs.
 After(async () => {
+  await prismaClient.beneficiaire.deleteMany({
+    where: { id: { in: [...beneficiairesSuivis] } },
+  })
+  await prismaClient.rdvUser.deleteMany({
+    where: { id: { in: [...usagersSuivis] } },
+  })
   await prismaClient.rdv.deleteMany({ where: { id: { in: [...rdvsSuivis] } } })
   await prismaClient.rdvAccount.deleteMany({
     where: {
@@ -163,6 +256,9 @@ After(async () => {
   })
   await prismaClient.rdvOrganisation.deleteMany({
     where: { id: { in: [...organisationsSuivies] } },
+  })
+  await prismaClient.mediateur.deleteMany({
+    where: { id: { in: [...mediateursSuivis] } },
   })
   await prismaClient.user.deleteMany({
     where: { id: { in: [...utilisateursSuivis] } },

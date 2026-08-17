@@ -28,12 +28,18 @@ export type UrlRetour = Model.TypeOf<typeof UrlRetour>
  * appelant, et cantonne à l'adaptateur la question de savoir ce que RDV Service
  * Public fait réellement de `user.id`.
  */
+/**
+ * Dans la branche `aCreer`, tous les champs d'identité sont facultatifs : ils ne
+ * sont qu'un pré-remplissage du formulaire de RDV Service Public, qui complète
+ * lui-même ce qui manque auprès de l'usager. Un bénéficiaire anonyme peut donc
+ * faire l'objet d'une demande.
+ */
 export type UsagerDeLaDemande =
   | { readonly _tag: 'existant'; readonly id: UsagerId }
   | {
       readonly _tag: 'aCreer'
-      readonly prenom: PrenomExterne
-      readonly nom: NomExterne
+      readonly prenom: PrenomExterne | null
+      readonly nom: NomExterne | null
       readonly email: EmailExterne | null
       readonly telephone: TelephoneExterne | null
       readonly adresse: string | null
@@ -44,6 +50,8 @@ export type DemandeRdv = {
   readonly usager: UsagerDeLaDemande
   /** Page vers laquelle RDV Service Public renvoie l'usager une fois la prise faite. */
   readonly urlRetour: UrlRetour | null
+  /** Page du dossier, affichée à l'agent depuis l'interface de RDV Service Public. */
+  readonly urlDossier: UrlRetour | null
 }
 
 /**

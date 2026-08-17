@@ -2,27 +2,23 @@
 
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
+import { prendreRendezVousAction } from '@app/web/app/_actions/rdvsp/prendre-rendez-vous.action'
 import type { SessionUser } from '@app/web/auth/sessionUser'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { BeneficiaireCraData } from '@app/web/features/activites/use-cases/cra/validation/BeneficiaireCraValidation'
 import { getRdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
-import { trpc } from '@app/web/trpc'
-import { getServerUrl } from '@app/web/utils/baseUrl'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 const PrendreRendezVousAvecBeneficiaireButton = ({
   beneficiaire,
   user,
-  returnPath,
   className,
 }: {
   beneficiaire: { id: string }
   user: Pick<SessionUser, 'id' | 'rdvAccount'>
-  returnPath: string // path on the app (e.g. /beneficiaires/12)
   className?: string
 }) => {
-  const mutation = trpc.rdvServicePublic.oAuthApiCreateRdvPlan.useMutation()
+  const [enCours, setEnCours] = useState(false)
 
   const oauthStatus = getRdvOauthIntegrationStatus({ user })
 
@@ -33,29 +29,29 @@ const PrendreRendezVousAvecBeneficiaireButton = ({
   }
 
   const onClick = async () => {
-    try {
-      const result = await mutation.mutateAsync({
-        beneficiaireId: beneficiaire.id,
-        returnUrl: getServerUrl(returnPath, { absolutePath: true }),
-      })
+    setEnCours(true)
+    const result = await prendreRendezVousAction({
+      beneficiaireId: beneficiaire.id,
+    })
 
-      router.push(result.rdv_plan.url)
-    } catch {
+    if (!result.success) {
+      setEnCours(false)
       createToast({
         priority: 'error',
         message: 'Une erreur est survenue lors de la création du RDV',
       })
+      return
     }
-  }
 
-  const isLoading = mutation.isPending || mutation.isSuccess
+    router.push(result.data.url)
+  }
 
   return (
     <Button
       priority="primary"
       size="small"
       iconId="fr-icon-calendar-line"
-      {...buttonLoadingClassname(isLoading)}
+      {...buttonLoadingClassname(enCours)}
       onClick={onClick}
       type="button"
       className={className}
@@ -65,4 +61,4 @@ const PrendreRendezVousAvecBeneficiaireButton = ({
   )
 }
 
-export default withTrpc(PrendreRendezVousAvecBeneficiaireButton)
+export default PrendreRendezVousAvecBeneficiaireButton

@@ -397,8 +397,8 @@ export const rdvServicePublicApi = ({
         demande.usager._tag === 'existant'
           ? { id: demande.usager.id }
           : {
-              first_name: demande.usager.prenom,
-              last_name: demande.usager.nom,
+              first_name: demande.usager.prenom ?? undefined,
+              last_name: demande.usager.nom ?? undefined,
               email: demande.usager.email ?? undefined,
               phone_number: demande.usager.telephone ?? undefined,
               address: demande.usager.adresse ?? undefined,
@@ -415,6 +415,7 @@ export const rdvServicePublicApi = ({
           corps: {
             user: usager,
             return_url: demande.urlRetour ?? undefined,
+            dossier_url: demande.urlDossier ?? undefined,
           },
         },
         demandeRdvPayload,
