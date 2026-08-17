@@ -1,6 +1,7 @@
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
+import { getServerUrl } from '@app/web/utils/baseUrl'
 import { rdvServicePublicApi } from './api'
 
 /**
@@ -14,6 +15,10 @@ export const rdvServicePublicApiBinding = rdvServicePublicApi({
   hostname: PublicWebAppConfig.RdvServicePublic.OAuth.hostname,
   clientId: PublicWebAppConfig.RdvServicePublic.OAuth.clientId,
   clientSecret: ServerWebAppConfig.RdvServicePublic.OAuth.clientSecret,
+  webhookUrl: getServerUrl('/api/rdv-service-public/webhook', {
+    absolutePath: true,
+  }),
+  webhookSecret: ServerWebAppConfig.RdvServicePublic.webhookSecret,
   // Les jetons renouvelés au fil d'un appel sont persistés sans attendre : sans
   // cela, chaque requête repartirait du jeton périmé et rejouerait un échange.
   onJetonsRenouveles: async (agentId, jetons) => {

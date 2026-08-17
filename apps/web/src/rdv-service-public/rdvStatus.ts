@@ -1,9 +1,14 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
 import type { RdvStatusFilterValue } from '../features/activites/use-cases/list/validation/ActivitesFilters'
-import type { OAuthApiRdvStatus } from './OAuthRdvApiCallInput'
+import type { statutsPresence } from '../features/rdvsp/domain/statut-presence'
 
-// We use the same statuses as RDVSP but for an "unknown" status, we differenciate between "past" and "unknown" which means "to come"
-export type RdvStatus = OAuthApiRdvStatus | 'past'
+/**
+ * Statuts de RDV Service Public, plus `past` que La Coop dérive de l'heure de
+ * fin — voir `domain/statut-rdv`, qui porte la même distinction sous le nom
+ * `passe`. Les deux coexistent tant que les filtres d'activités écrivent `past`
+ * dans les URLs.
+ */
+export type RdvStatus = (typeof statutsPresence)[number] | 'past'
 
 export const rdvStatusLabels: {
   [key in RdvStatus]: string

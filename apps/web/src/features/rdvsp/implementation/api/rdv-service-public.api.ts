@@ -26,6 +26,7 @@ import type {
 } from '../../domain/rdv-service-public.port'
 import { StatutPresence } from '../../domain/statut-presence'
 import type { UsagerId } from '../../domain/usager-id'
+import type { AbonnementWebhook, WebhookId } from '../../domain/webhook'
 import {
   demandeRdvPayload,
   jetonsPayload,
@@ -35,6 +36,8 @@ import {
   statutRdvPayload,
   usagersPagePayload,
   usagerUniquePayload,
+  webhooksPagePayload,
+  webhookUniquePayload,
 } from './payloads'
 import {
   agentToDomain,
@@ -43,12 +46,20 @@ import {
   organisationToDomain,
   rdvToDomain,
   usagerToDomain,
+  webhookToDomain,
 } from './to-domain'
 
 export type RdvServicePublicApiConfig = {
   readonly hostname: string
   readonly clientId: string
   readonly clientSecret: string
+  /**
+   * URL que RDV Service Public appellera, et secret dont il signe ses envois.
+   * Ils identifient La Coop comme destination des notifications : le port n'a
+   * pas à les porter, c'est cette implémentation qui est cette destination.
+   */
+  readonly webhookUrl: string
+  readonly webhookSecret: string
   /**
    * Notifié après un renouvellement réussi. L'adaptateur ne connaît pas la base :
    * c'est à l'appelant d'enregistrer les nouveaux jetons, et lui seul sait s'il
@@ -116,6 +127,8 @@ export const rdvServicePublicApi = ({
   hostname,
   clientId,
   clientSecret,
+  webhookUrl,
+  webhookSecret,
   onJetonsRenouveles,
   maintenant = () => new Date(),
 }: RdvServicePublicApiConfig): RdvServicePublicApi => {
@@ -449,6 +462,79 @@ export const rdvServicePublicApi = ({
       }
 
       return success(StatutPresence(reponse.data.status))
+    },
+
+    listerWebhooksDeLaCoop: async (compte, organisationId) => {
+      const reponse = await collecter(
+        compte,
+        {
+          chemin: `/organisations/${organisationId}/webhook_endpoints`,
+          methode: 'GET',
+          params: { target_url: webhookUrl },
+        },
+        webhooksPagePayload,
+        (page) => page.webhook_endpoints,
+        false,
+        1,
+        [],
+      )
+
+      if (!reponse.success) {
+        return reponse
+      }
+
+      // Le filtre `target_url` est passé à l'API, mais on le revérifie : une
+      // pose sur le webhook d'un tiers serait irréparable.
+      return success(
+        reponse.data
+          .filter((webhook) => webhook.target_url === webhookUrl)
+          .map(webhookToDomain),
+      )
+    },
+
+    poserWebhook: async (compte, organisationId, abonnements) => {
+      const reponse = await executer(
+        compte,
+        {
+          chemin: `/organisations/${organisationId}/webhook_endpoints`,
+          methode: 'POST',
+          corps: {
+            target_url: webhookUrl,
+            subscriptions: [...abonnements],
+            secret: webhookSecret,
+          },
+        },
+        webhookUniquePayload,
+      )
+
+      return reponse.success
+        ? success(webhookToDomain(reponse.data.webhook_endpoint))
+        : reponse
+    },
+
+    reconfigurerWebhook: async (
+      compte,
+      organisationId,
+      webhookId,
+      abonnements,
+    ) => {
+      const reponse = await executer(
+        compte,
+        {
+          chemin: `/organisations/${organisationId}/webhook_endpoints/${webhookId}`,
+          methode: 'PATCH',
+          corps: {
+            target_url: webhookUrl,
+            subscriptions: [...abonnements],
+            secret: webhookSecret,
+          },
+        },
+        webhookUniquePayload,
+      )
+
+      return reponse.success
+        ? success(webhookToDomain(reponse.data.webhook_endpoint))
+        : reponse
     },
 
     renouvelerJetons: async (compte) => await echangerRefreshToken(compte),

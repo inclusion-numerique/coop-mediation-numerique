@@ -1,4 +1,4 @@
-import type { OAuthApiRdvStatus } from './OAuthRdvApiCallInput'
+import type { statutsPresence } from '../features/rdvsp/domain/statut-presence'
 import type { RdvStatus } from './rdvStatus'
 
 // Représente un bénéficiaire suivi côté coop qu'on a lié à un user de RDVSP
@@ -18,7 +18,7 @@ export type Rdv = {
   date: Date
   endDate: Date
   createdBy: string
-  status: OAuthApiRdvStatus
+  status: (typeof statutsPresence)[number]
   badgeStatus: RdvStatus
   motif: {
     id: number
@@ -41,7 +41,7 @@ export type Rdv = {
   }
   participations: {
     id: number
-    status: OAuthApiRdvStatus
+    status: (typeof statutsPresence)[number]
     sendReminderNotification: boolean
     sendLifecycleNotifications: boolean
     user: {

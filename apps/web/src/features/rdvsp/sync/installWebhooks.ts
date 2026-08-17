@@ -1,225 +1,181 @@
 import { prismaClient } from '@app/web/prismaClient'
-import {
-  OAuthRdvApiCredentials,
-  OauthRdvApiCredentialsWithOrganisations,
-  oAuthRdvApiCreateWebhook,
-  oAuthRdvApiListWebhooks,
-  oAuthRdvApiPatchWebhook,
-} from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
-import {
-  RdvApiWebhookEndpoint,
-  RdvApiWebhookSubscription,
-} from '@app/web/rdv-service-public/OAuthRdvApiCallInput'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { getServerUrl } from '@app/web/utils/baseUrl'
+import type { CompteRdvUtilisable } from '../domain/compte-rdv'
+import type { OrganisationId } from '../domain/organisation-id'
+import type { RdvServicePublicApi } from '../domain/rdv-service-public.port'
+import { abonnementsDeLaCoop, estAJour } from '../domain/webhook'
+import { rdvServicePublicApiBinding } from '../implementation/rdv-service-public.bindings'
 import type { AppendLog } from './syncAllRdvData'
 import type { SyncModelResult, SyncOperation } from './syncLog'
+
+type PoseSurUneOrganisation = {
+  syncOperation: SyncOperation
+  invalidInstallation: boolean
+  organisationId: number
+}
 
 const webhookUrl = getServerUrl('/api/rdv-service-public/webhook', {
   absolutePath: true,
 })
 
-const webhookSubscriptions = [
-  'rdv',
-  'user',
-  'user_profile',
-  'organisation',
-  'motif',
-  'lieu',
-  'agent',
-  'agent_role',
-] as const satisfies RdvApiWebhookSubscription[]
-
-const isAlreadyInstalled = (webhook: RdvApiWebhookEndpoint) => {
-  return (
-    webhook.subscriptions.length === webhookSubscriptions.length &&
-    webhookSubscriptions.every((subscription) =>
-      webhook.subscriptions.includes(subscription),
-    )
-    // TODO: secret does not work, it is not returned by rdvsp api
-    // && webhook.secret === ServerWebAppConfig.RdvServicePublic.webhookSecret
-  )
-}
+/**
+ * En local, l'URL de destination n'est pas joignable depuis RDV Service Public :
+ * poser le webhook enverrait des notifications dans le vide, et surtout
+ * écraserait la pose de l'environnement qui porte réellement ce compte.
+ */
+const destinationJoignable = (): boolean => !webhookUrl.includes('localhost')
 
 export const installWebhookForOrganisation = async ({
-  rdvAccount,
+  compte,
   organisationId,
   appendLog,
+  api = rdvServicePublicApiBinding,
 }: {
-  rdvAccount: OAuthRdvApiCredentials
-  organisationId: number
+  compte: CompteRdvUtilisable
+  organisationId: OrganisationId
   appendLog: AppendLog
-}): Promise<{
-  syncOperation: SyncOperation
-  invalidInstallation: boolean
-  organisationId: number
-}> => {
-  const existing = await oAuthRdvApiListWebhooks({
-    rdvAccount,
-    organisationId,
-    params: {
-      target_url: webhookUrl,
-    },
-  })
+  api?: RdvServicePublicApi
+}): Promise<PoseSurUneOrganisation> => {
+  const existants = await api.listerWebhooksDeLaCoop(compte, organisationId)
 
-  appendLog(
-    `found ${existing.webhook_endpoints.length} webhooks for organisation ${organisationId}`,
-  )
-
-  // we double check to avoid creating a mess if api is not consistent
-  const coopEndpoint = existing.webhook_endpoints.find(
-    (webhook) => webhook.target_url === webhookUrl,
-  )
-
-  if (coopEndpoint && isAlreadyInstalled(coopEndpoint)) {
+  if (!existants.success) {
     appendLog(
-      `found existing coop endpoint ${coopEndpoint.id} with all subscriptions, skipping`,
+      `impossible de lire les webhooks de l'organisation ${organisationId} (${existants.error._tag})`,
     )
 
-    // Already installed
+    return { syncOperation: 'noop', invalidInstallation: true, organisationId }
+  }
+
+  appendLog(
+    `found ${existants.data.length} webhooks for organisation ${organisationId}`,
+  )
+
+  const [existant] = existants.data
+
+  if (existant !== undefined && estAJour(existant)) {
+    appendLog(
+      `found existing coop endpoint ${existant.id} with all subscriptions, skipping`,
+    )
+
     return { syncOperation: 'noop', invalidInstallation: false, organisationId }
   }
 
-  if (!coopEndpoint) {
-    if (webhookUrl.includes('localhost')) {
-      appendLog(`skipping webhook installation for local environment`)
-      return {
-        syncOperation: 'noop',
-        invalidInstallation: false,
-        organisationId,
-      }
-    }
+  if (existant !== undefined) {
+    appendLog(`updating coop endpoint ${existant.id}`)
 
-    appendLog(
-      `no existing coop endpoint found for organisation ${organisationId}, creating new one`,
+    const reconfigure = await api.reconfigurerWebhook(
+      compte,
+      organisationId,
+      existant.id,
+      abonnementsDeLaCoop,
     )
-    appendLog(`existing webhooks: ${existing.webhook_endpoints.length}`)
-    for (const webhook of existing.webhook_endpoints) {
-      appendLog(
-        `webhook ${rdvAccount.id}:${webhook.id} - ${webhook.target_url} - ${webhook.subscriptions.join(', ')}`,
-      )
-    }
-    // Create
-    const created = await oAuthRdvApiCreateWebhook({
-      rdvAccount,
-      organisationId,
-      target_url: webhookUrl,
-      subscriptions: webhookSubscriptions,
-      secret: ServerWebAppConfig.RdvServicePublic.webhookSecret,
-    })
 
-    appendLog(`created webhook ${JSON.stringify(created)}`)
-
-    // RDVSP does not allows webhook creation for agents that are not admin of the organisation
-    // we have to fetch again to see if it exists after creation (successful install)
-
-    const existingWebhooksPostInstallation = await oAuthRdvApiListWebhooks({
-      rdvAccount,
-      organisationId,
-      params: {
-        target_url: webhookUrl,
-      },
-    })
-
-    if (existingWebhooksPostInstallation.webhook_endpoints.length > 0) {
-      return {
-        syncOperation: 'created',
-        invalidInstallation: false,
-        organisationId,
-      }
-    }
-
-    // webhook does not exist after creation, it means it was not successful
-    // we mark as noop to avoid a "drift" count on the sync (as it is not a real drift)
-    return {
-      syncOperation: 'noop',
-      invalidInstallation: true,
-      organisationId,
-    }
+    return reconfigure.success
+      ? { syncOperation: 'updated', invalidInstallation: false, organisationId }
+      : { syncOperation: 'noop', invalidInstallation: true, organisationId }
   }
 
-  // Update
-  appendLog(`updating coop endpoint ${coopEndpoint.id}`)
-  await oAuthRdvApiPatchWebhook({
-    rdvAccount,
-    organisationId,
-    webhookId: coopEndpoint.id,
-    target_url: webhookUrl,
-    subscriptions: webhookSubscriptions,
-    secret: ServerWebAppConfig.RdvServicePublic.webhookSecret,
-  })
+  if (!destinationJoignable()) {
+    appendLog('skipping webhook installation for local environment')
 
-  return {
-    syncOperation: 'updated',
-    invalidInstallation: false,
-    organisationId,
+    return { syncOperation: 'noop', invalidInstallation: false, organisationId }
   }
+
+  appendLog(
+    `no existing coop endpoint found for organisation ${organisationId}, creating new one`,
+  )
+
+  const cree = await api.poserWebhook(
+    compte,
+    organisationId,
+    abonnementsDeLaCoop,
+  )
+
+  if (!cree.success) {
+    return { syncOperation: 'noop', invalidInstallation: true, organisationId }
+  }
+
+  appendLog(`created webhook ${cree.data.id}`)
+
+  // RDV Service Public accepte la création pour un agent qui n'administre pas
+  // l'organisation, sans rien créer : seule une relecture dit si la pose a pris.
+  const apresPose = await api.listerWebhooksDeLaCoop(compte, organisationId)
+
+  // Une pose non confirmée est comptée `noop` : elle n'a rien changé, et la
+  // faire peser sur la dérive donnerait un écart permanent.
+  return apresPose.success && apresPose.data.length > 0
+    ? { syncOperation: 'created', invalidInstallation: false, organisationId }
+    : { syncOperation: 'noop', invalidInstallation: true, organisationId }
 }
 
 /**
- * Install webhooks for a given RDV account
- * Organisations should already have been synced before calling this function
+ * Pose les webhooks d'un compte. Les organisations doivent avoir été
+ * synchronisées avant l'appel.
  */
 export const installWebhooks = async ({
-  rdvAccount,
+  compte,
   appendLog,
   organisationIds,
+  api = rdvServicePublicApiBinding,
 }: {
-  rdvAccount: OauthRdvApiCredentialsWithOrganisations
+  compte: CompteRdvUtilisable
   appendLog: AppendLog
-  organisationIds?: number[] // scopes the refresh to only these organisations, empty array means: no-op do nothing
+  /** Restreint la pose à ces organisations ; une liste vide ne pose rien. */
+  organisationIds?: number[]
+  api?: RdvServicePublicApi
 }): Promise<
   SyncModelResult & {
     count: number
-    invalidWebhookOrganisationIds: number[] | null // null means we did not check for invalid webhooks
+    /** `null` quand la passe était partielle : rien n'a été vérifié ailleurs. */
+    invalidWebhookOrganisationIds: number[] | null
   }
 > => {
   appendLog(
-    `installing webhooks for account ${rdvAccount.id} with ${rdvAccount.organisations.length} organisations`,
+    `installing webhooks for account ${compte.agentId} with ${compte.organisationIds.length} organisations`,
   )
-  const webhookOperations = await Promise.all(
-    rdvAccount.organisations
-      .filter((organisation) =>
-        organisationIds
-          ? organisationIds.includes(organisation.organisationId)
-          : true,
-      )
-      .map((organisation) =>
-        installWebhookForOrganisation({
-          rdvAccount,
-          organisationId: organisation.organisationId,
-          appendLog,
-        }),
-      ),
+
+  const aTraiter = compte.organisationIds.filter((organisationId) =>
+    organisationIds ? organisationIds.includes(organisationId) : true,
+  )
+
+  const poses = await Promise.all(
+    aTraiter.map((organisationId) =>
+      installWebhookForOrganisation({
+        compte,
+        organisationId,
+        appendLog,
+        api,
+      }),
+    ),
   )
 
   const result: SyncModelResult = {
-    noop: webhookOperations.filter((op) => op.syncOperation === 'noop').length,
-    created: webhookOperations.filter((op) => op.syncOperation === 'created')
-      .length,
-    updated: webhookOperations.filter((op) => op.syncOperation === 'updated')
-      .length,
+    noop: poses.filter((pose) => pose.syncOperation === 'noop').length,
+    created: poses.filter((pose) => pose.syncOperation === 'created').length,
+    updated: poses.filter((pose) => pose.syncOperation === 'updated').length,
     deleted: 0,
   }
 
-  // Only update invalid state if full sync was performed
-  let invalidWebhookOrganisationIds: number[] | null = null
-  if (!organisationIds) {
-    invalidWebhookOrganisationIds = webhookOperations
-      .filter((op) => op.invalidInstallation)
-      .map((op) => op.organisationId)
-
-    await prismaClient.rdvAccount.update({
-      where: { id: rdvAccount.id },
-      data: {
-        invalidWebhookOrganisationIds,
-      },
-    })
+  if (organisationIds) {
+    return {
+      ...result,
+      count: compte.organisationIds.length,
+      invalidWebhookOrganisationIds: null,
+    }
   }
+
+  const invalidWebhookOrganisationIds = poses
+    .filter((pose) => pose.invalidInstallation)
+    .map((pose) => pose.organisationId)
+
+  await prismaClient.rdvAccount.update({
+    where: { id: compte.agentId },
+    data: { invalidWebhookOrganisationIds },
+  })
 
   return {
     ...result,
-    count: rdvAccount.organisations.length,
+    count: compte.organisationIds.length,
     invalidWebhookOrganisationIds,
   }
 }

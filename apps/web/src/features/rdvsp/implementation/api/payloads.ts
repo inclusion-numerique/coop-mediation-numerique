@@ -205,6 +205,22 @@ export const usagersPagePayload = z.object({
   meta: metaPayload,
 })
 
+export const webhookPayload = z.object({
+  id: z.number().int().positive(),
+  target_url: z.string(),
+  organisation_id: z.number().int().positive(),
+  subscriptions: z.array(z.string()).default([]),
+})
+
+export const webhooksPagePayload = z.object({
+  webhook_endpoints: z.array(webhookPayload).default([]),
+  meta: metaPayload,
+})
+
+export const webhookUniquePayload = z.object({
+  webhook_endpoint: webhookPayload,
+})
+
 export const usagerUniquePayload = z.object({
   user: usagerPayload.nullish().transform((valeur) => valeur ?? null),
 })
@@ -218,3 +234,4 @@ export type MotifPayload = z.infer<typeof motifPayload>
 export type LieuPayload = z.infer<typeof lieuPayload>
 export type DemandeRdvPayload = z.infer<typeof demandeRdvPayload>
 export type JetonsPayload = z.infer<typeof jetonsPayload>
+export type WebhookPayload = z.infer<typeof webhookPayload>

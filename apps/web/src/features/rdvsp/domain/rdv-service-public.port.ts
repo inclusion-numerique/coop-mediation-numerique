@@ -15,6 +15,7 @@ import type {
 } from './statut-presence'
 import type { Usager } from './usager'
 import type { UsagerId } from './usager-id'
+import type { AbonnementWebhook, WebhookId, WebhookInstalle } from './webhook'
 
 export type FiltresRdvs = {
   /** Restreint aux rendez-vous de cet agent, comme le fait la synchronisation. */
@@ -42,9 +43,11 @@ export type FiltresUsagers = {
  * serveur-à-serveur devenir une seconde implémentation du même contrat, sans que
  * les abilities appelantes en sachent quoi que ce soit.
  *
- * Les webhooks n'y figurent pas : leur pose relève de l'installation
- * d'infrastructure, pas d'un cas d'usage métier, et ils continuent de passer par
- * le client historique.
+ * La pose des webhooks y figure, bien qu'elle relève de l'installation
+ * d'infrastructure plus que du métier : c'est le prix pour que le port reste le
+ * seul endroit qui parle HTTP à RDV Service Public. L'URL de destination et le
+ * secret n'apparaissent donc pas dans le contrat — ils identifient La Coop comme
+ * cible, et l'adaptateur les tient de sa configuration.
  */
 export type RdvServicePublicApi = {
   /**
@@ -86,6 +89,30 @@ export type RdvServicePublicApi = {
     id: RdvId,
     statut: StatutPresenceModifiable,
   ) => Promise<Result<StatutPresence, ErreurRdvApi>>
+
+  /** Webhooks de La Coop posés sur cette organisation, à l'exclusion des autres. */
+  readonly listerWebhooksDeLaCoop: (
+    compte: CompteRdvUtilisable,
+    organisationId: OrganisationId,
+  ) => Promise<Result<readonly WebhookInstalle[], ErreurRdvApi>>
+
+  /**
+   * Pose un webhook. RDV Service Public accepte l'appel même quand l'agent n'est
+   * pas administrateur de l'organisation, sans rien créer : la réussite se
+   * vérifie en relisant, pas au code de retour.
+   */
+  readonly poserWebhook: (
+    compte: CompteRdvUtilisable,
+    organisationId: OrganisationId,
+    abonnements: readonly AbonnementWebhook[],
+  ) => Promise<Result<WebhookInstalle, ErreurRdvApi>>
+
+  readonly reconfigurerWebhook: (
+    compte: CompteRdvUtilisable,
+    organisationId: OrganisationId,
+    webhookId: WebhookId,
+    abonnements: readonly AbonnementWebhook[],
+  ) => Promise<Result<WebhookInstalle, ErreurRdvApi>>
 
   /**
    * Obtient un nouveau jeu de jetons. La persistance n'en fait pas partie :

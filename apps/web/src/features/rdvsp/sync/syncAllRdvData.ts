@@ -93,16 +93,12 @@ export const syncAllRdvData = async ({
               journaliser: tracer,
             }),
           })({ compte: aSynchroniser, organisationIds: portee }),
-    reconcilierWebhooks: async ({ organisationIds: portee }) => {
+    reconcilierWebhooks: async ({
+      compte: aInstaller,
+      organisationIds: portee,
+    }) => {
       const resultat = await installWebhooks({
-        rdvAccount: {
-          id: row.id,
-          accessToken: row.accessToken,
-          refreshToken: row.refreshToken,
-          expiresAt: row.expiresAt,
-          scope: row.scope,
-          organisations: row.organisations,
-        },
+        compte: aInstaller,
         appendLog: (log) => journal.push(...[log].flat()),
         organisationIds: portee === undefined ? undefined : [...portee],
       })

@@ -35,6 +35,11 @@ import { StatutPresence } from '../../domain/statut-presence'
 import { UrlAgent } from '../../domain/url-agent'
 import type { Usager } from '../../domain/usager'
 import { UsagerId } from '../../domain/usager-id'
+import {
+  AbonnementWebhook,
+  WebhookId,
+  type WebhookInstalle,
+} from '../../domain/webhook'
 import type {
   AgentPayload,
   DemandeRdvPayload,
@@ -43,6 +48,7 @@ import type {
   ParticipationPayload,
   RdvPayload,
   UsagerPayload,
+  WebhookPayload,
 } from './payloads'
 
 /**
@@ -210,4 +216,19 @@ export const jetonsToDomain = (
   expiration: new Date(maintenant.getTime() + payload.expires_in * 1000),
   portee:
     payload.scope === null ? precedents.portee : PorteeOAuth(payload.scope),
+})
+
+/**
+ * Les abonnements inconnus de La Coop sont écartés plutôt que de faire échouer
+ * la lecture : RDV Service Public peut en ajouter, et un webhook posé reste
+ * exploitable pour ceux qu'on sait traiter.
+ */
+export const webhookToDomain = (payload: WebhookPayload): WebhookInstalle => ({
+  id: WebhookId(payload.id),
+  organisationId: OrganisationId(payload.organisation_id),
+  abonnements: payload.subscriptions.flatMap((abonnement) => {
+    const analyse = AbonnementWebhook.schema.safeParse(abonnement)
+
+    return analyse.success ? [analyse.data] : []
+  }),
 })
