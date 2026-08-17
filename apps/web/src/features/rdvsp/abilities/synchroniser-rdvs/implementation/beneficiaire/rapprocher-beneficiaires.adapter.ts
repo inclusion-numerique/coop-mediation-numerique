@@ -1,4 +1,4 @@
-import { createOrMergeBeneficiairesFromRdvUserIds } from '../../../../sync/createOrMergeBeneficiaireFromRdvUsers'
+import { createOrMergeBeneficiairesFromRdvUserIds } from '../../../../implementation/beneficiaire/creer-ou-fusionner-beneficiaires.adapter'
 import type { RapprocherBeneficiaires } from '../../domain/synchroniser-rdvs'
 
 export type DependancesRapprochement = {

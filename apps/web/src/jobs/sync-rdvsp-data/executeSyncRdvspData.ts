@@ -2,7 +2,7 @@ import { output } from '@app/cli/output'
 import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
 import { peutEtreSynchronise } from '@app/web/features/rdvsp/abilities/administrer-comptes-rdv/domain/sante-compte'
 import { getAdministrationRdvspData } from '@app/web/features/rdvsp/abilities/administrer-comptes-rdv/implementation/prisma/comptes-rdv.query'
-import { syncAllRdvData } from '@app/web/features/rdvsp/sync/syncAllRdvData'
+import { synchroniserCompte } from '@app/web/features/rdvsp/implementation/synchroniser-compte.binding'
 import type { SyncRdvspDataJob } from './syncRdvspDataJob'
 
 export const executeSyncRdvspData = async (_job: SyncRdvspDataJob) => {
@@ -34,7 +34,7 @@ export const executeSyncRdvspData = async (_job: SyncRdvspDataJob) => {
     }
 
     try {
-      await syncAllRdvData({
+      await synchroniserCompte({
         compteId: sessionUser.rdvAccount.id,
         mediateurId: sessionUser.mediateur?.id,
       })

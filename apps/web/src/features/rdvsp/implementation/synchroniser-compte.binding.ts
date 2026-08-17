@@ -6,6 +6,7 @@ import {
   ouvrirJournal,
 } from '../abilities/synchroniser-compte-rdv/implementation/prisma/journal-synchronisation.prisma'
 import { synchroniserCompteRdv } from '../abilities/synchroniser-compte-rdv/implementation/synchroniser-compte-rdv'
+import { installWebhooks } from '../abilities/synchroniser-compte-rdv/implementation/webhook/installer-webhooks.adapter'
 import { appliquerPlanOrganisations } from '../abilities/synchroniser-organisations/implementation/prisma/appliquer-plan-organisations.mutation'
 import { etatOrganisations } from '../abilities/synchroniser-organisations/implementation/prisma/etat-organisations.query'
 import { synchroniserOrganisations } from '../abilities/synchroniser-organisations/implementation/synchroniser-organisations'
@@ -23,10 +24,7 @@ import { compteRdvToDomain } from '../db'
 import { bilanVide } from '../domain/bilan-synchronisation'
 import { estUtilisable } from '../domain/compte-rdv'
 import { OrganisationId } from '../domain/organisation-id'
-import { rdvServicePublicApiBinding } from '../implementation/rdv-service-public.bindings'
-import { installWebhooks } from './installWebhooks'
-
-export type AppendLog = (log: string | string[]) => void
+import { rdvServicePublicApiBinding } from './rdv-service-public.bindings'
 
 const bilanRdvsVide = {
   rdvs: bilanVide,
@@ -36,14 +34,17 @@ const bilanRdvsVide = {
 }
 
 /**
- * Adaptateur de transition entre l'orchestrateur historique et les abilities.
+ * Composition d'une passe de synchronisation complète.
  *
- * Il ne fait plus que résoudre le compte et câbler les trois réconciliations.
- * L'installation des webhooks reste sur son chemin d'origine : elle relève de
- * l'installation d'infrastructure, pas d'un cas d'usage métier, et n'a donc pas
- * de port.
+ * Elle résout le compte, puis câble les trois réconciliations que
+ * `synchroniser-compte-rdv` orchestre par ses ports — organisations,
+ * rendez-vous, webhooks. Chacune est portée par son ability ; c'est ici, et
+ * seulement ici, qu'elles se rencontrent (IS-1).
+ *
+ * Deux appelants : le job de synchronisation périodique, et l'ability
+ * `declencher-synchronisation` quand un écran ou l'administration la demande.
  */
-export const syncAllRdvData = async ({
+export const synchroniserCompte = async ({
   compteId,
   mediateurId,
   organisationIds,

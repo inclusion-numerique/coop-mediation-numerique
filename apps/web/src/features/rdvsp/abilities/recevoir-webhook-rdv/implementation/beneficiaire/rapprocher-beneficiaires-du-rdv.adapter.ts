@@ -1,4 +1,4 @@
-import { createOrMergeBeneficiairesFromRdvUserIds } from '../../../../sync/createOrMergeBeneficiaireFromRdvUsers'
+import { createOrMergeBeneficiairesFromRdvUserIds } from '../../../../implementation/beneficiaire/creer-ou-fusionner-beneficiaires.adapter'
 import type { RapprocherBeneficiairesDuRdv } from '../../domain/recevoir-webhook-rdv'
 
 /**

@@ -5,7 +5,7 @@ import { getMediateursTags } from '@app/web/features/activites/use-cases/tags/db
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
 import { getMediateurCommunesAndDepartementsOptions } from '@app/web/features/lieux-activite/getMediateurCommunesOptions'
 import { getMediateursLieuxActiviteOptions } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
-import { getFirstAndLastRdvDate } from '@app/web/features/rdvsp/queries/getFirstAndLastRdvDate'
+import { getFirstAndLastRdvDate } from '@app/web/features/rdvsp/db/premier-et-dernier-rdv.query'
 import { getStructuresEmployeusesOptions } from '@app/web/features/structures/getStructuresEmployeusesOptions'
 import { getUserDepartement } from '@app/web/features/utilisateurs/utils/getUserDepartement'
 import { getInitialMediateursOptionsForSearch } from '@app/web/mediateurs/getInitialMediateursOptionsForSearch'

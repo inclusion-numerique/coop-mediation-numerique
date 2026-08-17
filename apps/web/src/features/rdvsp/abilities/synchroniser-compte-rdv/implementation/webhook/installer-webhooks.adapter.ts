@@ -1,15 +1,20 @@
 import { prismaClient } from '@app/web/prismaClient'
 import { getServerUrl } from '@app/web/utils/baseUrl'
-import type { CompteRdvUtilisable } from '../domain/compte-rdv'
-import type { OrganisationId } from '../domain/organisation-id'
-import type { RdvServicePublicApi } from '../domain/rdv-service-public.port'
-import { abonnementsDeLaCoop, estAJour } from '../domain/webhook'
-import { rdvServicePublicApiBinding } from '../implementation/rdv-service-public.bindings'
-import type { AppendLog } from './syncAllRdvData'
-import type { SyncModelResult, SyncOperation } from './syncLog'
+import type {
+  BilanModele,
+  OperationSynchronisation,
+} from '../../../../domain/bilan-synchronisation'
+import type { CompteRdvUtilisable } from '../../../../domain/compte-rdv'
+import type { OrganisationId } from '../../../../domain/organisation-id'
+import type { RdvServicePublicApi } from '../../../../domain/rdv-service-public.port'
+import { abonnementsDeLaCoop, estAJour } from '../../../../domain/webhook'
+import { rdvServicePublicApiBinding } from '../../../../implementation/rdv-service-public.bindings'
+
+/** Journal de la passe, tenu par l'orchestrateur qui appelle cet adaptateur. */
+export type AppendLog = (log: string | string[]) => void
 
 type PoseSurUneOrganisation = {
-  syncOperation: SyncOperation
+  syncOperation: OperationSynchronisation
   invalidInstallation: boolean
   organisationId: number
 }
@@ -124,7 +129,7 @@ export const installWebhooks = async ({
   organisationIds?: number[]
   api?: RdvServicePublicApi
 }): Promise<
-  SyncModelResult & {
+  BilanModele & {
     count: number
     /** `null` quand la passe était partielle : rien n'a été vérifié ailleurs. */
     invalidWebhookOrganisationIds: number[] | null
@@ -149,7 +154,7 @@ export const installWebhooks = async ({
     ),
   )
 
-  const result: SyncModelResult = {
+  const result: BilanModele = {
     noop: poses.filter((pose) => pose.syncOperation === 'noop').length,
     created: poses.filter((pose) => pose.syncOperation === 'created').length,
     updated: poses.filter((pose) => pose.syncOperation === 'updated').length,

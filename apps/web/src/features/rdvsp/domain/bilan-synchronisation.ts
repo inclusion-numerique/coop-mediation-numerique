@@ -11,6 +11,12 @@ export type BilanModele = {
   readonly deleted: number
 }
 
+/**
+ * Ce qu'une passe a fait subir à un élément. Les quatre valeurs sont les clés de
+ * `BilanModele` : chaque opération y incrémente son compteur.
+ */
+export type OperationSynchronisation = keyof BilanModele
+
 export const bilanVide: BilanModele = {
   noop: 0,
   created: 0,

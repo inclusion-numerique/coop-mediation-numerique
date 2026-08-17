@@ -1,4 +1,4 @@
-import { getFirstAndLastRdvDate } from '@app/web/features/rdvsp/queries/getFirstAndLastRdvDate'
+import { getFirstAndLastRdvDate } from '@app/web/features/rdvsp/db/premier-et-dernier-rdv.query'
 import { isEmptySearchParams } from '@app/web/libs/data-table/isEmptySearchParams'
 import type { UserId, UserRdvAccount, UserTimezone } from '@app/web/utils/user'
 import type { ActivitesDataTableSearchParams } from './components/ActivitesDataTable'

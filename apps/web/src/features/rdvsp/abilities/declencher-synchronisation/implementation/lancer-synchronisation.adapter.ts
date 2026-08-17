@@ -1,5 +1,5 @@
 import { prismaClient } from '@app/web/prismaClient'
-import { syncAllRdvData } from '../../../sync/syncAllRdvData'
+import { synchroniserCompte } from '../../../implementation/synchroniser-compte.binding'
 import type { LancerSynchronisation } from '../domain/declencher-synchronisation'
 
 /**
@@ -25,7 +25,7 @@ export const lancerSynchronisation: LancerSynchronisation = async ({
     return { derive: 0 }
   }
 
-  const { drift } = await syncAllRdvData({
+  const { drift } = await synchroniserCompte({
     compteId: utilisateur.rdvAccount.id,
     mediateurId: utilisateur.mediateur?.id,
     organisationIds:
