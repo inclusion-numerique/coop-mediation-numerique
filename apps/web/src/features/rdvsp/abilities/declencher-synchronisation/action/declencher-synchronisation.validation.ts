@@ -9,7 +9,3 @@ import { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
 export const DeclencherSynchronisationValidation = z.object({
   utilisateurId: UtilisateurCoopId.schema,
 })
-
-export type DeclencherSynchronisationInput = z.infer<
-  typeof DeclencherSynchronisationValidation
->

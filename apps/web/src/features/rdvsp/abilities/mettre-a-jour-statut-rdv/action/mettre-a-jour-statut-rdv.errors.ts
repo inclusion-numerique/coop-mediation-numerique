@@ -7,6 +7,3 @@ export const METTRE_A_JOUR_STATUT_RDV_ERRORS = {
   ApiIndisponible: 'RDV Service Public n’a pas pu être contacté',
   ReponseInattendue: 'RDV Service Public a renvoyé une réponse inattendue',
 } as const
-
-export type MettreAJourStatutRdvErrorKey =
-  (typeof METTRE_A_JOUR_STATUT_RDV_ERRORS)[keyof typeof METTRE_A_JOUR_STATUT_RDV_ERRORS]

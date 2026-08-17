@@ -15,8 +15,6 @@ export const rdvServicePublicOAuthConfig = {
   scope: 'write',
 }
 
-export const rdvServicePublicOAuthTokenEndpoint = `https://${rdvServicePublicOAuthConfig.oauthHostname}/oauth/token`
-
 export const rdvOauthLinkAccountSuccessCallbackPath =
   '/coop/mes-outils/rdv-service-public/connexion-reussie'
 

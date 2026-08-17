@@ -4,6 +4,3 @@ export const DECLENCHER_SYNCHRONISATION_ERRORS = {
   CompteRdvIntrouvable: 'Compte RDV Service Public introuvable',
   SynchronisationEchouee: 'Une erreur est survenue lors de la synchronisation.',
 } as const
-
-export type DeclencherSynchronisationErrorKey =
-  (typeof DECLENCHER_SYNCHRONISATION_ERRORS)[keyof typeof DECLENCHER_SYNCHRONISATION_ERRORS]

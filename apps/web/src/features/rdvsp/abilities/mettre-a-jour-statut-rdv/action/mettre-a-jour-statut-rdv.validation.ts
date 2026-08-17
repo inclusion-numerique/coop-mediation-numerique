@@ -12,7 +12,3 @@ export const MettreAJourStatutRdvValidation = z.object({
   rdvId: RdvId.schema,
   statut: StatutPresenceModifiable.schema,
 })
-
-export type MettreAJourStatutRdvInput = z.infer<
-  typeof MettreAJourStatutRdvValidation
->

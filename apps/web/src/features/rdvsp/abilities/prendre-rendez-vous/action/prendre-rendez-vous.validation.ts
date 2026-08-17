@@ -10,5 +10,3 @@ import { BeneficiaireCibleId } from '../domain/beneficiaire-cible'
 export const PrendreRendezVousValidation = z.object({
   beneficiaireId: BeneficiaireCibleId.schema,
 })
-
-export type PrendreRendezVousInput = z.infer<typeof PrendreRendezVousValidation>

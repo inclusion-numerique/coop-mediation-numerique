@@ -33,25 +33,6 @@ const toExternalUser = (rdvUser: RdvUserForMerge): ExternalUserToMerge => ({
 })
 
 /**
- * Crée ou fusionne les bénéficiaires des usagers RDV fournis (données déjà en
- * mémoire) et renvoie les fiches mergées — consommées par la construction des
- * CRA.
- */
-export const createOrMergeBeneficiairesFromRdvUsers = async ({
-  rdvUsers,
-  mediateurId,
-}: {
-  rdvUsers: RdvUserForMerge[]
-  mediateurId: string
-}): Promise<MergedBeneficiaire[]> => {
-  const { merges } = await creerOuFusionnerBeneficiairesDepuisUsagersExternes({
-    usagers: rdvUsers.map(toExternalUser),
-    mediateurId,
-  })
-  return merges
-}
-
-/**
  * Variante par ids : charge les usagers depuis la table `rdv_users` puis délègue
  * au port. Renvoie aussi les usagers écartés (donnée d'infra en échec) pour
  * l'observabilité du job, sans jamais interrompre la synchro.

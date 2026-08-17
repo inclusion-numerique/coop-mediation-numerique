@@ -7,6 +7,3 @@ export const PRENDRE_RENDEZ_VOUS_ERRORS = {
   ReponseInattendue: 'RDV Service Public a renvoyé une réponse inattendue',
   RdvIntrouvable: 'Rendez-vous introuvable',
 } as const
-
-export type PrendreRendezVousErrorKey =
-  (typeof PRENDRE_RENDEZ_VOUS_ERRORS)[keyof typeof PRENDRE_RENDEZ_VOUS_ERRORS]

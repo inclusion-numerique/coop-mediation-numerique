@@ -7,6 +7,3 @@ export const CREER_ACTIVITE_DEPUIS_RDV_ERRORS = {
   ApiIndisponible: 'RDV Service Public n’a pas pu être contacté',
   ReponseInattendue: 'RDV Service Public a renvoyé une réponse inattendue',
 } as const
-
-export type CreerActiviteDepuisRdvErrorKey =
-  (typeof CREER_ACTIVITE_DEPUIS_RDV_ERRORS)[keyof typeof CREER_ACTIVITE_DEPUIS_RDV_ERRORS]
