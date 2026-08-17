@@ -1,36 +1,26 @@
+import { compteRdvToDomain } from '@app/web/features/rdvsp/db'
+import { estUtilisable } from '@app/web/features/rdvsp/domain/compte-rdv'
 import { prismaClient } from '@app/web/prismaClient'
-import {
-  OAuthRdvApiCredentialsWithId,
-  oAuthRdvApiGetOrganisations,
-} from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
-import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
+import type { OAuthRdvApiCredentialsWithId } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
+import { appliquerPlanOrganisations } from '../abilities/synchroniser-organisations/implementation/prisma/appliquer-plan-organisations.mutation'
+import { etatOrganisations } from '../abilities/synchroniser-organisations/implementation/prisma/etat-organisations.query'
+import { synchroniserOrganisations } from '../abilities/synchroniser-organisations/implementation/synchroniser-organisations'
+import { rdvServicePublicApiBinding } from '../implementation/rdv-service-public.bindings'
 import type { AppendLog } from './syncAllRdvData'
 import type { SyncModelResult } from './syncLog'
 
-const organisationHasDiff = (
-  existing: {
-    id: number
-    name: string
-    email: string | null
-    phoneNumber: string | null
-    verticale: string | null
-  },
-  organisation: {
-    id: number
-    name: string
-    email: string | null
-    phone_number: string | null
-    verticale: string | null
-  },
-) => {
-  return (
-    existing.name !== organisation.name ||
-    existing.email !== organisation.email ||
-    existing.phoneNumber !== organisation.phone_number ||
-    existing.verticale !== organisation.verticale
-  )
-}
+const synchroniser = synchroniserOrganisations({
+  listerOrganisations: rdvServicePublicApiBinding.listerOrganisations,
+  etatOrganisations,
+  appliquerPlan: appliquerPlanOrganisations,
+})
 
+/**
+ * Adaptateur de transition : l'orchestrateur de synchronisation travaille encore
+ * avec les identifiants OAuth bruts, l'ability avec un `CompteRdv`. Ce module
+ * relit le compte pour faire le pont, et disparaîtra quand `syncAllRdvData`
+ * migrera à son tour.
+ */
 export const importOrganisations = async ({
   rdvAccount,
   appendLog,
@@ -39,132 +29,44 @@ export const importOrganisations = async ({
   appendLog: AppendLog
 }): Promise<{ result: SyncModelResult; count: number }> => {
   appendLog('import organisations')
-  const { organisations } = await oAuthRdvApiGetOrganisations({
-    rdvAccount,
+
+  const row = await prismaClient.rdvAccount.findUniqueOrThrow({
+    where: { id: rdvAccount.id },
+    include: { organisations: { select: { organisationId: true } } },
   })
 
-  appendLog(`found ${organisations.length} organisations from api`)
+  const compte = compteRdvToDomain(row)
 
-  const result = await prismaClient.$transaction(async (tx) => {
-    const organisationIds = organisations.map((o) => o.id)
-
-    // Fetch all organisations with these IDs, including their account links
-    const existingOrganisations = await tx.rdvOrganisation.findMany({
-      where: {
-        id: { in: organisationIds },
-      },
-      include: {
-        accounts: {
-          where: {
-            accountId: rdvAccount.id,
-          },
-        },
-      },
-    })
-
-    // STEP 1: Create or update all RdvOrganisation records first
-    let noop = 0
-    let updated = 0
-    let created = 0
-
-    for (const organisation of organisations) {
-      const existingOrganisation = existingOrganisations.find(
-        (o) => o.id === organisation.id,
-      )
-
-      const organisationData = {
-        id: organisation.id,
-        name: organisation.name,
-        email: organisation.email,
-        phoneNumber: organisation.phone_number,
-        verticale: organisation.verticale,
-      }
-
-      if (existingOrganisation) {
-        // Check if there's a diff
-        if (!organisationHasDiff(existingOrganisation, organisation)) {
-          noop++
-          continue
-        }
-
-        // Update if there's a diff
-        await tx.rdvOrganisation.update({
-          where: { id: organisation.id },
-          data: organisationData,
-        })
-        updated++
-      } else {
-        // Create new organisation
-        await tx.rdvOrganisation.create({
-          data: organisationData,
-        })
-        created++
-      }
-    }
-
-    // STEP 2: Now handle the account-organisation links
-    // Get currently linked organisations for this account
-    const existingOrganisationsForAccount = existingOrganisations
-      .map((o) => o.accounts.find((a) => a.accountId === rdvAccount.id))
-      .filter(isDefinedAndNotNull)
-
-    // Delete links that should no longer exist
-    const accountOrganisationsToDelete = existingOrganisationsForAccount.filter(
-      (o) => !existingOrganisations.map((o) => o.id).includes(o.organisationId),
-    )
-
-    await tx.rdvAccountOrganisation.deleteMany({
-      where: {
-        accountId: rdvAccount.id,
-        organisationId: {
-          in: accountOrganisationsToDelete.map(
-            ({ organisationId }) => organisationId,
-          ),
-        },
-      },
-    })
-
-    updated += accountOrganisationsToDelete.length
-
-    // Create new links
-    const currentlyLinkedIds = existingOrganisationsForAccount.map(
-      ({ organisationId }) => organisationId,
-    )
-    const accountOrganisationsToCreate = organisations.filter(
-      (organisation) => !currentlyLinkedIds.includes(organisation.id),
-    )
-
-    await tx.rdvAccountOrganisation.createMany({
-      data: accountOrganisationsToCreate.map((organisation) => ({
-        accountId: rdvAccount.id,
-        organisationId: organisation.id,
-      })),
-    })
-
-    updated += accountOrganisationsToCreate.length
-
-    // Return result
+  if (!estUtilisable(compte)) {
+    appendLog('import organisations skipped: compte non lié')
     return {
-      deleted: accountOrganisationsToDelete.length,
-      created,
-      updated,
-      noop,
+      result: { noop: 0, created: 0, updated: 0, deleted: 0 },
+      count: 0,
     }
-  })
+  }
 
-  appendLog(`import organisations success`)
-  appendLog(`  - noop ${result.noop} organisations`)
-  appendLog(`  - created ${result.created} organisations`)
-  appendLog(`  - updated ${result.updated} organisations`)
-  appendLog(`  - deleted ${result.deleted} organisations`)
+  const bilan = await synchroniser(compte)
+
+  if (!bilan.success) {
+    appendLog(`import organisations failed: ${bilan.error._tag}`)
+    throw new Error(
+      `Impossible de synchroniser les organisations (${bilan.error._tag})`,
+    )
+  }
+
+  appendLog('import organisations success')
+  appendLog(`  - noop ${bilan.data.noop} organisations`)
+  appendLog(`  - created ${bilan.data.created} organisations`)
+  appendLog(`  - updated ${bilan.data.updated} organisations`)
+  appendLog(`  - deleted ${bilan.data.deleted} rattachements`)
 
   return {
     result: {
-      noop: result.noop,
-      created: result.created,
-      updated: result.updated,
-      deleted: result.deleted,
+      noop: bilan.data.noop,
+      created: bilan.data.created,
+      updated: bilan.data.updated,
+      deleted: bilan.data.deleted,
     },
-    count: organisations.length,
+    count: bilan.data.count,
   }
 }

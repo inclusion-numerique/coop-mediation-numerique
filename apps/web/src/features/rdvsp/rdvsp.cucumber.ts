@@ -118,12 +118,7 @@ export const seedRdv = async ({
   status?: 'unknown' | 'seen' | 'excused' | 'revoked' | 'noshow'
   craDeclined?: boolean
 }): Promise<number> => {
-  await prismaClient.rdvOrganisation.upsert({
-    where: { id: organisationId },
-    create: { id: organisationId, name: `Organisation ${organisationId}` },
-    update: {},
-  })
-  organisationsSuivies.add(organisationId)
+  await seedOrganisation({ id: organisationId })
 
   await prismaClient.rdv.create({
     data: {
@@ -230,6 +225,51 @@ export const beneficiaireEnBase = async (id: string) =>
     select: { id: true, rdvUserId: true, prenom: true, nom: true },
   })
 
+export const seedOrganisation = async ({
+  id,
+  nom = `Organisation ${id}`,
+}: {
+  id: number
+  nom?: string
+}): Promise<number> => {
+  await prismaClient.rdvOrganisation.upsert({
+    where: { id },
+    create: { id, name: nom },
+    update: { name: nom },
+  })
+  organisationsSuivies.add(id)
+
+  return id
+}
+
+export const seedRattachement = async ({
+  agentId,
+  organisationId,
+}: {
+  agentId: number
+  organisationId: number
+}): Promise<void> => {
+  await prismaClient.rdvAccountOrganisation.create({
+    data: { accountId: agentId, organisationId },
+  })
+}
+
+export const organisationEnBase = async (id: number) =>
+  await prismaClient.rdvOrganisation.findUnique({
+    where: { id },
+    select: { id: true, name: true, email: true, phoneNumber: true },
+  })
+
+export const rattachementsDuCompte = async (
+  agentId: number,
+): Promise<number[]> =>
+  (
+    await prismaClient.rdvAccountOrganisation.findMany({
+      where: { accountId: agentId },
+      select: { organisationId: true },
+    })
+  ).map(({ organisationId }) => organisationId)
+
 /**
  * Participation d'un usager à un rendez-vous. Pas de suivi propre : la relation
  * est en `onDelete: Cascade`, la suppression du rendez-vous l'emporte.
@@ -316,6 +356,16 @@ After(async () => {
   await prismaClient.rdv.deleteMany({ where: { id: { in: [...rdvsSuivis] } } })
   await prismaClient.rdvUser.deleteMany({
     where: { id: { in: [...usagersSuivis] } },
+  })
+  // Les rattachements référencent le compte et l'organisation : ils partent avant
+  // les deux.
+  await prismaClient.rdvAccountOrganisation.deleteMany({
+    where: {
+      OR: [
+        { accountId: { in: [...comptesSuivis] } },
+        { organisationId: { in: [...organisationsSuivies] } },
+      ],
+    },
   })
   await prismaClient.rdvAccount.deleteMany({
     where: {
