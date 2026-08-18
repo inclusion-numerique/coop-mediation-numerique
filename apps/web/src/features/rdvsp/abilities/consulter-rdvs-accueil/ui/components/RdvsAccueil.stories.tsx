@@ -5,6 +5,8 @@ import type {
   DonneesAccueilRdv,
   RdvEnUneLigne,
 } from '../../domain/donnees-accueil-rdv'
+import type { WidgetRdvAccueil } from '../../domain/widget-rdv'
+import { RdvIntegrationErreurAlerte } from './RdvIntegrationErreurAlerte'
 import RdvsAccueil from './RdvsAccueil'
 
 export default {
@@ -43,11 +45,18 @@ const donnees = (surcharge: Partial<DonneesAccueilRdv>): DonneesAccueilRdv => ({
 
 const user = { timezone: 'Europe/Paris' }
 
+const alerte = <RdvIntegrationErreurAlerte />
+
+const avecDonnees = (
+  surcharge: Partial<DonneesAccueilRdv>,
+): WidgetRdvAccueil => ({ _tag: 'donnees', donnees: donnees(surcharge) })
+
 export const AvecRendezVous: Story = {
   args: {
     user,
     synchroniserAuChargement: false,
-    donnees: donnees({
+    alerte,
+    widget: avecDonnees({
       aVenir: 3,
       prochain: rdv(dans(2)),
       passes: 4,
@@ -58,14 +67,20 @@ export const AvecRendezVous: Story = {
 }
 
 export const AucunRendezVous: Story = {
-  args: { user, synchroniserAuChargement: false, donnees: donnees({}) },
+  args: {
+    user,
+    synchroniserAuChargement: false,
+    alerte,
+    widget: avecDonnees({}),
+  },
 }
 
 export const AtelierCollectif: Story = {
   args: {
     user,
     synchroniserAuChargement: false,
-    donnees: donnees({
+    alerte,
+    widget: avecDonnees({
       aVenir: 1,
       prochain: rdv(dans(1), {
         collectif: true,
@@ -80,9 +95,32 @@ export const ParticipantInconnu: Story = {
   args: {
     user,
     synchroniserAuChargement: false,
-    donnees: donnees({
+    alerte,
+    widget: avecDonnees({
       aVenir: 1,
       prochain: rdv(dans(1), { premierParticipant: null }),
     }),
+  },
+}
+
+/**
+ * Les deux états que le bloc pouvait déjà porter, mais que le composant ne
+ * savait pas rendre : le rendu initial les traitait dans la page.
+ */
+export const Alerte: Story = {
+  args: {
+    user,
+    synchroniserAuChargement: false,
+    alerte,
+    widget: { _tag: 'alerte' },
+  },
+}
+
+export const Masque: Story = {
+  args: {
+    user,
+    synchroniserAuChargement: false,
+    alerte,
+    widget: { _tag: 'masque' },
   },
 }

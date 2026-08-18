@@ -71,20 +71,12 @@ export const Accueil = ({
         </section>
       )}
 
-      {widgetRdv._tag === 'donnees' && (
-        <section className="fr-my-6w">
-          <RdvsAccueil
-            donnees={widgetRdv.donnees}
-            user={{ timezone }}
-            synchroniserAuChargement={synchroniserRdvsAuChargement}
-          />
-        </section>
-      )}
-      {widgetRdv._tag === 'alerte' && (
-        <section className="fr-my-6w">
-          <RdvIntegrationErreurAlerte />
-        </section>
-      )}
+      <RdvsAccueil
+        widget={widgetRdv}
+        user={{ timezone }}
+        synchroniserAuChargement={synchroniserRdvsAuChargement}
+        alerte={<RdvIntegrationErreurAlerte />}
+      />
       {isCoordinateur && (
         <>
           <section className="fr-my-6w">

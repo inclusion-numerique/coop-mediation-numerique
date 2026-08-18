@@ -1,8 +1,6 @@
 import assert from 'node:assert'
 import type { ConsulterRdvsAccueil } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/domain/consulter-rdvs-accueil'
-import { consulterRdvsAccueil } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/consulter-rdvs-accueil'
-import { compteDuMediateur } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/prisma/compte-du-mediateur.query'
-import { lireDonneesAccueilRdv } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/prisma/donnees-accueil-rdv.query'
+import { consulterRdvsAccueilBinding as consulter } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/consulter-rdvs-accueil.binding'
 import { StatutPresence } from '@app/web/features/rdvsp/domain/statut-presence'
 import {
   ID_TEST,
@@ -19,11 +17,6 @@ const JOUR_EN_MS = 24 * 60 * 60 * 1000
 
 let rdvsCrees = 0
 let resultat: Awaited<ReturnType<ConsulterRdvsAccueil>> | undefined
-
-const consulter = consulterRdvsAccueil({
-  compteDuMediateur,
-  lireDonnees: lireDonneesAccueilRdv,
-})
 
 const dans = (jours: number) =>
   new Date(MAINTENANT.getTime() + jours * JOUR_EN_MS)

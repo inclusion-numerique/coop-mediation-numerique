@@ -4,9 +4,8 @@ import {
   synchroniserAuChargement,
   type WidgetRdvAccueil,
 } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/domain/widget-rdv'
-import { consulterRdvsAccueil } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/consulter-rdvs-accueil'
+import { consulterRdvsAccueilBinding as consulterRdvs } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/consulter-rdvs-accueil.binding'
 import { compteDuMediateur } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/prisma/compte-du-mediateur.query'
-import { lireDonneesAccueilRdv } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/prisma/donnees-accueil-rdv.query'
 import { addRdvBadgeStatus } from '@app/web/features/rdvsp/db/badge-statut-rdv'
 import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
 import { countMediateursCoordonnesBy } from '@app/web/mediateurs/countMediateursCoordonnesBy'
@@ -69,11 +68,6 @@ export const getActivitesCoordinationByQuarter = async (
  * l'ability, non recomposé ici : trois états exclusifs plutôt que des données et
  * une alerte calculées séparément, combinaison qui pouvait n'en produire aucune.
  */
-const consulterRdvs = consulterRdvsAccueil({
-  compteDuMediateur,
-  lireDonnees: lireDonneesAccueilRdv,
-})
-
 const blocRdvPour = async (
   user: UserId & UserMediateur,
 ): Promise<{

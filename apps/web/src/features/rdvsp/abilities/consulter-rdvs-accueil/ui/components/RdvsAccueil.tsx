@@ -6,12 +6,13 @@ import { numberToString } from '@app/web/utils/formatNumber'
 import type { UserTimezone } from '@app/web/utils/user'
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
-import { useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 import type {
   DonneesAccueilRdv,
   RdvEnUneLigne,
 } from '../../domain/donnees-accueil-rdv'
 import { rdvsPassesTotal } from '../../domain/donnees-accueil-rdv'
+import type { WidgetRdvAccueil } from '../../domain/widget-rdv'
 import { phraseRdv } from '../rdvs-accueil.presenter'
 import RdvsAccueilHeader from './RdvsAccueilHeader'
 
@@ -76,39 +77,15 @@ const Compteur = ({
   )
 }
 
-/**
- * Widget de l'accueil. Le rattrapage au chargement ne concerne que les
- * organisations sans webhook ; il ne remplace les compteurs que s'il a corrigé
- * quelque chose.
- */
-const RdvsAccueil = ({
-  donnees: donneesInitiales,
-  user: { timezone },
-  synchroniserAuChargement,
+const Compteurs = ({
+  donnees,
+  timezone,
+  synchronisationEnCours,
 }: {
   donnees: DonneesAccueilRdv
-  user: UserTimezone
-  synchroniserAuChargement: boolean
+  timezone: UserTimezone['timezone']
+  synchronisationEnCours: boolean
 }) => {
-  const [donnees, setDonnees] = useState<DonneesAccueilRdv>(donneesInitiales)
-  const [synchronisationEnCours, setSynchronisationEnCours] = useState(false)
-
-  useEffect(() => {
-    if (!synchroniserAuChargement) {
-      return
-    }
-
-    setSynchronisationEnCours(true)
-
-    rafraichirAccueilRdvAction().then((resultat) => {
-      setSynchronisationEnCours(false)
-
-      if (resultat.success && resultat.data.donnees !== null) {
-        setDonnees(resultat.data.donnees)
-      }
-    })
-  }, [synchroniserAuChargement])
-
   const phrase = (
     prefixe: string,
     rdv: RdvEnUneLigne | null,
@@ -141,6 +118,68 @@ const RdvsAccueil = ({
         />
       </div>
     </>
+  )
+}
+
+/**
+ * Bloc RDV de l'accueil, dans ses trois états.
+ *
+ * Le composant tient l'union entière et non la seule branche `donnees` : le
+ * rattrapage au chargement peut faire basculer le compte en alerte — des jetons
+ * révoqués pendant la passe — et l'écran doit alors montrer la reconnexion, non
+ * garder des compteurs périmés.
+ *
+ * L'alerte arrive en slot depuis le serveur : elle construit l'URL du parcours
+ * OAuth avec `BASE_URL`, qui n'existe pas dans le bundle du navigateur.
+ */
+const RdvsAccueil = ({
+  widget: widgetInitial,
+  user: { timezone },
+  synchroniserAuChargement,
+  alerte,
+}: {
+  widget: WidgetRdvAccueil
+  user: UserTimezone
+  synchroniserAuChargement: boolean
+  alerte: ReactNode
+}) => {
+  const [widget, setWidget] = useState<WidgetRdvAccueil>(widgetInitial)
+  const [synchronisationEnCours, setSynchronisationEnCours] = useState(false)
+
+  useEffect(() => {
+    // Un compte masqué ou déjà en alerte n'a rien à rattraper : la reconnexion
+    // passe par le bouton de l'alerte, pas par une passe de plus.
+    if (!synchroniserAuChargement || widgetInitial._tag !== 'donnees') {
+      return
+    }
+
+    setSynchronisationEnCours(true)
+
+    rafraichirAccueilRdvAction().then((resultat) => {
+      setSynchronisationEnCours(false)
+
+      if (resultat.success && resultat.data._tag === 'rafraichi') {
+        setWidget(resultat.data.widget)
+      }
+    })
+  }, [synchroniserAuChargement, widgetInitial])
+
+  if (widget._tag === 'masque') {
+    return null
+  }
+
+  return (
+    <section className="fr-my-6w">
+      {widget._tag === 'alerte' ? (
+        alerte
+      ) : (
+        <Compteurs
+          donnees={widget.donnees}
+          timezone={timezone}
+          synchronisationEnCours={synchronisationEnCours}
+        />
+      )}
+    </section>
   )
 }
 
