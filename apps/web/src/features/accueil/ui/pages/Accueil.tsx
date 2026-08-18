@@ -1,24 +1,24 @@
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
-import EquipeVide from '@app/web/app/coop/EquipeVide'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import EquipeVide from '@app/web/equipe/EquipeVide'
+import FormationContinueNouvelleFonctionnaliteCard from '@app/web/features/accueil/nouvelles-fonctionnalites/use-cases/formation-continue/components/FormationContinueNouvelleFonctionnaliteCard'
+import RdvNouvelleFonctionnaliteCard from '@app/web/features/accueil/nouvelles-fonctionnalites/use-cases/rdv/components/RdvNouvelleFonctionnaliteCard'
+import TagsNouvelleFonctionnaliteCard from '@app/web/features/accueil/nouvelles-fonctionnalites/use-cases/tags/components/TagsNouvelleFonctionnaliteCard'
 import ActiviteDetailsModal from '@app/web/features/activites/use-cases/list/components/ActiviteDetailsModal/ActiviteDetailsModal'
 import { ActivitesCoordination } from '@app/web/features/activites/use-cases/list/components/ActivitesCoordination'
 import { DernieresActivites } from '@app/web/features/activites/use-cases/list/components/DernieresActivites'
-import FormationContinueNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/formation-continue/components/FormationContinueNouvelleFonctionnaliteCard'
-import RdvNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/rdv/components/RdvNouvelleFonctionnaliteCard'
-import TagsNouvelleFonctionnaliteCard from '@app/web/features/dashboard/nouvelles-fonctionnalites/use-cases/tags/components/TagsNouvelleFonctionnaliteCard'
 import { RdvIntegrationErreurAlerte } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvIntegrationErreurAlerte'
 import RdvsAccueil from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvsAccueil'
 import { contentId } from '@app/web/utils/skipLinks'
 import React from 'react'
+import type { AccueilPageData } from '../../db/accueil-page-data.query'
 import {
   ActionsRapides,
   InformationsCoop,
   OnboardingInfo,
   Support,
-} from './_components'
-import { Equipe } from './_components/Equipe'
-import { AccueilPageData } from './getAccueilPageDataFor'
+} from '../components'
+import { Equipe } from '../components/Equipe'
 
 export const Accueil = ({
   firstName,

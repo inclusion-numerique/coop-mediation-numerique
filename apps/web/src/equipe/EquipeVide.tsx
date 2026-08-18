@@ -1,4 +1,4 @@
-import MonEquipeHeader from '@app/web/app/coop/(sidemenu-layout)/(accueil-coop)/_components/MonEquipeHeader'
+import MonEquipeHeader from '@app/web/equipe/MonEquipeHeader'
 import Button from '@codegouvfr/react-dsfr/Button'
 import React from 'react'
 
