@@ -41,6 +41,24 @@ Given(
 )
 
 Given(
+  'un rendez-vous à convertir {string} avec un participant {string}',
+  async (statutDuRdv: string, statutDuParticipant: string) => {
+    await seedCompteRdv({ id: AGENT_ID, accessToken: 'jeton-acces' })
+    await seedRdv({
+      id: RDV_ID,
+      rdvAccountId: AGENT_ID,
+      status: StatutPresence.schema.parse(statutDuRdv),
+    })
+    await seedParticipation({
+      id: PARTICIPATION_ID,
+      rdvId: RDV_ID,
+      usagerId: USAGER_ID,
+      status: StatutPresence.schema.parse(statutDuParticipant),
+    })
+  },
+)
+
+Given(
   'un second participant {string} sur ce rendez-vous',
   async (statut: string) => {
     await seedParticipation({

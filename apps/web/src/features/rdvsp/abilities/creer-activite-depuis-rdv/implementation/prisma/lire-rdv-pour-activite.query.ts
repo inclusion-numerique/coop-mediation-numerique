@@ -16,6 +16,7 @@ export const lireRdvPourActivite: LireRdvPourActivite = async (rdvId) => {
     select: {
       id: true,
       rdvAccountId: true,
+      status: true,
       participations: {
         select: {
           status: true,
@@ -40,6 +41,7 @@ export const lireRdvPourActivite: LireRdvPourActivite = async (rdvId) => {
     : {
         id: RdvId(row.id),
         agentId: RdvAgentId(row.rdvAccountId),
+        statutPresence: StatutPresence(row.status),
         participations: row.participations.map((participation) => ({
           statutPresence: StatutPresence(participation.status),
           usager: {

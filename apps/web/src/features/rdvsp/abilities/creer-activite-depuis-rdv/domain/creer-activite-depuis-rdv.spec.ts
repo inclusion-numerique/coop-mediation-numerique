@@ -46,9 +46,18 @@ const participation = (
   },
 })
 
-const rdvAvec = (participations: ParticipationDuRdv[]): RdvPourActivite => ({
+const rdvAvec = (
+  participations: ParticipationDuRdv[],
+  statutDuRdv:
+    | 'seen'
+    | 'unknown'
+    | 'excused'
+    | 'revoked'
+    | 'noshow' = 'unknown',
+): RdvPourActivite => ({
   id: rdvId,
   agentId,
+  statutPresence: StatutPresence(statutDuRdv),
   participations,
 })
 
@@ -76,15 +85,49 @@ describe('usagersPourActivite', () => {
 
   it('ne garde que les présents d’un atelier partiellement honoré', () => {
     const usagers = usagersPourActivite(
-      rdvAvec([
-        participation('seen', 1),
-        participation('noshow', 2),
-        participation('unknown', 3),
-        participation('excused', 4),
-      ]),
+      rdvAvec(
+        [
+          participation('seen', 1),
+          participation('noshow', 2),
+          participation('unknown', 3),
+          participation('excused', 4),
+        ],
+        'seen',
+      ),
     )
 
     expect(usagers.map(({ id }) => id)).toEqual([1, 3])
+  })
+
+  // Le médiateur ne peut déclarer une absence que sur le rendez-vous entier :
+  // c'est le seul statut que La Coop écrit. La participation reste `unknown`, et
+  // la lire seule reviendrait à créer une fiche pour quelqu'un qu'il a justement
+  // déclaré absent.
+  it.each(['excused', 'revoked', 'noshow'] as const)(
+    'écarte une participation non saisie d’un rendez-vous « %s »',
+    (statutDuRdv) => {
+      expect(
+        usagersPourActivite(
+          rdvAvec([participation('unknown', 5)], statutDuRdv),
+        ),
+      ).toEqual([])
+    },
+  )
+
+  it('retient une participation explicitement présente sur un rendez-vous annulé', () => {
+    const usagers = usagersPourActivite(
+      rdvAvec([participation('seen', 6)], 'revoked'),
+    )
+
+    expect(usagers.map(({ id }) => id)).toEqual([6])
+  })
+
+  it('retient tout le monde tant que rien n’est saisi, le CRA valant constat', () => {
+    const usagers = usagersPourActivite(
+      rdvAvec([participation('unknown', 7), participation('unknown', 8)]),
+    )
+
+    expect(usagers.map(({ id }) => id)).toEqual([7, 8])
   })
 })
 

@@ -21,6 +21,21 @@
 * When je prépare un CRA depuis ce rendez-vous
 * Then aucun bénéficiaire n’a été créé depuis les participants
 
+### Scenario: Rendez-vous déclaré non honoré, présence jamais saisie
+
+La Coop n'écrit que le statut du rendez-vous : la participation reste "unknown"
+alors même que le médiateur a déclaré l'absence.
+
+* Given un rendez-vous à convertir "noshow" avec un participant "unknown"
+* When je prépare un CRA depuis ce rendez-vous
+* Then aucun bénéficiaire n’a été créé depuis les participants
+
+### Scenario: Participant présent d'un rendez-vous annulé
+
+* Given un rendez-vous à convertir "revoked" avec un participant "seen"
+* When je prépare un CRA depuis ce rendez-vous
+* Then 1 bénéficiaire a été créé depuis les participants
+
 ### Scenario: Atelier partiellement honoré
 
 * Given un rendez-vous à convertir avec un participant "seen"

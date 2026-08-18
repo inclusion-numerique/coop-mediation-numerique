@@ -33,6 +33,12 @@ export type ParticipationDuRdv = {
 export type RdvPourActivite = {
   readonly id: RdvId
   readonly agentId: RdvAgentId
+  /**
+   * Statut du rendez-vous entier. C'est le seul que La Coop sait écrire : son
+   * écran de saisie appelle `update_status` sur le rendez-vous, jamais sur une
+   * participation. Une participation restée `unknown` doit donc s'y référer.
+   */
+  readonly statutPresence: StatutPresence
   readonly participations: readonly ParticipationDuRdv[]
 }
 

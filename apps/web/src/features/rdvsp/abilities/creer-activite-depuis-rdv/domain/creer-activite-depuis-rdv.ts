@@ -6,6 +6,7 @@ import {
   RdvIntrouvable,
 } from '../../../domain/errors'
 import type { RdvId } from '../../../domain/rdv-id'
+import type { StatutPresence } from '../../../domain/statut-presence'
 import type { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
 import { RdvNonAutorise } from './errors'
 import type {
@@ -74,21 +75,39 @@ export const verifierRdv = ({
 }
 
 /**
+ * Présence effective d'un participant : son propre statut dès qu'il a été saisi,
+ * celui du rendez-vous sinon.
+ *
+ * La distinction compte parce que les deux ne se renseignent pas au même
+ * endroit. La Coop n'écrit que le statut du rendez-vous ; le statut d'une
+ * participation ne bouge que si quelqu'un le saisit dans RDV Service Public. Lire
+ * la participation seule revenait donc à ignorer la seule absence que le
+ * médiateur pouvait déclarer.
+ */
+const presenceEffective = (
+  participation: ParticipationDuRdv,
+  rdv: RdvPourActivite,
+): StatutPresence =>
+  participation.statutPresence === 'unknown'
+    ? rdv.statutPresence
+    : participation.statutPresence
+
+/**
  * Usagers pour lesquels une fiche bénéficiaire doit exister.
  *
  * Seuls comptent ceux qui étaient là — `seen` — et ceux dont la présence n'a pas
- * encore été saisie, un CRA rédigé après coup valant justement constat de
- * présence. Les absences et annulations sont écartées : leur créer une fiche
- * bénéficiaire au passage reviendrait à peupler le carnet du médiateur de
+ * encore été saisie nulle part, un CRA rédigé après coup valant justement
+ * constat de présence. Les absences et annulations sont écartées : leur créer une
+ * fiche bénéficiaire au passage reviendrait à peupler le carnet du médiateur de
  * personnes qu'il n'a jamais rencontrées.
  */
 export const usagersPourActivite = (
   rdv: RdvPourActivite,
 ): readonly UsagerDuRdv[] =>
   rdv.participations
-    .filter(
-      (participation: ParticipationDuRdv) =>
-        participation.statutPresence === 'seen' ||
-        participation.statutPresence === 'unknown',
-    )
+    .filter((participation: ParticipationDuRdv) => {
+      const presence = presenceEffective(participation, rdv)
+
+      return presence === 'seen' || presence === 'unknown'
+    })
     .map((participation) => participation.usager)
