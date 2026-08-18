@@ -9,6 +9,8 @@ export type WebhookId = Model.TypeOf<typeof WebhookId>
 
 export const abonnementsWebhook = [
   'rdv',
+  'absence',
+  'plage_ouverture',
   'user',
   'user_profile',
   'organisation',
@@ -16,20 +18,33 @@ export const abonnementsWebhook = [
   'lieu',
   'agent',
   'agent_role',
+  'referent_assignation',
 ] as const
 
 /**
  * Modèle dont RDV Service Public notifie les changements. Les valeurs sont
- * celles de leur API, reprises telles quelles.
+ * celles de leur API, reprises telles quelles — la liste complète, celle que
+ * leur validation accepte, et non l'échantillon donné en exemple dans leur
+ * documentation.
  */
 export const AbonnementWebhook = defineModel(
   z.enum(abonnementsWebhook).brand('AbonnementWebhook'),
 )
 export type AbonnementWebhook = Model.TypeOf<typeof AbonnementWebhook>
 
-/** Ce à quoi La Coop s'abonne : tout ce que la synchronisation sait traiter. */
-export const abonnementsDeLaCoop: readonly AbonnementWebhook[] =
-  abonnementsWebhook.map((abonnement) => AbonnementWebhook(abonnement))
+/**
+ * Ce à quoi La Coop s'abonne : les deux modèles qu'elle sait traiter, et rien de
+ * plus.
+ *
+ * S'abonner largement n'est pas neutre. RDV Service Public rejoue l'intégralité
+ * des enregistrements de chaque modèle abonné à chaque pose ou reconfiguration
+ * de webhook — motifs, lieux, agents et rôles compris. Tout ce qui n'est ni un
+ * rendez-vous ni un usager serait reçu pour être jeté.
+ */
+export const abonnementsDeLaCoop: readonly AbonnementWebhook[] = [
+  AbonnementWebhook('rdv'),
+  AbonnementWebhook('user'),
+]
 
 /**
  * Webhook posé par La Coop sur une organisation. Le secret n'en fait pas
