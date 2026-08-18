@@ -1,9 +1,9 @@
 import IconInSquare from '@app/web/components/IconInSquare'
-import RdvServicePubliqueConnexionCard from '@app/web/features/rdvsp/ui/RdvServicePubliqueConnexionCard'
 import { rdvSupportEmail } from '@app/web/features/rdvsp/urls'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
 import React from 'react'
+import RdvServicePublicConnexionCard from '../components/RdvServicePublicConnexionCard'
 
 // add params error_description and error from next query
 const ConnexionErreurPage = () => (
@@ -11,7 +11,7 @@ const ConnexionErreurPage = () => (
   //   searchParams: { error?: string; error_description?: string }
   // }
   <div className="fr-mb-32v fr-mt-10v">
-    <RdvServicePubliqueConnexionCard
+    <RdvServicePublicConnexionCard
       header={false}
       title="Créer son compte avec ProConnect"
     >
@@ -51,7 +51,7 @@ const ConnexionErreurPage = () => (
           J’ai compris
         </Button>
       </div>
-    </RdvServicePubliqueConnexionCard>
+    </RdvServicePublicConnexionCard>
   </div>
 )
 

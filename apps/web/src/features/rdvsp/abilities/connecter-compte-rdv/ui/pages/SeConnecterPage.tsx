@@ -5,10 +5,10 @@ import {
   rdvOauthLinkAccountFlowUrl,
   rdvOauthLinkAccountSuccessCallbackPath,
 } from '@app/web/features/rdvsp/oauth'
-import RdvServicePubliqueConnexionCard from '@app/web/features/rdvsp/ui/RdvServicePubliqueConnexionCard'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Image from 'next/image'
 import React from 'react'
+import RdvServicePublicConnexionCard from '../components/RdvServicePublicConnexionCard'
 
 const SeConnecterPage = () => {
   return (
@@ -16,7 +16,7 @@ const SeConnecterPage = () => {
       <div className="fr-mb-6v fr-mt-10v">
         <BackButton />
       </div>
-      <RdvServicePubliqueConnexionCard title="Se connecter avec ProConnect">
+      <RdvServicePublicConnexionCard title="Se connecter avec ProConnect">
         <div className="fr-flex fr-direction-column fr-align-items-center fr-text--center">
           <RDVServicePublicLogo
             className="fr-background-action-low--blue-france fr-border-radius--8 fr-p-3v"
@@ -55,7 +55,7 @@ const SeConnecterPage = () => {
             Je n’ai pas de compte
           </Button>
         </div>
-      </RdvServicePubliqueConnexionCard>
+      </RdvServicePublicConnexionCard>
     </div>
   )
 }

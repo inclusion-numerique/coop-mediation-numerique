@@ -1,7 +1,6 @@
 import { getSessionUser } from '@app/web/auth/getSessionUser'
 import IconInSquare from '@app/web/components/IconInSquare'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
-import RdvServicePubliqueConnexionCard from '@app/web/features/rdvsp/ui/RdvServicePubliqueConnexionCard'
 import {
   rdvIntegrationEnSavoirPlusLink,
   rdvMyHomepageLink,
@@ -12,6 +11,7 @@ import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import React from 'react'
+import RdvServicePublicConnexionCard from '../components/RdvServicePublicConnexionCard'
 
 const ConnexionReussiePage = async () => {
   const user = await getSessionUser()
@@ -23,7 +23,7 @@ const ConnexionReussiePage = async () => {
 
   return (
     <div className="fr-mb-32v fr-mt-10v">
-      <RdvServicePubliqueConnexionCard header={false} title="">
+      <RdvServicePublicConnexionCard header={false} title="">
         <div className="fr-grid-row fr-grid-row--center">
           <IconInSquare
             iconId="fr-icon-checkbox-circle-fill"
@@ -128,7 +128,7 @@ const ConnexionReussiePage = async () => {
             </div>
           </>
         )}
-      </RdvServicePubliqueConnexionCard>
+      </RdvServicePublicConnexionCard>
     </div>
   )
 }

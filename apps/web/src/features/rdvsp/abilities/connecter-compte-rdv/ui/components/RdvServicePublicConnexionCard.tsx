@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react'
 
-const RdvServicePubliqueConnexionCard = ({
+const RdvServicePublicConnexionCard = ({
   children,
   title,
   header = true,
@@ -21,4 +21,4 @@ const RdvServicePubliqueConnexionCard = ({
   </div>
 )
 
-export default RdvServicePubliqueConnexionCard
+export default RdvServicePublicConnexionCard
