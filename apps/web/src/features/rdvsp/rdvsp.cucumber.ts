@@ -409,6 +409,10 @@ After(async () => {
       ],
     },
   })
+  // Les journaux de synchronisation référencent le compte sans cascade.
+  await prismaClient.rdvSyncLog.deleteMany({
+    where: { rdvAccountId: { in: [...comptesSuivis] } },
+  })
   await prismaClient.rdvAccount.deleteMany({
     where: {
       OR: [{ id: { in: [...comptesSuivis] } }, { userId: testUtilisateurId }],
