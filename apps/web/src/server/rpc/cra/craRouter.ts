@@ -6,13 +6,10 @@ import { deleteActivite } from '@app/web/features/activites/use-cases/cra/db/del
 import { CraEvenementValidation } from '@app/web/features/activites/use-cases/cra/evenement/validation/CraEvenementValidation'
 import { CraIndividuelServerValidation } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelServerValidation'
 import { CraPartenariatValidation } from '@app/web/features/activites/use-cases/cra/partenariat/validation/CraPartenariatValidation'
-import { mettreAJourStatutRdv } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementation/mettre-a-jour-statut-rdv'
-import { contexteMiseAJourStatut } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementation/prisma/contexte-mise-a-jour-statut.query'
-import { enregistrerStatutRdv } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementation/prisma/enregistrer-statut-rdv.mutation'
+import { mettreAJourStatutRdvBinding } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementation/mettre-a-jour-statut-rdv.binding'
 import { RdvId } from '@app/web/features/rdvsp/domain/rdv-id'
 import { StatutPresenceModifiable } from '@app/web/features/rdvsp/domain/statut-presence'
 import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
-import { rdvServicePublicApiBinding } from '@app/web/features/rdvsp/implementation/rdv-service-public.bindings'
 import { prismaClient } from '@app/web/prismaClient'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { enforceIsCoordinateur } from '@app/web/server/rpc/enforceIsCoordinateur'
@@ -24,12 +21,6 @@ import { createStopwatch } from '@app/web/utils/stopwatch'
 import * as Sentry from '@sentry/nextjs'
 import { AxiosError } from 'axios'
 import z from 'zod'
-
-const mettreAJourStatut = mettreAJourStatutRdv({
-  contexte: contexteMiseAJourStatut,
-  changerStatutRdv: rdvServicePublicApiBinding.changerStatutRdv,
-  enregistrer: enregistrerStatutRdv,
-})
 
 /**
  * Un compte rendu d'activité vaut constat de présence : le rendez-vous dont il
@@ -52,7 +43,7 @@ const marquerRdvCommeHonore = async ({
     return
   }
 
-  const resultat = await mettreAJourStatut({
+  const resultat = await mettreAJourStatutRdvBinding({
     utilisateurId: UtilisateurCoopId(utilisateurId),
     rdvId: RdvId(rdvId),
     statut: StatutPresenceModifiable('seen'),
