@@ -102,6 +102,7 @@ export const synchroniserCompte = async ({
         compte: aInstaller,
         appendLog: (log) => journal.push(...[log].flat()),
         organisationIds: portee === undefined ? undefined : [...portee],
+        api: rdvServicePublicApiBinding,
       })
 
       return {

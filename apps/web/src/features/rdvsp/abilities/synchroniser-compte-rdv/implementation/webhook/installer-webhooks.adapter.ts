@@ -8,10 +8,22 @@ import type { CompteRdvUtilisable } from '../../../../domain/compte-rdv'
 import type { OrganisationId } from '../../../../domain/organisation-id'
 import type { RdvServicePublicApi } from '../../../../domain/rdv-service-public.port'
 import { abonnementsDeLaCoop, estAJour } from '../../../../domain/webhook'
-import { rdvServicePublicApiBinding } from '../../../../implementation/rdv-service-public.bindings'
 
 /** Journal de la passe, tenu par l'orchestrateur qui appelle cet adaptateur. */
 export type AppendLog = (log: string | string[]) => void
+
+/**
+ * Ce que la pose de webhooks demande à RDV Service Public, et rien de plus.
+ *
+ * L'adaptateur ne compose pas lui-même : le binding lui passe l'API, comme au
+ * reste de la feature. Il la tirait auparavant en valeur par défaut de paramètre,
+ * ce qui suffisait à embarquer Prisma et la configuration serveur dans tout
+ * module qui l'importait, sans que rien ne le laisse voir.
+ */
+export type ApiWebhooks = Pick<
+  RdvServicePublicApi,
+  'listerWebhooksDeLaCoop' | 'poserWebhook' | 'reconfigurerWebhook'
+>
 
 type PoseSurUneOrganisation = {
   syncOperation: OperationSynchronisation
@@ -34,12 +46,12 @@ export const installWebhookForOrganisation = async ({
   compte,
   organisationId,
   appendLog,
-  api = rdvServicePublicApiBinding,
+  api,
 }: {
   compte: CompteRdvUtilisable
   organisationId: OrganisationId
   appendLog: AppendLog
-  api?: RdvServicePublicApi
+  api: ApiWebhooks
 }): Promise<PoseSurUneOrganisation> => {
   const existants = await api.listerWebhooksDeLaCoop(compte, organisationId)
 
@@ -121,13 +133,13 @@ export const installWebhooks = async ({
   compte,
   appendLog,
   organisationIds,
-  api = rdvServicePublicApiBinding,
+  api,
 }: {
   compte: CompteRdvUtilisable
   appendLog: AppendLog
   /** Restreint la pose à ces organisations ; une liste vide ne pose rien. */
   organisationIds?: number[]
-  api?: RdvServicePublicApi
+  api: ApiWebhooks
 }): Promise<
   BilanModele & {
     count: number
