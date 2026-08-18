@@ -1,4 +1,5 @@
 import type { EvenementWebhook } from '../../../domain/evenement-webhook'
+import { journaliserWebhook } from '../../../implementation/webhook/journal'
 import { lireNotificationUsager } from './api/lire-notification-usager'
 import {
   anonymiserEtSupprimerUsager,
@@ -27,12 +28,9 @@ export const traiterNotificationUsager = async ({
 }) => {
   const resultat = await recevoir({ evenement, payload: donnees })
 
-  // biome-ignore lint/suspicious/noConsole: journal de webhook, conservé le temps de la mise en production
-  console.log(
-    `[rdvsp webhook] ${
-      resultat._tag === 'traite'
-        ? `usager ${resultat.action}`
-        : `notification usager ignorée : ${resultat.raison}`
-    }`,
+  journaliserWebhook(
+    resultat._tag === 'traite'
+      ? `usager ${resultat.action}`
+      : `notification usager ignorée : ${resultat.raison}`,
   )
 }

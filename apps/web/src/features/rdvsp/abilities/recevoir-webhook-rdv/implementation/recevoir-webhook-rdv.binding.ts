@@ -1,4 +1,5 @@
 import type { EvenementWebhook } from '../../../domain/evenement-webhook'
+import { journaliserWebhook } from '../../../implementation/webhook/journal'
 import { lireNotificationRdv } from './api/lire-notification-rdv'
 import { rapprocherBeneficiairesDuRdv } from './beneficiaire/rapprocher-beneficiaires-du-rdv.adapter'
 import {
@@ -9,18 +10,13 @@ import {
 } from './prisma/webhook-rdv.prisma'
 import { recevoirWebhookRdv } from './recevoir-webhook-rdv'
 
-const journaliser = (message: string) => {
-  // biome-ignore lint/suspicious/noConsole: journal de webhook, conservé le temps de la mise en production
-  console.log(`[rdvsp webhook] ${message}`)
-}
-
 const recevoir = recevoirWebhookRdv({
   lireNotification: lireNotificationRdv,
   comptePourWebhook,
   rdvConnuParId,
   enregistrer: enregistrerRdvDeLaNotification,
   supprimer: supprimerRdvDeLaNotification,
-  rapprocherBeneficiaires: rapprocherBeneficiairesDuRdv(journaliser),
+  rapprocherBeneficiaires: rapprocherBeneficiairesDuRdv(journaliserWebhook),
 })
 
 /**
@@ -37,7 +33,7 @@ export const traiterNotificationRdv = async ({
 }) => {
   const resultat = await recevoir({ evenement, payload: donnees })
 
-  journaliser(
+  journaliserWebhook(
     resultat._tag === 'traite'
       ? `rendez-vous ${resultat.action}`
       : `notification ignorée : ${resultat.raison}`,

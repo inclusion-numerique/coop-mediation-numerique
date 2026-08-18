@@ -67,7 +67,9 @@ export const ServerWebAppConfig = {
     },
     log: {
       webhook: {
-        debug: false,
+        // Diagnostic ponctuel : une ligne par notification reçue, à n'activer
+        // que le temps d'une investigation.
+        debug: process.env.RDV_SERVICE_PUBLIC_WEBHOOK_DEBUG === '1',
       },
     },
   },

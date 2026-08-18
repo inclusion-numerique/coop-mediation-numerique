@@ -284,6 +284,9 @@ export class WebAppStack extends TerraformStack {
               .value,
         RDV_SERVICE_PUBLIC_WEBHOOK_SECRET:
           sensitiveEnvironmentVariables.RDV_SERVICE_PUBLIC_WEBHOOK_SECRET.value,
+        // Une ligne de journal par notification reçue : tenable sur une preview,
+        // pas en production, où l'on ne l'allume que le temps d'un diagnostic.
+        RDV_SERVICE_PUBLIC_WEBHOOK_DEBUG: isMain ? '0' : '1',
         INTERNAL_API_PRIVATE_KEY:
           sensitiveEnvironmentVariables.INTERNAL_API_PRIVATE_KEY.value,
         CONSEILLER_NUMERIQUE_MONGODB_URL:

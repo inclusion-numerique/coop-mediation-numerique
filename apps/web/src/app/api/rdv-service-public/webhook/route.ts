@@ -1,6 +1,7 @@
 import { traiterNotificationRdv } from '@app/web/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/recevoir-webhook-rdv.binding'
 import { traiterNotificationUsager } from '@app/web/features/rdvsp/abilities/recevoir-webhook-usager/implementation/recevoir-webhook-usager.binding'
 import type { NotificationWebhook } from '@app/web/features/rdvsp/domain/notification-webhook'
+import { journaliserWebhook } from '@app/web/features/rdvsp/implementation/webhook/journal'
 import { lireNotificationWebhook } from '@app/web/features/rdvsp/implementation/webhook/lire-notification-webhook'
 import {
   ENTETE_SIGNATURE_WEBHOOK,
@@ -10,22 +11,13 @@ import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import * as Sentry from '@sentry/nextjs'
 import { type NextRequest, NextResponse } from 'next/server'
 
-const logDebug = ServerWebAppConfig.RdvServicePublic.log.webhook.debug
-
-const tracer = (message: string) => {
-  if (logDebug) {
-    // biome-ignore lint/suspicious/noConsole: journal de webhook, conservé le temps de la mise en production
-    console.log(`[rdvsp webhook] ${message}`)
-  }
-}
-
 const traiter = async (notification: NotificationWebhook): Promise<void> => {
   if (notification._tag === 'ignoree') {
-    tracer(`modèle non traité : ${notification.modele}`)
+    journaliserWebhook(`modèle non traité : ${notification.modele}`)
     return
   }
 
-  tracer(`traitement d'une notification ${notification._tag}`)
+  journaliserWebhook(`traitement d'une notification ${notification._tag}`)
 
   const { evenement, donnees } = notification
 
@@ -58,7 +50,7 @@ export const POST = async (request: NextRequest) => {
         secret: ServerWebAppConfig.RdvServicePublic.webhookSecret,
       })
     ) {
-      tracer('signature refusée')
+      journaliserWebhook('signature refusée')
 
       return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
     }
@@ -66,7 +58,7 @@ export const POST = async (request: NextRequest) => {
     const notification = lireNotificationWebhook(JSON.parse(corpsBrut))
 
     if (notification === null) {
-      tracer('enveloppe de notification illisible')
+      journaliserWebhook('enveloppe de notification illisible')
 
       return NextResponse.json(
         { error: 'Invalid webhook payload structure' },
