@@ -1,4 +1,3 @@
-import PrendreRendezVousAvecBeneficiaireButton from '@app/web/app/coop/(full-width-layout)/mon-profil/PrendreRendezVousAvecBeneficiaireButton'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import BeneficiaireEnregistrerUneActivite from '@app/web/features/activites/use-cases/cra/components/BeneficiaireEnregistrerUneActivite'
 import type { BeneficiaireCraData } from '@app/web/features/activites/use-cases/cra/validation/BeneficiaireCraValidation'
@@ -9,6 +8,7 @@ import DeleteBeneficiaireModalContent from '@app/web/features/beneficiaire/abili
 import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
 import { BeneficiaireId } from '@app/web/features/beneficiaire/domain/beneficiaire-id'
 import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
+import PrendreRendezVousAvecBeneficiaireButton from '@app/web/features/rdvsp/abilities/prendre-rendez-vous/ui/components/PrendreRendezVousAvecBeneficiaireButton'
 import RefreshRdvDataOnLoad from '@app/web/features/rdvsp/ui/RefreshRdvDataOnLoad'
 import { notFound } from 'next/navigation'
 import type { PropsWithChildren } from 'react'
