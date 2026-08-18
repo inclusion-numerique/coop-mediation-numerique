@@ -1,11 +1,7 @@
 import assert from 'node:assert'
 import type { CreerActiviteDepuisRdv } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/creer-activite-depuis-rdv'
 import { MediateurRedacteurId } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/rdv-pour-activite'
-import { preparerUrlCreationCra } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/implementation/activite/preparer-url-creation-cra.adapter'
-import { creerOuFusionnerBeneficiaires } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/implementation/beneficiaire/creer-ou-fusionner-beneficiaires.adapter'
-import { creerActiviteDepuisRdv } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/implementation/creer-activite-depuis-rdv'
-import { compteDuRedacteur } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/implementation/prisma/compte-du-redacteur.query'
-import { lireRdvPourActivite } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/implementation/prisma/lire-rdv-pour-activite.query'
+import { creerActiviteDepuisRdvBinding } from '@app/web/features/rdvsp/abilities/creer-activite-depuis-rdv/implementation/creer-activite-depuis-rdv.binding'
 import { RdvId } from '@app/web/features/rdvsp/domain/rdv-id'
 import { StatutPresence } from '@app/web/features/rdvsp/domain/statut-presence'
 import {
@@ -29,13 +25,6 @@ const USAGER_ID = ID_TEST.usager + 101
 const USAGER_ID_SECOND = ID_TEST.usager + 102
 
 let resultat: Awaited<ReturnType<CreerActiviteDepuisRdv>> | undefined
-
-const preparer = creerActiviteDepuisRdv({
-  lireRdv: lireRdvPourActivite,
-  compteDuRedacteur,
-  creerOuFusionnerBeneficiaires,
-  preparerUrlCreationCra,
-})
 
 Given(
   'un rendez-vous à convertir avec un participant {string}',
@@ -87,7 +76,7 @@ Given('aucun compte RDV pour convertir', () => {
 })
 
 When('je prépare un CRA depuis ce rendez-vous', async () => {
-  resultat = await preparer({
+  resultat = await creerActiviteDepuisRdvBinding({
     utilisateurId: testUtilisateurId,
     mediateurId: MediateurRedacteurId(testMediateurId),
     rdvId: RdvId(RDV_ID),
@@ -95,7 +84,7 @@ When('je prépare un CRA depuis ce rendez-vous', async () => {
 })
 
 When('je prépare un CRA depuis un rendez-vous inexistant', async () => {
-  resultat = await preparer({
+  resultat = await creerActiviteDepuisRdvBinding({
     utilisateurId: testUtilisateurId,
     mediateurId: MediateurRedacteurId(testMediateurId),
     rdvId: RdvId(RDV_ID_INEXISTANT),
