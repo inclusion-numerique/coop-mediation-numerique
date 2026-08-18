@@ -11,7 +11,7 @@ import { RdvIntegrationErreurAlerte } from '@app/web/features/rdvsp/abilities/co
 import RdvsAccueil from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvsAccueil'
 import { contentId } from '@app/web/utils/skipLinks'
 import React from 'react'
-import type { AccueilPageData } from '../../db/accueil-page-data.query'
+import type { AccueilPageData } from '../../accueil-page-data.query'
 import {
   ActionsRapides,
   InformationsCoop,

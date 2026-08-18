@@ -1,6 +1,6 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
-import { getAccueilPageDataFor } from '@app/web/features/accueil/db/accueil-page-data.query'
+import { getAccueilPageDataFor } from '@app/web/features/accueil/accueil-page-data.query'
 import { Accueil } from '@app/web/features/accueil/ui/pages/Accueil'
 import type { Metadata } from 'next'
 import React from 'react'
