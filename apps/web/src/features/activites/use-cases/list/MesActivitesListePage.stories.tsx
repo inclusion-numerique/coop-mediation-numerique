@@ -100,6 +100,7 @@ const dataAvecActivitesEtRdvs = {
       id: 1,
       invalidWebhookOrganisationIds: [2],
       hasOauthTokens: true,
+      statut: 'connecte' as const,
       includeRdvsInActivitesList: true,
       syncFrom: null,
       updated: new Date().toISOString(),

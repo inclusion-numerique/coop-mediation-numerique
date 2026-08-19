@@ -1,7 +1,7 @@
 import {
   getRdvsByIds,
   type RdvListItem,
-} from '@app/web/features/rdvsp/administration/db/rdvQueries'
+} from '@app/web/features/rdvsp/db/rdv-list-item.query'
 import { getDataTableSortParams } from '@app/web/libs/data-table/getDefaultDataTableSortParams'
 import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
 import {

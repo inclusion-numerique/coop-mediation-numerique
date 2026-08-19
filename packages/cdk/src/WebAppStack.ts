@@ -55,10 +55,8 @@ export const webAppStackSensitiveVariables = [
   'INTERNAL_API_PRIVATE_KEY',
   'CONSEILLER_NUMERIQUE_MONGODB_URL',
   'HMAC_SECRET_KEY',
-  'RDV_SERVICE_PUBLIC_PREVIEW_API_KEY',
   'RDV_SERVICE_PUBLIC_PREVIEW_OAUTH_CLIENT_ID',
   'RDV_SERVICE_PUBLIC_PREVIEW_OAUTH_CLIENT_SECRET',
-  'RDV_API_KEY',
   'RDV_SERVICE_PUBLIC_MAIN_OAUTH_CLIENT_ID',
   'RDV_SERVICE_PUBLIC_MAIN_OAUTH_CLIENT_SECRET',
   'RDV_SERVICE_PUBLIC_WEBHOOK_SECRET',
@@ -278,12 +276,11 @@ export class WebAppStack extends TerraformStack {
               .RDV_SERVICE_PUBLIC_MAIN_OAUTH_CLIENT_SECRET.value
           : sensitiveEnvironmentVariables
               .RDV_SERVICE_PUBLIC_PREVIEW_OAUTH_CLIENT_SECRET.value,
-        RDV_SERVICE_PUBLIC_API_KEY: isMain
-          ? sensitiveEnvironmentVariables.RDV_API_KEY.value
-          : sensitiveEnvironmentVariables.RDV_SERVICE_PUBLIC_PREVIEW_API_KEY
-              .value,
         RDV_SERVICE_PUBLIC_WEBHOOK_SECRET:
           sensitiveEnvironmentVariables.RDV_SERVICE_PUBLIC_WEBHOOK_SECRET.value,
+        // Une ligne de journal par notification reçue : tenable sur une preview,
+        // pas en production, où l'on ne l'allume que le temps d'un diagnostic.
+        RDV_SERVICE_PUBLIC_WEBHOOK_DEBUG: isMain ? '0' : '1',
         INTERNAL_API_PRIVATE_KEY:
           sensitiveEnvironmentVariables.INTERNAL_API_PRIVATE_KEY.value,
         CONSEILLER_NUMERIQUE_MONGODB_URL:

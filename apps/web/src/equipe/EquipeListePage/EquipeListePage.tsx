@@ -1,6 +1,6 @@
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
-import EquipeVide from '@app/web/app/coop/EquipeVide'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import EquipeVide from '@app/web/equipe/EquipeVide'
 import DataSearchBar from '@app/web/libs/data-table/DataSearchBar'
 import DataTable from '@app/web/libs/data-table/DataTable'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'

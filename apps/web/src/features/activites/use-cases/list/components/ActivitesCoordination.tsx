@@ -1,13 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import type { ActiviteGrouped } from '../db/getActivitesCoordinationByQuarter'
 import { CoordinationEmptyState } from './CoordinationEmptyState'
-
-type ActiviteType = 'Evenement' | 'Partenariat' | 'Animation'
-
-type ActiviteCount = { type: ActiviteType; count: number }
-
-type ActiviteGrouped = Record<string, ActiviteCount[]>
 
 const getQuarterLabel = (key: string): string => {
   const [year, quarter] = key.split('-q')

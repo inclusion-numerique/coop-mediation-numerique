@@ -11,9 +11,9 @@ import type {
   RdvStatusFilterValue,
 } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
+import { rdvStatusOptions } from '@app/web/features/rdvsp/ui/rdv-status'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
-import { rdvStatusOptions } from '@app/web/rdv-service-public/rdvStatus'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { ChangeEvent, useEffect, useState } from 'react'

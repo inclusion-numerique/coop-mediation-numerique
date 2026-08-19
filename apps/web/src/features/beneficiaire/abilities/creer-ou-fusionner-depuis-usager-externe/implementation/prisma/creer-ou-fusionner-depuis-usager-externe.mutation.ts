@@ -1,10 +1,14 @@
 import { communeFieldsFromAddress } from '@app/web/external-apis/ban/communeFieldsFromAddress'
 import type { DuplicateBeneficiaire } from '@app/web/features/beneficiaire/db/duplicate-beneficiaire'
 import { findDuplicatesForBeneficiaire } from '@app/web/features/beneficiaire/db/find-duplicates-for-beneficiaire.query'
+import { AnneeNaissance } from '@app/web/features/beneficiaire/domain/annee-naissance'
 import { Email } from '@app/web/features/beneficiaire/domain/email'
 import { MediateurId } from '@app/web/features/beneficiaire/domain/mediateur-id'
-import { Nom } from '@app/web/features/beneficiaire/domain/nom'
-import { Prenom } from '@app/web/features/beneficiaire/domain/prenom'
+import { NOM_MAX_LENGTH, Nom } from '@app/web/features/beneficiaire/domain/nom'
+import {
+  PRENOM_MAX_LENGTH,
+  Prenom,
+} from '@app/web/features/beneficiaire/domain/prenom'
 import { Telephone } from '@app/web/features/beneficiaire/domain/telephone'
 import { effectiveTrancheAge } from '@app/web/features/beneficiaire/domain/tranche-age'
 import { prismaClient } from '@app/web/prismaClient'
@@ -34,6 +38,11 @@ const mergedBeneficiaireSelect = {
 // normalisable. La MÊME valeur sert à la déduplication, à la création ET à la
 // fusion → la donnée stockée est identique à la clé de rapprochement, ce qui
 // maximise la détection des doublons.
+//
+// L'adresse fait exception : elle est recopiée telle quelle, même quand la BAN
+// ne rend pas de commune. Le domaine ne sait représenter qu'une résidence
+// complète, mais la conserver vaut mieux que la perdre — `normaliser-beneficiaires`
+// la préserve et la géocode ensuite.
 type NormalizedExternalUser = {
   rdvUserId: number
   nom: Nom | null
@@ -41,22 +50,38 @@ type NormalizedExternalUser = {
   telephone: Telephone | null
   email: Email | null
   adresse: string | null
-  anneeNaissance: number | null
+  anneeNaissance: AnneeNaissance | null
 }
 
-// RDVSP envoie `1900-01-01` quand la date de naissance est absente : c'est une
-// sentinelle, pas une année exploitable → `null`.
-const anneeNaissanceFromBirthDate = (birthDate: Date | null): number | null => {
+/**
+ * Un nom qui dépasse la longueur admise est une saisie parasite, pas une raison
+ * d'écarter l'usager : on tronque avant de valider, le rapprochement comptant
+ * plus que les caractères en trop.
+ */
+const tronque = (valeur: string, longueurMax: number): string =>
+  valeur.trim().slice(0, longueurMax)
+
+/**
+ * RDVSP envoie `1900-01-01` quand la date de naissance est absente : c'est une
+ * sentinelle, pas une année exploitable. Le reste est arbitré par le value
+ * object lui-même — une année hors bornes (une saisie dans le futur) ne doit
+ * pas entrer, puisque la lecture du bénéficiaire la refuserait.
+ */
+const anneeNaissanceFromBirthDate = (
+  birthDate: Date | null,
+): AnneeNaissance | null => {
   const year = birthDate?.getFullYear()
-  return year && year > 1900 ? year : null
+  return year && year > 1900 ? AnneeNaissance.safe(year) : null
 }
 
 const normalizeExternalUser = (
   usager: ExternalUserToMerge,
 ): NormalizedExternalUser => ({
   rdvUserId: usager.rdvUserId,
-  nom: usager.nom ? Nom.safe(usager.nom) : null,
-  prenom: usager.prenom ? Prenom.safe(usager.prenom) : null,
+  nom: usager.nom ? Nom.safe(tronque(usager.nom, NOM_MAX_LENGTH)) : null,
+  prenom: usager.prenom
+    ? Prenom.safe(tronque(usager.prenom, PRENOM_MAX_LENGTH))
+    : null,
   telephone: usager.telephone ? Telephone.safe(usager.telephone) : null,
   email: usager.email ? Email.safe(usager.email) : null,
   adresse: usager.adresse,
@@ -126,10 +151,27 @@ const mergeUpdateData = async (
   }
 }
 
+/**
+ * Une fiche identifiée sans nom ni prénom est illisible : la liste et la
+ * recherche du médiateur valident `Prenom(row.prenom ?? '')`, et une seule fiche
+ * ainsi écrite ferait tomber la page entière. Mieux vaut écarter l'usager — le
+ * lot en fait un `Skipped` observable — que d'écrire ce que le modèle de lecture
+ * refusera.
+ */
+const identiteRequise = (usager: NormalizedExternalUser): void => {
+  if (usager.nom === null || usager.prenom === null) {
+    throw new Error(
+      `usager rdv ${usager.rdvUserId} : nom et prénom sont requis pour une fiche identifiée`,
+    )
+  }
+}
+
 const createBeneficiaire = async (
   usager: NormalizedExternalUser,
   mediateurId: string,
 ): Promise<MergedBeneficiaire> => {
+  identiteRequise(usager)
+
   const communeFields = await communeFieldsFromAddress(usager.adresse)
 
   return prismaClient.beneficiaire.create({
@@ -154,7 +196,8 @@ const createBeneficiaire = async (
 }
 
 // Un usager → un bénéficiaire (lié, fusionné sur doublon, ou créé). Peut jeter
-// sur une VRAIE erreur d'infra (Prisma, géocodage) ; l'isolation par usager au
+// sur une erreur d'infra (Prisma, géocodage) ou sur une identité inexploitable
+// à la création — dans les deux cas, l'isolation par usager au
 // niveau du lot transforme ces throws en `Skipped` sans bloquer les autres.
 const mergeOneUsager = async (
   usager: ExternalUserToMerge,

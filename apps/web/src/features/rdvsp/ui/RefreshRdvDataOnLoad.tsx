@@ -1,33 +1,40 @@
 'use client'
 
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { trpc } from '@app/web/trpc'
+import { rattraperRdvsSansWebhookAction } from '@app/web/app/_actions/rdvsp/rattraper-rdvs-sans-webhook.action'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
+/**
+ * Rattrape au chargement les rendez-vous des organisations dont le webhook n'a
+ * pas pu être posé. La page n'est rafraîchie que si la passe a corrigé quelque
+ * chose.
+ */
 const RefreshRdvDataOnLoad = ({
-  userId,
-  syncDataOnLoad,
+  synchroniserAuChargement,
 }: {
-  userId: string
-  syncDataOnLoad: boolean
+  synchroniserAuChargement: boolean
 }) => {
   const router = useRouter()
-  const refreshRdvDataMutation =
-    trpc.rdvServicePublic.refreshRdvData.useMutation()
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: refreshRdvDataMutation is not in dependencies as it should not retrigger the call
+  // Même garde que dans la liste d'activités : l'effet est joué deux fois en
+  // mode strict, et deux passes concurrentes se disputeraient les mêmes lignes.
+  const rattrapageLance = useRef(false)
+
   useEffect(() => {
-    if (syncDataOnLoad) {
-      refreshRdvDataMutation.mutateAsync({ userId }).then((result) => {
-        if (result?.hasDiff) {
-          router.refresh()
-        }
-      })
+    if (!synchroniserAuChargement || rattrapageLance.current) {
+      return
     }
-  }, [syncDataOnLoad, userId, router])
+
+    rattrapageLance.current = true
+
+    rattraperRdvsSansWebhookAction().then((resultat) => {
+      if (resultat.success && resultat.data.derive > 0) {
+        router.refresh()
+      }
+    })
+  }, [synchroniserAuChargement, router])
 
   return null
 }
 
-export default withTrpc(RefreshRdvDataOnLoad)
+export default RefreshRdvDataOnLoad

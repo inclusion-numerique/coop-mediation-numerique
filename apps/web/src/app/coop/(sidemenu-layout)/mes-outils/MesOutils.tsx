@@ -8,9 +8,8 @@ import { CartographieLogo } from '@app/web/features/pictograms/services/Cartogra
 import { LesBasesLogo } from '@app/web/features/pictograms/services/LesBasesLogo'
 import { PixOrgaLogo } from '@app/web/features/pictograms/services/PixOrgaLogo'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
-import RdvServicePublicStatusTag from '@app/web/rdv-service-public/RdvServicePublicStatusTag'
-import { getRdvOauthIntegrationStatus } from '@app/web/rdv-service-public/rdvIntegrationOauthStatus'
-import { rdvWebsiteLink } from '@app/web/rdv-service-public/rdvServicePublicUrls'
+import RdvServicePublicStatusTag from '@app/web/features/rdvsp/ui/RdvServicePublicStatusTag'
+import { rdvWebsiteLink } from '@app/web/features/rdvsp/urls'
 import { contentId } from '@app/web/utils/skipLinks'
 import Image from 'next/image'
 import React from 'react'
@@ -19,7 +18,7 @@ import { CardOutil } from './_components/CardOutil'
 export const MesOutils = async () => {
   const user = await getAuthenticatedSessionUser()
 
-  const rdvServicePublicStatus = getRdvOauthIntegrationStatus({ user })
+  const rdvServicePublicStatus = user.rdvAccount?.statut ?? 'jamaisConnecte'
 
   return (
     <CoopPageContainer size={56}>
@@ -47,9 +46,9 @@ export const MesOutils = async () => {
                 title="RDV Service Public"
                 slug="rdv-service-public"
                 accessUrl={rdvWebsiteLink}
-                isNew={rdvServicePublicStatus === 'none'}
+                isNew={rdvServicePublicStatus === 'jamaisConnecte'}
                 topRight={
-                  rdvServicePublicStatus !== 'none' && (
+                  rdvServicePublicStatus !== 'jamaisConnecte' && (
                     <RdvServicePublicStatusTag
                       status={rdvServicePublicStatus}
                     />

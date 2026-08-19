@@ -1,9 +1,9 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
+import { getAccueilPageDataFor } from '@app/web/features/accueil/accueil-page-data.query'
+import { Accueil } from '@app/web/features/accueil/ui/pages/Accueil'
 import type { Metadata } from 'next'
 import React from 'react'
-import { Accueil } from './Accueil'
-import { getAccueilPageDataFor } from './getAccueilPageDataFor'
 
 export const metadata: Metadata = {
   title: metadataTitle('Accueil'),

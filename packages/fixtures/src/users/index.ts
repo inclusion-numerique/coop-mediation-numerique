@@ -218,16 +218,18 @@ export const rdvServicePublicStagingUsers = [
     enActiviteId: 'dd748ac8-c7d2-416e-9beb-d616519a5670',
     emploiId: '7f1dc3a8-a8e5-49da-85e6-89d3376fdad7',
   },
+  {
+    email: 'marc.gavanier@beta.gouv.fr',
+    firstName: 'Marc',
+    lastName: 'Gavanier',
+    id: 'eecac657-f415-47e1-8087-c4508ea16191',
+    mediateurId: '7fb83a1d-684e-4575-b14f-06d941b47716',
+    enActiviteId: 'c53095df-06f1-4a1d-add7-2ce34362335a',
+    emploiId: 'c30bb705-48ad-4e5c-8ad4-e836e4394388',
+  },
 ].map(givenMediateur)
 
 export const teamAdministrateurs = [
-  givenUser({
-    id: 'eecac657-f415-47e1-8087-c4508ea16191',
-    firstName: 'Marc',
-    lastName: 'Gavanier',
-    email: 'marc.gavanier@beta.gouv.fr',
-    role: 'Admin',
-  }),
   givenUser({
     id: '50439602-1437-443e-b6d0-25d96e21d60c',
     firstName: 'Manon',

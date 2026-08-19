@@ -1,6 +1,6 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
-import AdministrationRdvspPage from '@app/web/features/rdvsp/administration/AdministrationRdvspPage'
-import { getAdministrationRdvspData } from '@app/web/features/rdvsp/administration/getAdministrationRdvspData'
+import { getAdministrationRdvspData } from '@app/web/features/rdvsp/abilities/administrer-comptes-rdv/implementation/prisma/comptes-rdv.query'
+import AdministrationRdvspPage from '@app/web/features/rdvsp/abilities/administrer-comptes-rdv/ui/pages/AdministrationRdvspPage'
 
 export const metadata = {
   title: metadataTitle('Rendez-vous Service Public'),

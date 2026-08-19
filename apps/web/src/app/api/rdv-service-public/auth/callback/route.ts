@@ -1,70 +1,74 @@
 import { getSessionTokenFromNextRequestCookies } from '@app/web/auth/getSessionTokenFromCookies'
+import { getSessionUserFromSessionToken } from '@app/web/auth/getSessionUserFromSessionToken'
 import {
-  getSessionUserFromId,
-  getSessionUserFromSessionToken,
-} from '@app/web/auth/getSessionUserFromSessionToken'
-import { refreshRdvAgentAccountData } from '@app/web/features/rdvsp/sync/refreshRdvAgentAccountData'
-import { syncAllRdvData } from '@app/web/features/rdvsp/sync/syncAllRdvData'
-import { prismaClient } from '@app/web/prismaClient'
-import { oAuthRdvApiMe } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
-import { getUserContextForOAuthApiCall } from '@app/web/rdv-service-public/getUserContextForRdvApiCall'
-import {
-  rdvServicePublicOAuthConfig,
-  rdvServicePublicOAuthTokenEndpoint,
-} from '@app/web/rdv-service-public/rdvServicePublicOauth'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
+  CODE_AUTORISATION_MANQUANT,
+  CONNECTER_COMPTE_RDV_ERRORS,
+  type MotifEchecConnexion,
+} from '@app/web/features/rdvsp/abilities/connecter-compte-rdv/action/connecter-compte-rdv.errors'
+import { CodeAutorisation } from '@app/web/features/rdvsp/abilities/connecter-compte-rdv/domain/code-autorisation'
+import type { ErreurConnexionCompte } from '@app/web/features/rdvsp/abilities/connecter-compte-rdv/domain/connecter-compte-rdv'
+import { connecterCompteRdvBinding } from '@app/web/features/rdvsp/abilities/connecter-compte-rdv/implementation/connecter-compte-rdv.binding'
+import { declencherSynchronisationBinding } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
+import { EmailExterne } from '@app/web/features/rdvsp/domain/identite'
+import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
 import { getServerUrl } from '@app/web/utils/baseUrl'
 import {
   decodeSerializableState,
-  EncodedState,
+  type EncodedState,
 } from '@app/web/utils/encodeSerializableState'
 import * as Sentry from '@sentry/nextjs'
-import axios from 'axios'
-import { NextRequest, NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-type OAuthTokenResponse = {
-  access_token: string // Jeton d'accès pour les requêtes API
-  refresh_token?: string // Jeton pour rafraîchir l'accès
-  expires_in: number // Durée de validité en secondes
-  token_type: string // Type de jeton, généralement "Bearer"
-  scope?: string // Scopes accordés
+type DestinationsDeRetour = {
+  redirectToSuccess?: string
+  redirectToError?: string
 }
 
-const createErrorRedirectionFunction =
-  (redirectToError: string) => (queryParams?: Record<string, string>) => {
-    const urlSearchParams = new URLSearchParams(queryParams)
+/**
+ * Ce que l'on remonte à Sentry en plus du tag.
+ *
+ * `CodeAutorisationRefuse` porte le motif exact rendu par RDV Service Public —
+ * un `invalid_client` et un code réellement expiré arrivent tous deux ici, et
+ * l'écran de retour les rend d'une seule phrase. Sans ce détail, les deux sont
+ * indiscernables depuis la supervision. Les autres erreurs restent réduites à
+ * leur tag : `EmailAgentDifferent` porte deux adresses, qui n'ont rien à faire
+ * dans un événement Sentry.
+ */
+const motifDiagnostic = (erreur: ErreurConnexionCompte): string =>
+  erreur._tag === 'CodeAutorisationRefuse'
+    ? `${erreur._tag} (${erreur.detail})`
+    : erreur._tag
 
-    return NextResponse.redirect(
-      getServerUrl(`${redirectToError}?${urlSearchParams.toString()}`, {
-        absolutePath: true,
-      }),
-    )
-  }
+const redirection = (chemin: string, motif?: MotifEchecConnexion) =>
+  NextResponse.redirect(
+    getServerUrl(
+      motif === undefined
+        ? chemin
+        : `${chemin}?${new URLSearchParams({ ...motif }).toString()}`,
+      { absolutePath: true },
+    ),
+  )
 
 /**
- * This is the OAuth callback url route where rdv redirects to after the user has logged in.
- * It is used to get the user's tokens and update his RdvAccount.
+ * Route de retour du parcours OAuth de RDV Service Public.
  *
- * The User RDV Account should already exists and be created (id) before the oauth flow.
- *
+ * Elle ne fait plus que ce qu'une route doit faire : authentifier la session,
+ * lire les paramètres de l'URL, appeler la feature, rediriger. L'échange de
+ * jetons, l'identification de l'agent, le contrôle d'adresse et l'écriture du
+ * compte vivent dans l'ability `connecter-compte-rdv` ; les codes rendus à
+ * l'écran de retour, dans sa couche `action`.
  */
 export const GET = async (request: NextRequest) => {
-  // Fetch the user
-
   const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)
   const user = await getSessionUserFromSessionToken(sessionToken)
 
   if (!sessionToken || !user) {
-    return new Response('Unauthorized', {
-      status: 401,
-    })
+    return new Response('Unauthorized', { status: 401 })
   }
 
-  // I should have code and state (for the code workflow)
-  const code = request.nextUrl.searchParams.get('code')
   const state = request.nextUrl.searchParams.get('state')
 
   if (!state) {
@@ -74,168 +78,58 @@ export const GET = async (request: NextRequest) => {
     )
   }
 
-  const decodedState = decodeSerializableState(
-    state as EncodedState<{
-      redirectToSuccess?: string
-      redirectToError?: string
-    }>,
+  const destinations = decodeSerializableState(
+    state as EncodedState<DestinationsDeRetour>,
     {},
   )
 
-  const successCallbackUrl = decodedState.redirectToSuccess ?? '/coop'
-  const errorCallbackUrl = decodedState.redirectToError ?? '/coop'
+  const succes = destinations.redirectToSuccess ?? '/coop'
+  const echec = destinations.redirectToError ?? '/coop'
 
-  const redirectToError = createErrorRedirectionFunction(errorCallbackUrl)
+  // Refus de l'utilisateur ou panne côté fournisseur : aucun code n'arrivera, le
+  // motif est relayé tel quel.
+  const refus = request.nextUrl.searchParams.get('error')
 
-  // Get query params error_description and error
-  const error = request.nextUrl.searchParams.get('error') || ''
-  const error_description =
-    request.nextUrl.searchParams.get('error_description') || ''
-
-  if (error) {
-    return redirectToError({
-      error,
-      error_description,
+  if (refus) {
+    return redirection(echec, {
+      error: refus,
+      error_description:
+        request.nextUrl.searchParams.get('error_description') ?? '',
     })
   }
+
+  const code = request.nextUrl.searchParams.get('code')
 
   if (!code) {
-    return redirectToError({
-      error: 'invalid_oauth_code',
-      error_description: 'Le code d’autorisation est manquant',
-    })
+    return redirection(echec, CODE_AUTORISATION_MANQUANT)
   }
 
-  try {
-    // Échanger `code` contre access/refresh tokens.
-    const tokenResponse = await axios.post<OAuthTokenResponse>(
-      rdvServicePublicOAuthTokenEndpoint,
-      new URLSearchParams({
-        client_id: rdvServicePublicOAuthConfig.clientId,
-        client_secret: ServerWebAppConfig.RdvServicePublic.OAuth.clientSecret,
-        redirect_uri: rdvServicePublicOAuthConfig.redirectUri,
-        code,
-        grant_type: 'authorization_code',
-      }).toString(),
-      {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      },
+  const utilisateurId = UtilisateurCoopId(user.id)
+
+  const connexion = await connecterCompteRdvBinding({
+    utilisateurId,
+    emailUtilisateur: EmailExterne(user.email),
+    code: CodeAutorisation(code),
+  })
+
+  if (!connexion.success) {
+    Sentry.captureException?.(
+      new Error(
+        `Liaison RDV Service Public refusée : ${motifDiagnostic(connexion.error)}`,
+      ),
     )
-    const tokens = tokenResponse.data
 
-    const authUserData = {
-      accessToken: tokens.access_token ?? '',
-      refreshToken: tokens.refresh_token ?? '',
-      expiresAt: new Date(Date.now() + tokens.expires_in * 1000),
-      scope: tokens.scope ?? '',
-      metadata: {},
-    }
-
-    const userResponse = await oAuthRdvApiMe({
-      rdvAccount: authUserData,
-    })
-
-    if (userResponse.status === 'error') {
-      return redirectToError({
-        error: 'api_error',
-        error_description:
-          'Impossible de récupérer l’identifiant de l’utilisateur',
-      })
-    }
-
-    const userData = userResponse.data
-
-    if (!userData.agent?.id) {
-      return redirectToError({
-        error: 'invalid_oauth_account',
-        error_description:
-          'Impossible de récupérer l’identifiant de l’utilisateur',
-      })
-    }
-
-    if (userData.agent?.email.toLowerCase() !== user.email) {
-      return redirectToError({
-        error: 'account_does_not_match_email',
-        error_description:
-          'Le compte RDV Service Public ne correspond pas à l’adresse email du compte de La coop',
-      })
-    }
-
-    const existingRdvAccount = await prismaClient.rdvAccount.findFirst({
-      where: { OR: [{ id: userData.agent.id }, { userId: user.id }] },
-      select: {
-        id: true,
-      },
-    })
-
-    const startOfThisDay = new Date(new Date().setHours(0, 0, 0, 0))
-
-    // Update or create the rdv account
-    await prismaClient.rdvAccount.upsert({
-      where: { id: existingRdvAccount?.id ?? userData.agent.id },
-      create: {
-        ...authUserData,
-        id: userData.agent.id,
-        userId: user.id,
-        syncFrom: startOfThisDay,
-      },
-      update: {
-        ...authUserData,
-        id: userData.agent.id,
-        userId: user.id,
-        error: null,
-        deleted: null,
-      },
-      select: {
-        id: true,
-        accessToken: true,
-        refreshToken: true,
-        expiresAt: true,
-        scope: true,
-      },
-    })
-
-    const updatedUserWithRdvAccount = await getSessionUserFromId(user.id)
-
-    if (!updatedUserWithRdvAccount.rdvAccount) {
-      Sentry.captureException(
-        new Error('No RDV account found after OAuth callback'),
-      )
-      return redirectToError({
-        error: 'server_error',
-        error_description: 'Une erreur est survenue lors de la connexion',
-      })
-    }
-
-    // Asynchronously synchronize rdv account data
-    syncAllRdvData({
-      user: {
-        ...updatedUserWithRdvAccount,
-        rdvAccount: updatedUserWithRdvAccount.rdvAccount,
-      },
-    }).catch((error) => {
-      Sentry.captureException(error)
-      // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
-      console.error(
-        'Error while synchronizing RDV account data for user ',
-        user.id,
-        user.email,
-        error,
-      )
-    })
-
-    // Rediriger vers une route de succès ou une page front.
-
-    return NextResponse.redirect(
-      getServerUrl(successCallbackUrl, { absolutePath: true }),
-    )
-  } catch (error) {
-    Sentry.captureException(error)
-    // biome-ignore lint/suspicious/noConsole: we log this until feature is not in production
-    console.error('Error while connecting to RDV Service Public', error)
-    return redirectToError({
-      error: 'server_error',
-      error_description: 'Une erreur est survenue lors de la connexion',
-    })
+    return redirection(echec, CONNECTER_COMPTE_RDV_ERRORS[connexion.error._tag])
   }
+
+  // Première synchronisation en tâche de fond : elle peut durer plusieurs
+  // minutes, l'utilisateur n'a pas à l'attendre pour être redirigé. L'ability
+  // relit le compte qui vient d'être écrit — la route n'a pas à le lui passer.
+  declencherSynchronisationBinding({
+    demandeur: { id: utilisateurId, role: user.role },
+    utilisateurId,
+    seulementSansWebhook: false,
+  }).catch((erreur: unknown) => Sentry.captureException?.(erreur))
+
+  return redirection(succes)
 }

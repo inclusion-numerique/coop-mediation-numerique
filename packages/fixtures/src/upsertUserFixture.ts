@@ -51,7 +51,7 @@ const upsertUserFixture =
 
     if (relations.length > 0) {
       output.log(
-        `Skipping ${libelle} fixture ${user.email} : compte existant ${idExistant} (${relations.join(', ')} déjà rattaché)`,
+        `Skipping ${libelle} fixture ${user.email} : la fixture rattache ${relations.join(' et ')}, compte réel ${idExistant} préservé`,
       )
       return Promise.resolve(null)
     }

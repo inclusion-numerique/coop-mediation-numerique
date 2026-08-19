@@ -3,7 +3,7 @@
 import { RdvStatusUpdateDynamicModal } from '@app/web/features/activites/use-cases/list/components/RdvStatusUpdateModal/RdvStatusUpdateModal'
 import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/beneficiaire'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
-import type { RdvListItem } from '@app/web/features/rdvsp/administration/db/rdvQueries'
+import type { RdvListItem } from '@app/web/features/rdvsp/db/rdv-list-item.query'
 import {
   dateAsDayInTimeZone,
   dateAsTimeInTimeZone,
