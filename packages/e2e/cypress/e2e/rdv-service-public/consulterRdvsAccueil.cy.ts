@@ -80,7 +80,9 @@ describe('ETQ médiateur, l’accueil ne m’annonce que les rendez-vous qui aur
     cy.signin(mediateurSansActivites)
     cy.visit(appUrl('/coop'))
 
-    cy.contains('Rdv passés').should('be.visible')
+    // Le libellé du compteur s'accorde au nombre — « Rdv passé » au singulier —
+    // et ne fait pas une assertion stable. La phrase de mise en avant, si.
+    cy.contains('Dernier le').should('be.visible')
     cy.contains('Vous n’avez pas de rendez-vous passés').should('not.exist')
   })
 
