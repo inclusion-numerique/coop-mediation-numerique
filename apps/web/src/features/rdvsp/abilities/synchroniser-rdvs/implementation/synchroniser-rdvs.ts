@@ -165,7 +165,12 @@ export const synchroniserRdvs =
 
     // Après la suppression des rendez-vous, jamais avant : ce sont eux qui
     // libèrent les motifs devenus orphelins.
-    const motifsSupprimes = await supprimerMotifsOrphelins(organisationIds)
+    //
+    // À défaut de portée explicite, la passe est complète pour *ce compte* — pas
+    // pour la base. Ses organisations bornent donc le ramassage.
+    const motifsSupprimes = await supprimerMotifsOrphelins(
+      organisationIds ?? compte.organisationIds,
+    )
 
     return success(
       bilanFinal(cumul, rdvsRecus.length, aSupprimer.length, motifsSupprimes),

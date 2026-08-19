@@ -51,7 +51,17 @@ const toBase = (row: CompteRdvRow) => ({
   inclureRdvsDansActivites: row.includeRdvsInActivitesList,
 })
 
-const toJetons = (row: CompteRdvRow): JetonsOAuth | null => {
+/**
+ * Jetons portés par une ligne de compte. Exposé à part du compte entier : les
+ * appels à l'API n'ont besoin que de ceux-là, et les relire à chaque requête est
+ * ce qui évite de repartir d'un jeton de rafraîchissement déjà consommé.
+ */
+export const jetonsCompteToDomain = (
+  row: Pick<
+    CompteRdvRow,
+    'accessToken' | 'refreshToken' | 'expiresAt' | 'scope'
+  >,
+): JetonsOAuth | null => {
   const acces = absentSiVide(row.accessToken)
   const rafraichissement = absentSiVide(row.refreshToken)
   const portee = absentSiVide(row.scope)
@@ -81,7 +91,7 @@ export const compteRdvToDomain = (row: CompteRdvRow): CompteRdv => {
     return { ...base, _tag: 'deconnecte', deconnexion: row.deleted }
   }
 
-  const jetons = toJetons(row)
+  const jetons = jetonsCompteToDomain(row)
 
   if (jetons === null) {
     return { ...base, _tag: 'nonLie' }

@@ -73,11 +73,41 @@ export const bilanSynchronisationVide: BilanSynchronisation = {
  * l'administration surveille. Les `noop` en sont exclus : ne rien avoir à faire
  * n'est pas un écart.
  */
-export const derive = (bilan: BilanModele): number =>
-  bilan.created + bilan.updated + bilan.deleted
+export const derive = (
+  bilan: BilanModele,
+  suppressionEstUnEcart = true,
+): number =>
+  bilan.created + bilan.updated + (suppressionEstUnEcart ? bilan.deleted : 0)
+
+/**
+ * Une suppression signale un écart pour tous les modèles sauf les motifs.
+ *
+ * Un motif n'est jamais supprimé chez RDV Service Public à notre connaissance :
+ * on ne retire que ceux qu'aucun rendez-vous ne référence plus, c'est-à-dire du
+ * cache que la passe libère. Les compter aurait fait paraître le premier
+ * ramassage — 138 motifs sur un compte qui a deux rendez-vous — comme 138
+ * notifications manquées, et donc comme une alerte.
+ *
+ * Le compteur reste affiché dans le bilan : il dit ce que la passe a fait. Il ne
+ * pèse simplement pas sur la mesure de ce que les webhooks n'ont pas rapporté.
+ */
+const suppressionEstUnEcart: Readonly<Record<ModeleSynchronise, boolean>> = {
+  rdvs: true,
+  organisations: true,
+  webhooks: true,
+  users: true,
+  motifs: false,
+  lieux: true,
+}
+
+/** Dérive d'un modèle nommé, la règle de suppression du modèle appliquée. */
+export const deriveDuModele = (
+  modele: ModeleSynchronise,
+  bilan: BilanSynchronisation,
+): number => derive(bilan[modele], suppressionEstUnEcart[modele])
 
 export const deriveTotale = (bilan: BilanSynchronisation): number =>
   modelesSynchronises.reduce(
-    (total, modele) => total + derive(bilan[modele]),
+    (total, modele) => total + deriveDuModele(modele, bilan),
     0,
   )

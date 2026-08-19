@@ -2,6 +2,7 @@ export {
   type CompteRdvRow,
   compteRdvFromDomain,
   compteRdvToDomain,
+  jetonsCompteToDomain,
 } from './compte-rdv.transfer'
 export {
   lieuFromDomain,

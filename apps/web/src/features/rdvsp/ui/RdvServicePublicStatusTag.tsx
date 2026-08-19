@@ -3,9 +3,13 @@ import { Tag } from '@codegouvfr/react-dsfr/Tag'
 import type { StatutIntegration } from '../domain/sante-compte'
 
 /**
- * Une déconnexion voulue et une panne portent le même libellé — dans les deux
- * cas le compte n'est plus relié — mais pas la même couleur : le rouge dit qu'il
- * y a quelque chose à réparer.
+ * Une déconnexion voulue et un compte jamais relié portent le même libellé : dans
+ * les deux cas, rien n'est branché et il n'y a rien à réparer.
+ *
+ * La panne, elle, a son propre mot. L'appeler « déconnecté » disait faux — les
+ * jetons sont là, le compte est relié, c'est le dernier échange qui a échoué — et
+ * cela envoyait chercher une reconnexion là où il n'y avait qu'une synchro à
+ * rejouer.
  */
 const apparences: Record<
   StatutIntegration,
@@ -31,8 +35,8 @@ const apparences: Record<
     className: 'fr-background-contrast--grey fr-text-mention--grey',
   },
   enPanne: {
-    libelle: 'Compte déconnecté',
-    iconId: 'fr-icon-close-line',
+    libelle: 'Connexion à rétablir',
+    iconId: 'fr-icon-error-warning-line',
     className: 'fr-background-contrast--error fr-text-default--error',
   },
 }
