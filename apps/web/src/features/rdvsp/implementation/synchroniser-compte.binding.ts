@@ -27,6 +27,29 @@ import { estUtilisable } from '../domain/compte-rdv'
 import { OrganisationId } from '../domain/organisation-id'
 import { rdvServicePublicApiBinding } from './rdv-service-public.bindings'
 
+/**
+ * Échec d'une passe, porteur de sa cause.
+ *
+ * L'appelant a besoin de la distinguer : un jeton révoqué appelle une
+ * reconnexion du médiateur, une API momentanément injoignable n'appelle rien du
+ * tout. Sans ce type, les deux arrivaient sous la même `Error` et le compte
+ * était marqué en erreur dans les deux cas — donc l'alerte de reconnexion
+ * s'affichait chez des médiateurs dont le compte fonctionnait.
+ */
+export class EchecDeSynchronisation extends Error {
+  constructor(readonly motif: string) {
+    super(`Impossible de synchroniser le compte RDV (${motif})`)
+    this.name = 'EchecDeSynchronisation'
+  }
+}
+
+/**
+ * Un échec dont un nouvel essai ne viendra pas à bout. Seul le jeton révoqué en
+ * est un : il faut que le médiateur repasse par le parcours OAuth.
+ */
+export const echecDefinitif = (erreur: unknown): boolean =>
+  erreur instanceof EchecDeSynchronisation && erreur.motif === 'JetonRevoque'
+
 const bilanRdvsVide = {
   rdvs: bilanVide,
   usagers: bilanVide,
@@ -129,9 +152,7 @@ export const synchroniserCompte = async ({
   })
 
   if (!resultat.success) {
-    throw new Error(
-      `Impossible de synchroniser le compte RDV (${resultat.error._tag})`,
-    )
+    throw new EchecDeSynchronisation(resultat.error._tag)
   }
 
   const { organisationIdsSansWebhook } = resultat.data

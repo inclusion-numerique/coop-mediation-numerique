@@ -17,6 +17,12 @@ export type DependancesDeclencherSynchronisation = {
   readonly marquerEchec: MarquerEchecDeSynchronisation
   /** Remontée de l'erreur technique — Sentry en production, rien sous test. */
   readonly signaler?: (erreur: unknown) => void
+  /**
+   * Un échec qu'un nouvel essai ne résoudra pas. Lui seul justifie de marquer le
+   * compte : le drapeau déclenche l'alerte de reconnexion chez le médiateur, et
+   * une API momentanément injoignable ne doit pas la lui adresser.
+   */
+  readonly echecDefinitif?: (erreur: unknown) => boolean
   readonly maintenant?: () => Date
 }
 
@@ -46,6 +52,7 @@ export const declencherSynchronisation =
     signaler = () => {
       // Remontée facultative.
     },
+    echecDefinitif = () => true,
     maintenant = () => new Date(),
   }: DependancesDeclencherSynchronisation): DeclencherSynchronisation =>
   async ({ demandeur, utilisateurId, seulementSansWebhook }) => {
@@ -75,7 +82,13 @@ export const declencherSynchronisation =
       return success({ derive, synchroniseeLe: maintenant() })
     } catch (erreur) {
       signaler(erreur)
-      await marquerEchec({ compte, message: MESSAGE_ECHEC })
+
+      // L'échec est toujours consigné au journal de synchronisation, quel qu'il
+      // soit : c'est là qu'on diagnostique. Le compte, lui, n'est marqué que si
+      // réessayer ne servirait à rien.
+      if (echecDefinitif(erreur)) {
+        await marquerEchec({ compte, message: MESSAGE_ECHEC })
+      }
 
       return failure(SynchronisationEchouee())
     }

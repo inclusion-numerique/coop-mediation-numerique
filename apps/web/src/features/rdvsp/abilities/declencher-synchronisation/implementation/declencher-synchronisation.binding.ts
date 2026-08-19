@@ -1,3 +1,4 @@
+import { echecDefinitif } from '@app/web/features/rdvsp/implementation/synchroniser-compte.binding'
 import * as Sentry from '@sentry/nextjs'
 import { declencherSynchronisation } from './declencher-synchronisation'
 import { lancerSynchronisation } from './lancer-synchronisation.adapter'
@@ -19,4 +20,5 @@ export const declencherSynchronisationBinding = declencherSynchronisation({
   lancer: lancerSynchronisation,
   marquerEchec: marquerEchecDeSynchronisation(),
   signaler: (erreur) => Sentry.captureException?.(erreur),
+  echecDefinitif,
 })
