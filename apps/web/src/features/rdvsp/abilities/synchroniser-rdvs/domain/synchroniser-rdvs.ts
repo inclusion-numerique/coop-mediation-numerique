@@ -58,11 +58,15 @@ export type AppliquerPlanLot = (input: {
  * fenêtre. Seule l'absence de toute référence est un critère sûr, et elle se
  * répare d'elle-même : le prochain rendez-vous qui porte ce motif le recrée.
  *
- * Restreint à la portée, sans quoi une passe partielle irait ramasser des
- * organisations qu'elle n'a pas regardées.
+ * La liste est **exigée**, et jamais facultative. Une portée absente signifiait
+ * « pas de filtre », donc un balayage de toute la table : la passe d'un compte
+ * ramassait les motifs de tous les autres, imputait la suppression à son propre
+ * bilan, et pouvait effacer un motif qu'une passe concurrente venait de créer
+ * mais dont le rendez-vous n'était pas encore écrit — la clé étrangère faisait
+ * alors échouer cette passe-là. Le type interdit désormais ce cas.
  */
 export type SupprimerMotifsOrphelins = (
-  organisationIds?: readonly OrganisationId[],
+  organisationIds: readonly OrganisationId[],
 ) => Promise<number>
 
 export type SupprimerRdvs = (rdvIds: readonly RdvId[]) => Promise<void>

@@ -111,9 +111,12 @@ export const supprimerRdvs: SupprimerRdvs = async (rdvIds) => {
 /**
  * Ramasse les motifs qu'aucun rendez-vous ne référence plus.
  *
- * Le filtre par organisation borne le geste à ce que la passe a parcouru : une
- * passe restreinte ne doit pas se prononcer sur des organisations qu'elle n'a
- * pas lues. Sans portée, la passe est complète et le ramassage l'est aussi.
+ * Le filtre par organisation borne le geste à ce que la passe a parcouru, et il
+ * n'est pas facultatif : sans lui, `deleteMany` balaie toute la table et une
+ * passe ramasse les motifs des comptes qu'elle ne synchronise pas.
+ *
+ * Une liste vide ne supprime donc rien, ce qui est le comportement voulu — une
+ * passe sans organisation n'a rien parcouru et n'a rien à ramasser.
  */
 export const supprimerMotifsOrphelins: SupprimerMotifsOrphelins = async (
   organisationIds,
@@ -121,9 +124,7 @@ export const supprimerMotifsOrphelins: SupprimerMotifsOrphelins = async (
   const { count } = await prismaClient.rdvMotif.deleteMany({
     where: {
       rdvs: { none: {} },
-      ...(organisationIds === undefined
-        ? {}
-        : { organisationId: { in: [...organisationIds] } }),
+      organisationId: { in: [...organisationIds] },
     },
   })
 
