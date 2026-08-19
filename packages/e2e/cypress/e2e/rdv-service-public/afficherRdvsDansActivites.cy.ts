@@ -30,6 +30,19 @@ const CASE_VOIR_RDVS = '#include-rdvs-in-activites-list'
 
 const RDV = 9_900_300
 
+/**
+ * La case DSFR masque son `input` natif, ce qui oblige à cliquer en `force` — et
+ * `force` court-circuite l'attente d'actionnabilité de Cypress. Un clic parti
+ * avant l'hydratation modifie le DOM sans que React ne voie rien : le réglage
+ * n'est jamais écrit, et l'échec se présente comme une liste qui ne change pas.
+ *
+ * `data-fr-js` est posé sur `<html>` quand le JS du DSFR a démarré côté client,
+ * ce qui n'arrive qu'une fois le bundle exécuté. Même famille de garde que
+ * `dsfrModalsShouldBeBound`.
+ */
+const attendreHydratation = () =>
+  cy.get('html').should('have.attr', 'data-fr-js', 'true')
+
 describe('ETQ médiateur, je choisis de voir mes rendez-vous parmi mes activités', () => {
   beforeEach(() => {
     cy.execute('resetFixtures', {})
@@ -52,6 +65,7 @@ describe('ETQ médiateur, je choisis de voir mes rendez-vous parmi mes activité
     })
     cy.contains('Rendez-vous').should('not.exist')
 
+    attendreHydratation()
     cy.get(CASE_VOIR_RDVS).click({ force: true })
 
     // Sans rechargement : la bascule doit rafraîchir la liste sur place. Le
@@ -75,21 +89,31 @@ describe('ETQ médiateur, je choisis de voir mes rendez-vous parmi mes activité
   })
 
   it('La bascule inverse retire les rendez-vous de la liste', () => {
+    // Le réglage part de « activé » : l'état initial est ainsi rendu par le
+    // serveur, et le scénario n'éprouve que le sens qu'il annonce.
+    cy.execute('seedRdvsFor', {
+      email: mediateurAvecActivite.email,
+      voirRdvs: true,
+      rdvs: [{ id: RDV + 2, statut: 'unknown', dansDesJours: 2 }],
+    })
+
     cy.signin(mediateurAvecActivite)
     cy.visit(appUrl('/coop/mes-activites'))
 
-    cy.get(CASE_VOIR_RDVS).click({ force: true })
+    cy.get(CASE_VOIR_RDVS).should('be.checked')
     cy.contains('Rendez-vous').should('be.visible')
 
+    attendreHydratation()
     cy.get(CASE_VOIR_RDVS).click({ force: true })
+
+    // Sur place, sans rechargement : le rafraîchissement doit valoir dans les
+    // deux sens.
+    cy.contains('Rendez-vous').should('not.exist')
 
     cy.execute('reglageRdvsDansActivitesFor', {
       email: mediateurAvecActivite.email,
     }).then((reglage) => {
       expect(reglage?.includeRdvsInActivitesList).to.equal(false)
     })
-
-    cy.visit(appUrl('/coop/mes-activites'))
-    cy.contains('Rendez-vous').should('not.exist')
   })
 })

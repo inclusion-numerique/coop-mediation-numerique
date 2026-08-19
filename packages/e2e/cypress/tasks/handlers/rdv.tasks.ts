@@ -79,8 +79,11 @@ export type StatutRdvE2e = 'unknown' | 'seen' | 'excused' | 'revoked' | 'noshow'
 export const seedRdvsFor = async ({
   email,
   rdvs,
+  voirRdvs = false,
 }: {
   email: string
+  /** Réglage d'affichage des rendez-vous dans la liste d'activités. */
+  voirRdvs?: boolean
   rdvs: {
     id: number
     statut: StatutRdvE2e
@@ -105,6 +108,11 @@ export const seedRdvsFor = async ({
   })
 
   await prismaClient.rdv.deleteMany({ where: { rdvAccountId: compte.id } })
+
+  await prismaClient.rdvAccount.update({
+    where: { id: compte.id },
+    data: { includeRdvsInActivitesList: voirRdvs },
+  })
 
   const maintenant = Date.now()
 
