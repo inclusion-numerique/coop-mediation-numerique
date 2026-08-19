@@ -2,6 +2,7 @@ import assert from 'node:assert'
 import type { SynchroniserRdvs } from '@app/web/features/rdvsp/abilities/synchroniser-rdvs/domain/synchroniser-rdvs'
 import {
   appliquerPlanLot,
+  supprimerMotifsOrphelins,
   supprimerRdvs,
 } from '@app/web/features/rdvsp/abilities/synchroniser-rdvs/implementation/prisma/appliquer-plan-lot.mutation'
 import {
@@ -119,6 +120,7 @@ const synchroniser = synchroniserRdvs({
   etatConnuDuLot,
   appliquerPlan: appliquerPlanLot,
   supprimerRdvs,
+  supprimerMotifsOrphelins,
   // Le rapprochement des bénéficiaires a ses propres scénarios : ici on éprouve
   // la réconciliation des rendez-vous, pas ce qu'elle déclenche ensuite.
   rapprocherBeneficiaires: async () => {

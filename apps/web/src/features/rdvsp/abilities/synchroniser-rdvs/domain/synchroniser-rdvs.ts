@@ -48,6 +48,23 @@ export type AppliquerPlanLot = (input: {
   readonly bruts: ReadonlyMap<RdvId, unknown>
 }) => Promise<void>
 
+/**
+ * Retire les motifs qu'aucun rendez-vous ne référence plus, dans les seules
+ * organisations que la passe a parcourues.
+ *
+ * Les motifs arrivent portés par les rendez-vous : rien ne les énumère
+ * indépendamment, et un motif absent du lot n'est donc pas nécessairement
+ * supprimé chez RDV Service Public — il peut n'avoir aucun rendez-vous dans la
+ * fenêtre. Seule l'absence de toute référence est un critère sûr, et elle se
+ * répare d'elle-même : le prochain rendez-vous qui porte ce motif le recrée.
+ *
+ * Restreint à la portée, sans quoi une passe partielle irait ramasser des
+ * organisations qu'elle n'a pas regardées.
+ */
+export type SupprimerMotifsOrphelins = (
+  organisationIds?: readonly OrganisationId[],
+) => Promise<number>
+
 export type SupprimerRdvs = (rdvIds: readonly RdvId[]) => Promise<void>
 
 /**

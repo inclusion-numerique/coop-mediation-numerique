@@ -13,6 +13,7 @@ import { synchroniserOrganisations } from '../abilities/synchroniser-organisatio
 import { rapprocherBeneficiaires } from '../abilities/synchroniser-rdvs/implementation/beneficiaire/rapprocher-beneficiaires.adapter'
 import {
   appliquerPlanLot,
+  supprimerMotifsOrphelins,
   supprimerRdvs,
 } from '../abilities/synchroniser-rdvs/implementation/prisma/appliquer-plan-lot.mutation'
 import {
@@ -89,6 +90,7 @@ export const synchroniserCompte = async ({
             etatConnuDuLot,
             appliquerPlan: appliquerPlanLot,
             supprimerRdvs,
+            supprimerMotifsOrphelins,
             rapprocherBeneficiaires: rapprocherBeneficiaires({
               mediateurId,
               journaliser: tracer,

@@ -19,6 +19,7 @@ import type {
   EtatConnuDuLot,
   RapprocherBeneficiaires,
   RdvsDejaImportes,
+  SupprimerMotifsOrphelins,
   SupprimerRdvs,
   SynchroniserRdvs,
 } from '../domain/synchroniser-rdvs'
@@ -29,6 +30,7 @@ export type DependancesSynchroniserRdvs = {
   readonly etatConnuDuLot: EtatConnuDuLot
   readonly appliquerPlan: AppliquerPlanLot
   readonly supprimerRdvs: SupprimerRdvs
+  readonly supprimerMotifsOrphelins: SupprimerMotifsOrphelins
   readonly rapprocherBeneficiaires: RapprocherBeneficiaires
   readonly tailleLot?: number
 }
@@ -72,6 +74,7 @@ export const synchroniserRdvs =
     etatConnuDuLot,
     appliquerPlan,
     supprimerRdvs,
+    supprimerMotifsOrphelins,
     rapprocherBeneficiaires,
     tailleLot = 250,
   }: DependancesSynchroniserRdvs): SynchroniserRdvs =>
@@ -160,16 +163,27 @@ export const synchroniserRdvs =
 
     await supprimerRdvs(aSupprimer)
 
-    return success(bilanFinal(cumul, rdvsRecus.length, aSupprimer.length))
+    // Après la suppression des rendez-vous, jamais avant : ce sont eux qui
+    // libèrent les motifs devenus orphelins.
+    const motifsSupprimes = await supprimerMotifsOrphelins(organisationIds)
+
+    return success(
+      bilanFinal(cumul, rdvsRecus.length, aSupprimer.length, motifsSupprimes),
+    )
   }
 
 const bilanFinal = (
   cumul: Cumul,
   recus: number,
   supprimes: number,
+  motifsSupprimes: number,
 ): BilanSynchronisationRdvs => ({
   rdvs: { ...cumul.rdvs, deleted: supprimes, count: recus },
   usagers: { ...cumul.usagers, count: cumul.traites.usagers.size },
-  motifs: { ...cumul.motifs, count: cumul.traites.motifs.size },
+  motifs: {
+    ...cumul.motifs,
+    deleted: motifsSupprimes,
+    count: cumul.traites.motifs.size,
+  },
   lieux: { ...cumul.lieux, count: cumul.traites.lieux.size },
 })

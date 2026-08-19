@@ -9,6 +9,7 @@ import {
 import type { Rdv } from '../../../../domain/rdv'
 import type {
   AppliquerPlanLot,
+  SupprimerMotifsOrphelins,
   SupprimerRdvs,
 } from '../../domain/synchroniser-rdvs'
 
@@ -105,4 +106,26 @@ export const appliquerPlanLot: AppliquerPlanLot = async ({ plan, bruts }) => {
 /** La suppression d'un rendez-vous emporte ses participations, en cascade. */
 export const supprimerRdvs: SupprimerRdvs = async (rdvIds) => {
   await prismaClient.rdv.deleteMany({ where: { id: { in: [...rdvIds] } } })
+}
+
+/**
+ * Ramasse les motifs qu'aucun rendez-vous ne référence plus.
+ *
+ * Le filtre par organisation borne le geste à ce que la passe a parcouru : une
+ * passe restreinte ne doit pas se prononcer sur des organisations qu'elle n'a
+ * pas lues. Sans portée, la passe est complète et le ramassage l'est aussi.
+ */
+export const supprimerMotifsOrphelins: SupprimerMotifsOrphelins = async (
+  organisationIds,
+) => {
+  const { count } = await prismaClient.rdvMotif.deleteMany({
+    where: {
+      rdvs: { none: {} },
+      ...(organisationIds === undefined
+        ? {}
+        : { organisationId: { in: [...organisationIds] } }),
+    },
+  })
+
+  return count
 }
