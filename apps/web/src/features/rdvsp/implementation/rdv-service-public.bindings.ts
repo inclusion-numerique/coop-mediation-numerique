@@ -2,6 +2,7 @@ import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { getServerUrl } from '@app/web/utils/baseUrl'
+import { jetonsCompteToDomain } from '../db'
 import { rdvServicePublicApi } from './api'
 
 /**
@@ -31,5 +32,21 @@ export const rdvServicePublicApiBinding = rdvServicePublicApi({
         scope: jetons.portee,
       },
     })
+  },
+  // Contrepartie de l'écriture ci-dessus : sans cette lecture, un renouvellement
+  // profite au seul appel qui l'a déclenché, et le suivant repart du jeton
+  // périmé de l'instantané. Une passe de synchronisation en fait plusieurs.
+  jetonsCourants: async (agentId) => {
+    const compte = await prismaClient.rdvAccount.findUnique({
+      where: { id: agentId },
+      select: {
+        accessToken: true,
+        refreshToken: true,
+        expiresAt: true,
+        scope: true,
+      },
+    })
+
+    return compte === null ? null : jetonsCompteToDomain(compte)
   },
 })

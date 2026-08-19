@@ -69,6 +69,17 @@ export type RdvServicePublicApiConfig = {
     agentId: RdvAgentId,
     jetons: JetonsOAuth,
   ) => Promise<void>
+  /**
+   * Jetons que porte l'enregistrement du compte, à l'instant de l'appel.
+   *
+   * Sans elle, l'adaptateur repart des jetons figés dans le compte qu'on lui
+   * passe. Or une passe de synchronisation lit ce compte une fois et le promène
+   * d'une étape à l'autre, pendant que chaque renouvellement en écrit de
+   * nouveaux : le deuxième appel rejouait donc un échange avec un jeton de
+   * rafraîchissement que RDV Service Public venait de faire tourner, se le
+   * faisait refuser, et emportait la passe entière.
+   */
+  readonly jetonsCourants?: (agentId: RdvAgentId) => Promise<JetonsOAuth | null>
   /** Injectable pour les tests ; par défaut l'horloge système. */
   readonly maintenant?: () => Date
 }
@@ -130,12 +141,23 @@ export const rdvServicePublicApi = ({
   webhookUrl,
   webhookSecret,
   onJetonsRenouveles,
+  jetonsCourants,
   maintenant = () => new Date(),
 }: RdvServicePublicApiConfig): RdvServicePublicApi => {
+  /**
+   * Jetons à utiliser pour le prochain appel. Ceux de la base font foi ; ceux du
+   * compte reçu ne servent que de repli, quand aucune lecture n'est branchée.
+   */
+  const jetonsAJour = async (
+    compte: CompteRdvUtilisable,
+  ): Promise<JetonsOAuth> =>
+    (await jetonsCourants?.(compte.agentId)) ?? compte.jetons
+
   const echangerRefreshToken = async (
     compte: CompteRdvUtilisable,
+    jetonsUtilises: JetonsOAuth,
   ): Promise<Result<JetonsOAuth, ErreurRdvApi>> => {
-    const { rafraichissement } = compte.jetons
+    const { rafraichissement } = jetonsUtilises
 
     if (rafraichissement === null) {
       return failure(JetonRevoque(compte.agentId))
@@ -159,7 +181,7 @@ export const rdvServicePublicApi = ({
         return analyse
       }
 
-      const jetons = jetonsToDomain(analyse.data, compte.jetons, maintenant())
+      const jetons = jetonsToDomain(analyse.data, jetonsUtilises, maintenant())
 
       await onJetonsRenouveles?.(compte.agentId, jetons)
 
@@ -168,6 +190,36 @@ export const rdvServicePublicApi = ({
       // Un refresh_token refusé est définitif : il faut une reconnexion OAuth.
       return failure(JetonRevoque(compte.agentId))
     }
+  }
+
+  /**
+   * Renouvelle, et rattrape la course.
+   *
+   * Deux appels partis en parallèle avec le même jeton de rafraîchissement ne
+   * peuvent pas réussir tous les deux : le premier le consomme, le second se
+   * fait refuser. Le perdant relit alors les jetons du compte — s'ils ont changé,
+   * c'est que l'autre a fait le travail, et son refus n'est pas une révocation.
+   *
+   * C'est ce qui remplace un verrou : rien à partager, rien à mutualiser, la base
+   * arbitre.
+   */
+  const renouveler = async (
+    compte: CompteRdvUtilisable,
+    jetons: JetonsOAuth,
+  ): Promise<Result<JetonsOAuth, ErreurRdvApi>> => {
+    const echange = await echangerRefreshToken(compte, jetons)
+
+    if (echange.success) {
+      return echange
+    }
+
+    const courants = await jetonsCourants?.(compte.agentId)
+
+    return courants !== undefined &&
+      courants !== null &&
+      courants.acces !== jetons.acces
+      ? success(courants)
+      : echange
   }
 
   const requeteHttp = async (
@@ -208,7 +260,7 @@ export const rdvServicePublicApi = ({
       return failure(reponse.error)
     }
 
-    const renouveles = await echangerRefreshToken(compte)
+    const renouveles = await renouveler(compte, jetons)
 
     if (!renouveles.success) {
       return renouveles
@@ -226,11 +278,13 @@ export const rdvServicePublicApi = ({
     requete: Requete,
     schema: z.ZodType<T, z.ZodTypeDef, unknown>,
   ): Promise<Result<T, ErreurRdvApi>> => {
-    if (!jetonsARenouveler(compte.jetons, maintenant())) {
-      return await appeler(compte, requete, schema, compte.jetons, true)
+    const jetons = await jetonsAJour(compte)
+
+    if (!jetonsARenouveler(jetons, maintenant())) {
+      return await appeler(compte, requete, schema, jetons, true)
     }
 
-    const renouveles = await echangerRefreshToken(compte)
+    const renouveles = await renouveler(compte, jetons)
 
     return renouveles.success
       ? await appeler(compte, requete, schema, renouveles.data, false)
@@ -537,6 +591,7 @@ export const rdvServicePublicApi = ({
         : reponse
     },
 
-    renouvelerJetons: async (compte) => await echangerRefreshToken(compte),
+    renouvelerJetons: async (compte) =>
+      await renouveler(compte, await jetonsAJour(compte)),
   }
 }
