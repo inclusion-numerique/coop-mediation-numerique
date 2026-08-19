@@ -2,7 +2,7 @@
 
 import { rattraperRdvsSansWebhookAction } from '@app/web/app/_actions/rdvsp/rattraper-rdvs-sans-webhook.action'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 /**
  * Rattrape au chargement les rendez-vous des organisations dont le webhook n'a
@@ -16,10 +16,16 @@ const RefreshRdvDataOnLoad = ({
 }) => {
   const router = useRouter()
 
+  // Même garde que dans la liste d'activités : l'effet est joué deux fois en
+  // mode strict, et deux passes concurrentes se disputeraient les mêmes lignes.
+  const rattrapageLance = useRef(false)
+
   useEffect(() => {
-    if (!synchroniserAuChargement) {
+    if (!synchroniserAuChargement || rattrapageLance.current) {
       return
     }
+
+    rattrapageLance.current = true
 
     rattraperRdvsSansWebhookAction().then((resultat) => {
       if (resultat.success && resultat.data.derive > 0) {

@@ -5,7 +5,7 @@ import { rattraperRdvsSansWebhookAction } from '@app/web/app/_actions/rdvsp/ratt
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
 import { Spinner } from '@app/web/ui/Spinner'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { type ChangeEvent, useEffect, useState } from 'react'
+import { type ChangeEvent, useEffect, useRef, useState } from 'react'
 
 const UpdateIncludeRdvsInActivitesList = ({
   includeRdvsInActivitesList,
@@ -25,11 +25,17 @@ const UpdateIncludeRdvsInActivitesList = ({
 
   const [synchronisationEnCours, setSynchronisationEnCours] = useState(false)
 
+  // L'effet est joué deux fois en mode strict, et un remontage suffirait à
+  // relancer une passe déjà en vol. Deux passes concurrentes sur le même compte
+  // se disputeraient les mêmes lignes : on n'en laisse partir qu'une.
+  const rattrapageLance = useRef(false)
+
   useEffect(() => {
-    if (!syncDataOnLoad) {
+    if (!syncDataOnLoad || rattrapageLance.current) {
       return
     }
 
+    rattrapageLance.current = true
     setSynchronisationEnCours(true)
 
     rattraperRdvsSansWebhookAction().then((resultat) => {
