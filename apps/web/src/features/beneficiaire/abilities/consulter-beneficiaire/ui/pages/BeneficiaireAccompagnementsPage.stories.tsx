@@ -8,7 +8,7 @@ import BeneficiaireConsultationLayout from '@app/web/features/beneficiaire/abili
 import ViewBeneficiaireAccompagnementsPage, {
   type BeneficiaireAccompagnementsPageData,
 } from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireAccompagnementsPage'
-import { RdvListItem } from '@app/web/features/rdvsp/administration/db/rdvQueries'
+import { RdvListItem } from '@app/web/features/rdvsp/db/rdv-list-item.query'
 import { testSessionUser } from '@app/web/test/testSessionUser'
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'

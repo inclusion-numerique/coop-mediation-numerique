@@ -2,11 +2,11 @@ import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { thematiqueLabels } from '@app/web/features/activites/use-cases/cra/fields/thematique'
 import type { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
 import type { LieuFilterType } from '@app/web/features/lieux-activite/use-cases/filter/LieuFilter'
-import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import {
   type RdvStatus,
   rdvStatusLabels,
-} from '@app/web/rdv-service-public/rdvStatus'
+} from '@app/web/features/rdvsp/ui/rdv-status'
+import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { typeActiviteSlugLabels } from '../../cra/fields/type-activite'
 import { activiteSourceLabels } from '../../source/activiteSource'

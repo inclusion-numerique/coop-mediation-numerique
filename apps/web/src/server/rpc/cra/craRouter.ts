@@ -6,9 +6,11 @@ import { deleteActivite } from '@app/web/features/activites/use-cases/cra/db/del
 import { CraEvenementValidation } from '@app/web/features/activites/use-cases/cra/evenement/validation/CraEvenementValidation'
 import { CraIndividuelServerValidation } from '@app/web/features/activites/use-cases/cra/individuel/validation/CraIndividuelServerValidation'
 import { CraPartenariatValidation } from '@app/web/features/activites/use-cases/cra/partenariat/validation/CraPartenariatValidation'
+import { mettreAJourStatutRdvBinding } from '@app/web/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementation/mettre-a-jour-statut-rdv.binding'
+import { RdvId } from '@app/web/features/rdvsp/domain/rdv-id'
+import { StatutPresenceModifiable } from '@app/web/features/rdvsp/domain/statut-presence'
+import { UtilisateurCoopId } from '@app/web/features/rdvsp/domain/utilisateur-coop-id'
 import { prismaClient } from '@app/web/prismaClient'
-import { oAuthRdvApiUpdateRdvStatus } from '@app/web/rdv-service-public/executeOAuthRdvApiCall'
-import { getUserContextForOAuthApiCall } from '@app/web/rdv-service-public/getUserContextForRdvApiCall'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { enforceIsCoordinateur } from '@app/web/server/rpc/enforceIsCoordinateur'
 import { enforceIsMediateur } from '@app/web/server/rpc/enforceIsMediateur'
@@ -19,6 +21,45 @@ import { createStopwatch } from '@app/web/utils/stopwatch'
 import * as Sentry from '@sentry/nextjs'
 import { AxiosError } from 'axios'
 import z from 'zod'
+
+/**
+ * Un compte rendu d'activité vaut constat de présence : le rendez-vous dont il
+ * est issu passe à « honoré ».
+ *
+ * L'échec ne remonte pas — un CRA enregistré ne doit pas être perdu parce que
+ * RDV Service Public est injoignable. Le passage par l'ability change deux
+ * choses par rapport à l'appel direct qu'il remplace : l'appartenance du
+ * rendez-vous est vérifiée, et le statut confirmé est écrit en base au lieu
+ * d'attendre le webhook.
+ */
+const marquerRdvCommeHonore = async ({
+  utilisateurId,
+  rdvId,
+}: {
+  utilisateurId: string
+  rdvId?: number | null
+}): Promise<void> => {
+  if (!rdvId) {
+    return
+  }
+
+  const resultat = await mettreAJourStatutRdvBinding({
+    utilisateurId: UtilisateurCoopId(utilisateurId),
+    rdvId: RdvId(rdvId),
+    statut: StatutPresenceModifiable('seen'),
+  }).catch((erreur: unknown) => {
+    Sentry.captureException?.(erreur)
+    return null
+  })
+
+  if (resultat && !resultat.success) {
+    Sentry.captureException?.(
+      new Error(
+        `Statut du rendez-vous ${rdvId} non mis à jour (${resultat.error._tag})`,
+      ),
+    )
+  }
+}
 
 export const craRouter = router({
   individuel: protectedProcedure
@@ -36,26 +77,10 @@ export const craRouter = router({
         mediateurUserId: user.id,
       })
 
-      // Side effect: update RDV status if it comes from an RDV
-      if (input.rdvServicePublicId) {
-        try {
-          const userWithRdvAccount = await getUserContextForOAuthApiCall({
-            user,
-          })
-          const { rdvAccount } = userWithRdvAccount
-          if (rdvAccount) {
-            await oAuthRdvApiUpdateRdvStatus({
-              rdvAccount,
-              rdvId: input.rdvServicePublicId,
-              status: 'seen',
-            })
-          }
-        } catch (error) {
-          // We don't want to fail the CRA creation if the RDV status update fails
-          // But we want to be notified
-          Sentry.captureException(error)
-        }
-      }
+      await marquerRdvCommeHonore({
+        utilisateurId: user.id,
+        rdvId: input.rdvServicePublicId,
+      })
 
       return createResult
     }),
@@ -74,26 +99,10 @@ export const craRouter = router({
         mediateurUserId: user.id,
       })
 
-      // Side effect: update RDV status if it comes from an RDV
-      if (input.rdvServicePublicId) {
-        try {
-          const userWithRdvAccount = await getUserContextForOAuthApiCall({
-            user,
-          })
-          const { rdvAccount } = userWithRdvAccount
-          if (rdvAccount) {
-            await oAuthRdvApiUpdateRdvStatus({
-              rdvAccount,
-              rdvId: input.rdvServicePublicId,
-              status: 'seen',
-            })
-          }
-        } catch (error) {
-          // We don't want to fail the CRA creation if the RDV status update fails
-          // But we want to be notified
-          Sentry.captureException(error)
-        }
-      }
+      await marquerRdvCommeHonore({
+        utilisateurId: user.id,
+        rdvId: input.rdvServicePublicId,
+      })
 
       return createResult
     }),

@@ -60,14 +60,15 @@ export const ServerWebAppConfig = {
     usurpation: process.env.SUDO_USURPATION === '1' || false,
   },
   RdvServicePublic: {
-    apiKey: process.env.RDV_SERVICE_PUBLIC_API_KEY ?? '',
     webhookSecret: process.env.RDV_SERVICE_PUBLIC_WEBHOOK_SECRET ?? '',
     OAuth: {
       clientSecret: process.env.RDV_SERVICE_PUBLIC_OAUTH_CLIENT_SECRET ?? '',
     },
     log: {
       webhook: {
-        debug: false,
+        // Diagnostic ponctuel : une ligne par notification reçue, à n'activer
+        // que le temps d'une investigation.
+        debug: process.env.RDV_SERVICE_PUBLIC_WEBHOOK_DEBUG === '1',
       },
     },
   },

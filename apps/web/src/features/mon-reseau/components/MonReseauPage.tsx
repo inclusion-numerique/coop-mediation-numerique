@@ -1,7 +1,7 @@
-import { CommunicationConum } from '@app/web/app/coop/(sidemenu-layout)/(accueil-coop)/_components/CommunicationConum'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import Card from '@app/web/components/Card'
+import { CommunicationConum } from '@app/web/components/CommunicationConum'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { Departement } from '@app/web/data/collectivites-territoriales/departements'
 import MonReseauCountStatCard from '@app/web/features/mon-reseau/components/MonReseauCountStatCard'

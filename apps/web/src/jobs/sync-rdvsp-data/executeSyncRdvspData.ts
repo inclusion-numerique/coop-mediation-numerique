@@ -1,7 +1,8 @@
 import { output } from '@app/cli/output'
 import { getSessionUserFromId } from '@app/web/auth/getSessionUserFromSessionToken'
-import { getAdministrationRdvspData } from '@app/web/features/rdvsp/administration/getAdministrationRdvspData'
-import { syncAllRdvData } from '@app/web/features/rdvsp/sync/syncAllRdvData'
+import { getAdministrationRdvspData } from '@app/web/features/rdvsp/abilities/administrer-comptes-rdv/implementation/prisma/comptes-rdv.query'
+import { peutEtreSynchronise } from '@app/web/features/rdvsp/domain/sante-compte'
+import { synchroniserCompte } from '@app/web/features/rdvsp/implementation/synchroniser-compte.binding'
 import type { SyncRdvspDataJob } from './syncRdvspDataJob'
 
 export const executeSyncRdvspData = async (_job: SyncRdvspDataJob) => {
@@ -9,7 +10,12 @@ export const executeSyncRdvspData = async (_job: SyncRdvspDataJob) => {
 
   const { users } = await getAdministrationRdvspData()
 
-  const eligibleUsers = users.filter((u) => u.hasOauthTokens && u.rdvAccount)
+  // Éligibilité décidée par le domaine : un compte en erreur reste synchronisable,
+  // c'est en réessayant qu'il en sort.
+  const eligibleUsers = users.filter(
+    (utilisateur) =>
+      peutEtreSynchronise(utilisateur.sante) && utilisateur.rdvAccount,
+  )
 
   output(
     `Found ${users.length} users with RDV account; ${eligibleUsers.length} eligible for sync`,
@@ -28,12 +34,9 @@ export const executeSyncRdvspData = async (_job: SyncRdvspDataJob) => {
     }
 
     try {
-      await syncAllRdvData({
-        user: {
-          id: sessionUser.id,
-          mediateur: sessionUser.mediateur,
-          rdvAccount: sessionUser.rdvAccount,
-        },
+      await synchroniserCompte({
+        compteId: sessionUser.rdvAccount.id,
+        mediateurId: sessionUser.mediateur?.id,
       })
 
       synced += 1

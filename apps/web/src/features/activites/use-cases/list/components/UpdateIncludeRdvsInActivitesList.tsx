@@ -1,24 +1,21 @@
 'use client'
 
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { afficherRdvsDansActivitesAction } from '@app/web/app/_actions/rdvsp/afficher-rdvs-dans-activites.action'
+import { rattraperRdvsSansWebhookAction } from '@app/web/app/_actions/rdvsp/rattraper-rdvs-sans-webhook.action'
 import { RDVServicePublicLogo } from '@app/web/features/pictograms/services/RDVServicePublicLogo'
-import { trpc } from '@app/web/trpc'
 import { Spinner } from '@app/web/ui/Spinner'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { type ChangeEvent, useEffect, useRef, useState } from 'react'
 
 const UpdateIncludeRdvsInActivitesList = ({
-  rdvAccountId,
   includeRdvsInActivitesList,
   syncDataOnLoad,
-  userId,
 }: {
-  userId: string
-  rdvAccountId: number
   includeRdvsInActivitesList: boolean
   syncDataOnLoad: boolean
 }) => {
   const queryParams = useSearchParams()
+  const router = useRouter()
 
   const [value, setValue] = useState(
     includeRdvsInActivitesList ||
@@ -26,50 +23,56 @@ const UpdateIncludeRdvsInActivitesList = ({
       !!queryParams.get('voir-rdvs'),
   )
 
-  const mutation =
-    trpc.rdvServicePublic.updateIncludeRdvsInActivitesList.useMutation()
+  const [synchronisationEnCours, setSynchronisationEnCours] = useState(false)
 
-  const refreshRdvDataMutation =
-    trpc.rdvServicePublic.refreshRdvData.useMutation()
+  // L'effet est joué deux fois en mode strict, et un remontage suffirait à
+  // relancer une passe déjà en vol. Deux passes concurrentes sur le même compte
+  // se disputeraient les mêmes lignes : on n'en laisse partir qu'une.
+  const rattrapageLance = useRef(false)
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: refreshRdvDataMutation is not in dependencies as it should not retrigger the call
   useEffect(() => {
-    if (syncDataOnLoad) {
-      refreshRdvDataMutation.mutateAsync({ userId }).then((result) => {
-        if (result?.hasDiff) {
-          router.refresh()
-        }
-      })
+    if (!syncDataOnLoad || rattrapageLance.current) {
+      return
     }
-  }, [syncDataOnLoad])
 
-  const router = useRouter()
+    rattrapageLance.current = true
+    setSynchronisationEnCours(true)
+
+    rattraperRdvsSansWebhookAction().then((resultat) => {
+      setSynchronisationEnCours(false)
+
+      if (resultat.success && resultat.data.derive > 0) {
+        router.refresh()
+      }
+    })
+  }, [syncDataOnLoad, router])
 
   const onChange = async (option: ChangeEvent<HTMLInputElement>) => {
     setValue(option.target.checked)
 
-    await mutation.mutateAsync({
-      includeRdvsInActivitesList: option.target.checked,
-      rdvAccountId,
-    })
+    await afficherRdvsDansActivitesAction({ afficher: option.target.checked })
 
-    // get current query params
+    // Les filtres portés par l'URL cèdent la main au réglage : les garder ferait
+    // dépendre l'affichage de deux sources qui peuvent se contredire.
     const params = new URLSearchParams(queryParams.toString())
 
     params.delete('rdvs')
     params.delete('voir-rdvs')
 
-    // Router.replace() to trigger refresh
     router.replace(`?${params.toString()}`, { scroll: false })
+
+    // `replace` ne refait un rendu serveur que si l'URL change. Sur une page
+    // ouverte sans paramètre — le cas courant — elle ne bouge pas, et la liste
+    // restait telle quelle : le réglage était enregistré, mais l'écran ne
+    // montrait rien de nouveau jusqu'au rechargement suivant.
+    router.refresh()
   }
 
   const id = 'include-rdvs-in-activites-list'
 
-  const isLoading = refreshRdvDataMutation.isPending
-
   return (
     <div className="fr-flex fr-align-items-center fr-flex-gap-2v">
-      {isLoading && (
+      {synchronisationEnCours && (
         <div className="fr-flex fr-align-items-center fr-flex-gap-2v">
           <Spinner
             size="small"
@@ -109,4 +112,4 @@ const UpdateIncludeRdvsInActivitesList = ({
   )
 }
 
-export default withTrpc(UpdateIncludeRdvsInActivitesList)
+export default UpdateIncludeRdvsInActivitesList

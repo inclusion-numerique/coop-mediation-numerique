@@ -1,5 +1,5 @@
-import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
-import type { RdvStatus } from '@app/web/rdv-service-public/rdvStatus'
+import type { RdvStatus } from '@app/web/features/rdvsp/ui/rdv-status'
+import { pluriel } from '@app/web/libraries/pluriel'
 import type { AlertProps } from '@codegouvfr/react-dsfr/Alert'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import type { SearchRdvResultItem } from '../db/searchActiviteAndRdvs'
@@ -36,6 +36,22 @@ const statusBadgeProps: {
   },
 }
 
+/**
+ * Libellé du compteur, accordé au nombre.
+ *
+ * Seuls les états révolus se comptent : « À venir » ou « Annulé »
+ * qualifient l'état, pas une quantité. Et zéro prend le singulier en
+ * français — ce que l'ancien helper rendait faux, en affichant
+ * « 0 Rdv passés ».
+ */
+const libelleAccorde = (badgeStatus: RdvStatus, nombre: number): string => {
+  const libelle = statusBadgeProps[badgeStatus].label.toLowerCase()
+
+  return badgeStatus === 'past' || badgeStatus === 'seen'
+    ? pluriel(nombre, libelle, `${libelle}s`)
+    : libelle
+}
+
 const RdvStatusBadge = ({
   rdv: { badgeStatus },
   className,
@@ -51,7 +67,7 @@ const RdvStatusBadge = ({
     className={className}
   >
     {typeof pluralize === 'number'
-      ? `Rdv ${statusBadgeProps[badgeStatus].label.toLowerCase()}${badgeStatus === 'past' || badgeStatus === 'seen' ? sPluriel(pluralize) : ''}`
+      ? `Rdv ${libelleAccorde(badgeStatus, pluralize)}`
       : statusBadgeProps[badgeStatus].label}
   </Badge>
 )

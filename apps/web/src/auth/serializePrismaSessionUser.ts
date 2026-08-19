@@ -8,6 +8,7 @@ import {
   personneToEmployeuseActuelle,
 } from '@app/web/features/employeuse/server'
 import { splitMediateursCoordonnes } from '@app/web/features/mediateurs/splitMediateursCoordonnes'
+import { statutIntegrationDeLaSession } from '@app/web/features/rdvsp/db/statut-integration'
 
 /**
  * This is the session user that will be publicly sent to the client.
@@ -44,6 +45,12 @@ export const serializePrismaSessionUser = (
           prismaSessionUser.rdvAccount.refreshToken
         ),
         error: prismaSessionUser.rdvAccount.error ?? null,
+        // Calculé ici une fois pour toutes : les écrans n'ont pas de quoi le
+        // redériver, la session ne leur transmettant aucun jeton.
+        statut: statutIntegrationDeLaSession(
+          prismaSessionUser.rdvAccount,
+          new Date(),
+        ),
         includeRdvsInActivitesList:
           prismaSessionUser.rdvAccount.includeRdvsInActivitesList,
         created: prismaSessionUser.rdvAccount.created.toISOString(),

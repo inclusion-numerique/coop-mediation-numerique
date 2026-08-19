@@ -1,7 +1,9 @@
-import { addRdvBadgeStatus } from '@app/web/features/rdvsp/administration/db/addRdvBadgeStatus'
+import { addRdvBadgeStatus } from '@app/web/features/rdvsp/db/badge-statut-rdv'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
+import type { UserTimezone } from '@app/web/utils/user'
 import type { Prisma } from '@prisma/client'
+import { addTimezoneToActivite } from './addTimezoneToActivite'
 import { SearchActiviteAndRdvResultItem } from './searchActiviteAndRdvs'
 
 /**
@@ -121,6 +123,32 @@ export const getActivitesByIds = async ({ ids }: { ids: string[] }) =>
 export type ActiviteListItem = Awaited<
   ReturnType<typeof getActivitesByIds>
 >[number]
+
+/**
+ * Les dernières activités d'un médiateur, telles que l'accueil les montre.
+ */
+export const getDernieresActivitesFor = async ({
+  mediateurId,
+  user,
+  take = 3,
+}: {
+  mediateurId: string
+  user: UserTimezone
+  take?: number
+}) =>
+  prismaClient.activite
+    .findMany({
+      where: { mediateurId, suppression: null },
+      select: activiteListSelect,
+      orderBy: { creation: 'desc' },
+      take,
+    })
+    .then((activites) =>
+      activites.map(addTimezoneToActivite(user)).map((activite) => ({
+        ...activite,
+        rdv: activite.rdv ? addRdvBadgeStatus(activite.rdv) : null,
+      })),
+    )
 
 export const getAllActivites = async ({
   beneficiaireId,
