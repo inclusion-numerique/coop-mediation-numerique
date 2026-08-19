@@ -6,6 +6,7 @@ import {
   type MotifEchecConnexion,
 } from '@app/web/features/rdvsp/abilities/connecter-compte-rdv/action/connecter-compte-rdv.errors'
 import { CodeAutorisation } from '@app/web/features/rdvsp/abilities/connecter-compte-rdv/domain/code-autorisation'
+import type { ErreurConnexionCompte } from '@app/web/features/rdvsp/abilities/connecter-compte-rdv/domain/connecter-compte-rdv'
 import { connecterCompteRdvBinding } from '@app/web/features/rdvsp/abilities/connecter-compte-rdv/implementation/connecter-compte-rdv.binding'
 import { declencherSynchronisationBinding } from '@app/web/features/rdvsp/abilities/declencher-synchronisation/implementation/declencher-synchronisation.binding'
 import { EmailExterne } from '@app/web/features/rdvsp/domain/identite'
@@ -25,6 +26,21 @@ type DestinationsDeRetour = {
   redirectToSuccess?: string
   redirectToError?: string
 }
+
+/**
+ * Ce que l'on remonte à Sentry en plus du tag.
+ *
+ * `CodeAutorisationRefuse` porte le motif exact rendu par RDV Service Public —
+ * un `invalid_client` et un code réellement expiré arrivent tous deux ici, et
+ * l'écran de retour les rend d'une seule phrase. Sans ce détail, les deux sont
+ * indiscernables depuis la supervision. Les autres erreurs restent réduites à
+ * leur tag : `EmailAgentDifferent` porte deux adresses, qui n'ont rien à faire
+ * dans un événement Sentry.
+ */
+const motifDiagnostic = (erreur: ErreurConnexionCompte): string =>
+  erreur._tag === 'CodeAutorisationRefuse'
+    ? `${erreur._tag} (${erreur.detail})`
+    : erreur._tag
 
 const redirection = (chemin: string, motif?: MotifEchecConnexion) =>
   NextResponse.redirect(
@@ -98,7 +114,9 @@ export const GET = async (request: NextRequest) => {
 
   if (!connexion.success) {
     Sentry.captureException?.(
-      new Error(`Liaison RDV Service Public refusée : ${connexion.error._tag}`),
+      new Error(
+        `Liaison RDV Service Public refusée : ${motifDiagnostic(connexion.error)}`,
+      ),
     )
 
     return redirection(echec, CONNECTER_COMPTE_RDV_ERRORS[connexion.error._tag])
