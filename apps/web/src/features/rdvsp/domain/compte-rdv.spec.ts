@@ -1,6 +1,5 @@
 import {
   type CompteRdv,
-  doitAlerterUtilisateur,
   estUtilisable,
   MessageErreurCompte,
 } from './compte-rdv'
@@ -53,19 +52,5 @@ describe('estUtilisable', () => {
     ['déconnecté', deconnecte],
   ])('écarte un compte %s, qui n’a aucun jeton', (_, compte) => {
     expect(estUtilisable(compte)).toBe(false)
-  })
-})
-
-describe('doitAlerterUtilisateur', () => {
-  it('alerte sur un compte en erreur', () => {
-    expect(doitAlerterUtilisateur(enErreur)).toBe(true)
-  })
-
-  it('n’alerte pas sur une déconnexion, qui est un choix de l’utilisateur', () => {
-    expect(doitAlerterUtilisateur(deconnecte)).toBe(false)
-  })
-
-  it('n’alerte pas sur un compte qui fonctionne', () => {
-    expect(doitAlerterUtilisateur(lie)).toBe(false)
   })
 })

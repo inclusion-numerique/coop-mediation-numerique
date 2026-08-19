@@ -74,10 +74,3 @@ export const estUtilisable = (
   compte: CompteRdv,
 ): compte is CompteRdvUtilisable =>
   compte._tag === 'lie' || compte._tag === 'enErreur'
-
-/**
- * Un compte délié n'est pas « en erreur » : c'est une décision de l'utilisateur,
- * qui ne doit déclencher ni alerte ni tentative de reconnexion.
- */
-export const doitAlerterUtilisateur = (compte: CompteRdv): boolean =>
-  compte._tag === 'enErreur' || compte._tag === 'nonLie'

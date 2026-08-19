@@ -1,11 +1,7 @@
 import { type CompteRdv, MessageErreurCompte } from './compte-rdv'
 import { JetonAcces, type JetonsOAuth } from './jetons-oauth'
 import { RdvAgentId } from './rdv-agent-id'
-import {
-  reclameUneIntervention,
-  santeDuCompte,
-  statutIntegration,
-} from './sante-compte'
+import { santeDuCompte, statutIntegration } from './sante-compte'
 import { UtilisateurCoopId } from './utilisateur-coop-id'
 
 const maintenant = new Date('2026-08-17T12:00:00.000Z')
@@ -87,27 +83,6 @@ describe('santeDuCompte', () => {
         maintenant,
       ),
     ).toEqual({ _tag: 'deconnecteParUtilisateur', quand })
-  })
-})
-
-describe('reclameUneIntervention', () => {
-  it.each([
-    ['enErreur', true],
-    ['jamaisLie', true],
-    ['operationnel', false],
-    ['deconnecteParUtilisateur', false],
-    ['jetonExpire', false],
-  ] as const)('pour un compte « %s » : %s', (tag, attendu) => {
-    const sante =
-      tag === 'enErreur'
-        ? ({ _tag: 'enErreur', message: 'x' } as const)
-        : tag === 'jetonExpire'
-          ? ({ _tag: 'jetonExpire', depuis: maintenant } as const)
-          : tag === 'deconnecteParUtilisateur'
-            ? ({ _tag: 'deconnecteParUtilisateur', quand: maintenant } as const)
-            : ({ _tag: tag } as const)
-
-    expect(reclameUneIntervention(sante)).toBe(attendu)
   })
 })
 

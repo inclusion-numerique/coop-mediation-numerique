@@ -45,13 +45,6 @@ export const santeDuCompte = (
 }
 
 /**
- * Un compte réclame-t-il une intervention humaine ? Ni l'expiration d'un jeton
- * ni une déconnexion volontaire n'en demandent.
- */
-export const reclameUneIntervention = (sante: SanteCompteRdv): boolean =>
-  sante._tag === 'enErreur' || sante._tag === 'jamaisLie'
-
-/**
  * Un compte peut-il être synchronisé ? Il lui faut des jetons, même périmés ou
  * refusés : le renouvellement se tente au moment de l'appel, et c'est en
  * réessayant qu'un compte en erreur en sort.
