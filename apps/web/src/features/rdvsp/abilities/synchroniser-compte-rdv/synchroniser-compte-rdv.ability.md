@@ -17,6 +17,7 @@ webhooks en dernier, pour que les notifications reprennent sur un état à jour.
 * Then les réconciliations se sont enchaînées dans l’ordre "organisations,rendez-vous,webhooks"
 * And la passe rend une dérive de 3
 * And le journal de la passe est clôturé sans erreur
+* And le journal de la passe consigne une portée complète
 
 ### Scenario: Les organisations échouent
 
@@ -64,6 +65,7 @@ Aucune organisation à rattraper : il n’y a rien à faire, et surtout pas tout
 * When je synchronise les organisations "101,102"
 * Then les réconciliations se sont enchaînées dans l’ordre "rendez-vous,webhooks"
 * And les rendez-vous ont été réconciliés sur les organisations "101,102"
+* And le journal de la passe consigne la portée "101,102"
 
 ## Rule: Les organisations sans webhook remontent à l’appelant
 

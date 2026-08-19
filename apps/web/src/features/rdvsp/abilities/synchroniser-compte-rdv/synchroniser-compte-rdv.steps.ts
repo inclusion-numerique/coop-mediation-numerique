@@ -100,7 +100,12 @@ const compteUtilisable = async () => {
 const journauxDuCompte = async () =>
   prismaClient.rdvSyncLog.findMany({
     where: { rdvAccountId: AGENT_ID },
-    select: { ended: true, error: true, drift: true },
+    select: {
+      ended: true,
+      error: true,
+      drift: true,
+      organisationIds: true,
+    },
   })
 
 Given('un compte RDV à réconcilier', async () => {
@@ -205,6 +210,28 @@ Then('le journal de la passe est clôturé sans erreur', async () => {
   assert.equal(journaux.length, 1, 'Un seul journal attendu')
   assert.ok(journaux[0]?.ended, 'Le journal devrait être clôturé')
   assert.equal(journaux[0]?.error, null)
+})
+
+/**
+ * La portée est une écriture que personne ne relit dans le code : sans cette
+ * assertion, elle peut cesser d'être consignée sans qu'aucun test ne bronche —
+ * c'est exactement ce qui s'était produit.
+ */
+Then(
+  'le journal de la passe consigne la portée {string}',
+  async (ids: string) => {
+    const [journal] = await journauxDuCompte()
+
+    assert.deepEqual(journal?.organisationIds, ids.split(',').map(Number))
+  },
+)
+
+Then('le journal de la passe consigne une portée complète', async () => {
+  const [journal] = await journauxDuCompte()
+
+  // Liste vide = toutes les organisations. `passePour` a déjà écarté le cas
+  // d'une portée explicitement vide, qui n'ouvre aucun journal.
+  assert.deepEqual(journal?.organisationIds, [])
 })
 
 Then('le journal de la passe porte une erreur', async () => {
