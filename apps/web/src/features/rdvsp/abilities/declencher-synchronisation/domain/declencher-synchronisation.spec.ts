@@ -3,11 +3,7 @@ import { JetonAcces, type JetonsOAuth } from '../../../domain/jetons-oauth'
 import { OrganisationId } from '../../../domain/organisation-id'
 import { RdvAgentId } from '../../../domain/rdv-agent-id'
 import { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
-import {
-  organisationsARattraper,
-  peutDeclencherPour,
-  porteePour,
-} from './declencher-synchronisation'
+import { peutDeclencherPour, porteePour } from './declencher-synchronisation'
 
 const moi = UtilisateurCoopId('d10844c6-b6de-402a-a68d-f8328b1d1b0c')
 const autrui = UtilisateurCoopId('9c858901-8a57-4791-81fe-4c455b099bc9')
@@ -57,16 +53,6 @@ describe('peutDeclencherPour', () => {
       expect(peutDeclencherPour({ id: moi, role }, autrui)).toBe(true)
     },
   )
-})
-
-describe('organisationsARattraper', () => {
-  it('ne rend rien quand tous les webhooks sont posés', () => {
-    expect(organisationsARattraper(compte([]))).toEqual([])
-  })
-
-  it('rend les organisations dont le webhook a échoué', () => {
-    expect(organisationsARattraper(compte([10, 20]))).toEqual([10, 20])
-  })
 })
 
 describe('porteePour', () => {

@@ -29,7 +29,7 @@ export const peutDeclencherPour = (
  * Organisations dont les rendez-vous n'arrivent pas d'eux-mêmes, faute de
  * webhook posé.
  */
-export const organisationsARattraper = (
+const organisationsARattraper = (
   compte: CompteRdv,
 ): readonly OrganisationId[] => compte.organisationIdsSansWebhook
 

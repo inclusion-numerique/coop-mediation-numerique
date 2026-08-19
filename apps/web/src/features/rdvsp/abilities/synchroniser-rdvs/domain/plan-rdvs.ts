@@ -14,13 +14,13 @@ import {
 import { type PlanModele, planifierModele } from './plan-modele'
 
 /** Les motifs, lieux et usagers arrivent portés par les rendez-vous eux-mêmes. */
-export const motifsDe = (rdvs: readonly Rdv[]): readonly Motif[] =>
+const motifsDe = (rdvs: readonly Rdv[]): readonly Motif[] =>
   rdvs.map((rdv) => rdv.motif).filter((motif) => motif !== null)
 
-export const lieuxDe = (rdvs: readonly Rdv[]): readonly Lieu[] =>
+const lieuxDe = (rdvs: readonly Rdv[]): readonly Lieu[] =>
   rdvs.map((rdv) => rdv.lieu).filter((lieu) => lieu !== null)
 
-export const usagersDe = (rdvs: readonly Rdv[]): readonly Usager[] =>
+const usagersDe = (rdvs: readonly Rdv[]): readonly Usager[] =>
   rdvs.flatMap((rdv) =>
     rdv.participations.map((participation) => participation.usager),
   )

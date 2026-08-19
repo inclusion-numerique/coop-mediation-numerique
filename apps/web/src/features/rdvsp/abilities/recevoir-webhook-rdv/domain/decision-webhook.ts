@@ -26,7 +26,7 @@ export type DecisionWebhookRdv =
  * participations sous la même forme, et l'on ne cherche ici qu'à savoir si le
  * rendez-vous lui-même a bougé.
  */
-export const webhookRdvModifie = (connu: Rdv, recu: Rdv): boolean =>
+const webhookRdvModifie = (connu: Rdv, recu: Rdv): boolean =>
   connu.statutPresence !== recu.statutPresence ||
   connu.duree !== recu.duree ||
   (connu.collectif ? connu.nom : null) !== (recu.collectif ? recu.nom : null) ||

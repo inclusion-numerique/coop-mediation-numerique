@@ -8,7 +8,7 @@ import { RdvId } from '../../../domain/rdv-id'
 import { RdvUuid } from '../../../domain/rdv-uuid'
 import { StatutPresence } from '../../../domain/statut-presence'
 import { UrlAgent } from '../../../domain/url-agent'
-import { decisionPourWebhookRdv, webhookRdvModifie } from './decision-webhook'
+import { decisionPourWebhookRdv } from './decision-webhook'
 
 const rdv = (
   surcharge: Partial<Extract<Rdv, { collectif: false }>> = {},
@@ -128,15 +128,34 @@ describe('decisionPourWebhookRdv', () => {
       })
     })
 
-    it('cède devant un changement réel', () => {
+    it.each([
+      ['le statut', { statutPresence: StatutPresence('noshow') }],
+      ['la durée', { duree: DureeEnMinutes(30) }],
+      ['le début', { debut: new Date('2026-09-02T09:00:00.000Z') }],
+      ['l’organisation', { organisationId: OrganisationId(9) }],
+    ])('cède devant un changement réel sur %s', (_, changement) => {
       const decision = decisionPourWebhookRdv({
         evenement: misAJour,
-        recu: rdv({ statutPresence: StatutPresence('noshow') }),
+        recu: rdv(changement),
         connu: { rdv: rdv(), compteRenduRegle: true },
         synchroniserDepuis: null,
       })
 
       expect(decision._tag).toBe('enregistrer')
+    })
+
+    it('tient le refus malgré une adresse retouchée, que la notification ne fiabilise pas', () => {
+      const decision = decisionPourWebhookRdv({
+        evenement: misAJour,
+        recu: rdv({ adresse: AdresseRdv('Ailleurs') }),
+        connu: { rdv: rdv(), compteRenduRegle: true },
+        synchroniserDepuis: null,
+      })
+
+      expect(decision).toEqual({
+        _tag: 'ignorer',
+        raison: 'reglageDuCompteRenduPreserve',
+      })
     })
 
     it('ne protège rien quand aucun refus n’a été exprimé', () => {
@@ -160,26 +179,5 @@ describe('decisionPourWebhookRdv', () => {
 
       expect(decision._tag).toBe('supprimer')
     })
-  })
-})
-
-describe('webhookRdvModifie', () => {
-  it('ne voit rien changer entre deux copies', () => {
-    expect(webhookRdvModifie(rdv(), rdv())).toBe(false)
-  })
-
-  it.each([
-    ['le statut', { statutPresence: StatutPresence('seen') }],
-    ['la durée', { duree: DureeEnMinutes(30) }],
-    ['le début', { debut: new Date('2026-09-02T09:00:00.000Z') }],
-    ['l’organisation', { organisationId: OrganisationId(9) }],
-  ])('détecte un changement sur %s', (_, changement) => {
-    expect(webhookRdvModifie(rdv(), rdv(changement))).toBe(true)
-  })
-
-  it('ignore l’adresse, que la notification ne fiabilise pas', () => {
-    expect(
-      webhookRdvModifie(rdv(), rdv({ adresse: AdresseRdv('Ailleurs') })),
-    ).toBe(false)
   })
 })

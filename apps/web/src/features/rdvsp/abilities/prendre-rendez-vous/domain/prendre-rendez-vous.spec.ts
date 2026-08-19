@@ -17,7 +17,6 @@ import {
 } from './beneficiaire-cible'
 import {
   demandePourBeneficiaire,
-  usagerDeLaDemande,
   verifierBeneficiaire,
   verifierCompte,
 } from './prendre-rendez-vous'
@@ -57,21 +56,32 @@ const compteBase = {
   inclureRdvsDansActivites: false,
 } as const
 
-describe('usagerDeLaDemande', () => {
+describe('demandePourBeneficiaire', () => {
+  const urlDossier = UrlRetour(
+    'https://coop.fr/coop/mes-beneficiaires/3f2504e0-4f89-41d3-9a0c-0305e82c3301/accompagnements',
+  )
+
+  it('pointe le retour et le dossier vers la même page d’accompagnement', () => {
+    const demande = demandePourBeneficiaire(beneficiaire, urlDossier)
+
+    expect(demande.urlRetour).toBe(urlDossier)
+    expect(demande.urlDossier).toBe(urlDossier)
+  })
+
   it('désigne l’usager déjà rattaché par son seul identifiant', () => {
-    const usager = usagerDeLaDemande({
-      ...beneficiaire,
-      usagerId: UsagerId(9001),
-    })
+    const { usager } = demandePourBeneficiaire(
+      { ...beneficiaire, usagerId: UsagerId(9001) },
+      urlDossier,
+    )
 
     expect(usager).toEqual({ _tag: 'existant', id: 9001 })
   })
 
   it('n’envoie aucune identité avec un usager existant', () => {
-    const usager = usagerDeLaDemande({
-      ...beneficiaire,
-      usagerId: UsagerId(9001),
-    })
+    const { usager } = demandePourBeneficiaire(
+      { ...beneficiaire, usagerId: UsagerId(9001) },
+      urlDossier,
+    )
 
     // L'exclusivité est ce qui empêche RDV Service Public d'arbitrer entre un
     // identifiant et une identité, et donc de créer un doublon.
@@ -79,7 +89,9 @@ describe('usagerDeLaDemande', () => {
   })
 
   it('transmet le pré-remplissage quand aucun usager n’est rattaché', () => {
-    expect(usagerDeLaDemande(beneficiaire)).toEqual({
+    const { usager } = demandePourBeneficiaire(beneficiaire, urlDossier)
+
+    expect(usager).toEqual({
       _tag: 'aCreer',
       prenom: 'Jean',
       nom: 'Dupont',
@@ -91,29 +103,19 @@ describe('usagerDeLaDemande', () => {
   })
 
   it('accepte un bénéficiaire sans identité — RDV Service Public la complétera', () => {
-    const usager = usagerDeLaDemande({
-      ...beneficiaire,
-      prenom: null,
-      nom: null,
-      email: null,
-      telephone: null,
-      adresse: null,
-    })
-
-    expect(usager._tag).toBe('aCreer')
-  })
-})
-
-describe('demandePourBeneficiaire', () => {
-  it('pointe le retour et le dossier vers la même page d’accompagnement', () => {
-    const url = UrlRetour(
-      'https://coop.fr/coop/mes-beneficiaires/3f2504e0-4f89-41d3-9a0c-0305e82c3301/accompagnements',
+    const { usager } = demandePourBeneficiaire(
+      {
+        ...beneficiaire,
+        prenom: null,
+        nom: null,
+        email: null,
+        telephone: null,
+        adresse: null,
+      },
+      urlDossier,
     )
 
-    const demande = demandePourBeneficiaire(beneficiaire, url)
-
-    expect(demande.urlRetour).toBe(url)
-    expect(demande.urlDossier).toBe(url)
+    expect(usager._tag).toBe('aCreer')
   })
 })
 

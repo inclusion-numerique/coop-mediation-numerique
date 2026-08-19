@@ -1,7 +1,7 @@
 import { RdvId } from '../../../domain/rdv-id'
 import { StatutPresence } from '../../../domain/statut-presence'
 import type { RdvEnUneLigne } from '../domain/donnees-accueil-rdv'
-import { libelleParticipants, phraseRdv } from './rdvs-accueil.presenter'
+import { phraseRdv } from './rdvs-accueil.presenter'
 
 const rdv = (surcharge: Partial<RdvEnUneLigne> = {}): RdvEnUneLigne => ({
   id: RdvId(1),
@@ -14,41 +14,48 @@ const rdv = (surcharge: Partial<RdvEnUneLigne> = {}): RdvEnUneLigne => ({
   ...surcharge,
 })
 
-describe('libelleParticipants', () => {
-  it('nomme le bénéficiaire d’un rendez-vous individuel', () => {
-    expect(libelleParticipants(rdv())).toBe('Jean Dupont')
+const creneau = 'mardi 18 août de 11h00 à 12h00'
+
+describe('phraseRdv', () => {
+  it('compose le créneau et nomme le bénéficiaire d’un rendez-vous individuel', () => {
+    expect(phraseRdv('Prochain', rdv(), 'Europe/Paris')).toBe(
+      `Prochain le ${creneau} avec Jean Dupont`,
+    )
   })
 
   it('dit « anonyme » quand l’identité n’est pas connue', () => {
-    expect(libelleParticipants(rdv({ premierParticipant: null }))).toBe(
-      'anonyme',
-    )
+    expect(
+      phraseRdv('Prochain', rdv({ premierParticipant: null }), 'Europe/Paris'),
+    ).toBe(`Prochain le ${creneau} avec anonyme`)
   })
 
   it('compte les participants d’un atelier collectif', () => {
     expect(
-      libelleParticipants(rdv({ collectif: true, nombreParticipants: 4 })),
-    ).toBe('4 participants')
+      phraseRdv(
+        'Prochain',
+        rdv({ collectif: true, nombreParticipants: 4 }),
+        'Europe/Paris',
+      ),
+    ).toBe(`Prochain le ${creneau} avec 4 participants`)
   })
 
   it('accorde au singulier pour un seul participant', () => {
     expect(
-      libelleParticipants(rdv({ collectif: true, nombreParticipants: 1 })),
-    ).toBe('1 participant')
+      phraseRdv(
+        'Prochain',
+        rdv({ collectif: true, nombreParticipants: 1 }),
+        'Europe/Paris',
+      ),
+    ).toBe(`Prochain le ${creneau} avec 1 participant`)
   })
 
   it('accorde au singulier pour zéro participant, comme le veut le français', () => {
     expect(
-      libelleParticipants(rdv({ collectif: true, nombreParticipants: 0 })),
-    ).toBe('0 participant')
-  })
-})
-
-describe('phraseRdv', () => {
-  it('compose le créneau et la personne', () => {
-    const phrase = phraseRdv('Prochain', rdv(), 'Europe/Paris')
-
-    expect(phrase).toContain('Prochain le')
-    expect(phrase).toContain('avec Jean Dupont')
+      phraseRdv(
+        'Prochain',
+        rdv({ collectif: true, nombreParticipants: 0 }),
+        'Europe/Paris',
+      ),
+    ).toBe(`Prochain le ${creneau} avec 0 participant`)
   })
 })

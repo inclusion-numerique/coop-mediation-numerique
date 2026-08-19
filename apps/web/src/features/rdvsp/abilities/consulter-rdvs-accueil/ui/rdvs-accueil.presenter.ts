@@ -9,7 +9,7 @@ import type { RdvEnUneLigne } from '../domain/donnees-accueil-rdv'
  * l'identité du participant, ce qui arrive tant que la synchronisation ne l'a
  * pas rapportée.
  */
-export const libelleParticipants = (rdv: RdvEnUneLigne): string => {
+const libelleParticipants = (rdv: RdvEnUneLigne): string => {
   if (rdv.collectif) {
     return `${rdv.nombreParticipants} ${pluriel(
       rdv.nombreParticipants,

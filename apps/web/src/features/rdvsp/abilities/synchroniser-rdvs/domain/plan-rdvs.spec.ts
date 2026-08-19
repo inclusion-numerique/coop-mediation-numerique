@@ -10,14 +10,7 @@ import {
   rdvFixture,
   usagerFixture,
 } from './fixtures'
-import {
-  type EtatConnu,
-  lieuxDe,
-  motifsDe,
-  planifierLot,
-  rdvsASupprimer,
-  usagersDe,
-} from './plan-rdvs'
+import { type EtatConnu, planifierLot, rdvsASupprimer } from './plan-rdvs'
 
 const etatVide: EtatConnu = {
   rdvs: new Map(),
@@ -32,31 +25,6 @@ const rienDeTraite = {
   usagers: new Set<never>(),
 }
 
-describe('extraction depuis les rendez-vous', () => {
-  it('remonte les motifs, en écartant les rendez-vous qui n’en ont pas', () => {
-    const rdvs = [rdvFixture(1), rdvFixture(2, { motif: null })]
-
-    expect(motifsDe(rdvs).map(({ id }) => id)).toEqual([3])
-  })
-
-  it('remonte les lieux, en écartant les rendez-vous sans lieu', () => {
-    const rdvs = [rdvFixture(1), rdvFixture(2, { lieu: null })]
-
-    expect(lieuxDe(rdvs).map(({ id }) => id)).toEqual([11])
-  })
-
-  it('remonte les usagers de toutes les participations', () => {
-    const rdv = rdvFixture(1, {
-      participations: [
-        participationFixture(100, usagerFixture(200)),
-        participationFixture(101, usagerFixture(201)),
-      ],
-    })
-
-    expect(usagersDe([rdv]).map(({ id }) => id)).toEqual([200, 201])
-  })
-})
-
 describe('planifierLot', () => {
   it('crée tout ce que La Coop ne connaît pas', () => {
     const plan = planifierLot({
@@ -69,6 +37,43 @@ describe('planifierLot', () => {
     expect(plan.motifs.aCreer.map(({ id }) => id)).toEqual([3])
     expect(plan.lieux.aCreer.map(({ id }) => id)).toEqual([11])
     expect(plan.usagers.aCreer.map(({ id }) => id)).toEqual([200])
+  })
+
+  it('écarte les rendez-vous qui n’ont pas de motif', () => {
+    const plan = planifierLot({
+      recus: [rdvFixture(1), rdvFixture(2, { motif: null })],
+      connu: etatVide,
+      dejaTraites: rienDeTraite,
+    })
+
+    expect(plan.motifs.aCreer.map(({ id }) => id)).toEqual([3])
+  })
+
+  it('écarte les rendez-vous qui n’ont pas de lieu', () => {
+    const plan = planifierLot({
+      recus: [rdvFixture(1), rdvFixture(2, { lieu: null })],
+      connu: etatVide,
+      dejaTraites: rienDeTraite,
+    })
+
+    expect(plan.lieux.aCreer.map(({ id }) => id)).toEqual([11])
+  })
+
+  it('remonte les usagers de toutes les participations', () => {
+    const plan = planifierLot({
+      recus: [
+        rdvFixture(1, {
+          participations: [
+            participationFixture(100, usagerFixture(200)),
+            participationFixture(101, usagerFixture(201)),
+          ],
+        }),
+      ],
+      connu: etatVide,
+      dejaTraites: rienDeTraite,
+    })
+
+    expect(plan.usagers.aCreer.map(({ id }) => id)).toEqual([200, 201])
   })
 
   it('dédoublonne un motif porté par plusieurs rendez-vous', () => {

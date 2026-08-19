@@ -19,10 +19,7 @@ export type PlanSynchronisation = {
  * diffère. Rien d'autre n'est comparé : le reste du paramétrage de RDV Service
  * Public ne nous est pas transmis, et n'aurait aucun sens ici.
  */
-export const estModifiee = (
-  connue: Organisation,
-  recue: Organisation,
-): boolean =>
+const estModifiee = (connue: Organisation, recue: Organisation): boolean =>
   connue.nom !== recue.nom ||
   connue.email !== recue.email ||
   connue.telephone !== recue.telephone ||

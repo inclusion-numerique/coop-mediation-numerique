@@ -73,7 +73,7 @@ export const verifierCompte = (
  * pré-remplissage, sans identifiant à inventer. L'exclusivité est ce qui protège
  * de la création d'usagers en double à chaque nouvelle demande.
  */
-export const usagerDeLaDemande = (
+const usagerDeLaDemande = (
   beneficiaire: BeneficiaireCible,
 ): UsagerDeLaDemande =>
   beneficiaire.usagerId === null

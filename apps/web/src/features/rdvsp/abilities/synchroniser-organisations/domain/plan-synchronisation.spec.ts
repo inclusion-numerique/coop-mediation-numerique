@@ -2,7 +2,7 @@ import { EmailExterne, TelephoneExterne } from '../../../domain/identite'
 import { NomOrganisation } from '../../../domain/libelle'
 import type { Organisation } from '../../../domain/organisation'
 import { OrganisationId } from '../../../domain/organisation-id'
-import { estModifiee, planifierSynchronisation } from './plan-synchronisation'
+import { planifierSynchronisation } from './plan-synchronisation'
 
 const organisation = (id: number, nom = 'Médiathèque'): Organisation => ({
   id: OrganisationId(id),
@@ -10,23 +10,6 @@ const organisation = (id: number, nom = 'Médiathèque'): Organisation => ({
   email: null,
   telephone: null,
   verticale: null,
-})
-
-describe('estModifiee', () => {
-  it('ne voit aucune modification sur deux copies identiques', () => {
-    expect(estModifiee(organisation(1), organisation(1))).toBe(false)
-  })
-
-  it.each([
-    ['le nom', { nom: NomOrganisation('Autre nom') }],
-    ['l’e-mail', { email: EmailExterne('contact@example.com') }],
-    ['le téléphone', { telephone: TelephoneExterne('+33100000000') }],
-    ['la verticale', { verticale: 'rdv-aide-numerique' }],
-  ])('détecte un changement sur %s', (_, changement) => {
-    expect(
-      estModifiee(organisation(1), { ...organisation(1), ...changement }),
-    ).toBe(true)
-  })
 })
 
 describe('planifierSynchronisation', () => {
@@ -41,10 +24,15 @@ describe('planifierSynchronisation', () => {
     expect(plan.aMettreAJour).toEqual([])
   })
 
-  it('met à jour celles dont un champ a changé', () => {
+  it.each([
+    ['le nom', { nom: NomOrganisation('Autre nom') }],
+    ['l’e-mail', { email: EmailExterne('contact@example.com') }],
+    ['le téléphone', { telephone: TelephoneExterne('+33100000000') }],
+    ['la verticale', { verticale: 'rdv-aide-numerique' }],
+  ])('met à jour celles dont %s a changé', (_, changement) => {
     const plan = planifierSynchronisation({
-      recues: [organisation(1, 'Nouveau nom')],
-      connues: [organisation(1, 'Ancien nom')],
+      recues: [{ ...organisation(1), ...changement }],
+      connues: [organisation(1)],
       rattachements: [OrganisationId(1)],
     })
 
