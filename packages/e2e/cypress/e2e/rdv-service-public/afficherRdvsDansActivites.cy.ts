@@ -54,6 +54,11 @@ describe('ETQ médiateur, je choisis de voir mes rendez-vous parmi mes activité
 
     cy.get(CASE_VOIR_RDVS).click({ force: true })
 
+    // Sans rechargement : la bascule doit rafraîchir la liste sur place. Le
+    // `router.replace` ne suffit pas quand l'URL ne change pas, et le réglage
+    // était enregistré sans que l'écran ne montre rien.
+    cy.contains('Rendez-vous').should('be.visible')
+
     // La server action écrit le réglage : c'est lui, et non le paramètre d'URL,
     // qui doit porter l'affichage d'un rechargement à l'autre.
     cy.execute('reglageRdvsDansActivitesFor', {

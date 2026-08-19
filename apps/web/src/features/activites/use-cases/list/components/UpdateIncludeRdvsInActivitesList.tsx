@@ -52,14 +52,20 @@ const UpdateIncludeRdvsInActivitesList = ({
 
     await afficherRdvsDansActivitesAction({ afficher: option.target.checked })
 
-    // get current query params
+    // Les filtres portés par l'URL cèdent la main au réglage : les garder ferait
+    // dépendre l'affichage de deux sources qui peuvent se contredire.
     const params = new URLSearchParams(queryParams.toString())
 
     params.delete('rdvs')
     params.delete('voir-rdvs')
 
-    // Router.replace() to trigger refresh
     router.replace(`?${params.toString()}`, { scroll: false })
+
+    // `replace` ne refait un rendu serveur que si l'URL change. Sur une page
+    // ouverte sans paramètre — le cas courant — elle ne bouge pas, et la liste
+    // restait telle quelle : le réglage était enregistré, mais l'écran ne
+    // montrait rien de nouveau jusqu'au rechargement suivant.
+    router.refresh()
   }
 
   const id = 'include-rdvs-in-activites-list'
