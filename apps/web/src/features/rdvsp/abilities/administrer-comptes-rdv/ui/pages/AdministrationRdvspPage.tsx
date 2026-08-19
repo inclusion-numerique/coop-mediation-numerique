@@ -1,8 +1,8 @@
-import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { statutIntegration } from '@app/web/features/rdvsp/domain/sante-compte'
 import RdvServicePublicStatusTag from '@app/web/features/rdvsp/ui/RdvServicePublicStatusTag'
+import { pluriel } from '@app/web/libraries/pluriel'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { dateAsDayAndTimeInTimeZone } from '@app/web/utils/dateAsDayAndTime'
@@ -83,8 +83,12 @@ const AdministrationRdvspPage = async ({
                           />
                           <br />
                           <span className="fr-text--xs fr-text-mention--grey">
-                            {numberToString(organisations.length)} organisation
-                            {sPluriel(organisations.length)}
+                            {numberToString(organisations.length)}{' '}
+                            {pluriel(
+                              organisations.length,
+                              'organisation',
+                              'organisations',
+                            )}
                           </span>
                         </td>
                         <td>{numberToString(rdvs)}</td>
