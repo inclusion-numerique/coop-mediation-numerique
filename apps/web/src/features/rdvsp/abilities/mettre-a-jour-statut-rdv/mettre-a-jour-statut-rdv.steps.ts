@@ -126,11 +126,11 @@ Then(
 )
 
 Then('le rendez-vous est marqué sans CRA à renseigner', async () => {
-  assert.strictEqual((await rdvEnBase(RDV_ID))?.craDeclined, true)
+  assert.strictEqual((await rdvEnBase(RDV_ID))?.compteRenduRegle, true)
 })
 
 Then('le rendez-vous attend toujours un CRA', async () => {
-  assert.strictEqual((await rdvEnBase(RDV_ID))?.craDeclined, false)
+  assert.strictEqual((await rdvEnBase(RDV_ID))?.compteRenduRegle, false)
 })
 
 Then('la mise à jour échoue avec l’erreur {string}', (tag: string) => {

@@ -111,7 +111,7 @@ export const seedRdv = async ({
   organisationId = id,
   motifId = null,
   status = 'unknown',
-  craDeclined = false,
+  compteRenduRegle = false,
   debut = new Date('2026-08-16T09:00:00.000Z'),
   dureeEnMinutes = 60,
 }: {
@@ -120,7 +120,7 @@ export const seedRdv = async ({
   organisationId?: number
   motifId?: number | null
   status?: 'unknown' | 'seen' | 'excused' | 'revoked' | 'noshow'
-  craDeclined?: boolean
+  compteRenduRegle?: boolean
   debut?: Date
   dureeEnMinutes?: number
 }): Promise<number> => {
@@ -138,7 +138,7 @@ export const seedRdv = async ({
       endsAt: new Date(debut.getTime() + dureeEnMinutes * 60_000),
       durationInMin: dureeEnMinutes,
       status,
-      craDeclined,
+      compteRenduRegle,
       collectif: false,
       usersCount: 0,
       urlForAgents: `https://rdv.anct.gouv.fr/admin/rdvs/${id}`,
@@ -345,7 +345,12 @@ export const beneficiairesDuMediateurAvecUsagers = async () =>
 export const rdvEnBase = async (rdvId: number) =>
   await prismaClient.rdv.findUnique({
     where: { id: rdvId },
-    select: { id: true, status: true, craDeclined: true, rdvAccountId: true },
+    select: {
+      id: true,
+      status: true,
+      compteRenduRegle: true,
+      rdvAccountId: true,
+    },
   })
 
 BeforeAll({ timeout: 120_000 }, async () => {

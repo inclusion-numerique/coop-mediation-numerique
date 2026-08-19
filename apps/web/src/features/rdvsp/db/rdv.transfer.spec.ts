@@ -161,7 +161,7 @@ const toRow = (rdv: Rdv): RdvRow => ({
   createdBy: null,
   createdByType: null,
   createdById: null,
-  craDeclined: false,
+  compteRenduRegle: false,
   syncedAt: new Date('2026-08-17T06:00:00.000Z'),
   rawData: { id: 1 },
 })

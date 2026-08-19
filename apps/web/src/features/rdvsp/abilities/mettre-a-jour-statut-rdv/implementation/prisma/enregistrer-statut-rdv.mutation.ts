@@ -13,7 +13,7 @@ export const enregistrerStatutRdv: EnregistrerStatutRdv = async ({
     where: { id: rdvId },
     data: {
       status: statut.statutPresence,
-      craDeclined: statut.craRefuse,
+      compteRenduRegle: statut.compteRenduRegle,
     },
   })
 }

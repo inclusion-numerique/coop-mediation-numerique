@@ -117,7 +117,7 @@ describe('statutRdvMisAJour', () => {
   it('mémorise le refus de CRA quand le rendez-vous est déclaré honoré', () => {
     expect(statutRdvMisAJour(StatutPresence('seen'))).toEqual({
       statutPresence: 'seen',
-      craRefuse: true,
+      compteRenduRegle: true,
     })
   })
 
@@ -126,7 +126,7 @@ describe('statutRdvMisAJour', () => {
     (statut) => {
       expect(statutRdvMisAJour(StatutPresence(statut))).toEqual({
         statutPresence: statut,
-        craRefuse: false,
+        compteRenduRegle: false,
       })
     },
   )

@@ -37,7 +37,8 @@ export type ContexteMiseAJourStatut = (input: {
 
 export type StatutRdvMisAJour = {
   readonly statutPresence: StatutPresence
-  readonly craRefuse: boolean
+  /** Le compte rendu n'est plus attendu : rédigé, ou décliné. */
+  readonly compteRenduRegle: boolean
 }
 
 export type EnregistrerStatutRdv = (input: {
@@ -86,15 +87,16 @@ export const verifierAcces = ({
 /**
  * État à enregistrer une fois le statut confirmé par RDV Service Public.
  *
- * Déclarer un rendez-vous honoré depuis ce parcours, c'est avoir explicitement
- * écarté la rédaction d'un CRA — la modale n'offre ce chemin qu'en regard de
- * « Renseigner un CRA pour ce RDV ». Le drapeau retient ce choix pour que
- * l'invitation ne revienne pas. Les autres statuts le lèvent : un rendez-vous
- * annulé n'appelle aucun CRA, donc aucun refus à mémoriser.
+ * `compteRenduRegle` dit que le compte rendu n'est plus attendu, quelle qu'en
+ * soit la raison : le médiateur en a rédigé un, ou il a explicitement décliné
+ * l'invitation depuis la modale. Les deux chemins mènent ici et le drapeau
+ * empêche l'invitation de revenir — c'est lui que lisent la liste d'activités
+ * et le compteur de l'accueil. Les autres statuts le lèvent : un rendez-vous
+ * annulé n'appelle aucun compte rendu.
  */
 export const statutRdvMisAJour = (
   statutConfirme: StatutPresence,
 ): StatutRdvMisAJour => ({
   statutPresence: statutConfirme,
-  craRefuse: statutConfirme === 'seen',
+  compteRenduRegle: statutConfirme === 'seen',
 })
