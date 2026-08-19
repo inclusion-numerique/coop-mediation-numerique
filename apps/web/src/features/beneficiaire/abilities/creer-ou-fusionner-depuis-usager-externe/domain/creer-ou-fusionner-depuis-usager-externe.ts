@@ -29,9 +29,11 @@ export type MergedBeneficiaire = {
   readonly commune: string | null
 }
 
-// Issue par usager : fusionné, ou écarté (donnée d'infra en échec) — jamais un
-// throw qui interromprait le lot. La donnée invalide (value objects) est, elle,
-// absorbée en amont (`.safe`) et ne produit donc pas de `Skipped`.
+// Issue par usager : fusionné, ou écarté — jamais un throw qui interromprait le
+// lot. Un usager est écarté sur une erreur d'infrastructure, ou faute d'identité
+// exploitable : un champ isolé non normalisable est absorbé en amont (`.safe`)
+// et vaut `null`, mais une fiche identifiée sans nom ni prénom n'est pas
+// écrivable — le modèle de lecture du bénéficiaire les exige tous les deux.
 export type MergeOutcome =
   | { readonly _tag: 'Merged'; readonly beneficiaire: MergedBeneficiaire }
   | {
