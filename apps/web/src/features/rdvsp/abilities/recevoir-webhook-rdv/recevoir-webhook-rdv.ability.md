@@ -37,7 +37,7 @@
 * Given un compte notifié
 * And le rendez-vous notifié est déjà enregistré avec un CRA écarté
 * When RDV Service Public notifie ce rendez-vous sans changement
-* Then la notification est ignorée pour la raison "refusDeCraPreserve"
+* Then la notification est ignorée pour la raison "reglageDuCompteRenduPreserve"
 * And le rendez-vous notifié garde son CRA écarté
 
 ### Scenario: Notification porteuse d'un changement réel
@@ -63,3 +63,12 @@
 * Given un compte notifié
 * When RDV Service Public notifie la suppression du rendez-vous
 * Then la notification est ignorée pour la raison "dejaSupprime"
+
+## Rule: Une organisation que La Coop ne connaît pas fait renoncer
+
+### Scenario: Organisation inconnue de La Coop
+
+* Given un compte notifié sans son organisation
+* When RDV Service Public notifie la création d’un rendez-vous
+* Then la notification est ignorée pour la raison "organisationInconnue"
+* And le rendez-vous notifié n’est pas enregistré

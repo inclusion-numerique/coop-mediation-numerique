@@ -4,6 +4,7 @@ import { lireNotificationRdv } from '@app/web/features/rdvsp/abilities/recevoir-
 import {
   comptePourWebhook,
   enregistrerRdvDeLaNotification,
+  organisationConnue,
   rdvConnuParId,
   supprimerRdvDeLaNotification,
 } from '@app/web/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/prisma/webhook-rdv.prisma'
@@ -33,6 +34,7 @@ const recevoir = recevoirWebhookRdv({
   lireNotification: lireNotificationRdv,
   comptePourWebhook,
   rdvConnuParId,
+  organisationConnue,
   enregistrer: enregistrerRdvDeLaNotification,
   supprimer: supprimerRdvDeLaNotification,
   // Le rapprochement des bénéficiaires a ses propres scénarios.
@@ -132,6 +134,13 @@ Given(
   },
 )
 
+// Seule la synchronisation crée les organisations : une notification peut donc
+// arriver avant elle, et ne doit pas faire échouer la route.
+Given('un compte notifié sans son organisation', async () => {
+  await seedCompteRdv({ id: AGENT_ID, accessToken: 'jeton-acces' })
+  suivreUsagerRdv(USAGER_ID)
+})
+
 Given('aucun compte notifié', () => {
   // Le hook Before a déjà retiré tout compte de l'utilisateur de test.
 })
@@ -157,7 +166,7 @@ Given(
       organisationId: ORGANISATION_ID,
       motifId: MOTIF_ID,
       debut: new Date('2026-09-01T09:00:00.000Z'),
-      craDeclined: true,
+      compteRenduRegle: true,
     })
   },
 )
@@ -234,7 +243,7 @@ Then('le rendez-vous notifié n’est pas enregistré', async () => {
 })
 
 Then('le rendez-vous notifié garde son CRA écarté', async () => {
-  assert.strictEqual((await rdvEnBase(RDV_ID))?.craDeclined, true)
+  assert.strictEqual((await rdvEnBase(RDV_ID))?.compteRenduRegle, true)
 })
 
 Then(

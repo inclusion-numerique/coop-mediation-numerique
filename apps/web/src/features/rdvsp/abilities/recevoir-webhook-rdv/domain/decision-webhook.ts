@@ -7,13 +7,13 @@ import type { Rdv } from '../../../domain/rdv'
  */
 export type RdvConnu = {
   readonly rdv: Rdv
-  readonly craRefuse: boolean
+  readonly compteRenduRegle: boolean
 }
 
 export type RaisonIgnore =
   | 'dejaSupprime'
   | 'horsFenetreDeSynchronisation'
-  | 'refusDeCraPreserve'
+  | 'reglageDuCompteRenduPreserve'
 
 export type DecisionWebhookRdv =
   | { readonly _tag: 'enregistrer' }
@@ -78,10 +78,10 @@ export const decisionPourWebhookRdv = ({
 
   if (
     connu !== null &&
-    connu.craRefuse &&
+    connu.compteRenduRegle &&
     !webhookRdvModifie(connu.rdv, recu)
   ) {
-    return { _tag: 'ignorer', raison: 'refusDeCraPreserve' }
+    return { _tag: 'ignorer', raison: 'reglageDuCompteRenduPreserve' }
   }
 
   return { _tag: 'enregistrer' }

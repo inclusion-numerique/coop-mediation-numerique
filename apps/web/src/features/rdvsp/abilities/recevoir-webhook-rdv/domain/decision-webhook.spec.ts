@@ -53,7 +53,7 @@ describe('decisionPourWebhookRdv', () => {
     const decision = decisionPourWebhookRdv({
       evenement: detruit,
       recu: rdv(),
-      connu: { rdv: rdv(), craRefuse: false },
+      connu: { rdv: rdv(), compteRenduRegle: false },
       synchroniserDepuis: null,
     })
 
@@ -94,7 +94,7 @@ describe('decisionPourWebhookRdv', () => {
       const decision = decisionPourWebhookRdv({
         evenement: misAJour,
         recu: ancien,
-        connu: { rdv: ancien, craRefuse: false },
+        connu: { rdv: ancien, compteRenduRegle: false },
         synchroniserDepuis: fenetre,
       })
 
@@ -118,13 +118,13 @@ describe('decisionPourWebhookRdv', () => {
       const decision = decisionPourWebhookRdv({
         evenement: misAJour,
         recu: rdv(),
-        connu: { rdv: rdv(), craRefuse: true },
+        connu: { rdv: rdv(), compteRenduRegle: true },
         synchroniserDepuis: null,
       })
 
       expect(decision).toEqual({
         _tag: 'ignorer',
-        raison: 'refusDeCraPreserve',
+        raison: 'reglageDuCompteRenduPreserve',
       })
     })
 
@@ -132,7 +132,7 @@ describe('decisionPourWebhookRdv', () => {
       const decision = decisionPourWebhookRdv({
         evenement: misAJour,
         recu: rdv({ statutPresence: StatutPresence('noshow') }),
-        connu: { rdv: rdv(), craRefuse: true },
+        connu: { rdv: rdv(), compteRenduRegle: true },
         synchroniserDepuis: null,
       })
 
@@ -143,7 +143,7 @@ describe('decisionPourWebhookRdv', () => {
       const decision = decisionPourWebhookRdv({
         evenement: misAJour,
         recu: rdv(),
-        connu: { rdv: rdv(), craRefuse: false },
+        connu: { rdv: rdv(), compteRenduRegle: false },
         synchroniserDepuis: null,
       })
 
@@ -154,7 +154,7 @@ describe('decisionPourWebhookRdv', () => {
       const decision = decisionPourWebhookRdv({
         evenement: detruit,
         recu: rdv(),
-        connu: { rdv: rdv(), craRefuse: true },
+        connu: { rdv: rdv(), compteRenduRegle: true },
         synchroniserDepuis: null,
       })
 

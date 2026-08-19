@@ -10,6 +10,7 @@ import {
 import type {
   ComptePourWebhook,
   EnregistrerRdvDeLaNotification,
+  OrganisationConnue,
   RdvConnuParId,
   SupprimerRdvDeLaNotification,
 } from '../../domain/recevoir-webhook-rdv'
@@ -31,6 +32,11 @@ export const comptePourWebhook: ComptePourWebhook = async (agentId) => {
       }
 }
 
+export const organisationConnue: OrganisationConnue = async (organisationId) =>
+  (await prismaClient.rdvOrganisation.count({
+    where: { id: organisationId },
+  })) > 0
+
 export const rdvConnuParId: RdvConnuParId = async (rdvId) => {
   const row = await prismaClient.rdv.findUnique({
     where: { id: rdvId },
@@ -43,7 +49,7 @@ export const rdvConnuParId: RdvConnuParId = async (rdvId) => {
 
   return row === null
     ? null
-    : { rdv: rdvToDomain(row), craRefuse: row.craDeclined }
+    : { rdv: rdvToDomain(row), compteRenduRegle: row.compteRenduRegle }
 }
 
 const traceJson = (brut: unknown) => JSON.parse(JSON.stringify(brut ?? {}))
@@ -53,7 +59,7 @@ const traceJson = (brut: unknown) => JSON.parse(JSON.stringify(brut ?? {}))
  * clés étrangères. Les participations sont remplacées : RDV Service Public fait
  * autorité sur la liste des participants.
  *
- * `craDeclined` n'est pas touché — la colonne appartient au médiateur, pas au
+ * `compteRenduRegle` n'est pas touché — la colonne appartient au médiateur, pas au
  * service. C'est ce qui permet à `decisionPourWebhookRdv` de la protéger en
  * amont sans que l'écriture la contredise.
  */

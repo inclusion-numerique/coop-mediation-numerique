@@ -3,6 +3,7 @@ import type {
   ComptePourWebhook,
   EnregistrerRdvDeLaNotification,
   LireNotificationRdv,
+  OrganisationConnue,
   RapprocherBeneficiairesDuRdv,
   RdvConnuParId,
   RecevoirWebhookRdv,
@@ -13,6 +14,7 @@ export type DependancesRecevoirWebhookRdv = {
   readonly lireNotification: LireNotificationRdv
   readonly comptePourWebhook: ComptePourWebhook
   readonly rdvConnuParId: RdvConnuParId
+  readonly organisationConnue: OrganisationConnue
   readonly enregistrer: EnregistrerRdvDeLaNotification
   readonly supprimer: SupprimerRdvDeLaNotification
   readonly rapprocherBeneficiaires: RapprocherBeneficiairesDuRdv
@@ -30,6 +32,7 @@ export const recevoirWebhookRdv =
     lireNotification,
     comptePourWebhook,
     rdvConnuParId,
+    organisationConnue,
     enregistrer,
     supprimer,
     rapprocherBeneficiaires,
@@ -62,6 +65,12 @@ export const recevoirWebhookRdv =
     if (decision._tag === 'supprimer') {
       await supprimer(rdv.id)
       return { _tag: 'traite', action: 'supprime' }
+    }
+
+    // L'organisation porte le rendez-vous : l'écrire sans elle violerait la clé
+    // étrangère. On renonce, la synchronisation rattrapera.
+    if (!(await organisationConnue(rdv.organisationId))) {
+      return { _tag: 'ignore', raison: 'organisationInconnue' }
     }
 
     await enregistrer({ rdv, brut: payload })

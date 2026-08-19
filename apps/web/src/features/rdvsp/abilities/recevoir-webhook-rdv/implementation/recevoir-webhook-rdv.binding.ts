@@ -5,6 +5,7 @@ import { rapprocherBeneficiairesDuRdv } from './beneficiaire/rapprocher-benefici
 import {
   comptePourWebhook,
   enregistrerRdvDeLaNotification,
+  organisationConnue,
   rdvConnuParId,
   supprimerRdvDeLaNotification,
 } from './prisma/webhook-rdv.prisma'
@@ -14,6 +15,7 @@ const recevoir = recevoirWebhookRdv({
   lireNotification: lireNotificationRdv,
   comptePourWebhook,
   rdvConnuParId,
+  organisationConnue,
   enregistrer: enregistrerRdvDeLaNotification,
   supprimer: supprimerRdvDeLaNotification,
   rapprocherBeneficiaires: rapprocherBeneficiairesDuRdv(journaliserWebhook),

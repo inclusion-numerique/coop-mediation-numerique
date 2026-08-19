@@ -1,5 +1,6 @@
 import type { Result } from '@app/web/libraries/result'
 import type { EvenementWebhook } from '../../../domain/evenement-webhook'
+import type { OrganisationId } from '../../../domain/organisation-id'
 import type { Rdv } from '../../../domain/rdv'
 import type { RdvAgentId } from '../../../domain/rdv-agent-id'
 import type { RdvId } from '../../../domain/rdv-id'
@@ -33,6 +34,18 @@ export type RecevoirWebhookRdv = (input: {
 export type LireNotificationRdv = (
   payload: unknown,
 ) => Result<{ agentId: RdvAgentId; rdv: Rdv }, RaisonNonTraitee>
+
+/**
+ * L'organisation du rendez-vous est-elle déjà connue de La Coop ?
+ *
+ * Seule la synchronisation crée les organisations. Une notification peut la
+ * précéder — un agent rejoint une organisation, RDV Service Public notifie avant
+ * la passe suivante — et l'écriture butait alors sur la clé étrangère, rendant
+ * un 500 là où la route promet de renoncer proprement.
+ */
+export type OrganisationConnue = (
+  organisationId: OrganisationId,
+) => Promise<boolean>
 
 export type ComptePourWebhook = (agentId: RdvAgentId) => Promise<{
   readonly synchroniserDepuis: Date | null
