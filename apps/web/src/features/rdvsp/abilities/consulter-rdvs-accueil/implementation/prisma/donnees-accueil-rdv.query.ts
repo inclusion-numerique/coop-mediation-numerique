@@ -49,8 +49,8 @@ const toRdvEnUneLigne = (row: LigneRdv): RdvEnUneLigne => ({
 /**
  * Quatre lectures indépendantes, lancées ensemble. Les compteurs et les deux
  * rendez-vous mis en avant partagent les mêmes critères que les listes vers
- * lesquelles l'accueil renvoie — un rendez-vous « à venir » commence après
- * l'instant courant, un « passé » est échu sans présence saisie.
+ * lesquelles l'accueil renvoie — un rendez-vous « à venir » est sans statut et
+ * commence après l'instant courant, un « passé » est échu sans présence saisie.
  */
 export const lireDonneesAccueilRdv: LireDonneesAccueilRdv = async ({
   compte,
@@ -64,19 +64,27 @@ export const lireDonneesAccueilRdv: LireDonneesAccueilRdv = async ({
     endsAt: { lte: maintenant },
   } as const
 
+  // Un rendez-vous annulé ou déjà statué n'est plus « à venir », même si sa date
+  // ne l'est pas encore : sans ce critère, le compteur enflait des rendez-vous
+  // annulés et mettait en avant un « prochain » qui n'aurait pas lieu. C'est
+  // aussi ce que filtre le lien de l'accueil (`rdvs=unknown`).
+  const aVenirCriteres = {
+    rdvAccountId,
+    status: 'unknown',
+    startsAt: { gte: maintenant },
+  } as const
+
   const honoreSansCompteRendu = {
     rdvAccountId,
     status: 'seen',
     activite: null,
-    craDeclined: false,
+    compteRenduRegle: false,
   } as const
 
   const [aVenir, prochain, passes, honores, dernier] = await Promise.all([
-    prismaClient.rdv.count({
-      where: { rdvAccountId, startsAt: { gte: maintenant } },
-    }),
+    prismaClient.rdv.count({ where: aVenirCriteres }),
     prismaClient.rdv.findFirst({
-      where: { rdvAccountId, startsAt: { gte: maintenant } },
+      where: aVenirCriteres,
       select: selectionRdv,
       orderBy: { startsAt: 'asc' },
     }),

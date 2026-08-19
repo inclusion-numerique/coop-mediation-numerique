@@ -24,11 +24,11 @@ const dans = (jours: number) =>
 const creerRdv = async ({
   statut,
   debut,
-  craDeclined = false,
+  compteRenduRegle = false,
 }: {
   statut: string
   debut: Date
-  craDeclined?: boolean
+  compteRenduRegle?: boolean
 }) => {
   rdvsCrees += 1
   await seedRdv({
@@ -36,7 +36,7 @@ const creerRdv = async ({
     rdvAccountId: AGENT_ID,
     organisationId: ID_TEST.organisation + 200,
     status: StatutPresence.schema.parse(statut),
-    craDeclined,
+    compteRenduRegle,
     debut,
   })
 }
@@ -84,7 +84,7 @@ Given(
 Given(
   'un rendez-vous {string} il y a {int} jours dont le CRA a été écarté',
   async (statut: string, jours: number) => {
-    await creerRdv({ statut, debut: dans(-jours), craDeclined: true })
+    await creerRdv({ statut, debut: dans(-jours), compteRenduRegle: true })
   },
 )
 
