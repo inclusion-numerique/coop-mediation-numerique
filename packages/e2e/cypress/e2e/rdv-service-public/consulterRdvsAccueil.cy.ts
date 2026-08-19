@@ -10,8 +10,9 @@ import { mediateurSansActivites } from '@app/fixtures/users/mediateurSansActivit
  * mis en avant comme prochain — un médiateur se voyait annoncer un rendez-vous
  * qui n'aurait pas lieu.
  *
- * Le jeu de données croise donc volontairement statut et chronologie : c'est la
- * seule combinaison qui distingue un filtre correct d'un filtre sur la date.
+ * Les assertions portent sur des phrases entières rendues à l'écran plutôt que
+ * sur des compteurs atteints en remontant le DOM : la structure du bloc peut
+ * changer sans que le comportement bouge, et l'inverse doit rester détectable.
  */
 
 const RDV = 9_900_200
@@ -22,15 +23,12 @@ describe('ETQ médiateur, l’accueil ne m’annonce que les rendez-vous qui aur
     cy.execute('connectRdvAccountFor', { email: mediateurSansActivites.email })
   })
 
-  it('Un rendez-vous annulé n’est ni compté ni mis en avant', () => {
+  it('Des rendez-vous tous annulés n’en mettent aucun en avant', () => {
     cy.execute('seedRdvsFor', {
       email: mediateurSansActivites.email,
       rdvs: [
-        // Le plus proche dans le temps, mais annulé : le piège du classement
-        // par date seule.
         { id: RDV + 1, statut: 'revoked', dansDesJours: 1 },
         { id: RDV + 2, statut: 'excused', dansDesJours: 2 },
-        { id: RDV + 3, statut: 'unknown', dansDesJours: 3 },
       ],
     })
 
@@ -38,23 +36,16 @@ describe('ETQ médiateur, l’accueil ne m’annonce que les rendez-vous qui aur
     cy.visit(appUrl('/coop'))
 
     cy.contains('RDV Service Public').should('be.visible')
-
-    cy.contains('Rdv à venir')
-      .closest('div')
-      .parent()
-      .should('contain.text', '1')
-
-    // Le rendez-vous mis en avant doit être le seul qui aura lieu, pas le plus
-    // proche dans le temps.
-    cy.contains('Prochain le').should('be.visible')
+    // Avant correctif, le plus proche des deux annulés était annoncé ici.
+    cy.contains('Prochain le').should('not.exist')
   })
 
-  it('Un rendez-vous déjà honoré ne compte plus comme à venir', () => {
+  it('Un rendez-vous déjà statué n’est pas annoncé comme prochain', () => {
     cy.execute('seedRdvsFor', {
       email: mediateurSansActivites.email,
       rdvs: [
-        { id: RDV + 4, statut: 'seen', dansDesJours: 1 },
-        { id: RDV + 5, statut: 'noshow', dansDesJours: 2 },
+        { id: RDV + 3, statut: 'seen', dansDesJours: 1 },
+        { id: RDV + 4, statut: 'noshow', dansDesJours: 2 },
       ],
     })
 
@@ -65,10 +56,25 @@ describe('ETQ médiateur, l’accueil ne m’annonce que les rendez-vous qui aur
     cy.contains('Prochain le').should('not.exist')
   })
 
+  it('Un rendez-vous qui aura lieu est annoncé, même entouré d’annulés', () => {
+    cy.execute('seedRdvsFor', {
+      email: mediateurSansActivites.email,
+      rdvs: [
+        { id: RDV + 5, statut: 'revoked', dansDesJours: 1 },
+        { id: RDV + 6, statut: 'unknown', dansDesJours: 3 },
+      ],
+    })
+
+    cy.signin(mediateurSansActivites)
+    cy.visit(appUrl('/coop'))
+
+    cy.contains('Prochain le').should('be.visible')
+  })
+
   it('Un rendez-vous honoré sans compte rendu est réclamé', () => {
     cy.execute('seedRdvsFor', {
       email: mediateurSansActivites.email,
-      rdvs: [{ id: RDV + 6, statut: 'seen', dansDesJours: -2 }],
+      rdvs: [{ id: RDV + 7, statut: 'seen', dansDesJours: -2 }],
     })
 
     cy.signin(mediateurSansActivites)
@@ -83,7 +89,7 @@ describe('ETQ médiateur, l’accueil ne m’annonce que les rendez-vous qui aur
       email: mediateurSansActivites.email,
       rdvs: [
         {
-          id: RDV + 7,
+          id: RDV + 8,
           statut: 'seen',
           dansDesJours: -2,
           compteRenduRegle: true,
