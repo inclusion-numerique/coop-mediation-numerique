@@ -64,7 +64,10 @@ export const synchroniserCompteRdv =
     }
 
     const { compte } = portee
-    const { journalId } = await ouvrirJournal(compte)
+    const { journalId } = await ouvrirJournal({
+      compte,
+      organisationIds: passe.organisationIds,
+    })
     const lignes: string[] = []
     const tracer = (message: string) => {
       lignes.push(message)

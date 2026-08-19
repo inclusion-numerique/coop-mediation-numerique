@@ -26,9 +26,19 @@ const colonnesDuModele = (
   [`${modele}Deleted`]: bilan[modele].deleted,
 })
 
-export const ouvrirJournal: OuvrirJournal = async (compte) => {
+export const ouvrirJournal: OuvrirJournal = async ({
+  compte,
+  organisationIds,
+}) => {
   const { id } = await prismaClient.rdvSyncLog.create({
-    data: { rdvAccountId: compte.agentId, started: new Date() },
+    data: {
+      rdvAccountId: compte.agentId,
+      started: new Date(),
+      // Liste vide = passe complète : la colonne ne distingue pas l'absence de
+      // portée d'une portée vide, mais `passePour` a déjà écarté ce second cas.
+      organisationIds:
+        organisationIds === undefined ? [] : [...organisationIds],
+    },
     select: { id: true },
   })
 

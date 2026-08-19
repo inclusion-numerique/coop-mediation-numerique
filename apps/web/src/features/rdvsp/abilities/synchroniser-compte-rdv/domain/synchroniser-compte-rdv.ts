@@ -87,10 +87,19 @@ export type ReconcilierWebhooks = (input: {
   readonly organisationIdsSansWebhook: readonly OrganisationId[] | undefined
 }>
 
-/** Trace d'exécution, ouverte au démarrage et refermée à l'arrivée. */
-export type OuvrirJournal = (
-  compte: CompteRdvUtilisable,
-) => Promise<{ readonly journalId: string }>
+/**
+ * Trace d'exécution, ouverte au démarrage et refermée à l'arrivée.
+ *
+ * La portée y est consignée dès l'ouverture : une passe restreinte ne mesure la
+ * dérive que des organisations qu'elle a parcourues, et la lire comme une dérive
+ * globale la sous-estime. Sans cette information, les deux sont indiscernables
+ * dans `rdv_sync_logs` — c'est pourtant lui que l'administration surveille.
+ * `undefined` vaut « toutes les organisations ».
+ */
+export type OuvrirJournal = (input: {
+  readonly compte: CompteRdvUtilisable
+  readonly organisationIds?: readonly OrganisationId[]
+}) => Promise<{ readonly journalId: string }>
 
 export type CloturerJournal = (input: {
   readonly journalId: string
