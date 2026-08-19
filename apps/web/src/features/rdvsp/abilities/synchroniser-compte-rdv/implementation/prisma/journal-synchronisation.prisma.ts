@@ -1,7 +1,7 @@
 import { prismaClient } from '@app/web/prismaClient'
 import {
   type BilanSynchronisation,
-  derive,
+  deriveDuModele,
   type ModeleSynchronise,
 } from '../../../../domain/bilan-synchronisation'
 import type {
@@ -19,7 +19,7 @@ const colonnesDuModele = (
   modele: ModeleSynchronise,
   bilan: BilanSynchronisation,
 ) => ({
-  [`${modele}Drift`]: derive(bilan[modele]),
+  [`${modele}Drift`]: deriveDuModele(modele, bilan),
   [`${modele}Noop`]: bilan[modele].noop,
   [`${modele}Created`]: bilan[modele].created,
   [`${modele}Updated`]: bilan[modele].updated,

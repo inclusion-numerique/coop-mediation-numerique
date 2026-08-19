@@ -75,6 +75,15 @@ export const synchroniserCompteRdv =
     }
 
     try {
+      // Chaque étape s'annonce avant d'agir, et rend compte après. Ne tracer
+      // qu'au succès laissait un journal vide quand la première étape tombait —
+      // exactement le cas où on a besoin de savoir où on en était.
+      tracer(
+        passe.toutesOrganisations
+          ? 'réconciliation des organisations'
+          : 'organisations non réconciliées (passe restreinte)',
+      )
+
       const organisations = passe.toutesOrganisations
         ? await reconcilierOrganisations(compte)
         : success(bilanVide)
@@ -89,6 +98,7 @@ export const synchroniserCompteRdv =
       }
 
       tracer('organisations réconciliées')
+      tracer('réconciliation des rendez-vous')
 
       const rdvs = await reconcilierRdvs({
         compte,
@@ -105,6 +115,7 @@ export const synchroniserCompteRdv =
       }
 
       tracer('rendez-vous réconciliés')
+      tracer('installation des webhooks')
 
       const webhooks = await reconcilierWebhooks({
         compte,

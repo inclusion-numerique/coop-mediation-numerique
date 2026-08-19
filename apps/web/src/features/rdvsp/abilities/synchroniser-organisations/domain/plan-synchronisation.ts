@@ -62,8 +62,31 @@ export const planifierSynchronisation = ({
     aRattacher: recues
       .filter((recue) => !rattachements.includes(recue.id))
       .map((recue) => recue.id),
-    aDetacher: rattachements.filter(
-      (organisationId) => !idsRecus.has(organisationId),
-    ),
+    aDetacher: detachements(rattachements, idsRecus),
   }
+}
+
+/**
+ * Rattachements à retirer, sauf s'il faudrait tous les retirer.
+ *
+ * Une réponse vide n'est pas distinguable, ici, d'un agent qui vient d'être sorti
+ * de toutes ses organisations. Le second cas est rare, le premier est un incident
+ * d'API — et la sanction serait la même : un compte qui ne synchronise plus rien
+ * jusqu'à la passe suivante, faute d'organisation à parcourir.
+ *
+ * On garde donc le cache en l'état et on laisse la passe suivante trancher. Un
+ * agent réellement sorti de partout n'a de toute façon plus de rendez-vous à
+ * rapporter : ne rien détacher ne lui fait rien remonter de faux.
+ */
+const detachements = (
+  rattachements: readonly OrganisationId[],
+  idsRecus: ReadonlySet<OrganisationId>,
+): readonly OrganisationId[] => {
+  const aDetacher = rattachements.filter(
+    (organisationId) => !idsRecus.has(organisationId),
+  )
+
+  return aDetacher.length === rattachements.length && rattachements.length > 0
+    ? []
+    : aDetacher
 }

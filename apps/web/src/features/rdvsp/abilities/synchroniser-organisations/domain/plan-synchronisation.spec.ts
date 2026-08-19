@@ -76,14 +76,30 @@ describe('planifierSynchronisation', () => {
     expect(plan.aDetacher).toEqual([2])
   })
 
-  it('détache même une organisation que La Coop ne connaît plus en propre', () => {
+  it('ne détache rien quand la réponse ne confirme plus aucun rattachement', () => {
+    // Une réponse vide ne se distingue pas d'un agent sorti de toutes ses
+    // organisations. Tout détacher sur ce seul signal laisserait le compte sans
+    // rien à parcourir jusqu'à la passe suivante ; on garde le cache et on laisse
+    // la prochaine réponse trancher.
     const plan = planifierSynchronisation({
       recues: [],
       connues: [],
       rattachements: [OrganisationId(9)],
     })
 
-    expect(plan.aDetacher).toEqual([9])
+    expect(plan.aDetacher).toEqual([])
+  })
+
+  it('détache tous les rattachements non confirmés dès qu’un seul l’est', () => {
+    // La garde ne porte que sur le tout ou rien : une réponse qui confirme au
+    // moins une organisation fait autorité sur les autres.
+    const plan = planifierSynchronisation({
+      recues: [organisation(1)],
+      connues: [organisation(1)],
+      rattachements: [OrganisationId(1), OrganisationId(2), OrganisationId(3)],
+    })
+
+    expect(plan.aDetacher).toEqual([2, 3])
   })
 
   it('ne détache rien quand tous les rattachements sont confirmés', () => {
