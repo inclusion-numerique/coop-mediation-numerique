@@ -4,7 +4,10 @@ import {
   fixtureCrasIndividuels,
 } from '@app/fixtures/activites'
 import { fixtureBeneficiaires } from '@app/fixtures/beneficiaires'
-import { garantirAffectationIdposte } from '@app/fixtures/personnesMainConseillerNumerique'
+import {
+  garantirAffectationIdposte,
+  refleterCoordinateurDansMain,
+} from '@app/fixtures/personnesMainConseillerNumerique'
 import { upsertCraFixtures } from '@app/fixtures/upsertCraFixtures'
 import { sansDrapeauDispositif } from '@app/fixtures/upsertUserFixture'
 import { coordinations, fixtureUsers } from '@app/fixtures/users'
@@ -185,6 +188,10 @@ export const resetFixtureUser = async (
   if (userFixture.isConseillerNumerique) {
     await garantirAffectationIdposte(prismaClient, userFixture.id)
   }
+
+  // Le rôle coordinateur vient de `main` depuis ADR-002 : une fixture qui le déclare côté coop doit
+  // le voir reflété, sinon le parcours d'inscription la prend pour un simple conseiller.
+  await refleterCoordinateurDansMain(prismaClient)
 
   await prismaClient.session.createMany({
     data: sessions,

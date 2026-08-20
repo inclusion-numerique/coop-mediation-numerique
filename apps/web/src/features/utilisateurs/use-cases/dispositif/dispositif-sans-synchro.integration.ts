@@ -175,16 +175,25 @@ describe('le dispositif conseiller numérique sans synchro', () => {
     )
   })
 
-  // L'import automatique des lieux n'a PAS de remplaçant : `main.personne_affectations_lieu` est une
-  // vue construite sur `coop.mediateurs_en_activite`, et la table historique ne contient que des
-  // affectations de source `coop`. Aucune affectation lieu ne vient du dispositif — ce que ce test
-  // épingle, pour qu'une future « source idposte » ne passe pas inaperçue.
-  it('ne trouve aucune affectation lieu d’origine idposte dans main', async () => {
-    const [{ total }] = await prismaClient.$queryRaw<{ total: bigint }[]>`
-      SELECT count(*) AS total
-      FROM main.personne_affectations_lieu_legacy
-      WHERE source <> 'coop'`
+  // Le parcours d'inscription d'un COORDINATEUR conseiller numérique dépend de `is_coordinateur`
+  // porté par `main.personne` — que l'Entrepôt renseigne en production, et que les fixtures doivent
+  // refléter. Sans ce reflet, un coordinateur est vu comme un simple conseiller et le parcours
+  // l'envoie sur la mauvaise étape : c'est exactement ce qui a fait tomber l'e2e.
+  it('distingue le coordinateur du dispositif du simple conseiller', async () => {
+    const duCoordinateur = await dispositifDepuisMain(coordinateur)
+    const duConseiller = await dispositifDepuisMain(conseiller)
 
-    expect(Number(total)).toBe(0)
+    expect(profilDepuisDispositif(duCoordinateur)).toBe(
+      'CoordinateurConseillerNumerique',
+    )
+    expect(profilDepuisDispositif(duConseiller)).toBe('ConseillerNumerique')
   })
+
+  // L'import automatique des lieux n'a PAS de remplaçant : `main.personne_affectations_lieu` est une
+  // vue construite sur `coop.mediateurs_en_activite`, et les 14 033 lignes de la table historique
+  // sont toutes de source `coop`. Aucune affectation lieu ne vient du dispositif.
+  //
+  // Ce fait N'EST PAS testé ici : il porte sur des tables Flyway que notre baseline `main` ne crée
+  // pas (CI et preview ne les ont donc pas), et il décrit la donnée de l'Entrepôt, pas notre code.
+  // Un test le prétendant vérifierait surtout l'environnement dans lequel il tourne.
 })
