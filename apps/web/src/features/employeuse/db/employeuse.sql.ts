@@ -59,15 +59,20 @@ export const employeuseCourante = (alias = 's1') => ({
  * @param userIdColumn référence de colonne de la requête appelante (ex. `u.id`). C'est un
  *   **identifiant SQL**, jamais une entrée utilisateur : il ne peut pas être paramétré.
  */
-export const conseillerNumeriqueSql = (
+export const conseillerNumeriqueExpression = (
   userIdColumn: string,
-  releveDuDispositif: boolean,
-) =>
-  Prisma.raw(`${releveDuDispositif ? '' : 'NOT '}EXISTS (
+  releveDuDispositif = true,
+): string => `${releveDuDispositif ? '' : 'NOT '}EXISTS (
       SELECT 1
       FROM main.personne p
       JOIN main.personne_affectations_emploi a ON a.personne_id = p.id
       WHERE p.coop_id = ${userIdColumn}
         AND a.source = 'idposte'
         AND a.est_active
-    )`)
+    )`
+
+/** Même prédicat, prêt à être interpolé dans un template `Prisma.sql`. */
+export const conseillerNumeriqueSql = (
+  userIdColumn: string,
+  releveDuDispositif: boolean,
+) => Prisma.raw(conseillerNumeriqueExpression(userIdColumn, releveDuDispositif))

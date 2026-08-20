@@ -1,4 +1,8 @@
-import { rattacherAUneEmployeuseDepuisSiret } from '@app/web/features/employeuse/server'
+import {
+  personneConseillerNumeriqueSelect,
+  personneEstConseillerNumerique,
+  rattacherAUneEmployeuseDepuisSiret,
+} from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 
 export type ImportStructureEmployeuseFromProConnectResult = {
@@ -36,7 +40,7 @@ export const importStructureEmployeuseFromProConnect = async ({
 
   const user = await prismaClient.user.findUnique({
     where: { id: userId },
-    select: { isConseillerNumerique: true },
+    select: { personneMain: { select: personneConseillerNumeriqueSelect } },
   })
 
   if (!user) {
@@ -44,7 +48,7 @@ export const importStructureEmployeuseFromProConnect = async ({
   }
 
   // This import logic only applies to non-conseiller users.
-  if (user.isConseillerNumerique) {
+  if (personneEstConseillerNumerique(user.personneMain)) {
     return { success: true, noOp: true, reason: 'User is conseiller numerique' }
   }
 

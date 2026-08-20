@@ -988,6 +988,9 @@ model PersonneMain {
   prenom         String?   @db.VarChar(50)
   nom            String?   @db.VarChar(50)
   contact        Json?
+  /// Identifiant du conseiller numérique côté dispositif. Remplace `coop.users.dataspace_user_id_pg`,
+  /// que la synchro nocturne recopiait depuis l'API : c'est la même valeur, à la source.
+  cnPgId         Int?      @unique(map: "personne_cn_pg_id_ukey") @map("cn_pg_id")
   coopId         String?   @unique(map: "personne_coop_id_ukey") @map("coop_id") @db.Uuid
   isCoordinateur Boolean?  @map("is_coordinateur")
   isMediateur    Boolean?  @map("is_mediateur")
