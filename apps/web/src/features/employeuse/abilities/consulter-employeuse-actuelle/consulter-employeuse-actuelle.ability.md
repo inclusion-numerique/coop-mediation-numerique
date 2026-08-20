@@ -38,3 +38,23 @@ l'utilisateur jusqu'à sa personne, puis ses affectations emploi actives.
 * Given un utilisateur affecté à "Association des tests" par la source "coop"
 * When je consulte l'employeuse courante de cet utilisateur
 * Then la période d'emploi est inconnue
+
+## Rule: Un terme encore à venir ne termine pas l'emploi
+
+Un contrat à durée déterminée porte sa date de fin dès sa signature. La constater
+ne suffit donc pas : il faut la comparer à aujourd'hui, sans quoi tout CDD est
+annoncé terminé alors que la personne est en poste pour des mois encore.
+
+### Scenario: Un contrat dont le terme est encore devant reste en cours
+
+* Given un utilisateur affecté à "Association des tests" par la source "coop"
+* And un contrat chez "Association des tests" courant du "2026-03-01" au "2099-12-31"
+* When je consulte l'employeuse courante de cet utilisateur
+* Then la période d'emploi est en cours depuis le "2026-03-01" jusqu'au "2099-12-31"
+
+### Scenario: Un contrat dont le terme est passé est bien terminé
+
+* Given un utilisateur affecté à "Association des tests" par la source "coop"
+* And un contrat chez "Association des tests" courant du "2020-01-01" au "2020-12-31"
+* When je consulte l'employeuse courante de cet utilisateur
+* Then la période d'emploi est terminée le "2020-12-31"

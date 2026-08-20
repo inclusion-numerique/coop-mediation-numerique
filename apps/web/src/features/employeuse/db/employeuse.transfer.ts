@@ -138,7 +138,12 @@ export const affectationToDomain = (row: AffectationRow): Affectation => ({
  * date. Les contrats sans structure ne sont rattachables à aucune employeuse et
  * sont écartés.
  */
-export const contratsToDomain = (rows: readonly ContratRow[]): Contrat[] =>
+export const contratsToDomain = (
+  rows: readonly ContratRow[],
+  // Horloge du transfer : le domaine, lui, l'exige. Un contrat n'est terminé que
+  // si son terme est passé, et cette lecture est donc datée.
+  maintenant: Date = new Date(),
+): Contrat[] =>
   rows.flatMap((row) =>
     row.structureAdministrative
       ? [
@@ -148,6 +153,7 @@ export const contratsToDomain = (rows: readonly ContratRow[]): Contrat[] =>
               debut: row.dateDebut,
               fin: row.dateFin,
               rupture: row.dateRupture,
+              maintenant,
             }),
           },
         ]
@@ -161,7 +167,8 @@ export const personneToAffectations = (
 
 export const personneToContrats = (
   personne: PersonneEmployeusePayload | null,
-): Contrat[] => contratsToDomain(personne?.contrats ?? [])
+  maintenant: Date = new Date(),
+): Contrat[] => contratsToDomain(personne?.contrats ?? [], maintenant)
 
 /**
  * Employeuse courante depuis une personne **déjà chargée**. C'est la voie des
@@ -171,28 +178,31 @@ export const personneToContrats = (
  */
 export const personneToEmployeuseActuelle = (
   personne: PersonneEmployeusePayload | null,
+  maintenant: Date = new Date(),
 ): EmployeuseActuelle | null =>
   employeuseActuelle(
     personneToAffectations(personne),
-    personneToContrats(personne),
+    personneToContrats(personne, maintenant),
   )
 
 /** Même composition, pour l'historique complet des employeuses. */
 export const personneToEmployeusesHistorique = (
   personne: PersonneEmployeusePayload | null,
+  maintenant: Date = new Date(),
 ): EmployeuseHistorique[] =>
   employeusesHistorique(
     personneToAffectations(personne),
-    personneToContrats(personne),
+    personneToContrats(personne, maintenant),
   )
 
 /** Même composition, pour l'employeuse d'une date donnée. */
 export const personneToEmployeuseALaDate = (
   personne: PersonneEmployeusePayload | null,
   date: Date,
+  maintenant: Date = new Date(),
 ): Employeuse | null =>
   employeuseALaDate(
     personneToAffectations(personne),
-    personneToContrats(personne),
+    personneToContrats(personne, maintenant),
     date,
   )

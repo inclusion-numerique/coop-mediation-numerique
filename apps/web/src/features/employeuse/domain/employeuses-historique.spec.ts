@@ -46,6 +46,7 @@ describe('employeusesHistorique', () => {
     expect(historique[1]?.periode).toEqual({
       _tag: 'enCours',
       debut: new Date('2026-01-01'),
+      finPrevue: null,
     })
   })
 

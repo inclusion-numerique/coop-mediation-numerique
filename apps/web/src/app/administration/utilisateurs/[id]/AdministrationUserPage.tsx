@@ -643,7 +643,7 @@ const AdministrationUserPage = async ({
                   <hr className="fr-separator-1px fr-mt-4v" />
                   <div className="fr-text--lg fr-text--medium fr-mb-4v fr-mt-8v">
                     {emploi.structure.nom}{' '}
-                    {emploi.fin ? (
+                    {emploi.termine ? (
                       <Badge className="fr-ml-2w" severity="warning" small>
                         Contrat terminé
                       </Badge>
