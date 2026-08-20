@@ -29,6 +29,14 @@ import { output } from '../output'
 //
 // Écrit dans une base partagée -> dry-run par défaut ; chaque run produit un CSV (une ligne par user
 // ciblé, avec les deux `last_login`) pour relire chaque re-pointage avant application.
+//
+// DEUXIÈME PASSE — liens DÉJÀ POSÉS mais erronés (voir `analyserLiensDivergents`). La passe ci-dessus
+// ne regarde que les users NON liés ; elle ne peut donc rien pour un `coop_id` qui pointe sur la
+// mauvaise `main.personne`. Ce cas existe : `main` contient des identités dédoublées, et
+// `ensurePersonneMain` rend le lien tel quel dès qu'un `coop_id` est posé (court-circuit `byCoopId`),
+// sans jamais le remettre en cause — y compris quand c'est l'Entrepôt qui l'avait posé.
+// Conséquence concrète : on lit l'employeuse sur une ligne vide pendant que l'autre porte
+// l'affectation `idposte` active, et les activités partent sans structure employeuse.
 
 // Compte legacy auto-généré lors de l'import V1 (jamais un vrai login humain). Vérifié en base :
 // 1900 comptes, tous sur ce domaine, aucun autre pattern (v0/v2).
@@ -42,6 +50,14 @@ type Outcome =
   | 'conflit-personne-disputee'
   | 'inactif'
   | 'sans-match'
+  // Deuxième passe (liens déjà posés) : un seul outcome écrit, cinq refus explicites pour que le
+  // CSV dise POURQUOI on n'a pas recollé, plutôt qu'un « indisponible » fourre-tout.
+  | 're-point-doublon'
+  | 'cible-inexistante'
+  | 'cible-supprimee'
+  | 'cible-occupee'
+  | 'identite-non-corroboree'
+  | 'cible-moins-renseignee'
 
 // Outcomes qui écrivent un `coop_id`. `re-point`* déplacent depuis le jumeau (garde sur `jumeau_id`) ;
 // `lie` pose sur une personne encore libre (garde sur `coopId IS NULL`).
@@ -51,18 +67,26 @@ const ecritDepuisJumeau = (outcome: Outcome): boolean =>
 const estEcriture = (outcome: Outcome): boolean =>
   outcome === 'lie' || ecritDepuisJumeau(outcome)
 
+type MatchType = 'email' | 'nom-siret' | 'dataspace-id'
+
 type AnalyseRow = {
   user_id: string
   email: string
   is_conseiller_numerique: boolean
   outcome: Outcome
-  match_type: 'email' | 'nom-siret' | null
+  match_type: MatchType | null
   personne_id: number | null
   jumeau_id: string | null
   jumeau_email: string | null
   u_last_login: Date | null
   jumeau_last_login: Date | null
 }
+
+/**
+ * Ligne d'audit commune aux deux passes. `personne_actuelle` n'est renseignée que par la seconde :
+ * la première ne cible que des users sans lien, il n'y a donc rien à quitter.
+ */
+type LigneAudit = AnalyseRow & { personne_actuelle: number | null }
 
 // Pour chaque `coop.users` actif non lié, choisit la meilleure action (LINK > RE-POINT > CONFLIT >
 // INACTIF, puis affectation idposte, puis plus petit id de personne). `attribution` garantit qu'une
@@ -195,6 +219,136 @@ const analyser = (): Promise<AnalyseRow[]> =>
       ON a.user_id = c.user_id AND a.personne_id = m.personne_id
     ORDER BY outcome, c.user_id`
 
+type DivergenceRow = {
+  user_id: string
+  email: string
+  is_conseiller_numerique: boolean
+  personne_actuelle: number
+  /** `null` quand `dataspace_id` désigne une personne qui n'existe plus (identifiant fossile). */
+  personne_cible: number | null
+  cible_coop_id: string | null
+  cible_supprimee: boolean
+  cible_occupee: boolean
+  identite_corroboree: boolean
+  /** La cible ne sait RIEN de l'emploi (ni affectation active, ni contrat) alors que l'actuelle si. */
+  cible_moins_renseignee: boolean
+}
+
+/**
+ * Users DÉJÀ liés dont le `coop_id` ne désigne pas la personne que l'API Dataspace nomme.
+ *
+ * `coop.users.dataspace_id` est l'oracle : c'est l'identifiant que l'API rend pour cet e-mail, et
+ * l'API résout par e-mail là où nous résolvons par `coop_id`. Quand les deux divergent, `main` porte
+ * deux lignes pour un même humain. Mesuré : c'est le SEUL détecteur productif — rejouer l'arbitrage
+ * par e-mail de `ensurePersonneMain` sur les liens existants ne remonte aucun cas de plus.
+ *
+ * Angle mort assumé : un lien erroné sur un compte sans `dataspace_id` (jamais synchronisé, ou absent
+ * de l'API) est indétectable ici. Le job les compte pour ne pas laisser croire à une couverture
+ * totale.
+ *
+ * `identite_corroboree` interdit de re-pointer sur la seule foi de l'identifiant : il faut que la
+ * cible porte l'e-mail du compte, ou les mêmes nom et prénom que la ligne actuelle. Un changement de
+ * nom de famille passe par l'e-mail, un e-mail professionnel changé passe par le nom.
+ */
+const analyserLiensDivergents = (): Promise<DivergenceRow[]> =>
+  prismaClient.$queryRaw<DivergenceRow[]>`
+    SELECT
+      u.id AS user_id,
+      u.email,
+      u.is_conseiller_numerique,
+      actuelle.id AS personne_actuelle,
+      cible.id AS personne_cible,
+      cible.coop_id AS cible_coop_id,
+      COALESCE(cible.deleted_at IS NOT NULL, false) AS cible_supprimee,
+      -- « Occupée » = revendiquée par un compte coop qui existe VRAIMENT. Un coop_id qui référence
+      -- un user disparu est un lien mort : on l'écrase sans déposséder personne.
+      COALESCE(
+        cible.coop_id IS NOT NULL
+        AND EXISTS (SELECT 1 FROM coop.users tw WHERE tw.id = cible.coop_id),
+        false
+      ) AS cible_occupee,
+      COALESCE(
+        lower(cible.contact->'coop'->>'email') = lower(trim(u.email))
+        OR lower(cible.contact->'idposte'->>'mail_perso') = lower(trim(u.email))
+        OR lower(cible.contact->'idposte'->>'mail_pro') = lower(trim(u.email))
+        OR (
+          actuelle.nom IS NOT NULL AND actuelle.prenom IS NOT NULL
+          AND lower(trim(actuelle.nom)) = lower(trim(cible.nom))
+          AND lower(trim(actuelle.prenom)) = lower(trim(cible.prenom))
+        ),
+        false
+      ) AS identite_corroboree,
+      -- Garde de NON-DÉGRADATION. Corroborer l'identité ne suffit pas : deux lignes peuvent désigner
+      -- la même personne dont une seule sait où elle travaille. Recoller vers la ligne muette fait
+      -- alors PERDRE son employeuse au compte — constaté en prod sur un cas, qu'il a fallu annuler.
+      -- « Renseignée » = affectation active OU contrat rattaché à une structure, les deux voies par
+      -- lesquelles le domaine résout une employeuse.
+      COALESCE(
+        NOT EXISTS (
+          SELECT 1 FROM main.personne_affectations_emploi af
+          WHERE af.personne_id = cible.id AND af.est_active
+          UNION ALL
+          SELECT 1 FROM main.contrat c
+          WHERE c.personne_id = cible.id AND c.structure_id IS NOT NULL
+        )
+        AND EXISTS (
+          SELECT 1 FROM main.personne_affectations_emploi af
+          WHERE af.personne_id = actuelle.id AND af.est_active
+          UNION ALL
+          SELECT 1 FROM main.contrat c
+          WHERE c.personne_id = actuelle.id AND c.structure_id IS NOT NULL
+        ),
+        false
+      ) AS cible_moins_renseignee
+    FROM coop.users u
+    JOIN main.personne actuelle ON actuelle.coop_id = u.id
+    LEFT JOIN main.personne cible ON cible.id = u.dataspace_id
+    WHERE u.deleted IS NULL
+      AND u.dataspace_id IS NOT NULL
+      AND u.dataspace_id <> actuelle.id
+    ORDER BY u.id`
+
+/**
+ * Table de décision de la seconde passe. Un seul chemin écrit ; chaque refus nomme sa raison, parce
+ * que les trois ne se traitent pas pareil à la main (fusion Entrepôt, arbitrage humain, ou rien).
+ */
+const outcomeDivergence = (row: DivergenceRow): Outcome => {
+  if (row.personne_cible === null) return 'cible-inexistante'
+  if (row.cible_supprimee) return 'cible-supprimee'
+  if (row.cible_occupee) return 'cible-occupee'
+  if (!row.identite_corroboree) return 'identite-non-corroboree'
+  if (row.cible_moins_renseignee) return 'cible-moins-renseignee'
+  return 're-point-doublon'
+}
+
+/**
+ * Users liés dont le lien ne peut PAS être vérifié faute de `dataspace_id`. Ils ne sont ni sains ni
+ * malades : ils sont hors de portée du détecteur, et le job le dit plutôt que de les taire.
+ */
+const compterAngleMort = async (): Promise<number> => {
+  const [row] = await prismaClient.$queryRaw<{ n: bigint }[]>`
+    SELECT count(*) AS n
+    FROM coop.users u
+    JOIN main.personne p ON p.coop_id = u.id
+    WHERE u.deleted IS NULL AND u.dataspace_id IS NULL`
+
+  return Number(row?.n ?? 0)
+}
+
+const divergenceToLigne = (row: DivergenceRow): LigneAudit => ({
+  user_id: row.user_id,
+  email: row.email,
+  is_conseiller_numerique: row.is_conseiller_numerique,
+  outcome: outcomeDivergence(row),
+  match_type: 'dataspace-id',
+  personne_id: row.personne_cible,
+  personne_actuelle: row.personne_actuelle,
+  jumeau_id: row.cible_coop_id,
+  jumeau_email: null,
+  u_last_login: null,
+  jumeau_last_login: null,
+})
+
 const escapeCsvField = (value: string): string =>
   /[";\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value
 
@@ -208,6 +362,7 @@ const csvHeader = [
   'outcome',
   'match_type',
   'personne_id',
+  'personne_actuelle',
   'jumeau_id',
   'jumeau_email',
   'u_last_login',
@@ -215,7 +370,7 @@ const csvHeader = [
   'applied',
 ].join(';')
 
-const rowToCsv = (row: AnalyseRow, applied: string): string =>
+const rowToCsv = (row: LigneAudit, applied: string): string =>
   [
     row.user_id,
     escapeCsvField(row.email),
@@ -223,6 +378,7 @@ const rowToCsv = (row: AnalyseRow, applied: string): string =>
     row.outcome,
     row.match_type ?? '',
     row.personne_id === null ? '' : String(row.personne_id),
+    row.personne_actuelle === null ? '' : String(row.personne_actuelle),
     row.jumeau_id ?? '',
     escapeCsvField(row.jumeau_email ?? ''),
     isoOrEmpty(row.u_last_login),
@@ -246,22 +402,79 @@ const appliquer = async (
   return count === 1 ? 'oui' : 'course'
 }
 
+/** L'état a bougé entre l'analyse et l'écriture : on annule la transaction plutôt que de forcer. */
+class CourseDetectee extends Error {}
+
+/**
+ * Déplace le lien d'un user de la mauvaise personne vers la bonne. `coop_id` est UNIQUE : il faut
+ * libérer avant de poser, donc les deux écritures tiennent dans une transaction — sans quoi un échec
+ * de la seconde laisserait le compte sans aucun lien, pire que le lien erroné de départ.
+ *
+ * Les deux gardes rejouent l'état observé pendant l'analyse (le `coop_id` de la cible peut être NULL
+ * ou un lien mort) : toute divergence annule tout.
+ */
+const appliquerRepointDoublon = async (
+  row: LigneAudit & { personne_id: number; personne_actuelle: number },
+): Promise<'oui' | 'course'> =>
+  prismaClient
+    .$transaction(async (transaction) => {
+      const { count: libere } = await transaction.personneMain.updateMany({
+        where: { id: row.personne_actuelle, coopId: row.user_id },
+        data: { coopId: null },
+      })
+      if (libere !== 1) throw new CourseDetectee()
+
+      const { count: pose } = await transaction.personneMain.updateMany({
+        where: { id: row.personne_id, coopId: row.jumeau_id },
+        data: { coopId: row.user_id },
+      })
+      if (pose !== 1) throw new CourseDetectee()
+
+      return 'oui' as const
+    })
+    .catch((error: unknown) => {
+      if (error instanceof CourseDetectee) return 'course' as const
+      throw error
+    })
+
 export const executeRelierPersonnesCoopMain: JobExecutor<
   'relier-personnes-coop-main'
 > = async (job) => {
   const dryRun = job.payload?.dryRun ?? true
 
-  const rows = await analyser()
+  const nonLies: LigneAudit[] = (await analyser()).map((row) => ({
+    ...row,
+    personne_actuelle: null,
+  }))
+  const divergents = (await analyserLiensDivergents()).map(divergenceToLigne)
+  const rows = [...nonLies, ...divergents]
+  const angleMort = await compterAngleMort()
 
   const appliedByUser = new Map<string, 'oui' | 'course'>()
   if (!dryRun) {
-    const aEcrire = rows.filter(
-      (row): row is AnalyseRow & { personne_id: number } =>
+    const aEcrire = nonLies.filter(
+      (row): row is LigneAudit & { personne_id: number } =>
         estEcriture(row.outcome) && row.personne_id !== null,
     )
     await aEcrire.reduce<Promise<void>>(async (previous, row) => {
       await previous
       appliedByUser.set(row.user_id, await appliquer(row))
+    }, Promise.resolve())
+
+    const aRecoller = divergents.filter(
+      (
+        row,
+      ): row is LigneAudit & {
+        personne_id: number
+        personne_actuelle: number
+      } =>
+        row.outcome === 're-point-doublon' &&
+        row.personne_id !== null &&
+        row.personne_actuelle !== null,
+    )
+    await aRecoller.reduce<Promise<void>>(async (previous, row) => {
+      await previous
+      appliedByUser.set(row.user_id, await appliquerRepointDoublon(row))
     }, Promise.resolve())
   }
 
@@ -277,13 +490,28 @@ export const executeRelierPersonnesCoopMain: JobExecutor<
     'utf-8',
   )
 
-  const count = (predicate: (row: AnalyseRow) => boolean) =>
+  const count = (predicate: (row: LigneAudit) => boolean) =>
     rows.filter(predicate).length
 
   const results = {
     dryRun,
     csv: filePath,
-    ciblesNonLiees: rows.length,
+    ciblesNonLiees: nonLies.length,
+    // Seconde passe : liens déjà posés dont `dataspace_id` désigne une autre personne.
+    liensDivergents: divergents.length,
+    aRecoller: count((r) => r.outcome === 're-point-doublon'),
+    aRecollerCn: count(
+      (r) => r.outcome === 're-point-doublon' && r.is_conseiller_numerique,
+    ),
+    cibleInexistante: count((r) => r.outcome === 'cible-inexistante'),
+    cibleSupprimee: count((r) => r.outcome === 'cible-supprimee'),
+    cibleOccupee: count((r) => r.outcome === 'cible-occupee'),
+    identiteNonCorroboree: count(
+      (r) => r.outcome === 'identite-non-corroboree',
+    ),
+    cibleMoinsRenseignee: count((r) => r.outcome === 'cible-moins-renseignee'),
+    // Liens invérifiables faute de `dataspace_id` : ni sains, ni détectés.
+    liensNonVerifiables: angleMort,
     aLier: count((r) => r.outcome === 'lie'),
     aRepointer: count((r) => r.outcome === 're-point'),
     aRepointerCn: count(
@@ -319,6 +547,17 @@ export const executeRelierPersonnesCoopMain: JobExecutor<
     } ; sans-match ${results.sansMatch} ; via nom+SIRET ${
       results.viaNomSiret
     }` +
+      ` | liens divergents ${results.liensDivergents} : à recoller ${
+        results.aRecoller
+      } (dont CN ${results.aRecollerCn}) ; cible inexistante ${
+        results.cibleInexistante
+      } ; supprimée ${results.cibleSupprimee} ; occupée ${
+        results.cibleOccupee
+      } ; identité non corroborée ${
+        results.identiteNonCorroboree
+      } ; cible moins renseignée ${
+        results.cibleMoinsRenseignee
+      } ; non vérifiables ${results.liensNonVerifiables}` +
       (dryRun
         ? ''
         : ` ; écrits ${results.ecrituresAppliquees} (course ${results.ecrituresCourse})`) +
