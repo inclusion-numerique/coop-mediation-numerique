@@ -1,4 +1,5 @@
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
+import { personneEstConseillerNumerique } from '@app/web/features/employeuse'
 import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import { trpc } from '@app/web/trpc'
 import { getUserDisplayName } from '@app/web/utils/user'
@@ -64,7 +65,9 @@ export const useMediateursSearch = ({
           value: {
             mediateurId: mediateur.id,
             email: mediateur.user.email,
-            isConseillerNumerique: mediateur.user.isConseillerNumerique,
+            isConseillerNumerique: personneEstConseillerNumerique(
+              mediateur.user.personneMain,
+            ),
           },
         })),
         ...(allowTextValue

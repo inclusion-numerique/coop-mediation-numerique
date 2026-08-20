@@ -1,3 +1,4 @@
+import { personneConseillerNumeriqueSelect } from '@app/web/features/employeuse/server'
 import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
 import {
   DEFAULT_PAGE,
@@ -54,7 +55,7 @@ export const searchMediateur = async (options: SearchMediateurOptions) => {
           firstName: true,
           name: true,
           email: true,
-          isConseillerNumerique: true,
+          personneMain: { select: personneConseillerNumeriqueSelect },
         },
       },
     },

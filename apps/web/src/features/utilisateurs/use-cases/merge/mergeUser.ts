@@ -3,7 +3,6 @@ import {
   deploymentCanRemoveBrevoContactFromList,
   removeBrevoContactFromList,
 } from '@app/web/external-apis/brevo/removeBrevoContactFromList'
-import { conseillerNumeriqueMongoCollection } from '@app/web/external-apis/conseiller-numerique/conseillerNumeriqueMongoClient'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { PrismaClient } from '@prisma/client'
@@ -580,34 +579,6 @@ const getUsers =
     }),
   })
 
-const syncWithMongo =
-  (prisma: PrismaTransaction) =>
-  async ({
-    id: userId,
-    email,
-  }: {
-    id: string
-    email: string
-    mediateur?: { id: string } | null
-    coordinateur?: { id: string } | null
-  }) => {
-    const conseillerCollection =
-      await conseillerNumeriqueMongoCollection('conseillers')
-
-    const mongoConseiller = await conseillerCollection.findOne({
-      emailPro: email,
-    })
-
-    if (!mongoConseiller) return
-
-    await prisma.user.update({
-      where: { id: userId },
-      data: {
-        isConseillerNumerique: true,
-      },
-    })
-  }
-
 export const mergeUser = async (
   sourceUserId: string,
   targetUserId: string,
@@ -635,7 +606,9 @@ export const mergeUser = async (
     await mergeAffectationsMain(prisma)(sourceUserId, targetUserId)
     await mergeMutations(prisma)(sourceUser, targetUser)
     await deleteUser(prisma)(sourceUser)
-    await syncWithMongo(prisma)(targetUser)
+    // Le dispositif conseiller numérique n'est plus une colonne à repositionner après fusion : il
+    // se dérive de l'affectation `idposte`, que `mergeAffectationsMain` vient de déplacer vers la
+    // cible. L'ancien appel interrogeait Mongo (v1) pour écrire un drapeau désormais dérivé.
   })
 
   if (sourceUserForBrevo && deploymentCanRemoveBrevoContactFromList()) {

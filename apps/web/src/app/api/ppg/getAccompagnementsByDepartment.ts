@@ -1,4 +1,5 @@
 import { departements } from '@app/web/data/collectivites-territoriales/departements'
+import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 import { Prisma } from '@prisma/client'
 
@@ -38,11 +39,7 @@ export const getAccompagnementsByDepartment = async ({
                LEFT JOIN mediateurs med ON act.mediateur_id = med.id
                LEFT JOIN users u ON med.user_id = u.id
       WHERE act.suppression IS NULL
-        AND ${
-          isConseillerNumerique
-            ? Prisma.sql`u.is_conseiller_numerique = TRUE`
-            : Prisma.sql`u.is_conseiller_numerique = FALSE`
-        }
+        AND ${conseillerNumeriqueSql('u.id', isConseillerNumerique)}
           ${
             until
               ? Prisma.sql`AND DATE(act.date) <= ${until}::date`

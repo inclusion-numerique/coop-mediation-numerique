@@ -1,4 +1,5 @@
 import { output } from '@app/cli/output'
+import { conseillerNumeriqueWhere } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 
 const MILLISECONDS_IN_A_DAY = 24 * 60 * 60 * 1000
@@ -24,7 +25,7 @@ const fixCoordinateurRoles = async (now: Date) => {
           invitations: { none: {} },
         },
       },
-      isConseillerNumerique: false,
+      ...conseillerNumeriqueWhere(false),
       inscriptionValidee: { lte: daysAgo(now, 30) },
     },
   })
@@ -68,7 +69,7 @@ const fixMediateurRoles = async (now: Date) => {
           activites: { none: {} },
         },
       },
-      isConseillerNumerique: false,
+      ...conseillerNumeriqueWhere(false),
       coordinateur: { isNot: null },
       inscriptionValidee: { lte: daysAgo(now, 30) },
     },

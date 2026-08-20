@@ -2,6 +2,7 @@ import {
   ActivitesFilters,
   ActivitesFilterValidations,
 } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { personneEstConseillerNumerique } from '@app/web/features/employeuse/server'
 import { userFromShareId } from '@app/web/features/mediateurs/use-cases/partage-statistiques/db/userFromShareId'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { buildStatistiquesWorksheet } from '@app/web/worksheet/statistiques/buildStatistiquesWorksheet'
@@ -44,7 +45,7 @@ export const GET = async (
   const statistiquesWorksheetInput = await getStatistiquesWorksheetInput({
     user: {
       ...user,
-      isConseillerNumerique: user.isConseillerNumerique,
+      isConseillerNumerique: personneEstConseillerNumerique(user.personneMain),
       emplois: [],
       rdvAccount: null,
       coordinateur: shareStatsUser.coordinateur ?? null,
