@@ -41,7 +41,8 @@ const NON_CONTENT_FIELDS = new Set<string>([
   // Marqueurs techniques de synchronisation externe : ils tracent « quand on a
   // synchronisé », pas une modification du contenu métier → ne doivent pas bumper.
   'synchronisationSiret',
-  'lastSyncedFromDataspace',
+  // `lastSyncedFromDataspace` a disparu avec la synchro Dataspace elle-même (ADR-002).
+  'importedLieuxFromDataspace',
   // Rattachement à la cartographie nationale, réécrit chaque jour par la synchro
   // carto (reset+relien full-table) : lien technique géré par l'infra, pas du
   // contenu saisi → sans ça toute la table `lieu_inclusion` est bumpée chaque jour.

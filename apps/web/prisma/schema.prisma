@@ -138,23 +138,18 @@ model User {
   // User can be created from v1 data
   v1Imported DateTime? @map("v1_imported")
 
-  // Dataspace API integration
-  dataspaceId Int? @map("dataspace_id")
-
   // SIRET from ProConnect authentication
   siret String?
 
-  // Internal Dataspace ID for the user
-  dataspaceUserIdPg     Int?    @map("dataspace_user_id_pg") @db.Integer // another id belonging to dataspace, needed on their side for synchronisation
-  // If user is in the Conseiller Numerique program. Dataspace API is the source of truth for this data
-  isConseillerNumerique Boolean @default(false) @map("is_conseiller_numerique")
+  // Les identifiants Dataspace et le drapeau conseiller numérique ont été RETIRÉS : c'était une copie
+  // de ce que `main` porte déjà (`main.personne.id`, `cn_pg_id`, affectation `idposte` active),
+  // entretenue par une synchro nocturne qui appelait l'API une fois par compte. Tout se dérive
+  // désormais par la relation `personneMain` — voir `features/employeuse` (règle et fragments SQL).
 
   // Flux d'inscription
 
   // Le profil déclaré par l’utilisateur à la première étape de l’inscription
   profilInscription          ProfilInscription? @map("profil_inscription")
-  syncedFromDataspace        DateTime?          @map("synced_from_dataspace")
-  lastSyncedFromDataspace    DateTime?          @map("last_synced_from_dataspace")
   importedLieuxFromDataspace DateTime?          @map("imported_lieux_from_dataspace") // useful for customizing the inscription flow
   acceptationCgu             DateTime?          @map("acceptation_cgu")
 
@@ -195,8 +190,6 @@ model User {
   @@unique([created, id])
   // descending sort on this cursor for api query performances
   @@index([created(sort: Desc), id(sort: Desc)])
-  @@index([dataspaceId])
-  @@index([dataspaceUserIdPg])
   @@map("users")
   @@schema("coop")
 }

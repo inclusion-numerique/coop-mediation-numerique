@@ -65,7 +65,6 @@ export const webAppStackSensitiveVariables = [
   'SMTP_USERNAME',
   'SMTP_MAILDEV_USERNAME',
   'SMTP_MAILDEV_PASSWORD',
-  'DATASPACE_API_KEY',
 ] as const
 
 // Entrepôt (Dataspace) SSH tunnel parameters. OPTIONAL — empty until MIN provides the bastion +
@@ -246,7 +245,6 @@ export class WebAppStack extends TerraformStack {
         // This env variable is reserved at the level of container namespace. We inject it here even if its shared.
         SCW_DEFAULT_REGION: region,
         SMTP_PORT: isMain ? smtpPort : '1025',
-        DATASPACE_API_MOCK: isMain ? '0' : '1',
         // Entrepôt SSH tunnel: bastion coordinates (optional, from MIN) + the fixed target of the
         // entrepôt database reachable through it. The entrypoint opens the tunnel only when
         // ENTREPOT_BASTION_HOST is set, and ENTREPOT_DATABASE_URL points at the local tunnel port.
@@ -295,8 +293,6 @@ export class WebAppStack extends TerraformStack {
         SMTP_SERVER: isMain
           ? sensitiveEnvironmentVariables.SMTP_SERVER.value
           : 'maildev.coop-numerique.anct.gouv.fr',
-        DATASPACE_API_KEY:
-          sensitiveEnvironmentVariables.DATASPACE_API_KEY.value,
         // Bastion private key + entrepôt connection string (postgres://…@localhost:tunnel/…).
         // Empty until MIN provides them; the entrepôt-backed pages stay unavailable meanwhile.
         ENTREPOT_BASTION_SSH_KEY:
@@ -375,11 +371,14 @@ export class WebAppStack extends TerraformStack {
         containerId: container.id,
       })
 
-      // Daily sync users from Dataspace API at 2 AM
+      // Répercute chaque nuit à 2 h ce que l'Entrepôt a changé au dispositif conseiller numérique.
+      // Remplace `sync-users-from-dataspace`, qui appelait l'API une fois par compte pour recopier
+      // des colonnes que `main` porte déjà : il ne reste que les deux effets qu'une lecture ne peut
+      // pas produire — garantir la ligne `coop.coordinateurs`, et notifier Brevo sur transition.
       createJobExecutionCron(this, {
-        name: 'sync-users-from-dataspace',
+        name: 'appliquer-dispositif-conum',
         job: {
-          name: 'sync-users-from-dataspace',
+          name: 'appliquer-dispositif-conum',
         },
         schedule: '0 2 * * *',
         containerId: container.id,
