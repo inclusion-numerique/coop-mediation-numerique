@@ -50,13 +50,14 @@ type Outcome =
   | 'conflit-personne-disputee'
   | 'inactif'
   | 'sans-match'
-  // Deuxième passe (liens déjà posés) : un seul outcome écrit, quatre refus explicites pour que le
+  // Deuxième passe (liens déjà posés) : un seul outcome écrit, cinq refus explicites pour que le
   // CSV dise POURQUOI on n'a pas recollé, plutôt qu'un « indisponible » fourre-tout.
   | 're-point-doublon'
   | 'cible-inexistante'
   | 'cible-supprimee'
   | 'cible-occupee'
   | 'identite-non-corroboree'
+  | 'cible-moins-renseignee'
 
 // Outcomes qui écrivent un `coop_id`. `re-point`* déplacent depuis le jumeau (garde sur `jumeau_id`) ;
 // `lie` pose sur une personne encore libre (garde sur `coopId IS NULL`).
@@ -229,6 +230,8 @@ type DivergenceRow = {
   cible_supprimee: boolean
   cible_occupee: boolean
   identite_corroboree: boolean
+  /** La cible ne sait RIEN de l'emploi (ni affectation active, ni contrat) alors que l'actuelle si. */
+  cible_moins_renseignee: boolean
 }
 
 /**
@@ -274,7 +277,29 @@ const analyserLiensDivergents = (): Promise<DivergenceRow[]> =>
           AND lower(trim(actuelle.prenom)) = lower(trim(cible.prenom))
         ),
         false
-      ) AS identite_corroboree
+      ) AS identite_corroboree,
+      -- Garde de NON-DÉGRADATION. Corroborer l'identité ne suffit pas : deux lignes peuvent désigner
+      -- la même personne dont une seule sait où elle travaille. Recoller vers la ligne muette fait
+      -- alors PERDRE son employeuse au compte — constaté en prod sur un cas, qu'il a fallu annuler.
+      -- « Renseignée » = affectation active OU contrat rattaché à une structure, les deux voies par
+      -- lesquelles le domaine résout une employeuse.
+      COALESCE(
+        NOT EXISTS (
+          SELECT 1 FROM main.personne_affectations_emploi af
+          WHERE af.personne_id = cible.id AND af.est_active
+          UNION ALL
+          SELECT 1 FROM main.contrat c
+          WHERE c.personne_id = cible.id AND c.structure_id IS NOT NULL
+        )
+        AND EXISTS (
+          SELECT 1 FROM main.personne_affectations_emploi af
+          WHERE af.personne_id = actuelle.id AND af.est_active
+          UNION ALL
+          SELECT 1 FROM main.contrat c
+          WHERE c.personne_id = actuelle.id AND c.structure_id IS NOT NULL
+        ),
+        false
+      ) AS cible_moins_renseignee
     FROM coop.users u
     JOIN main.personne actuelle ON actuelle.coop_id = u.id
     LEFT JOIN main.personne cible ON cible.id = u.dataspace_id
@@ -292,6 +317,7 @@ const outcomeDivergence = (row: DivergenceRow): Outcome => {
   if (row.cible_supprimee) return 'cible-supprimee'
   if (row.cible_occupee) return 'cible-occupee'
   if (!row.identite_corroboree) return 'identite-non-corroboree'
+  if (row.cible_moins_renseignee) return 'cible-moins-renseignee'
   return 're-point-doublon'
 }
 
@@ -483,6 +509,7 @@ export const executeRelierPersonnesCoopMain: JobExecutor<
     identiteNonCorroboree: count(
       (r) => r.outcome === 'identite-non-corroboree',
     ),
+    cibleMoinsRenseignee: count((r) => r.outcome === 'cible-moins-renseignee'),
     // Liens invérifiables faute de `dataspace_id` : ni sains, ni détectés.
     liensNonVerifiables: angleMort,
     aLier: count((r) => r.outcome === 'lie'),
@@ -528,6 +555,8 @@ export const executeRelierPersonnesCoopMain: JobExecutor<
         results.cibleOccupee
       } ; identité non corroborée ${
         results.identiteNonCorroboree
+      } ; cible moins renseignée ${
+        results.cibleMoinsRenseignee
       } ; non vérifiables ${results.liensNonVerifiables}` +
       (dryRun
         ? ''
