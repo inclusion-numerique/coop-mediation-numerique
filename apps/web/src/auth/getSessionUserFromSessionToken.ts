@@ -29,7 +29,6 @@ export const sessionUserSelect = {
   lieuxActiviteRenseignes: true,
   inscriptionValidee: true,
   timezone: true,
-  isConseillerNumerique: true,
   lastSeen: true,
   // Employeuse COURANTE lue en PUR MAIN (ADR-002 périmètre élargi) : `main.personne` (coop_id) ->
   // affectation active -> structure. Plus AUCUNE référence à `emploi.structureMain`.

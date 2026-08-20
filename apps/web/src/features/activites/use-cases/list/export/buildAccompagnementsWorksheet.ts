@@ -2,6 +2,7 @@ import { displayNameFromIdentity } from '@app/web/features/beneficiaire/domain/b
 import { genreLabels } from '@app/web/features/beneficiaire/domain/genre'
 import { statutSocialLabels } from '@app/web/features/beneficiaire/domain/statut-social'
 import { trancheAgeLabels } from '@app/web/features/beneficiaire/domain/tranche-age'
+import { personneEstConseillerNumerique } from '@app/web/features/employeuse/server'
 import {
   addExportMetadata,
   WorksheetUser,
@@ -157,10 +158,10 @@ export const buildAccompagnementsWorksheet = (
             ? [
                 mediateur.user.firstName,
                 mediateur.user.lastName,
-                mediateur.user.isConseillerNumerique
+                personneEstConseillerNumerique(mediateur.user.personneMain)
                   ? 'Conseiller Numérique'
                   : 'Médiateur',
-                mediateur.user.isConseillerNumerique ?? '',
+                personneEstConseillerNumerique(mediateur.user.personneMain),
               ]
             : []),
           typeActiviteLabels[type],

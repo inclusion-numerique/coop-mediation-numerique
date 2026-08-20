@@ -117,7 +117,7 @@ const activites = [
       user: {
         firstName: '',
         lastName: '',
-        isConseillerNumerique: false,
+        personneMain: null,
       },
     },
     v1CraId: null,
@@ -159,7 +159,7 @@ const activites = [
       user: {
         firstName: '',
         lastName: '',
-        isConseillerNumerique: false,
+        personneMain: null,
       },
     },
     v1CraId: null,
@@ -210,7 +210,7 @@ const activites = [
       user: {
         firstName: '',
         lastName: '',
-        isConseillerNumerique: false,
+        personneMain: null,
       },
     },
     v1CraId: null,
@@ -252,7 +252,7 @@ const activites = [
       user: {
         firstName: '',
         lastName: '',
-        isConseillerNumerique: false,
+        personneMain: null,
       },
     },
     v1CraId: null,
@@ -294,7 +294,7 @@ const activites = [
       user: {
         firstName: '',
         lastName: '',
-        isConseillerNumerique: false,
+        personneMain: null,
       },
     },
     v1CraId: null,
@@ -345,7 +345,7 @@ const activites = [
       user: {
         firstName: '',
         lastName: '',
-        isConseillerNumerique: false,
+        personneMain: null,
       },
     },
     v1CraId: null,

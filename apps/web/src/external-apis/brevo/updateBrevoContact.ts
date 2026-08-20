@@ -1,3 +1,7 @@
+import {
+  personneConseillerNumeriqueSelect,
+  personneEstConseillerNumerique,
+} from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import {
@@ -21,7 +25,7 @@ export const updateBrevoContact = async (userId: string): Promise<boolean> => {
       firstName: true,
       lastName: true,
       phone: true,
-      isConseillerNumerique: true,
+      personneMain: { select: personneConseillerNumeriqueSelect },
       mediateur: { select: { id: true } },
       coordinateur: { select: { id: true } },
     },
@@ -29,7 +33,12 @@ export const updateBrevoContact = async (userId: string): Promise<boolean> => {
 
   if (!user) return false
 
-  const contact = toBrevoContact(user)
+  // Dispositif dérivé de l'affectation `idposte` active (ADR-002) : Brevo reçoit l'état réel du
+  // dispositif, pas la copie qu'une synchro nocturne posait sur `coop.users`.
+  const contact = toBrevoContact({
+    ...user,
+    isConseillerNumerique: personneEstConseillerNumerique(user.personneMain),
+  })
 
   if (!onlyWithBrevoRole(contact)) {
     await removeBrevoContactFromList(

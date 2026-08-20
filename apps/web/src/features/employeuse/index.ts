@@ -69,8 +69,12 @@ export {
 // `employeuse.transfer` n'importe `Prisma` qu'en TYPE : il est effacé à la
 // compilation et ne ramène donc pas le client dans le bundle.
 export {
+  conseillerNumeriqueWhere,
+  type PersonneConseillerNumeriquePayload,
   type PersonneEmployeusePayload,
+  personneConseillerNumeriqueSelect,
   personneEmployeuseSelect,
+  personneEstConseillerNumerique,
   personneToEmployeuseActuelle,
   personneToEmployeuseALaDate,
   personneToEmployeusesHistorique,
@@ -92,6 +96,7 @@ export {
   EmployeuseId,
   employeuseALaDate,
   employeuseCodeInsee,
+  estConseillerNumerique,
   finEmploi,
   IdentiteEmployeuse,
   identiteDepuisEtablissement,
