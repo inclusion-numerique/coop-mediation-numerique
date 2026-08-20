@@ -1,6 +1,5 @@
 import { structureEmployeuse } from '@app/fixtures/structures'
 import { fixtureUsers } from '@app/fixtures/users'
-import { conseillerInscription } from '@app/fixtures/users/conseillerInscription'
 import { conseillerInscriptionSansContrat } from '@app/fixtures/users/conseillerInscriptionSansContrat'
 import { conseillerSansLieuInscription } from '@app/fixtures/users/conseillerSansLieuInscription'
 import { coordinateurInscription } from '@app/fixtures/users/coordinateurInscription'
@@ -27,7 +26,6 @@ import type { Prisma } from '@prisma/client'
  * d'autre ne leur donnerait d'affectation.
  */
 const cnInscriptionUserIds = [
-  conseillerInscription.id,
   conseillerInscriptionSansContrat.id,
   conseillerSansLieuInscription.id,
   coordinateurInscription.id,
