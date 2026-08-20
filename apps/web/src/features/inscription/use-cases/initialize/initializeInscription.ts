@@ -7,11 +7,9 @@ import { garantirCoordinateurDuDispositif } from '@app/web/features/utilisateurs
 import { prismaClient } from '@app/web/prismaClient'
 import { getNextInscriptionStep, getStepPath } from '../../inscriptionFlow'
 import {
-  type DispositifPersonne,
   dispositifDepuisMain,
   profilDepuisDispositif,
 } from './dispositifDepuisMain'
-import { importerLieuxActiviteDepuisMain } from './importerLieuxActiviteDepuisMain'
 
 /**
  * Initialisation de l'inscription.
@@ -104,77 +102,6 @@ const replierSurSiret = async (
   log('Rattachement employeuse depuis SIRET', { resultat: rattachement._tag })
 }
 
-/**
- * Les lieux du dispositif ne sont importés qu'une fois, et seulement si l'utilisateur n'en a aucun :
- * après quoi ils lui appartiennent, et un ré-import écraserait ses propres choix.
- */
-const importerLieuxUneSeuleFois = async ({
-  userId,
-  mediateurId,
-  log,
-}: {
-  userId: string
-  mediateurId: string
-  log: InitializeDebugLogger
-}): Promise<void> => {
-  const mediateur = await prismaClient.mediateur.findUnique({
-    where: { id: mediateurId },
-    select: {
-      _count: {
-        select: { enActivite: { where: { suppression: null, fin: null } } },
-      },
-    },
-  })
-
-  if ((mediateur?._count.enActivite ?? 0) > 0) {
-    log('Lieux déjà présents, import ignoré', {
-      existants: mediateur?._count.enActivite,
-    })
-    return
-  }
-
-  const { structureIds } = await importerLieuxActiviteDepuisMain({
-    userId,
-    mediateurId,
-  })
-
-  if (structureIds.length === 0) return
-
-  await prismaClient.user.update({
-    where: { id: userId },
-    data: { importedLieuxFromDataspace: new Date() },
-    select: { id: true },
-  })
-
-  log('Lieux d’activité importés depuis main', { count: structureIds.length })
-}
-
-/**
- * Le médiateur n'est créé que pour qui exerce : un coordinateur pur (coordinateur sans lieu
- * d'activité) n'en a pas besoin. Règle inchangée, sur des valeurs dérivées.
- */
-const doitAvoirUnMediateur = (
-  dispositif: DispositifPersonne,
-  aDesLieux: boolean,
-): boolean =>
-  dispositif.estConseillerNumerique &&
-  (!dispositif.estCoordinateur || aDesLieux)
-
-/** Combien de lieux le dispositif propose, sans rien écrire : sert à décider du rôle médiateur. */
-const lieuxDisponibles = async (userId: string): Promise<number> => {
-  const [row] = await prismaClient.$queryRaw<{ total: bigint }[]>`
-    SELECT count(DISTINCT li.structure_coop_id) AS total
-    FROM main.personne p
-    JOIN main.personne_affectations_lieu al
-      ON al.personne_id = p.id AND al.est_active
-    JOIN main.lieu_inclusion li
-      ON li.id = al.lieu_id AND li.deleted_at IS NULL
-    WHERE p.coop_id = ${userId}::uuid
-      AND li.structure_coop_id IS NOT NULL`
-
-  return Number(row?.total ?? 0)
-}
-
 export const initializeInscription = async ({
   userId,
 }: {
@@ -200,16 +127,19 @@ export const initializeInscription = async ({
   // garantie est celle de la connexion et du job nocturne — une seule définition, trois appelants.
   await garantirCoordinateurDuDispositif(userId)
 
-  // Le médiateur d'abord : sans lui, aucun lieu ne peut être rattaché. Il n'est créé que pour qui
-  // exerce — un coordinateur pur n'en a pas besoin.
-  const lieuxDuDispositif = await lieuxDisponibles(userId)
-
-  if (doitAvoirUnMediateur(dispositif, lieuxDuDispositif > 0)) {
-    await importerLieuxUneSeuleFois({
-      userId,
-      mediateurId: await garantirMediateur(userId),
-      log,
-    })
+  // ⚠ LES LIEUX D'ACTIVITÉ NE SONT PLUS PRÉ-REMPLIS.
+  //
+  // L'API Dataspace fournissait les lieux connus du dispositif, et l'inscription les importait une
+  // fois pour toutes. `main` ne peut pas prendre le relais : ses affectations lieu
+  // (`main.personne_affectations_lieu`) sont une VUE construite sur `coop.mediateurs_en_activite`,
+  // donc sur ce que la coop sait déjà — et les 14 033 lignes de la table historique sont toutes de
+  // source `coop`. Il n'existe aucune affectation lieu d'origine `idposte`.
+  //
+  // Conséquence assumée : un conseiller numérique qui s'inscrit déclare ses lieux à l'étape
+  // `lieux-activite`, où le parcours l'emmène déjà faute de lieu existant. Rien n'est perdu pour les
+  // comptes déjà inscrits, dont les lieux sont en base.
+  if (dispositif.estConseillerNumerique && !dispositif.estCoordinateur) {
+    await garantirMediateur(userId)
   }
 
   await replierSurSiret(userId, log)
