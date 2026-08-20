@@ -2,6 +2,27 @@ import { branch as gitBranch } from 'git-rev-sync'
 
 export const getBranch = () => process.env.CDK_FORCE_BRANCH || gitBranch()
 
+/**
+ * Longueur maximale d'un namespace de branche.
+ *
+ * Elle est imposée par la plus contraignante des ressources qui en dérivent, le
+ * bucket S3 des téléversements :
+ *
+ *     coop-mediation-numerique-uploads-    33 caractères
+ *   + namespace                            30 au plus
+ *   = 63, la limite d'un nom de bucket
+ *
+ * Les autres ressources sont plus larges : la base de données et son
+ * utilisateur (`coop-mediation-numerique-<ns>`) plafonnent à 55 sur 63, et le
+ * sous-domaine de prévisualisation se tronque lui-même (`createPreviewSubdomain`).
+ *
+ * La valeur était de 32. Les deux caractères de trop ne se payaient qu'au
+ * déploiement, sur un `InvalidBucketName` qui ne nomme ni la longueur, ni la
+ * branche, ni la ressource — et seulement pour les branches assez longues pour
+ * les atteindre.
+ */
+export const MAX_NAMESPACE_LENGTH = 30
+
 export const computeBranchNamespace = (branch: string) =>
   branch
     // Replace special characters with hyphen
@@ -12,8 +33,8 @@ export const computeBranchNamespace = (branch: string) =>
     .replaceAll(/--+/g, '-')
     // Remove prefix hyphen
     .replace(/^-/, '')
-    // Namespace should be shorter than 32 chars to ensure all resources can be deployed
-    .slice(0, 32)
+    // Voir `MAX_NAMESPACE_LENGTH` : c'est le nom du bucket S3 qui fixe la borne.
+    .slice(0, MAX_NAMESPACE_LENGTH)
     // Remove suffix hyphen
     .replace(/-$/, '')
     .toLowerCase()
