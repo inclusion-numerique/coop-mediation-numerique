@@ -1,21 +1,10 @@
 import { rechercheApiEntreprise } from '@app/web/external-apis/rechercheApiEntreprise'
-import {
-  employeuseRecherchee,
-  rechercherEmployeuse,
-} from '@app/web/features/employeuse/server'
 import { structureCreationDataWithSiretFromUniteLegale } from '@app/web/structure/structuresInfoFromUniteLegale'
-
-export type StructureSearchResult = {
-  id?: string | null
-  nom: string
-  adresse: string
-  codePostal: string
-  commune: string
-  codeInsee: string
-  siret: string
-  typologies?: string[] | null
-  source: 'database' | 'api'
-}
+// Modules visés directement plutôt que le barrel `../../../server` : celui-ci réexporte cette
+// implémentation, et l'atteindre depuis ici fermerait un cycle d'imports.
+import { rechercherEmployeuse } from '../../rechercher-employeuse/implementation'
+import { employeuseRecherchee } from '../../rechercher-employeuse/ui/employeuse-recherchee.presenter'
+import type { StructureSearchResult } from '../domain/employeuse-choisie'
 
 export const searchStructureEmployeuseCombined = async (
   query: string,

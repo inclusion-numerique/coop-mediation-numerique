@@ -10,7 +10,11 @@ import type {
   JsonApiListResponse,
   JsonApiResource,
 } from '@app/web/app/api/v1/JsonApiTypes'
-import { contratPourEmployeuse } from '@app/web/features/employeuse/server'
+import {
+  conseillerNumeriqueWhere,
+  contratPourEmployeuse,
+  personneEstConseillerNumerique,
+} from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import { NextResponse } from 'next/server'
@@ -473,9 +477,9 @@ export const GET = createApiV1Route
     // Filter by conseiller numérique boolean status
     const conseillerNumeriqueFilter =
       params.filter.conseiller_numerique === '1'
-        ? { isConseillerNumerique: true }
+        ? conseillerNumeriqueWhere(true)
         : params.filter.conseiller_numerique === '0'
-          ? { isConseillerNumerique: false }
+          ? conseillerNumeriqueWhere(false)
           : undefined
 
     // Filter by conseiller numérique id_pg (parse as integers)
@@ -486,7 +490,7 @@ export const GET = createApiV1Route
 
     const conseillerNumeriqueIdPgFilter =
       conseillerNumeriqueIdPgValues.length > 0
-        ? { dataspaceUserIdPg: { in: conseillerNumeriqueIdPgValues } }
+        ? { personneMain: { cnPgId: { in: conseillerNumeriqueIdPgValues } } }
         : undefined
 
     // Filter by dataspace_id (parse as integers)
@@ -497,7 +501,7 @@ export const GET = createApiV1Route
 
     const dataspaceIdFilter =
       dataspaceIdValues.length > 0
-        ? { dataspaceId: { in: dataspaceIdValues } }
+        ? { personneMain: { id: { in: dataspaceIdValues } } }
         : undefined
 
     const users = await prismaClient.user.findMany({
@@ -538,10 +542,18 @@ export const GET = createApiV1Route
         // de vérité), plus la copie coop gelée. Dates best-effort depuis `main.contrat`.
         personneMain: {
           select: {
+            // `id` et `cnPgId` alimentent `dataspace_id` et `conseiller_numerique.id_pg`, que la
+            // synchro nocturne recopiait dans `coop.users`. Même valeur, lue à la source.
+            id: true,
+            cnPgId: true,
             affectationsEmploi: {
               where: { estActive: true },
               select: {
                 id: true,
+                // `source` + `estActive` : de quoi dériver le dispositif sans seconde requête. Le
+                // filtre `estActive` reste celui des emplois exposés, il ne fausse pas la règle.
+                source: true,
+                estActive: true,
                 structureAdministrativeId: true,
                 createdAt: true,
               },
@@ -639,7 +651,9 @@ export const GET = createApiV1Route
           creation: u.created.toISOString(),
           modification: u.updated.toISOString(),
           suppression: u.deleted?.toISOString() ?? null,
-          dataspace_id: u.dataspaceId ?? null,
+          // `dataspace_id` EST l'identifiant de `main.personne` : la colonne coop n'en était qu'une
+          // copie, entretenue par la synchro nocturne. Le contrat public ne change pas.
+          dataspace_id: u.personneMain?.id ?? null,
           emplois: (u.personneMain?.affectationsEmploi ?? []).map(
             (affectation) => {
               const contrat = contratPourEmployeuse(
@@ -709,8 +723,10 @@ export const GET = createApiV1Route
               }
             : null,
           conseiller_numerique: {
-            is_conseiller_numerique: u.isConseillerNumerique,
-            id_pg: u.dataspaceUserIdPg ?? null,
+            is_conseiller_numerique: personneEstConseillerNumerique(
+              u.personneMain,
+            ),
+            id_pg: u.personneMain?.cnPgId ?? null,
           },
         },
       })),

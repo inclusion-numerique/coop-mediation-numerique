@@ -1,4 +1,4 @@
-import { searchStructureEmployeuseCombined } from '@app/web/features/inscription/use-cases/renseigner-structure-employeuse/searchStructureEmployeuseCombined'
+import { searchStructureEmployeuseCombined } from '@app/web/features/employeuse/server'
 import { CreerStructureValidation } from '@app/web/features/structures/CreerStructureValidation'
 import { searchStructuresEmployeuses } from '@app/web/features/structures/getStructuresEmployeusesOptions'
 import { mergeLieuInclusion } from '@app/web/features/structures/use-cases/merge/mutations/mergeLieuInclusion'

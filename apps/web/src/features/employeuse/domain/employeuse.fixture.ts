@@ -44,12 +44,23 @@ export const affectation = (
 
 export const contrat = (
   employeuseId: number,
-  dates: { debut?: Date | null; fin?: Date | null; rupture?: Date | null } = {},
+  dates: {
+    debut?: Date | null
+    fin?: Date | null
+    rupture?: Date | null
+    /**
+     * Date depuis laquelle la période est jugée. Par défaut très loin devant,
+     * pour que tout terme posé par un scénario compte comme révolu : c'est ce
+     * qu'attendaient les tests écrits avant que `terminee` ne soit daté.
+     */
+    maintenant?: Date
+  } = {},
 ): Contrat => ({
   employeuse: employeuse(employeuseId),
   periode: PeriodeEmploi({
     debut: dates.debut ?? null,
     fin: dates.fin ?? null,
     rupture: dates.rupture ?? null,
+    maintenant: dates.maintenant ?? new Date('2100-01-01'),
   }),
 })

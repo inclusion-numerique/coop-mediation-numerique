@@ -1,4 +1,5 @@
 import { createApiV1Route } from '@app/web/app/api/v1/createApiV1Route'
+import { conseillersNumeriquesUserIdsSql } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   DispositifProgrammeNational,
@@ -296,7 +297,7 @@ export const GET = createApiV1Route
         NULLIF(structures.prise_en_charge_specifique, '{}') AS prise_en_charge_specifique,
         NULLIF(structures.frais_a_charge, '{}') AS frais_a_charge,
           CASE
-            WHEN COUNT(CASE WHEN users.is_conseiller_numerique THEN 1 END) > 0 THEN ARRAY['Conseillers numériques']
+            WHEN COUNT(CASE WHEN conseillers.user_id IS NOT NULL THEN 1 END) > 0 THEN ARRAY['Conseillers numériques']
           END
         AS dispositif_programmes_nationaux,
         NULLIF(structures.formations_labels, '{}') AS formations_labels,
@@ -320,6 +321,10 @@ export const GET = createApiV1Route
           LEFT JOIN mediateurs_en_activite mediateurs_en_activite  ON structures.id = mediateurs_en_activite.structure_id
           LEFT JOIN mediateurs ON mediateurs_en_activite.mediateur_id = mediateurs.id AND mediateurs.is_visible = TRUE
           LEFT JOIN users ON mediateurs.user_id = users.id
+          -- Dispositif conseiller numérique dérivé de main (affectation idposte active) : un
+          -- ensemble d'identifiants distincts, donc une jointure qui ne démultiplie aucune ligne
+          -- de l'agrégat.
+          LEFT JOIN (${conseillersNumeriquesUserIdsSql}) conseillers ON conseillers.user_id = users.id
       WHERE structures.suppression IS NULL
         AND mediateurs_en_activite.suppression IS NULL AND mediateurs_en_activite.fin_activite IS NULL
         AND structures.visible_pour_cartographie_nationale IS true

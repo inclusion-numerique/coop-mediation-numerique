@@ -1,6 +1,6 @@
 import IconInSquare from '@app/web/components/IconInSquare'
+import RattacherEmployeuseForm from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/ui/RattacherEmployeuseForm'
 import InscriptionCard from '@app/web/features/inscription/components/InscriptionCard'
-import RenseignerStructureEmployeuseForm from './RenseignerStructureEmployeuseForm'
 
 const RenseignerStructureEmployeusePage = ({
   nextStepPath,
@@ -26,7 +26,7 @@ const RenseignerStructureEmployeusePage = ({
         que médiateur numérique. Recherchez-la par son nom, son SIRET ou son
         adresse.
       </p>
-      <RenseignerStructureEmployeuseForm nextStepPath={nextStepPath} />
+      <RattacherEmployeuseForm nextStepPath={nextStepPath} />
     </InscriptionCard>
   )
 }

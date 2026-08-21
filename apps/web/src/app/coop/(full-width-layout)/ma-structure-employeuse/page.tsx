@@ -2,6 +2,7 @@ import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import RattacherEmployeuseForm from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/ui/RattacherEmployeuseForm'
 import {
   consulterEmployeuseAUneDate,
   emploiEmployeuseAffichage,
@@ -23,8 +24,6 @@ const MaStructureEmployeusePage = async () => {
     return redirect('/')
   }
 
-  // Employeuse COURANTE en pur main (ADR-002 périmètre élargi) : affectation active / contrat couvrant
-  // aujourd'hui. Plus aucune lecture de `coop.employes_structures`.
   const employeuse = await consulterEmployeuseAUneDate({
     userId: user.id,
     date: new Date(),
@@ -50,23 +49,21 @@ const MaStructureEmployeusePage = async () => {
           {emploi ? (
             <ActeurStructureEmployeuse
               emploi={emploi}
-              // La notice « employeuse = lieu d'activité » reposait sur l'égalité d'id employeuse/lieu,
-              // morte depuis l'étape 1 (clé de corrélation). Désactivée ici (ADR-002).
               showIsLieuActiviteNotice={false}
               showReferentStructure={true}
               showReferentStructureConseillerNumeriqueSupportNotice={false}
               canUpdateStructure={user.isConseillerNumerique}
             />
           ) : (
-            <div className="fr-text--center fr-background-alt--blue-france fr-border-radius--8 fr-p-6w">
+            <div className="fr-background-alt--blue-france fr-border-radius--8 fr-p-6w">
               <h2 className="fr-h6 fr-mb-1v">
-                Vous n’avez pas renseigné de structure employeuse
+                Vous n’avez pas de structure employeuse
               </h2>
-              <p className="fr-mb-0">
-                Vous pouvez continuez à utiliser la plateforme, cependant vous
-                ne serez plus identifié sur votre territoire comme faisant
-                partie de la communauté de la médiation numérique
+              <p className="fr-text--sm fr-text-mention--grey fr-mb-6v">
+                Sans elle, vous ne pouvez pas enregistrer d’activité. Recherchez
+                votre structure par son nom, son SIRET ou son adresse.
               </p>
+              <RattacherEmployeuseForm nextStepPath={null} />
             </div>
           )}
         </main>

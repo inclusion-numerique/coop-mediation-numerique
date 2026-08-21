@@ -1,3 +1,4 @@
+import { personneEstConseillerNumerique } from '@app/web/features/employeuse'
 import ActeurProfilAndContact from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurProfilAndContact'
 import type { ActeurForList } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
 import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
@@ -55,7 +56,14 @@ const ActeurCard = ({
       </div>
 
       <ActeurProfilAndContact
-        acteur={acteur}
+        // Le dispositif est dérivé ICI, côté serveur : le composant client reçoit un booléen tout
+        // fait plutôt que la liste des affectations.
+        acteur={{
+          ...acteur,
+          isConseillerNumerique: personneEstConseillerNumerique(
+            acteur.personneMain,
+          ),
+        }}
         departementCode={departementCode}
         compact
         className={lieuxActiviteCount > 0 ? 'fr-mb-4v' : undefined}

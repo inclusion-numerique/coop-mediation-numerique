@@ -34,3 +34,22 @@ export const affectationActuelle = (
       return (b.depuis?.getTime() ?? 0) - (a.depuis?.getTime() ?? 0)
     })
     .at(0) ?? null
+
+/**
+ * La personne relève-t-elle du dispositif conseiller numérique ?
+ *
+ * La règle est une affectation `idposte` ACTIVE : c'est l'Entrepôt qui la pose et la retire, et
+ * c'est elle — pas `main.poste`, pas `conseiller_numerique_id` — qui suit le contrat. Les deux
+ * autres pistes ont été mesurées et divergent bien davantage.
+ *
+ * Le corollaire tient en une phrase : la fin d'un contrat conum se lit ici, immédiatement, au lieu
+ * d'attendre qu'une synchro nocturne veuille bien recopier un drapeau.
+ */
+export const estConseillerNumerique = (
+  // Seuls la source et l'état comptent : la règle accepte donc une projection minimale, ce qui évite
+  // de charger structures et contrats là où on ne veut qu'un booléen.
+  affectations: readonly Pick<Affectation, 'source' | 'active'>[],
+): boolean =>
+  affectations.some(
+    (affectation) => affectation.active && affectation.source === 'idposte',
+  )

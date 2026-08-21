@@ -1,11 +1,14 @@
 import { UpdateProfileValidation } from '@app/web/app/user/UpdateProfileValidation'
 import { updateBrevoContact } from '@app/web/external-apis/brevo/updateBrevoContact'
+import {
+  personneConseillerNumeriqueSelect,
+  personneEstConseillerNumerique,
+} from '@app/web/features/employeuse/server'
 import { deleteUser } from '@app/web/features/utilisateurs/use-cases/delete/deleteUser'
 import { mergeUser } from '@app/web/features/utilisateurs/use-cases/merge/mergeUser'
 import { nouveauReminders } from '@app/web/features/utilisateurs/use-cases/nouveau-reminders/nouveauReminders'
 import { searchUser } from '@app/web/features/utilisateurs/use-cases/search/searchUser'
 import { signupReminders } from '@app/web/features/utilisateurs/use-cases/signup-reminders/signupReminders'
-import { updateUserFromDataspaceData } from '@app/web/features/utilisateurs/use-cases/update-from-dataspace/updateUserFromDataspaceData'
 import { prismaClient } from '@app/web/prismaClient'
 import {
   protectedProcedure,
@@ -134,7 +137,7 @@ export const userRouter = router({
           where: { id: userId, role: 'User' },
           select: {
             id: true,
-            isConseillerNumerique: true,
+            personneMain: { select: personneConseillerNumeriqueSelect },
             mediateur: {
               select: {
                 id: true,
@@ -241,18 +244,17 @@ export const userRouter = router({
           ])
         }
 
+        // Dispositif dérivé de l'affectation `idposte` active (ADR-002), plus d'une colonne recopiée.
+        const estConum = personneEstConseillerNumerique(user.personneMain)
+
         // Update profilInscription based on resulting roles
         let profilInscription: ProfilInscription | null = null
         if (isMediateur && isCoordinateur) {
-          profilInscription = user.isConseillerNumerique
-            ? 'ConseillerNumerique'
-            : 'Mediateur'
+          profilInscription = estConum ? 'ConseillerNumerique' : 'Mediateur'
         } else if (isMediateur) {
-          profilInscription = user.isConseillerNumerique
-            ? 'ConseillerNumerique'
-            : 'Mediateur'
+          profilInscription = estConum ? 'ConseillerNumerique' : 'Mediateur'
         } else if (isCoordinateur) {
-          profilInscription = user.isConseillerNumerique
+          profilInscription = estConum
             ? 'CoordinateurConseillerNumerique'
             : 'Coordinateur'
         }
@@ -351,12 +353,5 @@ export const userRouter = router({
         userId,
         deletedSessionsCount,
       }
-    }),
-  updateFromDataspace: protectedProcedure
-    .input(z.object({ userId: z.string().uuid() }))
-    .mutation(async ({ input: { userId }, ctx: { user: sessionUser } }) => {
-      enforceIsAdmin(sessionUser)
-
-      return updateUserFromDataspaceData({ userId })
     }),
 })

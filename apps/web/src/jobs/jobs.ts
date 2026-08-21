@@ -1,4 +1,5 @@
 import z from 'zod'
+import { AppliquerDispositifConumJobValidation } from './appliquer-dispositif-conum/appliquerDispositifConumJob'
 import { ApplyCorrigerAdresseJobValidation } from './apply-corriger-adresse/applyCorrigerAdresseJob'
 import { ApplyCorrigerCoordonneesJobValidation } from './apply-corriger-coordonnees/applyCorrigerCoordonneesJob'
 import { ApplyFusionnerLieuxJobValidation } from './apply-fusionner-lieux/applyFusionnerLieuxJob'
@@ -30,7 +31,6 @@ import { RemoveOrphanBrevoContactsJobValidation } from './remove-orphan-brevo-co
 import { ResetInscriptionsSansRoleJobValidation } from './reset-inscriptions-sans-role/resetInscriptionsSansRoleJob'
 import { SetServciesToSharedLieuxValidation } from './set-servcies-to-shared-lieux/setServciesToSharedLieuxJob'
 import { SyncRdvspDataJobValidation } from './sync-rdvsp-data/syncRdvspDataJob'
-import { SyncUsersFromDataspaceJobValidation } from './sync-users-from-dataspace/syncUsersFromDataspaceJob'
 import { UpdateLieuxActivitesAdistanceValidation } from './update-lieu-activite-a-distance/updateLieuxActivitesAdistanceJob'
 import { UpdateStructuresCartographieNationaleJobValidation } from './update-structures-cartographie-nationale/updateStructuresCartographieNationaleJob'
 
@@ -75,7 +75,7 @@ export const JobValidation = z.discriminatedUnion('name', [
   UpdateLieuxActivitesAdistanceValidation,
   FixStructuresJobValidation,
   FixUsersJobValidation,
-  SyncUsersFromDataspaceJobValidation,
+  AppliquerDispositifConumJobValidation,
   SyncRdvspDataJobValidation,
   FixTagsJobValidation,
   InactiveUsersRemindersJobValidation,

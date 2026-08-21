@@ -3,6 +3,7 @@ import {
   type ActivitesFilters,
   validateActivitesFilters,
 } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { personneEstConseillerNumerique } from '@app/web/features/employeuse/server'
 import { userFromShareId } from '@app/web/features/mediateurs/use-cases/partage-statistiques/db/userFromShareId'
 import { StatistiquesPage } from '@app/web/features/mediateurs/use-cases/partage-statistiques/page/statistiques'
 import { notFound } from 'next/navigation'
@@ -41,7 +42,7 @@ const Page = async ({ params, searchParams }: PageProps) => {
   const mesStatistiquesProps = await getMesStatistiquesPageData({
     user: {
       ...user,
-      isConseillerNumerique: user.isConseillerNumerique,
+      isConseillerNumerique: personneEstConseillerNumerique(user.personneMain),
       rdvAccount: null,
       mediateur: shareStatsUser?.mediateur ?? null,
       coordinateur: shareStatsUser?.coordinateur ?? null,

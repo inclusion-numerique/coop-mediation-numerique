@@ -1,3 +1,4 @@
+import { personneConseillerNumeriqueSelect } from '@app/web/features/employeuse/server'
 import { splitMediateursCoordonnes } from '@app/web/features/mediateurs/splitMediateursCoordonnes'
 import { prismaClient } from '@app/web/prismaClient'
 
@@ -28,7 +29,7 @@ const queryUserFromShareId = (id: string) =>
               email: true,
               name: true,
               role: true,
-              isConseillerNumerique: true,
+              personneMain: { select: personneConseillerNumeriqueSelect },
             },
           },
           coordinations: {
@@ -78,7 +79,7 @@ const queryUserFromShareId = (id: string) =>
               email: true,
               name: true,
               role: true,
-              isConseillerNumerique: true,
+              personneMain: { select: personneConseillerNumeriqueSelect },
             },
           },
           mediateursCoordonnes: {

@@ -200,7 +200,7 @@ describe('timestampExtension', () => {
       expect(updated.updated.getTime()).toBe(before.updated.getTime())
     })
 
-    it('ne bumpe PAS `updated` si seul `lastSyncedFromDataspace` change', async () => {
+    it('ne bumpe PAS `updated` si seul `importedLieuxFromDataspace` change', async () => {
       const before = await prismaClient.user.findUniqueOrThrow({
         where: { id: userId },
       })
@@ -208,7 +208,7 @@ describe('timestampExtension', () => {
       await wait(50)
       const updated = await prismaClient.user.update({
         where: { id: userId },
-        data: { lastSyncedFromDataspace: new Date() },
+        data: { importedLieuxFromDataspace: new Date() },
       })
 
       expect(updated.updated.getTime()).toBe(before.updated.getTime())

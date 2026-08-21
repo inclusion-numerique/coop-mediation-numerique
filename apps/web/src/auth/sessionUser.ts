@@ -24,8 +24,12 @@ export type SessionUser = Pick<
   | 'profilInscription'
   | 'acceptationCgu'
   | 'timezone'
-  | 'isConseillerNumerique'
 > & {
+  /**
+   * Dispositif conseiller numérique DÉRIVÉ de l'affectation `idposte` active, et non plus lu dans
+   * une colonne. Il reste un booléen dans la session : les écrans n'ont pas à connaître la règle.
+   */
+  isConseillerNumerique: boolean
   emailVerified: string | null
   created: string | null
   updated: string | null

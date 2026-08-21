@@ -5,6 +5,10 @@ import {
   toBrevoContact,
 } from '@app/web/external-apis/brevo/createBrevoContact'
 import { removeBrevoContactFromList } from '@app/web/external-apis/brevo/removeBrevoContactFromList'
+import {
+  personneConseillerNumeriqueSelect,
+  personneEstConseillerNumerique,
+} from '@app/web/features/employeuse/server'
 import { PrismaClient } from '@prisma/client'
 
 const userListId = Number.parseInt(process.env.BREVO_USERS_LIST_ID!, 10)
@@ -18,12 +22,17 @@ export const executeImportContactsToBrevo = async () => {
     include: {
       mediateur: true,
       coordinateur: true,
+      personneMain: { select: personneConseillerNumeriqueSelect },
     },
   })
 
   const allContacts = users.map((user) => ({
     user,
-    contact: toBrevoContact(user),
+    // Dispositif dérivé de l'affectation `idposte` active (ADR-002).
+    contact: toBrevoContact({
+      ...user,
+      isConseillerNumerique: personneEstConseillerNumerique(user.personneMain),
+    }),
   }))
 
   const contactsWithRole = allContacts.filter(({ contact }) =>

@@ -1,3 +1,4 @@
+import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 
 const thirtyOneDaysAgo = () => new Date(Date.now() - 31 * 24 * 60 * 60 * 1000)
@@ -23,7 +24,7 @@ export const getDataUtilisateursActifs = async (
     FROM users u
     JOIN mediateurs m ON m.user_id = u.id
     LEFT JOIN coordinateurs c ON c.user_id = u.id
-    WHERE u.is_conseiller_numerique = FALSE
+    WHERE ${conseillerNumeriqueSql('u.id', false)}
       AND c.id IS NULL
       AND u.deleted IS NULL
       AND u.inscription_validee IS NOT NULL
@@ -41,7 +42,7 @@ export const getDataUtilisateursActifs = async (
     FROM users u
     JOIN mediateurs m ON m.user_id = u.id
     LEFT JOIN coordinateurs c ON c.user_id = u.id
-    WHERE u.is_conseiller_numerique = TRUE
+    WHERE ${conseillerNumeriqueSql('u.id', true)}
       AND c.id IS NULL
       AND u.deleted IS NULL
       AND u.inscription_validee IS NOT NULL

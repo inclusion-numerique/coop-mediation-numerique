@@ -1,5 +1,5 @@
 import type { OptionsData } from '@app/ui/components/Primitives/Options'
-import type { StructureSearchResult } from '@app/web/features/inscription/use-cases/renseigner-structure-employeuse/searchStructureEmployeuseCombined'
+import type { StructureSearchResult } from '@app/web/features/employeuse'
 import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
 import { vanillaTrpc } from '@app/web/trpc'
 import { addresseFromParts } from '@app/web/utils/addresseFromParts'

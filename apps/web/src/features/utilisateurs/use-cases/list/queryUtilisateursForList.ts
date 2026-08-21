@@ -1,5 +1,6 @@
 import {
   personneEmployeuseSelect,
+  personneEstConseillerNumerique,
   personneToEmployeuseActuelle,
 } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
@@ -18,7 +19,6 @@ export const searchUtilisateurSelect = {
   profilInscription: true,
   created: true,
   deleted: true,
-  isConseillerNumerique: true,
   mediateur: {
     select: {
       id: true,
@@ -101,6 +101,8 @@ export const queryUtilisateursForList = async ({
   return utilisateurs.map(({ personneMain, ...utilisateur }) => ({
     ...utilisateur,
     emplois: toEmplois(personneMain),
+    // La même `personneMain` sert les deux : employeuse courante et dispositif conseiller numérique.
+    isConseillerNumerique: personneEstConseillerNumerique(personneMain),
   }))
 }
 

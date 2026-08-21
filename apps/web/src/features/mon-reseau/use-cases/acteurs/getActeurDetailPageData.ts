@@ -5,6 +5,7 @@ import type { ActivitesFilters } from '@app/web/features/activites/use-cases/lis
 import {
   consulterEmployeuseAUneDate,
   emploiEmployeuseAffichage,
+  personneEstConseillerNumerique,
 } from '@app/web/features/employeuse/server'
 import {
   acteurCoordinationSelect,
@@ -52,7 +53,6 @@ export const getActeurDetailPageData = async ({
       email: true,
       phone: true,
       created: true,
-      isConseillerNumerique: true,
       mediateur: {
         select: {
           id: true,
@@ -80,12 +80,16 @@ export const getActeurDetailPageData = async ({
   if (acteur == null) return null
 
   const mediateurId = acteur.mediateur?.id ?? null
+  // Dispositif dérivé une fois pour toutes : les écrans en aval reçoivent un booléen.
+  const estConseillerNumerique = personneEstConseillerNumerique(
+    acteur.personneMain,
+  )
 
   // Determine acteur role
   const coordinateurType = getActeurCoordinateurType(acteur)
   const acteurRole: ActeurDetailRole =
     coordinateurType ??
-    (acteur.isConseillerNumerique
+    (estConseillerNumerique
       ? 'conseiller_numerique'
       : acteur.mediateur
         ? 'mediateur'
@@ -110,8 +114,7 @@ export const getActeurDetailPageData = async ({
         acteurIsMediateurCoordonnne,
         acteurIsInvitedToTeam,
         showStats: acteurIsMediateurCoordonnne,
-        showContract:
-          acteurIsMediateurCoordonnne && acteur.isConseillerNumerique,
+        showContract: acteurIsMediateurCoordonnne && estConseillerNumerique,
         showReferentStructure: acteurIsMediateurCoordonnne,
         canInviteToTeam: !acteurIsMediateurCoordonnne && !acteurIsInvitedToTeam,
         canRemoveFromTeam: acteurIsMediateurCoordonnne,
@@ -172,7 +175,9 @@ export const getActeurDetailPageData = async ({
   })
 
   return {
-    acteur,
+    // Le booléen dérivé voyage avec l'acteur : les composants clients en aval n'ont pas à
+    // reconstituer la règle depuis les affectations.
+    acteur: { ...acteur, isConseillerNumerique: estConseillerNumerique },
     activityDates,
     mediateurId,
     acteurRole,

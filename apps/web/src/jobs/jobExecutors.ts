@@ -2,6 +2,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import * as Sentry from '@sentry/nextjs'
 import { v4 } from 'uuid'
+import { executeAppliquerDispositifConum } from './appliquer-dispositif-conum/executeAppliquerDispositifConum'
 import { executeApplyCorrigerAdresse } from './apply-corriger-adresse/executeApplyCorrigerAdresse'
 import { executeApplyCorrigerCoordonnees } from './apply-corriger-coordonnees/executeApplyCorrigerCoordonnees'
 import { executeApplyFusionnerLieux } from './apply-fusionner-lieux/executeApplyFusionnerLieux'
@@ -35,7 +36,6 @@ import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts
 import { executeResetInscriptionsSansRole } from './reset-inscriptions-sans-role/executeResetInscriptionsSansRole'
 import { executeSetServciesToSharedLieux } from './set-servcies-to-shared-lieux/executeSetServciesToSharedLieux'
 import { executeSyncRdvspData } from './sync-rdvsp-data/executeSyncRdvspData'
-import { executeSyncUsersFromDataspace } from './sync-users-from-dataspace/executeSyncUsersFromDataspace'
 import { executeUpdateLieuxActivitesADistance } from './update-lieu-activite-a-distance/executeUpdateLieuxActivitesADistance'
 import { updateStructuresFromEntrepot } from './update-structures-cartographie-nationale/updateStructuresFromEntrepot'
 
@@ -84,7 +84,7 @@ export const jobExecutors: {
   'fix-structures': executeFixStructures,
   'fix-users': executeFixUsers,
   'fix-tags': executeFixTags,
-  'sync-users-from-dataspace': executeSyncUsersFromDataspace,
+  'appliquer-dispositif-conum': executeAppliquerDispositifConum,
   'sync-rdvsp-data': executeSyncRdvspData,
   'inactive-users-reminders': executeInactiveUsersReminders,
   'fix-users-roles': executeFixUsersRoles,

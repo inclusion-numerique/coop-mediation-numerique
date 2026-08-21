@@ -6,6 +6,10 @@ import {
   toBrevoContact,
 } from '@app/web/external-apis/brevo/createBrevoContact'
 import {
+  personneConseillerNumeriqueSelect,
+  personneEstConseillerNumerique,
+} from '@app/web/features/employeuse/server'
+import {
   employeuseMainSelect,
   employeuseMainToLieuData,
 } from '@app/web/features/inscription/use-cases/lieux-activite/employeuseEnLieuData'
@@ -522,13 +526,18 @@ export const inscriptionRouter = router({
           phone: true,
           coordinateur: true,
           mediateur: { select: { id: true } },
-          isConseillerNumerique: true,
+          personneMain: { select: personneConseillerNumeriqueSelect },
         },
       })
 
       if (user != null && deploymentCanCreateBrevoContact()) {
         await createBrevoContact({
-          contact: toBrevoContact(user),
+          contact: toBrevoContact({
+            ...user,
+            isConseillerNumerique: personneEstConseillerNumerique(
+              user.personneMain,
+            ),
+          }),
           listIds: [ServerWebAppConfig.Brevo.usersListId],
         })
       }
@@ -631,12 +640,10 @@ export const inscriptionRouter = router({
         where: { mediateurId: mediateur.id },
       })
 
-      await prismaClient.user.update({
-        where: { id: sessionUser.id },
-        data: {
-          isConseillerNumerique: false,
-        },
-      })
+      // Le dispositif n'est plus une colonne qu'on remet à false en changeant de rôle : il se dérive
+      // de l'affectation `idposte`, qui appartient à l'Entrepôt. Quitter le rôle médiateur côté coop
+      // ne fait pas sortir quelqu'un du dispositif — et prétendre le contraire était précisément ce
+      // qui produisait des drapeaux en désaccord avec la réalité.
 
       await prismaClient.mediateur.delete({
         where: { id: mediateur.id },

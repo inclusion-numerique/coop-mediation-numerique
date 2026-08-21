@@ -1,3 +1,4 @@
+import { conseillerNumeriqueWhere } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 import { subMonths } from 'date-fns'
 
@@ -47,7 +48,7 @@ export const countMediateursCoordonnesBy = async (
       where: {
         coordinateurId: coordinateur.id,
         suppression: null,
-        mediateur: { user: { isConseillerNumerique: true } },
+        mediateur: { user: conseillerNumeriqueWhere(true) },
       },
     }),
     prismaClient.invitationEquipe.count({

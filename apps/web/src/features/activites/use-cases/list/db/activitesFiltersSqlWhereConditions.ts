@@ -1,4 +1,5 @@
 import { thematiqueApiValues } from '@app/web/features/activites/use-cases/cra/fields/thematique'
+import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
 import { isDefinedAndNotNull } from '@app/web/utils/isDefinedAndNotNull'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import { Prisma, Thematique } from '@prisma/client'
@@ -176,10 +177,10 @@ export const getActivitesFiltersWhereConditions = ({
               .join(', ')})`,
           )
         : null,
+    // `u` est la jointure sur `coop.users` des requêtes de liste : le dispositif s'y dérive de main
+    // (affectation idposte active), la colonne recopiée n'existe plus.
     conseiller_numerique: conseiller_numerique
-      ? conseiller_numerique === '1'
-        ? Prisma.raw(`u.is_conseiller_numerique = TRUE`)
-        : Prisma.raw(`u.is_conseiller_numerique = FALSE`)
+      ? conseillerNumeriqueSql('u.id', conseiller_numerique === '1')
       : null,
     demarches_administratives: demarches_administratives
       ? demarches_administratives === '1'

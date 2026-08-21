@@ -112,20 +112,26 @@ describe('contratsToDomain', () => {
   // Deux contrats successifs chez le même employeur restent deux périodes : c'est
   // ce qui permet de savoir laquelle couvre une date passée.
   it('conserve chaque contrat, y compris chez la même employeuse', () => {
-    const contrats = contratsToDomain([
-      {
-        structureAdministrative: ligneComplete,
-        dateDebut: new Date('2024-01-01'),
-        dateFin: new Date('2024-12-31'),
-        dateRupture: null,
-      },
-      {
-        structureAdministrative: ligneComplete,
-        dateDebut: new Date('2026-01-01'),
-        dateFin: null,
-        dateRupture: null,
-      },
-    ])
+    // Horloge explicite : le classement d'un contrat dépend désormais de la date
+    // à laquelle on le regarde, et un test ne doit pas dépendre du jour où il
+    // s'exécute.
+    const contrats = contratsToDomain(
+      [
+        {
+          structureAdministrative: ligneComplete,
+          dateDebut: new Date('2024-01-01'),
+          dateFin: new Date('2024-12-31'),
+          dateRupture: null,
+        },
+        {
+          structureAdministrative: ligneComplete,
+          dateDebut: new Date('2026-01-01'),
+          dateFin: null,
+          dateRupture: null,
+        },
+      ],
+      new Date('2026-06-01'),
+    )
 
     expect(contrats.map(({ periode }) => periode)).toEqual([
       {
@@ -133,7 +139,7 @@ describe('contratsToDomain', () => {
         debut: new Date('2024-01-01'),
         fin: new Date('2024-12-31'),
       },
-      { _tag: 'enCours', debut: new Date('2026-01-01') },
+      { _tag: 'enCours', debut: new Date('2026-01-01'), finPrevue: null },
     ])
     expect(contrats.every(({ employeuse }) => employeuse.id === 42)).toBe(true)
   })
@@ -178,6 +184,7 @@ describe('personneToEmployeuseActuelle', () => {
     expect(actuelle?.periode).toEqual({
       _tag: 'enCours',
       debut: new Date('2026-03-01'),
+      finPrevue: null,
     })
   })
 

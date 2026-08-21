@@ -1,6 +1,10 @@
 export { AdresseAGeocoder } from './adresse-a-geocoder'
 export { AdresseEmployeuse } from './adresse-employeuse'
-export { type Affectation, affectationActuelle } from './affectation'
+export {
+  type Affectation,
+  affectationActuelle,
+  estConseillerNumerique,
+} from './affectation'
 export { CodeInsee } from './code-insee'
 export { CodePostal } from './code-postal'
 export { ContactReferent, referentAffichage } from './contact-referent'

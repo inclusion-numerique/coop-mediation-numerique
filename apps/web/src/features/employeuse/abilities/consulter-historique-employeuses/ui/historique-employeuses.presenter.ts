@@ -1,5 +1,9 @@
 import type { EmployeuseHistorique } from '../../../domain/employeuses-historique'
-import { debutEmploi, finEmploi } from '../../../domain/periode-emploi'
+import {
+  debutEmploi,
+  estTerminee,
+  finEmploi,
+} from '../../../domain/periode-emploi'
 import { employeuseAffichage } from '../../../ui/employeuse.presenter'
 
 /**
@@ -15,7 +19,14 @@ export type EmployeuseHistoriqueAffichage = {
   id: string
   estActive: boolean
   debut: Date | null
+  /** Terme du contrat, échu ou non : c'est une date, pas un verdict. */
   fin: Date | null
+  /**
+   * Le contrat est-il révolu ? Distinct de `fin`, qu'un CDD en cours porte
+   * aussi — l'écran s'appuyait sur la seule présence d'une date de fin et
+   * annonçait « contrat terminé » à des personnes en poste pour des mois.
+   */
+  termine: boolean
   creation: Date | null
   structure: {
     id: string
@@ -43,6 +54,7 @@ export const historiqueEmployeusesAffichage = (
       estActive: affectationActive,
       debut: debutEmploi(periode),
       fin: finEmploi(periode),
+      termine: estTerminee(periode),
       creation: depuis,
       structure: {
         id,

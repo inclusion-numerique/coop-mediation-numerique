@@ -1,8 +1,30 @@
 // Import direct du value object, et non du barrel de la feature : ce schéma est chargé par
 // un composant client, or le barrel ré-exporte les implémentations Prisma de l'employeuse —
 // elles atterriraient dans le bundle client (frontière que `tsc` ne signale pas).
-import { Siret } from '@app/web/features/employeuse/domain/siret'
 import { z } from 'zod'
+import { Siret } from '../../../domain/siret'
+
+/**
+ * Une employeuse telle que la recherche la propose, avant tout choix : identité
+ * brute, encore non validée, indifféremment issue des structures enregistrées
+ * ou de l'annuaire des entreprises.
+ *
+ * Elle vit ici — dans le domaine — et non auprès de la recherche qui la
+ * produit, parce que la combo-box et le formulaire la manipulent depuis le
+ * navigateur : la référencer dans son module d'origine les ferait pointer un
+ * module qui importe Prisma.
+ */
+export type StructureSearchResult = {
+  id?: string | null
+  nom: string
+  adresse: string
+  codePostal: string
+  commune: string
+  codeInsee: string
+  siret: string
+  typologies?: string[] | null
+  source: 'database' | 'api'
+}
 
 /**
  * Ce que le formulaire envoie : l'employeuse choisie dans les résultats de

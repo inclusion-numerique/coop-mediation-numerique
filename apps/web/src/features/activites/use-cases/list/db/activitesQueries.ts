@@ -1,3 +1,4 @@
+import { personneConseillerNumeriqueSelect } from '@app/web/features/employeuse/server'
 import { addRdvBadgeStatus } from '@app/web/features/rdvsp/db/badge-statut-rdv'
 import { prismaClient } from '@app/web/prismaClient'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
@@ -47,7 +48,7 @@ export const activiteListSelect = {
         select: {
           firstName: true,
           lastName: true,
-          isConseillerNumerique: true,
+          personneMain: { select: personneConseillerNumeriqueSelect },
         },
       },
     },
