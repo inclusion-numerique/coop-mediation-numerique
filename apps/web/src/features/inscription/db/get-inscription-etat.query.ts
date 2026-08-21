@@ -13,7 +13,6 @@ export const getInscriptionEtat: GetInscriptionEtat = async (userId) => {
     select: {
       id: true,
       profilInscription: true,
-      isConseillerNumerique: true,
       acceptationCgu: true,
       structureEmployeuseRenseignee: true,
       lieuxActiviteRenseignes: true,

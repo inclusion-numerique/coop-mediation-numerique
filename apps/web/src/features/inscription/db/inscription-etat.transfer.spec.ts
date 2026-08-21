@@ -97,12 +97,11 @@ describe('inscription état transfer layer', () => {
     },
   )
 
-  it('rend EnCours avec des CGU en attente si le profil est posé sans CGU (flow Dataspace)', () => {
+  it('rend EnCours avec des CGU en attente si le profil est posé sans CGU (parcours du dispositif)', () => {
     expect(
       inscriptionEtatToDomain({
         id,
         profilInscription: 'Mediateur',
-        isConseillerNumerique: false,
         acceptationCgu: null,
         structureEmployeuseRenseignee: null,
         lieuxActiviteRenseignes: null,
@@ -126,7 +125,6 @@ describe('inscription état transfer layer', () => {
       inscriptionEtatToDomain({
         id,
         profilInscription: null,
-        isConseillerNumerique: false,
         acceptationCgu: new Date('2026-07-01T00:00:00.000Z'),
         structureEmployeuseRenseignee: null,
         lieuxActiviteRenseignes: null,

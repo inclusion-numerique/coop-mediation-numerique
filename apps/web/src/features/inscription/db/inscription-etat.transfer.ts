@@ -12,7 +12,6 @@ type InscriptionRow = Pick<
   PrismaUser,
   | 'id'
   | 'profilInscription'
-  | 'isConseillerNumerique'
   | 'acceptationCgu'
   | 'structureEmployeuseRenseignee'
   | 'lieuxActiviteRenseignes'
@@ -25,8 +24,8 @@ const toProgression = (row: InscriptionRow) => ({
 })
 
 /**
- * Rôle de base extrait du profil legacy 4-valeurs : les variantes conseiller
- * numérique retombent sur leur rôle (le statut CN vit dans le booléen dédié).
+ * Rôle de base extrait du profil 4-valeurs : les variantes conseiller numérique
+ * retombent sur leur rôle.
  */
 const roleDepuisProfil = (profil: ProfilInscription): Role =>
   Role(
@@ -36,11 +35,23 @@ const roleDepuisProfil = (profil: ProfilInscription): Role =>
   )
 
 /**
- * Reconstruit l'état depuis la ligne `user`. Le rôle vient du profil legacy
- * (collapsé), le statut CN de son booléen dédié (source de vérité Dataspace).
- * C'est le *profil* qui démarre l'inscription : les CGU sont un axe orthogonal
- * (le flow Dataspace pré-remplit le profil et ne les recueille qu'au
- * récapitulatif), et ne peuvent donc pas conditionner le démarrage.
+ * Statut conseiller numérique porté par le profil lui-même.
+ *
+ * Il vivait dans `coop.users.is_conseiller_numerique`, colonne supprimée depuis
+ * que le dispositif se lit dans `main`. Le profil en est la projection fidèle —
+ * `computeUserProfile` est la bijection inverse — donc rien n'est perdu à le
+ * dériver plutôt qu'à le stocker une seconde fois.
+ */
+const conseillerNumeriqueDepuisProfil = (profil: ProfilInscription): boolean =>
+  profil === 'ConseillerNumerique' ||
+  profil === 'CoordinateurConseillerNumerique'
+
+/**
+ * Reconstruit l'état depuis la ligne `user`. Rôle et statut CN viennent tous
+ * deux du profil (collapsé). C'est le *profil* qui démarre l'inscription : les
+ * CGU sont un axe orthogonal (le parcours du dispositif pré-remplit le profil et
+ * ne les recueille qu'au récapitulatif), et ne peuvent donc pas conditionner le
+ * démarrage.
  */
 export const inscriptionEtatToDomain = (
   row: InscriptionRow,
@@ -48,10 +59,12 @@ export const inscriptionEtatToDomain = (
   if (row.profilInscription === null)
     return { _tag: 'NonDemarree', userId: UserId(row.id) }
 
+  const profil = ProfilInscription(row.profilInscription)
+
   const ouvert = {
     userId: UserId(row.id),
-    role: roleDepuisProfil(ProfilInscription(row.profilInscription)),
-    conseillerNumerique: row.isConseillerNumerique,
+    role: roleDepuisProfil(profil),
+    conseillerNumerique: conseillerNumeriqueDepuisProfil(profil),
     acceptationCgu: row.acceptationCgu,
     progression: toProgression(row),
   }
@@ -62,17 +75,15 @@ export const inscriptionEtatToDomain = (
 }
 
 /**
- * Projette l'état vers les colonnes `user`. Le profil legacy 4-valeurs est
- * *re-aplati* depuis (rôle, statut CN) pour rester lisible par le legacy, le
- * booléen CN étant écrit en parallèle. Un CN qui traverse une étape conserve
- * donc sa variante d'enum.
+ * Projette l'état vers les colonnes `user`. Le profil 4-valeurs est *re-aplati*
+ * depuis (rôle, statut CN) : c'est désormais la seule colonne qui porte les
+ * deux. Un CN qui traverse une étape conserve donc sa variante d'enum.
  */
 export const inscriptionEtatFromDomain = (
   etat: InscriptionEtat,
 ): Pick<
   PrismaUser,
   | 'profilInscription'
-  | 'isConseillerNumerique'
   | 'acceptationCgu'
   | 'structureEmployeuseRenseignee'
   | 'lieuxActiviteRenseignes'
@@ -81,7 +92,6 @@ export const inscriptionEtatFromDomain = (
   etat._tag === 'NonDemarree'
     ? {
         profilInscription: null,
-        isConseillerNumerique: false,
         acceptationCgu: null,
         structureEmployeuseRenseignee: null,
         lieuxActiviteRenseignes: null,
@@ -92,7 +102,6 @@ export const inscriptionEtatFromDomain = (
           isConseillerNumerique: etat.conseillerNumerique,
           aCoordinateur: etat.role === 'Coordinateur',
         }),
-        isConseillerNumerique: etat.conseillerNumerique,
         acceptationCgu: etat.acceptationCgu,
         structureEmployeuseRenseignee: dateDeFranchissement(
           etat.progression.structureEmployeuse,

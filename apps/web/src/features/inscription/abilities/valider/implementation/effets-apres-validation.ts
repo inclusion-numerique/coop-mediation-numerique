@@ -3,6 +3,10 @@ import {
   deploymentCanCreateBrevoContact,
   toBrevoContact,
 } from '@app/web/external-apis/brevo/createBrevoContact'
+import {
+  personneConseillerNumeriqueSelect,
+  personneEstConseillerNumerique,
+} from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import type { EffetsApresValidation } from '../domain/ports'
@@ -29,13 +33,21 @@ export const effetsApresValidation: EffetsApresValidation = async (userId) => {
       phone: true,
       coordinateur: true,
       mediateur: { select: { id: true } },
-      isConseillerNumerique: true,
+      personneMain: { select: personneConseillerNumeriqueSelect },
     },
   })
 
   if (user != null && deploymentCanCreateBrevoContact()) {
     await createBrevoContact({
-      contact: toBrevoContact(user),
+      // Dispositif dérivé de l'affectation `idposte` active (ADR-002) : Brevo
+      // reçoit l'état réel du dispositif, pas la copie qu'une synchro nocturne
+      // posait sur `coop.users`.
+      contact: toBrevoContact({
+        ...user,
+        isConseillerNumerique: personneEstConseillerNumerique(
+          user.personneMain,
+        ),
+      }),
       listIds: [ServerWebAppConfig.Brevo.usersListId],
     })
   }
