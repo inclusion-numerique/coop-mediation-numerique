@@ -1,3 +1,4 @@
+import { conseillerNumeriqueExpression } from '@app/web/features/employeuse/server'
 import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
 import {
   DEFAULT_PAGE,
@@ -162,7 +163,7 @@ const userInfoColumns = `
   users.last_name AS last_name,
   users.name AS name,
   users.phone AS phone,
-  users.is_conseiller_numerique AS is_conseiller_numerique`
+  ${conseillerNumeriqueExpression('users.id')} AS is_conseiller_numerique`
 
 const pendingInvitationsQuery = (coordinateurId: string) => `
   SELECT

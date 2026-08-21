@@ -48,3 +48,31 @@ export const employeuseCourante = (alias = 's1') => ({
   id: Prisma.raw(`${alias}.id`),
   codeInsee: Prisma.raw(`${alias}.code_insee`),
 })
+
+/**
+ * Prédicat SQL « relève / ne relève pas du dispositif conseiller numérique », pour les requêtes
+ * brutes. Pendant SQL de `conseillerNumeriqueWhere`, même règle : une affectation `idposte` ACTIVE.
+ *
+ * Le rendre disponible ici évite que chaque requête brute réinvente la jointure — et qu'une
+ * évolution de la règle en oublie une au passage.
+ *
+ * @param userIdColumn référence de colonne de la requête appelante (ex. `u.id`). C'est un
+ *   **identifiant SQL**, jamais une entrée utilisateur : il ne peut pas être paramétré.
+ */
+export const conseillerNumeriqueExpression = (
+  userIdColumn: string,
+  releveDuDispositif = true,
+): string => `${releveDuDispositif ? '' : 'NOT '}EXISTS (
+      SELECT 1
+      FROM main.personne p
+      JOIN main.personne_affectations_emploi a ON a.personne_id = p.id
+      WHERE p.coop_id = ${userIdColumn}
+        AND a.source = 'idposte'
+        AND a.est_active
+    )`
+
+/** Même prédicat, prêt à être interpolé dans un template `Prisma.sql`. */
+export const conseillerNumeriqueSql = (
+  userIdColumn: string,
+  releveDuDispositif: boolean,
+) => Prisma.raw(conseillerNumeriqueExpression(userIdColumn, releveDuDispositif))

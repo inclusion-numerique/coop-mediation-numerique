@@ -1,7 +1,9 @@
 import {
   employeuseCourante,
   employeuseCouranteJoin,
+  personneConseillerNumeriqueSelect,
   personneEmployeuseSelect,
+  personneEstConseillerNumerique,
 } from '@app/web/features/employeuse/server'
 import { departementCodeFromInseeRegex } from '@app/web/features/mon-reseau/departementCodeFromInseeRegex'
 import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
@@ -45,7 +47,7 @@ export const acteurSelectForList = {
   name: true,
   email: true,
   phone: true,
-  isConseillerNumerique: true,
+  personneMain: { select: personneConseillerNumeriqueSelect },
   coordinateur: {
     select: {
       id: true,
@@ -76,16 +78,17 @@ export type ActeurCoordinateurType =
 
 export const getActeurCoordinateurType = ({
   coordinateur,
-  isConseillerNumerique,
+  personneMain,
 }: Pick<
   ActeurForList,
-  'coordinateur' | 'isConseillerNumerique'
+  'coordinateur' | 'personneMain'
 >): ActeurCoordinateurType => {
   if (coordinateur == null) {
     return null
   }
 
-  return isConseillerNumerique
+  // Dispositif dérivé de l'affectation `idposte` active (ADR-002), au lieu de la colonne recopiée.
+  return personneEstConseillerNumerique(personneMain)
     ? 'coordinateur_dans_dispositif'
     : 'coordinateur_hors_dispositif'
 }

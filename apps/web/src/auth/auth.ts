@@ -7,8 +7,8 @@ import { sendVerificationRequest } from '@app/web/auth/sendVerificationRequest'
 import { SessionUser } from '@app/web/auth/sessionUser'
 import { updateAccountTokens } from '@app/web/auth/updateAccountTokens'
 import { updateUserData } from '@app/web/auth/updateUserData'
+import { garantirCoordinateurDuDispositif } from '@app/web/features/utilisateurs/use-cases/dispositif/garantirCoordinateurDuDispositif'
 import { importStructureEmployeuseFromProConnect } from '@app/web/features/utilisateurs/use-cases/import-structure-from-proconnect/importStructureEmployeuseFromProConnect'
-import { updateUserFromDataspaceData } from '@app/web/features/utilisateurs/use-cases/update-from-dataspace/updateUserFromDataspaceData'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { registerLastLogin } from '@app/web/security/registerLastLogin'
@@ -88,7 +88,11 @@ export const nextAuthOptions = {
           })
         }
 
-        updateUserFromDataspaceData({ userId: user.id }).catch((error) => {
+        // Le dispositif conseiller numérique se DÉRIVE désormais à la lecture : plus rien à
+        // recopier ici. Ne subsiste que la ligne `coop.coordinateurs`, qu'aucune dérivation ne peut
+        // produire — et la connexion est le bon moment pour la garantir, plutôt que d'attendre le
+        // passage nocturne.
+        garantirCoordinateurDuDispositif(user.id).catch((error: unknown) => {
           Sentry.captureException(error)
         })
 
@@ -164,18 +168,20 @@ export const nextAuthOptions = {
         })
       }
 
-      updateUserFromDataspaceData({ userId: user.id })
-        .catch((error) => {
+      // Même chose côté ProConnect : plus rien à recopier depuis l'API, seule la ligne coordinateur
+      // reste à garantir. L'enchaînement est conservé — l'import ProConnect s'abstient pour un
+      // conseiller numérique, il doit donc passer APRÈS.
+      garantirCoordinateurDuDispositif(user.id)
+        .catch((error: unknown) => {
           Sentry.captureException(error)
         })
-        // Chain it so user is updated before importing structure employeuse from proconnect
         .then(() =>
           importStructureEmployeuseFromProConnect({
             userId: user.id,
             siret: profile.siret,
           }),
         )
-        .catch((error) => {
+        .catch((error: unknown) => {
           Sentry.captureException(error)
         })
 

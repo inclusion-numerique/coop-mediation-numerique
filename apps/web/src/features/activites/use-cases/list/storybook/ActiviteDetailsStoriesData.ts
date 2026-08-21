@@ -66,7 +66,7 @@ export const activiteIndividuelleInfosMinimum = {
     user: {
       firstName: '',
       lastName: '',
-      isConseillerNumerique: false,
+      personneMain: null,
     },
   },
   rdv: null,
@@ -122,7 +122,7 @@ export const activiteIndividuelleBeneficiaireSuivi = {
     user: {
       firstName: '',
       lastName: '',
-      isConseillerNumerique: false,
+      personneMain: null,
     },
   },
   rdv: null,
@@ -186,7 +186,7 @@ export const activiteIndividuelleBeneficiaireAnonyme = {
     user: {
       firstName: '',
       lastName: '',
-      isConseillerNumerique: false,
+      personneMain: null,
     },
   },
   rdv: null,
@@ -261,7 +261,7 @@ export const activiteCollectifInfosRepliees = {
     user: {
       firstName: '',
       lastName: '',
-      isConseillerNumerique: false,
+      personneMain: null,
     },
   },
   rdv: null,
@@ -372,7 +372,7 @@ export const activiteCollectifInfosDepliees = {
     user: {
       firstName: '',
       lastName: '',
-      isConseillerNumerique: false,
+      personneMain: null,
     },
   },
   rdv: null,

@@ -6,11 +6,9 @@ import AdministrationMailtoLink from '@app/web/app/administration/Administration
 import ChangeUserRolesButton from '@app/web/app/administration/utilisateurs/[id]/ChangeUserRolesButton'
 import DeleteUserButton from '@app/web/app/administration/utilisateurs/[id]/DeleteUserButton'
 import LogoutUserButton from '@app/web/app/administration/utilisateurs/[id]/LogoutUserButton'
-import UpdateUserDataFromDataspaceButton from '@app/web/app/administration/utilisateurs/[id]/UpdateUserDataFromDataspaceButton'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { isUserInscriptionEnCours } from '@app/web/auth/isUserInscriptionEnCours'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { getMediateurFromDataspaceApi } from '@app/web/external-apis/dataspace/dataspaceApiClient'
 import { getInvitationStatusBadge } from '@app/web/features/utilisateurs/use-cases/list/getInvitationStatusBadge'
 import { getUserAccountStatusBadge } from '@app/web/features/utilisateurs/use-cases/list/getUserAccountStatusBadge'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
@@ -143,6 +141,7 @@ const AdministrationUserPage = async ({
     mutations,
     uploads,
     emplois,
+    estConseillerNumerique,
     statutCompte,
   } = user
 
@@ -180,10 +179,6 @@ const AdministrationUserPage = async ({
   // L'ancien soft-delete coop (`suppression`) est abandonné.
   const emploisEnCours = emplois.filter((emploi) => emploi.estActive)
   const emploisTermines = emplois.filter((emploi) => !emploi.estActive)
-
-  const dataspaceInfo = await getMediateurFromDataspaceApi({
-    email: user.email,
-  })
 
   return (
     <CoopPageContainer size={64}>
@@ -229,7 +224,7 @@ const AdministrationUserPage = async ({
           {role === 'Admin' && <Tag small>Administrateur</Tag>}
           {role === 'Support' && <Tag small>Support</Tag>}
           {isMediateur && <Tag small>Médiateur</Tag>}
-          {user.isConseillerNumerique && <Tag small>Conseiller numérique</Tag>}
+          {estConseillerNumerique && <Tag small>Conseiller numérique</Tag>}
           {isCoordinateur && <Tag small>Coordinateur</Tag>}
         </div>
 
@@ -289,7 +284,7 @@ const AdministrationUserPage = async ({
               },
               {
                 label: 'Dispositif',
-                value: user.isConseillerNumerique ? (
+                value: estConseillerNumerique ? (
                   <Badge noIcon severity="info">
                     Conseiller numérique
                   </Badge>
@@ -776,28 +771,6 @@ const AdministrationUserPage = async ({
             />
           )
         )}
-        <AdministrationInfoCard
-          title="API Dataspace"
-          actions={<UpdateUserDataFromDataspaceButton userId={user.id} />}
-        >
-          {!dataspaceInfo && (
-            <Notice
-              className="fr-notice--warning fr-mb-6v"
-              title={<>Utilisateur non trouvé dans l’API Dataspace</>}
-            />
-          )}
-          {dataspaceInfo && (
-            <div className="fr-border-radius--8 fr-p-4v fr-background-alt--grey">
-              <pre
-                className="fr-text--sm fr-mb-0"
-                style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
-              >
-                {JSON.stringify(dataspaceInfo, null, 2)}
-              </pre>
-            </div>
-          )}
-        </AdministrationInfoCard>
-
         <AdministrationInfoCard
           title="Sessions de connexion et comptes liés"
           actions={<LogoutUserButton userId={user.id} />}

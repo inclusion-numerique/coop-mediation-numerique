@@ -4,7 +4,12 @@ import {
   fixtureCrasIndividuels,
 } from '@app/fixtures/activites'
 import { fixtureBeneficiaires } from '@app/fixtures/beneficiaires'
+import {
+  garantirAffectationIdposte,
+  refleterCoordinateurDansMain,
+} from '@app/fixtures/personnesMainConseillerNumerique'
 import { upsertCraFixtures } from '@app/fixtures/upsertCraFixtures'
+import { sansDrapeauDispositif } from '@app/fixtures/upsertUserFixture'
 import { coordinations, fixtureUsers } from '@app/fixtures/users'
 import { sessionUserSelect } from '@app/web/auth/getSessionUserFromSessionToken'
 import { prismaClient } from '@app/web/prismaClient'
@@ -172,9 +177,21 @@ export const resetFixtureUser = async (
   }
 
   const resetedUser = await prismaClient.user.create({
-    data: userFixture,
+    // Le drapeau `isConseillerNumerique` des fixtures n'est plus une colonne : il pilote le semis de
+    // l'affectation `idposte` dans `main` (voir `seedPersonnesMain`), pas la ligne `coop.users`.
+    data: sansDrapeauDispositif(userFixture),
     select: sessionUserSelect,
   })
+
+  // Le dispositif conseiller numérique n'est plus une colonne : une fixture CC recréée doit
+  // retrouver son affectation `idposte`, sans quoi la dérivation la voit hors dispositif.
+  if (userFixture.isConseillerNumerique) {
+    await garantirAffectationIdposte(prismaClient, userFixture.id)
+  }
+
+  // Le rôle coordinateur vient de `main` depuis ADR-002 : une fixture qui le déclare côté coop doit
+  // le voir reflété, sinon le parcours d'inscription la prend pour un simple conseiller.
+  await refleterCoordinateurDansMain(prismaClient)
 
   await prismaClient.session.createMany({
     data: sessions,

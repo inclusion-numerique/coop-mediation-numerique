@@ -1,3 +1,4 @@
+import { conseillerNumeriqueWhere } from '@app/web/features/employeuse/server'
 import type { Prisma } from '@prisma/client'
 import { RoleSlug } from '../list/role'
 import { StatutSlug } from '../list/statut'
@@ -69,37 +70,20 @@ export const filterOnRoles = (queryParams?: {
   }
 }
 
-// Filter for users NOT in conseiller numérique program (by role)
-const horsDispositifFilter: Record<
-  Exclude<RoleSlug, 'administrateur'>,
-  {
-    isConseillerNumerique: false
-    mediateur?: { isNot: null }
-    coordinateur?: { isNot: null }
-  }
-> = {
-  mediateur: { isConseillerNumerique: false, mediateur: { isNot: null } },
-  coordinateur: { isConseillerNumerique: false, coordinateur: { isNot: null } },
-}
-
-// Filter for users IN conseiller numérique program (by role)
-const conseillerNumeriqueFilter: Record<
-  Exclude<RoleSlug, 'administrateur'>,
-  {
-    isConseillerNumerique: true
-    mediateur?: { isNot: null }
-    coordinateur?: { isNot: null }
-  }
-> = {
+// Dispositif conseiller numérique DÉRIVÉ de l'affectation `idposte` active (ADR-002) : le filtre
+// porte désormais sur la relation `personneMain`, plus sur une colonne recopiée par une synchro.
+const dispositifFilter = (
+  releveDuDispositif: boolean,
+): Record<Exclude<RoleSlug, 'administrateur'>, Prisma.UserWhereInput> => ({
   mediateur: {
-    isConseillerNumerique: true,
+    ...conseillerNumeriqueWhere(releveDuDispositif),
     mediateur: { isNot: null },
   },
   coordinateur: {
-    isConseillerNumerique: true,
+    ...conseillerNumeriqueWhere(releveDuDispositif),
     coordinateur: { isNot: null },
   },
-}
+})
 
 const onlyUsers = (
   role: RoleSlug,
@@ -112,9 +96,7 @@ export const filterOnDispositif = (queryParams?: {
   if (queryParams?.conseiller_numerique == null) return {}
 
   const isConseillerNumerique = queryParams.conseiller_numerique === '1'
-  const filterMap = isConseillerNumerique
-    ? conseillerNumeriqueFilter
-    : horsDispositifFilter
+  const filterMap = dispositifFilter(isConseillerNumerique)
 
   // Get roles that are not 'administrateur'
   const userRoles = queryParams.roles.filter(onlyUsers)
@@ -122,8 +104,8 @@ export const filterOnDispositif = (queryParams?: {
   // If no roles specified, return OR of all role variants (or just CN check for conseiller_numerique=1 with no roles)
   if (userRoles.length === 0) {
     if (isConseillerNumerique) {
-      // Special case: conseiller_numerique=1 with no roles -> just check isConseillerNumerique
-      return { OR: [{ isConseillerNumerique: true }] }
+      // Special case: conseiller_numerique=1 with no roles -> just check the dispositif
+      return { OR: [conseillerNumeriqueWhere(true)] }
     }
     // hors dispositif with no roles -> OR of both role variants
     return { OR: Object.values(filterMap) }

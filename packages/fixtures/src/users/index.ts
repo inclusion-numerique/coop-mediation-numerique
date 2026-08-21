@@ -2,7 +2,6 @@ import { givenMediateur } from '@app/fixtures/givenMediateur'
 import { givenUser } from '@app/fixtures/givenUser'
 import type { Prisma } from '@prisma/client'
 import { administrateur } from './administrateur'
-import { conseillerInscription } from './conseillerInscription'
 import { conseillerInscriptionSansContrat } from './conseillerInscriptionSansContrat'
 import {
   conseillerNumerique,
@@ -56,7 +55,6 @@ import { mediateurSansEmployeuseInscription } from './mediateurSansEmployeuseIns
 
 export const fixtureUsers = [
   administrateur,
-  conseillerInscription,
   conseillerInscriptionSansContrat,
   conseillerSansLieuInscription,
   conseillerNumerique,

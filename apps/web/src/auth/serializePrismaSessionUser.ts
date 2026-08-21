@@ -5,6 +5,7 @@ import type {
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import {
   employeuseSessionEmplois,
+  personneEstConseillerNumerique,
   personneToEmployeuseActuelle,
 } from '@app/web/features/employeuse/server'
 import { splitMediateursCoordonnes } from '@app/web/features/mediateurs/splitMediateursCoordonnes'
@@ -24,6 +25,13 @@ export const serializePrismaSessionUser = (
   // `.length`).
   emplois: employeuseSessionEmplois(
     personneToEmployeuseActuelle(prismaSessionUser.personneMain),
+  ),
+  // Dispositif conseiller numérique DÉRIVÉ de l'affectation `idposte` active, et non plus lu dans
+  // la colonne `coop.users.is_conseiller_numerique` qu'une synchro nocturne recopiait. La session
+  // charge déjà `personneMain` pour l'employeuse : la dérivation ne coûte pas une requête de plus,
+  // et la fin d'un contrat conum est vue à la connexion suivante au lieu de la nuit d'après.
+  isConseillerNumerique: personneEstConseillerNumerique(
+    prismaSessionUser.personneMain,
   ),
   coordinateur: splitMediateursCoordonnes(prismaSessionUser.coordinateur),
   emailVerified: prismaSessionUser.emailVerified?.toISOString() ?? null,

@@ -97,21 +97,6 @@ const AdministrationSideMenu = () => {
       text: (
         <>
           <span
-            className="ri-database-2-line ri-xl fr-mr-1w fr-text--regular"
-            aria-hidden
-          />
-          Dataspace
-        </>
-      ),
-      linkProps: {
-        href: '/administration/dataspace',
-      },
-      isActive: pathname?.startsWith('/administration/dataspace'),
-    },
-    {
-      text: (
-        <>
-          <span
             className="ri-list-check-3 ri-xl fr-mr-2v fr-text--regular"
             style={{ marginLeft: '-4px' }}
             aria-hidden

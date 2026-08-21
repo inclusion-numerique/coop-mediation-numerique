@@ -46,6 +46,8 @@ export {
 } from './abilities/rattacher-a-une-employeuse/implementation'
 export { rechercherEmployeuse } from './abilities/rechercher-employeuse/implementation'
 export {
+  conseillerNumeriqueExpression,
+  conseillerNumeriqueSql,
   employeuseCourante,
   employeuseCouranteJoin,
 } from './db/employeuse.sql'

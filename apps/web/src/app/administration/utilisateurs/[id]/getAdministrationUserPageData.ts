@@ -1,6 +1,7 @@
 import {
   historiqueEmployeusesAffichage,
   personneEmployeuseSelect,
+  personneEstConseillerNumerique,
   personneToEmployeusesHistorique,
 } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
@@ -133,6 +134,9 @@ export const getAdministrationUserPageData = async ({ id }: { id: string }) => {
       emplois: historiqueEmployeusesAffichage(
         personneToEmployeusesHistorique(personneMain),
       ),
+      // La même personne sert l'historique des employeuses et le dispositif : la fiche reçoit un
+      // booléen, elle n'a pas à connaître la règle.
+      estConseillerNumerique: personneEstConseillerNumerique(personneMain),
     },
   }
 }

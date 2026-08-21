@@ -2,7 +2,11 @@ import { createSlug } from '@app/web/utils/createSlug'
 import type { Prisma, UserRole } from '@prisma/client'
 import { v4 } from 'uuid'
 
-export const givenUser = <T extends Partial<Prisma.UserCreateInput>>(
+export const givenUser = <
+  T extends Partial<Prisma.UserCreateInput> & {
+    isConseillerNumerique?: boolean
+  },
+>(
   data: T,
 ): Omit<
   T,
@@ -24,6 +28,12 @@ export const givenUser = <T extends Partial<Prisma.UserCreateInput>>(
   emailVerified: string | Date
   role: UserRole
   timezone: string
+  /**
+   * Intention de fixture, PAS une colonne : `coop.users.is_conseiller_numerique` a disparu, le
+   * dispositif se dérivant de l'affectation `idposte` (ADR-002). `seedPersonnesMain` lit ce drapeau
+   * pour semer l'affectation correspondante dans `main`, et `upsertUserFixture` l'écarte avant
+   * d'écrire la ligne.
+   */
   isConseillerNumerique: boolean
 } => {
   const {
@@ -59,7 +69,7 @@ export const givenUser = <T extends Partial<Prisma.UserCreateInput>>(
     role: givenRole,
     emailVerified: givenEmailVerified,
     timezone: givenTimezone,
-    isConseillerNumerique: givenIsConseillerNumerique,
     ...rest,
-  } satisfies Prisma.UserCreateInput
+    isConseillerNumerique: givenIsConseillerNumerique,
+  }
 }

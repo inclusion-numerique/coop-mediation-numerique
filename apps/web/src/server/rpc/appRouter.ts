@@ -1,5 +1,4 @@
 import { tagsRouter } from '@app/web/features/activites/use-cases/tags/tagsRouter'
-import { dataspaceAdminRouter } from '@app/web/features/dataspace/use-cases/administration/dataspaceAdminRouter'
 import { maintenanceRouter } from '@app/web/features/maintenance-mode/use-cases/administration/maintenanceRouter'
 import { apiClientRouter } from '@app/web/server/rpc/apiClient/apiClientRouter'
 import { craRouter } from '@app/web/server/rpc/cra/craRouter'
@@ -27,7 +26,6 @@ export const appRouter = router({
   lieuActivite: lieuActiviteRouter,
   apiClient: apiClientRouter,
   tags: tagsRouter,
-  dataspaceAdmin: dataspaceAdminRouter,
   maintenance: maintenanceRouter,
 })
 // export type definition of API

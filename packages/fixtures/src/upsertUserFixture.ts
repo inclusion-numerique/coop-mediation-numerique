@@ -16,7 +16,18 @@ import type { Prisma } from '@prisma/client'
  * réel a déjà les siens, avec ses emplois et ses activités). Ces fixtures-là sont ignorées, avec
  * une trace : le compte réel, plus riche, reste intact.
  */
-export type UserFixture = Prisma.UserCreateInput & { id: string; email: string }
+export type UserFixture = Prisma.UserCreateInput & {
+  id: string
+  email: string
+  /** Intention de fixture, écartée avant l'écriture : voir `givenUser` et `seedPersonnesMain`. */
+  isConseillerNumerique?: boolean
+}
+
+/** La ligne `coop.users` telle qu'elle s'écrit, sans le drapeau de fixture. */
+export const sansDrapeauDispositif = ({
+  isConseillerNumerique: _drapeau,
+  ...user
+}: UserFixture): Prisma.UserCreateInput & { id: string; email: string } => user
 
 const RELATIONS_UNIQUES = ['mediateur', 'coordinateur'] as const
 
@@ -38,9 +49,11 @@ const idsExistantsParEmail = async (
 const upsertUserFixture =
   (transaction: Prisma.TransactionClient, libelle: string) =>
   (user: UserFixture, idExistant?: string) => {
+    const ligne = sansDrapeauDispositif(user)
+
     if (idExistant === undefined || idExistant === user.id) {
       return transaction.user
-        .upsert({ where: { id: user.id }, create: user, update: user })
+        .upsert({ where: { id: user.id }, create: ligne, update: ligne })
         .catch((error) => {
           output.error(`Error upserting ${libelle} fixture`, user)
           throw error
@@ -56,7 +69,7 @@ const upsertUserFixture =
       return Promise.resolve(null)
     }
 
-    const { id: _idDeFixture, ...sansId } = user
+    const { id: _idDeFixture, ...sansId } = ligne
 
     output.log(
       `Reusing existing account ${idExistant} for ${libelle} fixture ${user.email}`,
