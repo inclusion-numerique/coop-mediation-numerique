@@ -28,7 +28,11 @@ set -euo pipefail
 WEB_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
 # `migration|table sentinelle` : la table dont l'existence prouve que le DDL Flyway est déjà posé.
-# À compléter si une nouvelle migration modélise des tables `main.*` du DDL Dataspace.
+#
+# Liste FERMÉE : ne rien y ajouter. Les deux migrations ci-dessous sont déjà appliquées partout et ne
+# peuvent plus être réécrites, d'où ce registre. Depuis `20260820190000_personne_main_cn_pg_id`, une
+# migration qui modélise `main` porte sa propre garde (`DO` + test d'existence dans `pg_attribute`) :
+# elle est inerte là où le DDL Dataspace est déjà posé, sans qu'on ait à l'inscrire ici.
 MIGRATIONS_MAIN=(
   "20260722155232_baseline_main_external|main.structure_administrative"
   "20260723171939_ajouter_personne_affectations_contrat_main|main.personne"
