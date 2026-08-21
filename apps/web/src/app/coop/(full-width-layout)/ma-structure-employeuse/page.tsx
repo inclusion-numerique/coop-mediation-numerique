@@ -2,6 +2,7 @@ import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import RattacherEmployeuseForm from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/ui/RattacherEmployeuseForm'
 import {
   consulterEmployeuseAUneDate,
   emploiEmployeuseAffichage,
@@ -58,15 +59,19 @@ const MaStructureEmployeusePage = async () => {
               canUpdateStructure={user.isConseillerNumerique}
             />
           ) : (
-            <div className="fr-text--center fr-background-alt--blue-france fr-border-radius--8 fr-p-6w">
+            /* L'état vide était un cul-de-sac : il annonçait l'absence sans
+               offrir d'y remédier, alors que c'est ici qu'on vient pour ça. */
+            <div className="fr-background-alt--blue-france fr-border-radius--8 fr-p-6w">
               <h2 className="fr-h6 fr-mb-1v">
-                Vous n’avez pas renseigné de structure employeuse
+                Vous n’avez pas de structure employeuse
               </h2>
-              <p className="fr-mb-0">
-                Vous pouvez continuez à utiliser la plateforme, cependant vous
-                ne serez plus identifié sur votre territoire comme faisant
-                partie de la communauté de la médiation numérique
+              <p className="fr-text--sm fr-text-mention--grey fr-mb-6v">
+                Sans elle, vous n’êtes pas identifié sur votre territoire comme
+                faisant partie de la communauté de la médiation numérique, et
+                vous ne pouvez pas enregistrer d’activité. Recherchez votre
+                structure par son nom, son SIRET ou son adresse.
               </p>
+              <RattacherEmployeuseForm nextStepPath={null} />
             </div>
           )}
         </main>

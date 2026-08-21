@@ -43,6 +43,7 @@ export {
   rattacherAUneEmployeuseDepuisSiret,
   resolveAdresseMain,
   resolveIdentiteFromSiret,
+  searchStructureEmployeuseCombined,
 } from './abilities/rattacher-a-une-employeuse/implementation'
 export { rechercherEmployeuse } from './abilities/rechercher-employeuse/implementation'
 export {

@@ -2,7 +2,7 @@
 
 import { Options } from '@app/ui/components/Primitives/Options'
 import { createToast } from '@app/ui/toast/createToast'
-import { renseignerStructureEmployeuseAction } from '@app/web/app/_actions/inscription/renseigner-structure-employeuse.action'
+import { renseignerStructureEmployeuseAction } from '@app/web/app/_actions/employeuse/renseigner-structure-employeuse.action'
 import StructureCard from '@app/web/components/structure/StructureCard'
 import SiretInputInfo from '@app/web/features/structures/siret/SiretInputInfo'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
@@ -12,17 +12,28 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { useStore } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { RenseignerStructureEmployeuseValidation } from './renseigner-structure-employeuse.validation'
+import {
+  RenseignerStructureEmployeuseValidation,
+  type StructureSearchResult,
+} from '../domain/employeuse-choisie'
 import {
   StructureEmployeuseComboBox,
   StructureEmployeuseOptions,
 } from './StructureEmployeuseComboBox'
-import type { StructureSearchResult } from './searchStructureEmployeuseCombined'
 
-const RenseignerStructureEmployeuseForm = ({
+/**
+ * Choix d'une structure employeuse, puis rattachement.
+ *
+ * Deux contextes l'utilisent, et c'est `nextStepPath` qui les distingue :
+ * l'inscription enchaîne sur l'étape suivante, tandis que la garde d'une page
+ * qui exige une employeuse (la saisie d'un CRA) passe `null` — il n'y a alors
+ * nulle part où aller, la page demandée s'affiche d'elle-même une fois la
+ * garde levée, et un simple rafraîchissement suffit à la révéler.
+ */
+const RattacherEmployeuseForm = ({
   nextStepPath,
 }: {
-  nextStepPath: string
+  nextStepPath: string | null
 }) => {
   const router = useRouter()
   const [apiUnavailable, setApiUnavailable] = useState(false)
@@ -52,7 +63,7 @@ const RenseignerStructureEmployeuseForm = ({
           return
         }
 
-        router.push(nextStepPath)
+        if (nextStepPath) router.push(nextStepPath)
         router.refresh()
       } catch {
         erreurEnregistrement()
@@ -139,4 +150,4 @@ const RenseignerStructureEmployeuseForm = ({
   )
 }
 
-export default RenseignerStructureEmployeuseForm
+export default RattacherEmployeuseForm

@@ -1,5 +1,5 @@
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
-import type { StructureSearchResult } from '@app/web/features/inscription/use-cases/renseigner-structure-employeuse/searchStructureEmployeuseCombined'
+import type { StructureSearchResult } from '@app/web/features/employeuse'
 import type { Typologie } from '@prisma/client'
 import { formOptions } from '@tanstack/react-form'
 import z from 'zod'

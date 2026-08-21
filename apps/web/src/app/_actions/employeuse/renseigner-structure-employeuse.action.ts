@@ -1,20 +1,21 @@
 'use server'
 
 import { withAuth } from '@app/web/features/authentification'
+import { RenseignerStructureEmployeuseValidation } from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/domain/employeuse-choisie'
 import {
   IdentiteEmployeuse,
   rattacherAUneEmployeuse,
 } from '@app/web/features/employeuse/server'
-import { RenseignerStructureEmployeuseValidation } from '@app/web/features/inscription/use-cases/renseigner-structure-employeuse/renseigner-structure-employeuse.validation'
 import { actionBuilder, withInput } from '@app/web/libraries/nextjs'
 import { prismaClient } from '@app/web/prismaClient'
 
 /**
- * Étape d'inscription « ma structure employeuse ».
+ * « Renseigner ma structure employeuse » : l'étape d'inscription, et la même
+ * demande faite plus tard à qui n'en a plus (garde de la saisie d'un CRA).
  *
- * Le rattachement lui-même appartient à la feature employeuse ; l'inscription
- * n'ajoute que ce qui la concerne — l'horodatage de l'étape franchie, qui
- * conditionne la suite du parcours.
+ * L'horodatage de l'étape reste posé dans les deux cas : c'est la date à
+ * laquelle la personne a déclaré son employeuse, et la reposer pour quelqu'un
+ * de déjà inscrit ne franchit rien qui ne le soit.
  *
  * L'utilisateur vient de la session, jamais de l'input : c'est ce qui remplace
  * la garde d'appartenance que portait la procédure tRPC.

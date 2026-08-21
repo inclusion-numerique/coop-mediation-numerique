@@ -61,6 +61,10 @@ export type {
   RattacherAUneEmployeuse,
   RattacherAUneEmployeuseDepuisSiret,
 } from './abilities/rattacher-a-une-employeuse/domain'
+export type {
+  EmployeuseChoisie,
+  StructureSearchResult,
+} from './abilities/rattacher-a-une-employeuse/domain/employeuse-choisie'
 export type { RechercherEmployeuse } from './abilities/rechercher-employeuse/domain'
 export {
   type EmployeuseRecherchee,
