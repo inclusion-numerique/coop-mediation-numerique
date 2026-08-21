@@ -5,7 +5,7 @@ describe('etapeApresInitialisation', () => {
   it('sans données Dataspace → choisir-role', () => {
     expect(
       etapeApresInitialisation({
-        hasDataspaceData: false,
+        connuDuDispositif: false,
         profil: null,
         hasLieuxActivite: false,
         isConseillerNumerique: false,
@@ -16,7 +16,7 @@ describe('etapeApresInitialisation', () => {
   it('Dataspace mais non conseiller numérique → choisir-role (flow complet)', () => {
     expect(
       etapeApresInitialisation({
-        hasDataspaceData: true,
+        connuDuDispositif: true,
         profil: ProfilInscription('Mediateur'),
         hasLieuxActivite: false,
         isConseillerNumerique: false,
@@ -27,7 +27,7 @@ describe('etapeApresInitialisation', () => {
   it('conseiller numérique sans lieu → verifier-informations', () => {
     expect(
       etapeApresInitialisation({
-        hasDataspaceData: true,
+        connuDuDispositif: true,
         profil: ProfilInscription('ConseillerNumerique'),
         hasLieuxActivite: false,
         isConseillerNumerique: true,
@@ -38,7 +38,7 @@ describe('etapeApresInitialisation', () => {
   it('conseiller numérique avec lieu → recapitulatif', () => {
     expect(
       etapeApresInitialisation({
-        hasDataspaceData: true,
+        connuDuDispositif: true,
         profil: ProfilInscription('ConseillerNumerique'),
         hasLieuxActivite: true,
         isConseillerNumerique: true,
@@ -49,7 +49,7 @@ describe('etapeApresInitialisation', () => {
   it('coordinateur conseiller numérique → recapitulatif', () => {
     expect(
       etapeApresInitialisation({
-        hasDataspaceData: true,
+        connuDuDispositif: true,
         profil: ProfilInscription('CoordinateurConseillerNumerique'),
         hasLieuxActivite: false,
         isConseillerNumerique: true,

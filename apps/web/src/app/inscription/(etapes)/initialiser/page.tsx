@@ -1,7 +1,7 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import { initialiserInscriptionAvecInfra } from '@app/web/features/inscription/abilities/initialiser-inscription/implementation'
-import { Email, UserId } from '@app/web/features/inscription/domain'
+import { UserId } from '@app/web/features/inscription/domain'
 import { stepPath } from '@app/web/features/inscription/ui/step-path'
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import * as Sentry from '@sentry/nextjs'
@@ -24,7 +24,6 @@ const InitialiserInscriptionPage = async () => {
 
   const { nextStep } = await initialiserInscriptionAvecInfra({
     userId: UserId(user.id),
-    email: Email(user.email),
   })
 
   // Redirect to next step or fallback

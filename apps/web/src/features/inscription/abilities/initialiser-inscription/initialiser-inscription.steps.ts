@@ -1,11 +1,10 @@
 import assert from 'node:assert'
 import {
-  type DataspaceInscription,
+  type DispositifInscription,
   initialiserInscription,
 } from '@app/web/features/inscription/abilities/initialiser-inscription/domain'
 import { lireEtatPourEtapeSuivante } from '@app/web/features/inscription/abilities/initialiser-inscription/implementation/prisma/lire-etat-pour-etape-suivante'
 import {
-  Email,
   type InscriptionStep,
   ProfilInscription,
 } from '@app/web/features/inscription/domain'
@@ -17,17 +16,20 @@ import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 
-// Seuls les ports API-bound (Dataspace, SIRET) sont fakés ; la lecture d'état
+// Seuls les ports à effets (dispositif, SIRET) sont fakés ; la lecture d'état
 // passe par l'adapteur Prisma RÉEL sur la base seedée (BDD hybride).
-let dataspaceInscription: DataspaceInscription | null = null
+let dispositif: DispositifInscription = {
+  connue: false,
+  estConseillerNumerique: false,
+}
 let etapeSuivante: InscriptionStep | null = null
 
-Given('le Dataspace ne connaît pas l’utilisateur', () => {
-  dataspaceInscription = null
+Given('le dispositif ne connaît pas l’utilisateur', () => {
+  dispositif = { connue: false, estConseillerNumerique: false }
 })
 
-Given('le Dataspace renvoie un conseiller numérique', () => {
-  dataspaceInscription = { isConseillerNumerique: true }
+Given('le dispositif connaît l’utilisateur comme conseiller numérique', () => {
+  dispositif = { connue: true, estConseillerNumerique: true }
 })
 
 Given('l’utilisateur n’a ni profil ni lieu d’activité', async () => {
@@ -74,12 +76,9 @@ Given(
 
 When('j’initialise l’inscription', async () => {
   const { nextStep } = await initialiserInscription(
+    { userId: currentInscriptionUserId() },
     {
-      userId: currentInscriptionUserId(),
-      email: Email('initialiser@test.local'),
-    },
-    {
-      synchroniserDepuisDataspace: async () => dataspaceInscription,
+      appliquerDispositif: async () => dispositif,
       importerStructureDepuisSiret: async () => undefined,
       lireEtatPourEtapeSuivante,
     },

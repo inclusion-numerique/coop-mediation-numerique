@@ -1,19 +1,18 @@
 import type {
-  Email,
   ProfilInscription,
   UserId,
 } from '@app/web/features/inscription/domain'
-import type { DataspaceInscription } from './dataspace-inscription'
+import type { DispositifInscription } from './dispositif-inscription'
 
 /**
- * Récupère et applique les effets Dataspace (profil, synchro structures,
- * import unique des lieux), et rend la vue domaine ; `null` si l'utilisateur
- * n'est pas connu du Dataspace (ou erreur API, traitée comme absence).
+ * Lit le dispositif dans `main` et applique ce qui en découle — profil
+ * d'inscription, rôle coordinateur, création du médiateur — puis rend la vue
+ * domaine. L'utilisateur inconnu du dispositif rend `connue: false` plutôt que
+ * `null` : l'absence est un cas nominal du parcours, pas un défaut de réponse.
  */
-export type SynchroniserDepuisDataspace = (input: {
+export type AppliquerDispositif = (input: {
   readonly userId: UserId
-  readonly email: Email
-}) => Promise<DataspaceInscription | null>
+}) => Promise<DispositifInscription>
 
 /** Crée la structure employeuse depuis le SIRET de l'utilisateur si applicable. */
 export type ImporterStructureDepuisSiret = (userId: UserId) => Promise<void>
@@ -25,7 +24,7 @@ export type LireEtatPourEtapeSuivante = (userId: UserId) => Promise<{
 }>
 
 export type InitialiserInscriptionPorts = {
-  readonly synchroniserDepuisDataspace: SynchroniserDepuisDataspace
+  readonly appliquerDispositif: AppliquerDispositif
   readonly importerStructureDepuisSiret: ImporterStructureDepuisSiret
   readonly lireEtatPourEtapeSuivante: LireEtatPourEtapeSuivante
 }
