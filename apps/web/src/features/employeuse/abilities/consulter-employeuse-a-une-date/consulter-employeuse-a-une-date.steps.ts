@@ -68,6 +68,18 @@ Given(
 )
 
 Given(
+  'ce même utilisateur employé par {string} du {string} au {string}',
+  async (nom: string, debut: string, fin: string) => {
+    await seedContrat({
+      userId: utilisateurId,
+      employeuseId: await employeuseNommee(nom),
+      debut: new Date(debut),
+      fin: new Date(fin),
+    })
+  },
+)
+
+Given(
   'un utilisateur avec une affectation active chez {string}',
   async (nom: string) => {
     await nouvelUtilisateur()

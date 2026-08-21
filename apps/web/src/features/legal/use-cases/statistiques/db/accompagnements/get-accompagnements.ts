@@ -1,3 +1,4 @@
+import { conseillersNumeriquesUserIdsSql } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 import { monthShortLabels } from '@app/web/utils/monthShortLabels'
 import { Prisma } from '@prisma/client'
@@ -32,15 +33,22 @@ type CombinedQueryResult = {
 export const getAccompagnements = async () => {
   const result = await prismaClient.$queryRaw<[CombinedQueryResult]>`
     WITH 
+    -- Le dispositif conseiller numérique se DÉRIVE de main (affectation idposte active) : sous
+    -- forme d'ensemble, joint une fois, et non de prédicat évalué sur chacun des millions
+    -- d'accompagnements.
+    conseillers AS (
+      ${conseillersNumeriquesUserIdsSql}
+    ),
     -- Base data: all accompagnements with role
     base_accompagnements AS (
       SELECT 
         act.date,
-        CASE WHEN u.is_conseiller_numerique THEN 'conseiller' ELSE 'mediateur' END AS role
+        CASE WHEN cn.user_id IS NOT NULL THEN 'conseiller' ELSE 'mediateur' END AS role
       FROM activites act
         JOIN accompagnements acc ON acc.activite_id = act.id
         LEFT JOIN mediateurs med ON act.mediateur_id = med.id
         LEFT JOIN users u ON med.user_id = u.id
+        LEFT JOIN conseillers cn ON cn.user_id = u.id
       WHERE act.suppression IS NULL 
         AND act.v1_cra_id IS NULL
     ),

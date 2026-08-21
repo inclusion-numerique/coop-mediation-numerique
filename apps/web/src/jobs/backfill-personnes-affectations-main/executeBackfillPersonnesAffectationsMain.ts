@@ -1,5 +1,6 @@
 import { writeFile } from 'node:fs/promises'
 import {
+  conseillerNumeriqueSql,
   deactivateCoopAffectationsExcept,
   ensureAffectationEmploiMain,
   ensurePersonneMain,
@@ -52,7 +53,7 @@ const chargerCibles = (): Promise<CibleRow[]> =>
       ON es.user_id = u.id AND es.suppression IS NULL
     JOIN main.structure_administrative m
       ON m.structure_coop_id = es.structure_id
-    WHERE u.deleted IS NULL AND u.is_conseiller_numerique = false
+    WHERE u.deleted IS NULL AND ${conseillerNumeriqueSql('u.id', false)}
     GROUP BY u.id, u.email, m.id
     ORDER BY u.id`
 

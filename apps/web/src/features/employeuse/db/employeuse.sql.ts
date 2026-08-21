@@ -71,6 +71,24 @@ export const conseillerNumeriqueExpression = (
         AND a.est_active
     )`
 
+/**
+ * Même règle, en ENSEMBLE d'utilisateurs plutôt qu'en prédicat ligne à ligne.
+ *
+ * Le prédicat ci-dessus est un `EXISTS` corrélé : Postgres l'évalue une fois par ligne examinée.
+ * C'est ce qu'on veut pour filtrer des utilisateurs, et c'est ruineux dès qu'on qualifie chaque
+ * accompagnement — plusieurs millions de lignes. Cette forme-là se joint une seule fois (2 649
+ * affectations actives), et dit la même chose.
+ *
+ * Rend une colonne `user_id`, à joindre sur `coop.users.id`.
+ */
+export const conseillersNumeriquesUserIdsSql = Prisma.raw(`
+    SELECT DISTINCT p.coop_id AS user_id
+    FROM main.personne p
+    JOIN main.personne_affectations_emploi a ON a.personne_id = p.id
+    WHERE a.source = 'idposte'
+      AND a.est_active
+      AND p.coop_id IS NOT NULL`)
+
 /** Même prédicat, prêt à être interpolé dans un template `Prisma.sql`. */
 export const conseillerNumeriqueSql = (
   userIdColumn: string,

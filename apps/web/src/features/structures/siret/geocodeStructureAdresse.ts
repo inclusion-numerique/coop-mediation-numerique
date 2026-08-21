@@ -1,7 +1,7 @@
 import { type Feature, searchAdresses } from '@app/web/external-apis/apiAdresse'
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
-import type { StructureSearchResult } from '@app/web/features/inscription/use-cases/renseigner-structure-employeuse/searchStructureEmployeuseCombined'
+import type { StructureSearchResult } from '@app/web/features/employeuse'
 
 export const adresseNonVerifiableMessage = ({
   adresse,

@@ -1,13 +1,14 @@
 'use server'
 
 import { withAuth } from '@app/web/features/authentification'
-import { searchStructureEmployeuseCombined } from '@app/web/features/inscription/use-cases/renseigner-structure-employeuse/searchStructureEmployeuseCombined'
+import { searchStructureEmployeuseCombined } from '@app/web/features/employeuse/abilities/rattacher-a-une-employeuse/implementation/recherche-structure-employeuse'
 import { actionBuilder, withInput } from '@app/web/libraries/nextjs'
 import { z } from 'zod'
 
 /**
- * Recherche d'employeuse pour l'étape d'inscription : structures déjà
- * enregistrées et annuaire des entreprises, fusionnés.
+ * Recherche d'employeuse : structures déjà enregistrées et annuaire des
+ * entreprises, fusionnés. Sert partout où l'on demande sa structure employeuse
+ * à quelqu'un — l'étape d'inscription comme la garde de la saisie d'un CRA.
  *
  * La partie « employeuses déjà enregistrées » est l'ability `rechercher-employeuse` ;
  * la fusion avec l'annuaire des entreprises reste ici, parce qu'elle sert aussi
