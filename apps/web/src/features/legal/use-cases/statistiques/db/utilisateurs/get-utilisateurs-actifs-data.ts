@@ -1,3 +1,4 @@
+import { conseillerNumeriqueExpression } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 
 type UtilisateursActifsRaw = {
@@ -58,7 +59,7 @@ export const getUtilisateursActifsPerMonth = async (): Promise<
       LEFT JOIN coordinateurs c ON u.id = c.user_id
       JOIN activites a ON a.mediateur_id = m.id
       WHERE a.suppression IS NULL
-        AND u.is_conseiller_numerique = FALSE
+        AND ${conseillerNumeriqueExpression('u.id', false)}
         AND c.id IS NULL
         AND u.deleted IS NULL
         AND u.inscription_validee IS NOT NULL
@@ -74,7 +75,7 @@ export const getUtilisateursActifsPerMonth = async (): Promise<
       LEFT JOIN coordinateurs c ON u.id = c.user_id
       JOIN activites a ON a.mediateur_id = m.id
       WHERE a.suppression IS NULL
-        AND u.is_conseiller_numerique = TRUE
+        AND ${conseillerNumeriqueExpression('u.id', true)}
         AND c.id IS NULL
         AND u.deleted IS NULL
         AND u.inscription_validee IS NOT NULL

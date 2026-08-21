@@ -24,8 +24,6 @@ const MaStructureEmployeusePage = async () => {
     return redirect('/')
   }
 
-  // Employeuse COURANTE en pur main (ADR-002 périmètre élargi) : affectation active / contrat couvrant
-  // aujourd'hui. Plus aucune lecture de `coop.employes_structures`.
   const employeuse = await consulterEmployeuseAUneDate({
     userId: user.id,
     date: new Date(),
@@ -51,25 +49,19 @@ const MaStructureEmployeusePage = async () => {
           {emploi ? (
             <ActeurStructureEmployeuse
               emploi={emploi}
-              // La notice « employeuse = lieu d'activité » reposait sur l'égalité d'id employeuse/lieu,
-              // morte depuis l'étape 1 (clé de corrélation). Désactivée ici (ADR-002).
               showIsLieuActiviteNotice={false}
               showReferentStructure={true}
               showReferentStructureConseillerNumeriqueSupportNotice={false}
               canUpdateStructure={user.isConseillerNumerique}
             />
           ) : (
-            /* L'état vide était un cul-de-sac : il annonçait l'absence sans
-               offrir d'y remédier, alors que c'est ici qu'on vient pour ça. */
             <div className="fr-background-alt--blue-france fr-border-radius--8 fr-p-6w">
               <h2 className="fr-h6 fr-mb-1v">
                 Vous n’avez pas de structure employeuse
               </h2>
               <p className="fr-text--sm fr-text-mention--grey fr-mb-6v">
-                Sans elle, vous n’êtes pas identifié sur votre territoire comme
-                faisant partie de la communauté de la médiation numérique, et
-                vous ne pouvez pas enregistrer d’activité. Recherchez votre
-                structure par son nom, son SIRET ou son adresse.
+                Sans elle, vous ne pouvez pas enregistrer d’activité. Recherchez
+                votre structure par son nom, son SIRET ou son adresse.
               </p>
               <RattacherEmployeuseForm nextStepPath={null} />
             </div>

@@ -49,6 +49,7 @@ export { rechercherEmployeuse } from './abilities/rechercher-employeuse/implemen
 export {
   conseillerNumeriqueExpression,
   conseillerNumeriqueSql,
+  conseillersNumeriquesUserIdsSql,
   employeuseCourante,
   employeuseCouranteJoin,
 } from './db/employeuse.sql'

@@ -1,4 +1,5 @@
 import { writeFile } from 'node:fs/promises'
+import { conseillerNumeriqueSql } from '@app/web/features/employeuse/server'
 import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import { prismaClient } from '@app/web/prismaClient'
 import type { JobExecutor } from '../jobExecutors'
@@ -103,7 +104,7 @@ const analyser = (): Promise<AnalyseRow[]> =>
         lower(trim(u.last_name)) AS nom,
         u.last_login AS u_last_login,
         (u.last_login IS NOT NULL) AS u_vivant,
-        u.is_conseiller_numerique
+        ${conseillerNumeriqueSql('u.id', true)} AS is_conseiller_numerique
       FROM coop.users u
       WHERE u.deleted IS NULL
         AND NOT EXISTS (SELECT 1 FROM main.personne p WHERE p.coop_id = u.id)
@@ -255,7 +256,7 @@ const analyserLiensDivergents = (): Promise<DivergenceRow[]> =>
     SELECT
       u.id AS user_id,
       u.email,
-      u.is_conseiller_numerique,
+      ${conseillerNumeriqueSql('u.id', true)} AS is_conseiller_numerique,
       actuelle.id AS personne_actuelle,
       cible.id AS personne_cible,
       cible.coop_id AS cible_coop_id,

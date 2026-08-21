@@ -1,4 +1,5 @@
 import {
+  conseillerNumeriqueSql,
   employeuseCourante,
   employeuseCouranteJoin,
   personneConseillerNumeriqueSelect,
@@ -127,9 +128,9 @@ export const searchActeurs = async ({
   // Build role condition
   const roleCondition =
     searchParams.role === 'conseiller_numerique'
-      ? Prisma.sql`u.is_conseiller_numerique = TRUE AND m.id IS NOT NULL`
+      ? Prisma.sql`${conseillerNumeriqueSql('u.id', true)} AND m.id IS NOT NULL`
       : searchParams.role === 'mediateur_numerique'
-        ? Prisma.sql`u.is_conseiller_numerique = FALSE AND m.id IS NOT NULL`
+        ? Prisma.sql`${conseillerNumeriqueSql('u.id', false)} AND m.id IS NOT NULL`
         : searchParams.role === 'coordinateur'
           ? Prisma.sql`c.id IS NOT NULL`
           : Prisma.sql`TRUE`
