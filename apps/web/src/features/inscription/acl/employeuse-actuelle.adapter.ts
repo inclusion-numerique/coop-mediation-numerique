@@ -3,11 +3,20 @@ import {
   employeuseActuelleAffichage,
 } from '@app/web/features/employeuse/server'
 
-// Structure employeuse COURANTE de l'inscription. La lecture appartient à la feature employeuse
-// (ability `consulter-employeuse-actuelle`) ; l'inscription n'en consomme que la mise à plat
-// d'affichage. L'`id` exposé est l'entier `main.structure_administrative.id` : clé de la mutation
-// `ajouterStructureEmployeuseEnLieuActivite`, qui matérialise le lieu depuis les données main.
-export const getStructureEmployeuseForInscription = async ({
+/**
+ * Couche anti-corruption vers la feature employeuse : le seul endroit où
+ * l'inscription traduit le vocabulaire d'une autre feature dans le sien.
+ *
+ * La lecture ne lui appartient pas — elle est faite par l'ability
+ * `consulter-employeuse-actuelle` d'employeuse, atteinte par sa frontière. Ce
+ * module n'en consomme que la mise à plat d'affichage, et tranche ici les replis
+ * dont les écrans d'inscription ont besoin, sans les faire remonter dans la
+ * lecture.
+ *
+ * L'`id` exposé est l'entier `main.structure_administrative.id` : la clé qu'attend
+ * la matérialisation du lieu depuis les données main.
+ */
+export const employeuseActuelleAdaptee = async ({
   userId,
 }: {
   userId: string
@@ -51,9 +60,8 @@ export const getStructureEmployeuseForInscription = async ({
   }
 }
 
-export type StructureEmployeuseForInscription = NonNullable<
-  Awaited<ReturnType<typeof getStructureEmployeuseForInscription>>
+export type EmployeuseActuelleAdaptee = NonNullable<
+  Awaited<ReturnType<typeof employeuseActuelleAdaptee>>
 >
 
-export type InscriptionStructureEmployeuse =
-  StructureEmployeuseForInscription['structure']
+export type EmployeuseAffichee = EmployeuseActuelleAdaptee['structure']

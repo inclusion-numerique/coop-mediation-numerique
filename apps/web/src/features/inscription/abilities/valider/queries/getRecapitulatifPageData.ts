@@ -1,6 +1,6 @@
 import type { SessionUser } from '@app/web/auth/sessionUser'
-import { getLieuxActiviteForInscription } from '@app/web/features/inscription/getLieuxActiviteForInscription'
-import { getStructureEmployeuseForInscription } from '@app/web/features/inscription/getStructureEmployeuseForInscription'
+import { employeuseActuelleAdaptee } from '@app/web/features/inscription/acl/employeuse-actuelle.adapter'
+import { lieuxActiviteDuMediateur } from '@app/web/features/inscription/implementation/prisma/lieux-activite-du-mediateur.query'
 import { stepPath } from '@app/web/features/inscription/ui/step-path'
 import { prismaClient } from '@app/web/prismaClient'
 import { getMediateursCoordonnesForInscription } from './getMediateursCoordonnesForInscription'
@@ -16,14 +16,14 @@ const getInscriptionDataContext = async ({
   const [emploi, lieuxActivite, mediateursCoordonnes, userAdditionalData] =
     await Promise.all([
       // Get structure employeuse
-      getStructureEmployeuseForInscription({
+      employeuseActuelleAdaptee({
         userId: user.id,
       }),
       // Get lieux activite if mediateur
       user.mediateur &&
       user.profilInscription !== 'Coordinateur' &&
       user.profilInscription !== 'CoordinateurConseillerNumerique'
-        ? getLieuxActiviteForInscription({ mediateurId: user.mediateur.id })
+        ? lieuxActiviteDuMediateur({ mediateurId: user.mediateur.id })
         : [],
       // Get mediateurs coordonnes count if coordinateur
       user.coordinateur

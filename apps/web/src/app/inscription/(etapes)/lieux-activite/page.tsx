@@ -2,7 +2,7 @@ import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import type { LieuActiviteInput } from '@app/web/features/inscription/abilities/renseigner-lieux-activite'
 import LieuxActivitePage from '@app/web/features/inscription/abilities/renseigner-lieux-activite/ui/pages/LieuxActivitePage'
-import { getLieuxActiviteForInscription } from '@app/web/features/inscription/getLieuxActiviteForInscription'
+import { lieuxActiviteDuMediateur } from '@app/web/features/inscription/implementation/prisma/lieux-activite-du-mediateur.query'
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import { redirect } from 'next/navigation'
 
@@ -27,7 +27,7 @@ const LieuxActivitePageRoute = async () => {
 
   // Get existing lieux if any, projetés vers l'input du formulaire (l'id porte la
   // réconciliation ; adresse/commune/codePostal sont non-null en base).
-  const lieuxActivite = await getLieuxActiviteForInscription({
+  const lieuxActivite = await lieuxActiviteDuMediateur({
     mediateurId: user.mediateur.id,
   })
 

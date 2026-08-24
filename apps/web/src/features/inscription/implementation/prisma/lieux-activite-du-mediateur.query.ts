@@ -1,7 +1,15 @@
 import { StructureData } from '@app/web/features/structures/StructureValidation'
 import { prismaClient } from '@app/web/prismaClient'
 
-export const getLieuxActiviteForInscription = async ({
+/**
+ * Lieux d'activité auxquels un médiateur est rattaché à l'instant présent :
+ * rattachements ni supprimés ni clos, du plus ancien au plus récent.
+ *
+ * Partagée par deux abilities, d'où sa place au niveau feature :
+ * `renseigner-lieux-activite` en pré-remplit son étape, `valider` les affiche au
+ * récapitulatif.
+ */
+export const lieuxActiviteDuMediateur = async ({
   mediateurId,
 }: {
   mediateurId: string

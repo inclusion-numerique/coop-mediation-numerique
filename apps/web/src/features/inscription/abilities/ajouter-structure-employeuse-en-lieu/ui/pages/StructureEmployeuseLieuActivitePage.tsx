@@ -4,8 +4,8 @@ import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { ajouterStructureEmployeuseEnLieuAction } from '@app/web/app/_actions/inscription/ajouter-structure-employeuse-en-lieu.action'
 import StructureCard from '@app/web/components/structure/StructureCard'
+import type { EmployeuseAffichee } from '@app/web/features/inscription/acl/employeuse-actuelle.adapter'
 import InscriptionCard from '@app/web/features/inscription/components/InscriptionCard'
-import type { InscriptionStructureEmployeuse } from '@app/web/features/inscription/getStructureEmployeuseForInscription'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -20,7 +20,7 @@ const erreurEnregistrement = () =>
 const StructureEmployeuseLieuActivitePage = ({
   structureEmployeuse,
 }: {
-  structureEmployeuse: InscriptionStructureEmployeuse
+  structureEmployeuse: EmployeuseAffichee
 }) => {
   const router = useRouter()
 

@@ -12,7 +12,7 @@ import {
 import {
   employeuseMainSelect,
   employeuseMainToLieuData,
-} from '@app/web/features/inscription/employeuseEnLieuData'
+} from '@app/web/features/inscription/implementation/prisma/employeuse-en-lieu.data'
 import {
   ajouterLieuxActivite,
   CREATE_MEDIATEUR_EN_ACTIVITE_KEY,

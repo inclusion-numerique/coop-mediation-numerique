@@ -1,7 +1,7 @@
 import {
   employeuseMainSelect,
   employeuseMainToLieuData,
-} from '@app/web/features/inscription/employeuseEnLieuData'
+} from '@app/web/features/inscription/implementation/prisma/employeuse-en-lieu.data'
 import { prismaClient } from '@app/web/prismaClient'
 import type { EmployeuseId } from '../../domain'
 
