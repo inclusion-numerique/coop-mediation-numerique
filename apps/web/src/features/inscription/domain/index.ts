@@ -1,3 +1,8 @@
+export {
+  type DispositifPersonne,
+  dispositifInconnu,
+  profilDepuisDispositif,
+} from './dispositif-personne'
 export { Email } from './email'
 export {
   EtapeNonAtteinte,

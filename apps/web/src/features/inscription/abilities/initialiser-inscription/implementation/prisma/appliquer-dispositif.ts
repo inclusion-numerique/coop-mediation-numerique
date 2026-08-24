@@ -1,10 +1,8 @@
 import type { AppliquerDispositif } from '@app/web/features/inscription/abilities/initialiser-inscription/domain'
-import {
-  dispositifDepuisMain,
-  profilDepuisDispositif,
-} from '@app/web/features/inscription/dispositifDepuisMain'
+import { profilDepuisDispositif } from '@app/web/features/inscription/domain'
 import { garantirCoordinateurDuDispositif } from '@app/web/features/utilisateurs/use-cases/dispositif/garantirCoordinateurDuDispositif'
 import { prismaClient } from '@app/web/prismaClient'
+import { dispositifDepuisMain } from './dispositif-depuis-main.query'
 
 /** Crée le médiateur s'il manque — jamais de suppression, comme auparavant. */
 const garantirMediateur = async (userId: string): Promise<void> => {

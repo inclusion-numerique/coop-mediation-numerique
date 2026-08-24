@@ -1,9 +1,9 @@
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import { getLieuxActiviteForInscription } from '@app/web/features/inscription/getLieuxActiviteForInscription'
-import { getMediateursCoordonnesForInscription } from '@app/web/features/inscription/getMediateursCoordonnesForInscription'
 import { getStructureEmployeuseForInscription } from '@app/web/features/inscription/getStructureEmployeuseForInscription'
 import { stepPath } from '@app/web/features/inscription/ui/step-path'
 import { prismaClient } from '@app/web/prismaClient'
+import { getMediateursCoordonnesForInscription } from './getMediateursCoordonnesForInscription'
 
 const getInscriptionDataContext = async ({
   user,

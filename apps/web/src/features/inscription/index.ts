@@ -1,5 +1,6 @@
 export {
   computeUserProfile,
+  type DispositifPersonne,
   type Franchissement,
   getInscriptionFlow,
   getNextInscriptionStep,
@@ -12,6 +13,7 @@ export {
   isValidee,
   ProfilInscription,
   profilDeLInscription,
+  profilDepuisDispositif,
   profilInscriptionLabels,
   profilInscriptionSlugs,
   profilsInscription,

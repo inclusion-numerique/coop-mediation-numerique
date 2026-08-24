@@ -1,10 +1,8 @@
 import { sessionUserSelect } from '@app/web/auth/getSessionUserFromSessionToken'
 import { serializePrismaSessionUser } from '@app/web/auth/serializePrismaSessionUser'
 import { conseillerNumeriqueWhere } from '@app/web/features/employeuse/server'
-import {
-  dispositifDepuisMain,
-  profilDepuisDispositif,
-} from '@app/web/features/inscription/dispositifDepuisMain'
+import { profilDepuisDispositif } from '@app/web/features/inscription'
+import { dispositifDepuisMain } from '@app/web/features/inscription/abilities/initialiser-inscription/implementation'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
 import { garantirCoordinateurDuDispositif } from './garantirCoordinateurDuDispositif'
