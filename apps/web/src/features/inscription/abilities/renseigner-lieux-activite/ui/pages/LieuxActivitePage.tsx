@@ -25,6 +25,7 @@ const LieuxActivitePage = ({
     <LieuxActiviteForm
       lieuxExistants={lieuxActivite}
       nextHref="/inscription/recapitulatif"
+      retourHref="/inscription/lieux-activite"
     />
   </InscriptionCard>
 )

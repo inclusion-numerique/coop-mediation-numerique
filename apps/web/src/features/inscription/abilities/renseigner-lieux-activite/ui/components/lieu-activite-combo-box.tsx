@@ -14,16 +14,44 @@ const itemToString = (item: LieuActiviteSearchResult | null): string =>
 
 const itemToKey = (item: LieuActiviteSearchResult): string => item.id
 
+/** Longueur minimale à partir de laquelle la recherche interroge les annuaires. */
+export const rechercheMinimum = 3
+
+/**
+ * L'état de la recherche voyage avec les résultats : sans lui, une liste vide
+ * pendant le chargement serait indiscernable d'une recherche infructueuse — et
+ * la proposition de créer un lieu clignoterait à chaque frappe. `enEchec`
+ * distingue le troisième cas : une recherche qui n'a pas abouti ne prouve pas
+ * que le lieu n'existe pas, et ne doit donc pas inviter à en créer un.
+ */
+export type RechercheLieuActivite = {
+  recherche: string
+  enCours: boolean
+  enEchec: boolean
+}
+
 const loadSuggestions = async (
   input: string,
-): Promise<{ items: LieuActiviteSearchResult[] }> => {
-  if (input.length < 3) return { items: [] }
+): Promise<{ items: LieuActiviteSearchResult[] } & RechercheLieuActivite> => {
+  const rien = { items: [], recherche: input, enCours: false }
 
-  const result = await vanillaTrpc.structures.searchLieuActiviteCombined.query({
-    query: input,
-  })
+  if (input.length < rechercheMinimum) return { ...rien, enEchec: false }
 
-  return { items: result.structures }
+  try {
+    const result =
+      await vanillaTrpc.structures.searchLieuActiviteCombined.query({
+        query: input,
+      })
+
+    return {
+      items: result.structures,
+      recherche: input,
+      enCours: false,
+      enEchec: false,
+    }
+  } catch {
+    return { ...rien, enEchec: true }
+  }
 }
 
 const origines: Record<LieuActiviteSearchResult['source'], string> = {
@@ -46,9 +74,17 @@ const renderItem = ({ item }: { item: LieuActiviteSearchResult }) => (
   </div>
 )
 
-export const LieuActiviteComboBox: ComboBoxData<LieuActiviteSearchResult> = {
+export const LieuActiviteComboBox: ComboBoxData<
+  LieuActiviteSearchResult,
+  RechercheLieuActivite
+> = {
   itemToString,
   itemToKey,
+  beforeLoadSuggestions: (input) => ({
+    recherche: input,
+    enCours: true,
+    enEchec: false,
+  }),
   loadSuggestions,
 }
 

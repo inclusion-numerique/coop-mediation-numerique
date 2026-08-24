@@ -4,11 +4,6 @@ import { Options } from '@app/ui/components/Primitives/Options'
 import { createToast } from '@app/ui/toast/createToast'
 import { renseignerLieuxActiviteAction } from '@app/web/app/_actions/inscription/renseigner-lieux-activite.action'
 import StructureCard from '@app/web/components/structure/StructureCard'
-import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
-import {
-  AdresseBanComboBox,
-  AdresseBanOptions,
-} from '@app/web/features/adresse/combo-box/AdresseBanComboBox'
 import type { LieuActiviteInput } from '@app/web/features/inscription/abilities/renseigner-lieux-activite'
 import {
   adresseNonVerifiableMessage,
@@ -26,36 +21,22 @@ import { z } from 'zod'
 import {
   LieuActiviteComboBox,
   LieuActiviteOptions,
+  type RechercheLieuActivite,
+  rechercheMinimum,
 } from './lieu-activite-combo-box'
 
 type FormValues = {
   lieux: LieuActiviteInput[]
   recherche: LieuActiviteSearchResult | null
-  nom: string
-  adresseBan: AdresseBanData | null
 }
 
-/** Au moins un lieu ajouté ; les champs d'ajout sont transitoires. */
+/** Au moins un lieu ajouté ; le champ de recherche est transitoire. */
 const lieuxActiviteFormShape = z
   .custom<FormValues>()
   .refine((value) => value.lieux.length > 0, {
     message: 'Veuillez renseigner au moins un lieu d’activité',
     path: ['lieux'],
   })
-
-/** Nouveau lieu construit depuis une adresse géocodée (saisie manuelle ou annuaire). */
-const lieuDepuisAdresse = (
-  nom: string,
-  adresseBan: AdresseBanData,
-): LieuActiviteInput => ({
-  nom,
-  adresse: adresseBan.nom,
-  commune: adresseBan.commune,
-  codePostal: adresseBan.codePostal,
-  codeInsee: adresseBan.codeInsee,
-  latitude: adresseBan.latitude,
-  longitude: adresseBan.longitude,
-})
 
 /**
  * Traduit un résultat de recherche en lieu à rattacher, selon sa provenance :
@@ -88,7 +69,17 @@ const lieuDepuisResultat = async (
     }
 
   const adresseBan = await geocodeStructureAdresse(item)
-  return adresseBan ? lieuDepuisAdresse(item.nom, adresseBan) : null
+  return adresseBan
+    ? {
+        nom: item.nom,
+        adresse: adresseBan.nom,
+        commune: adresseBan.commune,
+        codePostal: adresseBan.codePostal,
+        codeInsee: adresseBan.codeInsee,
+        latitude: adresseBan.latitude,
+        longitude: adresseBan.longitude,
+      }
+    : null
 }
 
 const erreurEnregistrement = () =>
@@ -102,35 +93,31 @@ const erreurEnregistrement = () =>
  * Renseignement des lieux d'activité. La recherche privilégie les lieux déjà
  * connus de la coop, puis la cartographie nationale, et ne tombe sur l'annuaire
  * des entreprises qu'en dernier repli — de quoi éviter de recréer un lieu
- * existant. À défaut, ou si l'adresse d'un établissement n'est pas géocodable, on
- * saisit nom + adresse à la main. Seuls ces deux champs sont demandés ici ; le
- * reste des informations se renseigne dans la gestion des lieux d'activité.
+ * existant. La création d'un lieu n'est proposée qu'une fois la recherche restée
+ * sans résultat : elle n'est pas une alternative offerte d'emblée, sans quoi on
+ * créerait des doublons de lieux qu'on n'a jamais cherchés.
  */
 const LieuxActiviteForm = ({
   lieuxExistants,
   nextHref,
+  retourHref,
 }: {
   lieuxExistants: LieuActiviteInput[]
   nextHref: string
+  retourHref: string
 }) => {
   const router = useRouter()
   const [rechercheError, setRechercheError] = useState<string | null>(null)
 
-  const defaultValues: FormValues = {
-    lieux: lieuxExistants,
-    recherche: null,
-    nom: '',
-    adresseBan: null,
-  }
+  const enregistrerLieux = async (lieux: LieuActiviteInput[]) =>
+    renseignerLieuxActiviteAction({ lieuxActivite: lieux })
 
   const form = useAppForm({
     validators: { onSubmit: lieuxActiviteFormShape },
-    defaultValues,
+    defaultValues: { lieux: lieuxExistants, recherche: null } as FormValues,
     onSubmit: async ({ value }) => {
       try {
-        const result = await renseignerLieuxActiviteAction({
-          lieuxActivite: value.lieux,
-        })
+        const result = await enregistrerLieux(value.lieux)
 
         if (!result.success) {
           erreurEnregistrement()
@@ -149,14 +136,29 @@ const LieuxActiviteForm = ({
   const isHydrated = useHydrated()
   const isPending = isSubmitting || !isHydrated
 
-  const nom = useStore(form.store, (state) => state.values.nom)
-  const adresseBan = useStore(form.store, (state) => state.values.adresseBan)
+  /**
+   * La création se fait sur une autre page : les lieux déjà ajoutés y seraient
+   * perdus, on les enregistre donc avant de partir. Ils seront relus au retour.
+   */
+  const creerUnLieu = async (recherche: string) => {
+    const lieux = form.state.values.lieux
+    const creerHref = `/inscription/creer-un-lieu-d-activite?nom=${encodeURIComponent(recherche)}&retour=${encodeURIComponent(retourHref)}`
 
-  const ajouterSaisieManuelle = () => {
-    if (!nom || !adresseBan) return
-    form.pushFieldValue('lieux', lieuDepuisAdresse(nom, adresseBan))
-    form.setFieldValue('nom', '')
-    form.setFieldValue('adresseBan', null)
+    if (lieux.length === 0) {
+      router.push(creerHref)
+      return
+    }
+
+    try {
+      const result = await enregistrerLieux(lieux)
+      if (!result.success) {
+        erreurEnregistrement()
+        return
+      }
+      router.push(creerHref)
+    } catch {
+      erreurEnregistrement()
+    }
   }
 
   return (
@@ -224,31 +226,70 @@ const LieuxActiviteForm = ({
                 getLabelProps,
                 getInputProps,
                 getToggleButtonProps,
+                payload,
                 ...optionsProps
-              }) => (
-                <>
-                  <field.Input
-                    addonEnd={
-                      <Button
-                        title="Rechercher"
-                        className="fr-border-left-0 fr-pl-3v"
-                        iconId="fr-icon-search-line"
-                        {...getToggleButtonProps({ type: 'button' })}
-                      />
-                    }
-                    isConnected={false}
-                    isPending={isPending}
-                    nativeLabelProps={getLabelProps()}
-                    nativeInputProps={getInputProps()}
-                    label="Rechercher un lieu d’activité par nom, adresse ou SIRET"
-                  />
-                  <Options
-                    className="fr-mt-n4v"
-                    {...optionsProps}
-                    {...LieuActiviteOptions}
-                  />
-                </>
-              )}
+              }) => {
+                const { recherche, enCours, enEchec } =
+                  payload as RechercheLieuActivite
+                const rechercheAboutie =
+                  !enCours &&
+                  (recherche?.trim().length ?? 0) >= rechercheMinimum &&
+                  optionsProps.items.length === 0
+                const sansResultat = rechercheAboutie && !enEchec
+                const rechercheEnEchec = rechercheAboutie && enEchec
+
+                // Un seul enfant, `null` quand il n'y a rien à dire : `Options`
+                // teste `children &&` pour ouvrir son élément de liste, et une
+                // paire de conditions serait un tableau toujours truthy — le
+                // menu s'ouvrirait vide dès le premier clic dans le champ.
+                const proposition = sansResultat ? (
+                  <div>
+                    <p className="fr-text--sm fr-text-mention--grey fr-mb-2v">
+                      Aucun lieu ne correspond à votre recherche.
+                    </p>
+                    <Button
+                      type="button"
+                      priority="secondary"
+                      className="fr-width-full fr-justify-content-center fr-mb-0"
+                      disabled={isPending}
+                      onClick={() => creerUnLieu(recherche)}
+                    >
+                      Créer un lieu d’activité
+                    </Button>
+                  </div>
+                ) : rechercheEnEchec ? (
+                  <p className="fr-text--sm fr-text-default--error fr-mb-0">
+                    La recherche n’a pas abouti, veuillez réessayer.
+                  </p>
+                ) : null
+
+                return (
+                  <>
+                    <field.Input
+                      addonEnd={
+                        <Button
+                          title="Rechercher"
+                          className="fr-border-left-0"
+                          iconId="fr-icon-search-line"
+                          {...getToggleButtonProps({ type: 'button' })}
+                        />
+                      }
+                      isConnected={false}
+                      isPending={isPending}
+                      nativeLabelProps={getLabelProps()}
+                      nativeInputProps={getInputProps()}
+                      label="Rechercher un lieu d’activité par nom, adresse ou SIRET"
+                    />
+                    <Options
+                      {...optionsProps}
+                      {...LieuActiviteOptions}
+                      showEmpty={proposition != null}
+                    >
+                      {proposition}
+                    </Options>
+                  </>
+                )
+              }}
             </field.ComboBox>
           )}
         </form.AppField>
@@ -256,62 +297,6 @@ const LieuxActiviteForm = ({
         {rechercheError && (
           <p className="fr-text-default--error fr-text--sm">{rechercheError}</p>
         )}
-
-        <p className="fr-text--sm fr-text-mention--grey fr-mt-4v fr-mb-2v">
-          Vous ne trouvez pas votre lieu d’activité ? Renseignez-le ci-dessous.
-        </p>
-
-        <form.AppField name="nom">
-          {(field) => (
-            <field.Input isPending={isPending} label="Nom du lieu d’activité" />
-          )}
-        </form.AppField>
-
-        <form.AppField name="adresseBan">
-          {(field) => (
-            <field.ComboBox isPending={isPending} {...AdresseBanComboBox}>
-              {({
-                getLabelProps,
-                getInputProps,
-                getToggleButtonProps,
-                ...optionsProps
-              }) => (
-                <>
-                  <field.Input
-                    addonEnd={
-                      <Button
-                        title="Rechercher"
-                        className="fr-border-left-0 fr-pl-3v"
-                        iconId="fr-icon-search-line"
-                        {...getToggleButtonProps({ type: 'button' })}
-                      />
-                    }
-                    isConnected={false}
-                    isPending={isPending}
-                    nativeLabelProps={getLabelProps()}
-                    nativeInputProps={getInputProps()}
-                    label="Adresse"
-                  />
-                  <Options
-                    className="fr-mt-n4v"
-                    {...optionsProps}
-                    {...AdresseBanOptions}
-                  />
-                </>
-              )}
-            </field.ComboBox>
-          )}
-        </form.AppField>
-
-        <Button
-          type="button"
-          priority="secondary"
-          iconId="fr-icon-add-line"
-          disabled={isPending || !nom || !adresseBan}
-          onClick={ajouterSaisieManuelle}
-        >
-          Ajouter ce lieu d’activité
-        </Button>
 
         <hr className="fr-separator-12v" />
 
