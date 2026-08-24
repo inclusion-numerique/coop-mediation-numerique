@@ -16,6 +16,3 @@ export const initialiserInscriptionAvecInfra = (input: {
     importerStructureDepuisSiret,
     lireEtatPourEtapeSuivante,
   })
-
-/** Lecture du dispositif, exposée pour les tests de contrat transverses. */
-export { dispositifDepuisMain } from './prisma/dispositif-depuis-main.query'

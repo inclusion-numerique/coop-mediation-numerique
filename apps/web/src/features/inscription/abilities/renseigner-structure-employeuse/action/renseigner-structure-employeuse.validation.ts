@@ -1,9 +1,9 @@
 import { AdresseBanValidation } from '@app/web/external-apis/ban/AdresseBanValidation'
-// `Siret` est importé directement du value object, et non du barrel de la feature
-// employeuse : ce schéma est chargé par un composant client, or le barrel ré-exporte
-// les implémentations Prisma — elles atterriraient dans le bundle client, frontière
-// que `tsc` ne signale pas.
-import { Siret } from '@app/web/features/employeuse/domain/siret'
+// `Siret` vient du barrel CLIENT d'employeuse, pas de son `domain/` : une feature
+// n'atteint une autre feature que par sa frontière. Ce schéma étant chargé par un
+// composant client, c'est bien `index` qu'il faut viser et non `server`, seul à
+// embarquer les implémentations Prisma.
+import { Siret } from '@app/web/features/employeuse'
 import { z } from 'zod'
 import type { StructureEmployeuseInput } from '../domain'
 
