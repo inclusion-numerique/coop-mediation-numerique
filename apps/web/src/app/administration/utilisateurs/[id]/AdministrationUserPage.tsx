@@ -14,6 +14,7 @@ import { getUserAccountStatusBadge } from '@app/web/features/utilisateurs/use-ca
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
+import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import {
   dateAsDayAndTime,
@@ -153,6 +154,18 @@ const AdministrationUserPage = async ({
   const isCoordinateur = !!coordinateur
   const inscriptionEnCours = isUserInscriptionEnCours(user)
 
+  // `isUserInscriptionEnCours` ne regarde que `inscriptionValidee` : elle rend
+  // `false` pour un compte validé SANS compte de rôle, alors que c'est justement
+  // l'état pathologique de l'incident des comptes fantômes — un compte qui ne
+  // peut rien faire dans la coop et reboucle sur l'inscription. Il n'apparaissait
+  // donc dans aucun des deux avertissements. On le distingue plutôt que de le
+  // fondre dans le premier : le remède n'est pas le même.
+  const inscriptionValideeSansRole =
+    role !== 'Admin' &&
+    role !== 'Support' &&
+    inscriptionValidee != null &&
+    !hasInscriptionComplete(user)
+
   const canRemoveMediateur =
     !mediateur ||
     (mediateur.beneficiairesCount === 0 && mediateur.activitesCount === 0)
@@ -217,6 +230,13 @@ const AdministrationUserPage = async ({
           <Notice
             className="fr-notice--warning fr-mb-8v"
             title="Inscription restée à la première étape"
+          />
+        )}
+
+        {inscriptionValideeSansRole && (
+          <Notice
+            className="fr-notice--warning fr-mb-8v"
+            title="Inscription validée sans compte de rôle — ce compte ne peut rien faire dans la coop et reboucle sur l’inscription"
           />
         )}
 
