@@ -1,24 +1,36 @@
 import assert from 'node:assert'
 import { EmployeuseId } from '@app/web/features/inscription/abilities/ajouter-structure-employeuse-en-lieu'
 import { ajouterStructureEmployeuseEnLieu } from '@app/web/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/commands/ajouter-structure-employeuse-en-lieu'
+import type { UserId } from '@app/web/features/inscription/domain'
 import {
   currentInscriptionUserId,
+  seedCollegueMediateur,
   seedEmployeuseMain,
 } from '@app/web/features/inscription/inscription.cucumber'
 import { prismaClient } from '@app/web/prismaClient'
-import { Given, Then, When } from '@cucumber/cucumber'
+import { Before, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 
 const nomEmployeuse = 'Employeuse lieu d’activité'
 
 let structureEmployeuseId = 0
+let collegueUserId: UserId | null = null
 
-const declarer = (estLieuActivite: boolean) =>
+// État de module : sans remise à zéro, un collègue d'un scénario précédent
+// ferait passer une assertion du suivant.
+Before(() => {
+  collegueUserId = null
+})
+
+const declarerPour = (userId: UserId) => (estLieuActivite: boolean) =>
   ajouterStructureEmployeuseEnLieu({
-    userId: currentInscriptionUserId(),
+    userId,
     structureEmployeuseId: EmployeuseId(structureEmployeuseId),
     estLieuActivite,
   })
+
+const declarer = (estLieuActivite: boolean) =>
+  declarerPour(currentInscriptionUserId())(estLieuActivite)
 
 Given('je suis médiateur', async () => {
   await prismaClient.mediateur.create({
@@ -48,6 +60,18 @@ When(
   'je déclare que ma structure employeuse n’est pas un lieu d’activité',
   async () => {
     await declarer(false)
+  },
+)
+
+Given('un collègue partage ma structure employeuse', async () => {
+  collegueUserId = await seedCollegueMediateur()
+})
+
+When(
+  'mon collègue déclare que notre structure employeuse est un lieu d’activité',
+  async () => {
+    assert.ok(collegueUserId, 'Aucun collègue n’a été créé pour ce scénario')
+    await declarerPour(collegueUserId)(true)
   },
 )
 
@@ -107,3 +131,41 @@ Then(
     )
   },
 )
+
+/**
+ * Le lieu matérialisé depuis une employeuse est partagé : deux médiateurs de la
+ * même structure s'y rattachent, ils ne s'en créent pas un chacun.
+ */
+Then('nous sommes rattachés au même lieu d’activité', async () => {
+  assert.ok(collegueUserId, 'Aucun collègue n’a été créé pour ce scénario')
+
+  const lieux = await prismaClient.lieuInclusion.count({
+    where: { nom: nomEmployeuse, suppression: null },
+  })
+  assert.strictEqual(
+    lieux,
+    1,
+    'Le lieu a été matérialisé une fois par médiateur',
+  )
+
+  const rattachements = await prismaClient.mediateurEnActivite.findMany({
+    where: {
+      mediateur: {
+        userId: { in: [currentInscriptionUserId(), collegueUserId] },
+      },
+      suppression: null,
+      fin: null,
+    },
+    select: { structureId: true },
+  })
+  assert.strictEqual(
+    rattachements.length,
+    2,
+    'Les deux médiateurs ne sont pas rattachés',
+  )
+  assert.strictEqual(
+    new Set(rattachements.map(({ structureId }) => structureId)).size,
+    1,
+    'Les deux médiateurs ne partagent pas le même lieu d’activité',
+  )
+})

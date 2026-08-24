@@ -17,6 +17,15 @@
 * When je déclare que ma structure employeuse est un lieu d’activité
 * Then ma structure employeuse n’a qu’un seul lieu d’activité actif
 
+### Scenario: Deux médiateurs de la même employeuse partagent le lieu
+
+* Given je suis médiateur
+* And j’ai une structure employeuse
+* And un collègue partage ma structure employeuse
+* When je déclare que ma structure employeuse est un lieu d’activité
+* And mon collègue déclare que notre structure employeuse est un lieu d’activité
+* Then nous sommes rattachés au même lieu d’activité
+
 ## Rule: Déclarer que ce n’est pas un lieu d’activité la détache
 
 ### Scenario: Non — la structure employeuse cesse d’être un lieu d’activité

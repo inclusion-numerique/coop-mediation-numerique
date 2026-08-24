@@ -20,6 +20,9 @@ const trackedAdresseMainIds = new Set<number>()
 // Le lieu matérialisé depuis une employeuse ne reprend plus son id : on le
 // retrouve, pour le nettoyage comme en production, par sa dénomination.
 const trackedEmployeuseMainNoms = new Set<string>()
+// Utilisateurs autres que celui du scénario (collègues de la même employeuse) :
+// suivis à part, le nettoyage ne connaissant sinon que l'utilisateur courant.
+const trackedAutresUserIds = new Set<string>()
 
 const adresseDeTest = {
   adresse: '1 rue de la Paix',
@@ -124,8 +127,23 @@ export const seedEmployeuseMain = async (
   return structure.id
 }
 
+/**
+ * Médiateur tiers rattaché à la même employeuse : de quoi vérifier qu'un lieu
+ * matérialisé depuis une employeuse est partagé, et non recréé par collègue.
+ */
+export const seedCollegueMediateur = async (): Promise<UserId> => {
+  const userId = v4()
+  await prismaClient.user.create({
+    data: { id: userId, email: `collegue-${userId}@test.local` },
+  })
+  await prismaClient.mediateur.create({ data: { id: v4(), userId } })
+  trackedAutresUserIds.add(userId)
+  return UserId(userId)
+}
+
 Before(async () => {
   inscriptionUserId = v4()
+  trackedAutresUserIds.clear()
   trackedStructureEmployeuseIds.clear()
   trackedLieuActiviteIds.clear()
   trackedEmployeuseMainIds.clear()
@@ -140,19 +158,20 @@ Before(async () => {
 })
 
 After(async () => {
+  const userIds = [inscriptionUserId, ...trackedAutresUserIds]
   await prismaClient.employeStructure.deleteMany({
-    where: { userId: inscriptionUserId },
+    where: { userId: { in: userIds } },
   })
   await prismaClient.mediateurEnActivite.deleteMany({
-    where: { mediateur: { userId: inscriptionUserId } },
+    where: { mediateur: { userId: { in: userIds } } },
   })
   await prismaClient.mediateur.deleteMany({
-    where: { userId: inscriptionUserId },
+    where: { userId: { in: userIds } },
   })
   await prismaClient.coordinateur.deleteMany({
-    where: { userId: inscriptionUserId },
+    where: { userId: { in: userIds } },
   })
-  await prismaClient.user.deleteMany({ where: { id: inscriptionUserId } })
+  await prismaClient.user.deleteMany({ where: { id: { in: userIds } } })
   await prismaClient.structureAdministrative.deleteMany({
     where: { id: { in: [...trackedStructureEmployeuseIds] } },
   })
@@ -175,7 +194,7 @@ After(async () => {
     where: { structureAdministrativeId: { in: [...trackedEmployeuseMainIds] } },
   })
   await prismaClient.personneMain.deleteMany({
-    where: { coopId: inscriptionUserId },
+    where: { coopId: { in: userIds } },
   })
   await prismaClient.structureAdministrativeMain.deleteMany({
     where: { id: { in: [...trackedEmployeuseMainIds] } },
