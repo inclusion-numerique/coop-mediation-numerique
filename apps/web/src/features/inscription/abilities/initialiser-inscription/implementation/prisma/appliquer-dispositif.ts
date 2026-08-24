@@ -2,7 +2,7 @@ import type { AppliquerDispositif } from '@app/web/features/inscription/abilitie
 import {
   dispositifDepuisMain,
   profilDepuisDispositif,
-} from '@app/web/features/inscription/use-cases/initialize/dispositifDepuisMain'
+} from '@app/web/features/inscription/dispositifDepuisMain'
 import { garantirCoordinateurDuDispositif } from '@app/web/features/utilisateurs/use-cases/dispositif/garantirCoordinateurDuDispositif'
 import { prismaClient } from '@app/web/prismaClient'
 

@@ -4,7 +4,7 @@ import { conseillerNumeriqueWhere } from '@app/web/features/employeuse/server'
 import {
   dispositifDepuisMain,
   profilDepuisDispositif,
-} from '@app/web/features/inscription/use-cases/initialize/dispositifDepuisMain'
+} from '@app/web/features/inscription/dispositifDepuisMain'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
 import { garantirCoordinateurDuDispositif } from './garantirCoordinateurDuDispositif'

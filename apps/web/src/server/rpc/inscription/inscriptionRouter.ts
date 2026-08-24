@@ -12,7 +12,7 @@ import {
 import {
   employeuseMainSelect,
   employeuseMainToLieuData,
-} from '@app/web/features/inscription/use-cases/lieux-activite/employeuseEnLieuData'
+} from '@app/web/features/inscription/employeuseEnLieuData'
 import {
   ajouterLieuxActivite,
   CREATE_MEDIATEUR_EN_ACTIVITE_KEY,
