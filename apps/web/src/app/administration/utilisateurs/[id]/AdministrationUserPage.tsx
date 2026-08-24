@@ -7,14 +7,13 @@ import ChangeUserRolesButton from '@app/web/app/administration/utilisateurs/[id]
 import DeleteUserButton from '@app/web/app/administration/utilisateurs/[id]/DeleteUserButton'
 import LogoutUserButton from '@app/web/app/administration/utilisateurs/[id]/LogoutUserButton'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
-import { isUserInscriptionEnCours } from '@app/web/auth/isUserInscriptionEnCours'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import { AvertissementsEtatInscription } from '@app/web/features/inscription/components/AvertissementsEtatInscription'
 import { getInvitationStatusBadge } from '@app/web/features/utilisateurs/use-cases/list/getInvitationStatusBadge'
 import { getUserAccountStatusBadge } from '@app/web/features/utilisateurs/use-cases/list/getUserAccountStatusBadge'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
-import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import {
   dateAsDayAndTime,
@@ -152,19 +151,6 @@ const AdministrationUserPage = async ({
 
   const isMediateur = !!mediateur
   const isCoordinateur = !!coordinateur
-  const inscriptionEnCours = isUserInscriptionEnCours(user)
-
-  // `isUserInscriptionEnCours` ne regarde que `inscriptionValidee` : elle rend
-  // `false` pour un compte validé SANS compte de rôle, alors que c'est justement
-  // l'état pathologique de l'incident des comptes fantômes — un compte qui ne
-  // peut rien faire dans la coop et reboucle sur l'inscription. Il n'apparaissait
-  // donc dans aucun des deux avertissements. On le distingue plutôt que de le
-  // fondre dans le premier : le remède n'est pas le même.
-  const inscriptionValideeSansRole =
-    role !== 'Admin' &&
-    role !== 'Support' &&
-    inscriptionValidee != null &&
-    !hasInscriptionComplete(user)
 
   const canRemoveMediateur =
     !mediateur ||
@@ -226,19 +212,7 @@ const AdministrationUserPage = async ({
           {name} <span className="fr-mx-1v" />{' '}
           {getUserAccountStatusBadge(statutCompte)}
         </AdministrationTitle>
-        {inscriptionEnCours && !isMediateur && !isCoordinateur && (
-          <Notice
-            className="fr-notice--warning fr-mb-8v"
-            title="Inscription restée à la première étape"
-          />
-        )}
-
-        {inscriptionValideeSansRole && (
-          <Notice
-            className="fr-notice--warning fr-mb-8v"
-            title="Inscription validée sans compte de rôle — ce compte ne peut rien faire dans la coop et reboucle sur l’inscription"
-          />
-        )}
+        <AvertissementsEtatInscription user={user} />
 
         <div className="fr-flex fr-flex-gap-2v fr-mb-6v">
           {role === 'Admin' && <Tag small>Administrateur</Tag>}
