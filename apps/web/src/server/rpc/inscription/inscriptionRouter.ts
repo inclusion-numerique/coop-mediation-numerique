@@ -31,10 +31,7 @@ import {
   findStructuresByCartoIds,
   PRISMA_CLIENT_KEY,
 } from '@app/web/features/lieux-activite/use-cases/ajouter/implementations/prisma'
-import { ChoisirProfilEtAccepterCguValidation } from '@app/web/features/utilisateurs/use-cases/registration/ChoisirProfilEtAccepterCguValidation'
 import { LieuxActiviteValidation } from '@app/web/features/utilisateurs/use-cases/registration/LieuxActivite'
-import { StructureEmployeuseLieuActiviteValidation } from '@app/web/features/utilisateurs/use-cases/registration/StructureEmployeuseLieuActivite'
-import { ValiderInscriptionValidation } from '@app/web/features/utilisateurs/use-cases/registration/ValiderInscriptionValidation'
 import { provide, runWithContainer } from '@app/web/libs/injection'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
