@@ -48,7 +48,7 @@ const getInscriptionDataContext = async ({
   }
 }
 
-export const getInscriptionRecapitulatifPageData = async ({
+export const getRecapitulatifPageData = async ({
   user,
 }: {
   user: Pick<
@@ -110,6 +110,6 @@ export const getInscriptionRecapitulatifPageData = async ({
   }
 }
 
-export type InscriptionRecapitulatifPageData = Awaited<
-  ReturnType<typeof getInscriptionRecapitulatifPageData>
+export type RecapitulatifPageData = Awaited<
+  ReturnType<typeof getRecapitulatifPageData>
 >

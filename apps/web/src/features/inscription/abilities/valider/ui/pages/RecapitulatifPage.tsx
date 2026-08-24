@@ -4,17 +4,17 @@ import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import IconInSquare from '@app/web/components/IconInSquare'
 import InfoLabelValue from '@app/web/components/InfoLabelValue'
 import StructureCard from '@app/web/components/structure/StructureCard'
+import ValiderInscriptionForm from '@app/web/features/inscription/abilities/valider/ui/components/ValiderInscriptionForm'
 import InscriptionCard from '@app/web/features/inscription/components/InscriptionCard'
 import InscriptionInvalidInformationContactSupportLink from '@app/web/features/inscription/components/InscriptionInvalidInformationContactSupportLink'
-import ValiderInscriptionForm from '@app/web/features/inscription/use-cases/recapitulatif/ValiderInscriptionForm'
 import {
   allProfileInscriptionLabels,
   computeUserProfile,
 } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import React from 'react'
-import ConseillerNumeriqueRoleNotice from './ConseillerNumeriqueRoleNotice'
-import type { InscriptionRecapitulatifPageData } from './getInscriptionRecapitulatifPageData'
+import type { RecapitulatifPageData } from '../../queries/getRecapitulatifPageData'
+import ConseillerNumeriqueRoleNotice from '../components/ConseillerNumeriqueRoleNotice'
 
 const RecapitulatifPage = ({
   data: {
@@ -30,7 +30,7 @@ const RecapitulatifPage = ({
     showInscriptionSteps,
   },
 }: {
-  data: InscriptionRecapitulatifPageData
+  data: RecapitulatifPageData
 }) => (
   <InscriptionCard
     title="Récapitulatif de vos informations"
