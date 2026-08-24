@@ -1,12 +1,12 @@
 'use client'
 
-import LieuActiviteSideMenu from '@app/web/app/coop/(full-width-layout)/lieux-activite/_components/LieuActiviteSideMenu'
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButton from '@app/web/components/BackButton'
 import { DisplayOnCartography } from '@app/web/components/structure/DisplayOnCartography'
 import styles from '@app/web/components/structure/fields/StructureFormFields.module.css'
 import { LieuAccueillantPublicTitle } from '@app/web/components/structure/titles/LieuAccueillantPublicTitle'
 import { ServiceInclusionNumeriqueTitle } from '@app/web/components/structure/titles/ServiceInclusionNumeriqueTitle'
+import LieuActiviteSideMenu from '@app/web/features/lieux-activite/components/LieuActiviteSideMenu'
 import { LieuActivitePageData } from '@app/web/features/lieux-activite/getLieuActivitePageData'
 import { getDepartementCodeForLieu } from '@app/web/features/mon-reseau/getDepartementCodeForLieu'
 import { getMonReseauBreadcrumbParents } from '@app/web/features/mon-reseau/getMonReseauBreadcrumbParents'

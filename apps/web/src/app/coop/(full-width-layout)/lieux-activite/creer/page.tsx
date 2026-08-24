@@ -1,9 +1,8 @@
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import CreerLieuActivitePage from '@app/web/features/lieux-activite/components/creer/CreerLieuActivitePage'
 import { contentId } from '@app/web/utils/skipLinks'
-import React from 'react'
-import { CreerLieuActivitePageContent } from './_components/CreerLieuActivitePageContent'
 
 const LieuActiviteCreerPage = async () => {
   await authenticateMediateur(`/connexion?suivant=/lieux-activite/`)
@@ -12,7 +11,7 @@ const LieuActiviteCreerPage = async () => {
     <>
       <SkipLinksPortal />
       <main id={contentId}>
-        <CreerLieuActivitePageContent
+        <CreerLieuActivitePage
           contentTop={
             <CoopBreadcrumbs
               parents={[
