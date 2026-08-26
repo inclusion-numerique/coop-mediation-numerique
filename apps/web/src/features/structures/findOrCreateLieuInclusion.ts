@@ -1,85 +1,8 @@
 import { searchAdresse } from '@app/web/external-apis/apiAdresse'
 import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
+import { nomsCorrespondent } from '@app/web/libraries/nom-etablissement'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
-
-// Préfixes administratifs interchangeables, normalisés vers un token canonique.
-// "commune de X", "mairie de X", "ville de X", "hôtel de ville de X" → "ville X"
-// Permet à findOrCreateLieuInclusion de matcher "MAIRIE DU PRÊCHEUR" avec
-// "COMMUNE DU PRECHEUR" pour le même SIRET, et ainsi d'éviter les doublons
-// quand le Dataspace renvoie une variante de nom différente de la base.
-const NOM_PREFIXES_NORMALIZATIONS: [RegExp, string][] = [
-  [/^commune (?:de(?:s)?|du|de la|de l)\s+/, 'ville '],
-  [/^com (?:de(?:s)?|du|de la|de l)\s+/, 'ville '],
-  [/^mairie (?:de(?:s)?|du|de la|de l)\s+/, 'ville '],
-  [/^ville (?:de(?:s)?|du|de la|de l)\s+/, 'ville '],
-  [/^hotel de ville (?:de(?:s)?|du|de la|de l)\s+/, 'ville '],
-  [/^conseil departemental (?:de(?:s)?|du|de la|de l)\s+/, 'departement '],
-  [/^departement (?:de(?:s)?|du|de la|de l)\s+/, 'departement '],
-  [/^communaute de communes?\s+/, 'cc '],
-  [/^communaute d agglomeration\s+/, 'cagglo '],
-  [/^communaute com\s+/, 'cc '],
-  [/^conseil regional (?:de(?:s)?|du|de la|de l)\s+/, 'region '],
-  [/^region\s+/, 'region '],
-]
-
-const baseNormalize = (s: string): string =>
-  s
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-
-const normalizeNom = (s: string): string => {
-  let n = baseNormalize(s)
-  for (const [pattern, replacement] of NOM_PREFIXES_NORMALIZATIONS) {
-    n = n.replace(pattern, replacement)
-  }
-  return n.trim()
-}
-
-// Mots-clés désignant un service spécifique d'une entité plus large.
-// Si l'un des deux noms en contient un et pas l'autre, ce sont des entités
-// distinctes (ex: EPN Fleury vs Commune de Fleury).
-const SERVICE_KEYWORDS = [
-  'epn',
-  'mediatheque',
-  'bibliotheque',
-  'ccas',
-  'cias',
-  'centre social',
-  'maison quartier',
-  'maison de quartier',
-  'france services',
-  'mjc',
-  'espace numerique',
-  'cyber espace',
-  'cyberbase',
-  'pole emploi',
-  'mission locale',
-  'point information',
-  'point info',
-  'fablab',
-]
-
-const detectServiceKeywords = (s: string): Set<string> => {
-  const found = new Set<string>()
-  for (const kw of SERVICE_KEYWORDS) {
-    if (s.includes(kw)) found.add(kw)
-  }
-  return found
-}
-
-const hasAsymmetricServiceKeyword = (a: string, b: string): boolean => {
-  const ka = detectServiceKeywords(a)
-  const kb = detectServiceKeywords(b)
-  if (ka.size === 0 && kb.size === 0) return false
-  for (const k of ka) if (!kb.has(k)) return true
-  for (const k of kb) if (!ka.has(k)) return true
-  return false
-}
 
 // Département prefix: 3 chars for overseas (97x/98x), 2 otherwise.
 const departementOf = (codeInsee: string): string =>
@@ -93,13 +16,6 @@ const departementOf = (codeInsee: string): string =>
 // codeInsee), which would otherwise corrupt the stored codeInsee.
 export const sameDepartement = (a: string, b: string): boolean =>
   departementOf(a) === departementOf(b)
-
-export const isContainedName = (a: string, b: string): boolean => {
-  const na = normalizeNom(a)
-  const nb = normalizeNom(b)
-  if (hasAsymmetricServiceKeyword(na, nb)) return false
-  return na === nb || na.includes(nb) || nb.includes(na)
-}
 
 export type FindOrCreateInput = {
   coopId?: string | null
@@ -144,7 +60,7 @@ const findExistingBySiretOrNom = async ({
 
   // Fallback: same SIRET, any codeInsee, with contained name match.
   // Handles codeInsee divergence between Dataspace and coop.
-  // The asymmetric-service-keyword check inside isContainedName prevents
+  // The asymmetric-service-keyword check inside nomsCorrespondent prevents
   // matching an EPN against its parent town hall (same SIRET, different role).
   if (siret) {
     const candidatesBySiret = await prismaClient.lieuInclusion.findMany({
@@ -153,7 +69,7 @@ const findExistingBySiretOrNom = async ({
       orderBy: { creation: 'desc' },
     })
 
-    const match = candidatesBySiret.find((s) => isContainedName(s.nom, nom))
+    const match = candidatesBySiret.find((s) => nomsCorrespondent(s.nom, nom))
 
     if (match) {
       await undeleteStructureIfDeleted(match)
