@@ -100,7 +100,7 @@ export const inscriptionEtatFromDomain = (
     : {
         profilInscription: computeUserProfile({
           isConseillerNumerique: etat.conseillerNumerique,
-          aCoordinateur: etat.role === 'Coordinateur',
+          isCoordinateur: etat.role === 'Coordinateur',
         }),
         acceptationCgu: etat.acceptationCgu,
         structureEmployeuseRenseignee: dateDeFranchissement(

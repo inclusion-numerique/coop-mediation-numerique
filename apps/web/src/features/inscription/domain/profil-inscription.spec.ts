@@ -5,26 +5,32 @@ describe('computeUserProfile', () => {
     expect(
       computeUserProfile({
         isConseillerNumerique: false,
-        aCoordinateur: false,
+        isCoordinateur: false,
       }),
     ).toBe('Mediateur')
   })
 
   it('conseiller numérique sans coordination', () => {
     expect(
-      computeUserProfile({ isConseillerNumerique: true, aCoordinateur: false }),
+      computeUserProfile({
+        isConseillerNumerique: true,
+        isCoordinateur: false,
+      }),
     ).toBe('ConseillerNumerique')
   })
 
   it('coordinateur sans conseiller numérique', () => {
     expect(
-      computeUserProfile({ isConseillerNumerique: false, aCoordinateur: true }),
+      computeUserProfile({
+        isConseillerNumerique: false,
+        isCoordinateur: true,
+      }),
     ).toBe('Coordinateur')
   })
 
   it('coordinateur conseiller numérique', () => {
     expect(
-      computeUserProfile({ isConseillerNumerique: true, aCoordinateur: true }),
+      computeUserProfile({ isConseillerNumerique: true, isCoordinateur: true }),
     ).toBe('CoordinateurConseillerNumerique')
   })
 })

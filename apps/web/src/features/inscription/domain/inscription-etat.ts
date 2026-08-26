@@ -85,5 +85,5 @@ export const profilDeLInscription = (
     ? null
     : computeUserProfile({
         isConseillerNumerique: etat.conseillerNumerique,
-        aCoordinateur: etat.role === 'Coordinateur',
+        isCoordinateur: etat.role === 'Coordinateur',
       })

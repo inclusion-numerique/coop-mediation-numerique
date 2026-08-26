@@ -40,12 +40,12 @@ export const profilInscriptionSlugs: Record<ProfilInscriptionValue, string> = {
  */
 export const computeUserProfile = ({
   isConseillerNumerique,
-  aCoordinateur,
+  isCoordinateur,
 }: {
   readonly isConseillerNumerique: boolean
-  readonly aCoordinateur: boolean
+  readonly isCoordinateur: boolean
 }): ProfilInscription =>
-  aCoordinateur
+  isCoordinateur
     ? ProfilInscription(
         isConseillerNumerique
           ? 'CoordinateurConseillerNumerique'
