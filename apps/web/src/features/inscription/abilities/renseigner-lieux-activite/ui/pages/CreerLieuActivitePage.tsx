@@ -1,13 +1,12 @@
 'use client'
 
 import { createToast } from '@app/ui/toast/createToast'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
+import { creerLieuActiviteAction } from '@app/web/app/_actions/inscription/creer-lieu-activite.action'
 import { CreerLieuActivitePageContent } from '@app/web/features/lieux-activite/components/creer/CreerLieuActivitePageContent'
 import {
   type CreerLieuActiviteFormData,
   toCreerLieuData,
 } from '@app/web/features/lieux-activite/components/creer/creerLieuActiviteFormData'
-import { trpc } from '@app/web/trpc'
 import { useRouter } from 'next/navigation'
 
 const erreurEnregistrement = () =>
@@ -21,29 +20,31 @@ const erreurEnregistrement = () =>
  * Création d'un lieu d'activité pendant l'inscription : on n'y arrive que
  * lorsque la recherche de l'étape « lieux d'activité » n'a rien rendu. Le lieu
  * est rattaché au médiateur dès sa création, puis on revient à l'étape.
+ *
+ * L'ability se réserve le droit de ne rien créer : si la coop connaît déjà cet
+ * établissement sous une autre dénomination, elle rattache l'existant. L'écran
+ * n'a pas à le savoir — dans les deux cas le lieu est acquis.
  */
 const CreerLieuActivitePage = ({
-  mediateurId,
   nom,
   retourHref,
 }: {
-  mediateurId: string
   nom?: string
   retourHref: string
 }) => {
   const router = useRouter()
-  const mutation = trpc.structures.createLieu.useMutation()
 
   const onCreer = async (value: CreerLieuActiviteFormData) => {
     const { adresseBan, ...data } = toCreerLieuData(value)
     if (adresseBan == null) return
 
     try {
-      await mutation.mutateAsync({
-        ...data,
-        adresseBan,
-        lieuActiviteMediateurId: mediateurId,
-      })
+      const result = await creerLieuActiviteAction({ ...data, adresseBan })
+
+      if (!result.success) {
+        erreurEnregistrement()
+        return
+      }
 
       createToast({
         priority: 'success',
@@ -66,4 +67,4 @@ const CreerLieuActivitePage = ({
   )
 }
 
-export default withTrpc(CreerLieuActivitePage)
+export default CreerLieuActivitePage

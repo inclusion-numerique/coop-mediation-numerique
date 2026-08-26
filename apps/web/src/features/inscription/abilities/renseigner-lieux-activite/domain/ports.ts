@@ -5,6 +5,7 @@ import type {
 // Type partagé de la structure carto de l'Entrepôt (erasé au build) — même
 // forme que celle consommée par le module partagé `structure/`.
 import type { CartoStructure } from '@app/web/features/lieux-activite/use-cases/ajouter/domain'
+import type { CreerLieuActiviteData } from '@app/web/features/structures/CreerLieuActiviteValidation'
 import type { LieuActiviteExistant, LieuActiviteInput } from './reconcilier'
 
 /** Lit les activités en cours de l'utilisateur (pour la réconciliation). */
@@ -33,3 +34,13 @@ export type EnregistrerReconciliation = (input: {
   readonly aCreer: readonly LieuActiviteInput[]
   readonly structuresCarto: readonly CartoStructure[]
 }) => Promise<void>
+
+/**
+ * Crée le lieu saisi et y rattache le médiateur — ou le rattache au lieu que la
+ * coop connaissait déjà sous une autre dénomination. Rend le lieu rattaché.
+ */
+export type CreerLieuActivite = (input: {
+  readonly userId: UserId
+  readonly mediateurId: string
+  readonly saisie: CreerLieuActiviteData
+}) => Promise<{ readonly id: string }>

@@ -78,11 +78,40 @@ export const seedStructureEmployeuse = async (
 
 /** Lieu d'activité de test (suivi pour nettoyage) : cible de `MediateurEnActivite`. */
 export const seedLieuActivite = async (
-  data: { nom?: string } = {},
+  data: {
+    nom?: string
+    /** Un SIRET de fixture est réputé vérifié (API entreprise), comme en prod. */
+    siret?: string | null
+    /** SIRET de provenance inconnue (ex. cartographie) : sans date de vérification. */
+    siretNonVerifie?: string | null
+    structureCartographieNationaleId?: string | null
+    visiblePourCartographieNationale?: boolean
+    supprime?: boolean
+    adresse?: {
+      adresse: string
+      commune: string
+      codePostal: string
+      codeInsee: string | null
+    }
+    position?: { latitude: number; longitude: number }
+  } = {},
 ): Promise<string> => {
   const id = v4()
+  const now = new Date()
   await prismaClient.lieuInclusion.create({
-    data: { id, nom: data.nom ?? 'Lieu d’activité de test', ...adresseDeTest },
+    data: {
+      id,
+      nom: data.nom ?? 'Lieu d’activité de test',
+      siret: data.siret ?? data.siretNonVerifie ?? null,
+      synchronisationSiret: data.siret == null ? null : now,
+      structureCartographieNationaleId:
+        data.structureCartographieNationaleId ?? null,
+      visiblePourCartographieNationale:
+        data.visiblePourCartographieNationale ?? false,
+      suppression: data.supprime ? now : null,
+      ...(data.adresse ?? adresseDeTest),
+      ...(data.position ?? {}),
+    },
   })
   trackedLieuActiviteIds.add(id)
   return id

@@ -71,6 +71,11 @@ export const employeuseMainToLieuData = (structure: EmployeuseMainPayload) => {
     codeInsee: structure.adresse?.codeInsee ?? null,
     complementAdresse: null,
     siret: structure.siret ?? null,
+    // `main.structure_administrative` fait foi sur le SIRET, et il est lu ICI,
+    // côté serveur : le client choisit l'employeuse, jamais la valeur. On peut
+    // donc horodater cette provenance — à la différence d'un SIRET soumis par
+    // le navigateur, qui reste non vérifié (cf. `lieuInclusionDepuisAdresse`).
+    synchronisationSiret: structure.siret == null ? null : new Date(),
     rna: structure.rna ?? null,
     nomReferent,
     courrielReferent,

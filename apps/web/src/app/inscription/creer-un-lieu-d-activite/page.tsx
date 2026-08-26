@@ -27,11 +27,7 @@ const Page = async (props: {
     <>
       <SkipLinksPortal />
       <main id={contentId} className="fr-width-full">
-        <CreerLieuActivitePage
-          mediateurId={user.mediateur.id}
-          nom={nom}
-          retourHref={retour}
-        />
+        <CreerLieuActivitePage nom={nom} retourHref={retour} />
       </main>
     </>
   )

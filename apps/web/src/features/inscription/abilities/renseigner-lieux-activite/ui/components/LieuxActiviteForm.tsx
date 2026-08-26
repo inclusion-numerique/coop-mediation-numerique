@@ -44,7 +44,9 @@ const lieuxActiviteFormShape = z
  * - cartographie : la coop ne le connaît pas encore, on transmet son id carto —
  *   la persistance le matérialisera avec toutes les informations de la carto ;
  * - annuaire des entreprises : aucune coordonnée n'est fournie, le géocodage est
- *   donc obligatoire ; sans lui le lieu n'est pas exploitable (`null`).
+ *   donc obligatoire ; sans lui le lieu n'est pas exploitable (`null`). Son SIRET
+ *   voyage avec lui — c'est la corrélation la plus sûre côté persistance, et il
+ *   n'est renseigné que là : le `pivot` de la carto peut être un RNA.
  */
 const lieuDepuisResultat = async (
   item: LieuActiviteSearchResult,
@@ -72,10 +74,14 @@ const lieuDepuisResultat = async (
   return adresseBan
     ? {
         nom: item.nom,
+        // Le SIRET de l'annuaire corrèle le lieu à celui que la coop connaît
+        // peut-être déjà, et reste porté par le lieu s'il faut le créer.
+        siret: item.pivot ?? null,
         adresse: adresseBan.nom,
         commune: adresseBan.commune,
         codePostal: adresseBan.codePostal,
         codeInsee: adresseBan.codeInsee,
+        banId: adresseBan.id,
         latitude: adresseBan.latitude,
         longitude: adresseBan.longitude,
       }

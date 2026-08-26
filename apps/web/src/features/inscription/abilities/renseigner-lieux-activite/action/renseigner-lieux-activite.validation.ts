@@ -11,10 +11,15 @@ const LieuActiviteInputValidation = z.object({
   id: z.string().uuid().nullish(),
   structureCartographieNationaleId: z.string().nullish(),
   nom: z.string().min(1, 'Veuillez renseigner le nom du lieu'),
+  siret: z
+    .string()
+    .regex(/^\d{14}$/, 'Le SIRET doit comporter 14 chiffres')
+    .nullish(),
   adresse: z.string().min(1, 'Veuillez renseigner une adresse'),
   commune: z.string().min(1),
   codePostal: z.string().min(1),
   codeInsee: z.string().nullish(),
+  banId: z.string().nullish(),
   latitude: z.number().nullish(),
   longitude: z.number().nullish(),
 })

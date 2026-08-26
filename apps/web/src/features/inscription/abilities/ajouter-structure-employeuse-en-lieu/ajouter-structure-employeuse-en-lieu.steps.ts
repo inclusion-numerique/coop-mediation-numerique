@@ -6,6 +6,7 @@ import {
   currentInscriptionUserId,
   seedCollegueMediateur,
   seedEmployeuseMain,
+  seedLieuActivite,
 } from '@app/web/features/inscription/inscription.cucumber'
 import { prismaClient } from '@app/web/prismaClient'
 import { Before, Given, Then, When } from '@cucumber/cucumber'
@@ -15,6 +16,8 @@ const nomEmployeuse = 'Employeuse lieu d’activité'
 
 let structureEmployeuseId = 0
 let collegueUserId: UserId | null = null
+let lieuConnuId = ''
+let nomCommuneEmployeuse = ''
 
 // État de module : sans remise à zéro, un collègue d'un scénario précédent
 // ferait passer une assertion du suivant.
@@ -62,6 +65,57 @@ When(
     await declarer(false)
   },
 )
+
+Given('j’ai une structure employeuse dénommée comme une mairie', async () => {
+  // « Mairie de X » et « COMMUNE DE X » se normalisent tous deux en « ville X ».
+  const commune = v4()
+  structureEmployeuseId = await seedEmployeuseMain({
+    nom: `Mairie de ${commune}`,
+  })
+  lieuConnuId = ''
+  collegueUserId = null
+  // Mémorisé pour le Given suivant, qui pose le lieu coop homologue.
+  nomCommuneEmployeuse = commune
+})
+
+Given(
+  'la coop connaît déjà ce lieu sous la dénomination de la commune',
+  async () => {
+    // Même adresse que `seedEmployeuseMain` (1 rue de la Paix, Paris 75001).
+    lieuConnuId = await seedLieuActivite({
+      nom: `COMMUNE DE ${nomCommuneEmployeuse}`,
+    })
+  },
+)
+
+Then('je suis rattaché au lieu que la coop connaissait déjà', async () => {
+  const actifs = await prismaClient.mediateurEnActivite.findMany({
+    where: {
+      mediateur: { userId: currentInscriptionUserId() },
+      suppression: null,
+      fin: null,
+    },
+    select: { structureId: true },
+  })
+  assert.deepStrictEqual(
+    actifs.map(({ structureId }) => structureId),
+    [lieuConnuId],
+    'Le médiateur n’est pas rattaché au lieu que la coop connaissait',
+  )
+})
+
+Then('ce lieu n’a pas été recréé', async () => {
+  const lieux = await prismaClient.lieuInclusion.count({
+    where: {
+      suppression: null,
+      OR: [
+        { nom: `COMMUNE DE ${nomCommuneEmployeuse}` },
+        { nom: `Mairie de ${nomCommuneEmployeuse}` },
+      ],
+    },
+  })
+  assert.strictEqual(lieux, 1, 'Le lieu a été matérialisé une seconde fois')
+})
 
 Given('un collègue partage ma structure employeuse', async () => {
   collegueUserId = await seedCollegueMediateur()

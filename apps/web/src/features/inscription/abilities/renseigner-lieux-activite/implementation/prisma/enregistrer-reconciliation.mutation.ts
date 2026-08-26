@@ -1,5 +1,10 @@
 import { inscriptionEtatFromDomain } from '@app/web/features/inscription/db'
 import type { UserId } from '@app/web/features/inscription/domain'
+import {
+  type LieuAMaterialiser,
+  lieuCorrele,
+  preparerCorrele,
+} from '@app/web/features/inscription/implementation/prisma/lieu-correle'
 import type { CartoStructure } from '@app/web/features/lieux-activite/use-cases/ajouter/domain'
 import { prismaClient } from '@app/web/prismaClient'
 import { toStructureFromCartoStructure } from '@app/web/structure/toStructureFromCartoStructure'
@@ -16,21 +21,108 @@ import type { EnregistrerReconciliation, LieuActiviteInput } from '../../domain'
 const lieuInclusionDepuisAdresse = (lieu: LieuActiviteInput) => ({
   id: v4(),
   nom: lieu.nom,
+  siret: lieu.siret ?? null,
+  // Volontairement PAS de `synchronisationSiret`. Ce SIRET vient de l'annuaire
+  // des entreprises, mais il a transité par le navigateur : le serveur ne peut
+  // pas distinguer celui que l'annuaire a rendu de celui qu'on lui souffle.
+  // L'horodater le dirait vérifié — et `normalize-sirets`, qui saute les SIRET
+  // récemment synchronisés, s'abstiendrait justement de le vérifier. On le
+  // stocke donc non vérifié ; le job lui donnera sa valeur de preuve. Seules les
+  // provenances lues côté serveur sont horodatées (cf. `employeuseMainToLieuData`).
   adresse: lieu.adresse,
   commune: lieu.commune,
   codePostal: lieu.codePostal,
   codeInsee: lieu.codeInsee,
+  banId: lieu.banId ?? null,
   latitude: lieu.latitude,
   longitude: lieu.longitude,
 })
 
 /**
- * Crée une activité pour un lieu à rattacher (4 branches, chacune construite en
- * ligne pour rester dans les types nested de Prisma) :
- * - sans carto, avec id interne : rattache le lieu existant ;
- * - sans carto, sans id : matérialise un nouveau lieu depuis nom + adresse géocodée ;
- * - avec carto déjà matérialisée localement : rattache la structure existante ;
- * - avec carto non matérialisée : crée le lieu depuis la structure carto.
+ * Matérialise le lieu — sauf s'il existe déjà. Aucun des chemins de création ne
+ * dispose de l'id du lieu coop correspondant : on passe donc toujours par la
+ * sonde de corrélation avant de créer, pour ne pas ajouter un doublon de plus.
+ */
+const materialiser = async (
+  transaction: Prisma.TransactionClient,
+  donnees: LieuAMaterialiser & Prisma.LieuInclusionCreateManyInput,
+): Promise<{ readonly id: string }> => {
+  const correle = await lieuCorrele(transaction, donnees)
+  const prepare = correle && (await preparerCorrele(transaction, correle))
+
+  if (prepare) return prepare
+
+  return transaction.lieuInclusion.create({
+    data: donnees,
+    select: { id: true },
+  })
+}
+
+/**
+ * Résout le lieu auquel rattacher l'activité. L'ordre des branches porte le
+ * modèle d'identité : l'id interne est la SEULE identité certaine d'un lieu de
+ * la coop. L'id de cartographie nationale, lui, est une annotation tardive —
+ * un lieu ajouté dans la coop n'en a pas ; c'est le job nightly de la carto qui,
+ * après avoir agrégé les sources, normalisé et dédupliqué, le pose sur le lieu
+ * publié puis le resynchronise dans la coop. Son absence ne dit donc rien de
+ * l'existence du lieu, et sa présence ne prime jamais sur l'id interne (colonne
+ * seulement indexée, non unique : y résoudre un lieu déjà identifié risquerait
+ * de rattacher l'activité à un doublon).
+ *
+ * - id interne : le lieu existant ;
+ * - sans id ni carto : un nouveau lieu, depuis nom + adresse géocodée ;
+ * - carto déjà matérialisée localement : le lieu qui la porte ;
+ * - carto non matérialisée : le lieu créé depuis la structure carto, et à défaut
+ *   (carto désynchronisée) depuis l'adresse soumise — un lieu introuvable dans
+ *   l'Entrepôt ne doit pas avorter l'inscription entière.
+ *
+ * Les deux dernières branches passent par `materialiser`, qui ne crée qu'à
+ * défaut de lieu corrélé.
+ */
+const lieuARattacher = async (
+  transaction: Prisma.TransactionClient,
+  lieu: LieuActiviteInput,
+  structuresCartoParId: ReadonlyMap<string, CartoStructure>,
+): Promise<{ readonly id: string }> => {
+  if (lieu.id) return { id: lieu.id }
+
+  if (!lieu.structureCartographieNationaleId)
+    return materialiser(transaction, lieuInclusionDepuisAdresse(lieu))
+
+  const porteurDeLaCarto = await transaction.lieuInclusion.findFirst({
+    where: {
+      structureCartographieNationaleId: lieu.structureCartographieNationaleId,
+      // Un lieu supprimé n'est pas un rattachement possible : on laisse la
+      // sonde décider s'il doit être relevé, et à quelles conditions. Sans ce
+      // filtre, cette branche rattacherait le médiateur à un lieu retiré, en
+      // court-circuitant les règles de modération.
+      suppression: null,
+    },
+    // La colonne n'est qu'indexée, pas unique : à défaut d'unicité, on rattache
+    // au plus ancien plutôt qu'à une ligne arbitraire.
+    orderBy: { creation: 'asc' },
+    select: { id: true },
+  })
+
+  if (porteurDeLaCarto) return porteurDeLaCarto
+
+  const cartoStructure = structuresCartoParId.get(
+    lieu.structureCartographieNationaleId,
+  )
+
+  return materialiser(
+    transaction,
+    cartoStructure
+      ? toStructureFromCartoStructure(cartoStructure)
+      : lieuInclusionDepuisAdresse(lieu),
+  )
+}
+
+/**
+ * Rattache le médiateur au lieu désiré. Le rattachement est idempotent : deux
+ * lieux désirés peuvent se corréler au même lieu de la coop (l'un trouvé dans la
+ * coop, l'autre dans la carto ou l'annuaire), et le médiateur n'exerce pas deux
+ * fois dans le même lieu.
  */
 const creerActivite = async (
   transaction: Prisma.TransactionClient,
@@ -38,48 +130,29 @@ const creerActivite = async (
   lieu: LieuActiviteInput,
   structuresCartoParId: ReadonlyMap<string, CartoStructure>,
 ) => {
-  if (!lieu.structureCartographieNationaleId) {
-    return transaction.mediateurEnActivite.create({
-      data: {
-        id: v4(),
-        mediateur: { connect: { userId } },
-        lieuInclusion: lieu.id
-          ? { connect: { id: lieu.id } }
-          : { create: lieuInclusionDepuisAdresse(lieu) },
-        debut: new Date(),
-      },
-    })
-  }
+  const { id: structureId } = await lieuARattacher(
+    transaction,
+    lieu,
+    structuresCartoParId,
+  )
 
-  const existante = await transaction.lieuInclusion.findFirst({
+  const dejaRattache = await transaction.mediateurEnActivite.findFirst({
     where: {
-      structureCartographieNationaleId: lieu.structureCartographieNationaleId,
+      mediateur: { userId },
+      structureId,
+      suppression: null,
+      fin: null,
     },
     select: { id: true },
   })
 
-  if (existante) {
-    return transaction.mediateurEnActivite.create({
-      data: {
-        id: v4(),
-        mediateur: { connect: { userId } },
-        lieuInclusion: { connect: { id: existante.id } },
-        debut: new Date(),
-      },
-    })
-  }
-
-  const cartoStructure = structuresCartoParId.get(
-    lieu.structureCartographieNationaleId,
-  )
-
-  if (!cartoStructure) throw new Error('Structure carto not found')
+  if (dejaRattache) return dejaRattache
 
   return transaction.mediateurEnActivite.create({
     data: {
       id: v4(),
       mediateur: { connect: { userId } },
-      lieuInclusion: { create: toStructureFromCartoStructure(cartoStructure) },
+      lieuInclusion: { connect: { id: structureId } },
       debut: new Date(),
     },
   })
@@ -109,11 +182,13 @@ export const enregistrerReconciliation: EnregistrerReconciliation = async ({
       data: { fin: now, suppression: now, suppressionParId: userId },
     })
 
-    await Promise.all(
-      aCreer.map((lieu) =>
-        creerActivite(transaction, userId, lieu, structuresCartoParId),
-      ),
-    )
+    // Séquentiel, et non `Promise.all` : deux lieux désirés peuvent se corréler
+    // au même lieu de la coop, et des sondes menées de front ne verraient pas
+    // les créations l'une de l'autre — le doublon que l'on cherche à éviter.
+    await aCreer.reduce(async (precedentes, lieu) => {
+      await precedentes
+      await creerActivite(transaction, userId, lieu, structuresCartoParId)
+    }, Promise.resolve())
 
     await transaction.user.update({
       where: { id: userId },

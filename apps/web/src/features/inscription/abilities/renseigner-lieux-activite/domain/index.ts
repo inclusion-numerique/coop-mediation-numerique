@@ -1,4 +1,9 @@
+export {
+  type CreerLieuActiviteError,
+  MediateurIntrouvable,
+} from './creer-lieu-activite'
 export type {
+  CreerLieuActivite,
   EnregistrerReconciliation,
   LireLieuxActiviteExistants,
   TrouverStructuresCarto,

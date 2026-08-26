@@ -1,3 +1,4 @@
+import { lieuCorrele } from '@app/web/features/inscription/implementation/prisma/lieu-correle'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import type { DelierStructureEmployeuseEnLieu } from '../../domain/ports'
@@ -9,13 +10,19 @@ import { lieuDepuisEmployeuse } from './lieu-depuis-employeuse'
  * `suppressionParId` est l'utilisateur lui-même (il agit sur sa propre
  * inscription).
  *
+ * Le lieu est retrouvé par la même sonde que le rattachement — sans quoi les
+ * deux ne désigneraient pas le même lieu et « Non » ne détacherait rien.
+ *
  * Le lieu n'est pas supprimé. Il peut être partagé avec d'autres médiateurs, et
  * porter des activités déjà enregistrées : le détruire ferait disparaître leur
  * rattachement. Un lieu créé par erreur reste donc orphelin — c'est assumé.
  */
 export const delierStructureEmployeuseEnLieu: DelierStructureEmployeuseEnLieu =
   async ({ userId, structureEmployeuseId }) => {
-    const { lieuCorrele } = await lieuDepuisEmployeuse(structureEmployeuseId)
+    const lieuData = await lieuDepuisEmployeuse(structureEmployeuseId)
+    const correle = await lieuCorrele(prismaClient, lieuData)
+
+    if (!correle) return
 
     addMutationLog({
       userId,
@@ -29,7 +36,7 @@ export const delierStructureEmployeuseEnLieu: DelierStructureEmployeuseEnLieu =
     await prismaClient.mediateurEnActivite.updateMany({
       where: {
         mediateur: { userId },
-        lieuInclusion: lieuCorrele,
+        structureId: correle.id,
         suppression: null,
         fin: null,
       },

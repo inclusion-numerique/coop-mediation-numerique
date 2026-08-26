@@ -1,3 +1,7 @@
+import {
+  lieuCorrele,
+  preparerCorrele,
+} from '@app/web/features/inscription/implementation/prisma/lieu-correle'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { v4 } from 'uuid'
@@ -11,53 +15,55 @@ import { lieuDepuisEmployeuse } from './lieu-depuis-employeuse'
  *
  * Le lieu est une photographie prise au moment du « Oui » : il ne se
  * resynchronise pas si l'employeuse déménage ensuite. Et il est partagé — s'il
- * existe déjà pour cette employeuse, on s'y rattache au lieu d'en créer un
- * second, si bien que deux médiateurs du même établissement voient un seul lieu.
+ * existe déjà, on s'y rattache au lieu d'en créer un second, si bien que deux
+ * médiateurs du même établissement voient un seul lieu.
+ *
+ * La reconnaissance passe par la sonde de corrélation de la feature, comme les
+ * autres chemins de matérialisation : le lieu que la coop connaît déjà ne porte
+ * pas forcément la dénomination de `main`, et une comparaison à l'identique en
+ * créerait un doublon.
  */
 export const lierStructureEmployeuseEnLieu: LierStructureEmployeuseEnLieu =
   async ({ userId, structureEmployeuseId }) => {
-    const { lieuData, lieuCorrele } = await lieuDepuisEmployeuse(
-      structureEmployeuseId,
-    )
+    const lieuData = await lieuDepuisEmployeuse(structureEmployeuseId)
 
-    const existing = await prismaClient.mediateurEnActivite.findFirst({
-      where: {
-        mediateur: { userId },
-        lieuInclusion: lieuCorrele,
-        suppression: null,
-        fin: null,
-      },
-      select: { id: true },
-    })
+    await prismaClient.$transaction(async (transaction) => {
+      const correle = await lieuCorrele(transaction, lieuData)
+      const prepare = correle && (await preparerCorrele(transaction, correle))
 
-    if (existing) return
+      const { id: structureId } =
+        prepare ??
+        (await transaction.lieuInclusion.create({
+          data: { id: v4(), ...lieuData },
+          select: { id: true },
+        }))
 
-    const lieuExistant = await prismaClient.lieuInclusion.findFirst({
-      where: lieuCorrele,
-      orderBy: { creation: 'asc' },
-      select: { id: true },
-    })
-
-    const lieuActivite =
-      lieuExistant ??
-      (await prismaClient.lieuInclusion.create({
-        data: { id: v4(), ...lieuData },
+      const dejaRattache = await transaction.mediateurEnActivite.findFirst({
+        where: {
+          mediateur: { userId },
+          structureId,
+          suppression: null,
+          fin: null,
+        },
         select: { id: true },
-      }))
+      })
 
-    addMutationLog({
-      userId,
-      nom: 'CreerMediateurEnActivite',
-      duration: 0,
-      data: { userId, structureId: structureEmployeuseId },
-    })
+      if (dejaRattache) return
 
-    await prismaClient.mediateurEnActivite.create({
-      data: {
-        id: v4(),
-        mediateur: { connect: { userId } },
-        lieuInclusion: { connect: { id: lieuActivite.id } },
-        debut: new Date(),
-      },
+      addMutationLog({
+        userId,
+        nom: 'CreerMediateurEnActivite',
+        duration: 0,
+        data: { userId, structureId: structureEmployeuseId },
+      })
+
+      await transaction.mediateurEnActivite.create({
+        data: {
+          id: v4(),
+          mediateur: { connect: { userId } },
+          lieuInclusion: { connect: { id: structureId } },
+          debut: new Date(),
+        },
+      })
     })
   }
