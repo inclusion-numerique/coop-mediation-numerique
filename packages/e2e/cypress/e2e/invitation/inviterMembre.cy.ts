@@ -7,12 +7,15 @@ import { goToMostRecentEmailReceived } from '../goToMostRecentEmailReceived'
 
 const searchAndInviteUser = ({
   displayName,
+  email,
   search,
   slug,
 }: {
   slug: string
   search: string
   displayName: string
+  /** Identifie l'option à coup sûr : les dénominations, elles, se préfixent. */
+  email: string
 }) => {
   // intercept the search query to avoid timing issues and insure that the search is executed
   cy.intercept(
@@ -24,10 +27,13 @@ const searchAndInviteUser = ({
   // wait for the search query to be completed
   cy.wait(`@search-${slug}`)
 
-  // select the first result on the dropdown and click on it
-  cy.get('#custom-select-form-field__members')
-    .type('{downarrow}')
-    .type('{enter}')
+  // La liste est ordonnée par nom de famille, pas par pertinence : prendre la
+  // première option sélectionne un homonyme qui trie avant celui qu'on vise
+  // (« Médiateur Avec activités » précède « Médiateur Inscription »). On clique
+  // donc l'option voulue, pour que le test affirme ce qu'il fait. Elle se
+  // désigne par l'e-mail : « Médiateur Inscription » est aussi le début de
+  // « Médiateur Inscription J+100 ».
+  cy.contains('[role="option"]', email).click()
 
   // selection tag should be present
   cy.findByRole('button', { name: displayName })
@@ -52,18 +58,21 @@ describe('ETQ coordinateur, je peux inviter un médiateur à rejoindre mon équi
       search: 'conseiller',
       slug: 'conseiller',
       displayName: getUserDisplayName(conseillerNumerique),
+      email: conseillerNumerique.email,
     })
 
     searchAndInviteUser({
       search: 'mediateur',
       slug: 'mediateur',
       displayName: getUserDisplayName(mediateurInscription),
+      email: mediateurInscription.email,
     })
 
     searchAndInviteUser({
       search: 'leo@med.fr',
       slug: 'leo',
       displayName: 'leo@med.fr',
+      email: 'leo@med.fr',
     })
 
     cy.intercept('/api/trpc/mediateur.invite*').as('mutation')
