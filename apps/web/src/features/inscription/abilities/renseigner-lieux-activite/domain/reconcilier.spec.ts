@@ -76,6 +76,30 @@ describe('reconcilierLieuxActivite', () => {
     })
   })
 
+  it('ne clôture pas un lieu re-soumis par son seul id interne, alors qu’il porte un id de cartographie nationale', () => {
+    // La recherche coop rend l'id interne seul : un lieu retiré puis re-ajouté
+    // ainsi ne doit pas être clôturé au prétexte que son id carto manque.
+    const existants = [existant('act-1', 'lieu-1', 'carto-1')]
+    const desires = [{ id: 'lieu-1', nom: 'Lieu 1' }]
+
+    expect(reconcilierLieuxActivite(existants, desires)).toEqual({
+      aCloturer: [],
+      aCreer: [],
+    })
+  })
+
+  it('ne recrée pas une activité dont le lieu est déjà rattaché par son id de cartographie nationale', () => {
+    const existants = [existant('act-1', 'lieu-1', 'carto-1')]
+    const desires = [
+      { structureCartographieNationaleId: 'carto-1', nom: 'Lieu 1' },
+    ]
+
+    expect(reconcilierLieuxActivite(existants, desires)).toEqual({
+      aCloturer: [],
+      aCreer: [],
+    })
+  })
+
   it('ne recrée pas une activité existante re-soumise avec son id de lieu', () => {
     const existants = [existant('act-1', 'lieu-1', 'carto-1')]
     const desires = [
