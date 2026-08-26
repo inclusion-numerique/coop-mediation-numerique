@@ -1,5 +1,5 @@
-import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite/CreerLieuActiviteValidation'
 import { searchLieuxActivite } from '@app/web/features/lieux-activite/searchLieuxActivite'
+import { CreerLieuActiviteValidation } from '@app/web/features/structures/CreerLieuActiviteValidation'
 import {
   DescriptionData,
   DescriptionValidation,
@@ -12,6 +12,15 @@ import {
   InformationsPratiquesData,
   InformationsPratiquesValidation,
 } from '@app/web/features/structures/InformationsPratiquesValidation'
+import {
+  setDescriptionFields,
+  setInformationsGeneralesFields,
+  setInformationsPratiquesFields,
+  setModalitesAccesAuServiceFields,
+  setServicesEtAccompagnementFields,
+  setTypesDePublicsAccueillisFields,
+  setVisiblePourCartographieNationaleFields,
+} from '@app/web/features/structures/lieuInclusionDepuisSaisie'
 import {
   ModalitesAccesAuServiceData,
   ModalitesAccesAuServiceValidation,
@@ -50,102 +59,6 @@ const lieuActiviteToUpdate = async (input: { id: string }) => {
 
   return structure ?? null
 }
-
-const setInformationsGeneralesFields = ({
-  nom,
-  adresseBan,
-  lieuItinerant,
-  complementAdresse,
-  siret,
-  rna,
-  nomUsage,
-  typologies,
-}: Omit<InformationsGeneralesData, 'id'>) => ({
-  nom,
-  adresse: adresseBan.nom,
-  commune: adresseBan.commune,
-  codePostal: adresseBan.codePostal,
-  codeInsee: adresseBan.codeInsee,
-  latitude: adresseBan.latitude,
-  longitude: adresseBan.longitude,
-  itinerance:
-    lieuItinerant == null
-      ? []
-      : lieuItinerant
-        ? [Itinerance.Itinerant]
-        : [Itinerance.Fixe],
-  complementAdresse,
-  siret,
-  rna,
-  nomUsage: siret ? nomUsage : null,
-  typologies,
-})
-
-const setVisiblePourCartographieNationaleFields = ({
-  visiblePourCartographieNationale,
-}: Omit<VisiblePourCartographieNationaleData, 'id'>) => ({
-  visiblePourCartographieNationale,
-})
-
-const setInformationsPratiquesFields = ({
-  siteWeb,
-  ficheAccesLibre,
-  horaires,
-  priseRdv,
-}: Omit<InformationsPratiquesData, 'id'>) => ({
-  siteWeb: siteWeb ?? undefined,
-  ficheAccesLibre: ficheAccesLibre ?? undefined,
-  horaires: horaires ?? undefined,
-  priseRdv: priseRdv ?? undefined,
-})
-
-const setDescriptionFields = ({
-  presentationResume,
-  presentationDetail,
-  formationsLabels,
-}: Omit<DescriptionData, 'id'>) => ({
-  presentationResume: presentationResume ?? undefined,
-  presentationDetail: presentationDetail ?? undefined,
-  formationsLabels: formationsLabels ?? undefined,
-})
-
-const setServicesEtAccompagnementFields = ({
-  services,
-  modalitesAccompagnement,
-}: Omit<ServicesEtAccompagnementData, 'id'>) => ({
-  services: services ?? undefined,
-  modalitesAccompagnement: modalitesAccompagnement ?? undefined,
-})
-
-const setModalitesAccesAuServiceFields = ({
-  modalitesAcces,
-  fraisACharge,
-}: Omit<ModalitesAccesAuServiceData, 'id'>) => ({
-  telephone:
-    modalitesAcces?.parTelephone && modalitesAcces?.numeroTelephone != null
-      ? fixTelephone(modalitesAcces.numeroTelephone)
-      : null,
-  courriels:
-    modalitesAcces?.parMail && modalitesAcces?.adresseMail != null
-      ? [modalitesAcces.adresseMail]
-      : [],
-  modalitesAcces: modalitesAcces
-    ? [
-        modalitesAcces.surPlace ? ModaliteAcces.SePresenter : undefined,
-        modalitesAcces.parTelephone ? ModaliteAcces.Telephoner : undefined,
-        modalitesAcces.parMail ? ModaliteAcces.ContacterParMail : undefined,
-      ].filter(onlyDefinedAndNotNull)
-    : undefined,
-  fraisACharge: fraisACharge ?? undefined,
-})
-
-const setTypesDePublicsAccueillisFields = ({
-  priseEnChargeSpecifique,
-  publicsSpecifiquementAdresses,
-}: Omit<TypesDePublicsAccueillisData, 'id'>) => ({
-  priseEnChargeSpecifique: priseEnChargeSpecifique ?? undefined,
-  publicsSpecifiquementAdresses: publicsSpecifiquementAdresses ?? undefined,
-})
 
 export const lieuActiviteRouter = router({
   create: protectedProcedure

@@ -3,7 +3,7 @@ import {
   emptyOpeningHours,
 } from '@app/web/components/structure/fields/openingHoursHelpers'
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
-import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite/CreerLieuActiviteValidation'
+import { CreerLieuActiviteValidation } from '@app/web/features/structures/CreerLieuActiviteValidation'
 import type { OpeningHoursData } from '@app/web/features/structures/OpeningHoursValidation'
 import {
   fromTimetableOpeningHours,
