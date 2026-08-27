@@ -23,7 +23,6 @@ export type LieuAMaterialiser = {
   readonly commune: string
   readonly codePostal: string
   readonly codeInsee?: string | null
-  readonly siret?: string | null
   readonly latitude?: number | null
   readonly longitude?: number | null
 }
@@ -95,10 +94,9 @@ const distanceEnMetres = (
 
 /**
  * Deux points plus proches que cela, dans la même commune et sous des
- * dénominations qui correspondent, sont le même établissement : c'est la
- * largeur d'une parcelle, pas celle d'un quartier. Mesuré sur la base : à ce
- * seuil, les rapprochements gagnés sont des doublons manifestes, et aucun ne
- * heurte le veto SIRET.
+ * dénominations qui correspondent, sont le même endroit : c'est la largeur
+ * d'une parcelle, pas celle d'un quartier. Mesuré sur la base : à ce seuil, les
+ * rapprochements gagnés sont des doublons manifestes.
  */
 const memeEmplacementEnMetres = 50
 
@@ -139,65 +137,29 @@ type LieuCandidat = {
   readonly commune: string
   readonly codePostal: string
   readonly codeInsee: string | null
-  readonly siret: string | null
-  readonly synchronisationSiret: Date | null
   readonly suppression: Date | null
 }
 
 /**
- * Un SIRET n'a valeur de preuve que si l'on sait d'où il vient. Seuls font foi
- * ceux issus de l'API entreprise, de ProConnect, ou d'une structure
- * administrative du schéma `main` ; celui de la cartographie nationale, lui,
- * n'est pas fiable — c'est déjà la règle des imports.
+ * Le candidat désigne-t-il le même lieu ?
  *
- * En base, cette provenance se lit sur `synchronisationSiret` : la date n'est
- * posée qu'après confrontation à une source faisant foi (job `normalize-sirets`,
- * et matérialisation depuis l'annuaire ci-dessous). Un SIRET sans cette date ne
- * dit donc rien — ni pour rapprocher, ni pour distinguer.
- */
-const siretFiable = (candidat: LieuCandidat): string | null =>
-  candidat.synchronisationSiret === null ? null : candidat.siret
-
-const memeSiret = (
-  candidat: LieuCandidat,
-  lieu: LieuAMaterialiser,
-): boolean => {
-  const fiable = siretFiable(candidat)
-  return fiable != null && fiable === lieu.siret
-}
-
-/**
- * Deux SIRET renseignés et différents désignent deux établissements distincts,
- * quoi que disent les dénominations : « LA POSTE » ou « COMMUNE DE TOULON »
- * ouvrent plusieurs sites dans la même commune. Le SIRET a donc valeur de VETO —
- * s'y fier seulement quand il rapproche, et l'ignorer quand il sépare,
- * fusionnerait des antennes bien réelles.
- */
-const siretsDivergents = (
-  candidat: LieuCandidat,
-  lieu: LieuAMaterialiser,
-): boolean => {
-  const fiable = siretFiable(candidat)
-  return fiable != null && lieu.siret != null && fiable !== lieu.siret
-}
-
-/**
- * Le candidat désigne-t-il le même établissement ?
+ * Un lieu est un ENDROIT, et se reconnaît comme tel : la même commune, une
+ * dénomination qui correspond, une adresse qui concorde — au libellé près, ou
+ * à quelques dizaines de mètres près.
  *
- * - SIRET divergents : jamais, c'est le veto.
- * - Même SIRET : oui, c'est la preuve d'identité — l'adresse peut différer, elle
- *   a pu être corrigée.
- * - Sinon : la dénomination doit correspondre ET l'adresse aussi. Sans SIRET
- *   pour arbitrer, deux antennes homonymes dans la même commune ne se
- *   distinguent que par leur adresse ; s'en passer fusionnerait la nouvelle
- *   antenne dans l'ancienne et perdrait son adresse au passage.
+ * Le SIRET n'entre pas dans ce jugement, dans aucune des deux directions. Il
+ * identifie un établissement JURIDIQUE, ce qui n'est pas la même chose qu'un
+ * lieu : une association dont le siège est à Paris déclare légitimement ce
+ * SIRET pour son antenne de Nantes, et deux structures distinctes partagent
+ * l'adresse d'un même tiers-lieu. L'égalité de SIRET n'est donc ni nécessaire
+ * ni suffisante — et sa divergence ne prouve pas davantage deux endroits
+ * différents. Cela vaut quelle que soit la provenance de la valeur : le SIRET
+ * de l'API entreprise est exact, il ne dit simplement pas où l'on se trouve.
  */
 const designeLeMemeLieu = (
   candidat: LieuCandidat,
   lieu: LieuAMaterialiser,
 ): boolean => {
-  if (siretsDivergents(candidat, lieu)) return false
-  if (memeSiret(candidat, lieu)) return true
   if (!dansLaMemeCommune(candidat, lieu)) return false
 
   return (
@@ -207,18 +169,19 @@ const designeLeMemeLieu = (
 }
 
 /**
- * Corrélation forte : deux identités qui ne se confondent pas par hasard — même
- * SIRET, ou même dénomination (et non un simple nom contenu dans l'autre) à la
- * même adresse. Une corrélation faible suffit à rattacher un lieu actif sans
- * risque, mais pas à relever un lieu supprimé : le seuil pour défaire une
- * suppression doit être plus haut.
+ * Corrélation forte : deux identités qui ne se confondent pas par hasard — la
+ * même dénomination (et non un simple nom contenu dans l'autre) au même
+ * endroit. Une corrélation faible suffit à rattacher un lieu actif sans risque,
+ * mais pas à relever un lieu supprimé : le seuil pour défaire une suppression
+ * doit être plus haut.
+ *
+ * Le SIRET en est exclu comme il l'est de l'identité : il ne doit pas pouvoir
+ * défaire un acte de modération.
  */
 const correlationForte = (
   candidat: LieuCandidat,
   lieu: LieuAMaterialiser,
-): boolean =>
-  memeSiret(candidat, lieu) ||
-  normaliserNom(candidat.nom) === normaliserNom(lieu.nom)
+): boolean => normaliserNom(candidat.nom) === normaliserNom(lieu.nom)
 
 export type Correle = {
   readonly id: string
@@ -246,8 +209,8 @@ const meilleurCandidat = (
 
 /**
  * Sonde de corrélation : cherche dans la coop un lieu qui désigne le même
- * établissement que celui qu'on s'apprête à créer, pour s'y rattacher plutôt
- * que d'en créer un doublon.
+ * endroit que celui qu'on s'apprête à créer, pour s'y rattacher plutôt que d'en
+ * créer un doublon.
  *
  * Aucune identité ne relie les deux. Un lieu venu de la cartographie nationale
  * ou de l'annuaire des entreprises ne porte pas l'id du lieu coop qui lui
@@ -255,13 +218,14 @@ const meilleurCandidat = (
  * n'est posé qu'a posteriori par le job nightly de la carto, si bien qu'un lieu
  * créé dans la coop et publié depuis n'en a pas encore — et serait recréé.
  *
- * On corrèle donc sur ce qui désigne un établissement, dans la commune : son
- * SIRET s'il est de provenance sûre (cf. `siretFiable`) — qui vaut alors aussi
- * bien preuve d'identité que preuve de distinction —, sinon sa dénomination
- * À LA MÊME ADRESSE. Les dénominations se
- * comparent normalisées, parce que la même structure ne porte pas le même
- * libellé selon la source qui la décrit (« Mairie de Fleury » côté coop,
- * « COMMUNE DE FLEURY » côté annuaire).
+ * On corrèle donc sur ce qui désigne un ENDROIT : la dénomination, à la même
+ * adresse, dans la même commune. Les dénominations se comparent normalisées,
+ * parce que la même structure ne porte pas le même libellé selon la source qui
+ * la décrit (« Mairie de Fleury » côté coop, « COMMUNE DE FLEURY » côté
+ * annuaire).
+ *
+ * Le SIRET ne participe à aucun de ces jugements : il identifie une entité
+ * juridique, pas un endroit (cf. `designeLeMemeLieu`).
  *
  * En cas de doute on ne fusionne pas : un doublon se détecte
  * (`detect-duplicate-lieux`) et se répare (fusion de lieux), une fusion à tort
@@ -288,30 +252,14 @@ export const lieuCorrele = async (
     commune: true,
     codePostal: true,
     codeInsee: true,
-    siret: true,
-    synchronisationSiret: true,
     suppression: true,
   } as const
 
-  // Un SIRET fiable identifie un établissement à l'échelle nationale : il n'a
-  // pas à passer par le périmètre géographique, qui le manquerait dès que les
-  // deux fiches ne s'accordent pas sur la commune.
-  const parSiret = lieu.siret
-    ? await transaction.lieuInclusion.findMany({
-        where: { siret: lieu.siret, synchronisationSiret: { not: null } },
-        orderBy: { creation: 'asc' },
-        select: selection,
-      })
-    : []
-
-  const candidats =
-    parSiret.length > 0
-      ? parSiret
-      : await transaction.lieuInclusion.findMany({
-          where: auMemeEndroit(lieu),
-          orderBy: { creation: 'asc' },
-          select: selection,
-        })
+  const candidats = await transaction.lieuInclusion.findMany({
+    where: auMemeEndroit(lieu),
+    orderBy: { creation: 'asc' },
+    select: selection,
+  })
 
   const correles = candidats.filter((candidat) =>
     designeLeMemeLieu(candidat, lieu),

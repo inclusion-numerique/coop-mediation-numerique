@@ -61,8 +61,8 @@ sur l’id interne — seule identité certaine d’un lieu de la coop.
 Un lieu venu de la cartographie nationale ou de l’annuaire des entreprises ne
 porte pas l’id du lieu coop qui lui correspond, et l’id de cartographie
 nationale ne peut pas jouer ce rôle : le lieu créé dans la coop puis publié ne
-le porte pas encore. On corrèle donc sur ce qui désigne un établissement — son
-SIRET dans la commune, puis son nom.
+le porte pas encore. On corrèle donc sur ce qui désigne un ENDROIT — sa
+dénomination, à la même adresse, dans la même commune.
 
 ### Scenario: Un lieu de la carto que la coop connaît déjà est rattaché, pas recréé
 
@@ -77,7 +77,7 @@ SIRET dans la commune, puis son nom.
 
 * Given je suis un médiateur en cours d’inscription
 * And un lieu d’activité est disponible, identifié par son SIRET
-* When je renseigne un lieu de l’annuaire des entreprises portant ce SIRET
+* When je renseigne un lieu de l’annuaire des entreprises à la même adresse
 * Then l’étape lieux d’activité est franchie
 * And ce lieu est un de mes lieux d’activité actifs
 * And aucun autre lieu d’activité n’a été créé
@@ -115,8 +115,8 @@ rendre. La corrélation reste donc le dernier rempart.
 Rendre un lieu visible sur la cartographie nationale se décide ; le retirer aussi.
 Une suppression est un acte de modération. La ré-inscription ne doit jamais la
 défaire silencieusement : un lieu supprimé n'est relevé que sur corrélation forte
-(même SIRET, ou même dénomination à la même adresse), et il revient invisible de
-la cartographie — la visibilité se re-décide.
+(la même dénomination au même endroit — un SIRET n'y suffit pas), et il revient
+invisible de la cartographie — la visibilité se re-décide.
 
 ### Scenario: Un lieu supprimé, corrélé fortement, est relevé mais reste invisible
 
@@ -138,19 +138,10 @@ la cartographie — la visibilité se re-décide.
 ## Rule: Deux antennes d’une même enseigne restent deux lieux
 
 Une enseigne ouvre plusieurs sites dans une même commune : « LA POSTE » ou
-« COMMUNE DE TOULON » y ont plusieurs adresses, chacune son SIRET. Rapprocher un
-lieu de son homonyme sur le seul nom les fusionnerait et perdrait l’adresse du
-lieu absorbé. En cas de doute on ne fusionne pas : un doublon se détecte et se
-répare, une fusion à tort ne laisse aucune trace.
-
-### Scenario: Un SIRET différent interdit le rapprochement
-
-* Given je suis un médiateur en cours d’inscription
-* And un lieu d’activité est disponible, identifié par son SIRET
-* When je renseigne un lieu de l’annuaire des entreprises de même nom et même adresse, mais d’un autre SIRET
-* Then l’étape lieux d’activité est franchie
-* And un second lieu d’activité a été créé
-* And je n’ai qu’un seul lieu d’activité actif
+« COMMUNE DE TOULON » y ont plusieurs adresses. Ce qui les sépare est leur
+adresse. Rapprocher un lieu de son homonyme sur le seul nom les fusionnerait et
+perdrait l’adresse du lieu absorbé. En cas de doute on ne fusionne pas : un
+doublon se détecte et se répare, une fusion à tort ne laisse aucune trace.
 
 ### Scenario: Un homonyme à une autre adresse reste un lieu distinct
 
@@ -160,18 +151,22 @@ répare, une fusion à tort ne laisse aucune trace.
 * Then un second lieu d’activité a été créé
 * And je n’ai qu’un seul lieu d’activité actif
 
-## Rule: Un SIRET ne fait foi que si l’on sait d’où il vient
+## Rule: Le SIRET ne dit pas où l’on se trouve
 
-Seuls les SIRET issus de l’API entreprise, de ProConnect ou d’une structure
-administrative du schéma `main` sont fiables ; celui de la cartographie
-nationale ne l’est pas. En base, cette provenance se lit sur la date de
-vérification du SIRET : sans elle, le SIRET ne dit rien — ni pour rapprocher
-deux lieux, ni pour les distinguer.
+Un SIRET identifie une entité juridique, pas un endroit. Une association dont le
+siège est à Paris déclare légitimement ce SIRET pour son antenne de Nantes, et
+deux structures distinctes partagent l’adresse d’un même tiers-lieu. Son égalité
+ne prouve donc pas qu’il s’agit du même lieu, et sa divergence ne prouve pas
+qu’il s’agit de deux lieux — quelle que soit la provenance de la valeur : un
+SIRET exact, issu de l’API entreprise, reste muet sur l’endroit.
 
-### Scenario: Un SIRET non vérifié ne sépare pas deux lieux par ailleurs identiques
+Le SIRET n’entre donc dans aucun rapprochement de lieux. Il reste stocké sur le
+lieu, pour ce qu’il est : le renseignement d’une entité juridique.
+
+### Scenario: Un SIRET différent ne sépare pas deux lieux à la même adresse
 
 * Given je suis un médiateur en cours d’inscription
-* And un lieu d’activité est disponible, portant un SIRET de provenance inconnue
+* And un lieu d’activité est disponible, identifié par son SIRET
 * When je renseigne un lieu de l’annuaire des entreprises de même nom et même adresse, mais d’un autre SIRET
 * Then l’étape lieux d’activité est franchie
 * And ce lieu est un de mes lieux d’activité actifs

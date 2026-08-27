@@ -351,10 +351,12 @@ When(
 )
 
 When(
-  'je renseigne un lieu de l’annuaire des entreprises portant ce SIRET',
+  'je renseigne un lieu de l’annuaire des entreprises à la même adresse',
   async () => {
-    // L'annuaire rend une dénomination différente de celle enregistrée dans la
-    // coop : seul le SIRET permet de reconnaître le même établissement.
+    // L'annuaire rend une dénomination plus longue que celle enregistrée dans
+    // la coop (« … SAS ») : c'est la dénomination à la même adresse qui
+    // reconnaît l'endroit. Le SIRET voyage avec le lieu, mais ne rapproche
+    // rien — il désigne une entité juridique, pas un endroit.
     const resultat = await renseignerLieuxActivite({
       command: {
         userId: currentInscriptionUserId(),

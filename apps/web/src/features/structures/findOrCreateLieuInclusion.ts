@@ -32,52 +32,37 @@ export type FindOrCreateInput = {
   creationParId?: string | null
 }
 
-const findExistingBySiretOrNom = async ({
-  siret,
+/**
+ * Cherche un lieu existant au même endroit et sous une dénomination qui
+ * correspond.
+ *
+ * Le SIRET n'y participe pas, bien qu'il soit stocké sur le lieu. Il identifie
+ * une entité juridique, pas un endroit : une association dont le siège est à
+ * Paris déclare légitimement ce SIRET pour son antenne de Nantes, et deux
+ * structures peuvent partager l'adresse d'un tiers-lieu. La provenance de la
+ * valeur n'y change rien — un SIRET exact de l'API entreprise ne dit toujours
+ * pas où l'on se trouve.
+ *
+ * C'est pourquoi il n'y a plus de repli « même SIRET, n'importe quelle
+ * commune » : il fusionnait précisément les antennes d'un même réseau.
+ */
+const findExistingByNom = async ({
   nom,
   codeInsee,
 }: {
-  siret: string | null
   nom: string
   codeInsee: string
 }): Promise<{ id: string } | null> => {
-  const where = siret
-    ? { siret, codeInsee, suppression: null }
-    : { nom, codeInsee, suppression: null }
-
   const existing = await prismaClient.lieuInclusion.findFirst({
-    where,
+    where: { nom, codeInsee, suppression: null },
     select: { id: true, suppression: true },
     orderBy: { creation: 'desc' },
   })
 
-  if (existing) {
-    await undeleteStructureIfDeleted(
-      existing as { id: string; suppression: Date | null },
-    )
-    return existing
-  }
+  if (!existing) return null
 
-  // Fallback: same SIRET, any codeInsee, with contained name match.
-  // Handles codeInsee divergence between Dataspace and coop.
-  // The asymmetric-service-keyword check inside nomsCorrespondent prevents
-  // matching an EPN against its parent town hall (same SIRET, different role).
-  if (siret) {
-    const candidatesBySiret = await prismaClient.lieuInclusion.findMany({
-      where: { siret, suppression: null },
-      select: { id: true, nom: true, suppression: true },
-      orderBy: { creation: 'desc' },
-    })
-
-    const match = candidatesBySiret.find((s) => nomsCorrespondent(s.nom, nom))
-
-    if (match) {
-      await undeleteStructureIfDeleted(match)
-      return match
-    }
-  }
-
-  return null
+  await undeleteStructureIfDeleted(existing)
+  return existing
 }
 
 const undeleteStructureIfDeleted = async ({
@@ -103,12 +88,11 @@ const undeleteStructureIfDeleted = async ({
  * 1. Find existing Structure by coopId (surest match)
  * 2. Geocode the address once (BAN) to resolve a canonical codeInsee used by
  *    every lookup below AND by the final create (kept symmetric on purpose)
- * 3. Find existing Structure by SIRET + resolved codeInsee
- * 4. Find existing Structure by nom + resolved codeInsee (if no SIRET)
- * 5. Fallback: create from the geocoded address (or raw fields if geocoding failed)
+ * 3. Find existing Structure by nom + resolved codeInsee
+ * 4. Fallback: create from the geocoded address (or raw fields if geocoding failed)
  *
- * Note : on n'importe plus de structure depuis la cartographie nationale par SIRET
- * (le SIRET de la carto n'est pas fiable, seule l'API entreprise fait foi).
+ * Note : le SIRET ne sert à AUCUN rapprochement, quelle que soit sa provenance —
+ * il identifie une entité juridique, pas un endroit (cf. `findExistingByNom`).
  * This is reusable for both V1 imports and Dataspace imports.
  */
 export const findOrCreateLieuInclusion = async ({
@@ -144,7 +128,7 @@ export const findOrCreateLieuInclusion = async ({
   // Normalize codeInsee via BAN so lookups use the same value stored on
   // creation. The Dataspace payload sometimes carries a codeInsee variant
   // (siège vs antenne) that diverges from the geocoded one, which made the
-  // exact (siret, codeInsee) lookup miss an existing active structure and
+  // exact (nom, codeInsee) lookup miss an existing active structure and
   // recreate a duplicate. Geocode once here and reuse it for the final create.
   const fullAdresse = `${adresse}, ${codePostal} ${commune}`
   const adresseResult = await searchAdresse(fullAdresse)
@@ -158,71 +142,40 @@ export const findOrCreateLieuInclusion = async ({
     banData && sameDepartement(banData.codeInsee, codeInsee) ? banData : null
   const resolvedCodeInsee = trustedBanData?.codeInsee ?? codeInsee
 
-  // Step 1: Find existing Structure by SIRET + codeInsee
-  if (siret) {
-    const existingStructure = await prismaClient.lieuInclusion.findFirst({
-      where: {
-        siret,
-        codeInsee: resolvedCodeInsee,
-        suppression: null,
-      },
-      select: {
-        id: true,
-        suppression: true,
-      },
-      orderBy: [
-        {
-          suppression: {
-            sort: 'desc',
-            nulls: 'last',
-          },
+  // Step 1: Find existing Structure by nom + resolved codeInsee.
+  // Le SIRET ne rapproche rien : cette étape en cherchait un identique dans la
+  // commune et concluait à l'identité SANS regarder la dénomination, ce qui
+  // confondait deux implantations d'une même structure.
+  const existingByNom = await prismaClient.lieuInclusion.findFirst({
+    where: {
+      nom,
+      codeInsee: resolvedCodeInsee,
+    },
+    select: {
+      id: true,
+      suppression: true,
+    },
+    orderBy: [
+      {
+        suppression: {
+          sort: 'desc',
+          nulls: 'last',
         },
-        {
-          creation: 'desc',
-        },
-      ],
-    })
+      },
+      {
+        creation: 'desc',
+      },
+    ],
+  })
 
-    if (existingStructure) {
-      await undeleteStructureIfDeleted(existingStructure)
-      return existingStructure
-    }
-  }
-
-  // Step 2: Try to find existing structure by nom if no siret
-  if (!siret) {
-    const existingByNom = await prismaClient.lieuInclusion.findFirst({
-      where: {
-        nom,
-        codeInsee: resolvedCodeInsee,
-      },
-      select: {
-        id: true,
-        suppression: true,
-      },
-      orderBy: [
-        {
-          suppression: {
-            sort: 'desc',
-            nulls: 'last',
-          },
-        },
-        {
-          creation: 'desc',
-        },
-      ],
-    })
-
-    if (existingByNom) {
-      await undeleteStructureIfDeleted(existingByNom)
-      return existingByNom
-    }
+  if (existingByNom) {
+    await undeleteStructureIfDeleted(existingByNom)
+    return existingByNom
   }
 
   // Step 3: Fallback - reuse the geocoded address (already fetched) and create
   // Guard: re-check before creating to prevent duplicates
-  const existingGuard = await findExistingBySiretOrNom({
-    siret,
+  const existingGuard = await findExistingByNom({
     nom,
     codeInsee: resolvedCodeInsee,
   })

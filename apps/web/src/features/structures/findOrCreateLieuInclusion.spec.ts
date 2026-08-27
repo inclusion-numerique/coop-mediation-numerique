@@ -84,13 +84,33 @@ describe('findOrCreateLieuInclusion', () => {
     expect(structure.findFirst).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
-          siret: mayenne.siret,
+          nom: mayenne.nom,
           codeInsee: '53000',
-          suppression: null,
         }),
       }),
     )
     expect(structure.create).not.toHaveBeenCalled()
+  })
+
+  test('ne rapproche jamais par SIRET : deux implantations d’un même réseau restent deux lieux', async () => {
+    // L'antenne porte légitimement le SIRET du siège. Aucune recherche ne doit
+    // s'appuyer dessus, sans quoi elle serait absorbée dans le lieu du siège.
+    mockedSearchAdresse.mockResolvedValue(featureWithCitycode('44109'))
+
+    await findOrCreateLieuInclusion({
+      ...mayenne,
+      nom: 'ANTENNE DE NANTES',
+      commune: 'NANTES',
+      codePostal: '44000',
+      codeInsee: '44109',
+    })
+
+    for (const [{ where }] of structure.findFirst.mock.calls)
+      expect(where).not.toHaveProperty('siret')
+    for (const [{ where }] of structure.findMany.mock.calls)
+      expect(where).not.toHaveProperty('siret')
+
+    expect(structure.create).toHaveBeenCalled()
   })
 
   test('creates from the geocoded address (single BAN call) when nothing matches', async () => {
