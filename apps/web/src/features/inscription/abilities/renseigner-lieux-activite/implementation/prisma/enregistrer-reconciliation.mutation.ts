@@ -84,7 +84,20 @@ const lieuARattacher = async (
   lieu: LieuActiviteInput,
   structuresCartoParId: ReadonlyMap<string, CartoStructure>,
 ): Promise<{ readonly id: string }> => {
-  if (lieu.id) return { id: lieu.id }
+  // L'id vient de l'écran, donc du client : le prendre au mot rattacherait le
+  // médiateur à n'importe quel lieu par son uuid, y compris un lieu supprimé —
+  // exactement ce que la branche carto ci-dessous refuse. Un id qui ne désigne
+  // plus un lieu vivant retombe sur la matérialisation ordinaire, où la sonde
+  // décide seule s'il y a lieu de relever le lieu retiré.
+  const designe =
+    lieu.id === null || lieu.id === undefined
+      ? null
+      : await transaction.lieuInclusion.findFirst({
+          where: { id: lieu.id, suppression: null },
+          select: { id: true },
+        })
+
+  if (designe) return designe
 
   if (!lieu.structureCartographieNationaleId)
     return materialiser(transaction, lieuInclusionDepuisAdresse(lieu))
