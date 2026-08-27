@@ -6,6 +6,7 @@ import type {
 // forme que celle consommée par le module partagé `structure/`.
 import type { CartoStructure } from '@app/web/features/lieux-activite/use-cases/ajouter/domain'
 import type { CreerLieuActiviteData } from '@app/web/features/structures/CreerLieuActiviteValidation'
+import type { MediateurId } from './mediateur-id'
 import type { LieuActiviteExistant, LieuActiviteInput } from './reconcilier'
 
 /** Lit les activités en cours de l'utilisateur (pour la réconciliation). */
@@ -41,6 +42,14 @@ export type EnregistrerReconciliation = (input: {
  */
 export type CreerLieuActivite = (input: {
   readonly userId: UserId
-  readonly mediateurId: string
+  readonly mediateurId: MediateurId
   readonly saisie: CreerLieuActiviteData
 }) => Promise<{ readonly id: string }>
+
+/**
+ * Résout le profil médiateur de l'utilisateur. Un lieu d'activité ne se
+ * rattache qu'à soi-même : le médiateur se dérive de l'acteur authentifié au
+ * lieu d'être fourni par l'appelant, sans quoi l'invariant ne tiendrait qu'à la
+ * discipline de ce dernier.
+ */
+export type MediateurFromUser = (userId: UserId) => Promise<MediateurId | null>

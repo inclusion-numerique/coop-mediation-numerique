@@ -13,13 +13,7 @@ export const creerLieuActiviteAction = actionBuilder()
   .execute(
     fromResult(
       async ({ user, input }) =>
-        creerLieuActivite({
-          userId: UserId(user.id),
-          // Le médiateur vient de l'authentification : on ne rattache un lieu
-          // qu'à soi-même.
-          mediateurId: user.mediateur?.id ?? null,
-          saisie: input,
-        }),
+        creerLieuActivite({ userId: UserId(user.id), saisie: input }),
       { onError: CREER_LIEU_ACTIVITE_ERRORS },
     ),
   )

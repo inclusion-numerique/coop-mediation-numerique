@@ -84,21 +84,12 @@ const creerEtRattacher = async (
 ) => {
   const resultat = await creerLieuActivite({
     userId: currentInscriptionUserId(),
-    mediateurId: await mediateurIdCourant(),
     saisie,
   })
   assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
   trackLieuActivite(resultat.data.id)
   return resultat.data.id
 }
-
-const mediateurIdCourant = async () =>
-  (
-    await prismaClient.mediateur.findFirstOrThrow({
-      where: { userId: currentInscriptionUserId() },
-      select: { id: true },
-    })
-  ).id
 
 const activitesActivesPour = (structureId: string) =>
   prismaClient.mediateurEnActivite.findMany({
@@ -476,7 +467,6 @@ When(
     nomDuNouveauLieu = nomDuLieuDisponible
     const resultat = await creerLieuActivite({
       userId: currentInscriptionUserId(),
-      mediateurId: await mediateurIdCourant(),
       saisie: saisieDeCreation(nomDuLieuDisponible, {
         adresse: '99 avenue Ailleurs',
         codeInsee: '75102',
@@ -623,7 +613,6 @@ When('je crée un lieu d’activité que la coop ignore', async () => {
   nomDuNouveauLieu = `Tiers-lieu ${v4()}`
   const resultat = await creerLieuActivite({
     userId: currentInscriptionUserId(),
-    mediateurId: await mediateurIdCourant(),
     saisie: saisieDeCreation(nomDuNouveauLieu),
   })
   assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
@@ -634,7 +623,6 @@ When('je crée un lieu d’activité que la coop ignore', async () => {
 When('je crée un lieu d’activité identique à ce lieu retiré', async () => {
   const resultat = await creerLieuActivite({
     userId: currentInscriptionUserId(),
-    mediateurId: await mediateurIdCourant(),
     saisie: saisieDeCreation(nomDuNouveauLieu),
   })
   assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
@@ -647,7 +635,6 @@ When(
   async () => {
     const resultat = await creerLieuActivite({
       userId: currentInscriptionUserId(),
-      mediateurId: await mediateurIdCourant(),
       saisie: saisieDeCreation(`${nomDuNouveauLieu} Annexe`, {
         adresse: '99 avenue Ailleurs',
         codeInsee: '75102',
@@ -664,7 +651,6 @@ When(
   async () => {
     const resultat = await creerLieuActivite({
       userId: currentInscriptionUserId(),
-      mediateurId: await mediateurIdCourant(),
       saisie: saisieDeCreation(
         `COMMUNE DE ${communeDuLieuDisponible}`.toUpperCase(),
       ),
