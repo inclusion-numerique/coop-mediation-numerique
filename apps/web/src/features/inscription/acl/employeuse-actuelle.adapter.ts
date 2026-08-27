@@ -65,3 +65,21 @@ export type EmployeuseActuelleAdaptee = NonNullable<
 >
 
 export type EmployeuseAffichee = EmployeuseActuelleAdaptee['structure']
+
+/**
+ * L'identifiant seul de l'employeuse actuelle — ce que demandent les abilities
+ * qui agissent sur elle, par opposition aux écrans qui l'affichent.
+ *
+ * Même lecture, même frontière : l'`id` est l'entier
+ * `main.structure_administrative.id`.
+ */
+export const employeuseActuelleId = async ({
+  userId,
+}: {
+  userId: string
+}): Promise<number | null> => {
+  const employeuseActuelle = await consulterEmployeuseActuelle({ userId })
+  if (!employeuseActuelle) return null
+
+  return employeuseActuelleAffichage(employeuseActuelle).id
+}

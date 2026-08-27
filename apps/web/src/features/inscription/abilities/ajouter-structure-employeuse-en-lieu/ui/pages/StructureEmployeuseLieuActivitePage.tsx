@@ -32,7 +32,6 @@ const StructureEmployeuseLieuActivitePage = ({
     try {
       setSubmittedEstLieuActivite(estLieuActivite)
       const result = await ajouterStructureEmployeuseEnLieuAction({
-        structureEmployeuseId: structureEmployeuse.id,
         estLieuActivite,
       })
 

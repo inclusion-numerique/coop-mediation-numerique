@@ -1,14 +1,14 @@
 import { z } from 'zod'
 
 /**
- * Contrat d'input de la server action : l'identifiant de l'employeuse et le
- * choix Oui/Non. L'utilisateur vient de l'authentification, pas de l'input.
+ * Contrat d'input de la server action : le seul choix Oui/Non.
  *
- * L'identifiant est l'entier `main.structure_administrative.id` — c'est ce que
- * l'écran reçoit depuis la lecture employeuse, et non un uuid coop.
+ * Ni l'utilisateur ni son employeuse ne viennent de l'input — le premier de
+ * l'authentification, la seconde de la lecture serveur qui en découle. L'écran
+ * affiche l'employeuse, il ne la désigne pas : la lui faire renvoyer
+ * reviendrait à laisser le client choisir la structure à matérialiser.
  */
 export const StructureEmployeuseLieuValidation = z.object({
-  structureEmployeuseId: z.number().int().positive(),
   estLieuActivite: z.boolean(),
 })
 

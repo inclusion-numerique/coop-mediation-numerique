@@ -157,6 +157,47 @@ export const seedEmployeuseMain = async (
 }
 
 /**
+ * Rattache un utilisateur à une employeuse `main` par le chemin que lit la
+ * production : `coop.users → main.personne` (par `coop_id`) → affectation
+ * active. Sans lui, l'employeuse existe mais n'est celle de personne — et les
+ * abilities qui la dérivent de l'acteur ne trouvent rien.
+ *
+ * Idempotent des deux côtés : un utilisateur peut être rattaché à plusieurs
+ * employeuses, et deux scénarios peuvent rejouer le même rattachement.
+ */
+export const rattacherAEmployeuseMain = async ({
+  userId,
+  structureAdministrativeId,
+}: {
+  userId: string
+  structureAdministrativeId: number
+}): Promise<void> => {
+  const personne = await prismaClient.personneMain.upsert({
+    where: { coopId: userId },
+    create: { coopId: userId },
+    update: {},
+    select: { id: true },
+  })
+
+  await prismaClient.personneAffectationEmploiMain.upsert({
+    where: {
+      personneId_structureAdministrativeId_source: {
+        personneId: personne.id,
+        structureAdministrativeId,
+        source: 'coop',
+      },
+    },
+    create: {
+      personneId: personne.id,
+      structureAdministrativeId,
+      source: 'coop',
+      estActive: true,
+    },
+    update: { estActive: true },
+  })
+}
+
+/**
  * Médiateur tiers rattaché à la même employeuse : de quoi vérifier qu'un lieu
  * matérialisé depuis une employeuse est partagé, et non recréé par collègue.
  */
@@ -200,6 +241,12 @@ After(async () => {
   await prismaClient.coordinateur.deleteMany({
     where: { userId: { in: userIds } },
   })
+  await prismaClient.personneAffectationEmploiMain.deleteMany({
+    where: { personne: { coopId: { in: userIds } } },
+  })
+  await prismaClient.personneMain.deleteMany({
+    where: { coopId: { in: userIds } },
+  })
   await prismaClient.user.deleteMany({ where: { id: { in: userIds } } })
   await prismaClient.structureAdministrative.deleteMany({
     where: { id: { in: [...trackedStructureEmployeuseIds] } },
@@ -221,9 +268,6 @@ After(async () => {
   })
   await prismaClient.personneAffectationEmploiMain.deleteMany({
     where: { structureAdministrativeId: { in: [...trackedEmployeuseMainIds] } },
-  })
-  await prismaClient.personneMain.deleteMany({
-    where: { coopId: { in: userIds } },
   })
   await prismaClient.structureAdministrativeMain.deleteMany({
     where: { id: { in: [...trackedEmployeuseMainIds] } },

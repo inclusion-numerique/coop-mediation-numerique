@@ -1,9 +1,9 @@
 import assert from 'node:assert'
-import { EmployeuseId } from '@app/web/features/inscription/abilities/ajouter-structure-employeuse-en-lieu'
 import { ajouterStructureEmployeuseEnLieu } from '@app/web/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/commands/ajouter-structure-employeuse-en-lieu'
 import type { UserId } from '@app/web/features/inscription/domain'
 import {
   currentInscriptionUserId,
+  rattacherAEmployeuseMain,
   seedCollegueMediateur,
   seedEmployeuseMain,
   seedLieuActivite,
@@ -25,12 +25,13 @@ Before(() => {
   collegueUserId = null
 })
 
-const declarerPour = (userId: UserId) => (estLieuActivite: boolean) =>
-  ajouterStructureEmployeuseEnLieu({
+const declarerPour = (userId: UserId) => async (estLieuActivite: boolean) => {
+  const resultat = await ajouterStructureEmployeuseEnLieu({
     userId,
-    structureEmployeuseId: EmployeuseId(structureEmployeuseId),
     estLieuActivite,
   })
+  assert.ok(resultat.success, 'La déclaration aurait dû aboutir')
+}
 
 const declarer = (estLieuActivite: boolean) =>
   declarerPour(currentInscriptionUserId())(estLieuActivite)
@@ -43,6 +44,10 @@ Given('je suis médiateur', async () => {
 
 Given('j’ai une structure employeuse', async () => {
   structureEmployeuseId = await seedEmployeuseMain({ nom: nomEmployeuse })
+  await rattacherAEmployeuseMain({
+    userId: currentInscriptionUserId(),
+    structureAdministrativeId: structureEmployeuseId,
+  })
 })
 
 Given(
@@ -71,6 +76,10 @@ Given('j’ai une structure employeuse dénommée comme une mairie', async () =>
   const commune = v4()
   structureEmployeuseId = await seedEmployeuseMain({
     nom: `Mairie de ${commune}`,
+  })
+  await rattacherAEmployeuseMain({
+    userId: currentInscriptionUserId(),
+    structureAdministrativeId: structureEmployeuseId,
   })
   lieuConnuId = ''
   collegueUserId = null
@@ -119,6 +128,10 @@ Then('ce lieu n’a pas été recréé', async () => {
 
 Given('un collègue partage ma structure employeuse', async () => {
   collegueUserId = await seedCollegueMediateur()
+  await rattacherAEmployeuseMain({
+    userId: collegueUserId,
+    structureAdministrativeId: structureEmployeuseId,
+  })
 })
 
 When(

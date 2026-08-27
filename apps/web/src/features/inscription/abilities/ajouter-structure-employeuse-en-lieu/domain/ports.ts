@@ -24,3 +24,13 @@ export type DelierStructureEmployeuseEnLieu = (input: {
   readonly userId: UserId
   readonly structureEmployeuseId: EmployeuseId
 }) => Promise<void>
+
+/**
+ * Résout l'employeuse actuelle de l'utilisateur. Le « Oui/Non » ne porte que
+ * sur sa propre employeuse : l'identifiant se dérive de l'acteur au lieu d'être
+ * accepté de l'appelant, faute de quoi n'importe quelle structure
+ * administrative pourrait être matérialisée en lieu et rattachée à son compte.
+ */
+export type LireEmployeuseActuelle = (
+  userId: UserId,
+) => Promise<EmployeuseId | null>
