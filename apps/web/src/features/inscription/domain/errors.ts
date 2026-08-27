@@ -64,13 +64,3 @@ export const EtapeNonAtteinte = (
   etapeRequise,
   etapeCourante,
 })
-
-export type MediateurIntrouvable = {
-  readonly _tag: 'MediateurIntrouvable'
-  readonly userId: UserId
-}
-
-export const MediateurIntrouvable = (userId: UserId): MediateurIntrouvable => ({
-  _tag: 'MediateurIntrouvable',
-  userId,
-})

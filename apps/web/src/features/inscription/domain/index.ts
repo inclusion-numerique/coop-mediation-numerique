@@ -9,7 +9,6 @@ export {
   InscriptionDejaValidee,
   InscriptionForbidden,
   InscriptionIntrouvable,
-  MediateurIntrouvable,
   ProfilNonChoisi,
 } from './errors'
 export {
