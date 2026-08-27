@@ -154,6 +154,7 @@ const creerActivite = async (
       mediateur: { connect: { userId } },
       lieuInclusion: { connect: { id: structureId } },
       debut: new Date(),
+      creationPar: { connect: { id: userId } },
     },
   })
 }
