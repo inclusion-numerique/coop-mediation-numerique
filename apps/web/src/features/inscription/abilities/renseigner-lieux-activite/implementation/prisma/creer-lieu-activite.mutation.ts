@@ -1,9 +1,7 @@
-import type { UserId } from '@app/web/features/inscription/domain'
 import {
   lieuCorrele,
   preparerCorrele,
 } from '@app/web/features/inscription/implementation/prisma/lieu-correle'
-import type { CreerLieuActiviteData } from '@app/web/features/structures/CreerLieuActiviteValidation'
 import { lieuInclusionDepuisSaisie } from '@app/web/features/structures/lieuInclusionDepuisSaisie'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
