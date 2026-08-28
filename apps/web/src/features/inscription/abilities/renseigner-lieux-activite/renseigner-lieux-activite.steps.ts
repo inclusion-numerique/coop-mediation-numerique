@@ -30,6 +30,7 @@ const adresseDuLieuDisponible = {
   adresse: '1 rue de la Paix',
   commune: 'Paris',
   codePostal: '75001',
+  codeInsee: '75101',
 }
 
 /**

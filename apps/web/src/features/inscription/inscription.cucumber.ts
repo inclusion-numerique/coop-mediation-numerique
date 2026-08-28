@@ -2,6 +2,7 @@ import type { ProfilInscription } from '@app/web/features/inscription/domain'
 import { UserId } from '@app/web/features/inscription/domain'
 import { prismaClient } from '@app/web/prismaClient'
 import { After, Before, setDefaultTimeout } from '@cucumber/cucumber'
+import type { Typologie } from '@prisma/client'
 import { v4 } from 'uuid'
 
 setDefaultTimeout(60_000)
@@ -24,10 +25,17 @@ const trackedEmployeuseMainNoms = new Set<string>()
 // suivis à part, le nettoyage ne connaissant sinon que l'utilisateur courant.
 const trackedAutresUserIds = new Set<string>()
 
+/**
+ * Toute adresse de la coop vient de l'API adresse, qui rend systématiquement un
+ * code INSEE — aucun des 12 477 lieux de la base n'en est dépourvu. Les fixtures
+ * le portent donc aussi : c'est par lui, et lui seul, que se ratissent les
+ * candidats à la corrélation.
+ */
 const adresseDeTest = {
   adresse: '1 rue de la Paix',
   commune: 'Paris',
   codePostal: '75001',
+  codeInsee: '75101',
 }
 
 export const currentInscriptionUserId = (): UserId => UserId(inscriptionUserId)
@@ -87,6 +95,7 @@ export const seedLieuActivite = async (
     structureCartographieNationaleId?: string | null
     visiblePourCartographieNationale?: boolean
     supprime?: boolean
+    typologies?: Typologie[]
     adresse?: {
       adresse: string
       commune: string
@@ -109,6 +118,10 @@ export const seedLieuActivite = async (
       visiblePourCartographieNationale:
         data.visiblePourCartographieNationale ?? false,
       suppression: data.supprime ? now : null,
+      // Les écrans de création imposent au moins une typologie : un lieu de la
+      // coop en porte toujours une, et la corrélation compare des typologies
+      // déclarées de part et d'autre.
+      typologies: data.typologies ?? ['ASSO'],
       ...(data.adresse ?? adresseDeTest),
       ...(data.position ?? {}),
     },

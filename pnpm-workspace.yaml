@@ -18,6 +18,9 @@ packages:
 # préférer une exclusion ciblée ci-dessous.
 minimumReleaseAge: 21600
 minimumReleaseAgeExclude:
+  # Bibliothèque du standard, publiée par nos soins depuis notre CI avec attestation de
+  # provenance : la quarantaine protège d'une publication compromise en amont, pas de la nôtre.
+  - "@gouvfr-anct/lieux-de-mediation-numerique"
   - typescript
   # TypeScript 7 distribue son compilateur natif dans des paquets par plateforme, tirés par
   # `typescript@next` (tag mobile republié chaque nuit) via downlevel-dts -> jsii -> cdktf-cli.

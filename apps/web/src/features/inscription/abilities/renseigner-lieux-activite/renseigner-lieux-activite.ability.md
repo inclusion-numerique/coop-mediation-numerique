@@ -210,21 +210,28 @@ diffusibles ne sont pas le même : les rapprocher les fusionnerait tous.
 * Then un second lieu d’activité a été créé
 * And je n’ai qu’un seul lieu d’activité actif
 
-## Rule: Une adresse absente ne distingue pas deux lieux
+## Rule: Un lieu que rien ne situe n’est reconnu par personne
 
 Une employeuse de `main` sans adresse, un établissement non diffusible, un
-payload de cartographie incomplet : l’adresse manque des deux côtés. Elle ne
-départage alors rien, et le nom dans la commune reprend la main — sinon chaque
-déclaration ajouterait une ligne. Mais une adresse absente d’un seul côté ne se
-compare à rien : ce n’est pas une concordance.
+payload de cartographie incomplet : l’adresse manque, et les coordonnées avec.
+Plus rien ne dit OÙ, et un lieu est un endroit — une commune compte plusieurs
+« Association Trait d’Union ». La dénomination seule ne suffit donc pas, et deux
+fiches que rien ne situe restent distinctes.
 
-### Scenario: Deux lieux sans adresse, de même nom dans la commune, n’en font qu’un
+C’est un doublon assumé : il se détecte et se répare, là où un rapprochement à
+tort rattache quelqu’un à l’établissement d’un autre. Trois lieux de la coop sur
+12 489 sont dans ce cas.
+
+Dès qu’un des deux signaux revient — une adresse comparable ou des coordonnées —
+la reconnaissance opère de nouveau.
+
+### Scenario: Deux lieux que rien ne situe restent distincts
 
 * Given je suis un médiateur en cours d’inscription
 * And un lieu d’activité sans adresse est disponible
 * When je crée un lieu d’activité de même nom, sans adresse
-* Then ce lieu est un de mes lieux d’activité actifs
-* And je n’ai qu’un seul lieu d’activité actif
+* Then le lieu créé est un de mes lieux d’activité actifs
+* And un second lieu d’activité a été créé
 
 ### Scenario: Une adresse absente d’un seul côté ne vaut pas concordance
 

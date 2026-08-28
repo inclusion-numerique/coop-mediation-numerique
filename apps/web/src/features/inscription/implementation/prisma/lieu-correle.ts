@@ -14,14 +14,20 @@ export type { Correle, LieuAMaterialiser }
  * structure employeuse comme lieu. D'où sa place au niveau feature.
  *
  * Elle n'a plus la charge de RECONNAÎTRE un lieu — c'est
- * `libraries/lieu-identite`, pur et testé par valeur. Il lui reste ce qui
- * touche la base : ratisser, lire, et relever.
+ * `libraries/lieu-identite`, qui s'en remet au standard partagé. Il lui reste ce
+ * qui touche la base : ratisser, lire, et relever.
  */
 
 /**
- * Ratissage : tout ce qui partage le code INSEE ou le code postal. Volontairement
- * large — c'est `dansLaMemeCommune` qui resserre ensuite, sur des libellés que
- * SQL ne sait pas comparer (accents).
+ * Ratissage : le code INSEE ou le code postal.
+ *
+ * L'égalité stricte des codes INSEE ne suffit pas, et c'est tout l'intérêt du
+ * standard : Paris, Lyon et Marseille sont désignées tantôt par le code de la
+ * commune (75056), tantôt par celui de l'arrondissement (75101). Le standard les
+ * réunit — encore faut-il que SQL ait présenté le candidat. Ratisser sur le seul
+ * code INSEE les manquerait.
+ *
+ * Le code postal élargit donc la moisson ; `memeCommune` resserre ensuite.
  */
 const auMemeEndroit = ({ codeInsee, codePostal }: LieuAMaterialiser) => ({
   OR: [...(codeInsee ? [{ codeInsee }] : []), { codePostal }],
@@ -39,13 +45,14 @@ const auMemeEndroit = ({ codeInsee, codePostal }: LieuAMaterialiser) => ({
  * créé dans la coop et publié depuis n'en a pas encore — et serait recréé.
  *
  * On corrèle donc sur ce qui désigne un ENDROIT : la dénomination, à la même
- * adresse, dans la même commune. Les dénominations se comparent normalisées,
- * parce que la même structure ne porte pas le même libellé selon la source qui
- * la décrit (« Mairie de Fleury » côté coop, « COMMUNE DE FLEURY » côté
- * annuaire).
+ * adresse, dans la même commune. Le jugement appartient au standard
+ * `@gouvfr-anct/lieux-de-mediation-numerique`, partagé avec la cartographie
+ * nationale — les dénominations y sont normalisées, parce que la même structure
+ * ne porte pas le même libellé selon la source qui la décrit (« Mairie de
+ * Fleury » côté coop, « COMMUNE DE FLEURY » côté annuaire).
  *
  * Le SIRET ne participe à aucun de ces jugements : il identifie une entité
- * juridique, pas un endroit (cf. `designeLeMemeLieu`).
+ * juridique, pas un endroit.
  *
  * En cas de doute on ne fusionne pas : un doublon se détecte
  * (`detect-duplicate-lieux`) et se répare (fusion de lieux), une fusion à tort
@@ -73,7 +80,17 @@ export const lieuCorrele = async (
     codePostal: true,
     codeInsee: true,
     suppression: true,
+    // Sans elle, on opposerait la typologie DÉCLARÉE du lieu saisi à celle que le
+    // standard DÉDUIT du nom du candidat — « Mairie de Fleury » rendrait MUNI, et
+    // toute saisie déclarée autrement serait écartée à tort.
+    typologies: true,
   } as const
+
+  // Sans code INSEE, le standard ne reconnaîtra aucun candidat comme d'une même
+  // commune : on s'arrête avant la requête. Le cas ne se présente pas en
+  // production — les adresses viennent de l'API adresse, qui en rend toujours un,
+  // et aucun des 12 477 lieux de la base n'en est dépourvu.
+  if (!lieu.codeInsee) return null
 
   const candidats = await transaction.lieuInclusion.findMany({
     where: auMemeEndroit(lieu),

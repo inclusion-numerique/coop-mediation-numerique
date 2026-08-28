@@ -1,6 +1,5 @@
 import { searchAdresse } from '@app/web/external-apis/apiAdresse'
 import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
-import { nomsCorrespondent } from '@app/web/libraries/nom-etablissement'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'
 

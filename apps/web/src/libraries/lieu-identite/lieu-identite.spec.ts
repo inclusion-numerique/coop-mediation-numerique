@@ -120,15 +120,28 @@ describe('correler', () => {
       expect(correler([candidat()], deuxCentsMetresPlusLoin)).toBeNull()
     })
 
-    it('sans coordonnées des deux côtés, seule l’égalité du libellé rapproche', () => {
+    it('sans coordonnées, deux adresses franchement différentes ne rapprochent pas', () => {
       const sansCoordonnees = candidat({ latitude: null, longitude: null })
-      const autreLibelle = lieu({
-        adresse: 'PL DE LA PAIX',
+      const ailleurs = lieu({
+        adresse: '254 avenue du Général Leclerc',
         latitude: null,
         longitude: null,
       })
 
-      expect(correler([sansCoordonnees], autreLibelle)).toBeNull()
+      expect(correler([sansCoordonnees], ailleurs)).toBeNull()
+    })
+
+    it('sans coordonnées, deux écritures d’une même adresse rapprochent', () => {
+      const sansCoordonnees = candidat({ latitude: null, longitude: null })
+      const memeVoieAutreEcriture = lieu({
+        adresse: 'RUE DE LA PAIX',
+        latitude: null,
+        longitude: null,
+      })
+
+      expect(correler([sansCoordonnees], memeVoieAutreEcriture)).toMatchObject({
+        id: 'candidat-1',
+      })
     })
   })
 
@@ -151,10 +164,19 @@ describe('correler', () => {
       ).toMatchObject({ id: 'candidat-1' })
     })
 
-    it('ne rapproche pas quand une seule des deux adresses manque', () => {
+    it('une adresse manquante ne sépare pas deux lieux au même point', () => {
       const nonDiffusible = candidat({ adresse: '[Non diffusible]' })
 
-      expect(correler([nonDiffusible], lieu())).toBeNull()
+      expect(correler([nonDiffusible], lieu())).toMatchObject({
+        id: 'candidat-1',
+      })
+    })
+
+    it('une adresse manquante ne rapproche pas deux points distants', () => {
+      const nonDiffusible = candidat({ adresse: '[Non diffusible]' })
+      const troisCentsMetresPlusLoin = lieu({ latitude: 48.8717 })
+
+      expect(correler([nonDiffusible], troisCentsMetresPlusLoin)).toBeNull()
     })
   })
 

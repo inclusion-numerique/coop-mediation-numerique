@@ -158,8 +158,8 @@ importers:
         specifier: ^1.32.4
         version: 1.32.4
       '@gouvfr-anct/lieux-de-mediation-numerique':
-        specifier: ^2.3.0
-        version: 2.3.0
+        specifier: ^3.0.1
+        version: 3.0.1
       '@gouvfr-anct/timetable-to-osm-opening-hours':
         specifier: ^2.1.0
         version: 2.1.0(typescript@7.0.2)
@@ -2431,8 +2431,8 @@ packages:
     resolution: {integrity: sha512-wmglKKPDIkgV3aWlZzWECCPoGIkYCulzBwxG9+w7rc5BGapZ6cPMpoPOT8k36J0Ni7PPX6c/rsoMWfS4d1MUMg==}
     engines: {node: '>=6'}
 
-  '@gouvfr-anct/lieux-de-mediation-numerique@2.3.0':
-    resolution: {integrity: sha512-KQnZZz0t64jFMvKKIULhYP3YT5JOaFaYk/8ApZB2ENsFyjK3/+gF55CLG5h/qECneDFE2PQR6j/h9M0Pj3/9Jw==}
+  '@gouvfr-anct/lieux-de-mediation-numerique@3.0.1':
+    resolution: {integrity: sha512-06LdNoL5TCFKGhQu43t73fi+WnzS8nmcyzETETwKOQskvcLtYomXygZqB428LkqPkZl6uat+dt6B5tXRsff5Dw==}
 
   '@gouvfr-anct/timetable-to-osm-opening-hours@2.1.0':
     resolution: {integrity: sha512-P5UwarBy6BVtHdGFWGNsQa6gBRcIyo6PJH3iiPSr17Oua5FWokowSYfV0Tok86uD3V7tIlpfLS29H1Fg+xztNQ==}
@@ -8439,6 +8439,9 @@ packages:
   functions-have-names@1.2.3:
     resolution: {integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==}
 
+  fuzzball@2.2.6:
+    resolution: {integrity: sha512-RFYKY0GGDOmocz6rYmvOk9qOnV2UCsLHbVPl5zfZVvcdBlilDg/84WSgAvOCGDq+UEnpnqjZMHk6a/hamC5VuQ==}
+
   generator-function@2.0.1:
     resolution: {integrity: sha512-SFdFmIJi+ybC0vjlHN0ZGVGHc3lgE0DxPAT0djjVg+kjOnSqclqmj0KQ7ykTOLP6YxoqOvuAODGdcHJn+43q3g==}
     engines: {node: '>= 0.4'}
@@ -8673,6 +8676,9 @@ packages:
   he@1.2.0:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
+
+  heap@0.2.7:
+    resolution: {integrity: sha512-2bsegYkkHO+h/9MGbn6KWcE45cHZgPANo5LXF7EvWdT0yT2EguSVO1nDgU5c8+ZOPwp2vMNa7YFsJhVcDR9Sdg==}
 
   highlight.js@11.11.1:
     resolution: {integrity: sha512-Xwwo44whKBVCYoliBQwaPvtd/2tYFkRQtXDWj1nackaV2JPXx3L0+Jvd8/qCJ2p+ML0/XVkJ2q+Mr+UVdpJK5w==}
@@ -15497,7 +15503,9 @@ snapshots:
 
   '@fortawesome/fontawesome-free@7.3.1': {}
 
-  '@gouvfr-anct/lieux-de-mediation-numerique@2.3.0': {}
+  '@gouvfr-anct/lieux-de-mediation-numerique@3.0.1':
+    dependencies:
+      fuzzball: 2.2.6
 
   '@gouvfr-anct/timetable-to-osm-opening-hours@2.1.0(typescript@7.0.2)':
     dependencies:
@@ -22192,6 +22200,12 @@ snapshots:
 
   functions-have-names@1.2.3: {}
 
+  fuzzball@2.2.6:
+    dependencies:
+      heap: 0.2.7
+      lodash: 4.18.1
+      setimmediate: 1.0.5
+
   generator-function@2.0.1: {}
 
   gensync@1.0.0-beta.2: {}
@@ -22462,6 +22476,8 @@ snapshots:
       function-bind: 1.1.2
 
   he@1.2.0: {}
+
+  heap@0.2.7: {}
 
   highlight.js@11.11.1: {}
 

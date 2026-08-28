@@ -93,6 +93,9 @@ Given(
     // Même adresse que `seedEmployeuseMain` (1 rue de la Paix, Paris 75001).
     lieuConnuId = await seedLieuActivite({
       nom: `COMMUNE DE ${nomCommuneEmployeuse}`,
+      // Une commune se déclare comme telle : l'employeuse « Mairie de X » n'a pas
+      // de typologie et la sienne se déduit du nom, MUNI de part et d'autre.
+      typologies: ['MUNI'],
     })
   },
 )
