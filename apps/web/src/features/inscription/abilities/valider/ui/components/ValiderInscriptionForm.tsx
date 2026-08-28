@@ -10,7 +10,7 @@ import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { type DefaultValues, useAppForm } from '@app/web/libs/form/use-app-form'
 import { useHydrated } from '@app/web/libs/form/use-hydrated'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { useStore } from '@tanstack/react-form'
+import { useSelector } from '@tanstack/react-form'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 
@@ -60,7 +60,7 @@ const ValiderInscriptionForm = ({
     },
   })
 
-  const isSubmitting = useStore(form.store, (state) => state.isSubmitting)
+  const isSubmitting = useSelector(form.store, (state) => state.isSubmitting)
   const isHydrated = useHydrated()
 
   // Bouton désactivé tant que la page n'est pas interactive : sans cela, un

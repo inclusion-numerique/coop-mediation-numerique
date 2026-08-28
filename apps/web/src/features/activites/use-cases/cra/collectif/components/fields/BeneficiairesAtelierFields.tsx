@@ -22,7 +22,7 @@ import {
 import { DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { formOptions, useStore } from '@tanstack/react-form'
+import { formOptions, useSelector } from '@tanstack/react-form'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { Fragment, useCallback } from 'react'
@@ -71,9 +71,9 @@ export const BeneficiairesAtelierFields = withForm({
     const router = useRouter()
 
     const participants =
-      useStore(form.store, (state) => state.values.participants) ?? []
+      useSelector(form.store, (state) => state.values.participants) ?? []
 
-    const participantsAnonymes = useStore(
+    const participantsAnonymes = useSelector(
       form.store,
       (state) => state.values.participantsAnonymes,
     ) ?? { total: 0 }

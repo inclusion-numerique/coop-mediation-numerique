@@ -13,7 +13,7 @@ import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import Alert from '@codegouvfr/react-dsfr/Alert'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { useStore } from '@tanstack/react-form'
+import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import {
@@ -77,8 +77,8 @@ const RenseignerStructureEmployeuseForm = ({
     },
   })
 
-  const isPending = useStore(form.store, (state) => state.isSubmitting)
-  const selected = useStore(
+  const isPending = useSelector(form.store, (state) => state.isSubmitting)
+  const selected = useSelector(
     form.store,
     (state) => state.values.structureEmployeuse,
   )

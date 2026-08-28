@@ -11,7 +11,7 @@ import {
   OSM_DAYS_OF_WEEK,
   type OsmDaysOfWeek,
 } from '@gouvfr-anct/timetable-to-osm-opening-hours'
-import { useStore } from '@tanstack/react-form'
+import { useSelector } from '@tanstack/react-form'
 import { creerLieuActiviteFormOptions } from '../creerLieuActiviteFormData'
 
 const jours = OSM_DAYS_OF_WEEK as unknown as OsmDaysOfWeek[]
@@ -27,7 +27,7 @@ const DemiJournee = withForm({
   ...creerLieuActiviteFormOptions,
   props: {} as { isPending: boolean; day: OsmDaysOfWeek; period: Period },
   render: ({ form, isPending, day, period }) => {
-    const isOpen = useStore(
+    const isOpen = useSelector(
       form.store,
       (state) => state.values.openingHours[day][period].isOpen,
     )

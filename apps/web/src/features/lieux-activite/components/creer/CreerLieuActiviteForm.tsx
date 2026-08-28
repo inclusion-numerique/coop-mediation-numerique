@@ -9,7 +9,7 @@ import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useHydrated } from '@app/web/libs/form/use-hydrated'
 import Button from '@codegouvfr/react-dsfr/Button'
 import ToggleSwitch from '@codegouvfr/react-dsfr/ToggleSwitch'
-import { useStore } from '@tanstack/react-form'
+import { useSelector } from '@tanstack/react-form'
 import { useEffect } from 'react'
 import {
   type CreerLieuActiviteFormData,
@@ -46,11 +46,11 @@ const CreerLieuActiviteForm = ({
     onSubmit: ({ value }) => onCreer(value),
   })
 
-  const isSubmitting = useStore(form.store, (state) => state.isSubmitting)
+  const isSubmitting = useSelector(form.store, (state) => state.isSubmitting)
   const isHydrated = useHydrated()
   const isPending = isSubmitting || !isHydrated
 
-  const visiblePourCartographieNationale = useStore(
+  const visiblePourCartographieNationale = useSelector(
     form.store,
     (state) => state.values.visiblePourCartographieNationale,
   )

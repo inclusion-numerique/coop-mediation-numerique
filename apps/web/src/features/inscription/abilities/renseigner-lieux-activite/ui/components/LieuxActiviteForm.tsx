@@ -14,7 +14,7 @@ import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useHydrated } from '@app/web/libs/form/use-hydrated'
 import type { LieuActiviteSearchResult } from '@app/web/structure/searchLieuActiviteCombined'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { useStore } from '@tanstack/react-form'
+import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { z } from 'zod'
@@ -138,7 +138,7 @@ const LieuxActiviteForm = ({
     },
   })
 
-  const isSubmitting = useStore(form.store, (state) => state.isSubmitting)
+  const isSubmitting = useSelector(form.store, (state) => state.isSubmitting)
   const isHydrated = useHydrated()
   const isPending = isSubmitting || !isHydrated
 

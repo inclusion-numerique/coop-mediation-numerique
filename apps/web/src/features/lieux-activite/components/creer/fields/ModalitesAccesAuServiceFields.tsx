@@ -3,18 +3,18 @@
 import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
 import { fraisAChargeOptions } from '@app/web/features/structures/fraisACharge'
 import { withForm } from '@app/web/libs/form/use-app-form'
-import { useStore } from '@tanstack/react-form'
+import { useSelector } from '@tanstack/react-form'
 import { creerLieuActiviteFormOptions } from '../creerLieuActiviteFormData'
 
 export const ModalitesAccesAuServiceFields = withForm({
   ...creerLieuActiviteFormOptions,
   props: {} as { isPending: boolean },
   render: ({ form, isPending }) => {
-    const parTelephone = useStore(
+    const parTelephone = useSelector(
       form.store,
       (state) => state.values.modalitesAcces.parTelephone === true,
     )
-    const parMail = useStore(
+    const parMail = useSelector(
       form.store,
       (state) => state.values.modalitesAcces.parMail === true,
     )

@@ -7,14 +7,14 @@ import {
   formationLabelOptions,
 } from '@app/web/features/structures/formationLabel'
 import { withForm } from '@app/web/libs/form/use-app-form'
-import { useStore } from '@tanstack/react-form'
+import { useSelector } from '@tanstack/react-form'
 import { creerLieuActiviteFormOptions } from '../creerLieuActiviteFormData'
 
 export const DescriptionFields = withForm({
   ...creerLieuActiviteFormOptions,
   props: {} as { isPending: boolean },
   render: ({ form, isPending }) => {
-    const presentationResume = useStore(
+    const presentationResume = useSelector(
       form.store,
       (state) => state.values.presentationResume,
     )

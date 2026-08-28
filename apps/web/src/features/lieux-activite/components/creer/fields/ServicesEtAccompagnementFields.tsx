@@ -9,14 +9,14 @@ import {
 } from '@app/web/features/structures/service'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import { useStore } from '@tanstack/react-form'
+import { useSelector } from '@tanstack/react-form'
 import { creerLieuActiviteFormOptions } from '../creerLieuActiviteFormData'
 
 export const ServicesEtAccompagnementFields = withForm({
   ...creerLieuActiviteFormOptions,
   props: {} as { isPending: boolean },
   render: ({ form, isPending }) => {
-    const services = useStore(form.store, (state) => state.values.services)
+    const services = useSelector(form.store, (state) => state.values.services)
 
     return (
       <>
