@@ -1,7 +1,7 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
-import { getStructureEmployeuseForInscription } from '@app/web/features/inscription/getStructureEmployeuseForInscription'
-import StructureEmployeuseLieuActivitePage from '@app/web/features/inscription/use-cases/lieux-activite/StructureEmployeuseLieuActivitePage'
+import StructureEmployeuseLieuActivitePage from '@app/web/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/ui/pages/StructureEmployeuseLieuActivitePage'
+import { employeuseActuelleAdaptee } from '@app/web/features/inscription/acl/employeuse-actuelle.adapter'
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import { redirect } from 'next/navigation'
 
@@ -25,7 +25,7 @@ const StructureEmployeuseLieuxActivitePageRoute = async () => {
   }
 
   // User must have an emploi (structure employeuse)
-  const emploi = await getStructureEmployeuseForInscription({
+  const emploi = await employeuseActuelleAdaptee({
     userId: user.id,
   })
 
@@ -42,7 +42,6 @@ const StructureEmployeuseLieuxActivitePageRoute = async () => {
 
   return (
     <StructureEmployeuseLieuActivitePage
-      userId={user.id}
       structureEmployeuse={structureEmployeuse}
     />
   )

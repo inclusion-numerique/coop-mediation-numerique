@@ -1,6 +1,7 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
-import VerifierInformationsPage from '@app/web/features/inscription/use-cases/verifier-informations/VerifierInformationsPage'
+import { getVerifierInformationsPageData } from '@app/web/features/inscription/abilities/verifier-informations/queries/getVerifierInformationsPageData'
+import VerifierInformationsPage from '@app/web/features/inscription/abilities/verifier-informations/ui/pages/VerifierInformationsPage'
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import { redirect } from 'next/navigation'
 
@@ -19,7 +20,9 @@ const VerifierInformationsPageRoute = async () => {
     redirect('/coop')
   }
 
-  return <VerifierInformationsPage user={user} />
+  return (
+    <VerifierInformationsPage data={getVerifierInformationsPageData(user)} />
+  )
 }
 
 export default VerifierInformationsPageRoute

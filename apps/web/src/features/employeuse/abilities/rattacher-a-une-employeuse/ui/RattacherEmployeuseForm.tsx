@@ -9,7 +9,7 @@ import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import Alert from '@codegouvfr/react-dsfr/Alert'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { useStore } from '@tanstack/react-form'
+import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import {
@@ -71,10 +71,10 @@ const RattacherEmployeuseForm = ({
     },
   })
 
-  const isPending = useStore(form.store, (state) => state.isSubmitting)
+  const isPending = useSelector(form.store, (state) => state.isSubmitting)
   // La carte récapitulative n'apparaît qu'une fois le choix fait : c'est aussi
   // ce qui autorise la soumission.
-  const structureChoisie = useStore(
+  const structureChoisie = useSelector(
     form.store,
     (state) => state.values.structure,
   )

@@ -1,7 +1,7 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
-import { getInscriptionRecapitulatifPageData } from '@app/web/features/inscription/use-cases/recapitulatif/getInscriptionRecapitulatifPageData'
-import RecapitulatifPage from '@app/web/features/inscription/use-cases/recapitulatif/RecapitulatifPage'
+import { getRecapitulatifPageData } from '@app/web/features/inscription/abilities/valider/queries/getRecapitulatifPageData'
+import RecapitulatifPage from '@app/web/features/inscription/abilities/valider/ui/pages/RecapitulatifPage'
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import { redirect } from 'next/navigation'
 
@@ -20,7 +20,7 @@ const RecapitulatifPageRoute = async () => {
     redirect('/coop')
   }
 
-  const data = await getInscriptionRecapitulatifPageData({
+  const data = await getRecapitulatifPageData({
     user,
   })
 

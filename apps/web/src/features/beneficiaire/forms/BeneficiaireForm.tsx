@@ -31,7 +31,7 @@ import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { useStore } from '@tanstack/react-form'
+import { useSelector } from '@tanstack/react-form'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
@@ -153,12 +153,12 @@ const BeneficiaireForm = ({
     },
   })
 
-  const isPending = useStore(form.store, (state) => state.isSubmitting)
-  const pasDeTelephone = useStore(
+  const isPending = useSelector(form.store, (state) => state.isSubmitting)
+  const pasDeTelephone = useSelector(
     form.store,
     (state) => state.values.pasDeTelephone === true,
   )
-  const anneeNaissance = useStore(
+  const anneeNaissance = useSelector(
     form.store,
     (state) => state.values.anneeNaissance,
   )

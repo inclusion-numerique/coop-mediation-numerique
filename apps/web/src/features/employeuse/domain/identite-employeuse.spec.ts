@@ -36,13 +36,20 @@ describe('identiteDepuisEtablissement', () => {
     ).toBeNull()
   })
 
-  it('n’en tire aucune sans raison sociale ni sans commune', () => {
-    expect(
-      identiteDepuisEtablissement(etablissement({ raisonSociale: null })),
-    ).toBeNull()
+  it('n’en tire aucune sans commune — il n’y a rien à soumettre à la BAN', () => {
     expect(
       identiteDepuisEtablissement(etablissement({ commune: null })),
     ).toBeNull()
+  })
+
+  it('tolère l’absence de raison sociale — l’établissement reste rattachable', () => {
+    // Règle métier : un SIRET valide suffit à enregistrer une employeuse. 14
+    // employeuses de production n'ont aucune dénomination (entreprises
+    // individuelles, établissements non diffusibles) ; l'exiger ici les rendait
+    // lisibles mais non enregistrables.
+    expect(
+      identiteDepuisEtablissement(etablissement({ raisonSociale: null })),
+    ).toMatchObject({ siret: '12345678901234', denomination: null })
   })
 
   it('tolère l’absence de voie, de code postal et de code INSEE', () => {

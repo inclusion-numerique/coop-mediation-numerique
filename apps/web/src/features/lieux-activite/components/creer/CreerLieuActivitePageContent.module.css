@@ -1,0 +1,23 @@
+.container {
+  --side-nav-width: 296px;
+
+  display: flex;
+}
+
+.sideNavContainer {
+  width: 100%;
+
+  @media (min-width: 48em) {
+    width: var(--side-nav-width);
+  }
+}
+
+.pageContainer {
+  min-height: 100%;
+  padding: 0 16px 120px;
+
+  @media (min-width: 48em) {
+    width: calc(100% - var(--side-nav-width));
+    padding: 0 32px 120px 0;
+  }
+}

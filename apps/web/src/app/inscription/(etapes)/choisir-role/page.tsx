@@ -1,6 +1,7 @@
+import { choisirProfilAction } from '@app/web/app/_actions/inscription/choisir-profil.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
-import ChoisirRolePage from '@app/web/features/inscription/use-cases/choisir-role/ChoisirRolePage'
+import ChoisirRolePage from '@app/web/features/inscription/abilities/choisir-profil/ui/pages/ChoisirRolePage'
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import { redirect } from 'next/navigation'
 
@@ -19,7 +20,7 @@ const ChoisirRolePageRoute = async () => {
     redirect('/coop')
   }
 
-  return <ChoisirRolePage userId={user.id} />
+  return <ChoisirRolePage save={choisirProfilAction} />
 }
 
 export default ChoisirRolePageRoute
