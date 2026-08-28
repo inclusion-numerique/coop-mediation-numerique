@@ -1,7 +1,8 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
-import { getLieuxActiviteForInscription } from '@app/web/features/inscription/getLieuxActiviteForInscription'
-import LieuxActivitePage from '@app/web/features/inscription/use-cases/lieux-activite/LieuxActivitePage'
+import type { LieuActiviteInput } from '@app/web/features/inscription/abilities/renseigner-lieux-activite'
+import LieuxActivitePage from '@app/web/features/inscription/abilities/renseigner-lieux-activite/ui/pages/LieuxActivitePage'
+import { lieuxActiviteDuMediateur } from '@app/web/features/inscription/implementation/prisma/lieux-activite-du-mediateur.query'
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import { redirect } from 'next/navigation'
 
@@ -24,12 +25,24 @@ const LieuxActivitePageRoute = async () => {
     redirect('/inscription/initialiser')
   }
 
-  // Get existing lieux if any
-  const lieuxActivite = await getLieuxActiviteForInscription({
+  // Get existing lieux if any, projetés vers l'input du formulaire (l'id porte la
+  // réconciliation ; adresse/commune/codePostal sont non-null en base).
+  const lieuxActivite = await lieuxActiviteDuMediateur({
     mediateurId: user.mediateur.id,
   })
 
-  return <LieuxActivitePage userId={user.id} lieuxActivite={lieuxActivite} />
+  const lieuxExistants: LieuActiviteInput[] = lieuxActivite.map((lieu) => ({
+    id: lieu.id ?? null,
+    structureCartographieNationaleId:
+      lieu.structureCartographieNationaleId ?? null,
+    nom: lieu.nom,
+    adresse: lieu.adresse ?? '',
+    commune: lieu.commune ?? '',
+    codePostal: lieu.codePostal ?? '',
+    codeInsee: lieu.codeInsee ?? null,
+  }))
+
+  return <LieuxActivitePage lieuxActivite={lieuxExistants} />
 }
 
 export default LieuxActivitePageRoute

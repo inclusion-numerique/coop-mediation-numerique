@@ -1,6 +1,6 @@
 import { appUrl } from '@app/e2e/support/helpers'
 import { CreateUserInput } from '@app/e2e/tasks/handlers/user.tasks'
-import { getStepPath } from '@app/web/features/inscription/inscriptionFlow'
+import { stepPath } from '@app/web/features/inscription/ui/step-path'
 import {
   lowerCaseProfileInscriptionLabels,
   profileInscriptionConseillerNumeriqueLabels,
@@ -51,13 +51,16 @@ const cguLabelMatch = /J’ai lu et j’accepte/
 
 const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
   if (step.step === 'choisir-role') {
-    cy.appUrlShouldBe(getStepPath('choisir-role'), {
+    cy.appUrlShouldBe(stepPath('choisir-role'), {
       timeout: mutationAndNavigationTimeout,
     })
 
-    cy.intercept('/api/trpc/inscription.choisirProfilEtAccepterCgu*').as(
-      'choisirProfilMutation',
-    )
+    // Le formulaire se desactive tant que la page n'est pas hydratee : cliquer
+    // avant serait perdu sans aucun signe visible. On attend donc qu'il soit
+    // actif, ce qui est aussi ce que voit un utilisateur.
+    cy.get('input[type=radio][name=role]')
+      .first()
+      .should('be.enabled', { timeout: mutationAndNavigationTimeout })
 
     cy.contains(profileInscriptionLabels[step.role]).click()
 
@@ -69,13 +72,21 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
 
     cy.get('button').contains('Continuer').click()
 
-    cy.wait('@choisirProfilMutation', { timeout: mutationAndNavigationTimeout })
+    // Cette étape passe par une server action, pas par tRPC : il n'y a aucune
+    // requête nommée à intercepter. On synchronise sur la sortie de l'étape,
+    // poussée par la page une fois l'action revenue — sinon les assertions de
+    // l'étape suivante démarreraient encore sur celle-ci (le récapitulatif
+    // vérifie l'absence de la checkbox CGU, qui est présente ici).
+    cy.url({ timeout: mutationAndNavigationTimeout }).should(
+      'not.contain',
+      stepPath('choisir-role'),
+    )
 
     return
   }
 
   if (step.step === 'verifier-informations') {
-    cy.appUrlShouldBe(getStepPath('verifier-informations'), {
+    cy.appUrlShouldBe(stepPath('verifier-informations'), {
       timeout: mutationAndNavigationTimeout,
     })
     step.check?.()
@@ -88,7 +99,7 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
   }
 
   if (step.step === 'renseigner-structure-employeuse') {
-    cy.appUrlShouldBe(getStepPath('renseigner-structure-employeuse'), {
+    cy.appUrlShouldBe(stepPath('renseigner-structure-employeuse'), {
       timeout: mutationAndNavigationTimeout,
     })
 
@@ -110,14 +121,13 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
     step.step === 'lieux-activite' &&
     'structureEmployeuseIsLieuActivite' in step
   ) {
-    cy.appUrlShouldBe(`${getStepPath('lieux-activite')}/structure-employeuse`, {
+    cy.appUrlShouldBe(`${stepPath('lieux-activite')}/structure-employeuse`, {
       timeout: mutationAndNavigationTimeout,
     })
 
-    cy.intercept(
-      '/api/trpc/inscription.ajouterStructureEmployeuseEnLieuActivite*',
-    ).as('ajouterStructureEmployeuseMutation')
-
+    // Cette étape passe désormais par une server action, pas par tRPC : aucune
+    // requête nommée à intercepter. On synchronise sur la sortie de l'étape
+    // (navigation vers /inscription/lieux-activite après le choix Oui/Non).
     step.check?.()
     if (step.structureEmployeuseIsLieuActivite) {
       cy.contains('Oui').click()
@@ -125,7 +135,7 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
       cy.contains('Non').click()
     }
 
-    cy.wait('@ajouterStructureEmployeuseMutation', {
+    cy.appUrlShouldBe(stepPath('lieux-activite'), {
       timeout: mutationAndNavigationTimeout,
     })
 
@@ -135,19 +145,18 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
     step.step === 'lieux-activite' &&
     !('structureEmployeuseIsLieuActivite' in step)
   ) {
-    cy.appUrlShouldBe(getStepPath('lieux-activite'), {
+    cy.appUrlShouldBe(stepPath('lieux-activite'), {
       timeout: mutationAndNavigationTimeout,
     })
 
-    cy.intercept('/api/trpc/inscription.renseignerLieuxActivite*').as(
-      'renseignerLieuxActiviteMutation',
-    )
-
+    // Cette étape passe désormais par une server action, pas par tRPC : aucune
+    // requête nommée à intercepter. On synchronise sur la sortie de l'étape
+    // (navigation vers le récapitulatif après « Suivant »).
     step.check?.()
 
     cy.contains('Suivant').click()
 
-    cy.wait('@renseignerLieuxActiviteMutation', {
+    cy.appUrlShouldBe(stepPath('recapitulatif'), {
       timeout: mutationAndNavigationTimeout,
     })
 
@@ -158,12 +167,19 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
     if (step.acceptCgu === undefined) {
       cy.findByRole('checkbox', { name: cguLabelMatch }).should('not.exist')
     } else if (step.acceptCgu) {
-      cy.findByRole('checkbox', { name: cguLabelMatch }).check({ force: true })
+      // Le formulaire se désactive tant que la page n'est pas hydratée : cocher
+      // avant serait effacé par le premier rendu client, sans aucun signe visible
+      // — et la validation des CGU bloquerait ensuite la soumission. On attend
+      // donc qu'il soit actif, comme à l'étape choisir-role. Cas atteint quand on
+      // arrive au récapitulatif par un chargement complet (raccourci Dataspace).
+      cy.findByRole('checkbox', { name: cguLabelMatch })
+        .should('be.enabled', { timeout: mutationAndNavigationTimeout })
+        .check({ force: true })
     } else {
       cy.findByRole('checkbox', { name: cguLabelMatch }).should('be.visible')
     }
 
-    cy.appUrlShouldBe(getStepPath('recapitulatif'), {
+    cy.appUrlShouldBe(stepPath('recapitulatif'), {
       timeout: mutationAndNavigationTimeout,
     })
 
@@ -181,16 +197,18 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
       cy.contains('Vous avez été identifié en tant que').should('not.exist')
     }
 
-    cy.intercept('/api/trpc/inscription.validerInscription*').as(
-      'validerInscriptionMutation',
-    )
-
     step.check?.()
     cy.contains('Valider mon inscription').click()
 
-    cy.wait('@validerInscriptionMutation', {
-      timeout: mutationAndNavigationTimeout,
-    })
+    // Valider passe par une server action, pas par tRPC : il n'y a aucune requête
+    // nommée à intercepter. On synchronise sur la navigation hors du récapitulatif
+    // (poussée par le succès de l'action), sinon le toast de succès vérifié après
+    // la boucle serait cherché avant même que l'action, plus lente sur certaines
+    // fixtures, ait abouti — sa fenêtre de retry par défaut (4s) perdrait la course.
+    cy.url({ timeout: mutationAndNavigationTimeout }).should(
+      'not.contain',
+      stepPath('recapitulatif'),
+    )
 
     return
   }
@@ -220,7 +238,7 @@ export const executeInscriptionFlow = ({
     cy.signin(user)
   }
 
-  cy.visit(appUrl(getStepPath('initialize')))
+  cy.visit(appUrl(stepPath('initialize')))
 
   for (const step of expectedSteps) {
     handleStep(step)

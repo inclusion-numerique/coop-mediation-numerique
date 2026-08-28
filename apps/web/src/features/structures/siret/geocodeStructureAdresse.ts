@@ -1,13 +1,24 @@
 import { type Feature, searchAdresses } from '@app/web/external-apis/apiAdresse'
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
-import type { StructureSearchResult } from '@app/web/features/employeuse'
+
+/**
+ * Les seuls champs nécessaires au géocodage : structures employeuses et lieux
+ * d'activité les portent tous deux, d'où cette forme minimale plutôt qu'un type
+ * de résultat de recherche particulier.
+ */
+export type AdresseAGeocoder = {
+  readonly adresse: string
+  readonly codePostal: string
+  readonly commune: string
+  readonly codeInsee: string | null
+}
 
 export const adresseNonVerifiableMessage = ({
   adresse,
   codePostal,
   commune,
-}: StructureSearchResult): string =>
+}: AdresseAGeocoder): string =>
   `L’adresse « ${adresse} ${codePostal} ${commune} » de cet établissement est introuvable dans la Base Adresse Nationale. Contactez le support pour ajouter ce lieu.`
 
 // Un résultat de type « municipality » est un repli sur le centre de la
@@ -18,7 +29,7 @@ const isPreciseMatchIn =
     properties.citycode === codeInsee && properties.type !== 'municipality'
 
 export const geocodeStructureAdresse = async (
-  structure: StructureSearchResult,
+  structure: AdresseAGeocoder,
 ): Promise<AdresseBanData | null> => {
   if (!structure.codeInsee) return null
 

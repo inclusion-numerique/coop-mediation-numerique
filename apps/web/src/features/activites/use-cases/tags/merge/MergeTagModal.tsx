@@ -12,7 +12,7 @@ import { trpc } from '@app/web/trpc'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import { useStore } from '@tanstack/react-form'
+import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { Fragment, useCallback, useRef, useState } from 'react'
 import { TagItem } from '../components/TagItem'
@@ -106,7 +106,7 @@ const MergeTagModal = () => {
     },
   })
 
-  const selectedDestinationTag = useStore(
+  const selectedDestinationTag = useSelector(
     form.store,
     (state) => state.values.destinationTag,
   )

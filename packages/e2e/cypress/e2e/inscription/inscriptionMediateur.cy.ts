@@ -26,7 +26,7 @@ describe("ETQ médiateur, je peux m'inscrire en suivant le bon parcours", () => 
               'Inscription à La Coop de la médiation numérique',
             ).should('be.visible')
             cy.contains(
-              "Choisissez votre rôle afin de profiter d'un espace adapté à vos besoins.",
+              'Choisissez votre rôle afin de profiter d’un espace adapté à vos besoins.',
             ).should('be.visible')
             cy.contains(profileInscriptionLabels.Mediateur).should('be.visible')
             cy.contains(profileInscriptionLabels.Coordinateur).should(
@@ -86,9 +86,9 @@ describe("ETQ médiateur, je peux m'inscrire en suivant le bon parcours", () => 
             cy.contains(
               "Vos lieux d'activité sont les lieux où vous accueillez et accompagnez vos bénéficiaires",
             ).should('be.visible')
-            cy.contains('Rechercher par nom du lieu, adresse ou SIRET.').should(
-              'be.visible',
-            )
+            cy.contains(
+              'Rechercher un lieu d’activité par nom, adresse ou SIRET',
+            ).should('be.visible')
           },
         },
         {

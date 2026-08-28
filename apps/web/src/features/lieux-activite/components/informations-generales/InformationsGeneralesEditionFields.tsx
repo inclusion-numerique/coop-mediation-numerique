@@ -19,7 +19,7 @@ import { typologieStructureOptions } from '@app/web/features/structures/typologi
 import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import { useStore } from '@tanstack/react-form'
+import { useSelector } from '@tanstack/react-form'
 import { useState } from 'react'
 import {
   type InformationsGeneralesFormData,
@@ -33,11 +33,11 @@ export const InformationsGeneralesEditionFields = withForm({
     hasActiveEmployees?: boolean
   },
   render: ({ form, isPending, hasActiveEmployees }) => {
-    const noSiret = useStore(
+    const noSiret = useSelector(
       form.store,
       (state) => state.values.noSiret === true,
     )
-    const siretSearch = useStore(
+    const siretSearch = useSelector(
       form.store,
       (state) => state.values.siretSearch,
     )

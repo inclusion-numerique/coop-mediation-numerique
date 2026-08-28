@@ -25,8 +25,9 @@ describe("ETQ Coordinateur hors dispositif, je peux m'inscrire en suivant le bon
           },
         },
         {
+          // Les CGU ont ete acceptees des choisir-role : le recapitulatif ne
+          // les redemande pas (mustAcceptCgu = !user.acceptationCgu).
           step: 'recapitulatif',
-          acceptCgu: true,
           conseillerNumeriqueRoleNotice: 'none',
           check: () => {
             cy.contains('Récapitulatif de vos informations').should(

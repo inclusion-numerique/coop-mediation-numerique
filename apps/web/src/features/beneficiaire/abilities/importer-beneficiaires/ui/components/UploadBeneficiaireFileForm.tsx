@@ -8,7 +8,7 @@ import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { isBrowser } from '@app/web/utils/isBrowser'
 import Button from '@codegouvfr/react-dsfr/Button'
-import { useStore } from '@tanstack/react-form'
+import { useSelector } from '@tanstack/react-form'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -77,7 +77,7 @@ const UploadBeneficiaireFileForm = () => {
     },
   })
 
-  const isPending = useStore(form.store, (state) => state.isSubmitting)
+  const isPending = useSelector(form.store, (state) => state.isSubmitting)
 
   return (
     <form.AppForm>

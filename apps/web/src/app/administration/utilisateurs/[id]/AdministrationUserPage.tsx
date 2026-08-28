@@ -7,8 +7,8 @@ import ChangeUserRolesButton from '@app/web/app/administration/utilisateurs/[id]
 import DeleteUserButton from '@app/web/app/administration/utilisateurs/[id]/DeleteUserButton'
 import LogoutUserButton from '@app/web/app/administration/utilisateurs/[id]/LogoutUserButton'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
-import { isUserInscriptionEnCours } from '@app/web/auth/isUserInscriptionEnCours'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import { AvertissementsEtatInscription } from '@app/web/features/inscription/components/AvertissementsEtatInscription'
 import { getInvitationStatusBadge } from '@app/web/features/utilisateurs/use-cases/list/getInvitationStatusBadge'
 import { getUserAccountStatusBadge } from '@app/web/features/utilisateurs/use-cases/list/getUserAccountStatusBadge'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
@@ -151,7 +151,6 @@ const AdministrationUserPage = async ({
 
   const isMediateur = !!mediateur
   const isCoordinateur = !!coordinateur
-  const inscriptionEnCours = isUserInscriptionEnCours(user)
 
   const canRemoveMediateur =
     !mediateur ||
@@ -213,12 +212,7 @@ const AdministrationUserPage = async ({
           {name} <span className="fr-mx-1v" />{' '}
           {getUserAccountStatusBadge(statutCompte)}
         </AdministrationTitle>
-        {inscriptionEnCours && !isMediateur && !isCoordinateur && (
-          <Notice
-            className="fr-notice--warning fr-mb-8v"
-            title="Inscription restée à la première étape"
-          />
-        )}
+        <AvertissementsEtatInscription user={user} />
 
         <div className="fr-flex fr-flex-gap-2v fr-mb-6v">
           {role === 'Admin' && <Tag small>Administrateur</Tag>}
