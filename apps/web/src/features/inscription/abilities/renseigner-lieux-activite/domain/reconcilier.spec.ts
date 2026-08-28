@@ -100,6 +100,48 @@ describe('reconcilierLieuxActivite', () => {
     })
   })
 
+  it('ne crée qu’une activité pour un même lieu désiré deux fois', () => {
+    const desires = [
+      { id: 'lieu-1', nom: 'Lieu 1' },
+      { id: 'lieu-1', nom: 'Lieu 1' },
+    ]
+
+    expect(reconcilierLieuxActivite([], desires)).toEqual({
+      aCloturer: [],
+      aCreer: [{ id: 'lieu-1', nom: 'Lieu 1' }],
+    })
+  })
+
+  it('ne crée qu’une activité pour un même lieu de cartographie désiré deux fois', () => {
+    const desires = [
+      { structureCartographieNationaleId: 'carto-1', nom: 'Lieu 1' },
+      { structureCartographieNationaleId: 'carto-1', nom: 'Lieu 1' },
+    ]
+
+    expect(reconcilierLieuxActivite([], desires)).toEqual({
+      aCloturer: [],
+      aCreer: [{ structureCartographieNationaleId: 'carto-1', nom: 'Lieu 1' }],
+    })
+  })
+
+  it('ne crée qu’une activité pour un même nouveau lieu nommé deux fois', () => {
+    const desires = [{ nom: 'Lieu neuf' }, { nom: 'Lieu neuf' }]
+
+    expect(reconcilierLieuxActivite([], desires)).toEqual({
+      aCloturer: [],
+      aCreer: [{ nom: 'Lieu neuf' }],
+    })
+  })
+
+  it('distingue deux lieux désirés que rien ne confond', () => {
+    const desires = [{ id: 'lieu-1', nom: 'Lieu 1' }, { nom: 'Lieu 2' }]
+
+    expect(reconcilierLieuxActivite([], desires)).toEqual({
+      aCloturer: [],
+      aCreer: [{ id: 'lieu-1', nom: 'Lieu 1' }, { nom: 'Lieu 2' }],
+    })
+  })
+
   it('ne recrée pas une activité existante re-soumise avec son id de lieu', () => {
     const existants = [existant('act-1', 'lieu-1', 'carto-1')]
     const desires = [

@@ -28,6 +28,7 @@ export const Options = <T,>({
   itemToKey,
   renderItem,
   children,
+  footer,
   anchorRef,
   className,
 }: {
@@ -39,6 +40,12 @@ export const Options = <T,>({
   getMenuProps?: () => object
   getItemProps?: ({ item, index }: { item: T; index: number }) => object
   children?: ReactNode
+  /**
+   * Rendu SOUS les résultats, et quels qu'ils soient — là où `children` ne
+   * paraît qu'en leur absence. De quoi offrir une issue à qui ne trouve pas son
+   * bonheur dans la liste sans lui retirer la liste.
+   */
+  footer?: ReactNode
   anchorRef?: RefObject<HTMLElement | null>
   className?: string
 } & OptionsData<T>) => {
@@ -89,7 +96,8 @@ export const Options = <T,>({
       className={classNames(
         'fr-menu-options',
         className,
-        !(isOpen && (items.length > 0 || showEmpty)) && 'hidden',
+        !(isOpen && (items.length > 0 || showEmpty || footer != null)) &&
+          'hidden',
       )}
       style={
         anchorRef && position
@@ -126,6 +134,9 @@ export const Options = <T,>({
           )}
         {isOpen && items.length === 0 && children && (
           <li className="fr-menu-options__item">{children}</li>
+        )}
+        {isOpen && footer && (
+          <li className="fr-menu-options__item">{footer}</li>
         )}
       </ul>
     </div>

@@ -109,9 +109,41 @@ export const reconcilierLieuxActivite = <T extends LieuActiviteDesire>(
   const estIdentifie = ({ id, structureCartographieNationaleId, nom }: T) =>
     estDefini(id) || estDefini(structureCartographieNationaleId) || nom != null
 
-  const aCreer = desires.filter(
-    (desire) => estIdentifie(desire) && !estDejaRattache(desire),
-  )
+  /**
+   * Deux fois le même lieu dans la liste désirée, c'est une activité de trop.
+   * Le filtre ci-dessus confronte chaque désir à l'EXISTANT ; il ne les confronte
+   * pas entre eux, et un lieu qu'on n'a pas encore ne s'y oppose pas lui-même.
+   *
+   * L'identité est celle que ce type porte, et rien d'autre : l'id interne, l'id
+   * de cartographie, ou la dénomination pour un lieu que rien n'identifie encore
+   * — un même nom soumis deux fois dans une même liste désigne le même lieu, la
+   * persistance le corrélant de toute façon sur son adresse.
+   */
+  const identite = ({
+    id,
+    structureCartographieNationaleId,
+    nom,
+  }: T): string =>
+    estDefini(id)
+      ? `id:${id}`
+      : estDefini(structureCartographieNationaleId)
+        ? `carto:${structureCartographieNationaleId}`
+        : `nom:${nom}`
+
+  const dejaVus = new Set<string>()
+  const uneSeuleFois = (desire: T): boolean => {
+    const cle = identite(desire)
+
+    if (dejaVus.has(cle)) return false
+
+    dejaVus.add(cle)
+
+    return true
+  }
+
+  const aCreer = desires
+    .filter((desire) => estIdentifie(desire) && !estDejaRattache(desire))
+    .filter(uneSeuleFois)
 
   return { aCloturer, aCreer }
 }
