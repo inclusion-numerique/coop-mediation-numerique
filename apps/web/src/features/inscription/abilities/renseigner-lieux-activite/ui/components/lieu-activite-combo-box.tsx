@@ -54,12 +54,12 @@ const loadSuggestions = async (
   }
 }
 
-const origines: Record<LieuActiviteSearchResult['source'], string> = {
-  structure_locale: 'Déjà dans vos lieux',
-  cartographie_nationale: 'Cartographie nationale',
-  api: 'Annuaire des entreprises',
-}
-
+/**
+ * Un lieu se désigne par sa dénomination et son adresse. La source dont il nous
+ * parvient — la coop, la cartographie, l'annuaire des entreprises — ne dit rien
+ * à qui cherche l'endroit où il travaille : elle ne distingue jamais deux
+ * résultats, la recherche écartant déjà les doublons entre sources.
+ */
 const renderItem = ({ item }: { item: LieuActiviteSearchResult }) => (
   <div className="fr-flex fr-direction-column">
     <span className="fr-text--bold">{item.nom}</span>
@@ -67,9 +67,6 @@ const renderItem = ({ item }: { item: LieuActiviteSearchResult }) => (
       {item.adresse}
       {item.adresse && (item.codePostal || item.commune) ? ', ' : null}
       {item.codePostal} {item.commune}
-    </span>
-    <span className="fr-text--xs fr-text-mention--grey fr-mb-0">
-      {origines[item.source]}
     </span>
   </div>
 )

@@ -39,6 +39,41 @@ const lieuxActiviteFormShape = z
   })
 
 /**
+ * Le même lieu, déjà dans la liste ?
+ *
+ * On compare ce que l'utilisateur a sous les yeux : l'entrée qu'il vient de
+ * choisir contre celles qu'il a déjà retenues. L'identifiant tranche quand il y
+ * en a un — celui de la coop, ou celui de la cartographie ; à défaut la
+ * dénomination et l'adresse, qui sont ce que la liste affiche.
+ *
+ * Le SIRET n'entre pas dans cette comparaison : il désigne une entité juridique,
+ * pas un endroit, et deux antennes d'un même réseau le partagent légitimement —
+ * les confondre interdirait d'ajouter la seconde.
+ */
+const dejaAjoute = (
+  lieux: readonly LieuActiviteInput[],
+  candidat: LieuActiviteInput,
+): boolean =>
+  lieux.some((lieu) => {
+    if (lieu.id != null && candidat.id != null) return lieu.id === candidat.id
+
+    if (
+      lieu.structureCartographieNationaleId != null &&
+      candidat.structureCartographieNationaleId != null
+    )
+      return (
+        lieu.structureCartographieNationaleId ===
+        candidat.structureCartographieNationaleId
+      )
+
+    return (
+      lieu.nom === candidat.nom &&
+      lieu.adresse === candidat.adresse &&
+      lieu.codePostal === candidat.codePostal
+    )
+  })
+
+/**
  * Traduit un résultat de recherche en lieu à rattacher, selon sa provenance :
  * - coop : le lieu existe déjà, on le rattache par son id (aucun doublon créé) ;
  * - cartographie : la coop ne le connaît pas encore, on transmet son id carto —
@@ -223,6 +258,14 @@ const LieuxActiviteForm = ({
                   return
                 }
 
+                if (dejaAjoute(form.state.values.lieux, lieu)) {
+                  setRechercheError(
+                    `${lieu.nom} fait déjà partie de vos lieux d’activité.`,
+                  )
+                  form.setFieldValue('recherche', null)
+                  return
+                }
+
                 form.pushFieldValue('lieux', lieu)
                 form.setFieldValue('recherche', null)
               }}
@@ -237,12 +280,37 @@ const LieuxActiviteForm = ({
               }) => {
                 const { recherche, enCours, enEchec } =
                   payload as RechercheLieuActivite
-                const rechercheAboutie =
+                const rechercheFaite =
                   !enCours &&
-                  (recherche?.trim().length ?? 0) >= rechercheMinimum &&
-                  optionsProps.items.length === 0
+                  (recherche?.trim().length ?? 0) >= rechercheMinimum
+                const rechercheAboutie =
+                  rechercheFaite && optionsProps.items.length === 0
                 const sansResultat = rechercheAboutie && !enEchec
                 const rechercheEnEchec = rechercheAboutie && enEchec
+
+                const boutonCreer = (
+                  <Button
+                    type="button"
+                    priority="secondary"
+                    className="fr-width-full fr-justify-content-center fr-mb-0"
+                    disabled={isPending}
+                    onClick={() => creerUnLieu(recherche)}
+                  >
+                    Créer un lieu d’activité
+                  </Button>
+                )
+
+                /**
+                 * Trouver des résultats n'est pas trouver le bon : une recherche
+                 * qui propose dix lieux sans proposer CELUI qu'on a en tête
+                 * enfermerait autant qu'une recherche vide. La création reste
+                 * donc offerte sous la liste, tant qu'il y a une liste — le cas
+                 * sans résultat porte déjà le sien, avec son explication.
+                 */
+                const issue =
+                  rechercheFaite && optionsProps.items.length > 0
+                    ? boutonCreer
+                    : null
 
                 // Un seul enfant, `null` quand il n'y a rien à dire : `Options`
                 // teste `children &&` pour ouvrir son élément de liste, et une
@@ -253,15 +321,7 @@ const LieuxActiviteForm = ({
                     <p className="fr-text--sm fr-text-mention--grey fr-mb-2v">
                       Aucun lieu ne correspond à votre recherche.
                     </p>
-                    <Button
-                      type="button"
-                      priority="secondary"
-                      className="fr-width-full fr-justify-content-center fr-mb-0"
-                      disabled={isPending}
-                      onClick={() => creerUnLieu(recherche)}
-                    >
-                      Créer un lieu d’activité
-                    </Button>
+                    {boutonCreer}
                   </div>
                 ) : rechercheEnEchec ? (
                   <p className="fr-text--sm fr-text-default--error fr-mb-0">
@@ -290,6 +350,7 @@ const LieuxActiviteForm = ({
                       {...optionsProps}
                       {...LieuActiviteOptions}
                       showEmpty={proposition != null}
+                      footer={issue}
                     >
                       {proposition}
                     </Options>
