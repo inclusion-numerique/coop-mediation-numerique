@@ -78,3 +78,66 @@ After(async () => {
     data: { beneficiairesCount: beneficiairesCountBefore },
   })
 })
+
+/**
+ * Portefeuille isolé pour l'ability `anonymiser-portefeuille`.
+ *
+ * Elle efface TOUT le portefeuille d'un médiateur : elle ne peut donc pas
+ * s'exercer sur le médiateur de fixtures que se partagent les autres scénarios.
+ * Un compte jetable est créé pour chaque scénario, et retiré derrière lui.
+ */
+type PortefeuilleSeme = {
+  readonly userId: string
+  readonly mediateurId: string
+}
+
+let portefeuille: PortefeuilleSeme | undefined
+
+export const portefeuilleSeme = (): PortefeuilleSeme => {
+  if (!portefeuille) throw new Error('Aucun portefeuille semé')
+  return portefeuille
+}
+
+export const semerPortefeuille = async (): Promise<PortefeuilleSeme> => {
+  const userId = v4()
+
+  await prismaClient.user.create({
+    data: { id: userId, email: `portefeuille-${userId}@example.com` },
+  })
+
+  const mediateur = await prismaClient.mediateur.create({
+    data: { userId, beneficiairesCount: 2 },
+    select: { id: true },
+  })
+
+  await prismaClient.beneficiaire.createMany({
+    data: [1, 2].map((rang) => ({
+      mediateurId: mediateur.id,
+      prenom: `Paul${rang}`,
+      nom: 'Durand',
+      telephone: '+33611111111',
+      email: `paul${rang}.durand@example.com`,
+      notes: 'Note confidentielle',
+      adresse: '2 rue des Lilas',
+      anneeNaissance: 1980,
+      commune: 'Reims',
+      genre: 'Masculin' as const,
+    })),
+  })
+
+  portefeuille = { userId, mediateurId: mediateur.id }
+
+  return portefeuille
+}
+
+After(async () => {
+  const semé = portefeuille
+  portefeuille = undefined
+  if (!semé) return
+
+  await prismaClient.beneficiaire.deleteMany({
+    where: { mediateurId: semé.mediateurId },
+  })
+  await prismaClient.mediateur.deleteMany({ where: { id: semé.mediateurId } })
+  await prismaClient.user.deleteMany({ where: { id: semé.userId } })
+})

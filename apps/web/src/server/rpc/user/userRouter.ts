@@ -1,10 +1,10 @@
+import { chargesEffacement } from '@app/web/app/_actions/utilisateurs/charges-effacement'
 import { UpdateProfileValidation } from '@app/web/app/user/UpdateProfileValidation'
 import { updateBrevoContact } from '@app/web/external-apis/brevo/updateBrevoContact'
 import {
   personneConseillerNumeriqueSelect,
   personneEstConseillerNumerique,
 } from '@app/web/features/employeuse/server'
-import { deleteUser } from '@app/web/features/utilisateurs/use-cases/delete/deleteUser'
 import { mergeUser } from '@app/web/features/utilisateurs/use-cases/merge/mergeUser'
 import { nouveauReminders } from '@app/web/features/utilisateurs/use-cases/nouveau-reminders/nouveauReminders'
 import { searchUser } from '@app/web/features/utilisateurs/use-cases/search/searchUser'
@@ -56,7 +56,7 @@ export const userRouter = router({
     async ({ ctx: { user: sessionUser } }) => {
       enforceIsAdmin(sessionUser)
 
-      await nouveauReminders()
+      await nouveauReminders({ charges: chargesEffacement })
     },
   ),
   updateProfile: protectedProcedure
@@ -87,31 +87,6 @@ export const userRouter = router({
         return updated
       },
     ),
-  deleteProfile: protectedProcedure.mutation(({ ctx: { user } }) =>
-    deleteUser(user.id, user.email),
-  ),
-  adminDeleteUser: protectedProcedure
-    .input(z.object({ userId: z.string().uuid() }))
-    .mutation(async ({ input: { userId }, ctx: { user: sessionUser } }) => {
-      enforceIsAdmin(sessionUser)
-
-      const user = await prismaClient.user.findUnique({
-        where: { id: userId },
-        select: { id: true, email: true, role: true, deleted: true },
-      })
-
-      if (!user) throw invalidError('Utilisateur non trouvé')
-
-      if (user.deleted) throw invalidError('Cet utilisateur est déjà supprimé')
-
-      if (user.role === 'Admin' || user.role === 'Support') {
-        throw invalidError(
-          'Impossible de supprimer un administrateur ou support',
-        )
-      }
-
-      return deleteUser(userId, user.email)
-    }),
   markOnboardingAsSeen: protectedProcedure.mutation(({ ctx: { user } }) =>
     prismaClient.user.update({
       where: { id: user.id },

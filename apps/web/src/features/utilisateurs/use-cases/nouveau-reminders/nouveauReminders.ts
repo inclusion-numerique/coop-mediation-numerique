@@ -1,10 +1,11 @@
-import { deleteBrevoContactIfOrphan } from '@app/web/external-apis/brevo/deleteBrevoContactIfOrphan'
 import {
-  deploymentCanRemoveBrevoContactFromList,
-  removeBrevoContactFromList,
-} from '@app/web/external-apis/brevo/removeBrevoContactFromList'
+  type ChargesEffacement,
+  CouloirAutomatique,
+  empreinte,
+  supprimerCompte,
+} from '@app/web/features/utilisateurs/abilities/supprimer-compte'
+import { UtilisateurId } from '@app/web/features/utilisateurs/domain'
 import { prismaClient } from '@app/web/prismaClient'
-import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { countTotalActifUsers } from '../filter/db/count-total-actif-users'
 import { nouveauFilter } from '../filter/db/nouveau-filter'
 import { sendNouveauAccountDeletedEmail } from './emails/account-deleted/sendNouveauAccountDeletedEmail'
@@ -26,23 +27,19 @@ const MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000
 const daysAgo = (now: Date, days: number) =>
   new Date(now.getTime() - days * MILLISECONDS_IN_DAY)
 
-const softDeleteUser = async (userId: string) => {
-  const hash = Math.random().toString(36).substring(2, 15)
-
-  await prismaClient.user.update({
-    where: { id: userId },
-    data: {
-      deleted: new Date(),
-      email: `deleted+${hash}@coop-numerique.anct.gouv.fr`,
-      firstName: 'Utilisateur',
-      lastName: 'Supprimé',
-      name: 'Utilisateur Supprimé',
-      phone: null,
-    },
-  })
-}
-
-const deleteAndNotify = async (now: Date) => {
+/**
+ * J+105 : le compte inscrit qui n'a jamais rien fait est effacé.
+ *
+ * L'effacement lui-même est délégué à l'ability `supprimer-compte`, comme pour
+ * une suppression demandée par le titulaire ou décidée par un administrateur :
+ * même charge, même contrat de résurrection, un seul endroit à faire évoluer.
+ * Ce couloir n'apporte que son critère — l'inactivité — et le courriel qui
+ * l'annonce.
+ *
+ * L'adresse réelle est capturée AVANT l'effacement, puisque c'est elle qui doit
+ * recevoir la notification.
+ */
+const deleteAndNotify = async (now: Date, charges: ChargesEffacement) => {
   const usersToDelete = await prismaClient.user.findMany({
     select,
     where: {
@@ -50,24 +47,29 @@ const deleteAndNotify = async (now: Date) => {
     },
   })
 
-  for (const user of usersToDelete) {
-    const isMediateur = user.mediateur !== null
+  await usersToDelete.reduce<Promise<void>>(async (precedent, user) => {
+    await precedent
 
-    if (deploymentCanRemoveBrevoContactFromList()) {
-      await removeBrevoContactFromList(
-        user.email,
-        ServerWebAppConfig.Brevo.usersListId,
-      )
-      await deleteBrevoContactIfOrphan(user.email)
-    }
+    const resultat = await supprimerCompte({
+      command: {
+        cible: UtilisateurId(user.id),
+        auteur: {
+          _tag: 'systeme',
+          couloir: CouloirAutomatique('InscritJamaisActif'),
+        },
+        maintenant: now,
+      },
+      charges,
+      empreinte,
+    })
 
-    await softDeleteUser(user.id)
+    if (!resultat.success) return
 
     await sendNouveauAccountDeletedEmail({
       email: user.email,
-      isMediateur,
+      isMediateur: user.mediateur !== null,
     })
-  }
+  }, Promise.resolve())
 }
 
 const warnBeforeDeletion = async (now: Date) => {
@@ -179,12 +181,16 @@ const resetOnboardingStatus = async (now: Date) => {
   })
 }
 
-export const nouveauReminders = async () => {
+export const nouveauReminders = async ({
+  charges,
+}: {
+  readonly charges: ChargesEffacement
+}) => {
   const now = new Date()
 
   const totalUsers = await countTotalActifUsers()
 
-  await deleteAndNotify(now)
+  await deleteAndNotify(now, charges)
   await warnBeforeDeletion(now)
   await remindersAfterXDays(now, totalUsers)(60)
   await remindersAfterXDays(now, totalUsers)(30)
