@@ -108,7 +108,9 @@ const ChoisirRolePage = ({ save }: { save: EnregistrerProfil }) => {
           <form.AppField name="role">
             {(field) => (
               <field.RadioButtons
-                className="fr-px-3v"
+                classes={{
+                  content: 'fr-display-grid fr-grid--1x2 fr-grid-gap-2v',
+                }}
                 isPending={isPending}
                 options={roleOptions}
                 legend="Choisissez votre rôle"
