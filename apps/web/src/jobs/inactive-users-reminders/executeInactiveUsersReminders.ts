@@ -18,7 +18,7 @@ export const executeInactiveUsersReminders = async () => {
 
   await signupReminders()
 
-  // Le couloir « inscrit mais jamais actif » efface des comptes à J+105 : il
+  // La politique « inscrit mais jamais actif » efface des comptes à J+105 : il
   // passe donc par l'ability, et c'est ici — dans la couche application — que
   // les implémentations des étapes lui sont fournies. La feature qui décide
   // n'importe aucune des six features qui exécutent.

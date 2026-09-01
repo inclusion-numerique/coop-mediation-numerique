@@ -6,7 +6,7 @@ import {
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
 import type { AuteurSuppression } from './auteur-suppression'
-import { CouloirAutomatique } from './auteur-suppression'
+import { RetentionPolicy } from './retention-policy'
 import { autoriserSuppression } from './supprimer-compte'
 
 const compte = (
@@ -28,7 +28,7 @@ const administrateur: AuteurSuppression = {
 }
 const systeme: AuteurSuppression = {
   _tag: 'systeme',
-  couloir: CouloirAutomatique('InscritJamaisActif'),
+  policy: RetentionPolicy('InscritJamaisActif'),
 }
 
 describe('autoriserSuppression', () => {
@@ -75,7 +75,7 @@ describe('autoriserSuppression', () => {
   // code, dont les jetons OAuth sont toujours vivants.
   it.each([
     ['un administrateur', administrateur],
-    ['le couloir automatique', systeme],
+    ['la politique de rétention', systeme],
   ])('autorise %s à rejouer un effacement', (_, auteur) => {
     expect(
       autoriserSuppression(

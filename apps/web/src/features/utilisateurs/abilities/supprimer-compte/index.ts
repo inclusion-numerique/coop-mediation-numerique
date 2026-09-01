@@ -10,11 +10,11 @@ export { supprimerCompte } from './commands/supprimer-compte'
 export {
   type AuteurSuppression,
   type CompteSupprime,
-  CouloirAutomatique,
   type EffacementReport,
   EffacementStep,
   ErasedCount,
   isComplete,
+  RetentionPolicy,
   type SupprimerCompteError,
   type SupprimerComptePorts,
 } from './domain'

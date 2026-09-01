@@ -31,7 +31,7 @@ export type CompteSupprime = {
  * propre compte, ce que l'ancienne procédure autorisait sans le vouloir.
  *
  * Un compte déjà supprimé ne l'est pas deux fois pour son titulaire — il n'a
- * rien à y gagner et ne comprendrait pas. Un administrateur ou le couloir
+ * rien à y gagner et ne comprendrait pas. Un administrateur ou le politique
  * automatique, eux, peuvent rejouer : c'est ce qui permet de rattraper les
  * comptes effacés par l'ancien code, dont les jetons sont toujours vivants.
  * L'empreinte étant déterministe, le rejeu ne heurte pas l'unicité du courriel.

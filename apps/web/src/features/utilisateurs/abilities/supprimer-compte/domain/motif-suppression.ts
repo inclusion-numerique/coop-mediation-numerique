@@ -1,6 +1,7 @@
 import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
 import type { AuteurSuppression } from './auteur-suppression'
+import type { NomRetentionPolicy } from './retention-policy'
 
 export const motifsSuppression = [
   'DemandeDuTitulaire',
@@ -19,11 +20,32 @@ export type MotifSuppression = Model.TypeOf<typeof MotifSuppression>
  * désaccorder — un effacement « demandé par le titulaire » attribué à un
  * administrateur.
  */
-const MOTIF_PAR_AUTEUR: Record<AuteurSuppression['_tag'], MotifSuppression> = {
+const MOTIF_PAR_AUTEUR: Record<
+  Exclude<AuteurSuppression['_tag'], 'systeme'>,
+  MotifSuppression
+> = {
   titulaire: MotifSuppression('DemandeDuTitulaire'),
   administrateur: MotifSuppression('DecisionAdministrateur'),
-  systeme: MotifSuppression('InactiviteApresInscription'),
 }
 
+/**
+ * Un effacement automatique se journalise sous le motif de LA POLITIQUE qui l'a
+ * déclenché, et non sous un motif attaché au fait qu'il soit automatique.
+ *
+ * La table est exhaustive : ajouter une politique de rétention sans dire ce
+ * qu'elle journalise ne compile pas. Sans elle, une seconde politique — celle
+ * de l'inactivité à un an, déjà prévue — aurait été enregistrée comme une
+ * « inactivité après inscription », en silence et pour toujours.
+ */
+const MOTIF_PAR_POLICY: Record<NomRetentionPolicy, MotifSuppression> = {
+  InscritJamaisActif: MotifSuppression('InactiviteApresInscription'),
+}
+
+/** La marque ne peut pas servir d'index : le paramètre reçoit le nom nu. */
+const motifDeLaPolicy = (policy: NomRetentionPolicy): MotifSuppression =>
+  MOTIF_PAR_POLICY[policy]
+
 export const motifDe = (auteur: AuteurSuppression): MotifSuppression =>
-  MOTIF_PAR_AUTEUR[auteur._tag]
+  auteur._tag === 'systeme'
+    ? motifDeLaPolicy(auteur.policy)
+    : MOTIF_PAR_AUTEUR[auteur._tag]

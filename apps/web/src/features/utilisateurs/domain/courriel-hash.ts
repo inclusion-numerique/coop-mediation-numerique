@@ -7,7 +7,7 @@ export const COURRIEL_HASH_LENGTH = 12
  * Empreinte qui rend unique le courriel d'un compte anonymisé.
  *
  * Elle est calculée par empreinte (sha256 tronqué) et non tirée au hasard,
- * contrairement à ce que faisait le couloir automatique : deux comptes ne
+ * contrairement à ce que faisait la politique de rétention : deux comptes ne
  * peuvent pas se disputer la même adresse, et l'anonymisation reste
  * reproductible à partir du compte d'origine.
  *

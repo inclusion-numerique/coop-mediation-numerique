@@ -1,8 +1,4 @@
-export {
-  type AuteurSuppression,
-  CouloirAutomatique,
-  couloirsAutomatiques,
-} from './auteur-suppression'
+export { type AuteurSuppression } from './auteur-suppression'
 export { effacementPlan } from './effacement-plan'
 export {
   type EffacementReport,
@@ -37,4 +33,8 @@ export type {
   RevoquerPartageStatistiques,
   SupprimerComptePorts,
 } from './ports'
+export {
+  RetentionPolicy,
+  retentionPolicies,
+} from './retention-policy'
 export { autoriserSuppression, type CompteSupprime } from './supprimer-compte'

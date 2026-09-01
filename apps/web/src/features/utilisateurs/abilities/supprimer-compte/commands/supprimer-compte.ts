@@ -34,11 +34,6 @@ const failureReasonOf = (erreur: unknown): FailureReason =>
       'Erreur sans message',
   )
 
-/**
- * Une étape produit un nombre, ou rejette. La conversion du rejet en résultat
- * se fait ici, une seule fois : les adaptateurs restent triviaux et n'ont pas à
- * connaître le vocabulaire du constat.
- */
 const runStep = async (
   step: EffacementStep,
   effacer: () => Promise<number>,
@@ -53,13 +48,6 @@ const runStep = async (
   }
 }
 
-/**
- * Les étapes qui visent indifféremment un médiateur ou un coordinateur
- * reçoivent les rattachements tels quels : le type dit déjà ce qui existe.
- * Seules celles qui exigent un médiateur gardent un repli, parce que l'extraire
- * de l'union rend un `MediateurId | null` que le plan seul ne suffit pas à
- * écarter aux yeux du compilateur.
- */
 const stepRunners = (
   compte: CompteASupprimer,
   ports: SupprimerComptePorts,
@@ -131,26 +119,6 @@ const stepRunners = (
   ])
 }
 
-/**
- * Effacement complet d'un compte.
- *
- * L'ordre est la seule chose que cette commande apporte, et il porte trois
- * décisions :
- *
- * Le noyau d'abord — sessions, jetons, identité — parce que couper l'accès
- * avant d'effacer empêche une session encore ouverte de recréer ce qu'on vient
- * d'effacer. S'il échoue, rien d'autre n'est tenté et l'état est inchangé.
- *
- * Les satellites ensuite, chacun atomique chez lui, chacun MONOTONE : une
- * interruption laisse un état plus effacé que le précédent, jamais incohérent.
- * C'est ce qui permet de ne pas les envelopper dans une transaction commune —
- * laquelle exigerait de faire transiter un client Prisma à travers sept ports et
- * de remonter l'infrastructure dans le domaine de six features.
- *
- * Le constat enfin, qui dit ce qui a abouti. Il est un axe SÉPARÉ du résultat :
- * la personne peut être correctement déconnectée et anonymisée pendant qu'une
- * étape distante a échoué. Confondre les deux ferait avaler l'un des deux.
- */
 export const supprimerCompte = async ({
   command: { cible, auteur, maintenant },
   ports,

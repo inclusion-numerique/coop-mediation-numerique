@@ -1,6 +1,6 @@
 import {
-  CouloirAutomatique,
   hash,
+  RetentionPolicy,
   type SupprimerComptePorts,
   supprimerCompte,
 } from '@app/web/features/utilisateurs/abilities/supprimer-compte'
@@ -33,7 +33,7 @@ const daysAgo = (now: Date, days: number) =>
  * L'effacement lui-même est délégué à l'ability `supprimer-compte`, comme pour
  * une suppression demandée par le titulaire ou décidée par un administrateur :
  * même étape, même contrat de résurrection, un seul endroit à faire évoluer.
- * Ce couloir n'apporte que son critère — l'inactivité — et le courriel qui
+ * Cette politique n'apporte que son critère — l'inactivité — et le courriel qui
  * l'annonce.
  *
  * L'adresse réelle est capturée AVANT l'effacement, puisque c'est elle qui doit
@@ -55,7 +55,7 @@ const deleteAndNotify = async (now: Date, ports: SupprimerComptePorts) => {
         cible: UtilisateurId(user.id),
         auteur: {
           _tag: 'systeme',
-          couloir: CouloirAutomatique('InscritJamaisActif'),
+          policy: RetentionPolicy('InscritJamaisActif'),
         },
         maintenant: now,
       },
