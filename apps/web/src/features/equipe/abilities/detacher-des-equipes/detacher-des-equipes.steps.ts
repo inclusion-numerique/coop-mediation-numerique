@@ -105,17 +105,6 @@ Then('le tag du médiateur est marqué supprimé', async () => {
   assert.ok(tag.suppression)
 })
 
-Then('le tag appartient désormais au coordinateur', async () => {
-  const tag = await prismaClient.tag.findUniqueOrThrow({
-    where: { id: equipeSemee().tagId },
-    select: { mediateurId: true, coordinateurId: true, suppression: true },
-  })
-
-  assert.strictEqual(tag.mediateurId, null)
-  assert.strictEqual(tag.coordinateurId, equipeSemee().coordinateurId)
-  assert.strictEqual(tag.suppression, null)
-})
-
 Then("ce médiateur n'appartient plus à aucune équipe", async () => {
   assert.strictEqual(
     await prismaClient.mediateurCoordonne.count({

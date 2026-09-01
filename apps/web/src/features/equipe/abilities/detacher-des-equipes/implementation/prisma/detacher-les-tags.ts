@@ -1,9 +1,6 @@
 import type { Prisma } from '@prisma/client'
-import { proprietaireFromDomain } from '../../../../db/tag.transfer'
 import {
-  CoordinateurId,
-  detenuParCoordinateur,
-  devolutionDesTagsDuMediateur,
+  type CoordinateurId,
   essaimageDesTagsDuCoordinateur,
   type MediateurId,
 } from '../../../../domain'
@@ -87,34 +84,16 @@ export const detacherLesTagsDuCoordinateur = async (
   }
 }
 
+/**
+ * Les tags d'un médiateur lui sont propres : ils partent avec lui, qu'il ait un
+ * coordinateur ou non. Les liens vers les comptes rendus subsistent, si bien que
+ * l'historique reste lisible.
+ */
 export const detacherLesTagsDuMediateur = async (
   transaction: Transaction,
   mediateurId: MediateurId,
   maintenant: Date,
-): Promise<{ transferes: number; supprimes: number }> => {
-  const coordinations = await transaction.mediateurCoordonne.findMany({
-    where: { mediateurId, suppression: null },
-    select: { coordinateurId: true },
-  })
-
-  const devolution = devolutionDesTagsDuMediateur(
-    coordinations.map(({ coordinateurId }) => CoordinateurId(coordinateurId)),
-  )
-
-  if (devolution._tag === 'supprime') {
-    return {
-      transferes: 0,
-      supprimes: await softDeleteTags(transaction, { mediateurId }, maintenant),
-    }
-  }
-
-  const { count } = await transaction.tag.updateMany({
-    where: { mediateurId, suppression: null },
-    data: {
-      ...proprietaireFromDomain(detenuParCoordinateur(devolution.vers)),
-      modification: maintenant,
-    },
-  })
-
-  return { transferes: count, supprimes: 0 }
-}
+): Promise<{ transferes: number; supprimes: number }> => ({
+  transferes: 0,
+  supprimes: await softDeleteTags(transaction, { mediateurId }, maintenant),
+})
