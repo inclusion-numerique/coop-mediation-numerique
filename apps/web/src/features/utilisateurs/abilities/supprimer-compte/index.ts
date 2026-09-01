@@ -9,13 +9,13 @@ export {
 export { supprimerCompte } from './commands/supprimer-compte'
 export {
   type AuteurSuppression,
-  type ChargesEffacement,
   type CompteSupprime,
-  type ConstatEffacement,
   CouloirAutomatique,
-  estComplet,
-  NomCharge,
+  type EffacementReport,
+  EffacementStep,
+  ErasedCount,
+  isComplete,
   type SupprimerCompteError,
-  VolumeEfface,
+  type SupprimerComptePorts,
 } from './domain'
-export { empreinte } from './implementation'
+export { hash, retirerDesListesDeDiffusion } from './implementation'

@@ -33,7 +33,7 @@ import { prismaClient } from '@app/web/prismaClient'
  *
  * Idempotent : un second passage ne trouve plus de compte agent et rend zéro.
  */
-export const effacerEmpreinteCompte = async ({
+export const effacerEmpreinteRdv = async ({
   utilisateurId,
 }: {
   readonly utilisateurId: string

@@ -4,12 +4,10 @@ import { anonymiserPortefeuille } from '@app/web/features/beneficiaire/abilities
 import { libererDesEquipes } from '@app/web/features/equipe'
 import { retirerDesLieux } from '@app/web/features/lieux-activite/abilities/retirer-des-lieux'
 import { revoquerPartageStatistiques } from '@app/web/features/mediateurs/abilities/revoquer-partage-statistiques'
-import { effacerEmpreinteCompte } from '@app/web/features/rdvsp/abilities/effacer-empreinte-compte'
+import { effacerEmpreinteRdv } from '@app/web/features/rdvsp/abilities/effacer-empreinte-rdv'
 import {
   AuteurId,
-  coordinateurDe,
-  mediateurDe,
-  type RattachementsDuCompte,
+  identifiantsDe,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
 import {
@@ -20,61 +18,32 @@ import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { supprimerCompte } from './commands/supprimer-compte'
-import type { ChargesEffacement } from './domain'
-import { VolumeEfface } from './domain'
-import { empreinte } from './implementation'
+import type { SupprimerComptePorts } from './domain'
+import { hash } from './implementation'
 
 /**
- * Le scénario compose lui-même les charges, comme le fait la couche
+ * Le scénario compose lui-même les étapes, comme le fait la couche
  * application : la feature `utilisateurs` ne connaît toujours aucune des
  * features qui exécutent. Seules les listes de diffusion sont remplacées — un
- * test d'intégration n'appelle pas Brevo.
+ * test d'intégration n'appelle pas Brevo, et s'abstenir est un succès sans
+ * effet.
  */
-const denuder = (rattachements: RattachementsDuCompte) => ({
-  mediateurId: mediateurDe(rattachements),
-  coordinateurId: coordinateurDe(rattachements),
-})
+const ports: SupprimerComptePorts = {
+  anonymiserPortefeuille,
+  effacerEmpreinteRdv,
+  retirerDesLieux,
 
-const charges: ChargesEffacement = {
-  anonymiserPortefeuille: async ({ mediateurId }) => ({
-    anonymises: VolumeEfface(
-      (await anonymiserPortefeuille({ mediateurId })).anonymises,
-    ),
-  }),
-  effacerNotesDesAccompagnements: async ({ rattachements }) => ({
-    effacees: VolumeEfface(
-      (await effacerNotes(denuder(rattachements))).effacees,
-    ),
-  }),
-  effacerEmpreinteRdv: async ({ utilisateurId }) => {
-    const bilan = await effacerEmpreinteCompte({ utilisateurId })
-    return {
-      compteDelie: bilan.compteDelie,
-      rdvsExpurges: VolumeEfface(bilan.rdvsExpurges),
-      usagersSupprimes: VolumeEfface(bilan.usagersSupprimes),
-    }
-  },
-  libererDesEquipes: async ({ rattachements }) => {
-    const bilan = await libererDesEquipes(denuder(rattachements))
-    return {
-      invitationsSupprimees: VolumeEfface(bilan.invitationsSupprimees),
-      appartenancesSupprimees: VolumeEfface(bilan.appartenancesSupprimees),
-      tagsTransferes: VolumeEfface(bilan.tagsTransferes),
-      tagsSupprimes: VolumeEfface(bilan.tagsSupprimes),
-    }
-  },
-  retirerDesLieuxActivite: async ({ mediateurId }) => ({
-    rattachementsSupprimes: VolumeEfface(
-      (await retirerDesLieux({ mediateurId })).rattachementsSupprimes,
-    ),
-  }),
-  revoquerPartageStatistiques: async ({ rattachements }) => ({
-    partagesRevoques: VolumeEfface(
-      (await revoquerPartageStatistiques(denuder(rattachements)))
-        .partagesRevoques,
-    ),
-  }),
-  retirerDesListesDeDiffusion: async () => ({ contactSupprime: false }),
+  effacerNotes: ({ rattachements }) =>
+    effacerNotes(identifiantsDe(rattachements)),
+
+  libererDesEquipes: ({ rattachements }) =>
+    libererDesEquipes(identifiantsDe(rattachements)),
+
+  revoquerPartageStatistiques: ({ rattachements }) =>
+    revoquerPartageStatistiques(identifiantsDe(rattachements)),
+
+  retirerDesListesDeDiffusion: async () => false,
+  hash,
 }
 
 type Effacement = Awaited<ReturnType<typeof supprimerCompte>>
@@ -107,8 +76,7 @@ When('le titulaire supprime son compte', async () => {
       auteur: { _tag: 'titulaire' },
       maintenant: new Date(),
     },
-    charges,
-    empreinte,
+    ports,
   })
 })
 
@@ -120,8 +88,7 @@ When('un administrateur supprime ce compte', async () => {
       auteur: { _tag: 'administrateur', administrateurId: AuteurId(v4()) },
       maintenant: new Date(),
     },
-    charges,
-    empreinte,
+    ports,
   })
 })
 
@@ -140,8 +107,7 @@ When("un administrateur rejoue l'effacement de ce compte", async () => {
       auteur: { _tag: 'administrateur', administrateurId: AuteurId(v4()) },
       maintenant: new Date(),
     },
-    charges,
-    empreinte,
+    ports,
   })
 })
 
@@ -212,7 +178,7 @@ Then('les jetons du compte sont révoqués', async () => {
 
 Then("le constat d'effacement est complet", () => {
   assert.ok(effacement?.success)
-  assert.strictEqual(effacement.data.constat._tag, 'complet')
+  assert.strictEqual(effacement.data.report._tag, 'complete')
 })
 
 Then("la liaison au fournisseur d'identité existe toujours", async () => {

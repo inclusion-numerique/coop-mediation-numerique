@@ -1,5 +1,5 @@
 import assert from 'node:assert'
-import { effacerEmpreinteCompte } from '@app/web/features/rdvsp/abilities/effacer-empreinte-compte'
+import { effacerEmpreinteRdv } from '@app/web/features/rdvsp/abilities/effacer-empreinte-rdv'
 import {
   ID_TEST,
   seedAutreMediateur,
@@ -13,7 +13,7 @@ import {
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 
-type Bilan = Awaited<ReturnType<typeof effacerEmpreinteCompte>>
+type Bilan = Awaited<ReturnType<typeof effacerEmpreinteRdv>>
 
 let bilan: Bilan | undefined
 
@@ -39,11 +39,11 @@ Given(
 )
 
 When("j'efface l'empreinte RDV de ce compte", async () => {
-  bilan = await effacerEmpreinteCompte({ utilisateurId: testUtilisateurId })
+  bilan = await effacerEmpreinteRdv({ utilisateurId: testUtilisateurId })
 })
 
 When("j'efface à nouveau l'empreinte RDV de ce compte", async () => {
-  bilan = await effacerEmpreinteCompte({ utilisateurId: testUtilisateurId })
+  bilan = await effacerEmpreinteRdv({ utilisateurId: testUtilisateurId })
 })
 
 Then('le compte RDV est délié', () => {

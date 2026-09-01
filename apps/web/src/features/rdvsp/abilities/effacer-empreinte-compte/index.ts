@@ -1,1 +1,0 @@
-export { effacerEmpreinteCompte } from './implementation'

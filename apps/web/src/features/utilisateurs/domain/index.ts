@@ -5,14 +5,16 @@ export {
   coordinateurDe,
   type EtatCompte,
   estSupprime,
+  type IdentifiantsRattaches,
+  identifiantsDe,
   mediateurDe,
   type RattachementsDuCompte,
 } from './compte'
 export { CoordinateurId } from './coordinateur-id'
 export {
-  EMPREINTE_COURRIEL_LONGUEUR,
-  EmpreinteCourriel,
-} from './empreinte-courriel'
+  COURRIEL_HASH_LENGTH,
+  CourrielHash,
+} from './courriel-hash'
 export {
   DOMAINE_COURRIEL_ANONYME,
   estCourrielAnonymise,

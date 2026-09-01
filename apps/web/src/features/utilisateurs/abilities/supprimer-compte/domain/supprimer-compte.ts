@@ -5,7 +5,7 @@ import type {
 import { estRoleProtege } from '@app/web/features/utilisateurs/domain'
 import { failure, type Result, success } from '@app/web/libraries/result'
 import type { AuteurSuppression } from './auteur-suppression'
-import type { ConstatEffacement } from './constat-effacement'
+import type { EffacementReport } from './effacement-report'
 import {
   CompteDejaSupprime,
   RoleProtege,
@@ -17,7 +17,7 @@ export type CompteSupprime = {
   readonly id: UtilisateurId
   readonly motif: MotifSuppression
   readonly supprimeLe: Date
-  readonly constat: ConstatEffacement
+  readonly report: EffacementReport
 }
 
 /**

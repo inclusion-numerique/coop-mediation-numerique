@@ -12,7 +12,7 @@ import { prismaClient } from '@app/web/prismaClient'
  * Le noyau de l'effacement : couper l'accès et effacer l'identité, en une seule
  * transaction.
  *
- * Il vient EN PREMIER, avant toute charge satellite, et pour une raison de
+ * Il vient EN PREMIER, avant toute étape satellite, et pour une raison de
  * correction et non de confort : tant qu'une session reste ouverte, la personne
  * peut recréer pendant l'effacement ce qu'on vient d'effacer.
  *

@@ -16,7 +16,7 @@ export const CouloirAutomatique = defineModel(
 )
 export type CouloirAutomatique = Model.TypeOf<typeof CouloirAutomatique>
 
-/** Qui demande l'effacement. Trois chemins, une seule charge. */
+/** Qui demande l'effacement. Trois chemins, une seule étape. */
 export type AuteurSuppression =
   | { readonly _tag: 'titulaire' }
   | { readonly _tag: 'administrateur'; readonly administrateurId: AuteurId }

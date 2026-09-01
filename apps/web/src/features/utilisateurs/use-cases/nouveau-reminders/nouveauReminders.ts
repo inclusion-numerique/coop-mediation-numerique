@@ -1,7 +1,7 @@
 import {
-  type ChargesEffacement,
   CouloirAutomatique,
-  empreinte,
+  hash,
+  type SupprimerComptePorts,
   supprimerCompte,
 } from '@app/web/features/utilisateurs/abilities/supprimer-compte'
 import { UtilisateurId } from '@app/web/features/utilisateurs/domain'
@@ -32,14 +32,14 @@ const daysAgo = (now: Date, days: number) =>
  *
  * L'effacement lui-même est délégué à l'ability `supprimer-compte`, comme pour
  * une suppression demandée par le titulaire ou décidée par un administrateur :
- * même charge, même contrat de résurrection, un seul endroit à faire évoluer.
+ * même étape, même contrat de résurrection, un seul endroit à faire évoluer.
  * Ce couloir n'apporte que son critère — l'inactivité — et le courriel qui
  * l'annonce.
  *
  * L'adresse réelle est capturée AVANT l'effacement, puisque c'est elle qui doit
  * recevoir la notification.
  */
-const deleteAndNotify = async (now: Date, charges: ChargesEffacement) => {
+const deleteAndNotify = async (now: Date, ports: SupprimerComptePorts) => {
   const usersToDelete = await prismaClient.user.findMany({
     select,
     where: {
@@ -50,7 +50,7 @@ const deleteAndNotify = async (now: Date, charges: ChargesEffacement) => {
   await usersToDelete.reduce<Promise<void>>(async (precedent, user) => {
     await precedent
 
-    const resultat = await supprimerCompte({
+    const result = await supprimerCompte({
       command: {
         cible: UtilisateurId(user.id),
         auteur: {
@@ -59,11 +59,10 @@ const deleteAndNotify = async (now: Date, charges: ChargesEffacement) => {
         },
         maintenant: now,
       },
-      charges,
-      empreinte,
+      ports,
     })
 
-    if (!resultat.success) return
+    if (!result.success) return
 
     await sendNouveauAccountDeletedEmail({
       email: user.email,
@@ -182,15 +181,15 @@ const resetOnboardingStatus = async (now: Date) => {
 }
 
 export const nouveauReminders = async ({
-  charges,
+  ports,
 }: {
-  readonly charges: ChargesEffacement
+  readonly ports: SupprimerComptePorts
 }) => {
   const now = new Date()
 
   const totalUsers = await countTotalActifUsers()
 
-  await deleteAndNotify(now, charges)
+  await deleteAndNotify(now, ports)
   await warnBeforeDeletion(now)
   await remindersAfterXDays(now, totalUsers)(60)
   await remindersAfterXDays(now, totalUsers)(30)

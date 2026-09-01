@@ -1,2 +1,3 @@
-export { empreinte } from './node/empreinte'
-export { compteASupprimer, couperAcces, journaliserConstat } from './prisma'
+export { retirerDesListesDeDiffusion } from './brevo/retirer-des-listes-de-diffusion'
+export { hash } from './node/hash'
+export { compteASupprimer, couperAcces, logEffacementReport } from './prisma'

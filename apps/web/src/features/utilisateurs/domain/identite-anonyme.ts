@@ -1,7 +1,7 @@
 import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
 import { AdresseCourriel } from './adresse-courriel'
-import type { EmpreinteCourriel } from './empreinte-courriel'
+import type { CourrielHash } from './courriel-hash'
 
 export const PRENOM_ANONYME = 'Utilisateur'
 export const NOM_ANONYME = 'Supprimé'
@@ -31,16 +31,12 @@ export type IdentiteAnonyme = Model.TypeOf<typeof IdentiteAnonyme>
  * Fabrique l'identité anonyme d'un compte à partir de son empreinte. Pure et
  * déterministe : deux appels avec la même empreinte rendent le même courriel.
  */
-export const identiteAnonyme = (
-  empreinte: EmpreinteCourriel,
-): IdentiteAnonyme =>
+export const identiteAnonyme = (hash: CourrielHash): IdentiteAnonyme =>
   IdentiteAnonyme({
     prenom: PRENOM_ANONYME,
     nom: NOM_ANONYME,
     nomComplet: `${PRENOM_ANONYME} ${NOM_ANONYME}`,
-    courriel: AdresseCourriel(
-      `deleted+${empreinte}@${DOMAINE_COURRIEL_ANONYME}`,
-    ),
+    courriel: AdresseCourriel(`deleted+${hash}@${DOMAINE_COURRIEL_ANONYME}`),
   })
 
 /**

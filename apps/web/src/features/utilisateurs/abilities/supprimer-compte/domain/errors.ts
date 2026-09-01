@@ -2,7 +2,7 @@ import type {
   RoleUtilisateur,
   UtilisateurId,
 } from '@app/web/features/utilisateurs/domain'
-import type { CauseTechnique } from './constat-effacement'
+import type { FailureReason } from './effacement-report'
 
 export type CompteIntrouvable = {
   readonly _tag: 'CompteIntrouvable'
@@ -23,13 +23,13 @@ export type RoleProtege = {
 
 /**
  * Le noyau transactionnel a échoué : ni sessions coupées, ni jetons révoqués,
- * ni identité effacée. Aucune charge satellite n'a été lancée, l'état est
+ * ni identité effacée. Aucune étape satellite n'a été lancée, l'état est
  * inchangé — c'est le seul échec possible une fois le compte lu.
  */
 export type AccesNonCoupe = {
   readonly _tag: 'AccesNonCoupe'
   readonly utilisateurId: UtilisateurId
-  readonly cause: CauseTechnique
+  readonly cause: FailureReason
 }
 
 export type SupprimerCompteError =
@@ -54,5 +54,5 @@ export const RoleProtege = (
 
 export const AccesNonCoupe = (
   utilisateurId: UtilisateurId,
-  cause: CauseTechnique,
+  cause: FailureReason,
 ): AccesNonCoupe => ({ _tag: 'AccesNonCoupe', utilisateurId, cause })

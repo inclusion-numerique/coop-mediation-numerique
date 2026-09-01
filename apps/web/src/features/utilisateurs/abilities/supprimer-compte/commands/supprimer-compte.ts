@@ -10,130 +10,123 @@ import {
   AccesNonCoupe,
   type AuteurSuppression,
   autoriserSuppression,
-  CauseTechnique,
-  type ChargesEffacement,
   CompteIntrouvable,
   type CompteSupprime,
-  constat,
-  type Empreinte,
+  EffacementStep,
+  ErasedCount,
+  effacementPlan,
+  FailureReason,
   motifDe,
-  NomCharge,
-  planEffacement,
-  type ResultatCharge,
+  report,
+  type StepResult,
   type SupprimerCompteError,
-  VolumeEfface,
+  type SupprimerComptePorts,
 } from '../domain'
 import {
   compteASupprimer,
   couperAcces,
-  journaliserConstat,
+  logEffacementReport,
 } from '../implementation/prisma'
 
-const causeDe = (erreur: unknown): CauseTechnique =>
-  CauseTechnique(
+const failureReasonOf = (erreur: unknown): FailureReason =>
+  FailureReason(
     (erreur instanceof Error ? erreur.message : String(erreur)).slice(0, 500) ||
       'Erreur sans message',
   )
 
 /**
- * Une charge produit un volume, ou rejette. La conversion du rejet en résultat
+ * Une étape produit un nombre, ou rejette. La conversion du rejet en résultat
  * se fait ici, une seule fois : les adaptateurs restent triviaux et n'ont pas à
  * connaître le vocabulaire du constat.
  */
-const executerCharge = async (
-  charge: NomCharge,
+const runStep = async (
+  step: EffacementStep,
   effacer: () => Promise<number>,
-): Promise<ResultatCharge> => {
+): Promise<StepResult> => {
   try {
-    const volume = await effacer()
-    return volume === 0
-      ? { _tag: 'sansObjet', charge }
-      : { _tag: 'effacee', charge, volume: VolumeEfface(volume) }
+    const count = await effacer()
+    return count === 0
+      ? { _tag: 'skipped', step }
+      : { _tag: 'erased', step, count: ErasedCount(count) }
   } catch (erreur) {
-    return { _tag: 'echouee', charge, cause: causeDe(erreur) }
+    return { _tag: 'failed', step, cause: failureReasonOf(erreur) }
   }
 }
 
 /**
- * Les charges qui visent indifféremment un médiateur ou un coordinateur
+ * Les étapes qui visent indifféremment un médiateur ou un coordinateur
  * reçoivent les rattachements tels quels : le type dit déjà ce qui existe.
  * Seules celles qui exigent un médiateur gardent un repli, parce que l'extraire
  * de l'union rend un `MediateurId | null` que le plan seul ne suffit pas à
  * écarter aux yeux du compilateur.
  */
-const effacements = (
+const stepRunners = (
   compte: CompteASupprimer,
-  charges: ChargesEffacement,
-): ReadonlyMap<NomCharge, () => Promise<number>> => {
+  ports: SupprimerComptePorts,
+): ReadonlyMap<EffacementStep, () => Promise<number>> => {
   const mediateurId = mediateurDe(compte.rattachements)
 
   return new Map([
     [
-      NomCharge('PortefeuilleBeneficiaires'),
+      EffacementStep('PortefeuilleBeneficiaires'),
       async () =>
         mediateurId === null
           ? 0
-          : (await charges.anonymiserPortefeuille({ mediateurId })).anonymises,
+          : (await ports.anonymiserPortefeuille({ mediateurId })).anonymises,
     ],
     [
-      NomCharge('EmpreinteRdv'),
+      EffacementStep('EmpreinteRdv'),
       async () => {
-        const bilan = await charges.effacerEmpreinteRdv({
+        const outcome = await ports.effacerEmpreinteRdv({
           utilisateurId: compte.id,
         })
-        return bilan.rdvsExpurges + bilan.usagersSupprimes
+        return outcome.rdvsExpurges + outcome.usagersSupprimes
       },
     ],
     [
-      NomCharge('NotesAccompagnements'),
+      EffacementStep('NotesAccompagnements'),
       async () =>
         (
-          await charges.effacerNotesDesAccompagnements({
+          await ports.effacerNotes({
             rattachements: compte.rattachements,
           })
         ).effacees,
     ],
     [
-      NomCharge('AppartenancesEquipe'),
+      EffacementStep('AppartenancesEquipe'),
       async () => {
-        const bilan = await charges.libererDesEquipes({
+        const outcome = await ports.libererDesEquipes({
           rattachements: compte.rattachements,
         })
         return (
-          bilan.invitationsSupprimees +
-          bilan.appartenancesSupprimees +
-          bilan.tagsTransferes +
-          bilan.tagsSupprimes
+          outcome.invitationsSupprimees +
+          outcome.appartenancesSupprimees +
+          outcome.tagsTransferes +
+          outcome.tagsSupprimes
         )
       },
     ],
     [
-      NomCharge('LieuxActivite'),
+      EffacementStep('LieuxActivite'),
       async () =>
         mediateurId === null
           ? 0
-          : (await charges.retirerDesLieuxActivite({ mediateurId }))
+          : (await ports.retirerDesLieux({ mediateurId }))
               .rattachementsSupprimes,
     ],
     [
-      NomCharge('PartageStatistiques'),
+      EffacementStep('PartageStatistiques'),
       async () =>
         (
-          await charges.revoquerPartageStatistiques({
+          await ports.revoquerPartageStatistiques({
             rattachements: compte.rattachements,
           })
         ).partagesRevoques,
     ],
     [
-      NomCharge('ListesDeDiffusion'),
+      EffacementStep('ListesDeDiffusion'),
       async () =>
-        (
-          await charges.retirerDesListesDeDiffusion({
-            courriel: compte.courriel,
-          })
-        ).contactSupprime
-          ? 1
-          : 0,
+        (await ports.retirerDesListesDeDiffusion(compte.courriel)) ? 1 : 0,
     ],
   ])
 }
@@ -156,20 +149,18 @@ const effacements = (
  *
  * Le constat enfin, qui dit ce qui a abouti. Il est un axe SÉPARÉ du résultat :
  * la personne peut être correctement déconnectée et anonymisée pendant qu'une
- * charge distante a échoué. Confondre les deux ferait avaler l'un des deux.
+ * étape distante a échoué. Confondre les deux ferait avaler l'un des deux.
  */
 export const supprimerCompte = async ({
   command: { cible, auteur, maintenant },
-  charges,
-  empreinte,
+  ports,
 }: {
   readonly command: {
     readonly cible: UtilisateurId
     readonly auteur: AuteurSuppression
     readonly maintenant: Date
   }
-  readonly charges: ChargesEffacement
-  readonly empreinte: Empreinte
+  readonly ports: SupprimerComptePorts
 }): Promise<Result<CompteSupprime, SupprimerCompteError>> => {
   const compte = await compteASupprimer(cible)
 
@@ -179,7 +170,9 @@ export const supprimerCompte = async ({
 
   if (!autorisation.success) return autorisation
 
-  const identite = identiteAnonyme(empreinte(`${compte.id}-${compte.courriel}`))
+  const identite = identiteAnonyme(
+    ports.hash(`${compte.id}-${compte.courriel}`),
+  )
 
   try {
     await couperAcces({
@@ -189,17 +182,17 @@ export const supprimerCompte = async ({
       dejaAnonymise: estCourrielAnonymise(compte.courriel),
     })
   } catch (erreur) {
-    return failure(AccesNonCoupe(compte.id, causeDe(erreur)))
+    return failure(AccesNonCoupe(compte.id, failureReasonOf(erreur)))
   }
 
-  const aEffacer = effacements(compte, charges)
+  const runners = stepRunners(compte, ports)
 
-  const resultats = await planEffacement(compte.rattachements).reduce<
-    Promise<readonly ResultatCharge[]>
+  const results = await effacementPlan(compte.rattachements).reduce<
+    Promise<readonly StepResult[]>
   >(
-    async (precedents, charge) => [
-      ...(await precedents),
-      await executerCharge(charge, aEffacer.get(charge) ?? (async () => 0)),
+    async (previous, step) => [
+      ...(await previous),
+      await runStep(step, runners.get(step) ?? (async () => 0)),
     ],
     Promise.resolve([]),
   )
@@ -208,10 +201,10 @@ export const supprimerCompte = async ({
     id: compte.id,
     motif: motifDe(auteur),
     supprimeLe: maintenant,
-    constat: constat(resultats),
+    report: report(results),
   }
 
-  journaliserConstat(compteSupprime)
+  logEffacementReport(compteSupprime)
 
   return success(compteSupprime)
 }

@@ -1,7 +1,7 @@
 import {
   AdresseCourriel,
   CoordinateurId,
-  EmpreinteCourriel,
+  CourrielHash,
   identiteAnonyme,
   MediateurId,
   RoleUtilisateur,
@@ -114,7 +114,7 @@ describe('identiteAnonymeFromDomain', () => {
   it("efface l'identité et ses résidus", () => {
     const supprimeLe = new Date('2026-08-31T12:00:00.000Z')
     const payload = identiteAnonymeFromDomain(
-      identiteAnonyme(EmpreinteCourriel('abcdef012345')),
+      identiteAnonyme(CourrielHash('abcdef012345')),
       supprimeLe,
     )
 

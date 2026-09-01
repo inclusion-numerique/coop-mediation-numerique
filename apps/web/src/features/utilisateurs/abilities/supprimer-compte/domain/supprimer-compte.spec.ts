@@ -39,38 +39,34 @@ describe('autoriserSuppression', () => {
   it.each([['Admin'] as const, ['Support'] as const])(
     'refuse un compte %s, quel que soit le demandeur',
     (role) => {
-      const resultat = autoriserSuppression(
+      const result = autoriserSuppression(
         compte({ role: RoleUtilisateur(role) }),
         administrateur,
       )
 
-      expect(resultat.success).toBe(false)
-      expect(resultat.success === false && resultat.error._tag).toBe(
-        'RoleProtege',
-      )
+      expect(result.success).toBe(false)
+      expect(result.success === false && result.error._tag).toBe('RoleProtege')
     },
   )
 
   // La garde vaut aussi pour l'auto-suppression : se priver d'un administrateur
   // est une panne d'exploitation, que le clic vienne de lui ou d'un autre.
   it("refuse à un administrateur d'effacer son propre compte", () => {
-    const resultat = autoriserSuppression(
+    const result = autoriserSuppression(
       compte({ role: RoleUtilisateur('Admin') }),
       titulaire,
     )
 
-    expect(resultat.success === false && resultat.error._tag).toBe(
-      'RoleProtege',
-    )
+    expect(result.success === false && result.error._tag).toBe('RoleProtege')
   })
 
   it('refuse au titulaire de supprimer un compte déjà supprimé', () => {
-    const resultat = autoriserSuppression(
+    const result = autoriserSuppression(
       compte({ etat: { _tag: 'supprime', depuis: new Date() } }),
       titulaire,
     )
 
-    expect(resultat.success === false && resultat.error._tag).toBe(
+    expect(result.success === false && result.error._tag).toBe(
       'CompteDejaSupprime',
     )
   })

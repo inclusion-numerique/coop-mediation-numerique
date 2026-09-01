@@ -3,16 +3,17 @@ export {
   CouloirAutomatique,
   couloirsAutomatiques,
 } from './auteur-suppression'
+export { effacementPlan } from './effacement-plan'
 export {
-  CauseTechnique,
-  type ConstatEffacement,
-  constat,
-  estComplet,
-  NomCharge,
-  nomsCharge,
-  type ResultatCharge,
-  VolumeEfface,
-} from './constat-effacement'
+  type EffacementReport,
+  EffacementStep,
+  ErasedCount,
+  effacementSteps,
+  FailureReason,
+  isComplete,
+  report,
+  type StepResult,
+} from './effacement-report'
 export {
   AccesNonCoupe,
   CompteDejaSupprime,
@@ -25,16 +26,15 @@ export {
   motifDe,
   motifsSuppression,
 } from './motif-suppression'
-export { planEffacement } from './plan-effacement'
 export type {
   AnonymiserPortefeuille,
-  ChargesEffacement,
   EffacerEmpreinteRdv,
-  EffacerNotesDesAccompagnements,
-  Empreinte,
+  EffacerNotes,
+  Hash,
   LibererDesEquipes,
-  RetirerDesLieuxActivite,
+  RetirerDesLieux,
   RetirerDesListesDeDiffusion,
   RevoquerPartageStatistiques,
+  SupprimerComptePorts,
 } from './ports'
 export { autoriserSuppression, type CompteSupprime } from './supprimer-compte'

@@ -3,10 +3,10 @@ import {
   coordinateurDe,
   mediateurDe,
 } from '@app/web/features/utilisateurs/domain'
-import { NomCharge } from './constat-effacement'
+import { EffacementStep } from './effacement-report'
 
-type ChargePlanifiable = {
-  readonly charge: NomCharge
+type PlannableStep = {
+  readonly step: EffacementStep
   readonly due: (rattachements: RattachementsDuCompte) => boolean
 }
 
@@ -19,7 +19,7 @@ const porteUnCoordinateur = (rattachements: RattachementsDuCompte): boolean =>
 const porteUneEquipe = (rattachements: RattachementsDuCompte): boolean =>
   porteUnMediateur(rattachements) || porteUnCoordinateur(rattachements)
 
-const toujours = (): boolean => true
+const always = (): boolean => true
 
 /**
  * L'ORDRE de cette table est un invariant, pas une préférence d'écriture.
@@ -32,25 +32,23 @@ const toujours = (): boolean => true
  * Les listes de diffusion viennent en dernier : l'appel sort du réseau, et rien
  * n'oblige à l'attendre avant d'avoir effacé ce qui est chez nous.
  */
-const CHARGES_ORDONNEES: readonly ChargePlanifiable[] = [
-  { charge: NomCharge('PortefeuilleBeneficiaires'), due: porteUnMediateur },
-  { charge: NomCharge('EmpreinteRdv'), due: toujours },
-  { charge: NomCharge('NotesAccompagnements'), due: porteUneEquipe },
-  { charge: NomCharge('AppartenancesEquipe'), due: porteUneEquipe },
-  { charge: NomCharge('LieuxActivite'), due: porteUnMediateur },
-  { charge: NomCharge('PartageStatistiques'), due: porteUneEquipe },
-  { charge: NomCharge('ListesDeDiffusion'), due: toujours },
+const ORDERED_STEPS: readonly PlannableStep[] = [
+  { step: EffacementStep('PortefeuilleBeneficiaires'), due: porteUnMediateur },
+  { step: EffacementStep('EmpreinteRdv'), due: always },
+  { step: EffacementStep('NotesAccompagnements'), due: porteUneEquipe },
+  { step: EffacementStep('AppartenancesEquipe'), due: porteUneEquipe },
+  { step: EffacementStep('LieuxActivite'), due: porteUnMediateur },
+  { step: EffacementStep('PartageStatistiques'), due: porteUneEquipe },
+  { step: EffacementStep('ListesDeDiffusion'), due: always },
 ]
 
 /**
- * Les charges dues pour ce compte, dans l'ordre où elles doivent s'exécuter.
+ * Les étapes dues pour ce compte, dans l'ordre où elles doivent s'exécuter.
  *
  * Un compte sans rattachement ne déclenche que ce qui pend à l'utilisateur
  * lui-même — son compte RDV et ses listes de diffusion.
  */
-export const planEffacement = (
+export const effacementPlan = (
   rattachements: RattachementsDuCompte,
-): readonly NomCharge[] =>
-  CHARGES_ORDONNEES.filter(({ due }) => due(rattachements)).map(
-    ({ charge }) => charge,
-  )
+): readonly EffacementStep[] =>
+  ORDERED_STEPS.filter(({ due }) => due(rattachements)).map(({ step }) => step)

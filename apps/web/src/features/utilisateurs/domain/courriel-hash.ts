@@ -1,7 +1,7 @@
 import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
 
-export const EMPREINTE_COURRIEL_LONGUEUR = 12
+export const COURRIEL_HASH_LENGTH = 12
 
 /**
  * Empreinte qui rend unique le courriel d'un compte anonymisé.
@@ -15,14 +15,14 @@ export const EMPREINTE_COURRIEL_LONGUEUR = 12
  * rejeu : la recalculer sur le courriel courant — qui vaut déjà `deleted+…` —
  * en produirait une nouvelle à chaque passage.
  */
-export const EmpreinteCourriel = defineModel(
+export const CourrielHash = defineModel(
   z
     .string()
     .regex(
-      new RegExp(`^[A-Za-z0-9_-]{${EMPREINTE_COURRIEL_LONGUEUR}}$`),
-      'Empreinte attendue : 12 caractères base64url',
+      new RegExp(`^[A-Za-z0-9_-]{${COURRIEL_HASH_LENGTH}}$`),
+      'Hash attendue : 12 caractères base64url',
     )
-    .brand('EmpreinteCourriel'),
+    .brand('CourrielHash'),
 )
 
-export type EmpreinteCourriel = Model.TypeOf<typeof EmpreinteCourriel>
+export type CourrielHash = Model.TypeOf<typeof CourrielHash>

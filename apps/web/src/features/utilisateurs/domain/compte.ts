@@ -65,5 +65,26 @@ export const coordinateurDe = (
     ? rattachements.coordinateurId
     : null
 
+/**
+ * Les identifiants portés par un compte, projetés depuis ses rattachements.
+ *
+ * L'union dit ce qui EXISTE et interdit de représenter « ni médiateur ni
+ * coordinateur ». Les features qui reçoivent ces identifiants, elles, n'en
+ * connaissent pas la forme et travaillent rôle par rôle : elles attendent un
+ * couple. La traduction est nommée ici pour n'exister qu'une fois, chez le
+ * propriétaire de l'union, plutôt que d'être réécrite par chaque composition.
+ */
+export type IdentifiantsRattaches = {
+  readonly mediateurId: MediateurId | null
+  readonly coordinateurId: CoordinateurId | null
+}
+
+export const identifiantsDe = (
+  rattachements: RattachementsDuCompte,
+): IdentifiantsRattaches => ({
+  mediateurId: mediateurDe(rattachements),
+  coordinateurId: coordinateurDe(rattachements),
+})
+
 export const estSupprime = (compte: CompteASupprimer): boolean =>
   compte.etat._tag === 'supprime'

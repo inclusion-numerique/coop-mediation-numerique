@@ -1,14 +1,23 @@
 'use server'
 
+import { effacerNotes } from '@app/web/features/activites/abilities/effacer-notes'
 import { withAuth } from '@app/web/features/authentification'
+import { anonymiserPortefeuille } from '@app/web/features/beneficiaire/abilities/anonymiser-portefeuille'
+import { libererDesEquipes } from '@app/web/features/equipe'
+import { retirerDesLieux } from '@app/web/features/lieux-activite/abilities/retirer-des-lieux'
+import { revoquerPartageStatistiques } from '@app/web/features/mediateurs/abilities/revoquer-partage-statistiques'
+import { effacerEmpreinteRdv } from '@app/web/features/rdvsp/abilities/effacer-empreinte-rdv'
 import {
-  empreinte,
+  hash,
+  retirerDesListesDeDiffusion,
   SUPPRIMER_COMPTE_ERRORS,
   supprimerCompte,
 } from '@app/web/features/utilisateurs/abilities/supprimer-compte'
-import { UtilisateurId } from '@app/web/features/utilisateurs/domain'
+import {
+  identifiantsDe,
+  UtilisateurId,
+} from '@app/web/features/utilisateurs/domain'
 import { actionBuilder, fromResult } from '@app/web/libraries/nextjs'
-import { chargesEffacement } from './charges-effacement'
 
 /**
  * Suppression de son propre compte.
@@ -27,8 +36,19 @@ export const supprimerMonCompteAction = actionBuilder()
             auteur: { _tag: 'titulaire' },
             maintenant: new Date(),
           },
-          charges: chargesEffacement,
-          empreinte,
+          ports: {
+            anonymiserPortefeuille,
+            effacerEmpreinteRdv,
+            retirerDesLieux,
+            effacerNotes: ({ rattachements }) =>
+              effacerNotes(identifiantsDe(rattachements)),
+            libererDesEquipes: ({ rattachements }) =>
+              libererDesEquipes(identifiantsDe(rattachements)),
+            revoquerPartageStatistiques: ({ rattachements }) =>
+              revoquerPartageStatistiques(identifiantsDe(rattachements)),
+            retirerDesListesDeDiffusion,
+            hash,
+          },
         }),
       { onError: SUPPRIMER_COMPTE_ERRORS },
     ),
