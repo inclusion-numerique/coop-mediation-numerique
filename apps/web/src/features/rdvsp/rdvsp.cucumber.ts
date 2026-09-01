@@ -441,3 +441,32 @@ After(async () => {
     where: { id: { in: [...utilisateursSuivis] } },
   })
 })
+
+/**
+ * Participation d'un usager à un rendez-vous.
+ *
+ * C'est elle qui décide de l'orphelinage : tant qu'une participation désigne un
+ * usager, il ne peut pas être supprimé — la contrainte de clé étrangère l'interdit.
+ */
+export const seedParticipationRdv = async ({
+  id,
+  rdvId,
+  usagerId,
+}: {
+  id: number
+  rdvId: number
+  usagerId: number
+}): Promise<number> => {
+  await prismaClient.rdvParticipation.create({
+    data: {
+      id,
+      rdvId,
+      userId: usagerId,
+      sendLifecycleNotifications: false,
+      sendReminderNotification: false,
+      status: 'unknown',
+    },
+  })
+
+  return id
+}

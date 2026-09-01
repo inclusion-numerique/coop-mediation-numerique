@@ -2010,6 +2010,7 @@ enum MutationName {
   CreerMediateurEnActivite                  @map("creer_mediateur_en_activite")
   SupprimerMediateurEnActivite              @map("supprimer_mediateur_en_activite")
   ChangerRoles                              @map("changer_roles")
+  SupprimerCompte                           @map("supprimer_compte")
 
   @@map("mutation_name")
   @@schema("coop")

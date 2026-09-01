@@ -1,8 +1,7 @@
 'use client'
 
+import { supprimerMonCompteAction } from '@app/web/app/_actions/utilisateurs/supprimer-mon-compte.action'
 import Card from '@app/web/components/Card'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { trpc } from '@app/web/trpc'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import * as Sentry from '@sentry/nextjs'
@@ -19,8 +18,6 @@ const {
 })
 
 const ProfileDeleteCard = () => {
-  const mutation = trpc.user.deleteProfile.useMutation()
-
   const [deleteProfileConfirmation, setDeleteProfileConfirmation] = useState('')
 
   const isDeleteConfirmed =
@@ -29,12 +26,14 @@ const ProfileDeleteCard = () => {
   const deleteProfile = async () => {
     if (!isDeleteConfirmed) return
 
-    try {
-      await mutation.mutateAsync()
-      await signOut()
-    } catch (error) {
-      Sentry.captureException(error)
+    const result = await supprimerMonCompteAction()
+
+    if (!result.success) {
+      Sentry.captureException(new Error(result.error))
+      return
     }
+
+    await signOut()
   }
   return (
     <>
@@ -103,4 +102,4 @@ const ProfileDeleteCard = () => {
   )
 }
 
-export default withTrpc(ProfileDeleteCard)
+export default ProfileDeleteCard

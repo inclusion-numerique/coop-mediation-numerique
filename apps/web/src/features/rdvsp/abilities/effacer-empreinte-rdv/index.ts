@@ -1,0 +1,1 @@
+export { effacerEmpreinteRdv } from './implementation'
