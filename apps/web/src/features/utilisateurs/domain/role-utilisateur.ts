@@ -1,7 +1,9 @@
 import { defineModel, type Model } from '@app/web/libraries/model'
 import { z } from 'zod'
 
-export const rolesUtilisateur = ['User', 'Support', 'Admin'] as const
+const rolesProteges = ['Support', 'Admin'] as const
+
+export const rolesUtilisateur = ['User', ...rolesProteges] as const
 
 /**
  * Rôle d'un compte. Non nullable en base (`@default(User)`), donc pas de valeur
@@ -13,11 +15,5 @@ export const RoleUtilisateur = defineModel(
 
 export type RoleUtilisateur = Model.TypeOf<typeof RoleUtilisateur>
 
-/**
- * Les rôles qu'on refuse d'effacer : se priver silencieusement d'un
- * administrateur ou d'un support est une panne d'exploitation, pas une
- * suppression de compte. La règle ne dépend pas de qui clique — elle vaut aussi
- * pour l'auto-suppression.
- */
 export const estRoleProtege = (role: RoleUtilisateur): boolean =>
-  role === 'Admin' || role === 'Support'
+  rolesProteges.some((protege) => protege === role)
