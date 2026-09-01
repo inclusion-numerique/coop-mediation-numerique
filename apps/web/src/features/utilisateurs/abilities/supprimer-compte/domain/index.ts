@@ -6,7 +6,9 @@ export {
   ErasedCount,
   effacementSteps,
   FailureReason,
+  failureReasonOf,
   isComplete,
+  type NomEffacementStep,
   report,
   type StepResult,
 } from './effacement-report'

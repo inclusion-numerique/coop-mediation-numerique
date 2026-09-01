@@ -12,6 +12,8 @@ export const effacementSteps = [
 ] as const
 
 /** Une étape d'effacement, nommée par son intention et non par sa table. */
+export type NomEffacementStep = (typeof effacementSteps)[number]
+
 export const EffacementStep = defineModel(
   z.enum(effacementSteps).brand('EffacementStep'),
 )
@@ -37,6 +39,18 @@ export const FailureReason = defineModel(
   z.string().trim().min(1).max(500).brand('FailureReason'),
 )
 export type FailureReason = Model.TypeOf<typeof FailureReason>
+
+/**
+ * Ce qu'on retient d'un rejet.
+ *
+ * Tronqué à la longueur du modèle, et jamais vide : une cause absente
+ * n'apprendrait rien à qui relit le journal pour reprendre un effacement.
+ */
+export const failureReasonOf = (erreur: unknown): FailureReason =>
+  FailureReason(
+    (erreur instanceof Error ? erreur.message : String(erreur)).slice(0, 500) ||
+      'Erreur sans message',
+  )
 
 export type StepResult =
   | {
