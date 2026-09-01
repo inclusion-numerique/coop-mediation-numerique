@@ -3,7 +3,7 @@
 import { effacerNotes } from '@app/web/features/activites/abilities/effacer-notes'
 import { withAdmin, withAuth } from '@app/web/features/authentification'
 import { anonymiserPortefeuille } from '@app/web/features/beneficiaire/abilities/anonymiser-portefeuille'
-import { libererDesEquipes } from '@app/web/features/equipe'
+import { detacherDesEquipes } from '@app/web/features/equipe'
 import { retirerDesLieux } from '@app/web/features/lieux-activite/abilities/retirer-des-lieux'
 import { revoquerPartageStatistiques } from '@app/web/features/mediateurs/abilities/revoquer-partage-statistiques'
 import { effacerEmpreinteRdv } from '@app/web/features/rdvsp/abilities/effacer-empreinte-rdv'
@@ -49,8 +49,8 @@ export const supprimerCompteAction = actionBuilder()
             retirerDesLieux,
             effacerNotes: ({ rattachements }) =>
               effacerNotes(identifiantsDe(rattachements)),
-            libererDesEquipes: ({ rattachements }) =>
-              libererDesEquipes(identifiantsDe(rattachements)),
+            detacherDesEquipes: ({ rattachements }) =>
+              detacherDesEquipes(identifiantsDe(rattachements)),
             revoquerPartageStatistiques: ({ rattachements }) =>
               revoquerPartageStatistiques(identifiantsDe(rattachements)),
             retirerDesListesDeDiffusion,

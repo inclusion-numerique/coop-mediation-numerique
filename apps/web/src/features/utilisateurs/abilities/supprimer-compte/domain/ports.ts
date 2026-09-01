@@ -86,7 +86,7 @@ export type EffacerEmpreinteRdv = (input: {
  * d'équipe, et parce que le transfert doit précéder la coupure des
  * appartenances — un invariant d'ordre qu'on ne saurait pas tenir de l'extérieur.
  */
-export type LibererDesEquipes = (input: {
+export type DetacherDesEquipes = (input: {
   readonly rattachements: RattachementsDuCompte
 }) => Promise<{
   readonly invitationsSupprimees: number
@@ -127,7 +127,7 @@ export type SupprimerComptePorts = {
   readonly anonymiserPortefeuille: AnonymiserPortefeuille
   readonly effacerNotes: EffacerNotes
   readonly effacerEmpreinteRdv: EffacerEmpreinteRdv
-  readonly libererDesEquipes: LibererDesEquipes
+  readonly detacherDesEquipes: DetacherDesEquipes
   readonly retirerDesLieux: RetirerDesLieux
   readonly revoquerPartageStatistiques: RevoquerPartageStatistiques
   readonly retirerDesListesDeDiffusion: RetirerDesListesDeDiffusion

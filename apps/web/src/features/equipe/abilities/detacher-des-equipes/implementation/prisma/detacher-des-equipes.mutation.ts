@@ -1,9 +1,9 @@
 import { prismaClient } from '@app/web/prismaClient'
 import { CoordinateurId, MediateurId } from '../../../../domain'
 import {
-  libererLesTagsDuCoordinateur,
-  libererLesTagsDuMediateur,
-} from './liberer-les-tags.mutation'
+  detacherLesTagsDuCoordinateur,
+  detacherLesTagsDuMediateur,
+} from './detacher-les-tags'
 
 type Bilan = {
   readonly invitationsSupprimees: number
@@ -24,7 +24,7 @@ const aucunTag = { transferes: 0, supprimes: 0 }
  *
  * Idempotent : chaque écriture est filtrée sur ce qui est encore vivant.
  */
-export const libererDesEquipes = ({
+export const detacherDesEquipes = ({
   mediateurId,
   coordinateurId,
   maintenant = new Date(),
@@ -37,7 +37,7 @@ export const libererDesEquipes = ({
     const tagsMediateur =
       mediateurId === null
         ? aucunTag
-        : await libererLesTagsDuMediateur(
+        : await detacherLesTagsDuMediateur(
             transaction,
             MediateurId(mediateurId),
             maintenant,
@@ -46,7 +46,7 @@ export const libererDesEquipes = ({
     const tagsCoordinateur =
       coordinateurId === null
         ? aucunTag
-        : await libererLesTagsDuCoordinateur(
+        : await detacherLesTagsDuCoordinateur(
             transaction,
             CoordinateurId(coordinateurId),
             maintenant,

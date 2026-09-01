@@ -1,4 +1,4 @@
-# Feature: Libérer un compte de ses équipes
+# Feature: Détacher un compte de ses équipes
 
 ## Rule: Les tags d'un coordinateur essaiment vers ceux qui s'en servent
 
@@ -9,7 +9,7 @@
 ### Scenario: Le tag d'un coordinateur rejoint chacun de ses utilisateurs
 
 * Given un coordinateur dont le tag est utilisé par 2 médiateurs
-* When je libère ce coordinateur de ses équipes
+* When je détache ce coordinateur de ses équipes
 * Then 2 tags sont essaimés
 * And chaque médiateur utilisateur possède désormais le tag
 * And les comptes rendus pointent vers le tag de leur médiateur
@@ -18,7 +18,7 @@
 ### Scenario: Un tag de coordinateur que personne n'utilise est simplement supprimé
 
 * Given un coordinateur dont le tag est utilisé par 0 médiateur
-* When je libère ce coordinateur de ses équipes
+* When je détache ce coordinateur de ses équipes
 * Then 0 tag est essaimé
 * And le tag du coordinateur est marqué supprimé
 
@@ -27,14 +27,14 @@
 ### Scenario: Le tag revient au coordinateur unique
 
 * Given un médiateur coordonné par un seul coordinateur
-* When je libère ce médiateur de ses équipes
+* When je détache ce médiateur de ses équipes
 * Then 1 tag est transféré
 * And le tag appartient désormais au coordinateur
 
 ### Scenario: Sans coordinateur, le tag est supprimé faute de destinataire
 
 * Given un médiateur sans coordinateur
-* When je libère ce médiateur de ses équipes
+* When je détache ce médiateur de ses équipes
 * Then 0 tag est transféré
 * And le tag du médiateur est marqué supprimé
 
@@ -43,6 +43,6 @@
 ### Scenario: Le médiateur quitte son équipe
 
 * Given un médiateur coordonné par un seul coordinateur
-* When je libère ce médiateur de ses équipes
+* When je détache ce médiateur de ses équipes
 * Then ce médiateur n'appartient plus à aucune équipe
 * And les invitations de ce médiateur ont disparu

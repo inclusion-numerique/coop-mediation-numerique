@@ -28,10 +28,10 @@ export {
 } from './motif-suppression'
 export type {
   AnonymiserPortefeuille,
+  DetacherDesEquipes,
   EffacerEmpreinteRdv,
   EffacerNotes,
   Hash,
-  LibererDesEquipes,
   RetirerDesLieux,
   RetirerDesListesDeDiffusion,
   RevoquerPartageStatistiques,

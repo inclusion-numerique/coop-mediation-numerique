@@ -24,8 +24,8 @@ export const proprietaireFromDomain = (
  *
  * `safe` plutôt que le constructeur strict : la colonne `nom` n'a pas de
  * contrainte de non-vacuité en base. Un nom inexploitable ne peut de toute façon
- * accueillir aucun essaimage — on l'écarte au lieu de faire échouer la
- * libération entière pour une donnée héritée.
+ * accueillir aucun essaimage — on l'écarte au lieu de faire échouer le
+ * détachement entier pour une donnée héritée.
  */
 export const tagsDetenusToDomain = (
   rows: readonly { id: string; nom: string }[],

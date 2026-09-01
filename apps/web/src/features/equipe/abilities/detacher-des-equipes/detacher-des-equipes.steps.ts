@@ -1,5 +1,5 @@
 import assert from 'node:assert'
-import { libererDesEquipes } from '@app/web/features/equipe'
+import { detacherDesEquipes } from '@app/web/features/equipe'
 import {
   equipeSemee,
   semerTagDeCoordinateur,
@@ -8,7 +8,7 @@ import {
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 
-type Bilan = Awaited<ReturnType<typeof libererDesEquipes>>
+type Bilan = Awaited<ReturnType<typeof detacherDesEquipes>>
 
 let bilan: Bilan | undefined
 
@@ -38,15 +38,15 @@ Given('un médiateur sans coordinateur', async () => {
   await semerTagDeMediateur({ avecCoordinateur: false })
 })
 
-When('je libère ce coordinateur de ses équipes', async () => {
-  bilan = await libererDesEquipes({
+When('je détache ce coordinateur de ses équipes', async () => {
+  bilan = await detacherDesEquipes({
     mediateurId: null,
     coordinateurId: equipeSemee().coordinateurId,
   })
 })
 
-When('je libère ce médiateur de ses équipes', async () => {
-  bilan = await libererDesEquipes({
+When('je détache ce médiateur de ses équipes', async () => {
+  bilan = await detacherDesEquipes({
     mediateurId: porteur(),
     coordinateurId: null,
   })

@@ -95,7 +95,7 @@ const stepRunners = (
     [
       EffacementStep('AppartenancesEquipe'),
       async () => {
-        const outcome = await ports.libererDesEquipes({
+        const outcome = await ports.detacherDesEquipes({
           rattachements: compte.rattachements,
         })
         return (

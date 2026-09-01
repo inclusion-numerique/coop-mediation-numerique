@@ -52,7 +52,7 @@ const essaimer = async (
   return destinataires.length
 }
 
-export const libererLesTagsDuCoordinateur = async (
+export const detacherLesTagsDuCoordinateur = async (
   transaction: Transaction,
   coordinateurId: CoordinateurId,
   maintenant: Date,
@@ -87,7 +87,7 @@ export const libererLesTagsDuCoordinateur = async (
   }
 }
 
-export const libererLesTagsDuMediateur = async (
+export const detacherLesTagsDuMediateur = async (
   transaction: Transaction,
   mediateurId: MediateurId,
   maintenant: Date,

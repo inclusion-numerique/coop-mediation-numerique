@@ -6,4 +6,4 @@
  * un oubli — la migration se fait ability par ability, et celle-ci était la
  * première à avoir un propriétaire évident.
  */
-export { libererDesEquipes } from './abilities/liberer-des-equipes'
+export { detacherDesEquipes } from './abilities/detacher-des-equipes'

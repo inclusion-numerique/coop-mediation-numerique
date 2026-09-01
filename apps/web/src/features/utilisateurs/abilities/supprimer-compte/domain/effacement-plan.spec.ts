@@ -41,7 +41,7 @@ describe('effacementPlan', () => {
     expect(effacementPlan(coordinateur)).not.toContain('LieuxActivite')
   })
 
-  it('libère les équipes dès que le compte porte un rôle', () => {
+  it('détache les équipes dès que le compte porte un rôle', () => {
     expect(effacementPlan(mediateur)).toContain('AppartenancesEquipe')
     expect(effacementPlan(coordinateur)).toContain('AppartenancesEquipe')
     expect(effacementPlan(aucun)).not.toContain('AppartenancesEquipe')
