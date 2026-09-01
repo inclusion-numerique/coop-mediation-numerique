@@ -1,5 +1,7 @@
 import type { UniteLegale } from '@app/web/external-apis/apiEntrepriseApiModels'
+import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import pRetry, { AbortError } from 'p-retry'
+import { rechercheApiEntrepriseE2e } from './rechercheApiEntreprise.e2e'
 
 const rechercheApiEntrepriseEndpoint =
   'https://recherche-entreprises.api.gouv.fr/search'
@@ -106,6 +108,11 @@ export const rechercheApiEntreprise = async (
   queryParams: RechercheApiEntrepriseQueryParams,
   retryOptions?: RechercheApiEntrepriseRetryOptions,
 ): Promise<RechercheApiResponse> => {
+  // Les parcours e2e ne dépendent pas d'un service public tiers : son
+  // indisponibilité se traduirait par une employeuse silencieusement absente,
+  // donc par une suite rouge sans rapport avec le code testé.
+  if (PublicWebAppConfig.isE2e) return rechercheApiEntrepriseE2e(queryParams)
+
   const queryUrl = `${rechercheApiEntrepriseEndpoint}?${convertQueryParams(queryParams).toString()}`
 
   const executeFetch = async () => {
