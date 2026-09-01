@@ -2,8 +2,7 @@
 
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { trpc } from '@app/web/trpc'
+import { supprimerCompteAction } from '@app/web/app/_actions/utilisateurs/supprimer-compte.action'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import { useRouter } from 'next/navigation'
@@ -26,7 +25,7 @@ const DeleteUserButtonComponent = ({
   userName: string
 }) => {
   const router = useRouter()
-  const mutation = trpc.user.adminDeleteUser.useMutation()
+  const [suppressionEnCours, setSuppressionEnCours] = useState(false)
   const [confirmation, setConfirmation] = useState('')
 
   const isConfirmed = confirmation.trim().toLowerCase() === 'oui'
@@ -34,21 +33,23 @@ const DeleteUserButtonComponent = ({
   const onDelete = async () => {
     if (!isConfirmed) return
 
-    try {
-      await mutation.mutateAsync({ userId })
-      closeDeleteUserModal()
-      createToast({
-        priority: 'success',
-        message: `L'utilisateur ${userName} a été supprimé`,
-      })
-      router.refresh()
-    } catch {
-      createToast({
-        priority: 'error',
-        message:
-          'Erreur lors de la suppression, veuillez réessayer ou contacter le support',
-      })
+    setSuppressionEnCours(true)
+
+    const result = await supprimerCompteAction({ utilisateurId: userId })
+
+    setSuppressionEnCours(false)
+
+    if (!result.success) {
+      createToast({ priority: 'error', message: result.error })
+      return
     }
+
+    closeDeleteUserModal()
+    createToast({
+      priority: 'success',
+      message: `L'utilisateur ${userName} a été supprimé`,
+    })
+    router.refresh()
   }
 
   return (
@@ -68,7 +69,7 @@ const DeleteUserButtonComponent = ({
             children: 'Supprimer',
             disabled: !isConfirmed,
             onClick: onDelete,
-            ...buttonLoadingClassname(mutation.isPending, 'fr-btn--danger'),
+            ...buttonLoadingClassname(suppressionEnCours, 'fr-btn--danger'),
           },
         ]}
       >
@@ -102,4 +103,4 @@ const DeleteUserButtonComponent = ({
   )
 }
 
-export default withTrpc(DeleteUserButtonComponent)
+export default DeleteUserButtonComponent
