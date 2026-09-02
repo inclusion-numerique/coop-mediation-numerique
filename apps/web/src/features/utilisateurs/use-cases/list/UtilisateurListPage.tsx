@@ -1,7 +1,7 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { pluralize } from '@app/ui/utils/pluriel/pluralize'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
+import { LieuActiviteOption } from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { contentId } from '@app/web/utils/skipLinks'

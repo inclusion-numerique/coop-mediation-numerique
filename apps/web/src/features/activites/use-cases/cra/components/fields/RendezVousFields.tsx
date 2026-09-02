@@ -6,12 +6,12 @@ import {
   CommuneComboBox,
   CommuneOptions,
 } from '@app/web/features/adresse/combo-box/CommuneComboBox'
+import type { LieuActiviteOption } from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import type { LieuActiviteTrouve } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite'
 import {
   LieuActiviteComboBox,
   LieuActiviteOptions,
 } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite/ui/LieuActiviteComboBox'
-import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
 import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { formOptions } from '@tanstack/react-form'

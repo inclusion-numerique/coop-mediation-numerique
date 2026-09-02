@@ -1,25 +1,5 @@
-import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { prismaClient } from '@app/web/prismaClient'
-import type { Prisma } from '@prisma/client'
-
-export const mediateurStructureSelect = () =>
-  ({
-    nom: true,
-    id: true,
-    adresse: true,
-    codePostal: true,
-    commune: true,
-  }) satisfies Prisma.LieuInclusionSelect
-
-export type LieuActiviteOption = SelectOption<
-  string,
-  {
-    nom: string
-    adresse: string
-    activites: number
-    mostUsed: boolean
-  }
->
+import { type LieuActiviteOption, optionDeLieu } from './option-de-lieu'
 
 type LieuActiviteQueryResult = {
   id: string
@@ -65,18 +45,11 @@ export const getMediateursLieuxActiviteOptions = async ({
   `
 
   return results.map(
-    ({ id, nom, commune, code_postal, adresse, activites_count }, index) => {
-      const count = Number(activites_count)
-      return {
-        value: id,
-        label: nom,
-        extra: {
-          nom,
-          adresse: `${adresse}, ${code_postal} ${commune}`,
-          activites: count,
-          mostUsed: index === 0 && count > 0,
-        },
-      } satisfies LieuActiviteOption
-    },
+    ({ id, nom, commune, code_postal, adresse, activites_count }, rang) =>
+      optionDeLieu(
+        { id, nom, adresse, codePostal: code_postal, commune },
+        Number(activites_count),
+        rang,
+      ),
   )
 }

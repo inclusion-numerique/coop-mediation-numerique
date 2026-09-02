@@ -10,7 +10,7 @@ import {
   statutSocialOptions,
   trancheAgeOptions,
 } from '@app/web/features/beneficiaire/forms/beneficiaire-options'
-import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
+import type { LieuActiviteOption } from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { trpc } from '@app/web/trpc'
