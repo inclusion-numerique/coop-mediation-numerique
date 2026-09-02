@@ -15,6 +15,7 @@ import { DefaultValues } from 'react-hook-form'
 import { Tag } from '../../../tags/components/TagsComboBox'
 import styles from '../../components/CraForm.module.css'
 import { TagsFields } from '../../components/fields/TagsFields'
+import { debutDispositifConum } from '../../validation/CraDateValidation'
 import {
   ECHELON_TERRITORIAL_OPTIONS,
   NATURE_OPTIONS,
@@ -89,7 +90,7 @@ const CraPartenariatForm = ({
             <field.Input
               className="fr-flex-basis-0 fr-flex-grow-1 fr-mb-8v"
               isPending={isPending}
-              nativeInputProps={{ type: 'date' }}
+              nativeInputProps={{ type: 'date', min: debutDispositifConum }}
               classes={{ nativeInputOrTextArea: styles.tallInput }}
               label={
                 <>
