@@ -1,8 +1,8 @@
 'use client'
 
 import Card from '@app/web/components/Card'
-import type { LieuActivitePageDataMediateurEnActivite } from '@app/web/features/lieux-activite/getLieuActivitePageData'
 import ActeurCard from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurCard'
+import type { MediateurEnActiviteDuLieu } from '@app/web/features/mon-reseau/use-cases/lieux/db/mediateursEnActiviteDuLieu'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useState } from 'react'
 
@@ -14,7 +14,7 @@ export const LieuMediateursEnActivite = ({
   canRemoveMediateurFromLieuId,
   structureNom,
 }: {
-  mediateurs: LieuActivitePageDataMediateurEnActivite[]
+  mediateurs: MediateurEnActiviteDuLieu[]
   departementCode: string
   canRemoveMediateurFromLieuId: string | null // if null, mediateurs cannot be removed from the lieu
   structureNom: string
