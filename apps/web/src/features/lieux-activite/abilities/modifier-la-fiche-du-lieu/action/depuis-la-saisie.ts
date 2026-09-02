@@ -25,6 +25,19 @@ import {
 import { vocabulaire } from '../../../db'
 import { BanId } from '../../../domain/ban-id'
 import { NomUsage } from '../../../domain/identite-sirene'
+import {
+  adresseSaisie,
+  courrielsSaisis,
+  itineranceSaisie,
+  localisationSaisie,
+  modalitesAccesSaisies,
+  nonVide,
+  pivotSaisi,
+  presentationSaisie,
+  sitesWebSaisis,
+  telephoneSaisi,
+  urlSaisie,
+} from '../../../domain/saisie'
 import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
 import type { ModificationLieu } from '../domain/modification-lieu'
 import type { SaisieDeSection } from './modifier-la-fiche-du-lieu.validation'
@@ -46,83 +59,6 @@ const horairesOsm = (
   return osm === '' ? null : osm
 }
 
-/** Le séparateur multi-valeurs du schéma national. */
-const SEPARATEUR_LISTE = '|'
-
-const nonVide = (valeur: string | null | undefined): string | null =>
-  valeur != null && valeur.trim() !== '' ? valeur.trim() : null
-
-const url = (valeur: string | null | undefined): Url | null => {
-  const texte = nonVide(valeur)
-
-  return texte != null && isValidUrl(texte) ? Url(texte) : null
-}
-
-const sitesWeb = (valeur: string | null | undefined): readonly Url[] =>
-  (nonVide(valeur) ?? '')
-    .split(SEPARATEUR_LISTE)
-    .map((jeton) => jeton.trim())
-    .filter(isValidUrl)
-    .map(Url)
-
-const pivot = (
-  siret: string | null | undefined,
-  rna: string | null | undefined,
-): Pivot | null => {
-  const siretSaisi = nonVide(siret)
-  if (siretSaisi != null && isSiret(siretSaisi)) return siretSaisi
-
-  const rnaSaisi = nonVide(rna)
-
-  return rnaSaisi != null && isRna(rnaSaisi) ? rnaSaisi : null
-}
-
-const presentation = (
-  resume: string | null | undefined,
-  detail: string | null | undefined,
-): Presentation | null => {
-  const resumeSaisi = nonVide(resume)
-  const detailSaisi = nonVide(detail)
-
-  if (resumeSaisi == null && detailSaisi == null) return null
-
-  return {
-    ...(resumeSaisi == null ? {} : { resume: resumeSaisi }),
-    ...(detailSaisi == null ? {} : { detail: detailSaisi }),
-  }
-}
-
-const telephone = (
-  parTelephone: boolean,
-  numero: string | null | undefined,
-): string | null => {
-  if (!parTelephone) return null
-
-  const saisi = nonVide(numero)
-  const normalise = saisi == null ? null : fixTelephone(saisi)
-
-  return normalise != null && isValidTelephone(normalise) ? normalise : null
-}
-
-const courriels = (
-  parMail: boolean,
-  adresse: string | null | undefined,
-): readonly Courriel[] => {
-  const saisie = parMail ? nonVide(adresse) : null
-
-  return saisie != null && isValidCourriel(saisie) ? [Courriel(saisie)] : []
-}
-
-const modalitesAcces = (saisie: {
-  surPlace: boolean
-  parTelephone: boolean
-  parMail: boolean
-}): readonly ModaliteAcces[] => [
-  ...(saisie.surPlace ? [ModaliteAcces.SePresenter] : []),
-  ...(saisie.parTelephone ? [ModaliteAcces.Telephoner] : []),
-  ...(saisie.parMail ? [ModaliteAcces.ContacterParMail] : []),
-]
-
 /**
  * La saisie devient un modèle du domaine, ou rien : c'est ici, à la frontière,
  * que le parsing a lieu. Ce que le schéma national refuse — une adresse
@@ -135,35 +71,15 @@ export const depuisLaSaisie = (saisie: SaisieDeSection): ModificationLieu => {
   // biome-ignore lint/style/useDefaultSwitchClause: l'union est exhaustive
   switch (saisie.section) {
     case 'InformationsGenerales': {
-      const candidate = {
-        voie: saisie.adresseBan.nom,
-        commune: saisie.adresseBan.commune,
-        code_postal: saisie.adresseBan.codePostal,
-        code_insee: saisie.adresseBan.codeInsee,
-        ...(nonVide(saisie.complementAdresse) == null
-          ? {}
-          : { complement_adresse: saisie.complementAdresse?.trim() }),
-      }
-      const localisation = {
-        latitude: saisie.adresseBan.latitude,
-        longitude: saisie.adresseBan.longitude,
-      }
-      const immatriculation = pivot(saisie.siret, saisie.rna)
+      const immatriculation = pivotSaisi(saisie.siret, saisie.rna)
 
       return {
         section: 'InformationsGenerales',
         nom: Nom(saisie.nom),
-        adresse: isValidAddress(candidate) ? Adresse(candidate) : null,
-        localisation: isValidLocalisation(localisation)
-          ? Localisation(localisation)
-          : null,
+        adresse: adresseSaisie(saisie.adresseBan, saisie.complementAdresse),
+        localisation: localisationSaisie(saisie.adresseBan),
         banId: BanId.safe(saisie.adresseBan.id),
-        itinerance:
-          saisie.lieuItinerant == null
-            ? []
-            : saisie.lieuItinerant
-              ? [Itinerance.Itinerant]
-              : [Itinerance.Fixe],
+        itinerance: itineranceSaisie(saisie.lieuItinerant),
         typologies: vocabulaire.traduites(
           saisie.typologies,
           vocabulaire.typologie.versStandard,
@@ -185,15 +101,15 @@ export const depuisLaSaisie = (saisie: SaisieDeSection): ModificationLieu => {
     case 'InformationsPratiques':
       return {
         section: 'InformationsPratiques',
-        sitesWeb: sitesWeb(saisie.siteWeb),
-        ficheAccesLibre: url(saisie.ficheAccesLibre),
-        priseRdv: url(saisie.priseRdv),
+        sitesWeb: sitesWebSaisis(saisie.siteWeb),
+        ficheAccesLibre: urlSaisie(saisie.ficheAccesLibre),
+        priseRdv: urlSaisie(saisie.priseRdv),
         horaires: horairesOsm(saisie.openingHours, saisie.horairesComment),
       }
     case 'Description':
       return {
         section: 'Description',
-        presentation: presentation(
+        presentation: presentationSaisie(
           saisie.presentationResume,
           saisie.presentationDetail,
         ),
@@ -217,9 +133,9 @@ export const depuisLaSaisie = (saisie: SaisieDeSection): ModificationLieu => {
     case 'ModalitesAccesAuService':
       return {
         section: 'ModalitesAccesAuService',
-        modalitesAcces: modalitesAcces(saisie),
-        telephone: telephone(saisie.parTelephone, saisie.numeroTelephone),
-        courriels: courriels(saisie.parMail, saisie.adresseMail),
+        modalitesAcces: modalitesAccesSaisies(saisie),
+        telephone: telephoneSaisi(saisie.parTelephone, saisie.numeroTelephone),
+        courriels: courrielsSaisis(saisie.parMail, saisie.adresseMail),
         fraisACharge: vocabulaire.traduites(
           saisie.fraisACharge,
           vocabulaire.fraisACharge.versStandard,

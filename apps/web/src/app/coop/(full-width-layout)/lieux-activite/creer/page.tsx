@@ -1,7 +1,7 @@
 import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { authenticateMediateur } from '@app/web/auth/authenticateUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import CreerLieuActivitePage from '@app/web/features/lieux-activite/components/creer/CreerLieuActivitePage'
+import CreerLieuActivitePage from '@app/web/features/lieux-activite/abilities/creer-lieu-activite/ui/CreerLieuActivitePage'
 import { contentId } from '@app/web/utils/skipLinks'
 
 const LieuActiviteCreerPage = async () => {

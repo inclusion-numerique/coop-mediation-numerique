@@ -1,16 +1,15 @@
 'use client'
 
 import { createToast } from '@app/ui/toast/createToast'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { trpc } from '@app/web/trpc'
+import { creerUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/creer-lieu-activite.action'
 import { getDepartementCodeFromCodeInsee } from '@app/web/utils/getDepartementFromCodeInsee'
 import { useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'
-import { CreerLieuActivitePageContent } from './CreerLieuActivitePageContent'
+import { CreerLieuActivitePageContent } from '../../../components/creer/CreerLieuActivitePageContent'
 import {
   type CreerLieuActiviteFormData,
   toCreerLieuData,
-} from './creerLieuActiviteFormData'
+} from '../../../components/creer/creerLieuActiviteFormData'
 
 const erreurEnregistrement = () =>
   createToast({
@@ -22,26 +21,26 @@ const erreurEnregistrement = () =>
 /** Création d'un lieu d'activité depuis la gestion des lieux d'un médiateur. */
 const CreerLieuActivitePage = ({ contentTop }: { contentTop?: ReactNode }) => {
   const router = useRouter()
-  const mutation = trpc.lieuActivite.create.useMutation()
 
   const onCreer = async (value: CreerLieuActiviteFormData) => {
     const { adresseBan, ...data } = toCreerLieuData(value)
     if (adresseBan == null) return
 
-    try {
-      const lieu = await mutation.mutateAsync({ ...data, adresseBan })
+    const resultat = await creerUnLieuActiviteAction({ ...data, adresseBan })
 
-      createToast({
-        priority: 'success',
-        message: 'Le lieu d’activité a bien été créé.',
-      })
-
-      router.push(
-        `/coop/mon-reseau/${getDepartementCodeFromCodeInsee(adresseBan.codeInsee)}/lieux/${lieu.id}`,
-      )
-    } catch {
+    if (!resultat.success) {
       erreurEnregistrement()
+      return
     }
+
+    createToast({
+      priority: 'success',
+      message: 'Le lieu d’activité a bien été créé.',
+    })
+
+    router.push(
+      `/coop/mon-reseau/${getDepartementCodeFromCodeInsee(adresseBan.codeInsee)}/lieux/${resultat.data.id}`,
+    )
   }
 
   return (
@@ -53,4 +52,4 @@ const CreerLieuActivitePage = ({ contentTop }: { contentTop?: ReactNode }) => {
   )
 }
 
-export default withTrpc(CreerLieuActivitePage)
+export default CreerLieuActivitePage

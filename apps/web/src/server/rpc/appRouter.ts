@@ -5,7 +5,6 @@ import { craRouter } from '@app/web/server/rpc/cra/craRouter'
 import { router } from '@app/web/server/rpc/createRouter'
 import { imageRouter } from '@app/web/server/rpc/image/imageRouter'
 import { inscriptionRouter } from '@app/web/server/rpc/inscription/inscriptionRouter'
-import { lieuActiviteRouter } from '@app/web/server/rpc/lieu-activite/lieuActiviteRouter'
 import { mediateursRouter } from '@app/web/server/rpc/mediateur/mediateursRouter'
 import { siretRouter } from '@app/web/server/rpc/siret/siretRouter'
 import { structuresRouter } from '@app/web/server/rpc/structures/structuresRouter'
@@ -23,7 +22,6 @@ export const appRouter = router({
   mediateur: mediateursRouter,
   cra: craRouter,
   usurpation: usurpationRouter,
-  lieuActivite: lieuActiviteRouter,
   apiClient: apiClientRouter,
   tags: tagsRouter,
   maintenance: maintenanceRouter,
