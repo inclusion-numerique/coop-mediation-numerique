@@ -2,12 +2,11 @@
 
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { trpc } from '@app/web/trpc'
+import { retirerUnMediateurDuLieuAction } from '@app/web/app/_actions/lieux-activite/retirer-un-mediateur-du-lieu.action'
 import { formatDate } from '@app/web/utils/formatDate'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useState } from 'react'
 import { RemoveMediateurFromLieuDynamicModal } from './RemoveMediateurFromLieuDynamicModal'
 
 const RemoveMediateurFromLieuModal = () => {
@@ -21,38 +20,34 @@ const RemoveMediateurFromLieuModal = () => {
   } = RemoveMediateurFromLieuDynamicModal.useState()
 
   const router = useRouter()
-  const mutation = trpc.lieuActivite.removeMediateurFromLieu.useMutation()
-  const isPending = mutation.isPending
+  const [isPending, setIsPending] = useState(false)
 
   const handleConfirm = async () => {
     if (isPending) return
 
-    try {
-      await mutation.mutateAsync({
-        mediateurId,
-        structureId,
-      })
+    setIsPending(true)
+    const resultat = await retirerUnMediateurDuLieuAction({
+      mediateurId,
+      lieuId: structureId,
+    })
+    setIsPending(false)
 
-      RemoveMediateurFromLieuDynamicModal.close()
-
-      createToast({
-        priority: 'success',
-        message:
-          variant === 'mediateur'
-            ? `${mediateurDisplayName} a bien été retiré du lieu ${structureNom}.`
-            : `${structureNom} a bien été retiré de votre liste de lieux d’activité.`,
-      })
-
-      router.refresh()
-    } catch {
-      createToast({
-        priority: 'error',
-        message:
-          variant === 'mediateur'
-            ? 'Une erreur est survenue lors du retrait du médiateur.'
-            : 'Une erreur est survenue lors du retrait du lieu.',
-      })
+    if (!resultat.success) {
+      createToast({ priority: 'error', message: resultat.error })
+      return
     }
+
+    RemoveMediateurFromLieuDynamicModal.close()
+
+    createToast({
+      priority: 'success',
+      message:
+        variant === 'mediateur'
+          ? `${mediateurDisplayName} a bien été retiré du lieu ${structureNom}.`
+          : `${structureNom} a bien été retiré de votre liste de lieux d’activité.`,
+    })
+
+    router.refresh()
   }
 
   const formattedDate = derniereActiviteDate
@@ -123,4 +118,4 @@ const RemoveMediateurFromLieuModal = () => {
   )
 }
 
-export default withTrpc(RemoveMediateurFromLieuModal)
+export default RemoveMediateurFromLieuModal
