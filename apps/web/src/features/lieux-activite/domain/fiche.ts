@@ -30,11 +30,16 @@ import type {
  * `Fiche` est `LieuMediationNumerique` moins ce que l'enveloppe coop possède en
  * propre : l'identifiant, la date de mise à jour et la source.
  *
- * Trois champs y restent des chaînes nues — `horaires`, `structureParente` et
+ * Deux champs y restent des chaînes nues — `horaires` et
  * `autresFormationsLabels` — parce que le standard les laisse ainsi. Les
  * brander ici rouvrirait la seconde vérité qu'on vient de fermer : `horaires`
  * en particulier suit le format OSM `opening_hours`, dont le parseur rejette
  * les valeurs héritées des imports. Le parsing appartient aux presenters.
+ *
+ * `structure_parente` n'y figure pas : la colonne existe et l'API v1 la publie,
+ * mais aucune ligne ne la renseigne et rien ne l'écrit. La porter dans le
+ * domaine reviendrait à la traîner dans chaque ability sans jamais rien en
+ * lire.
  */
 export type Fiche = {
   readonly nom: Nom
@@ -52,7 +57,6 @@ export type Fiche = {
   readonly contact: Contact
   readonly horaires: string | null
   readonly presentation: Presentation | null
-  readonly structureParente: string | null
   readonly services: readonly Service[]
   readonly publicsSpecifiquementAdresses: readonly PublicSpecifiquementAdresse[]
   readonly priseEnChargeSpecifique: readonly PriseEnChargeSpecifique[]

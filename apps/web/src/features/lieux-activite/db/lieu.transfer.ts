@@ -147,7 +147,6 @@ const toFiche = (row: LieuInclusion): Fiche => ({
   contact: toContact(row),
   horaires: nonVide(row.horaires),
   presentation: toPresentation(row),
-  structureParente: nonVide(row.structureParente),
   services: vocabulaire.traduites(
     row.services,
     vocabulaire.service.versStandard,
@@ -281,7 +280,6 @@ export const lieuFromDomain = ({
   horaires: fiche.horaires,
   presentationResume: fiche.presentation?.resume ?? null,
   presentationDetail: fiche.presentation?.detail ?? null,
-  structureParente: fiche.structureParente,
   ficheAccesLibre: fiche.ficheAccesLibre,
   priseRdv: fiche.priseRdv,
   autresFormationsLabels: [...fiche.autresFormationsLabels],

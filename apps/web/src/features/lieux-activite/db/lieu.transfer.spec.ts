@@ -39,8 +39,12 @@ const modification = new Date('2026-08-20T14:30:00Z')
 const id = LieuId('550e8400-e29b-41d4-a716-446655440000')
 const auteur = UserId('550e8400-e29b-41d4-a716-446655440001')
 
-/** Les colonnes que le domaine ne porte pas : lignage v1, compteur, référent. */
+/**
+ * Les colonnes que le domaine ne porte pas : lignage v1, compteur, référent, et
+ * `structureParente` — que rien n'écrit et qu'aucune ligne ne renseigne.
+ */
 const horsDomaine = {
+  structureParente: null,
   nomReferent: null,
   courrielReferent: null,
   telephoneReferent: null,
@@ -67,7 +71,6 @@ const minimal: Lieu = {
     contact: Contact({}),
     horaires: null,
     presentation: null,
-    structureParente: null,
     services: [],
     publicsSpecifiquementAdresses: [],
     priseEnChargeSpecifique: [],
@@ -116,7 +119,6 @@ const maximal: Lieu = {
     }),
     horaires: 'Mo-Fr 09:00-12:00,14:00-18:30; Sa 08:30-12:00',
     presentation: { resume: 'Un résumé', detail: 'Un détail plus long' },
-    structureParente: 'Ville de Reims',
     services: [
       Service.AideAuxDemarchesAdministratives,
       Service.MaterielInformatiqueAPrixSolidaire,
