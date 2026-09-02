@@ -1,4 +1,5 @@
 import z from 'zod'
+import { CraDateValidation } from '../../validation/CraDateValidation'
 import { CraDureeValidation } from '../../validation/CraDureeValidation'
 
 const initiativeValues = ['Initiative', 'Demande'] as const
@@ -32,9 +33,7 @@ export type ThematiqueAnimationValue =
 export const CraAnimationValidation = z
   .object({
     id: z.string().uuid().nullish(), // defined if update, nullish if create
-    date: z
-      .string({ required_error: 'Veuillez renseigner une date' })
-      .date('Veuillez renseigner une date valide'),
+    date: CraDateValidation,
     duree: CraDureeValidation,
     coordinateurId: z.string().uuid(), // owner of the CRA
     mediateurs: z.number().nullish(),
