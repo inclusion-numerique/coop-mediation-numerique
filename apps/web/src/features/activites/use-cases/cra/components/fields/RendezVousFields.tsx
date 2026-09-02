@@ -15,6 +15,7 @@ import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { formOptions } from '@tanstack/react-form'
 import { typeLieuOptionsWithExtras } from '../../fields/type-lieu'
+import { debutDispositifConum } from '../../validation/CraDateValidation'
 import { CraData } from '../../validation/CraValidation'
 import styles from '../CraForm.module.css'
 
@@ -79,7 +80,7 @@ export const RendezVousFields = withForm({
               <field.Input
                 className="fr-flex-basis-0 fr-flex-grow-1 fr-mb-8v"
                 isPending={isPending}
-                nativeInputProps={{ type: 'date' }}
+                nativeInputProps={{ type: 'date', min: debutDispositifConum }}
                 classes={{ nativeInputOrTextArea: styles.tallInput }}
                 label={
                   <>

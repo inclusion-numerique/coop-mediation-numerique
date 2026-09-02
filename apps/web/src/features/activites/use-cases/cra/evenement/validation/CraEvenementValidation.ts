@@ -1,4 +1,5 @@
 import z from 'zod'
+import { CraDateValidation } from '../../validation/CraDateValidation'
 
 const typeEvenementValues = [
   'GrandPublic',
@@ -40,9 +41,7 @@ export const CraEvenementValidation = z
   .object({
     id: z.string().uuid().nullish(), // defined if update, nullish if create
     coordinateurId: z.string().uuid(), // owner of the CRA
-    date: z
-      .string({ required_error: 'Veuillez renseigner une date' })
-      .date('Veuillez renseigner une date valide'),
+    date: CraDateValidation,
     participants: z.coerce
       .number()
       .int({ message: 'Veuillez renseigner un nombre entier' })
