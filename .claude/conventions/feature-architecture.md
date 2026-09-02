@@ -193,6 +193,7 @@ abilities/<ability>/
 | DV-5 | DI `piqure` adoptée **progressivement**        | DI systématique                                    | Incrémental                                                                    |
 | DV-6 | Pas (encore) de mapping erreur→clé i18n        | `errors.ts` → i18n                                 | À venir, non bloquant                                                          |
 | DV-7 | Jest (`.spec.ts`/`.integration.ts`) + Cucumber | Vitest + Cucumber only                             | Existant ; `.integration.ts` est une convention COOP valide                    |
+| DV-8 | `defaultValues: {} as TFormData` dans `formOptions(…)`, `props: {} as {…}` dans `withForm(…)` | — | Imposé par la signature de TanStack Form : ces options ne servent qu'à porter un type, la valeur n'est jamais lue. Seule exception tolérée à CS-5 ; tout autre `as` reste BLOCKER. |
 
 ---
 
