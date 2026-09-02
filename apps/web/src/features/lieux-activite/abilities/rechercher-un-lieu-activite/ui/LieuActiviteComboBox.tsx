@@ -1,18 +1,17 @@
 import { OptionsData } from '@app/ui/components/Primitives/Options'
+import { rechercherUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
-import { vanillaTrpc } from '@app/web/trpc'
 import type { LieuActiviteTrouve } from '../implementation'
 
-/**
- * Le chargement des suggestions passe encore par tRPC : c'est le transport que
- * les combo-box de la coop utilisent toutes, y compris celles des abilities
- * déjà migrées. La procédure n'est plus qu'un adaptateur sur cette ability.
- */
 const loadSuggestions = async (
   input: string,
-): Promise<{ items: LieuActiviteTrouve[] }> => ({
-  items: [...(await vanillaTrpc.lieuActivite.search.query({ query: input }))],
-})
+): Promise<{ items: LieuActiviteTrouve[] }> => {
+  const resultat = await rechercherUnLieuActiviteAction({ recherche: input })
+
+  // Une recherche qui échoue ne propose rien : le champ reste utilisable, et
+  // l'utilisateur peut toujours saisir autre chose.
+  return { items: resultat.success ? [...resultat.data] : [] }
+}
 
 const itemToString = (item: LieuActiviteTrouve | null): string =>
   item == null ? '' : item.nom
