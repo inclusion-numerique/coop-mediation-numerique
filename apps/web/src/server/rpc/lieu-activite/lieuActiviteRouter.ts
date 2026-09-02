@@ -1,4 +1,5 @@
-import { searchLieuxActivite } from '@app/web/features/lieux-activite/searchLieuxActivite'
+import { rechercherUnLieuActivite } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite'
+import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
 import { CreerLieuActiviteValidation } from '@app/web/features/structures/CreerLieuActiviteValidation'
 import {
   setDescriptionFields,
@@ -51,9 +52,9 @@ export const lieuActiviteRouter = router({
     .query(({ input: { query }, ctx: { user: sessionUser } }) => {
       enforceIsMediateur(sessionUser)
 
-      return searchLieuxActivite({
-        mediateurId: sessionUser.mediateur.id,
-        searchParams: { recherche: query },
+      return rechercherUnLieuActivite({
+        mediateurId: MediateurId(sessionUser.mediateur.id),
+        recherche: query,
       })
     }),
 })
