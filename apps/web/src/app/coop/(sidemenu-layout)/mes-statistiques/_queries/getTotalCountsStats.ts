@@ -1,5 +1,6 @@
 import { activitesMediateurIdsWhereCondition } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/activitesMediateurIdsWhereCondition'
 import { allocatePercentages } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/allocatePercentages'
+import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/activites/use-cases/list/db/activitesEquipeCoordonneeWhereCondition'
 import {
   getActiviteFiltersSqlFragment,
   getActivitesFiltersWhereConditions,
@@ -97,7 +98,6 @@ const getActivityStatsQuery = ({
   mediateurIds?: string[]
   activitesFilters: ActivitesFilters
 }) => {
-  const hasCoordinateurContext = !!user?.coordinateur?.id
   const { needsConseillerNumeriqueJoin, needsStructureJoin } =
     getRequiredJoins(activitesFilters)
 
@@ -109,21 +109,12 @@ const getActivityStatsQuery = ({
       COALESCE(SUM(act.accompagnements_count), 0)::integer AS total_accompagnements,
       COALESCE(SUM(CASE WHEN act.type = 'collectif' THEN act.accompagnements_count ELSE 0 END), 0)::integer AS total_accompagnements_collectifs
     FROM activites act
-      ${
-        hasCoordinateurContext
-          ? Prisma.sql`FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user?.coordinateur?.id}::UUID`
-          : Prisma.empty
-      }
       ${needsStructureJoin ? Prisma.sql`LEFT JOIN lieu_inclusion str ON str.id = act.structure_id` : Prisma.empty}
       ${needsConseillerNumeriqueJoin ? Prisma.sql`LEFT JOIN mediateurs med ON act.mediateur_id = med.id` : Prisma.empty}
       ${needsConseillerNumeriqueJoin ? Prisma.sql`LEFT JOIN users u ON med.user_id = u.id` : Prisma.empty}
     WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
       AND act.suppression IS NULL
-      ${
-        hasCoordinateurContext
-          ? Prisma.sql`AND (act.date <= mc.suppression OR mc.suppression IS NULL)`
-          : Prisma.empty
-      }
+      AND ${activitesEquipeCoordonneeWhereCondition(user?.coordinateur?.id)}
       AND ${getActiviteFiltersSqlFragment(
         getActivitesFiltersWhereConditions(activitesFilters),
       )}
@@ -143,7 +134,6 @@ const getBeneficiaireStatsQuery = ({
   mediateurIds?: string[]
   activitesFilters: ActivitesFilters
 }) => {
-  const hasCoordinateurContext = !!user?.coordinateur?.id
   const { needsConseillerNumeriqueJoin, needsStructureJoin } =
     getRequiredJoins(activitesFilters)
 
@@ -152,11 +142,6 @@ const getBeneficiaireStatsQuery = ({
       COUNT(DISTINCT ben.id)::integer AS total_beneficiaires,
       COUNT(DISTINCT CASE WHEN ben.anonyme = false THEN ben.id END)::integer AS total_beneficiaires_suivis
     FROM activites act
-      ${
-        hasCoordinateurContext
-          ? Prisma.sql`FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user?.coordinateur?.id}::UUID`
-          : Prisma.empty
-      }
       INNER JOIN accompagnements acc ON acc.activite_id = act.id
       INNER JOIN beneficiaires ben ON ben.id = acc.beneficiaire_id
       ${needsStructureJoin ? Prisma.sql`LEFT JOIN lieu_inclusion str ON str.id = act.structure_id` : Prisma.empty}
@@ -164,11 +149,7 @@ const getBeneficiaireStatsQuery = ({
       ${needsConseillerNumeriqueJoin ? Prisma.sql`LEFT JOIN users u ON med.user_id = u.id` : Prisma.empty}
     WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
       AND act.suppression IS NULL
-      ${
-        hasCoordinateurContext
-          ? Prisma.sql`AND (act.date <= mc.suppression OR mc.suppression IS NULL)`
-          : Prisma.empty
-      }
+      AND ${activitesEquipeCoordonneeWhereCondition(user?.coordinateur?.id)}
       AND ${getActiviteFiltersSqlFragment(
         getActivitesFiltersWhereConditions(activitesFilters),
       )}
@@ -193,7 +174,6 @@ const getNouveauxAccompagnementsQuery = ({
     return Promise.resolve({ total_accompagnements_nouveaux: 0 })
   }
 
-  const hasCoordinateurContext = !!user?.coordinateur?.id
   const { needsConseillerNumeriqueJoin, needsStructureJoin } =
     getRequiredJoins(activitesFilters)
 
@@ -202,22 +182,13 @@ const getNouveauxAccompagnementsQuery = ({
       COUNT(*)::integer AS total_accompagnements_nouveaux
     FROM accompagnements acc
       INNER JOIN activites act ON acc.activite_id = act.id
-      ${
-        hasCoordinateurContext
-          ? Prisma.sql`FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user?.coordinateur?.id}::UUID`
-          : Prisma.empty
-      }
       ${needsStructureJoin ? Prisma.sql`LEFT JOIN lieu_inclusion str ON str.id = act.structure_id` : Prisma.empty}
       ${needsConseillerNumeriqueJoin ? Prisma.sql`LEFT JOIN mediateurs med ON act.mediateur_id = med.id` : Prisma.empty}
       ${needsConseillerNumeriqueJoin ? Prisma.sql`LEFT JOIN users u ON med.user_id = u.id` : Prisma.empty}
     WHERE acc.premier_accompagnement = true
       AND ${activitesMediateurIdsWhereCondition(mediateurIds)}
       AND act.suppression IS NULL
-      ${
-        hasCoordinateurContext
-          ? Prisma.sql`AND (act.date <= mc.suppression OR mc.suppression IS NULL)`
-          : Prisma.empty
-      }
+      AND ${activitesEquipeCoordonneeWhereCondition(user?.coordinateur?.id)}
       AND ${getActiviteFiltersSqlFragment(
         getActivitesFiltersWhereConditions(activitesFilters),
       )}

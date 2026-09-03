@@ -2,6 +2,7 @@ import { activitesMediateurIdsWhereCondition } from '@app/web/app/coop/(sidemenu
 import { allocatePercentagesFromRecords } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/allocatePercentages'
 import { createEnumDistinctCountSelect } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/createEnumCountSelect'
 import { derivedTrancheAgeSql } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/derivedTrancheAgeSql'
+import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/activites/use-cases/list/db/activitesEquipeCoordonneeWhereCondition'
 import {
   getActiviteFiltersSqlFragment,
   getActivitesFiltersWhereConditions,
@@ -57,7 +58,6 @@ export const getBeneficiaireStatsRaw = async ({
 }) => {
   if (mediateurIds?.length === 0) return EMPTY_BENEFICIAIRES_STATS
 
-  const hasCoordinateurContext = !!user?.coordinateur?.id
   const { needsConseillerNumeriqueJoin, needsStructureJoin } =
     getRequiredJoins(activitesFilters)
 
@@ -92,22 +92,13 @@ export const getBeneficiaireStatsRaw = async ({
           defaultEnumValue: TrancheAge.NonCommunique,
         })}
       FROM activites act
-        ${
-          hasCoordinateurContext
-            ? Prisma.sql`FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user?.coordinateur?.id}::UUID`
-            : Prisma.empty
-        }
         INNER JOIN accompagnements acc ON acc.activite_id = act.id
         INNER JOIN beneficiaires ben ON ben.id = acc.beneficiaire_id
         ${needsConseillerNumeriqueJoin ? Prisma.sql`LEFT JOIN mediateurs med ON act.mediateur_id = med.id` : Prisma.empty}
         ${needsConseillerNumeriqueJoin ? Prisma.sql`LEFT JOIN users u ON med.user_id = u.id` : Prisma.empty}
         ${needsStructureJoin ? Prisma.sql`LEFT JOIN lieu_inclusion str ON str.id = act.structure_id` : Prisma.empty}
       WHERE act.suppression IS NULL
-        ${
-          hasCoordinateurContext
-            ? Prisma.sql`AND (act.date <= mc.suppression OR mc.suppression IS NULL)`
-            : Prisma.empty
-        }
+        AND ${activitesEquipeCoordonneeWhereCondition(user?.coordinateur?.id)}
         AND ${activitesMediateurIdsWhereCondition(mediateurIds)}
         AND ${activitesSourceWhereCondition(activitesFilters.source)}
         AND ${getActiviteFiltersSqlFragment(
@@ -186,10 +177,7 @@ export const getBeneficiairesCommunesRaw = async ({
             LEFT JOIN lieu_inclusion str ON str.id = act.structure_id
             LEFT JOIN mediateurs med ON act.mediateur_id = med.id
             LEFT JOIN users u ON med.user_id = u.id
-            FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${
-              user.coordinateur?.id
-            }::UUID
-        WHERE (act.date <= mc.suppression OR mc.suppression IS NULL)
+        WHERE ${activitesEquipeCoordonneeWhereCondition(user.coordinateur?.id)}
           AND ${getActiviteFiltersSqlFragment(
             getActivitesFiltersWhereConditions(activitesFilters),
           )}

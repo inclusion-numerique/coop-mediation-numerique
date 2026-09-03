@@ -1,7 +1,7 @@
 import type { ExportDebugLogger } from '@app/web/app/coop/(sidemenu-layout)/mes-activites/export/route'
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFiltersOptionsForMediateur'
-import { mediateurCoordonnesIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
+import { mediateurCoordonnesEtAnciensIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
 import { generateActivitesFiltersLabels } from '../components/generateActivitesFiltersLabels'
 import { addTimezoneToActivite } from '../db/addTimezoneToActivite'
 import {
@@ -18,10 +18,12 @@ const fetchActivitesInBatches = async (
     mediateurIds,
     beneficiaireIds,
     filters,
+    coordinateurId,
   }: {
     mediateurIds: string[]
     beneficiaireIds?: string[]
     filters: ActivitesFilters
+    coordinateurId?: string
   },
   log: ExportDebugLogger,
 ): Promise<SearchActiviteResultRow[]> => {
@@ -35,6 +37,7 @@ const fetchActivitesInBatches = async (
     const { activites, totalPages } = await searchActivite({
       mediateurIds,
       beneficiaireIds,
+      coordinateurId,
       searchParams: {
         ...filters,
         lignes: String(EXPORT_BATCH_SIZE),
@@ -60,22 +63,25 @@ export const getAccompagenmentsWorksheetInput = async ({
   user,
   filters,
   mediateurIds,
+  coordinateurId,
   hasCraV1,
   log,
 }: {
   user: SessionUser
   filters: ActivitesFilters
   mediateurIds: string[]
+  coordinateurId?: string
   hasCraV1: boolean
   log: ExportDebugLogger
 }): Promise<BuildActivitesWorksheetInput> => {
-  const mediateurCoordonnesIds = mediateurCoordonnesIdsFor(user)
+  const mediateurCoordonnesIds = mediateurCoordonnesEtAnciensIdsFor(user)
 
   const activites = await fetchActivitesInBatches(
     {
       mediateurIds,
       beneficiaireIds: filters.beneficiaires,
       filters,
+      coordinateurId,
     },
     log,
   )
