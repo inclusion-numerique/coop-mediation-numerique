@@ -8,6 +8,8 @@ import {
   lireLieuxDejaRattaches,
   trouverStructuresCarto,
 } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation'
+import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
+import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 
 /**
@@ -23,8 +25,9 @@ export const ajouterDesLieuxActiviteAction = actionBuilder()
       async ({ user, input }) =>
         ajouterDesLieuxActivite({
           demandes: input.lieux,
-          userId: user.id,
-          mediateurId: user.mediateur?.id ?? null,
+          userId: UserId(user.id),
+          mediateurId:
+            user.mediateur == null ? null : MediateurId(user.mediateur.id),
           ports: { lireLieuxDejaRattaches, trouverStructuresCarto },
         }),
       { onError: AJOUTER_DES_LIEUX_ACTIVITE_ERRORS },

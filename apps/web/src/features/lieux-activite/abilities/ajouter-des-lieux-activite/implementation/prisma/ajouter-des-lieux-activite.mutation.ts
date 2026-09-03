@@ -1,5 +1,8 @@
 import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
+import { LieuId } from '../../../../domain/lieu-id'
+import type { MediateurId } from '../../../../domain/mediateur-id'
+import type { UserId } from '../../../../domain/user-id'
 import {
   type AjouterDesLieuxActivitePorts,
   type EchecDAjout,
@@ -33,11 +36,11 @@ export const ajouterDesLieuxActivite = async ({
   maintenant = new Date(),
 }: {
   readonly demandes: readonly LieuDemande[]
-  readonly userId: string
-  readonly mediateurId: string | null
+  readonly userId: UserId
+  readonly mediateurId: MediateurId | null
   readonly ports: AjouterDesLieuxActivitePorts
   readonly maintenant?: Date
-}): Promise<Result<{ readonly lieux: readonly string[] }, EchecDAjout>> => {
+}): Promise<Result<{ readonly lieux: readonly LieuId[] }, EchecDAjout>> => {
   if (mediateurId == null) return failure(MediateurRequis)
   if (demandes.length === 0) return failure(PanierVide)
 
@@ -62,17 +65,19 @@ export const ajouterDesLieuxActivite = async ({
   )
 
   const lieux = await prismaClient.$transaction(async (transaction) =>
-    aMaterialiser.reduce<Promise<readonly string[]>>(
+    aMaterialiser.reduce<Promise<readonly LieuId[]>>(
       async (precedents, lieu) => [
         ...(await precedents),
-        (
-          await rattacherAuLieu(transaction, {
-            userId,
-            lieu,
-            structuresCartoParId,
-            maintenant,
-          })
-        ).lieuId,
+        LieuId(
+          (
+            await rattacherAuLieu(transaction, {
+              userId,
+              lieu,
+              structuresCartoParId,
+              maintenant,
+            })
+          ).lieuId,
+        ),
       ],
       Promise.resolve([]),
     ),

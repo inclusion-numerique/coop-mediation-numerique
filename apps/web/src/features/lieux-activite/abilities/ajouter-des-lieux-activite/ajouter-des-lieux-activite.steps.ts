@@ -2,6 +2,8 @@ import assert from 'node:assert'
 import { ajouterDesLieuxActivite } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite'
 import type { LieuDemande } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain'
 import { lireLieuxDejaRattaches } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation'
+import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
+import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
 import { lieuxSemes } from '@app/web/features/lieux-activite/lieux-activite.cucumber'
 import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
@@ -24,8 +26,8 @@ const ajouter = async (
 ) => {
   dernier.ajout = await ajouterDesLieuxActivite({
     demandes,
-    userId: lieuxSemes().userId,
-    mediateurId,
+    userId: UserId(lieuxSemes().userId),
+    mediateurId: mediateurId == null ? null : MediateurId(mediateurId),
     ports,
   })
 }

@@ -1,3 +1,4 @@
+import type { MediateurId } from '../../../domain/mediateur-id'
 import type { CartoStructure } from './carto-structure'
 import type { LieuDejaRattache } from './lieu-demande'
 
@@ -15,7 +16,7 @@ export type TrouverStructuresCarto = (
 
 /** Lit les lieux auxquels le médiateur exerce déjà. */
 export type LireLieuxDejaRattaches = (
-  mediateurId: string,
+  mediateurId: MediateurId,
 ) => Promise<readonly LieuDejaRattache[]>
 
 export type AjouterDesLieuxActivitePorts = {
