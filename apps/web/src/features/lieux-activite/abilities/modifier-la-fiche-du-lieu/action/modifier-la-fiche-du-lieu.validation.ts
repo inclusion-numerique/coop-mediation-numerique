@@ -1,13 +1,11 @@
 import { AdresseBanValidation } from '@app/web/external-apis/ban/AdresseBanValidation'
-import {
-  FormationLabel as PrismaFormationLabel,
-  FraisACharge as PrismaFraisACharge,
-  ModaliteAccompagnement as PrismaModaliteAccompagnement,
-  PriseEnChargeSpecifique as PrismaPriseEnChargeSpecifique,
-  PublicSpecifiquementAdresse as PrismaPublicSpecifiquementAdresse,
-  Service as PrismaService,
-  Typologie as PrismaTypologie,
-} from '@prisma/client'
+import { formationLabelValues } from '@app/web/features/structures/formationLabel'
+import { fraisAChargeValues } from '@app/web/features/structures/fraisACharge'
+import { modaliteAccompagnementValues } from '@app/web/features/structures/modaliteAccompagnement'
+import { priseEnChargeSpecifiqueValues } from '@app/web/features/structures/priseEnChargeSpecifique'
+import { publicSpecifiquementAdresseValues } from '@app/web/features/structures/publicSpecifiquementAdresse'
+import { serviceValues } from '@app/web/features/structures/service'
+import { typologieStructureValue } from '@app/web/features/structures/typologieStructure'
 import { z } from 'zod'
 import { HorairesValidation } from './horaires.validation'
 
@@ -18,6 +16,11 @@ import { HorairesValidation } from './horaires.validation'
  * d'options affichent déjà — et le mapper le traduit vers le schéma national à
  * l'entrée du domaine. Une seule table de correspondance existe, celle du
  * transfer ; l'action s'en sert plutôt que d'en tenir une seconde.
+ *
+ * Les valeurs admises viennent des mêmes listes que les options du formulaire,
+ * et non des enums `@prisma/client` : ce fichier est importé par les composants
+ * `'use client'` des sections, où un import Prisma au runtime embarquerait le
+ * client de base de données dans le bundle du navigateur.
  */
 export const resumeMaxLength = 280
 
@@ -30,7 +33,7 @@ export const InformationsGeneralesSaisie = z.object({
   complementAdresse: texteFacultatif,
   lieuItinerant: z.boolean().nullish(),
   typologies: z
-    .array(z.nativeEnum(PrismaTypologie))
+    .array(z.enum(typologieStructureValue))
     .min(1, 'Sélectionnez au moins une typologie de structure'),
   siret: texteFacultatif,
   rna: texteFacultatif,
@@ -76,13 +79,13 @@ export const DescriptionSaisie = z.object({
     )
     .nullish(),
   presentationDetail: texteFacultatif,
-  formationsLabels: z.array(z.nativeEnum(PrismaFormationLabel)),
+  formationsLabels: z.array(z.enum(formationLabelValues)),
 })
 
 export const ServicesEtAccompagnementSaisie = z.object({
   section: z.literal('ServicesEtAccompagnement'),
-  services: z.array(z.nativeEnum(PrismaService)),
-  modalitesAccompagnement: z.array(z.nativeEnum(PrismaModaliteAccompagnement)),
+  services: z.array(z.enum(serviceValues)),
+  modalitesAccompagnement: z.array(z.enum(modaliteAccompagnementValues)),
 })
 
 /**
@@ -101,16 +104,16 @@ export const ModalitesAccesAuServiceSaisie = z.object({
     .trim()
     .email('Veuillez renseigner une adresse email valide')
     .nullish(),
-  fraisACharge: z.array(z.nativeEnum(PrismaFraisACharge)),
+  fraisACharge: z.array(z.enum(fraisAChargeValues)),
 })
 
 export const TypesDePublicsAccueillisSaisie = z.object({
   section: z.literal('TypesDePublicsAccueillis'),
   toutPublic: z.boolean(),
   publicsSpecifiquementAdresses: z.array(
-    z.nativeEnum(PrismaPublicSpecifiquementAdresse),
+    z.enum(publicSpecifiquementAdresseValues),
   ),
-  priseEnChargeSpecifique: z.array(z.nativeEnum(PrismaPriseEnChargeSpecifique)),
+  priseEnChargeSpecifique: z.array(z.enum(priseEnChargeSpecifiqueValues)),
 })
 
 export const ModifierLaFicheDuLieuValidation = z.object({
