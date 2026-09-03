@@ -3,7 +3,7 @@ import { getFiltersOptionsForMediateur } from '@app/web/components/filters/getFi
 import { generateActivitesFiltersLabels } from '@app/web/features/activites/use-cases/list/components/generateActivitesFiltersLabels'
 import type { ActivitesFilters } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import type { WorksheetUser } from '@app/web/libs/worksheet/addExportMetadata'
-import { mediateurCoordonnesIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
+import { mediateurCoordonnesEtAnciensIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
 import type {
   UserDisplayName,
   UserProfile,
@@ -18,7 +18,7 @@ export const getStatistiquesWorksheetInput = async ({
   user: WorksheetUser & UserDisplayName & UserProfile & UserRdvAccount
   filters: ActivitesFilters
 }): Promise<BuildStatistiquesWorksheetInput> => {
-  const mediateurCoordonnesIds = mediateurCoordonnesIdsFor(user)
+  const mediateurCoordonnesIds = mediateurCoordonnesEtAnciensIdsFor(user)
 
   const statistiques = await getMesStatistiquesPageData({
     user,

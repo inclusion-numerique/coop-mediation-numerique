@@ -1,4 +1,5 @@
 import { activitesMediateurIdsWhereCondition } from '@app/web/app/coop/(sidemenu-layout)/mes-statistiques/_queries/activitesMediateurIdsWhereCondition'
+import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/activites/use-cases/list/db/activitesEquipeCoordonneeWhereCondition'
 import {
   getActiviteFiltersSqlFragment,
   getActivitesFiltersWhereConditions,
@@ -41,8 +42,6 @@ export const getAccompagnementsCountByMonth = async ({
 }) => {
   if (mediateurIds?.length === 0) return EMPTY_ACCOMPAGNEMENTS_COUNT
 
-  const hasCoordinateurContext = !!user?.coordinateur?.id
-
   // include dates until the end of the month if no default end date
   const endDate = periodEnd
     ? `TO_DATE('${periodEnd}', 'YYYY-MM-DD')`
@@ -57,11 +56,6 @@ export const getAccompagnementsCountByMonth = async ({
       WITH filtered_accompagnements AS (
           SELECT act.date
           FROM activites act
-            ${
-              hasCoordinateurContext
-                ? Prisma.sql`FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user?.coordinateur?.id}::UUID`
-                : Prisma.empty
-            }
             INNER JOIN accompagnements acc ON acc.activite_id = act.id
             LEFT JOIN mediateurs med ON act.mediateur_id = med.id
             LEFT JOIN users u ON med.user_id = u.id
@@ -74,11 +68,7 @@ export const getAccompagnementsCountByMonth = async ({
             )}
             AND act.date <= ${Prisma.raw(endDate)}
             AND act.date >= ${Prisma.raw(fromDate)}
-            ${
-              hasCoordinateurContext
-                ? Prisma.sql`AND (act.date <= mc.suppression OR mc.suppression IS NULL)`
-                : Prisma.empty
-            }),
+            AND ${activitesEquipeCoordonneeWhereCondition(user?.coordinateur?.id)}),
            months AS (SELECT DATE_TRUNC(
             'month',
             generate_series(
@@ -120,8 +110,6 @@ export const getAccompagnementsCountByDay = async ({
 }) => {
   if (mediateurIds?.length === 0) return EMPTY_ACCOMPAGNEMENTS_COUNT
 
-  const hasCoordinateurContext = !!user?.coordinateur?.id
-
   const start = periodStart ?? activitesFilters.du
   const end = periodEnd ?? activitesFilters.au
 
@@ -134,11 +122,6 @@ export const getAccompagnementsCountByDay = async ({
       WITH filtered_accompagnements AS (
         SELECT act.date AS date
             FROM activites act
-                ${
-                  hasCoordinateurContext
-                    ? Prisma.sql`FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user?.coordinateur?.id}::UUID`
-                    : Prisma.empty
-                }
                 INNER JOIN accompagnements ON accompagnements.activite_id = act.id
                 LEFT JOIN mediateurs med ON act.mediateur_id = med.id
                 LEFT JOIN users u ON med.user_id = u.id
@@ -151,11 +134,7 @@ export const getAccompagnementsCountByDay = async ({
           )}
           AND act.date <= ${Prisma.raw(endDate)}
           AND act.date >= ${Prisma.raw(fromDate)}
-          ${
-            hasCoordinateurContext
-              ? Prisma.sql`AND (act.date <= mc.suppression OR mc.suppression IS NULL)`
-              : Prisma.empty
-          }),
+          AND ${activitesEquipeCoordonneeWhereCondition(user?.coordinateur?.id)}),
            days AS (SELECT generate_series(${Prisma.raw(
              fromDate,
            )}, ${Prisma.raw(endDate)}, '1 day'::interval) AS date)

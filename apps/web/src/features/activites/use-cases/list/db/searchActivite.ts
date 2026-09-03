@@ -12,6 +12,7 @@ import {
   ActivitesDataTableSearchParams,
 } from '../components/ActivitesDataTable'
 import { ActivitesRawSqlConfiguration } from './ActivitesRawSqlConfiguration'
+import { activitesEquipeCoordonneeWhereCondition } from './activitesEquipeCoordonneeWhereCondition'
 import {
   activiteAccompagnementsCountSelect,
   activitesBeneficiaireInnerJoin,
@@ -27,6 +28,9 @@ type SearchActiviteOptions = {
   beneficiaireIds?: string[]
   searchParams?: ActivitesDataTableSearchParams
   havingRdvId?: boolean
+  // Contexte coordinateur : borne les activités des anciens membres à leur période d'appartenance,
+  // pour que la liste et l'export voient exactement le périmètre de « Mes statistiques ».
+  coordinateurId?: string
 }
 
 export const searchActivite = async (options: SearchActiviteOptions) => {
@@ -74,6 +78,7 @@ export const searchActivite = async (options: SearchActiviteOptions) => {
 
       WHERE (${mediateurIds.length > 0}::BOOLEAN = FALSE OR act.mediateur_id = ANY(${mediateurIds}::UUID[]))
         AND act.suppression IS NULL
+        AND ${activitesEquipeCoordonneeWhereCondition(options.coordinateurId)}
         AND ${filterFragment}
       ORDER BY ${orderByCondition},
                date DESC
@@ -107,6 +112,7 @@ export const searchActivite = async (options: SearchActiviteOptions) => {
           LEFT JOIN users u ON med.user_id = u.id
       WHERE (${mediateurIds.length > 0}::BOOLEAN = FALSE OR act.mediateur_id = ANY(${mediateurIds}::UUID[]))
         AND act.suppression IS NULL
+        AND ${activitesEquipeCoordonneeWhereCondition(options.coordinateurId)}
         AND ${filterFragment}
   `
 
@@ -121,6 +127,7 @@ export const searchActivite = async (options: SearchActiviteOptions) => {
           LEFT JOIN users u ON med.user_id = u.id
       WHERE (${mediateurIds.length > 0}::BOOLEAN = FALSE OR act.mediateur_id = ANY(${mediateurIds}::UUID[]))
         AND act.suppression IS NULL
+        AND ${activitesEquipeCoordonneeWhereCondition(options.coordinateurId)}
         AND ${filterFragment}
   `
 
