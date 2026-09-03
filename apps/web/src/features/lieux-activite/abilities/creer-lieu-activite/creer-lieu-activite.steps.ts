@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { emptyOpeningHours } from '@app/web/components/structure/fields/openingHoursHelpers'
 import { creerLieuActivite } from '@app/web/features/lieux-activite/abilities/creer-lieu-activite'
+import { nouveauLieu } from '@app/web/features/lieux-activite/abilities/creer-lieu-activite/action/depuis-la-saisie'
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
 import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
 import { ficheSemee } from '@app/web/features/lieux-activite/lieux-activite.cucumber'
@@ -50,9 +51,12 @@ const saisie: CreerLieuActiviteData = {
 
 const creer = async (mediateurId: string | null) => {
   dernier.creation = await creerLieuActivite({
-    saisie,
+    lieu: nouveauLieu(
+      saisie,
+      UserId(ficheSemee().userIds[0] ?? ''),
+      new Date(),
+    ),
     mediateurId: mediateurId == null ? null : MediateurId(mediateurId),
-    par: UserId(ficheSemee().userIds[0] ?? ''),
   })
 
   if (dernier.creation.success) dernier.lieuCreeId = dernier.creation.data.id
