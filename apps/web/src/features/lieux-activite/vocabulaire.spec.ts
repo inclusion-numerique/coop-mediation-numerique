@@ -10,11 +10,11 @@ import {
   Service as PrismaService,
   Typologie as PrismaTypologie,
 } from '@prisma/client'
-import * as vocabulaire from './vocabulaire.transfer'
+import * as vocabulaire from './vocabulaire'
 
 type Pont<Prisma extends string, Standard extends string> = {
   versStandard: (valeur: Prisma) => Standard | null
-  versPrisma: (valeur: Standard) => Prisma | null
+  versCoop: (valeur: Standard) => Prisma | null
 }
 
 /**
@@ -42,7 +42,7 @@ const exerceTouteLEnumeration = <
     const allerRetour = valeurs.map((valeur) => {
       const standard = pont.versStandard(valeur)
 
-      return standard == null ? null : pont.versPrisma(standard)
+      return standard == null ? null : pont.versCoop(standard)
     })
 
     expect(allerRetour).toEqual(valeurs)

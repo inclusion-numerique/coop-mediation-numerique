@@ -22,7 +22,6 @@ import {
   fromTimetableOpeningHours,
   type Schedule,
 } from '@gouvfr-anct/timetable-to-osm-opening-hours'
-import { vocabulaire } from '../../../db'
 import { BanId } from '../../../domain/ban-id'
 import { NomUsage } from '../../../domain/identite-sirene'
 import {
@@ -39,6 +38,7 @@ import {
   urlSaisie,
 } from '../../../domain/saisie'
 import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
+import * as vocabulaire from '../../../vocabulaire'
 import type { ModificationLieu } from '../domain/modification-lieu'
 import type { SaisieDeSection } from './modifier-la-fiche-du-lieu.validation'
 

@@ -3,4 +3,3 @@ export {
   rattachementFromDomain,
   rattachementToDomain,
 } from './rattachement.transfer'
-export * as vocabulaire from './vocabulaire.transfer'

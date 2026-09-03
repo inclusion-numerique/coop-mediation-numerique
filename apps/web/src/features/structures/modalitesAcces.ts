@@ -1,5 +1,5 @@
 import { ModaliteAcces } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { ModaliteAcces as PrismaModaliteAcces } from '@prisma/client'
+import type { ModaliteAcces as PrismaModaliteAcces } from '@prisma/client'
 
 export const modaliteAccesLabels: Record<PrismaModaliteAcces, ModaliteAcces> = {
   SePresenter: ModaliteAcces.SePresenter,

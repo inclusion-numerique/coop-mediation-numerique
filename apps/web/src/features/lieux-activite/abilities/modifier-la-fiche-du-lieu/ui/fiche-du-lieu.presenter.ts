@@ -22,9 +22,9 @@ import type {
   Service as PrismaService,
   Typologie as PrismaTypologie,
 } from '@prisma/client'
-import { vocabulaire } from '../../../db'
 import type { Lieu } from '../../../domain/lieu'
 import { estPublie } from '../../../domain/visibilite-cartographie'
+import * as vocabulaire from '../../../vocabulaire'
 import type { FicheDuLieu } from '../implementation'
 
 /**
@@ -173,7 +173,7 @@ export const ficheAffichee = ({
       lieuItinerant: itinerant(fiche.itinerance),
       typologies: vocabulaire.traduites(
         fiche.typologies,
-        vocabulaire.typologie.versPrisma,
+        vocabulaire.typologie.versCoop,
       ),
       siret: fiche.pivot != null && isSiret(fiche.pivot) ? fiche.pivot : null,
       rna: fiche.pivot != null && !isSiret(fiche.pivot) ? fiche.pivot : null,
@@ -201,7 +201,7 @@ export const ficheAffichee = ({
       presentationDetail: fiche.presentation?.detail ?? null,
       formationsLabels: vocabulaire.traduites(
         fiche.formationsLabels,
-        vocabulaire.formationLabel.versPrisma,
+        vocabulaire.formationLabel.versCoop,
       ),
       estVide:
         fiche.presentation?.resume == null &&
@@ -210,11 +210,11 @@ export const ficheAffichee = ({
     servicesEtAccompagnement: {
       services: vocabulaire.traduites(
         fiche.services,
-        vocabulaire.service.versPrisma,
+        vocabulaire.service.versCoop,
       ),
       modalitesAccompagnement: vocabulaire.traduites(
         fiche.modalitesAccompagnement,
-        vocabulaire.modaliteAccompagnement.versPrisma,
+        vocabulaire.modaliteAccompagnement.versCoop,
       ),
       estVide:
         fiche.services.length === 0 &&
@@ -228,7 +228,7 @@ export const ficheAffichee = ({
       adresseMail: courriel,
       fraisACharge: vocabulaire.traduites(
         fiche.fraisACharge,
-        vocabulaire.fraisACharge.versPrisma,
+        vocabulaire.fraisACharge.versCoop,
       ),
       estVide:
         fiche.modalitesAcces.length === 0 && fiche.fraisACharge.length === 0,
@@ -238,11 +238,11 @@ export const ficheAffichee = ({
       toutPublic: fiche.publicsSpecifiquementAdresses.length === 0,
       publicsSpecifiquementAdresses: vocabulaire.traduites(
         fiche.publicsSpecifiquementAdresses,
-        vocabulaire.publicSpecifiquementAdresse.versPrisma,
+        vocabulaire.publicSpecifiquementAdresse.versCoop,
       ),
       priseEnChargeSpecifique: vocabulaire.traduites(
         fiche.priseEnChargeSpecifique,
-        vocabulaire.priseEnChargeSpecifique.versPrisma,
+        vocabulaire.priseEnChargeSpecifique.versCoop,
       ),
       estVide:
         fiche.publicsSpecifiquementAdresses.length === 0 &&

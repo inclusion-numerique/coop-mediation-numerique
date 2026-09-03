@@ -40,7 +40,7 @@ import {
   estPublie,
   VisibiliteCartographie,
 } from '../domain/visibilite-cartographie'
-import * as vocabulaire from './vocabulaire.transfer'
+import * as vocabulaire from '../vocabulaire'
 
 /** Le séparateur multi-valeurs du schéma national. */
 const SEPARATEUR_LISTE = '|'
@@ -283,36 +283,36 @@ export const lieuFromDomain = ({
   ficheAccesLibre: fiche.ficheAccesLibre,
   priseRdv: fiche.priseRdv,
   autresFormationsLabels: [...fiche.autresFormationsLabels],
-  typologies: versPrisma(fiche.typologies, vocabulaire.typologie.versPrisma),
-  services: versPrisma(fiche.services, vocabulaire.service.versPrisma),
+  typologies: versPrisma(fiche.typologies, vocabulaire.typologie.versCoop),
+  services: versPrisma(fiche.services, vocabulaire.service.versCoop),
   publicsSpecifiquementAdresses: versPrisma(
     fiche.publicsSpecifiquementAdresses,
-    vocabulaire.publicSpecifiquementAdresse.versPrisma,
+    vocabulaire.publicSpecifiquementAdresse.versCoop,
   ),
   priseEnChargeSpecifique: versPrisma(
     fiche.priseEnChargeSpecifique,
-    vocabulaire.priseEnChargeSpecifique.versPrisma,
+    vocabulaire.priseEnChargeSpecifique.versCoop,
   ),
   modalitesAcces: versPrisma(
     fiche.modalitesAcces,
-    vocabulaire.modaliteAcces.versPrisma,
+    vocabulaire.modaliteAcces.versCoop,
   ),
   fraisACharge: versPrisma(
     fiche.fraisACharge,
-    vocabulaire.fraisACharge.versPrisma,
+    vocabulaire.fraisACharge.versCoop,
   ),
-  itinerance: versPrisma(fiche.itinerance, vocabulaire.itinerance.versPrisma),
+  itinerance: versPrisma(fiche.itinerance, vocabulaire.itinerance.versCoop),
   dispositifProgrammesNationaux: versPrisma(
     fiche.dispositifProgrammesNationaux,
-    vocabulaire.dispositifProgrammeNational.versPrisma,
+    vocabulaire.dispositifProgrammeNational.versCoop,
   ),
   formationsLabels: versPrisma(
     fiche.formationsLabels,
-    vocabulaire.formationLabel.versPrisma,
+    vocabulaire.formationLabel.versCoop,
   ),
   modalitesAccompagnement: versPrisma(
     fiche.modalitesAccompagnement,
-    vocabulaire.modaliteAccompagnement.versPrisma,
+    vocabulaire.modaliteAccompagnement.versCoop,
   ),
   visiblePourCartographieNationale: estPublie(visibilite),
   structureCartographieNationaleId:

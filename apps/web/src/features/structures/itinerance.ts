@@ -1,5 +1,5 @@
 import { Itinerance } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { Itinerance as PrismaItinerance } from '@prisma/client'
+import type { Itinerance as PrismaItinerance } from '@prisma/client'
 
 export const itineranceLabels: Record<PrismaItinerance, Itinerance> = {
   Itinerant: Itinerance.Itinerant,

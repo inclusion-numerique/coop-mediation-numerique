@@ -2,7 +2,6 @@ import { appendComment } from '@app/web/components/structure/fields/openingHours
 import type { CreerLieuActiviteData } from '@app/web/features/structures/CreerLieuActiviteValidation'
 import { Contact, Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { v4 } from 'uuid'
-import { vocabulaire } from '../../../db'
 import { BanId } from '../../../domain/ban-id'
 import type { Lieu } from '../../../domain/lieu'
 import { LieuId } from '../../../domain/lieu-id'
@@ -20,6 +19,7 @@ import {
 } from '../../../domain/saisie'
 import type { UserId } from '../../../domain/user-id'
 import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
+import * as vocabulaire from '../../../vocabulaire'
 
 /**
  * Un lieu qu'on crée n'a pas d'immatriculation : on ne le saisit que lorsque
