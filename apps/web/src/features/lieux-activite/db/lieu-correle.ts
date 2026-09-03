@@ -8,14 +8,19 @@ import type { Prisma } from '@prisma/client'
 export type { Correle, LieuAMaterialiser }
 
 /**
- * Sonde de corrélation des lieux d'inclusion, partagée par les abilities de
- * l'inscription qui en matérialisent un : le renseignement des lieux d'activité
- * (recherche, cartographie, annuaire, création) et la déclaration de la
- * structure employeuse comme lieu. D'où sa place au niveau feature.
+ * Sonde de corrélation des lieux d'inclusion : avant d'en créer un, chercher
+ * celui que la coop connaît peut-être déjà sous une autre dénomination.
  *
- * Elle n'a plus la charge de RECONNAÎTRE un lieu — c'est
- * `libraries/lieu-identite`, qui s'en remet au standard partagé. Il lui reste ce
- * qui touche la base : ratisser, lire, et relever.
+ * Elle n'a pas la charge de RECONNAÎTRE un lieu — c'est `libraries/lieu-identite`,
+ * qui s'en remet au standard partagé. Il lui reste ce qui touche la base :
+ * ratisser, lire, et relever.
+ *
+ * Elle vit ici parce qu'elle interroge `lieuInclusion`, et elle figure dans
+ * l'API publique de la feature parce que ses appelants doivent la composer
+ * DANS leur propre transaction — d'où le client passé en paramètre. C'est le
+ * cas qu'AR-7 prévoit : recoller en mémoire ferait sortir la corrélation de la
+ * transaction qui l'utilise, et deux lecteurs concurrents créeraient le doublon
+ * que la sonde existe précisément pour éviter.
  */
 
 /**

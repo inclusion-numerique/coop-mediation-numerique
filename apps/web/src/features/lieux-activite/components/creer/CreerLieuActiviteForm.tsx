@@ -32,11 +32,19 @@ import { TypesDePublicsAccueillisFields } from './fields/TypesDePublicsAccueilli
 const CreerLieuActiviteForm = ({
   nom,
   annulerHref,
+  onAnnuler,
   onCreer,
   onVisiblePourCartographieNationaleChange,
 }: {
   nom?: string
-  annulerHref: string
+  /** Où revenir en annulant, quand annuler veut dire quitter la page. */
+  annulerHref?: string
+  /**
+   * Ce que fait « Annuler » quand la création se déroule DANS un écran qu'il
+   * ne faut pas quitter — le panier d'ajout, dont la navigation viderait la
+   * sélection en cours.
+   */
+  onAnnuler?: () => void
   onCreer: (data: CreerLieuActiviteFormData) => Promise<void>
   onVisiblePourCartographieNationaleChange?: (visible: boolean) => void
 }) => {
@@ -175,13 +183,28 @@ const CreerLieuActiviteForm = ({
           >
             Créer le lieu d’activité
           </form.Submit>
-          <Button
-            className="fr-display-block fr-width-full fr-text--center fr-mb-20v"
-            priority="secondary"
-            linkProps={{ href: annulerHref, 'aria-disabled': isPending }}
-          >
-            Annuler
-          </Button>
+          {onAnnuler ? (
+            <Button
+              type="button"
+              className="fr-display-block fr-width-full fr-text--center fr-mb-20v"
+              priority="secondary"
+              disabled={isPending}
+              onClick={onAnnuler}
+            >
+              Annuler
+            </Button>
+          ) : (
+            <Button
+              className="fr-display-block fr-width-full fr-text--center fr-mb-20v"
+              priority="secondary"
+              linkProps={{
+                href: annulerHref ?? '/coop/lieux-activite',
+                'aria-disabled': isPending,
+              }}
+            >
+              Annuler
+            </Button>
+          )}
         </div>
       </form>
     </form.AppForm>

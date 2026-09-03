@@ -14,31 +14,15 @@ import {
   employeuseMainToLieuData,
 } from '@app/web/features/inscription/implementation/prisma/employeuse-en-lieu.data'
 import {
-  ajouterLieuxActivite,
-  CREATE_MEDIATEUR_EN_ACTIVITE_KEY,
-  CREATE_STRUCTURE_FROM_CARTO_KEY,
-  CREATE_STRUCTURE_FROM_DATA_KEY,
-  FIND_CARTO_STRUCTURE_KEY,
-  FIND_EXISTING_LIEUX_ACTIVITES_KEY,
-  FIND_STRUCTURES_BY_CARTO_IDS_KEY,
-} from '@app/web/features/lieux-activite/use-cases/ajouter/domain'
-import {
-  createMediateurEnActivite,
-  createStructureFromCarto,
-  createStructureFromData,
-  findCartoStructure,
-  findExistingLieuxActivite,
-  findStructuresByCartoIds,
-  PRISMA_CLIENT_KEY,
-} from '@app/web/features/lieux-activite/use-cases/ajouter/implementations/prisma'
+  ajouterDesLieuxActivite,
+  lireLieuxDejaRattaches,
+  trouverStructuresCarto,
+} from '@app/web/features/lieux-activite'
 import { LieuxActiviteValidation } from '@app/web/features/utilisateurs/use-cases/registration/LieuxActivite'
-import { provide, runWithContainer } from '@app/web/libs/injection'
 import { prismaClient } from '@app/web/prismaClient'
 import { ServerWebAppConfig } from '@app/web/ServerWebAppConfig'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { forbiddenError } from '@app/web/server/rpc/trpcErrors'
-import { findCartoStructuresByIds } from '@app/web/structure/cartoStructureFromEntrepot'
-import { toStructureFromCartoStructure } from '@app/web/structure/toStructureFromCartoStructure'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import { createStopwatch } from '@app/web/utils/stopwatch'
@@ -55,46 +39,6 @@ const inscriptionGuard = (
 }
 
 export const inscriptionRouter = router({
-  ajouterLieuxActivite: protectedProcedure
-    .input(LieuxActiviteValidation)
-    .mutation(
-      async ({
-        input: { userId, lieuxActivite },
-        ctx: { user: sessionUser },
-      }) => {
-        inscriptionGuard(userId, sessionUser)
-
-        const mediateur = await prismaClient.mediateur.findUnique({
-          where: { userId },
-          select: { id: true },
-        })
-
-        if (!mediateur) {
-          throw forbiddenError("L'utilisateur n'est pas un médiateur")
-        }
-
-        return prismaClient.$transaction((tx) =>
-          runWithContainer(async () => {
-            provide(PRISMA_CLIENT_KEY, tx)
-            provide(
-              FIND_EXISTING_LIEUX_ACTIVITES_KEY,
-              findExistingLieuxActivite,
-            )
-            provide(FIND_STRUCTURES_BY_CARTO_IDS_KEY, findStructuresByCartoIds)
-            provide(FIND_CARTO_STRUCTURE_KEY, findCartoStructure)
-            provide(CREATE_STRUCTURE_FROM_DATA_KEY, createStructureFromData)
-            provide(CREATE_STRUCTURE_FROM_CARTO_KEY, createStructureFromCarto)
-            provide(CREATE_MEDIATEUR_EN_ACTIVITE_KEY, createMediateurEnActivite)
-
-            return ajouterLieuxActivite({
-              userId,
-              mediateurId: mediateur.id,
-              lieuxActivite,
-            })
-          }),
-        )
-      },
-    ),
   addMediationNumeriqueToCoordinateur: protectedProcedure.mutation(
     async ({ ctx: { user: sessionUser } }) => {
       inscriptionGuard(sessionUser.id, sessionUser)

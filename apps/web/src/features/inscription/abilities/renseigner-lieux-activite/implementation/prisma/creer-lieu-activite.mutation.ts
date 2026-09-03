@@ -1,7 +1,4 @@
-import {
-  lieuCorrele,
-  preparerCorrele,
-} from '@app/web/features/inscription/implementation/prisma/lieu-correle'
+import { lieuCorrele, preparerCorrele } from '@app/web/features/lieux-activite'
 import { lieuInclusionDepuisSaisie } from '@app/web/features/structures/lieuInclusionDepuisSaisie'
 import { prismaClient } from '@app/web/prismaClient'
 import { v4 } from 'uuid'

@@ -1,6 +1,6 @@
 import { entrepotPrismaClient } from '@app/web/entrepotPrismaClient'
-import type { CartoStructure } from '@app/web/features/lieux-activite/use-cases/ajouter/domain'
 import { Prisma } from '@app/web/generated/entrepot'
+import type { CartoStructure } from '../../domain'
 
 // Reconstruit une CartoStructure (forme attendue par l'import "ajouter un lieu d'activité")
 // à partir d'une ligne `main.lieu_inclusion` + `main.adresse` de l'Entrepôt.

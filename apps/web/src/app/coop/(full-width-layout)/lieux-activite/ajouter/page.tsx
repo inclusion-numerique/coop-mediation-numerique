@@ -3,10 +3,10 @@ import { authenticateUser } from '@app/web/auth/authenticateUser'
 import BackButton from '@app/web/components/BackButton'
 import IconInSquare from '@app/web/components/IconInSquare'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
+import { AjouterDesLieuxActivitePage } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/AjouterDesLieuxActivitePage'
 import { contentId } from '@app/web/utils/skipLinks'
 import { redirect } from 'next/navigation'
 import React from 'react'
-import LieuxActiviteForm from './_components/LieuxActiviteForm'
 
 const AjouterLieuPage = async () => {
   const user = await authenticateUser()
@@ -42,11 +42,7 @@ const AjouterLieuPage = async () => {
               Recherchez dans les lieux déjà référencés. Si vous ne trouvez pas
               vos lieux d’activité, vous pouvez les créer afin d’être référencé.
             </p>
-            <LieuxActiviteForm
-              nextHref="/coop/lieux-activite"
-              createStructureHref="/coop/lieux-activite/creer"
-              userId={user.id}
-            />
+            <AjouterDesLieuxActivitePage retourHref="/coop/lieux-activite" />
           </div>
         </div>
       </div>

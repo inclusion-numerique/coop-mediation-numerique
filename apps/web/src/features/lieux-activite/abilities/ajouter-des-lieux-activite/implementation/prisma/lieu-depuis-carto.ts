@@ -1,4 +1,3 @@
-import type { CartoStructure } from '@app/web/features/lieux-activite/use-cases/ajouter/domain'
 import { fraisAChargeKeys } from '@app/web/features/structures/fraisACharge'
 import { itineranceKeys } from '@app/web/features/structures/itinerance'
 import { modaliteAccompagnementKeys } from '@app/web/features/structures/modaliteAccompagnement'
@@ -20,8 +19,10 @@ import type {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Prisma, Typologie } from '@prisma/client'
 import { v4 } from 'uuid'
+import type { CartoStructure } from '../../domain'
 
-export const toStructureFromCartoStructure = ({
+/** Les colonnes d'un lieu de la coop, depuis une structure de la cartographie. */
+export const lieuDepuisCarto = ({
   adresse,
   codeInsee,
   codePostal,
