@@ -57,13 +57,21 @@ const sortByName = (
 
 const isRemoved = ({ suppression }: { suppression: Date | null }) => suppression
 
+// Ancien membre seulement si AUCUNE appartenance active : un médiateur ré-invité garde la ligne
+// supprimée de son passage précédent, et `some` le classait à tort parmi les anciens.
+const isFormerMember = <
+  T extends { coordinations: { suppression: Date | null }[] },
+>(
+  mediateur: T,
+) => mediateur.coordinations.every(isRemoved)
+
 const toMedtateursByTeam = <
   T extends { coordinations: { suppression: Date | null }[] }[],
 >(
   { actifs, anciens }: { actifs: T; anciens: T },
   mediateur: T[number],
 ): { actifs: T; anciens: T } =>
-  mediateur.coordinations.some(isRemoved)
+  isFormerMember(mediateur)
     ? { actifs, anciens: [...anciens, mediateur] as T }
     : { actifs: [...actifs, mediateur] as T, anciens }
 
@@ -116,7 +124,7 @@ export const getInitialMediateursOptionsForSearch = async ({
     ...actifs.sort(sortByName),
     ...anciens.sort(sortByName),
   ].map(({ user, id, coordinations }) => ({
-    label: `${coordinations.some(isRemoved) ? 'Ancien membre - ' : ''}${getUserDisplayName(user)}`,
+    label: `${coordinations.every(isRemoved) ? 'Ancien membre - ' : ''}${getUserDisplayName(user)}`,
     value: { mediateurId: id, email: user.email },
   }))
 

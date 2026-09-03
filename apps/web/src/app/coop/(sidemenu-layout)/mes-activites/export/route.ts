@@ -6,6 +6,7 @@ import {
   ActivitesFilters,
   ActivitesFilterValidations,
 } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
+import { mediateurCoordonnesEtAnciensIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import type { NextRequest } from 'next/server'
 import { z } from 'zod'
@@ -40,8 +41,6 @@ const createExportDebugLogger = (enabled: boolean): ExportDebugLogger => {
     )
   }
 }
-
-const toMediateurId = ({ mediateurId }: { mediateurId: string }) => mediateurId
 
 const ExportActivitesValidation = z
   .object({
@@ -79,11 +78,12 @@ export const GET = async (request: NextRequest) => {
 
   const filters = parsedQueryParams.data as ActivitesFilters
 
+  // Anciens membres inclus : `searchActivite` les borne à leur période d'appartenance, comme
+  // « Mes statistiques ». Sans eux, l'export d'un coordinateur perd les accompagnements réalisés
+  // par un médiateur sorti de l'équipe depuis.
   const mediateurIds: string[] = [
     ...(user.mediateur ? [user.mediateur.id] : []),
-    ...(user.coordinateur
-      ? user.coordinateur.mediateursCoordonnes.map(toMediateurId)
-      : []),
+    ...mediateurCoordonnesEtAnciensIdsFor(user),
   ]
 
   const hasCraV1 = await getHasCrasV1({
@@ -103,6 +103,7 @@ export const GET = async (request: NextRequest) => {
     user,
     filters,
     mediateurIds: filteredMediateurIds,
+    coordinateurId: user.coordinateur?.id,
     hasCraV1: hasCraV1.hasCrasV1,
     log,
   })

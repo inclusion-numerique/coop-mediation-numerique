@@ -23,6 +23,7 @@ import {
   typeLieuLabels,
   typeLieuValues,
 } from '@app/web/features/activites/use-cases/cra/fields/type-lieu'
+import { activitesEquipeCoordonneeWhereCondition } from '@app/web/features/activites/use-cases/list/db/activitesEquipeCoordonneeWhereCondition'
 import {
   getActiviteFiltersSqlFragment,
   getActivitesFiltersWhereConditions,
@@ -60,8 +61,6 @@ export const getActivitesStatsRaw = async ({
   activitesFilters: ActivitesFilters
 }) => {
   if (mediateurIds?.length === 0) return EMPTY_ACTIVITES_STATS
-
-  const hasCoordinateurContext = !!user?.coordinateur?.id
 
   // Uses pre-computed accompagnements_count column for weighted aggregations
   // instead of joining with accompagnements table (avoids scanning 6M+ rows)
@@ -101,18 +100,9 @@ export const getActivitesStatsRaw = async ({
              LEFT JOIN lieu_inclusion str ON str.id = act.structure_id
              LEFT JOIN mediateurs med ON act.mediateur_id = med.id
              LEFT JOIN users u ON med.user_id = u.id
-             ${
-               hasCoordinateurContext
-                 ? Prisma.sql`FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user?.coordinateur?.id}::UUID`
-                 : Prisma.empty
-}
 
       WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
-        ${
-          hasCoordinateurContext
-            ? Prisma.sql`AND (act.date <= mc.suppression OR mc.suppression IS NULL)`
-            : Prisma.empty
-        }
+        AND ${activitesEquipeCoordonneeWhereCondition(user?.coordinateur?.id)}
         AND act.suppression IS NULL
         AND ${getActiviteFiltersSqlFragment(
           getActivitesFiltersWhereConditions(activitesFilters),
@@ -228,8 +218,6 @@ const getActiviteTags = ({
   if (mediateurIds == null || mediateurIds.length === 0)
     return Promise.resolve([])
 
-  const hasCoordinateurContext = !!user?.coordinateur?.id
-
   return prismaClient.$queryRaw<
     {
       label: string
@@ -245,17 +233,8 @@ const getActiviteTags = ({
            LEFT JOIN users u ON med.user_id = u.id
            INNER JOIN activite_tags at ON at.activite_id = act.id
            INNER JOIN tags t ON t.id = at.tag_id
-           ${
-             hasCoordinateurContext
-               ? Prisma.sql`FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${user?.coordinateur?.id}::UUID`
-               : Prisma.empty
-}
     WHERE ${activitesMediateurIdsWhereCondition(mediateurIds)}
-      ${
-        hasCoordinateurContext
-          ? Prisma.sql`AND (act.date <= mc.suppression OR mc.suppression IS NULL)`
-          : Prisma.empty
-      }
+      AND ${activitesEquipeCoordonneeWhereCondition(user?.coordinateur?.id)}
       AND act.suppression IS NULL
       AND t.suppression IS NULL
       AND ${getActiviteFiltersSqlFragment(
@@ -328,10 +307,7 @@ export const getActivitesStructuresStatsRaw = async ({
       INNER JOIN accompagnements acc ON acc.activite_id = act.id
       LEFT JOIN mediateurs med ON act.mediateur_id = med.id
       LEFT JOIN users u ON med.user_id = u.id
-      FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${
-        user?.coordinateur?.id
-      }::UUID
-      WHERE (act.date <= mc.suppression OR mc.suppression IS NULL)
+      WHERE ${activitesEquipeCoordonneeWhereCondition(user?.coordinateur?.id)}
         AND act.suppression IS NULL
         AND ${activitesMediateurIdsWhereCondition(mediateurIds)}
         AND ${getActiviteFiltersSqlFragment(
@@ -407,10 +383,7 @@ export const getActivitesCommunesStatsRaw = async ({
       INNER JOIN accompagnements acc ON acc.activite_id = act.id
       LEFT JOIN mediateurs med ON act.mediateur_id = med.id
       LEFT JOIN users u ON med.user_id = u.id
-      FULL OUTER JOIN mediateurs_coordonnes mc ON mc.mediateur_id = act.mediateur_id AND mc.coordinateur_id = ${
-        user?.coordinateur?.id
-      }::UUID
-      WHERE (act.date <= mc.suppression OR mc.suppression IS NULL)
+      WHERE ${activitesEquipeCoordonneeWhereCondition(user?.coordinateur?.id)}
         AND act.suppression IS NULL
         AND ${activitesMediateurIdsWhereCondition(mediateurIds)}
         AND ${getActiviteFiltersSqlFragment(

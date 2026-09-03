@@ -45,7 +45,10 @@ export const getMesStatistiquesPageData = async ({
           select: { mediateurId: true },
         })
 
-  const mediateurCoordonnesIds = mediateurCoordonnes.map(toMediateurId)
+  // Un médiateur ré-invité a une ligne par passage dans l'équipe : on ne garde qu'un identifiant.
+  const mediateurCoordonnesIds = [
+    ...new Set(mediateurCoordonnes.map(toMediateurId)),
+  ]
 
   const mediateurIds = [
     ...(user.mediateur?.id ? [user.mediateur.id] : []),
