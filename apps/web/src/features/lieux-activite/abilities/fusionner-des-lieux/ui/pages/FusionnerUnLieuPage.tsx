@@ -1,11 +1,11 @@
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { MergeWithLieuInclusion } from '@app/web/features/structures/use-cases/merge/components/MergeWithLieuInclusion'
+import { ChoisirLeLieuAFusionner } from '@app/web/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ChoisirLeLieuAFusionner'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { contentId } from '@app/web/utils/skipLinks'
 
-export const MergeLieuInclusionPage = ({
+export const FusionnerUnLieuPage = ({
   structureId,
   nom,
 }: {
@@ -33,7 +33,7 @@ export const MergeLieuInclusionPage = ({
       <AdministrationTitle icon="fr-icon-git-merge-line">
         Fusionner {nom} avec un autre lieu d’activité
       </AdministrationTitle>
-      <MergeWithLieuInclusion structureId={structureId} />
+      <ChoisirLeLieuAFusionner structureId={structureId} />
     </main>
   </CoopPageContainer>
 )

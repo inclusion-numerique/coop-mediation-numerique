@@ -1,9 +1,9 @@
-import type { MergeLieuInclusionData } from '../types'
+import type { ChampsPartageables } from './lieu-a-fusionner'
 
 const intersectArrays = <T>(source: T[], target: T[]): T[] =>
   source.filter((item) => target.includes(item))
 
-const mergeLieuInclusionDataKeys: (keyof MergeLieuInclusionData)[] = [
+const mergeLieuInclusionDataKeys: (keyof ChampsPartageables)[] = [
   'employesIds',
   'mediateursEnActiviteIds',
   'activitesEmployeurIds',
@@ -22,13 +22,13 @@ const mergeLieuInclusionDataKeys: (keyof MergeLieuInclusionData)[] = [
   'courriels',
 ]
 
-export const findMergeCommonFields = (
-  mergeSource: MergeLieuInclusionData,
-  mergeTarget: MergeLieuInclusionData,
-): MergeLieuInclusionData =>
+export const champsCommuns = (
+  mergeSource: ChampsPartageables,
+  mergeTarget: ChampsPartageables,
+): ChampsPartageables =>
   Object.fromEntries(
     mergeLieuInclusionDataKeys.map((key) => [
       key,
       intersectArrays(mergeSource[key], mergeTarget[key]),
     ]),
-  ) as MergeLieuInclusionData
+  ) as ChampsPartageables

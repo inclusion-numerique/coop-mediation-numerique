@@ -1,13 +1,12 @@
 'use client'
 
 import { createToast } from '@app/ui/toast/createToast'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import { trpc } from '@app/web/trpc'
+import { fusionnerDesLieuxAction } from '@app/web/app/_actions/lieux-activite/fusionner-des-lieux.action'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import { useRouter } from 'next/navigation'
 
-const ValiderFusionLieuInclusion = ({
+const ValiderLaFusion = ({
   sourceStructure,
   targetStructure,
 }: {
@@ -15,8 +14,6 @@ const ValiderFusionLieuInclusion = ({
   targetStructure: { id: string; nom: string }
 }) => {
   const router = useRouter()
-
-  const mutation = trpc.structures.merge.useMutation()
 
   const {
     Component: ValiderFusionModal,
@@ -27,12 +24,23 @@ const ValiderFusionLieuInclusion = ({
     isOpenedByDefault: false,
   })
 
+  const echec = () =>
+    createToast({
+      priority: 'error',
+      message: 'Une erreur est survenue lors de la fusion. Veuillez réessayer.',
+    })
+
   const handleValiderFusion = async () => {
     try {
-      await mutation.mutateAsync({
+      const resultat = await fusionnerDesLieuxAction({
         sourceStructureId: sourceStructure.id,
         targetStructureId: targetStructure.id,
       })
+
+      if (!resultat.success) {
+        echec()
+        return
+      }
 
       createToast({
         priority: 'success',
@@ -44,11 +52,7 @@ const ValiderFusionLieuInclusion = ({
       )
       router.refresh()
     } catch {
-      createToast({
-        priority: 'error',
-        message:
-          'Une erreur est survenue lors de la fusion. Veuillez réessayer.',
-      })
+      echec()
     } finally {
       closeValiderFusionModal()
     }
@@ -103,4 +107,4 @@ const ValiderFusionLieuInclusion = ({
   )
 }
 
-export default withTrpc(ValiderFusionLieuInclusion)
+export default ValiderLaFusion

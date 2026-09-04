@@ -1,6 +1,6 @@
 import { writeFile } from 'node:fs/promises'
+import { fusionnerDesLieux } from '@app/web/features/lieux-activite'
 import { getEmploisCountForStructure } from '@app/web/features/structures/correlateStructureAdministrative'
-import { mergeLieuInclusion } from '@app/web/features/structures/use-cases/merge/mutations/mergeLieuInclusion'
 import {
   type ActionPlanRow,
   escapeCsvField,
@@ -200,7 +200,7 @@ export const executeApplyFusionnerLieux = async (
       merged++
     } else {
       try {
-        await mergeLieuInclusion(row.id, row.cibleFusion, {
+        await fusionnerDesLieux(row.id, row.cibleFusion, {
           timeout: 30_000,
           propagateVisibility: action === 'fusionner_review',
         })

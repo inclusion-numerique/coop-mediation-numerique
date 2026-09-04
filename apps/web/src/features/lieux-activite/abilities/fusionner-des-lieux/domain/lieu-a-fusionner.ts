@@ -4,7 +4,7 @@ import type { Prisma } from '@prisma/client'
 // structure_administrative, sans lien FK avec le lieu : la prévisualisation les récupère
 // par corrélation nom + code INSEE (getCorrelatedEmployeuseRelations), pas via l'include.
 // La fusion de deux structures dont les employeuses corrélées diffèrent reste ambiguë.
-export const mergeLieuInclusionInclude = {
+export const lieuAFusionnerInclude = {
   mediateursEnActivite: {
     where: { suppression: null },
     select: { mediateurId: true },
@@ -15,11 +15,11 @@ export const mergeLieuInclusionInclude = {
   },
 } satisfies Prisma.LieuInclusionInclude
 
-export type MergeLieuInclusion = Prisma.LieuInclusionGetPayload<{
-  include: typeof mergeLieuInclusionInclude
+export type LieuAFusionnerRow = Prisma.LieuInclusionGetPayload<{
+  include: typeof lieuAFusionnerInclude
 }>
 
-export type MergeLieuInclusionData = {
+export type ChampsPartageables = {
   employesIds: string[]
   mediateursEnActiviteIds: string[]
   activitesEmployeurIds: string[]
@@ -38,7 +38,7 @@ export type MergeLieuInclusionData = {
   courriels: string[]
 }
 
-export type MergeLieuInclusionInfo = MergeLieuInclusionData & {
+export type LieuAFusionner = ChampsPartageables & {
   id: string
   nom: string
   adresse: string

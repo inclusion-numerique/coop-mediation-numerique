@@ -1,23 +1,22 @@
 import { getCorrelatedEmployeuseRelations } from '@app/web/features/structures/correlateStructureAdministrative'
 import { prismaClient } from '@app/web/prismaClient'
-import { findMergeCommonFields } from '../mappers/findMergeCommonFields'
-import { presentMergeLieuInclusion } from '../presenters/presentMergeLieuInclusion'
-import { mergeLieuInclusionInclude } from '../types'
+import { champsCommuns, lieuAFusionnerInclude } from '../../domain'
+import { lieuAFusionnerToDomain } from './lieu-a-fusionner.transfer'
 
-export type { MergeLieuInclusionData, MergeLieuInclusionInfo } from '../types'
+export type { ChampsPartageables, LieuAFusionner } from '../../domain'
 
-export const getMergeLieuInclusionPreviewPageData = async (
+export const apercuDeLaFusion = async (
   sourceStructureId: string,
   targetStructureId: string,
 ) => {
   const [sourceStructure, targetStructure] = await Promise.all([
     prismaClient.lieuInclusion.findUnique({
       where: { id: sourceStructureId },
-      include: mergeLieuInclusionInclude,
+      include: lieuAFusionnerInclude,
     }),
     prismaClient.lieuInclusion.findUnique({
       where: { id: targetStructureId },
-      include: mergeLieuInclusionInclude,
+      include: lieuAFusionnerInclude,
     }),
   ])
 
@@ -29,22 +28,14 @@ export const getMergeLieuInclusionPreviewPageData = async (
     getCorrelatedEmployeuseRelations(targetStructure),
   ])
 
-  const mergeSource = presentMergeLieuInclusion(
-    sourceStructure,
-    sourceEmployeuse,
-  )
-  const mergeTarget = presentMergeLieuInclusion(
-    targetStructure,
-    targetEmployeuse,
-  )
+  const mergeSource = lieuAFusionnerToDomain(sourceStructure, sourceEmployeuse)
+  const mergeTarget = lieuAFusionnerToDomain(targetStructure, targetEmployeuse)
 
   return {
     mergeSource,
     mergeTarget,
-    mergeCommon: findMergeCommonFields(mergeSource, mergeTarget),
+    mergeCommon: champsCommuns(mergeSource, mergeTarget),
   }
 }
 
-export type MergeLieuInclusionSourceAndTargetData = Awaited<
-  ReturnType<typeof getMergeLieuInclusionPreviewPageData>
->
+export type FusionApercue = Awaited<ReturnType<typeof apercuDeLaFusion>>

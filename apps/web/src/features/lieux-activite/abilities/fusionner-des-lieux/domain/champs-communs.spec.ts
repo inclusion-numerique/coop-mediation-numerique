@@ -1,8 +1,8 @@
-import type { MergeLieuInclusionData } from '../types'
-import { findMergeCommonFields } from './findMergeCommonFields'
+import { champsCommuns } from './champs-communs'
+import type { ChampsPartageables } from './lieu-a-fusionner'
 
-describe('findMergeCommonFields', () => {
-  const emptyMergeData: MergeLieuInclusionData = {
+describe('champsCommuns', () => {
+  const emptyMergeData: ChampsPartageables = {
     employesIds: [],
     mediateursEnActiviteIds: [],
     activitesEmployeurIds: [],
@@ -22,61 +22,61 @@ describe('findMergeCommonFields', () => {
   }
 
   it('returns empty data when both sources are empty', () => {
-    expect(findMergeCommonFields(emptyMergeData, emptyMergeData)).toEqual(
+    expect(champsCommuns(emptyMergeData, emptyMergeData)).toEqual(
       emptyMergeData,
     )
   })
 
   it('returns intersection of employesIds', () => {
-    const source: MergeLieuInclusionData = {
+    const source: ChampsPartageables = {
       ...emptyMergeData,
       employesIds: ['user-1', 'user-2', 'user-3'],
     }
-    const target: MergeLieuInclusionData = {
+    const target: ChampsPartageables = {
       ...emptyMergeData,
       employesIds: ['user-2', 'user-3', 'user-4'],
     }
 
-    const result = findMergeCommonFields(source, target)
+    const result = champsCommuns(source, target)
 
     expect(result.employesIds).toEqual(['user-2', 'user-3'])
   })
 
   it('returns intersection of typologies', () => {
-    const source: MergeLieuInclusionData = {
+    const source: ChampsPartageables = {
       ...emptyMergeData,
       typologies: ['ASSO', 'CCAS'],
     }
-    const target: MergeLieuInclusionData = {
+    const target: ChampsPartageables = {
       ...emptyMergeData,
       typologies: ['CCAS', 'MAIRIE'],
     }
 
-    const result = findMergeCommonFields(source, target)
+    const result = champsCommuns(source, target)
 
     expect(result.typologies).toEqual(['CCAS'])
   })
 
   it('returns empty arrays when no common elements exist', () => {
-    const source: MergeLieuInclusionData = {
+    const source: ChampsPartageables = {
       ...emptyMergeData,
       employesIds: ['user-1'],
       services: ['service-a'],
     }
-    const target: MergeLieuInclusionData = {
+    const target: ChampsPartageables = {
       ...emptyMergeData,
       employesIds: ['user-2'],
       services: ['service-b'],
     }
 
-    const result = findMergeCommonFields(source, target)
+    const result = champsCommuns(source, target)
 
     expect(result.employesIds).toEqual([])
     expect(result.services).toEqual([])
   })
 
   it('computes intersection for all fields', () => {
-    const source: MergeLieuInclusionData = {
+    const source: ChampsPartageables = {
       employesIds: ['e1', 'e2'],
       mediateursEnActiviteIds: ['m1', 'm2'],
       activitesEmployeurIds: ['ae1'],
@@ -94,7 +94,7 @@ describe('findMergeCommonFields', () => {
       modalitesAccompagnement: ['mac1'],
       courriels: ['c1@test.fr'],
     }
-    const target: MergeLieuInclusionData = {
+    const target: ChampsPartageables = {
       employesIds: ['e2', 'e3'],
       mediateursEnActiviteIds: ['m2', 'm3'],
       activitesEmployeurIds: ['ae2'],
@@ -113,7 +113,7 @@ describe('findMergeCommonFields', () => {
       courriels: ['c2@test.fr'],
     }
 
-    const result = findMergeCommonFields(source, target)
+    const result = champsCommuns(source, target)
 
     expect(result).toEqual({
       employesIds: ['e2'],

@@ -143,7 +143,7 @@ const deleteStructure =
     })
   }
 
-export const mergeLieuInclusion = async (
+export const fusionnerDesLieux = async (
   sourceStructureId: string,
   targetStructureId: string,
   options?: { timeout?: number; propagateVisibility?: boolean },

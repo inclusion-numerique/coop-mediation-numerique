@@ -1,7 +1,7 @@
 import { MergeDiff } from '@app/web/libs/ui/administration/MergeDiff'
-import type { MergeLieuInclusionData, MergeLieuInclusionInfo } from '../types'
+import type { ChampsPartageables, LieuAFusionner } from '../../domain'
 
-const mergeFields: { label: string; key: keyof MergeLieuInclusionData }[] = [
+const mergeFields: { label: string; key: keyof ChampsPartageables }[] = [
   { label: 'Employés', key: 'employesIds' },
   { label: 'Médiateurs en activité', key: 'mediateursEnActiviteIds' },
   { label: 'Activités (employeur)', key: 'activitesEmployeurIds' },
@@ -15,14 +15,14 @@ const mergeFields: { label: string; key: keyof MergeLieuInclusionData }[] = [
   { label: 'Courriels', key: 'courriels' },
 ]
 
-export const MergeLieuInclusionPreview = ({
+export const ApercuDeLaFusion = ({
   merge,
   common,
   source,
 }: {
-  merge: MergeLieuInclusionInfo
-  common: MergeLieuInclusionData
-  source?: MergeLieuInclusionData
+  merge: LieuAFusionner
+  common: ChampsPartageables
+  source?: ChampsPartageables
 }) => (
   <>
     <h2 className="fr-h6 fr-flex fr-flex-gap-2v">
