@@ -66,10 +66,9 @@ const auMemeEndroit = ({ codeInsee, codePostal }: LieuAMaterialiser) => ({
  * Rend aussi la force de la corrélation et l'état de suppression du lieu trouvé,
  * dont dépend le droit de relever un lieu supprimé (cf. `preparerCorrele`).
  *
- * Même hiérarchie que la sonde des imports (`findOrCreateLieuInclusion`), sans
- * son géocodage : on est ici dans une transaction, qui n'a rien à attendre du
- * réseau. Le filtrage se fait en mémoire, la comparaison de noms n'étant pas
- * exprimable en SQL — une commune compte 2 lieux en moyenne, 89 au maximum.
+ * Le filtrage se fait en mémoire, la comparaison de noms n'étant pas exprimable
+ * en SQL — une commune compte 2 lieux en moyenne, 89 au maximum. On est dans une
+ * transaction, qui n'a rien à attendre du réseau : pas de géocodage ici.
  */
 export const lieuCorrele = async (
   transaction: Prisma.TransactionClient,
