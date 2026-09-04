@@ -1,5 +1,6 @@
 import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
+import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import { LieuId } from '../../../../domain/lieu-id'
 import type { MediateurId } from '../../../../domain/mediateur-id'
 import type { UserId } from '../../../../domain/user-id'
@@ -13,7 +14,24 @@ import {
 } from '../../domain'
 import { rattacherAuLieu } from './rattacher-au-lieu'
 
-const estDefini = (valeur?: string | null): valeur is string => valeur != null
+/**
+ * Traite les éléments l'un APRÈS l'autre, et non de front.
+ *
+ * `Promise.all` ne convient pas ici : deux lieux demandés peuvent se corréler au
+ * même lieu de la coop, et des sondes menées en parallèle ne verraient pas les
+ * créations l'une de l'autre — le doublon que l'on cherche précisément à éviter.
+ */
+const enSerie = async <Element, Resultat>(
+  elements: readonly Element[],
+  traiter: (element: Element) => Promise<Resultat>,
+): Promise<readonly Resultat[]> =>
+  elements.reduce<Promise<readonly Resultat[]>>(
+    async (precedents, element) => [
+      ...(await precedents),
+      await traiter(element),
+    ],
+    Promise.resolve([]),
+  )
 
 /**
  * Ajoute d'un coup les lieux du panier à l'activité du médiateur.
@@ -22,11 +40,6 @@ const estDefini = (valeur?: string | null): valeur is string => valeur != null
  * déroutant qu'un échec net. D'où l'unique transaction — mais les structures de
  * la cartographie sont résolues AVANT de l'ouvrir, l'Entrepôt ayant son propre
  * client Prisma, sans transaction partagée.
- *
- * Le traitement est séquentiel, et non `Promise.all` : deux lieux demandés
- * peuvent se corréler au même lieu de la coop, et des sondes menées de front ne
- * verraient pas les créations l'une de l'autre — le doublon que l'on cherche
- * précisément à éviter.
  */
 export const ajouterDesLieuxActivite = async ({
   demandes,
@@ -57,30 +70,24 @@ export const ajouterDesLieuxActivite = async ({
         ({ structureCartographieNationaleId }) =>
           structureCartographieNationaleId,
       )
-      .filter(estDefini),
+      .filter(onlyDefinedAndNotNull),
   )
 
   const structuresCartoParId = new Map(
     structuresCarto.map((structure) => [structure.id, structure]),
   )
 
-  const lieux = await prismaClient.$transaction(async (transaction) =>
-    aMaterialiser.reduce<Promise<readonly LieuId[]>>(
-      async (precedents, lieu) => [
-        ...(await precedents),
-        LieuId(
-          (
-            await rattacherAuLieu(transaction, {
-              userId,
-              lieu,
-              structuresCartoParId,
-              maintenant,
-            })
-          ).lieuId,
-        ),
-      ],
-      Promise.resolve([]),
-    ),
+  const lieux = await prismaClient.$transaction((transaction) =>
+    enSerie(aMaterialiser, async (lieu) => {
+      const { lieuId } = await rattacherAuLieu(transaction, {
+        userId,
+        lieu,
+        structuresCartoParId,
+        maintenant,
+      })
+
+      return LieuId(lieuId)
+    }),
   )
 
   return success({ lieux })

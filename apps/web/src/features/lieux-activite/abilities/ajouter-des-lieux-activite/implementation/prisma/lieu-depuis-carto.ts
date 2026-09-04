@@ -1,25 +1,21 @@
-import { fraisAChargeKeys } from '@app/web/features/structures/fraisACharge'
-import { itineranceKeys } from '@app/web/features/structures/itinerance'
-import { modaliteAccompagnementKeys } from '@app/web/features/structures/modaliteAccompagnement'
-import { modaliteAccesKeys } from '@app/web/features/structures/modalitesAcces'
-import { priseEnChargeSpecifiqueKeys } from '@app/web/features/structures/priseEnChargeSpecifique'
-import { publicSpecifiquementAdresseKeys } from '@app/web/features/structures/publicSpecifiquementAdresse'
+import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import { validateValidRnaDigits } from '@app/web/features/structures/rna/rnaValidation'
-import { serviceKeys } from '@app/web/features/structures/service'
 import { validateValidSiretDigits } from '@app/web/features/structures/siret/siretValidation'
 import { coopCartographieNationaleSource } from '@app/web/structure/cartographieNationaleSources'
-import type {
-  Frais,
-  Itinerance,
-  ModaliteAcces,
-  ModaliteAccompagnement,
-  PriseEnChargeSpecifique,
-  PublicSpecifiquementAdresse,
-  Service,
-} from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { Prisma, Typologie } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 import { v4 } from 'uuid'
 import type { CartoStructure } from '../../domain'
+
+/**
+ * Traduit une liste du schéma national vers les noms d'enum de la coop, en
+ * écartant ce qui n'a pas d'équivalent. Les tables de correspondance vivent au
+ * niveau de la feature : la cartographie et la saisie décrivent le même objet,
+ * elles ne peuvent pas en avoir deux vocabulaires.
+ */
+const versCoop = <Standard extends string, Coop extends string>(
+  valeurs: readonly Standard[],
+  table: { versCoop: (valeur: Standard) => Coop | null },
+): Coop[] => [...vocabulaire.traduites(valeurs, table.versCoop)]
 
 /** Les colonnes d'un lieu de la coop, depuis une structure de la cartographie. */
 export const lieuDepuisCarto = ({
@@ -34,8 +30,7 @@ export const lieuDepuisCarto = ({
   horaires,
   id,
   itinerance,
-  latitude,
-  longitude,
+  localisation,
   modalitesAcces,
   modalitesAccompagnement,
   nom,
@@ -48,7 +43,7 @@ export const lieuDepuisCarto = ({
   source,
   siteWeb,
   telephone,
-  typologie,
+  typologies,
 }: CartoStructure) =>
   ({
     id: v4(),
@@ -62,52 +57,32 @@ export const lieuDepuisCarto = ({
     siret: pivot && validateValidSiretDigits(pivot) ? pivot : null,
     rna: pivot && validateValidRnaDigits(pivot) ? pivot : null,
     codeInsee,
-    longitude,
-    latitude,
+    longitude: localisation?.longitude ?? null,
+    latitude: localisation?.latitude ?? null,
     ficheAccesLibre,
-    services: services
-      ?.split('|')
-      .map((serviceLabel) => serviceKeys[serviceLabel as Service]),
     horaires,
-    typologies: typologie?.split('|') as Typologie[] | undefined,
     presentationResume,
     presentationDetail,
-    courriels: courriels?.split('|'),
+    courriels: [...courriels],
     telephone,
     siteWeb,
     derniereModificationSource:
       source === coopCartographieNationaleSource ? null : source,
-    modalitesAccompagnement: modalitesAccompagnement
-      ?.split('|')
-      .map(
-        (modaliteAccompagnement) =>
-          modaliteAccompagnementKeys[
-            modaliteAccompagnement as ModaliteAccompagnement
-          ],
-      ),
-    modalitesAcces: modalitesAcces
-      ?.split('|')
-      .map(
-        (modaliteAcces) => modaliteAccesKeys[modaliteAcces as ModaliteAcces],
-      ),
-    fraisACharge: fraisACharge
-      ?.split('|')
-      .map((frais) => fraisAChargeKeys[frais as Frais]),
-    itinerance: itinerance
-      ?.split('|')
-      .map((itineranceLabel) => itineranceKeys[itineranceLabel as Itinerance]),
-    priseEnChargeSpecifique: priseEnChargeSpecifique
-      ?.split('|')
-      .map(
-        (priseEnCharge) =>
-          priseEnChargeSpecifiqueKeys[priseEnCharge as PriseEnChargeSpecifique],
-      ),
-    publicsSpecifiquementAdresses: publicsSpecifiquementAdresses
-      ?.split('|')
-      .map(
-        (publicSpecifiquementAdresse) =>
-          publicSpecifiquementAdresseKeys[
-            publicSpecifiquementAdresse as PublicSpecifiquementAdresse
-          ],
-      ),
+    typologies: versCoop(typologies, vocabulaire.typologie),
+    services: versCoop(services, vocabulaire.service),
+    modalitesAcces: versCoop(modalitesAcces, vocabulaire.modaliteAcces),
+    modalitesAccompagnement: versCoop(
+      modalitesAccompagnement,
+      vocabulaire.modaliteAccompagnement,
+    ),
+    publicsSpecifiquementAdresses: versCoop(
+      publicsSpecifiquementAdresses,
+      vocabulaire.publicSpecifiquementAdresse,
+    ),
+    priseEnChargeSpecifique: versCoop(
+      priseEnChargeSpecifique,
+      vocabulaire.priseEnChargeSpecifique,
+    ),
+    fraisACharge: versCoop(fraisACharge, vocabulaire.fraisACharge),
+    itinerance: versCoop(itinerance, vocabulaire.itinerance),
   }) satisfies Prisma.LieuInclusionCreateManyInput

@@ -1,5 +1,16 @@
 import { entrepotPrismaClient } from '@app/web/entrepotPrismaClient'
+import { reconnues } from '@app/web/features/lieux-activite/vocabulaire'
 import { Prisma } from '@app/web/generated/entrepot'
+import {
+  Frais,
+  Itinerance,
+  ModaliteAcces,
+  ModaliteAccompagnement,
+  PriseEnChargeSpecifique,
+  PublicSpecifiquementAdresse,
+  Service,
+  Typologie,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { CartoStructure } from '../../domain'
 
 // Reconstruit une CartoStructure (forme attendue par l'import "ajouter un lieu d'activité")
@@ -67,14 +78,11 @@ type LieuRow = {
   } | null
 }
 
-const joinLabels = (labels: string[]): string | null =>
-  labels.length > 0 ? labels.join('|') : null
-
 const contactValue = (
   contact: unknown,
 ): {
   telephone: string | null
-  courriels: string | null
+  courriels: readonly string[]
   siteWeb: string | null
 } => {
   const record =
@@ -89,10 +97,16 @@ const contactValue = (
       : undefined
   return {
     telephone: typeof record.telephone === 'string' ? record.telephone : null,
-    courriels: courriels ?? null,
+    courriels: courriels == null ? [] : [courriels],
     siteWeb: typeof record.site_web === 'string' ? record.site_web : null,
   }
 }
+
+/** Latitude et longitude ne valent qu'ensemble : un point, ou rien. */
+const localisation = (coords?: Coords): CartoStructure['localisation'] =>
+  coords?.latitude == null || coords.longitude == null
+    ? null
+    : { latitude: coords.latitude, longitude: coords.longitude }
 
 type Coords = { latitude: number | null; longitude: number | null }
 
@@ -146,10 +160,9 @@ const toCartoStructure = (
     codePostal: lieu.adresse?.codePostal ?? '',
     codeInsee: lieu.adresse?.codeInsee ?? null,
     // SIRET non fiable côté carto → jamais repris
-    pivot: '',
+    pivot: null,
     complementAdresse: null,
-    longitude: coords?.longitude ?? null,
-    latitude: coords?.latitude ?? null,
+    localisation: localisation(coords),
     ficheAccesLibre: lieu.ficheAccesLibre,
     presentationDetail: lieu.presentationDetail,
     presentationResume: lieu.presentationResume,
@@ -158,16 +171,23 @@ const toCartoStructure = (
     siteWeb,
     telephone,
     courriels,
-    typologie: joinLabels(lieu.typologies),
-    services: joinLabels(lieu.services),
-    modalitesAcces: joinLabels(lieu.modalitesAcces),
-    modalitesAccompagnement: joinLabels(lieu.modalitesAccompagnement),
-    publicsSpecifiquementAdresses: joinLabels(
+    typologies: reconnues(Typologie, lieu.typologies),
+    services: reconnues(Service, lieu.services),
+    modalitesAcces: reconnues(ModaliteAcces, lieu.modalitesAcces),
+    modalitesAccompagnement: reconnues(
+      ModaliteAccompagnement,
+      lieu.modalitesAccompagnement,
+    ),
+    publicsSpecifiquementAdresses: reconnues(
+      PublicSpecifiquementAdresse,
       lieu.publicsSpecifiquementAdresses,
     ),
-    priseEnChargeSpecifique: joinLabels(lieu.priseEnChargeSpecifique),
-    fraisACharge: joinLabels(lieu.fraisACharge),
-    itinerance: joinLabels(lieu.itinerance),
+    priseEnChargeSpecifique: reconnues(
+      PriseEnChargeSpecifique,
+      lieu.priseEnChargeSpecifique,
+    ),
+    fraisACharge: reconnues(Frais, lieu.fraisACharge),
+    itinerance: reconnues(Itinerance, lieu.itinerance),
   }
 }
 

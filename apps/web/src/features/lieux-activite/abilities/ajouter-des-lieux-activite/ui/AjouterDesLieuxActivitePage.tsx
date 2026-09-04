@@ -1,25 +1,33 @@
 'use client'
 
-import CustomSelect from '@app/ui/components/CustomSelect/CustomSelect'
 import { createToast } from '@app/ui/toast/createToast'
 import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { ajouterDesLieuxActiviteAction } from '@app/web/app/_actions/lieux-activite/ajouter-des-lieux-activite.action'
 import { creerUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/creer-lieu-activite.action'
 import { rechercherDesLieuxAAjouterAction } from '@app/web/app/_actions/lieux-activite/rechercher-des-lieux-a-ajouter.action'
-import StructureCard from '@app/web/components/structure/StructureCard'
 import CreerLieuActiviteForm from '@app/web/features/lieux-activite/components/creer/CreerLieuActiviteForm'
 import {
   type CreerLieuActiviteFormData,
   toCreerLieuData,
 } from '@app/web/features/lieux-activite/components/creer/creerLieuActiviteFormData'
-import { pluriel } from '@app/web/libraries/pluriel'
 import type { LieuActiviteSearchResult } from '@app/web/structure/searchLieuActiviteCombined'
 import { getDepartementCodeFromCodeInsee } from '@app/web/utils/getDepartementFromCodeInsee'
+import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import Button from '@codegouvfr/react-dsfr/Button'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { type ReactNode, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
+import {
+  nombreDeResultats,
+  type OptionDeRecherche,
+  optionDeStructure,
+  piedDeListe,
+  rechercheTropCourte,
+} from './components/options-de-recherche'
+import { PanierDeLieux } from './components/PanierDeLieux'
+import { RechercheDeLieu } from './components/RechercheDeLieu'
 import { auPanier, type LieuAuPanier, memeLieu } from './panier'
+
+const RECHERCHE_MINIMALE = 3
 
 const erreur = (message: string) => createToast({ priority: 'error', message })
 
@@ -54,14 +62,10 @@ export const AjouterDesLieuxActivitePage = ({
         : [...actuel, lieu],
     )
 
-  const chargerLesOptions = async (recherche: string) => {
-    if (recherche.length < 3)
-      return [
-        {
-          label: 'La recherche doit contenir au moins 3 caractères',
-          value: '',
-        },
-      ]
+  const chargerLesOptions = async (
+    recherche: string,
+  ): Promise<OptionDeRecherche[]> => {
+    if (recherche.length < RECHERCHE_MINIMALE) return [...rechercheTropCourte()]
 
     const resultat = await rechercherDesLieuxAAjouterAction({
       recherche,
@@ -70,88 +74,23 @@ export const AjouterDesLieuxActivitePage = ({
           ({ structureCartographieNationaleId }) =>
             structureCartographieNationaleId,
         )
-        .filter((identifiant): identifiant is string => identifiant != null),
+        .filter(onlyDefinedAndNotNull),
     })
 
     if (!resultat.success) return []
 
     const { structures, matchesCount } = resultat.data
-    const nonAffiches = matchesCount - structures.length
 
     for (const structure of structures)
       resultats.current.set(structure.id, structure)
 
-    const entetes = [
-      {
-        label: `${matchesCount} ${pluriel(matchesCount, 'résultat', 'résultats')}`,
-        value: '',
-      },
+    return [
+      ...nombreDeResultats(matchesCount),
+      ...structures.map(optionDeStructure),
+      ...piedDeListe(matchesCount - structures.length, () =>
+        setEnCreation(true),
+      ),
     ]
-
-    const options = structures.map((structure) => ({
-      label: (
-        <>
-          <div className="fr-width-full fr-text--sm fr-mb-0">
-            {structure.nom}
-          </div>
-          <div className="fr-width-full fr-text--xs fr-text-mention--grey fr-mb-0">
-            {structure.typologie ? `${structure.typologie} · ` : null}
-            {structure.adresse}
-            {structure.adresse && (structure.codePostal || structure.commune)
-              ? ', '
-              : null}
-            {structure.codePostal}
-            {structure.codePostal && structure.commune ? ' ' : null}
-            {structure.commune}
-          </div>
-        </>
-      ) as ReactNode,
-      value: structure.id,
-    }))
-
-    const pied =
-      nonAffiches > 0
-        ? [
-            {
-              label: `Veuillez préciser votre recherche - ${nonAffiches} ${pluriel(
-                nonAffiches,
-                'structure n’est pas affichée',
-                'structures ne sont pas affichées',
-              )}`,
-              value: '',
-            },
-          ]
-        : [
-            {
-              label: (
-                <div style={{ marginBottom: -16 }}>
-                  Vous ne trouvez pas votre lieu d’activité ?
-                </div>
-              ) as ReactNode,
-              value: '',
-            },
-            {
-              label: (
-                <div className="fr-btns-group">
-                  <Button
-                    type="button"
-                    priority="secondary"
-                    className="fr-width-full fr-mb-0"
-                    onClick={() => setEnCreation(true)}
-                  >
-                    Créer un lieu d’activité
-                  </Button>
-                </div>
-              ) as ReactNode,
-              value: '',
-            },
-          ]
-
-    // `react-select` type les libellés en chaînes, mais rend les nœuds React.
-    return [...entetes, ...options, ...pied] as {
-      label: string
-      value: string
-    }[]
   }
 
   const selectionner = (identifiant: string | null) => {
@@ -159,6 +98,9 @@ export const AjouterDesLieuxActivitePage = ({
 
     if (trouve) ajouterAuPanier(auPanier(trouve))
   }
+
+  const retirer = (lieu: LieuAuPanier) =>
+    setPanier((actuel) => actuel.filter((present) => present !== lieu))
 
   const creer = async (valeur: CreerLieuActiviteFormData) => {
     const { adresseBan, ...donnees } = toCreerLieuData(valeur)
@@ -194,6 +136,20 @@ export const AjouterDesLieuxActivitePage = ({
     })
   }
 
+  /**
+   * Un panier d'un seul lieu mène à sa fiche : c'est ce qu'on est venu chercher.
+   * Au-delà, aucune fiche ne résume l'ajout, on revient à la liste.
+   */
+  const destination = (lieux: readonly string[]) => {
+    const premier = panier.at(0)
+
+    return panier.length === 1 && lieux.length === 1 && premier != null
+      ? `/coop/mon-reseau/${getDepartementCodeFromCodeInsee(
+          premier.codeInsee ?? '',
+        )}/lieux/${lieux[0]}`
+      : retourHref
+  }
+
   const valider = async () => {
     setEnCours(true)
     const resultat = await ajouterDesLieuxActiviteAction({ lieux: [...panier] })
@@ -204,15 +160,7 @@ export const AjouterDesLieuxActivitePage = ({
       return
     }
 
-    const premier = panier.at(0)
-
-    router.push(
-      panier.length === 1 && resultat.data.lieux.length === 1 && premier != null
-        ? `/coop/mon-reseau/${getDepartementCodeFromCodeInsee(
-            premier.codeInsee ?? '',
-          )}/lieux/${resultat.data.lieux[0]}`
-        : retourHref,
-    )
+    router.push(destination(resultat.data.lieux))
     router.refresh()
 
     createToast({
@@ -234,59 +182,12 @@ export const AjouterDesLieuxActivitePage = ({
 
   return (
     <>
-      <div className="fr-input-group fr-mb-1w">
-        <label className="fr-label" htmlFor="recherche-lieu-a-ajouter">
-          Rechercher par nom du lieu, adresse ou SIRET.
-        </label>
-        <CustomSelect
-          inputId="recherche-lieu-a-ajouter"
-          instanceId="recherche-lieu-a-ajouter"
-          className="fr-mt-1w"
-          // Vider le champ après chaque sélection : le panier est ailleurs.
-          key={panier.length}
-          placeholder="Rechercher un lieu d’activité"
-          loadOptions={chargerLesOptions}
-          isOptionDisabled={(option) => option.value === ''}
-          onChange={(option) => selectionner(option?.value ?? null)}
-          cacheOptions
-        />
-      </div>
-      <div className="fr-mb-12v">
-        <Link
-          className="fr-link fr-link--sm"
-          href="https://annuaire-entreprises.data.gouv.fr/"
-          target="_blank"
-          rel="noreferrer"
-          title="Annuaire des Entreprises - nouvelle fenêtre"
-        >
-          Retrouvez votre SIRET sur l’Annuaire des Entreprises
-        </Link>
-      </div>
-      {panier.toReversed().map((lieu, rang) => (
-        <StructureCard
-          key={lieu.id ?? lieu.structureCartographieNationaleId ?? lieu.nom}
-          structure={lieu}
-          className="fr-mt-4v"
-          topRight={
-            <Button
-              type="button"
-              priority="tertiary no outline"
-              size="small"
-              iconPosition="right"
-              iconId="fr-icon-close-line"
-              onClick={() =>
-                setPanier((actuel) =>
-                  actuel.filter(
-                    (_, index) => index !== actuel.length - 1 - rang,
-                  ),
-                )
-              }
-            >
-              Retirer
-            </Button>
-          }
-        />
-      ))}
+      <RechercheDeLieu
+        cle={panier.length}
+        chargerLesOptions={chargerLesOptions}
+        onSelection={selectionner}
+      />
+      <PanierDeLieux lieux={panier} onRetirer={retirer} />
       <hr className="fr-separator-12v" />
       <div className="fr-btns-group">
         <Button

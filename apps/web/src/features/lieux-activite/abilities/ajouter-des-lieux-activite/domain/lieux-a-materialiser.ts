@@ -1,6 +1,5 @@
+import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import type { LieuDejaRattache, LieuDemande } from './lieu-demande'
-
-const estDefini = (valeur?: string | null): valeur is string => valeur != null
 
 /**
  * Parmi les lieux demandés, ceux qu'il reste à matérialiser.
@@ -34,15 +33,15 @@ export const lieuxAMaterialiser = (
         ({ structureCartographieNationaleId }) =>
           structureCartographieNationaleId,
       )
-      .filter(estDefini),
+      .filter(onlyDefinedAndNotNull),
   )
 
   const estDejaRattache = ({
     id,
     structureCartographieNationaleId,
   }: LieuDemande) =>
-    (estDefini(id) && idsRattaches.has(id)) ||
-    (estDefini(structureCartographieNationaleId) &&
+    (onlyDefinedAndNotNull(id) && idsRattaches.has(id)) ||
+    (onlyDefinedAndNotNull(structureCartographieNationaleId) &&
       cartoIdsRattaches.has(structureCartographieNationaleId))
 
   const identite = ({
@@ -50,9 +49,9 @@ export const lieuxAMaterialiser = (
     structureCartographieNationaleId,
     nom,
   }: LieuDemande): string =>
-    estDefini(id)
+    onlyDefinedAndNotNull(id)
       ? `id:${id}`
-      : estDefini(structureCartographieNationaleId)
+      : onlyDefinedAndNotNull(structureCartographieNationaleId)
         ? `carto:${structureCartographieNationaleId}`
         : `nom:${nom}`
 

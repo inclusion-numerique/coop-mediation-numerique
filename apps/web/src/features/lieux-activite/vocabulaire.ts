@@ -139,3 +139,21 @@ export const traduites = <Depuis, Vers>(
   valeurs
     .map(traduction)
     .filter((valeur): valeur is NonNullable<Vers> => valeur != null)
+
+/**
+ * Les valeurs d'une énumération du schéma national reconnues parmi des libellés
+ * bruts.
+ *
+ * Une source externe rend des chaînes ; les traiter d'emblée comme des valeurs
+ * du standard demanderait un `as`, c'est-à-dire une affirmation qu'on ne vérifie
+ * pas. Ce qu'on ne reconnaît pas est écarté, comme le fait `traduites` de ce
+ * qu'elle ne sait pas traduire.
+ */
+export const reconnues = <Valeur extends string>(
+  enumeration: Record<string, Valeur>,
+  libelles: readonly string[],
+): readonly Valeur[] => {
+  const connues = new Set<string>(Object.values(enumeration))
+
+  return libelles.filter((libelle): libelle is Valeur => connues.has(libelle))
+}
