@@ -1,10 +1,9 @@
 'use client'
 
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import { LieuActiviteOption } from '@app/web/features/lieux-activite/getLieuxActiviteOptions'
-import { LieuFilter } from '@app/web/features/lieux-activite/use-cases/filter/LieuFilter'
+import { LieuActiviteOption } from '@app/web/features/lieux-activite'
+import { LieuFilter } from '@app/web/features/lieux-activite/ui'
 import classNames from 'classnames'
-import React from 'react'
 import { DispositifFilter } from './DispositifFilter'
 import { RoleFilter } from './RoleFilter'
 import { StatutFilter } from './StatutFilter'

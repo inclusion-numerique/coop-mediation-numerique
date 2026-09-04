@@ -8,7 +8,6 @@ import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSize
 import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 import { contentId } from '@app/web/utils/skipLinks'
 import Button from '@codegouvfr/react-dsfr/Button'
-import React from 'react'
 import { Exporter } from './actions/Exporter'
 import { EquipeDataTable } from './EquipeDataTable'
 import { FiltresEquipe } from './filtres/FiltresEquipe'

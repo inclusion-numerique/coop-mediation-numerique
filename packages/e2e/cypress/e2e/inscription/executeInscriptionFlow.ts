@@ -3,7 +3,6 @@ import { CreateUserInput } from '@app/e2e/tasks/handlers/user.tasks'
 import { stepPath } from '@app/web/features/inscription/ui/step-path'
 import {
   lowerCaseProfileInscriptionLabels,
-  profileInscriptionConseillerNumeriqueLabels,
   profileInscriptionLabels,
 } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 

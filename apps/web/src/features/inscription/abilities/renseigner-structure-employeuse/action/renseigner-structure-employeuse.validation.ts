@@ -1,3 +1,7 @@
+import {
+  type TypologieStructure,
+  typologiesStructure,
+} from '@app/web/external-apis/api-entreprise/typologieStructure'
 import { AdresseBanValidation } from '@app/web/external-apis/ban/AdresseBanValidation'
 // `Siret` vient du barrel CLIENT d'employeuse, pas de son `domain/` : une feature
 // n'atteint une autre feature que par sa frontière. Ce schéma étant chargé par un
@@ -26,7 +30,17 @@ const StructureEmployeuseShape = z.object({
   nom: z.string().min(1, 'Le nom est requis'),
   siret: Siret.schema,
   adresseBan: AdresseBanValidation,
-  typologies: z.array(z.string()).nullish(),
+  // La typologie déduite de l'annuaire n'entre pas dans l'input du domaine :
+  // elle sert à reconnaître la structure dans la liste et sur la carte, pas à
+  // la rattacher. Le formulaire la porte, la commande l'ignore.
+  typologie: z
+    .enum(
+      Object.keys(typologiesStructure) as [
+        TypologieStructure,
+        ...TypologieStructure[],
+      ],
+    )
+    .nullish(),
 })
 
 /** Forme du formulaire (validateur client `useAppForm`). */
@@ -58,7 +72,6 @@ export const RenseignerStructureEmployeuseValidation =
           latitude: structureEmployeuse.adresseBan.latitude,
           longitude: structureEmployeuse.adresseBan.longitude,
         },
-        typologies: structureEmployeuse.typologies ?? [],
       },
     }),
   )

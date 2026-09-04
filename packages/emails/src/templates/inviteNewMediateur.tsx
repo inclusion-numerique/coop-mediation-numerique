@@ -11,7 +11,6 @@ import {
   MjmlText,
 } from '@faire/mjml-react'
 import { renderToMjml } from '@faire/mjml-react/utils/renderToMjml'
-import React from 'react'
 import Invitation from '../components/Invitation'
 
 export const inviteNewMediateur = {

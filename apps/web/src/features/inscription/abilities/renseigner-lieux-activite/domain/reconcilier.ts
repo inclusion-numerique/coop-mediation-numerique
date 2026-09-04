@@ -18,27 +18,56 @@ export type LieuActiviteDesire = {
 }
 
 /**
- * Lieu d'activité tel que soumis par le formulaire d'inscription : identité (pour
- * la réconciliation) + nom et adresse géocodée (pour matérialiser un lieu
- * inexistant). Un lieu existant porte son `id` (ou son `structureCartographieNationaleId`)
- * et se rattache tel quel ; un nouveau lieu (SIRET ou saisie manuelle) porte
- * nom + adresse géocodée, sans id, et sera créé.
+ * L'adresse d'un lieu, telle que la Base Adresse Nationale l'a reconnue.
+ *
+ * Les sept champs vont ensemble : c'est leur présence conjointe qui atteste du
+ * géocodage. Sans `banId`, rien ne distingue une adresse reconnue d'une adresse
+ * saisie à l'estime.
  */
-export type LieuActiviteInput = {
-  readonly id?: string | null
-  readonly structureCartographieNationaleId?: string | null
+export type AdresseValidee = {
+  readonly adresse: string
+  readonly commune: string
+  readonly codePostal: string
+  readonly codeInsee: string
+  readonly banId: string
+  readonly latitude: number
+  readonly longitude: number
+}
+
+type Identite = {
   readonly nom: string
   /** Repris de l'annuaire des entreprises : la corrélation la plus sûre. */
   readonly siret?: string | null
+  readonly structureCartographieNationaleId?: string | null
+}
+
+/**
+ * Un lieu que la coop connaît déjà : il se rattache tel quel, et rien de son
+ * adresse ne sera réécrit.
+ */
+export type LieuActiviteConnu = Identite & {
+  readonly id: string
   readonly adresse: string
   readonly commune: string
   readonly codePostal: string
   readonly codeInsee?: string | null
-  /** Identifiant BAN de la voie, quand l'adresse a été géocodée. */
-  readonly banId?: string | null
-  readonly latitude?: number | null
-  readonly longitude?: number | null
 }
+
+/**
+ * Un lieu qu'il faudra créer, donc dont l'adresse doit avoir été validée. On
+ * n'admet plus de lieu sans code INSEE, sans localisation ni sans `banId` : le
+ * formulaire géocode l'adresse avant de l'ajouter, et refuse la sélection à
+ * défaut.
+ */
+export type LieuActiviteACreer = Identite &
+  AdresseValidee & { readonly id?: null }
+
+/**
+ * Lieu d'activité tel que soumis par le formulaire d'inscription : identité
+ * (pour la réconciliation) puis, selon qu'il est connu ou non, ce qu'il faut
+ * pour le rattacher ou pour le créer.
+ */
+export type LieuActiviteInput = LieuActiviteConnu | LieuActiviteACreer
 
 export type Reconciliation<T> = {
   /** Ids des activités existantes à clôturer (plus dans la liste désirée). */

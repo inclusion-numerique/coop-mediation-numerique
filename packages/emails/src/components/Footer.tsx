@@ -5,7 +5,6 @@ import {
   MjmlImage,
   MjmlSection,
 } from '@faire/mjml-react'
-import React from 'react'
 
 const Footer = ({
   padding = '15px 15px 0 15px',

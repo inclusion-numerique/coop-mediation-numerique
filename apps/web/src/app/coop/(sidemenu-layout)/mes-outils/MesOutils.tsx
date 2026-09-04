@@ -12,7 +12,6 @@ import RdvServicePublicStatusTag from '@app/web/features/rdvsp/ui/RdvServicePubl
 import { rdvWebsiteLink } from '@app/web/features/rdvsp/urls'
 import { contentId } from '@app/web/utils/skipLinks'
 import Image from 'next/image'
-import React from 'react'
 import { CardOutil } from './_components/CardOutil'
 
 export const MesOutils = async () => {

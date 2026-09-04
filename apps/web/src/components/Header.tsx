@@ -7,7 +7,6 @@ import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { getHomepage } from '@app/web/security/getHomepage'
 import classNames from 'classnames'
 import Link from 'next/link'
-import React from 'react'
 import styles from './Header.module.css'
 
 export type HeaderVariant = 'public' | 'coop'

@@ -1,6 +1,6 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import { departementCodeFromInseeRegex } from '@app/web/features/mon-reseau/departementCodeFromInseeRegex'
 import { prismaClient } from '@app/web/prismaClient'
+import { departementCodeFromInseeRegex } from '@app/web/utils/departementCodeFromInseeRegex'
 
 export const getActeursFiltersOptions = async ({
   departementCode,

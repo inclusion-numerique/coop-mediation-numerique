@@ -5,7 +5,6 @@ import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import { trpc } from '@app/web/trpc'
 import Button from '@codegouvfr/react-dsfr/Button'
-import React from 'react'
 
 const NouveauReminders = () => {
   const mutation = trpc.user.inactiveReminders.useMutation()

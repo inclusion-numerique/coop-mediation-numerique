@@ -29,3 +29,31 @@
 .fr-layout__inner--header-72 {
   height: calc(100% - var(--header-height));
 }
+
+/* Page à sommaire latéral : le sommaire prend toute la largeur sur mobile, puis
+   une colonne fixe à partir de la tablette, et le contenu occupe le reste. */
+.fr-layout--side-menu {
+  --side-menu-width: 296px;
+
+  display: flex;
+}
+
+.fr-layout__side-menu {
+  width: 100%;
+}
+
+.fr-layout__side-menu-content {
+  min-height: 100%;
+  padding: 0 1rem 7.5rem;
+}
+
+@media (min-width: 48em) {
+  .fr-layout__side-menu {
+    width: var(--side-menu-width);
+  }
+
+  .fr-layout__side-menu-content {
+    width: calc(100% - var(--side-menu-width));
+    padding: 0 2rem 7.5rem 0;
+  }
+}

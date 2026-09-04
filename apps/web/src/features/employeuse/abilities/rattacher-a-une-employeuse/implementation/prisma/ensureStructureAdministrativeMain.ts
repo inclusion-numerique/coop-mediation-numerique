@@ -1,4 +1,4 @@
-import { throttleApiEntreprise } from '@app/web/features/structures/siret/siretIdentity'
+import { throttleApiEntreprise } from '@app/web/libraries/siret'
 import { prismaClient } from '@app/web/prismaClient'
 import * as Sentry from '@sentry/nextjs'
 import {
@@ -83,7 +83,8 @@ const findStructureMainByIdentity = async ({
  * - Sans identité fournie NI SIRET résolvable, ne crée rien.
  * - **Best-effort et non bloquant** : toute erreur (API, géocodage, conflit d'unicité) est avalée —
  *   le chemin d'écriture ne doit JAMAIS échouer à cause de la couverture `main`. La dérive résiduelle
- *   est rattrapée par le job `completer-structures-main`.
+ *   reste à compléter à la main : le job de rattrapage a été supprimé une fois
+ *   la reprise ADR-002 passée.
  */
 export const ensureStructureAdministrativeMain = async ({
   coopId,

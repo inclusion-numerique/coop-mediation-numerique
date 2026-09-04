@@ -4,7 +4,7 @@ import { Popover } from '@app/ui/components/Primitives/Popover'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { StatutSlug, statutSlugOptions } from '../list/statut'
 
 export const StatutFilter = ({

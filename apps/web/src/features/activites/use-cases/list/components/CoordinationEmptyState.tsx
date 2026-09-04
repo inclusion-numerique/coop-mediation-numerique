@@ -1,5 +1,4 @@
 import { Button } from '@codegouvfr/react-dsfr/Button'
-import React from 'react'
 import { CreateCraModalDefinition } from '../../cra/components/CreateCraModal/CreateCraModalDefinition'
 
 export const CoordinationEmptyState = ({

@@ -1,4 +1,5 @@
 export {
+  AdresseNonValidee,
   type CreerLieuActiviteError,
   MediateurIntrouvable,
 } from './creer-lieu-activite'
@@ -11,6 +12,9 @@ export type {
   TrouverStructuresCarto,
 } from './ports'
 export {
+  type AdresseValidee,
+  type LieuActiviteACreer,
+  type LieuActiviteConnu,
   type LieuActiviteDesire,
   type LieuActiviteExistant,
   type LieuActiviteInput,

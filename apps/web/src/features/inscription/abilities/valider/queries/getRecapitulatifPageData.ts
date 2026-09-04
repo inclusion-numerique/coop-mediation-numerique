@@ -1,7 +1,7 @@
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import { employeuseActuelleAdaptee } from '@app/web/features/inscription/acl/employeuse-actuelle.adapter'
-import { lieuxActiviteDuMediateur } from '@app/web/features/inscription/implementation/prisma/lieux-activite-du-mediateur.query'
 import { stepPath } from '@app/web/features/inscription/ui/step-path'
+import { lieuxActiviteDuMediateur } from '@app/web/features/lieux-activite'
 import { prismaClient } from '@app/web/prismaClient'
 import { getMediateursCoordonnesForInscription } from './getMediateursCoordonnesForInscription'
 

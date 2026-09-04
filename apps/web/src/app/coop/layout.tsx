@@ -6,7 +6,7 @@ import { MaintenanceModeBanner } from '@app/web/features/maintenance-mode/compon
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import React, { PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
 
 const Layout = async ({ children }: PropsWithChildren) => {
   const user = await authenticateUser()

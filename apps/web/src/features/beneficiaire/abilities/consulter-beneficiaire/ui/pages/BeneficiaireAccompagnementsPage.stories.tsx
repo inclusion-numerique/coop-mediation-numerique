@@ -11,7 +11,6 @@ import ViewBeneficiaireAccompagnementsPage, {
 import { RdvListItem } from '@app/web/features/rdvsp/db/rdv-list-item.query'
 import { testSessionUser } from '@app/web/test/testSessionUser'
 import type { Meta, StoryObj } from '@storybook/react'
-import React from 'react'
 
 // `data.beneficiaire` ne porte que l'`id` (seul champ utilisé par la page) ; le
 // shell de consultation, simple décor en story, reçoit son bénéficiaire à part.

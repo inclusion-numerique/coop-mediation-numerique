@@ -7,7 +7,6 @@ import {
 } from '@app/web/utils/encodeSerializableState'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import React from 'react'
 import { AlreadyProcessed } from './_components/alreadyProcessed'
 import { getInvitationData } from './_components/getInvitationData'
 import { JoinTeam } from './_components/JoinTeam'

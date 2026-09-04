@@ -1,5 +1,5 @@
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
+import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
 import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import classNames from 'classnames'
 import { Suspense } from 'react'

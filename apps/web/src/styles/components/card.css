@@ -25,3 +25,14 @@
     }
   }
 }
+
+/* Pile de cartes structure : la première prend l'air sous ce qui la précède, les
+   suivantes se serrent. La règle porte sur la fratrie, ce qu'aucun utilitaire
+   d'espacement ne sait exprimer. */
+.fr-card--structure {
+  margin-top: 3rem;
+}
+
+.fr-card--structure + .fr-card--structure {
+  margin-top: 1rem;
+}

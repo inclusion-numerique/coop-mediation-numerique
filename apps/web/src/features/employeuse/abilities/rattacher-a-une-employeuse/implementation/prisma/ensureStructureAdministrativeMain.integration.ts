@@ -8,7 +8,8 @@ import { resolveIdentiteFromSiret } from './resolveIdentiteSirene'
 jest.mock('./resolveIdentiteSirene', () => ({
   resolveIdentiteFromSiret: jest.fn(),
 }))
-jest.mock('@app/web/features/structures/siret/siretIdentity', () => ({
+jest.mock('@app/web/libraries/siret', () => ({
+  ...jest.requireActual('@app/web/libraries/siret'),
   throttleApiEntreprise: jest.fn().mockResolvedValue(undefined),
 }))
 

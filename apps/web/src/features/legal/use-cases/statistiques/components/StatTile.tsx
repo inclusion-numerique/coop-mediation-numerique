@@ -1,7 +1,6 @@
 import { numberToString } from '@app/web/utils/formatNumber'
 import classNames from 'classnames'
 import Image from 'next/image'
-import React from 'react'
 
 type ImageStatTileProps = {
   variant: 'image'

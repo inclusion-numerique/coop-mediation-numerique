@@ -1,6 +1,6 @@
 import IconInSquare from '@app/web/components/IconInSquare'
 import InfoLabelValue from '@app/web/components/InfoLabelValue'
-import StructureCard from '@app/web/components/structure/StructureCard'
+import StructureAdministrativeCard from '@app/web/features/employeuse/ui/StructureAdministrativeCard'
 import InscriptionCard from '@app/web/features/inscription/components/InscriptionCard'
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { VerifierInformationsPageData } from '../../queries/getVerifierInformationsPageData'
@@ -60,7 +60,10 @@ const VerifierInformationsPage = ({
             Ma structure employeuse
           </h2>
         </div>
-        <StructureCard structure={structureEmployeuse} className="fr-mt-4v" />
+        <StructureAdministrativeCard
+          structure={structureEmployeuse}
+          className="fr-mt-4v"
+        />
       </>
     )}
     <hr className="fr-separator-12v" />

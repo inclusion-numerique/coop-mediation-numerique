@@ -1,8 +1,8 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
-import type { LieuActiviteInput } from '@app/web/features/inscription/abilities/renseigner-lieux-activite'
+import type { LieuActiviteConnu } from '@app/web/features/inscription/abilities/renseigner-lieux-activite'
 import LieuxActivitePage from '@app/web/features/inscription/abilities/renseigner-lieux-activite/ui/pages/LieuxActivitePage'
-import { lieuxActiviteDuMediateur } from '@app/web/features/inscription/implementation/prisma/lieux-activite-du-mediateur.query'
+import { lieuxActiviteDuMediateur } from '@app/web/features/lieux-activite'
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import { redirect } from 'next/navigation'
 
@@ -25,14 +25,15 @@ const LieuxActivitePageRoute = async () => {
     redirect('/inscription/initialiser')
   }
 
-  // Get existing lieux if any, projetés vers l'input du formulaire (l'id porte la
-  // réconciliation ; adresse/commune/codePostal sont non-null en base).
+  // Les lieux déjà rattachés, projetés vers l'input du formulaire. Ils portent
+  // tous un id — c'est lui qui porte la réconciliation, et c'est lui qui les
+  // dispense d'une adresse validée : rien ne sera réécrit de la leur.
   const lieuxActivite = await lieuxActiviteDuMediateur({
     mediateurId: user.mediateur.id,
   })
 
-  const lieuxExistants: LieuActiviteInput[] = lieuxActivite.map((lieu) => ({
-    id: lieu.id ?? null,
+  const lieuxExistants: LieuActiviteConnu[] = lieuxActivite.map((lieu) => ({
+    id: lieu.id ?? '',
     structureCartographieNationaleId:
       lieu.structureCartographieNationaleId ?? null,
     nom: lieu.nom,

@@ -1,5 +1,4 @@
 import ButtonsGroup from '@codegouvfr/react-dsfr/ButtonsGroup'
-import Image from 'next/image'
 
 export const Hero = () => (
   <div className="fr-container">

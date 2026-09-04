@@ -12,7 +12,7 @@ import {
   acteurSelectForList,
   getActeurCoordinateurType,
 } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
-import { lieuxForListSelect } from '@app/web/features/mon-reseau/use-cases/lieux/db/searchLieux'
+import type { LieuAffiche } from '@app/web/features/mon-reseau/use-cases/lieux/contrat'
 import { prismaClient } from '@app/web/prismaClient'
 import { getLastUserActivityDate } from '@app/web/security/getLastUserActivityDate'
 import { getMediateurCoordinationDetails } from './db/getMediateurCoordinationDetails'
@@ -34,12 +34,23 @@ export type ActeurDetailRole =
   | 'mediateur'
   | null
 
+/**
+ * La lecture des lieux est reçue, pas importée : les lieux appartiennent à leur
+ * feature, la fiche d'un acteur ne fait que les afficher. La route branche
+ * l'implémentation.
+ */
+export type LireLesLieuxDuMediateur = (input: {
+  mediateurId: string
+}) => Promise<readonly LieuAffiche[]>
+
 export const getActeurDetailPageData = async ({
   userId,
   sessionUser,
+  lireLesLieuxDuMediateur,
 }: {
   userId: string
   sessionUser: Pick<SessionUser, 'coordinateur'>
+  lireLesLieuxDuMediateur: LireLesLieuxDuMediateur
 }) => {
   // Fetch user with mediateur and coordinateur relations
   const acteur = await prismaClient.user.findUnique({
@@ -156,18 +167,7 @@ export const getActeurDetailPageData = async ({
     : null
 
   const lieuxActivites = mediateurId
-    ? await prismaClient.lieuInclusion.findMany({
-        where: {
-          mediateursEnActivite: {
-            some: {
-              mediateurId,
-              suppression: null,
-              fin: null,
-            },
-          },
-        },
-        select: lieuxForListSelect,
-      })
+    ? await lireLesLieuxDuMediateur({ mediateurId })
     : []
 
   const activityDates = await getLastUserActivityDate({

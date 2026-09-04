@@ -8,7 +8,7 @@ import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import { format } from 'date-fns'
 import { useRouter, useSearchParams } from 'next/navigation'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import z from 'zod'
 
 export const DateRangeValidation = z

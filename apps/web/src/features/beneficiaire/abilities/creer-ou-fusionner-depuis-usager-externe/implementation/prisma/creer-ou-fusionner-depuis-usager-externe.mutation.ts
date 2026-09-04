@@ -41,7 +41,7 @@ const mergedBeneficiaireSelect = {
 //
 // L'adresse fait exception : elle est recopiée telle quelle, même quand la BAN
 // ne rend pas de commune. Le domaine ne sait représenter qu'une résidence
-// complète, mais la conserver vaut mieux que la perdre — `normaliser-beneficiaires`
+// complète, mais la conserver vaut mieux que la perdre — l'outil de normalisation de l'administration
 // la préserve et la géocode ensuite.
 type NormalizedExternalUser = {
   rdvUserId: number

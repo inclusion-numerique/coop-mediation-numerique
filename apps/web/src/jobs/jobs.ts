@@ -1,37 +1,10 @@
-import z from 'zod'
+import { z } from 'zod'
 import { AppliquerDispositifConumJobValidation } from './appliquer-dispositif-conum/appliquerDispositifConumJob'
-import { ApplyCorrigerAdresseJobValidation } from './apply-corriger-adresse/applyCorrigerAdresseJob'
-import { ApplyCorrigerCoordonneesJobValidation } from './apply-corriger-coordonnees/applyCorrigerCoordonneesJob'
-import { ApplyFusionnerLieuxJobValidation } from './apply-fusionner-lieux/applyFusionnerLieuxJob'
-import { ApplyReviewToActionPlanJobValidation } from './apply-review-to-action-plan/applyReviewToActionPlanJob'
-import { ApplySupprimerLieuxJobValidation } from './apply-supprimer-lieux/applySupprimerLieuxJob'
-import { ApplyViderSiretJobValidation } from './apply-vider-siret/applyViderSiretJob'
-import { AuditAdresseCoherenceJobValidation } from './audit-adresse-coherence/auditAdresseCoherenceJob'
-import { AuditLieuxOverviewJobValidation } from './audit-lieux-overview/auditLieuxOverviewJob'
-import { AuditSiretCoherenceJobValidation } from './audit-siret-coherence/auditSiretCoherenceJob'
-import { BackfillCommuneRdvspJobValidation } from './backfill-commune-rdvsp/backfillCommuneRdvspJob'
-import { BackfillPersonnesAffectationsMainJobValidation } from './backfill-personnes-affectations-main/backfillPersonnesAffectationsMainJob'
-import { BackfillStructureEmployeuseMainJobValidation } from './backfill-structure-employeuse-main/backfillStructureEmployeuseMainJob'
-import { BackfillTrancheAgeJobValidation } from './backfill-tranche-age/backfillTrancheAgeJob'
-import { BackupDatabaseJobValidation } from './backup-database/backupDatabaseJob'
-import { CompleterStructuresMainJobValidation } from './completer-structures-main/completerStructuresMainJob'
-import { DeduplicateLieuxJobValidation } from './deduplicate-lieux/deduplicateLieuxJob'
-import { DetectDuplicateLieuxJobValidation } from './detect-duplicate-lieux/detectDuplicateLieuxJob'
-import { ExportDuplicateSiretsJobValidation } from './export-duplicate-sirets/exportDuplicateSiretsJob'
-import { FixStructuresJobValidation } from './fix-structures/fixStructuresJob'
-import { FixTagsJobValidation } from './fix-tags/fixTagsJob'
-import { FixUsersJobValidation } from './fix-users/fixUsersJob'
 import { FixUsersRolesJobValidation } from './fix-users-roles/fixUsersRolesJob'
-import { ImportContactsToBrevoValidation } from './import-contacts-to-brevo/ImportContactsToBrevoJob'
 import { InactiveUsersRemindersJobValidation } from './inactive-users-reminders/inactiveUsersJob'
-import { NormaliserBeneficiairesJobValidation } from './normaliser-beneficiaires/normaliserBeneficiairesJob'
 import { NormalizeSiretsJobValidation } from './normalize-sirets/normalizeSiretsJob'
-import { RelierPersonnesCoopMainJobValidation } from './relier-personnes-coop-main/relierPersonnesCoopMainJob'
 import { RemoveOrphanBrevoContactsJobValidation } from './remove-orphan-brevo-contacts/removeOrphanBrevoContactsJob'
-import { ResetInscriptionsSansRoleJobValidation } from './reset-inscriptions-sans-role/resetInscriptionsSansRoleJob'
-import { SetServciesToSharedLieuxValidation } from './set-servcies-to-shared-lieux/setServciesToSharedLieuxJob'
 import { SyncRdvspDataJobValidation } from './sync-rdvsp-data/syncRdvspDataJob'
-import { UpdateLieuxActivitesAdistanceValidation } from './update-lieu-activite-a-distance/updateLieuxActivitesAdistanceJob'
 import { UpdateStructuresCartographieNationaleJobValidation } from './update-structures-cartographie-nationale/updateStructuresCartographieNationaleJob'
 
 /**
@@ -48,43 +21,21 @@ import { UpdateStructuresCartographieNationaleJobValidation } from './update-str
  *
  * Add your jobs here.
  * To add a cron trigger, see WebAppStack Jobs definitions.
+ *
+ * N'y figurent que les jobs qui ont encore une raison de tourner. Les campagnes
+ * de reprise de données, les correctifs ponctuels et les backfills accomplis
+ * sont supprimés une fois passés : leur trace vit dans `job_executions` et dans
+ * l'historique git, pas dans le code.
  */
 
 export const JobValidation = z.discriminatedUnion('name', [
-  ApplyReviewToActionPlanJobValidation,
-  ApplyCorrigerAdresseJobValidation,
-  ApplyCorrigerCoordonneesJobValidation,
-  ApplyFusionnerLieuxJobValidation,
-  ApplySupprimerLieuxJobValidation,
-  ApplyViderSiretJobValidation,
-  AuditAdresseCoherenceJobValidation,
-  AuditSiretCoherenceJobValidation,
-  AuditLieuxOverviewJobValidation,
-  BackfillCommuneRdvspJobValidation,
-  NormaliserBeneficiairesJobValidation,
-  BackfillTrancheAgeJobValidation,
-  BackupDatabaseJobValidation,
-  CompleterStructuresMainJobValidation,
-  RelierPersonnesCoopMainJobValidation,
-  BackfillPersonnesAffectationsMainJobValidation,
-  BackfillStructureEmployeuseMainJobValidation,
-  UpdateStructuresCartographieNationaleJobValidation,
-  ImportContactsToBrevoValidation,
-  NormalizeSiretsJobValidation,
-  SetServciesToSharedLieuxValidation,
-  UpdateLieuxActivitesAdistanceValidation,
-  FixStructuresJobValidation,
-  FixUsersJobValidation,
   AppliquerDispositifConumJobValidation,
-  SyncRdvspDataJobValidation,
-  FixTagsJobValidation,
-  InactiveUsersRemindersJobValidation,
   FixUsersRolesJobValidation,
+  InactiveUsersRemindersJobValidation,
+  NormalizeSiretsJobValidation,
   RemoveOrphanBrevoContactsJobValidation,
-  ResetInscriptionsSansRoleJobValidation,
-  DeduplicateLieuxJobValidation,
-  DetectDuplicateLieuxJobValidation,
-  ExportDuplicateSiretsJobValidation,
+  SyncRdvspDataJobValidation,
+  UpdateStructuresCartographieNationaleJobValidation,
 ])
 
 export type Job = z.infer<typeof JobValidation>

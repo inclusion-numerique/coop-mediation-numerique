@@ -16,7 +16,6 @@ import { dateAsIsoDay } from '@app/web/utils/dateAsIsoDay'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import React from 'react'
 import { DefaultValues, useForm } from 'react-hook-form'
 
 const ClientApiForm = ({

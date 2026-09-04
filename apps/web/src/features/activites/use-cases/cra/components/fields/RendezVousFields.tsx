@@ -6,11 +6,14 @@ import {
   CommuneComboBox,
   CommuneOptions,
 } from '@app/web/features/adresse/combo-box/CommuneComboBox'
+import type {
+  LieuActiviteOption,
+  LieuActiviteTrouve,
+} from '@app/web/features/lieux-activite'
 import {
   LieuActiviteComboBox,
   LieuActiviteOptions,
-} from '@app/web/features/lieux-activite/combo-box/LieuActiviteComboBox'
-import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
+} from '@app/web/features/lieux-activite/ui'
 import { type DefaultValues, withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { formOptions } from '@tanstack/react-form'
@@ -29,20 +32,28 @@ const shouldResetLieuCommuneData = (value?: string) =>
 const shouldResetStructure = (value?: string) =>
   value != null && ['Autre', 'Domicile', 'ADistance'].includes(value)
 
+// Les options de filtre et les suggestions du combo-box décrivent le même lieu
+// sous deux formes ; l'adaptation reste ici, chez leur seul point de rencontre.
 const toLieuActiviteOption = ({
   value,
   extra,
 }: {
   value: string
-  extra?: { nom: string; adresse: string; mostUsed: boolean }
-}) => ({
+  extra?: {
+    nom: string
+    adresse: string
+    mostUsed: boolean
+    activites?: number
+  }
+}): LieuActiviteTrouve => ({
   id: value,
   nom: extra?.nom ?? '',
   adresse: extra?.adresse ?? '',
-  mostUsed: extra?.mostUsed ?? false,
+  activites: extra?.activites ?? 0,
+  lePlusUtilise: extra?.mostUsed ?? false,
 })
 
-const mostUsedOption = ({ mostUsed }: { mostUsed: boolean }) => mostUsed
+const mostUsedOption = ({ lePlusUtilise }: LieuActiviteTrouve) => lePlusUtilise
 
 export const RendezVousFields = withForm({
   ...options,

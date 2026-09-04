@@ -1,6 +1,5 @@
 import { numberToPercentage, numberToString } from '@app/web/utils/formatNumber'
 import classNames from 'classnames'
-import React from 'react'
 
 export const LegendTile = ({
   value,

@@ -312,7 +312,7 @@ Exemples :
 pnpm cli job:execute update-structures-cartographie-nationale
 
 # Backup de la base de donnees (avec payload)
-pnpm cli job:execute backup-database '{"databaseName":"coop-mediation-numerique-main","type":"daily"}'
+pnpm cli job:execute normalize-sirets '{"dryRun":true}'
 ```
 
 ### Deploiement
@@ -381,21 +381,18 @@ L'execution des jobs est tracee en base de donnees dans la table `jobExecution`.
 
 | Job | Payload | Description |
 |---|---|---|
-| `backup-database` | `{ databaseName, type: 'weekly' \| 'daily' \| 'hourly' }` | Sauvegarde de la base de donnees Scaleway. Retention : weekly=600j, daily=90j, hourly=4j |
-| `update-structures-cartographie-nationale` | — | Telecharge et synchronise les structures depuis l'API de la cartographie nationale |
-| `sync-users-from-dataspace` | — | Synchronise les donnees utilisateurs depuis l'API Dataspace |
+| `appliquer-dispositif-conum` | `{ fenetreHeures? }` | Reporte les affectations d'emploi conseiller numerique modifiees dans l'Entrepot |
+| `update-structures-cartographie-nationale` | — | Synchronise les lieux depuis la cartographie nationale (Entrepot) |
 | `sync-rdvsp-data` | — | Synchronise les donnees de rendez-vous depuis RDV Service Public |
 | `fix-users-roles` | — | Corrige et repare les attributions de roles utilisateurs |
 | `inactive-users-reminders` | — | Envoie des emails de relance aux utilisateurs avec des inscriptions incompletes |
 | `remove-orphan-brevo-contacts` | — | Supprime les contacts Brevo qui n'existent plus en base de donnees |
-| `normalize-sirets` | `{ dryRun?, minDaysSinceLastSync? }` | Normalise les donnees des structures employeuses (par defaut : sync si 7+ jours depuis la derniere) |
-| `import-contacts-to-brevo` | — | Synchronise les contacts de la base de donnees vers la plateforme Brevo |
-| `ingest-les-bases-in-rag` | — | Ingere la documentation "Les Bases" dans le systeme RAG pour l'assistant IA |
-| `fix-structures` | — | Corrige et valide les donnees des structures (adresses, telephones, URLs, horaires) |
-| `fix-users` | — | Corrige les numeros de telephone invalides des utilisateurs |
-| `fix-tags` | — | Nettoie et corrige les donnees de tags |
-| `set-servcies-to-shared-lieux` | — | Met a jour la configuration de partage des services pour les lieux partages |
-| `update-lieux-activites-a-distance` | — | Met a jour les lieux d'activites marques comme "a distance" |
+| `normalize-sirets` | `{ dryRun?, minDaysSinceLastSync? }` | Verifie les SIRET contre l'annuaire des entreprises (par defaut : sync si 7+ jours depuis la derniere) |
+
+Ne figurent ici que les jobs qui ont encore une raison de tourner. Les campagnes
+de reprise de donnees, les correctifs ponctuels et les backfills accomplis sont
+supprimes une fois passes : leur trace vit dans `job_executions` et dans
+l'historique git, pas dans le code.
 
 ### Mecanisme d'execution des crons
 
@@ -411,12 +408,9 @@ L'execution des jobs est tracee en base de donnees dans la table `jobExecution`.
 
 | Job | Schedule | Horaire |
 |---|---|---|
-| `backup-database` (hourly) | `0 * * * *` | Toutes les heures |
-| `backup-database` (daily) | `0 0 * * *` | Tous les jours a 00:00 |
-| `backup-database` (weekly) | `0 0 * * 0` | Tous les dimanches a 00:00 |
 | `fix-users-roles` | `0 0 * * *` | Tous les jours a 00:00 |
 | `inactive-users-reminders` | `0 0 * * *` | Tous les jours a 00:00 |
-| `sync-users-from-dataspace` | `0 2 * * *` | Tous les jours a 02:00 |
+| `appliquer-dispositif-conum` | `0 2 * * *` | Tous les jours a 02:00 |
 | `remove-orphan-brevo-contacts` | `0 3 * * *` | Tous les jours a 03:00 |
 | `normalize-sirets` | `0 4 * * *` | Tous les jours a 04:00 |
 
@@ -594,14 +588,11 @@ Les crons sont configures via `ContainerCron` Scaleway et envoient des requetes 
 
 | Job | Frequence | Description |
 |---|---|---|
-| `backup-database` (hourly) | Toutes les heures | Sauvegarde horaire de la base |
-| `backup-database` (daily) | Tous les jours a minuit | Sauvegarde quotidienne |
-| `backup-database` (weekly) | Tous les dimanches a minuit | Sauvegarde hebdomadaire |
-| `sync-users-from-dataspace` | Tous les jours a 2h | Synchronisation utilisateurs Dataspace |
 | `fix-users-roles` | Tous les jours a minuit | Correction des roles utilisateurs |
 | `inactive-users-reminders` | Tous les jours a minuit | Relances inscriptions incompletes |
+| `appliquer-dispositif-conum` | Tous les jours a 2h | Report des affectations conseiller numerique |
 | `remove-orphan-brevo-contacts` | Tous les jours a 3h | Nettoyage contacts Brevo orphelins |
-| `normalize-sirets` | Tous les jours a 4h | Normalisation des structures |
+| `normalize-sirets` | Tous les jours a 4h | Verification des SIRET |
 
 **Dev et production :**
 

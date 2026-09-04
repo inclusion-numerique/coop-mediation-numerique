@@ -1,5 +1,4 @@
 import { labelsToOptions } from '@app/ui/components/Form/utils/options'
-import type { RdvStatusFilterValue } from '@app/web/features/activites/use-cases/list/validation/ActivitesFilters'
 import type { statutsPresence } from '../domain/statut-presence'
 
 /**

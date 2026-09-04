@@ -1,4 +1,4 @@
-import { output, outputError } from '@app/cli/output'
+import { outputError } from '@app/cli/output'
 import axios, { type AxiosInstance } from 'axios'
 
 export type SentryConfig = {

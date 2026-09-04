@@ -10,7 +10,6 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import React from 'react'
 import RdvServicePublicConnexionCard from '../components/RdvServicePublicConnexionCard'
 
 const ConnexionReussiePage = async () => {

@@ -4,7 +4,6 @@ import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
-import React from 'react'
 
 export const metadata: Metadata = {
   title: metadataTitle('Politique de confidentialité'),

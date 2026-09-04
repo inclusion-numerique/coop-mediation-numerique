@@ -1,4 +1,3 @@
-import React from 'react'
 import { ChartCard, ChartCardDataProps } from '../ChartCard'
 
 export const Accompagnements = ({

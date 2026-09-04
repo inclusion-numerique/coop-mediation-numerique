@@ -5,7 +5,7 @@ import InscriptionStepsLayout from '@app/web/features/inscription/components/Ins
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import React, { PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
 
 const InscriptionLayout = async ({ children }: PropsWithChildren) => {
   const user = await authenticateUser()
