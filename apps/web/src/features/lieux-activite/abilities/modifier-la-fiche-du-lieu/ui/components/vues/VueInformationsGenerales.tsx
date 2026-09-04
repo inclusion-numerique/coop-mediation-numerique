@@ -1,5 +1,5 @@
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
-import { typologieStructureLabels } from '@app/web/features/structures/typologieStructure'
+import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import type { Typologie } from '@prisma/client'
 
@@ -83,7 +83,7 @@ export const VueInformationsGenerales = ({
         <ul className="fr-tags-group fr-mt-3v">
           {typologies?.map((typologie) => (
             <li key={typologie}>
-              <Tag>{typologieStructureLabels[typologie]}</Tag>
+              <Tag>{vocabulaire.typologieLibelles[typologie]}</Tag>
             </li>
           ))}
         </ul>

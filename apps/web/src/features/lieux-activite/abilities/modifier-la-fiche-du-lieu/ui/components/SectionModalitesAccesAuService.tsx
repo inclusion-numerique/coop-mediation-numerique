@@ -1,7 +1,7 @@
-'use client'
+import { fraisAChargeOptions } from '@app/web/features/lieux-activite/vocabulaire/options'
+;('use client')
 
 import EditCardTanStack from '@app/web/components/EditCardTanStack'
-import { fraisAChargeOptions } from '@app/web/features/structures/fraisACharge'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useStore } from '@tanstack/react-form'
 import type { z } from 'zod'

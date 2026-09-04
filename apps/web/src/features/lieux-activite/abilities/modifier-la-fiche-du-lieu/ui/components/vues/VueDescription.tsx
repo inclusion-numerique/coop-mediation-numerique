@@ -1,4 +1,4 @@
-import { formationLabelLabels } from '@app/web/features/structures/formationLabel'
+import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import type { FormationLabel } from '@prisma/client'
 
@@ -46,7 +46,7 @@ export const VueDescription = ({
         <ul className="fr-tags-group fr-mt-3v">
           {formationsLabels?.map((formationLabel) => (
             <li key={formationLabel}>
-              <Tag>{formationLabelLabels[formationLabel]}</Tag>
+              <Tag>{vocabulaire.formationLabel.table[formationLabel]}</Tag>
             </li>
           ))}
         </ul>

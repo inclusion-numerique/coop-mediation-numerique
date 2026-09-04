@@ -1,11 +1,5 @@
 import { AdresseBanValidation } from '@app/web/external-apis/ban/AdresseBanValidation'
-import { formationLabelValues } from '@app/web/features/structures/formationLabel'
-import { fraisAChargeValues } from '@app/web/features/structures/fraisACharge'
-import { modaliteAccompagnementValues } from '@app/web/features/structures/modaliteAccompagnement'
-import { priseEnChargeSpecifiqueValues } from '@app/web/features/structures/priseEnChargeSpecifique'
-import { publicSpecifiquementAdresseValues } from '@app/web/features/structures/publicSpecifiquementAdresse'
-import { serviceValues } from '@app/web/features/structures/service'
-import { typologieStructureValue } from '@app/web/features/structures/typologieStructure'
+import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import { z } from 'zod'
 import { HorairesValidation } from './horaires.validation'
 
@@ -33,7 +27,7 @@ export const InformationsGeneralesSaisie = z.object({
   complementAdresse: texteFacultatif,
   lieuItinerant: z.boolean().nullish(),
   typologies: z
-    .array(z.enum(typologieStructureValue))
+    .array(z.enum(vocabulaire.typologie.valeurs))
     .min(1, 'Sélectionnez au moins une typologie de structure'),
   siret: texteFacultatif,
   rna: texteFacultatif,
@@ -79,13 +73,15 @@ export const DescriptionSaisie = z.object({
     )
     .nullish(),
   presentationDetail: texteFacultatif,
-  formationsLabels: z.array(z.enum(formationLabelValues)),
+  formationsLabels: z.array(z.enum(vocabulaire.formationLabel.valeurs)),
 })
 
 export const ServicesEtAccompagnementSaisie = z.object({
   section: z.literal('ServicesEtAccompagnement'),
-  services: z.array(z.enum(serviceValues)),
-  modalitesAccompagnement: z.array(z.enum(modaliteAccompagnementValues)),
+  services: z.array(z.enum(vocabulaire.service.valeurs)),
+  modalitesAccompagnement: z.array(
+    z.enum(vocabulaire.modaliteAccompagnement.valeurs),
+  ),
 })
 
 /**
@@ -104,16 +100,18 @@ export const ModalitesAccesAuServiceSaisie = z.object({
     .trim()
     .email('Veuillez renseigner une adresse email valide')
     .nullish(),
-  fraisACharge: z.array(z.enum(fraisAChargeValues)),
+  fraisACharge: z.array(z.enum(vocabulaire.fraisACharge.valeurs)),
 })
 
 export const TypesDePublicsAccueillisSaisie = z.object({
   section: z.literal('TypesDePublicsAccueillis'),
   toutPublic: z.boolean(),
   publicsSpecifiquementAdresses: z.array(
-    z.enum(publicSpecifiquementAdresseValues),
+    z.enum(vocabulaire.publicSpecifiquementAdresse.valeurs),
   ),
-  priseEnChargeSpecifique: z.array(z.enum(priseEnChargeSpecifiqueValues)),
+  priseEnChargeSpecifique: z.array(
+    z.enum(vocabulaire.priseEnChargeSpecifique.valeurs),
+  ),
 })
 
 export const ModifierLaFicheDuLieuValidation = z.object({

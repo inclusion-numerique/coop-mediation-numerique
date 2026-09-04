@@ -1,14 +1,13 @@
+import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import z from 'zod'
-import { priseEnChargeSpecifiqueValues } from './priseEnChargeSpecifique'
-import { publicSpecifiquementAdresseValues } from './publicSpecifiquementAdresse'
 
 export const TypesDePublicsAccueillisShape = {
   priseEnChargeSpecifique: z
-    .array(z.enum(priseEnChargeSpecifiqueValues))
+    .array(z.enum(vocabulaire.priseEnChargeSpecifique.valeurs))
     .nullish(),
   toutPublic: z.boolean().nullish(),
   publicsSpecifiquementAdresses: z
-    .array(z.enum(publicSpecifiquementAdresseValues))
+    .array(z.enum(vocabulaire.publicSpecifiquementAdresse.valeurs))
     .nullish(),
 }
 

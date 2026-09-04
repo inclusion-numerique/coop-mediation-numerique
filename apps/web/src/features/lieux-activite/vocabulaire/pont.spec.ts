@@ -10,7 +10,7 @@ import {
   Service as PrismaService,
   Typologie as PrismaTypologie,
 } from '@prisma/client'
-import * as vocabulaire from './vocabulaire'
+import * as vocabulaire from './index'
 
 type Pont<Prisma extends string, Standard extends string> = {
   versStandard: (valeur: Prisma) => Standard | null

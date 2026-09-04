@@ -1,8 +1,5 @@
-import {
-  modaliteAccompagnementIcons,
-  modaliteAccompagnementLabels,
-} from '@app/web/features/structures/modaliteAccompagnement'
-import { serviceLabels } from '@app/web/features/structures/service'
+import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
+import { modaliteAccompagnementIcons } from '@app/web/features/lieux-activite/vocabulaire/options'
 import type { ModaliteAccompagnement, Service } from '@prisma/client'
 
 export const VueServicesEtAccompagnement = ({
@@ -23,7 +20,7 @@ export const VueServicesEtAccompagnement = ({
       {services.length > 0 ? (
         <ul>
           {services.map((service) => (
-            <li key={service}>{serviceLabels[service]}</li>
+            <li key={service}>{vocabulaire.service.table[service]}</li>
           ))}
         </ul>
       ) : (
@@ -44,7 +41,11 @@ export const VueServicesEtAccompagnement = ({
                 <span className="fr-flex fr-px-4v">
                   <Icon width={32} height={32} />
                 </span>
-                {modaliteAccompagnementLabels[modaliteAccompagnement]}
+                {
+                  vocabulaire.modaliteAccompagnement.table[
+                    modaliteAccompagnement
+                  ]
+                }
               </li>
             )
           })}

@@ -1,4 +1,5 @@
-'use client'
+import { typologieStructureOptions } from '@app/web/features/lieux-activite/vocabulaire/options'
+;('use client')
 
 import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
 import { optionsWithEmptyValue } from '@app/ui/components/Form/utils/options'
@@ -11,7 +12,6 @@ import {
   AdresseBanComboBox,
   AdresseBanOptions,
 } from '@app/web/features/adresse/combo-box/AdresseBanComboBox'
-import { typologieStructureOptions } from '@app/web/features/structures/typologieStructure'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'

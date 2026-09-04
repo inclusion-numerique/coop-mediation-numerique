@@ -1,4 +1,6 @@
-'use client'
+import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
+import { typologieStructureOptions } from '@app/web/features/lieux-activite/vocabulaire/options'
+;('use client')
 
 import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
 import RequiredFieldsDisclaimer from '@app/ui/components/Form/RequiredFieldsDisclaimer'
@@ -8,10 +10,6 @@ import {
   AdresseBanComboBox,
   AdresseBanOptions,
 } from '@app/web/features/adresse/combo-box/AdresseBanComboBox'
-import {
-  typologieStructureLabels,
-  typologieStructureOptions,
-} from '@app/web/features/structures/typologieStructure'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { creerLieuActiviteFormOptions } from '../creerLieuActiviteFormData'
@@ -134,8 +132,8 @@ export const InformationsGeneralesFields = withForm({
             />
             <field.SelectedItems
               itemToString={(item: string) =>
-                typologieStructureLabels[
-                  item as keyof typeof typologieStructureLabels
+                vocabulaire.typologieLibelles[
+                  item as keyof typeof vocabulaire.typologieLibelles
                 ] ?? item
               }
               itemToKey={(item: string) => item}

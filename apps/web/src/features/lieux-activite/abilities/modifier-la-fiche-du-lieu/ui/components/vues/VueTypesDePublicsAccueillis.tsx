@@ -1,5 +1,4 @@
-import { priseEnChargeSpecifiqueLabels } from '@app/web/features/structures/priseEnChargeSpecifique'
-import { publicSpecifiquementAdresseLabels } from '@app/web/features/structures/publicSpecifiquementAdresse'
+import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import type {
   PriseEnChargeSpecifique,
@@ -26,7 +25,11 @@ export const VueTypesDePublicsAccueillis = ({
           {publicsSpecifiquementAdresses.map((publicSpecifiquementAdresse) => (
             <li key={publicSpecifiquementAdresse}>
               <Tag>
-                {publicSpecifiquementAdresseLabels[publicSpecifiquementAdresse]}
+                {
+                  vocabulaire.publicSpecifiquementAdresse.table[
+                    publicSpecifiquementAdresse
+                  ]
+                }
               </Tag>
             </li>
           ))}
@@ -49,7 +52,9 @@ export const VueTypesDePublicsAccueillis = ({
         <ul className="fr-tags-group">
           {priseEnChargeSpecifique.map((priseEnCharge) => (
             <li key={priseEnCharge}>
-              <Tag>{priseEnChargeSpecifiqueLabels[priseEnCharge]}</Tag>
+              <Tag>
+                {vocabulaire.priseEnChargeSpecifique.table[priseEnCharge]}
+              </Tag>
             </li>
           ))}
         </ul>

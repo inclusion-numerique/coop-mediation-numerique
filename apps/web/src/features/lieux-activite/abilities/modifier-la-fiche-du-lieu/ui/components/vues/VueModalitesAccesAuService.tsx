@@ -1,4 +1,4 @@
-import { fraisAChargeLabels } from '@app/web/features/structures/fraisACharge'
+import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import type { FraisACharge } from '@prisma/client'
 import Link from 'next/link'
@@ -75,7 +75,7 @@ export const VueModalitesAccesAuService = ({
         <ul className="fr-tags-group">
           {fraisACharge.map((frais) => (
             <li key={frais}>
-              <Tag>{fraisAChargeLabels[frais]}</Tag>
+              <Tag>{vocabulaire.fraisACharge.table[frais]}</Tag>
             </li>
           ))}
         </ul>

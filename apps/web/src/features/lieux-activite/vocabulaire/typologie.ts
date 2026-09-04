@@ -1,7 +1,14 @@
-import { labelsToOptions } from '@app/ui/components/Form/utils/options'
-import type { Typologie as PrismaTypologie } from '@prisma/client'
+import { Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import type { Typologie as TypologieCoop } from '@prisma/client'
+import { pontParNom } from './pont'
 
-export const typologieStructureLabels: Record<PrismaTypologie, string> = {
+/**
+ * Seule nomenclature dont la table coop ne porte pas les valeurs du standard :
+ * le schéma national reprend les mêmes sigles (`ACI`, `BIB`, `CCAS`…), si bien
+ * que la correspondance se fait par identité des noms. Ce que la coop garde en
+ * propre, c'est le libellé lisible affiché dans les formulaires et les fiches.
+ */
+export const libelles: Record<TypologieCoop, string> = {
   ACI: 'Structures porteuses d’ateliers et chantiers d’insertion (ACI)',
   ACIPHC: 'SIAE — Atelier chantier d’insertion premières heures en chantier',
   AFPA: 'Agence nationale pour la formation professionnelle des adultes (AFPA)',
@@ -102,12 +109,8 @@ export const typologieStructureLabels: Record<PrismaTypologie, string> = {
   UDAF: 'Union Départementale d’Aide aux Familles (UDAF)',
 }
 
-export type TypologieLabel = keyof typeof typologieStructureLabels
-
-export const typologieStructureValue = Object.keys(
-  typologieStructureLabels,
-) as [TypologieLabel, ...TypologieLabel[]]
-
-export const typologieStructureOptions = labelsToOptions(
-  typologieStructureLabels,
+export const typologie = pontParNom(
+  Typologie,
+  Object.keys(libelles) as [TypologieCoop, ...TypologieCoop[]],
+  [['Autre', Typologie.AUTRE]],
 )

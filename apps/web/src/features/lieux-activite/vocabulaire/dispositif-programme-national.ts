@@ -1,8 +1,9 @@
 import { DispositifProgrammeNational } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { DispositifProgrammeNational as PrismaDispositifProgrammeNational } from '@prisma/client'
+import type { DispositifProgrammeNational as DispositifProgrammeNationalCoop } from '@prisma/client'
+import { pont } from './pont'
 
-export const dispositifProgrammeNationalLabels: Record<
-  PrismaDispositifProgrammeNational,
+const table: Record<
+  DispositifProgrammeNationalCoop,
   DispositifProgrammeNational
 > = {
   AidantsConnect: DispositifProgrammeNational.AidantsConnect,
@@ -20,12 +21,4 @@ export const dispositifProgrammeNationalLabels: Record<
     DispositifProgrammeNational.RelaisNumeriqueEmmausConnect,
 }
 
-export const dispositifProgrammeNationalKeys: Record<
-  DispositifProgrammeNational,
-  PrismaDispositifProgrammeNational
-> = Object.fromEntries(
-  Object.entries(dispositifProgrammeNationalLabels).map(([key, value]) => [
-    value,
-    key,
-  ]),
-) as Record<DispositifProgrammeNational, PrismaDispositifProgrammeNational>
+export const dispositifProgrammeNational = pont(table)

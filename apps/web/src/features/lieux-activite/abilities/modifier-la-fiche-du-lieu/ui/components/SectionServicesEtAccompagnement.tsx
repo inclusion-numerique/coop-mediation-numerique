@@ -1,8 +1,10 @@
-'use client'
+import {
+  modaliteAccompagnementOptions,
+  serviceOptions,
+} from '@app/web/features/lieux-activite/vocabulaire/options'
+;('use client')
 
 import EditCardTanStack from '@app/web/components/EditCardTanStack'
-import { modaliteAccompagnementOptions } from '@app/web/features/structures/modaliteAccompagnement'
-import { serviceOptions } from '@app/web/features/structures/service'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useStore } from '@tanstack/react-form'
 import type { z } from 'zod'

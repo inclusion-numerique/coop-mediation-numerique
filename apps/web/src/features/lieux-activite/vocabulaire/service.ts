@@ -1,8 +1,8 @@
-import { labelsToOptions } from '@app/ui/components/Form/utils/options'
 import { Service } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { Service as PrismaService } from '@prisma/client'
+import type { Service as ServiceCoop } from '@prisma/client'
+import { pont } from './pont'
 
-export const serviceLabels: Record<PrismaService, Service> = {
+const table: Record<ServiceCoop, Service> = {
   AideAuxDemarchesAdministratives: Service.AideAuxDemarchesAdministratives,
   MaitriseDesOutilsNumeriquesDuQuotidien:
     Service.MaitriseDesOutilsNumeriquesDuQuotidien,
@@ -19,15 +19,4 @@ export const serviceLabels: Record<PrismaService, Service> = {
     Service.AccesInternetEtMaterielInformatique,
 }
 
-export const serviceKeys: Record<Service, PrismaService> = Object.fromEntries(
-  Object.entries(serviceLabels).map(([key, value]) => [value, key]),
-) as Record<Service, PrismaService>
-
-export type ServiceLabel = keyof typeof serviceLabels
-
-export const serviceValues = Object.keys(serviceLabels) as [
-  ServiceLabel,
-  ...ServiceLabel[],
-]
-
-export const serviceOptions = labelsToOptions(serviceLabels)
+export const service = pont(table)

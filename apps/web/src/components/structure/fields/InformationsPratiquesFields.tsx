@@ -1,6 +1,6 @@
 import InputFormField from '@app/ui/components/Form/InputFormField'
+import { InformationsPratiquesData } from '@app/web/features/lieux-activite/formulaire/InformationsPratiquesValidation'
 import { rdvWebsiteLink } from '@app/web/features/rdvsp/urls'
-import { InformationsPratiquesData } from '@app/web/features/structures/InformationsPratiquesValidation'
 import { OSM_DAYS_OF_WEEK } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import { OsmDaysOfWeek } from '@gouvfr-anct/timetable-to-osm-opening-hours/lib/cjs/utilities'
 import Link from 'next/link'

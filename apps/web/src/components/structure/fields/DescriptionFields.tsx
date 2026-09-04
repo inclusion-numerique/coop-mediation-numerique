@@ -4,8 +4,8 @@ import { optionsWithEmptyValue } from '@app/ui/components/Form/utils/options'
 import {
   DescriptionData,
   descriptionMaxLength,
-} from '@app/web/features/structures/DescriptionValidation'
-import { formationLabelOptions } from '@app/web/features/structures/formationLabel'
+} from '@app/web/features/lieux-activite/formulaire/DescriptionValidation'
+import { formationLabelOptions } from '@app/web/features/lieux-activite/vocabulaire/options'
 import { UseFormReturn } from 'react-hook-form'
 
 const descriptionInfo = (description?: string | null) =>

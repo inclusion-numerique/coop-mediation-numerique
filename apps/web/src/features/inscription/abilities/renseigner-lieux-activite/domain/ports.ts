@@ -5,7 +5,7 @@ import type {
 // Type partagé de la structure carto de l'Entrepôt (erasé au build) — même
 // forme que celle consommée par le module partagé `structure/`.
 import type { CartoStructure } from '@app/web/features/lieux-activite'
-import type { CreerLieuActiviteData } from '@app/web/features/structures/CreerLieuActiviteValidation'
+import type { CreerLieuActiviteData } from '@app/web/features/lieux-activite/formulaire/CreerLieuActiviteValidation'
 import type { MediateurId } from './mediateur-id'
 import type { LieuActiviteExistant, LieuActiviteInput } from './reconcilier'
 

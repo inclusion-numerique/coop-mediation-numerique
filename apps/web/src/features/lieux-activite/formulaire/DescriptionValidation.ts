@@ -1,5 +1,5 @@
+import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import z from 'zod'
-import { formationLabelValues } from './formationLabel'
 
 export const descriptionMaxLength = 280
 
@@ -13,7 +13,9 @@ export const DescriptionShape = {
     .trim()
     .nullish(),
   presentationDetail: z.string().trim().nullish(),
-  formationsLabels: z.array(z.enum(formationLabelValues)).nullish(),
+  formationsLabels: z
+    .array(z.enum(vocabulaire.formationLabel.valeurs))
+    .nullish(),
 }
 
 export const DescriptionValidation = z.object({

@@ -1,4 +1,4 @@
-import { typologieStructureLabels } from '@app/web/features/structures/typologieStructure'
+import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { Typologie } from '@prisma/client'
 
@@ -29,7 +29,7 @@ export const Typologies = ({
         {typologies
           .map(
             (typologie: Typologie): string =>
-              typologieStructureLabels[typologie],
+              vocabulaire.typologieLibelles[typologie],
           )
           ?.join(', ')}
       </span>

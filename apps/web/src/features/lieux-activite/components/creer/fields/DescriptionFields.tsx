@@ -1,11 +1,9 @@
-'use client'
+import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
+import { formationLabelOptions } from '@app/web/features/lieux-activite/vocabulaire/options'
+;('use client')
 
 import { optionsWithEmptyValue } from '@app/ui/components/Form/utils/options'
-import { descriptionMaxLength } from '@app/web/features/structures/DescriptionValidation'
-import {
-  formationLabelLabels,
-  formationLabelOptions,
-} from '@app/web/features/structures/formationLabel'
+import { descriptionMaxLength } from '@app/web/features/lieux-activite/formulaire/DescriptionValidation'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import { useSelector } from '@tanstack/react-form'
 import { creerLieuActiviteFormOptions } from '../creerLieuActiviteFormData'
@@ -60,8 +58,8 @@ export const DescriptionFields = withForm({
               />
               <field.SelectedItems
                 itemToString={(item: string) =>
-                  formationLabelLabels[
-                    item as keyof typeof formationLabelLabels
+                  vocabulaire.formationLabel.table[
+                    item as keyof typeof vocabulaire.formationLabel.table
                   ] ?? item
                 }
                 itemToKey={(item: string) => item}

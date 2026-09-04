@@ -1,9 +1,11 @@
 import CheckboxGroupFormField from '@app/ui/components/Form/CheckboxGroupFormField'
 import MultipleSelectFormField from '@app/ui/components/Form/MultipleSelectFormField'
 import { optionsWithEmptyValue } from '@app/ui/components/Form/utils/options'
-import { modaliteAccompagnementOptions } from '@app/web/features/structures/modaliteAccompagnement'
-import { ServicesEtAccompagnementData } from '@app/web/features/structures/ServicesEtAccompagnementValidation'
-import { serviceOptions } from '@app/web/features/structures/service'
+import { ServicesEtAccompagnementData } from '@app/web/features/lieux-activite/formulaire/ServicesEtAccompagnementValidation'
+import {
+  modaliteAccompagnementOptions,
+  serviceOptions,
+} from '@app/web/features/lieux-activite/vocabulaire/options'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { UseFormReturn } from 'react-hook-form'
 

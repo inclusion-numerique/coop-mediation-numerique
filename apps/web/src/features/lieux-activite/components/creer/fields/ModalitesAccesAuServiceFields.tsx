@@ -1,7 +1,7 @@
-'use client'
+import { fraisAChargeOptions } from '@app/web/features/lieux-activite/vocabulaire/options'
+;('use client')
 
 import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
-import { fraisAChargeOptions } from '@app/web/features/structures/fraisACharge'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import { useSelector } from '@tanstack/react-form'
 import { creerLieuActiviteFormOptions } from '../creerLieuActiviteFormData'

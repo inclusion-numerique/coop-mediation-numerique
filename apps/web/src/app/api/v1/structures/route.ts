@@ -11,15 +11,7 @@ import type {
   JsonApiResource,
 } from '@app/web/app/api/v1/JsonApiTypes'
 import { inventaireDesLieux } from '@app/web/features/lieux-activite/abilities/inventorier-les-lieux'
-import { dispositifProgrammeNationalLabels } from '@app/web/features/structures/dispositifProgrammesNationaux'
-import { formationLabelLabels } from '@app/web/features/structures/formationLabel'
-import { fraisAChargeLabels } from '@app/web/features/structures/fraisACharge'
-import { itineranceLabels } from '@app/web/features/structures/itinerance'
-import { modaliteAccompagnementLabels } from '@app/web/features/structures/modaliteAccompagnement'
-import { modaliteAccesLabels } from '@app/web/features/structures/modalitesAcces'
-import { priseEnChargeSpecifiqueLabels } from '@app/web/features/structures/priseEnChargeSpecifique'
-import { publicSpecifiquementAdresseLabels } from '@app/web/features/structures/publicSpecifiquementAdresse'
-import { serviceLabels } from '@app/web/features/structures/service'
+import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import {
   DispositifProgrammeNational,
@@ -548,38 +540,46 @@ export const GET = createApiV1Route
           prise_rdv: s.priseRdv,
           structure_parente: s.structureParente,
           services: s.services.map(
-            (service: Service) => serviceLabels[service],
+            (service: Service) => vocabulaire.service.table[service],
           ),
           publics_specifiquement_adresses: s.publicsSpecifiquementAdresses.map(
             (publicSpecifiquementAdresse: PublicSpecifiquementAdresse) =>
-              publicSpecifiquementAdresseLabels[publicSpecifiquementAdresse],
+              vocabulaire.publicSpecifiquementAdresse.table[
+                publicSpecifiquementAdresse
+              ],
           ),
           prise_en_charge_specifique: s.priseEnChargeSpecifique.map(
             (priseEnChargeSpecifique: PriseEnChargeSpecifique) =>
-              priseEnChargeSpecifiqueLabels[priseEnChargeSpecifique],
+              vocabulaire.priseEnChargeSpecifique.table[
+                priseEnChargeSpecifique
+              ],
           ),
           frais_a_charge: s.fraisACharge.map(
-            (fraisACharge: FraisACharge) => fraisAChargeLabels[fraisACharge],
+            (fraisACharge: FraisACharge) =>
+              vocabulaire.fraisACharge.table[fraisACharge],
           ),
           dispositif_programmes_nationaux: s.dispositifProgrammesNationaux.map(
             (dispositifProgrammeNational: DispositifProgrammeNational) =>
-              dispositifProgrammeNationalLabels[dispositifProgrammeNational],
+              vocabulaire.dispositifProgrammeNational.table[
+                dispositifProgrammeNational
+              ],
           ),
           formations_labels: s.formationsLabels.map(
             (formationLabel: FormationLabel) =>
-              formationLabelLabels[formationLabel],
+              vocabulaire.formationLabel.table[formationLabel],
           ),
           autres_formations_labels: s.autresFormationsLabels,
           itinerance: s.itinerance.map(
-            (itinerance: Itinerance) => itineranceLabels[itinerance],
+            (itinerance: Itinerance) =>
+              vocabulaire.itinerance.table[itinerance],
           ),
           modalites_acces: s.modalitesAcces.map(
             (modaliteAcces: ModaliteAcces) =>
-              modaliteAccesLabels[modaliteAcces],
+              vocabulaire.modaliteAcces.table[modaliteAcces],
           ),
           modalites_accompagnement: s.modalitesAccompagnement.map(
             (modaliteAccompagnement: ModaliteAccompagnement) =>
-              modaliteAccompagnementLabels[modaliteAccompagnement],
+              vocabulaire.modaliteAccompagnement.table[modaliteAccompagnement],
           ),
           mediateurs_en_activite: s._count.mediateursEnActivite,
           emplois: emploisParLieu.get(s.id) ?? 0,

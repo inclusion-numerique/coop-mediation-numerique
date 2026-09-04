@@ -1,5 +1,5 @@
+import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import type { StructureData } from '@app/web/features/structures/StructureValidation'
-import { typologieStructureLabels } from '@app/web/features/structures/typologieStructure'
 import { addresseFromParts } from '@app/web/utils/addresseFromParts'
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { Typologie } from '@prisma/client'
@@ -68,8 +68,8 @@ const StructureCard = ({
           >
             {(typologies as Typologie[])
               .map((typologie) =>
-                typologie in typologieStructureLabels
-                  ? typologieStructureLabels[typologie].toString()
+                typologie in vocabulaire.typologieLibelles
+                  ? vocabulaire.typologieLibelles[typologie].toString()
                   : typologie.toString(),
               )
               .join(', ')}

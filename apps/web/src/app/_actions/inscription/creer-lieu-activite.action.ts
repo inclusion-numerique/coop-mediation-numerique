@@ -10,7 +10,7 @@ import { creerLieuActivite as creerUnLieu } from '@app/web/features/lieux-activi
 import { nouveauLieu } from '@app/web/features/lieux-activite/abilities/creer-lieu-activite/action/depuis-la-saisie'
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
 import { UserId as LieuUserId } from '@app/web/features/lieux-activite/domain/user-id'
-import { CreerLieuActiviteValidation } from '@app/web/features/structures/CreerLieuActiviteValidation'
+import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite/formulaire/CreerLieuActiviteValidation'
 import { actionBuilder, fromResult, withInput } from '@app/web/libraries/nextjs'
 
 /**

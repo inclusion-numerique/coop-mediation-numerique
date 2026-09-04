@@ -1,11 +1,10 @@
+import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import z from 'zod'
-import { modaliteAccompagnementValues } from './modaliteAccompagnement'
-import { serviceValues } from './service'
 
 export const ServicesEtAccompagnementShape = {
-  services: z.array(z.enum(serviceValues)).nullish(),
+  services: z.array(z.enum(vocabulaire.service.valeurs)).nullish(),
   modalitesAccompagnement: z
-    .array(z.enum(modaliteAccompagnementValues))
+    .array(z.enum(vocabulaire.modaliteAccompagnement.valeurs))
     .nullish(),
 }
 

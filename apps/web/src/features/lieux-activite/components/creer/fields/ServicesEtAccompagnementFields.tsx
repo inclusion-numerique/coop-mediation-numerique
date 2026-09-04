@@ -1,12 +1,12 @@
-'use client'
+import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
+import {
+  modaliteAccompagnementOptions,
+  serviceOptions,
+} from '@app/web/features/lieux-activite/vocabulaire/options'
+;('use client')
 
 import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
 import { optionsWithEmptyValue } from '@app/ui/components/Form/utils/options'
-import { modaliteAccompagnementOptions } from '@app/web/features/structures/modaliteAccompagnement'
-import {
-  serviceLabels,
-  serviceOptions,
-} from '@app/web/features/structures/service'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useSelector } from '@tanstack/react-form'
@@ -48,7 +48,9 @@ export const ServicesEtAccompagnementFields = withForm({
               />
               <field.SelectedItems
                 itemToString={(item: string) =>
-                  serviceLabels[item as keyof typeof serviceLabels] ?? item
+                  vocabulaire.service.table[
+                    item as keyof typeof vocabulaire.service.table
+                  ] ?? item
                 }
                 itemToKey={(item: string) => item}
               />
