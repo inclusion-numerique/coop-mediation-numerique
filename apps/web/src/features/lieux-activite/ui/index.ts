@@ -29,6 +29,10 @@ export {
   toCreerLieuData,
 } from '../formulaire/creerLieuActiviteFormData'
 export { DisplayOnCartography } from './DisplayOnCartography'
+export {
+  default as LieuActiviteCard,
+  type LieuEnActivite,
+} from './LieuActiviteCard'
 export { default as LieuActiviteSideMenu } from './LieuActiviteSideMenu'
 export {
   type LieuSaisi,

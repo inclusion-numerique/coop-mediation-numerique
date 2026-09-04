@@ -1,8 +1,5 @@
-import { getDepartementCodeForLieu } from '@app/web/features/mon-reseau/getDepartementCodeForLieu'
-import { getStructureDisplayName } from '@app/web/features/mon-reseau/getStructureDisplayName'
-import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
-import type { LieuAffiche } from '@app/web/features/mon-reseau/use-cases/lieux/contrat'
 import { getCartographieNationaleSourceLabel } from '@app/web/libraries/cartographie-nationale'
+import { pluriel } from '@app/web/libraries/pluriel'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
@@ -12,31 +9,57 @@ import type { ReactNode } from 'react'
 import CartographyIndicator, {
   getCartographyStatus,
 } from './CartographyIndicator'
-import styles from './LieuCard.module.css'
 
-const LieuCard = ({
+/**
+ * Ce que la carte montre d'un lieu où l'on exerce : qui y exerce, s'il est
+ * publié sur la cartographie nationale, et depuis quand sa fiche n'a pas bougé.
+ *
+ * À distinguer de `LieuSaisi`, qui décrit un endroit qu'on est en train de
+ * retenir. Ici le lieu est un dossier chez nous, avec une histoire.
+ */
+export type LieuEnActivite = {
+  readonly id: string
+  readonly nom: string
+  readonly nomUsage: string | null
+  readonly adresse: string
+  readonly complementAdresse: string | null
+  readonly commune: string
+  readonly codePostal: string
+  readonly modification: Date
+  readonly derniereModificationSource: string | null
+  readonly visiblePourCartographieNationale: boolean
+  readonly structureCartographieNationaleId: string | null
+  readonly _count: { readonly mediateursEnActivite: number }
+}
+
+const LieuActiviteCard = ({
   lieu,
+  href,
+  derniereModificationPar,
   className,
   retrait,
   showActionButtons = false,
 }: {
-  lieu: LieuAffiche
+  lieu: LieuEnActivite
+  /**
+   * Où mène la carte. Le lien est fourni plutôt que calculé : les fiches de
+   * lieu vivent sous l'annuaire, et cette feature n'a pas à connaître son plan
+   * de routes.
+   */
+  href: string
+  /** Le nom de la personne, déjà mis en forme par l'appelant. */
+  derniereModificationPar?: string | null
   className?: string
-  // Le bouton qui retire ce lieu de la liste, quand la page en propose un. Il
-  // appartient aux lieux d'activité ; la carte se contente de lui faire place.
+  // Le bouton qui retire ce lieu de la liste, quand la page en propose un.
   retrait?: ReactNode
-  // When true, shows explicit Modifier/Retirer buttons instead of clickable card
+  // Boutons Modifier/Retirer explicites, au lieu d'une carte cliquable en entier.
   showActionButtons?: boolean
 }) => {
-  const departementCode = getDepartementCodeForLieu(lieu)
   const mediateursCount = lieu._count.mediateursEnActivite ?? 0
 
-  const lieuHref = `/coop/mon-reseau/${departementCode}/lieux/${lieu.id}`
-
-  const formattedModificationDate = format(
-    new Date(lieu.modification),
-    'dd.MM.yyyy',
-  )
+  // Le nom d'usage est celui sous lequel l'établissement est connu de SIRENE ;
+  // quand il existe, il prime sur celui que la fiche se donne.
+  const nomAffiche = lieu.nomUsage || lieu.nom
 
   const cartographyStatus = getCartographyStatus({
     visiblePourCartographieNationale: lieu.visiblePourCartographieNationale,
@@ -47,34 +70,33 @@ const LieuCard = ({
     ),
   })
 
-  const derniereModificationPar = lieu.derniereModificationPar
-    ? getActeurDisplayName(lieu.derniereModificationPar)
-    : lieu.derniereModificationSource
+  // À défaut d'une personne, la source de l'import : une fiche modifiée par un
+  // moissonnage n'a pas d'auteur, mais elle a une provenance.
+  const auteur =
+    derniereModificationPar ??
+    (lieu.derniereModificationSource
       ? getCartographieNationaleSourceLabel(lieu.derniereModificationSource)
-      : null
+      : null)
 
-  const updatedMoreThanOneYearAgo = isBefore(
+  const parQui = auteur ? `par ${auteur}` : ''
+
+  const tropAncien = isBefore(
     new Date(lieu.modification),
     subYears(new Date(), 1),
   )
-
-  const derniereModificationParText = derniereModificationPar
-    ? `par ${derniereModificationPar}`
-    : ''
 
   return (
     <article
       id={lieu.id}
       className={classNames(
-        'fr-border-bottom fr-pt-4v fr-px-2v fr-pb-6v',
+        'fr-border-bottom fr-pt-4v fr-px-2v fr-pb-6v fr-lieu-activite-card',
         { 'fr-enlarge-link': !showActionButtons },
-        styles.card,
-        { [styles.cardNoHover]: showActionButtons },
+        { 'fr-lieu-activite-card--sans-survol': showActionButtons },
         className,
       )}
     >
       <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-mb-2v">
-        {updatedMoreThanOneYearAgo ? (
+        {tropAncien ? (
           <div className="fr-flex fr-align-items-center fr-flex-gap-2v">
             <div
               className="fr-background-contrast--warning fr-border-radius--4 fr-flex fr-align-items-center fr-justify-content-center"
@@ -87,14 +109,13 @@ const LieuCard = ({
             </div>
 
             <p className="fr-text--xs fr-mb-0 fr-text-default--warning">
-              Dernière mise à jour il y a plus d’un an{' '}
-              {derniereModificationParText}
+              Dernière mise à jour il y a plus d’un an {parQui}
             </p>
           </div>
         ) : (
           <p className="fr-text--xs fr-mb-0 fr-text-mention--grey">
-            Mis à jour le {formattedModificationDate}{' '}
-            {derniereModificationParText}
+            Mis à jour le {format(new Date(lieu.modification), 'dd.MM.yyyy')}{' '}
+            {parQui}
           </p>
         )}
         {showActionButtons ? (
@@ -102,7 +123,7 @@ const LieuCard = ({
             <Button
               size="small"
               priority="tertiary no outline"
-              linkProps={{ href: lieuHref }}
+              linkProps={{ href }}
               iconPosition="right"
               iconId="fr-icon-pencil-line"
             >
@@ -111,12 +132,14 @@ const LieuCard = ({
             {retrait}
           </span>
         ) : (
-          retrait && <span className={styles.innerLink}>{retrait}</span>
+          retrait && (
+            <span className="fr-lieu-activite-card__au-dessus">{retrait}</span>
+          )
         )}
       </div>
 
       <p className="fr-text--bold fr-text--lg fr-mb-2v fr-text-title--blue-france">
-        {getStructureDisplayName(lieu)}
+        {nomAffiche}
       </p>
 
       <p className="fr-text--sm fr-mb-4v fr-text-mention--grey fr-flex fr-align-items-center">
@@ -133,19 +156,21 @@ const LieuCard = ({
             lieu.structureCartographieNationaleId
           }
           structureId={lieu.id}
-          className={styles.innerLink}
+          className="fr-lieu-activite-card__au-dessus"
         />
-        <Tag small className={styles.innerLink}>
+        <Tag small className="fr-lieu-activite-card__au-dessus">
           <span className="ri-account-circle-fill fr-mr-1v" aria-hidden />
           {mediateursCount}{' '}
-          {mediateursCount === 1
-            ? 'médiateur numérique référencé'
-            : 'médiateurs numériques référencés'}
+          {pluriel(
+            mediateursCount,
+            'médiateur numérique référencé',
+            'médiateurs numériques référencés',
+          )}
         </Tag>
       </div>
-      {!showActionButtons && <Link href={lieuHref} prefetch={false} />}
+      {!showActionButtons && <Link href={href} prefetch={false} />}
     </article>
   )
 }
 
-export default LieuCard
+export default LieuActiviteCard

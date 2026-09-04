@@ -9,7 +9,9 @@ import {
 import { MesLieuxActivitePage } from '@app/web/features/lieux-activite/abilities/lister-mes-lieux-activite/ui'
 import { BoutonDeRetrait } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
-import LieuCard from '@app/web/features/mon-reseau/use-cases/lieux/components/LieuCard'
+import { LieuActiviteCard } from '@app/web/features/lieux-activite/ui'
+import { getLieuHref } from '@app/web/features/mon-reseau/getLieuHref'
+import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
@@ -42,9 +44,15 @@ const LieuActiviteListPage = async ({
         <MesLieuxActivitePage
           lieux={lieux}
           carte={({ id, lieuInclusion }) => (
-            <LieuCard
+            <LieuActiviteCard
               key={id}
               lieu={lieuInclusion}
+              href={getLieuHref(lieuInclusion)}
+              derniereModificationPar={
+                lieuInclusion.derniereModificationPar
+                  ? getActeurDisplayName(lieuInclusion.derniereModificationPar)
+                  : null
+              }
               retrait={
                 <BoutonDeRetrait
                   mediateurId={mediateur.id}

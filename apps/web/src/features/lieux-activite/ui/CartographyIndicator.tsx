@@ -2,7 +2,6 @@ import TooltipIcon from '@app/ui/components/TooltipIcon'
 import { getStructureCartographieLink } from '@app/web/libraries/cartographie-nationale'
 import classNames from 'classnames'
 import Link from 'next/link'
-import styles from './CartographyIndicator.module.css'
 
 export type CartographyStatus =
   | 'visible'
@@ -50,7 +49,7 @@ const CartographyIndicator = ({
       <Link
         className={classNames(
           'fr-tag fr-tag--sm',
-          styles.tagVisible,
+          'fr-tag--carto-visible',
           className,
         )}
         href={getStructureCartographieLink({
@@ -71,7 +70,12 @@ const CartographyIndicator = ({
   if (status === 'pending') {
     return (
       <span className="fr-flex fr-align-items-center">
-        <span className={classNames('fr-tag fr-tag--sm', styles.tagPending)}>
+        <span
+          className={classNames(
+            'fr-tag fr-tag--sm',
+            'fr-tag--carto-en-attente',
+          )}
+        >
           <span className="ri-loader-2-line fr-mr-1v" aria-hidden />
           En cours d'ajout sur la cartographie
           <TooltipIcon tooltipId={tooltipId} />
@@ -95,7 +99,7 @@ const CartographyIndicator = ({
         <Link
           className={classNames(
             'fr-tag fr-tag--sm',
-            styles.tagUpdating,
+            'fr-tag--carto-mise-a-jour',
             className,
           )}
           href={getStructureCartographieLink({
@@ -125,7 +129,7 @@ const CartographyIndicator = ({
   // not_visible
   return (
     <span className="fr-flex fr-align-items-center">
-      <span className={classNames('fr-tag fr-tag--sm', styles.tagNotVisible)}>
+      <span className={classNames('fr-tag fr-tag--sm', 'fr-tag--carto-absent')}>
         <span
           className="fr-icon-france-line fr-icon--sm fr-mr-1v"
           aria-hidden

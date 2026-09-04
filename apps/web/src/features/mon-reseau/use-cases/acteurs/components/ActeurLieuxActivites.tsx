@@ -2,7 +2,9 @@
 
 import Card from '@app/web/components/Card'
 import IconInSquare from '@app/web/components/IconInSquare'
-import LieuCard from '@app/web/features/mon-reseau/use-cases/lieux/components/LieuCard'
+import { LieuActiviteCard } from '@app/web/features/lieux-activite/ui'
+import { getLieuHref } from '@app/web/features/mon-reseau/getLieuHref'
+import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
 import type { LieuAffiche } from '@app/web/features/mon-reseau/use-cases/lieux/contrat'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useState } from 'react'
@@ -37,9 +39,15 @@ export const ActeurLieuxActivites = ({
       <hr className="fr-separator-1px" />
       <ul className="fr-list-group fr-my-0">
         {lieuxToDisplay.map((lieu, index) => (
-          <LieuCard
+          <LieuActiviteCard
             key={lieu.id}
             lieu={lieu}
+            href={getLieuHref(lieu)}
+            derniereModificationPar={
+              lieu.derniereModificationPar
+                ? getActeurDisplayName(lieu.derniereModificationPar)
+                : null
+            }
             className={
               hideLastLieuBorderBottom && index === lieuxToDisplay.length - 1
                 ? 'fr-border-none'
