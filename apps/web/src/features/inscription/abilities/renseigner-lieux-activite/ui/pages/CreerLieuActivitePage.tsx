@@ -2,11 +2,11 @@
 
 import { createToast } from '@app/ui/toast/createToast'
 import { creerLieuActiviteAction } from '@app/web/app/_actions/inscription/creer-lieu-activite.action'
-import { CreerLieuActivitePageContent } from '@app/web/features/lieux-activite/formulaire/CreerLieuActivitePageContent'
 import {
   type CreerLieuActiviteFormData,
+  CreerLieuActivitePageContent,
   toCreerLieuData,
-} from '@app/web/features/lieux-activite/formulaire/creerLieuActiviteFormData'
+} from '@app/web/features/lieux-activite/ui'
 import { useRouter } from 'next/navigation'
 
 const erreurEnregistrement = () =>

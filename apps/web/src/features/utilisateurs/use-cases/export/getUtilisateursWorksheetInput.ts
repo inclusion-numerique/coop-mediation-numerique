@@ -2,7 +2,7 @@ import { SessionUser } from '@app/web/auth/sessionUser'
 import {
   getCommunesAndDepartementsOptions,
   getLieuxActiviteOptions,
-} from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
+} from '@app/web/features/lieux-activite'
 import { generateUtilisateursFiltersLabels } from '../filter/generateUtilisateursFiltersLabels'
 import {
   UtilisateursFilters,

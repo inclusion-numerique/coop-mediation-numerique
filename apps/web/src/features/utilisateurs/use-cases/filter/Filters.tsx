@@ -1,8 +1,8 @@
 'use client'
 
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import { LieuActiviteOption } from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
-import { LieuFilter } from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux/ui/LieuFilter'
+import { LieuActiviteOption } from '@app/web/features/lieux-activite'
+import { LieuFilter } from '@app/web/features/lieux-activite/ui'
 import classNames from 'classnames'
 import { DispositifFilter } from './DispositifFilter'
 import { RoleFilter } from './RoleFilter'

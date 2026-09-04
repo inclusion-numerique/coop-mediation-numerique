@@ -7,7 +7,7 @@ import StructureAdministrativeCard from '@app/web/features/employeuse/ui/Structu
 import ValiderInscriptionForm from '@app/web/features/inscription/abilities/valider/ui/components/ValiderInscriptionForm'
 import InscriptionCard from '@app/web/features/inscription/components/InscriptionCard'
 import InscriptionInvalidInformationContactSupportLink from '@app/web/features/inscription/components/InscriptionInvalidInformationContactSupportLink'
-import LieuActiviteCard from '@app/web/features/lieux-activite/ui/LieuActiviteCard'
+import { LieuActiviteCard } from '@app/web/features/lieux-activite/ui'
 import {
   allProfileInscriptionLabels,
   computeUserProfile,

@@ -10,12 +10,14 @@ import {
   seedProfilChoisi,
   trackLieuActivite,
 } from '@app/web/features/inscription/inscription.cucumber'
-import { creerLieuActivite as creerUnLieu } from '@app/web/features/lieux-activite/abilities/creer-lieu-activite'
-import { nouveauLieu } from '@app/web/features/lieux-activite/abilities/creer-lieu-activite/action/depuis-la-saisie'
-import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
-import { UserId as LieuUserId } from '@app/web/features/lieux-activite/domain/user-id'
-import type { CreerLieuActiviteData } from '@app/web/features/lieux-activite/formulaire/CreerLieuActiviteValidation'
-import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite/formulaire/CreerLieuActiviteValidation'
+import type { CreerLieuActiviteData } from '@app/web/features/lieux-activite'
+import {
+  CreerLieuActiviteValidation,
+  creerLieuActivite as creerUnLieu,
+  UserId as LieuUserId,
+  MediateurId,
+  nouveauLieu,
+} from '@app/web/features/lieux-activite'
 import { emptyOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'

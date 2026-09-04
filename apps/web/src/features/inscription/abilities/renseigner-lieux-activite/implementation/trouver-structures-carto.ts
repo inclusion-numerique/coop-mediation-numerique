@@ -1,4 +1,4 @@
-import { findCartoStructuresByIds } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/entrepot/structures-carto'
+import { findCartoStructuresByIds } from '@app/web/features/lieux-activite'
 import type { TrouverStructuresCarto } from '../domain'
 
 /**

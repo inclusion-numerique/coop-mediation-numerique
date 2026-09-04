@@ -1,5 +1,5 @@
 import type { UserId } from '@app/web/features/inscription/domain'
-import type { CreerLieuActiviteData } from '@app/web/features/lieux-activite/formulaire/CreerLieuActiviteValidation'
+import type { CreerLieuActiviteData } from '@app/web/features/lieux-activite'
 import { failure, type Result, success } from '@app/web/libraries/result'
 import {
   type CreerLieuActivite,

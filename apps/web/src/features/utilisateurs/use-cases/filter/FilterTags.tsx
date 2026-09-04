@@ -1,7 +1,7 @@
 'use client'
 
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
-import { LieuActiviteOption } from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
+import { LieuActiviteOption } from '@app/web/features/lieux-activite'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { useRouter, useSearchParams } from 'next/navigation'

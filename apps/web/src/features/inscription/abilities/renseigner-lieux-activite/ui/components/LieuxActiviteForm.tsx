@@ -8,8 +8,8 @@ import {
   geocodeStructureAdresse,
 } from '@app/web/external-apis/ban/geocodeStructureAdresse'
 import type { LieuActiviteInput } from '@app/web/features/inscription/abilities/renseigner-lieux-activite'
-import type { LieuActiviteSearchResult } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/searchLieuActiviteCombined'
-import LieuActiviteCard from '@app/web/features/lieux-activite/ui/LieuActiviteCard'
+import type { LieuActiviteSearchResult } from '@app/web/features/lieux-activite'
+import { LieuActiviteCard } from '@app/web/features/lieux-activite/ui'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useHydrated } from '@app/web/libs/form/use-hydrated'

@@ -2,7 +2,7 @@
 
 import type { SelectOption } from '@app/ui/components/Form/utils/options'
 import { BeneficiaireOption } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/beneficiaire-option'
-import type { LieuActiviteOption } from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
+import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
 import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
