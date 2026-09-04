@@ -1,4 +1,4 @@
-import { getCorrelatedEmployeuseRelations } from '@app/web/features/structures/correlateStructureAdministrative'
+import { getCorrelatedEmployeuseRelations } from '@app/web/features/lieux-activite/db/employeuse-correlee'
 import { prismaClient } from '@app/web/prismaClient'
 import { champsCommuns, lieuAFusionnerInclude } from '../../domain'
 import { lieuAFusionnerToDomain } from './lieu-a-fusionner.transfer'

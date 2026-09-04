@@ -1,7 +1,7 @@
 import type { OptionsData } from '@app/ui/components/Primitives/Options'
 import { rechercherDesLieuxAAjouterAction } from '@app/web/app/_actions/lieux-activite/rechercher-des-lieux-a-ajouter.action'
+import type { LieuActiviteSearchResult } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/searchLieuActiviteCombined'
 import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
-import type { LieuActiviteSearchResult } from '@app/web/structure/searchLieuActiviteCombined'
 
 /**
  * Recherche d'un lieu à ajouter, par ordre de priorité : les lieux déjà connus

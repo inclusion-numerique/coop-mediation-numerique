@@ -3,12 +3,12 @@ import { getFirstAndLastActiviteDate } from '@app/web/features/activites/use-cas
 import { activiteSourceOptions } from '@app/web/features/activites/use-cases/source/activiteSource'
 import { getMediateursTags } from '@app/web/features/activites/use-cases/tags/db/getMediateursTags'
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
+import { getStructuresEmployeusesOptions } from '@app/web/features/employeuse/getStructuresEmployeusesOptions'
 import {
   getMediateurCommunesAndDepartementsOptions,
   getMediateursLieuxActiviteOptions,
 } from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import { getFirstAndLastRdvDate } from '@app/web/features/rdvsp/db/premier-et-dernier-rdv.query'
-import { getStructuresEmployeusesOptions } from '@app/web/features/structures/getStructuresEmployeusesOptions'
 import { getUserDepartement } from '@app/web/features/utilisateurs/utils/getUserDepartement'
 import { getInitialMediateursOptionsForSearch } from '@app/web/mediateurs/getInitialMediateursOptionsForSearch'
 import type {

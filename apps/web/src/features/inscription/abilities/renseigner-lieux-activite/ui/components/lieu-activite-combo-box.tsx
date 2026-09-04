@@ -1,6 +1,6 @@
 import type { OptionsData } from '@app/ui/components/Primitives/Options'
+import type { LieuActiviteSearchResult } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/searchLieuActiviteCombined'
 import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
-import type { LieuActiviteSearchResult } from '@app/web/structure/searchLieuActiviteCombined'
 import { vanillaTrpc } from '@app/web/trpc'
 
 /**

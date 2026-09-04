@@ -1,4 +1,4 @@
-import { StructureValidation } from '@app/web/features/structures/StructureValidation'
+import { StructureValidation } from '@app/web/components/structure/StructureValidation'
 import z from 'zod'
 
 export const LieuxActiviteValidation = z.object({

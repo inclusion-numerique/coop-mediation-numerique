@@ -1,7 +1,7 @@
 import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
+import { coopCartographieNationaleSource } from '@app/web/libraries/cartographie-nationale'
 import { validateValidRnaDigits } from '@app/web/libraries/rna'
 import { validateValidSiretDigits } from '@app/web/libraries/siret'
-import { coopCartographieNationaleSource } from '@app/web/structure/cartographieNationaleSources'
 import type { Prisma } from '@prisma/client'
 import { v4 } from 'uuid'
 import type { CartoStructure } from '../../domain'

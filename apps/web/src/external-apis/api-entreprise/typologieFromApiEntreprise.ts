@@ -1,5 +1,5 @@
+import { TypologieStructure } from '@app/web/external-apis/api-entreprise/typologieStructure'
 import { UniteLegale } from '@app/web/external-apis/apiEntrepriseApiModels'
-import { TypologieStructure } from '@app/web/structure/typologieStructure'
 
 /**
  * Specs :

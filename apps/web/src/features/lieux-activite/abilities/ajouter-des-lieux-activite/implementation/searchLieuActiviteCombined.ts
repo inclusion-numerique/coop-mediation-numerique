@@ -1,7 +1,7 @@
+import { structureCreationDataWithSiretFromUniteLegale } from '@app/web/external-apis/api-entreprise/structuresDepuisUniteLegale'
 import { rechercheApiEntreprise } from '@app/web/external-apis/rechercheApiEntreprise'
+import { searchStructureCartographieNationale } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/entrepot/searchStructureCartographieNationale'
 import { prismaClient } from '@app/web/prismaClient'
-import { searchStructureCartographieNationale } from '@app/web/structure/searchStructureCartographieNationale'
-import { structureCreationDataWithSiretFromUniteLegale } from '@app/web/structure/structuresInfoFromUniteLegale'
 import { toTitleCase } from '@app/web/utils/toTitleCase'
 import type { Prisma } from '@prisma/client'
 

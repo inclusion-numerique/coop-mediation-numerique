@@ -1,6 +1,6 @@
 import type { OptionsData } from '@app/ui/components/Primitives/Options'
 import type { SelectedItemsData } from '@app/ui/components/Primitives/SelectedItems'
-import type { StructureEmployeuseOption } from '@app/web/features/structures/getStructuresEmployeusesOptions'
+import type { StructureEmployeuseOption } from '@app/web/features/employeuse/getStructuresEmployeusesOptions'
 import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
 import { vanillaTrpc } from '@app/web/trpc'
 

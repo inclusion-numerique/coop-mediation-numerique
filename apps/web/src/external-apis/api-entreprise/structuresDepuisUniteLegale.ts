@@ -1,6 +1,6 @@
+import { getTypologieFromApiEntreprise } from '@app/web/external-apis/api-entreprise/typologieFromApiEntreprise'
+import type { TypologieStructure } from '@app/web/external-apis/api-entreprise/typologieStructure'
 import type { UniteLegale } from '@app/web/external-apis/apiEntrepriseApiModels'
-import type { StructureCreationDataWithSiret } from '@app/web/features/structures/StructureValidation'
-import { getTypologieFromApiEntreprise } from '@app/web/structure/typologieFromApiEntreprise'
 import { toTitleCase } from '@app/web/utils/toTitleCase'
 
 /**
@@ -19,6 +19,20 @@ import { toTitleCase } from '@app/web/utils/toTitleCase'
  * suffit à créer une employeuse reconnaissable. Le nom est conservé tel quel
  * (« [Non-Diffusible] »), comme le faisaient déjà les structures coop.
  */
+/**
+ * Un établissement tel que l'API Recherche d'entreprises le décrit, réduit aux
+ * champs dont l'application a besoin pour proposer une structure à la création.
+ */
+export type StructureDepuisUniteLegale = {
+  readonly siret: string
+  readonly nom: string
+  readonly adresse: string
+  readonly commune: string
+  readonly codePostal: string
+  readonly codeInsee: string
+  readonly typologie: TypologieStructure | null
+}
+
 const NON_DIFFUSIBLE = /^\[non[\s-]?diffusible]$/i
 
 const valeurDiffusable = (valeur: string | undefined): string =>
@@ -55,7 +69,7 @@ export const structureCreationDataWithSiretFromUniteLegale = ({
   nom_raison_sociale,
   nom_complet,
   matching_etablissements,
-}: UniteLegale): StructureCreationDataWithSiret[] => {
+}: UniteLegale): StructureDepuisUniteLegale[] => {
   const typologie = getTypologieFromApiEntreprise({
     complements,
     nature_juridique,

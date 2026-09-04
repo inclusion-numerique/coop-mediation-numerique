@@ -1,4 +1,4 @@
-import { StructureData } from '@app/web/features/structures/StructureValidation'
+import { StructureData } from '@app/web/components/structure/StructureValidation'
 import { prismaClient } from '@app/web/prismaClient'
 
 /**

@@ -1,5 +1,5 @@
+import type { StructureData } from '@app/web/components/structure/StructureValidation'
 import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
-import type { StructureData } from '@app/web/features/structures/StructureValidation'
 import { addresseFromParts } from '@app/web/utils/addresseFromParts'
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { Typologie } from '@prisma/client'

@@ -1,4 +1,4 @@
-import { getEmploisCountByCorrelation } from '@app/web/features/structures/correlateStructureAdministrative'
+import { getEmploisCountByCorrelation } from '@app/web/features/lieux-activite/db/employeuse-correlee'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
 

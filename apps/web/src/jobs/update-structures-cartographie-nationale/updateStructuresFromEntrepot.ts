@@ -1,7 +1,7 @@
 import { output } from '@app/cli/output'
 import { entrepotPrismaClient } from '@app/web/entrepotPrismaClient'
+import { coopCartographieNationaleSource } from '@app/web/libraries/cartographie-nationale'
 import { prismaClient } from '@app/web/prismaClient'
-import { coopCartographieNationaleSource } from '@app/web/structure/cartographieNationaleSources'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import { LieuInclusion, PrismaClient } from '@prisma/client'

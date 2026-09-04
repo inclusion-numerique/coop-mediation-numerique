@@ -1,5 +1,5 @@
 import { geocodeStructureAdresse } from '@app/web/external-apis/ban/geocodeStructureAdresse'
-import type { LieuActiviteSearchResult } from '@app/web/structure/searchLieuActiviteCombined'
+import type { LieuActiviteSearchResult } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/searchLieuActiviteCombined'
 import type { LieuxAAjouterData } from '../action/ajouter-des-lieux-activite.validation'
 
 export type LieuAuPanier = LieuxAAjouterData['lieux'][number]

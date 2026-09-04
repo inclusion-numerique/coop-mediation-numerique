@@ -1,9 +1,9 @@
+import { searchStructuresEmployeuses } from '@app/web/features/employeuse/getStructuresEmployeusesOptions'
 import { searchStructureEmployeuseCombined } from '@app/web/features/employeuse/server'
-import { searchStructuresEmployeuses } from '@app/web/features/structures/getStructuresEmployeusesOptions'
+import { searchStructureCartographieNationale } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/entrepot/searchStructureCartographieNationale'
+import { searchLieuActiviteCombined } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/searchLieuActiviteCombined'
 import { mediateurCoordonnesIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
-import { searchLieuActiviteCombined } from '@app/web/structure/searchLieuActiviteCombined'
-import { searchStructureCartographieNationale } from '@app/web/structure/searchStructureCartographieNationale'
 import { z } from 'zod'
 
 export const structuresRouter = router({

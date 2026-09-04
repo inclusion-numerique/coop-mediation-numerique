@@ -1,5 +1,5 @@
+import { structureCreationDataWithSiretFromUniteLegale } from '@app/web/external-apis/api-entreprise/structuresDepuisUniteLegale'
 import { rechercheApiEntreprise } from '@app/web/external-apis/rechercheApiEntreprise'
-import { structureCreationDataWithSiretFromUniteLegale } from '@app/web/structure/structuresInfoFromUniteLegale'
 // Modules visés directement plutôt que le barrel `../../../server` : celui-ci réexporte cette
 // implémentation, et l'atteindre depuis ici fermerait un cycle d'imports.
 import { rechercherEmployeuse } from '../../rechercher-employeuse/implementation'
@@ -63,7 +63,11 @@ export const searchStructureEmployeuseCombined = async (
           codePostal: structure.codePostal ?? '',
           codeInsee: structure.codeInsee ?? '',
           siret: structure.siret as string,
-          typologies: structure.typologies ?? null,
+          // L'adaptateur rend `typologie` au singulier : ce champ lisait donc
+          // `undefined` depuis toujours, et vaut `null` en pratique. Corrigé à
+          // part — le remplir ici changerait ce que la recherche d'employeuse
+          // affiche.
+          typologies: null,
           source: 'api' as const,
         }))
     : []

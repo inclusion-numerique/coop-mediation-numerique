@@ -1,8 +1,8 @@
 'use server'
 
 import { withAuth } from '@app/web/features/authentification'
+import { searchLieuActiviteCombined } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/searchLieuActiviteCombined'
 import { actionBuilder, withInput } from '@app/web/libraries/nextjs'
-import { searchLieuActiviteCombined } from '@app/web/structure/searchLieuActiviteCombined'
 import { z } from 'zod'
 
 /**
