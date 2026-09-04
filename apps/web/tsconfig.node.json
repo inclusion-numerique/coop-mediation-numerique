@@ -2,6 +2,8 @@
   "//": "tsconfig des exécutions hors Next (Cucumber, tsx). Identique à ./tsconfig.json, à l'alias `server-only` près : la garde de bundling n'a pas de sens dans un runtime serveur, et sa résolution par défaut lève une erreur. Ne PAS mettre cet alias dans ./tsconfig.json, qui est celui que Next utilise — la garde y serait désarmée et la fuite Prisma redeviendrait possible.",
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "//": "`./tsconfig.json` pose `jsx: preserve` parce que Next fait lui-même la transformation. Hors Next, personne ne la fait : tsx retombe alors sur le runtime classique et exige un `import React` que le dépôt n'écrit plus. On redit ici le runtime automatique de la racine.",
+    "jsx": "react-jsx",
     "paths": {
       "server-only": ["./src/libraries/server-only-cli/index.ts"],
       "@app/cli/*": ["../../apps/cli/src/*"],
@@ -17,5 +19,15 @@
       "@app/ui/*": ["../../packages/ui/src/*"],
       "@app/fixtures/*": ["../../packages/fixtures/src/*"]
     }
-  }
+  },
+  "//include": "tsx n'applique un tsconfig qu'aux fichiers qu'il COUVRE : hors de cette liste, il retombe sur le runtime JSX classique et exige un `import React`. Cucumber charge des .tsx des paquets partagés (gabarits d'e-mail), qui doivent donc y figurer.",
+  "include": [
+    "next-env.d.ts",
+    "nextAuth.d.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    ".next/types/**/*.ts",
+    "../../packages/*/src/**/*.ts",
+    "../../packages/*/src/**/*.tsx"
+  ]
 }
