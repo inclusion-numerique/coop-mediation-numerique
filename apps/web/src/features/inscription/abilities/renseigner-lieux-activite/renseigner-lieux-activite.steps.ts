@@ -2,6 +2,8 @@ import assert from 'node:assert'
 import { emptyOpeningHours } from '@app/web/components/structure/fields/openingHoursHelpers'
 import { creerLieuActivite } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/commands/creer-lieu-activite'
 import { renseignerLieuxActivite } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/commands/renseigner-lieux-activite'
+import type { CreerLieuActivite } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/domain'
+import { mediateurFromUser } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/implementation'
 import { ProfilInscription } from '@app/web/features/inscription/domain'
 import {
   currentInscriptionUserId,
@@ -9,10 +11,42 @@ import {
   seedProfilChoisi,
   trackLieuActivite,
 } from '@app/web/features/inscription/inscription.cucumber'
+import { creerLieuActivite as creerUnLieu } from '@app/web/features/lieux-activite/abilities/creer-lieu-activite'
+import { nouveauLieu } from '@app/web/features/lieux-activite/abilities/creer-lieu-activite/action/depuis-la-saisie'
+import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
+import { UserId as LieuUserId } from '@app/web/features/lieux-activite/domain/user-id'
+import type { CreerLieuActiviteData } from '@app/web/features/structures/CreerLieuActiviteValidation'
 import { CreerLieuActiviteValidation } from '@app/web/features/structures/CreerLieuActiviteValidation'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+
+/**
+ * Même branchement que `app/_actions/inscription/creer-lieu-activite.action.ts` :
+ * l'inscription déclare le besoin, l'ability de `lieux-activite` le sert. Les
+ * scénarios de corrélation ci-dessous valent donc pour les deux parcours.
+ */
+const creerDansLesLieuxActivite: CreerLieuActivite = async ({
+  userId,
+  mediateurId,
+  saisie,
+}) => {
+  const resultat = await creerUnLieu({
+    lieu: nouveauLieu(saisie, LieuUserId(userId), new Date()),
+    mediateurId: MediateurId(mediateurId),
+  })
+
+  assert.ok(resultat.success, "L'ability aurait dû accepter le médiateur")
+
+  return resultat.data
+}
+
+const creerUnLieuDActivite = (saisie: CreerLieuActiviteData) =>
+  creerLieuActivite({
+    command: { userId: currentInscriptionUserId(), saisie },
+    mediateurFromUser,
+    creerLieuActivite: creerDansLesLieuxActivite,
+  })
 
 let lieuDisponibleId = ''
 let cartoIdDuLieuDisponible: string | null = null
@@ -80,13 +114,8 @@ const saisieDeCreation = (
 
 const siretDeTest = () => v4().replace(/\D/g, '').padEnd(14, '0').slice(0, 14)
 
-const creerEtRattacher = async (
-  saisie: Parameters<typeof creerLieuActivite>[0]['saisie'],
-) => {
-  const resultat = await creerLieuActivite({
-    userId: currentInscriptionUserId(),
-    saisie,
-  })
+const creerEtRattacher = async (saisie: CreerLieuActiviteData) => {
+  const resultat = await creerUnLieuDActivite(saisie)
   assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
   trackLieuActivite(resultat.data.id)
   return resultat.data.id
@@ -468,13 +497,12 @@ When(
   'je crée un lieu d’activité de même nom, à une autre adresse',
   async () => {
     nomDuNouveauLieu = nomDuLieuDisponible
-    const resultat = await creerLieuActivite({
-      userId: currentInscriptionUserId(),
-      saisie: saisieDeCreation(nomDuLieuDisponible, {
+    const resultat = await creerUnLieuDActivite(
+      saisieDeCreation(nomDuLieuDisponible, {
         adresse: '99 avenue Ailleurs',
         codeInsee: '75102',
       }),
-    })
+    )
     assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
     lieuCreeId = resultat.data.id
     trackLieuActivite(lieuCreeId)
@@ -614,20 +642,18 @@ When(
 
 When('je crée un lieu d’activité que la coop ignore', async () => {
   nomDuNouveauLieu = `Tiers-lieu ${v4()}`
-  const resultat = await creerLieuActivite({
-    userId: currentInscriptionUserId(),
-    saisie: saisieDeCreation(nomDuNouveauLieu),
-  })
+  const resultat = await creerUnLieuDActivite(
+    saisieDeCreation(nomDuNouveauLieu),
+  )
   assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
   lieuCreeId = resultat.data.id
   trackLieuActivite(lieuCreeId)
 })
 
 When('je crée un lieu d’activité identique à ce lieu retiré', async () => {
-  const resultat = await creerLieuActivite({
-    userId: currentInscriptionUserId(),
-    saisie: saisieDeCreation(nomDuNouveauLieu),
-  })
+  const resultat = await creerUnLieuDActivite(
+    saisieDeCreation(nomDuNouveauLieu),
+  )
   assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
   lieuCreeId = resultat.data.id
   trackLieuActivite(lieuCreeId)
@@ -636,13 +662,12 @@ When('je crée un lieu d’activité identique à ce lieu retiré', async () => 
 When(
   'je crée un lieu d’activité dont le nom contient celui du lieu supprimé, à une autre adresse',
   async () => {
-    const resultat = await creerLieuActivite({
-      userId: currentInscriptionUserId(),
-      saisie: saisieDeCreation(`${nomDuNouveauLieu} Annexe`, {
+    const resultat = await creerUnLieuDActivite(
+      saisieDeCreation(`${nomDuNouveauLieu} Annexe`, {
         adresse: '99 avenue Ailleurs',
         codeInsee: '75102',
       }),
-    })
+    )
     assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
     lieuCreeId = resultat.data.id
     trackLieuActivite(lieuCreeId)
@@ -652,12 +677,9 @@ When(
 When(
   'je crée un lieu d’activité dénommé comme la commune, à la même adresse',
   async () => {
-    const resultat = await creerLieuActivite({
-      userId: currentInscriptionUserId(),
-      saisie: saisieDeCreation(
-        `COMMUNE DE ${communeDuLieuDisponible}`.toUpperCase(),
-      ),
-    })
+    const resultat = await creerUnLieuDActivite(
+      saisieDeCreation(`COMMUNE DE ${communeDuLieuDisponible}`.toUpperCase()),
+    )
     assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
     lieuCreeId = resultat.data.id
     trackLieuActivite(lieuCreeId)

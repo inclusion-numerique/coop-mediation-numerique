@@ -12,7 +12,9 @@ import { PublicSpecifiquementAdresse, Typologie } from '@prisma/client'
 
 type Issue = Awaited<ReturnType<typeof creerLieuActivite>>
 
-const dernier: { creation?: Issue; lieuCreeId?: string } = {}
+const dernier: { creation?: Issue; lieuxCreesIds: string[] } = {
+  lieuxCreesIds: [],
+}
 
 const saisie: CreerLieuActiviteData = {
   nom: 'Tiers-lieu du Port',
@@ -59,10 +61,19 @@ const creer = async (mediateurId: string | null) => {
     mediateurId: mediateurId == null ? null : MediateurId(mediateurId),
   })
 
-  if (dernier.creation.success) dernier.lieuCreeId = dernier.creation.data.id
+  if (dernier.creation.success)
+    dernier.lieuxCreesIds = [...dernier.lieuxCreesIds, dernier.creation.data.id]
 }
 
+/** L'identifiant rendu par la création de rang `rang`, la première valant 1. */
+const lieuCree = (rang: number): string | undefined =>
+  dernier.lieuxCreesIds[rang - 1]
+
 When('ce médiateur crée un lieu « Tiers-lieu du Port »', async () => {
+  await creer(ficheSemee().mediateurRattacheId)
+})
+
+When('ce médiateur ressaisit le même lieu', async () => {
   await creer(ficheSemee().mediateurRattacheId)
 })
 
@@ -73,7 +84,7 @@ When("quelqu'un sans médiateur tente de créer un lieu", async () => {
 Then('le lieu créé existe', async () => {
   assert.strictEqual(
     await prismaClient.lieuInclusion.count({
-      where: { id: dernier.lieuCreeId },
+      where: { id: lieuCree(1) },
     }),
     1,
   )
@@ -83,7 +94,7 @@ Then('ce médiateur exerce dans le lieu créé', async () => {
   assert.strictEqual(
     await prismaClient.mediateurEnActivite.count({
       where: {
-        structureId: dernier.lieuCreeId,
+        structureId: lieuCree(1),
         mediateurId: ficheSemee().mediateurRattacheId,
         fin: null,
       },
@@ -98,22 +109,40 @@ Then('la création est refusée', () => {
 
 Then('le lieu créé ne vise aucun public en particulier', async () => {
   const lieu = await prismaClient.lieuInclusion.findUnique({
-    where: { id: dernier.lieuCreeId },
+    where: { id: lieuCree(1) },
     select: { publicsSpecifiquementAdresses: true },
   })
 
   assert.deepStrictEqual(lieu?.publicsSpecifiquementAdresses, [])
 })
 
-// Le lieu créé par le scénario n'est pas semé : il se nettoie ici.
+Then('les deux créations désignent le même lieu', () => {
+  assert.strictEqual(dernier.lieuxCreesIds.length, 2)
+  assert.strictEqual(lieuCree(1), lieuCree(2))
+})
+
+Then("ce médiateur n'exerce qu'une fois dans le lieu créé", async () => {
+  assert.strictEqual(
+    await prismaClient.mediateurEnActivite.count({
+      where: {
+        structureId: lieuCree(1),
+        mediateurId: ficheSemee().mediateurRattacheId,
+        fin: null,
+      },
+    }),
+    1,
+  )
+})
+
+// Les lieux créés par les scénarios ne sont pas semés : ils se nettoient ici.
 After(async () => {
-  const id = dernier.lieuCreeId
-  dernier.lieuCreeId = undefined
+  const ids = dernier.lieuxCreesIds
+  dernier.lieuxCreesIds = []
   dernier.creation = undefined
-  if (!id) return
+  if (ids.length === 0) return
 
   await prismaClient.mediateurEnActivite.deleteMany({
-    where: { structureId: id },
+    where: { structureId: { in: ids } },
   })
-  await prismaClient.lieuInclusion.deleteMany({ where: { id } })
+  await prismaClient.lieuInclusion.deleteMany({ where: { id: { in: ids } } })
 })
