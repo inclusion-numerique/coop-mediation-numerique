@@ -1,6 +1,6 @@
-import { lieuxForListSelect } from '@app/web/features/mon-reseau/use-cases/lieux/db/searchLieux'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
+import { projectionDuLieuEnListe } from '../../../../db/lieu-en-liste'
 import type { MediateurId } from '../../../../domain/mediateur-id'
 import type { TriDesLieux } from '../../domain/tri-des-lieux'
 import { ordonnancement } from '../../domain/tri-des-lieux'
@@ -8,9 +8,8 @@ import { ordonnancement } from '../../domain/tri-des-lieux'
 /**
  * Les lieux où le médiateur exerce aujourd'hui.
  *
- * La projection est celle de l'annuaire (`lieuxForListSelect`) parce que la
- * carte affichée est la sienne : « mes lieux » et « les lieux du département »
- * montrent le même objet, vu depuis deux entrées.
+ * La projection est celle des listes de lieux : « mes lieux » et « l'annuaire du
+ * département » montrent le même objet, vu depuis deux entrées.
  */
 export const listerMesLieuxActivite = async ({
   mediateurId,
@@ -27,7 +26,7 @@ export const listerMesLieuxActivite = async ({
     select: {
       id: true,
       debut: true,
-      lieuInclusion: { select: lieuxForListSelect },
+      lieuInclusion: { select: projectionDuLieuEnListe },
     },
     orderBy,
   })

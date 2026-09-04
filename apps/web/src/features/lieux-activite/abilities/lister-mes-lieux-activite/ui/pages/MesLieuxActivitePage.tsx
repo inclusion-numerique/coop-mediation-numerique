@@ -1,5 +1,4 @@
 import { ModaleDeRetrait } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
-import LieuCard from '@app/web/features/mon-reseau/use-cases/lieux/components/LieuCard'
 import { pluriel } from '@app/web/libraries/pluriel'
 import SortSelect from '@app/web/libs/data-table/SortSelect'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -12,18 +11,19 @@ import VisibiliteMediateur from '../components/VisibiliteMediateur'
 /**
  * Les lieux où le médiateur exerce.
  *
- * La carte affichée est celle de l'annuaire : « mes lieux » et « les lieux du
- * département » montrent le même objet, et le dupliquer ferait diverger deux
- * représentations d'une même chose.
+ * La carte est reçue et non importée : « mes lieux » et « l'annuaire du
+ * département » montrent le même objet, mais c'est l'annuaire qui sait le
+ * dessiner. La route branche l'une sur l'autre, ce qui évite que cette feature
+ * aille chercher un composant chez sa voisine.
  */
 export const MesLieuxActivitePage = ({
   lieux,
-  mediateurId,
+  carte,
   mediateurEstVisible,
   entete,
 }: {
   lieux: readonly MonLieuActivite[]
-  mediateurId: string
+  carte: (lieu: MonLieuActivite) => ReactNode
   mediateurEstVisible: boolean
   entete?: ReactNode
 }) => (
@@ -62,14 +62,7 @@ export const MesLieuxActivitePage = ({
               </span>
             </div>
             <hr className="fr-separator-1px" />
-            {lieux.map(({ id, lieuInclusion: lieu }) => (
-              <LieuCard
-                key={id}
-                lieu={lieu}
-                removeMediateurFromLieu={{ mediateurId }}
-                showActionButtons
-              />
-            ))}
+            {lieux.map(carte)}
             <ModaleDeRetrait />
           </>
         )}

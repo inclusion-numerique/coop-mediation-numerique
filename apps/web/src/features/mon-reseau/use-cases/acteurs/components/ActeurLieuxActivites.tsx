@@ -3,13 +3,17 @@
 import Card from '@app/web/components/Card'
 import IconInSquare from '@app/web/components/IconInSquare'
 import LieuCard from '@app/web/features/mon-reseau/use-cases/lieux/components/LieuCard'
-import type { LieuForList } from '@app/web/features/mon-reseau/use-cases/lieux/db/searchLieux'
+import type { LieuAffiche } from '@app/web/features/mon-reseau/use-cases/lieux/contrat'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useState } from 'react'
 
 const initialLieuCount = 3
 
-export const ActeurLieuxActivites = ({ lieux }: { lieux: LieuForList[] }) => {
+export const ActeurLieuxActivites = ({
+  lieux,
+}: {
+  lieux: readonly LieuAffiche[]
+}) => {
   const [showMore, setShowMore] = useState(false)
 
   const lieuxToDisplay = showMore ? lieux : lieux.slice(0, initialLieuCount)

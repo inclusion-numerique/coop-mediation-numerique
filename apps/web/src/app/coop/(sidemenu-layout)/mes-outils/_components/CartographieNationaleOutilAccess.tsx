@@ -3,7 +3,7 @@ import { getSessionUser } from '@app/web/auth/getSessionUser'
 import { departementsRegionByCode } from '@app/web/data/collectivites-territoriales/departementsRegion'
 import { getDepartementCodeForActeur } from '@app/web/features/mon-reseau/getDepartementCodeForActeur'
 import { getMonReseauPageData } from '@app/web/features/mon-reseau/getMonReseauPageData'
-import { getCartographieDepartementLink } from '@app/web/features/mon-reseau/use-cases/lieux/getStructureLink'
+import { getCartographieDepartementLink } from '@app/web/libraries/cartographie-nationale'
 import Link from 'next/link'
 
 const onlyVisibleForCartographieNationale = ({

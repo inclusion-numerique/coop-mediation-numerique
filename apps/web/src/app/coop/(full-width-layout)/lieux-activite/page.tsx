@@ -7,7 +7,9 @@ import {
   TriDesLieux,
 } from '@app/web/features/lieux-activite/abilities/lister-mes-lieux-activite'
 import { MesLieuxActivitePage } from '@app/web/features/lieux-activite/abilities/lister-mes-lieux-activite/ui'
+import { BoutonDeRetrait } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
+import LieuCard from '@app/web/features/mon-reseau/use-cases/lieux/components/LieuCard'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
@@ -26,6 +28,8 @@ const LieuActiviteListPage = async ({
 
   if (user.mediateur == null) return redirect('/')
 
+  const mediateur = user.mediateur
+
   const lieux = await listerMesLieuxActivite({
     mediateurId: MediateurId(user.mediateur.id),
     tri: TriDesLieux(tri),
@@ -37,7 +41,23 @@ const LieuActiviteListPage = async ({
       <div id={contentId}>
         <MesLieuxActivitePage
           lieux={lieux}
-          mediateurId={user.mediateur.id}
+          carte={({ id, lieuInclusion }) => (
+            <LieuCard
+              key={id}
+              lieu={lieuInclusion}
+              retrait={
+                <BoutonDeRetrait
+                  mediateurId={mediateur.id}
+                  structureId={lieuInclusion.id}
+                  variant="lieu"
+                  mediateurDisplayName=""
+                  structureNom={lieuInclusion.nom}
+                  derniereActiviteDate={null}
+                />
+              }
+              showActionButtons
+            />
+          )}
           mediateurEstVisible={user.mediateur.isVisible}
           entete={<CoopBreadcrumbs currentPage="Mes lieux d'activités" />}
         />

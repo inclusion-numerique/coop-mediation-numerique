@@ -13,7 +13,7 @@ import { contentId } from '@app/web/utils/skipLinks'
 import Filters from './components/Filters'
 import { FilterTags } from './components/FilterTags'
 import LieuCard from './components/LieuCard'
-import type { SearchLieuxResult } from './db/searchLieux'
+import type { LieuxTrouves } from './contrat'
 import type { LieuxSearchParams } from './validation/LieuxFilters'
 
 const pageSizeOptions = generatePageSizeSelectOptions([20, 50, 100])
@@ -44,7 +44,7 @@ const LieuxPage = ({
   communesOptions,
 }: {
   departement: Departement
-  searchResult: SearchLieuxResult
+  searchResult: LieuxTrouves
   searchParams: LieuxSearchParams
   isFiltered: boolean
   communesOptions: SelectOption[]

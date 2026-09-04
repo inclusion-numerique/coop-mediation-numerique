@@ -1,83 +1,65 @@
-import { departementCodeFromInseeRegex } from '@app/web/features/mon-reseau/departementCodeFromInseeRegex'
 import { takeAndSkipFromPage } from '@app/web/libs/data-table/takeAndSkipFromPage'
 import { DEFAULT_PAGE, toNumberOr } from '@app/web/libs/data-table/toNumberOr'
 import { prismaClient } from '@app/web/prismaClient'
+import { departementCodeFromInseeRegex } from '@app/web/utils/departementCodeFromInseeRegex'
 import { orderItemsByIndexedValues } from '@app/web/utils/orderItemsByIndexedValues'
 import { Prisma } from '@prisma/client'
-import type { LieuxSearchParams } from '../validation/LieuxFilters'
+import {
+  type LieuEnListe,
+  projectionDuLieuEnListe,
+} from '../../../../db/lieu-en-liste'
+import { ordonnancement, type TriDeLAnnuaire } from '../../domain'
 
 const LIEUX_DEFAULT_PAGE_SIZE = 20
 
-export type SearchLieuxOptions = {
-  departementCode: string
-  searchParams: LieuxSearchParams
+/**
+ * Ce que l'annuaire peut demander : un département, un texte libre, des
+ * communes, des départements de repli, des médiateurs, un tri et une page.
+ * Déclaré ici plutôt qu'emprunté à la page qui les lit dans l'URL — la requête
+ * ne dépend pas de l'écran qui la déclenche.
+ */
+export type RechercheDeLieuxDuDepartement = {
+  readonly recherche?: string
+  readonly communes?: readonly string[]
+  readonly departements?: readonly string[]
+  readonly mediateurs?: readonly string[]
+  readonly tri?: TriDeLAnnuaire
+  readonly page?: string
+  readonly lignes?: string
 }
 
-export const lieuxForListSelect = {
-  id: true,
-  nom: true,
-  nomUsage: true,
-  adresse: true,
-  complementAdresse: true,
-  commune: true,
-  codePostal: true,
-  codeInsee: true,
-  modification: true,
-  derniereModificationPar: {
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      name: true,
-      email: true,
-    },
-  },
-  derniereModificationSource: true,
-  visiblePourCartographieNationale: true,
-  structureCartographieNationaleId: true,
-  _count: {
-    select: {
-      mediateursEnActivite: {
-        where: {
-          suppression: null,
-          fin: null,
-          mediateur: {
-            user: {
-              deleted: null,
-            },
-          },
-        },
-      },
-    },
-  },
-} satisfies Prisma.LieuInclusionSelect
-
-export type LieuForList = Prisma.LieuInclusionGetPayload<{
-  select: typeof lieuxForListSelect
-}>
+export type LieuxDuDepartementOptions = {
+  departementCode: string
+  searchParams: RechercheDeLieuxDuDepartement
+}
 
 const getLieuxByIds = async ({
   ids,
 }: {
   ids: string[]
-}): Promise<LieuForList[]> => {
+}): Promise<LieuEnListe[]> => {
   const lieux = await prismaClient.lieuInclusion.findMany({
     where: { id: { in: ids } },
-    select: lieuxForListSelect,
+    select: projectionDuLieuEnListe,
   })
 
   return lieux
 }
 
 /**
- * Lieux in this annuaire contexts are only lieux that have:
- * - At least one active mediateur_en_activite
- * - OR visible_pour_cartographie_nationale is true
+ * L'annuaire d'un département ne montre pas tous les lieux qui s'y trouvent :
+ * un lieu y figure s'il est publié sur la cartographie nationale, ou si au
+ * moins un médiateur y exerce encore. Un lieu ni publié ni fréquenté n'est
+ * l'annuaire de personne.
+ *
+ * Les identifiants sont paginés en SQL brut — le `DISTINCT` que réclame la
+ * jointure avec les rattachements ne se dit pas avec l'API de Prisma — puis
+ * hydratés par Prisma, et remis dans l'ordre que le SQL a fixé.
  */
-export const searchLieux = async ({
+export const lieuxDuDepartement = async ({
   departementCode,
   searchParams,
-}: SearchLieuxOptions) => {
+}: LieuxDuDepartementOptions) => {
   const page = toNumberOr(searchParams.page)(DEFAULT_PAGE)
   const pageSize = toNumberOr(searchParams.lignes)(LIEUX_DEFAULT_PAGE_SIZE)
 
@@ -101,34 +83,24 @@ export const searchLieux = async ({
   // Build communes filter condition
   const communesCondition =
     searchParams.communes && searchParams.communes.length > 0
-      ? Prisma.sql`s.code_insee = ANY(${searchParams.communes}::TEXT[])`
+      ? Prisma.sql`s.code_insee = ANY(${[...searchParams.communes]}::TEXT[])`
       : Prisma.sql`TRUE`
 
   // Departements filter (within location, not the main department context)
   const departementsFilterCondition =
     searchParams.departements && searchParams.departements.length > 0
-      ? Prisma.sql`SUBSTRING(s.code_insee FROM ${departementCodeFromInseeRegex}) = ANY(${searchParams.departements}::TEXT[])`
+      ? Prisma.sql`SUBSTRING(s.code_insee FROM ${departementCodeFromInseeRegex}) = ANY(${[...searchParams.departements]}::TEXT[])`
       : Prisma.sql`TRUE`
 
   // Build mediateurs filter condition
   const mediateursCondition =
     searchParams.mediateurs && searchParams.mediateurs.length > 0
-      ? Prisma.sql`mea.mediateur_id = ANY(${searchParams.mediateurs}::UUID[])`
+      ? Prisma.sql`mea.mediateur_id = ANY(${[...searchParams.mediateurs]}::UUID[])`
       : Prisma.sql`TRUE`
 
-  // Sort direction
-  // nomaz = A to Z = ASC, nomza = Z to A = DESC
-  // majrecent = newest first = DESC, majancien = oldest first = ASC
-  const sortDirection =
-    searchParams.tri === 'nomza' || searchParams.tri === 'majrecent'
-      ? Prisma.raw('DESC')
-      : Prisma.raw('ASC')
-
-  // Determine sort column for CTE
-  const sortColumn =
-    searchParams.tri === 'majrecent' || searchParams.tri === 'majancien'
-      ? Prisma.raw('modification')
-      : Prisma.raw('nom')
+  const { colonne, sens } = ordonnancement(searchParams.tri)
+  const sortColumn = Prisma.raw(colonne)
+  const sortDirection = Prisma.raw(sens)
 
   // Get paginated structure IDs using CTE to handle DISTINCT + ORDER BY
   const structureIds = await prismaClient.$queryRaw<{ id: string }[]>`
@@ -204,4 +176,4 @@ export const searchLieux = async ({
   }
 }
 
-export type SearchLieuxResult = Awaited<ReturnType<typeof searchLieux>>
+export type LieuxDuDepartement = Awaited<ReturnType<typeof lieuxDuDepartement>>

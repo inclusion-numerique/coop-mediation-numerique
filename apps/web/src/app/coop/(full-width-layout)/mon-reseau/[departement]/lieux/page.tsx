@@ -1,13 +1,16 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
+import {
+  communesDesLieux,
+  lieuxDuDepartement,
+} from '@app/web/features/lieux-activite/abilities/lister-les-lieux-du-departement'
 import { getDepartementFromCodeOrThrowNotFound } from '@app/web/features/mon-reseau/getDepartementFromCodeOrThrowNotFound'
-import { getLieuxFiltersOptions } from '@app/web/features/mon-reseau/use-cases/lieux/getLieuxFiltersOptions'
-import { getLieuxPageData } from '@app/web/features/mon-reseau/use-cases/lieux/getLieuxPageData'
 import LieuxPage from '@app/web/features/mon-reseau/use-cases/lieux/LieuxPage'
 import {
   type LieuxSearchParams,
   validateLieuxFilters,
 } from '@app/web/features/mon-reseau/use-cases/lieux/validation/LieuxFilters'
+import { isEmptySearchParams } from '@app/web/libs/data-table/isEmptySearchParams'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -29,21 +32,20 @@ const Page = async ({
   const unvalidatedSearchParams = await rawSearchParams
   const searchParams = validateLieuxFilters(unvalidatedSearchParams)
 
-  const [pageData, filtersOptions] = await Promise.all([
-    getLieuxPageData({
-      departementCode,
-      searchParams,
-    }),
-    getLieuxFiltersOptions({ departementCode }),
+  // La recherche est celle des lieux, l'affichage celui de l'annuaire : les deux
+  // features se rencontrent ici et nulle part ailleurs.
+  const [searchResult, { communesOptions }] = await Promise.all([
+    lieuxDuDepartement({ departementCode, searchParams }),
+    communesDesLieux({ departementCode }),
   ])
 
   return (
     <LieuxPage
       departement={departement}
-      searchResult={pageData.searchResult}
+      searchResult={searchResult}
       searchParams={searchParams}
-      isFiltered={pageData.isFiltered}
-      communesOptions={filtersOptions.communesOptions}
+      isFiltered={!isEmptySearchParams(searchParams)}
+      communesOptions={communesOptions}
     />
   )
 }

@@ -1,5 +1,6 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateMediateurOrCoordinateur } from '@app/web/auth/authenticateUser'
+import { lieuxEnListeDuMediateur } from '@app/web/features/lieux-activite/db'
 import { getDepartementFromCodeOrThrowNotFound } from '@app/web/features/mon-reseau/getDepartementFromCodeOrThrowNotFound'
 import { ActeurDetailPage } from '@app/web/features/mon-reseau/use-cases/acteurs/ActeurDetailPage'
 import { getActeurDetailPageData } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDetailPageData'
@@ -43,6 +44,7 @@ const Page = async ({
   const data = await getActeurDetailPageData({
     userId,
     sessionUser,
+    lireLesLieuxDuMediateur: lieuxEnListeDuMediateur,
   })
 
   if (data == null) {

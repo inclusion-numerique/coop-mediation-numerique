@@ -1,5 +1,4 @@
 import { personneEstConseillerNumerique } from '@app/web/features/employeuse'
-import { BoutonDeRetrait } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
 import ActeurProfilAndContact from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurProfilAndContact'
 import type { ActeurForList } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
 import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
@@ -7,20 +6,19 @@ import { getActeurPageUrl } from '@app/web/features/mon-reseau/use-cases/acteurs
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
 import Link from 'next/link'
+import type { ReactNode } from 'react'
 import styles from './ActeurCard.module.css'
 
 const ActeurCard = ({
   acteur,
   departementCode,
-  canRemoveMediateurFromLieuId,
-  structureNom,
-  derniereActivite,
+  retrait,
 }: {
   acteur: ActeurForList
   departementCode: string
-  canRemoveMediateurFromLieuId?: string // id of a lieux d'activité from which a mediateur can be removed. if undefined, the mediateur cannot be removed from the lieu
-  structureNom?: string // used only on the remove mediateur from lieu button
-  derniereActivite?: { date: Date } | null // used only on the remove mediateur from lieu button
+  // Le bouton qui retire ce médiateur du lieu, quand la page en propose un. Il
+  // appartient aux lieux d'activité ; la carte se contente de lui faire place.
+  retrait?: ReactNode
 }) => {
   const displayName = getActeurDisplayName(acteur)
   const lieuxActiviteCount = acteur.mediateur?._count.enActivite ?? 0
@@ -43,16 +41,7 @@ const ActeurCard = ({
         <p className="fr-text--bold fr-text--lg fr-mb-0 fr-text-title--blue-france">
           {displayName}
         </p>
-        {canRemoveMediateurFromLieuId && acteur.mediateur && structureNom && (
-          <BoutonDeRetrait
-            structureId={canRemoveMediateurFromLieuId}
-            mediateurId={acteur.mediateur.id}
-            mediateurDisplayName={displayName}
-            structureNom={structureNom}
-            derniereActiviteDate={derniereActivite?.date ?? null}
-            variant="mediateur"
-          />
-        )}
+        {retrait}
       </div>
 
       <ActeurProfilAndContact

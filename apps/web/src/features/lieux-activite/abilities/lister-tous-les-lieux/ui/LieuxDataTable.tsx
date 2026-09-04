@@ -1,4 +1,4 @@
-import { getStructureCartographieLink } from '@app/web/features/mon-reseau/use-cases/lieux/getStructureLink'
+import { getStructureCartographieLink } from '@app/web/libraries/cartographie-nationale'
 import type {
   DataTableConfiguration,
   DataTableFilterValues,

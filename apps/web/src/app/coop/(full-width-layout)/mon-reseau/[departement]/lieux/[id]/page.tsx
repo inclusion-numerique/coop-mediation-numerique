@@ -8,10 +8,14 @@ import {
   FicheDuLieuPage,
   ficheAffichee,
 } from '@app/web/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui'
-import { ModaleDeRetrait } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
+import {
+  BoutonDeRetrait,
+  ModaleDeRetrait,
+} from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
 import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
 import { getDepartementFromCodeOrThrowNotFound } from '@app/web/features/mon-reseau/getDepartementFromCodeOrThrowNotFound'
 import { getMonReseauBreadcrumbParents } from '@app/web/features/mon-reseau/getMonReseauBreadcrumbParents'
+import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
 import LieuMediateursEnActivite from '@app/web/features/mon-reseau/use-cases/lieux/components/LieuMediateursEnActivite'
 import { mediateursEnActiviteDuLieu } from '@app/web/features/mon-reseau/use-cases/lieux/db/mediateursEnActiviteDuLieu'
 import { contentId } from '@app/web/utils/skipLinks'
@@ -68,10 +72,28 @@ const LieuActiviteDetailPage = async (props: {
               <LieuMediateursEnActivite
                 mediateurs={mediateurs}
                 departementCode={departementCode}
-                canRemoveMediateurFromLieuId={
-                  peutRetirerUnMediateur ? fiche.id : null
+                retraits={
+                  peutRetirerUnMediateur
+                    ? Object.fromEntries(
+                        mediateurs.map((rattachement) => [
+                          rattachement.id,
+                          <BoutonDeRetrait
+                            key={rattachement.id}
+                            structureId={fiche.id}
+                            mediateurId={rattachement.mediateur.user.id}
+                            mediateurDisplayName={getActeurDisplayName(
+                              rattachement.mediateur.user,
+                            )}
+                            structureNom={fiche.nom}
+                            derniereActiviteDate={
+                              rattachement.mediateur.derniereActivite.date
+                            }
+                            variant="mediateur"
+                          />,
+                        ]),
+                      )
+                    : undefined
                 }
-                structureNom={fiche.nom}
               />
               {peutRetirerUnMediateur && <ModaleDeRetrait />}
             </>

@@ -1,14 +1,14 @@
-import { BoutonDeRetrait } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
 import { getDepartementCodeForLieu } from '@app/web/features/mon-reseau/getDepartementCodeForLieu'
 import { getStructureDisplayName } from '@app/web/features/mon-reseau/getStructureDisplayName'
 import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
-import type { LieuForList } from '@app/web/features/mon-reseau/use-cases/lieux/db/searchLieux'
+import type { LieuAffiche } from '@app/web/features/mon-reseau/use-cases/lieux/contrat'
 import { getCartographieNationaleSourceLabel } from '@app/web/libraries/cartographie-nationale'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
 import { format, isAfter, isBefore, subDays, subYears } from 'date-fns'
 import Link from 'next/link'
+import type { ReactNode } from 'react'
 import CartographyIndicator, {
   getCartographyStatus,
 } from './CartographyIndicator'
@@ -17,15 +17,14 @@ import styles from './LieuCard.module.css'
 const LieuCard = ({
   lieu,
   className,
-  removeMediateurFromLieu,
+  retrait,
   showActionButtons = false,
 }: {
-  lieu: LieuForList
+  lieu: LieuAffiche
   className?: string
-  // Allow button feature to remove mediateur from lieu
-  removeMediateurFromLieu?: {
-    mediateurId: string
-  }
+  // Le bouton qui retire ce lieu de la liste, quand la page en propose un. Il
+  // appartient aux lieux d'activité ; la carte se contente de lui faire place.
+  retrait?: ReactNode
   // When true, shows explicit Modifier/Retirer buttons instead of clickable card
   showActionButtons?: boolean
 }) => {
@@ -109,29 +108,10 @@ const LieuCard = ({
             >
               Modifier
             </Button>
-            {removeMediateurFromLieu && (
-              <BoutonDeRetrait
-                mediateurId={removeMediateurFromLieu.mediateurId}
-                structureId={lieu.id}
-                variant="lieu"
-                mediateurDisplayName=""
-                structureNom={lieu.nom}
-                derniereActiviteDate={null}
-              />
-            )}
+            {retrait}
           </span>
         ) : (
-          removeMediateurFromLieu && (
-            <BoutonDeRetrait
-              className={styles.innerLink}
-              mediateurId={removeMediateurFromLieu.mediateurId}
-              structureId={lieu.id}
-              variant="lieu"
-              mediateurDisplayName=""
-              structureNom={lieu.nom}
-              derniereActiviteDate={null}
-            />
-          )
+          retrait && <span className={styles.innerLink}>{retrait}</span>
         )}
       </div>
 
