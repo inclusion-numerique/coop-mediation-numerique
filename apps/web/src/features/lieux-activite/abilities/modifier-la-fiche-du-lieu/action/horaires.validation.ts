@@ -35,8 +35,8 @@ const Journee = z.object({ am: DemiJournee, pm: DemiJournee })
 
 /**
  * La grille hebdomadaire, validée dans la forme qu'attend le standard — d'où
- * le fait qu'elle vive ici et non dans `features/structures` : le contrat
- * d'entrée d'une ability ne dépend pas du schéma d'une autre feature.
+ * le fait qu'elle vive ici et non dans le formulaire de création : le contrat
+ * d'entrée d'une ability ne dépend pas du schéma d'un formulaire.
  */
 export const HorairesValidation = z.object({
   Mo: Journee,
