@@ -1,4 +1,3 @@
-import type { StructureData } from '@app/web/components/structure/StructureValidation'
 import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import { addresseFromParts } from '@app/web/utils/addresseFromParts'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -6,10 +5,21 @@ import type { Typologie } from '@prisma/client'
 import classNames from 'classnames'
 import type { ReactNode } from 'react'
 
-export type StructureCardStructure = Pick<
-  StructureData,
-  'nom' | 'typologies' | 'adresse' | 'commune' | 'codePostal' | 'siret' | 'rna'
->
+/**
+ * Ce que la carte montre d'un établissement : comment il s'appelle, où il est,
+ * ce qu'il est, sous quel numéro il est immatriculé. Tout est facultatif sauf
+ * le nom — une structure de l'annuaire des entreprises peut n'être diffusée
+ * qu'à moitié, et un lieu saisi à la main n'a pas d'immatriculation.
+ */
+export type StructureCardStructure = {
+  readonly nom: string
+  readonly adresse?: string | null
+  readonly commune?: string | null
+  readonly codePostal?: string | null
+  readonly siret?: string | null
+  readonly rna?: string | null
+  readonly typologies?: readonly string[] | null
+}
 
 const StructureCard = ({
   structure: { nom, adresse, rna, siret, codePostal, commune, typologies },

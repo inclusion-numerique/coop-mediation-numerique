@@ -1,43 +1,36 @@
 import { mediumContainerStory, mobileStory } from '@app/storybook/storyHelper'
-import type { StructureData } from '@app/web/components/structure/StructureValidation'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { Meta, StoryObj } from '@storybook/react'
-import StructureCard from './StructureCard'
+import StructureCard, { type StructureCardStructure } from './StructureCard'
 
 const structureWithSiret = {
-  id: 'with-siret',
   siret: '12345678901234',
   codePostal: '75001',
   commune: 'Paris',
   adresse: '1 rue de Rivoli',
   typologies: ['TIERS_LIEUX'],
   nom: 'La structure',
-  accessibilite: 'PMR',
-  codeInsee: '75056',
   rna: null,
-} satisfies StructureData
+} satisfies StructureCardStructure
 
 const structureWithRnaAndNoTypologie = {
   ...structureWithSiret,
-  id: 'with-rna',
   siret: null,
   rna: 'W123456789',
   typologies: null,
-} satisfies StructureData
+} satisfies StructureCardStructure
 
 const structureWithMultipleTypologies = {
   ...structureWithSiret,
-  id: 'with-multiple-typologies',
   typologies: ['CCAS', 'CS', 'ASSO', 'TIERS_LIEUX'],
-} satisfies StructureData
+} satisfies StructureCardStructure
 
 const structureWithoutPivotAndMultipleTypologies = {
   ...structureWithMultipleTypologies,
-  id: 'without-pivot',
   siret: null,
   rna: null,
   typologies: ['PIJ_BIJ', 'TIERS_LIEUX', 'MUNI'],
-} satisfies StructureData
+} satisfies StructureCardStructure
 
 const cases = [
   structureWithSiret,
@@ -64,7 +57,7 @@ const Template = () => (
     {cases.map((structure, index) => (
       <StructureCard
         structure={structure}
-        key={structure.id}
+        key={structure.nom + index}
         className={index > 0 ? 'fr-mt-6v' : ''}
         topRight={
           index % 2 === 0 ? (
