@@ -15,14 +15,5 @@ import { z } from 'zod'
  */
 export const rechercherDesLieuxAAjouterAction = actionBuilder()
   .use(withAuth())
-  .use(
-    withInput(
-      z.object({
-        recherche: z.string(),
-        exclus: z.array(z.string()).optional(),
-      }),
-    ),
-  )
-  .execute(async ({ input }) =>
-    searchLieuActiviteCombined(input.recherche, { except: input.exclus }),
-  )
+  .use(withInput(z.object({ recherche: z.string() })))
+  .execute(async ({ input }) => searchLieuActiviteCombined(input.recherche))
