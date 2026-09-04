@@ -1,4 +1,4 @@
-import StructureCard from '@app/web/components/structure/StructureCard'
+import LieuActiviteCard from '@app/web/features/lieux-activite/ui/LieuActiviteCard'
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { LieuAuPanier } from '../panier'
 
@@ -19,9 +19,9 @@ export const PanierDeLieux = ({
 }) => (
   <>
     {lieux.toReversed().map((lieu, rang) => (
-      <StructureCard
+      <LieuActiviteCard
         key={lieu.id ?? lieu.structureCartographieNationaleId ?? lieu.nom}
-        structure={lieu}
+        lieu={lieu}
         className="fr-mb-4v"
         topRight={
           <Button

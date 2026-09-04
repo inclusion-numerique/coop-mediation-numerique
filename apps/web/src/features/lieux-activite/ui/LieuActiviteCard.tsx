@@ -6,12 +6,14 @@ import classNames from 'classnames'
 import type { ReactNode } from 'react'
 
 /**
- * Ce que la carte montre d'un établissement : comment il s'appelle, où il est,
- * ce qu'il est, sous quel numéro il est immatriculé. Tout est facultatif sauf
- * le nom — une structure de l'annuaire des entreprises peut n'être diffusée
- * qu'à moitié, et un lieu saisi à la main n'a pas d'immatriculation.
+ * Ce que la carte montre d'un lieu d'activité : comment il s'appelle, où il
+ * est, ce qu'il accueille, sous quel numéro il est immatriculé.
+ *
+ * Tout y est facultatif sauf le nom. Un lieu saisi à la main n'a ni SIRET ni
+ * RNA — c'est même la raison d'être de la saisie : décrire un endroit que les
+ * annuaires ignorent.
  */
-export type StructureCardStructure = {
+export type LieuActiviteAffiche = {
   readonly nom: string
   readonly adresse?: string | null
   readonly commune?: string | null
@@ -21,20 +23,34 @@ export type StructureCardStructure = {
   readonly typologies?: readonly string[] | null
 }
 
-const StructureCard = ({
-  structure: { nom, adresse, rna, siret, codePostal, commune, typologies },
+/**
+ * Les typologies voyagent sous les noms d'enum de la coop ; l'infobulle les rend
+ * lisibles. Ce qu'on ne reconnaît pas s'affiche tel quel plutôt que de
+ * disparaître : une typologie inconnue vaut mieux qu'un trou.
+ */
+const libelles = (typologies: readonly string[]): string =>
+  (typologies as Typologie[])
+    .map((typologie) =>
+      typologie in vocabulaire.typologieLibelles
+        ? vocabulaire.typologieLibelles[typologie].toString()
+        : typologie.toString(),
+    )
+    .join(', ')
+
+export const LieuActiviteCard = ({
+  lieu: { nom, adresse, rna, siret, codePostal, commune, typologies },
   topRight,
   infoLinkHref,
   className,
 }: {
   className?: string
-  structure: StructureCardStructure
+  lieu: LieuActiviteAffiche
   topRight?: ReactNode
   infoLinkHref?: string
 }) => {
   const tooltipId = `tooltip-${nom.replaceAll('"', '')}-${typologies?.join(',')}-${siret}-${rna}-${codePostal}-${commune}-${adresse}`
 
-  // Une structure peut n'avoir aucune adresse exploitable (établissement non
+  // Un lieu peut n'avoir aucune adresse exploitable (établissement non
   // diffusible) : on masque alors la ligne entière plutôt que d'afficher une
   // épingle sans rien à côté.
   const adresseAffichee = addresseFromParts({ adresse, codePostal, commune })
@@ -57,7 +73,7 @@ const StructureCard = ({
         </p>
       )}
 
-      {!!typologies && typologies?.length > 0 && (
+      {!!typologies && typologies.length > 0 && (
         <p className="fr-mt-1v fr-text--sm fr-text-mention--grey fr-mb-0 fr-flex fr-align-items-center">
           <span className="fr-icon-government-line fr-icon--sm fr-mr-1w" />
           {typologies.join(', ')}
@@ -74,13 +90,7 @@ const StructureCard = ({
             role="tooltip"
             aria-hidden
           >
-            {(typologies as Typologie[])
-              .map((typologie) =>
-                typologie in vocabulaire.typologieLibelles
-                  ? vocabulaire.typologieLibelles[typologie].toString()
-                  : typologie.toString(),
-              )
-              .join(', ')}
+            {libelles(typologies)}
           </span>
         </p>
       )}
@@ -115,4 +125,4 @@ const StructureCard = ({
   )
 }
 
-export default StructureCard
+export default LieuActiviteCard

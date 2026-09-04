@@ -3,7 +3,7 @@
 import { Options } from '@app/ui/components/Primitives/Options'
 import { createToast } from '@app/ui/toast/createToast'
 import SiretInputInfo from '@app/web/components/siret/SiretInputInfo'
-import StructureCard from '@app/web/components/structure/StructureCard'
+import StructureAdministrativeCard from '@app/web/features/employeuse/ui/StructureAdministrativeCard'
 import {
   type RenseignerStructureEmployeuseFormData,
   renseignerStructureEmployeuseFormShape,
@@ -142,7 +142,7 @@ const RenseignerStructureEmployeuseForm = ({
         </form.AppField>
         <SiretInputInfo />
         {selected && (
-          <StructureCard
+          <StructureAdministrativeCard
             className="fr-mt-6v fr-mb-6v"
             structure={{
               nom: selected.nom,
@@ -150,7 +150,6 @@ const RenseignerStructureEmployeuseForm = ({
               adresse: selected.adresseBan.nom,
               commune: selected.adresseBan.commune,
               codePostal: selected.adresseBan.codePostal,
-              typologies: selected.typologie ? [selected.typologie] : null,
               rna: null,
             }}
           />
