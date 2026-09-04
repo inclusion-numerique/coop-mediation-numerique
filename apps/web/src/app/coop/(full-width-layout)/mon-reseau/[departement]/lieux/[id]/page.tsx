@@ -8,10 +8,10 @@ import {
   FicheDuLieuPage,
   ficheAffichee,
 } from '@app/web/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui'
+import { ModaleDeRetrait } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
 import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
 import { getDepartementFromCodeOrThrowNotFound } from '@app/web/features/mon-reseau/getDepartementFromCodeOrThrowNotFound'
 import { getMonReseauBreadcrumbParents } from '@app/web/features/mon-reseau/getMonReseauBreadcrumbParents'
-import RemoveMediateurFromLieuModal from '@app/web/features/mon-reseau/use-cases/acteurs/components/RemoveMediateurFromLieuModal/RemoveMediateurFromLieuModal'
 import LieuMediateursEnActivite from '@app/web/features/mon-reseau/use-cases/lieux/components/LieuMediateursEnActivite'
 import { mediateursEnActiviteDuLieu } from '@app/web/features/mon-reseau/use-cases/lieux/db/mediateursEnActiviteDuLieu'
 import { contentId } from '@app/web/utils/skipLinks'
@@ -73,7 +73,7 @@ const LieuActiviteDetailPage = async (props: {
                 }
                 structureNom={fiche.nom}
               />
-              {peutRetirerUnMediateur && <RemoveMediateurFromLieuModal />}
+              {peutRetirerUnMediateur && <ModaleDeRetrait />}
             </>
           }
         />

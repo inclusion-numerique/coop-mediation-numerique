@@ -1,6 +1,6 @@
 import { createDynamicModal } from '@app/ui/components/Modal/createDynamicModal'
 
-export type RemoveMediateurFromLieuModalState = {
+export type EtatDeLaModaleDeRetrait = {
   mediateurId: string
   structureId: string
   mediateurDisplayName: string
@@ -9,8 +9,8 @@ export type RemoveMediateurFromLieuModalState = {
   variant: 'mediateur' | 'lieu'
 }
 
-export const RemoveMediateurFromLieuDynamicModal =
-  createDynamicModal<RemoveMediateurFromLieuModalState>({
+export const ModaleDeRetraitDynamique =
+  createDynamicModal<EtatDeLaModaleDeRetrait>({
     id: 'remove-mediateur-from-lieu-modal',
     isOpenedByDefault: false,
     initialState: {

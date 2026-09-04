@@ -6,8 +6,8 @@ import {
   FicheDuLieuPage,
   ficheAffichee,
 } from '@app/web/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui'
+import { ModaleDeRetrait } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
 import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
-import RemoveMediateurFromLieuModal from '@app/web/features/mon-reseau/use-cases/acteurs/components/RemoveMediateurFromLieuModal/RemoveMediateurFromLieuModal'
 import LieuMediateursEnActivite from '@app/web/features/mon-reseau/use-cases/lieux/components/LieuMediateursEnActivite'
 import { mediateursEnActiviteDuLieu } from '@app/web/features/mon-reseau/use-cases/lieux/db/mediateursEnActiviteDuLieu'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
@@ -75,7 +75,7 @@ const Page = async (props: { params: Promise<{ structureId: string }> }) => {
                 canRemoveMediateurFromLieuId={fiche.id}
                 structureNom={fiche.nom}
               />
-              <RemoveMediateurFromLieuModal />
+              <ModaleDeRetrait />
             </>
           }
         />

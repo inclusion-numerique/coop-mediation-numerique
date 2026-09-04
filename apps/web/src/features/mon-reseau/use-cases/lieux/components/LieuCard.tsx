@@ -1,6 +1,6 @@
+import { BoutonDeRetrait } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
 import { getDepartementCodeForLieu } from '@app/web/features/mon-reseau/getDepartementCodeForLieu'
 import { getStructureDisplayName } from '@app/web/features/mon-reseau/getStructureDisplayName'
-import RemoveMediateurFromLieuButton from '@app/web/features/mon-reseau/use-cases/acteurs/components/RemoveMediateurFromLieuButton'
 import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
 import type { LieuForList } from '@app/web/features/mon-reseau/use-cases/lieux/db/searchLieux'
 import { getCartographieNationaleSourceLabel } from '@app/web/libraries/cartographie-nationale'
@@ -110,7 +110,7 @@ const LieuCard = ({
               Modifier
             </Button>
             {removeMediateurFromLieu && (
-              <RemoveMediateurFromLieuButton
+              <BoutonDeRetrait
                 mediateurId={removeMediateurFromLieu.mediateurId}
                 structureId={lieu.id}
                 variant="lieu"
@@ -122,7 +122,7 @@ const LieuCard = ({
           </span>
         ) : (
           removeMediateurFromLieu && (
-            <RemoveMediateurFromLieuButton
+            <BoutonDeRetrait
               className={styles.innerLink}
               mediateurId={removeMediateurFromLieu.mediateurId}
               structureId={lieu.id}

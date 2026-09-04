@@ -1,4 +1,5 @@
 import { personneEstConseillerNumerique } from '@app/web/features/employeuse'
+import { BoutonDeRetrait } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
 import ActeurProfilAndContact from '@app/web/features/mon-reseau/use-cases/acteurs/components/ActeurProfilAndContact'
 import type { ActeurForList } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
 import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
@@ -7,7 +8,6 @@ import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
 import Link from 'next/link'
 import styles from './ActeurCard.module.css'
-import RemoveMediateurFromLieuButton from './RemoveMediateurFromLieuButton'
 
 const ActeurCard = ({
   acteur,
@@ -44,7 +44,7 @@ const ActeurCard = ({
           {displayName}
         </p>
         {canRemoveMediateurFromLieuId && acteur.mediateur && structureNom && (
-          <RemoveMediateurFromLieuButton
+          <BoutonDeRetrait
             structureId={canRemoveMediateurFromLieuId}
             mediateurId={acteur.mediateur.id}
             mediateurDisplayName={displayName}

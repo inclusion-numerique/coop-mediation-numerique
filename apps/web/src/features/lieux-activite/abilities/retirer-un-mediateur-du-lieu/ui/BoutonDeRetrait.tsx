@@ -2,9 +2,9 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
-import { RemoveMediateurFromLieuDynamicModal } from './RemoveMediateurFromLieuModal/RemoveMediateurFromLieuDynamicModal'
+import { ModaleDeRetraitDynamique } from './modale-de-retrait'
 
-const RemoveMediateurFromLieuButton = ({
+const BoutonDeRetrait = ({
   className,
   structureId,
   mediateurId,
@@ -21,7 +21,7 @@ const RemoveMediateurFromLieuButton = ({
   derniereActiviteDate: Date | null
   variant: 'mediateur' | 'lieu' // if the view of the button is in a mediateur card (remove mediateur wording) or lieu card (remove from my lieux d'activite)
 }) => {
-  const openModal = RemoveMediateurFromLieuDynamicModal.useOpen()
+  const openModal = ModaleDeRetraitDynamique.useOpen()
 
   const handleClick = () => {
     openModal({
@@ -49,4 +49,4 @@ const RemoveMediateurFromLieuButton = ({
   )
 }
 
-export default RemoveMediateurFromLieuButton
+export default BoutonDeRetrait

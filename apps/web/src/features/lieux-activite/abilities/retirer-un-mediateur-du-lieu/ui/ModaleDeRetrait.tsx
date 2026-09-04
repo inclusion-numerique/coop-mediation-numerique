@@ -7,9 +7,9 @@ import { formatDate } from '@app/web/utils/formatDate'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { RemoveMediateurFromLieuDynamicModal } from './RemoveMediateurFromLieuDynamicModal'
+import { ModaleDeRetraitDynamique } from './modale-de-retrait'
 
-const RemoveMediateurFromLieuModal = () => {
+const ModaleDeRetrait = () => {
   const {
     mediateurId,
     structureId,
@@ -17,7 +17,7 @@ const RemoveMediateurFromLieuModal = () => {
     structureNom,
     derniereActiviteDate,
     variant,
-  } = RemoveMediateurFromLieuDynamicModal.useState()
+  } = ModaleDeRetraitDynamique.useState()
 
   const router = useRouter()
   const [isPending, setIsPending] = useState(false)
@@ -37,7 +37,7 @@ const RemoveMediateurFromLieuModal = () => {
       return
     }
 
-    RemoveMediateurFromLieuDynamicModal.close()
+    ModaleDeRetraitDynamique.close()
 
     createToast({
       priority: 'success',
@@ -55,7 +55,7 @@ const RemoveMediateurFromLieuModal = () => {
     : null
 
   return (
-    <RemoveMediateurFromLieuDynamicModal.Component
+    <ModaleDeRetraitDynamique.Component
       title={
         variant === 'mediateur'
           ? `Retirer ${mediateurDisplayName} du lieu ${structureNom} ?`
@@ -114,8 +114,8 @@ const RemoveMediateurFromLieuModal = () => {
           }
         />
       )}
-    </RemoveMediateurFromLieuDynamicModal.Component>
+    </ModaleDeRetraitDynamique.Component>
   )
 }
 
-export default RemoveMediateurFromLieuModal
+export default ModaleDeRetrait

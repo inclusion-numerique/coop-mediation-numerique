@@ -1,4 +1,4 @@
-import RemoveMediateurFromLieuModal from '@app/web/features/mon-reseau/use-cases/acteurs/components/RemoveMediateurFromLieuModal/RemoveMediateurFromLieuModal'
+import { ModaleDeRetrait } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
 import LieuCard from '@app/web/features/mon-reseau/use-cases/lieux/components/LieuCard'
 import { pluriel } from '@app/web/libraries/pluriel'
 import SortSelect from '@app/web/libs/data-table/SortSelect'
@@ -70,7 +70,7 @@ export const MesLieuxActivitePage = ({
                 showActionButtons
               />
             ))}
-            <RemoveMediateurFromLieuModal />
+            <ModaleDeRetrait />
           </>
         )}
       </div>
