@@ -4,17 +4,13 @@ import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
 import { optionsWithEmptyValue } from '@app/ui/components/Form/utils/options'
 import { Options } from '@app/ui/components/Primitives/Options'
 import {
+  adresseNonVerifiableMessage,
+  geocodeStructureAdresse,
+} from '@app/web/external-apis/ban/geocodeStructureAdresse'
+import {
   AdresseBanComboBox,
   AdresseBanOptions,
 } from '@app/web/features/adresse/combo-box/AdresseBanComboBox'
-import {
-  adresseNonVerifiableMessage,
-  geocodeStructureAdresse,
-} from '@app/web/features/structures/siret/geocodeStructureAdresse'
-import {
-  SiretSearchComboBox,
-  SiretSearchOptions,
-} from '@app/web/features/structures/siret/SiretSearchComboBox'
 import { typologieStructureOptions } from '@app/web/features/structures/typologieStructure'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -22,6 +18,7 @@ import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useSelector } from '@tanstack/react-form'
 import { useState } from 'react'
 import { informationsGeneralesFormOptions } from './informationsGeneralesFormData'
+import { SiretSearchComboBox, SiretSearchOptions } from './SiretSearchComboBox'
 
 export const InformationsGeneralesEditionFields = withForm({
   ...informationsGeneralesFormOptions,

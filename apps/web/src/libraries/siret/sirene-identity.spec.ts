@@ -2,7 +2,7 @@ import {
   ADRESSE_SIMILARITY_THRESHOLD,
   diceSimilarity,
   NOM_SIMILARITY_THRESHOLD,
-} from './siretIdentity'
+} from './sirene-identity'
 
 describe('diceSimilarity', () => {
   it('renvoie 1 pour deux chaînes identiques (après normalisation)', () => {

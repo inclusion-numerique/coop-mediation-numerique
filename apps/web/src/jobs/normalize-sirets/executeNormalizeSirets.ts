@@ -1,19 +1,19 @@
-import { fetchSiretApiData } from '@app/web/features/structures/siret/fetchSiretData'
-import {
-  clearSiret,
-  getSiretBearingStructures,
-  markSiretSynchronised,
-  type SiretBearingStructure,
-} from '@app/web/features/structures/siret/siretBearingStructures'
+import { fetchSiretApiData } from '@app/web/external-apis/siret/fetchSiretData'
 import {
   ADRESSE_SIMILARITY_THRESHOLD,
   diceSimilarity,
   NOM_SIMILARITY_THRESHOLD,
   parseSireneIdentity,
   throttleApiEntreprise,
-} from '@app/web/features/structures/siret/siretIdentity'
+} from '@app/web/libraries/siret'
 import type { JobExecutor } from '../jobExecutors'
 import { output } from '../output'
+import {
+  clearSiret,
+  getSiretBearingStructures,
+  markSiretSynchronised,
+  type SiretBearingStructure,
+} from './siretBearingStructures'
 
 // ADR-002 échange final : ce job ne traite plus que les LIEUX (`lieu_inclusion`). Le SIRET est
 // optionnel ; on ne touche JAMAIS au nom du lieu. On VÉRIFIE par fuzzy match (nom OU adresse) que le

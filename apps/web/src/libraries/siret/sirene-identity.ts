@@ -1,4 +1,4 @@
-import type { SiretApiResponse } from '@app/web/features/structures/siret/SiretApiResponse'
+import type { SiretApiResponse } from './siret-api-response'
 
 // Débit API Entreprise : 250 req/min ≈ 4 req/s → 250 ms minimum entre deux appels.
 export const API_ENTREPRISE_THROTTLE_MS = 250

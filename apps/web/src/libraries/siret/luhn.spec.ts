@@ -1,4 +1,4 @@
-import { checkLuhnIntegrity } from './checkLuhnIntegrity'
+import { checkLuhnIntegrity } from './luhn'
 
 describe('checkLuhnIntegrity', () => {
   it('devrait retourner vrai pour un numéro valide', () => {

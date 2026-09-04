@@ -1,7 +1,7 @@
 import { AdresseBanValidation } from '@app/web/external-apis/ban/AdresseBanValidation'
+import { validateValidRnaDigits } from '@app/web/libraries/rna'
+import { validateValidSiretDigits } from '@app/web/libraries/siret'
 import z from 'zod'
-import { validateValidRnaDigits } from './rna/rnaValidation'
-import { validateValidSiretDigits } from './siret/siretValidation'
 import { typologieStructureValue } from './typologieStructure'
 
 /**

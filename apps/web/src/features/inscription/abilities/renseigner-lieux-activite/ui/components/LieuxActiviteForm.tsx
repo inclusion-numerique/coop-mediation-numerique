@@ -4,11 +4,11 @@ import { Options } from '@app/ui/components/Primitives/Options'
 import { createToast } from '@app/ui/toast/createToast'
 import { renseignerLieuxActiviteAction } from '@app/web/app/_actions/inscription/renseigner-lieux-activite.action'
 import StructureCard from '@app/web/components/structure/StructureCard'
-import type { LieuActiviteInput } from '@app/web/features/inscription/abilities/renseigner-lieux-activite'
 import {
   adresseNonVerifiableMessage,
   geocodeStructureAdresse,
-} from '@app/web/features/structures/siret/geocodeStructureAdresse'
+} from '@app/web/external-apis/ban/geocodeStructureAdresse'
+import type { LieuActiviteInput } from '@app/web/features/inscription/abilities/renseigner-lieux-activite'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useHydrated } from '@app/web/libs/form/use-hydrated'

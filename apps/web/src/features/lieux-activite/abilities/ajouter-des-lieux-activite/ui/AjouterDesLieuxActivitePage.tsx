@@ -4,12 +4,12 @@ import { Options } from '@app/ui/components/Primitives/Options'
 import { createToast } from '@app/ui/toast/createToast'
 import { ajouterDesLieuxActiviteAction } from '@app/web/app/_actions/lieux-activite/ajouter-des-lieux-activite.action'
 import { creerUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/creer-lieu-activite.action'
+import { adresseNonVerifiableMessage } from '@app/web/external-apis/ban/geocodeStructureAdresse'
 import CreerLieuActiviteForm from '@app/web/features/lieux-activite/components/creer/CreerLieuActiviteForm'
 import {
   type CreerLieuActiviteFormData,
   toCreerLieuData,
 } from '@app/web/features/lieux-activite/components/creer/creerLieuActiviteFormData'
-import { adresseNonVerifiableMessage } from '@app/web/features/structures/siret/geocodeStructureAdresse'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useHydrated } from '@app/web/libs/form/use-hydrated'

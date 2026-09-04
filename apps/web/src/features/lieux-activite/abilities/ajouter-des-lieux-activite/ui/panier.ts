@@ -1,4 +1,4 @@
-import { geocodeStructureAdresse } from '@app/web/features/structures/siret/geocodeStructureAdresse'
+import { geocodeStructureAdresse } from '@app/web/external-apis/ban/geocodeStructureAdresse'
 import type { LieuActiviteSearchResult } from '@app/web/structure/searchLieuActiviteCombined'
 import type { LieuxAAjouterData } from '../action/ajouter-des-lieux-activite.validation'
 

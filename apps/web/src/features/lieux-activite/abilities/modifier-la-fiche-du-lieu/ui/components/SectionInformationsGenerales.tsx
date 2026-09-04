@@ -1,9 +1,9 @@
 'use client'
 
 import EditCardTanStack from '@app/web/components/EditCardTanStack'
-import { siretOrRna } from '@app/web/features/structures/rna/rnaValidation'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useStore } from '@tanstack/react-form'
+import { immatriculationSaisie } from '../../../../domain/saisie'
 import type { EnregistrerUneSection } from '../enregistrer-une-section'
 import type { FicheAffichee } from '../fiche-du-lieu.presenter'
 import { InformationsGeneralesEditionFields } from './InformationsGeneralesEditionFields'
@@ -58,7 +58,7 @@ export const SectionInformationsGenerales = ({
         lieuItinerant: noSiret ? saisie.lieuItinerant : null,
         typologies: saisie.typologies,
         nomUsage: saisie.nomUsage,
-        ...siretOrRna({ ...saisie, siret }),
+        ...immatriculationSaisie(siret),
       })
     },
   })

@@ -1,7 +1,7 @@
 import {
   optionalSiretValidation,
   requiredSiretValidation,
-} from './siretValidation'
+} from './siret-validation'
 
 describe('Validations SIRET', () => {
   describe('siretValidation', () => {

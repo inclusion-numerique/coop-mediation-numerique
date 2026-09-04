@@ -2,12 +2,12 @@
 
 import { Options } from '@app/ui/components/Primitives/Options'
 import { createToast } from '@app/ui/toast/createToast'
+import SiretInputInfo from '@app/web/components/siret/SiretInputInfo'
 import StructureCard from '@app/web/components/structure/StructureCard'
 import {
   type RenseignerStructureEmployeuseFormData,
   renseignerStructureEmployeuseFormShape,
 } from '@app/web/features/inscription/abilities/renseigner-structure-employeuse'
-import SiretInputInfo from '@app/web/features/structures/siret/SiretInputInfo'
 import type { ServerActionResult } from '@app/web/libraries/nextjs'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'

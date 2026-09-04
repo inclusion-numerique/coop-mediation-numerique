@@ -1,4 +1,4 @@
-import { throttleApiEntreprise } from '@app/web/features/structures/siret/siretIdentity'
+import { throttleApiEntreprise } from '@app/web/libraries/siret'
 import { prismaClient } from '@app/web/prismaClient'
 import * as Sentry from '@sentry/nextjs'
 import {
