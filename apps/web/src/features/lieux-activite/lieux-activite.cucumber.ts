@@ -168,3 +168,59 @@ After(async () => {
     where: { id: { in: [...semé.userIds] } },
   })
 })
+
+type LieuxASiretSemes = {
+  readonly premierId: string
+  readonly secondId: string
+}
+
+// SIRET improbables en production : la vérification balaie toute la table, il
+// faut que les lieux du scénario y soient reconnaissables.
+export const SIRET_PREMIER = '00000000000017'
+export const SIRET_SECOND = '00000000000025'
+
+const semisSiret: { lieuxASiret?: LieuxASiretSemes } = {}
+
+export const lieuxASiretSemes = (): LieuxASiretSemes => {
+  if (!semisSiret.lieuxASiret) throw new Error('Aucun lieu à SIRET semé')
+  return semisSiret.lieuxASiret
+}
+
+export const semerDesLieuxASiret = async (): Promise<LieuxASiretSemes> => {
+  const [premier, second] = await Promise.all([
+    prismaClient.lieuInclusion.create({
+      data: {
+        nom: 'Maison France Services de Reims',
+        adresse: '12 rue de la Paix',
+        commune: 'Reims',
+        codePostal: '51100',
+        siret: SIRET_PREMIER,
+      },
+      select: { id: true },
+    }),
+    prismaClient.lieuInclusion.create({
+      data: {
+        nom: 'Espace numérique de Tinqueux',
+        adresse: '4 avenue Jean Jaurès',
+        commune: 'Tinqueux',
+        codePostal: '51430',
+        siret: SIRET_SECOND,
+      },
+      select: { id: true },
+    }),
+  ])
+
+  semisSiret.lieuxASiret = { premierId: premier.id, secondId: second.id }
+
+  return semisSiret.lieuxASiret
+}
+
+After(async () => {
+  const semé = semisSiret.lieuxASiret
+  semisSiret.lieuxASiret = undefined
+  if (!semé) return
+
+  await prismaClient.lieuInclusion.deleteMany({
+    where: { id: { in: [semé.premierId, semé.secondId] } },
+  })
+})

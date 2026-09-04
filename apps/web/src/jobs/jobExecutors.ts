@@ -3,6 +3,14 @@ import {
   lireLesLieuxCarto,
   reconcilierAvecLaCartographie,
 } from '@app/web/features/lieux-activite/abilities/reconcilier-avec-la-cartographie'
+import {
+  effacerLeSiret,
+  interrogerSirene,
+  lireLesLieuxASiret,
+  marquerLeSiretVerifie,
+  sansEcriture,
+  verifierLesSiretsDesLieux,
+} from '@app/web/features/lieux-activite/abilities/verifier-les-sirets-des-lieux'
 import { prismaClient } from '@app/web/prismaClient'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import * as Sentry from '@sentry/nextjs'
@@ -11,7 +19,6 @@ import { executeAppliquerDispositifConum } from './appliquer-dispositif-conum/ex
 import { executeFixUsersRoles } from './fix-users-roles/executeFixUsersRoles'
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
 import type { Job, JobName, JobPayload } from './jobs'
-import { executeNormalizeSirets } from './normalize-sirets/executeNormalizeSirets'
 import { output } from './output'
 import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts/executeRemoveOrphanBrevoContacts'
 import { executeSyncRdvspData } from './sync-rdvsp-data/executeSyncRdvspData'
@@ -32,6 +39,40 @@ const executeUpdateStructuresCartographieNationale = async () => {
       appliquerLaReconciliation: appliquerLaReconciliation(journal),
     },
   })
+}
+
+const JOUR_EN_MS = 24 * 60 * 60 * 1000
+
+const executeNormalizeSirets: JobExecutor<'normalize-sirets'> = async (job) => {
+  const dryRun = job.payload?.dryRun ?? false
+  const minDaysSinceLastSync = job.payload?.minDaysSinceLastSync ?? 7
+
+  const journal = (message: string) =>
+    output.log(`normalize-sirets: ${message}`)
+
+  journal(
+    `démarrage${dryRun ? ' (À BLANC)' : ''}, on saute les lieux confrontés depuis moins de ${minDaysSinceLastSync} jours`,
+  )
+
+  const compte = await verifierLesSiretsDesLieux({
+    command: {
+      verifiesDepuis: new Date(Date.now() - minDaysSinceLastSync * JOUR_EN_MS),
+    },
+    ports: {
+      lireLesLieuxASiret,
+      interrogerSirene,
+      journal,
+      // Une passe à blanc est la même vérification menée avec des ports qui
+      // n'écrivent pas : le compte est celui qu'on obtiendrait.
+      ...(dryRun ? sansEcriture : { effacerLeSiret, marquerLeSiretVerifie }),
+    },
+  })
+
+  journal(
+    `terminé — ${compte.verifies} vérifiés, ${compte.siretsEffaces} SIRET effacés, ${compte.ignores} ignorés, ${compte.echecs} échecs${dryRun ? ' (À BLANC)' : ''}`,
+  )
+
+  return { ...compte, dryRun }
 }
 
 // Create an object that for each JobName, MUST has a JobExecutor<Name>
