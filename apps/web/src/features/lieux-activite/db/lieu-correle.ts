@@ -59,9 +59,9 @@ const auMemeEndroit = ({ codeInsee, codePostal }: LieuAMaterialiser) => ({
  * Le SIRET ne participe à aucun de ces jugements : il identifie une entité
  * juridique, pas un endroit.
  *
- * En cas de doute on ne fusionne pas : un doublon se détecte
- * (`detect-duplicate-lieux`) et se répare (fusion de lieux), une fusion à tort
- * perd l'adresse du lieu absorbé sans laisser de trace.
+ * En cas de doute on ne fusionne pas : un doublon se repère et se répare depuis
+ * l'administration, alors qu'une fusion à tort perd l'adresse du lieu absorbé
+ * sans laisser de trace.
  *
  * Rend aussi la force de la corrélation et l'état de suppression du lieu trouvé,
  * dont dépend le droit de relever un lieu supprimé (cf. `preparerCorrele`).

@@ -3,40 +3,13 @@ import { createStopwatch } from '@app/web/utils/stopwatch'
 import * as Sentry from '@sentry/nextjs'
 import { v4 } from 'uuid'
 import { executeAppliquerDispositifConum } from './appliquer-dispositif-conum/executeAppliquerDispositifConum'
-import { executeApplyCorrigerAdresse } from './apply-corriger-adresse/executeApplyCorrigerAdresse'
-import { executeApplyCorrigerCoordonnees } from './apply-corriger-coordonnees/executeApplyCorrigerCoordonnees'
-import { executeApplyFusionnerLieux } from './apply-fusionner-lieux/executeApplyFusionnerLieux'
-import { executeApplyReviewToActionPlan } from './apply-review-to-action-plan/executeApplyReviewToActionPlan'
-import { executeApplySupprimerLieux } from './apply-supprimer-lieux/executeApplySupprimerLieux'
-import { executeApplyViderSiret } from './apply-vider-siret/executeApplyViderSiret'
-import { executeAuditAdresseCoherence } from './audit-adresse-coherence/executeAuditAdresseCoherence'
-import { executeAuditLieuxOverview } from './audit-lieux-overview/executeAuditLieuxOverview'
-import { executeAuditSiretCoherence } from './audit-siret-coherence/executeAuditSiretCoherence'
-import { executeBackfillCommuneRdvsp } from './backfill-commune-rdvsp/executeBackfillCommuneRdvsp'
-import { executeBackfillPersonnesAffectationsMain } from './backfill-personnes-affectations-main/executeBackfillPersonnesAffectationsMain'
-import { executeBackfillStructureEmployeuseMain } from './backfill-structure-employeuse-main/executeBackfillStructureEmployeuseMain'
-import { executeBackfillTrancheAge } from './backfill-tranche-age/executeBackfillTrancheAge'
-import { executeBackupDatabaseJob } from './backup-database/executeBackupDatabaseJob'
-import { executeCompleterStructuresMain } from './completer-structures-main/executeCompleterStructuresMain'
-import { executeDeduplicateLieux } from './deduplicate-lieux/executeDeduplicateLieux'
-import { executeDetectDuplicateLieux } from './detect-duplicate-lieux/executeDetectDuplicateLieux'
-import { executeExportDuplicateSirets } from './export-duplicate-sirets/executeExportDuplicateSirets'
-import { executeFixStructures } from './fix-structures/executeFixStructures'
-import { executeFixTags } from './fix-tags/executeFixTags'
-import { executeFixUsers } from './fix-users/executeFixUsers'
 import { executeFixUsersRoles } from './fix-users-roles/executeFixUsersRoles'
-import { executeImportContactsToBrevo } from './import-contacts-to-brevo/executeImportContactsToBrevo'
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
 import type { Job, JobName, JobPayload } from './jobs'
-import { executeNormaliserBeneficiaires } from './normaliser-beneficiaires/executeNormaliserBeneficiaires'
 import { executeNormalizeSirets } from './normalize-sirets/executeNormalizeSirets'
 import { output } from './output'
-import { executeRelierPersonnesCoopMain } from './relier-personnes-coop-main/executeRelierPersonnesCoopMain'
 import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts/executeRemoveOrphanBrevoContacts'
-import { executeResetInscriptionsSansRole } from './reset-inscriptions-sans-role/executeResetInscriptionsSansRole'
-import { executeSetServciesToSharedLieux } from './set-servcies-to-shared-lieux/executeSetServciesToSharedLieux'
 import { executeSyncRdvspData } from './sync-rdvsp-data/executeSyncRdvspData'
-import { executeUpdateLieuxActivitesADistance } from './update-lieu-activite-a-distance/executeUpdateLieuxActivitesADistance'
 import { updateStructuresFromEntrepot } from './update-structures-cartographie-nationale/updateStructuresFromEntrepot'
 
 export type JobExecutor<Name extends JobName, Result = unknown> = (
@@ -57,42 +30,14 @@ const executeUpdateStructuresCartographieNationale = async () => {
 export const jobExecutors: {
   [Name in JobName]: JobExecutor<Name>
 } = {
-  'apply-review-to-action-plan': executeApplyReviewToActionPlan,
-  'apply-corriger-adresse': executeApplyCorrigerAdresse,
-  'apply-corriger-coordonnees': executeApplyCorrigerCoordonnees,
-  'apply-fusionner-lieux': executeApplyFusionnerLieux,
-  'apply-supprimer-lieux': executeApplySupprimerLieux,
-  'apply-vider-siret': executeApplyViderSiret,
-  'audit-adresse-coherence': executeAuditAdresseCoherence,
-  'audit-siret-coherence': executeAuditSiretCoherence,
-  'audit-lieux-overview': executeAuditLieuxOverview,
-  'backfill-commune-rdvsp': executeBackfillCommuneRdvsp,
-  'backfill-tranche-age': executeBackfillTrancheAge,
-  'backup-database': executeBackupDatabaseJob,
-  'completer-structures-main': executeCompleterStructuresMain,
-  'relier-personnes-coop-main': executeRelierPersonnesCoopMain,
-  'backfill-personnes-affectations-main':
-    executeBackfillPersonnesAffectationsMain,
-  'backfill-structure-employeuse-main': executeBackfillStructureEmployeuseMain,
+  'appliquer-dispositif-conum': executeAppliquerDispositifConum,
+  'fix-users-roles': executeFixUsersRoles,
+  'inactive-users-reminders': executeInactiveUsersReminders,
+  'normalize-sirets': executeNormalizeSirets,
+  'remove-orphan-brevo-contacts': executeRemoveOrphanBrevoContacts,
+  'sync-rdvsp-data': executeSyncRdvspData,
   'update-structures-cartographie-nationale':
     executeUpdateStructuresCartographieNationale,
-  'import-contacts-to-brevo': executeImportContactsToBrevo,
-  'normalize-sirets': executeNormalizeSirets,
-  'normaliser-beneficiaires': executeNormaliserBeneficiaires,
-  'set-servcies-to-shared-lieux': executeSetServciesToSharedLieux,
-  'update-lieux-activites-a-distance': executeUpdateLieuxActivitesADistance,
-  'fix-structures': executeFixStructures,
-  'fix-users': executeFixUsers,
-  'fix-tags': executeFixTags,
-  'appliquer-dispositif-conum': executeAppliquerDispositifConum,
-  'sync-rdvsp-data': executeSyncRdvspData,
-  'inactive-users-reminders': executeInactiveUsersReminders,
-  'fix-users-roles': executeFixUsersRoles,
-  'remove-orphan-brevo-contacts': executeRemoveOrphanBrevoContacts,
-  'reset-inscriptions-sans-role': executeResetInscriptionsSansRole,
-  'deduplicate-lieux': executeDeduplicateLieux,
-  'detect-duplicate-lieux': executeDetectDuplicateLieux,
-  'export-duplicate-sirets': executeExportDuplicateSirets,
 }
 
 export const executeJob = async (job: Job) => {

@@ -1,5 +1,5 @@
 import assert from 'node:assert'
-import { fusionnerDesLieux } from '@app/web/features/lieux-activite'
+import { fusionnerDesLieux } from '@app/web/features/lieux-activite/abilities/fusionner-des-lieux'
 import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
