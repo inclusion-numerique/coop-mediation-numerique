@@ -1,10 +1,10 @@
 'use client'
 
-import CustomSelect from '@app/ui/components/CustomSelect/CustomSelect'
 import {
   labelsToOptions,
   SelectOption,
 } from '@app/ui/components/Form/utils/options'
+import { Options } from '@app/ui/components/Primitives/Options'
 import { Popover } from '@app/ui/components/Primitives/Popover'
 import { locationTypeLabels } from '@app/web/features/activites/use-cases/list/components/generateActivitesFiltersLabels'
 import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
@@ -17,8 +17,13 @@ import {
   update,
 } from '@app/web/libs/filters/helpers'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
+import { useAppForm } from '@app/web/libs/form/use-app-form'
+import { useHydrated } from '@app/web/libs/form/use-hydrated'
+import Button from '@codegouvfr/react-dsfr/Button'
+import { useSelector } from '@tanstack/react-form'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { OptionOptions, optionComboBox } from './option-combo-box'
 
 export type LieuFilterType = 'lieu' | 'commune' | 'departement'
 export type LieuFilterValue = { type: LieuFilterType; value: string[] }
@@ -50,8 +55,24 @@ export const LieuFilter = ({
   const params = new URLSearchParams(searchParams.toString())
 
   const [isOpen, setIsOpen] = useState(false)
+  const champRef = useRef<HTMLDivElement>(null)
 
-  const [lieuFilterType, setLieuFilterType] = useState<LieuFilterType | null>()
+  /**
+   * Deux champs transitoires : le type de localisation, puis la valeur choisie
+   * dans la liste correspondante. Ni l'un ni l'autre n'est soumis — ce sont les
+   * sélections accumulées qui partent dans l'URL — mais ils passent par le
+   * formulaire pour bénéficier des composants de champ de l'application.
+   */
+  const form = useAppForm({
+    defaultValues: { type: '', valeur: null as SelectOption | null },
+  })
+
+  const lieuFilterType = useSelector(
+    form.store,
+    (state) => state.values.type,
+  ) as LieuFilterType | ''
+
+  const isPending = !useHydrated()
 
   const defaultValueSet = new Set(defaultValue.flatMap(({ value }) => value))
 
@@ -90,7 +111,8 @@ export const LieuFilter = ({
   }
 
   const closePopover = (close: boolean = false) => {
-    setLieuFilterType(null)
+    form.setFieldValue('type', '')
+    form.setFieldValue('valeur', null)
     close && setIsOpen(false)
     router.replace(`?${params}`, { scroll: false })
   }
@@ -117,14 +139,20 @@ export const LieuFilter = ({
     closePopover(true)
   }
 
-  const handleSelectFilter = (option: SelectOption | null) => {
-    if (!option || !lieuFilterType) return handleClearFilters()
+  const handleSelectFilter = (option: SelectOption) => {
+    if (!lieuFilterType) return
     const setState = {
       commune: setCommunes,
       departement: setDepartements,
       lieu: setLieuxActivite,
     }[lieuFilterType]
     setState((prev) => [...prev, option])
+
+    // Le champ se vide au tour suivant, et non tout de suite : la combo pose sa
+    // propre valeur juste avant d'appeler ce gestionnaire, et le composant ne se
+    // réinitialise qu'au changement de clé. Remettre à zéro dans le même tour ne
+    // ferait donc pas varier la clé — le libellé choisi resterait affiché.
+    queueMicrotask(() => form.setFieldValue('valeur', null))
   }
 
   const handleRemoveFilter = (option: SelectOption) => {
@@ -152,27 +180,76 @@ export const LieuFilter = ({
         >
           Filtrer par&nbsp;:
         </label>
-        <CustomSelect
-          instanceId="location-filter-type"
-          placeholder="Choisir un type de localisation"
-          className="fr-mb-2v fr-mt-3v"
-          options={
-            departementsOptions
-              ? lieuTypeOptions
-              : lieuTypeOptionsWithoutDepartement
-          }
-          onChange={(option) => setLieuFilterType(option?.value ?? null)}
-        />
-        {lieuFilterType && (
-          <CustomSelect<SelectOption>
-            instanceId="location-filter-value"
-            placeholder={lieuPlaceholder[lieuFilterType]}
-            className="fr-mb-2v fr-mt-3v"
-            options={optionsForType[lieuFilterType]}
-            onChange={handleSelectFilter}
-            value={[]}
-          />
-        )}
+        <form.AppForm>
+          <form.AppField name="type">
+            {(field) => (
+              <field.Select
+                isPending={isPending}
+                label=""
+                className="fr-mb-2v fr-mt-3v"
+                placeholder="Choisir un type de localisation"
+                options={
+                  departementsOptions
+                    ? lieuTypeOptions
+                    : lieuTypeOptionsWithoutDepartement
+                }
+              />
+            )}
+          </form.AppField>
+
+          {lieuFilterType && (
+            <form.AppField name="valeur">
+              {(field) => (
+                <field.ComboBox
+                  isPending={isPending}
+                  onSelect={handleSelectFilter}
+                  // Le bouton déroule la liste entière ; la frappe la filtre.
+                  // Sans ces items par défaut, ouvrir le champ ne montrerait
+                  // rien tant qu'on n'a pas tapé.
+                  defaultItems={[...optionsForType[lieuFilterType]]}
+                  {...optionComboBox(optionsForType[lieuFilterType])}
+                >
+                  {({
+                    getLabelProps,
+                    getInputProps,
+                    getToggleButtonProps,
+                    ...optionsProps
+                  }) => (
+                    <>
+                      <div ref={champRef}>
+                        <field.Input
+                          addonEnd={
+                            <Button
+                              title="Voir la liste"
+                              className="fr-border-left-0"
+                              iconId="fr-icon-arrow-down-s-line"
+                              {...getToggleButtonProps({ type: 'button' })}
+                            />
+                          }
+                          isConnected={false}
+                          isPending={isPending}
+                          nativeLabelProps={getLabelProps()}
+                          nativeInputProps={{
+                            ...getInputProps(),
+                            placeholder: lieuPlaceholder[lieuFilterType],
+                          }}
+                          label=""
+                        />
+                      </div>
+                      <Options
+                        {...optionsProps}
+                        {...OptionOptions}
+                        anchorRef={champRef}
+                        className="fr-index-2000"
+                      />
+                    </>
+                  )}
+                </field.ComboBox>
+              )}
+            </form.AppField>
+          )}
+        </form.AppForm>
+
         {hasFilters && (
           <>
             <FilterSelection
