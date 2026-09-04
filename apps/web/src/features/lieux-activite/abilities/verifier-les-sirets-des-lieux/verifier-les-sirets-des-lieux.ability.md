@@ -66,10 +66,15 @@ qu'on croit. Une passe quotidienne le confronte à l'annuaire des entreprises.
 * Then le premier lieu garde son SIRET
 * And SIRENE n’a pas été interrogée sur le premier lieu
 
-## Rule: Un lieu qui échoue n'emporte pas les autres
+## Rule: Ne rien savoir n'est pas savoir que c'est faux
 
-> La passe traverse toute la table. Une panne sur une ligne doit coûter cette
-> ligne, pas la nuit entière.
+> Quand l'annuaire ne répond pas, le lieu garde son SIRET. Un numéro inconnu
+> est effacé ; un numéro sur lequel on n'a pas pu se renseigner ne l'est pas —
+> sans quoi une indisponibilité pendant la passe de nuit viderait toutes les
+> colonnes `siret` qu'elle atteint.
+>
+> La passe traverse toute la table : une panne sur une ligne coûte cette ligne,
+> pas la nuit entière.
 
 ### Scenario: L'annuaire tombe en panne sur un lieu
 
