@@ -2,7 +2,6 @@
 
 import Card from '@app/web/components/Card'
 import IconInSquare from '@app/web/components/IconInSquare'
-import { getDepartementCodeForLieu } from '@app/web/features/mon-reseau/getDepartementCodeForLieu'
 import LieuCard from '@app/web/features/mon-reseau/use-cases/lieux/components/LieuCard'
 import type { LieuForList } from '@app/web/features/mon-reseau/use-cases/lieux/db/searchLieux'
 import Button from '@codegouvfr/react-dsfr/Button'

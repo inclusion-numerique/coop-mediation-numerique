@@ -4,7 +4,7 @@ import Button, { type ButtonProps } from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 const BackButtonModalDefinition = createModal({
   id: 'back-button-modal',

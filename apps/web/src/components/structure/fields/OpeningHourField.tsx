@@ -2,7 +2,7 @@ import InputFormField from '@app/ui/components/Form/InputFormField'
 import ToggleFormField from '@app/ui/components/Form/ToggleFormField'
 import { OpeningHoursData } from '@app/web/features/structures/OpeningHoursValidation'
 import { OsmDaysOfWeek } from '@gouvfr-anct/timetable-to-osm-opening-hours'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import { daysTexts, Period, periodsTexts } from './openingHoursHelpers'
 

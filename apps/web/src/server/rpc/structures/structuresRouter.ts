@@ -2,7 +2,6 @@ import { searchStructureEmployeuseCombined } from '@app/web/features/employeuse/
 import { searchStructuresEmployeuses } from '@app/web/features/structures/getStructuresEmployeusesOptions'
 import { mergeLieuInclusion } from '@app/web/features/structures/use-cases/merge/mutations/mergeLieuInclusion'
 import { mediateurCoordonnesIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
-import { prismaClient } from '@app/web/prismaClient'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { enforceIsAdmin } from '@app/web/server/rpc/enforceIsAdmin'
 import { searchLieuActiviteCombined } from '@app/web/structure/searchLieuActiviteCombined'

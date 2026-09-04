@@ -4,10 +4,7 @@ import {
   rechercherUnLieuActivite,
 } from '@app/web/features/lieux-activite/abilities/rechercher-un-lieu-activite'
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
-import {
-  ficheSemee,
-  semerUneFicheDeLieu,
-} from '@app/web/features/lieux-activite/lieux-activite.cucumber'
+import { ficheSemee } from '@app/web/features/lieux-activite/lieux-activite.cucumber'
 import { prismaClient } from '@app/web/prismaClient'
 import { Then, When } from '@cucumber/cucumber'
 

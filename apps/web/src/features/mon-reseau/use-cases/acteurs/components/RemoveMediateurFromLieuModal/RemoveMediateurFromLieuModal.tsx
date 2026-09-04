@@ -6,7 +6,7 @@ import { retirerUnMediateurDuLieuAction } from '@app/web/app/_actions/lieux-acti
 import { formatDate } from '@app/web/utils/formatDate'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { RemoveMediateurFromLieuDynamicModal } from './RemoveMediateurFromLieuDynamicModal'
 
 const RemoveMediateurFromLieuModal = () => {

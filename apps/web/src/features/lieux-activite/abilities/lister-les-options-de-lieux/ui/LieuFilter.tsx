@@ -18,7 +18,7 @@ import {
 } from '@app/web/libs/filters/helpers'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import { useRouter, useSearchParams } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export type LieuFilterType = 'lieu' | 'commune' | 'departement'
 export type LieuFilterValue = { type: LieuFilterType; value: string[] }

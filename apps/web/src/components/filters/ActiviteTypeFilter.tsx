@@ -16,7 +16,7 @@ import { FilterFooter } from '@app/web/libs/filters/FilterFooter'
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 
 export const ActiviteTypeFilter = ({
   defaultValue = {},

@@ -1,6 +1,6 @@
 import { formationLabelLabels } from '@app/web/features/structures/formationLabel'
 import Tag from '@codegouvfr/react-dsfr/Tag'
-import type { FormationLabel, Typologie } from '@prisma/client'
+import type { FormationLabel } from '@prisma/client'
 
 export const VueDescription = ({
   presentationResume,

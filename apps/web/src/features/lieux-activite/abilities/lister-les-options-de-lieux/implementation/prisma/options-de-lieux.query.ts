@@ -1,6 +1,6 @@
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
-import { type LieuActiviteOption, optionDeLieu } from './option-de-lieu'
+import { type LieuActiviteOption } from './option-de-lieu'
 
 export const mediateurStructureSelect = () =>
   ({

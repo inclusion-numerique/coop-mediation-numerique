@@ -1,6 +1,5 @@
 import MonEquipeHeader from '@app/web/equipe/MonEquipeHeader'
 import Button from '@codegouvfr/react-dsfr/Button'
-import React from 'react'
 
 const EquipeVide = ({ withHeader = false }: { withHeader?: boolean }) => (
   <>

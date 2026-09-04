@@ -12,7 +12,7 @@ import {
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { INITIATIVE_OPTIONS } from '../../../cra/animation/labels'
 import { ECHELON_TERRITORIAL_OPTIONS } from '../../../cra/evenement/labels'
 import { TYPE_DE_STRUCTURE_PARTENAIRE_OPTIONS } from '../../../cra/partenariat/labels'

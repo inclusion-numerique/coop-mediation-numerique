@@ -2,11 +2,7 @@ import { resetFixtureUser } from '@app/fixtures/resetFixtureUser'
 import { seedStructures } from '@app/fixtures/structures'
 import { conseillerNumerique } from '@app/fixtures/users/conseillerNumerique'
 import { mediateurSansActivites } from '@app/fixtures/users/mediateurSansActivites'
-import {
-  ensureAffectationEmploiMain,
-  ensurePersonneMain,
-  rattacherAUneEmployeuseDepuisSiret,
-} from '@app/web/features/employeuse/server'
+import { rattacherAUneEmployeuseDepuisSiret } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
 import { importStructureEmployeuseFromProConnect } from './importStructureEmployeuseFromProConnect'
 

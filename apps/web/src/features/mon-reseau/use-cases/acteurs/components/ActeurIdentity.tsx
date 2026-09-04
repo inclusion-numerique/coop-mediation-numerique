@@ -14,7 +14,6 @@ import ButtonsGroup from '@codegouvfr/react-dsfr/ButtonsGroup'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useRouter } from 'next/navigation'
-import React from 'react'
 import { ActeurDetailPageData } from '../getActeurDetailPageData'
 import ActeurProfilAndContact from './ActeurProfilAndContact'
 

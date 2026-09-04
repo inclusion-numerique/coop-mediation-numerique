@@ -6,7 +6,6 @@ import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { AjouterDesLieuxActivitePage } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/AjouterDesLieuxActivitePage'
 import { contentId } from '@app/web/utils/skipLinks'
 import { redirect } from 'next/navigation'
-import React from 'react'
 
 const AjouterLieuPage = async () => {
   const user = await authenticateUser()

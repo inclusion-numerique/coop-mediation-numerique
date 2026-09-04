@@ -7,7 +7,6 @@ import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
 import { lieuxSemes } from '@app/web/features/lieux-activite/lieux-activite.cucumber'
 import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
 
 type Issue = Awaited<ReturnType<typeof ajouterDesLieuxActivite>>
 

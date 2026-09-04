@@ -1,5 +1,3 @@
-import React from 'react'
-
 export const ServiceInclusionNumeriqueTitle = () => (
   <div className="fr-p-4w fr-flex fr-direction-column fr-flex-gap-4v">
     <div>

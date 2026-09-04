@@ -1,5 +1,4 @@
 import CompactNavigationSideMenu from '@app/ui/components/CompactNavigationSideMenu'
-import React from 'react'
 
 const LieuActiviteSideMenu = ({
   className,

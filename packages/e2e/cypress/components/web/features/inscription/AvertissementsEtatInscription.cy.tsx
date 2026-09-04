@@ -2,7 +2,6 @@ import {
   AvertissementsEtatInscription,
   type EtatInscriptionUtilisateur,
 } from '@app/web/features/inscription/components/AvertissementsEtatInscription'
-import React from 'react'
 
 const PREMIERE_ETAPE = 'Inscription restée à la première étape'
 const VALIDEE_SANS_ROLE = 'Inscription validée sans compte de rôle'

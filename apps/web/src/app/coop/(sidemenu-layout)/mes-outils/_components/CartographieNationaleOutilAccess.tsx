@@ -5,7 +5,6 @@ import { getDepartementCodeForActeur } from '@app/web/features/mon-reseau/getDep
 import { getMonReseauPageData } from '@app/web/features/mon-reseau/getMonReseauPageData'
 import { getCartographieDepartementLink } from '@app/web/features/mon-reseau/use-cases/lieux/getStructureLink'
 import Link from 'next/link'
-import React from 'react'
 
 const onlyVisibleForCartographieNationale = ({
   lieuInclusion: { visiblePourCartographieNationale },

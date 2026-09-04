@@ -3,7 +3,6 @@ import { rechercheApiEntreprise } from '@app/web/external-apis/rechercheApiEntre
 import type { StructureCreationDataWithSiret } from '@app/web/features/structures/StructureValidation'
 import { structureCreationDataWithSiretFromUniteLegale } from '@app/web/structure/structuresInfoFromUniteLegale'
 import debounce from 'debounce-promise'
-import React from 'react'
 
 const loadStructureEmployeuseOptions = async (
   search: string,

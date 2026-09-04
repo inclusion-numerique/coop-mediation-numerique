@@ -6,7 +6,6 @@ import { trpc } from '@app/web/trpc'
 import ToggleSwitch from '@codegouvfr/react-dsfr/ToggleSwitch'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import React from 'react'
 
 const VisibiliteMediateur = ({ isVisible }: { isVisible: boolean }) => {
   const router = useRouter()

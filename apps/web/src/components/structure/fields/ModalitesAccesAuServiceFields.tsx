@@ -3,7 +3,6 @@ import CheckboxGroupFormField from '@app/ui/components/Form/CheckboxGroupFormFie
 import InputFormField from '@app/ui/components/Form/InputFormField'
 import { fraisAChargeOptions } from '@app/web/features/structures/fraisACharge'
 import { ModalitesAccesAuServiceData } from '@app/web/features/structures/ModalitesAccesAuServiceValidation'
-import React from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
 export const ModalitesAccesAuServiceFields = <

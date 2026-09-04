@@ -6,7 +6,6 @@ import {
   descriptionMaxLength,
 } from '@app/web/features/structures/DescriptionValidation'
 import { formationLabelOptions } from '@app/web/features/structures/formationLabel'
-import React from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
 const descriptionInfo = (description?: string | null) =>

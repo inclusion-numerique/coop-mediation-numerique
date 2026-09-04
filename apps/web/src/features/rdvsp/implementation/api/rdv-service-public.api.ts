@@ -26,7 +26,6 @@ import type {
 } from '../../domain/rdv-service-public.port'
 import { StatutPresence } from '../../domain/statut-presence'
 import type { UsagerId } from '../../domain/usager-id'
-import type { AbonnementWebhook, WebhookId } from '../../domain/webhook'
 import {
   demandeRdvPayload,
   jetonsPayload,

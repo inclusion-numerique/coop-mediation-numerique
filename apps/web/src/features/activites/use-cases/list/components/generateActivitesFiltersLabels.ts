@@ -9,7 +9,6 @@ import {
 import type { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import { dateAsDay } from '@app/web/utils/dateAsDay'
 import { typeActiviteSlugLabels } from '../../cra/fields/type-activite'
-import { activiteSourceLabels } from '../../source/activiteSource'
 import type { ActivitesFilters } from '../validation/ActivitesFilters'
 
 export type FilterType =

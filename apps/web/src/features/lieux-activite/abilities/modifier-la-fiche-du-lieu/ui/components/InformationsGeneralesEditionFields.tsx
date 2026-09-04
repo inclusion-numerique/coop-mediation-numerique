@@ -21,10 +21,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useSelector } from '@tanstack/react-form'
 import { useState } from 'react'
-import {
-  type InformationsGeneralesFormData,
-  informationsGeneralesFormOptions,
-} from './informationsGeneralesFormData'
+import { informationsGeneralesFormOptions } from './informationsGeneralesFormData'
 
 export const InformationsGeneralesEditionFields = withForm({
   ...informationsGeneralesFormOptions,

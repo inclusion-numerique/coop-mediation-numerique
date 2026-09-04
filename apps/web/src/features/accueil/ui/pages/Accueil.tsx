@@ -10,7 +10,6 @@ import { DernieresActivites } from '@app/web/features/activites/use-cases/list/c
 import { RdvIntegrationErreurAlerte } from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvIntegrationErreurAlerte'
 import RdvsAccueil from '@app/web/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvsAccueil'
 import { contentId } from '@app/web/utils/skipLinks'
-import React from 'react'
 import type { AccueilPageData } from '../../accueil-page-data.query'
 import {
   ActionsRapides,

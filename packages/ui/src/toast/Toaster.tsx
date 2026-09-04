@@ -1,6 +1,5 @@
 'use client'
 
-import React from 'react'
 import { Toaster as BaseToaster } from 'react-hot-toast'
 
 const Toaster = () => (

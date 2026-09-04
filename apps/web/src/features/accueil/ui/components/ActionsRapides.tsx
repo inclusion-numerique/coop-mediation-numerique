@@ -1,7 +1,6 @@
 import { CreateCraModalDefinition } from '@app/web/features/activites/use-cases/cra/components/CreateCraModal/CreateCraModalDefinition'
 import { Button } from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
-import React from 'react'
 
 export const ActionsRapides = () => (
   <>

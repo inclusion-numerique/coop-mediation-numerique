@@ -12,7 +12,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
-import React, {
+import {
   PropsWithChildren,
   useEffect,
   useLayoutEffect,

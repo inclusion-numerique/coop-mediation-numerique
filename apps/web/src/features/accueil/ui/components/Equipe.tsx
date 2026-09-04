@@ -2,7 +2,6 @@ import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
 import MonEquipeHeader from '@app/web/equipe/MonEquipeHeader'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
-import React from 'react'
 
 const EquipeCount = ({
   label,

@@ -8,7 +8,7 @@ import { requiredSiretValidation } from '@app/web/features/structures/siret/sire
 import { trpc } from '@app/web/trpc'
 import { Spinner } from '@app/web/ui/Spinner'
 import Link from 'next/link'
-import React, { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect } from 'react'
 import type {
   DefaultValues,
   FieldPath,

@@ -1,5 +1,3 @@
-import AdministrationCheckSiret from '@app/web/app/administration/lieux-activite/AdministrationCheckSiret'
-import AdministrationSearchStructure from '@app/web/app/administration/lieux-activite/AdministrationSearchStructure'
 import { getStructuresListPageData } from '@app/web/app/administration/lieux-activite/getStructuresListPageData'
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { metadataTitle } from '@app/web/app/metadataTitle'
@@ -10,11 +8,7 @@ import LieuxTable from '@app/web/features/structures/use-cases/list/LieuxTable'
 import { pluriel } from '@app/web/libraries/pluriel'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
-import { prismaClient } from '@app/web/prismaClient'
-import { getServerUrl } from '@app/web/utils/baseUrl'
-import { numberToString } from '@app/web/utils/formatNumber'
 import { contentId } from '@app/web/utils/skipLinks'
-import Link from 'next/link'
 
 export const metadata = {
   title: metadataTitle('Lieux d’activité'),

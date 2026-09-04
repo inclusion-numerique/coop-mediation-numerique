@@ -19,7 +19,6 @@ import { replaceRouteWithoutRerender } from '@app/web/utils/replaceRouteWithoutR
 import { yesNoBooleanOptions } from '@app/web/utils/yesNoBooleanOptions'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
-import React from 'react'
 import { DefaultValues } from 'react-hook-form'
 import { Tag } from '../../../tags/components/TagsComboBox'
 import { clearAdministrativeData } from '../../components/clearAdministrativeData'

@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import React, { ChangeEventHandler } from 'react'
+import { ChangeEventHandler } from 'react'
 
 export type SortSelectOption = {
   label: string

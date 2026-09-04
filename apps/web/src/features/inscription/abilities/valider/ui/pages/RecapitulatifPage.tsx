@@ -12,7 +12,6 @@ import {
   computeUserProfile,
 } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import React from 'react'
 import type { RecapitulatifPageData } from '../../queries/getRecapitulatifPageData'
 import ConseillerNumeriqueRoleNotice from '../components/ConseillerNumeriqueRoleNotice'
 

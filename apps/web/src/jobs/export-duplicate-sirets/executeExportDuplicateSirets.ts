@@ -2,7 +2,6 @@ import { writeFile } from 'node:fs/promises'
 import { fetchSiretApiData } from '@app/web/features/structures/siret/fetchSiretData'
 import { getSiretBearingStructures } from '@app/web/features/structures/siret/siretBearingStructures'
 import {
-  buildAddressFromApiData,
   diceSimilarity,
   parseSireneIdentity,
   throttleApiEntreprise,

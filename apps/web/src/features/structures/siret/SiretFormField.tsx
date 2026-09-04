@@ -4,7 +4,7 @@ import InputFormField from '@app/ui/components/Form/InputFormField'
 import { trpc } from '@app/web/trpc'
 import { Spinner } from '@app/web/ui/Spinner'
 import Link from 'next/link'
-import React, { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect } from 'react'
 import type {
   DefaultValues,
   FieldPath,

@@ -4,7 +4,6 @@ import {
 } from '@app/fixtures/beneficiaires'
 import BeneficiaireConsultationLayout from '@app/web/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireConsultationLayout'
 import type { Meta, StoryObj } from '@storybook/react'
-import React from 'react'
 import { expect, within } from 'storybook/test'
 import ViewBeneficiaireInformationsPage, {
   type BeneficiaireInformationsPageData,

@@ -4,7 +4,7 @@ import { useWatchSubscription } from '@app/ui/hooks/useWatchSubscription'
 import { priseEnChargeSpecifiqueOptions } from '@app/web/features/structures/priseEnChargeSpecifique'
 import { publicSpecifiquementAdresseOptions } from '@app/web/features/structures/publicSpecifiquementAdresse'
 import { TypesDePublicsAccueillisData } from '@app/web/features/structures/TypesDePublicsAccueillisValidation'
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
 export const TypesDePublicsAccueillisFields = <

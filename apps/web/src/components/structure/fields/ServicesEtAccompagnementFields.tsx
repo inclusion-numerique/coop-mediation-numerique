@@ -5,7 +5,6 @@ import { modaliteAccompagnementOptions } from '@app/web/features/structures/moda
 import { ServicesEtAccompagnementData } from '@app/web/features/structures/ServicesEtAccompagnementValidation'
 import { serviceOptions } from '@app/web/features/structures/service'
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import React from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
 export const ServicesEtAccompagnementFields = <
