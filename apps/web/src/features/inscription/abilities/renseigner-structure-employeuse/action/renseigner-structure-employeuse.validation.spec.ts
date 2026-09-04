@@ -26,7 +26,6 @@ describe('RenseignerStructureEmployeuseValidation', () => {
       nom: 'Ma Structure',
       siret: '35600000000048',
       adresse: { commune: 'Paris', codeInsee: '75101' },
-      typologies: [],
     })
   })
 

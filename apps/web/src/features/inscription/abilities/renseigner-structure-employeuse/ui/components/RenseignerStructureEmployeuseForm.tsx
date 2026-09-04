@@ -150,7 +150,7 @@ const RenseignerStructureEmployeuseForm = ({
               adresse: selected.adresseBan.nom,
               commune: selected.adresseBan.commune,
               codePostal: selected.adresseBan.codePostal,
-              typologies: selected.typologies ?? null,
+              typologies: selected.typologie ? [selected.typologie] : null,
               rna: null,
             }}
           />
