@@ -1,4 +1,3 @@
-import { getEmploisCountByCorrelation } from '@app/web/features/lieux-activite/db/employeuse-correlee'
 import { prismaClient } from '@app/web/prismaClient'
 
 /**
@@ -53,13 +52,7 @@ export const inventaireDesLieux = async ({
 
   const totalCount = await prismaClient.lieuInclusion.count({ where })
 
-  // Compteur d'emplois par corrélation nom + code INSEE avec l'employeuse
-  // (structure_administrative) ; pas de lien FK.
-  const emploisParLieu = await getEmploisCountByCorrelation(lieux, {
-    activeOnly: true,
-  })
-
-  return { lieux, totalCount, emploisParLieu }
+  return { lieux, totalCount }
 }
 
 export type LieuInventorie = Awaited<

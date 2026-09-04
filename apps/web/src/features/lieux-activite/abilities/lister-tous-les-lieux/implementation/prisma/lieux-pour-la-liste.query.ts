@@ -1,4 +1,3 @@
-import { getEmploisCountByCorrelation } from '@app/web/features/lieux-activite/db/employeuse-correlee'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
 
@@ -57,15 +56,9 @@ export const lieuxPourLaListe = async ({
     orderBy: [...(orderBy ?? []), { nom: 'asc' }],
   })
 
-  // Compteur d'emplois par corrélation nom + code INSEE avec l'employeuse (pas de lien FK).
-  const emploisCounts = await getEmploisCountByCorrelation(structures, {
-    activeOnly: false,
-  })
-
-  return structures.map((structure) => ({
-    ...structure,
-    emploisCount: emploisCounts.get(structure.id) ?? 0,
-  }))
+  // L'employeuse n'est plus reliée au lieu (ADR-002) : ce compteur n'a plus de
+  // quoi se calculer et vaut zéro pour tout le monde.
+  return structures.map((structure) => ({ ...structure, emploisCount: 0 }))
 }
 
 export type LieuDeLaListe = Awaited<ReturnType<typeof lieuxPourLaListe>>[number]

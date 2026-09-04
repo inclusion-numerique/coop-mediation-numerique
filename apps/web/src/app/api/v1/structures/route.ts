@@ -462,7 +462,7 @@ export const GET = createApiV1Route
       ? new Date(modificationSinceInput)
       : undefined
 
-    const { lieux, totalCount, emploisParLieu } = await inventaireDesLieux({
+    const { lieux, totalCount } = await inventaireDesLieux({
       ids,
       creeDepuis: creationSinceDate,
       modifieDepuis: modificationSinceDate,
@@ -582,7 +582,9 @@ export const GET = createApiV1Route
               vocabulaire.modaliteAccompagnement.table[modaliteAccompagnement],
           ),
           mediateurs_en_activite: s._count.mediateursEnActivite,
-          emplois: emploisParLieu.get(s.id) ?? 0,
+          // L'employeuse ne se relie plus au lieu (ADR-002) : ce compteur n'a
+          // plus de quoi se calculer. Le champ reste au contrat, à zéro.
+          emplois: 0,
         },
       })),
       links: {
