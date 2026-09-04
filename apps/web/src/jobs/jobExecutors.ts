@@ -1,3 +1,8 @@
+import {
+  appliquerLaReconciliation,
+  lireLesLieuxCarto,
+  reconcilierAvecLaCartographie,
+} from '@app/web/features/lieux-activite/abilities/reconcilier-avec-la-cartographie'
 import { prismaClient } from '@app/web/prismaClient'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import * as Sentry from '@sentry/nextjs'
@@ -10,20 +15,23 @@ import { executeNormalizeSirets } from './normalize-sirets/executeNormalizeSiret
 import { output } from './output'
 import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts/executeRemoveOrphanBrevoContacts'
 import { executeSyncRdvspData } from './sync-rdvsp-data/executeSyncRdvspData'
-import { updateStructuresFromEntrepot } from './update-structures-cartographie-nationale/updateStructuresFromEntrepot'
 
 export type JobExecutor<Name extends JobName, Result = unknown> = (
   job: Job & { name: Name; payload: JobPayload<Name> },
 ) => Promise<Result>
 
 const executeUpdateStructuresCartographieNationale = async () => {
-  output.log(
-    `update-structures-carto: lecture des lieux de la cartographie nationale depuis l’Entrepôt`,
-  )
+  const journal = (message: string) =>
+    output.log(`update-structures-carto: ${message}`)
 
-  const execute = updateStructuresFromEntrepot()
+  journal('lecture des lieux de la cartographie depuis l’Entrepôt')
 
-  return await execute()
+  return reconcilierAvecLaCartographie({
+    ports: {
+      lireLesLieuxCarto,
+      appliquerLaReconciliation: appliquerLaReconciliation(journal),
+    },
+  })
 }
 
 // Create an object that for each JobName, MUST has a JobExecutor<Name>

@@ -1,6 +1,7 @@
 import { deleteAll } from '@app/fixtures/seeds'
 import { prismaClient } from '@app/web/prismaClient'
-import { updateStructuresFromEntrepot } from './updateStructuresFromEntrepot'
+import { lieuxCoopReunis } from '../../domain'
+import { appliquerLaReconciliation } from './reconciliation.mutation'
 
 const COMMON_STRUCTURE_FIELDS = {
   adresse: '12 Rue Louise Leclercq',
@@ -58,7 +59,11 @@ const createStructureWithStaff =
     return { mediateurId: mediateur.id }
   }
 
-describe('updateStructuresFromEntrepot', () => {
+/** La commande, avec la lecture de l'Entrepôt remplacée par des lieux donnés. */
+const reconcilier = (lieux: Parameters<typeof lieuxCoopReunis>[0]) =>
+  appliquerLaReconciliation()(lieuxCoopReunis(lieux))
+
+describe('réconciliation avec la cartographie nationale', () => {
   beforeEach(async () => {
     await deleteAll(prismaClient)
   })
@@ -78,15 +83,13 @@ describe('updateStructuresFromEntrepot', () => {
       ],
     })
 
-    await updateStructuresFromEntrepot({
-      cartoLieux: [
-        {
-          structureCartographieNationaleId: `Coop-numérique_${linkedId}`,
-          source: 'Coop numérique',
-          dateMaj: new Date('2026-01-01'),
-        },
-      ],
-    })()
+    await reconcilier([
+      {
+        identifiantCartographie: `Coop-numérique_${linkedId}`,
+        source: 'Coop numérique',
+        dateMaj: new Date('2026-01-01'),
+      },
+    ])
 
     const linked = await prismaClient.lieuInclusion.findUnique({
       where: { id: linkedId },
@@ -109,15 +112,13 @@ describe('updateStructuresFromEntrepot', () => {
     await createStructureWithStaff('survivor@coop.com')({ id: survivorId })
     await createStructureWithStaff('merged@coop.com')({ id: mergedAwayId })
 
-    await updateStructuresFromEntrepot({
-      cartoLieux: [
-        {
-          structureCartographieNationaleId: compositeId,
-          source: 'Coop numérique',
-          dateMaj: new Date('2026-01-01'),
-        },
-      ],
-    })()
+    await reconcilier([
+      {
+        identifiantCartographie: compositeId,
+        source: 'Coop numérique',
+        dateMaj: new Date('2026-01-01'),
+      },
+    ])
 
     const structures = await prismaClient.lieuInclusion.findMany()
     const employes = await prismaClient.employeStructure.findMany()
@@ -141,15 +142,13 @@ describe('updateStructuresFromEntrepot', () => {
       data: { id: structureId, ...COMMON_STRUCTURE_FIELDS },
     })
 
-    await updateStructuresFromEntrepot({
-      cartoLieux: [
-        {
-          structureCartographieNationaleId: `Hinaura_FablabVichy__Coop-numérique_${structureId}`,
-          source: 'Hinaura',
-          dateMaj: new Date('2999-01-01'),
-        },
-      ],
-    })()
+    await reconcilier([
+      {
+        identifiantCartographie: `Hinaura_FablabVichy__Coop-numérique_${structureId}`,
+        source: 'Hinaura',
+        dateMaj: new Date('2999-01-01'),
+      },
+    ])
 
     const structure = await prismaClient.lieuInclusion.findUnique({
       where: { id: structureId },
