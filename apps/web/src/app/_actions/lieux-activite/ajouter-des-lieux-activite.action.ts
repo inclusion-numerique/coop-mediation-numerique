@@ -1,7 +1,10 @@
 'use server'
 
 import { withAuth } from '@app/web/features/authentification'
-import { ajouterDesLieuxActivite } from '@app/web/features/lieux-activite'
+import {
+  ajouterDesLieuxActivite,
+  depuisLePanier,
+} from '@app/web/features/lieux-activite'
 import { AJOUTER_DES_LIEUX_ACTIVITE_ERRORS } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/ajouter-des-lieux-activite.errors'
 import { LieuxAAjouterValidation } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/ajouter-des-lieux-activite.validation'
 import {
@@ -22,14 +25,19 @@ export const ajouterDesLieuxActiviteAction = actionBuilder()
   .use(withInput(LieuxAAjouterValidation))
   .execute(
     fromResult(
-      async ({ user, input }) =>
-        ajouterDesLieuxActivite({
-          demandes: input.lieux,
+      async ({ user, input }) => {
+        const demandes = depuisLePanier(input.lieux)
+
+        if (!demandes.success) return demandes
+
+        return ajouterDesLieuxActivite({
+          demandes: demandes.data,
           userId: UserId(user.id),
           mediateurId:
             user.mediateur == null ? null : MediateurId(user.mediateur.id),
           ports: { lireLieuxDejaRattaches, trouverStructuresCarto },
-        }),
+        })
+      },
       { onError: AJOUTER_DES_LIEUX_ACTIVITE_ERRORS },
     ),
   )

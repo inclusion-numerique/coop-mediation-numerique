@@ -75,52 +75,55 @@ const dejaAjoute = (
 
 /**
  * Traduit un résultat de recherche en lieu à rattacher, selon sa provenance :
- * - coop : le lieu existe déjà, on le rattache par son id (aucun doublon créé) ;
- * - cartographie : la coop ne le connaît pas encore, on transmet son id carto —
- *   la persistance le matérialisera avec toutes les informations de la carto ;
- * - annuaire des entreprises : aucune coordonnée n'est fournie, le géocodage est
- *   donc obligatoire ; sans lui le lieu n'est pas exploitable (`null`). Son SIRET
- *   voyage avec lui — c'est la corrélation la plus sûre côté persistance, et il
- *   n'est renseigné que là : le `pivot` de la carto peut être un RNA.
+ * - coop : le lieu existe déjà, on le rattache par son id (aucun doublon créé),
+ *   et son adresse ne sera pas réécrite ;
+ * - cartographie ou annuaire des entreprises : la coop ne le connaît pas, il
+ *   sera donc CRÉÉ — et l'on ne crée plus de lieu dont l'adresse n'a pas été
+ *   reconnue par la Base Adresse Nationale. La cartographie ne porte pas
+ *   d'identifiant BAN et l'annuaire pas de coordonnées : les deux passent par le
+ *   géocodage, faute de quoi le lieu n'est pas exploitable (`null`) et l'écran
+ *   renvoie l'utilisateur vers la saisie manuelle.
+ *
+ * Le SIRET de l'annuaire voyage avec le lieu — c'est la corrélation la plus
+ * sûre côté persistance, et il n'est renseigné que là : le `pivot` de la carto
+ * peut être un RNA.
  */
 const lieuDepuisResultat = async (
   item: LieuActiviteSearchResult,
 ): Promise<LieuActiviteInput | null> => {
-  const identiteAffichee = {
-    nom: item.nom,
-    adresse: item.adresse,
-    commune: item.commune,
-    codePostal: item.codePostal,
-    codeInsee: item.codeInsee,
-  }
-
   const lieuCoop = item.structures.at(0)
-  if (lieuCoop) return { ...identiteAffichee, id: lieuCoop.id }
 
-  if (item.source === 'cartographie_nationale')
+  if (lieuCoop)
     return {
-      ...identiteAffichee,
-      structureCartographieNationaleId: item.id,
-      latitude: item.latitude,
-      longitude: item.longitude,
+      id: lieuCoop.id,
+      nom: item.nom,
+      adresse: item.adresse,
+      commune: item.commune,
+      codePostal: item.codePostal,
+      codeInsee: item.codeInsee,
     }
 
   const adresseBan = await geocodeStructureAdresse(item)
-  return adresseBan
+
+  if (!adresseBan) return null
+
+  const adresseValidee = {
+    adresse: adresseBan.nom,
+    commune: adresseBan.commune,
+    codePostal: adresseBan.codePostal,
+    codeInsee: adresseBan.codeInsee,
+    banId: adresseBan.id,
+    latitude: adresseBan.latitude,
+    longitude: adresseBan.longitude,
+  }
+
+  return item.source === 'cartographie_nationale'
     ? {
         nom: item.nom,
-        // Le SIRET de l'annuaire corrèle le lieu à celui que la coop connaît
-        // peut-être déjà, et reste porté par le lieu s'il faut le créer.
-        siret: item.pivot ?? null,
-        adresse: adresseBan.nom,
-        commune: adresseBan.commune,
-        codePostal: adresseBan.codePostal,
-        codeInsee: adresseBan.codeInsee,
-        banId: adresseBan.id,
-        latitude: adresseBan.latitude,
-        longitude: adresseBan.longitude,
+        structureCartographieNationaleId: item.id,
+        ...adresseValidee,
       }
-    : null
+    : { nom: item.nom, siret: item.pivot ?? null, ...adresseValidee }
 }
 
 const erreurEnregistrement = () =>

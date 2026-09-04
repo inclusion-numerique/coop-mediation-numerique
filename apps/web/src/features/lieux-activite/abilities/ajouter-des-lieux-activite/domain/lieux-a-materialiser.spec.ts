@@ -1,11 +1,31 @@
-import type { LieuDejaRattache, LieuDemande } from './lieu-demande'
+import type { LieuACreer, LieuDejaRattache, LieuExistant } from './lieu-demande'
 import { lieuxAMaterialiser } from './lieux-a-materialiser'
 
-const demande = (partie: Partial<LieuDemande>): LieuDemande => ({
+/**
+ * Une demande porte, ou bien l'id du lieu que la coop connaît déjà, ou bien une
+ * adresse validée par la BAN : un lieu sans identité interne sera CRÉÉ, et l'on
+ * ne crée plus de lieu qu'on ne saurait situer.
+ */
+const identite = {
   nom: 'Maison France Services',
   adresse: '12 rue de la Paix',
   commune: 'Reims',
   codePostal: '51100',
+} as const
+
+const connu = (
+  partie: Partial<LieuExistant> & { id: string },
+): LieuExistant => ({
+  ...identite,
+  ...partie,
+})
+
+const aCreer = (partie: Partial<LieuACreer> = {}): LieuACreer => ({
+  ...identite,
+  codeInsee: '51454',
+  banId: '51454_7160_00012',
+  latitude: 49.25,
+  longitude: 4.03,
   ...partie,
 })
 
@@ -17,8 +37,8 @@ const rattache = (partie: Partial<LieuDejaRattache>): LieuDejaRattache => ({
 
 describe("les lieux qu'il reste à matérialiser", () => {
   it('retient un lieu auquel le médiateur n’exerce pas encore', () => {
-    expect(lieuxAMaterialiser([], [demande({ id: 'lieu-a' })])).toEqual([
-      demande({ id: 'lieu-a' }),
+    expect(lieuxAMaterialiser([], [connu({ id: 'lieu-a' })])).toEqual([
+      connu({ id: 'lieu-a' }),
     ])
   })
 
@@ -27,7 +47,7 @@ describe("les lieux qu'il reste à matérialiser", () => {
       expect(
         lieuxAMaterialiser(
           [rattache({ id: 'lieu-a' })],
-          [demande({ id: 'lieu-a' })],
+          [connu({ id: 'lieu-a' })],
         ),
       ).toEqual([])
     })
@@ -38,7 +58,7 @@ describe("les lieux qu'il reste à matérialiser", () => {
       expect(
         lieuxAMaterialiser(
           [rattache({ id: 'lieu-a', structureCartographieNationaleId: 'c-1' })],
-          [demande({ structureCartographieNationaleId: 'c-1' })],
+          [aCreer({ structureCartographieNationaleId: 'c-1' })],
         ),
       ).toEqual([])
     })
@@ -47,7 +67,7 @@ describe("les lieux qu'il reste à matérialiser", () => {
       expect(
         lieuxAMaterialiser(
           [rattache({ id: 'lieu-a', structureCartographieNationaleId: 'c-1' })],
-          [demande({ id: 'autre', structureCartographieNationaleId: 'c-1' })],
+          [connu({ id: 'autre', structureCartographieNationaleId: 'c-1' })],
         ),
       ).toEqual([])
     })
@@ -58,9 +78,9 @@ describe("les lieux qu'il reste à matérialiser", () => {
       expect(
         lieuxAMaterialiser(
           [],
-          [demande({ id: 'lieu-a' }), demande({ id: 'lieu-a' })],
+          [connu({ id: 'lieu-a' }), connu({ id: 'lieu-a' })],
         ),
-      ).toEqual([demande({ id: 'lieu-a' })])
+      ).toEqual([connu({ id: 'lieu-a' })])
     })
 
     it('par son identité de cartographie', () => {
@@ -68,11 +88,11 @@ describe("les lieux qu'il reste à matérialiser", () => {
         lieuxAMaterialiser(
           [],
           [
-            demande({ structureCartographieNationaleId: 'c-1' }),
-            demande({ structureCartographieNationaleId: 'c-1' }),
+            aCreer({ structureCartographieNationaleId: 'c-1' }),
+            aCreer({ structureCartographieNationaleId: 'c-1' }),
           ],
         ),
-      ).toEqual([demande({ structureCartographieNationaleId: 'c-1' })])
+      ).toEqual([aCreer({ structureCartographieNationaleId: 'c-1' })])
     })
 
     // Rien ne les identifie encore : c'est la dénomination qui départage, la
@@ -82,16 +102,16 @@ describe("les lieux qu'il reste à matérialiser", () => {
         lieuxAMaterialiser(
           [],
           [
-            demande({ nom: 'Tiers-lieu du Port' }),
-            demande({ nom: 'Tiers-lieu du Port' }),
+            aCreer({ nom: 'Tiers-lieu du Port' }),
+            aCreer({ nom: 'Tiers-lieu du Port' }),
           ],
         ),
-      ).toEqual([demande({ nom: 'Tiers-lieu du Port' })])
+      ).toEqual([aCreer({ nom: 'Tiers-lieu du Port' })])
     })
 
     it('mais retient deux lieux distincts portant le même nom sous des identités différentes', () => {
-      const premier = demande({ id: 'lieu-a', nom: 'Médiathèque' })
-      const second = demande({ id: 'lieu-b', nom: 'Médiathèque' })
+      const premier = connu({ id: 'lieu-a', nom: 'Médiathèque' })
+      const second = connu({ id: 'lieu-b', nom: 'Médiathèque' })
 
       expect(lieuxAMaterialiser([], [premier, second])).toEqual([
         premier,
@@ -102,7 +122,7 @@ describe("les lieux qu'il reste à matérialiser", () => {
 
   it('laisse passer un lieu sans aucune identité, que la persistance corrélera', () => {
     expect(
-      lieuxAMaterialiser([rattache({ id: 'lieu-a' })], [demande({})]),
-    ).toEqual([demande({})])
+      lieuxAMaterialiser([rattache({ id: 'lieu-a' })], [aCreer()]),
+    ).toEqual([aCreer()])
   })
 })

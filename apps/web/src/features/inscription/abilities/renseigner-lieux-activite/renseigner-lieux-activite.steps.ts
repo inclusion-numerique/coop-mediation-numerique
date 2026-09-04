@@ -59,12 +59,24 @@ let ancienLieuId = ''
  */
 const cartoIdDesynchronise = () => `Coop-numérique_${v4()}`
 
-/** Même adresse que `seedLieuActivite` : c'est elle qui porte la corrélation. */
+/**
+ * Même adresse que `seedLieuActivite` : c'est elle qui porte la corrélation.
+ *
+ * Elle porte identifiant BAN et coordonnées, comme toute adresse d'un lieu à
+ * créer : le formulaire la géocode avant de l'ajouter, et l'ability refuse
+ * désormais de créer un lieu qu'elle ne saurait situer.
+ */
 const adresseDuLieuDisponible = {
   adresse: '1 rue de la Paix',
   commune: 'Paris',
   codePostal: '75001',
   codeInsee: '75101',
+  banId: '75101_7160_00001',
+  // Mêmes coordonnées que `saisieDeCreation` : la sonde de corrélation pèse la
+  // distance, et un lieu semé à 900 m de celui qu'on saisit ne serait plus le
+  // même endroit.
+  latitude: 48.86,
+  longitude: 2.33,
 }
 
 /**
@@ -320,6 +332,7 @@ When('je renseigne un nouveau lieu nommé {string}', async (nom: string) => {
           commune: 'Lyon',
           codePostal: '69000',
           codeInsee: '69123',
+          banId: '69123_5678_00012',
           latitude: 45.75,
           longitude: 4.85,
         },
@@ -345,6 +358,7 @@ When(
             commune: 'Paris',
             codePostal: '75003',
             codeInsee: '75103',
+            banId: '75103_1234_00003',
             latitude: 48.86,
             longitude: 2.36,
           },
@@ -416,6 +430,7 @@ When(
       codePostal: '69000',
       codeInsee: '69123',
       latitude: 45.75,
+      banId: '69123_5678_00012',
       longitude: 4.85,
     }
 
@@ -563,8 +578,8 @@ When(
           {
             siret: siretDuLieuDisponible,
             nom: nomDuNouveauLieu,
-            banId: 'ban-voie-de-test',
             ...adresseDuLieuDisponible,
+            banId: 'ban-voie-de-test',
           },
         ],
       },

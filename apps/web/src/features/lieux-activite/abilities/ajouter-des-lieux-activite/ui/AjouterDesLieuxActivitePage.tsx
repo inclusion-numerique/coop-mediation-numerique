@@ -10,6 +10,7 @@ import {
   type CreerLieuActiviteFormData,
   toCreerLieuData,
 } from '@app/web/features/lieux-activite/components/creer/creerLieuActiviteFormData'
+import { adresseNonVerifiableMessage } from '@app/web/features/structures/siret/geocodeStructureAdresse'
 import type { LieuActiviteSearchResult } from '@app/web/structure/searchLieuActiviteCombined'
 import { getDepartementCodeFromCodeInsee } from '@app/web/utils/getDepartementFromCodeInsee'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
@@ -93,10 +94,22 @@ export const AjouterDesLieuxActivitePage = ({
     ]
   }
 
-  const selectionner = (identifiant: string | null) => {
+  const selectionner = async (identifiant: string | null) => {
     const trouve = identifiant ? resultats.current.get(identifiant) : undefined
 
-    if (trouve) ajouterAuPanier(auPanier(trouve))
+    if (!trouve) return
+
+    const lieu = await auPanier(trouve)
+
+    // L'adresse de ce lieu n'existe pas dans la BAN : le créer écrirait une
+    // adresse que personne n'a validée. On renvoie vers la saisie manuelle,
+    // seule à pouvoir faire choisir une adresse reconnue.
+    if (lieu == null) {
+      erreur(adresseNonVerifiableMessage(trouve))
+      return
+    }
+
+    ajouterAuPanier(lieu)
   }
 
   const retirer = (lieu: LieuAuPanier) =>

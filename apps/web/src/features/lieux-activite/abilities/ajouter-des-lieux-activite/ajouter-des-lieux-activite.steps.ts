@@ -1,6 +1,10 @@
 import assert from 'node:assert'
 import { ajouterDesLieuxActivite } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite'
-import type { LieuDemande } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain'
+import type {
+  LieuACreer,
+  LieuDemande,
+  LieuExistant,
+} from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain'
 import { lireLieuxDejaRattaches } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation'
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
 import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
@@ -31,12 +35,33 @@ const ajouter = async (
   })
 }
 
-const lieuSaisi = (partie: Partial<LieuDemande> = {}): LieuDemande => ({
+/**
+ * Un lieu à créer porte toujours une adresse validée par la BAN : c'est la
+ * condition pour qu'il soit créé du tout. Les scénarios qui mettent en scène un
+ * lieu déjà connu passent son `id` et n'ont pas d'adresse à valider.
+ */
+const lieuSaisi = (partie: Partial<LieuACreer> = {}): LieuACreer => ({
   nom: 'Tiers-lieu du Port',
   adresse: '12 quai du Port',
   commune: 'Rochefort',
   codePostal: '17300',
   codeInsee: '17299',
+  banId: '17299_0123_00012',
+  latitude: 45.94,
+  longitude: -0.96,
+  ...partie,
+})
+
+const lieuConnu = (
+  id: string,
+  partie: Partial<LieuExistant> = {},
+): LieuExistant => ({
+  nom: 'Tiers-lieu du Port',
+  adresse: '12 quai du Port',
+  commune: 'Rochefort',
+  codePostal: '17300',
+  codeInsee: '17299',
+  id,
   ...partie,
 })
 
@@ -67,14 +92,13 @@ Given('un lieu référencé dans la coop', async () => {
 
 When('ce médiateur ajoute ce lieu référencé', async () => {
   await ajouter(
-    [lieuSaisi({ id: dernier.lieuReference, nom: 'Médiathèque du Centre' })],
+    [lieuConnu(dernier.lieuReference ?? '', { nom: 'Médiathèque du Centre' })],
     lieuxSemes().mediateurId,
   )
 })
 
 When('ce médiateur ajoute deux fois ce lieu référencé', async () => {
-  const demande = lieuSaisi({
-    id: dernier.lieuReference,
+  const demande = lieuConnu(dernier.lieuReference ?? '', {
     nom: 'Médiathèque du Centre',
   })
 
@@ -87,7 +111,7 @@ When('ce médiateur ajoute un lieu saisi « Tiers-lieu du Port »', async () => 
 
 When('ce médiateur ajoute un lieu où il exerce déjà', async () => {
   await ajouter(
-    [lieuSaisi({ id: lieuxSemes().lieuIds[0], nom: 'Espace numérique 1' })],
+    [lieuConnu(lieuxSemes().lieuIds[0] ?? '', { nom: 'Espace numérique 1' })],
     lieuxSemes().mediateurId,
   )
 })

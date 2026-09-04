@@ -6,6 +6,11 @@ import { z } from 'zod'
  * L'adresse, la commune et le code postal sont obligatoires là où l'ancienne
  * validation les laissait facultatifs : la matérialisation en a besoin, et
  * s'en passer est ce qui a produit les lieux sans adresse valide qu'on traîne.
+ *
+ * Le schéma ne dit que la FORME. Que l'adresse ait été validée par la Base
+ * Adresse Nationale est une règle, pas une contrainte de champ : elle ne
+ * s'applique qu'aux lieux qu'il faudra créer, et elle a son mot à dire à
+ * l'utilisateur. Elle vit donc dans `depuis-le-panier`.
  */
 const LieuAAjouterValidation = z.object({
   id: z.string().uuid().nullish(),

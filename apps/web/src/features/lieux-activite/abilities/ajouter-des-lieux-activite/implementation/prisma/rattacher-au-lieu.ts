@@ -1,15 +1,46 @@
 import type { Prisma } from '@prisma/client'
 import { v4 } from 'uuid'
 import { lieuCorrele, preparerCorrele } from '../../../../db/lieu-correle'
-import type { CartoStructure, LieuDemande } from '../../domain'
+import {
+  type AdresseValidee,
+  type CartoStructure,
+  estExistant,
+  type LieuACreer,
+  type LieuDemande,
+} from '../../domain'
 import { lieuDepuisCarto } from './lieu-depuis-carto'
 
 /**
- * Matérialise un nouveau lieu depuis son nom et son adresse géocodée — mêmes
+ * Les colonnes d'adresse, telles que la Base Adresse Nationale les a validées.
+ *
+ * Elles priment sur toute autre source — y compris la cartographie nationale,
+ * qui ne porte pas d'identifiant BAN : c'est le seul moyen de distinguer une
+ * adresse reconnue d'une adresse saisie à l'estime.
+ */
+const adresseValidee = ({
+  adresse,
+  commune,
+  codePostal,
+  codeInsee,
+  banId,
+  latitude,
+  longitude,
+}: AdresseValidee) => ({
+  adresse,
+  commune,
+  codePostal,
+  codeInsee,
+  banId,
+  latitude,
+  longitude,
+})
+
+/**
+ * Matérialise un nouveau lieu depuis son nom et son adresse validée — mêmes
  * colonnes que le mapper canonique des informations générales d'un lieu. Le
  * reste des informations sera renseigné plus tard dans la gestion des lieux.
  */
-const lieuDepuisAdresse = (lieu: LieuDemande) => ({
+const lieuDepuisAdresse = (lieu: LieuACreer) => ({
   id: v4(),
   nom: lieu.nom,
   siret: lieu.siret ?? null,
@@ -19,13 +50,7 @@ const lieuDepuisAdresse = (lieu: LieuDemande) => ({
   // L'horodater le dirait vérifié — et `normalize-sirets`, qui saute les SIRET
   // récemment synchronisés, s'abstiendrait justement de le vérifier. On le
   // stocke donc non vérifié ; le job lui donnera sa valeur de preuve.
-  adresse: lieu.adresse,
-  commune: lieu.commune,
-  codePostal: lieu.codePostal,
-  codeInsee: lieu.codeInsee,
-  banId: lieu.banId ?? null,
-  latitude: lieu.latitude,
-  longitude: lieu.longitude,
+  ...adresseValidee(lieu),
 })
 
 /**
@@ -77,46 +102,58 @@ const lieuARattacher = async (
 ): Promise<{ readonly id: string }> => {
   // L'id vient de l'écran, donc du client : le prendre au mot rattacherait le
   // médiateur à n'importe quel lieu par son uuid, y compris un lieu supprimé —
-  // exactement ce que la branche carto ci-dessous refuse. Un id qui ne désigne
-  // plus un lieu vivant retombe sur la matérialisation ordinaire, où la sonde
-  // décide seule s'il y a lieu de relever le lieu retiré.
-  const designe =
-    lieu.id === null || lieu.id === undefined
-      ? null
-      : await transaction.lieuInclusion.findFirst({
-          where: { id: lieu.id, suppression: null },
-          select: { id: true },
-        })
+  // exactement ce que la branche carto ci-dessous refuse.
+  const designe = estExistant(lieu)
+    ? await transaction.lieuInclusion.findFirst({
+        where: { id: lieu.id, suppression: null },
+        select: { id: true },
+      })
+    : null
 
   if (designe) return designe
 
-  if (!lieu.structureCartographieNationaleId)
-    return materialiser(transaction, lieuDepuisAdresse(lieu))
-
-  const porteurDeLaCarto = await transaction.lieuInclusion.findFirst({
-    where: {
-      structureCartographieNationaleId: lieu.structureCartographieNationaleId,
-      // Un lieu supprimé n'est pas un rattachement possible : on laisse la
-      // sonde décider s'il doit être relevé, et à quelles conditions. Sans ce
-      // filtre, cette branche rattacherait le médiateur à un lieu retiré, en
-      // court-circuitant les règles de modération.
-      suppression: null,
-    },
-    // La colonne n'est qu'indexée, pas unique : à défaut d'unicité, on rattache
-    // au plus ancien plutôt qu'à une ligne arbitraire.
-    orderBy: { creation: 'asc' },
-    select: { id: true },
-  })
+  const porteurDeLaCarto = lieu.structureCartographieNationaleId
+    ? await transaction.lieuInclusion.findFirst({
+        where: {
+          structureCartographieNationaleId:
+            lieu.structureCartographieNationaleId,
+          // Un lieu supprimé n'est pas un rattachement possible : on laisse la
+          // sonde décider s'il doit être relevé, et à quelles conditions. Sans
+          // ce filtre, cette branche rattacherait le médiateur à un lieu
+          // retiré, en court-circuitant les règles de modération.
+          suppression: null,
+        },
+        // La colonne n'est qu'indexée, pas unique : à défaut d'unicité, on
+        // rattache au plus ancien plutôt qu'à une ligne arbitraire.
+        orderBy: { creation: 'asc' },
+        select: { id: true },
+      })
+    : null
 
   if (porteurDeLaCarto) return porteurDeLaCarto
 
-  const cartoStructure = structuresCartoParId.get(
-    lieu.structureCartographieNationaleId,
-  )
+  // Reste à créer. Un lieu désigné par un id qui ne répond plus n'a pas
+  // d'adresse validée à offrir — l'écran ne la lui demande pas, puisqu'il
+  // croyait le lieu connu. Créer sur cette base écrirait une adresse dont
+  // personne n'a vérifié qu'elle désigne un endroit : on préfère échouer, et
+  // que l'utilisateur reprenne sa recherche.
+  if (estExistant(lieu))
+    throw new Error(
+      `Le lieu ${lieu.id} n'existe plus et ne peut pas être recréé : son adresse n'a pas été validée`,
+    )
 
+  const cartoStructure = lieu.structureCartographieNationaleId
+    ? structuresCartoParId.get(lieu.structureCartographieNationaleId)
+    : undefined
+
+  // La cartographie donne la fiche — services, horaires, présentation — mais
+  // jamais l'adresse : elle n'a pas d'identifiant BAN à opposer à celui que
+  // l'écran a fait valider.
   return materialiser(
     transaction,
-    cartoStructure ? lieuDepuisCarto(cartoStructure) : lieuDepuisAdresse(lieu),
+    cartoStructure
+      ? { ...lieuDepuisCarto(cartoStructure), ...adresseValidee(lieu) }
+      : lieuDepuisAdresse(lieu),
   )
 }
 

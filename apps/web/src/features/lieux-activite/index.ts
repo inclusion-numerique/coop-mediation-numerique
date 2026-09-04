@@ -8,9 +8,13 @@
  */
 
 export {
+  type AdresseValidee,
   ajouterDesLieuxActivite,
   type CartoStructure,
+  depuisLePanier,
+  type LieuACreer,
   type LieuDemande,
+  type LieuExistant,
   lireLieuxDejaRattaches,
   rattacherAuLieu,
   trouverStructuresCarto,
