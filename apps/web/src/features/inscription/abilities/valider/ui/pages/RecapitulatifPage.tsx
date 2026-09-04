@@ -7,7 +7,7 @@ import StructureAdministrativeCard from '@app/web/features/employeuse/ui/Structu
 import ValiderInscriptionForm from '@app/web/features/inscription/abilities/valider/ui/components/ValiderInscriptionForm'
 import InscriptionCard from '@app/web/features/inscription/components/InscriptionCard'
 import InscriptionInvalidInformationContactSupportLink from '@app/web/features/inscription/components/InscriptionInvalidInformationContactSupportLink'
-import { LieuActiviteCard } from '@app/web/features/lieux-activite/ui'
+import { SaisieDuLieuCard } from '@app/web/features/lieux-activite/ui'
 import {
   allProfileInscriptionLabels,
   computeUserProfile,
@@ -163,7 +163,7 @@ const RecapitulatifPage = ({
         {/* Les lieux sont affichés dans l'ordre inverse (le plus récent en haut) dans la formulaire lieux activité, on reproduit cela pour */}
         {/* que l'affichage soit cohérent */}
         {lieuxActivite.toReversed().map((lieu) => (
-          <LieuActiviteCard key={lieu.id} lieu={lieu} className="fr-mt-4v" />
+          <SaisieDuLieuCard key={lieu.id} lieu={lieu} className="fr-mt-4v" />
         ))}
       </>
     )}

@@ -6,14 +6,17 @@ import classNames from 'classnames'
 import type { ReactNode } from 'react'
 
 /**
- * Ce que la carte montre d'un lieu d'activité : comment il s'appelle, où il
- * est, ce qu'il accueille, sous quel numéro il est immatriculé.
+ * Ce que la carte montre d'un lieu qu'on est en train de retenir : comment il
+ * s'appelle, où il est, ce qu'il accueille, sous quel numéro il est
+ * immatriculé. De quoi le reconnaître, et rien de plus — cette carte décrit un
+ * endroit, pas un dossier chez nous : elle sert aussi à montrer un lieu trouvé
+ * dans la cartographie nationale, que la coop ne connaît pas encore.
  *
  * Tout y est facultatif sauf le nom. Un lieu saisi à la main n'a ni SIRET ni
  * RNA — c'est même la raison d'être de la saisie : décrire un endroit que les
  * annuaires ignorent.
  */
-export type LieuActiviteAffiche = {
+export type LieuSaisi = {
   readonly nom: string
   readonly adresse?: string | null
   readonly commune?: string | null
@@ -37,14 +40,14 @@ const libelles = (typologies: readonly string[]): string =>
     )
     .join(', ')
 
-export const LieuActiviteCard = ({
+export const SaisieDuLieuCard = ({
   lieu: { nom, adresse, rna, siret, codePostal, commune, typologies },
   topRight,
   infoLinkHref,
   className,
 }: {
   className?: string
-  lieu: LieuActiviteAffiche
+  lieu: LieuSaisi
   topRight?: ReactNode
   infoLinkHref?: string
 }) => {
@@ -125,4 +128,4 @@ export const LieuActiviteCard = ({
   )
 }
 
-export default LieuActiviteCard
+export default SaisieDuLieuCard

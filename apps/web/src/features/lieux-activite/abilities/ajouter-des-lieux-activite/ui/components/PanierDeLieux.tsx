@@ -1,4 +1,4 @@
-import LieuActiviteCard from '@app/web/features/lieux-activite/ui/LieuActiviteCard'
+import SaisieDuLieuCard from '@app/web/features/lieux-activite/ui/SaisieDuLieuCard'
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { LieuAuPanier } from '../panier'
 
@@ -19,7 +19,7 @@ export const PanierDeLieux = ({
 }) => (
   <>
     {lieux.toReversed().map((lieu, rang) => (
-      <LieuActiviteCard
+      <SaisieDuLieuCard
         key={lieu.id ?? lieu.structureCartographieNationaleId ?? lieu.nom}
         lieu={lieu}
         className="fr-mb-4v"

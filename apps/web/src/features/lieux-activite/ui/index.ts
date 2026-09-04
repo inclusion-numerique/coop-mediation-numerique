@@ -29,10 +29,10 @@ export {
   toCreerLieuData,
 } from '../formulaire/creerLieuActiviteFormData'
 export { DisplayOnCartography } from './DisplayOnCartography'
-export {
-  type LieuActiviteAffiche,
-  LieuActiviteCard,
-} from './LieuActiviteCard'
 export { default as LieuActiviteSideMenu } from './LieuActiviteSideMenu'
+export {
+  type LieuSaisi,
+  SaisieDuLieuCard,
+} from './SaisieDuLieuCard'
 export { LieuAccueillantPublicTitle } from './titles/LieuAccueillantPublicTitle'
 export { ServiceInclusionNumeriqueTitle } from './titles/ServiceInclusionNumeriqueTitle'
