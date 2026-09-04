@@ -1,10 +1,10 @@
-import {
-  appendComment,
-  emptyOpeningHours,
-} from '@app/web/components/structure/fields/openingHoursHelpers'
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite/formulaire/CreerLieuActiviteValidation'
 import type { OpeningHoursData } from '@app/web/features/lieux-activite/formulaire/OpeningHoursValidation'
+import {
+  appendComment,
+  emptyOpeningHours,
+} from '@app/web/opening-hours/openingHoursHelpers'
 import {
   fromTimetableOpeningHours,
   type Schedule,

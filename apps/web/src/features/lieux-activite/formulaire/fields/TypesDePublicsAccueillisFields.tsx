@@ -1,8 +1,9 @@
+'use client'
+
 import {
   priseEnChargeSpecifiqueOptions,
   publicSpecifiquementAdresseOptions,
 } from '@app/web/features/lieux-activite/vocabulaire/options'
-;('use client')
 
 import { withForm } from '@app/web/libs/form/use-app-form'
 import type { PublicSpecifiquementAdresse } from '@prisma/client'

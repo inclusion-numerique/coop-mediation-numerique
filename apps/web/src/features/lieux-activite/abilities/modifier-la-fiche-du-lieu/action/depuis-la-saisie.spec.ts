@@ -1,4 +1,4 @@
-import { emptyOpeningHours } from '@app/web/components/structure/fields/openingHoursHelpers'
+import { emptyOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import {
   Itinerance,
   ModaliteAcces,

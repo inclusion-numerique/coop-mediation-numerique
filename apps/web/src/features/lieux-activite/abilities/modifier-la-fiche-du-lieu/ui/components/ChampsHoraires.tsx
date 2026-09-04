@@ -1,11 +1,11 @@
 'use client'
 
+import { withForm } from '@app/web/libs/form/use-app-form'
 import {
   daysTexts,
   type Period,
   periodsTexts,
-} from '@app/web/components/structure/fields/openingHoursHelpers'
-import { withForm } from '@app/web/libs/form/use-app-form'
+} from '@app/web/opening-hours/openingHoursHelpers'
 import ToggleSwitch from '@codegouvfr/react-dsfr/ToggleSwitch'
 import {
   OSM_DAYS_OF_WEEK,

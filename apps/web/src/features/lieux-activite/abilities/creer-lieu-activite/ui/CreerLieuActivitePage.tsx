@@ -5,11 +5,11 @@ import { creerUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/
 import { getDepartementCodeFromCodeInsee } from '@app/web/utils/getDepartementFromCodeInsee'
 import { useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'
-import { CreerLieuActivitePageContent } from '../../../components/creer/CreerLieuActivitePageContent'
+import { CreerLieuActivitePageContent } from '../../../formulaire/CreerLieuActivitePageContent'
 import {
   type CreerLieuActiviteFormData,
   toCreerLieuData,
-} from '../../../components/creer/creerLieuActiviteFormData'
+} from '../../../formulaire/creerLieuActiviteFormData'
 
 const erreurEnregistrement = () =>
   createToast({

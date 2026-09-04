@@ -6,11 +6,11 @@ import { ajouterDesLieuxActiviteAction } from '@app/web/app/_actions/lieux-activ
 import { creerUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/creer-lieu-activite.action'
 import { adresseNonVerifiableMessage } from '@app/web/external-apis/ban/geocodeStructureAdresse'
 import type { LieuActiviteSearchResult } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/searchLieuActiviteCombined'
-import CreerLieuActiviteForm from '@app/web/features/lieux-activite/components/creer/CreerLieuActiviteForm'
+import CreerLieuActiviteForm from '@app/web/features/lieux-activite/formulaire/CreerLieuActiviteForm'
 import {
   type CreerLieuActiviteFormData,
   toCreerLieuData,
-} from '@app/web/features/lieux-activite/components/creer/creerLieuActiviteFormData'
+} from '@app/web/features/lieux-activite/formulaire/creerLieuActiviteFormData'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useHydrated } from '@app/web/libs/form/use-hydrated'

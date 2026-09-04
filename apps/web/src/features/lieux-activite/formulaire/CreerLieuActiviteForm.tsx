@@ -1,9 +1,9 @@
 'use client'
 
 import { CompleteFields } from '@app/web/components/form/CompleteFields'
-import { DisplayOnCartography } from '@app/web/components/structure/DisplayOnCartography'
-import { LieuAccueillantPublicTitle } from '@app/web/components/structure/titles/LieuAccueillantPublicTitle'
-import { ServiceInclusionNumeriqueTitle } from '@app/web/components/structure/titles/ServiceInclusionNumeriqueTitle'
+import { DisplayOnCartography } from '@app/web/features/lieux-activite/components/DisplayOnCartography'
+import { LieuAccueillantPublicTitle } from '@app/web/features/lieux-activite/components/titles/LieuAccueillantPublicTitle'
+import { ServiceInclusionNumeriqueTitle } from '@app/web/features/lieux-activite/components/titles/ServiceInclusionNumeriqueTitle'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useHydrated } from '@app/web/libs/form/use-hydrated'

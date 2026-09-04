@@ -3,10 +3,8 @@
 import IconInSquare from '@app/web/components/IconInSquare'
 import LieuActiviteSideMenu from '@app/web/features/lieux-activite/components/LieuActiviteSideMenu'
 import Button from '@codegouvfr/react-dsfr/Button'
-import classNames from 'classnames'
 import { type ReactNode, useState } from 'react'
 import CreerLieuActiviteForm from './CreerLieuActiviteForm'
-import styles from './CreerLieuActivitePageContent.module.css'
 import type { CreerLieuActiviteFormData } from './creerLieuActiviteFormData'
 
 /**
@@ -31,24 +29,11 @@ export const CreerLieuActivitePageContent = ({
   const [showSideMenu, setShowSideMenu] = useState(false)
 
   return (
-    <div
-      className={classNames('fr-container', styles.container)}
-      style={{ flex: 1 }}
-    >
-      <div
-        className={classNames(
-          'fr-hidden fr-unhidden-lg fr-mt-30v fr-pt-23v',
-          styles.sideNavContainer,
-        )}
-      >
+    <div className="fr-container fr-layout--side-menu" style={{ flex: 1 }}>
+      <div className="fr-hidden fr-unhidden-lg fr-mt-30v fr-pt-23v fr-layout__side-menu">
         {showSideMenu && <LieuActiviteSideMenu />}
       </div>
-      <div
-        className={classNames(
-          'fr-container fr-container--narrow fr-ml-0 fr-mb-30v',
-          styles.pageContainer,
-        )}
-      >
+      <div className="fr-container fr-container--narrow fr-ml-0 fr-mb-30v fr-layout__side-menu-content">
         {contentTop}
         <Button
           priority="tertiary no outline"

@@ -1,4 +1,4 @@
-import { safeToTimetableOpeningHours } from '@app/web/components/structure/fields/openingHoursHelpers'
+import { safeToTimetableOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import { NullableTime } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import classNames from 'classnames'
 

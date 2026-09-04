@@ -1,5 +1,5 @@
-import { appendComment } from '@app/web/components/structure/fields/openingHoursHelpers'
 import type { CreerLieuActiviteData } from '@app/web/features/lieux-activite/formulaire/CreerLieuActiviteValidation'
+import { appendComment } from '@app/web/opening-hours/openingHoursHelpers'
 import { Contact, Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { v4 } from 'uuid'
 import { BanId } from '../../../domain/ban-id'

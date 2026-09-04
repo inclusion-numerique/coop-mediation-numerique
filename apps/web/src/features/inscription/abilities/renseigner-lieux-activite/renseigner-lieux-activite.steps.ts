@@ -1,5 +1,4 @@
 import assert from 'node:assert'
-import { emptyOpeningHours } from '@app/web/components/structure/fields/openingHoursHelpers'
 import { creerLieuActivite } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/commands/creer-lieu-activite'
 import { renseignerLieuxActivite } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/commands/renseigner-lieux-activite'
 import type { CreerLieuActivite } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/domain'
@@ -17,6 +16,7 @@ import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-i
 import { UserId as LieuUserId } from '@app/web/features/lieux-activite/domain/user-id'
 import type { CreerLieuActiviteData } from '@app/web/features/lieux-activite/formulaire/CreerLieuActiviteValidation'
 import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite/formulaire/CreerLieuActiviteValidation'
+import { emptyOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'

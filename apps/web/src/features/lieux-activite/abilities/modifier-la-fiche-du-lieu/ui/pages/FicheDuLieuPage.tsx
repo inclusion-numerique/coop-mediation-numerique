@@ -1,8 +1,8 @@
 'use client'
 
-import { DisplayOnCartography } from '@app/web/components/structure/DisplayOnCartography'
-import { LieuAccueillantPublicTitle } from '@app/web/components/structure/titles/LieuAccueillantPublicTitle'
-import { ServiceInclusionNumeriqueTitle } from '@app/web/components/structure/titles/ServiceInclusionNumeriqueTitle'
+import { DisplayOnCartography } from '@app/web/features/lieux-activite/components/DisplayOnCartography'
+import { LieuAccueillantPublicTitle } from '@app/web/features/lieux-activite/components/titles/LieuAccueillantPublicTitle'
+import { ServiceInclusionNumeriqueTitle } from '@app/web/features/lieux-activite/components/titles/ServiceInclusionNumeriqueTitle'
 import { formatDate } from '@app/web/utils/formatDate'
 import type { ReactNode } from 'react'
 import { BasculeVisibiliteCartographie } from '../components/BasculeVisibiliteCartographie'

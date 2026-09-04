@@ -1,4 +1,4 @@
-import { appendComment } from '@app/web/components/structure/fields/openingHoursHelpers'
+import { appendComment } from '@app/web/opening-hours/openingHoursHelpers'
 import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import {
   fromTimetableOpeningHours,

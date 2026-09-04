@@ -1,9 +1,9 @@
-import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
-import { formationLabelOptions } from '@app/web/features/lieux-activite/vocabulaire/options'
-;('use client')
+'use client'
 
 import { optionsWithEmptyValue } from '@app/ui/components/Form/utils/options'
 import { descriptionMaxLength } from '@app/web/features/lieux-activite/formulaire/DescriptionValidation'
+import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
+import { formationLabelOptions } from '@app/web/features/lieux-activite/vocabulaire/options'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import { useSelector } from '@tanstack/react-form'
 import { creerLieuActiviteFormOptions } from '../creerLieuActiviteFormData'

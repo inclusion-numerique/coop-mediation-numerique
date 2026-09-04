@@ -1,8 +1,8 @@
-import { safeToTimetableOpeningHours } from '@app/web/components/structure/fields/openingHoursHelpers'
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import { getAdresseBanLabel } from '@app/web/external-apis/ban/adresseBanLabel'
 import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
 import type { StructureSearchResult } from '@app/web/features/employeuse'
+import { safeToTimetableOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import { getDepartementCodeFromCodeInsee } from '@app/web/utils/getDepartementFromCodeInsee'
 import {
   Itinerance,
