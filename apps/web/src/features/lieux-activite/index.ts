@@ -129,6 +129,7 @@ export {
 export {
   type LieuDuMediateur,
   lieuxActiviteDuMediateur,
+  visibiliteDesLieuxDuMediateur,
 } from './db/lieux-du-mediateur'
 // Identité d'un lieu et des personnes qui le manipulent
 export { LieuId } from './domain/lieu-id'

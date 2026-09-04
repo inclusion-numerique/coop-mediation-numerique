@@ -1,15 +1,15 @@
-import { getLieuxActiviteForCartographie } from '@app/web/app/coop/(sidemenu-layout)/mes-outils/_data/getLieuxActiviteForCartographie'
 import { getSessionUser } from '@app/web/auth/getSessionUser'
 import { departementsRegionByCode } from '@app/web/data/collectivites-territoriales/departementsRegion'
+import { visibiliteDesLieuxDuMediateur } from '@app/web/features/lieux-activite'
 import { getDepartementCodeForActeur } from '@app/web/features/mon-reseau/getDepartementCodeForActeur'
 import { getMonReseauPageData } from '@app/web/features/mon-reseau/getMonReseauPageData'
 import { getCartographieDepartementLink } from '@app/web/libraries/cartographie-nationale'
 import Link from 'next/link'
 
-const onlyVisibleForCartographieNationale = ({
-  lieuInclusion: { visiblePourCartographieNationale },
+const declareVisible = ({
+  visiblePourCartographieNationale,
 }: {
-  lieuInclusion: { visiblePourCartographieNationale: boolean }
+  visiblePourCartographieNationale: boolean
 }) => visiblePourCartographieNationale
 
 const pluralizeLieuxActiviteUser = (count: number): string => {
@@ -45,16 +45,14 @@ const CartographieNationaleOutilAccess = async () => {
   const user = await getSessionUser()
 
   const lieuxActivite = user?.mediateur
-    ? await getLieuxActiviteForCartographie(user.mediateur.id)
+    ? await visibiliteDesLieuxDuMediateur({ mediateurId: user.mediateur.id })
     : null
 
   const departementCode = getDepartementCodeForActeur({
     emplois: user?.emplois,
     mediateur: lieuxActivite
       ? {
-          enActivite: lieuxActivite.map((l) => ({
-            lieuInclusion: l.lieuInclusion,
-          })),
+          enActivite: lieuxActivite.map((lieuInclusion) => ({ lieuInclusion })),
         }
       : null,
   })
@@ -70,7 +68,7 @@ const CartographieNationaleOutilAccess = async () => {
     : 'https://cartographie.societenumerique.gouv.fr/cartographie'
 
   const userLieuxVisiblesCount =
-    lieuxActivite?.filter(onlyVisibleForCartographieNationale).length ?? 0
+    lieuxActivite?.filter(declareVisible).length ?? 0
 
   return (
     <div className="fr-flex fr-direction-column fr-flex-gap-6v">
