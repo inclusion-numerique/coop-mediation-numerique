@@ -25,3 +25,7 @@ export {
   lieuCorrele,
   preparerCorrele,
 } from './db/lieu-correle'
+export {
+  type LieuDuMediateur,
+  lieuxActiviteDuMediateur,
+} from './db/lieux-du-mediateur'

@@ -2,7 +2,7 @@ import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import type { LieuActiviteConnu } from '@app/web/features/inscription/abilities/renseigner-lieux-activite'
 import LieuxActivitePage from '@app/web/features/inscription/abilities/renseigner-lieux-activite/ui/pages/LieuxActivitePage'
-import { lieuxActiviteDuMediateur } from '@app/web/features/inscription/implementation/prisma/lieux-activite-du-mediateur.query'
+import { lieuxActiviteDuMediateur } from '@app/web/features/lieux-activite'
 import { hasInscriptionComplete } from '@app/web/security/getHomepage'
 import { redirect } from 'next/navigation'
 

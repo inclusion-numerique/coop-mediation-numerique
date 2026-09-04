@@ -1,13 +1,12 @@
-import { StructureData } from '@app/web/components/structure/StructureValidation'
 import { prismaClient } from '@app/web/prismaClient'
 
 /**
  * Lieux d'activité auxquels un médiateur est rattaché à l'instant présent :
  * rattachements ni supprimés ni clos, du plus ancien au plus récent.
  *
- * Partagée par deux abilities, d'où sa place au niveau feature :
- * `renseigner-lieux-activite` en pré-remplit son étape, `valider` les affiche au
- * récapitulatif.
+ * C'est une question sur les lieux, posée par l'inscription : son étape « lieux
+ * d'activité » s'en pré-remplit et son récapitulatif les affiche. Elle vit donc
+ * ici, et l'inscription la lit par l'API publique de la feature.
  */
 export const lieuxActiviteDuMediateur = async ({
   mediateurId,
@@ -43,9 +42,9 @@ export const lieuxActiviteDuMediateur = async ({
     },
   })
 
-  const lieuxActivite: StructureData[] = enActivite.map(
-    (lieuActivite) => lieuActivite.lieuInclusion,
-  )
-
-  return lieuxActivite
+  return enActivite.map((lieuActivite) => lieuActivite.lieuInclusion)
 }
+
+export type LieuDuMediateur = Awaited<
+  ReturnType<typeof lieuxActiviteDuMediateur>
+>[number]
