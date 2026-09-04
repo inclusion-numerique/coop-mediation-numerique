@@ -18,7 +18,7 @@ export const ChoisirLeLieuAFusionner = ({
 }) => {
   const router = useRouter()
 
-  const handleSearchStructureSelect = ({ value: id }: { value: string }) => {
+  const allerVersLApercu = ({ id }: { id: string }) => {
     router.push(`/administration/lieux-activite/${structureId}/merge/${id}`)
   }
 
@@ -26,7 +26,7 @@ export const ChoisirLeLieuAFusionner = ({
     <div className="fr-border-radius--8 fr-border fr-p-8v fr-mb-6v">
       <h2 className="fr-h6">Rechercher la structure avec laquelle fusionner</h2>
       <RechercheDUnLieu
-        onSelect={handleSearchStructureSelect}
+        onSelect={allerVersLApercu}
         defaultStructure={defaultMergeStructure}
         excludeStructureIds={[structureId]}
       />

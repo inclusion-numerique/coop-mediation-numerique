@@ -1,115 +1,119 @@
 'use client'
 
-import CustomSelectFormField from '@app/ui/components/Form/CustomSelectFormField'
-import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
-import { withTrpc } from '@app/web/components/trpc/withTrpc'
-import type { SearchLieuInclusionResultLieu } from '@app/web/structure/searchLieuInclusion'
-import { trpc } from '@app/web/trpc'
-import { ReactElement, useRef } from 'react'
-import { useForm } from 'react-hook-form'
+import { Options } from '@app/ui/components/Primitives/Options'
+import { pluriel } from '@app/web/libraries/pluriel'
+import { useAppForm } from '@app/web/libs/form/use-app-form'
+import { useHydrated } from '@app/web/libs/form/use-hydrated'
+import Button from '@codegouvfr/react-dsfr/Button'
+import {
+  LieuAFusionnerOptions,
+  type LieuChoisi,
+  lieuAFusionnerComboBox,
+  type RechercheDeFusion,
+  rechercheMinimum,
+} from './lieu-a-fusionner-combo-box'
 
-const toLabel = ({
-  nom,
-  adresse,
-  commune,
-  codePostal,
-}: {
-  nom: string
-  adresse: string
-  commune: string
-  codePostal: string
-}) => (
-  <>
-    <div className="fr-width-full fr-text--sm fr-mb-0">{nom}</div>
-    <div className="fr-width-full fr-text--xs fr-text-mention--grey fr-mb-0">
-      {adresse}, {codePostal} {commune}
-    </div>
-  </>
-)
-
-const RechercheDUnLieu = ({
+/**
+ * Le champ qui désigne le lieu avec lequel fusionner.
+ *
+ * Rien n'est soumis : choisir SUFFIT, l'écran navigue aussitôt vers l'aperçu de
+ * la fusion. Le champ n'existe donc que le temps d'une sélection.
+ */
+export const RechercheDUnLieu = ({
   excludeStructureIds = [],
   defaultStructure,
   onSelect,
 }: {
   excludeStructureIds?: string[]
-  defaultStructure?: {
-    id: string
-    nom: string
-    adresse: string
-    commune: string
-    codePostal: string
-  }
-  onSelect?: (option: { label: ReactElement; value: string }) => void
+  defaultStructure?: LieuChoisi
+  onSelect: (lieu: LieuChoisi) => void
 }) => {
-  const form = useForm<{ structure: string }>()
+  const form = useAppForm({
+    defaultValues: { lieu: (defaultStructure ?? null) as LieuChoisi | null },
+  })
 
-  const { client: trpcClient } = trpc.useContext()
-
-  const structuresMapRef = useRef(
-    new Map<string, SearchLieuInclusionResultLieu>(),
-  )
-
-  const loadOptions = async (search: string) => {
-    const result = await trpcClient.structures.search.query({ query: search })
-
-    const filteredStructures = result.structures.filter(
-      (s) => !excludeStructureIds.includes(s.id),
-    )
-
-    for (const structure of filteredStructures) {
-      structuresMapRef.current.set(structure.id, structure)
-    }
-
-    const hasMore = result.matchesCount - result.structures.length
-    const hasMoreMessage = hasMore
-      ? hasMore === 1
-        ? `Veuillez préciser votre recherche - 1 structure n'est pas affichée`
-        : `Veuillez préciser votre recherche - ${hasMore} structures ne sont pas affichées`
-      : null
-
-    return [
-      {
-        label: `${filteredStructures.length} résultat${sPluriel(filteredStructures.length)}`,
-        value: '',
-      },
-      ...filteredStructures.map((structure) => ({
-        label: toLabel(structure),
-        value: structure.id,
-      })),
-      ...(hasMoreMessage
-        ? [
-            {
-              label: hasMoreMessage,
-              value: '',
-            },
-          ]
-        : []),
-    ] as {
-      label: ReactElement
-      value: string
-    }[]
-  }
+  const isPending = !useHydrated()
 
   return (
-    <CustomSelectFormField
-      label={null}
-      control={form.control}
-      path="structure"
-      placeholder="Rechercher une structure..."
-      loadOptions={loadOptions}
-      defaultValue={
-        defaultStructure == null
-          ? undefined
-          : { label: toLabel(defaultStructure), value: defaultStructure.id }
-      }
-      isOptionDisabled={(option) => option.value === ''}
-      onChange={(option) => {
-        if (option == null || option.value === '') return
-        onSelect?.(option)
-      }}
-    />
+    <form.AppForm>
+      <form.AppField name="lieu">
+        {(field) => (
+          <field.ComboBox
+            isPending={isPending}
+            onSelect={onSelect}
+            {...lieuAFusionnerComboBox(excludeStructureIds)}
+          >
+            {({
+              getLabelProps,
+              getInputProps,
+              getToggleButtonProps,
+              payload,
+              ...optionsProps
+            }) => {
+              const { recherche, enCours, nonAffiches } =
+                payload as RechercheDeFusion
+              const rechercheFaite =
+                !enCours && (recherche?.trim().length ?? 0) >= rechercheMinimum
+
+              const sansResultat =
+                rechercheFaite && optionsProps.items.length === 0
+
+              const tronquee =
+                rechercheFaite &&
+                optionsProps.items.length > 0 &&
+                nonAffiches > 0
+
+              return (
+                <>
+                  <field.Input
+                    addonEnd={
+                      <Button
+                        title="Rechercher"
+                        className="fr-border-left-0"
+                        iconId="fr-icon-search-line"
+                        {...getToggleButtonProps({ type: 'button' })}
+                      />
+                    }
+                    isConnected={false}
+                    isPending={isPending}
+                    nativeLabelProps={getLabelProps()}
+                    nativeInputProps={{
+                      ...getInputProps(),
+                      placeholder: 'Rechercher une structure...',
+                    }}
+                    label=""
+                  />
+                  <Options
+                    {...optionsProps}
+                    {...LieuAFusionnerOptions}
+                    showEmpty={sansResultat}
+                    footer={
+                      tronquee ? (
+                        <p className="fr-text--sm fr-text-mention--grey fr-mb-0">
+                          Précisez votre recherche&nbsp;: {nonAffiches}{' '}
+                          {pluriel(
+                            nonAffiches,
+                            'structure n’est pas affichée',
+                            'structures ne sont pas affichées',
+                          )}
+                        </p>
+                      ) : null
+                    }
+                  >
+                    {sansResultat ? (
+                      <p className="fr-text--sm fr-text-mention--grey fr-mb-0">
+                        Aucun lieu ne correspond à votre recherche.
+                      </p>
+                    ) : null}
+                  </Options>
+                </>
+              )
+            }}
+          </field.ComboBox>
+        )}
+      </form.AppField>
+    </form.AppForm>
   )
 }
 
-export default withTrpc(RechercheDUnLieu)
+export default RechercheDUnLieu

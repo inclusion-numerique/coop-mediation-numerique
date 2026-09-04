@@ -2,15 +2,16 @@ import { prismaClient } from '@app/web/prismaClient'
 import { toTitleCase } from '@app/web/utils/toTitleCase'
 import type { Prisma } from '@prisma/client'
 
-type SearchStructureOptions = {
-  limit: number
-}
+const LIMITE = 50
 
-export const searchLieuInclusion = async (
-  query: string,
-  options?: SearchStructureOptions,
-) => {
-  const structuresSearchLimit = options?.limit || 50
+/**
+ * Les lieux parmi lesquels choisir celui à fusionner : la recherche ratisse
+ * SIRET, dénomination, adresse et commune, chaque mot devant se retrouver
+ * quelque part. Les dénominations sont recasées — la base mêle les majuscules
+ * de l'annuaire et la saisie des médiateurs.
+ */
+export const lieuxAFusionner = async (query: string) => {
+  const structuresSearchLimit = LIMITE
   const queryParts = query.split(' ')
 
   const matchesWhere = {
@@ -73,9 +74,6 @@ export const searchLieuInclusion = async (
   }
 }
 
-export type SearchLieuInclusionResult = Awaited<
-  ReturnType<typeof searchLieuInclusion>
->
+export type LieuxAFusionnerTrouves = Awaited<ReturnType<typeof lieuxAFusionner>>
 
-export type SearchLieuInclusionResultLieu =
-  SearchLieuInclusionResult['structures'][number]
+export type LieuTrouve = LieuxAFusionnerTrouves['structures'][number]

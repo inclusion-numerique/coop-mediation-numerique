@@ -3,15 +3,10 @@ import { searchStructuresEmployeuses } from '@app/web/features/structures/getStr
 import { mediateurCoordonnesIdsFor } from '@app/web/mediateurs/mediateurCoordonnesIdsFor'
 import { protectedProcedure, router } from '@app/web/server/rpc/createRouter'
 import { searchLieuActiviteCombined } from '@app/web/structure/searchLieuActiviteCombined'
-import { searchLieuInclusion } from '@app/web/structure/searchLieuInclusion'
 import { searchStructureCartographieNationale } from '@app/web/structure/searchStructureCartographieNationale'
 import { z } from 'zod'
 
 export const structuresRouter = router({
-  search: protectedProcedure
-    .input(z.object({ query: z.string() }))
-    .query(({ input: { query } }) => searchLieuInclusion(query)),
-
   searchCombined: protectedProcedure
     .input(z.object({ query: z.string() }))
     .query(({ input: { query } }) => searchStructureEmployeuseCombined(query)),

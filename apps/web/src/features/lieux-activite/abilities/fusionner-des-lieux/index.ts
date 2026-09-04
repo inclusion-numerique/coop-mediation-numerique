@@ -6,5 +6,7 @@ export {
   apercuDeLaFusion,
   type FusionApercue,
   fusionnerDesLieux,
+  type LieuTrouve,
   lieuAFusionner,
+  lieuxAFusionner,
 } from './implementation'
