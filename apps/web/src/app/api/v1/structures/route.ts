@@ -10,7 +10,7 @@ import type {
   JsonApiListResponse,
   JsonApiResource,
 } from '@app/web/app/api/v1/JsonApiTypes'
-import { getEmploisCountByCorrelation } from '@app/web/features/structures/correlateStructureAdministrative'
+import { inventaireDesLieux } from '@app/web/features/lieux-activite/abilities/inventorier-les-lieux'
 import { dispositifProgrammeNationalLabels } from '@app/web/features/structures/dispositifProgrammesNationaux'
 import { formationLabelLabels } from '@app/web/features/structures/formationLabel'
 import { fraisAChargeLabels } from '@app/web/features/structures/fraisACharge'
@@ -20,7 +20,6 @@ import { modaliteAccesLabels } from '@app/web/features/structures/modalitesAcces
 import { priseEnChargeSpecifiqueLabels } from '@app/web/features/structures/priseEnChargeSpecifique'
 import { publicSpecifiquementAdresseLabels } from '@app/web/features/structures/publicSpecifiquementAdresse'
 import { serviceLabels } from '@app/web/features/structures/service'
-import { prismaClient } from '@app/web/prismaClient'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import {
   DispositifProgrammeNational,
@@ -471,56 +470,26 @@ export const GET = createApiV1Route
       ? new Date(modificationSinceInput)
       : undefined
 
-    // include all structures, even if suppression != null
-    const where = {
-      ...(ids.length > 0 ? { id: { in: ids } } : {}),
-      ...(creationSinceDate ? { creation: { gte: creationSinceDate } } : {}),
-      ...(modificationSinceDate
-        ? { modification: { gte: modificationSinceDate } }
-        : {}),
-    }
-
-    const structures = await prismaClient.lieuInclusion.findMany({
-      orderBy: [{ creation: 'desc' }, { id: 'desc' }],
+    const { lieux, totalCount, emploisParLieu } = await inventaireDesLieux({
+      ids,
+      creeDepuis: creationSinceDate,
+      modifieDepuis: modificationSinceDate,
       take: cursorPagination.take,
       skip: cursorPagination.skip,
-      where,
-      include: {
-        _count: {
-          select: {
-            mediateursEnActivite: {
-              where: {
-                suppression: null,
-                fin: null,
-              },
-            },
-          },
-        },
-      },
-      cursor: validatedCursor
+      curseur: validatedCursor
         ? {
-            creation_id: {
-              creation: validatedCursor.data.creation_id.creation,
-              id: validatedCursor.data.creation_id.id,
-            },
+            creation: validatedCursor.data.creation_id.creation,
+            id: validatedCursor.data.creation_id.id,
           }
         : undefined,
     })
 
-    const totalCount = await prismaClient.lieuInclusion.count({ where })
-
-    // Compteur d'emplois par corrélation nom + code INSEE avec l'employeuse
-    // (structure_administrative) ; pas de lien FK. Contrat API v1 préservé.
-    const emploisCounts = await getEmploisCountByCorrelation(structures, {
-      activeOnly: true,
-    })
-
-    const lastItem = structures.at(-1)
-    const firstItem = structures.at(0)
+    const lastItem = lieux.at(-1)
+    const firstItem = lieux.at(0)
 
     // next page exists only if we filled the page size
     const nextCursor =
-      structures.length === cursorPagination.take && lastItem
+      lieux.length === cursorPagination.take && lastItem
         ? createCompositeCursor(lastItem.creation.toISOString(), lastItem.id)
         : undefined
     const previousCursor =
@@ -546,7 +515,7 @@ export const GET = createApiV1Route
     const queryIdsSuffix = queryString ? `&${queryString}` : ''
 
     const response: StructureListResponse = {
-      data: structures.map((s) => ({
+      data: lieux.map((s) => ({
         type: 'structure',
         id: s.id,
         attributes: {
@@ -613,7 +582,7 @@ export const GET = createApiV1Route
               modaliteAccompagnementLabels[modaliteAccompagnement],
           ),
           mediateurs_en_activite: s._count.mediateursEnActivite,
-          emplois: emploisCounts.get(s.id) ?? 0,
+          emplois: emploisParLieu.get(s.id) ?? 0,
         },
       })),
       links: {
