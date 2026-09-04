@@ -1,7 +1,7 @@
 import DataTable from '@app/web/libs/data-table/DataTable'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
 import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSizeSelectOptions'
-import { type SearchLieuxResult } from '../search/searchLieux'
+import type { LieuxTrouves } from '../implementation/prisma/rechercher-des-lieux.query'
 import {
   LieuxDataTable,
   type LieuxDataTableSearchParams,
@@ -18,7 +18,7 @@ const LieuxTable = ({
   searchParams,
   baseHref,
 }: {
-  data: SearchLieuxResult
+  data: LieuxTrouves
   searchParams: LieuxDataTableSearchParams
   baseHref: string
 }) => (

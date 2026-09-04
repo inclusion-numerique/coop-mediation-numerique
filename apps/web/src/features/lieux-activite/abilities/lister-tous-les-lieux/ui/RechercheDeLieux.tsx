@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { type FormEventHandler, useRef } from 'react'
 import { type LieuxDataTableSearchParams } from './LieuxDataTable'
 
-const AdministrationSearchLieu = ({
+export const RechercheDeLieux = ({
   searchParams = {},
 }: {
   searchParams?: LieuxDataTableSearchParams
@@ -55,5 +55,3 @@ const AdministrationSearchLieu = ({
     </form>
   )
 }
-
-export default AdministrationSearchLieu

@@ -34,7 +34,11 @@ export const searchStructureSelect = {
   },
 } satisfies Prisma.LieuInclusionSelect
 
-export const queryStructuresForList = async ({
+/**
+ * Les colonnes de la liste d'administration, et ce que chaque lieu porte
+ * d'activité : médiateurs en exercice, activités, emplois.
+ */
+export const lieuxPourLaListe = async ({
   skip,
   take,
   where,
@@ -64,6 +68,4 @@ export const queryStructuresForList = async ({
   }))
 }
 
-export type StructureForList = Awaited<
-  ReturnType<typeof queryStructuresForList>
->[number]
+export type LieuDeLaListe = Awaited<ReturnType<typeof lieuxPourLaListe>>[number]

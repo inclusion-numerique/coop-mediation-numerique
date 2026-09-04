@@ -11,10 +11,10 @@ import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import type { Prisma } from '@prisma/client'
-import { StructureForList } from './queryStructuresForList'
+import type { LieuDeLaListe } from '../implementation/prisma/lieux-pour-la-liste.query'
 
 export type LieuxDataTableConfiguration = DataTableConfiguration<
-  StructureForList,
+  LieuDeLaListe,
   Prisma.LieuInclusionWhereInput,
   Prisma.LieuInclusionOrderByWithRelationInput
 >
