@@ -9,9 +9,10 @@ import { z } from 'zod'
  * Les suggestions du champ d'ajout : la coop, la cartographie nationale et,
  * en dernier recours, l'annuaire des entreprises.
  *
- * La recherche elle-même vit encore dans `src/structure/` — elle attend sa
- * propre ability. Ce qui compte ici, c'est qu'elle ne franchisse plus la
- * frontière du navigateur : elle tirait le client Prisma dans le bundle.
+ * Elle sert les deux parcours qui ajoutent un lieu : le panier des lieux
+ * d'activité et l'étape d'inscription. C'est une action et non une procédure
+ * tRPC pour qu'elle ne franchisse pas la frontière du navigateur — elle tire le
+ * client Prisma.
  */
 export const rechercherDesLieuxAAjouterAction = actionBuilder()
   .use(withAuth())

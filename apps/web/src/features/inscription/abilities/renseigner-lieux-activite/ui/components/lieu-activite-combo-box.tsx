@@ -1,7 +1,7 @@
 import type { OptionsData } from '@app/ui/components/Primitives/Options'
+import { rechercherDesLieuxAAjouterAction } from '@app/web/app/_actions/lieux-activite/rechercher-des-lieux-a-ajouter.action'
 import type { LieuActiviteSearchResult } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/searchLieuActiviteCombined'
 import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
-import { vanillaTrpc } from '@app/web/trpc'
 
 /**
  * Recherche d'un lieu d'activité, par ordre de priorité : les lieux déjà connus
@@ -37,20 +37,15 @@ const loadSuggestions = async (
 
   if (input.length < rechercheMinimum) return { ...rien, enEchec: false }
 
-  try {
-    const result =
-      await vanillaTrpc.structures.searchLieuActiviteCombined.query({
-        query: input,
-      })
+  const resultat = await rechercherDesLieuxAAjouterAction({ recherche: input })
 
-    return {
-      items: result.structures,
-      recherche: input,
-      enCours: false,
-      enEchec: false,
-    }
-  } catch {
-    return { ...rien, enEchec: true }
+  if (!resultat.success) return { ...rien, enEchec: true }
+
+  return {
+    items: [...resultat.data.structures],
+    recherche: input,
+    enCours: false,
+    enEchec: false,
   }
 }
 

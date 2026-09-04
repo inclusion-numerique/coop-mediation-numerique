@@ -1,7 +1,7 @@
 import type { OptionsData } from '@app/ui/components/Primitives/Options'
+import { rechercherStructureEmployeuseAction } from '@app/web/app/_actions/employeuse/rechercher-structure-employeuse.action'
 import type { StructureSearchResult } from '@app/web/features/employeuse'
 import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
-import { vanillaTrpc } from '@app/web/trpc'
 import { addresseFromParts } from '@app/web/utils/addresseFromParts'
 
 const itemToString = (item: StructureSearchResult | null): string =>
@@ -17,11 +17,11 @@ const loadSuggestions = async (
     return { items: [] }
   }
 
-  const result = await vanillaTrpc.structures.searchCombined.query({
-    query: input,
-  })
+  const resultat = await rechercherStructureEmployeuseAction({ query: input })
 
-  return { items: result.structures }
+  return resultat.success
+    ? { items: [...resultat.data.structures] }
+    : { items: [] }
 }
 
 const renderItem = ({ item }: { item: StructureSearchResult }) => (
