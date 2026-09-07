@@ -1,7 +1,13 @@
 import type { Prisma } from '@prisma/client'
 import { v4 } from 'uuid'
-import { fromAdresse, lieuFromDomain } from '../../../../db/lieu.transfer'
-import { lieuCorrele, preparerCorrele } from '../../../../db/lieu-correle'
+import {
+  fromAdresse,
+  lieuFromDomain,
+} from '../../../../implementation/lieu.transfer'
+import {
+  lieuCorrele,
+  preparerCorrele,
+} from '../../../../implementation/lieu-correle'
 import {
   type AdresseValidee,
   estExistant,

@@ -1,7 +1,7 @@
 import { prismaClient } from '@app/web/prismaClient'
-import { lieuToDomain } from '../../../../db'
 import type { Lieu } from '../../../../domain/lieu'
 import type { LieuId } from '../../../../domain/lieu-id'
+import { lieuToDomain } from '../../../../implementation'
 
 export type FicheDuLieu = {
   readonly lieu: Lieu

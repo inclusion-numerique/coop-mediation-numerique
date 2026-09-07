@@ -1,9 +1,9 @@
 import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
-import { lieuFromDomain } from '../../../../db'
 import type { Lieu } from '../../../../domain/lieu'
 import type { LieuId } from '../../../../domain/lieu-id'
 import type { UserId } from '../../../../domain/user-id'
+import { lieuFromDomain } from '../../../../implementation'
 import { type EchecDeModification, FicheIntrouvable } from '../../domain/errors'
 import {
   appliquerModification,

@@ -7,7 +7,7 @@ import { Prisma } from '@prisma/client'
 import {
   type LieuEnListe,
   projectionDuLieuEnListe,
-} from '../../../../db/lieu-en-liste'
+} from '../../../../implementation/lieu-en-liste'
 import { ordonnancement, type TriDeLAnnuaire } from '../../domain'
 
 const LIEUX_DEFAULT_PAGE_SIZE = 20

@@ -124,23 +124,6 @@ export {
   sansEcriture,
   verifierLesSiretsDesLieux,
 } from './abilities/verifier-les-sirets-des-lieux'
-// Lectures partagées
-export {
-  type Correle,
-  type LieuAMaterialiser,
-  lieuCorrele,
-  preparerCorrele,
-} from './db/lieu-correle'
-export {
-  type LieuEnListe,
-  lieuxEnListeDuMediateur,
-  projectionDuLieuEnListe,
-} from './db/lieu-en-liste'
-export {
-  type LieuDuMediateur,
-  lieuxActiviteDuMediateur,
-  visibiliteDesLieuxDuMediateur,
-} from './db/lieux-du-mediateur'
 // Identité d'un lieu et des personnes qui le manipulent
 export { BanId } from './domain/ban-id'
 export { IdentifiantCartographie } from './domain/ids-cartographie-nationale'
@@ -156,3 +139,20 @@ export {
   type CreerLieuActiviteData,
   CreerLieuActiviteValidation,
 } from './formulaire/CreerLieuActiviteValidation'
+// Lectures partagées
+export {
+  type Correle,
+  type LieuAMaterialiser,
+  lieuCorrele,
+  preparerCorrele,
+} from './implementation/lieu-correle'
+export {
+  type LieuEnListe,
+  lieuxEnListeDuMediateur,
+  projectionDuLieuEnListe,
+} from './implementation/lieu-en-liste'
+export {
+  type LieuDuMediateur,
+  lieuxActiviteDuMediateur,
+  visibiliteDesLieuxDuMediateur,
+} from './implementation/lieux-du-mediateur'

@@ -2,10 +2,14 @@ import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
 import { v4 } from 'uuid'
-import { lieuCorrele, lieuFromDomain, preparerCorrele } from '../../../../db'
 import type { Lieu } from '../../../../domain/lieu'
 import { LieuId } from '../../../../domain/lieu-id'
 import type { MediateurId } from '../../../../domain/mediateur-id'
+import {
+  lieuCorrele,
+  lieuFromDomain,
+  preparerCorrele,
+} from '../../../../implementation'
 import { type EchecDeCreation, MediateurRequis } from '../../domain/errors'
 
 /**
