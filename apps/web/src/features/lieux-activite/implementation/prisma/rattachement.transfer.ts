@@ -1,14 +1,14 @@
 import type { MediateurEnActivite } from '@prisma/client'
-import { LieuId } from '../domain/lieu-id'
-import { MediateurId } from '../domain/mediateur-id'
-import type { Rattachement } from '../domain/rattachement'
-import { RattachementId } from '../domain/rattachement-id'
+import { LieuId } from '../../domain/lieu-id'
+import { MediateurId } from '../../domain/mediateur-id'
+import type { Rattachement } from '../../domain/rattachement'
+import { RattachementId } from '../../domain/rattachement-id'
 import {
   ModificationInconnue,
   ModifieParUtilisateur,
   type TracabiliteRattachement,
-} from '../domain/tracabilite'
-import { UserId } from '../domain/user-id'
+} from '../../domain/tracabilite'
+import { UserId } from '../../domain/user-id'
 
 const toTracabilite = (row: MediateurEnActivite): TracabiliteRattachement => ({
   creation: {

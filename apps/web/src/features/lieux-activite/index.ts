@@ -145,14 +145,14 @@ export {
   type LieuAMaterialiser,
   lieuCorrele,
   preparerCorrele,
-} from './implementation/lieu-correle'
+} from './implementation/prisma/lieu-correle'
 export {
   type LieuEnListe,
   lieuxEnListeDuMediateur,
   projectionDuLieuEnListe,
-} from './implementation/lieu-en-liste'
+} from './implementation/prisma/lieu-en-liste'
 export {
   type LieuDuMediateur,
   lieuxActiviteDuMediateur,
   visibiliteDesLieuxDuMediateur,
-} from './implementation/lieux-du-mediateur'
+} from './implementation/prisma/lieux-du-mediateur'

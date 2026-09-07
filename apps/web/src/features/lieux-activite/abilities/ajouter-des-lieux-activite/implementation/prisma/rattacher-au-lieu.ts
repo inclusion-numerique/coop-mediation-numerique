@@ -3,11 +3,11 @@ import { v4 } from 'uuid'
 import {
   fromAdresse,
   lieuFromDomain,
-} from '../../../../implementation/lieu.transfer'
+} from '../../../../implementation/prisma/lieu.transfer'
 import {
   lieuCorrele,
   preparerCorrele,
-} from '../../../../implementation/lieu-correle'
+} from '../../../../implementation/prisma/lieu-correle'
 import {
   type AdresseValidee,
   estExistant,

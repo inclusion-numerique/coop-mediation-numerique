@@ -1,6 +1,5 @@
 import { getStructureCartographieLink } from '@app/web/libraries/cartographie-nationale'
 import type {
-  DataTableConfiguration,
   DataTableFilterValues,
   DataTableSearchParams,
 } from '@app/web/libs/data-table/DataTableConfiguration'
@@ -10,14 +9,7 @@ import { optionalNumberToString } from '@app/web/utils/formatNumber'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
-import type { Prisma } from '@prisma/client'
-import type { LieuDeLaListe } from '../implementation/prisma/lieux-pour-la-liste.query'
-
-export type LieuxDataTableConfiguration = DataTableConfiguration<
-  LieuDeLaListe,
-  Prisma.LieuInclusionWhereInput,
-  Prisma.LieuInclusionOrderByWithRelationInput
->
+import type { LieuxDataTableConfiguration } from '../implementation/prisma/lieux-pour-la-liste.data'
 
 export const LieuxDataTable = {
   csvFilename: () => `coop-${dateAsIsoDay(new Date())}-structures`,

@@ -15,15 +15,15 @@ import {
   type Presentation,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { BanId } from '../domain/ban-id'
-import type { Fiche } from '../domain/fiche'
-import { NomUsage } from '../domain/identite-sirene'
+import { BanId } from '../../domain/ban-id'
+import type { Fiche } from '../../domain/fiche'
+import { NomUsage } from '../../domain/identite-sirene'
 import {
   IdsCartographieNationale,
   serialiserIdsCartographieNationale,
-} from '../domain/ids-cartographie-nationale'
-import type { Lieu } from '../domain/lieu'
-import { LieuId } from '../domain/lieu-id'
+} from '../../domain/ids-cartographie-nationale'
+import type { Lieu } from '../../domain/lieu'
+import { LieuId } from '../../domain/lieu-id'
 import {
   Actif,
   type DerniereModification,
@@ -33,12 +33,12 @@ import {
   SourceCartographie,
   type Suppression,
   Supprime,
-} from '../domain/tracabilite'
-import { UserId } from '../domain/user-id'
+} from '../../domain/tracabilite'
+import { UserId } from '../../domain/user-id'
 import {
   estPublie,
   VisibiliteCartographie,
-} from '../domain/visibilite-cartographie'
+} from '../../domain/visibilite-cartographie'
 import type { LigneDuLieu } from './ligne-du-lieu'
 import * as vocabulaire from './vocabulaire'
 

@@ -18,19 +18,19 @@ import {
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { LieuInclusion } from '@prisma/client'
-import { BanId } from '../domain/ban-id'
-import { NomUsage } from '../domain/identite-sirene'
-import { IdsCartographieNationale } from '../domain/ids-cartographie-nationale'
-import type { Lieu } from '../domain/lieu'
-import { LieuId } from '../domain/lieu-id'
+import { BanId } from '../../domain/ban-id'
+import { NomUsage } from '../../domain/identite-sirene'
+import { IdsCartographieNationale } from '../../domain/ids-cartographie-nationale'
+import type { Lieu } from '../../domain/lieu'
+import { LieuId } from '../../domain/lieu-id'
 import {
   ModificationInconnue,
   ModifieParSource,
   ModifieParUtilisateur,
   SourceCartographie,
-} from '../domain/tracabilite'
-import { UserId } from '../domain/user-id'
-import { VisibiliteCartographie } from '../domain/visibilite-cartographie'
+} from '../../domain/tracabilite'
+import { UserId } from '../../domain/user-id'
+import { VisibiliteCartographie } from '../../domain/visibilite-cartographie'
 import { lieuFromDomain, lieuToDomain } from './lieu.transfer'
 
 const creation = new Date('2026-01-15T09:00:00Z')

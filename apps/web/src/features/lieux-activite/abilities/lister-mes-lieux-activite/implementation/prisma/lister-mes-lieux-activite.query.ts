@@ -1,7 +1,7 @@
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
 import type { MediateurId } from '../../../../domain/mediateur-id'
-import { projectionDuLieuEnListe } from '../../../../implementation/lieu-en-liste'
+import { projectionDuLieuEnListe } from '../../../../implementation/prisma/lieu-en-liste'
 import type { TriDesLieux } from '../../domain/tri-des-lieux'
 import { ordonnancement } from '../../domain/tri-des-lieux'
 

@@ -1,9 +1,8 @@
 import { structureCreationDataWithSiretFromUniteLegale } from '@app/web/external-apis/api-entreprise/structuresDepuisUniteLegale'
 import { rechercheApiEntreprise } from '@app/web/external-apis/rechercheApiEntreprise'
 import { searchStructureCartographieNationale } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/entrepot/searchStructureCartographieNationale'
-import { prismaClient } from '@app/web/prismaClient'
 import { toTitleCase } from '@app/web/utils/toTitleCase'
-import type { Prisma } from '@prisma/client'
+import { lieuxDeLaCoop } from './prisma/lieux-de-la-coop.query'
 
 export type LieuActiviteSearchResult = {
   id: string
@@ -30,61 +29,25 @@ const searchLocalStructures = async (
   query: string,
   options?: { limit?: number },
 ) => {
-  const limit = options?.limit || 25
-  const queryParts = query.split(' ')
-
-  const matchesWhere = {
-    suppression: null,
-    AND: queryParts.map((part) => ({
-      OR: [
-        { siret: { contains: part, mode: 'insensitive' } },
-        { nom: { contains: part, mode: 'insensitive' } },
-        { adresse: { contains: part, mode: 'insensitive' } },
-        { commune: { contains: part, mode: 'insensitive' } },
-      ],
-    })),
-  } satisfies Prisma.LieuInclusionWhereInput
-
-  const structuresRaw = await prismaClient.lieuInclusion.findMany({
-    where: matchesWhere,
-    take: limit,
-    orderBy: { nom: 'asc' },
-    select: {
-      id: true,
-      nom: true,
-      adresse: true,
-      commune: true,
-      codePostal: true,
-      codeInsee: true,
-      complementAdresse: true,
-      siret: true,
-      typologies: true,
-      latitude: true,
-      longitude: true,
-    },
+  const { lignes, matchesCount } = await lieuxDeLaCoop(query, {
+    limite: options?.limit || 25,
   })
 
-  const matchesCount = await prismaClient.lieuInclusion.count({
-    where: matchesWhere,
-  })
-
-  const structures: LieuActiviteSearchResult[] = structuresRaw.map(
-    (structure) => ({
-      id: `structure_${structure.id}`,
-      nom: toTitleCase(structure.nom, { noUpper: true }),
-      adresse: toTitleCase(structure.adresse ?? '', { noUpper: true }),
-      commune: toTitleCase(structure.commune ?? ''),
-      codePostal: structure.codePostal ?? '',
-      codeInsee: structure.codeInsee,
-      complementAdresse: structure.complementAdresse,
-      pivot: structure.siret ?? undefined,
-      typologie: structure.typologies?.join(';') || null,
-      latitude: structure.latitude,
-      longitude: structure.longitude,
-      structures: [{ id: structure.id }],
-      source: 'structure_locale' as const,
-    }),
-  )
+  const structures: LieuActiviteSearchResult[] = lignes.map((structure) => ({
+    id: `structure_${structure.id}`,
+    nom: toTitleCase(structure.nom, { noUpper: true }),
+    adresse: toTitleCase(structure.adresse ?? '', { noUpper: true }),
+    commune: toTitleCase(structure.commune ?? ''),
+    codePostal: structure.codePostal ?? '',
+    codeInsee: structure.codeInsee,
+    complementAdresse: structure.complementAdresse,
+    pivot: structure.siret ?? undefined,
+    typologie: structure.typologies?.join(';') || null,
+    latitude: structure.latitude,
+    longitude: structure.longitude,
+    structures: [{ id: structure.id }],
+    source: 'structure_locale' as const,
+  }))
 
   return { structures, matchesCount }
 }
