@@ -139,6 +139,59 @@ describe('réconciliation avec la cartographie nationale', () => {
     expect(activites.every((a) => a.structureId === survivorId)).toBe(true)
   })
 
+  /**
+   * Le cas que la fusion précédente ne produit pas : là-bas chaque lieu a son
+   * propre médiateur, donc rien à dédoublonner. Ici le même médiateur exerce
+   * dans les deux lieux réunis — il s'y retrouverait deux fois.
+   */
+  it('ne laisse qu’un rattachement et un emploi quand la même personne fréquentait les deux lieux', async () => {
+    const survivorId = '0927f824-b84d-4840-ae2e-e4a96a7a519b'
+    const mergedAwayId = 'f98724ab-93d2-46cd-bff6-1821dd6a6da7'
+
+    await prismaClient.lieuInclusion.createMany({
+      data: [
+        { id: survivorId, ...COMMON_STRUCTURE_FIELDS },
+        { id: mergedAwayId, ...COMMON_STRUCTURE_FIELDS },
+      ],
+    })
+
+    const user = await prismaClient.user.create({
+      data: { email: 'des-deux-cotes@coop.com' },
+    })
+    const mediateur = await prismaClient.mediateur.create({
+      data: { userId: user.id },
+    })
+
+    await prismaClient.employeStructure.createMany({
+      data: [survivorId, mergedAwayId].map((structureId) => ({
+        userId: user.id,
+        structureId,
+        debut: new Date(),
+      })),
+    })
+
+    await prismaClient.mediateurEnActivite.createMany({
+      data: [survivorId, mergedAwayId].map((structureId) => ({
+        mediateurId: mediateur.id,
+        structureId,
+        debut: new Date(),
+      })),
+    })
+
+    await reconcilier([
+      {
+        identifiantCartographie: IdsCartographieNationale(
+          `Coop-numérique_${survivorId}__Coop-numérique_${mergedAwayId}`,
+        ),
+        source: SourceCartographie('Coop numérique'),
+        dateMaj: new Date('2026-01-01'),
+      },
+    ])
+
+    expect(await prismaClient.mediateurEnActivite.findMany()).toHaveLength(1)
+    expect(await prismaClient.employeStructure.findMany()).toHaveLength(1)
+  })
+
   it('trace la source de modification externe quand la source n’est pas coop et la date est plus récente', async () => {
     const structureId = 'a6648fed-4d21-4ca4-a25b-d5a44d8ca38a'
 

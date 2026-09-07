@@ -21,6 +21,57 @@ export type PortsDeVerification = {
 }
 
 /**
+ * L'examen d'un lieu : ce qu'on décide de son SIRET, et ce qu'on en fait.
+ *
+ * Le verdict et l'écriture qui s'ensuit sont indissociables — « vérifié » date
+ * la confrontation, « effacé » retire le numéro —, d'où la table qui les
+ * apparie. Une erreur d'annuaire n'interrompt pas la passe : elle se journalise
+ * et le lieu ressort inexaminé.
+ */
+const examinerLeLieu =
+  (
+    {
+      interrogerSirene,
+      effacerLeSiret,
+      marquerLeSiretVerifie,
+      journal,
+    }: PortsDeVerification,
+    verifiesDepuis: Date,
+  ) =>
+  async (lieu: LieuAVerifier): Promise<Verdict> => {
+    if (dejaVerifie(lieu, verifiesDepuis)) return 'ignore'
+
+    const application: Record<
+      'verifie' | 'efface',
+      (lieu: LieuAVerifier) => Promise<void>
+    > = { verifie: marquerLeSiretVerifie, efface: effacerLeSiret }
+
+    try {
+      const verdict = verdictDuSiret(lieu, await interrogerSirene(lieu.siret))
+      await application[verdict](lieu)
+
+      return verdict
+    } catch (error) {
+      journal(
+        `lieu ${lieu.id} : ${error instanceof Error ? error.message : 'erreur inconnue'}`,
+      )
+
+      return 'echec'
+    }
+  }
+
+/**
+ * De quoi suivre une passe d'une demi-heure sans la noyer : un point tous les
+ * cinquante lieux.
+ */
+const avancement =
+  (journal: Journal, total: number) =>
+  (rang: number): void => {
+    if (rang > 0 && rang % PAS_DU_JOURNAL === 0)
+      journal(`${rang}/${total} lieux examinés`)
+  }
+
+/**
  * Confronte à SIRENE les SIRET que portent les lieux, et efface ceux qui
  * désignent un autre établissement.
  *
@@ -43,37 +94,12 @@ export const verifierLesSiretsDesLieux = async ({
   }
   readonly ports: PortsDeVerification
 }): Promise<Compte> => {
-  const {
-    lireLesLieuxASiret,
-    interrogerSirene,
-    effacerLeSiret,
-    marquerLeSiretVerifie,
-    journal,
-  } = ports
+  const lieux = await ports.lireLesLieuxASiret()
 
-  const application: Record<
-    'verifie' | 'efface',
-    (lieu: LieuAVerifier) => Promise<void>
-  > = { verifie: marquerLeSiretVerifie, efface: effacerLeSiret }
+  ports.journal(`${lieux.length} lieux portent un SIRET`)
 
-  const examiner = async (lieu: LieuAVerifier): Promise<Verdict> => {
-    if (dejaVerifie(lieu, verifiesDepuis)) return 'ignore'
-
-    try {
-      const verdict = verdictDuSiret(lieu, await interrogerSirene(lieu.siret))
-      await application[verdict](lieu)
-      return verdict
-    } catch (error) {
-      journal(
-        `lieu ${lieu.id} : ${error instanceof Error ? error.message : 'erreur inconnue'}`,
-      )
-      return 'echec'
-    }
-  }
-
-  const lieux = await lireLesLieuxASiret()
-
-  journal(`${lieux.length} lieux portent un SIRET`)
+  const examiner = examinerLeLieu(ports, verifiesDepuis)
+  const signaler = avancement(ports.journal, lieux.length)
 
   // Les lieux défilent un à un : chaque examen consomme un appel à l'annuaire
   // des entreprises, qui n'accepte pas la salve. Attendre l'accumulateur avant
@@ -82,9 +108,7 @@ export const verifierLesSiretsDesLieux = async ({
   return lieux.reduce<Promise<Compte>>(async (compte, lieu, rang) => {
     const acquis = await compte
 
-    if (rang > 0 && rang % PAS_DU_JOURNAL === 0) {
-      journal(`${rang}/${lieux.length} lieux examinés`)
-    }
+    signaler(rang)
 
     return compter(acquis, await examiner(lieu))
   }, Promise.resolve(aucunExamen))
