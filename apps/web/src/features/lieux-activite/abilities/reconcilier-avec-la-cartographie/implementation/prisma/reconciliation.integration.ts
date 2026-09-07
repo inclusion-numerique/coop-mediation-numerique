@@ -1,4 +1,4 @@
-import { deleteAll } from '@app/fixtures/seeds'
+import { deleteAll, seed } from '@app/fixtures/seeds'
 import { IdsCartographieNationale } from '@app/web/features/lieux-activite/domain/ids-cartographie-nationale'
 import { SourceCartographie } from '@app/web/features/lieux-activite/domain/tracabilite'
 import { prismaClient } from '@app/web/prismaClient'
@@ -65,9 +65,20 @@ const createStructureWithStaff =
 const reconcilier = (lieux: Parameters<typeof lieuxCoopReunis>[0]) =>
   appliquerLaReconciliation()(lieuxCoopReunis(lieux))
 
+/**
+ * Ces cas comptent les lieux de TOUTE la base — « il n'en reste qu'un » —, donc
+ * ils la vident d'abord. Les autres suites d'intégration, elles, s'appuient sur
+ * les fixtures : on les leur rend en partant, sans quoi l'ordre des fichiers
+ * déciderait de qui trouve encore les siennes.
+ */
 describe('réconciliation avec la cartographie nationale', () => {
   beforeEach(async () => {
     await deleteAll(prismaClient)
+  })
+
+  afterAll(async () => {
+    await deleteAll(prismaClient)
+    await seed(prismaClient)
   })
 
   it('relie la structure coop dont l’id apparaît dans l’id composite, et remet à null les liens absents', async () => {
@@ -153,6 +164,16 @@ describe('réconciliation avec la cartographie nationale', () => {
         { id: survivorId, ...COMMON_STRUCTURE_FIELDS },
         { id: mergedAwayId, ...COMMON_STRUCTURE_FIELDS },
       ],
+    })
+
+    // L'emploi pointe la structure administrative, pas le lieu : le double-rôle
+    // leur donne le même id, comme la migration des données legacy.
+    await prismaClient.structureAdministrative.createMany({
+      data: [survivorId, mergedAwayId].map((id) => ({
+        id,
+        ...COMMON_STRUCTURE_FIELDS,
+        source: 'coop',
+      })),
     })
 
     const user = await prismaClient.user.create({

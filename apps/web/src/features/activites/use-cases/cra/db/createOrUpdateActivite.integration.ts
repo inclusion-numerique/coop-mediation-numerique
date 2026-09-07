@@ -93,7 +93,12 @@ const nullActivite: Omit<
     user: {
       firstName: 'Médiateur',
       lastName: 'Avec activités',
-      personneMain: null,
+      // Les fixtures relient ce médiateur à sa personne `main`. L'attente
+      // précédente — aucune personne — décrivait une base d'où une autre suite
+      // les avait effacées : elle ne tenait qu'à l'ordre des fichiers.
+      personneMain: {
+        affectationsEmploi: [{ estActive: true, source: 'coop' }],
+      },
     },
   },
   v1CraId: null,

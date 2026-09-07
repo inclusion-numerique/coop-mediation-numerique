@@ -50,6 +50,15 @@ const deleteFixturePersonnesMain = async (
   await transaction.personneMain.deleteMany({ where: { coopId } })
 }
 
+/**
+ * Vide le schéma coop. `structure_administrative` en faisait exception : la
+ * colonne `structures.structure_administrative_id` la référençait, et le
+ * CASCADE emportait la table `structures` qu'on préserve. Cette colonne
+ * n'existe plus — les deux seules tables qui la référencent encore, `activites`
+ * et `employes_structures`, sont truncatées ici même. Sans quoi les lignes
+ * survivaient d'une exécution à l'autre, et un test qui sème un id fixe
+ * échouait au second passage.
+ */
 export const deleteAll = async (transaction: Prisma.TransactionClient) => {
   await deleteFixturePersonnesMain(transaction)
 
@@ -62,7 +71,6 @@ export const deleteAll = async (transaction: Prisma.TransactionClient) => {
       AND table_name != '_prisma_migrations'
       AND table_name != '_prisma_migrations_lock'
       AND table_name != 'structures'
-      AND table_name != 'structure_administrative'
       AND table_name != 'cras_conseiller_numerique_V1'
   `
 
