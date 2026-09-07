@@ -1,4 +1,5 @@
-import { publicationSansService } from './publication'
+import { Service } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { publicationSansService, servicesALaPublication } from './publication'
 
 describe('la publication sur la cartographie nationale', () => {
   it('refuse un lieu visible sans service', () => {
@@ -23,4 +24,21 @@ describe('la publication sur la cartographie nationale', () => {
       expect(publicationSansService(true, services)).toBe(true)
     },
   )
+})
+
+describe('les services d’un lieu qu’on rend visible', () => {
+  it('reçoit un socle quand le lieu n’en annonçait aucun', () => {
+    expect(servicesALaPublication([])).toEqual([
+      Service.MaitriseDesOutilsNumeriquesDuQuotidien,
+      Service.ComprehensionDuMondeNumerique,
+    ])
+  })
+
+  // Le socle est un point de départ, jamais une correction : ce que le lieu
+  // déclare prime, fût-ce un seul service.
+  it('laisse intacts les services déjà déclarés', () => {
+    expect(
+      servicesALaPublication([Service.AideAuxDemarchesAdministratives]),
+    ).toEqual([Service.AideAuxDemarchesAdministratives])
+  })
 })

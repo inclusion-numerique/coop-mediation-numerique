@@ -45,8 +45,12 @@ const informationsGenerales = (colonnes: Colonnes): Partial<Colonnes> => ({
   nomUsage: colonnes.nomUsage,
 })
 
+// Les services suivent la visibilité : rendre un lieu visible lui donne un socle
+// s'il n'en annonçait aucun, et ce socle n'est écrit que si la colonne est du
+// voyage.
 const visibiliteCartographie = (colonnes: Colonnes): Partial<Colonnes> => ({
   visiblePourCartographieNationale: colonnes.visiblePourCartographieNationale,
+  services: colonnes.services,
 })
 
 const informationsPratiques = (colonnes: Colonnes): Partial<Colonnes> => ({
@@ -125,11 +129,14 @@ export const modifierLaFicheDuLieu = async ({
     maintenant,
   )
 
-  // Mesurée sur le lieu APRÈS modification, et non sur la saisie : la
-  // visibilité et les services s'éditent dans deux sections, et la règle se
-  // enfreint des deux côtés — rendre visible un lieu sans service, ou retirer
-  // le dernier service d'un lieu visible.
+  // La règle ne vaut que pour la section qui porte les services. L'étendre aux
+  // autres refusait d'enregistrer la description ou les horaires d'un lieu
+  // visible sans service, en renvoyant un message parlant de services — alors
+  // que la section qui les porte vient en avant-dernier.
+  // Mesurée sur le lieu APRÈS modification, et non sur la saisie : c'est ce qui
+  // reste au lieu qui compte, pas ce qui a été soumis.
   if (
+    modification.section === 'ServicesEtAccompagnement' &&
     publicationSansService(
       estPublie(modifie.visibilite),
       modifie.fiche.services,

@@ -1,3 +1,4 @@
+import { Service } from '@gouvfr-anct/lieux-de-mediation-numerique'
 /**
  * La règle de publication sur la cartographie nationale : un lieu visible
  * annonce au moins un service.
@@ -19,3 +20,31 @@ export const publicationSansService = (
   publie: boolean,
   services: readonly unknown[] | null | undefined,
 ): boolean => publie && (services?.length ?? 0) === 0
+
+/**
+ * Ce qu'un lieu annonce par défaut lorsqu'il devient visible sans avoir déclaré
+ * le moindre service.
+ *
+ * Les deux que presque tous les lieux déclarent déjà : sur les 8 677 lieux
+ * visibles de la coop, 96 % annoncent la maîtrise des outils du quotidien et
+ * 93 % la compréhension du monde numérique. C'est aussi, à 458 lieux, la
+ * deuxième combinaison exacte la plus répandue — autrement dit le socle minimal
+ * réellement pratiqué, et donc le moins susceptible d'être faux.
+ *
+ * Ils ne valent que comme point de départ : la section « Services » reste
+ * ouverte, et le médiateur les corrige ou les remplace.
+ *
+ * Sans eux, la règle « un lieu visible annonce au moins un service » enfermait :
+ * elle refusait l'enregistrement de toutes les sections tant qu'aucun service
+ * n'était déclaré, alors que celle qui les porte vient en avant-dernier.
+ */
+export const SERVICES_PAR_DEFAUT = [
+  Service.MaitriseDesOutilsNumeriquesDuQuotidien,
+  Service.ComprehensionDuMondeNumerique,
+] as const
+
+/** Les services du lieu, complétés d'un socle s'il n'en annonçait aucun. */
+export const servicesALaPublication = (
+  services: readonly Service[],
+): readonly Service[] =>
+  services.length === 0 ? SERVICES_PAR_DEFAUT : services

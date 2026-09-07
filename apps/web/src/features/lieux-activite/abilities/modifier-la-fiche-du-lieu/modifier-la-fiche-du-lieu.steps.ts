@@ -4,6 +4,7 @@ import {
   modifierLaFicheDuLieu,
 } from '@app/web/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementation'
 import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
+import { SERVICES_PAR_DEFAUT } from '@app/web/features/lieux-activite/domain/publication'
 import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
 import {
   ficheSemee,
@@ -309,14 +310,31 @@ When('le médiateur rattaché retire tous les services', async () => {
   })
 })
 
+When('le médiateur rattaché modifie la description du lieu', async () => {
+  derniere.issue = await modifierLaFicheDuLieu({
+    id: LieuId(ficheSemee().lieuId),
+    par: auteur(),
+    modification: depuisLaSaisie({
+      section: 'Description',
+      presentationResume: 'Un lieu qui accueille du public',
+      presentationDetail: null,
+      formationsLabels: [],
+    }),
+  })
+})
+
+Then('la modification est acceptée', () => {
+  assert.strictEqual(derniere.issue?.success, true)
+})
+
+Then('le lieu annonce les services du socle', async () => {
+  const { lieu } = await relire()
+  assert.deepStrictEqual(lieu.fiche.services, [...SERVICES_PAR_DEFAUT])
+})
+
 Then('le lieu est visible sur la cartographie', async () => {
   const { lieu } = await relire()
   assert.strictEqual(lieu.visibilite, 'Publie')
-})
-
-Then("le lieu n'est pas visible sur la cartographie", async () => {
-  const { lieu } = await relire()
-  assert.strictEqual(lieu.visibilite, 'NonPublie')
 })
 
 Then('la modification est refusée', () => {

@@ -2,8 +2,10 @@ import type { Pivot } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Fiche } from '../../../domain/fiche'
 import type { NomUsage } from '../../../domain/identite-sirene'
 import type { Lieu } from '../../../domain/lieu'
+import { servicesALaPublication } from '../../../domain/publication'
 import { ModifieParUtilisateur } from '../../../domain/tracabilite'
 import type { UserId } from '../../../domain/user-id'
+import { estPublie } from '../../../domain/visibilite-cartographie'
 import {
   contactAvecJoignabilite,
   contactAvecSitesWeb,
@@ -24,8 +26,18 @@ import type {
  * touchent.
  */
 
-/** La visibilité relève de l'enveloppe coop : la fiche n'en sait rien. */
-const ficheInchangee = (fiche: Fiche): Fiche => fiche
+/**
+ * Rendre un lieu visible lui donne un socle de services s'il n'en annonçait
+ * aucun : la cartographie oriente, et une fiche muette sur ce qu'elle propose
+ * n'oriente personne. Le médiateur les corrige ensuite dans « Services ».
+ */
+const visibiliteCartographie = (
+  fiche: Fiche,
+  { visibilite }: Modification<'VisibiliteCartographie'>,
+): Fiche =>
+  estPublie(visibilite)
+    ? { ...fiche, services: [...servicesALaPublication(fiche.services)] }
+    : fiche
 
 const informationsGenerales = (
   fiche: Fiche,
@@ -118,7 +130,7 @@ const ficheParSection: {
   ) => Fiche
 } = {
   InformationsGenerales: informationsGenerales,
-  VisibiliteCartographie: ficheInchangee,
+  VisibiliteCartographie: visibiliteCartographie,
   InformationsPratiques: informationsPratiques,
   Description: description,
   ServicesEtAccompagnement: servicesEtAccompagnement,

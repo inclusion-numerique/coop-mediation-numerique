@@ -94,13 +94,20 @@ description, services et accompagnement, modalités d'accès, publics accueillis
 * And le lieu n'a plus de nom d'usage
 * And le nom du lieu est celui qui a été saisi
 
-## Rule: Un lieu visible sur la cartographie annonce au moins un service
+## Rule: On ne retire pas le dernier service d'un lieu visible
 
-> La règle existait à la création et manquait à la modification : on pouvait
-> créer un lieu invisible sans service, puis le rendre visible. Elle se mesure
-> sur le lieu APRÈS modification, et non sur la saisie, parce qu'on l'enfreint
-> des deux côtés — rendre visible un lieu sans service, ou retirer le dernier
-> service d'un lieu visible.
+> La règle existait à la création, où tout se saisit d'un coup, et manquait à la
+> modification : on pouvait créer un lieu invisible sans service, puis le rendre
+> visible.
+>
+> Elle ne garde pourtant pas la bascule de visibilité, seulement les services.
+> C'est que les sections où l'on renseigne les services ne se déplient qu'une
+> fois le lieu rendu visible : refuser la bascule faute de service enfermait le
+> médiateur dehors, sans aucun chemin pour satisfaire la règle. La fiche affiche
+> un avertissement tant qu'aucun service n'est renseigné.
+>
+> Elle se mesure sur le lieu APRÈS modification, et non sur la saisie : c'est ce
+> qui reste au lieu qui compte, pas ce qui a été soumis.
 
 ### Scenario: Rendre visible un lieu qui annonce un service
 
@@ -108,12 +115,21 @@ description, services et accompagnement, modalités d'accès, publics accueillis
 * When le médiateur rattaché rend le lieu visible sur la cartographie
 * Then le lieu est visible sur la cartographie
 
-### Scenario: Rendre visible un lieu sans service est refusé
+### Scenario: Rendre visible un lieu sans service lui donne un socle
 
 * Given une fiche de lieu sans service
 * When le médiateur rattaché rend le lieu visible sur la cartographie
-* Then la modification est refusée
-* And le lieu n'est pas visible sur la cartographie
+* Then le lieu est visible sur la cartographie
+* And le lieu annonce les services du socle
+
+### Scenario: Une autre section s'enregistre sans parler des services
+
+> Le message des services manquants remontait sur toutes les sections, alors que
+> celle qui les porte vient en avant-dernier.
+
+* Given une fiche de lieu sans service
+* When le médiateur rattaché modifie la description du lieu
+* Then la modification est acceptée
 
 ### Scenario: Retirer le dernier service d'un lieu visible est refusé
 

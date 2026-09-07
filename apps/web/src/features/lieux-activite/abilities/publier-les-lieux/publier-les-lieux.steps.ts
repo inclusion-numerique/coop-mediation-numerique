@@ -53,6 +53,13 @@ const semerUnLieu = async (visiblePourCartographieNationale: boolean) => {
   semis.lieuId = lieu.id
 }
 
+Given("ce lieu n'annonce aucun service", async () => {
+  await prismaClient.lieuInclusion.update({
+    where: { id: semis.lieuId },
+    data: { services: [] },
+  })
+})
+
 Given('un lieu où exerce un médiateur visible', async () => {
   await semerUnLieu(true)
 })

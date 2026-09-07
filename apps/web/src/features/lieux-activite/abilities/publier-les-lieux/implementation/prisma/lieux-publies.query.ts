@@ -19,9 +19,10 @@ export type Aidant = {
 /**
  * Les lieux que la coop publie sur la cartographie nationale.
  *
- * Trois conditions, et elles se cumulent : le lieu n'est pas supprimé, il est
- * déclaré visible pour la cartographie, et au moins un médiateur visible y
- * exerce encore. Un lieu sans personne n'est pas un lieu d'accueil.
+ * Quatre conditions, et elles se cumulent : le lieu n'est pas supprimé, il est
+ * déclaré visible pour la cartographie, il annonce au moins un service, et au
+ * moins un médiateur visible y exerce encore. Un lieu sans personne n'est pas un
+ * lieu d'accueil ; un lieu sans service n'oriente personne.
  *
  * La requête est écrite en SQL brut parce qu'elle produit directement la forme
  * du schéma national — objets d'adresse, de localisation, de contact, de
@@ -115,6 +116,11 @@ export const lieuxPublies = async ({
     WHERE structures.suppression IS NULL
       AND mediateurs_en_activite.suppression IS NULL AND mediateurs_en_activite.fin_activite IS NULL
       AND structures.visible_pour_cartographie_nationale IS true
+      -- Un lieu qui n'annonce aucun service n'oriente personne : la carte le
+      -- retient jusqu'à ce qu'il en déclare un. La garde se tient ici plutôt
+      -- qu'à la saisie, où exiger un service avant de rendre le lieu visible
+      -- fermait la seule porte menant aux champs qui les renseignent.
+      AND COALESCE(array_length(structures.services, 1), 0) > 0
       AND users.deleted IS NULL
     GROUP BY structures.id
   )

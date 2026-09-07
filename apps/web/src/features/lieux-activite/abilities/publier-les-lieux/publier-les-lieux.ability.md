@@ -12,6 +12,24 @@
 * When la cartographie nationale moissonne les lieux
 * Then ce lieu n'est pas publié
 
+## Rule: Un lieu qui n'annonce aucun service n'est pas publié
+
+> La cartographie sert à orienter : un lieu dont on ignore ce qu'il propose
+> n'oriente personne, et ferait se déplacer un usager pour rien.
+>
+> La garde se tient à la moisson, et non à la saisie. Exiger un service avant de
+> rendre le lieu visible fermait la seule porte menant aux champs qui les
+> renseignent : les sections des services ne se déplient qu'une fois le lieu
+> visible. Le médiateur déclare donc son intention quand il veut, la carte
+> attend qu'elle soit exploitable.
+
+### Scenario: Le lieu partagé sans service reste hors de la cartographie
+
+* Given un lieu partagé où exerce un médiateur visible
+* And ce lieu n'annonce aucun service
+* When la cartographie nationale moissonne les lieux
+* Then ce lieu n'est pas publié
+
 ## Rule: Un lieu où plus personne n'exerce n'est pas un lieu d'accueil
 
 > La cartographie oriente des usagers vers quelqu'un. Un lieu que plus personne
