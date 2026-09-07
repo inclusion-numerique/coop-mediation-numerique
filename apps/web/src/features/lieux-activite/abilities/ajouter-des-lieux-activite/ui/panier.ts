@@ -1,5 +1,9 @@
-import { geocodeStructureAdresse } from '@app/web/external-apis/ban/geocodeStructureAdresse'
+import {
+  adresseNonVerifiableMessage,
+  geocodeStructureAdresse,
+} from '@app/web/external-apis/ban/geocodeStructureAdresse'
 import type { LieuActiviteSearchResult } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/searchLieuActiviteCombined'
+import { failure, type Result, success } from '@app/web/libraries/result'
 import type { LieuxAAjouterData } from '../action/ajouter-des-lieux-activite.validation'
 
 export type LieuAuPanier = LieuxAAjouterData['lieux'][number]
@@ -66,3 +70,25 @@ export const memeLieu = (un: LieuAuPanier, autre: LieuAuPanier): boolean =>
   (un.structureCartographieNationaleId != null &&
     un.structureCartographieNationaleId ===
       autre.structureCartographieNationaleId)
+
+/**
+ * Ce que devient un lieu choisi dans la recherche : une entrée du panier, ou le
+ * refus à opposer à l'utilisateur.
+ *
+ * Deux refus seulement. L'adresse que la Base Adresse Nationale ne reconnaît
+ * pas : créer le lieu écrirait une adresse que personne n'a validée, et seule
+ * la saisie manuelle fait choisir une adresse reconnue. Et le lieu déjà retenu :
+ * l'ajouter une seconde fois n'ajoute rien.
+ */
+export const selectionner = async (
+  lieux: readonly LieuAuPanier[],
+  resultat: LieuActiviteSearchResult,
+): Promise<Result<LieuAuPanier, string>> => {
+  const lieu = await auPanier(resultat)
+
+  if (lieu == null) return failure(adresseNonVerifiableMessage(resultat))
+
+  return lieux.some((present) => memeLieu(present, lieu))
+    ? failure(`${lieu.nom} fait déjà partie de votre sélection.`)
+    : success(lieu)
+}

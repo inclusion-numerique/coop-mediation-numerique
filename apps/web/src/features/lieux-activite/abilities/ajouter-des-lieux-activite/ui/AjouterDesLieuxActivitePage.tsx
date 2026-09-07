@@ -1,10 +1,8 @@
 'use client'
 
-import { Options } from '@app/ui/components/Primitives/Options'
 import { createToast } from '@app/ui/toast/createToast'
 import { ajouterDesLieuxActiviteAction } from '@app/web/app/_actions/lieux-activite/ajouter-des-lieux-activite.action'
 import { creerUnLieuActiviteAction } from '@app/web/app/_actions/lieux-activite/creer-lieu-activite.action'
-import { adresseNonVerifiableMessage } from '@app/web/external-apis/ban/geocodeStructureAdresse'
 import type { LieuActiviteSearchResult } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation/searchLieuActiviteCombined'
 import CreerLieuActiviteForm from '@app/web/features/lieux-activite/formulaire/CreerLieuActiviteForm'
 import {
@@ -21,14 +19,10 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { z } from 'zod'
-import {
-  LieuAAjouterComboBox,
-  LieuAAjouterOptions,
-  type RechercheLieuAAjouter,
-  rechercheMinimum,
-} from './components/lieu-a-ajouter-combo-box'
+import { LieuAAjouterComboBox } from './components/lieu-a-ajouter-combo-box'
 import { PanierDeLieux } from './components/PanierDeLieux'
-import { auPanier, type LieuAuPanier, memeLieu } from './panier'
+import { RechercheDeLieu } from './components/RechercheDeLieu'
+import { type LieuAuPanier, selectionner } from './panier'
 
 type FormValues = {
   lieux: LieuAuPanier[]
@@ -175,130 +169,22 @@ export const AjouterDesLieuxActivitePage = ({
             <field.ComboBox
               isPending={isPending}
               onSelect={async (item) => {
-                setRechercheError(null)
-                const lieu = await auPanier(item)
+                const issue = await selectionner(form.state.values.lieux, item)
 
-                // L'adresse de ce lieu n'existe pas dans la BAN : le créer
-                // écrirait une adresse que personne n'a validée. On renvoie
-                // vers la saisie manuelle, seule à pouvoir faire choisir une
-                // adresse reconnue.
-                if (lieu == null) {
-                  setRechercheError(adresseNonVerifiableMessage(item))
-                  form.setFieldValue('recherche', null)
-                  return
-                }
-
-                if (
-                  form.state.values.lieux.some((present) =>
-                    memeLieu(present, lieu),
-                  )
-                ) {
-                  setRechercheError(
-                    `${lieu.nom} fait déjà partie de votre sélection.`,
-                  )
-                  form.setFieldValue('recherche', null)
-                  return
-                }
-
-                form.pushFieldValue('lieux', lieu)
                 form.setFieldValue('recherche', null)
+                setRechercheError(issue.success ? null : issue.error)
+
+                if (issue.success) form.pushFieldValue('lieux', issue.data)
               }}
               {...LieuAAjouterComboBox}
             >
-              {({
-                getLabelProps,
-                getInputProps,
-                getToggleButtonProps,
-                payload,
-                ...optionsProps
-              }) => {
-                const { recherche, enCours, enEchec, nonAffiches } =
-                  payload as RechercheLieuAAjouter
-                const rechercheFaite =
-                  !enCours &&
-                  (recherche?.trim().length ?? 0) >= rechercheMinimum
-                const rechercheAboutie =
-                  rechercheFaite && optionsProps.items.length === 0
-                const sansResultat = rechercheAboutie && !enEchec
-                const rechercheEnEchec = rechercheAboutie && enEchec
-
-                const boutonCreer = (
-                  <Button
-                    type="button"
-                    priority="secondary"
-                    className="fr-width-full fr-justify-content-center fr-mb-0"
-                    disabled={isPending}
-                    onClick={() => setEnCreation(true)}
-                  >
-                    Créer un lieu d’activité
-                  </Button>
-                )
-
-                /**
-                 * Trouver des résultats n'est pas trouver le bon : une recherche
-                 * qui propose dix lieux sans proposer CELUI qu'on a en tête
-                 * enfermerait autant qu'une recherche vide. La création reste
-                 * donc offerte sous la liste, tant qu'il y a une liste — le cas
-                 * sans résultat porte déjà le sien, avec son explication.
-                 */
-                const issue =
-                  rechercheFaite && optionsProps.items.length > 0 ? (
-                    <div>
-                      {nonAffiches > 0 && (
-                        <p className="fr-text--sm fr-text-mention--grey fr-mb-2v">
-                          Précisez votre recherche : {nonAffiches} structures ne
-                          sont pas affichées.
-                        </p>
-                      )}
-                      {boutonCreer}
-                    </div>
-                  ) : null
-
-                // Un seul enfant, `null` quand il n'y a rien à dire : `Options`
-                // teste `children &&` pour ouvrir son élément de liste, et une
-                // paire de conditions serait un tableau toujours truthy — le
-                // menu s'ouvrirait vide dès le premier clic dans le champ.
-                const proposition = sansResultat ? (
-                  <div>
-                    <p className="fr-text--sm fr-text-mention--grey fr-mb-2v">
-                      Aucun lieu ne correspond à votre recherche.
-                    </p>
-                    {boutonCreer}
-                  </div>
-                ) : rechercheEnEchec ? (
-                  <p className="fr-text--sm fr-text-default--error fr-mb-0">
-                    La recherche n’a pas abouti, veuillez réessayer.
-                  </p>
-                ) : null
-
-                return (
-                  <>
-                    <field.Input
-                      addonEnd={
-                        <Button
-                          title="Rechercher"
-                          className="fr-border-left-0"
-                          iconId="fr-icon-search-line"
-                          {...getToggleButtonProps({ type: 'button' })}
-                        />
-                      }
-                      isConnected={false}
-                      isPending={isPending}
-                      nativeLabelProps={getLabelProps()}
-                      nativeInputProps={getInputProps()}
-                      label="Rechercher un lieu d’activité par nom, adresse ou SIRET"
-                    />
-                    <Options
-                      {...optionsProps}
-                      {...LieuAAjouterOptions}
-                      showEmpty={proposition != null}
-                      footer={issue}
-                    >
-                      {proposition}
-                    </Options>
-                  </>
-                )
-              }}
+              {(rendu) => (
+                <RechercheDeLieu
+                  {...rendu}
+                  isPending={isPending}
+                  onCreer={() => setEnCreation(true)}
+                />
+              )}
             </field.ComboBox>
           )}
         </form.AppField>
