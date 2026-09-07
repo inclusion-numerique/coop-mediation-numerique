@@ -1,3 +1,4 @@
+import { telephoneDisplayString } from '@app/web/libraries/telephone'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { type Frais as FraisACharge } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import Link from 'next/link'
@@ -49,7 +50,9 @@ export const VueModalitesAccesAuService = ({
     {modalitesAcces?.numeroTelephone && (
       <div data-testid="modalites-acces-numero-de-telephone">
         <div className="fr-text-mention--grey">Téléphone de contact</div>
-        <div className="fr-text--medium">{modalitesAcces?.numeroTelephone}</div>
+        <div className="fr-text--medium">
+          {telephoneDisplayString(modalitesAcces.numeroTelephone)}
+        </div>
       </div>
     )}
     {modalitesAcces?.adresseMail && (

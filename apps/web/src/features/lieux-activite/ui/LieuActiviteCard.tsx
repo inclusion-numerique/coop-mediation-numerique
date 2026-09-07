@@ -1,3 +1,4 @@
+import { nomAffiche } from '@app/web/features/lieux-activite/domain/nom-affiche'
 import { getCartographieNationaleSourceLabel } from '@app/web/libraries/cartographie-nationale'
 import { pluriel } from '@app/web/libraries/pluriel'
 import Button from '@codegouvfr/react-dsfr/Button'
@@ -57,9 +58,7 @@ const LieuActiviteCard = ({
 }) => {
   const mediateursCount = lieu._count.mediateursEnActivite ?? 0
 
-  // Le nom d'usage est celui sous lequel l'établissement est connu de SIRENE ;
-  // quand il existe, il prime sur celui que la fiche se donne.
-  const nomAffiche = lieu.nomUsage || lieu.nom
+  const nom = nomAffiche(lieu.nom, lieu.nomUsage)
 
   const cartographyStatus = getCartographyStatus({
     visiblePourCartographieNationale: lieu.visiblePourCartographieNationale,
@@ -139,7 +138,7 @@ const LieuActiviteCard = ({
       </div>
 
       <p className="fr-text--bold fr-text--lg fr-mb-2v fr-text-title--blue-france">
-        {nomAffiche}
+        {nom}
       </p>
 
       <p className="fr-text--sm fr-mb-4v fr-text-mention--grey fr-flex fr-align-items-center">

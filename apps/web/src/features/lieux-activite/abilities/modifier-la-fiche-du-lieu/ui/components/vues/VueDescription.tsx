@@ -39,19 +39,23 @@ export const VueDescription = ({
         )}
       </div>
     </div>
-    <div>
-      <span className="fr-text-mention--grey">Formations et labels</span>
-      {(formationsLabels?.length ?? 0) > 0 ? (
+    {/*
+      Les formations et labels ne se saisissent qu'à la création du lieu : cette
+      fiche n'offre aucun champ pour les renseigner. Annoncer « Non renseigné »
+      y désignait donc un manque que le lecteur ne pouvait pas combler — on ne
+      montre la rubrique que lorsqu'elle porte quelque chose.
+    */}
+    {formationsLabels != null && formationsLabels.length > 0 && (
+      <div>
+        <span className="fr-text-mention--grey">Formations et labels</span>
         <ul className="fr-tags-group fr-mt-3v">
-          {formationsLabels?.map((formationLabel) => (
+          {formationsLabels.map((formationLabel) => (
             <li key={formationLabel}>
               <Tag>{formationLabel}</Tag>
             </li>
           ))}
         </ul>
-      ) : (
-        <div className="fr-text--medium">Non renseigné</div>
-      )}
-    </div>
+      </div>
+    )}
   </div>
 )

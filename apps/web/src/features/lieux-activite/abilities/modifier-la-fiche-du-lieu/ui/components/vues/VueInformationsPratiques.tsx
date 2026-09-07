@@ -19,8 +19,13 @@ export const VueInformationsPratiques = ({
   <div className="fr-flex fr-direction-column fr-flex-gap-6v">
     <div>
       <span className="fr-text-mention--grey">Site internet du lieu</span>
+      {/*
+        La colonne empile les sites ; sans `align-items: start`, ses enfants
+        s'étirent sur toute la largeur et le lien devient souligné — et
+        cliquable — jusqu'au bord.
+      */}
       <div
-        className="fr-flex fr-direction-column"
+        className="fr-flex fr-direction-column fr-align-items-start"
         data-testid="informations-pratiques-site-web"
       >
         {sitesWeb.length > 0 ? (

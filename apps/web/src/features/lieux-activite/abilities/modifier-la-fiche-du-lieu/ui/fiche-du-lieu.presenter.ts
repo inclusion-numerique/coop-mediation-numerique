@@ -2,6 +2,7 @@ import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValida
 import { getAdresseBanLabel } from '@app/web/external-apis/ban/adresseBanLabel'
 import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
 import type { StructureSearchResult } from '@app/web/features/employeuse'
+import { nomAffiche } from '@app/web/features/lieux-activite/domain/nom-affiche'
 import {
   type FormationLabelPropose,
   formationsLabelsProposees,
@@ -149,7 +150,9 @@ export const ficheAffichee = ({
 
   return {
     id: lieu.id,
-    nom: fiche.nom,
+    // Le titre de la fiche porte le nom sous lequel le lieu se montre partout
+    // ailleurs ; la raison sociale reste lisible dans « Informations générales ».
+    nom: nomAffiche(fiche.nom, lieu.identiteSirene.nomUsage),
     misAJourLe: lieu.tracabilite.derniereModification.date,
     misAJourPar: auteurDerniereModification,
     publieSurLaCartographie: estPublie(lieu.visibilite),

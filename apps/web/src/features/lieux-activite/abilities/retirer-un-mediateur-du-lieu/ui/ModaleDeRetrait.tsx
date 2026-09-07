@@ -83,13 +83,13 @@ const ModaleDeRetrait = () => {
       <p className="fr-mb-4v">
         {variant === 'mediateur' ? (
           <>
-            Êtes-vous sur que {mediateurDisplayName} ne travaille plus dans ce
+            Êtes-vous sûr que {mediateurDisplayName} ne travaille plus dans ce
             lieu ? Il sera notifié par email que vous l'avez retiré de ce lieu
             d’activité.
           </>
         ) : (
           <>
-            Êtes-vous sûr de vouloir supprimer ce lieu de votre liste de lieux
+            Êtes-vous sûr de vouloir retirer ce lieu de votre liste de lieux
             d’activité ?
           </>
         )}
