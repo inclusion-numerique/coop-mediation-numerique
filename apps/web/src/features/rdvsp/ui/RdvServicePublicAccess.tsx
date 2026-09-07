@@ -12,7 +12,6 @@ import {
 } from '@app/web/features/rdvsp/urls'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
-import React from 'react'
 import GererRdvServicePublicModal from './GererRdvServicePublicModal'
 import RdvServicePublicStatusTag from './RdvServicePublicStatusTag'
 

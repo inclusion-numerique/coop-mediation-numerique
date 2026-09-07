@@ -1,6 +1,5 @@
 import { brandColor } from '@app/emails/styles'
 import { MjmlSpacer, MjmlText } from '@faire/mjml-react'
-import React from 'react'
 
 const Invitation = ({ from }: { from: string }) => (
   <>

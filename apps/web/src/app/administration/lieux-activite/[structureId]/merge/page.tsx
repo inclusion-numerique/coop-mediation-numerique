@@ -1,6 +1,6 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
-import { MergeLieuInclusionPage } from '@app/web/features/structures/use-cases/merge/pages/MergeLieuInclusionPage'
-import { getMergeLieuInclusionPageData } from '@app/web/features/structures/use-cases/merge/queries/getMergeLieuInclusionPageData'
+import { lieuAFusionner } from '@app/web/features/lieux-activite/abilities/fusionner-des-lieux'
+import { FusionnerUnLieuPage } from '@app/web/features/lieux-activite/abilities/fusionner-des-lieux/ui'
 import { notFound } from 'next/navigation'
 
 export const metadata = {
@@ -9,10 +9,10 @@ export const metadata = {
 
 const Page = async (props: { params: Promise<{ structureId: string }> }) => {
   const { structureId } = await props.params
-  const pageData = await getMergeLieuInclusionPageData(structureId)
+  const pageData = await lieuAFusionner(structureId)
   if (!pageData) return notFound()
 
-  return <MergeLieuInclusionPage structureId={structureId} nom={pageData.nom} />
+  return <FusionnerUnLieuPage structureId={structureId} nom={pageData.nom} />
 }
 
 export default Page

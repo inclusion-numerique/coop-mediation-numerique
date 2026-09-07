@@ -10,7 +10,7 @@ import {
   statutSocialOptions,
   trancheAgeOptions,
 } from '@app/web/features/beneficiaire/forms/beneficiaire-options'
-import type { LieuActiviteOption } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
+import type { LieuActiviteOption } from '@app/web/features/lieux-activite'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { trpc } from '@app/web/trpc'
@@ -19,7 +19,6 @@ import { replaceRouteWithoutRerender } from '@app/web/utils/replaceRouteWithoutR
 import { yesNoBooleanOptions } from '@app/web/utils/yesNoBooleanOptions'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
-import React from 'react'
 import { DefaultValues } from 'react-hook-form'
 import { Tag } from '../../../tags/components/TagsComboBox'
 import { clearAdministrativeData } from '../../components/clearAdministrativeData'

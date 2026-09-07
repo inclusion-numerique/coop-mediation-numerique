@@ -1,6 +1,6 @@
 import { searchTags } from '@app/web/features/activites/use-cases/tags/search/searchTags'
 import { getInitialBeneficiairesOptionsForSearch } from '@app/web/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
-import { getMediateursLieuxActiviteOptions } from '@app/web/features/lieux-activite/getMediateursLieuxActiviteOptions'
+import { getMediateursLieuxActiviteOptions } from '@app/web/features/lieux-activite'
 import type { DefaultValues } from 'react-hook-form'
 import { getAdaptiveDureeOptions } from './db/getAdaptiveDureeOptions'
 import { CraData } from './validation/CraValidation'

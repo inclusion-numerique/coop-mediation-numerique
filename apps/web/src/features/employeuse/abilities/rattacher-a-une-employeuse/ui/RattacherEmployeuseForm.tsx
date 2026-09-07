@@ -3,8 +3,8 @@
 import { Options } from '@app/ui/components/Primitives/Options'
 import { createToast } from '@app/ui/toast/createToast'
 import { renseignerStructureEmployeuseAction } from '@app/web/app/_actions/employeuse/renseigner-structure-employeuse.action'
-import StructureCard from '@app/web/components/structure/StructureCard'
-import SiretInputInfo from '@app/web/features/structures/siret/SiretInputInfo'
+import SiretInputInfo from '@app/web/components/siret/SiretInputInfo'
+import StructureAdministrativeCard from '@app/web/features/employeuse/ui/StructureAdministrativeCard'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import Alert from '@codegouvfr/react-dsfr/Alert'
@@ -132,7 +132,7 @@ const RattacherEmployeuseForm = ({
         </form.AppField>
 
         {structureChoisie && (
-          <StructureCard
+          <StructureAdministrativeCard
             className="fr-mt-6v fr-mb-6v"
             structure={structureChoisie}
           />

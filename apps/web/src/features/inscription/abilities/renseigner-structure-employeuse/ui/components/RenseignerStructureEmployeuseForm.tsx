@@ -2,12 +2,12 @@
 
 import { Options } from '@app/ui/components/Primitives/Options'
 import { createToast } from '@app/ui/toast/createToast'
-import StructureCard from '@app/web/components/structure/StructureCard'
+import SiretInputInfo from '@app/web/components/siret/SiretInputInfo'
+import StructureAdministrativeCard from '@app/web/features/employeuse/ui/StructureAdministrativeCard'
 import {
   type RenseignerStructureEmployeuseFormData,
   renseignerStructureEmployeuseFormShape,
 } from '@app/web/features/inscription/abilities/renseigner-structure-employeuse'
-import SiretInputInfo from '@app/web/features/structures/siret/SiretInputInfo'
 import type { ServerActionResult } from '@app/web/libraries/nextjs'
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
@@ -142,7 +142,7 @@ const RenseignerStructureEmployeuseForm = ({
         </form.AppField>
         <SiretInputInfo />
         {selected && (
-          <StructureCard
+          <StructureAdministrativeCard
             className="fr-mt-6v fr-mb-6v"
             structure={{
               nom: selected.nom,
@@ -150,7 +150,6 @@ const RenseignerStructureEmployeuseForm = ({
               adresse: selected.adresseBan.nom,
               commune: selected.adresseBan.commune,
               codePostal: selected.adresseBan.codePostal,
-              typologies: selected.typologies ?? null,
               rna: null,
             }}
           />

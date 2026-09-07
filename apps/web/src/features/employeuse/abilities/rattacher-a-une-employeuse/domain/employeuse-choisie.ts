@@ -1,6 +1,10 @@
 // Import direct du value object, et non du barrel de la feature : ce schéma est chargé par
 // un composant client, or le barrel ré-exporte les implémentations Prisma de l'employeuse —
 // elles atterriraient dans le bundle client (frontière que `tsc` ne signale pas).
+import {
+  type TypologieStructure,
+  typologiesStructure,
+} from '@app/web/external-apis/api-entreprise/typologieStructure'
 import { z } from 'zod'
 import { Siret } from '../../../domain/siret'
 
@@ -22,7 +26,7 @@ export type StructureSearchResult = {
   commune: string
   codeInsee: string
   siret: string
-  typologies?: string[] | null
+  typologie?: TypologieStructure | null
   source: 'database' | 'api'
 }
 
@@ -52,7 +56,14 @@ export const EmployeuseChoisieValidation = z.object(
     codeInsee: z.string().trim(),
     // Portés par les résultats de recherche, sans emploi pour le rattachement.
     id: z.string().nullish(),
-    typologies: z.array(z.string()).nullish(),
+    typologie: z
+      .enum(
+        Object.keys(typologiesStructure) as [
+          TypologieStructure,
+          ...TypologieStructure[],
+        ],
+      )
+      .nullish(),
     source: z.enum(['database', 'api']),
   },
   {

@@ -1,8 +1,8 @@
-import { fetchSiretApiData } from '@app/web/features/structures/siret/fetchSiretData'
+import { fetchSiretApiData } from '@app/web/external-apis/siret/fetchSiretData'
 import {
   parseSireneIdentityForCompletion,
   type SireneIdentity,
-} from '@app/web/features/structures/siret/siretIdentity'
+} from '@app/web/libraries/siret'
 
 // Résout l'identité d'une structure à partir de son SIRET (seule donnée coop de confiance) via l'API
 // Recherche d'entreprises. Le nom vient de `nom_complet` (raison sociale, ou nom+prénom pour une EI ;

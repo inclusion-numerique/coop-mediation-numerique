@@ -85,6 +85,19 @@ const nettoyer = async () => {
 describe('lireDonneesAccueilRdv', () => {
   beforeAll(async () => {
     await nettoyer()
+
+    // Les suites d'intégration partagent une base, et l'une d'elles la vide :
+    // l'ordre des fichiers décide alors de qui trouve encore ses fixtures. Ce
+    // compte a besoin d'un utilisateur — il le sème plutôt que de l'espérer.
+    await prismaClient.user.upsert({
+      where: { id: mediateurSansActivitesUserId },
+      create: {
+        id: mediateurSansActivitesUserId,
+        email: 'mediation@numerique.fr',
+      },
+      update: {},
+    })
+
     await prismaClient.rdvOrganisation.create({
       data: { id: ORGANISATION, name: 'Organisation de test' },
     })

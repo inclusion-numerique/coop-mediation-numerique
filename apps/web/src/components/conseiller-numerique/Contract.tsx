@@ -2,7 +2,6 @@ import Card from '@app/web/components/Card'
 import { AlerteFinContrat } from '@app/web/conseiller-numerique/getContractInfo'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Link from 'next/link'
-import React from 'react'
 
 const Contract = ({
   isCoordinateur,

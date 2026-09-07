@@ -20,5 +20,4 @@ export type StructureEmployeuseInput = {
   readonly nom: string
   readonly siret: string
   readonly adresse: AdresseEmployeuse
-  readonly typologies: readonly string[]
 }

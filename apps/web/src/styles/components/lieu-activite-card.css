@@ -1,0 +1,51 @@
+/* Carte d'un lieu d'activité dans l'annuaire, et pastilles de son état de
+ * publication sur la cartographie nationale.
+ *
+ * Rien de tokenisable ici : le DSFR n'a ni utilitaire de survol de conteneur,
+ * ni variante colorée de `fr-tag`. Le reste de la carte passe par ses
+ * utilitaires. */
+
+.fr-lieu-activite-card {
+  cursor: pointer;
+}
+
+.fr-lieu-activite-card:hover {
+  background-color: var(--background-alt-grey);
+}
+
+/* Quand la carte porte ses propres boutons, elle cesse d'être cliquable en
+ * entier : le survol ne doit plus rien promettre. */
+.fr-lieu-activite-card--sans-survol {
+  cursor: default;
+}
+
+.fr-lieu-activite-card--sans-survol:hover {
+  background-color: transparent;
+}
+
+/* Ce qui doit rester cliquable par-dessus le lien qui recouvre la carte. */
+.fr-lieu-activite-card__au-dessus {
+  position: relative;
+  z-index: 2;
+}
+
+.fr-tag--carto-visible,
+.fr-tag--carto-mise-a-jour {
+  background-color: var(--background-action-high-blue-france);
+  color: var(--text-inverted-grey);
+}
+
+.fr-tag--carto-visible:hover,
+.fr-tag--carto-mise-a-jour:hover {
+  background-color: var(--background-action-high-blue-france-hover);
+}
+
+.fr-tag--carto-en-attente {
+  background-color: var(--background-contrast-orange-terre-battue);
+  color: var(--text-label-orange-terre-battue);
+}
+
+.fr-tag--carto-absent {
+  background-color: var(--background-contrast-grey);
+  color: var(--text-mention-grey);
+}

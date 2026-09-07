@@ -1,6 +1,5 @@
 import { appUrl } from '@app/e2e/support/helpers'
 import { mediateurAvecActivite } from '@app/fixtures/users/mediateurAvecActivite'
-import { mediateurSansActivites } from '@app/fixtures/users/mediateurSansActivites'
 
 describe('ETQ Mediateur, je peux créer un CRA individuel', () => {
   before(() => {

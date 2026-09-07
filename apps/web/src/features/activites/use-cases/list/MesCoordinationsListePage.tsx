@@ -4,7 +4,7 @@ import { generatePageSizeSelectOptions } from '@app/web/libs/data-table/pageSize
 import { DEFAULT_PAGE_SIZE } from '@app/web/libs/data-table/toNumberOr'
 import { Spinner } from '@app/web/ui/Spinner'
 import { formatActiviteDayDate } from '@app/web/utils/activiteDayDateFormat'
-import React, { Suspense } from 'react'
+import { Suspense } from 'react'
 import { CoordinationEmptyState } from './components/CoordinationEmptyState'
 import ActiviteCoordinationModal from './components/coordination/ActiviteCoordinationDynamicModal'
 import { CoordinationListCard } from './components/coordination/CoordinationListCard'

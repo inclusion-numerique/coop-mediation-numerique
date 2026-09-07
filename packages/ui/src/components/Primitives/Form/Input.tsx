@@ -1,6 +1,6 @@
 import { FrIconClassName, fr, RiIconClassName } from '@codegouvfr/react-dsfr'
 import { cx } from '@codegouvfr/react-dsfr/tools/cx'
-import React, {
+import {
   type CSSProperties,
   type DetailedHTMLProps,
   forwardRef,

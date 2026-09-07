@@ -4,7 +4,7 @@ import CustomTooltip from '@app/web/libs/statistiques/CustomTooltip'
 import { StatisticsLegend } from '@app/web/libs/statistiques/StatisticsLegend'
 import { numberToString } from '@app/web/utils/formatNumber'
 import { SegmentedControl } from '@codegouvfr/react-dsfr/SegmentedControl'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import {
   Area,
   AreaChart,

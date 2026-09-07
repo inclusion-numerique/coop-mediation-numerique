@@ -343,34 +343,6 @@ export class WebAppStack extends TerraformStack {
     })
 
     if (isMain) {
-      // Weekly backup job
-      createJobExecutionCron(this, {
-        name: `backup-${namespace}-database-weekly`,
-        job: {
-          name: 'backup-database',
-          payload: {
-            databaseName,
-            type: 'weekly',
-          },
-        },
-        schedule: '0 0 * * 0',
-        containerId: container.id,
-      })
-
-      // Daily backup job
-      createJobExecutionCron(this, {
-        name: `backup-${namespace}-database-daily`,
-        job: {
-          name: 'backup-database',
-          payload: {
-            databaseName,
-            type: 'daily',
-          },
-        },
-        schedule: '0 0 * * *',
-        containerId: container.id,
-      })
-
       // Répercute chaque nuit à 2 h ce que l'Entrepôt a changé au dispositif conseiller numérique.
       // Remplace `sync-users-from-dataspace`, qui appelait l'API une fois par compte pour recopier
       // des colonnes que `main` porte déjà : il ne reste que les deux effets qu'une lecture ne peut
@@ -411,20 +383,6 @@ export class WebAppStack extends TerraformStack {
           name: 'remove-orphan-brevo-contacts',
         },
         schedule: '0 3 * * *',
-        containerId: container.id,
-      })
-
-      // Hourly backup job
-      createJobExecutionCron(this, {
-        name: `backup-${namespace}-database-hourly`,
-        job: {
-          name: 'backup-database',
-          payload: {
-            databaseName,
-            type: 'hourly',
-          },
-        },
-        schedule: '0 * * * *',
         containerId: container.id,
       })
 

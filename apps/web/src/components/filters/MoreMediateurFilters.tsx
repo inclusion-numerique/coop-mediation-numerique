@@ -25,7 +25,6 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
-import React from 'react'
 
 const MoreFiltersModal = createModal({
   id: 'more-filters-modal',

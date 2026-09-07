@@ -1,7 +1,19 @@
+import { modifierLaFicheDuLieuAction } from '@app/web/app/_actions/lieux-activite/modifier-la-fiche-du-lieu.action'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { LieuActivitePageContent } from '@app/web/features/lieux-activite/components/LieuActivitePageContent'
-import { getLieuActivitePageData } from '@app/web/features/lieux-activite/getLieuActivitePageData'
+import { consulterLaFicheDuLieu } from '@app/web/features/lieux-activite/abilities/modifier-la-fiche-du-lieu'
+import {
+  FicheDuLieuPage,
+  ficheAffichee,
+} from '@app/web/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui'
+import {
+  BoutonDeRetrait,
+  ModaleDeRetrait,
+} from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
+import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
+import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
+import LieuMediateursEnActivite from '@app/web/features/mon-reseau/use-cases/lieux/components/LieuMediateursEnActivite'
+import { mediateursEnActiviteDuLieu } from '@app/web/features/mon-reseau/use-cases/lieux/db/mediateursEnActiviteDuLieu'
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import { contentId } from '@app/web/utils/skipLinks'
 import { toTitleCase } from '@app/web/utils/toTitleCase'
@@ -15,13 +27,14 @@ export const metadata: Metadata = {
 
 const Page = async (props: { params: Promise<{ structureId: string }> }) => {
   const params = await props.params
-  const data = await getLieuActivitePageData({
-    id: params.structureId,
-  })
+  const consultee = await consulterLaFicheDuLieu(LieuId(params.structureId))
 
-  if (!data) {
+  if (consultee == null) {
     return notFound()
   }
+
+  const fiche = ficheAffichee(consultee)
+  const mediateurs = await mediateursEnActiviteDuLieu(params.structureId)
 
   return (
     <>
@@ -35,7 +48,7 @@ const Page = async (props: { params: Promise<{ structureId: string }> }) => {
               linkProps: { href: `/administration/lieux-activite` },
             },
           ]}
-          currentPage={toTitleCase(data.structure.nom, { noUpper: true })}
+          currentPage={toTitleCase(fiche.nom, { noUpper: true })}
         />
         <div>
           <Button
@@ -55,11 +68,37 @@ const Page = async (props: { params: Promise<{ structureId: string }> }) => {
         id={contentId}
         className="fr-mt-12v fr-pb-20v fr-flex fr-justify-content-center"
       >
-        <LieuActivitePageContent
-          data={data}
-          canRemoveMediateurFromLieu
-          hideBreadcrumbs
-        />{' '}
+        <FicheDuLieuPage
+          fiche={fiche}
+          enregistrer={modifierLaFicheDuLieuAction}
+          mediateurs={
+            <>
+              <LieuMediateursEnActivite
+                mediateurs={mediateurs}
+                departementCode={fiche.departementCode}
+                retraits={Object.fromEntries(
+                  mediateurs.map((rattachement) => [
+                    rattachement.id,
+                    <BoutonDeRetrait
+                      key={rattachement.id}
+                      structureId={fiche.id}
+                      mediateurId={rattachement.mediateur.user.id}
+                      mediateurDisplayName={getActeurDisplayName(
+                        rattachement.mediateur.user,
+                      )}
+                      structureNom={fiche.nom}
+                      derniereActiviteDate={
+                        rattachement.mediateur.derniereActivite.date
+                      }
+                      variant="mediateur"
+                    />,
+                  ]),
+                )}
+              />
+              <ModaleDeRetrait />
+            </>
+          }
+        />
       </main>
     </>
   )

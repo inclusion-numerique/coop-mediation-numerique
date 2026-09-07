@@ -19,7 +19,6 @@ import { addMutationLog } from '@app/web/utils/addMutationLog'
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import { createStopwatch } from '@app/web/utils/stopwatch'
 import * as Sentry from '@sentry/nextjs'
-import { AxiosError } from 'axios'
 import z from 'zod'
 
 /**

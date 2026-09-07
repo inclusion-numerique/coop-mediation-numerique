@@ -1,6 +1,6 @@
 'use client'
 
-import type { ComponentType, ReactNode } from 'react'
+import type { ComponentType } from 'react'
 import { useMemo } from 'react'
 import DataTable, { type DataTableClasses } from './DataTable'
 import styles from './DataTable.module.css'

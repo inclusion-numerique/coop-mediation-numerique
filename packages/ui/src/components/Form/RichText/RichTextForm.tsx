@@ -3,7 +3,7 @@
 import RichTextFormLinkTooltip from '@app/ui/components/Form/RichText/RichTextFormLinkTooltip'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import React, { ReactNode, useState } from 'react'
+import { ReactNode, useState } from 'react'
 import {
   FieldPath,
   FieldValues,

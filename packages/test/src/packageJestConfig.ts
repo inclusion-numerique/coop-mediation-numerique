@@ -42,13 +42,22 @@ export const packageJestConfig = ({
   // '^.+packages/foo/src/common/cache\\.ts$': 'ts-jest',
   const tsJestTransformPattern = mockableFilePatterns.join('|')
 
+  // Le dépôt compile le JSX en runtime automatique (`"jsx": "react-jsx"` à la racine des
+  // tsconfig, comme Next et tsx). @swc/jest, lui, retombe sur le runtime classique quand on ne
+  // lui dit rien : il émet `React.createElement` et exige un `import React` que plus aucun
+  // fichier ne porte. On l'aligne ici, sinon les tests seuls réclameraient un import mort.
+  const swcJest: [string, Record<string, unknown>] = [
+    '@swc/jest',
+    { jsc: { transform: { react: { runtime: 'automatic' } } } },
+  ]
+
   const transform = tsJestTransformPattern
     ? {
         [tsJestTransformPattern]: 'ts-jest',
-        '^.+\\.(t|j)sx?$': '@swc/jest',
+        '^.+\\.(t|j)sx?$': swcJest,
       }
     : {
-        '^.+\\.(t|j)sx?$': '@swc/jest',
+        '^.+\\.(t|j)sx?$': swcJest,
       }
 
   return {

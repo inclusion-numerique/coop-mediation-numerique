@@ -69,6 +69,23 @@ export type DataTableConfiguration<
   defaultSortableInMemory?: (a: DataRow, b: DataRow) => number
 }
 
+/**
+ * Les colonnes qui portent des filtres.
+ *
+ * Le même défaut que `tri` ci-dessous : `filters` est facultatif, `Extract` ne
+ * retient pas une propriété facultative, et ce type vaut donc `never` — les
+ * deux types de filtres qui en dérivent sont des objets vides, si bien que les
+ * paramètres de filtre ne sont vérifiés nulle part.
+ *
+ * La correction s'écrit en deux lignes :
+ *
+ *     NonNullable<Configuration['columns'][number]['filters']>[number]['name']
+ *
+ * mais elle fait apparaître deux incohérences réelles, dans `activites` et
+ * `utilisateurs`, où des filtres d'activités sont passés là où une autre table
+ * attend les siens. À reprendre quand ces features passeront à la refacto,
+ * pas au détour d'un correctif sur le tri.
+ */
 type ConfiguredFilters<Configuration extends DataTableConfiguration> = Extract<
   Configuration['columns'][number],
   { filters: Required<DataTableColumn['filters']> }
@@ -77,7 +94,6 @@ type ConfiguredFilters<Configuration extends DataTableConfiguration> = Extract<
 export type DataTableFilterValues<
   Configuration extends DataTableConfiguration = DataTableConfiguration,
 > = {
-  // TODO type for key in filter names and T values from config
   [key in Exclude<
     ConfiguredFilters<Configuration>['filters'],
     undefined
@@ -87,24 +103,32 @@ export type DataTableFilterValues<
 export type DataTableFilterSearchParams<
   Configuration extends DataTableConfiguration = DataTableConfiguration,
 > = {
-  // TODO type for key in filter names and T values from config
   [key in Exclude<
     ConfiguredFilters<Configuration>['filters'],
     undefined
   >[number]['name']]: string | undefined
 }
 
-type SortableColumn<Configuration extends DataTableConfiguration> = Extract<
-  Configuration['columns'][number],
-  { sortable: Required<DataTableColumn['sortInMemory']> }
->
-
 export type DataTableSearchParams<
   Configuration extends DataTableConfiguration = DataTableConfiguration,
   FilterParams extends Record<string, unknown> = Record<string, unknown>,
 > = {
   recherche?: string
-  tri?: SortableColumn<Configuration>['name']
+  /**
+   * La colonne sur laquelle trier : l'une de celles que la table déclare.
+   *
+   * On aimerait n'admettre ici que les colonnes triables. Ce n'est pas
+   * exprimable : `sortable` et ses voisins sont facultatifs, et `Extract` ne
+   * retient jamais une propriété facultative. L'ancienne écriture —
+   * `Extract<colonnes, { sortable: … }>['name']` — valait donc `never`, ce qui
+   * rendait `tri` inutilisable dans du code typé alors que l'URL le porte bien
+   * et que le tri fonctionnait à l'exécution.
+   *
+   * Ce qui empêche d'offrir un tri que personne ne sait résoudre est ailleurs :
+   * le référentiel passé à `getDataTableOrderBy`, qui doit couvrir exactement
+   * les colonnes que l'écran déclare triables.
+   */
+  tri?: Configuration['columns'][number]['name']
   ordre?: SortDirection
   page?: string // String as it is used in URL query params
   lignes?: string // Nombre de résultats par page // String as it is used in URL query params

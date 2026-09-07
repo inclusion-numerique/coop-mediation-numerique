@@ -70,7 +70,7 @@ describe('findAdresseMainId — dédup par clé composant', () => {
 // Cas de production : pour un établissement non diffusible, l'API Recherche d'entreprises rend
 // littéralement `[NON-DIFFUSIBLE]` dans `code_postal` et `libelle_voie`. Sans neutralisation, la
 // chaîne de 16 caractères atteignait `main.adresse.code_postal varchar(5)` et faisait échouer
-// l'INSERT en `22001` — le job `completer-structures-main` s'arrêtait à la première rencontre.
+// l'INSERT en `22001` — la reprise ADR-002 s'arrêtait à la première rencontre.
 describe('resolveAdresseMain — codes non conformes des sources amont', () => {
   const COMMUNE_DE_TEST = 'AURAGNE-TEST-NON-DIFFUSIBLE'
   const state = { adresseId: 0 }

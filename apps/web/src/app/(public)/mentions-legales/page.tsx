@@ -5,7 +5,6 @@ import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import React from 'react'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mentions légales'),

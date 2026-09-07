@@ -1,7 +1,10 @@
 import assert from 'node:assert'
-import { emptyOpeningHours } from '@app/web/components/structure/fields/openingHoursHelpers'
 import { creerLieuActivite } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/commands/creer-lieu-activite'
 import { renseignerLieuxActivite } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/commands/renseigner-lieux-activite'
+import {
+  enregistrerLeLieuSaisi,
+  mediateurFromUser,
+} from '@app/web/features/inscription/abilities/renseigner-lieux-activite/implementation'
 import { ProfilInscription } from '@app/web/features/inscription/domain'
 import {
   currentInscriptionUserId,
@@ -9,10 +12,21 @@ import {
   seedProfilChoisi,
   trackLieuActivite,
 } from '@app/web/features/inscription/inscription.cucumber'
-import { CreerLieuActiviteValidation } from '@app/web/features/structures/CreerLieuActiviteValidation'
+import {
+  type CreerLieuActiviteData,
+  CreerLieuActiviteValidation,
+} from '@app/web/features/lieux-activite'
+import { emptyOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+
+const creerUnLieuDActivite = (saisie: CreerLieuActiviteData) =>
+  creerLieuActivite({
+    command: { userId: currentInscriptionUserId(), saisie },
+    mediateurFromUser,
+    enregistrerLeLieuSaisi,
+  })
 
 let lieuDisponibleId = ''
 let cartoIdDuLieuDisponible: string | null = null
@@ -25,12 +39,24 @@ let ancienLieuId = ''
  */
 const cartoIdDesynchronise = () => `Coop-numérique_${v4()}`
 
-/** Même adresse que `seedLieuActivite` : c'est elle qui porte la corrélation. */
+/**
+ * Même adresse que `seedLieuActivite` : c'est elle qui porte la corrélation.
+ *
+ * Elle porte identifiant BAN et coordonnées, comme toute adresse d'un lieu à
+ * créer : le formulaire la géocode avant de l'ajouter, et l'ability refuse
+ * désormais de créer un lieu qu'elle ne saurait situer.
+ */
 const adresseDuLieuDisponible = {
   adresse: '1 rue de la Paix',
   commune: 'Paris',
   codePostal: '75001',
   codeInsee: '75101',
+  banId: '75101_7160_00001',
+  // Mêmes coordonnées que `saisieDeCreation` : la sonde de corrélation pèse la
+  // distance, et un lieu semé à 900 m de celui qu'on saisit ne serait plus le
+  // même endroit.
+  latitude: 48.86,
+  longitude: 2.33,
 }
 
 /**
@@ -80,13 +106,8 @@ const saisieDeCreation = (
 
 const siretDeTest = () => v4().replace(/\D/g, '').padEnd(14, '0').slice(0, 14)
 
-const creerEtRattacher = async (
-  saisie: Parameters<typeof creerLieuActivite>[0]['saisie'],
-) => {
-  const resultat = await creerLieuActivite({
-    userId: currentInscriptionUserId(),
-    saisie,
-  })
+const creerEtRattacher = async (saisie: CreerLieuActiviteData) => {
+  const resultat = await creerUnLieuDActivite(saisie)
   assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
   trackLieuActivite(resultat.data.id)
   return resultat.data.id
@@ -274,7 +295,7 @@ When('je renseigne ce lieu comme lieu d’activité', async () => {
         },
       ],
     },
-    trouverStructuresCarto: async () => [],
+    trouverStructuresCarto: async () => new Map(),
     maintenant: new Date(),
   })
   assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -291,12 +312,13 @@ When('je renseigne un nouveau lieu nommé {string}', async (nom: string) => {
           commune: 'Lyon',
           codePostal: '69000',
           codeInsee: '69123',
+          banId: '69123_5678_00012',
           latitude: 45.75,
           longitude: 4.85,
         },
       ],
     },
-    trouverStructuresCarto: async () => [],
+    trouverStructuresCarto: async () => new Map(),
     maintenant: new Date(),
   })
   assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -316,12 +338,13 @@ When(
             commune: 'Paris',
             codePostal: '75003',
             codeInsee: '75103',
+            banId: '75103_1234_00003',
             latitude: 48.86,
             longitude: 2.36,
           },
         ],
       },
-      trouverStructuresCarto: async () => [],
+      trouverStructuresCarto: async () => new Map(),
       maintenant: new Date(),
     })
     assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -344,7 +367,7 @@ When(
           },
         ],
       },
-      trouverStructuresCarto: async () => [],
+      trouverStructuresCarto: async () => new Map(),
       maintenant: new Date(),
     })
     assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -369,7 +392,7 @@ When(
           },
         ],
       },
-      trouverStructuresCarto: async () => [],
+      trouverStructuresCarto: async () => new Map(),
       maintenant: new Date(),
     })
     assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -387,6 +410,7 @@ When(
       codePostal: '69000',
       codeInsee: '69123',
       latitude: 45.75,
+      banId: '69123_5678_00012',
       longitude: 4.85,
     }
 
@@ -395,7 +419,7 @@ When(
         userId: currentInscriptionUserId(),
         lieuxActivite: [nouveauLieu, nouveauLieu],
       },
-      trouverStructuresCarto: async () => [],
+      trouverStructuresCarto: async () => new Map(),
       maintenant: new Date(),
     })
     assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -446,7 +470,7 @@ When(
           },
         ],
       },
-      trouverStructuresCarto: async () => [],
+      trouverStructuresCarto: async () => new Map(),
       maintenant: new Date(),
     })
     assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -468,13 +492,12 @@ When(
   'je crée un lieu d’activité de même nom, à une autre adresse',
   async () => {
     nomDuNouveauLieu = nomDuLieuDisponible
-    const resultat = await creerLieuActivite({
-      userId: currentInscriptionUserId(),
-      saisie: saisieDeCreation(nomDuLieuDisponible, {
+    const resultat = await creerUnLieuDActivite(
+      saisieDeCreation(nomDuLieuDisponible, {
         adresse: '99 avenue Ailleurs',
         codeInsee: '75102',
       }),
-    })
+    )
     assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
     lieuCreeId = resultat.data.id
     trackLieuActivite(lieuCreeId)
@@ -535,12 +558,12 @@ When(
           {
             siret: siretDuLieuDisponible,
             nom: nomDuNouveauLieu,
-            banId: 'ban-voie-de-test',
             ...adresseDuLieuDisponible,
+            banId: 'ban-voie-de-test',
           },
         ],
       },
-      trouverStructuresCarto: async () => [],
+      trouverStructuresCarto: async () => new Map(),
       maintenant: new Date(),
     })
     assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -614,20 +637,18 @@ When(
 
 When('je crée un lieu d’activité que la coop ignore', async () => {
   nomDuNouveauLieu = `Tiers-lieu ${v4()}`
-  const resultat = await creerLieuActivite({
-    userId: currentInscriptionUserId(),
-    saisie: saisieDeCreation(nomDuNouveauLieu),
-  })
+  const resultat = await creerUnLieuDActivite(
+    saisieDeCreation(nomDuNouveauLieu),
+  )
   assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
   lieuCreeId = resultat.data.id
   trackLieuActivite(lieuCreeId)
 })
 
 When('je crée un lieu d’activité identique à ce lieu retiré', async () => {
-  const resultat = await creerLieuActivite({
-    userId: currentInscriptionUserId(),
-    saisie: saisieDeCreation(nomDuNouveauLieu),
-  })
+  const resultat = await creerUnLieuDActivite(
+    saisieDeCreation(nomDuNouveauLieu),
+  )
   assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
   lieuCreeId = resultat.data.id
   trackLieuActivite(lieuCreeId)
@@ -636,13 +657,12 @@ When('je crée un lieu d’activité identique à ce lieu retiré', async () => 
 When(
   'je crée un lieu d’activité dont le nom contient celui du lieu supprimé, à une autre adresse',
   async () => {
-    const resultat = await creerLieuActivite({
-      userId: currentInscriptionUserId(),
-      saisie: saisieDeCreation(`${nomDuNouveauLieu} Annexe`, {
+    const resultat = await creerUnLieuDActivite(
+      saisieDeCreation(`${nomDuNouveauLieu} Annexe`, {
         adresse: '99 avenue Ailleurs',
         codeInsee: '75102',
       }),
-    })
+    )
     assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
     lieuCreeId = resultat.data.id
     trackLieuActivite(lieuCreeId)
@@ -652,12 +672,9 @@ When(
 When(
   'je crée un lieu d’activité dénommé comme la commune, à la même adresse',
   async () => {
-    const resultat = await creerLieuActivite({
-      userId: currentInscriptionUserId(),
-      saisie: saisieDeCreation(
-        `COMMUNE DE ${communeDuLieuDisponible}`.toUpperCase(),
-      ),
-    })
+    const resultat = await creerUnLieuDActivite(
+      saisieDeCreation(`COMMUNE DE ${communeDuLieuDisponible}`.toUpperCase()),
+    )
     assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
     lieuCreeId = resultat.data.id
     trackLieuActivite(lieuCreeId)

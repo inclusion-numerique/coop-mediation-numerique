@@ -9,7 +9,7 @@ import {
 } from '@app/web/external-apis/apiAdresse'
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import { banFeatureToAdresseBanData } from '@app/web/external-apis/ban/banFeatureToAdresseBanData'
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import type { Control, FieldValues, Path } from 'react-hook-form'
 
 export type AdressBanFormFieldOption = SelectOption<AdresseBanData | null>

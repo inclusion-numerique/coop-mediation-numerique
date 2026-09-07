@@ -1,5 +1,3 @@
-import React from 'react'
-
 export const AlreadyProcessed = () => (
   <div
     className="fr-flex fr-direction-column fr-background-alt--blue-ecume"

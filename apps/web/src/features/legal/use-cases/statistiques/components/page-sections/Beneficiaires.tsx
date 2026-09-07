@@ -1,5 +1,4 @@
 import { numberToString } from '@app/web/utils/formatNumber'
-import React from 'react'
 import { ChartCard, ChartCardDataProps } from '../ChartCard'
 import { StatTile } from '../StatTile'
 

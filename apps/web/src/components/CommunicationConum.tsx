@@ -1,6 +1,5 @@
 import Card from '@app/web/components/Card'
 import Image from 'next/image'
-import React from 'react'
 
 export const CommunicationConum = () => (
   <>

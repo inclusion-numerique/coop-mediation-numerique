@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import Link from 'next/link'
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import styles from './Card.module.css'
 
 const Card = ({

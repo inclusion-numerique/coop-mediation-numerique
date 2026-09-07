@@ -1,5 +1,4 @@
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
-import { FrIconClassName } from '@codegouvfr/react-dsfr'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import { cookies } from 'next/headers'
 import type { PropsWithChildren, ReactNode } from 'react'
