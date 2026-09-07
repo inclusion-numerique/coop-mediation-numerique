@@ -17,7 +17,7 @@ import { LieuId } from '../../../domain/lieu-id'
 import { ModificationInconnue } from '../../../domain/tracabilite'
 import { UserId } from '../../../domain/user-id'
 import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
-import { appliquerModification } from './modification-lieu'
+import { appliquerModification } from './appliquer-la-modification'
 
 const maintenant = new Date('2026-09-02T11:00:00Z')
 const auteur = UserId('550e8400-e29b-41d4-a716-446655440001')

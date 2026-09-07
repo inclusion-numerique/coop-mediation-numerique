@@ -6,15 +6,15 @@ import { publicationSansService } from '../../../../domain/publication'
 import type { UserId } from '../../../../domain/user-id'
 import { estPublie } from '../../../../domain/visibilite-cartographie'
 import { lieuFromDomain } from '../../../../implementation'
+import { appliquerModification } from '../../domain/appliquer-la-modification'
 import {
   type EchecDeModification,
   FicheIntrouvable,
   PublicationSansService,
 } from '../../domain/errors'
-import {
-  appliquerModification,
-  type ModificationLieu,
-  type SectionDeLaFiche,
+import type {
+  ModificationLieu,
+  SectionDeLaFiche,
 } from '../../domain/modification-lieu'
 import { consulterLaFicheDuLieu } from './consulter-la-fiche-du-lieu.query'
 
