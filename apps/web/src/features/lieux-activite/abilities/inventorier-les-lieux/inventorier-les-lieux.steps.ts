@@ -2,6 +2,16 @@ import assert from 'node:assert'
 import { inventaireDesLieux } from '@app/web/features/lieux-activite/abilities/inventorier-les-lieux'
 import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
+import {
+  Frais,
+  ModaliteAcces,
+  Service,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
+import {
+  FraisACharge as FraisAChargeStockee,
+  ModaliteAcces as ModaliteAccesStockee,
+  Service as ServiceStocke,
+} from '@prisma/client'
 import { v4 } from 'uuid'
 
 const semis: {
@@ -40,6 +50,20 @@ Given("ce lieu n'est pas partagé sur la cartographie nationale", async () => {
   })
 })
 
+Given(
+  "ce lieu déclare un service, des frais et une modalité d'accès",
+  async () => {
+    await prismaClient.lieuInclusion.update({
+      where: { id: semis.lieuId },
+      data: {
+        services: [ServiceStocke.AideAuxDemarchesAdministratives],
+        fraisACharge: [FraisAChargeStockee.GratuitSousCondition],
+        modalitesAcces: [ModaliteAccesStockee.FicheDePrescription],
+      },
+    })
+  },
+)
+
 When("un client d'API demande l'inventaire de ce lieu", async () => {
   semis.inventaire = await inventaireDesLieux({
     ids: [semis.lieuId ?? ''],
@@ -61,6 +85,22 @@ Then("ce lieu figure à l'inventaire", () => {
 
 Then("ce lieu ne figure pas à l'inventaire", () => {
   assert.strictEqual(semis.inventaire?.lieux.length, 0)
+})
+
+/**
+ * `FicheDePrescription` est le cas qui compte : c'est la seule nomenclature
+ * dont le nom stocké ne ressemble pas au membre du standard qui lui correspond.
+ */
+Then('ses nomenclatures sont dites dans les termes du schéma national', () => {
+  const lieu = semis.inventaire?.lieux.at(0)
+
+  assert.deepStrictEqual(lieu?.services, [
+    Service.AideAuxDemarchesAdministratives,
+  ])
+  assert.deepStrictEqual(lieu?.fraisACharge, [Frais.GratuitSousCondition])
+  assert.deepStrictEqual(lieu?.modalitesAcces, [
+    ModaliteAcces.PrescriptionParMail,
+  ])
 })
 
 Then('sa suppression est datée', () => {

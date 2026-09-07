@@ -11,19 +11,7 @@ import type {
   JsonApiResource,
 } from '@app/web/app/api/v1/JsonApiTypes'
 import { inventaireDesLieux } from '@app/web/features/lieux-activite/abilities/inventorier-les-lieux'
-import * as vocabulaire from '@app/web/features/lieux-activite/implementation/prisma/vocabulaire'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
-import {
-  DispositifProgrammeNational,
-  FormationLabel,
-  FraisACharge,
-  Itinerance,
-  ModaliteAcces,
-  ModaliteAccompagnement,
-  PriseEnChargeSpecifique,
-  PublicSpecifiquementAdresse,
-  Service,
-} from '@prisma/client'
 import { NextResponse } from 'next/server'
 import { type ZodError, z } from 'zod'
 
@@ -529,7 +517,7 @@ export const GET = createApiV1Route
           rna: s.rna,
           visible_pour_cartographie_nationale:
             s.visiblePourCartographieNationale,
-          typologies: s.typologies,
+          typologies: [...s.typologies],
           presentation_resume: s.presentationResume,
           presentation_detail: s.presentationDetail,
           site_web: s.siteWeb,
@@ -539,48 +527,16 @@ export const GET = createApiV1Route
           horaires: s.horaires,
           prise_rdv: s.priseRdv,
           structure_parente: s.structureParente,
-          services: s.services.map(
-            (service: Service) => vocabulaire.service.table[service],
-          ),
-          publics_specifiquement_adresses: s.publicsSpecifiquementAdresses.map(
-            (publicSpecifiquementAdresse: PublicSpecifiquementAdresse) =>
-              vocabulaire.publicSpecifiquementAdresse.table[
-                publicSpecifiquementAdresse
-              ],
-          ),
-          prise_en_charge_specifique: s.priseEnChargeSpecifique.map(
-            (priseEnChargeSpecifique: PriseEnChargeSpecifique) =>
-              vocabulaire.priseEnChargeSpecifique.table[
-                priseEnChargeSpecifique
-              ],
-          ),
-          frais_a_charge: s.fraisACharge.map(
-            (fraisACharge: FraisACharge) =>
-              vocabulaire.fraisACharge.table[fraisACharge],
-          ),
-          dispositif_programmes_nationaux: s.dispositifProgrammesNationaux.map(
-            (dispositifProgrammeNational: DispositifProgrammeNational) =>
-              vocabulaire.dispositifProgrammeNational.table[
-                dispositifProgrammeNational
-              ],
-          ),
-          formations_labels: s.formationsLabels.map(
-            (formationLabel: FormationLabel) =>
-              vocabulaire.formationLabel.table[formationLabel],
-          ),
+          services: [...s.services],
+          publics_specifiquement_adresses: [...s.publicsSpecifiquementAdresses],
+          prise_en_charge_specifique: [...s.priseEnChargeSpecifique],
+          frais_a_charge: [...s.fraisACharge],
+          dispositif_programmes_nationaux: [...s.dispositifProgrammesNationaux],
+          formations_labels: [...s.formationsLabels],
           autres_formations_labels: s.autresFormationsLabels,
-          itinerance: s.itinerance.map(
-            (itinerance: Itinerance) =>
-              vocabulaire.itinerance.table[itinerance],
-          ),
-          modalites_acces: s.modalitesAcces.map(
-            (modaliteAcces: ModaliteAcces) =>
-              vocabulaire.modaliteAcces.table[modaliteAcces],
-          ),
-          modalites_accompagnement: s.modalitesAccompagnement.map(
-            (modaliteAccompagnement: ModaliteAccompagnement) =>
-              vocabulaire.modaliteAccompagnement.table[modaliteAccompagnement],
-          ),
+          itinerance: [...s.itinerance],
+          modalites_acces: [...s.modalitesAcces],
+          modalites_accompagnement: [...s.modalitesAccompagnement],
           mediateurs_en_activite: s._count.mediateursEnActivite,
           // L'employeuse ne se relie plus au lieu (ADR-002) : ce compteur n'a
           // plus de quoi se calculer. Le champ reste au contrat, à zéro.

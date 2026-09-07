@@ -1,4 +1,62 @@
 import { prismaClient } from '@app/web/prismaClient'
+import type { LigneDuLieu } from '../../../../implementation/prisma/ligne-du-lieu'
+import * as vocabulaire from '../../../../implementation/prisma/vocabulaire'
+
+/**
+ * Les nomenclatures rendues dans les valeurs du schéma national, et non sous
+ * les noms que la base leur donne.
+ *
+ * L'inventaire sert des clients d'API : c'est le vocabulaire du standard qu'ils
+ * attendent, comme le reste de la coop. La traduction se fait donc ici, dans
+ * l'implémentation, plutôt que chez l'appelant — qui n'a alors plus rien à
+ * connaître de la façon dont on stocke.
+ *
+ * `LigneDuLieu` porte la garde d'alignement : si les noms stockés et ceux du
+ * vocabulaire divergeaient, cette conversion cesserait de compiler.
+ */
+const auVocabulaireDuStandard = <Ligne extends LigneDuLieu>(ligne: Ligne) => ({
+  ...ligne,
+  typologies: vocabulaire.traduites(
+    ligne.typologies,
+    vocabulaire.typologie.versStandard,
+  ),
+  services: vocabulaire.traduites(
+    ligne.services,
+    vocabulaire.service.versStandard,
+  ),
+  publicsSpecifiquementAdresses: vocabulaire.traduites(
+    ligne.publicsSpecifiquementAdresses,
+    vocabulaire.publicSpecifiquementAdresse.versStandard,
+  ),
+  priseEnChargeSpecifique: vocabulaire.traduites(
+    ligne.priseEnChargeSpecifique,
+    vocabulaire.priseEnChargeSpecifique.versStandard,
+  ),
+  modalitesAcces: vocabulaire.traduites(
+    ligne.modalitesAcces,
+    vocabulaire.modaliteAcces.versStandard,
+  ),
+  fraisACharge: vocabulaire.traduites(
+    ligne.fraisACharge,
+    vocabulaire.fraisACharge.versStandard,
+  ),
+  itinerance: vocabulaire.traduites(
+    ligne.itinerance,
+    vocabulaire.itinerance.versStandard,
+  ),
+  dispositifProgrammesNationaux: vocabulaire.traduites(
+    ligne.dispositifProgrammesNationaux,
+    vocabulaire.dispositifProgrammeNational.versStandard,
+  ),
+  formationsLabels: vocabulaire.traduites(
+    ligne.formationsLabels,
+    vocabulaire.formationLabel.versStandard,
+  ),
+  modalitesAccompagnement: vocabulaire.traduites(
+    ligne.modalitesAccompagnement,
+    vocabulaire.modaliteAccompagnement.versStandard,
+  ),
+})
 
 /**
  * L'inventaire des lieux, tel que les clients d'API le parcourent.
@@ -52,7 +110,7 @@ export const inventaireDesLieux = async ({
 
   const totalCount = await prismaClient.lieuInclusion.count({ where })
 
-  return { lieux, totalCount }
+  return { lieux: lieux.map(auVocabulaireDuStandard), totalCount }
 }
 
 export type LieuInventorie = Awaited<

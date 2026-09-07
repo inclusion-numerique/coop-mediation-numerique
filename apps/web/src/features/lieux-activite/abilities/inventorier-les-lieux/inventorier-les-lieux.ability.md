@@ -31,3 +31,16 @@
 * Given un lieu à inventorier
 * When un client d'API demande les lieux modifiés depuis demain
 * Then ce lieu ne figure pas à l'inventaire
+
+## Rule: L'inventaire parle le vocabulaire du schéma national
+
+> Un client qui tient un miroir attend les termes du standard, pas les noms
+> sous lesquels la coop range ses nomenclatures en base. La traduction lui est
+> due : c'est la seule chose qu'il ne peut pas deviner.
+
+### Scenario: Les nomenclatures sortent dans les termes du schéma national
+
+* Given un lieu à inventorier
+* And ce lieu déclare un service, des frais et une modalité d'accès
+* When un client d'API demande l'inventaire de ce lieu
+* Then ses nomenclatures sont dites dans les termes du schéma national
