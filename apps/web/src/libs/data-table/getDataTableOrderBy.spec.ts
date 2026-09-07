@@ -67,14 +67,13 @@ describe('tri résolu depuis un référentiel', () => {
         {
           name: 'nom',
           header: 'Nom',
-          defaultSortable: true,
           orderBy: (direction: 'asc' | 'desc') => [{ nom: direction }],
         },
       ],
     } satisfies DataTableConfiguration<Ligne>
 
-    expect(getDataTableOrderBy({ ordre: 'asc' }, ancienneForme)).toEqual([
-      { nom: 'asc' },
-    ])
+    expect(
+      getDataTableOrderBy({ tri: 'nom', ordre: 'asc' }, ancienneForme),
+    ).toEqual([{ nom: 'asc' }])
   })
 })
