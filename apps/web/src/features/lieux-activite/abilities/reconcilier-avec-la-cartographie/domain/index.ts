@@ -1,4 +1,5 @@
 export {
+  identifiantEnColonne,
   identifiantsCoop,
   type LieuCarto,
   type LieuxCoopReunis,

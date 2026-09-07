@@ -1,4 +1,6 @@
 import { deleteAll } from '@app/fixtures/seeds'
+import { IdsCartographieNationale } from '@app/web/features/lieux-activite/domain/ids-cartographie-nationale'
+import { SourceCartographie } from '@app/web/features/lieux-activite/domain/tracabilite'
 import { prismaClient } from '@app/web/prismaClient'
 import { lieuxCoopReunis } from '../../domain'
 import { appliquerLaReconciliation } from './reconciliation.mutation'
@@ -85,8 +87,10 @@ describe('réconciliation avec la cartographie nationale', () => {
 
     await reconcilier([
       {
-        identifiantCartographie: `Coop-numérique_${linkedId}`,
-        source: 'Coop numérique',
+        identifiantCartographie: IdsCartographieNationale(
+          `Coop-numérique_${linkedId}`,
+        ),
+        source: SourceCartographie('Coop numérique'),
         dateMaj: new Date('2026-01-01'),
       },
     ])
@@ -114,8 +118,8 @@ describe('réconciliation avec la cartographie nationale', () => {
 
     await reconcilier([
       {
-        identifiantCartographie: compositeId,
-        source: 'Coop numérique',
+        identifiantCartographie: IdsCartographieNationale(compositeId),
+        source: SourceCartographie('Coop numérique'),
         dateMaj: new Date('2026-01-01'),
       },
     ])
@@ -144,8 +148,10 @@ describe('réconciliation avec la cartographie nationale', () => {
 
     await reconcilier([
       {
-        identifiantCartographie: `Hinaura_FablabVichy__Coop-numérique_${structureId}`,
-        source: 'Hinaura',
+        identifiantCartographie: IdsCartographieNationale(
+          `Hinaura_FablabVichy__Coop-numérique_${structureId}`,
+        ),
+        source: SourceCartographie('Hinaura'),
         dateMaj: new Date('2999-01-01'),
       },
     ])

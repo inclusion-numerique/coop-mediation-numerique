@@ -1,4 +1,6 @@
 import { entrepotPrismaClient } from '@app/web/entrepotPrismaClient'
+import { IdsCartographieNationale } from '@app/web/features/lieux-activite/domain/ids-cartographie-nationale'
+import { SourceCartographie } from '@app/web/features/lieux-activite/domain/tracabilite'
 import { type LieuCarto, PREFIXE_COOP } from '../../domain'
 
 /**
@@ -20,15 +22,21 @@ export const lireLesLieuxCarto = async (): Promise<readonly LieuCarto[]> => {
   })
 
   return lieux.flatMap(
-    ({ structureCartographieNationaleId, source, updatedAt }) =>
-      structureCartographieNationaleId == null
+    ({ structureCartographieNationaleId, source, updatedAt }) => {
+      const identifiantCartographie =
+        structureCartographieNationaleId == null
+          ? null
+          : IdsCartographieNationale.safe(structureCartographieNationaleId)
+
+      return identifiantCartographie == null
         ? []
         : [
             {
-              identifiantCartographie: structureCartographieNationaleId,
-              source,
+              identifiantCartographie,
+              source: source == null ? null : SourceCartographie.safe(source),
               dateMaj: updatedAt,
             },
-          ],
+          ]
+    },
   )
 }

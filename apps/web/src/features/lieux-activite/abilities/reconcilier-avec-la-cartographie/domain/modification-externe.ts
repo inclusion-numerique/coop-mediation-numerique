@@ -1,4 +1,5 @@
 import { coopCartographieNationaleSource } from '@app/web/libraries/cartographie-nationale'
+import type { SourceCartographie } from '../../../domain/tracabilite'
 import type { LieuCarto } from './identifiant-composite'
 
 /**
@@ -16,7 +17,7 @@ export const modificationExterne = (
   lieu: LieuCarto,
   derniereModificationCoop: Date,
 ): {
-  readonly derniereModificationSource: string
+  readonly derniereModificationSource: SourceCartographie
   readonly derniereModificationParId: null
 } | null => {
   if (lieu.source == null || lieu.source === coopCartographieNationaleSource) {

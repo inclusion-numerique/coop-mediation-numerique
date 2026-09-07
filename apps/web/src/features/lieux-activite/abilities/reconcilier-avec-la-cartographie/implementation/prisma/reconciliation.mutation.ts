@@ -5,7 +5,7 @@ import type {
   LieuxCoopReunis,
   Reconciliation,
 } from '../../domain'
-import { modificationExterne } from '../../domain'
+import { identifiantEnColonne, modificationExterne } from '../../domain'
 
 type Transaction = Prisma.TransactionClient
 
@@ -105,13 +105,14 @@ const relier = async (
     { ...lieu, identifiantCartographie },
     existant.modification,
   )
+  const enColonne = identifiantEnColonne({ ...lieu, identifiantCartographie })
 
   if (absorbes.length === 0) {
     await transaction.lieuInclusion.update({
       where: { id: survivant },
       data: {
         ...trace,
-        structureCartographieNationaleId: identifiantCartographie,
+        structureCartographieNationaleId: enColonne,
       },
     })
 
@@ -132,7 +133,7 @@ const relier = async (
       ...herites,
       ...trace,
       activitesCount: { increment: activites._sum.activitesCount ?? 0 },
-      structureCartographieNationaleId: identifiantCartographie,
+      structureCartographieNationaleId: enColonne,
     },
   })
 

@@ -1,14 +1,22 @@
+import {
+  IdsCartographieNationale,
+  serialiserIdsCartographieNationale,
+} from '../../../domain/ids-cartographie-nationale'
+import { LieuId } from '../../../domain/lieu-id'
+import type { SourceCartographie } from '../../../domain/tracabilite'
+
 /**
  * Un lieu de la cartographie nationale, tel que l'Entrepôt le décrit.
  *
- * `identifiantCartographie` est un identifiant **composite** : quand plusieurs
- * sources décrivent le même endroit, la cartographie concatène leurs
- * identifiants. Les tokens de la coop y portent le préfixe
- * `Coop-numérique_`, suivi de l'identifiant du lieu chez nous.
+ * Ses identifiants sont ceux de `IdsCartographieNationale` : quand plusieurs
+ * sources décrivent le même endroit, la cartographie réunit leurs tokens sous
+ * une seule fiche. Ceux de la coop portent le préfixe `Coop-numérique_`, suivi
+ * de l'identifiant du lieu chez nous — ce sont eux que la réconciliation
+ * cherche.
  */
 export type LieuCarto = {
-  readonly identifiantCartographie: string
-  readonly source: string | null
+  readonly identifiantCartographie: IdsCartographieNationale
+  readonly source: SourceCartographie | null
   readonly dateMaj: Date | null
 }
 
@@ -16,28 +24,37 @@ export type LieuCarto = {
  * Les lieux de la coop que la cartographie a réunis sous un même identifiant.
  * Le premier survit à la fusion, les suivants lui cèdent leurs rattachements.
  */
-export type LieuxCoopReunis = {
-  readonly identifiantCartographie: string
-  readonly source: string | null
-  readonly dateMaj: Date | null
-  readonly coopIds: readonly string[]
+export type LieuxCoopReunis = LieuCarto & {
+  readonly coopIds: readonly LieuId[]
 }
 
 export const PREFIXE_COOP = 'Coop-numérique_'
-const SEPARATEUR = '__'
 
-/** Les identifiants coop portés par un identifiant composite, sans doublon. */
+/**
+ * Les lieux de la coop qu'un identifiant composite désigne, sans doublon.
+ *
+ * Un token mal formé est écarté : la cartographie agrège des producteurs qui ne
+ * garantissent rien de la forme, et une réconciliation d'une demi-heure ne doit
+ * pas s'arrêter sur une chaîne qui ne ressemble pas à un identifiant.
+ */
 export const identifiantsCoop = (
-  identifiantCartographie: string,
-): readonly string[] =>
+  identifiantCartographie: IdsCartographieNationale,
+): readonly LieuId[] =>
   Array.from(
     new Set(
       identifiantCartographie
-        .split(SEPARATEUR)
         .filter((token) => token.startsWith(PREFIXE_COOP))
         .map((token) => token.slice(PREFIXE_COOP.length)),
     ),
   )
+    .map(LieuId.safe)
+    .filter((id) => id !== null)
+
+/** La forme attendue par la colonne : les tokens recollés. */
+export const identifiantEnColonne = ({
+  identifiantCartographie,
+}: LieuCarto): string =>
+  serialiserIdsCartographieNationale(identifiantCartographie)
 
 /**
  * Les lieux carto qui désignent au moins un lieu de la coop, regroupés. Ceux

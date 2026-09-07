@@ -1,3 +1,5 @@
+import { IdsCartographieNationale } from '../../../domain/ids-cartographie-nationale'
+import { SourceCartographie } from '../../../domain/tracabilite'
 import { modificationExterne } from './modification-externe'
 
 const LE_15_JANVIER = new Date('2026-01-15')
@@ -7,8 +9,10 @@ describe('trace d’une modification venue d’ailleurs', () => {
     expect(
       modificationExterne(
         {
-          identifiantCartographie: 'Hinaura_Fablab__Coop-numérique_abc',
-          source: 'Hinaura',
+          identifiantCartographie: IdsCartographieNationale(
+            'Hinaura_Fablab__Coop-numérique_abc',
+          ),
+          source: SourceCartographie('Hinaura'),
           dateMaj: new Date('2026-02-01'),
         },
         LE_15_JANVIER,
@@ -23,8 +27,9 @@ describe('trace d’une modification venue d’ailleurs', () => {
     expect(
       modificationExterne(
         {
-          identifiantCartographie: 'Coop-numérique_abc',
-          source: 'Coop numérique',
+          identifiantCartographie:
+            IdsCartographieNationale('Coop-numérique_abc'),
+          source: SourceCartographie('Coop numérique'),
           dateMaj: new Date('2026-02-01'),
         },
         LE_15_JANVIER,
@@ -36,8 +41,10 @@ describe('trace d’une modification venue d’ailleurs', () => {
     expect(
       modificationExterne(
         {
-          identifiantCartographie: 'Hinaura_Fablab__Coop-numérique_abc',
-          source: 'Hinaura',
+          identifiantCartographie: IdsCartographieNationale(
+            'Hinaura_Fablab__Coop-numérique_abc',
+          ),
+          source: SourceCartographie('Hinaura'),
           dateMaj: new Date('2026-01-01'),
         },
         LE_15_JANVIER,
@@ -49,8 +56,10 @@ describe('trace d’une modification venue d’ailleurs', () => {
     expect(
       modificationExterne(
         {
-          identifiantCartographie: 'Hinaura_Fablab__Coop-numérique_abc',
-          source: 'Hinaura',
+          identifiantCartographie: IdsCartographieNationale(
+            'Hinaura_Fablab__Coop-numérique_abc',
+          ),
+          source: SourceCartographie('Hinaura'),
           dateMaj: null,
         },
         LE_15_JANVIER,
@@ -62,7 +71,8 @@ describe('trace d’une modification venue d’ailleurs', () => {
     expect(
       modificationExterne(
         {
-          identifiantCartographie: 'Coop-numérique_abc',
+          identifiantCartographie:
+            IdsCartographieNationale('Coop-numérique_abc'),
           source: null,
           dateMaj: new Date('2026-02-01'),
         },
