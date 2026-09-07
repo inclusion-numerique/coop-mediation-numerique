@@ -1,7 +1,7 @@
 'use client'
 
 import { optionsWithEmptyValue } from '@app/ui/components/Form/utils/options'
-import { descriptionMaxLength } from '@app/web/features/lieux-activite/formulaire/DescriptionValidation'
+import { RESUME_MAX_LENGTH } from '@app/web/features/lieux-activite/domain/regles-de-saisie'
 import { formationLabelOptions } from '@app/web/features/lieux-activite/ui/options'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import { useSelector } from '@tanstack/react-form'
@@ -30,7 +30,7 @@ export const DescriptionFields = withForm({
               nativeTextAreaProps={{ rows: 3 }}
               label="Résumé de l’activité du lieu"
               hintText="Ce résumé permet d’introduire brièvement l’activité du lieu."
-              info={`${presentationResume.length}/${descriptionMaxLength} caractères`}
+              info={`${presentationResume.length}/${RESUME_MAX_LENGTH} caractères`}
             />
           )}
         </form.AppField>

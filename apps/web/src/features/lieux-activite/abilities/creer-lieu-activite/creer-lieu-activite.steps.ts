@@ -42,7 +42,6 @@ const saisie: CreerLieuActiviteData = {
   siteWeb: null,
   ficheAccesLibre: null,
   priseRdv: null,
-  horaires: null,
   horairesComment: null,
   openingHours: emptyOpeningHours,
   modalitesAcces: null,
@@ -54,13 +53,12 @@ const saisie: CreerLieuActiviteData = {
   publicsSpecifiquementAdresses: [PublicSpecifiquementAdresse.Jeunes],
 }
 
-const creer = async (mediateurId: string | null) => {
+const creer = async (
+  mediateurId: string | null,
+  quoi: CreerLieuActiviteData = saisie,
+) => {
   dernier.creation = await creerLieuActivite({
-    lieu: nouveauLieu(
-      saisie,
-      UserId(ficheSemee().userIds[0] ?? ''),
-      new Date(),
-    ),
+    lieu: nouveauLieu(quoi, UserId(ficheSemee().userIds[0] ?? ''), new Date()),
     mediateurId: mediateurId == null ? null : MediateurId(mediateurId),
   })
 
@@ -149,3 +147,38 @@ After(async () => {
   })
   await prismaClient.lieuInclusion.deleteMany({ where: { id: { in: ids } } })
 })
+
+const COMMENTAIRE = 'Fermé le premier lundi du mois'
+
+When(
+  "ce médiateur crée un lieu ouvert le lundi matin avec un commentaire d'horaires",
+  async () => {
+    await creer(ficheSemee().mediateurRattacheId, {
+      ...saisie,
+      horairesComment: COMMENTAIRE,
+      openingHours: {
+        ...emptyOpeningHours,
+        Mo: {
+          am: { startTime: '09:00', endTime: '12:00', isOpen: true },
+          pm: { startTime: null, endTime: null, isOpen: false },
+        },
+      },
+    })
+  },
+)
+
+Then(
+  'les horaires du lieu créé portent le commentaire une seule fois',
+  async () => {
+    const lieu = await prismaClient.lieuInclusion.findUniqueOrThrow({
+      where: { id: dernier.lieuxCreesIds.at(-1) ?? '' },
+      select: { horaires: true },
+    })
+
+    assert.strictEqual(
+      (lieu.horaires ?? '').split(COMMENTAIRE).length - 1,
+      1,
+      `Le commentaire devrait figurer une seule fois : ${lieu.horaires}`,
+    )
+  },
+)

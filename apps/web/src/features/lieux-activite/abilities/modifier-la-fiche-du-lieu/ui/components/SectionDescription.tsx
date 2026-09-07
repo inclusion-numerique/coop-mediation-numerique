@@ -1,13 +1,11 @@
 'use client'
 
 import EditCardTanStack from '@app/web/components/EditCardTanStack'
+import { RESUME_MAX_LENGTH } from '@app/web/features/lieux-activite/domain/regles-de-saisie'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useStore } from '@tanstack/react-form'
 import type { z } from 'zod'
-import {
-  DescriptionSaisie,
-  resumeMaxLength,
-} from '../../action/modifier-la-fiche-du-lieu.validation'
+import { DescriptionSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
 import type { EnregistrerUneSection } from '../enregistrer-une-section'
 import type { FicheAffichee } from '../fiche-du-lieu.presenter'
 import { EtatVide } from './EtatVide'
@@ -59,7 +57,7 @@ export const SectionDescription = ({
             {(field) => (
               <field.Input
                 label="Résumé"
-                hintText={`${resumeMaxLength} caractères maximum`}
+                hintText={`${RESUME_MAX_LENGTH} caractères maximum`}
                 textArea
                 isPending={isPending}
               />

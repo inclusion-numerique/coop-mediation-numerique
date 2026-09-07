@@ -2,9 +2,15 @@ import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
 import type { Lieu } from '../../../../domain/lieu'
 import type { LieuId } from '../../../../domain/lieu-id'
+import { publicationSansService } from '../../../../domain/publication'
 import type { UserId } from '../../../../domain/user-id'
+import { estPublie } from '../../../../domain/visibilite-cartographie'
 import { lieuFromDomain } from '../../../../implementation'
-import { type EchecDeModification, FicheIntrouvable } from '../../domain/errors'
+import {
+  type EchecDeModification,
+  FicheIntrouvable,
+  PublicationSansService,
+} from '../../domain/errors'
 import {
   appliquerModification,
   type ModificationLieu,
@@ -104,6 +110,18 @@ export const modifierLaFicheDuLieu = async ({
     par,
     maintenant,
   )
+
+  // Mesurée sur le lieu APRÈS modification, et non sur la saisie : la
+  // visibilité et les services s'éditent dans deux sections, et la règle se
+  // enfreint des deux côtés — rendre visible un lieu sans service, ou retirer
+  // le dernier service d'un lieu visible.
+  if (
+    publicationSansService(
+      estPublie(modifie.visibilite),
+      modifie.fiche.services,
+    )
+  )
+    return failure(PublicationSansService(id))
 
   await prismaClient.lieuInclusion.update({
     where: { id },

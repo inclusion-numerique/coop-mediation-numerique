@@ -50,3 +50,16 @@
 * Given un médiateur qui exerce dans un lieu
 * When ce médiateur crée un lieu « Tiers-lieu du Port »
 * Then le lieu créé ne vise aucun public en particulier
+
+## Rule: Les horaires portent leur commentaire une seule fois
+
+> La saisie composait déjà la chaîne OpenStreetMap avec son commentaire, et le
+> mapper la recomposait : `appendComment` ajoutant plutôt que remplaçant, le
+> commentaire s'écrivait deux fois. Les horaires ne se composent plus qu'à un
+> seul endroit, à partir de la grille.
+
+### Scenario: Le commentaire n'apparaît qu'une fois dans les horaires
+
+* Given un médiateur qui exerce dans un lieu
+* When ce médiateur crée un lieu ouvert le lundi matin avec un commentaire d'horaires
+* Then les horaires du lieu créé portent le commentaire une seule fois

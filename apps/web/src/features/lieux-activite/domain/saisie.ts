@@ -1,4 +1,5 @@
 import { telephoneCanonique } from '@app/web/libraries/telephone'
+import { appendComment } from '@app/web/opening-hours/openingHoursHelpers'
 import {
   Adresse,
   Courriel,
@@ -16,6 +17,10 @@ import {
   type Presentation,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import {
+  fromTimetableOpeningHours,
+  type Schedule,
+} from '@gouvfr-anct/timetable-to-osm-opening-hours'
 
 /**
  * Des valeurs brutes traduites en modèles du standard.
@@ -180,3 +185,20 @@ export const itineranceSaisie = (
     : itinerant
       ? [Itinerance.Itinerant]
       : [Itinerance.Fixe]
+
+/**
+ * Les horaires : une grille hebdomadaire à la saisie, une chaîne au format
+ * OpenStreetMap dans le standard, et le commentaire libre à la suite.
+ *
+ * La composition vit ici parce que les deux formulaires saisissent la même
+ * grille. Elle a longtemps été faite deux fois sur le chemin de la création —
+ * une fois en projetant la saisie, une fois dans le mapper — et `appendComment`
+ * ajoutant plutôt que remplaçant, le commentaire s'écrivait en double.
+ */
+export const horairesSaisis = (
+  grille: Schedule,
+  commentaire: string | null | undefined,
+): string | null =>
+  nonVide(
+    appendComment(fromTimetableOpeningHours(grille), nonVide(commentaire)),
+  )

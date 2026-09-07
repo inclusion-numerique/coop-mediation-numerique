@@ -1,5 +1,4 @@
 import type { CreerLieuActiviteData } from '@app/web/features/lieux-activite/formulaire/CreerLieuActiviteValidation'
-import { appendComment } from '@app/web/opening-hours/openingHoursHelpers'
 import { Contact, Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { v4 } from 'uuid'
 import { BanId } from '../../../domain/ban-id'
@@ -9,10 +8,10 @@ import { LieuId } from '../../../domain/lieu-id'
 import {
   adresseSaisie,
   courrielsSaisis,
+  horairesSaisis,
   itineranceSaisie,
   localisationSaisie,
   modalitesAccesSaisies,
-  nonVide,
   presentationSaisie,
   sitesWebSaisis,
   telephoneSaisi,
@@ -67,9 +66,7 @@ const description = (
 const informationsPratiques = (
   saisie: CreerLieuActiviteData,
 ): Pick<Fiche, 'horaires' | 'ficheAccesLibre' | 'priseRdv'> => ({
-  horaires: nonVide(
-    appendComment(saisie.horaires ?? '', nonVide(saisie.horairesComment)),
-  ),
+  horaires: horairesSaisis(saisie.openingHours, saisie.horairesComment),
   ficheAccesLibre: urlSaisie(saisie.ficheAccesLibre),
   priseRdv: urlSaisie(saisie.priseRdv),
 })

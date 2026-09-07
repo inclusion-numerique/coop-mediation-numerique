@@ -10,4 +10,18 @@ export const FicheIntrouvable = (id: LieuId): FicheIntrouvable => ({
   id,
 })
 
-export type EchecDeModification = FicheIntrouvable
+/**
+ * La publication demande au moins un service — que la section éditée soit la
+ * visibilité, ou celle des services dont on retirerait le dernier.
+ */
+export type PublicationSansService = {
+  readonly _tag: 'PublicationSansService'
+  readonly id: LieuId
+}
+
+export const PublicationSansService = (id: LieuId): PublicationSansService => ({
+  _tag: 'PublicationSansService',
+  id,
+})
+
+export type EchecDeModification = FicheIntrouvable | PublicationSansService

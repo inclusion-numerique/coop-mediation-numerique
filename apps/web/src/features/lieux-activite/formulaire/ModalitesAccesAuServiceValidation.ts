@@ -1,4 +1,7 @@
-import { telephoneValidation } from '@app/web/utils/telephoneValidation'
+import {
+  AdresseMailSaisie,
+  NumeroTelephoneSaisi,
+} from '@app/web/features/lieux-activite/domain/regles-de-saisie'
 import { Frais } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import z from 'zod'
 
@@ -7,12 +10,9 @@ export const ModalitesAccesAuServiceShape = {
     .object({
       surPlace: z.boolean().nullish(),
       parTelephone: z.boolean().nullish(),
-      numeroTelephone: telephoneValidation,
+      numeroTelephone: NumeroTelephoneSaisi,
       parMail: z.boolean().nullish(),
-      adresseMail: z
-        .string()
-        .email('Veuillez renseigner une adresse email valide')
-        .nullish(),
+      adresseMail: AdresseMailSaisie,
     })
     .nullish()
     .superRefine((data, refinementContext) => {
@@ -33,12 +33,3 @@ export const ModalitesAccesAuServiceShape = {
     }),
   fraisACharge: z.array(z.nativeEnum(Frais)).nullish(),
 }
-
-export const ModalitesAccesAuServiceValidation = z.object({
-  id: z.string().uuid(),
-  ...ModalitesAccesAuServiceShape,
-})
-
-export type ModalitesAccesAuServiceData = z.infer<
-  typeof ModalitesAccesAuServiceValidation
->

@@ -11,7 +11,11 @@ import {
 } from '@app/web/features/lieux-activite/lieux-activite.cucumber'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { Typologie, Url } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import {
+  Service,
+  Typologie,
+  Url,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { depuisLaSaisie } from './action/depuis-la-saisie'
 import { InformationsGeneralesSaisie } from './action/modifier-la-fiche-du-lieu.validation'
 import { informationsGeneralesSoumises } from './ui/informations-generales-soumises'
@@ -256,4 +260,72 @@ Then("le lieu n'a plus de nom d'usage", async () => {
 Then('le nom du lieu est celui qui a été saisi', async () => {
   const { lieu } = await relire()
   assert.strictEqual(lieu.fiche.nom, 'Tiers-lieu du Port')
+})
+
+const derniere: { issue?: Awaited<ReturnType<typeof modifierLaFicheDuLieu>> } =
+  {}
+
+Given('une fiche de lieu sans service', async () => {
+  await semerUneFicheDeLieu()
+
+  await prismaClient.lieuInclusion.update({
+    where: { id: ficheSemee().lieuId },
+    data: { services: [] },
+  })
+})
+
+Given('une fiche de lieu visible sur la cartographie', async () => {
+  await semerUneFicheDeLieu()
+
+  await prismaClient.lieuInclusion.update({
+    where: { id: ficheSemee().lieuId },
+    data: { visiblePourCartographieNationale: true },
+  })
+})
+
+When(
+  'le médiateur rattaché rend le lieu visible sur la cartographie',
+  async () => {
+    derniere.issue = await modifierLaFicheDuLieu({
+      id: LieuId(ficheSemee().lieuId),
+      par: auteur(),
+      modification: depuisLaSaisie({
+        section: 'VisibiliteCartographie',
+        visiblePourCartographieNationale: true,
+      }),
+    })
+  },
+)
+
+When('le médiateur rattaché retire tous les services', async () => {
+  derniere.issue = await modifierLaFicheDuLieu({
+    id: LieuId(ficheSemee().lieuId),
+    par: auteur(),
+    modification: depuisLaSaisie({
+      section: 'ServicesEtAccompagnement',
+      services: [],
+      modalitesAccompagnement: [],
+    }),
+  })
+})
+
+Then('le lieu est visible sur la cartographie', async () => {
+  const { lieu } = await relire()
+  assert.strictEqual(lieu.visibilite, 'Publie')
+})
+
+Then("le lieu n'est pas visible sur la cartographie", async () => {
+  const { lieu } = await relire()
+  assert.strictEqual(lieu.visibilite, 'NonPublie')
+})
+
+Then('la modification est refusée', () => {
+  assert.strictEqual(derniere.issue?.success, false)
+})
+
+Then('le lieu annonce toujours son service', async () => {
+  const { lieu } = await relire()
+  assert.deepStrictEqual(lieu.fiche.services, [
+    Service.AideAuxDemarchesAdministratives,
+  ])
 })

@@ -13,12 +13,3 @@ export const TypesDePublicsAccueillisShape = {
     .array(z.nativeEnum(PublicSpecifiquementAdresse))
     .nullish(),
 }
-
-export const TypesDePublicsAccueillisValidation = z.object({
-  id: z.string().uuid(),
-  ...TypesDePublicsAccueillisShape,
-})
-
-export type TypesDePublicsAccueillisData = z.infer<
-  typeof TypesDePublicsAccueillisValidation
->

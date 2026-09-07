@@ -1,11 +1,8 @@
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
+import type { HorairesSaisis } from '@app/web/features/lieux-activite/domain/horaires.validation'
 import type { FormationLabelPropose as FormationLabel } from '@app/web/features/lieux-activite/domain/nomenclatures'
 import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite/formulaire/CreerLieuActiviteValidation'
-import type { OpeningHoursData } from '@app/web/features/lieux-activite/formulaire/OpeningHoursValidation'
-import {
-  appendComment,
-  emptyOpeningHours,
-} from '@app/web/opening-hours/openingHoursHelpers'
+import { emptyOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import type {
   Frais as FraisACharge,
   ModaliteAccompagnement,
@@ -14,10 +11,6 @@ import type {
   Service,
   Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import {
-  fromTimetableOpeningHours,
-  type Schedule,
-} from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import { formOptions } from '@tanstack/react-form'
 import z from 'zod'
 
@@ -41,7 +34,7 @@ export type CreerLieuActiviteFormData = {
   ficheAccesLibre: string
   priseRdv: string
   horairesComment: string
-  openingHours: OpeningHoursData
+  openingHours: HorairesSaisis
   services: Service[]
   modalitesAccompagnement: ModaliteAccompagnement[]
   modalitesAcces: {
@@ -75,10 +68,6 @@ export const toCreerLieuData = (value: CreerLieuActiviteFormData) => ({
     numeroTelephone: emptyToNull(value.modalitesAcces.numeroTelephone),
     adresseMail: emptyToNull(value.modalitesAcces.adresseMail),
   },
-  horaires: appendComment(
-    fromTimetableOpeningHours(value.openingHours as Schedule),
-    emptyToNull(value.horairesComment),
-  ),
 })
 
 /**
@@ -109,7 +98,7 @@ export const creerLieuActiviteDefaultValues = (
   ficheAccesLibre: '',
   priseRdv: '',
   horairesComment: '',
-  openingHours: emptyOpeningHours as OpeningHoursData,
+  openingHours: emptyOpeningHours,
   services: [],
   modalitesAccompagnement: [],
   modalitesAcces: {

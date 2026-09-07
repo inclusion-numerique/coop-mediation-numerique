@@ -25,18 +25,44 @@ const Heure = z
   .nullish()
   .transform((valeur) => (valeur == null || valeur === '' ? null : valeur))
 
-const DemiJournee = z.object({
-  startTime: Heure,
-  endTime: Heure,
-  isOpen: z.boolean(),
-})
+/**
+ * Une demi-journée ouverte porte ses deux heures. Sans elles, la composition
+ * OSM laisserait tomber l'ouverture : la grille afficherait un créneau que la
+ * fiche n'annoncerait pas.
+ */
+const DemiJournee = z
+  .object({
+    startTime: Heure,
+    endTime: Heure,
+    isOpen: z.boolean(),
+  })
+  .superRefine(({ isOpen, startTime, endTime }, contexte) => {
+    if (!isOpen) return
+
+    if (startTime == null)
+      contexte.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'À renseigner',
+        path: ['startTime'],
+      })
+
+    if (endTime == null)
+      contexte.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'À renseigner',
+        path: ['endTime'],
+      })
+  })
 
 const Journee = z.object({ am: DemiJournee, pm: DemiJournee })
 
 /**
- * La grille hebdomadaire, validée dans la forme qu'attend le standard — d'où
- * le fait qu'elle vive ici et non dans le formulaire de création : le contrat
- * d'entrée d'une ability ne dépend pas du schéma d'un formulaire.
+ * La grille hebdomadaire, validée dans la forme qu'attend le standard.
+ *
+ * Elle vit au niveau de la feature parce que créer un lieu et corriger sa fiche
+ * saisissent les mêmes horaires : deux grilles ont longtemps coexisté, l'une
+ * exigeant les heures d'une demi-journée ouverte, l'autre le format `HH:MM`.
+ * Celle-ci demande les deux.
  */
 export const HorairesValidation = z.object({
   Mo: Journee,

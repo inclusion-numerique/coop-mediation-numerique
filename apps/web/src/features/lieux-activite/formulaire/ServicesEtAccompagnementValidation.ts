@@ -10,12 +10,3 @@ export const ServicesEtAccompagnementShape = {
     .array(z.nativeEnum(ModaliteAccompagnement))
     .nullish(),
 }
-
-export const ServicesEtAccompagnementValidation = z.object({
-  id: z.string().uuid(),
-  ...ServicesEtAccompagnementShape,
-})
-
-export type ServicesEtAccompagnementData = z.infer<
-  typeof ServicesEtAccompagnementValidation
->

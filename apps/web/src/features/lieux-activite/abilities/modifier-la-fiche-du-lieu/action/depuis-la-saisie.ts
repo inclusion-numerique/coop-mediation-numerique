@@ -1,18 +1,13 @@
-import { appendComment } from '@app/web/opening-hours/openingHoursHelpers'
 import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import {
-  fromTimetableOpeningHours,
-  type Schedule,
-} from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import { BanId } from '../../../domain/ban-id'
 import { NomUsage } from '../../../domain/identite-sirene'
 import {
   adresseSaisie,
   courrielsSaisis,
+  horairesSaisis,
   itineranceSaisie,
   localisationSaisie,
   modalitesAccesSaisies,
-  nonVide,
   pivotSaisi,
   presentationSaisie,
   sitesWebSaisis,
@@ -22,18 +17,6 @@ import {
 import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
 import type { ModificationLieu } from '../domain/modification-lieu'
 import type { SaisieDeSection } from './modifier-la-fiche-du-lieu.validation'
-
-const horairesOsm = (
-  openingHours: Schedule,
-  commentaire: string | null | undefined,
-): string | null => {
-  const osm = appendComment(
-    fromTimetableOpeningHours(openingHours),
-    nonVide(commentaire),
-  ).trim()
-
-  return osm === '' ? null : osm
-}
 
 type Saisie<Section extends SaisieDeSection['section']> = Extract<
   SaisieDeSection,
@@ -81,7 +64,7 @@ const informationsPratiques = (
   sitesWeb: sitesWebSaisis(saisie.siteWeb),
   ficheAccesLibre: urlSaisie(saisie.ficheAccesLibre),
   priseRdv: urlSaisie(saisie.priseRdv),
-  horaires: horairesOsm(saisie.openingHours, saisie.horairesComment),
+  horaires: horairesSaisis(saisie.openingHours, saisie.horairesComment),
 })
 
 const description = (

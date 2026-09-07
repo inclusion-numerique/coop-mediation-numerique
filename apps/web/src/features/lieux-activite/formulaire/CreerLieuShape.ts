@@ -1,3 +1,7 @@
+import {
+  PUBLICATION_SANS_SERVICE,
+  publicationSansService,
+} from '@app/web/features/lieux-activite/domain/publication'
 import { DescriptionShape } from './DescriptionValidation'
 import { IdentiteLieuShape } from './InformationsGeneralesValidation'
 import { InformationsPratiquesShape } from './InformationsPratiquesValidation'
@@ -30,10 +34,9 @@ export const auMoinsUnServiceSiVisible: [
   { message: string; path: (string | number)[] },
 ] = [
   (data) =>
-    !data.visiblePourCartographieNationale || (data.services?.length ?? 0) > 0,
-  {
-    message:
-      'Au moins un service doit être renseigné pour que le lieu d’activité soit visible sur la cartographie.',
-    path: ['services'],
-  },
+    !publicationSansService(
+      data.visiblePourCartographieNationale === true,
+      data.services,
+    ),
+  { message: PUBLICATION_SANS_SERVICE, path: ['services'] },
 ]

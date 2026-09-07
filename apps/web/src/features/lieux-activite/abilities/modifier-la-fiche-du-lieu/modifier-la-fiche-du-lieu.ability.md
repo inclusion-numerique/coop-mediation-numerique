@@ -93,3 +93,31 @@ description, services et accompagnement, modalités d'accès, publics accueillis
 * Then le lieu n'a plus d'immatriculation
 * And le lieu n'a plus de nom d'usage
 * And le nom du lieu est celui qui a été saisi
+
+## Rule: Un lieu visible sur la cartographie annonce au moins un service
+
+> La règle existait à la création et manquait à la modification : on pouvait
+> créer un lieu invisible sans service, puis le rendre visible. Elle se mesure
+> sur le lieu APRÈS modification, et non sur la saisie, parce qu'on l'enfreint
+> des deux côtés — rendre visible un lieu sans service, ou retirer le dernier
+> service d'un lieu visible.
+
+### Scenario: Rendre visible un lieu qui annonce un service
+
+* Given une fiche de lieu avec un site web, un téléphone et un courriel
+* When le médiateur rattaché rend le lieu visible sur la cartographie
+* Then le lieu est visible sur la cartographie
+
+### Scenario: Rendre visible un lieu sans service est refusé
+
+* Given une fiche de lieu sans service
+* When le médiateur rattaché rend le lieu visible sur la cartographie
+* Then la modification est refusée
+* And le lieu n'est pas visible sur la cartographie
+
+### Scenario: Retirer le dernier service d'un lieu visible est refusé
+
+* Given une fiche de lieu visible sur la cartographie
+* When le médiateur rattaché retire tous les services
+* Then la modification est refusée
+* And le lieu annonce toujours son service
