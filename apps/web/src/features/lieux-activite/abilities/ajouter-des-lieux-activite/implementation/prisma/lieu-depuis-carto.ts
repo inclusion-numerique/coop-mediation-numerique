@@ -1,10 +1,8 @@
 import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import { coopCartographieNationaleSource } from '@app/web/libraries/cartographie-nationale'
-import { validateValidRnaDigits } from '@app/web/libraries/rna'
-import { validateValidSiretDigits } from '@app/web/libraries/siret'
 import type { Prisma } from '@prisma/client'
 import { v4 } from 'uuid'
-import type { CartoStructure } from '../../domain'
+import type { AdresseValidee, CartoStructure } from '../../domain'
 
 /**
  * Traduit une liste du schéma national vers les noms d'enum de la coop, en
@@ -17,24 +15,22 @@ const versCoop = <Standard extends string, Coop extends string>(
   table: { versCoop: (valeur: Standard) => Coop | null },
 ): Coop[] => [...vocabulaire.traduites(valeurs, table.versCoop)]
 
-/** Les colonnes d'un lieu de la coop, depuis une structure de la cartographie. */
+/**
+ * Les colonnes d'un lieu de la coop, depuis une structure de la cartographie —
+ * toutes sauf celles de l'adresse, que l'appelant complète avec celle que la
+ * Base Adresse Nationale a validée. C'est ce que dit l'`Omit` : la cartographie
+ * décrit le lieu, elle ne le situe pas.
+ */
 export const lieuDepuisCarto = ({
-  adresse,
-  codeInsee,
-  codePostal,
-  commune,
-  complementAdresse,
   courriels,
   ficheAccesLibre,
   fraisACharge,
   horaires,
   id,
   itinerance,
-  localisation,
   modalitesAcces,
   modalitesAccompagnement,
   nom,
-  pivot,
   presentationDetail,
   presentationResume,
   priseEnChargeSpecifique,
@@ -50,15 +46,6 @@ export const lieuDepuisCarto = ({
     structureCartographieNationaleId: id,
     visiblePourCartographieNationale: true,
     nom,
-    adresse,
-    complementAdresse,
-    commune,
-    codePostal,
-    siret: pivot && validateValidSiretDigits(pivot) ? pivot : null,
-    rna: pivot && validateValidRnaDigits(pivot) ? pivot : null,
-    codeInsee,
-    longitude: localisation?.longitude ?? null,
-    latitude: localisation?.latitude ?? null,
     ficheAccesLibre,
     horaires,
     presentationResume,
@@ -85,4 +72,4 @@ export const lieuDepuisCarto = ({
     ),
     fraisACharge: versCoop(fraisACharge, vocabulaire.fraisACharge),
     itinerance: versCoop(itinerance, vocabulaire.itinerance),
-  }) satisfies Prisma.LieuInclusionCreateManyInput
+  }) satisfies Omit<Prisma.LieuInclusionCreateManyInput, keyof AdresseValidee>

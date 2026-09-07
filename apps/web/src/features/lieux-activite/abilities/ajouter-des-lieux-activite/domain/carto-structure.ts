@@ -10,7 +10,16 @@ import type {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 
 /**
- * Une structure de la cartographie nationale, telle que la coop la reçoit.
+ * Ce que la cartographie nationale apporte à un lieu que la coop matérialise :
+ * sa fiche, et rien de plus.
+ *
+ * L'adresse n'en fait pas partie, ni les coordonnées. La cartographie ne porte
+ * pas d'identifiant BAN, donc rien n'y distingue une adresse reconnue d'une
+ * adresse saisie à l'estime ; celle de l'écran, validée, prime toujours. Les
+ * porter ici revenait à les calculer pour les écraser.
+ *
+ * Le pivot non plus : le schéma national le prévoit, mais la cartographie n'est
+ * pas une source fiable d'immatriculation — seule l'API Entreprise fait foi.
  *
  * Les listes sont des listes. L'Entrepôt les rend déjà en tableaux : les
  * assembler en chaînes séparées par `|` pour les redécouper au moment d'écrire
@@ -21,28 +30,12 @@ import type {
  * l'implémentation.
  *
  * Les `null` disent ce que la cartographie peut réellement taire : elle agrège
- * des sources hétérogènes, dont certaines ne renseignent ni coordonnées, ni
- * horaires, ni présentation.
+ * des sources hétérogènes, dont certaines ne renseignent ni horaires, ni
+ * présentation.
  */
 export type CartoStructure = {
   readonly id: string
   readonly nom: string
-  readonly adresse: string
-  readonly commune: string
-  readonly codePostal: string
-  readonly codeInsee: string | null
-  readonly complementAdresse: string | null
-  /** Un point, ou rien : une latitude sans longitude ne situe personne. */
-  readonly localisation: {
-    readonly latitude: number
-    readonly longitude: number
-  } | null
-  /**
-   * SIRET ou RNA. Toujours nul en pratique : la cartographie n'est pas une
-   * source fiable d'immatriculation, seule l'API Entreprise fait foi. Le champ
-   * demeure parce que le schéma national le porte.
-   */
-  readonly pivot: string | null
   readonly ficheAccesLibre: string | null
   readonly presentationDetail: string | null
   readonly presentationResume: string | null

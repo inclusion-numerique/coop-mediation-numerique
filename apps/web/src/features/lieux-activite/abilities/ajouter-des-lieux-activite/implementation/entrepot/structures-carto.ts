@@ -1,6 +1,5 @@
 import { entrepotPrismaClient } from '@app/web/entrepotPrismaClient'
 import { reconnues } from '@app/web/features/lieux-activite/vocabulaire'
-import { Prisma } from '@app/web/generated/entrepot'
 import {
   Frais,
   Itinerance,
@@ -13,12 +12,12 @@ import {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { CartoStructure } from '../../domain'
 
-// Reconstruit une CartoStructure (forme attendue par l'import "ajouter un lieu d'activité")
-// à partir d'une ligne `main.lieu_inclusion` + `main.adresse` de l'Entrepôt.
-// Le SIRET (pivot) n'est PAS repris : la cartographie nationale n'en est pas une source
-// fiable, seule l'API entreprise fait foi. Les coordonnées vivent dans `main.adresse.geom`
-// (postgis, non sélectionnable par le client typé) : on les lit via ST_Y/ST_X en SQL brut
-// pour que la structure coop créée à l'import conserve sa latitude/longitude.
+// Reconstruit une CartoStructure (la fiche attendue par l'import "ajouter un lieu
+// d'activité") à partir d'une ligne `main.lieu_inclusion` de l'Entrepôt.
+// Ni adresse ni coordonnées : celles de l'écran, validées par la Base Adresse
+// Nationale, priment toujours sur celles de la cartographie. Le SIRET (pivot) n'est
+// pas repris non plus — la cartographie nationale n'en est pas une source fiable,
+// seule l'API entreprise fait foi.
 
 const lieuSelect = {
   structureCartographieNationaleId: true,
@@ -38,16 +37,6 @@ const lieuSelect = {
   priseEnChargeSpecifique: true,
   fraisACharge: true,
   itinerance: true,
-  adresse: {
-    select: {
-      numeroVoie: true,
-      repetition: true,
-      nomVoie: true,
-      nomCommune: true,
-      codePostal: true,
-      codeInsee: true,
-    },
-  },
 } as const
 
 type LieuRow = {
@@ -68,14 +57,6 @@ type LieuRow = {
   priseEnChargeSpecifique: string[]
   fraisACharge: string[]
   itinerance: string[]
-  adresse: {
-    numeroVoie: number | null
-    repetition: string | null
-    nomVoie: string | null
-    nomCommune: string
-    codePostal: string
-    codeInsee: string
-  } | null
 }
 
 const contactValue = (
@@ -102,45 +83,7 @@ const contactValue = (
   }
 }
 
-/** Latitude et longitude ne valent qu'ensemble : un point, ou rien. */
-const localisation = (coords?: Coords): CartoStructure['localisation'] =>
-  coords?.latitude == null || coords.longitude == null
-    ? null
-    : { latitude: coords.latitude, longitude: coords.longitude }
-
-type Coords = { latitude: number | null; longitude: number | null }
-
-// main.adresse.geom est une géométrie postgis (Point, SRID 4326) que Prisma ne sait pas
-// sélectionner en typé : on extrait lat/long via ST_Y/ST_X en SQL brut, indexé par cartoId.
-const coordsByCartoId = async (
-  cartoIds: string[],
-): Promise<Map<string, Coords>> => {
-  if (cartoIds.length === 0) return new Map()
-
-  const rows = await entrepotPrismaClient.$queryRaw<
-    { cartoId: string; latitude: number | null; longitude: number | null }[]
-  >`
-    SELECT
-      li.structure_cartographie_nationale_id AS "cartoId",
-      ST_Y(a.geom) AS latitude,
-      ST_X(a.geom) AS longitude
-    FROM main.lieu_inclusion li
-    JOIN main.adresse a ON a.id = li.adresse_id
-    WHERE li.structure_cartographie_nationale_id IN (${Prisma.join(cartoIds)})
-  `
-
-  return new Map(
-    rows.map((row) => [
-      row.cartoId,
-      { latitude: row.latitude, longitude: row.longitude },
-    ]),
-  )
-}
-
-const toCartoStructure = (
-  lieu: LieuRow,
-  coords?: Coords,
-): CartoStructure | null => {
+const toCartoStructure = (lieu: LieuRow): CartoStructure | null => {
   if (!lieu.structureCartographieNationaleId) {
     return null
   }
@@ -148,21 +91,6 @@ const toCartoStructure = (
   return {
     id: lieu.structureCartographieNationaleId,
     nom: lieu.nom,
-    adresse: [
-      [lieu.adresse?.numeroVoie, lieu.adresse?.repetition]
-        .filter(Boolean)
-        .join(''),
-      lieu.adresse?.nomVoie,
-    ]
-      .filter(Boolean)
-      .join(' '),
-    commune: lieu.adresse?.nomCommune ?? '',
-    codePostal: lieu.adresse?.codePostal ?? '',
-    codeInsee: lieu.adresse?.codeInsee ?? null,
-    // SIRET non fiable côté carto → jamais repris
-    pivot: null,
-    complementAdresse: null,
-    localisation: localisation(coords),
     ficheAccesLibre: lieu.ficheAccesLibre,
     presentationDetail: lieu.presentationDetail,
     presentationResume: lieu.presentationResume,
@@ -191,42 +119,19 @@ const toCartoStructure = (
   }
 }
 
-export const findCartoStructure = async (
-  cartoId: string,
-): Promise<CartoStructure | null> => {
-  const [lieu, coords] = await Promise.all([
-    entrepotPrismaClient.lieuInclusion.findUnique({
-      where: { structureCartographieNationaleId: cartoId },
-      select: lieuSelect,
-    }),
-    coordsByCartoId([cartoId]),
-  ])
-  return lieu ? toCartoStructure(lieu, coords.get(cartoId)) : null
-}
-
 export const findCartoStructuresByIds = async (
   cartoIds: string[],
 ): Promise<Map<string, CartoStructure>> => {
   if (cartoIds.length === 0) return new Map()
 
-  const [lieux, coords] = await Promise.all([
-    entrepotPrismaClient.lieuInclusion.findMany({
-      where: { structureCartographieNationaleId: { in: cartoIds } },
-      select: lieuSelect,
-    }),
-    coordsByCartoId(cartoIds),
-  ])
+  const lieux = await entrepotPrismaClient.lieuInclusion.findMany({
+    where: { structureCartographieNationaleId: { in: cartoIds } },
+    select: lieuSelect,
+  })
 
   return new Map(
     lieux
-      .map((lieu) =>
-        toCartoStructure(
-          lieu,
-          lieu.structureCartographieNationaleId
-            ? coords.get(lieu.structureCartographieNationaleId)
-            : undefined,
-        ),
-      )
+      .map(toCartoStructure)
       .filter((s): s is CartoStructure => s !== null)
       .map((s) => [s.id, s]),
   )
