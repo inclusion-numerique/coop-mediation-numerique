@@ -195,6 +195,24 @@ const ficheApres = (
   }
 }
 
+/**
+ * Ce que la coop sait de l'établissement au répertoire SIRENE.
+ *
+ * `synchronisation` date la confrontation du pivot à SIRENE : elle atteste CE
+ * numéro-là. Un pivot qui change emporte donc sa preuve, sans quoi le nouveau
+ * SIRET hériterait de la vérification du précédent — et le job qui les contrôle,
+ * qui saute les lieux vérifiés depuis peu, ne le regarderait jamais.
+ */
+const identiteSireneApres = (
+  lieu: Lieu,
+  pivot: Pivot | null,
+  nomUsage: NomUsage | null,
+): Lieu['identiteSirene'] => ({
+  nomUsage,
+  synchronisation:
+    pivot === lieu.fiche.pivot ? lieu.identiteSirene.synchronisation : null,
+})
+
 /** L'enveloppe coop ne bouge que pour deux des sept sections. */
 const enveloppeApres = (lieu: Lieu, modification: ModificationLieu) => ({
   visibilite:
@@ -207,7 +225,7 @@ const enveloppeApres = (lieu: Lieu, modification: ModificationLieu) => ({
       : lieu.banId,
   identiteSirene:
     modification.section === 'InformationsGenerales'
-      ? { ...lieu.identiteSirene, nomUsage: modification.nomUsage }
+      ? identiteSireneApres(lieu, modification.pivot, modification.nomUsage)
       : lieu.identiteSirene,
 })
 

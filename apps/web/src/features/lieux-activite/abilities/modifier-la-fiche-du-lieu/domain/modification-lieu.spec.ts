@@ -6,10 +6,12 @@ import {
   Itinerance,
   ModaliteAcces,
   Nom,
+  Pivot,
   Service,
   Typologie,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { NomUsage } from '../../../domain/identite-sirene'
 import type { Lieu } from '../../../domain/lieu'
 import { LieuId } from '../../../domain/lieu-id'
 import { ModificationInconnue } from '../../../domain/tracabilite'
@@ -231,5 +233,69 @@ describe('modalités d’accès que le formulaire n’exprime pas', () => {
     expect(modifie.fiche.modalitesAcces).toEqual([
       ModaliteAcces.PrendreRdvEnLigne,
     ])
+  })
+})
+
+describe('ce que la coop sait de l’établissement au répertoire SIRENE', () => {
+  const verifieLe = new Date('2026-08-01T00:00:00Z')
+
+  const immatricule: Lieu = {
+    ...lieu,
+    fiche: { ...lieu.fiche, pivot: Pivot('13002603200016') },
+    identiteSirene: {
+      nomUsage: NomUsage('La Maison du Port'),
+      synchronisation: verifieLe,
+    },
+  }
+
+  const informationsGenerales = (pivot: Pivot | null) =>
+    ({
+      section: 'InformationsGenerales',
+      nom: immatricule.fiche.nom,
+      adresse: immatricule.fiche.adresse,
+      localisation: null,
+      banId: null,
+      itinerance: immatricule.fiche.itinerance,
+      typologies: immatricule.fiche.typologies,
+      pivot,
+      nomUsage: NomUsage('La Maison du Port'),
+    }) as const
+
+  it('garde la date de vérification tant que le pivot ne bouge pas', () => {
+    const modifie = appliquerModification(
+      immatricule,
+      informationsGenerales(Pivot('13002603200016')),
+      auteur,
+      maintenant,
+    )
+
+    expect(modifie.identiteSirene.synchronisation).toEqual(verifieLe)
+  })
+
+  /**
+   * La date atteste CE numéro-là. La garder ferait passer le nouveau SIRET pour
+   * vérifié, et le job qui les contrôle — qui saute les lieux vus depuis peu —
+   * ne le regarderait jamais.
+   */
+  it('efface la date de vérification quand le pivot change', () => {
+    const modifie = appliquerModification(
+      immatricule,
+      informationsGenerales(Pivot('81031049400015')),
+      auteur,
+      maintenant,
+    )
+
+    expect(modifie.identiteSirene.synchronisation).toBeNull()
+  })
+
+  it('efface la date de vérification quand le pivot disparaît', () => {
+    const modifie = appliquerModification(
+      immatricule,
+      informationsGenerales(null),
+      auteur,
+      maintenant,
+    )
+
+    expect(modifie.identiteSirene.synchronisation).toBeNull()
   })
 })
