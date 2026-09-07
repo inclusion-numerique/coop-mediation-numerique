@@ -1,4 +1,4 @@
-import * as vocabulaire from './index'
+import * as vocabulaire from './vocabulaire'
 
 type Pont<Coop extends string, Standard extends string> = {
   readonly table: Record<Coop, Standard>
@@ -6,8 +6,8 @@ type Pont<Coop extends string, Standard extends string> = {
 }
 
 /**
- * Traduire vers le standard ne peut pas échouer : la table est totale, et
- * `satisfies` vérifie à la compilation que chaque valeur citée existe bien dans
+ * Traduire vers le standard ne peut pas échouer : la table est totale, et le
+ * compilateur vérifie que chaque valeur citée est bien un membre de
  * l'énumération du paquet. Le retour, lui, passe par la table inversée — et
  * deux noms stockés qui désigneraient la même valeur du standard en feraient
  * disparaître un, sans que rien ne le signale.
