@@ -35,7 +35,7 @@ const DataTable = <
   headerPrefix,
   rowPrefix,
 }: {
-  rows: Data[]
+  rows: readonly Data[]
   configuration: Configuration
   className?: string
   classes?: DataTableClasses

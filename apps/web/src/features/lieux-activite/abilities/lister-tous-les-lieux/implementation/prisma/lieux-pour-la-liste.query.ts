@@ -1,5 +1,6 @@
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
+import type { LigneDeLaListe } from '../../ui/ligne-de-la-liste'
 
 export const searchStructureSelect = {
   id: true,
@@ -36,6 +37,10 @@ export const searchStructureSelect = {
 /**
  * Les colonnes de la liste d'administration, et ce que chaque lieu porte
  * d'activité : médiateurs en exercice, activités, emplois.
+ *
+ * Le type de retour est celui que l'écran déclare : c'est lui qui dit ce qu'il
+ * montre, et la requête qui s'y conforme. Sélectionner une colonne de moins ne
+ * compile plus.
  */
 export const lieuxPourLaListe = async ({
   skip,
@@ -47,7 +52,7 @@ export const lieuxPourLaListe = async ({
   take?: number
   skip?: number
   orderBy?: Prisma.LieuInclusionOrderByWithRelationInput[]
-}) => {
+}): Promise<LigneDeLaListe[]> => {
   const structures = await prismaClient.lieuInclusion.findMany({
     where,
     take,
@@ -60,5 +65,3 @@ export const lieuxPourLaListe = async ({
   // quoi se calculer et vaut zéro pour tout le monde.
   return structures.map((structure) => ({ ...structure, emploisCount: 0 }))
 }
-
-export type LieuDeLaListe = Awaited<ReturnType<typeof lieuxPourLaListe>>[number]

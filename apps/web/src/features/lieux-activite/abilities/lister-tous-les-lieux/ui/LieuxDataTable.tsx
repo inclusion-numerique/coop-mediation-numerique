@@ -1,5 +1,7 @@
 import { getStructureCartographieLink } from '@app/web/libraries/cartographie-nationale'
 import type {
+  DataTableColumn,
+  DataTableConfiguration,
   DataTableFilterValues,
   DataTableSearchParams,
 } from '@app/web/libs/data-table/DataTableConfiguration'
@@ -9,7 +11,33 @@ import { optionalNumberToString } from '@app/web/utils/formatNumber'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Tag from '@codegouvfr/react-dsfr/Tag'
-import type { LieuxDataTableConfiguration } from '../implementation/prisma/lieux-pour-la-liste.data'
+import type { LigneDeLaListe } from './ligne-de-la-liste'
+
+/**
+ * Les colonnes que l'écran offre au tri.
+ *
+ * Déclarées, et non déduites de la configuration : `DataTableColumn` type ses
+ * noms en `string`, si bien qu'une extraction rendrait `string` — un
+ * référentiel de tri qui n'exigerait plus rien. `ColonneDeLaListe` fait tenir
+ * les deux ensemble.
+ */
+export type ColonneTriable =
+  | 'nom'
+  | 'creation'
+  | 'modification'
+  | 'mediateursEnActivite'
+
+/**
+ * Une colonne triable doit être nommée ci-dessus, et le référentiel de tri doit
+ * couvrir cette union exactement : offrir un tri qu'aucune règle ne sait
+ * résoudre rendrait un lien qui ne trie rien.
+ */
+type ColonneDeLaListe = DataTableColumn<LigneDeLaListe> &
+  (
+    | { name: ColonneTriable; sortable: true }
+    | { name: ColonneTriable; defaultSortable: true }
+    | { sortable?: undefined; defaultSortable?: undefined }
+  )
 
 export const LieuxDataTable = {
   csvFilename: () => `coop-${dateAsIsoDay(new Date())}-structures`,
@@ -26,7 +54,7 @@ export const LieuxDataTable = {
       cell: ({ nom }) => nom,
       defaultSortable: true,
       defaultSortableDirection: 'asc',
-      orderBy: (direction) => [{ nom: direction }],
+      sortable: true,
     },
     {
       name: 'type',
@@ -140,7 +168,7 @@ export const LieuxDataTable = {
       defaultSortableDirection: 'desc',
       csvValues: ({ creation }) => [creation.toISOString()],
       cell: ({ creation }) => dateAsDayAndTime(creation),
-      orderBy: (direction) => [{ creation: direction }],
+      sortable: true,
     },
     {
       name: 'modification',
@@ -150,7 +178,7 @@ export const LieuxDataTable = {
       defaultSortableDirection: 'desc',
       csvValues: ({ modification }) => [modification.toISOString()],
       cell: ({ modification }) => dateAsDayAndTime(modification),
-      orderBy: (direction) => [{ modification: direction }],
+      sortable: true,
     },
     {
       name: 'employes',
@@ -158,8 +186,9 @@ export const LieuxDataTable = {
       csvHeaders: ['Employ\u00e9s'],
       csvValues: ({ emploisCount }) => [emploisCount],
       cell: ({ emploisCount }) => optionalNumberToString(emploisCount, null),
-      // Tri DB indisponible : le compteur d'emplois est corrélé (nom + code INSEE)
-      // côté application, sans relation FK exploitable par un orderBy Prisma.
+      // Colonne non triable : le compteur d'emplois est corrélé (nom + code
+      // INSEE) côté application, et aucune relation ne permet de le trier en
+      // base — le référentiel de tri n'a donc rien à en dire.
     },
     {
       name: 'mediateursEnActivite',
@@ -168,13 +197,17 @@ export const LieuxDataTable = {
       csvValues: ({ _count }) => [_count.mediateursEnActivite],
       cell: ({ _count }) =>
         optionalNumberToString(_count.mediateursEnActivite, null),
-      orderBy: (direction) => [{ mediateursEnActivite: { _count: direction } }],
+      sortable: true,
     },
   ],
-} satisfies LieuxDataTableConfiguration
+} satisfies DataTableConfiguration<LigneDeLaListe> & {
+  columns: ColonneDeLaListe[]
+}
 
-export type LieuxDataTableSearchParams =
-  DataTableSearchParams<LieuxDataTableConfiguration>
+export type LieuxDataTableSearchParams = DataTableSearchParams<
+  DataTableConfiguration<LigneDeLaListe>
+>
 
-export type LieuxDataTableFilterValues =
-  DataTableFilterValues<LieuxDataTableConfiguration>
+export type LieuxDataTableFilterValues = DataTableFilterValues<
+  DataTableConfiguration<LigneDeLaListe>
+>

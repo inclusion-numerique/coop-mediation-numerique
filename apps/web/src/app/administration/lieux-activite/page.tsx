@@ -1,7 +1,10 @@
 import CoopPageContainer from '@app/web/app/coop/CoopPageContainer'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import { rechercherDesLieux } from '@app/web/features/lieux-activite/abilities/lister-tous-les-lieux'
+import {
+  rechercherDesLieux,
+  triDesLieux,
+} from '@app/web/features/lieux-activite/abilities/lister-tous-les-lieux'
 import {
   LieuxDataTable,
   type LieuxDataTableSearchParams,
@@ -26,9 +29,10 @@ const Page = async (props: {
   const searchParams = await props.searchParams
   const { totalCount, searchResult } = await rechercherDesLieux({
     searchParams,
-    // Le tri se lit dans les colonnes de la table : c'est elle qui sait
-    // lesquelles sont triables, et selon quel champ.
-    orderBy: getDataTableOrderBy(searchParams, LieuxDataTable),
+    // La table dit quelles colonnes sont triables, le référentiel dit sur quoi
+    // elles se trient : la route les rapproche, et aucun des deux n'a besoin de
+    // connaître l'autre.
+    orderBy: getDataTableOrderBy(searchParams, LieuxDataTable, triDesLieux),
   })
 
   return (

@@ -81,8 +81,8 @@ export {
   TriDesLieux,
 } from './abilities/lister-mes-lieux-activite'
 export {
-  type LieuDeLaListe,
   rechercherDesLieux,
+  triDesLieux,
 } from './abilities/lister-tous-les-lieux'
 // Modifier la fiche
 export {
