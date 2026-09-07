@@ -12,7 +12,6 @@ import {
 import { handleSubmit } from '@app/web/libs/form/handle-submit'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useHydrated } from '@app/web/libs/form/use-hydrated'
-import { getDepartementCodeFromCodeInsee } from '@app/web/utils/getDepartementFromCodeInsee'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import Link from 'next/link'
@@ -22,7 +21,8 @@ import { z } from 'zod'
 import { LieuAAjouterComboBox } from './components/lieu-a-ajouter-combo-box'
 import { PanierDeLieux } from './components/PanierDeLieux'
 import { RechercheDeLieu } from './components/RechercheDeLieu'
-import { type LieuAuPanier, selectionner } from './panier'
+import { destination } from './destination'
+import { type LieuAuPanier, lieuCree, selectionner } from './panier'
 
 type FormValues = {
   lieux: LieuAuPanier[]
@@ -61,23 +61,6 @@ export const AjouterDesLieuxActivitePage = ({
   const [enCreation, setEnCreation] = useState(false)
   const [rechercheError, setRechercheError] = useState<string | null>(null)
 
-  /**
-   * Un panier d'un seul lieu mène à sa fiche : c'est ce qu'on est venu chercher.
-   * Au-delà, aucune fiche ne résume l'ajout, on revient à la liste.
-   */
-  const destination = (
-    lieux: readonly LieuAuPanier[],
-    rejoints: readonly string[],
-  ) => {
-    const premier = lieux.at(0)
-
-    return lieux.length === 1 && rejoints.length === 1 && premier != null
-      ? `/coop/mon-reseau/${getDepartementCodeFromCodeInsee(
-          premier.codeInsee ?? '',
-        )}/lieux/${rejoints[0]}`
-      : retourHref
-  }
-
   const form = useAppForm({
     validators: { onSubmit: panierShape },
     defaultValues: { lieux: [], recherche: null } as FormValues,
@@ -92,7 +75,7 @@ export const AjouterDesLieuxActivitePage = ({
           return
         }
 
-        router.push(destination(value.lieux, resultat.data.lieux))
+        router.push(destination(value.lieux, resultat.data.lieux, retourHref))
         router.refresh()
 
         createToast({
@@ -123,19 +106,10 @@ export const AjouterDesLieuxActivitePage = ({
       return
     }
 
-    form.pushFieldValue('lieux', {
-      id: resultat.data.id,
-      structureCartographieNationaleId: null,
-      nom: donnees.nom,
-      siret: null,
-      adresse: adresseBan.nom,
-      commune: adresseBan.commune,
-      codePostal: adresseBan.codePostal,
-      codeInsee: adresseBan.codeInsee,
-      banId: adresseBan.id,
-      latitude: adresseBan.latitude,
-      longitude: adresseBan.longitude,
-    })
+    form.pushFieldValue(
+      'lieux',
+      lieuCree({ id: resultat.data.id, nom: donnees.nom, adresseBan }),
+    )
     setEnCreation(false)
     createToast({
       priority: 'success',

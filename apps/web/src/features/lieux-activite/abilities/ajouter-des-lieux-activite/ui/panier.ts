@@ -1,3 +1,4 @@
+import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import {
   adresseNonVerifiableMessage,
   geocodeStructureAdresse,
@@ -92,3 +93,33 @@ export const selectionner = async (
     ? failure(`${lieu.nom} fait déjà partie de votre sélection.`)
     : success(lieu)
 }
+
+/**
+ * Le lieu qu'on vient de créer rejoint la sélection.
+ *
+ * Rien à géocoder ni à corréler, contrairement à un résultat de recherche : son
+ * adresse a été choisie dans la Base Adresse Nationale au moment de le saisir,
+ * et son id est celui que la coop vient de lui donner. Ni SIRET — la création
+ * n'en demande pas — ni id de cartographie : celui-là ne se pose qu'après coup.
+ */
+export const lieuCree = ({
+  id,
+  nom,
+  adresseBan,
+}: {
+  id: string
+  nom: string
+  adresseBan: AdresseBanData
+}): LieuAuPanier => ({
+  id,
+  structureCartographieNationaleId: null,
+  nom,
+  siret: null,
+  adresse: adresseBan.nom,
+  commune: adresseBan.commune,
+  codePostal: adresseBan.codePostal,
+  codeInsee: adresseBan.codeInsee,
+  banId: adresseBan.id,
+  latitude: adresseBan.latitude,
+  longitude: adresseBan.longitude,
+})
