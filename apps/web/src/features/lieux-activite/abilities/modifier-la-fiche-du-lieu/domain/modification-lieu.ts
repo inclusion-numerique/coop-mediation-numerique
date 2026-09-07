@@ -92,6 +92,85 @@ type Modification<Section extends SectionDeLaFiche> = Extract<
   { section: Section }
 >
 
+/** La visibilité relève de l'enveloppe coop : la fiche n'en sait rien. */
+const ficheInchangee = (fiche: Fiche): Fiche => fiche
+
+const informationsGenerales = (
+  fiche: Fiche,
+  {
+    nom,
+    adresse,
+    localisation,
+    itinerance,
+    typologies,
+    pivot,
+  }: Modification<'InformationsGenerales'>,
+): Fiche => ({
+  ...fiche,
+  nom,
+  adresse,
+  localisation,
+  itinerance,
+  typologies,
+  pivot,
+})
+
+const informationsPratiques = (
+  fiche: Fiche,
+  {
+    sitesWeb,
+    ficheAccesLibre,
+    priseRdv,
+    horaires,
+  }: Modification<'InformationsPratiques'>,
+): Fiche => ({
+  ...fiche,
+  contact: contactAvecSitesWeb(fiche.contact, sitesWeb),
+  ficheAccesLibre,
+  priseRdv,
+  horaires,
+})
+
+const description = (
+  fiche: Fiche,
+  { presentation, formationsLabels }: Modification<'Description'>,
+): Fiche => ({ ...fiche, presentation, formationsLabels })
+
+const servicesEtAccompagnement = (
+  fiche: Fiche,
+  {
+    services,
+    modalitesAccompagnement,
+  }: Modification<'ServicesEtAccompagnement'>,
+): Fiche => ({ ...fiche, services, modalitesAccompagnement })
+
+const modalitesAccesAuService = (
+  fiche: Fiche,
+  {
+    telephone,
+    courriels,
+    modalitesAcces,
+    fraisACharge,
+  }: Modification<'ModalitesAccesAuService'>,
+): Fiche => ({
+  ...fiche,
+  contact: contactAvecJoignabilite(fiche.contact, telephone, courriels),
+  modalitesAcces: modalitesApres(fiche.modalitesAcces, modalitesAcces),
+  fraisACharge,
+})
+
+const typesDePublicsAccueillis = (
+  fiche: Fiche,
+  {
+    publicsSpecifiquementAdresses,
+    priseEnChargeSpecifique,
+  }: Modification<'TypesDePublicsAccueillis'>,
+): Fiche => ({
+  ...fiche,
+  publicsSpecifiquementAdresses,
+  priseEnChargeSpecifique,
+})
+
 /**
  * Ce que chaque section change à la fiche, une ligne par section.
  *
@@ -106,58 +185,13 @@ const ficheParSection: {
     modification: Modification<Section>,
   ) => Fiche
 } = {
-  InformationsGenerales: (
-    fiche,
-    { nom, adresse, localisation, itinerance, typologies, pivot },
-  ) => ({
-    ...fiche,
-    nom,
-    adresse,
-    localisation,
-    itinerance,
-    typologies,
-    pivot,
-  }),
-
-  VisibiliteCartographie: (fiche) => fiche,
-
-  InformationsPratiques: (
-    fiche,
-    { sitesWeb, ficheAccesLibre, priseRdv, horaires },
-  ) => ({
-    ...fiche,
-    contact: contactAvecSitesWeb(fiche.contact, sitesWeb),
-    ficheAccesLibre,
-    priseRdv,
-    horaires,
-  }),
-
-  Description: (fiche, { presentation, formationsLabels }) => ({
-    ...fiche,
-    presentation,
-    formationsLabels,
-  }),
-
-  ServicesEtAccompagnement: (fiche, { services, modalitesAccompagnement }) => ({
-    ...fiche,
-    services,
-    modalitesAccompagnement,
-  }),
-
-  ModalitesAccesAuService: (
-    fiche,
-    { telephone, courriels, modalitesAcces, fraisACharge },
-  ) => ({
-    ...fiche,
-    contact: contactAvecJoignabilite(fiche.contact, telephone, courriels),
-    modalitesAcces: modalitesApres(fiche.modalitesAcces, modalitesAcces),
-    fraisACharge,
-  }),
-
-  TypesDePublicsAccueillis: (
-    fiche,
-    { publicsSpecifiquementAdresses, priseEnChargeSpecifique },
-  ) => ({ ...fiche, publicsSpecifiquementAdresses, priseEnChargeSpecifique }),
+  InformationsGenerales: informationsGenerales,
+  VisibiliteCartographie: ficheInchangee,
+  InformationsPratiques: informationsPratiques,
+  Description: description,
+  ServicesEtAccompagnement: servicesEtAccompagnement,
+  ModalitesAccesAuService: modalitesAccesAuService,
+  TypesDePublicsAccueillis: typesDePublicsAccueillis,
 }
 
 const ficheApres = <Section extends SectionDeLaFiche>(

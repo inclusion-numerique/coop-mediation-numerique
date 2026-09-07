@@ -28,54 +28,68 @@ type Colonnes = ReturnType<typeof lieuFromDomain>
  * à peu d'intervalle et la seconde réécrivait la première avec des valeurs
  * périmées. La table ci-dessous rend cette collision impossible.
  */
+const informationsGenerales = (colonnes: Colonnes): Partial<Colonnes> => ({
+  nom: colonnes.nom,
+  adresse: colonnes.adresse,
+  commune: colonnes.commune,
+  codePostal: colonnes.codePostal,
+  codeInsee: colonnes.codeInsee,
+  complementAdresse: colonnes.complementAdresse,
+  latitude: colonnes.latitude,
+  longitude: colonnes.longitude,
+  banId: colonnes.banId,
+  itinerance: colonnes.itinerance,
+  typologies: colonnes.typologies,
+  siret: colonnes.siret,
+  rna: colonnes.rna,
+  nomUsage: colonnes.nomUsage,
+})
+
+const visibiliteCartographie = (colonnes: Colonnes): Partial<Colonnes> => ({
+  visiblePourCartographieNationale: colonnes.visiblePourCartographieNationale,
+})
+
+const informationsPratiques = (colonnes: Colonnes): Partial<Colonnes> => ({
+  siteWeb: colonnes.siteWeb,
+  ficheAccesLibre: colonnes.ficheAccesLibre,
+  priseRdv: colonnes.priseRdv,
+  horaires: colonnes.horaires,
+})
+
+const description = (colonnes: Colonnes): Partial<Colonnes> => ({
+  presentationResume: colonnes.presentationResume,
+  presentationDetail: colonnes.presentationDetail,
+  formationsLabels: colonnes.formationsLabels,
+})
+
+const servicesEtAccompagnement = (colonnes: Colonnes): Partial<Colonnes> => ({
+  services: colonnes.services,
+  modalitesAccompagnement: colonnes.modalitesAccompagnement,
+})
+
+const modalitesAccesAuService = (colonnes: Colonnes): Partial<Colonnes> => ({
+  telephone: colonnes.telephone,
+  courriels: colonnes.courriels,
+  modalitesAcces: colonnes.modalitesAcces,
+  fraisACharge: colonnes.fraisACharge,
+})
+
+const typesDePublicsAccueillis = (colonnes: Colonnes): Partial<Colonnes> => ({
+  publicsSpecifiquementAdresses: colonnes.publicsSpecifiquementAdresses,
+  priseEnChargeSpecifique: colonnes.priseEnChargeSpecifique,
+})
+
 const colonnesParSection: Record<
   SectionDeLaFiche,
   (colonnes: Colonnes) => Partial<Colonnes>
 > = {
-  InformationsGenerales: (colonnes) => ({
-    nom: colonnes.nom,
-    adresse: colonnes.adresse,
-    commune: colonnes.commune,
-    codePostal: colonnes.codePostal,
-    codeInsee: colonnes.codeInsee,
-    complementAdresse: colonnes.complementAdresse,
-    latitude: colonnes.latitude,
-    longitude: colonnes.longitude,
-    banId: colonnes.banId,
-    itinerance: colonnes.itinerance,
-    typologies: colonnes.typologies,
-    siret: colonnes.siret,
-    rna: colonnes.rna,
-    nomUsage: colonnes.nomUsage,
-  }),
-  VisibiliteCartographie: (colonnes) => ({
-    visiblePourCartographieNationale: colonnes.visiblePourCartographieNationale,
-  }),
-  InformationsPratiques: (colonnes) => ({
-    siteWeb: colonnes.siteWeb,
-    ficheAccesLibre: colonnes.ficheAccesLibre,
-    priseRdv: colonnes.priseRdv,
-    horaires: colonnes.horaires,
-  }),
-  Description: (colonnes) => ({
-    presentationResume: colonnes.presentationResume,
-    presentationDetail: colonnes.presentationDetail,
-    formationsLabels: colonnes.formationsLabels,
-  }),
-  ServicesEtAccompagnement: (colonnes) => ({
-    services: colonnes.services,
-    modalitesAccompagnement: colonnes.modalitesAccompagnement,
-  }),
-  ModalitesAccesAuService: (colonnes) => ({
-    telephone: colonnes.telephone,
-    courriels: colonnes.courriels,
-    modalitesAcces: colonnes.modalitesAcces,
-    fraisACharge: colonnes.fraisACharge,
-  }),
-  TypesDePublicsAccueillis: (colonnes) => ({
-    publicsSpecifiquementAdresses: colonnes.publicsSpecifiquementAdresses,
-    priseEnChargeSpecifique: colonnes.priseEnChargeSpecifique,
-  }),
+  InformationsGenerales: informationsGenerales,
+  VisibiliteCartographie: visibiliteCartographie,
+  InformationsPratiques: informationsPratiques,
+  Description: description,
+  ServicesEtAccompagnement: servicesEtAccompagnement,
+  ModalitesAccesAuService: modalitesAccesAuService,
+  TypesDePublicsAccueillis: typesDePublicsAccueillis,
 }
 
 const ecriture = (lieu: Lieu, section: SectionDeLaFiche) => {
