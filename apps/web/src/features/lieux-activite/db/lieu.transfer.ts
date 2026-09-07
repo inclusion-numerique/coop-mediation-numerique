@@ -230,7 +230,12 @@ const fromPivot = (pivot: Pivot | null) => ({
   rna: pivot != null && isRna(pivot) ? pivot : null,
 })
 
-const fromAdresse = (adresse: Adresse | null) => ({
+/**
+ * Les colonnes d'adresse. Exporté parce que la matérialisation d'un lieu ajouté
+ * les compose avec le reste : l'adresse validée prime sur celle de la source,
+ * et les deux passent par la même traduction.
+ */
+export const fromAdresse = (adresse: Adresse | null) => ({
   adresse: adresse?.voie ?? '',
   commune: adresse?.commune ?? '',
   codePostal: adresse?.code_postal ?? '',

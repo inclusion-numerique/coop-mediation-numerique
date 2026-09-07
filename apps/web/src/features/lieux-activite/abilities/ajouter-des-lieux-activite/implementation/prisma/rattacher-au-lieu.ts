@@ -1,6 +1,6 @@
 import type { Prisma } from '@prisma/client'
 import { v4 } from 'uuid'
-import { lieuFromDomain } from '../../../../db/lieu.transfer'
+import { fromAdresse, lieuFromDomain } from '../../../../db/lieu.transfer'
 import { lieuCorrele, preparerCorrele } from '../../../../db/lieu-correle'
 import {
   type AdresseValidee,
@@ -18,22 +18,11 @@ import {
  * qui ne porte pas d'identifiant BAN : c'est le seul moyen de distinguer une
  * adresse reconnue d'une adresse saisie à l'estime.
  */
-const adresseValidee = ({
-  adresse,
-  commune,
-  codePostal,
-  codeInsee,
+const adresseValidee = ({ adresse, localisation, banId }: AdresseValidee) => ({
+  ...fromAdresse(adresse),
   banId,
-  latitude,
-  longitude,
-}: AdresseValidee) => ({
-  adresse,
-  commune,
-  codePostal,
-  codeInsee,
-  banId,
-  latitude,
-  longitude,
+  latitude: localisation.latitude,
+  longitude: localisation.longitude,
 })
 
 /**

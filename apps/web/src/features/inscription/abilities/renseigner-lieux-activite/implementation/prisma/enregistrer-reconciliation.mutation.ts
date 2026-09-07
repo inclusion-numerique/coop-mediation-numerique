@@ -2,6 +2,7 @@ import { inscriptionEtatFromDomain } from '@app/web/features/inscription/db'
 import { rattacherAuLieu } from '@app/web/features/lieux-activite'
 import { prismaClient } from '@app/web/prismaClient'
 import type { EnregistrerReconciliation } from '../../domain'
+import { depuisLeLieuDesire } from '../depuis-le-lieu-desire'
 
 /**
  * Applique la réconciliation en une transaction : clôt les activités retirées,
@@ -40,7 +41,7 @@ export const enregistrerReconciliation: EnregistrerReconciliation = async ({
       await precedentes
       await rattacherAuLieu(transaction, {
         userId,
-        lieu,
+        lieu: depuisLeLieuDesire(lieu),
         structuresCartoParId,
         maintenant,
       })

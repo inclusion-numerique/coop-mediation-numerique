@@ -142,8 +142,14 @@ export {
   visibiliteDesLieuxDuMediateur,
 } from './db/lieux-du-mediateur'
 // Identité d'un lieu et des personnes qui le manipulent
+export { BanId } from './domain/ban-id'
+export { IdentifiantCartographie } from './domain/ids-cartographie-nationale'
 export { LieuId } from './domain/lieu-id'
 export { MediateurId } from './domain/mediateur-id'
+// Ce qui se saisit pour un lieu — les primitives qui traduisent une valeur
+// brute en modèle du standard, dont un appelant a besoin pour composer un
+// LieuDemande.
+export { adresseSaisie, localisationSaisie } from './domain/saisie'
 export { UserId } from './domain/user-id'
 // Ce qui se saisit pour un lieu
 export {

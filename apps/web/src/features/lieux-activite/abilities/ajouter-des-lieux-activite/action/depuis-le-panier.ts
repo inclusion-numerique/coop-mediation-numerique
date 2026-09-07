@@ -1,4 +1,9 @@
 import { failure, type Result, success } from '@app/web/libraries/result'
+import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { BanId } from '../../../domain/ban-id'
+import { IdentifiantCartographie } from '../../../domain/ids-cartographie-nationale'
+import { LieuId } from '../../../domain/lieu-id'
+import { adresseSaisie, localisationSaisie } from '../../../domain/saisie'
 import {
   AdresseNonValidee,
   type AdresseValidee,
@@ -12,30 +17,43 @@ const identite = ({
   nom,
   siret,
   structureCartographieNationaleId,
-}: LieuSoumis) => ({ nom, siret, structureCartographieNationaleId })
+}: LieuSoumis) => ({
+  nom: Nom(nom),
+  siret,
+  structureCartographieNationaleId:
+    structureCartographieNationaleId == null
+      ? null
+      : IdentifiantCartographie.safe(structureCartographieNationaleId),
+})
 
 /**
  * L'adresse soumise, si la Base Adresse Nationale l'a reconnue.
  *
- * Les quatre champs voyagent facultatifs — un lieu déjà connu de la coop n'a
- * pas à les porter — mais ils ne valent qu'ensemble : c'est leur présence
- * conjointe qui atteste du géocodage.
+ * Les champs voyagent facultatifs — un lieu déjà connu de la coop n'a pas à les
+ * porter — mais ils ne valent qu'ensemble : c'est leur présence conjointe, et
+ * la reconnaissance de chacun par son modèle, qui atteste du géocodage.
  */
-const adresseValidee = (lieu: LieuSoumis): AdresseValidee | null =>
-  lieu.codeInsee == null ||
-  lieu.banId == null ||
-  lieu.latitude == null ||
-  lieu.longitude == null
+const adresseValidee = (lieu: LieuSoumis): AdresseValidee | null => {
+  if (lieu.codeInsee == null || lieu.latitude == null || lieu.longitude == null)
+    return null
+
+  const ban = {
+    nom: lieu.adresse,
+    commune: lieu.commune,
+    codePostal: lieu.codePostal,
+    codeInsee: lieu.codeInsee,
+    latitude: lieu.latitude,
+    longitude: lieu.longitude,
+  }
+
+  const adresse = adresseSaisie(ban, null)
+  const localisation = localisationSaisie(ban)
+  const banId = lieu.banId == null ? null : BanId.safe(lieu.banId)
+
+  return adresse == null || localisation == null || banId == null
     ? null
-    : {
-        adresse: lieu.adresse,
-        commune: lieu.commune,
-        codePostal: lieu.codePostal,
-        codeInsee: lieu.codeInsee,
-        banId: lieu.banId,
-        latitude: lieu.latitude,
-        longitude: lieu.longitude,
-      }
+    : { adresse, localisation, banId }
+}
 
 /**
  * Le panier soumis devient une liste de demandes.
@@ -61,14 +79,7 @@ export const depuisLePanier = (
       if (lieu.id != null)
         return success([
           ...precedents.data,
-          {
-            ...identite(lieu),
-            id: lieu.id,
-            adresse: lieu.adresse,
-            commune: lieu.commune,
-            codePostal: lieu.codePostal,
-            codeInsee: lieu.codeInsee,
-          },
+          { ...identite(lieu), id: LieuId(lieu.id) },
         ])
 
       const validee = adresseValidee(lieu)

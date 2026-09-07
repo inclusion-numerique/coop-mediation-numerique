@@ -24,7 +24,22 @@ export type IdsCartographieNationale = Model.TypeOf<
   typeof IdsCartographieNationale
 >
 
+/**
+ * L'identifiant tel que la colonne le porte : les tokens recollés, ou le token
+ * unique d'un lieu qu'aucune fusion n'a réuni.
+ *
+ * C'est sous cette forme qu'on interroge la base et qu'on compare deux lieux :
+ * la liste dit ce que l'identifiant contient, la chaîne dit ce qu'il vaut.
+ */
+export const IdentifiantCartographie = defineModel(
+  z.string().trim().min(1).brand('IdentifiantCartographie'),
+)
+
+export type IdentifiantCartographie = Model.TypeOf<
+  typeof IdentifiantCartographie
+>
+
 /** La forme attendue par la colonne : les tokens recollés. */
 export const serialiserIdsCartographieNationale = (
   ids: IdsCartographieNationale,
-): string => ids.join(SEPARATEUR)
+): IdentifiantCartographie => IdentifiantCartographie(ids.join(SEPARATEUR))

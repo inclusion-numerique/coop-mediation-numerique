@@ -6,11 +6,18 @@ import type {
   LieuExistant,
 } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain'
 import { lireLieuxDejaRattaches } from '@app/web/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation'
+import { BanId } from '@app/web/features/lieux-activite/domain/ban-id'
+import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
 import { UserId } from '@app/web/features/lieux-activite/domain/user-id'
 import { lieuxSemes } from '@app/web/features/lieux-activite/lieux-activite.cucumber'
 import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
+import {
+  Adresse,
+  Localisation,
+  Nom,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
 
 type Issue = Awaited<ReturnType<typeof ajouterDesLieuxActivite>>
 
@@ -41,14 +48,15 @@ const ajouter = async (
  * lieu déjà connu passent son `id` et n'ont pas d'adresse à valider.
  */
 const lieuSaisi = (partie: Partial<LieuACreer> = {}): LieuACreer => ({
-  nom: 'Tiers-lieu du Port',
-  adresse: '12 quai du Port',
-  commune: 'Rochefort',
-  codePostal: '17300',
-  codeInsee: '17299',
-  banId: '17299_0123_00012',
-  latitude: 45.94,
-  longitude: -0.96,
+  nom: Nom('Tiers-lieu du Port'),
+  adresse: Adresse({
+    voie: '12 quai du Port',
+    commune: 'Rochefort',
+    code_postal: '17300',
+    code_insee: '17299',
+  }),
+  localisation: Localisation({ latitude: 45.94, longitude: -0.96 }),
+  banId: BanId('17299_0123_00012'),
   ...partie,
 })
 
@@ -56,12 +64,8 @@ const lieuConnu = (
   id: string,
   partie: Partial<LieuExistant> = {},
 ): LieuExistant => ({
-  nom: 'Tiers-lieu du Port',
-  adresse: '12 quai du Port',
-  commune: 'Rochefort',
-  codePostal: '17300',
-  codeInsee: '17299',
-  id,
+  nom: Nom('Tiers-lieu du Port'),
+  id: LieuId(id),
   ...partie,
 })
 
@@ -77,7 +81,7 @@ const lieuxDuMediateur = async () =>
 Given('un lieu référencé dans la coop', async () => {
   const lieu = await prismaClient.lieuInclusion.create({
     data: {
-      nom: 'Médiathèque du Centre',
+      nom: Nom('Médiathèque du Centre'),
       adresse: '5 place de la Mairie',
       commune: 'Rochefort',
       codePostal: '17300',
@@ -92,14 +96,18 @@ Given('un lieu référencé dans la coop', async () => {
 
 When('ce médiateur ajoute ce lieu référencé', async () => {
   await ajouter(
-    [lieuConnu(dernier.lieuReference ?? '', { nom: 'Médiathèque du Centre' })],
+    [
+      lieuConnu(dernier.lieuReference ?? '', {
+        nom: Nom('Médiathèque du Centre'),
+      }),
+    ],
     lieuxSemes().mediateurId,
   )
 })
 
 When('ce médiateur ajoute deux fois ce lieu référencé', async () => {
   const demande = lieuConnu(dernier.lieuReference ?? '', {
-    nom: 'Médiathèque du Centre',
+    nom: Nom('Médiathèque du Centre'),
   })
 
   await ajouter([demande, demande], lieuxSemes().mediateurId)
@@ -111,7 +119,11 @@ When('ce médiateur ajoute un lieu saisi « Tiers-lieu du Port »', async () => 
 
 When('ce médiateur ajoute un lieu où il exerce déjà', async () => {
   await ajouter(
-    [lieuConnu(lieuxSemes().lieuIds[0] ?? '', { nom: 'Espace numérique 1' })],
+    [
+      lieuConnu(lieuxSemes().lieuIds[0] ?? '', {
+        nom: Nom('Espace numérique 1'),
+      }),
+    ],
     lieuxSemes().mediateurId,
   )
 })
@@ -123,8 +135,13 @@ When(
     await ajouter(
       [
         lieuSaisi({
-          nom: 'Mediatheque du centre',
-          adresse: '5 place de la Mairie',
+          nom: Nom('Mediatheque du centre'),
+          adresse: Adresse({
+            voie: '5 place de la Mairie',
+            commune: 'Rochefort',
+            code_postal: '17300',
+            code_insee: '17299',
+          }),
         }),
       ],
       lieuxSemes().mediateurId,
@@ -154,7 +171,7 @@ Then('ce médiateur exerce dans ce lieu référencé', async () => {
 
 Then('le lieu « Tiers-lieu du Port » existe', async () => {
   const lieu = await prismaClient.lieuInclusion.findFirst({
-    where: { nom: 'Tiers-lieu du Port' },
+    where: { nom: Nom('Tiers-lieu du Port') },
     select: { id: true },
   })
 
@@ -166,7 +183,7 @@ Then('ce médiateur exerce dans le lieu « Tiers-lieu du Port »', async () => {
   const rattachement = await prismaClient.mediateurEnActivite.findFirst({
     where: {
       mediateurId: lieuxSemes().mediateurId,
-      lieuInclusion: { nom: 'Tiers-lieu du Port' },
+      lieuInclusion: { nom: Nom('Tiers-lieu du Port') },
       fin: null,
     },
   })
@@ -189,7 +206,7 @@ Then('ce médiateur exerce dans trois lieux', async () => {
  */
 Then("aucun lieu n'a été créé", async () => {
   const doublon = await prismaClient.lieuInclusion.count({
-    where: { nom: 'Mediatheque du centre' },
+    where: { nom: Nom('Mediatheque du centre') },
   })
 
   assert.strictEqual(doublon, 0, 'la saisie a créé un doublon')

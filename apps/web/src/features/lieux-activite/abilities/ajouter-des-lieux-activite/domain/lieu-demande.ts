@@ -1,29 +1,41 @@
+import type {
+  Adresse,
+  Localisation,
+  Nom,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
+import type { BanId } from '../../../domain/ban-id'
+import type { IdentifiantCartographie } from '../../../domain/ids-cartographie-nationale'
+import type { LieuId } from '../../../domain/lieu-id'
+
 /**
  * L'adresse d'un lieu, telle que la Base Adresse Nationale l'a reconnue.
  *
- * Les quatre champs vont ensemble et ne sont jamais absents : c'est ce qui
- * distingue une adresse validée d'une adresse saisie à l'estime. Sans `banId`,
- * rien ne permet de dire laquelle des deux on tient.
+ * Les trois vont ensemble et ne sont jamais absents : c'est ce qui distingue
+ * une adresse validée d'une adresse saisie à l'estime. Sans `banId`, rien ne
+ * permet de dire laquelle des deux on tient.
  */
 export type AdresseValidee = {
-  readonly adresse: string
-  readonly commune: string
-  readonly codePostal: string
-  readonly codeInsee: string
-  readonly banId: string
-  readonly latitude: number
-  readonly longitude: number
+  readonly adresse: Adresse
+  readonly localisation: Localisation
+  readonly banId: BanId
 }
 
 type Identite = {
-  readonly nom: string
-  /** Repris de l'annuaire des entreprises : la corrélation la plus sûre. */
+  readonly nom: Nom
+  /**
+   * Repris de l'annuaire des entreprises : la corrélation la plus sûre.
+   *
+   * Reste une chaîne, à dessein. Ce numéro a transité par le navigateur, et le
+   * serveur ne peut pas distinguer celui que l'annuaire a rendu de celui qu'on
+   * lui souffle. Le brander dirait vérifié ce dont on doute — c'est le job
+   * `verifier-les-sirets-des-lieux` qui l'établit.
+   */
   readonly siret?: string | null
   /**
    * Identité de cartographie nationale : annotation tardive posée par le job de
    * synchronisation. Son absence ne dit rien de l'existence du lieu.
    */
-  readonly structureCartographieNationaleId?: string | null
+  readonly structureCartographieNationaleId?: IdentifiantCartographie | null
 }
 
 /**
@@ -32,11 +44,7 @@ type Identite = {
  * et son adresse, fût-elle incomplète, ne regarde pas cet ajout.
  */
 export type LieuExistant = Identite & {
-  readonly id: string
-  readonly adresse?: string | null
-  readonly commune?: string | null
-  readonly codePostal?: string | null
-  readonly codeInsee?: string | null
+  readonly id: LieuId
 }
 
 /**
@@ -64,6 +72,6 @@ export const estExistant = (lieu: LieuDemande): lieu is LieuExistant =>
 
 /** Ce à quoi le médiateur est déjà rattaché, réduit aux signaux d'identité. */
 export type LieuDejaRattache = {
-  readonly id: string
-  readonly structureCartographieNationaleId: string | null
+  readonly id: LieuId
+  readonly structureCartographieNationaleId: IdentifiantCartographie | null
 }
