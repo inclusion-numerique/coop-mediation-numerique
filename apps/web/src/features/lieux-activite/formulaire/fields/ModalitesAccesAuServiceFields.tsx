@@ -30,8 +30,9 @@ export const ModalitesAccesAuServiceFields = withForm({
           plusieurs choix.
         </p>
 
-        <div className="fr-flex fr-direction-column fr-flex-gap-4v">
-          <div>
+        <div className="fr-flex fr-direction-column fr-flex-gap-6v">
+          {/* Les cases portent `fr-mb-0` : sans gap ici, elles se collent. */}
+          <div className="fr-flex fr-direction-column fr-flex-gap-3v">
             <form.AppField name="modalitesAcces.surPlace">
               {(field) => (
                 <field.Checkbox
@@ -58,7 +59,7 @@ export const ModalitesAccesAuServiceFields = withForm({
               <form.AppField name="modalitesAcces.numeroTelephone">
                 {(field) => (
                   <field.Input
-                    className="fr-mb-8v fr-mt-4v"
+                    className="fr-mb-0"
                     isPending={isPending}
                     label={
                       <>
@@ -86,7 +87,7 @@ export const ModalitesAccesAuServiceFields = withForm({
               <form.AppField name="modalitesAcces.adresseMail">
                 {(field) => (
                   <field.Input
-                    className="fr-my-4v"
+                    className="fr-mb-0"
                     isPending={isPending}
                     label={
                       <>
@@ -103,6 +104,8 @@ export const ModalitesAccesAuServiceFields = withForm({
           <form.AppField name="fraisACharge">
             {(field) => (
               <field.Checkbox
+                className="fr-mb-0"
+                classes={{ content: 'fr-checkboxes-compact' }}
                 isPending={isPending}
                 isTiled={false}
                 legend="Frais à charge"

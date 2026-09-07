@@ -57,10 +57,12 @@ export const SectionServicesEtAccompagnement = ({
         <EtatVide titre="Renseignez les services proposés pour que ce lieu soit trouvé par les personnes qui en ont besoin." />
       }
       edition={
-        <>
+        <div className="fr-flex fr-direction-column fr-flex-gap-6v">
           <form.AppField name="services">
             {(field) => (
               <field.Checkbox
+                className="fr-mb-0"
+                classes={{ content: 'fr-checkboxes-compact' }}
                 legend="Services proposés"
                 isPending={isPending}
                 isTiled={false}
@@ -71,6 +73,8 @@ export const SectionServicesEtAccompagnement = ({
           <form.AppField name="modalitesAccompagnement">
             {(field) => (
               <field.Checkbox
+                className="fr-mb-0"
+                classes={{ content: 'fr-checkboxes-compact' }}
                 legend="Modalités d’accompagnement"
                 isPending={isPending}
                 isTiled={false}
@@ -78,7 +82,7 @@ export const SectionServicesEtAccompagnement = ({
               />
             )}
           </form.AppField>
-        </>
+        </div>
       }
       view={
         <VueServicesEtAccompagnement

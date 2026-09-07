@@ -31,39 +31,42 @@ export const ServicesEtAccompagnementFields = withForm({
           />
         )}
 
-        <form.AppField name="services">
-          {(field) => (
-            <>
-              <field.MultiSelect
-                isPending={isPending}
-                label={
-                  <>
-                    Thématiques des services d’inclusion numérique{' '}
-                    <RedAsterisk />
-                  </>
-                }
-                hint="Renseignez ici les services proposés dans ce lieu."
-                options={optionsWithEmptyValue(serviceOptions)}
-              />
-              <field.SelectedItems
-                itemToString={(item: string) => item ?? item}
-                itemToKey={(item: string) => item}
-              />
-            </>
-          )}
-        </form.AppField>
+        <div className="fr-flex fr-direction-column fr-flex-gap-6v">
+          <form.AppField name="services">
+            {(field) => (
+              <>
+                <field.MultiSelect
+                  isPending={isPending}
+                  label={
+                    <>
+                      Thématiques des services d’inclusion numérique{' '}
+                      <RedAsterisk />
+                    </>
+                  }
+                  hint="Renseignez ici les services proposés dans ce lieu."
+                  options={optionsWithEmptyValue(serviceOptions)}
+                />
+                <field.SelectedItems
+                  itemToString={(item: string) => item ?? item}
+                  itemToKey={(item: string) => item}
+                />
+              </>
+            )}
+          </form.AppField>
 
-        <form.AppField name="modalitesAccompagnement">
-          {(field) => (
-            <field.Checkbox
-              className="fr-mb-0"
-              isPending={isPending}
-              isTiled={false}
-              legend="Types d’accompagnements proposés"
-              options={modaliteAccompagnementOptions}
-            />
-          )}
-        </form.AppField>
+          <form.AppField name="modalitesAccompagnement">
+            {(field) => (
+              <field.Checkbox
+                className="fr-mb-0"
+                classes={{ content: 'fr-checkboxes-compact' }}
+                isPending={isPending}
+                isTiled={false}
+                legend="Types d’accompagnements proposés"
+                options={modaliteAccompagnementOptions}
+              />
+            )}
+          </form.AppField>
+        </div>
       </>
     )
   },

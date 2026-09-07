@@ -65,7 +65,13 @@ export const SectionDescription = ({
           </form.AppField>
           <form.AppField name="presentationDetail">
             {(field) => (
-              <field.RichTextarea label="Présentation" isPending={isPending} />
+              // L'éditeur riche n'est pas un `fr-input-group` : il n'a aucune
+              // marge basse, et les boutons de la carte venaient s'y coller.
+              <field.RichTextarea
+                className="fr-mb-6v"
+                label="Présentation"
+                isPending={isPending}
+              />
             )}
           </form.AppField>
         </>

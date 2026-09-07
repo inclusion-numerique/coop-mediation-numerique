@@ -91,11 +91,12 @@ const CreerLieuActiviteForm = ({
         <div className="fr-border fr-border-radius--8 fr-mt-6v fr-mb-6v">
           <DisplayOnCartography />
           <hr className="fr-separator fr-separator-1px" />
-          <div className="fr-px-4w fr-pt-4w">
+          <div className="fr-px-4w fr-py-4w">
             <ToggleSwitch
               inputTitle="Visibilité du lieu sur la cartographie"
               className="fr-m-0"
               disabled={isPending}
+              showCheckedHint={false}
               checked={visiblePourCartographieNationale}
               label={
                 <span className="fr-text--medium">

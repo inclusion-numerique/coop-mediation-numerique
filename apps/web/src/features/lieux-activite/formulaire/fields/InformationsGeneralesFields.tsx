@@ -99,7 +99,7 @@ export const InformationsGeneralesFields = withForm({
       <form.AppField name="lieuItinerant">
         {(field) => (
           <field.Checkbox
-            className="fr-mt-6v fr-mb-6v"
+            className="fr-mt-8v fr-mb-6v"
             isPending={isPending}
             isTiled={false}
             options={[

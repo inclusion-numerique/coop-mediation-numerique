@@ -79,7 +79,7 @@ const DemiJournee = withForm({
               )}
             </form.AppField>
           </div>
-          <div className="fr-px-12v fr-py-2v">
+          <div className="fr-px-4v fr-py-2v fr-toggle-centre">
             <ToggleSwitch
               inputTitle={`Ouverture du ${libelle}`}
               className="fr-m-0"

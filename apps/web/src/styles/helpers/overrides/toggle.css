@@ -1,0 +1,15 @@
+/* Un interrupteur DSFR « libellé à gauche » étale son label sur toute la largeur
+   disponible (`flex: 1`), ce qui plaque le libellé contre un bord et
+   l'interrupteur contre l'autre. Dans une grille — les demi-journées des
+   horaires — on veut au contraire le couple resserré et centré dans sa colonne.
+
+   `fr-toggle-centre` se pose sur le conteneur de l'interrupteur : il rend au
+   `fr-toggle` sa largeur naturelle, et le centre. */
+.fr-toggle-centre {
+  display: flex;
+  justify-content: center;
+}
+
+.fr-toggle-centre .fr-toggle {
+  width: fit-content;
+}

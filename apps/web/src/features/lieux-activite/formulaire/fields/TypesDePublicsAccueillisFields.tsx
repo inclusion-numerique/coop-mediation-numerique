@@ -75,8 +75,11 @@ export const TypesDePublicsAccueillisFields = withForm({
       >
         {(field) => (
           <field.Checkbox
-            className="fr-mb-0 fr-ml-4v"
-            style={{ marginTop: -16 }}
+            // La sous-liste se rattache à la case qui la commande par son
+            // retrait, pas par l'absence d'air : le DSFR remonte déjà sa
+            // première case de .75rem, une marge négative en plus les collait.
+            className="fr-mb-0 fr-ml-4v fr-mt-3v"
+            classes={{ content: 'fr-checkboxes-compact' }}
             small
             isPending={isPending}
             isTiled={false}
@@ -88,7 +91,8 @@ export const TypesDePublicsAccueillisFields = withForm({
       <form.AppField name="priseEnChargeSpecifique">
         {(field) => (
           <field.Checkbox
-            className="fr-mb-0"
+            className="fr-mb-0 fr-mt-6v"
+            classes={{ content: 'fr-checkboxes-compact' }}
             isPending={isPending}
             isTiled={false}
             legend="Prise en charge spécifique"

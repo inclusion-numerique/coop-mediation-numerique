@@ -157,7 +157,10 @@ export const InformationsGeneralesEditionFields = withForm({
             >
               {(field) => (
                 <field.Checkbox
-                  className="fr-mb-6v"
+                  // Une case seule est aussi la première de son groupe : le DSFR
+                  // la remonte de .75rem, qu'il faut couvrir pour la décoller du
+                  // champ au-dessus.
+                  className="fr-mt-8v fr-mb-6v"
                   isPending={isPending}
                   isTiled={false}
                   options={[
@@ -275,7 +278,7 @@ export const InformationsGeneralesEditionFields = withForm({
             <form.AppField name="lieuItinerant">
               {(field) => (
                 <field.Checkbox
-                  className="fr-mt-6v fr-mb-6v"
+                  className="fr-mt-8v fr-mb-6v"
                   isPending={isPending}
                   isTiled={false}
                   options={[

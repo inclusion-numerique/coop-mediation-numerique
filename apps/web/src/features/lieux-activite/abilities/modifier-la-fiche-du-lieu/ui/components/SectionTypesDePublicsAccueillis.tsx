@@ -60,10 +60,11 @@ export const SectionTypesDePublicsAccueillis = ({
         <EtatVide titre="Précisez les publics accueillis si ce lieu s’adresse à certains d’entre eux en particulier." />
       }
       edition={
-        <>
+        <div className="fr-flex fr-direction-column fr-flex-gap-6v">
           <form.AppField name="toutPublic">
             {(field) => (
               <field.Checkbox
+                className="fr-mb-0"
                 legend="Publics accueillis"
                 isPending={isPending}
                 isTiled={false}
@@ -77,6 +78,8 @@ export const SectionTypesDePublicsAccueillis = ({
             <form.AppField name="publicsSpecifiquementAdresses">
               {(field) => (
                 <field.Checkbox
+                  className="fr-mb-0"
+                  classes={{ content: 'fr-checkboxes-compact' }}
                   legend="Publics spécifiquement adressés"
                   isPending={isPending}
                   isTiled={false}
@@ -88,6 +91,8 @@ export const SectionTypesDePublicsAccueillis = ({
           <form.AppField name="priseEnChargeSpecifique">
             {(field) => (
               <field.Checkbox
+                className="fr-mb-0"
+                classes={{ content: 'fr-checkboxes-compact' }}
                 legend="Prise en charge spécifique"
                 isPending={isPending}
                 isTiled={false}
@@ -95,7 +100,7 @@ export const SectionTypesDePublicsAccueillis = ({
               />
             )}
           </form.AppField>
-        </>
+        </div>
       }
       view={
         <VueTypesDePublicsAccueillis
