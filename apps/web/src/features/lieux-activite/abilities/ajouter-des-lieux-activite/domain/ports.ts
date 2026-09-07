@@ -1,9 +1,10 @@
 import type { MediateurId } from '../../../domain/mediateur-id'
-import type { CartoStructure } from './carto-structure'
+import type { LieuCarto } from './lieu-carto'
 import type { LieuDejaRattache } from './lieu-demande'
 
 /**
- * Résout les structures de la cartographie nationale des lieux à matérialiser.
+ * Résout les lieux de la cartographie nationale à matérialiser, indexés par
+ * l'identifiant demandé.
  *
  * Injectée plutôt qu'appelée directement : elle lit l'Entrepôt, dont le client
  * Prisma ne partage pas de transaction avec celui de la coop. La résolution a
@@ -12,7 +13,7 @@ import type { LieuDejaRattache } from './lieu-demande'
  */
 export type TrouverStructuresCarto = (
   cartoIds: readonly string[],
-) => Promise<readonly CartoStructure[]>
+) => Promise<ReadonlyMap<string, LieuCarto>>
 
 /** Lit les lieux auxquels le médiateur exerce déjà. */
 export type LireLieuxDejaRattaches = (

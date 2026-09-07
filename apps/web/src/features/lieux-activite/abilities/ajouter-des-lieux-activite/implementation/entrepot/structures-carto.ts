@@ -1,24 +1,36 @@
 import { entrepotPrismaClient } from '@app/web/entrepotPrismaClient'
-import { reconnues } from '@app/web/features/lieux-activite/vocabulaire'
+import type { Fiche } from '@app/web/features/lieux-activite/domain/fiche'
+import { IdsCartographieNationale } from '@app/web/features/lieux-activite/domain/ids-cartographie-nationale'
 import {
+  courrielsValides,
+  presentationSaisie,
+  sitesWebSaisis,
+  telephoneValide,
+  urlSaisie,
+} from '@app/web/features/lieux-activite/domain/saisie'
+import { SourceCartographie } from '@app/web/features/lieux-activite/domain/tracabilite'
+import { reconnues } from '@app/web/features/lieux-activite/vocabulaire'
+import { coopCartographieNationaleSource } from '@app/web/libraries/cartographie-nationale'
+import {
+  Contact,
   Frais,
   Itinerance,
   isValidNom,
   ModaliteAcces,
   ModaliteAccompagnement,
+  Nom,
   PriseEnChargeSpecifique,
   PublicSpecifiquementAdresse,
   Service,
   Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { CartoStructure } from '../../domain'
+import type { LieuCarto } from '../../domain'
 
-// Reconstruit une CartoStructure (la fiche attendue par l'import "ajouter un lieu
-// d'activité") à partir d'une ligne `main.lieu_inclusion` de l'Entrepôt.
-// Ni adresse ni coordonnées : celles de l'écran, validées par la Base Adresse
-// Nationale, priment toujours sur celles de la cartographie. Le SIRET (pivot) n'est
-// pas repris non plus — la cartographie nationale n'en est pas une source fiable,
-// seule l'API entreprise fait foi.
+// Lit `main.lieu_inclusion` dans l'Entrepôt et en tire la fiche que la coop
+// matérialise. Ni adresse ni coordonnées : celles de l'écran, validées par la
+// Base Adresse Nationale, priment toujours sur celles de la cartographie. Le
+// SIRET (pivot) n'est pas repris non plus — la cartographie nationale n'en est
+// pas une source fiable, seule l'API entreprise fait foi.
 
 const lieuSelect = {
   structureCartographieNationaleId: true,
@@ -60,87 +72,126 @@ type LieuRow = {
   itinerance: string[]
 }
 
-const contactValue = (
-  contact: unknown,
-): {
-  telephone: string | null
-  courriels: readonly string[]
-  siteWeb: string | null
-} => {
+/** La colonne `contact` est un JSON libre : rien n'y est acquis. */
+const contactDeLaLigne = (contact: unknown): Contact => {
   const record =
     typeof contact === 'object' && contact !== null
       ? (contact as Record<string, unknown>)
       : {}
-  const courriels =
+  const courriel =
     typeof record.courriels === 'object' && record.courriels !== null
       ? ((record.courriels as Record<string, unknown>).email as
           | string
           | undefined)
       : undefined
-  return {
-    telephone: typeof record.telephone === 'string' ? record.telephone : null,
-    courriels: courriels == null ? [] : [courriels],
-    siteWeb: typeof record.site_web === 'string' ? record.site_web : null,
-  }
+
+  const telephone = telephoneValide(
+    typeof record.telephone === 'string' ? record.telephone : null,
+  )
+  const courriels = courrielsValides([courriel])
+  const sitesWeb = sitesWebSaisis(
+    typeof record.site_web === 'string' ? record.site_web : null,
+  )
+
+  return Contact({
+    ...(telephone == null ? {} : { telephone }),
+    ...(courriels.length === 0 ? {} : { courriels: [...courriels] }),
+    ...(sitesWeb.length === 0 ? {} : { site_web: [...sitesWeb] }),
+  })
 }
 
 /**
- * Une ligne de l'Entrepôt devient une structure exploitable, ou rien.
+ * Ce que la cartographie sait dire de la fiche, et rien de plus.
+ *
+ * Les listes qu'elle ne porte pas — dispositifs, labels de formation — restent
+ * vides plutôt que d'être devinées ; `reconnues` écarte des autres les valeurs
+ * que le schéma national ne connaît pas.
+ */
+const ficheDeLaLigne = (lieu: LieuRow): Fiche => ({
+  nom: Nom(lieu.nom),
+  pivot: null,
+  adresse: null,
+  localisation: null,
+  typologies: reconnues(Typologie, lieu.typologies),
+  contact: contactDeLaLigne(lieu.contact),
+  horaires: lieu.horaires,
+  presentation: presentationSaisie(
+    lieu.presentationResume,
+    lieu.presentationDetail,
+  ),
+  services: reconnues(Service, lieu.services),
+  publicsSpecifiquementAdresses: reconnues(
+    PublicSpecifiquementAdresse,
+    lieu.publicsSpecifiquementAdresses,
+  ),
+  priseEnChargeSpecifique: reconnues(
+    PriseEnChargeSpecifique,
+    lieu.priseEnChargeSpecifique,
+  ),
+  modalitesAcces: reconnues(ModaliteAcces, lieu.modalitesAcces),
+  fraisACharge: reconnues(Frais, lieu.fraisACharge),
+  itinerance: reconnues(Itinerance, lieu.itinerance),
+  dispositifProgrammesNationaux: [],
+  formationsLabels: [],
+  autresFormationsLabels: [],
+  modalitesAccompagnement: reconnues(
+    ModaliteAccompagnement,
+    lieu.modalitesAccompagnement,
+  ),
+  ficheAccesLibre: urlSaisie(lieu.ficheAccesLibre),
+  priseRdv: null,
+})
+
+/**
+ * La coop relisant sa propre publication ne nomme aucun producteur tiers : la
+ * fiche n'a alors pas été modifiée de l'extérieur.
+ */
+const sourceDeLaLigne = (source: string | null): SourceCartographie | null =>
+  source == null || source === coopCartographieNationaleSource
+    ? null
+    : SourceCartographie.safe(source)
+
+/**
+ * Une ligne de l'Entrepôt devient un lieu exploitable, ou rien.
  *
  * Sans id de cartographie il n'y a rien à corréler ; sans nom, il n'y a pas de
  * fiche — `Nom` du standard le refuse, et une ligne écartée vaut mieux qu'un
  * import interrompu.
  */
-const toCartoStructure = (lieu: LieuRow): CartoStructure | null => {
-  if (!lieu.structureCartographieNationaleId || !isValidNom(lieu.nom)) {
-    return null
-  }
-  const { telephone, courriels, siteWeb } = contactValue(lieu.contact)
+const toLieuCarto = (lieu: LieuRow): LieuCarto | null => {
+  const ids =
+    lieu.structureCartographieNationaleId == null
+      ? null
+      : IdsCartographieNationale.safe(lieu.structureCartographieNationaleId)
+
+  if (ids == null || !isValidNom(lieu.nom)) return null
+
   return {
-    id: lieu.structureCartographieNationaleId,
-    nom: lieu.nom,
-    ficheAccesLibre: lieu.ficheAccesLibre,
-    presentationDetail: lieu.presentationDetail,
-    presentationResume: lieu.presentationResume,
-    horaires: lieu.horaires,
-    source: lieu.source,
-    siteWeb,
-    telephone,
-    courriels,
-    typologies: reconnues(Typologie, lieu.typologies),
-    services: reconnues(Service, lieu.services),
-    modalitesAcces: reconnues(ModaliteAcces, lieu.modalitesAcces),
-    modalitesAccompagnement: reconnues(
-      ModaliteAccompagnement,
-      lieu.modalitesAccompagnement,
-    ),
-    publicsSpecifiquementAdresses: reconnues(
-      PublicSpecifiquementAdresse,
-      lieu.publicsSpecifiquementAdresses,
-    ),
-    priseEnChargeSpecifique: reconnues(
-      PriseEnChargeSpecifique,
-      lieu.priseEnChargeSpecifique,
-    ),
-    fraisACharge: reconnues(Frais, lieu.fraisACharge),
-    itinerance: reconnues(Itinerance, lieu.itinerance),
+    idsCartographieNationale: ids,
+    source: sourceDeLaLigne(lieu.source),
+    fiche: ficheDeLaLigne(lieu),
   }
 }
 
 export const findCartoStructuresByIds = async (
-  cartoIds: string[],
-): Promise<Map<string, CartoStructure>> => {
+  cartoIds: readonly string[],
+): Promise<ReadonlyMap<string, LieuCarto>> => {
   if (cartoIds.length === 0) return new Map()
 
   const lieux = await entrepotPrismaClient.lieuInclusion.findMany({
-    where: { structureCartographieNationaleId: { in: cartoIds } },
+    where: { structureCartographieNationaleId: { in: [...cartoIds] } },
     select: lieuSelect,
   })
 
   return new Map(
     lieux
-      .map(toCartoStructure)
-      .filter((s): s is CartoStructure => s !== null)
-      .map((s) => [s.id, s]),
+      .map((lieu) => {
+        const carto = toLieuCarto(lieu)
+
+        return carto == null || lieu.structureCartographieNationaleId == null
+          ? null
+          : ([lieu.structureCartographieNationaleId, carto] as const)
+      })
+      .filter((entree) => entree !== null),
   )
 }

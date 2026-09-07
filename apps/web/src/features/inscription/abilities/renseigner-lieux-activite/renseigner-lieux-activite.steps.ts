@@ -295,7 +295,7 @@ When('je renseigne ce lieu comme lieu d’activité', async () => {
         },
       ],
     },
-    trouverStructuresCarto: async () => [],
+    trouverStructuresCarto: async () => new Map(),
     maintenant: new Date(),
   })
   assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -318,7 +318,7 @@ When('je renseigne un nouveau lieu nommé {string}', async (nom: string) => {
         },
       ],
     },
-    trouverStructuresCarto: async () => [],
+    trouverStructuresCarto: async () => new Map(),
     maintenant: new Date(),
   })
   assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -344,7 +344,7 @@ When(
           },
         ],
       },
-      trouverStructuresCarto: async () => [],
+      trouverStructuresCarto: async () => new Map(),
       maintenant: new Date(),
     })
     assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -367,7 +367,7 @@ When(
           },
         ],
       },
-      trouverStructuresCarto: async () => [],
+      trouverStructuresCarto: async () => new Map(),
       maintenant: new Date(),
     })
     assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -392,7 +392,7 @@ When(
           },
         ],
       },
-      trouverStructuresCarto: async () => [],
+      trouverStructuresCarto: async () => new Map(),
       maintenant: new Date(),
     })
     assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -419,7 +419,7 @@ When(
         userId: currentInscriptionUserId(),
         lieuxActivite: [nouveauLieu, nouveauLieu],
       },
-      trouverStructuresCarto: async () => [],
+      trouverStructuresCarto: async () => new Map(),
       maintenant: new Date(),
     })
     assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -470,7 +470,7 @@ When(
           },
         ],
       },
-      trouverStructuresCarto: async () => [],
+      trouverStructuresCarto: async () => new Map(),
       maintenant: new Date(),
     })
     assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -563,7 +563,7 @@ When(
           },
         ],
       },
-      trouverStructuresCarto: async () => [],
+      trouverStructuresCarto: async () => new Map(),
       maintenant: new Date(),
     })
     assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')

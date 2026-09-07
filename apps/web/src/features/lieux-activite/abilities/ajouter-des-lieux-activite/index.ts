@@ -1,9 +1,9 @@
 export { depuisLePanier } from './action/depuis-le-panier'
 export type {
   AdresseValidee,
-  CartoStructure,
   EchecDAjout,
   LieuACreer,
+  LieuCarto,
   LieuDejaRattache,
   LieuDemande,
   LieuExistant,

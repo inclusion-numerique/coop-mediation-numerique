@@ -20,7 +20,7 @@ const lieuxDeTest: string[] = []
 /** L'Entrepôt n'est pas joignable en test : le port existe pour cela. */
 const ports = {
   lireLieuxDejaRattaches,
-  trouverStructuresCarto: async () => [],
+  trouverStructuresCarto: async () => new Map(),
 }
 
 const ajouter = async (

@@ -19,11 +19,8 @@ export const enregistrerReconciliation: EnregistrerReconciliation = async ({
   userId,
   aCloturer,
   aCreer,
-  structuresCarto,
+  structuresCarto: structuresCartoParId,
 }) => {
-  const structuresCartoParId = new Map(
-    structuresCarto.map((structure) => [structure.id, structure]),
-  )
   const maintenant = new Date()
 
   await prismaClient.$transaction(async (transaction) => {

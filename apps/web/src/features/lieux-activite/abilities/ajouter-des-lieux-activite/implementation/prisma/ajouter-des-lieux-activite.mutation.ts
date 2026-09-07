@@ -64,17 +64,13 @@ export const ajouterDesLieuxActivite = async ({
 
   if (aMaterialiser.length === 0) return success({ lieux: [] })
 
-  const structuresCarto = await ports.trouverStructuresCarto(
+  const structuresCartoParId = await ports.trouverStructuresCarto(
     aMaterialiser
       .map(
         ({ structureCartographieNationaleId }) =>
           structureCartographieNationaleId,
       )
       .filter(onlyDefinedAndNotNull),
-  )
-
-  const structuresCartoParId = new Map(
-    structuresCarto.map((structure) => [structure.id, structure]),
   )
 
   const lieux = await prismaClient.$transaction((transaction) =>

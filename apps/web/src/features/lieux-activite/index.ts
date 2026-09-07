@@ -21,9 +21,9 @@
 export {
   type AdresseValidee,
   ajouterDesLieuxActivite,
-  type CartoStructure,
   depuisLePanier,
   type LieuACreer,
+  type LieuCarto,
   type LieuDejaRattache,
   type LieuDemande,
   type LieuExistant,

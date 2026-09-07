@@ -4,9 +4,9 @@ import { lieuFromDomain } from '../../../../db/lieu.transfer'
 import { lieuCorrele, preparerCorrele } from '../../../../db/lieu-correle'
 import {
   type AdresseValidee,
-  type CartoStructure,
   estExistant,
   type LieuACreer,
+  type LieuCarto,
   type LieuDemande,
   lieuDepuisCarto,
 } from '../../domain'
@@ -99,7 +99,7 @@ const materialiser = async (
 const lieuARattacher = async (
   transaction: Prisma.TransactionClient,
   lieu: LieuDemande,
-  structuresCartoParId: ReadonlyMap<string, CartoStructure>,
+  structuresCartoParId: ReadonlyMap<string, LieuCarto>,
   maintenant: Date,
 ): Promise<{ readonly id: string }> => {
   // L'id vient de l'écran, donc du client : le prendre au mot rattacherait le
@@ -144,7 +144,7 @@ const lieuARattacher = async (
       `Le lieu ${lieu.id} n'existe plus et ne peut pas être recréé : son adresse n'a pas été validée`,
     )
 
-  const cartoStructure = lieu.structureCartographieNationaleId
+  const lieuCarto = lieu.structureCartographieNationaleId
     ? structuresCartoParId.get(lieu.structureCartographieNationaleId)
     : undefined
 
@@ -153,9 +153,9 @@ const lieuARattacher = async (
   // l'écran a fait valider.
   return materialiser(
     transaction,
-    cartoStructure
+    lieuCarto
       ? {
-          ...lieuFromDomain(lieuDepuisCarto(cartoStructure, maintenant)),
+          ...lieuFromDomain(lieuDepuisCarto(lieuCarto, maintenant)),
           ...adresseValidee(lieu),
         }
       : lieuDepuisAdresse(lieu),
@@ -185,7 +185,7 @@ export const rattacherAuLieu = async (
   }: {
     readonly userId: string
     readonly lieu: LieuDemande
-    readonly structuresCartoParId: ReadonlyMap<string, CartoStructure>
+    readonly structuresCartoParId: ReadonlyMap<string, LieuCarto>
     readonly maintenant: Date
   },
 ) => {

@@ -1,10 +1,10 @@
-export type { CartoStructure } from './carto-structure'
 export {
   AdresseNonValidee,
   type EchecDAjout,
   MediateurRequis,
   PanierVide,
 } from './errors'
+export { type LieuCarto, lieuDepuisCarto } from './lieu-carto'
 export {
   type AdresseValidee,
   estExistant,
@@ -13,7 +13,6 @@ export {
   type LieuDemande,
   type LieuExistant,
 } from './lieu-demande'
-export { lieuDepuisCarto } from './lieu-depuis-carto'
 export { lieuxAMaterialiser } from './lieux-a-materialiser'
 export type {
   AjouterDesLieuxActivitePorts,
