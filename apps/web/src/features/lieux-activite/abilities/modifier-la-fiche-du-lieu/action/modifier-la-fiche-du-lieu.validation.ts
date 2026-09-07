@@ -1,6 +1,14 @@
 import { AdresseBanValidation } from '@app/web/external-apis/ban/AdresseBanValidation'
 import { FormationLabelPropose } from '@app/web/features/lieux-activite/domain/nomenclatures'
 import {
+  nonVide,
+  SEPARATEUR_LISTE,
+  telephoneValide,
+  urlSaisie,
+} from '@app/web/features/lieux-activite/domain/saisie'
+import { validateValidRnaDigits } from '@app/web/libraries/rna'
+import { validateValidSiretDigits } from '@app/web/libraries/siret'
+import {
   Frais,
   ModaliteAccompagnement,
   PriseEnChargeSpecifique,
@@ -23,6 +31,39 @@ export const resumeMaxLength = 280
 
 const texteFacultatif = z.string().trim().nullish()
 
+/**
+ * Un champ facultatif qui, dès qu'il porte quelque chose, doit être reconnu.
+ *
+ * La règle est toujours la même : refuser ici exactement ce que le mapper
+ * écarterait plus loin. Le prédicat lui est donc emprunté — `urlSaisie`,
+ * `telephoneValide` — plutôt que réécrit, car deux lectures d'une même valeur
+ * finissent par diverger, et l'écart se paie en saisies effacées sans un mot :
+ * l'enregistrement réussit, le champ revient vide, et rien n'a été dit.
+ *
+ * Les deux immatriculations font exception et sont volontairement PLUS strictes
+ * que le mapper : `isSiret` du standard vaut `length === 14` et son `isRna`
+ * accepte des lettres. On leur préfère les prédicats de la coop — clé de Luhn,
+ * `W` suivi de neuf chiffres —, qui n'acceptent qu'un sous-ensemble : resserrer
+ * ne peut donc pas créer d'effacement silencieux.
+ */
+const reconnu = (estReconnue: (valeur: string) => boolean, message: string) =>
+  texteFacultatif.refine(
+    (valeur) => {
+      const saisi = nonVide(valeur)
+
+      return saisi == null || estReconnue(saisi)
+    },
+    { message },
+  )
+
+const PREFIXE_ACCESLIBRE = 'https://acceslibre.beta.gouv.fr/'
+
+const estUneUrl = (valeur: string): boolean => urlSaisie(valeur) != null
+
+/** Le schéma national joint plusieurs sites web par « | » : chacun doit valoir. */
+const sontDesUrls = (valeur: string): boolean =>
+  valeur.split(SEPARATEUR_LISTE).every(estUneUrl)
+
 export const InformationsGeneralesSaisie = z.object({
   section: z.literal('InformationsGenerales'),
   nom: z.string().trim().min(1, 'Veuillez renseigner le nom du lieu'),
@@ -32,8 +73,14 @@ export const InformationsGeneralesSaisie = z.object({
   typologies: z
     .array(z.nativeEnum(Typologie))
     .min(1, 'Sélectionnez au moins une typologie de structure'),
-  siret: texteFacultatif,
-  rna: texteFacultatif,
+  siret: reconnu(
+    validateValidSiretDigits,
+    'Le SIRET doit être composé de 14 chiffres et respecter sa clé de contrôle',
+  ),
+  rna: reconnu(
+    validateValidRnaDigits,
+    'Le RNA doit être composé d’un W suivi de 9 chiffres',
+  ),
   nomUsage: texteFacultatif,
 })
 
@@ -44,18 +91,18 @@ export const VisibiliteCartographieSaisie = z.object({
 
 export const InformationsPratiquesSaisie = z.object({
   section: z.literal('InformationsPratiques'),
-  siteWeb: texteFacultatif,
-  ficheAccesLibre: texteFacultatif.refine(
-    (valeur) =>
-      valeur == null ||
-      valeur === '' ||
-      valeur.startsWith('https://acceslibre.beta.gouv.fr/'),
-    {
-      message:
-        'Veuillez renseigner une URL Acceslibre (https://acceslibre.beta.gouv.fr/...)',
-    },
+  siteWeb: reconnu(
+    sontDesUrls,
+    'Veuillez renseigner une URL valide, ou plusieurs séparées par « | »',
   ),
-  priseRdv: texteFacultatif,
+  ficheAccesLibre: reconnu(
+    (valeur) => estUneUrl(valeur) && valeur.startsWith(PREFIXE_ACCESLIBRE),
+    `Veuillez renseigner une URL Acceslibre (${PREFIXE_ACCESLIBRE}...)`,
+  ),
+  priseRdv: reconnu(
+    estUneUrl,
+    'Veuillez renseigner une URL de prise de rendez-vous valide',
+  ),
   /**
    * Les horaires se saisissent en grille hebdomadaire et se stockent en une
    * chaîne au format OpenStreetMap : la composition a lieu à la frontière, dans
@@ -94,7 +141,17 @@ export const ModalitesAccesAuServiceSaisie = z.object({
   section: z.literal('ModalitesAccesAuService'),
   surPlace: z.boolean(),
   parTelephone: z.boolean(),
-  numeroTelephone: texteFacultatif,
+  /**
+   * Le numéro se tape comme on veut — `01 02 03 04 05`, `+33 1 02 03 04 05`,
+   * `0033102030405` — pourvu qu'on sache le reconnaître ; c'est la
+   * normalisation, et non la saisie, qui porte la forme canonique. Seule
+   * contrainte de fond : le schéma national n'admet que les indicatifs français
+   * et d'outre-mer, un lieu paraissant sur la cartographie nationale.
+   */
+  numeroTelephone: reconnu(
+    (valeur) => telephoneValide(valeur) != null,
+    'Veuillez renseigner un numéro de téléphone français ou d’outre-mer',
+  ),
   parMail: z.boolean(),
   adresseMail: z
     .string()

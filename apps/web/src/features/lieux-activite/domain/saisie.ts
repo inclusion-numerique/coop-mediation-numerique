@@ -1,5 +1,5 @@
 import { validateValidRnaDigits } from '@app/web/libraries/rna'
-import { fixTelephone } from '@app/web/utils/clean-operations'
+import { telephoneCanonique } from '@app/web/libraries/telephone'
 import {
   Adresse,
   Courriel,
@@ -85,6 +85,15 @@ export const presentationSaisie = (
 /**
  * Le numéro, normalisé puis validé — `null` s'il ne l'est pas.
  *
+ * La normalisation accepte ce qu'un humain tape : national, international,
+ * séparateurs quelconques. Elle rend l'E.164, seule forme sous laquelle deux
+ * écritures d'un même numéro se reconnaissent, et donne aux DOM leur indicatif
+ * propre (`0262…` devient `+262262…`, non `+33262…`).
+ *
+ * La validation, elle, reste celle du schéma national : un lieu paraît sur la
+ * cartographie, et le standard n'y admet que les indicatifs français. Un numéro
+ * étranger, fût-il parfaitement valide, n'y a pas sa place.
+ *
  * `Contact` du standard lève sur un téléphone invalide : la cartographie agrège
  * des producteurs hétérogènes, et une valeur mal formée doit se perdre plutôt
  * que d'interrompre un import.
@@ -93,7 +102,7 @@ export const telephoneValide = (
   numero: string | null | undefined,
 ): string | null => {
   const saisi = nonVide(numero)
-  const normalise = saisi == null ? null : fixTelephone(saisi)
+  const normalise = saisi == null ? null : telephoneCanonique(saisi)
 
   return normalise != null && isValidTelephone(normalise) ? normalise : null
 }
