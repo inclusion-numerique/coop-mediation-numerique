@@ -1,3 +1,5 @@
+import { Courriel } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { MediateurId } from '../../../domain/mediateur-id'
 import { champsCommuns } from './champs-communs'
 import type { ChampsPartageables } from './lieu-a-fusionner'
 
@@ -78,7 +80,10 @@ describe('champsCommuns', () => {
   it('computes intersection for all fields', () => {
     const source: ChampsPartageables = {
       employesIds: ['e1', 'e2'],
-      mediateursEnActiviteIds: ['m1', 'm2'],
+      mediateursEnActiviteIds: [
+        MediateurId('0927f824-b84d-4840-ae2e-e4a96a7a519b'),
+        MediateurId('f98724ab-93d2-46cd-bff6-1821dd6a6da7'),
+      ],
       activitesEmployeurIds: ['ae1'],
       activitesLieuIds: ['al1', 'al2'],
       typologies: ['t1'],
@@ -92,11 +97,14 @@ describe('champsCommuns', () => {
       itinerance: ['i1'],
       modalitesAcces: ['ma1'],
       modalitesAccompagnement: ['mac1'],
-      courriels: ['c1@test.fr'],
+      courriels: [Courriel('c1@test.fr')],
     }
     const target: ChampsPartageables = {
       employesIds: ['e2', 'e3'],
-      mediateursEnActiviteIds: ['m2', 'm3'],
+      mediateursEnActiviteIds: [
+        MediateurId('f98724ab-93d2-46cd-bff6-1821dd6a6da7'),
+        MediateurId('00efad2c-0d71-43e3-a174-9e0c2defa083'),
+      ],
       activitesEmployeurIds: ['ae2'],
       activitesLieuIds: ['al2', 'al3'],
       typologies: ['t2'],
@@ -110,14 +118,16 @@ describe('champsCommuns', () => {
       itinerance: ['i2'],
       modalitesAcces: ['ma2'],
       modalitesAccompagnement: ['mac2'],
-      courriels: ['c2@test.fr'],
+      courriels: [Courriel('c2@test.fr')],
     }
 
     const result = champsCommuns(source, target)
 
     expect(result).toEqual({
       employesIds: ['e2'],
-      mediateursEnActiviteIds: ['m2'],
+      mediateursEnActiviteIds: [
+        MediateurId('f98724ab-93d2-46cd-bff6-1821dd6a6da7'),
+      ],
       activitesEmployeurIds: [],
       activitesLieuIds: ['al2'],
       typologies: [],

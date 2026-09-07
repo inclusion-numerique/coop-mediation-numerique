@@ -7,7 +7,7 @@ const AdditionDiff = ({ diff }: { diff: number }) =>
     </span>
   )
 
-const SubtractionDiff = ({ sourceIds }: { sourceIds: string[] }) =>
+const SubtractionDiff = ({ sourceIds }: { sourceIds: readonly string[] }) =>
   sourceIds.length === 0 ? null : (
     <span className="fr-text--bold fr-text-label--red-marianne fr-mb-0">
       &nbsp;
@@ -22,8 +22,10 @@ export const MergeDiff = ({
   commonIds,
 }: {
   isAddition?: boolean
-  sourceIds: string[]
-  commonIds: string[]
+  // Seule la taille compte : n'importe quelle liste de valeurs comparables fait
+  // l'affaire, y compris une liste d'identifiants marqués.
+  sourceIds: readonly string[]
+  commonIds: readonly string[]
 }) =>
   isAddition ? (
     <AdditionDiff diff={(sourceIds.length ?? 0) - (commonIds.length ?? 0)} />

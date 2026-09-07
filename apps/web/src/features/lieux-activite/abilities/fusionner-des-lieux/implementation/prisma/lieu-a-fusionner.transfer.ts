@@ -1,21 +1,49 @@
-import { toTitleCase } from '@app/web/utils/toTitleCase'
-import type { LieuAFusionner, LieuAFusionnerRow } from '../../domain'
+import { adresseSaisie } from '@app/web/features/lieux-activite/domain/saisie'
+import { Courriel, Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { IdentifiantCartographie } from '../../../../domain/ids-cartographie-nationale'
+import { LieuId } from '../../../../domain/lieu-id'
+import { MediateurId } from '../../../../domain/mediateur-id'
+import type { LieuAFusionner } from '../../domain'
+import type { LieuAFusionnerRow } from './lieu-a-fusionner.data'
+
+/**
+ * L'adresse du lieu, si la base en porte une exploitable.
+ *
+ * Les colonnes existent toujours mais peuvent être vides : un lieu en double
+ * est justement le genre de lieu à qui cela arrive, et l'aperçu doit rester
+ * lisible plutôt que refuser de s'afficher.
+ */
+const adresseDuLieu = (structure: LieuAFusionnerRow) =>
+  adresseSaisie(
+    {
+      nom: structure.adresse,
+      commune: structure.commune,
+      codePostal: structure.codePostal,
+      codeInsee: structure.codeInsee ?? '',
+      latitude: 0,
+      longitude: 0,
+    },
+    structure.complementAdresse,
+  )
 
 export const lieuAFusionnerToDomain = (
   structure: LieuAFusionnerRow,
   employeuseRelations: {
-    employesIds: string[]
-    activitesEmployeurIds: string[]
+    readonly employesIds: readonly string[]
+    readonly activitesEmployeurIds: readonly string[]
   },
 ): LieuAFusionner => ({
-  id: structure.id,
-  nom: toTitleCase(structure.nom, { noUpper: true }),
-  adresse: toTitleCase(structure.adresse, { noUpper: true }),
-  commune: toTitleCase(structure.commune),
-  codePostal: structure.codePostal,
+  id: LieuId(structure.id),
+  nom: Nom(structure.nom),
+  adresse: adresseDuLieu(structure),
   siret: structure.siret,
   rna: structure.rna,
-  structureCartographieNationaleId: structure.structureCartographieNationaleId,
+  structureCartographieNationaleId:
+    structure.structureCartographieNationaleId == null
+      ? null
+      : IdentifiantCartographie.safe(
+          structure.structureCartographieNationaleId,
+        ),
   typologies: structure.typologies,
   services: structure.services,
   publicsSpecifiquementAdresses: structure.publicsSpecifiquementAdresses,
@@ -27,11 +55,11 @@ export const lieuAFusionnerToDomain = (
   itinerance: structure.itinerance,
   modalitesAcces: structure.modalitesAcces,
   modalitesAccompagnement: structure.modalitesAccompagnement,
-  courriels: structure.courriels,
+  courriels: structure.courriels.map(Courriel),
   employesIds: employeuseRelations.employesIds,
   mediateursEnActiviteIds: structure.mediateursEnActivite.map(
-    (m) => m.mediateurId,
+    ({ mediateurId }) => MediateurId(mediateurId),
   ),
   activitesEmployeurIds: employeuseRelations.activitesEmployeurIds,
-  activitesLieuIds: structure.activites.map((a) => a.id),
+  activitesLieuIds: structure.activites.map(({ id }) => id),
 })

@@ -7,6 +7,8 @@ import ValiderLaFusion from '@app/web/features/lieux-activite/abilities/fusionne
 import AdministrationBreadcrumbs from '@app/web/libs/ui/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@app/web/libs/ui/administration/AdministrationTitle'
 import { contentId } from '@app/web/utils/skipLinks'
+import { toTitleCase } from '@app/web/utils/toTitleCase'
+import { nomAffiche } from '../nom-affiche'
 
 export const ApercuDeLaFusionPage = ({
   structureId,
@@ -25,7 +27,7 @@ export const ApercuDeLaFusionPage = ({
           linkProps: { href: '/administration/lieux-activite' },
         },
         {
-          label: mergeData.mergeTarget.nom,
+          label: nomAffiche(mergeData.mergeTarget.nom),
           linkProps: {
             href: `/administration/lieux-activite/${structureId}/modifier`,
           },
@@ -34,16 +36,19 @@ export const ApercuDeLaFusionPage = ({
     />
     <main id={contentId}>
       <AdministrationTitle icon="fr-icon-git-merge-line">
-        Fusionner {mergeData.mergeTarget.nom} avec un autre lieu d’activité
+        Fusionner {nomAffiche(mergeData.mergeTarget.nom)} avec un autre lieu
+        d’activité
       </AdministrationTitle>
       <ChoisirLeLieuAFusionner
         structureId={structureId}
         defaultMergeStructure={{
           id: mergeData.mergeSource.id,
-          nom: mergeData.mergeSource.nom,
-          adresse: mergeData.mergeSource.adresse,
-          commune: mergeData.mergeSource.commune,
-          codePostal: mergeData.mergeSource.codePostal,
+          nom: nomAffiche(mergeData.mergeSource.nom),
+          adresse: toTitleCase(mergeData.mergeSource.adresse?.voie ?? '', {
+            noUpper: true,
+          }),
+          commune: toTitleCase(mergeData.mergeSource.adresse?.commune ?? ''),
+          codePostal: mergeData.mergeSource.adresse?.code_postal ?? '',
         }}
       />
       <div className="fr-flex fr-flex-gap-6v fr-mb-6v fr-direction-lg-row fr-direction-column">

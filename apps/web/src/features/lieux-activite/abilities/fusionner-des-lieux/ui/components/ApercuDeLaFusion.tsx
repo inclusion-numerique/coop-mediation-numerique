@@ -1,5 +1,7 @@
 import { MergeDiff } from '@app/web/libs/ui/administration/MergeDiff'
+import { toTitleCase } from '@app/web/utils/toTitleCase'
 import type { ChampsPartageables, LieuAFusionner } from '../../domain'
+import { nomAffiche } from '../nom-affiche'
 
 const mergeFields: { label: string; key: keyof ChampsPartageables }[] = [
   { label: 'Employés', key: 'employesIds' },
@@ -14,6 +16,15 @@ const mergeFields: { label: string; key: keyof ChampsPartageables }[] = [
   { label: "Modalités d'accès", key: 'modalitesAcces' },
   { label: 'Courriels', key: 'courriels' },
 ]
+
+/**
+ * L'adresse en une ligne, telle qu'on la lit. Un lieu sans adresse valide reste
+ * affichable : c'est souvent celui qu'on est venu fusionner.
+ */
+const adresseAffichee = (adresse: LieuAFusionner['adresse']): string =>
+  adresse == null
+    ? 'Adresse non renseignée'
+    : `${toTitleCase(adresse.voie, { noUpper: true })}, ${adresse.code_postal} ${toTitleCase(adresse.commune)}`
 
 export const ApercuDeLaFusion = ({
   merge,
@@ -31,9 +42,9 @@ export const ApercuDeLaFusion = ({
         aria-hidden
       />
       <span className="fr-flex fr-direction-column">
-        {merge.nom}
+        {nomAffiche(merge.nom)}
         <span className="fr-text-mention--grey fr-text--sm fr-mb-0">
-          {merge.adresse}, {merge.codePostal} {merge.commune}
+          {adresseAffichee(merge.adresse)}
         </span>
       </span>
     </h2>

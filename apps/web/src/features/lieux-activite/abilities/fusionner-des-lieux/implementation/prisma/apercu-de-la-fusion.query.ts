@@ -1,5 +1,6 @@
 import { prismaClient } from '@app/web/prismaClient'
-import { champsCommuns, lieuAFusionnerInclude } from '../../domain'
+import { champsCommuns } from '../../domain'
+import { lieuAFusionnerInclude } from './lieu-a-fusionner.data'
 import { lieuAFusionnerToDomain } from './lieu-a-fusionner.transfer'
 
 export type { ChampsPartageables, LieuAFusionner } from '../../domain'
@@ -13,8 +14,8 @@ export type { ChampsPartageables, LieuAFusionner } from '../../domain'
  * sur `personne_affectations_emploi`.
  */
 const SANS_EMPLOYEUSE = {
-  employesIds: [] as string[],
-  activitesEmployeurIds: [] as string[],
+  employesIds: [],
+  activitesEmployeurIds: [],
 }
 
 export const apercuDeLaFusion = async (
