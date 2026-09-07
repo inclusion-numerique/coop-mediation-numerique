@@ -1,7 +1,6 @@
 import { executeInscriptionFlow } from '@app/e2e/e2e/inscription/executeInscriptionFlow'
 import { shouldBeOnCoopHomepage } from '@app/e2e/support/helpers'
 import { mediateurInscription } from '@app/fixtures/users/mediateurInscription'
-import { previewBranchAuthFallbacks } from '@app/web/auth/previewBranchAuthFallbacks'
 import { profileInscriptionLabels } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 
 describe("ETQ médiateur, je peux m'inscrire en suivant le bon parcours", () => {

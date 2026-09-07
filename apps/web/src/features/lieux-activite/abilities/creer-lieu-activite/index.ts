@@ -1,0 +1,1 @@
+export { creerLieuActivite } from './implementation'

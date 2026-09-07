@@ -2,10 +2,10 @@ import type {
   InscriptionEnCours,
   UserId,
 } from '@app/web/features/inscription/domain'
-// Type partagé de la structure carto de l'Entrepôt (erasé au build) — même
-// forme que celle consommée par le module partagé `structure/`.
-import type { CartoStructure } from '@app/web/features/lieux-activite/use-cases/ajouter/domain'
-import type { CreerLieuActiviteData } from '@app/web/features/structures/CreerLieuActiviteValidation'
+import type {
+  CreerLieuActiviteData,
+  LieuCarto,
+} from '@app/web/features/lieux-activite'
 import type { MediateurId } from './mediateur-id'
 import type { LieuActiviteExistant, LieuActiviteInput } from './reconcilier'
 
@@ -15,13 +15,14 @@ export type LireLieuxActiviteExistants = (
 ) => Promise<readonly LieuActiviteExistant[]>
 
 /**
- * Résout les structures carto (lecture Entrepôt) des lieux à créer. Injectée
+ * Résout les lieux de la carto (lecture Entrepôt) à créer, indexés par
+ * l'identifiant demandé. Injectée
  * pour rester hors du chemin critique et stubbable en test — les deux clients
  * Prisma (coop / entrepôt) ne partageant pas de transaction.
  */
 export type TrouverStructuresCarto = (
   cartoIds: readonly string[],
-) => Promise<readonly CartoStructure[]>
+) => Promise<ReadonlyMap<string, LieuCarto>>
 
 /**
  * Applique la réconciliation en une transaction : clôt les activités retirées,
@@ -33,14 +34,18 @@ export type EnregistrerReconciliation = (input: {
   readonly userId: UserId
   readonly aCloturer: readonly string[]
   readonly aCreer: readonly LieuActiviteInput[]
-  readonly structuresCarto: readonly CartoStructure[]
+  readonly structuresCarto: ReadonlyMap<string, LieuCarto>
 }) => Promise<void>
 
 /**
- * Crée le lieu saisi et y rattache le médiateur — ou le rattache au lieu que la
- * coop connaissait déjà sous une autre dénomination. Rend le lieu rattaché.
+ * Enregistre le lieu saisi et y rattache le médiateur — ou le rattache au lieu
+ * que la coop connaissait déjà sous une autre dénomination. Rend le lieu
+ * rattaché.
+ *
+ * « Enregistrer » plutôt que « créer » : l'inscription demande que le lieu
+ * saisi existe et porte son médiateur, pas qu'une fiche de plus soit ouverte.
  */
-export type CreerLieuActivite = (input: {
+export type EnregistrerLeLieuSaisi = (input: {
   readonly userId: UserId
   readonly mediateurId: MediateurId
   readonly saisie: CreerLieuActiviteData

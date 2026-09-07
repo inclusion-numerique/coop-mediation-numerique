@@ -11,7 +11,6 @@ import ActeurStructureEmployeuse from '@app/web/features/mon-reseau/use-cases/ac
 import { contentId } from '@app/web/utils/skipLinks'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import React from 'react'
 
 export const metadata: Metadata = {
   title: metadataTitle('Ma structure employeuse'),

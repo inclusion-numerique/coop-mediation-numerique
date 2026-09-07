@@ -1,6 +1,6 @@
 import { metadataTitle } from '@app/web/app/metadataTitle'
-import { MergeLieuInclusionPreviewPage } from '@app/web/features/structures/use-cases/merge/pages/MergeLieuInclusionPreviewPage'
-import { getMergeLieuInclusionPreviewPageData } from '@app/web/features/structures/use-cases/merge/queries/getMergeLieuInclusionPreviewPageData'
+import { apercuDeLaFusion } from '@app/web/features/lieux-activite/abilities/fusionner-des-lieux'
+import { ApercuDeLaFusionPage } from '@app/web/features/lieux-activite/abilities/fusionner-des-lieux/ui'
 import { notFound } from 'next/navigation'
 
 export const metadata = {
@@ -11,17 +11,11 @@ const Page = async (props: {
   params: Promise<{ structureId: string; mergeId: string }>
 }) => {
   const { structureId, mergeId } = await props.params
-  const mergeData = await getMergeLieuInclusionPreviewPageData(
-    mergeId,
-    structureId,
-  )
+  const mergeData = await apercuDeLaFusion(mergeId, structureId)
   if (!mergeData) return notFound()
 
   return (
-    <MergeLieuInclusionPreviewPage
-      structureId={structureId}
-      mergeData={mergeData}
-    />
+    <ApercuDeLaFusionPage structureId={structureId} mergeData={mergeData} />
   )
 }
 

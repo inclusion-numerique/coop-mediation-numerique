@@ -46,7 +46,6 @@ const structureEmployeuseInput: StructureEmployeuseInput = {
     latitude: 0,
     longitude: 0,
   },
-  typologies: [],
 }
 
 Given('j’ai choisi le profil {string}', async (profil: string) => {

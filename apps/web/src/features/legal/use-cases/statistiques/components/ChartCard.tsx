@@ -2,7 +2,6 @@ import IconInSquare from '@app/web/components/IconInSquare'
 import { numberToString } from '@app/web/utils/formatNumber'
 import type { ButtonProps } from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
-import React from 'react'
 import {
   datesDonneesRecolteesEtMisesAJour,
   totalDepuis,

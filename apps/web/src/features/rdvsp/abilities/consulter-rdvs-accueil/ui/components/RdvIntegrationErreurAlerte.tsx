@@ -5,7 +5,6 @@ import {
 } from '@app/web/features/rdvsp/oauth'
 import Alert from '@codegouvfr/react-dsfr/Alert'
 import Button from '@codegouvfr/react-dsfr/Button'
-import React from 'react'
 
 export const RdvIntegrationErreurAlerte = () => (
   <Alert

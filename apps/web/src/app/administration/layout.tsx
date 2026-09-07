@@ -2,10 +2,8 @@ import AdministrationSideMenu from '@app/web/app/administration/AdministrationSi
 import MinimalFooter from '@app/web/app/coop/MinimalFooter'
 import { getSessionUser } from '@app/web/auth/getSessionUser'
 import Header from '@app/web/components/Header'
-import classNames from 'classnames'
 import { notFound } from 'next/navigation'
-import React, { PropsWithChildren } from 'react'
-import styles from './AdministrationLayout.module.css'
+import { PropsWithChildren } from 'react'
 
 const AdministrationLayout = async ({ children }: PropsWithChildren) => {
   const user = await getSessionUser()

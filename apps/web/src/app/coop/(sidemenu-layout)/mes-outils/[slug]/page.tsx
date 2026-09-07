@@ -3,7 +3,6 @@ import { getOutilsPageData } from '@app/web/app/coop/(sidemenu-layout)/mes-outil
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import React from 'react'
 
 export const generateMetadata = async (props: {
   params: Promise<{ slug: string }>

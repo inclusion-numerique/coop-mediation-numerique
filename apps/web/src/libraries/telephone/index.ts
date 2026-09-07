@@ -1,1 +1,1 @@
-export { telephoneDisplayString } from './telephone'
+export { telephoneCanonique, telephoneDisplayString } from './telephone'

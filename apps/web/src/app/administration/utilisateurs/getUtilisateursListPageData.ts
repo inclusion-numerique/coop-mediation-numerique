@@ -1,5 +1,7 @@
-import { getCommunesAndDepartementsOptions } from '@app/web/features/lieux-activite/getCommunesAndDepartementsOptions'
-import { getLieuxActiviteOptions } from '@app/web/features/lieux-activite/getLieuxActiviteOptions'
+import {
+  getCommunesAndDepartementsOptions,
+  getLieuxActiviteOptions,
+} from '@app/web/features/lieux-activite/abilities/lister-les-options-de-lieux'
 import { UtilisateursDataTableSearchParams } from '@app/web/features/utilisateurs/use-cases/list/UtilisateursDataTable'
 import { searchUtilisateur } from '@app/web/features/utilisateurs/use-cases/search/searchUtilisateur'
 import { prismaClient } from '@app/web/prismaClient'

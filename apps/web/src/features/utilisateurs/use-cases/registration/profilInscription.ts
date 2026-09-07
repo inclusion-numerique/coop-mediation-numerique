@@ -1,4 +1,3 @@
-import { labelsToOptions } from '@app/ui/components/Form/utils/options'
 import type { SessionUser } from '@app/web/auth/sessionUser'
 import type { ProfilInscription } from '@prisma/client'
 

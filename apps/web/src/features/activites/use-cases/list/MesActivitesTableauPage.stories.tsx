@@ -1,6 +1,5 @@
 import { testSessionUser } from '@app/web/test/testSessionUser'
 import type { Meta, StoryObj } from '@storybook/react'
-import React from 'react'
 import ActivitesListeLayout from './components/ActivitesListeLayout'
 import MesActivitesListeEmptyPage from './components/MesActivitesListeEmptyPage'
 import { ActivitesListPageData } from './getActivitesListPageData'

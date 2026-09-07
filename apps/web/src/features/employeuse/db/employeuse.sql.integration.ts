@@ -1,6 +1,6 @@
+import { getStructuresEmployeusesOptions } from '@app/web/features/employeuse/getStructuresEmployeusesOptions'
 import { getMonReseauPageData } from '@app/web/features/mon-reseau/getMonReseauPageData'
 import { searchActeurs } from '@app/web/features/mon-reseau/use-cases/acteurs/db/searchActeurs'
-import { getStructuresEmployeusesOptions } from '@app/web/features/structures/getStructuresEmployeusesOptions'
 import { prismaClient } from '@app/web/prismaClient'
 
 /**

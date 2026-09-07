@@ -4,7 +4,6 @@ import {
 } from '@app/web/features/utilisateurs/use-cases/registration/profilInscription'
 import classNames from 'classnames'
 import Link from 'next/link'
-import React from 'react'
 
 const ConseillerNumeriqueRoleNotice = ({
   conseillerNumeriqueRole,

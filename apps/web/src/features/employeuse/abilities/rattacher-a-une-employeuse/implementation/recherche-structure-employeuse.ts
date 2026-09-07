@@ -1,5 +1,5 @@
+import { structureCreationDataWithSiretFromUniteLegale } from '@app/web/external-apis/api-entreprise/structuresDepuisUniteLegale'
 import { rechercheApiEntreprise } from '@app/web/external-apis/rechercheApiEntreprise'
-import { structureCreationDataWithSiretFromUniteLegale } from '@app/web/structure/structuresInfoFromUniteLegale'
 // Modules visés directement plutôt que le barrel `../../../server` : celui-ci réexporte cette
 // implémentation, et l'atteindre depuis ici fermerait un cycle d'imports.
 import { rechercherEmployeuse } from '../../rechercher-employeuse/implementation'
@@ -49,6 +49,9 @@ export const searchStructureEmployeuseCombined = async (
       codePostal: structure.codePostal,
       codeInsee: structure.codeInsee ?? '',
       siret: structure.siret as string,
+      // L'employeuse enregistrée n'en porte pas : `main.structure_administrative`
+      // ne range aucune typologie. Seul l'annuaire sait la déduire.
+      typologie: null,
       source: 'database' as const,
     }))
 
@@ -63,7 +66,7 @@ export const searchStructureEmployeuseCombined = async (
           codePostal: structure.codePostal ?? '',
           codeInsee: structure.codeInsee ?? '',
           siret: structure.siret as string,
-          typologies: structure.typologies ?? null,
+          typologie: structure.typologie,
           source: 'api' as const,
         }))
     : []

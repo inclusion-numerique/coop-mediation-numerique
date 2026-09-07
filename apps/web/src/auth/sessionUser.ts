@@ -1,11 +1,9 @@
 import type { StatutIntegration } from '@app/web/features/rdvsp/domain/sante-compte'
 import type {
   Coordinateur,
-  EmployeStructure,
   Mediateur,
   RdvAccount,
   RdvOrganisation,
-  StructureAdministrative,
   User,
 } from '@prisma/client'
 

@@ -3,7 +3,10 @@ import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import BackButton from '@app/web/components/BackButton'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import type { Departement } from '@app/web/data/collectivites-territoriales/departements'
+import { LieuActiviteCard } from '@app/web/features/lieux-activite/ui'
+import { getLieuHref } from '@app/web/features/mon-reseau/getLieuHref'
 import { getMonReseauBreadcrumbParents } from '@app/web/features/mon-reseau/getMonReseauBreadcrumbParents'
+import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
 import DataSearchBar from '@app/web/libs/data-table/DataSearchBar'
 import type { DataTableSearchParams } from '@app/web/libs/data-table/DataTableConfiguration'
 import PaginationNavWithPageSizeSelect from '@app/web/libs/data-table/PaginationNavWithPageSizeSelect'
@@ -12,8 +15,7 @@ import SortSelect from '@app/web/libs/data-table/SortSelect'
 import { contentId } from '@app/web/utils/skipLinks'
 import Filters from './components/Filters'
 import { FilterTags } from './components/FilterTags'
-import LieuCard from './components/LieuCard'
-import type { SearchLieuxResult } from './db/searchLieux'
+import type { LieuxTrouves } from './contrat'
 import type { LieuxSearchParams } from './validation/LieuxFilters'
 
 const pageSizeOptions = generatePageSizeSelectOptions([20, 50, 100])
@@ -44,7 +46,7 @@ const LieuxPage = ({
   communesOptions,
 }: {
   departement: Departement
-  searchResult: SearchLieuxResult
+  searchResult: LieuxTrouves
   searchParams: LieuxSearchParams
   isFiltered: boolean
   communesOptions: SelectOption[]
@@ -127,7 +129,16 @@ const LieuxPage = ({
           <hr className="fr-separator-1px" />
 
           {searchResult.lieux.map((lieu) => (
-            <LieuCard key={lieu.id} lieu={lieu} />
+            <LieuActiviteCard
+              key={lieu.id}
+              lieu={lieu}
+              href={getLieuHref(lieu)}
+              derniereModificationPar={
+                lieu.derniereModificationPar
+                  ? getActeurDisplayName(lieu.derniereModificationPar)
+                  : null
+              }
+            />
           ))}
 
           <PaginationNavWithPageSizeSelect

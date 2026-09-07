@@ -1,4 +1,3 @@
-import React from 'react'
 import { ORGANISATEURS_OPTIONS } from '../../../../cra/evenement/labels'
 import { CustomLabel } from '../CustomLabel'
 

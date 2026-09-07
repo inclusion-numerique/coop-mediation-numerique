@@ -1,5 +1,4 @@
 import Button from '@codegouvfr/react-dsfr/Button'
-import React from 'react'
 import { datesDonneesRecolteesEtMisesAJour } from '../../../wording/statistiquesPubliquesWording'
 import { StatTile } from '../StatTile'
 

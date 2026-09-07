@@ -1,0 +1,211 @@
+import { telephoneCanonique } from '@app/web/libraries/telephone'
+import { appendComment } from '@app/web/opening-hours/openingHoursHelpers'
+import {
+  Adresse,
+  Courriel,
+  Itinerance,
+  isRna,
+  isSiret,
+  isValidAddress,
+  isValidCourriel,
+  isValidLocalisation,
+  isValidTelephone,
+  isValidUrl,
+  Localisation,
+  ModaliteAcces,
+  type Pivot,
+  type Presentation,
+  Url,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
+import {
+  fromTimetableOpeningHours,
+  type Schedule,
+} from '@gouvfr-anct/timetable-to-osm-opening-hours'
+
+/**
+ * Des valeurs brutes traduites en modèles du standard.
+ *
+ * Ces primitives vivent au niveau de la feature parce que créer un lieu, corriger
+ * sa fiche et l'importer depuis la cartographie décrivent les mêmes choses : les
+ * dupliquer par ability ferait diverger deux lectures d'une même valeur — l'une
+ * accepterait une URL que l'autre refuserait.
+ *
+ * Les fonctions en `*Saisi` portent en plus ce qu'un formulaire ajoute — une case
+ * à cocher qui commande le champ ; les autres prennent la valeur telle quelle et
+ * servent les deux entrées.
+ *
+ * Elles sont pures et ne connaissent que le standard : le vocabulaire Prisma,
+ * lui, se traduit dans le transfer.
+ */
+
+/** Le séparateur multi-valeurs du schéma national. */
+export const SEPARATEUR_LISTE = '|'
+
+export const nonVide = (valeur: string | null | undefined): string | null =>
+  valeur != null && valeur.trim() !== '' ? valeur.trim() : null
+
+export const urlSaisie = (valeur: string | null | undefined): Url | null => {
+  const texte = nonVide(valeur)
+
+  return texte != null && isValidUrl(texte) ? Url(texte) : null
+}
+
+export const sitesWebSaisis = (
+  valeur: string | null | undefined,
+): readonly Url[] =>
+  (nonVide(valeur) ?? '')
+    .split(SEPARATEUR_LISTE)
+    .map((jeton) => jeton.trim())
+    .filter(isValidUrl)
+    .map(Url)
+
+export const pivotSaisi = (
+  siret: string | null | undefined,
+  rna: string | null | undefined,
+): Pivot | null => {
+  const siretSaisi = nonVide(siret)
+  if (siretSaisi != null && isSiret(siretSaisi)) return siretSaisi
+
+  const rnaSaisi = nonVide(rna)
+
+  return rnaSaisi != null && isRna(rnaSaisi) ? rnaSaisi : null
+}
+
+export const presentationSaisie = (
+  resume: string | null | undefined,
+  detail: string | null | undefined,
+): Presentation | null => {
+  const resumeSaisi = nonVide(resume)
+  const detailSaisi = nonVide(detail)
+
+  if (resumeSaisi == null && detailSaisi == null) return null
+
+  return {
+    ...(resumeSaisi == null ? {} : { resume: resumeSaisi }),
+    ...(detailSaisi == null ? {} : { detail: detailSaisi }),
+  }
+}
+
+/**
+ * Le numéro, normalisé puis validé — `null` s'il ne l'est pas.
+ *
+ * La normalisation accepte ce qu'un humain tape : national, international,
+ * séparateurs quelconques. Elle rend l'E.164, seule forme sous laquelle deux
+ * écritures d'un même numéro se reconnaissent, et donne aux DOM leur indicatif
+ * propre (`0262…` devient `+262262…`, non `+33262…`).
+ *
+ * La validation, elle, reste celle du schéma national : un lieu paraît sur la
+ * cartographie, et le standard n'y admet que les indicatifs français. Un numéro
+ * étranger, fût-il parfaitement valide, n'y a pas sa place.
+ *
+ * `Contact` du standard lève sur un téléphone invalide : la cartographie agrège
+ * des producteurs hétérogènes, et une valeur mal formée doit se perdre plutôt
+ * que d'interrompre un import.
+ */
+export const telephoneValide = (
+  numero: string | null | undefined,
+): string | null => {
+  const saisi = nonVide(numero)
+  const normalise = saisi == null ? null : telephoneCanonique(saisi)
+
+  return normalise != null && isValidTelephone(normalise) ? normalise : null
+}
+
+/**
+ * Ce que rend une case à cocher isolée : `true` cochée, `null` (ou rien)
+ * décochée. Les fonctions qui la lisent la traitent en valeur véridique, ce qui
+ * range les trois cas sans distinguer « décochée » de « absente ».
+ */
+export type Coche = boolean | null | undefined
+
+export const telephoneSaisi = (
+  coche: Coche,
+  numero: string | null | undefined,
+): string | null => (coche ? telephoneValide(numero) : null)
+
+/** Les adresses reconnues parmi celles proposées, dans l'ordre. */
+export const courrielsValides = (
+  adresses: readonly (string | null | undefined)[],
+): readonly Courriel[] =>
+  adresses
+    .map(nonVide)
+    .filter((adresse): adresse is string => adresse != null)
+    .filter(isValidCourriel)
+    .map(Courriel)
+
+export const courrielsSaisis = (
+  coche: Coche,
+  adresse: string | null | undefined,
+): readonly Courriel[] => (coche ? courrielsValides([adresse]) : [])
+
+/** Les trois seules modalités qu'un formulaire de lieu sait exprimer. */
+export const modalitesAccesSaisies = (saisie: {
+  surPlace?: Coche
+  parTelephone?: Coche
+  parMail?: Coche
+}): readonly ModaliteAcces[] => [
+  ...(saisie.surPlace ? [ModaliteAcces.SePresenter] : []),
+  ...(saisie.parTelephone ? [ModaliteAcces.Telephoner] : []),
+  ...(saisie.parMail ? [ModaliteAcces.ContacterParMail] : []),
+]
+
+export type AdresseSaisie = {
+  nom: string
+  commune: string
+  codePostal: string
+  codeInsee: string
+  latitude: number
+  longitude: number
+}
+
+export const adresseSaisie = (
+  ban: AdresseSaisie,
+  complement: string | null | undefined,
+): Adresse | null => {
+  const complementSaisi = nonVide(complement)
+  const candidate = {
+    voie: ban.nom,
+    commune: ban.commune,
+    code_postal: ban.codePostal,
+    code_insee: ban.codeInsee,
+    ...(complementSaisi == null ? {} : { complement_adresse: complementSaisi }),
+  }
+
+  return isValidAddress(candidate) ? Adresse(candidate) : null
+}
+
+export const localisationSaisie = (ban: AdresseSaisie): Localisation | null => {
+  const candidate = { latitude: ban.latitude, longitude: ban.longitude }
+
+  return isValidLocalisation(candidate) ? Localisation(candidate) : null
+}
+
+/**
+ * L'itinérance se saisit en tri-état : coché, décoché, ou pas renseigné. Le
+ * standard, lui, la porte en liste.
+ */
+export const itineranceSaisie = (
+  itinerant: boolean | null | undefined,
+): readonly Itinerance[] =>
+  itinerant == null
+    ? []
+    : itinerant
+      ? [Itinerance.Itinerant]
+      : [Itinerance.Fixe]
+
+/**
+ * Les horaires : une grille hebdomadaire à la saisie, une chaîne au format
+ * OpenStreetMap dans le standard, et le commentaire libre à la suite.
+ *
+ * La composition vit ici parce que les deux formulaires saisissent la même
+ * grille. Elle a longtemps été faite deux fois sur le chemin de la création —
+ * une fois en projetant la saisie, une fois dans le mapper — et `appendComment`
+ * ajoutant plutôt que remplaçant, le commentaire s'écrivait en double.
+ */
+export const horairesSaisis = (
+  grille: Schedule,
+  commentaire: string | null | undefined,
+): string | null =>
+  nonVide(
+    appendComment(fromTimetableOpeningHours(grille), nonVide(commentaire)),
+  )

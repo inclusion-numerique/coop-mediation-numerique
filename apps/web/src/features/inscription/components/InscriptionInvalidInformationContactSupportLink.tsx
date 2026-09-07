@@ -1,7 +1,6 @@
 import { PublicWebAppConfig } from '@app/web/PublicWebAppConfig'
 import classNames from 'classnames'
 import Link from 'next/link'
-import React from 'react'
 
 const InscriptionInvalidInformationContactSupportLink = ({
   className,

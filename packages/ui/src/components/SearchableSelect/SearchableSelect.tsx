@@ -1,6 +1,6 @@
 import Input from '@codegouvfr/react-dsfr/Input'
 import classNames from 'classnames'
-import React, {
+import {
   Dispatch,
   SetStateAction,
   useCallback,

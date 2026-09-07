@@ -1,6 +1,8 @@
 import { SessionUser } from '@app/web/auth/sessionUser'
-import { getCommunesAndDepartementsOptions } from '@app/web/features/lieux-activite/getCommunesAndDepartementsOptions'
-import { getLieuxActiviteOptions } from '@app/web/features/lieux-activite/getLieuxActiviteOptions'
+import {
+  getCommunesAndDepartementsOptions,
+  getLieuxActiviteOptions,
+} from '@app/web/features/lieux-activite'
 import { generateUtilisateursFiltersLabels } from '../filter/generateUtilisateursFiltersLabels'
 import {
   UtilisateursFilters,

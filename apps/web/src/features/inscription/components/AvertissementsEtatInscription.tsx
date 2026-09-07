@@ -19,7 +19,7 @@ export type EtatInscriptionUtilisateur = {
  * - **validée sans compte de rôle** : l'état fantôme de l'incident des comptes
  *   sans rôle. Le compte a dépassé la première étape mais ne peut rien faire dans
  *   la coop, et `getHomepage` le renvoie indéfiniment vers l'inscription. Le
- *   remède est le job `reset-inscriptions-sans-role`, pas une relance.
+ *   remède fut une reprise en base, jouée le 08/07/2026, pas une relance.
  *
  * Le second échappe à `isUserInscriptionEnCours`, qui ne regarde que
  * `inscriptionValidee` : c'est pourquoi il a sa propre condition.

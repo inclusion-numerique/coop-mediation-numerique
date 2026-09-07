@@ -7,7 +7,7 @@ import {
   employeuseCouranteJoin,
 } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
-import { departementCodeFromInseeRegex } from './departementCodeFromInseeRegex'
+import { departementCodeFromInseeRegex } from '@app/web/utils/departementCodeFromInseeRegex'
 
 /**
  * Count distinct users who are acteurs in a department:

@@ -7,7 +7,6 @@ import { contentId } from '@app/web/utils/skipLinks'
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import React from 'react'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

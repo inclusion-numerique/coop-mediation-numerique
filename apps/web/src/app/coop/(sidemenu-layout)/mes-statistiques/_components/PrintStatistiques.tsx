@@ -4,7 +4,6 @@ import {
   toLieuPrefix,
 } from '@app/web/features/activites/use-cases/list/components/generateActivitesFiltersLabels'
 import Tag from '@codegouvfr/react-dsfr/Tag'
-import React from 'react'
 import { StatistiquesActivitesPrint } from '../_sections/StatistiquesActivitesPrint'
 import { StatistiquesBeneficiairesPrint } from '../_sections/StatistiquesBeneficiairesPrint'
 import { StatistiquesGeneralesPrint } from '../_sections/StatistiquesGeneralesPrint'

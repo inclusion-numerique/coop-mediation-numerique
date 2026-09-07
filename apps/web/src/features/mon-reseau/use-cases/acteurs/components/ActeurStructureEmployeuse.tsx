@@ -1,6 +1,6 @@
 import Card from '@app/web/components/Card'
-import { ReferentStructure } from '@app/web/components/structure/ReferentStructure'
 import type { EmploiEmployeuseAffichage } from '@app/web/features/employeuse/server'
+import { ReferentStructure } from '@app/web/features/mon-reseau/ReferentStructure'
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Link from 'next/link'
 import { ReactNode } from 'react'

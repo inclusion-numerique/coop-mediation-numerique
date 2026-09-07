@@ -8,7 +8,6 @@ import {
 import type { StructureEmployeuse } from '@app/web/components/filters/more-filters/StructureEmployeuseComboBox'
 import {
   StructuresEmployeusesField,
-  structuresEmployeusesCount,
   updateStructuresEmployeusesParams,
 } from '@app/web/components/filters/more-filters/StructuresEmployeusesField'
 import {
@@ -38,7 +37,6 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
-import React from 'react'
 import { SourcesField, updateSourcesParams } from './more-filters/SourceField'
 
 const MoreFiltersModal = createModal({

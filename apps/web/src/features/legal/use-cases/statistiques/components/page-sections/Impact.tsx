@@ -1,5 +1,3 @@
-import React from 'react'
-
 export const Impact = () => (
   <>
     <h2 className="fr-h3 fr-flex fr-align-items-center fr-flex-gap-3v">

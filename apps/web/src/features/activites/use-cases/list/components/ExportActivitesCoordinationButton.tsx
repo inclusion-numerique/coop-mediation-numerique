@@ -7,7 +7,6 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import Image from 'next/image'
-import React from 'react'
 
 type Filter = {
   params: string[]

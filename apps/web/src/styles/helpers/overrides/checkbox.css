@@ -1,0 +1,15 @@
+/* Le DSFR donne .75rem de padding vertical à chaque label de case à cocher. Ce
+   padding n'est pas de l'espacement : la case elle-même est en `position:
+   absolute; top: 0`, et c'est lui qui descend le texte pour l'aligner sur elle.
+   Le réduire décale le libellé vers le haut — d'autant plus visible sur les
+   options qui portent un texte explicatif.
+
+   L'écart entre deux cases vient donc du padding bas de l'une plus le padding
+   haut de la suivante, soit 24px. Pour le resserrer sans rien désaligner, on
+   laisse le padding tranquille et on remonte les cases suivantes : le DSFR fait
+   déjà exactement cela sur la première du groupe (`margin-top: -.75rem`).
+
+   À poser sur le `content` du champ : `classes={{ content: 'fr-checkboxes-compact' }}`. */
+.fr-checkboxes-compact .fr-checkbox-group:not(:first-child) {
+  margin-top: -0.5rem;
+}

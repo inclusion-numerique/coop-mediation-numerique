@@ -15,7 +15,7 @@ import {
 import TriggerButton from '@app/web/libs/filters/TriggerButton'
 import { MediateurOption } from '@app/web/mediateurs/MediateurOption'
 import { useRouter, useSearchParams } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type MediateurOptionWithId = MediateurOption & {
   value: { mediateurId: string }

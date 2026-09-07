@@ -6,8 +6,6 @@ import {
   rdvOauthLinkAccountSuccessCallbackPath,
 } from '@app/web/features/rdvsp/oauth'
 import Button from '@codegouvfr/react-dsfr/Button'
-import Image from 'next/image'
-import React from 'react'
 import RdvServicePublicConnexionCard from '../components/RdvServicePublicConnexionCard'
 
 const SeConnecterPage = () => {

@@ -4,7 +4,7 @@ import CustomSelect, {
 import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
 import { UiComponentProps } from '@app/ui/utils/uiComponentProps'
 import classNames from 'classnames'
-import React, { ReactNode, useCallback, useState } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 import {
   Control,
   Controller,

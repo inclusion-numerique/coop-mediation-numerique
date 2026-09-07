@@ -1,7 +1,6 @@
 import Breadcrumbs from '@app/web/components/Breadcrumbs'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { contentId } from '@app/web/utils/skipLinks'
-import React from 'react'
 import { Accompagnements } from './components/page-sections/Accompagnements'
 import { Beneficiaires } from './components/page-sections/Beneficiaires'
 import { ChiffresCles } from './components/page-sections/ChiffresCles'

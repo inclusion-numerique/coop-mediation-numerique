@@ -90,11 +90,14 @@ const nullActivite: Omit<
   rdvServicePublicId: null,
   mediateur: {
     id: '303381cc-3da7-433d-a553-1a5f76465989',
-    user: {
+    // La personne `main` du médiateur ne dit rien de la création d'une
+    // activité, et elle diffère selon l'environnement : absente en CI, présente
+    // sur une base locale restaurée depuis la prod, où `seedPersonnesMain` lui
+    // ajoute une affectation. Ce cas n'a pas à en juger.
+    user: expect.objectContaining({
       firstName: 'Médiateur',
       lastName: 'Avec activités',
-      personneMain: null,
-    },
+    }),
   },
   v1CraId: null,
   rdv: null,

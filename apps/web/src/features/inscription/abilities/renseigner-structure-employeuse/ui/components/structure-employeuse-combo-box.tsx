@@ -1,5 +1,9 @@
 import type { OptionsData } from '@app/ui/components/Primitives/Options'
 import { rechercherStructureEmployeuseAction } from '@app/web/app/_actions/employeuse/rechercher-structure-employeuse.action'
+import {
+  type TypologieStructure,
+  typologieStructureLibelle,
+} from '@app/web/external-apis/api-entreprise/typologieStructure'
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import type { StructureSearchResult } from '@app/web/features/employeuse'
 import type { ComboBoxData } from '@app/web/libs/form/fields-components/ComboBox'
@@ -15,7 +19,7 @@ export type StructureEmployeuseItem = {
   readonly nom: string
   readonly siret: string
   readonly adresseBan: AdresseBanData
-  readonly typologies?: string[] | null
+  readonly typologie?: TypologieStructure | null
 }
 
 /**
@@ -37,7 +41,7 @@ const toItem = (structure: StructureSearchResult): StructureEmployeuseItem => ({
     latitude: 0,
     longitude: 0,
   },
-  typologies: structure.typologies ?? null,
+  typologie: structure.typologie ?? null,
 })
 
 /**
@@ -70,9 +74,7 @@ const renderItem = ({ item }: { item: StructureEmployeuseItem }) => (
   <span className="fr-flex fr-direction-column">
     <span className="fr-text--sm fr-mb-0">{item.nom}</span>
     <span className="fr-text--xs fr-text-mention--grey fr-mb-0">
-      {(item.typologies?.length ?? 0) > 0
-        ? `${item.typologies?.join(', ')} · `
-        : ''}
+      {item.typologie ? `${typologieStructureLibelle(item.typologie)} · ` : ''}
       {addresseFromParts({
         adresse: item.adresseBan.nom,
         codePostal: item.adresseBan.codePostal,

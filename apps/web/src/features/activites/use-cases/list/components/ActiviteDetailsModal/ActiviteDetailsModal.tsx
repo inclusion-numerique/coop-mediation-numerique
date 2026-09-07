@@ -32,7 +32,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import React, { Fragment, ReactNode, useEffect, useState } from 'react'
+import { Fragment, ReactNode, useEffect, useState } from 'react'
 import { niveauAtelierStars } from '../../../cra/collectif/fields/niveau-atelier'
 import { materielLabels } from '../../../cra/fields/materiel'
 import {
