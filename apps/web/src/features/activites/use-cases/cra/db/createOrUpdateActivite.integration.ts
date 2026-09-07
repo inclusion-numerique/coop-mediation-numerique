@@ -90,16 +90,14 @@ const nullActivite: Omit<
   rdvServicePublicId: null,
   mediateur: {
     id: '303381cc-3da7-433d-a553-1a5f76465989',
-    user: {
+    // La personne `main` du médiateur ne dit rien de la création d'une
+    // activité, et elle diffère selon l'environnement : absente en CI, présente
+    // sur une base locale restaurée depuis la prod, où `seedPersonnesMain` lui
+    // ajoute une affectation. Ce cas n'a pas à en juger.
+    user: expect.objectContaining({
       firstName: 'Médiateur',
       lastName: 'Avec activités',
-      // Les fixtures relient ce médiateur à sa personne `main`. L'attente
-      // précédente — aucune personne — décrivait une base d'où une autre suite
-      // les avait effacées : elle ne tenait qu'à l'ordre des fichiers.
-      personneMain: {
-        affectationsEmploi: [{ estActive: true, source: 'coop' }],
-      },
-    },
+    }),
   },
   v1CraId: null,
   rdv: null,
