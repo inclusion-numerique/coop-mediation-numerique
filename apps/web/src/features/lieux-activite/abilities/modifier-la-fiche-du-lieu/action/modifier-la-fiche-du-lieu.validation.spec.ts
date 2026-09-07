@@ -4,6 +4,7 @@ import {
   InformationsGeneralesSaisie,
   InformationsPratiquesSaisie,
   ModalitesAccesAuServiceSaisie,
+  ModifierLaFicheDuLieuValidation,
 } from './modifier-la-fiche-du-lieu.validation'
 
 const adresseBan = {
@@ -165,5 +166,80 @@ describe('la saisie d’une section de fiche', () => {
         expect(numeroTelephone(numero)).toBe(false)
       },
     )
+  })
+})
+
+/**
+ * La saisie peut être incohérente, le domaine non : une case de contact cochée
+ * sans son moyen ferait une fiche annonçant qu'on peut joindre ce lieu, sans de
+ * quoi le joindre. La règle croise deux champs, elle se tient donc sur l'union
+ * assemblée et non sur l'un d'eux.
+ */
+describe('une case de contact cochée exige son moyen', () => {
+  const modalites = (champs: Record<string, unknown>) =>
+    ModifierLaFicheDuLieuValidation.safeParse({
+      id: '0927f824-b84d-4840-ae2e-e4a96a7a519b',
+      modification: {
+        section: 'ModalitesAccesAuService',
+        surPlace: false,
+        parTelephone: false,
+        numeroTelephone: null,
+        parMail: false,
+        adresseMail: null,
+        fraisACharge: [],
+        ...champs,
+      },
+    })
+
+  const messages = (issue: ReturnType<typeof modalites>) =>
+    issue.success ? [] : issue.error.issues.map(({ message }) => message)
+
+  it('refuse « par téléphone » sans numéro', () => {
+    expect(messages(modalites({ parTelephone: true }))).toEqual([
+      'Le numéro de téléphone est obligatoire.',
+    ])
+  })
+
+  it('refuse « par mail » sans adresse', () => {
+    expect(messages(modalites({ parMail: true }))).toEqual([
+      "L'adresse email est obligatoire.",
+    ])
+  })
+
+  it('dit les deux manques d’un coup', () => {
+    expect(messages(modalites({ parTelephone: true, parMail: true }))).toEqual([
+      'Le numéro de téléphone est obligatoire.',
+      "L'adresse email est obligatoire.",
+    ])
+  })
+
+  it('accepte les cases cochées avec leurs moyens', () => {
+    expect(
+      modalites({
+        parTelephone: true,
+        numeroTelephone: '01 02 03 04 05',
+        parMail: true,
+        adresseMail: 'contact@example.fr',
+      }).success,
+    ).toBe(true)
+  })
+
+  /** Décochées, les cases n'exigent rien. */
+  it('n’exige rien quand aucune case n’est cochée', () => {
+    expect(modalites({}).success).toBe(true)
+  })
+
+  /** La règle ne vaut que pour sa section : les autres ne la portent pas. */
+  it('laisse passer une autre section', () => {
+    expect(
+      ModifierLaFicheDuLieuValidation.safeParse({
+        id: '0927f824-b84d-4840-ae2e-e4a96a7a519b',
+        modification: {
+          section: 'ServicesEtAccompagnement',
+          services: [],
+          modalitesAccompagnement: [],
+        },
+      }).success,
+    ).toBe(true)
   })
 })

@@ -2,11 +2,14 @@ import {
   Adresse,
   Contact,
   Courriel,
+  FormationLabel,
   Frais,
   Itinerance,
   ModaliteAcces,
   Nom,
   Pivot,
+  PriseEnChargeSpecifique,
+  PublicSpecifiquementAdresse,
   Service,
   Typologie,
   Url,
@@ -161,6 +164,46 @@ describe('appliquer une modification à la fiche du lieu', () => {
 
     expect(modifie.fiche.contact.site_web).toBeUndefined()
     expect(modifie.fiche.horaires).toBeNull()
+  })
+
+  it('enregistre la description sans toucher au reste', () => {
+    const modifie = appliquerModification(
+      lieu,
+      {
+        section: 'Description',
+        presentation: { resume: 'Un nouveau résumé' },
+        formationsLabels: [FormationLabel.FabriquesDeTerritoire],
+      },
+      auteur,
+      maintenant,
+    )
+
+    expect(modifie.fiche.presentation).toEqual({ resume: 'Un nouveau résumé' })
+    expect(modifie.fiche.formationsLabels).toEqual([
+      FormationLabel.FabriquesDeTerritoire,
+    ])
+    expect(modifie.fiche.services).toEqual(lieu.fiche.services)
+  })
+
+  it('enregistre les publics accueillis sans toucher au reste', () => {
+    const modifie = appliquerModification(
+      lieu,
+      {
+        section: 'TypesDePublicsAccueillis',
+        publicsSpecifiquementAdresses: [PublicSpecifiquementAdresse.Jeunes],
+        priseEnChargeSpecifique: [PriseEnChargeSpecifique.Surdite],
+      },
+      auteur,
+      maintenant,
+    )
+
+    expect(modifie.fiche.publicsSpecifiquementAdresses).toEqual([
+      PublicSpecifiquementAdresse.Jeunes,
+    ])
+    expect(modifie.fiche.priseEnChargeSpecifique).toEqual([
+      PriseEnChargeSpecifique.Surdite,
+    ])
+    expect(modifie.fiche.contact).toEqual(lieu.fiche.contact)
   })
 
   it('ne déborde pas d’une section sur les autres', () => {
