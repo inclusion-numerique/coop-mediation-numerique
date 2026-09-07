@@ -1,4 +1,5 @@
 import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
+import { identifiantsCarto } from './identifiants-carto'
 import type { LieuDejaRattache, LieuDemande } from './lieu-demande'
 
 /**
@@ -27,14 +28,7 @@ export const lieuxAMaterialiser = (
   demandes: readonly LieuDemande[],
 ): readonly LieuDemande[] => {
   const idsRattaches = new Set(dejaRattaches.map(({ id }) => id))
-  const cartoIdsRattaches = new Set(
-    dejaRattaches
-      .map(
-        ({ structureCartographieNationaleId }) =>
-          structureCartographieNationaleId,
-      )
-      .filter(onlyDefinedAndNotNull),
-  )
+  const cartoIdsRattaches = new Set(identifiantsCarto(dejaRattaches))
 
   const estDejaRattache = ({
     id,

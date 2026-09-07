@@ -1,9 +1,11 @@
+export { demandeDAjout } from './demande-d-ajout'
 export {
   AdresseNonValidee,
   type EchecDAjout,
   MediateurRequis,
   PanierVide,
 } from './errors'
+export { identifiantsCarto } from './identifiants-carto'
 export { type LieuCarto, lieuDepuisCarto } from './lieu-carto'
 export {
   type AdresseValidee,

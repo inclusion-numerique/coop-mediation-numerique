@@ -1,16 +1,15 @@
-import { failure, type Result, success } from '@app/web/libraries/result'
+import { type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
-import { onlyDefinedAndNotNull } from '@app/web/utils/onlyDefinedAndNotNull'
 import { LieuId } from '../../../../domain/lieu-id'
 import type { MediateurId } from '../../../../domain/mediateur-id'
 import type { UserId } from '../../../../domain/user-id'
 import {
   type AjouterDesLieuxActivitePorts,
+  demandeDAjout,
   type EchecDAjout,
+  identifiantsCarto,
   type LieuDemande,
   lieuxAMaterialiser,
-  MediateurRequis,
-  PanierVide,
 } from '../../domain'
 import { rattacherAuLieu } from './rattacher-au-lieu'
 
@@ -54,23 +53,19 @@ export const ajouterDesLieuxActivite = async ({
   readonly ports: AjouterDesLieuxActivitePorts
   readonly maintenant?: Date
 }): Promise<Result<{ readonly lieux: readonly LieuId[] }, EchecDAjout>> => {
-  if (mediateurId == null) return failure(MediateurRequis)
-  if (demandes.length === 0) return failure(PanierVide)
+  const demande = demandeDAjout({ mediateurId, demandes })
+
+  if (!demande.success) return demande
 
   const aMaterialiser = lieuxAMaterialiser(
-    await ports.lireLieuxDejaRattaches(mediateurId),
-    demandes,
+    await ports.lireLieuxDejaRattaches(demande.data.mediateurId),
+    demande.data.demandes,
   )
 
   if (aMaterialiser.length === 0) return success({ lieux: [] })
 
   const structuresCartoParId = await ports.trouverStructuresCarto(
-    aMaterialiser
-      .map(
-        ({ structureCartographieNationaleId }) =>
-          structureCartographieNationaleId,
-      )
-      .filter(onlyDefinedAndNotNull),
+    identifiantsCarto(aMaterialiser),
   )
 
   const lieux = await prismaClient.$transaction((transaction) =>
