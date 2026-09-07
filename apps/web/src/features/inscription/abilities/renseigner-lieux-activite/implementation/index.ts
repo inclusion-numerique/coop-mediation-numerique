@@ -1,5 +1,5 @@
 export { getInscriptionEtat } from '@app/web/features/inscription/db'
-export { enregistrerLeLieuSaisi } from './creer-dans-les-lieux-activite'
+export { enregistrerLeLieuSaisi } from './enregistrer-le-lieu-saisi'
 export { enregistrerReconciliation } from './prisma/enregistrer-reconciliation.mutation'
 export { lireLieuxActiviteExistants } from './prisma/lire-lieux-activite-existants.query'
 export { mediateurFromUser } from './prisma/lire-mediateur-de-utilisateur.query'
