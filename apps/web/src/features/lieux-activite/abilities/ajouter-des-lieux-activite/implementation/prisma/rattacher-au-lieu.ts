@@ -1,5 +1,6 @@
 import type { Prisma } from '@prisma/client'
 import { v4 } from 'uuid'
+import { lieuFromDomain } from '../../../../db/lieu.transfer'
 import { lieuCorrele, preparerCorrele } from '../../../../db/lieu-correle'
 import {
   type AdresseValidee,
@@ -7,8 +8,8 @@ import {
   estExistant,
   type LieuACreer,
   type LieuDemande,
+  lieuDepuisCarto,
 } from '../../domain'
-import { lieuDepuisCarto } from './lieu-depuis-carto'
 
 /**
  * Les colonnes d'adresse, telles que la Base Adresse Nationale les a validées.
@@ -99,6 +100,7 @@ const lieuARattacher = async (
   transaction: Prisma.TransactionClient,
   lieu: LieuDemande,
   structuresCartoParId: ReadonlyMap<string, CartoStructure>,
+  maintenant: Date,
 ): Promise<{ readonly id: string }> => {
   // L'id vient de l'écran, donc du client : le prendre au mot rattacherait le
   // médiateur à n'importe quel lieu par son uuid, y compris un lieu supprimé —
@@ -152,7 +154,10 @@ const lieuARattacher = async (
   return materialiser(
     transaction,
     cartoStructure
-      ? { ...lieuDepuisCarto(cartoStructure), ...adresseValidee(lieu) }
+      ? {
+          ...lieuFromDomain(lieuDepuisCarto(cartoStructure, maintenant)),
+          ...adresseValidee(lieu),
+        }
       : lieuDepuisAdresse(lieu),
   )
 }
@@ -188,6 +193,7 @@ export const rattacherAuLieu = async (
     transaction,
     lieu,
     structuresCartoParId,
+    maintenant,
   )
 
   const dejaRattache = await transaction.mediateurEnActivite.findFirst({

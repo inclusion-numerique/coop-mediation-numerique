@@ -3,6 +3,7 @@ import { reconnues } from '@app/web/features/lieux-activite/vocabulaire'
 import {
   Frais,
   Itinerance,
+  isValidNom,
   ModaliteAcces,
   ModaliteAccompagnement,
   PriseEnChargeSpecifique,
@@ -83,8 +84,15 @@ const contactValue = (
   }
 }
 
+/**
+ * Une ligne de l'Entrepôt devient une structure exploitable, ou rien.
+ *
+ * Sans id de cartographie il n'y a rien à corréler ; sans nom, il n'y a pas de
+ * fiche — `Nom` du standard le refuse, et une ligne écartée vaut mieux qu'un
+ * import interrompu.
+ */
 const toCartoStructure = (lieu: LieuRow): CartoStructure | null => {
-  if (!lieu.structureCartographieNationaleId) {
+  if (!lieu.structureCartographieNationaleId || !isValidNom(lieu.nom)) {
     return null
   }
   const { telephone, courriels, siteWeb } = contactValue(lieu.contact)

@@ -13,6 +13,7 @@ export {
   type LieuDemande,
   type LieuExistant,
 } from './lieu-demande'
+export { lieuDepuisCarto } from './lieu-depuis-carto'
 export { lieuxAMaterialiser } from './lieux-a-materialiser'
 export type {
   AjouterDesLieuxActivitePorts,

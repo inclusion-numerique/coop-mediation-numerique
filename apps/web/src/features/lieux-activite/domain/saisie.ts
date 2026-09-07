@@ -19,12 +19,16 @@ import {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 
 /**
- * Ce qu'un formulaire de lieu produit, traduit en modèles du standard.
+ * Des valeurs brutes traduites en modèles du standard.
  *
- * Ces primitives vivent au niveau de la feature parce que créer un lieu et
- * corriger sa fiche saisissent les mêmes choses : les dupliquer par ability
- * ferait diverger deux lectures d'un même formulaire — l'une accepterait une
- * URL que l'autre refuserait.
+ * Ces primitives vivent au niveau de la feature parce que créer un lieu, corriger
+ * sa fiche et l'importer depuis la cartographie décrivent les mêmes choses : les
+ * dupliquer par ability ferait diverger deux lectures d'une même valeur — l'une
+ * accepterait une URL que l'autre refuserait.
+ *
+ * Les fonctions en `*Saisi` portent en plus ce qu'un formulaire ajoute — une case
+ * à cocher qui commande le champ ; les autres prennent la valeur telle quelle et
+ * servent les deux entrées.
  *
  * Elles sont pures et ne connaissent que le standard : le vocabulaire Prisma,
  * lui, se traduit dans le transfer.
@@ -78,26 +82,41 @@ export const presentationSaisie = (
   }
 }
 
-export const telephoneSaisi = (
-  coche: boolean,
+/**
+ * Le numéro, normalisé puis validé — `null` s'il ne l'est pas.
+ *
+ * `Contact` du standard lève sur un téléphone invalide : la cartographie agrège
+ * des producteurs hétérogènes, et une valeur mal formée doit se perdre plutôt
+ * que d'interrompre un import.
+ */
+export const telephoneValide = (
   numero: string | null | undefined,
 ): string | null => {
-  if (!coche) return null
-
   const saisi = nonVide(numero)
   const normalise = saisi == null ? null : fixTelephone(saisi)
 
   return normalise != null && isValidTelephone(normalise) ? normalise : null
 }
 
+export const telephoneSaisi = (
+  coche: boolean,
+  numero: string | null | undefined,
+): string | null => (coche ? telephoneValide(numero) : null)
+
+/** Les adresses reconnues parmi celles proposées, dans l'ordre. */
+export const courrielsValides = (
+  adresses: readonly (string | null | undefined)[],
+): readonly Courriel[] =>
+  adresses
+    .map(nonVide)
+    .filter((adresse): adresse is string => adresse != null)
+    .filter(isValidCourriel)
+    .map(Courriel)
+
 export const courrielsSaisis = (
   coche: boolean,
   adresse: string | null | undefined,
-): readonly Courriel[] => {
-  const saisie = coche ? nonVide(adresse) : null
-
-  return saisie != null && isValidCourriel(saisie) ? [Courriel(saisie)] : []
-}
+): readonly Courriel[] => (coche ? courrielsValides([adresse]) : [])
 
 /** Les trois seules modalités qu'un formulaire de lieu sait exprimer. */
 export const modalitesAccesSaisies = (saisie: {
