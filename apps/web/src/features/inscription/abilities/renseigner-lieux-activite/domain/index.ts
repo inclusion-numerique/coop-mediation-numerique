@@ -5,7 +5,7 @@ export {
 } from './creer-lieu-activite'
 export { MediateurId } from './mediateur-id'
 export type {
-  CreerLieuActivite,
+  EnregistrerLeLieuSaisi,
   EnregistrerReconciliation,
   LireLieuxActiviteExistants,
   MediateurFromUser,

@@ -1,8 +1,10 @@
 import assert from 'node:assert'
 import { creerLieuActivite } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/commands/creer-lieu-activite'
 import { renseignerLieuxActivite } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/commands/renseigner-lieux-activite'
-import type { CreerLieuActivite } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/domain'
-import { mediateurFromUser } from '@app/web/features/inscription/abilities/renseigner-lieux-activite/implementation'
+import {
+  enregistrerLeLieuSaisi,
+  mediateurFromUser,
+} from '@app/web/features/inscription/abilities/renseigner-lieux-activite/implementation'
 import { ProfilInscription } from '@app/web/features/inscription/domain'
 import {
   currentInscriptionUserId,
@@ -10,44 +12,20 @@ import {
   seedProfilChoisi,
   trackLieuActivite,
 } from '@app/web/features/inscription/inscription.cucumber'
-import type { CreerLieuActiviteData } from '@app/web/features/lieux-activite'
 import {
+  type CreerLieuActiviteData,
   CreerLieuActiviteValidation,
-  creerLieuActivite as creerUnLieu,
-  UserId as LieuUserId,
-  MediateurId,
-  nouveauLieu,
 } from '@app/web/features/lieux-activite'
 import { emptyOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 
-/**
- * Même branchement que `app/_actions/inscription/creer-lieu-activite.action.ts` :
- * l'inscription déclare le besoin, l'ability de `lieux-activite` le sert. Les
- * scénarios de corrélation ci-dessous valent donc pour les deux parcours.
- */
-const creerDansLesLieuxActivite: CreerLieuActivite = async ({
-  userId,
-  mediateurId,
-  saisie,
-}) => {
-  const resultat = await creerUnLieu({
-    lieu: nouveauLieu(saisie, LieuUserId(userId), new Date()),
-    mediateurId: MediateurId(mediateurId),
-  })
-
-  assert.ok(resultat.success, "L'ability aurait dû accepter le médiateur")
-
-  return resultat.data
-}
-
 const creerUnLieuDActivite = (saisie: CreerLieuActiviteData) =>
   creerLieuActivite({
     command: { userId: currentInscriptionUserId(), saisie },
     mediateurFromUser,
-    creerLieuActivite: creerDansLesLieuxActivite,
+    enregistrerLeLieuSaisi,
   })
 
 let lieuDisponibleId = ''

@@ -39,10 +39,14 @@ export type EnregistrerReconciliation = (input: {
 }) => Promise<void>
 
 /**
- * Crée le lieu saisi et y rattache le médiateur — ou le rattache au lieu que la
- * coop connaissait déjà sous une autre dénomination. Rend le lieu rattaché.
+ * Enregistre le lieu saisi et y rattache le médiateur — ou le rattache au lieu
+ * que la coop connaissait déjà sous une autre dénomination. Rend le lieu
+ * rattaché.
+ *
+ * « Enregistrer » plutôt que « créer » : l'inscription demande que le lieu
+ * saisi existe et porte son médiateur, pas qu'une fiche de plus soit ouverte.
  */
-export type CreerLieuActivite = (input: {
+export type EnregistrerLeLieuSaisi = (input: {
   readonly userId: UserId
   readonly mediateurId: MediateurId
   readonly saisie: CreerLieuActiviteData

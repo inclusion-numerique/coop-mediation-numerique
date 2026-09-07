@@ -2,8 +2,8 @@ import type { UserId } from '@app/web/features/inscription/domain'
 import type { CreerLieuActiviteData } from '@app/web/features/lieux-activite'
 import { failure, type Result, success } from '@app/web/libraries/result'
 import {
-  type CreerLieuActivite,
   type CreerLieuActiviteError,
+  type EnregistrerLeLieuSaisi,
   type MediateurFromUser,
   MediateurIntrouvable,
 } from '../domain'
@@ -26,18 +26,18 @@ import {
 export const creerLieuActivite = async ({
   command: { userId, saisie },
   mediateurFromUser,
-  creerLieuActivite: creer,
+  enregistrerLeLieuSaisi,
 }: {
   readonly command: {
     readonly userId: UserId
     readonly saisie: CreerLieuActiviteData
   }
   readonly mediateurFromUser: MediateurFromUser
-  readonly creerLieuActivite: CreerLieuActivite
+  readonly enregistrerLeLieuSaisi: EnregistrerLeLieuSaisi
 }): Promise<Result<{ readonly id: string }, CreerLieuActiviteError>> => {
   const mediateurId = await mediateurFromUser(userId)
 
   if (mediateurId === null) return failure(MediateurIntrouvable(userId))
 
-  return success(await creer({ userId, mediateurId, saisie }))
+  return success(await enregistrerLeLieuSaisi({ userId, mediateurId, saisie }))
 }
