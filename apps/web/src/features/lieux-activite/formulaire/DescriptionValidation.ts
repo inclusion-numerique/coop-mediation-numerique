@@ -1,4 +1,4 @@
-import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
+import { FormationLabelPropose } from '@app/web/features/lieux-activite/domain/nomenclatures'
 import z from 'zod'
 
 export const descriptionMaxLength = 280
@@ -13,9 +13,7 @@ export const DescriptionShape = {
     .trim()
     .nullish(),
   presentationDetail: z.string().trim().nullish(),
-  formationsLabels: z
-    .array(z.enum(vocabulaire.formationLabel.valeurs))
-    .nullish(),
+  formationsLabels: z.array(z.nativeEnum(FormationLabelPropose)).nullish(),
 }
 
 export const DescriptionValidation = z.object({

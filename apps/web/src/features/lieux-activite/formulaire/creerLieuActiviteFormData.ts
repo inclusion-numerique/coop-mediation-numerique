@@ -1,19 +1,19 @@
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
+import type { FormationLabelPropose as FormationLabel } from '@app/web/features/lieux-activite/domain/nomenclatures'
 import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite/formulaire/CreerLieuActiviteValidation'
 import type { OpeningHoursData } from '@app/web/features/lieux-activite/formulaire/OpeningHoursValidation'
-import type {
-  FormationLabelCoop as FormationLabel,
-  FraisAChargeCoop as FraisACharge,
-  ModaliteAccompagnementCoop as ModaliteAccompagnement,
-  PriseEnChargeSpecifiqueCoop as PriseEnChargeSpecifique,
-  PublicSpecifiquementAdresseCoop as PublicSpecifiquementAdresse,
-  ServiceCoop as Service,
-  TypologieCoop as Typologie,
-} from '@app/web/features/lieux-activite/vocabulaire'
 import {
   appendComment,
   emptyOpeningHours,
 } from '@app/web/opening-hours/openingHoursHelpers'
+import type {
+  Frais as FraisACharge,
+  ModaliteAccompagnement,
+  PriseEnChargeSpecifique,
+  PublicSpecifiquementAdresse,
+  Service,
+  Typologie,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
 import {
   fromTimetableOpeningHours,
   type Schedule,

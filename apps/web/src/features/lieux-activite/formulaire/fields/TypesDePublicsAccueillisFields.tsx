@@ -1,11 +1,11 @@
 'use client'
 
-import type { PublicSpecifiquementAdresseCoop as PublicSpecifiquementAdresse } from '@app/web/features/lieux-activite/vocabulaire'
 import {
   priseEnChargeSpecifiqueOptions,
   publicSpecifiquementAdresseOptions,
-} from '@app/web/features/lieux-activite/vocabulaire/options'
+} from '@app/web/features/lieux-activite/ui/options'
 import { withForm } from '@app/web/libs/form/use-app-form'
+import { type PublicSpecifiquementAdresse } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { creerLieuActiviteFormOptions } from '../creerLieuActiviteFormData'
 
 const tousLesPublics = publicSpecifiquementAdresseOptions.map(

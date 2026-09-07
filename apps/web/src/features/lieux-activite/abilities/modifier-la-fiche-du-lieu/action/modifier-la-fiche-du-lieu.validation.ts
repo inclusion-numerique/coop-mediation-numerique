@@ -1,20 +1,23 @@
 import { AdresseBanValidation } from '@app/web/external-apis/ban/AdresseBanValidation'
-import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
+import { FormationLabelPropose } from '@app/web/features/lieux-activite/domain/nomenclatures'
+import {
+  Frais,
+  ModaliteAccompagnement,
+  PriseEnChargeSpecifique,
+  PublicSpecifiquementAdresse,
+  Service,
+  Typologie,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { z } from 'zod'
 import { HorairesValidation } from './horaires.validation'
 
 /**
  * La saisie, telle que le formulaire l'envoie.
  *
- * Le vocabulaire y circule sous ses noms Prisma — c'est ce que les listes
- * d'options affichent déjà — et le mapper le traduit vers le schéma national à
- * l'entrée du domaine. Une seule table de correspondance existe, celle du
- * transfer ; l'action s'en sert plutôt que d'en tenir une seconde.
- *
- * Les valeurs admises viennent des mêmes listes que les options du formulaire,
- * et non des enums `@prisma/client` : ce fichier est importé par les composants
- * `'use client'` des sections, où un import Prisma au runtime embarquerait le
- * client de base de données dans le bundle du navigateur.
+ * Le vocabulaire y circule sous les valeurs du schéma national, celles-là mêmes
+ * que le domaine manipule : le mapper n'a plus rien à traduire, et la seule
+ * table de correspondance qui subsiste est celle du transfer, vers les noms
+ * sous lesquels la base les stocke.
  */
 export const resumeMaxLength = 280
 
@@ -27,7 +30,7 @@ export const InformationsGeneralesSaisie = z.object({
   complementAdresse: texteFacultatif,
   lieuItinerant: z.boolean().nullish(),
   typologies: z
-    .array(z.enum(vocabulaire.typologie.valeurs))
+    .array(z.nativeEnum(Typologie))
     .min(1, 'Sélectionnez au moins une typologie de structure'),
   siret: texteFacultatif,
   rna: texteFacultatif,
@@ -73,15 +76,13 @@ export const DescriptionSaisie = z.object({
     )
     .nullish(),
   presentationDetail: texteFacultatif,
-  formationsLabels: z.array(z.enum(vocabulaire.formationLabel.valeurs)),
+  formationsLabels: z.array(z.nativeEnum(FormationLabelPropose)),
 })
 
 export const ServicesEtAccompagnementSaisie = z.object({
   section: z.literal('ServicesEtAccompagnement'),
-  services: z.array(z.enum(vocabulaire.service.valeurs)),
-  modalitesAccompagnement: z.array(
-    z.enum(vocabulaire.modaliteAccompagnement.valeurs),
-  ),
+  services: z.array(z.nativeEnum(Service)),
+  modalitesAccompagnement: z.array(z.nativeEnum(ModaliteAccompagnement)),
 })
 
 /**
@@ -100,18 +101,16 @@ export const ModalitesAccesAuServiceSaisie = z.object({
     .trim()
     .email('Veuillez renseigner une adresse email valide')
     .nullish(),
-  fraisACharge: z.array(z.enum(vocabulaire.fraisACharge.valeurs)),
+  fraisACharge: z.array(z.nativeEnum(Frais)),
 })
 
 export const TypesDePublicsAccueillisSaisie = z.object({
   section: z.literal('TypesDePublicsAccueillis'),
   toutPublic: z.boolean(),
   publicsSpecifiquementAdresses: z.array(
-    z.enum(vocabulaire.publicSpecifiquementAdresse.valeurs),
+    z.nativeEnum(PublicSpecifiquementAdresse),
   ),
-  priseEnChargeSpecifique: z.array(
-    z.enum(vocabulaire.priseEnChargeSpecifique.valeurs),
-  ),
+  priseEnChargeSpecifique: z.array(z.nativeEnum(PriseEnChargeSpecifique)),
 })
 
 export const ModifierLaFicheDuLieuValidation = z.object({

@@ -20,12 +20,15 @@ import {
 } from '../../../domain/saisie'
 import type { UserId } from '../../../domain/user-id'
 import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
-import * as vocabulaire from '../../../vocabulaire'
 
-const traduits = <Depuis extends string, Vers extends string>(
-  valeurs: readonly Depuis[] | null | undefined,
-  table: { versStandard: (valeur: Depuis) => Vers | null },
-): readonly Vers[] => vocabulaire.traduites(valeurs ?? [], table.versStandard)
+/**
+ * La saisie porte déjà le vocabulaire du schéma national : il n'y a plus rien à
+ * traduire ici, seulement à rendre une liste là où le formulaire peut n'avoir
+ * rien coché.
+ */
+const cochees = <Valeur>(
+  valeurs: readonly Valeur[] | null | undefined,
+): readonly Valeur[] => valeurs ?? []
 
 const modalitesCochees = (
   modalites: CreerLieuActiviteData['modalitesAcces'],
@@ -47,7 +50,7 @@ const identiteDuLieu = (
   pivot: null,
   adresse: adresseSaisie(saisie.adresseBan, saisie.complementAdresse),
   localisation: localisationSaisie(saisie.adresseBan),
-  typologies: traduits(saisie.typologies, vocabulaire.typologie),
+  typologies: cochees(saisie.typologies),
   itinerance: itineranceSaisie(saisie.lieuItinerant),
 })
 
@@ -58,10 +61,7 @@ const description = (
     saisie.presentationResume,
     saisie.presentationDetail,
   ),
-  formationsLabels: traduits(
-    saisie.formationsLabels,
-    vocabulaire.formationLabel,
-  ),
+  formationsLabels: cochees(saisie.formationsLabels),
 })
 
 const informationsPratiques = (
@@ -77,11 +77,8 @@ const informationsPratiques = (
 const servicesEtAccompagnement = (
   saisie: CreerLieuActiviteData,
 ): Pick<Fiche, 'services' | 'modalitesAccompagnement'> => ({
-  services: traduits(saisie.services, vocabulaire.service),
-  modalitesAccompagnement: traduits(
-    saisie.modalitesAccompagnement,
-    vocabulaire.modaliteAccompagnement,
-  ),
+  services: cochees(saisie.services),
+  modalitesAccompagnement: cochees(saisie.modalitesAccompagnement),
 })
 
 const modalitesAccesAuService = (
@@ -90,7 +87,7 @@ const modalitesAccesAuService = (
   modalitesAcces: modalitesAccesSaisies(
     modalitesCochees(saisie.modalitesAcces),
   ),
-  fraisACharge: traduits(saisie.fraisACharge, vocabulaire.fraisACharge),
+  fraisACharge: cochees(saisie.fraisACharge),
 })
 
 const typesDePublicsAccueillis = (
@@ -101,14 +98,8 @@ const typesDePublicsAccueillis = (
 > => ({
   publicsSpecifiquementAdresses: saisie.toutPublic
     ? []
-    : traduits(
-        saisie.publicsSpecifiquementAdresses,
-        vocabulaire.publicSpecifiquementAdresse,
-      ),
-  priseEnChargeSpecifique: traduits(
-    saisie.priseEnChargeSpecifique,
-    vocabulaire.priseEnChargeSpecifique,
-  ),
+    : cochees(saisie.publicsSpecifiquementAdresses),
+  priseEnChargeSpecifique: cochees(saisie.priseEnChargeSpecifique),
 })
 
 const contactSaisi = (saisie: CreerLieuActiviteData): Contact => {

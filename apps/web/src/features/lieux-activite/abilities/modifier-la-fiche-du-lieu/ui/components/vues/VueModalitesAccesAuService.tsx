@@ -1,6 +1,5 @@
-import type { FraisAChargeCoop as FraisACharge } from '@app/web/features/lieux-activite/vocabulaire'
-import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import Tag from '@codegouvfr/react-dsfr/Tag'
+import { type Frais as FraisACharge } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import Link from 'next/link'
 
 export const VueModalitesAccesAuService = ({
@@ -75,7 +74,7 @@ export const VueModalitesAccesAuService = ({
         <ul className="fr-tags-group">
           {fraisACharge.map((frais) => (
             <li key={frais}>
-              <Tag>{vocabulaire.fraisACharge.table[frais]}</Tag>
+              <Tag>{frais}</Tag>
             </li>
           ))}
         </ul>

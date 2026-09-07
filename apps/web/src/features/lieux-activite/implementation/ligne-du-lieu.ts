@@ -22,7 +22,7 @@ import type {
   PublicSpecifiquementAdresseCoop,
   ServiceCoop,
   TypologieCoop,
-} from '../vocabulaire'
+} from './vocabulaire'
 
 /**
  * Les noms que la coop donne à ses nomenclatures et ceux que la base stocke

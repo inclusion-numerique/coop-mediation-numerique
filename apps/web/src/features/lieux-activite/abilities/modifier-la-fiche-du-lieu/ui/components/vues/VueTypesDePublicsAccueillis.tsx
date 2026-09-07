@@ -1,9 +1,8 @@
-import type {
-  PriseEnChargeSpecifiqueCoop as PriseEnChargeSpecifique,
-  PublicSpecifiquementAdresseCoop as PublicSpecifiquementAdresse,
-} from '@app/web/features/lieux-activite/vocabulaire'
-import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import Tag from '@codegouvfr/react-dsfr/Tag'
+import type {
+  PriseEnChargeSpecifique,
+  PublicSpecifiquementAdresse,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
 
 export const VueTypesDePublicsAccueillis = ({
   priseEnChargeSpecifique = [],
@@ -24,13 +23,7 @@ export const VueTypesDePublicsAccueillis = ({
         <ul className="fr-tags-group fr-mt-3v fr-mt-1v">
           {publicsSpecifiquementAdresses.map((publicSpecifiquementAdresse) => (
             <li key={publicSpecifiquementAdresse}>
-              <Tag>
-                {
-                  vocabulaire.publicSpecifiquementAdresse.table[
-                    publicSpecifiquementAdresse
-                  ]
-                }
-              </Tag>
+              <Tag>{publicSpecifiquementAdresse}</Tag>
             </li>
           ))}
         </ul>
@@ -52,9 +45,7 @@ export const VueTypesDePublicsAccueillis = ({
         <ul className="fr-tags-group">
           {priseEnChargeSpecifique.map((priseEnCharge) => (
             <li key={priseEnCharge}>
-              <Tag>
-                {vocabulaire.priseEnChargeSpecifique.table[priseEnCharge]}
-              </Tag>
+              <Tag>{priseEnCharge}</Tag>
             </li>
           ))}
         </ul>

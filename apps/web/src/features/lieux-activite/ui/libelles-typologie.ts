@@ -1,13 +1,13 @@
-import { Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { pontParNom } from './pont'
+import type { Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
 
 /**
- * Seule nomenclature dont la table coop ne porte pas les valeurs du standard :
- * le schéma national reprend les mêmes sigles (`ACI`, `BIB`, `CCAS`…), si bien
- * que la correspondance se fait par identité des noms. Ce que la coop garde en
- * propre, c'est le libellé lisible affiché dans les formulaires et les fiches.
+ * Les libellés des typologies.
+ *
+ * Seule nomenclature dont les valeurs du schéma national ne sont pas lisibles
+ * telles quelles : ce sont des sigles. La coop garde donc en propre le libellé
+ * affiché dans les formulaires et les fiches.
  */
-export const libelles = {
+export const typologieLibelles: Record<Typologie, string> = {
   ACI: 'Structures porteuses d’ateliers et chantiers d’insertion (ACI)',
   ACIPHC: 'SIAE — Atelier chantier d’insertion premières heures en chantier',
   AFPA: 'Agence nationale pour la formation professionnelle des adultes (AFPA)',
@@ -108,10 +108,12 @@ export const libelles = {
   UDAF: 'Union Départementale d’Aide aux Familles (UDAF)',
 }
 
-export type TypologieCoop = keyof typeof libelles
+const parValeur = new Map<string, string>(Object.entries(typologieLibelles))
 
-export const typologie = pontParNom(
-  Typologie,
-  Object.keys(libelles) as [TypologieCoop, ...TypologieCoop[]],
-  [['Autre', Typologie.AUTRE]],
-)
+/**
+ * Le libellé d'une typologie désignée par une chaîne quelconque — ce que rendent
+ * les listes de sélection — ou la chaîne elle-même quand elle n'en désigne
+ * aucune.
+ */
+export const libelleDeTypologie = (valeur: string): string =>
+  parValeur.get(valeur) ?? valeur

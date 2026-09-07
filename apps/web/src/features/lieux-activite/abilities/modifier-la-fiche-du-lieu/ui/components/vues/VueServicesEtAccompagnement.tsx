@@ -1,9 +1,8 @@
-import type {
-  ModaliteAccompagnementCoop as ModaliteAccompagnement,
-  ServiceCoop as Service,
-} from '@app/web/features/lieux-activite/vocabulaire'
-import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
-import { modaliteAccompagnementIcons } from '@app/web/features/lieux-activite/vocabulaire/options'
+import { modaliteAccompagnementIcons } from '@app/web/features/lieux-activite/ui/options'
+import {
+  ModaliteAccompagnement,
+  type Service,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
 
 export const VueServicesEtAccompagnement = ({
   services = [],
@@ -23,7 +22,7 @@ export const VueServicesEtAccompagnement = ({
       {services.length > 0 ? (
         <ul>
           {services.map((service) => (
-            <li key={service}>{vocabulaire.service.table[service]}</li>
+            <li key={service}>{service}</li>
           ))}
         </ul>
       ) : (
@@ -44,11 +43,7 @@ export const VueServicesEtAccompagnement = ({
                 <span className="fr-flex fr-px-4v">
                   <Icon width={32} height={32} />
                 </span>
-                {
-                  vocabulaire.modaliteAccompagnement.table[
-                    modaliteAccompagnement
-                  ]
-                }
+                {modaliteAccompagnement}
               </li>
             )
           })}

@@ -2,21 +2,22 @@ import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValida
 import { getAdresseBanLabel } from '@app/web/external-apis/ban/adresseBanLabel'
 import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
 import type { StructureSearchResult } from '@app/web/features/employeuse'
-import type {
-  FormationLabelCoop,
-  FraisAChargeCoop,
-  ModaliteAccompagnementCoop,
-  PriseEnChargeSpecifiqueCoop,
-  PublicSpecifiquementAdresseCoop,
-  ServiceCoop,
-  TypologieCoop,
-} from '@app/web/features/lieux-activite/vocabulaire'
+import {
+  type FormationLabelPropose,
+  formationsLabelsProposees,
+} from '@app/web/features/lieux-activite/domain/nomenclatures'
 import { safeToTimetableOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import { getDepartementCodeFromCodeInsee } from '@app/web/utils/getDepartementFromCodeInsee'
 import {
+  type Frais,
   Itinerance,
   isSiret,
   ModaliteAcces,
+  type ModaliteAccompagnement,
+  type PriseEnChargeSpecifique,
+  type PublicSpecifiquementAdresse,
+  type Service,
+  type Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import {
   CLOSED_SCHEDULE,
@@ -24,16 +25,15 @@ import {
 } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import type { Lieu } from '../../../domain/lieu'
 import { estPublie } from '../../../domain/visibilite-cartographie'
-import * as vocabulaire from '../../../vocabulaire'
 import type { FicheDuLieu } from '../implementation'
 
 /**
  * La mise en forme de la fiche pour l'écran : domaine vers props, sans effet et
  * sans JSX. Les composants n'ont ainsi rien à décider.
  *
- * Le vocabulaire redescend en noms Prisma parce que c'est sous ces noms que les
- * listes de libellés et d'options de la coop sont indexées. La traduction reste
- * celle du transfer — il n'en existe qu'une.
+ * Le vocabulaire ne redescend plus : la fiche, la saisie et les options parlent
+ * toutes les valeurs du schéma national. Seul le transfer traduit, vers les
+ * noms sous lesquels la base les stocke.
  */
 export type FicheAffichee = {
   readonly id: string
@@ -58,7 +58,7 @@ export type FicheAffichee = {
     readonly adresseBan: AdresseBanData
     readonly siretSearch: StructureSearchResult | null
     readonly lieuItinerant: boolean | null
-    readonly typologies: readonly TypologieCoop[]
+    readonly typologies: readonly Typologie[]
     readonly siret: string | null
     readonly rna: string | null
     readonly nomUsage: string | null
@@ -77,12 +77,12 @@ export type FicheAffichee = {
   readonly description: {
     readonly presentationResume: string | null
     readonly presentationDetail: string | null
-    readonly formationsLabels: readonly FormationLabelCoop[]
+    readonly formationsLabels: readonly FormationLabelPropose[]
     readonly estVide: boolean
   }
   readonly servicesEtAccompagnement: {
-    readonly services: readonly ServiceCoop[]
-    readonly modalitesAccompagnement: readonly ModaliteAccompagnementCoop[]
+    readonly services: readonly Service[]
+    readonly modalitesAccompagnement: readonly ModaliteAccompagnement[]
     readonly estVide: boolean
   }
   readonly modalitesAccesAuService: {
@@ -91,13 +91,13 @@ export type FicheAffichee = {
     readonly numeroTelephone: string | null
     readonly parMail: boolean
     readonly adresseMail: string | null
-    readonly fraisACharge: readonly FraisAChargeCoop[]
+    readonly fraisACharge: readonly Frais[]
     readonly estVide: boolean
   }
   readonly typesDePublicsAccueillis: {
     readonly toutPublic: boolean
-    readonly publicsSpecifiquementAdresses: readonly PublicSpecifiquementAdresseCoop[]
-    readonly priseEnChargeSpecifique: readonly PriseEnChargeSpecifiqueCoop[]
+    readonly publicsSpecifiquementAdresses: readonly PublicSpecifiquementAdresse[]
+    readonly priseEnChargeSpecifique: readonly PriseEnChargeSpecifique[]
     readonly estVide: boolean
   }
 }
@@ -171,10 +171,7 @@ export const ficheAffichee = ({
       adresseBan: adresseBanDepuis(fiche),
       siretSearch: rechercheSiret(fiche),
       lieuItinerant: itinerant(fiche.itinerance),
-      typologies: vocabulaire.traduites(
-        fiche.typologies,
-        vocabulaire.typologie.versCoop,
-      ),
+      typologies: fiche.typologies,
       siret: fiche.pivot != null && isSiret(fiche.pivot) ? fiche.pivot : null,
       rna: fiche.pivot != null && !isSiret(fiche.pivot) ? fiche.pivot : null,
       nomUsage: lieu.identiteSirene.nomUsage,
@@ -199,23 +196,14 @@ export const ficheAffichee = ({
     description: {
       presentationResume: fiche.presentation?.resume ?? null,
       presentationDetail: fiche.presentation?.detail ?? null,
-      formationsLabels: vocabulaire.traduites(
-        fiche.formationsLabels,
-        vocabulaire.formationLabel.versCoop,
-      ),
+      formationsLabels: formationsLabelsProposees(fiche.formationsLabels),
       estVide:
         fiche.presentation?.resume == null &&
         fiche.presentation?.detail == null,
     },
     servicesEtAccompagnement: {
-      services: vocabulaire.traduites(
-        fiche.services,
-        vocabulaire.service.versCoop,
-      ),
-      modalitesAccompagnement: vocabulaire.traduites(
-        fiche.modalitesAccompagnement,
-        vocabulaire.modaliteAccompagnement.versCoop,
-      ),
+      services: fiche.services,
+      modalitesAccompagnement: fiche.modalitesAccompagnement,
       estVide:
         fiche.services.length === 0 &&
         fiche.modalitesAccompagnement.length === 0,
@@ -226,24 +214,15 @@ export const ficheAffichee = ({
       numeroTelephone: contact.telephone ?? null,
       parMail: fiche.modalitesAcces.includes(ModaliteAcces.ContacterParMail),
       adresseMail: courriel,
-      fraisACharge: vocabulaire.traduites(
-        fiche.fraisACharge,
-        vocabulaire.fraisACharge.versCoop,
-      ),
+      fraisACharge: fiche.fraisACharge,
       estVide:
         fiche.modalitesAcces.length === 0 && fiche.fraisACharge.length === 0,
     },
     typesDePublicsAccueillis: {
       // « Tout public » n'est pas une colonne : c'est l'absence de public visé.
       toutPublic: fiche.publicsSpecifiquementAdresses.length === 0,
-      publicsSpecifiquementAdresses: vocabulaire.traduites(
-        fiche.publicsSpecifiquementAdresses,
-        vocabulaire.publicSpecifiquementAdresse.versCoop,
-      ),
-      priseEnChargeSpecifique: vocabulaire.traduites(
-        fiche.priseEnChargeSpecifique,
-        vocabulaire.priseEnChargeSpecifique.versCoop,
-      ),
+      publicsSpecifiquementAdresses: fiche.publicsSpecifiquementAdresses,
+      priseEnChargeSpecifique: fiche.priseEnChargeSpecifique,
       estVide:
         fiche.publicsSpecifiquementAdresses.length === 0 &&
         fiche.priseEnChargeSpecifique.length === 0,

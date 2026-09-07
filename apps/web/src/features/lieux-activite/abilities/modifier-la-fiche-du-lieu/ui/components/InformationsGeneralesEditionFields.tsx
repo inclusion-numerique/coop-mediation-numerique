@@ -11,7 +11,7 @@ import {
   AdresseBanComboBox,
   AdresseBanOptions,
 } from '@app/web/features/adresse/combo-box/AdresseBanComboBox'
-import { typologieStructureOptions } from '@app/web/features/lieux-activite/vocabulaire/options'
+import { typologieStructureOptions } from '@app/web/features/lieux-activite/ui/options'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'

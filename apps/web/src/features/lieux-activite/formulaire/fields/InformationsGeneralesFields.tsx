@@ -8,8 +8,8 @@ import {
   AdresseBanComboBox,
   AdresseBanOptions,
 } from '@app/web/features/adresse/combo-box/AdresseBanComboBox'
-import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
-import { typologieStructureOptions } from '@app/web/features/lieux-activite/vocabulaire/options'
+import { libelleDeTypologie } from '@app/web/features/lieux-activite/ui/libelles-typologie'
+import { typologieStructureOptions } from '@app/web/features/lieux-activite/ui/options'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { creerLieuActiviteFormOptions } from '../creerLieuActiviteFormData'
@@ -131,11 +131,7 @@ export const InformationsGeneralesFields = withForm({
               options={optionsWithEmptyValue(typologieStructureOptions)}
             />
             <field.SelectedItems
-              itemToString={(item: string) =>
-                vocabulaire.typologieLibelles[
-                  item as keyof typeof vocabulaire.typologieLibelles
-                ] ?? item
-              }
+              itemToString={libelleDeTypologie}
               itemToKey={(item: string) => item}
             />
           </>

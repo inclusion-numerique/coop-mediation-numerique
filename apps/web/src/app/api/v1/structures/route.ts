@@ -11,7 +11,7 @@ import type {
   JsonApiResource,
 } from '@app/web/app/api/v1/JsonApiTypes'
 import { inventaireDesLieux } from '@app/web/features/lieux-activite/abilities/inventorier-les-lieux'
-import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
+import * as vocabulaire from '@app/web/features/lieux-activite/implementation/vocabulaire'
 import { encodeSerializableState } from '@app/web/utils/encodeSerializableState'
 import {
   DispositifProgrammeNational,

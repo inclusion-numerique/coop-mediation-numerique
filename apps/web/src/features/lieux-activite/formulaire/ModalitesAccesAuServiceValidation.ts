@@ -1,5 +1,5 @@
-import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import { telephoneValidation } from '@app/web/utils/telephoneValidation'
+import { Frais } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import z from 'zod'
 
 export const ModalitesAccesAuServiceShape = {
@@ -31,7 +31,7 @@ export const ModalitesAccesAuServiceShape = {
         })
       }
     }),
-  fraisACharge: z.array(z.enum(vocabulaire.fraisACharge.valeurs)).nullish(),
+  fraisACharge: z.array(z.nativeEnum(Frais)).nullish(),
 }
 
 export const ModalitesAccesAuServiceValidation = z.object({

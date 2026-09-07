@@ -1,5 +1,4 @@
-import type { FormationLabelCoop as FormationLabel } from '@app/web/features/lieux-activite/vocabulaire'
-import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
+import { FormationLabelPropose as FormationLabel } from '@app/web/features/lieux-activite/domain/nomenclatures'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 
 export const VueDescription = ({
@@ -46,7 +45,7 @@ export const VueDescription = ({
         <ul className="fr-tags-group fr-mt-3v">
           {formationsLabels?.map((formationLabel) => (
             <li key={formationLabel}>
-              <Tag>{vocabulaire.formationLabel.table[formationLabel]}</Tag>
+              <Tag>{formationLabel}</Tag>
             </li>
           ))}
         </ul>

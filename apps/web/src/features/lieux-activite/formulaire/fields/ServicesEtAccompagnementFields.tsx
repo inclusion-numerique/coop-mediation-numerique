@@ -2,11 +2,10 @@
 
 import RedAsterisk from '@app/ui/components/Form/RedAsterisk'
 import { optionsWithEmptyValue } from '@app/ui/components/Form/utils/options'
-import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import {
   modaliteAccompagnementOptions,
   serviceOptions,
-} from '@app/web/features/lieux-activite/vocabulaire/options'
+} from '@app/web/features/lieux-activite/ui/options'
 import { withForm } from '@app/web/libs/form/use-app-form'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useSelector } from '@tanstack/react-form'
@@ -47,11 +46,7 @@ export const ServicesEtAccompagnementFields = withForm({
                 options={optionsWithEmptyValue(serviceOptions)}
               />
               <field.SelectedItems
-                itemToString={(item: string) =>
-                  vocabulaire.service.table[
-                    item as keyof typeof vocabulaire.service.table
-                  ] ?? item
-                }
+                itemToString={(item: string) => item ?? item}
                 itemToKey={(item: string) => item}
               />
             </>

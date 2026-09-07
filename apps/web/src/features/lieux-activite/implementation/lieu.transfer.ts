@@ -39,8 +39,8 @@ import {
   estPublie,
   VisibiliteCartographie,
 } from '../domain/visibilite-cartographie'
-import * as vocabulaire from '../vocabulaire'
 import type { LigneDuLieu } from './ligne-du-lieu'
+import * as vocabulaire from './vocabulaire'
 
 /** Le séparateur multi-valeurs du schéma national. */
 const SEPARATEUR_LISTE = '|'

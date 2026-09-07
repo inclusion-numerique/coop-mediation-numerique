@@ -1,6 +1,7 @@
 import { entrepotPrismaClient } from '@app/web/entrepotPrismaClient'
 import type { Fiche } from '@app/web/features/lieux-activite/domain/fiche'
 import { IdsCartographieNationale } from '@app/web/features/lieux-activite/domain/ids-cartographie-nationale'
+import { reconnues } from '@app/web/features/lieux-activite/domain/nomenclatures'
 import {
   courrielsValides,
   presentationSaisie,
@@ -9,7 +10,6 @@ import {
   urlSaisie,
 } from '@app/web/features/lieux-activite/domain/saisie'
 import { SourceCartographie } from '@app/web/features/lieux-activite/domain/tracabilite'
-import { reconnues } from '@app/web/features/lieux-activite/vocabulaire'
 import { coopCartographieNationaleSource } from '@app/web/libraries/cartographie-nationale'
 import {
   Contact,

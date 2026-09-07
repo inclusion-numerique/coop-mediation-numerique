@@ -1,13 +1,16 @@
-import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
+import {
+  PriseEnChargeSpecifique,
+  PublicSpecifiquementAdresse,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
 import z from 'zod'
 
 export const TypesDePublicsAccueillisShape = {
   priseEnChargeSpecifique: z
-    .array(z.enum(vocabulaire.priseEnChargeSpecifique.valeurs))
+    .array(z.nativeEnum(PriseEnChargeSpecifique))
     .nullish(),
   toutPublic: z.boolean().nullish(),
   publicsSpecifiquementAdresses: z
-    .array(z.enum(vocabulaire.publicSpecifiquementAdresse.valeurs))
+    .array(z.nativeEnum(PublicSpecifiquementAdresse))
     .nullish(),
 }
 

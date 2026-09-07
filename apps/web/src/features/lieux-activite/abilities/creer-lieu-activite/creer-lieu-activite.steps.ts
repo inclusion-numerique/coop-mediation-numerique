@@ -8,7 +8,10 @@ import { ficheSemee } from '@app/web/features/lieux-activite/lieux-activite.cucu
 import { emptyOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import { prismaClient } from '@app/web/prismaClient'
 import { After, Then, When } from '@cucumber/cucumber'
-import { PublicSpecifiquementAdresse, Typologie } from '@prisma/client'
+import {
+  PublicSpecifiquementAdresse,
+  Typologie,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
 
 type Issue = Awaited<ReturnType<typeof creerLieuActivite>>
 

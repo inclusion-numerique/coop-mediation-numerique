@@ -1,7 +1,7 @@
 import { AdresseBanValidation } from '@app/web/external-apis/ban/AdresseBanValidation'
-import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import { validateValidRnaDigits } from '@app/web/libraries/rna'
 import { validateValidSiretDigits } from '@app/web/libraries/siret'
+import { Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import z from 'zod'
 
 /**
@@ -16,7 +16,7 @@ export const IdentiteLieuShape = {
   lieuItinerant: z.boolean().nullish(),
   complementAdresse: z.string().nullish(),
   typologies: z
-    .array(z.enum(vocabulaire.typologie.valeurs))
+    .array(z.nativeEnum(Typologie))
     .min(1, 'Sélectionnez au moins une typologie de structure'),
 }
 

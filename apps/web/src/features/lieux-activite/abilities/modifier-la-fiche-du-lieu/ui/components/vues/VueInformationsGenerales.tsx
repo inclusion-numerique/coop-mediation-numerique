@@ -1,7 +1,7 @@
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
-import type { TypologieCoop as Typologie } from '@app/web/features/lieux-activite/vocabulaire'
-import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
+import { typologieLibelles } from '@app/web/features/lieux-activite/ui/libelles-typologie'
 import Tag from '@codegouvfr/react-dsfr/Tag'
+import { type Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
 
 export const VueInformationsGenerales = ({
   nom,
@@ -83,7 +83,7 @@ export const VueInformationsGenerales = ({
         <ul className="fr-tags-group fr-mt-3v">
           {typologies?.map((typologie) => (
             <li key={typologie}>
-              <Tag>{vocabulaire.typologieLibelles[typologie]}</Tag>
+              <Tag>{typologieLibelles[typologie]}</Tag>
             </li>
           ))}
         </ul>

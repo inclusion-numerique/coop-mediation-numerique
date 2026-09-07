@@ -2,6 +2,7 @@ import { emptyOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import {
   Itinerance,
   ModaliteAcces,
+  PublicSpecifiquementAdresse,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { depuisLaSaisie } from './depuis-la-saisie'
 
@@ -122,7 +123,7 @@ describe('la saisie devient un modèle du domaine', () => {
         depuisLaSaisie({
           section: 'TypesDePublicsAccueillis',
           toutPublic: true,
-          publicsSpecifiquementAdresses: ['Jeunes'],
+          publicsSpecifiquementAdresses: [PublicSpecifiquementAdresse.Jeunes],
           priseEnChargeSpecifique: [],
         }),
       ).toMatchObject({

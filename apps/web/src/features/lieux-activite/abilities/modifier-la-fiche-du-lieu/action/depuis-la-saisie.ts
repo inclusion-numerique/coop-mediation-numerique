@@ -20,7 +20,6 @@ import {
   urlSaisie,
 } from '../../../domain/saisie'
 import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
-import * as vocabulaire from '../../../vocabulaire'
 import type { ModificationLieu } from '../domain/modification-lieu'
 import type { SaisieDeSection } from './modifier-la-fiche-du-lieu.validation'
 
@@ -58,10 +57,7 @@ const informationsGenerales = (
     localisation: localisationSaisie(saisie.adresseBan),
     banId: BanId.safe(saisie.adresseBan.id),
     itinerance: itineranceSaisie(saisie.lieuItinerant),
-    typologies: vocabulaire.traduites(
-      saisie.typologies,
-      vocabulaire.typologie.versStandard,
-    ),
+    typologies: saisie.typologies,
     pivot: immatriculation,
     // Le nom d'usage vient de SIRENE : sans immatriculation, il n'a plus d'objet.
     nomUsage:
@@ -96,24 +92,15 @@ const description = (
     saisie.presentationResume,
     saisie.presentationDetail,
   ),
-  formationsLabels: vocabulaire.traduites(
-    saisie.formationsLabels,
-    vocabulaire.formationLabel.versStandard,
-  ),
+  formationsLabels: saisie.formationsLabels,
 })
 
 const servicesEtAccompagnement = (
   saisie: Saisie<'ServicesEtAccompagnement'>,
 ): Modification<'ServicesEtAccompagnement'> => ({
   section: 'ServicesEtAccompagnement',
-  services: vocabulaire.traduites(
-    saisie.services,
-    vocabulaire.service.versStandard,
-  ),
-  modalitesAccompagnement: vocabulaire.traduites(
-    saisie.modalitesAccompagnement,
-    vocabulaire.modaliteAccompagnement.versStandard,
-  ),
+  services: saisie.services,
+  modalitesAccompagnement: saisie.modalitesAccompagnement,
 })
 
 const modalitesAccesAuService = (
@@ -123,10 +110,7 @@ const modalitesAccesAuService = (
   modalitesAcces: modalitesAccesSaisies(saisie),
   telephone: telephoneSaisi(saisie.parTelephone, saisie.numeroTelephone),
   courriels: courrielsSaisis(saisie.parMail, saisie.adresseMail),
-  fraisACharge: vocabulaire.traduites(
-    saisie.fraisACharge,
-    vocabulaire.fraisACharge.versStandard,
-  ),
+  fraisACharge: saisie.fraisACharge,
 })
 
 const typesDePublicsAccueillis = (
@@ -135,14 +119,8 @@ const typesDePublicsAccueillis = (
   section: 'TypesDePublicsAccueillis',
   publicsSpecifiquementAdresses: saisie.toutPublic
     ? []
-    : vocabulaire.traduites(
-        saisie.publicsSpecifiquementAdresses,
-        vocabulaire.publicSpecifiquementAdresse.versStandard,
-      ),
-  priseEnChargeSpecifique: vocabulaire.traduites(
-    saisie.priseEnChargeSpecifique,
-    vocabulaire.priseEnChargeSpecifique.versStandard,
-  ),
+    : saisie.publicsSpecifiquementAdresses,
+  priseEnChargeSpecifique: saisie.priseEnChargeSpecifique,
 })
 
 const parSection: {

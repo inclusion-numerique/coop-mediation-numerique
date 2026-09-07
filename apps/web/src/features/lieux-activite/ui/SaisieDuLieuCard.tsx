@@ -1,5 +1,4 @@
-import type { TypologieCoop as Typologie } from '@app/web/features/lieux-activite/vocabulaire'
-import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
+import { libelleDeTypologie } from '@app/web/features/lieux-activite/ui/libelles-typologie'
 import { addresseFromParts } from '@app/web/utils/addresseFromParts'
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
@@ -27,18 +26,13 @@ export type LieuSaisi = {
 }
 
 /**
- * Les typologies voyagent sous les noms d'enum de la coop ; l'infobulle les rend
- * lisibles. Ce qu'on ne reconnaît pas s'affiche tel quel plutôt que de
- * disparaître : une typologie inconnue vaut mieux qu'un trou.
+ * Les typologies sont des sigles ; l'infobulle les rend lisibles. Ce qu'on ne
+ * reconnaît pas s'affiche tel quel plutôt que de disparaître : une typologie
+ * inconnue vaut mieux qu'un trou. La carte montre aussi des lieux venus de la
+ * cartographie nationale, dont rien ne garantit le vocabulaire.
  */
 const libelles = (typologies: readonly string[]): string =>
-  (typologies as Typologie[])
-    .map((typologie) =>
-      typologie in vocabulaire.typologieLibelles
-        ? vocabulaire.typologieLibelles[typologie].toString()
-        : typologie.toString(),
-    )
-    .join(', ')
+  typologies.map(libelleDeTypologie).join(', ')
 
 export const SaisieDuLieuCard = ({
   lieu: { nom, adresse, rna, siret, codePostal, commune, typologies },
