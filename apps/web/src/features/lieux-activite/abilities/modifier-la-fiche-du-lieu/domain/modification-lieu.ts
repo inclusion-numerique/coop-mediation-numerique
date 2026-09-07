@@ -1,12 +1,11 @@
 import {
   type Adresse,
-  type Contact,
   type Courriel,
   type FormationLabel,
   type Frais,
   type Itinerance,
   type Localisation,
-  ModaliteAcces,
+  type ModaliteAcces,
   type ModaliteAccompagnement,
   type Nom,
   type Pivot,
@@ -18,11 +17,17 @@ import {
   type Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { BanId } from '../../../domain/ban-id'
+import type { Fiche } from '../../../domain/fiche'
 import type { NomUsage } from '../../../domain/identite-sirene'
 import type { Lieu } from '../../../domain/lieu'
 import { ModifieParUtilisateur } from '../../../domain/tracabilite'
 import type { UserId } from '../../../domain/user-id'
 import type { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
+import {
+  contactAvecJoignabilite,
+  contactAvecSitesWeb,
+  modalitesApres,
+} from './contact-de-la-fiche'
 
 /**
  * La fiche d'un lieu se corrige section par section : chaque carte de la page
@@ -82,118 +87,83 @@ export type ModificationLieu =
 
 export type SectionDeLaFiche = ModificationLieu['section']
 
-/**
- * Le contact est réparti sur deux sections — les informations pratiques
- * possèdent les sites web, les modalités d'accès le téléphone et les courriels.
- * Éditer l'une ne doit rien retirer à l'autre, d'où ces recompositions plutôt
- * qu'un remplacement du `Contact` entier.
- */
-const contactAvecSitesWeb = (
-  contact: Contact,
-  sitesWeb: readonly Url[],
-): Contact => ({
-  ...contact,
-  ...(sitesWeb.length === 0
-    ? { site_web: undefined }
-    : { site_web: [...sitesWeb] }),
-})
-
-const contactAvecJoignabilite = (
-  contact: Contact,
-  telephone: string | null,
-  courriels: readonly Courriel[],
-): Contact => ({
-  ...contact,
-  telephone: telephone ?? undefined,
-  ...(courriels.length === 0
-    ? { courriels: undefined }
-    : { courriels: [...courriels] }),
-})
+type Modification<Section extends SectionDeLaFiche> = Extract<
+  ModificationLieu,
+  { section: Section }
+>
 
 /**
- * Les seules modalités que le formulaire sait exprimer — se présenter,
- * téléphoner, écrire. Les trois autres du schéma national viennent des imports
- * cartographiques : dix lieux en portent une, et les réécrire depuis un
- * formulaire qui les ignore les effacerait. La section ne gouverne donc que les
- * siennes, et laisse les autres en place.
+ * Ce que chaque section change à la fiche, une ligne par section.
+ *
+ * La table remplace le `switch` qui la disait avant : chaque cas n'a plus à se
+ * nommer deux fois, et l'exhaustivité ne tient plus à une directive de lint
+ * mais au type — une section ajoutée à l'union sans sa ligne ici ne compile
+ * pas.
  */
-const modalitesDuFormulaire: readonly ModaliteAcces[] = [
-  ModaliteAcces.SePresenter,
-  ModaliteAcces.Telephoner,
-  ModaliteAcces.ContacterParMail,
-]
+const ficheParSection: {
+  [Section in SectionDeLaFiche]: (
+    fiche: Fiche,
+    modification: Modification<Section>,
+  ) => Fiche
+} = {
+  InformationsGenerales: (
+    fiche,
+    { nom, adresse, localisation, itinerance, typologies, pivot },
+  ) => ({
+    ...fiche,
+    nom,
+    adresse,
+    localisation,
+    itinerance,
+    typologies,
+    pivot,
+  }),
 
-const modalitesApres = (
-  existantes: readonly ModaliteAcces[],
-  saisies: readonly ModaliteAcces[],
-): readonly ModaliteAcces[] => [
-  ...saisies,
-  ...existantes.filter((modalite) => !modalitesDuFormulaire.includes(modalite)),
-]
+  VisibiliteCartographie: (fiche) => fiche,
 
-const ficheApres = (
-  lieu: Lieu,
-  modification: ModificationLieu,
-): Lieu['fiche'] => {
-  // Un `default` ferait taire le contrôle d'exhaustivité de TypeScript, qui est
-  // justement ce qui garantit qu'une section ajoutée sera traitée ici.
-  // biome-ignore lint/style/useDefaultSwitchClause: l'union est exhaustive
-  switch (modification.section) {
-    case 'InformationsGenerales':
-      return {
-        ...lieu.fiche,
-        nom: modification.nom,
-        adresse: modification.adresse,
-        localisation: modification.localisation,
-        itinerance: modification.itinerance,
-        typologies: modification.typologies,
-        pivot: modification.pivot,
-      }
-    case 'VisibiliteCartographie':
-      return lieu.fiche
-    case 'InformationsPratiques':
-      return {
-        ...lieu.fiche,
-        contact: contactAvecSitesWeb(lieu.fiche.contact, modification.sitesWeb),
-        ficheAccesLibre: modification.ficheAccesLibre,
-        priseRdv: modification.priseRdv,
-        horaires: modification.horaires,
-      }
-    case 'Description':
-      return {
-        ...lieu.fiche,
-        presentation: modification.presentation,
-        formationsLabels: modification.formationsLabels,
-      }
-    case 'ServicesEtAccompagnement':
-      return {
-        ...lieu.fiche,
-        services: modification.services,
-        modalitesAccompagnement: modification.modalitesAccompagnement,
-      }
-    case 'ModalitesAccesAuService':
-      return {
-        ...lieu.fiche,
-        contact: contactAvecJoignabilite(
-          lieu.fiche.contact,
-          modification.telephone,
-          modification.courriels,
-        ),
-        modalitesAcces: modalitesApres(
-          lieu.fiche.modalitesAcces,
-          modification.modalitesAcces,
-        ),
-        fraisACharge: modification.fraisACharge,
-      }
-    case 'TypesDePublicsAccueillis':
-      return {
-        ...lieu.fiche,
-        publicsSpecifiquementAdresses:
-          modification.publicsSpecifiquementAdresses,
-        priseEnChargeSpecifique: modification.priseEnChargeSpecifique,
-      }
-  }
+  InformationsPratiques: (
+    fiche,
+    { sitesWeb, ficheAccesLibre, priseRdv, horaires },
+  ) => ({
+    ...fiche,
+    contact: contactAvecSitesWeb(fiche.contact, sitesWeb),
+    ficheAccesLibre,
+    priseRdv,
+    horaires,
+  }),
+
+  Description: (fiche, { presentation, formationsLabels }) => ({
+    ...fiche,
+    presentation,
+    formationsLabels,
+  }),
+
+  ServicesEtAccompagnement: (fiche, { services, modalitesAccompagnement }) => ({
+    ...fiche,
+    services,
+    modalitesAccompagnement,
+  }),
+
+  ModalitesAccesAuService: (
+    fiche,
+    { telephone, courriels, modalitesAcces, fraisACharge },
+  ) => ({
+    ...fiche,
+    contact: contactAvecJoignabilite(fiche.contact, telephone, courriels),
+    modalitesAcces: modalitesApres(fiche.modalitesAcces, modalitesAcces),
+    fraisACharge,
+  }),
+
+  TypesDePublicsAccueillis: (
+    fiche,
+    { publicsSpecifiquementAdresses, priseEnChargeSpecifique },
+  ) => ({ ...fiche, publicsSpecifiquementAdresses, priseEnChargeSpecifique }),
 }
+
+const ficheApres = <Section extends SectionDeLaFiche>(
+  fiche: Fiche,
+  modification: Modification<Section>,
+): Fiche => ficheParSection[modification.section](fiche, modification)
 
 /**
  * Ce que la coop sait de l'établissement au répertoire SIRENE.
@@ -236,7 +206,7 @@ export const appliquerModification = (
   maintenant: Date,
 ): Lieu => ({
   ...lieu,
-  fiche: ficheApres(lieu, modification),
+  fiche: ficheApres(lieu.fiche, modification),
   ...enveloppeApres(lieu, modification),
   tracabilite: {
     ...lieu.tracabilite,
