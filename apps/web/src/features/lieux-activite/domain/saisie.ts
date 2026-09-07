@@ -111,8 +111,15 @@ export const telephoneValide = (
   return normalise != null && isValidTelephone(normalise) ? normalise : null
 }
 
+/**
+ * Ce que rend une case à cocher isolée : `true` cochée, `null` (ou rien)
+ * décochée. Les fonctions qui la lisent la traitent en valeur véridique, ce qui
+ * range les trois cas sans distinguer « décochée » de « absente ».
+ */
+export type Coche = boolean | null | undefined
+
 export const telephoneSaisi = (
-  coche: boolean,
+  coche: Coche,
   numero: string | null | undefined,
 ): string | null => (coche ? telephoneValide(numero) : null)
 
@@ -127,15 +134,15 @@ export const courrielsValides = (
     .map(Courriel)
 
 export const courrielsSaisis = (
-  coche: boolean,
+  coche: Coche,
   adresse: string | null | undefined,
 ): readonly Courriel[] => (coche ? courrielsValides([adresse]) : [])
 
 /** Les trois seules modalités qu'un formulaire de lieu sait exprimer. */
 export const modalitesAccesSaisies = (saisie: {
-  surPlace: boolean
-  parTelephone: boolean
-  parMail: boolean
+  surPlace?: Coche
+  parTelephone?: Coche
+  parMail?: Coche
 }): readonly ModaliteAcces[] => [
   ...(saisie.surPlace ? [ModaliteAcces.SePresenter] : []),
   ...(saisie.parTelephone ? [ModaliteAcces.Telephoner] : []),

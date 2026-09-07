@@ -111,6 +111,19 @@ export const PresentationResumeSaisie = z
   .trim()
   .max(
     RESUME_MAX_LENGTH,
-    `Cette description doit faire moins de ${RESUME_MAX_LENGTH} caractères`,
+    `Cette description doit faire au plus ${RESUME_MAX_LENGTH} caractères`,
   )
   .nullish()
+
+/**
+ * Une case à cocher isolée, telle que le composant la rend : `true` cochée,
+ * `null` décochée — jamais `false`. Tout champ booléen alimenté par
+ * `field.Checkbox` passe par ici.
+ *
+ * La règle vit au niveau de la feature parce que les deux formulaires partagent
+ * ces champs, et que l'écart s'est déjà payé deux fois : la création acceptait
+ * `null`, la modification exigeait un booléen, et l'utilisateur se voyait
+ * répondre « Expected boolean, received null » en décochant — d'abord sur
+ * « tout public », puis sur « Téléphoner » et « Contacter par mail ».
+ */
+export const CaseCochee = z.boolean().nullish()

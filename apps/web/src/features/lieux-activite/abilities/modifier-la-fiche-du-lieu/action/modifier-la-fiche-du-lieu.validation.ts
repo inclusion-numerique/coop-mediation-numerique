@@ -2,6 +2,7 @@ import { AdresseBanValidation } from '@app/web/external-apis/ban/AdresseBanValid
 import { FormationLabelPropose } from '@app/web/features/lieux-activite/domain/nomenclatures'
 import {
   AdresseMailSaisie,
+  CaseCochee,
   FicheAccesLibreSaisie,
   NomDuLieuSaisi,
   NumeroTelephoneSaisi,
@@ -89,22 +90,50 @@ export const ServicesEtAccompagnementSaisie = z.object({
  */
 export const ModalitesAccesAuServiceSaisie = z.object({
   section: z.literal('ModalitesAccesAuService'),
-  surPlace: z.boolean(),
-  parTelephone: z.boolean(),
+  surPlace: CaseCochee,
+  parTelephone: CaseCochee,
   numeroTelephone: NumeroTelephoneSaisi,
-  parMail: z.boolean(),
+  parMail: CaseCochee,
   adresseMail: AdresseMailSaisie,
   fraisACharge: z.array(z.nativeEnum(Frais)),
 })
 
 export const TypesDePublicsAccueillisSaisie = z.object({
   section: z.literal('TypesDePublicsAccueillis'),
-  toutPublic: z.boolean(),
+  toutPublic: CaseCochee,
   publicsSpecifiquementAdresses: z.array(
     z.nativeEnum(PublicSpecifiquementAdresse),
   ),
   priseEnChargeSpecifique: z.array(z.nativeEnum(PriseEnChargeSpecifique)),
 })
+
+/**
+ * Les deux règles « cochée sans son moyen », telles que le formulaire les
+ * applique.
+ *
+ * Elles ne peuvent pas vivre sur `ModalitesAccesAuServiceSaisie` : un
+ * `superRefine` produit un `ZodEffects`, qu'une `discriminatedUnion` n'admet pas
+ * comme membre. D'où cette variante, à côté de la section — sans quoi le
+ * formulaire laissait passer une case cochée sans son moyen, et seule l'action
+ * refusait, en renvoyant le code brut « INVALID_INPUT » dans un toast au lieu
+ * d'un message sous le champ.
+ */
+export const ModalitesAccesAuServiceFormValidation =
+  ModalitesAccesAuServiceSaisie.superRefine((saisie, contexte) => {
+    if (saisie.parTelephone && !saisie.numeroTelephone)
+      contexte.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Le numéro de téléphone est obligatoire.',
+        path: ['numeroTelephone'],
+      })
+
+    if (saisie.parMail && !saisie.adresseMail)
+      contexte.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "L'adresse email est obligatoire.",
+        path: ['adresseMail'],
+      })
+  })
 
 export const ModifierLaFicheDuLieuValidation = z.object({
   id: z.string().uuid(),

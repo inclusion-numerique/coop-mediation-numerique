@@ -4,6 +4,7 @@ import {
   InformationsGeneralesSaisie,
   InformationsPratiquesSaisie,
   ModalitesAccesAuServiceSaisie,
+  TypesDePublicsAccueillisSaisie,
 } from '../abilities/modifier-la-fiche-du-lieu/action/modifier-la-fiche-du-lieu.validation'
 import { CreerLieuShape } from '../formulaire/CreerLieuShape'
 
@@ -60,6 +61,29 @@ const verdicts = {
       nom,
       adresseBan,
       typologies: ['TIERS_LIEUX'],
+    }).success,
+  }),
+  /**
+   * « Se présenter » : le moyen de contact qui n'exige rien d'autre, donc celui
+   * qui isole le contrat de la case elle-même.
+   */
+  moyenDeContact: (coche: unknown) => ({
+    creation: creation.safeParse(
+      saisieDeCreation({ modalitesAcces: { surPlace: coche } }),
+    ).success,
+    modification: ModalitesAccesAuServiceSaisie.safeParse({
+      section: 'ModalitesAccesAuService',
+      surPlace: coche,
+      fraisACharge: [],
+    }).success,
+  }),
+  toutPublic: (toutPublic: unknown) => ({
+    creation: creation.safeParse(saisieDeCreation({ toutPublic })).success,
+    modification: TypesDePublicsAccueillisSaisie.safeParse({
+      section: 'TypesDePublicsAccueillis',
+      toutPublic,
+      publicsSpecifiquementAdresses: [],
+      priseEnChargeSpecifique: [],
     }).success,
   }),
   siteWeb: (siteWeb: unknown) => ({
@@ -191,6 +215,56 @@ describe('les deux formulaires appliquent les mêmes règles', () => {
           journeeOuverte({ startTime: '9h', endTime: '12:00' }),
         ),
       ).toEqual({ creation: false, modification: false })
+    })
+  })
+
+  describe('« ce lieu accueille tout public »', () => {
+    it('accepte que la case soit cochée', () => {
+      expect(verdicts.toutPublic(true)).toEqual({
+        creation: true,
+        modification: true,
+      })
+    })
+
+    /**
+     * Le groupe de cases à cocher rend `null` quand aucune n'est cochée. La
+     * modification exigeait un booléen : décocher « tout public » rendait donc
+     * impossible d'enregistrer des publics spécifiques sur un lieu existant,
+     * avec un « Expected boolean, received null » à l'écran.
+     */
+    it('accepte que la case soit décochée, qui se dit `null`', () => {
+      expect(verdicts.toutPublic(null)).toEqual({
+        creation: true,
+        modification: true,
+      })
+    })
+
+    it('accepte la case absente', () => {
+      expect(verdicts.toutPublic(undefined)).toEqual({
+        creation: true,
+        modification: true,
+      })
+    })
+  })
+
+  describe('les moyens de contact', () => {
+    it('acceptent une case cochée', () => {
+      expect(verdicts.moyenDeContact(true)).toEqual({
+        creation: true,
+        modification: true,
+      })
+    })
+
+    /**
+     * Même piège que « tout public » : le composant rend `null` au décochage.
+     * La modification exigeait un booléen, et décocher « Téléphoner » ou
+     * « Contacter par mail » interdisait d'enregistrer la section.
+     */
+    it('acceptent une case décochée, qui se dit `null`', () => {
+      expect(verdicts.moyenDeContact(null)).toEqual({
+        creation: true,
+        modification: true,
+      })
     })
   })
 })
