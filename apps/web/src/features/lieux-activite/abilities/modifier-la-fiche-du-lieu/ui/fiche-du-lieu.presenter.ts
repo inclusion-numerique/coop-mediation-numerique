@@ -2,6 +2,15 @@ import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValida
 import { getAdresseBanLabel } from '@app/web/external-apis/ban/adresseBanLabel'
 import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banDefaultValueToAdresseBanData'
 import type { StructureSearchResult } from '@app/web/features/employeuse'
+import type {
+  FormationLabelCoop,
+  FraisAChargeCoop,
+  ModaliteAccompagnementCoop,
+  PriseEnChargeSpecifiqueCoop,
+  PublicSpecifiquementAdresseCoop,
+  ServiceCoop,
+  TypologieCoop,
+} from '@app/web/features/lieux-activite/vocabulaire'
 import { safeToTimetableOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import { getDepartementCodeFromCodeInsee } from '@app/web/utils/getDepartementFromCodeInsee'
 import {
@@ -13,15 +22,6 @@ import {
   CLOSED_SCHEDULE,
   type Schedule,
 } from '@gouvfr-anct/timetable-to-osm-opening-hours'
-import type {
-  FormationLabel as PrismaFormationLabel,
-  FraisACharge as PrismaFraisACharge,
-  ModaliteAccompagnement as PrismaModaliteAccompagnement,
-  PriseEnChargeSpecifique as PrismaPriseEnChargeSpecifique,
-  PublicSpecifiquementAdresse as PrismaPublicSpecifiquementAdresse,
-  Service as PrismaService,
-  Typologie as PrismaTypologie,
-} from '@prisma/client'
 import type { Lieu } from '../../../domain/lieu'
 import { estPublie } from '../../../domain/visibilite-cartographie'
 import * as vocabulaire from '../../../vocabulaire'
@@ -58,7 +58,7 @@ export type FicheAffichee = {
     readonly adresseBan: AdresseBanData
     readonly siretSearch: StructureSearchResult | null
     readonly lieuItinerant: boolean | null
-    readonly typologies: readonly PrismaTypologie[]
+    readonly typologies: readonly TypologieCoop[]
     readonly siret: string | null
     readonly rna: string | null
     readonly nomUsage: string | null
@@ -77,12 +77,12 @@ export type FicheAffichee = {
   readonly description: {
     readonly presentationResume: string | null
     readonly presentationDetail: string | null
-    readonly formationsLabels: readonly PrismaFormationLabel[]
+    readonly formationsLabels: readonly FormationLabelCoop[]
     readonly estVide: boolean
   }
   readonly servicesEtAccompagnement: {
-    readonly services: readonly PrismaService[]
-    readonly modalitesAccompagnement: readonly PrismaModaliteAccompagnement[]
+    readonly services: readonly ServiceCoop[]
+    readonly modalitesAccompagnement: readonly ModaliteAccompagnementCoop[]
     readonly estVide: boolean
   }
   readonly modalitesAccesAuService: {
@@ -91,13 +91,13 @@ export type FicheAffichee = {
     readonly numeroTelephone: string | null
     readonly parMail: boolean
     readonly adresseMail: string | null
-    readonly fraisACharge: readonly PrismaFraisACharge[]
+    readonly fraisACharge: readonly FraisAChargeCoop[]
     readonly estVide: boolean
   }
   readonly typesDePublicsAccueillis: {
     readonly toutPublic: boolean
-    readonly publicsSpecifiquementAdresses: readonly PrismaPublicSpecifiquementAdresse[]
-    readonly priseEnChargeSpecifique: readonly PrismaPriseEnChargeSpecifique[]
+    readonly publicsSpecifiquementAdresses: readonly PublicSpecifiquementAdresseCoop[]
+    readonly priseEnChargeSpecifique: readonly PriseEnChargeSpecifiqueCoop[]
     readonly estVide: boolean
   }
 }

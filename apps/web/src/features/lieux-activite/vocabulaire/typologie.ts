@@ -1,5 +1,4 @@
 import { Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { Typologie as TypologieCoop } from '@prisma/client'
 import { pontParNom } from './pont'
 
 /**
@@ -8,7 +7,7 @@ import { pontParNom } from './pont'
  * que la correspondance se fait par identité des noms. Ce que la coop garde en
  * propre, c'est le libellé lisible affiché dans les formulaires et les fiches.
  */
-export const libelles: Record<TypologieCoop, string> = {
+export const libelles = {
   ACI: 'Structures porteuses d’ateliers et chantiers d’insertion (ACI)',
   ACIPHC: 'SIAE — Atelier chantier d’insertion premières heures en chantier',
   AFPA: 'Agence nationale pour la formation professionnelle des adultes (AFPA)',
@@ -108,6 +107,8 @@ export const libelles: Record<TypologieCoop, string> = {
   TIERS_LIEUX: 'Tiers lieu & coworking',
   UDAF: 'Union Départementale d’Aide aux Familles (UDAF)',
 }
+
+export type TypologieCoop = keyof typeof libelles
 
 export const typologie = pontParNom(
   Typologie,

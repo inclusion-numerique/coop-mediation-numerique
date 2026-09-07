@@ -1,12 +1,11 @@
 'use client'
 
+import type { PublicSpecifiquementAdresseCoop as PublicSpecifiquementAdresse } from '@app/web/features/lieux-activite/vocabulaire'
 import {
   priseEnChargeSpecifiqueOptions,
   publicSpecifiquementAdresseOptions,
 } from '@app/web/features/lieux-activite/vocabulaire/options'
-
 import { withForm } from '@app/web/libs/form/use-app-form'
-import type { PublicSpecifiquementAdresse } from '@prisma/client'
 import { creerLieuActiviteFormOptions } from '../creerLieuActiviteFormData'
 
 const tousLesPublics = publicSpecifiquementAdresseOptions.map(

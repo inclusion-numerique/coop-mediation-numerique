@@ -1,6 +1,9 @@
+import type {
+  ModaliteAccompagnementCoop as ModaliteAccompagnement,
+  ServiceCoop as Service,
+} from '@app/web/features/lieux-activite/vocabulaire'
 import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import { modaliteAccompagnementIcons } from '@app/web/features/lieux-activite/vocabulaire/options'
-import type { ModaliteAccompagnement, Service } from '@prisma/client'
 
 export const VueServicesEtAccompagnement = ({
   services = [],

@@ -1,7 +1,7 @@
 import { sPluriel } from '@app/ui/utils/pluriel/sPluriel'
+import type { TypologieCoop as Typologie } from '@app/web/features/lieux-activite/vocabulaire'
 import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import Tag from '@codegouvfr/react-dsfr/Tag'
-import type { Typologie } from '@prisma/client'
 
 export const VueInformationsGenerales = ({
   nom,

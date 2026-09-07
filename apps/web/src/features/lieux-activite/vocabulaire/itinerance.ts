@@ -1,10 +1,11 @@
 import { Itinerance } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { Itinerance as ItineranceCoop } from '@prisma/client'
 import { pont } from './pont'
 
-const table: Record<ItineranceCoop, Itinerance> = {
+const table = {
   Itinerant: Itinerance.Itinerant,
   Fixe: Itinerance.Fixe,
-}
+} satisfies Record<string, Itinerance>
 
-export const itinerance = pont(table)
+export type ItineranceCoop = keyof typeof table
+
+export const itinerance = pont(Itinerance, table)

@@ -1,8 +1,7 @@
 import { Service } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { Service as ServiceCoop } from '@prisma/client'
 import { pont } from './pont'
 
-const table: Record<ServiceCoop, Service> = {
+const table = {
   AideAuxDemarchesAdministratives: Service.AideAuxDemarchesAdministratives,
   MaitriseDesOutilsNumeriquesDuQuotidien:
     Service.MaitriseDesOutilsNumeriquesDuQuotidien,
@@ -17,6 +16,8 @@ const table: Record<ServiceCoop, Service> = {
   ComprehensionDuMondeNumerique: Service.ComprehensionDuMondeNumerique,
   AccesInternetEtMaterielInformatique:
     Service.AccesInternetEtMaterielInformatique,
-}
+} satisfies Record<string, Service>
 
-export const service = pont(table)
+export type ServiceCoop = keyof typeof table
+
+export const service = pont(Service, table)

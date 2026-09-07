@@ -1,11 +1,12 @@
 import { Frais } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { FraisACharge as FraisAChargeCoop } from '@prisma/client'
 import { pont } from './pont'
 
-const table: Record<FraisAChargeCoop, Frais> = {
+const table = {
   Gratuit: Frais.Gratuit,
   GratuitSousCondition: Frais.GratuitSousCondition,
   Payant: Frais.Payant,
-}
+} satisfies Record<string, Frais>
 
-export const fraisACharge = pont(table)
+export type FraisAChargeCoop = keyof typeof table
+
+export const fraisACharge = pont(Frais, table)

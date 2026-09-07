@@ -1,6 +1,6 @@
+import type { FormationLabelCoop as FormationLabel } from '@app/web/features/lieux-activite/vocabulaire'
 import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import Tag from '@codegouvfr/react-dsfr/Tag'
-import type { FormationLabel } from '@prisma/client'
 
 export const VueDescription = ({
   presentationResume,

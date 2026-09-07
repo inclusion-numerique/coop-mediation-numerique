@@ -1,6 +1,6 @@
+import type { FraisAChargeCoop as FraisACharge } from '@app/web/features/lieux-activite/vocabulaire'
 import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import Tag from '@codegouvfr/react-dsfr/Tag'
-import type { FraisACharge } from '@prisma/client'
 import Link from 'next/link'
 
 export const VueModalitesAccesAuService = ({

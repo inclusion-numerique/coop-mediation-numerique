@@ -1,21 +1,43 @@
 /**
  * Le pont entre le vocabulaire de la coop et celui du schéma national.
  *
- * La coop stocke ses propres noms d'enum ; le standard `@gouvfr-anct` a les
- * siens. Une table par nomenclature dit la correspondance, et c'est la seule
- * source : tout le reste — la liste des valeurs pour Zod, la traduction dans un
- * sens comme dans l'autre — en découle.
+ * La coop a ses propres noms ; le standard `@gouvfr-anct` a les siens. Une
+ * table par nomenclature dit la correspondance, et c'est la seule source : tout
+ * le reste — la liste des valeurs pour Zod, la traduction dans un sens comme
+ * dans l'autre, les libellés — en découle.
+ *
+ * Ces noms sont déclarés ici, et non empruntés au client Prisma : le
+ * vocabulaire d'une feature n'a pas à dépendre de la façon dont elle se
+ * stocke. Qu'ils soient exactement les valeurs des énumérations de la base
+ * reste une obligation, tenue au compilateur par `db/ligne-du-lieu.ts` — le
+ * seul endroit qui regarde le schéma.
  */
-export { dispositifProgrammeNational } from './dispositif-programme-national'
-export { formationLabel } from './formation-label'
-export { fraisACharge } from './frais-a-charge'
-export { itinerance } from './itinerance'
-export { modaliteAcces } from './modalite-acces'
-export { modaliteAccompagnement } from './modalite-accompagnement'
-export { priseEnChargeSpecifique } from './prise-en-charge-specifique'
-export { publicSpecifiquementAdresse } from './public-specifiquement-adresse'
-export { service } from './service'
-export { libelles as typologieLibelles, typologie } from './typologie'
+export {
+  type DispositifProgrammeNationalCoop,
+  dispositifProgrammeNational,
+} from './dispositif-programme-national'
+export { type FormationLabelCoop, formationLabel } from './formation-label'
+export { type FraisAChargeCoop, fraisACharge } from './frais-a-charge'
+export { type ItineranceCoop, itinerance } from './itinerance'
+export { type ModaliteAccesCoop, modaliteAcces } from './modalite-acces'
+export {
+  type ModaliteAccompagnementCoop,
+  modaliteAccompagnement,
+} from './modalite-accompagnement'
+export {
+  type PriseEnChargeSpecifiqueCoop,
+  priseEnChargeSpecifique,
+} from './prise-en-charge-specifique'
+export {
+  type PublicSpecifiquementAdresseCoop,
+  publicSpecifiquementAdresse,
+} from './public-specifiquement-adresse'
+export { type ServiceCoop, service } from './service'
+export {
+  libelles as typologieLibelles,
+  type TypologieCoop,
+  typologie,
+} from './typologie'
 
 /**
  * Une valeur que le pont ne sait pas traduire est écartée plutôt que portée

@@ -1,94 +1,66 @@
-import {
-  DispositifProgrammeNational as PrismaDispositifProgrammeNational,
-  FormationLabel as PrismaFormationLabel,
-  FraisACharge as PrismaFraisACharge,
-  Itinerance as PrismaItinerance,
-  ModaliteAcces as PrismaModaliteAcces,
-  ModaliteAccompagnement as PrismaModaliteAccompagnement,
-  PriseEnChargeSpecifique as PrismaPriseEnChargeSpecifique,
-  PublicSpecifiquementAdresse as PrismaPublicSpecifiquementAdresse,
-  Service as PrismaService,
-  Typologie as PrismaTypologie,
-} from '@prisma/client'
 import * as vocabulaire from './index'
 
-type Pont<Prisma extends string, Standard extends string> = {
-  versStandard: (valeur: Prisma) => Standard | null
-  versCoop: (valeur: Standard) => Prisma | null
+type Pont<Coop extends string, Standard extends string> = {
+  readonly valeurs: readonly Coop[]
+  versStandard: (valeur: Coop) => Standard | null
+  versCoop: (valeur: Standard) => Coop | null
 }
 
 /**
  * Le pont traduit par nom de membre et écarte en silence ce qu'il ne sait pas
  * traduire : sans ce test, une divergence de nommage introduite en amont — par
  * une montée du paquet standard — ferait disparaître des valeurs en production
- * sans qu'aucun test ne tombe. On exerce donc l'intégralité de chaque enum.
+ * sans qu'aucun test ne tombe. On exerce donc chaque nomenclature entière.
+ *
+ * L'accord avec les énumérations de la base ne se joue plus ici : le
+ * vocabulaire déclare ses noms lui-même, et `db/ligne-du-lieu.ts` fait tenir
+ * l'égalité des deux ensembles au compilateur.
  */
-const exerceTouteLEnumeration = <
-  Prisma extends string,
-  Standard extends string,
->(
-  enumeration: Record<string, Prisma>,
-  pont: Pont<Prisma, Standard>,
+const exerceToutLeVocabulaire = <Coop extends string, Standard extends string>(
+  pont: Pont<Coop, Standard>,
 ) => {
-  const valeurs = Object.values(enumeration)
-
-  it('traduit toutes les valeurs Prisma vers le standard', () => {
+  it('traduit tous les noms de la coop vers le standard', () => {
     expect(
-      valeurs.filter((valeur) => pont.versStandard(valeur) == null),
+      pont.valeurs.filter((valeur) => pont.versStandard(valeur) == null),
     ).toEqual([])
   })
 
-  it('revient à la valeur Prisma de départ', () => {
-    const allerRetour = valeurs.map((valeur) => {
+  it('revient au nom de la coop de départ', () => {
+    const allerRetour = pont.valeurs.map((valeur) => {
       const standard = pont.versStandard(valeur)
 
       return standard == null ? null : pont.versCoop(standard)
     })
 
-    expect(allerRetour).toEqual(valeurs)
+    expect(allerRetour).toEqual([...pont.valeurs])
   })
 }
 
 describe('pont de vocabulaire', () => {
-  describe('service', () =>
-    exerceTouteLEnumeration(PrismaService, vocabulaire.service))
+  describe('service', () => exerceToutLeVocabulaire(vocabulaire.service))
 
-  describe('typologie', () =>
-    exerceTouteLEnumeration(PrismaTypologie, vocabulaire.typologie))
+  describe('typologie', () => exerceToutLeVocabulaire(vocabulaire.typologie))
 
   describe('frais à charge', () =>
-    exerceTouteLEnumeration(PrismaFraisACharge, vocabulaire.fraisACharge))
+    exerceToutLeVocabulaire(vocabulaire.fraisACharge))
 
-  describe('itinérance', () =>
-    exerceTouteLEnumeration(PrismaItinerance, vocabulaire.itinerance))
+  describe('itinérance', () => exerceToutLeVocabulaire(vocabulaire.itinerance))
 
   describe('modalité d’accès', () =>
-    exerceTouteLEnumeration(PrismaModaliteAcces, vocabulaire.modaliteAcces))
+    exerceToutLeVocabulaire(vocabulaire.modaliteAcces))
 
   describe('modalité d’accompagnement', () =>
-    exerceTouteLEnumeration(
-      PrismaModaliteAccompagnement,
-      vocabulaire.modaliteAccompagnement,
-    ))
+    exerceToutLeVocabulaire(vocabulaire.modaliteAccompagnement))
 
   describe('public spécifiquement adressé', () =>
-    exerceTouteLEnumeration(
-      PrismaPublicSpecifiquementAdresse,
-      vocabulaire.publicSpecifiquementAdresse,
-    ))
+    exerceToutLeVocabulaire(vocabulaire.publicSpecifiquementAdresse))
 
   describe('prise en charge spécifique', () =>
-    exerceTouteLEnumeration(
-      PrismaPriseEnChargeSpecifique,
-      vocabulaire.priseEnChargeSpecifique,
-    ))
+    exerceToutLeVocabulaire(vocabulaire.priseEnChargeSpecifique))
 
   describe('formation et label', () =>
-    exerceTouteLEnumeration(PrismaFormationLabel, vocabulaire.formationLabel))
+    exerceToutLeVocabulaire(vocabulaire.formationLabel))
 
   describe('dispositif ou programme national', () =>
-    exerceTouteLEnumeration(
-      PrismaDispositifProgrammeNational,
-      vocabulaire.dispositifProgrammeNational,
-    ))
+    exerceToutLeVocabulaire(vocabulaire.dispositifProgrammeNational))
 })

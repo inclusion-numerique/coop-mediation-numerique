@@ -1,9 +1,9 @@
+import type {
+  PriseEnChargeSpecifiqueCoop as PriseEnChargeSpecifique,
+  PublicSpecifiquementAdresseCoop as PublicSpecifiquementAdresse,
+} from '@app/web/features/lieux-activite/vocabulaire'
 import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import Tag from '@codegouvfr/react-dsfr/Tag'
-import type {
-  PriseEnChargeSpecifique,
-  PublicSpecifiquementAdresse,
-} from '@prisma/client'
 
 export const VueTypesDePublicsAccueillis = ({
   priseEnChargeSpecifique = [],

@@ -1,11 +1,7 @@
 import { DispositifProgrammeNational } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { DispositifProgrammeNational as DispositifProgrammeNationalCoop } from '@prisma/client'
 import { pont } from './pont'
 
-const table: Record<
-  DispositifProgrammeNationalCoop,
-  DispositifProgrammeNational
-> = {
+const table = {
   AidantsConnect: DispositifProgrammeNational.AidantsConnect,
   BibliothequesNumeriqueDeReference:
     DispositifProgrammeNational.BibliothequesNumeriqueDeReference,
@@ -19,6 +15,11 @@ const table: Record<
   PromeneursDuNet: DispositifProgrammeNational.PromeneursDuNet,
   RelaisNumeriqueEmmausConnect:
     DispositifProgrammeNational.RelaisNumeriqueEmmausConnect,
-}
+} satisfies Record<string, DispositifProgrammeNational>
 
-export const dispositifProgrammeNational = pont(table)
+export type DispositifProgrammeNationalCoop = keyof typeof table
+
+export const dispositifProgrammeNational = pont(
+  DispositifProgrammeNational,
+  table,
+)

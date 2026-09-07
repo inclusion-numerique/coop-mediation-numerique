@@ -1,8 +1,7 @@
 import { FormationLabel } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { FormationLabel as FormationLabelCoop } from '@prisma/client'
 import { pont } from './pont'
 
-const table: Record<FormationLabelCoop, FormationLabel> = {
+const table = {
   FormeAMonEspaceSante: FormationLabel.FormeAMonEspaceSante,
   FormeADuplex: FormationLabel.FormeADuplex,
   ArniaMednum: FormationLabel.ArniaMednum,
@@ -13,6 +12,8 @@ const table: Record<FormationLabelCoop, FormationLabel> = {
   MesPapiers: FormationLabel.MesPapiers,
   Ordi3: FormationLabel.Ordi3,
   SudLabs: FormationLabel.SudLabs,
-}
+} satisfies Record<string, FormationLabel>
 
-export const formationLabel = pont(table)
+export type FormationLabelCoop = keyof typeof table
+
+export const formationLabel = pont(FormationLabel, table)

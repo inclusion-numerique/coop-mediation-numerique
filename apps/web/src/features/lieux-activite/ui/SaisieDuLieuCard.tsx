@@ -1,7 +1,7 @@
+import type { TypologieCoop as Typologie } from '@app/web/features/lieux-activite/vocabulaire'
 import * as vocabulaire from '@app/web/features/lieux-activite/vocabulaire'
 import { addresseFromParts } from '@app/web/utils/addresseFromParts'
 import Button from '@codegouvfr/react-dsfr/Button'
-import type { Typologie } from '@prisma/client'
 import classNames from 'classnames'
 import type { ReactNode } from 'react'
 

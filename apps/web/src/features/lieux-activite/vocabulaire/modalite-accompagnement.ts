@@ -1,12 +1,13 @@
 import { ModaliteAccompagnement } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { ModaliteAccompagnement as ModaliteAccompagnementCoop } from '@prisma/client'
 import { pont } from './pont'
 
-const table: Record<ModaliteAccompagnementCoop, ModaliteAccompagnement> = {
+const table = {
   EnAutonomie: ModaliteAccompagnement.EnAutonomie,
   AccompagnementIndividuel: ModaliteAccompagnement.AccompagnementIndividuel,
   DansUnAtelierCollectif: ModaliteAccompagnement.DansUnAtelier,
   ADistance: ModaliteAccompagnement.ADistance,
-}
+} satisfies Record<string, ModaliteAccompagnement>
 
-export const modaliteAccompagnement = pont(table)
+export type ModaliteAccompagnementCoop = keyof typeof table
+
+export const modaliteAccompagnement = pont(ModaliteAccompagnement, table)

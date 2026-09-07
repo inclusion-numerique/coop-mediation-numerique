@@ -1,8 +1,7 @@
 import { PriseEnChargeSpecifique } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { PriseEnChargeSpecifique as PriseEnChargeSpecifiqueCoop } from '@prisma/client'
 import { pont } from './pont'
 
-const table: Record<PriseEnChargeSpecifiqueCoop, PriseEnChargeSpecifique> = {
+const table = {
   Surdite: PriseEnChargeSpecifique.Surdite,
   HandicapsMoteurs: PriseEnChargeSpecifique.HandicapsMoteurs,
   HandicapsMentaux: PriseEnChargeSpecifique.HandicapsMentaux,
@@ -10,6 +9,8 @@ const table: Record<PriseEnChargeSpecifiqueCoop, PriseEnChargeSpecifique> = {
   LanguesEtrangeresAnglais: PriseEnChargeSpecifique.LanguesEtrangeresAnglais,
   LanguesEtrangeresAutre: PriseEnChargeSpecifique.LanguesEtrangeresAutre,
   DeficienceVisuelle: PriseEnChargeSpecifique.DeficienceVisuelle,
-}
+} satisfies Record<string, PriseEnChargeSpecifique>
 
-export const priseEnChargeSpecifique = pont(table)
+export type PriseEnChargeSpecifiqueCoop = keyof typeof table
+
+export const priseEnChargeSpecifique = pont(PriseEnChargeSpecifique, table)

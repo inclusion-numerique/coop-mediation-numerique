@@ -1,6 +1,15 @@
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import { CreerLieuActiviteValidation } from '@app/web/features/lieux-activite/formulaire/CreerLieuActiviteValidation'
 import type { OpeningHoursData } from '@app/web/features/lieux-activite/formulaire/OpeningHoursValidation'
+import type {
+  FormationLabelCoop as FormationLabel,
+  FraisAChargeCoop as FraisACharge,
+  ModaliteAccompagnementCoop as ModaliteAccompagnement,
+  PriseEnChargeSpecifiqueCoop as PriseEnChargeSpecifique,
+  PublicSpecifiquementAdresseCoop as PublicSpecifiquementAdresse,
+  ServiceCoop as Service,
+  TypologieCoop as Typologie,
+} from '@app/web/features/lieux-activite/vocabulaire'
 import {
   appendComment,
   emptyOpeningHours,
@@ -9,15 +18,6 @@ import {
   fromTimetableOpeningHours,
   type Schedule,
 } from '@gouvfr-anct/timetable-to-osm-opening-hours'
-import type {
-  FormationLabel,
-  FraisACharge,
-  ModaliteAccompagnement,
-  PriseEnChargeSpecifique,
-  PublicSpecifiquementAdresse,
-  Service,
-  Typologie,
-} from '@prisma/client'
 import { formOptions } from '@tanstack/react-form'
 import z from 'zod'
 

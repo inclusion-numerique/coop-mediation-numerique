@@ -15,7 +15,6 @@ import {
   type Presentation,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { LieuInclusion } from '@prisma/client'
 import { BanId } from '../domain/ban-id'
 import type { Fiche } from '../domain/fiche'
 import { NomUsage } from '../domain/identite-sirene'
@@ -41,6 +40,7 @@ import {
   VisibiliteCartographie,
 } from '../domain/visibilite-cartographie'
 import * as vocabulaire from '../vocabulaire'
+import type { LigneDuLieu } from './ligne-du-lieu'
 
 /** Le séparateur multi-valeurs du schéma national. */
 const SEPARATEUR_LISTE = '|'
@@ -58,7 +58,7 @@ const toSitesWeb = (siteWeb: string | null): readonly Url[] =>
 const toCourriels = (courriels: readonly string[]): readonly Courriel[] =>
   courriels.filter(isValidCourriel).map(Courriel)
 
-const toContact = (row: LieuInclusion): Contact => {
+const toContact = (row: LigneDuLieu): Contact => {
   const telephone = nonVide(row.telephone)
   const sitesWeb = toSitesWeb(row.siteWeb)
   const courriels = toCourriels(row.courriels)
@@ -70,7 +70,7 @@ const toContact = (row: LieuInclusion): Contact => {
   })
 }
 
-const toAdresse = (row: LieuInclusion): Adresse | null => {
+const toAdresse = (row: LigneDuLieu): Adresse | null => {
   const codeInsee = nonVide(row.codeInsee)
   const complement = nonVide(row.complementAdresse)
 
@@ -85,7 +85,7 @@ const toAdresse = (row: LieuInclusion): Adresse | null => {
   return isValidAddress(candidate) ? Adresse(candidate) : null
 }
 
-const toLocalisation = (row: LieuInclusion): Localisation | null => {
+const toLocalisation = (row: LigneDuLieu): Localisation | null => {
   if (row.latitude == null || row.longitude == null) return null
 
   const candidate = { latitude: row.latitude, longitude: row.longitude }
@@ -93,7 +93,7 @@ const toLocalisation = (row: LieuInclusion): Localisation | null => {
   return isValidLocalisation(candidate) ? Localisation(candidate) : null
 }
 
-const toPivot = (row: LieuInclusion): Pivot | null => {
+const toPivot = (row: LigneDuLieu): Pivot | null => {
   const siret = nonVide(row.siret)
   if (siret != null && isSiret(siret)) return siret
 
@@ -102,7 +102,7 @@ const toPivot = (row: LieuInclusion): Pivot | null => {
   return rna != null && isRna(rna) ? rna : null
 }
 
-const toPresentation = (row: LieuInclusion): Presentation | null => {
+const toPresentation = (row: LigneDuLieu): Presentation | null => {
   const resume = nonVide(row.presentationResume)
   const detail = nonVide(row.presentationDetail)
 
@@ -114,7 +114,7 @@ const toPresentation = (row: LieuInclusion): Presentation | null => {
   }
 }
 
-const toDerniereModification = (row: LieuInclusion): DerniereModification => {
+const toDerniereModification = (row: LigneDuLieu): DerniereModification => {
   const source = nonVide(row.derniereModificationSource)
   if (source != null)
     return ModifieParSource(row.modification, SourceCartographie(source))
@@ -127,7 +127,7 @@ const toDerniereModification = (row: LieuInclusion): DerniereModification => {
       )
 }
 
-const toSuppression = (row: LieuInclusion): Suppression =>
+const toSuppression = (row: LigneDuLieu): Suppression =>
   row.suppression == null
     ? Actif
     : Supprime(
@@ -135,7 +135,7 @@ const toSuppression = (row: LieuInclusion): Suppression =>
         row.suppressionParId == null ? null : UserId(row.suppressionParId),
       )
 
-const toFiche = (row: LieuInclusion): Fiche => ({
+const toFiche = (row: LigneDuLieu): Fiche => ({
   nom: Nom(row.nom),
   pivot: toPivot(row),
   adresse: toAdresse(row),
@@ -190,7 +190,7 @@ const toFiche = (row: LieuInclusion): Fiche => ({
   priseRdv: isValidUrl(row.priseRdv ?? '') ? Url(row.priseRdv ?? '') : null,
 })
 
-export const lieuToDomain = (row: LieuInclusion): Lieu => ({
+export const lieuToDomain = (row: LigneDuLieu): Lieu => ({
   id: LieuId(row.id),
   fiche: toFiche(row),
   visibilite: VisibiliteCartographie(

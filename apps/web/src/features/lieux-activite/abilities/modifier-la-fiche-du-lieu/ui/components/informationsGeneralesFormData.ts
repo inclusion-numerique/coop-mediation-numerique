@@ -1,6 +1,6 @@
 import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import type { StructureSearchResult } from '@app/web/features/employeuse'
-import type { Typologie } from '@prisma/client'
+import type { TypologieCoop as Typologie } from '@app/web/features/lieux-activite/vocabulaire'
 import { formOptions } from '@tanstack/react-form'
 import z from 'zod'
 

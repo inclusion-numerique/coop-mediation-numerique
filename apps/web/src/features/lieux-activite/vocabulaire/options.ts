@@ -3,14 +3,13 @@ import { InternetIcon } from '@app/web/features/pictograms/digital/InternetIcon'
 import { SittingAtATableIcon } from '@app/web/features/pictograms/user/SittingAtATableIcon'
 import { TeacherIcon } from '@app/web/features/pictograms/user/TeacherIcon'
 import { PairIcon } from '@app/web/features/pictograms/work/PairIcon'
-import type {
-  FraisACharge as FraisAChargeCoop,
-  ModaliteAccompagnement as ModaliteAccompagnementCoop,
-} from '@prisma/client'
 import type { ComponentType } from 'react'
 import { formationLabel } from './formation-label'
-import { fraisACharge } from './frais-a-charge'
-import { modaliteAccompagnement } from './modalite-accompagnement'
+import { type FraisAChargeCoop, fraisACharge } from './frais-a-charge'
+import {
+  type ModaliteAccompagnementCoop,
+  modaliteAccompagnement,
+} from './modalite-accompagnement'
 import { priseEnChargeSpecifique } from './prise-en-charge-specifique'
 import { publicSpecifiquementAdresse } from './public-specifiquement-adresse'
 import { service } from './service'
