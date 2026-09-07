@@ -4,11 +4,11 @@ import { prismaClient } from '@app/web/prismaClient'
 import { departementCodeFromInseeRegex } from '@app/web/utils/departementCodeFromInseeRegex'
 import { orderItemsByIndexedValues } from '@app/web/utils/orderItemsByIndexedValues'
 import { Prisma } from '@prisma/client'
+import { ordonnancement, TriDesLieux } from '../../../../domain/tri-des-lieux'
 import {
   type LieuEnListe,
   projectionDuLieuEnListe,
 } from '../../../../implementation/prisma/lieu-en-liste'
-import { ordonnancement, type TriDeLAnnuaire } from '../../domain'
 
 const LIEUX_DEFAULT_PAGE_SIZE = 20
 
@@ -23,7 +23,7 @@ export type RechercheDeLieuxDuDepartement = {
   readonly communes?: readonly string[]
   readonly departements?: readonly string[]
   readonly mediateurs?: readonly string[]
-  readonly tri?: TriDeLAnnuaire
+  readonly tri?: TriDesLieux
   readonly page?: string
   readonly lignes?: string
 }
@@ -98,9 +98,9 @@ export const lieuxDuDepartement = async ({
       ? Prisma.sql`mea.mediateur_id = ANY(${[...searchParams.mediateurs]}::UUID[])`
       : Prisma.sql`TRUE`
 
-  const { colonne, sens } = ordonnancement(searchParams.tri)
-  const sortColumn = Prisma.raw(colonne)
-  const sortDirection = Prisma.raw(sens)
+  const { champ, sens } = ordonnancement(TriDesLieux(searchParams.tri))
+  const sortColumn = Prisma.raw(champ)
+  const sortDirection = Prisma.raw(sens.toUpperCase())
 
   // Get paginated structure IDs using CTE to handle DISTINCT + ORDER BY
   const structureIds = await prismaClient.$queryRaw<{ id: string }[]>`

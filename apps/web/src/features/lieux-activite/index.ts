@@ -78,7 +78,6 @@ export {
 export {
   listerMesLieuxActivite,
   type MonLieuActivite,
-  TriDesLieux,
 } from './abilities/lister-mes-lieux-activite'
 export {
   rechercherDesLieux,
@@ -133,6 +132,7 @@ export { MediateurId } from './domain/mediateur-id'
 // brute en modèle du standard, dont un appelant a besoin pour composer un
 // LieuDemande.
 export { adresseSaisie, localisationSaisie } from './domain/saisie'
+export { TriDesLieux } from './domain/tri-des-lieux'
 export { UserId } from './domain/user-id'
 // Ce qui se saisit pour un lieu
 export {

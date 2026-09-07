@@ -2,9 +2,9 @@ import assert from 'node:assert'
 import {
   listerMesLieuxActivite,
   type MonLieuActivite,
-  TriDesLieux,
 } from '@app/web/features/lieux-activite/abilities/lister-mes-lieux-activite'
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
+import { TriDesLieux } from '@app/web/features/lieux-activite/domain/tri-des-lieux'
 import { ficheSemee } from '@app/web/features/lieux-activite/lieux-activite.cucumber'
 import { prismaClient } from '@app/web/prismaClient'
 import { Then, When } from '@cucumber/cucumber'

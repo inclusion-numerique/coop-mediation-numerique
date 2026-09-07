@@ -1,9 +1,4 @@
 export {
-  libellesDeTri,
-  ordonnancement,
-  type TriDeLAnnuaire,
-} from './domain'
-export {
   communesDesLieux,
   type LieuxDuDepartement,
   lieuxDuDepartement,

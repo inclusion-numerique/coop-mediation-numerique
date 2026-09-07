@@ -2,13 +2,11 @@ import CoopBreadcrumbs from '@app/web/app/coop/CoopBreadcrumbs'
 import { metadataTitle } from '@app/web/app/metadataTitle'
 import { authenticateUser } from '@app/web/auth/authenticateUser'
 import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
-import {
-  listerMesLieuxActivite,
-  TriDesLieux,
-} from '@app/web/features/lieux-activite/abilities/lister-mes-lieux-activite'
+import { listerMesLieuxActivite } from '@app/web/features/lieux-activite/abilities/lister-mes-lieux-activite'
 import { MesLieuxActivitePage } from '@app/web/features/lieux-activite/abilities/lister-mes-lieux-activite/ui'
 import { BoutonDeRetrait } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
+import { TriDesLieux } from '@app/web/features/lieux-activite/domain/tri-des-lieux'
 import { LieuActiviteCard } from '@app/web/features/lieux-activite/ui'
 import { getLieuHref } from '@app/web/features/mon-reseau/getLieuHref'
 import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'

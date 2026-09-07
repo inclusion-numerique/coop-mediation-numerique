@@ -1,9 +1,12 @@
 import { ModaleDeRetrait } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
+import {
+  libellesDeTri,
+  trisDesLieux,
+} from '@app/web/features/lieux-activite/domain/tri-des-lieux'
 import { pluriel } from '@app/web/libraries/pluriel'
 import SortSelect from '@app/web/libs/data-table/SortSelect'
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { ReactNode } from 'react'
-import { libellesDeTri, type TriDesLieux } from '../../domain'
 import type { MonLieuActivite } from '../../implementation'
 import { AucunLieu } from '../components/AucunLieu'
 import VisibiliteMediateur from '../components/VisibiliteMediateur'
@@ -71,7 +74,7 @@ export const MesLieuxActivitePage = ({
   </div>
 )
 
-const tris = (Object.keys(libellesDeTri) as TriDesLieux[]).map((tri) => ({
+const tris = trisDesLieux.map((tri) => ({
   label: libellesDeTri[tri],
   value: tri,
 }))

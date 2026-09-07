@@ -1,9 +1,11 @@
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
 import type { MediateurId } from '../../../../domain/mediateur-id'
+import {
+  ordonnancement,
+  type TriDesLieux,
+} from '../../../../domain/tri-des-lieux'
 import { projectionDuLieuEnListe } from '../../../../implementation/prisma/lieu-en-liste'
-import type { TriDesLieux } from '../../domain/tri-des-lieux'
-import { ordonnancement } from '../../domain/tri-des-lieux'
 
 /**
  * Les lieux où le médiateur exerce aujourd'hui.
@@ -18,8 +20,10 @@ export const listerMesLieuxActivite = async ({
   mediateurId: MediateurId
   tri: TriDesLieux
 }) => {
-  const orderBy: Prisma.MediateurEnActiviteOrderByWithRelationInput =
-    ordonnancement(tri)
+  const { champ, sens } = ordonnancement(tri)
+  const orderBy: Prisma.MediateurEnActiviteOrderByWithRelationInput = {
+    lieuInclusion: { [champ]: sens },
+  }
 
   return prismaClient.mediateurEnActivite.findMany({
     where: { mediateurId, suppression: null, fin: null },
