@@ -11,7 +11,10 @@ import {
 } from '@app/web/features/lieux-activite/lieux-activite.cucumber'
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { Url } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { Typologie, Url } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { depuisLaSaisie } from './action/depuis-la-saisie'
+import { InformationsGeneralesSaisie } from './action/modifier-la-fiche-du-lieu.validation'
+import { informationsGeneralesSoumises } from './ui/informations-generales-soumises'
 
 const auteur = () => UserId(ficheSemee().userIds[0] ?? '')
 
@@ -143,4 +146,114 @@ Then('la fiche du lieu est introuvable', async () => {
     await consulterLaFicheDuLieu(LieuId(ficheSemee().lieuId)),
     null,
   )
+})
+
+/**
+ * L'adresse telle que la Base Adresse Nationale l'a reconnue — celle de
+ * l'établissement de l'Annuaire y est géocodée au moment de le choisir, comme
+ * celle qu'un utilisateur cherche lui-même.
+ */
+const adresseBan = {
+  id: '51454_7160_00012',
+  label: '12 rue de la Paix, 51100 Reims',
+  nom: '12 rue de la Paix',
+  commune: 'Reims',
+  codePostal: '51100',
+  codeInsee: '51454',
+  contexte: '51, Marne, Grand Est',
+  latitude: 49.25,
+  longitude: 4.03,
+}
+
+const ETABLISSEMENT = {
+  nom: 'MAISON FRANCE SERVICES',
+  adresse: '12 rue de la Paix',
+  codePostal: '51100',
+  commune: 'Reims',
+  codeInsee: '51454',
+  siret: '13002603200016',
+  source: 'api' as const,
+}
+
+/** Le chemin complet du formulaire : ce qu'il porte, ce qu'il soumet, ce qui s'écrit. */
+const enregistrerLesInformationsGenerales = async (
+  valeurs: Parameters<typeof informationsGeneralesSoumises>[0],
+) =>
+  modifierLaFicheDuLieu({
+    id: LieuId(ficheSemee().lieuId),
+    par: auteur(),
+    modification: depuisLaSaisie(
+      InformationsGeneralesSaisie.parse(informationsGeneralesSoumises(valeurs)),
+    ),
+  })
+
+Given('une fiche de lieu immatriculée', async () => {
+  await semerUneFicheDeLieu()
+
+  await prismaClient.lieuInclusion.update({
+    where: { id: ficheSemee().lieuId },
+    data: { siret: ETABLISSEMENT.siret, nomUsage: 'La Maison du Port' },
+  })
+})
+
+When(
+  "le médiateur rattaché enregistre les informations générales avec un établissement de l'Annuaire",
+  async () => {
+    await enregistrerLesInformationsGenerales({
+      id: ficheSemee().lieuId,
+      noSiret: false,
+      siretSearch: ETABLISSEMENT,
+      // Le nom vient de l'établissement choisi, que le formulaire recopie.
+      nom: ETABLISSEMENT.nom,
+      adresseBan,
+      nomUsage: 'La Maison du Port',
+      rna: null,
+      lieuItinerant: null,
+      complementAdresse: null,
+      typologies: [Typologie.TIERS_LIEUX],
+    })
+  },
+)
+
+When(
+  "le médiateur rattaché enregistre les informations générales en déclarant l'absence de SIRET",
+  async () => {
+    await enregistrerLesInformationsGenerales({
+      id: ficheSemee().lieuId,
+      noSiret: true,
+      siretSearch: null,
+      nom: 'Tiers-lieu du Port',
+      adresseBan,
+      nomUsage: 'La Maison du Port',
+      rna: null,
+      lieuItinerant: null,
+      complementAdresse: null,
+      typologies: [Typologie.TIERS_LIEUX],
+    })
+  },
+)
+
+Then('le lieu porte le SIRET de cet établissement', async () => {
+  const { lieu } = await relire()
+  assert.strictEqual(lieu.fiche.pivot, ETABLISSEMENT.siret)
+})
+
+Then("le lieu porte le nom d'usage saisi", async () => {
+  const { lieu } = await relire()
+  assert.strictEqual(lieu.identiteSirene.nomUsage, 'La Maison du Port')
+})
+
+Then("le lieu n'a plus d'immatriculation", async () => {
+  const { lieu } = await relire()
+  assert.strictEqual(lieu.fiche.pivot, null)
+})
+
+Then("le lieu n'a plus de nom d'usage", async () => {
+  const { lieu } = await relire()
+  assert.strictEqual(lieu.identiteSirene.nomUsage, null)
+})
+
+Then('le nom du lieu est celui qui a été saisi', async () => {
+  const { lieu } = await relire()
+  assert.strictEqual(lieu.fiche.nom, 'Tiers-lieu du Port')
 })

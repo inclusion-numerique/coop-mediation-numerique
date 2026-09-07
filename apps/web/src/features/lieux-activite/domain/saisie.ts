@@ -1,4 +1,3 @@
-import { validateValidRnaDigits } from '@app/web/libraries/rna'
 import { telephoneCanonique } from '@app/web/libraries/telephone'
 import {
   Adresse,
@@ -181,15 +180,3 @@ export const itineranceSaisie = (
     : itinerant
       ? [Itinerance.Itinerant]
       : [Itinerance.Fixe]
-
-/**
- * Le formulaire ne propose qu'une case d'immatriculation : le numéro RNA d'une
- * association y arrive donc par le champ SIRET. On le range dans sa colonne au
- * moment de soumettre, sans quoi il serait stocké comme un SIRET invalide.
- */
-export const immatriculationSaisie = (
-  immatriculation: string | null | undefined,
-): { rna: string; siret: undefined } | Record<string, never> =>
-  immatriculation != null && validateValidRnaDigits(immatriculation)
-    ? { rna: immatriculation, siret: undefined }
-    : {}

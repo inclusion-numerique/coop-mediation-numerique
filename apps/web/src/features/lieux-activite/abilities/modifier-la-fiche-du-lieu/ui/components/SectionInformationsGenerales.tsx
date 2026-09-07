@@ -3,9 +3,9 @@
 import EditCardTanStack from '@app/web/components/EditCardTanStack'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useStore } from '@tanstack/react-form'
-import { immatriculationSaisie } from '../../../../domain/saisie'
 import type { EnregistrerUneSection } from '../enregistrer-une-section'
 import type { FicheAffichee } from '../fiche-du-lieu.presenter'
+import { informationsGeneralesSoumises } from '../informations-generales-soumises'
 import { InformationsGeneralesEditionFields } from './InformationsGeneralesEditionFields'
 import {
   type InformationsGeneralesFormData,
@@ -46,20 +46,12 @@ export const SectionInformationsGenerales = ({
     onSubmit: async ({ value }) => {
       if (!value.adresseBan) return
 
-      const { noSiret, siretSearch, ...saisie } = value
-      const siret = noSiret ? null : (siretSearch?.siret ?? null)
-
-      await soumettre({
-        section: 'InformationsGenerales',
-        nom: saisie.nom,
-        adresseBan: value.adresseBan,
-        complementAdresse: saisie.complementAdresse,
-        // L'itinérance ne se déclare que pour un lieu sans immatriculation.
-        lieuItinerant: noSiret ? saisie.lieuItinerant : null,
-        typologies: saisie.typologies,
-        nomUsage: saisie.nomUsage,
-        ...immatriculationSaisie(siret),
-      })
+      await soumettre(
+        informationsGeneralesSoumises({
+          ...value,
+          adresseBan: value.adresseBan,
+        }),
+      )
     },
   })
 

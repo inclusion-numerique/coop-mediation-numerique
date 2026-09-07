@@ -66,3 +66,30 @@ description, services et accompagnement, modalités d'accès, publics accueillis
 * Given une fiche de lieu avec un site web, un téléphone et un courriel
 * When ce lieu est supprimé
 * Then la fiche du lieu est introuvable
+
+## Rule: L'immatriculation d'un lieu survit à l'enregistrement de ses informations générales
+
+> Le formulaire ne rangeait dans sa saisie que les immatriculations en forme de
+> RNA : le SIRET choisi dans l'Annuaire des entreprises n'y figurait pas, et
+> l'enregistrement l'effaçait — avec le nom d'usage, qui n'a plus d'objet sans
+> immatriculation.
+>
+> Un SIRET vient TOUJOURS de l'Annuaire, seul à pouvoir l'attester, et il emporte
+> le nom et l'adresse de l'établissement. À défaut de SIRET, le nom se saisit
+> librement. Dans les deux cas l'adresse est reconnue par la Base Adresse
+> Nationale.
+
+### Scenario: Le SIRET choisi dans l'Annuaire est enregistré
+
+* Given une fiche de lieu avec un site web, un téléphone et un courriel
+* When le médiateur rattaché enregistre les informations générales avec un établissement de l'Annuaire
+* Then le lieu porte le SIRET de cet établissement
+* And le lieu porte le nom d'usage saisi
+
+### Scenario: Déclarer qu'il n'y a pas de SIRET
+
+* Given une fiche de lieu immatriculée
+* When le médiateur rattaché enregistre les informations générales en déclarant l'absence de SIRET
+* Then le lieu n'a plus d'immatriculation
+* And le lieu n'a plus de nom d'usage
+* And le nom du lieu est celui qui a été saisi
