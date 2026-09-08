@@ -104,12 +104,13 @@
 > La sonde de la coop ne regarde que `coop.lieu_inclusion` : un lieu moissonné
 > chez `dora` n'y figure pas, et la fiche coop se crée donc à bon droit. C'est au
 > moment d'inscrire au registre, et là seulement, qu'on peut éviter d'y ajouter
-> une seconde ligne pour le même endroit. L'inscription trouvée est reprise, sans
-> perdre la provenance qui l'a fait naître.
+> une seconde ligne pour le même endroit. L'inscription trouvée est reprise — et
+> passe à la coop, puisque c'est d'elle que viennent désormais les valeurs qu'on y
+> lit.
 
 * Given un médiateur qui exerce dans un lieu
 * And le registre connaît déjà ce lieu sous la source « dora »
 * When ce médiateur crée un lieu déjà connu du registre
 * Then le registre ne porte qu'une inscription pour cet endroit
 * And cette inscription porte le lien vers le lieu créé
-* And cette inscription reste attribuée à « dora »
+* And cette inscription est désormais attribuée à la coop

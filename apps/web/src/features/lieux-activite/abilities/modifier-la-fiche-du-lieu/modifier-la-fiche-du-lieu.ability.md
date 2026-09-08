@@ -157,3 +157,14 @@ description, services et accompagnement, modalités d'accès, publics accueillis
 * When le médiateur rattaché modifie la description du lieu
 * Then le registre porte la description du lieu
 * And le registre porte toujours le site web d'origine
+
+### Scenario: Une inscription venue d'ailleurs passe à la coop dès qu'elle en porte les valeurs
+
+> `source` dit d'où viennent les données qu'on lit dans l'inscription. Une fiche
+> qui annoncerait `dora` en portant ce que le médiateur vient d'enregistrer
+> tromperait ses lecteurs. Ce que la fiche était avant reste lisible dans la coop.
+
+* Given une fiche de lieu avec un site web, un téléphone et un courriel
+* And cette fiche est déjà inscrite au registre sous la source « dora »
+* When le médiateur rattaché modifie la description du lieu
+* Then le registre attribue l'inscription à la coop

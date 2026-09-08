@@ -15,12 +15,18 @@ import {
 const EDITE_PAR = 'coop'
 
 /**
- * Le producteur à l'origine de la fiche, posé à la CRÉATION et jamais réécrit.
+ * La source que porte une inscription dont la coop tient les valeurs — l'étiquette
+ * que la colonne emploie déjà, sur 8 518 lignes.
  *
- * `source` dit d'où vient le lieu, pas qui l'a touché en dernier : réécrire
- * « Coop numérique » sur un lieu moissonné chez `dora` parce qu'un médiateur en
- * a corrigé les horaires effacerait sa provenance. La récence, elle, se lit dans
- * `updated_at_coop` face à `updated_at_carto` et `updated_at_min`.
+ * Elle est posée à CHAQUE écriture, y compris sur une inscription moissonnée
+ * ailleurs : dès lors que la coop en écrit la fiche, c'est d'elle que viennent
+ * les données qu'on y lit, et `source` doit le dire. Une inscription qui
+ * annoncerait `dora` en portant ce que le médiateur vient de saisir tromperait
+ * ses lecteurs sur la provenance de ce qu'ils ont sous les yeux.
+ *
+ * Ce que la fiche était avant reste lisible : `coop.lieu_inclusion` en garde la
+ * mémoire, et `updated_at_carto` face à `updated_at_coop` dit laquelle des deux
+ * sources a parlé en dernier.
  */
 const SOURCE_COOP = 'Coop numérique'
 
@@ -42,7 +48,7 @@ const SOURCE_COOP = 'Coop numérique'
  *    bon droit, et c'est ici, et seulement ici, qu'on évite le doublon au registre
  *    national.
  *
- * 3. Personne ne le connaît : on inscrit, en posant `source`.
+ * 3. Personne ne le connaît : on inscrit.
  *
  * L'adresse est résolue à chaque écriture, y compris quand la section n'y touche
  * pas : c'est une lecture indexée, et elle rattrape les lignes dont
@@ -67,6 +73,7 @@ export const ecrireAuRegistre = async (
 
   const tracabilite = {
     adresseId,
+    source: SOURCE_COOP,
     editedBy: EDITE_PAR,
     updatedAtCoop: maintenant,
   }
@@ -87,13 +94,9 @@ export const ecrireAuRegistre = async (
 
   const aAdopter = await inscriptionCorrelee(transaction, lieu)
 
-  // Adopter, c'est reprendre l'inscription en entier : la coop devient la source
-  // la plus récente de cet endroit, et `updated_at` — colonne générée, qu'on
-  // n'écrit pas — le dira d'elle-même en prenant `updated_at_coop`.
-  //
-  // `source` n'est pas touché : il dit d'où vient la fiche, et une inscription
-  // moissonnée chez `dora` en reste issue même quand la coop en tient désormais
-  // les valeurs. On ne le pose qu'à l'inscription, ci-dessous.
+  // Adopter, c'est reprendre l'inscription en entier : la coop en devient la
+  // source, et `updated_at` — colonne générée, qu'on n'écrit pas — le dira
+  // d'elle-même en prenant `updated_at_coop`.
   if (aAdopter != null) {
     await transaction.lieuInclusionRegistreMain.update({
       where: { id: aAdopter },
@@ -108,7 +111,6 @@ export const ecrireAuRegistre = async (
       ...toutes,
       ...tracabilite,
       structureCoopId: lieu.id,
-      source: SOURCE_COOP,
       createdAt: maintenant,
     },
   })

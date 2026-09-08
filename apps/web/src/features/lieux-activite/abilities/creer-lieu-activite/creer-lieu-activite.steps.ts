@@ -268,14 +268,14 @@ Then('cette inscription porte le lien vers le lieu créé', async () => {
   assert.notStrictEqual(inscription.updatedAtCoop, null)
 })
 
-Then('cette inscription reste attribuée à « dora »', async () => {
+Then('cette inscription est désormais attribuée à la coop', async () => {
   const inscription =
     await prismaClient.lieuInclusionRegistreMain.findUniqueOrThrow({
       where: { id: inscriptionDora.id ?? 0 },
       select: { source: true },
     })
 
-  assert.strictEqual(inscription.source, 'dora')
+  assert.strictEqual(inscription.source, 'Coop numérique')
 })
 
 Then('le lieu créé est inscrit au registre', async () => {

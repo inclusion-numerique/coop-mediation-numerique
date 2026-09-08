@@ -359,6 +359,7 @@ const inscriptionAuRegistre = () =>
     select: {
       contact: true,
       presentationResume: true,
+      source: true,
       editedBy: true,
       updatedAtCoop: true,
     },
@@ -396,4 +397,25 @@ Then("le registre porte toujours le site web d'origine", async () => {
     courriels: { email: 'contact@exemple-reims.fr' },
     site_web: 'https://www.exemple-reims.fr',
   })
+})
+
+Given(
+  'cette fiche est déjà inscrite au registre sous la source « dora »',
+  async () => {
+    await prismaClient.lieuInclusionRegistreMain.create({
+      data: {
+        nom: 'Maison France Services de Reims',
+        structureCoopId: ficheSemee().lieuId,
+        source: 'dora',
+        editedBy: 'carto',
+        updatedAtCarto: new Date('2026-01-01'),
+      },
+    })
+  },
+)
+
+Then("le registre attribue l'inscription à la coop", async () => {
+  const inscription = await inscriptionAuRegistre()
+
+  assert.strictEqual(inscription.source, 'Coop numérique')
 })
