@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 #
 # Garde anti-dérive des tables `main.*` de l'Entrepôt dont dépend la coop
-# (`structure_administrative`, `adresse`). Ces tables sont possédées par le Dataspace et gérées
-# par Flyway (ADR-002) : on les modélise dans `schema.prisma` sans les migrer. Si Flyway les fait
-# évoluer, notre client Prisma peut casser silencieusement. Ce script compare l'introspection
-# actuelle de `main` au snapshot de référence committé (`prisma/main.reference.prisma`).
+# (`structure_administrative`, `adresse`, `lieu_inclusion_registre`). Ces tables sont possédées par
+# le Dataspace et gérées par Flyway (ADR-002) : on les modélise dans `schema.prisma` sans les
+# migrer. Si Flyway les fait évoluer, notre client Prisma peut casser silencieusement. Ce script
+# compare l'introspection actuelle de `main` au snapshot de référence committé
+# (`prisma/main.reference.prisma`).
 #
 # Lecture seule : `prisma db pull` ne lit que le catalogue (types/colonnes/contraintes), aucune
 # donnée. À lancer EN LOCAL contre DATABASE_URL, jamais en CI (pas d'accès prod depuis la CI).
@@ -17,7 +18,7 @@ set -euo pipefail
 MODE="${1:-check}"
 WEB_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 REF="$WEB_DIR/prisma/main.reference.prisma"
-MODELS_REGEX='/^model (structure_administrative|adresse) \{/,/^\}/'
+MODELS_REGEX='/^model (structure_administrative|adresse|lieu_inclusion_registre) \{/,/^\}/'
 
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
@@ -55,7 +56,7 @@ fi
 awk "$MODELS_REGEX" "$REF" > "$TMP/ref.models"
 
 if diff -u "$TMP/ref.models" "$TMP/current.models"; then
-  echo "✓ Aucune dérive : main.structure_administrative / main.adresse == snapshot de référence."
+  echo "✓ Aucune dérive : structure_administrative / adresse / lieu_inclusion_registre == snapshot."
   exit 0
 fi
 
