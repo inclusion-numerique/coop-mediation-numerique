@@ -753,6 +753,14 @@ model LieuInclusion {
   // supprimée, la donnée carto vit désormais dans l'Entrepôt (cf. entrepotPrismaClient).
   structureCartographieNationaleId String? @map("id_cartographie_nationale")
 
+  /// L'inscription du lieu au registre de l'Entrepôt.
+  ///
+  /// Aucune colonne ici : le lien vit dans `main.lieu_inclusion_registre.structure_coop_id`, qui
+  /// est UNIQUE et que le chemin d'écriture pose déjà. En tenir une seconde copie côté coop
+  /// dupliquerait une arête qui n'en a qu'une — c'est ainsi que la copie de l'identifiant de
+  /// cartographie avait fini par diverger de son original.
+  inscriptionRegistre LieuInclusionRegistreMain?
+
   // Timestamps internes à coop-mediation-numerique
   creation      DateTime @default(now())
   creationParId String?  @map("creation_par_id") @db.Uuid
@@ -1114,6 +1122,14 @@ model LieuInclusionRegistreMain {
   deletedAt DateTime? @map("deleted_at") @db.Timestamp(6)
 
   adresse AdresseMain? @relation(fields: [adresseId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "lieu_inclusion_registre_adresse_fkey")
+
+  /// Le lieu coop dont cette inscription porte les valeurs, par la colonne que le registre porte
+  /// déjà. La relation est déclarée pour que Prisma sache joindre ; la contrainte, elle, n'existe
+  /// dans AUCUN environnement et ne doit pas être créée : `main` est possédé par le Dataspace, et
+  /// une clé étrangère posée là ferait entrer `coop` dans son graphe de dépendances — il ne
+  /// pourrait plus restaurer ni remodeler cette table sans nous. `prisma migrate` proposera
+  /// néanmoins de l'ajouter à chaque migration générée : cette ligne est à retirer.
+  lieuCoop LieuInclusion? @relation(fields: [structureCoopId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([adresseId], map: "lieu_inclusion_registre_adresse_id_idx")
   @@index([nom], map: "lieu_inclusion_registre_nom_idx")
