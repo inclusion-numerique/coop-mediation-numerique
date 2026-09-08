@@ -6,7 +6,7 @@ import type {
   LieuxCoopReunis,
   Reconciliation,
 } from '../../domain'
-import { identifiantEnColonne, modificationExterne } from '../../domain'
+import { modificationExterne } from '../../domain'
 import { champsHerites } from './champs-herites'
 import {
   dedoublonnerLesEmplois,
@@ -16,14 +16,15 @@ import {
 type Transaction = Prisma.TransactionClient
 
 /**
- * Ce que la cartographie apprend au lieu qui survit : sous quel identifiant
- * elle le connaît, et la trace de cette écriture venue du dehors — celle-ci
- * seulement si la fiche vient d'une autre source et l'a touchée après nous.
+ * Ce que la cartographie apprend au lieu qui survit : la trace d'une écriture
+ * venue du dehors, et seulement si la fiche vient d'une autre source et l'a
+ * touchée après nous.
+ *
+ * Elle ne lui apprend plus sous quel identifiant elle le connaît : celui-ci vit
+ * dans l'inscription au registre de l'Entrepôt, dont c'est le domicile.
  */
-const annotationDe = (lieu: LieuCarto, derniereModificationCoop: Date) => ({
-  ...modificationExterne(lieu, derniereModificationCoop),
-  structureCartographieNationaleId: identifiantEnColonne(lieu),
-})
+const annotationDe = (lieu: LieuCarto, derniereModificationCoop: Date) =>
+  modificationExterne(lieu, derniereModificationCoop)
 
 type Annotation = ReturnType<typeof annotationDe>
 
@@ -54,12 +55,21 @@ const reporterLesRattachements = async (
   ])
 }
 
-/** Le lieu que la cartographie ne réunit avec aucun autre : rien à absorber. */
+/**
+ * Le lieu que la cartographie ne réunit avec aucun autre : rien à absorber.
+ *
+ * L'annotation peut être vide — la fiche ne vient pas d'une autre source, ou
+ * celle-ci ne l'a pas touchée après nous. Tant que l'identifiant de
+ * cartographie voyageait avec elle, il y avait toujours quelque chose à écrire ;
+ * il n'y en a plus, et un lieu sans rien à apprendre ne se réécrit pas.
+ */
 const annoterLeLieu = async (
   transaction: Transaction,
   survivant: string,
   annotation: Annotation,
 ) => {
+  if (annotation == null) return
+
   await transaction.lieuInclusion.update({
     where: { id: survivant },
     data: annotation,
@@ -146,12 +156,6 @@ export const appliquerLaReconciliation =
   async (reunis): Promise<Reconciliation> =>
     prismaClient.$transaction(
       async (transaction) => {
-        journal('Réinitialisation des liens vers la cartographie')
-        const { count: liensReinitialises } =
-          await transaction.lieuInclusion.updateMany({
-            data: { structureCartographieNationaleId: null },
-          })
-
         journal(`Liaison de ${reunis.length} lieux de la cartographie`)
         const lieuxRelies = await lierChacun(transaction, reunis)
 
@@ -161,7 +165,6 @@ export const appliquerLaReconciliation =
         const emploisDedoublonnes = await dedoublonnerLesEmplois(transaction)
 
         return {
-          liensReinitialises,
           lieuxRelies,
           rattachementsDedoublonnes,
           emploisDedoublonnes,

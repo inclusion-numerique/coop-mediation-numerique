@@ -18,10 +18,7 @@ import {
 import { BanId } from '../../domain/ban-id'
 import type { Fiche } from '../../domain/fiche'
 import { NomUsage } from '../../domain/identite-sirene'
-import {
-  IdsCartographieNationale,
-  serialiserIdsCartographieNationale,
-} from '../../domain/ids-cartographie-nationale'
+import { IdsCartographieNationale } from '../../domain/ids-cartographie-nationale'
 import type { Lieu } from '../../domain/lieu'
 import { LieuId } from '../../domain/lieu-id'
 import {
@@ -196,12 +193,9 @@ export const lieuToDomain = (row: LigneDuLieu): Lieu => ({
   visibilite: VisibiliteCartographie(
     row.visiblePourCartographieNationale ? 'Publie' : 'NonPublie',
   ),
-  idsCartographieNationale:
-    nonVide(row.structureCartographieNationaleId) == null
-      ? null
-      : IdsCartographieNationale.safe(
-          row.structureCartographieNationaleId ?? '',
-        ),
+  idsCartographieNationale: IdsCartographieNationale.safe(
+    row.inscriptionRegistre?.structureCartographieNationaleId ?? '',
+  ),
   banId: BanId.safe(row.banId ?? ''),
   identiteSirene: {
     nomUsage: NomUsage.safe(row.nomUsage ?? ''),
@@ -320,10 +314,6 @@ export const lieuFromDomain = ({
     vocabulaire.modaliteAccompagnement.versCoop,
   ),
   visiblePourCartographieNationale: estPublie(visibilite),
-  structureCartographieNationaleId:
-    idsCartographieNationale == null
-      ? null
-      : serialiserIdsCartographieNationale(idsCartographieNationale),
   nomUsage: identiteSirene.nomUsage,
   synchronisationSiret: identiteSirene.synchronisation,
   creation: tracabilite.creation.date,

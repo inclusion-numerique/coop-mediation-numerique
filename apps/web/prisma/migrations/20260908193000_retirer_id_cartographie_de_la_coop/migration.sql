@@ -1,0 +1,21 @@
+-- Retire la copie que la coop tenait de l'identifiant de cartographie nationale.
+--
+-- L'identifiant appartient à la cartographie et le registre de l'Entrepôt en est le domicile. La
+-- coop en gardait un double, posé par le job de réconciliation, et les deux ont dérivé : sur
+-- 12 764 lieux appariés, 561 ne s'accordaient plus, dans les deux sens. Les lectures passent
+-- désormais par `coop.lieu_inclusion.inscription_registre_id`, et cette colonne n'a plus de
+-- lecteur.
+--
+-- DESTRUCTIF : 7 821 valeurs disparaissent. Ce que le registre ne porte pas a été relevé au
+-- préalable — 336 lieux, avec les tokens manquants, de quoi les reconstituer depuis un export
+-- mednum-cli.
+--
+-- AVANT DE DÉPLOYER : rejouer le relevé SUR LA PRODUCTION.
+--
+--     psql "$DATABASE_URL" -f prisma/sql/identifiants-carto-absents-de-main.sql --csv -o absents.csv
+--
+-- Celui qui a servi à décider vient d'un dump restauré : il reflète la prod à la date du dump, pas
+-- au moment du déploiement. Un lieu relié entre-temps n'y figurerait pas.
+-- L'index qui la portait s'en va avec elle : inutile de le nommer, et le nommer
+-- exposerait la migration a echouer la ou il aurait deja disparu.
+ALTER TABLE "coop"."lieu_inclusion" DROP COLUMN "id_cartographie_nationale";

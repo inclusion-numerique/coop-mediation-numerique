@@ -2,6 +2,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import type { Lieu } from '../../../../domain/lieu'
 import type { LieuId } from '../../../../domain/lieu-id'
 import { lieuToDomain } from '../../../../implementation'
+import { inscriptionPourLIdentifiantCarto } from '../../../../implementation/prisma/registre'
 
 export type FicheDuLieu = {
   readonly lieu: Lieu
@@ -30,6 +31,7 @@ export const consulterLaFicheDuLieu = async (
   const ligne = await prismaClient.lieuInclusion.findFirst({
     where: { id, suppression: null },
     include: {
+      inscriptionRegistre: inscriptionPourLIdentifiantCarto,
       derniereModificationPar: {
         select: { name: true, firstName: true, lastName: true, email: true },
       },

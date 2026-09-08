@@ -3,6 +3,7 @@ import { unionArrays } from '@app/web/utils/unionArrays'
 import type { PrismaClient } from '@prisma/client'
 import {
   ecrireLeLieuAuRegistre,
+  inscriptionPourLIdentifiantCarto,
   retirerDuRegistre,
 } from '../../../../implementation'
 
@@ -165,6 +166,7 @@ const fusionnerAuRegistre =
 
     const fusionne = await prisma.lieuInclusion.findUnique({
       where: { id: targetStructureId },
+      include: { inscriptionRegistre: inscriptionPourLIdentifiantCarto },
     })
 
     if (!fusionne) return

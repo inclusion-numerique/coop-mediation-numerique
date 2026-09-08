@@ -10,6 +10,7 @@ import {
 } from '../../../../implementation/prisma/lieu-correle'
 import {
   ecrireLeLieuAuRegistre,
+  inscriptionPourLIdentifiantCarto,
   lieuCoopPorteurDeLaCarto,
 } from '../../../../implementation/prisma/registre'
 import {
@@ -56,15 +57,33 @@ const materialiser = async (
   donnees: Parameters<typeof lieuCorrele>[1] &
     Prisma.LieuInclusionCreateManyInput,
   maintenant: Date,
+  identifiantCartographie: string | null,
 ): Promise<{ readonly id: string }> => {
   const correle = await lieuCorrele(transaction, donnees)
   const prepare = correle && (await preparerCorrele(transaction, correle))
 
   if (prepare) return prepare
 
-  const cree = await transaction.lieuInclusion.create({ data: donnees })
+  const cree = await transaction.lieuInclusion.create({
+    data: donnees,
+    include: { inscriptionRegistre: inscriptionPourLIdentifiantCarto },
+  })
 
-  await ecrireLeLieuAuRegistre(transaction, { ligne: cree, maintenant })
+  // L'identité cartographique voyage explicitement, et non par la ligne relue :
+  // elle vit dans l'inscription au registre, qui n'existe pas encore à cet
+  // instant. Un lieu matérialisé DEPUIS la cartographie la tient de la fiche
+  // d'où il sort, et c'est elle qui permettra d'adopter l'inscription
+  // correspondante plutôt que d'en créer une seconde.
+  await ecrireLeLieuAuRegistre(transaction, {
+    ligne: {
+      ...cree,
+      inscriptionRegistre:
+        identifiantCartographie == null
+          ? null
+          : { structureCartographieNationaleId: identifiantCartographie },
+    },
+    maintenant,
+  })
 
   return { id: cree.id }
 }
@@ -115,6 +134,7 @@ const lieuARattacher = async (
         }
       : lieuDepuisAdresse(lieu),
     maintenant,
+    lieu.structureCartographieNationaleId ?? null,
   )
 }
 

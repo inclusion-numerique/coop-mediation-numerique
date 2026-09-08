@@ -1,5 +1,6 @@
 import {
   ecrireLeLieuAuRegistre,
+  inscriptionPourLIdentifiantCarto,
   lieuCorrele,
   preparerCorrele,
 } from '@app/web/features/lieux-activite'
@@ -38,6 +39,7 @@ const materialiser = async (
 ): Promise<{ readonly id: string }> => {
   const cree = await transaction.lieuInclusion.create({
     data: { id: v4(), ...lieuData },
+    include: { inscriptionRegistre: inscriptionPourLIdentifiantCarto },
   })
 
   await ecrireLeLieuAuRegistre(transaction, {

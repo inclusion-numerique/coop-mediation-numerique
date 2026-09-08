@@ -92,8 +92,14 @@ export const seedLieuActivite = async (
     siret?: string | null
     /** SIRET de provenance inconnue (ex. cartographie) : sans date de vérification. */
     siretNonVerifie?: string | null
-    structureCartographieNationaleId?: string | null
     visiblePourCartographieNationale?: boolean
+    /**
+     * L'identité cartographique du lieu. Elle vit dans son inscription au
+     * registre de l'Entrepôt, dont c'est le domicile ; la coop n'en tient plus
+     * copie. Le semis pose donc l'inscription et le lien qui y mène, comme le
+     * fait la double écriture.
+     */
+    structureCartographieNationaleId?: string | null
     supprime?: boolean
     typologies?: Typologie[]
     adresse?: {
@@ -113,8 +119,6 @@ export const seedLieuActivite = async (
       nom: data.nom ?? 'Lieu d’activité de test',
       siret: data.siret ?? data.siretNonVerifie ?? null,
       synchronisationSiret: data.siret == null ? null : now,
-      structureCartographieNationaleId:
-        data.structureCartographieNationaleId ?? null,
       visiblePourCartographieNationale:
         data.visiblePourCartographieNationale ?? false,
       suppression: data.supprime ? now : null,
@@ -126,6 +130,20 @@ export const seedLieuActivite = async (
       ...(data.position ?? {}),
     },
   })
+
+  if (data.structureCartographieNationaleId != null) {
+    await prismaClient.lieuInclusionRegistreMain.create({
+      data: {
+        nom: data.nom ?? 'Lieu d’activité de test',
+        structureCoopId: id,
+        structureCartographieNationaleId: data.structureCartographieNationaleId,
+        source: 'carto',
+        editedBy: 'carto',
+        updatedAtCarto: now,
+      },
+      select: { id: true },
+    })
+  }
   trackedLieuActiviteIds.add(id)
   return id
 }

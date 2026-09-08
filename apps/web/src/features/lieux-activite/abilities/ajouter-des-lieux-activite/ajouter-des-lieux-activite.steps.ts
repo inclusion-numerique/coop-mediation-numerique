@@ -48,6 +48,12 @@ const ajouter = async (
     mediateurId: mediateurId == null ? null : MediateurId(mediateurId),
     ports: { ...ports, trouverStructuresCarto: async () => structuresCarto },
   })
+
+  // Les lieux rejoints ou matérialisés se tracent ICI, à l'ajout, et non au
+  // moment où une assertion les retrouve : un scénario qui échoue avant sa
+  // dernière étape les laisserait sinon derrière lui, et le suivant buterait
+  // dessus pour une raison sans rapport.
+  if (dernier.ajout.success) lieuxDeTest.push(...dernier.ajout.data.lieux)
 }
 
 /**
@@ -382,7 +388,11 @@ When('ce médiateur ajoute ce lieu de la cartographie', async () => {
 /** Le lieu coop que le scénario vient de matérialiser, quel que soit son nom. */
 const lieuMaterialise = async () => {
   const lieu = await prismaClient.lieuInclusion.findFirstOrThrow({
-    where: { structureCartographieNationaleId: IDENTIFIANT_CARTO },
+    where: {
+      inscriptionRegistre: {
+        structureCartographieNationaleId: IDENTIFIANT_CARTO,
+      },
+    },
     select: { id: true },
   })
 

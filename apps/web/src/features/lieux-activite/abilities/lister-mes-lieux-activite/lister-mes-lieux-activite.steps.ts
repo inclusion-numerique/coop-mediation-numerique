@@ -60,15 +60,8 @@ const IDENTIFIANT_DU_REGISTRE =
   'Coop-numérique_du-registre__France-Services_9999'
 
 Given(
-  'le registre donne à ce lieu un autre identifiant de cartographie que la coop',
+  'le registre donne à ce lieu un identifiant de cartographie',
   async () => {
-    // La coop porte le sien, périmé : c'est précisément la situation qu'on veut
-    // voir trancher en faveur du registre.
-    await prismaClient.lieuInclusion.update({
-      where: { id: ficheSemee().lieuId },
-      data: { structureCartographieNationaleId: 'Coop-numérique_perime' },
-    })
-
     await prismaClient.lieuInclusionRegistreMain.create({
       data: {
         nom: 'Maison France Services de Reims',

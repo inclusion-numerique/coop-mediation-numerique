@@ -17,10 +17,12 @@ import {
   Typologie,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { LieuInclusion } from '@prisma/client'
 import { BanId } from '../../domain/ban-id'
 import { NomUsage } from '../../domain/identite-sirene'
-import { IdsCartographieNationale } from '../../domain/ids-cartographie-nationale'
+import {
+  IdsCartographieNationale,
+  serialiserIdsCartographieNationale,
+} from '../../domain/ids-cartographie-nationale'
 import type { Lieu } from '../../domain/lieu'
 import { LieuId } from '../../domain/lieu-id'
 import {
@@ -32,6 +34,7 @@ import {
 import { UserId } from '../../domain/user-id'
 import { VisibiliteCartographie } from '../../domain/visibilite-cartographie'
 import { lieuFromDomain, lieuToDomain } from './lieu.transfer'
+import type { LigneDuLieu } from './ligne-du-lieu'
 
 const creation = new Date('2026-01-15T09:00:00Z')
 const modification = new Date('2026-08-20T14:30:00Z')
@@ -55,9 +58,22 @@ const horsDomaine = {
   activitesCount: 0,
 }
 
-const ligne = (lieu: Lieu): LieuInclusion => ({
+/**
+ * L'identité cartographique ne vient plus des colonnes du lieu mais de son
+ * inscription au registre de l'Entrepôt : le transfer ne l'écrit plus, il la lit
+ * là. La ligne du test la porte donc comme la base la rendrait.
+ */
+const ligne = (lieu: Lieu): LigneDuLieu => ({
   ...lieuFromDomain(lieu),
   ...horsDomaine,
+  inscriptionRegistre:
+    lieu.idsCartographieNationale == null
+      ? null
+      : {
+          structureCartographieNationaleId: serialiserIdsCartographieNationale(
+            lieu.idsCartographieNationale,
+          ),
+        },
 })
 
 const minimal: Lieu = {
@@ -213,7 +229,7 @@ describe('transfer du lieu', () => {
 
   describe('pertes assumées à la relecture de la base', () => {
     it('écarte une adresse que le schéma national refuse', () => {
-      const nonDiffusible: LieuInclusion = {
+      const nonDiffusible: LigneDuLieu = {
         ...ligne(maximal),
         adresse: '[Non-Diffusible]',
       }
@@ -222,7 +238,7 @@ describe('transfer du lieu', () => {
     })
 
     it('écarte une adresse dont le code postal est vide', () => {
-      const sansCodePostal: LieuInclusion = {
+      const sansCodePostal: LigneDuLieu = {
         ...ligne(maximal),
         codePostal: '',
       }
@@ -231,7 +247,7 @@ describe('transfer du lieu', () => {
     })
 
     it('ne retient que les sites web que le standard reconnaît', () => {
-      const siteWebMixte: LieuInclusion = {
+      const siteWebMixte: LigneDuLieu = {
         ...ligne(maximal),
         siteWeb: 'https://www.example.fr|pas une url du tout',
       }
@@ -242,7 +258,7 @@ describe('transfer du lieu', () => {
     })
 
     it('écarte un téléphone que le standard refuse', () => {
-      const telephoneEtranger: LieuInclusion = {
+      const telephoneEtranger: LigneDuLieu = {
         ...ligne(maximal),
         telephone: '+49 30 901820',
       }

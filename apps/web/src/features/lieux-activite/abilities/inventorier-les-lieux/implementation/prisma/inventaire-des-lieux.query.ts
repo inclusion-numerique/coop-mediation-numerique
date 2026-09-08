@@ -118,8 +118,10 @@ export const inventaireDesLieux = async ({
   // L'identifiant de cartographie vient du registre de l'Entrepôt, qui en est le
   // domicile : la colonne coop en portait une copie qui avait dérivé.
   return {
+    // L'aplatissement vient APRÈS la traduction : `auVocabulaireDuStandard`
+    // attend une ligne de lieu, laquelle porte son inscription.
     lieux: lieux.map((lieu) =>
-      auVocabulaireDuStandard(avecIdentifiantCarto(lieu)),
+      avecIdentifiantCarto(auVocabulaireDuStandard(lieu)),
     ),
     totalCount,
   }

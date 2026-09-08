@@ -747,12 +747,6 @@ model LieuInclusion {
   // Id
   id String @id @default(uuid()) @db.Uuid
 
-  // Id composite cartographie nationale (tokens `Coop-numérique_…` séparés par `__`),
-  // posé par le job `update-structures-cartographie-nationale` depuis `main.lieu_inclusion`
-  // de l'Entrepôt. Plus une FK : la table miroir `structures_cartographie_nationale` a été
-  // supprimée, la donnée carto vit désormais dans l'Entrepôt (cf. entrepotPrismaClient).
-  structureCartographieNationaleId String? @map("id_cartographie_nationale")
-
   /// L'inscription du lieu au registre de l'Entrepôt.
   ///
   /// Aucune colonne ici : le lien vit dans `main.lieu_inclusion_registre.structure_coop_id`, qui
@@ -846,7 +840,6 @@ model LieuInclusion {
   @@unique([creation, id])
   // descending sort on this cursor for api query performances
   @@index([creation(sort: Desc), id(sort: Desc)])
-  @@index([structureCartographieNationaleId])
   @@index([activitesCount(sort: Asc)], map: "lieu_inclusion_activites_count_asc_idx")
   @@index([activitesCount(sort: Desc)], map: "lieu_inclusion_activites_count_desc_idx")
   // performance indexes

@@ -81,43 +81,11 @@ describe('réconciliation avec la cartographie nationale', () => {
     await seed(prismaClient)
   })
 
-  it('relie la structure coop dont l’id apparaît dans l’id composite, et remet à null les liens absents', async () => {
-    const linkedId = '00efad2c-0d71-43e3-a174-9e0c2defa083'
-    const staleId = 'f98724ab-93d2-46cd-bff6-1821dd6a6da7'
-
-    await prismaClient.lieuInclusion.createMany({
-      data: [
-        { id: linkedId, ...COMMON_STRUCTURE_FIELDS },
-        {
-          id: staleId,
-          ...COMMON_STRUCTURE_FIELDS,
-          structureCartographieNationaleId: 'Coop-numérique_obsolete',
-        },
-      ],
-    })
-
-    await reconcilier([
-      {
-        identifiantCartographie: IdsCartographieNationale(
-          `Coop-numérique_${linkedId}`,
-        ),
-        source: SourceCartographie('Coop numérique'),
-        dateMaj: new Date('2026-01-01'),
-      },
-    ])
-
-    const linked = await prismaClient.lieuInclusion.findUnique({
-      where: { id: linkedId },
-    })
-    const stale = await prismaClient.lieuInclusion.findUnique({
-      where: { id: staleId },
-    })
-
-    expect(linked?.structureCartographieNationaleId).toBe(
-      `Coop-numérique_${linkedId}`,
-    )
-    expect(stale?.structureCartographieNationaleId).toBeNull()
-  })
+  // Le test qui vérifiait la pose du lien vers la cartographie a été retiré avec
+  // le comportement qu'il couvrait : l'identifiant vit dans l'inscription au
+  // registre de l'Entrepôt, et la coop n'en tient plus copie. La réconciliation
+  // ne repose donc plus de lien — il lui reste de fusionner ce que la
+  // cartographie réunit, et de noter les écritures venues du dehors.
 
   it('fusionne les structures coop partageant un même id composite (relations déplacées, doublons supprimés)', async () => {
     const survivorId = '0927f824-b84d-4840-ae2e-e4a96a7a519b'
@@ -140,12 +108,7 @@ describe('réconciliation avec la cartographie nationale', () => {
     const activites = await prismaClient.mediateurEnActivite.findMany()
 
     expect(structures).toHaveLength(1)
-    expect(structures[0]).toEqual(
-      expect.objectContaining({
-        id: survivorId,
-        structureCartographieNationaleId: compositeId,
-      }),
-    )
+    expect(structures[0]).toEqual(expect.objectContaining({ id: survivorId }))
     expect(employes.every((e) => e.structureId === survivorId)).toBe(true)
     expect(activites.every((a) => a.structureId === survivorId)).toBe(true)
   })
@@ -234,11 +197,10 @@ describe('réconciliation avec la cartographie nationale', () => {
       where: { id: structureId },
     })
 
+    // Seule la trace de l'écriture extérieure subsiste : la coop ne tient plus
+    // de copie de l'identifiant de cartographie.
     expect(structure).toEqual(
-      expect.objectContaining({
-        structureCartographieNationaleId: `Hinaura_FablabVichy__Coop-numérique_${structureId}`,
-        derniereModificationSource: 'Hinaura',
-      }),
+      expect.objectContaining({ derniereModificationSource: 'Hinaura' }),
     )
   })
 })

@@ -56,7 +56,16 @@ type Divergences =
 /**
  * Une ligne de lieu telle que la base la rend, dont les nomenclatures sont
  * prouvées alignées sur le vocabulaire de la coop.
+ *
+ * Elle porte son inscription au registre de l'Entrepôt, où vit désormais
+ * l'identité cartographique du lieu — la coop en tenait une copie, retirée
+ * depuis. Le type l'exige : une requête qui oublierait de l'inclure ne compile
+ * pas, plutôt que de rendre un lieu sans identité.
  */
 export type LigneDuLieu = [Divergences] extends [never]
-  ? LieuInclusion
+  ? LieuInclusion & {
+      readonly inscriptionRegistre: {
+        readonly structureCartographieNationaleId: string | null
+      } | null
+    }
   : { readonly VOCABULAIRE_DESALIGNE_AVEC_LE_SCHEMA: Divergences }

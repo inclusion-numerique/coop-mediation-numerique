@@ -7,9 +7,10 @@ import type { Prisma } from '@prisma/client'
  * ne s'accordaient plus — tantôt le registre portait des tokens que la coop
  * ignorait, tantôt l'inverse, et rien n'arbitrait.
  *
- * La lecture passe par la relation que la coop porte vers le registre, donc par
- * une jointure et non une seconde requête. La clé étrangère est de notre côté :
- * la dépendance va de la coop vers `main`, jamais l'inverse.
+ * La lecture passe par une jointure et non par une seconde requête. Le lien qui
+ * la porte est `structure_coop_id`, du côté du registre : la coop n'en tient pas
+ * de copie, et aucune contrainte ne traverse les deux schémas — `main` appartient
+ * au Dataspace, qui doit pouvoir remodeler ses tables sans nous.
  */
 
 /** À inclure dans un `select` de lieu pour en obtenir l'identité cartographique. */

@@ -38,12 +38,11 @@ export const lieuAFusionnerToDomain = (
   adresse: adresseDuLieu(structure),
   siret: structure.siret,
   rna: structure.rna,
-  structureCartographieNationaleId:
-    structure.structureCartographieNationaleId == null
-      ? null
-      : IdentifiantCartographie.safe(
-          structure.structureCartographieNationaleId,
-        ),
+  // L'identité cartographique vit dans l'inscription au registre de l'Entrepôt,
+  // dont c'est le domicile ; la coop n'en tient plus de copie.
+  structureCartographieNationaleId: IdentifiantCartographie.safe(
+    structure.inscriptionRegistre?.structureCartographieNationaleId ?? '',
+  ),
   typologies: structure.typologies,
   services: structure.services,
   publicsSpecifiquementAdresses: structure.publicsSpecifiquementAdresses,

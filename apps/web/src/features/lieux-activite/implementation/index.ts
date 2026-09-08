@@ -26,6 +26,7 @@ export {
   type ColonnesDuRegistre,
   ecrireAuRegistre,
   ecrireLeLieuAuRegistre,
+  inscriptionPourLIdentifiantCarto,
   lieuVersRegistre,
   retirerDuRegistre,
   toutesLesColonnes,
