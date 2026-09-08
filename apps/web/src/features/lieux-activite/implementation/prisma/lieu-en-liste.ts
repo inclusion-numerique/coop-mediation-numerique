@@ -1,5 +1,6 @@
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
+import { avecIdentifiantCarto } from './registre/identifiants-carto'
 
 /**
  * Ce que la coop montre d'un lieu quand elle en montre plusieurs : de quoi le
@@ -31,7 +32,6 @@ export const projectionDuLieuEnListe = {
   },
   derniereModificationSource: true,
   visiblePourCartographieNationale: true,
-  structureCartographieNationaleId: true,
   _count: {
     select: {
       mediateursEnActivite: {
@@ -45,9 +45,15 @@ export const projectionDuLieuEnListe = {
   },
 } satisfies Prisma.LieuInclusionSelect
 
+/**
+ * L'identifiant de cartographie ne vient plus de la colonne coop mais du
+ * registre de l'Entrepôt, greffé après lecture par `avecIdentifiantCarto`. Il
+ * garde son nom : ce qui change est sa provenance, pas ce que les écrans en
+ * font.
+ */
 export type LieuEnListe = Prisma.LieuInclusionGetPayload<{
   select: typeof projectionDuLieuEnListe
-}>
+}> & { readonly structureCartographieNationaleId: string | null }
 
 /** Les lieux où un médiateur exerce, dans la projection des listes. */
 export const lieuxEnListeDuMediateur = async ({
@@ -55,11 +61,13 @@ export const lieuxEnListeDuMediateur = async ({
 }: {
   mediateurId: string
 }): Promise<LieuEnListe[]> =>
-  prismaClient.lieuInclusion.findMany({
-    where: {
-      mediateursEnActivite: {
-        some: { mediateurId, suppression: null, fin: null },
+  avecIdentifiantCarto(
+    await prismaClient.lieuInclusion.findMany({
+      where: {
+        mediateursEnActivite: {
+          some: { mediateurId, suppression: null, fin: null },
+        },
       },
-    },
-    select: projectionDuLieuEnListe,
-  })
+      select: projectionDuLieuEnListe,
+    }),
+  )

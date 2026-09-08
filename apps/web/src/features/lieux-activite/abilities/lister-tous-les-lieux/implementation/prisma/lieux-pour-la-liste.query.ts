@@ -1,5 +1,6 @@
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
+import { avecIdentifiantCarto } from '../../../../implementation/prisma/registre'
 import type { LigneDeLaListe } from '../../ui/ligne-de-la-liste'
 
 export const searchStructureSelect = {
@@ -12,7 +13,6 @@ export const searchStructureSelect = {
   siret: true,
   typologies: true,
   visiblePourCartographieNationale: true,
-  structureCartographieNationaleId: true,
   creation: true,
   modification: true,
   suppression: true,
@@ -61,7 +61,11 @@ export const lieuxPourLaListe = async ({
     orderBy: [...(orderBy ?? []), { nom: 'asc' }],
   })
 
+  // L'identifiant de cartographie vient du registre de l'Entrepôt, qui en est le
+  // domicile, et non plus d'une copie tenue par la coop.
+  const avecCarto = await avecIdentifiantCarto(structures)
+
   // L'employeuse n'est plus reliée au lieu (ADR-002) : ce compteur n'a plus de
   // quoi se calculer et vaut zéro pour tout le monde.
-  return structures.map((structure) => ({ ...structure, emploisCount: 0 }))
+  return avecCarto.map((structure) => ({ ...structure, emploisCount: 0 }))
 }

@@ -9,6 +9,7 @@ import {
   type LieuEnListe,
   projectionDuLieuEnListe,
 } from '../../../../implementation/prisma/lieu-en-liste'
+import { avecIdentifiantCarto } from '../../../../implementation/prisma/registre'
 
 const LIEUX_DEFAULT_PAGE_SIZE = 20
 
@@ -43,7 +44,7 @@ const getLieuxByIds = async ({
     select: projectionDuLieuEnListe,
   })
 
-  return lieux
+  return avecIdentifiantCarto(lieux)
 }
 
 /**

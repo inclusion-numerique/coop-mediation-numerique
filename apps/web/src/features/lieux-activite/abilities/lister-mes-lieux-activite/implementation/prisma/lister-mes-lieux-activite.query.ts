@@ -6,6 +6,7 @@ import {
   type TriDesLieux,
 } from '../../../../domain/tri-des-lieux'
 import { projectionDuLieuEnListe } from '../../../../implementation/prisma/lieu-en-liste'
+import { avecIdentifiantCarto } from '../../../../implementation/prisma/registre'
 
 /**
  * Les lieux où le médiateur exerce aujourd'hui.
@@ -25,7 +26,7 @@ export const listerMesLieuxActivite = async ({
     lieuInclusion: { [champ]: sens },
   }
 
-  return prismaClient.mediateurEnActivite.findMany({
+  const rattachements = await prismaClient.mediateurEnActivite.findMany({
     where: { mediateurId, suppression: null, fin: null },
     select: {
       id: true,
@@ -34,6 +35,20 @@ export const listerMesLieuxActivite = async ({
     },
     orderBy,
   })
+
+  // La greffe porte sur le lieu, pas sur le rattachement qui le porte : c'est le
+  // lieu qui a une identité cartographique.
+  const lieux = await avecIdentifiantCarto(
+    rattachements.map(({ lieuInclusion }) => lieuInclusion),
+  )
+
+  return rattachements.map((rattachement, rang) => ({
+    ...rattachement,
+    lieuInclusion: lieux[rang] ?? {
+      ...rattachement.lieuInclusion,
+      structureCartographieNationaleId: null,
+    },
+  }))
 }
 
 export type MonLieuActivite = Awaited<

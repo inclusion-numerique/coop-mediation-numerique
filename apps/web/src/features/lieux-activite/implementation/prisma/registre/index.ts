@@ -6,12 +6,14 @@
  * atteints par un seul client, ce qui permet aux deux écritures de tenir dans la
  * même transaction. Le jour où l'Entrepôt s'éloigne, c'est ce dossier qui part.
  */
+
 export {
   ecrireAuRegistre,
   ecrireLeLieuAuRegistre,
   retirerDuRegistre,
   toutesLesColonnes,
 } from './ecrire-au-registre'
+export { avecIdentifiantCarto } from './identifiants-carto'
 export {
   type ColonnesDuRegistre,
   lieuVersRegistre,
