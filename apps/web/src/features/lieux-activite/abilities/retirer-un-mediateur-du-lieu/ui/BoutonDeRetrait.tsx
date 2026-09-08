@@ -2,8 +2,15 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
+import type { LieuId } from '../../../domain/lieu-id'
+import type { MediateurId } from '../../../domain/mediateur-id'
 import { ModaleDeRetraitDynamique } from './modale-de-retrait'
 
+/**
+ * Les deux identifiants sont demandés dans leur type du domaine : un lieu se
+ * lit à côté d'un rattachement dont on connaît aussi l'utilisateur, et rien
+ * n'empêchait jusqu'ici de tendre l'un pour l'autre — deux uuid se ressemblent.
+ */
 const BoutonDeRetrait = ({
   className,
   structureId,
@@ -14,8 +21,8 @@ const BoutonDeRetrait = ({
   variant,
 }: {
   className?: string
-  structureId: string
-  mediateurId: string
+  structureId: LieuId
+  mediateurId: MediateurId
   mediateurDisplayName: string
   structureNom: string
   derniereActiviteDate: Date | null

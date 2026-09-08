@@ -13,6 +13,7 @@ import {
   ModaleDeRetrait,
 } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
 import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
+import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
 import { getDepartementFromCodeOrThrowNotFound } from '@app/web/features/mon-reseau/getDepartementFromCodeOrThrowNotFound'
 import { getMonReseauBreadcrumbParents } from '@app/web/features/mon-reseau/getMonReseauBreadcrumbParents'
 import { getActeurDisplayName } from '@app/web/features/mon-reseau/use-cases/acteurs/getActeurDisplayName'
@@ -79,8 +80,8 @@ const LieuActiviteDetailPage = async (props: {
                           rattachement.id,
                           <BoutonDeRetrait
                             key={rattachement.id}
-                            structureId={fiche.id}
-                            mediateurId={rattachement.mediateur.user.id}
+                            structureId={LieuId(fiche.id)}
+                            mediateurId={MediateurId(rattachement.mediateur.id)}
                             mediateurDisplayName={getActeurDisplayName(
                               rattachement.mediateur.user,
                             )}
