@@ -36,18 +36,11 @@ export const listerMesLieuxActivite = async ({
     orderBy,
   })
 
-  // La greffe porte sur le lieu, pas sur le rattachement qui le porte : c'est le
-  // lieu qui a une identité cartographique.
-  const lieux = await avecIdentifiantCarto(
-    rattachements.map(({ lieuInclusion }) => lieuInclusion),
-  )
-
-  return rattachements.map((rattachement, rang) => ({
+  // L'aplatissement porte sur le lieu, pas sur le rattachement qui le porte :
+  // c'est le lieu qui a une identité cartographique.
+  return rattachements.map((rattachement) => ({
     ...rattachement,
-    lieuInclusion: lieux[rang] ?? {
-      ...rattachement.lieuInclusion,
-      structureCartographieNationaleId: null,
-    },
+    lieuInclusion: avecIdentifiantCarto(rattachement.lieuInclusion),
   }))
 }
 

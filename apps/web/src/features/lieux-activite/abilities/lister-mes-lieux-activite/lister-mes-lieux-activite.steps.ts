@@ -78,6 +78,7 @@ Given(
         editedBy: 'carto',
         updatedAtCarto: new Date('2026-01-01'),
       },
+      select: { id: true },
     })
   },
 )

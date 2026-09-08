@@ -164,4 +164,5 @@ export {
 export {
   avecIdentifiantCarto,
   ecrireLeLieuAuRegistre,
+  inscriptionPourLIdentifiantCarto,
 } from './implementation/prisma/registre'

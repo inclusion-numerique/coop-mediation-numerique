@@ -305,6 +305,14 @@ Given('le registre connaît déjà un lieu de la cartographie', async () => {
   semisEntrepot.inscriptions = [...semisEntrepot.inscriptions, inscription.id]
 })
 
+/**
+ * Un identifiant propre à ce scénario. Le partager avec celui de l'adoption les
+ * rendrait solidaires : l'identifiant est unique en base, si bien qu'un échec
+ * laissant une inscription derrière lui ferait échouer l'autre au passage
+ * suivant, pour une raison qui n'aurait rien à voir.
+ */
+const IDENTIFIANT_CARTO_DEJA_RELIE = 'Dora_99999999-8888-7777-6666-555555555555'
+
 Given(
   'le registre relie ce lieu référencé à un identifiant de cartographie',
   async () => {
@@ -312,7 +320,7 @@ Given(
       data: {
         nom: 'Médiathèque du Centre',
         structureCoopId: dernier.lieuReference,
-        structureCartographieNationaleId: IDENTIFIANT_CARTO,
+        structureCartographieNationaleId: IDENTIFIANT_CARTO_DEJA_RELIE,
         source: 'dora',
         editedBy: 'carto',
         updatedAtCarto: new Date('2026-01-01'),
@@ -328,16 +336,19 @@ When('ce médiateur ajoute le lieu de la cartographie ainsi relié', async () =>
   await ajouter(
     [
       lieuSaisi({
-        structureCartographieNationaleId:
-          IdentifiantCartographie(IDENTIFIANT_CARTO),
+        structureCartographieNationaleId: IdentifiantCartographie(
+          IDENTIFIANT_CARTO_DEJA_RELIE,
+        ),
       }),
     ],
     lieuxSemes().mediateurId,
     new Map([
       [
-        IDENTIFIANT_CARTO,
+        IDENTIFIANT_CARTO_DEJA_RELIE,
         {
-          idsCartographieNationale: IdsCartographieNationale(IDENTIFIANT_CARTO),
+          idsCartographieNationale: IdsCartographieNationale(
+            IDENTIFIANT_CARTO_DEJA_RELIE,
+          ),
           source: null,
           fiche: ficheDeLaCarto,
         },

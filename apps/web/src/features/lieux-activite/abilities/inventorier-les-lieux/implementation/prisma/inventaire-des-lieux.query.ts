@@ -1,6 +1,9 @@
 import { prismaClient } from '@app/web/prismaClient'
 import type { LigneDuLieu } from '../../../../implementation/prisma/ligne-du-lieu'
-import { avecIdentifiantCarto } from '../../../../implementation/prisma/registre'
+import {
+  avecIdentifiantCarto,
+  inscriptionPourLIdentifiantCarto,
+} from '../../../../implementation/prisma/registre'
 import * as vocabulaire from '../../../../implementation/prisma/vocabulaire'
 
 /**
@@ -98,6 +101,7 @@ export const inventaireDesLieux = async ({
     skip,
     where,
     include: {
+      inscriptionRegistre: inscriptionPourLIdentifiantCarto,
       _count: {
         select: {
           mediateursEnActivite: { where: { suppression: null, fin: null } },
@@ -112,13 +116,13 @@ export const inventaireDesLieux = async ({
   const totalCount = await prismaClient.lieuInclusion.count({ where })
 
   // L'identifiant de cartographie vient du registre de l'Entrepôt, qui en est le
-  // domicile : la colonne coop en portait une copie qui avait dérivé. La greffe
-  // écrase donc la valeur héritée de la ligne.
-  const inventorie = await avecIdentifiantCarto(
-    lieux.map(auVocabulaireDuStandard),
-  )
-
-  return { lieux: inventorie, totalCount }
+  // domicile : la colonne coop en portait une copie qui avait dérivé.
+  return {
+    lieux: lieux.map((lieu) =>
+      auVocabulaireDuStandard(avecIdentifiantCarto(lieu)),
+    ),
+    totalCount,
+  }
 }
 
 export type LieuInventorie = Awaited<

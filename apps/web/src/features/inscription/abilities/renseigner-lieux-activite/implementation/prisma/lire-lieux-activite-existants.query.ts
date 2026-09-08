@@ -1,4 +1,7 @@
-import { avecIdentifiantCarto } from '@app/web/features/lieux-activite'
+import {
+  avecIdentifiantCarto,
+  inscriptionPourLIdentifiantCarto,
+} from '@app/web/features/lieux-activite'
 import { prismaClient } from '@app/web/prismaClient'
 import type { LireLieuxActiviteExistants } from '../../domain'
 
@@ -15,18 +18,19 @@ export const lireLieuxActiviteExistants: LireLieuxActiviteExistants = async (
 ) => {
   const activites = await prismaClient.mediateurEnActivite.findMany({
     where: { mediateur: { userId }, suppression: null, fin: null },
-    select: { id: true, lieuInclusion: { select: { id: true } } },
+    select: {
+      id: true,
+      lieuInclusion: {
+        select: {
+          id: true,
+          inscriptionRegistre: inscriptionPourLIdentifiantCarto,
+        },
+      },
+    },
   })
 
-  const lieux = await avecIdentifiantCarto(
-    activites.map(({ lieuInclusion }) => lieuInclusion),
-  )
-
-  return activites.map(({ id, lieuInclusion }, rang) => ({
+  return activites.map(({ id, lieuInclusion }) => ({
     id,
-    lieuInclusion: lieux[rang] ?? {
-      ...lieuInclusion,
-      structureCartographieNationaleId: null,
-    },
+    lieuInclusion: avecIdentifiantCarto(lieuInclusion),
   }))
 }

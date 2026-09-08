@@ -15,6 +15,7 @@ export {
 } from './ecrire-au-registre'
 export {
   avecIdentifiantCarto,
+  inscriptionPourLIdentifiantCarto,
   lieuCoopPorteurDeLaCarto,
 } from './identifiants-carto'
 export {

@@ -44,7 +44,7 @@ const getLieuxByIds = async ({
     select: projectionDuLieuEnListe,
   })
 
-  return avecIdentifiantCarto(lieux)
+  return lieux.map(avecIdentifiantCarto)
 }
 
 /**

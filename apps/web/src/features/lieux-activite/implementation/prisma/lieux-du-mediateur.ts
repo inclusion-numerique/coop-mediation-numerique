@@ -1,5 +1,8 @@
 import { prismaClient } from '@app/web/prismaClient'
-import { avecIdentifiantCarto } from './registre/identifiants-carto'
+import {
+  avecIdentifiantCarto,
+  inscriptionPourLIdentifiantCarto,
+} from './registre/identifiants-carto'
 
 /**
  * Lieux d'activité auxquels un médiateur est rattaché à l'instant présent :
@@ -28,6 +31,7 @@ export const lieuxActiviteDuMediateur = async ({
       lieuInclusion: {
         select: {
           id: true,
+          inscriptionRegistre: inscriptionPourLIdentifiantCarto,
           nom: true,
           commune: true,
           codePostal: true,
@@ -42,8 +46,8 @@ export const lieuxActiviteDuMediateur = async ({
     },
   })
 
-  return avecIdentifiantCarto(
-    enActivite.map((lieuActivite) => lieuActivite.lieuInclusion),
+  return enActivite.map(({ lieuInclusion }) =>
+    avecIdentifiantCarto(lieuInclusion),
   )
 }
 

@@ -98,4 +98,3 @@
 * And le registre relie ce lieu référencé à un identifiant de cartographie
 * When ce médiateur ajoute le lieu de la cartographie ainsi relié
 * Then ce médiateur exerce dans ce lieu référencé
-* And le registre ne porte qu'une inscription sous cet identifiant
