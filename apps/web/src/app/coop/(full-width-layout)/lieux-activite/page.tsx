@@ -5,6 +5,7 @@ import SkipLinksPortal from '@app/web/components/SkipLinksPortal'
 import { listerMesLieuxActivite } from '@app/web/features/lieux-activite/abilities/lister-mes-lieux-activite'
 import { MesLieuxActivitePage } from '@app/web/features/lieux-activite/abilities/lister-mes-lieux-activite/ui'
 import { BoutonDeRetrait } from '@app/web/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
+import { LieuId } from '@app/web/features/lieux-activite/domain/lieu-id'
 import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-id'
 import { TriDesLieux } from '@app/web/features/lieux-activite/domain/tri-des-lieux'
 import { LieuActiviteCard } from '@app/web/features/lieux-activite/ui'
@@ -53,8 +54,8 @@ const LieuActiviteListPage = async ({
               }
               retrait={
                 <BoutonDeRetrait
-                  mediateurId={mediateur.id}
-                  structureId={lieuInclusion.id}
+                  mediateurId={MediateurId(mediateur.id)}
+                  structureId={LieuId(lieuInclusion.id)}
                   variant="lieu"
                   mediateurDisplayName=""
                   structureNom={lieuInclusion.nom}

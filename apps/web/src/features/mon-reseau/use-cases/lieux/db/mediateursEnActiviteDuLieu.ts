@@ -24,6 +24,7 @@ export const mediateursEnActiviteDuLieu = async (lieuId: string) => {
       id: true,
       mediateur: {
         select: {
+          id: true,
           user: { select: acteurSelectForList },
           activites: {
             take: 1,
