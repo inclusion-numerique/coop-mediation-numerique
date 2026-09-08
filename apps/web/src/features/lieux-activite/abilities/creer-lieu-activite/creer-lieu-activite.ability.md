@@ -98,3 +98,18 @@
 * And une adresse déjà connue de l'Entrepôt, à répétition vide
 * When ce médiateur crée un lieu à cette adresse
 * Then le registre pointe vers l'adresse que l'Entrepôt connaissait déjà
+
+### Scenario: Un lieu que le registre connaît déjà sous une autre source est adopté, pas inscrit deux fois
+
+> La sonde de la coop ne regarde que `coop.lieu_inclusion` : un lieu moissonné
+> chez `dora` n'y figure pas, et la fiche coop se crée donc à bon droit. C'est au
+> moment d'inscrire au registre, et là seulement, qu'on peut éviter d'y ajouter
+> une seconde ligne pour le même endroit. L'inscription trouvée est reprise, sans
+> perdre la provenance qui l'a fait naître.
+
+* Given un médiateur qui exerce dans un lieu
+* And le registre connaît déjà ce lieu sous la source « dora »
+* When ce médiateur crée un lieu déjà connu du registre
+* Then le registre ne porte qu'une inscription pour cet endroit
+* And cette inscription porte le lien vers le lieu créé
+* And cette inscription reste attribuée à « dora »

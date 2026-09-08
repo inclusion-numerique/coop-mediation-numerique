@@ -1,6 +1,7 @@
 import type { Prisma } from '@prisma/client'
 import type { Lieu } from '../../../domain/lieu'
 import { adresseDuRegistre } from './adresse-du-registre'
+import { inscriptionCorrelee } from './inscription-correlee'
 import {
   type ColonnesDuRegistre,
   lieuVersRegistre,
@@ -26,15 +27,22 @@ const SOURCE_COOP = 'Coop numérique'
 /**
  * Écrit le lieu au registre de l'Entrepôt, dans la transaction de l'appelant.
  *
- * `upsert` et non `update` : la ligne existe pour la quasi-totalité du parc,
- * mais pas pour un lieu que la coop vient de créer, ni pour les quelques-uns que
- * le flux quotidien n'a pas encore vus. Un `update` y serait silencieusement
- * sans effet — exactement le genre de panne qu'on ne voit qu'au moment de lire.
+ * Trois issues, dans cet ordre, et l'ordre est tout le sujet.
  *
- * `colonnes` choisit ce que la modification touche. Le motif est celui de
- * l'écriture coop : une section n'écrit que ses propres colonnes, sinon deux
- * enregistrements rapprochés se réécrivent l'un l'autre avec des valeurs
- * périmées. À la création, il n'y a rien à choisir — `toutesLesColonnes`.
+ * 1. Le lieu y est déjà inscrit sous son lien coop : on met à jour. `colonnes`
+ *    choisit ce que la modification touche, sur le motif de l'écriture coop —
+ *    une section n'écrit que ses propres colonnes, sinon deux enregistrements
+ *    rapprochés se réécrivent l'un l'autre avec des valeurs périmées.
+ *
+ * 2. Le registre décrit déjà cet endroit, sous une autre source et sans lien
+ *    coop : on ADOPTE cette inscription — on y pose le lien et les valeurs de la
+ *    coop — au lieu d'en créer une seconde. C'est le cas qui rend une inscription
+ *    aveugle dangereuse : la sonde de la coop ne regarde que `coop.lieu_inclusion`,
+ *    où un lieu moissonné chez `dora` ne figure pas. La fiche coop se crée donc à
+ *    bon droit, et c'est ici, et seulement ici, qu'on évite le doublon au registre
+ *    national.
+ *
+ * 3. Personne ne le connaît : on inscrit, en posant `source`.
  *
  * L'adresse est résolue à chaque écriture, y compris quand la section n'y touche
  * pas : c'est une lecture indexée, et elle rattrape les lignes dont
@@ -63,16 +71,46 @@ export const ecrireAuRegistre = async (
     updatedAtCoop: maintenant,
   }
 
-  await transaction.lieuInclusionRegistreMain.upsert({
+  const inscrit = await transaction.lieuInclusionRegistreMain.findUnique({
     where: { structureCoopId: lieu.id },
-    create: {
+    select: { id: true },
+  })
+
+  if (inscrit != null) {
+    await transaction.lieuInclusionRegistreMain.update({
+      where: { id: inscrit.id },
+      data: { ...colonnes(toutes), ...tracabilite },
+    })
+
+    return
+  }
+
+  const aAdopter = await inscriptionCorrelee(transaction, lieu)
+
+  // Adopter, c'est reprendre l'inscription en entier : la coop devient la source
+  // la plus récente de cet endroit, et `updated_at` — colonne générée, qu'on
+  // n'écrit pas — le dira d'elle-même en prenant `updated_at_coop`.
+  //
+  // `source` n'est pas touché : il dit d'où vient la fiche, et une inscription
+  // moissonnée chez `dora` en reste issue même quand la coop en tient désormais
+  // les valeurs. On ne le pose qu'à l'inscription, ci-dessous.
+  if (aAdopter != null) {
+    await transaction.lieuInclusionRegistreMain.update({
+      where: { id: aAdopter },
+      data: { ...toutes, ...tracabilite, structureCoopId: lieu.id },
+    })
+
+    return
+  }
+
+  await transaction.lieuInclusionRegistreMain.create({
+    data: {
       ...toutes,
       ...tracabilite,
       structureCoopId: lieu.id,
       source: SOURCE_COOP,
       createdAt: maintenant,
     },
-    update: { ...colonnes(toutes), ...tracabilite },
   })
 }
 
