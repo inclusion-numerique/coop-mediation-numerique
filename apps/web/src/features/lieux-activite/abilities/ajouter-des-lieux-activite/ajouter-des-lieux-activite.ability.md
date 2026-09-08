@@ -61,3 +61,28 @@
 * Given un médiateur rattaché à deux lieux d'activité
 * When ce médiateur valide un panier vide
 * Then l'ajout est refusé
+
+## Rule: Ce qui est matérialisé dans la coop s'inscrit au registre de l'Entrepôt
+
+> Matérialiser un lieu, c'est le poser des deux côtés dans la même transaction.
+> Rien de tel quand la sonde a corrélé : on rejoint une fiche que la coop
+> connaissait déjà, et le registre n'a rien de nouveau à apprendre.
+
+### Scenario: Un lieu saisi que personne ne connaît est inscrit au registre
+
+* Given un médiateur rattaché à deux lieux d'activité
+* When ce médiateur ajoute un lieu saisi « Tiers-lieu du Port »
+* Then le lieu « Tiers-lieu du Port » existe
+* And le lieu saisi est inscrit au registre
+
+### Scenario: Un lieu venu de la cartographie adopte l'inscription d'où il sort
+
+> Il porte son identifiant de cartographie dès sa création, et le registre a
+> forcément déjà la ligne d'où il vient — cet identifiant y est UNIQUE. Inscrire
+> sans regarder violerait la contrainte, en plein enregistrement du médiateur.
+
+* Given un médiateur rattaché à deux lieux d'activité
+* And le registre connaît déjà un lieu de la cartographie
+* When ce médiateur ajoute ce lieu de la cartographie
+* Then le registre ne porte qu'une inscription sous cet identifiant
+* And cette inscription porte le lien vers le lieu matérialisé

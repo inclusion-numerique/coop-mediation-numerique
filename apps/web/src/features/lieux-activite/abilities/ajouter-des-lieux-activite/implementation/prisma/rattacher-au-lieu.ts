@@ -3,11 +3,16 @@ import { v4 } from 'uuid'
 import {
   fromAdresse,
   lieuFromDomain,
+  lieuToDomain,
 } from '../../../../implementation/prisma/lieu.transfer'
 import {
   lieuCorrele,
   preparerCorrele,
 } from '../../../../implementation/prisma/lieu-correle'
+import {
+  ecrireAuRegistre,
+  toutesLesColonnes,
+} from '../../../../implementation/prisma/registre'
 import {
   type AdresseValidee,
   estExistant,
@@ -31,20 +36,42 @@ const lieuDepuisAdresse = (lieu: LieuACreer) => ({
   ...adresseValidee(lieu),
 })
 
+/**
+ * Matérialiser, c'est poser la fiche des deux côtés : dans la coop, et au
+ * registre des lieux de l'Entrepôt, dans la même transaction.
+ *
+ * Rien de tel quand la sonde a corrélé : on rejoint une fiche que la coop
+ * connaissait déjà, et le registre n'a rien de nouveau à apprendre.
+ *
+ * L'inscription part de la ligne RELUE et non des données préparées : c'est ce
+ * que la coop a effectivement stocké — défauts de colonnes compris — qui doit
+ * partir au registre, sans quoi les deux tables diraient des choses proches mais
+ * pas identiques.
+ *
+ * Un lieu venu de la cartographie porte son identifiant carto dès sa création,
+ * et le registre a forcément déjà la ligne d'où il sort : c'est `ecrireAuRegistre`
+ * qui la reconnaît et l'adopte, plutôt que d'en inscrire une seconde.
+ */
 const materialiser = async (
   transaction: Prisma.TransactionClient,
   donnees: Parameters<typeof lieuCorrele>[1] &
     Prisma.LieuInclusionCreateManyInput,
+  maintenant: Date,
 ): Promise<{ readonly id: string }> => {
   const correle = await lieuCorrele(transaction, donnees)
   const prepare = correle && (await preparerCorrele(transaction, correle))
 
   if (prepare) return prepare
 
-  return transaction.lieuInclusion.create({
-    data: donnees,
-    select: { id: true },
+  const cree = await transaction.lieuInclusion.create({ data: donnees })
+
+  await ecrireAuRegistre(transaction, {
+    lieu: lieuToDomain(cree),
+    colonnes: toutesLesColonnes,
+    maintenant,
   })
+
+  return { id: cree.id }
 }
 
 const lieuARattacher = async (
@@ -93,6 +120,7 @@ const lieuARattacher = async (
           ...adresseValidee(lieu),
         }
       : lieuDepuisAdresse(lieu),
+    maintenant,
   )
 }
 

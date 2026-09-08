@@ -1,5 +1,6 @@
 import { correler, type LieuCandidat } from '@app/web/libraries/lieu-identite'
 import type { Prisma } from '@prisma/client'
+import { serialiserIdsCartographieNationale } from '../../../domain/ids-cartographie-nationale'
 import type { Lieu } from '../../../domain/lieu'
 
 /**
@@ -84,6 +85,51 @@ const candidat = (inscription: {
       }
 
 /**
+ * L'identifiant sous lequel la cartographie nationale connaît ce lieu, tel que
+ * le registre le stocke.
+ */
+export const identifiantCarto = (lieu: Lieu): string | null =>
+  lieu.idsCartographieNationale == null
+    ? null
+    : serialiserIdsCartographieNationale(lieu.idsCartographieNationale)
+
+/**
+ * L'inscription qui porte déjà l'identifiant de cartographie du lieu.
+ *
+ * C'est une clé EXACTE, et unique côté registre : quand elle répond, elle
+ * tranche mieux que la comparaison des dénominations, qui ne fait qu'estimer.
+ * Elle passe donc en premier.
+ *
+ * Elle est surtout indispensable au chemin qui matérialise un lieu VENU de la
+ * cartographie : celui-là porte l'identifiant dès sa création, et le registre a
+ * forcément déjà la ligne d'où il sort — inscrire sans regarder violerait
+ * `lieu_inclusion_carto_id_ukey`, en plein enregistrement du médiateur.
+ *
+ * On n'adopte pas une inscription déjà reliée à un AUTRE lieu coop : elle ne
+ * nous appartient pas. Ni une inscription retirée, pour la même raison
+ * qu'ailleurs — l'adopter déferait une suppression décidée dans l'Entrepôt.
+ */
+const parIdentifiantCarto = async (
+  transaction: Prisma.TransactionClient,
+  lieu: Lieu,
+): Promise<number | null> => {
+  const identifiant = identifiantCarto(lieu)
+
+  if (identifiant == null) return null
+
+  const porteur = await transaction.lieuInclusionRegistreMain.findUnique({
+    where: { structureCartographieNationaleId: identifiant },
+    select: { id: true, structureCoopId: true, deletedAt: true },
+  })
+
+  return porteur != null &&
+    porteur.structureCoopId == null &&
+    porteur.deletedAt == null
+    ? porteur.id
+    : null
+}
+
+/**
  * L'inscription du registre qui désigne déjà cet endroit, s'il en est une.
  *
  * Rend son identifiant, à adopter — y poser le lien coop plutôt que d'inscrire
@@ -93,6 +139,10 @@ export const inscriptionCorrelee = async (
   transaction: Prisma.TransactionClient,
   lieu: Lieu,
 ): Promise<number | null> => {
+  const parLaCarto = await parIdentifiantCarto(transaction, lieu)
+
+  if (parLaCarto != null) return parLaCarto
+
   const adresse = lieu.fiche.adresse
 
   // Sans code INSEE, le standard ne reconnaîtra aucun candidat comme d'une même

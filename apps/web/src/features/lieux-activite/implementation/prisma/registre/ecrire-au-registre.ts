@@ -1,7 +1,7 @@
 import type { Prisma } from '@prisma/client'
 import type { Lieu } from '../../../domain/lieu'
 import { adresseDuRegistre } from './adresse-du-registre'
-import { inscriptionCorrelee } from './inscription-correlee'
+import { identifiantCarto, inscriptionCorrelee } from './inscription-correlee'
 import {
   type ColonnesDuRegistre,
   lieuVersRegistre,
@@ -29,6 +29,38 @@ const EDITE_PAR = 'coop'
  * sources a parlé en dernier.
  */
 const SOURCE_COOP = 'Coop numérique'
+
+/**
+ * L'identifiant de cartographie, s'il est libre ou déjà porté par l'inscription
+ * qu'on s'apprête à écrire — `null` sinon.
+ *
+ * Il est UNIQUE côté registre et ne l'est PAS côté coop. Deux lieux coop qui le
+ * partageraient feraient donc échouer la seconde écriture sur
+ * `lieu_inclusion_carto_id_ukey`, en plein enregistrement du médiateur. Entre une
+ * inscription sans identifiant et un enregistrement qui casse, on choisit la
+ * première : réunir des lieux coop qui n'auraient jamais dû se partager le même
+ * identifiant est le métier de la réconciliation cartographique, pas celui du
+ * formulaire qu'on est en train de valider.
+ */
+const identifiantCartoARevendiquer = async (
+  transaction: Prisma.TransactionClient,
+  {
+    identifiant,
+    inscriptionId,
+  }: {
+    readonly identifiant: string | null
+    readonly inscriptionId: number | null
+  },
+): Promise<string | null> => {
+  if (identifiant == null) return null
+
+  const porteur = await transaction.lieuInclusionRegistreMain.findUnique({
+    where: { structureCartographieNationaleId: identifiant },
+    select: { id: true },
+  })
+
+  return porteur == null || porteur.id === inscriptionId ? identifiant : null
+}
 
 /**
  * Écrit le lieu au registre de l'Entrepôt, dans la transaction de l'appelant.
@@ -100,7 +132,15 @@ export const ecrireAuRegistre = async (
   if (aAdopter != null) {
     await transaction.lieuInclusionRegistreMain.update({
       where: { id: aAdopter },
-      data: { ...toutes, ...tracabilite, structureCoopId: lieu.id },
+      data: {
+        ...toutes,
+        ...tracabilite,
+        structureCartographieNationaleId: await identifiantCartoARevendiquer(
+          transaction,
+          { identifiant: identifiantCarto(lieu), inscriptionId: aAdopter },
+        ),
+        structureCoopId: lieu.id,
+      },
     })
 
     return
@@ -110,6 +150,10 @@ export const ecrireAuRegistre = async (
     data: {
       ...toutes,
       ...tracabilite,
+      structureCartographieNationaleId: await identifiantCartoARevendiquer(
+        transaction,
+        { identifiant: identifiantCarto(lieu), inscriptionId: null },
+      ),
       structureCoopId: lieu.id,
       createdAt: maintenant,
     },
