@@ -305,6 +305,47 @@ Given('le registre connaît déjà un lieu de la cartographie', async () => {
   semisEntrepot.inscriptions = [...semisEntrepot.inscriptions, inscription.id]
 })
 
+Given(
+  'le registre relie ce lieu référencé à un identifiant de cartographie',
+  async () => {
+    const inscription = await prismaClient.lieuInclusionRegistreMain.create({
+      data: {
+        nom: 'Médiathèque du Centre',
+        structureCoopId: dernier.lieuReference,
+        structureCartographieNationaleId: IDENTIFIANT_CARTO,
+        source: 'dora',
+        editedBy: 'carto',
+        updatedAtCarto: new Date('2026-01-01'),
+      },
+      select: { id: true },
+    })
+
+    semisEntrepot.inscriptions = [...semisEntrepot.inscriptions, inscription.id]
+  },
+)
+
+When('ce médiateur ajoute le lieu de la cartographie ainsi relié', async () => {
+  await ajouter(
+    [
+      lieuSaisi({
+        structureCartographieNationaleId:
+          IdentifiantCartographie(IDENTIFIANT_CARTO),
+      }),
+    ],
+    lieuxSemes().mediateurId,
+    new Map([
+      [
+        IDENTIFIANT_CARTO,
+        {
+          idsCartographieNationale: IdsCartographieNationale(IDENTIFIANT_CARTO),
+          source: null,
+          fiche: ficheDeLaCarto,
+        },
+      ],
+    ]),
+  )
+})
+
 When('ce médiateur ajoute ce lieu de la cartographie', async () => {
   await ajouter(
     [

@@ -161,4 +161,7 @@ export {
 // transaction de l'appelant, ce qu'un port de commande ne permet pas. Quiconque
 // crée une ligne `coop.lieu_inclusion` doit passer par là, sous peine de laisser
 // le registre national ignorer ce lieu — ou d'y semer un doublon.
-export { ecrireLeLieuAuRegistre } from './implementation/prisma/registre'
+export {
+  avecIdentifiantCarto,
+  ecrireLeLieuAuRegistre,
+} from './implementation/prisma/registre'

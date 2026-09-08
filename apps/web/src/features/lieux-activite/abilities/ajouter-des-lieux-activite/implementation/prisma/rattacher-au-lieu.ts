@@ -8,7 +8,10 @@ import {
   lieuCorrele,
   preparerCorrele,
 } from '../../../../implementation/prisma/lieu-correle'
-import { ecrireLeLieuAuRegistre } from '../../../../implementation/prisma/registre'
+import {
+  ecrireLeLieuAuRegistre,
+  lieuCoopPorteurDeLaCarto,
+} from '../../../../implementation/prisma/registre'
 import {
   type AdresseValidee,
   estExistant,
@@ -81,16 +84,15 @@ const lieuARattacher = async (
 
   if (designe) return designe
 
+  // La question « quel lieu coop porte cet identifiant » se pose au registre,
+  // qui en est le domicile et où l'identifiant est unique — la colonne coop en
+  // portait une copie dérivée, et non unique, qu'il fallait départager par
+  // ancienneté.
   const porteurDeLaCarto = lieu.structureCartographieNationaleId
-    ? await transaction.lieuInclusion.findFirst({
-        where: {
-          structureCartographieNationaleId:
-            lieu.structureCartographieNationaleId,
-          suppression: null,
-        },
-        orderBy: { creation: 'asc' },
-        select: { id: true },
-      })
+    ? await lieuCoopPorteurDeLaCarto(
+        transaction,
+        lieu.structureCartographieNationaleId,
+      )
     : null
 
   if (porteurDeLaCarto) return porteurDeLaCarto

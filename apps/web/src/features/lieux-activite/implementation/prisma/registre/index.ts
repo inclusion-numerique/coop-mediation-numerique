@@ -13,7 +13,10 @@ export {
   retirerDuRegistre,
   toutesLesColonnes,
 } from './ecrire-au-registre'
-export { avecIdentifiantCarto } from './identifiants-carto'
+export {
+  avecIdentifiantCarto,
+  lieuCoopPorteurDeLaCarto,
+} from './identifiants-carto'
 export {
   type ColonnesDuRegistre,
   lieuVersRegistre,

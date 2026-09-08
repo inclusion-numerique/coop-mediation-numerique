@@ -86,3 +86,16 @@
 * When ce médiateur ajoute ce lieu de la cartographie
 * Then le registre ne porte qu'une inscription sous cet identifiant
 * And cette inscription porte le lien vers le lieu matérialisé
+
+### Scenario: Un lieu que le registre relie déjà à la coop est rejoint, pas recréé
+
+> « Quel lieu coop porte cet identifiant ? » se demande au registre, où il est
+> unique — et non à la copie que la coop en tenait, qui ne l'était pas et qu'il
+> fallait départager par ancienneté.
+
+* Given un médiateur rattaché à deux lieux d'activité
+* And un lieu référencé dans la coop
+* And le registre relie ce lieu référencé à un identifiant de cartographie
+* When ce médiateur ajoute le lieu de la cartographie ainsi relié
+* Then ce médiateur exerce dans ce lieu référencé
+* And le registre ne porte qu'une inscription sous cet identifiant

@@ -1,4 +1,5 @@
 import { prismaClient } from '@app/web/prismaClient'
+import type { Prisma } from '@prisma/client'
 
 /**
  * Les identifiants de cartographie que le registre porte, par lieu coop.
@@ -56,4 +57,31 @@ export const avecIdentifiantCarto = async <T extends { readonly id: string }>(
     ...lieu,
     structureCartographieNationaleId: identifiants.get(lieu.id) ?? null,
   }))
+}
+
+/**
+ * Le lieu coop que le registre désigne sous cet identifiant de cartographie.
+ *
+ * L'identifiant est UNIQUE côté registre, là où la colonne coop ne l'était pas :
+ * « quel lieu porte cet identifiant » y a une réponse et une seule, sans avoir à
+ * départager par ancienneté comme le faisait la sonde qui interrogeait la coop.
+ *
+ * Rend `null` si personne ne le porte, si l'inscription n'est reliée à aucun
+ * lieu coop, ou si le lieu qu'elle désigne a été supprimé depuis.
+ */
+export const lieuCoopPorteurDeLaCarto = async (
+  transaction: Prisma.TransactionClient,
+  identifiant: string,
+): Promise<{ readonly id: string } | null> => {
+  const inscription = await transaction.lieuInclusionRegistreMain.findUnique({
+    where: { structureCartographieNationaleId: identifiant },
+    select: { structureCoopId: true },
+  })
+
+  if (inscription?.structureCoopId == null) return null
+
+  return transaction.lieuInclusion.findFirst({
+    where: { id: inscription.structureCoopId, suppression: null },
+    select: { id: true },
+  })
 }
