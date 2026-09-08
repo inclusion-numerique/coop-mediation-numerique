@@ -3,16 +3,12 @@ import { v4 } from 'uuid'
 import {
   fromAdresse,
   lieuFromDomain,
-  lieuToDomain,
 } from '../../../../implementation/prisma/lieu.transfer'
 import {
   lieuCorrele,
   preparerCorrele,
 } from '../../../../implementation/prisma/lieu-correle'
-import {
-  ecrireAuRegistre,
-  toutesLesColonnes,
-} from '../../../../implementation/prisma/registre'
+import { ecrireLeLieuAuRegistre } from '../../../../implementation/prisma/registre'
 import {
   type AdresseValidee,
   estExistant,
@@ -65,11 +61,7 @@ const materialiser = async (
 
   const cree = await transaction.lieuInclusion.create({ data: donnees })
 
-  await ecrireAuRegistre(transaction, {
-    lieu: lieuToDomain(cree),
-    colonnes: toutesLesColonnes,
-    maintenant,
-  })
+  await ecrireLeLieuAuRegistre(transaction, { ligne: cree, maintenant })
 
   return { id: cree.id }
 }

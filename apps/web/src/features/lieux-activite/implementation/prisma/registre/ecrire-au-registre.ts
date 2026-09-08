@@ -1,5 +1,7 @@
 import type { Prisma } from '@prisma/client'
 import type { Lieu } from '../../../domain/lieu'
+import { lieuToDomain } from '../lieu.transfer'
+import type { LigneDuLieu } from '../ligne-du-lieu'
 import { adresseDuRegistre } from './adresse-du-registre'
 import { identifiantCarto, inscriptionCorrelee } from './inscription-correlee'
 import {
@@ -164,6 +166,33 @@ export const ecrireAuRegistre = async (
 export const toutesLesColonnes = (
   toutes: ColonnesDuRegistre,
 ): ColonnesDuRegistre => toutes
+
+/**
+ * Écrit au registre un lieu en entier, depuis la LIGNE que la coop en a
+ * stockée.
+ *
+ * C'est la forme dont ont besoin les chemins qui viennent de créer ou de fondre
+ * une fiche : ils tiennent la ligne, pas le lieu du domaine. Partir de la ligne
+ * relue plutôt que des données préparées n'est pas un détour — c'est ce que la
+ * coop a effectivement enregistré, défauts de colonnes compris, qui doit partir
+ * au registre, sans quoi les deux tables diraient des choses proches mais pas
+ * identiques.
+ *
+ * C'est aussi ce que la feature expose au-dehors : un appelant d'une autre
+ * feature n'a pas à connaître le transfer qui va de la ligne au domaine.
+ */
+export const ecrireLeLieuAuRegistre = async (
+  transaction: Prisma.TransactionClient,
+  {
+    ligne,
+    maintenant,
+  }: { readonly ligne: LigneDuLieu; readonly maintenant: Date },
+): Promise<void> =>
+  ecrireAuRegistre(transaction, {
+    lieu: lieuToDomain(ligne),
+    colonnes: toutesLesColonnes,
+    maintenant,
+  })
 
 /**
  * Marque l'inscription comme supprimée, sans effacer la ligne : le registre

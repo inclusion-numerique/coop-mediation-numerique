@@ -2,10 +2,8 @@ import { prismaClient } from '@app/web/prismaClient'
 import { unionArrays } from '@app/web/utils/unionArrays'
 import type { PrismaClient } from '@prisma/client'
 import {
-  ecrireAuRegistre,
-  lieuToDomain,
+  ecrireLeLieuAuRegistre,
   retirerDuRegistre,
-  toutesLesColonnes,
 } from '../../../../implementation'
 
 type PrismaTransaction = Omit<
@@ -171,11 +169,7 @@ const fusionnerAuRegistre =
 
     if (!fusionne) return
 
-    await ecrireAuRegistre(prisma, {
-      lieu: lieuToDomain(fusionne),
-      colonnes: toutesLesColonnes,
-      maintenant,
-    })
+    await ecrireLeLieuAuRegistre(prisma, { ligne: fusionne, maintenant })
   }
 
 export const fusionnerDesLieux = async (

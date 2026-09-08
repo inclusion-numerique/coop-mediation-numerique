@@ -25,6 +25,7 @@ export {
 export {
   type ColonnesDuRegistre,
   ecrireAuRegistre,
+  ecrireLeLieuAuRegistre,
   lieuVersRegistre,
   retirerDuRegistre,
   toutesLesColonnes,

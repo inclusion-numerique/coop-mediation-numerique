@@ -156,3 +156,9 @@ export {
   lieuxActiviteDuMediateur,
   visibiliteDesLieuxDuMediateur,
 } from './implementation/prisma/lieux-du-mediateur'
+// Écriture au registre des lieux de l'Entrepôt. Y figure au même titre que
+// `lieuCorrele` (AR-7) : les deux écritures ne valent que composées dans la
+// transaction de l'appelant, ce qu'un port de commande ne permet pas. Quiconque
+// crée une ligne `coop.lieu_inclusion` doit passer par là, sous peine de laisser
+// le registre national ignorer ce lieu — ou d'y semer un doublon.
+export { ecrireLeLieuAuRegistre } from './implementation/prisma/registre'

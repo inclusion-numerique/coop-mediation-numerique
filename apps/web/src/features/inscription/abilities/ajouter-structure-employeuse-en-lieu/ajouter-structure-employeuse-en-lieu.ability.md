@@ -51,3 +51,17 @@ doublon.
 * When je déclare que ma structure employeuse est un lieu d’activité
 * Then je suis rattaché au lieu que la coop connaissait déjà
 * And ce lieu n’a pas été recréé
+
+## Rule: Le lieu matérialisé s’inscrit au registre de l’Entrepôt
+
+Matérialiser une employeuse en lieu, c’est poser la fiche des deux côtés dans la
+même transaction. Sans quoi ce lieu n’existerait pour le registre national qu’à
+sa première modification, qui l’y rattraperait. Rien n’est inscrit quand la sonde
+a corrélé : on rejoint alors une fiche que la coop connaissait déjà.
+
+### Scenario: L’employeuse matérialisée en lieu paraît au registre
+
+* Given je suis médiateur
+* And j’ai une structure employeuse
+* When je déclare que ma structure employeuse est un lieu d’activité
+* Then ce lieu d’activité est inscrit au registre

@@ -264,21 +264,33 @@ After(async () => {
   await prismaClient.structureAdministrative.deleteMany({
     where: { id: { in: [...trackedStructureEmployeuseIds] } },
   })
-  await prismaClient.lieuInclusion.deleteMany({
-    // Inclut les employeuses matérialisées en lieu par l'ability « structure
-    // employeuse en lieu d'activité » : elles ne reprennent plus l'id de la
-    // structure, on les retrouve donc par leur dénomination.
-    where: {
-      OR: [
-        {
-          id: {
-            in: [...trackedLieuActiviteIds, ...trackedStructureEmployeuseIds],
-          },
+  // Inclut les employeuses matérialisées en lieu par l'ability « structure
+  // employeuse en lieu d'activité » : elles ne reprennent plus l'id de la
+  // structure, on les retrouve donc par leur dénomination.
+  const lieuxDuScenario = {
+    OR: [
+      {
+        id: {
+          in: [...trackedLieuActiviteIds, ...trackedStructureEmployeuseIds],
         },
-        { nom: { in: [...trackedEmployeuseMainNoms] } },
-      ],
-    },
+      },
+      { nom: { in: [...trackedEmployeuseMainNoms] } },
+    ],
+  }
+
+  // Matérialiser un lieu l'inscrit au registre de l'Entrepôt. L'inscription y
+  // survivrait au scénario, et sa clé étrangère vers `main.adresse` empêcherait
+  // d'effacer les adresses semées plus bas : elle part donc en premier.
+  const lieux = await prismaClient.lieuInclusion.findMany({
+    where: lieuxDuScenario,
+    select: { id: true },
   })
+
+  await prismaClient.lieuInclusionRegistreMain.deleteMany({
+    where: { structureCoopId: { in: lieux.map(({ id }) => id) } },
+  })
+
+  await prismaClient.lieuInclusion.deleteMany({ where: lieuxDuScenario })
   await prismaClient.personneAffectationEmploiMain.deleteMany({
     where: { structureAdministrativeId: { in: [...trackedEmployeuseMainIds] } },
   })

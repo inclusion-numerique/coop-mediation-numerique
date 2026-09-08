@@ -308,17 +308,20 @@ Then("le registre porte l'adresse du lieu créé", async () => {
             nomVoie: true,
             codePostal: true,
             nomCommune: true,
-            clefInterop: true,
           },
         },
       },
     })
 
+  // La `clef_interop` ne figure pas dans l'attendu : `main.adresse` est
+  // mutualisée, et « 12 quai du Port » sert aussi aux scénarios d'ajout, qui la
+  // désignent par un autre identifiant BAN. La ligne appartient à celui des deux
+  // qui l'a créée en premier — l'y attacher ferait dépendre le scénario de son
+  // rang d'exécution.
   assert.deepStrictEqual(inscription.adresse, {
     nomVoie: '12 quai du Port',
     codePostal: '17300',
     nomCommune: 'Rochefort',
-    clefInterop: '17300_0123_00012',
   })
 })
 

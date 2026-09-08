@@ -8,6 +8,7 @@
  */
 export {
   ecrireAuRegistre,
+  ecrireLeLieuAuRegistre,
   retirerDuRegistre,
   toutesLesColonnes,
 } from './ecrire-au-registre'

@@ -130,6 +130,11 @@ After(async () => {
   await prismaClient.mediateurEnActivite.deleteMany({
     where: { structureId: { in: ids } },
   })
+  // La fusion inscrit le lieu survivant au registre de l'Entrepôt : son
+  // inscription vit dans un autre schéma que les semis et leur survivrait.
+  await prismaClient.lieuInclusionRegistreMain.deleteMany({
+    where: { structureCoopId: { in: ids } },
+  })
   await prismaClient.lieuInclusion.deleteMany({ where: { id: { in: ids } } })
   if (mediateurId)
     await prismaClient.mediateur.deleteMany({ where: { id: mediateurId } })
