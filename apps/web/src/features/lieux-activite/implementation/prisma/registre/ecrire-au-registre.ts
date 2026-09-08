@@ -1,0 +1,109 @@
+import type { Prisma } from '@prisma/client'
+import type { Lieu } from '../../../domain/lieu'
+import { adresseDuRegistre } from './adresse-du-registre'
+import {
+  type ColonnesDuRegistre,
+  lieuVersRegistre,
+} from './lieu.registre.transfer'
+
+/**
+ * Ce que le registre retient de l'auteur d'une écriture. `carto`, `coop`,
+ * `app_python`, `id-poste` s'y côtoient déjà : c'est la convention de
+ * l'Entrepôt, pas la nôtre.
+ */
+const EDITE_PAR = 'coop'
+
+/**
+ * Le producteur à l'origine de la fiche, posé à la CRÉATION et jamais réécrit.
+ *
+ * `source` dit d'où vient le lieu, pas qui l'a touché en dernier : réécrire
+ * « Coop numérique » sur un lieu moissonné chez `dora` parce qu'un médiateur en
+ * a corrigé les horaires effacerait sa provenance. La récence, elle, se lit dans
+ * `updated_at_coop` face à `updated_at_carto` et `updated_at_min`.
+ */
+const SOURCE_COOP = 'Coop numérique'
+
+/**
+ * Écrit le lieu au registre de l'Entrepôt, dans la transaction de l'appelant.
+ *
+ * `upsert` et non `update` : la ligne existe pour la quasi-totalité du parc,
+ * mais pas pour un lieu que la coop vient de créer, ni pour les quelques-uns que
+ * le flux quotidien n'a pas encore vus. Un `update` y serait silencieusement
+ * sans effet — exactement le genre de panne qu'on ne voit qu'au moment de lire.
+ *
+ * `colonnes` choisit ce que la modification touche. Le motif est celui de
+ * l'écriture coop : une section n'écrit que ses propres colonnes, sinon deux
+ * enregistrements rapprochés se réécrivent l'un l'autre avec des valeurs
+ * périmées. À la création, il n'y a rien à choisir — `toutesLesColonnes`.
+ *
+ * L'adresse est résolue à chaque écriture, y compris quand la section n'y touche
+ * pas : c'est une lecture indexée, et elle rattrape les lignes dont
+ * `adresse_id` n'a jamais été posé.
+ */
+export const ecrireAuRegistre = async (
+  transaction: Prisma.TransactionClient,
+  {
+    lieu,
+    colonnes,
+    maintenant,
+  }: {
+    readonly lieu: Lieu
+    readonly colonnes: (
+      toutes: ColonnesDuRegistre,
+    ) => Partial<ColonnesDuRegistre>
+    readonly maintenant: Date
+  },
+): Promise<void> => {
+  const toutes = lieuVersRegistre(lieu)
+  const adresseId = await adresseDuRegistre(transaction, lieu)
+
+  const tracabilite = {
+    adresseId,
+    editedBy: EDITE_PAR,
+    updatedAtCoop: maintenant,
+  }
+
+  await transaction.lieuInclusionRegistreMain.upsert({
+    where: { structureCoopId: lieu.id },
+    create: {
+      ...toutes,
+      ...tracabilite,
+      structureCoopId: lieu.id,
+      source: SOURCE_COOP,
+      createdAt: maintenant,
+    },
+    update: { ...colonnes(toutes), ...tracabilite },
+  })
+}
+
+/** À la création, tout le lieu s'écrit. */
+export const toutesLesColonnes = (
+  toutes: ColonnesDuRegistre,
+): ColonnesDuRegistre => toutes
+
+/**
+ * Marque l'inscription comme supprimée, sans effacer la ligne : le registre
+ * appartient à l'Entrepôt et sert d'autres consommateurs, à qui la disparition
+ * pure et simple d'un lieu ne dirait rien. `deleted_at` est sa suppression
+ * logique — « NULL = lieu actif », dit la colonne.
+ *
+ * `updateMany` et non `update` : un lieu que le flux quotidien n'a jamais vu, et
+ * que la coop n'a jamais modifié depuis la double écriture, n'a pas
+ * d'inscription à retirer. Ce n'est pas une erreur, c'est zéro ligne.
+ */
+export const retirerDuRegistre = async (
+  transaction: Prisma.TransactionClient,
+  {
+    lieuId,
+    maintenant,
+  }: { readonly lieuId: string; readonly maintenant: Date },
+): Promise<void> => {
+  await transaction.lieuInclusionRegistreMain.updateMany({
+    where: { structureCoopId: lieuId },
+    data: {
+      deletedAt: maintenant,
+      editedBy: EDITE_PAR,
+      updatedAtCoop: maintenant,
+    },
+  })
+}

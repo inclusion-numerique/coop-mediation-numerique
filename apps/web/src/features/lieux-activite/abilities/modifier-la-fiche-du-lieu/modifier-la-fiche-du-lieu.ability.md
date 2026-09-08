@@ -137,3 +137,23 @@ description, services et accompagnement, modalités d'accès, publics accueillis
 * When le médiateur rattaché retire tous les services
 * Then la modification est refusée
 * And le lieu annonce toujours son service
+
+## Rule: Chaque enregistrement se répercute au registre de l'Entrepôt
+
+> Les deux écritures tiennent dans une seule transaction. Une section n'y écrit
+> que ses propres colonnes, comme côté coop — à ceci près que le registre range
+> en un seul `jsonb` ce que la coop tient en trois colonnes : enregistrer le site
+> web y réécrit le contact entier, reconstruit depuis la fiche à jour.
+
+### Scenario: Le site web enregistré paraît au registre sans emporter le reste du contact
+
+* Given une fiche de lieu avec un site web, un téléphone et un courriel
+* When le médiateur rattaché enregistre les informations pratiques avec un nouveau site web
+* Then le registre porte le nouveau site web, le téléphone et le courriel du lieu
+
+### Scenario: Une section muette sur le contact ne le touche pas
+
+* Given une fiche de lieu avec un site web, un téléphone et un courriel
+* When le médiateur rattaché modifie la description du lieu
+* Then le registre porte la description du lieu
+* And le registre porte toujours le site web d'origine

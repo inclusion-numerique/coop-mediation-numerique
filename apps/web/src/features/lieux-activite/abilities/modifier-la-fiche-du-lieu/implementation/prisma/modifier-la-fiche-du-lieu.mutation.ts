@@ -5,7 +5,11 @@ import type { LieuId } from '../../../../domain/lieu-id'
 import { publicationSansService } from '../../../../domain/publication'
 import type { UserId } from '../../../../domain/user-id'
 import { estPublie } from '../../../../domain/visibilite-cartographie'
-import { lieuFromDomain } from '../../../../implementation'
+import {
+  type ColonnesDuRegistre,
+  ecrireAuRegistre,
+  lieuFromDomain,
+} from '../../../../implementation'
 import { appliquerModification } from '../../domain/appliquer-la-modification'
 import {
   type EchecDeModification,
@@ -107,6 +111,61 @@ const ecriture = (lieu: Lieu, section: SectionDeLaFiche) => {
   }
 }
 
+/**
+ * La même découpe, dans les colonnes du registre de l'Entrepôt. Les deux tables
+ * se lisent côte à côte : une section qui gagne un champ doit le gagner ici
+ * aussi, sinon la coop et le registre divergent en silence.
+ *
+ * Deux différences tiennent à la forme du registre et non à un choix. L'adresse
+ * n'y figure pas : elle vit dans `main.adresse` et se repointe à chaque
+ * écriture. Et `contact` est une colonne unique là où la coop en a trois — le
+ * site web appartient aux informations pratiques, le téléphone et les courriels
+ * aux modalités d'accès, mais les deux sections réécrivent l'objet entier. Il
+ * est reconstruit depuis le lieu à jour, donc juste ; ce qu'on y perd, c'est
+ * l'indépendance de deux enregistrements simultanés sur ces deux sections-là.
+ */
+const colonnesDuRegistreParSection: Record<
+  SectionDeLaFiche,
+  (colonnes: ColonnesDuRegistre) => Partial<ColonnesDuRegistre>
+> = {
+  InformationsGenerales: (colonnes) => ({
+    nom: colonnes.nom,
+    nomUsage: colonnes.nomUsage,
+    complementAdresse: colonnes.complementAdresse,
+    typologies: colonnes.typologies,
+    itinerance: colonnes.itinerance,
+    siretALEnrichissement: colonnes.siretALEnrichissement,
+  }),
+  VisibiliteCartographie: (colonnes) => ({
+    visiblePourCartographieNationale: colonnes.visiblePourCartographieNationale,
+    services: colonnes.services,
+  }),
+  InformationsPratiques: (colonnes) => ({
+    ficheAccesLibre: colonnes.ficheAccesLibre,
+    priseRdv: colonnes.priseRdv,
+    horaires: colonnes.horaires,
+    contact: colonnes.contact,
+  }),
+  Description: (colonnes) => ({
+    presentationResume: colonnes.presentationResume,
+    presentationDetail: colonnes.presentationDetail,
+    formationsLabels: colonnes.formationsLabels,
+  }),
+  ServicesEtAccompagnement: (colonnes) => ({
+    services: colonnes.services,
+    modalitesAccompagnement: colonnes.modalitesAccompagnement,
+  }),
+  ModalitesAccesAuService: (colonnes) => ({
+    contact: colonnes.contact,
+    modalitesAcces: colonnes.modalitesAcces,
+    fraisACharge: colonnes.fraisACharge,
+  }),
+  TypesDePublicsAccueillis: (colonnes) => ({
+    publicsSpecifiquementAdresses: colonnes.publicsSpecifiquementAdresses,
+    priseEnChargeSpecifique: colonnes.priseEnChargeSpecifique,
+  }),
+}
+
 export const modifierLaFicheDuLieu = async ({
   id,
   modification,
@@ -144,9 +203,21 @@ export const modifierLaFicheDuLieu = async ({
   )
     return failure(PublicationSansService(id))
 
-  await prismaClient.lieuInclusion.update({
-    where: { id },
-    data: ecriture(modifie, modification.section),
+  // Les deux écritures tiennent dans une seule transaction : `coop` et `main`
+  // sont deux schémas d'une même base, atteints par un même client. Une fiche
+  // enregistrée d'un côté et pas de l'autre serait une divergence que rien ne
+  // viendrait rattraper.
+  await prismaClient.$transaction(async (transaction) => {
+    await transaction.lieuInclusion.update({
+      where: { id },
+      data: ecriture(modifie, modification.section),
+    })
+
+    await ecrireAuRegistre(transaction, {
+      lieu: modifie,
+      colonnes: colonnesDuRegistreParSection[modification.section],
+      maintenant,
+    })
   })
 
   return success(modifie)

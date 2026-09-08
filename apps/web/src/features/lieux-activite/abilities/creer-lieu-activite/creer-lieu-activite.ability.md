@@ -63,3 +63,38 @@
 * Given un médiateur qui exerce dans un lieu
 * When ce médiateur crée un lieu ouvert le lundi matin avec un commentaire d'horaires
 * Then les horaires du lieu créé portent le commentaire une seule fois
+
+## Rule: Ce que le médiateur saisit part aussi au registre de l'Entrepôt
+
+> La coop n'est plus seule à porter la fiche. Chaque création s'inscrit du même
+> geste dans `main.lieu_inclusion_registre`, sous le lien `structure_coop_id`, et
+> l'adresse s'y résout dans `main.adresse`, mutualisée entre lieux — on l'y
+> retrouve plutôt que de la réécrire.
+
+### Scenario: Le lieu créé paraît au registre
+
+* Given un médiateur qui exerce dans un lieu
+* When ce médiateur crée un lieu « Tiers-lieu du Port »
+* Then le lieu créé est inscrit au registre
+* And le registre porte l'adresse du lieu créé
+
+### Scenario: Rejoindre un lieu existant n'inscrit rien de neuf
+
+> On n'y crée pas de fiche : le registre n'a rien de nouveau à apprendre.
+
+* Given un médiateur qui exerce dans un lieu
+* When ce médiateur crée un lieu « Tiers-lieu du Port »
+* And ce médiateur ressaisit le même lieu
+* Then le registre ne porte qu'une inscription pour le lieu créé
+
+### Scenario: Une adresse que l'Entrepôt connaît déjà est réutilisée, pas recréée
+
+> `main.adresse` est mutualisée et sa clé d'unicité compare des `COALESCE` : une
+> répétition vide et une répétition nulle y désignent la même adresse. 13 118
+> lignes portent la première. Chercher en `IS NULL` les manquerait, et
+> l'insertion échouerait en plein enregistrement du médiateur.
+
+* Given un médiateur qui exerce dans un lieu
+* And une adresse déjà connue de l'Entrepôt, à répétition vide
+* When ce médiateur crée un lieu à cette adresse
+* Then le registre pointe vers l'adresse que l'Entrepôt connaissait déjà

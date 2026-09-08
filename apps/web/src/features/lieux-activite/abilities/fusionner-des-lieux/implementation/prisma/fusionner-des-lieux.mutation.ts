@@ -1,6 +1,12 @@
 import { prismaClient } from '@app/web/prismaClient'
 import { unionArrays } from '@app/web/utils/unionArrays'
 import type { PrismaClient } from '@prisma/client'
+import {
+  ecrireAuRegistre,
+  lieuToDomain,
+  retirerDuRegistre,
+  toutesLesColonnes,
+} from '../../../../implementation'
 
 type PrismaTransaction = Omit<
   PrismaClient,
@@ -143,6 +149,35 @@ const deleteStructure =
     })
   }
 
+/**
+ * Répercuter la fusion au registre de l'Entrepôt.
+ *
+ * Le lieu absorbé y garde sa ligne, marquée supprimée : le registre sert
+ * d'autres consommateurs que la coop, à qui l'effacement pur et simple d'un lieu
+ * ne dirait rien de ce qui lui est arrivé. Le lieu qui reste, lui, a récupéré
+ * les valeurs des deux fiches — il se réécrit en entier, relu depuis la coop,
+ * puisque c'est cet état-là qui fait désormais foi.
+ */
+const fusionnerAuRegistre =
+  (prisma: PrismaTransaction) =>
+  async (sourceStructureId: string, targetStructureId: string) => {
+    const maintenant = new Date()
+
+    await retirerDuRegistre(prisma, { lieuId: sourceStructureId, maintenant })
+
+    const fusionne = await prisma.lieuInclusion.findUnique({
+      where: { id: targetStructureId },
+    })
+
+    if (!fusionne) return
+
+    await ecrireAuRegistre(prisma, {
+      lieu: lieuToDomain(fusionne),
+      colonnes: toutesLesColonnes,
+      maintenant,
+    })
+  }
+
 export const fusionnerDesLieux = async (
   sourceStructureId: string,
   targetStructureId: string,
@@ -193,6 +228,8 @@ export const fusionnerDesLieux = async (
           data: { visiblePourCartographieNationale: true },
         })
       }
+
+      await fusionnerAuRegistre(prisma)(sourceStructureId, targetStructureId)
 
       await deleteStructure(prisma)(sourceStructureId)
     },

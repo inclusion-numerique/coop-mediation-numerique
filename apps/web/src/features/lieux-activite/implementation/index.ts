@@ -22,3 +22,10 @@ export {
   rattachementFromDomain,
   rattachementToDomain,
 } from './prisma/rattachement.transfer'
+export {
+  type ColonnesDuRegistre,
+  ecrireAuRegistre,
+  lieuVersRegistre,
+  retirerDuRegistre,
+  toutesLesColonnes,
+} from './prisma/registre'

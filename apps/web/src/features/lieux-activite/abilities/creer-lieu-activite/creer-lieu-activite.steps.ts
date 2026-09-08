@@ -7,7 +7,7 @@ import type { CreerLieuActiviteData } from '@app/web/features/lieux-activite/for
 import { ficheSemee } from '@app/web/features/lieux-activite/lieux-activite.cucumber'
 import { emptyOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import { prismaClient } from '@app/web/prismaClient'
-import { After, Then, When } from '@cucumber/cucumber'
+import { After, Given, Then, When } from '@cucumber/cucumber'
 import {
   PublicSpecifiquementAdresse,
   Typologie,
@@ -135,17 +135,137 @@ Then("ce médiateur n'exerce qu'une fois dans le lieu créé", async () => {
   )
 })
 
+/**
+ * Une adresse que l'Entrepôt porte AVEC une répétition vide, et sans
+ * `clef_interop` : seule la recherche par la clé d'unicité peut la retrouver.
+ * C'est le cas qui faisait échouer l'enregistrement quand on cherchait en
+ * `IS NULL`.
+ */
+const adresseDeLEntrepot: { id?: number } = {}
+
+const SAISIE_A_ADRESSE_CONNUE: CreerLieuActiviteData = {
+  ...saisie,
+  adresseBan: {
+    id: '17300_0999_00099',
+    label: '99 quai du Test, 17300 Rochefort',
+    nom: '99 quai du Test',
+    commune: 'Rochefort',
+    codePostal: '17300',
+    codeInsee: '17299',
+    contexte: '17, Charente-Maritime',
+    latitude: 45.94,
+    longitude: -0.96,
+  },
+}
+
+Given("une adresse déjà connue de l'Entrepôt, à répétition vide", async () => {
+  const [creee] = await prismaClient.$queryRaw<{ id: number }[]>`
+    INSERT INTO main.adresse (code_postal, code_insee, nom_commune, nom_voie, repetition)
+    VALUES ('17300', '17299', 'Rochefort', '99 quai du Test', '')
+    RETURNING id`
+
+  adresseDeLEntrepot.id = creee?.id
+})
+
+When('ce médiateur crée un lieu à cette adresse', async () => {
+  await creer(ficheSemee().mediateurRattacheId, SAISIE_A_ADRESSE_CONNUE)
+})
+
+Then(
+  "le registre pointe vers l'adresse que l'Entrepôt connaissait déjà",
+  async () => {
+    const inscription =
+      await prismaClient.lieuInclusionRegistreMain.findUniqueOrThrow({
+        where: { structureCoopId: lieuCree(1) },
+        select: { adresseId: true },
+      })
+
+    assert.strictEqual(inscription.adresseId, adresseDeLEntrepot.id)
+  },
+)
+
+Then('le lieu créé est inscrit au registre', async () => {
+  const inscription =
+    await prismaClient.lieuInclusionRegistreMain.findUniqueOrThrow({
+      where: { structureCoopId: lieuCree(1) },
+      select: {
+        nom: true,
+        source: true,
+        editedBy: true,
+        updatedAtCoop: true,
+        typologies: true,
+      },
+    })
+
+  assert.strictEqual(inscription.nom, 'Tiers-lieu du Port')
+  assert.strictEqual(inscription.source, 'Coop numérique')
+  assert.strictEqual(inscription.editedBy, 'coop')
+  assert.deepStrictEqual(inscription.typologies, ['BIB'])
+  assert.notStrictEqual(inscription.updatedAtCoop, null)
+})
+
+Then("le registre porte l'adresse du lieu créé", async () => {
+  const inscription =
+    await prismaClient.lieuInclusionRegistreMain.findUniqueOrThrow({
+      where: { structureCoopId: lieuCree(1) },
+      select: {
+        adresse: {
+          select: {
+            nomVoie: true,
+            codePostal: true,
+            nomCommune: true,
+            clefInterop: true,
+          },
+        },
+      },
+    })
+
+  assert.deepStrictEqual(inscription.adresse, {
+    nomVoie: '12 quai du Port',
+    codePostal: '17300',
+    nomCommune: 'Rochefort',
+    clefInterop: '17300_0123_00012',
+  })
+})
+
+Then("le registre ne porte qu'une inscription pour le lieu créé", async () => {
+  assert.strictEqual(
+    await prismaClient.lieuInclusionRegistreMain.count({
+      where: { structureCoopId: lieuCree(1) },
+    }),
+    1,
+  )
+})
+
 // Les lieux créés par les scénarios ne sont pas semés : ils se nettoient ici.
+//
+// Les `main.adresse` résolues au passage restent, elles : la table est
+// mutualisée entre lieux et structures administratives, et rien ne dit que la
+// ligne trouvée a été créée par le scénario. Une exécution suivante la retrouve
+// par sa `clef_interop` au lieu d'en créer une autre.
 After(async () => {
   const ids = dernier.lieuxCreesIds
+  // L'adresse semée s'efface même quand aucun lieu n'a été créé : un scénario
+  // qui échoue en cours de création la laisserait sinon derrière lui, et la
+  // ferait buter l'exécution suivante sur la clé d'unicité — un échec qui ne
+  // parlerait plus du tout du bug qu'on surveille.
+  const adresseId = adresseDeLEntrepot.id
   dernier.lieuxCreesIds = []
   dernier.creation = undefined
-  if (ids.length === 0) return
+  adresseDeLEntrepot.id = undefined
 
-  await prismaClient.mediateurEnActivite.deleteMany({
-    where: { structureId: { in: ids } },
-  })
-  await prismaClient.lieuInclusion.deleteMany({ where: { id: { in: ids } } })
+  if (ids.length > 0) {
+    await prismaClient.mediateurEnActivite.deleteMany({
+      where: { structureId: { in: ids } },
+    })
+    await prismaClient.lieuInclusionRegistreMain.deleteMany({
+      where: { structureCoopId: { in: ids } },
+    })
+    await prismaClient.lieuInclusion.deleteMany({ where: { id: { in: ids } } })
+  }
+
+  if (adresseId != null)
+    await prismaClient.adresseMain.deleteMany({ where: { id: adresseId } })
 })
 
 const COMMENTAIRE = 'Fermé le premier lundi du mois'

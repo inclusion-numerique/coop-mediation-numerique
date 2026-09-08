@@ -6,9 +6,11 @@ import type { Lieu } from '../../../../domain/lieu'
 import { LieuId } from '../../../../domain/lieu-id'
 import type { MediateurId } from '../../../../domain/mediateur-id'
 import {
+  ecrireAuRegistre,
   lieuCorrele,
   lieuFromDomain,
   preparerCorrele,
+  toutesLesColonnes,
 } from '../../../../implementation'
 import { type EchecDeCreation, MediateurRequis } from '../../domain/errors'
 
@@ -46,6 +48,33 @@ const rattacher = async (
 }
 
 /**
+ * Poser la fiche des deux côtés : dans la coop, et au registre des lieux de
+ * l'Entrepôt, dans la même transaction.
+ *
+ * Rien de tel sur le chemin de la corrélation : on n'y crée pas de fiche, on
+ * rejoint celle que la coop connaissait déjà, et le registre n'a donc rien de
+ * nouveau à apprendre — c'est le rattachement qui change, pas le lieu.
+ */
+const creerLaFiche = async (
+  transaction: Prisma.TransactionClient,
+  lieu: Lieu,
+  donnees: ReturnType<typeof lieuFromDomain>,
+): Promise<{ readonly id: string }> => {
+  const cree = await transaction.lieuInclusion.create({
+    data: donnees,
+    select: { id: true },
+  })
+
+  await ecrireAuRegistre(transaction, {
+    lieu,
+    colonnes: toutesLesColonnes,
+    maintenant: lieu.tracabilite.creation.date,
+  })
+
+  return cree
+}
+
+/**
  * Créer un lieu, c'est aussi s'y rattacher : on ne crée pas une fiche pour
  * personne. Les deux écritures vont ensemble, dans une transaction.
  *
@@ -77,12 +106,7 @@ export const creerLieuActivite = async ({
     const correle = await lieuCorrele(transaction, donnees)
     const prepare = correle && (await preparerCorrele(transaction, correle))
 
-    const { id } =
-      prepare ??
-      (await transaction.lieuInclusion.create({
-        data: donnees,
-        select: { id: true },
-      }))
+    const { id } = prepare ?? (await creerLaFiche(transaction, lieu, donnees))
 
     await rattacher(transaction, {
       mediateurId,
