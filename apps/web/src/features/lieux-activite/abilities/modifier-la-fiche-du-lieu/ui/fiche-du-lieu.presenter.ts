@@ -8,6 +8,7 @@ import {
   formationsLabelsProposees,
 } from '@app/web/features/lieux-activite/domain/nomenclatures'
 import { getCartographieNationaleSourceLabel } from '@app/web/libraries/cartographie-nationale'
+import { telephoneDisplayString } from '@app/web/libraries/telephone'
 import { safeToTimetableOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import { getDepartementCodeFromCodeInsee } from '@app/web/utils/getDepartementFromCodeInsee'
 import {
@@ -61,8 +62,8 @@ export type FicheAffichee = {
     readonly differences: readonly {
       readonly champ: ChampCompare
       readonly libelle: string
-      readonly coop: string
-      readonly registre: string
+      readonly coop: ValeurAffichee
+      readonly registre: ValeurAffichee
     }[]
   } | null
   readonly publieSurLaCartographie: boolean
@@ -189,51 +190,87 @@ const misAJourPar = (
  * Le médiateur voit sinon une date de mise à jour qu'il ne reconnaît pas, sur
  * des valeurs qu'il n'a pas écrites, sans que rien ne le lui dise.
  */
-const NON_RENSEIGNE = 'Non renseigné'
+const nonVide = (morceaux: readonly (string | null | undefined)[]): string[] =>
+  morceaux.filter(
+    (morceau): morceau is string => morceau != null && morceau !== '',
+  )
 
 const adresseLisible = (adresse: Adresse): string =>
-  [
+  nonVide([
     adresse.voie,
     adresse.complement_adresse,
     `${adresse.code_postal} ${adresse.commune}`,
-  ]
-    .filter((morceau) => morceau != null && morceau !== '')
-    .join(', ')
-
-const morceauxDuContact = (contact: Contact): string[] =>
-  [
-    contact.telephone,
-    ...(contact.courriels ?? []),
-    ...(contact.site_web ?? []),
-  ].filter((morceau): morceau is string => morceau != null && morceau !== '')
+  ]).join(', ')
 
 /**
- * Une valeur de fiche, dite en toutes lettres pour la comparaison.
+ * Le contact en autant d'éléments qu'il porte de moyens d'être joint : un
+ * numéro, des courriels, des sites. Les fondre en une phrase les rendrait
+ * illisibles dès qu'il y en a plus de deux — et il y en a souvent trois.
  *
- * L'absence est une valeur comme une autre : c'est elle qu'on lit quand une
- * source a effacé ce que le médiateur avait saisi, et il doit pouvoir la choisir
- * comme le reste.
+ * Le numéro passe par la mise en forme de la librairie, la même qu'emploient
+ * déjà bénéficiaire et employeuse : `+33248559312` n'est pas un numéro qu'on
+ * lit, `02 48 55 93 12` en est un.
  */
-const lisible = (valeur: unknown): string => {
-  if (valeur == null || valeur === '') return NON_RENSEIGNE
-  if (typeof valeur === 'string') return valeur
+const morceauxDuContact = (contact: Contact): string[] =>
+  nonVide([
+    contact.telephone == null
+      ? null
+      : telephoneDisplayString(contact.telephone),
+    ...(contact.courriels ?? []),
+    ...(contact.site_web ?? []),
+  ])
 
-  if (Array.isArray(valeur))
-    return valeur.length === 0 ? NON_RENSEIGNE : valeur.map(String).join(', ')
+/**
+ * Une valeur de fiche, préparée pour l'écran mais pas encore mise en forme :
+ * c'est le composant qui décide d'une puce, d'un tableau d'horaires ou d'une
+ * ligne de texte. Le presenter dit ce que la valeur EST, pas à quoi elle
+ * ressemble.
+ *
+ * L'absence en fait partie : c'est elle qu'on lit quand une source a effacé ce
+ * que le médiateur avait saisi, et il doit pouvoir la choisir comme le reste.
+ */
+export type ValeurAffichee =
+  | { readonly _tag: 'Absente' }
+  | { readonly _tag: 'Texte'; readonly texte: string }
+  | { readonly _tag: 'Liste'; readonly valeurs: readonly string[] }
+  | { readonly _tag: 'Horaires'; readonly osm: string }
 
-  if (typeof valeur !== 'object') return String(valeur)
+const ABSENTE = { _tag: 'Absente' } as const
 
-  if ('voie' in valeur) return adresseLisible(valeur as Adresse)
+/** Une liste d'un seul élément se lit comme un texte : la puce n'apprend rien. */
+const liste = (valeurs: readonly string[]): ValeurAffichee =>
+  valeurs.length === 0
+    ? ABSENTE
+    : valeurs.length === 1 && valeurs[0] != null
+      ? { _tag: 'Texte', texte: valeurs[0] }
+      : { _tag: 'Liste', valeurs }
+
+const texte = (valeur: string): ValeurAffichee =>
+  valeur === '' ? ABSENTE : { _tag: 'Texte', texte: valeur }
+
+const affichee = (champ: ChampCompare, valeur: unknown): ValeurAffichee => {
+  if (valeur == null) return ABSENTE
+
+  // Les horaires sont une expression `opening_hours` d'OpenStreetMap. La rendre
+  // telle quelle demanderait au médiateur de la déchiffrer pour comparer.
+  if (champ === 'horaires')
+    return typeof valeur === 'string' && valeur !== ''
+      ? { _tag: 'Horaires', osm: valeur }
+      : ABSENTE
+
+  if (typeof valeur === 'string') return texte(valeur)
+  if (Array.isArray(valeur)) return liste(valeur.map(String))
+  if (typeof valeur !== 'object') return texte(String(valeur))
+
+  if ('voie' in valeur) return texte(adresseLisible(valeur as Adresse))
 
   if ('resume' in valeur || 'detail' in valeur) {
     const { resume, detail } = valeur as Presentation
 
-    return [resume, detail].filter((morceau) => morceau != null).join(' — ')
+    return texte(nonVide([resume, detail]).join(' — '))
   }
 
-  const morceaux = morceauxDuContact(valeur as Contact)
-
-  return morceaux.length === 0 ? NON_RENSEIGNE : morceaux.join(' · ')
+  return liste(morceauxDuContact(valeur as Contact))
 }
 
 const repriseExterne = (
@@ -254,8 +291,8 @@ const repriseExterne = (
           ({ champ, libelle, coop, registre }) => ({
             champ,
             libelle,
-            coop: lisible(coop),
-            registre: lisible(registre),
+            coop: affichee(champ, coop),
+            registre: affichee(champ, registre),
           }),
         ),
       }

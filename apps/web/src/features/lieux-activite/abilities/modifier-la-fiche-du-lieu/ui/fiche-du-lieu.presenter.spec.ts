@@ -7,6 +7,7 @@ import {
   Nom,
   Pivot,
   PublicSpecifiquementAdresse,
+  Typologie,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Lieu } from '../../../domain/lieu'
@@ -148,16 +149,61 @@ describe('mise en forme de la fiche pour l’écran', () => {
       {
         champ: 'nom',
         libelle: 'Nom',
-        coop: 'Espace numérique',
-        registre: 'Autre',
+        coop: { _tag: 'Texte', texte: 'Espace numérique' },
+        registre: { _tag: 'Texte', texte: 'Autre' },
       },
       {
         champ: 'horaires',
         libelle: 'Horaires',
-        coop: 'Non renseigné',
-        registre: 'Tu 14:00-18:00',
+        // L'absence est une valeur : c'est elle que le médiateur choisira s'il
+        // veut que la source n'ait rien posé.
+        coop: { _tag: 'Absente' },
+        registre: { _tag: 'Horaires', osm: 'Tu 14:00-18:00' },
       },
     ])
+  })
+
+  it('empile une liste de plusieurs valeurs, garde une seule en texte', () => {
+    const { repriseExterne } = ficheAffichee({
+      lieu: {
+        ...lieu,
+        fiche: {
+          ...lieu.fiche,
+          publicsSpecifiquementAdresses: [
+            PublicSpecifiquementAdresse.Jeunes,
+            PublicSpecifiquementAdresse.Seniors,
+          ],
+          typologies: [Typologie.BIB],
+        },
+        tracabilite: {
+          ...lieu.tracabilite,
+          derniereModification: ModifieParSource(
+            new Date('2026-09-01T00:00:00Z'),
+            SourceCartographie('dora'),
+          ),
+        },
+      },
+      auteurDerniereModification: null,
+      derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
+      ficheCoop: lieu.fiche,
+    })
+
+    const parChamp = new Map(
+      repriseExterne?.differences.map(({ champ, registre }) => [
+        champ,
+        registre,
+      ]),
+    )
+
+    expect(parChamp.get('publicsSpecifiquementAdresses')).toEqual({
+      _tag: 'Liste',
+      valeurs: ['Jeunes', 'Seniors'],
+    })
+    // Une seule valeur : la puce n'apprendrait rien.
+    expect(parChamp.get('typologies')).toEqual({
+      _tag: 'Texte',
+      texte: 'BIB',
+    })
   })
 
   it('ne signale aucune reprise quand la coop a la main', () => {
