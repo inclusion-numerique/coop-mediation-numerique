@@ -28,11 +28,11 @@ export const BandeauRepriseExterne = ({
 }) => (
   <>
     <Notice
-      className="fr-notice--flex fr-align-items-center fr-mb-4v"
-      // `fr-notice--flex` fait du titre lui-même un conteneur flex, et
-      // `fr-align-items-center` y centre l'icône, qui en est le `::before`. Le
-      // texte et le bouton sont donc ses deux autres éléments : le premier
-      // s'étire, ce qui pousse le second au bord droit.
+      className="fr-notice--flex fr-notice--titre-pleine-largeur fr-align-items-center fr-mb-4v"
+      // `fr-notice--flex` fait du titre un conteneur flex, `fr-align-items-center`
+      // y centre l'icône — son `::before` — et `fr-notice--titre-pleine-largeur`
+      // étire le paragraphe que react-dsfr interpose, sans quoi le titre ne fait
+      // que la largeur de son texte et le bouton n'a nulle part où s'écarter.
       title={
         <>
           <span className="fr-flex-grow-1 fr-text--left fr-text--regular fr-text-default--grey">

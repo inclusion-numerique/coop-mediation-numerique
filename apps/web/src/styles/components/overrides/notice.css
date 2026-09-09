@@ -7,6 +7,17 @@
   align-items: center;
 }
 
+/*
+ * Le corps du bandeau est un flex, et react-dsfr y place le titre dans un
+ * paragraphe sans classe : ce paragraphe s'y dimensionne donc sur son contenu.
+ * Un bouton posé à droite du titre reste alors collé au texte, quelle que soit
+ * la largeur qu'on donne au titre lui-même. Cette variante étire le paragraphe
+ * pour que le titre dispose vraiment de toute la largeur.
+ */
+.fr-notice--titre-pleine-largeur .fr-notice__body > p {
+  flex: 1 1 auto;
+}
+
 /* Fix notice padding right bug and add border radius */
 .fr-notice {
   border-radius: 8px;
