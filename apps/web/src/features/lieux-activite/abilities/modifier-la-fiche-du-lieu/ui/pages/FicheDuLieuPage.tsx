@@ -5,6 +5,7 @@ import { LieuAccueillantPublicTitle } from '@app/web/features/lieux-activite/ui/
 import { ServiceInclusionNumeriqueTitle } from '@app/web/features/lieux-activite/ui/titles/ServiceInclusionNumeriqueTitle'
 import { formatDate } from '@app/web/utils/formatDate'
 import type { ReactNode } from 'react'
+import { AlerteRepriseExterne } from '../components/AlerteRepriseExterne'
 import { BasculeVisibiliteCartographie } from '../components/BasculeVisibiliteCartographie'
 import { SectionDescription } from '../components/SectionDescription'
 import { SectionInformationsGenerales } from '../components/SectionInformationsGenerales'
@@ -44,6 +45,10 @@ export const FicheDuLieuPage = ({
       Mis à jour le {formatDate(fiche.misAJourLe, 'dd.MM.yyyy')}{' '}
       {fiche.misAJourPar ? `par ${fiche.misAJourPar}` : ''}
     </p>
+    {fiche.repriseExterne && (
+      <AlerteRepriseExterne reprise={fiche.repriseExterne} />
+    )}
+
     <h1 className="fr-page-title fr-h2">{fiche.nom}</h1>
 
     <div className="fr-border fr-border-radius--8 fr-mb-6v">

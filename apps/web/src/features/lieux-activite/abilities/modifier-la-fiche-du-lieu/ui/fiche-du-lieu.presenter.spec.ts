@@ -61,10 +61,13 @@ const lieu: Lieu = {
   },
 }
 
+const DERNIERE_MODIFICATION_COOP = new Date('2026-08-01T00:00:00Z')
+
 const afficher = (fiche: Lieu['fiche']) => {
   const consultee: FicheDuLieu = {
     lieu: { ...lieu, fiche },
     auteurDerniereModification: null,
+    derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
   }
 
   return ficheAffichee(consultee)
@@ -84,6 +87,7 @@ describe('mise en forme de la fiche pour l’écran', () => {
         },
       },
       auteurDerniereModification: null,
+      derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
     })
 
     // Sans ce nom, l'écran annoncerait une mise à jour récente que le médiateur
@@ -91,10 +95,40 @@ describe('mise en forme de la fiche pour l’écran', () => {
     expect(affichee.misAJourPar).toBe('dora')
   })
 
+  it('annonce la reprise avec les deux dates, la sienne et la nôtre', () => {
+    const affichee = ficheAffichee({
+      lieu: {
+        ...lieu,
+        tracabilite: {
+          ...lieu.tracabilite,
+          derniereModification: ModifieParSource(
+            new Date('2026-09-01T00:00:00Z'),
+            SourceCartographie('dora'),
+          ),
+        },
+      },
+      auteurDerniereModification: null,
+      derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
+    })
+
+    // C'est l'écart entre les deux dates qui fait l'information : « on a écrit
+    // après vous », et non « la fiche a bougé ».
+    expect(affichee.repriseExterne).toEqual({
+      source: 'dora',
+      le: new Date('2026-09-01T00:00:00Z'),
+      votreDerniereModificationLe: DERNIERE_MODIFICATION_COOP,
+    })
+  })
+
+  it('ne signale aucune reprise quand la coop a la main', () => {
+    expect(afficher(lieu.fiche).repriseExterne).toBeNull()
+  })
+
   it('garde l’auteur coop quand c’est lui qui a modifié en dernier', () => {
     const affichee = ficheAffichee({
       lieu,
       auteurDerniereModification: 'Édith Piaf',
+      derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
     })
 
     expect(affichee.misAJourPar).toBe('Édith Piaf')

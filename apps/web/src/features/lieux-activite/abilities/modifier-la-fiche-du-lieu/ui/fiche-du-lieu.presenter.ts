@@ -42,6 +42,15 @@ export type FicheAffichee = {
   readonly nom: string
   readonly misAJourLe: Date
   readonly misAJourPar: string | null
+  /**
+   * Ce qu'il faut dire au médiateur quand un autre producteur a repris sa fiche
+   * après lui — `null` le reste du temps, et l'écran n'affiche alors rien.
+   */
+  readonly repriseExterne: {
+    readonly source: string
+    readonly le: Date
+    readonly votreDerniereModificationLe: Date
+  } | null
   readonly publieSurLaCartographie: boolean
   readonly connuDeLaCartographie: boolean
   /** Le département du lieu, dont dépendent les liens de l'annuaire. */
@@ -160,9 +169,33 @@ const misAJourPar = (
     : auteurCoop
 }
 
+/**
+ * La reprise d'une fiche par un producteur tiers, s'il y en a une.
+ *
+ * Le médiateur voit sinon une date de mise à jour qu'il ne reconnaît pas, sur
+ * des valeurs qu'il n'a pas écrites, sans que rien ne le lui dise.
+ */
+const repriseExterne = (
+  lieu: FicheDuLieu['lieu'],
+  derniereModificationCoop: Date,
+): FicheAffichee['repriseExterne'] => {
+  const { derniereModification } = lieu.tracabilite
+
+  return derniereModification._tag === 'ParSource'
+    ? {
+        source: getCartographieNationaleSourceLabel(
+          derniereModification.source,
+        ),
+        le: derniereModification.date,
+        votreDerniereModificationLe: derniereModificationCoop,
+      }
+    : null
+}
+
 export const ficheAffichee = ({
   lieu,
   auteurDerniereModification,
+  derniereModificationCoop,
 }: FicheDuLieu): FicheAffichee => {
   const { fiche } = lieu
   const contact = fiche.contact
@@ -176,6 +209,7 @@ export const ficheAffichee = ({
     nom: nomAffiche(fiche.nom, lieu.identiteSirene.nomUsage),
     misAJourLe: lieu.tracabilite.derniereModification.date,
     misAJourPar: misAJourPar(lieu, auteurDerniereModification),
+    repriseExterne: repriseExterne(lieu, derniereModificationCoop),
     publieSurLaCartographie: estPublie(lieu.visibilite),
     connuDeLaCartographie: lieu.idsCartographieNationale != null,
     departementCode:

@@ -7,6 +7,15 @@ import { inscriptionPourLaFiche } from '../../../../implementation/prisma/regist
 export type FicheDuLieu = {
   readonly lieu: Lieu
   readonly auteurDerniereModification: string | null
+  /**
+   * Quand la coop a modifié la fiche pour la dernière fois.
+   *
+   * Distincte de `lieu.tracabilite.derniereModification.date`, qui porte celle
+   * du dernier écrivain quel qu'il soit : dès qu'un producteur tiers reprend la
+   * fiche, la date du médiateur disparaîtrait du domaine, et c'est précisément
+   * celle qu'il faut lui remontrer pour qu'il situe la reprise.
+   */
+  readonly derniereModificationCoop: Date
 }
 
 /**
@@ -44,6 +53,7 @@ export const consulterLaFicheDuLieu = async (
 
   return {
     lieu: lieuToDomain(lieu),
+    derniereModificationCoop: lieu.modification,
     auteurDerniereModification:
       derniereModificationPar == null
         ? null
