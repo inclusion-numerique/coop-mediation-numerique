@@ -4,8 +4,9 @@ import { createToast } from '@app/ui/toast/createToast'
 import { appliquerLesDifferencesAction } from '@app/web/app/_actions/lieux-activite/appliquer-les-differences.action'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
+import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import type { OrigineDuChoix } from '../../domain'
 import type { FicheAffichee, ValeurAffichee } from '../fiche-du-lieu.presenter'
 import { HorairesDOuverture } from './vues/HorairesDOuverture'
@@ -19,11 +20,19 @@ const modale = createModal({
 })
 
 /**
+ * Au-delà de quoi une liste passe sur trois colonnes.
+ *
+ * Une nomenclature en compte parfois 92 : sur une seule colonne, la modale
+ * défile sans fin et les deux versions ne se voient plus ensemble.
+ */
+const LISTE_LONGUE = 6
+
+/**
  * Une valeur, dans la forme que sa nature appelle.
  *
  * Une liste d'un seul élément reste une ligne de texte — la puce n'apprendrait
- * rien — mais dès qu'il y en a plusieurs elles s'empilent : 92 typologies sur
- * une seule ligne séparées par des virgules ne se comparent pas.
+ * rien — mais dès qu'il y en a plusieurs elles s'empilent, et sur trois colonnes
+ * quand elles sont nombreuses.
  */
 const Valeur = ({ valeur }: { valeur: ValeurAffichee }) => {
   if (valeur._tag === 'Absente')
@@ -35,7 +44,11 @@ const Valeur = ({ valeur }: { valeur: ValeurAffichee }) => {
     return <HorairesDOuverture horaires={valeur.osm} />
 
   return (
-    <ul className="fr-mb-0 fr-pl-3w">
+    <ul
+      className={classNames('fr-mb-0 fr-pl-3w', {
+        'fr-display-grid fr-grid-cols-3': valeur.valeurs.length > LISTE_LONGUE,
+      })}
+    >
       {valeur.valeurs.map((une) => (
         <li key={une}>{une}</li>
       ))}
@@ -195,18 +208,20 @@ export const ModaleDesDifferences = ({
         enregistrez ici remplace la fiche, comme si vous l’aviez saisi dans le
         formulaire.
       </p>
-      {differences.map((difference) => (
-        <Ecart
-          key={difference.champ}
-          difference={difference}
-          choisi={origineDe(difference.champ)}
-          choisir={(origine) =>
-            setChoix((precedents) => ({
-              ...precedents,
-              [difference.champ]: origine,
-            }))
-          }
-        />
+      {differences.map((difference, rang) => (
+        <Fragment key={difference.champ}>
+          {rang > 0 && <hr className="fr-separator-1px fr-mb-4v" />}
+          <Ecart
+            difference={difference}
+            choisi={origineDe(difference.champ)}
+            choisir={(origine) =>
+              setChoix((precedents) => ({
+                ...precedents,
+                [difference.champ]: origine,
+              }))
+            }
+          />
+        </Fragment>
       ))}
     </modale.Component>
   )
