@@ -25,10 +25,7 @@ export const AlerteRepriseExterne = ({
     description={
       <>
         <strong>{reprise.source}</strong> a modifié cette fiche le{' '}
-        {formatDate(reprise.le, 'dd.MM.yyyy')}, après votre dernière
-        modification du{' '}
-        {formatDate(reprise.votreDerniereModificationLe, 'dd.MM.yyyy')}. Ce que
-        vous lisez ci-dessous vient de la cartographie nationale.
+        {formatDate(reprise.le, 'dd.MM.yyyy')}.
       </>
     }
   />
