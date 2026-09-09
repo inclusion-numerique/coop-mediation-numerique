@@ -36,8 +36,11 @@ export const BandeauRepriseExterne = ({
       title={
         <>
           <span className="fr-flex-grow-1 fr-text--left fr-text--regular fr-text-default--grey">
-            <b>{reprise.source}</b> a modifié cette fiche le{' '}
-            {formatDate(reprise.le, 'dd.MM.yyyy')}.
+            <b>{reprise.source}</b>
+            {/* La phrase tient dans une seule expression : le titre est un
+                conteneur flex, où une chaîne laissée au fil du JSX perd son
+                espace de tête. */}
+            {` a modifié cette fiche le ${formatDate(reprise.le, 'dd.MM.yyyy')}.`}
           </span>
           {reprise.differences.length > 0 && <BoutonDesDifferences />}
         </>
