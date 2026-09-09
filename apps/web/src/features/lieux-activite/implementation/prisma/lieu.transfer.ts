@@ -36,7 +36,9 @@ import {
   estPublie,
   VisibiliteCartographie,
 } from '../../domain/visibilite-cartographie'
-import type { LigneDuLieu } from './ligne-du-lieu'
+import type { LigneDuLieu, LigneDuLieuCoop } from './ligne-du-lieu'
+import { ficheDuRegistre } from './registre/fiche-du-registre'
+import { derniereModificationExterne } from './registre/modification-du-registre'
 import * as vocabulaire from './vocabulaire'
 
 /** Le séparateur multi-valeurs du schéma national. */
@@ -55,7 +57,7 @@ const toSitesWeb = (siteWeb: string | null): readonly Url[] =>
 const toCourriels = (courriels: readonly string[]): readonly Courriel[] =>
   courriels.filter(isValidCourriel).map(Courriel)
 
-const toContact = (row: LigneDuLieu): Contact => {
+const toContact = (row: LigneDuLieuCoop): Contact => {
   const telephone = nonVide(row.telephone)
   const sitesWeb = toSitesWeb(row.siteWeb)
   const courriels = toCourriels(row.courriels)
@@ -67,7 +69,7 @@ const toContact = (row: LigneDuLieu): Contact => {
   })
 }
 
-const toAdresse = (row: LigneDuLieu): Adresse | null => {
+const toAdresse = (row: LigneDuLieuCoop): Adresse | null => {
   const codeInsee = nonVide(row.codeInsee)
   const complement = nonVide(row.complementAdresse)
 
@@ -82,7 +84,7 @@ const toAdresse = (row: LigneDuLieu): Adresse | null => {
   return isValidAddress(candidate) ? Adresse(candidate) : null
 }
 
-const toLocalisation = (row: LigneDuLieu): Localisation | null => {
+const toLocalisation = (row: LigneDuLieuCoop): Localisation | null => {
   if (row.latitude == null || row.longitude == null) return null
 
   const candidate = { latitude: row.latitude, longitude: row.longitude }
@@ -90,7 +92,7 @@ const toLocalisation = (row: LigneDuLieu): Localisation | null => {
   return isValidLocalisation(candidate) ? Localisation(candidate) : null
 }
 
-const toPivot = (row: LigneDuLieu): Pivot | null => {
+const toPivot = (row: LigneDuLieuCoop): Pivot | null => {
   const siret = nonVide(row.siret)
   if (siret != null && isSiret(siret)) return siret
 
@@ -99,7 +101,7 @@ const toPivot = (row: LigneDuLieu): Pivot | null => {
   return rna != null && isRna(rna) ? rna : null
 }
 
-const toPresentation = (row: LigneDuLieu): Presentation | null => {
+const toPresentation = (row: LigneDuLieuCoop): Presentation | null => {
   const resume = nonVide(row.presentationResume)
   const detail = nonVide(row.presentationDetail)
 
@@ -111,7 +113,18 @@ const toPresentation = (row: LigneDuLieu): Presentation | null => {
   }
 }
 
-const toDerniereModification = (row: LigneDuLieu): DerniereModification => {
+/**
+ * Qui a touché la fiche en dernier.
+ *
+ * Le registre est interrogé d'abord : c'est lui qui sait qu'une source tierce
+ * est passée après nous, et il le sait à l'instant de la lecture plutôt qu'au
+ * dernier passage d'un job de nuit. La colonne coop ne sert plus que de repli
+ * pour les lieux sans inscription, et garde la mémoire des annotations que ce
+ * job avait posées avant sa suppression.
+ */
+const toDerniereModificationCoop = (
+  row: LigneDuLieuCoop,
+): DerniereModification => {
   const source = nonVide(row.derniereModificationSource)
   if (source != null)
     return ModifieParSource(row.modification, SourceCartographie(source))
@@ -124,7 +137,13 @@ const toDerniereModification = (row: LigneDuLieu): DerniereModification => {
       )
 }
 
-const toSuppression = (row: LigneDuLieu): Suppression =>
+const toDerniereModification = (row: LigneDuLieu): DerniereModification =>
+  (row.inscriptionRegistre == null
+    ? null
+    : derniereModificationExterne(row.inscriptionRegistre, row.modification)) ??
+  toDerniereModificationCoop(row)
+
+const toSuppression = (row: LigneDuLieuCoop): Suppression =>
   row.suppression == null
     ? Actif
     : Supprime(
@@ -132,7 +151,7 @@ const toSuppression = (row: LigneDuLieu): Suppression =>
         row.suppressionParId == null ? null : UserId(row.suppressionParId),
       )
 
-const toFiche = (row: LigneDuLieu): Fiche => ({
+const toFiche = (row: LigneDuLieuCoop): Fiche => ({
   nom: Nom(row.nom),
   pivot: toPivot(row),
   adresse: toAdresse(row),
@@ -187,9 +206,38 @@ const toFiche = (row: LigneDuLieu): Fiche => ({
   priseRdv: isValidUrl(row.priseRdv ?? '') ? Url(row.priseRdv ?? '') : null,
 })
 
-export const lieuToDomain = (row: LigneDuLieu): Lieu => ({
+/**
+ * La fiche du lieu, prise au registre quand il en porte une.
+ *
+ * Le registre reçoit toutes les écritures — les nôtres comme celles des autres
+ * producteurs — et chacun n'y écrit que les colonnes qu'il possède : la fusion
+ * champ par champ y a donc déjà eu lieu, et lire cette ligne, c'est lire la
+ * valeur la plus récente de chaque champ sans avoir à comparer des dates.
+ *
+ * Trois choses n'en viennent pas et lui sont passées : le pivot, que le registre
+ * ne porte pas — pas de RNA, et `siret_a_l_enrichissement` vide sur les 12 765
+ * inscriptions —, les coordonnées, dont la colonne `geom` est illisible par
+ * Prisma, et l'adresse en repli quand celle du registre est incomplète.
+ */
+const ficheDuLieu = (row: LigneDuLieu) => {
+  const coop = toFiche(row)
+
+  return row.inscriptionRegistre == null
+    ? coop
+    : ficheDuRegistre(row.inscriptionRegistre, {
+        pivot: coop.pivot,
+        localisation: coop.localisation,
+        adresse: coop.adresse,
+      })
+}
+
+/**
+ * Ce que la coop porte autour de la fiche : identité, publication, identifiants
+ * et traçabilité. Commun aux deux conversions, qui ne diffèrent que par la
+ * provenance de la fiche et de la dernière modification.
+ */
+const enveloppe = (row: LigneDuLieuCoop) => ({
   id: LieuId(row.id),
-  fiche: toFiche(row),
   visibilite: VisibiliteCartographie(
     row.visiblePourCartographieNationale ? 'Publie' : 'NonPublie',
   ),
@@ -201,15 +249,45 @@ export const lieuToDomain = (row: LigneDuLieu): Lieu => ({
     nomUsage: NomUsage.safe(row.nomUsage ?? ''),
     synchronisation: row.synchronisationSiret,
   },
-  tracabilite: {
-    creation: {
-      date: row.creation,
-      par: row.creationParId == null ? null : UserId(row.creationParId),
-    },
-    derniereModification: toDerniereModification(row),
-    suppression: toSuppression(row),
+  creation: {
+    date: row.creation,
+    par: row.creationParId == null ? null : UserId(row.creationParId),
   },
 })
+
+/**
+ * Le lieu tel que la COOP le porte, sans rien emprunter au registre.
+ *
+ * C'est ce qu'on lui pousse : la fiche que le médiateur vient d'enregistrer, et
+ * non celle que le registre affiche déjà.
+ */
+export const lieuCoopToDomain = (row: LigneDuLieuCoop): Lieu => {
+  const { creation, ...reste } = enveloppe(row)
+
+  return {
+    ...reste,
+    fiche: toFiche(row),
+    tracabilite: {
+      creation,
+      derniereModification: toDerniereModificationCoop(row),
+      suppression: toSuppression(row),
+    },
+  }
+}
+
+export const lieuToDomain = (row: LigneDuLieu): Lieu => {
+  const { creation, ...reste } = enveloppe(row)
+
+  return {
+    ...reste,
+    fiche: ficheDuLieu(row),
+    tracabilite: {
+      creation,
+      derniereModification: toDerniereModification(row),
+      suppression: toSuppression(row),
+    },
+  }
+}
 
 const versPrisma = <Standard, Prisma>(
   valeurs: readonly Standard[],

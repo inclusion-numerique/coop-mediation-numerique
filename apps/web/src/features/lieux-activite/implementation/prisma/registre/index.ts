@@ -16,6 +16,12 @@ export {
   toutesLesColonnes,
 } from './ecrire-au-registre'
 export {
+  adresseDuRegistre as adresseDeLInscription,
+  ficheDuRegistre,
+  type InscriptionPourLaFiche,
+  inscriptionPourLaFiche,
+} from './fiche-du-registre'
+export {
   avecIdentifiantCarto,
   inscriptionPourLIdentifiantCarto,
   lieuCoopPorteurDeLaCarto,
@@ -24,3 +30,4 @@ export {
   type ColonnesDuRegistre,
   lieuVersRegistre,
 } from './lieu.registre.transfer'
+export { derniereModificationExterne } from './modification-du-registre'

@@ -1,7 +1,7 @@
 import type { Prisma } from '@prisma/client'
 import type { Lieu } from '../../../domain/lieu'
-import { lieuToDomain } from '../lieu.transfer'
-import type { LigneDuLieu } from '../ligne-du-lieu'
+import { lieuCoopToDomain } from '../lieu.transfer'
+import type { LigneDuLieuCoop } from '../ligne-du-lieu'
 import { adresseDuRegistre } from './adresse-du-registre'
 import { identifiantCarto, inscriptionCorrelee } from './inscription-correlee'
 import {
@@ -269,7 +269,7 @@ export const ecrireLeLieuAuRegistre = async (
     colonnes,
     maintenant,
   }: {
-    readonly ligne: LigneDuLieu
+    readonly ligne: LigneDuLieuCoop
     readonly colonnes: (
       toutes: ColonnesDuRegistre,
     ) => Partial<ColonnesDuRegistre>
@@ -277,7 +277,7 @@ export const ecrireLeLieuAuRegistre = async (
   },
 ): Promise<void> =>
   ecrireAuRegistre(transaction, {
-    lieu: lieuToDomain(ligne),
+    lieu: lieuCoopToDomain(ligne),
     colonnes,
     maintenant,
   })

@@ -2,7 +2,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import type { LigneDuLieu } from '../../../../implementation/prisma/ligne-du-lieu'
 import {
   avecIdentifiantCarto,
-  inscriptionPourLIdentifiantCarto,
+  inscriptionPourLaFiche,
 } from '../../../../implementation/prisma/registre'
 import * as vocabulaire from '../../../../implementation/prisma/vocabulaire'
 
@@ -101,7 +101,7 @@ export const inventaireDesLieux = async ({
     skip,
     where,
     include: {
-      inscriptionRegistre: inscriptionPourLIdentifiantCarto,
+      inscriptionRegistre: inscriptionPourLaFiche,
       _count: {
         select: {
           mediateursEnActivite: { where: { suppression: null, fin: null } },

@@ -33,8 +33,8 @@ import {
 } from '../../domain/tracabilite'
 import { UserId } from '../../domain/user-id'
 import { VisibiliteCartographie } from '../../domain/visibilite-cartographie'
-import { lieuFromDomain, lieuToDomain } from './lieu.transfer'
-import type { LigneDuLieu } from './ligne-du-lieu'
+import { lieuCoopToDomain, lieuFromDomain } from './lieu.transfer'
+import type { LigneDuLieuCoop } from './ligne-du-lieu'
 
 const creation = new Date('2026-01-15T09:00:00Z')
 const modification = new Date('2026-08-20T14:30:00Z')
@@ -62,8 +62,13 @@ const horsDomaine = {
  * L'identité cartographique ne vient plus des colonnes du lieu mais de son
  * inscription au registre de l'Entrepôt : le transfer ne l'écrit plus, il la lit
  * là. La ligne du test la porte donc comme la base la rendrait.
+ *
+ * L'aller-retour se joue sur la ligne COOP — celle qu'on écrit — et non sur
+ * celle qu'on lit, dont la fiche vient du registre : `lieuFromDomain` produit
+ * des colonnes coop, c'est donc `lieuCoopToDomain` qui doit les relire pour que
+ * l'identité ait un sens.
  */
-const ligne = (lieu: Lieu): LigneDuLieu => ({
+const ligne = (lieu: Lieu): LigneDuLieuCoop => ({
   ...lieuFromDomain(lieu),
   ...horsDomaine,
   inscriptionRegistre:
@@ -181,11 +186,11 @@ const maximal: Lieu = {
 
 describe('transfer du lieu', () => {
   it('conserve un lieu minimal', () => {
-    expect(lieuToDomain(ligne(minimal))).toEqual(minimal)
+    expect(lieuCoopToDomain(ligne(minimal))).toEqual(minimal)
   })
 
   it('conserve un lieu complet', () => {
-    expect(lieuToDomain(ligne(maximal))).toEqual(maximal)
+    expect(lieuCoopToDomain(ligne(maximal))).toEqual(maximal)
   })
 
   it('conserve un pivot RNA', () => {
@@ -194,7 +199,7 @@ describe('transfer du lieu', () => {
       fiche: { ...minimal.fiche, pivot: Pivot('W123456789') },
     }
 
-    expect(lieuToDomain(ligne(parRna))).toEqual(parRna)
+    expect(lieuCoopToDomain(ligne(parRna))).toEqual(parRna)
   })
 
   it('conserve une modification par un utilisateur', () => {
@@ -206,7 +211,7 @@ describe('transfer du lieu', () => {
       },
     }
 
-    expect(lieuToDomain(ligne(parUtilisateur))).toEqual(parUtilisateur)
+    expect(lieuCoopToDomain(ligne(parUtilisateur))).toEqual(parUtilisateur)
   })
 
   it('conserve un lieu supprimé', () => {
@@ -218,53 +223,53 @@ describe('transfer du lieu', () => {
       },
     }
 
-    expect(lieuToDomain(ligne(supprime))).toEqual(supprime)
+    expect(lieuCoopToDomain(ligne(supprime))).toEqual(supprime)
   })
 
   it('conserve les tokens multiples de la cartographie nationale', () => {
-    expect(lieuToDomain(ligne(maximal)).idsCartographieNationale).toHaveLength(
-      2,
-    )
+    expect(
+      lieuCoopToDomain(ligne(maximal)).idsCartographieNationale,
+    ).toHaveLength(2)
   })
 
   describe('pertes assumées à la relecture de la base', () => {
     it('écarte une adresse que le schéma national refuse', () => {
-      const nonDiffusible: LigneDuLieu = {
+      const nonDiffusible: LigneDuLieuCoop = {
         ...ligne(maximal),
         adresse: '[Non-Diffusible]',
       }
 
-      expect(lieuToDomain(nonDiffusible).fiche.adresse).toBeNull()
+      expect(lieuCoopToDomain(nonDiffusible).fiche.adresse).toBeNull()
     })
 
     it('écarte une adresse dont le code postal est vide', () => {
-      const sansCodePostal: LigneDuLieu = {
+      const sansCodePostal: LigneDuLieuCoop = {
         ...ligne(maximal),
         codePostal: '',
       }
 
-      expect(lieuToDomain(sansCodePostal).fiche.adresse).toBeNull()
+      expect(lieuCoopToDomain(sansCodePostal).fiche.adresse).toBeNull()
     })
 
     it('ne retient que les sites web que le standard reconnaît', () => {
-      const siteWebMixte: LigneDuLieu = {
+      const siteWebMixte: LigneDuLieuCoop = {
         ...ligne(maximal),
         siteWeb: 'https://www.example.fr|pas une url du tout',
       }
 
-      expect(lieuToDomain(siteWebMixte).fiche.contact.site_web).toEqual([
+      expect(lieuCoopToDomain(siteWebMixte).fiche.contact.site_web).toEqual([
         'https://www.example.fr',
       ])
     })
 
     it('écarte un téléphone que le standard refuse', () => {
-      const telephoneEtranger: LigneDuLieu = {
+      const telephoneEtranger: LigneDuLieuCoop = {
         ...ligne(maximal),
         telephone: '+49 30 901820',
       }
 
       expect(
-        lieuToDomain(telephoneEtranger).fiche.contact.telephone,
+        lieuCoopToDomain(telephoneEtranger).fiche.contact.telephone,
       ).toBeUndefined()
     })
   })
