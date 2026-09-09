@@ -28,9 +28,9 @@ export const BandeauRepriseExterne = ({
 }) => (
   <>
     <Notice
-      className="fr-notice--flex fr-mb-4v"
+      className="fr-notice--flex fr-align-items-center fr-mb-4v"
       title={
-        <span className="fr-text--left fr-text-default--grey fr-text--regular fr-width-full fr-flex fr-align-items-center fr-justify-content-space-between fr-flex-gap-3v">
+        <span className="fr-width-full fr-flex fr-align-items-center fr-justify-content-space-between fr-flex-gap-3v fr-ml-1w fr-text--left fr-text--regular fr-text-default--grey">
           <span>
             <b>{reprise.source}</b> a modifié cette fiche le{' '}
             {formatDate(reprise.le, 'dd.MM.yyyy')}.
