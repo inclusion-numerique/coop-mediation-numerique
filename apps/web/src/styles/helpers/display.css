@@ -103,11 +103,6 @@
   align-items: baseline !important;
 }
 
-/*
- * L'écart entre colonnes seulement. `grid-gap` pose les deux axes d'un coup, ce
- * qui aère aussi les lignes : dans une liste, ça défait le paquet que les puces
- * forment ensemble et fait défiler pour rien.
- */
 .fr-grid-column-gap-2v {
   column-gap: 1rem !important;
 }
@@ -151,20 +146,12 @@
   }
 }
 
-/* xl display rules */
 @media (min-width: 78em) {
   .fr-display-block-xl {
     display: block !important;
   }
 }
 
-/*
- * La puce d'une liste est posée HORS de la boîte de l'élément par défaut. Dans
- * une grille, elle empiète alors sur la cellule voisine : un libellé long passe
- * par-dessus les puces de la colonne d'après. `inside` la ramène dans la
- * cellule, au prix d'un texte qui ne s'aligne plus sous lui-même à la ligne
- * suivante — le bon compromis quand les colonnes sont étroites.
- */
 .fr-list-style-inside {
   list-style-position: inside;
 }
