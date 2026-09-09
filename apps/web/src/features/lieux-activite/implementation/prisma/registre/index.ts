@@ -8,8 +8,10 @@
  */
 
 export {
+  colonnesRapporteesParLaCartographie,
   ecrireAuRegistre,
   ecrireLeLieuAuRegistre,
+  identiteDuLieu,
   retirerDuRegistre,
   toutesLesColonnes,
 } from './ecrire-au-registre'

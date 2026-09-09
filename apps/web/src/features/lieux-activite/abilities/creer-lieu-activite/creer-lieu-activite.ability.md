@@ -114,3 +114,33 @@
 * Then le registre ne porte qu'une inscription pour cet endroit
 * And cette inscription porte le lien vers le lieu créé
 * And cette inscription est désormais attribuée à la coop
+
+## Rule: La coop n'efface pas au registre ce qu'elle ne sait pas dire
+
+> Adopter une inscription, ce n'est pas la reprendre en entier. Elle vient d'un
+> producteur qui en sait plus que le formulaire d'où on l'adopte : `dispositif
+> programmes nationaux` et `autres formations labels` n'ont aucun champ dans la
+> coop, et les sections détaillées ne s'ouvrent que si le médiateur partage son
+> lieu à la cartographie. Écrire toutes les colonnes viderait chez lui ce que la
+> coop n'avait aucun moyen de renseigner.
+
+### Scenario: Une création sans partage ne vide rien de la fiche adoptée
+
+* Given un médiateur qui exerce dans un lieu
+* And le registre connaît déjà ce lieu sous la source « dora »
+* When ce médiateur crée un lieu déjà connu du registre
+* Then cette inscription garde ce qu'aucun formulaire de la coop ne porte
+* And cette inscription garde ce que le formulaire ne montrait pas
+
+### Scenario: Une création partagée remplace ce que le formulaire montrait
+
+> Le partage à la cartographie ouvre toutes les sections : le médiateur les a
+> sous les yeux, et un champ qu'il laisse vide est une décision. Les deux
+> colonnes qu'aucun formulaire ne porte survivent malgré tout.
+
+* Given un médiateur qui exerce dans un lieu
+* And le registre connaît déjà ce lieu sous la source « dora »
+* When ce médiateur crée en le partageant un lieu déjà connu du registre
+* Then cette inscription porte les services saisis
+* And cette inscription a perdu les horaires que la coop a laissés vides
+* And cette inscription garde ce qu'aucun formulaire de la coop ne porte

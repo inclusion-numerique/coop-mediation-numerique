@@ -65,6 +65,14 @@ const siretDeclare = (lieu: Lieu): string | null =>
  *
  * `contact` en est exclu : la colonne est un `jsonb`, que Prisma type en lecture
  * (`JsonValue`) et en écriture (`InputJsonValue`) différemment.
+ *
+ * En sont exclus aussi `dispositif_programmes_nationaux` et
+ * `autres_formations_labels`, qu'AUCUN formulaire de la coop ne porte — ni la
+ * création, qui les pose à `[]`, ni les sept sections de la modification. Les
+ * écrire reviendrait à vider ce que d'autres producteurs y ont mis : 4 841
+ * inscriptions renseignent les labels, 2 854 les dispositifs. Ce que la coop ne
+ * sait pas dire, elle ne l'écrase pas — et l'omission est ici tenue par le
+ * compilateur, non par la vigilance de l'appelant.
  */
 export type ColonnesDuRegistre = Pick<
   LigneDuRegistre,
@@ -79,7 +87,6 @@ export type ColonnesDuRegistre = Pick<
   | 'presentationDetail'
   | 'siretALEnrichissement'
   | 'structureCartographieNationaleId'
-  | 'autresFormationsLabels'
   | 'typologies'
   | 'services'
   | 'publicsSpecifiquementAdresses'
@@ -87,7 +94,6 @@ export type ColonnesDuRegistre = Pick<
   | 'modalitesAcces'
   | 'fraisACharge'
   | 'itinerance'
-  | 'dispositifProgrammesNationaux'
   | 'formationsLabels'
   | 'modalitesAccompagnement'
 > & { readonly contact: ReturnType<typeof contactDuRegistre> }
@@ -99,7 +105,8 @@ export type ColonnesDuRegistre = Pick<
  * pas — latitude, longitude, `ban_id`, RNA, champs référent, compteurs — ni
  * l'adresse, qui vit dans `main.adresse` et se résout à part
  * (`adresse-du-registre.ts`), ni les compteurs `mediateurs_en_activite` et
- * `emplois`, entretenus par le flux quotidien de l'Entrepôt.
+ * `emplois`, entretenus par le flux quotidien de l'Entrepôt. Ni les deux
+ * nomenclatures que la coop ne sait pas saisir, cf. `ColonnesDuRegistre`.
  */
 export const lieuVersRegistre = (lieu: Lieu): ColonnesDuRegistre => {
   const { fiche, visibilite, idsCartographieNationale, identiteSirene } = lieu
@@ -120,7 +127,6 @@ export const lieuVersRegistre = (lieu: Lieu): ColonnesDuRegistre => {
       idsCartographieNationale == null
         ? null
         : serialiserIdsCartographieNationale(idsCartographieNationale),
-    autresFormationsLabels: [...fiche.autresFormationsLabels],
     typologies: nomenclature(fiche.typologies, vocabulaire.typologie.versCoop),
     services: nomenclature(fiche.services, vocabulaire.service.versCoop),
     publicsSpecifiquementAdresses: nomenclature(
@@ -140,10 +146,6 @@ export const lieuVersRegistre = (lieu: Lieu): ColonnesDuRegistre => {
       vocabulaire.fraisACharge.versCoop,
     ),
     itinerance: nomenclature(fiche.itinerance, vocabulaire.itinerance.versCoop),
-    dispositifProgrammesNationaux: nomenclature(
-      fiche.dispositifProgrammesNationaux,
-      vocabulaire.dispositifProgrammeNational.versCoop,
-    ),
     formationsLabels: nomenclature(
       fiche.formationsLabels,
       vocabulaire.formationLabel.versCoop,

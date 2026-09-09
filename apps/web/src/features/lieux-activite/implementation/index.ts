@@ -24,8 +24,10 @@ export {
 } from './prisma/rattachement.transfer'
 export {
   type ColonnesDuRegistre,
+  colonnesRapporteesParLaCartographie,
   ecrireAuRegistre,
   ecrireLeLieuAuRegistre,
+  identiteDuLieu,
   inscriptionPourLIdentifiantCarto,
   lieuVersRegistre,
   retirerDuRegistre,

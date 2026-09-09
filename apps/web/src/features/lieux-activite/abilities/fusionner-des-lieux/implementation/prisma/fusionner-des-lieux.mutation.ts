@@ -5,6 +5,7 @@ import {
   ecrireLeLieuAuRegistre,
   inscriptionPourLIdentifiantCarto,
   retirerDuRegistre,
+  toutesLesColonnes,
 } from '../../../../implementation'
 
 type PrismaTransaction = Omit<
@@ -198,7 +199,11 @@ const fusionnerAuRegistre =
 
     if (!fusionne) return
 
-    await ecrireLeLieuAuRegistre(prisma, { ligne: fusionne, maintenant })
+    await ecrireLeLieuAuRegistre(prisma, {
+      ligne: fusionne,
+      colonnes: toutesLesColonnes,
+      maintenant,
+    })
   }
 
 export const fusionnerDesLieux = async (

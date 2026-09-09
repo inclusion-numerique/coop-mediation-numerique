@@ -1,5 +1,6 @@
 import {
   ecrireLeLieuAuRegistre,
+  identiteDuLieu,
   inscriptionPourLIdentifiantCarto,
   lieuCorrele,
   preparerCorrele,
@@ -44,6 +45,7 @@ const materialiser = async (
 
   await ecrireLeLieuAuRegistre(transaction, {
     ligne: cree,
+    colonnes: identiteDuLieu,
     maintenant: cree.creation,
   })
 

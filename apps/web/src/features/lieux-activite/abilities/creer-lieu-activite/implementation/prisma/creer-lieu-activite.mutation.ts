@@ -5,8 +5,10 @@ import { v4 } from 'uuid'
 import type { Lieu } from '../../../../domain/lieu'
 import { LieuId } from '../../../../domain/lieu-id'
 import type { MediateurId } from '../../../../domain/mediateur-id'
+import { estPublie } from '../../../../domain/visibilite-cartographie'
 import {
   ecrireAuRegistre,
+  identiteDuLieu,
   lieuCorrele,
   lieuFromDomain,
   preparerCorrele,
@@ -48,6 +50,17 @@ const rattacher = async (
 }
 
 /**
+ * Ce que le formulaire avait sous les yeux, et que l'écriture peut donc vider.
+ *
+ * Les sections détaillées ne s'ouvrent que si le médiateur partage le lieu à la
+ * cartographie ; sans ce partage il n'a rempli que l'identité, et une inscription
+ * adoptée à cette occasion ne doit pas perdre ce qu'une autre source y avait mis.
+ * Avec le partage, il a tout vu : un champ laissé vide est alors une décision.
+ */
+const colonnesDuFormulaire = (lieu: Lieu) =>
+  estPublie(lieu.visibilite) ? toutesLesColonnes : identiteDuLieu
+
+/**
  * Poser la fiche des deux côtés : dans la coop, et au registre des lieux de
  * l'Entrepôt, dans la même transaction.
  *
@@ -67,7 +80,7 @@ const creerLaFiche = async (
 
   await ecrireAuRegistre(transaction, {
     lieu,
-    colonnes: toutesLesColonnes,
+    colonnes: colonnesDuFormulaire(lieu),
     maintenant: lieu.tracabilite.creation.date,
   })
 

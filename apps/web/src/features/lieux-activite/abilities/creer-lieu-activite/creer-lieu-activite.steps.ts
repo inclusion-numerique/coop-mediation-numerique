@@ -10,6 +10,7 @@ import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import {
   PublicSpecifiquementAdresse,
+  Service,
   Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 
@@ -232,6 +233,13 @@ Given('le registre connaît déjà ce lieu sous la source « dora »', async () 
       nom: saisie.nom,
       adresseId,
       typologies: ['BIB'],
+      // Ce que dora sait et que la coop ne saurait pas redire : les deux
+      // premières colonnes n'ont aucun champ de formulaire, les deux suivantes
+      // sont cachées derrière l'interrupteur de partage à la cartographie.
+      autresFormationsLabels: ['Label maison'],
+      dispositifProgrammesNationaux: ['AidantsConnect'],
+      horaires: 'Mo 09:00-12:00',
+      services: ['AideAuxDemarchesAdministratives'],
       source: 'dora',
       editedBy: 'carto',
       updatedAtCarto: new Date('2026-01-01'),
@@ -277,6 +285,69 @@ Then('cette inscription est désormais attribuée à la coop', async () => {
 
   assert.strictEqual(inscription.source, 'Coop numérique')
 })
+
+const inscriptionAdoptee = () =>
+  prismaClient.lieuInclusionRegistreMain.findUniqueOrThrow({
+    where: { id: inscriptionDora.id ?? 0 },
+    select: {
+      autresFormationsLabels: true,
+      dispositifProgrammesNationaux: true,
+      horaires: true,
+      services: true,
+    },
+  })
+
+Then(
+  "cette inscription garde ce qu'aucun formulaire de la coop ne porte",
+  async () => {
+    const { autresFormationsLabels, dispositifProgrammesNationaux } =
+      await inscriptionAdoptee()
+
+    assert.deepStrictEqual(autresFormationsLabels, ['Label maison'])
+    assert.deepStrictEqual(dispositifProgrammesNationaux, ['AidantsConnect'])
+  },
+)
+
+Then(
+  'cette inscription garde ce que le formulaire ne montrait pas',
+  async () => {
+    const { horaires, services } = await inscriptionAdoptee()
+
+    assert.strictEqual(horaires, 'Mo 09:00-12:00')
+    assert.deepStrictEqual(services, ['AideAuxDemarchesAdministratives'])
+  },
+)
+
+const SAISIE_PARTAGEE_DEJA_AU_REGISTRE: CreerLieuActiviteData = {
+  ...SAISIE_DEJA_AU_REGISTRE,
+  visiblePourCartographieNationale: true,
+  services: [Service.MaitriseDesOutilsNumeriquesDuQuotidien],
+}
+
+When(
+  'ce médiateur crée en le partageant un lieu déjà connu du registre',
+  async () => {
+    await creer(
+      ficheSemee().mediateurRattacheId,
+      SAISIE_PARTAGEE_DEJA_AU_REGISTRE,
+    )
+  },
+)
+
+Then('cette inscription porte les services saisis', async () => {
+  const { services } = await inscriptionAdoptee()
+
+  assert.deepStrictEqual(services, ['MaitriseDesOutilsNumeriquesDuQuotidien'])
+})
+
+Then(
+  'cette inscription a perdu les horaires que la coop a laissés vides',
+  async () => {
+    const { horaires } = await inscriptionAdoptee()
+
+    assert.strictEqual(horaires, null)
+  },
+)
 
 Then('le lieu créé est inscrit au registre', async () => {
   const inscription =

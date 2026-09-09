@@ -9,6 +9,7 @@ import {
   preparerCorrele,
 } from '../../../../implementation/prisma/lieu-correle'
 import {
+  colonnesRapporteesParLaCartographie,
   ecrireLeLieuAuRegistre,
   inscriptionPourLIdentifiantCarto,
   lieuCoopPorteurDeLaCarto,
@@ -75,6 +76,7 @@ const materialiser = async (
   // d'où il sort, et c'est elle qui permettra d'adopter l'inscription
   // correspondante plutôt que d'en créer une seconde.
   await ecrireLeLieuAuRegistre(transaction, {
+    colonnes: colonnesRapporteesParLaCartographie,
     ligne: {
       ...cree,
       inscriptionRegistre:

@@ -128,14 +128,18 @@ export const ecrireAuRegistre = async (
 
   const aAdopter = await inscriptionCorrelee(transaction, lieu)
 
-  // Adopter, c'est reprendre l'inscription en entier : la coop en devient la
-  // source, et `updated_at` — colonne générée, qu'on n'écrit pas — le dira
-  // d'elle-même en prenant `updated_at_coop`.
+  // Adopter, ce n'est PAS reprendre l'inscription en entier : `colonnes` vaut ici
+  // comme à la mise à jour. Une fiche adoptée depuis la recherche vient d'un
+  // producteur qui en sait plus que le formulaire d'où elle est reprise — écrire
+  // toutes les colonnes viderait ce qu'il y a mis, alors que la coop n'avait rien
+  // à en dire. La coop devient la source des valeurs qu'elle écrit, et
+  // `updated_at` — colonne générée, qu'on n'écrit pas — le dira d'elle-même en
+  // prenant `updated_at_coop`.
   if (aAdopter != null) {
     await transaction.lieuInclusionRegistreMain.update({
       where: { id: aAdopter },
       data: {
-        ...toutes,
+        ...colonnes(toutes),
         ...tracabilite,
         structureCartographieNationaleId: await identifiantCartoARevendiquer(
           transaction,
@@ -162,10 +166,87 @@ export const ecrireAuRegistre = async (
   })
 }
 
-/** À la création, tout le lieu s'écrit. */
+/**
+ * Tout ce que la coop sait dire.
+ *
+ * Le formulaire de création n'ouvre ses sections que si le médiateur partage le
+ * lieu à la cartographie ; c'est alors seulement qu'il les a toutes sous les
+ * yeux et qu'il peut vouloir en vider une. La fusion l'emploie aussi : le
+ * survivant est une fiche coop complète, relue depuis la base.
+ */
 export const toutesLesColonnes = (
   toutes: ColonnesDuRegistre,
 ): ColonnesDuRegistre => toutes
+
+/**
+ * L'identité, et rien d'autre.
+ *
+ * Ce que montre le formulaire de création tant que le lieu n'est pas partagé —
+ * la section « Informations générales » et l'interrupteur de partage, le reste
+ * étant caché derrière lui — et tout ce qu'une employeuse matérialisée en lieu
+ * peut dire d'elle-même : elle n'a ni services, ni horaires, ni présentation.
+ */
+export const identiteDuLieu = ({
+  nom,
+  nomUsage,
+  complementAdresse,
+  typologies,
+  itinerance,
+  siretALEnrichissement,
+  visiblePourCartographieNationale,
+}: ColonnesDuRegistre): Partial<ColonnesDuRegistre> => ({
+  nom,
+  nomUsage,
+  complementAdresse,
+  typologies,
+  itinerance,
+  siretALEnrichissement,
+  visiblePourCartographieNationale,
+})
+
+/**
+ * Ce qu'un lieu matérialisé depuis la recherche rapporte de la cartographie.
+ *
+ * `ficheDeLaLigne` laisse délibérément vides les listes que la carto ne porte
+ * pas, et la fiche ne dit rien du nom d'usage ni du SIRET : ces colonnes sont
+ * donc absentes ici, sinon l'adoption viderait chez le producteur ce que la
+ * recherche n'avait fait que ne pas lire.
+ */
+export const colonnesRapporteesParLaCartographie = ({
+  nom,
+  complementAdresse,
+  visiblePourCartographieNationale,
+  ficheAccesLibre,
+  horaires,
+  presentationResume,
+  presentationDetail,
+  contact,
+  typologies,
+  services,
+  publicsSpecifiquementAdresses,
+  priseEnChargeSpecifique,
+  modalitesAcces,
+  fraisACharge,
+  itinerance,
+  modalitesAccompagnement,
+}: ColonnesDuRegistre): Partial<ColonnesDuRegistre> => ({
+  nom,
+  complementAdresse,
+  visiblePourCartographieNationale,
+  ficheAccesLibre,
+  horaires,
+  presentationResume,
+  presentationDetail,
+  contact,
+  typologies,
+  services,
+  publicsSpecifiquementAdresses,
+  priseEnChargeSpecifique,
+  modalitesAcces,
+  fraisACharge,
+  itinerance,
+  modalitesAccompagnement,
+})
 
 /**
  * Écrit au registre un lieu en entier, depuis la LIGNE que la coop en a
@@ -185,12 +266,19 @@ export const ecrireLeLieuAuRegistre = async (
   transaction: Prisma.TransactionClient,
   {
     ligne,
+    colonnes,
     maintenant,
-  }: { readonly ligne: LigneDuLieu; readonly maintenant: Date },
+  }: {
+    readonly ligne: LigneDuLieu
+    readonly colonnes: (
+      toutes: ColonnesDuRegistre,
+    ) => Partial<ColonnesDuRegistre>
+    readonly maintenant: Date
+  },
 ): Promise<void> =>
   ecrireAuRegistre(transaction, {
     lieu: lieuToDomain(ligne),
-    colonnes: toutesLesColonnes,
+    colonnes,
     maintenant,
   })
 
