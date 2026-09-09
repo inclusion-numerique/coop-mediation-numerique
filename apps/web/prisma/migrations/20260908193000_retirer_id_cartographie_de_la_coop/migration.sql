@@ -2,12 +2,12 @@
 --
 -- L'identifiant appartient à la cartographie et le registre de l'Entrepôt en est le domicile. La
 -- coop en gardait un double, posé par le job de réconciliation, et les deux ont dérivé : sur
--- 12 764 lieux appariés, 561 ne s'accordaient plus, dans les deux sens. Les lectures passent
+-- 12 765 lieux appariés, 553 ne s'accordaient plus, dans les deux sens. Les lectures passent
 -- désormais par l'inscription au registre, que `main.lieu_inclusion_registre.structure_coop_id`
 -- désigne, et cette colonne n'a plus de lecteur.
 --
 -- DESTRUCTIF : 7 821 valeurs disparaissent. Ce que le registre ne porte pas a été relevé au
--- préalable et exporté en CSV — 336 lieux, avec les tokens manquants, de quoi les reconstituer
+-- préalable et exporté en CSV — 337 lieux, avec les tokens manquants, de quoi les reconstituer
 -- depuis un export mednum-cli. La requête qui a produit ce relevé a été retirée : l'export
 -- conservé hors du dépôt fait foi.
 --
