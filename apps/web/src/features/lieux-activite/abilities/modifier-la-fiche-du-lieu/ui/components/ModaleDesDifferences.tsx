@@ -86,6 +86,7 @@ export const BoutonDesDifferences = () => (
   <Button
     size="small"
     priority="secondary"
+    className="fr-flex-shrink-0"
     nativeButtonProps={modale.buttonProps}
   >
     Voir les différences

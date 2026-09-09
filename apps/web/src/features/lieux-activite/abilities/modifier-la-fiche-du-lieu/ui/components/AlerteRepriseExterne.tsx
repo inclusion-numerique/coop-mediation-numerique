@@ -32,7 +32,7 @@ export const AlerteRepriseExterne = ({
       severity="info"
       small
       description={
-        <span className="fr-flex fr-direction-column fr-align-items-start fr-flex-gap-3v">
+        <span className="fr-flex fr-align-items-center fr-justify-content-space-between fr-flex-gap-3v">
           <span>
             <strong>{reprise.source}</strong> a modifié cette fiche le{' '}
             {formatDate(reprise.le, 'dd.MM.yyyy')}.
