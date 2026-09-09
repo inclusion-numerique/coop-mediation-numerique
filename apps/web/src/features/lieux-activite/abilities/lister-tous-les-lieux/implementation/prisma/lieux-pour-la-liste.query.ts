@@ -1,8 +1,8 @@
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
 import {
-  avecIdentifiantCarto,
-  inscriptionPourLIdentifiantCarto,
+  champsDAffichage,
+  inscriptionPourLaFiche,
 } from '../../../../implementation/prisma/registre'
 import type { LigneDeLaListe } from '../../ui/ligne-de-la-liste'
 
@@ -16,7 +16,7 @@ export const searchStructureSelect = {
   siret: true,
   typologies: true,
   visiblePourCartographieNationale: true,
-  inscriptionRegistre: inscriptionPourLIdentifiantCarto,
+  inscriptionRegistre: inscriptionPourLaFiche,
   creation: true,
   modification: true,
   suppression: true,
@@ -70,8 +70,24 @@ export const lieuxPourLaListe = async ({
   //
   // L'employeuse n'est plus reliée au lieu (ADR-002) : ce compteur n'a plus de
   // quoi se calculer et vaut zéro pour tout le monde.
-  return structures.map((structure) => ({
-    ...avecIdentifiantCarto(structure),
-    emploisCount: 0,
-  }))
+  return structures.map(({ inscriptionRegistre, ...coop }) => {
+    const registre =
+      inscriptionRegistre == null ? null : champsDAffichage(inscriptionRegistre)
+
+    return {
+      ...coop,
+      nom: registre?.nom ?? coop.nom,
+      adresse: registre?.adresse ?? coop.adresse,
+      commune: registre?.commune ?? coop.commune,
+      codePostal: registre?.codePostal ?? coop.codePostal,
+      codeInsee: registre?.codeInsee ?? coop.codeInsee,
+      typologies: registre?.typologies ?? coop.typologies,
+      visiblePourCartographieNationale:
+        registre?.visiblePourCartographieNationale ??
+        coop.visiblePourCartographieNationale,
+      structureCartographieNationaleId:
+        registre?.structureCartographieNationaleId ?? null,
+      emploisCount: 0,
+    }
+  })
 }

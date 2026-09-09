@@ -6,10 +6,10 @@ import { orderItemsByIndexedValues } from '@app/web/utils/orderItemsByIndexedVal
 import { Prisma } from '@prisma/client'
 import { ordonnancement, TriDesLieux } from '../../../../domain/tri-des-lieux'
 import {
+  avecLaFicheDuRegistre,
   type LieuEnListe,
   projectionDuLieuEnListe,
 } from '../../../../implementation/prisma/lieu-en-liste'
-import { avecIdentifiantCarto } from '../../../../implementation/prisma/registre'
 
 const LIEUX_DEFAULT_PAGE_SIZE = 20
 
@@ -44,7 +44,7 @@ const getLieuxByIds = async ({
     select: projectionDuLieuEnListe,
   })
 
-  return lieux.map(avecIdentifiantCarto)
+  return lieux.map(avecLaFicheDuRegistre)
 }
 
 /**

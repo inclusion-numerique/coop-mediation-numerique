@@ -1,8 +1,5 @@
 import { prismaClient } from '@app/web/prismaClient'
-import {
-  avecIdentifiantCarto,
-  inscriptionPourLIdentifiantCarto,
-} from './registre/identifiants-carto'
+import { champsDAffichage, inscriptionPourLaFiche } from './registre'
 
 /**
  * Lieux d'activité auxquels un médiateur est rattaché à l'instant présent :
@@ -31,7 +28,7 @@ export const lieuxActiviteDuMediateur = async ({
       lieuInclusion: {
         select: {
           id: true,
-          inscriptionRegistre: inscriptionPourLIdentifiantCarto,
+          inscriptionRegistre: inscriptionPourLaFiche,
           nom: true,
           commune: true,
           codePostal: true,
@@ -46,9 +43,26 @@ export const lieuxActiviteDuMediateur = async ({
     },
   })
 
-  return enActivite.map(({ lieuInclusion }) =>
-    avecIdentifiantCarto(lieuInclusion),
-  )
+  // Le lieu se montre tel que le registre le décrit ; ce qu'il ne porte pas — le
+  // pivot — et ce qu'il porte moins bien qu'elle reste à la coop.
+  return enActivite.map(({ lieuInclusion }) => {
+    const { inscriptionRegistre, ...coop } = lieuInclusion
+    const registre =
+      inscriptionRegistre == null ? null : champsDAffichage(inscriptionRegistre)
+
+    return {
+      ...coop,
+      nom: registre?.nom ?? coop.nom,
+      adresse: registre?.adresse ?? coop.adresse,
+      complementAdresse: registre?.complementAdresse ?? coop.complementAdresse,
+      commune: registre?.commune ?? coop.commune,
+      codePostal: registre?.codePostal ?? coop.codePostal,
+      codeInsee: registre?.codeInsee ?? coop.codeInsee,
+      typologies: registre?.typologies ?? coop.typologies,
+      structureCartographieNationaleId:
+        registre?.structureCartographieNationaleId ?? null,
+    }
+  })
 }
 
 export type LieuDuMediateur = Awaited<

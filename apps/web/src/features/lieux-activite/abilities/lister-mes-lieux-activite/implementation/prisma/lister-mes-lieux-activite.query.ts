@@ -5,8 +5,10 @@ import {
   ordonnancement,
   type TriDesLieux,
 } from '../../../../domain/tri-des-lieux'
-import { projectionDuLieuEnListe } from '../../../../implementation/prisma/lieu-en-liste'
-import { avecIdentifiantCarto } from '../../../../implementation/prisma/registre'
+import {
+  avecLaFicheDuRegistre,
+  projectionDuLieuEnListe,
+} from '../../../../implementation/prisma/lieu-en-liste'
 
 /**
  * Les lieux où le médiateur exerce aujourd'hui.
@@ -40,7 +42,7 @@ export const listerMesLieuxActivite = async ({
   // c'est le lieu qui a une identité cartographique.
   return rattachements.map((rattachement) => ({
     ...rattachement,
-    lieuInclusion: avecIdentifiantCarto(rattachement.lieuInclusion),
+    lieuInclusion: avecLaFicheDuRegistre(rattachement.lieuInclusion),
   }))
 }
 

@@ -164,6 +164,33 @@ export const adresseDuRegistre = (
   return isValidAddress(candidate) ? Adresse(candidate) : null
 }
 
+/**
+ * Les champs d'affichage d'un lieu, tels que le registre les porte — `null`
+ * quand il n'en dit rien, à charge de l'appelant de se rabattre sur la coop.
+ *
+ * Sert les projections de liste, qui montrent le lieu sans construire un `Lieu`
+ * du domaine : elles n'ont besoin ni du pivot, ni des coordonnées, ni des
+ * nomenclatures traduites.
+ */
+export const champsDAffichage = (inscription: InscriptionPourLaFiche) => {
+  const adresse = adresseDuRegistre(inscription)
+
+  return {
+    nom: inscription.nom,
+    nomUsage: inscription.nomUsage,
+    adresse: adresse?.voie ?? null,
+    complementAdresse: adresse?.complement_adresse ?? null,
+    commune: adresse?.commune ?? null,
+    codePostal: adresse?.code_postal ?? null,
+    codeInsee: adresse?.code_insee ?? null,
+    typologies: inscription.typologies,
+    visiblePourCartographieNationale:
+      inscription.visiblePourCartographieNationale,
+    structureCartographieNationaleId:
+      inscription.structureCartographieNationaleId,
+  }
+}
+
 const presentationDuRegistre = ({
   presentationResume,
   presentationDetail,

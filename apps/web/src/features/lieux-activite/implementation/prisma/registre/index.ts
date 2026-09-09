@@ -17,6 +17,7 @@ export {
 } from './ecrire-au-registre'
 export {
   adresseDuRegistre as adresseDeLInscription,
+  champsDAffichage,
   ficheDuRegistre,
   type InscriptionPourLaFiche,
   inscriptionPourLaFiche,
