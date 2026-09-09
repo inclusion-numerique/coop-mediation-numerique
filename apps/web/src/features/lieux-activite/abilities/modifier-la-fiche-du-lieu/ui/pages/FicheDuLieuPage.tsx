@@ -16,15 +16,6 @@ import { SectionTypesDePublicsAccueillis } from '../components/SectionTypesDePub
 import type { EnregistrerUneSection } from '../enregistrer-une-section'
 import type { FicheAffichee } from '../fiche-du-lieu.presenter'
 
-/**
- * La fiche d'un lieu : ses sept sections, consultées d'un bloc et corrigées
- * l'une après l'autre.
- *
- * Ce qui ne lui appartient pas — le fil d'Ariane, la liste des médiateurs qui
- * exercent ici — lui est passé en emplacement par la route. La feature
- * `mon-reseau` reste ainsi propriétaire de son annuaire, et cette page n'a
- * aucune raison d'aller la chercher.
- */
 export const FicheDuLieuPage = ({
   fiche,
   enregistrer,
@@ -45,7 +36,7 @@ export const FicheDuLieuPage = ({
       Mis à jour le {formatDate(fiche.misAJourLe, 'dd.MM.yyyy')}{' '}
       {fiche.misAJourPar ? `par ${fiche.misAJourPar}` : ''}
     </p>
-    {fiche.repriseExterne && (
+    {fiche.repriseExterne && fiche.repriseExterne.differences.length > 0 && (
       <BandeauRepriseExterne lieuId={fiche.id} reprise={fiche.repriseExterne} />
     )}
 
