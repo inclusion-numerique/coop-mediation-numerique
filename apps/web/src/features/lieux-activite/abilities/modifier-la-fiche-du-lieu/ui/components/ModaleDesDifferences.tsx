@@ -20,21 +20,27 @@ const modale = createModal({
 })
 
 /**
- * Au-delà de quoi une liste passe sur trois colonnes.
+ * Le seul champ dont la liste s'étale sur trois colonnes.
  *
- * Une nomenclature en compte parfois 92 : sur une seule colonne, la modale
- * défile sans fin et les deux versions ne se voient plus ensemble.
+ * Les typologies se comptent par dizaines — 92 valeurs au catalogue — là où les
+ * autres nomenclatures en alignent moins de dix : les mettre en colonnes ne
+ * gagnerait rien et les rendrait plus difficiles à parcourir.
  */
-const LISTE_LONGUE = 6
+const CHAMP_EN_COLONNES = 'typologies'
 
 /**
  * Une valeur, dans la forme que sa nature appelle.
  *
  * Une liste d'un seul élément reste une ligne de texte — la puce n'apprendrait
- * rien — mais dès qu'il y en a plusieurs elles s'empilent, et sur trois colonnes
- * quand elles sont nombreuses.
+ * rien — mais dès qu'il y en a plusieurs elles s'empilent.
  */
-const Valeur = ({ valeur }: { valeur: ValeurAffichee }) => {
+const Valeur = ({
+  valeur,
+  enColonnes,
+}: {
+  valeur: ValeurAffichee
+  enColonnes: boolean
+}) => {
   if (valeur._tag === 'Absente')
     return <i className="fr-text-mention--grey">Non renseigné</i>
 
@@ -42,8 +48,6 @@ const Valeur = ({ valeur }: { valeur: ValeurAffichee }) => {
 
   if (valeur._tag === 'Horaires')
     return <HorairesDOuverture horaires={valeur.osm} />
-
-  const enColonnes = valeur.valeurs.length > LISTE_LONGUE
 
   return (
     <ul
@@ -110,7 +114,10 @@ const Ecart = ({
             {aide}
           </label>
           <div className="fr-ml-8v fr-mb-2v fr-text--sm">
-            <Valeur valeur={valeur} />
+            <Valeur
+              valeur={valeur}
+              enColonnes={difference.champ === CHAMP_EN_COLONNES}
+            />
           </div>
         </div>
       ))}
