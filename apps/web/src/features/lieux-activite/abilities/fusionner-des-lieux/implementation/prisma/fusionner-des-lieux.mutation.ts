@@ -1,6 +1,6 @@
 import { prismaClient } from '@app/web/prismaClient'
 import { unionArrays } from '@app/web/utils/unionArrays'
-import type { PrismaClient } from '@prisma/client'
+import type { LieuInclusion, PrismaClient } from '@prisma/client'
 import {
   ecrireLeLieuAuRegistre,
   inscriptionPourLIdentifiantCarto,
@@ -89,7 +89,20 @@ const mergeActivitesLieu =
     })
   }
 
-const mergeArrayFields =
+/**
+ * Ce que la fiche absorbée lègue à celle qui reste, quand celle-ci ne le dit
+ * pas : le contact du référent et les identifiants de l'import v1.
+ *
+ * La cible prime — c'est elle que l'administration a choisi de garder — et la
+ * source ne comble que les vides. Rien ne se perd, rien ne s'écrase.
+ */
+const legs = <Champ extends keyof LieuInclusion>(
+  source: LieuInclusion,
+  target: LieuInclusion,
+  champ: Champ,
+): LieuInclusion[Champ] => target[champ] ?? source[champ]
+
+const fusionnerLesChamps =
   (prisma: PrismaTransaction) =>
   async (sourceStructureId: string, targetStructureId: string) => {
     const [source, target] = await Promise.all([
@@ -136,6 +149,20 @@ const mergeArrayFields =
         ),
         courriels: unionArrays(target.courriels, source.courriels),
         activitesCount: { increment: source.activitesCount },
+        // La publication sur la carte nationale ne se déduit pas d'une fusion :
+        // il faut que les deux fiches l'aient été pour que celle qui reste le
+        // soit. Publier parce que l'une des deux l'était exposerait un lieu que
+        // son second dossier gardait volontairement à l'écart.
+        visiblePourCartographieNationale:
+          target.visiblePourCartographieNationale &&
+          source.visiblePourCartographieNationale,
+        nomReferent: legs(source, target, 'nomReferent'),
+        courrielReferent: legs(source, target, 'courrielReferent'),
+        telephoneReferent: legs(source, target, 'telephoneReferent'),
+        v1Imported: legs(source, target, 'v1Imported'),
+        v1StructureId: legs(source, target, 'v1StructureId'),
+        v1StructureIdPg: legs(source, target, 'v1StructureIdPg'),
+        v1PermanenceId: legs(source, target, 'v1PermanenceId'),
         modification: new Date(),
       },
     })
@@ -177,24 +204,18 @@ const fusionnerAuRegistre =
 export const fusionnerDesLieux = async (
   sourceStructureId: string,
   targetStructureId: string,
-  options?: { timeout?: number; propagateVisibility?: boolean },
+  options?: { timeout?: number },
 ): Promise<void> => {
   await prismaClient.$transaction(
     async (prisma) => {
       const [sourceStructure, targetStructure] = await Promise.all([
         prisma.lieuInclusion.findUnique({
           where: { id: sourceStructureId },
-          select: {
-            id: true,
-            visiblePourCartographieNationale: true,
-          },
+          select: { id: true },
         }),
         prisma.lieuInclusion.findUnique({
           where: { id: targetStructureId },
-          select: {
-            id: true,
-            visiblePourCartographieNationale: true,
-          },
+          select: { id: true },
         }),
       ])
 
@@ -212,18 +233,7 @@ export const fusionnerDesLieux = async (
         targetStructureId,
       )
       await mergeActivitesLieu(prisma)(sourceStructureId, targetStructureId)
-      await mergeArrayFields(prisma)(sourceStructureId, targetStructureId)
-
-      if (
-        options?.propagateVisibility &&
-        sourceStructure.visiblePourCartographieNationale &&
-        !targetStructure.visiblePourCartographieNationale
-      ) {
-        await prisma.lieuInclusion.update({
-          where: { id: targetStructureId },
-          data: { visiblePourCartographieNationale: true },
-        })
-      }
+      await fusionnerLesChamps(prisma)(sourceStructureId, targetStructureId)
 
       await fusionnerAuRegistre(prisma)(sourceStructureId, targetStructureId)
 

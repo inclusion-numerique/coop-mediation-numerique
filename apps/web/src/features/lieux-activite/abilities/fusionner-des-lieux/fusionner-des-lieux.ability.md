@@ -42,3 +42,42 @@
 * Given deux lieux à fusionner
 * When l'administration fusionne le premier dans le second
 * Then le lieu conservé annonce les services des deux
+
+## Rule: Le lieu conservé n'est publié que si les deux l'étaient
+
+> Publier parce que l'une des deux fiches l'était exposerait sur la carte
+> nationale un endroit que son second dossier gardait volontairement à l'écart.
+> La fusion peut donc dépublier ; elle ne publie jamais.
+
+### Scenario: Deux fiches publiées donnent un lieu publié
+
+* Given deux lieux à fusionner
+* And les deux lieux sont publiés sur la carte nationale
+* When l'administration fusionne le premier dans le second
+* Then le lieu conservé est publié sur la carte nationale
+
+### Scenario: Une seule fiche publiée donne un lieu retiré de la carte
+
+* Given deux lieux à fusionner
+* And seul le lieu conservé est publié sur la carte nationale
+* When l'administration fusionne le premier dans le second
+* Then le lieu conservé n'est pas publié sur la carte nationale
+
+## Rule: Ce que la fiche absorbée est seule à renseigner lui survit
+
+> La cible prime — c'est elle que l'administration garde — mais un contact
+> qu'elle ne porte pas et que l'autre connaissait disparaîtrait sans retour.
+
+### Scenario: Le référent de la fiche absorbée passe au lieu conservé
+
+* Given deux lieux à fusionner
+* And seule la fiche à absorber porte un référent
+* When l'administration fusionne le premier dans le second
+* Then le lieu conservé porte le référent de la fiche absorbée
+
+### Scenario: Le référent du lieu conservé n'est pas écrasé
+
+* Given deux lieux à fusionner
+* And les deux fiches portent un référent différent
+* When l'administration fusionne le premier dans le second
+* Then le lieu conservé garde son propre référent

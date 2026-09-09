@@ -72,6 +72,38 @@ Given('un médiateur exerce dans les deux lieux', async () => {
   await rattacher(mediateurId, semis.conserveId ?? '')
 })
 
+const publier = (ids: readonly (string | undefined)[]) =>
+  prismaClient.lieuInclusion.updateMany({
+    where: { id: { in: ids.filter((id): id is string => id != null) } },
+    data: { visiblePourCartographieNationale: true },
+  })
+
+Given('les deux lieux sont publiés sur la carte nationale', async () => {
+  await publier([semis.absorbeId, semis.conserveId])
+})
+
+Given('seul le lieu conservé est publié sur la carte nationale', async () => {
+  await publier([semis.conserveId])
+})
+
+const poserUnReferent = (id: string | undefined, nom: string) =>
+  prismaClient.lieuInclusion.updateMany({
+    where: { id },
+    data: {
+      nomReferent: nom,
+      courrielReferent: `${nom.toLowerCase()}@example.com`,
+    },
+  })
+
+Given('seule la fiche à absorber porte un référent', async () => {
+  await poserUnReferent(semis.absorbeId, 'Absorbe')
+})
+
+Given('les deux fiches portent un référent différent', async () => {
+  await poserUnReferent(semis.absorbeId, 'Absorbe')
+  await poserUnReferent(semis.conserveId, 'Conserve')
+})
+
 When("l'administration fusionne le premier dans le second", async () => {
   await fusionnerDesLieux(semis.absorbeId ?? '', semis.conserveId ?? '')
 })
@@ -103,6 +135,36 @@ Then('ce médiateur exerce dans le lieu conservé', async () => {
 
 Then("ce médiateur n'exerce qu'une fois dans le lieu conservé", async () => {
   assert.strictEqual(await activitesDuMediateurDansLeLieuConserve(), 1)
+})
+
+const lieuConserve = () =>
+  prismaClient.lieuInclusion.findUniqueOrThrow({
+    where: { id: semis.conserveId },
+    select: { visiblePourCartographieNationale: true, nomReferent: true },
+  })
+
+Then('le lieu conservé est publié sur la carte nationale', async () => {
+  const { visiblePourCartographieNationale } = await lieuConserve()
+
+  assert.strictEqual(visiblePourCartographieNationale, true)
+})
+
+Then("le lieu conservé n'est pas publié sur la carte nationale", async () => {
+  const { visiblePourCartographieNationale } = await lieuConserve()
+
+  assert.strictEqual(visiblePourCartographieNationale, false)
+})
+
+Then('le lieu conservé porte le référent de la fiche absorbée', async () => {
+  const { nomReferent } = await lieuConserve()
+
+  assert.strictEqual(nomReferent, 'Absorbe')
+})
+
+Then('le lieu conservé garde son propre référent', async () => {
+  const { nomReferent } = await lieuConserve()
+
+  assert.strictEqual(nomReferent, 'Conserve')
 })
 
 Then('le lieu conservé annonce les services des deux', async () => {
