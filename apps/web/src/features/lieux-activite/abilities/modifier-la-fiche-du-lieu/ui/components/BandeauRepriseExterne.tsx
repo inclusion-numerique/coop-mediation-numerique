@@ -29,14 +29,18 @@ export const BandeauRepriseExterne = ({
   <>
     <Notice
       className="fr-notice--flex fr-align-items-center fr-mb-4v"
+      // `fr-notice--flex` fait du titre lui-même un conteneur flex, et
+      // `fr-align-items-center` y centre l'icône, qui en est le `::before`. Le
+      // texte et le bouton sont donc ses deux autres éléments : le premier
+      // s'étire, ce qui pousse le second au bord droit.
       title={
-        <span className="fr-width-full fr-flex fr-align-items-center fr-justify-content-space-between fr-flex-gap-3v fr-ml-1w fr-text--left fr-text--regular fr-text-default--grey">
-          <span>
+        <>
+          <span className="fr-flex-grow-1 fr-text--left fr-text--regular fr-text-default--grey">
             <b>{reprise.source}</b> a modifié cette fiche le{' '}
             {formatDate(reprise.le, 'dd.MM.yyyy')}.
           </span>
           {reprise.differences.length > 0 && <BoutonDesDifferences />}
-        </span>
+        </>
       }
     />
     {reprise.differences.length > 0 && (
