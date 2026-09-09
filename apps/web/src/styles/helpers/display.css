@@ -103,6 +103,15 @@
   align-items: baseline !important;
 }
 
+/*
+ * L'écart entre colonnes seulement. `grid-gap` pose les deux axes d'un coup, ce
+ * qui aère aussi les lignes : dans une liste, ça défait le paquet que les puces
+ * forment ensemble et fait défiler pour rien.
+ */
+.fr-grid-column-gap-2v {
+  column-gap: 1rem !important;
+}
+
 .fr-overflow-hidden {
   overflow: hidden;
 }

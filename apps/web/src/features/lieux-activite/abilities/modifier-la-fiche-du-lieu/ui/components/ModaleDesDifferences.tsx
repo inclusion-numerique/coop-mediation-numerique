@@ -51,7 +51,7 @@ const Valeur = ({ valeur }: { valeur: ValeurAffichee }) => {
         // `fr-list-style-inside` ramène la puce DANS la cellule : posée dehors,
         // elle empiète sur la colonne voisine et un libellé long passe
         // par-dessus les puces de la suivante.
-        'fr-display-grid fr-grid-cols-3 fr-grid-gap-2v fr-list-style-inside':
+        'fr-display-grid fr-grid-cols-3 fr-grid-column-gap-2v fr-list-style-inside':
           enColonnes,
         'fr-pl-3w': !enColonnes,
       })}
