@@ -43,10 +43,17 @@ const Valeur = ({ valeur }: { valeur: ValeurAffichee }) => {
   if (valeur._tag === 'Horaires')
     return <HorairesDOuverture horaires={valeur.osm} />
 
+  const enColonnes = valeur.valeurs.length > LISTE_LONGUE
+
   return (
     <ul
-      className={classNames('fr-mb-0 fr-pl-3w', {
-        'fr-display-grid fr-grid-cols-3': valeur.valeurs.length > LISTE_LONGUE,
+      className={classNames('fr-mb-0', {
+        // `fr-list-style-inside` ramène la puce DANS la cellule : posée dehors,
+        // elle empiète sur la colonne voisine et un libellé long passe
+        // par-dessus les puces de la suivante.
+        'fr-display-grid fr-grid-cols-3 fr-grid-gap-2v fr-list-style-inside':
+          enColonnes,
+        'fr-pl-3w': !enColonnes,
       })}
     >
       {valeur.valeurs.map((une) => (

@@ -148,3 +148,14 @@
     display: block !important;
   }
 }
+
+/*
+ * La puce d'une liste est posée HORS de la boîte de l'élément par défaut. Dans
+ * une grille, elle empiète alors sur la cellule voisine : un libellé long passe
+ * par-dessus les puces de la colonne d'après. `inside` la ramène dans la
+ * cellule, au prix d'un texte qui ne s'aligne plus sous lui-même à la ligne
+ * suivante — le bon compromis quand les colonnes sont étroites.
+ */
+.fr-list-style-inside {
+  list-style-position: inside;
+}
