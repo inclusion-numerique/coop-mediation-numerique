@@ -1,9 +1,4 @@
 import {
-  appliquerLaReconciliation,
-  lireLesLieuxCarto,
-  reconcilierAvecLaCartographie,
-} from '@app/web/features/lieux-activite/abilities/reconcilier-avec-la-cartographie'
-import {
   effacerLeSiret,
   interrogerSirene,
   lireLesLieuxASiret,
@@ -26,20 +21,6 @@ import { executeSyncRdvspData } from './sync-rdvsp-data/executeSyncRdvspData'
 export type JobExecutor<Name extends JobName, Result = unknown> = (
   job: Job & { name: Name; payload: JobPayload<Name> },
 ) => Promise<Result>
-
-const executeUpdateStructuresCartographieNationale = async () => {
-  const journal = (message: string) =>
-    output.log(`update-structures-carto: ${message}`)
-
-  journal('lecture des lieux de la cartographie depuis l’Entrepôt')
-
-  return reconcilierAvecLaCartographie({
-    ports: {
-      lireLesLieuxCarto,
-      appliquerLaReconciliation: appliquerLaReconciliation(journal),
-    },
-  })
-}
 
 const JOUR_EN_MS = 24 * 60 * 60 * 1000
 
@@ -85,8 +66,6 @@ export const jobExecutors: {
   'normalize-sirets': executeNormalizeSirets,
   'remove-orphan-brevo-contacts': executeRemoveOrphanBrevoContacts,
   'sync-rdvsp-data': executeSyncRdvspData,
-  'update-structures-cartographie-nationale':
-    executeUpdateStructuresCartographieNationale,
 }
 
 export const executeJob = async (job: Job) => {

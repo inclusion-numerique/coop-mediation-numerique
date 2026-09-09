@@ -99,12 +99,6 @@ export {
   type LieuActiviteTrouve,
   rechercherUnLieuActivite,
 } from './abilities/rechercher-un-lieu-activite'
-// Réconcilier avec la cartographie nationale
-export {
-  appliquerLaReconciliation,
-  lireLesLieuxCarto,
-  reconcilierAvecLaCartographie,
-} from './abilities/reconcilier-avec-la-cartographie'
 // Retirer
 export { retirerDesLieux } from './abilities/retirer-des-lieux'
 export {
