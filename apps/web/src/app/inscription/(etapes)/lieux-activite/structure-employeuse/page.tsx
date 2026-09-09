@@ -30,6 +30,18 @@ const StructureEmployeuseLieuxActivitePageRoute = async () => {
   })
 
   if (!emploi) {
+    // DIAGNOSTIC TEMPORAIRE — à retirer une fois la CI verte.
+    //
+    // Cette redirection est ce que l'e2e observe en CI et que je ne reproduis
+    // dans aucune configuration locale : base recréée à l'identique, suite
+    // complète, ordre exact du conteneur qui échoue. On demande donc à la CI de
+    // dire ce qu'elle voit, plutôt que de continuer à supposer.
+    // biome-ignore lint/suspicious/noConsole: diagnostic CI, retiré ensuite
+    console.info('[diagnostic] employeuse introuvable', {
+      userId: user.id,
+      emploisEnSession: user.emplois.length,
+      employeuseEnSession: user.emplois.at(0)?.structure?.nom ?? null,
+    })
     // No structure employeuse, skip this step
     redirect('/inscription/lieux-activite')
   }
