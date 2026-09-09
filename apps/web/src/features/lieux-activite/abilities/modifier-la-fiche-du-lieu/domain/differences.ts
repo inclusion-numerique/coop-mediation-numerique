@@ -11,11 +11,16 @@ import type { SectionDeLaFiche } from './modification-lieu'
  *   les tiennent de la coop et ne peuvent pas en différer ;
  * - `dispositifProgrammesNationaux` et `autresFormationsLabels`, qu'aucun
  *   formulaire de la coop ne renseigne. Les proposer au choix reviendrait à
- *   offrir d'effacer ce que la coop n'a jamais su dire.
+ *   offrir d'effacer ce que la coop n'a jamais su dire ;
+ * - `adresse`, qui ne voyage jamais seule. La coop la tient avec ses coordonnées
+ *   et son identifiant BAN, que le registre ne porte pas : reprendre l'adresse
+ *   d'une autre source poserait une voie sans déplacer le point, et la
+ *   cartographie afficherait le lieu à son ancienne position sous sa nouvelle
+ *   adresse. Une adresse se corrige dans le formulaire, par l'autocomplétion qui
+ *   rend les trois d'un coup.
  */
 const CHAMPS = [
   { champ: 'nom', libelle: 'Nom', section: 'InformationsGenerales' },
-  { champ: 'adresse', libelle: 'Adresse', section: 'InformationsGenerales' },
   {
     champ: 'typologies',
     libelle: 'Typologies',

@@ -74,6 +74,24 @@ const Ecart = ({
  * cartographie sont réécrits eux aussi — sans quoi la fiche coop garderait son
  * ancienne valeur et la modale se rouvrirait sur le même écart.
  */
+/**
+ * Le bouton qui ouvre la modale, séparé d'elle.
+ *
+ * Il vit dans le corps de l'alerte, que le DSFR rend dans un `<p>` : un
+ * `<dialog>` n'y a pas sa place — le navigateur le remonterait hors du
+ * paragraphe et la mise en page casserait. Les deux partagent la même modale,
+ * déclarée au niveau du module.
+ */
+export const BoutonDesDifferences = () => (
+  <Button
+    size="small"
+    priority="secondary"
+    nativeButtonProps={modale.buttonProps}
+  >
+    Voir les différences
+  </Button>
+)
+
 export const ModaleDesDifferences = ({
   lieuId,
   differences,
@@ -122,49 +140,40 @@ export const ModaleDesDifferences = ({
   }
 
   return (
-    <>
-      <Button
-        size="small"
-        priority="secondary"
-        nativeButtonProps={modale.buttonProps}
-      >
-        Voir les différences
-      </Button>
-      <modale.Component
-        title="Différences avec la cartographie nationale"
-        buttons={[
-          {
-            children: 'Annuler',
-            priority: 'secondary',
-            onClick: modale.close,
-            disabled: enCours,
-          },
-          {
-            children: 'Enregistrer',
-            onClick: appliquer,
-            disabled: enCours,
-          },
-        ]}
-      >
-        <p className="fr-text--sm fr-mb-4v">
-          Pour chaque information, choisissez la version à conserver. Ce que
-          vous enregistrez ici remplace la fiche, comme si vous l’aviez saisi
-          dans le formulaire.
-        </p>
-        {differences.map((difference) => (
-          <Ecart
-            key={difference.champ}
-            difference={difference}
-            choisi={origineDe(difference.champ)}
-            choisir={(origine) =>
-              setChoix((precedents) => ({
-                ...precedents,
-                [difference.champ]: origine,
-              }))
-            }
-          />
-        ))}
-      </modale.Component>
-    </>
+    <modale.Component
+      title="Différences avec la cartographie nationale"
+      buttons={[
+        {
+          children: 'Annuler',
+          priority: 'secondary',
+          onClick: modale.close,
+          disabled: enCours,
+        },
+        {
+          children: 'Enregistrer',
+          onClick: appliquer,
+          disabled: enCours,
+        },
+      ]}
+    >
+      <p className="fr-text--sm fr-mb-4v">
+        Pour chaque information, choisissez la version à conserver. Ce que vous
+        enregistrez ici remplace la fiche, comme si vous l’aviez saisi dans le
+        formulaire.
+      </p>
+      {differences.map((difference) => (
+        <Ecart
+          key={difference.champ}
+          difference={difference}
+          choisi={origineDe(difference.champ)}
+          choisir={(origine) =>
+            setChoix((precedents) => ({
+              ...precedents,
+              [difference.champ]: origine,
+            }))
+          }
+        />
+      ))}
+    </modale.Component>
   )
 }

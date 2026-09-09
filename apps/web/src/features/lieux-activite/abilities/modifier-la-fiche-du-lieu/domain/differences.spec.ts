@@ -73,16 +73,24 @@ describe('différences entre la fiche de la coop et celle du registre', () => {
   })
 
   it('compare les objets sur leur contenu, pas sur leur identité', () => {
-    const memeAdresse = {
+    const memeContact = { ...fiche, contact: Contact({}) }
+
+    expect(differences(fiche, memeContact)).toEqual([])
+  })
+
+  it('ne propose jamais de reprendre l’adresse d’une autre source', () => {
+    // Elle ne voyage pas seule : la reprendre poserait une voie sans déplacer
+    // les coordonnées, que le registre ne porte pas.
+    const ailleurs = {
       ...fiche,
       adresse: Adresse({
-        voie: '12 rue de la Paix',
+        voie: '3 avenue de la Gare',
         commune: 'Reims',
         code_postal: '51100',
       }),
     }
 
-    expect(differences(fiche, memeAdresse)).toEqual([])
+    expect(differences(fiche, ailleurs)).toEqual([])
   })
 
   it('ignore ce qu’aucun formulaire de la coop ne sait écrire', () => {
