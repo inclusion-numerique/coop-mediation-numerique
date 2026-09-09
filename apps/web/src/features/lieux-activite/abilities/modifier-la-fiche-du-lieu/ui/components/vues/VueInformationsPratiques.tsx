@@ -20,9 +20,13 @@ export const VueInformationsPratiques = ({
     <div>
       <span className="fr-text-mention--grey">Site internet du lieu</span>
       {/*
-        La colonne empile les sites ; sans `align-items: start`, ses enfants
-        s'étirent sur toute la largeur et le lien devient souligné — et
-        cliquable — jusqu'au bord.
+        Chaque lien vit dans son propre bloc, et n'est donc PAS un enfant direct
+        de la colonne flex : un élément flex est blockifié — le `display: inline`
+        que le DSFR donne à `.fr-link` devient `block` — et son soulignement se
+        dessine alors sur la boîte de ligne, jusqu'au bord, au lieu de suivre les
+        glyphes. `align-items: start` ne masquait le défaut que tant que l'URL
+        tenait sur une ligne : dès qu'elle se replie, la boîte occupe toute la
+        largeur disponible.
       */}
       <div
         className="fr-flex fr-direction-column fr-align-items-start"
@@ -30,15 +34,16 @@ export const VueInformationsPratiques = ({
       >
         {sitesWeb.length > 0 ? (
           sitesWeb.map((site) => (
-            <Link
-              key={site}
-              className="fr-link"
-              href={site}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {site}
-            </Link>
+            <div key={site}>
+              <Link
+                className="fr-link"
+                href={site}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {site}
+              </Link>
+            </div>
           ))
         ) : (
           <span className="fr-text--medium">Non renseigné</span>
