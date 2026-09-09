@@ -46,7 +46,7 @@ export const FicheDuLieuPage = ({
       {fiche.misAJourPar ? `par ${fiche.misAJourPar}` : ''}
     </p>
     {fiche.repriseExterne && (
-      <AlerteRepriseExterne reprise={fiche.repriseExterne} />
+      <AlerteRepriseExterne lieuId={fiche.id} reprise={fiche.repriseExterne} />
     )}
 
     <h1 className="fr-page-title fr-h2">{fiche.nom}</h1>

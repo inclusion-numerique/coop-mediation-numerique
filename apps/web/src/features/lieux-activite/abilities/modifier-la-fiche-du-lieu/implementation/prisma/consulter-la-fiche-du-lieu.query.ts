@@ -1,7 +1,8 @@
 import { prismaClient } from '@app/web/prismaClient'
+import type { Fiche } from '../../../../domain/fiche'
 import type { Lieu } from '../../../../domain/lieu'
 import type { LieuId } from '../../../../domain/lieu-id'
-import { lieuToDomain } from '../../../../implementation'
+import { lieuCoopToDomain, lieuToDomain } from '../../../../implementation'
 import { inscriptionPourLaFiche } from '../../../../implementation/prisma/registre'
 
 export type FicheDuLieu = {
@@ -16,6 +17,12 @@ export type FicheDuLieu = {
    * celle qu'il faut lui remontrer pour qu'il situe la reprise.
    */
   readonly derniereModificationCoop: Date
+  /**
+   * La fiche telle que la COOP l'a enregistrée, face à `lieu.fiche` qui vient du
+   * registre. Les deux sont les deux côtés du difftool : ce que le médiateur
+   * avait saisi, et ce qu'on lui montre aujourd'hui.
+   */
+  readonly ficheCoop: Fiche
 }
 
 /**
@@ -53,6 +60,7 @@ export const consulterLaFicheDuLieu = async (
 
   return {
     lieu: lieuToDomain(lieu),
+    ficheCoop: lieuCoopToDomain(lieu).fiche,
     derniereModificationCoop: lieu.modification,
     auteurDerniereModification:
       derniereModificationPar == null

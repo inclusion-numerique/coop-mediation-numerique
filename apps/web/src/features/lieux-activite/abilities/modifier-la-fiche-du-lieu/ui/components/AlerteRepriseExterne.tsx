@@ -1,6 +1,7 @@
 import { formatDate } from '@app/web/utils/formatDate'
 import Alert from '@codegouvfr/react-dsfr/Alert'
 import type { FicheAffichee } from '../fiche-du-lieu.presenter'
+import { ModaleDesDifferences } from './ModaleDesDifferences'
 
 /**
  * Prévient le médiateur qu'un autre producteur a repris sa fiche après lui.
@@ -14,8 +15,10 @@ import type { FicheAffichee } from '../fiche-du-lieu.presenter'
  * s'afficherait partout ne serait plus lue nulle part.
  */
 export const AlerteRepriseExterne = ({
+  lieuId,
   reprise,
 }: {
+  lieuId: string
   reprise: NonNullable<FicheAffichee['repriseExterne']>
 }) => (
   <Alert
@@ -23,10 +26,18 @@ export const AlerteRepriseExterne = ({
     severity="info"
     small
     description={
-      <>
-        <strong>{reprise.source}</strong> a modifié cette fiche le{' '}
-        {formatDate(reprise.le, 'dd.MM.yyyy')}.
-      </>
+      <span className="fr-flex fr-direction-column fr-align-items-start fr-flex-gap-3v">
+        <span>
+          <strong>{reprise.source}</strong> a modifié cette fiche le{' '}
+          {formatDate(reprise.le, 'dd.MM.yyyy')}.
+        </span>
+        {reprise.differences.length > 0 && (
+          <ModaleDesDifferences
+            lieuId={lieuId}
+            differences={reprise.differences}
+          />
+        )}
+      </span>
     }
   />
 )

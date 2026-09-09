@@ -11,11 +11,14 @@ import { getCartographieNationaleSourceLabel } from '@app/web/libraries/cartogra
 import { safeToTimetableOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import { getDepartementCodeFromCodeInsee } from '@app/web/utils/getDepartementFromCodeInsee'
 import {
+  type Adresse,
+  type Contact,
   type Frais,
   Itinerance,
   isSiret,
   ModaliteAcces,
   type ModaliteAccompagnement,
+  type Presentation,
   type PriseEnChargeSpecifique,
   type PublicSpecifiquementAdresse,
   type Service,
@@ -27,6 +30,7 @@ import {
 } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import type { Lieu } from '../../../domain/lieu'
 import { estPublie } from '../../../domain/visibilite-cartographie'
+import { type ChampCompare, differences } from '../domain/differences'
 import type { FicheDuLieu } from '../implementation'
 
 /**
@@ -50,6 +54,16 @@ export type FicheAffichee = {
     readonly source: string
     readonly le: Date
     readonly votreDerniereModificationLe: Date
+    /**
+     * Ce qui a changé, mis en mots. Peut être vide : une source peut avoir
+     * horodaté un moissonnage sans rien modifier.
+     */
+    readonly differences: readonly {
+      readonly champ: ChampCompare
+      readonly libelle: string
+      readonly coop: string
+      readonly registre: string
+    }[]
   } | null
   readonly publieSurLaCartographie: boolean
   readonly connuDeLaCartographie: boolean
@@ -175,8 +189,56 @@ const misAJourPar = (
  * Le médiateur voit sinon une date de mise à jour qu'il ne reconnaît pas, sur
  * des valeurs qu'il n'a pas écrites, sans que rien ne le lui dise.
  */
+const NON_RENSEIGNE = 'Non renseigné'
+
+const adresseLisible = (adresse: Adresse): string =>
+  [
+    adresse.voie,
+    adresse.complement_adresse,
+    `${adresse.code_postal} ${adresse.commune}`,
+  ]
+    .filter((morceau) => morceau != null && morceau !== '')
+    .join(', ')
+
+const morceauxDuContact = (contact: Contact): string[] =>
+  [
+    contact.telephone,
+    ...(contact.courriels ?? []),
+    ...(contact.site_web ?? []),
+  ].filter((morceau): morceau is string => morceau != null && morceau !== '')
+
+/**
+ * Une valeur de fiche, dite en toutes lettres pour la comparaison.
+ *
+ * L'absence est une valeur comme une autre : c'est elle qu'on lit quand une
+ * source a effacé ce que le médiateur avait saisi, et il doit pouvoir la choisir
+ * comme le reste.
+ */
+const lisible = (valeur: unknown): string => {
+  if (valeur == null || valeur === '') return NON_RENSEIGNE
+  if (typeof valeur === 'string') return valeur
+
+  if (Array.isArray(valeur))
+    return valeur.length === 0 ? NON_RENSEIGNE : valeur.map(String).join(', ')
+
+  if (typeof valeur !== 'object') return String(valeur)
+
+  if ('voie' in valeur) return adresseLisible(valeur as Adresse)
+
+  if ('resume' in valeur || 'detail' in valeur) {
+    const { resume, detail } = valeur as Presentation
+
+    return [resume, detail].filter((morceau) => morceau != null).join(' — ')
+  }
+
+  const morceaux = morceauxDuContact(valeur as Contact)
+
+  return morceaux.length === 0 ? NON_RENSEIGNE : morceaux.join(' · ')
+}
+
 const repriseExterne = (
   lieu: FicheDuLieu['lieu'],
+  ficheCoop: FicheDuLieu['ficheCoop'],
   derniereModificationCoop: Date,
 ): FicheAffichee['repriseExterne'] => {
   const { derniereModification } = lieu.tracabilite
@@ -188,6 +250,14 @@ const repriseExterne = (
         ),
         le: derniereModification.date,
         votreDerniereModificationLe: derniereModificationCoop,
+        differences: differences(ficheCoop, lieu.fiche).map(
+          ({ champ, libelle, coop, registre }) => ({
+            champ,
+            libelle,
+            coop: lisible(coop),
+            registre: lisible(registre),
+          }),
+        ),
       }
     : null
 }
@@ -196,6 +266,7 @@ export const ficheAffichee = ({
   lieu,
   auteurDerniereModification,
   derniereModificationCoop,
+  ficheCoop,
 }: FicheDuLieu): FicheAffichee => {
   const { fiche } = lieu
   const contact = fiche.contact
@@ -209,7 +280,7 @@ export const ficheAffichee = ({
     nom: nomAffiche(fiche.nom, lieu.identiteSirene.nomUsage),
     misAJourLe: lieu.tracabilite.derniereModification.date,
     misAJourPar: misAJourPar(lieu, auteurDerniereModification),
-    repriseExterne: repriseExterne(lieu, derniereModificationCoop),
+    repriseExterne: repriseExterne(lieu, ficheCoop, derniereModificationCoop),
     publieSurLaCartographie: estPublie(lieu.visibilite),
     connuDeLaCartographie: lieu.idsCartographieNationale != null,
     departementCode:

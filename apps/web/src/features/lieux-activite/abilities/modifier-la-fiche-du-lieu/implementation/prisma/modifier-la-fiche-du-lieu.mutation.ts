@@ -1,8 +1,10 @@
 import { failure, type Result, success } from '@app/web/libraries/result'
 import { prismaClient } from '@app/web/prismaClient'
+import type { Fiche } from '../../../../domain/fiche'
 import type { Lieu } from '../../../../domain/lieu'
 import type { LieuId } from '../../../../domain/lieu-id'
 import { publicationSansService } from '../../../../domain/publication'
+import { ModifieParUtilisateur } from '../../../../domain/tracabilite'
 import type { UserId } from '../../../../domain/user-id'
 import { estPublie } from '../../../../domain/visibilite-cartographie'
 import {
@@ -11,6 +13,11 @@ import {
   lieuFromDomain,
 } from '../../../../implementation'
 import { appliquerModification } from '../../domain/appliquer-la-modification'
+import {
+  type ChampCompare,
+  differences,
+  type OrigineDuChoix,
+} from '../../domain/differences'
 import {
   type EchecDeModification,
   FicheIntrouvable,
@@ -216,6 +223,81 @@ export const modifierLaFicheDuLieu = async ({
     await ecrireAuRegistre(transaction, {
       lieu: modifie,
       colonnes: colonnesDuRegistreParSection[modification.section],
+      maintenant,
+    })
+  })
+
+  return success(modifie)
+}
+
+/**
+ * Applique, champ par champ, le choix du médiateur entre sa fiche et celle que
+ * le registre montre.
+ *
+ * C'est un raccourci du formulaire, pas un chemin d'écriture parallèle : le
+ * résultat passe par les mêmes tables de sections, donc par les mêmes colonnes,
+ * et laisse le lieu dans l'état où une saisie l'aurait laissé.
+ *
+ * Les sections écrites sont celles de TOUTES les différences, y compris celles
+ * où le médiateur garde la valeur du registre. Sans cela, la ligne coop
+ * conserverait son ancienne valeur, l'écart réapparaîtrait à la lecture
+ * suivante, et la modale se rouvrirait indéfiniment sur le même choix.
+ */
+export const appliquerLesDifferences = async ({
+  id,
+  choix,
+  par,
+  maintenant = new Date(),
+}: {
+  id: LieuId
+  choix: Readonly<Partial<Record<ChampCompare, OrigineDuChoix>>>
+  par: UserId
+  maintenant?: Date
+}): Promise<Result<Lieu, EchecDeModification>> => {
+  const fiche = await consulterLaFicheDuLieu(id)
+
+  if (fiche == null) return failure(FicheIntrouvable(id))
+
+  const ecarts = differences(fiche.ficheCoop, fiche.lieu.fiche)
+
+  if (ecarts.length === 0) return success(fiche.lieu)
+
+  const modifie: Lieu = {
+    ...fiche.lieu,
+    fiche: ecarts.reduce<Fiche>(
+      (resolue, { champ }) =>
+        choix[champ] === 'coop'
+          ? { ...resolue, [champ]: fiche.ficheCoop[champ] }
+          : resolue,
+      fiche.lieu.fiche,
+    ),
+    tracabilite: {
+      ...fiche.lieu.tracabilite,
+      derniereModification: ModifieParUtilisateur(maintenant, par),
+    },
+  }
+
+  const sections = [...new Set(ecarts.map(({ section }) => section))]
+
+  await prismaClient.$transaction(async (transaction) => {
+    await transaction.lieuInclusion.update({
+      where: { id },
+      data: sections.reduce(
+        (colonnes, section) => ({ ...colonnes, ...ecriture(modifie, section) }),
+        {},
+      ),
+    })
+
+    await ecrireAuRegistre(transaction, {
+      lieu: modifie,
+      colonnes: (toutes) =>
+        sections.reduce(
+          (colonnes, section) => ({
+            ...colonnes,
+            ...colonnesDuRegistreParSection[section](toutes),
+          }),
+          {},
+        ),
       maintenant,
     })
   })

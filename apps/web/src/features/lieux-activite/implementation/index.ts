@@ -6,7 +6,11 @@
  * autre stockage, ou une autre source, prendra un dossier voisin plutôt que de
  * s'y mêler.
  */
-export { lieuFromDomain, lieuToDomain } from './prisma/lieu.transfer'
+export {
+  lieuCoopToDomain,
+  lieuFromDomain,
+  lieuToDomain,
+} from './prisma/lieu.transfer'
 export {
   type Correle,
   type LieuAMaterialiser,

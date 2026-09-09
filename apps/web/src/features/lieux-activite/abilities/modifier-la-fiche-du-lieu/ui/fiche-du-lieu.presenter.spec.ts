@@ -68,6 +68,7 @@ const afficher = (fiche: Lieu['fiche']) => {
     lieu: { ...lieu, fiche },
     auteurDerniereModification: null,
     derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
+    ficheCoop: lieu.fiche,
   }
 
   return ficheAffichee(consultee)
@@ -88,6 +89,7 @@ describe('mise en forme de la fiche pour l’écran', () => {
       },
       auteurDerniereModification: null,
       derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
+      ficheCoop: lieu.fiche,
     })
 
     // Sans ce nom, l'écran annoncerait une mise à jour récente que le médiateur
@@ -109,6 +111,7 @@ describe('mise en forme de la fiche pour l’écran', () => {
       },
       auteurDerniereModification: null,
       derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
+      ficheCoop: lieu.fiche,
     })
 
     // C'est l'écart entre les deux dates qui fait l'information : « on a écrit
@@ -117,7 +120,44 @@ describe('mise en forme de la fiche pour l’écran', () => {
       source: 'dora',
       le: new Date('2026-09-01T00:00:00Z'),
       votreDerniereModificationLe: DERNIERE_MODIFICATION_COOP,
+      differences: [],
     })
+  })
+
+  it('met en mots ce que la source a change, l’absence comprise', () => {
+    const { repriseExterne } = ficheAffichee({
+      lieu: {
+        ...lieu,
+        fiche: { ...lieu.fiche, horaires: 'Tu 14:00-18:00', nom: Nom('Autre') },
+        tracabilite: {
+          ...lieu.tracabilite,
+          derniereModification: ModifieParSource(
+            new Date('2026-09-01T00:00:00Z'),
+            SourceCartographie('dora'),
+          ),
+        },
+      },
+      auteurDerniereModification: null,
+      derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
+      // La coop n'avait pas d'horaires : le registre en pose, et l'écart doit se
+      // lire comme « Non renseigné » face à la nouvelle valeur.
+      ficheCoop: lieu.fiche,
+    })
+
+    expect(repriseExterne?.differences).toEqual([
+      {
+        champ: 'nom',
+        libelle: 'Nom',
+        coop: 'Espace numérique',
+        registre: 'Autre',
+      },
+      {
+        champ: 'horaires',
+        libelle: 'Horaires',
+        coop: 'Non renseigné',
+        registre: 'Tu 14:00-18:00',
+      },
+    ])
   })
 
   it('ne signale aucune reprise quand la coop a la main', () => {
@@ -129,6 +169,7 @@ describe('mise en forme de la fiche pour l’écran', () => {
       lieu,
       auteurDerniereModification: 'Édith Piaf',
       derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
+      ficheCoop: lieu.fiche,
     })
 
     expect(affichee.misAJourPar).toBe('Édith Piaf')

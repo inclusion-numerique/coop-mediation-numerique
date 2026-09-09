@@ -82,6 +82,9 @@ const CHAMPS = [
 
 export type ChampCompare = (typeof CHAMPS)[number]['champ']
 
+/** De quel côté le médiateur prend la valeur, pour un champ donné. */
+export type OrigineDuChoix = 'coop' | 'registre'
+
 export type Difference = {
   readonly champ: ChampCompare
   readonly libelle: string
