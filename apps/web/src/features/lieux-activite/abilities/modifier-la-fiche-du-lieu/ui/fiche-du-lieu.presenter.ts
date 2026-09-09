@@ -7,6 +7,7 @@ import {
   type FormationLabelPropose,
   formationsLabelsProposees,
 } from '@app/web/features/lieux-activite/domain/nomenclatures'
+import { getCartographieNationaleSourceLabel } from '@app/web/libraries/cartographie-nationale'
 import { safeToTimetableOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import { getDepartementCodeFromCodeInsee } from '@app/web/utils/getDepartementFromCodeInsee'
 import {
@@ -139,6 +140,26 @@ const rechercheSiret = (fiche: Lieu['fiche']): StructureSearchResult | null =>
       }
     : null
 
+/**
+ * Qui a mis la fiche à jour — une personne de la coop, ou le producteur qui l'a
+ * reprise après nous.
+ *
+ * Sans ce repli, une fiche dont la cartographie s'est saisie afficherait une
+ * date de mise à jour récente sans dire d'où elle vient : le médiateur y verrait
+ * une modification qu'il ne reconnaît pas et que rien n'explique. La carte de
+ * liste fait déjà ce repli ; la fiche le doit aussi.
+ */
+const misAJourPar = (
+  lieu: FicheDuLieu['lieu'],
+  auteurCoop: string | null,
+): string | null => {
+  const { derniereModification } = lieu.tracabilite
+
+  return derniereModification._tag === 'ParSource'
+    ? getCartographieNationaleSourceLabel(derniereModification.source)
+    : auteurCoop
+}
+
 export const ficheAffichee = ({
   lieu,
   auteurDerniereModification,
@@ -154,7 +175,7 @@ export const ficheAffichee = ({
     // ailleurs ; la raison sociale reste lisible dans « Informations générales ».
     nom: nomAffiche(fiche.nom, lieu.identiteSirene.nomUsage),
     misAJourLe: lieu.tracabilite.derniereModification.date,
-    misAJourPar: auteurDerniereModification,
+    misAJourPar: misAJourPar(lieu, auteurDerniereModification),
     publieSurLaCartographie: estPublie(lieu.visibilite),
     connuDeLaCartographie: lieu.idsCartographieNationale != null,
     departementCode:

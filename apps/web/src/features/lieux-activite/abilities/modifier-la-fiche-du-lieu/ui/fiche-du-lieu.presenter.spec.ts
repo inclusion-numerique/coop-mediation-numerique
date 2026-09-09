@@ -11,7 +11,11 @@ import {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Lieu } from '../../../domain/lieu'
 import { LieuId } from '../../../domain/lieu-id'
-import { ModificationInconnue } from '../../../domain/tracabilite'
+import {
+  ModificationInconnue,
+  ModifieParSource,
+  SourceCartographie,
+} from '../../../domain/tracabilite'
 import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
 import type { FicheDuLieu } from '../implementation'
 import { ficheAffichee } from './fiche-du-lieu.presenter'
@@ -67,6 +71,35 @@ const afficher = (fiche: Lieu['fiche']) => {
 }
 
 describe('mise en forme de la fiche pour l’écran', () => {
+  it('nomme le producteur quand la dernière main n’est pas la nôtre', () => {
+    const affichee = ficheAffichee({
+      lieu: {
+        ...lieu,
+        tracabilite: {
+          ...lieu.tracabilite,
+          derniereModification: ModifieParSource(
+            new Date('2026-09-01T00:00:00Z'),
+            SourceCartographie('dora'),
+          ),
+        },
+      },
+      auteurDerniereModification: null,
+    })
+
+    // Sans ce nom, l'écran annoncerait une mise à jour récente que le médiateur
+    // ne reconnaîtrait pas et que rien n'expliquerait.
+    expect(affichee.misAJourPar).toBe('dora')
+  })
+
+  it('garde l’auteur coop quand c’est lui qui a modifié en dernier', () => {
+    const affichee = ficheAffichee({
+      lieu,
+      auteurDerniereModification: 'Édith Piaf',
+    })
+
+    expect(affichee.misAJourPar).toBe('Édith Piaf')
+  })
+
   it('déduit « tout public » de l’absence de public visé', () => {
     expect(afficher(lieu.fiche).typesDePublicsAccueillis.toutPublic).toBe(true)
   })
