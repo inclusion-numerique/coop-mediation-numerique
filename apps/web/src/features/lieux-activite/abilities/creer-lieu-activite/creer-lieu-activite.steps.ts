@@ -151,12 +151,16 @@ const semisEntrepot: { adresses: number[]; inscriptions: number[] } = {
  * bien que les deux y désignent la même adresse.
  */
 const semerUneAdresse = async (
+  numeroVoie: number,
   nomVoie: string,
   repetition: string | null = null,
 ): Promise<number> => {
+  // Sous la forme que `main.trouver_ou_creer_adresse_lieu` produit : numéro
+  // séparé, voie en capitales initiales. Semer la ligne entière décrirait un
+  // état que l'Entrepôt ne fabrique pas, et le scénario ne prouverait rien.
   const [creee] = await prismaClient.$queryRaw<{ id: number }[]>`
-    INSERT INTO main.adresse (code_postal, code_insee, nom_commune, nom_voie, repetition)
-    VALUES ('17300', '17299', 'Rochefort', ${nomVoie}, ${repetition})
+    INSERT INTO main.adresse (code_postal, code_insee, nom_commune, numero_voie, nom_voie, repetition)
+    VALUES ('17300', '17299', 'Rochefort', ${numeroVoie}, ${nomVoie}, ${repetition})
     RETURNING id`
 
   const id = creee?.id ?? 0
@@ -183,7 +187,7 @@ const SAISIE_A_ADRESSE_CONNUE: CreerLieuActiviteData = {
 const adresseARepetitionVide: { id?: number } = {}
 
 Given("une adresse déjà connue de l'Entrepôt, à répétition vide", async () => {
-  adresseARepetitionVide.id = await semerUneAdresse('99 quai du Test', '')
+  adresseARepetitionVide.id = await semerUneAdresse(99, 'Quai Du Test', '')
 })
 
 When('ce médiateur crée un lieu à cette adresse', async () => {
@@ -226,7 +230,7 @@ const SAISIE_DEJA_AU_REGISTRE: CreerLieuActiviteData = {
 }
 
 Given('le registre connaît déjà ce lieu sous la source « dora »', async () => {
-  const adresseId = await semerUneAdresse('50 rue du Registre')
+  const adresseId = await semerUneAdresse(50, 'Rue Du Registre')
 
   const inscription = await prismaClient.lieuInclusionRegistreMain.create({
     data: {

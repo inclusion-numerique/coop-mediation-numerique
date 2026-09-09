@@ -289,8 +289,8 @@ const ficheDeLaCarto: Fiche = {
 
 Given('le registre connaît déjà un lieu de la cartographie', async () => {
   const [adresse] = await prismaClient.$queryRaw<{ id: number }[]>`
-    INSERT INTO main.adresse (code_postal, code_insee, nom_commune, nom_voie)
-    VALUES ('17300', '17299', 'Rochefort', '77 rue de la Cartographie')
+    INSERT INTO main.adresse (code_postal, code_insee, nom_commune, numero_voie, nom_voie)
+    VALUES ('17300', '17299', 'Rochefort', 77, 'Rue De La Cartographie')
     RETURNING id`
 
   const adresseId = adresse?.id ?? 0
