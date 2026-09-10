@@ -10,6 +10,7 @@
 - [Commandes CLI](#commandes-cli)
 - [CLI (`apps/cli`)](#cli-appscli)
 - [Jobs](#jobs)
+- [Registre des lieux de l'Entrepot](#registre-des-lieux-de-lentrepot)
 - [Infrastructure Terraform](#infrastructure-terraform)
 - [Procedures de contribution](#procedures-de-contribution)
 - [Stack technique](#stack-technique)
@@ -412,6 +413,66 @@ l'historique git, pas dans le code.
 | Job | Schedule | Horaire |
 |---|---|---|
 | `sync-rdvsp-data` | `0 2 * * *` | Tous les jours a 02:00 |
+
+---
+
+## Registre des lieux de l'Entrepot
+
+`coop.lieu_inclusion` garde la verite de la coop. `main.lieu_inclusion_registre`, possede par
+l'Entrepot, porte la verite servie a tous les autres consommateurs (Mon Inclusion Numerique, API de
+la carte nationale, data.gouv) : `main.lieu_inclusion` en est une projection directe.
+
+L'application ecrit aux deux endroits, dans **une seule transaction** — `coop` et `main` sont deux
+schemas d'une meme base, atteints par un meme client Prisma. Le code vit dans
+`apps/web/src/features/lieux-activite/implementation/prisma/registre/`.
+
+### La regle
+
+> **Tout script SQL, backfill ou migration qui touche `coop.lieu_inclusion` en dehors de
+> l'application doit passer par l'application, ou etre signale a l'equipe Dataspace.**
+
+La double ecriture ne couvre que l'app. Un rattrapage quotidien existe cote Entrepot, mais il ne
+couvre que **l'identite** du lieu — pas ses champs metier. Une correction passee en SQL laisse donc
+le referentiel sur l'ancienne valeur, et les consommateurs avec.
+
+Un chemin applicatif echappe deja a la double ecriture, et c'est assume : le job `normalize-sirets`
+efface `coop.lieu_inclusion.siret` sans toucher `main.lieu_inclusion_registre.siret_a_l_enrichissement`,
+qui garde sa valeur jusqu'a la prochaine edition de la section « Informations generales ». Ce SIRET
+n'est qu'une entree declarative pour l'enrichissement ; le SIRET canonique est celui de la
+`structure_administrative` associee.
+
+### Les dates disent la verite
+
+`updated_at_coop` doit refleter une modification **reelle** du contenu. Ne jamais bumper
+`coop.lieu_inclusion.modification` ni `updated_at_coop` en masse sans changement de valeur : le bump
+des 6 et 7 juillet 2026 sur 12 086 lieux fausse encore les arbitrages de fraicheur entre sources.
+Un backfill se fait dates inchangees, et se signale.
+
+`main.lieu_inclusion_registre.updated_at` est une colonne **generee**
+(`GREATEST(updated_at_carto, updated_at_coop, updated_at_min)`) : ne jamais l'ecrire.
+
+### Colonnes ouvertes au role `coop`
+
+En ecriture : `structure_coop_id`, `nom`, `nom_usage`, `complement_adresse`, `adresse_id`, `source`,
+`edited_by`, `updated_at_coop`, `created_at` (INSERT seul), `deleted_at`,
+`structure_cartographie_nationale_id`, `visible_pour_cartographie_nationale`, `fiche_acces_libre`,
+`prise_rdv`, `horaires`, `presentation_resume`, `presentation_detail`, `siret_a_l_enrichissement`,
+`typologies`, `services`, `publics_specifiquement_adresses`, `prise_en_charge_specifique`,
+`modalites_acces`, `frais_a_charge`, `itinerance`, `formations_labels`, `modalites_accompagnement`,
+`contact`.
+
+Fermees, alimentees par d'autres producteurs — PostgreSQL refusera l'ecriture : `updated_at_carto`,
+`updated_at_min`, `mediateurs_en_activite`, `emplois`, `import_warnings`, `old_main_structure_id`,
+`dispositif_programmes_nationaux`, `autres_formations_labels`. Le type `ColonnesDuRegistre` les
+exclut, et c'est le compilateur qui tient l'omission.
+
+### Ce qu'on ne fait pas
+
+- Aucun trigger ni replication supplementaire vers `main` : l'adoption d'une inscription existante
+  est une logique applicative, et un trigger la casse.
+- Aucune modification de `main.adresse` en place — la table est mutualisee. On appelle
+  `main.trouver_ou_creer_adresse_lieu` et on repointe `adresse_id`.
+- Aucune ecriture dans `main.lieu_appariement` ni dans les autres tables `main.*` des lieux.
 
 ---
 
