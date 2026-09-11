@@ -8,13 +8,12 @@
  */
 
 export {
+  type ColonnesAEcrire,
   colonnesRapporteesParLaCartographie,
-  ecrireAuRegistre,
-  ecrireLeLieuAuRegistre,
   identiteDuLieu,
-  retirerDuRegistre,
   toutesLesColonnes,
-} from './ecrire-au-registre'
+} from './colonnes-a-ecrire'
+export { ecrireAuRegistre, ecrireLeLieuAuRegistre } from './ecrire-au-registre'
 export {
   adresseDuRegistre as adresseDeLInscription,
   champsDAffichage,
@@ -32,3 +31,4 @@ export {
   lieuVersRegistre,
 } from './lieu.registre.transfer'
 export { derniereModificationExterne } from './modification-du-registre'
+export { retirerDuRegistre } from './retirer-du-registre'
