@@ -7,15 +7,6 @@ import {
 } from './registre'
 import { derniereModificationExterne } from './registre/modification-du-registre'
 
-/**
- * Ce que la coop montre d'un lieu quand elle en montre plusieurs : de quoi le
- * reconnaître, le situer, dire s'il est publié et depuis quand il n'a pas
- * bougé.
- *
- * La projection appartient au lieu, pas aux pages qui l'affichent — l'annuaire
- * du département, mes lieux d'activité et la fiche d'un acteur montrent le même
- * objet, vu depuis trois entrées.
- */
 export const projectionDuLieuEnListe = {
   id: true,
   nom: true,
@@ -55,14 +46,6 @@ type LigneEnListe = Prisma.LieuInclusionGetPayload<{
   select: typeof projectionDuLieuEnListe
 }>
 
-/**
- * La ligne de liste, dite depuis le registre.
- *
- * Les clés ne bougent pas — les écrans montrent le même objet — seule la
- * provenance des valeurs change. Ce que le registre ne porte pas, ou porte moins
- * bien que la coop, garde la valeur coop : c'est le même repli que dans
- * `ficheDuRegistre`, et pour les mêmes raisons.
- */
 const depuisLInscription = (
   ligne: LigneEnListe,
   inscription: InscriptionPourLaFiche,
@@ -81,9 +64,6 @@ const depuisLInscription = (
     visiblePourCartographieNationale:
       inscription.visiblePourCartographieNationale ??
       ligne.visiblePourCartographieNationale,
-    // Le badge est celui du registre quand une source tierce y a écrit après
-    // nous ; sinon la colonne coop, qui garde la mémoire des annotations que le
-    // job de réconciliation posait avant sa suppression.
     derniereModificationSource:
       externe?._tag === 'ParSource'
         ? externe.source
@@ -93,10 +73,6 @@ const depuisLInscription = (
   }
 }
 
-/**
- * La ligne aplatie que les écrans consomment : la fiche vient du registre,
- * l'enveloppe et les compteurs restent ceux de la coop.
- */
 export const avecLaFicheDuRegistre = (ligne: LigneEnListe) => {
   const { inscriptionRegistre, ...reste } = ligne
 
@@ -110,7 +86,6 @@ export const avecLaFicheDuRegistre = (ligne: LigneEnListe) => {
 
 export type LieuEnListe = ReturnType<typeof avecLaFicheDuRegistre>
 
-/** Les lieux où un médiateur exerce, dans la projection des listes. */
 export const lieuxEnListeDuMediateur = async ({
   mediateurId,
 }: {

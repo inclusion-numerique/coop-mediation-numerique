@@ -8,6 +8,7 @@ import type { Fiche } from '../../../domain/fiche'
 import { nonVide, presentationSaisie, urlSaisie } from '../../../domain/saisie'
 import * as vocabulaire from '../vocabulaire'
 import { contactDuRegistre } from './contact-du-registre'
+import { voieDuRegistre } from './voie-du-registre'
 
 export const inscriptionPourLaFiche = {
   select: {
@@ -55,15 +56,6 @@ export const inscriptionPourLaFiche = {
 export type InscriptionPourLaFiche = Prisma.LieuInclusionRegistreMainGetPayload<
   typeof inscriptionPourLaFiche
 >
-
-const voieDuRegistre = ({
-  numeroVoie,
-  repetition,
-  nomVoie,
-}: NonNullable<InscriptionPourLaFiche['adresse']>): string =>
-  [numeroVoie?.toString(), nonVide(repetition), nonVide(nomVoie)]
-    .filter((jeton): jeton is string => jeton != null)
-    .join(' ')
 
 export const adresseDeLInscription = (
   inscription: InscriptionPourLaFiche,
