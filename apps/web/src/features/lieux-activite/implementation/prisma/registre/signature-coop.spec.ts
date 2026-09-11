@@ -6,9 +6,14 @@ describe('la marque que la coop laisse sur une inscription', () => {
   it('annonce la coop comme source et comme auteur', () => {
     expect(signatureCoop(maintenant)).toEqual({
       source: 'Coop numérique',
+      deletedAt: null,
       editedBy: 'coop',
       updatedAtCoop: maintenant,
     })
+  })
+
+  it('relève une inscription qu’une autre source avait éteinte', () => {
+    expect(signatureCoop(maintenant).deletedAt).toBeNull()
   })
 
   it('retire sans effacer, en datant la suppression', () => {

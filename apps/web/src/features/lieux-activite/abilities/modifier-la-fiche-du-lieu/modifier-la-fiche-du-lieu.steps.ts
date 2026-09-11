@@ -362,6 +362,7 @@ const inscriptionAuRegistre = () =>
       source: true,
       editedBy: true,
       updatedAtCoop: true,
+      deletedAt: true,
     },
   })
 
@@ -419,4 +420,27 @@ Then("le registre attribue l'inscription à la coop", async () => {
   const inscription = await inscriptionAuRegistre()
 
   assert.strictEqual(inscription.source, 'Coop numérique')
+})
+
+Given(
+  "cette fiche est inscrite au registre, mais une autre source l'y a supprimée",
+  async () => {
+    await prismaClient.lieuInclusionRegistreMain.create({
+      data: {
+        nom: 'Maison France Services de Reims',
+        structureCoopId: ficheSemee().lieuId,
+        source: 'dora',
+        editedBy: 'carto',
+        updatedAtCarto: new Date('2026-01-01'),
+        deletedAt: new Date('2026-02-01'),
+      },
+      select: { id: true },
+    })
+  },
+)
+
+Then('le registre ne dit plus cette inscription supprimée', async () => {
+  const inscription = await inscriptionAuRegistre()
+
+  assert.strictEqual(inscription.deletedAt, null)
 })

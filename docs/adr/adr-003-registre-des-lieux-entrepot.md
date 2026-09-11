@@ -77,6 +77,21 @@ Les deux doivent regarder les mêmes colonnes : un lieu écarté par le filtre a
 le dit récent serait perdu pour toujours par une synchronisation incrémentale, qui ne redemande
 jamais ce qu'elle croit à jour.
 
+### `deleted_at` suit ce que la coop constate
+
+Un retrait pose `deleted_at` et n'écrit aucune valeur métier : `edited_by` dit qui a agi,
+`source` continue de nommer le producteur de ce que la ligne porte encore. Même forme pour une
+dépublication.
+
+Symétriquement, **une écriture de valeurs relève la suppression** : quelqu'un tient cette fiche
+à jour dans la coop, donc le lieu existe. Sans cela, la coop écrirait dans une ligne que plus
+aucun consommateur ne lit — une modification sans effet, et rien pour le dire au médiateur qui
+vient de la faire.
+
+Reste à poser au Dataspace ce que `deleted_at` signifie pour eux : la coop marque supprimée une
+ligne dont un autre producteur reste peut-être l'auteur légitime, et la relève sur la seule foi
+d'une édition côté coop.
+
 ### Adresses : mutualisées, jamais modifiées en place
 
 `main.adresse` est partagée avec les autres producteurs. On appelle

@@ -168,3 +168,15 @@ description, services et accompagnement, modalités d'accès, publics accueillis
 * And cette fiche est déjà inscrite au registre sous la source « dora »
 * When le médiateur rattaché modifie la description du lieu
 * Then le registre attribue l'inscription à la coop
+
+### Scenario: Une inscription qu'une autre source avait éteinte revient à la vie
+
+> Quelqu'un tient cette fiche à jour dans la coop : le lieu existe. Laisser
+> l'inscription éteinte reviendrait à écrire dans une ligne que plus aucun
+> consommateur ne lit — une modification sans effet, et sans rien pour le dire
+> au médiateur qui vient de la faire.
+
+* Given une fiche de lieu avec un site web, un téléphone et un courriel
+* And cette fiche est inscrite au registre, mais une autre source l'y a supprimée
+* When le médiateur rattaché modifie la description du lieu
+* Then le registre ne dit plus cette inscription supprimée

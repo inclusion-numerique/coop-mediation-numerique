@@ -10,9 +10,16 @@ const editionCoop = (maintenant: Date) => ({
 /**
  * Une écriture de valeurs métier : la coop devient le producteur de ce que la
  * ligne dit désormais.
+ *
+ * Elle relève aussi la suppression logique, et ce n'est pas un effet de bord :
+ * quelqu'un tient cette fiche à jour dans la coop, donc le lieu existe. Le
+ * laisser éteint reviendrait à écrire des valeurs dans une ligne que plus aucun
+ * consommateur ne lit — une modification sans effet, et sans rien pour le dire
+ * au médiateur qui vient de la faire.
  */
 export const signatureCoop = (maintenant: Date) => ({
   source: SOURCE_COOP,
+  deletedAt: null,
   ...editionCoop(maintenant),
 })
 
