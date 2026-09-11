@@ -8,15 +8,19 @@
  */
 
 export {
+  type ChampsDAffichage,
+  champsDAffichage,
+} from './champs-d-affichage'
+export {
   type ColonnesAEcrire,
   colonnesRapporteesParLaCartographie,
   identiteDuLieu,
   toutesLesColonnes,
 } from './colonnes-a-ecrire'
+export { contactDuRegistre } from './contact-du-registre'
 export { ecrireAuRegistre, ecrireLeLieuAuRegistre } from './ecrire-au-registre'
 export {
-  adresseDuRegistre as adresseDeLInscription,
-  champsDAffichage,
+  adresseDeLInscription,
   ficheDuRegistre,
   type InscriptionPourLaFiche,
   inscriptionPourLaFiche,
