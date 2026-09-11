@@ -11,7 +11,7 @@ import {
   ModalitesAccesAuServiceSaisie,
 } from '../../action/modifier-la-fiche-du-lieu.validation'
 import type { EnregistrerUneSection } from '../enregistrer-une-section'
-import type { FicheAffichee } from '../fiche-du-lieu.presenter'
+import type { ModalitesAccesAuServiceAffichees } from '../fiche-affichee/modalites-acces-au-service'
 import { EtatVide } from './EtatVide'
 import { useEnregistrementDeSection } from './useEnregistrementDeSection'
 import { VueModalitesAccesAuService } from './vues/VueModalitesAccesAuService'
@@ -22,7 +22,7 @@ export const SectionModalitesAccesAuService = ({
   enregistrer,
 }: {
   id: string
-  modalitesAccesAuService: FicheAffichee['modalitesAccesAuService']
+  modalitesAccesAuService: ModalitesAccesAuServiceAffichees
   enregistrer: EnregistrerUneSection
 }) => {
   const soumettre = useEnregistrementDeSection(id, enregistrer)

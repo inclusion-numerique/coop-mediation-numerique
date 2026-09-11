@@ -10,7 +10,7 @@ import { useStore } from '@tanstack/react-form'
 import type { z } from 'zod'
 import { ServicesEtAccompagnementSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
 import type { EnregistrerUneSection } from '../enregistrer-une-section'
-import type { FicheAffichee } from '../fiche-du-lieu.presenter'
+import type { ServicesEtAccompagnementAffiches } from '../fiche-affichee/services-et-accompagnement'
 import { EtatVide } from './EtatVide'
 import { useEnregistrementDeSection } from './useEnregistrementDeSection'
 import { VueServicesEtAccompagnement } from './vues/VueServicesEtAccompagnement'
@@ -21,7 +21,7 @@ export const SectionServicesEtAccompagnement = ({
   enregistrer,
 }: {
   id: string
-  servicesEtAccompagnement: FicheAffichee['servicesEtAccompagnement']
+  servicesEtAccompagnement: ServicesEtAccompagnementAffiches
   enregistrer: EnregistrerUneSection
 }) => {
   const soumettre = useEnregistrementDeSection(id, enregistrer)

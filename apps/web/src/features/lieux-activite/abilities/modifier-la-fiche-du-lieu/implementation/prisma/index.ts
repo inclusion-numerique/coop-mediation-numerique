@@ -1,3 +1,4 @@
+export { appliquerLesDifferences } from './appliquer-les-differences.mutation'
 export {
   consulterLaFicheDuLieu,
   type FicheDuLieu,

@@ -11,6 +11,7 @@ import type {
   Service,
   Typologie,
 } from '@prisma/client'
+import type { InscriptionPourLaFiche } from './registre/fiche-du-registre'
 import type {
   DispositifProgrammeNationalCoop,
   FormationLabelCoop,
@@ -56,7 +57,38 @@ type Divergences =
 /**
  * Une ligne de lieu telle que la base la rend, dont les nomenclatures sont
  * prouvées alignées sur le vocabulaire de la coop.
+ *
+ * Elle porte son inscription au registre de l'Entrepôt, d'où vient DÉSORMAIS la
+ * fiche entière : nom, adresse, contact, horaires, présentation, nomenclatures.
+ * La coop reste l'ancre — c'est elle qui porte l'identifiant, les rattachements,
+ * le pivot et la traçabilité — mais elle n'est plus lue pour ce que le lieu
+ * déclare de lui-même.
+ *
+ * Le type l'exige : une requête qui oublierait d'inclure l'inscription ne
+ * compile pas, plutôt que de rendre un lieu dont la fiche serait celle d'hier.
  */
 export type LigneDuLieu = [Divergences] extends [never]
-  ? LieuInclusion
+  ? LieuInclusion & {
+      readonly inscriptionRegistre: InscriptionPourLaFiche | null
+    }
+  : { readonly VOCABULAIRE_DESALIGNE_AVEC_LE_SCHEMA: Divergences }
+
+/**
+ * La ligne telle que la COOP la porte, pour l'écriture au registre.
+ *
+ * Distincte de `LigneDuLieu`, et la distinction n'est pas une commodité de
+ * typage : y lire la fiche du registre reviendrait, au moment de pousser une
+ * fiche coop nouvellement créée, à relire les valeurs déjà inscrites et à les
+ * réécrire telles quelles. Une adoption n'inscrirait alors jamais ce que le
+ * médiateur vient de saisir.
+ *
+ * Elle ne porte de l'inscription que l'identité cartographique, qui sert à
+ * reconnaître la ligne à adopter.
+ */
+export type LigneDuLieuCoop = [Divergences] extends [never]
+  ? LieuInclusion & {
+      readonly inscriptionRegistre: {
+        readonly structureCartographieNationaleId: string | null
+      } | null
+    }
   : { readonly VOCABULAIRE_DESALIGNE_AVEC_LE_SCHEMA: Divergences }

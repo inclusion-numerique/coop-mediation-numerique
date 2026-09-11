@@ -99,12 +99,6 @@ export {
   type LieuActiviteTrouve,
   rechercherUnLieuActivite,
 } from './abilities/rechercher-un-lieu-activite'
-// Réconcilier avec la cartographie nationale
-export {
-  appliquerLaReconciliation,
-  lireLesLieuxCarto,
-  reconcilierAvecLaCartographie,
-} from './abilities/reconcilier-avec-la-cartographie'
 // Retirer
 export { retirerDesLieux } from './abilities/retirer-des-lieux'
 export {
@@ -156,3 +150,14 @@ export {
   lieuxActiviteDuMediateur,
   visibiliteDesLieuxDuMediateur,
 } from './implementation/prisma/lieux-du-mediateur'
+// Écriture au registre des lieux de l'Entrepôt. Y figure au même titre que
+// `lieuCorrele` (AR-7) : les deux écritures ne valent que composées dans la
+// transaction de l'appelant, ce qu'un port de commande ne permet pas. Quiconque
+// crée une ligne `coop.lieu_inclusion` doit passer par là, sous peine de laisser
+// le registre national ignorer ce lieu — ou d'y semer un doublon.
+export {
+  avecIdentifiantCarto,
+  ecrireLeLieuAuRegistre,
+  identiteDuLieu,
+  inscriptionPourLIdentifiantCarto,
+} from './implementation/prisma/registre'

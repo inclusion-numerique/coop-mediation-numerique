@@ -747,11 +747,13 @@ model LieuInclusion {
   // Id
   id String @id @default(uuid()) @db.Uuid
 
-  // Id composite cartographie nationale (tokens `Coop-numérique_…` séparés par `__`),
-  // posé par le job `update-structures-cartographie-nationale` depuis `main.lieu_inclusion`
-  // de l'Entrepôt. Plus une FK : la table miroir `structures_cartographie_nationale` a été
-  // supprimée, la donnée carto vit désormais dans l'Entrepôt (cf. entrepotPrismaClient).
-  structureCartographieNationaleId String? @map("id_cartographie_nationale")
+  /// L'inscription du lieu au registre de l'Entrepôt.
+  ///
+  /// Aucune colonne ici : le lien vit dans `main.lieu_inclusion.structure_coop_id`, qui
+  /// est UNIQUE et que le chemin d'écriture pose déjà. En tenir une seconde copie côté coop
+  /// dupliquerait une arête qui n'en a qu'une — c'est ainsi que la copie de l'identifiant de
+  /// cartographie avait fini par diverger de son original.
+  inscriptionRegistre LieuInclusionRegistreMain?
 
   // Timestamps internes à coop-mediation-numerique
   creation      DateTime @default(now())
@@ -838,7 +840,6 @@ model LieuInclusion {
   @@unique([creation, id])
   // descending sort on this cursor for api query performances
   @@index([creation(sort: Desc), id(sort: Desc)])
-  @@index([structureCartographieNationaleId])
   @@index([activitesCount(sort: Asc)], map: "lieu_inclusion_activites_count_asc_idx")
   @@index([activitesCount(sort: Desc)], map: "lieu_inclusion_activites_count_desc_idx")
   // performance indexes
@@ -966,6 +967,7 @@ model AdresseMain {
   departement String?                  @db.VarChar(3)
 
   structuresAdministratives StructureAdministrativeMain[]
+  lieux                     LieuInclusionRegistreMain[]
 
   @@map("adresse")
   @@schema("main")
@@ -1038,6 +1040,301 @@ model ContratMain {
   structureAdministrative StructureAdministrativeMain? @relation(fields: [structureId], references: [id])
 
   @@map("contrat")
+  @@schema("main")
+}
+
+/// Registre des lieux d'inclusion numérique côté Entrepôt (`main.lieu_inclusion`, possédé
+/// par le Dataspace, géré par Flyway). Il agrège toutes les sources — moissonnage mednum-cli, MIN,
+/// et la coop — à raison d'UNE ligne par lieu : `structure_coop_id` y est unique, il n'y a donc
+/// jamais plusieurs versions à départager. Chaque source écrase la ligne et pousse son propre
+/// horodatage, si bien que la ligne porte toujours l'information la plus récente.
+///
+/// `updated_at` n'est volontairement PAS modélisée : en base c'est une colonne générée
+/// (`GREATEST(updated_at_carto, updated_at_coop, updated_at_min)`), que Prisma ne sait pas décrire.
+/// La reproduire en colonne simple pour la CI donnerait une valeur toujours nulle en test là où la
+/// prod la calcule — un piège silencieux sur la seule information dont dépend l'arbitrage. La
+/// récence se dérive donc des trois horodatages de source, en code : même résultat, même
+/// comportement partout.
+///
+/// L'index partiel `lieu_inclusion_visible_idx` n'est pas non plus représentable par Prisma ; comme
+/// pour `main.adresse`, il n'est pas reproduit par la migration de bootstrap.
+///
+/// Les noms de contraintes déclarés ici sont ceux que pose notre migration de bootstrap, donc ceux
+/// du shadow DB : la prod, elle, porte les noms hérités d'avant le renommage de la table
+/// (`lieu_inclusion_pkey`, `lieu_inclusion_carto_id_ukey`…). Les noms ne changent rien à
+/// l'exécution ; l'écart est surveillé par `pnpm -F web db:check-main-drift`. Voir ADR-002.
+model LieuInclusionRegistreMain {
+  id                               Int      @id @default(autoincrement())
+  oldMainStructureId               Int?     @unique(map: "lieu_inclusion_old_main_structure_id_ukey") @map("old_main_structure_id")
+  nom                              String   @db.VarChar(255)
+  adresseId                        Int?     @map("adresse_id")
+  structureCartographieNationaleId String?  @unique(map: "lieu_inclusion_carto_id_ukey") @map("structure_cartographie_nationale_id") @db.VarChar
+  visiblePourCartographieNationale Boolean? @map("visible_pour_cartographie_nationale")
+  ficheAccesLibre                  String?  @map("fiche_acces_libre") @db.VarChar
+  presentationResume               String?  @map("presentation_resume")
+  presentationDetail               String?  @map("presentation_detail")
+  horaires                         String?  @db.VarChar
+  priseRdv                         String?  @map("prise_rdv") @db.VarChar
+  complementAdresse                String?  @map("complement_adresse")
+  nomUsage                         String?  @map("nom_usage") @db.VarChar(255)
+
+  itinerance                    ItineranceMain[]
+  services                      ServiceMain[]
+  modalitesAcces                ModaliteAccesMain[]               @map("modalites_acces")
+  modalitesAccompagnement       ModaliteAccompagnementMain[]      @map("modalites_accompagnement")
+  publicsSpecifiquementAdresses PublicSpecifiquementAdresseMain[] @map("publics_specifiquement_adresses")
+  priseEnChargeSpecifique       PriseEnChargeSpecifiqueMain[]     @map("prise_en_charge_specifique")
+  fraisACharge                  FraisAChargeMain[]                @map("frais_a_charge")
+  formationsLabels              FormationLabelMain[]              @map("formations_labels")
+  autresFormationsLabels        String[]                          @map("autres_formations_labels")
+  dispositifProgrammesNationaux DispositifProgrammeNationalMain[] @map("dispositif_programmes_nationaux")
+  typologies                    TypologieMain[]
+
+  /// Coordonnées publiques du lieu (`telephone`, `courriels`, `site_web`), là où la coop les porte
+  /// en colonnes. Distinct du `contact` de `structure_administrative`, qui nomme des référents.
+  contact Json?
+
+  mediateursEnActivite Int? @map("mediateurs_en_activite")
+  emplois              Int?
+
+  /// Producteur à l'origine de la fiche (`dora`, `France Services`, `Coop numérique`…), et non son
+  /// dernier éditeur : la récence se lit dans les horodatages ci-dessous.
+  source                String? @db.VarChar
+  editedBy              String? @map("edited_by") @db.VarChar(50)
+  siretALEnrichissement String? @map("siret_a_l_enrichissement") @db.VarChar(14)
+  structureCoopId       String? @unique(map: "lieu_inclusion_structure_coop_id_ukey") @map("structure_coop_id") @db.Uuid
+  importWarnings        Json?   @map("import_warnings")
+
+  /// Un horodatage par source : le moissonnage carto, la coop, l'application MIN.
+  updatedAtCarto DateTime? @map("updated_at_carto") @db.Timestamp(6)
+  updatedAtCoop  DateTime? @map("updated_at_coop") @db.Timestamp(6)
+  updatedAtMin   DateTime? @map("updated_at_min") @db.Timestamp(6)
+
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+  /// Suppression logique : `null` = lieu actif.
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp(6)
+
+  adresse AdresseMain? @relation(fields: [adresseId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "lieu_inclusion_adresse_fkey")
+
+  /// Le lieu coop dont cette inscription porte les valeurs, par la colonne que le registre porte
+  /// déjà. La relation est déclarée pour que Prisma sache joindre ; la contrainte, elle, n'existe
+  /// dans AUCUN environnement et ne doit pas être créée : `main` est possédé par le Dataspace, et
+  /// une clé étrangère posée là ferait entrer `coop` dans son graphe de dépendances — il ne
+  /// pourrait plus restaurer ni remodeler cette table sans nous. `prisma migrate` proposera
+  /// néanmoins de l'ajouter à chaque migration générée : cette ligne est à retirer.
+  lieuCoop LieuInclusion? @relation(fields: [structureCoopId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([adresseId], map: "lieu_inclusion_adresse_id_idx")
+  @@index([nom], map: "lieu_inclusion_nom_idx")
+  @@map("lieu_inclusion")
+  @@schema("main")
+}
+
+enum ServiceMain {
+  AideAuxDemarchesAdministratives                 @map("Aide aux démarches administratives")
+  MaitriseDesOutilsNumeriquesDuQuotidien          @map("Maîtrise des outils numériques du quotidien")
+  InsertionProfessionnelleViaLeNumerique          @map("Insertion professionnelle via le numérique")
+  UtilisationSecuriseeDuNumerique                 @map("Utilisation sécurisée du numérique")
+  ParentaliteEtEducationAvecLeNumerique           @map("Parentalité et éducation avec le numérique")
+  LoisirsEtCreationsNumeriques                    @map("Loisirs et créations numériques")
+  ComprehensionDuMondeNumerique                   @map("Compréhension du monde numérique")
+  AccesInternetEtMaterielInformatique             @map("Accès internet et matériel informatique")
+  AcquisitionDeMaterielInformatiqueAPrixSolidaire @map("Acquisition de matériel informatique à prix solidaire")
+
+  @@map("service")
+  @@schema("main")
+}
+
+enum TypologieMain {
+  ACI            @map("ACI")
+  ACIPHC         @map("ACIPHC")
+  AFPA           @map("AFPA")
+  AI             @map("AI")
+  ASE            @map("ASE")
+  ASSO           @map("ASSO")
+  ASSO_CHOMEUR   @map("ASSO_CHOMEUR")
+  Autre          @map("Autre")
+  AVIP           @map("AVIP")
+  BIB            @map("BIB")
+  CAARUD         @map("CAARUD")
+  CADA           @map("CADA")
+  CAF            @map("CAF")
+  CAP_EMPLOI     @map("CAP_EMPLOI")
+  CAVA           @map("CAVA")
+  CC             @map("CC")
+  CCAS           @map("CCAS")
+  CCONS          @map("CCONS")
+  CD             @map("CD")
+  CDAS           @map("CDAS")
+  CFP            @map("CFP")
+  CHRS           @map("CHRS")
+  CHU            @map("CHU")
+  CIAS           @map("CIAS")
+  CIDFF          @map("CIDFF")
+  CITMET         @map("CITMET")
+  CMP            @map("CMP")
+  CMS            @map("CMS")
+  CPAM           @map("CPAM")
+  CPH            @map("CPH")
+  CS             @map("CS")
+  CSAPA          @map("CSAPA")
+  CSC            @map("CSC")
+  DEETS          @map("DEETS")
+  DEPT           @map("DEPT")
+  DIPLP          @map("DIPLP")
+  E2C            @map("E2C")
+  EA             @map("EA")
+  EATT           @map("EATT")
+  EI             @map("EI")
+  EITI           @map("EITI")
+  ENM            @map("ENM")
+  EPCI           @map("EPCI")
+  EPI            @map("EPI")
+  EPIDE          @map("EPIDE")
+  EPN            @map("EPN")
+  ES             @map("ES")
+  ESAT           @map("ESAT")
+  ESS            @map("ESS")
+  ETTI           @map("ETTI")
+  EVS            @map("EVS")
+  FABLAB         @map("FABLAB")
+  FABRIQUE       @map("FABRIQUE")
+  FAIS           @map("FAIS")
+  FT             @map("FT")
+  GEIQ           @map("GEIQ")
+  HUDA           @map("HUDA")
+  LA_POSTE       @map("LA_POSTE")
+  MDE            @map("MDE")
+  MDH            @map("MDH")
+  MDEF           @map("MDEF")
+  MDPH           @map("MDPH")
+  MDS            @map("MDS")
+  MJC            @map("MJC")
+  ML             @map("ML")
+  MQ             @map("MQ")
+  MSA            @map("MSA")
+  MSAP           @map("MSAP")
+  MUNI           @map("MUNI")
+  OACAS          @map("OACAS")
+  ODC            @map("ODC")
+  OF             @map("OF")
+  OIL            @map("OIL")
+  OPCS           @map("OPCS")
+  PAD            @map("PAD")
+  PENSION        @map("PENSION")
+  PI             @map("PI")
+  PIJ_BIJ        @map("PIJ_BIJ")
+  PIMMS          @map("PIMMS")
+  PJJ            @map("PJJ")
+  PLIE           @map("PLIE")
+  PREF           @map("PREF")
+  PREVENTION     @map("PREVENTION")
+  REG            @map("REG")
+  RELAIS_LECTURE @map("RELAIS_LECTURE")
+  RESSOURCERIE   @map("RESSOURCERIE")
+  RFS            @map("RFS")
+  RS_FJT         @map("RS_FJT")
+  SCP            @map("SCP")
+  SPIP           @map("SPIP")
+  TIERS_LIEUX    @map("TIERS_LIEUX")
+  UDAF           @map("UDAF")
+
+  @@map("typologie")
+  @@schema("main")
+}
+
+enum ModaliteAccesMain {
+  SePresenter         @map("Se présenter")
+  Telephoner          @map("Téléphoner")
+  ContacterParMail    @map("Contacter par mail")
+  PrendreRdvEnLigne   @map("Prendre un RDV en ligne")
+  PasDePublic         @map("Ce lieu n’accueille pas de public")
+  FicheDePrescription @map("Envoyer un mail avec une fiche de prescription")
+
+  @@map("modalite_acces")
+  @@schema("main")
+}
+
+enum ModaliteAccompagnementMain {
+  EnAutonomie              @map("En autonomie")
+  AccompagnementIndividuel @map("Accompagnement individuel")
+  DansUnAtelierCollectif   @map("Dans un atelier collectif")
+  ADistance                @map("À distance")
+
+  @@map("modalite_accompagnement")
+  @@schema("main")
+}
+
+enum FraisAChargeMain {
+  Gratuit              @map("Gratuit")
+  GratuitSousCondition @map("Gratuit sous condition")
+  Payant               @map("Payant")
+
+  @@map("frais_a_charge")
+  @@schema("main")
+}
+
+enum ItineranceMain {
+  Itinerant @map("Itinérant")
+  Fixe      @map("Fixe")
+
+  @@map("itinerance")
+  @@schema("main")
+}
+
+enum PublicSpecifiquementAdresseMain {
+  Jeunes          @map("Jeunes")
+  Etudiants       @map("Étudiants")
+  FamillesEnfants @map("Familles et/ou enfants")
+  Seniors         @map("Seniors")
+  Femmes          @map("Femmes")
+
+  @@map("public_specifiquement_adresse")
+  @@schema("main")
+}
+
+enum PriseEnChargeSpecifiqueMain {
+  Surdite                  @map("Surdité")
+  HandicapsMoteurs         @map("Handicaps moteurs")
+  HandicapsMentaux         @map("Handicaps mentaux")
+  Illettrisme              @map("Illettrisme")
+  LanguesEtrangeresAnglais @map("Langues étrangères (anglais)")
+  LanguesEtrangeresAutre   @map("Langues étrangères (autres)")
+  DeficienceVisuelle       @map("Déficience visuelle")
+
+  @@map("prise_en_charge_specifique")
+  @@schema("main")
+}
+
+enum FormationLabelMain {
+  FormeAMonEspaceSante                 @map("Formé à « Mon Espace Santé »")
+  FormeADuplex                         @map("Formé à « DUPLEX » (illettrisme)")
+  ArniaMednum                          @map("Arnia/MedNum BFC (Bourgogne-Franche-Comté)")
+  CollectifRessourcesEtActeursReemploi @map("Collectif ressources et acteurs réemploi (Normandie)")
+  FabriquesDeTerritoire                @map("Fabriques de Territoire")
+  LesEclaireurs                        @map("Les Éclaireurs du numérique (Drôme)")
+  MesPapiers                           @map("Mes Papiers (Métropole de Lyon)")
+  Ordi3                                @map("ORDI 3.0")
+  SudLabs                              @map("SUD LABS (PACA)")
+
+  @@map("formation_label")
+  @@schema("main")
+}
+
+enum DispositifProgrammeNationalMain {
+  AidantsConnect                    @map("Aidants Connect")
+  BibliothequesNumeriqueDeReference @map("Bibliothèques numérique de référence")
+  CertificationPix                  @map("Certification PIX")
+  ConseillersNumeriques             @map("Conseillers numériques")
+  EmmausConnect                     @map("Emmaüs Connect")
+  FranceServices                    @map("France Services")
+  GrandeEcoleDuNumerique            @map("Grande école du numérique")
+  LaCroixRouge                      @map("La Croix Rouge")
+  PointAccesNumeriqueCaf            @map("Point d'accès numérique CAF")
+  PromeneursDuNet                   @map("Promeneurs du net")
+  RelaisNumeriqueEmmausConnect      @map("Relais numérique (Emmaüs Connect)")
+
+  @@map("dispositif_programme_national")
   @@schema("main")
 }
 

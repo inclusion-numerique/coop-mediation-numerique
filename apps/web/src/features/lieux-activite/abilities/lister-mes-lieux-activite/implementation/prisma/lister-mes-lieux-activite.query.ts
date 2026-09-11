@@ -5,7 +5,10 @@ import {
   ordonnancement,
   type TriDesLieux,
 } from '../../../../domain/tri-des-lieux'
-import { projectionDuLieuEnListe } from '../../../../implementation/prisma/lieu-en-liste'
+import {
+  avecLaFicheDuRegistre,
+  projectionDuLieuEnListe,
+} from '../../../../implementation/prisma/lieu-en-liste'
 
 /**
  * Les lieux où le médiateur exerce aujourd'hui.
@@ -25,7 +28,7 @@ export const listerMesLieuxActivite = async ({
     lieuInclusion: { [champ]: sens },
   }
 
-  return prismaClient.mediateurEnActivite.findMany({
+  const rattachements = await prismaClient.mediateurEnActivite.findMany({
     where: { mediateurId, suppression: null, fin: null },
     select: {
       id: true,
@@ -34,6 +37,13 @@ export const listerMesLieuxActivite = async ({
     },
     orderBy,
   })
+
+  // L'aplatissement porte sur le lieu, pas sur le rattachement qui le porte :
+  // c'est le lieu qui a une identité cartographique.
+  return rattachements.map((rattachement) => ({
+    ...rattachement,
+    lieuInclusion: avecLaFicheDuRegistre(rattachement.lieuInclusion),
+  }))
 }
 
 export type MonLieuActivite = Awaited<

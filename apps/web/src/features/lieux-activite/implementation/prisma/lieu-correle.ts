@@ -4,6 +4,7 @@ import {
   type LieuAMaterialiser,
 } from '@app/web/libraries/lieu-identite'
 import type { Prisma } from '@prisma/client'
+import { depublierAuRegistre } from './registre/depublier-au-registre'
 
 export type { Correle, LieuAMaterialiser }
 
@@ -117,16 +118,22 @@ export const lieuCorrele = async (
  *   visible demande une nouvelle décision, jamais une simple ré-inscription.
  *   Sinon, il n'est pas relevé (`null`) : on matérialisera un lieu neuf, lui
  *   aussi invisible par défaut, sans toucher au lieu modéré.
+ *
+ * La dépublication part aussi au registre, dans la même transaction. C'est le
+ * seul chemin qui retire un lieu de la carte sans passer par l'interrupteur de
+ * partage : sans cette écriture, l'inscription resterait annoncée publiée à
+ * tous les consommateurs de l'Entrepôt.
  */
 export const preparerCorrele = async (
   transaction: Prisma.TransactionClient,
   correle: Correle,
+  maintenant: Date,
 ): Promise<{ readonly id: string } | null> => {
   if (correle.suppression === null) return { id: correle.id }
 
   if (!correle.forte) return null
 
-  return transaction.lieuInclusion.update({
+  const releve = await transaction.lieuInclusion.update({
     where: { id: correle.id },
     data: {
       suppression: null,
@@ -138,4 +145,8 @@ export const preparerCorrele = async (
     },
     select: { id: true },
   })
+
+  await depublierAuRegistre(transaction, { lieuId: releve.id, maintenant })
+
+  return releve
 }

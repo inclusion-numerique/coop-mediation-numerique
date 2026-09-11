@@ -7,7 +7,7 @@ import { useStore } from '@tanstack/react-form'
 import type { z } from 'zod'
 import { DescriptionSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
 import type { EnregistrerUneSection } from '../enregistrer-une-section'
-import type { FicheAffichee } from '../fiche-du-lieu.presenter'
+import type { DescriptionAffichee } from '../fiche-affichee/description'
 import { EtatVide } from './EtatVide'
 import { useEnregistrementDeSection } from './useEnregistrementDeSection'
 import { VueDescription } from './vues/VueDescription'
@@ -18,7 +18,7 @@ export const SectionDescription = ({
   enregistrer,
 }: {
   id: string
-  description: FicheAffichee['description']
+  description: DescriptionAffichee
   enregistrer: EnregistrerUneSection
 }) => {
   const soumettre = useEnregistrementDeSection(id, enregistrer)

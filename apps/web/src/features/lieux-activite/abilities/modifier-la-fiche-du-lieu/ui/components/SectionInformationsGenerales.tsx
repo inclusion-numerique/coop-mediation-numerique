@@ -4,7 +4,7 @@ import EditCardTanStack from '@app/web/components/EditCardTanStack'
 import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useStore } from '@tanstack/react-form'
 import type { EnregistrerUneSection } from '../enregistrer-une-section'
-import type { FicheAffichee } from '../fiche-du-lieu.presenter'
+import type { InformationsGeneralesAffichees } from '../fiche-affichee/informations-generales'
 import { informationsGeneralesSoumises } from '../informations-generales-soumises'
 import { InformationsGeneralesEditionFields } from './InformationsGeneralesEditionFields'
 import {
@@ -21,7 +21,7 @@ export const SectionInformationsGenerales = ({
   enregistrer,
 }: {
   id: string
-  informationsGenerales: FicheAffichee['informationsGenerales']
+  informationsGenerales: InformationsGeneralesAffichees
   enregistrer: EnregistrerUneSection
 }) => {
   const soumettre = useEnregistrementDeSection(id, enregistrer)

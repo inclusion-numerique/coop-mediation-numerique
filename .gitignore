@@ -105,3 +105,6 @@ CLAUDE.md
 /refactor/
 /scripts/
 /.playwright-mcp/
+
+# dossiers de travail par sujet (relevés, exports, notes) — jamais dans le home
+/travail/

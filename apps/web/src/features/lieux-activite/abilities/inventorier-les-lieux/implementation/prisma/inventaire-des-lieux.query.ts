@@ -1,6 +1,12 @@
 import { prismaClient } from '@app/web/prismaClient'
+import { lieuToDomain } from '../../../../implementation/prisma/lieu.transfer'
 import type { LigneDuLieu } from '../../../../implementation/prisma/ligne-du-lieu'
-import * as vocabulaire from '../../../../implementation/prisma/vocabulaire'
+import {
+  aBougeDepuis,
+  avecIdentifiantCarto,
+  derniereEcriture,
+  inscriptionPourLaFiche,
+} from '../../../../implementation/prisma/registre'
 
 /**
  * Les nomenclatures rendues dans les valeurs du schéma national, et non sous
@@ -14,49 +20,51 @@ import * as vocabulaire from '../../../../implementation/prisma/vocabulaire'
  * `LigneDuLieu` porte la garde d'alignement : si les noms stockés et ceux du
  * vocabulaire divergeaient, cette conversion cesserait de compiler.
  */
-const auVocabulaireDuStandard = <Ligne extends LigneDuLieu>(ligne: Ligne) => ({
-  ...ligne,
-  typologies: vocabulaire.traduites(
-    ligne.typologies,
-    vocabulaire.typologie.versStandard,
-  ),
-  services: vocabulaire.traduites(
-    ligne.services,
-    vocabulaire.service.versStandard,
-  ),
-  publicsSpecifiquementAdresses: vocabulaire.traduites(
-    ligne.publicsSpecifiquementAdresses,
-    vocabulaire.publicSpecifiquementAdresse.versStandard,
-  ),
-  priseEnChargeSpecifique: vocabulaire.traduites(
-    ligne.priseEnChargeSpecifique,
-    vocabulaire.priseEnChargeSpecifique.versStandard,
-  ),
-  modalitesAcces: vocabulaire.traduites(
-    ligne.modalitesAcces,
-    vocabulaire.modaliteAcces.versStandard,
-  ),
-  fraisACharge: vocabulaire.traduites(
-    ligne.fraisACharge,
-    vocabulaire.fraisACharge.versStandard,
-  ),
-  itinerance: vocabulaire.traduites(
-    ligne.itinerance,
-    vocabulaire.itinerance.versStandard,
-  ),
-  dispositifProgrammesNationaux: vocabulaire.traduites(
-    ligne.dispositifProgrammesNationaux,
-    vocabulaire.dispositifProgrammeNational.versStandard,
-  ),
-  formationsLabels: vocabulaire.traduites(
-    ligne.formationsLabels,
-    vocabulaire.formationLabel.versStandard,
-  ),
-  modalitesAccompagnement: vocabulaire.traduites(
-    ligne.modalitesAccompagnement,
-    vocabulaire.modaliteAccompagnement.versStandard,
-  ),
-})
+const auVocabulaireDuStandard = <Ligne extends LigneDuLieu>(ligne: Ligne) => {
+  // La fiche vient du registre de l'Entrepôt, où chaque producteur n'écrit que
+  // ses colonnes : les nomenclatures y sont déjà celles que le lieu déclare de
+  // plus récent. `lieuToDomain` les rend traduites dans le vocabulaire du
+  // standard, qui est justement celui que cet inventaire publie.
+  const { fiche, tracabilite } = lieuToDomain(ligne)
+
+  return {
+    ...ligne,
+    modification: derniereEcriture(
+      ligne.inscriptionRegistre,
+      ligne.modification,
+    ),
+    nom: fiche.nom,
+    adresse: fiche.adresse?.voie ?? ligne.adresse,
+    commune: fiche.adresse?.commune ?? ligne.commune,
+    codePostal: fiche.adresse?.code_postal ?? ligne.codePostal,
+    codeInsee: fiche.adresse?.code_insee ?? ligne.codeInsee,
+    complementAdresse:
+      fiche.adresse?.complement_adresse ?? ligne.complementAdresse,
+    horaires: fiche.horaires,
+    presentationResume: fiche.presentation?.resume ?? null,
+    presentationDetail: fiche.presentation?.detail ?? null,
+    ficheAccesLibre: fiche.ficheAccesLibre,
+    priseRdv: fiche.priseRdv,
+    telephone: fiche.contact.telephone ?? null,
+    courriels: [...(fiche.contact.courriels ?? [])],
+    siteWeb: fiche.contact.site_web?.join('|') ?? null,
+    derniereModificationSource:
+      tracabilite.derniereModification._tag === 'ParSource'
+        ? tracabilite.derniereModification.source
+        : null,
+    typologies: fiche.typologies,
+    services: fiche.services,
+    publicsSpecifiquementAdresses: fiche.publicsSpecifiquementAdresses,
+    priseEnChargeSpecifique: fiche.priseEnChargeSpecifique,
+    modalitesAcces: fiche.modalitesAcces,
+    fraisACharge: fiche.fraisACharge,
+    itinerance: fiche.itinerance,
+    dispositifProgrammesNationaux: fiche.dispositifProgrammesNationaux,
+    formationsLabels: fiche.formationsLabels,
+    autresFormationsLabels: [...fiche.autresFormationsLabels],
+    modalitesAccompagnement: fiche.modalitesAccompagnement,
+  }
+}
 
 /**
  * L'inventaire des lieux, tel que les clients d'API le parcourent.
@@ -88,7 +96,7 @@ export const inventaireDesLieux = async ({
   const where = {
     ...(ids.length > 0 ? { id: { in: [...ids] } } : {}),
     ...(creeDepuis ? { creation: { gte: creeDepuis } } : {}),
-    ...(modifieDepuis ? { modification: { gte: modifieDepuis } } : {}),
+    ...(modifieDepuis ? aBougeDepuis(modifieDepuis) : {}),
   }
 
   const lieux = await prismaClient.lieuInclusion.findMany({
@@ -97,6 +105,7 @@ export const inventaireDesLieux = async ({
     skip,
     where,
     include: {
+      inscriptionRegistre: inscriptionPourLaFiche,
       _count: {
         select: {
           mediateursEnActivite: { where: { suppression: null, fin: null } },
@@ -110,7 +119,16 @@ export const inventaireDesLieux = async ({
 
   const totalCount = await prismaClient.lieuInclusion.count({ where })
 
-  return { lieux: lieux.map(auVocabulaireDuStandard), totalCount }
+  // L'identifiant de cartographie vient du registre de l'Entrepôt, qui en est le
+  // domicile : la colonne coop en portait une copie qui avait dérivé.
+  return {
+    // L'aplatissement vient APRÈS la traduction : `auVocabulaireDuStandard`
+    // attend une ligne de lieu, laquelle porte son inscription.
+    lieux: lieux.map((lieu) =>
+      avecIdentifiantCarto(auVocabulaireDuStandard(lieu)),
+    ),
+    totalCount,
+  }
 }
 
 export type LieuInventorie = Awaited<

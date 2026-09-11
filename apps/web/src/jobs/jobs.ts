@@ -5,7 +5,6 @@ import { InactiveUsersRemindersJobValidation } from './inactive-users-reminders/
 import { NormalizeSiretsJobValidation } from './normalize-sirets/normalizeSiretsJob'
 import { RemoveOrphanBrevoContactsJobValidation } from './remove-orphan-brevo-contacts/removeOrphanBrevoContactsJob'
 import { SyncRdvspDataJobValidation } from './sync-rdvsp-data/syncRdvspDataJob'
-import { UpdateStructuresCartographieNationaleJobValidation } from './update-structures-cartographie-nationale/updateStructuresCartographieNationaleJob'
 
 /**
  * A job represents a task that can be executed asynchronously.
@@ -35,7 +34,6 @@ export const JobValidation = z.discriminatedUnion('name', [
   NormalizeSiretsJobValidation,
   RemoveOrphanBrevoContactsJobValidation,
   SyncRdvspDataJobValidation,
-  UpdateStructuresCartographieNationaleJobValidation,
 ])
 
 export type Job = z.infer<typeof JobValidation>

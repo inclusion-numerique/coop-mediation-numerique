@@ -136,33 +136,6 @@ Given('un lieu d’activité est disponible', async () => {
   lieuDisponibleId = await seedLieuActivite({ nom: nomDuLieuDisponible })
 })
 
-/**
- * Un doublon porteur du même id carto, créé AVANT le lieu renseigné : résoudre
- * le lieu par son id carto le rattacherait à ce doublon plutôt qu'au lieu
- * effectivement choisi. C'est l'id interne qui doit trancher.
- */
-Given(
-  'un doublon plus ancien porte un id de cartographie nationale',
-  async () => {
-    cartoIdDuLieuDisponible = cartoIdDesynchronise()
-    await seedLieuActivite({
-      nom: 'Doublon carto',
-      structureCartographieNationaleId: cartoIdDuLieuDisponible,
-    })
-  },
-)
-
-Given(
-  'un lieu d’activité est disponible, annoté de ce même id de cartographie nationale',
-  async () => {
-    nomDuLieuDisponible = `Lieu disponible ${v4()}`
-    lieuDisponibleId = await seedLieuActivite({
-      nom: nomDuLieuDisponible,
-      structureCartographieNationaleId: cartoIdDuLieuDisponible,
-    })
-  },
-)
-
 Given(
   'un lieu d’activité est disponible, identifié par son SIRET',
   async () => {

@@ -249,8 +249,8 @@ describe('timestampExtension', () => {
     })
   })
 
-  describe('cas synchro cartographie nationale (LieuInclusion)', () => {
-    it('ne bumpe PAS `modification` si seul le lien carto change', async () => {
+  describe('cas marqueur de synchronisation (LieuInclusion)', () => {
+    it('ne bumpe PAS `modification` si seul le marqueur de synchro change', async () => {
       const before = await prismaClient.lieuInclusion.findUniqueOrThrow({
         where: { id: lieuInclusionId },
       })
@@ -258,13 +258,13 @@ describe('timestampExtension', () => {
       await wait(50)
       const updated = await prismaClient.lieuInclusion.update({
         where: { id: lieuInclusionId },
-        data: { structureCartographieNationaleId: 'Coop-numérique_test' },
+        data: { synchronisationSiret: new Date() },
       })
 
       expect(updated.modification.getTime()).toBe(before.modification.getTime())
     })
 
-    it('ne bumpe PAS `modification` sur le reset carto (updateMany du lien seul)', async () => {
+    it('ne bumpe PAS `modification` sur un updateMany du marqueur seul', async () => {
       const before = await prismaClient.lieuInclusion.findUniqueOrThrow({
         where: { id: lieuInclusionId },
       })
@@ -272,7 +272,7 @@ describe('timestampExtension', () => {
       await wait(50)
       await prismaClient.lieuInclusion.updateMany({
         where: { id: lieuInclusionId },
-        data: { structureCartographieNationaleId: null },
+        data: { synchronisationSiret: new Date() },
       })
 
       const after = await prismaClient.lieuInclusion.findUniqueOrThrow({
@@ -281,7 +281,7 @@ describe('timestampExtension', () => {
       expect(after.modification.getTime()).toBe(before.modification.getTime())
     })
 
-    it('bumpe `modification` si un champ de contenu change en même temps que le lien', async () => {
+    it('bumpe `modification` si un champ de contenu change en même temps que le marqueur', async () => {
       const before = await prismaClient.lieuInclusion.findUniqueOrThrow({
         where: { id: lieuInclusionId },
       })
@@ -291,7 +291,7 @@ describe('timestampExtension', () => {
         where: { id: lieuInclusionId },
         data: {
           nom: 'Lieu renommé',
-          structureCartographieNationaleId: 'Coop-numérique_test2',
+          synchronisationSiret: new Date(),
         },
       })
 

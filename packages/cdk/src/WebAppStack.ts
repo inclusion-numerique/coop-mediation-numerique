@@ -410,16 +410,6 @@ export class WebAppStack extends TerraformStack {
       })
     }
 
-    createJobExecutionCron(this, {
-      name: `update-structures-cartographie-nationale`,
-      job: {
-        name: 'update-structures-cartographie-nationale',
-        payload: undefined,
-      },
-      schedule: '30 5 * * *',
-      containerId: container.id,
-    })
-
     output('webBaseUrl', hostname)
     output('containerDomainName', container.domainName)
     output('databaseUrl', databaseUrl, 'sensitive')

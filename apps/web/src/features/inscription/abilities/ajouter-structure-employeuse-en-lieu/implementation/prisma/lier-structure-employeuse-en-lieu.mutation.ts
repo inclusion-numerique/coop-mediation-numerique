@@ -1,6 +1,13 @@
-import { lieuCorrele, preparerCorrele } from '@app/web/features/lieux-activite'
+import {
+  ecrireLeLieuAuRegistre,
+  identiteDuLieu,
+  inscriptionPourLIdentifiantCarto,
+  lieuCorrele,
+  preparerCorrele,
+} from '@app/web/features/lieux-activite'
 import { prismaClient } from '@app/web/prismaClient'
 import { addMutationLog } from '@app/web/utils/addMutationLog'
+import type { Prisma } from '@prisma/client'
 import { v4 } from 'uuid'
 import type { LierStructureEmployeuseEnLieu } from '../../domain/ports'
 import { lieuDepuisEmployeuse } from './lieu-depuis-employeuse'
@@ -19,21 +26,44 @@ import { lieuDepuisEmployeuse } from './lieu-depuis-employeuse'
  * autres chemins de matérialisation : le lieu que la coop connaît déjà ne porte
  * pas forcément la dénomination de `main`, et une comparaison à l'identique en
  * créerait un doublon.
+ *
+ * Et matérialiser, c'est poser la fiche des deux côtés : dans la coop, et au
+ * registre des lieux de l'Entrepôt, dans la même transaction. Sans quoi ce lieu
+ * n'existerait pour le registre national qu'à sa première modification. Rien
+ * n'est écrit quand la sonde a corrélé — on rejoint alors une fiche que la coop
+ * connaissait déjà, et le registre n'a rien de nouveau à apprendre.
  */
+/** La fiche posée dans la coop, puis au registre, dans la même transaction. */
+const materialiser = async (
+  transaction: Prisma.TransactionClient,
+  lieuData: Awaited<ReturnType<typeof lieuDepuisEmployeuse>>,
+): Promise<{ readonly id: string }> => {
+  const cree = await transaction.lieuInclusion.create({
+    data: { id: v4(), ...lieuData },
+    include: { inscriptionRegistre: inscriptionPourLIdentifiantCarto },
+  })
+
+  await ecrireLeLieuAuRegistre(transaction, {
+    ligne: cree,
+    colonnes: identiteDuLieu,
+    maintenant: cree.creation,
+  })
+
+  return { id: cree.id }
+}
+
 export const lierStructureEmployeuseEnLieu: LierStructureEmployeuseEnLieu =
   async ({ userId, structureEmployeuseId }) => {
     const lieuData = await lieuDepuisEmployeuse(structureEmployeuseId)
+    const maintenant = new Date()
 
     await prismaClient.$transaction(async (transaction) => {
       const correle = await lieuCorrele(transaction, lieuData)
-      const prepare = correle && (await preparerCorrele(transaction, correle))
+      const prepare =
+        correle && (await preparerCorrele(transaction, correle, maintenant))
 
       const { id: structureId } =
-        prepare ??
-        (await transaction.lieuInclusion.create({
-          data: { id: v4(), ...lieuData },
-          select: { id: true },
-        }))
+        prepare ?? (await materialiser(transaction, lieuData))
 
       const dejaRattache = await transaction.mediateurEnActivite.findFirst({
         where: {

@@ -171,12 +171,6 @@ Charge des donnees de test avec deux utilisateurs :
 
 En developpement, un "Magic link" de connexion apparait dans la console du serveur Next.js.
 
-### 8. Telecharger les lieux de la cartographie nationale (optionnel)
-
-```bash
-pnpm cli job:execute update-structures-cartographie-nationale
-```
-
 ---
 
 ## Lancer le projet
@@ -308,8 +302,8 @@ L'application CLI (`pnpm cli <commande>`) fournit un ensemble d'outils pour le d
 
 Exemples :
 ```bash
-# Mettre a jour les structures depuis la cartographie nationale
-pnpm cli job:execute update-structures-cartographie-nationale
+# Verifier les SIRET sans rien ecrire
+pnpm cli job:execute normalize-sirets '{"dryRun":true}'
 
 # Backup de la base de donnees (avec payload)
 pnpm cli job:execute normalize-sirets '{"dryRun":true}'
@@ -382,7 +376,6 @@ L'execution des jobs est tracee en base de donnees dans la table `jobExecution`.
 | Job | Payload | Description |
 |---|---|---|
 | `appliquer-dispositif-conum` | `{ fenetreHeures? }` | Reporte les affectations d'emploi conseiller numerique modifiees dans l'Entrepot |
-| `update-structures-cartographie-nationale` | — | Synchronise les lieux depuis la cartographie nationale (Entrepot) |
 | `sync-rdvsp-data` | — | Synchronise les donnees de rendez-vous depuis RDV Service Public |
 | `fix-users-roles` | — | Corrige et repare les attributions de roles utilisateurs |
 | `inactive-users-reminders` | — | Envoie des emails de relance aux utilisateurs avec des inscriptions incompletes |
@@ -419,12 +412,6 @@ l'historique git, pas dans le code.
 | Job | Schedule | Horaire |
 |---|---|---|
 | `sync-rdvsp-data` | `0 2 * * *` | Tous les jours a 02:00 |
-
-#### Tous les environnements
-
-| Job | Schedule | Horaire |
-|---|---|---|
-| `update-structures-cartographie-nationale` | `0 3 * * *` | Tous les jours a 03:00 |
 
 ---
 
@@ -600,12 +587,6 @@ Les crons sont configures via `ContainerCron` Scaleway et envoient des requetes 
 |---|---|---|
 | `sync-rdvsp-data` | Tous les jours a 2h | Synchronisation RDV Service Public |
 
-**Tous les environnements :**
-
-| Job | Frequence | Description |
-|---|---|---|
-| `update-structures-cartographie-nationale` | Tous les jours a 3h | Mise a jour des structures depuis la cartographie nationale |
-
 ### Deployer l'infrastructure
 
 ```bash
@@ -727,6 +708,10 @@ Exemple : `feat/ajout-export-csv`, `fix/correction-pagination`
    pnpm prisma:generate-migration nom_de_la_migration
    ```
 3. Verifier le fichier SQL genere dans `apps/web/prisma/migrations/`
+4. Toute migration, tout backfill et tout script SQL qui touche `coop.lieu_inclusion` doit
+   passer par l'application, ou etre signale a l'equipe Dataspace : la coop ecrit aussi dans le
+   registre de l'Entrepot. Voir
+   [ADR-003 : Registre des lieux de l'Entrepot](docs/adr/adr-003-registre-des-lieux-entrepot.md).
 
 ---
 
