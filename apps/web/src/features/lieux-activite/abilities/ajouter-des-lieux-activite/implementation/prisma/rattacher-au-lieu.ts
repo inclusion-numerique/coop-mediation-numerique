@@ -61,7 +61,8 @@ const materialiser = async (
   identifiantCartographie: string | null,
 ): Promise<{ readonly id: string }> => {
   const correle = await lieuCorrele(transaction, donnees)
-  const prepare = correle && (await preparerCorrele(transaction, correle))
+  const prepare =
+    correle && (await preparerCorrele(transaction, correle, maintenant))
 
   if (prepare) return prepare
 

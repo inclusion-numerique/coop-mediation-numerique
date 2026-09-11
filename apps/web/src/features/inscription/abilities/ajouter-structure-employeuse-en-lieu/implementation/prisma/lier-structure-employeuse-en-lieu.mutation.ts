@@ -55,10 +55,12 @@ const materialiser = async (
 export const lierStructureEmployeuseEnLieu: LierStructureEmployeuseEnLieu =
   async ({ userId, structureEmployeuseId }) => {
     const lieuData = await lieuDepuisEmployeuse(structureEmployeuseId)
+    const maintenant = new Date()
 
     await prismaClient.$transaction(async (transaction) => {
       const correle = await lieuCorrele(transaction, lieuData)
-      const prepare = correle && (await preparerCorrele(transaction, correle))
+      const prepare =
+        correle && (await preparerCorrele(transaction, correle, maintenant))
 
       const { id: structureId } =
         prepare ?? (await materialiser(transaction, lieuData))

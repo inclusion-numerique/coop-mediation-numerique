@@ -1,4 +1,4 @@
-import { retraitCoop, signatureCoop } from './signature-coop'
+import { depublicationCoop, retraitCoop, signatureCoop } from './signature-coop'
 
 const maintenant = new Date('2026-09-11T16:00:00Z')
 
@@ -17,5 +17,18 @@ describe('la marque que la coop laisse sur une inscription', () => {
       editedBy: 'coop',
       updatedAtCoop: maintenant,
     })
+  })
+
+  it('dépublie sans toucher au partage déclaré ailleurs', () => {
+    expect(depublicationCoop(maintenant)).toEqual({
+      visiblePourCartographieNationale: false,
+      editedBy: 'coop',
+      updatedAtCoop: maintenant,
+    })
+  })
+
+  it('ne réattribue la source que sur une écriture de valeurs métier', () => {
+    expect(retraitCoop(maintenant)).not.toHaveProperty('source')
+    expect(depublicationCoop(maintenant)).not.toHaveProperty('source')
   })
 })

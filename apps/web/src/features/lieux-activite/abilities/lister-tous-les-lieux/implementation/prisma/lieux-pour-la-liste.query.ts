@@ -82,9 +82,6 @@ export const lieuxPourLaListe = async ({
       codePostal: registre?.codePostal ?? coop.codePostal,
       codeInsee: registre?.codeInsee ?? coop.codeInsee,
       typologies: registre?.typologies ?? coop.typologies,
-      visiblePourCartographieNationale:
-        registre?.visiblePourCartographieNationale ??
-        coop.visiblePourCartographieNationale,
       structureCartographieNationaleId:
         registre?.structureCartographieNationaleId ?? null,
       emploisCount: 0,

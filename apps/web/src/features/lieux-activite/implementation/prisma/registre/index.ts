@@ -18,6 +18,7 @@ export {
   toutesLesColonnes,
 } from './colonnes-a-ecrire'
 export { contactDuRegistre } from './contact-du-registre'
+export { depublierAuRegistre } from './depublier-au-registre'
 export { aBougeDepuis, derniereEcriture } from './derniere-ecriture'
 export { ecrireAuRegistre, ecrireLeLieuAuRegistre } from './ecrire-au-registre'
 export {

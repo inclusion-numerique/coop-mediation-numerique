@@ -3,6 +3,13 @@ import {
   type InscriptionPourLaFiche,
 } from './fiche-du-registre'
 
+/**
+ * N'y figure pas `visiblePourCartographieNationale`. C'est le seul champ dont
+ * la coop reste l'auteur et le registre le miroir : l'interrupteur de partage
+ * écrit la colonne coop, et c'est elle que `lieuxPublies` interroge à la
+ * moisson. La lire au registre ferait annoncer par la liste une publication que
+ * la carte ne ferait pas.
+ */
 export type ChampsDAffichage = {
   readonly nom: InscriptionPourLaFiche['nom']
   readonly nomUsage: InscriptionPourLaFiche['nomUsage']
@@ -12,7 +19,6 @@ export type ChampsDAffichage = {
   readonly codePostal: string | null
   readonly codeInsee: string | null
   readonly typologies: InscriptionPourLaFiche['typologies']
-  readonly visiblePourCartographieNationale: InscriptionPourLaFiche['visiblePourCartographieNationale']
   readonly structureCartographieNationaleId: InscriptionPourLaFiche['structureCartographieNationaleId']
 }
 
@@ -30,8 +36,6 @@ export const champsDAffichage = (
     codePostal: adresse?.code_postal ?? null,
     codeInsee: adresse?.code_insee ?? null,
     typologies: inscription.typologies,
-    visiblePourCartographieNationale:
-      inscription.visiblePourCartographieNationale,
     structureCartographieNationaleId:
       inscription.structureCartographieNationaleId,
   }

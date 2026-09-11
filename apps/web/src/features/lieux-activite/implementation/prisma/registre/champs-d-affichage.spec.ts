@@ -58,9 +58,14 @@ describe('ce qu’une liste montre d’une inscription', () => {
     expect(champsDAffichage(inscription())).toMatchObject({
       nom: 'Espace numérique',
       nomUsage: 'La Quincaillerie',
-      visiblePourCartographieNationale: true,
       structureCartographieNationaleId: 'carto-42',
     })
+  })
+
+  it('ne rend pas le partage à la cartographie, qui reste celui de la coop', () => {
+    expect(champsDAffichage(inscription())).not.toHaveProperty(
+      'visiblePourCartographieNationale',
+    )
   })
 
   it('laisse les colonnes d’adresse vides quand l’inscription n’en a pas', () => {

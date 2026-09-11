@@ -117,7 +117,13 @@ export const creerLieuActivite = async ({
 
   const structureId = await prismaClient.$transaction(async (transaction) => {
     const correle = await lieuCorrele(transaction, donnees)
-    const prepare = correle && (await preparerCorrele(transaction, correle))
+    const prepare =
+      correle &&
+      (await preparerCorrele(
+        transaction,
+        correle,
+        lieu.tracabilite.creation.date,
+      ))
 
     const { id } = prepare ?? (await creerLaFiche(transaction, lieu, donnees))
 
