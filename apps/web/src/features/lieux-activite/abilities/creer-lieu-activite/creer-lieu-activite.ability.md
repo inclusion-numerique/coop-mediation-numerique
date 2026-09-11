@@ -67,7 +67,7 @@
 ## Rule: Ce que le médiateur saisit part aussi au registre de l'Entrepôt
 
 > La coop n'est plus seule à porter la fiche. Chaque création s'inscrit du même
-> geste dans `main.lieu_inclusion_registre`, sous le lien `structure_coop_id`, et
+> geste dans `main.lieu_inclusion`, sous le lien `structure_coop_id`, et
 > l'adresse s'y résout dans `main.adresse`, mutualisée entre lieux — on l'y
 > retrouve plutôt que de la réécrire.
 

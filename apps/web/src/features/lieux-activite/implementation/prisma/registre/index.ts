@@ -1,5 +1,5 @@
 /**
- * L'écriture au registre des lieux de l'Entrepôt (`main.lieu_inclusion_registre`).
+ * L'écriture au registre des lieux de l'Entrepôt (`main.lieu_inclusion`).
  *
  * Elle vit sous `prisma/` et non dans un dossier voisin parce qu'elle emprunte
  * la même dépendance : `main` et `coop` sont deux schémas d'une seule base,

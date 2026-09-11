@@ -17,47 +17,94 @@ model adresse {
   updated_at               DateTime?                  @db.Timestamp(6)
   departement              String?                    @default(dbgenerated("\nCASE\n    WHEN (((code_insee)::text ~ '^97'::text) OR ((code_insee)::text ~ '^98'::text)) THEN \"left\"((code_insee)::text, 3)\n    ELSE \"left\"((code_insee)::text, 2)\nEND")) @db.VarChar(3)
   lieu_inclusion           lieu_inclusion[]
-  structure                structure[]
   structure_administrative structure_administrative[]
 
   @@index([code_insee])
   @@index([geom], type: Gist)
   @@schema("main")
 }
+model lieu_inclusion {
+  id                                  Int                                 @id @default(autoincrement())
+  old_main_structure_id               Int?                                @unique(map: "lieu_inclusion_old_main_structure_id_ukey")
+  nom                                 String                              @db.VarChar(255)
+  adresse_id                          Int?
+  structure_cartographie_nationale_id String?                             @unique(map: "lieu_inclusion_carto_id_ukey") @db.VarChar
+  visible_pour_cartographie_nationale Boolean?
+  fiche_acces_libre                   String?                             @db.VarChar
+  presentation_resume                 String?
+  presentation_detail                 String?
+  horaires                            String?                             @db.VarChar
+  prise_rdv                           String?                             @db.VarChar
+  itinerance                          itinerance[]
+  services                            service[]
+  modalites_acces                     modalite_acces[]
+  modalites_accompagnement            modalite_accompagnement[]
+  publics_specifiquement_adresses     public_specifiquement_adresse[]
+  prise_en_charge_specifique          prise_en_charge_specifique[]
+  frais_a_charge                      frais_a_charge[]
+  formations_labels                   formation_label[]
+  autres_formations_labels            String[]
+  dispositif_programmes_nationaux     dispositif_programme_national[]
+  typologies                          typologie[]
+  contact                             Json?
+  mediateurs_en_activite              Int?
+  emplois                             Int?
+  source                              String?                             @db.VarChar
+  edited_by                           String?                             @db.VarChar(50)
+  created_at                          DateTime?                           @default(now()) @db.Timestamp(6)
+  structure_coop_id                   String?                             @unique(map: "lieu_inclusion_structure_coop_id_ukey") @db.Uuid
+  import_warnings                     Json?
+  updated_at_carto                    DateTime?                           @db.Timestamp(6)
+  updated_at_coop                     DateTime?                           @db.Timestamp(6)
+  updated_at_min                      DateTime?                           @db.Timestamp(6)
+  updated_at                          DateTime?                           @default(dbgenerated("GREATEST(updated_at_carto, updated_at_coop, updated_at_min)")) @db.Timestamp(6)
+  complement_adresse                  String?
+  siret_a_l_enrichissement            String?                             @db.VarChar(14)
+  nom_usage                           String?                             @db.VarChar(255)
+  deleted_at                          DateTime?                           @db.Timestamp(6)
+  adresse                             adresse?                            @relation(fields: [adresse_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "lieu_inclusion_adresse_fkey")
+  personne_affectations_lieu_legacy   personne_affectations_lieu_legacy[]
+
+  @@index([adresse_id])
+  @@index([nom])
+  @@schema("main")
+}
 model structure_administrative {
-  id                                      Int                                       @id @default(autoincrement())
-  old_main_structure_id                   Int?                                      @unique(map: "structure_administrative_old_main_structure_id_ukey")
-  siret                                   String?                                   @db.VarChar(14)
-  ridet                                   String?                                   @unique(map: "structure_administrative_ridet_ukey") @db.VarChar(10)
-  denomination_sirene                     String?                                   @db.VarChar
-  rna                                     String?                                   @db.VarChar(10)
-  denomination_antenne                    String?                                   @db.VarChar(255)
-  adresse_id                              Int?
-  structure_coop_id                       String?                                   @unique(map: "structure_administrative_structure_coop_id_ukey") @db.Uuid
-  structure_tp_id                         Int?                                      @unique(map: "structure_administrative_structure_tp_id_ukey")
-  structure_ac_id                         String?                                   @unique(map: "structure_administrative_structure_ac_id_ukey") @db.Uuid
-  etat_administratif                      String?                                   @db.VarChar
-  code_activite_principale                String?                                   @db.VarChar(6)
-  categorie_juridique                     String?                                   @db.VarChar(4)
-  publique                                Boolean?
-  nb_mandats_ac                           Int?
-  contact                                 Json?
-  deleted_at                              DateTime?                                 @db.Timestamp(6)
-  deleted_by                              String[]
-  edited_by                               String?                                   @db.VarChar(50)
-  last_sirene_enrich_at                   DateTime?                                 @db.Date
-  created_at                              DateTime?                                 @default(now()) @db.Timestamp(6)
-  updated_at                              DateTime?                                 @db.Timestamp(6)
-  updated_at_coop                         DateTime?                                 @db.Timestamp(6)
-  updated_at_idposte                      DateTime?                                 @db.Timestamp(6)
-  updated_at_ac                           DateTime?                                 @db.Timestamp(6)
-  contact_structure_administrative        contact_structure_administrative[]
-  contrat                                 contrat[]
-  lieu_inclusion_structure_administrative lieu_inclusion_structure_administrative[]
-  personne_affectations_emploi            personne_affectations_emploi[]
-  poste                                   poste[]
-  adresse                                 adresse?                                  @relation(fields: [adresse_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "structure_administrative_adresse_fkey")
-  categories_juridiques                   categories_juridiques?                    @relation(fields: [categorie_juridique], references: [code], onDelete: NoAction, onUpdate: NoAction)
+  id                               Int                                @id @default(autoincrement())
+  old_main_structure_id            Int?                               @unique(map: "structure_administrative_old_main_structure_id_ukey")
+  siret                            String?                            @db.VarChar(14)
+  ridet                            String?                            @unique(map: "structure_administrative_ridet_ukey") @db.VarChar(10)
+  denomination_sirene              String?                            @db.VarChar
+  rna                              String?                            @db.VarChar(10)
+  denomination_antenne             String?                            @db.VarChar(255)
+  adresse_id                       Int?
+  structure_coop_id                String?                            @unique(map: "structure_administrative_structure_coop_id_ukey") @db.Uuid
+  structure_tp_id                  Int?                               @unique(map: "structure_administrative_structure_tp_id_ukey")
+  structure_ac_id                  String?                            @unique(map: "structure_administrative_structure_ac_id_ukey") @db.Uuid
+  etat_administratif               String?                            @db.VarChar
+  code_activite_principale         String?                            @db.VarChar(6)
+  categorie_juridique              String?                            @db.VarChar(4)
+  publique                         Boolean?
+  nb_mandats_ac                    Int?
+  contact                          Json?
+  deleted_at                       DateTime?                          @db.Timestamp(6)
+  deleted_by                       String[]
+  edited_by                        String?                            @db.VarChar(50)
+  last_sirene_enrich_at            DateTime?                          @db.Date
+  created_at                       DateTime?                          @default(now()) @db.Timestamp(6)
+  updated_at                       DateTime?                          @db.Timestamp(6)
+  updated_at_coop                  DateTime?                          @db.Timestamp(6)
+  updated_at_idposte               DateTime?                          @db.Timestamp(6)
+  updated_at_ac                    DateTime?                          @db.Timestamp(6)
+  est_grand_reseau                 Boolean                            @default(false)
+  est_hub                          Boolean                            @default(false)
+  contact_structure_administrative contact_structure_administrative[]
+  contrat                          contrat[]
+  conum_labellisation              conum_labellisation[]
+  personne_affectations_emploi     personne_affectations_emploi[]
+  poste                            poste[]
+  adresse                          adresse?                           @relation(fields: [adresse_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "structure_administrative_adresse_fkey")
+  categories_juridiques            categories_juridiques?             @relation(fields: [categorie_juridique], references: [code], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([siret, denomination_antenne], map: "structure_administrative_siret_antenne_ukey")
   @@index([adresse_id])

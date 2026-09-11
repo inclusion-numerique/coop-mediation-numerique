@@ -749,7 +749,7 @@ model LieuInclusion {
 
   /// L'inscription du lieu au registre de l'Entrepôt.
   ///
-  /// Aucune colonne ici : le lien vit dans `main.lieu_inclusion_registre.structure_coop_id`, qui
+  /// Aucune colonne ici : le lien vit dans `main.lieu_inclusion.structure_coop_id`, qui
   /// est UNIQUE et que le chemin d'écriture pose déjà. En tenir une seconde copie côté coop
   /// dupliquerait une arête qui n'en a qu'une — c'est ainsi que la copie de l'identifiant de
   /// cartographie avait fini par diverger de son original.
@@ -1043,7 +1043,7 @@ model ContratMain {
   @@schema("main")
 }
 
-/// Registre des lieux d'inclusion numérique côté Entrepôt (`main.lieu_inclusion_registre`, possédé
+/// Registre des lieux d'inclusion numérique côté Entrepôt (`main.lieu_inclusion`, possédé
 /// par le Dataspace, géré par Flyway). Il agrège toutes les sources — moissonnage mednum-cli, MIN,
 /// et la coop — à raison d'UNE ligne par lieu : `structure_coop_id` y est unique, il n'y a donc
 /// jamais plusieurs versions à départager. Chaque source écrase la ligne et pousse son propre
@@ -1065,10 +1065,10 @@ model ContratMain {
 /// l'exécution ; l'écart est surveillé par `pnpm -F web db:check-main-drift`. Voir ADR-002.
 model LieuInclusionRegistreMain {
   id                               Int      @id @default(autoincrement())
-  oldMainStructureId               Int?     @unique(map: "lieu_inclusion_registre_old_main_structure_id_ukey") @map("old_main_structure_id")
+  oldMainStructureId               Int?     @unique(map: "lieu_inclusion_old_main_structure_id_ukey") @map("old_main_structure_id")
   nom                              String   @db.VarChar(255)
   adresseId                        Int?     @map("adresse_id")
-  structureCartographieNationaleId String?  @unique(map: "lieu_inclusion_registre_carto_id_ukey") @map("structure_cartographie_nationale_id") @db.VarChar
+  structureCartographieNationaleId String?  @unique(map: "lieu_inclusion_carto_id_ukey") @map("structure_cartographie_nationale_id") @db.VarChar
   visiblePourCartographieNationale Boolean? @map("visible_pour_cartographie_nationale")
   ficheAccesLibre                  String?  @map("fiche_acces_libre") @db.VarChar
   presentationResume               String?  @map("presentation_resume")
@@ -1102,7 +1102,7 @@ model LieuInclusionRegistreMain {
   source                String? @db.VarChar
   editedBy              String? @map("edited_by") @db.VarChar(50)
   siretALEnrichissement String? @map("siret_a_l_enrichissement") @db.VarChar(14)
-  structureCoopId       String? @unique(map: "lieu_inclusion_registre_structure_coop_id_ukey") @map("structure_coop_id") @db.Uuid
+  structureCoopId       String? @unique(map: "lieu_inclusion_structure_coop_id_ukey") @map("structure_coop_id") @db.Uuid
   importWarnings        Json?   @map("import_warnings")
 
   /// Un horodatage par source : le moissonnage carto, la coop, l'application MIN.
@@ -1114,7 +1114,7 @@ model LieuInclusionRegistreMain {
   /// Suppression logique : `null` = lieu actif.
   deletedAt DateTime? @map("deleted_at") @db.Timestamp(6)
 
-  adresse AdresseMain? @relation(fields: [adresseId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "lieu_inclusion_registre_adresse_fkey")
+  adresse AdresseMain? @relation(fields: [adresseId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "lieu_inclusion_adresse_fkey")
 
   /// Le lieu coop dont cette inscription porte les valeurs, par la colonne que le registre porte
   /// déjà. La relation est déclarée pour que Prisma sache joindre ; la contrainte, elle, n'existe
@@ -1124,9 +1124,9 @@ model LieuInclusionRegistreMain {
   /// néanmoins de l'ajouter à chaque migration générée : cette ligne est à retirer.
   lieuCoop LieuInclusion? @relation(fields: [structureCoopId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([adresseId], map: "lieu_inclusion_registre_adresse_id_idx")
-  @@index([nom], map: "lieu_inclusion_registre_nom_idx")
-  @@map("lieu_inclusion_registre")
+  @@index([adresseId], map: "lieu_inclusion_adresse_id_idx")
+  @@index([nom], map: "lieu_inclusion_nom_idx")
+  @@map("lieu_inclusion")
   @@schema("main")
 }
 

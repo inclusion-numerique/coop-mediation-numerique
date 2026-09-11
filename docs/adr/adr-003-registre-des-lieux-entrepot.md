@@ -12,7 +12,7 @@ Accepté — double écriture en place (`feat/registre-lieux-main`).
 
 ## Contexte
 
-`coop.lieu_inclusion` garde la vérité de la coop. `main.lieu_inclusion_registre`, possédé par
+`coop.lieu_inclusion` garde la vérité de la coop. `main.lieu_inclusion`, possédé par
 l'Entrepôt, porte la vérité servie à tous les autres consommateurs (Mon Inclusion Numérique, API de
 la carte nationale, data.gouv) : `main.lieu_inclusion` en est une projection directe.
 
@@ -25,7 +25,7 @@ donc invisible pour les consommateurs.
 
 ### Double écriture applicative, en une seule transaction
 
-L'application écrit dans `coop.lieu_inclusion` et dans `main.lieu_inclusion_registre` dans **une
+L'application écrit dans `coop.lieu_inclusion` et dans `main.lieu_inclusion` dans **une
 seule transaction**. Le code vit dans
 `apps/web/src/features/lieux-activite/implementation/prisma/registre/`.
 
@@ -47,7 +47,7 @@ Aucune liste de colonnes n'est recopiée en markdown : elle dériverait à la pr
 `coop.lieu_inclusion.modification` ni `updated_at_coop` en masse sans changement de valeur : ces
 dates arbitrent la fraîcheur entre sources côté Entrepôt.
 
-`main.lieu_inclusion_registre.updated_at` est une colonne **générée**
+`main.lieu_inclusion.updated_at` est une colonne **générée**
 (`GREATEST(updated_at_carto, updated_at_coop, updated_at_min)`) : on ne l'écrit jamais.
 
 ### Adresses : mutualisées, jamais modifiées en place
@@ -64,7 +64,7 @@ lieux.
 ### Une dérogation assumée
 
 Le job `normalize-sirets` efface `coop.lieu_inclusion.siret` sans toucher
-`main.lieu_inclusion_registre.siret_a_l_enrichissement`, qui garde sa valeur jusqu'à la prochaine
+`main.lieu_inclusion.siret_a_l_enrichissement`, qui garde sa valeur jusqu'à la prochaine
 édition de la section « Informations générales ». Ce SIRET n'est qu'une entrée déclarative pour
 l'enrichissement ; le SIRET canonique est celui de la `structure_administrative` associée.
 

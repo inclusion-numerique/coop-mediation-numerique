@@ -3,7 +3,7 @@
 -- L'identifiant appartient à la cartographie et le registre de l'Entrepôt en est le domicile. La
 -- coop en gardait un double, posé par le job de réconciliation, et les deux ont dérivé : sur
 -- 12 765 lieux appariés, 553 ne s'accordaient plus, dans les deux sens. Les lectures passent
--- désormais par l'inscription au registre, que `main.lieu_inclusion_registre.structure_coop_id`
+-- désormais par l'inscription au registre, que `main.lieu_inclusion.structure_coop_id`
 -- désigne, et cette colonne n'a plus de lecteur.
 --
 -- DESTRUCTIF : 7 821 valeurs disparaissent. Ce que le registre ne porte pas a été relevé au

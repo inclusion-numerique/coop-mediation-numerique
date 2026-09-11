@@ -1,4 +1,4 @@
--- `main.lieu_inclusion_registre` est le registre des lieux d'inclusion de l'Entrepôt : une ligne par
+-- `main.lieu_inclusion` est le registre des lieux d'inclusion de l'Entrepôt : une ligne par
 -- lieu, toutes sources confondues (moissonnage mednum-cli, MIN, coop), reliée au lieu coop par
 -- `structure_coop_id`. Il est possédé par le Dataspace et géré par Flyway ; la coop ne fait que le
 -- MODÉLISER pour pouvoir l'écrire et le lire.
@@ -19,11 +19,11 @@
 --     prod la calcule. La récence se dérive des trois horodatages de source, en code.
 --   - L'index partiel `lieu_inclusion_visible_idx` n'est pas reproduit (non représentable par Prisma).
 --
--- Un écart de NOMS, enfin : la prod porte les noms hérités d'avant le renommage de la table
--- (`lieu_inclusion_pkey`, `lieu_inclusion_carto_id_ukey`…), déjà pris sur les bases docker locales
--- par l'instantané périmé `docker/initdb/01-dataspace-ddl.sql`, où `main.lieu_inclusion` est encore
--- une table. Nos contraintes sont donc nommées d'après la table qu'elles servent. Les noms ne
--- changent rien à l'exécution ; l'écart est surveillé par `pnpm -F web db:check-main-drift`.
+-- L'instantané `docker/initdb/01-dataspace-ddl.sql` porte, lui, une `main.lieu_inclusion` d'un stade
+-- ANTÉRIEUR au registre : trente-deux colonnes, des `text[]` au lieu des énums, et aucun des trois
+-- horodatages de source. La garde le détecte et lève, plutôt que de prendre cette table pour la
+-- bonne et de sauter la création — une base docker neuve ferait alors tourner l'application sur des
+-- colonnes absentes, en silence.
 DO $$
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE n.nspname = 'main' AND t.typname = 'dispositif_programme_national') THEN
@@ -215,8 +215,17 @@ BEGIN
     );
   END IF;
 
-  IF to_regclass('main.lieu_inclusion_registre') IS NULL THEN
-    CREATE TABLE main.lieu_inclusion_registre (
+  IF to_regclass('main.lieu_inclusion') IS NOT NULL
+     AND NOT EXISTS (
+       SELECT 1 FROM information_schema.columns
+       WHERE table_schema = 'main' AND table_name = 'lieu_inclusion'
+         AND column_name = 'updated_at_coop'
+     ) THEN
+    RAISE EXCEPTION 'main.lieu_inclusion est perimee : elle precede le registre (ni updated_at_coop, ni les enums main.*). Rafraichir docker/initdb/01-dataspace-ddl.sql, ou repartir d''une base vide.';
+  END IF;
+
+  IF to_regclass('main.lieu_inclusion') IS NULL THEN
+    CREATE TABLE main.lieu_inclusion (
       id SERIAL NOT NULL,
       old_main_structure_id INTEGER,
       nom VARCHAR(255) NOT NULL,
@@ -255,17 +264,17 @@ BEGIN
       created_at TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
       deleted_at TIMESTAMP(6),
 
-      CONSTRAINT lieu_inclusion_registre_pkey PRIMARY KEY (id)
+      CONSTRAINT lieu_inclusion_pkey PRIMARY KEY (id)
     );
 
-    CREATE UNIQUE INDEX lieu_inclusion_registre_old_main_structure_id_ukey ON main.lieu_inclusion_registre(old_main_structure_id);
-    CREATE UNIQUE INDEX lieu_inclusion_registre_carto_id_ukey ON main.lieu_inclusion_registre(structure_cartographie_nationale_id);
-    CREATE UNIQUE INDEX lieu_inclusion_registre_structure_coop_id_ukey ON main.lieu_inclusion_registre(structure_coop_id);
-    CREATE INDEX lieu_inclusion_registre_adresse_id_idx ON main.lieu_inclusion_registre(adresse_id);
-    CREATE INDEX lieu_inclusion_registre_nom_idx ON main.lieu_inclusion_registre(nom);
+    CREATE UNIQUE INDEX lieu_inclusion_old_main_structure_id_ukey ON main.lieu_inclusion(old_main_structure_id);
+    CREATE UNIQUE INDEX lieu_inclusion_carto_id_ukey ON main.lieu_inclusion(structure_cartographie_nationale_id);
+    CREATE UNIQUE INDEX lieu_inclusion_structure_coop_id_ukey ON main.lieu_inclusion(structure_coop_id);
+    CREATE INDEX lieu_inclusion_adresse_id_idx ON main.lieu_inclusion(adresse_id);
+    CREATE INDEX lieu_inclusion_nom_idx ON main.lieu_inclusion(nom);
 
-    ALTER TABLE main.lieu_inclusion_registre
-      ADD CONSTRAINT lieu_inclusion_registre_adresse_fkey
+    ALTER TABLE main.lieu_inclusion
+      ADD CONSTRAINT lieu_inclusion_adresse_fkey
       FOREIGN KEY (adresse_id) REFERENCES main.adresse(id) ON DELETE NO ACTION ON UPDATE NO ACTION;
   END IF;
 END $$;
