@@ -90,6 +90,10 @@ export type ChampCompare = (typeof CHAMPS)[number]['champ']
 /** De quel côté le médiateur prend la valeur, pour un champ donné. */
 export type OrigineDuChoix = 'coop' | 'registre'
 
+export type ChoixDesDifferences = Readonly<
+  Partial<Record<ChampCompare, OrigineDuChoix>>
+>
+
 export type Difference = {
   readonly champ: ChampCompare
   readonly libelle: string
@@ -162,3 +166,9 @@ export const differences = (
       registre: registre[champ],
     }),
   )
+
+export const sectionsConcernees = (
+  ecarts: readonly Difference[],
+): readonly SectionDeLaFiche[] => [
+  ...new Set(ecarts.map(({ section }) => section)),
+]
