@@ -137,3 +137,46 @@ description, services et accompagnement, modalités d'accès, publics accueillis
 * When le médiateur rattaché retire tous les services
 * Then la modification est refusée
 * And le lieu annonce toujours son service
+
+## Rule: Chaque enregistrement se répercute au registre de l'Entrepôt
+
+> Les deux écritures tiennent dans une seule transaction. Une section n'y écrit
+> que ses propres colonnes, comme côté coop — à ceci près que le registre range
+> en un seul `jsonb` ce que la coop tient en trois colonnes : enregistrer le site
+> web y réécrit le contact entier, reconstruit depuis la fiche à jour.
+
+### Scenario: Le site web enregistré paraît au registre sans emporter le reste du contact
+
+* Given une fiche de lieu avec un site web, un téléphone et un courriel
+* When le médiateur rattaché enregistre les informations pratiques avec un nouveau site web
+* Then le registre porte le nouveau site web, le téléphone et le courriel du lieu
+
+### Scenario: Une section muette sur le contact ne le touche pas
+
+* Given une fiche de lieu avec un site web, un téléphone et un courriel
+* When le médiateur rattaché modifie la description du lieu
+* Then le registre porte la description du lieu
+* And le registre porte toujours le site web d'origine
+
+### Scenario: Une inscription venue d'ailleurs passe à la coop dès qu'elle en porte les valeurs
+
+> `source` dit d'où viennent les données qu'on lit dans l'inscription. Une fiche
+> qui annoncerait `dora` en portant ce que le médiateur vient d'enregistrer
+> tromperait ses lecteurs. Ce que la fiche était avant reste lisible dans la coop.
+
+* Given une fiche de lieu avec un site web, un téléphone et un courriel
+* And cette fiche est déjà inscrite au registre sous la source « dora »
+* When le médiateur rattaché modifie la description du lieu
+* Then le registre attribue l'inscription à la coop
+
+### Scenario: Une inscription qu'une autre source avait éteinte revient à la vie
+
+> Quelqu'un tient cette fiche à jour dans la coop : le lieu existe. Laisser
+> l'inscription éteinte reviendrait à écrire dans une ligne que plus aucun
+> consommateur ne lit — une modification sans effet, et sans rien pour le dire
+> au médiateur qui vient de la faire.
+
+* Given une fiche de lieu avec un site web, un téléphone et un courriel
+* And cette fiche est inscrite au registre, mais une autre source l'y a supprimée
+* When le médiateur rattaché modifie la description du lieu
+* Then le registre ne dit plus cette inscription supprimée

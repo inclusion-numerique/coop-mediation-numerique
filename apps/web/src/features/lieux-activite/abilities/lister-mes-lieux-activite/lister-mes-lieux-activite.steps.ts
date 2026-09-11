@@ -7,7 +7,7 @@ import { MediateurId } from '@app/web/features/lieux-activite/domain/mediateur-i
 import { TriDesLieux } from '@app/web/features/lieux-activite/domain/tri-des-lieux'
 import { ficheSemee } from '@app/web/features/lieux-activite/lieux-activite.cucumber'
 import { prismaClient } from '@app/web/prismaClient'
-import { Then, When } from '@cucumber/cucumber'
+import { Given, Then, When } from '@cucumber/cucumber'
 
 const liste: { lieux?: readonly MonLieuActivite[] } = {}
 
@@ -54,4 +54,33 @@ Then('la liste contient ce lieu', () => {
 
 Then('la liste est vide', () => {
   assert.deepStrictEqual(liste.lieux, [])
+})
+
+const IDENTIFIANT_DU_REGISTRE =
+  'Coop-numérique_du-registre__France-Services_9999'
+
+Given(
+  'le registre donne à ce lieu un identifiant de cartographie',
+  async () => {
+    await prismaClient.lieuInclusionRegistreMain.create({
+      data: {
+        nom: 'Maison France Services de Reims',
+        structureCoopId: ficheSemee().lieuId,
+        structureCartographieNationaleId: IDENTIFIANT_DU_REGISTRE,
+        source: 'dora',
+        editedBy: 'carto',
+        updatedAtCarto: new Date('2026-01-01'),
+      },
+      select: { id: true },
+    })
+  },
+)
+
+Then("le lieu listé porte l'identifiant du registre", () => {
+  assert.deepStrictEqual(
+    liste.lieux?.map(
+      ({ lieuInclusion }) => lieuInclusion.structureCartographieNationaleId,
+    ),
+    [IDENTIFIANT_DU_REGISTRE],
+  )
 })

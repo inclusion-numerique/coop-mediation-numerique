@@ -5,6 +5,7 @@ import { LieuAccueillantPublicTitle } from '@app/web/features/lieux-activite/ui/
 import { ServiceInclusionNumeriqueTitle } from '@app/web/features/lieux-activite/ui/titles/ServiceInclusionNumeriqueTitle'
 import { formatDate } from '@app/web/utils/formatDate'
 import type { ReactNode } from 'react'
+import { BandeauRepriseExterne } from '../components/BandeauRepriseExterne'
 import { BasculeVisibiliteCartographie } from '../components/BasculeVisibiliteCartographie'
 import { SectionDescription } from '../components/SectionDescription'
 import { SectionInformationsGenerales } from '../components/SectionInformationsGenerales'
@@ -15,15 +16,6 @@ import { SectionTypesDePublicsAccueillis } from '../components/SectionTypesDePub
 import type { EnregistrerUneSection } from '../enregistrer-une-section'
 import type { FicheAffichee } from '../fiche-du-lieu.presenter'
 
-/**
- * La fiche d'un lieu : ses sept sections, consultées d'un bloc et corrigées
- * l'une après l'autre.
- *
- * Ce qui ne lui appartient pas — le fil d'Ariane, la liste des médiateurs qui
- * exercent ici — lui est passé en emplacement par la route. La feature
- * `mon-reseau` reste ainsi propriétaire de son annuaire, et cette page n'a
- * aucune raison d'aller la chercher.
- */
 export const FicheDuLieuPage = ({
   fiche,
   enregistrer,
@@ -44,6 +36,10 @@ export const FicheDuLieuPage = ({
       Mis à jour le {formatDate(fiche.misAJourLe, 'dd.MM.yyyy')}{' '}
       {fiche.misAJourPar ? `par ${fiche.misAJourPar}` : ''}
     </p>
+    {fiche.repriseExterne && fiche.repriseExterne.differences.length > 0 && (
+      <BandeauRepriseExterne lieuId={fiche.id} reprise={fiche.repriseExterne} />
+    )}
+
     <h1 className="fr-page-title fr-h2">{fiche.nom}</h1>
 
     <div className="fr-border fr-border-radius--8 fr-mb-6v">

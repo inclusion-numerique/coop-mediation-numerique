@@ -1,111 +1,17 @@
 import { failure, type Result, success } from '@app/web/libraries/result'
-import { prismaClient } from '@app/web/prismaClient'
 import type { Lieu } from '../../../../domain/lieu'
 import type { LieuId } from '../../../../domain/lieu-id'
-import { publicationSansService } from '../../../../domain/publication'
 import type { UserId } from '../../../../domain/user-id'
-import { estPublie } from '../../../../domain/visibilite-cartographie'
-import { lieuFromDomain } from '../../../../implementation'
 import { appliquerModification } from '../../domain/appliquer-la-modification'
 import {
   type EchecDeModification,
   FicheIntrouvable,
   PublicationSansService,
 } from '../../domain/errors'
-import type {
-  ModificationLieu,
-  SectionDeLaFiche,
-} from '../../domain/modification-lieu'
+import type { ModificationLieu } from '../../domain/modification-lieu'
+import { laisseUnePublicationSansService } from '../../domain/publication-sans-service'
 import { consulterLaFicheDuLieu } from './consulter-la-fiche-du-lieu.query'
-
-type Colonnes = ReturnType<typeof lieuFromDomain>
-
-/**
- * Chaque section n'écrit que ses propres colonnes.
- *
- * Le routeur tRPC réétalait la ligne entière relue avant l'écriture
- * (`data: { ...structure, ...champsDeLaSection }`) : deux sections enregistrées
- * à peu d'intervalle et la seconde réécrivait la première avec des valeurs
- * périmées. La table ci-dessous rend cette collision impossible.
- */
-const informationsGenerales = (colonnes: Colonnes): Partial<Colonnes> => ({
-  nom: colonnes.nom,
-  adresse: colonnes.adresse,
-  commune: colonnes.commune,
-  codePostal: colonnes.codePostal,
-  codeInsee: colonnes.codeInsee,
-  complementAdresse: colonnes.complementAdresse,
-  latitude: colonnes.latitude,
-  longitude: colonnes.longitude,
-  banId: colonnes.banId,
-  itinerance: colonnes.itinerance,
-  typologies: colonnes.typologies,
-  siret: colonnes.siret,
-  rna: colonnes.rna,
-  nomUsage: colonnes.nomUsage,
-})
-
-// Les services suivent la visibilité : rendre un lieu visible lui donne un socle
-// s'il n'en annonçait aucun, et ce socle n'est écrit que si la colonne est du
-// voyage.
-const visibiliteCartographie = (colonnes: Colonnes): Partial<Colonnes> => ({
-  visiblePourCartographieNationale: colonnes.visiblePourCartographieNationale,
-  services: colonnes.services,
-})
-
-const informationsPratiques = (colonnes: Colonnes): Partial<Colonnes> => ({
-  siteWeb: colonnes.siteWeb,
-  ficheAccesLibre: colonnes.ficheAccesLibre,
-  priseRdv: colonnes.priseRdv,
-  horaires: colonnes.horaires,
-})
-
-const description = (colonnes: Colonnes): Partial<Colonnes> => ({
-  presentationResume: colonnes.presentationResume,
-  presentationDetail: colonnes.presentationDetail,
-  formationsLabels: colonnes.formationsLabels,
-})
-
-const servicesEtAccompagnement = (colonnes: Colonnes): Partial<Colonnes> => ({
-  services: colonnes.services,
-  modalitesAccompagnement: colonnes.modalitesAccompagnement,
-})
-
-const modalitesAccesAuService = (colonnes: Colonnes): Partial<Colonnes> => ({
-  telephone: colonnes.telephone,
-  courriels: colonnes.courriels,
-  modalitesAcces: colonnes.modalitesAcces,
-  fraisACharge: colonnes.fraisACharge,
-})
-
-const typesDePublicsAccueillis = (colonnes: Colonnes): Partial<Colonnes> => ({
-  publicsSpecifiquementAdresses: colonnes.publicsSpecifiquementAdresses,
-  priseEnChargeSpecifique: colonnes.priseEnChargeSpecifique,
-})
-
-const colonnesParSection: Record<
-  SectionDeLaFiche,
-  (colonnes: Colonnes) => Partial<Colonnes>
-> = {
-  InformationsGenerales: informationsGenerales,
-  VisibiliteCartographie: visibiliteCartographie,
-  InformationsPratiques: informationsPratiques,
-  Description: description,
-  ServicesEtAccompagnement: servicesEtAccompagnement,
-  ModalitesAccesAuService: modalitesAccesAuService,
-  TypesDePublicsAccueillis: typesDePublicsAccueillis,
-}
-
-const ecriture = (lieu: Lieu, section: SectionDeLaFiche) => {
-  const colonnes = lieuFromDomain(lieu)
-
-  return {
-    ...colonnesParSection[section](colonnes),
-    modification: colonnes.modification,
-    derniereModificationParId: colonnes.derniereModificationParId,
-    derniereModificationSource: colonnes.derniereModificationSource,
-  }
-}
+import { enregistrerLesSections } from './enregistrer-les-sections'
 
 export const modifierLaFicheDuLieu = async ({
   id,
@@ -129,24 +35,13 @@ export const modifierLaFicheDuLieu = async ({
     maintenant,
   )
 
-  // La règle ne vaut que pour la section qui porte les services. L'étendre aux
-  // autres refusait d'enregistrer la description ou les horaires d'un lieu
-  // visible sans service, en renvoyant un message parlant de services — alors
-  // que la section qui les porte vient en avant-dernier.
-  // Mesurée sur le lieu APRÈS modification, et non sur la saisie : c'est ce qui
-  // reste au lieu qui compte, pas ce qui a été soumis.
-  if (
-    modification.section === 'ServicesEtAccompagnement' &&
-    publicationSansService(
-      estPublie(modifie.visibilite),
-      modifie.fiche.services,
-    )
-  )
+  if (laisseUnePublicationSansService(modifie, modification))
     return failure(PublicationSansService(id))
 
-  await prismaClient.lieuInclusion.update({
-    where: { id },
-    data: ecriture(modifie, modification.section),
+  await enregistrerLesSections({
+    lieu: modifie,
+    sections: [modification.section],
+    maintenant,
   })
 
   return success(modifie)

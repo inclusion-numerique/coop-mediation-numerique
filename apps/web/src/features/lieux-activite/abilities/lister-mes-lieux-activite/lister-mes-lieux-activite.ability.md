@@ -29,3 +29,17 @@
 * Given un médiateur qui exerce dans un lieu
 * When ce médiateur liste ses lieux avec le tri « au hasard »
 * Then la liste contient ce lieu
+
+## Rule: L'identité cartographique vient du registre
+
+> La coop en tenait un double dans `id_cartographie_nationale`, posé par un job.
+> Les deux avaient dérivé : sur 12 764 lieux appariés, 561 ne s'accordaient plus,
+> et dans les deux sens. La colonne a été retirée — l'identifiant appartient à la
+> cartographie nationale, dont le registre de l'Entrepôt est le domicile.
+
+### Scenario: Le lieu listé porte l'identifiant que le registre lui donne
+
+* Given un médiateur qui exerce dans un lieu
+* And le registre donne à ce lieu un identifiant de cartographie
+* When ce médiateur liste ses lieux d'activité
+* Then le lieu listé porte l'identifiant du registre

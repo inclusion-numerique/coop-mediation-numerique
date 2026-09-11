@@ -72,6 +72,58 @@ Given('un médiateur exerce dans les deux lieux', async () => {
   await rattacher(mediateurId, semis.conserveId ?? '')
 })
 
+const publier = (ids: readonly (string | undefined)[]) =>
+  prismaClient.lieuInclusion.updateMany({
+    where: { id: { in: ids.filter((id): id is string => id != null) } },
+    data: { visiblePourCartographieNationale: true },
+  })
+
+Given('les deux lieux sont publiés sur la carte nationale', async () => {
+  await publier([semis.absorbeId, semis.conserveId])
+})
+
+Given('seul le lieu conservé est publié sur la carte nationale', async () => {
+  await publier([semis.conserveId])
+})
+
+const poserUnReferent = (id: string | undefined, nom: string) =>
+  prismaClient.lieuInclusion.updateMany({
+    where: { id },
+    data: {
+      nomReferent: nom,
+      courrielReferent: `${nom.toLowerCase()}@example.com`,
+    },
+  })
+
+Given('seule la fiche à absorber porte un référent', async () => {
+  await poserUnReferent(semis.absorbeId, 'Absorbe')
+})
+
+Given('les deux fiches portent un référent différent', async () => {
+  await poserUnReferent(semis.absorbeId, 'Absorbe')
+  await poserUnReferent(semis.conserveId, 'Conserve')
+})
+
+const inscrire = (structureCoopId: string, nom: string) =>
+  prismaClient.lieuInclusionRegistreMain.create({
+    data: {
+      nom,
+      structureCoopId,
+      source: 'dora',
+      editedBy: 'carto',
+      updatedAtCarto: new Date('2026-01-01'),
+    },
+    select: { id: true },
+  })
+
+Given(
+  'les deux lieux sont inscrits au registre sous la source « dora »',
+  async () => {
+    await inscrire(semis.absorbeId ?? '', 'Cyberbase au registre')
+    await inscrire(semis.conserveId ?? '', 'Médiathèque au registre')
+  },
+)
+
 When("l'administration fusionne le premier dans le second", async () => {
   await fusionnerDesLieux(semis.absorbeId ?? '', semis.conserveId ?? '')
 })
@@ -105,6 +157,36 @@ Then("ce médiateur n'exerce qu'une fois dans le lieu conservé", async () => {
   assert.strictEqual(await activitesDuMediateurDansLeLieuConserve(), 1)
 })
 
+const lieuConserve = () =>
+  prismaClient.lieuInclusion.findUniqueOrThrow({
+    where: { id: semis.conserveId },
+    select: { visiblePourCartographieNationale: true, nomReferent: true },
+  })
+
+Then('le lieu conservé est publié sur la carte nationale', async () => {
+  const { visiblePourCartographieNationale } = await lieuConserve()
+
+  assert.strictEqual(visiblePourCartographieNationale, true)
+})
+
+Then("le lieu conservé n'est pas publié sur la carte nationale", async () => {
+  const { visiblePourCartographieNationale } = await lieuConserve()
+
+  assert.strictEqual(visiblePourCartographieNationale, false)
+})
+
+Then('le lieu conservé porte le référent de la fiche absorbée', async () => {
+  const { nomReferent } = await lieuConserve()
+
+  assert.strictEqual(nomReferent, 'Absorbe')
+})
+
+Then('le lieu conservé garde son propre référent', async () => {
+  const { nomReferent } = await lieuConserve()
+
+  assert.strictEqual(nomReferent, 'Conserve')
+})
+
 Then('le lieu conservé annonce les services des deux', async () => {
   const conserve = await prismaClient.lieuInclusion.findUnique({
     where: { id: semis.conserveId },
@@ -115,6 +197,59 @@ Then('le lieu conservé annonce les services des deux', async () => {
     'AideAuxDemarchesAdministratives',
     'MaitriseDesOutilsNumeriquesDuQuotidien',
   ])
+})
+
+const inscriptionDe = (structureCoopId?: string) =>
+  prismaClient.lieuInclusionRegistreMain.findFirstOrThrow({
+    where: { structureCoopId },
+    select: {
+      deletedAt: true,
+      editedBy: true,
+      source: true,
+      services: true,
+    },
+  })
+
+Then("l'inscription du lieu absorbé est datée supprimée", async () => {
+  const { deletedAt } = await inscriptionDe(semis.absorbeId)
+
+  assert.ok(
+    deletedAt != null,
+    "L'inscription du lieu absorbé devrait porter sa date de suppression",
+  )
+})
+
+Then(
+  "l'inscription du lieu absorbé porte la coop comme dernier éditeur",
+  async () => {
+    const { editedBy } = await inscriptionDe(semis.absorbeId)
+
+    assert.strictEqual(editedBy, 'coop')
+  },
+)
+
+Then('elle annonce toujours « dora » comme source', async () => {
+  const { source } = await inscriptionDe(semis.absorbeId)
+
+  assert.strictEqual(source, 'dora')
+})
+
+Then(
+  "l'inscription du lieu conservé annonce les services des deux",
+  async () => {
+    const { services } = await inscriptionDe(semis.conserveId)
+
+    assert.deepStrictEqual([...services].sort(), [
+      'AideAuxDemarchesAdministratives',
+      'MaitriseDesOutilsNumeriquesDuQuotidien',
+    ])
+  },
+)
+
+Then('le lieu conservé est inscrit au registre', async () => {
+  const { source } = await inscriptionDe(semis.conserveId)
+
+  assert.strictEqual(source, 'Coop numérique')
 })
 
 After(async () => {
@@ -129,6 +264,11 @@ After(async () => {
 
   await prismaClient.mediateurEnActivite.deleteMany({
     where: { structureId: { in: ids } },
+  })
+  // La fusion inscrit le lieu survivant au registre de l'Entrepôt : son
+  // inscription vit dans un autre schéma que les semis et leur survivrait.
+  await prismaClient.lieuInclusionRegistreMain.deleteMany({
+    where: { structureCoopId: { in: ids } },
   })
   await prismaClient.lieuInclusion.deleteMany({ where: { id: { in: ids } } })
   if (mediateurId)

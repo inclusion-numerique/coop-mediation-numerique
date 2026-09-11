@@ -1,15 +1,12 @@
 import { prismaClient } from '@app/web/prismaClient'
 import type { Prisma } from '@prisma/client'
+import {
+  adresseDeLInscription,
+  type InscriptionPourLaFiche,
+  inscriptionPourLaFiche,
+} from './registre'
+import { derniereModificationExterne } from './registre/modification-du-registre'
 
-/**
- * Ce que la coop montre d'un lieu quand elle en montre plusieurs : de quoi le
- * reconnaître, le situer, dire s'il est publié et depuis quand il n'a pas
- * bougé.
- *
- * La projection appartient au lieu, pas aux pages qui l'affichent — l'annuaire
- * du département, mes lieux d'activité et la fiche d'un acteur montrent le même
- * objet, vu depuis trois entrées.
- */
 export const projectionDuLieuEnListe = {
   id: true,
   nom: true,
@@ -31,7 +28,7 @@ export const projectionDuLieuEnListe = {
   },
   derniereModificationSource: true,
   visiblePourCartographieNationale: true,
-  structureCartographieNationaleId: true,
+  inscriptionRegistre: inscriptionPourLaFiche,
   _count: {
     select: {
       mediateursEnActivite: {
@@ -45,21 +42,66 @@ export const projectionDuLieuEnListe = {
   },
 } satisfies Prisma.LieuInclusionSelect
 
-export type LieuEnListe = Prisma.LieuInclusionGetPayload<{
+type LigneEnListe = Prisma.LieuInclusionGetPayload<{
   select: typeof projectionDuLieuEnListe
 }>
 
-/** Les lieux où un médiateur exerce, dans la projection des listes. */
+/**
+ * Ce que la liste prend au registre. Le partage à la cartographie n'en est
+ * pas : la coop en est l'auteur — c'est sa colonne que l'interrupteur écrit et
+ * que `lieuxPublies` interroge à la moisson —, le registre n'en tient qu'une
+ * copie qu'on lui pousse. La lire ici ferait annoncer par la liste une
+ * publication que la carte ne ferait pas.
+ */
+const depuisLInscription = (
+  ligne: LigneEnListe,
+  inscription: InscriptionPourLaFiche,
+) => {
+  const adresse = adresseDeLInscription(inscription)
+  const externe = derniereModificationExterne(inscription, ligne.modification)
+
+  return {
+    nom: inscription.nom,
+    nomUsage: inscription.nomUsage ?? ligne.nomUsage,
+    adresse: adresse?.voie ?? ligne.adresse,
+    complementAdresse: adresse?.complement_adresse ?? ligne.complementAdresse,
+    commune: adresse?.commune ?? ligne.commune,
+    codePostal: adresse?.code_postal ?? ligne.codePostal,
+    codeInsee: adresse?.code_insee ?? ligne.codeInsee,
+    derniereModificationSource:
+      externe?._tag === 'ParSource'
+        ? externe.source
+        : ligne.derniereModificationSource,
+    structureCartographieNationaleId:
+      inscription.structureCartographieNationaleId,
+  }
+}
+
+export const avecLaFicheDuRegistre = (ligne: LigneEnListe) => {
+  const { inscriptionRegistre, ...reste } = ligne
+
+  return {
+    ...reste,
+    ...(inscriptionRegistre == null
+      ? { structureCartographieNationaleId: null }
+      : depuisLInscription(ligne, inscriptionRegistre)),
+  }
+}
+
+export type LieuEnListe = ReturnType<typeof avecLaFicheDuRegistre>
+
 export const lieuxEnListeDuMediateur = async ({
   mediateurId,
 }: {
   mediateurId: string
 }): Promise<LieuEnListe[]> =>
-  prismaClient.lieuInclusion.findMany({
-    where: {
-      mediateursEnActivite: {
-        some: { mediateurId, suppression: null, fin: null },
+  (
+    await prismaClient.lieuInclusion.findMany({
+      where: {
+        mediateursEnActivite: {
+          some: { mediateurId, suppression: null, fin: null },
+        },
       },
-    },
-    select: projectionDuLieuEnListe,
-  })
+      select: projectionDuLieuEnListe,
+    })
+  ).map(avecLaFicheDuRegistre)

@@ -6,11 +6,32 @@ import { orderItemsByIndexedValues } from '@app/web/utils/orderItemsByIndexedVal
 import { Prisma } from '@prisma/client'
 import { ordonnancement, TriDesLieux } from '../../../../domain/tri-des-lieux'
 import {
+  avecLaFicheDuRegistre,
   type LieuEnListe,
   projectionDuLieuEnListe,
 } from '../../../../implementation/prisma/lieu-en-liste'
+import {
+  DERNIERE_ECRITURE,
+  JOINTURE_DE_L_INSCRIPTION,
+  NOM_AFFICHE,
+  normaliseePourLaRecherche,
+  VOIE_DU_REGISTRE,
+} from '../../../../implementation/prisma/registre/lieu-affiche.sql'
 
 const LIEUX_DEFAULT_PAGE_SIZE = 20
+
+/**
+ * Le tri, dit dans les valeurs que l'annuaire AFFICHE — celles du registre — et
+ * non dans les colonnes de la coop, qui donnaient un ordre alphabétique
+ * invisible à qui lisait la liste.
+ */
+const EXPRESSION_DE_TRI = {
+  nom: NOM_AFFICHE,
+  modification: DERNIERE_ECRITURE,
+} satisfies Record<
+  ReturnType<typeof ordonnancement>['champ'],
+  ReturnType<typeof normaliseePourLaRecherche>
+>
 
 /**
  * Ce que l'annuaire peut demander : un département, un texte libre, des
@@ -43,7 +64,7 @@ const getLieuxByIds = async ({
     select: projectionDuLieuEnListe,
   })
 
-  return lieux
+  return lieux.map(avecLaFicheDuRegistre)
 }
 
 /**
@@ -73,10 +94,13 @@ export const lieuxDuDepartement = async ({
 
   const searchCondition = normalizedSearchTerm
     ? Prisma.sql`(
-        NULLIF(regexp_replace(lower(unaccent(s.nom)), '[\\s-]', '', 'g'), '') ILIKE '%' || ${normalizedSearchTerm} || '%'
-        OR NULLIF(regexp_replace(lower(unaccent(s.adresse)), '[\\s-]', '', 'g'), '') ILIKE '%' || ${normalizedSearchTerm} || '%'
+        ${normaliseePourLaRecherche(Prisma.sql`s.nom`)} ILIKE '%' || ${normalizedSearchTerm} || '%'
+        OR ${normaliseePourLaRecherche(Prisma.sql`ri.nom`)} ILIKE '%' || ${normalizedSearchTerm} || '%'
+        OR ${normaliseePourLaRecherche(Prisma.sql`s.adresse`)} ILIKE '%' || ${normalizedSearchTerm} || '%'
+        OR ${normaliseePourLaRecherche(VOIE_DU_REGISTRE)} ILIKE '%' || ${normalizedSearchTerm} || '%'
         OR s.siret ILIKE '%' || ${searchTerm} || '%'
         OR s.code_postal ILIKE '%' || ${searchTerm} || '%'
+        OR ra.code_postal ILIKE '%' || ${searchTerm} || '%'
       )`
     : Prisma.sql`TRUE`
 
@@ -99,7 +123,7 @@ export const lieuxDuDepartement = async ({
       : Prisma.sql`TRUE`
 
   const { champ, sens } = ordonnancement(TriDesLieux(searchParams.tri))
-  const sortColumn = Prisma.raw(champ)
+  const sortColumn = EXPRESSION_DE_TRI[champ]
   const sortDirection = Prisma.raw(sens.toUpperCase())
 
   // Get paginated structure IDs using CTE to handle DISTINCT + ORDER BY
@@ -107,9 +131,10 @@ export const lieuxDuDepartement = async ({
     WITH distinct_lieux AS (
       SELECT DISTINCT ON (s.id)
         s.id,
-        s.${sortColumn}
+        ${sortColumn} AS tri
       FROM lieu_inclusion s
       LEFT JOIN mediateurs_en_activite mea ON mea.structure_id = s.id AND mea.suppression IS NULL AND mea.fin_activite IS NULL
+      ${JOINTURE_DE_L_INSCRIPTION}
       WHERE s.suppression IS NULL
         AND SUBSTRING(s.code_insee FROM ${departementCodeFromInseeRegex}) = ${departementCode}
         AND ${searchCondition}
@@ -128,7 +153,7 @@ export const lieuxDuDepartement = async ({
         )
     )
     SELECT id FROM distinct_lieux
-    ORDER BY ${sortColumn} ${sortDirection}, id ASC
+    ORDER BY tri ${sortDirection}, id ASC
     LIMIT ${take} OFFSET ${skip}
   `
 
@@ -139,6 +164,7 @@ export const lieuxDuDepartement = async ({
     SELECT COUNT(DISTINCT s.id)::integer AS count
     FROM lieu_inclusion s
     LEFT JOIN mediateurs_en_activite mea ON mea.structure_id = s.id AND mea.suppression IS NULL AND mea.fin_activite IS NULL
+    ${JOINTURE_DE_L_INSCRIPTION}
     WHERE s.suppression IS NULL
       AND SUBSTRING(s.code_insee FROM ${departementCodeFromInseeRegex}) = ${departementCode}
       AND ${searchCondition}

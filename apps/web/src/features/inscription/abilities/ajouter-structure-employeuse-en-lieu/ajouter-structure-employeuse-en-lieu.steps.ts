@@ -239,3 +239,21 @@ Then('nous sommes rattachés au même lieu d’activité', async () => {
     'Les deux médiateurs ne partagent pas le même lieu d’activité',
   )
 })
+
+Then('ce lieu d’activité est inscrit au registre', async () => {
+  const lieu = await prismaClient.lieuInclusion.findFirstOrThrow({
+    where: { nom: nomEmployeuse, suppression: null },
+    select: { id: true },
+  })
+
+  const inscription =
+    await prismaClient.lieuInclusionRegistreMain.findUniqueOrThrow({
+      where: { structureCoopId: lieu.id },
+      select: { nom: true, source: true, editedBy: true, updatedAtCoop: true },
+    })
+
+  assert.strictEqual(inscription.nom, nomEmployeuse)
+  assert.strictEqual(inscription.source, 'Coop numérique')
+  assert.strictEqual(inscription.editedBy, 'coop')
+  assert.notStrictEqual(inscription.updatedAtCoop, null)
+})

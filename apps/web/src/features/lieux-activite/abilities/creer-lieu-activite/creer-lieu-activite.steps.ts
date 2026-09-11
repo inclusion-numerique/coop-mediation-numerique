@@ -7,9 +7,10 @@ import type { CreerLieuActiviteData } from '@app/web/features/lieux-activite/for
 import { ficheSemee } from '@app/web/features/lieux-activite/lieux-activite.cucumber'
 import { emptyOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import { prismaClient } from '@app/web/prismaClient'
-import { After, Then, When } from '@cucumber/cucumber'
+import { After, Given, Then, When } from '@cucumber/cucumber'
 import {
   PublicSpecifiquementAdresse,
+  Service,
   Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 
@@ -135,17 +136,314 @@ Then("ce médiateur n'exerce qu'une fois dans le lieu créé", async () => {
   )
 })
 
+/**
+ * Ce que les scénarios sèment DANS l'Entrepôt — hors du périmètre des semis de
+ * la coop, et donc à nettoyer ici.
+ */
+const semisEntrepot: { adresses: number[]; inscriptions: number[] } = {
+  adresses: [],
+  inscriptions: [],
+}
+
+/**
+ * Sème une adresse de l'Entrepôt. `repetition` vaut `''` et non `null` pour le
+ * scénario qui surveille la clé d'unicité : celle-ci compare des `COALESCE`, si
+ * bien que les deux y désignent la même adresse.
+ */
+const semerUneAdresse = async (
+  numeroVoie: number,
+  nomVoie: string,
+  repetition: string | null = null,
+): Promise<number> => {
+  // Sous la forme que `main.trouver_ou_creer_adresse_lieu` produit : numéro
+  // séparé, voie en capitales initiales. Semer la ligne entière décrirait un
+  // état que l'Entrepôt ne fabrique pas, et le scénario ne prouverait rien.
+  const [creee] = await prismaClient.$queryRaw<{ id: number }[]>`
+    INSERT INTO main.adresse (code_postal, code_insee, nom_commune, numero_voie, nom_voie, repetition)
+    VALUES ('17300', '17299', 'Rochefort', ${numeroVoie}, ${nomVoie}, ${repetition})
+    RETURNING id`
+
+  const id = creee?.id ?? 0
+  semisEntrepot.adresses = [...semisEntrepot.adresses, id]
+
+  return id
+}
+
+const SAISIE_A_ADRESSE_CONNUE: CreerLieuActiviteData = {
+  ...saisie,
+  adresseBan: {
+    id: '17300_0999_00099',
+    label: '99 quai du Test, 17300 Rochefort',
+    nom: '99 quai du Test',
+    commune: 'Rochefort',
+    codePostal: '17300',
+    codeInsee: '17299',
+    contexte: '17, Charente-Maritime',
+    latitude: 45.94,
+    longitude: -0.96,
+  },
+}
+
+const adresseARepetitionVide: { id?: number } = {}
+
+Given("une adresse déjà connue de l'Entrepôt, à répétition vide", async () => {
+  adresseARepetitionVide.id = await semerUneAdresse(99, 'Quai Du Test', '')
+})
+
+When('ce médiateur crée un lieu à cette adresse', async () => {
+  await creer(ficheSemee().mediateurRattacheId, SAISIE_A_ADRESSE_CONNUE)
+})
+
+Then(
+  "le registre pointe vers l'adresse que l'Entrepôt connaissait déjà",
+  async () => {
+    const inscription =
+      await prismaClient.lieuInclusionRegistreMain.findUniqueOrThrow({
+        where: { structureCoopId: lieuCree(1) },
+        select: { adresseId: true },
+      })
+
+    assert.strictEqual(inscription.adresseId, adresseARepetitionVide.id)
+  },
+)
+
+/**
+ * Le même endroit que `SAISIE_DEJA_AU_REGISTRE`, déjà inscrit au registre sous
+ * une autre source et sans lien coop — l'état qu'aucune sonde de la coop ne peut
+ * voir, puisqu'il ne vit que dans l'Entrepôt.
+ */
+const inscriptionDora: { id?: number; adresseId?: number } = {}
+
+const SAISIE_DEJA_AU_REGISTRE: CreerLieuActiviteData = {
+  ...saisie,
+  adresseBan: {
+    id: '17300_0555_00050',
+    label: '50 rue du Registre, 17300 Rochefort',
+    nom: '50 rue du Registre',
+    commune: 'Rochefort',
+    codePostal: '17300',
+    codeInsee: '17299',
+    contexte: '17, Charente-Maritime',
+    latitude: 45.94,
+    longitude: -0.96,
+  },
+}
+
+Given('le registre connaît déjà ce lieu sous la source « dora »', async () => {
+  const adresseId = await semerUneAdresse(50, 'Rue Du Registre')
+
+  const inscription = await prismaClient.lieuInclusionRegistreMain.create({
+    data: {
+      nom: saisie.nom,
+      adresseId,
+      typologies: ['BIB'],
+      // Ce que dora sait et que la coop ne saurait pas redire : les deux
+      // premières colonnes n'ont aucun champ de formulaire, les deux suivantes
+      // sont cachées derrière l'interrupteur de partage à la cartographie.
+      autresFormationsLabels: ['Label maison'],
+      dispositifProgrammesNationaux: ['AidantsConnect'],
+      horaires: 'Mo 09:00-12:00',
+      services: ['AideAuxDemarchesAdministratives'],
+      source: 'dora',
+      editedBy: 'carto',
+      updatedAtCarto: new Date('2026-01-01'),
+    },
+    select: { id: true },
+  })
+
+  inscriptionDora.id = inscription.id
+  inscriptionDora.adresseId = adresseId
+  semisEntrepot.inscriptions = [...semisEntrepot.inscriptions, inscription.id]
+})
+
+When('ce médiateur crée un lieu déjà connu du registre', async () => {
+  await creer(ficheSemee().mediateurRattacheId, SAISIE_DEJA_AU_REGISTRE)
+})
+
+Then("le registre ne porte qu'une inscription pour cet endroit", async () => {
+  assert.strictEqual(
+    await prismaClient.lieuInclusionRegistreMain.count({
+      where: { adresseId: inscriptionDora.adresseId },
+    }),
+    1,
+  )
+})
+
+Then('cette inscription porte le lien vers le lieu créé', async () => {
+  const inscription =
+    await prismaClient.lieuInclusionRegistreMain.findUniqueOrThrow({
+      where: { id: inscriptionDora.id ?? 0 },
+      select: { structureCoopId: true, updatedAtCoop: true },
+    })
+
+  assert.strictEqual(inscription.structureCoopId, lieuCree(1))
+  assert.notStrictEqual(inscription.updatedAtCoop, null)
+})
+
+Then('cette inscription est désormais attribuée à la coop', async () => {
+  const inscription =
+    await prismaClient.lieuInclusionRegistreMain.findUniqueOrThrow({
+      where: { id: inscriptionDora.id ?? 0 },
+      select: { source: true },
+    })
+
+  assert.strictEqual(inscription.source, 'Coop numérique')
+})
+
+const inscriptionAdoptee = () =>
+  prismaClient.lieuInclusionRegistreMain.findUniqueOrThrow({
+    where: { id: inscriptionDora.id ?? 0 },
+    select: {
+      autresFormationsLabels: true,
+      dispositifProgrammesNationaux: true,
+      horaires: true,
+      services: true,
+    },
+  })
+
+Then(
+  "cette inscription garde ce qu'aucun formulaire de la coop ne porte",
+  async () => {
+    const { autresFormationsLabels, dispositifProgrammesNationaux } =
+      await inscriptionAdoptee()
+
+    assert.deepStrictEqual(autresFormationsLabels, ['Label maison'])
+    assert.deepStrictEqual(dispositifProgrammesNationaux, ['AidantsConnect'])
+  },
+)
+
+Then(
+  'cette inscription garde ce que le formulaire ne montrait pas',
+  async () => {
+    const { horaires, services } = await inscriptionAdoptee()
+
+    assert.strictEqual(horaires, 'Mo 09:00-12:00')
+    assert.deepStrictEqual(services, ['AideAuxDemarchesAdministratives'])
+  },
+)
+
+const SAISIE_PARTAGEE_DEJA_AU_REGISTRE: CreerLieuActiviteData = {
+  ...SAISIE_DEJA_AU_REGISTRE,
+  visiblePourCartographieNationale: true,
+  services: [Service.MaitriseDesOutilsNumeriquesDuQuotidien],
+}
+
+When(
+  'ce médiateur crée en le partageant un lieu déjà connu du registre',
+  async () => {
+    await creer(
+      ficheSemee().mediateurRattacheId,
+      SAISIE_PARTAGEE_DEJA_AU_REGISTRE,
+    )
+  },
+)
+
+Then('cette inscription porte les services saisis', async () => {
+  const { services } = await inscriptionAdoptee()
+
+  assert.deepStrictEqual(services, ['MaitriseDesOutilsNumeriquesDuQuotidien'])
+})
+
+Then(
+  'cette inscription a perdu les horaires que la coop a laissés vides',
+  async () => {
+    const { horaires } = await inscriptionAdoptee()
+
+    assert.strictEqual(horaires, null)
+  },
+)
+
+Then('le lieu créé est inscrit au registre', async () => {
+  const inscription =
+    await prismaClient.lieuInclusionRegistreMain.findUniqueOrThrow({
+      where: { structureCoopId: lieuCree(1) },
+      select: {
+        nom: true,
+        source: true,
+        editedBy: true,
+        updatedAtCoop: true,
+        typologies: true,
+      },
+    })
+
+  assert.strictEqual(inscription.nom, 'Tiers-lieu du Port')
+  assert.strictEqual(inscription.source, 'Coop numérique')
+  assert.strictEqual(inscription.editedBy, 'coop')
+  assert.deepStrictEqual(inscription.typologies, ['BIB'])
+  assert.notStrictEqual(inscription.updatedAtCoop, null)
+})
+
+Then("le registre porte l'adresse du lieu créé", async () => {
+  const inscription =
+    await prismaClient.lieuInclusionRegistreMain.findUniqueOrThrow({
+      where: { structureCoopId: lieuCree(1) },
+      select: {
+        adresse: {
+          select: {
+            nomVoie: true,
+            codePostal: true,
+            nomCommune: true,
+          },
+        },
+      },
+    })
+
+  // La `clef_interop` ne figure pas dans l'attendu : `main.adresse` est
+  // mutualisée, et « 12 quai du Port » sert aussi aux scénarios d'ajout, qui la
+  // désignent par un autre identifiant BAN. La ligne appartient à celui des deux
+  // qui l'a créée en premier — l'y attacher ferait dépendre le scénario de son
+  // rang d'exécution.
+  assert.deepStrictEqual(inscription.adresse, {
+    nomVoie: '12 quai du Port',
+    codePostal: '17300',
+    nomCommune: 'Rochefort',
+  })
+})
+
+Then("le registre ne porte qu'une inscription pour le lieu créé", async () => {
+  assert.strictEqual(
+    await prismaClient.lieuInclusionRegistreMain.count({
+      where: { structureCoopId: lieuCree(1) },
+    }),
+    1,
+  )
+})
+
 // Les lieux créés par les scénarios ne sont pas semés : ils se nettoient ici.
+//
+// Les `main.adresse` résolues au passage restent, elles : la table est
+// mutualisée entre lieux et structures administratives, et rien ne dit que la
+// ligne trouvée a été créée par le scénario. Une exécution suivante la retrouve
+// par sa `clef_interop` au lieu d'en créer une autre.
 After(async () => {
   const ids = dernier.lieuxCreesIds
+  // Les semis Entrepôt s'effacent même quand aucun lieu n'a été créé : un
+  // scénario qui échoue en cours de création les laisserait sinon derrière lui,
+  // et ferait buter l'exécution suivante sur la clé d'unicité — un échec qui ne
+  // parlerait plus du tout du bug qu'on surveille.
+  const { adresses, inscriptions } = semisEntrepot
   dernier.lieuxCreesIds = []
   dernier.creation = undefined
-  if (ids.length === 0) return
+  semisEntrepot.adresses = []
+  semisEntrepot.inscriptions = []
+  adresseARepetitionVide.id = undefined
+  inscriptionDora.id = undefined
+  inscriptionDora.adresseId = undefined
 
-  await prismaClient.mediateurEnActivite.deleteMany({
-    where: { structureId: { in: ids } },
+  if (ids.length > 0) {
+    await prismaClient.mediateurEnActivite.deleteMany({
+      where: { structureId: { in: ids } },
+    })
+    await prismaClient.lieuInclusionRegistreMain.deleteMany({
+      where: { structureCoopId: { in: ids } },
+    })
+    await prismaClient.lieuInclusion.deleteMany({ where: { id: { in: ids } } })
+  }
+
+  await prismaClient.lieuInclusionRegistreMain.deleteMany({
+    where: { id: { in: inscriptions } },
   })
-  await prismaClient.lieuInclusion.deleteMany({ where: { id: { in: ids } } })
+  await prismaClient.adresseMain.deleteMany({ where: { id: { in: adresses } } })
 })
 
 const COMMENTAIRE = 'Fermé le premier lundi du mois'

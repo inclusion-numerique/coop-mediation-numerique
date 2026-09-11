@@ -4,6 +4,19 @@ import { v4 } from 'uuid'
 
 setDefaultTimeout(60_000)
 
+/**
+ * Les écritures de la coop se répercutent au registre de l'Entrepôt : un lieu
+ * semé y laisse une inscription, qui survivrait au scénario puisque la table
+ * appartient à un autre schéma que celui des semis. Les `main.adresse` résolues
+ * au passage restent, elles : la table est mutualisée entre lieux et structures
+ * administratives, et rien ne dit que la ligne trouvée vient du scénario.
+ */
+const effacerDuRegistre = async (lieuIds: readonly string[]): Promise<void> => {
+  await prismaClient.lieuInclusionRegistreMain.deleteMany({
+    where: { structureCoopId: { in: [...lieuIds] } },
+  })
+}
+
 type LieuxSemes = {
   readonly userId: string
   readonly mediateurId: string
@@ -68,6 +81,7 @@ After(async () => {
   await prismaClient.mediateurEnActivite.deleteMany({
     where: { mediateurId: semé.mediateurId },
   })
+  await effacerDuRegistre([...semé.lieuIds])
   await prismaClient.lieuInclusion.deleteMany({
     where: { id: { in: [...semé.lieuIds] } },
   })
@@ -160,6 +174,7 @@ After(async () => {
   await prismaClient.mediateurEnActivite.deleteMany({
     where: { structureId: semé.lieuId },
   })
+  await effacerDuRegistre([semé.lieuId])
   await prismaClient.lieuInclusion.deleteMany({ where: { id: semé.lieuId } })
   await prismaClient.mediateur.deleteMany({
     where: { id: { in: [semé.mediateurRattacheId, semé.mediateurEtrangerId] } },
@@ -220,6 +235,7 @@ After(async () => {
   semisSiret.lieuxASiret = undefined
   if (!semé) return
 
+  await effacerDuRegistre([semé.premierId, semé.secondId])
   await prismaClient.lieuInclusion.deleteMany({
     where: { id: { in: [semé.premierId, semé.secondId] } },
   })

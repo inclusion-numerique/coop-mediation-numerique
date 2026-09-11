@@ -10,7 +10,7 @@ import { useStore } from '@tanstack/react-form'
 import type { z } from 'zod'
 import { TypesDePublicsAccueillisSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
 import type { EnregistrerUneSection } from '../enregistrer-une-section'
-import type { FicheAffichee } from '../fiche-du-lieu.presenter'
+import type { TypesDePublicsAccueillisAffiches } from '../fiche-affichee/types-de-publics-accueillis'
 import { EtatVide } from './EtatVide'
 import { useEnregistrementDeSection } from './useEnregistrementDeSection'
 import { VueTypesDePublicsAccueillis } from './vues/VueTypesDePublicsAccueillis'
@@ -21,7 +21,7 @@ export const SectionTypesDePublicsAccueillis = ({
   enregistrer,
 }: {
   id: string
-  typesDePublicsAccueillis: FicheAffichee['typesDePublicsAccueillis']
+  typesDePublicsAccueillis: TypesDePublicsAccueillisAffiches
   enregistrer: EnregistrerUneSection
 }) => {
   const soumettre = useEnregistrementDeSection(id, enregistrer)

@@ -7,11 +7,16 @@ import {
   Nom,
   Pivot,
   PublicSpecifiquementAdresse,
+  Typologie,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Lieu } from '../../../domain/lieu'
 import { LieuId } from '../../../domain/lieu-id'
-import { ModificationInconnue } from '../../../domain/tracabilite'
+import {
+  ModificationInconnue,
+  ModifieParSource,
+  SourceCartographie,
+} from '../../../domain/tracabilite'
 import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
 import type { FicheDuLieu } from '../implementation'
 import { ficheAffichee } from './fiche-du-lieu.presenter'
@@ -57,16 +62,165 @@ const lieu: Lieu = {
   },
 }
 
+const DERNIERE_MODIFICATION_COOP = new Date('2026-08-01T00:00:00Z')
+
 const afficher = (fiche: Lieu['fiche']) => {
   const consultee: FicheDuLieu = {
     lieu: { ...lieu, fiche },
     auteurDerniereModification: null,
+    derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
+    ficheCoop: lieu.fiche,
   }
 
   return ficheAffichee(consultee)
 }
 
 describe('mise en forme de la fiche pour l’écran', () => {
+  it('nomme le producteur quand la dernière main n’est pas la nôtre', () => {
+    const affichee = ficheAffichee({
+      lieu: {
+        ...lieu,
+        tracabilite: {
+          ...lieu.tracabilite,
+          derniereModification: ModifieParSource(
+            new Date('2026-09-01T00:00:00Z'),
+            SourceCartographie('dora'),
+          ),
+        },
+      },
+      auteurDerniereModification: null,
+      derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
+      ficheCoop: lieu.fiche,
+    })
+
+    // Sans ce nom, l'écran annoncerait une mise à jour récente que le médiateur
+    // ne reconnaîtrait pas et que rien n'expliquerait.
+    expect(affichee.misAJourPar).toBe('dora')
+  })
+
+  it('annonce la reprise avec les deux dates, la sienne et la nôtre', () => {
+    const affichee = ficheAffichee({
+      lieu: {
+        ...lieu,
+        tracabilite: {
+          ...lieu.tracabilite,
+          derniereModification: ModifieParSource(
+            new Date('2026-09-01T00:00:00Z'),
+            SourceCartographie('dora'),
+          ),
+        },
+      },
+      auteurDerniereModification: null,
+      derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
+      ficheCoop: lieu.fiche,
+    })
+
+    // C'est l'écart entre les deux dates qui fait l'information : « on a écrit
+    // après vous », et non « la fiche a bougé ».
+    expect(affichee.repriseExterne).toEqual({
+      source: 'dora',
+      le: new Date('2026-09-01T00:00:00Z'),
+      votreDerniereModificationLe: DERNIERE_MODIFICATION_COOP,
+      differences: [],
+    })
+  })
+
+  it('met en mots ce que la source a change, l’absence comprise', () => {
+    const { repriseExterne } = ficheAffichee({
+      lieu: {
+        ...lieu,
+        fiche: { ...lieu.fiche, horaires: 'Tu 14:00-18:00', nom: Nom('Autre') },
+        tracabilite: {
+          ...lieu.tracabilite,
+          derniereModification: ModifieParSource(
+            new Date('2026-09-01T00:00:00Z'),
+            SourceCartographie('dora'),
+          ),
+        },
+      },
+      auteurDerniereModification: null,
+      derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
+      // La coop n'avait pas d'horaires : le registre en pose, et l'écart doit se
+      // lire comme « Non renseigné » face à la nouvelle valeur.
+      ficheCoop: lieu.fiche,
+    })
+
+    expect(repriseExterne?.differences).toEqual([
+      {
+        champ: 'nom',
+        libelle: 'Nom',
+        coop: { _tag: 'Texte', texte: 'Espace numérique' },
+        registre: { _tag: 'Texte', texte: 'Autre' },
+      },
+      {
+        champ: 'horaires',
+        libelle: 'Horaires',
+        // L'absence est une valeur : c'est elle que le médiateur choisira s'il
+        // veut que la source n'ait rien posé.
+        coop: { _tag: 'Absente' },
+        registre: { _tag: 'Horaires', osm: 'Tu 14:00-18:00' },
+      },
+    ])
+  })
+
+  it('empile une liste de plusieurs valeurs, garde une seule en texte', () => {
+    const { repriseExterne } = ficheAffichee({
+      lieu: {
+        ...lieu,
+        fiche: {
+          ...lieu.fiche,
+          publicsSpecifiquementAdresses: [
+            PublicSpecifiquementAdresse.Jeunes,
+            PublicSpecifiquementAdresse.Seniors,
+          ],
+          typologies: [Typologie.BIB],
+        },
+        tracabilite: {
+          ...lieu.tracabilite,
+          derniereModification: ModifieParSource(
+            new Date('2026-09-01T00:00:00Z'),
+            SourceCartographie('dora'),
+          ),
+        },
+      },
+      auteurDerniereModification: null,
+      derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
+      ficheCoop: lieu.fiche,
+    })
+
+    const parChamp = new Map(
+      repriseExterne?.differences.map(({ champ, registre }) => [
+        champ,
+        registre,
+      ]),
+    )
+
+    expect(parChamp.get('publicsSpecifiquementAdresses')).toEqual({
+      _tag: 'Liste',
+      valeurs: ['Jeunes', 'Seniors'],
+    })
+    // Une seule valeur : la puce n'apprendrait rien.
+    expect(parChamp.get('typologies')).toEqual({
+      _tag: 'Texte',
+      texte: 'BIB',
+    })
+  })
+
+  it('ne signale aucune reprise quand la coop a la main', () => {
+    expect(afficher(lieu.fiche).repriseExterne).toBeNull()
+  })
+
+  it('garde l’auteur coop quand c’est lui qui a modifié en dernier', () => {
+    const affichee = ficheAffichee({
+      lieu,
+      auteurDerniereModification: 'Édith Piaf',
+      derniereModificationCoop: DERNIERE_MODIFICATION_COOP,
+      ficheCoop: lieu.fiche,
+    })
+
+    expect(affichee.misAJourPar).toBe('Édith Piaf')
+  })
+
   it('déduit « tout public » de l’absence de public visé', () => {
     expect(afficher(lieu.fiche).typesDePublicsAccueillis.toutPublic).toBe(true)
   })

@@ -1,4 +1,5 @@
 import type { Prisma } from '@prisma/client'
+import { inscriptionPourLIdentifiantCarto } from '../../../../implementation/prisma/registre'
 
 /**
  * Ce qu'il faut lire d'un lieu pour prévisualiser sa fusion.
@@ -12,6 +13,9 @@ import type { Prisma } from '@prisma/client'
  * ils vivent avec la requête, jamais dans le domaine.
  */
 export const lieuAFusionnerInclude = {
+  // L'identité cartographique du lieu vit dans son inscription au registre de
+  // l'Entrepôt : la prévisualisation la lit là, la coop n'en gardant plus copie.
+  inscriptionRegistre: inscriptionPourLIdentifiantCarto,
   mediateursEnActivite: {
     where: { suppression: null },
     select: { mediateurId: true },

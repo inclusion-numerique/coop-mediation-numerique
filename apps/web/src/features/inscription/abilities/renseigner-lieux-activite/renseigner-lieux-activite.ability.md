@@ -33,21 +33,17 @@
 
 ## Rule: L’id interne prime sur l’id de cartographie nationale
 
-L’id de cartographie nationale n’est pas posé à la création d’un lieu : c’est le
-job nightly de la carto qui, après agrégation des sources, normalisation et
-déduplication, l’attribue au lieu publié puis le resynchronise dans la coop. Son
-absence ne dit donc rien de l’existence du lieu, et sa présence ne prime jamais
-sur l’id interne — seule identité certaine d’un lieu de la coop.
+L’id de cartographie nationale n’est pas posé à la création d’un lieu : c’est la
+cartographie qui, après agrégation des sources, normalisation et déduplication,
+l’attribue au lieu publié. Son absence ne dit donc rien de l’existence du lieu,
+et sa présence ne prime jamais sur l’id interne — seule identité certaine d’un
+lieu de la coop.
 
-### Scenario: Un lieu de la coop est rattaché par son id, jamais par un doublon de même id carto
-
-* Given je suis un médiateur en cours d’inscription
-* And un doublon plus ancien porte un id de cartographie nationale
-* And un lieu d’activité est disponible, annoté de ce même id de cartographie nationale
-* When je renseigne ce lieu comme lieu d’activité
-* Then l’étape lieux d’activité est franchie
-* And ce lieu est un de mes lieux d’activité actifs
-* And aucun autre lieu d’activité n’a été créé
+> Le scénario qui vérifiait qu’un doublon de même id carto ne détourne pas le
+> rattachement a été retiré : sa prémisse n’existe plus. L’identité
+> cartographique vit dans l’inscription au registre de l’Entrepôt, où elle est
+> unique — deux lieux de la coop ne peuvent plus la partager. Ce qu’un scénario
+> surveillait, une contrainte l’interdit.
 
 ### Scenario: Un lieu de la carto introuvable dans l’Entrepôt est matérialisé depuis son adresse
 

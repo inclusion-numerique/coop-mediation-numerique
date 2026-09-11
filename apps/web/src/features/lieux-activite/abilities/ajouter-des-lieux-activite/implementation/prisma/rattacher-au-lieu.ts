@@ -9,6 +9,12 @@ import {
   preparerCorrele,
 } from '../../../../implementation/prisma/lieu-correle'
 import {
+  colonnesRapporteesParLaCartographie,
+  ecrireLeLieuAuRegistre,
+  inscriptionPourLIdentifiantCarto,
+  lieuCoopPorteurDeLaCarto,
+} from '../../../../implementation/prisma/registre'
+import {
   type AdresseValidee,
   estExistant,
   type LieuACreer,
@@ -31,20 +37,58 @@ const lieuDepuisAdresse = (lieu: LieuACreer) => ({
   ...adresseValidee(lieu),
 })
 
+/**
+ * Matérialiser, c'est poser la fiche des deux côtés : dans la coop, et au
+ * registre des lieux de l'Entrepôt, dans la même transaction.
+ *
+ * Rien de tel quand la sonde a corrélé : on rejoint une fiche que la coop
+ * connaissait déjà, et le registre n'a rien de nouveau à apprendre.
+ *
+ * L'inscription part de la ligne RELUE et non des données préparées : c'est ce
+ * que la coop a effectivement stocké — défauts de colonnes compris — qui doit
+ * partir au registre, sans quoi les deux tables diraient des choses proches mais
+ * pas identiques.
+ *
+ * Un lieu venu de la cartographie porte son identifiant carto dès sa création,
+ * et le registre a forcément déjà la ligne d'où il sort : c'est `ecrireAuRegistre`
+ * qui la reconnaît et l'adopte, plutôt que d'en inscrire une seconde.
+ */
 const materialiser = async (
   transaction: Prisma.TransactionClient,
   donnees: Parameters<typeof lieuCorrele>[1] &
     Prisma.LieuInclusionCreateManyInput,
+  maintenant: Date,
+  identifiantCartographie: string | null,
 ): Promise<{ readonly id: string }> => {
   const correle = await lieuCorrele(transaction, donnees)
-  const prepare = correle && (await preparerCorrele(transaction, correle))
+  const prepare =
+    correle && (await preparerCorrele(transaction, correle, maintenant))
 
   if (prepare) return prepare
 
-  return transaction.lieuInclusion.create({
+  const cree = await transaction.lieuInclusion.create({
     data: donnees,
-    select: { id: true },
+    include: { inscriptionRegistre: inscriptionPourLIdentifiantCarto },
   })
+
+  // L'identité cartographique voyage explicitement, et non par la ligne relue :
+  // elle vit dans l'inscription au registre, qui n'existe pas encore à cet
+  // instant. Un lieu matérialisé DEPUIS la cartographie la tient de la fiche
+  // d'où il sort, et c'est elle qui permettra d'adopter l'inscription
+  // correspondante plutôt que d'en créer une seconde.
+  await ecrireLeLieuAuRegistre(transaction, {
+    colonnes: colonnesRapporteesParLaCartographie,
+    ligne: {
+      ...cree,
+      inscriptionRegistre:
+        identifiantCartographie == null
+          ? null
+          : { structureCartographieNationaleId: identifiantCartographie },
+    },
+    maintenant,
+  })
+
+  return { id: cree.id }
 }
 
 const lieuARattacher = async (
@@ -62,16 +106,15 @@ const lieuARattacher = async (
 
   if (designe) return designe
 
+  // La question « quel lieu coop porte cet identifiant » se pose au registre,
+  // qui en est le domicile et où l'identifiant est unique — la colonne coop en
+  // portait une copie dérivée, et non unique, qu'il fallait départager par
+  // ancienneté.
   const porteurDeLaCarto = lieu.structureCartographieNationaleId
-    ? await transaction.lieuInclusion.findFirst({
-        where: {
-          structureCartographieNationaleId:
-            lieu.structureCartographieNationaleId,
-          suppression: null,
-        },
-        orderBy: { creation: 'asc' },
-        select: { id: true },
-      })
+    ? await lieuCoopPorteurDeLaCarto(
+        transaction,
+        lieu.structureCartographieNationaleId,
+      )
     : null
 
   if (porteurDeLaCarto) return porteurDeLaCarto
@@ -93,6 +136,8 @@ const lieuARattacher = async (
           ...adresseValidee(lieu),
         }
       : lieuDepuisAdresse(lieu),
+    maintenant,
+    lieu.structureCartographieNationaleId ?? null,
   )
 }
 
