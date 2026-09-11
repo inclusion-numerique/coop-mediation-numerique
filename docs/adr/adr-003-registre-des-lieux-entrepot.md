@@ -5,6 +5,7 @@
 | Date | Auteur | Action |
 |------|--------|--------|
 | 2026-09-11 | Marc Gavanier | Rédaction initiale : extraction de la section « Registre des lieux de l'Entrepôt » de `CONTRIBUTING.md` |
+| 2026-09-11 | Marc Gavanier | Règles de lecture : le registre prime sauf sur le partage à la cartographie ; « modifié depuis » se dérive des quatre horodatages |
 
 ## Statut
 
@@ -49,6 +50,32 @@ dates arbitrent la fraîcheur entre sources côté Entrepôt.
 
 `main.lieu_inclusion.updated_at` est une colonne **générée**
 (`GREATEST(updated_at_carto, updated_at_coop, updated_at_min)`) : on ne l'écrit jamais.
+
+### En lecture, le registre prime — sauf sur le partage à la cartographie
+
+La fiche affichée vient du registre : nom, adresse, contact, horaires, présentation,
+nomenclatures. Chaque producteur n'y écrit que ses colonnes, si bien que la fusion champ par
+champ y a déjà eu lieu.
+
+`visible_pour_cartographie_nationale` est la seule exception, et elle n'est pas un oubli : la
+coop en est l'**auteur**, le registre n'en tient qu'une copie qu'on lui pousse. C'est la colonne
+coop que l'interrupteur de partage écrit, et c'est elle que `lieuxPublies` interroge à la
+moisson. La lire au registre ferait annoncer par la coop une publication que la carte ne ferait
+pas.
+
+Corollaire : tout chemin qui dépublie côté coop doit le dire au registre. Il y en a deux —
+l'interrupteur, et le relèvement d'un lieu modéré (`preparerCorrele`), qui revient invisible.
+
+### Ce que « modifié depuis » veut dire pour un client d'API
+
+La fiche venant du registre, `coop.lieu_inclusion.modification` ne date plus ce qu'on publie :
+une valeur reprise par un autre producteur change le contenu rendu sans la faire bouger. Le
+filtre `filter[modification][depuis]` et la date exposée dérivent donc tous deux des quatre
+horodatages — celui de la coop et les trois du registre (`derniere-ecriture.ts`).
+
+Les deux doivent regarder les mêmes colonnes : un lieu écarté par le filtre alors que sa date
+le dit récent serait perdu pour toujours par une synchronisation incrémentale, qui ne redemande
+jamais ce qu'elle croit à jour.
 
 ### Adresses : mutualisées, jamais modifiées en place
 
