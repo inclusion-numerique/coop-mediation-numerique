@@ -16,10 +16,16 @@ import { v4 } from 'uuid'
 
 const semis: {
   lieuId?: string
+  inscriptionId?: number
   inventaire?: Awaited<ReturnType<typeof inventaireDesLieux>>
 } = {}
 
-const DEMAIN = () => new Date(Date.now() + 24 * 60 * 60 * 1000)
+const JOUR = 24 * 60 * 60 * 1000
+
+const DEMAIN = () => new Date(Date.now() + JOUR)
+const HIER = () => new Date(Date.now() - JOUR)
+const LA_SEMAINE_DERNIERE = () => new Date(Date.now() - 7 * JOUR)
+const L_AN_DERNIER = () => new Date(Date.now() - 365 * JOUR)
 
 Given('un lieu à inventorier', async () => {
   const lieu = await prismaClient.lieuInclusion.create({
@@ -48,6 +54,28 @@ Given("ce lieu n'est pas partagé sur la cartographie nationale", async () => {
     where: { id: semis.lieuId },
     data: { visiblePourCartographieNationale: false },
   })
+})
+
+Given("la coop n'a pas touché à ce lieu depuis l'an dernier", async () => {
+  await prismaClient.lieuInclusion.update({
+    where: { id: semis.lieuId },
+    data: { modification: L_AN_DERNIER() },
+  })
+})
+
+Given("une autre source l'a repris hier", async () => {
+  const inscription = await prismaClient.lieuInclusionRegistreMain.create({
+    data: {
+      nom: 'Espace inventaire repris par dora',
+      structureCoopId: semis.lieuId,
+      source: 'dora',
+      editedBy: 'carto',
+      updatedAtCarto: HIER(),
+    },
+    select: { id: true },
+  })
+
+  semis.inscriptionId = inscription.id
 })
 
 Given(
@@ -79,6 +107,17 @@ When("un client d'API demande les lieux modifiés depuis demain", async () => {
   })
 })
 
+When(
+  "un client d'API demande les lieux modifiés depuis la semaine dernière",
+  async () => {
+    semis.inventaire = await inventaireDesLieux({
+      ids: [semis.lieuId ?? ''],
+      take: 10,
+      modifieDepuis: LA_SEMAINE_DERNIERE(),
+    })
+  },
+)
+
 Then("ce lieu figure à l'inventaire", () => {
   assert.strictEqual(semis.inventaire?.lieux.length, 1)
 })
@@ -103,6 +142,15 @@ Then('ses nomenclatures sont dites dans les termes du schéma national', () => {
   ])
 })
 
+Then('sa date de modification est celle de la reprise', () => {
+  const lieu = semis.inventaire?.lieux.at(0)
+
+  assert.ok(
+    lieu != null && lieu.modification > LA_SEMAINE_DERNIERE(),
+    'La date de modification devrait être celle de la reprise, pas celle de la coop',
+  )
+})
+
 Then('sa suppression est datée', () => {
   assert.ok(
     semis.inventaire?.lieux.at(0)?.suppression != null,
@@ -112,8 +160,16 @@ Then('sa suppression est datée', () => {
 
 After(async () => {
   const id = semis.lieuId
+  const inscriptionId = semis.inscriptionId
   semis.lieuId = undefined
+  semis.inscriptionId = undefined
   semis.inventaire = undefined
+
+  if (inscriptionId != null)
+    await prismaClient.lieuInclusionRegistreMain.deleteMany({
+      where: { id: inscriptionId },
+    })
+
   if (!id) return
 
   await prismaClient.lieuInclusion.deleteMany({ where: { id } })

@@ -32,6 +32,23 @@
 * When un client d'API demande les lieux modifiés depuis demain
 * Then ce lieu ne figure pas à l'inventaire
 
+## Rule: Une reprise par une autre source est une modification
+
+> La fiche rendue vient du registre de l'Entrepôt, où toutes les sources
+> écrivent. Ne dater l'inventaire que des écritures de la coop laisserait une
+> valeur reprise par un autre producteur passer sous le filtre : le client la
+> raterait, et ne la redemanderait jamais — une synchronisation incrémentale ne
+> revient pas sur ce qu'elle croit à jour.
+
+### Scenario: Un lieu que la coop n'a pas touché mais qu'une autre source a repris figure parmi les modifiés
+
+* Given un lieu à inventorier
+* And la coop n'a pas touché à ce lieu depuis l'an dernier
+* And une autre source l'a repris hier
+* When un client d'API demande les lieux modifiés depuis la semaine dernière
+* Then ce lieu figure à l'inventaire
+* And sa date de modification est celle de la reprise
+
 ## Rule: L'inventaire parle le vocabulaire du schéma national
 
 > Un client qui tient un miroir attend les termes du standard, pas les noms

@@ -2,7 +2,9 @@ import { prismaClient } from '@app/web/prismaClient'
 import { lieuToDomain } from '../../../../implementation/prisma/lieu.transfer'
 import type { LigneDuLieu } from '../../../../implementation/prisma/ligne-du-lieu'
 import {
+  aBougeDepuis,
   avecIdentifiantCarto,
+  derniereEcriture,
   inscriptionPourLaFiche,
 } from '../../../../implementation/prisma/registre'
 
@@ -27,6 +29,10 @@ const auVocabulaireDuStandard = <Ligne extends LigneDuLieu>(ligne: Ligne) => {
 
   return {
     ...ligne,
+    modification: derniereEcriture(
+      ligne.inscriptionRegistre,
+      ligne.modification,
+    ),
     nom: fiche.nom,
     adresse: fiche.adresse?.voie ?? ligne.adresse,
     commune: fiche.adresse?.commune ?? ligne.commune,
@@ -90,7 +96,7 @@ export const inventaireDesLieux = async ({
   const where = {
     ...(ids.length > 0 ? { id: { in: [...ids] } } : {}),
     ...(creeDepuis ? { creation: { gte: creeDepuis } } : {}),
-    ...(modifieDepuis ? { modification: { gte: modifieDepuis } } : {}),
+    ...(modifieDepuis ? aBougeDepuis(modifieDepuis) : {}),
   }
 
   const lieux = await prismaClient.lieuInclusion.findMany({

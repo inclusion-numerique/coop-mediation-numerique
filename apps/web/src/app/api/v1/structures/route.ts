@@ -88,6 +88,7 @@ import { type ZodError, z } from 'zod'
  *             modification:
  *               type: string
  *               format: date-time
+ *               description: "date de la dernière écriture sur ce lieu, quelle qu'en soit la source : la coop, la cartographie nationale ou Mon Inclusion Numérique"
  *               example: "2023-12-10T15:00:00Z"
  *             suppression:
  *               type: string
@@ -300,7 +301,7 @@ import { type ZodError, z } from 'zod'
  *           format: date-time
  *           example: "2025-09-01T00:00:00Z"
  *         required: false
- *         description: "retourne les structures avec une date de dernière modification supérieure ou égale à cette date-heure"
+ *         description: "retourne les structures dont la dernière écriture, quelle qu'en soit la source, est supérieure ou égale à cette date-heure"
  *     responses:
  *       200:
  *         description: liste des structures
