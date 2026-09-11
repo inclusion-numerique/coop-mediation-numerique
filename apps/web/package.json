@@ -110,7 +110,7 @@
     "react-use-css-custom-property": "^0.1.1",
     "recharts": "^3.10.0",
     "server-only": "^0.0.1",
-    "sharp": "^0.35.3",
+    "sharp": "^0.35.4",
     "slugify": "^1.6.9",
     "superjson": "2.2.6",
     "undici": "^7.29.0",
