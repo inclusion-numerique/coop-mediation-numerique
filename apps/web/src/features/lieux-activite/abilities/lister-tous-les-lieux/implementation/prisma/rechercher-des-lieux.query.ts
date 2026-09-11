@@ -21,6 +21,33 @@ export type RechercheDeLieuxParams = {
 const DEFAULT_PAGE_SIZE = 100
 
 /**
+ * Un mot cherché est confronté aux deux côtés : ce que la coop a stocké et ce
+ * que le registre affiche.
+ *
+ * La liste montre le nom du registre ; ne chercher que dans celui de la coop
+ * faisait disparaître un lieu qu'on voyait à l'écran. Chercher dans les deux
+ * plutôt que dans le seul côté affiché est délibéré : l'administration connaît
+ * souvent un lieu sous le nom qu'il portait avant qu'une autre source ne le
+ * renomme.
+ */
+const contient = (part: string) =>
+  ({ contains: part, mode: 'insensitive' }) satisfies Prisma.StringFilter
+
+const dansLesDeuxFiches = (part: string) => ({
+  OR: [
+    { nom: contient(part) },
+    { siret: contient(part) },
+    { adresse: contient(part) },
+    { commune: contient(part) },
+    { codePostal: contient(part) },
+    { inscriptionRegistre: { nom: contient(part) } },
+    { inscriptionRegistre: { adresse: { nomVoie: contient(part) } } },
+    { inscriptionRegistre: { adresse: { nomCommune: contient(part) } } },
+    { inscriptionRegistre: { adresse: { codePostal: contient(part) } } },
+  ],
+})
+
+/**
  * Les lieux que l'administration cherche, et combien la coop en compte.
  *
  * Le total ne dépend d'aucun critère : c'est le repère qui donne son sens au
@@ -40,15 +67,7 @@ export const rechercherDesLieux = async ({
 
   const matchesWhere = {
     suppression: null,
-    AND: toQueryParts(searchParams).map((part) => ({
-      OR: [
-        { nom: { contains: part, mode: 'insensitive' } },
-        { siret: { contains: part, mode: 'insensitive' } },
-        { adresse: { contains: part, mode: 'insensitive' } },
-        { commune: { contains: part, mode: 'insensitive' } },
-        { codePostal: { contains: part, mode: 'insensitive' } },
-      ],
-    })),
+    AND: toQueryParts(searchParams).map(dansLesDeuxFiches),
   } satisfies Prisma.LieuInclusionWhereInput
 
   const structures = await lieuxPourLaListe({
