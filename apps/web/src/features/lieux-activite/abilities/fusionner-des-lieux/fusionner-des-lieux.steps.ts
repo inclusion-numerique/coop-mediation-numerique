@@ -104,6 +104,26 @@ Given('les deux fiches portent un référent différent', async () => {
   await poserUnReferent(semis.conserveId, 'Conserve')
 })
 
+const inscrire = (structureCoopId: string, nom: string) =>
+  prismaClient.lieuInclusionRegistreMain.create({
+    data: {
+      nom,
+      structureCoopId,
+      source: 'dora',
+      editedBy: 'carto',
+      updatedAtCarto: new Date('2026-01-01'),
+    },
+    select: { id: true },
+  })
+
+Given(
+  'les deux lieux sont inscrits au registre sous la source « dora »',
+  async () => {
+    await inscrire(semis.absorbeId ?? '', 'Cyberbase au registre')
+    await inscrire(semis.conserveId ?? '', 'Médiathèque au registre')
+  },
+)
+
 When("l'administration fusionne le premier dans le second", async () => {
   await fusionnerDesLieux(semis.absorbeId ?? '', semis.conserveId ?? '')
 })
@@ -177,6 +197,59 @@ Then('le lieu conservé annonce les services des deux', async () => {
     'AideAuxDemarchesAdministratives',
     'MaitriseDesOutilsNumeriquesDuQuotidien',
   ])
+})
+
+const inscriptionDe = (structureCoopId?: string) =>
+  prismaClient.lieuInclusionRegistreMain.findFirstOrThrow({
+    where: { structureCoopId },
+    select: {
+      deletedAt: true,
+      editedBy: true,
+      source: true,
+      services: true,
+    },
+  })
+
+Then("l'inscription du lieu absorbé est datée supprimée", async () => {
+  const { deletedAt } = await inscriptionDe(semis.absorbeId)
+
+  assert.ok(
+    deletedAt != null,
+    "L'inscription du lieu absorbé devrait porter sa date de suppression",
+  )
+})
+
+Then(
+  "l'inscription du lieu absorbé porte la coop comme dernier éditeur",
+  async () => {
+    const { editedBy } = await inscriptionDe(semis.absorbeId)
+
+    assert.strictEqual(editedBy, 'coop')
+  },
+)
+
+Then('elle annonce toujours « dora » comme source', async () => {
+  const { source } = await inscriptionDe(semis.absorbeId)
+
+  assert.strictEqual(source, 'dora')
+})
+
+Then(
+  "l'inscription du lieu conservé annonce les services des deux",
+  async () => {
+    const { services } = await inscriptionDe(semis.conserveId)
+
+    assert.deepStrictEqual([...services].sort(), [
+      'AideAuxDemarchesAdministratives',
+      'MaitriseDesOutilsNumeriquesDuQuotidien',
+    ])
+  },
+)
+
+Then('le lieu conservé est inscrit au registre', async () => {
+  const { source } = await inscriptionDe(semis.conserveId)
+
+  assert.strictEqual(source, 'Coop numérique')
 })
 
 After(async () => {
