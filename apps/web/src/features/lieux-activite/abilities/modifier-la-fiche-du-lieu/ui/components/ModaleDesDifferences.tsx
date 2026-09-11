@@ -8,11 +8,9 @@ import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { Fragment, useState } from 'react'
 import type { OrigineDuChoix } from '../../domain'
-import type { FicheAffichee, ValeurAffichee } from '../fiche-du-lieu.presenter'
+import type { DifferenceAffichee } from '../fiche-affichee/reprise-externe'
+import type { ValeurAffichee } from '../fiche-affichee/valeur-affichee'
 import { HorairesDOuverture } from './vues/HorairesDOuverture'
-
-type Reprise = NonNullable<FicheAffichee['repriseExterne']>
-type Differences = Reprise['differences']
 
 const modale = createModal({
   id: 'differences-avec-la-cartographie',
@@ -84,7 +82,7 @@ const Ecart = ({
   choisi,
   choisir,
 }: {
-  difference: Differences[number]
+  difference: DifferenceAffichee
   choisi: OrigineDuChoix
   choisir: (origine: OrigineDuChoix) => void
 }) => (
@@ -158,7 +156,7 @@ export const ModaleDesDifferences = ({
   differences,
 }: {
   lieuId: string
-  differences: Differences
+  differences: readonly DifferenceAffichee[]
 }) => {
   const router = useRouter()
   const [choix, setChoix] = useState<Record<string, OrigineDuChoix>>({})

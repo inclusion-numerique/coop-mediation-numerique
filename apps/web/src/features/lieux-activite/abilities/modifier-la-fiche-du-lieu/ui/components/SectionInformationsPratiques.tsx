@@ -5,7 +5,7 @@ import { useAppForm } from '@app/web/libs/form/use-app-form'
 import { useStore } from '@tanstack/react-form'
 import { InformationsPratiquesSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
 import type { EnregistrerUneSection } from '../enregistrer-une-section'
-import type { FicheAffichee } from '../fiche-du-lieu.presenter'
+import type { InformationsPratiquesAffichees } from '../fiche-affichee/informations-pratiques'
 import { ChampsHoraires } from './ChampsHoraires'
 import { EtatVide } from './EtatVide'
 import {
@@ -21,7 +21,7 @@ export const SectionInformationsPratiques = ({
   enregistrer,
 }: {
   id: string
-  informationsPratiques: FicheAffichee['informationsPratiques']
+  informationsPratiques: InformationsPratiquesAffichees
   enregistrer: EnregistrerUneSection
 }) => {
   const soumettre = useEnregistrementDeSection(id, enregistrer)

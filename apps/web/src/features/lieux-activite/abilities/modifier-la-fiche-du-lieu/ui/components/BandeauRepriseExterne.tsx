@@ -1,6 +1,6 @@
 import { formatDate } from '@app/web/utils/formatDate'
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import type { FicheAffichee } from '../fiche-du-lieu.presenter'
+import type { RepriseExterne } from '../fiche-affichee/reprise-externe'
 import {
   BoutonDesDifferences,
   ModaleDesDifferences,
@@ -11,7 +11,7 @@ export const BandeauRepriseExterne = ({
   reprise,
 }: {
   lieuId: string
-  reprise: NonNullable<FicheAffichee['repriseExterne']>
+  reprise: RepriseExterne
 }) => (
   <>
     <Notice
