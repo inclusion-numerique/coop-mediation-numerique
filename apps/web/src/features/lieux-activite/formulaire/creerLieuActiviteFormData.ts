@@ -79,7 +79,8 @@ export const CreerLieuActiviteFormValidation = z
   .superRefine((value, context) => {
     const parsed = CreerLieuActiviteValidation.safeParse(toCreerLieuData(value))
     if (parsed.success) return
-    for (const issue of parsed.error.issues) context.addIssue(issue)
+    for (const { path, message } of parsed.error.issues)
+      context.addIssue({ code: 'custom', path, message })
   })
 
 export const creerLieuActiviteDefaultValues = (

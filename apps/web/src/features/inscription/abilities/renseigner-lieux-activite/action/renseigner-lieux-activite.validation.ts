@@ -8,7 +8,7 @@ import { z } from 'zod'
  * lieux d'activité.
  */
 const LieuActiviteInputValidation = z.object({
-  id: z.string().uuid().nullish(),
+  id: z.guid().nullish(),
   structureCartographieNationaleId: z.string().nullish(),
   nom: z.string().min(1, 'Veuillez renseigner le nom du lieu'),
   siret: z
@@ -31,7 +31,7 @@ const LieuActiviteInputValidation = z.object({
 export const RenseignerLieuxActiviteValidation = z.object({
   lieuxActivite: z
     .array(LieuActiviteInputValidation, {
-      required_error: 'Veuillez renseigner au moins un lieu d’activité',
+      error: 'Veuillez renseigner au moins un lieu d’activité',
     })
     .min(1, 'Veuillez renseigner au moins un lieu d’activité'),
 })

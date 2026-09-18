@@ -10,7 +10,7 @@ import { z } from 'zod'
 
 export const usurpationRouter = router({
   usurpUser: protectedProcedure
-    .input(z.object({ userId: z.string().uuid() }))
+    .input(z.object({ userId: z.guid() }))
     .mutation(
       async ({
         input: { userId },
@@ -104,7 +104,7 @@ export const usurpationRouter = router({
     },
   ),
   resetUserFixture: protectedProcedure
-    .input(z.object({ userId: z.string().uuid() }))
+    .input(z.object({ userId: z.guid() }))
     .mutation(async ({ input: { userId }, ctx: { user: initialUser } }) => {
       enforceIsAdmin(initialUser)
 

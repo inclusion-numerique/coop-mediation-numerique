@@ -44,7 +44,7 @@ export const InformationsGeneralesSaisie = z.object({
   complementAdresse: texteFacultatif,
   lieuItinerant: z.boolean().nullish(),
   typologies: z
-    .array(z.nativeEnum(Typologie))
+    .array(z.enum(Typologie))
     .min(1, 'Sélectionnez au moins une typologie de structure'),
   siret: SiretSaisi,
   rna: RnaSaisi,
@@ -74,13 +74,13 @@ export const DescriptionSaisie = z.object({
   section: z.literal('Description'),
   presentationResume: PresentationResumeSaisie,
   presentationDetail: texteFacultatif,
-  formationsLabels: z.array(z.nativeEnum(FormationLabelPropose)),
+  formationsLabels: z.array(z.enum(FormationLabelPropose)),
 })
 
 export const ServicesEtAccompagnementSaisie = z.object({
   section: z.literal('ServicesEtAccompagnement'),
-  services: z.array(z.nativeEnum(Service)),
-  modalitesAccompagnement: z.array(z.nativeEnum(ModaliteAccompagnement)),
+  services: z.array(z.enum(Service)),
+  modalitesAccompagnement: z.array(z.enum(ModaliteAccompagnement)),
 })
 
 /**
@@ -95,16 +95,14 @@ export const ModalitesAccesAuServiceSaisie = z.object({
   numeroTelephone: NumeroTelephoneSaisi,
   parMail: CaseCochee,
   adresseMail: AdresseMailSaisie,
-  fraisACharge: z.array(z.nativeEnum(Frais)),
+  fraisACharge: z.array(z.enum(Frais)),
 })
 
 export const TypesDePublicsAccueillisSaisie = z.object({
   section: z.literal('TypesDePublicsAccueillis'),
   toutPublic: CaseCochee,
-  publicsSpecifiquementAdresses: z.array(
-    z.nativeEnum(PublicSpecifiquementAdresse),
-  ),
-  priseEnChargeSpecifique: z.array(z.nativeEnum(PriseEnChargeSpecifique)),
+  publicsSpecifiquementAdresses: z.array(z.enum(PublicSpecifiquementAdresse)),
+  priseEnChargeSpecifique: z.array(z.enum(PriseEnChargeSpecifique)),
 })
 
 /**
@@ -122,21 +120,21 @@ export const ModalitesAccesAuServiceFormValidation =
   ModalitesAccesAuServiceSaisie.superRefine((saisie, contexte) => {
     if (saisie.parTelephone && !saisie.numeroTelephone)
       contexte.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         message: 'Le numéro de téléphone est obligatoire.',
         path: ['numeroTelephone'],
       })
 
     if (saisie.parMail && !saisie.adresseMail)
       contexte.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         message: "L'adresse email est obligatoire.",
         path: ['adresseMail'],
       })
   })
 
 export const ModifierLaFicheDuLieuValidation = z.object({
-  id: z.string().uuid(),
+  id: z.guid(),
   modification: z
     .discriminatedUnion('section', [
       InformationsGeneralesSaisie,
@@ -152,14 +150,14 @@ export const ModifierLaFicheDuLieuValidation = z.object({
 
       if (saisie.parTelephone && !saisie.numeroTelephone)
         contexte.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           message: 'Le numéro de téléphone est obligatoire.',
           path: ['numeroTelephone'],
         })
 
       if (saisie.parMail && !saisie.adresseMail)
         contexte.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           message: "L'adresse email est obligatoire.",
           path: ['adresseMail'],
         })

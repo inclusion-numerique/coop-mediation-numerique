@@ -1,7 +1,7 @@
 import z from 'zod'
 
 export const InvitationValidation = z.object({
-  email: z.string().email(),
+  email: z.email(),
   coordinateurId: z.string(),
 })
 

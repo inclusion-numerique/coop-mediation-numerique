@@ -379,8 +379,8 @@ export type StructureListResponse = JsonApiListResponse<StructureResource>
  */
 const StructureCursorValidation = z.object({
   creation_id: z.object({
-    creation: z.coerce.string().datetime(),
-    id: z.string().uuid(),
+    creation: z.coerce.string().pipe(z.iso.datetime()),
+    id: z.guid(),
   }),
 })
 
@@ -401,22 +401,22 @@ export const GET = createApiV1Route
         .transform((v) => (Array.isArray(v) ? v : v ? v.split(',') : []))
         .transform((arr) => arr.map((s) => s.trim()).filter(Boolean))
         .transform((arr) => Array.from(new Set(arr)))
-        .pipe(z.array(z.string().uuid()).max(100))
+        .pipe(z.array(z.guid()).max(100))
         .default([]),
       filter: z
         .object({
           creation: z
             .object({
-              depuis: z.string().datetime().optional(),
+              depuis: z.iso.datetime().optional(),
             })
-            .default({}),
+            .prefault({}),
           modification: z
             .object({
-              depuis: z.string().datetime().optional(),
+              depuis: z.iso.datetime().optional(),
             })
-            .default({}),
+            .prefault({}),
         })
-        .default({}),
+        .prefault({}),
     }),
   )
   .handle(async ({ params }) => {

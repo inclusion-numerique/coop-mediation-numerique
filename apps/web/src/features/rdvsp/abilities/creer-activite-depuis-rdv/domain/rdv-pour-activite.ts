@@ -6,7 +6,7 @@ import type { StatutPresence } from '../../../domain/statut-presence'
 import type { UsagerId } from '../../../domain/usager-id'
 
 export const MediateurRedacteurId = defineModel(
-  z.string().uuid().brand('MediateurRedacteurId'),
+  z.guid().brand('MediateurRedacteurId'),
 )
 export type MediateurRedacteurId = Model.TypeOf<typeof MediateurRedacteurId>
 

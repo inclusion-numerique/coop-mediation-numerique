@@ -67,8 +67,7 @@ export const EmployeuseChoisieValidation = z.object(
     source: z.enum(['database', 'api']),
   },
   {
-    required_error: 'Veuillez sélectionner votre structure employeuse',
-    invalid_type_error: 'Veuillez sélectionner votre structure employeuse',
+    error: 'Veuillez sélectionner votre structure employeuse',
   },
 )
 

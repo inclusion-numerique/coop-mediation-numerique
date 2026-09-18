@@ -7,6 +7,6 @@ import { z } from 'zod'
  * spécification publique ne le décrit que dans ses exemples de réponse : on le
  * valide donc ici plutôt que de faire confiance au payload.
  */
-export const UrlAgent = defineModel(z.string().url().brand('UrlAgent'))
+export const UrlAgent = defineModel(z.url().brand('UrlAgent'))
 
 export type UrlAgent = Model.TypeOf<typeof UrlAgent>

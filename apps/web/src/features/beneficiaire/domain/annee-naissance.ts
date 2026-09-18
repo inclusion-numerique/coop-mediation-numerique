@@ -24,7 +24,7 @@ const anneeNaissanceInvalide =
  * brut ou l'absence.
  */
 export const anneeNaissanceValidation = z
-  .number({ invalid_type_error: anneeNaissanceInvalide })
+  .number({ error: anneeNaissanceInvalide })
   .int(anneeNaissanceInvalide)
   .min(ANNEE_NAISSANCE_MIN, anneeNaissanceInvalide)
   .max(ANNEE_NAISSANCE_MAX, anneeNaissanceInvalide)

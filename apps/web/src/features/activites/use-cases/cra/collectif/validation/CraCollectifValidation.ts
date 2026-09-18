@@ -6,7 +6,7 @@ import { ParticipantsAnonymesCraCollectifValidation } from './ParticipantsAnonym
 
 export const CraCollectifValidation = CraValidation.extend({
   participants: z
-    .array(BeneficiaireCraValidation.extend({ id: z.string().uuid() }))
+    .array(BeneficiaireCraValidation.extend({ id: z.guid() }))
     .default([]),
   participantsAnonymes: ParticipantsAnonymesCraCollectifValidation,
   titreAtelier: z.string().nullish(),

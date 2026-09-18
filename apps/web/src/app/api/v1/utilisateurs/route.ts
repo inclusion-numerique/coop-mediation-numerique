@@ -397,8 +397,8 @@ export type UtilisateurListResponse = JsonApiListResponse<UtilisateurResource>
 const UserCursorValidation = z.object({
   creation_id: z.object({
     // 'created' is a DateTime in 'User' model
-    created: z.coerce.string().datetime(),
-    id: z.string().uuid(),
+    created: z.coerce.string().pipe(z.iso.datetime()),
+    id: z.guid(),
   }),
 })
 
@@ -433,7 +433,7 @@ export const GET = createApiV1Route
             }),
           soft_deleted: z.union([z.literal('0'), z.literal('1')]).optional(),
         })
-        .default({}),
+        .prefault({}),
     }),
   )
   .handle(async ({ params }) => {

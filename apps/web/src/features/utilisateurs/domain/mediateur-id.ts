@@ -6,6 +6,6 @@ import { z } from 'zod'
  * feature `utilisateurs` en a besoin pour dire à qui s'adressent les charges
  * d'effacement, sans importer le domaine de `beneficiaire` ni de `mediateurs`.
  */
-export const MediateurId = defineModel(z.string().uuid().brand('MediateurId'))
+export const MediateurId = defineModel(z.guid().brand('MediateurId'))
 
 export type MediateurId = Model.TypeOf<typeof MediateurId>

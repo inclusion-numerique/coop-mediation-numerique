@@ -51,13 +51,13 @@ export const ActivitesFilterValidations = {
   mediateurs: z
     .union([
       z.string().transform((val) => val.split(',').map((id) => id.trim())),
-      z.array(z.string().uuid()),
+      z.array(z.guid()),
     ])
     .optional(),
   beneficiaires: z
     .union([
       z.string().transform((val) => val.split(',').map((id) => id.trim())),
-      z.array(z.string().uuid()),
+      z.array(z.guid()),
     ])
     .optional(),
   communes: z
@@ -75,7 +75,7 @@ export const ActivitesFilterValidations = {
   lieux: z
     .union([
       z.string().transform((val) => val.split(',').map((id) => id.trim())),
-      z.array(z.string().uuid()),
+      z.array(z.guid()),
     ])
     .optional(),
   conseiller_numerique: z.enum(booleanStringValues).optional(),
@@ -97,7 +97,7 @@ export const ActivitesFilterValidations = {
   tags: z
     .union([
       z.string().transform((val) => val.split(',').map((id) => id.trim())),
-      z.array(z.string().uuid()),
+      z.array(z.guid()),
     ])
     .optional(),
   structuresEmployeuses: z

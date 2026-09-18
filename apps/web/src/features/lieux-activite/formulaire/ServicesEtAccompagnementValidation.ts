@@ -5,8 +5,6 @@ import {
 import z from 'zod'
 
 export const ServicesEtAccompagnementShape = {
-  services: z.array(z.nativeEnum(Service)).nullish(),
-  modalitesAccompagnement: z
-    .array(z.nativeEnum(ModaliteAccompagnement))
-    .nullish(),
+  services: z.array(z.enum(Service)).nullish(),
+  modalitesAccompagnement: z.array(z.enum(ModaliteAccompagnement)).nullish(),
 }

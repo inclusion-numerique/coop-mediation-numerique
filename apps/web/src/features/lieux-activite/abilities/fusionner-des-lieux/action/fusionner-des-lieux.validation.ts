@@ -7,8 +7,8 @@ import { z } from 'zod'
  */
 export const FusionnerDesLieuxValidation = z
   .object({
-    sourceStructureId: z.string().uuid(),
-    targetStructureId: z.string().uuid(),
+    sourceStructureId: z.guid(),
+    targetStructureId: z.guid(),
   })
   .refine(
     ({ sourceStructureId, targetStructureId }) =>

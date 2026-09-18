@@ -4,7 +4,7 @@ export const InviterMembreValidation = z.object({
   members: z
     .array(
       z.object({
-        email: z.string().email(),
+        email: z.email(),
         nom: z.string().optional(),
         mediateurId: z.string().optional(),
       }),
@@ -12,4 +12,5 @@ export const InviterMembreValidation = z.object({
     .default([]),
 })
 
+export type InviterMembreInput = z.input<typeof InviterMembreValidation>
 export type InviterMembreData = z.infer<typeof InviterMembreValidation>

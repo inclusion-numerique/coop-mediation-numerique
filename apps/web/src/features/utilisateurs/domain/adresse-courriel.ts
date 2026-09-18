@@ -10,7 +10,7 @@ import { z } from 'zod'
  * compte supprimé ne doit pas échouer.
  */
 export const AdresseCourriel = defineModel(
-  z.string().trim().toLowerCase().email().brand('AdresseCourriel'),
+  z.string().trim().toLowerCase().pipe(z.email()).brand('AdresseCourriel'),
 )
 
 export type AdresseCourriel = Model.TypeOf<typeof AdresseCourriel>

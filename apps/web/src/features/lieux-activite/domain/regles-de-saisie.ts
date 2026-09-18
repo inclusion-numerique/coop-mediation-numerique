@@ -103,7 +103,7 @@ export const NumeroTelephoneSaisi = reconnu(
 export const AdresseMailSaisie = z
   .string()
   .trim()
-  .email('Veuillez renseigner une adresse email valide')
+  .pipe(z.email('Veuillez renseigner une adresse email valide'))
   .nullish()
 
 export const PresentationResumeSaisie = z

@@ -6,7 +6,7 @@ export const descriptionMaxLength = 280
 
 export const SaveTagValidation = z
   .object({
-    id: z.string().uuid().nullable(),
+    id: z.guid().nullable(),
     nom: z
       .string()
       .min(3, `Le nom du tag doit faire plus de 3 caractères`)
@@ -27,7 +27,7 @@ export const SaveTagValidation = z
       TagScope.Departemental,
       TagScope.National,
     ]),
-    equipeId: z.string().uuid().nullable(),
+    equipeId: z.guid().nullable(),
   })
   .refine(
     (data) =>

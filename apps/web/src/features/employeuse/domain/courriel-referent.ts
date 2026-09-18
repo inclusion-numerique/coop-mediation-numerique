@@ -12,7 +12,7 @@ import { z } from 'zod'
  * l'inscription.
  */
 export const CourrielReferent = defineModel(
-  z.string().trim().toLowerCase().email().brand('CourrielReferent'),
+  z.string().trim().toLowerCase().pipe(z.email()).brand('CourrielReferent'),
 )
 
 export type CourrielReferent = Model.TypeOf<typeof CourrielReferent>

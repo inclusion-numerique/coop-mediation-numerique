@@ -224,7 +224,7 @@ export const GET = createApiV1Route
         .transform((v) => (Array.isArray(v) ? v : v ? v.split(',') : []))
         .transform((arr) => arr.map((s) => s.trim()).filter(Boolean))
         .transform((arr) => Array.from(new Set(arr)))
-        .pipe(z.array(z.string().uuid()).max(100))
+        .pipe(z.array(z.guid()).max(100))
         .default([]),
       filter: z
         .object({

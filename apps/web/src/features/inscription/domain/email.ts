@@ -3,7 +3,7 @@ import { z } from 'zod'
 
 /** Forme canonique : sans espaces de bord, en minuscules. */
 export const Email = defineModel(
-  z.string().trim().toLowerCase().email().brand('Email'),
+  z.string().trim().toLowerCase().pipe(z.email()).brand('Email'),
 )
 
 export type Email = Model.TypeOf<typeof Email>
