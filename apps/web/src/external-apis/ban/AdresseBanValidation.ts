@@ -14,8 +14,7 @@ export const AdresseBanValidation = z.object(
     longitude: z.number(),
   },
   {
-    required_error: 'Veuillez renseigner une adresse',
-    invalid_type_error: 'Veuillez renseigner une adresse',
+    error: 'Veuillez renseigner une adresse',
   },
 )
 

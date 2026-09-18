@@ -19,9 +19,8 @@ export const trisDesLieux = [
  */
 export const TriDesLieux = defineModel(
   z
-    .enum(trisDesLieux)
-    .nullish()
-    .catch('nomaz')
+    .unknown()
+    .pipe(z.enum(trisDesLieux).nullish().catch('nomaz'))
     .transform((valeur) => valeur ?? 'nomaz'),
 )
 

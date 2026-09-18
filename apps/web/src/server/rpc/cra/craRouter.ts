@@ -150,7 +150,7 @@ export const craRouter = router({
   deleteActivite: protectedProcedure
     .input(
       z.object({
-        activiteId: z.string().uuid(),
+        activiteId: z.guid(),
       }),
     )
     .mutation(async ({ input: { activiteId }, ctx: { user } }) => {
@@ -165,7 +165,7 @@ export const craRouter = router({
   deleteActiviteCoordination: protectedProcedure
     .input(
       z.object({
-        activiteId: z.string().uuid(),
+        activiteId: z.guid(),
       }),
     )
     .mutation(async ({ input: { activiteId }, ctx: { user } }) => {

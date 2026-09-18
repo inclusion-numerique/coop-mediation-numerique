@@ -18,6 +18,6 @@ export const IdentiteLieuShape = {
   lieuItinerant: z.boolean().nullish(),
   complementAdresse: texteFacultatif,
   typologies: z
-    .array(z.nativeEnum(Typologie))
+    .array(z.enum(Typologie))
     .min(1, 'Sélectionnez au moins une typologie de structure'),
 }

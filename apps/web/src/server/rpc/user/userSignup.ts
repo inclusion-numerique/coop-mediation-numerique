@@ -2,16 +2,16 @@ import z from 'zod'
 
 export const UserSignupValidation = z.object({
   email: z
-    .string({ required_error: 'Veuillez renseigner votre email' })
+    .string({ error: 'Veuillez renseigner votre email' })
     .trim()
     .toLowerCase()
-    .email('Merci de renseigner un email valide'),
+    .pipe(z.email('Merci de renseigner un email valide')),
   firstName: z
-    .string({ required_error: 'Veuillez renseigner votre prénom' })
+    .string({ error: 'Veuillez renseigner votre prénom' })
     .trim()
     .min(1, 'Veuillez renseigner votre prénom'),
   lastName: z
-    .string({ required_error: 'Veuillez renseigner votre nom' })
+    .string({ error: 'Veuillez renseigner votre nom' })
     .trim()
     .min(1, 'Veuillez renseigner votre nom'),
 })

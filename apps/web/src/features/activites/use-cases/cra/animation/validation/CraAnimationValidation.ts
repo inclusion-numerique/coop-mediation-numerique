@@ -32,23 +32,23 @@ export type ThematiqueAnimationValue =
 
 export const CraAnimationValidation = z
   .object({
-    id: z.string().uuid().nullish(), // defined if update, nullish if create
+    id: z.guid().nullish(), // defined if update, nullish if create
     date: CraDateValidation,
     duree: CraDureeValidation,
-    coordinateurId: z.string().uuid(), // owner of the CRA
+    coordinateurId: z.guid(), // owner of the CRA
     mediateurs: z.number().nullish(),
     structures: z.number().nullish(),
     autresActeurs: z.number().nullish(),
     typeAnimation: z.enum(typeAnimationValues, {
-      required_error: 'Veuillez renseigner un type d’animation',
+      error: 'Veuillez renseigner un type d’animation',
     }),
     typeAnimationAutre: z.string().nullish(),
     initiative: z.enum(initiativeValues).nullish(),
     thematiquesAnimation: z.array(z.enum(thematiqueAnimationValues), {
-      required_error: 'Veuillez renseigner au moins une thématique d’animation',
+      error: 'Veuillez renseigner au moins une thématique d’animation',
     }),
     thematiqueAnimationAutre: z.string().nullish(),
-    tags: z.array(z.object({ id: z.string().uuid() })).default([]),
+    tags: z.array(z.object({ id: z.guid() })).default([]),
     notes: z.string().nullish(),
   })
   .superRefine((data, ctx) => {
@@ -58,7 +58,7 @@ export const CraAnimationValidation = z
 
     if (!hasMediateurs && !hasStructures && !hasAutresActeurs) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         path: ['mediateurs'],
         message:
           'Veuillez renseigner au moins un médiateur, une structure ou un autre acteur',
@@ -67,7 +67,7 @@ export const CraAnimationValidation = z
 
     if (data.typeAnimation === 'Autre' && !data.typeAnimationAutre?.trim()) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         path: ['typeAnimationAutre'],
         message: 'Veuillez préciser le type d’animation',
       })
@@ -78,7 +78,7 @@ export const CraAnimationValidation = z
       !data.thematiqueAnimationAutre?.trim()
     ) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         path: ['thematiqueAnimationAutre'],
         message: 'Veuillez préciser la thématique d’animation',
       })

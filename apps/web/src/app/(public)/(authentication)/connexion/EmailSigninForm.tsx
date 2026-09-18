@@ -11,9 +11,9 @@ import z from 'zod'
 
 const SigninFormValidation = z.object({
   email: z
-    .string({ required_error: 'Veuillez renseigner votre email' })
-    .nonempty('Veuillez renseigner votre email')
-    .email('Merci de renseigner un email valide'),
+    .string({ error: 'Veuillez renseigner votre email' })
+    .min(1, 'Veuillez renseigner votre email')
+    .pipe(z.email('Merci de renseigner un email valide')),
 })
 type SigninFormData = z.infer<typeof SigninFormValidation>
 

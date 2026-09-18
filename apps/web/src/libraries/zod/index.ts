@@ -9,5 +9,5 @@ const blankToUndefined = (value: unknown): unknown =>
  * Champ de formulaire optionnel : une valeur vide (null, undefined, chaîne
  * blanche) est traitée comme absente avant validation par le schéma fourni.
  */
-export const optional = <S extends z.ZodTypeAny>(schema: S) =>
+export const optional = <S extends z.ZodType>(schema: S) =>
   z.preprocess(blankToUndefined, schema.optional())

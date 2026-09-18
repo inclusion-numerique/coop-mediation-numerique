@@ -4,10 +4,10 @@ import z from 'zod'
 
 export const ServerUserSignupValidation = UserSignupValidation.extend({
   email: z
-    .string({ required_error: 'Veuillez renseigner votre email' })
+    .string({ error: 'Veuillez renseigner votre email' })
     .trim()
     .toLowerCase()
-    .email('Merci de renseigner un email valide')
+    .pipe(z.email('Merci de renseigner un email valide'))
     .refine(async (email) => {
       const existing = await prismaClient.user.findUnique({
         where: { email },

@@ -254,8 +254,8 @@ export const mediateursRouter = router({
   addToTeam: protectedProcedure
     .input(
       z.object({
-        userId: z.string().uuid(), // id du model User (pas Mediateur)
-        coordinateurId: z.string().uuid(), // id du model Coordinateur (pas User)
+        userId: z.guid(), // id du model User (pas Mediateur)
+        coordinateurId: z.guid(), // id du model Coordinateur (pas User)
       }),
     )
     .mutation(async ({ input: { userId, coordinateurId }, ctx: { user } }) => {

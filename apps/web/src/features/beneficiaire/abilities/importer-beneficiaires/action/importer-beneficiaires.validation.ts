@@ -19,7 +19,7 @@ import type { BeneficiaireAImporter } from '../domain/importer-beneficiaires'
 // Récupère la valeur d'un value object si elle est valide, sinon `null` : les
 // champs optionnels d'un fichier importé sont tolérés (une donnée invalide est
 // ignorée, pas bloquante).
-const parseOptional = <S extends z.ZodTypeAny>(
+const parseOptional = <S extends z.ZodType>(
   schema: S,
   value: unknown,
 ): z.output<S> | null => {

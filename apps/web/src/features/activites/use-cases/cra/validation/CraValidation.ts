@@ -7,17 +7,17 @@ import { CraDateValidation } from './CraDateValidation'
 import { CraDureeValidation } from './CraDureeValidation'
 
 export const CraValidation = z.object({
-  id: z.string().uuid().nullish(), // defined if update, nullish if create
-  mediateurId: z.string().uuid(), // owner of the CRA
+  id: z.guid().nullish(), // defined if update, nullish if create
+  mediateurId: z.guid(), // owner of the CRA
   rdvServicePublicId: z.number().nullish(), // id externe du RDV Service Public qui est à l'origine de cette Activité
   date: CraDateValidation,
   duree: CraDureeValidation,
   typeLieu: z.enum(typeLieuValues, {
-    required_error: 'Veuillez renseigner un lieu d’accompagnement',
+    error: 'Veuillez renseigner un lieu d’accompagnement',
   }),
   structure: z
     .object({
-      id: z.string().uuid(),
+      id: z.guid(),
       nom: z.string(),
       adresse: z.string(),
     })
@@ -25,10 +25,10 @@ export const CraValidation = z.object({
   lieuCommuneData: AdresseBanValidation.nullish(),
   thematiques: z
     .array(z.enum(thematiqueValues), {
-      required_error: 'Veuillez renseigner au moins une thématique',
+      error: 'Veuillez renseigner au moins une thématique',
     })
     .min(1, 'Veuillez renseigner au moins une thématique'),
-  tags: z.array(z.object({ id: z.string().uuid() })).default([]),
+  tags: z.array(z.object({ id: z.guid() })).default([]),
   precisionsDemarche: z.string().nullish(),
   materiel: z.array(z.enum(materielValues)).default([]),
   notes: z.string().nullish(),

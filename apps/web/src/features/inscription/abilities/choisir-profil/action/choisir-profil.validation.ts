@@ -8,7 +8,7 @@ import { rolesDisponibles } from '../domain/choisir-profil'
  */
 export const choisirProfilFormShape = z.object({
   role: z.enum(rolesDisponibles, {
-    required_error: 'Veuillez choisir un poste',
+    error: 'Veuillez choisir un poste',
   }),
   cguAcceptee: z
     .boolean()

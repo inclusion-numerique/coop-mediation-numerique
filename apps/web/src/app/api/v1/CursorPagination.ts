@@ -67,7 +67,7 @@ export const JsonApiCursorPaginationQueryParamsValidation = z.object({
       after: z.string().optional(),
       before: z.string().optional(),
     })
-    .default({}),
+    .prefault({}),
 })
 
 export type JsonApiCursorPaginationQueryParams = z.infer<

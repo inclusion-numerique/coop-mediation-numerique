@@ -6,6 +6,7 @@ import { buttonLoadingClassname } from '@app/ui/utils/buttonLoadingClassname'
 import { withTrpc } from '@app/web/components/trpc/withTrpc'
 import {
   InviterMembreData,
+  InviterMembreInput,
   InviterMembreValidation,
 } from '@app/web/equipe/InviterMembreValidation'
 import { useMediateursSearch } from '@app/web/hooks/useMediateurSearch'
@@ -45,7 +46,7 @@ const InviterMembreForm = () => {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-  const form = useForm<InviterMembreData>({
+  const form = useForm<InviterMembreInput, unknown, InviterMembreData>({
     resolver: zodResolver(InviterMembreValidation),
     defaultValues: { members: [] },
   })

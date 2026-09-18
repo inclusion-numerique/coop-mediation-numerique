@@ -7,7 +7,7 @@ import { z } from 'zod'
  * lui qui porte le périmètre de propriété des requêtes (AB-3).
  */
 export const UtilisateurCoopId = defineModel(
-  z.string().uuid().brand('UtilisateurCoopId'),
+  z.guid().brand('UtilisateurCoopId'),
 )
 
 export type UtilisateurCoopId = Model.TypeOf<typeof UtilisateurCoopId>

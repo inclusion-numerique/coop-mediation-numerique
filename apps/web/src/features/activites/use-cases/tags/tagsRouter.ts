@@ -36,7 +36,7 @@ export const tagsRouter = router({
   searchMergeDestinations: protectedProcedure
     .input(
       z.object({
-        sourceTagId: z.string().uuid(),
+        sourceTagId: z.guid(),
         query: z.string(),
       }),
     )

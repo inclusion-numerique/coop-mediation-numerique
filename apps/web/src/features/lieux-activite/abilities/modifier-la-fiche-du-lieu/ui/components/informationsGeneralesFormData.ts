@@ -22,14 +22,14 @@ export const InformationsGeneralesFormValidation = z
   .superRefine((data, ctx) => {
     if (!data.noSiret && !data.siretSearch) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         path: ['siretSearch'],
         message: 'Veuillez rechercher et sélectionner une structure',
       })
     }
     if (!data.noSiret && data.siretSearch && !data.adresseBan) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         path: ['siretSearch'],
         message:
           'L’adresse de la structure n’a pas pu être déterminée, veuillez sélectionner à nouveau la structure',
@@ -37,21 +37,21 @@ export const InformationsGeneralesFormValidation = z
     }
     if (data.noSiret && !data.nom?.trim()) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         path: ['nom'],
         message: "Veuillez renseigner le nom du lieu d'activité",
       })
     }
     if (data.noSiret && !data.adresseBan) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         path: ['adresseBan'],
         message: 'Veuillez renseigner une adresse',
       })
     }
     if (data.typologies?.length === 0) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         path: ['typologies'],
         message: 'Sélectionnez au moins une typologie de structure',
       })

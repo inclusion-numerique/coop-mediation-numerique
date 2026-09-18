@@ -14,10 +14,10 @@ export const DemandeRdvId = defineModel(
 )
 export type DemandeRdvId = Model.TypeOf<typeof DemandeRdvId>
 
-export const UrlPriseRdv = defineModel(z.string().url().brand('UrlPriseRdv'))
+export const UrlPriseRdv = defineModel(z.url().brand('UrlPriseRdv'))
 export type UrlPriseRdv = Model.TypeOf<typeof UrlPriseRdv>
 
-export const UrlRetour = defineModel(z.string().url().brand('UrlRetour'))
+export const UrlRetour = defineModel(z.url().brand('UrlRetour'))
 export type UrlRetour = Model.TypeOf<typeof UrlRetour>
 
 /**
