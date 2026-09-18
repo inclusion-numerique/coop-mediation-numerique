@@ -67,7 +67,6 @@ overrides:
 # sont bloqués par défaut par pnpm 10 — c'est ce qui neutralise le vecteur `preinstall` des
 # vers npm. N'ajouter une entrée qu'avec une raison de compilation native avérée.
 onlyBuiltDependencies:
-  - "@cdktf/node-pty-prebuilt-multiarch"
   - "@prisma/client"
   - "@prisma/engines"
   - "@sentry/cli"
