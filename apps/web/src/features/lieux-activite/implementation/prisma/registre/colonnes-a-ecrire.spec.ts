@@ -1,5 +1,6 @@
 import {
   Contact,
+  Horaires,
   Nom,
   Presentation,
   Service,
@@ -23,7 +24,7 @@ const fiche: Fiche = {
   localisation: null,
   typologies: [],
   contact: Contact({}),
-  horaires: 'Mo-Fr 09:00-12:00',
+  horaires: Horaires('Mo-Fr 09:00-12:00'),
   presentation: Presentation({ resume: 'Un résumé' }),
   services: [Service.AideAuxDemarchesAdministratives],
   publicsSpecifiquementAdresses: [],

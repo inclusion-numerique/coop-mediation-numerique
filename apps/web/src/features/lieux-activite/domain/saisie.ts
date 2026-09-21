@@ -4,6 +4,7 @@ import {
   ComplementAdresse,
   Courriel,
   FicheAccesLibre,
+  Horaires,
   Itinerance,
   Localisation,
   ModaliteAcces,
@@ -230,8 +231,19 @@ export const itineranceSaisie = (
 export const horairesSaisis = (
   grille: Schedule,
   commentaire: string | null | undefined,
-): string | null => {
+): Horaires | null => {
   const osm = nonVide(fromTimetableOpeningHours(grille))
 
-  return osm == null ? null : appendComment(osm, nonVide(commentaire))
+  return osm == null
+    ? null
+    : Horaires.safe(appendComment(osm, nonVide(commentaire)))
+}
+
+/** Un horaire tel qu'une source l'a écrit : retenu s'il suit le format OSM. */
+export const horairesDeLaSource = (
+  horaires: string | null | undefined,
+): Horaires | null => {
+  const texte = nonVide(horaires)
+
+  return texte == null ? null : Horaires.safe(texte)
 }

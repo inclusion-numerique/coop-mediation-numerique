@@ -5,6 +5,7 @@ import type {
   FicheAccesLibre,
   FormationLabel,
   Frais,
+  Horaires,
   Itinerance,
   Localisation,
   ModaliteAcces,
@@ -56,7 +57,7 @@ export type Fiche = {
   readonly localisation: Localisation | null
   readonly typologies: readonly Typologie[]
   readonly contact: Contact
-  readonly horaires: string | null
+  readonly horaires: Horaires | null
   readonly presentation: Presentation | null
   readonly services: readonly Service[]
   readonly publicsSpecifiquementAdresses: readonly PublicSpecifiquementAdresse[]

@@ -2,6 +2,7 @@ import {
   Adresse,
   Contact,
   Courriel,
+  Horaires,
   Itinerance,
   ModaliteAcces,
   Nom,
@@ -129,7 +130,11 @@ describe('mise en forme de la fiche pour l’écran', () => {
     const { repriseExterne } = ficheAffichee({
       lieu: {
         ...lieu,
-        fiche: { ...lieu.fiche, horaires: 'Tu 14:00-18:00', nom: Nom('Autre') },
+        fiche: {
+          ...lieu.fiche,
+          horaires: Horaires('Tu 14:00-18:00'),
+          nom: Nom('Autre'),
+        },
         tracabilite: {
           ...lieu.tracabilite,
           derniereModification: ModifieParSource(

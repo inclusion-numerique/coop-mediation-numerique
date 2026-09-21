@@ -6,6 +6,7 @@ import {
   FicheAccesLibre,
   FormationLabel,
   Frais,
+  Horaires,
   Itinerance,
   Localisation,
   ModaliteAcces,
@@ -142,7 +143,7 @@ const maximal: Lieu = {
         Url('https://autre.example.fr'),
       ],
     }),
-    horaires: 'Mo-Fr 09:00-12:00,14:00-18:30; Sa 08:30-12:00',
+    horaires: Horaires('Mo-Fr 09:00-12:00,14:00-18:30; Sa 08:30-12:00'),
     presentation: Presentation({
       resume: 'Un résumé',
       detail: 'Un détail plus long',

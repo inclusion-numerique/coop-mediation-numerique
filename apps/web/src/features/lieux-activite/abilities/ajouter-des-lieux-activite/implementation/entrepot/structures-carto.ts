@@ -5,6 +5,7 @@ import { reconnues } from '@app/web/features/lieux-activite/domain/nomenclatures
 import {
   courrielsValides,
   ficheAccesLibreSaisie,
+  horairesDeLaSource,
   presentationSaisie,
   sitesWebSaisis,
   telephoneValide,
@@ -113,7 +114,7 @@ const ficheDeLaLigne = (lieu: LieuRow): Fiche => ({
   localisation: null,
   typologies: reconnues(Typologie, lieu.typologies),
   contact: contactDeLaLigne(lieu.contact),
-  horaires: lieu.horaires,
+  horaires: horairesDeLaSource(lieu.horaires),
   presentation: presentationSaisie(
     lieu.presentationResume,
     lieu.presentationDetail,

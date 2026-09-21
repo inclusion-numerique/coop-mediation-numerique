@@ -16,7 +16,7 @@ import { NomUsage } from '../../domain/identite-sirene'
 import { IdsCartographieNationale } from '../../domain/ids-cartographie-nationale'
 import type { Lieu } from '../../domain/lieu'
 import { LieuId } from '../../domain/lieu-id'
-import { complementAdresseSaisi } from '../../domain/saisie'
+import { complementAdresseSaisi, horairesDeLaSource } from '../../domain/saisie'
 import {
   Actif,
   type DerniereModification,
@@ -156,7 +156,7 @@ const toFiche = (row: LigneDuLieuCoop): Fiche => ({
     vocabulaire.typologie.versStandard,
   ),
   contact: toContact(row),
-  horaires: nonVide(row.horaires),
+  horaires: horairesDeLaSource(row.horaires),
   presentation: toPresentation(row),
   services: vocabulaire.traduites(
     row.services,

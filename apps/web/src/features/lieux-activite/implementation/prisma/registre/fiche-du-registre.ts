@@ -4,7 +4,7 @@ import type { Fiche } from '../../../domain/fiche'
 import {
   complementAdresseSaisi,
   ficheAccesLibreSaisie,
-  nonVide,
+  horairesDeLaSource,
   presentationSaisie,
   urlSaisie,
 } from '../../../domain/saisie'
@@ -91,7 +91,7 @@ export const ficheDuRegistre = (
     vocabulaire.typologie.versStandard,
   ),
   contact: contactDuRegistre(inscription.contact),
-  horaires: nonVide(inscription.horaires),
+  horaires: horairesDeLaSource(inscription.horaires),
   presentation: presentationSaisie(
     inscription.presentationResume,
     inscription.presentationDetail,

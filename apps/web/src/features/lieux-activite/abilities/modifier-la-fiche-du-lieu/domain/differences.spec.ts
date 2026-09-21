@@ -2,6 +2,7 @@ import {
   Adresse,
   Contact,
   DispositifProgrammeNational,
+  Horaires,
   Nom,
   Service,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
@@ -19,7 +20,7 @@ const fiche: Fiche = {
   localisation: null,
   typologies: [],
   contact: Contact({}),
-  horaires: 'Mo 09:00-12:00',
+  horaires: Horaires('Mo 09:00-12:00'),
   presentation: null,
   services: [
     Service.AideAuxDemarchesAdministratives,
@@ -108,7 +109,7 @@ describe('différences entre la fiche de la coop et celle du registre', () => {
   })
 
   it('rend de quoi présenter le choix : les deux valeurs et leur section', () => {
-    const repris = { ...fiche, horaires: 'Tu 14:00-18:00' }
+    const repris = { ...fiche, horaires: Horaires('Tu 14:00-18:00') }
 
     expect(differences(fiche, repris)).toEqual([
       {

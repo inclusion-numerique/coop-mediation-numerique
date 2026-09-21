@@ -4,6 +4,7 @@ import {
   type FicheAccesLibre,
   type FormationLabel,
   type Frais,
+  type Horaires,
   type Itinerance,
   type Localisation,
   type ModaliteAcces,
@@ -53,7 +54,7 @@ export type ModificationLieu =
       readonly sitesWeb: readonly Url[]
       readonly ficheAccesLibre: FicheAccesLibre | null
       readonly priseRdv: Url | null
-      readonly horaires: string | null
+      readonly horaires: Horaires | null
     }
   | {
       readonly section: 'Description'

@@ -1,7 +1,7 @@
 import { conseillersNumeriquesUserIdsSql } from '@app/web/features/employeuse/server'
 import { prismaClient } from '@app/web/prismaClient'
-import type { LieuMediationNumerique } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { Prisma } from '@prisma/client'
+import { type LieuPublie, LieuPublieSchema } from '../../domain/lieu-publie'
 
 /**
  * Un médiateur tel que la cartographie nationale l'affiche sur le lieu.
@@ -38,9 +38,9 @@ export const lieuxPublies = async ({
 }: {
   readonly ids: readonly string[]
   readonly dispositifProgrammeNational?: string
-}) => {
-  return prismaClient.$queryRaw<
-    (LieuMediationNumerique & { aidants?: Aidant[] })[]
+}): Promise<(LieuPublie & { aidants?: Aidant[] })[]> => {
+  const lignes = await prismaClient.$queryRaw<
+    (Record<string, unknown> & { aidants?: Aidant[] })[]
   >`
   WITH base AS (
     SELECT structures.id,
@@ -77,8 +77,8 @@ export const lieuxPublies = async ({
         )
       ) AS presentation,
       'Coop numérique' AS source,
-      structures.itinerance,
-      NULLIF(structures.itinerance, '{}') AS itinerance, structures.modification as "date_maj",
+      NULLIF(structures.itinerance, '{}') AS itinerance,
+      structures.modification AS "date_maj",
       NULLIF(structures.services, '{}') AS services,
       NULLIF(structures.publics_specifiquement_adresses, '{}') AS publics_specifiquement_adresses,
       NULLIF(structures.prise_en_charge_specifique, '{}') AS prise_en_charge_specifique,
@@ -143,4 +143,14 @@ export const lieuxPublies = async ({
           : Prisma.empty
       }
   `
+
+  return lignes
+    .map(({ aidants, ...lieu }) => {
+      const publie = LieuPublieSchema.safeParse(lieu)
+
+      return publie.success
+        ? { ...publie.data, ...(aidants == null ? {} : { aidants }) }
+        : null
+    })
+    .filter((lieu) => lieu !== null)
 }

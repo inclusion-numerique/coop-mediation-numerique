@@ -3,6 +3,7 @@ import {
   Contact,
   Courriel,
   Frais,
+  Horaires,
   Itinerance,
   ModaliteAcces,
   Nom,
@@ -36,7 +37,7 @@ const fiche = (ajustements: Partial<Fiche>): Fiche => ({
     telephone: '+33180059880',
     courriels: [Courriel('contact@example.fr')],
   }),
-  horaires: 'Mo-Fr 09:00-12:00',
+  horaires: Horaires('Mo-Fr 09:00-12:00'),
   presentation: Presentation({ resume: 'Un résumé' }),
   services: [Service.AideAuxDemarchesAdministratives],
   publicsSpecifiquementAdresses: [],
@@ -109,12 +110,18 @@ describe('résoudre les différences entre la fiche coop et celle du registre', 
 
   it('garde la valeur du registre pour le champ dont personne n’a tranché', () => {
     const resolu = resoudre(
-      fiche({ nom: Nom('Espace numérique de Reims'), horaires: 'Mo-Fr 08:00' }),
-      fiche({ nom: Nom('Tiers-lieu de Reims'), horaires: 'Mo-Fr 09:00' }),
+      fiche({
+        nom: Nom('Espace numérique de Reims'),
+        horaires: Horaires('Mo-Fr 08:00-12:00'),
+      }),
+      fiche({
+        nom: Nom('Tiers-lieu de Reims'),
+        horaires: Horaires('Mo-Fr 09:00-12:00'),
+      }),
       { nom: 'coop' },
     )
 
-    expect(resolu.fiche.horaires).toBe('Mo-Fr 09:00')
+    expect(resolu.fiche.horaires).toBe('Mo-Fr 09:00-12:00')
   })
 
   it('ne reprend rien d’un champ que les deux fiches disent pareil', () => {
