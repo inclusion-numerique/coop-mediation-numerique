@@ -17,7 +17,9 @@ import {
   PrisesEnChargeSpecifiques,
   PublicsSpecifiquementAdresses,
   Services,
+  sansDoublons,
   Typologies,
+  triee,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { z } from 'zod'
@@ -78,7 +80,7 @@ export const LieuPublieSchema = z.object({
   autres_formations_labels: facultatif(
     z
       .array(z.string().trim().min(1))
-      .transform((labels) => [...new Set(labels)]),
+      .transform((labels) => triee(sansDoublons(labels))),
   ),
   modalites_accompagnement: facultatif(ModalitesAccompagnement.schema),
   fiche_acces_libre: facultatif(FicheAccesLibre.schema),
