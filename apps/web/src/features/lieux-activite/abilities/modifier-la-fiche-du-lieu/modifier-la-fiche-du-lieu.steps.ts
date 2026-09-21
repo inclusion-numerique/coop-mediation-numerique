@@ -13,6 +13,9 @@ import {
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 import {
+  FormationsLabels,
+  FraisACharge,
+  ModalitesAcces,
   Presentation,
   Service,
   Typologie,
@@ -79,10 +82,10 @@ When(
       par: auteur(),
       modification: {
         section: 'ModalitesAccesAuService',
-        modalitesAcces: [],
+        modalitesAcces: ModalitesAcces([]),
         telephone: null,
         courriels: [],
-        fraisACharge: [],
+        fraisACharge: FraisACharge([]),
       },
     })
   },
@@ -95,7 +98,7 @@ When('un médiateur étranger au lieu enregistre la description', async () => {
     modification: {
       section: 'Description',
       presentation: Presentation({ resume: 'Une présentation du lieu' }),
-      formationsLabels: [],
+      formationsLabels: FormationsLabels([]),
     },
   })
 })

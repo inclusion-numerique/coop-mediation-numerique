@@ -2,9 +2,19 @@ import {
   Adresse,
   Contact,
   DispositifProgrammeNational,
+  DispositifProgrammesNationaux,
+  FormationsLabels,
+  FraisACharge,
   Horaires,
+  Itinerances,
+  ModalitesAcces,
+  ModalitesAccompagnement,
   Nom,
+  PrisesEnChargeSpecifiques,
+  PublicsSpecifiquementAdresses,
   Service,
+  Services,
+  Typologies,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Fiche } from '../../../domain/fiche'
 import { differences } from './differences'
@@ -18,23 +28,23 @@ const fiche: Fiche = {
     code_postal: '51100',
   }),
   localisation: null,
-  typologies: [],
+  typologies: Typologies([]),
   contact: Contact({}),
   horaires: Horaires('Mo 09:00-12:00'),
   presentation: null,
-  services: [
+  services: Services([
     Service.AideAuxDemarchesAdministratives,
     Service.ComprehensionDuMondeNumerique,
-  ],
-  publicsSpecifiquementAdresses: [],
-  priseEnChargeSpecifique: [],
-  modalitesAcces: [],
-  fraisACharge: [],
-  itinerance: [],
-  dispositifProgrammesNationaux: [],
-  formationsLabels: [],
+  ]),
+  publicsSpecifiquementAdresses: PublicsSpecifiquementAdresses([]),
+  priseEnChargeSpecifique: PrisesEnChargeSpecifiques([]),
+  modalitesAcces: ModalitesAcces([]),
+  fraisACharge: FraisACharge([]),
+  itinerance: Itinerances([]),
+  dispositifProgrammesNationaux: DispositifProgrammesNationaux([]),
+  formationsLabels: FormationsLabels([]),
   autresFormationsLabels: [],
-  modalitesAccompagnement: [],
+  modalitesAccompagnement: ModalitesAccompagnement([]),
   ficheAccesLibre: null,
   priseRdv: null,
 }
@@ -64,10 +74,10 @@ describe('différences entre la fiche de la coop et celle du registre', () => {
   it('ne voit pas de différence dans un ordre de liste différent', () => {
     const memesServices = {
       ...fiche,
-      services: [
+      services: Services([
         Service.ComprehensionDuMondeNumerique,
         Service.AideAuxDemarchesAdministratives,
-      ],
+      ]),
     }
 
     expect(differences(fiche, memesServices)).toEqual([])
@@ -99,9 +109,9 @@ describe('différences entre la fiche de la coop et celle du registre', () => {
     // jamais su dire — précisément ce qu'on vient d'interdire à l'écriture.
     const enrichi = {
       ...fiche,
-      dispositifProgrammesNationaux: [
+      dispositifProgrammesNationaux: DispositifProgrammesNationaux([
         DispositifProgrammeNational.AidantsConnect,
-      ],
+      ]),
       autresFormationsLabels: ['Label maison'],
     }
 

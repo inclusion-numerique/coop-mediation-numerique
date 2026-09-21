@@ -1,5 +1,18 @@
 import type { CreerLieuActiviteData } from '@app/web/features/lieux-activite/formulaire/CreerLieuActiviteValidation'
-import { Contact, Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import {
+  Contact,
+  DispositifProgrammesNationaux,
+  FormationsLabels,
+  FraisACharge,
+  Itinerances,
+  ModalitesAcces,
+  ModalitesAccompagnement,
+  Nom,
+  PrisesEnChargeSpecifiques,
+  PublicsSpecifiquementAdresses,
+  Services,
+  Typologies,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { v4 } from 'uuid'
 import { BanId } from '../../../domain/ban-id'
 import type { Fiche } from '../../../domain/fiche'
@@ -28,7 +41,7 @@ import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
  */
 const cochees = <Valeur>(
   valeurs: readonly Valeur[] | null | undefined,
-): readonly Valeur[] => valeurs ?? []
+): Valeur[] => [...(valeurs ?? [])]
 
 const modalitesCochees = (
   modalites: CreerLieuActiviteData['modalitesAcces'],
@@ -50,8 +63,8 @@ const identiteDuLieu = (
   pivot: null,
   adresse: adresseSaisie(saisie.adresseBan, saisie.complementAdresse),
   localisation: localisationSaisie(saisie.adresseBan),
-  typologies: cochees(saisie.typologies),
-  itinerance: itineranceSaisie(saisie.lieuItinerant),
+  typologies: Typologies(cochees(saisie.typologies)),
+  itinerance: Itinerances(itineranceSaisie(saisie.lieuItinerant)),
 })
 
 const description = (
@@ -61,7 +74,7 @@ const description = (
     saisie.presentationResume,
     saisie.presentationDetail,
   ),
-  formationsLabels: cochees(saisie.formationsLabels),
+  formationsLabels: FormationsLabels(cochees(saisie.formationsLabels)),
 })
 
 const informationsPratiques = (
@@ -75,17 +88,19 @@ const informationsPratiques = (
 const servicesEtAccompagnement = (
   saisie: CreerLieuActiviteData,
 ): Pick<Fiche, 'services' | 'modalitesAccompagnement'> => ({
-  services: cochees(saisie.services),
-  modalitesAccompagnement: cochees(saisie.modalitesAccompagnement),
+  services: Services(cochees(saisie.services)),
+  modalitesAccompagnement: ModalitesAccompagnement(
+    cochees(saisie.modalitesAccompagnement),
+  ),
 })
 
 const modalitesAccesAuService = (
   saisie: CreerLieuActiviteData,
 ): Pick<Fiche, 'modalitesAcces' | 'fraisACharge'> => ({
-  modalitesAcces: modalitesAccesSaisies(
-    modalitesCochees(saisie.modalitesAcces),
+  modalitesAcces: ModalitesAcces(
+    modalitesAccesSaisies(modalitesCochees(saisie.modalitesAcces)),
   ),
-  fraisACharge: cochees(saisie.fraisACharge),
+  fraisACharge: FraisACharge(cochees(saisie.fraisACharge)),
 })
 
 const typesDePublicsAccueillis = (
@@ -94,10 +109,12 @@ const typesDePublicsAccueillis = (
   Fiche,
   'publicsSpecifiquementAdresses' | 'priseEnChargeSpecifique'
 > => ({
-  publicsSpecifiquementAdresses: saisie.toutPublic
-    ? []
-    : cochees(saisie.publicsSpecifiquementAdresses),
-  priseEnChargeSpecifique: cochees(saisie.priseEnChargeSpecifique),
+  publicsSpecifiquementAdresses: PublicsSpecifiquementAdresses(
+    saisie.toutPublic ? [] : cochees(saisie.publicsSpecifiquementAdresses),
+  ),
+  priseEnChargeSpecifique: PrisesEnChargeSpecifiques(
+    cochees(saisie.priseEnChargeSpecifique),
+  ),
 })
 
 const contactSaisi = (saisie: CreerLieuActiviteData): Contact => {
@@ -124,7 +141,7 @@ const ficheSaisie = (saisie: CreerLieuActiviteData): Fiche => ({
   ...modalitesAccesAuService(saisie),
   ...typesDePublicsAccueillis(saisie),
   contact: contactSaisi(saisie),
-  dispositifProgrammesNationaux: [],
+  dispositifProgrammesNationaux: DispositifProgrammesNationaux([]),
   autresFormationsLabels: [],
 })
 

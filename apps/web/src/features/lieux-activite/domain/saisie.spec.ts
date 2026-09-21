@@ -3,6 +3,8 @@ import {
   Horaires,
   Itinerance,
   ModaliteAcces,
+  Service,
+  Services,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Schedule } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import {
@@ -12,6 +14,7 @@ import {
   ficheAccesLibreSaisie,
   horairesSaisis,
   itineranceSaisie,
+  labelsLibres,
   localisationSaisie,
   modalitesAccesSaisies,
   nonVide,
@@ -132,6 +135,39 @@ describe('les horaires', () => {
       expect(Horaires.safe(composes ?? '')).not.toBeNull()
     },
   )
+})
+
+describe('les listes du domaine', () => {
+  /**
+   * L'ordre d'une liste ne porte aucune information, et une valeur répétée n'en
+   * porte pas davantage. Les modèles du standard le garantissent : la coop ne
+   * peut plus stocker ni doublon ni ordre instable dans ses dix colonnes de
+   * vocabulaire, d'où venaient des republications qui ne différaient que par là.
+   */
+  it('dédoublonne et ordonne un vocabulaire fermé', () => {
+    expect(
+      Services([
+        Service.UtilisationSecuriseeDuNumerique,
+        Service.AideAuxDemarchesAdministratives,
+        Service.UtilisationSecuriseeDuNumerique,
+      ]),
+    ).toEqual([
+      Service.AideAuxDemarchesAdministratives,
+      Service.UtilisationSecuriseeDuNumerique,
+    ])
+  })
+
+  it('range les labels libres comme le reste, en collation française', () => {
+    expect(
+      labelsLibres([
+        'Zone atelier',
+        'Étudiants relais',
+        'Zone atelier',
+        '  ',
+        null,
+      ]),
+    ).toEqual(['Étudiants relais', 'Zone atelier'])
+  })
 })
 
 describe('le complément d’adresse', () => {

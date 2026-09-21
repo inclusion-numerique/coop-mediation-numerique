@@ -14,15 +14,25 @@ import { SourceCartographie } from '@app/web/features/lieux-activite/domain/trac
 import { coopCartographieNationaleSource } from '@app/web/libraries/cartographie-nationale'
 import {
   Contact,
+  DispositifProgrammesNationaux,
+  FormationsLabels,
   Frais,
+  FraisACharge,
   Itinerance,
+  Itinerances,
   ModaliteAcces,
   ModaliteAccompagnement,
+  ModalitesAcces,
+  ModalitesAccompagnement,
   Nom,
   PriseEnChargeSpecifique,
+  PrisesEnChargeSpecifiques,
   PublicSpecifiquementAdresse,
+  PublicsSpecifiquementAdresses,
   Service,
+  Services,
   Typologie,
+  Typologies,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { LieuCarto } from '../../domain'
 
@@ -112,31 +122,28 @@ const ficheDeLaLigne = (lieu: LieuRow): Fiche => ({
   pivot: null,
   adresse: null,
   localisation: null,
-  typologies: reconnues(Typologie, lieu.typologies),
+  typologies: Typologies(reconnues(Typologie, lieu.typologies)),
   contact: contactDeLaLigne(lieu.contact),
   horaires: horairesDeLaSource(lieu.horaires),
   presentation: presentationSaisie(
     lieu.presentationResume,
     lieu.presentationDetail,
   ),
-  services: reconnues(Service, lieu.services),
-  publicsSpecifiquementAdresses: reconnues(
-    PublicSpecifiquementAdresse,
-    lieu.publicsSpecifiquementAdresses,
+  services: Services(reconnues(Service, lieu.services)),
+  publicsSpecifiquementAdresses: PublicsSpecifiquementAdresses(
+    reconnues(PublicSpecifiquementAdresse, lieu.publicsSpecifiquementAdresses),
   ),
-  priseEnChargeSpecifique: reconnues(
-    PriseEnChargeSpecifique,
-    lieu.priseEnChargeSpecifique,
+  priseEnChargeSpecifique: PrisesEnChargeSpecifiques(
+    reconnues(PriseEnChargeSpecifique, lieu.priseEnChargeSpecifique),
   ),
-  modalitesAcces: reconnues(ModaliteAcces, lieu.modalitesAcces),
-  fraisACharge: reconnues(Frais, lieu.fraisACharge),
-  itinerance: reconnues(Itinerance, lieu.itinerance),
-  dispositifProgrammesNationaux: [],
-  formationsLabels: [],
+  modalitesAcces: ModalitesAcces(reconnues(ModaliteAcces, lieu.modalitesAcces)),
+  fraisACharge: FraisACharge(reconnues(Frais, lieu.fraisACharge)),
+  itinerance: Itinerances(reconnues(Itinerance, lieu.itinerance)),
+  dispositifProgrammesNationaux: DispositifProgrammesNationaux([]),
+  formationsLabels: FormationsLabels([]),
   autresFormationsLabels: [],
-  modalitesAccompagnement: reconnues(
-    ModaliteAccompagnement,
-    lieu.modalitesAccompagnement,
+  modalitesAccompagnement: ModalitesAccompagnement(
+    reconnues(ModaliteAccompagnement, lieu.modalitesAccompagnement),
   ),
   ficheAccesLibre: ficheAccesLibreSaisie(lieu.ficheAccesLibre),
   priseRdv: null,

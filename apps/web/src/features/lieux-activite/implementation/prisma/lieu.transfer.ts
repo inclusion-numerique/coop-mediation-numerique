@@ -2,12 +2,22 @@ import {
   Adresse,
   Contact,
   Courriel,
+  DispositifProgrammesNationaux,
   FicheAccesLibre,
+  FormationsLabels,
+  FraisACharge,
+  Itinerances,
   Localisation,
+  ModalitesAcces,
+  ModalitesAccompagnement,
   Nom,
   Pivot,
   Presentation,
+  PrisesEnChargeSpecifiques,
+  PublicsSpecifiquementAdresses,
+  Services,
   Telephone,
+  Typologies,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { BanId } from '../../domain/ban-id'
@@ -16,7 +26,11 @@ import { NomUsage } from '../../domain/identite-sirene'
 import { IdsCartographieNationale } from '../../domain/ids-cartographie-nationale'
 import type { Lieu } from '../../domain/lieu'
 import { LieuId } from '../../domain/lieu-id'
-import { complementAdresseSaisi, horairesDeLaSource } from '../../domain/saisie'
+import {
+  complementAdresseSaisi,
+  horairesDeLaSource,
+  labelsLibres,
+} from '../../domain/saisie'
 import {
   Actif,
   type DerniereModification,
@@ -151,49 +165,60 @@ const toFiche = (row: LigneDuLieuCoop): Fiche => ({
   pivot: toPivot(row),
   adresse: toAdresse(row),
   localisation: toLocalisation(row),
-  typologies: vocabulaire.traduites(
-    row.typologies,
-    vocabulaire.typologie.versStandard,
+  typologies: Typologies(
+    vocabulaire.traduites(row.typologies, vocabulaire.typologie.versStandard),
   ),
   contact: toContact(row),
   horaires: horairesDeLaSource(row.horaires),
   presentation: toPresentation(row),
-  services: vocabulaire.traduites(
-    row.services,
-    vocabulaire.service.versStandard,
+  services: Services(
+    vocabulaire.traduites(row.services, vocabulaire.service.versStandard),
   ),
-  publicsSpecifiquementAdresses: vocabulaire.traduites(
-    row.publicsSpecifiquementAdresses,
-    vocabulaire.publicSpecifiquementAdresse.versStandard,
+  publicsSpecifiquementAdresses: PublicsSpecifiquementAdresses(
+    vocabulaire.traduites(
+      row.publicsSpecifiquementAdresses,
+      vocabulaire.publicSpecifiquementAdresse.versStandard,
+    ),
   ),
-  priseEnChargeSpecifique: vocabulaire.traduites(
-    row.priseEnChargeSpecifique,
-    vocabulaire.priseEnChargeSpecifique.versStandard,
+  priseEnChargeSpecifique: PrisesEnChargeSpecifiques(
+    vocabulaire.traduites(
+      row.priseEnChargeSpecifique,
+      vocabulaire.priseEnChargeSpecifique.versStandard,
+    ),
   ),
-  modalitesAcces: vocabulaire.traduites(
-    row.modalitesAcces,
-    vocabulaire.modaliteAcces.versStandard,
+  modalitesAcces: ModalitesAcces(
+    vocabulaire.traduites(
+      row.modalitesAcces,
+      vocabulaire.modaliteAcces.versStandard,
+    ),
   ),
-  fraisACharge: vocabulaire.traduites(
-    row.fraisACharge,
-    vocabulaire.fraisACharge.versStandard,
+  fraisACharge: FraisACharge(
+    vocabulaire.traduites(
+      row.fraisACharge,
+      vocabulaire.fraisACharge.versStandard,
+    ),
   ),
-  itinerance: vocabulaire.traduites(
-    row.itinerance,
-    vocabulaire.itinerance.versStandard,
+  itinerance: Itinerances(
+    vocabulaire.traduites(row.itinerance, vocabulaire.itinerance.versStandard),
   ),
-  dispositifProgrammesNationaux: vocabulaire.traduites(
-    row.dispositifProgrammesNationaux,
-    vocabulaire.dispositifProgrammeNational.versStandard,
+  dispositifProgrammesNationaux: DispositifProgrammesNationaux(
+    vocabulaire.traduites(
+      row.dispositifProgrammesNationaux,
+      vocabulaire.dispositifProgrammeNational.versStandard,
+    ),
   ),
-  formationsLabels: vocabulaire.traduites(
-    row.formationsLabels,
-    vocabulaire.formationLabel.versStandard,
+  formationsLabels: FormationsLabels(
+    vocabulaire.traduites(
+      row.formationsLabels,
+      vocabulaire.formationLabel.versStandard,
+    ),
   ),
-  autresFormationsLabels: row.autresFormationsLabels,
-  modalitesAccompagnement: vocabulaire.traduites(
-    row.modalitesAccompagnement,
-    vocabulaire.modaliteAccompagnement.versStandard,
+  autresFormationsLabels: labelsLibres(row.autresFormationsLabels),
+  modalitesAccompagnement: ModalitesAccompagnement(
+    vocabulaire.traduites(
+      row.modalitesAccompagnement,
+      vocabulaire.modaliteAccompagnement.versStandard,
+    ),
   ),
   ficheAccesLibre: FicheAccesLibre.safe(row.ficheAccesLibre ?? ''),
   priseRdv: Url.safe(row.priseRdv ?? ''),

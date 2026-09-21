@@ -10,8 +10,10 @@ import {
   ModaliteAcces,
   Pivot,
   Presentation,
+  sansDoublons,
   Telephone,
   telephoneCanonique,
+  triee,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import {
@@ -134,6 +136,21 @@ export const telephoneSaisi = (
   numero: string | null | undefined,
 ): Telephone | null => (coche ? telephoneValide(numero) : null)
 
+/**
+ * Les labels libres, tels que le standard range toute valeur multiple :
+ * dédoublonnés et ordonnés. Le champ n'a pas de modèle — il est libre — mais
+ * l'ordre d'une liste n'y porte pas davantage d'information qu'ailleurs, et
+ * deux exécutions qui ne diffèrent que par lui fabriquent de faux changements.
+ */
+export const labelsLibres = (
+  labels: readonly (string | null | undefined)[],
+): string[] =>
+  triee(
+    sansDoublons(
+      labels.map(nonVide).filter((label): label is string => label != null),
+    ),
+  )
+
 /** Les adresses reconnues parmi celles proposées, dans l'ordre. */
 export const courrielsValides = (
   adresses: readonly (string | null | undefined)[],
@@ -153,7 +170,7 @@ export const modalitesAccesSaisies = (saisie: {
   surPlace?: Coche
   parTelephone?: Coche
   parMail?: Coche
-}): readonly ModaliteAcces[] => [
+}): ModaliteAcces[] => [
   ...(saisie.surPlace ? [ModaliteAcces.SePresenter] : []),
   ...(saisie.parTelephone ? [ModaliteAcces.Telephoner] : []),
   ...(saisie.parMail ? [ModaliteAcces.ContacterParMail] : []),
@@ -212,7 +229,7 @@ export const localisationSaisie = (ban: AdresseSaisie): Localisation | null => {
  */
 export const itineranceSaisie = (
   itinerant: boolean | null | undefined,
-): readonly Itinerance[] =>
+): Itinerance[] =>
   itinerant == null
     ? []
     : itinerant

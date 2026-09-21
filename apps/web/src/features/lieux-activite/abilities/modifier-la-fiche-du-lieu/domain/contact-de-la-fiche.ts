@@ -50,7 +50,7 @@ const modalitesDuFormulaire: readonly ModaliteAcces[] = [
 export const modalitesApres = (
   existantes: readonly ModaliteAcces[],
   saisies: readonly ModaliteAcces[],
-): readonly ModaliteAcces[] => [
+): ModaliteAcces[] => [
   ...saisies,
   ...existantes.filter((modalite) => !modalitesDuFormulaire.includes(modalite)),
 ]

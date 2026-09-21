@@ -2,19 +2,29 @@ import {
   Adresse,
   Contact,
   Courriel,
+  DispositifProgrammesNationaux,
   FormationLabel,
+  FormationsLabels,
   Frais,
+  FraisACharge,
   Horaires,
   Itinerance,
+  Itinerances,
   ModaliteAcces,
+  ModalitesAcces,
+  ModalitesAccompagnement,
   Nom,
   Pivot,
   Presentation,
   PriseEnChargeSpecifique,
+  PrisesEnChargeSpecifiques,
   PublicSpecifiquementAdresse,
+  PublicsSpecifiquementAdresses,
   Service,
+  Services,
   Telephone,
   Typologie,
+  Typologies,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { NomUsage } from '../../../domain/identite-sirene'
@@ -39,7 +49,7 @@ const lieu: Lieu = {
       code_postal: '51100',
     }),
     localisation: null,
-    typologies: [Typologie.BIB],
+    typologies: Typologies([Typologie.BIB]),
     contact: Contact({
       telephone: '+33180059880',
       courriels: [Courriel('contact@example.fr')],
@@ -47,16 +57,16 @@ const lieu: Lieu = {
     }),
     horaires: Horaires('Mo-Fr 09:00-12:00'),
     presentation: Presentation({ resume: 'Un résumé' }),
-    services: [Service.AideAuxDemarchesAdministratives],
-    publicsSpecifiquementAdresses: [],
-    priseEnChargeSpecifique: [],
-    modalitesAcces: [ModaliteAcces.SePresenter],
-    fraisACharge: [Frais.Gratuit],
-    itinerance: [Itinerance.Fixe],
-    dispositifProgrammesNationaux: [],
-    formationsLabels: [],
+    services: Services([Service.AideAuxDemarchesAdministratives]),
+    publicsSpecifiquementAdresses: PublicsSpecifiquementAdresses([]),
+    priseEnChargeSpecifique: PrisesEnChargeSpecifiques([]),
+    modalitesAcces: ModalitesAcces([ModaliteAcces.SePresenter]),
+    fraisACharge: FraisACharge([Frais.Gratuit]),
+    itinerance: Itinerances([Itinerance.Fixe]),
+    dispositifProgrammesNationaux: DispositifProgrammesNationaux([]),
+    formationsLabels: FormationsLabels([]),
     autresFormationsLabels: [],
-    modalitesAccompagnement: [],
+    modalitesAccompagnement: ModalitesAccompagnement([]),
     ficheAccesLibre: null,
     priseRdv: null,
   },
@@ -137,10 +147,10 @@ describe('appliquer une modification à la fiche du lieu', () => {
       lieu,
       {
         section: 'ModalitesAccesAuService',
-        modalitesAcces: [ModaliteAcces.Telephoner],
+        modalitesAcces: ModalitesAcces([ModaliteAcces.Telephoner]),
         telephone: Telephone('+33180059881'),
         courriels: [],
-        fraisACharge: [Frais.Payant],
+        fraisACharge: FraisACharge([Frais.Payant]),
       },
       auteur,
       maintenant,
@@ -175,7 +185,9 @@ describe('appliquer une modification à la fiche du lieu', () => {
       {
         section: 'Description',
         presentation: Presentation({ resume: 'Un nouveau résumé' }),
-        formationsLabels: [FormationLabel.FabriquesDeTerritoire],
+        formationsLabels: FormationsLabels([
+          FormationLabel.FabriquesDeTerritoire,
+        ]),
       },
       auteur,
       maintenant,
@@ -193,8 +205,12 @@ describe('appliquer une modification à la fiche du lieu', () => {
       lieu,
       {
         section: 'TypesDePublicsAccueillis',
-        publicsSpecifiquementAdresses: [PublicSpecifiquementAdresse.Jeunes],
-        priseEnChargeSpecifique: [PriseEnChargeSpecifique.Surdite],
+        publicsSpecifiquementAdresses: PublicsSpecifiquementAdresses([
+          PublicSpecifiquementAdresse.Jeunes,
+        ]),
+        priseEnChargeSpecifique: PrisesEnChargeSpecifiques([
+          PriseEnChargeSpecifique.Surdite,
+        ]),
       },
       auteur,
       maintenant,
@@ -214,8 +230,8 @@ describe('appliquer une modification à la fiche du lieu', () => {
       lieu,
       {
         section: 'ServicesEtAccompagnement',
-        services: [Service.LoisirsEtCreationsNumeriques],
-        modalitesAccompagnement: [],
+        services: Services([Service.LoisirsEtCreationsNumeriques]),
+        modalitesAccompagnement: ModalitesAccompagnement([]),
       },
       auteur,
       maintenant,
@@ -235,10 +251,10 @@ describe('modalités d’accès que le formulaire n’exprime pas', () => {
     ...lieu,
     fiche: {
       ...lieu.fiche,
-      modalitesAcces: [
+      modalitesAcces: ModalitesAcces([
         ModaliteAcces.SePresenter,
         ModaliteAcces.PrendreRdvEnLigne,
-      ],
+      ]),
     },
   }
 
@@ -247,18 +263,18 @@ describe('modalités d’accès que le formulaire n’exprime pas', () => {
       avecPriseDeRdv,
       {
         section: 'ModalitesAccesAuService',
-        modalitesAcces: [ModaliteAcces.Telephoner],
+        modalitesAcces: ModalitesAcces([ModaliteAcces.Telephoner]),
         telephone: Telephone('+33180059880'),
         courriels: [],
-        fraisACharge: [],
+        fraisACharge: FraisACharge([]),
       },
       auteur,
       maintenant,
     )
 
     expect(modifie.fiche.modalitesAcces).toEqual([
-      ModaliteAcces.Telephoner,
       ModaliteAcces.PrendreRdvEnLigne,
+      ModaliteAcces.Telephoner,
     ])
   })
 
@@ -267,10 +283,10 @@ describe('modalités d’accès que le formulaire n’exprime pas', () => {
       avecPriseDeRdv,
       {
         section: 'ModalitesAccesAuService',
-        modalitesAcces: [],
+        modalitesAcces: ModalitesAcces([]),
         telephone: null,
         courriels: [],
-        fraisACharge: [],
+        fraisACharge: FraisACharge([]),
       },
       auteur,
       maintenant,

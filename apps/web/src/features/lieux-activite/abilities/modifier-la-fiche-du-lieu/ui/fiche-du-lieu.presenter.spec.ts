@@ -2,13 +2,23 @@ import {
   Adresse,
   Contact,
   Courriel,
+  DispositifProgrammesNationaux,
+  FormationsLabels,
+  FraisACharge,
   Horaires,
   Itinerance,
+  Itinerances,
   ModaliteAcces,
+  ModalitesAcces,
+  ModalitesAccompagnement,
   Nom,
   Pivot,
+  PrisesEnChargeSpecifiques,
   PublicSpecifiquementAdresse,
+  PublicsSpecifiquementAdresses,
+  Services,
   Typologie,
+  Typologies,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Lieu } from '../../../domain/lieu'
@@ -33,20 +43,20 @@ const lieu: Lieu = {
       code_postal: '51100',
     }),
     localisation: null,
-    typologies: [],
+    typologies: Typologies([]),
     contact: Contact({}),
     horaires: null,
     presentation: null,
-    services: [],
-    publicsSpecifiquementAdresses: [],
-    priseEnChargeSpecifique: [],
-    modalitesAcces: [],
-    fraisACharge: [],
-    itinerance: [],
-    dispositifProgrammesNationaux: [],
-    formationsLabels: [],
+    services: Services([]),
+    publicsSpecifiquementAdresses: PublicsSpecifiquementAdresses([]),
+    priseEnChargeSpecifique: PrisesEnChargeSpecifiques([]),
+    modalitesAcces: ModalitesAcces([]),
+    fraisACharge: FraisACharge([]),
+    itinerance: Itinerances([]),
+    dispositifProgrammesNationaux: DispositifProgrammesNationaux([]),
+    formationsLabels: FormationsLabels([]),
     autresFormationsLabels: [],
-    modalitesAccompagnement: [],
+    modalitesAccompagnement: ModalitesAccompagnement([]),
     ficheAccesLibre: null,
     priseRdv: null,
   },
@@ -174,11 +184,11 @@ describe('mise en forme de la fiche pour l’écran', () => {
         ...lieu,
         fiche: {
           ...lieu.fiche,
-          publicsSpecifiquementAdresses: [
+          publicsSpecifiquementAdresses: PublicsSpecifiquementAdresses([
             PublicSpecifiquementAdresse.Jeunes,
             PublicSpecifiquementAdresse.Seniors,
-          ],
-          typologies: [Typologie.BIB],
+          ]),
+          typologies: Typologies([Typologie.BIB]),
         },
         tracabilite: {
           ...lieu.tracabilite,
@@ -233,7 +243,9 @@ describe('mise en forme de la fiche pour l’écran', () => {
   it('ne dit plus « tout public » dès qu’un public est visé', () => {
     const affichee = afficher({
       ...lieu.fiche,
-      publicsSpecifiquementAdresses: [PublicSpecifiquementAdresse.Jeunes],
+      publicsSpecifiquementAdresses: PublicsSpecifiquementAdresses([
+        PublicSpecifiquementAdresse.Jeunes,
+      ]),
     })
 
     expect(affichee.typesDePublicsAccueillis.toutPublic).toBe(false)
@@ -269,11 +281,13 @@ describe('mise en forme de la fiche pour l’écran', () => {
   it('rend l’itinérance en tri-état pour la case à cocher', () => {
     expect(afficher(lieu.fiche).informationsGenerales.lieuItinerant).toBeNull()
     expect(
-      afficher({ ...lieu.fiche, itinerance: [Itinerance.Itinerant] })
-        .informationsGenerales.lieuItinerant,
+      afficher({
+        ...lieu.fiche,
+        itinerance: Itinerances([Itinerance.Itinerant]),
+      }).informationsGenerales.lieuItinerant,
     ).toBe(true)
     expect(
-      afficher({ ...lieu.fiche, itinerance: [Itinerance.Fixe] })
+      afficher({ ...lieu.fiche, itinerance: Itinerances([Itinerance.Fixe]) })
         .informationsGenerales.lieuItinerant,
     ).toBe(false)
   })
@@ -281,10 +295,10 @@ describe('mise en forme de la fiche pour l’écran', () => {
   it('recompose les cases des modalités d’accès et leurs moyens', () => {
     const affichee = afficher({
       ...lieu.fiche,
-      modalitesAcces: [
+      modalitesAcces: ModalitesAcces([
         ModaliteAcces.Telephoner,
         ModaliteAcces.ContacterParMail,
-      ],
+      ]),
       contact: Contact({
         telephone: '+33180059880',
         courriels: [Courriel('contact@example.fr')],

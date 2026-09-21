@@ -32,7 +32,7 @@ const pont = <Standard extends string, Coop extends string>(
 export const traduites = <Depuis, Vers>(
   valeurs: readonly Depuis[],
   traduction: (valeur: Depuis) => Vers | null,
-): readonly Vers[] =>
+): Vers[] =>
   valeurs
     .map(traduction)
     .filter((valeur): valeur is NonNullable<Vers> => valeur != null)

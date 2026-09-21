@@ -1,4 +1,8 @@
-import type { Pivot } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import {
+  ModalitesAcces,
+  Pivot,
+  Services,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Fiche } from '../../../domain/fiche'
 import type { NomUsage } from '../../../domain/identite-sirene'
 import type { Lieu } from '../../../domain/lieu'
@@ -36,7 +40,10 @@ const visibiliteCartographie = (
   { visibilite }: Modification<'VisibiliteCartographie'>,
 ): Fiche =>
   estPublie(visibilite)
-    ? { ...fiche, services: [...servicesALaPublication(fiche.services)] }
+    ? {
+        ...fiche,
+        services: Services([...servicesALaPublication(fiche.services)]),
+      }
     : fiche
 
 const informationsGenerales = (
@@ -99,7 +106,9 @@ const modalitesAccesAuService = (
 ): Fiche => ({
   ...fiche,
   contact: contactAvecJoignabilite(fiche.contact, telephone, courriels),
-  modalitesAcces: modalitesApres(fiche.modalitesAcces, modalitesAcces),
+  modalitesAcces: ModalitesAcces(
+    modalitesApres(fiche.modalitesAcces, modalitesAcces),
+  ),
   fraisACharge,
 })
 
