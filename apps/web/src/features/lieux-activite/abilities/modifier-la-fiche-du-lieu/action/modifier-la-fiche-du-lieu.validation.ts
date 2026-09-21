@@ -2,7 +2,9 @@ import { AdresseBanValidation } from '@app/web/external-apis/ban/AdresseBanValid
 import { FormationLabelPropose } from '@app/web/features/lieux-activite/domain/nomenclatures'
 import {
   AdresseMailSaisie,
+  adresseReconnue,
   CaseCochee,
+  ComplementAdresseSaisi,
   commentaireAdosseAUnCreneau,
   FicheAccesLibreSaisie,
   NomDuLieuSaisi,
@@ -38,18 +40,20 @@ import { HorairesValidation } from '../../../domain/horaires.validation'
  * règles pour un seul objet finissent par diverger.
  */
 
-export const InformationsGeneralesSaisie = z.object({
-  section: z.literal('InformationsGenerales'),
-  nom: NomDuLieuSaisi,
-  adresseBan: AdresseBanValidation,
-  complementAdresse: texteFacultatif,
-  lieuItinerant: z.boolean().nullish(),
-  typologies: z
-    .array(z.enum(Typologie))
-    .min(1, 'Sélectionnez au moins une typologie de structure'),
-  siret: SiretSaisi,
-  nomUsage: texteFacultatif,
-})
+export const InformationsGeneralesSaisie = z
+  .object({
+    section: z.literal('InformationsGenerales'),
+    nom: NomDuLieuSaisi,
+    adresseBan: AdresseBanValidation,
+    complementAdresse: ComplementAdresseSaisi,
+    lieuItinerant: z.boolean().nullish(),
+    typologies: z
+      .array(z.enum(Typologie))
+      .min(1, 'Sélectionnez au moins une typologie de structure'),
+    siret: SiretSaisi,
+    nomUsage: texteFacultatif,
+  })
+  .refine(...adresseReconnue)
 
 export const VisibiliteCartographieSaisie = z.object({
   section: z.literal('VisibiliteCartographie'),

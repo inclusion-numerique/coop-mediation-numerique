@@ -1,4 +1,5 @@
 import {
+  ComplementAdresse,
   Courriel,
   DETAIL_LONGUEUR_MAXIMALE,
   FicheAccesLibre,
@@ -9,6 +10,8 @@ import {
 import type { Schedule } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import { z } from 'zod'
 import {
+  type AdresseSaisie,
+  adresseSaisie,
   horairesSaisis,
   nonVide,
   SEPARATEUR_LISTE,
@@ -83,6 +86,21 @@ export const SiretSaisi = reconnu(
   'Le SIRET doit être composé de 14 chiffres et respecter sa clé de contrôle',
 )
 
+/**
+ * Le complément d'adresse, mesuré au standard.
+ *
+ * Il se dit ici parce que, sans cela, il se perdrait en silence : le mapper le
+ * valide seul et le laisse tomber, pour que l'adresse ne tombe pas avec lui.
+ * Refuser en le disant vaut mieux qu'enregistrer sans rien enregistrer.
+ *
+ * Le jeu de caractères est celui d'un nom de voie — c'est le standard qui le
+ * pose, et il est probablement trop étroit pour un complément.
+ */
+export const ComplementAdresseSaisi = reconnu(
+  (valeur) => ComplementAdresse.safe(valeur) != null,
+  'Ce complément contient un caractère que le schéma national n’accepte pas : évitez #, &, %, « " » et les tirets longs',
+)
+
 export const SiteWebSaisi = reconnu(
   sontDesUrls,
   'Veuillez renseigner une URL valide, ou plusieurs séparées par « | »',
@@ -153,6 +171,28 @@ export const PresentationDetailSaisi = z
  * « tout public », puis sur « Téléphoner » et « Contacter par mail ».
  */
 export const CaseCochee = z.boolean().nullish()
+
+/**
+ * L'adresse choisie doit être de celles que le standard reconnaît.
+ *
+ * La Base Adresse Nationale rend des libellés que `Adresse` refuse — une
+ * esperluette dans un nom de voie suffit. Sans cette règle, le lieu
+ * s'enregistrait et revenait **sans adresse du tout**, ce qu'aucun message ne
+ * disait. Le prédicat est emprunté au mapper : c'est `adresseSaisie` qui
+ * décide, la saisie ne fait que le redire.
+ */
+export const adresseReconnue: [
+  (data: { adresseBan?: AdresseSaisie }) => boolean,
+  { message: string; path: (string | number)[] },
+] = [
+  ({ adresseBan }) =>
+    adresseBan == null || adresseSaisie(adresseBan, null) != null,
+  {
+    message:
+      'Cette adresse n’est pas reconnue par le schéma national ; choisissez-en une autre',
+    path: ['adresseBan'],
+  },
+]
 
 /**
  * Un commentaire d'horaires ne vaut qu'adossé à un créneau.

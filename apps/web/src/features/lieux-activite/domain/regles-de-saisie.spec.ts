@@ -152,6 +152,17 @@ const verdicts = {
       formationsLabels: [],
     }).success,
   }),
+  complementAdresse: (complementAdresse: unknown) => ({
+    creation: creation.safeParse(saisieDeCreation({ complementAdresse }))
+      .success,
+    modification: InformationsGeneralesSaisie.safeParse({
+      section: 'InformationsGenerales',
+      nom: 'Maison France Services',
+      adresseBan,
+      complementAdresse,
+      typologies: ['TIERS_LIEUX'],
+    }).success,
+  }),
   presentationResume: (presentationResume: unknown) => ({
     creation: creation.safeParse(saisieDeCreation({ presentationResume }))
       .success,
@@ -209,6 +220,18 @@ describe('les deux formulaires appliquent les mêmes règles', () => {
     // Le schéma national n'admet que les indicatifs français et d'outre-mer.
     ['numeroTelephone', '+32 470 44 25 43', false],
 
+    // Le standard mesure le complément au jeu de caractères d'un nom de voie.
+    // Le mapper le laisse tomber seul pour que l'adresse ne tombe pas avec lui :
+    // sans règle ici, il se perdait sans un mot.
+    ['complementAdresse', 'Bâtiment B', true],
+    ['complementAdresse', 'Bât. 3 (entrée côté parking)', true],
+    ['complementAdresse', '1er étage / bureau 12', true],
+    ['complementAdresse', null, true],
+    ['complementAdresse', 'Appt #4', false],
+    ['complementAdresse', 'Hall A — porte gauche', false],
+    ['complementAdresse', 'Local n°12 & annexe', false],
+    ['complementAdresse', 'Zone d’activité 50 %', false],
+
     ['presentationResume', 'x'.repeat(280), true],
     ['presentationResume', 'x'.repeat(281), false],
 
@@ -256,6 +279,42 @@ describe('les deux formulaires appliquent les mêmes règles', () => {
           journeeOuverte({ startTime: '9h', endTime: '12:00' }),
         ),
       ).toEqual({ creation: false, modification: false })
+    })
+  })
+
+  /**
+   * Une adresse que la Base Adresse Nationale rend n'est pas forcément une
+   * adresse que le standard accepte. Sans cette règle, le lieu s'enregistrait et
+   * revenait sans adresse du tout.
+   */
+  describe('l’adresse choisie', () => {
+    const avecAdresse = (nom: string) => {
+      const ban = { ...adresseBan, nom }
+
+      return {
+        creation: creation.safeParse(saisieDeCreation({ adresseBan: ban }))
+          .success,
+        modification: InformationsGeneralesSaisie.safeParse({
+          section: 'InformationsGenerales',
+          nom: 'Maison France Services',
+          adresseBan: ban,
+          typologies: ['TIERS_LIEUX'],
+        }).success,
+      }
+    }
+
+    it('accepte une voie que le standard reconnaît', () => {
+      expect(avecAdresse('12 rue de la Paix')).toEqual({
+        creation: true,
+        modification: true,
+      })
+    })
+
+    it('refuse une voie que le standard ne reconnaît pas', () => {
+      expect(avecAdresse('12 rue Pierre & Marie Curie')).toEqual({
+        creation: false,
+        modification: false,
+      })
     })
   })
 
