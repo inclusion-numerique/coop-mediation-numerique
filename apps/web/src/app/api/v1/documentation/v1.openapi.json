@@ -65,7 +65,8 @@
               "tags",
               "precisions_demarche",
               "titre_atelier",
-              "niveau_atelier"
+              "niveau_atelier",
+              "beneficiaires"
             ],
             "properties": {
               "type": {
@@ -256,6 +257,100 @@
                 "description": "niveau de l'atelier collectif",
                 "enum": ["debutant", "intermediaire", "avance"],
                 "example": "debutant"
+              },
+              "beneficiaires": {
+                "type": "object",
+                "description": "données agrégées sur les bénéficiaires de l'activité",
+                "required": ["total", "genres", "tranches_age", "statuts"],
+                "properties": {
+                  "total": {
+                    "type": "integer",
+                    "description": "nombre total de bénéficiaires",
+                    "example": 3
+                  },
+                  "genres": {
+                    "type": "object",
+                    "description": "répartition par genre",
+                    "properties": {
+                      "masculin": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "feminin": {
+                        "type": "integer",
+                        "example": 2
+                      },
+                      "non_communique": {
+                        "type": "integer",
+                        "example": 0
+                      }
+                    }
+                  },
+                  "tranches_age": {
+                    "type": "object",
+                    "description": "répartition par tranche d'âge",
+                    "properties": {
+                      "moins_de_douze": {
+                        "type": "integer",
+                        "example": 0
+                      },
+                      "douze_dix_huit": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "dix_huit_vingt_quatre": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "vingt_cinq_trente_neuf": {
+                        "type": "integer",
+                        "example": 0
+                      },
+                      "quarante_cinquante_neuf": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "soixante_soixante_neuf": {
+                        "type": "integer",
+                        "example": 0
+                      },
+                      "soixante_dix_plus": {
+                        "type": "integer",
+                        "example": 0
+                      },
+                      "non_communique": {
+                        "type": "integer",
+                        "example": 0
+                      }
+                    }
+                  },
+                  "statuts": {
+                    "type": "object",
+                    "description": "répartition par statut social",
+                    "properties": {
+                      "scolarise": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "sans_emploi": {
+                        "type": "integer",
+                        "example": 0
+                      },
+                      "en_emploi": {
+                        "type": "integer",
+                        "example": 2
+                      },
+                      "retraite": {
+                        "type": "integer",
+                        "example": 0
+                      },
+                      "non_communique": {
+                        "type": "integer",
+                        "example": 0
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -590,8 +685,7 @@
           "code_postal",
           "adresse",
           "date_maj",
-          "services",
-          "pivot"
+          "services"
         ],
         "type": "object",
         "properties": {
@@ -602,8 +696,8 @@
           },
           "pivot": {
             "type": "string",
-            "description": "Donnée pivot provenant d’une des deux bases de référence - le répertoire SIRENE des entreprises et de leurs établissements de l’Insee ou le Répertoire national des associations du ministère de l’intérieur (RNA).",
-            "example": "55217862900132"
+            "description": "Numéro SIRET de l’établissement, issu du répertoire SIRENE de l’Insee. Le champ est facultatif, un lieu sans immatriculation n’en portant pas.",
+            "example": "55217862900135"
           },
           "nom": {
             "type": "string",
@@ -693,11 +787,6 @@
             "enum": ["Itinérant", "Fixe"],
             "description": "Indique s'il s'agit un lieu de médiation itinérant comme un bus numérique",
             "example": "Itinérant"
-          },
-          "structure_parente": {
-            "type": "string",
-            "description": "Décrit le réseau/la structure auquel le lieu appartient. Pour le remplir\\, indiquer le nom de cette entité.",
-            "example": "SIRET de la ville pour une bibliothèque"
           },
           "date_maj": {
             "type": "string",
@@ -1134,6 +1223,7 @@
               "modification": {
                 "type": "string",
                 "format": "date-time",
+                "description": "date de la dernière écriture sur ce lieu, quelle qu'en soit la source : la coop, la cartographie nationale ou Mon Inclusion Numérique",
                 "example": "2023-12-10T15:00:00Z"
               },
               "suppression": {
@@ -1410,17 +1500,18 @@
               },
               "emplois": {
                 "type": "array",
-                "description": "liste des emplois (relation \"EmployeStructure\") avec uniquement l'id et l'id de la structure",
+                "description": "employeuses courantes (affectations actives dans main.personne_affectations_emploi) avec l'id de l'affectation et l'id de la structure employeuse (main.structure_administrative). Dates best-effort depuis main.contrat.",
                 "items": {
                   "type": "object",
                   "properties": {
                     "id": {
                       "type": "string",
-                      "format": "uuid"
+                      "description": "identifiant de l'affectation emploi (main)"
                     },
                     "structure_id": {
-                      "type": "string",
-                      "format": "uuid"
+                      "type": "integer",
+                      "nullable": true,
+                      "description": "identifiant de la structure employeuse dans main.structure_administrative (entier)"
                     },
                     "debut": {
                       "type": "string",
@@ -1465,6 +1556,10 @@
                   "modification": {
                     "type": "string",
                     "format": "date-time"
+                  },
+                  "is_visible": {
+                    "type": "boolean",
+                    "description": "indique si le médiateur consent à la diffusion publique de ses informations"
                   },
                   "en_activite": {
                     "type": "array",
@@ -2083,7 +2178,7 @@
               "example": "2025-09-01T00:00:00Z"
             },
             "required": false,
-            "description": "retourne les structures avec une date de dernière modification supérieure ou égale à cette date-heure"
+            "description": "retourne les structures dont la dernière écriture, quelle qu'en soit la source, est supérieure ou égale à cette date-heure"
           }
         ],
         "responses": {

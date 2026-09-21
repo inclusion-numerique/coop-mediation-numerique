@@ -8,9 +8,11 @@ import {
   ModaliteAcces,
   Nom,
   Pivot,
+  Presentation,
   PriseEnChargeSpecifique,
   PublicSpecifiquementAdresse,
   Service,
+  Telephone,
   Typologie,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
@@ -43,7 +45,7 @@ const lieu: Lieu = {
       site_web: [Url('https://www.example.fr')],
     }),
     horaires: 'Mo-Fr 09:00-12:00',
-    presentation: { resume: 'Un résumé' },
+    presentation: Presentation({ resume: 'Un résumé' }),
     services: [Service.AideAuxDemarchesAdministratives],
     publicsSpecifiquementAdresses: [],
     priseEnChargeSpecifique: [],
@@ -135,7 +137,7 @@ describe('appliquer une modification à la fiche du lieu', () => {
       {
         section: 'ModalitesAccesAuService',
         modalitesAcces: [ModaliteAcces.Telephoner],
-        telephone: '+33180059881',
+        telephone: Telephone('+33180059881'),
         courriels: [],
         fraisACharge: [Frais.Payant],
       },
@@ -171,7 +173,7 @@ describe('appliquer une modification à la fiche du lieu', () => {
       lieu,
       {
         section: 'Description',
-        presentation: { resume: 'Un nouveau résumé' },
+        presentation: Presentation({ resume: 'Un nouveau résumé' }),
         formationsLabels: [FormationLabel.FabriquesDeTerritoire],
       },
       auteur,
@@ -245,7 +247,7 @@ describe('modalités d’accès que le formulaire n’exprime pas', () => {
       {
         section: 'ModalitesAccesAuService',
         modalitesAcces: [ModaliteAcces.Telephoner],
-        telephone: '+33180059880',
+        telephone: Telephone('+33180059880'),
         courriels: [],
         fraisACharge: [],
       },
@@ -323,7 +325,7 @@ describe('ce que la coop sait de l’établissement au répertoire SIRENE', () =
   it('efface la date de vérification quand le pivot change', () => {
     const modifie = appliquerModification(
       immatricule,
-      informationsGenerales(Pivot('81031049400015')),
+      informationsGenerales(Pivot('81031049400010')),
       auteur,
       maintenant,
     )

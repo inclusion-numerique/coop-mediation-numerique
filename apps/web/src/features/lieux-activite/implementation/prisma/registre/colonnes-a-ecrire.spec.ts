@@ -1,6 +1,7 @@
 import {
   Contact,
   Nom,
+  Presentation,
   Service,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Fiche } from '../../../domain/fiche'
@@ -23,7 +24,7 @@ const fiche: Fiche = {
   typologies: [],
   contact: Contact({}),
   horaires: 'Mo-Fr 09:00-12:00',
-  presentation: { resume: 'Un résumé' },
+  presentation: Presentation({ resume: 'Un résumé' }),
   services: [Service.AideAuxDemarchesAdministratives],
   publicsSpecifiquementAdresses: [],
   priseEnChargeSpecifique: [],

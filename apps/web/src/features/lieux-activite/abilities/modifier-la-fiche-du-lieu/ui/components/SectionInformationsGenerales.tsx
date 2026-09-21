@@ -33,7 +33,6 @@ export const SectionInformationsGenerales = ({
     lieuItinerant: informationsGenerales.lieuItinerant,
     complementAdresse: informationsGenerales.complementAdresse,
     siretSearch: informationsGenerales.siretSearch,
-    rna: informationsGenerales.rna,
     nomUsage: informationsGenerales.nomUsage,
     noSiret: informationsGenerales.siret == null,
     typologies: [...informationsGenerales.typologies],
@@ -86,7 +85,6 @@ export const SectionInformationsGenerales = ({
           lieuItinerant={informationsGenerales.lieuItinerant}
           complementAdresse={informationsGenerales.complementAdresse}
           siret={informationsGenerales.siret}
-          rna={informationsGenerales.rna}
           nomUsage={informationsGenerales.nomUsage}
           typologies={[...informationsGenerales.typologies]}
         />

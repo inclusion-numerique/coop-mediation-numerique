@@ -2,6 +2,7 @@ import {
   type Contact,
   type Courriel,
   ModaliteAcces,
+  type Telephone,
   type Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 
@@ -23,7 +24,7 @@ export const contactAvecSitesWeb = (
 
 export const contactAvecJoignabilite = (
   contact: Contact,
-  telephone: string | null,
+  telephone: Telephone | null,
   courriels: readonly Courriel[],
 ): Contact => ({
   ...contact,

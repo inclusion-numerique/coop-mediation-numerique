@@ -6,6 +6,7 @@ import {
   Itinerance,
   ModaliteAcces,
   Nom,
+  Presentation,
   Service,
   Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
@@ -36,7 +37,7 @@ const fiche = (ajustements: Partial<Fiche>): Fiche => ({
     courriels: [Courriel('contact@example.fr')],
   }),
   horaires: 'Mo-Fr 09:00-12:00',
-  presentation: { resume: 'Un résumé' },
+  presentation: Presentation({ resume: 'Un résumé' }),
   services: [Service.AideAuxDemarchesAdministratives],
   publicsSpecifiquementAdresses: [],
   priseEnChargeSpecifique: [],

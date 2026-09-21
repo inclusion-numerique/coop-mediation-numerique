@@ -1,20 +1,14 @@
-import { telephoneCanonique } from '@app/web/libraries/telephone'
 import { appendComment } from '@app/web/opening-hours/openingHoursHelpers'
 import {
   Adresse,
   Courriel,
   Itinerance,
-  isRna,
-  isSiret,
-  isValidAddress,
-  isValidCourriel,
-  isValidLocalisation,
-  isValidTelephone,
-  isValidUrl,
   Localisation,
   ModaliteAcces,
-  type Pivot,
-  type Presentation,
+  Pivot,
+  Presentation,
+  Telephone,
+  telephoneCanonique,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import {
@@ -47,7 +41,7 @@ export const nonVide = (valeur: string | null | undefined): string | null =>
 export const urlSaisie = (valeur: string | null | undefined): Url | null => {
   const texte = nonVide(valeur)
 
-  return texte != null && isValidUrl(texte) ? Url(texte) : null
+  return texte == null ? null : Url.safe(texte)
 }
 
 export const sitesWebSaisis = (
@@ -55,20 +49,20 @@ export const sitesWebSaisis = (
 ): readonly Url[] =>
   (nonVide(valeur) ?? '')
     .split(SEPARATEUR_LISTE)
-    .map((jeton) => jeton.trim())
-    .filter(isValidUrl)
-    .map(Url)
+    .map((jeton) => Url.safe(jeton.trim()))
+    .filter((url): url is Url => url != null)
 
-export const pivotSaisi = (
-  siret: string | null | undefined,
-  rna: string | null | undefined,
-): Pivot | null => {
+/**
+ * L'immatriculation du lieu : un SIRET, ou rien.
+ *
+ * Le RNA n'en est plus une. Le standard a ramené `Pivot` au seul SIRET, cinq
+ * lieux du jeu national en portant un et aucun ne s'y saisissant ; la colonne
+ * `rna` de la coop demeure, mais plus rien ne la lit pour désigner le lieu.
+ */
+export const pivotSaisi = (siret: string | null | undefined): Pivot | null => {
   const siretSaisi = nonVide(siret)
-  if (siretSaisi != null && isSiret(siretSaisi)) return siretSaisi
 
-  const rnaSaisi = nonVide(rna)
-
-  return rnaSaisi != null && isRna(rnaSaisi) ? rnaSaisi : null
+  return siretSaisi == null ? null : Pivot.safe(siretSaisi)
 }
 
 export const presentationSaisie = (
@@ -80,10 +74,10 @@ export const presentationSaisie = (
 
   if (resumeSaisi == null && detailSaisi == null) return null
 
-  return {
+  return Presentation.safe({
     ...(resumeSaisi == null ? {} : { resume: resumeSaisi }),
     ...(detailSaisi == null ? {} : { detail: detailSaisi }),
-  }
+  })
 }
 
 /**
@@ -104,11 +98,11 @@ export const presentationSaisie = (
  */
 export const telephoneValide = (
   numero: string | null | undefined,
-): string | null => {
+): Telephone | null => {
   const saisi = nonVide(numero)
   const normalise = saisi == null ? null : telephoneCanonique(saisi)
 
-  return normalise != null && isValidTelephone(normalise) ? normalise : null
+  return normalise == null ? null : Telephone.safe(normalise)
 }
 
 /**
@@ -121,7 +115,7 @@ export type Coche = boolean | null | undefined
 export const telephoneSaisi = (
   coche: Coche,
   numero: string | null | undefined,
-): string | null => (coche ? telephoneValide(numero) : null)
+): Telephone | null => (coche ? telephoneValide(numero) : null)
 
 /** Les adresses reconnues parmi celles proposées, dans l'ordre. */
 export const courrielsValides = (
@@ -129,9 +123,8 @@ export const courrielsValides = (
 ): readonly Courriel[] =>
   adresses
     .map(nonVide)
-    .filter((adresse): adresse is string => adresse != null)
-    .filter(isValidCourriel)
-    .map(Courriel)
+    .map((adresse) => (adresse == null ? null : Courriel.safe(adresse)))
+    .filter((courriel): courriel is Courriel => courriel != null)
 
 export const courrielsSaisis = (
   coche: Coche,
@@ -171,13 +164,13 @@ export const adresseSaisie = (
     ...(complementSaisi == null ? {} : { complement_adresse: complementSaisi }),
   }
 
-  return isValidAddress(candidate) ? Adresse(candidate) : null
+  return Adresse.safe(candidate)
 }
 
 export const localisationSaisie = (ban: AdresseSaisie): Localisation | null => {
   const candidate = { latitude: ban.latitude, longitude: ban.longitude }
 
-  return isValidLocalisation(candidate) ? Localisation(candidate) : null
+  return Localisation.safe(candidate)
 }
 
 /**

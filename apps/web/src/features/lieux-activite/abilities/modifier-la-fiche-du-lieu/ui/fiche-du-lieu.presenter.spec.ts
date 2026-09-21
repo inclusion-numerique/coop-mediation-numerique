@@ -237,17 +237,15 @@ describe('mise en forme de la fiche pour l’écran', () => {
     ).toEqual(['Jeunes'])
   })
 
-  it('range le pivot du bon côté selon qu’il est SIRET ou RNA', () => {
-    const parSiret = afficher({ ...lieu.fiche, pivot: Pivot('55217862900132') })
-    const parRna = afficher({ ...lieu.fiche, pivot: Pivot('W123456789') })
+  it('affiche le SIRET du pivot, et rien quand il n’y en a pas', () => {
+    const parSiret = afficher({ ...lieu.fiche, pivot: Pivot('55217862900135') })
+    const sansPivot = afficher({ ...lieu.fiche, pivot: null })
 
-    expect(parSiret.informationsGenerales.siret).toBe('55217862900132')
-    expect(parSiret.informationsGenerales.rna).toBeNull()
-    expect(parRna.informationsGenerales.rna).toBe('W123456789')
-    expect(parRna.informationsGenerales.siret).toBeNull()
+    expect(parSiret.informationsGenerales.siret).toBe('55217862900135')
+    expect(sansPivot.informationsGenerales.siret).toBeNull()
   })
 
-  it('rejoint les sites web comme la colonne les stocke', () => {
+  it('rejoint les sites web dans l’ordre que le standard leur donne', () => {
     const affichee = afficher({
       ...lieu.fiche,
       contact: Contact({
@@ -259,7 +257,7 @@ describe('mise en forme de la fiche pour l’écran', () => {
     })
 
     expect(affichee.informationsPratiques.siteWeb).toBe(
-      'https://un.example.fr|https://deux.example.fr',
+      'https://deux.example.fr|https://un.example.fr',
     )
   })
 

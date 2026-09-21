@@ -1,7 +1,7 @@
 import {
   Contact,
   type Courriel,
-  isValidTelephone,
+  Telephone,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Prisma } from '@prisma/client'
 import {
@@ -32,10 +32,10 @@ const courrielsDe = (contact: Record<string, unknown>): readonly Courriel[] => {
   )
 }
 
-const telephoneDe = (contact: Record<string, unknown>): string | null => {
+const telephoneDe = (contact: Record<string, unknown>): Telephone | null => {
   const telephone = texteDe(contact, 'telephone')
 
-  return telephone != null && isValidTelephone(telephone) ? telephone : null
+  return telephone == null ? null : Telephone.safe(telephone)
 }
 
 export const contactDuRegistre = (contact: Prisma.JsonValue): Contact => {

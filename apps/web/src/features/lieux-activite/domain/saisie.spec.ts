@@ -114,23 +114,11 @@ describe('les horaires', () => {
 
 describe('l’immatriculation', () => {
   it('retient le SIRET quand il en est un', () => {
-    expect(pivotSaisi('13002603200016', null)).toBe('13002603200016')
+    expect(pivotSaisi('13002603200016')).toBe('13002603200016')
   })
 
-  it('retombe sur le RNA à défaut de SIRET', () => {
-    expect(pivotSaisi(null, 'W123456789')).toBe('W123456789')
-  })
-
-  it('préfère le SIRET quand les deux sont là', () => {
-    expect(pivotSaisi('13002603200016', 'W123456789')).toBe('13002603200016')
-  })
-
-  it.each([
-    ['123', null],
-    [null, 'pas-un-rna'],
-    [null, null],
-  ])('vaut null pour (%s, %s)', (siret, rna) => {
-    expect(pivotSaisi(siret, rna)).toBeNull()
+  it.each([['123'], ['W123456789'], [null]])('vaut null pour %s', (siret) => {
+    expect(pivotSaisi(siret)).toBeNull()
   })
 })
 

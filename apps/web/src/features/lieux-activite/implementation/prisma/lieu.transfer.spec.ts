@@ -11,6 +11,7 @@ import {
   ModaliteAccompagnement,
   Nom,
   Pivot,
+  Presentation,
   PriseEnChargeSpecifique,
   PublicSpecifiquementAdresse,
   Service,
@@ -43,11 +44,13 @@ const id = LieuId('550e8400-e29b-41d4-a716-446655440000')
 const auteur = UserId('550e8400-e29b-41d4-a716-446655440001')
 
 /**
- * Les colonnes que le domaine ne porte pas : lignage v1, compteur, référent, et
- * `structureParente` — que rien n'écrit et qu'aucune ligne ne renseigne.
+ * Les colonnes que le domaine ne porte pas : lignage v1, compteur, référent,
+ * `structureParente` — que rien n'écrit et qu'aucune ligne ne renseigne — et
+ * `rna`, que le standard a sorti du pivot et que plus aucune écriture ne touche.
  */
 const horsDomaine = {
   structureParente: null,
+  rna: null,
   nomReferent: null,
   courrielReferent: null,
   telephoneReferent: null,
@@ -120,7 +123,7 @@ const maximal: Lieu = {
   id,
   fiche: {
     nom: Nom('La Quincaillerie numérique'),
-    pivot: Pivot('55217862900132'),
+    pivot: Pivot('55217862900135'),
     adresse: Adresse({
       voie: '12 BIS RUE DE LECLERCQ',
       commune: 'Reims',
@@ -139,7 +142,10 @@ const maximal: Lieu = {
       ],
     }),
     horaires: 'Mo-Fr 09:00-12:00,14:00-18:30; Sa 08:30-12:00',
-    presentation: { resume: 'Un résumé', detail: 'Un détail plus long' },
+    presentation: Presentation({
+      resume: 'Un résumé',
+      detail: 'Un détail plus long',
+    }),
     services: [
       Service.AideAuxDemarchesAdministratives,
       Service.MaterielInformatiqueAPrixSolidaire,
@@ -193,13 +199,10 @@ describe('transfer du lieu', () => {
     expect(lieuCoopToDomain(ligne(maximal))).toEqual(maximal)
   })
 
-  it('conserve un pivot RNA', () => {
-    const parRna: Lieu = {
-      ...minimal,
-      fiche: { ...minimal.fiche, pivot: Pivot('W123456789') },
-    }
-
-    expect(lieuCoopToDomain(ligne(parRna))).toEqual(parRna)
+  it('ignore un RNA en base, qui n’est plus une immatriculation du lieu', () => {
+    expect(lieuCoopToDomain({ ...ligne(minimal), rna: 'W123456789' })).toEqual(
+      minimal,
+    )
   })
 
   it('conserve une modification par un utilisateur', () => {

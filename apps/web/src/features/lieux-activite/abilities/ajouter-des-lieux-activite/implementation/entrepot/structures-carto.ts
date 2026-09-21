@@ -15,7 +15,6 @@ import {
   Contact,
   Frais,
   Itinerance,
-  isValidNom,
   ModaliteAcces,
   ModaliteAccompagnement,
   Nom,
@@ -164,7 +163,7 @@ const toLieuCarto = (lieu: LieuRow): LieuCarto | null => {
       ? null
       : IdsCartographieNationale.safe(lieu.structureCartographieNationaleId)
 
-  if (ids == null || !isValidNom(lieu.nom)) return null
+  if (ids == null || Nom.safe(lieu.nom) == null) return null
 
   return {
     idsCartographieNationale: ids,

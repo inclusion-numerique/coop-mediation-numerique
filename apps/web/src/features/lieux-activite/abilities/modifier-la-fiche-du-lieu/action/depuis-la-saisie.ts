@@ -31,7 +31,7 @@ type Modification<Section extends SaisieDeSection['section']> = Extract<
 const informationsGenerales = (
   saisie: Saisie<'InformationsGenerales'>,
 ): Modification<'InformationsGenerales'> => {
-  const immatriculation = pivotSaisi(saisie.siret, saisie.rna)
+  const immatriculation = pivotSaisi(saisie.siret)
 
   return {
     section: 'InformationsGenerales',

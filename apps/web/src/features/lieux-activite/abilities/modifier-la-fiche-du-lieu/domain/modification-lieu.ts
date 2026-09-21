@@ -13,6 +13,7 @@ import {
   type PriseEnChargeSpecifique,
   type PublicSpecifiquementAdresse,
   type Service,
+  type Telephone,
   type Typologie,
   type Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
@@ -66,7 +67,7 @@ export type ModificationLieu =
   | {
       readonly section: 'ModalitesAccesAuService'
       readonly modalitesAcces: readonly ModaliteAcces[]
-      readonly telephone: string | null
+      readonly telephone: Telephone | null
       readonly courriels: readonly Courriel[]
       readonly fraisACharge: readonly Frais[]
     }

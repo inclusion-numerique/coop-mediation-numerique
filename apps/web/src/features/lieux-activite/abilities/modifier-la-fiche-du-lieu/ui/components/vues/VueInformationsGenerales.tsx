@@ -11,7 +11,6 @@ export const VueInformationsGenerales = ({
   lieuItinerant,
   complementAdresse,
   siret,
-  rna,
   nomUsage,
   typologies,
 }: {
@@ -22,7 +21,6 @@ export const VueInformationsGenerales = ({
   lieuItinerant?: boolean | null
   complementAdresse?: string | null
   siret?: string | null
-  rna?: string | null
   nomUsage?: string | null
   typologies?: Typologie[] | null
 }) => (
@@ -92,14 +90,12 @@ export const VueInformationsGenerales = ({
       )}
     </div>
     <div>
-      <span className="fr-text-mention--grey">SIRET structure (ou RNA)</span>
+      <span className="fr-text-mention--grey">SIRET structure</span>
       <div
         className="fr-text--medium"
         data-testid="informations-generales-pivot"
       >
-        {(siret?.length ?? 0) > 0 || (rna?.length ?? 0) > 0
-          ? (siret ?? rna)
-          : 'Non renseigné'}
+        {(siret?.length ?? 0) > 0 ? siret : 'Non renseigné'}
       </div>
     </div>
   </div>

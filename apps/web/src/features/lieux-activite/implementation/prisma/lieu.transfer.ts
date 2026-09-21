@@ -2,17 +2,11 @@ import {
   Adresse,
   Contact,
   Courriel,
-  isRna,
-  isSiret,
-  isValidAddress,
-  isValidCourriel,
-  isValidLocalisation,
-  isValidTelephone,
-  isValidUrl,
   Localisation,
   Nom,
-  type Pivot,
-  type Presentation,
+  Pivot,
+  Presentation,
+  Telephone,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { BanId } from '../../domain/ban-id'
@@ -50,20 +44,22 @@ const nonVide = (valeur: string | null): string | null =>
 const toSitesWeb = (siteWeb: string | null): readonly Url[] =>
   (siteWeb ?? '')
     .split(SEPARATEUR_LISTE)
-    .map((jeton) => jeton.trim())
-    .filter(isValidUrl)
-    .map(Url)
+    .map((jeton) => Url.safe(jeton.trim()))
+    .filter((url): url is Url => url != null)
 
 const toCourriels = (courriels: readonly string[]): readonly Courriel[] =>
-  courriels.filter(isValidCourriel).map(Courriel)
+  courriels
+    .map((courriel) => Courriel.safe(courriel))
+    .filter((courriel): courriel is Courriel => courriel != null)
 
 const toContact = (row: LigneDuLieuCoop): Contact => {
-  const telephone = nonVide(row.telephone)
+  const telephone =
+    nonVide(row.telephone) == null ? null : Telephone.safe(row.telephone ?? '')
   const sitesWeb = toSitesWeb(row.siteWeb)
   const courriels = toCourriels(row.courriels)
 
   return Contact({
-    ...(telephone != null && isValidTelephone(telephone) ? { telephone } : {}),
+    ...(telephone == null ? {} : { telephone }),
     ...(courriels.length > 0 ? { courriels: [...courriels] } : {}),
     ...(sitesWeb.length > 0 ? { site_web: [...sitesWeb] } : {}),
   })
@@ -81,7 +77,7 @@ const toAdresse = (row: LigneDuLieuCoop): Adresse | null => {
     ...(complement == null ? {} : { complement_adresse: complement }),
   }
 
-  return isValidAddress(candidate) ? Adresse(candidate) : null
+  return Adresse.safe(candidate)
 }
 
 const toLocalisation = (row: LigneDuLieuCoop): Localisation | null => {
@@ -89,16 +85,13 @@ const toLocalisation = (row: LigneDuLieuCoop): Localisation | null => {
 
   const candidate = { latitude: row.latitude, longitude: row.longitude }
 
-  return isValidLocalisation(candidate) ? Localisation(candidate) : null
+  return Localisation.safe(candidate)
 }
 
 const toPivot = (row: LigneDuLieuCoop): Pivot | null => {
   const siret = nonVide(row.siret)
-  if (siret != null && isSiret(siret)) return siret
 
-  const rna = nonVide(row.rna)
-
-  return rna != null && isRna(rna) ? rna : null
+  return siret == null ? null : Pivot.safe(siret)
 }
 
 const toPresentation = (row: LigneDuLieuCoop): Presentation | null => {
@@ -107,10 +100,10 @@ const toPresentation = (row: LigneDuLieuCoop): Presentation | null => {
 
   if (resume == null && detail == null) return null
 
-  return {
+  return Presentation.safe({
     ...(resume == null ? {} : { resume }),
     ...(detail == null ? {} : { detail }),
-  }
+  })
 }
 
 /**
@@ -200,10 +193,8 @@ const toFiche = (row: LigneDuLieuCoop): Fiche => ({
     row.modalitesAccompagnement,
     vocabulaire.modaliteAccompagnement.versStandard,
   ),
-  ficheAccesLibre: isValidUrl(row.ficheAccesLibre ?? '')
-    ? Url(row.ficheAccesLibre ?? '')
-    : null,
-  priseRdv: isValidUrl(row.priseRdv ?? '') ? Url(row.priseRdv ?? '') : null,
+  ficheAccesLibre: Url.safe(row.ficheAccesLibre ?? ''),
+  priseRdv: Url.safe(row.priseRdv ?? ''),
 })
 
 /**
@@ -297,9 +288,12 @@ const versPrisma = <Standard, Prisma>(
     .map(traduction)
     .filter((valeur): valeur is NonNullable<Prisma> => valeur != null)
 
+/**
+ * Le pivot ne s'écrit plus que dans `siret`. La colonne `rna` demeure en base,
+ * mais elle a quitté le domaine : aucune écriture ne la pose ni ne l'efface.
+ */
 const fromPivot = (pivot: Pivot | null) => ({
-  siret: pivot != null && isSiret(pivot) ? pivot : null,
-  rna: pivot != null && isRna(pivot) ? pivot : null,
+  siret: pivot,
 })
 
 /**

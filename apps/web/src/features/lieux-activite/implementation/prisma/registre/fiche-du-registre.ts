@@ -1,8 +1,4 @@
-import {
-  Adresse,
-  isValidAddress,
-  Nom,
-} from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { Adresse, Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Prisma } from '@prisma/client'
 import type { Fiche } from '../../../domain/fiche'
 import { nonVide, presentationSaisie, urlSaisie } from '../../../domain/saisie'
@@ -73,7 +69,7 @@ export const adresseDeLInscription = (
     ...(complement == null ? {} : { complement_adresse: complement }),
   }
 
-  return isValidAddress(candidate) ? Adresse(candidate) : null
+  return Adresse.safe(candidate)
 }
 
 export const ficheDuRegistre = (

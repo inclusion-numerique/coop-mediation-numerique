@@ -44,7 +44,7 @@ export const lieuxPublies = async ({
   >`
   WITH base AS (
     SELECT structures.id,
-      COALESCE(NULLIF(structures.siret, ''), NULLIF(structures.rna, ''), '00000000000000') AS pivot,
+      NULLIF(structures.siret, '') AS pivot,
       structures.nom,
       jsonb_strip_nulls(
         jsonb_build_object(
@@ -80,7 +80,6 @@ export const lieuxPublies = async ({
       structures.itinerance,
       NULLIF(structures.itinerance, '{}') AS itinerance, structures.modification as "date_maj",
       NULLIF(structures.services, '{}') AS services,
-      NULLIF(structures.structure_parente, '{}') AS structure_parente,
       NULLIF(structures.publics_specifiquement_adresses, '{}') AS publics_specifiquement_adresses,
       NULLIF(structures.prise_en_charge_specifique, '{}') AS prise_en_charge_specifique,
       NULLIF(structures.frais_a_charge, '{}') AS frais_a_charge,

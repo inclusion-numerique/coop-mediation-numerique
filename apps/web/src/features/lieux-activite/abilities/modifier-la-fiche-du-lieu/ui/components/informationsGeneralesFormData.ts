@@ -11,7 +11,6 @@ export type InformationsGeneralesFormData = {
   lieuItinerant: boolean | null
   complementAdresse: string | null
   siretSearch: StructureSearchResult | null
-  rna: string | null
   nomUsage: string | null
   noSiret: boolean | null
   typologies: Typologie[]

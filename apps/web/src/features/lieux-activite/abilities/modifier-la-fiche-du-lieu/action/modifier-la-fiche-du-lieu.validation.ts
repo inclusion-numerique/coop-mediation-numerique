@@ -8,7 +8,6 @@ import {
   NumeroTelephoneSaisi,
   PresentationResumeSaisie,
   PriseRdvSaisie,
-  RnaSaisi,
   SiretSaisi,
   SiteWebSaisi,
   texteFacultatif,
@@ -47,7 +46,6 @@ export const InformationsGeneralesSaisie = z.object({
     .array(z.enum(Typologie))
     .min(1, 'Sélectionnez au moins une typologie de structure'),
   siret: SiretSaisi,
-  rna: RnaSaisi,
   nomUsage: texteFacultatif,
 })
 

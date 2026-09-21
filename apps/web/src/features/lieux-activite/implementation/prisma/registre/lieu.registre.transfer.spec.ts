@@ -52,7 +52,7 @@ const lieu = (surcharge: Partial<Fiche> = {}): Lieu => ({
 })
 
 describe('le contact, que le registre range en un seul jsonb', () => {
-  it('joint les courriels et les sites web par le séparateur du standard', () => {
+  it('joint les courriels et les sites web, ordonnés par le standard', () => {
     const { contact } = lieuVersRegistre(
       lieu({
         contact: Contact({
@@ -71,8 +71,8 @@ describe('le contact, que le registre range en un seul jsonb', () => {
 
     expect(contact).toEqual({
       telephone: '+33180059880',
-      courriels: { email: 'contact@example.fr|accueil@example.fr' },
-      site_web: 'https://example.fr|https://autre.example.fr',
+      courriels: { email: 'accueil@example.fr|contact@example.fr' },
+      site_web: 'https://autre.example.fr|https://example.fr',
     })
   })
 
@@ -84,17 +84,12 @@ describe('le contact, que le registre range en un seul jsonb', () => {
 describe("le SIRET déclaré à l'enrichissement", () => {
   it('est le pivot quand celui-ci est un SIRET', () => {
     expect(
-      lieuVersRegistre(lieu({ pivot: Pivot('55217862900132') }))
+      lieuVersRegistre(lieu({ pivot: Pivot('55217862900135') }))
         .siretALEnrichissement,
-    ).toBe('55217862900132')
+    ).toBe('55217862900135')
   })
 
-  // Le registre ne porte pas de RNA : un pivot associatif n'a pas de colonne où
-  // aller, et la coop reste seule à le savoir.
-  it('est absent quand le pivot est un RNA', () => {
-    expect(
-      lieuVersRegistre(lieu({ pivot: Pivot('W751234567') }))
-        .siretALEnrichissement,
-    ).toBeNull()
+  it('est absent quand le lieu n’a pas de pivot', () => {
+    expect(lieuVersRegistre(lieu()).siretALEnrichissement).toBeNull()
   })
 })

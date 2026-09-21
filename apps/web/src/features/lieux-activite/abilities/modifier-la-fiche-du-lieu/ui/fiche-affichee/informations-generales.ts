@@ -4,8 +4,6 @@ import { banDefaultValueToAdresseBanData } from '@app/web/external-apis/ban/banD
 import type { StructureSearchResult } from '@app/web/features/employeuse'
 import {
   Itinerance,
-  isSiret,
-  type Pivot,
   type Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Fiche } from '../../../../domain/fiche'
@@ -26,18 +24,11 @@ export type InformationsGeneralesAffichees = {
   readonly lieuItinerant: boolean | null
   readonly typologies: readonly Typologie[]
   readonly siret: string | null
-  readonly rna: string | null
   readonly nomUsage: string | null
 }
 
 const itinerant = (itinerance: Fiche['itinerance']): boolean | null =>
   itinerance.length === 0 ? null : itinerance.includes(Itinerance.Itinerant)
-
-const siretDuPivot = (pivot: Pivot | null): string | null =>
-  pivot != null && isSiret(pivot) ? pivot : null
-
-const rnaDuPivot = (pivot: Pivot | null): string | null =>
-  pivot != null && !isSiret(pivot) ? pivot : null
 
 const adresseBanDepuis = (fiche: Fiche): AdresseBanData => {
   const adresse = banDefaultValueToAdresseBanData({
@@ -53,8 +44,9 @@ const adresseBanDepuis = (fiche: Fiche): AdresseBanData => {
 }
 
 const rechercheSiret = (fiche: Fiche): StructureSearchResult | null =>
-  fiche.pivot != null && isSiret(fiche.pivot)
-    ? {
+  fiche.pivot == null
+    ? null
+    : {
         siret: fiche.pivot,
         nom: fiche.nom,
         adresse: fiche.adresse?.voie ?? '',
@@ -63,7 +55,6 @@ const rechercheSiret = (fiche: Fiche): StructureSearchResult | null =>
         codeInsee: fiche.adresse?.code_insee ?? '',
         source: 'database',
       }
-    : null
 
 export const informationsGenerales = ({
   fiche,
@@ -83,7 +74,6 @@ export const informationsGenerales = ({
   siretSearch: rechercheSiret(fiche),
   lieuItinerant: itinerant(fiche.itinerance),
   typologies: fiche.typologies,
-  siret: siretDuPivot(fiche.pivot),
-  rna: rnaDuPivot(fiche.pivot),
+  siret: fiche.pivot,
   nomUsage: identiteSirene.nomUsage,
 })

@@ -13,6 +13,7 @@ import {
 import { prismaClient } from '@app/web/prismaClient'
 import { Given, Then, When } from '@cucumber/cucumber'
 import {
+  Presentation,
   Service,
   Typologie,
   Url,
@@ -93,7 +94,7 @@ When('un médiateur étranger au lieu enregistre la description', async () => {
     par: UserId(ficheSemee().userIds[1] ?? ''),
     modification: {
       section: 'Description',
-      presentation: { resume: 'Une présentation du lieu' },
+      presentation: Presentation({ resume: 'Une présentation du lieu' }),
       formationsLabels: [],
     },
   })
@@ -212,7 +213,6 @@ When(
       nom: ETABLISSEMENT.nom,
       adresseBan,
       nomUsage: 'La Maison du Port',
-      rna: null,
       lieuItinerant: null,
       complementAdresse: null,
       typologies: [Typologie.TIERS_LIEUX],
@@ -230,7 +230,6 @@ When(
       nom: 'Tiers-lieu du Port',
       adresseBan,
       nomUsage: 'La Maison du Port',
-      rna: null,
       lieuItinerant: null,
       complementAdresse: null,
       typologies: [Typologie.TIERS_LIEUX],

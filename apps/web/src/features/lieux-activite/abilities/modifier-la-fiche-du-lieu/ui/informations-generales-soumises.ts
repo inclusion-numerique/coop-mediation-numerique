@@ -16,9 +16,6 @@ type Saisie = Extract<SaisieDeSection, { section: 'InformationsGenerales' }>
  * Dans les deux cas l'adresse a été reconnue par la Base Adresse Nationale :
  * celle de l'Annuaire y est géocodée au moment de choisir l'établissement,
  * exactement comme celle que l'on cherche soi-même.
- *
- * Le RNA repart tel qu'il est venu. Aucun champ ne l'édite — il vient des
- * imports cartographiques — et ne pas le renvoyer l'effacerait.
  */
 export const informationsGeneralesSoumises = ({
   noSiret,
@@ -26,7 +23,6 @@ export const informationsGeneralesSoumises = ({
   adresseBan,
   nom,
   nomUsage,
-  rna,
   lieuItinerant,
   complementAdresse,
   typologies,
@@ -41,6 +37,5 @@ export const informationsGeneralesSoumises = ({
   lieuItinerant: noSiret ? lieuItinerant : null,
   typologies,
   siret: noSiret ? null : (siretSearch?.siret ?? null),
-  rna,
   nomUsage: noSiret ? null : nomUsage,
 })

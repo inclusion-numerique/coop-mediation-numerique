@@ -1,5 +1,4 @@
-import { validateValidRnaDigits } from '@app/web/libraries/rna'
-import { validateValidSiretDigits } from '@app/web/libraries/siret'
+import { Siret } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { z } from 'zod'
 import { nonVide, SEPARATEUR_LISTE, telephoneValide, urlSaisie } from './saisie'
 
@@ -57,20 +56,12 @@ export const NomDuLieuSaisi = z
   .min(1, 'Veuillez renseigner le nom du lieu d’activité')
 
 /**
- * Les deux immatriculations sont volontairement PLUS strictes que le standard :
- * son `isSiret` vaut `length === 14` et son `isRna` accepte des lettres. On leur
- * préfère les prédicats de la coop — clé de Luhn, `W` suivi de neuf chiffres —,
- * qui n'acceptent qu'un sous-ensemble : resserrer ne peut donc pas créer
- * d'effacement silencieux.
+ * L'immatriculation se mesure au modèle du standard, qui porte déjà la règle de
+ * la coop — quatorze chiffres, clé de Luhn, dérogation au SIREN de La Poste.
  */
 export const SiretSaisi = reconnu(
-  validateValidSiretDigits,
+  (valeur) => Siret.safe(valeur) != null,
   'Le SIRET doit être composé de 14 chiffres et respecter sa clé de contrôle',
-)
-
-export const RnaSaisi = reconnu(
-  validateValidRnaDigits,
-  'Le RNA doit être composé d’un W suivi de 9 chiffres',
 )
 
 export const SiteWebSaisi = reconnu(
