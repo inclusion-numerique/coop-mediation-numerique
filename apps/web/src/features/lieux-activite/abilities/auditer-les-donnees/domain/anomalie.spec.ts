@@ -11,6 +11,7 @@ const ligne = (champs: Partial<LigneAAuditer> = {}): LigneAAuditer => ({
   codePostal: '51100',
   codeInsee: '51454',
   complementAdresse: null,
+  banId: '51454_7160_00012',
   latitude: 49.25,
   longitude: 4.03,
   telephone: null,
@@ -56,6 +57,36 @@ describe('le diagnostic d’une ligne', () => {
     ['12345'],
   ])('signale la voie « %s », que la base acceptait', (adresse) => {
     expect(codes({ adresse })).toContain('voie-non-reconnue')
+  })
+
+  /**
+   * Une adresse ne se stocke que si elle vient de la Base Adresse Nationale.
+   * Un identifiant absent, ou qui désigne une autre commune que celle
+   * enregistrée, dit que ce n'est pas le cas.
+   */
+  it('signale une adresse sans identifiant BAN', () => {
+    expect(codes({ banId: null })).toEqual(['adresse-hors-ban'])
+  })
+
+  it('signale un identifiant BAN qui contredit la commune', () => {
+    expect(codes({ banId: '70058_0170_00004' })).toEqual([
+      'ban-id-contredit-la-commune',
+    ])
+  })
+
+  it.each([
+    ['Paris', '75056', '75113_1234_00001'],
+    ['Lyon', '69123', '69386_1234_00001'],
+    ['Marseille', '13055', '13208_1234_00001'],
+  ])(
+    'accepte l’arrondissement que la BAN nomme à %s',
+    (_ville, codeInsee, banId) => {
+      expect(codes({ codeInsee, banId })).toEqual([])
+    },
+  )
+
+  it('accepte la casse de l’identifiant corse', () => {
+    expect(codes({ codeInsee: '2B313', banId: '2b313_0010_00001' })).toEqual([])
   })
 
   it('signale un complément hors du jeu de caractères', () => {

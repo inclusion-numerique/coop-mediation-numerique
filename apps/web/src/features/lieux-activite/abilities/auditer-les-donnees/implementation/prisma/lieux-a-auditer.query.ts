@@ -24,6 +24,7 @@ export const lieuxAAuditer = async (): Promise<LigneAAuditer[]> =>
       COALESCE(code_postal, '')                      AS "codePostal",
       NULLIF(code_insee, '')                         AS "codeInsee",
       NULLIF(complement_adresse, '')                 AS "complementAdresse",
+      NULLIF(ban_id, '')                             AS "banId",
       latitude                                       AS "latitude",
       longitude                                      AS "longitude",
       NULLIF(telephone, '')                          AS "telephone",

@@ -50,6 +50,7 @@ export type LigneAAuditer = {
   readonly codePostal: string
   readonly codeInsee: string | null
   readonly complementAdresse: string | null
+  readonly banId: string | null
   readonly latitude: number | null
   readonly longitude: number | null
   readonly telephone: string | null
@@ -159,6 +160,57 @@ const adresseIncomplete = (ligne: LigneAAuditer): readonly Anomalie[] => {
     : [anomalie('adresse-invalide', 'lieu-ecarte', 'adresse', ligne.adresse)]
 }
 
+/**
+ * Les arrondissements que la Base Adresse Nationale nomme là où la coop stocke
+ * la commune-mère. L'écart est normal : le schéma national le refait à la
+ * publication, dans l'autre sens.
+ */
+const ARRONDISSEMENTS: Readonly<Record<string, string>> = {
+  '75056': '751',
+  '69123': '6938',
+  '13055': '132',
+}
+
+/**
+ * Une adresse ne se stocke que si elle vient de la Base Adresse Nationale.
+ *
+ * Deux façons de ne pas en venir : n'avoir aucun identifiant BAN, ou en porter
+ * un qui désigne une autre commune que celle enregistrée — l'adresse a alors été
+ * retouchée après coup, et l'un des deux ment.
+ */
+const adresseHorsBan = (ligne: LigneAAuditer): readonly Anomalie[] => {
+  const banId = nonVide(ligne.banId)
+
+  if (banId == null)
+    return [
+      anomalie(
+        'adresse-hors-ban',
+        'a-verifier',
+        'banId',
+        `${ligne.adresse}, ${ligne.codePostal} ${ligne.commune}`,
+      ),
+    ]
+
+  const inseeDuBan = banId.split('_')[0]?.toUpperCase() ?? ''
+  const insee = (nonVide(ligne.codeInsee) ?? '').toUpperCase()
+  const arrondissement = ARRONDISSEMENTS[insee]
+
+  if (
+    insee === inseeDuBan ||
+    (arrondissement != null && inseeDuBan.startsWith(arrondissement))
+  )
+    return []
+
+  return [
+    anomalie(
+      'ban-id-contredit-la-commune',
+      'a-verifier',
+      'banId',
+      `${ligne.commune} (${insee}) mais ban_id ${banId}`,
+    ),
+  ]
+}
+
 /** Les coordonnées doivent tomber dans une emprise française (D18.1). */
 const localisationHorsEmprise = (ligne: LigneAAuditer): readonly Anomalie[] => {
   if (ligne.latitude == null || ligne.longitude == null) return []
@@ -221,6 +273,7 @@ export const diagnostiquer = (ligne: LigneAAuditer): readonly Anomalie[] => [
     : []),
 
   ...adresseIncomplete(ligne),
+  ...adresseHorsBan(ligne),
   ...valeurRefusee(
     'complement-non-reconnu',
     'complementAdresse',
