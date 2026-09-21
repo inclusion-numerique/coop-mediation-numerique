@@ -66,14 +66,7 @@ export const lieuxPublies = async ({
         jsonb_build_object(
           'telephone', NULLIF(structures.telephone, ''),
           'courriels', NULLIF(structures.courriels, '{}'),
-          -- La colonne joint plusieurs sites par « | » : les envelopper tels
-          -- quels publiait une seule URL qui en contenait un, que le standard
-          -- refuse — et le contact entier tombait avec elle.
-          'site_web', (
-            SELECT array_agg(btrim(site))
-            FROM unnest(string_to_array(structures.site_web, '|')) AS site
-            WHERE btrim(site) <> ''
-          )
+          'site_web', NULLIF(structures.site_web, '{}')
         )
       ) AS contact,
       NULLIF(structures.horaires, '') AS horaires,
@@ -90,10 +83,19 @@ export const lieuxPublies = async ({
       NULLIF(structures.publics_specifiquement_adresses, '{}') AS publics_specifiquement_adresses,
       NULLIF(structures.prise_en_charge_specifique, '{}') AS prise_en_charge_specifique,
       NULLIF(structures.frais_a_charge, '{}') AS frais_a_charge,
-        CASE
-          WHEN COUNT(CASE WHEN conseillers.user_id IS NOT NULL THEN 1 END) > 0 THEN ARRAY['Conseillers numériques']
-        END
-      AS dispositif_programmes_nationaux,
+      -- Ce que le lieu porte, plus le dispositif conseiller numérique que la
+      -- coop est seule à savoir dériver. La colonne n'est pas de la saisie mais
+      -- de la donnée de référence, en lecture seule : la jeter ferait dire à la
+      -- carte autre chose que ce que la fiche montre.
+      NULLIF(
+        structures.dispositif_programmes_nationaux
+          || CASE
+               WHEN COUNT(CASE WHEN conseillers.user_id IS NOT NULL THEN 1 END) > 0
+               THEN ARRAY['Conseillers numériques']::"coop"."dispositif_programme_national"[]
+               ELSE '{}'::"coop"."dispositif_programme_national"[]
+             END,
+        '{}'
+      ) AS dispositif_programmes_nationaux,
       NULLIF(structures.formations_labels, '{}') AS formations_labels,
       NULLIF(structures.autres_formations_labels, '{}') AS autres_formations_labels,
       NULLIF(structures.modalites_acces, '{}') AS modalites_acces,

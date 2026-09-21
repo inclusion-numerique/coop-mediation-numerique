@@ -51,16 +51,12 @@ import { ficheDuRegistre } from './registre/fiche-du-registre'
 import { derniereModificationExterne } from './registre/modification-du-registre'
 import * as vocabulaire from './vocabulaire'
 
-/** Le séparateur multi-valeurs du schéma national. */
-const SEPARATEUR_LISTE = '|'
-
 const nonVide = (valeur: string | null): string | null =>
   valeur != null && valeur.trim() !== '' ? valeur : null
 
-const toSitesWeb = (siteWeb: string | null): readonly Url[] =>
-  (siteWeb ?? '')
-    .split(SEPARATEUR_LISTE)
-    .map((jeton) => Url.safe(jeton.trim()))
+const toSitesWeb = (siteWeb: readonly string[]): readonly Url[] =>
+  siteWeb
+    .map((adresse) => Url.safe(adresse.trim()))
     .filter((url): url is Url => url != null)
 
 const toCourriels = (courriels: readonly string[]): readonly Courriel[] =>
@@ -371,10 +367,7 @@ export const lieuFromDomain = ({
   banId,
   telephone: fiche.contact.telephone ?? null,
   courriels: [...(fiche.contact.courriels ?? [])],
-  siteWeb:
-    fiche.contact.site_web == null || fiche.contact.site_web.length === 0
-      ? null
-      : fiche.contact.site_web.join(SEPARATEUR_LISTE),
+  siteWeb: [...(fiche.contact.site_web ?? [])],
   horaires: fiche.horaires,
   presentationResume: fiche.presentation?.resume ?? null,
   presentationDetail: fiche.presentation?.detail ?? null,

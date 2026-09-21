@@ -1190,7 +1190,6 @@
               "fiche_acces_libre",
               "horaires",
               "prise_rdv",
-              "structure_parente",
               "services",
               "publics_specifiquement_adresses",
               "prise_en_charge_specifique",
@@ -1346,11 +1345,6 @@
                 "nullable": true,
                 "description": "url vers la prise de rendez-vous",
                 "example": "https://exemple.org/rdv"
-              },
-              "structure_parente": {
-                "type": "string",
-                "nullable": true,
-                "example": "association nationale"
               },
               "services": {
                 "type": "array",

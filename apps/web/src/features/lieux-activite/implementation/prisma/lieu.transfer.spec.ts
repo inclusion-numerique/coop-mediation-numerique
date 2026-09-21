@@ -275,7 +275,7 @@ describe('transfer du lieu', () => {
     it('ne retient que les sites web que le standard reconnaît', () => {
       const siteWebMixte: LigneDuLieuCoop = {
         ...ligne(maximal),
-        siteWeb: 'https://www.example.fr|pas une url du tout',
+        siteWeb: ['https://www.example.fr', 'pas une url du tout'],
       }
 
       expect(lieuCoopToDomain(siteWebMixte).fiche.contact.site_web).toEqual([

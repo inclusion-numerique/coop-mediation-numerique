@@ -126,6 +126,7 @@ export const formationLabel = pont(FormationLabel, {
   ArniaMednum: FormationLabel.ArniaMednum,
   CollectifRessourcesEtActeursReemploi:
     FormationLabel.CollectifRessourcesEtActeursReemploi,
+  EtapesNumeriques: FormationLabel.EtapesNumeriques,
   FabriquesDeTerritoire: FormationLabel.FabriquesDeTerritoire,
   LesEclaireurs: FormationLabel.LesEclaireurs,
   MesPapiers: FormationLabel.MesPapiers,

@@ -86,7 +86,7 @@ Given('ce lieu déclare deux sites web', async () => {
   await prismaClient.lieuInclusion.update({
     where: { id: semis.lieuId },
     data: {
-      siteWeb: 'https://un.example.fr|https://deux.example.fr',
+      siteWeb: ['https://un.example.fr', 'https://deux.example.fr'],
       telephone: '+33180059880',
     },
   })
