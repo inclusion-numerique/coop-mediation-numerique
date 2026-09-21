@@ -11,6 +11,7 @@ import { createStopwatch } from '@app/web/utils/stopwatch'
 import * as Sentry from '@sentry/nextjs'
 import { v4 } from 'uuid'
 import { executeAppliquerDispositifConum } from './appliquer-dispositif-conum/executeAppliquerDispositifConum'
+import { executeAuditerLesDonnees } from './auditer-les-donnees/executeAuditerLesDonnees'
 import { executeFixUsersRoles } from './fix-users-roles/executeFixUsersRoles'
 import { executeInactiveUsersReminders } from './inactive-users-reminders/executeInactiveUsersReminders'
 import type { Job, JobName, JobPayload } from './jobs'
@@ -61,6 +62,7 @@ export const jobExecutors: {
   [Name in JobName]: JobExecutor<Name>
 } = {
   'appliquer-dispositif-conum': executeAppliquerDispositifConum,
+  'auditer-les-donnees': executeAuditerLesDonnees,
   'fix-users-roles': executeFixUsersRoles,
   'inactive-users-reminders': executeInactiveUsersReminders,
   'normalize-sirets': executeNormalizeSirets,

@@ -1,0 +1,1 @@
+export { lieuxAAuditer } from './prisma'
