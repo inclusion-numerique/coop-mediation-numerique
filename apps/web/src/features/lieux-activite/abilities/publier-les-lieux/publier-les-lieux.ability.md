@@ -65,3 +65,21 @@
 * When la cartographie nationale moissonne les lieux
 * Then ce lieu est publié
 * And il annonce un aidant
+
+## Rule: Ce qui sort est mesuré au schéma national
+
+> Un champ facultatif que le standard refuse se perd, et le lieu reste : il y est
+> utile sans ses horaires, il n'existe plus du tout s'il est écarté.
+>
+> La colonne `site_web` joint pourtant plusieurs adresses par « | ». Les publier
+> telles quelles ferait une seule URL qui en contient un — que le standard
+> refuse, et le contact tombant d'un bloc, le téléphone et les courriels
+> disparaîtraient avec elle.
+
+### Scenario: Le lieu à plusieurs sites web garde son contact
+
+* Given un lieu partagé où exerce un médiateur visible
+* And ce lieu déclare deux sites web
+* When la cartographie nationale moissonne les lieux
+* Then ce lieu est publié
+* And il annonce ses deux sites web

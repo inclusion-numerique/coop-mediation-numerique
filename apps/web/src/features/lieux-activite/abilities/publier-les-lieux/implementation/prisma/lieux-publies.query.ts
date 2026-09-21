@@ -66,7 +66,14 @@ export const lieuxPublies = async ({
         jsonb_build_object(
           'telephone', NULLIF(structures.telephone, ''),
           'courriels', NULLIF(structures.courriels, '{}'),
-          'site_web', CASE WHEN NULLIF(structures.site_web, '') IS NOT NULL THEN ARRAY[structures.site_web] END
+          -- La colonne joint plusieurs sites par « | » : les envelopper tels
+          -- quels publiait une seule URL qui en contenait un, que le standard
+          -- refuse — et le contact entier tombait avec elle.
+          'site_web', (
+            SELECT array_agg(btrim(site))
+            FROM unnest(string_to_array(structures.site_web, '|')) AS site
+            WHERE btrim(site) <> ''
+          )
         )
       ) AS contact,
       NULLIF(structures.horaires, '') AS horaires,

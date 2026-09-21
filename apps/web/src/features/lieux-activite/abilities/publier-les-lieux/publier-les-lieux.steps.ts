@@ -82,6 +82,16 @@ Given("ce médiateur s'est retiré du lieu", async () => {
   })
 })
 
+Given('ce lieu déclare deux sites web', async () => {
+  await prismaClient.lieuInclusion.update({
+    where: { id: semis.lieuId },
+    data: {
+      siteWeb: 'https://un.example.fr|https://deux.example.fr',
+      telephone: '+33180059880',
+    },
+  })
+})
+
 Given('ce médiateur a choisi de ne pas être visible', async () => {
   await prismaClient.mediateur.update({
     where: { id: semis.mediateurId },
@@ -107,6 +117,16 @@ Then('il annonce un aidant', () => {
 
 Then("il n'annonce aucun aidant", () => {
   assert.strictEqual(semis.moisson?.at(0)?.aidants?.length, 0)
+})
+
+Then('il annonce ses deux sites web', () => {
+  const contact = semis.moisson?.at(0)?.contact
+
+  assert.deepStrictEqual(contact?.site_web, [
+    'https://deux.example.fr',
+    'https://un.example.fr',
+  ])
+  assert.strictEqual(contact?.telephone, '+33180059880')
 })
 
 After(async () => {
