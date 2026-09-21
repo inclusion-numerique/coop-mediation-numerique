@@ -1,6 +1,20 @@
-import { Siret } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import {
+  Courriel,
+  DETAIL_LONGUEUR_MAXIMALE,
+  FicheAccesLibre,
+  Nom,
+  RESUME_LONGUEUR_MAXIMALE,
+  Siret,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
+import type { Schedule } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import { z } from 'zod'
-import { nonVide, SEPARATEUR_LISTE, telephoneValide, urlSaisie } from './saisie'
+import {
+  horairesSaisis,
+  nonVide,
+  SEPARATEUR_LISTE,
+  telephoneValide,
+  urlSaisie,
+} from './saisie'
 
 /**
  * Ce qu'une saisie de lieu doit respecter, quelle que soit la porte d'entrée.
@@ -16,10 +30,13 @@ import { nonVide, SEPARATEUR_LISTE, telephoneValide, urlSaisie } from './saisie'
  * celles-ci le refusent en le disant.
  */
 
-/** Longueur du résumé de présentation, telle que la carte du lieu l'affiche. */
-export const RESUME_MAX_LENGTH = 280
+/**
+ * Longueurs de présentation, telles que le standard les fixe. Réexportées parce
+ * que les formulaires les affichent en compteur de caractères.
+ */
+export const RESUME_MAX_LENGTH = RESUME_LONGUEUR_MAXIMALE
 
-const PREFIXE_ACCESLIBRE = 'https://acceslibre.beta.gouv.fr/'
+export const DETAIL_MAX_LENGTH = DETAIL_LONGUEUR_MAXIMALE
 
 export const texteFacultatif = z.string().trim().nullish()
 
@@ -53,7 +70,9 @@ const sontDesUrls = (valeur: string): boolean =>
 export const NomDuLieuSaisi = z
   .string()
   .trim()
-  .min(1, 'Veuillez renseigner le nom du lieu d’activité')
+  .refine((valeur) => Nom.safe(valeur) != null, {
+    message: 'Veuillez renseigner le nom du lieu d’activité',
+  })
 
 /**
  * L'immatriculation se mesure au modèle du standard, qui porte déjà la règle de
@@ -70,8 +89,8 @@ export const SiteWebSaisi = reconnu(
 )
 
 export const FicheAccesLibreSaisie = reconnu(
-  (valeur) => estUneUrl(valeur) && valeur.startsWith(PREFIXE_ACCESLIBRE),
-  `Veuillez renseigner une URL Acceslibre (${PREFIXE_ACCESLIBRE}...)`,
+  (valeur) => FicheAccesLibre.safe(valeur) != null,
+  'Veuillez renseigner une URL Acceslibre (https://acceslibre.beta.gouv.fr/...)',
 )
 
 export const PriseRdvSaisie = reconnu(
@@ -94,7 +113,9 @@ export const NumeroTelephoneSaisi = reconnu(
 export const AdresseMailSaisie = z
   .string()
   .trim()
-  .pipe(z.email('Veuillez renseigner une adresse email valide'))
+  .refine((valeur) => Courriel.safe(valeur) != null, {
+    message: 'Veuillez renseigner une adresse email valide',
+  })
   .nullish()
 
 export const PresentationResumeSaisie = z
@@ -103,6 +124,20 @@ export const PresentationResumeSaisie = z
   .max(
     RESUME_MAX_LENGTH,
     `Cette description doit faire au plus ${RESUME_MAX_LENGTH} caractères`,
+  )
+  .nullish()
+
+/**
+ * Le détail n'avait aucune borne à la saisie, alors que `Presentation` en pose
+ * une. Au-delà, le constructeur rendait `null` et la présentation entière
+ * tombait — résumé compris — sans que rien ne soit dit.
+ */
+export const PresentationDetailSaisi = z
+  .string()
+  .trim()
+  .max(
+    DETAIL_MAX_LENGTH,
+    `Cette description doit faire au plus ${DETAIL_MAX_LENGTH} caractères`,
   )
   .nullish()
 
@@ -118,3 +153,31 @@ export const PresentationResumeSaisie = z
  * « tout public », puis sur « Téléphoner » et « Contacter par mail ».
  */
 export const CaseCochee = z.boolean().nullish()
+
+/**
+ * Un commentaire d'horaires ne vaut qu'adossé à un créneau.
+ *
+ * Seul, il ne peut pas former une valeur OpenStreetMap : la composition rendait
+ * ` "Sur rendez-vous"`, que le standard refuse, et la coop le publiait. Le dire
+ * vaut mieux que de laisser tomber le commentaire, et mieux encore que
+ * d'affirmer par un `Mo-Su off` une fermeture que personne n'a déclarée.
+ *
+ * Le prédicat est emprunté au mapper, comme les autres : c'est `horairesSaisis`
+ * qui décide, et la saisie ne fait que le redire à l'utilisateur.
+ */
+export const commentaireAdosseAUnCreneau: [
+  (data: {
+    openingHours?: Schedule
+    horairesComment?: string | null
+  }) => boolean,
+  { message: string; path: (string | number)[] },
+] = [
+  ({ openingHours, horairesComment }) =>
+    nonVide(horairesComment) == null ||
+    (openingHours != null && horairesSaisis(openingHours, null) != null),
+  {
+    message:
+      'Renseignez au moins un créneau pour ajouter un commentaire aux horaires',
+    path: ['horairesComment'],
+  },
+]

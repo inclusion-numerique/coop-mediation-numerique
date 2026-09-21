@@ -8,6 +8,7 @@ import { LieuId } from '../../../domain/lieu-id'
 import {
   adresseSaisie,
   courrielsSaisis,
+  ficheAccesLibreSaisie,
   horairesSaisis,
   itineranceSaisie,
   localisationSaisie,
@@ -67,7 +68,7 @@ const informationsPratiques = (
   saisie: CreerLieuActiviteData,
 ): Pick<Fiche, 'horaires' | 'ficheAccesLibre' | 'priseRdv'> => ({
   horaires: horairesSaisis(saisie.openingHours, saisie.horairesComment),
-  ficheAccesLibre: urlSaisie(saisie.ficheAccesLibre),
+  ficheAccesLibre: ficheAccesLibreSaisie(saisie.ficheAccesLibre),
   priseRdv: urlSaisie(saisie.priseRdv),
 })
 

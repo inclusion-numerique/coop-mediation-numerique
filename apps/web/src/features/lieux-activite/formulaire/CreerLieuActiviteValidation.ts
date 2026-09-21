@@ -1,3 +1,4 @@
+import { commentaireAdosseAUnCreneau } from '@app/web/features/lieux-activite/domain/regles-de-saisie'
 import {
   auMoinsUnServiceSiVisible,
   CreerLieuShape,
@@ -7,5 +8,6 @@ import z from 'zod'
 export const CreerLieuActiviteValidation = z
   .object(CreerLieuShape)
   .refine(...auMoinsUnServiceSiVisible)
+  .refine(...commentaireAdosseAUnCreneau)
 
 export type CreerLieuActiviteData = z.infer<typeof CreerLieuActiviteValidation>

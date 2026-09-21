@@ -2,6 +2,7 @@ import { appendComment } from '@app/web/opening-hours/openingHoursHelpers'
 import {
   Adresse,
   Courriel,
+  FicheAccesLibre,
   Itinerance,
   Localisation,
   ModaliteAcces,
@@ -42,6 +43,20 @@ export const urlSaisie = (valeur: string | null | undefined): Url | null => {
   const texte = nonVide(valeur)
 
   return texte == null ? null : Url.safe(texte)
+}
+
+/**
+ * Une fiche d'accessibilité, qui n'est pas n'importe quelle URL : le standard
+ * exige qu'elle pointe vers Accès Libre. La règle vient de la coop, qui l'a
+ * toujours imposée à la saisie ; elle vaut désormais sur tous les chemins
+ * d'écriture, imports cartographiques compris.
+ */
+export const ficheAccesLibreSaisie = (
+  valeur: string | null | undefined,
+): FicheAccesLibre | null => {
+  const texte = nonVide(valeur)
+
+  return texte == null ? null : FicheAccesLibre.safe(texte)
 }
 
 export const sitesWebSaisis = (
@@ -198,7 +213,8 @@ export const itineranceSaisie = (
 export const horairesSaisis = (
   grille: Schedule,
   commentaire: string | null | undefined,
-): string | null =>
-  nonVide(
-    appendComment(fromTimetableOpeningHours(grille), nonVide(commentaire)),
-  )
+): string | null => {
+  const osm = nonVide(fromTimetableOpeningHours(grille))
+
+  return osm == null ? null : appendComment(osm, nonVide(commentaire))
+}

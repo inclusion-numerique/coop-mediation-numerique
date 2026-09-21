@@ -1,6 +1,7 @@
 import {
   type Adresse,
   type Courriel,
+  type FicheAccesLibre,
   type FormationLabel,
   type Frais,
   type Itinerance,
@@ -50,7 +51,7 @@ export type ModificationLieu =
   | {
       readonly section: 'InformationsPratiques'
       readonly sitesWeb: readonly Url[]
-      readonly ficheAccesLibre: Url | null
+      readonly ficheAccesLibre: FicheAccesLibre | null
       readonly priseRdv: Url | null
       readonly horaires: string | null
     }

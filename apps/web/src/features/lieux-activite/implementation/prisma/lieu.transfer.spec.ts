@@ -3,6 +3,7 @@ import {
   Contact,
   Courriel,
   DispositifProgrammeNational,
+  FicheAccesLibre,
   FormationLabel,
   Frais,
   Itinerance,
@@ -168,7 +169,9 @@ const maximal: Lieu = {
     formationsLabels: [FormationLabel.FormeAMonEspaceSante],
     autresFormationsLabels: ['Label et la bête'],
     modalitesAccompagnement: [ModaliteAccompagnement.DansUnAtelier],
-    ficheAccesLibre: Url('https://acceslibre.beta.gouv.fr/app/erp/mediatheque'),
+    ficheAccesLibre: FicheAccesLibre(
+      'https://acceslibre.beta.gouv.fr/app/erp/mediatheque',
+    ),
     priseRdv: Url('https://rdv.anct.gouv.fr/'),
   },
   visibilite: VisibiliteCartographie('Publie'),

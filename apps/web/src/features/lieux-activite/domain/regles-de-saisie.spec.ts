@@ -1,4 +1,3 @@
-import { z } from 'zod'
 import {
   DescriptionSaisie,
   InformationsGeneralesSaisie,
@@ -6,7 +5,7 @@ import {
   ModalitesAccesAuServiceSaisie,
   TypesDePublicsAccueillisSaisie,
 } from '../abilities/modifier-la-fiche-du-lieu/action/modifier-la-fiche-du-lieu.validation'
-import { CreerLieuShape } from '../formulaire/CreerLieuShape'
+import { CreerLieuActiviteValidation } from '../formulaire/CreerLieuActiviteValidation'
 
 /**
  * Créer un lieu et corriger sa fiche décrivent le même objet : une valeur que
@@ -18,7 +17,13 @@ import { CreerLieuShape } from '../formulaire/CreerLieuShape'
  * manqué : le téléphone se rangeait sous deux formes, la liste de sites web
  * passait d'un côté et pas de l'autre.
  */
-const creation = z.object(CreerLieuShape)
+/**
+ * Le schéma assemblé, et non la forme nue : les règles inter-champs — au moins
+ * un service pour un lieu visible, un commentaire d'horaires adossé à un
+ * créneau — vivent sur l'assemblage. Les comparer à la forme seule confrontait
+ * la modification à un schéma que le produit n'emploie nulle part.
+ */
+const creation = CreerLieuActiviteValidation
 
 const adresseBan = {
   id: '51454_7160_00012',
@@ -125,6 +130,28 @@ const verdicts = {
       fraisACharge: [],
     }).success,
   }),
+  adresseMail: (adresseMail: unknown) => ({
+    creation: creation.safeParse(
+      saisieDeCreation({ modalitesAcces: { parMail: true, adresseMail } }),
+    ).success,
+    modification: ModalitesAccesAuServiceSaisie.safeParse({
+      section: 'ModalitesAccesAuService',
+      surPlace: false,
+      parTelephone: false,
+      parMail: true,
+      adresseMail,
+      fraisACharge: [],
+    }).success,
+  }),
+  presentationDetail: (presentationDetail: unknown) => ({
+    creation: creation.safeParse(saisieDeCreation({ presentationDetail }))
+      .success,
+    modification: DescriptionSaisie.safeParse({
+      section: 'Description',
+      presentationDetail,
+      formationsLabels: [],
+    }).success,
+  }),
   presentationResume: (presentationResume: unknown) => ({
     creation: creation.safeParse(saisieDeCreation({ presentationResume }))
       .success,
@@ -184,6 +211,20 @@ describe('les deux formulaires appliquent les mêmes règles', () => {
 
     ['presentationResume', 'x'.repeat(280), true],
     ['presentationResume', 'x'.repeat(281), false],
+
+    // Le détail n'avait aucune borne : au-delà, `Presentation` rendait `null` et
+    // la présentation tombait tout entière, résumé compris, sans un mot.
+    ['presentationDetail', 'x'.repeat(10_000), true],
+    ['presentationDetail', 'x'.repeat(10_001), false],
+
+    // Le formulaire validait avec `z.email`, le modèle avec `Courriel` : ce que
+    // l'un acceptait, l'autre le refusait, et le courriel disparaissait à
+    // l'enregistrement sans que rien ne soit dit.
+    ['adresseMail', 'contact@example.fr', true],
+    ['adresseMail', `${'x'.repeat(65)}@example.fr`, false],
+    ['adresseMail', `contact@${'y'.repeat(250)}.fr`, false],
+    ['adresseMail', 'jean+lieu@example.fr', true],
+    ['adresseMail', 'contact@example', false],
   ])('%s : « %s » vaut %s des deux côtés', (champ, valeur, attendu) => {
     expect(verdicts[champ as keyof typeof verdicts](valeur)).toEqual({
       creation: attendu,
@@ -215,6 +256,38 @@ describe('les deux formulaires appliquent les mêmes règles', () => {
           journeeOuverte({ startTime: '9h', endTime: '12:00' }),
         ),
       ).toEqual({ creation: false, modification: false })
+    })
+  })
+
+  describe('le commentaire des horaires', () => {
+    const avecCommentaire = (openingHours: unknown) => ({
+      creation: creation.safeParse(
+        saisieDeCreation({ openingHours, horairesComment: 'Sur rendez-vous' }),
+      ).success,
+      modification: InformationsPratiquesSaisie.safeParse({
+        section: 'InformationsPratiques',
+        openingHours,
+        horairesComment: 'Sur rendez-vous',
+      }).success,
+    })
+
+    it('s’accepte adossé à un créneau', () => {
+      expect(
+        avecCommentaire(
+          journeeOuverte({ startTime: '09:00', endTime: '12:00' }),
+        ),
+      ).toEqual({ creation: true, modification: true })
+    })
+
+    /**
+     * Seul, il ne forme pas une valeur OpenStreetMap : la composition rendait
+     * ` "Sur rendez-vous"`, que le standard refuse et que la coop publiait.
+     */
+    it('se refuse quand la grille est vide', () => {
+      expect(avecCommentaire(grilleVide)).toEqual({
+        creation: false,
+        modification: false,
+      })
     })
   })
 

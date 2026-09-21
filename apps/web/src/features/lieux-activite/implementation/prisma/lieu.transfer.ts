@@ -2,6 +2,7 @@ import {
   Adresse,
   Contact,
   Courriel,
+  FicheAccesLibre,
   Localisation,
   Nom,
   Pivot,
@@ -193,7 +194,7 @@ const toFiche = (row: LigneDuLieuCoop): Fiche => ({
     row.modalitesAccompagnement,
     vocabulaire.modaliteAccompagnement.versStandard,
   ),
-  ficheAccesLibre: Url.safe(row.ficheAccesLibre ?? ''),
+  ficheAccesLibre: FicheAccesLibre.safe(row.ficheAccesLibre ?? ''),
   priseRdv: Url.safe(row.priseRdv ?? ''),
 })
 

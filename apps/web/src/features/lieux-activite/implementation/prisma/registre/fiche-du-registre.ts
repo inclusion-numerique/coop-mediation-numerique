@@ -1,7 +1,12 @@
 import { Adresse, Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Prisma } from '@prisma/client'
 import type { Fiche } from '../../../domain/fiche'
-import { nonVide, presentationSaisie, urlSaisie } from '../../../domain/saisie'
+import {
+  ficheAccesLibreSaisie,
+  nonVide,
+  presentationSaisie,
+  urlSaisie,
+} from '../../../domain/saisie'
 import * as vocabulaire from '../vocabulaire'
 import { contactDuRegistre } from './contact-du-registre'
 import { voieDuRegistre } from './voie-du-registre'
@@ -127,6 +132,6 @@ export const ficheDuRegistre = (
     inscription.modalitesAccompagnement,
     vocabulaire.modaliteAccompagnement.versStandard,
   ),
-  ficheAccesLibre: urlSaisie(inscription.ficheAccesLibre),
+  ficheAccesLibre: ficheAccesLibreSaisie(inscription.ficheAccesLibre),
   priseRdv: urlSaisie(inscription.priseRdv),
 })

@@ -4,6 +4,7 @@ import { NomUsage } from '../../../domain/identite-sirene'
 import {
   adresseSaisie,
   courrielsSaisis,
+  ficheAccesLibreSaisie,
   horairesSaisis,
   itineranceSaisie,
   localisationSaisie,
@@ -62,7 +63,7 @@ const informationsPratiques = (
 ): Modification<'InformationsPratiques'> => ({
   section: 'InformationsPratiques',
   sitesWeb: sitesWebSaisis(saisie.siteWeb),
-  ficheAccesLibre: urlSaisie(saisie.ficheAccesLibre),
+  ficheAccesLibre: ficheAccesLibreSaisie(saisie.ficheAccesLibre),
   priseRdv: urlSaisie(saisie.priseRdv),
   horaires: horairesSaisis(saisie.openingHours, saisie.horairesComment),
 })

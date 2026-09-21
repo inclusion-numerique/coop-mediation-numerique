@@ -3,9 +3,11 @@ import { FormationLabelPropose } from '@app/web/features/lieux-activite/domain/n
 import {
   AdresseMailSaisie,
   CaseCochee,
+  commentaireAdosseAUnCreneau,
   FicheAccesLibreSaisie,
   NomDuLieuSaisi,
   NumeroTelephoneSaisi,
+  PresentationDetailSaisi,
   PresentationResumeSaisie,
   PriseRdvSaisie,
   SiretSaisi,
@@ -54,24 +56,26 @@ export const VisibiliteCartographieSaisie = z.object({
   visiblePourCartographieNationale: z.boolean(),
 })
 
-export const InformationsPratiquesSaisie = z.object({
-  section: z.literal('InformationsPratiques'),
-  siteWeb: SiteWebSaisi,
-  ficheAccesLibre: FicheAccesLibreSaisie,
-  priseRdv: PriseRdvSaisie,
-  /**
-   * Les horaires se saisissent en grille hebdomadaire et se stockent en une
-   * chaîne au format OpenStreetMap : la composition a lieu à la frontière, dans
-   * le mapper, pour que le domaine n'ait affaire qu'à la chaîne du standard.
-   */
-  openingHours: HorairesValidation,
-  horairesComment: texteFacultatif,
-})
+export const InformationsPratiquesSaisie = z
+  .object({
+    section: z.literal('InformationsPratiques'),
+    siteWeb: SiteWebSaisi,
+    ficheAccesLibre: FicheAccesLibreSaisie,
+    priseRdv: PriseRdvSaisie,
+    /**
+     * Les horaires se saisissent en grille hebdomadaire et se stockent en une
+     * chaîne au format OpenStreetMap : la composition a lieu à la frontière, dans
+     * le mapper, pour que le domaine n'ait affaire qu'à la chaîne du standard.
+     */
+    openingHours: HorairesValidation,
+    horairesComment: texteFacultatif,
+  })
+  .refine(...commentaireAdosseAUnCreneau)
 
 export const DescriptionSaisie = z.object({
   section: z.literal('Description'),
   presentationResume: PresentationResumeSaisie,
-  presentationDetail: texteFacultatif,
+  presentationDetail: PresentationDetailSaisi,
   formationsLabels: z.array(z.enum(FormationLabelPropose)),
 })
 

@@ -1,5 +1,6 @@
 import { emptyOpeningHours } from '@app/web/opening-hours/openingHoursHelpers'
 import {
+  Horaires,
   Itinerance,
   ModaliteAcces,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
@@ -8,6 +9,7 @@ import {
   adresseSaisie,
   courrielsSaisis,
   courrielsValides,
+  ficheAccesLibreSaisie,
   horairesSaisis,
   itineranceSaisie,
   localisationSaisie,
@@ -109,6 +111,43 @@ describe('les horaires', () => {
   it('valent null quand la grille est vide et qu’il n’y a rien à commenter', () => {
     expect(horairesSaisis(emptyOpeningHours, null)).toBeNull()
     expect(horairesSaisis(emptyOpeningHours, '   ')).toBeNull()
+  })
+
+  /**
+   * Un commentaire seul ne forme pas une valeur OpenStreetMap : la composition
+   * rendait ` "Sur rendez-vous"`, que le standard refuse et que la coop
+   * publiait. Un `Mo-Su off` l'aurait rendue conforme au prix d'une fermeture
+   * que personne n'a déclarée.
+   */
+  it('valent null quand un commentaire n’a aucun créneau où s’adosser', () => {
+    expect(horairesSaisis(emptyOpeningHours, 'Sur rendez-vous')).toBeNull()
+  })
+
+  it.each([[null], ['Fermé le premier lundi']])(
+    'composent une valeur que le standard reconnaît (commentaire : %s)',
+    (commentaire) => {
+      const composes = horairesSaisis(lundiMatin, commentaire)
+
+      expect(composes).not.toBeNull()
+      expect(Horaires.safe(composes ?? '')).not.toBeNull()
+    },
+  )
+})
+
+describe('la fiche d’accessibilité', () => {
+  it('retient un lien vers Accès Libre', () => {
+    expect(
+      ficheAccesLibreSaisie('https://acceslibre.beta.gouv.fr/app/erp/le-lieu'),
+    ).toBe('https://acceslibre.beta.gouv.fr/app/erp/le-lieu')
+  })
+
+  it.each([
+    ['https://acceslibre.fr/fiche'],
+    ['https://example.fr'],
+    ['pas une url'],
+    [null],
+  ])('vaut null pour %s', (valeur) => {
+    expect(ficheAccesLibreSaisie(valeur)).toBeNull()
   })
 })
 

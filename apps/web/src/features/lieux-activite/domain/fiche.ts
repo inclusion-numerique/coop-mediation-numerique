@@ -2,6 +2,7 @@ import type {
   Adresse,
   Contact,
   DispositifProgrammeNational,
+  FicheAccesLibre,
   FormationLabel,
   Frais,
   Itinerance,
@@ -67,6 +68,6 @@ export type Fiche = {
   readonly formationsLabels: readonly FormationLabel[]
   readonly autresFormationsLabels: readonly string[]
   readonly modalitesAccompagnement: readonly ModaliteAccompagnement[]
-  readonly ficheAccesLibre: Url | null
+  readonly ficheAccesLibre: FicheAccesLibre | null
   readonly priseRdv: Url | null
 }
