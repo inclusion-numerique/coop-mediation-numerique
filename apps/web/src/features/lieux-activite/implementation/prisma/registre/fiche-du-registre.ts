@@ -2,6 +2,7 @@ import { Adresse, Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Prisma } from '@prisma/client'
 import type { Fiche } from '../../../domain/fiche'
 import {
+  complementAdresseSaisi,
   ficheAccesLibreSaisie,
   nonVide,
   presentationSaisie,
@@ -65,7 +66,7 @@ export const adresseDeLInscription = (
 
   if (adresse == null) return null
 
-  const complement = nonVide(complementAdresse)
+  const complement = complementAdresseSaisi(complementAdresse)
   const candidate = {
     voie: voieDuRegistre(adresse),
     commune: adresse.nomCommune,

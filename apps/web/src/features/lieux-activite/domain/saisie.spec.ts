@@ -134,6 +134,38 @@ describe('les horaires', () => {
   )
 })
 
+describe('le complément d’adresse', () => {
+  /**
+   * `complement_adresse` n'était pas validé par la bibliothèque avant la 4.2.0.
+   * Depuis, il l'est — avec le jeu de caractères d'un nom de voie, qui ne
+   * couvre pas ce qu'on écrit dans un complément. Mêlé au reste, un complément
+   * refusé emportait l'adresse entière.
+   */
+  it.each([
+    ['Appt #4'],
+    ['Hall A — porte gauche'],
+    ['Local n°12 & annexe'],
+    ['Résidence "Les Tilleuls"'],
+    ['Zone d’activité 50 %'],
+  ])('%s tombe seul, et l’adresse demeure', (complement) => {
+    const adresse = adresseSaisie(ban, complement)
+
+    expect(adresse).not.toBeNull()
+    expect(adresse).not.toHaveProperty('complement_adresse')
+  })
+
+  it.each([
+    ['Bâtiment B'],
+    ['Bât. 3 (entrée côté parking)'],
+    ['1er étage / bureau 12'],
+  ])('%s est retenu', (complement) => {
+    expect(adresseSaisie(ban, complement)).toHaveProperty(
+      'complement_adresse',
+      complement,
+    )
+  })
+})
+
 describe('la fiche d’accessibilité', () => {
   it('retient un lien vers Accès Libre', () => {
     expect(

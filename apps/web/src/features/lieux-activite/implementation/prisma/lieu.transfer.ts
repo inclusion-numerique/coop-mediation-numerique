@@ -16,6 +16,7 @@ import { NomUsage } from '../../domain/identite-sirene'
 import { IdsCartographieNationale } from '../../domain/ids-cartographie-nationale'
 import type { Lieu } from '../../domain/lieu'
 import { LieuId } from '../../domain/lieu-id'
+import { complementAdresseSaisi } from '../../domain/saisie'
 import {
   Actif,
   type DerniereModification,
@@ -68,7 +69,7 @@ const toContact = (row: LigneDuLieuCoop): Contact => {
 
 const toAdresse = (row: LigneDuLieuCoop): Adresse | null => {
   const codeInsee = nonVide(row.codeInsee)
-  const complement = nonVide(row.complementAdresse)
+  const complement = complementAdresseSaisi(row.complementAdresse)
 
   const candidate = {
     voie: row.adresse,

@@ -1,6 +1,7 @@
 import { appendComment } from '@app/web/opening-hours/openingHoursHelpers'
 import {
   Adresse,
+  ComplementAdresse,
   Courriel,
   FicheAccesLibre,
   Itinerance,
@@ -166,11 +167,27 @@ export type AdresseSaisie = {
   longitude: number
 }
 
+/**
+ * Le complément, s'il est reconnu — et rien sinon.
+ *
+ * Il se valide seul parce qu'il est facultatif : mêlé au reste, un complément
+ * refusé emporterait l'adresse entière (D21, D29.1). Le cas n'existait pas
+ * avant que le standard ne se mette à le valider ; il vaut désormais pour
+ * `Appt #4` comme pour un tiret cadratin.
+ */
+export const complementAdresseSaisi = (
+  complement: string | null | undefined,
+): ComplementAdresse | null => {
+  const texte = nonVide(complement)
+
+  return texte == null ? null : ComplementAdresse.safe(texte)
+}
+
 export const adresseSaisie = (
   ban: AdresseSaisie,
   complement: string | null | undefined,
 ): Adresse | null => {
-  const complementSaisi = nonVide(complement)
+  const complementSaisi = complementAdresseSaisi(complement)
   const candidate = {
     voie: ban.nom,
     commune: ban.commune,
