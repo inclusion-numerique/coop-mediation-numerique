@@ -4,11 +4,20 @@ import {
   dossierDuReleve,
   lireLesLieux,
   releveEnLignes,
+  reprendreLesCourriels,
   reprendreLesDonneesDesLieux,
   reprendreLesHoraires,
+  reprendreLesSitesWeb,
+  reprendreLeTelephone,
+  repriseDesCourriels,
   repriseDesHoraires,
+  repriseDesSitesWeb,
+  repriseDuTelephone,
   sansDepot,
+  sansRepriseDesCourriels,
   sansRepriseDesHoraires,
+  sansRepriseDesSitesWeb,
+  sansRepriseDuTelephone,
   sansTri,
   triDesListes,
   trierLesListes,
@@ -30,6 +39,15 @@ export const executeReprendreLesDonneesDesLieux: JobExecutor<
       triDesListes(reprendre ? trierLesListes : sansTri),
       repriseDesHoraires(
         reprendre ? reprendreLesHoraires : sansRepriseDesHoraires,
+      ),
+      repriseDuTelephone(
+        reprendre ? reprendreLeTelephone : sansRepriseDuTelephone,
+      ),
+      repriseDesCourriels(
+        reprendre ? reprendreLesCourriels : sansRepriseDesCourriels,
+      ),
+      repriseDesSitesWeb(
+        reprendre ? reprendreLesSitesWeb : sansRepriseDesSitesWeb,
       ),
     ],
     ports: {

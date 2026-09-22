@@ -5,6 +5,9 @@ export type LieuAReprendre = {
   readonly codePostal: string
   readonly publie: boolean
   readonly horaires: string | null
+  readonly telephone: string | null
+  readonly courriels: readonly string[]
+  readonly siteWeb: readonly string[]
   readonly typologies: readonly string[]
   readonly services: readonly string[]
   readonly modalitesAcces: readonly string[]

@@ -18,3 +18,8 @@ export {
   type Reprise,
   reprise,
 } from './reprise'
+export {
+  type Nettoyer,
+  type ValeursAReprendre,
+  valeursAReprendre,
+} from './valeurs-a-reprendre'

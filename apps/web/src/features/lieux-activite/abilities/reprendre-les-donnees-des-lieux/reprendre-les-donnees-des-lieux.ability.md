@@ -132,3 +132,30 @@ base.
 * When on relève les données des lieux sans les reprendre
 * Then le relevé annonce des horaires à corriger
 * And les horaires du lieu sont restés en l’état
+
+## Rule: Un téléphone français s'écrit en E.164
+
+> Le standard veut l'indicatif international. Un numéro noté à la française
+> désigne pourtant le même poste : on le réécrit plutôt que de le perdre, en
+> prenant l'indicatif du territoire dans le code postal du lieu.
+
+### Scenario: Un numéro noté à la française est réécrit
+
+* Given un lieu dont le téléphone est noté à la française
+* When on reprend les données des lieux
+* Then le relevé compte ce lieu dans la colonne "telephone"
+* And le téléphone du lieu est écrit en E.164
+
+## Rule: Une adresse sans domaine n'est pas une adresse
+
+> Des imports ont laissé des `https://www.` sans rien derrière. Il n'y a pas de
+> site à visiter là : la valeur paraît au relevé, puis elle part. Une autre
+> adresse de la même fiche n'en souffre pas — c'est l'élément fautif qui tombe,
+> pas la liste.
+
+### Scenario: Seule l'adresse sans domaine disparaît
+
+* Given un lieu dont un site web n’a pas de domaine
+* When on reprend les données des lieux
+* Then le relevé montre l’adresse abandonnée
+* And le lieu garde son autre site web

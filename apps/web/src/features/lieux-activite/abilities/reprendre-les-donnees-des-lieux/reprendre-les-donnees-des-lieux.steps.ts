@@ -6,9 +6,15 @@ import {
   type Releve,
   reprendreLesDonneesDesLieux,
   reprendreLesHoraires,
+  reprendreLesSitesWeb,
+  reprendreLeTelephone,
   repriseDesHoraires,
+  repriseDesSitesWeb,
+  repriseDuTelephone,
   sansDepot,
   sansRepriseDesHoraires,
+  sansRepriseDesSitesWeb,
+  sansRepriseDuTelephone,
   sansTri,
   triDesListes,
   trierLesListes,
@@ -43,6 +49,10 @@ const DESCRIPTION_EXISTANTE = 'Un espace ouvert à toutes et tous.'
 
 const CRENEAUX_ILLISIBLES = 'We-Fr 09:00-14:00-19:00; Mo,Tu 09:00-12:30'
 
+const SITE_WEB_VALIDE = 'https://www.exemple-reims.fr'
+
+const SITE_WEB_SANS_DOMAINE = 'https://www.'
+
 const semis: { lieuId?: string; modification?: Date; releve?: Releve } = {}
 
 const lieuSeme = (): string => {
@@ -61,6 +71,8 @@ const semerUnLieu = async (champs: {
   readonly services?: readonly Service[]
   readonly horaires?: string
   readonly description?: string
+  readonly telephone?: string
+  readonly siteWeb?: readonly string[]
 }): Promise<void> => {
   const lieu = await prismaClient.lieuInclusion.create({
     data: {
@@ -71,6 +83,8 @@ const semerUnLieu = async (champs: {
       services: [...(champs.services ?? SERVICES_TRIES)],
       horaires: champs.horaires ?? null,
       presentationDetail: champs.description ?? null,
+      telephone: champs.telephone ?? null,
+      siteWeb: [...(champs.siteWeb ?? [])],
     },
     select: { id: true, modification: true },
   })
@@ -145,6 +159,14 @@ Given('un lieu dont les horaires ne portent aucun créneau', async () => {
   await semerUnLieu({ horaires: HORAIRES_SANS_CRENEAU })
 })
 
+Given('un lieu dont le téléphone est noté à la française', async () => {
+  await semerUnLieu({ telephone: '04 50 31 46 95' })
+})
+
+Given('un lieu dont un site web n’a pas de domaine', async () => {
+  await semerUnLieu({ siteWeb: [SITE_WEB_VALIDE, SITE_WEB_SANS_DOMAINE] })
+})
+
 Given('un lieu dont les créneaux sont illisibles', async () => {
   await semerUnLieu({
     horaires: CRENEAUX_ILLISIBLES,
@@ -188,6 +210,8 @@ When('on reprend les données des lieux', async () => {
       reprises: [
         triDesListes(trierLesListes),
         repriseDesHoraires(reprendreLesHoraires),
+        repriseDuTelephone(reprendreLeTelephone),
+        repriseDesSitesWeb(reprendreLesSitesWeb),
       ],
       ports: {
         lireLesLieux: lireLesLieuxDuScenario,
@@ -204,6 +228,8 @@ When('on relève les données des lieux sans les reprendre', async () => {
       reprises: [
         triDesListes(sansTri),
         repriseDesHoraires(sansRepriseDesHoraires),
+        repriseDuTelephone(sansRepriseDuTelephone),
+        repriseDesSitesWeb(sansRepriseDesSitesWeb),
       ],
       ports: {
         lireLesLieux: lireLesLieuxDuScenario,
@@ -302,6 +328,28 @@ Then('la note rejoint la description déjà écrite', async () => {
     presentationDetail,
     `${DESCRIPTION_EXISTANTE}\n\nSur rendez-vous uniquement`,
   )
+})
+
+Then('le téléphone du lieu est écrit en E.164', async () => {
+  const { telephone } = await prismaClient.lieuInclusion.findUniqueOrThrow({
+    where: { id: lieuSeme() },
+    select: { telephone: true },
+  })
+
+  assert.strictEqual(telephone, '+33450314695')
+})
+
+Then('le relevé montre l’adresse abandonnée', () => {
+  assert.strictEqual(celluleDe('siteWeb'), SITE_WEB_SANS_DOMAINE)
+})
+
+Then('le lieu garde son autre site web', async () => {
+  const { siteWeb } = await prismaClient.lieuInclusion.findUniqueOrThrow({
+    where: { id: lieuSeme() },
+    select: { siteWeb: true },
+  })
+
+  assert.deepStrictEqual(siteWeb, [SITE_WEB_VALIDE])
 })
 
 Then('la date de modification du lieu n’a pas bougé', async () => {
