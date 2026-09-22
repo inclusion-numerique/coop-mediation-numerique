@@ -189,3 +189,44 @@ base.
 * Then les courriels du lieu sont rangés
 * And ses courriels au registre sont rangés
 * And son inscription au registre garde ce téléphone
+
+## Rule: Un lieu publié sans service se retire de la carte
+
+> Une fiche publiée dit à quelqu'un qui cherche de l'aide où il peut en trouver.
+> Sans un seul service annoncé, elle n'oriente personne. Le lieu reste dans la
+> coop, il quitte la cartographie — le retirer n'efface rien, et ses médiateurs
+> le retrouvent entier le jour où ils déclarent ce qu'ils y font.
+
+### Scenario: Le lieu sans service quitte la cartographie
+
+* Given un lieu publié qui n’annonce aucun service
+* When on reprend les données des lieux
+* Then le relevé compte ce lieu dans la colonne "publication"
+* And le lieu ne paraît plus sur la cartographie
+
+## Rule: Le RNA n'immatricule plus un lieu
+
+> Le pivot du standard est le SIRET, et lui seul (D13). Un numéro RNA en base
+> n'est plus lu par personne : il ne désigne plus rien, il encombre. Le relevé
+> montre sa valeur avant qu'elle ne parte.
+
+### Scenario: Un RNA est montré puis effacé
+
+* Given un lieu qui porte un RNA
+* When on reprend les données des lieux
+* Then le relevé montre le RNA effacé
+* And le lieu ne porte plus de RNA
+
+## Rule: Un résumé trop long descend dans la description
+
+> Le résumé annonce le lieu en deux phrases ; au-delà de deux cent quatre-vingts
+> caractères, ce n'est plus un résumé mais une description. On le déplace plutôt
+> que de le tronquer, et s'il redit ce que la description porte déjà, il s'en va
+> sans rien ajouter.
+
+### Scenario: Un résumé trop long rejoint la description
+
+* Given un lieu dont le résumé dépasse la longueur admise
+* When on reprend les données des lieux
+* Then le relevé compte ce lieu dans la colonne "presentationResume"
+* And le résumé du lieu descend dans sa description

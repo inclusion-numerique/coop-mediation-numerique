@@ -1,5 +1,4 @@
 export {
-  descriptionAvecLaNote,
   type HorairesAReprendre,
   horairesAReprendre,
   horairesNormalises,

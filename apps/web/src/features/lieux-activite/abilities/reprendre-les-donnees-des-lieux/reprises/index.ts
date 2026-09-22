@@ -1,4 +1,10 @@
 export {
+  type RetirerLaPublication,
+  repriseDeLaPublication,
+  retirerLaPublication,
+  sansRetraitDePublication,
+} from './reprise-de-la-publication'
+export {
   courrielsAReprendre,
   type ReprendreLesCourriels,
   reprendreLesCourriels,
@@ -6,7 +12,6 @@ export {
   sansRepriseDesCourriels,
 } from './reprise-des-courriels'
 export {
-  descriptionAvecLaNote,
   type HorairesAReprendre,
   horairesAReprendre,
   horairesNormalises,
@@ -22,6 +27,19 @@ export {
   sansRepriseDesSitesWeb,
   sitesWebAReprendre,
 } from './reprise-des-sites-web'
+export {
+  type EffacerLeRna,
+  effacerLeRna,
+  repriseDuPivot,
+  sansEffacementDuRna,
+} from './reprise-du-pivot'
+export {
+  type DescendreLeResume,
+  descendreLeResume,
+  repriseDuResume,
+  resumeADescendre,
+  sansDescenteDuResume,
+} from './reprise-du-resume'
 export {
   type ReprendreLeTelephone,
   reprendreLeTelephone,

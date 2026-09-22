@@ -1,6 +1,8 @@
 import assert from 'node:assert'
 import {
   deposerLeReleve,
+  descendreLeResume,
+  effacerLeRna,
   lireLesLieux,
   mentionsDuLieu,
   type Releve,
@@ -9,14 +11,21 @@ import {
   reprendreLesHoraires,
   reprendreLesSitesWeb,
   reprendreLeTelephone,
+  repriseDeLaPublication,
   repriseDesCourriels,
   repriseDesHoraires,
   repriseDesSitesWeb,
+  repriseDuPivot,
+  repriseDuResume,
   repriseDuTelephone,
+  retirerLaPublication,
+  sansDescenteDuResume,
+  sansEffacementDuRna,
   sansRepriseDesCourriels,
   sansRepriseDesHoraires,
   sansRepriseDesSitesWeb,
   sansRepriseDuTelephone,
+  sansRetraitDePublication,
   sansTri,
   triDesListes,
   trierLesListes,
@@ -61,6 +70,10 @@ const COURRIELS_RANGES = ['ana@exemple.fr', 'zoe@exemple.fr']
 
 const TELEPHONE_DU_REGISTRE = '+33123456789'
 
+const RNA = 'W751234567'
+
+const RESUME_TROP_LONG = 'x'.repeat(281)
+
 const semis: { lieuId?: string; modification?: Date; releve?: Releve } = {}
 
 const lieuSeme = (): string => {
@@ -82,6 +95,10 @@ const semerUnLieu = async (champs: {
   readonly telephone?: string
   readonly siteWeb?: readonly string[]
   readonly courriels?: readonly string[]
+  readonly rna?: string
+  readonly resume?: string
+  readonly publie?: boolean
+  readonly sansService?: boolean
 }): Promise<void> => {
   const lieu = await prismaClient.lieuInclusion.create({
     data: {
@@ -89,7 +106,13 @@ const semerUnLieu = async (champs: {
       adresse: '12 quai du Port',
       commune: 'Rochefort',
       codePostal: '17300',
-      services: [...(champs.services ?? SERVICES_TRIES)],
+      services:
+        champs.sansService === true
+          ? []
+          : [...(champs.services ?? SERVICES_TRIES)],
+      rna: champs.rna ?? null,
+      presentationResume: champs.resume ?? null,
+      visiblePourCartographieNationale: champs.publie ?? false,
       horaires: champs.horaires ?? null,
       presentationDetail: champs.description ?? null,
       telephone: champs.telephone ?? null,
@@ -173,6 +196,18 @@ Given('un lieu dont le téléphone est noté à la française', async () => {
   await semerUnLieu({ telephone: '04 50 31 46 95' })
 })
 
+Given('un lieu publié qui n’annonce aucun service', async () => {
+  await semerUnLieu({ publie: true, sansService: true })
+})
+
+Given('un lieu qui porte un RNA', async () => {
+  await semerUnLieu({ rna: RNA })
+})
+
+Given('un lieu dont le résumé dépasse la longueur admise', async () => {
+  await semerUnLieu({ resume: RESUME_TROP_LONG })
+})
+
 Given('un lieu dont les courriels sont désordonnés', async () => {
   await semerUnLieu({ courriels: COURRIELS_DESORDONNES })
 })
@@ -240,6 +275,9 @@ When('on reprend les données des lieux', async () => {
         repriseDuTelephone(reprendreLeTelephone),
         repriseDesSitesWeb(reprendreLesSitesWeb),
         repriseDesCourriels(reprendreLesCourriels),
+        repriseDuPivot(effacerLeRna),
+        repriseDuResume(descendreLeResume),
+        repriseDeLaPublication(retirerLaPublication),
       ],
       ports: {
         lireLesLieux: lireLesLieuxDuScenario,
@@ -259,6 +297,9 @@ When('on relève les données des lieux sans les reprendre', async () => {
         repriseDuTelephone(sansRepriseDuTelephone),
         repriseDesSitesWeb(sansRepriseDesSitesWeb),
         repriseDesCourriels(sansRepriseDesCourriels),
+        repriseDuPivot(sansEffacementDuRna),
+        repriseDuResume(sansDescenteDuResume),
+        repriseDeLaPublication(sansRetraitDePublication),
       ],
       ports: {
         lireLesLieux: lireLesLieuxDuScenario,
@@ -404,6 +445,40 @@ Then('ses courriels au registre sont rangés', async () => {
   assert.deepStrictEqual(courriels, {
     email: COURRIELS_RANGES.join('|'),
   })
+})
+
+Then('le lieu ne paraît plus sur la cartographie', async () => {
+  const { visiblePourCartographieNationale } =
+    await prismaClient.lieuInclusion.findUniqueOrThrow({
+      where: { id: lieuSeme() },
+      select: { visiblePourCartographieNationale: true },
+    })
+
+  assert.strictEqual(visiblePourCartographieNationale, false)
+})
+
+Then('le relevé montre le RNA effacé', () => {
+  assert.strictEqual(celluleDe('rna'), RNA)
+})
+
+Then('le lieu ne porte plus de RNA', async () => {
+  const { rna } = await prismaClient.lieuInclusion.findUniqueOrThrow({
+    where: { id: lieuSeme() },
+    select: { rna: true },
+  })
+
+  assert.strictEqual(rna, null)
+})
+
+Then('le résumé du lieu descend dans sa description', async () => {
+  const { presentationResume, presentationDetail } =
+    await prismaClient.lieuInclusion.findUniqueOrThrow({
+      where: { id: lieuSeme() },
+      select: { presentationResume: true, presentationDetail: true },
+    })
+
+  assert.strictEqual(presentationResume, null)
+  assert.strictEqual(presentationDetail, RESUME_TROP_LONG)
 })
 
 Then('le relevé montre l’adresse abandonnée', () => {

@@ -1,3 +1,4 @@
+export { descriptionAvecLaNote } from './description'
 export {
   type LieuAReprendre,
   nonVide,
