@@ -173,3 +173,19 @@ base.
 * When on reprend les données des lieux
 * Then le relevé compte ce lieu dans la colonne "courriels"
 * And les courriels du lieu sont rangés
+
+## Rule: La coop n'écrit au registre que ce qu'elle possède
+
+> Le registre accueille d'autres producteurs que la coop : un lieu peut y porter
+> un téléphone ou un site web dont la coop n'a rien. Une reprise n'a donc le
+> droit de toucher qu'au champ dont elle s'occupe — ranger des courriels ne
+> saurait faire disparaître un numéro que quelqu'un d'autre y a mis.
+
+### Scenario: Ranger les courriels laisse intact le reste du contact
+
+* Given un lieu dont les courriels sont désordonnés
+* And son inscription au registre porte un téléphone que la coop n’a pas
+* When on reprend les données des lieux
+* Then les courriels du lieu sont rangés
+* And ses courriels au registre sont rangés
+* And son inscription au registre garde ce téléphone

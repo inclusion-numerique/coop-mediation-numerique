@@ -59,6 +59,8 @@ const COURRIELS_DESORDONNES = ['zoe@exemple.fr', 'ana@exemple.fr']
 
 const COURRIELS_RANGES = ['ana@exemple.fr', 'zoe@exemple.fr']
 
+const TELEPHONE_DU_REGISTRE = '+33123456789'
+
 const semis: { lieuId?: string; modification?: Date; releve?: Releve } = {}
 
 const lieuSeme = (): string => {
@@ -201,6 +203,19 @@ Given(
         nom: 'Lieu à reprendre',
         structureCoopId: lieuSeme(),
         services: [...SERVICES_DESORDONNES_AU_REGISTRE],
+      },
+    })
+  },
+)
+
+Given(
+  'son inscription au registre porte un téléphone que la coop n’a pas',
+  async () => {
+    await prismaClient.lieuInclusionRegistreMain.create({
+      data: {
+        nom: 'Lieu à reprendre',
+        structureCoopId: lieuSeme(),
+        contact: { telephone: TELEPHONE_DU_REGISTRE },
       },
     })
   },
@@ -360,6 +375,35 @@ Then('les courriels du lieu sont rangés', async () => {
   })
 
   assert.deepStrictEqual(courriels, COURRIELS_RANGES)
+})
+
+const contactDuRegistre = async (): Promise<Record<string, unknown>> => {
+  const { contact } =
+    await prismaClient.lieuInclusionRegistreMain.findFirstOrThrow({
+      where: { structureCoopId: lieuSeme() },
+      select: { contact: true },
+    })
+
+  return typeof contact === 'object' &&
+    contact !== null &&
+    !Array.isArray(contact)
+    ? contact
+    : {}
+}
+
+Then('son inscription au registre garde ce téléphone', async () => {
+  assert.strictEqual(
+    (await contactDuRegistre()).telephone,
+    TELEPHONE_DU_REGISTRE,
+  )
+})
+
+Then('ses courriels au registre sont rangés', async () => {
+  const courriels = (await contactDuRegistre()).courriels
+
+  assert.deepStrictEqual(courriels, {
+    email: COURRIELS_RANGES.join('|'),
+  })
 })
 
 Then('le relevé montre l’adresse abandonnée', () => {
