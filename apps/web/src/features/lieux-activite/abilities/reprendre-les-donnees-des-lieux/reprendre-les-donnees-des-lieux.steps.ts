@@ -36,6 +36,8 @@ const HORAIRES_CORRIGES = 'We 09:00-12:00 "Mercredis semaines paires"'
 
 const HORAIRES_SANS_CRENEAU = '"Sur rendez-vous uniquement"'
 
+const DESCRIPTION_EXISTANTE = 'Un espace ouvert à toutes et tous.'
+
 const semis: { lieuId?: string; modification?: Date; releve?: Releve } = {}
 
 const lieuSeme = (): string => {
@@ -53,6 +55,7 @@ const releve = (): Releve => {
 const semerUnLieu = async (champs: {
   readonly services?: readonly Service[]
   readonly horaires?: string
+  readonly description?: string
 }): Promise<void> => {
   const lieu = await prismaClient.lieuInclusion.create({
     data: {
@@ -62,6 +65,7 @@ const semerUnLieu = async (champs: {
       codePostal: '17300',
       services: [...(champs.services ?? SERVICES_TRIES)],
       horaires: champs.horaires ?? null,
+      presentationDetail: champs.description ?? null,
     },
     select: { id: true, modification: true },
   })
@@ -125,6 +129,13 @@ Given(
 
 Given('un lieu dont les horaires ne portent aucun créneau', async () => {
   await semerUnLieu({ horaires: HORAIRES_SANS_CRENEAU })
+})
+
+Given('un lieu sans créneau mais avec une description', async () => {
+  await semerUnLieu({
+    horaires: HORAIRES_SANS_CRENEAU,
+    description: DESCRIPTION_EXISTANTE,
+  })
 })
 
 Given(
@@ -193,15 +204,15 @@ Then('le relevé annonce des horaires à corriger', () => {
   assert.strictEqual(auReleve()?.horaires?.verdict, 'a-corriger')
 })
 
-Then('le relevé annonce des horaires à effacer', () => {
-  assert.strictEqual(auReleve()?.horaires?.verdict, 'a-effacer')
+Then('le relevé annonce des horaires à déplacer', () => {
+  assert.strictEqual(auReleve()?.horaires?.verdict, 'a-deplacer')
 })
 
-Then('le relevé montre la chaîne abandonnée', () => {
+Then('le relevé montre la chaîne déplacée', () => {
   const horaires = auReleve()?.horaires
 
   assert.strictEqual(
-    horaires?.verdict === 'a-effacer' ? horaires.valeur : null,
+    horaires?.verdict === 'a-deplacer' ? horaires.valeur : null,
     HORAIRES_SANS_CRENEAU,
   )
 })
@@ -232,6 +243,29 @@ Then('les horaires de son inscription au registre sont corrigés', async () => {
 
 Then('les horaires du lieu sont effacés', async () => {
   assert.strictEqual(await horairesDuLieu(), null)
+})
+
+Then('la note passe dans la description du lieu', async () => {
+  const { presentationDetail } =
+    await prismaClient.lieuInclusion.findUniqueOrThrow({
+      where: { id: lieuSeme() },
+      select: { presentationDetail: true },
+    })
+
+  assert.strictEqual(presentationDetail, 'Sur rendez-vous uniquement')
+})
+
+Then('la note rejoint la description déjà écrite', async () => {
+  const { presentationDetail } =
+    await prismaClient.lieuInclusion.findUniqueOrThrow({
+      where: { id: lieuSeme() },
+      select: { presentationDetail: true },
+    })
+
+  assert.strictEqual(
+    presentationDetail,
+    `${DESCRIPTION_EXISTANTE}\n\nSur rendez-vous uniquement`,
+  )
 })
 
 Then('la date de modification du lieu n’a pas bougé', async () => {

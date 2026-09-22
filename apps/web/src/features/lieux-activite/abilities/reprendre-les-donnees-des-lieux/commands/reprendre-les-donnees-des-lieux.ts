@@ -1,6 +1,5 @@
 import type {
   DeposerLeReleve,
-  HorairesAReprendre,
   Journal,
   LieuAuReleve,
   LireLesLieux,
@@ -26,16 +25,12 @@ export type Reprise = {
   readonly fichiers: readonly string[]
 }
 
-const horairesAEcrire = (horaires: HorairesAReprendre): string | null =>
-  horaires.verdict === 'a-corriger' ? horaires.corriges : null
-
 const reprendreLeLieu = async (
   { trierLesListes, reprendreLesHoraires }: PortsDeReprise,
   { lieuId, listesATrier, horaires }: LieuAuReleve,
 ): Promise<void> => {
   if (listesATrier.length > 0) await trierLesListes(lieuId, listesATrier)
-  if (horaires != null)
-    await reprendreLesHoraires(lieuId, horairesAEcrire(horaires))
+  if (horaires != null) await reprendreLesHoraires(lieuId, horaires)
 }
 
 const avancement =

@@ -1,5 +1,6 @@
 import {
   appliquerRegles,
+  DETAIL_LONGUEUR_MAXIMALE,
   Horaires,
   type RegleDeNettoyage,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
@@ -113,7 +114,17 @@ export const horairesNormalises = (valeur: string): Horaires | null => {
 
 export type HorairesAReprendre =
   | { readonly verdict: 'a-corriger'; readonly corriges: Horaires }
-  | { readonly verdict: 'a-effacer'; readonly valeur: string }
+  | {
+      readonly verdict: 'a-deplacer'
+      readonly valeur: string
+      readonly note: string
+    }
+
+const noteDe = (valeur: string): string => {
+  const { corps, commentaire } = detacherLeCommentaire(valeur)
+
+  return enUnSeulCommentaire([corps, commentaire])
+}
 
 export const horairesAReprendre = (
   lieu: LieuAReprendre,
@@ -126,10 +137,26 @@ export const horairesAReprendre = (
 
   if (normalises == null)
     return Horaires.safe(valeur) == null
-      ? { verdict: 'a-effacer', valeur }
+      ? { verdict: 'a-deplacer', valeur, note: noteDe(valeur) }
       : null
 
   return normalises === valeur
     ? null
     : { verdict: 'a-corriger', corriges: normalises }
+}
+
+export const descriptionAvecLaNote = (
+  description: string | null,
+  note: string,
+): string | null => {
+  const existante = nonVide(description)
+
+  if (existante == null)
+    return note.length <= DETAIL_LONGUEUR_MAXIMALE ? note : null
+
+  if (existante.includes(note)) return existante
+
+  const augmentee = `${existante}\n\n${note}`
+
+  return augmentee.length <= DETAIL_LONGUEUR_MAXIMALE ? augmentee : null
 }

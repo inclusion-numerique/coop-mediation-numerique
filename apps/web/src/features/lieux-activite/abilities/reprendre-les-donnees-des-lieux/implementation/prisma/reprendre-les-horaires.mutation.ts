@@ -1,26 +1,51 @@
 import { prismaClient } from '@app/web/prismaClient'
-import type { ReprendreLesHoraires } from '../../domain'
+import {
+  descriptionAvecLaNote,
+  type HorairesAReprendre,
+  type ReprendreLesHoraires,
+} from '../../domain'
+
+type Ecriture = {
+  readonly horaires: string | null
+  readonly presentationDetail?: string
+}
+
+const ecriture = (
+  aReprendre: HorairesAReprendre,
+  description: string | null,
+): Ecriture => {
+  if (aReprendre.verdict === 'a-corriger')
+    return { horaires: aReprendre.corriges }
+
+  const augmentee = descriptionAvecLaNote(description, aReprendre.note)
+
+  return augmentee == null
+    ? { horaires: null }
+    : { horaires: null, presentationDetail: augmentee }
+}
 
 export const reprendreLesHoraires: ReprendreLesHoraires = async (
   lieuId,
-  horaires,
+  aReprendre,
 ) => {
   const ligne = await prismaClient.lieuInclusion.findUnique({
     where: { id: lieuId },
-    select: { modification: true },
+    select: { modification: true, presentationDetail: true },
   })
 
   if (ligne == null) return
 
+  const aEcrire = ecriture(aReprendre, ligne.presentationDetail)
+
   await prismaClient.$transaction(async (transaction) => {
     await transaction.lieuInclusion.update({
       where: { id: lieuId },
-      data: { horaires, modification: ligne.modification },
+      data: { ...aEcrire, modification: ligne.modification },
     })
 
     await transaction.lieuInclusionRegistreMain.updateMany({
       where: { structureCoopId: lieuId },
-      data: { horaires },
+      data: aEcrire,
     })
   })
 }

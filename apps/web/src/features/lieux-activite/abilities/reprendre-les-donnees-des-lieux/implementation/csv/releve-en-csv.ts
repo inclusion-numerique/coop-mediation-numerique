@@ -16,6 +16,8 @@ const A_TRIER = 'à trier'
 
 const A_CORRIGER = 'à corriger'
 
+const A_DEPLACER = 'À déplacer dans le champ description'
+
 const EN_TETE = [
   'lieu_id',
   'nom',
@@ -34,7 +36,7 @@ const celluleDesHoraires = (horaires: HorairesAReprendre | null): string =>
     ? ''
     : horaires.verdict === 'a-corriger'
       ? A_CORRIGER
-      : cellule(horaires.valeur)
+      : A_DEPLACER
 
 const ligneDuLieu = (lieu: LieuAuReleve): readonly string[] => [
   lieu.lieuId,

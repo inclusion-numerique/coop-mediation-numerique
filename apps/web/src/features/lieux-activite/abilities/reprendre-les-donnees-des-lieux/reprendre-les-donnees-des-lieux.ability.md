@@ -51,19 +51,29 @@ base.
 * Then les horaires du lieu sont corrigés
 * And les horaires de son inscription au registre sont corrigés
 
-## Rule: On n'efface qu'en dernier recours
+## Rule: Une précision qui n'est pas un horaire descend dans la description
 
-> Une note comme « sur rendez-vous » n'est pas un horaire : il n'y a aucun
-> créneau à en tirer. La chaîne paraît telle quelle au relevé, pour qu'on puisse
-> la lire avant qu'elle ne disparaisse.
+> « Sur rendez-vous uniquement » n'est pas un horaire : il n'y a aucun créneau à
+> en tirer, et le champ la rendait invisible puisque le modèle rejetait la
+> valeur. Ce n'est pas une raison pour la perdre — c'est ce que le lieu avait à
+> dire de son accueil, et la description est faite pour ça. La chaîne paraît
+> telle quelle au relevé, pour qu'on la lise avant qu'elle ne change de place.
 
-### Scenario: Une note sans créneau est montrée puis effacée
+### Scenario: Une note sans créneau descend dans une description vide
 
 * Given un lieu dont les horaires ne portent aucun créneau
 * When on reprend les données des lieux
-* Then le relevé annonce des horaires à effacer
-* And le relevé montre la chaîne abandonnée
+* Then le relevé annonce des horaires à déplacer
+* And le relevé montre la chaîne déplacée
 * And les horaires du lieu sont effacés
+* And la note passe dans la description du lieu
+
+### Scenario: Une note sans créneau rejoint une description déjà écrite
+
+* Given un lieu sans créneau mais avec une description
+* When on reprend les données des lieux
+* Then les horaires du lieu sont effacés
+* And la note rejoint la description déjà écrite
 
 ## Rule: Le registre est repris dans la même transaction que la coop
 

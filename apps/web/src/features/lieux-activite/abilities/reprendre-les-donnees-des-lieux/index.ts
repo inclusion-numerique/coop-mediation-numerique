@@ -8,6 +8,7 @@ export {
   colonnesATrier,
   comptesDesHoraires,
   comptesParColonne,
+  descriptionAvecLaNote,
   type HorairesAReprendre,
   horairesAReprendre,
   horairesNormalises,

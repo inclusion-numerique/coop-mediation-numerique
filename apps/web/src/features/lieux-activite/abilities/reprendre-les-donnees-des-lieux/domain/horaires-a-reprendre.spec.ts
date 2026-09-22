@@ -1,4 +1,8 @@
-import { horairesAReprendre, horairesNormalises } from './horaires-a-reprendre'
+import {
+  descriptionAvecLaNote,
+  horairesAReprendre,
+  horairesNormalises,
+} from './horaires-a-reprendre'
 import { lieuAReprendre } from './lieu-a-reprendre.fixture'
 
 const verdict = (horaires: string | null) =>
@@ -81,15 +85,42 @@ describe('le verdict sur les horaires d’un lieu', () => {
     })
   })
 
-  it('abandonne une note qui ne porte aucun horaire, en montrant la chaîne', () => {
+  it('déplace une note qui ne porte aucun horaire, en gardant la chaîne', () => {
     expect(verdict(' "Sur rendez-vous uniquement"')).toEqual({
-      verdict: 'a-effacer',
+      verdict: 'a-deplacer',
       valeur: '"Sur rendez-vous uniquement"',
+      note: 'Sur rendez-vous uniquement',
     })
   })
 
   it('ne touche jamais à des horaires que le modèle accepte', () => {
     expect(verdict('24/7')).toBeNull()
     expect(verdict('week 1-53/2 Mo 09:00-12:00')).toBeNull()
+  })
+})
+
+describe('la description augmentée d’une note', () => {
+  it('devient la note quand la description est vide', () => {
+    expect(descriptionAvecLaNote(null, 'Sur rendez-vous')).toBe(
+      'Sur rendez-vous',
+    )
+  })
+
+  it('accueille la note après la description déjà écrite', () => {
+    expect(descriptionAvecLaNote('Un espace ouvert.', 'Sur rendez-vous')).toBe(
+      'Un espace ouvert.\n\nSur rendez-vous',
+    )
+  })
+
+  it('ne redit pas une note que la description porte déjà', () => {
+    expect(
+      descriptionAvecLaNote('Ouvert sur rendez-vous.', 'sur rendez-vous'),
+    ).toBe('Ouvert sur rendez-vous.')
+  })
+
+  it('renonce plutôt que de dépasser la longueur du détail', () => {
+    expect(
+      descriptionAvecLaNote('x'.repeat(10_000), 'Sur rendez-vous'),
+    ).toBeNull()
   })
 })
