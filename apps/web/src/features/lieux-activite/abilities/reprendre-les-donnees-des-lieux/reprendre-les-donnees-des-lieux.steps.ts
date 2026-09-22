@@ -1,7 +1,9 @@
 import assert from 'node:assert'
 import type {
   AdresseGeocodee,
+  AdresseRetrouvee,
   GeocoderLesAdresses,
+  RetrouverParLesCoordonnees,
 } from '@app/web/features/lieux-activite/abilities/reprendre-les-donnees-des-lieux'
 import {
   deposerLeReleve,
@@ -98,6 +100,15 @@ const ADRESSE_BAN = {
 }
 
 const banRend: { adresse: AdresseGeocodee } = { adresse: ADRESSE_BAN }
+
+const banRetrouve: { adresse: AdresseRetrouvee | null } = { adresse: null }
+
+const retrouverParLesCoordonnees: RetrouverParLesCoordonnees = async (
+  points,
+) =>
+  banRetrouve.adresse == null
+    ? new Map()
+    : new Map(points.map(({ lieuId }) => [lieuId, banRetrouve.adresse!]))
 
 const geocoderLesAdresses: GeocoderLesAdresses = async (adresses) =>
   new Map(adresses.map(({ lieuId }) => [lieuId, banRend.adresse]))
@@ -259,8 +270,33 @@ Given(
   },
 )
 
+Given('un lieu dont la voie ne nomme aucune voie', async () => {
+  await semerUnLieu({})
+  await prismaClient.lieuInclusion.update({
+    where: { id: lieuSeme() },
+    data: { adresse: 'Le Bourg', banId: null, latitude: null },
+  })
+})
+
+Then('la voie du lieu n’a pas bougé', async () => {
+  const { adresse } = await prismaClient.lieuInclusion.findUniqueOrThrow({
+    where: { id: lieuSeme() },
+    select: { adresse: true },
+  })
+
+  assert.strictEqual(adresse, 'Le Bourg')
+})
+
 Given('la Base Adresse Nationale ne reconnaît pas la voie', () => {
   banRend.adresse = { ...ADRESSE_BAN, type: 'municipality' }
+})
+
+Given('elle retrouve une adresse au point du lieu', () => {
+  banRetrouve.adresse = { ...ADRESSE_BAN, distance: 4 }
+})
+
+Given('elle retrouve une adresse trop loin du point du lieu', () => {
+  banRetrouve.adresse = { ...ADRESSE_BAN, distance: 240 }
 })
 
 Given('un lieu dont les créneaux sont illisibles', async () => {
@@ -325,7 +361,11 @@ When('on reprend les données des lieux', async () => {
         repriseDuPivot(effacerLeRna),
         repriseDuResume(descendreLeResume),
         repriseDeLaPublication(retirerLaPublication),
-        repriseDeLAdresse(geocoderLesAdresses, reprendreLAdresse),
+        repriseDeLAdresse(
+          geocoderLesAdresses,
+          retrouverParLesCoordonnees,
+          reprendreLAdresse,
+        ),
       ],
       ports: {
         lireLesLieux: lireLesLieuxDuScenario,
@@ -348,7 +388,11 @@ When('on relève les données des lieux sans les reprendre', async () => {
         repriseDuPivot(sansEffacementDuRna),
         repriseDuResume(sansDescenteDuResume),
         repriseDeLaPublication(sansRetraitDePublication),
-        repriseDeLAdresse(geocoderLesAdresses, sansRepriseDeLAdresse),
+        repriseDeLAdresse(
+          geocoderLesAdresses,
+          retrouverParLesCoordonnees,
+          sansRepriseDeLAdresse,
+        ),
       ],
       ports: {
         lireLesLieux: lireLesLieuxDuScenario,
@@ -609,6 +653,7 @@ After(async () => {
   semis.modification = undefined
   semis.releve = undefined
   banRend.adresse = ADRESSE_BAN
+  banRetrouve.adresse = null
 
   if (lieuId == null) return
 

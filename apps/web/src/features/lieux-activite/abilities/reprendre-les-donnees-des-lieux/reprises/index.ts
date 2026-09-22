@@ -1,14 +1,20 @@
 export {
   type AdresseAReprendre,
   type AdresseGeocodee,
+  type AdresseRetrouvee,
   type AdresseSoumise,
   adresseAReprendre,
+  adresseDesCoordonnees,
   adresseSoumise,
+  type CoordonneesSoumises,
+  coordonneesSoumises,
   type GeocoderLesAdresses,
   geocoderLesAdresses,
   type ReprendreLAdresse,
+  type RetrouverParLesCoordonnees,
   reprendreLAdresse,
   repriseDeLAdresse,
+  retrouverParLesCoordonnees,
   sansRepriseDeLAdresse,
 } from './reprise-de-l-adresse'
 export {

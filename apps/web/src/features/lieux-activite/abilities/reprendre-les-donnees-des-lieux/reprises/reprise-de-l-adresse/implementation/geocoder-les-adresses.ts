@@ -4,6 +4,7 @@ import type {
   AdresseSoumise,
 } from '../domain/adresse-a-reprendre'
 import type { GeocoderLesAdresses } from '../domain/reprise-de-l-adresse'
+import { ligneDuTableau, lots } from './csv-de-la-ban'
 
 type Appariement = readonly [string, AdresseGeocodee]
 
@@ -28,11 +29,6 @@ const enCsv = (adresses: readonly AdresseSoumise[]): string =>
     ),
   ].join('\n')
 
-const lots = <T>(valeurs: readonly T[], taille: number): readonly T[][] =>
-  valeurs.length === 0
-    ? []
-    : [valeurs.slice(0, taille), ...lots(valeurs.slice(taille), taille)]
-
 const corps = (adresses: readonly AdresseSoumise[]): FormData => {
   const formulaire = new FormData()
 
@@ -49,22 +45,14 @@ const corps = (adresses: readonly AdresseSoumise[]): FormData => {
   return formulaire
 }
 
-const valeurs = (ligne: string): readonly string[] => {
-  const decoupee = ligne.match(/("([^"]|"")*"|[^,]*)(,|$)/gu) ?? []
-
-  return decoupee.map((brut) =>
-    brut.replace(/,$/u, '').replace(/^"|"$/gu, '').replaceAll('""', '"'),
-  )
-}
-
 const geocodee = (
   colonnes: readonly string[],
   ligne: readonly string[],
-): Appariement | null => {
+): readonly Appariement[] => {
   const champ = (nom: string): string =>
     ligne[colonnes.indexOf(nom)]?.trim() ?? ''
 
-  if (champ('result_id') === '') return null
+  if (champ('result_id') === '') return []
 
   const appariement: Appariement = [
     champ('lieu_id'),
@@ -83,21 +71,7 @@ const geocodee = (
     },
   ]
 
-  return appariement
-}
-
-const depouiller = (reponse: string): readonly Appariement[] => {
-  const [entete, ...lignes] = reponse.split('\n').filter((l) => l.trim() !== '')
-
-  if (entete == null) return []
-
-  const colonnes = valeurs(entete)
-
-  return lignes.flatMap((ligne) => {
-    const appariement = geocodee(colonnes, valeurs(ligne))
-
-    return appariement == null ? [] : [appariement]
-  })
+  return [appariement]
 }
 
 const soumettre = async (
@@ -113,7 +87,7 @@ const soumettre = async (
       `La Base Adresse Nationale a répondu ${reponse.status} au géocodage d'un lot de ${adresses.length} adresses`,
     )
 
-  return depouiller(await reponse.text())
+  return ligneDuTableau(await reponse.text(), geocodee)
 }
 
 /**

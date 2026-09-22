@@ -262,3 +262,46 @@ base.
 * When on reprend les données des lieux
 * Then le relevé compte ce lieu dans la colonne "adresse"
 * And l’adresse du lieu n’a pas bougé
+
+## Rule: Le point du lieu rattrape ce que son adresse ne dit pas
+
+> Des imports ont écrit dans la ligne de voie le nom de la commune, celui du
+> bâtiment, ou rien du tout, tout en posant des coordonnées justes. Le point, lui,
+> ne ment pas : on demande à la Base Adresse Nationale ce qui s'y trouve. Encore
+> faut-il que l'adresse rendue soit à portée — au-delà d'une vingtaine de mètres,
+> ce n'est plus le même endroit — et dans la commune enregistrée, faute de quoi
+> ce sont les coordonnées qui sont fausses.
+>
+> Le point est un recours, jamais une source : quand la Base Adresse Nationale
+> reconnaît déjà l'adresse écrite, c'est elle qui fait foi.
+>
+> Et le point ne parle que si la voie se tait — vide, réduite au nom de la
+> commune, ou ne nommant aucun type de voie. Là où une voie est écrite, c'est
+> elle qui décide : la remplacer par ce qui se trouve au point reviendrait à
+> croire les coordonnées plus que la saisie, et « Route de Marseille »
+> deviendrait « Route de Lyon » parce que le point est mal placé.
+
+### Scenario: L'adresse est retrouvée au point du lieu
+
+* Given un lieu dont la voie ne nomme aucune voie
+* And la Base Adresse Nationale ne reconnaît pas la voie
+* And elle retrouve une adresse au point du lieu
+* When on reprend les données des lieux
+* Then le relevé compte ce lieu dans la colonne "adresse"
+* And l’adresse du lieu est celle que la Base Adresse Nationale rend
+
+### Scenario: Un point trop éloigné de son adresse ne sert à rien
+
+* Given un lieu dont la voie ne nomme aucune voie
+* And la Base Adresse Nationale ne reconnaît pas la voie
+* And elle retrouve une adresse trop loin du point du lieu
+* When on reprend les données des lieux
+* Then la voie du lieu n’a pas bougé
+
+### Scenario: Le point ne remplace pas une voie qui parle
+
+* Given un lieu dont l’adresse diffère de celle de la Base Adresse Nationale
+* And la Base Adresse Nationale ne reconnaît pas la voie
+* And elle retrouve une adresse au point du lieu
+* When on reprend les données des lieux
+* Then l’adresse du lieu n’a pas bougé

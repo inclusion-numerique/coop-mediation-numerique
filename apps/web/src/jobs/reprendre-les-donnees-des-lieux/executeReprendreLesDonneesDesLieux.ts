@@ -22,6 +22,7 @@ import {
   repriseDuResume,
   repriseDuTelephone,
   retirerLaPublication,
+  retrouverParLesCoordonnees,
   sansDescenteDuResume,
   sansEffacementDuRna,
   sansRepriseDeLAdresse,
@@ -67,6 +68,7 @@ export const executeReprendreLesDonneesDesLieux: JobExecutor<
       ),
       repriseDeLAdresse(
         geocoderLesAdresses,
+        retrouverParLesCoordonnees,
         reprendre ? reprendreLAdresse : sansRepriseDeLAdresse,
       ),
     ],

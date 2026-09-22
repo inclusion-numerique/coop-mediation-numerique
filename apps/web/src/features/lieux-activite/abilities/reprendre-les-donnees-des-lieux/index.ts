@@ -24,6 +24,7 @@ export {
 } from './implementation'
 export {
   type AdresseGeocodee,
+  type AdresseRetrouvee,
   adresseAReprendre,
   type ColonneDeListe,
   colonnesATrier,
@@ -44,6 +45,7 @@ export {
   type ReprendreLesSitesWeb,
   type ReprendreLeTelephone,
   type RetirerLaPublication,
+  type RetrouverParLesCoordonnees,
   reprendreLAdresse,
   reprendreLesCourriels,
   reprendreLesHoraires,
@@ -59,6 +61,7 @@ export {
   repriseDuTelephone,
   resumeADescendre,
   retirerLaPublication,
+  retrouverParLesCoordonnees,
   sansDescenteDuResume,
   sansEffacementDuRna,
   sansRepriseDeLAdresse,
