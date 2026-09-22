@@ -159,3 +159,17 @@ base.
 * When on reprend les données des lieux
 * Then le relevé montre l’adresse abandonnée
 * And le lieu garde son autre site web
+
+## Rule: Les listes de contact se rangent comme les autres
+
+> L'ordre d'une liste ne porte aucune information, qu'elle nomme des services ou
+> des adresses (D37). Le registre le sait déjà — il reçoit la liste par le
+> domaine, qui la range — si bien qu'une coop qui garde l'ordre de saisie
+> diverge de lui sans que rien n'ait change.
+
+### Scenario: Des courriels dans le désordre sont rangés
+
+* Given un lieu dont les courriels sont désordonnés
+* When on reprend les données des lieux
+* Then le relevé compte ce lieu dans la colonne "courriels"
+* And les courriels du lieu sont rangés

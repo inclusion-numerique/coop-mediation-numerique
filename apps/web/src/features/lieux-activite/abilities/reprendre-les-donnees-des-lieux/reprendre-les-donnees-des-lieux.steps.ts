@@ -4,13 +4,16 @@ import {
   lireLesLieux,
   mentionsDuLieu,
   type Releve,
+  reprendreLesCourriels,
   reprendreLesDonneesDesLieux,
   reprendreLesHoraires,
   reprendreLesSitesWeb,
   reprendreLeTelephone,
+  repriseDesCourriels,
   repriseDesHoraires,
   repriseDesSitesWeb,
   repriseDuTelephone,
+  sansRepriseDesCourriels,
   sansRepriseDesHoraires,
   sansRepriseDesSitesWeb,
   sansRepriseDuTelephone,
@@ -52,6 +55,10 @@ const SITE_WEB_VALIDE = 'https://www.exemple-reims.fr'
 
 const SITE_WEB_SANS_DOMAINE = 'https://www.'
 
+const COURRIELS_DESORDONNES = ['zoe@exemple.fr', 'ana@exemple.fr']
+
+const COURRIELS_RANGES = ['ana@exemple.fr', 'zoe@exemple.fr']
+
 const semis: { lieuId?: string; modification?: Date; releve?: Releve } = {}
 
 const lieuSeme = (): string => {
@@ -72,6 +79,7 @@ const semerUnLieu = async (champs: {
   readonly description?: string
   readonly telephone?: string
   readonly siteWeb?: readonly string[]
+  readonly courriels?: readonly string[]
 }): Promise<void> => {
   const lieu = await prismaClient.lieuInclusion.create({
     data: {
@@ -84,6 +92,7 @@ const semerUnLieu = async (champs: {
       presentationDetail: champs.description ?? null,
       telephone: champs.telephone ?? null,
       siteWeb: [...(champs.siteWeb ?? [])],
+      courriels: [...(champs.courriels ?? [])],
     },
     select: { id: true, modification: true },
   })
@@ -162,6 +171,10 @@ Given('un lieu dont le téléphone est noté à la française', async () => {
   await semerUnLieu({ telephone: '04 50 31 46 95' })
 })
 
+Given('un lieu dont les courriels sont désordonnés', async () => {
+  await semerUnLieu({ courriels: COURRIELS_DESORDONNES })
+})
+
 Given('un lieu dont un site web n’a pas de domaine', async () => {
   await semerUnLieu({ siteWeb: [SITE_WEB_VALIDE, SITE_WEB_SANS_DOMAINE] })
 })
@@ -211,6 +224,7 @@ When('on reprend les données des lieux', async () => {
         repriseDesHoraires(reprendreLesHoraires),
         repriseDuTelephone(reprendreLeTelephone),
         repriseDesSitesWeb(reprendreLesSitesWeb),
+        repriseDesCourriels(reprendreLesCourriels),
       ],
       ports: {
         lireLesLieux: lireLesLieuxDuScenario,
@@ -229,6 +243,7 @@ When('on relève les données des lieux sans les reprendre', async () => {
         repriseDesHoraires(sansRepriseDesHoraires),
         repriseDuTelephone(sansRepriseDuTelephone),
         repriseDesSitesWeb(sansRepriseDesSitesWeb),
+        repriseDesCourriels(sansRepriseDesCourriels),
       ],
       ports: {
         lireLesLieux: lireLesLieuxDuScenario,
@@ -336,6 +351,15 @@ Then('le téléphone du lieu est écrit en E.164', async () => {
   })
 
   assert.strictEqual(telephone, '+33450314695')
+})
+
+Then('les courriels du lieu sont rangés', async () => {
+  const { courriels } = await prismaClient.lieuInclusion.findUniqueOrThrow({
+    where: { id: lieuSeme() },
+    select: { courriels: true },
+  })
+
+  assert.deepStrictEqual(courriels, COURRIELS_RANGES)
 })
 
 Then('le relevé montre l’adresse abandonnée', () => {
