@@ -75,6 +75,9 @@ personne n’a validée et qu’aucune carte ne saura situer. Le refus est celui
 qu’oppose déjà la recherche par SIRET, et l’adresse retenue est celle que la
 Base Adresse Nationale rend, avec son identifiant et ses coordonnées.
 
+Le refus ne laisse personne sans recours : l’étape suivante permet d’ajouter ce
+lieu en saisissant soi-même son adresse, choisie dans la Base Adresse Nationale.
+
 ### Scenario: L’adresse de l’employeuse est introuvable
 
 * Given je suis médiateur
