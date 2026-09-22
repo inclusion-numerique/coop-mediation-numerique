@@ -3,18 +3,28 @@ import { courrielsAReprendre } from './courriels-a-reprendre'
 
 const COLONNE = 'courriels'
 
-const A_CORRIGER = 'à corriger'
-
 export type ReprendreLesCourriels = (
   lieuId: string,
   aReprendre: ValeursAReprendre,
 ) => Promise<void>
 
-const cellule = ({ perdues }: ValeursAReprendre): string =>
-  perdues.length === 0 ? A_CORRIGER : perdues.join(' | ')
+const A_TRIER = 'à trier'
 
-const motif = ({ perdues }: ValeursAReprendre): string =>
-  perdues.length === 0 ? `${COLONNE} : ${A_CORRIGER}` : `${COLONNE} : à effacer`
+const A_CORRIGER = 'à corriger'
+
+const A_EFFACER = 'à effacer'
+
+const cellule = ({ perdues, rienQueLOrdre }: ValeursAReprendre): string => {
+  if (perdues.length > 0) return perdues.join(' | ')
+
+  return rienQueLOrdre ? A_TRIER : A_CORRIGER
+}
+
+const motif = ({ perdues, rienQueLOrdre }: ValeursAReprendre): string => {
+  if (perdues.length > 0) return `${COLONNE} : ${A_EFFACER}`
+
+  return `${COLONNE} : ${rienQueLOrdre ? A_TRIER : A_CORRIGER}`
+}
 
 export const repriseDesCourriels = (
   reprendreLesCourriels: ReprendreLesCourriels,

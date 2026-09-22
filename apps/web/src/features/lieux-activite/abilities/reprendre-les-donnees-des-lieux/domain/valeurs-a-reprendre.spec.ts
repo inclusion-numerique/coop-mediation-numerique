@@ -17,13 +17,18 @@ describe('la reprise d’une liste de valeurs', () => {
     ).toEqual({
       conservees: ['a@exemple.fr', 'b@exemple.fr'],
       perdues: [],
+      rienQueLOrdre: true,
     })
   })
 
   it('ôte une valeur répétée', () => {
     expect(
       valeursAReprendre(['a@exemple.fr', 'a@exemple.fr'], telleQuelle),
-    ).toEqual({ conservees: ['a@exemple.fr'], perdues: [] })
+    ).toEqual({
+      conservees: ['a@exemple.fr'],
+      perdues: [],
+      rienQueLOrdre: true,
+    })
   })
 
   it('range selon la collation française et non selon les points de code', () => {
@@ -36,6 +41,7 @@ describe('la reprise d’une liste de valeurs', () => {
     ).toEqual({
       conservees: ['a@exemple.fr', 'b@exemple.fr'],
       perdues: [''],
+      rienQueLOrdre: false,
     })
   })
 })

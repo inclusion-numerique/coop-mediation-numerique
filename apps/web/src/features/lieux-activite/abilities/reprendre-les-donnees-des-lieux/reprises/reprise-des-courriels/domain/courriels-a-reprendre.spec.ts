@@ -13,6 +13,7 @@ describe('le verdict sur les courriels d’un lieu', () => {
     expect(verdict(['BATALLA.dulce@orne.fr'])).toEqual({
       conservees: ['batalla.dulce@orne.fr'],
       perdues: [],
+      rienQueLOrdre: false,
     })
   })
 
@@ -20,6 +21,7 @@ describe('le verdict sur les courriels d’un lieu', () => {
     expect(verdict(['pas-une-adresse'])).toEqual({
       conservees: [],
       perdues: ['pas-une-adresse'],
+      rienQueLOrdre: false,
     })
   })
 
@@ -27,6 +29,23 @@ describe('le verdict sur les courriels d’un lieu', () => {
     expect(verdict(['contact@exemple.fr', 'pas-une-adresse'])).toEqual({
       conservees: ['contact@exemple.fr'],
       perdues: ['pas-une-adresse'],
+      rienQueLOrdre: false,
     })
+  })
+})
+
+describe('le tri des courriels', () => {
+  it('range une liste dont seules les places ont bougé', () => {
+    expect(verdict(['zoe@exemple.fr', 'ana@exemple.fr'])).toEqual({
+      conservees: ['ana@exemple.fr', 'zoe@exemple.fr'],
+      perdues: [],
+      rienQueLOrdre: true,
+    })
+  })
+
+  it('ne dit pas « rien que l’ordre » quand une valeur a change de forme', () => {
+    expect(verdict(['ZOE@exemple.fr', 'ana@exemple.fr'])?.rienQueLOrdre).toBe(
+      false,
+    )
   })
 })

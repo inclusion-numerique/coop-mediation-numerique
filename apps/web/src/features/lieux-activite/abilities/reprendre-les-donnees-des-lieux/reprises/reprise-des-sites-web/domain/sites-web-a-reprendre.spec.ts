@@ -19,6 +19,7 @@ describe('le verdict sur les sites web d’un lieu', () => {
     expect(verdict(['https://www.'])).toEqual({
       conservees: [],
       perdues: ['https://www.'],
+      rienQueLOrdre: false,
     })
   })
 
@@ -26,6 +27,7 @@ describe('le verdict sur les sites web d’un lieu', () => {
     expect(verdict(['https://www.exemple.fr', 'https://www.'])).toEqual({
       conservees: ['https://www.exemple.fr'],
       perdues: ['https://www.'],
+      rienQueLOrdre: false,
     })
   })
 })
@@ -63,7 +65,11 @@ describe('le gabarit « https://www. » écrit autour de la vraie adresse', () =
       'https://exemple.fr',
     ],
   ])('se retire quand il est %s', (_cas, brut, attendu) => {
-    expect(verdict([brut])).toEqual({ conservees: [attendu], perdues: [] })
+    expect(verdict([brut])).toEqual({
+      conservees: [attendu],
+      perdues: [],
+      rienQueLOrdre: false,
+    })
   })
 
   it('rend les deux adresses que le séparateur encodé avait collées', () => {
@@ -72,6 +78,7 @@ describe('le gabarit « https://www. » écrit autour de la vraie adresse', () =
     ).toEqual({
       conservees: ['https://un.example.fr/', 'https://www.deux.fr/'],
       perdues: [],
+      rienQueLOrdre: false,
     })
   })
 
@@ -87,6 +94,7 @@ describe('le gabarit « https://www. » écrit autour de la vraie adresse', () =
     expect(verdict(['http://www.'])).toEqual({
       conservees: [],
       perdues: ['http://www.'],
+      rienQueLOrdre: false,
     })
   })
 })
