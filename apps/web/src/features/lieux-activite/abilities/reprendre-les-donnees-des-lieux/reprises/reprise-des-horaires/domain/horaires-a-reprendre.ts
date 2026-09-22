@@ -4,7 +4,7 @@ import {
   Horaires,
   type RegleDeNettoyage,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { type LieuAReprendre, nonVide } from './lieu-a-reprendre'
+import { type LieuAReprendre, nonVide } from '../../../domain'
 
 const JOUR = 'Mo|Tu|We|Th|Fr|Sa|Su|PH'
 const PLAGE = '(?:[01]\\d|2[0-3]):[0-5]\\d-(?:[01]\\d|2[0-3]):[0-5]\\d'

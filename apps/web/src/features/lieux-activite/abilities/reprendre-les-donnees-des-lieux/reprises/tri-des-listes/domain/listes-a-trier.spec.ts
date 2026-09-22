@@ -1,4 +1,4 @@
-import { lieuAReprendre } from './lieu-a-reprendre.fixture'
+import { lieuAReprendre } from '../../../domain/lieu-a-reprendre.fixture'
 import { colonnesATrier } from './listes-a-trier'
 
 describe('les colonnes à trier', () => {

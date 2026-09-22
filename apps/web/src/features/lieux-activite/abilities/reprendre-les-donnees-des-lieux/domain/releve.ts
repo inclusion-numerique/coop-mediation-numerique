@@ -1,10 +1,5 @@
-import {
-  type HorairesAReprendre,
-  horairesAReprendre,
-} from './horaires-a-reprendre'
-import type { ColonneDeListe, LieuAReprendre } from './lieu-a-reprendre'
-import { LISTES } from './lieu-a-reprendre'
-import { colonnesATrier } from './listes-a-trier'
+import type { LieuAReprendre } from './lieu-a-reprendre'
+import type { Constat, Mention, Reprise } from './reprise'
 
 export type LieuAuReleve = {
   readonly lieuId: string
@@ -12,70 +7,73 @@ export type LieuAuReleve = {
   readonly commune: string
   readonly codePostal: string
   readonly publie: boolean
-  readonly listesATrier: readonly ColonneDeListe[]
-  readonly horaires: HorairesAReprendre | null
+  readonly constats: readonly Constat[]
 }
 
-export type ColonneATrier = {
-  readonly colonne: ColonneDeListe
+export type CompteParMotif = {
+  readonly motif: string
   readonly lieux: number
-}
-
-export type ComptesDesHoraires = {
-  readonly aCorriger: number
-  readonly aDeplacer: number
-  readonly aEffacer: number
 }
 
 export type Releve = {
   readonly lieuxMesures: number
+  readonly colonnes: readonly string[]
   readonly lieux: readonly LieuAuReleve[]
 }
 
-const rienAFaire = ({ listesATrier, horaires }: LieuAuReleve): boolean =>
-  listesATrier.length === 0 && horaires == null
+const constater =
+  (reprises: readonly Reprise[]) =>
+  (lieu: LieuAReprendre): readonly LieuAuReleve[] => {
+    const constats = reprises.flatMap(
+      (reprise) => reprise.constater(lieu) ?? [],
+    )
 
-const auReleve = (lieu: LieuAReprendre): LieuAuReleve => ({
-  lieuId: lieu.id,
-  nom: lieu.nom,
-  commune: lieu.commune,
-  codePostal: lieu.codePostal,
-  publie: lieu.publie,
-  listesATrier: colonnesATrier(lieu),
-  horaires: horairesAReprendre(lieu),
-})
+    return constats.length === 0
+      ? []
+      : [
+          {
+            lieuId: lieu.id,
+            nom: lieu.nom,
+            commune: lieu.commune,
+            codePostal: lieu.codePostal,
+            publie: lieu.publie,
+            constats,
+          },
+        ]
+  }
 
-export const relever = (lieux: readonly LieuAReprendre[]): Releve => ({
+export const relever = (
+  reprises: readonly Reprise[],
+  lieux: readonly LieuAReprendre[],
+): Releve => ({
   lieuxMesures: lieux.length,
-  lieux: lieux.map(auReleve).filter((lieu) => !rienAFaire(lieu)),
+  colonnes: reprises.flatMap(({ colonnes }) => colonnes),
+  lieux: lieux.flatMap(constater(reprises)),
 })
 
-const compter = (
-  lieux: readonly LieuAuReleve[],
-  colonne: ColonneDeListe,
-): ColonneATrier => ({
-  colonne,
-  lieux: lieux.filter(({ listesATrier }) => listesATrier.includes(colonne))
-    .length,
-})
+export const mentionsDuLieu = ({
+  constats,
+}: LieuAuReleve): readonly Mention[] =>
+  constats.flatMap(({ mentions }) => mentions)
 
-const deLaPlusLourde = (gauche: ColonneATrier, droite: ColonneATrier): number =>
-  droite.lieux - gauche.lieux
+const motifsDuLieu = (lieu: LieuAuReleve): readonly string[] => [
+  ...new Set(mentionsDuLieu(lieu).map(({ motif }) => motif)),
+]
 
-export const comptesParColonne = ({
+const deLaPlusLourde = (
+  gauche: CompteParMotif,
+  droite: CompteParMotif,
+): number => droite.lieux - gauche.lieux
+
+export const comptesParMotif = ({
   lieux,
-}: Releve): readonly ColonneATrier[] =>
-  LISTES.map((colonne) => compter(lieux, colonne))
-    .filter(({ lieux: touches }) => touches > 0)
+}: Releve): readonly CompteParMotif[] => {
+  const motifs = lieux.flatMap(motifsDuLieu)
+
+  return [...new Set(motifs)]
+    .map((motif) => ({
+      motif,
+      lieux: motifs.filter((releve) => releve === motif).length,
+    }))
     .sort(deLaPlusLourde)
-
-const porteLeVerdict =
-  (verdict: HorairesAReprendre['verdict']) =>
-  ({ horaires }: LieuAuReleve): boolean =>
-    horaires?.verdict === verdict
-
-export const comptesDesHoraires = ({ lieux }: Releve): ComptesDesHoraires => ({
-  aCorriger: lieux.filter(porteLeVerdict('a-corriger')).length,
-  aDeplacer: lieux.filter(porteLeVerdict('a-deplacer')).length,
-  aEffacer: lieux.filter(porteLeVerdict('a-effacer')).length,
-})
+}

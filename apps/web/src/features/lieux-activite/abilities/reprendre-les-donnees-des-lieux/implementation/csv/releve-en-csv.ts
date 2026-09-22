@@ -2,9 +2,8 @@ import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import {
   type DeposerLeReleve,
-  type HorairesAReprendre,
-  LISTES,
   type LieuAuReleve,
+  mentionsDuLieu,
   type Releve,
 } from '../../domain'
 
@@ -12,45 +11,38 @@ const DOSSIER = 'output/reprise-lieux'
 
 const FICHIER = 'reprise-lieux.csv'
 
-const A_TRIER = 'à trier'
-
-const A_CORRIGER = 'à corriger'
-
-const A_DEPLACER = 'À déplacer dans le champ description'
-
-const EN_TETE = [
-  'lieu_id',
-  'nom',
-  'commune',
-  'code_postal',
-  'publie',
-  ...LISTES,
-  'horaires',
-]
+const EN_TETE_IDENTITE = ['lieu_id', 'nom', 'commune', 'code_postal', 'publie']
 
 const cellule = (valeur: string): string =>
-  `"${valeur.replaceAll('"', '""').replaceAll('\n', ' ').replaceAll('\r', '')}"`
+  valeur === ''
+    ? ''
+    : `"${valeur.replaceAll('"', '""').replaceAll('\n', ' ').replaceAll('\r', '')}"`
 
-const celluleDesHoraires = (horaires: HorairesAReprendre | null): string => {
-  if (horaires == null) return ''
-  if (horaires.verdict === 'a-corriger') return A_CORRIGER
-  if (horaires.verdict === 'a-deplacer') return A_DEPLACER
+const parColonne = (lieu: LieuAuReleve): ReadonlyMap<string, string> =>
+  new Map(
+    mentionsDuLieu(lieu).map(({ colonne, cellule }) => [colonne, cellule]),
+  )
 
-  return cellule(horaires.valeur)
-}
+const ligneDuLieu =
+  (colonnes: readonly string[]) =>
+  (lieu: LieuAuReleve): readonly string[] => {
+    const mentions = parColonne(lieu)
 
-const ligneDuLieu = (lieu: LieuAuReleve): readonly string[] => [
-  lieu.lieuId,
-  cellule(lieu.nom),
-  cellule(lieu.commune),
-  lieu.codePostal,
-  lieu.publie ? 'oui' : 'non',
-  ...LISTES.map((liste) => (lieu.listesATrier.includes(liste) ? A_TRIER : '')),
-  celluleDesHoraires(lieu.horaires),
-]
+    return [
+      lieu.lieuId,
+      cellule(lieu.nom),
+      cellule(lieu.commune),
+      lieu.codePostal,
+      lieu.publie ? 'oui' : 'non',
+      ...colonnes.map((colonne) => cellule(mentions.get(colonne) ?? '')),
+    ]
+  }
 
 const enLignes = (releve: Releve): string =>
-  [EN_TETE, ...releve.lieux.map(ligneDuLieu)]
+  [
+    [...EN_TETE_IDENTITE, ...releve.colonnes],
+    ...releve.lieux.map(ligneDuLieu(releve.colonnes)),
+  ]
     .map((ligne) => ligne.join(';'))
     .join('\n')
 

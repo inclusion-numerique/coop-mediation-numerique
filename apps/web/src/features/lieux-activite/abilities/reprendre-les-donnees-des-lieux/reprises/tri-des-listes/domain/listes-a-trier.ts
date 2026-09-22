@@ -1,9 +1,21 @@
 import { sansDoublons, triee } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import {
-  type ColonneDeListe,
-  LISTES,
-  type LieuAReprendre,
-} from './lieu-a-reprendre'
+import type { LieuAReprendre } from '../../../domain'
+
+export const LISTES = [
+  'typologies',
+  'services',
+  'modalitesAcces',
+  'modalitesAccompagnement',
+  'publicsSpecifiquementAdresses',
+  'priseEnChargeSpecifique',
+  'fraisACharge',
+  'itinerance',
+  'dispositifProgrammesNationaux',
+  'formationsLabels',
+  'autresFormationsLabels',
+] as const satisfies readonly (keyof LieuAReprendre)[]
+
+export type ColonneDeListe = (typeof LISTES)[number]
 
 const SEPARATEUR = '\u0000'
 

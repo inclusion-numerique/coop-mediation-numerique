@@ -2,12 +2,15 @@ import assert from 'node:assert'
 import {
   deposerLeReleve,
   lireLesLieux,
+  mentionsDuLieu,
   type Releve,
   reprendreLesDonneesDesLieux,
   reprendreLesHoraires,
+  repriseDesHoraires,
   sansDepot,
   sansRepriseDesHoraires,
   sansTri,
+  triDesListes,
   trierLesListes,
 } from '@app/web/features/lieux-activite/abilities/reprendre-les-donnees-des-lieux'
 import { prismaClient } from '@app/web/prismaClient'
@@ -114,6 +117,15 @@ const servicesDuRegistre = async (): Promise<readonly string[]> =>
 const auReleve = () =>
   releve().lieux.find(({ lieuId }) => lieuId === lieuSeme())
 
+const mentions = () => {
+  const lieu = auReleve()
+
+  return lieu == null ? [] : mentionsDuLieu(lieu)
+}
+
+const celluleDe = (colonne: string): string | undefined =>
+  mentions().find((mention) => mention.colonne === colonne)?.cellule
+
 Given('un lieu dont les services sont désordonnés', async () => {
   await semerUnLieu({ services: SERVICES_DESORDONNES })
 })
@@ -173,10 +185,12 @@ Given('il est inscrit au registre avec les mêmes horaires', async () => {
 When('on reprend les données des lieux', async () => {
   semis.releve = (
     await reprendreLesDonneesDesLieux({
+      reprises: [
+        triDesListes(trierLesListes),
+        repriseDesHoraires(reprendreLesHoraires),
+      ],
       ports: {
         lireLesLieux: lireLesLieuxDuScenario,
-        trierLesListes,
-        reprendreLesHoraires,
         deposerLeReleve,
         journal: () => undefined,
       },
@@ -187,10 +201,12 @@ When('on reprend les données des lieux', async () => {
 When('on relève les données des lieux sans les reprendre', async () => {
   semis.releve = (
     await reprendreLesDonneesDesLieux({
+      reprises: [
+        triDesListes(sansTri),
+        repriseDesHoraires(sansRepriseDesHoraires),
+      ],
       ports: {
         lireLesLieux: lireLesLieuxDuScenario,
-        trierLesListes: sansTri,
-        reprendreLesHoraires: sansRepriseDesHoraires,
         deposerLeReleve: sansDepot,
         journal: () => undefined,
       },
@@ -199,9 +215,12 @@ When('on relève les données des lieux sans les reprendre', async () => {
 })
 
 Then('le relevé compte ce lieu dans la colonne {string}', (colonne: string) => {
-  assert.ok(
-    auReleve()?.listesATrier.some((relevee) => relevee === colonne),
-    `colonnes relevées : ${auReleve()?.listesATrier.join(', ') ?? 'aucune'}`,
+  assert.strictEqual(
+    celluleDe(colonne),
+    'à trier',
+    `colonnes relevées : ${mentions()
+      .map(({ colonne: relevee }) => relevee)
+      .join(', ')}`,
   )
 })
 
@@ -210,11 +229,11 @@ Then('le relevé ne retient pas ce lieu', () => {
 })
 
 Then('le relevé annonce des horaires à corriger', () => {
-  assert.strictEqual(auReleve()?.horaires?.verdict, 'a-corriger')
+  assert.strictEqual(celluleDe('horaires'), 'à corriger')
 })
 
 Then('le relevé annonce des horaires à effacer', () => {
-  assert.strictEqual(auReleve()?.horaires?.verdict, 'a-effacer')
+  assert.strictEqual(celluleDe('horaires'), CRENEAUX_ILLISIBLES)
 })
 
 Then('la description du lieu n’a pas bougé', async () => {
@@ -228,15 +247,9 @@ Then('la description du lieu n’a pas bougé', async () => {
 })
 
 Then('le relevé annonce des horaires à déplacer', () => {
-  assert.strictEqual(auReleve()?.horaires?.verdict, 'a-deplacer')
-})
-
-Then('le relevé montre la chaîne déplacée', () => {
-  const horaires = auReleve()?.horaires
-
   assert.strictEqual(
-    horaires?.verdict === 'a-deplacer' ? horaires.valeur : null,
-    HORAIRES_SANS_CRENEAU,
+    celluleDe('horaires'),
+    'À déplacer dans le champ description',
   )
 })
 

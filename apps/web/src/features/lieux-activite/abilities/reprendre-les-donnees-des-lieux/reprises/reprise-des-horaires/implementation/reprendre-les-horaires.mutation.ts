@@ -2,8 +2,8 @@ import { prismaClient } from '@app/web/prismaClient'
 import {
   descriptionAvecLaNote,
   type HorairesAReprendre,
-  type ReprendreLesHoraires,
-} from '../../domain'
+} from '../domain/horaires-a-reprendre'
+import type { ReprendreLesHoraires } from '../domain/reprise-des-horaires'
 
 type Ecriture = {
   readonly horaires: string | null

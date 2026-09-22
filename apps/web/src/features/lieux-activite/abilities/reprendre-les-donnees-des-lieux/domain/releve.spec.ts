@@ -1,82 +1,77 @@
 import { lieuAReprendre } from './lieu-a-reprendre.fixture'
-import { comptesDesHoraires, comptesParColonne, relever } from './releve'
+import { comptesParMotif, relever } from './releve'
+import { type Reprise, reprise } from './reprise'
 
-const DESORDONNES = [
-  'Utilisation sécurisée du numérique',
-  'Aide aux démarches administratives',
-]
+const repriseDeTest = (
+  colonne: string,
+  concerne: (nom: string) => boolean,
+): Reprise =>
+  reprise<string>({
+    colonnes: [colonne],
+    constater: (lieu) => (concerne(lieu.nom) ? lieu.nom : null),
+    mentions: () => [
+      { colonne, cellule: 'à faire', motif: `${colonne} : à faire` },
+    ],
+    appliquer: async () => undefined,
+  })
+
+const TOUJOURS = repriseDeTest('premiere', () => true)
+
+const JAMAIS = repriseDeTest('seconde', () => false)
+
+const SUR_REIMS = repriseDeTest('seconde', (nom) => nom.includes('Reims'))
 
 describe('le relevé', () => {
-  it('ne retient que les lieux qui ont quelque chose à reprendre', () => {
-    const releve = relever([
-      lieuAReprendre({ id: 'a', services: DESORDONNES }),
-      lieuAReprendre({ id: 'b' }),
+  it('annonce les colonnes de toutes les reprises, même celles qui ne relèvent rien', () => {
+    expect(relever([TOUJOURS, JAMAIS], []).colonnes).toEqual([
+      'premiere',
+      'seconde',
     ])
+  })
+
+  it('ne retient que les lieux qu’au moins une reprise concerne', () => {
+    const releve = relever(
+      [SUR_REIMS],
+      [
+        lieuAReprendre({ id: 'a', nom: 'Espace de Reims' }),
+        lieuAReprendre({ id: 'b', nom: 'Espace de Lyon' }),
+      ],
+    )
 
     expect(releve.lieuxMesures).toBe(2)
     expect(releve.lieux.map(({ lieuId }) => lieuId)).toEqual(['a'])
   })
 
-  it('retient un lieu pour ses seuls horaires', () => {
-    const releve = relever([
-      lieuAReprendre({
-        id: 'a',
-        horaires: 'We 09:00-12:00 un mercredi sur deux',
-      }),
-    ])
+  it('rassemble sur un lieu les constats de chaque reprise', () => {
+    const releve = relever(
+      [TOUJOURS, SUR_REIMS],
+      [lieuAReprendre({ nom: 'Espace de Reims' })],
+    )
 
-    expect(
-      releve.lieux.map(({ lieuId, listesATrier }) => [lieuId, listesATrier]),
-    ).toEqual([['a', []]])
+    expect(releve.lieux.flatMap(({ constats }) => constats)).toHaveLength(2)
   })
 
-  it('compte les lieux concernés colonne par colonne', () => {
-    const releve = relever([
-      lieuAReprendre({ id: 'a', services: DESORDONNES }),
-      lieuAReprendre({ id: 'b', services: DESORDONNES }),
-      lieuAReprendre({ id: 'c', itinerance: ['Itinérant', 'Itinérant'] }),
-    ])
+  it('compte les lieux motif par motif, du plus lourd au plus léger', () => {
+    const releve = relever(
+      [TOUJOURS, SUR_REIMS],
+      [
+        lieuAReprendre({ id: 'a', nom: 'Espace de Reims' }),
+        lieuAReprendre({ id: 'b', nom: 'Espace de Lyon' }),
+      ],
+    )
 
-    expect(comptesParColonne(releve)).toEqual([
-      { colonne: 'services', lieux: 2 },
-      { colonne: 'itinerance', lieux: 1 },
+    expect(comptesParMotif(releve)).toEqual([
+      { motif: 'premiere : à faire', lieux: 2 },
+      { motif: 'seconde : à faire', lieux: 1 },
     ])
   })
 
-  it('tait les colonnes que personne n’a à trier', () => {
-    expect(comptesParColonne(relever([lieuAReprendre()]))).toEqual([])
-  })
+  it('porte de quoi reconnaître le lieu', () => {
+    const [lieu] = relever([TOUJOURS], [lieuAReprendre()]).lieux
 
-  it('compte les horaires à corriger, à déplacer et à effacer', () => {
-    const releve = relever([
-      lieuAReprendre({
-        id: 'a',
-        horaires: 'We 09:00-12:00 un mercredi sur deux',
-      }),
-      lieuAReprendre({ id: 'b', horaires: 'Mo 09:00-12:00;Tu 09:00-12:00' }),
-      lieuAReprendre({ id: 'c', horaires: '"Sur rendez-vous uniquement"' }),
-      lieuAReprendre({ id: 'd', horaires: 'We-Fr 09:00-14:00-19:00' }),
-      lieuAReprendre({ id: 'e', horaires: 'Mo 09:00-12:00' }),
-    ])
-
-    expect(comptesDesHoraires(releve)).toEqual({
-      aCorriger: 2,
-      aDeplacer: 1,
-      aEffacer: 1,
-    })
-  })
-
-  it('porte de quoi reconnaître le lieu dans le relevé', () => {
-    expect(relever([lieuAReprendre({ services: DESORDONNES })]).lieux).toEqual([
-      {
-        lieuId: 'e4b5f0d4-5a1f-4a5a-9a4e-2e1c9f0b1d2c',
-        nom: 'Espace numérique de Reims',
-        commune: 'Reims',
-        codePostal: '51100',
-        publie: true,
-        listesATrier: ['services'],
-        horaires: null,
-      },
-    ])
+    expect(lieu?.nom).toBe('Espace numérique de Reims')
+    expect(lieu?.commune).toBe('Reims')
+    expect(lieu?.codePostal).toBe('51100')
+    expect(lieu?.publie).toBe(true)
   })
 })

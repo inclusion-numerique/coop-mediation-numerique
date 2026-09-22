@@ -1,21 +1,18 @@
 export {
+  type Passe,
   type PortsDeReprise,
-  type Reprise,
   reprendreLesDonneesDesLieux,
 } from './commands/reprendre-les-donnees-des-lieux'
 export {
-  type ColonneDeListe,
-  colonnesATrier,
-  comptesDesHoraires,
-  comptesParColonne,
-  descriptionAvecLaNote,
-  type HorairesAReprendre,
-  horairesAReprendre,
-  horairesNormalises,
-  LISTES,
+  type CompteParMotif,
+  type Constat,
+  comptesParMotif,
   type LieuAReprendre,
   type LieuAuReleve,
+  type Mention,
+  mentionsDuLieu,
   type Releve,
+  type Reprise,
   relever,
 } from './domain'
 export {
@@ -23,9 +20,23 @@ export {
   dossierDuReleve,
   lireLesLieux,
   releveEnLignes,
-  reprendreLesHoraires,
   sansDepot,
+} from './implementation'
+export {
+  type ColonneDeListe,
+  colonnesATrier,
+  descriptionAvecLaNote,
+  type HorairesAReprendre,
+  horairesAReprendre,
+  horairesNormalises,
+  LISTES,
+  listeATrier,
+  type ReprendreLesHoraires,
+  reprendreLesHoraires,
+  repriseDesHoraires,
   sansRepriseDesHoraires,
   sansTri,
+  type TrierLesListes,
+  triDesListes,
   trierLesListes,
-} from './implementation'
+} from './reprises'

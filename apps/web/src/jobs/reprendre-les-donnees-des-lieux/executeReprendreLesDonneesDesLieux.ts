@@ -1,15 +1,16 @@
 import {
-  comptesDesHoraires,
-  comptesParColonne,
+  comptesParMotif,
   deposerLeReleve,
   dossierDuReleve,
   lireLesLieux,
   releveEnLignes,
   reprendreLesDonneesDesLieux,
   reprendreLesHoraires,
+  repriseDesHoraires,
   sansDepot,
   sansRepriseDesHoraires,
   sansTri,
+  triDesListes,
   trierLesListes,
 } from '@app/web/features/lieux-activite/abilities/reprendre-les-donnees-des-lieux'
 import type { JobExecutor } from '@app/web/jobs/jobExecutors'
@@ -25,13 +26,15 @@ export const executeReprendreLesDonneesDesLieux: JobExecutor<
     output.log(`reprendre-les-donnees-des-lieux: ${message}`)
 
   const { releve, lieuxRepris, fichiers } = await reprendreLesDonneesDesLieux({
+    reprises: [
+      triDesListes(reprendre ? trierLesListes : sansTri),
+      repriseDesHoraires(
+        reprendre ? reprendreLesHoraires : sansRepriseDesHoraires,
+      ),
+    ],
     ports: {
       lireLesLieux,
       journal,
-      trierLesListes: reprendre ? trierLesListes : sansTri,
-      reprendreLesHoraires: reprendre
-        ? reprendreLesHoraires
-        : sansRepriseDesHoraires,
       deposerLeReleve: csv ? deposerLeReleve : sansDepot,
     },
   })
@@ -48,8 +51,7 @@ export const executeReprendreLesDonneesDesLieux: JobExecutor<
   return {
     lieuxMesures: releve.lieuxMesures,
     lieuxAReprendre: releve.lieux.length,
-    colonnesATrier: comptesParColonne(releve),
-    horaires: comptesDesHoraires(releve),
+    motifs: comptesParMotif(releve),
     lieuxRepris,
     reprendre,
   }

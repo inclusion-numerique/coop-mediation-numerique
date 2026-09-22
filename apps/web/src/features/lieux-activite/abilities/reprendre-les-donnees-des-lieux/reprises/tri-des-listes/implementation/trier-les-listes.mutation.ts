@@ -5,7 +5,8 @@ import {
   lieuVersRegistre,
 } from '@app/web/features/lieux-activite/implementation'
 import { prismaClient } from '@app/web/prismaClient'
-import type { ColonneDeListe, TrierLesListes } from '../../domain'
+import type { ColonneDeListe } from '../domain/listes-a-trier'
+import type { TrierLesListes } from '../domain/tri-des-listes'
 
 const retenirSi =
   (aEcrire: readonly ColonneDeListe[]) =>

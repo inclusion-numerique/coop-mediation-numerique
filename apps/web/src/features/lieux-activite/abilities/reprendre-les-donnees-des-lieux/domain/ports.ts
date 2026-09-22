@@ -1,18 +1,7 @@
-import type { HorairesAReprendre } from './horaires-a-reprendre'
-import type { ColonneDeListe, LieuAReprendre } from './lieu-a-reprendre'
+import type { LieuAReprendre } from './lieu-a-reprendre'
 import type { Releve } from './releve'
 
 export type LireLesLieux = () => Promise<readonly LieuAReprendre[]>
-
-export type TrierLesListes = (
-  lieuId: string,
-  colonnes: readonly ColonneDeListe[],
-) => Promise<void>
-
-export type ReprendreLesHoraires = (
-  lieuId: string,
-  aReprendre: HorairesAReprendre,
-) => Promise<void>
 
 export type DeposerLeReleve = (releve: Releve) => Promise<readonly string[]>
 

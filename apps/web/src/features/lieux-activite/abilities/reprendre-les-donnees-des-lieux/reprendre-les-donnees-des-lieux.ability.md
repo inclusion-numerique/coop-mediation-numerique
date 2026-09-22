@@ -64,7 +64,6 @@ base.
 * Given un lieu dont les horaires ne portent aucun créneau
 * When on reprend les données des lieux
 * Then le relevé annonce des horaires à déplacer
-* And le relevé montre la chaîne déplacée
 * And les horaires du lieu sont effacés
 * And la note passe dans la description du lieu
 

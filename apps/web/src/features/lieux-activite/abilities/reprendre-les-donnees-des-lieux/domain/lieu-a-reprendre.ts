@@ -18,21 +18,5 @@ export type LieuAReprendre = {
   readonly autresFormationsLabels: readonly string[]
 }
 
-export const LISTES = [
-  'typologies',
-  'services',
-  'modalitesAcces',
-  'modalitesAccompagnement',
-  'publicsSpecifiquementAdresses',
-  'priseEnChargeSpecifique',
-  'fraisACharge',
-  'itinerance',
-  'dispositifProgrammesNationaux',
-  'formationsLabels',
-  'autresFormationsLabels',
-] as const satisfies readonly (keyof LieuAReprendre)[]
-
-export type ColonneDeListe = (typeof LISTES)[number]
-
 export const nonVide = (valeur: string | null | undefined): string | null =>
   valeur != null && valeur.trim() !== '' ? valeur.trim() : null

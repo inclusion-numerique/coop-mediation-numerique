@@ -1,9 +1,9 @@
+import { lieuAReprendre } from '../../../domain/lieu-a-reprendre.fixture'
 import {
   descriptionAvecLaNote,
   horairesAReprendre,
   horairesNormalises,
 } from './horaires-a-reprendre'
-import { lieuAReprendre } from './lieu-a-reprendre.fixture'
 
 const verdict = (horaires: string | null) =>
   horairesAReprendre(lieuAReprendre({ horaires }))
