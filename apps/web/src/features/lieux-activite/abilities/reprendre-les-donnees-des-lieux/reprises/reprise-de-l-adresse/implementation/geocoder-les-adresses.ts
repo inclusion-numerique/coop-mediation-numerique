@@ -102,6 +102,8 @@ const soumettre = async (
   adresses: readonly AdresseSoumise[],
   colonnes: readonly string[],
 ): Promise<readonly Appariement[]> => {
+  if (adresses.length === 0) return []
+
   const reponse = await fetch(`${apiAdresseEndpoint}/csv/`, {
     method: 'POST',
     body: corps(adresses, colonnes),
@@ -114,6 +116,25 @@ const soumettre = async (
 
   return ligneDuTableau(await reponse.text(), geocodee)
 }
+
+/**
+ * Une recherche directe, par lots, sur les colonnes demandées.
+ *
+ * Le géocodage inverse s'en sert lui aussi : la Base Adresse Nationale nomme
+ * l'adresse qu'elle trouve à un point, mais ne rend pas ses coordonnées, et
+ * c'est en cherchant cette voie qu'on obtient l'entrée complète.
+ */
+export const rechercherLesVoies = async (
+  adresses: readonly AdresseSoumise[],
+  colonnes: readonly string[],
+): Promise<readonly Appariement[]> =>
+  lots(adresses, ADRESSES_PAR_LOT).reduce<Promise<readonly Appariement[]>>(
+    async (acquises, lot) => [
+      ...(await acquises),
+      ...(await soumettre(lot, colonnes)),
+    ],
+    Promise.resolve([]),
+  )
 
 const parLieu = (
   appariements: readonly Appariement[],
@@ -134,14 +155,10 @@ const parLieu = (
  */
 export const geocoderLesAdresses: GeocoderLesAdresses = async (adresses) =>
   parLieu(
-    await INTERROGATIONS.flatMap((colonnes) =>
-      lots(adresses, ADRESSES_PAR_LOT).map(
-        (lot) => async () => soumettre(lot, colonnes),
-      ),
-    ).reduce<Promise<readonly Appariement[]>>(
-      async (acquises, interroger) => [
+    await INTERROGATIONS.reduce<Promise<readonly Appariement[]>>(
+      async (acquises, colonnes) => [
         ...(await acquises),
-        ...(await interroger()),
+        ...(await rechercherLesVoies(adresses, colonnes)),
       ],
       Promise.resolve([]),
     ),
