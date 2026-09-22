@@ -4,8 +4,8 @@ import { FixUsersRolesJobValidation } from './fix-users-roles/fixUsersRolesJob'
 import { InactiveUsersRemindersJobValidation } from './inactive-users-reminders/inactiveUsersJob'
 import { NormalizeSiretsJobValidation } from './normalize-sirets/normalizeSiretsJob'
 import { RemoveOrphanBrevoContactsJobValidation } from './remove-orphan-brevo-contacts/removeOrphanBrevoContactsJob'
-import { ReprendreLesDonneesDesLieuxJobValidation } from './reprendre-les-donnees-des-lieux/reprendreLesDonneesDesLieuxJob'
 import { SyncRdvspDataJobValidation } from './sync-rdvsp-data/syncRdvspDataJob'
+import { TrierLesListesDesLieuxJobValidation } from './trier-les-listes-des-lieux/trierLesListesDesLieuxJob'
 
 /**
  * A job represents a task that can be executed asynchronously.
@@ -34,8 +34,8 @@ export const JobValidation = z.discriminatedUnion('name', [
   InactiveUsersRemindersJobValidation,
   NormalizeSiretsJobValidation,
   RemoveOrphanBrevoContactsJobValidation,
-  ReprendreLesDonneesDesLieuxJobValidation,
   SyncRdvspDataJobValidation,
+  TrierLesListesDesLieuxJobValidation,
 ])
 
 export type Job = z.infer<typeof JobValidation>

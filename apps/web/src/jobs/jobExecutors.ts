@@ -16,8 +16,8 @@ import { executeInactiveUsersReminders } from './inactive-users-reminders/execut
 import type { Job, JobName, JobPayload } from './jobs'
 import { output } from './output'
 import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts/executeRemoveOrphanBrevoContacts'
-import { executeReprendreLesDonneesDesLieux } from './reprendre-les-donnees-des-lieux/executeReprendreLesDonneesDesLieux'
 import { executeSyncRdvspData } from './sync-rdvsp-data/executeSyncRdvspData'
+import { executeTrierLesListesDesLieux } from './trier-les-listes-des-lieux/executeTrierLesListesDesLieux'
 
 export type JobExecutor<Name extends JobName, Result = unknown> = (
   job: Job & { name: Name; payload: JobPayload<Name> },
@@ -66,8 +66,8 @@ export const jobExecutors: {
   'inactive-users-reminders': executeInactiveUsersReminders,
   'normalize-sirets': executeNormalizeSirets,
   'remove-orphan-brevo-contacts': executeRemoveOrphanBrevoContacts,
-  'reprendre-les-donnees-des-lieux': executeReprendreLesDonneesDesLieux,
   'sync-rdvsp-data': executeSyncRdvspData,
+  'trier-les-listes-des-lieux': executeTrierLesListesDesLieux,
 }
 
 export const executeJob = async (job: Job) => {
