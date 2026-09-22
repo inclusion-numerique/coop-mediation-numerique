@@ -139,9 +139,12 @@ export const coordonneesSoumises = (
  * `enCasseNaturelle` n'y figure pas : la Base Adresse Nationale compare déjà
  * sans tenir compte de la casse, et la mesure ne lui trouve aucun effet.
  */
+const voieCherchee = (lieu: LieuAReprendre): string =>
+  nettoyerVoiePourRecherche(nettoyerVoie(lieu.adresse))
+
 export const adresseSoumise = (lieu: LieuAReprendre): AdresseSoumise => ({
   lieuId: lieu.id,
-  voie: nettoyerVoiePourRecherche(nettoyerVoie(lieu.adresse)),
+  voie: voieCherchee(lieu),
   commune: lieu.commune,
   codePostal: lieu.codePostal,
   codeInsee: lieu.codeInsee,
@@ -192,6 +195,12 @@ const bonusDeProximite = (ecart: number | null): number =>
       )
 
 /**
+ * La comparaison porte sur la voie telle qu'on l'a cherchée, et non telle
+ * qu'elle est enregistrée : c'est la réponse à cette question-là que la Base
+ * Adresse Nationale rend. Comparer la ligne brute ferait échouer « 3 AV MAL
+ * FOCH » contre « Avenue du Maréchal Foch » alors que la recherche est partie
+ * de « 3 Avenue Maréchal FOCH ».
+ *
  * Le score de la Base Adresse Nationale mêle la ressemblance du libellé à sa
  * propre confiance, et chute pour des raisons qui ne nous regardent pas : une
  * particule, un hameau entre parenthèses, un prénom qu'elle connaît et pas
@@ -202,7 +211,7 @@ export const rapprochement = (
   lieu: LieuAReprendre,
   rendue: AdresseGeocodee,
 ): number =>
-  similarite(lieu.adresse.toLowerCase(), rendue.voie.toLowerCase()) +
+  similarite(voieCherchee(lieu).toLowerCase(), rendue.voie.toLowerCase()) +
   bonusDeProximite(ecartEnMetres(lieu, rendue))
 
 const sansAccents = (valeur: string): string =>
@@ -277,7 +286,8 @@ const memeCommune = (lieu: LieuAReprendre, rendue: AdresseGeocodee): boolean =>
 const reconnue = (lieu: LieuAReprendre, rendue: AdresseGeocodee): boolean =>
   rendue.score >= SCORE_MINIMAL ||
   rapprochement(lieu, rendue) >= RAPPROCHEMENT_MINIMAL ||
-  (memeVoieMotAMot(lieu.adresse, rendue.voie) && auMemeEndroit(lieu, rendue))
+  (memeVoieMotAMot(voieCherchee(lieu), rendue.voie) &&
+    auMemeEndroit(lieu, rendue))
 
 /**
  * L'adresse rendue n'a pas de numéro là où la nôtre en porte un.
@@ -291,7 +301,7 @@ const effaceraitLeNumero = (
   lieu: LieuAReprendre,
   rendue: AdresseGeocodee,
 ): boolean =>
-  COMMENCE_PAR_UN_NUMERO.test(lieu.adresse) &&
+  COMMENCE_PAR_UN_NUMERO.test(voieCherchee(lieu)) &&
   rendue.type !== UNE_PLAQUE &&
   !auMemeEndroit(lieu, rendue)
 
@@ -358,9 +368,9 @@ const voieConfirmee = (
   lieu: LieuAReprendre,
   retrouvee: AdresseRetrouvee,
 ): boolean =>
-  memeVoieMotAMot(lieu.adresse, retrouvee.voieSansLeNumero) ||
+  memeVoieMotAMot(voieCherchee(lieu), retrouvee.voieSansLeNumero) ||
   similarite(
-    sansAccents(lieu.adresse),
+    sansAccents(voieCherchee(lieu)),
     sansAccents(retrouvee.voieSansLeNumero),
   ) >= CONFIRMATION_MINIMALE
 
