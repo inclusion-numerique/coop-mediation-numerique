@@ -1,12 +1,37 @@
 import {
   auditerLesDonnees,
   lieuxAAuditer,
+  type Releve,
 } from '@app/web/features/lieux-activite/abilities/auditer-les-donnees'
 import type { JobExecutor } from '@app/web/jobs/jobExecutors'
 import { output } from '@app/web/jobs/output'
-import { dossierDuReleve, releveEnCsv } from './releve-en-csv'
+import { CODES_DE_LISTE, dossierDuReleve, releveEnCsv } from './releve-en-csv'
 
 const LARGEUR_CODE = 28
+
+/**
+ * Le compte des lieux touchés par colonne de vocabulaire.
+ *
+ * Le poste dit combien de lieux ont une liste à reprendre ; celui-ci dit
+ * lesquelles. C'est ce qui permet de décider colonne par colonne plutôt que
+ * d'affronter les huit mille d'un bloc.
+ */
+const lieuxParColonne = (releve: Releve): readonly [string, number][] => {
+  const parColonne = new Map<string, Set<string>>()
+
+  for (const anomalie of releve.detail)
+    if (CODES_DE_LISTE.has(anomalie.code))
+      parColonne.set(
+        anomalie.champ,
+        (parColonne.get(anomalie.champ) ?? new Set<string>()).add(
+          anomalie.lieuId,
+        ),
+      )
+
+  return [...parColonne.entries()]
+    .map(([colonne, lieux]): [string, number] => [colonne, lieux.size])
+    .sort(([, gauche], [, droite]) => droite - gauche)
+}
 
 const pourcent = (part: number, total: number): string =>
   total === 0 ? '—' : `${((part / total) * 100).toFixed(1)} %`
@@ -53,6 +78,14 @@ export const executeAuditerLesDonnees: JobExecutor<
     ({ exemples }) => exemples.length > 0,
   ))
     journal(`${poste.code} — ${poste.exemples.join(' · ')}`)
+
+  const parColonne = lieuxParColonne(releve)
+  if (parColonne.length > 0) {
+    journal('')
+    journal('listes à reprendre, colonne par colonne :')
+    for (const [colonne, lieux] of parColonne)
+      journal(`  ${colonne.padEnd(LARGEUR_CODE)} ${String(lieux).padStart(6)}`)
+  }
 
   if (job.payload?.csv ?? true) {
     const fichiers = releveEnCsv(releve)

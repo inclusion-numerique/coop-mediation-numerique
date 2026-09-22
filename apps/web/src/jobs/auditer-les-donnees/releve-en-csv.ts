@@ -1,8 +1,9 @@
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import type {
-  AnomalieSituee,
-  Releve,
+import {
+  type AnomalieSituee,
+  LISTES,
+  type Releve,
 } from '@app/web/features/lieux-activite/abilities/auditer-les-donnees'
 
 const DOSSIER = 'output/audit-lieux'
@@ -48,6 +49,54 @@ const parCode = (
   return groupes
 }
 
+/**
+ * Les postes qui portent sur les listes de vocabulaire se lisent en tableau :
+ * une ligne par lieu, une colonne par liste, et « à trier » là où il y a
+ * quelque chose à faire. Un lieu dont aucune liste ne bouge n'y figure pas —
+ * un relevé énumère ce qu'il reste à faire, pas ce qui va bien.
+ */
+export const CODES_DE_LISTE = new Set(['liste-desordonnee', 'liste-en-doublon'])
+
+const A_TRIER = 'à trier'
+
+const enTableauDeListes = (detail: readonly AnomalieSituee[]): string => {
+  const parLieu = new Map<
+    string,
+    { anomalie: AnomalieSituee; champs: Set<string> }
+  >()
+
+  for (const anomalie of detail) {
+    const lieu = parLieu.get(anomalie.lieuId) ?? {
+      anomalie,
+      champs: new Set<string>(),
+    }
+    lieu.champs.add(anomalie.champ)
+    parLieu.set(anomalie.lieuId, lieu)
+  }
+
+  const entete = [
+    'lieu_id',
+    'nom',
+    'commune',
+    'code_postal',
+    'publie',
+    ...LISTES,
+  ].join(';')
+
+  const lignes = [...parLieu.values()].map(({ anomalie, champs }) =>
+    [
+      anomalie.lieuId,
+      cellule(anomalie.nom),
+      cellule(anomalie.commune),
+      anomalie.codePostal,
+      anomalie.publie ? 'oui' : 'non',
+      ...LISTES.map((liste) => (champs.has(liste) ? A_TRIER : '')),
+    ].join(';'),
+  )
+
+  return [entete, ...lignes].join('\n')
+}
+
 export const releveEnCsv = (releve: Releve): readonly string[] => {
   const dossier = join(process.cwd(), DOSSIER)
 
@@ -57,11 +106,15 @@ export const releveEnCsv = (releve: Releve): readonly string[] => {
   const ecrits = [...parCode(releve.detail).entries()].map(
     ([code, anomalies]) => {
       const chemin = join(dossier, `${code}.csv`)
-      const lignes = [ENTETE, ...anomalies.map(ligneCsv)]
+      const contenu = CODES_DE_LISTE.has(code)
+        ? enTableauDeListes(anomalies)
+        : [ENTETE, ...anomalies.map(ligneCsv)].join('\n')
 
-      writeFileSync(chemin, `${lignes.join('\n')}\n`, 'utf8')
+      writeFileSync(chemin, `${contenu}\n`, 'utf8')
 
-      return `${code}.csv (${anomalies.length})`
+      const lieux = new Set(anomalies.map(({ lieuId }) => lieuId)).size
+
+      return `${code}.csv (${lieux} lieux)`
     },
   )
 

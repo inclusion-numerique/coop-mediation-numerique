@@ -247,7 +247,14 @@ const listeDesordonnee = (
     : [anomalie('liste-desordonnee', 'a-verifier', champ, valeurs.join(', '))]
 }
 
-const LISTES: readonly (keyof LigneAAuditer)[] = [
+/**
+ * Les colonnes de vocabulaire, dans l'ordre où le relevé les présente.
+ *
+ * Exportées parce que le relevé en fait des colonnes : une valeur multiple par
+ * champ, et le lecteur veut voir d'un coup d'œil lesquelles d'un lieu sont à
+ * reprendre.
+ */
+export const LISTES: readonly (keyof LigneAAuditer)[] = [
   'typologies',
   'services',
   'modalitesAcces',
