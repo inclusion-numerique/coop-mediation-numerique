@@ -52,10 +52,15 @@ const retrouvee = (
         commune: champ('result_city'),
         codePostal: champ('result_postcode'),
         codeInsee: champ('result_citycode'),
+        ancienCodeInsee: champ('result_oldcitycode'),
         latitude: Number(champ('latitude')),
         longitude: Number(champ('longitude')),
         libelle: champ('result_label'),
         distance: Number(champ('result_distance')),
+        voieSansLeNumero:
+          champ('result_street') === ''
+            ? champ('result_name')
+            : champ('result_street'),
       },
     ],
   ]

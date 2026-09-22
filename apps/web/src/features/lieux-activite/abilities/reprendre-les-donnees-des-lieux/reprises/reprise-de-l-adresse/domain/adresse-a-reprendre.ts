@@ -1,6 +1,9 @@
 import {
   ABREVIATIONS_DE_TYPE_DE_VOIE,
+  distanceEnMetres,
+  nettoyerVoie,
   nettoyerVoiePourRecherche,
+  similarite,
   TYPES_DE_VOIE,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { LieuAReprendre } from '../../../domain'
@@ -14,13 +17,17 @@ export type AdresseGeocodee = {
   readonly commune: string
   readonly codePostal: string
   readonly codeInsee: string
+  readonly ancienCodeInsee: string
   readonly latitude: number
   readonly longitude: number
   readonly libelle: string
 }
 
 /** Ce que la Base Adresse Nationale trouve au point qu'on lui montre. */
-export type AdresseRetrouvee = AdresseGeocodee & { readonly distance: number }
+export type AdresseRetrouvee = AdresseGeocodee & {
+  readonly distance: number
+  readonly voieSansLeNumero: string
+}
 
 export type CoordonneesSoumises = {
   readonly lieuId: string
@@ -48,16 +55,56 @@ const SCORE_MINIMAL = 0.9
  * vingtaine de mètres sépare deux entrées d'un même bâtiment, pas deux
  * bâtiments.
  */
-const DISTANCE_MAXIMALE = 20
+const MEME_ENDROIT = 25
 
-const TYPES_PRECIS: ReadonlySet<string> = new Set(['housenumber', 'street'])
+/**
+ * Ce qu'il faut de ressemblance, une fois la distance prise en compte, pour
+ * tenir deux libellés pour la même voie quand la Base Adresse Nationale, elle,
+ * n'est pas assez sûre d'elle.
+ */
+const RAPPROCHEMENT_MINIMAL = 95
+
+const BONUS_MAXIMAL = 20
+
+/** La distance à laquelle le bonus s'annule : au-delà, il pénalise. */
+const DISTANCE_PIVOT = 15
+
+/** Ce qu'il faut de ressemblance pour que le point confirme la voie écrite. */
+const CONFIRMATION_MINIMALE = 80
+
+/**
+ * Un lieu-dit est une adresse entière là où il n'y a pas de voie : « Le Bourg »,
+ * « Terres Sainville », « Bois de Nèfles ». La Base Adresse Nationale le range à
+ * part de ses voies, mais c'est bien l'adresse du lieu.
+ */
+const TYPES_UTILISABLES: ReadonlySet<string> = new Set([
+  'housenumber',
+  'street',
+  'locality',
+])
+
+/**
+ * Paris, Marseille et Lyon portent un code de commune que la Base Adresse
+ * Nationale n'emploie pas : elle répond par l'arrondissement. Les deux désignent
+ * la même ville.
+ */
+const ARRONDISSEMENTS: ReadonlyMap<string, RegExp> = new Map([
+  ['75056', /^751\d\d$/u],
+  ['13055', /^132\d\d$/u],
+  ['69123', /^693[89]\d$/u],
+])
 
 const MOTIFS = {
   sansReponse: 'la Base Adresse Nationale ne rend rien',
   repli: 'la voie est introuvable',
   autreCommune: 'une autre commune que celle enregistrée',
   scoreInsuffisant: 'score insuffisant',
+  numeroPerdu: 'le numéro de voie serait perdu',
 } as const
+
+const COMMENCE_PAR_UN_NUMERO = /^\s*\d/u
+
+const UNE_PLAQUE = 'housenumber'
 
 export const coordonneesSoumises = (
   lieu: LieuAReprendre,
@@ -83,12 +130,18 @@ export const coordonneesSoumises = (
  * son `nettoyerVoiePourRecherche` fait, et lui seul : l'adresse retenue reste
  * celle que la Base Adresse Nationale rend.
  *
- * Mesuré sur les 12 780 lieux : 108 voies s'en trouvent changées, 76 franchissent
- * alors le seuil d'appariement, aucune ne le perd.
+ * `nettoyerVoie` passe d'abord : il développe les abréviations de type de voie
+ * et, surtout, coupe la ligne au code postal — des imports y ont recopié
+ * l'adresse entière, si bien que la Base Adresse Nationale comparait
+ * « 26 Rue Famelart 59200 Tourcoing » à « 26 Rue Famelart » et faisait chuter
+ * l'appariement. Cent onze lieux franchissent le seuil pour cette seule raison.
+ *
+ * `enCasseNaturelle` n'y figure pas : la Base Adresse Nationale compare déjà
+ * sans tenir compte de la casse, et la mesure ne lui trouve aucun effet.
  */
 export const adresseSoumise = (lieu: LieuAReprendre): AdresseSoumise => ({
   lieuId: lieu.id,
-  voie: nettoyerVoiePourRecherche(lieu.adresse),
+  voie: nettoyerVoiePourRecherche(nettoyerVoie(lieu.adresse)),
   commune: lieu.commune,
   codePostal: lieu.codePostal,
   codeInsee: lieu.codeInsee,
@@ -103,64 +156,188 @@ const dejaConforme = (lieu: LieuAReprendre, rendue: AdresseGeocodee): boolean =>
   lieu.latitude === rendue.latitude &&
   lieu.longitude === rendue.longitude
 
+const ecartEnMetres = (
+  lieu: LieuAReprendre,
+  rendue: AdresseGeocodee,
+): number | null =>
+  lieu.latitude == null || lieu.longitude == null
+    ? null
+    : Math.abs(
+        distanceEnMetres(
+          { latitude: lieu.latitude, longitude: lieu.longitude },
+          { latitude: rendue.latitude, longitude: rendue.longitude },
+        ),
+      )
+
+const auMemeEndroit = (
+  lieu: LieuAReprendre,
+  rendue: AdresseGeocodee,
+): boolean =>
+  (ecartEnMetres(lieu, rendue) ?? Number.POSITIVE_INFINITY) <= MEME_ENDROIT
+
 /**
- * Une adresse ne se garde que si la Base Adresse Nationale la rend elle-même.
+ * Ce que la proximité ajoute — ou retire — à la ressemblance des libellés.
  *
- * Un repli sur le centre de la commune ne désigne pas un lieu, une voie trouvée
- * dans une autre commune contredit ce qui est enregistré, et un appariement
- * faible n'est qu'une ressemblance. Aucun des trois n'est corrigé d'office : ils
- * paraissent au relevé avec leur motif, pour qu'on les tranche un par un.
+ * Deux adresses au même point et dont le nom propre coïncide sont la même, même
+ * si l'une dit « place » et l'autre « chemin » : c'est une saisie mal qualifiée,
+ * pas un autre endroit. Le bonus est donc maximal à zéro mètre, nul au pivot, et
+ * pénalise ensuite — s'éloigner est un indice bien plus fort que se ressembler.
  */
+const bonusDeProximite = (ecart: number | null): number =>
+  ecart == null
+    ? 0
+    : Math.max(
+        -2 * BONUS_MAXIMAL,
+        Math.round(BONUS_MAXIMAL * (1 - ecart / DISTANCE_PIVOT)),
+      )
+
+/**
+ * Le score de la Base Adresse Nationale mêle la ressemblance du libellé à sa
+ * propre confiance, et chute pour des raisons qui ne nous regardent pas : une
+ * particule, un hameau entre parenthèses, un prénom qu'elle connaît et pas
+ * nous. On lui oppose donc notre propre rapprochement — la ressemblance des
+ * voies, corrigée par la distance.
+ */
+export const rapprochement = (
+  lieu: LieuAReprendre,
+  rendue: AdresseGeocodee,
+): number =>
+  similarite(lieu.adresse.toLowerCase(), rendue.voie.toLowerCase()) +
+  bonusDeProximite(ecartEnMetres(lieu, rendue))
+
+const sansAccents = (valeur: string): string =>
+  valeur
+    .normalize('NFD')
+    .replaceAll(/[̀-ͯ]/gu, '')
+    .toLowerCase()
+    .replaceAll(/[^a-z0-9]+/gu, ' ')
+    .trim()
+
+const MOTS_VIDES: ReadonlySet<string> = new Set([
+  'a',
+  'au',
+  'aux',
+  'd',
+  'de',
+  'des',
+  'du',
+  'en',
+  'et',
+  'l',
+  'la',
+  'le',
+  'les',
+])
+
+const motsDe = (valeur: string): readonly string[] =>
+  sansAccents(valeur)
+    .split(' ')
+    .filter((mot) => mot !== '' && !MOTS_VIDES.has(mot))
+
+const tousPresents = (
+  attendus: readonly string[],
+  parmi: readonly string[],
+): boolean =>
+  attendus.length > 0 && attendus.every((mot) => parmi.includes(mot))
+
+/**
+ * L'une des deux voies contient tous les mots de l'autre.
+ *
+ * C'est ce que la ressemblance globale rate : la ligne enregistrée porte le nom
+ * du bâtiment, du service ou de la commune en plus de la voie — « 32 RUE
+ * FREDERIC MISTRAL LA STATION » —, ou c'est la Base Adresse Nationale qui
+ * complète un prénom que nous n'avions pas — « 5 Rue Surcouf » contre « 5 Rue
+ * Robert Surcouf ». Deux voies réellement différentes ne se contiennent pas.
+ */
+const memeVoieMotAMot = (ecrite: string, rendue: string): boolean => {
+  const ecrits = motsDe(ecrite)
+  const rendus = motsDe(rendue)
+
+  return tousPresents(rendus, ecrits) || tousPresents(ecrits, rendus)
+}
+
+/**
+ * La commune enregistrée et celle que la Base Adresse Nationale rend sont la
+ * même : le code est identique, l'un est un arrondissement de l'autre, ou la
+ * Base Adresse Nationale signale elle-même que le nôtre est l'ancien code d'une
+ * commune nouvelle.
+ */
+const memeCommune = (lieu: LieuAReprendre, rendue: AdresseGeocodee): boolean =>
+  lieu.codeInsee != null &&
+  (rendue.codeInsee === lieu.codeInsee ||
+    rendue.ancienCodeInsee === lieu.codeInsee ||
+    (ARRONDISSEMENTS.get(lieu.codeInsee)?.test(rendue.codeInsee) ?? false) ||
+    (ARRONDISSEMENTS.get(rendue.codeInsee)?.test(lieu.codeInsee) ?? false))
+
+/**
+ * Trois façons de tenir l'adresse rendue pour celle du lieu : la Base Adresse
+ * Nationale en répond elle-même, notre rapprochement la reconnaît là où elle
+ * doute, ou les deux libellés disent les mêmes mots au même endroit.
+ */
+const reconnue = (lieu: LieuAReprendre, rendue: AdresseGeocodee): boolean =>
+  rendue.score >= SCORE_MINIMAL ||
+  rapprochement(lieu, rendue) >= RAPPROCHEMENT_MINIMAL ||
+  (memeVoieMotAMot(lieu.adresse, rendue.voie) && auMemeEndroit(lieu, rendue))
+
+/**
+ * L'adresse rendue n'a pas de numéro là où la nôtre en porte un.
+ *
+ * Au même endroit, c'est sans conséquence : la Base Adresse Nationale ne connaît
+ * pas ce numéro-là, et son point est celui du lieu. Plus loin, en revanche,
+ * l'adresse « à la voie » n'est plus qu'une ressemblance de nom et échangerait
+ * une précision contre une source.
+ */
+const effaceraitLeNumero = (
+  lieu: LieuAReprendre,
+  rendue: AdresseGeocodee,
+): boolean =>
+  COMMENCE_PAR_UN_NUMERO.test(lieu.adresse) &&
+  rendue.type !== UNE_PLAQUE &&
+  !auMemeEndroit(lieu, rendue)
+
 const motifDuRefus = (
   lieu: LieuAReprendre,
   rendue: AdresseGeocodee | undefined,
 ): string | null => {
   if (rendue == null) return MOTIFS.sansReponse
-  if (!TYPES_PRECIS.has(rendue.type)) return MOTIFS.repli
-  if (rendue.codeInsee !== lieu.codeInsee) return MOTIFS.autreCommune
-  if (rendue.score < SCORE_MINIMAL) return MOTIFS.scoreInsuffisant
+  if (!TYPES_UTILISABLES.has(rendue.type)) return MOTIFS.repli
+  if (!memeCommune(lieu, rendue)) return MOTIFS.autreCommune
+  if (!reconnue(lieu, rendue)) return MOTIFS.scoreInsuffisant
+  if (effaceraitLeNumero(lieu, rendue)) return MOTIFS.numeroPerdu
 
   return null
 }
 
-export const adresseDeLAdresse = (
-  lieu: LieuAReprendre,
-  rendue: AdresseGeocodee | undefined,
-): AdresseGeocodee | null =>
-  rendue != null && motifDuRefus(lieu, rendue) == null ? rendue : null
+const parScoreDecroissant = (
+  rendues: readonly AdresseGeocodee[],
+): readonly AdresseGeocodee[] =>
+  [...rendues].sort((une, autre) => autre.score - une.score)
 
 /**
- * L'adresse que la Base Adresse Nationale trouve au point du lieu.
- *
- * Des imports ont ecrit dans la ligne de voie le nom de la commune, celui du
- * batiment, ou rien du tout, tout en posant des coordonnees justes. Le point,
- * lui, ne ment pas : on lui demande ce qui s'y trouve. Encore faut-il que
- * l'adresse rendue soit a portee — au-dela d'une vingtaine de metres, ce n'est
- * plus le meme endroit — et dans la commune enregistree, faute de quoi ce sont
- * les coordonnees qui sont fausses.
+ * La Base Adresse Nationale est interrogée de plusieurs façons sur la même
+ * adresse ; on garde la première réponse qui tienne, la mieux notée d'abord.
  */
+export const adresseDeLAdresse = (
+  lieu: LieuAReprendre,
+  rendues: readonly AdresseGeocodee[],
+): AdresseGeocodee | null =>
+  parScoreDecroissant(rendues).find(
+    (rendue) => motifDuRefus(lieu, rendue) == null,
+  ) ?? null
+
 const UN_TYPE_DE_VOIE = new RegExp(
   `(?:^|[^\\p{L}])(?:${TYPES_DE_VOIE}|${Object.keys(ABREVIATIONS_DE_TYPE_DE_VOIE).join('|')})(?![\\p{L}\\d])`,
   'iu',
 )
-
-const sansAccents = (valeur: string): string =>
-  valeur
-    .normalize('NFD')
-    .replaceAll(/[\u0300-\u036f]/gu, '')
-    .toLowerCase()
-    .replaceAll(/[^a-z0-9]+/gu, ' ')
-    .trim()
 
 /**
  * La ligne de voie ne dit pas de voie.
  *
  * Elle est vide, elle répète le nom de la commune, ou elle ne nomme aucun des
  * types de voie que le standard connaît — « Le Bourg », « Metairie Loaven »,
- * « Pierrecourt ». Alors, et alors seulement, le point a quelque chose à nous
- * apprendre : là où une voie est écrite, c'est elle qui fait foi, et la
- * remplacer par ce qui se trouve au point reviendrait à croire les coordonnées
- * plus que la saisie.
+ * « Pierrecourt ». Alors, et alors seulement, le point décide seul de la voie :
+ * là où une voie est écrite, elle fait foi, et le point ne peut que la
+ * confirmer.
  */
 export const voieMuette = (lieu: LieuAReprendre): boolean => {
   const voie = lieu.adresse.trim()
@@ -172,30 +349,56 @@ export const voieMuette = (lieu: LieuAReprendre): boolean => {
   )
 }
 
+/**
+ * Le point confirme la voie écrite : les deux libellés disent les mêmes mots, ou
+ * se ressemblent assez. Le numéro n'entre pas dans la comparaison — c'est
+ * justement ce que le point apporte ou retire.
+ */
+const voieConfirmee = (
+  lieu: LieuAReprendre,
+  retrouvee: AdresseRetrouvee,
+): boolean =>
+  memeVoieMotAMot(lieu.adresse, retrouvee.voieSansLeNumero) ||
+  similarite(
+    sansAccents(lieu.adresse),
+    sansAccents(retrouvee.voieSansLeNumero),
+  ) >= CONFIRMATION_MINIMALE
+
+/**
+ * L'adresse que la Base Adresse Nationale trouve au point du lieu.
+ *
+ * Des imports ont écrit dans la ligne de voie le nom de la commune, celui du
+ * bâtiment, ou rien du tout, tout en posant des coordonnées justes. Le point,
+ * lui, ne ment pas : on lui demande ce qui s'y trouve. Il pose une voie là où il
+ * n'y en avait aucune, il confirme celle qui est écrite — il ne la remplace
+ * jamais par une autre.
+ */
 export const adresseDesCoordonnees = (
   lieu: LieuAReprendre,
   retrouvee: AdresseRetrouvee | undefined,
 ): AdresseGeocodee | null =>
   retrouvee != null &&
-  voieMuette(lieu) &&
-  TYPES_PRECIS.has(retrouvee.type) &&
-  retrouvee.codeInsee === lieu.codeInsee &&
-  retrouvee.distance <= DISTANCE_MAXIMALE
+  TYPES_UTILISABLES.has(retrouvee.type) &&
+  memeCommune(lieu, retrouvee) &&
+  retrouvee.distance <= MEME_ENDROIT &&
+  (voieMuette(lieu) || voieConfirmee(lieu, retrouvee))
     ? retrouvee
     : null
 
 export const adresseAReprendre = (
   lieu: LieuAReprendre,
-  rendue: AdresseGeocodee | undefined,
+  rendues: readonly AdresseGeocodee[],
   retrouvee?: AdresseRetrouvee,
 ): AdresseAReprendre | null => {
   const adresse =
-    adresseDeLAdresse(lieu, rendue) ?? adresseDesCoordonnees(lieu, retrouvee)
+    adresseDeLAdresse(lieu, rendues) ?? adresseDesCoordonnees(lieu, retrouvee)
 
   if (adresse == null)
     return {
       verdict: 'a-verifier',
-      motif: motifDuRefus(lieu, rendue) ?? MOTIFS.sansReponse,
+      motif:
+        motifDuRefus(lieu, parScoreDecroissant(rendues)[0]) ??
+        MOTIFS.sansReponse,
     }
 
   return dejaConforme(lieu, adresse) ? null : { verdict: 'a-corriger', adresse }

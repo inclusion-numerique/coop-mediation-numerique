@@ -21,7 +21,7 @@ const A_CORRIGER = 'à corriger'
 
 export type GeocoderLesAdresses = (
   adresses: readonly AdresseSoumise[],
-) => Promise<ReadonlyMap<string, AdresseGeocodee>>
+) => Promise<ReadonlyMap<string, readonly AdresseGeocodee[]>>
 
 export type RetrouverParLesCoordonnees = (
   coordonnees: readonly CoordonneesSoumises[],
@@ -38,7 +38,7 @@ export type ReprendreLAdresse = (
  * suffi à situer.
  */
 export type AdressesRendues = {
-  readonly parLAdresse: ReadonlyMap<string, AdresseGeocodee>
+  readonly parLAdresse: ReadonlyMap<string, readonly AdresseGeocodee[]>
   readonly parLesCoordonnees: ReadonlyMap<string, AdresseRetrouvee>
 }
 
@@ -74,7 +74,7 @@ const adressesRendues =
     const parLAdresse = await geocoderLesAdresses(lieux.map(adresseSoumise))
 
     const aRetrouver = lieux.filter(
-      (lieu) => adresseDeLAdresse(lieu, parLAdresse.get(lieu.id)) == null,
+      (lieu) => adresseDeLAdresse(lieu, parLAdresse.get(lieu.id) ?? []) == null,
     )
 
     return {
@@ -96,7 +96,7 @@ export const repriseDeLAdresse = (
     constater: (lieu, { parLAdresse, parLesCoordonnees }) =>
       adresseAReprendre(
         lieu,
-        parLAdresse.get(lieu.id),
+        parLAdresse.get(lieu.id) ?? [],
         parLesCoordonnees.get(lieu.id),
       ),
     mentions: (aReprendre) => [

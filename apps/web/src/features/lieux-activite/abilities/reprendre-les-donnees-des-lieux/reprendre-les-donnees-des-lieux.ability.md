@@ -239,6 +239,29 @@ base.
 > Nationale rend — voie, commune, codes, identifiant et coordonnées comprises.
 > Au-delà de quatre-vingt-dix centièmes d'appariement, c'est la même adresse, et
 > c'est sa version à elle qui fait foi.
+>
+> On l'interroge deux fois sur la même adresse, avec puis sans le code postal
+> enregistré, et on garde la réponse la mieux notée qui tienne. Le code postal
+> est l'une des données qu'on vient justement lui chercher : le lui donner en
+> entrée, c'est lui demander de confirmer une erreur. Dès qu'une commune en porte
+> plusieurs, elle préfère alors n'importe quelle voie du code postal demandé à la
+> bonne voie — « Route de Marseille » à Avignon devient « Route de Lyon » parce
+> que la première est en 84140 et non en 84000. L'ôter seul ne suffit pas non
+> plus : ailleurs, c'est lui qui départage.
+>
+> Un lieu-dit est une adresse entière là où il n'y a pas de voie — « Le Bourg »,
+> « Terres Sainville », « Bois de Nèfles ». La Base Adresse Nationale le range à
+> part de ses voies, mais c'est bien l'adresse du lieu, et elle se garde comme
+> une autre.
+
+## Rule: La commune reste la même quand seul son code change
+
+> Paris, Marseille et Lyon portent un code de commune que la Base Adresse
+> Nationale n'emploie pas : elle répond par l'arrondissement. Une commune nouvelle
+> a remplacé celles qui l'ont formée, et nos fiches portent encore l'ancien code —
+> la Base Adresse Nationale le dit elle-même en rendant le code déchu à côté du
+> sien. Dans les deux cas c'est la même commune, et refuser l'adresse pour cette
+> seule raison ferait tomber des appariements parfaits.
 
 ### Scenario: L'adresse est réalignée sur celle de la Base Adresse Nationale
 
@@ -254,6 +277,26 @@ base.
 > dans une autre commune contredit ce qui est enregistré, et un appariement
 > faible n'est qu'une ressemblance. Aucun des trois ne se tranche sans qu'on
 > l'ait regardé : ils paraissent au relevé avec leur motif, et rien n'est écrit.
+>
+> Encore faut-il ne pas prendre pour faible ce qui ne l'est pas. Le score de la
+> Base Adresse Nationale mêle la ressemblance du libellé à sa propre confiance, et
+> chute pour des raisons qui ne nous regardent pas : une particule, un hameau
+> entre parenthèses, un prénom qu'elle connaît et pas nous. Deux recours lui sont
+> donc opposés. Le rapprochement d'abord — la ressemblance des voies, corrigée par
+> la distance : deux adresses au même point et dont le nom propre coïncide sont la
+> même, même si l'une dit « place » et l'autre « chemin ». L'inclusion des mots
+> ensuite : la ligne enregistrée porte le nom du bâtiment ou du service en plus de
+> la voie — « 32 RUE FREDERIC MISTRAL LA STATION » —, ou c'est la Base Adresse
+> Nationale qui complète un prénom que nous n'avions pas. Deux voies réellement
+> différentes ne se contiennent pas.
+
+## Rule: Le numéro de voie ne se perd qu'au même endroit
+
+> L'adresse rendue n'a pas toujours le numéro que la nôtre porte, ou porte celui
+> qui nous manquait. Au même endroit, c'est sans conséquence : la Base Adresse
+> Nationale ne connaît pas ce numéro-là, son point est celui du lieu, et sa
+> version fait foi comme pour le reste. Plus loin, l'adresse « à la voie » n'est
+> plus qu'une ressemblance de nom et échangerait une précision contre une source.
 
 ### Scenario: Une voie introuvable paraît au relevé sans être corrigée
 
@@ -268,16 +311,18 @@ base.
 > Des imports ont écrit dans la ligne de voie le nom de la commune, celui du
 > bâtiment, ou rien du tout, tout en posant des coordonnées justes. Le point, lui,
 > ne ment pas : on demande à la Base Adresse Nationale ce qui s'y trouve. Encore
-> faut-il que l'adresse rendue soit à portée — au-delà d'une vingtaine de mètres,
-> ce n'est plus le même endroit — et dans la commune enregistrée, faute de quoi
-> ce sont les coordonnées qui sont fausses.
+> faut-il que l'adresse rendue soit à portée — au-delà de vingt-cinq mètres, ce
+> n'est plus le même endroit — et dans la commune enregistrée, faute de quoi ce
+> sont les coordonnées qui sont fausses.
 >
 > Le point est un recours, jamais une source : quand la Base Adresse Nationale
 > reconnaît déjà l'adresse écrite, c'est elle qui fait foi.
 >
-> Et le point ne parle que si la voie se tait — vide, réduite au nom de la
-> commune, ou ne nommant aucun type de voie. Là où une voie est écrite, c'est
-> elle qui décide : la remplacer par ce qui se trouve au point reviendrait à
+> Le point décide seul quand la voie se tait — vide, réduite au nom de la
+> commune, ou ne nommant aucun type de voie. Là où une voie est écrite, il ne
+> peut que la confirmer : il faut qu'il en porte les mêmes mots, ou qu'il lui
+> ressemble assez, et le numéro n'entre pas dans la comparaison puisque c'est
+> justement ce qu'il apporte ou retire. Le remplacer sans cela reviendrait à
 > croire les coordonnées plus que la saisie, et « Route de Marseille »
 > deviendrait « Route de Lyon » parce que le point est mal placé.
 

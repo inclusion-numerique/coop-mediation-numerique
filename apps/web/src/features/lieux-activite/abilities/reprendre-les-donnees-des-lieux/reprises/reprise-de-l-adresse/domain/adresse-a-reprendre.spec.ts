@@ -14,6 +14,7 @@ const RENDUE: AdresseGeocodee = {
   commune: 'Reims',
   codePostal: '51100',
   codeInsee: '51454',
+  ancienCodeInsee: '',
   latitude: 49.25,
   longitude: 4.03,
   libelle: '12 rue de la Paix 51100 Reims',
@@ -25,7 +26,7 @@ const verdict = (
 ) =>
   adresseAReprendre(
     lieuAReprendre(lieu),
-    rendue === undefined ? undefined : { ...RENDUE, ...rendue },
+    rendue === undefined ? [] : [{ ...RENDUE, ...rendue }],
   )
 
 describe('le verdict sur l’adresse d’un lieu', () => {
@@ -53,22 +54,17 @@ describe('le verdict sur l’adresse d’un lieu', () => {
     })
   })
 
-  it('ne corrige pas un lieu-dit', () => {
-    expect(verdict({ type: 'locality' })?.verdict).toBe('a-verifier')
-  })
-
-  it('ne corrige pas une voie trouvée dans une autre commune', () => {
-    expect(verdict({ codeInsee: '51108' })).toEqual({
-      verdict: 'a-verifier',
-      motif: 'une autre commune que celle enregistrée',
-    })
-  })
-
-  it('ne corrige pas un appariement faible', () => {
-    expect(verdict({ score: 0.899 })).toEqual({
+  it('ne corrige pas un appariement faible sur une autre voie', () => {
+    expect(verdict({ score: 0.899, voie: 'Rue de Bourgogne' })).toEqual({
       verdict: 'a-verifier',
       motif: 'score insuffisant',
     })
+  })
+
+  it('corrige un appariement faible sur la même voie, au même point', () => {
+    expect(verdict({ score: 0.899, banId: 'autre' })?.verdict).toBe(
+      'a-corriger',
+    )
   })
 
   it('retient un appariement tout juste au seuil', () => {
@@ -79,6 +75,155 @@ describe('le verdict sur l’adresse d’un lieu', () => {
     expect(verdict(undefined)).toEqual({
       verdict: 'a-verifier',
       motif: 'la Base Adresse Nationale ne rend rien',
+    })
+  })
+})
+
+describe('la commune, que la BAN ne code pas toujours comme nous', () => {
+  it('reconnaît l’arrondissement que la BAN rend pour la ville', () => {
+    expect(
+      verdict({ codeInsee: '75110', banId: 'autre' }, { codeInsee: '75056' })
+        ?.verdict,
+    ).toBe('a-corriger')
+  })
+
+  it('reconnaît la ville que la BAN rend pour l’arrondissement', () => {
+    expect(
+      verdict({ codeInsee: '13055', banId: 'autre' }, { codeInsee: '13203' })
+        ?.verdict,
+    ).toBe('a-corriger')
+  })
+
+  it('reconnaît la commune nouvelle dont la BAN rend l’ancien code', () => {
+    expect(
+      verdict({
+        codeInsee: '85292',
+        ancienCodeInsee: '51454',
+        banId: 'autre',
+      })?.verdict,
+    ).toBe('a-corriger')
+  })
+
+  it('refuse une voie trouvée dans une commune sans rapport', () => {
+    expect(verdict({ codeInsee: '51108' })).toEqual({
+      verdict: 'a-verifier',
+      motif: 'une autre commune que celle enregistrée',
+    })
+  })
+
+  it('refuse l’arrondissement d’une autre ville', () => {
+    expect(
+      verdict({ codeInsee: '75110', banId: 'autre' }, { codeInsee: '13055' })
+        ?.verdict,
+    ).toBe('a-verifier')
+  })
+})
+
+describe('le lieu-dit, adresse entière là où il n’y a pas de voie', () => {
+  it('retient un lieu-dit que la BAN reconnaît', () => {
+    expect(
+      verdict(
+        { type: 'locality', voie: 'Le Bourg', banId: 'autre' },
+        { adresse: 'Le Bourg' },
+      )?.verdict,
+    ).toBe('a-corriger')
+  })
+
+  it('refuse un lieu-dit dont la BAN n’est pas sûre', () => {
+    expect(
+      verdict(
+        { type: 'locality', voie: 'La Fage', score: 0.5, banId: 'autre' },
+        { adresse: 'Le Bourg' },
+      ),
+    ).toEqual({ verdict: 'a-verifier', motif: 'score insuffisant' })
+  })
+})
+
+describe('les deux façons d’interroger la Base Adresse Nationale', () => {
+  const entre = (...rendues: Partial<AdresseGeocodee>[]) =>
+    adresseAReprendre(
+      lieuAReprendre({ adresse: 'Route de Marseille' }),
+      rendues.map((rendue) => ({ ...RENDUE, ...rendue })),
+    )
+
+  it('garde la réponse la mieux notée', () => {
+    expect(
+      entre(
+        { voie: 'Route de Lyon', score: 0.55, banId: 'avec' },
+        { voie: 'Route de Marseille', score: 0.97, banId: 'sans' },
+      ),
+    ).toEqual({
+      verdict: 'a-corriger',
+      adresse: {
+        ...RENDUE,
+        voie: 'Route de Marseille',
+        score: 0.97,
+        banId: 'sans',
+      },
+    })
+  })
+
+  it('se rabat sur la seconde quand la mieux notée ne tient pas', () => {
+    expect(
+      entre(
+        { type: 'municipality', score: 0.98, banId: 'avec' },
+        { voie: 'Route de Marseille', score: 0.93, banId: 'sans' },
+      )?.verdict,
+    ).toBe('a-corriger')
+  })
+
+  it('signale le motif de la mieux notée quand aucune ne tient', () => {
+    expect(
+      entre(
+        { type: 'municipality', score: 0.98 },
+        { voie: 'Route de Lyon', score: 0.55 },
+      ),
+    ).toEqual({ verdict: 'a-verifier', motif: 'la voie est introuvable' })
+  })
+})
+
+describe('les mots d’une voie contenus dans ceux de l’autre', () => {
+  const auPoint = (adresse: string, voie: string, metres: number) =>
+    adresseAReprendre(lieuAReprendre({ adresse }), [
+      {
+        ...RENDUE,
+        score: 0.6,
+        voie,
+        banId: 'autre',
+        latitude: 49.25 + metres / 111_320,
+      },
+    ])
+
+  it('retient la voie que la saisie noyait dans le nom du bâtiment', () => {
+    expect(
+      auPoint(
+        '32 RUE FREDERIC MISTRAL LA STATION',
+        '32 Rue Frédéric Mistral',
+        0,
+      )?.verdict,
+    ).toBe('a-corriger')
+  })
+
+  it('retient le prénom que la BAN ajoute', () => {
+    expect(auPoint('5 Rue Surcouf', '5 Rue Robert Surcouf', 0)?.verdict).toBe(
+      'a-corriger',
+    )
+  })
+
+  it('refuse les mêmes mots à cent mètres', () => {
+    expect(
+      auPoint(
+        '32 RUE FREDERIC MISTRAL LA STATION',
+        '32 Rue Frédéric Mistral',
+        100,
+      ),
+    ).toEqual({ verdict: 'a-verifier', motif: 'score insuffisant' })
+  })
+
+  it('refuse une voie qui ne partage pas ses mots', () => {
+    expect(auPoint('Route de Marseille', 'Route de Lyon', 0)).toEqual({
+      verdict: 'a-verifier',
+      motif: 'score insuffisant',
     })
   })
 })
@@ -106,6 +251,16 @@ describe('la voie soumise à la Base Adresse Nationale', () => {
       '39 Rue de l’Esterel',
     ],
     ['la boîte postale', 'BP 117 2 Avenue du Parc', '2 Avenue du Parc'],
+    [
+      'le code postal et la commune recopiés',
+      '26 Rue Famelart 59200 Tourcoing',
+      '26 Rue Famelart',
+    ],
+    [
+      'une abréviation de type de voie',
+      '10 PL DE L HOTEL DE VILLE',
+      '10 Place DE L HOTEL DE VILLE',
+    ],
   ])('se débarrasse de %s', (_cas, brute, attendue) => {
     expect(adresseSoumise(lieuAReprendre({ adresse: brute })).voie).toBe(
       attendue,
@@ -119,7 +274,7 @@ describe('la voie soumise à la Base Adresse Nationale', () => {
   })
 })
 
-const RETROUVEE = { ...RENDUE, distance: 0 }
+const RETROUVEE = { ...RENDUE, distance: 0, voieSansLeNumero: RENDUE.voie }
 
 const parLesCoordonnees = (
   retrouvee?: Partial<typeof RETROUVEE>,
@@ -127,7 +282,7 @@ const parLesCoordonnees = (
 ) =>
   adresseAReprendre(
     lieuAReprendre({ adresse: 'Vallon-en-Sully', ...lieu }),
-    { ...RENDUE, type: 'municipality' },
+    [{ ...RENDUE, type: 'municipality' }],
     retrouvee === undefined ? undefined : { ...RETROUVEE, ...retrouvee },
   )
 
@@ -140,13 +295,13 @@ describe('l’adresse retrouvée au point du lieu', () => {
   })
 
   it('accepte un point tout juste à la limite', () => {
-    expect(parLesCoordonnees({ distance: 20, banId: 'autre' })?.verdict).toBe(
+    expect(parLesCoordonnees({ distance: 25, banId: 'autre' })?.verdict).toBe(
       'a-corriger',
     )
   })
 
   it('refuse un point trop éloigné de l’adresse rendue', () => {
-    expect(parLesCoordonnees({ distance: 21 })).toEqual({
+    expect(parLesCoordonnees({ distance: 26 })).toEqual({
       verdict: 'a-verifier',
       motif: 'la voie est introuvable',
     })
@@ -166,7 +321,7 @@ describe('l’adresse retrouvée au point du lieu', () => {
 
   it('ne sert pas quand l’adresse écrite suffit', () => {
     expect(
-      adresseAReprendre(lieuAReprendre(), RENDUE, {
+      adresseAReprendre(lieuAReprendre(), [RENDUE], {
         ...RETROUVEE,
         banId: 'ailleurs',
       }),
@@ -175,6 +330,54 @@ describe('l’adresse retrouvée au point du lieu', () => {
 
   it('ne concerne pas un lieu sans coordonnées', () => {
     expect(parLesCoordonnees(undefined)?.verdict).toBe('a-verifier')
+  })
+})
+
+describe('la voie écrite, que le point confirme sans la remplacer', () => {
+  const auPoint = (adresse: string, retrouvee: Partial<typeof RETROUVEE>) =>
+    adresseAReprendre(
+      lieuAReprendre({ adresse }),
+      [{ ...RENDUE, type: 'municipality' }],
+      { ...RETROUVEE, banId: 'autre', distance: 3, ...retrouvee },
+    )
+
+  it('confirme la voie dont le point porte les mêmes mots', () => {
+    expect(
+      auPoint('82 Rue Guynemer', {
+        type: 'street',
+        voie: 'Rue Guynemer',
+        voieSansLeNumero: 'Rue Guynemer',
+      })?.verdict,
+    ).toBe('a-corriger')
+  })
+
+  it('confirme la voie dont le point ne diffère que par l’orthographe', () => {
+    expect(
+      auPoint('Rue Macabit', {
+        type: 'street',
+        voie: 'Rue des Macabits',
+        voieSansLeNumero: 'Rue des Macabits',
+      })?.verdict,
+    ).toBe('a-corriger')
+  })
+
+  it('ne laisse pas le point remplacer une voie qui parle', () => {
+    expect(
+      auPoint('Route de Marseille', {
+        type: 'street',
+        voie: 'Route de Lyon',
+        voieSansLeNumero: 'Route de Lyon',
+      }),
+    ).toEqual({ verdict: 'a-verifier', motif: 'la voie est introuvable' })
+  })
+
+  it('compare la voie sans son numéro', () => {
+    expect(
+      auPoint('Rue de la Chapelle', {
+        voie: '9 Rue de la Chapelle',
+        voieSansLeNumero: 'Rue de la Chapelle',
+      })?.verdict,
+    ).toBe('a-corriger')
   })
 })
 
@@ -197,14 +400,85 @@ describe('la voie qui se tait, seule à laisser parler le point', () => {
   ])('parle quand elle porte %s', (_cas, adresse) => {
     expect(voieMuette(lieuAReprendre({ adresse }))).toBe(false)
   })
+})
 
-  it('ne laisse pas le point remplacer une voie qui parle', () => {
+describe('le numéro de voie, que seule la proximité autorise à perdre', () => {
+  const aLaVoie = (metres: number) =>
+    adresseAReprendre(lieuAReprendre({ adresse: '20 Route de Demigny' }), [
+      {
+        ...RENDUE,
+        type: 'street',
+        voie: 'Route de Demigny',
+        banId: 'autre',
+        latitude: 49.25 + metres / 111_320,
+      },
+    ])
+
+  it('accepte de perdre le numéro au point même du lieu', () => {
+    expect(aLaVoie(0)?.verdict).toBe('a-corriger')
+  })
+
+  it('refuse de le perdre pour une voie située ailleurs', () => {
+    expect(aLaVoie(300)).toEqual({
+      verdict: 'a-verifier',
+      motif: 'le numéro de voie serait perdu',
+    })
+  })
+
+  it('accepte une adresse « à la voie » là où la nôtre n’a pas de numéro', () => {
     expect(
-      adresseAReprendre(
-        lieuAReprendre({ adresse: 'Route de Marseille' }),
-        { ...RENDUE, type: 'municipality' },
-        { ...RENDUE, voie: 'Route de Lyon', banId: 'autre', distance: 3 },
-      ),
-    ).toEqual({ verdict: 'a-verifier', motif: 'la voie est introuvable' })
+      verdict(
+        { type: 'street', voie: 'Route de Demigny', banId: 'autre' },
+        { adresse: 'Route de Demigny' },
+      )?.verdict,
+    ).toBe('a-corriger')
+  })
+
+  it('accepte le numéro que la BAN ajoute au point du lieu', () => {
+    expect(
+      verdict(
+        { voie: '14 Route de Demigny', banId: 'autre' },
+        { adresse: 'Route de Demigny' },
+      )?.verdict,
+    ).toBe('a-corriger')
+  })
+})
+
+describe('le rapprochement, quand la Base Adresse Nationale doute', () => {
+  const auPoint = (adresse: string, voie: string, metres: number) =>
+    adresseAReprendre(
+      lieuAReprendre({ adresse, latitude: 49.25, longitude: 4.03 }),
+      [
+        {
+          ...RENDUE,
+          score: 0.8,
+          voie,
+          banId: 'autre',
+          latitude: 49.25 + metres / 111_320,
+          longitude: 4.03,
+        },
+      ],
+    )
+
+  it('retient une voie mal qualifiée au même point', () => {
+    expect(
+      auPoint('1 Place Victor Schoelcher', '1 Rue Victor Schoelcher', 0)
+        ?.verdict,
+    ).toBe('a-corriger')
+  })
+
+  it('refuse la même ressemblance à cent mètres', () => {
+    expect(
+      auPoint('1 Place Victor Schoelcher', '1 Rue Victor Schoelcher', 100),
+    ).toEqual({ verdict: 'a-verifier', motif: 'score insuffisant' })
+  })
+
+  it('ne se substitue pas au score quand celui-ci suffit', () => {
+    expect(
+      verdict(
+        { voie: 'Route de Marseille', banId: 'autre' },
+        { adresse: 'Route de Marseille' },
+      )?.verdict,
+    ).toBe('a-corriger')
   })
 })

@@ -94,6 +94,7 @@ const ADRESSE_BAN = {
   commune: 'Rochefort',
   codePostal: '17300',
   codeInsee: '17299',
+  ancienCodeInsee: '',
   latitude: 45.941_23,
   longitude: -0.960_45,
   libelle: '12 Quai du Port 17300 Rochefort',
@@ -105,13 +106,16 @@ const banRetrouve: { adresse: AdresseRetrouvee | null } = { adresse: null }
 
 const retrouverParLesCoordonnees: RetrouverParLesCoordonnees = async (
   points,
-) =>
-  banRetrouve.adresse == null
+) => {
+  const retrouvee = banRetrouve.adresse
+
+  return retrouvee == null
     ? new Map()
-    : new Map(points.map(({ lieuId }) => [lieuId, banRetrouve.adresse!]))
+    : new Map(points.map(({ lieuId }) => [lieuId, retrouvee]))
+}
 
 const geocoderLesAdresses: GeocoderLesAdresses = async (adresses) =>
-  new Map(adresses.map(({ lieuId }) => [lieuId, banRend.adresse]))
+  new Map(adresses.map(({ lieuId }) => [lieuId, [banRend.adresse]]))
 
 const semis: { lieuId?: string; modification?: Date; releve?: Releve } = {}
 
@@ -292,11 +296,19 @@ Given('la Base Adresse Nationale ne reconnaît pas la voie', () => {
 })
 
 Given('elle retrouve une adresse au point du lieu', () => {
-  banRetrouve.adresse = { ...ADRESSE_BAN, distance: 4 }
+  banRetrouve.adresse = {
+    ...ADRESSE_BAN,
+    distance: 4,
+    voieSansLeNumero: ADRESSE_BAN.voie,
+  }
 })
 
 Given('elle retrouve une adresse trop loin du point du lieu', () => {
-  banRetrouve.adresse = { ...ADRESSE_BAN, distance: 240 }
+  banRetrouve.adresse = {
+    ...ADRESSE_BAN,
+    distance: 240,
+    voieSansLeNumero: ADRESSE_BAN.voie,
+  }
 })
 
 Given('un lieu dont les créneaux sont illisibles', async () => {
