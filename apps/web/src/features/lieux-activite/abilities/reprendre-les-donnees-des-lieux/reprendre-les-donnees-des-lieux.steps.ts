@@ -4,7 +4,9 @@ import {
   lireLesLieux,
   type Releve,
   reprendreLesDonneesDesLieux,
+  reprendreLesHoraires,
   sansDepot,
+  sansRepriseDesHoraires,
   sansTri,
   trierLesListes,
 } from '@app/web/features/lieux-activite/abilities/reprendre-les-donnees-des-lieux'
@@ -28,6 +30,12 @@ const SERVICES_DESORDONNES_AU_REGISTRE: readonly ServiceMain[] = [
   'AideAuxDemarchesAdministratives',
 ]
 
+const HORAIRES_A_CORRIGER = 'We 09:00-12:00 Mercredis semaines paires'
+
+const HORAIRES_CORRIGES = 'We 09:00-12:00 "Mercredis semaines paires"'
+
+const HORAIRES_SANS_CRENEAU = '"Sur rendez-vous uniquement"'
+
 const semis: { lieuId?: string; modification?: Date; releve?: Releve } = {}
 
 const lieuSeme = (): string => {
@@ -42,14 +50,18 @@ const releve = (): Releve => {
   return semis.releve
 }
 
-const semerUnLieu = async (services: readonly Service[]): Promise<void> => {
+const semerUnLieu = async (champs: {
+  readonly services?: readonly Service[]
+  readonly horaires?: string
+}): Promise<void> => {
   const lieu = await prismaClient.lieuInclusion.create({
     data: {
-      nom: `Lieu à trier ${v4()}`,
+      nom: `Lieu à reprendre ${v4()}`,
       adresse: '12 quai du Port',
       commune: 'Rochefort',
       codePostal: '17300',
-      services: [...services],
+      services: [...(champs.services ?? SERVICES_TRIES)],
+      horaires: champs.horaires ?? null,
     },
     select: { id: true, modification: true },
   })
@@ -69,6 +81,22 @@ const servicesDuLieu = async (): Promise<readonly string[]> =>
     })
   ).services
 
+const horairesDuLieu = async (): Promise<string | null> =>
+  (
+    await prismaClient.lieuInclusion.findUniqueOrThrow({
+      where: { id: lieuSeme() },
+      select: { horaires: true },
+    })
+  ).horaires
+
+const horairesDuRegistre = async (): Promise<string | null> =>
+  (
+    await prismaClient.lieuInclusionRegistreMain.findFirstOrThrow({
+      where: { structureCoopId: lieuSeme() },
+      select: { horaires: true },
+    })
+  ).horaires
+
 const servicesDuRegistre = async (): Promise<readonly string[]> =>
   (
     await prismaClient.lieuInclusionRegistreMain.findFirstOrThrow({
@@ -77,12 +105,26 @@ const servicesDuRegistre = async (): Promise<readonly string[]> =>
     })
   ).services
 
+const auReleve = () =>
+  releve().lieux.find(({ lieuId }) => lieuId === lieuSeme())
+
 Given('un lieu dont les services sont désordonnés', async () => {
-  await semerUnLieu(SERVICES_DESORDONNES)
+  await semerUnLieu({ services: SERVICES_DESORDONNES })
 })
 
 Given('un lieu dont les listes sont en ordre', async () => {
-  await semerUnLieu(SERVICES_TRIES)
+  await semerUnLieu({})
+})
+
+Given(
+  'un lieu dont les horaires portent un commentaire non guillemeté',
+  async () => {
+    await semerUnLieu({ horaires: HORAIRES_A_CORRIGER })
+  },
+)
+
+Given('un lieu dont les horaires ne portent aucun créneau', async () => {
+  await semerUnLieu({ horaires: HORAIRES_SANS_CRENEAU })
 })
 
 Given(
@@ -90,7 +132,7 @@ Given(
   async () => {
     await prismaClient.lieuInclusionRegistreMain.create({
       data: {
-        nom: 'Lieu à trier',
+        nom: 'Lieu à reprendre',
         structureCoopId: lieuSeme(),
         services: [...SERVICES_DESORDONNES_AU_REGISTRE],
       },
@@ -98,12 +140,23 @@ Given(
   },
 )
 
+Given('il est inscrit au registre avec les mêmes horaires', async () => {
+  await prismaClient.lieuInclusionRegistreMain.create({
+    data: {
+      nom: 'Lieu à reprendre',
+      structureCoopId: lieuSeme(),
+      horaires: HORAIRES_A_CORRIGER,
+    },
+  })
+})
+
 When('on reprend les données des lieux', async () => {
   semis.releve = (
     await reprendreLesDonneesDesLieux({
       ports: {
         lireLesLieux: lireLesLieuxDuScenario,
         trierLesListes,
+        reprendreLesHoraires,
         deposerLeReleve,
         journal: () => undefined,
       },
@@ -117,6 +170,7 @@ When('on relève les données des lieux sans les reprendre', async () => {
       ports: {
         lireLesLieux: lireLesLieuxDuScenario,
         trierLesListes: sansTri,
+        reprendreLesHoraires: sansRepriseDesHoraires,
         deposerLeReleve: sansDepot,
         journal: () => undefined,
       },
@@ -126,21 +180,29 @@ When('on relève les données des lieux sans les reprendre', async () => {
 
 Then('le relevé compte ce lieu dans la colonne {string}', (colonne: string) => {
   assert.ok(
-    releve().listesATrier.lieux.some(
-      ({ lieuId, colonnes }) =>
-        lieuId === lieuSeme() &&
-        colonnes.some((relevee) => relevee === colonne),
-    ),
-    `colonnes relevées : ${releve()
-      .listesATrier.lieux.flatMap(({ colonnes }) => colonnes)
-      .join(', ')}`,
+    auReleve()?.listesATrier.some((relevee) => relevee === colonne),
+    `colonnes relevées : ${auReleve()?.listesATrier.join(', ') ?? 'aucune'}`,
   )
 })
 
 Then('le relevé ne retient pas ce lieu', () => {
-  assert.ok(
-    releve().listesATrier.lieux.every(({ lieuId }) => lieuId !== lieuSeme()),
-    'le lieu ne devrait rien avoir à trier',
+  assert.strictEqual(auReleve(), undefined)
+})
+
+Then('le relevé annonce des horaires à corriger', () => {
+  assert.strictEqual(auReleve()?.horaires?.verdict, 'a-corriger')
+})
+
+Then('le relevé annonce des horaires à effacer', () => {
+  assert.strictEqual(auReleve()?.horaires?.verdict, 'a-effacer')
+})
+
+Then('le relevé montre la chaîne abandonnée', () => {
+  const horaires = auReleve()?.horaires
+
+  assert.strictEqual(
+    horaires?.verdict === 'a-effacer' ? horaires.valeur : null,
+    HORAIRES_SANS_CRENEAU,
   )
 })
 
@@ -154,6 +216,22 @@ Then('les services du lieu sont restés en l’état', async () => {
 
 Then('les services de son inscription au registre sont triés', async () => {
   assert.deepStrictEqual(await servicesDuRegistre(), [...SERVICES_TRIES])
+})
+
+Then('les horaires du lieu sont corrigés', async () => {
+  assert.strictEqual(await horairesDuLieu(), HORAIRES_CORRIGES)
+})
+
+Then('les horaires du lieu sont restés en l’état', async () => {
+  assert.strictEqual(await horairesDuLieu(), HORAIRES_A_CORRIGER)
+})
+
+Then('les horaires de son inscription au registre sont corrigés', async () => {
+  assert.strictEqual(await horairesDuRegistre(), HORAIRES_CORRIGES)
+})
+
+Then('les horaires du lieu sont effacés', async () => {
+  assert.strictEqual(await horairesDuLieu(), null)
 })
 
 Then('la date de modification du lieu n’a pas bougé', async () => {

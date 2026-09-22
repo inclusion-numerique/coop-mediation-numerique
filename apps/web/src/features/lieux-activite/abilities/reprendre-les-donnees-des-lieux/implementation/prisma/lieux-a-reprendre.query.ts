@@ -9,6 +9,7 @@ export const lireLesLieux: LireLesLieux = async () =>
       COALESCE(commune, '')                                  AS "commune",
       COALESCE(code_postal, '')                              AS "codePostal",
       COALESCE(visible_pour_cartographie_nationale, false)   AS "publie",
+      NULLIF(horaires, '')                                   AS "horaires",
       COALESCE(typologies::text[], '{}')                     AS "typologies",
       COALESCE(services::text[], '{}')                       AS "services",
       COALESCE(modalites_acces::text[], '{}')                AS "modalitesAcces",

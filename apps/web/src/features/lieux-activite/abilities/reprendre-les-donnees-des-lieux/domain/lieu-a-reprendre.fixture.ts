@@ -8,6 +8,7 @@ export const lieuAReprendre = (
   commune: 'Reims',
   codePostal: '51100',
   publie: true,
+  horaires: null,
   typologies: ['TIERS_LIEUX'],
   services: ['Aide aux démarches administratives'],
   modalitesAcces: [],

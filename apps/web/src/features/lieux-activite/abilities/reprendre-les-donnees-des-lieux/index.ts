@@ -6,10 +6,14 @@ export {
 export {
   type ColonneDeListe,
   colonnesATrier,
+  comptesDesHoraires,
+  comptesParColonne,
+  type HorairesAReprendre,
+  horairesAReprendre,
+  horairesNormalises,
   LISTES,
   type LieuAReprendre,
-  type LieuAuxListesATrier,
-  type ListesATrier,
+  type LieuAuReleve,
   type Releve,
   relever,
 } from './domain'
@@ -18,7 +22,9 @@ export {
   dossierDuReleve,
   lireLesLieux,
   releveEnLignes,
+  reprendreLesHoraires,
   sansDepot,
+  sansRepriseDesHoraires,
   sansTri,
   trierLesListes,
 } from './implementation'

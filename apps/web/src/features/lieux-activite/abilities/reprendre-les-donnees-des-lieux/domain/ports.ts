@@ -8,6 +8,11 @@ export type TrierLesListes = (
   colonnes: readonly ColonneDeListe[],
 ) => Promise<void>
 
+export type ReprendreLesHoraires = (
+  lieuId: string,
+  horaires: string | null,
+) => Promise<void>
+
 export type DeposerLeReleve = (releve: Releve) => Promise<readonly string[]>
 
 export type Journal = (message: string) => void

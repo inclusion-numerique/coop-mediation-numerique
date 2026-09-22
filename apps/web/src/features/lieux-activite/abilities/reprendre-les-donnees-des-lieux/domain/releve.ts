@@ -1,14 +1,19 @@
+import {
+  type HorairesAReprendre,
+  horairesAReprendre,
+} from './horaires-a-reprendre'
 import type { ColonneDeListe, LieuAReprendre } from './lieu-a-reprendre'
 import { LISTES } from './lieu-a-reprendre'
 import { colonnesATrier } from './listes-a-trier'
 
-export type LieuAuxListesATrier = {
+export type LieuAuReleve = {
   readonly lieuId: string
   readonly nom: string
   readonly commune: string
   readonly codePostal: string
   readonly publie: boolean
-  readonly colonnes: readonly ColonneDeListe[]
+  readonly listesATrier: readonly ColonneDeListe[]
+  readonly horaires: HorairesAReprendre | null
 }
 
 export type ColonneATrier = {
@@ -16,56 +21,59 @@ export type ColonneATrier = {
   readonly lieux: number
 }
 
-export type ListesATrier = {
-  readonly colonnes: readonly ColonneATrier[]
-  readonly lieux: readonly LieuAuxListesATrier[]
+export type ComptesDesHoraires = {
+  readonly aCorriger: number
+  readonly aEffacer: number
 }
 
 export type Releve = {
   readonly lieuxMesures: number
-  readonly listesATrier: ListesATrier
+  readonly lieux: readonly LieuAuReleve[]
 }
 
-const auReleve = (lieu: LieuAReprendre): readonly LieuAuxListesATrier[] => {
-  const colonnes = colonnesATrier(lieu)
+const rienAFaire = ({ listesATrier, horaires }: LieuAuReleve): boolean =>
+  listesATrier.length === 0 && horaires == null
 
-  return colonnes.length === 0
-    ? []
-    : [
-        {
-          lieuId: lieu.id,
-          nom: lieu.nom,
-          commune: lieu.commune,
-          codePostal: lieu.codePostal,
-          publie: lieu.publie,
-          colonnes,
-        },
-      ]
-}
+const auReleve = (lieu: LieuAReprendre): LieuAuReleve => ({
+  lieuId: lieu.id,
+  nom: lieu.nom,
+  commune: lieu.commune,
+  codePostal: lieu.codePostal,
+  publie: lieu.publie,
+  listesATrier: colonnesATrier(lieu),
+  horaires: horairesAReprendre(lieu),
+})
+
+export const relever = (lieux: readonly LieuAReprendre[]): Releve => ({
+  lieuxMesures: lieux.length,
+  lieux: lieux.map(auReleve).filter((lieu) => !rienAFaire(lieu)),
+})
 
 const compter = (
-  lieux: readonly LieuAuxListesATrier[],
+  lieux: readonly LieuAuReleve[],
   colonne: ColonneDeListe,
 ): ColonneATrier => ({
   colonne,
-  lieux: lieux.filter(({ colonnes }) => colonnes.includes(colonne)).length,
+  lieux: lieux.filter(({ listesATrier }) => listesATrier.includes(colonne))
+    .length,
 })
 
 const deLaPlusLourde = (gauche: ColonneATrier, droite: ColonneATrier): number =>
   droite.lieux - gauche.lieux
 
-const listesATrier = (lieux: readonly LieuAReprendre[]): ListesATrier => {
-  const aTrier = lieux.flatMap(auReleve)
+export const comptesParColonne = ({
+  lieux,
+}: Releve): readonly ColonneATrier[] =>
+  LISTES.map((colonne) => compter(lieux, colonne))
+    .filter(({ lieux: touches }) => touches > 0)
+    .sort(deLaPlusLourde)
 
-  return {
-    colonnes: LISTES.map((colonne) => compter(aTrier, colonne))
-      .filter(({ lieux: touches }) => touches > 0)
-      .sort(deLaPlusLourde),
-    lieux: aTrier,
-  }
-}
+const porteLeVerdict =
+  (verdict: HorairesAReprendre['verdict']) =>
+  ({ horaires }: LieuAuReleve): boolean =>
+    horaires?.verdict === verdict
 
-export const relever = (lieux: readonly LieuAReprendre[]): Releve => ({
-  lieuxMesures: lieux.length,
-  listesATrier: listesATrier(lieux),
+export const comptesDesHoraires = ({ lieux }: Releve): ComptesDesHoraires => ({
+  aCorriger: lieux.filter(porteLeVerdict('a-corriger')).length,
+  aEffacer: lieux.filter(porteLeVerdict('a-effacer')).length,
 })

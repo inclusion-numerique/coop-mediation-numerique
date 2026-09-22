@@ -286,9 +286,6 @@ importers:
       nodemailer:
         specifier: ^9.0.3
         version: 9.0.3
-      opening_hours:
-        specifier: ^3.14.0
-        version: 3.14.0(typescript@7.0.2)
       p-retry:
         specifier: ^8.0.0
         version: 8.0.0

@@ -1,10 +1,14 @@
 import {
+  comptesDesHoraires,
+  comptesParColonne,
   deposerLeReleve,
   dossierDuReleve,
   lireLesLieux,
   releveEnLignes,
   reprendreLesDonneesDesLieux,
+  reprendreLesHoraires,
   sansDepot,
+  sansRepriseDesHoraires,
   sansTri,
   trierLesListes,
 } from '@app/web/features/lieux-activite/abilities/reprendre-les-donnees-des-lieux'
@@ -20,11 +24,14 @@ export const executeReprendreLesDonneesDesLieux: JobExecutor<
   const journal = (message: string) =>
     output.log(`reprendre-les-donnees-des-lieux: ${message}`)
 
-  const { releve, lieuxTries, fichiers } = await reprendreLesDonneesDesLieux({
+  const { releve, lieuxRepris, fichiers } = await reprendreLesDonneesDesLieux({
     ports: {
       lireLesLieux,
       journal,
       trierLesListes: reprendre ? trierLesListes : sansTri,
+      reprendreLesHoraires: reprendre
+        ? reprendreLesHoraires
+        : sansRepriseDesHoraires,
       deposerLeReleve: csv ? deposerLeReleve : sansDepot,
     },
   })
@@ -33,15 +40,17 @@ export const executeReprendreLesDonneesDesLieux: JobExecutor<
     [
       ...releveEnLignes(releve),
       '',
-      `${lieuxTries} lieux${reprendre ? ' triés, dans la coop et au registre' : ' à trier (À BLANC)'}`,
+      `${lieuxRepris} lieux${reprendre ? ' repris, dans la coop et au registre' : ' à reprendre (À BLANC)'}`,
       ...fichiers.map((fichier) => `  ${dossierDuReleve()}/${fichier}`),
     ].join('\n'),
   )
 
   return {
     lieuxMesures: releve.lieuxMesures,
-    colonnesATrier: releve.listesATrier.colonnes,
-    lieuxTries,
+    lieuxAReprendre: releve.lieux.length,
+    colonnesATrier: comptesParColonne(releve),
+    horaires: comptesDesHoraires(releve),
+    lieuxRepris,
     reprendre,
   }
 }

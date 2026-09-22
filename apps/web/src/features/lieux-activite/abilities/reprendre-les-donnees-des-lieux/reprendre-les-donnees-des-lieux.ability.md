@@ -5,7 +5,7 @@ standard de la médiation numérique ne les gouverne. Une passe relève ce que l
 règles n'acceptent plus et reprend ce qui se reprend sans arbitrage.
 
 Chaque reprise est ajoutée séparément, une fois la précédente vérifiée sur la
-base. La première est le tri des listes de vocabulaire.
+base.
 
 ## Rule: L'ordre d'une liste de vocabulaire ne porte aucune information
 
@@ -29,10 +29,46 @@ base. La première est le tri des listes de vocabulaire.
 * When on reprend les données des lieux
 * Then le relevé ne retient pas ce lieu
 
-## Rule: Le registre est trié dans la même transaction que la coop
+## Rule: Des horaires que le format refuse se réparent plutôt qu'ils ne se perdent
+
+> Le format OpenStreetMap n'accepte un commentaire qu'entre guillemets, en fin
+> de chaîne. Or la coop a enregistré des notes collées aux créneaux, et le
+> modèle rejetait la valeur entière : ces lieux n'affichaient aucun horaire
+> alors qu'ils en portaient. On guillemète la note, on garde les créneaux.
+
+### Scenario: Un commentaire non guillemeté est remis à sa place
+
+* Given un lieu dont les horaires portent un commentaire non guillemeté
+* When on reprend les données des lieux
+* Then le relevé annonce des horaires à corriger
+* And les horaires du lieu sont corrigés
+
+### Scenario: Le registre est corrigé en même temps que la coop
+
+* Given un lieu dont les horaires portent un commentaire non guillemeté
+* And il est inscrit au registre avec les mêmes horaires
+* When on reprend les données des lieux
+* Then les horaires du lieu sont corrigés
+* And les horaires de son inscription au registre sont corrigés
+
+## Rule: On n'efface qu'en dernier recours
+
+> Une note comme « sur rendez-vous » n'est pas un horaire : il n'y a aucun
+> créneau à en tirer. La chaîne paraît telle quelle au relevé, pour qu'on puisse
+> la lire avant qu'elle ne disparaisse.
+
+### Scenario: Une note sans créneau est montrée puis effacée
+
+* Given un lieu dont les horaires ne portent aucun créneau
+* When on reprend les données des lieux
+* Then le relevé annonce des horaires à effacer
+* And le relevé montre la chaîne abandonnée
+* And les horaires du lieu sont effacés
+
+## Rule: Le registre est repris dans la même transaction que la coop
 
 > Le lieu paraît sur la cartographie nationale par son inscription au registre :
-> trier d'un côté seulement recréerait l'écart qu'on vient de supprimer.
+> reprendre d'un côté seulement recréerait l'écart qu'on vient de supprimer.
 
 ### Scenario: La coop et le registre sont triés ensemble
 
@@ -42,11 +78,11 @@ base. La première est le tri des listes de vocabulaire.
 * Then les services du lieu sont triés
 * And les services de son inscription au registre sont triés
 
-## Rule: Trier une liste ne date pas la fiche
+## Rule: Une reprise ne date pas la fiche
 
-> Une date de mise à jour annonce à ceux qui republient le lieu que quelque
-> chose a changé pour le public. Un tri ne change rien pour le public : le
-> signaler fabriquerait le faux changement que ce tri vient supprimer.
+> Une date de mise à jour annonce à ceux qui republient le lieu que quelqu'un a
+> tenu la fiche. Personne ne l'a tenue : on répare ce que d'anciens imports ont
+> laissé. La dater ferait passer une réparation pour une mise à jour.
 
 ### Scenario: La date de modification ne bouge pas
 
@@ -65,3 +101,10 @@ base. La première est le tri des listes de vocabulaire.
 * When on relève les données des lieux sans les reprendre
 * Then le relevé compte ce lieu dans la colonne "services"
 * And les services du lieu sont restés en l’état
+
+### Scenario: Une passe à blanc ne corrige aucun horaire
+
+* Given un lieu dont les horaires portent un commentaire non guillemeté
+* When on relève les données des lieux sans les reprendre
+* Then le relevé annonce des horaires à corriger
+* And les horaires du lieu sont restés en l’état

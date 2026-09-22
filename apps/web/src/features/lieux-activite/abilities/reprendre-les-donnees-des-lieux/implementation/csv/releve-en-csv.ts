@@ -2,16 +2,19 @@ import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import {
   type DeposerLeReleve,
+  type HorairesAReprendre,
   LISTES,
-  type LieuAuxListesATrier,
-  type ListesATrier,
+  type LieuAuReleve,
+  type Releve,
 } from '../../domain'
 
 const DOSSIER = 'output/reprise-lieux'
 
-const LISTES_A_TRIER = 'listes-a-trier.csv'
+const FICHIER = 'reprise-lieux.csv'
 
 const A_TRIER = 'à trier'
+
+const A_CORRIGER = 'à corriger'
 
 const EN_TETE = [
   'lieu_id',
@@ -20,22 +23,31 @@ const EN_TETE = [
   'code_postal',
   'publie',
   ...LISTES,
+  'horaires',
 ]
 
 const cellule = (valeur: string): string =>
   `"${valeur.replaceAll('"', '""').replaceAll('\n', ' ').replaceAll('\r', '')}"`
 
-const ligneDuLieu = (lieu: LieuAuxListesATrier): readonly string[] => [
+const celluleDesHoraires = (horaires: HorairesAReprendre | null): string =>
+  horaires == null
+    ? ''
+    : horaires.verdict === 'a-corriger'
+      ? A_CORRIGER
+      : cellule(horaires.valeur)
+
+const ligneDuLieu = (lieu: LieuAuReleve): readonly string[] => [
   lieu.lieuId,
   cellule(lieu.nom),
   cellule(lieu.commune),
   lieu.codePostal,
   lieu.publie ? 'oui' : 'non',
-  ...LISTES.map((liste) => (lieu.colonnes.includes(liste) ? A_TRIER : '')),
+  ...LISTES.map((liste) => (lieu.listesATrier.includes(liste) ? A_TRIER : '')),
+  celluleDesHoraires(lieu.horaires),
 ]
 
-const enLignes = (listesATrier: ListesATrier): string =>
-  [EN_TETE, ...listesATrier.lieux.map(ligneDuLieu)]
+const enLignes = (releve: Releve): string =>
+  [EN_TETE, ...releve.lieux.map(ligneDuLieu)]
     .map((ligne) => ligne.join(';'))
     .join('\n')
 
@@ -48,16 +60,10 @@ const dossierNeuf = (): string => {
   return dossier
 }
 
-const ecrire = (dossier: string, nom: string, contenu: string): string => {
-  writeFileSync(join(dossier, nom), `${contenu}\n`, 'utf8')
-
-  return nom
-}
-
 export const deposerLeReleve: DeposerLeReleve = async (releve) => {
-  const dossier = dossierNeuf()
+  writeFileSync(join(dossierNeuf(), FICHIER), `${enLignes(releve)}\n`, 'utf8')
 
-  return [ecrire(dossier, LISTES_A_TRIER, enLignes(releve.listesATrier))]
+  return [FICHIER]
 }
 
 export const dossierDuReleve = (): string => join(process.cwd(), DOSSIER)

@@ -4,6 +4,7 @@ export type LieuAReprendre = {
   readonly commune: string
   readonly codePostal: string
   readonly publie: boolean
+  readonly horaires: string | null
   readonly typologies: readonly string[]
   readonly services: readonly string[]
   readonly modalitesAcces: readonly string[]
@@ -32,3 +33,6 @@ export const LISTES = [
 ] as const satisfies readonly (keyof LieuAReprendre)[]
 
 export type ColonneDeListe = (typeof LISTES)[number]
+
+export const nonVide = (valeur: string | null | undefined): string | null =>
+  valeur != null && valeur.trim() !== '' ? valeur.trim() : null
