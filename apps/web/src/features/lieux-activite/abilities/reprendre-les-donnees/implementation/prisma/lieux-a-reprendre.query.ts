@@ -1,17 +1,8 @@
 import { prismaClient } from '@app/web/prismaClient'
-import type { LigneAAuditer } from '../../domain/anomalie'
+import type { LieuAReprendre, LireLesLieux } from '../../domain'
 
-/**
- * Les lieux tels que la base les porte, sans passer par le domaine.
- *
- * La lecture est en SQL brut, et c'est délibéré : le client Prisma décrit le
- * schéma d'APRÈS la migration, alors qu'on veut mesurer la base d'AVANT. Tout
- * revient en texte, y compris les vocabulaires, pour que le diagnostic compare
- * des valeurs du standard et non des noms de membres d'énumération.
-
- */
-export const lieuxAAuditer = async (): Promise<LigneAAuditer[]> =>
-  prismaClient.$queryRaw<LigneAAuditer[]>`
+export const lireLesLieux: LireLesLieux = async () =>
+  prismaClient.$queryRaw<LieuAReprendre[]>`
     SELECT
       id::text                                       AS "id",
       COALESCE(nom, '')                              AS "nom",
@@ -44,7 +35,7 @@ export const lieuxAAuditer = async (): Promise<LigneAAuditer[]> =>
       COALESCE(dispositif_programmes_nationaux::text[], '{}') AS "dispositifProgrammesNationaux",
       COALESCE(formations_labels::text[], '{}')      AS "formationsLabels",
       COALESCE(autres_formations_labels, '{}')       AS "autresFormationsLabels",
-      COALESCE(visible_pour_cartographie_nationale, false) AS "visiblePourCartographieNationale"
+      COALESCE(visible_pour_cartographie_nationale, false) AS "publie"
     FROM coop.lieu_inclusion
     WHERE suppression IS NULL
     ORDER BY creation
