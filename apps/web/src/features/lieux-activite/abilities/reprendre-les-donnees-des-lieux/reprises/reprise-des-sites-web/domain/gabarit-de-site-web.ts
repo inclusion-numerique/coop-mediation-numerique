@@ -4,7 +4,7 @@ const GABARITS = ['https://www.', 'http://www.']
 
 const SCHEMAS = ['https://', 'http://']
 
-const SEPARATEURS_COLLES = /%257C|%7C|\|/giu
+const SEPARATEURS_COLLES = /%257C|\|/giu
 
 const LONGUEUR_MINIMALE_DU_RESIDU = 3
 

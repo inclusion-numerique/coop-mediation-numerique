@@ -75,6 +75,14 @@ describe('le gabarit « https://www. » écrit autour de la vraie adresse', () =
     })
   })
 
+  it('ne coupe pas sur un pipe simplement encodé, légitime dans une requête', () => {
+    expect(
+      verdict([
+        'https://eur03.safelinks.protection.outlook.com/?url=http%3A%2F%2Fexemple.fr&data=05%7C01%7Ca.b%40exemple.fr%7C3000',
+      ]),
+    ).toBeNull()
+  })
+
   it('renonce quand il ne reste aucun domaine', () => {
     expect(verdict(['http://www.'])).toEqual({
       conservees: [],
