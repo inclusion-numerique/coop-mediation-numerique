@@ -1,34 +1,15 @@
-import { writeFileSync } from 'node:fs'
 import {
   auditerLesDonnees,
   lieuxAAuditer,
-  type Releve,
 } from '@app/web/features/lieux-activite/abilities/auditer-les-donnees'
-import { getAuditOutputPath } from '@app/web/jobs/audit-output'
 import type { JobExecutor } from '@app/web/jobs/jobExecutors'
 import { output } from '@app/web/jobs/output'
+import { dossierDuReleve, releveEnCsv } from './releve-en-csv'
 
 const LARGEUR_CODE = 28
 
 const pourcent = (part: number, total: number): string =>
   total === 0 ? '—' : `${((part / total) * 100).toFixed(1)} %`
-
-const echappe = (valeur: string): string =>
-  `"${valeur.replaceAll('"', '""').replaceAll('\n', ' ')}"`
-
-const ecrireLeCsv = (releve: Releve): string => {
-  const chemin = getAuditOutputPath('anomalies-lieux.csv')
-  const lignes = [
-    'lieu_id;code;gravite;champ;valeur',
-    ...releve.detail.map(({ lieuId, code, gravite, champ, valeur }) =>
-      [lieuId, code, gravite, champ, echappe(valeur)].join(';'),
-    ),
-  ]
-
-  writeFileSync(chemin, `${lignes.join('\n')}\n`, 'utf8')
-
-  return chemin
-}
 
 /**
  * Mesure l'écart entre ce que la base porte et ce que les règles attendent.
@@ -73,8 +54,12 @@ export const executeAuditerLesDonnees: JobExecutor<
   ))
     journal(`${poste.code} — ${poste.exemples.join(' · ')}`)
 
-  const csv = (job.payload?.csv ?? true) ? ecrireLeCsv(releve) : null
-  if (csv != null) journal(`\ndétail ligne à ligne : ${csv}`)
+  if (job.payload?.csv ?? true) {
+    const fichiers = releveEnCsv(releve)
+    journal('')
+    journal(`relevé détaillé dans ${dossierDuReleve()}`)
+    for (const fichier of fichiers) journal(`  ${fichier}`)
+  }
 
   return {
     lieuxAudites: releve.lieuxAudites,

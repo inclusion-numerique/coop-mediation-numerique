@@ -20,12 +20,28 @@ export type Poste = {
   readonly exemples: readonly string[]
 }
 
+/**
+ * Une anomalie et de quoi reconnaître le lieu qui la porte.
+ *
+ * Le relevé sert à décider, et on ne décide pas sur un identifiant : il faut
+ * savoir de quel lieu il s'agit, où il est, et s'il paraît sur la cartographie
+ * — un défaut sur un lieu publié ne pèse pas comme le même sur un lieu qui
+ * n'est vu de personne.
+ */
+export type AnomalieSituee = Anomalie & {
+  readonly lieuId: string
+  readonly nom: string
+  readonly commune: string
+  readonly codePostal: string
+  readonly publie: boolean
+}
+
 export type Releve = {
   readonly lieuxAudites: number
   readonly lieuxSains: number
   readonly lieuxEcartes: number
   readonly postes: readonly Poste[]
-  readonly detail: readonly (Anomalie & { readonly lieuId: string })[]
+  readonly detail: readonly AnomalieSituee[]
 }
 
 const EXEMPLES_PAR_POSTE = 3
@@ -45,7 +61,14 @@ const trierParPoids = (postes: readonly Poste[]): readonly Poste[] =>
  */
 export const auditerLesDonnees = (lignes: readonly LigneAAuditer[]): Releve => {
   const detail = lignes.flatMap((ligne) =>
-    diagnostiquer(ligne).map((anomalie) => ({ ...anomalie, lieuId: ligne.id })),
+    diagnostiquer(ligne).map((anomalie) => ({
+      ...anomalie,
+      lieuId: ligne.id,
+      nom: ligne.nom,
+      commune: ligne.commune,
+      codePostal: ligne.codePostal,
+      publie: ligne.visiblePourCartographieNationale,
+    })),
   )
 
   const parCode = new Map<
