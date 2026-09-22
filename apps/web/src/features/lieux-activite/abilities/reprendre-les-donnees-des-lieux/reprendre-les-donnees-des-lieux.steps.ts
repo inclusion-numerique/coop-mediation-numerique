@@ -11,7 +11,6 @@ import {
   repriseDesHoraires,
   repriseDesSitesWeb,
   repriseDuTelephone,
-  sansDepot,
   sansRepriseDesHoraires,
   sansRepriseDesSitesWeb,
   sansRepriseDuTelephone,
@@ -233,7 +232,7 @@ When('on relève les données des lieux sans les reprendre', async () => {
       ],
       ports: {
         lireLesLieux: lireLesLieuxDuScenario,
-        deposerLeReleve: sansDepot,
+        deposerLeReleve,
         journal: () => undefined,
       },
     })

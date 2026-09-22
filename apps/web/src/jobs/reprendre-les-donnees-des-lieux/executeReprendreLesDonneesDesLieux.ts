@@ -13,7 +13,6 @@ import {
   repriseDesHoraires,
   repriseDesSitesWeb,
   repriseDuTelephone,
-  sansDepot,
   sansRepriseDesCourriels,
   sansRepriseDesHoraires,
   sansRepriseDesSitesWeb,
@@ -29,7 +28,6 @@ export const executeReprendreLesDonneesDesLieux: JobExecutor<
   'reprendre-les-donnees-des-lieux'
 > = async (job) => {
   const reprendre = job.payload?.reprendre ?? false
-  const csv = job.payload?.csv ?? true
 
   const journal = (message: string) =>
     output.log(`reprendre-les-donnees-des-lieux: ${message}`)
@@ -53,7 +51,7 @@ export const executeReprendreLesDonneesDesLieux: JobExecutor<
     ports: {
       lireLesLieux,
       journal,
-      deposerLeReleve: csv ? deposerLeReleve : sansDepot,
+      deposerLeReleve,
     },
   })
 

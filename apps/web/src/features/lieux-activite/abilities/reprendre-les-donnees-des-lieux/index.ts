@@ -20,7 +20,6 @@ export {
   dossierDuReleve,
   lireLesLieux,
   releveEnLignes,
-  sansDepot,
 } from './implementation'
 export {
   type ColonneDeListe,
