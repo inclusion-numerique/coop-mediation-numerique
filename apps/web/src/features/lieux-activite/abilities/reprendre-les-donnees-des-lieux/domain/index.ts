@@ -1,8 +1,8 @@
 export {
   type ColonneDeListe,
   LISTES,
-  type LieuATrier,
-} from './lieu-a-trier'
+  type LieuAReprendre,
+} from './lieu-a-reprendre'
 export { colonnesATrier, listeATrier } from './listes-a-trier'
 export type {
   DeposerLeReleve,
@@ -11,8 +11,9 @@ export type {
   TrierLesListes,
 } from './ports'
 export {
-  type ColonneDuReleve,
-  type LieuDuReleve,
+  type ColonneATrier,
+  type LieuAuxListesATrier,
+  type ListesATrier,
   type Releve,
   relever,
 } from './releve'

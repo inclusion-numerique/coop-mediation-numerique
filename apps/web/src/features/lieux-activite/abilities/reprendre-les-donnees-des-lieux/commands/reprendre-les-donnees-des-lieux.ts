@@ -1,6 +1,7 @@
 import type {
   DeposerLeReleve,
   Journal,
+  LieuAuxListesATrier,
   LireLesLieux,
   Releve,
   TrierLesListes,
@@ -9,14 +10,14 @@ import { relever } from '../domain'
 
 const PAS_DU_JOURNAL = 500
 
-export type PortsDeTri = {
+export type PortsDeReprise = {
   readonly lireLesLieux: LireLesLieux
   readonly trierLesListes: TrierLesListes
   readonly deposerLeReleve: DeposerLeReleve
   readonly journal: Journal
 }
 
-export type Tri = {
+export type Reprise = {
   readonly releve: Releve
   readonly lieuxTries: number
   readonly fichiers: readonly string[]
@@ -30,12 +31,12 @@ const avancement =
   }
 
 const trierChaqueLieu = async (
-  { trierLesListes, journal }: PortsDeTri,
-  releve: Releve,
+  { trierLesListes, journal }: PortsDeReprise,
+  aTrier: readonly LieuAuxListesATrier[],
 ): Promise<number> => {
-  const signaler = avancement(journal, releve.lieux.length)
+  const signaler = avancement(journal, aTrier.length)
 
-  return releve.lieux.reduce<Promise<number>>(
+  return aTrier.reduce<Promise<number>>(
     async (tries, { lieuId, colonnes }, rang) => {
       const acquis = await tries
 
@@ -48,16 +49,16 @@ const trierChaqueLieu = async (
   )
 }
 
-export const trierLesListesDesLieux = async ({
+export const reprendreLesDonneesDesLieux = async ({
   ports,
 }: {
-  readonly ports: PortsDeTri
-}): Promise<Tri> => {
+  readonly ports: PortsDeReprise
+}): Promise<Reprise> => {
   const releve = relever(await ports.lireLesLieux())
 
   return {
     releve,
-    lieuxTries: await trierChaqueLieu(ports, releve),
+    lieuxTries: await trierChaqueLieu(ports, releve.listesATrier.lieux),
     fichiers: await ports.deposerLeReleve(releve),
   }
 }

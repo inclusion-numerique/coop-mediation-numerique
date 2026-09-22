@@ -1,4 +1,4 @@
-export type LieuATrier = {
+export type LieuAReprendre = {
   readonly id: string
   readonly nom: string
   readonly commune: string
@@ -29,6 +29,6 @@ export const LISTES = [
   'dispositifProgrammesNationaux',
   'formationsLabels',
   'autresFormationsLabels',
-] as const satisfies readonly (keyof LieuATrier)[]
+] as const satisfies readonly (keyof LieuAReprendre)[]
 
 export type ColonneDeListe = (typeof LISTES)[number]

@@ -1,6 +1,8 @@
-import type { LieuATrier } from './lieu-a-trier'
+import type { LieuAReprendre } from './lieu-a-reprendre'
 
-export const lieuATrier = (champs: Partial<LieuATrier> = {}): LieuATrier => ({
+export const lieuAReprendre = (
+  champs: Partial<LieuAReprendre> = {},
+): LieuAReprendre => ({
   id: 'e4b5f0d4-5a1f-4a5a-9a4e-2e1c9f0b1d2c',
   nom: 'Espace numérique de Reims',
   commune: 'Reims',

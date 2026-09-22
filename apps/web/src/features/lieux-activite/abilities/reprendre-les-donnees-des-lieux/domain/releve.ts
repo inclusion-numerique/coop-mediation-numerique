@@ -1,8 +1,8 @@
-import type { ColonneDeListe, LieuATrier } from './lieu-a-trier'
-import { LISTES } from './lieu-a-trier'
+import type { ColonneDeListe, LieuAReprendre } from './lieu-a-reprendre'
+import { LISTES } from './lieu-a-reprendre'
 import { colonnesATrier } from './listes-a-trier'
 
-export type LieuDuReleve = {
+export type LieuAuxListesATrier = {
   readonly lieuId: string
   readonly nom: string
   readonly commune: string
@@ -11,18 +11,22 @@ export type LieuDuReleve = {
   readonly colonnes: readonly ColonneDeListe[]
 }
 
-export type ColonneDuReleve = {
+export type ColonneATrier = {
   readonly colonne: ColonneDeListe
   readonly lieux: number
 }
 
-export type Releve = {
-  readonly lieuxMesures: number
-  readonly colonnes: readonly ColonneDuReleve[]
-  readonly lieux: readonly LieuDuReleve[]
+export type ListesATrier = {
+  readonly colonnes: readonly ColonneATrier[]
+  readonly lieux: readonly LieuAuxListesATrier[]
 }
 
-const auReleve = (lieu: LieuATrier): readonly LieuDuReleve[] => {
+export type Releve = {
+  readonly lieuxMesures: number
+  readonly listesATrier: ListesATrier
+}
+
+const auReleve = (lieu: LieuAReprendre): readonly LieuAuxListesATrier[] => {
   const colonnes = colonnesATrier(lieu)
 
   return colonnes.length === 0
@@ -40,26 +44,28 @@ const auReleve = (lieu: LieuATrier): readonly LieuDuReleve[] => {
 }
 
 const compter = (
-  lieux: readonly LieuDuReleve[],
+  lieux: readonly LieuAuxListesATrier[],
   colonne: ColonneDeListe,
-): ColonneDuReleve => ({
+): ColonneATrier => ({
   colonne,
   lieux: lieux.filter(({ colonnes }) => colonnes.includes(colonne)).length,
 })
 
-const deLaPlusLourde = (
-  gauche: ColonneDuReleve,
-  droite: ColonneDuReleve,
-): number => droite.lieux - gauche.lieux
+const deLaPlusLourde = (gauche: ColonneATrier, droite: ColonneATrier): number =>
+  droite.lieux - gauche.lieux
 
-export const relever = (lieux: readonly LieuATrier[]): Releve => {
+const listesATrier = (lieux: readonly LieuAReprendre[]): ListesATrier => {
   const aTrier = lieux.flatMap(auReleve)
 
   return {
-    lieuxMesures: lieux.length,
     colonnes: LISTES.map((colonne) => compter(aTrier, colonne))
       .filter(({ lieux: touches }) => touches > 0)
       .sort(deLaPlusLourde),
     lieux: aTrier,
   }
 }
+
+export const relever = (lieux: readonly LieuAReprendre[]): Releve => ({
+  lieuxMesures: lieux.length,
+  listesATrier: listesATrier(lieux),
+})

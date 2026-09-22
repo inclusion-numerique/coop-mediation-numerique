@@ -1,15 +1,15 @@
-import { lieuATrier } from './lieu-a-trier.fixture'
+import { lieuAReprendre } from './lieu-a-reprendre.fixture'
 import { colonnesATrier } from './listes-a-trier'
 
 describe('les colonnes à trier', () => {
   it('n’en retient aucune quand tout est déjà en ordre', () => {
-    expect(colonnesATrier(lieuATrier())).toEqual([])
+    expect(colonnesATrier(lieuAReprendre())).toEqual([])
   })
 
   it('retient la colonne désordonnée et elle seule', () => {
     expect(
       colonnesATrier(
-        lieuATrier({
+        lieuAReprendre({
           services: [
             'Utilisation sécurisée du numérique',
             'Aide aux démarches administratives',
@@ -21,14 +21,16 @@ describe('les colonnes à trier', () => {
 
   it('retient une colonne qui répète une valeur', () => {
     expect(
-      colonnesATrier(lieuATrier({ itinerance: ['Itinérant', 'Itinérant'] })),
+      colonnesATrier(
+        lieuAReprendre({ itinerance: ['Itinérant', 'Itinérant'] }),
+      ),
     ).toEqual(['itinerance'])
   })
 
   it('retient chaque colonne désordonnée d’un même lieu', () => {
     expect(
       colonnesATrier(
-        lieuATrier({
+        lieuAReprendre({
           services: [
             'Utilisation sécurisée du numérique',
             'Aide aux démarches administratives',
@@ -42,7 +44,9 @@ describe('les colonnes à trier', () => {
   it('ordonne selon la collation française et non selon les points de code', () => {
     expect(
       colonnesATrier(
-        lieuATrier({ publicsSpecifiquementAdresses: ['Étudiants', 'Femmes'] }),
+        lieuAReprendre({
+          publicsSpecifiquementAdresses: ['Étudiants', 'Femmes'],
+        }),
       ),
     ).toEqual([])
   })

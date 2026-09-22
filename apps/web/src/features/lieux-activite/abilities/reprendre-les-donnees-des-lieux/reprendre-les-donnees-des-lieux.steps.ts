@@ -3,11 +3,11 @@ import {
   deposerLeReleve,
   lireLesLieux,
   type Releve,
+  reprendreLesDonneesDesLieux,
   sansDepot,
   sansTri,
   trierLesListes,
-  trierLesListesDesLieux,
-} from '@app/web/features/lieux-activite/abilities/trier-les-listes-des-lieux'
+} from '@app/web/features/lieux-activite/abilities/reprendre-les-donnees-des-lieux'
 import { prismaClient } from '@app/web/prismaClient'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import type { Service, ServiceMain } from '@prisma/client'
@@ -98,9 +98,9 @@ Given(
   },
 )
 
-When('on trie les listes des lieux', async () => {
+When('on reprend les données des lieux', async () => {
   semis.releve = (
-    await trierLesListesDesLieux({
+    await reprendreLesDonneesDesLieux({
       ports: {
         lireLesLieux: lireLesLieuxDuScenario,
         trierLesListes,
@@ -111,9 +111,9 @@ When('on trie les listes des lieux', async () => {
   ).releve
 })
 
-When('on relève les listes des lieux sans les trier', async () => {
+When('on relève les données des lieux sans les reprendre', async () => {
   semis.releve = (
-    await trierLesListesDesLieux({
+    await reprendreLesDonneesDesLieux({
       ports: {
         lireLesLieux: lireLesLieuxDuScenario,
         trierLesListes: sansTri,
@@ -126,20 +126,20 @@ When('on relève les listes des lieux sans les trier', async () => {
 
 Then('le relevé compte ce lieu dans la colonne {string}', (colonne: string) => {
   assert.ok(
-    releve().lieux.some(
+    releve().listesATrier.lieux.some(
       ({ lieuId, colonnes }) =>
         lieuId === lieuSeme() &&
         colonnes.some((relevee) => relevee === colonne),
     ),
     `colonnes relevées : ${releve()
-      .lieux.flatMap(({ colonnes }) => colonnes)
+      .listesATrier.lieux.flatMap(({ colonnes }) => colonnes)
       .join(', ')}`,
   )
 })
 
 Then('le relevé ne retient pas ce lieu', () => {
   assert.ok(
-    releve().lieux.every(({ lieuId }) => lieuId !== lieuSeme()),
+    releve().listesATrier.lieux.every(({ lieuId }) => lieuId !== lieuSeme()),
     'le lieu ne devrait rien avoir à trier',
   )
 })

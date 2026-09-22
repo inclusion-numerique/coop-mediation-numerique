@@ -1,8 +1,8 @@
 import { prismaClient } from '@app/web/prismaClient'
-import type { LieuATrier, LireLesLieux } from '../../domain'
+import type { LieuAReprendre, LireLesLieux } from '../../domain'
 
 export const lireLesLieux: LireLesLieux = async () =>
-  prismaClient.$queryRaw<LieuATrier[]>`
+  prismaClient.$queryRaw<LieuAReprendre[]>`
     SELECT
       id::text                                               AS "id",
       COALESCE(nom, '')                                      AS "nom",

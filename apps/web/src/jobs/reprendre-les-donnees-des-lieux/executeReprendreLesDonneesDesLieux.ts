@@ -3,28 +3,28 @@ import {
   dossierDuReleve,
   lireLesLieux,
   releveEnLignes,
+  reprendreLesDonneesDesLieux,
   sansDepot,
   sansTri,
   trierLesListes,
-  trierLesListesDesLieux,
-} from '@app/web/features/lieux-activite/abilities/trier-les-listes-des-lieux'
+} from '@app/web/features/lieux-activite/abilities/reprendre-les-donnees-des-lieux'
 import type { JobExecutor } from '@app/web/jobs/jobExecutors'
 import { output } from '@app/web/jobs/output'
 
-export const executeTrierLesListesDesLieux: JobExecutor<
-  'trier-les-listes-des-lieux'
+export const executeReprendreLesDonneesDesLieux: JobExecutor<
+  'reprendre-les-donnees-des-lieux'
 > = async (job) => {
-  const trier = job.payload?.trier ?? false
+  const reprendre = job.payload?.reprendre ?? false
   const csv = job.payload?.csv ?? true
 
   const journal = (message: string) =>
-    output.log(`trier-les-listes-des-lieux: ${message}`)
+    output.log(`reprendre-les-donnees-des-lieux: ${message}`)
 
-  const { releve, lieuxTries, fichiers } = await trierLesListesDesLieux({
+  const { releve, lieuxTries, fichiers } = await reprendreLesDonneesDesLieux({
     ports: {
       lireLesLieux,
       journal,
-      trierLesListes: trier ? trierLesListes : sansTri,
+      trierLesListes: reprendre ? trierLesListes : sansTri,
       deposerLeReleve: csv ? deposerLeReleve : sansDepot,
     },
   })
@@ -33,16 +33,15 @@ export const executeTrierLesListesDesLieux: JobExecutor<
     [
       ...releveEnLignes(releve),
       '',
-      `${lieuxTries} lieux${trier ? ' triés, dans la coop et au registre' : ' à trier (À BLANC)'}`,
+      `${lieuxTries} lieux${reprendre ? ' triés, dans la coop et au registre' : ' à trier (À BLANC)'}`,
       ...fichiers.map((fichier) => `  ${dossierDuReleve()}/${fichier}`),
     ].join('\n'),
   )
 
   return {
     lieuxMesures: releve.lieuxMesures,
-    lieuxATrier: releve.lieux.length,
-    colonnes: releve.colonnes,
+    colonnesATrier: releve.listesATrier.colonnes,
     lieuxTries,
-    trier,
+    reprendre,
   }
 }

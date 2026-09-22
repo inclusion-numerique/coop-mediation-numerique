@@ -1,7 +1,7 @@
-import type { ColonneDeListe, LieuATrier } from './lieu-a-trier'
+import type { ColonneDeListe, LieuAReprendre } from './lieu-a-reprendre'
 import type { Releve } from './releve'
 
-export type LireLesLieux = () => Promise<readonly LieuATrier[]>
+export type LireLesLieux = () => Promise<readonly LieuAReprendre[]>
 
 export type TrierLesListes = (
   lieuId: string,

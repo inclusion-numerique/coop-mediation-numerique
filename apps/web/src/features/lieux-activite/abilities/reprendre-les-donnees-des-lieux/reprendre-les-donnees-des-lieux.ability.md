@@ -1,8 +1,11 @@
-# Feature: Trier les listes de vocabulaire des lieux d'activité
+# Feature: Reprendre les données des lieux d'activité
 
-Les typologies, services et autres nomenclatures d'un lieu ont été enregistrées
-dans l'ordre où elles ont été saisies ou moissonnées. Une passe relève celles
-qui ne sont pas en ordre, et les trie.
+Les fiches de lieux ont été saisies, importées et moissonnées avant que le
+standard de la médiation numérique ne les gouverne. Une passe relève ce que les
+règles n'acceptent plus et reprend ce qui se reprend sans arbitrage.
+
+Chaque reprise est ajoutée séparément, une fois la précédente vérifiée sur la
+base. La première est le tri des listes de vocabulaire.
 
 ## Rule: L'ordre d'une liste de vocabulaire ne porte aucune information
 
@@ -14,7 +17,7 @@ qui ne sont pas en ordre, et les trie.
 ### Scenario: Une liste désordonnée est relevée puis triée
 
 * Given un lieu dont les services sont désordonnés
-* When on trie les listes des lieux
+* When on reprend les données des lieux
 * Then le relevé compte ce lieu dans la colonne "services"
 * And les services du lieu sont triés
 
@@ -23,7 +26,7 @@ qui ne sont pas en ordre, et les trie.
 > Un relevé énumère ce qu'il reste à faire, pas ce qui va bien.
 
 * Given un lieu dont les listes sont en ordre
-* When on trie les listes des lieux
+* When on reprend les données des lieux
 * Then le relevé ne retient pas ce lieu
 
 ## Rule: Le registre est trié dans la même transaction que la coop
@@ -35,7 +38,7 @@ qui ne sont pas en ordre, et les trie.
 
 * Given un lieu dont les services sont désordonnés
 * And il est inscrit au registre avec les mêmes services désordonnés
-* When on trie les listes des lieux
+* When on reprend les données des lieux
 * Then les services du lieu sont triés
 * And les services de son inscription au registre sont triés
 
@@ -48,17 +51,17 @@ qui ne sont pas en ordre, et les trie.
 ### Scenario: La date de modification ne bouge pas
 
 * Given un lieu dont les services sont désordonnés
-* When on trie les listes des lieux
+* When on reprend les données des lieux
 * Then la date de modification du lieu n’a pas bougé
 
-## Rule: Relever sans trier est la même passe menée avec des ports qui n'écrivent pas
+## Rule: Relever sans reprendre est la même passe menée avec des ports qui n'écrivent pas
 
 > On regarde avant de toucher. Ce que la passe écrit tient à ses ports et non à
 > un drapeau : le relevé d'une passe à blanc est celui qu'on obtiendrait.
 
-### Scenario: Une passe à blanc relève sans rien trier
+### Scenario: Une passe à blanc relève sans rien reprendre
 
 * Given un lieu dont les services sont désordonnés
-* When on relève les listes des lieux sans les trier
+* When on relève les données des lieux sans les reprendre
 * Then le relevé compte ce lieu dans la colonne "services"
 * And les services du lieu sont restés en l’état
