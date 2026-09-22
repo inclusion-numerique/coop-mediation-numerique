@@ -27,6 +27,7 @@ export type LieuAReprendre = {
   readonly dispositifProgrammesNationaux: readonly string[]
   readonly formationsLabels: readonly string[]
   readonly autresFormationsLabels: readonly string[]
+  readonly accompagnements: number
 }
 
 export const nonVide = (valeur: string | null | undefined): string | null =>

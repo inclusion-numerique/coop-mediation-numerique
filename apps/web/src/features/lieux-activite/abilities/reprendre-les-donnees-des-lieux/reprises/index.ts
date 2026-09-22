@@ -16,6 +16,8 @@ export {
   repriseDeLAdresse,
   retrouverParLesCoordonnees,
   sansRepriseDeLAdresse,
+  sansSuppressionDuLieu,
+  supprimerLeLieu,
 } from './reprise-de-l-adresse'
 export {
   type RetirerLaPublication,

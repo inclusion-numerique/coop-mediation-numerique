@@ -19,6 +19,8 @@ const COLONNE = 'adresse'
 
 const A_CORRIGER = 'à corriger'
 
+const A_SUPPRIMER = 'à supprimer'
+
 export type GeocoderLesAdresses = (
   adresses: readonly AdresseSoumise[],
 ) => Promise<ReadonlyMap<string, readonly AdresseGeocodee[]>>
@@ -32,6 +34,8 @@ export type ReprendreLAdresse = (
   adresse: AdresseGeocodee,
 ) => Promise<void>
 
+export type SupprimerLeLieu = (lieuId: string) => Promise<void>
+
 /**
  * Ce que la Base Adresse Nationale a répondu sur l'ensemble des lieux : par
  * l'adresse d'abord, puis par les coordonnées pour ceux que l'adresse n'a pas
@@ -42,20 +46,31 @@ export type AdressesRendues = {
   readonly parLesCoordonnees: ReadonlyMap<string, AdresseRetrouvee>
 }
 
-const cellule = (aReprendre: AdresseAReprendre): string =>
-  aReprendre.verdict === 'a-corriger'
-    ? A_CORRIGER
-    : `à vérifier : ${aReprendre.motif}`
+const cellule = (aReprendre: AdresseAReprendre): string => {
+  if (aReprendre.verdict === 'a-corriger') return A_CORRIGER
+  if (aReprendre.verdict === 'a-supprimer')
+    return `${A_SUPPRIMER} : ${aReprendre.motif}`
 
-const motif = (aReprendre: AdresseAReprendre): string =>
-  aReprendre.verdict === 'a-corriger'
-    ? `${COLONNE} : ${A_CORRIGER}`
-    : `${COLONNE} : ${aReprendre.motif}`
+  return `à vérifier : ${aReprendre.motif}`
+}
+
+const motif = (aReprendre: AdresseAReprendre): string => {
+  if (aReprendre.verdict === 'a-corriger') return `${COLONNE} : ${A_CORRIGER}`
+  if (aReprendre.verdict === 'a-supprimer')
+    return `${COLONNE} : ${A_SUPPRIMER}, ${aReprendre.motif}`
+
+  return `${COLONNE} : ${aReprendre.motif}`
+}
 
 const appliquer =
-  (reprendreLAdresse: ReprendreLAdresse) =>
+  (reprendreLAdresse: ReprendreLAdresse, supprimerLeLieu: SupprimerLeLieu) =>
   async (lieuId: string, aReprendre: AdresseAReprendre): Promise<void> => {
     if (aReprendre.verdict === 'a-verifier') return
+    if (aReprendre.verdict === 'a-supprimer') {
+      await supprimerLeLieu(lieuId)
+
+      return
+    }
 
     await reprendreLAdresse(lieuId, aReprendre.adresse)
   }
@@ -89,6 +104,7 @@ export const repriseDeLAdresse = (
   geocoderLesAdresses: GeocoderLesAdresses,
   retrouverParLesCoordonnees: RetrouverParLesCoordonnees,
   reprendreLAdresse: ReprendreLAdresse,
+  supprimerLeLieu: SupprimerLeLieu,
 ): Reprise =>
   repriseAvecPrealable<AdresseAReprendre, AdressesRendues>({
     colonnes: [COLONNE],
@@ -106,5 +122,5 @@ export const repriseDeLAdresse = (
         motif: motif(aReprendre),
       },
     ],
-    appliquer: appliquer(reprendreLAdresse),
+    appliquer: appliquer(reprendreLAdresse, supprimerLeLieu),
   })

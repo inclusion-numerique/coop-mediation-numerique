@@ -79,6 +79,42 @@ describe('le verdict sur l’adresse d’un lieu', () => {
   })
 })
 
+describe('le lieu qu’aucune adresse ne situe et qui n’accompagne personne', () => {
+  const sansAccompagnement = (rendue?: Partial<AdresseGeocodee>) =>
+    verdict(rendue, { accompagnements: 0 })
+
+  it('se supprime quand la BAN ne reconnaît pas sa voie', () => {
+    expect(sansAccompagnement({ type: 'municipality' })).toEqual({
+      verdict: 'a-supprimer',
+      motif: 'la voie est introuvable',
+    })
+  })
+
+  it('se supprime quand la BAN ne rend rien', () => {
+    expect(sansAccompagnement(undefined)).toEqual({
+      verdict: 'a-supprimer',
+      motif: 'la Base Adresse Nationale ne rend rien',
+    })
+  })
+
+  it('reste à vérifier dès qu’il a accompagné quelqu’un', () => {
+    expect(verdict({ type: 'municipality' }, { accompagnements: 1 })).toEqual({
+      verdict: 'a-verifier',
+      motif: 'la voie est introuvable',
+    })
+  })
+
+  it('ne se supprime pas quand son adresse se corrige', () => {
+    expect(verdict({ banId: 'autre' }, { accompagnements: 0 })?.verdict).toBe(
+      'a-corriger',
+    )
+  })
+
+  it('ne se supprime pas quand son adresse est déjà conforme', () => {
+    expect(verdict({}, { accompagnements: 0 })).toBeNull()
+  })
+})
+
 describe('la commune, que la BAN ne code pas toujours comme nous', () => {
   it('reconnaît l’arrondissement que la BAN rend pour la ville', () => {
     expect(

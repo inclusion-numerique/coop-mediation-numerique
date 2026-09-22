@@ -46,6 +46,7 @@ export type AdresseSoumise = {
 
 export type AdresseAReprendre =
   | { readonly verdict: 'a-corriger'; readonly adresse: AdresseGeocodee }
+  | { readonly verdict: 'a-supprimer'; readonly motif: string }
   | { readonly verdict: 'a-verifier'; readonly motif: string }
 
 const SCORE_MINIMAL = 0.9
@@ -395,6 +396,18 @@ export const adresseDesCoordonnees = (
     ? retrouvee
     : null
 
+/**
+ * Un lieu dont l'adresse reste introuvable et qui n'a jamais rien accompagné.
+ *
+ * Réparer passe avant supprimer, et la suppression n'intervient qu'ici, quand
+ * la Base Adresse Nationale a été interrogée de toutes les façons et que rien
+ * n'a tenu. Reste alors une fiche que personne ne peut situer ; si elle ne porte
+ * aucun accompagnement, elle ne documente rien non plus, et la garder revient à
+ * publier une adresse fausse sur la cartographie nationale.
+ */
+const nAccompagneRien = (lieu: LieuAReprendre): boolean =>
+  lieu.accompagnements === 0
+
 export const adresseAReprendre = (
   lieu: LieuAReprendre,
   rendues: readonly AdresseGeocodee[],
@@ -403,13 +416,14 @@ export const adresseAReprendre = (
   const adresse =
     adresseDeLAdresse(lieu, rendues) ?? adresseDesCoordonnees(lieu, retrouvee)
 
-  if (adresse == null)
-    return {
-      verdict: 'a-verifier',
-      motif:
-        motifDuRefus(lieu, parScoreDecroissant(rendues)[0]) ??
-        MOTIFS.sansReponse,
-    }
+  if (adresse == null) {
+    const motif =
+      motifDuRefus(lieu, parScoreDecroissant(rendues)[0]) ?? MOTIFS.sansReponse
+
+    return nAccompagneRien(lieu)
+      ? { verdict: 'a-supprimer', motif }
+      : { verdict: 'a-verifier', motif }
+  }
 
   return dejaConforme(lieu, adresse) ? null : { verdict: 'a-corriger', adresse }
 }

@@ -31,7 +31,9 @@ import {
   sansRepriseDesSitesWeb,
   sansRepriseDuTelephone,
   sansRetraitDePublication,
+  sansSuppressionDuLieu,
   sansTri,
+  supprimerLeLieu,
   triDesListes,
   trierLesListes,
 } from '@app/web/features/lieux-activite/abilities/reprendre-les-donnees-des-lieux'
@@ -70,6 +72,7 @@ export const executeReprendreLesDonneesDesLieux: JobExecutor<
         geocoderLesAdresses,
         retrouverParLesCoordonnees,
         reprendre ? reprendreLAdresse : sansRepriseDeLAdresse,
+        reprendre ? supprimerLeLieu : sansSuppressionDuLieu,
       ),
     ],
     ports: {

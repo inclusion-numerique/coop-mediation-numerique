@@ -31,5 +31,6 @@ export const lieuAReprendre = (
   dispositifProgrammesNationaux: [],
   formationsLabels: [],
   autresFormationsLabels: [],
+  accompagnements: 3,
   ...champs,
 })

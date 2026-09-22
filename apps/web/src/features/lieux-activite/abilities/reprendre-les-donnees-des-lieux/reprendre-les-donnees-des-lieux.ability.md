@@ -372,6 +372,39 @@ base.
 * Then le relevé compte ce lieu dans la colonne "adresse"
 * And l’adresse du lieu n’a pas bougé
 
+## Rule: Le lieu que rien ne situe et qui n'accompagne personne s'efface
+
+> Réparer passe avant supprimer, et la suppression n'intervient qu'en dernier
+> recours : quand la Base Adresse Nationale a été interrogée de toutes les façons
+> — sur la voie écrite, avec et sans le code postal, puis au point du lieu — et
+> que rien n'a tenu. Reste alors une fiche que personne ne peut situer. Si elle
+> ne porte aucun accompagnement, elle ne documente rien non plus, et la garder
+> revient à publier une adresse fausse sur la cartographie nationale.
+>
+> Dès qu'un accompagnement s'y rattache, la fiche témoigne d'une activité réelle
+> et ne s'efface pas : elle paraît au relevé, et c'est à un humain de trancher.
+>
+> Le lieu se retire des trois endroits où il vit — la coop, l'inscription au
+> registre, et les rattachements des médiateurs, faute de quoi un médiateur
+> resterait attaché à un lieu qui n'existe plus.
+
+### Scenario: Le lieu sans adresse ni accompagnement est supprimé
+
+* Given un lieu qui n’a accompagné personne
+* And la Base Adresse Nationale ne reconnaît pas la voie
+* When on reprend les données des lieux
+* Then le relevé compte ce lieu dans la colonne "adresse"
+* And le lieu est supprimé
+* And son inscription au registre est supprimée
+
+### Scenario: Le lieu qui a accompagné quelqu'un est seulement signalé
+
+* Given un lieu dont l’adresse diffère de celle de la Base Adresse Nationale
+* And la Base Adresse Nationale ne reconnaît pas la voie
+* When on reprend les données des lieux
+* Then le lieu n’est pas supprimé
+* And l’adresse du lieu n’a pas bougé
+
 ## Rule: Le point du lieu rattrape ce que son adresse ne dit pas
 
 > Des imports ont écrit dans la ligne de voie le nom de la commune, celui du

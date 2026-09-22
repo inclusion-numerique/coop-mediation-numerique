@@ -35,7 +35,9 @@ import {
   sansRepriseDesSitesWeb,
   sansRepriseDuTelephone,
   sansRetraitDePublication,
+  sansSuppressionDuLieu,
   sansTri,
+  supprimerLeLieu,
   triDesListes,
   trierLesListes,
 } from '@app/web/features/lieux-activite/abilities/reprendre-les-donnees-des-lieux'
@@ -169,7 +171,12 @@ const retrouverParLesCoordonnees: RetrouverParLesCoordonnees = async (
 const geocoderLesAdresses: GeocoderLesAdresses = async (adresses) =>
   new Map(adresses.map(({ lieuId }) => [lieuId, banRend.adresses]))
 
-const semis: { lieuId?: string; modification?: Date; releve?: Releve } = {}
+const semis: {
+  lieuId?: string
+  modification?: Date
+  releve?: Releve
+  userId?: string
+} = {}
 
 const lieuSeme = (): string => {
   if (semis.lieuId == null) throw new Error('Aucun lieu semé')
@@ -194,6 +201,7 @@ const semerUnLieu = async (champs: {
   readonly resume?: string
   readonly publie?: boolean
   readonly sansService?: boolean
+  readonly sansAccompagnement?: boolean
 }): Promise<void> => {
   const lieu = await prismaClient.lieuInclusion.create({
     data: {
@@ -223,6 +231,47 @@ const semerUnLieu = async (champs: {
 
   semis.lieuId = lieu.id
   semis.modification = lieu.modification
+
+  if (champs.sansAccompagnement === true) return
+
+  // Un lieu de la coop a un médiateur et des accompagnements à son actif. Le
+  // semer ainsi rend la suppression explicite : elle ne frappe que le lieu
+  // qu'un scénario déclare n'avoir accompagné personne.
+  const userId = v4()
+
+  await prismaClient.user.create({
+    data: {
+      id: userId,
+      email: `reprise-${userId}@example.com`,
+      name: 'Camille Aidante',
+    },
+  })
+  semis.userId = userId
+
+  const mediateur = await prismaClient.mediateur.create({
+    data: { userId },
+    select: { id: true },
+  })
+
+  await prismaClient.mediateurEnActivite.create({
+    data: {
+      mediateurId: mediateur.id,
+      structureId: lieu.id,
+      debut: new Date('2026-01-01'),
+    },
+  })
+
+  await prismaClient.activite.create({
+    data: {
+      mediateurId: mediateur.id,
+      structureId: lieu.id,
+      type: 'Individuel',
+      typeLieu: 'LieuActivite',
+      date: new Date('2026-02-01'),
+      duree: 60,
+      accompagnementsCount: 3,
+    },
+  })
 }
 
 const lireLesLieuxDuScenario = async () =>
@@ -372,6 +421,45 @@ const semerUneAdresse = async (
     data: { ...adresse, banId: null },
   })
 }
+
+Given('un lieu qui n’a accompagné personne', async () => {
+  await semerUnLieu({ sansAccompagnement: true })
+  initiale.voie = '12 QUAI DU PORT'
+  await prismaClient.lieuInclusion.update({
+    where: { id: lieuSeme() },
+    data: { adresse: initiale.voie, banId: null, latitude: null },
+  })
+})
+
+Then('le lieu est supprimé', async () => {
+  const { suppression, visiblePourCartographieNationale } =
+    await prismaClient.lieuInclusion.findUniqueOrThrow({
+      where: { id: lieuSeme() },
+      select: { suppression: true, visiblePourCartographieNationale: true },
+    })
+
+  assert.notStrictEqual(suppression, null)
+  assert.strictEqual(visiblePourCartographieNationale, false)
+})
+
+Then('son inscription au registre est supprimée', async () => {
+  const { deletedAt } =
+    await prismaClient.lieuInclusionRegistreMain.findFirstOrThrow({
+      where: { structureCoopId: lieuSeme() },
+      select: { deletedAt: true },
+    })
+
+  assert.notStrictEqual(deletedAt, null)
+})
+
+Then('le lieu n’est pas supprimé', async () => {
+  const { suppression } = await prismaClient.lieuInclusion.findUniqueOrThrow({
+    where: { id: lieuSeme() },
+    select: { suppression: true },
+  })
+
+  assert.strictEqual(suppression, null)
+})
 
 Given('la Base Adresse Nationale rend deux réponses de qualité inégale', () => {
   banRend.adresses = [
@@ -538,6 +626,7 @@ When('on reprend les données des lieux', async () => {
           geocoderLesAdresses,
           retrouverParLesCoordonnees,
           reprendreLAdresse,
+          supprimerLeLieu,
         ),
       ],
       ports: {
@@ -565,6 +654,7 @@ When('on relève les données des lieux sans les reprendre', async () => {
           geocoderLesAdresses,
           retrouverParLesCoordonnees,
           sansRepriseDeLAdresse,
+          sansSuppressionDuLieu,
         ),
       ],
       ports: {
@@ -821,8 +911,10 @@ Then('la date de modification du lieu n’a pas bougé', async () => {
 
 After(async () => {
   const lieuId = semis.lieuId
+  const userId = semis.userId
 
   semis.lieuId = undefined
+  semis.userId = undefined
   semis.modification = undefined
   semis.releve = undefined
   banRend.adresses = [ADRESSE_BAN]
@@ -835,5 +927,14 @@ After(async () => {
   await prismaClient.lieuInclusionRegistreMain.deleteMany({
     where: { structureCoopId: lieuId },
   })
+  await prismaClient.activite.deleteMany({ where: { structureId: lieuId } })
+  await prismaClient.mediateurEnActivite.deleteMany({
+    where: { structureId: lieuId },
+  })
   await prismaClient.lieuInclusion.deleteMany({ where: { id: lieuId } })
+
+  if (userId == null) return
+
+  await prismaClient.mediateur.deleteMany({ where: { userId } })
+  await prismaClient.user.deleteMany({ where: { id: userId } })
 })

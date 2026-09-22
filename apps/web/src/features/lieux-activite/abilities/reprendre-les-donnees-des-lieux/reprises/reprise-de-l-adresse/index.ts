@@ -14,8 +14,11 @@ export {
   type ReprendreLAdresse,
   type RetrouverParLesCoordonnees,
   repriseDeLAdresse,
+  type SupprimerLeLieu,
 } from './domain/reprise-de-l-adresse'
 export { geocoderLesAdresses } from './implementation/geocoder-les-adresses'
 export { reprendreLAdresse } from './implementation/reprendre-l-adresse.mutation'
 export { retrouverParLesCoordonnees } from './implementation/retrouver-par-les-coordonnees'
 export { sansRepriseDeLAdresse } from './implementation/sans-reprise-de-l-adresse'
+export { sansSuppressionDuLieu } from './implementation/sans-suppression-du-lieu'
+export { supprimerLeLieu } from './implementation/supprimer-le-lieu.mutation'
