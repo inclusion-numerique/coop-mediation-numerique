@@ -112,8 +112,16 @@ export const horairesNormalises = (valeur: string): Horaires | null => {
   return recomposes == null ? null : Horaires.safe(recomposes)
 }
 
+const UN_JOUR = new RegExp(`\\b(?:${JOUR})\\b`, 'u')
+
+const UNE_HEURE = /\b(?:[01]?\d|2[0-3]):[0-5]\d\b/u
+
+const estUnHoraireManque = (texte: string): boolean =>
+  UN_JOUR.test(texte) && UNE_HEURE.test(texte)
+
 export type HorairesAReprendre =
   | { readonly verdict: 'a-corriger'; readonly corriges: Horaires }
+  | { readonly verdict: 'a-effacer'; readonly valeur: string }
   | {
       readonly verdict: 'a-deplacer'
       readonly valeur: string
@@ -126,6 +134,14 @@ const noteDe = (valeur: string): string => {
   return enUnSeulCommentaire([corps, commentaire])
 }
 
+const abandonner = (valeur: string): HorairesAReprendre => {
+  const note = noteDe(valeur)
+
+  return estUnHoraireManque(note)
+    ? { verdict: 'a-effacer', valeur }
+    : { verdict: 'a-deplacer', valeur, note }
+}
+
 export const horairesAReprendre = (
   lieu: LieuAReprendre,
 ): HorairesAReprendre | null => {
@@ -136,9 +152,7 @@ export const horairesAReprendre = (
   const normalises = horairesNormalises(valeur)
 
   if (normalises == null)
-    return Horaires.safe(valeur) == null
-      ? { verdict: 'a-deplacer', valeur, note: noteDe(valeur) }
-      : null
+    return Horaires.safe(valeur) == null ? abandonner(valeur) : null
 
   return normalises === valeur
     ? null

@@ -93,6 +93,28 @@ describe('le verdict sur les horaires d’un lieu', () => {
     })
   })
 
+  it('efface une suite de créneaux que rien ne rattrape', () => {
+    expect(
+      verdict('We-Fr 09:00-14:00-19:00; Mo,Tu 09:00-12:30,14:00-19:00'),
+    ).toEqual({
+      verdict: 'a-effacer',
+      valeur: 'We-Fr 09:00-14:00-19:00; Mo,Tu 09:00-12:30,14:00-19:00',
+    })
+  })
+
+  it('déplace une précision qui parle d’heures sans en écrire', () => {
+    expect(
+      verdict(
+        '"Accueil sans rendez-vous : du lundi au vendredi de 9 h à 12 h."',
+      ),
+    ).toEqual({
+      verdict: 'a-deplacer',
+      valeur:
+        '"Accueil sans rendez-vous : du lundi au vendredi de 9 h à 12 h."',
+      note: 'Accueil sans rendez-vous : du lundi au vendredi de 9 h à 12 h.',
+    })
+  })
+
   it('ne touche jamais à des horaires que le modèle accepte', () => {
     expect(verdict('24/7')).toBeNull()
     expect(verdict('week 1-53/2 Mo 09:00-12:00')).toBeNull()

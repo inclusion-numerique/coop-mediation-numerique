@@ -75,6 +75,21 @@ base.
 * Then les horaires du lieu sont effacés
 * And la note rejoint la description déjà écrite
 
+## Rule: Une suite de créneaux que rien ne rattrape s'efface
+
+> Une chaîne qui nomme des jours et des heures voulait être un horaire, pas une
+> précision. Mal écrite au point qu'on ne puisse pas la lire, elle n'a rien à
+> faire dans la description d'un lieu : on ne descend pas `09:00-14:00-19:00`
+> sous le nez du public. Elle paraît telle quelle au relevé, puis elle part.
+
+### Scenario: Des créneaux illisibles sont montrés puis effacés
+
+* Given un lieu dont les créneaux sont illisibles
+* When on reprend les données des lieux
+* Then le relevé annonce des horaires à effacer
+* And les horaires du lieu sont effacés
+* And la description du lieu n’a pas bougé
+
 ## Rule: Le registre est repris dans la même transaction que la coop
 
 > Le lieu paraît sur la cartographie nationale par son inscription au registre :

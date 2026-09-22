@@ -31,12 +31,13 @@ const EN_TETE = [
 const cellule = (valeur: string): string =>
   `"${valeur.replaceAll('"', '""').replaceAll('\n', ' ').replaceAll('\r', '')}"`
 
-const celluleDesHoraires = (horaires: HorairesAReprendre | null): string =>
-  horaires == null
-    ? ''
-    : horaires.verdict === 'a-corriger'
-      ? A_CORRIGER
-      : A_DEPLACER
+const celluleDesHoraires = (horaires: HorairesAReprendre | null): string => {
+  if (horaires == null) return ''
+  if (horaires.verdict === 'a-corriger') return A_CORRIGER
+  if (horaires.verdict === 'a-deplacer') return A_DEPLACER
+
+  return cellule(horaires.valeur)
+}
 
 const ligneDuLieu = (lieu: LieuAuReleve): readonly string[] => [
   lieu.lieuId,

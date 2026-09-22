@@ -24,6 +24,7 @@ export type ColonneATrier = {
 export type ComptesDesHoraires = {
   readonly aCorriger: number
   readonly aDeplacer: number
+  readonly aEffacer: number
 }
 
 export type Releve = {
@@ -76,4 +77,5 @@ const porteLeVerdict =
 export const comptesDesHoraires = ({ lieux }: Releve): ComptesDesHoraires => ({
   aCorriger: lieux.filter(porteLeVerdict('a-corriger')).length,
   aDeplacer: lieux.filter(porteLeVerdict('a-deplacer')).length,
+  aEffacer: lieux.filter(porteLeVerdict('a-effacer')).length,
 })

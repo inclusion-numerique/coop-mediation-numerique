@@ -17,6 +17,8 @@ const ecriture = (
   if (aReprendre.verdict === 'a-corriger')
     return { horaires: aReprendre.corriges }
 
+  if (aReprendre.verdict === 'a-effacer') return { horaires: null }
+
   const augmentee = descriptionAvecLaNote(description, aReprendre.note)
 
   return augmentee == null

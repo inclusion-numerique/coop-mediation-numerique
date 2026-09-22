@@ -22,15 +22,16 @@ const listes = (releve: Releve): readonly string[] => {
 }
 
 const horaires = (releve: Releve): readonly string[] => {
-  const { aCorriger, aDeplacer } = comptesDesHoraires(releve)
+  const { aCorriger, aDeplacer, aEffacer } = comptesDesHoraires(releve)
 
-  if (aCorriger === 0 && aDeplacer === 0) return []
+  if (aCorriger === 0 && aDeplacer === 0 && aEffacer === 0) return []
 
   return [
     '',
     'horaires :',
     `  ${'à corriger'.padEnd(LARGEUR_COLONNE)} ${String(aCorriger).padStart(6)}`,
     `  ${'vers la description'.padEnd(LARGEUR_COLONNE)} ${String(aDeplacer).padStart(6)}`,
+    `  ${'à effacer'.padEnd(LARGEUR_COLONNE)} ${String(aEffacer).padStart(6)}`,
   ]
 }
 

@@ -47,7 +47,7 @@ describe('le relevé', () => {
     expect(comptesParColonne(relever([lieuAReprendre()]))).toEqual([])
   })
 
-  it('compte les horaires à corriger et ceux à déplacer', () => {
+  it('compte les horaires à corriger, à déplacer et à effacer', () => {
     const releve = relever([
       lieuAReprendre({
         id: 'a',
@@ -55,10 +55,15 @@ describe('le relevé', () => {
       }),
       lieuAReprendre({ id: 'b', horaires: 'Mo 09:00-12:00;Tu 09:00-12:00' }),
       lieuAReprendre({ id: 'c', horaires: '"Sur rendez-vous uniquement"' }),
-      lieuAReprendre({ id: 'd', horaires: 'Mo 09:00-12:00' }),
+      lieuAReprendre({ id: 'd', horaires: 'We-Fr 09:00-14:00-19:00' }),
+      lieuAReprendre({ id: 'e', horaires: 'Mo 09:00-12:00' }),
     ])
 
-    expect(comptesDesHoraires(releve)).toEqual({ aCorriger: 2, aDeplacer: 1 })
+    expect(comptesDesHoraires(releve)).toEqual({
+      aCorriger: 2,
+      aDeplacer: 1,
+      aEffacer: 1,
+    })
   })
 
   it('porte de quoi reconnaître le lieu dans le relevé', () => {

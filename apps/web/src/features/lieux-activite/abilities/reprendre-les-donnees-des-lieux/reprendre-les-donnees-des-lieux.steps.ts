@@ -38,6 +38,8 @@ const HORAIRES_SANS_CRENEAU = '"Sur rendez-vous uniquement"'
 
 const DESCRIPTION_EXISTANTE = 'Un espace ouvert à toutes et tous.'
 
+const CRENEAUX_ILLISIBLES = 'We-Fr 09:00-14:00-19:00; Mo,Tu 09:00-12:30'
+
 const semis: { lieuId?: string; modification?: Date; releve?: Releve } = {}
 
 const lieuSeme = (): string => {
@@ -131,6 +133,13 @@ Given('un lieu dont les horaires ne portent aucun créneau', async () => {
   await semerUnLieu({ horaires: HORAIRES_SANS_CRENEAU })
 })
 
+Given('un lieu dont les créneaux sont illisibles', async () => {
+  await semerUnLieu({
+    horaires: CRENEAUX_ILLISIBLES,
+    description: DESCRIPTION_EXISTANTE,
+  })
+})
+
 Given('un lieu sans créneau mais avec une description', async () => {
   await semerUnLieu({
     horaires: HORAIRES_SANS_CRENEAU,
@@ -202,6 +211,20 @@ Then('le relevé ne retient pas ce lieu', () => {
 
 Then('le relevé annonce des horaires à corriger', () => {
   assert.strictEqual(auReleve()?.horaires?.verdict, 'a-corriger')
+})
+
+Then('le relevé annonce des horaires à effacer', () => {
+  assert.strictEqual(auReleve()?.horaires?.verdict, 'a-effacer')
+})
+
+Then('la description du lieu n’a pas bougé', async () => {
+  const { presentationDetail } =
+    await prismaClient.lieuInclusion.findUniqueOrThrow({
+      where: { id: lieuSeme() },
+      select: { presentationDetail: true },
+    })
+
+  assert.strictEqual(presentationDetail, DESCRIPTION_EXISTANTE)
 })
 
 Then('le relevé annonce des horaires à déplacer', () => {
