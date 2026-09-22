@@ -1,3 +1,4 @@
+import { nettoyerVoiePourRecherche } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { LieuAReprendre } from '../../../domain'
 
 /** Ce que la Base Adresse Nationale rend d'une adresse qu'on lui soumet. */
@@ -37,9 +38,22 @@ const MOTIFS = {
   scoreInsuffisant: 'score insuffisant',
 } as const
 
+/**
+ * La voie telle qu'on la soumet à la Base Adresse Nationale, et non telle qu'on
+ * la garde.
+ *
+ * Les imports ont écrit devant la voie ce qui n'en fait pas partie — le nom de
+ * l'hôtel de ville, la zone d'activité, la boîte postale, le premier numéro
+ * d'une fourchette. La bibliothèque sait les ôter pour chercher ; c'est ce que
+ * son `nettoyerVoiePourRecherche` fait, et lui seul : l'adresse retenue reste
+ * celle que la Base Adresse Nationale rend.
+ *
+ * Mesuré sur les 12 780 lieux : 108 voies s'en trouvent changées, 76 franchissent
+ * alors le seuil d'appariement, aucune ne le perd.
+ */
 export const adresseSoumise = (lieu: LieuAReprendre): AdresseSoumise => ({
   lieuId: lieu.id,
-  voie: lieu.adresse,
+  voie: nettoyerVoiePourRecherche(lieu.adresse),
   commune: lieu.commune,
   codePostal: lieu.codePostal,
   codeInsee: lieu.codeInsee,

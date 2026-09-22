@@ -1,5 +1,9 @@
 import { lieuAReprendre } from '../../../domain/lieu-a-reprendre.fixture'
-import { type AdresseGeocodee, adresseAReprendre } from './adresse-a-reprendre'
+import {
+  type AdresseGeocodee,
+  adresseAReprendre,
+  adresseSoumise,
+} from './adresse-a-reprendre'
 
 const RENDUE: AdresseGeocodee = {
   type: 'housenumber',
@@ -75,5 +79,41 @@ describe('le verdict sur l’adresse d’un lieu', () => {
       verdict: 'a-verifier',
       motif: 'la Base Adresse Nationale ne rend rien',
     })
+  })
+})
+
+describe('la voie soumise à la Base Adresse Nationale', () => {
+  it.each([
+    [
+      'ce qui précède le type de voie',
+      'Hotel de Ville 7 Rue Andre Gide',
+      '7 Rue Andre Gide',
+    ],
+    [
+      'la zone d’activité',
+      'ZA STANG AR GARRONT 9 RUE CAMILLE DANGUILLAUME',
+      '9 RUE CAMILLE DANGUILLAUME',
+    ],
+    [
+      'la lettre isolée après le numéro',
+      '5 T RUE JEAN COTTIN',
+      '5 RUE JEAN COTTIN',
+    ],
+    [
+      'le second numéro de la fourchette',
+      '39-41 Rue de l’Esterel',
+      '39 Rue de l’Esterel',
+    ],
+    ['la boîte postale', 'BP 117 2 Avenue du Parc', '2 Avenue du Parc'],
+  ])('se débarrasse de %s', (_cas, brute, attendue) => {
+    expect(adresseSoumise(lieuAReprendre({ adresse: brute })).voie).toBe(
+      attendue,
+    )
+  })
+
+  it('laisse intacte une voie qui n’a rien de trop', () => {
+    expect(
+      adresseSoumise(lieuAReprendre({ adresse: '12 rue de la Paix' })).voie,
+    ).toBe('12 rue de la Paix')
   })
 })
