@@ -55,7 +55,7 @@ export type LigneAAuditer = {
   readonly longitude: number | null
   readonly telephone: string | null
   readonly courriels: readonly string[]
-  readonly siteWeb: string | null
+  readonly siteWeb: readonly string[]
   readonly horaires: string | null
   readonly presentationResume: string | null
   readonly presentationDetail: string | null
@@ -74,8 +74,6 @@ export type LigneAAuditer = {
   readonly autresFormationsLabels: readonly string[]
   readonly visiblePourCartographieNationale: boolean
 }
-
-const SEPARATEUR_LISTE = '|'
 
 const nonVide = (valeur: string | null): string | null =>
   valeur != null && valeur.trim() !== '' ? valeur.trim() : null
@@ -313,16 +311,14 @@ export const diagnostiquer = (ligne: LigneAAuditer): readonly Anomalie[] => [
       (valeur) => Courriel.safe(valeur) != null,
     ),
   ),
-  ...(nonVide(ligne.siteWeb) ?? '')
-    .split(SEPARATEUR_LISTE)
-    .flatMap((site) =>
-      valeurRefusee(
-        'site-web-non-conforme',
-        'siteWeb',
-        site,
-        (valeur) => Url.safe(valeur) != null,
-      ),
+  ...ligne.siteWeb.flatMap((site) =>
+    valeurRefusee(
+      'site-web-non-conforme',
+      'siteWeb',
+      site,
+      (valeur) => Url.safe(valeur) != null,
     ),
+  ),
 
   ...valeurRefusee(
     'horaires-non-osm',

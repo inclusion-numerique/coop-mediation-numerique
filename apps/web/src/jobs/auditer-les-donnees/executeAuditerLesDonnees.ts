@@ -1,7 +1,9 @@
 import {
   auditerLesDonnees,
   lieuxAAuditer,
+  listesATrier,
   type Releve,
+  trierLesListes,
 } from '@app/web/features/lieux-activite/abilities/auditer-les-donnees'
 import type { JobExecutor } from '@app/web/jobs/jobExecutors'
 import { output } from '@app/web/jobs/output'
@@ -85,6 +87,25 @@ export const executeAuditerLesDonnees: JobExecutor<
     journal('listes à reprendre, colonne par colonne :')
     for (const [colonne, lieux] of parColonne)
       journal(`  ${colonne.padEnd(LARGEUR_CODE)} ${String(lieux).padStart(6)}`)
+  }
+
+  if (job.payload?.corriger ?? false) {
+    journal('')
+    journal('correction des listes à trier…')
+
+    const aReprendre = lignes
+      .map((ligne) => ({ ligne, champs: listesATrier(ligne) }))
+      .filter(({ champs }) => champs.length > 0)
+
+    let reprises = 0
+    for (const { ligne, champs } of aReprendre) {
+      await trierLesListes(ligne.id, champs)
+      reprises += 1
+      if (reprises % 500 === 0)
+        journal(`  ${reprises} / ${aReprendre.length} lieux repris`)
+    }
+
+    journal(`${reprises} lieux repris, dans la coop et au registre`)
   }
 
   if (job.payload?.csv ?? true) {

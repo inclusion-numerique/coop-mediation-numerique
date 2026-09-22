@@ -8,9 +8,7 @@ import type { LigneAAuditer } from '../../domain/anomalie'
  * schéma d'APRÈS la migration, alors qu'on veut mesurer la base d'AVANT. Tout
  * revient en texte, y compris les vocabulaires, pour que le diagnostic compare
  * des valeurs du standard et non des noms de membres d'énumération.
- *
- * `site_web` est lu en texte : la colonne joint encore ses valeurs par « | » sur
- * une base qui n'a pas reçu la migration, et le diagnostic les découpe.
+
  */
 export const lieuxAAuditer = async (): Promise<LigneAAuditer[]> =>
   prismaClient.$queryRaw<LigneAAuditer[]>`
@@ -29,7 +27,7 @@ export const lieuxAAuditer = async (): Promise<LigneAAuditer[]> =>
       longitude                                      AS "longitude",
       NULLIF(telephone, '')                          AS "telephone",
       COALESCE(courriels, '{}')                      AS "courriels",
-      NULLIF(site_web::text, '')                     AS "siteWeb",
+      COALESCE(site_web, '{}')                       AS "siteWeb",
       NULLIF(horaires, '')                           AS "horaires",
       NULLIF(presentation_resume, '')                AS "presentationResume",
       NULLIF(presentation_detail, '')                AS "presentationDetail",

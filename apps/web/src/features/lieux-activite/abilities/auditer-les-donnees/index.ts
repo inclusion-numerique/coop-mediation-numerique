@@ -11,4 +11,5 @@ export {
   type Poste,
   type Releve,
 } from './domain/auditer-les-donnees'
-export { lieuxAAuditer } from './implementation'
+export { listesATrier } from './domain/listes-a-trier'
+export { lieuxAAuditer, trierLesListes } from './implementation'

@@ -1,1 +1,1 @@
-export { lieuxAAuditer } from './prisma'
+export { lieuxAAuditer, trierLesListes } from './prisma'

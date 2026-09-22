@@ -16,7 +16,7 @@ const ligne = (champs: Partial<LigneAAuditer> = {}): LigneAAuditer => ({
   longitude: 4.03,
   telephone: null,
   courriels: [],
-  siteWeb: null,
+  siteWeb: [],
   horaires: null,
   presentationResume: null,
   presentationDetail: null,
@@ -112,9 +112,11 @@ describe('le diagnostic d’une ligne', () => {
     expect(codes(champs)).toContain(attendu)
   })
 
-  it('signale chaque site web fautif d’une liste jointe, pas la liste', () => {
+  it('signale chaque site web fautif, pas la liste', () => {
     expect(
-      codes({ siteWeb: 'https://un.example.fr|pas une url|https://w' }),
+      codes({
+        siteWeb: ['https://un.example.fr', 'pas une url', 'https://w'],
+      }),
     ).toEqual(['site-web-non-conforme', 'site-web-non-conforme'])
   })
 
