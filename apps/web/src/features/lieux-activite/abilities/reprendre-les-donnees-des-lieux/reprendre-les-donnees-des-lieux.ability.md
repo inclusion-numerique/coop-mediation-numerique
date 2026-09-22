@@ -254,6 +254,21 @@ base.
 > part de ses voies, mais c'est bien l'adresse du lieu, et elle se garde comme
 > une autre.
 
+### Scenario: La mieux notée des deux réponses l'emporte
+
+* Given un lieu dont l’adresse diffère de celle de la Base Adresse Nationale
+* And la Base Adresse Nationale rend deux réponses de qualité inégale
+* When on reprend les données des lieux
+* Then l’adresse du lieu est celle que la Base Adresse Nationale rend
+
+### Scenario: Un lieu-dit est une adresse comme une autre
+
+* Given un lieu dont l’adresse est un lieu-dit
+* And la Base Adresse Nationale rend un lieu-dit
+* When on reprend les données des lieux
+* Then le relevé compte ce lieu dans la colonne "adresse"
+* And l’adresse du lieu est celle que la Base Adresse Nationale rend
+
 ## Rule: La commune reste la même quand seul son code change
 
 > Paris, Marseille et Lyon portent un code de commune que la Base Adresse
@@ -270,6 +285,20 @@ base.
 * Then le relevé compte ce lieu dans la colonne "adresse"
 * And l’adresse du lieu est celle que la Base Adresse Nationale rend
 * And l’inscription au registre pointe vers une adresse
+
+### Scenario: L'arrondissement rendu vaut la commune enregistrée
+
+* Given un lieu d’une ville à arrondissements
+* And la Base Adresse Nationale répond par l’arrondissement
+* When on reprend les données des lieux
+* Then l’adresse du lieu est celle que la Base Adresse Nationale rend
+
+### Scenario: La commune nouvelle vaut celle qu'elle a remplacée
+
+* Given un lieu d’une commune qui a fusionné
+* And la Base Adresse Nationale répond par la commune nouvelle
+* When on reprend les données des lieux
+* Then l’adresse du lieu est celle que la Base Adresse Nationale rend
 
 ## Rule: Ce que la Base Adresse Nationale ne reconnaît pas n'est pas corrigé d'office
 
@@ -290,6 +319,28 @@ base.
 > Nationale qui complète un prénom que nous n'avions pas. Deux voies réellement
 > différentes ne se contiennent pas.
 
+### Scenario: Une voie mal qualifiée au même point est retenue
+
+* Given un lieu dont la voie est mal qualifiée
+* And la Base Adresse Nationale doute de son appariement
+* When on reprend les données des lieux
+* Then l’adresse du lieu est celle que la Base Adresse Nationale rend
+
+### Scenario: La voie noyée dans le nom du bâtiment est retenue
+
+* Given un lieu dont la voie est noyée dans le nom du bâtiment
+* And la Base Adresse Nationale doute de son appariement
+* When on reprend les données des lieux
+* Then l’adresse du lieu est celle que la Base Adresse Nationale rend
+
+### Scenario: Une tout autre voie reste refusée, fût-elle au même point
+
+* Given un lieu dont la voie ne ressemble à aucune autre
+* And elle doute et rend une tout autre voie
+* When on reprend les données des lieux
+* Then le relevé compte ce lieu dans la colonne "adresse"
+* And l’adresse du lieu n’a pas bougé
+
 ## Rule: Le numéro de voie ne se perd qu'au même endroit
 
 > L'adresse rendue n'a pas toujours le numéro que la nôtre porte, ou porte celui
@@ -302,6 +353,21 @@ base.
 
 * Given un lieu dont l’adresse diffère de celle de la Base Adresse Nationale
 * And la Base Adresse Nationale ne reconnaît pas la voie
+* When on reprend les données des lieux
+* Then le relevé compte ce lieu dans la colonne "adresse"
+* And l’adresse du lieu n’a pas bougé
+
+### Scenario: Le numéro se perd au point même du lieu
+
+* Given un lieu dont la voie porte un numéro
+* And la Base Adresse Nationale rend la voie sans son numéro
+* When on reprend les données des lieux
+* Then l’adresse du lieu est celle que la Base Adresse Nationale rend
+
+### Scenario: Le numéro ne se perd pas pour une voie située ailleurs
+
+* Given un lieu dont la voie porte un numéro
+* And elle rend la voie sans son numéro, à trois cents mètres de là
 * When on reprend les données des lieux
 * Then le relevé compte ce lieu dans la colonne "adresse"
 * And l’adresse du lieu n’a pas bougé
@@ -343,10 +409,19 @@ base.
 * When on reprend les données des lieux
 * Then la voie du lieu n’a pas bougé
 
+### Scenario: Le point confirme la voie écrite
+
+* Given un lieu dont l’adresse diffère de celle de la Base Adresse Nationale
+* And la Base Adresse Nationale ne reconnaît pas la voie
+* And elle retrouve au point la voie écrite, sans son numéro
+* When on reprend les données des lieux
+* Then le relevé compte ce lieu dans la colonne "adresse"
+* And l’adresse du lieu est celle que la Base Adresse Nationale rend
+
 ### Scenario: Le point ne remplace pas une voie qui parle
 
 * Given un lieu dont l’adresse diffère de celle de la Base Adresse Nationale
 * And la Base Adresse Nationale ne reconnaît pas la voie
-* And elle retrouve une adresse au point du lieu
+* And elle retrouve au point une tout autre voie
 * When on reprend les données des lieux
 * Then l’adresse du lieu n’a pas bougé

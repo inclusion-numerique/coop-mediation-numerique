@@ -100,7 +100,59 @@ const ADRESSE_BAN = {
   libelle: '12 Quai du Port 17300 Rochefort',
 }
 
-const banRend: { adresse: AdresseGeocodee } = { adresse: ADRESSE_BAN }
+const ARRONDISSEMENT: AdresseGeocodee = {
+  ...ADRESSE_BAN,
+  banId: '75110_0570_00012',
+  voie: '12 Rue de la Grange aux Belles',
+  commune: 'Paris',
+  codePostal: '75010',
+  codeInsee: '75110',
+}
+
+const COMMUNE_NOUVELLE: AdresseGeocodee = {
+  ...ADRESSE_BAN,
+  banId: '85292_0012_00012',
+  commune: 'Rives-du-Fougerais',
+  codePostal: '85410',
+  codeInsee: '85292',
+  ancienCodeInsee: '85041',
+}
+
+const LIEU_DIT: AdresseGeocodee = {
+  ...ADRESSE_BAN,
+  banId: '17299_a1b2c3',
+  type: 'locality',
+  voie: 'Le Bourg',
+}
+
+const VOIE_SANS_NUMERO: AdresseGeocodee = {
+  ...ADRESSE_BAN,
+  banId: '17299_2380',
+  type: 'street',
+  voie: 'Quai du Port',
+}
+
+const TROIS_CENTS_METRES = 300 / 111_320
+
+// La Base Adresse Nationale est interrogée deux fois sur la même adresse, avec
+// puis sans le code postal : elle rend donc plusieurs réponses par lieu.
+const banRend: { adresses: readonly AdresseGeocodee[] } = {
+  adresses: [ADRESSE_BAN],
+}
+
+// Celle des réponses que le scénario attend en base, pour que l'assertion ne
+// redise pas la règle qu'elle vérifie.
+const attendue: { adresse: AdresseGeocodee } = { adresse: ADRESSE_BAN }
+
+// La voie semée, pour que « n'a pas bougé » se vérifie sans la redire.
+const initiale: { voie: string } = { voie: ADRESSE_BAN.voie }
+
+const banRendSeulement = (champs: Partial<AdresseGeocodee>): void => {
+  const rendue = { ...ADRESSE_BAN, ...champs }
+
+  banRend.adresses = [rendue]
+  attendue.adresse = rendue
+}
 
 const banRetrouve: { adresse: AdresseRetrouvee | null } = { adresse: null }
 
@@ -115,7 +167,7 @@ const retrouverParLesCoordonnees: RetrouverParLesCoordonnees = async (
 }
 
 const geocoderLesAdresses: GeocoderLesAdresses = async (adresses) =>
-  new Map(adresses.map(({ lieuId }) => [lieuId, [banRend.adresse]]))
+  new Map(adresses.map(({ lieuId }) => [lieuId, banRend.adresses]))
 
 const semis: { lieuId?: string; modification?: Date; releve?: Releve } = {}
 
@@ -267,18 +319,20 @@ Given(
   'un lieu dont l’adresse diffère de celle de la Base Adresse Nationale',
   async () => {
     await semerUnLieu({})
+    initiale.voie = '12 QUAI DU PORT'
     await prismaClient.lieuInclusion.update({
       where: { id: lieuSeme() },
-      data: { adresse: '12 QUAI DU PORT', banId: null, latitude: null },
+      data: { adresse: initiale.voie, banId: null, latitude: null },
     })
   },
 )
 
 Given('un lieu dont la voie ne nomme aucune voie', async () => {
   await semerUnLieu({})
+  initiale.voie = 'Le Bourg'
   await prismaClient.lieuInclusion.update({
     where: { id: lieuSeme() },
-    data: { adresse: 'Le Bourg', banId: null, latitude: null },
+    data: { adresse: initiale.voie, banId: null, latitude: null },
   })
 })
 
@@ -288,11 +342,11 @@ Then('la voie du lieu n’a pas bougé', async () => {
     select: { adresse: true },
   })
 
-  assert.strictEqual(adresse, 'Le Bourg')
+  assert.strictEqual(adresse, initiale.voie)
 })
 
 Given('la Base Adresse Nationale ne reconnaît pas la voie', () => {
-  banRend.adresse = { ...ADRESSE_BAN, type: 'municipality' }
+  banRend.adresses = [{ ...ADRESSE_BAN, type: 'municipality' }]
 })
 
 Given('elle retrouve une adresse au point du lieu', () => {
@@ -300,6 +354,113 @@ Given('elle retrouve une adresse au point du lieu', () => {
     ...ADRESSE_BAN,
     distance: 4,
     voieSansLeNumero: ADRESSE_BAN.voie,
+  }
+})
+
+const semerUneAdresse = async (
+  adresse: Partial<{
+    adresse: string
+    commune: string
+    codePostal: string
+    codeInsee: string
+  }>,
+): Promise<void> => {
+  await semerUnLieu({})
+  initiale.voie = adresse.adresse ?? ADRESSE_BAN.voie
+  await prismaClient.lieuInclusion.update({
+    where: { id: lieuSeme() },
+    data: { ...adresse, banId: null },
+  })
+}
+
+Given('la Base Adresse Nationale rend deux réponses de qualité inégale', () => {
+  banRend.adresses = [
+    { ...ADRESSE_BAN, banId: '17299_0001', voie: 'Rue de Lyon', score: 0.55 },
+    ADRESSE_BAN,
+  ]
+  attendue.adresse = ADRESSE_BAN
+})
+
+Given('un lieu d’une ville à arrondissements', async () => {
+  await semerUneAdresse({
+    adresse: ARRONDISSEMENT.voie,
+    commune: ARRONDISSEMENT.commune,
+    codePostal: ARRONDISSEMENT.codePostal,
+    codeInsee: '75056',
+  })
+})
+
+Given('la Base Adresse Nationale répond par l’arrondissement', () => {
+  banRendSeulement(ARRONDISSEMENT)
+})
+
+Given('un lieu d’une commune qui a fusionné', async () => {
+  await semerUneAdresse({ commune: 'Cezais', codeInsee: '85041' })
+})
+
+Given('la Base Adresse Nationale répond par la commune nouvelle', () => {
+  banRendSeulement(COMMUNE_NOUVELLE)
+})
+
+Given('un lieu dont l’adresse est un lieu-dit', async () => {
+  await semerUneAdresse({ adresse: LIEU_DIT.voie })
+})
+
+Given('la Base Adresse Nationale rend un lieu-dit', () => {
+  banRendSeulement(LIEU_DIT)
+})
+
+Given('un lieu dont la voie est mal qualifiée', async () => {
+  await semerUneAdresse({ adresse: '12 Rue du Port' })
+})
+
+Given('un lieu dont la voie est noyée dans le nom du bâtiment', async () => {
+  await semerUneAdresse({ adresse: 'MAIRIE 12 QUAI DU PORT SERVICE PUBLIC' })
+})
+
+Given('un lieu dont la voie ne ressemble à aucune autre', async () => {
+  await semerUneAdresse({ adresse: 'Route de Marseille' })
+})
+
+Given('la Base Adresse Nationale doute de son appariement', () => {
+  banRendSeulement({ banId: '17299_2380_00099', score: 0.6 })
+})
+
+Given('elle doute et rend une tout autre voie', () => {
+  banRendSeulement({ banId: '17299_0002', voie: 'Route de Lyon', score: 0.6 })
+})
+
+Given('un lieu dont la voie porte un numéro', async () => {
+  await semerUneAdresse({ adresse: '12 QUAI DU PORT' })
+})
+
+Given('la Base Adresse Nationale rend la voie sans son numéro', () => {
+  banRendSeulement(VOIE_SANS_NUMERO)
+})
+
+Given('elle rend la voie sans son numéro, à trois cents mètres de là', () => {
+  banRendSeulement({
+    ...VOIE_SANS_NUMERO,
+    latitude: ADRESSE_BAN.latitude + TROIS_CENTS_METRES,
+  })
+})
+
+Given('elle retrouve au point la voie écrite, sans son numéro', () => {
+  banRetrouve.adresse = {
+    ...VOIE_SANS_NUMERO,
+    distance: 6,
+    voieSansLeNumero: VOIE_SANS_NUMERO.voie,
+  }
+  attendue.adresse = VOIE_SANS_NUMERO
+})
+
+Given('elle retrouve au point une tout autre voie', () => {
+  banRetrouve.adresse = {
+    ...ADRESSE_BAN,
+    banId: '17299_0003',
+    voie: 'Route de Lyon',
+    voieSansLeNumero: 'Route de Lyon',
+    distance: 6,
   }
 })
 
@@ -603,13 +764,13 @@ Then(
     })
 
     assert.deepStrictEqual(lieu, {
-      adresse: ADRESSE_BAN.voie,
-      commune: ADRESSE_BAN.commune,
-      codePostal: ADRESSE_BAN.codePostal,
-      codeInsee: ADRESSE_BAN.codeInsee,
-      banId: ADRESSE_BAN.banId,
-      latitude: ADRESSE_BAN.latitude,
-      longitude: ADRESSE_BAN.longitude,
+      adresse: attendue.adresse.voie,
+      commune: attendue.adresse.commune,
+      codePostal: attendue.adresse.codePostal,
+      codeInsee: attendue.adresse.codeInsee,
+      banId: attendue.adresse.banId,
+      latitude: attendue.adresse.latitude,
+      longitude: attendue.adresse.longitude,
     })
   },
 )
@@ -632,7 +793,7 @@ Then('l’adresse du lieu n’a pas bougé', async () => {
     },
   )
 
-  assert.strictEqual(adresse, '12 QUAI DU PORT')
+  assert.strictEqual(adresse, initiale.voie)
   assert.strictEqual(banId, null)
 })
 
@@ -664,7 +825,9 @@ After(async () => {
   semis.lieuId = undefined
   semis.modification = undefined
   semis.releve = undefined
-  banRend.adresse = ADRESSE_BAN
+  banRend.adresses = [ADRESSE_BAN]
+  attendue.adresse = ADRESSE_BAN
+  initiale.voie = ADRESSE_BAN.voie
   banRetrouve.adresse = null
 
   if (lieuId == null) return
