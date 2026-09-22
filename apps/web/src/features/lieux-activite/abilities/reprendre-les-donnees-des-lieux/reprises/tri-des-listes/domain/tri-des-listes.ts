@@ -24,7 +24,7 @@ export const triDesListes = (trierLesListes: TrierLesListes): Reprise =>
       colonnes.map((colonne) => ({
         colonne,
         cellule: A_TRIER,
-        motif: colonne,
+        motif: `${colonne} : ${A_TRIER}`,
       })),
     appliquer: trierLesListes,
   })

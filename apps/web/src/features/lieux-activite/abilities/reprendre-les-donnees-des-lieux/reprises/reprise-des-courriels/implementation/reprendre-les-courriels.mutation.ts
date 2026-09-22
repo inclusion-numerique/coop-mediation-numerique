@@ -1,5 +1,5 @@
 import { prismaClient } from '@app/web/prismaClient'
-import { ecrireLeContactAuRegistre } from '../../../implementation/prisma/contact-au-registre'
+import { ecrireAuContactDuRegistre } from '../../../implementation/prisma/contact-au-registre'
 import type { ReprendreLesCourriels } from '../domain/reprise-des-courriels'
 
 export const reprendreLesCourriels: ReprendreLesCourriels = async (
@@ -22,6 +22,6 @@ export const reprendreLesCourriels: ReprendreLesCourriels = async (
       },
     })
 
-    await ecrireLeContactAuRegistre(transaction, lieuId)
+    await ecrireAuContactDuRegistre(transaction, lieuId, 'courriels')
   })
 }

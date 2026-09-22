@@ -1,5 +1,5 @@
 import { prismaClient } from '@app/web/prismaClient'
-import { ecrireLeContactAuRegistre } from '../../../implementation/prisma/contact-au-registre'
+import { ecrireAuContactDuRegistre } from '../../../implementation/prisma/contact-au-registre'
 import type { ReprendreLeTelephone } from '../domain/reprise-du-telephone'
 import type { TelephoneAReprendre } from '../domain/telephone-a-reprendre'
 
@@ -26,6 +26,6 @@ export const reprendreLeTelephone: ReprendreLeTelephone = async (
       },
     })
 
-    await ecrireLeContactAuRegistre(transaction, lieuId)
+    await ecrireAuContactDuRegistre(transaction, lieuId, 'telephone')
   })
 }

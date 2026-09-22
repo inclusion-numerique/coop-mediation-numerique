@@ -10,7 +10,7 @@ const DESORDONNES = [
 const sansEcrire = triDesListes(async () => undefined)
 
 describe('le tri des listes, vu du relevé', () => {
-  it('nomme la colonne désordonnée comme motif', () => {
+  it('nomme la colonne et le geste comme motif', () => {
     const releve = relever(
       [sansEcrire],
       [lieuAReprendre({ services: DESORDONNES })],
@@ -20,7 +20,9 @@ describe('le tri des listes, vu du relevé', () => {
       releve.lieux.flatMap(({ constats }) =>
         constats.flatMap(({ mentions }) => mentions),
       ),
-    ).toEqual([{ colonne: 'services', cellule: 'à trier', motif: 'services' }])
+    ).toEqual([
+      { colonne: 'services', cellule: 'à trier', motif: 'services : à trier' },
+    ])
   })
 
   it('laisse hors du relevé un lieu dont les listes sont en ordre', () => {
