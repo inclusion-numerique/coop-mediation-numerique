@@ -14,10 +14,13 @@ export {
 } from './releve'
 export {
   type Constat,
+  type Constater,
+  type DefinitionAvecPrealable,
   type DefinitionDeReprise,
   type Mention,
   type Reprise,
   reprise,
+  repriseAvecPrealable,
 } from './reprise'
 export {
   type Nettoyer,

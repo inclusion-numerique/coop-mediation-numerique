@@ -22,15 +22,15 @@ const JAMAIS = repriseDeTest('seconde', () => false)
 const SUR_REIMS = repriseDeTest('seconde', (nom) => nom.includes('Reims'))
 
 describe('le relevé', () => {
-  it('annonce les colonnes de toutes les reprises, même celles qui ne relèvent rien', () => {
-    expect(relever([TOUJOURS, JAMAIS], []).colonnes).toEqual([
+  it('annonce les colonnes de toutes les reprises, même celles qui ne relèvent rien', async () => {
+    expect((await relever([TOUJOURS, JAMAIS], [])).colonnes).toEqual([
       'premiere',
       'seconde',
     ])
   })
 
-  it('ne retient que les lieux qu’au moins une reprise concerne', () => {
-    const releve = relever(
+  it('ne retient que les lieux qu’au moins une reprise concerne', async () => {
+    const releve = await relever(
       [SUR_REIMS],
       [
         lieuAReprendre({ id: 'a', nom: 'Espace de Reims' }),
@@ -42,8 +42,8 @@ describe('le relevé', () => {
     expect(releve.lieux.map(({ lieuId }) => lieuId)).toEqual(['a'])
   })
 
-  it('rassemble sur un lieu les constats de chaque reprise', () => {
-    const releve = relever(
+  it('rassemble sur un lieu les constats de chaque reprise', async () => {
+    const releve = await relever(
       [TOUJOURS, SUR_REIMS],
       [lieuAReprendre({ nom: 'Espace de Reims' })],
     )
@@ -51,8 +51,8 @@ describe('le relevé', () => {
     expect(releve.lieux.flatMap(({ constats }) => constats)).toHaveLength(2)
   })
 
-  it('compte les lieux motif par motif, du plus lourd au plus léger', () => {
-    const releve = relever(
+  it('compte les lieux motif par motif, du plus lourd au plus léger', async () => {
+    const releve = await relever(
       [TOUJOURS, SUR_REIMS],
       [
         lieuAReprendre({ id: 'a', nom: 'Espace de Reims' }),
@@ -66,8 +66,8 @@ describe('le relevé', () => {
     ])
   })
 
-  it('porte de quoi reconnaître le lieu', () => {
-    const [lieu] = relever([TOUJOURS], [lieuAReprendre()]).lieux
+  it('porte de quoi reconnaître le lieu', async () => {
+    const [lieu] = (await relever([TOUJOURS], [lieuAReprendre()])).lieux
 
     expect(lieu?.nom).toBe('Espace numérique de Reims')
     expect(lieu?.commune).toBe('Reims')

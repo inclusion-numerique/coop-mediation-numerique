@@ -4,14 +4,14 @@ import { repriseDeLaPublication } from './reprise-de-la-publication'
 
 const sansEcrire = repriseDeLaPublication(async () => undefined)
 
-const mentions = (champs: Parameters<typeof lieuAReprendre>[0]) =>
-  relever([sansEcrire], [lieuAReprendre(champs)]).lieux.flatMap(
+const mentions = async (champs: Parameters<typeof lieuAReprendre>[0]) =>
+  (await relever([sansEcrire], [lieuAReprendre(champs)])).lieux.flatMap(
     ({ constats }) => constats.flatMap(({ mentions }) => mentions),
   )
 
 describe('la publication d’un lieu sans service', () => {
-  it('se retire', () => {
-    expect(mentions({ publie: true, services: [] })).toEqual([
+  it('se retire', async () => {
+    expect(await mentions({ publie: true, services: [] })).toEqual([
       {
         colonne: 'publication',
         cellule: 'à retirer',
@@ -20,17 +20,21 @@ describe('la publication d’un lieu sans service', () => {
     ])
   })
 
-  it('se retire même quand le lieu annonce une typologie', () => {
+  it('se retire même quand le lieu annonce une typologie', async () => {
     expect(
-      mentions({ publie: true, services: [], typologies: ['TIERS_LIEUX'] }),
+      await mentions({
+        publie: true,
+        services: [],
+        typologies: ['TIERS_LIEUX'],
+      }),
     ).toHaveLength(1)
   })
 
-  it('reste quand le lieu annonce un service', () => {
-    expect(mentions({ publie: true, services: ['Aide'] })).toEqual([])
+  it('reste quand le lieu annonce un service', async () => {
+    expect(await mentions({ publie: true, services: ['Aide'] })).toEqual([])
   })
 
-  it('ne concerne pas un lieu que personne ne voit', () => {
-    expect(mentions({ publie: false, services: [] })).toEqual([])
+  it('ne concerne pas un lieu que personne ne voit', async () => {
+    expect(await mentions({ publie: false, services: [] })).toEqual([])
   })
 })

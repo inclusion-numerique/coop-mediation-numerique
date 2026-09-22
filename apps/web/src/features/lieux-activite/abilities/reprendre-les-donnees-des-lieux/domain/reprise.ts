@@ -11,9 +11,11 @@ export type Constat = {
   readonly appliquer: () => Promise<void>
 }
 
+export type Constater = (lieu: LieuAReprendre) => Constat | null
+
 export type Reprise = {
   readonly colonnes: readonly string[]
-  readonly constater: (lieu: LieuAReprendre) => Constat | null
+  readonly preparer: (lieux: readonly LieuAReprendre[]) => Promise<Constater>
 }
 
 export type DefinitionDeReprise<Verdict> = {
@@ -23,15 +25,24 @@ export type DefinitionDeReprise<Verdict> = {
   readonly appliquer: (lieuId: string, verdict: Verdict) => Promise<void>
 }
 
-export const reprise = <Verdict>({
-  colonnes,
-  constater,
-  mentions,
-  appliquer,
-}: DefinitionDeReprise<Verdict>): Reprise => ({
-  colonnes,
-  constater: (lieu) => {
-    const verdict = constater(lieu)
+export type DefinitionAvecPrealable<Verdict, Prealable> = Omit<
+  DefinitionDeReprise<Verdict>,
+  'constater'
+> & {
+  readonly preparer: (lieux: readonly LieuAReprendre[]) => Promise<Prealable>
+  readonly constater: (
+    lieu: LieuAReprendre,
+    prealable: Prealable,
+  ) => Verdict | null
+}
+
+const constater =
+  <Verdict>(
+    { mentions, appliquer }: Omit<DefinitionDeReprise<Verdict>, 'constater'>,
+    juger: (lieu: LieuAReprendre) => Verdict | null,
+  ): Constater =>
+  (lieu) => {
+    const verdict = juger(lieu)
 
     return verdict == null
       ? null
@@ -39,5 +50,29 @@ export const reprise = <Verdict>({
           mentions: mentions(verdict),
           appliquer: () => appliquer(lieu.id, verdict),
         }
+  }
+
+export const reprise = <Verdict>(
+  definition: DefinitionDeReprise<Verdict>,
+): Reprise => ({
+  colonnes: definition.colonnes,
+  preparer: async () => constater(definition, definition.constater),
+})
+
+/**
+ * Une reprise dont le jugement demande un travail préalable sur l'ensemble des
+ * lieux : interroger un service en masse plutôt qu'un lieu à la fois. Le
+ * préalable est calculé une seule fois, puis chaque lieu se juge devant lui.
+ */
+export const repriseAvecPrealable = <Verdict, Prealable>(
+  definition: DefinitionAvecPrealable<Verdict, Prealable>,
+): Reprise => ({
+  colonnes: definition.colonnes,
+  preparer: async (lieux) => {
+    const prealable = await definition.preparer(lieux)
+
+    return constater(definition, (lieu) =>
+      definition.constater(lieu, prealable),
+    )
   },
 })

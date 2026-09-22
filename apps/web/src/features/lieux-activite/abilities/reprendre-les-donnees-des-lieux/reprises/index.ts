@@ -1,4 +1,17 @@
 export {
+  type AdresseAReprendre,
+  type AdresseGeocodee,
+  type AdresseSoumise,
+  adresseAReprendre,
+  adresseSoumise,
+  type GeocoderLesAdresses,
+  geocoderLesAdresses,
+  type ReprendreLAdresse,
+  reprendreLAdresse,
+  repriseDeLAdresse,
+  sansRepriseDeLAdresse,
+} from './reprise-de-l-adresse'
+export {
   type RetirerLaPublication,
   repriseDeLaPublication,
   retirerLaPublication,

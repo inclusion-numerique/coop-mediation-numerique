@@ -230,3 +230,35 @@ base.
 * When on reprend les données des lieux
 * Then le relevé compte ce lieu dans la colonne "presentationResume"
 * And le résumé du lieu descend dans sa description
+
+## Rule: Une adresse ne se garde que si la Base Adresse Nationale la rend elle-même
+
+> Une adresse qu'aucun référentiel ne connaît n'est pas une adresse : c'est une
+> phrase. Le lieu qui la porte ne se situe sur aucune carte et ne se compare à
+> aucun autre. La base doit donc porter exactement ce que la Base Adresse
+> Nationale rend — voie, commune, codes, identifiant et coordonnées comprises.
+> Au-delà de quatre-vingt-dix centièmes d'appariement, c'est la même adresse, et
+> c'est sa version à elle qui fait foi.
+
+### Scenario: L'adresse est réalignée sur celle de la Base Adresse Nationale
+
+* Given un lieu dont l’adresse diffère de celle de la Base Adresse Nationale
+* When on reprend les données des lieux
+* Then le relevé compte ce lieu dans la colonne "adresse"
+* And l’adresse du lieu est celle que la Base Adresse Nationale rend
+* And l’inscription au registre pointe vers une adresse
+
+## Rule: Ce que la Base Adresse Nationale ne reconnaît pas n'est pas corrigé d'office
+
+> Un repli sur le centre de la commune ne désigne pas un lieu, une voie trouvée
+> dans une autre commune contredit ce qui est enregistré, et un appariement
+> faible n'est qu'une ressemblance. Aucun des trois ne se tranche sans qu'on
+> l'ait regardé : ils paraissent au relevé avec leur motif, et rien n'est écrit.
+
+### Scenario: Une voie introuvable paraît au relevé sans être corrigée
+
+* Given un lieu dont l’adresse diffère de celle de la Base Adresse Nationale
+* And la Base Adresse Nationale ne reconnaît pas la voie
+* When on reprend les données des lieux
+* Then le relevé compte ce lieu dans la colonne "adresse"
+* And l’adresse du lieu n’a pas bougé

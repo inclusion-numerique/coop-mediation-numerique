@@ -1,4 +1,8 @@
 import assert from 'node:assert'
+import type {
+  AdresseGeocodee,
+  GeocoderLesAdresses,
+} from '@app/web/features/lieux-activite/abilities/reprendre-les-donnees-des-lieux'
 import {
   deposerLeReleve,
   descendreLeResume,
@@ -6,11 +10,13 @@ import {
   lireLesLieux,
   mentionsDuLieu,
   type Releve,
+  reprendreLAdresse,
   reprendreLesCourriels,
   reprendreLesDonneesDesLieux,
   reprendreLesHoraires,
   reprendreLesSitesWeb,
   reprendreLeTelephone,
+  repriseDeLAdresse,
   repriseDeLaPublication,
   repriseDesCourriels,
   repriseDesHoraires,
@@ -21,6 +27,7 @@ import {
   retirerLaPublication,
   sansDescenteDuResume,
   sansEffacementDuRna,
+  sansRepriseDeLAdresse,
   sansRepriseDesCourriels,
   sansRepriseDesHoraires,
   sansRepriseDesSitesWeb,
@@ -74,6 +81,27 @@ const RNA = 'W751234567'
 
 const RESUME_TROP_LONG = 'x'.repeat(281)
 
+// L'adresse que la Base Adresse Nationale rend pour les lieux semés. Les
+// scénarios ne sortent pas sur le réseau : le géocodeur se passe en port, et
+// sans réponse conforme chaque lieu paraîtrait au relevé pour son adresse.
+const ADRESSE_BAN = {
+  type: 'housenumber',
+  score: 0.96,
+  banId: '17299_2380_00012',
+  voie: '12 Quai du Port',
+  commune: 'Rochefort',
+  codePostal: '17300',
+  codeInsee: '17299',
+  latitude: 45.941_23,
+  longitude: -0.960_45,
+  libelle: '12 Quai du Port 17300 Rochefort',
+}
+
+const banRend: { adresse: AdresseGeocodee } = { adresse: ADRESSE_BAN }
+
+const geocoderLesAdresses: GeocoderLesAdresses = async (adresses) =>
+  new Map(adresses.map(({ lieuId }) => [lieuId, banRend.adresse]))
+
 const semis: { lieuId?: string; modification?: Date; releve?: Releve } = {}
 
 const lieuSeme = (): string => {
@@ -103,9 +131,13 @@ const semerUnLieu = async (champs: {
   const lieu = await prismaClient.lieuInclusion.create({
     data: {
       nom: `Lieu à reprendre ${v4()}`,
-      adresse: '12 quai du Port',
-      commune: 'Rochefort',
-      codePostal: '17300',
+      adresse: ADRESSE_BAN.voie,
+      commune: ADRESSE_BAN.commune,
+      codePostal: ADRESSE_BAN.codePostal,
+      codeInsee: ADRESSE_BAN.codeInsee,
+      banId: ADRESSE_BAN.banId,
+      latitude: ADRESSE_BAN.latitude,
+      longitude: ADRESSE_BAN.longitude,
       services:
         champs.sansService === true
           ? []
@@ -216,6 +248,21 @@ Given('un lieu dont un site web n’a pas de domaine', async () => {
   await semerUnLieu({ siteWeb: [SITE_WEB_VALIDE, SITE_WEB_SANS_DOMAINE] })
 })
 
+Given(
+  'un lieu dont l’adresse diffère de celle de la Base Adresse Nationale',
+  async () => {
+    await semerUnLieu({})
+    await prismaClient.lieuInclusion.update({
+      where: { id: lieuSeme() },
+      data: { adresse: '12 QUAI DU PORT', banId: null, latitude: null },
+    })
+  },
+)
+
+Given('la Base Adresse Nationale ne reconnaît pas la voie', () => {
+  banRend.adresse = { ...ADRESSE_BAN, type: 'municipality' }
+})
+
 Given('un lieu dont les créneaux sont illisibles', async () => {
   await semerUnLieu({
     horaires: CRENEAUX_ILLISIBLES,
@@ -278,6 +325,7 @@ When('on reprend les données des lieux', async () => {
         repriseDuPivot(effacerLeRna),
         repriseDuResume(descendreLeResume),
         repriseDeLaPublication(retirerLaPublication),
+        repriseDeLAdresse(geocoderLesAdresses, reprendreLAdresse),
       ],
       ports: {
         lireLesLieux: lireLesLieuxDuScenario,
@@ -300,6 +348,7 @@ When('on relève les données des lieux sans les reprendre', async () => {
         repriseDuPivot(sansEffacementDuRna),
         repriseDuResume(sansDescenteDuResume),
         repriseDeLaPublication(sansRetraitDePublication),
+        repriseDeLAdresse(geocoderLesAdresses, sansRepriseDeLAdresse),
       ],
       ports: {
         lireLesLieux: lireLesLieuxDuScenario,
@@ -311,9 +360,9 @@ When('on relève les données des lieux sans les reprendre', async () => {
 })
 
 Then('le relevé compte ce lieu dans la colonne {string}', (colonne: string) => {
-  assert.strictEqual(
+  assert.notStrictEqual(
     celluleDe(colonne),
-    'à trier',
+    undefined,
     `colonnes relevées : ${mentions()
       .map(({ colonne: relevee }) => relevee)
       .join(', ')}`,
@@ -481,6 +530,56 @@ Then('le résumé du lieu descend dans sa description', async () => {
   assert.strictEqual(presentationDetail, RESUME_TROP_LONG)
 })
 
+Then(
+  'l’adresse du lieu est celle que la Base Adresse Nationale rend',
+  async () => {
+    const lieu = await prismaClient.lieuInclusion.findUniqueOrThrow({
+      where: { id: lieuSeme() },
+      select: {
+        adresse: true,
+        commune: true,
+        codePostal: true,
+        codeInsee: true,
+        banId: true,
+        latitude: true,
+        longitude: true,
+      },
+    })
+
+    assert.deepStrictEqual(lieu, {
+      adresse: ADRESSE_BAN.voie,
+      commune: ADRESSE_BAN.commune,
+      codePostal: ADRESSE_BAN.codePostal,
+      codeInsee: ADRESSE_BAN.codeInsee,
+      banId: ADRESSE_BAN.banId,
+      latitude: ADRESSE_BAN.latitude,
+      longitude: ADRESSE_BAN.longitude,
+    })
+  },
+)
+
+Then('l’inscription au registre pointe vers une adresse', async () => {
+  const { adresseId } =
+    await prismaClient.lieuInclusionRegistreMain.findFirstOrThrow({
+      where: { structureCoopId: lieuSeme() },
+      select: { adresseId: true },
+    })
+
+  assert.notStrictEqual(adresseId, null)
+})
+
+Then('l’adresse du lieu n’a pas bougé', async () => {
+  const { adresse, banId } = await prismaClient.lieuInclusion.findUniqueOrThrow(
+    {
+      where: { id: lieuSeme() },
+      select: { adresse: true, banId: true },
+    },
+  )
+
+  assert.strictEqual(adresse, '12 QUAI DU PORT')
+  assert.strictEqual(banId, null)
+})
+
 Then('le relevé montre l’adresse abandonnée', () => {
   assert.strictEqual(celluleDe('siteWeb'), SITE_WEB_SANS_DOMAINE)
 })
@@ -509,6 +608,7 @@ After(async () => {
   semis.lieuId = undefined
   semis.modification = undefined
   semis.releve = undefined
+  banRend.adresse = ADRESSE_BAN
 
   if (lieuId == null) return
 

@@ -5,6 +5,11 @@ export type LieuAReprendre = {
   readonly codePostal: string
   readonly publie: boolean
   readonly horaires: string | null
+  readonly adresse: string
+  readonly codeInsee: string | null
+  readonly banId: string | null
+  readonly latitude: number | null
+  readonly longitude: number | null
   readonly rna: string | null
   readonly presentationResume: string | null
   readonly presentationDetail: string | null

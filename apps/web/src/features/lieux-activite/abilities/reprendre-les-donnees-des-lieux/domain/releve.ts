@@ -1,5 +1,5 @@
 import type { LieuAReprendre } from './lieu-a-reprendre'
-import type { Constat, Mention, Reprise } from './reprise'
+import type { Constat, Constater, Mention, Reprise } from './reprise'
 
 export type LieuAuReleve = {
   readonly lieuId: string
@@ -22,11 +22,9 @@ export type Releve = {
 }
 
 const constater =
-  (reprises: readonly Reprise[]) =>
+  (jugements: readonly Constater[]) =>
   (lieu: LieuAReprendre): readonly LieuAuReleve[] => {
-    const constats = reprises.flatMap(
-      (reprise) => reprise.constater(lieu) ?? [],
-    )
+    const constats = jugements.flatMap((juger) => juger(lieu) ?? [])
 
     return constats.length === 0
       ? []
@@ -42,14 +40,20 @@ const constater =
         ]
   }
 
-export const relever = (
+export const relever = async (
   reprises: readonly Reprise[],
   lieux: readonly LieuAReprendre[],
-): Releve => ({
-  lieuxMesures: lieux.length,
-  colonnes: reprises.flatMap(({ colonnes }) => colonnes),
-  lieux: lieux.flatMap(constater(reprises)),
-})
+): Promise<Releve> => {
+  const jugements = await Promise.all(
+    reprises.map((reprise) => reprise.preparer(lieux)),
+  )
+
+  return {
+    lieuxMesures: lieux.length,
+    colonnes: reprises.flatMap(({ colonnes }) => colonnes),
+    lieux: lieux.flatMap(constater(jugements)),
+  }
+}
 
 export const mentionsDuLieu = ({
   constats,

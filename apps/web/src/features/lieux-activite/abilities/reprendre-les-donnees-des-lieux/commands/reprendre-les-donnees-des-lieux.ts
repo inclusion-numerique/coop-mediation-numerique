@@ -60,7 +60,7 @@ export const reprendreLesDonneesDesLieux = async ({
   readonly reprises: readonly Reprise[]
   readonly ports: PortsDeReprise
 }): Promise<Passe> => {
-  const releve = relever(reprises, await ports.lireLesLieux())
+  const releve = await relever(reprises, await ports.lireLesLieux())
 
   return {
     releve,

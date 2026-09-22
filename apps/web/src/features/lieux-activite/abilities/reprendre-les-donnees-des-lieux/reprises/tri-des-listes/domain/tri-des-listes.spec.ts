@@ -9,24 +9,20 @@ const DESORDONNES = [
 
 const sansEcrire = triDesListes(async () => undefined)
 
-describe('le tri des listes, vu du relevé', () => {
-  it('nomme la colonne et le geste comme motif', () => {
-    const releve = relever(
-      [sansEcrire],
-      [lieuAReprendre({ services: DESORDONNES })],
-    )
+const mentionsDe = async (champs: Parameters<typeof lieuAReprendre>[0]) =>
+  (await relever([sansEcrire], [lieuAReprendre(champs)])).lieux.flatMap(
+    ({ constats }) => constats.flatMap(({ mentions }) => mentions),
+  )
 
-    expect(
-      releve.lieux.flatMap(({ constats }) =>
-        constats.flatMap(({ mentions }) => mentions),
-      ),
-    ).toEqual([
+describe('le tri des listes, vu du relevé', () => {
+  it('nomme la colonne et le geste comme motif', async () => {
+    expect(await mentionsDe({ services: DESORDONNES })).toEqual([
       { colonne: 'services', cellule: 'à trier', motif: 'services : à trier' },
     ])
   })
 
-  it('laisse hors du relevé un lieu dont les listes sont en ordre', () => {
-    expect(relever([sansEcrire], [lieuAReprendre()]).lieux).toEqual([])
+  it('laisse hors du relevé un lieu dont les listes sont en ordre', async () => {
+    expect(await mentionsDe({})).toEqual([])
   })
 
   it('confie au port le tri des seules colonnes désordonnées', async () => {
@@ -36,7 +32,7 @@ describe('le tri des listes, vu du relevé', () => {
       tries.colonnes = colonnes
     })
 
-    const releve = relever(
+    const releve = await relever(
       [reprise],
       [lieuAReprendre({ id: 'a', services: DESORDONNES })],
     )
