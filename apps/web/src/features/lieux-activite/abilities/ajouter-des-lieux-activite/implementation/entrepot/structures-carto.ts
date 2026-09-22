@@ -4,25 +4,35 @@ import { IdsCartographieNationale } from '@app/web/features/lieux-activite/domai
 import { reconnues } from '@app/web/features/lieux-activite/domain/nomenclatures'
 import {
   courrielsValides,
+  ficheAccesLibreSaisie,
+  horairesDeLaSource,
   presentationSaisie,
   sitesWebSaisis,
   telephoneValide,
-  urlSaisie,
 } from '@app/web/features/lieux-activite/domain/saisie'
 import { SourceCartographie } from '@app/web/features/lieux-activite/domain/tracabilite'
 import { coopCartographieNationaleSource } from '@app/web/libraries/cartographie-nationale'
 import {
   Contact,
+  DispositifProgrammesNationaux,
+  FormationsLabels,
   Frais,
+  FraisACharge,
   Itinerance,
-  isValidNom,
+  Itinerances,
   ModaliteAcces,
   ModaliteAccompagnement,
+  ModalitesAcces,
+  ModalitesAccompagnement,
   Nom,
   PriseEnChargeSpecifique,
+  PrisesEnChargeSpecifiques,
   PublicSpecifiquementAdresse,
+  PublicsSpecifiquementAdresses,
   Service,
+  Services,
   Typologie,
+  Typologies,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { LieuCarto } from '../../domain'
 
@@ -112,33 +122,30 @@ const ficheDeLaLigne = (lieu: LieuRow): Fiche => ({
   pivot: null,
   adresse: null,
   localisation: null,
-  typologies: reconnues(Typologie, lieu.typologies),
+  typologies: Typologies(reconnues(Typologie, lieu.typologies)),
   contact: contactDeLaLigne(lieu.contact),
-  horaires: lieu.horaires,
+  horaires: horairesDeLaSource(lieu.horaires),
   presentation: presentationSaisie(
     lieu.presentationResume,
     lieu.presentationDetail,
   ),
-  services: reconnues(Service, lieu.services),
-  publicsSpecifiquementAdresses: reconnues(
-    PublicSpecifiquementAdresse,
-    lieu.publicsSpecifiquementAdresses,
+  services: Services(reconnues(Service, lieu.services)),
+  publicsSpecifiquementAdresses: PublicsSpecifiquementAdresses(
+    reconnues(PublicSpecifiquementAdresse, lieu.publicsSpecifiquementAdresses),
   ),
-  priseEnChargeSpecifique: reconnues(
-    PriseEnChargeSpecifique,
-    lieu.priseEnChargeSpecifique,
+  priseEnChargeSpecifique: PrisesEnChargeSpecifiques(
+    reconnues(PriseEnChargeSpecifique, lieu.priseEnChargeSpecifique),
   ),
-  modalitesAcces: reconnues(ModaliteAcces, lieu.modalitesAcces),
-  fraisACharge: reconnues(Frais, lieu.fraisACharge),
-  itinerance: reconnues(Itinerance, lieu.itinerance),
-  dispositifProgrammesNationaux: [],
-  formationsLabels: [],
+  modalitesAcces: ModalitesAcces(reconnues(ModaliteAcces, lieu.modalitesAcces)),
+  fraisACharge: FraisACharge(reconnues(Frais, lieu.fraisACharge)),
+  itinerance: Itinerances(reconnues(Itinerance, lieu.itinerance)),
+  dispositifProgrammesNationaux: DispositifProgrammesNationaux([]),
+  formationsLabels: FormationsLabels([]),
   autresFormationsLabels: [],
-  modalitesAccompagnement: reconnues(
-    ModaliteAccompagnement,
-    lieu.modalitesAccompagnement,
+  modalitesAccompagnement: ModalitesAccompagnement(
+    reconnues(ModaliteAccompagnement, lieu.modalitesAccompagnement),
   ),
-  ficheAccesLibre: urlSaisie(lieu.ficheAccesLibre),
+  ficheAccesLibre: ficheAccesLibreSaisie(lieu.ficheAccesLibre),
   priseRdv: null,
 })
 
@@ -164,7 +171,7 @@ const toLieuCarto = (lieu: LieuRow): LieuCarto | null => {
       ? null
       : IdsCartographieNationale.safe(lieu.structureCartographieNationaleId)
 
-  if (ids == null || !isValidNom(lieu.nom)) return null
+  if (ids == null || Nom.safe(lieu.nom) == null) return null
 
   return {
     idsCartographieNationale: ids,

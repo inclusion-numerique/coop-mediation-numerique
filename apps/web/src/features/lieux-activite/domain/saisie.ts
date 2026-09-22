@@ -1,20 +1,19 @@
-import { telephoneCanonique } from '@app/web/libraries/telephone'
 import { appendComment } from '@app/web/opening-hours/openingHoursHelpers'
 import {
   Adresse,
+  ComplementAdresse,
   Courriel,
+  FicheAccesLibre,
+  Horaires,
   Itinerance,
-  isRna,
-  isSiret,
-  isValidAddress,
-  isValidCourriel,
-  isValidLocalisation,
-  isValidTelephone,
-  isValidUrl,
   Localisation,
   ModaliteAcces,
-  type Pivot,
-  type Presentation,
+  Pivot,
+  Presentation,
+  sansDoublons,
+  Telephone,
+  telephoneCanonique,
+  triee,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import {
@@ -47,7 +46,21 @@ export const nonVide = (valeur: string | null | undefined): string | null =>
 export const urlSaisie = (valeur: string | null | undefined): Url | null => {
   const texte = nonVide(valeur)
 
-  return texte != null && isValidUrl(texte) ? Url(texte) : null
+  return texte == null ? null : Url.safe(texte)
+}
+
+/**
+ * Une fiche d'accessibilité, qui n'est pas n'importe quelle URL : le standard
+ * exige qu'elle pointe vers Accès Libre. La règle vient de la coop, qui l'a
+ * toujours imposée à la saisie ; elle vaut désormais sur tous les chemins
+ * d'écriture, imports cartographiques compris.
+ */
+export const ficheAccesLibreSaisie = (
+  valeur: string | null | undefined,
+): FicheAccesLibre | null => {
+  const texte = nonVide(valeur)
+
+  return texte == null ? null : FicheAccesLibre.safe(texte)
 }
 
 export const sitesWebSaisis = (
@@ -55,20 +68,20 @@ export const sitesWebSaisis = (
 ): readonly Url[] =>
   (nonVide(valeur) ?? '')
     .split(SEPARATEUR_LISTE)
-    .map((jeton) => jeton.trim())
-    .filter(isValidUrl)
-    .map(Url)
+    .map((jeton) => Url.safe(jeton.trim()))
+    .filter((url): url is Url => url != null)
 
-export const pivotSaisi = (
-  siret: string | null | undefined,
-  rna: string | null | undefined,
-): Pivot | null => {
+/**
+ * L'immatriculation du lieu : un SIRET, ou rien.
+ *
+ * Le RNA n'en est plus une. Le standard a ramené `Pivot` au seul SIRET, cinq
+ * lieux du jeu national en portant un et aucun ne s'y saisissant ; la colonne
+ * `rna` de la coop demeure, mais plus rien ne la lit pour désigner le lieu.
+ */
+export const pivotSaisi = (siret: string | null | undefined): Pivot | null => {
   const siretSaisi = nonVide(siret)
-  if (siretSaisi != null && isSiret(siretSaisi)) return siretSaisi
 
-  const rnaSaisi = nonVide(rna)
-
-  return rnaSaisi != null && isRna(rnaSaisi) ? rnaSaisi : null
+  return siretSaisi == null ? null : Pivot.safe(siretSaisi)
 }
 
 export const presentationSaisie = (
@@ -80,10 +93,10 @@ export const presentationSaisie = (
 
   if (resumeSaisi == null && detailSaisi == null) return null
 
-  return {
+  return Presentation.safe({
     ...(resumeSaisi == null ? {} : { resume: resumeSaisi }),
     ...(detailSaisi == null ? {} : { detail: detailSaisi }),
-  }
+  })
 }
 
 /**
@@ -104,11 +117,11 @@ export const presentationSaisie = (
  */
 export const telephoneValide = (
   numero: string | null | undefined,
-): string | null => {
+): Telephone | null => {
   const saisi = nonVide(numero)
   const normalise = saisi == null ? null : telephoneCanonique(saisi)
 
-  return normalise != null && isValidTelephone(normalise) ? normalise : null
+  return normalise == null ? null : Telephone.safe(normalise)
 }
 
 /**
@@ -121,7 +134,22 @@ export type Coche = boolean | null | undefined
 export const telephoneSaisi = (
   coche: Coche,
   numero: string | null | undefined,
-): string | null => (coche ? telephoneValide(numero) : null)
+): Telephone | null => (coche ? telephoneValide(numero) : null)
+
+/**
+ * Les labels libres, tels que le standard range toute valeur multiple :
+ * dédoublonnés et ordonnés. Le champ n'a pas de modèle — il est libre — mais
+ * l'ordre d'une liste n'y porte pas davantage d'information qu'ailleurs, et
+ * deux exécutions qui ne diffèrent que par lui fabriquent de faux changements.
+ */
+export const labelsLibres = (
+  labels: readonly (string | null | undefined)[],
+): string[] =>
+  triee(
+    sansDoublons(
+      labels.map(nonVide).filter((label): label is string => label != null),
+    ),
+  )
 
 /** Les adresses reconnues parmi celles proposées, dans l'ordre. */
 export const courrielsValides = (
@@ -129,9 +157,8 @@ export const courrielsValides = (
 ): readonly Courriel[] =>
   adresses
     .map(nonVide)
-    .filter((adresse): adresse is string => adresse != null)
-    .filter(isValidCourriel)
-    .map(Courriel)
+    .map((adresse) => (adresse == null ? null : Courriel.safe(adresse)))
+    .filter((courriel): courriel is Courriel => courriel != null)
 
 export const courrielsSaisis = (
   coche: Coche,
@@ -143,7 +170,7 @@ export const modalitesAccesSaisies = (saisie: {
   surPlace?: Coche
   parTelephone?: Coche
   parMail?: Coche
-}): readonly ModaliteAcces[] => [
+}): ModaliteAcces[] => [
   ...(saisie.surPlace ? [ModaliteAcces.SePresenter] : []),
   ...(saisie.parTelephone ? [ModaliteAcces.Telephoner] : []),
   ...(saisie.parMail ? [ModaliteAcces.ContacterParMail] : []),
@@ -158,11 +185,27 @@ export type AdresseSaisie = {
   longitude: number
 }
 
+/**
+ * Le complément, s'il est reconnu — et rien sinon.
+ *
+ * Il se valide seul parce qu'il est facultatif : mêlé au reste, un complément
+ * refusé emporterait l'adresse entière (D21, D29.1). Le cas n'existait pas
+ * avant que le standard ne se mette à le valider ; il vaut désormais pour
+ * `Appt #4` comme pour un tiret cadratin.
+ */
+export const complementAdresseSaisi = (
+  complement: string | null | undefined,
+): ComplementAdresse | null => {
+  const texte = nonVide(complement)
+
+  return texte == null ? null : ComplementAdresse.safe(texte)
+}
+
 export const adresseSaisie = (
   ban: AdresseSaisie,
   complement: string | null | undefined,
 ): Adresse | null => {
-  const complementSaisi = nonVide(complement)
+  const complementSaisi = complementAdresseSaisi(complement)
   const candidate = {
     voie: ban.nom,
     commune: ban.commune,
@@ -171,13 +214,13 @@ export const adresseSaisie = (
     ...(complementSaisi == null ? {} : { complement_adresse: complementSaisi }),
   }
 
-  return isValidAddress(candidate) ? Adresse(candidate) : null
+  return Adresse.safe(candidate)
 }
 
 export const localisationSaisie = (ban: AdresseSaisie): Localisation | null => {
   const candidate = { latitude: ban.latitude, longitude: ban.longitude }
 
-  return isValidLocalisation(candidate) ? Localisation(candidate) : null
+  return Localisation.safe(candidate)
 }
 
 /**
@@ -186,7 +229,7 @@ export const localisationSaisie = (ban: AdresseSaisie): Localisation | null => {
  */
 export const itineranceSaisie = (
   itinerant: boolean | null | undefined,
-): readonly Itinerance[] =>
+): Itinerance[] =>
   itinerant == null
     ? []
     : itinerant
@@ -205,7 +248,19 @@ export const itineranceSaisie = (
 export const horairesSaisis = (
   grille: Schedule,
   commentaire: string | null | undefined,
-): string | null =>
-  nonVide(
-    appendComment(fromTimetableOpeningHours(grille), nonVide(commentaire)),
-  )
+): Horaires | null => {
+  const osm = nonVide(fromTimetableOpeningHours(grille))
+
+  return osm == null
+    ? null
+    : Horaires.safe(appendComment(osm, nonVide(commentaire)))
+}
+
+/** Un horaire tel qu'une source l'a écrit : retenu s'il suit le format OSM. */
+export const horairesDeLaSource = (
+  horaires: string | null | undefined,
+): Horaires | null => {
+  const texte = nonVide(horaires)
+
+  return texte == null ? null : Horaires.safe(texte)
+}

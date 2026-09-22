@@ -141,11 +141,11 @@ describe('le contact', () => {
     ).toEqual({})
   })
 
-  it('découpe les sites web joints par le séparateur du schéma national', () => {
+  it('découpe les sites web du schéma national et les ordonne', () => {
     expect(
       lieuDe({ siteWeb: 'https://un.fr|https://deux.fr' }).fiche.contact
         .site_web,
-    ).toEqual(['https://un.fr', 'https://deux.fr'])
+    ).toEqual(['https://deux.fr', 'https://un.fr'])
   })
 
   it('déduit les modalités d’accès des cases cochées', () => {

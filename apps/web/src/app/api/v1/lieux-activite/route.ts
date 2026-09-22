@@ -27,7 +27,6 @@ export const revalidate = 0
  *         - adresse
  *         - date_maj
  *         - services
- *         - pivot
  *       type: object
  *       properties:
  *         id:
@@ -36,8 +35,8 @@ export const revalidate = 0
  *           example: 105c8bcd-e977-4180-a895-96b6a6c688c0
  *         pivot:
  *           type: string
- *           description: Donnée pivot provenant d’une des deux bases de référence - le répertoire SIRENE des entreprises et de leurs établissements de l’Insee ou le Répertoire national des associations du ministère de l’intérieur (RNA).
- *           example: "55217862900132"
+ *           description: Numéro SIRET de l’établissement, issu du répertoire SIRENE de l’Insee. Le champ est facultatif, un lieu sans immatriculation n’en portant pas.
+ *           example: "55217862900135"
  *         nom:
  *           type: string
  *           description: Nom du lieu d'inclusion numérique.
@@ -110,10 +109,6 @@ export const revalidate = 0
  *           enum: [Itinérant, Fixe]
  *           description: "Indique s'il s'agit un lieu de médiation itinérant comme un bus numérique"
  *           example: Itinérant
- *         structure_parente:
- *           type: string
- *           description: Décrit le réseau/la structure auquel le lieu appartient. Pour le remplir\, indiquer le nom de cette entité.
- *           example: SIRET de la ville pour une bibliothèque
  *         date_maj:
  *           type: string
  *           format: date

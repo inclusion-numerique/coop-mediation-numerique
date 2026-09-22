@@ -2,17 +2,22 @@ import {
   Adresse,
   Contact,
   Courriel,
-  isRna,
-  isSiret,
-  isValidAddress,
-  isValidCourriel,
-  isValidLocalisation,
-  isValidTelephone,
-  isValidUrl,
+  DispositifProgrammesNationaux,
+  FicheAccesLibre,
+  FormationsLabels,
+  FraisACharge,
+  Itinerances,
   Localisation,
+  ModalitesAcces,
+  ModalitesAccompagnement,
   Nom,
-  type Pivot,
-  type Presentation,
+  Pivot,
+  Presentation,
+  PrisesEnChargeSpecifiques,
+  PublicsSpecifiquementAdresses,
+  Services,
+  Telephone,
+  Typologies,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { BanId } from '../../domain/ban-id'
@@ -21,6 +26,11 @@ import { NomUsage } from '../../domain/identite-sirene'
 import { IdsCartographieNationale } from '../../domain/ids-cartographie-nationale'
 import type { Lieu } from '../../domain/lieu'
 import { LieuId } from '../../domain/lieu-id'
+import {
+  complementAdresseSaisi,
+  horairesDeLaSource,
+  labelsLibres,
+} from '../../domain/saisie'
 import {
   Actif,
   type DerniereModification,
@@ -41,29 +51,27 @@ import { ficheDuRegistre } from './registre/fiche-du-registre'
 import { derniereModificationExterne } from './registre/modification-du-registre'
 import * as vocabulaire from './vocabulaire'
 
-/** Le séparateur multi-valeurs du schéma national. */
-const SEPARATEUR_LISTE = '|'
-
 const nonVide = (valeur: string | null): string | null =>
   valeur != null && valeur.trim() !== '' ? valeur : null
 
-const toSitesWeb = (siteWeb: string | null): readonly Url[] =>
-  (siteWeb ?? '')
-    .split(SEPARATEUR_LISTE)
-    .map((jeton) => jeton.trim())
-    .filter(isValidUrl)
-    .map(Url)
+const toSitesWeb = (siteWeb: readonly string[]): readonly Url[] =>
+  siteWeb
+    .map((adresse) => Url.safe(adresse.trim()))
+    .filter((url): url is Url => url != null)
 
 const toCourriels = (courriels: readonly string[]): readonly Courriel[] =>
-  courriels.filter(isValidCourriel).map(Courriel)
+  courriels
+    .map((courriel) => Courriel.safe(courriel))
+    .filter((courriel): courriel is Courriel => courriel != null)
 
 const toContact = (row: LigneDuLieuCoop): Contact => {
-  const telephone = nonVide(row.telephone)
+  const telephone =
+    nonVide(row.telephone) == null ? null : Telephone.safe(row.telephone ?? '')
   const sitesWeb = toSitesWeb(row.siteWeb)
   const courriels = toCourriels(row.courriels)
 
   return Contact({
-    ...(telephone != null && isValidTelephone(telephone) ? { telephone } : {}),
+    ...(telephone == null ? {} : { telephone }),
     ...(courriels.length > 0 ? { courriels: [...courriels] } : {}),
     ...(sitesWeb.length > 0 ? { site_web: [...sitesWeb] } : {}),
   })
@@ -71,7 +79,7 @@ const toContact = (row: LigneDuLieuCoop): Contact => {
 
 const toAdresse = (row: LigneDuLieuCoop): Adresse | null => {
   const codeInsee = nonVide(row.codeInsee)
-  const complement = nonVide(row.complementAdresse)
+  const complement = complementAdresseSaisi(row.complementAdresse)
 
   const candidate = {
     voie: row.adresse,
@@ -81,7 +89,7 @@ const toAdresse = (row: LigneDuLieuCoop): Adresse | null => {
     ...(complement == null ? {} : { complement_adresse: complement }),
   }
 
-  return isValidAddress(candidate) ? Adresse(candidate) : null
+  return Adresse.safe(candidate)
 }
 
 const toLocalisation = (row: LigneDuLieuCoop): Localisation | null => {
@@ -89,16 +97,13 @@ const toLocalisation = (row: LigneDuLieuCoop): Localisation | null => {
 
   const candidate = { latitude: row.latitude, longitude: row.longitude }
 
-  return isValidLocalisation(candidate) ? Localisation(candidate) : null
+  return Localisation.safe(candidate)
 }
 
 const toPivot = (row: LigneDuLieuCoop): Pivot | null => {
   const siret = nonVide(row.siret)
-  if (siret != null && isSiret(siret)) return siret
 
-  const rna = nonVide(row.rna)
-
-  return rna != null && isRna(rna) ? rna : null
+  return siret == null ? null : Pivot.safe(siret)
 }
 
 const toPresentation = (row: LigneDuLieuCoop): Presentation | null => {
@@ -107,10 +112,10 @@ const toPresentation = (row: LigneDuLieuCoop): Presentation | null => {
 
   if (resume == null && detail == null) return null
 
-  return {
+  return Presentation.safe({
     ...(resume == null ? {} : { resume }),
     ...(detail == null ? {} : { detail }),
-  }
+  })
 }
 
 /**
@@ -156,54 +161,63 @@ const toFiche = (row: LigneDuLieuCoop): Fiche => ({
   pivot: toPivot(row),
   adresse: toAdresse(row),
   localisation: toLocalisation(row),
-  typologies: vocabulaire.traduites(
-    row.typologies,
-    vocabulaire.typologie.versStandard,
+  typologies: Typologies(
+    vocabulaire.traduites(row.typologies, vocabulaire.typologie.versStandard),
   ),
   contact: toContact(row),
-  horaires: nonVide(row.horaires),
+  horaires: horairesDeLaSource(row.horaires),
   presentation: toPresentation(row),
-  services: vocabulaire.traduites(
-    row.services,
-    vocabulaire.service.versStandard,
+  services: Services(
+    vocabulaire.traduites(row.services, vocabulaire.service.versStandard),
   ),
-  publicsSpecifiquementAdresses: vocabulaire.traduites(
-    row.publicsSpecifiquementAdresses,
-    vocabulaire.publicSpecifiquementAdresse.versStandard,
+  publicsSpecifiquementAdresses: PublicsSpecifiquementAdresses(
+    vocabulaire.traduites(
+      row.publicsSpecifiquementAdresses,
+      vocabulaire.publicSpecifiquementAdresse.versStandard,
+    ),
   ),
-  priseEnChargeSpecifique: vocabulaire.traduites(
-    row.priseEnChargeSpecifique,
-    vocabulaire.priseEnChargeSpecifique.versStandard,
+  priseEnChargeSpecifique: PrisesEnChargeSpecifiques(
+    vocabulaire.traduites(
+      row.priseEnChargeSpecifique,
+      vocabulaire.priseEnChargeSpecifique.versStandard,
+    ),
   ),
-  modalitesAcces: vocabulaire.traduites(
-    row.modalitesAcces,
-    vocabulaire.modaliteAcces.versStandard,
+  modalitesAcces: ModalitesAcces(
+    vocabulaire.traduites(
+      row.modalitesAcces,
+      vocabulaire.modaliteAcces.versStandard,
+    ),
   ),
-  fraisACharge: vocabulaire.traduites(
-    row.fraisACharge,
-    vocabulaire.fraisACharge.versStandard,
+  fraisACharge: FraisACharge(
+    vocabulaire.traduites(
+      row.fraisACharge,
+      vocabulaire.fraisACharge.versStandard,
+    ),
   ),
-  itinerance: vocabulaire.traduites(
-    row.itinerance,
-    vocabulaire.itinerance.versStandard,
+  itinerance: Itinerances(
+    vocabulaire.traduites(row.itinerance, vocabulaire.itinerance.versStandard),
   ),
-  dispositifProgrammesNationaux: vocabulaire.traduites(
-    row.dispositifProgrammesNationaux,
-    vocabulaire.dispositifProgrammeNational.versStandard,
+  dispositifProgrammesNationaux: DispositifProgrammesNationaux(
+    vocabulaire.traduites(
+      row.dispositifProgrammesNationaux,
+      vocabulaire.dispositifProgrammeNational.versStandard,
+    ),
   ),
-  formationsLabels: vocabulaire.traduites(
-    row.formationsLabels,
-    vocabulaire.formationLabel.versStandard,
+  formationsLabels: FormationsLabels(
+    vocabulaire.traduites(
+      row.formationsLabels,
+      vocabulaire.formationLabel.versStandard,
+    ),
   ),
-  autresFormationsLabels: row.autresFormationsLabels,
-  modalitesAccompagnement: vocabulaire.traduites(
-    row.modalitesAccompagnement,
-    vocabulaire.modaliteAccompagnement.versStandard,
+  autresFormationsLabels: labelsLibres(row.autresFormationsLabels),
+  modalitesAccompagnement: ModalitesAccompagnement(
+    vocabulaire.traduites(
+      row.modalitesAccompagnement,
+      vocabulaire.modaliteAccompagnement.versStandard,
+    ),
   ),
-  ficheAccesLibre: isValidUrl(row.ficheAccesLibre ?? '')
-    ? Url(row.ficheAccesLibre ?? '')
-    : null,
-  priseRdv: isValidUrl(row.priseRdv ?? '') ? Url(row.priseRdv ?? '') : null,
+  ficheAccesLibre: FicheAccesLibre.safe(row.ficheAccesLibre ?? ''),
+  priseRdv: Url.safe(row.priseRdv ?? ''),
 })
 
 /**
@@ -297,9 +311,12 @@ const versPrisma = <Standard, Prisma>(
     .map(traduction)
     .filter((valeur): valeur is NonNullable<Prisma> => valeur != null)
 
+/**
+ * Le pivot ne s'écrit plus que dans `siret`. La colonne `rna` demeure en base,
+ * mais elle a quitté le domaine : aucune écriture ne la pose ni ne l'efface.
+ */
 const fromPivot = (pivot: Pivot | null) => ({
-  siret: pivot != null && isSiret(pivot) ? pivot : null,
-  rna: pivot != null && isRna(pivot) ? pivot : null,
+  siret: pivot,
 })
 
 /**
@@ -350,10 +367,7 @@ export const lieuFromDomain = ({
   banId,
   telephone: fiche.contact.telephone ?? null,
   courriels: [...(fiche.contact.courriels ?? [])],
-  siteWeb:
-    fiche.contact.site_web == null || fiche.contact.site_web.length === 0
-      ? null
-      : fiche.contact.site_web.join(SEPARATEUR_LISTE),
+  siteWeb: [...(fiche.contact.site_web ?? [])],
   horaires: fiche.horaires,
   presentationResume: fiche.presentation?.resume ?? null,
   presentationDetail: fiche.presentation?.detail ?? null,

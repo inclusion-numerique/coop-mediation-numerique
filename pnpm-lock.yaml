@@ -155,8 +155,8 @@ importers:
         specifier: ^1.32.4
         version: 1.32.4
       '@gouvfr-anct/lieux-de-mediation-numerique':
-        specifier: ^3.0.1
-        version: 3.0.1
+        specifier: ^4.2.0
+        version: 4.2.0
       '@gouvfr-anct/timetable-to-osm-opening-hours':
         specifier: ^2.1.0
         version: 2.1.0(typescript@7.0.2)
@@ -260,8 +260,8 @@ importers:
         specifier: ^9.0.3
         version: 9.0.3
       libphonenumber-js:
-        specifier: 1.13.9
-        version: 1.13.9
+        specifier: ^1.13.12
+        version: 1.13.12
       lodash-es:
         specifier: ^4.18.1
         version: 4.18.1
@@ -2425,8 +2425,9 @@ packages:
     resolution: {integrity: sha512-wmglKKPDIkgV3aWlZzWECCPoGIkYCulzBwxG9+w7rc5BGapZ6cPMpoPOT8k36J0Ni7PPX6c/rsoMWfS4d1MUMg==}
     engines: {node: '>=6'}
 
-  '@gouvfr-anct/lieux-de-mediation-numerique@3.0.1':
-    resolution: {integrity: sha512-06LdNoL5TCFKGhQu43t73fi+WnzS8nmcyzETETwKOQskvcLtYomXygZqB428LkqPkZl6uat+dt6B5tXRsff5Dw==}
+  '@gouvfr-anct/lieux-de-mediation-numerique@4.2.0':
+    resolution: {integrity: sha512-Z3zQWC9nVOmtkEfFQjRLnZjaFaGi7wewd2WU8IvuTg5398Sr82VWD1w5h39i03UilqZvjQRYZQ+s7FrNTPcP4A==}
+    engines: {node: '>=22.13.0'}
 
   '@gouvfr-anct/timetable-to-osm-opening-hours@2.1.0':
     resolution: {integrity: sha512-P5UwarBy6BVtHdGFWGNsQa6gBRcIyo6PJH3iiPSr17Oua5FWokowSYfV0Tok86uD3V7tIlpfLS29H1Fg+xztNQ==}
@@ -9778,8 +9779,8 @@ packages:
     resolution: {integrity: sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==}
     engines: {node: '>=6'}
 
-  libphonenumber-js@1.13.9:
-    resolution: {integrity: sha512-VNS5vWMM7r0P66BYv+TQJATxExEgLxN+34hfHDVhDkUsGAE4cRg0shCNSLTXNKm7nIUscC7AfB51TjxEeF7msQ==}
+  libphonenumber-js@1.13.12:
+    resolution: {integrity: sha512-uLVeV1c9OTk6qkdqnj+mpMD+ZdnZ0szVyWu58HwMmpwkHA1gCEkyjd3veZQXDnuw9KEwSRjcc9B1pS9XKIN1fA==}
 
   lie@3.1.1:
     resolution: {integrity: sha512-RiNhHysUjhrDQntfYSfY4MU24coXXdEOgw9WGcKHNeEwffDYbF//u87M1EWaMGzuFoSbqW0C9C6lEEhDOAswfw==}
@@ -15570,9 +15571,11 @@ snapshots:
 
   '@fortawesome/fontawesome-free@7.3.1': {}
 
-  '@gouvfr-anct/lieux-de-mediation-numerique@3.0.1':
+  '@gouvfr-anct/lieux-de-mediation-numerique@4.2.0':
     dependencies:
       fuzzball: 2.2.6
+      libphonenumber-js: 1.13.12
+      zod: 4.5.4
 
   '@gouvfr-anct/timetable-to-osm-opening-hours@2.1.0(typescript@7.0.2)':
     dependencies:
@@ -23989,7 +23992,7 @@ snapshots:
 
   leven@3.1.0: {}
 
-  libphonenumber-js@1.13.9: {}
+  libphonenumber-js@1.13.12: {}
 
   lie@3.1.1:
     dependencies:

@@ -1,7 +1,23 @@
-import { validateValidRnaDigits } from '@app/web/libraries/rna'
-import { validateValidSiretDigits } from '@app/web/libraries/siret'
+import {
+  ComplementAdresse,
+  Courriel,
+  DETAIL_LONGUEUR_MAXIMALE,
+  FicheAccesLibre,
+  Nom,
+  RESUME_LONGUEUR_MAXIMALE,
+  Siret,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
+import type { Schedule } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import { z } from 'zod'
-import { nonVide, SEPARATEUR_LISTE, telephoneValide, urlSaisie } from './saisie'
+import {
+  type AdresseSaisie,
+  adresseSaisie,
+  horairesSaisis,
+  nonVide,
+  SEPARATEUR_LISTE,
+  telephoneValide,
+  urlSaisie,
+} from './saisie'
 
 /**
  * Ce qu'une saisie de lieu doit respecter, quelle que soit la porte d'entrée.
@@ -17,10 +33,13 @@ import { nonVide, SEPARATEUR_LISTE, telephoneValide, urlSaisie } from './saisie'
  * celles-ci le refusent en le disant.
  */
 
-/** Longueur du résumé de présentation, telle que la carte du lieu l'affiche. */
-export const RESUME_MAX_LENGTH = 280
+/**
+ * Longueurs de présentation, telles que le standard les fixe. Réexportées parce
+ * que les formulaires les affichent en compteur de caractères.
+ */
+export const RESUME_MAX_LENGTH = RESUME_LONGUEUR_MAXIMALE
 
-const PREFIXE_ACCESLIBRE = 'https://acceslibre.beta.gouv.fr/'
+export const DETAIL_MAX_LENGTH = DETAIL_LONGUEUR_MAXIMALE
 
 export const texteFacultatif = z.string().trim().nullish()
 
@@ -54,23 +73,32 @@ const sontDesUrls = (valeur: string): boolean =>
 export const NomDuLieuSaisi = z
   .string()
   .trim()
-  .min(1, 'Veuillez renseigner le nom du lieu d’activité')
+  .refine((valeur) => Nom.safe(valeur) != null, {
+    message: 'Veuillez renseigner le nom du lieu d’activité',
+  })
 
 /**
- * Les deux immatriculations sont volontairement PLUS strictes que le standard :
- * son `isSiret` vaut `length === 14` et son `isRna` accepte des lettres. On leur
- * préfère les prédicats de la coop — clé de Luhn, `W` suivi de neuf chiffres —,
- * qui n'acceptent qu'un sous-ensemble : resserrer ne peut donc pas créer
- * d'effacement silencieux.
+ * L'immatriculation se mesure au modèle du standard, qui porte déjà la règle de
+ * la coop — quatorze chiffres, clé de Luhn, dérogation au SIREN de La Poste.
  */
 export const SiretSaisi = reconnu(
-  validateValidSiretDigits,
+  (valeur) => Siret.safe(valeur) != null,
   'Le SIRET doit être composé de 14 chiffres et respecter sa clé de contrôle',
 )
 
-export const RnaSaisi = reconnu(
-  validateValidRnaDigits,
-  'Le RNA doit être composé d’un W suivi de 9 chiffres',
+/**
+ * Le complément d'adresse, mesuré au standard.
+ *
+ * Il se dit ici parce que, sans cela, il se perdrait en silence : le mapper le
+ * valide seul et le laisse tomber, pour que l'adresse ne tombe pas avec lui.
+ * Refuser en le disant vaut mieux qu'enregistrer sans rien enregistrer.
+ *
+ * Le jeu de caractères est celui d'un nom de voie — c'est le standard qui le
+ * pose, et il est probablement trop étroit pour un complément.
+ */
+export const ComplementAdresseSaisi = reconnu(
+  (valeur) => ComplementAdresse.safe(valeur) != null,
+  'Ce complément contient un caractère que le schéma national n’accepte pas : évitez #, &, %, « " » et les tirets longs',
 )
 
 export const SiteWebSaisi = reconnu(
@@ -79,8 +107,8 @@ export const SiteWebSaisi = reconnu(
 )
 
 export const FicheAccesLibreSaisie = reconnu(
-  (valeur) => estUneUrl(valeur) && valeur.startsWith(PREFIXE_ACCESLIBRE),
-  `Veuillez renseigner une URL Acceslibre (${PREFIXE_ACCESLIBRE}...)`,
+  (valeur) => FicheAccesLibre.safe(valeur) != null,
+  'Veuillez renseigner une URL Acceslibre (https://acceslibre.beta.gouv.fr/...)',
 )
 
 export const PriseRdvSaisie = reconnu(
@@ -103,7 +131,9 @@ export const NumeroTelephoneSaisi = reconnu(
 export const AdresseMailSaisie = z
   .string()
   .trim()
-  .pipe(z.email('Veuillez renseigner une adresse email valide'))
+  .refine((valeur) => Courriel.safe(valeur) != null, {
+    message: 'Veuillez renseigner une adresse email valide',
+  })
   .nullish()
 
 export const PresentationResumeSaisie = z
@@ -112,6 +142,20 @@ export const PresentationResumeSaisie = z
   .max(
     RESUME_MAX_LENGTH,
     `Cette description doit faire au plus ${RESUME_MAX_LENGTH} caractères`,
+  )
+  .nullish()
+
+/**
+ * Le détail n'avait aucune borne à la saisie, alors que `Presentation` en pose
+ * une. Au-delà, le constructeur rendait `null` et la présentation entière
+ * tombait — résumé compris — sans que rien ne soit dit.
+ */
+export const PresentationDetailSaisi = z
+  .string()
+  .trim()
+  .max(
+    DETAIL_MAX_LENGTH,
+    `Cette description doit faire au plus ${DETAIL_MAX_LENGTH} caractères`,
   )
   .nullish()
 
@@ -127,3 +171,53 @@ export const PresentationResumeSaisie = z
  * « tout public », puis sur « Téléphoner » et « Contacter par mail ».
  */
 export const CaseCochee = z.boolean().nullish()
+
+/**
+ * L'adresse choisie doit être de celles que le standard reconnaît.
+ *
+ * La Base Adresse Nationale rend des libellés que `Adresse` refuse — une
+ * esperluette dans un nom de voie suffit. Sans cette règle, le lieu
+ * s'enregistrait et revenait **sans adresse du tout**, ce qu'aucun message ne
+ * disait. Le prédicat est emprunté au mapper : c'est `adresseSaisie` qui
+ * décide, la saisie ne fait que le redire.
+ */
+export const adresseReconnue: [
+  (data: { adresseBan?: AdresseSaisie }) => boolean,
+  { message: string; path: (string | number)[] },
+] = [
+  ({ adresseBan }) =>
+    adresseBan == null || adresseSaisie(adresseBan, null) != null,
+  {
+    message:
+      'Cette adresse n’est pas reconnue par le schéma national ; choisissez-en une autre',
+    path: ['adresseBan'],
+  },
+]
+
+/**
+ * Un commentaire d'horaires ne vaut qu'adossé à un créneau.
+ *
+ * Seul, il ne peut pas former une valeur OpenStreetMap : la composition rendait
+ * ` "Sur rendez-vous"`, que le standard refuse, et la coop le publiait. Le dire
+ * vaut mieux que de laisser tomber le commentaire, et mieux encore que
+ * d'affirmer par un `Mo-Su off` une fermeture que personne n'a déclarée.
+ *
+ * Le prédicat est emprunté au mapper, comme les autres : c'est `horairesSaisis`
+ * qui décide, et la saisie ne fait que le redire à l'utilisateur.
+ */
+export const commentaireAdosseAUnCreneau: [
+  (data: {
+    openingHours?: Schedule
+    horairesComment?: string | null
+  }) => boolean,
+  { message: string; path: (string | number)[] },
+] = [
+  ({ openingHours, horairesComment }) =>
+    nonVide(horairesComment) == null ||
+    (openingHours != null && horairesSaisis(openingHours, null) != null),
+  {
+    message:
+      'Renseignez au moins un créneau pour ajouter un commentaire aux horaires',
+    path: ['horairesComment'],
+  },
+]

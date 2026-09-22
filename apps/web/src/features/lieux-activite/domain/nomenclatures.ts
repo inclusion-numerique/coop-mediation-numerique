@@ -60,7 +60,7 @@ export const formationsLabelsProposees = (
 export const reconnues = <Valeur extends string>(
   enumeration: Record<string, Valeur>,
   libelles: readonly string[],
-): readonly Valeur[] => {
+): Valeur[] => {
   const connues = new Set<string>(Object.values(enumeration))
 
   return libelles.filter((libelle): libelle is Valeur => connues.has(libelle))

@@ -1,4 +1,3 @@
-export { checkLuhnIntegrity } from './luhn'
 export {
   ADRESSE_SIMILARITY_THRESHOLD,
   API_ENTREPRISE_THROTTLE_MS,
@@ -12,10 +11,3 @@ export {
   throttleApiEntreprise,
 } from './sirene-identity'
 export type { SiretApiResponse } from './siret-api-response'
-export {
-  optionalSiretValidation,
-  requiredSiretValidation,
-  type SiretInfoData,
-  SiretInfoValidation,
-  validateValidSiretDigits,
-} from './siret-validation'

@@ -224,7 +224,6 @@ const LieuxActiviteForm = ({
                       codePostal: lieu.codePostal,
                       siret: null,
                       typologies: null,
-                      rna: null,
                     }}
                     topRight={
                       <Button

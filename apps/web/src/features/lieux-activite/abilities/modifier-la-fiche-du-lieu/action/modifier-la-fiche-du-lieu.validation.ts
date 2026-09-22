@@ -2,13 +2,16 @@ import { AdresseBanValidation } from '@app/web/external-apis/ban/AdresseBanValid
 import { FormationLabelPropose } from '@app/web/features/lieux-activite/domain/nomenclatures'
 import {
   AdresseMailSaisie,
+  adresseReconnue,
   CaseCochee,
+  ComplementAdresseSaisi,
+  commentaireAdosseAUnCreneau,
   FicheAccesLibreSaisie,
   NomDuLieuSaisi,
   NumeroTelephoneSaisi,
+  PresentationDetailSaisi,
   PresentationResumeSaisie,
   PriseRdvSaisie,
-  RnaSaisi,
   SiretSaisi,
   SiteWebSaisi,
   texteFacultatif,
@@ -37,43 +40,46 @@ import { HorairesValidation } from '../../../domain/horaires.validation'
  * règles pour un seul objet finissent par diverger.
  */
 
-export const InformationsGeneralesSaisie = z.object({
-  section: z.literal('InformationsGenerales'),
-  nom: NomDuLieuSaisi,
-  adresseBan: AdresseBanValidation,
-  complementAdresse: texteFacultatif,
-  lieuItinerant: z.boolean().nullish(),
-  typologies: z
-    .array(z.enum(Typologie))
-    .min(1, 'Sélectionnez au moins une typologie de structure'),
-  siret: SiretSaisi,
-  rna: RnaSaisi,
-  nomUsage: texteFacultatif,
-})
+export const InformationsGeneralesSaisie = z
+  .object({
+    section: z.literal('InformationsGenerales'),
+    nom: NomDuLieuSaisi,
+    adresseBan: AdresseBanValidation,
+    complementAdresse: ComplementAdresseSaisi,
+    lieuItinerant: z.boolean().nullish(),
+    typologies: z
+      .array(z.enum(Typologie))
+      .min(1, 'Sélectionnez au moins une typologie de structure'),
+    siret: SiretSaisi,
+    nomUsage: texteFacultatif,
+  })
+  .refine(...adresseReconnue)
 
 export const VisibiliteCartographieSaisie = z.object({
   section: z.literal('VisibiliteCartographie'),
   visiblePourCartographieNationale: z.boolean(),
 })
 
-export const InformationsPratiquesSaisie = z.object({
-  section: z.literal('InformationsPratiques'),
-  siteWeb: SiteWebSaisi,
-  ficheAccesLibre: FicheAccesLibreSaisie,
-  priseRdv: PriseRdvSaisie,
-  /**
-   * Les horaires se saisissent en grille hebdomadaire et se stockent en une
-   * chaîne au format OpenStreetMap : la composition a lieu à la frontière, dans
-   * le mapper, pour que le domaine n'ait affaire qu'à la chaîne du standard.
-   */
-  openingHours: HorairesValidation,
-  horairesComment: texteFacultatif,
-})
+export const InformationsPratiquesSaisie = z
+  .object({
+    section: z.literal('InformationsPratiques'),
+    siteWeb: SiteWebSaisi,
+    ficheAccesLibre: FicheAccesLibreSaisie,
+    priseRdv: PriseRdvSaisie,
+    /**
+     * Les horaires se saisissent en grille hebdomadaire et se stockent en une
+     * chaîne au format OpenStreetMap : la composition a lieu à la frontière, dans
+     * le mapper, pour que le domaine n'ait affaire qu'à la chaîne du standard.
+     */
+    openingHours: HorairesValidation,
+    horairesComment: texteFacultatif,
+  })
+  .refine(...commentaireAdosseAUnCreneau)
 
 export const DescriptionSaisie = z.object({
   section: z.literal('Description'),
   presentationResume: PresentationResumeSaisie,
-  presentationDetail: texteFacultatif,
+  presentationDetail: PresentationDetailSaisi,
   formationsLabels: z.array(z.enum(FormationLabelPropose)),
 })
 

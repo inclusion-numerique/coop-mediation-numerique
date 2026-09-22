@@ -137,7 +137,7 @@ export const semerUneFicheDeLieu = async (): Promise<FicheSemee> => {
       adresse: '12 rue de la Paix',
       commune: 'Reims',
       codePostal: '51100',
-      siteWeb: 'https://www.exemple-reims.fr',
+      siteWeb: ['https://www.exemple-reims.fr'],
       telephone: '+33180059880',
       courriels: ['contact@exemple-reims.fr'],
       // Une modalité que le formulaire ne sait pas exprimer : elle vient d'un

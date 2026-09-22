@@ -1,9 +1,21 @@
-import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import {
+  FormationsLabels,
+  FraisACharge,
+  Itinerances,
+  ModalitesAcces,
+  ModalitesAccompagnement,
+  Nom,
+  PrisesEnChargeSpecifiques,
+  PublicsSpecifiquementAdresses,
+  Services,
+  Typologies,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { BanId } from '../../../domain/ban-id'
 import { NomUsage } from '../../../domain/identite-sirene'
 import {
   adresseSaisie,
   courrielsSaisis,
+  ficheAccesLibreSaisie,
   horairesSaisis,
   itineranceSaisie,
   localisationSaisie,
@@ -31,7 +43,7 @@ type Modification<Section extends SaisieDeSection['section']> = Extract<
 const informationsGenerales = (
   saisie: Saisie<'InformationsGenerales'>,
 ): Modification<'InformationsGenerales'> => {
-  const immatriculation = pivotSaisi(saisie.siret, saisie.rna)
+  const immatriculation = pivotSaisi(saisie.siret)
 
   return {
     section: 'InformationsGenerales',
@@ -39,8 +51,8 @@ const informationsGenerales = (
     adresse: adresseSaisie(saisie.adresseBan, saisie.complementAdresse),
     localisation: localisationSaisie(saisie.adresseBan),
     banId: BanId.safe(saisie.adresseBan.id),
-    itinerance: itineranceSaisie(saisie.lieuItinerant),
-    typologies: saisie.typologies,
+    itinerance: Itinerances(itineranceSaisie(saisie.lieuItinerant)),
+    typologies: Typologies(saisie.typologies),
     pivot: immatriculation,
     // Le nom d'usage vient de SIRENE : sans immatriculation, il n'a plus d'objet.
     nomUsage:
@@ -62,7 +74,7 @@ const informationsPratiques = (
 ): Modification<'InformationsPratiques'> => ({
   section: 'InformationsPratiques',
   sitesWeb: sitesWebSaisis(saisie.siteWeb),
-  ficheAccesLibre: urlSaisie(saisie.ficheAccesLibre),
+  ficheAccesLibre: ficheAccesLibreSaisie(saisie.ficheAccesLibre),
   priseRdv: urlSaisie(saisie.priseRdv),
   horaires: horairesSaisis(saisie.openingHours, saisie.horairesComment),
 })
@@ -75,35 +87,39 @@ const description = (
     saisie.presentationResume,
     saisie.presentationDetail,
   ),
-  formationsLabels: saisie.formationsLabels,
+  formationsLabels: FormationsLabels(saisie.formationsLabels),
 })
 
 const servicesEtAccompagnement = (
   saisie: Saisie<'ServicesEtAccompagnement'>,
 ): Modification<'ServicesEtAccompagnement'> => ({
   section: 'ServicesEtAccompagnement',
-  services: saisie.services,
-  modalitesAccompagnement: saisie.modalitesAccompagnement,
+  services: Services(saisie.services),
+  modalitesAccompagnement: ModalitesAccompagnement(
+    saisie.modalitesAccompagnement,
+  ),
 })
 
 const modalitesAccesAuService = (
   saisie: Saisie<'ModalitesAccesAuService'>,
 ): Modification<'ModalitesAccesAuService'> => ({
   section: 'ModalitesAccesAuService',
-  modalitesAcces: modalitesAccesSaisies(saisie),
+  modalitesAcces: ModalitesAcces(modalitesAccesSaisies(saisie)),
   telephone: telephoneSaisi(saisie.parTelephone, saisie.numeroTelephone),
   courriels: courrielsSaisis(saisie.parMail, saisie.adresseMail),
-  fraisACharge: saisie.fraisACharge,
+  fraisACharge: FraisACharge(saisie.fraisACharge),
 })
 
 const typesDePublicsAccueillis = (
   saisie: Saisie<'TypesDePublicsAccueillis'>,
 ): Modification<'TypesDePublicsAccueillis'> => ({
   section: 'TypesDePublicsAccueillis',
-  publicsSpecifiquementAdresses: saisie.toutPublic
-    ? []
-    : saisie.publicsSpecifiquementAdresses,
-  priseEnChargeSpecifique: saisie.priseEnChargeSpecifique,
+  publicsSpecifiquementAdresses: PublicsSpecifiquementAdresses(
+    saisie.toutPublic ? [] : saisie.publicsSpecifiquementAdresses,
+  ),
+  priseEnChargeSpecifique: PrisesEnChargeSpecifiques(
+    saisie.priseEnChargeSpecifique,
+  ),
 })
 
 const parSection: {

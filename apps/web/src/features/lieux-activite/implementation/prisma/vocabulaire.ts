@@ -32,7 +32,7 @@ const pont = <Standard extends string, Coop extends string>(
 export const traduites = <Depuis, Vers>(
   valeurs: readonly Depuis[],
   traduction: (valeur: Depuis) => Vers | null,
-): readonly Vers[] =>
+): Vers[] =>
   valeurs
     .map(traduction)
     .filter((valeur): valeur is NonNullable<Vers> => valeur != null)
@@ -126,6 +126,7 @@ export const formationLabel = pont(FormationLabel, {
   ArniaMednum: FormationLabel.ArniaMednum,
   CollectifRessourcesEtActeursReemploi:
     FormationLabel.CollectifRessourcesEtActeursReemploi,
+  EtapesNumeriques: FormationLabel.EtapesNumeriques,
   FabriquesDeTerritoire: FormationLabel.FabriquesDeTerritoire,
   LesEclaireurs: FormationLabel.LesEclaireurs,
   MesPapiers: FormationLabel.MesPapiers,
