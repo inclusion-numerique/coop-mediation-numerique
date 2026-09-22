@@ -1,5 +1,7 @@
 import assert from 'node:assert'
+import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import { ajouterStructureEmployeuseEnLieu } from '@app/web/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/commands/ajouter-structure-employeuse-en-lieu'
+import type { GeocoderLAdresse } from '@app/web/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/domain'
 import type { UserId } from '@app/web/features/inscription/domain'
 import {
   currentInscriptionUserId,
@@ -14,6 +16,27 @@ import { v4 } from 'uuid'
 
 const nomEmployeuse = 'Employeuse lieu d’activité'
 
+// Ce que la Base Adresse Nationale répondrait pour l'adresse de `seedEmployeuseMain`
+// (1 rue de la Paix, 75001 Paris). Les scénarios ne sortent pas sur le réseau :
+// c'est le seul recours qu'a ce cas d'usage, et il se passe en port.
+const ADRESSE_RECONNUE: AdresseBanData = {
+  id: '75101_7038_00001',
+  label: '1 Rue de la Paix 75001 Paris',
+  nom: '1 Rue de la Paix',
+  commune: 'Paris',
+  codePostal: '75001',
+  codeInsee: '75101',
+  contexte: '75, Paris, Île-de-France',
+  latitude: 48.869_36,
+  longitude: 2.331_08,
+}
+
+const banReconnait: { reponse: AdresseBanData | null } = {
+  reponse: ADRESSE_RECONNUE,
+}
+
+const geocoderLAdresse: GeocoderLAdresse = async () => banReconnait.reponse
+
 let structureEmployeuseId = 0
 let collegueUserId: UserId | null = null
 let lieuConnuId = ''
@@ -23,13 +46,21 @@ let nomCommuneEmployeuse = ''
 // ferait passer une assertion du suivant.
 Before(() => {
   collegueUserId = null
+  banReconnait.reponse = ADRESSE_RECONNUE
+  refus.tag = null
 })
 
+// Le refus opposé à la déclaration, quand il y en a un.
+const refus: { tag: string | null } = { tag: null }
+
+const resoudre = (userId: UserId, estLieuActivite: boolean) =>
+  ajouterStructureEmployeuseEnLieu(
+    { userId, estLieuActivite },
+    { geocoderLAdresse },
+  )
+
 const declarerPour = (userId: UserId) => async (estLieuActivite: boolean) => {
-  const resultat = await ajouterStructureEmployeuseEnLieu({
-    userId,
-    estLieuActivite,
-  })
+  const resultat = await resoudre(userId, estLieuActivite)
   assert.ok(resultat.success, 'La déclaration aurait dû aboutir')
 }
 
@@ -52,13 +83,6 @@ Given('j’ai une structure employeuse', async () => {
 
 Given(
   'ma structure employeuse est déjà rattachée comme lieu d’activité',
-  async () => {
-    await declarer(true)
-  },
-)
-
-When(
-  'je déclare que ma structure employeuse est un lieu d’activité',
   async () => {
     await declarer(true)
   },
@@ -256,4 +280,40 @@ Then('ce lieu d’activité est inscrit au registre', async () => {
   assert.strictEqual(inscription.source, 'Coop numérique')
   assert.strictEqual(inscription.editedBy, 'coop')
   assert.notStrictEqual(inscription.updatedAtCoop, null)
+})
+
+Given('la Base Adresse Nationale ne reconnaît pas son adresse', () => {
+  banReconnait.reponse = null
+})
+
+When(
+  'je déclare que ma structure employeuse est un lieu d’activité',
+  async () => {
+    const resultat = await resoudre(currentInscriptionUserId(), true)
+
+    refus.tag = resultat.success ? null : resultat.error._tag
+  },
+)
+
+Then('la déclaration m’est refusée faute d’adresse reconnue', () => {
+  assert.strictEqual(refus.tag, 'AdresseNonReconnue')
+})
+
+Then('aucun lieu d’activité n’a été créé', async () => {
+  assert.strictEqual(
+    await prismaClient.lieuInclusion.count({ where: { nom: nomEmployeuse } }),
+    0,
+  )
+})
+
+Then('l’adresse du lieu est celle de la Base Adresse Nationale', async () => {
+  const lieu = await prismaClient.lieuInclusion.findFirstOrThrow({
+    where: { nom: nomEmployeuse },
+    select: { adresse: true, banId: true, latitude: true, longitude: true },
+  })
+
+  assert.strictEqual(lieu.adresse, ADRESSE_RECONNUE.nom)
+  assert.strictEqual(lieu.banId, ADRESSE_RECONNUE.id)
+  assert.strictEqual(lieu.latitude, ADRESSE_RECONNUE.latitude)
+  assert.strictEqual(lieu.longitude, ADRESSE_RECONNUE.longitude)
 })

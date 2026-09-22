@@ -1,3 +1,4 @@
+import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import {
   employeuseMainSelect,
   employeuseMainToLieuData,
@@ -18,6 +19,7 @@ import type { EmployeuseId } from '../../domain'
  */
 export const lieuDepuisEmployeuse = async (
   structureEmployeuseId: EmployeuseId,
+  adresseBan?: AdresseBanData,
 ) => {
   const structureMain =
     await prismaClient.structureAdministrativeMain.findUniqueOrThrow({
@@ -25,5 +27,5 @@ export const lieuDepuisEmployeuse = async (
       select: employeuseMainSelect,
     })
 
-  return employeuseMainToLieuData(structureMain)
+  return employeuseMainToLieuData(structureMain, adresseBan)
 }

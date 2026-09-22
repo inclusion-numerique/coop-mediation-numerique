@@ -1,3 +1,4 @@
+import type { AdresseBanData } from '@app/web/external-apis/ban/AdresseBanValidation'
 import {
   ContactReferent,
   referentAffichage,
@@ -53,7 +54,39 @@ export const employeuseMainNom = (structure: EmployeuseMainPayload): string =>
 // `nom`/`adresse`/`commune`/`codePostal` sont non-null (colonnes requises du lieu ; défaut `''`
 // quand l'adresse main manque). `complementAdresse` est abandonné (absent de main -> null,
 // décision 6 révisée), les référents sont lus depuis `contact`.
-export const employeuseMainToLieuData = (structure: EmployeuseMainPayload) => {
+/**
+ * L'adresse retenue pour la ligne à créer.
+ *
+ * Sans adresse de la Base Adresse Nationale, on recompose celle de `main` — le
+ * détachement s'en sert pour retrouver le lieu, et il n'a rien à géocoder. Le
+ * rattachement, lui, en fournit toujours une : c'est elle qui fait foi, et elle
+ * apporte l'identifiant et les coordonnées que SIRENE ne connaît pas.
+ */
+const adresseRetenue = (
+  structure: EmployeuseMainPayload,
+  adresseBan?: AdresseBanData,
+) =>
+  adresseBan == null
+    ? {
+        adresse: adresseMainToString(structure.adresse),
+        commune: structure.adresse?.nomCommune ?? '',
+        codePostal: structure.adresse?.codePostal ?? '',
+        codeInsee: structure.adresse?.codeInsee ?? null,
+      }
+    : {
+        adresse: adresseBan.nom,
+        commune: adresseBan.commune,
+        codePostal: adresseBan.codePostal,
+        codeInsee: adresseBan.codeInsee,
+        banId: adresseBan.id,
+        latitude: adresseBan.latitude,
+        longitude: adresseBan.longitude,
+      }
+
+export const employeuseMainToLieuData = (
+  structure: EmployeuseMainPayload,
+  adresseBan?: AdresseBanData,
+) => {
   // Les trois champs référent sont nommés un par un, et NON répandus depuis
   // `referentAffichage` : ce résultat part tel quel dans un `lieu_inclusion.create`,
   // où le moindre champ surnuméraire fait échouer Prisma à l'exécution. Un spread
@@ -65,10 +98,7 @@ export const employeuseMainToLieuData = (structure: EmployeuseMainPayload) => {
 
   return {
     nom: employeuseMainNom(structure),
-    adresse: adresseMainToString(structure.adresse),
-    commune: structure.adresse?.nomCommune ?? '',
-    codePostal: structure.adresse?.codePostal ?? '',
-    codeInsee: structure.adresse?.codeInsee ?? null,
+    ...adresseRetenue(structure, adresseBan),
     complementAdresse: null,
     siret: structure.siret ?? null,
     // `main.structure_administrative` fait foi sur le SIRET, et il est lu ICI,
