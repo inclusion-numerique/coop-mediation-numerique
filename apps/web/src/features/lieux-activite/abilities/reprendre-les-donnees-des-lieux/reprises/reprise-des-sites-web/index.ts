@@ -1,4 +1,8 @@
 export {
+  adressesCollees,
+  sansLeGabarit,
+} from './domain/gabarit-de-site-web'
+export {
   type ReprendreLesSitesWeb,
   repriseDesSitesWeb,
 } from './domain/reprise-des-sites-web'
