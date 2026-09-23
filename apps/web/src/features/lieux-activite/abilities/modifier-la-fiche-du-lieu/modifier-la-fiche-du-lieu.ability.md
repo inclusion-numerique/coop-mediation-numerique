@@ -138,6 +138,37 @@ description, services et accompagnement, modalités d'accès, publics accueillis
 * Then la modification est refusée
 * And le lieu annonce toujours son service
 
+## Rule: Un lieu ne se partage qu'avec une adresse reconnue par la Base Adresse Nationale
+
+> La cartographie envoie des usagers à une adresse : elle doit exister. Une
+> adresse que la Base Adresse Nationale ne reconnaît pas — saisie avant que le
+> sélecteur ne l'impose, ou retirée par la reprise des données faute d'avoir pu
+> la retrouver — ne se partage pas. La fiche l'annonce, et le partage se
+> débloque dès qu'une adresse est choisie dans la liste proposée.
+>
+> La garde ne porte que sur le partage : retirer un lieu de la cartographie
+> reste toujours possible. Un lieu situé à la seule commune, lui, se partage :
+> c'est une réponse de la Base Adresse Nationale, si pauvre soit-elle.
+
+### Scenario: Rendre visible un lieu sans adresse reconnue est refusé
+
+* Given une fiche de lieu sans adresse reconnue par la Base Adresse Nationale
+* When le médiateur rattaché rend le lieu visible sur la cartographie
+* Then la modification est refusée
+* And le lieu n'est pas visible sur la cartographie
+
+### Scenario: Retirer de la cartographie un lieu sans adresse reconnue reste possible
+
+* Given une fiche de lieu visible sans adresse reconnue par la Base Adresse Nationale
+* When le médiateur rattaché retire le lieu de la cartographie
+* Then la modification est acceptée
+
+### Scenario: Un lieu situé à la seule commune se partage
+
+* Given une fiche de lieu située à la seule commune
+* When le médiateur rattaché rend le lieu visible sur la cartographie
+* Then le lieu est visible sur la cartographie
+
 ## Rule: Chaque enregistrement se répercute au registre de l'Entrepôt
 
 > Les deux écritures tiennent dans une seule transaction. Une section n'y écrit

@@ -4,6 +4,7 @@ import { DisplayOnCartography } from '@app/web/features/lieux-activite/ui/Displa
 import { LieuAccueillantPublicTitle } from '@app/web/features/lieux-activite/ui/titles/LieuAccueillantPublicTitle'
 import { ServiceInclusionNumeriqueTitle } from '@app/web/features/lieux-activite/ui/titles/ServiceInclusionNumeriqueTitle'
 import { formatDate } from '@app/web/utils/formatDate'
+import Alert from '@codegouvfr/react-dsfr/Alert'
 import type { ReactNode } from 'react'
 import { BandeauRepriseExterne } from '../components/BandeauRepriseExterne'
 import { BasculeVisibiliteCartographie } from '../components/BasculeVisibiliteCartographie'
@@ -57,6 +58,15 @@ export const FicheDuLieuPage = ({
         isSharedWithCartography={fiche.connuDeLaCartographie}
       />
       <hr className="fr-separator fr-separator-1px" />
+      {fiche.informationsGenerales.banId == null && (
+        <div className="fr-px-4w fr-pt-3w">
+          <Alert
+            severity="warning"
+            small
+            description="L’adresse de ce lieu n’est pas reconnue par la Base Adresse Nationale : modifiez-la dans « Informations générales » pour pouvoir le rendre visible sur la cartographie."
+          />
+        </div>
+      )}
       <BasculeVisibiliteCartographie
         id={fiche.id}
         publie={fiche.publieSurLaCartographie}
