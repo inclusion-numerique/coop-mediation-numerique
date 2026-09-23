@@ -458,3 +458,61 @@ base.
 * And elle retrouve au point une tout autre voie
 * When on reprend les données des lieux
 * Then l’adresse du lieu n’a pas bougé
+
+## Rule: L'Annuaire de l'administration situe le service public que rien d'autre ne situe
+
+> Une bonne part des lieux que ni l'adresse ni le point ne situent sont des
+> services publics : « Mairie d'Oyrières », « CCAS de Millas », « France
+> services de Pesmes », saisis sans voie ou avec le seul nom de la commune.
+> L'Annuaire de l'administration publie l'adresse de chacun, et c'est la source
+> officielle.
+>
+> On ne le croit pas sur parole pour autant : l'adresse qu'il donne n'est que la
+> question posée à la Base Adresse Nationale, et c'est sa réponse qui s'écrit,
+> aux mêmes conditions que le reste — un appariement sûr, dans la commune
+> enregistrée.
+>
+> L'Annuaire vient en dernier recours, après l'adresse écrite et le point, et
+> comme le point il pose une voie là où la ligne se tait sans jamais remplacer
+> celle qui est écrite : « Commune de Sada » peut désigner l'employeur d'un lieu
+> situé ailleurs que la mairie. Il ne tranche que s'il ne connaît qu'un service
+> de ce type dans la commune. Une annexe, une mairie déléguée, une antenne ou une
+> salle sont un autre bâtiment que le service dont elles portent le nom : il ne
+> les situe pas. Il ne situe pas non plus une intercommunalité, dont le siège
+> n'est pas le lieu où elle accueille.
+>
+> Réparer passe avant supprimer : le lieu que l'Annuaire situe ne s'efface pas,
+> même s'il n'a accompagné personne.
+
+### Scenario: La mairie que rien ne situe est située par l'Annuaire
+
+* Given une mairie dont la voie ne nomme aucune voie
+* And la Base Adresse Nationale ne reconnaît pas la voie
+* And l’Annuaire de l’administration connaît sa mairie
+* When on reprend les données des lieux
+* Then le relevé annonce une adresse corrigée d’après l’Annuaire
+* And l’adresse du lieu est celle que la Base Adresse Nationale rend
+
+### Scenario: L'Annuaire ne remplace pas une voie écrite
+
+* Given une mairie dont la voie en nomme une autre
+* And la Base Adresse Nationale ne reconnaît pas la voie
+* And l’Annuaire de l’administration connaît sa mairie
+* When on reprend les données des lieux
+* Then l’adresse du lieu n’a pas bougé
+
+### Scenario: L'Annuaire ne tranche pas entre deux services du même type
+
+* Given une mairie dont la voie ne nomme aucune voie
+* And la Base Adresse Nationale ne reconnaît pas la voie
+* And l’Annuaire de l’administration connaît deux mairies dans la commune
+* When on reprend les données des lieux
+* Then la voie du lieu n’a pas bougé
+
+### Scenario: Une mairie annexe n'est pas la mairie
+
+* Given une mairie annexe dont la voie ne nomme aucune voie
+* And la Base Adresse Nationale ne reconnaît pas la voie
+* And l’Annuaire de l’administration connaît sa mairie
+* When on reprend les données des lieux
+* Then la voie du lieu n’a pas bougé

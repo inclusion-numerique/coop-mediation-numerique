@@ -1,5 +1,6 @@
 import {
   comptesParMotif,
+  consulterLAnnuaire,
   deposerLeReleve,
   descendreLeResume,
   dossierDuReleve,
@@ -71,6 +72,7 @@ export const executeReprendreLesDonneesDesLieux: JobExecutor<
       repriseDeLAdresse(
         geocoderLesAdresses,
         retrouverParLesCoordonnees,
+        consulterLAnnuaire,
         reprendre ? reprendreLAdresse : sansRepriseDeLAdresse,
         reprendre ? supprimerLeLieu : sansSuppressionDuLieu,
       ),

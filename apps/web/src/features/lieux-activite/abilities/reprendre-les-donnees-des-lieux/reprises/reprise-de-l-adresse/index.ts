@@ -8,14 +8,19 @@ export {
   adresseSoumise,
   type CoordonneesSoumises,
   coordonneesSoumises,
+  type ServiceDemande,
+  type ServiceDesigne,
+  serviceDesigne,
 } from './domain/adresse-a-reprendre'
 export {
+  type ConsulterLAnnuaire,
   type GeocoderLesAdresses,
   type ReprendreLAdresse,
   type RetrouverParLesCoordonnees,
   repriseDeLAdresse,
   type SupprimerLeLieu,
 } from './domain/reprise-de-l-adresse'
+export { consulterLAnnuaire } from './implementation/consulter-l-annuaire'
 export { geocoderLesAdresses } from './implementation/geocoder-les-adresses'
 export { reprendreLAdresse } from './implementation/reprendre-l-adresse.mutation'
 export { retrouverParLesCoordonnees } from './implementation/retrouver-par-les-coordonnees'

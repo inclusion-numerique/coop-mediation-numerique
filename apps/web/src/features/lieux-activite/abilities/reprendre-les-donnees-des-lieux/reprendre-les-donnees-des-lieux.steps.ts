@@ -2,6 +2,7 @@ import assert from 'node:assert'
 import type {
   AdresseGeocodee,
   AdresseRetrouvee,
+  ConsulterLAnnuaire,
   GeocoderLesAdresses,
   RetrouverParLesCoordonnees,
 } from '@app/web/features/lieux-activite/abilities/reprendre-les-donnees-des-lieux'
@@ -136,6 +137,13 @@ const VOIE_SANS_NUMERO: AdresseGeocodee = {
 
 const TROIS_CENTS_METRES = 300 / 111_320
 
+const MAIRIE_DE_L_ANNUAIRE: AdresseGeocodee = {
+  ...ADRESSE_BAN,
+  banId: '17299_0450_00001',
+  voie: '1 Place Colbert',
+  libelle: '1 Place Colbert 17300 Rochefort',
+}
+
 // La Base Adresse Nationale est interrogée deux fois sur la même adresse, avec
 // puis sans le code postal : elle rend donc plusieurs réponses par lieu.
 const banRend: { adresses: readonly AdresseGeocodee[] } = {
@@ -170,6 +178,13 @@ const retrouverParLesCoordonnees: RetrouverParLesCoordonnees = async (
 
 const geocoderLesAdresses: GeocoderLesAdresses = async (adresses) =>
   new Map(adresses.map(({ lieuId }) => [lieuId, banRend.adresses]))
+
+const annuaireRend: { services: readonly (AdresseGeocodee | null)[] } = {
+  services: [],
+}
+
+const consulterLAnnuaire: ConsulterLAnnuaire = async (demandes) =>
+  new Map(demandes.map(({ lieuId }) => [lieuId, annuaireRend.services]))
 
 const semis: {
   lieuId?: string
@@ -383,6 +398,55 @@ Given('un lieu dont la voie ne nomme aucune voie', async () => {
     where: { id: lieuSeme() },
     data: { adresse: initiale.voie, banId: null, latitude: null },
   })
+})
+
+const semerUneMairie = async (nom: string, voie: string): Promise<void> => {
+  await semerUnLieu({})
+  initiale.voie = voie
+  await prismaClient.lieuInclusion.update({
+    where: { id: lieuSeme() },
+    data: { nom, adresse: voie, banId: null, latitude: null },
+  })
+}
+
+Given('une mairie dont la voie ne nomme aucune voie', async () => {
+  await semerUneMairie('Mairie de Rochefort', 'Rochefort')
+})
+
+Given('une mairie dont la voie en nomme une autre', async () => {
+  await semerUneMairie('Mairie de Rochefort', 'Route de Marseille')
+})
+
+Given('une mairie annexe dont la voie ne nomme aucune voie', async () => {
+  await semerUneMairie('Mairie annexe de Rochefort', 'Rochefort')
+})
+
+Given('l’Annuaire de l’administration connaît sa mairie', () => {
+  annuaireRend.services = [MAIRIE_DE_L_ANNUAIRE]
+  attendue.adresse = MAIRIE_DE_L_ANNUAIRE
+})
+
+Given(
+  'l’Annuaire de l’administration connaît deux mairies dans la commune',
+  () => {
+    annuaireRend.services = [
+      MAIRIE_DE_L_ANNUAIRE,
+      {
+        ...MAIRIE_DE_L_ANNUAIRE,
+        banId: '17299_0451_00003',
+        voie: '3 Rue Toufaire',
+      },
+    ]
+  },
+)
+
+Then('le relevé annonce une adresse corrigée d’après l’Annuaire', () => {
+  assert.ok(
+    mentions().some(
+      ({ motif }) =>
+        motif === "adresse : à corriger d'après l'Annuaire de l'administration",
+    ),
+  )
 })
 
 Then('la voie du lieu n’a pas bougé', async () => {
@@ -625,6 +689,7 @@ When('on reprend les données des lieux', async () => {
         repriseDeLAdresse(
           geocoderLesAdresses,
           retrouverParLesCoordonnees,
+          consulterLAnnuaire,
           reprendreLAdresse,
           supprimerLeLieu,
         ),
@@ -653,6 +718,7 @@ When('on relève les données des lieux sans les reprendre', async () => {
         repriseDeLAdresse(
           geocoderLesAdresses,
           retrouverParLesCoordonnees,
+          consulterLAnnuaire,
           sansRepriseDeLAdresse,
           sansSuppressionDuLieu,
         ),
@@ -921,6 +987,7 @@ After(async () => {
   attendue.adresse = ADRESSE_BAN
   initiale.voie = ADRESSE_BAN.voie
   banRetrouve.adresse = null
+  annuaireRend.services = []
 
   if (lieuId == null) return
 

@@ -3,6 +3,7 @@ import {
   type AdresseGeocodee,
   adresseAReprendre,
   adresseSoumise,
+  serviceDesigne,
   voieMuette,
 } from './adresse-a-reprendre'
 
@@ -516,5 +517,116 @@ describe('le rapprochement, quand la Base Adresse Nationale doute', () => {
         { adresse: 'Route de Marseille' },
       )?.verdict,
     ).toBe('a-corriger')
+  })
+})
+
+describe('le service public que le nom du lieu désigne', () => {
+  it.each([
+    ['Mairie d’Oyrières', 'mairie'],
+    ['COMMUNE DU LORRAIN', 'mairie'],
+    ['Hôtel de Ville de Vivario', 'mairie'],
+    ['CCAS de Millas', 'ccas'],
+    ['Centre communal d’action sociale', 'ccas'],
+    ['Espaces France Services Cunlhat', 'france_services'],
+    ['MFS Saulx', 'france_services'],
+    ['Maison des solidarités de Bonne', 'mds'],
+  ])('reconnaît %s', (nom, service) => {
+    expect(serviceDesigne(nom)).toBe(service)
+  })
+
+  it.each([
+    ['une mairie annexe', 'Mairie Annexe Saint-Germain-de-Confolens'],
+    ['une mairie déléguée', 'Mairie déléguée de Seynod'],
+    ['une salle de la mairie', 'MAIRIE salle de la FRATERNITE'],
+    ['une intercommunalité', 'Communauté de communes du Pays de Sommières'],
+    ['un centre intercommunal', 'Centre intercommunal d’action sociale'],
+    ['un lieu qui n’est pas un service public', 'Médiathèque de Donzy'],
+  ])('ne désigne aucun service pour %s', (_cas, nom) => {
+    expect(serviceDesigne(nom)).toBeNull()
+  })
+})
+
+describe('l’adresse que l’Annuaire de l’administration donne à la BAN', () => {
+  const DE_L_ANNUAIRE: AdresseGeocodee = {
+    ...RENDUE,
+    banId: '51454_0450_00001',
+    voie: '1 Place de l’Hôtel de Ville',
+  }
+
+  const parLAnnuaire = (
+    services: readonly (AdresseGeocodee | null)[],
+    lieu: Parameters<typeof lieuAReprendre>[0] = {},
+  ) =>
+    adresseAReprendre(
+      lieuAReprendre({ nom: 'Mairie de Reims', adresse: 'Reims', ...lieu }),
+      [{ ...RENDUE, type: 'municipality' }],
+      undefined,
+      services,
+    )
+
+  it('situe le service que ni l’adresse ni le point ne situent', () => {
+    expect(parLAnnuaire([DE_L_ANNUAIRE])).toEqual({
+      verdict: 'a-corriger-d-apres-l-annuaire',
+      adresse: DE_L_ANNUAIRE,
+    })
+  })
+
+  it('ne tranche pas entre deux services du même type', () => {
+    expect(
+      parLAnnuaire([DE_L_ANNUAIRE, { ...DE_L_ANNUAIRE, banId: 'autre' }])
+        ?.verdict,
+    ).toBe('a-verifier')
+  })
+
+  it('ne retient pas un service que la BAN ne situe pas', () => {
+    expect(parLAnnuaire([null])?.verdict).toBe('a-verifier')
+  })
+
+  it('ne retient pas un appariement faible', () => {
+    expect(parLAnnuaire([{ ...DE_L_ANNUAIRE, score: 0.89 }])?.verdict).toBe(
+      'a-verifier',
+    )
+  })
+
+  it('ne retient pas une adresse dans une autre commune', () => {
+    expect(
+      parLAnnuaire([{ ...DE_L_ANNUAIRE, codeInsee: '51108' }])?.verdict,
+    ).toBe('a-verifier')
+  })
+
+  it('ne remplace pas une voie écrite', () => {
+    expect(
+      parLAnnuaire([DE_L_ANNUAIRE], { adresse: 'Rue du Grand Cadi' })?.verdict,
+    ).toBe('a-verifier')
+  })
+
+  it('confirme une voie écrite qu’il porte aussi', () => {
+    expect(
+      parLAnnuaire([DE_L_ANNUAIRE], { adresse: 'Place de l’Hôtel de Ville' })
+        ?.verdict,
+    ).toBe('a-corriger-d-apres-l-annuaire')
+  })
+
+  it('ne perd pas le numéro de la voie écrite', () => {
+    expect(
+      parLAnnuaire(
+        [{ ...DE_L_ANNUAIRE, type: 'street', voie: 'Rue de la Paix' }],
+        {
+          adresse: '4 rue de la Paix',
+        },
+      )?.verdict,
+    ).toBe('a-verifier')
+  })
+
+  it('sauve de la suppression le lieu qui n’a accompagné personne', () => {
+    expect(parLAnnuaire([DE_L_ANNUAIRE], { accompagnements: 0 })?.verdict).toBe(
+      'a-corriger-d-apres-l-annuaire',
+    )
+  })
+
+  it('passe après l’adresse écrite', () => {
+    expect(
+      adresseAReprendre(lieuAReprendre(), [RENDUE], undefined, [DE_L_ANNUAIRE]),
+    ).toBeNull()
   })
 })

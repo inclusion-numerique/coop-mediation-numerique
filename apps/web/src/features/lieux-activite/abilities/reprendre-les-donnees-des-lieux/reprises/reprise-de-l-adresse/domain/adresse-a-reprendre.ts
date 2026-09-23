@@ -44,8 +44,20 @@ export type AdresseSoumise = {
   readonly codeInsee: string | null
 }
 
+export type ServiceDesigne = 'mairie' | 'ccas' | 'france_services' | 'mds'
+
+export type ServiceDemande = {
+  readonly lieuId: string
+  readonly codeInsee: string
+  readonly service: ServiceDesigne
+}
+
 export type AdresseAReprendre =
   | { readonly verdict: 'a-corriger'; readonly adresse: AdresseGeocodee }
+  | {
+      readonly verdict: 'a-corriger-d-apres-l-annuaire'
+      readonly adresse: AdresseGeocodee
+    }
   | { readonly verdict: 'a-supprimer'; readonly motif: string }
   | { readonly verdict: 'a-verifier'; readonly motif: string }
 
@@ -367,13 +379,11 @@ export const voieMuette = (lieu: LieuAReprendre): boolean => {
  */
 const voieConfirmee = (
   lieu: LieuAReprendre,
-  retrouvee: AdresseRetrouvee,
+  voieSansLeNumero: string,
 ): boolean =>
-  memeVoieMotAMot(voieCherchee(lieu), retrouvee.voieSansLeNumero) ||
-  similarite(
-    sansAccents(voieCherchee(lieu)),
-    sansAccents(retrouvee.voieSansLeNumero),
-  ) >= CONFIRMATION_MINIMALE
+  memeVoieMotAMot(voieCherchee(lieu), voieSansLeNumero) ||
+  similarite(sansAccents(voieCherchee(lieu)), sansAccents(voieSansLeNumero)) >=
+    CONFIRMATION_MINIMALE
 
 /**
  * L'adresse que la Base Adresse Nationale trouve au point du lieu.
@@ -392,9 +402,66 @@ export const adresseDesCoordonnees = (
   TYPES_UTILISABLES.has(retrouvee.type) &&
   memeCommune(lieu, retrouvee) &&
   retrouvee.distance <= MEME_ENDROIT &&
-  (voieMuette(lieu) || voieConfirmee(lieu, retrouvee))
+  (voieMuette(lieu) || voieConfirmee(lieu, retrouvee.voieSansLeNumero))
     ? retrouvee
     : null
+
+const SERVICES_DESIGNES: readonly (readonly [RegExp, ServiceDesigne])[] = [
+  [/\bccas\b|\baction sociale\b/u, 'ccas'],
+  [/\bmaisons? (des? )?solidarites?\b|\bmds\b/u, 'mds'],
+  [/\bfrance ?services?\b|\bmfs\b/u, 'france_services'],
+  [/\bmairie\b|\bcommune\b|\bhotel de ville\b/u, 'mairie'],
+]
+
+const UN_AUTRE_BATIMENT =
+  /\b(annexe|deleguee|antenne|salle|agence postale|intercommunal|communaute)\b/u
+
+export const serviceDesigne = (nom: string): ServiceDesigne | null => {
+  const nomCherche = sansAccents(nom)
+
+  if (UN_AUTRE_BATIMENT.test(nomCherche)) return null
+
+  return (
+    SERVICES_DESIGNES.find(([motif]) => motif.test(nomCherche))?.[1] ?? null
+  )
+}
+
+export const serviceDemande = (
+  lieu: LieuAReprendre,
+): readonly ServiceDemande[] => {
+  const service = serviceDesigne(lieu.nom)
+
+  return service == null || lieu.codeInsee == null
+    ? []
+    : [{ lieuId: lieu.id, codeInsee: lieu.codeInsee, service }]
+}
+
+const UN_NUMERO_EN_TETE = /^\s*\d+\s*(?:bis|ter|[a-z])?\s+/iu
+
+const situeParLAnnuaire = (
+  lieu: LieuAReprendre,
+  rendue: AdresseGeocodee,
+): boolean =>
+  TYPES_UTILISABLES.has(rendue.type) &&
+  rendue.score >= SCORE_MINIMAL &&
+  memeCommune(lieu, rendue) &&
+  !(
+    COMMENCE_PAR_UN_NUMERO.test(voieCherchee(lieu)) &&
+    rendue.type !== UNE_PLAQUE
+  ) &&
+  (voieMuette(lieu) ||
+    voieConfirmee(lieu, rendue.voie.replace(UN_NUMERO_EN_TETE, '')))
+
+export const adresseDeLAnnuaire = (
+  lieu: LieuAReprendre,
+  services: readonly (AdresseGeocodee | null)[],
+): AdresseGeocodee | null => {
+  const [seul, ...autres] = services
+
+  return seul != null && autres.length === 0 && situeParLAnnuaire(lieu, seul)
+    ? seul
+    : null
+}
 
 /**
  * Un lieu dont l'adresse reste introuvable et qui n'a jamais rien accompagné.
@@ -412,9 +479,17 @@ export const adresseAReprendre = (
   lieu: LieuAReprendre,
   rendues: readonly AdresseGeocodee[],
   retrouvee?: AdresseRetrouvee,
+  parLAnnuaire: readonly (AdresseGeocodee | null)[] = [],
 ): AdresseAReprendre | null => {
   const adresse =
     adresseDeLAdresse(lieu, rendues) ?? adresseDesCoordonnees(lieu, retrouvee)
+  const deLAnnuaire =
+    adresse == null ? adresseDeLAnnuaire(lieu, parLAnnuaire) : null
+
+  if (deLAnnuaire != null)
+    return dejaConforme(lieu, deLAnnuaire)
+      ? null
+      : { verdict: 'a-corriger-d-apres-l-annuaire', adresse: deLAnnuaire }
 
   if (adresse == null) {
     const motif =

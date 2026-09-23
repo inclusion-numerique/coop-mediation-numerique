@@ -6,7 +6,9 @@ export {
   adresseAReprendre,
   adresseDesCoordonnees,
   adresseSoumise,
+  type ConsulterLAnnuaire,
   type CoordonneesSoumises,
+  consulterLAnnuaire,
   coordonneesSoumises,
   type GeocoderLesAdresses,
   geocoderLesAdresses,
@@ -15,8 +17,11 @@ export {
   reprendreLAdresse,
   repriseDeLAdresse,
   retrouverParLesCoordonnees,
+  type ServiceDemande,
+  type ServiceDesigne,
   sansRepriseDeLAdresse,
   sansSuppressionDuLieu,
+  serviceDesigne,
   supprimerLeLieu,
 } from './reprise-de-l-adresse'
 export {
