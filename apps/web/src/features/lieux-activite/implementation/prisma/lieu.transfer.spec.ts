@@ -255,12 +255,12 @@ describe('transfer du lieu', () => {
 
   describe('pertes assumées à la relecture de la base', () => {
     it('écarte une adresse que le schéma national refuse', () => {
-      const nonDiffusible: LigneDuLieuCoop = {
+      const commenceParUnTiret: LigneDuLieuCoop = {
         ...ligne(maximal),
-        adresse: '[Non-Diffusible]',
+        adresse: '-12 rue de la Paix',
       }
 
-      expect(lieuCoopToDomain(nonDiffusible).fiche.adresse).toBeNull()
+      expect(lieuCoopToDomain(commenceParUnTiret).fiche.adresse).toBeNull()
     })
 
     it('écarte une adresse dont le code postal est vide', () => {

@@ -195,7 +195,7 @@ describe('une saisie acceptée n’est jamais perdue en silence', () => {
     [
       'voie que le standard ne reconnaît pas',
       {
-        adresseBan: { ...adresseBan, nom: '12 rue Pierre & Marie Curie' },
+        adresseBan: { ...adresseBan, nom: '-12 rue de la Paix' },
       },
     ],
     ['complément hors du jeu de caractères', { complementAdresse: 'Appt #4' }],

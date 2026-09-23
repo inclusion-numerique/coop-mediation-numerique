@@ -48,10 +48,9 @@ export type Fiche = {
   readonly pivot: Pivot | null
   /**
    * Le schéma national rend l'adresse obligatoire, la base non : 133 lieux
-   * actifs n'en ont pas de valide — code postal vide, voie vide, ou
-   * `[Non-Diffusible]` renvoyé par l'API Entreprise. 120 d'entre eux sont
-   * rattachés à un médiateur et doivent rester lisibles, d'où l'absence
-   * modélisée plutôt qu'une fiche qu'on refuserait de charger.
+   * actifs n'en ont pas de valide — code postal vide, ou voie vide. 120
+   * d'entre eux sont rattachés à un médiateur et doivent rester lisibles,
+   * d'où l'absence modélisée plutôt qu'une fiche qu'on refuserait de charger.
    */
   readonly adresse: Adresse | null
   readonly localisation: Localisation | null
