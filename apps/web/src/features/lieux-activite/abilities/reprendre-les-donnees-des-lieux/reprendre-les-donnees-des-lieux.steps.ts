@@ -1,10 +1,12 @@
 import assert from 'node:assert'
 import type {
+  AdresseConsignee,
   AdresseGeocodee,
   AdresseRetrouvee,
   ConsulterLAnnuaire,
   GeocoderLesAdresses,
   RetrouverParLesCoordonnees,
+  SituerLesAdressesConsignees,
 } from '@app/web/features/lieux-activite/abilities/reprendre-les-donnees-des-lieux'
 import {
   deposerLeReleve,
@@ -178,6 +180,27 @@ const retrouverParLesCoordonnees: RetrouverParLesCoordonnees = async (
 
 const geocoderLesAdresses: GeocoderLesAdresses = async (adresses) =>
   new Map(adresses.map(({ lieuId }) => [lieuId, banRend.adresses]))
+
+const ADRESSE_CONSIGNEE: AdresseGeocodee = {
+  ...ADRESSE_BAN,
+  banId: '17299_0777_00005',
+  voie: '5 Rue Pierre Loti',
+  libelle: '5 Rue Pierre Loti 17300 Rochefort',
+}
+
+const registreRend: { consignee: AdresseConsignee | null } = {
+  consignee: null,
+}
+
+const situerLesAdressesConsignees: SituerLesAdressesConsignees = async (
+  lieuIds,
+) => {
+  const consignee = registreRend.consignee
+
+  return consignee == null
+    ? new Map()
+    : new Map(lieuIds.map((lieuId) => [lieuId, consignee]))
+}
 
 const annuaireRend: { services: readonly (AdresseGeocodee | null)[] } = {
   services: [],
@@ -440,6 +463,44 @@ Given(
   },
 )
 
+Given(
+  'le lieu est consigné au registre avec une adresse que la Base Adresse Nationale rend',
+  () => {
+    registreRend.consignee = {
+      codeInsee: ADRESSE_CONSIGNEE.codeInsee,
+      rendue: ADRESSE_CONSIGNEE,
+    }
+    attendue.adresse = ADRESSE_CONSIGNEE
+  },
+)
+
+Given(
+  'le lieu est consigné au registre avec une adresse que la Base Adresse Nationale ne rend pas',
+  () => {
+    registreRend.consignee = {
+      codeInsee: ADRESSE_CONSIGNEE.codeInsee,
+      rendue: null,
+    }
+  },
+)
+
+Given('le lieu est consigné au registre avec une autre adresse', () => {
+  registreRend.consignee = {
+    codeInsee: ADRESSE_CONSIGNEE.codeInsee,
+    rendue: ADRESSE_CONSIGNEE,
+  }
+})
+
+Then('le relevé annonce une adresse corrigée d’après le registre', () => {
+  assert.ok(
+    mentions().some(
+      ({ motif }) =>
+        motif ===
+        "adresse : à corriger d'après le registre des adresses consignées",
+    ),
+  )
+})
+
 Then('le relevé annonce une adresse corrigée d’après l’Annuaire', () => {
   assert.ok(
     mentions().some(
@@ -689,6 +750,7 @@ When('on reprend les données des lieux', async () => {
         repriseDeLAdresse(
           geocoderLesAdresses,
           retrouverParLesCoordonnees,
+          situerLesAdressesConsignees,
           consulterLAnnuaire,
           reprendreLAdresse,
           supprimerLeLieu,
@@ -718,6 +780,7 @@ When('on relève les données des lieux sans les reprendre', async () => {
         repriseDeLAdresse(
           geocoderLesAdresses,
           retrouverParLesCoordonnees,
+          situerLesAdressesConsignees,
           consulterLAnnuaire,
           sansRepriseDeLAdresse,
           sansSuppressionDuLieu,
@@ -988,6 +1051,7 @@ After(async () => {
   initiale.voie = ADRESSE_BAN.voie
   banRetrouve.adresse = null
   annuaireRend.services = []
+  registreRend.consignee = null
 
   if (lieuId == null) return
 

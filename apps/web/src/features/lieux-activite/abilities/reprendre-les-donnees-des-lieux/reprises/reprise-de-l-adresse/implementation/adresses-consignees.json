@@ -1,0 +1,723 @@
+[
+  {
+    "lieuId": "0038fa3c-e903-402b-a050-f97b15e0a407",
+    "nom": "Mairie de Pogio de Venaco",
+    "adresse": "Piazza San Roccu 20250 Poggio-di-Venaco",
+    "codeInsee": "2B238",
+    "source": "https://lannuaire.service-public.gouv.fr/corse/haute-corse/a69cc77d-238c-4fda-82df-05b10a136dfa"
+  },
+  {
+    "lieuId": "012d1e9f-bf2b-4603-8ca8-0caa6f49769d",
+    "nom": "Mairie de Luchapt",
+    "adresse": "4 Grand Rue 86430 Luchapt",
+    "codeInsee": "86138",
+    "source": "https://lannuaire.service-public.gouv.fr/nouvelle-aquitaine/vienne/04af73a0-f64c-408a-8204-7b7449d3ade2"
+  },
+  {
+    "lieuId": "01ead374-e8c0-439e-9d6d-28d038f5a8c4",
+    "nom": "Point info 14",
+    "adresse": "128 Grande Rue 14430 Dozulé",
+    "codeInsee": "14229",
+    "source": "https://www.normandiecabourgpaysdauge.fr/espace-france-services-et-point-infos-14/"
+  },
+  {
+    "lieuId": "035edf3d-ef04-4e64-9262-9a80c0dc127d",
+    "nom": "Verteillac Mairie",
+    "adresse": "112 Avenue d'Aquitaine 24320 Verteillac",
+    "codeInsee": "24573",
+    "source": "https://www.verteillac.fr/contact/"
+  },
+  {
+    "lieuId": "039b7439-2782-47c8-b58a-e689018f4fe7",
+    "nom": "Espace Numérique de l'Alta Rocca",
+    "adresse": "A Sorba 20170 Levie",
+    "codeInsee": "2A142",
+    "source": "https://www.alta-rocca.com/contact/"
+  },
+  {
+    "lieuId": "043efcce-80e9-4d67-87a3-81d8572d7947",
+    "nom": "Centre intercommunal d'action sociale de l'Ernée",
+    "adresse": "69 Rue de la Querminais 53500 Ernée",
+    "codeInsee": "53096",
+    "source": "https://www.lernee.fr/annuaires/services/cias/"
+  },
+  {
+    "lieuId": "04bb4ed0-3284-49d8-9c07-1804570801a4",
+    "nom": "Mairie de Villecerf",
+    "adresse": "9 Rue de l'Eglise 77250 Villecerf",
+    "codeInsee": "77501",
+    "source": "https://lannuaire.service-public.gouv.fr/ile-de-france/seine-et-marne/68a874dc-dcbb-4a2d-b792-a10fe6e11376"
+  },
+  {
+    "lieuId": "0837611b-3a71-442b-8ce8-fea4a82d8517",
+    "nom": "MDS JAUNAY-MARIGNY",
+    "adresse": "Rue Évariste Galois 86130 Jaunay-Marigny",
+    "codeInsee": "86115",
+    "source": "https://lannuaire.service-public.gouv.fr/nouvelle-aquitaine/vienne/e2780fd1-4588-414b-a0c8-3d5430516571"
+  },
+  {
+    "lieuId": "0a83988d-3130-44e4-8d9f-a5b145d44841",
+    "nom": "Commune de Suzannecourt",
+    "adresse": "26bis Grande Rue 52300 Suzannecourt",
+    "codeInsee": "52484",
+    "source": "https://lannuaire.service-public.gouv.fr/grand-est/haute-marne/9df48cdb-6519-461d-9e59-9a8512d51641"
+  },
+  {
+    "lieuId": "0a92879a-04bd-4a7f-862e-0cffa6b85b34",
+    "nom": "Bligny-lès-Beaune",
+    "adresse": "12 Place de la Mairie 21200 Bligny-lès-Beaune",
+    "codeInsee": "21086",
+    "source": "https://lannuaire.service-public.gouv.fr/bourgogne-franche-comte/cote-d-or/67f56abc-6f57-4e32-af29-dd28bf47d448"
+  },
+  {
+    "lieuId": "0b035503-b9b3-4fe1-bfe5-ec06ee02c1f1",
+    "nom": "COMMUNE DE BLENEAU",
+    "adresse": "Place de la Libération 89220 Bléneau",
+    "codeInsee": "89046",
+    "source": "https://lannuaire.service-public.gouv.fr/bourgogne-franche-comte/yonne/15e1abf2-efb2-4e1f-a80a-d30afe0e7b97"
+  },
+  {
+    "lieuId": "0bb5b306-3b54-4ebe-bb88-56a40be510eb",
+    "nom": "COMMUNAUTE DE COMMUNES DU PAYS BELLEGARDIEN",
+    "adresse": "35 Rue de la Poste 01200 Valserhône",
+    "codeInsee": "01033",
+    "source": "https://lannuaire.service-public.gouv.fr/auvergne-rhone-alpes/ain/f6bc123d-9ed3-4ad9-bc18-685e4142da05"
+  },
+  {
+    "lieuId": "0df98f9e-2f16-4ce9-83a3-665f096ab7a7",
+    "nom": "Bibliothèque Municipale de Puycasquier",
+    "adresse": "Grand Rue 32120 Puycasquier",
+    "codeInsee": "32335",
+    "source": "https://horaire-bibliotheque.net/ville/puycasquier-32120/"
+  },
+  {
+    "lieuId": "0f924711-42be-42b9-9af7-580424cf92bc",
+    "nom": "Agence Postale Communale de Genêts",
+    "adresse": "42 Grande Rue 50530 Genêts",
+    "codeInsee": "50199",
+    "source": "https://datanova.laposte.fr/data-fair/api/v1/datasets/laposte-poincont2/lines?q=genets"
+  },
+  {
+    "lieuId": "1029fb97-ae59-4151-a4d2-8c774430bac5",
+    "nom": "Salle Gabriel Mourier - La Motte-Chalancon",
+    "adresse": "740 Grand Rue 26470 La Motte-Chalancon",
+    "codeInsee": "26215",
+    "source": "https://lamottechalancon.com/commune/location-salles-communales/"
+  },
+  {
+    "lieuId": "12acfdf0-a1d2-48bd-9024-d377972e8956",
+    "nom": "Familles Rurales",
+    "adresse": "58 Grande Rue 54370 Einville-au-Jard",
+    "codeInsee": "54176",
+    "source": "https://www.famillesrurales.org/einville/"
+  },
+  {
+    "lieuId": "16b86c77-3768-46fa-95cb-0d757ddd3769",
+    "nom": "ESMERY HALLON",
+    "adresse": "29 Grande Rue 80400 Esmery-Hallon",
+    "codeInsee": "80284",
+    "source": "https://lannuaire.service-public.gouv.fr/hauts-de-france/somme/cfa34c86-46fe-428b-808d-bbbb9cdeed44"
+  },
+  {
+    "lieuId": "17b9c6b6-b91d-4f48-85cc-3102133464e4",
+    "nom": "Médiathèque la Pléiade",
+    "adresse": "2a Grand'Rue 57120 Rombas",
+    "codeInsee": "57591",
+    "source": "https://acceslibre.beta.gouv.fr/app/57-rombas/a/bibliotheque-mediatheque/erp/mediatheque-la-pleiade-3/"
+  },
+  {
+    "lieuId": "17fe90de-43d4-49fb-b569-a19b7b7ffb4b",
+    "nom": "France Services",
+    "adresse": "7 Route de Soissons 10170 Méry-sur-Seine",
+    "codeInsee": "10233",
+    "source": "https://www.france-services.gouv.fr/le-reseau/france-services-seine-et-aube"
+  },
+  {
+    "lieuId": "1805b5a1-15db-4641-a87b-69654a5d44ef",
+    "nom": "COMMUNE DE CARPENTRAS",
+    "adresse": "Place Maurice Charretier 84200 Carpentras",
+    "codeInsee": "84031",
+    "source": "https://www.carpentras.fr/municipalite/les-services-municipaux/hotel-de-ville.html"
+  },
+  {
+    "lieuId": "1882f0ef-0336-42a5-a48b-046e4a4aece5",
+    "nom": "Mairie du 19ème",
+    "adresse": "5 Place Roger Madec 75019 Paris",
+    "codeInsee": "75119",
+    "source": "https://lannuaire.service-public.gouv.fr/ile-de-france/paris/4f5c10ae-9152-4f40-8999-c33873f61a9f"
+  },
+  {
+    "lieuId": "18db7655-0166-400a-aebc-6a451dca5489",
+    "nom": "CC HAUTE-CORREZE COMMUNAUTE",
+    "adresse": "23 Rue du Bois Saint Michel 19200 Ussel",
+    "codeInsee": "19275",
+    "source": "https://lannuaire.service-public.gouv.fr/nouvelle-aquitaine/correze/672fa7df-c23d-41c7-8552-f30be823f513"
+  },
+  {
+    "lieuId": "18ec3d8a-5162-408b-8737-528f0abbdf0c",
+    "nom": "Mairie de Persac",
+    "adresse": "3 Grand Rue 86320 Persac",
+    "codeInsee": "86190",
+    "source": "https://lannuaire.service-public.gouv.fr/nouvelle-aquitaine/vienne/7b69e978-362e-499f-974a-37545674d11e"
+  },
+  {
+    "lieuId": "1a655a67-33a4-46e7-98ae-8bd1c3d0cd11",
+    "nom": "MAIRIE DE SEVEUX/MOTTEY",
+    "adresse": "10 Grande Rue 70130 Seveux-Motey",
+    "codeInsee": "70491",
+    "source": "https://lannuaire.service-public.gouv.fr/bourgogne-franche-comte/haute-saone/045833cb-740b-479d-8a0f-9f0b967507c6"
+  },
+  {
+    "lieuId": "1cf3a501-bf86-48e5-b6fa-44e2dab54530",
+    "nom": "Médiathèque Jean Farges",
+    "adresse": "3 Grande Rue 91630 Marolles-en-Hurepoix",
+    "codeInsee": "91376",
+    "source": "https://mediatheques.coeuressonne.fr/contactez-nous/10"
+  },
+  {
+    "lieuId": "21705cd6-e583-4f49-9b20-2f664dfbf3b1",
+    "nom": "Le Landou 2.0 Lafontasse",
+    "adresse": "Village de Lafontasse 81100 Burlats",
+    "codeInsee": "81042",
+    "source": "https://www.mairie-burlats.fr/"
+  },
+  {
+    "lieuId": "24a8f90d-8e7b-4de2-a6fb-af8f3c0da23d",
+    "nom": "MJH Daguenière - Maison des jeunes et habitants",
+    "adresse": "10 Rue du Stade (La Daguenière) 49800 Loire-Authion",
+    "codeInsee": "49307",
+    "source": "https://www.aicla.fr/creation-du-jardin-de-la-mjh-de-la-dagueniere/"
+  },
+  {
+    "lieuId": "265ef2b7-aaa4-43b0-b04c-3181a9abf1fd",
+    "nom": "PASSW",
+    "adresse": "7 Place Vincetti 20200 Bastia",
+    "codeInsee": "2B033",
+    "source": "https://www.bastia.corsica/wp-content/uploads/2025/10/2022.01.01.08a2-convention-aide-eco-webforce3-avec-marques-de-revision-lisse-4.pdf"
+  },
+  {
+    "lieuId": "28471b37-9cfe-485a-8856-923216b3e6cf",
+    "nom": "France Services Plaine d'Ozon",
+    "adresse": "1 Rue Nicole Auger 86100 Châtellerault",
+    "codeInsee": "86066",
+    "source": "https://lannuaire.service-public.gouv.fr/nouvelle-aquitaine/vienne/fdf0af26-2e27-4f7e-a05d-18405373ff56"
+  },
+  {
+    "lieuId": "2849957c-ba56-4a77-a81f-7bf466a4dd3d",
+    "nom": "Lavaudieu B-bus France Services",
+    "adresse": "Le Bourg 43100 Lavaudieu",
+    "codeInsee": "43117",
+    "source": "https://lannuaire.service-public.gouv.fr/auvergne-rhone-alpes/haute-loire/6f8022fe-0548-4500-accc-2cb181a0cffd"
+  },
+  {
+    "lieuId": "2ae0893e-7622-41d8-8d1e-5883508fe433",
+    "nom": "Maison Citoyenne de Marquise",
+    "adresse": "28 Rue Pierre BACHELET 62250 Marquise",
+    "codeInsee": "62560",
+    "source": "https://www.conseiller-numerique.gouv.fr/627a5804ad1bdb06edc48d10/details"
+  },
+  {
+    "lieuId": "2e91ce6f-3992-4d14-a8b7-037597ee1334",
+    "nom": "COMMUNAUTE COMMUNES CAMPAGNE DE CAUX",
+    "adresse": "52 Impasse du Lin 76110 Goderville",
+    "codeInsee": "76302",
+    "source": "https://lannuaire.service-public.gouv.fr/normandie/seine-maritime/fff00d09-d41e-4ad6-aee2-c9cddfae36a1"
+  },
+  {
+    "lieuId": "3355344e-4b50-44d7-baae-d2cadc09d7c9",
+    "nom": "AGENCE POSTALE INTERCOMMUNALE ARCEY",
+    "adresse": "29 Rue de la 5e Db 25750 Arcey",
+    "codeInsee": "25022",
+    "source": "https://localiser.laposte.fr/doubs/arcey/arcey-intercommunale-252750"
+  },
+  {
+    "lieuId": "33d423ae-1ae7-49ae-be01-7fbfb35a2589",
+    "nom": "Association Familles Rurales - Mont-sur-Meurthe",
+    "adresse": "3 Rue de la Meurthe 54360 Mont-sur-Meurthe",
+    "codeInsee": "54383",
+    "source": "https://www.famillesrurales.org/mont-sur-meurthe/15/france-services"
+  },
+  {
+    "lieuId": "34f5a286-c195-4c07-9533-a54f89bb8260",
+    "nom": "Gélacourt",
+    "adresse": "10bis Grande Rue 54120 Gélacourt",
+    "codeInsee": "54217",
+    "source": "https://lannuaire.service-public.gouv.fr/grand-est/meurthe-et-moselle/abbb81bb-d378-4bb5-af7d-92cde8e69605"
+  },
+  {
+    "lieuId": "34ff23f8-2afd-4117-bb5f-301154aced09",
+    "nom": "MAITRISE LANGUE ET AIDE PERSONNALISEE",
+    "adresse": "Esplanade Charles Spinasse 19300 Égletons",
+    "codeInsee": "19073",
+    "source": "https://data.education.gouv.fr/explore/dataset/fr-en-annuaire-education/table/?q=0190019T"
+  },
+  {
+    "lieuId": "37ad5735-b70c-449d-9c90-f9b02d354f12",
+    "nom": "Espace Saugonna / collège",
+    "adresse": "1 Rue de la Gare 72600 Mamers",
+    "codeInsee": "72180",
+    "source": "https://www.sarthetourisme.com/en/loisirs/espace-saugonna/"
+  },
+  {
+    "lieuId": "384407c8-e5b4-450c-a66e-037b01ee1ba0",
+    "nom": "CHARLEVAL",
+    "adresse": "Place du General de Gaulle 27380 Charleval",
+    "codeInsee": "27151",
+    "source": "https://lannuaire.service-public.gouv.fr/normandie/eure/2fdab848-f18a-4e7c-8d1a-a78ebaa21f02"
+  },
+  {
+    "lieuId": "3b4df06d-9d5a-42d1-bc19-e68be40b93b0",
+    "nom": "COMMUNE D'ALLONNES",
+    "adresse": "Place Nelson Mandela 72700 Allonnes",
+    "codeInsee": "72003",
+    "source": "https://lannuaire.service-public.gouv.fr/pays-de-la-loire/sarthe/7c856dfc-0cee-442e-a336-f1d8b6533e37"
+  },
+  {
+    "lieuId": "3b884825-37b2-40e1-adee-0970741bb238",
+    "nom": "Maison France Services du Causse",
+    "adresse": "5 Route du Dolmen 81140 Vaour",
+    "codeInsee": "81309",
+    "source": "https://lannuaire.service-public.gouv.fr/occitanie/tarn/604825e3-7f2c-4a7a-85c7-a549050f1868"
+  },
+  {
+    "lieuId": "3ec7bf9e-ec19-4fee-bdf1-bd3dec80de90",
+    "nom": "Mairies Coutures-sur-Drot",
+    "adresse": "2 Place Marcel Mestivier 24320 Coutures",
+    "codeInsee": "24141",
+    "source": "https://lannuaire.service-public.gouv.fr/nouvelle-aquitaine/dordogne/360dd899-d42e-4e62-bcc3-831d5c0969c0"
+  },
+  {
+    "lieuId": "41670e05-d80e-43f1-b0b0-4bda628fa12d",
+    "nom": "Cap Evasion",
+    "adresse": "Vourze 43590 Beauzac",
+    "codeInsee": "43025",
+    "source": "https://www.ville-beauzac.fr/pole-enfance-jeunesse.php"
+  },
+  {
+    "lieuId": "434f9452-7619-4097-a2d1-8707f491f0f1",
+    "nom": "Centre Socio-Culturel",
+    "adresse": "35 Rue du maréchal leclerc de hautecloque 85800 Saint-Gilles-Croix-de-Vie",
+    "codeInsee": "85222",
+    "source": "https://www.saintgillescroixdevie.fr/contacts/centre-socioculturel-la-ptite-gare/"
+  },
+  {
+    "lieuId": "454b8aa0-2d43-4e01-88ea-6df59775bd35",
+    "nom": "FRANCE SERVICE SAUZE VAUSSAIS",
+    "adresse": "40 Grand'Rue 79190 Sauzé-entre-Bois",
+    "codeInsee": "79307",
+    "source": "https://lannuaire.service-public.gouv.fr/nouvelle-aquitaine/deux-sevres/3e3a18c0-7e92-481e-bdd6-c0b968ceefbd"
+  },
+  {
+    "lieuId": "4723c1e1-cb94-43cb-bbec-83d8e385edc2",
+    "nom": "COMMUNAUTE DE COMMUNES DU SUD CORSE",
+    "adresse": "Carrughju Marescialu Juin 20137 Porto-Vecchio",
+    "codeInsee": "2A247",
+    "source": "https://cc-sudcorse.fr/contactez-nous/"
+  },
+  {
+    "lieuId": "472b56cd-428f-46d0-840c-8990e598f888",
+    "nom": "Bibliothèque de Meilhan",
+    "adresse": "Route du Port d'Orion 40400 Meilhan",
+    "codeInsee": "40180",
+    "source": "https://www.justacote.com/meilhan-40400/bibliotheque/bibliotheque-municipale-de-meilhan-1438026.htm"
+  },
+  {
+    "lieuId": "495a26b0-d951-4c66-9634-f7cd8968412c",
+    "nom": "Association des Amis de la Bibliotheque Mediatheque",
+    "adresse": "4 Grande Rue De La Resistance 10110 Bar-sur-Seine",
+    "codeInsee": "10034",
+    "source": "https://www.bibliotheques.org/mediatheque-goncourt-bar-sur-seine-10/"
+  },
+  {
+    "lieuId": "4960da11-a8b8-43a8-85dd-c24e8b5a4519",
+    "nom": "agence postale vitry en perthois",
+    "adresse": "3 Rue de la Trinite 51300 Vitry-en-Perthois",
+    "codeInsee": "51647",
+    "source": "https://localiser.laposte.fr/marne/vitry-en-perthois/vitry-en-perthois-mairie-516470"
+  },
+  {
+    "lieuId": "49aa20fa-b7f0-49c1-ba51-cd2df15b2148",
+    "nom": "Mairie de Hastingues",
+    "adresse": "1 Place du Général de Monsabert 40300 Hastingues",
+    "codeInsee": "40120",
+    "source": "https://lannuaire.service-public.gouv.fr/nouvelle-aquitaine/landes/66c12329-4f75-4f76-948b-3ada9037a982"
+  },
+  {
+    "lieuId": "49e9b088-88f6-4fa2-9451-2ba7492a6184",
+    "nom": "Pôle Territorial de Solidarité Haute-Gironde",
+    "adresse": "49 Rue Rosa Bonheur 33240 Saint-André-de-Cubzac",
+    "codeInsee": "33366",
+    "source": "https://lannuaire.service-public.gouv.fr/nouvelle-aquitaine/gironde/50fbe2a7-e7f1-436d-a2fa-6e25312e036d"
+  },
+  {
+    "lieuId": "4e4c0abd-84d5-4f45-9e56-983759daeec7",
+    "nom": "C.A.S.E Eucalyptus",
+    "adresse": "Chemin Eucalyptus 97422 Saint-Paul",
+    "codeInsee": "97415",
+    "source": "https://www.mairie-saintpaul.re/salles-polyvalentes/"
+  },
+  {
+    "lieuId": "4eb0cec6-db02-4333-a61f-87a641a3a468",
+    "nom": "Lyon - MLPE DUCHERE",
+    "adresse": "8 Place Gisèle Halimi 69009 Lyon",
+    "codeInsee": "69389",
+    "source": "https://www.lyon.fr/lieu/equipements-divers/maison-lyon-pour-lemploi-antenne-duchere"
+  },
+  {
+    "lieuId": "4f4ad766-3061-4866-96ca-d5bca52cc2c5",
+    "nom": "Médiathèque Villeneuve les Bouloc",
+    "adresse": "Route d'Ensarla 31620 Villeneuve-lès-Bouloc",
+    "codeInsee": "31587",
+    "source": "https://mediatheque.villeneuvelesbouloc.fr/infos-pratiques"
+  },
+  {
+    "lieuId": "5257dda0-54d6-4939-971a-a27dfa7fc6a7",
+    "nom": "Bibliothèque Vanault-les-dames",
+    "adresse": "8 Place Matras 51340 Vanault-les-Dames",
+    "codeInsee": "51590",
+    "source": "https://www.bibliotheques.org/bibliotheque-de-vanault-les-dames-vanault-les-dames-51/"
+  },
+  {
+    "lieuId": "58137af2-4541-4874-9b9d-23ac55ed2b15",
+    "nom": "Point Info 14 Potigny",
+    "adresse": "Place de la 1ère Division Blindée Polonaise 14420 Potigny",
+    "codeInsee": "14516",
+    "source": "https://lannuaire.service-public.gouv.fr/normandie/calvados/0d720f37-f4f9-4b25-9e0d-f725658cecef"
+  },
+  {
+    "lieuId": "5b7db5bf-130f-479a-a174-5688fed88f5d",
+    "nom": "Mediathèque Arbois",
+    "adresse": "9 Grande Rue 39600 Arbois",
+    "codeInsee": "39013",
+    "source": "https://www.arbois.fr/bibliotheque-intercommunale/"
+  },
+  {
+    "lieuId": "5b8eefa1-45ca-4941-9b5c-0db7b97edc7a",
+    "nom": "Bibliothèque de Saint-Beauzire",
+    "adresse": "1 Rue du Pont Neuf 63360 Saint-Beauzire",
+    "codeInsee": "63322",
+    "source": "https://www.saint-beauzire.com/mediatheque-saintbeauzire-riom-limagne-63"
+  },
+  {
+    "lieuId": "5bb62fc0-7f32-447b-819e-da210c5e2c76",
+    "nom": "Cms Aumale",
+    "adresse": "25 Rue du Bailliage 76390 Aumale",
+    "codeInsee": "76035",
+    "source": "https://allopmi.fr/pmi/seine-maritime-76/centre-medico-social-d-aumale-842.html"
+  },
+  {
+    "lieuId": "5d196ca6-ea2b-4097-b3a9-f8e3636bf39f",
+    "nom": "COMMUNE DE SADA",
+    "adresse": "17 Rue Assimini Bacar 97640 Sada",
+    "codeInsee": "97616",
+    "source": "https://lannuaire.service-public.gouv.fr/mayotte/mayotte/146ef312-62cf-46a4-af11-dd1502c77a7a"
+  },
+  {
+    "lieuId": "5d39cad8-224e-452f-8739-fd6f8faae90e",
+    "nom": "L'OLIVIER DES SAGES",
+    "adresse": "8 Rue de l'Epée 69003 Lyon",
+    "codeInsee": "69383",
+    "source": "https://www.lyon.fr/association/solidarites/olivier-des-sages"
+  },
+  {
+    "lieuId": "5e1ef3d2-c8c1-4393-8bf8-9c31f5a41bd2",
+    "nom": "Maison Des Solidarités Départementales",
+    "adresse": "place des Carmes 46100 Figeac",
+    "codeInsee": "46102",
+    "source": "https://lannuaire.service-public.gouv.fr/occitanie/lot/1c505a45-c55e-433d-8b16-ee9f10a41535"
+  },
+  {
+    "lieuId": "5ed3cc0a-5cde-4f14-8bf9-530c87adf2e9",
+    "nom": "Maison Pour Tous",
+    "adresse": "10 Rue du Nouveau Brunswick 86100 Châtellerault",
+    "codeInsee": "86066",
+    "source": "https://mptchatellerault.centres-sociaux.fr/infos-pratiques/nous-ecrire/"
+  },
+  {
+    "lieuId": "67b5a721-3786-4beb-bb91-de9d55098890",
+    "nom": "COMMUNE DE LA SEYNE SUR MER",
+    "adresse": "20 quai saturnin fabre 83500 La Seyne-sur-Mer",
+    "codeInsee": "83126",
+    "source": "https://lannuaire.service-public.gouv.fr/provence-alpes-cote-d-azur/var/15678b88-9fee-4cfe-9fa3-1e86aba91ea6"
+  },
+  {
+    "lieuId": "6fe644b2-3d25-46e0-937b-d8c6f371dfc5",
+    "nom": "France Services Ailly sur Noye",
+    "adresse": "3 chemin d'Altforweiler 80250 Ailly-sur-Noye",
+    "codeInsee": "80010",
+    "source": "https://lannuaire.service-public.gouv.fr/hauts-de-france/somme/d218647f-8f85-465d-9e9e-7cf775671c65"
+  },
+  {
+    "lieuId": "701955c1-019a-49ef-8ac0-c89f42204a8f",
+    "nom": "LA POSTE Jean Jaurès",
+    "adresse": "117 Avenue Jean Jaurès 90000 Belfort",
+    "codeInsee": "90010",
+    "source": "https://localiser.laposte.fr/territoire-de-belfort/belfort/belfort-jean-jaures-909210"
+  },
+  {
+    "lieuId": "716cdbad-4075-4201-97f6-29bad0964e10",
+    "nom": "Médiathèque l'Animu",
+    "adresse": "Via Rumana 20137 Porto-Vecchio",
+    "codeInsee": "2A247",
+    "source": "https://www.portivechju.corsica/animations-a-lanimu/"
+  },
+  {
+    "lieuId": "72033070-1a30-47c3-9b75-19bf656285d0",
+    "nom": "Mairie déléguée de Seynod",
+    "adresse": "1 Place de l'Hôtel de Ville 74600 Annecy",
+    "codeInsee": "74010",
+    "source": "https://lannuaire.service-public.gouv.fr/auvergne-rhone-alpes/haute-savoie/9092b507-9122-4911-9be6-14a30e26422f"
+  },
+  {
+    "lieuId": "7901cb5e-e181-4fde-8132-036ed283487f",
+    "nom": "Maire de Pont de Salars",
+    "adresse": "40 Place de l’Hotel de Ville 12290 Pont-de-Salars",
+    "codeInsee": "12185",
+    "source": "https://lannuaire.service-public.gouv.fr/occitanie/aveyron/982a5765-fc67-4f8a-8b44-7f1404894def"
+  },
+  {
+    "lieuId": "79a35258-5d6b-47e5-b60c-e93cec79e8cb",
+    "nom": "CENTRE COMMUNAL D ACTION SOCIALE",
+    "adresse": "9 Rue Pierre Jouanno 56300 Pontivy",
+    "codeInsee": "56178",
+    "source": "https://lannuaire.service-public.gouv.fr/bretagne/morbihan/4136c298-56d1-43fa-b80d-6bb5a5545ca4"
+  },
+  {
+    "lieuId": "7a0aff9b-8cd4-48de-b471-84e1f50a085c",
+    "nom": "Residence Autonomie Camille Barroy · Centre Communal d'Action Sociale",
+    "adresse": "15 Rue Jean Mermoz 93110 Rosny-sous-Bois",
+    "codeInsee": "93064",
+    "source": "https://www.pour-les-personnes-agees.gouv.fr/annuaire-ehpad-et-maisons-de-retraite/residence-autonomie/seine-saint-denis-93/rosny-sous-bois-93110/residence-autonomie-camille-barroy/930800768"
+  },
+  {
+    "lieuId": "7a7f62b1-44a7-4a33-b0dc-348cff36db11",
+    "nom": "Mairie d'Anthy sur Léman",
+    "adresse": "41 Rue de la Mairie 74200 Anthy-sur-Léman",
+    "codeInsee": "74013",
+    "source": "https://lannuaire.service-public.gouv.fr/auvergne-rhone-alpes/haute-savoie/f688fa4a-2019-46a0-baec-be8100ba4b20"
+  },
+  {
+    "lieuId": "7b46ca7c-f75f-47b2-9e2e-bbb910f80942",
+    "nom": "AFPA Navenne",
+    "adresse": "Rue Victor Hugo 70000 Navenne",
+    "codeInsee": "70378",
+    "source": "https://lannuaire.service-public.gouv.fr/bourgogne-franche-comte/haute-saone/6294cb25-1d7b-43c6-9142-743947084fc9"
+  },
+  {
+    "lieuId": "7ceec2ff-951d-42a8-8433-ea9c8e9a786c",
+    "nom": "CELLES Mairie",
+    "adresse": "3 Rue de la Mairie 24600 Celles",
+    "codeInsee": "24090",
+    "source": "https://demarchesadministratives.fr/mairie/celles-24600"
+  },
+  {
+    "lieuId": "825c79d4-0c00-4256-b9dc-9dda960d5aa4",
+    "nom": "agence postale",
+    "adresse": "Rue du Nochet 51300 Saint-Amand-sur-Fion",
+    "codeInsee": "51472",
+    "source": "https://localiser.laposte.fr/marne/st-amand-sur-fion/st-amand-sur-fion-mairie-514720"
+  },
+  {
+    "lieuId": "88352a1e-61da-402f-936f-35220a5d6545",
+    "nom": "Médiathèque Saint-Lupicin",
+    "adresse": "1 Grande Rue 39170 Coteaux du Lizon",
+    "codeInsee": "39491",
+    "source": "https://www.coteauxdulizon.fr/la-mediatheque.htm"
+  },
+  {
+    "lieuId": "88b22001-ea9b-4859-a48d-05d85a59bff7",
+    "nom": "Mairie annexe Moulin Galant",
+    "adresse": "2 Rue Raymond Brunot 91100 Corbeil-Essonnes",
+    "codeInsee": "91174",
+    "source": "https://www.corbeil-essonnes.fr/annuaire-des-services/annexe-moulin-galant/"
+  },
+  {
+    "lieuId": "89722a05-e2c0-4265-b82d-2a657b47a065",
+    "nom": "MAIRIE SEVEUX MOTTEY",
+    "adresse": "10 Grande Rue 70130 Seveux-Motey",
+    "codeInsee": "70491",
+    "source": "https://lannuaire.service-public.gouv.fr/bourgogne-franche-comte/haute-saone/045833cb-740b-479d-8a0f-9f0b967507c6"
+  },
+  {
+    "lieuId": "8e3b0165-17d6-41a6-beed-bff6b5a44380",
+    "nom": "AFPA ACCES A L' EMPLOI",
+    "adresse": "Avenue René Descartes 43700 Saint-Germain-Laprade",
+    "codeInsee": "43190",
+    "source": "https://www.afpa.fr/centre/centre-du-puy-en-velay"
+  },
+  {
+    "lieuId": "8f851006-be6d-4fb9-a353-7a8f2f03f6b4",
+    "nom": "Collège Madeleine Cros - Dourgne",
+    "adresse": "5 Route du Collège 81110 Dourgne",
+    "codeInsee": "81081",
+    "source": "https://www.onisep.fr/ressources/structures-enseignement/occitanie/tarn/college-madeleine-cros"
+  },
+  {
+    "lieuId": "90198b55-2625-44c0-86ed-48f20779d1e2",
+    "nom": "CMS Bourgtheroulde",
+    "adresse": "85 Rue d'Elbeuf 27520 Grand Bourgtheroulde",
+    "codeInsee": "27105",
+    "source": "https://www.grand-bourgtheroulde.fr/vie-sociale/sante/"
+  },
+  {
+    "lieuId": "904fda00-eddf-4392-a614-b3a4263d3552",
+    "nom": "76 MOBILE - CMS NEUFCHATEL EN BRAY",
+    "adresse": "10 Rue des Cordelières 76270 Neufchâtel-en-Bray",
+    "codeInsee": "76462",
+    "source": "https://www.santeenfrance.fr/etablissement/71621-cms-neufchatel-en-bray-cg76"
+  },
+  {
+    "lieuId": "92b8f1dc-4e0a-4521-804a-dc29f1dcc06e",
+    "nom": "COMMUNE DE CLAPIERS",
+    "adresse": "5 Grand Rue Marie Lacroix 34830 Clapiers",
+    "codeInsee": "34077",
+    "source": "https://lannuaire.service-public.gouv.fr/occitanie/herault/bdd12231-6ce1-4208-8769-75488d26da36"
+  },
+  {
+    "lieuId": "94b8214b-c0dd-4853-8e26-4dccbce6d372",
+    "nom": "DIME VESOUL",
+    "adresse": "10 Rue Jules Alexis Muenier 70000 Vesoul",
+    "codeInsee": "70550",
+    "source": "https://annuaire.action-sociale.org/?p=ime-dr-jean-louis-beaudouin--ahssea-700780216&details=caracteristiques"
+  },
+  {
+    "lieuId": "a02372f3-daf1-4f37-a95e-f7ae2b026b84",
+    "nom": "Antenne de Mortain",
+    "adresse": "16 Rue de la 30e Division Américaine 50140 Mortain-Bocage",
+    "codeInsee": "50359",
+    "source": "https://fondation-grandouest.mutualia.fr/associations/cms-antenne-du-mortainais/"
+  },
+  {
+    "lieuId": "ad5018d4-7b47-47e5-a7b8-ef12448d9f9d",
+    "nom": "CCAS d'Alès",
+    "adresse": "Rue Baronnie 30100 Alès",
+    "codeInsee": "30007",
+    "source": "https://lannuaire.service-public.gouv.fr/occitanie/gard/f40ad87e-7f39-4a68-9ced-677f0aed037a"
+  },
+  {
+    "lieuId": "b05ad6c4-2e7b-400e-9a29-d305131c0630",
+    "nom": "76 MOBILE - CMS NEUFCHATEL COTTEVRARD",
+    "adresse": "Place de l’Eglise 76850 Cottévrard",
+    "codeInsee": "76188",
+    "source": "https://seinemaritime.fr/nos-actions/action-sociale/accompagnement-social/76-mobile"
+  },
+  {
+    "lieuId": "c7067e9f-9051-4e10-9baa-0e87d028594b",
+    "nom": "Commune de Feuges",
+    "adresse": "2 Route de Saint Benoit 10150 Feuges",
+    "codeInsee": "10149",
+    "source": "https://lannuaire.service-public.gouv.fr/grand-est/aube/217b3dba-57ab-43ae-86ef-03400111a865"
+  },
+  {
+    "lieuId": "cca96640-75a9-49bd-8cdc-a5ae7ede85d1",
+    "nom": "Espace de vie sociale",
+    "adresse": "3 Allée de la Gare 41170 Mondoubleau",
+    "codeInsee": "41143",
+    "source": "https://www.cc-collinesperche.fr/france-services"
+  },
+  {
+    "lieuId": "cdfa0a6f-2746-4a54-84fc-fa6d29252af1",
+    "nom": "Fretigney",
+    "adresse": "21 Grande Rue 70130 Fretigney-et-Velloreille",
+    "codeInsee": "70257",
+    "source": "https://montsdegy.fr/fretigney-et-velloreille--1614595266.html"
+  },
+  {
+    "lieuId": "d19fc7a7-5392-4611-8dca-64ba9f7d2009",
+    "nom": "Pimms Médiation Artois (Bruay-la-Buissière)",
+    "adresse": "597 Rue Emile Basly 62700 Bruay-la-Buissière",
+    "codeInsee": "62178",
+    "source": "https://lannuaire.service-public.gouv.fr/hauts-de-france/pas-de-calais/4a8dcbaf-a8a2-4ed3-95fa-672dbfd44f85"
+  },
+  {
+    "lieuId": "d1e5a33b-4121-4760-9820-fe207d3b5b90",
+    "nom": "Médiathèque de St Crépin",
+    "adresse": "Rue du Tour de Ville 05600 Saint-Crépin",
+    "codeInsee": "05136",
+    "source": "https://provence-alpes-cotedazur.com/que-faire/detente-et-loisirs/toutes-les-activites-detente-et-loisirs/mediatheque-de-saint-crepin-saint-crepin-fr-3739977/"
+  },
+  {
+    "lieuId": "d7c88db3-085a-4af4-b137-4d9ab0089afa",
+    "nom": "MAIRIE salle de la FRATERNITE a GREOLIERES",
+    "adresse": "5 Rue de la Mairie 06620 Gréolières",
+    "codeInsee": "06070",
+    "source": "https://app.panneaupocket.com/ville/1316297572-greolieres-06620"
+  },
+  {
+    "lieuId": "d7cd86e1-fce1-4d8f-bf86-a15f013a234e",
+    "nom": "Collège Jean Rostand",
+    "adresse": "19 Rue Jules Ferry 72380 Sainte-Jamme-sur-Sarthe",
+    "codeInsee": "72289",
+    "source": "https://www.education.gouv.fr/annuaire/72380/sainte-jamme-sur-sarthe/college/0721042s/college-jean-rostand.html"
+  },
+  {
+    "lieuId": "d7dcd62e-3a47-4673-881a-a8ca8607e0da",
+    "nom": "MÉDIATHÈQUE - GENTILLY",
+    "adresse": "3 Rue de la Div du General Leclerc 94250 Gentilly",
+    "codeInsee": "94037",
+    "source": "https://www.ville-gentilly.fr/annuaires/services-et-equipements-municipaux-et-publics/la-mediatheque"
+  },
+  {
+    "lieuId": "da65e096-a750-4979-a97b-5aa3588164df",
+    "nom": "Le Pass'âge - Pôle Générations",
+    "adresse": "48 Rue Claude Castaing 33450 Saint-Loubès",
+    "codeInsee": "33433",
+    "source": "https://www.saint-loubes.fr/mon-quotidien/solidarite-et-sante/le-passage/"
+  },
+  {
+    "lieuId": "e4b59a06-6213-4700-b8d4-c85b62f36eaa",
+    "nom": "Médiathèque de Donzy",
+    "adresse": "10 Rue d'Osmond 58220 Donzy",
+    "codeInsee": "58102",
+    "source": "https://www.donzy.fr/mediatheque/"
+  },
+  {
+    "lieuId": "e4cd51c4-acf6-4019-86b9-7282660b47d0",
+    "nom": "Mairie de Gesnes-le-Gandelin",
+    "adresse": "41 Rue Grande Rue 72130 Gesnes-le-Gandelin",
+    "codeInsee": "72141",
+    "source": "https://lannuaire.service-public.gouv.fr/pays-de-la-loire/sarthe/0c0d0ad3-c396-4ede-85e6-bbf1447d0825"
+  },
+  {
+    "lieuId": "e5336239-8d8c-4a9e-a7a6-73844677f285",
+    "nom": "France Service Chambois",
+    "adresse": "7 Rue des Bordes 27240 Chambois",
+    "codeInsee": "27032",
+    "source": "https://lannuaire.service-public.gouv.fr/normandie/eure/3e43ff37-6ef4-4ddc-bbaf-778e80b9e7ed"
+  },
+  {
+    "lieuId": "e806a17f-bc03-4d95-8e93-8a201afc1f9c",
+    "nom": "CROIX ROUGE FRANCAISE",
+    "adresse": "20 Boulevard Henry Dunant 84000 Avignon",
+    "codeInsee": "84007",
+    "source": "https://www.croix-rouge.fr/unite-locale-du-pays-d-avignon"
+  },
+  {
+    "lieuId": "eb769609-ece5-45a6-b85e-6fd8ffe50e3d",
+    "nom": "COMMUNE DE CERVIONE",
+    "adresse": "Carrughju Filippu Pescetti 20221 Cervione",
+    "codeInsee": "2B087",
+    "source": "https://lannuaire.service-public.gouv.fr/corse/haute-corse/42b23377-94f9-4979-91d9-61bc0d156bdd"
+  },
+  {
+    "lieuId": "f29f6c85-893f-4df2-8990-f7709616598b",
+    "nom": "LA POSTE",
+    "adresse": "10 Boulevard de la Marine 66510 Saint-Hippolyte",
+    "codeInsee": "66176",
+    "source": "https://localiser.laposte.fr/pyrenees-orientales/st-hippolyte/saint-hippolyte-661760"
+  },
+  {
+    "lieuId": "f415c17b-1066-4f98-8547-ee26313cba9e",
+    "nom": "Maison des solidarités de Bonne",
+    "adresse": "5 Impasse de Bonne 05000 Gap",
+    "codeInsee": "05061",
+    "source": "https://www.hautes-alpes.fr/annuaire/maison-des-solidarites-de-gap-bonne/"
+  },
+  {
+    "lieuId": "fe8382e9-6af3-4b9e-a40f-983ab40edcf2",
+    "nom": "Point de médiation numérique LA GIMOND",
+    "adresse": "127 Route du Petit Mas 42140 La Gimond",
+    "codeInsee": "42100",
+    "source": "https://lannuaire.service-public.gouv.fr/auvergne-rhone-alpes/loire/df6d35ce-1e3b-4810-b349-f44aa496f13b"
+  }
+]

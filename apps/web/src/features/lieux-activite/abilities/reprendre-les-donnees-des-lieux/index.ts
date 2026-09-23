@@ -23,6 +23,7 @@ export {
   releveEnLignes,
 } from './implementation'
 export {
+  type AdresseConsignee,
   type AdresseGeocodee,
   type AdresseRetrouvee,
   adresseAReprendre,
@@ -64,6 +65,7 @@ export {
   resumeADescendre,
   retirerLaPublication,
   retrouverParLesCoordonnees,
+  type SituerLesAdressesConsignees,
   sansDescenteDuResume,
   sansEffacementDuRna,
   sansRepriseDeLAdresse,
@@ -75,6 +77,8 @@ export {
   sansSuppressionDuLieu,
   sansTri,
   sitesWebAReprendre,
+  situerLesAdressesConsignees,
+  situerLesAdressesDuRegistreLocal,
   supprimerLeLieu,
   type TelephoneAReprendre,
   type TrierLesListes,

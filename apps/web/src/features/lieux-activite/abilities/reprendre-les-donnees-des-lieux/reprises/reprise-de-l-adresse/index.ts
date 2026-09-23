@@ -1,5 +1,6 @@
 export {
   type AdresseAReprendre,
+  type AdresseConsignee,
   type AdresseGeocodee,
   type AdresseRetrouvee,
   type AdresseSoumise,
@@ -18,6 +19,7 @@ export {
   type ReprendreLAdresse,
   type RetrouverParLesCoordonnees,
   repriseDeLAdresse,
+  type SituerLesAdressesConsignees,
   type SupprimerLeLieu,
 } from './domain/reprise-de-l-adresse'
 export { consulterLAnnuaire } from './implementation/consulter-l-annuaire'
@@ -26,4 +28,9 @@ export { reprendreLAdresse } from './implementation/reprendre-l-adresse.mutation
 export { retrouverParLesCoordonnees } from './implementation/retrouver-par-les-coordonnees'
 export { sansRepriseDeLAdresse } from './implementation/sans-reprise-de-l-adresse'
 export { sansSuppressionDuLieu } from './implementation/sans-suppression-du-lieu'
+export {
+  registreDesAdressesConsignees,
+  situerLesAdressesConsignees,
+  situerLesAdressesDuRegistreLocal,
+} from './implementation/situer-les-adresses-consignees'
 export { supprimerLeLieu } from './implementation/supprimer-le-lieu.mutation'

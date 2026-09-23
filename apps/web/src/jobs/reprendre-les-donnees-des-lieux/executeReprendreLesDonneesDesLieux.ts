@@ -34,6 +34,7 @@ import {
   sansRetraitDePublication,
   sansSuppressionDuLieu,
   sansTri,
+  situerLesAdressesDuRegistreLocal,
   supprimerLeLieu,
   triDesListes,
   trierLesListes,
@@ -72,6 +73,7 @@ export const executeReprendreLesDonneesDesLieux: JobExecutor<
       repriseDeLAdresse(
         geocoderLesAdresses,
         retrouverParLesCoordonnees,
+        situerLesAdressesDuRegistreLocal,
         consulterLAnnuaire,
         reprendre ? reprendreLAdresse : sansRepriseDeLAdresse,
         reprendre ? supprimerLeLieu : sansSuppressionDuLieu,

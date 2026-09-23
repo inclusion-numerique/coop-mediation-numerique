@@ -630,3 +630,97 @@ describe('l’adresse que l’Annuaire de l’administration donne à la BAN', (
     ).toBeNull()
   })
 })
+
+describe('l’adresse consignée au registre, que la BAN rend à nouveau', () => {
+  const CONSIGNEE: AdresseGeocodee = {
+    ...RENDUE,
+    banId: '51454_0777_00005',
+    voie: '5 Rue Pierre Loti',
+  }
+
+  const parLeRegistre = (
+    consignee: { codeInsee: string; rendue: AdresseGeocodee | null },
+    lieu: Parameters<typeof lieuAReprendre>[0] = {},
+    parLAnnuaire: readonly (AdresseGeocodee | null)[] = [],
+  ) =>
+    adresseAReprendre(
+      lieuAReprendre({ adresse: '12 rue Introuvable', ...lieu }),
+      [{ ...RENDUE, type: 'municipality' }],
+      undefined,
+      parLAnnuaire,
+      consignee,
+    )
+
+  it('situe le lieu que ni l’adresse ni le point ne situent', () => {
+    expect(parLeRegistre({ codeInsee: '51454', rendue: CONSIGNEE })).toEqual({
+      verdict: 'a-corriger-d-apres-le-registre',
+      adresse: CONSIGNEE,
+    })
+  })
+
+  it('n’écrit rien quand la BAN ne rend pas l’adresse consignée', () => {
+    expect(parLeRegistre({ codeInsee: '51454', rendue: null })?.verdict).toBe(
+      'a-verifier',
+    )
+  })
+
+  it('n’écrit pas un appariement faible', () => {
+    expect(
+      parLeRegistre({
+        codeInsee: '51454',
+        rendue: { ...CONSIGNEE, score: 0.8 },
+      })?.verdict,
+    ).toBe('a-verifier')
+  })
+
+  it('n’écrit pas un repli sur la commune', () => {
+    expect(
+      parLeRegistre({
+        codeInsee: '51454',
+        rendue: { ...CONSIGNEE, type: 'municipality' },
+      })?.verdict,
+    ).toBe('a-verifier')
+  })
+
+  it('juge la commune sur celle consignée, pas sur celle enregistrée', () => {
+    const annecy = { ...CONSIGNEE, codeInsee: '74010' }
+
+    expect(
+      parLeRegistre(
+        { codeInsee: '74010', rendue: annecy },
+        { codeInsee: '44003' },
+      )?.verdict,
+    ).toBe('a-corriger-d-apres-le-registre')
+    expect(parLeRegistre({ codeInsee: '51454', rendue: annecy })?.verdict).toBe(
+      'a-verifier',
+    )
+  })
+
+  it('n’écrase pas une adresse que la BAN reconnaît', () => {
+    expect(
+      adresseAReprendre(lieuAReprendre(), [RENDUE], undefined, [], {
+        codeInsee: '51454',
+        rendue: CONSIGNEE,
+      }),
+    ).toBeNull()
+  })
+
+  it('passe avant l’Annuaire', () => {
+    expect(
+      parLeRegistre(
+        { codeInsee: '51454', rendue: CONSIGNEE },
+        { nom: 'Mairie de Reims', adresse: 'Reims' },
+        [{ ...RENDUE, banId: 'annuaire' }],
+      ),
+    ).toEqual({ verdict: 'a-corriger-d-apres-le-registre', adresse: CONSIGNEE })
+  })
+
+  it('sauve de la suppression le lieu qui n’a accompagné personne', () => {
+    expect(
+      parLeRegistre(
+        { codeInsee: '51454', rendue: CONSIGNEE },
+        { accompagnements: 0 },
+      )?.verdict,
+    ).toBe('a-corriger-d-apres-le-registre')
+  })
+})

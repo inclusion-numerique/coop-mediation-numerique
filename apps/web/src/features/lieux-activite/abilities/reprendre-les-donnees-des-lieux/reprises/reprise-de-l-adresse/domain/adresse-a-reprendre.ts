@@ -52,8 +52,17 @@ export type ServiceDemande = {
   readonly service: ServiceDesigne
 }
 
+export type AdresseConsignee = {
+  readonly codeInsee: string
+  readonly rendue: AdresseGeocodee | null
+}
+
 export type AdresseAReprendre =
   | { readonly verdict: 'a-corriger'; readonly adresse: AdresseGeocodee }
+  | {
+      readonly verdict: 'a-corriger-d-apres-le-registre'
+      readonly adresse: AdresseGeocodee
+    }
   | {
       readonly verdict: 'a-corriger-d-apres-l-annuaire'
       readonly adresse: AdresseGeocodee
@@ -284,12 +293,14 @@ const memeVoieMotAMot = (ecrite: string, rendue: string): boolean => {
  * Base Adresse Nationale signale elle-même que le nôtre est l'ancien code d'une
  * commune nouvelle.
  */
+const memeCodeCommune = (codeInsee: string, rendue: AdresseGeocodee): boolean =>
+  rendue.codeInsee === codeInsee ||
+  rendue.ancienCodeInsee === codeInsee ||
+  (ARRONDISSEMENTS.get(codeInsee)?.test(rendue.codeInsee) ?? false) ||
+  (ARRONDISSEMENTS.get(rendue.codeInsee)?.test(codeInsee) ?? false)
+
 const memeCommune = (lieu: LieuAReprendre, rendue: AdresseGeocodee): boolean =>
-  lieu.codeInsee != null &&
-  (rendue.codeInsee === lieu.codeInsee ||
-    rendue.ancienCodeInsee === lieu.codeInsee ||
-    (ARRONDISSEMENTS.get(lieu.codeInsee)?.test(rendue.codeInsee) ?? false) ||
-    (ARRONDISSEMENTS.get(rendue.codeInsee)?.test(lieu.codeInsee) ?? false))
+  lieu.codeInsee != null && memeCodeCommune(lieu.codeInsee, rendue)
 
 /**
  * Trois façons de tenir l'adresse rendue pour celle du lieu : la Base Adresse
@@ -463,6 +474,20 @@ export const adresseDeLAnnuaire = (
     : null
 }
 
+export const adresseDuRegistre = (
+  consignee: AdresseConsignee | undefined,
+): AdresseGeocodee | null => {
+  const rendue = consignee?.rendue
+
+  return consignee != null &&
+    rendue != null &&
+    TYPES_UTILISABLES.has(rendue.type) &&
+    rendue.score >= SCORE_MINIMAL &&
+    memeCodeCommune(consignee.codeInsee, rendue)
+    ? rendue
+    : null
+}
+
 /**
  * Un lieu dont l'adresse reste introuvable et qui n'a jamais rien accompagné.
  *
@@ -480,11 +505,20 @@ export const adresseAReprendre = (
   rendues: readonly AdresseGeocodee[],
   retrouvee?: AdresseRetrouvee,
   parLAnnuaire: readonly (AdresseGeocodee | null)[] = [],
+  consignee?: AdresseConsignee,
 ): AdresseAReprendre | null => {
   const adresse =
     adresseDeLAdresse(lieu, rendues) ?? adresseDesCoordonnees(lieu, retrouvee)
+  const duRegistre = adresse == null ? adresseDuRegistre(consignee) : null
   const deLAnnuaire =
-    adresse == null ? adresseDeLAnnuaire(lieu, parLAnnuaire) : null
+    adresse == null && duRegistre == null
+      ? adresseDeLAnnuaire(lieu, parLAnnuaire)
+      : null
+
+  if (duRegistre != null)
+    return dejaConforme(lieu, duRegistre)
+      ? null
+      : { verdict: 'a-corriger-d-apres-le-registre', adresse: duRegistre }
 
   if (deLAnnuaire != null)
     return dejaConforme(lieu, deLAnnuaire)

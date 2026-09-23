@@ -1,5 +1,6 @@
 export {
   type AdresseAReprendre,
+  type AdresseConsignee,
   type AdresseGeocodee,
   type AdresseRetrouvee,
   type AdresseSoumise,
@@ -19,9 +20,12 @@ export {
   retrouverParLesCoordonnees,
   type ServiceDemande,
   type ServiceDesigne,
+  type SituerLesAdressesConsignees,
   sansRepriseDeLAdresse,
   sansSuppressionDuLieu,
   serviceDesigne,
+  situerLesAdressesConsignees,
+  situerLesAdressesDuRegistreLocal,
   supprimerLeLieu,
 } from './reprise-de-l-adresse'
 export {

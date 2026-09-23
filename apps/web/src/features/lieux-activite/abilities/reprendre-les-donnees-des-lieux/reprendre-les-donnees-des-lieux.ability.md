@@ -459,6 +459,59 @@ base.
 * When on reprend les données des lieux
 * Then l’adresse du lieu n’a pas bougé
 
+## Rule: Le registre des adresses consignées situe le lieu qu'on a déjà cherché
+
+> Quand ni l'adresse écrite ni le point ne situent un lieu, on est allé chercher
+> son adresse publique : le site de la commune, l'Annuaire de l'administration,
+> France services, La Poste. Ce qui a été trouvé de façon certaine — une source
+> officielle, une adresse que la Base Adresse Nationale rend à l'identique — est
+> consigné dans un registre local, pour ne pas refaire la recherche à chaque
+> passe ni la perdre d'une base à l'autre.
+>
+> Le registre ne fait pas foi pour autant : l'adresse consignée est reposée à la
+> Base Adresse Nationale à chaque passe, et c'est sa réponse qui s'écrit, avec un
+> appariement sûr dans la commune consignée — qui peut différer de celle
+> enregistrée quand c'est elle qui était fausse.
+>
+> Il vient après l'adresse écrite et le point : un lieu dont l'adresse a été
+> corrigée depuis n'a plus besoin de lui, et le registre ne l'écrase pas. Il
+> vient avant l'Annuaire, parce qu'une adresse vérifiée lieu par lieu vaut mieux
+> qu'une règle générale.
+
+### Scenario: Le lieu consigné est situé par l'adresse consignée
+
+* Given un lieu dont l’adresse diffère de celle de la Base Adresse Nationale
+* And la Base Adresse Nationale ne reconnaît pas la voie
+* And le lieu est consigné au registre avec une adresse que la Base Adresse Nationale rend
+* When on reprend les données des lieux
+* Then le relevé annonce une adresse corrigée d’après le registre
+* And l’adresse du lieu est celle que la Base Adresse Nationale rend
+
+### Scenario: Une adresse consignée que la BAN ne rend pas ne s'écrit pas
+
+* Given un lieu dont l’adresse diffère de celle de la Base Adresse Nationale
+* And la Base Adresse Nationale ne reconnaît pas la voie
+* And le lieu est consigné au registre avec une adresse que la Base Adresse Nationale ne rend pas
+* When on reprend les données des lieux
+* Then l’adresse du lieu n’a pas bougé
+
+### Scenario: Le registre n'écrase pas une adresse que la BAN reconnaît
+
+* Given un lieu dont l’adresse diffère de celle de la Base Adresse Nationale
+* And le lieu est consigné au registre avec une autre adresse
+* When on reprend les données des lieux
+* Then l’adresse du lieu est celle que la Base Adresse Nationale rend
+
+### Scenario: Le registre passe avant l'Annuaire
+
+* Given une mairie dont la voie ne nomme aucune voie
+* And la Base Adresse Nationale ne reconnaît pas la voie
+* And l’Annuaire de l’administration connaît sa mairie
+* And le lieu est consigné au registre avec une adresse que la Base Adresse Nationale rend
+* When on reprend les données des lieux
+* Then le relevé annonce une adresse corrigée d’après le registre
+* And l’adresse du lieu est celle que la Base Adresse Nationale rend
+
 ## Rule: L'Annuaire de l'administration situe le service public que rien d'autre ne situe
 
 > Une bonne part des lieux que ni l'adresse ni le point ne situent sont des
