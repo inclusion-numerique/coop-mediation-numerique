@@ -32,5 +32,6 @@ export const lieuAReprendre = (
   formationsLabels: [],
   autresFormationsLabels: [],
   accompagnements: 3,
+  derniereActivite: new Date('2026-09-01T00:00:00Z'),
   ...champs,
 })

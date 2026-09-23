@@ -9,6 +9,7 @@ import type {
   SituerLesAdressesConsignees,
 } from '@app/web/features/lieux-activite/abilities/reprendre-les-donnees-des-lieux'
 import {
+  confierLAdresseAuLieu,
   deposerLeReleve,
   descendreLeResume,
   effacerLeRna,
@@ -30,6 +31,7 @@ import {
   repriseDuResume,
   repriseDuTelephone,
   retirerLaPublication,
+  sansConfiementDeLAdresse,
   sansDescenteDuResume,
   sansEffacementDuRna,
   sansRepriseDeLAdresse,
@@ -138,6 +140,8 @@ const VOIE_SANS_NUMERO: AdresseGeocodee = {
 }
 
 const TROIS_CENTS_METRES = 300 / 111_320
+
+const MAINTENANT = new Date('2026-03-01T00:00:00Z')
 
 const MAIRIE_DE_L_ANNUAIRE: AdresseGeocodee = {
   ...ADRESSE_BAN,
@@ -510,6 +514,40 @@ Then('le relevé annonce une adresse corrigée d’après l’Annuaire', () => {
   )
 })
 
+Given('un lieu partagé dont l’adresse n’est plus reconnue', async () => {
+  await semerUnLieu({ publie: true })
+  initiale.voie = '12 QUAI DU PORT'
+  await prismaClient.lieuInclusion.update({
+    where: { id: lieuSeme() },
+    data: { adresse: initiale.voie, latitude: null },
+  })
+})
+
+Given('sa dernière activité remonte à plus de six mois', async () => {
+  await prismaClient.activite.updateMany({
+    where: { structureId: lieuSeme() },
+    data: { date: new Date('2025-06-01') },
+  })
+})
+
+Then('le relevé annonce une adresse à faire corriger par le lieu', () => {
+  assert.ok(
+    mentions().some(
+      ({ motif }) => motif === 'adresse : à faire corriger par le lieu',
+    ),
+  )
+})
+
+Then('le lieu paraît toujours sur la cartographie', async () => {
+  const { visiblePourCartographieNationale } =
+    await prismaClient.lieuInclusion.findUniqueOrThrow({
+      where: { id: lieuSeme() },
+      select: { visiblePourCartographieNationale: true },
+    })
+
+  assert.strictEqual(visiblePourCartographieNationale, true)
+})
+
 Then('la voie du lieu n’a pas bougé', async () => {
   const { adresse } = await prismaClient.lieuInclusion.findUniqueOrThrow({
     where: { id: lieuSeme() },
@@ -754,6 +792,8 @@ When('on reprend les données des lieux', async () => {
           consulterLAnnuaire,
           reprendreLAdresse,
           supprimerLeLieu,
+          confierLAdresseAuLieu,
+          MAINTENANT,
         ),
       ],
       ports: {
@@ -784,6 +824,8 @@ When('on relève les données des lieux sans les reprendre', async () => {
           consulterLAnnuaire,
           sansRepriseDeLAdresse,
           sansSuppressionDuLieu,
+          sansConfiementDeLAdresse,
+          MAINTENANT,
         ),
       ],
       ports: {

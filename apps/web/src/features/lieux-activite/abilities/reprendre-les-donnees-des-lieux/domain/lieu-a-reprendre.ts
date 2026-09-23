@@ -28,6 +28,7 @@ export type LieuAReprendre = {
   readonly formationsLabels: readonly string[]
   readonly autresFormationsLabels: readonly string[]
   readonly accompagnements: number
+  readonly derniereActivite: Date | null
 }
 
 export const nonVide = (valeur: string | null | undefined): string | null =>

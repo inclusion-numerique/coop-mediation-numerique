@@ -1,5 +1,6 @@
 import {
   comptesParMotif,
+  confierLAdresseAuLieu,
   consulterLAnnuaire,
   deposerLeReleve,
   descendreLeResume,
@@ -24,6 +25,7 @@ import {
   repriseDuTelephone,
   retirerLaPublication,
   retrouverParLesCoordonnees,
+  sansConfiementDeLAdresse,
   sansDescenteDuResume,
   sansEffacementDuRna,
   sansRepriseDeLAdresse,
@@ -77,6 +79,8 @@ export const executeReprendreLesDonneesDesLieux: JobExecutor<
         consulterLAnnuaire,
         reprendre ? reprendreLAdresse : sansRepriseDeLAdresse,
         reprendre ? supprimerLeLieu : sansSuppressionDuLieu,
+        reprendre ? confierLAdresseAuLieu : sansConfiementDeLAdresse,
+        new Date(),
       ),
     ],
     ports: {

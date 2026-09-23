@@ -32,12 +32,18 @@ export const lireLesLieux: LireLesLieux = async () =>
       COALESCE(dispositif_programmes_nationaux::text[], '{}') AS "dispositifProgrammesNationaux",
       COALESCE(formations_labels::text[], '{}')              AS "formationsLabels",
       COALESCE(autres_formations_labels, '{}')               AS "autresFormationsLabels",
-      COALESCE((
-        SELECT SUM(a.accompagnements_count)
-        FROM coop.activites a
-        WHERE a.structure_id = coop.lieu_inclusion.id AND a.suppression IS NULL
-      ), 0)::int                                             AS "accompagnements"
+      COALESCE(activite.accompagnements, 0)::int             AS "accompagnements",
+      activite.derniere                                      AS "derniereActivite"
     FROM coop.lieu_inclusion
+    LEFT JOIN (
+      SELECT
+        structure_id,
+        SUM(accompagnements_count) AS accompagnements,
+        MAX(date)                  AS derniere
+      FROM coop.activites
+      WHERE suppression IS NULL
+      GROUP BY structure_id
+    ) activite ON activite.structure_id = coop.lieu_inclusion.id
     WHERE suppression IS NULL
     ORDER BY creation
   `

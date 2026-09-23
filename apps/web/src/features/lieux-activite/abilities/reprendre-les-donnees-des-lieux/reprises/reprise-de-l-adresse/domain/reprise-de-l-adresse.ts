@@ -15,6 +15,7 @@ import {
   adresseDuRegistre,
   adresseSoumise,
   type CoordonneesSoumises,
+  confieeAuLieuSiInactif,
   coordonneesSoumises,
   type ServiceDemande,
   serviceDemande,
@@ -25,6 +26,8 @@ const COLONNE = 'adresse'
 const A_CORRIGER = 'à corriger'
 
 const A_SUPPRIMER = 'à supprimer'
+
+const A_FAIRE_CORRIGER = 'à faire corriger par le lieu'
 
 const D_APRES_L_ANNUAIRE = "d'après l'Annuaire de l'administration"
 
@@ -53,6 +56,8 @@ export type ReprendreLAdresse = (
 
 export type SupprimerLeLieu = (lieuId: string) => Promise<void>
 
+export type ConfierLAdresseAuLieu = (lieuId: string) => Promise<void>
+
 /**
  * Ce que la Base Adresse Nationale a répondu sur l'ensemble des lieux : par
  * l'adresse d'abord, puis par les coordonnées pour ceux que l'adresse n'a pas
@@ -77,6 +82,8 @@ const cellule = (aReprendre: AdresseAReprendre): string => {
     return A_CORRIGER
   if (aReprendre.verdict === 'a-supprimer')
     return `${A_SUPPRIMER} : ${aReprendre.motif}`
+  if (aReprendre.verdict === 'a-faire-corriger')
+    return `${A_FAIRE_CORRIGER} : ${aReprendre.motif}`
 
   return `à vérifier : ${aReprendre.motif}`
 }
@@ -89,14 +96,25 @@ const motif = (aReprendre: AdresseAReprendre): string => {
     return `${COLONNE} : ${A_CORRIGER} ${D_APRES_L_ANNUAIRE}`
   if (aReprendre.verdict === 'a-supprimer')
     return `${COLONNE} : ${A_SUPPRIMER}, ${aReprendre.motif}`
+  if (aReprendre.verdict === 'a-faire-corriger')
+    return `${COLONNE} : ${A_FAIRE_CORRIGER}`
 
   return `${COLONNE} : ${aReprendre.motif}`
 }
 
 const appliquer =
-  (reprendreLAdresse: ReprendreLAdresse, supprimerLeLieu: SupprimerLeLieu) =>
+  (
+    reprendreLAdresse: ReprendreLAdresse,
+    supprimerLeLieu: SupprimerLeLieu,
+    confierLAdresseAuLieu: ConfierLAdresseAuLieu,
+  ) =>
   async (lieuId: string, aReprendre: AdresseAReprendre): Promise<void> => {
     if (aReprendre.verdict === 'a-verifier') return
+    if (aReprendre.verdict === 'a-faire-corriger') {
+      await confierLAdresseAuLieu(lieuId)
+
+      return
+    }
     if (aReprendre.verdict === 'a-supprimer') {
       await supprimerLeLieu(lieuId)
 
@@ -159,6 +177,8 @@ export const repriseDeLAdresse = (
   consulterLAnnuaire: ConsulterLAnnuaire,
   reprendreLAdresse: ReprendreLAdresse,
   supprimerLeLieu: SupprimerLeLieu,
+  confierLAdresseAuLieu: ConfierLAdresseAuLieu,
+  maintenant: Date,
 ): Reprise =>
   repriseAvecPrealable<AdresseAReprendre, AdressesRendues>({
     colonnes: [COLONNE],
@@ -172,12 +192,16 @@ export const repriseDeLAdresse = (
       lieu,
       { parLAdresse, parLesCoordonnees, parLeRegistre, parLAnnuaire },
     ) =>
-      adresseAReprendre(
+      confieeAuLieuSiInactif(
         lieu,
-        parLAdresse.get(lieu.id) ?? [],
-        parLesCoordonnees.get(lieu.id),
-        parLAnnuaire.get(lieu.id) ?? [],
-        parLeRegistre.get(lieu.id),
+        adresseAReprendre(
+          lieu,
+          parLAdresse.get(lieu.id) ?? [],
+          parLesCoordonnees.get(lieu.id),
+          parLAnnuaire.get(lieu.id) ?? [],
+          parLeRegistre.get(lieu.id),
+        ),
+        maintenant,
       ),
     mentions: (aReprendre) => [
       {
@@ -186,5 +210,9 @@ export const repriseDeLAdresse = (
         motif: motif(aReprendre),
       },
     ],
-    appliquer: appliquer(reprendreLAdresse, supprimerLeLieu),
+    appliquer: appliquer(
+      reprendreLAdresse,
+      supprimerLeLieu,
+      confierLAdresseAuLieu,
+    ),
   })

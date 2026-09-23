@@ -68,6 +68,7 @@ export type AdresseAReprendre =
       readonly adresse: AdresseGeocodee
     }
   | { readonly verdict: 'a-supprimer'; readonly motif: string }
+  | { readonly verdict: 'a-faire-corriger'; readonly motif: string }
   | { readonly verdict: 'a-verifier'; readonly motif: string }
 
 const SCORE_MINIMAL = 0.9
@@ -499,6 +500,30 @@ export const adresseDuRegistre = (
  */
 const nAccompagneRien = (lieu: LieuAReprendre): boolean =>
   lieu.accompagnements === 0
+
+const MOIS_D_INACTIVITE = 6
+
+const ilYA = (mois: number, maintenant: Date): Date =>
+  new Date(
+    Date.UTC(
+      maintenant.getUTCFullYear(),
+      maintenant.getUTCMonth() - mois,
+      maintenant.getUTCDate(),
+    ),
+  )
+
+const inactif = (lieu: LieuAReprendre, maintenant: Date): boolean =>
+  lieu.derniereActivite == null ||
+  lieu.derniereActivite < ilYA(MOIS_D_INACTIVITE, maintenant)
+
+export const confieeAuLieuSiInactif = (
+  lieu: LieuAReprendre,
+  aReprendre: AdresseAReprendre | null,
+  maintenant: Date,
+): AdresseAReprendre | null =>
+  aReprendre?.verdict === 'a-verifier' && inactif(lieu, maintenant)
+    ? { verdict: 'a-faire-corriger', motif: aReprendre.motif }
+    : aReprendre
 
 export const adresseAReprendre = (
   lieu: LieuAReprendre,

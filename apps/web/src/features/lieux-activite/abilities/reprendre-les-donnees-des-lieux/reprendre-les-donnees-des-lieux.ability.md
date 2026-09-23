@@ -459,6 +459,39 @@ base.
 * When on reprend les données des lieux
 * Then l’adresse du lieu n’a pas bougé
 
+## Rule: Le lieu inactif que rien ne situe est confié à ceux qui l'animent
+
+> Quand ni l'adresse écrite, ni le point, ni le registre, ni l'Annuaire ne
+> situent un lieu qui a accompagné quelqu'un, il reste deux issues. S'il a vécu
+> ces six derniers mois, ses médiateurs sont là : il paraît au relevé, et c'est à
+> un humain de trancher. S'il n'a rien accompagné depuis six mois, personne ne
+> viendra le corriger de sitôt, et le laisser sur la cartographie y publie une
+> adresse que rien ne confirme.
+>
+> On le retire donc de la cartographie et on lui ôte son identifiant de la Base
+> Adresse Nationale, qui ne désignait plus son adresse. Il n'est pas supprimé :
+> il a une histoire. Ses médiateurs le retrouvent tel quel, avec un message qui
+> leur demande de choisir son adresse dans la liste proposée ; le partage se
+> débloque dès qu'ils l'ont fait.
+
+### Scenario: Le lieu inactif depuis plus de six mois est retiré de la cartographie
+
+* Given un lieu partagé dont l’adresse n’est plus reconnue
+* And la Base Adresse Nationale ne reconnaît pas la voie
+* And sa dernière activité remonte à plus de six mois
+* When on reprend les données des lieux
+* Then le relevé annonce une adresse à faire corriger par le lieu
+* And le lieu ne paraît plus sur la cartographie
+* And l’adresse du lieu n’a pas bougé
+* And la date de modification du lieu n’a pas bougé
+
+### Scenario: Le lieu actif ces six derniers mois reste partagé
+
+* Given un lieu partagé dont l’adresse n’est plus reconnue
+* And la Base Adresse Nationale ne reconnaît pas la voie
+* When on reprend les données des lieux
+* Then le lieu paraît toujours sur la cartographie
+
 ## Rule: Le registre des adresses consignées situe le lieu qu'on a déjà cherché
 
 > Quand ni l'adresse écrite ni le point ne situent un lieu, on est allé chercher

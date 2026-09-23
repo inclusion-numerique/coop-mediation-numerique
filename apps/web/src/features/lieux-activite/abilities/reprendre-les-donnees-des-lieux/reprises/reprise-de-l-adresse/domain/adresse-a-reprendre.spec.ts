@@ -3,6 +3,7 @@ import {
   type AdresseGeocodee,
   adresseAReprendre,
   adresseSoumise,
+  confieeAuLieuSiInactif,
   serviceDesigne,
   voieMuette,
 } from './adresse-a-reprendre'
@@ -722,5 +723,62 @@ describe('l’adresse consignée au registre, que la BAN rend à nouveau', () =>
         { accompagnements: 0 },
       )?.verdict,
     ).toBe('a-corriger-d-apres-le-registre')
+  })
+})
+
+describe('le lieu inactif que rien ne situe, confié à ceux qui l’animent', () => {
+  const MAINTENANT = new Date('2026-09-24T00:00:00Z')
+  const A_VERIFIER = {
+    verdict: 'a-verifier',
+    motif: 'score insuffisant',
+  } as const
+
+  const confiee = (derniereActivite: Date | null) =>
+    confieeAuLieuSiInactif(
+      lieuAReprendre({ derniereActivite }),
+      A_VERIFIER,
+      MAINTENANT,
+    )
+
+  it('confie le lieu qui n’a rien accompagné depuis plus de six mois', () => {
+    expect(confiee(new Date('2026-03-01T00:00:00Z'))).toEqual({
+      verdict: 'a-faire-corriger',
+      motif: 'score insuffisant',
+    })
+  })
+
+  it('laisse à vérifier le lieu actif ces six derniers mois', () => {
+    expect(confiee(new Date('2026-04-01T00:00:00Z'))).toEqual(A_VERIFIER)
+  })
+
+  it('laisse à vérifier le lieu dont la dernière activité date d’il y a six mois tout juste', () => {
+    expect(confiee(new Date('2026-03-24T00:00:00Z'))).toEqual(A_VERIFIER)
+  })
+
+  it('ne touche pas au lieu que la reprise corrige', () => {
+    const aCorriger = { verdict: 'a-corriger', adresse: RENDUE } as const
+
+    expect(
+      confieeAuLieuSiInactif(
+        lieuAReprendre({ derniereActivite: new Date('2024-01-01') }),
+        aCorriger,
+        MAINTENANT,
+      ),
+    ).toEqual(aCorriger)
+  })
+
+  it('ne touche pas au lieu qui n’a accompagné personne, que la reprise supprime', () => {
+    const aSupprimer = {
+      verdict: 'a-supprimer',
+      motif: 'la voie est introuvable',
+    } as const
+
+    expect(
+      confieeAuLieuSiInactif(
+        lieuAReprendre({ derniereActivite: null }),
+        aSupprimer,
+        MAINTENANT,
+      ),
+    ).toEqual(aSupprimer)
   })
 })

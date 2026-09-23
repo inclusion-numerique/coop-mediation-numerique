@@ -14,6 +14,7 @@ export {
   serviceDesigne,
 } from './domain/adresse-a-reprendre'
 export {
+  type ConfierLAdresseAuLieu,
   type ConsulterLAnnuaire,
   type GeocoderLesAdresses,
   type ReprendreLAdresse,
@@ -22,10 +23,12 @@ export {
   type SituerLesAdressesConsignees,
   type SupprimerLeLieu,
 } from './domain/reprise-de-l-adresse'
+export { confierLAdresseAuLieu } from './implementation/confier-l-adresse-au-lieu.mutation'
 export { consulterLAnnuaire } from './implementation/consulter-l-annuaire'
 export { geocoderLesAdresses } from './implementation/geocoder-les-adresses'
 export { reprendreLAdresse } from './implementation/reprendre-l-adresse.mutation'
 export { retrouverParLesCoordonnees } from './implementation/retrouver-par-les-coordonnees'
+export { sansConfiementDeLAdresse } from './implementation/sans-confiement-de-l-adresse'
 export { sansRepriseDeLAdresse } from './implementation/sans-reprise-de-l-adresse'
 export { sansSuppressionDuLieu } from './implementation/sans-suppression-du-lieu'
 export {
