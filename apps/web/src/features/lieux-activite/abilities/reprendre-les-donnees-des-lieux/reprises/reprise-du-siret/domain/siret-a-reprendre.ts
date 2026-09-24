@@ -1,7 +1,7 @@
 import { Siret } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { LieuAReprendre } from '../../../domain'
 import type { AdresseGeocodee } from '../../reprise-de-l-adresse/domain/adresse-a-reprendre'
-import { voieNormalisee } from './adresse-equivalente'
+import { motsDeLaVoie } from './adresse-equivalente'
 import { ressemblanceDesNoms } from './nom-ressemblant'
 
 export const RESSEMBLANCE_MINIMALE_DES_NOMS = 65
@@ -114,7 +114,7 @@ const verdictDeLaConfrontation = (
     reponsesPourSirene.some(({ banId }) => banId === adresseRetenue) ||
     (voieRetenue != null &&
       inseeRetenu === etablissement.codeInsee &&
-      voieNormalisee(voieRetenue) === voieNormalisee(etablissement.voie))
+      motsDeLaVoie(voieRetenue) === motsDeLaVoie(etablissement.voie))
 
   if (!memeAdresse && adresseSirene == null)
     return reverifier(MOTIFS_SIRET.adresseSireneIntrouvable)

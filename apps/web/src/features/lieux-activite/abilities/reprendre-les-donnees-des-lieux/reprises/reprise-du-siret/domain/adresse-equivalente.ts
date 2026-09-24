@@ -11,7 +11,7 @@ const SUFFIXES: Readonly<Record<string, string>> = {
 
 const NUMERO_ET_SUFFIXE = /^(\d+)\s*(bis|ter|quater|[a-z])\b\s*/u
 
-export const voieNormalisee = (voie: string): string =>
+const voieNormalisee = (voie: string): string =>
   normaliserAdresse(nettoyerVoie(voie))
     .replace(
       NUMERO_ET_SUFFIXE,
@@ -19,3 +19,6 @@ export const voieNormalisee = (voie: string): string =>
         `${numero}${SUFFIXES[suffixe] ?? suffixe} `,
     )
     .trim()
+
+export const motsDeLaVoie = (voie: string): string =>
+  [...new Set(voieNormalisee(voie).split(/\s+/u))].sort().join(' ')

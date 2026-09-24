@@ -150,6 +150,33 @@ describe('le SIRET, confronté à SIRENE et à la Base Adresse Nationale', () =>
     ).toBeNull()
   })
 
+  it('garde un SIRET dont la voie SIRENE a les mêmes mots dans un autre ordre', () => {
+    expect(
+      verdict({
+        sirene: sireneA('4 RUE DE BIANKOUMA ET SIPILOU', '70550'),
+        voieRetenue: '4 Rue de Sipilou et Biankouma',
+        inseeRetenu: '70550',
+        adresseSirene: null,
+        reponsesPourSirene: [],
+      }),
+    ).toBeNull()
+  })
+
+  it('ne confond pas deux numéros de la même voie', () => {
+    expect(
+      verdict({
+        sirene: sireneA('14 RUE DE BIANKOUMA ET SIPILOU', '70550'),
+        voieRetenue: '4 Rue de Biankouma et Sipilou',
+        inseeRetenu: '70550',
+        adresseSirene: null,
+        reponsesPourSirene: [],
+      }),
+    ).toEqual({
+      verdict: 'a-reverifier',
+      motif: MOTIFS_SIRET.adresseSireneIntrouvable,
+    })
+  })
+
   it('reconnaît un suffixe écrit autrement', () => {
     expect(
       verdict({

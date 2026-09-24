@@ -732,7 +732,8 @@ base.
 > Nationale, avec les mêmes règles que les adresses des lieux, et doit désigner
 > exactement la même adresse que celle du lieu — le même identifiant BAN, ou,
 > quand la BAN hésite sur le libellé SIRENE, la même voie une fois les deux
-> libellés normalisés, dans la même commune. Le nom
+> libellés normalisés, mots pris dans n'importe quel ordre, dans la même
+> commune. Le nom
 > doit ressembler assez, mots pris dans n'importe quel ordre. Qu'une des deux
 > conditions manque, et le SIRET s'efface.
 >
