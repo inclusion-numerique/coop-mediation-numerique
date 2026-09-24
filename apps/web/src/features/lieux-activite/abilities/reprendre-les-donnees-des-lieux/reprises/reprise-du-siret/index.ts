@@ -1,5 +1,6 @@
 export { ressemblanceDesNoms } from './domain/nom-ressemblant'
 export {
+  type ConsignerLesConfrontations,
   type InterrogerSirene,
   type PortsDuSiret,
   type ReprendreLeSiret,
@@ -14,6 +15,8 @@ export {
   type SiretAReprendre,
   siretAReprendre,
 } from './domain/siret-a-reprendre'
+export { consignerLesConfrontations } from './implementation/consigner-les-confrontations'
 export { interrogerSirene } from './implementation/interroger-sirene'
 export { reprendreLeSiret } from './implementation/reprendre-le-siret.mutation'
+export { sansConsignation } from './implementation/sans-consignation'
 export { sansRepriseDuSiret } from './implementation/sans-reprise-du-siret'

@@ -16,6 +16,10 @@ import {
   type SituerLesAdressesConsignees,
 } from '../../reprise-de-l-adresse/domain/reprise-de-l-adresse'
 import {
+  type ConfrontationConsignee,
+  confrontationConsignee,
+} from './confrontation-consignee'
+import {
   type Confrontation,
   type EtablissementSirene,
   type ReponseSirene,
@@ -42,6 +46,10 @@ export type ReprendreLeSiret = (
   aReprendre: SiretAReprendre,
 ) => Promise<void>
 
+export type ConsignerLesConfrontations = (
+  confrontations: readonly ConfrontationConsignee[],
+) => Promise<void>
+
 export type PortsDuSiret = {
   readonly geocoderLesAdresses: GeocoderLesAdresses
   readonly retrouverParLesCoordonnees: RetrouverParLesCoordonnees
@@ -49,11 +57,14 @@ export type PortsDuSiret = {
   readonly consulterLAnnuaire: ConsulterLAnnuaire
   readonly interrogerSirene: InterrogerSirene
   readonly reprendreLeSiret: ReprendreLeSiret
+  readonly consignerLesConfrontations: ConsignerLesConfrontations
   readonly maintenant: Date
 }
 
 type AdresseDuLieu = {
   readonly banId: string | null
+  readonly voie: string | null
+  readonly codeInsee: string | null
   readonly alaVoie: boolean
 }
 
@@ -79,15 +90,19 @@ const adresseRetenue = (
   if (verdict == null)
     return {
       banId: lieu.banId,
+      voie: lieu.adresse,
+      codeInsee: lieu.codeInsee,
       alaVoie: (lieu.banId ?? '').split('_').length < 3,
     }
 
   return 'adresse' in verdict
     ? {
         banId: verdict.adresse.banId,
+        voie: verdict.adresse.voie,
+        codeInsee: verdict.adresse.codeInsee,
         alaVoie: verdict.adresse.type !== UNE_PLAQUE,
       }
-    : { banId: null, alaVoie: false }
+    : { banId: null, voie: null, codeInsee: null, alaVoie: false }
 }
 
 const lieuDeSirene = (
@@ -162,7 +177,7 @@ const confrontations =
       ]),
     )
 
-    return new Map(
+    const parLieu = new Map(
       aConfronter.map((lieu): [string, Confrontation] => {
         const retenue = adresseRetenue(lieu, rendues, ports.maintenant)
 
@@ -172,12 +187,29 @@ const confrontations =
             siret: siretDe(lieu),
             sirene: reponses.get(siretDe(lieu)) ?? { etat: 'injoignable' },
             adresseRetenue: retenue.banId,
+            voieRetenue: retenue.voie,
+            inseeRetenu: retenue.codeInsee,
             adresseDuLieuALaVoie: retenue.alaVoie,
             adresseSirene: adressesSirene.get(lieu.id) ?? null,
+            reponsesPourSirene: parLaSirene.get(lieu.id) ?? [],
           },
         ]
       }),
     )
+
+    await ports.consignerLesConfrontations(
+      lieux
+        .filter(({ siret }) => siret != null)
+        .map((lieu) =>
+          confrontationConsignee(
+            lieu,
+            parLieu.get(lieu.id),
+            siretAReprendre(lieu, parLieu.get(lieu.id)),
+          ),
+        ),
+    )
+
+    return parLieu
   }
 
 const cellule = (aReprendre: SiretAReprendre): string => {

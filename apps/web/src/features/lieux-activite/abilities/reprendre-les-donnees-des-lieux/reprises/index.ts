@@ -109,6 +109,8 @@ export {
 } from './reprise-du-resume'
 export {
   type Confrontation,
+  type ConsignerLesConfrontations,
+  consignerLesConfrontations,
   type EtablissementSirene,
   type InterrogerSirene,
   interrogerSirene,
@@ -121,6 +123,7 @@ export {
   repriseDuSiret,
   ressemblanceDesNoms,
   type SiretAReprendre,
+  sansConsignation,
   sansRepriseDuSiret,
   siretAReprendre,
 } from './reprise-du-siret'

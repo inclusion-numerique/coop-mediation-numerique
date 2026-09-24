@@ -38,8 +38,11 @@ const confrontation = (champs: Partial<Confrontation> = {}): Confrontation => ({
     },
   },
   adresseRetenue: BAN_DU_LIEU,
+  voieRetenue: '12 rue de la Paix',
+  inseeRetenu: '51454',
   adresseDuLieuALaVoie: false,
   adresseSirene: ADRESSE_SIRENE,
+  reponsesPourSirene: [ADRESSE_SIRENE],
   ...champs,
 })
 
@@ -51,6 +54,18 @@ const verdict = (
     lieuAReprendre({ siret: SIRET, ...lieu }),
     confrontation(champs),
   )
+
+const sireneA = (voie: string, codeInsee: string) =>
+  ({
+    etat: 'ouvert',
+    etablissement: {
+      nom: 'Espace numérique de Reims',
+      voie,
+      codePostal: '51100',
+      commune: 'REIMS',
+      codeInsee,
+    },
+  }) as const
 
 const ailleurs = (nom: string) =>
   confrontation({
@@ -103,12 +118,78 @@ describe('le SIRET, confronté à SIRENE et à la Base Adresse Nationale', () =>
   it('efface un SIRET que SIRENE situe à un autre numéro', () => {
     expect(
       verdict({
+        sirene: sireneA('14 RUE DE LA PAIX', '51454'),
         adresseSirene: { ...ADRESSE_SIRENE, banId: '51454_7160_00014' },
+        reponsesPourSirene: [{ ...ADRESSE_SIRENE, banId: '51454_7160_00014' }],
       }),
     ).toEqual({
       verdict: 'a-effacer',
       efface: SIRET,
       motif: MOTIFS_SIRET.autreAdresse,
+    })
+  })
+
+  it('garde un SIRET dont l’adresse SIRENE, mal écrite, mène à celle du lieu', () => {
+    expect(
+      verdict({
+        adresseSirene: null,
+        reponsesPourSirene: [{ ...ADRESSE_SIRENE, score: 0.73 }],
+      }),
+    ).toBeNull()
+  })
+
+  it('garde un SIRET dont l’adresse SIRENE, normalisée, est celle du lieu', () => {
+    expect(
+      verdict({
+        sirene: sireneA('4 RUE DE BIANKOUMA ET SIPILOU', '70550'),
+        voieRetenue: '4 Rue de Biankouma et Sipilou',
+        inseeRetenu: '70550',
+        adresseSirene: null,
+        reponsesPourSirene: [],
+      }),
+    ).toBeNull()
+  })
+
+  it('reconnaît un suffixe écrit autrement', () => {
+    expect(
+      verdict({
+        sirene: sireneA('16 bis RUE ROGER SALENGRO', '30032'),
+        voieRetenue: '16bis Rue Roger Salengro',
+        inseeRetenu: '30032',
+        adresseSirene: null,
+        reponsesPourSirene: [],
+      }),
+    ).toBeNull()
+  })
+
+  it('efface un SIRET à la même adresse dans une autre commune', () => {
+    expect(
+      verdict({
+        sirene: sireneA('11 RUE DE LA MAIRIE', '56188'),
+        voieRetenue: '11 Rue de la Mairie',
+        inseeRetenu: '56128',
+        adresseSirene: { ...ADRESSE_SIRENE, banId: '56188_0010_00011' },
+        reponsesPourSirene: [{ ...ADRESSE_SIRENE, banId: '56188_0010_00011' }],
+      })?.verdict,
+    ).toBe('a-effacer')
+  })
+
+  it('garde à revérifier un SIRET dont SIRENE ne situe que la voie du lieu', () => {
+    expect(
+      verdict({
+        sirene: sireneA('PLACE DE LA PAIX', '51454'),
+        adresseSirene: {
+          ...ADRESSE_SIRENE,
+          type: 'street',
+          banId: '51454_7160',
+        },
+        reponsesPourSirene: [
+          { ...ADRESSE_SIRENE, type: 'street', banId: '51454_7160' },
+        ],
+      }),
+    ).toEqual({
+      verdict: 'a-reverifier',
+      motif: MOTIFS_SIRET.adresseSireneALaVoie,
     })
   })
 
@@ -144,7 +225,11 @@ describe('le SIRET, confronté à SIRENE et à la Base Adresse Nationale', () =>
     ],
     [
       'la BAN ne reconnaît pas l’adresse SIRENE',
-      { adresseSirene: null },
+      {
+        sirene: sireneA('MAISON DES SERVICES', '51454'),
+        adresseSirene: null,
+        reponsesPourSirene: [],
+      },
       MOTIFS_SIRET.adresseSireneIntrouvable,
     ],
     [
@@ -156,6 +241,7 @@ describe('le SIRET, confronté à SIRENE et à la Base Adresse Nationale', () =>
       'le lieu n’est situé qu’à la voie que SIRENE numérote',
       {
         adresseRetenue: '51454_7160',
+        voieRetenue: 'rue de la Paix',
         adresseDuLieuALaVoie: true,
       },
       MOTIFS_SIRET.adresseALaVoie,

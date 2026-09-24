@@ -1,6 +1,7 @@
 import { Siret } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { LieuAReprendre } from '../../../domain'
 import type { AdresseGeocodee } from '../../reprise-de-l-adresse/domain/adresse-a-reprendre'
+import { voieNormalisee } from './adresse-equivalente'
 import { ressemblanceDesNoms } from './nom-ressemblant'
 
 export const RESSEMBLANCE_MINIMALE_DES_NOMS = 65
@@ -23,8 +24,11 @@ export type Confrontation = {
   readonly siret: string
   readonly sirene: ReponseSirene
   readonly adresseRetenue: string | null
+  readonly voieRetenue: string | null
+  readonly inseeRetenu: string | null
   readonly adresseDuLieuALaVoie: boolean
   readonly adresseSirene: AdresseGeocodee | null
+  readonly reponsesPourSirene: readonly AdresseGeocodee[]
 }
 
 export type SiretAReprendre =
@@ -51,6 +55,7 @@ export const MOTIFS_SIRET = {
   autreNom: 'SIRENE lui donne un autre nom',
   adresseNonFixee: "l'adresse du lieu n'est pas encore fixée",
   adresseALaVoie: "l'adresse du lieu s'arrête à la voie",
+  adresseSireneALaVoie: "l'adresse SIRENE s'arrête à la voie",
   adresseSireneIntrouvable:
     "la Base Adresse Nationale ne reconnaît pas l'adresse SIRENE",
   injoignable: "SIRENE n'a pas répondu",
@@ -90,8 +95,11 @@ const verdictDeLaConfrontation = (
     siret,
     sirene,
     adresseRetenue,
+    voieRetenue,
+    inseeRetenu,
     adresseDuLieuALaVoie,
     adresseSirene,
+    reponsesPourSirene,
   }: Confrontation,
 ): SiretAReprendre | null => {
   const brut = lieu.siret ?? siret
@@ -100,20 +108,33 @@ const verdictDeLaConfrontation = (
   if (sirene.etat === 'inconnu') return effacer(brut, MOTIFS_SIRET.inconnu)
   if (sirene.etat === 'ferme') return effacer(brut, MOTIFS_SIRET.ferme)
   if (adresseRetenue == null) return reverifier(MOTIFS_SIRET.adresseNonFixee)
-  if (adresseSirene == null)
-    return reverifier(MOTIFS_SIRET.adresseSireneIntrouvable)
 
-  const memeAdresse = adresseSirene.banId === adresseRetenue
+  const etablissement = sirene.etablissement
+  const memeAdresse =
+    reponsesPourSirene.some(({ banId }) => banId === adresseRetenue) ||
+    (voieRetenue != null &&
+      inseeRetenu === etablissement.codeInsee &&
+      voieNormalisee(voieRetenue) === voieNormalisee(etablissement.voie))
+
+  if (!memeAdresse && adresseSirene == null)
+    return reverifier(MOTIFS_SIRET.adresseSireneIntrouvable)
 
   if (
     !memeAdresse &&
     adresseDuLieuALaVoie &&
-    voieDe(adresseSirene.banId) === voieDe(adresseRetenue)
+    voieDe(adresseSirene?.banId ?? '') === voieDe(adresseRetenue)
   )
     return reverifier(MOTIFS_SIRET.adresseALaVoie)
+  if (
+    !memeAdresse &&
+    adresseSirene != null &&
+    adresseSirene.type !== 'housenumber' &&
+    voieDe(adresseSirene.banId) === voieDe(adresseRetenue)
+  )
+    return reverifier(MOTIFS_SIRET.adresseSireneALaVoie)
   if (!memeAdresse) return effacer(brut, MOTIFS_SIRET.autreAdresse)
 
-  const { nom } = sirene.etablissement
+  const { nom } = etablissement
 
   if (ressemblanceDesNoms(lieu.nom, nom) < RESSEMBLANCE_MINIMALE_DES_NOMS)
     return effacer(brut, MOTIFS_SIRET.autreNom)

@@ -1,6 +1,7 @@
 import {
   comptesParMotif,
   confierLAdresseAuLieu,
+  consignerLesConfrontations,
   consulterLAnnuaire,
   deposerLeReleve,
   descendreLeResume,
@@ -122,6 +123,7 @@ export const executeReprendreLesDonneesDesLieux: JobExecutor<
           consulterLAnnuaire,
           interrogerSirene,
           reprendreLeSiret: reprendre ? reprendreLeSiret : sansRepriseDuSiret,
+          consignerLesConfrontations,
           maintenant: new Date(),
         }),
       ],

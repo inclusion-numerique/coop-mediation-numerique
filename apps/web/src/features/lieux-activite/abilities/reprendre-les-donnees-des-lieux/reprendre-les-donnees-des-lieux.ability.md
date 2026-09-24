@@ -730,14 +730,17 @@ base.
 >
 > Sinon, l'adresse que SIRENE enregistre est géocodée par la Base Adresse
 > Nationale, avec les mêmes règles que les adresses des lieux, et doit désigner
-> exactement la même adresse que celle du lieu — le même identifiant BAN. Le nom
+> exactement la même adresse que celle du lieu — le même identifiant BAN, ou,
+> quand la BAN hésite sur le libellé SIRENE, la même voie une fois les deux
+> libellés normalisés, dans la même commune. Le nom
 > doit ressembler assez, mots pris dans n'importe quel ordre. Qu'une des deux
 > conditions manque, et le SIRET s'efface.
 >
 > L'adresse du lieu comparée est celle que la reprise de l'adresse retient, pas
 > celle qui est enregistrée : la confrontation vaut sur une base jamais
 > corrigée comme sur une base déjà reprise. Quand cette adresse n'est pas encore
-> fixée, quand elle s'arrête à la voie que SIRENE numérote, quand la BAN ne
+> fixée, quand l'une des deux adresses s'arrête à la voie que l'autre numérote,
+> quand la BAN ne
 > reconnaît pas l'adresse SIRENE ou que SIRENE ne répond pas, on ne sait pas :
 > le SIRET reste, à revérifier à une prochaine passe.
 >

@@ -6,6 +6,15 @@ const SIRET_ABSENT_DES_RESULTATS = 404
 
 const ETABLISSEMENT_FERME = 'F'
 
+const SUFFIXES: Readonly<Record<string, string>> = {
+  B: 'bis',
+  T: 'ter',
+  Q: 'quater',
+}
+
+const suffixe = (indice: string | null | undefined): string | null =>
+  indice == null ? null : (SUFFIXES[indice.toUpperCase()] ?? indice)
+
 const renseigne = (partie: string | null | undefined): partie is string =>
   partie != null && partie !== '' && partie !== 'null'
 
@@ -31,7 +40,7 @@ export const interrogerSirene: InterrogerSirene = async (siret) => {
         unite_legale.nom_complet,
       voie: [
         adresse.numero_voie,
-        adresse.indice_repetition_voie,
+        suffixe(adresse.indice_repetition_voie),
         adresse.type_voie,
         adresse.libelle_voie,
       ]
