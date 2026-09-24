@@ -17,6 +17,7 @@ import {
   mentionsDuLieu,
   type Releve,
   reprendreLAdresse,
+  reprendreLeComplement,
   reprendreLesCourriels,
   reprendreLesDonneesDesLieux,
   reprendreLesHoraires,
@@ -27,6 +28,7 @@ import {
   repriseDesCourriels,
   repriseDesHoraires,
   repriseDesSitesWeb,
+  repriseDuComplementDAdresse,
   repriseDuPivot,
   repriseDuResume,
   repriseDuTelephone,
@@ -38,6 +40,7 @@ import {
   sansRepriseDesCourriels,
   sansRepriseDesHoraires,
   sansRepriseDesSitesWeb,
+  sansRepriseDuComplement,
   sansRepriseDuTelephone,
   sansRetraitDePublication,
   sansSuppressionDuLieu,
@@ -241,6 +244,7 @@ const semerUnLieu = async (champs: {
   readonly courriels?: readonly string[]
   readonly rna?: string
   readonly resume?: string
+  readonly complementAdresse?: string
   readonly publie?: boolean
   readonly sansService?: boolean
   readonly sansAccompagnement?: boolean
@@ -261,6 +265,7 @@ const semerUnLieu = async (champs: {
           : [...(champs.services ?? SERVICES_TRIES)],
       rna: champs.rna ?? null,
       presentationResume: champs.resume ?? null,
+      complementAdresse: champs.complementAdresse ?? null,
       visiblePourCartographieNationale: champs.publie ?? false,
       horaires: champs.horaires ?? null,
       presentationDetail: champs.description ?? null,
@@ -392,6 +397,41 @@ Given('un lieu publié qui n’annonce aucun service', async () => {
 
 Given('un lieu qui porte un RNA', async () => {
   await semerUnLieu({ rna: RNA })
+})
+
+Given('un lieu dont le complément porte des guillemets droits', async () => {
+  await semerUnLieu({ complementAdresse: 'Groupe scolaire "Les Terrasses"' })
+})
+
+Given('un lieu dont le complément est un numéro de téléphone', async () => {
+  await semerUnLieu({ complementAdresse: '06 02 16 12 33' })
+})
+
+Given('un lieu dont le complément n’est que du blanc', async () => {
+  await semerUnLieu({ complementAdresse: ' ' })
+})
+
+const complementDuLieu = async (): Promise<string | null> =>
+  (
+    await prismaClient.lieuInclusion.findUniqueOrThrow({
+      where: { id: lieuSeme() },
+      select: { complementAdresse: true },
+    })
+  ).complementAdresse
+
+Then('le complément du lieu est corrigé', async () => {
+  assert.strictEqual(
+    await complementDuLieu(),
+    'Groupe scolaire «\u00a0Les Terrasses\u00a0»',
+  )
+})
+
+Then('le complément du lieu est effacé', async () => {
+  assert.strictEqual(await complementDuLieu(), null)
+})
+
+Then('le relevé montre le complément effacé, entre guillemets', () => {
+  assert.strictEqual(celluleDe('complementAdresse'), '" "')
 })
 
 Given('un lieu dont le résumé dépasse la longueur admise', async () => {
@@ -828,6 +868,7 @@ When('on reprend les données des lieux', async () => {
         repriseDuPivot(effacerLeRna),
         repriseDuResume(descendreLeResume),
         repriseDeLaPublication(retirerLaPublication),
+        repriseDuComplementDAdresse(reprendreLeComplement),
         repriseDeLAdresse(
           geocoderLesAdresses,
           retrouverParLesCoordonnees,
@@ -860,6 +901,7 @@ When('on relève les données des lieux sans les reprendre', async () => {
         repriseDuPivot(sansEffacementDuRna),
         repriseDuResume(sansDescenteDuResume),
         repriseDeLaPublication(sansRetraitDePublication),
+        repriseDuComplementDAdresse(sansRepriseDuComplement),
         repriseDeLAdresse(
           geocoderLesAdresses,
           retrouverParLesCoordonnees,

@@ -11,7 +11,7 @@ export const lireLesLieux: LireLesLieux = async () =>
       COALESCE(visible_pour_cartographie_nationale, false)   AS "publie",
       NULLIF(horaires, '')                                   AS "horaires",
       COALESCE(adresse, '')                                  AS "adresse",
-      NULLIF(complement_adresse, '')                         AS "complementAdresse",
+      complement_adresse                                     AS "complementAdresse",
       NULLIF(code_insee, '')                                 AS "codeInsee",
       NULLIF(ban_id, '')                                     AS "banId",
       latitude                                               AS "latitude",

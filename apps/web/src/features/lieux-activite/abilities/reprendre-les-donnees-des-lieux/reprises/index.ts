@@ -61,6 +61,14 @@ export {
   sitesWebAReprendre,
 } from './reprise-des-sites-web'
 export {
+  type ComplementAReprendre,
+  complementAReprendre,
+  type ReprendreLeComplement,
+  reprendreLeComplement,
+  repriseDuComplementDAdresse,
+  sansRepriseDuComplement,
+} from './reprise-du-complement-d-adresse'
+export {
   type EffacerLeRna,
   effacerLeRna,
   repriseDuPivot,

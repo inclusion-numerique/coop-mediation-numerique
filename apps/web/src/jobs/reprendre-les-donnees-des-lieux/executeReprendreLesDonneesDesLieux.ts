@@ -10,6 +10,7 @@ import {
   lireLesLieux,
   releveEnLignes,
   reprendreLAdresse,
+  reprendreLeComplement,
   reprendreLesCourriels,
   reprendreLesDonneesDesLieux,
   reprendreLesHoraires,
@@ -20,6 +21,7 @@ import {
   repriseDesCourriels,
   repriseDesHoraires,
   repriseDesSitesWeb,
+  repriseDuComplementDAdresse,
   repriseDuPivot,
   repriseDuResume,
   repriseDuTelephone,
@@ -32,6 +34,7 @@ import {
   sansRepriseDesCourriels,
   sansRepriseDesHoraires,
   sansRepriseDesSitesWeb,
+  sansRepriseDuComplement,
   sansRepriseDuTelephone,
   sansRetraitDePublication,
   sansSuppressionDuLieu,
@@ -71,6 +74,9 @@ export const executeReprendreLesDonneesDesLieux: JobExecutor<
       repriseDuResume(reprendre ? descendreLeResume : sansDescenteDuResume),
       repriseDeLaPublication(
         reprendre ? retirerLaPublication : sansRetraitDePublication,
+      ),
+      repriseDuComplementDAdresse(
+        reprendre ? reprendreLeComplement : sansRepriseDuComplement,
       ),
       repriseDeLAdresse(
         geocoderLesAdresses,

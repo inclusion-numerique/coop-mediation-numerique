@@ -29,6 +29,38 @@ base.
 * When on reprend les données des lieux
 * Then le relevé ne retient pas ce lieu
 
+## Rule: Un complément d'adresse se nettoie selon le standard
+
+> Le complément se saisit librement, et des imports y ont laissé des espaces en
+> bord, des guillemets droits, et parfois tout autre chose qu'un complément : un
+> SIRET, un numéro de téléphone, un code postal. La bibliothèque du standard sait
+> le nettoyer ; ce qu'elle rend s'écrit, et ce qu'elle vide s'efface.
+>
+> Une chaîne vide ou réduite à du blanc s'efface aussi : elle ne dit rien, et
+> une colonne vide vaut mieux qu'une colonne qui fait semblant. Le relevé montre
+> chaque valeur effacée entre guillemets, pour qu'on voie aussi ce qui n'était
+> que du blanc.
+
+### Scenario: Un complément mal typographié est corrigé
+
+* Given un lieu dont le complément porte des guillemets droits
+* When on reprend les données des lieux
+* Then le relevé compte ce lieu dans la colonne "complementAdresse"
+* And le complément du lieu est corrigé
+
+### Scenario: Un complément qui n'en est pas un s'efface
+
+* Given un lieu dont le complément est un numéro de téléphone
+* When on reprend les données des lieux
+* Then le complément du lieu est effacé
+
+### Scenario: Un complément réduit à du blanc s'efface, et le relevé le montre
+
+* Given un lieu dont le complément n’est que du blanc
+* When on reprend les données des lieux
+* Then le relevé montre le complément effacé, entre guillemets
+* And le complément du lieu est effacé
+
 ## Rule: Des horaires que le format refuse se réparent plutôt qu'ils ne se perdent
 
 > Le format OpenStreetMap n'accepte un commentaire qu'entre guillemets, en fin
