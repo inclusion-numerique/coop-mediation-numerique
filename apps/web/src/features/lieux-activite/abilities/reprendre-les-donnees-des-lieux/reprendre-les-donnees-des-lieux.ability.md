@@ -521,6 +521,12 @@ base.
 > appariement sûr dans la commune consignée — qui peut différer de celle
 > enregistrée quand c'est elle qui était fausse.
 >
+> Le service de recherche de la Base Adresse Nationale a parfois un temps de
+> retard sur les communes qui viennent de publier leur adresse : il ne rend pas
+> encore une voie que la BAN connaît déjà, ou rend une tout autre voie. L'adresse
+> consignée porte alors son identifiant, et c'est par lui qu'on la lit dans la
+> BAN, sans passer par la recherche.
+>
 > Il vient après l'adresse écrite et le point : un lieu dont l'adresse a été
 > corrigée depuis n'a plus besoin de lui, et le registre ne l'écrase pas. Il
 > vient avant l'Annuaire, parce qu'une adresse vérifiée lieu par lieu vaut mieux

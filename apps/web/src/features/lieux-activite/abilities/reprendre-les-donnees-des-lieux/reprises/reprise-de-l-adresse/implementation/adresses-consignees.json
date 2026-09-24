@@ -805,6 +805,14 @@
     "source": "https://www.saint-loubes.fr/mon-quotidien/solidarite-et-sante/le-passage/"
   },
   {
+    "lieuId": "daad7ffd-e7e4-4303-8811-0c30e12835f2",
+    "nom": "Commune de Valreas",
+    "adresse": "5 Place Aristide Briand La Ville 84600 Valréas",
+    "codeInsee": "84138",
+    "banId": "84138_7cw24f_00005",
+    "source": "https://valreas.net/"
+  },
+  {
     "lieuId": "e4b59a06-6213-4700-b8d4-c85b62f36eaa",
     "nom": "Médiathèque de Donzy",
     "adresse": "10 Rue d'Osmond 58220 Donzy",
