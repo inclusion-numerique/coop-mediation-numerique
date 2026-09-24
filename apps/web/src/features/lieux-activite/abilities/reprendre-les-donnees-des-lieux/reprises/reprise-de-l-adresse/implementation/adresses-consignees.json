@@ -42,11 +42,27 @@
     "source": "https://www.lernee.fr/annuaires/services/cias/"
   },
   {
+    "lieuId": "047ce4a2-5bbe-421a-8438-03265c6ef12c",
+    "nom": "CC ENCLAVE DES PAPES-PAYS DE GRIGNAN",
+    "adresse": "14 Rue de Tourville Les Tours 84600 Valréas",
+    "codeInsee": "84138",
+    "banId": "84138_de60um_00014",
+    "complementAdresse": "En face",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/84138_de60um_00014"
+  },
+  {
     "lieuId": "04bb4ed0-3284-49d8-9c07-1804570801a4",
     "nom": "Mairie de Villecerf",
     "adresse": "9 Rue de l'Eglise 77250 Villecerf",
     "codeInsee": "77501",
     "source": "https://lannuaire.service-public.gouv.fr/ile-de-france/seine-et-marne/68a874dc-dcbb-4a2d-b792-a10fe6e11376"
+  },
+  {
+    "lieuId": "070a3296-a93a-4fc2-8621-ce1d113d5fec",
+    "nom": "CRf - Unité Locale de Bercé",
+    "adresse": "14 Rue des Vertolines Château-du-Loir 72500 Montval-sur-Loir",
+    "codeInsee": "72071",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/72071_h5ahoj_00014"
   },
   {
     "lieuId": "0837611b-3a71-442b-8ce8-fea4a82d8517",
@@ -98,6 +114,13 @@
     "source": "https://lannuaire.service-public.gouv.fr/auvergne-rhone-alpes/ain/f6bc123d-9ed3-4ad9-bc18-685e4142da05"
   },
   {
+    "lieuId": "0bc183e2-4db0-4d52-9a2d-1721b72943c0",
+    "nom": "ANTENNE CHAMBRE METIERS",
+    "adresse": "70 Avenue du Général de Gaulle 97139 Les Abymes",
+    "codeInsee": "97101",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/97101_0510_00070"
+  },
+  {
     "lieuId": "0df98f9e-2f16-4ce9-83a3-665f096ab7a7",
     "nom": "Bibliothèque Municipale de Puycasquier",
     "adresse": "Grand Rue 32120 Puycasquier",
@@ -112,11 +135,25 @@
     "source": "https://datanova.laposte.fr/data-fair/api/v1/datasets/laposte-poincont2/lines?q=genets"
   },
   {
+    "lieuId": "0fce386f-4a06-42c2-aedf-d8b96d3ce805",
+    "nom": "Maison France Services Maurepas - Le Relais Marianne",
+    "adresse": "Boulevard du Rhin 78310 Maurepas",
+    "codeInsee": "78383",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/78383_0998"
+  },
+  {
     "lieuId": "1029fb97-ae59-4151-a4d2-8c774430bac5",
     "nom": "Salle Gabriel Mourier - La Motte-Chalancon",
     "adresse": "740 Grand Rue 26470 La Motte-Chalancon",
     "codeInsee": "26215",
     "source": "https://lamottechalancon.com/commune/location-salles-communales/"
+  },
+  {
+    "lieuId": "120f0e6a-195c-42aa-8c20-31f1a7203e0a",
+    "nom": "CONSEIL DEP DE L'ACCES AU DROIT",
+    "adresse": "7 Esplanade Robert BADINTER 08000 Charleville-Mézières",
+    "codeInsee": "08105",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/08105_lhp0xb_00007"
   },
   {
     "lieuId": "12acfdf0-a1d2-48bd-9024-d377972e8956",
@@ -189,6 +226,14 @@
     "source": "https://lannuaire.service-public.gouv.fr/bourgogne-franche-comte/haute-saone/045833cb-740b-479d-8a0f-9f0b967507c6"
   },
   {
+    "lieuId": "1c9b18f2-449c-4cb5-aec1-2d3fabf10dce",
+    "nom": "Mairie de Bénodet",
+    "adresse": "104 Avenue de la Plage 29950 Bénodet",
+    "codeInsee": "29006",
+    "complementAdresse": "En face de la poissonnerie",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/29006_0670_00104"
+  },
+  {
     "lieuId": "1cf3a501-bf86-48e5-b6fa-44e2dab54530",
     "nom": "Médiathèque Jean Farges",
     "adresse": "3 Grande Rue 91630 Marolles-en-Hurepoix",
@@ -208,6 +253,13 @@
     "adresse": "Village de Lafontasse 81100 Burlats",
     "codeInsee": "81042",
     "source": "https://www.mairie-burlats.fr/"
+  },
+  {
+    "lieuId": "244ad6d8-e56e-4af0-83b0-0a2d85056012",
+    "nom": "Maison de quartier du Plateau",
+    "adresse": "3 Rue Edgar Varèse 71100 Chalon-sur-Saône",
+    "codeInsee": "71076",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/71076_2433_00003"
   },
   {
     "lieuId": "24a8f90d-8e7b-4de2-a6fb-af8f3c0da23d",
@@ -250,6 +302,28 @@
     "adresse": "28 Rue Pierre BACHELET 62250 Marquise",
     "codeInsee": "62560",
     "source": "https://www.conseiller-numerique.gouv.fr/627a5804ad1bdb06edc48d10/details"
+  },
+  {
+    "lieuId": "2b67d188-a01c-405a-b471-c0884ba31773",
+    "nom": "Salle des Cèdres",
+    "adresse": "6 Place de la Promenade 86220 Dangé-Saint-Romain",
+    "codeInsee": "86092",
+    "complementAdresse": "À côté de la médiathèque",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/86092_0125_00006"
+  },
+  {
+    "lieuId": "2bc15d00-7386-4e6d-bb15-3f5a3b82e83d",
+    "nom": "RIO Portes du Sud",
+    "adresse": "10bis Avenue Jean Cagne 69200 Vénissieux",
+    "codeInsee": "69259",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/69259_0880_00010_bis"
+  },
+  {
+    "lieuId": "2c966cfe-8c32-4dde-ac61-1d50817d8604",
+    "nom": "CC DU GRAND LANGRES",
+    "adresse": "250 Avenue du 21e Régiment d’Infanterie 52200 Langres",
+    "codeInsee": "52269",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/52269_eydpfy_00250"
   },
   {
     "lieuId": "2e5a04b4-b46f-44e2-a5cc-7ff3deefc929",
@@ -306,6 +380,14 @@
     "adresse": "1 Rue de la Gare 72600 Mamers",
     "codeInsee": "72180",
     "source": "https://www.sarthetourisme.com/en/loisirs/espace-saugonna/"
+  },
+  {
+    "lieuId": "37f70baf-21e3-46da-b082-e9267290e46b",
+    "nom": "LA POSTE",
+    "adresse": "1 Rue de Montbéliard 25190 Saint-Hippolyte",
+    "codeInsee": "25519",
+    "complementAdresse": "À l'esplanade des fêtes en face du garage",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/25519_0400_00001"
   },
   {
     "lieuId": "384407c8-e5b4-450c-a66e-037b01ee1ba0",
@@ -371,6 +453,14 @@
     "source": "https://www.mobilis-paysdelaloire.fr/annuaire/bibliotheques/bibliotheque-intercommunale-sivom-laigne-en-belin"
   },
   {
+    "lieuId": "469e00bd-205e-4a24-9317-b385a8df1898",
+    "nom": "Maison Citoyenne Noel Guichard",
+    "adresse": "4 Rue Francis Poulenc 26100 Romans-sur-Isère",
+    "codeInsee": "26281",
+    "complementAdresse": "Sur la place Hector Berlioz",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/26281_1273_00004"
+  },
+  {
     "lieuId": "46bd512d-9570-4de2-b80d-cd80c5221885",
     "nom": "DTAS Antenne Bellême",
     "adresse": "4 Rue du Mans 61130 Bellême",
@@ -427,6 +517,13 @@
     "source": "https://www.mairie-saintpaul.re/salles-polyvalentes/"
   },
   {
+    "lieuId": "4e2d7c89-2979-49e0-9d41-d45e31bcd3e7",
+    "nom": "Kiosque Multimédia de Chalon-sur-Saône",
+    "adresse": "1 Square Chabas 71100 Chalon-sur-Saône",
+    "codeInsee": "71076",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/71076_bi60q2_00001"
+  },
+  {
     "lieuId": "4e4c0abd-84d5-4f45-9e56-983759daeec7",
     "nom": "C.A.S.E Eucalyptus",
     "adresse": "Chemin Eucalyptus 97422 Saint-Paul",
@@ -453,6 +550,13 @@
     "adresse": "8 Place Matras 51340 Vanault-les-Dames",
     "codeInsee": "51590",
     "source": "https://www.bibliotheques.org/bibliotheque-de-vanault-les-dames-vanault-les-dames-51/"
+  },
+  {
+    "lieuId": "52e8dedf-9f4f-4e17-9f74-078d5bd46613",
+    "nom": "Espace Numérique Mobile (ENM)",
+    "adresse": "60 Place de l’Eglise 76480 Duclair",
+    "codeInsee": "76222",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/76222_0221_00060"
   },
   {
     "lieuId": "55708da3-ed50-4bd4-9f34-2a655e87b100",
@@ -532,6 +636,13 @@
     "source": "https://lannuaire.service-public.gouv.fr/provence-alpes-cote-d-azur/var/15678b88-9fee-4cfe-9fa3-1e86aba91ea6"
   },
   {
+    "lieuId": "6bd6320c-5a79-4a45-aa10-2ae622dec623",
+    "nom": "Vénissieux RIO PDS",
+    "adresse": "10bis Avenue Jean Cagne 69200 Vénissieux",
+    "codeInsee": "69259",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/69259_0880_00010_bis"
+  },
+  {
     "lieuId": "6d3dbcc4-1603-41a6-a94c-83c91f65b660",
     "nom": "CA \"TERRE DE PROVENCE\"",
     "adresse": "5 Place Marius Chabrand 13630 Eyragues",
@@ -572,6 +683,21 @@
     "adresse": "21 Allée du Chemin de Fer 03450 Ébreuil",
     "codeInsee": "03107",
     "source": "https://lannuaire.service-public.gouv.fr/auvergne-rhone-alpes/allier/e013dccf-c5cf-4aac-add9-89416dcd6d6a"
+  },
+  {
+    "lieuId": "7646f1d3-cd7e-4412-8f93-3d1621137c4e",
+    "nom": "Montagrier Mairie",
+    "adresse": "3 Rue de la Porte Wiridel 24350 Montagrier",
+    "codeInsee": "24286",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/24286_0260_00003"
+  },
+  {
+    "lieuId": "781406e3-ea91-44ff-874f-4e5c088701d7",
+    "nom": "Mairie Sourdeval",
+    "adresse": "11 Rue Guy Degrenne 50150 Sourdeval",
+    "codeInsee": "50582",
+    "complementAdresse": "En face",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/50582_0232_00011"
   },
   {
     "lieuId": "783baf4f-aba8-4c68-9fc1-a200bdb27bd0",
@@ -630,6 +756,13 @@
     "source": "https://localiser.laposte.fr/marne/st-amand-sur-fion/st-amand-sur-fion-mairie-514720"
   },
   {
+    "lieuId": "8386e51c-53b0-412c-9b45-7fb327c7d691",
+    "nom": "Salle Gevigney-Et-Mercey",
+    "adresse": "1 Rue de Jussey 70500 Gevigney-et-Mercey",
+    "codeInsee": "70267",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/70267_0020_00001"
+  },
+  {
     "lieuId": "88352a1e-61da-402f-936f-35220a5d6545",
     "nom": "Médiathèque Saint-Lupicin",
     "adresse": "1 Grande Rue 39170 Coteaux du Lizon",
@@ -679,6 +812,14 @@
     "source": "https://www.santeenfrance.fr/etablissement/71621-cms-neufchatel-en-bray-cg76"
   },
   {
+    "lieuId": "929a8d6f-e5a2-41c9-99d7-cb171d79b4da",
+    "nom": "Les Loisirs de Mont Alma",
+    "adresse": "79 Allée Marie de la Barrière 40280 Saint-Pierre-du-Mont",
+    "codeInsee": "40281",
+    "complementAdresse": "Residence Domaine de Mont Alma – Bâtiment D",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/40281_0573_00079"
+  },
+  {
     "lieuId": "92b8f1dc-4e0a-4521-804a-dc29f1dcc06e",
     "nom": "COMMUNE DE CLAPIERS",
     "adresse": "5 Grand Rue Marie Lacroix 34830 Clapiers",
@@ -714,6 +855,21 @@
     "source": "https://fondation-grandouest.mutualia.fr/associations/cms-antenne-du-mortainais/"
   },
   {
+    "lieuId": "a8b96311-8d27-45b3-911c-187df1f17f91",
+    "nom": "Solideria - Association pour le developpement des projets d'economie sociale, solidaire et durable en corse",
+    "adresse": "24 Arena 20260 Calvi",
+    "codeInsee": "2B050",
+    "complementAdresse": "Avenue Christophe Colomb Immeuble Vitamine",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/2b050_llie8v_00024"
+  },
+  {
+    "lieuId": "ab39a1ab-150d-4643-acae-4eafb6cb7637",
+    "nom": "COMMUNE DE SAINT-LIONS",
+    "adresse": "51 Route de Saint Lions 04330 Saint-Lions",
+    "codeInsee": "04187",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/04187_z4voht_00051"
+  },
+  {
     "lieuId": "ad5018d4-7b47-47e5-a7b8-ef12448d9f9d",
     "nom": "CCAS d'Alès",
     "adresse": "Rue Baronnie 30100 Alès",
@@ -733,6 +889,20 @@
     "adresse": "42 Place des Artisans Boulangers 42740 La Terrasse-sur-Dorlay",
     "codeInsee": "42308",
     "source": "https://www.udaf42.org/post/dates-maison-de-la-famille-2024"
+  },
+  {
+    "lieuId": "bf909233-f85a-452b-bb8b-d7c6e054fcd4",
+    "nom": "Point Multi Service Intercommunal · Communaute de Communes Piege-Lauragais-Malepere",
+    "adresse": "81 Brezegous 11270 Gaja-la-Selve",
+    "codeInsee": "11159",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/11159_aquq5l_00081"
+  },
+  {
+    "lieuId": "bfe1fd2e-0814-400b-8237-20b2cc54b9b7",
+    "nom": "Communauté d'agglomération de l'espace sud Martinique",
+    "adresse": "313 Chemin de la Fraîcheur 97215 Rivière-Salée",
+    "codeInsee": "97221",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/97221_2yzaem_00313"
   },
   {
     "lieuId": "c022bf26-289f-445a-9ff5-4464e6d986bb",
@@ -763,6 +933,14 @@
     "source": "https://montsdegy.fr/fretigney-et-velloreille--1614595266.html"
   },
   {
+    "lieuId": "d005d879-54f7-4a41-841b-9ca77eea8777",
+    "nom": "CCAS de Millas",
+    "adresse": "4 Rue Lafayette 66170 Millas",
+    "codeInsee": "66108",
+    "banId": "66108_0084_00004",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/66108_0084_00004"
+  },
+  {
     "lieuId": "d19fc7a7-5392-4611-8dca-64ba9f7d2009",
     "nom": "Pimms Médiation Artois (Bruay-la-Buissière)",
     "adresse": "597 Rue Emile Basly 62700 Bruay-la-Buissière",
@@ -775,6 +953,22 @@
     "adresse": "Rue du Tour de Ville 05600 Saint-Crépin",
     "codeInsee": "05136",
     "source": "https://provence-alpes-cotedazur.com/que-faire/detente-et-loisirs/toutes-les-activites-detente-et-loisirs/mediatheque-de-saint-crepin-saint-crepin-fr-3739977/"
+  },
+  {
+    "lieuId": "d2696324-e1f0-4f52-b9be-188fae7cb5af",
+    "nom": "Espace Joseph Valentin-Maurel",
+    "adresse": "36 Avenue la Fayette 13200 Arles",
+    "codeInsee": "13004",
+    "complementAdresse": "En face : 2 place d’York",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/13004_mpp8vj_00036"
+  },
+  {
+    "lieuId": "d3dd631a-44eb-4561-b1b1-6136db9587f9",
+    "nom": "Association Si Po Fa",
+    "adresse": "Renno",
+    "codeInsee": "2A258",
+    "complementAdresse": "U pont",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/2A258"
   },
   {
     "lieuId": "d7c88db3-085a-4af4-b137-4d9ab0089afa",
@@ -813,6 +1007,13 @@
     "source": "https://valreas.net/"
   },
   {
+    "lieuId": "dd362a34-2031-4cbe-9e92-e93c2f38fefd",
+    "nom": "76 MOBILE - CMS NEUFCHATEL MASSY",
+    "adresse": "6 Rue Jean Jaures 76270 Neufchâtel-en-Bray",
+    "codeInsee": "76462",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/76462_0444_00006"
+  },
+  {
     "lieuId": "e4b59a06-6213-4700-b8d4-c85b62f36eaa",
     "nom": "Médiathèque de Donzy",
     "adresse": "10 Rue d'Osmond 58220 Donzy",
@@ -848,6 +1049,13 @@
     "source": "https://lannuaire.service-public.gouv.fr/corse/haute-corse/42b23377-94f9-4979-91d9-61bc0d156bdd"
   },
   {
+    "lieuId": "efebceef-9348-438b-89b8-1c62c8c2eefd",
+    "nom": "RIO LYON 2",
+    "adresse": "100 Rue Jacques-Louis Hénon 69004 Lyon",
+    "codeInsee": "69384",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/69384_3465_00100"
+  },
+  {
     "lieuId": "f29f6c85-893f-4df2-8990-f7709616598b",
     "nom": "LA POSTE",
     "adresse": "10 Boulevard de la Marine 66510 Saint-Hippolyte",
@@ -867,6 +1075,20 @@
     "adresse": "3 Rue des Tilleuls 06420 Valdeblore",
     "codeInsee": "06153",
     "source": "https://ville-valdeblore.fr/?p=4112"
+  },
+  {
+    "lieuId": "fb149d8e-db60-4ff6-a84d-1073a6687ee9",
+    "nom": "Salle du temps libre",
+    "adresse": "12 rue de la gare 03170 Bézenet",
+    "codeInsee": "03027",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/03027_0055_00012"
+  },
+  {
+    "lieuId": "fe792281-7ee0-4f1b-b266-76493f8d2ab7",
+    "nom": "76 MOBILE - CMS ST SAENS MATHONVILLE",
+    "adresse": "24 Rue Raymond Poincaré 76680 Saint-Saëns",
+    "codeInsee": "76648",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/76648_0440_00024"
   },
   {
     "lieuId": "fe8382e9-6af3-4b9e-a40f-983ab40edcf2",
