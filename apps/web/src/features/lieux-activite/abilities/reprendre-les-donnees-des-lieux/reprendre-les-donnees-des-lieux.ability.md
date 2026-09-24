@@ -29,6 +29,21 @@ base.
 * When on reprend les données des lieux
 * Then le relevé ne retient pas ce lieu
 
+## Rule: Un lien que le standard refuse se corrige ou s'efface
+
+> La fiche Accès Libre et le lien de prise de rendez-vous sont des URL, et la
+> fiche doit pointer vers Accès Libre. Une valeur que le standard refuse se
+> corrige si le nettoyage des URL la rend acceptable, et s'efface sinon ; une
+> chaîne vide ou réduite à du blanc s'efface aussi. Le relevé montre la valeur
+> effacée entre guillemets.
+
+### Scenario: Une prise de rendez-vous vide s'efface, et le relevé le montre
+
+* Given un lieu dont la prise de rendez-vous est une chaîne vide
+* When on reprend les données des lieux
+* Then le relevé montre la prise de rendez-vous effacée, entre guillemets
+* And la prise de rendez-vous du lieu est effacée
+
 ## Rule: Une présentation se nettoie selon le standard, paragraphes compris
 
 > Des résumés et des descriptions portent des espaces doublés, des balises et

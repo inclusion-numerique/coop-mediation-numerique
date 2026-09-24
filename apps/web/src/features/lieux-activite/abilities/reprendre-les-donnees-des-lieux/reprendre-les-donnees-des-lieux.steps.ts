@@ -19,6 +19,7 @@ import {
   type Releve,
   reprendreLAdresse,
   reprendreLeComplement,
+  reprendreLeLien,
   reprendreLeNom,
   reprendreLesCourriels,
   reprendreLesDonneesDesLieux,
@@ -32,6 +33,7 @@ import {
   repriseDesHoraires,
   repriseDesSitesWeb,
   repriseDuComplementDAdresse,
+  repriseDuLien,
   repriseDuNom,
   repriseDuPivot,
   repriseDuResume,
@@ -46,6 +48,7 @@ import {
   sansRepriseDesHoraires,
   sansRepriseDesSitesWeb,
   sansRepriseDuComplement,
+  sansRepriseDuLien,
   sansRepriseDuNom,
   sansRepriseDuTelephone,
   sansRetraitDePublication,
@@ -404,6 +407,30 @@ Given('un lieu publié qui n’annonce aucun service', async () => {
 Given('un lieu qui porte un RNA', async () => {
   await semerUnLieu({ rna: RNA })
 })
+
+Given('un lieu dont la prise de rendez-vous est une chaîne vide', async () => {
+  await semerUnLieu({})
+  await prismaClient.lieuInclusion.update({
+    where: { id: lieuSeme() },
+    data: { priseRdv: '' },
+  })
+})
+
+Then('la prise de rendez-vous du lieu est effacée', async () => {
+  const { priseRdv } = await prismaClient.lieuInclusion.findUniqueOrThrow({
+    where: { id: lieuSeme() },
+    select: { priseRdv: true },
+  })
+
+  assert.strictEqual(priseRdv, null)
+})
+
+Then(
+  'le relevé montre la prise de rendez-vous effacée, entre guillemets',
+  () => {
+    assert.strictEqual(celluleDe('priseRdv'), '""')
+  },
+)
 
 Given('un lieu dont la description est écrite en HTML', async () => {
   await semerUnLieu({
@@ -915,6 +942,8 @@ When('on reprend les données des lieux', async () => {
         repriseDeLaPublication(retirerLaPublication),
         repriseDuComplementDAdresse(reprendreLeComplement),
         repriseDuNom(reprendreLeNom),
+        repriseDuLien('ficheAccesLibre', reprendreLeLien),
+        repriseDuLien('priseRdv', reprendreLeLien),
         repriseDeLaPresentation(nettoyerLaPresentation),
         repriseDeLAdresse(
           geocoderLesAdresses,
@@ -950,6 +979,8 @@ When('on relève les données des lieux sans les reprendre', async () => {
         repriseDeLaPublication(sansRetraitDePublication),
         repriseDuComplementDAdresse(sansRepriseDuComplement),
         repriseDuNom(sansRepriseDuNom),
+        repriseDuLien('ficheAccesLibre', sansRepriseDuLien),
+        repriseDuLien('priseRdv', sansRepriseDuLien),
         repriseDeLaPresentation(sansNettoyageDeLaPresentation),
         repriseDeLAdresse(
           geocoderLesAdresses,

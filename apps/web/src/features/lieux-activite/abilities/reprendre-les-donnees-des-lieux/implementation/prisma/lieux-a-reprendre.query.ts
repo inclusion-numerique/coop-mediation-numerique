@@ -12,6 +12,8 @@ export const lireLesLieux: LireLesLieux = async () =>
       NULLIF(horaires, '')                                   AS "horaires",
       COALESCE(adresse, '')                                  AS "adresse",
       complement_adresse                                     AS "complementAdresse",
+      fiche_acces_libre                                      AS "ficheAccesLibre",
+      prise_rdv                                              AS "priseRdv",
       NULLIF(code_insee, '')                                 AS "codeInsee",
       NULLIF(ban_id, '')                                     AS "banId",
       latitude                                               AS "latitude",

@@ -12,6 +12,7 @@ import {
   releveEnLignes,
   reprendreLAdresse,
   reprendreLeComplement,
+  reprendreLeLien,
   reprendreLeNom,
   reprendreLesCourriels,
   reprendreLesDonneesDesLieux,
@@ -25,6 +26,7 @@ import {
   repriseDesHoraires,
   repriseDesSitesWeb,
   repriseDuComplementDAdresse,
+  repriseDuLien,
   repriseDuNom,
   repriseDuPivot,
   repriseDuResume,
@@ -41,6 +43,7 @@ import {
   sansRepriseDesHoraires,
   sansRepriseDesSitesWeb,
   sansRepriseDuComplement,
+  sansRepriseDuLien,
   sansRepriseDuNom,
   sansRepriseDuTelephone,
   sansRetraitDePublication,
@@ -84,6 +87,14 @@ export const executeReprendreLesDonneesDesLieux: JobExecutor<
           reprendre ? retirerLaPublication : sansRetraitDePublication,
         ),
         repriseDuNom(reprendre ? reprendreLeNom : sansRepriseDuNom),
+        repriseDuLien(
+          'ficheAccesLibre',
+          reprendre ? reprendreLeLien : sansRepriseDuLien,
+        ),
+        repriseDuLien(
+          'priseRdv',
+          reprendre ? reprendreLeLien : sansRepriseDuLien,
+        ),
         repriseDeLaPresentation(
           reprendre ? nettoyerLaPresentation : sansNettoyageDeLaPresentation,
         ),

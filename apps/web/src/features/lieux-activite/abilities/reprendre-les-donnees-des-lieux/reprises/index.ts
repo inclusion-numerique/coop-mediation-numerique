@@ -63,6 +63,15 @@ export {
   sansRepriseDesHoraires,
 } from './reprise-des-horaires'
 export {
+  type Lien,
+  type LienAReprendre,
+  lienAReprendre,
+  type ReprendreLeLien,
+  reprendreLeLien,
+  repriseDuLien,
+  sansRepriseDuLien,
+} from './reprise-des-liens'
+export {
   type ReprendreLesSitesWeb,
   reprendreLesSitesWeb,
   repriseDesSitesWeb,

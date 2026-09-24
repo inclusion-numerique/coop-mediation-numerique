@@ -7,6 +7,8 @@ export type LieuAReprendre = {
   readonly horaires: string | null
   readonly adresse: string
   readonly complementAdresse: string | null
+  readonly ficheAccesLibre: string | null
+  readonly priseRdv: string | null
   readonly codeInsee: string | null
   readonly banId: string | null
   readonly latitude: number | null
