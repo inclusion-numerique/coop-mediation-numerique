@@ -720,3 +720,57 @@ base.
 * And l’Annuaire de l’administration connaît sa mairie
 * When on reprend les données des lieux
 * Then la voie du lieu n’a pas bougé
+
+## Rule: Un SIRET ne reste que s'il désigne le lieu, sous son nom et à son adresse
+
+> Le SIRET sert de pivot dans le schéma national : un numéro faux se propage à
+> tous ceux qui republient le lieu. On le confronte donc à SIRENE, de façon
+> stricte. Un numéro vide, refusé par la clé de contrôle, inconnu de SIRENE ou
+> porté par un établissement fermé s'efface.
+>
+> Sinon, l'adresse que SIRENE enregistre est géocodée par la Base Adresse
+> Nationale, avec les mêmes règles que les adresses des lieux, et doit désigner
+> exactement la même adresse que celle du lieu — le même identifiant BAN. Le nom
+> doit ressembler assez, mots pris dans n'importe quel ordre. Qu'une des deux
+> conditions manque, et le SIRET s'efface.
+>
+> L'adresse du lieu comparée est celle que la reprise de l'adresse retient, pas
+> celle qui est enregistrée : la confrontation vaut sur une base jamais
+> corrigée comme sur une base déjà reprise. Quand cette adresse n'est pas encore
+> fixée, quand elle s'arrête à la voie que SIRENE numérote, quand la BAN ne
+> reconnaît pas l'adresse SIRENE ou que SIRENE ne répond pas, on ne sait pas :
+> le SIRET reste, à revérifier à une prochaine passe.
+>
+> Un SIRET légitime sous un autre nom apporte le nom légal : il devient le nom
+> du lieu, et celui que les médiateurs lui donnaient passe en nom d'usage.
+
+### Scenario: Le SIRET légitime sous le même nom reste
+
+* Given un lieu qui porte un SIRET
+* And SIRENE enregistre ce SIRET sous le même nom, à la même adresse
+* When on reprend les données des lieux
+* Then le relevé ne retient pas ce lieu
+* And le lieu garde son SIRET
+
+### Scenario: Le SIRET que SIRENE situe ailleurs s'efface
+
+* Given un lieu qui porte un SIRET
+* And SIRENE enregistre ce SIRET à une autre adresse
+* When on reprend les données des lieux
+* Then le relevé compte ce lieu dans la colonne "siret"
+* And le SIRET du lieu est effacé
+
+### Scenario: Le SIRET inconnu de SIRENE s'efface
+
+* Given un lieu qui porte un SIRET
+* And SIRENE ne connaît pas ce SIRET
+* When on reprend les données des lieux
+* Then le SIRET du lieu est effacé
+
+### Scenario: Le SIRET légitime sous un nom voisin apporte le nom légal
+
+* Given un lieu qui porte un SIRET
+* And SIRENE enregistre ce SIRET sous un nom voisin, à la même adresse
+* When on reprend les données des lieux
+* Then le lieu garde son SIRET
+* And le lieu prend le nom SIRENE et garde le sien en nom d’usage

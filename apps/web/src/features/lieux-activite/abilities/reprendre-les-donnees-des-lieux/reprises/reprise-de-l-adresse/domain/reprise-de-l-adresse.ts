@@ -136,7 +136,7 @@ const appliquer =
  * Le point est un recours, pas une source : quand la Base Adresse Nationale
  * reconnaît déjà l'adresse écrite, c'est elle qui fait foi.
  */
-const adressesRendues =
+export const adressesRendues =
   (
     geocoderLesAdresses: GeocoderLesAdresses,
     retrouverParLesCoordonnees: RetrouverParLesCoordonnees,

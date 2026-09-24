@@ -108,6 +108,23 @@ export {
   sansDescenteDuResume,
 } from './reprise-du-resume'
 export {
+  type Confrontation,
+  type EtablissementSirene,
+  type InterrogerSirene,
+  interrogerSirene,
+  MOTIFS_SIRET,
+  type PortsDuSiret,
+  RESSEMBLANCE_MINIMALE_DES_NOMS,
+  type ReponseSirene,
+  type ReprendreLeSiret,
+  reprendreLeSiret,
+  repriseDuSiret,
+  ressemblanceDesNoms,
+  type SiretAReprendre,
+  sansRepriseDuSiret,
+  siretAReprendre,
+} from './reprise-du-siret'
+export {
   type ReprendreLeTelephone,
   reprendreLeTelephone,
   repriseDuTelephone,

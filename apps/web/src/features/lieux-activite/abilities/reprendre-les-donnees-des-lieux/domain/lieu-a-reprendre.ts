@@ -14,6 +14,8 @@ export type LieuAReprendre = {
   readonly latitude: number | null
   readonly longitude: number | null
   readonly rna: string | null
+  readonly siret: string | null
+  readonly nomUsage: string | null
   readonly presentationResume: string | null
   readonly presentationDetail: string | null
   readonly telephone: string | null

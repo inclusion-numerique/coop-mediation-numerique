@@ -19,6 +19,8 @@ export const lireLesLieux: LireLesLieux = async () =>
       latitude                                               AS "latitude",
       longitude                                              AS "longitude",
       NULLIF(rna, '')                                        AS "rna",
+      siret                                                  AS "siret",
+      NULLIF(nom_usage, '')                                  AS "nomUsage",
       NULLIF(presentation_resume, '')                        AS "presentationResume",
       NULLIF(presentation_detail, '')                        AS "presentationDetail",
       NULLIF(telephone, '')                                  AS "telephone",

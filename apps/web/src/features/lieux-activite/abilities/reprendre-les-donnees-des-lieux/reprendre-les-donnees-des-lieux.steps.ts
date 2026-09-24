@@ -5,6 +5,8 @@ import type {
   AdresseRetrouvee,
   ConsulterLAnnuaire,
   GeocoderLesAdresses,
+  InterrogerSirene,
+  ReponseSirene,
   RetrouverParLesCoordonnees,
   SituerLesAdressesConsignees,
 } from '@app/web/features/lieux-activite/abilities/reprendre-les-donnees-des-lieux'
@@ -21,6 +23,7 @@ import {
   reprendreLeComplement,
   reprendreLeLien,
   reprendreLeNom,
+  reprendreLeSiret,
   reprendreLesCourriels,
   reprendreLesDonneesDesLieux,
   reprendreLesHoraires,
@@ -37,6 +40,7 @@ import {
   repriseDuNom,
   repriseDuPivot,
   repriseDuResume,
+  repriseDuSiret,
   repriseDuTelephone,
   retirerLaPublication,
   sansConfiementDeLAdresse,
@@ -50,6 +54,7 @@ import {
   sansRepriseDuComplement,
   sansRepriseDuLien,
   sansRepriseDuNom,
+  sansRepriseDuSiret,
   sansRepriseDuTelephone,
   sansRetraitDePublication,
   sansSuppressionDuLieu,
@@ -194,8 +199,39 @@ const retrouverParLesCoordonnees: RetrouverParLesCoordonnees = async (
     : new Map(points.map(({ lieuId }) => [lieuId, retrouvee]))
 }
 
+const SIRET_DU_LIEU = '35600000000048'
+
+const VOIE_SIRENE_AILLEURS = '3 RUE TOUFAIRE'
+
+const AILLEURS: AdresseGeocodee = {
+  ...ADRESSE_BAN,
+  banId: '17299_0451_00003',
+  voie: '3 Rue Toufaire',
+  libelle: '3 Rue Toufaire 17300 Rochefort',
+}
+
 const geocoderLesAdresses: GeocoderLesAdresses = async (adresses) =>
-  new Map(adresses.map(({ lieuId }) => [lieuId, banRend.adresses]))
+  new Map(
+    adresses.map(({ lieuId, voie }) => [
+      lieuId,
+      voie === VOIE_SIRENE_AILLEURS ? [AILLEURS] : banRend.adresses,
+    ]),
+  )
+
+const sireneRend: { reponse: ReponseSirene } = { reponse: { etat: 'inconnu' } }
+
+const interrogerSirene: InterrogerSirene = async () => sireneRend.reponse
+
+const etablissementSirene = (nom: string, voie: string): ReponseSirene => ({
+  etat: 'ouvert',
+  etablissement: {
+    nom,
+    voie,
+    codePostal: ADRESSE_BAN.codePostal,
+    commune: ADRESSE_BAN.commune,
+    codeInsee: ADRESSE_BAN.codeInsee,
+  },
+})
 
 const ADRESSE_CONSIGNEE: AdresseGeocodee = {
   ...ADRESSE_BAN,
@@ -407,6 +443,72 @@ Given('un lieu publié qui n’annonce aucun service', async () => {
 Given('un lieu qui porte un RNA', async () => {
   await semerUnLieu({ rna: RNA })
 })
+
+const semerUnLieuASiret = async (nom: string): Promise<void> => {
+  await semerUnLieu({})
+  await prismaClient.lieuInclusion.update({
+    where: { id: lieuSeme() },
+    data: { nom, siret: SIRET_DU_LIEU },
+  })
+}
+
+Given('un lieu qui porte un SIRET', async () => {
+  await semerUnLieuASiret('Médiathèque de Rochefort')
+})
+
+Given('SIRENE enregistre ce SIRET sous le même nom, à la même adresse', () => {
+  sireneRend.reponse = etablissementSirene(
+    'Médiathèque de Rochefort',
+    ADRESSE_BAN.voie,
+  )
+})
+
+Given('SIRENE enregistre ce SIRET à une autre adresse', () => {
+  sireneRend.reponse = etablissementSirene(
+    'Médiathèque de Rochefort',
+    VOIE_SIRENE_AILLEURS,
+  )
+})
+
+Given(
+  'SIRENE enregistre ce SIRET sous un nom voisin, à la même adresse',
+  () => {
+    sireneRend.reponse = etablissementSirene(
+      'MEDIATHEQUE DE ROCHEFORT',
+      ADRESSE_BAN.voie,
+    )
+  },
+)
+
+Given('SIRENE ne connaît pas ce SIRET', () => {
+  sireneRend.reponse = { etat: 'inconnu' }
+})
+
+const identiteDuLieu = () =>
+  prismaClient.lieuInclusion.findUniqueOrThrow({
+    where: { id: lieuSeme() },
+    select: { siret: true, nom: true, nomUsage: true },
+  })
+
+Then('le lieu garde son SIRET', async () => {
+  assert.strictEqual((await identiteDuLieu()).siret, SIRET_DU_LIEU)
+})
+
+Then('le SIRET du lieu est effacé', async () => {
+  assert.strictEqual((await identiteDuLieu()).siret, null)
+})
+
+Then(
+  'le lieu prend le nom SIRENE et garde le sien en nom d’usage',
+  async () => {
+    const { nom, nomUsage } = await identiteDuLieu()
+
+    assert.deepStrictEqual(
+      { nom, nomUsage },
+      { nom: 'MEDIATHEQUE DE ROCHEFORT', nomUsage: 'Médiathèque de Rochefort' },
+    )
+  },
+)
 
 Given('un lieu dont la prise de rendez-vous est une chaîne vide', async () => {
   await semerUnLieu({})
@@ -955,6 +1057,15 @@ When('on reprend les données des lieux', async () => {
           confierLAdresseAuLieu,
           MAINTENANT,
         ),
+        repriseDuSiret({
+          geocoderLesAdresses,
+          retrouverParLesCoordonnees,
+          situerLesAdressesConsignees,
+          consulterLAnnuaire,
+          interrogerSirene,
+          reprendreLeSiret,
+          maintenant: MAINTENANT,
+        }),
       ],
       ports: {
         lireLesLieux: lireLesLieuxDuScenario,
@@ -992,6 +1103,15 @@ When('on relève les données des lieux sans les reprendre', async () => {
           sansConfiementDeLAdresse,
           MAINTENANT,
         ),
+        repriseDuSiret({
+          geocoderLesAdresses,
+          retrouverParLesCoordonnees,
+          situerLesAdressesConsignees,
+          consulterLAnnuaire,
+          interrogerSirene,
+          reprendreLeSiret: sansRepriseDuSiret,
+          maintenant: MAINTENANT,
+        }),
       ],
       ports: {
         lireLesLieux: lireLesLieuxDuScenario,
@@ -1259,6 +1379,7 @@ After(async () => {
   banRetrouve.adresse = null
   annuaireRend.services = []
   registreRend.consignee = null
+  sireneRend.reponse = { etat: 'inconnu' }
 
   if (lieuId == null) return
 

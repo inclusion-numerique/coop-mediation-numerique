@@ -18,6 +18,8 @@ export const lieuAReprendre = (
   latitude: 49.25,
   longitude: 4.03,
   rna: null,
+  siret: null,
+  nomUsage: null,
   presentationResume: null,
   presentationDetail: null,
   telephone: null,
