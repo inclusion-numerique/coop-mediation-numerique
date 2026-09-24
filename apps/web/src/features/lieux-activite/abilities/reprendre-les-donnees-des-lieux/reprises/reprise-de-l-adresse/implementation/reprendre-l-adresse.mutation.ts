@@ -31,7 +31,11 @@ const adresseDuRegistre = async (
   return resolue?.id ?? null
 }
 
-export const reprendreLAdresse: ReprendreLAdresse = async (lieuId, adresse) => {
+export const reprendreLAdresse: ReprendreLAdresse = async (
+  lieuId,
+  adresse,
+  complement,
+) => {
   const ligne = await prismaClient.lieuInclusion.findUnique({
     where: { id: lieuId },
     select: { modification: true },
@@ -50,17 +54,21 @@ export const reprendreLAdresse: ReprendreLAdresse = async (lieuId, adresse) => {
         banId: adresse.banId,
         latitude: adresse.latitude,
         longitude: adresse.longitude,
+        ...(complement == null ? {} : { complementAdresse: complement }),
         modification: ligne.modification,
       },
     })
 
     const adresseId = await adresseDuRegistre(transaction, adresse)
 
-    if (adresseId == null) return
+    if (adresseId == null && complement == null) return
 
     await transaction.lieuInclusionRegistreMain.updateMany({
       where: { structureCoopId: lieuId },
-      data: { adresseId },
+      data: {
+        ...(adresseId == null ? {} : { adresseId }),
+        ...(complement == null ? {} : { complementAdresse: complement }),
+      },
     })
   })
 }

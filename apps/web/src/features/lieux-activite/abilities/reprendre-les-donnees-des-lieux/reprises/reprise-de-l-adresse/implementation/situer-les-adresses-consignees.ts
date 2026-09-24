@@ -16,6 +16,7 @@ const Consignation = z.object({
   adresse: z.string().min(1),
   codeInsee: z.string().regex(/^\d[\dAB]\d{3}$/u),
   banId: z.string().min(1).optional(),
+  complementAdresse: z.string().min(1).optional(),
   source: z.string().url(),
 })
 
@@ -129,10 +130,20 @@ export const situerLesAdressesConsignees =
     ])
 
     return new Map(
-      consignees.map(({ lieuId, codeInsee }): [string, AdresseConsignee] => [
-        lieuId,
-        { codeInsee, rendue: situees.get(lieuId) ?? null },
-      ]),
+      consignees.map(
+        ({
+          lieuId,
+          codeInsee,
+          complementAdresse,
+        }): [string, AdresseConsignee] => [
+          lieuId,
+          {
+            codeInsee,
+            rendue: situees.get(lieuId) ?? null,
+            complement: complementAdresse ?? null,
+          },
+        ],
+      ),
     )
   }
 

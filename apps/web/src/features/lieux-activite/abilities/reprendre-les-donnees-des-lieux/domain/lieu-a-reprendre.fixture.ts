@@ -10,6 +10,7 @@ export const lieuAReprendre = (
   publie: true,
   horaires: null,
   adresse: '12 rue de la Paix',
+  complementAdresse: null,
   codeInsee: '51454',
   banId: '51454_7160_00012',
   latitude: 49.25,

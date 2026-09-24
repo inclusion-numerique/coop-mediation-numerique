@@ -527,6 +527,13 @@ base.
 > consignée porte alors son identifiant, et c'est par lui qu'on la lit dans la
 > BAN, sans passer par la recherche.
 >
+> Une adresse consignée peut aussi porter un complément — « En face de la
+> poissonnerie », « Résidence Domaine de Mont Alma – Bâtiment D » —, qui s'écrit
+> avec elle s'il suit le standard. Et quand la commune n'a encore aucune adresse
+> dans la Base Adresse Nationale, un humain peut consigner la commune seule :
+> c'est une réponse de la BAN, si pauvre soit-elle, que la recherche ne retient
+> jamais d'elle-même.
+>
 > Il vient après l'adresse écrite et le point : un lieu dont l'adresse a été
 > corrigée depuis n'a plus besoin de lui, et le registre ne l'écrase pas. Il
 > vient avant l'Annuaire, parce qu'une adresse vérifiée lieu par lieu vaut mieux
@@ -540,6 +547,15 @@ base.
 * When on reprend les données des lieux
 * Then le relevé annonce une adresse corrigée d’après le registre
 * And l’adresse du lieu est celle que la Base Adresse Nationale rend
+
+### Scenario: Le complément consigné s'écrit avec l'adresse
+
+* Given un lieu dont l’adresse diffère de celle de la Base Adresse Nationale
+* And la Base Adresse Nationale ne reconnaît pas la voie
+* And le lieu est consigné au registre avec une adresse et un complément
+* When on reprend les données des lieux
+* Then l’adresse du lieu est celle que la Base Adresse Nationale rend
+* And le complément du lieu est celui consigné
 
 ### Scenario: Une adresse consignée que la BAN ne rend pas ne s'écrit pas
 

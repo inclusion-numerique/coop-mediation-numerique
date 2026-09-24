@@ -6,6 +6,7 @@ export type LieuAReprendre = {
   readonly publie: boolean
   readonly horaires: string | null
   readonly adresse: string
+  readonly complementAdresse: string | null
   readonly codeInsee: string | null
   readonly banId: string | null
   readonly latitude: number | null

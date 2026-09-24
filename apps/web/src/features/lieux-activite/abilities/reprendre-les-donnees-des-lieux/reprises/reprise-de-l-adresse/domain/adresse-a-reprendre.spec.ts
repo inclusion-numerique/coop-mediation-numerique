@@ -660,7 +660,11 @@ describe('l’adresse consignée au registre, que la BAN rend à nouveau', () =>
   }
 
   const parLeRegistre = (
-    consignee: { codeInsee: string; rendue: AdresseGeocodee | null },
+    consignee: {
+      codeInsee: string
+      rendue: AdresseGeocodee | null
+      complement?: string | null
+    },
     lieu: Parameters<typeof lieuAReprendre>[0] = {},
     parLAnnuaire: readonly (AdresseGeocodee | null)[] = [],
   ) =>
@@ -669,13 +673,14 @@ describe('l’adresse consignée au registre, que la BAN rend à nouveau', () =>
       [{ ...RENDUE, type: 'municipality' }],
       undefined,
       parLAnnuaire,
-      consignee,
+      { complement: null, ...consignee },
     )
 
   it('situe le lieu que ni l’adresse ni le point ne situent', () => {
     expect(parLeRegistre({ codeInsee: '51454', rendue: CONSIGNEE })).toEqual({
       verdict: 'a-corriger-d-apres-le-registre',
       adresse: CONSIGNEE,
+      complement: null,
     })
   })
 
@@ -690,15 +695,6 @@ describe('l’adresse consignée au registre, que la BAN rend à nouveau', () =>
       parLeRegistre({
         codeInsee: '51454',
         rendue: { ...CONSIGNEE, score: 0.8 },
-      })?.verdict,
-    ).toBe('a-verifier')
-  })
-
-  it('n’écrit pas un repli sur la commune', () => {
-    expect(
-      parLeRegistre({
-        codeInsee: '51454',
-        rendue: { ...CONSIGNEE, type: 'municipality' },
       })?.verdict,
     ).toBe('a-verifier')
   })
@@ -722,6 +718,7 @@ describe('l’adresse consignée au registre, que la BAN rend à nouveau', () =>
       adresseAReprendre(lieuAReprendre(), [RENDUE], undefined, [], {
         codeInsee: '51454',
         rendue: CONSIGNEE,
+        complement: null,
       }),
     ).toBeNull()
   })
@@ -733,7 +730,11 @@ describe('l’adresse consignée au registre, que la BAN rend à nouveau', () =>
         { nom: 'Mairie de Reims', adresse: 'Reims' },
         [{ ...RENDUE, banId: 'annuaire' }],
       ),
-    ).toEqual({ verdict: 'a-corriger-d-apres-le-registre', adresse: CONSIGNEE })
+    ).toEqual({
+      verdict: 'a-corriger-d-apres-le-registre',
+      adresse: CONSIGNEE,
+      complement: null,
+    })
   })
 
   it('sauve de la suppression le lieu qui n’a accompagné personne', () => {
@@ -742,6 +743,78 @@ describe('l’adresse consignée au registre, que la BAN rend à nouveau', () =>
         { codeInsee: '51454', rendue: CONSIGNEE },
         { accompagnements: 0 },
       )?.verdict,
+    ).toBe('a-corriger-d-apres-le-registre')
+  })
+})
+
+describe('le complément et la commune que le registre consigne', () => {
+  const CONSIGNEE: AdresseGeocodee = {
+    ...RENDUE,
+    banId: '51454_0777_00005',
+    voie: '5 Rue Pierre Loti',
+  }
+
+  const duRegistre = (
+    consignee: { rendue: AdresseGeocodee; complement: string | null },
+    lieu: Parameters<typeof lieuAReprendre>[0] = {},
+  ) =>
+    adresseAReprendre(
+      lieuAReprendre({ adresse: '12 rue Introuvable', ...lieu }),
+      [{ ...RENDUE, type: 'municipality' }],
+      undefined,
+      [],
+      { codeInsee: '51454', ...consignee },
+    )
+
+  it('transporte le complément consigné', () => {
+    expect(
+      duRegistre({
+        rendue: CONSIGNEE,
+        complement: 'En face de la poissonnerie',
+      }),
+    ).toEqual({
+      verdict: 'a-corriger-d-apres-le-registre',
+      adresse: CONSIGNEE,
+      complement: 'En face de la poissonnerie',
+    })
+  })
+
+  it('écarte un complément que le standard refuse', () => {
+    const aReprendre = duRegistre({ rendue: CONSIGNEE, complement: 'Appt #4' })
+
+    expect(
+      aReprendre?.verdict === 'a-corriger-d-apres-le-registre' &&
+        aReprendre.complement,
+    ).toBeNull()
+  })
+
+  it('reprend le complément d’un lieu déjà à la bonne adresse', () => {
+    expect(
+      duRegistre(
+        { rendue: RENDUE, complement: 'En face' },
+        { adresse: '12 rue de la Paix' },
+      )?.verdict,
+    ).toBe('a-corriger-d-apres-le-registre')
+  })
+
+  it('ne reprend rien quand l’adresse et le complément sont en place', () => {
+    expect(
+      adresseAReprendre(
+        lieuAReprendre({ complementAdresse: 'En face' }),
+        [{ ...RENDUE, type: 'municipality' }],
+        undefined,
+        [],
+        { codeInsee: '51454', rendue: RENDUE, complement: 'En face' },
+      ),
+    ).toBeNull()
+  })
+
+  it('accepte la commune seule, que seul un humain consigne', () => {
+    expect(
+      duRegistre({
+        rendue: { ...CONSIGNEE, type: 'municipality', banId: '51454' },
+        complement: null,
+      })?.verdict,
     ).toBe('a-corriger-d-apres-le-registre')
   })
 })

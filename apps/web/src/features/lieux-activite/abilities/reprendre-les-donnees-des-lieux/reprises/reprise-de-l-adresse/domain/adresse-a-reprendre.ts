@@ -1,5 +1,6 @@
 import {
   ABREVIATIONS_DE_TYPE_DE_VOIE,
+  ComplementAdresse,
   distanceEnMetres,
   nettoyerVoie,
   nettoyerVoiePourRecherche,
@@ -57,6 +58,7 @@ export type ServiceDemande = {
 export type AdresseConsignee = {
   readonly codeInsee: string
   readonly rendue: AdresseGeocodee | null
+  readonly complement: string | null
 }
 
 export type AdresseAReprendre =
@@ -64,6 +66,7 @@ export type AdresseAReprendre =
   | {
       readonly verdict: 'a-corriger-d-apres-le-registre'
       readonly adresse: AdresseGeocodee
+      readonly complement: ComplementAdresse | null
     }
   | {
       readonly verdict: 'a-corriger-d-apres-l-annuaire'
@@ -485,6 +488,23 @@ export const adresseDeLAnnuaire = (
     : null
 }
 
+const TYPES_DU_REGISTRE: ReadonlySet<string> = new Set([
+  ...TYPES_UTILISABLES,
+  'municipality',
+])
+
+const complementConsigne = (
+  consignee: AdresseConsignee | undefined,
+): ComplementAdresse | null =>
+  consignee?.complement == null
+    ? null
+    : ComplementAdresse.safe(consignee.complement)
+
+const complementEnPlace = (
+  lieu: LieuAReprendre,
+  complement: ComplementAdresse | null,
+): boolean => complement == null || lieu.complementAdresse === complement
+
 export const adresseDuRegistre = (
   consignee: AdresseConsignee | undefined,
 ): AdresseGeocodee | null => {
@@ -492,7 +512,7 @@ export const adresseDuRegistre = (
 
   return consignee != null &&
     rendue != null &&
-    TYPES_UTILISABLES.has(rendue.type) &&
+    TYPES_DU_REGISTRE.has(rendue.type) &&
     rendue.score >= SCORE_MINIMAL &&
     memeCodeCommune(consignee.codeInsee, rendue)
     ? rendue
@@ -550,10 +570,17 @@ export const adresseAReprendre = (
       ? adresseDeLAnnuaire(lieu, parLAnnuaire)
       : null
 
-  if (duRegistre != null)
-    return dejaConforme(lieu, duRegistre)
+  if (duRegistre != null) {
+    const complement = complementConsigne(consignee)
+
+    return dejaConforme(lieu, duRegistre) && complementEnPlace(lieu, complement)
       ? null
-      : { verdict: 'a-corriger-d-apres-le-registre', adresse: duRegistre }
+      : {
+          verdict: 'a-corriger-d-apres-le-registre',
+          adresse: duRegistre,
+          complement,
+        }
+  }
 
   if (deLAnnuaire != null)
     return dejaConforme(lieu, deLAnnuaire)

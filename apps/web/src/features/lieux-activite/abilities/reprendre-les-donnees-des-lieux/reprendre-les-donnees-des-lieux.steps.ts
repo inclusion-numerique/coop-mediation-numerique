@@ -473,6 +473,7 @@ Given(
     registreRend.consignee = {
       codeInsee: ADRESSE_CONSIGNEE.codeInsee,
       rendue: ADRESSE_CONSIGNEE,
+      complement: null,
     }
     attendue.adresse = ADRESSE_CONSIGNEE
   },
@@ -484,14 +485,40 @@ Given(
     registreRend.consignee = {
       codeInsee: ADRESSE_CONSIGNEE.codeInsee,
       rendue: null,
+      complement: null,
     }
   },
 )
+
+const COMPLEMENT_CONSIGNE = 'En face de la poissonnerie'
+
+Given(
+  'le lieu est consigné au registre avec une adresse et un complément',
+  () => {
+    registreRend.consignee = {
+      codeInsee: ADRESSE_CONSIGNEE.codeInsee,
+      rendue: ADRESSE_CONSIGNEE,
+      complement: COMPLEMENT_CONSIGNE,
+    }
+    attendue.adresse = ADRESSE_CONSIGNEE
+  },
+)
+
+Then('le complément du lieu est celui consigné', async () => {
+  const { complementAdresse } =
+    await prismaClient.lieuInclusion.findUniqueOrThrow({
+      where: { id: lieuSeme() },
+      select: { complementAdresse: true },
+    })
+
+  assert.strictEqual(complementAdresse, COMPLEMENT_CONSIGNE)
+})
 
 Given('le lieu est consigné au registre avec une autre adresse', () => {
   registreRend.consignee = {
     codeInsee: ADRESSE_CONSIGNEE.codeInsee,
     rendue: ADRESSE_CONSIGNEE,
+    complement: null,
   }
 })
 

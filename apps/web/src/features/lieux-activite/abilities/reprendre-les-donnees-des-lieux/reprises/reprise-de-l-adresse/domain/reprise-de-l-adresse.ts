@@ -52,6 +52,7 @@ export type ConsulterLAnnuaire = (
 export type ReprendreLAdresse = (
   lieuId: string,
   adresse: AdresseGeocodee,
+  complement: string | null,
 ) => Promise<void>
 
 export type SupprimerLeLieu = (lieuId: string) => Promise<void>
@@ -121,7 +122,13 @@ const appliquer =
       return
     }
 
-    await reprendreLAdresse(lieuId, aReprendre.adresse)
+    await reprendreLAdresse(
+      lieuId,
+      aReprendre.adresse,
+      aReprendre.verdict === 'a-corriger-d-apres-le-registre'
+        ? aReprendre.complement
+        : null,
+    )
   }
 
 /**
