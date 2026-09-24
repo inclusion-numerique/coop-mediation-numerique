@@ -417,6 +417,13 @@ base.
 > Le point est un recours, jamais une source : quand la Base Adresse Nationale
 > reconnaît déjà l'adresse écrite, c'est elle qui fait foi.
 >
+> Encore faut-il que le point soit celui du lieu. Un point posé au centre de la
+> commune n'est que la trace d'un géocodage qui n'a trouvé que la commune, et la
+> Base Adresse Nationale range parfois au même endroit des numéros dont elle
+> ignore la position : les rapprocher donnerait au lieu une adresse au hasard.
+> Un point à moins de trente mètres du centre de sa commune ne sert donc pas de
+> recours.
+>
 > Le point décide seul quand la voie se tait — vide, réduite au nom de la
 > commune, ou ne nommant aucun type de voie. Là où une voie est écrite, il ne
 > peut que la confirmer : il faut qu'il en porte les mêmes mots, ou qu'il lui
@@ -439,6 +446,14 @@ base.
 * Given un lieu dont la voie ne nomme aucune voie
 * And la Base Adresse Nationale ne reconnaît pas la voie
 * And elle retrouve une adresse trop loin du point du lieu
+* When on reprend les données des lieux
+* Then la voie du lieu n’a pas bougé
+
+### Scenario: Un point posé au centre de la commune ne sert à rien
+
+* Given un lieu dont la voie ne nomme aucune voie
+* And la Base Adresse Nationale ne reconnaît pas la voie
+* And elle retrouve une adresse au point du lieu, posé au centre de la commune
 * When on reprend les données des lieux
 * Then la voie du lieu n’a pas bougé
 

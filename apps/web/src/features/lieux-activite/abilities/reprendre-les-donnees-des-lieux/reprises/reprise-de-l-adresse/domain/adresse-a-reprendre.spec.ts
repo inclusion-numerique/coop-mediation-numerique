@@ -1,6 +1,7 @@
 import { lieuAReprendre } from '../../../domain/lieu-a-reprendre.fixture'
 import {
   type AdresseGeocodee,
+  type AdresseRetrouvee,
   adresseAReprendre,
   adresseSoumise,
   confieeAuLieuSiInactif,
@@ -312,7 +313,12 @@ describe('la voie soumise à la Base Adresse Nationale', () => {
   })
 })
 
-const RETROUVEE = { ...RENDUE, distance: 0, voieSansLeNumero: RENDUE.voie }
+const RETROUVEE: AdresseRetrouvee = {
+  ...RENDUE,
+  distance: 0,
+  voieSansLeNumero: RENDUE.voie,
+  distanceAuCentreDeLaCommune: null,
+}
 
 const parLesCoordonnees = (
   retrouvee?: Partial<typeof RETROUVEE>,
@@ -355,6 +361,20 @@ describe('l’adresse retrouvée au point du lieu', () => {
     expect(parLesCoordonnees({ type: 'municipality' })?.verdict).toBe(
       'a-verifier',
     )
+  })
+
+  it('refuse un point posé au centre de la commune', () => {
+    expect(
+      parLesCoordonnees({ banId: 'autre', distanceAuCentreDeLaCommune: 1 })
+        ?.verdict,
+    ).toBe('a-verifier')
+  })
+
+  it('accepte un point à plus de trente mètres du centre de la commune', () => {
+    expect(
+      parLesCoordonnees({ banId: 'autre', distanceAuCentreDeLaCommune: 31 })
+        ?.verdict,
+    ).toBe('a-corriger')
   })
 
   it('ne sert pas quand l’adresse écrite suffit', () => {

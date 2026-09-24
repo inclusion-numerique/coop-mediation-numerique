@@ -566,6 +566,7 @@ Given('elle retrouve une adresse au point du lieu', () => {
     ...ADRESSE_BAN,
     distance: 4,
     voieSansLeNumero: ADRESSE_BAN.voie,
+    distanceAuCentreDeLaCommune: null,
   }
 })
 
@@ -701,6 +702,7 @@ Given('elle retrouve au point la voie écrite, sans son numéro', () => {
     ...VOIE_SANS_NUMERO,
     distance: 6,
     voieSansLeNumero: VOIE_SANS_NUMERO.voie,
+    distanceAuCentreDeLaCommune: null,
   }
   attendue.adresse = VOIE_SANS_NUMERO
 })
@@ -711,15 +713,29 @@ Given('elle retrouve au point une tout autre voie', () => {
     banId: '17299_0003',
     voie: 'Route de Lyon',
     voieSansLeNumero: 'Route de Lyon',
+    distanceAuCentreDeLaCommune: null,
     distance: 6,
   }
 })
+
+Given(
+  'elle retrouve une adresse au point du lieu, posé au centre de la commune',
+  () => {
+    banRetrouve.adresse = {
+      ...ADRESSE_BAN,
+      distance: 1,
+      voieSansLeNumero: ADRESSE_BAN.voie,
+      distanceAuCentreDeLaCommune: 0,
+    }
+  },
+)
 
 Given('elle retrouve une adresse trop loin du point du lieu', () => {
   banRetrouve.adresse = {
     ...ADRESSE_BAN,
     distance: 240,
     voieSansLeNumero: ADRESSE_BAN.voie,
+    distanceAuCentreDeLaCommune: null,
   }
 })
 

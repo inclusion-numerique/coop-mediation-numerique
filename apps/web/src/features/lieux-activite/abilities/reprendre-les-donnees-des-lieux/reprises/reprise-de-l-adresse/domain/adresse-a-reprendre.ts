@@ -27,6 +27,7 @@ export type AdresseGeocodee = {
 export type AdresseRetrouvee = AdresseGeocodee & {
   readonly distance: number
   readonly voieSansLeNumero: string
+  readonly distanceAuCentreDeLaCommune: number | null
 }
 
 export type CoordonneesSoumises = {
@@ -34,6 +35,7 @@ export type CoordonneesSoumises = {
   readonly latitude: number
   readonly longitude: number
   readonly codeInsee: string | null
+  readonly commune: string
 }
 
 export type AdresseSoumise = {
@@ -79,6 +81,8 @@ const SCORE_MINIMAL = 0.9
  * bâtiments.
  */
 const MEME_ENDROIT = 25
+
+const AU_CENTRE_DE_LA_COMMUNE = 30
 
 /**
  * Ce qu'il faut de ressemblance, une fois la distance prise en compte, pour
@@ -140,6 +144,7 @@ export const coordonneesSoumises = (
           latitude: lieu.latitude,
           longitude: lieu.longitude,
           codeInsee: lieu.codeInsee,
+          commune: lieu.commune,
         },
       ]
 
@@ -397,6 +402,10 @@ const voieConfirmee = (
   similarite(sansAccents(voieCherchee(lieu)), sansAccents(voieSansLeNumero)) >=
     CONFIRMATION_MINIMALE
 
+const pointAuCentreDeLaCommune = (retrouvee: AdresseRetrouvee): boolean =>
+  retrouvee.distanceAuCentreDeLaCommune != null &&
+  retrouvee.distanceAuCentreDeLaCommune <= AU_CENTRE_DE_LA_COMMUNE
+
 /**
  * L'adresse que la Base Adresse Nationale trouve au point du lieu.
  *
@@ -411,6 +420,7 @@ export const adresseDesCoordonnees = (
   retrouvee: AdresseRetrouvee | undefined,
 ): AdresseGeocodee | null =>
   retrouvee != null &&
+  !pointAuCentreDeLaCommune(retrouvee) &&
   TYPES_UTILISABLES.has(retrouvee.type) &&
   memeCommune(lieu, retrouvee) &&
   retrouvee.distance <= MEME_ENDROIT &&

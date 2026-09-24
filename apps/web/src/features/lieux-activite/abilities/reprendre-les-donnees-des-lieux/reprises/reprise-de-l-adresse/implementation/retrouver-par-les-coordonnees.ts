@@ -1,4 +1,6 @@
 import { apiAdresseEndpoint } from '@app/web/external-apis/apiAdresse'
+import { distanceEnMetres } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { z } from 'zod'
 import type {
   AdresseRetrouvee,
   AdresseSoumise,
@@ -104,8 +106,77 @@ const aChercher = (trouvee: VoieAuPoint): AdresseSoumise => ({
  * donne l'entrée complète — et qui garantit que tout ce qu'on écrit vient de la
  * Base Adresse Nationale, coordonnées comprises, plutôt que du point de départ.
  */
+type Position = { readonly latitude: number; readonly longitude: number }
+
+const ReponseCommune = z.object({
+  features: z.array(
+    z.object({
+      geometry: z.object({ coordinates: z.tuple([z.number(), z.number()]) }),
+    }),
+  ),
+})
+
+const cleDeLaCommune = ({ codeInsee, commune }: CoordonneesSoumises): string =>
+  `${codeInsee ?? ''}|${commune}`
+
+const centreDeLaCommune = async ({
+  codeInsee,
+  commune,
+}: CoordonneesSoumises): Promise<Position | null> => {
+  if (codeInsee == null || commune.trim() === '') return null
+
+  const parametres = new URLSearchParams({
+    q: commune,
+    citycode: codeInsee,
+    type: 'municipality',
+    limit: '1',
+  })
+  const reponse = await fetch(`${apiAdresseEndpoint}?${parametres.toString()}`)
+
+  if (!reponse.ok)
+    throw new Error(
+      `La Base Adresse Nationale a répondu ${reponse.status} pour le centre de la commune ${codeInsee}`,
+    )
+
+  const [premiere] = ReponseCommune.parse(await reponse.json()).features
+
+  return premiere == null
+    ? null
+    : {
+        latitude: premiere.geometry.coordinates[1],
+        longitude: premiere.geometry.coordinates[0],
+      }
+}
+
+const centresDesCommunes = async (
+  points: readonly CoordonneesSoumises[],
+): Promise<ReadonlyMap<string, Position | null>> =>
+  [
+    ...new Map(points.map((point) => [cleDeLaCommune(point), point])).values(),
+  ].reduce<Promise<ReadonlyMap<string, Position | null>>>(
+    async (acquis, point) =>
+      new Map([
+        ...(await acquis),
+        [cleDeLaCommune(point), await centreDeLaCommune(point)],
+      ]),
+    Promise.resolve(new Map()),
+  )
+
+const distanceAuCentre = (
+  point: CoordonneesSoumises | undefined,
+  centres: ReadonlyMap<string, Position | null>,
+): number | null => {
+  const centre = point == null ? null : centres.get(cleDeLaCommune(point))
+
+  return point == null || centre == null
+    ? null
+    : Math.abs(distanceEnMetres(point, centre))
+}
+
 const situer = async (
   trouvees: readonly VoieAuPoint[],
+  points: ReadonlyMap<string, CoordonneesSoumises>,
+  centres: ReadonlyMap<string, Position | null>,
 ): Promise<readonly (readonly [string, AdresseRetrouvee])[]> => {
   const situees = new Map(
     await rechercherLesVoies(trouvees.map(aChercher), ['voie']),
@@ -123,6 +194,10 @@ const situer = async (
               ...situee,
               distance: trouvee.distance,
               voieSansLeNumero: trouvee.voieSansLeNumero,
+              distanceAuCentreDeLaCommune: distanceAuCentre(
+                points.get(trouvee.lieuId),
+                centres,
+              ),
             },
           ] as const,
         ]
@@ -138,14 +213,21 @@ const situer = async (
  */
 export const retrouverParLesCoordonnees: RetrouverParLesCoordonnees = async (
   coordonnees,
-) =>
-  new Map(
-    await situer(
-      await lots(coordonnees, POINTS_PAR_LOT).reduce<
-        Promise<readonly VoieAuPoint[]>
-      >(
-        async (acquis, lot) => [...(await acquis), ...(await soumettre(lot))],
-        Promise.resolve([]),
-      ),
-    ),
+) => {
+  const trouvees = await lots(coordonnees, POINTS_PAR_LOT).reduce<
+    Promise<readonly VoieAuPoint[]>
+  >(
+    async (acquis, lot) => [...(await acquis), ...(await soumettre(lot))],
+    Promise.resolve([]),
   )
+  const points = new Map(coordonnees.map((point) => [point.lieuId, point]))
+  const centres = await centresDesCommunes(
+    trouvees.flatMap(({ lieuId }) => {
+      const point = points.get(lieuId)
+
+      return point == null ? [] : [point]
+    }),
+  )
+
+  return new Map(await situer(trouvees, points, centres))
+}
