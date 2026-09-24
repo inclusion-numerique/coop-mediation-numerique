@@ -5,6 +5,7 @@ import { createToast } from '@app/ui/toast/createToast'
 import { renseignerLieuxActiviteAction } from '@app/web/app/_actions/inscription/renseigner-lieux-activite.action'
 import {
   adresseNonVerifiableMessage,
+  CREER_A_LA_MAIN,
   geocodeStructureAdresse,
 } from '@app/web/external-apis/ban/geocodeStructureAdresse'
 import type { LieuActiviteInput } from '@app/web/features/inscription/abilities/renseigner-lieux-activite'
@@ -255,7 +256,9 @@ const LieuxActiviteForm = ({
                 const lieu = await lieuDepuisResultat(item)
 
                 if (!lieu) {
-                  setRechercheError(adresseNonVerifiableMessage(item))
+                  setRechercheError(
+                    adresseNonVerifiableMessage(item, CREER_A_LA_MAIN),
+                  )
                   form.setFieldValue('recherche', null)
                   return
                 }

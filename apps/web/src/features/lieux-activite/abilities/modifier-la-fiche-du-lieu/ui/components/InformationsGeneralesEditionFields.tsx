@@ -6,6 +6,7 @@ import { Options } from '@app/ui/components/Primitives/Options'
 import {
   adresseNonVerifiableMessage,
   geocodeStructureAdresse,
+  SANS_SIRET_A_LA_MAIN,
 } from '@app/web/external-apis/ban/geocodeStructureAdresse'
 import {
   AdresseBanComboBox,
@@ -65,7 +66,9 @@ export const InformationsGeneralesEditionFields = withForm({
                 const adresseBan = await geocodeStructureAdresse(item)
                 if (!adresseBan) {
                   form.setFieldValue('siretSearch', null)
-                  setSiretSearchError(adresseNonVerifiableMessage(item))
+                  setSiretSearchError(
+                    adresseNonVerifiableMessage(item, SANS_SIRET_A_LA_MAIN),
+                  )
                   return
                 }
                 form.setFieldValue('nom', item.nom)
