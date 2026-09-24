@@ -15,6 +15,7 @@ import {
   effacerLeRna,
   lireLesLieux,
   mentionsDuLieu,
+  nettoyerLaPresentation,
   type Releve,
   reprendreLAdresse,
   reprendreLeComplement,
@@ -25,6 +26,7 @@ import {
   reprendreLesSitesWeb,
   reprendreLeTelephone,
   repriseDeLAdresse,
+  repriseDeLaPresentation,
   repriseDeLaPublication,
   repriseDesCourriels,
   repriseDesHoraires,
@@ -38,6 +40,7 @@ import {
   sansConfiementDeLAdresse,
   sansDescenteDuResume,
   sansEffacementDuRna,
+  sansNettoyageDeLaPresentation,
   sansRepriseDeLAdresse,
   sansRepriseDesCourriels,
   sansRepriseDesHoraires,
@@ -401,6 +404,28 @@ Given('un lieu publié qui n’annonce aucun service', async () => {
 Given('un lieu qui porte un RNA', async () => {
   await semerUnLieu({ rna: RNA })
 })
+
+Given('un lieu dont la description est écrite en HTML', async () => {
+  await semerUnLieu({
+    description: '<p>Des ateliers  collectifs</p><p>Sur rendez-vous</p>',
+  })
+})
+
+Then(
+  'la description du lieu est nettoyée, ses paragraphes conservés',
+  async () => {
+    const { presentationDetail } =
+      await prismaClient.lieuInclusion.findUniqueOrThrow({
+        where: { id: lieuSeme() },
+        select: { presentationDetail: true },
+      })
+
+    assert.strictEqual(
+      presentationDetail,
+      'Des ateliers collectifs\n\nSur rendez-vous',
+    )
+  },
+)
 
 Given('un lieu dont le nom porte des espaces en trop', async () => {
   await semerUnLieu({})
@@ -890,6 +915,7 @@ When('on reprend les données des lieux', async () => {
         repriseDeLaPublication(retirerLaPublication),
         repriseDuComplementDAdresse(reprendreLeComplement),
         repriseDuNom(reprendreLeNom),
+        repriseDeLaPresentation(nettoyerLaPresentation),
         repriseDeLAdresse(
           geocoderLesAdresses,
           retrouverParLesCoordonnees,
@@ -924,6 +950,7 @@ When('on relève les données des lieux sans les reprendre', async () => {
         repriseDeLaPublication(sansRetraitDePublication),
         repriseDuComplementDAdresse(sansRepriseDuComplement),
         repriseDuNom(sansRepriseDuNom),
+        repriseDeLaPresentation(sansNettoyageDeLaPresentation),
         repriseDeLAdresse(
           geocoderLesAdresses,
           retrouverParLesCoordonnees,

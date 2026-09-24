@@ -32,6 +32,15 @@ export {
   supprimerLeLieu,
 } from './reprise-de-l-adresse'
 export {
+  type NettoyerLaPresentation,
+  nettoyerLaPresentation,
+  type PresentationAReprendre,
+  presentationAReprendre,
+  presentationNettoyee,
+  repriseDeLaPresentation,
+  sansNettoyageDeLaPresentation,
+} from './reprise-de-la-presentation'
+export {
   type RetirerLaPublication,
   repriseDeLaPublication,
   retirerLaPublication,

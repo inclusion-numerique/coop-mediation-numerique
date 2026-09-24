@@ -8,6 +8,7 @@ import {
   effacerLeRna,
   geocoderLesAdresses,
   lireLesLieux,
+  nettoyerLaPresentation,
   releveEnLignes,
   reprendreLAdresse,
   reprendreLeComplement,
@@ -18,6 +19,7 @@ import {
   reprendreLesSitesWeb,
   reprendreLeTelephone,
   repriseDeLAdresse,
+  repriseDeLaPresentation,
   repriseDeLaPublication,
   repriseDesCourriels,
   repriseDesHoraires,
@@ -33,6 +35,7 @@ import {
   sansConfiementDeLAdresse,
   sansDescenteDuResume,
   sansEffacementDuRna,
+  sansNettoyageDeLaPresentation,
   sansRepriseDeLAdresse,
   sansRepriseDesCourriels,
   sansRepriseDesHoraires,
@@ -81,6 +84,9 @@ export const executeReprendreLesDonneesDesLieux: JobExecutor<
           reprendre ? retirerLaPublication : sansRetraitDePublication,
         ),
         repriseDuNom(reprendre ? reprendreLeNom : sansRepriseDuNom),
+        repriseDeLaPresentation(
+          reprendre ? nettoyerLaPresentation : sansNettoyageDeLaPresentation,
+        ),
         repriseDuComplementDAdresse(
           reprendre ? reprendreLeComplement : sansRepriseDuComplement,
         ),

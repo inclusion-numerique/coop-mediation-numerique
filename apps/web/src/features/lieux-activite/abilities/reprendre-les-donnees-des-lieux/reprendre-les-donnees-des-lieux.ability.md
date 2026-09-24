@@ -29,6 +29,23 @@ base.
 * When on reprend les données des lieux
 * Then le relevé ne retient pas ce lieu
 
+## Rule: Une présentation se nettoie selon le standard, paragraphes compris
+
+> Des résumés et des descriptions portent des espaces doublés, des balises et
+> des entités HTML copiées d'un site. La bibliothèque du standard les nettoie en
+> gardant les lignes et les paragraphes : une liste reste une liste.
+>
+> Le nettoyage passe après les reprises qui écrivent déjà dans la description —
+> le résumé trop long qui y descend, la note d'horaires qui la rejoint — et
+> nettoie ce qu'elles viennent d'écrire, sans l'écraser.
+
+### Scenario: Une description en HTML est nettoyée, ses paragraphes conservés
+
+* Given un lieu dont la description est écrite en HTML
+* When on reprend les données des lieux
+* Then le relevé compte ce lieu dans la colonne "presentation"
+* And la description du lieu est nettoyée, ses paragraphes conservés
+
 ## Rule: Un nom se nettoie selon le standard, sans changer de casse
 
 > Des noms portent des espaces doublés ou en bord, des guillemets droits, parfois
