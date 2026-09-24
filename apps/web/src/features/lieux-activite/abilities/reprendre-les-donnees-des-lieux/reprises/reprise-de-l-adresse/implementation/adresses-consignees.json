@@ -56,6 +56,20 @@
     "source": "https://lannuaire.service-public.gouv.fr/nouvelle-aquitaine/vienne/e2780fd1-4588-414b-a0c8-3d5430516571"
   },
   {
+    "lieuId": "08e8839a-1d70-4b17-8382-584a606098c5",
+    "nom": "Mairie de Vivario",
+    "adresse": "7 Jampulacce 20219 Vivario",
+    "codeInsee": "2B354",
+    "source": "https://lannuaire.service-public.gouv.fr/corse/haute-corse/2cd88d7c-713b-4f92-82a9-a129ae9b31cb"
+  },
+  {
+    "lieuId": "0a574583-81cf-459f-9f1e-7f7a7b1f331b",
+    "nom": "LA POSTE",
+    "adresse": "18 Avenue Roger Salengro 89400 Migennes",
+    "codeInsee": "89257",
+    "source": "https://localiser.laposte.fr/yonne/migennes/migennes-892570"
+  },
+  {
     "lieuId": "0a83988d-3130-44e4-8d9f-a5b145d44841",
     "nom": "Commune de Suzannecourt",
     "adresse": "26bis Grande Rue 52300 Suzannecourt",
@@ -110,6 +124,13 @@
     "adresse": "58 Grande Rue 54370 Einville-au-Jard",
     "codeInsee": "54176",
     "source": "https://www.famillesrurales.org/einville/"
+  },
+  {
+    "lieuId": "14419e8d-1781-462b-9045-992b53d1e293",
+    "nom": "Commune de Mussey-sur-Marne",
+    "adresse": "12 Rue du Chateau 52300 Mussey-sur-Marne",
+    "codeInsee": "52346",
+    "source": "https://www.pagesjaunes.fr/pros/07477304"
   },
   {
     "lieuId": "16b86c77-3768-46fa-95cb-0d757ddd3769",
@@ -175,6 +196,13 @@
     "source": "https://mediatheques.coeuressonne.fr/contactez-nous/10"
   },
   {
+    "lieuId": "206a289e-1f93-4775-a821-68ab60c50540",
+    "nom": "CAP Nord Martinique",
+    "adresse": "177 Passage Fleurit-Noël 97225 Le Marigot",
+    "codeInsee": "97216",
+    "source": "https://www.openstreetmap.org/way/125338154"
+  },
+  {
     "lieuId": "21705cd6-e583-4f49-9b20-2f664dfbf3b1",
     "nom": "Le Landou 2.0 Lafontasse",
     "adresse": "Village de Lafontasse 81100 Burlats",
@@ -210,11 +238,25 @@
     "source": "https://lannuaire.service-public.gouv.fr/auvergne-rhone-alpes/haute-loire/6f8022fe-0548-4500-accc-2cb181a0cffd"
   },
   {
+    "lieuId": "2929ebf3-73c3-46da-ae48-8f550136a3eb",
+    "nom": "Bibliothèque Grand'Rue",
+    "adresse": "19 Grand'Rue 68100 Mulhouse",
+    "codeInsee": "68224",
+    "source": "https://www.mulhouse68.fr/annuaire/bibliotheque-grandrue"
+  },
+  {
     "lieuId": "2ae0893e-7622-41d8-8d1e-5883508fe433",
     "nom": "Maison Citoyenne de Marquise",
     "adresse": "28 Rue Pierre BACHELET 62250 Marquise",
     "codeInsee": "62560",
     "source": "https://www.conseiller-numerique.gouv.fr/627a5804ad1bdb06edc48d10/details"
+  },
+  {
+    "lieuId": "2e5a04b4-b46f-44e2-a5cc-7ff3deefc929",
+    "nom": "Mairie de Venaco",
+    "adresse": "48 Strada di Lugu 20231 Venaco",
+    "codeInsee": "2B341",
+    "source": "https://www.mairiedevenaco.corsica/fr/contact-horaires"
   },
   {
     "lieuId": "2e91ce6f-3992-4d14-a8b7-037597ee1334",
@@ -280,6 +322,13 @@
     "source": "https://lannuaire.service-public.gouv.fr/occitanie/tarn/604825e3-7f2c-4a7a-85c7-a549050f1868"
   },
   {
+    "lieuId": "3e531ee9-d114-4b8d-b544-ee63a111fe92",
+    "nom": "MAIRIE DE LOUVERNE",
+    "adresse": "2 Rue des pins 53950 Louverné",
+    "codeInsee": "53140",
+    "source": "https://louverne.fr/infos-mairie/"
+  },
+  {
     "lieuId": "3ec7bf9e-ec19-4fee-bdf1-bd3dec80de90",
     "nom": "Mairies Coutures-sur-Drot",
     "adresse": "2 Place Marcel Mestivier 24320 Coutures",
@@ -306,6 +355,20 @@
     "adresse": "40 Grand'Rue 79190 Sauzé-entre-Bois",
     "codeInsee": "79307",
     "source": "https://lannuaire.service-public.gouv.fr/nouvelle-aquitaine/deux-sevres/3e3a18c0-7e92-481e-bdd6-c0b968ceefbd"
+  },
+  {
+    "lieuId": "4554e3df-a8c2-490a-8a2f-519d6c570d9f",
+    "nom": "Bibliothèque intercommunale Laigné - Saint-Gervais en Belin",
+    "adresse": "34 Rue des Freres Bailleul 72220 Laigné-Saint-Gervais",
+    "codeInsee": "72155",
+    "source": "https://www.mobilis-paysdelaloire.fr/annuaire/bibliotheques/bibliotheque-intercommunale-sivom-laigne-en-belin"
+  },
+  {
+    "lieuId": "46bd512d-9570-4de2-b80d-cd80c5221885",
+    "nom": "DTAS Antenne Bellême",
+    "adresse": "4 Rue du Mans 61130 Bellême",
+    "codeInsee": "61038",
+    "source": "https://indexsante.fr/etablissements/etablissements-de-sante/hopitaux-cliniques/orne-61/61-belleme/hopital-local-belleme/"
   },
   {
     "lieuId": "4723c1e1-cb94-43cb-bbec-83d8e385edc2",
@@ -350,6 +413,13 @@
     "source": "https://lannuaire.service-public.gouv.fr/nouvelle-aquitaine/gironde/50fbe2a7-e7f1-436d-a2fa-6e25312e036d"
   },
   {
+    "lieuId": "4af2af61-7de6-47a1-89a7-a4037eeb6ede",
+    "nom": "Maison Célestin",
+    "adresse": "13 Route de Fatima 97435 Saint-Paul",
+    "codeInsee": "97415",
+    "source": "https://www.mairie-saintpaul.re/salles-polyvalentes/"
+  },
+  {
     "lieuId": "4e4c0abd-84d5-4f45-9e56-983759daeec7",
     "nom": "C.A.S.E Eucalyptus",
     "adresse": "Chemin Eucalyptus 97422 Saint-Paul",
@@ -376,6 +446,13 @@
     "adresse": "8 Place Matras 51340 Vanault-les-Dames",
     "codeInsee": "51590",
     "source": "https://www.bibliotheques.org/bibliotheque-de-vanault-les-dames-vanault-les-dames-51/"
+  },
+  {
+    "lieuId": "55708da3-ed50-4bd4-9f34-2a655e87b100",
+    "nom": "Parenthèse au jardin",
+    "adresse": "20 Grand’Rue 79340 Vasles",
+    "codeInsee": "79339",
+    "source": "https://dora.inclusion.gouv.fr/structures/parenthese-au-jardin"
   },
   {
     "lieuId": "58137af2-4541-4874-9b9d-23ac55ed2b15",
@@ -432,6 +509,13 @@
     "adresse": "10 Rue du Nouveau Brunswick 86100 Châtellerault",
     "codeInsee": "86066",
     "source": "https://mptchatellerault.centres-sociaux.fr/infos-pratiques/nous-ecrire/"
+  },
+  {
+    "lieuId": "6126fef9-05ea-45b3-baa0-a54def8103a9",
+    "nom": "COMMUNE DE LA CHAUSSEE SAINT VICTOR",
+    "adresse": "29 Rue de la Poste 41260 La Chaussée-Saint-Victor",
+    "codeInsee": "41047",
+    "source": "https://www.lachausseesaintvictor.fr"
   },
   {
     "lieuId": "67b5a721-3786-4beb-bb91-de9d55098890",
@@ -574,11 +658,25 @@
     "source": "https://lannuaire.service-public.gouv.fr/occitanie/herault/bdd12231-6ce1-4208-8769-75488d26da36"
   },
   {
+    "lieuId": "93cf0aa5-75dd-428f-843d-d5a59582b464",
+    "nom": "MAIRIE DE LARRESSINGLE",
+    "adresse": "1 Place Lannelongue 32100 Larressingle",
+    "codeInsee": "32194",
+    "source": "https://www.openstreetmap.org/way/113459727"
+  },
+  {
     "lieuId": "94b8214b-c0dd-4853-8e26-4dccbce6d372",
     "nom": "DIME VESOUL",
     "adresse": "10 Rue Jules Alexis Muenier 70000 Vesoul",
     "codeInsee": "70550",
     "source": "https://annuaire.action-sociale.org/?p=ime-dr-jean-louis-beaudouin--ahssea-700780216&details=caracteristiques"
+  },
+  {
+    "lieuId": "9f59c6e0-06b0-41d9-b0da-f9c690c7eb00",
+    "nom": "Bibliothèque Municipale de Furiani",
+    "adresse": "Via di u 5 di Maghju 20600 Furiani",
+    "codeInsee": "2B120",
+    "source": "https://www.mairie-furiani.corsica/contacter-un-service/"
   },
   {
     "lieuId": "a02372f3-daf1-4f37-a95e-f7ae2b026b84",
@@ -600,6 +698,20 @@
     "adresse": "Place de l’Eglise 76850 Cottévrard",
     "codeInsee": "76188",
     "source": "https://seinemaritime.fr/nos-actions/action-sociale/accompagnement-social/76-mobile"
+  },
+  {
+    "lieuId": "bd414386-28bd-45b1-8b23-0cc17b73bc8c",
+    "nom": "MDF Itinérante, sud - LA TERASSE-SUR-DORLAY",
+    "adresse": "42 Place des Artisans Boulangers 42740 La Terrasse-sur-Dorlay",
+    "codeInsee": "42308",
+    "source": "https://www.udaf42.org/post/dates-maison-de-la-famille-2024"
+  },
+  {
+    "lieuId": "c022bf26-289f-445a-9ff5-4464e6d986bb",
+    "nom": "Commune de Lachamp-Ribennes",
+    "adresse": "2 Impasse du Sabotier 48700 Lachamp-Ribennes",
+    "codeInsee": "48126",
+    "source": "https://www.lachamp-ribennes.fr/contact-mairie-48-lozere-randon-margeride"
   },
   {
     "lieuId": "c7067e9f-9051-4e10-9baa-0e87d028594b",
@@ -712,6 +824,13 @@
     "adresse": "5 Impasse de Bonne 05000 Gap",
     "codeInsee": "05061",
     "source": "https://www.hautes-alpes.fr/annuaire/maison-des-solidarites-de-gap-bonne/"
+  },
+  {
+    "lieuId": "f6990af8-f20a-4ab1-bfc6-e4889324e23d",
+    "nom": "Mairie de Valdeblore - La Roche",
+    "adresse": "3 Rue des Tilleuls 06420 Valdeblore",
+    "codeInsee": "06153",
+    "source": "https://ville-valdeblore.fr/?p=4112"
   },
   {
     "lieuId": "fe8382e9-6af3-4b9e-a40f-983ab40edcf2",
