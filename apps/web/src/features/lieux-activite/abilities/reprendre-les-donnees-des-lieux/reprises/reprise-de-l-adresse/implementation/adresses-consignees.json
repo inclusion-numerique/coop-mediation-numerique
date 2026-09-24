@@ -266,6 +266,13 @@
     "source": "https://lannuaire.service-public.gouv.fr/normandie/seine-maritime/fff00d09-d41e-4ad6-aee2-c9cddfae36a1"
   },
   {
+    "lieuId": "3345543e-f5b4-4400-bc18-6385a974dd39",
+    "nom": "Chalais Mairie",
+    "adresse": "28 Place des Ecoles 24800 Chalais",
+    "codeInsee": "24095",
+    "source": "https://www.mairie-chalais.fr/"
+  },
+  {
     "lieuId": "3355344e-4b50-44d7-baae-d2cadc09d7c9",
     "nom": "AGENCE POSTALE INTERCOMMUNALE ARCEY",
     "adresse": "29 Rue de la 5e Db 25750 Arcey",
@@ -525,6 +532,13 @@
     "source": "https://lannuaire.service-public.gouv.fr/provence-alpes-cote-d-azur/var/15678b88-9fee-4cfe-9fa3-1e86aba91ea6"
   },
   {
+    "lieuId": "6d3dbcc4-1603-41a6-a94c-83c91f65b660",
+    "nom": "CA \"TERRE DE PROVENCE\"",
+    "adresse": "5 Place Marius Chabrand 13630 Eyragues",
+    "codeInsee": "13036",
+    "source": "https://www.terredeprovence-agglo.com/"
+  },
+  {
     "lieuId": "6fe644b2-3d25-46e0-937b-d8c6f371dfc5",
     "nom": "France Services Ailly sur Noye",
     "adresse": "3 chemin d'Altforweiler 80250 Ailly-sur-Noye",
@@ -551,6 +565,20 @@
     "adresse": "1 Place de l'Hôtel de Ville 74600 Annecy",
     "codeInsee": "74010",
     "source": "https://lannuaire.service-public.gouv.fr/auvergne-rhone-alpes/haute-savoie/9092b507-9122-4911-9be6-14a30e26422f"
+  },
+  {
+    "lieuId": "75b8fc39-a969-4f12-b45a-552a5e754710",
+    "nom": "Maison france service - Ebreuil",
+    "adresse": "21 Allée du Chemin de Fer 03450 Ébreuil",
+    "codeInsee": "03107",
+    "source": "https://lannuaire.service-public.gouv.fr/auvergne-rhone-alpes/allier/e013dccf-c5cf-4aac-add9-89416dcd6d6a"
+  },
+  {
+    "lieuId": "783baf4f-aba8-4c68-9fc1-a200bdb27bd0",
+    "nom": "Jean Toutain",
+    "adresse": "1 Rue Jean Mermoz 66140 Canet-en-Roussillon",
+    "codeInsee": "66037",
+    "source": "https://api-lannuaire.service-public.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration/records?where=code_insee_commune=\"66037\""
   },
   {
     "lieuId": "7901cb5e-e181-4fde-8132-036ed283487f",
