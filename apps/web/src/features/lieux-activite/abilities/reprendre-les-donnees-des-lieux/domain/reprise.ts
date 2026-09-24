@@ -76,3 +76,27 @@ export const repriseAvecPrealable = <Verdict, Prealable>(
     )
   },
 })
+
+const colonnesDes = (reprises: readonly Reprise[]): readonly string[] =>
+  reprises.flatMap(({ colonnes }) => colonnes)
+
+export const reprisesRetenues = (
+  reprises: readonly Reprise[],
+  colonnesDemandees: readonly string[] | undefined,
+): readonly Reprise[] => {
+  if (colonnesDemandees == null) return reprises
+
+  const connues = colonnesDes(reprises)
+  const inconnues = colonnesDemandees.filter(
+    (colonne) => !connues.includes(colonne),
+  )
+
+  if (inconnues.length > 0)
+    throw new Error(
+      `Reprise inconnue : ${inconnues.join(', ')}. Reprises possibles : ${connues.join(', ')}`,
+    )
+
+  return reprises.filter(({ colonnes }) =>
+    colonnes.some((colonne) => colonnesDemandees.includes(colonne)),
+  )
+}

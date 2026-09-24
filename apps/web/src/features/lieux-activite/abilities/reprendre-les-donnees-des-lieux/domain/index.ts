@@ -21,6 +21,7 @@ export {
   type Reprise,
   reprise,
   repriseAvecPrealable,
+  reprisesRetenues,
 } from './reprise'
 export {
   type Nettoyer,

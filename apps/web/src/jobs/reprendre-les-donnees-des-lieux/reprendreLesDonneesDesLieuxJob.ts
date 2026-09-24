@@ -5,6 +5,7 @@ export const ReprendreLesDonneesDesLieuxJobValidation = z.object({
   payload: z
     .object({
       reprendre: z.boolean().optional().default(false),
+      reprises: z.array(z.string().min(1)).nonempty().optional(),
     })
     .optional(),
 })

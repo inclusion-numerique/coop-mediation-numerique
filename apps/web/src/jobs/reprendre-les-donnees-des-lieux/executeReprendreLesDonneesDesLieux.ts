@@ -25,6 +25,7 @@ import {
   repriseDuPivot,
   repriseDuResume,
   repriseDuTelephone,
+  reprisesRetenues,
   retirerLaPublication,
   retrouverParLesCoordonnees,
   sansConfiementDeLAdresse,
@@ -56,39 +57,42 @@ export const executeReprendreLesDonneesDesLieux: JobExecutor<
     output.log(`reprendre-les-donnees-des-lieux: ${message}`)
 
   const { releve, lieuxRepris, fichiers } = await reprendreLesDonneesDesLieux({
-    reprises: [
-      triDesListes(reprendre ? trierLesListes : sansTri),
-      repriseDesHoraires(
-        reprendre ? reprendreLesHoraires : sansRepriseDesHoraires,
-      ),
-      repriseDuTelephone(
-        reprendre ? reprendreLeTelephone : sansRepriseDuTelephone,
-      ),
-      repriseDesCourriels(
-        reprendre ? reprendreLesCourriels : sansRepriseDesCourriels,
-      ),
-      repriseDesSitesWeb(
-        reprendre ? reprendreLesSitesWeb : sansRepriseDesSitesWeb,
-      ),
-      repriseDuPivot(reprendre ? effacerLeRna : sansEffacementDuRna),
-      repriseDuResume(reprendre ? descendreLeResume : sansDescenteDuResume),
-      repriseDeLaPublication(
-        reprendre ? retirerLaPublication : sansRetraitDePublication,
-      ),
-      repriseDuComplementDAdresse(
-        reprendre ? reprendreLeComplement : sansRepriseDuComplement,
-      ),
-      repriseDeLAdresse(
-        geocoderLesAdresses,
-        retrouverParLesCoordonnees,
-        situerLesAdressesDuRegistreLocal,
-        consulterLAnnuaire,
-        reprendre ? reprendreLAdresse : sansRepriseDeLAdresse,
-        reprendre ? supprimerLeLieu : sansSuppressionDuLieu,
-        reprendre ? confierLAdresseAuLieu : sansConfiementDeLAdresse,
-        new Date(),
-      ),
-    ],
+    reprises: reprisesRetenues(
+      [
+        triDesListes(reprendre ? trierLesListes : sansTri),
+        repriseDesHoraires(
+          reprendre ? reprendreLesHoraires : sansRepriseDesHoraires,
+        ),
+        repriseDuTelephone(
+          reprendre ? reprendreLeTelephone : sansRepriseDuTelephone,
+        ),
+        repriseDesCourriels(
+          reprendre ? reprendreLesCourriels : sansRepriseDesCourriels,
+        ),
+        repriseDesSitesWeb(
+          reprendre ? reprendreLesSitesWeb : sansRepriseDesSitesWeb,
+        ),
+        repriseDuPivot(reprendre ? effacerLeRna : sansEffacementDuRna),
+        repriseDuResume(reprendre ? descendreLeResume : sansDescenteDuResume),
+        repriseDeLaPublication(
+          reprendre ? retirerLaPublication : sansRetraitDePublication,
+        ),
+        repriseDuComplementDAdresse(
+          reprendre ? reprendreLeComplement : sansRepriseDuComplement,
+        ),
+        repriseDeLAdresse(
+          geocoderLesAdresses,
+          retrouverParLesCoordonnees,
+          situerLesAdressesDuRegistreLocal,
+          consulterLAnnuaire,
+          reprendre ? reprendreLAdresse : sansRepriseDeLAdresse,
+          reprendre ? supprimerLeLieu : sansSuppressionDuLieu,
+          reprendre ? confierLAdresseAuLieu : sansConfiementDeLAdresse,
+          new Date(),
+        ),
+      ],
+      job.payload?.reprises,
+    ),
     ports: {
       lireLesLieux,
       journal,

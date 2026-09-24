@@ -15,6 +15,7 @@ export {
   type Releve,
   type Reprise,
   relever,
+  reprisesRetenues,
 } from './domain'
 export {
   deposerLeReleve,
