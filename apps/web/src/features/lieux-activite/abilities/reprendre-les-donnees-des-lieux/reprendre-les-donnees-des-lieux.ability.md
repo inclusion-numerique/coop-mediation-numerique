@@ -29,6 +29,23 @@ base.
 * When on reprend les données des lieux
 * Then le relevé ne retient pas ce lieu
 
+## Rule: Un nom se nettoie selon le standard, sans changer de casse
+
+> Des noms portent des espaces doublés ou en bord, des guillemets droits, parfois
+> un retour à la ligne. La bibliothèque du standard les nettoie, et le nom
+> nettoyé s'écrit.
+>
+> La casse, elle, n'est pas touchée. Un nom tout en capitales mis en casse
+> naturelle abîmerait les sigles (« UFCV » deviendrait « Ufcv ») et garderait
+> les accents absents (« L'etang Sale ») : c'est aux lieux de le corriger.
+
+### Scenario: Un nom aux espaces en trop est nettoyé, sans changer de casse
+
+* Given un lieu dont le nom porte des espaces en trop
+* When on reprend les données des lieux
+* Then le relevé compte ce lieu dans la colonne "nom"
+* And le nom du lieu est nettoyé, sans changer de casse
+
 ## Rule: Un complément d'adresse se nettoie selon le standard
 
 > Le complément se saisit librement, et des imports y ont laissé des espaces en

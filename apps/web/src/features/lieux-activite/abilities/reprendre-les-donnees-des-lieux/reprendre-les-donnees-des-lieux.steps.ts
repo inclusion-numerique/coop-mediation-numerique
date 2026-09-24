@@ -18,6 +18,7 @@ import {
   type Releve,
   reprendreLAdresse,
   reprendreLeComplement,
+  reprendreLeNom,
   reprendreLesCourriels,
   reprendreLesDonneesDesLieux,
   reprendreLesHoraires,
@@ -29,6 +30,7 @@ import {
   repriseDesHoraires,
   repriseDesSitesWeb,
   repriseDuComplementDAdresse,
+  repriseDuNom,
   repriseDuPivot,
   repriseDuResume,
   repriseDuTelephone,
@@ -41,6 +43,7 @@ import {
   sansRepriseDesHoraires,
   sansRepriseDesSitesWeb,
   sansRepriseDuComplement,
+  sansRepriseDuNom,
   sansRepriseDuTelephone,
   sansRetraitDePublication,
   sansSuppressionDuLieu,
@@ -397,6 +400,23 @@ Given('un lieu publié qui n’annonce aucun service', async () => {
 
 Given('un lieu qui porte un RNA', async () => {
   await semerUnLieu({ rna: RNA })
+})
+
+Given('un lieu dont le nom porte des espaces en trop', async () => {
+  await semerUnLieu({})
+  await prismaClient.lieuInclusion.update({
+    where: { id: lieuSeme() },
+    data: { nom: ' MAISON  FRANCE SERVICES ' },
+  })
+})
+
+Then('le nom du lieu est nettoyé, sans changer de casse', async () => {
+  const { nom } = await prismaClient.lieuInclusion.findUniqueOrThrow({
+    where: { id: lieuSeme() },
+    select: { nom: true },
+  })
+
+  assert.strictEqual(nom, 'MAISON FRANCE SERVICES')
 })
 
 Given('un lieu dont le complément porte des guillemets droits', async () => {
@@ -869,6 +889,7 @@ When('on reprend les données des lieux', async () => {
         repriseDuResume(descendreLeResume),
         repriseDeLaPublication(retirerLaPublication),
         repriseDuComplementDAdresse(reprendreLeComplement),
+        repriseDuNom(reprendreLeNom),
         repriseDeLAdresse(
           geocoderLesAdresses,
           retrouverParLesCoordonnees,
@@ -902,6 +923,7 @@ When('on relève les données des lieux sans les reprendre', async () => {
         repriseDuResume(sansDescenteDuResume),
         repriseDeLaPublication(sansRetraitDePublication),
         repriseDuComplementDAdresse(sansRepriseDuComplement),
+        repriseDuNom(sansRepriseDuNom),
         repriseDeLAdresse(
           geocoderLesAdresses,
           retrouverParLesCoordonnees,

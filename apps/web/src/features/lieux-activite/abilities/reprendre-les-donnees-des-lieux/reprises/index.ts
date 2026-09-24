@@ -69,6 +69,14 @@ export {
   sansRepriseDuComplement,
 } from './reprise-du-complement-d-adresse'
 export {
+  type NomAReprendre,
+  nomAReprendre,
+  type ReprendreLeNom,
+  reprendreLeNom,
+  repriseDuNom,
+  sansRepriseDuNom,
+} from './reprise-du-nom'
+export {
   type EffacerLeRna,
   effacerLeRna,
   repriseDuPivot,
