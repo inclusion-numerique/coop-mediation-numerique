@@ -1,5 +1,13 @@
 [
   {
+    "lieuId": "000a5c01-6fa5-483e-944b-eed29196974c",
+    "nom": "Médiathèque",
+    "adresse": "1 Cour de l’Abbaye 68140 Munster",
+    "codeInsee": "68226",
+    "banId": "68226_0003_00001",
+    "source": "https://api-lannuaire.service-public.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration/records?where=code_insee_commune=\"68226\"&limit=100"
+  },
+  {
     "lieuId": "0038fa3c-e903-402b-a050-f97b15e0a407",
     "nom": "Mairie de Pogio de Venaco",
     "adresse": "Piazza San Roccu 20250 Poggio-di-Venaco",
@@ -121,11 +129,27 @@
     "source": "https://adresse.data.gouv.fr/base-adresse-nationale/97101_0510_00070"
   },
   {
+    "lieuId": "0d2b52c9-301b-4483-90e4-ab7dcd5f12a6",
+    "nom": "Permanence Saint-Pois",
+    "adresse": "15 Grande Rue 50670 Saint-Pois",
+    "codeInsee": "50542",
+    "banId": "50542_0008_00015",
+    "source": "https://api-lannuaire.service-public.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration/records?where=code_insee_commune=\"50542\"&limit=100"
+  },
+  {
     "lieuId": "0df98f9e-2f16-4ce9-83a3-665f096ab7a7",
     "nom": "Bibliothèque Municipale de Puycasquier",
     "adresse": "Grand Rue 32120 Puycasquier",
     "codeInsee": "32335",
     "source": "https://horaire-bibliotheque.net/ville/puycasquier-32120/"
+  },
+  {
+    "lieuId": "0ed4b25f-664c-4828-8d7e-42f349261d5c",
+    "nom": "Espace Lagleyze",
+    "adresse": "29 Grande Rue 31620 Castelnau-d'Estrétefonds",
+    "codeInsee": "31118",
+    "banId": "31118_0460_00029",
+    "source": "https://api-lannuaire.service-public.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration/records?where=code_insee_commune=\"31118\"&limit=100"
   },
   {
     "lieuId": "0f924711-42be-42b9-9af7-580424cf92bc",
@@ -163,11 +187,27 @@
     "source": "https://www.famillesrurales.org/einville/"
   },
   {
+    "lieuId": "13f7d670-bd32-4b14-be4a-e1e11a648432",
+    "nom": "Médiathèque Vacquiers",
+    "adresse": "52 Place de la Mairie 31340 Vacquiers",
+    "codeInsee": "31563",
+    "banId": "31563_0027_00052",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/31563_0027_00052"
+  },
+  {
     "lieuId": "14419e8d-1781-462b-9045-992b53d1e293",
     "nom": "Commune de Mussey-sur-Marne",
     "adresse": "12 Rue du Chateau 52300 Mussey-sur-Marne",
     "codeInsee": "52346",
     "source": "https://www.pagesjaunes.fr/pros/07477304"
+  },
+  {
+    "lieuId": "150248f3-77a6-467b-9d74-688c24774188",
+    "nom": "centre social de la Tour d'Aigues",
+    "adresse": "60 Rue du Parc 84240 La Tour-d'Aigues",
+    "codeInsee": "84133",
+    "banId": "84133_0675_00060",
+    "source": "https://www.centresocialaiguier.com/"
   },
   {
     "lieuId": "16b86c77-3768-46fa-95cb-0d757ddd3769",
@@ -219,6 +259,14 @@
     "source": "https://lannuaire.service-public.gouv.fr/nouvelle-aquitaine/vienne/7b69e978-362e-499f-974a-37545674d11e"
   },
   {
+    "lieuId": "1a04c1af-0477-4f2d-a9f5-63d4f36a0c8a",
+    "nom": "CMS Saint Saens",
+    "adresse": "24 Rue Raymond Poincaré 76680 Saint-Saëns",
+    "codeInsee": "76648",
+    "banId": "76648_0440_00024",
+    "source": "https://allopmi.fr/pmi/seine-maritime-76/centre-medico-social-de-saint-saens-1441.html"
+  },
+  {
     "lieuId": "1a655a67-33a4-46e7-98ae-8bd1c3d0cd11",
     "nom": "MAIRIE DE SEVEUX/MOTTEY",
     "adresse": "10 Grande Rue 70130 Seveux-Motey",
@@ -241,6 +289,22 @@
     "source": "https://mediatheques.coeuressonne.fr/contactez-nous/10"
   },
   {
+    "lieuId": "1d4551e9-49f7-4a1a-87f4-eacdc8ed49f9",
+    "nom": "Atelier municipaux de Baignes",
+    "adresse": "1bis Route de l'Ancienne Gare 16360 Touvérac",
+    "codeInsee": "16384",
+    "banId": "16384_0040_00001_bis",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/16384_0040_00001_bis"
+  },
+  {
+    "lieuId": "1dbfa51e-bf53-4d58-98b1-1cfabb79a45f",
+    "nom": "Bus It'In",
+    "adresse": "1 Rue De L'église 35560 Saint-Rémy-du-Plain",
+    "codeInsee": "35309",
+    "banId": "35309_0018_00001",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/35309_0018_00001"
+  },
+  {
     "lieuId": "206a289e-1f93-4775-a821-68ab60c50540",
     "nom": "CAP Nord Martinique",
     "adresse": "177 Passage Fleurit-Noël 97225 Le Marigot",
@@ -253,6 +317,14 @@
     "adresse": "Village de Lafontasse 81100 Burlats",
     "codeInsee": "81042",
     "source": "https://www.mairie-burlats.fr/"
+  },
+  {
+    "lieuId": "239f5786-b172-424b-9bca-25152e074c46",
+    "nom": "Complexe Sportif Girond'O",
+    "adresse": "1 Girondeau 49540 Terranjou",
+    "codeInsee": "49086",
+    "banId": "49086_qnmnd0_00001",
+    "source": "https://equipements.sports.gouv.fr/api/explore/v2.1/catalog/datasets/data-es/records?where=inst_numero=\"I491910002\""
   },
   {
     "lieuId": "244ad6d8-e56e-4af0-83b0-0a2d85056012",
@@ -276,6 +348,14 @@
     "source": "https://www.bastia.corsica/wp-content/uploads/2025/10/2022.01.01.08a2-convention-aide-eco-webforce3-avec-marques-de-revision-lisse-4.pdf"
   },
   {
+    "lieuId": "26bb348d-21dc-4d96-9866-7de2eb24fd0e",
+    "nom": "DIME MEMBREY",
+    "adresse": "13 Rue de l’Eglise 70180 Membrey",
+    "codeInsee": "70340",
+    "banId": "70340_0054_00013",
+    "source": "https://recherche-entreprises.api.gouv.fr/search?q=afsame&code_postal=70180"
+  },
+  {
     "lieuId": "28471b37-9cfe-485a-8856-923216b3e6cf",
     "nom": "France Services Plaine d'Ozon",
     "adresse": "1 Rue Nicole Auger 86100 Châtellerault",
@@ -288,6 +368,14 @@
     "adresse": "Le Bourg 43100 Lavaudieu",
     "codeInsee": "43117",
     "source": "https://lannuaire.service-public.gouv.fr/auvergne-rhone-alpes/haute-loire/6f8022fe-0548-4500-accc-2cb181a0cffd"
+  },
+  {
+    "lieuId": "28f9a388-0d52-44d8-b155-277947277c76",
+    "nom": "COMMUNE DE LA CADIERE-ET-CAMBO",
+    "adresse": "215 Rue de la Mairie 30170 La Cadière-et-Cambo",
+    "codeInsee": "30058",
+    "banId": "30058_s39un5_00215",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/30058_s39un5_00215"
   },
   {
     "lieuId": "2929ebf3-73c3-46da-ae48-8f550136a3eb",
@@ -340,6 +428,22 @@
     "source": "https://lannuaire.service-public.gouv.fr/normandie/seine-maritime/fff00d09-d41e-4ad6-aee2-c9cddfae36a1"
   },
   {
+    "lieuId": "2fbaf47c-4176-4548-95f2-153c3ac0d3bc",
+    "nom": "Accueil Périscolaire (APS) d'Yvré-le-Pôlin",
+    "adresse": "4 Place de L Eglise 72330 Yvré-le-Pôlin",
+    "codeInsee": "72385",
+    "banId": "72385_0356_00004",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/72385_0356_00004"
+  },
+  {
+    "lieuId": "31f8bddf-9d2e-453d-9220-12358cc529c8",
+    "nom": "Médiathèque au Pré vert",
+    "adresse": "2 Rue des Carlets 35520 La Chapelle-des-Fougeretz",
+    "codeInsee": "35059",
+    "banId": "35059_0013_00002",
+    "source": "https://api-lannuaire.service-public.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration/records?where=code_insee_commune=\"35059\"&limit=100"
+  },
+  {
     "lieuId": "3345543e-f5b4-4400-bc18-6385a974dd39",
     "nom": "Chalais Mairie",
     "adresse": "28 Place des Ecoles 24800 Chalais",
@@ -390,11 +494,43 @@
     "source": "https://adresse.data.gouv.fr/base-adresse-nationale/25519_0400_00001"
   },
   {
+    "lieuId": "38299908-2189-41dd-ad39-3c74a0e01b20",
+    "nom": "Pin",
+    "adresse": "49 Grande Rue 70150 Pin",
+    "codeInsee": "70410",
+    "banId": "70410_0073_00049",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/70410_0073_00049"
+  },
+  {
     "lieuId": "384407c8-e5b4-450c-a66e-037b01ee1ba0",
     "nom": "CHARLEVAL",
     "adresse": "Place du General de Gaulle 27380 Charleval",
     "codeInsee": "27151",
     "source": "https://lannuaire.service-public.gouv.fr/normandie/eure/2fdab848-f18a-4e7c-8d1a-a78ebaa21f02"
+  },
+  {
+    "lieuId": "386f2445-776f-4b23-9258-b46a409236be",
+    "nom": "76 MOBILE - CMS ST SAENS",
+    "adresse": "45 Place Maintenon 76680 Saint-Saëns",
+    "codeInsee": "76648",
+    "banId": "76648_0320_00045",
+    "source": "https://www.seinemaritime.fr/nos-actions/action-sociale/accompagnement-social/76-mobile/"
+  },
+  {
+    "lieuId": "3a0a40e4-192a-4d59-901b-4bccf9b05a1e",
+    "nom": "76 MOBILE - CMS NEUFCHATEL BOSC LE HARD",
+    "adresse": "217 Place du Marché 76850 Bosc-le-Hard",
+    "codeInsee": "76125",
+    "banId": "76125_0056_00217",
+    "source": "https://api-lannuaire.service-public.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration/records?where=code_insee_commune=\"76125\"&limit=100"
+  },
+  {
+    "lieuId": "3b453e12-98d4-49c0-887e-d7ddd1d9581f",
+    "nom": "college cazeaux morez",
+    "adresse": "15 Rue de la Citadelle 39400 Hauts de Bienne",
+    "codeInsee": "39368",
+    "banId": "39368_0030_00015",
+    "source": "https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-annuaire-education/records?where=code_commune=\"39368\""
   },
   {
     "lieuId": "3b4df06d-9d5a-42d1-bc19-e68be40b93b0",
@@ -409,6 +545,30 @@
     "adresse": "5 Route du Dolmen 81140 Vaour",
     "codeInsee": "81309",
     "source": "https://lannuaire.service-public.gouv.fr/occitanie/tarn/604825e3-7f2c-4a7a-85c7-a549050f1868"
+  },
+  {
+    "lieuId": "3ca03331-08bb-422c-b267-15f6e608eac0",
+    "nom": "ESPACE NUMERIQUE SUD CHARENTE",
+    "adresse": "10 Grand'Rue 16320 Villebois-Lavalette",
+    "codeInsee": "16408",
+    "banId": "16408_0070_00010",
+    "source": "https://numeriquesudcharente.org/"
+  },
+  {
+    "lieuId": "3d3d1043-1093-4596-a0a5-6f4ad9827f88",
+    "nom": "COMMUNE DES TROIS-ILETS",
+    "adresse": "9 Rue Jules Ferry 97229 Les Trois-Îlets",
+    "codeInsee": "97231",
+    "banId": "97231_0020_00009",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/97231_0020_00009"
+  },
+  {
+    "lieuId": "3d4a7399-653e-4074-bda9-fae648368eaf",
+    "nom": "POLE NUMERIQUE ET MOBILITE",
+    "adresse": "71 Rue Victor Hugo 16300 Barbezieux-Saint-Hilaire",
+    "codeInsee": "16028",
+    "banId": "16028_1480_00071",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/16028_1480_00071"
   },
   {
     "lieuId": "3e531ee9-d114-4b8d-b544-ee63a111fe92",
@@ -437,6 +597,14 @@
     "adresse": "35 Rue du maréchal leclerc de hautecloque 85800 Saint-Gilles-Croix-de-Vie",
     "codeInsee": "85222",
     "source": "https://www.saintgillescroixdevie.fr/contacts/centre-socioculturel-la-ptite-gare/"
+  },
+  {
+    "lieuId": "4488cdb7-e6ae-41c6-b0c1-f6f569b26daf",
+    "nom": "CROIX ROUGE Villebois",
+    "adresse": "66 Rue André Bouyer 16320 Villebois-Lavalette",
+    "codeInsee": "16408",
+    "banId": "16408_0005_00066",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/16408_0005_00066"
   },
   {
     "lieuId": "454b8aa0-2d43-4e01-88ea-6df59775bd35",
@@ -468,6 +636,14 @@
     "source": "https://indexsante.fr/etablissements/etablissements-de-sante/hopitaux-cliniques/orne-61/61-belleme/hopital-local-belleme/"
   },
   {
+    "lieuId": "46f42e28-a2c9-499e-8e04-779b3e925716",
+    "nom": "ALSH de Villaines/Bousse",
+    "adresse": "32 Rue Principale 72270 Villaines-sous-Malicorne",
+    "codeInsee": "72377",
+    "banId": "72377_0167_00032",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/72377_0167_00032"
+  },
+  {
     "lieuId": "4723c1e1-cb94-43cb-bbec-83d8e385edc2",
     "nom": "COMMUNAUTE DE COMMUNES DU SUD CORSE",
     "adresse": "Carrughju Marescialu Juin 20137 Porto-Vecchio",
@@ -480,6 +656,22 @@
     "adresse": "Route du Port d'Orion 40400 Meilhan",
     "codeInsee": "40180",
     "source": "https://www.justacote.com/meilhan-40400/bibliotheque/bibliotheque-municipale-de-meilhan-1438026.htm"
+  },
+  {
+    "lieuId": "47a6f762-0353-445e-b9ef-78f966a9d847",
+    "nom": "Mairie Le Temple",
+    "adresse": "274 Route du Porge 33680 Le Temple",
+    "codeInsee": "33528",
+    "banId": "33528_0050_00274",
+    "source": "https://api-lannuaire.service-public.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration/records?where=code_insee_commune=\"33528\"&limit=100"
+  },
+  {
+    "lieuId": "483f9a19-6b60-4844-9f15-0dbc3c4a7b7c",
+    "nom": "Espaces France Service de Villebois",
+    "adresse": "74 Grand'Rue 16320 Villebois-Lavalette",
+    "codeInsee": "16408",
+    "banId": "16408_0070_00074",
+    "source": "https://api-lannuaire.service-public.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration/records?where=code_insee_commune=\"16408\"&limit=100"
   },
   {
     "lieuId": "495a26b0-d951-4c66-9634-f7cd8968412c",
@@ -510,6 +702,14 @@
     "source": "https://lannuaire.service-public.gouv.fr/nouvelle-aquitaine/gironde/50fbe2a7-e7f1-436d-a2fa-6e25312e036d"
   },
   {
+    "lieuId": "49ffd90c-61da-41f5-afa5-0e8295defd9c",
+    "nom": "Siège de la Commaunauté d'Agglomération de l'Espace Sud de la Martinique",
+    "adresse": "313 Chemin de la Fraîcheur 97215 Rivière-Salée",
+    "codeInsee": "97221",
+    "banId": "97221_2yzaem_00313",
+    "source": "https://api-lannuaire.service-public.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration/records?where=code_insee_commune=\"97221\"&limit=100"
+  },
+  {
     "lieuId": "4af2af61-7de6-47a1-89a7-a4037eeb6ede",
     "nom": "Maison Célestin",
     "adresse": "13 Route de Fatima 97435 Saint-Paul",
@@ -538,6 +738,14 @@
     "source": "https://www.lyon.fr/lieu/equipements-divers/maison-lyon-pour-lemploi-antenne-duchere"
   },
   {
+    "lieuId": "4f1a3096-c0ac-45c1-a148-383a6e0445fc",
+    "nom": "Intercommunalité La Vicomté-sur-Rance, Pleudihen-sur-Rance, Saint-Helen",
+    "adresse": "22 Rue de la Mairie 22690 La Vicomté-sur-Rance",
+    "codeInsee": "22385",
+    "banId": "22385_0080_00022",
+    "source": "https://api-lannuaire.service-public.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration/records?where=code_insee_commune=\"22385\"&limit=100"
+  },
+  {
     "lieuId": "4f4ad766-3061-4866-96ca-d5bca52cc2c5",
     "nom": "Médiathèque Villeneuve les Bouloc",
     "adresse": "Route d'Ensarla 31620 Villeneuve-lès-Bouloc",
@@ -564,6 +772,14 @@
     "adresse": "20 Grand’Rue 79340 Vasles",
     "codeInsee": "79339",
     "source": "https://dora.inclusion.gouv.fr/structures/parenthese-au-jardin"
+  },
+  {
+    "lieuId": "58084154-ae25-4451-8684-4497786e2fb4",
+    "nom": "DIALAN-SUR-CHAINE (Mairie)",
+    "adresse": "9 Rue de la Mairie - Jurques 14260 Dialan sur Chaîne",
+    "codeInsee": "14347",
+    "banId": "14347_0310_00009",
+    "source": "https://api-lannuaire.service-public.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration/records?where=code_insee_commune=\"14347\"&limit=100"
   },
   {
     "lieuId": "58137af2-4541-4874-9b9d-23ac55ed2b15",
@@ -622,6 +838,14 @@
     "source": "https://mptchatellerault.centres-sociaux.fr/infos-pratiques/nous-ecrire/"
   },
   {
+    "lieuId": "60b99107-beb5-4ae7-8ffa-db6c1215d6c2",
+    "nom": "Mairie de Molines en Queyras",
+    "adresse": "225 Rue du Serre 05350 Molines-en-Queyras",
+    "codeInsee": "05077",
+    "banId": "05077_0323_00225",
+    "source": "https://api-lannuaire.service-public.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration/records?where=code_insee_commune=\"05077\"&limit=100"
+  },
+  {
     "lieuId": "6126fef9-05ea-45b3-baa0-a54def8103a9",
     "nom": "COMMUNE DE LA CHAUSSEE SAINT VICTOR",
     "adresse": "29 Rue de la Poste 41260 La Chaussée-Saint-Victor",
@@ -650,6 +874,14 @@
     "source": "https://www.terredeprovence-agglo.com/"
   },
   {
+    "lieuId": "6ec2b848-08bd-4468-976f-be551b1895dc",
+    "nom": "Syndicat mixte du Giussani",
+    "adresse": "86 Stradone Di a Furesta 20259 Olmi-Cappella",
+    "codeInsee": "2B190",
+    "banId": "2b190_febxhb_00086",
+    "source": "https://api-lannuaire.service-public.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration/records?where=code_insee_commune=\"2B190\"&limit=100"
+  },
+  {
     "lieuId": "6fe644b2-3d25-46e0-937b-d8c6f371dfc5",
     "nom": "France Services Ailly sur Noye",
     "adresse": "3 chemin d'Altforweiler 80250 Ailly-sur-Noye",
@@ -676,6 +908,14 @@
     "adresse": "1 Place de l'Hôtel de Ville 74600 Annecy",
     "codeInsee": "74010",
     "source": "https://lannuaire.service-public.gouv.fr/auvergne-rhone-alpes/haute-savoie/9092b507-9122-4911-9be6-14a30e26422f"
+  },
+  {
+    "lieuId": "7420ca21-df6f-4ea1-bed1-6019c26646bc",
+    "nom": "Pole educatif de Moffans",
+    "adresse": "3 Rue de la Corne 70200 Moffans-et-Vacheresse",
+    "codeInsee": "70348",
+    "banId": "70348_0035_00003",
+    "source": "https://api-lannuaire.service-public.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration/records?where=code_insee_commune=\"70348\"&limit=100"
   },
   {
     "lieuId": "75b8fc39-a969-4f12-b45a-552a5e754710",
@@ -784,6 +1024,14 @@
     "source": "https://lannuaire.service-public.gouv.fr/bourgogne-franche-comte/haute-saone/045833cb-740b-479d-8a0f-9f0b967507c6"
   },
   {
+    "lieuId": "8e065195-6c0a-4d44-b187-168a5afa4ef5",
+    "nom": "France Service Silly-en-Gouffern",
+    "adresse": "25 Route de l'Abbaye 61310 Gouffern en Auge",
+    "codeInsee": "61474",
+    "banId": "61474_i1ebnr_00025",
+    "source": "https://api-lannuaire.service-public.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration/records?where=code_insee_commune=\"61474\"&limit=100"
+  },
+  {
     "lieuId": "8e3b0165-17d6-41a6-beed-bff6b5a44380",
     "nom": "AFPA ACCES A L' EMPLOI",
     "adresse": "Avenue René Descartes 43700 Saint-Germain-Laprade",
@@ -855,12 +1103,28 @@
     "source": "https://fondation-grandouest.mutualia.fr/associations/cms-antenne-du-mortainais/"
   },
   {
+    "lieuId": "a0292b2c-0a56-40a5-b2b4-cfd2a0a0e82e",
+    "nom": "Challes - Espace France Service",
+    "adresse": "2 Route de Chateau Du Loir 72250 Challes",
+    "codeInsee": "72053",
+    "banId": "72053_0062_00002",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/72053_0062_00002"
+  },
+  {
     "lieuId": "a8b96311-8d27-45b3-911c-187df1f17f91",
     "nom": "Solideria - Association pour le developpement des projets d'economie sociale, solidaire et durable en corse",
     "adresse": "24 Arena 20260 Calvi",
     "codeInsee": "2B050",
     "complementAdresse": "Avenue Christophe Colomb Immeuble Vitamine",
     "source": "https://adresse.data.gouv.fr/base-adresse-nationale/2b050_llie8v_00024"
+  },
+  {
+    "lieuId": "aa3fac04-eec7-417d-bff4-9fabe5c44cc3",
+    "nom": "POLE CULTUREL",
+    "adresse": "1 Chemin des Vignes 70360 Scey-sur-Saône-et-Saint-Albin",
+    "codeInsee": "70482",
+    "banId": "70482_0170_00001",
+    "source": "https://www.edm70.fr/index.php?IdPage=1492590118"
   },
   {
     "lieuId": "ab39a1ab-150d-4643-acae-4eafb6cb7637",
@@ -882,6 +1146,22 @@
     "adresse": "Place de l’Eglise 76850 Cottévrard",
     "codeInsee": "76188",
     "source": "https://seinemaritime.fr/nos-actions/action-sociale/accompagnement-social/76-mobile"
+  },
+  {
+    "lieuId": "b1d432a8-c1d6-4cf1-af6e-77de38cacb4a",
+    "nom": "76 MOBILE - CMS NEUFCHATEL BEAUMONT LE HARENG",
+    "adresse": "10 Rue des Cordelières 76270 Neufchâtel-en-Bray",
+    "codeInsee": "76462",
+    "banId": "76462_0200_00010",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/76462_0200_00010"
+  },
+  {
+    "lieuId": "b3619c65-365a-4ed7-9df8-90f7d624c410",
+    "nom": "Médiathèque Monod",
+    "adresse": "5bis Rue du Vau Chalet 35830 Betton",
+    "codeInsee": "35024",
+    "banId": "35024_0140_00005_bis",
+    "source": "https://www.lesmediatheques-rennesmetropole.fr/bibliotheque/betton"
   },
   {
     "lieuId": "bd414386-28bd-45b1-8b23-0cc17b73bc8c",
@@ -912,11 +1192,27 @@
     "source": "https://www.lachamp-ribennes.fr/contact-mairie-48-lozere-randon-margeride"
   },
   {
+    "lieuId": "c3645d74-7be6-47eb-9b57-1ccda9444c6f",
+    "nom": "Médiathèque L'Acolade",
+    "adresse": "4 Rue de la Mairie 35250 Chevaigné",
+    "codeInsee": "35079",
+    "banId": "35079_0035_00004",
+    "source": "https://www.lesmediatheques-rennesmetropole.fr/bibliotheque/chevaigne"
+  },
+  {
     "lieuId": "c7067e9f-9051-4e10-9baa-0e87d028594b",
     "nom": "Commune de Feuges",
     "adresse": "2 Route de Saint Benoit 10150 Feuges",
     "codeInsee": "10149",
     "source": "https://lannuaire.service-public.gouv.fr/grand-est/aube/217b3dba-57ab-43ae-86ef-03400111a865"
+  },
+  {
+    "lieuId": "c8cf68db-42dc-4cf3-9aef-753c19916ab4",
+    "nom": "Ecole de fauch",
+    "adresse": "7 Rue de la mairie 81120 Fauch",
+    "codeInsee": "81088",
+    "banId": "81088_0026_00007",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/81088_0026_00007"
   },
   {
     "lieuId": "cca96640-75a9-49bd-8cdc-a5ae7ede85d1",
@@ -933,12 +1229,28 @@
     "source": "https://montsdegy.fr/fretigney-et-velloreille--1614595266.html"
   },
   {
+    "lieuId": "cf53a52f-f416-4260-9321-58f781c0fbc0",
+    "nom": "Bibliothèque municipale - Brach",
+    "adresse": "1 Espace Allienor 33480 Brach",
+    "codeInsee": "33070",
+    "banId": "33070_0060_00001",
+    "source": "https://api-lannuaire.service-public.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration/records?where=code_insee_commune=\"33070\"&limit=100"
+  },
+  {
     "lieuId": "d005d879-54f7-4a41-841b-9ca77eea8777",
     "nom": "CCAS de Millas",
     "adresse": "4 Rue Lafayette 66170 Millas",
     "codeInsee": "66108",
     "banId": "66108_0084_00004",
     "source": "https://adresse.data.gouv.fr/base-adresse-nationale/66108_0084_00004"
+  },
+  {
+    "lieuId": "d057899d-40f9-4e57-9a8c-b9fe19623d23",
+    "nom": "76 MOBILE - CMS NEUFCHATEL ST GERMAIN SUR EAULNE",
+    "adresse": "10 Rue des Cordelières 76270 Neufchâtel-en-Bray",
+    "codeInsee": "76462",
+    "banId": "76462_0200_00010",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/76462_0200_00010"
   },
   {
     "lieuId": "d19fc7a7-5392-4611-8dca-64ba9f7d2009",
@@ -955,6 +1267,14 @@
     "source": "https://provence-alpes-cotedazur.com/que-faire/detente-et-loisirs/toutes-les-activites-detente-et-loisirs/mediatheque-de-saint-crepin-saint-crepin-fr-3739977/"
   },
   {
+    "lieuId": "d25a4b50-3e49-4a9f-9c6e-90dcec1a33dd",
+    "nom": "76 MOBILE - CMS ST SAENS BOSC MESNIL",
+    "adresse": "19 Route du Bouloir 76680 Bosc-Mesnil",
+    "codeInsee": "76126",
+    "banId": "76126_0030_00019",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/76126_0030_00019"
+  },
+  {
     "lieuId": "d2696324-e1f0-4f52-b9be-188fae7cb5af",
     "nom": "Espace Joseph Valentin-Maurel",
     "adresse": "36 Avenue la Fayette 13200 Arles",
@@ -969,6 +1289,22 @@
     "codeInsee": "2A258",
     "complementAdresse": "U pont",
     "source": "https://adresse.data.gouv.fr/base-adresse-nationale/2A258"
+  },
+  {
+    "lieuId": "d5e94f62-f095-488c-ab91-00397f78ef50",
+    "nom": "76 MOBILE - CMS NEUFCHATEL SAINT-HELLIER",
+    "adresse": "35 Rue des Vallons 76680 Saint-Hellier",
+    "codeInsee": "76588",
+    "banId": "76588_0013_00035",
+    "source": "https://www.seinemaritime.fr/nos-actions/action-sociale/accompagnement-social/76-mobile/"
+  },
+  {
+    "lieuId": "d6220e94-d811-40ad-aea4-f8a802e9bb99",
+    "nom": "76 MOBILE - CMS LONDINIERES OSMOY ST VALERY",
+    "adresse": "44 Route de Neufchâtel 76660 Osmoy-Saint-Valery",
+    "codeInsee": "76487",
+    "banId": "76487_0015_00044",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/76487_0015_00044"
   },
   {
     "lieuId": "d7c88db3-085a-4af4-b137-4d9ab0089afa",
@@ -1007,11 +1343,35 @@
     "source": "https://valreas.net/"
   },
   {
+    "lieuId": "dbaa3001-7af0-4273-937b-5adc61c818e2",
+    "nom": "ESAT de Recoubeau",
+    "adresse": "29 Chemin de la Condamine 26310 Recoubeau-Jansac",
+    "codeInsee": "26262",
+    "banId": "26262_0065_00029",
+    "source": "https://annuaire-entreprises.data.gouv.fr/etablissement/77567227205719"
+  },
+  {
     "lieuId": "dd362a34-2031-4cbe-9e92-e93c2f38fefd",
     "nom": "76 MOBILE - CMS NEUFCHATEL MASSY",
     "adresse": "6 Rue Jean Jaures 76270 Neufchâtel-en-Bray",
     "codeInsee": "76462",
     "source": "https://adresse.data.gouv.fr/base-adresse-nationale/76462_0444_00006"
+  },
+  {
+    "lieuId": "e03d019f-b5c3-49e9-8593-47cb0b7cffbf",
+    "nom": "Centre social La Maison des Projets",
+    "adresse": "7 Place de la Republique 72290 Ballon-Saint Mars",
+    "codeInsee": "72023",
+    "banId": "72023_0840_00007",
+    "source": "https://api-lannuaire.service-public.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration/records?where=code_insee_commune=\"72023\"&limit=100"
+  },
+  {
+    "lieuId": "e04086e7-2eab-4a84-af49-aab57d52da38",
+    "nom": "Mairie",
+    "adresse": "91 Route de Monbazillac 33220 Saint-Philippe-du-Seignal",
+    "codeInsee": "33462",
+    "banId": "33462_0600_00091",
+    "source": "https://api-lannuaire.service-public.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration/records?where=code_insee_commune=\"33462\"&limit=100"
   },
   {
     "lieuId": "e4b59a06-6213-4700-b8d4-c85b62f36eaa",
@@ -1049,6 +1409,14 @@
     "source": "https://lannuaire.service-public.gouv.fr/corse/haute-corse/42b23377-94f9-4979-91d9-61bc0d156bdd"
   },
   {
+    "lieuId": "ee6473fd-a993-48f9-ac69-22e742131e47",
+    "nom": "MAISON DES FAMILLES",
+    "adresse": "30 Avenue PRIPRI SOULA 97355 Macouria",
+    "codeInsee": "97305",
+    "banId": "97305_0693_00030",
+    "source": "https://api-lannuaire.service-public.fr/api/explore/v2.1/catalog/datasets/api-lannuaire-administration/records?where=code_insee_commune=\"97305\"&limit=100"
+  },
+  {
     "lieuId": "efebceef-9348-438b-89b8-1c62c8c2eefd",
     "nom": "RIO LYON 2",
     "adresse": "100 Rue Jacques-Louis Hénon 69004 Lyon",
@@ -1075,6 +1443,14 @@
     "adresse": "3 Rue des Tilleuls 06420 Valdeblore",
     "codeInsee": "06153",
     "source": "https://ville-valdeblore.fr/?p=4112"
+  },
+  {
+    "lieuId": "fa83cf62-67b5-4e29-a800-7e15dffcbcfc",
+    "nom": "76 MOBILE - CMS ST SAENS SAINTE GENEVIEVE",
+    "adresse": "24 Rue Raymond Poincaré 76680 Saint-Saëns",
+    "codeInsee": "76648",
+    "banId": "76648_0440_00024",
+    "source": "https://adresse.data.gouv.fr/base-adresse-nationale/76648_0440_00024"
   },
   {
     "lieuId": "fb149d8e-db60-4ff6-a84d-1073a6687ee9",
