@@ -137,6 +137,15 @@ describe('la description augmentée d’une note', () => {
     ).toBe('Ouvert sur rendez-vous.')
   })
 
+  it('nettoie la note comme le standard nettoie la présentation', () => {
+    expect(
+      descriptionAvecLaNote(
+        null,
+        'Accueil sans rendez-vous :  Du lundi au vendredi',
+      ),
+    ).toBe('Accueil sans rendez-vous : Du lundi au vendredi')
+  })
+
   it('renonce plutôt que de dépasser la longueur du détail', () => {
     expect(
       descriptionAvecLaNote('x'.repeat(10_000), 'Sur rendez-vous'),

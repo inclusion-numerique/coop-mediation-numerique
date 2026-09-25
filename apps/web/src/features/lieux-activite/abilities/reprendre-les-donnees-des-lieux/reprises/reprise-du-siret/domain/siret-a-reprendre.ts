@@ -1,4 +1,4 @@
-import { Siret } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { nettoyerNom, Siret } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { LieuAReprendre } from '../../../domain'
 import type { AdresseGeocodee } from '../../reprise-de-l-adresse/domain/adresse-a-reprendre'
 import { motsDeLaVoie } from './adresse-equivalente'
@@ -138,12 +138,13 @@ const verdictDeLaConfrontation = (
       motifDeLAutreAdresse(adresseSirene, adresseRetenue, adresseDuLieuALaVoie),
     )
 
-  const { nom } = etablissement
+  const nom = nettoyerNom(etablissement.nom)
+  const nomDuLieu = nettoyerNom(lieu.nom)
 
-  if (ressemblanceDesNoms(lieu.nom, nom) < RESSEMBLANCE_MINIMALE_DES_NOMS)
+  if (ressemblanceDesNoms(nomDuLieu, nom) < RESSEMBLANCE_MINIMALE_DES_NOMS)
     return effacer(brut, MOTIFS_SIRET.autreNom)
-  if (nom !== lieu.nom)
-    return { verdict: 'a-renommer', siret, nom, nomUsage: lieu.nom }
+  if (nom !== nomDuLieu)
+    return { verdict: 'a-renommer', siret, nom, nomUsage: nomDuLieu }
   if (siret !== lieu.siret) return { verdict: 'a-corriger', corrige: siret }
 
   return null

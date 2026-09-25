@@ -37,6 +37,16 @@ describe('le verdict sur l’adresse d’un lieu', () => {
     expect(verdict({})).toBeNull()
   })
 
+  it('garde l’adresse du lieu quand la BAN rend à égalité un doublon de sa voie', () => {
+    const doublon: AdresseGeocodee = {
+      ...RENDUE,
+      banId: '51454_m9jvpb_00012',
+      voie: '12 Paix rue de la',
+    }
+
+    expect(adresseAReprendre(lieuAReprendre({}), [doublon, RENDUE])).toBeNull()
+  })
+
   it('corrige une adresse dont l’identifiant BAN diffère', () => {
     expect(verdict({ banId: '51454_7160_00099' })).toEqual({
       verdict: 'a-corriger',

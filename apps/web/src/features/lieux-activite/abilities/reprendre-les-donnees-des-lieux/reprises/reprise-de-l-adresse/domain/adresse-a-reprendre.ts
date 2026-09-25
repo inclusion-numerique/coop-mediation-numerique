@@ -352,9 +352,14 @@ const motifDuRefus = (
 }
 
 const parScoreDecroissant = (
+  lieu: LieuAReprendre,
   rendues: readonly AdresseGeocodee[],
 ): readonly AdresseGeocodee[] =>
-  [...rendues].sort((une, autre) => autre.score - une.score)
+  [...rendues].sort(
+    (une, autre) =>
+      autre.score - une.score ||
+      Number(autre.banId === lieu.banId) - Number(une.banId === lieu.banId),
+  )
 
 /**
  * La Base Adresse Nationale est interrogée de plusieurs façons sur la même
@@ -364,7 +369,7 @@ export const adresseDeLAdresse = (
   lieu: LieuAReprendre,
   rendues: readonly AdresseGeocodee[],
 ): AdresseGeocodee | null =>
-  parScoreDecroissant(rendues).find(
+  parScoreDecroissant(lieu, rendues).find(
     (rendue) => motifDuRefus(lieu, rendue) == null,
   ) ?? null
 
@@ -589,7 +594,8 @@ export const adresseAReprendre = (
 
   if (adresse == null) {
     const motif =
-      motifDuRefus(lieu, parScoreDecroissant(rendues)[0]) ?? MOTIFS.sansReponse
+      motifDuRefus(lieu, parScoreDecroissant(lieu, rendues)[0]) ??
+      MOTIFS.sansReponse
 
     return nAccompagneRien(lieu)
       ? { verdict: 'a-supprimer', motif }

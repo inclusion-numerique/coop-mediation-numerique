@@ -239,6 +239,23 @@ describe('le SIRET, confronté à SIRENE et à la Base Adresse Nationale', () =>
     })
   })
 
+  it('compare les noms nettoyés, sans renommer pour un espace en trop chez SIRENE', () => {
+    expect(
+      verdict({
+        sirene: {
+          etat: 'ouvert',
+          etablissement: {
+            nom: 'Espace  numérique de Reims',
+            voie: '12 RUE DE LA PAIX',
+            codePostal: '51100',
+            commune: 'REIMS',
+            codeInsee: '51454',
+          },
+        },
+      }),
+    ).toBeNull()
+  })
+
   it('retire les espaces d’un SIRET légitime', () => {
     expect(verdict({}, { siret: '356 000 000 00048' })).toEqual({
       verdict: 'a-corriger',

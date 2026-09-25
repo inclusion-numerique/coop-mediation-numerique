@@ -1,11 +1,15 @@
-import { DETAIL_LONGUEUR_MAXIMALE } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import {
+  DETAIL_LONGUEUR_MAXIMALE,
+  nettoyerPresentation,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { nonVide } from './lieu-a-reprendre'
 
 export const descriptionAvecLaNote = (
   description: string | null,
-  note: string,
+  noteBrute: string,
 ): string | null => {
   const existante = nonVide(description)
+  const note = nettoyerPresentation(noteBrute)
 
   if (existante == null)
     return note.length <= DETAIL_LONGUEUR_MAXIMALE ? note : null
